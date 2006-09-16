@@ -727,7 +727,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	else
 		format = growisofs->priv->image_format;
 
-	if (format & BRASERO_IMAGE_FORMAT_ISO)
+	if (format & BRASERO_IMAGE_FORMAT_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
 	if (format & BRASERO_IMAGE_FORMAT_VIDEO)
