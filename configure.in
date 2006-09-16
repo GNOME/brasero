@@ -1,0 +1,254 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT
+AC_CONFIG_SRCDIR(src/main.c)
+
+BRASERO_MAJOR_VERSION=0
+BRASERO_MINOR_VERSION=4
+BRASERO_SUB=90
+BRASERO_VERSION=$BRASERO_MAJOR_VERSION.$BRASERO_MINOR_VERSION.$BRASERO_SUB
+
+LT_REVISION=1
+LT_AGE=1
+LT_CURRENT=1
+
+
+AC_SUBST(BRASERO_MAJOR_VERSION)
+AC_SUBST(BRASERO_MINOR_VERSION)
+AC_SUBST(BRASERO_SUB)
+AC_SUBST(BRASERO_VERSION)
+
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
+
+
+AC_DEFINE_UNQUOTED(BRASERO_MAJOR_VERSION, $BRASERO_MAJOR_VERSION, [major version])
+AC_DEFINE_UNQUOTED(BRASERO_MINOR_VERSION, $BRASERO_MINOR_VERSION, [minor version])
+AC_DEFINE_UNQUOTED(BRASERO_SUB, $BRASERO_SUB, [sub version])
+AC_DEFINE_UNQUOTED(BRASERO_VERSION, $BRASERO_VERSION, [version])
+
+AM_INIT_AUTOMAKE(brasero, $BRASERO_VERSION)
+AM_CONFIG_HEADER(config.h)
+
+dnl ***************** GENERAL **********************************
+
+AC_PROG_LIBTOOL
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+
+dnl ********** GNOME2 ******************************
+GLIB_REQUIRED=2.6.0
+GDK_REQUIRED=2.6.0
+GTK_REQUIRED=2.8.0
+LIBGNOME_REQUIRED=2.10.0
+LIBGNOMEUI_REQUIRED=2.10.0
+GNOME_VFS_REQUIRED=2.14.2
+GSTREAMER_REQUIRED=0.10.6
+GSTREAMER_BASE_REQUIRED=0.10.0
+LIBXML2_REQUIRED=2.6.0
+
+PKG_CHECK_MODULES(BRASERO, 		\
+	glib-2.0 >= $GLIB_REQUIRED		\
+	gdk-2.0 >= $GDK_REQUIRED	\
+	gtk+-2.0 >= $GTK_REQUIRED		\
+	libgnome-2.0 >= $LIBGNOME_REQUIRED	\
+	libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED	\
+	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED	\
+	gnome-vfs-module-2.0 \
+	gstreamer-0.10 >= $GSTREAMER_REQUIRED \
+	gstreamer-plugins-base-0.10 >= $GSTREAMER_BASE_REQUIRED \
+	libxml-2.0 >= $LIBXML2_REQUIRED)
+	
+AC_SUBST(BRASERO_CFLAGS)
+AC_SUBST(BRASERO_LIBS)
+BRASERO_CFLAGS="$BRASERO_CFLAGS $CFLAGS"
+BRASERO_LIBS="$BRASERO_LIBS $LDFLAGS"
+
+dnl **************** check for nautilus-cd-burner version **
+PKG_CHECK_MODULES(NAUTILUS_BURN, libnautilus-burn >= 2.15.0, has_ncb_2_15=yes, has_ncb_2_15=no)
+
+if test x"$has_ncb_2_15" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $NAUTILUS_BURN_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $NAUTILUS_BURN_LIBS"
+	AC_DEFINE(NCB_2_15, 1, [ncb-2.15 support])
+else
+	PKG_CHECK_MODULES(NAUTILUS_BURN, libnautilus-burn >= 2.14.0)
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $NAUTILUS_BURN_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $NAUTILUS_BURN_LIBS"
+fi
+AM_CONDITIONAL(NCB_2_15, test x"$has_ncb_2_15" = "xyes")
+
+dnl ****************check for libburn (optional)**************
+LIBBURN_REQUIRED=0.2.1
+LIBISOFS_REQUIRED=0.2.1
+
+AC_ARG_ENABLE(libburn,
+			[  --enable-libburn		use libburn if available [[default = yes]]],,
+			[enable_libburn="yes"])
+
+if test x"$enable_libburn" = "xyes"; then
+	PKG_CHECK_MODULES(LIBBURN, libburn-1 >= $LIBBURN_REQUIRED libisofs-1 >= $LIBISOFS_REQUIRED, build_libburn=yes, build_libburn=no)
+else
+	build_libburn="no"
+fi
+
+if test x"$build_libburn" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBBURN_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $LIBBURN_LIBS"
+	AC_DEFINE(HAVE_LIBBURN, 1, [define if you  want to use with libburn support])
+fi
+AM_CONDITIONAL(HAVE_LIBBURN, test x"$build_libburn" = "xyes")
+
+dnl ****************check for libnotify (optional)**************
+LIBNOTIFY_REQUIRED=0.3.0
+
+AC_ARG_ENABLE(libnotify,
+			[  --enable-libnotify		use libnotify if available [[default = yes]]],,
+			[enable_libnotify="yes"])
+
+if test x"$enable_libnotify" = "xyes"; then
+	PKG_CHECK_MODULES(LIBNOTIFY, libnotify >= $LIBNOTIFY_REQUIRED, build_libnotify=yes, build_libnotify=no)
+else
+	build_libnotify="no"
+fi
+
+if test x"$build_libnotify" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBNOTIFY_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $LIBNOTIFY_LIBS"
+	AC_DEFINE(HAVE_LIBNOTIFY, 1, [define if you  want to use with libnotify support])
+fi
+AM_CONDITIONAL(HAVE_LIBNOTIFY, test x"$build_libnotify" = "xyes")
+
+dnl ****************check for search (optional)**************
+BEAGLE_REQUIRED=0.1.1
+
+AC_ARG_ENABLE(search,
+			[  --enable-search		build search pane (if beagle is available) [[default = yes]]],,
+			[enable_search="yes"])
+
+if test x"$enable_search" = "xyes"; then
+	PKG_CHECK_MODULES(BEAGLE, libbeagle-0.0 >= $BEAGLE_REQUIRED, build_beagle=yes, build_beagle=no)
+else
+	build_beagle="no"
+fi
+
+if test x"$build_beagle" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $BEAGLE_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $BEAGLE_LIBS"
+	AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
+fi
+AM_CONDITIONAL(BUILD_SEARCH, test x"$build_search" = "xyes")
+
+dnl ****************check for playlist (optional)**************
+TOTEM_REQUIRED=1.2.0
+
+AC_ARG_ENABLE(playlist,
+			[  --enable-playlist		build playlist pane (if totem is available)[[default = yes]]],,
+			[enable_playlist="yes"])
+
+if test x"$enable_playlist" = "xyes"; then
+	PKG_CHECK_MODULES(TOTEM, totem-plparser >= $TOTEM_REQUIRED, build_totem=yes, build_totem=no)
+else
+	build_totem="no"
+fi
+
+if test x"$build_totem" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $TOTEM_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $TOTEM_LIBS"
+	AC_DEFINE(BUILD_PLAYLIST, 1, [define if you  want to build playlist pane])
+fi
+AM_CONDITIONAL(BUILD_PLAYLIST, test x"$build_totem" = "xyes")
+
+dnl ****************check for preview (optional)**************
+GSTREAMER_MODULE_REQUIRED=0.10.0
+AC_ARG_ENABLE(preview,
+			[  --enable-preview		build preview pane [[default = yes]]],,
+			[enable_preview="yes"])
+
+if test x"$enable_preview" = "xyes"; then
+	PKG_CHECK_MODULES(GSTREAMER_GCONF, gstreamer-plugins-base-0.10 >= $GSTREAMER_MODULE_REQUIRED, build_preview=yes, build_preview=no)
+else
+	build_preview="no"
+fi
+
+if test x"$build_preview" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $GSTREAMER_GCONF_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $GSTREAMER_GCONF_LIBS -lgstinterfaces-0.10"
+	AC_DEFINE(BUILD_PREVIEW, 1, [define if you  want to build preview pane])
+fi
+AM_CONDITIONAL(BUILD_PREVIEW, test x"$build_preview" = "xyes")
+
+dnl ****************check for inotify (optional)**************
+AC_ARG_ENABLE(inotify,
+			[  --enable-inotify		use inotify [[default = yes]]],,
+			[enable_inotify="yes"])
+
+if test x"$enable_inotify" = "xyes"; then
+	AC_DEFINE(BUILD_INOTIFY, 1, [define if you  want to build inotify])
+fi
+AM_CONDITIONAL(BUILD_INOTIFY, test x"$enable_inotify" = "xyes")
+
+dnl ****** Update mime, desktop and icon caches *******
+AC_ARG_ENABLE(caches,
+			[  --enable-caches	Run update-* to update mime, desktop and icon caches when installing [[default = yes]]],,
+			[enable_caches="yes"])
+
+AM_CONDITIONAL(UPDATE_CACHES, test x"$enable_caches" = "xyes")
+
+dnl ****** INTERNATIONALIZATION **********************
+ALL_LINGUAS="fr ja es pt_BR it pl de ca"
+
+GETTEXT_PACKAGE=brasero
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
+
+AM_GLIB_GNU_GETTEXT
+
+AC_PROG_INTLTOOL(0.25)
+
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Location of package locale files])
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Location of package locale files])
+fi
+
+dnl ***** GCONF *************************
+
+AC_ARG_ENABLE(schemas-install,AC_HELP_STRING([--disable-schemas-install],
+					     [Disable installation of the gconf schemas]))
+
+AM_CONDITIONAL(SCHEMAS_INSTALL, test x$enable_schemas_install != xno)
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+if test x"$GCONFTOOL" = "xno"; then
+	AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
+fi
+AM_GCONF_SOURCE_2
+
+dnl ****** END ***********************
+
+AC_OUTPUT([
+Makefile
+docs/Makefile
+data/Makefile
+po/Makefile.in
+src/Makefile
+])
+
+echo
+echo
+echo "$PACKAGE configuration summary:"
+echo "----------------------------------"
+
+echo "Version: $BRASERO_VERSION
+	Update caches: ${enable_caches}
+	Build inotify: ${enable_inotify}
+	Build search pane : ${build_beagle}
+	Build playlist pane : ${build_totem}
+	Build Preview pane : ${enable_preview}
+	Build libnotify support : ${build_libnotify}
+	Use libburn : ${build_libburn}
+"
+echo
+echo

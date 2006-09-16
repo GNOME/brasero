@@ -1,0 +1,24 @@
+2006: release 0.4.90
+This is a development version which adds some new features:
+- supports ncb-2.14 and upward
+- silences can be added individually between tracks in the audio project. Their length can also be set.
+- handles joliet non compliant files more gracefully by not filtering them but by renaming them (after a warning)
+- new project size widget more HIG compliant
+- rework error reporting so that if an error occurs while burning then the full log can be read or saved to disc
+- initial work to provide data integrity checking by inserting at the root of the disc a file with md5 signatures for every file on the disc and a dialog to check these files. This file is compatible with md5sum format and can therefore be used on the command line. This work will be improved and extended in the next development release to allow support for external md5 files so as to check images (downloaded or not).
+
+Updated translations: German (Georg Funke)
+
+Most of all:
+This release adds support for a new backend library libburn.pykix.org (http://libburn.pykix.org) in replacement of cdrecord and mkisofs. If you want to use libburn you probably need to download and compile yourself the tarballs available at http://libburn-download.pykix.org/releases/snap.tar.
+
+Compiling against libburn is _not_enough. You need to activate the backend through GConf editor at "/apps/brasero/config/libburn_burn and /apps/brasero/config/libburn_iso"
+
+NOTE:
+libburn only enables CD burning for the time being and is in active development. It can erase and burn audio/data CDs on the fly or not. No CD copy for the time being. So if you decide to support it and notice bugs please report them at "http://libburn.pykix.org/newticket". This is important if we want a working good replacement for the "not so free any more" cdrtools.
+
+Anyone is welcome to contribute.
+
+Additionally, some GUI improvements, some internal rework and start to document brasero (first manpage written by Lionel Le Folgoc).
+
+Thanks to all the people who contributed to this release by their suggestions, translations, bug reporting.

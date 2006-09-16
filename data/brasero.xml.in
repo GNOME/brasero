@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+	<mime-type type="application/x-brasero">
+		<sub-class-of type="application/xml"/>
+		<_comment>Brasero project file</_comment>
+		<magic priority="80">
+		      <match value="braseroproject" type="string" offset="0:50"/>
+		</magic>
+	</mime-type>
+	
+	<mime-type type="application/x-cdrdao-toc">
+		<sub-class-of type="text/plain"/>
+		<_comment>Cdrdao toc file</_comment>
+		<magic priority="50">
+		      <match value="CD_DA" type="string" offset="0:10"/>
+		      <match value="CD_ROM" type="string" offset="0:10"/>
+		      <match value="CD_ROM_XA" type="string" offset="0:10"/>
+		      <match value="CD_TEXT" type="string" offset="0:10"/>
+		      <match value="CATALOG" type="string" offset="0:10"/>
+		</magic>
+	</mime-type>
+</mime-info>

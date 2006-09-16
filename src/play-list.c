@@ -1,0 +1,1236 @@
+/***************************************************************************
+*            play-list.c
+*
+*  mer mai 25 22:22:53 2005
+*  Copyright  2005  Philippe Rouquier
+*  brasero-app@wanadoo.fr
+****************************************************************************/
+
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#ifdef BUILD_PLAYLIST
+
+#include <string.h>
+
+#include <glib.h>
+#include <glib/gi18n-lib.h>
+#include <glib-object.h>
+
+#include <gtk/gtkwidget.h>
+#include <gtk/gtkvbox.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtktreeview.h>
+#include <gtk/gtktreeviewcolumn.h>
+#include <gtk/gtktreemodel.h>
+#include <gtk/gtktreeselection.h>
+#include <gtk/gtktreestore.h>
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkcellrenderer.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtkselection.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkmessagedialog.h>
+
+#include <libgnomevfs/gnome-vfs.h>
+
+#ifdef BUILD_SEARCH
+#include <beagle/beagle.h>
+#endif
+
+#include <totem-pl-parser.h>
+
+#include "play-list.h"
+#include "utils.h"
+#include "metadata.h"
+#include "brasero-uri-container.h"
+#include "async-job-manager.h"
+
+static void brasero_playlist_class_init (BraseroPlaylistClass *klass);
+static void brasero_playlist_init (BraseroPlaylist *sp);
+static void brasero_playlist_iface_uri_container_init (BraseroURIContainerIFace *iface);
+static void brasero_playlist_finalize (GObject *object);
+static void brasero_playlist_destroy (GtkObject *object);
+
+struct BraseroPlaylistPrivate {
+
+#ifdef BUILD_SEARCH
+	BeagleClient *client;
+	BeagleQuery *query;
+	int id;
+#endif
+
+	GtkWidget *tree;
+	GtkWidget *button_add;
+	GtkWidget *button_remove;
+	guint activity_counter;
+
+	GSList *queue_songs;
+	BraseroMetadata *metadata;
+	BraseroAsyncJobManager *jobs;
+	gint parse_type;
+	gint get_metadata_id;
+
+	gint searched:1;
+};
+
+enum {
+	BRASERO_PLAYLIST_DISPLAY_COL,
+	BRASERO_PLAYLIST_NB_SONGS_COL,
+	BRASERO_PLAYLIST_LEN_COL,
+	BRASERO_PLAYLIST_GENRE_COL,
+	BRASERO_PLAYLIST_URI_COL,
+	BRASERO_PLAYLIST_DSIZE_COL,
+	BRASERO_PLAYLIST_NB_COL,
+};
+
+#ifdef BUILD_SEARCH
+
+static void brasero_playlist_beagle_hit_added_cb (BeagleQuery *query,
+						  BeagleHitsAddedResponse *response,
+						  BraseroPlaylist *playlist);
+static void brasero_playlist_beagle_hit_substracted_cb (BeagleQuery *query,
+							BeagleHitsSubtractedResponse *response,
+							BraseroPlaylist *playlist);
+static void brasero_playlist_beagle_finished_cb (BeagleQuery *query,
+						 BeagleFinishedResponse *response,
+						 BraseroPlaylist *playlist);
+#endif
+
+static void brasero_playlist_drag_data_get_cb (GtkTreeView *tree,
+					       GdkDragContext *drag_context,
+					       GtkSelectionData *selection_data,
+					       guint info,
+					       guint time,
+					       BraseroPlaylist *playlist);
+static void brasero_playlist_add_cb (GtkButton *button,
+				     BraseroPlaylist *playlist);
+static void brasero_playlist_remove_cb (GtkButton *button,
+					BraseroPlaylist *playlist);
+static void brasero_playlist_add_uri_playlist (BraseroPlaylist *playlist,
+					       const char *uri,
+					       gboolean quiet);
+static void brasero_playlist_search_playlists_rhythmbox (BraseroPlaylist *playlist);
+static void brasero_playlist_increase_activity_counter (BraseroPlaylist *playlist);
+static void brasero_playlist_decrease_activity_counter (BraseroPlaylist *playlist);
+static void brasero_playlist_row_activated_cb (GtkTreeView *tree,
+					       GtkTreeIter *row,
+					       GtkTreeViewColumn *column,
+					       BraseroPlaylist *playlist);
+static void brasero_playlist_selection_changed_cb (GtkTreeSelection *
+						   selection,
+						   BraseroPlaylist *
+						   playlist);
+static char **brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist);
+
+static gboolean brasero_playlist_get_song_metadata (BraseroPlaylist *playlist);
+
+static char **
+brasero_playlist_get_selected_uris (BraseroURIContainer *container);
+static char *
+brasero_playlist_get_selected_uri (BraseroURIContainer *container);
+
+struct _BraseroPlaylistSong {
+	GtkTreeRowReference *reference;
+	gchar *uri;
+	gchar *title;
+	gchar *genre;
+};
+typedef struct _BraseroPlaylistSong BraseroPlaylistSong;
+
+enum {
+	TARGET_URIS_LIST,
+};
+
+static GtkTargetEntry ntables[] = {
+	{"text/uri-list", 0, TARGET_URIS_LIST}
+};
+static guint nb_ntables = sizeof (ntables) / sizeof (ntables[0]);
+
+static GObjectClass *parent_class = NULL;
+
+GType
+brasero_playlist_get_type ()
+{
+	static GType type = 0;
+
+	if (type == 0) {
+		static const GTypeInfo our_info = {
+			sizeof (BraseroPlaylistClass),
+			NULL,
+			NULL,
+			(GClassInitFunc) brasero_playlist_class_init,
+			NULL,
+			NULL,
+			sizeof (BraseroPlaylist),
+			0,
+			(GInstanceInitFunc) brasero_playlist_init,
+		};
+
+		static const GInterfaceInfo uri_container_info =
+		{
+			(GInterfaceInitFunc) brasero_playlist_iface_uri_container_init,
+			NULL,
+			NULL
+		};
+
+		type = g_type_register_static (GTK_TYPE_VBOX,
+					       "BraseroPlaylist",
+					       &our_info, 0);
+
+		g_type_add_interface_static (type,
+					     BRASERO_TYPE_URI_CONTAINER,
+					     &uri_container_info);
+	}
+
+	return type;
+}
+
+static void
+brasero_playlist_class_init (BraseroPlaylistClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GtkObjectClass *gtkobject_class = GTK_OBJECT_CLASS (klass);
+
+	parent_class = g_type_class_peek_parent (klass);
+	object_class->finalize = brasero_playlist_finalize;
+	gtkobject_class->destroy = brasero_playlist_destroy;
+}
+
+static void
+brasero_playlist_iface_uri_container_init (BraseroURIContainerIFace *iface)
+{
+	iface->get_selected_uri = brasero_playlist_get_selected_uri;
+	iface->get_selected_uris = brasero_playlist_get_selected_uris;
+}
+
+static void
+brasero_playlist_init (BraseroPlaylist *obj)
+{
+	GtkWidget *hbox, *scroll;
+	GtkTreeStore *store = NULL;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+
+	obj->priv = g_new0 (BraseroPlaylistPrivate, 1);
+	gtk_box_set_spacing (GTK_BOX (obj), 6);
+
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+
+	obj->priv->button_add = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	gtk_widget_show (obj->priv->button_add);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    obj->priv->button_add,
+			    FALSE,
+			    FALSE, 0);
+	g_signal_connect (G_OBJECT (obj->priv->button_add),
+			  "clicked",
+			  G_CALLBACK (brasero_playlist_add_cb),
+			  obj);
+
+	obj->priv->button_remove = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
+	gtk_widget_show (obj->priv->button_remove);
+	gtk_box_pack_start (GTK_BOX (hbox), obj->priv->button_remove,
+			    FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (obj->priv->button_remove),
+			  "clicked",
+			  G_CALLBACK (brasero_playlist_remove_cb),
+			  obj);
+
+	gtk_box_pack_end (GTK_BOX (obj), hbox, FALSE, FALSE, 0);
+
+	store = gtk_tree_store_new (BRASERO_PLAYLIST_NB_COL,
+				    G_TYPE_STRING,
+				    G_TYPE_STRING,
+				    G_TYPE_STRING,
+				    G_TYPE_STRING, 
+				    G_TYPE_STRING,
+				    G_TYPE_INT64);
+
+	obj->priv->tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+	gtk_tree_view_set_headers_clickable (GTK_TREE_VIEW
+					     (obj->priv->tree), TRUE);
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (obj->priv->tree),
+					 TRUE);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree),
+				      TRUE);
+	gtk_tree_view_set_expander_column (GTK_TREE_VIEW (obj->priv->tree),
+					   BRASERO_PLAYLIST_DISPLAY_COL);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Playlists"),
+							   renderer, "text",
+							   BRASERO_PLAYLIST_DISPLAY_COL,
+							   NULL);
+	gtk_tree_view_column_set_sort_column_id (column,
+						 BRASERO_PLAYLIST_DISPLAY_COL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
+				     column);
+	gtk_tree_view_column_set_expand (column, TRUE);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Number of songs"),
+							   renderer, "text",
+							   BRASERO_PLAYLIST_NB_SONGS_COL,
+							   NULL);
+	gtk_tree_view_column_set_sort_column_id (column,
+						 BRASERO_PLAYLIST_NB_SONGS_COL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
+				     column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Length"),
+							   renderer, "text",
+							   BRASERO_PLAYLIST_LEN_COL,
+							   NULL);
+	gtk_tree_view_column_set_sort_column_id (column,
+						 BRASERO_PLAYLIST_LEN_COL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
+				     column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Genre"), renderer,
+							   "text",
+							   BRASERO_PLAYLIST_GENRE_COL,
+							   NULL);
+	gtk_tree_view_column_set_sort_column_id (column,
+						 BRASERO_PLAYLIST_GENRE_COL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree),
+				     column);
+
+	gtk_tree_view_set_search_column (GTK_TREE_VIEW (obj->priv->tree),
+					 BRASERO_PLAYLIST_DISPLAY_COL);
+	gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (obj->priv->tree),
+						GDK_BUTTON1_MASK, ntables,
+						nb_ntables,
+						GDK_ACTION_COPY |
+						GDK_ACTION_MOVE);
+
+	g_signal_connect (G_OBJECT (obj->priv->tree), "drag_data_get",
+			  G_CALLBACK (brasero_playlist_drag_data_get_cb),
+			  obj);
+
+	g_signal_connect (G_OBJECT (obj->priv->tree), "row_activated",
+			  G_CALLBACK (brasero_playlist_row_activated_cb),
+			  obj);
+
+	g_signal_connect (G_OBJECT (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree))),
+			  "changed",
+			  G_CALLBACK (brasero_playlist_selection_changed_cb),
+			  obj);
+
+	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree)),
+				     GTK_SELECTION_MULTIPLE);
+
+	scroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
+					     GTK_SHADOW_IN);
+
+	gtk_container_add (GTK_CONTAINER (scroll), obj->priv->tree);
+	gtk_box_pack_start (GTK_BOX (obj), scroll, TRUE, TRUE, 0);
+}
+
+static void
+brasero_playlist_increase_activity_counter (BraseroPlaylist *playlist)
+{
+	if (!GTK_WIDGET (playlist->priv->tree)->window)
+		return;
+
+	if (playlist->priv->activity_counter == 0) {
+		GdkCursor *cursor;
+
+		cursor = gdk_cursor_new (GDK_WATCH);
+		gdk_window_set_cursor (GTK_WIDGET (playlist->priv->tree)->window,
+				       cursor);
+		gdk_cursor_unref (cursor);
+	}
+	playlist->priv->activity_counter++;
+}
+
+static void
+brasero_playlist_decrease_activity_counter (BraseroPlaylist *playlist)
+{
+	if (playlist->priv->activity_counter > 0)
+		playlist->priv->activity_counter--;
+
+	if (!GTK_WIDGET (playlist->priv->tree)->window)
+		return;
+
+	if (playlist->priv->activity_counter == 0)
+		gdk_window_set_cursor (GTK_WIDGET (playlist->priv->tree)->window,
+				       NULL);
+}
+
+static void
+brasero_playlist_song_free (BraseroPlaylistSong *song)
+{
+	gtk_tree_row_reference_free (song->reference);
+
+	g_free (song->genre);
+	g_free (song->title);
+
+	g_free (song->uri);
+	g_free (song);
+}
+
+static void
+brasero_playlist_pop_and_free_song (BraseroPlaylist *playlist)
+{
+	BraseroPlaylistSong *song;
+
+	song = playlist->priv->queue_songs->data;
+	playlist->priv->queue_songs = g_slist_remove (playlist->priv->queue_songs, song);
+
+	brasero_playlist_song_free (song);
+}
+
+static void
+brasero_playlist_destroy (GtkObject *object)
+{
+	BraseroPlaylist *playlist = BRASERO_PLAYLIST (object);
+
+#ifdef BUILD_SEARCH
+
+	if (playlist->priv->id) {
+		g_source_remove (playlist->priv->id);
+		playlist->priv->id = 0;
+	}
+
+	if (playlist->priv->client) {
+		g_object_unref (playlist->priv->client);
+		playlist->priv->client = NULL;
+	}
+
+	if (playlist->priv->query) {
+		g_object_unref (playlist->priv->query);
+		playlist->priv->query = NULL;
+	}
+
+#endif
+
+	if (playlist->priv->get_metadata_id) {
+		g_source_remove (playlist->priv->get_metadata_id);
+		playlist->priv->get_metadata_id = 0;
+	}
+
+	if (playlist->priv->jobs) {
+		if (playlist->priv->parse_type) {
+			brasero_async_job_manager_cancel_by_object (playlist->priv->jobs,
+								    G_OBJECT (playlist));
+			brasero_async_job_manager_unregister_type (playlist->priv->jobs,
+								   playlist->priv->parse_type);
+			playlist->priv->parse_type = 0;
+		}
+
+		g_object_unref (playlist->priv->jobs);
+		playlist->priv->jobs = NULL;
+	}
+
+	if (playlist->priv->metadata) {
+		brasero_metadata_cancel (playlist->priv->metadata);
+		g_object_unref (playlist->priv->metadata);
+		playlist->priv->metadata = NULL;
+	}
+
+	while (playlist->priv->queue_songs)
+		brasero_playlist_pop_and_free_song (playlist);
+
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		GTK_OBJECT_CLASS (parent_class)->destroy (object);
+}
+
+static void
+brasero_playlist_finalize (GObject *object)
+{
+	BraseroPlaylist *cobj;
+
+	cobj = BRASERO_PLAYLIST (object);
+
+	g_free (cobj->priv);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+#ifdef BUILD_SEARCH
+
+static gboolean
+brasero_playlist_try_again (BraseroPlaylist *playlist)
+{
+	playlist->priv->client = beagle_client_new (NULL);
+	if (!playlist->priv->client)
+		return TRUE;
+
+	playlist->priv->id = 0;
+	return FALSE;
+}
+
+static void
+brasero_playlist_start_beagle_search (BraseroPlaylist *playlist)
+{
+	playlist->priv->client = beagle_client_new (NULL);
+	if(playlist->priv->client) {
+		GError *error = NULL;
+
+		playlist->priv->query = beagle_query_new ();
+
+		g_signal_connect (G_OBJECT (playlist->priv->query), "hits-added",
+				  G_CALLBACK (brasero_playlist_beagle_hit_added_cb),
+				  playlist);
+		g_signal_connect (G_OBJECT (playlist->priv->query), "hits-subtracted",
+				  G_CALLBACK (brasero_playlist_beagle_hit_substracted_cb),
+				  playlist);
+		g_signal_connect (G_OBJECT (playlist->priv->query), "finished",
+				  G_CALLBACK (brasero_playlist_beagle_finished_cb),
+				  playlist);
+	
+		beagle_query_add_source (playlist->priv->query, "Files");
+	
+		beagle_query_add_mime_type (playlist->priv->query, "audio/x-scpls");
+		beagle_query_add_mime_type (playlist->priv->query, "audio/x-ms-asx");
+		beagle_query_add_mime_type (playlist->priv->query, "audio/x-mp3-playlist");
+		beagle_query_add_mime_type (playlist->priv->query, "audio/x-mpegurl");
+
+		brasero_playlist_increase_activity_counter (playlist);
+		beagle_client_send_request_async (playlist->priv->client,
+						  BEAGLE_REQUEST (playlist->priv->query),
+						  &error);
+		if (error) {
+			g_warning ("Could not connect to beagle : %s\n",
+				   error->message);
+			g_error_free (error);
+		}
+	}
+	else {
+		/* we will retry in 10 seconds */
+		playlist->priv->id = g_timeout_add (10000,
+					       (GSourceFunc) brasero_playlist_try_again,
+					       playlist);
+	}
+}
+
+#else
+
+static void
+brasero_playlist_start_beagle_search (BraseroPlaylist *playlist)
+{
+	
+}
+
+#endif /* BUILD_SEARCH */
+
+static gboolean
+brasero_playlist_expose_event_cb (GtkWidget *widget,
+				  gpointer event,
+				  gpointer null_data)
+{
+	BraseroPlaylist *playlist = BRASERO_PLAYLIST (widget);
+
+	/* we only want to load playlists if the user is going to use them that
+	 * is if they become apparent. That will avoid overhead */
+	if (!playlist->priv->searched) {
+		playlist->priv->searched = 1;
+		brasero_playlist_start_beagle_search (playlist);
+		brasero_playlist_search_playlists_rhythmbox (playlist);
+	}
+
+	return FALSE;
+}
+
+GtkWidget *
+brasero_playlist_new ()
+{
+	BraseroPlaylist *obj;
+
+	obj = BRASERO_PLAYLIST (g_object_new (BRASERO_TYPE_PLAYLIST, NULL));
+
+	g_signal_connect (obj,
+			  "expose-event",
+			  G_CALLBACK (brasero_playlist_expose_event_cb),
+			  NULL);
+
+	return GTK_WIDGET (obj);
+}
+
+static char **
+brasero_playlist_get_selected_uris (BraseroURIContainer *container)
+{
+	BraseroPlaylist *playlist;
+
+	playlist = BRASERO_PLAYLIST (container);
+	return brasero_playlist_get_selected_uris_real (playlist);
+}
+
+static char *
+brasero_playlist_get_selected_uri (BraseroURIContainer *container)
+{
+	BraseroPlaylist *playlist;
+	char **uris = NULL;
+	char *uri;
+
+	playlist = BRASERO_PLAYLIST (container);
+	uris = brasero_playlist_get_selected_uris_real (playlist);
+
+	if (uris) {
+		uri = g_strdup (uris [0]);
+		g_strfreev (uris);
+		return uri;
+	}
+
+	return NULL;
+}
+
+void
+brasero_playlist_unselect_all (BraseroPlaylist *playlist)
+{
+	GtkTreeSelection *selection;
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (playlist->priv->tree));
+	gtk_tree_selection_unselect_all (selection);
+}
+
+static void
+brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
+{
+	GtkWidget *dialog, *toplevel;
+	char *uri;
+	GSList *uris, *iter;
+	gint result;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (playlist));
+	if (!GTK_WIDGET_TOPLEVEL (toplevel))
+		return;
+
+	dialog = gtk_file_chooser_dialog_new (_("Select a playlist"),
+					      GTK_WINDOW (toplevel),
+					      GTK_FILE_CHOOSER_ACTION_OPEN,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					      NULL);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+					 GTK_RESPONSE_ACCEPT);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), TRUE);
+	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (dialog), TRUE);
+	gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog),
+						 g_get_home_dir ());
+
+	gtk_widget_show_all (dialog);
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (result == GTK_RESPONSE_CANCEL) {
+		gtk_widget_destroy (dialog);
+		return;
+	}
+
+	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (dialog));
+	gtk_widget_destroy (dialog);
+
+	for (iter = uris; iter; iter = iter->next) {
+		uri = iter->data;
+		brasero_playlist_add_uri_playlist (playlist, uri, FALSE);
+		g_free (uri);
+	}
+	g_slist_free (uris);
+}
+
+static void
+brasero_playlist_remove_cb (GtkButton *button, BraseroPlaylist *playlist)
+{
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreePath *path;
+	GtkTreeIter row;
+	GList *rows, *iter;
+	gboolean valid;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (playlist->priv->tree));
+	rows = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	if (rows == NULL)
+		return;
+
+	/* we just remove the lists removing particular songs would be a nonsense */
+	/* we must reverse the list otherwise the last paths wouldn't be valid */
+	for (iter = g_list_last (rows); iter; iter = iter->prev) {
+		path = iter->data;
+		valid = gtk_tree_model_get_iter (model, &row, path);
+		gtk_tree_path_free (path);
+
+		if (valid == FALSE)	/* if we remove the whole list it could happen that we try to remove twice a song */
+			continue;
+
+		if (gtk_tree_model_iter_has_child (model, &row)) {
+			GtkTreeIter child;
+
+			/* we remove the songs if it's a list */
+			gtk_tree_model_iter_children (model, &child, &row);
+			while (gtk_tree_store_remove (GTK_TREE_STORE (model), &child) == TRUE);
+			gtk_tree_store_remove (GTK_TREE_STORE (model),
+					       &row);
+		}
+	}
+
+	g_list_free (rows);
+}
+
+static char **
+brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist)
+{
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreePath *path;
+	GList *rows, *iter;
+	GtkTreeIter row;
+	char **uris = NULL, *uri;
+	GPtrArray *array;
+	gboolean valid;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (playlist->priv->tree));
+
+	rows = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	if (rows == NULL)
+		return NULL;
+
+	rows = g_list_reverse (rows);
+
+	array = g_ptr_array_sized_new (g_list_length (rows) + 1);
+	for (iter = rows; iter; iter = iter->next) {
+		path = iter->data;
+		valid = gtk_tree_model_get_iter (model, &row, path);
+		gtk_tree_path_free (path);
+
+		if (valid == FALSE)
+			continue;
+
+		/* FIXME : we must find a way to reverse the list */
+		/* check if it is a list or not */
+		if (gtk_tree_model_iter_has_child (model, &row)) {
+			GtkTreeIter child;
+
+			if (gtk_tree_model_iter_children (model, &child, &row) == FALSE)
+				continue;
+
+			do {
+				/* first check if the row is selected to prevent to put it in the list twice */
+				if (gtk_tree_selection_iter_is_selected (selection, &child) == TRUE)
+					continue;
+
+				gtk_tree_model_get (model, &child,
+						    BRASERO_PLAYLIST_URI_COL, &uri,
+						    -1);
+				g_ptr_array_add (array, uri);
+			} while (gtk_tree_model_iter_next (model, &child));
+
+			continue;
+		}
+
+		gtk_tree_model_get (model, &row,
+				    BRASERO_PLAYLIST_URI_COL, &uri,
+				    -1);
+		g_ptr_array_add (array, uri);
+	}
+
+	g_list_free (rows);
+
+	g_ptr_array_set_size (array, array->len + 1);
+	uris = (char **) array->pdata;
+	g_ptr_array_free (array, FALSE);
+	return uris;
+}
+
+static void
+brasero_playlist_drag_data_get_cb (GtkTreeView *tree,
+				   GdkDragContext *drag_context,
+				   GtkSelectionData *selection_data,
+				   guint info,
+				   guint time, BraseroPlaylist *playlist)
+{
+	char **uris;
+
+	uris = brasero_playlist_get_selected_uris_real (playlist);
+	gtk_selection_data_set_uris (selection_data, uris);
+	g_strfreev (uris);
+}
+
+struct _BraseroPlaylistParseData {
+	TotemPlParser *parser;
+	TotemPlParserResult result;
+
+	gchar *uri;
+	gchar *title;
+	guint nb_songs;
+
+	GSList *songs;
+	gboolean quiet;
+};
+typedef struct _BraseroPlaylistParseData BraseroPlaylistParseData;
+
+static void
+brasero_playlist_add_song (BraseroPlaylist *playlist,
+			   const gchar *uri,
+			   GtkTreeRowReference *reference,
+			   gint64 length,
+			   const gchar *title,
+			   const gchar *genre)
+{
+	gint num;
+	gint64 total_length;
+	GtkTreeModel *model;
+	GtkTreePath *treepath;
+	GtkTreeIter parent, row;
+	gchar *len_string, *name, *num_string;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
+	treepath = gtk_tree_row_reference_get_path (reference);
+	gtk_tree_model_get_iter (model, &parent, treepath);
+	gtk_tree_path_free (treepath);
+
+	/* update the parent */
+	num = gtk_tree_model_iter_n_children (model, &parent);
+	if (!num)
+		num_string = g_strdup (_("empty"));
+	else
+		num_string = g_strdup_printf (ngettext ("%d song", "%d songs", num), num);
+
+	/* get total length in time of the playlist */
+	gtk_tree_model_get (model, &parent,
+			    BRASERO_PLAYLIST_DSIZE_COL, &total_length,
+			    -1);
+
+	total_length += length; 
+	len_string = brasero_utils_get_time_string (total_length, TRUE, FALSE);
+
+	gtk_tree_store_set (GTK_TREE_STORE (model), &parent,
+			    BRASERO_PLAYLIST_NB_SONGS_COL, num_string,
+			    BRASERO_PLAYLIST_LEN_COL, len_string,
+			    BRASERO_PLAYLIST_DSIZE_COL, total_length,
+			    -1);
+	g_free (len_string);
+	g_free (num_string);
+
+	/* add the song */
+	gtk_tree_store_append (GTK_TREE_STORE (model), &row, &parent);
+
+	if (length > 0)
+		len_string = brasero_utils_get_time_string (length, TRUE, FALSE);
+	else
+		len_string = NULL;
+
+	name = g_path_get_basename (uri);
+	gtk_tree_store_set (GTK_TREE_STORE (model), &row,
+			    BRASERO_PLAYLIST_DISPLAY_COL, title ? title : name,
+			    BRASERO_PLAYLIST_LEN_COL, len_string,
+			    BRASERO_PLAYLIST_GENRE_COL, genre,
+			    BRASERO_PLAYLIST_URI_COL, uri,
+			    BRASERO_PLAYLIST_DSIZE_COL, length,
+			    -1);
+	g_free (name);
+	g_free (len_string);
+	return;
+}
+
+static void
+brasero_playlist_get_song_metadata_completed (BraseroMetadata *metadata,
+					      const GError *error,
+					      BraseroPlaylist *playlist)
+{
+	BraseroPlaylistSong *song;
+
+	song = playlist->priv->queue_songs->data;
+
+	if (error)
+		goto end;
+
+	brasero_playlist_add_song (playlist,
+				   song->uri,
+				   song->reference,
+				   metadata->len,
+				   song->title ? song->title:metadata->title,
+				   song->genre);
+
+end:
+
+	brasero_playlist_pop_and_free_song (playlist);
+	g_object_unref (playlist->priv->metadata);
+	playlist->priv->metadata = NULL;
+
+	if (!playlist->priv->get_metadata_id)
+		playlist->priv->get_metadata_id = g_idle_add ((GSourceFunc) brasero_playlist_get_song_metadata, playlist);
+}
+
+static gboolean
+brasero_playlist_get_song_metadata (BraseroPlaylist *playlist)
+{
+	BraseroPlaylistSong *song;
+	BraseroMetadata *metadata;
+
+	if (playlist->priv->metadata) {
+		/* we don't want to have to metadata searches at the same time */
+		playlist->priv->get_metadata_id = 0;
+		return FALSE;
+	}
+
+	if (!playlist->priv->queue_songs) {
+		/* we emptied up the queue */
+		playlist->priv->get_metadata_id = 0;
+		return FALSE;
+	}
+
+	/* we leave song in the list */
+	song = playlist->priv->queue_songs->data;
+
+	/* now let's get the length of it */
+	metadata = brasero_metadata_new (song->uri);
+	if (!metadata) {
+		/* try again with another one */
+		brasero_playlist_pop_and_free_song (playlist);
+		return TRUE;
+	}
+
+	playlist->priv->metadata = metadata;
+	g_signal_connect (metadata,
+			  "completed",
+			  G_CALLBACK (brasero_playlist_get_song_metadata_completed),
+			  playlist);
+	brasero_metadata_get_async (metadata, TRUE);
+
+	playlist->priv->get_metadata_id = 0;
+	return FALSE;
+}
+
+static void
+brasero_playlist_dialog_error (BraseroPlaylist *playlist,
+			       BraseroPlaylistParseData *data,
+			       gchar *reason)
+{
+	gchar *name;
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	gchar *unescaped_uri;
+
+	if (data->quiet)
+		return;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (playlist));
+	if (!GTK_WIDGET_TOPLEVEL (toplevel)) {
+		g_warning ("Error parsing playlist %s\n", data->uri);
+		return;
+	}
+
+	unescaped_uri = gnome_vfs_unescape_string_for_display (data->uri);
+	name = g_path_get_basename (unescaped_uri);
+	g_free (unescaped_uri);
+
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT|
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_CLOSE,
+					 _("Error parsing playlist \"%s\":"),
+					 name);
+	g_free (name);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("an unknown error occured."));
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Playlist loading error"));
+
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+}
+
+static gboolean
+brasero_playlist_parse_result (GObject *object, gpointer callback_data)
+{
+	gchar *name;
+	GSList *iter;
+	gchar *unescaped_uri;
+	GtkTreeIter parent;
+	GtkTreeModel *model;
+	GtkTreePath *treepath;
+	BraseroPlaylistParseData *data = callback_data;
+	BraseroPlaylist *playlist = BRASERO_PLAYLIST (object);
+
+	if (data->result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
+		brasero_playlist_dialog_error (playlist,
+					       data,
+					       _("an unknown error occured."));
+		return TRUE;
+	}
+
+	if (data->nb_songs == 0) {
+		brasero_playlist_dialog_error (playlist,
+					       data,
+					       _("the playlist is empty."));
+		return TRUE;
+	}
+
+	/* actually add it */
+	unescaped_uri = gnome_vfs_unescape_string_for_display (data->uri);
+	name = g_path_get_basename (unescaped_uri);
+	g_free (unescaped_uri);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
+	gtk_tree_store_append (GTK_TREE_STORE (model), &parent, NULL);
+	gtk_tree_store_set (GTK_TREE_STORE (model), &parent,
+			    BRASERO_PLAYLIST_DISPLAY_COL, data->title ? data->title : name,
+			    BRASERO_PLAYLIST_URI_COL, data->uri,
+			    -1);
+	g_free (name);
+
+	treepath = gtk_tree_model_get_path (model, &parent);
+	for (iter = data->songs; iter; iter = iter->next) {
+		BraseroPlaylistSong *song;
+
+		song = iter->data;
+		song->reference = gtk_tree_row_reference_new (model, treepath);
+	}
+
+	playlist->priv->queue_songs = g_slist_concat (playlist->priv->queue_songs, data->songs);
+	data->songs = NULL;
+
+	gtk_tree_path_free (treepath);
+
+	if (!playlist->priv->get_metadata_id)
+		playlist->priv->get_metadata_id = g_idle_add ((GSourceFunc) brasero_playlist_get_song_metadata, playlist);
+
+	return TRUE;
+}
+
+static void
+brasero_playlist_parse_destroy (GObject *object, gpointer callback_data)
+{
+	BraseroPlaylistParseData *data = callback_data;
+
+	brasero_playlist_decrease_activity_counter (BRASERO_PLAYLIST (object));
+
+	if (data->parser) {
+		TotemPlParser *parser;
+
+		parser = data->parser;
+		data->parser = NULL;
+		g_object_unref (parser);
+	}
+	g_slist_foreach (data->songs, (GFunc) brasero_playlist_song_free, NULL);
+	g_slist_free (data->songs);
+	g_free (data->title);
+	g_free (data->uri);
+	g_free (data);
+}
+
+static void
+brasero_playlist_start_cb (TotemPlParser *parser,
+			   const char *title,
+			   BraseroPlaylistParseData *data)
+{
+	if (!title)
+		return;
+
+	if (!data->title)
+		data->title = g_strdup (title);
+}
+
+static void
+brasero_playlist_end_cb (TotemPlParser *parser,
+			 const char *title,
+			 BraseroPlaylistParseData *data)
+{
+	if (!title)
+		return;
+
+	if (!data->title)
+		data->title = g_strdup (title);
+}
+
+static void
+brasero_playlist_entry_cb (TotemPlParser *parser,
+			   const char *uri,
+			   const char *title,
+			   const char *genre,
+			   BraseroPlaylistParseData *data)
+{
+	BraseroPlaylistSong *song;
+
+	data->nb_songs++;
+	song = g_new0 (BraseroPlaylistSong, 1);
+	song->uri = g_strdup (uri);
+	song->title = g_strdup (title);
+	song->genre = g_strdup (genre);
+	data->songs = g_slist_prepend (data->songs, song);
+}
+
+static gboolean
+brasero_playlist_parse_thread (GObject *object, gpointer callback_data)
+{
+	BraseroPlaylistParseData *data = callback_data;
+
+	g_signal_connect (G_OBJECT (data->parser), "playlist-start",
+			  G_CALLBACK (brasero_playlist_start_cb), data);
+	g_signal_connect (G_OBJECT (data->parser), "playlist-end",
+			  G_CALLBACK (brasero_playlist_end_cb), data);
+	g_signal_connect (G_OBJECT (data->parser), "entry",
+			  G_CALLBACK (brasero_playlist_entry_cb), data);
+
+	if (g_object_class_find_property (G_OBJECT_GET_CLASS (data->parser), "recurse"))
+		g_object_set (G_OBJECT (data->parser), "recurse", FALSE, NULL);
+
+	data->result = totem_pl_parser_parse (data->parser, data->uri, TRUE);
+
+	if (data->parser) {
+		g_object_unref (data->parser);
+		data->parser = NULL;
+	}
+
+	return TRUE;
+}
+
+static void
+brasero_playlist_add_uri_playlist (BraseroPlaylist *playlist,
+				   const char *uri,
+				   gboolean quiet)
+{
+	BraseroPlaylistParseData *callback_data;
+
+	callback_data = g_new0 (BraseroPlaylistParseData, 1);
+	callback_data->uri = g_strdup (uri);
+	callback_data->parser = totem_pl_parser_new ();
+	callback_data->quiet = quiet;
+
+	if (!playlist->priv->jobs)
+		playlist->priv->jobs = brasero_async_job_manager_get_default ();
+
+	if (!playlist->priv->parse_type) {
+		playlist->priv->parse_type = brasero_async_job_manager_register_type (playlist->priv->jobs,
+										      G_OBJECT (playlist),
+										      brasero_playlist_parse_thread,
+										      brasero_playlist_parse_result,
+										      brasero_playlist_parse_destroy,
+										      NULL);
+	}
+
+	brasero_async_job_manager_queue (playlist->priv->jobs,
+					 playlist->priv->parse_type,
+					 callback_data);
+
+	brasero_playlist_increase_activity_counter (playlist);
+}
+
+static void
+brasero_playlist_search_playlists_rhythmbox (BraseroPlaylist *playlist)
+{
+/*	RBSource *source;
+
+	manager = rb_playlist_manager_new ();
+	lists = rb_playlist_manager_get_playlists (manager);
+*/
+}
+
+#ifdef BUILD_SEARCH
+
+static void
+brasero_playlist_beagle_hit_added_cb (BeagleQuery *query,
+				      BeagleHitsAddedResponse *response,
+				      BraseroPlaylist *playlist)
+{
+	GSList *list, *iter;
+	BeagleHit *hit;
+	const char *uri;
+
+	list = beagle_hits_added_response_get_hits (response);
+	for (iter = list; iter; iter = iter->next) {
+		hit = iter->data;
+		uri = beagle_hit_get_uri (hit);
+		brasero_playlist_add_uri_playlist (playlist, uri, TRUE);
+	}
+	brasero_playlist_decrease_activity_counter (playlist);
+}
+
+static void
+brasero_playlist_beagle_hit_substracted_cb (BeagleQuery *query,
+					    BeagleHitsSubtractedResponse *response,
+					    BraseroPlaylist *playlist)
+{
+	GSList *list, *iter;
+	const char *uri;
+	char *row_uri;
+
+	GtkTreeModel *model;
+	GtkTreeIter row;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
+
+	list = beagle_hits_subtracted_response_get_uris (response);
+	for (iter = list; iter; iter = iter->next) {
+		uri = iter->data;
+
+		if (!gtk_tree_model_get_iter_first (model, &row))
+			continue;
+
+		do {
+			gtk_tree_model_get (model, &row,
+					    BRASERO_PLAYLIST_URI_COL, &row_uri,
+					    -1);
+
+			if (!strcmp (row_uri, uri)) {
+				gtk_tree_store_remove (GTK_TREE_STORE (model), &row);
+				g_free (row_uri);
+				break;
+			}
+			g_free (row_uri);
+		} while (gtk_tree_model_iter_next (model, &row));
+	}
+}
+
+static void
+brasero_playlist_beagle_finished_cb (BeagleQuery *query,
+				     BeagleFinishedResponse *response,
+				     BraseroPlaylist *playlist)
+{
+	brasero_playlist_decrease_activity_counter (playlist);
+}
+
+#endif /* BUILD_SEARCH */
+
+static void
+brasero_playlist_row_activated_cb (GtkTreeView *tree,
+				   GtkTreeIter *row,
+				   GtkTreeViewColumn *column,
+				   BraseroPlaylist *playlist)
+{
+	brasero_uri_container_uri_activated (BRASERO_URI_CONTAINER (playlist));
+}
+
+static void
+brasero_playlist_selection_changed_cb (GtkTreeSelection *selection,
+				       BraseroPlaylist *playlist)
+{
+	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (playlist));
+}
+
+#endif /* BUILD_PLAYLIST */

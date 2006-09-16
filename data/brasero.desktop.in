@@ -1,0 +1,29 @@
+[Desktop Entry]
+_Name=Disc burning application
+_Comment=Write and copy CD / DVD
+Categories=GNOME;Application;AudioVideo;
+Encoding=UTF-8
+Exec=brasero -e %U
+Icon=brasero.png
+MimeType=application/x-cd-image;application/x-cdrdao-toc;application/x-brasero;
+StartupNotify=true
+Terminal=false
+Type=Application
+
+Actions=BurnImage;OpenProject;
+
+[Desktop Action BurnImage]
+Icon=brasero.png
+MimeType=application/x-cd-image;application/x-cdrdao-toc;
+Exec=brasero -e -i %u
+_Name=Burn Image
+
+[Desktop Action OpenProject]
+Icon=brasero.png
+MimeType=application/x-brasero;
+Exec=brasero -e -p %u
+_Name=Open project
+
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=bonfire
+X-GNOME-Bugzilla-Component=general

@@ -1,0 +1,139 @@
+<gconfschemafile>
+    <schemalist>    
+
+      <schema>
+        <key>/schemas/apps/brasero/ask_default_app</key>
+	<applyto>/apps/brasero/ask_audio_default</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Should brasero ask to be set as the default app to burn</short>
+	  <long>
+	    Should brasero ask to be set as the default app to burn audio or data. Set to true, brasero won't ask.
+	  </long>
+	</locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/activate_checksum</key>
+	<applyto>/apps/brasero/config/activate_checksum</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Should brasero generate activate the "generate checksum" button</short>
+	  <long>Should brasero generate activate the "generate checksum" button by default. Set to true, brasero will check the option by default.</long>
+	</locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/immed_flag</key>
+	<applyto>/apps/brasero/config/immed_flag</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Enable immed flag with cdrecord</short>
+	  <long>Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/minbuf_value</key>
+	<applyto>/apps/brasero/config/minbuf_value</applyto>
+	<owner>brasero</owner>
+	<type>int</type>
+	<default>0</default>
+	<locale name="C">
+	  <short>Used in conjunction with -immed flag with cdrecord</short>
+	  <long>Only used in conjunction with -immed flag with cdrecord. See immed_flag.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/cdrdao_disabled</key>
+	<applyto>/apps/brasero/config/cdrdao_disabled</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Enable use of cdrdao</short>
+	  <long>Whether to use cdrdao for burning or not. Set to true to use it.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/libburn_burn</key>
+	<applyto>/apps/brasero/config/libburn_burn</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Use libburn to burn CDs</short>
+	  <long>Whether to use libburn to burn CDs. Set to true to use it.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/libburn_iso</key>
+	<applyto>/apps/brasero/config/libburn_iso</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Use libisofs to generate images</short>
+	  <long>Whether to use libisofs to generate images. Set to true to use it.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/libburn_read</key>
+	<applyto>/apps/brasero/config/libburn_read</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Use libburn to read CDs</short>
+	  <long>Whether to use libburn to read CDs. Set to true to use it.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/display/audio_pane</key>
+	<applyto>/apps/brasero/display/audio_pane</applyto>
+	<owner>brasero</owner>
+	<type>string</type>
+	<default>Chooser</default>
+	<locale name="C">
+	  <short>Pane to display for audio projects</short>
+	  <long>The pane to display with audio projects. It should be one of the following: Chooser/Search/Playlist/EmptyView.</long>
+	</locale>
+       </schema>
+
+       <schema>
+        <key>/schemas/apps/brasero/display/data_pane</key>
+	<applyto>/apps/brasero/display/data_pane</applyto>
+	<owner>brasero</owner>
+	<type>string</type>
+	<default>Chooser</default>
+	<locale name="C">
+	  <short>Pane to display for data projects</short>
+	  <long>The pane to display with data projects. It should be one of the following: Chooser/Search/EmptyView.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/display/viewer</key>
+	<applyto>/apps/brasero/display/viewer</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>true</default>
+	<locale name="C">
+	  <short>Enable file preview</short>
+	  <long>Whether to display file preview. Set to true to use it.</long>
+	</locale>
+       </schema>
+ 
+  </schemalist>
+</gconfschemafile>

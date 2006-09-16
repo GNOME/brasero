@@ -1,0 +1,49 @@
+Brasero is a CD/DVD mastering tool for the gnome desktop. It is designed to be simple and easy to use. 
+
+Features:
+
+Data CD/DVD:
+- supports edition of discs contents (remove/move/rename files inside directories)
+- can burn data CD/DVD on the fly
+- automatic filtering for unwanted files (hidden files, broken/recursive symlinks, files not conforming to joliet standard, ...)
+- supports multisession
+- supports joliet extension
+- can write the image to the hard drive
+
+Audio CD:
+- write CD-TEXT information (automatically found thanks to gstreamer)
+- supports the edition of CD-TEXT information
+- can burn audio CD on the fly
+- can use all audio files handled by Gstreamer local installation (ogg, flac, mp3, ...)
+- can search for audio files inside dropped folders 
+
+CD/DVD copy:
+- can copy a CD/DVD to the hard drive
+- can copy DVD and CD on the fly
+- supports single-session data DVD
+- supports any kind of CD
+
+
+Others:
+- erase CD/DVD
+- can save/load projects
+- can burn CD/DVD images and cue files
+- song, image and video previewer
+- device detection thanks to HAL
+- file change notification (requires kernel > 2.6.13)
+- a customisable GUI (when used with GDL)
+- supports Drag and Drop / Cut'n'Paste from nautilus (and others apps)
+- can use files on a network as long as the protocol is handled by gnome-vfs
+- can search for files thanks to beagle (search is based on keywords or on file type)
+- can display a playlist and its contents (note that playlists are automatically searched through beagle)
+- all disc IO is done asynchronously to prevent the application from blocking
+
+Requirements:
+- gnome 2.14.x (gnome-vfs, nautilus-cd-burner)
+- gstreamer (>=0.10.0)
+- Hal (>= 0.50)
+- libxml2 
+- a fairly new kernel (>= 2.6.13 because of inotify) (optional)
+- totem (>= 2.14) (optional)
+- beagle (>= 0.2.5) (optional)
+- GDL (>= 0.6) (optional)
