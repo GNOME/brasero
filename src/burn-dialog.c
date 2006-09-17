@@ -117,7 +117,7 @@ struct BraseroBurnDialogPrivate {
 	GtkWidget *header;
 	GtkWidget *cancel;
 	GtkWidget *image;
-	GtkWidget *tray;
+	BraseroTrayIcon *tray;
 
 	GMainLoop *loop;
 	gint close_timeout;
@@ -756,7 +756,7 @@ brasero_burn_dialog_finalize (GObject * object)
 	}
 
 	if (cobj->priv->tray) {
-		gtk_widget_destroy (cobj->priv->tray);
+		g_object_unref (cobj->priv->tray);
 		cobj->priv->tray = NULL;
 	}
 
@@ -1966,7 +1966,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 	BraseroTrackSource *track = NULL;
 
-	gtk_widget_show_all (dialog->priv->tray);
 	dialog->priv->track_type = source->type;
 	dialog->priv->isosize = sectors * 2048;
 

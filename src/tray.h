@@ -28,7 +28,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "eggtrayicon.h"
+#include <gtk/gtkstatusicon.h>
+
 #include "burn-basics.h"
 
 G_BEGIN_DECLS
@@ -43,12 +44,12 @@ G_BEGIN_DECLS
 typedef struct BraseroTrayIconPrivate BraseroTrayIconPrivate;
 
 typedef struct {
-	EggTrayIcon parent;
+	GtkStatusIcon parent;
 	BraseroTrayIconPrivate *priv;
 } BraseroTrayIcon;
 
 typedef struct {
-	EggTrayIconClass parent_class;
+	GtkStatusIconClass parent_class;
 
 	void		(*show_dialog)		(BraseroTrayIcon *tray, gboolean show);
 	void		(*close_after)		(BraseroTrayIcon *tray, gboolean close);
@@ -57,7 +58,7 @@ typedef struct {
 } BraseroTrayIconClass;
 
 GType brasero_tray_icon_get_type ();
-GtkWidget *brasero_tray_icon_new ();
+BraseroTrayIcon *brasero_tray_icon_new ();
 
 void
 brasero_tray_icon_set_progress (BraseroTrayIcon *tray,

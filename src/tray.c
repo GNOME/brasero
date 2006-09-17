@@ -39,9 +39,9 @@
 #include <gtk/gtkimage.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkiconfactory.h>
+#include <gtk/gtkstatusicon.h>
 
 #include "burn-basics.h"
-#include "eggtrayicon.h"
 #include "utils.h"
 #include "tray.h"
 
@@ -49,10 +49,15 @@ static void brasero_tray_icon_class_init (BraseroTrayIconClass *klass);
 static void brasero_tray_icon_init (BraseroTrayIcon *sp);
 static void brasero_tray_icon_finalize (GObject *object);
 
-static gboolean
-brasero_tray_icon_button_press_cb (GtkWidget *eventbox,
-				   GdkEventButton *event,
-				   BraseroTrayIcon *tray);
+static void
+brasero_tray_icon_menu_popup_cb (BraseroTrayIcon *tray,
+				 guint button,
+				 guint time,
+				 gpointer user_data);
+static void
+brasero_tray_icon_activate_cb (BraseroTrayIcon *tray,
+			       gpointer user_data);
+
 static void
 brasero_tray_icon_cancel_cb (GtkAction *action, BraseroTrayIcon *tray);
 static void
@@ -63,7 +68,6 @@ brasero_tray_icon_close_toggled_cb (GtkToggleAction *action, BraseroTrayIcon *tr
 struct BraseroTrayIconPrivate {
 	BraseroBurnAction action;
 	GtkUIManager *manager;
-	GtkTooltips *tooltip;
 
 	int first_burning_percent;
 	int rounded_percent;
@@ -124,7 +128,7 @@ brasero_tray_icon_get_type ()
 			(GInstanceInitFunc) brasero_tray_icon_init,
 		};
 
-		type = g_type_register_static(EGG_TYPE_TRAY_ICON, 
+		type = g_type_register_static(GTK_TYPE_STATUS_ICON, 
 					      "BraseroTrayIcon",
 					      &our_info,
 					      0);
@@ -206,45 +210,27 @@ brasero_tray_icon_build_menu (BraseroTrayIcon *tray)
 static void
 brasero_tray_icon_init (BraseroTrayIcon *obj)
 {
-	GtkWidget *event;
-	GtkWidget *image;
 	GdkPixbuf *pixbuf;
 
 	obj->priv = g_new0 (BraseroTrayIconPrivate, 1);
 	brasero_tray_icon_build_menu (obj);
-
-	event = gtk_event_box_new ();
-	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event), FALSE);
-	gtk_container_add (GTK_CONTAINER (obj), event);
-	g_signal_connect (event,
-			  "button-press-event",
-			  G_CALLBACK (brasero_tray_icon_button_press_cb),
-			  obj);
-
-	image = gtk_image_new ();
-	gtk_container_add (GTK_CONTAINER (event), image);
+	g_signal_connect (obj,
+			  "popup-menu",
+			  G_CALLBACK (brasero_tray_icon_menu_popup_cb),
+			  NULL);
+	g_signal_connect (obj,
+			  "activate",
+			  G_CALLBACK (brasero_tray_icon_activate_cb),
+			  NULL);
 
 	pixbuf = gdk_pixbuf_new_from_file (BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-00.png", NULL);
-	if (pixbuf) {
-		GtkIconSet *iconset;
-
-		iconset = gtk_icon_set_new_from_pixbuf (pixbuf);
-		g_object_unref (pixbuf);
-
-		gtk_image_set_from_icon_set (GTK_IMAGE (image), iconset, GTK_ICON_SIZE_MENU);
-		gtk_icon_set_unref (iconset);
-	}
+	if (pixbuf)
+		gtk_status_icon_set_from_pixbuf (GTK_STATUS_ICON (obj), pixbuf);
 	else
 		g_warning ("Faulty installation. \"%s\" can't be found.\n",
 			   BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-00.png");
 
-	obj->priv->tooltip = gtk_tooltips_new ();
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      GTK_WIDGET (obj),
-			      _("waiting"),
-			      NULL);
-	gtk_tooltips_enable (obj->priv->tooltip);
-
+	gtk_status_icon_set_tooltip (GTK_STATUS_ICON (obj), _("waiting"));
 	obj->priv->first_burning_percent = -1;
 }
 
@@ -255,35 +241,31 @@ brasero_tray_icon_finalize (GObject *object)
 
 	cobj = BRASERO_TRAYICON (object);
 
-	if (cobj->priv->tooltip) {
-		gtk_object_sink (GTK_OBJECT (cobj->priv->tooltip));
-		cobj->priv->tooltip = NULL;
-	}
-
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-GtkWidget *
+BraseroTrayIcon *
 brasero_tray_icon_new ()
 {
 	BraseroTrayIcon *obj;
 	
 	obj = BRASERO_TRAYICON (g_object_new (BRASERO_TYPE_TRAYICON, NULL));
-	return GTK_WIDGET (obj);
+
+	return obj;
 }
 
 static void
 brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
-			       long remaining)
+			       glong remaining)
 {
-	char *text;
-	const char *action_string;
+	gchar *text;
+	const gchar *action_string;
 
 	action_string = brasero_burn_action_to_string (tray->priv->action);
 
 	if (remaining > 0) {
-		char *remaining_string;
+		gchar *remaining_string;
 
 		remaining_string = brasero_utils_get_time_string ((double) remaining * 1000000000, TRUE, FALSE);
 		text = g_strdup_printf (_("%s, %02i%% done, %s remaining"),
@@ -299,10 +281,7 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 	else
 		text = g_strdup (action_string);
 
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tray->priv->tooltip),
-			      GTK_WIDGET (tray),
-			      text,
-			      NULL);
+	gtk_status_icon_set_tooltip (GTK_STATUS_ICON (tray), text);
 	g_free (text);
 }
 
@@ -361,26 +340,12 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 
 	icon_name = g_strdup_printf (BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-%02i.png", percent);
 	pixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
+	g_free (icon_name);
 
-	if (pixbuf) {
-		GtkWidget *image;
-		GtkIconSet *iconset;
-
-		iconset = gtk_icon_set_new_from_pixbuf (pixbuf);
-		g_object_unref (pixbuf);
-
-		image = gtk_bin_get_child (GTK_BIN (tray));
-		image = gtk_bin_get_child (GTK_BIN (image));
-
-		gtk_image_set_from_icon_set (GTK_IMAGE (image),
-					     iconset,
-					     GTK_ICON_SIZE_MENU);
-		gtk_icon_set_unref (iconset);
-	}
+	if (pixbuf)
+		gtk_status_icon_set_from_pixbuf (GTK_STATUS_ICON (tray), pixbuf);
 	else
 		g_warning ("Faulty installation. \"%s\" can't be found.\n", icon_name);
-
-	g_free (icon_name);
 }
 
 static void
@@ -400,38 +365,36 @@ brasero_tray_icon_change_show_dialog_state (BraseroTrayIcon *tray)
 		       active);
 }
 
-static gboolean
-brasero_tray_icon_button_press_cb (GtkWidget *eventbox,
-				   GdkEventButton *event,
-				   BraseroTrayIcon *tray)
+static void
+brasero_tray_icon_menu_popup_cb (BraseroTrayIcon *tray,
+				 guint button,
+				 guint time,
+				 gpointer user_data)
 {
-	if (event->button == 3) {
-		GtkWidget *menu;
+	GtkWidget *menu;
 
-		menu = gtk_ui_manager_get_widget (tray->priv->manager,"/ContextMenu");
-		gtk_menu_popup (GTK_MENU (menu),
-				NULL,
-				NULL,
-				NULL,
-				NULL,
-				event->button,
-				event->time);
-		return FALSE;
-	}
+	menu = gtk_ui_manager_get_widget (tray->priv->manager,"/ContextMenu");
+	gtk_menu_popup (GTK_MENU (menu),
+			NULL,
+			NULL,
+			gtk_status_icon_position_menu,
+			tray,
+			button,
+			time);
+}
 
-	if (event->button == 1) {
-		GtkAction *action;
-		gboolean show;
+static void
+brasero_tray_icon_activate_cb (BraseroTrayIcon *tray,
+			       gpointer user_data)
+{
+	GtkAction *action;
+	gboolean show;
 	
-		/* update menu */
-		action = gtk_ui_manager_get_action (tray->priv->manager, "/ContextMenu/Show");
-		show = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
-		show = show ? FALSE:TRUE;
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), show);
-		return FALSE;
-	}
-
-	return FALSE;
+	/* update menu */
+	action = gtk_ui_manager_get_action (tray->priv->manager, "/ContextMenu/Show");
+	show = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
+	show = show ? FALSE:TRUE;
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), show);
 }
 
 static void

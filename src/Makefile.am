@@ -84,8 +84,6 @@ brasero_SOURCES = \
 	async-job-manager.h         \
 	song-properties.c         \
 	song-properties.h         \
-	eggtrayicon.c         \
-	eggtrayicon.h         \
 	tray.c         \
 	tray.h         \
 	burn.c         \
