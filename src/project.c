@@ -409,7 +409,7 @@ brasero_project_finalize (GObject *object)
 		g_free (cobj->priv->project);
 
 	if (cobj->priv->tooltip) {
-		gtk_object_sink (GTK_OBJECT (cobj->priv->tooltip));
+		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
 		cobj->priv->tooltip = NULL;
 	}
 

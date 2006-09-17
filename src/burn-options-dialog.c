@@ -134,7 +134,7 @@ brasero_burn_option_dialog_init (BraseroBurnOptionDialog *obj)
 
 	obj->priv->tooltips = gtk_tooltips_new ();
 	g_object_ref (obj->priv->tooltips);
-	gtk_object_sink (GTK_OBJECT (obj->priv->tooltips));
+	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
 
 	/* first box */
 	obj->priv->selection = brasero_recorder_selection_new ();

@@ -377,7 +377,7 @@ brasero_project_type_chooser_finalize (GObject *object)
 	cobj = BRASERO_PROJECT_TYPE_CHOOSER (object);
 
 	if (cobj->priv->tooltips) {
-		gtk_object_sink (GTK_OBJECT (cobj->priv->tooltips));
+		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltips));
 		cobj->priv->tooltips = NULL;
 	}
 

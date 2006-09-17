@@ -1073,7 +1073,7 @@ brasero_data_disc_finalize (GObject *object)
 	g_hash_table_destroy (cobj->priv->files);
 
 	if (cobj->priv->tooltip)
-		gtk_object_sink (GTK_OBJECT (cobj->priv->tooltip));
+		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
 
 	if (cobj->priv->path_refs)
 		g_hash_table_destroy (cobj->priv->path_refs);

@@ -1,6 +1,29 @@
 2006-09-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* configure.in:
+	* src/brasero-ncb.h:
+	* src/brasero-project-size.c: (brasero_project_size_finalize),
+	(brasero_project_size_add_real_medias):
+	* src/burn-dialog.c: (brasero_burn_dialog_notify_daemon):
+	* src/burn-options-dialog.c: (brasero_burn_option_dialog_init):
+	* src/data-disc.c: (brasero_data_disc_finalize):
+	* src/main.c: (main):
+	* src/mime-filter.c: (brasero_mime_filter_add_mime),
+	(brasero_mime_filter_add_filter):
+	* src/project-type-chooser.c:
+	(brasero_project_type_chooser_finalize):
+	* src/project.c: (brasero_project_finalize):
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_update_drive_info):
+	* src/search-entry.c: (brasero_search_entry_finalize),
+	(_add_mime_types_to_query):
+	* src/song-properties.c: (brasero_song_props_init):
+
+	Replaced/Removed deprecated functions/properties (gtk+ and ncb). Bumped requirements for ncb to 2.16
+
+2006-09-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* configure.in:
 	* src/Makefile.am:
 	* src/burn-dialog.c: (brasero_burn_dialog_finalize),
 	(brasero_burn_dialog_run):

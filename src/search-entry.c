@@ -556,10 +556,9 @@ brasero_search_entry_finalize (GObject *object)
 		cobj->priv->search_id = 0;
 	}
 
-	if (cobj->priv->tooltip) {
-		gtk_object_sink (GTK_OBJECT (cobj->priv->tooltip));
+	if (cobj->priv->tooltip)
+		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
 		cobj->priv->tooltip = NULL;
-	}
 
 	g_free (cobj->priv);
 	cobj->priv = NULL;
@@ -830,9 +829,9 @@ brasero_search_entry_add_current_keyword_to_history (BraseroSearchEntry *entry)
 static void
 _add_mime_types_to_query (BeagleQuery *query, const MimeTypeGroup *group)
 {
-	char **mime;
+	gchar **mime;
 
-	mime = group->mimetypes;
+	mime = (gchar **) group->mimetypes;
 	while (*mime) {
 		beagle_query_add_mime_type (query, *mime);
 		mime ++;

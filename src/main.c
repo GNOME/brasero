@@ -41,10 +41,8 @@
 #include <libgnomeui/libgnomeui.h>
 
 #include <nautilus-burn-recorder.h>
-
-#ifdef NCB_2_15
 #include <nautilus-burn-init.h>
-#endif
+
 
 #include <gconf/gconf-client.h>
 
@@ -482,9 +480,7 @@ main (int argc, char **argv)
 	gnome_vfs_init ();
 	gst_init (&argc, &argv);
 
-#ifdef NCB_2_15
 	nautilus_burn_init ();
-#endif
 
 #ifdef HAVE_LIBNOTIFY
 	notify_init ("Brasero");
@@ -509,9 +505,7 @@ main (int argc, char **argv)
 	g_free (app);
 	gst_deinit ();
 
-#ifdef NCB_2_15
 	nautilus_burn_shutdown ();
-#endif
 
 	g_object_unref (client);
 	client = NULL;

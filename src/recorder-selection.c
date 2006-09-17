@@ -40,10 +40,7 @@
 #include <nautilus-burn-drive.h>
 #include <nautilus-burn-drive-selection.h>
 #include <nautilus-burn-recorder.h>
-
-#ifdef NCB_2_15
 #include <nautilus-burn-drive-monitor.h>
-#endif
 
 #include "burn-caps.h"
 #include "recorder-selection.h"
@@ -621,7 +618,6 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 							     has_data,
 							     is_blank);
 
-	g_object_set (G_OBJECT (drive), "enable-monitor", TRUE, NULL);
 	added_signal = g_signal_connect (G_OBJECT (drive),
 					 "media-added",
 					 G_CALLBACK (brasero_recorder_selection_drive_media_added_cb),
@@ -645,12 +641,8 @@ end:
 		selection->priv->removed_signal = 0;
 	}
 
-	if (selection->priv->drive) {
-		g_object_set (G_OBJECT (selection->priv->drive),
-			      "enable-monitor", FALSE,
-			      NULL);
+	if (selection->priv->drive)
 		nautilus_burn_drive_unref (selection->priv->drive);
-	}
 
 	selection->priv->drive = drive;
 	selection->priv->added_signal = added_signal;

@@ -37,49 +37,25 @@
 #  include <config.h>
 #endif
 
-#ifdef NCB_2_15
 #include <nautilus-burn-drive-monitor.h>
-#endif
-
 #include <nautilus-burn-drive.h>
 
 extern "C"
 {
 #endif
 
-#ifdef NCB_2_15
 #define NCB_DRIVE_GET_TYPE(drive) 	\
 nautilus_burn_drive_get_drive_type (drive)
-#else
-#define NCB_DRIVE_GET_TYPE(drive) 	\
-((drive) ? (drive)->type: NAUTILUS_BURN_DRIVE_TYPE_FILE)
-#endif
 
-#ifdef NCB_2_15
 #define NCB_DRIVE_GET_DEVICE(drive) 	\
 nautilus_burn_drive_get_device (drive)
-#else
-#define NCB_DRIVE_GET_DEVICE(drive) 	\
-((drive) ? (const gchar *) (drive)->device:"bogus")
-#endif
 
-#ifdef NCB_2_15
 #define NCB_MEDIA_GET_SIZE(drive)			\
 nautilus_burn_drive_get_media_size (drive)
-#else
-#define NCB_MEDIA_GET_SIZE(drive)	\
-0
-#endif
 
-#ifdef NCB_2_15
 #define NCB_MEDIA_GET_CAPACITY(drive)	\
 nautilus_burn_drive_get_media_capacity (drive)
-#else
-#define NCB_MEDIA_GET_CAPACITY(drive)	\
-nautilus_burn_drive_get_media_size (drive)
-#endif
 
-#ifdef NCB_2_15
 #define NCB_DRIVE_GET_LIST(list, recorders, image)	\
 {	\
 	NautilusBurnDriveMonitor *monitor;	\
@@ -92,10 +68,6 @@ nautilus_burn_drive_get_media_size (drive)
 	if (image)	\
 		list = g_list_prepend (list, nautilus_burn_drive_monitor_get_drive_for_image (monitor));	\
 }
-#else
-#define NCB_DRIVE_GET_LIST(list, recorders, image)	\
-list = nautilus_burn_drive_get_list (recorders, image)
-#endif
 
 gboolean
 NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);

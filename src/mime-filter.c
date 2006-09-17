@@ -261,7 +261,7 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 				    BRASERO_MIME_FILTER_ICON_COL, icon_pix,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
-		gtk_object_sink (GTK_OBJECT (item));
+		g_object_ref_sink (GTK_OBJECT (item));
 
 		g_free (display);
 		if (icon_pix)
@@ -295,7 +295,7 @@ brasero_mime_filter_add_filter (BraseroMimeFilter *filter,
 			    BRASERO_MIME_FILTER_DISPLAY_COL, name,
 			    BRASERO_MIME_FILTER_FILTER_COL, item,
 			    -1);
-	gtk_object_sink (GTK_OBJECT (item));
+	g_object_ref_sink (GTK_OBJECT (item));
 
 	g_hash_table_insert (filter->priv->table,
 			     g_strdup (name),

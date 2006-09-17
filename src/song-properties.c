@@ -111,7 +111,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 
 	obj->priv->tooltips = gtk_tooltips_new ();
 	g_object_ref (obj->priv->tooltips);
-	gtk_object_sink (GTK_OBJECT (obj->priv->tooltips));
+	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
 
 	obj->priv->label = gtk_label_new (NULL);
 	gtk_label_set_single_line_mode (GTK_LABEL (obj->priv->label), FALSE);

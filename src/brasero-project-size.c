@@ -35,10 +35,7 @@
 #include <gtk/gtkcontainer.h>
 
 #include <nautilus-burn-drive.h>
-
-#ifdef NCB_2_15
 #include <nautilus-burn-drive-monitor.h>
-#endif
 
 #include "brasero-project-size.h"
 #include "brasero-ncb.h"
@@ -268,7 +265,7 @@ brasero_project_size_finalize (GObject *object)
 	cobj = BRASERO_PROJECT_SIZE (object);
 
 	if (cobj->priv->tooltips) {
-		gtk_object_sink (GTK_OBJECT (cobj->priv->tooltips));
+		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltips));
 		cobj->priv->tooltips = NULL;
 	}
 
@@ -1364,7 +1361,6 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 		self->priv->drives = g_list_prepend (self->priv->drives, drive);
 
 		/* add a callback if media changes */
-		g_object_set (drive->drive, "enable-monitor", TRUE, NULL);
 		g_signal_connect (drive->drive,
 				  "media-added",
 				  G_CALLBACK (brasero_project_size_disc_added_cb),

@@ -47,6 +47,7 @@ GNOME_VFS_REQUIRED=2.14.2
 GSTREAMER_REQUIRED=0.10.6
 GSTREAMER_BASE_REQUIRED=0.10.0
 LIBXML2_REQUIRED=2.6.0
+NAUTILUS_BURN_REQUIRED=2.16.0
 
 PKG_CHECK_MODULES(BRASERO, 		\
 	glib-2.0 >= $GLIB_REQUIRED		\
@@ -56,6 +57,7 @@ PKG_CHECK_MODULES(BRASERO, 		\
 	libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED	\
 	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED	\
 	gnome-vfs-module-2.0 \
+	libnautilus-burn >= $NAUTILUS_BURN_REQUIRED \
 	gstreamer-0.10 >= $GSTREAMER_REQUIRED \
 	gstreamer-plugins-base-0.10 >= $GSTREAMER_BASE_REQUIRED \
 	libxml-2.0 >= $LIBXML2_REQUIRED)
@@ -64,20 +66,6 @@ AC_SUBST(BRASERO_CFLAGS)
 AC_SUBST(BRASERO_LIBS)
 BRASERO_CFLAGS="$BRASERO_CFLAGS $CFLAGS"
 BRASERO_LIBS="$BRASERO_LIBS $LDFLAGS"
-
-dnl **************** check for nautilus-cd-burner version **
-PKG_CHECK_MODULES(NAUTILUS_BURN, libnautilus-burn >= 2.15.0, has_ncb_2_15=yes, has_ncb_2_15=no)
-
-if test x"$has_ncb_2_15" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $NAUTILUS_BURN_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $NAUTILUS_BURN_LIBS"
-	AC_DEFINE(NCB_2_15, 1, [ncb-2.15 support])
-else
-	PKG_CHECK_MODULES(NAUTILUS_BURN, libnautilus-burn >= 2.14.0)
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $NAUTILUS_BURN_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $NAUTILUS_BURN_LIBS"
-fi
-AM_CONDITIONAL(NCB_2_15, test x"$has_ncb_2_15" = "xyes")
 
 dnl ****************check for libburn (optional)**************
 LIBBURN_REQUIRED=0.2.1

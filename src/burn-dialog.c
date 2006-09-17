@@ -1533,7 +1533,7 @@ brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
 	notification = notify_notification_new (primary,
 						secondary,
 						GTK_STOCK_CDROM,
-						dialog->priv->tray);
+						GTK_STATUS_ICON (dialog->priv->tray));
 	if (!notification)
 		return FALSE;
 
