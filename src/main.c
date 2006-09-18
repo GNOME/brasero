@@ -327,10 +327,10 @@ brasero_app_create_app (void)
 	app = g_new0 (BraseroApp, 1);
 	app->mainwin = gnome_app_new ("Brasero", NULL);
 
-	gtk_window_set_default_icon_from_file (BRASERO_DATADIR G_DIR_SEPARATOR_S "icon-final-48x48.png",
+	gtk_window_set_default_icon_from_file (BRASERO_DATADIR G_DIR_SEPARATOR_S "brasero.png",
 					       NULL);
 	gtk_window_set_icon_from_file (GTK_WINDOW (app->mainwin),
-				       BRASERO_DATADIR G_DIR_SEPARATOR_S "icon-final-48x48.png",
+				       BRASERO_DATADIR G_DIR_SEPARATOR_S "brasero.png",
 				       NULL);
 
 	g_signal_connect (G_OBJECT (app->mainwin), "delete-event",

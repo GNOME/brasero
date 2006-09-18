@@ -129,7 +129,7 @@ brasero_utils_init (void)
 
 	brasero_utils_register_icon (factory,
 				     BRASERO_STOCK_ICON,
-				     BRASERO_DATADIR G_DIR_SEPARATOR_S "icon-final-48x48.png",
+				     BRASERO_DATADIR G_DIR_SEPARATOR_S "brasero.png",
 				     FROM_FILE,
 				     0);
 	brasero_utils_register_icon (factory,
