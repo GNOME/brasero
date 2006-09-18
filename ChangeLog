@@ -1,5 +1,19 @@
 2006-09-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* src/brasero-file-chooser.c: (brasero_file_chooser_init):
+	* src/burn-dialog.c: (brasero_burn_dialog_save_log):
+	* src/play-list.c: (brasero_playlist_add_cb):
+	* src/project.c: (brasero_project_open_project),
+	(brasero_project_save_project_xml),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project_ask_for_path):
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_image_properties):
+
+	Allow open image dialog and main file browser to display remote files
+
+2006-09-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* src/burn-options-dialog.c: (brasero_burn_option_dialog_new):
 
 	Don't allow to add data to a disc if it's not appendable

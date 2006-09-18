@@ -1628,7 +1628,7 @@ brasero_project_open_project (BraseroProject *project,
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
 	GtkWidget *toplevel;
-	char *path;
+	gchar *path;
 
 	if (!name) {
 		GtkWidget *chooser;
@@ -1641,7 +1641,7 @@ brasero_project_open_project (BraseroProject *project,
 						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
 						      NULL);
-		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), FALSE);
+		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
 						     g_get_home_dir ());
 	
@@ -1805,12 +1805,12 @@ _save_data_track_xml (xmlTextWriter *project,
 
 static gboolean 
 brasero_project_save_project_xml (BraseroProject *proj,
-				  const char *path,
+				  const gchar *path,
 				  BraseroDiscTrack *track)
 {
 	xmlTextWriter *project;
 	gboolean retval;
-	int success;
+	gint success;
 
 	project = xmlNewTextWriterFilename (path, 0);
 	if (!project) {
@@ -1896,7 +1896,7 @@ error:
 
 static gboolean
 brasero_project_save_project_real (BraseroProject *project,
-				   const char *path)
+				   const gchar *path)
 {
 	BraseroDiscResult result;
 	BraseroDiscTrack track;
@@ -1939,8 +1939,8 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 {
 	GtkWidget *toplevel;
 	GtkWidget *chooser;
-	char *path = NULL;
-	int answer;
+	gchar *path = NULL;
+	gint answer;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	chooser = gtk_file_chooser_dialog_new (_("Save current project"),
@@ -1949,7 +1949,7 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					       GTK_STOCK_SAVE, GTK_RESPONSE_OK,
 					       NULL);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), FALSE);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
 					     g_get_home_dir ());
 

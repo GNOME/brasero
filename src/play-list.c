@@ -633,7 +633,7 @@ brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
 
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 					 GTK_RESPONSE_ACCEPT);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), TRUE);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (dialog), TRUE);
 	gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog),
 						 g_get_home_dir ());

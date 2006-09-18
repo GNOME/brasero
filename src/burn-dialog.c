@@ -1574,14 +1574,14 @@ brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 	GtkWidget *chooser;
 	GtkResponseType answer;
 
-	chooser = gtk_file_chooser_dialog_new (_("Save current project"),
+	chooser = gtk_file_chooser_dialog_new (_("Save current session"),
 					       GTK_WINDOW (dialog),
 					       GTK_FILE_CHOOSER_ACTION_SAVE,
 					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					       GTK_STOCK_SAVE, GTK_RESPONSE_OK,
 					       NULL);
 
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), FALSE);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
 					     g_get_home_dir ());
 	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (chooser),

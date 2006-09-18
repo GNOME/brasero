@@ -911,7 +911,7 @@ brasero_recorder_selection_image_properties (BraseroRecorderSelection *selection
 {
 	GtkWindow *toplevel;
 	GtkWidget *dialog;
-	int answer;
+	gint answer;
 
 	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (selection)));
 	dialog = gtk_file_chooser_dialog_new (_("Choose a location for the disc image"),
@@ -925,7 +925,7 @@ brasero_recorder_selection_image_properties (BraseroRecorderSelection *selection
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), TRUE);
 
 	if (selection->priv->image_path) {
-		char *name;
+		gchar *name;
 
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog),
 					       selection->priv->image_path);
@@ -936,8 +936,9 @@ brasero_recorder_selection_image_properties (BraseroRecorderSelection *selection
 		if (!name) {
 			name = g_path_get_basename (selection->priv->image_path);
 			gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), name);
-			g_free (name);
 		}
+
+		g_free (name);
 	}
 	else
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),

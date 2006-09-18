@@ -120,6 +120,8 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	obj->priv = g_new0 (BraseroFileChooserPrivate, 1);
 
 	obj->priv->chooser = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (obj->priv->chooser), FALSE);
+
 	gtk_widget_show (obj->priv->chooser);
 
 	gtk_container_add (GTK_CONTAINER (obj), obj->priv->chooser);
