@@ -185,15 +185,13 @@ AC_ARG_ENABLE(caches,
 AM_CONDITIONAL(UPDATE_CACHES, test x"$enable_caches" = "xyes")
 
 dnl ****** INTERNATIONALIZATION **********************
-ALL_LINGUAS="fr ja es pt_BR it pl de ca"
-
 GETTEXT_PACKAGE=brasero
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
 
 AM_GLIB_GNU_GETTEXT
 
-AC_PROG_INTLTOOL(0.25)
+IT_PROG_INTLTOOL([0.35.0])
 
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Location of package locale files])
