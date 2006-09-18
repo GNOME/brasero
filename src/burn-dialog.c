@@ -44,6 +44,9 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtklabel.h>
 
+#include <nautilus-burn-drive-monitor.h>
+#include <nautilus-burn-drive.h>
+
 #ifdef HAVE_LIBNOTIFY
 #include <libnotify/notify.h>
 #endif
@@ -954,7 +957,8 @@ end:
 }
 
 static void
-brasero_burn_dialog_media_added_cb (NautilusBurnDrive *drive,
+brasero_burn_dialog_media_added_cb (NautilusBurnDriveMonitor *monitor,
+				    NautilusBurnDrive *drive,
 				    BraseroBurnDialog *dialog)
 {
 	brasero_burn_dialog_update_info (dialog);
@@ -968,7 +972,8 @@ brasero_burn_dialog_media_added_cb (NautilusBurnDrive *drive,
 }
 
 static void
-brasero_burn_dialog_media_removed_cb (NautilusBurnDrive *drive,
+brasero_burn_dialog_media_removed_cb (NautilusBurnDriveMonitor *monitor,
+				      NautilusBurnDrive *drive,
 				      BraseroBurnDialog *dialog)
 {
 	GdkPixbuf *pixbuf;
@@ -1135,7 +1140,8 @@ brasero_burn_dialog_integrity_wrong_sums (BraseroBurnDialog *dialog)
 }
 
 static void
-brasero_burn_dialog_close_reload_disc_dlg (NautilusBurnDrive *drive,
+brasero_burn_dialog_close_reload_disc_dlg (NautilusBurnDriveMonitor *monitor,
+					   NautilusBurnDrive *drive,
 					   BraseroBurnDialog *dialog)
 {
 	/* we might have a dialog waiting for the 
@@ -1148,13 +1154,13 @@ brasero_burn_dialog_close_reload_disc_dlg (NautilusBurnDrive *drive,
 
 static BraseroBurnResult
 brasero_burn_dialog_reload_disc_dlg (BraseroBurnDialog *dialog,
-				     NautilusBurnDrive *drive,
 				     const gchar *primary,
 				     const gchar *secondary)
 {
 	gint answer;
 	gint added_id;
 	GtkWidget *message;
+	NautilusBurnDriveMonitor *monitor;
 
 	/* display a dialog to the user explaining what we're
 	 * going to do, that is reload the disc before checking */
@@ -1170,7 +1176,8 @@ brasero_burn_dialog_reload_disc_dlg (BraseroBurnDialog *dialog,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  secondary);
 
-	added_id = g_signal_connect_after (drive,
+	monitor = nautilus_burn_get_drive_monitor ();
+	added_id = g_signal_connect_after (monitor,
 					   "media-added",
 					   G_CALLBACK (brasero_burn_dialog_close_reload_disc_dlg),
 					   dialog);
@@ -1181,7 +1188,7 @@ brasero_burn_dialog_reload_disc_dlg (BraseroBurnDialog *dialog,
 
 	gtk_widget_destroy (message);
 
-	g_signal_handler_disconnect (drive, added_id);
+	g_signal_handler_disconnect (monitor, added_id);
 
 	if (answer == GTK_RESPONSE_CANCEL)
 		return BRASERO_BURN_CANCEL;
@@ -1224,7 +1231,6 @@ brasero_burn_dialog_check_image_integrity (BraseroBurnDialog *dialog,
 	&&  nautilus_burn_drive_equal (drive, source->contents.drive.disc)) {
 		nautilus_burn_drive_eject (drive);
 		result = brasero_burn_dialog_reload_disc_dlg (dialog,
-							      drive,
 							      _("The source media needs to be reloaded:"),
 							      _("Please insert it again."));
 		if (result == BRASERO_BURN_CANCEL) {
@@ -1409,7 +1415,6 @@ brasero_burn_dialog_integrity_button_pressed (GtkButton *button,
 	/* display a dialog to the user explaining what we're
 	 * going to do, that is reload the disc before checking */
 	result = brasero_burn_dialog_reload_disc_dlg (dialog,
-						      data->burner,
 						      _("The burnt media needs to be reloaded to perform integrity check:"),
 						      _("please, insert it again."));
 	if (result == BRASERO_BURN_CANCEL)
@@ -1965,6 +1970,7 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	gboolean close_dialog;
 	BraseroBurnResult result;
 	BraseroTrackSource *track = NULL;
+	NautilusBurnDriveMonitor *monitor;
 
 	dialog->priv->track_type = source->type;
 	dialog->priv->isosize = sectors * 2048;
@@ -1983,11 +1989,12 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	nautilus_burn_drive_ref (drive);
 
 	/* Leave the time to all sub systems and libs to get notified */
-	added_id = g_signal_connect_after (drive,
+	monitor = nautilus_burn_get_drive_monitor ();
+	added_id = g_signal_connect_after (monitor,
 					   "media-added",
 					   G_CALLBACK (brasero_burn_dialog_media_added_cb),
 					   dialog);
-	removed_id = g_signal_connect_after (drive,
+	removed_id = g_signal_connect_after (monitor,
 					     "media-removed",
 					     G_CALLBACK (brasero_burn_dialog_media_removed_cb),
 					     dialog);
@@ -2013,12 +2020,12 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	}
 
 	if (added_id) {
-		g_signal_handler_disconnect (drive, added_id);
+		g_signal_handler_disconnect (monitor, added_id);
 		added_id = 0;
 	}
 
 	if (removed_id) {
-		g_signal_handler_disconnect (drive, removed_id);
+		g_signal_handler_disconnect (monitor, removed_id);
 		removed_id = 0;
 	}
 

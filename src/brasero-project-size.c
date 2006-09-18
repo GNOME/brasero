@@ -1292,7 +1292,8 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 
 /********************************* real drives *********************************/
 static void
-brasero_project_size_disc_added_cb (NautilusBurnDrive *ndrive,
+brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
+				    NautilusBurnDrive *ndrive,
 				    BraseroProjectSize *self)
 {
 	GList *iter;
@@ -1322,7 +1323,8 @@ brasero_project_size_disc_added_cb (NautilusBurnDrive *ndrive,
 }
 
 static void
-brasero_project_size_disc_removed_cb (NautilusBurnDrive *ndrive,
+brasero_project_size_disc_removed_cb (NautilusBurnDriveMonitor *monitor,
+				      NautilusBurnDrive *ndrive,
 				      BraseroProjectSize *self)
 {
 	GList *iter;
@@ -1353,6 +1355,7 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 
 	NCB_DRIVE_GET_LIST (list, TRUE, FALSE);
 	for (iter = list; iter; iter = iter->next) {
+		NautilusBurnDriveMonitor *monitor;
 		BraseroDrive *drive;
 		gint64 size;
 
@@ -1361,11 +1364,12 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 		self->priv->drives = g_list_prepend (self->priv->drives, drive);
 
 		/* add a callback if media changes */
-		g_signal_connect (drive->drive,
+		monitor = nautilus_burn_get_drive_monitor ();
+		g_signal_connect (monitor,
 				  "media-added",
 				  G_CALLBACK (brasero_project_size_disc_added_cb),
 				  self);
-		g_signal_connect (drive->drive,
+		g_signal_connect (monitor,
 				  "media-removed",
 				  G_CALLBACK (brasero_project_size_disc_removed_cb),
 				  self);

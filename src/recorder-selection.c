@@ -67,8 +67,10 @@ static void brasero_recorder_selection_button_cb (GtkWidget *button,
 						   BraseroRecorderSelection *selection);
 
 static void brasero_recorder_selection_drive_changed_cb (NautilusBurnDriveSelection *selector, 
-							  const char *device,
+							  NautilusBurnDrive *drive,
 							  BraseroRecorderSelection *selection);
+
+static void brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selection);
 
 enum {
 	PROP_NONE,
@@ -288,19 +290,21 @@ brasero_recorder_selection_init (BraseroRecorderSelection *obj)
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	g_signal_connect (obj->priv->selection,
-			  "device-changed",
+			  "drive-changed",
 			  G_CALLBACK (brasero_recorder_selection_drive_changed_cb),
 			  obj);
 
-	obj->priv->image_format = BRASERO_IMAGE_FORMAT_ANY;
+	obj->priv->image_format = BRASERO_IMAGE_FORMAT_ANY;	
 }
 
 static void
 brasero_recorder_selection_finalize (GObject *object)
 {
 	BraseroRecorderSelection *cobj;
+	NautilusBurnDriveMonitor *monitor;
 
 	cobj = BRASERO_RECORDER_SELECTION (object);
+	monitor = nautilus_burn_get_drive_monitor ();
 
 	if (cobj->priv->image_path) {
 		g_free (cobj->priv->image_path);
@@ -308,13 +312,13 @@ brasero_recorder_selection_finalize (GObject *object)
 	}
 
 	if (cobj->priv->added_signal) {
-		g_signal_handler_disconnect (cobj->priv->drive,
+		g_signal_handler_disconnect (monitor,
 					     cobj->priv->added_signal);
 		cobj->priv->added_signal = 0;
 	}
 
 	if (cobj->priv->removed_signal) {
-		g_signal_handler_disconnect (cobj->priv->drive,
+		g_signal_handler_disconnect (monitor,
 					     cobj->priv->removed_signal);
 		cobj->priv->removed_signal = 0;
 	}
@@ -493,7 +497,8 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 }
 
 static void
-brasero_recorder_selection_drive_media_added_cb (NautilusBurnDrive *drive,
+brasero_recorder_selection_drive_media_added_cb (NautilusBurnDriveMonitor *monitor,
+						 NautilusBurnDrive *drive,
 						 BraseroRecorderSelection *selection)
 {
 	NautilusBurnMediaType type;
@@ -518,7 +523,8 @@ brasero_recorder_selection_drive_media_added_cb (NautilusBurnDrive *drive,
 }
 
 static void
-brasero_recorder_selection_drive_media_removed_cb (NautilusBurnDrive *drive,
+brasero_recorder_selection_drive_media_removed_cb (NautilusBurnDriveMonitor *monitor,
+						   NautilusBurnDrive *drive,
 						   BraseroRecorderSelection *selection)
 {
 	if (selection->priv->dialog)
@@ -566,15 +572,18 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 	guint added_signal = 0;
 	guint removed_signal = 0;
 	NautilusBurnDrive *drive;
-	gboolean can_record = FALSE;
 	NautilusBurnMediaType type;
+	gboolean can_record = FALSE;
+	NautilusBurnDriveMonitor *monitor;
 	gboolean is_rewritable, has_audio, has_data, is_blank;
 
+	monitor = nautilus_burn_get_drive_monitor ();
 	drive = nautilus_burn_drive_selection_get_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection));
+
 	if (drive == NULL) {
 		GdkPixbuf *pixbuf;
 
-		gtk_widget_set_sensitive (selection->priv->selection, FALSE);
+	    	gtk_widget_set_sensitive (selection->priv->selection, FALSE);
 		gtk_label_set_markup (GTK_LABEL (selection->priv->infos),
 				      _("<b>There is no available drive.</b>"));
 
@@ -618,11 +627,11 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 							     has_data,
 							     is_blank);
 
-	added_signal = g_signal_connect (G_OBJECT (drive),
+	added_signal = g_signal_connect (G_OBJECT (monitor),
 					 "media-added",
 					 G_CALLBACK (brasero_recorder_selection_drive_media_added_cb),
 					 selection);
-	removed_signal = g_signal_connect (G_OBJECT (drive),
+	removed_signal = g_signal_connect (G_OBJECT (monitor),
 					   "media-removed",
 					   G_CALLBACK (brasero_recorder_selection_drive_media_removed_cb),
 					   selection);
@@ -630,13 +639,13 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 end:
 
 	if (selection->priv->added_signal) {
-		g_signal_handler_disconnect (selection->priv->drive,
+		g_signal_handler_disconnect (monitor,
 					     selection->priv->added_signal);
 		selection->priv->added_signal = 0;
 	}
 
 	if (selection->priv->removed_signal) {
-		g_signal_handler_disconnect (selection->priv->drive,
+		g_signal_handler_disconnect (monitor,
 					     selection->priv->removed_signal);
 		selection->priv->removed_signal = 0;
 	}
@@ -655,7 +664,7 @@ end:
 
 static void
 brasero_recorder_selection_drive_changed_cb (NautilusBurnDriveSelection *selector,
-					     const char *device,
+					     NautilusBurnDrive *drive,
 					     BraseroRecorderSelection *selection)
 {
 	brasero_recorder_selection_update_drive_info (selection);
@@ -668,7 +677,7 @@ brasero_recorder_selection_new (void)
 
 	obj = BRASERO_RECORDER_SELECTION (g_object_new (BRASERO_TYPE_RECORDER_SELECTION,
 					                NULL));
-	brasero_recorder_selection_update_drive_info (obj);
+
 	return GTK_WIDGET (obj);
 }
 
@@ -695,7 +704,6 @@ brasero_recorder_selection_set_source_track (BraseroRecorderSelection *selection
 		if (!selection->priv->image_type_combo)
 			return;
 
-		/* FIXME: this could force the disc to reload */
 		type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
 		if (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
 			gtk_combo_box_remove_text (GTK_COMBO_BOX (selection->priv->image_type_combo), 3);
@@ -730,7 +738,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	gchar *header, *text;
 	gchar *display_name;
 	gint result, i;
-	gint speed;
+	gint max_rate, max_speed;
 	GSList *list = NULL;
 
 	/* */
@@ -756,23 +764,20 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 
 	/* Speed combo */
 	media = nautilus_burn_drive_get_media_type (drive);
-	speed = nautilus_burn_drive_get_max_speed_write (drive);
+	max_rate = nautilus_burn_drive_get_max_speed_write (drive);
 
 	combo = gtk_combo_box_new_text ();
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Max speed"));
+	
+	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+		max_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
+	else
+		max_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
 
-	/* FIXME : we should use nautilus_burn_drive_get_speeds in the future
-	 * when it actually works */
-	if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-		for (i = 2; i < speed; i += 2) {
-		/* FIXME : this has changed in 2.15/16 speeds are given in bytes */
-		text = g_strdup_printf ("%i x (DVD)", i);
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), text);
-		g_free (text);
-	}
-	else for (i = 2; i < speed;i += 2) {
-		/* FIXME : this has changed in 2.15/16 speeds are given in bytes */
-		text = g_strdup_printf ("%i x (CD)", i);
+	for (i = 2; i <= max_speed; i += 2) {
+		text = g_strdup_printf ("%i x (%s)",
+					i,
+					NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media) ? _("DVD"):_("CD"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), text);
 		g_free (text);
 	}
@@ -800,7 +805,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo),
-					  prop->props.drive_speed / 2);
+								  prop->props.drive_speed / 2);
 
 	/* properties */
 	brasero_burn_caps_get_supported_flags (selection->priv->caps,
@@ -1193,6 +1198,7 @@ brasero_recorder_selection_select_default_drive (BraseroRecorderSelection *selec
 		      NULL);
 
 	NCB_DRIVE_GET_LIST (drives, recorders, image);
+
 	for (iter = drives; iter; iter = iter->next) {
 		drive = iter->data;
 

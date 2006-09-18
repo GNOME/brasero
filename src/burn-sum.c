@@ -558,13 +558,17 @@ brasero_burn_sum_image (BraseroBurnSum *self, GError **error)
 static BraseroBurnResult
 brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 {
+	gint64 size;
 	const gchar *device;
 	BraseroBurnResult result;
 	NautilusBurnDrive *drive;
 	NautilusBurnMediaType media;
 
-	/* FIXME: use ncb-2.15 to get the size of the image */
 	drive = self->priv->source->contents.drive.disc;
+	
+	/* we get the size of the image */
+	size = nautilus_burn_drive_get_media_size (drive);
+	BRASERO_JOB_TASK_SET_TOTAL (self, size);
 
 	media = nautilus_burn_drive_get_media_type (drive);
 	if (media < NAUTILUS_BURN_MEDIA_TYPE_CD) {

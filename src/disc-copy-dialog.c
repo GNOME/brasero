@@ -122,8 +122,15 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 	obj->priv->source = brasero_recorder_selection_new ();
 	g_object_set (G_OBJECT (obj->priv->source),
 		      "show-properties", FALSE,
+		      "show-recorders-only", TRUE,
+		      NULL);
+
+	/* There is some kind of small bug that I can't figure it out here,
+	 * but this works. */
+	g_object_set (G_OBJECT (obj->priv->source),
 		      "show-recorders-only", FALSE,
 		      NULL);
+
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    brasero_utils_pack_properties (_("<b>Select source drive to copy</b>"),
 							   obj->priv->source,
@@ -162,6 +169,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (obj->priv->source),
 					      &drive,
 					      NULL);
+
 	if (drive && NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		BraseroTrackSource source;
 		NautilusBurnMediaType type;
