@@ -57,12 +57,12 @@ braserodistpix_DATA = $(IMAGES)
 distpixmapdir = $(datadir)/pixmaps
 distpixmap_DATA = brasero.png
 
-mimeicondir = $(datadir)/icons/gnome/48x48/mimetypes
+mimeicondir = $(datadir)/icons/hicolor/48x48/mimetypes
 mimeicon_DATA = gnome-mime-application-x-brasero.png
 
 ## Update mime only when system wide installation takes place (taken from anjuta)
 
-gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/gnome
+gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
 
 UPDATE_MIME = \
 	if [ -f $(DESTDIR)$(datadir)/mime/packages/freedesktop.org.xml ] ; then \

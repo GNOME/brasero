@@ -74,7 +74,7 @@ static GtkActionEntry entries[] = {
 };
 
 
-static const char *description = {
+static const gchar *description = {
 	"<ui>"
 	    "<menubar name='menubar' >"
 	    "<menu action='ProjectMenu'>"

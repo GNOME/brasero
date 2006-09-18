@@ -258,6 +258,62 @@ on_configure_event_cb (GtkWidget *widget,
 	return FALSE;
 }
 
+static void
+brasero_app_recent_open (GtkRecentChooser *chooser,
+			 BraseroApp *app)
+{
+    	const gchar *mime;
+    	GtkRecentInfo *item;
+
+    	item = gtk_recent_chooser_get_current_item (chooser);
+    	mime = gtk_recent_info_get_mime_type (item);
+    	if (!strcmp (mime, "application/x-brasero")) {
+    		BRASERO_PROJECT_OPEN_URI (app,
+					  brasero_project_manager_open,
+					  gtk_recent_info_get_uri (item));
+	}
+    	else if (!strcmp (mime, "application/x-cd-image")) {
+    		BRASERO_PROJECT_OPEN_URI (app,
+					  brasero_project_manager_iso,
+					  gtk_recent_info_get_uri (item));
+	}
+    	else if (!strcmp (mime, "application/x-cdrdao-toc")) {
+    		BRASERO_PROJECT_OPEN_URI (app,
+					  brasero_project_manager_iso,
+					  gtk_recent_info_get_uri (item));
+	}
+}
+
+static void
+brasero_app_add_recent (BraseroApp *app)
+{
+	GtkRecentManager *recent;
+	GtkRecentFilter *filter;
+	GtkWidget *submenu;
+	GtkWidget *menu;
+
+	/* add recent files */
+	recent = gtk_recent_manager_get_default ();
+ 	gtk_recent_manager_set_limit (recent, 5);
+
+	submenu = gtk_recent_chooser_menu_new_for_manager (recent);
+	g_signal_connect (submenu,
+                  	  "item_activated",
+			  G_CALLBACK (brasero_app_recent_open),
+			  app);
+
+	filter = gtk_recent_filter_new ();
+	gtk_recent_filter_set_name (filter, _("Brasero projects"));
+	gtk_recent_filter_add_mime_type (filter, "application/x-brasero");
+	gtk_recent_filter_add_mime_type (filter, "application/x-cd-image");
+	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");
+	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (submenu), filter);
+	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (submenu), TRUE);
+
+	menu = gtk_ui_manager_get_widget (app->manager, "/menubar/ProjectMenu/Recent");
+ 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), submenu);    
+}
+
 static BraseroApp *
 brasero_app_create_app (void)
 {
@@ -313,6 +369,8 @@ brasero_app_create_app (void)
 	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");
 	gnome_app_set_menus (GNOME_APP (app->mainwin), GTK_MENU_BAR (menubar));
 
+	brasero_app_add_recent (app);
+ 
 	/* add accelerators */
 	accel_group = gtk_ui_manager_get_accel_group (app->manager);
 	gtk_window_add_accel_group (GTK_WINDOW (app->mainwin), accel_group);

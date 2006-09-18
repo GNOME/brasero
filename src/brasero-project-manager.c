@@ -22,8 +22,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
-
 #include <string.h>
 
 #ifdef HAVE_CONFIG_H
@@ -135,6 +133,7 @@ static const char *description = {
 			"<separator/>"
 			"<placeholder name='ProjectPlaceholder'/>"
 			    "<menuitem action='Open'/>"
+			    "<menuitem action='Recent'/>"
 			    "<separator/>"
 		"</menu>"
 	    "</menubar>"
@@ -347,15 +346,22 @@ void
 brasero_project_manager_register_menu (BraseroProjectManager *manager,
 				       GtkUIManager *ui_manager)
 {
+	GtkAction *action;
 	GError *error = NULL;
+
+	action = gtk_action_new ("Recent",
+				 _("Recent projects"),
+				 _("Display the projects recently opened"),
+				 NULL);
+	gtk_action_group_add_action (manager->priv->action_group, action);
+	g_object_unref (action);
 
 	gtk_ui_manager_insert_action_group (ui_manager, manager->priv->action_group, 0);
 	if (!gtk_ui_manager_add_ui_from_string (ui_manager, description, -1, &error)) {
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
 	}
-
-	brasero_layout_register_menu (BRASERO_LAYOUT (manager->priv->layout), ui_manager);
+   	brasero_layout_register_menu (BRASERO_LAYOUT (manager->priv->layout), ui_manager);
 	brasero_project_register_menu (BRASERO_PROJECT (manager->priv->project), ui_manager);
 }
 
