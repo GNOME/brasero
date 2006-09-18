@@ -253,6 +253,7 @@ brasero_burn_option_dialog_new (const BraseroTrackSource *track)
 
 	/* keep a copy of the track for later */
 	if (track->type == BRASERO_TRACK_SOURCE_DATA) {
+		NautilusBurnDrive *drive = NULL;
 		GtkWidget *dont_close_check;
 		GtkWidget *append_check;
 		GConfClient *client;
@@ -273,6 +274,18 @@ brasero_burn_option_dialog_new (const BraseroTrackSource *track)
 				  G_CALLBACK (brasero_burn_option_dialog_append_toggled_cb),
 				  obj);
 		obj->priv->append_check = append_check;
+
+		/* This option is only available if the disc is appendable */
+		brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
+						      &drive,
+						      NULL);
+		if (drive && nautilus_burn_drive_media_is_appendable (drive))
+			gtk_widget_set_sensitive (append_check, TRUE);
+		else
+			gtk_widget_set_sensitive (append_check, FALSE);
+
+		if (drive)	
+			nautilus_burn_drive_unref (drive);
 
 		dont_close_check = gtk_check_button_new_with_label (_("Leave the disc open to add other files later"));
 		gtk_tooltips_set_tip (obj->priv->tooltips,
