@@ -551,8 +551,13 @@ brasero_process_stop (BraseroJob *job,
 						     BRASERO_CHANNEL_STDOUT,
 						     klass->stdout_func));
 		}
-		g_io_channel_unref (process->priv->std_out);
-		process->priv->std_out = NULL;
+
+	    	/* NOTE: we already checked if process->priv->std_out wasn't 
+		 * NULL but brasero_process_read could have closed it */
+	    	if (process->priv->std_out) {
+			g_io_channel_unref (process->priv->std_out);
+			process->priv->std_out = NULL;
+		}
 	}
 
 	if (process->priv->out_buffer) {
@@ -577,8 +582,13 @@ brasero_process_stop (BraseroJob *job,
 						     BRASERO_CHANNEL_STDERR,
 						     klass->stderr_func));
 		}
-		g_io_channel_unref (process->priv->std_error);
-		process->priv->std_error = NULL;
+
+	    	/* NOTE: we already checked if process->priv->std_out wasn't 
+		 * NULL but brasero_process_read could have closed it */
+	    	if (process->priv->std_error) {
+			g_io_channel_unref (process->priv->std_error);
+			process->priv->std_error = NULL;
+		}
 	}
 
 	if (process->priv->err_buffer) {

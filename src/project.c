@@ -1624,9 +1624,11 @@ brasero_project_open_project (BraseroProject *project,
 			      const gchar *name)
 {
 	BraseroDiscTrack *track = NULL;
+    	GtkRecentManager *recent;
 	BraseroProjectType type;
 	GtkWidget *toplevel;
 	gchar *path;
+    	gchar *uri;
 
 	if (!name) {
 		GtkWidget *chooser;
@@ -1658,7 +1660,12 @@ brasero_project_open_project (BraseroProject *project,
 
 	if (!path || *path =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
-
+ 
+    	recent = gtk_recent_manager_get_default ();
+    	uri = brasero_utils_validate_uri (path, FALSE);
+    	gtk_recent_manager_add_item (recent, uri);
+    	g_free (uri);
+ 
 	if (!brasero_project_open_project_xml (project, path, &track)) {
 		g_free (path);
 		return BRASERO_PROJECT_TYPE_INVALID;
@@ -1896,11 +1903,18 @@ static gboolean
 brasero_project_save_project_real (BraseroProject *project,
 				   const gchar *path)
 {
+    	GtkRecentManager *recent;
 	BraseroDiscResult result;
 	BraseroDiscTrack track;
 	gboolean retval;
+    	gchar *uri;
 
 	g_return_val_if_fail (path != NULL || project->priv->project != NULL, FALSE);
+
+    	recent = gtk_recent_manager_get_default ();
+    	uri = brasero_utils_validate_uri (path, FALSE);
+    	gtk_recent_manager_add_item (recent, uri);
+    	g_free (uri);
 
 	result = brasero_project_check_status (project, project->priv->current);
 	if (result != BRASERO_DISC_OK)
@@ -1932,7 +1946,7 @@ brasero_project_save_project_real (BraseroProject *project,
 	return retval;
 }
 
-static char *
+static gchar *
 brasero_project_save_project_ask_for_path (BraseroProject *project)
 {
 	GtkWidget *toplevel;
@@ -1968,7 +1982,7 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 gboolean
 brasero_project_save_project (BraseroProject *project)
 {
-	char *path = NULL;
+	gchar *path = NULL;
 	gboolean result;
 
 	if (!project->priv->project
@@ -1985,7 +1999,7 @@ gboolean
 brasero_project_save_project_as (BraseroProject *project)
 {
 	gboolean result;
-	char *path;
+	gchar *path;
 
 	path = brasero_project_save_project_ask_for_path (project);
 	if (!path)

@@ -466,6 +466,7 @@ brasero_project_manager_burn_iso (BraseroProjectManager *manager,
 				  const gchar *image_uri) /* must be unescaped */
 {
 	BraseroTrackSource *track = NULL;
+    	GtkRecentManager *recent;
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
 	GtkWidget *toplevel;
@@ -511,10 +512,15 @@ brasero_project_manager_burn_iso (BraseroProjectManager *manager,
 					  info,
 					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
 					  GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE);
-	g_free (escaped_uri);
-
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK) {
+		g_free (escaped_uri);
 		goto error;
+	}
+
+    	/* Add it to the recent files */
+    	recent = gtk_recent_manager_get_default ();
+    	gtk_recent_manager_add_item (recent, escaped_uri);
+    	g_free (escaped_uri);
 
 	if (!strcmp (info->mime_type, "application/octet-stream")) {
 		track = g_new0 (BraseroTrackSource, 1);

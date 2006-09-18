@@ -1,5 +1,16 @@
 2006-09-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_burn_iso):
+	* src/burn-process.c: (brasero_process_stop):
+	* src/project.c: (brasero_project_open_project),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project), (brasero_project_save_project_as):
+
+	Fixed a warning and add opened projects/files to recent manager
+
+2006-09-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* configure.in:
 	* data/gnome-mime-application-x-brasero.png:
 	* data/icon-final-128x128.png:
