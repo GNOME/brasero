@@ -515,7 +515,7 @@ retry:
 		goto error;
 	}
 
-    	/* Add it to the recent files */
+    	/* Add it to recent file manager */
     	recent = gtk_recent_manager_get_default ();
     	gtk_recent_manager_add_item (recent, uri);
 	if (!strcmp (info->mime_type, "application/octet-stream")) {
