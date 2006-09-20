@@ -7484,11 +7484,13 @@ brasero_data_disc_get_track (BraseroDisc *disc,
 {
 	GSList *grafts= NULL;
 	GSList *restored = NULL;
-	GSList *unreadable = NULL;
+
+    	if (BRASERO_DATA_DISC (disc)->priv->loading)
+		return BRASERO_DISC_LOADING;
 
 	brasero_data_disc_get_track_real (BRASERO_DATA_DISC (disc),
 					  &grafts,
-					  &unreadable,
+					  NULL,
 					  &restored,
 					  FALSE);
 	if (!restored && !grafts)
@@ -7496,7 +7498,6 @@ brasero_data_disc_get_track (BraseroDisc *disc,
 
 	track->type = BRASERO_DISC_TRACK_DATA;
 	track->contents.data.grafts = grafts;
-	track->contents.data.unreadable = unreadable;
 	track->contents.data.restored = restored;
 
 	return BRASERO_DISC_OK;

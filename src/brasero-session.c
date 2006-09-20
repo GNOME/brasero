@@ -36,36 +36,32 @@
 #include <libxml/xmlstring.h>
 
 #include "brasero-app.h"
+#include "brasero-session.h"
 #include "brasero-project-manager.h"
 
 static GnomeClient *client = NULL;
 
 #define SESSION_VERSION "0.1"
 
-static char*
-brasero_session_get_file_path (void)
-{
-	return gnome_util_home_file ("brasero.session");
-}
-
 gboolean
-brasero_session_load (BraseroApp *app)
+brasero_session_load (BraseroApp *app, gboolean load_project)
 {
-	char *height_str = NULL;
-	char *width_str = NULL;
-	char *state_str = NULL;
-	char *pane_str = NULL;
-	char *version = NULL;
-	int pane_pos = -1;
-	int height = 480;
-	int width = 640;
-	int state = 0;
+	gchar *height_str = NULL;
+	gchar *width_str = NULL;
+	gchar *state_str = NULL;
+	gchar *pane_str = NULL;
+	gchar *version = NULL;
+    	gchar *project_path;
+	gint pane_pos = -1;
+	gint height = 480;
+	gint width = 640;
+	gint state = 0;
 
-	char *session_path;
+	gchar *session_path;
 	xmlNodePtr item;
 	xmlDocPtr session = NULL;
 
-	session_path = brasero_session_get_file_path ();
+	session_path = gnome_util_home_file (BRASERO_SESSION_TMP_SESSION_PATH);
 	if (!session_path)
 		goto end;
 
@@ -168,25 +164,50 @@ end:
 				     width,
 				     height);
 
-	if (pane_pos > 0)
-		brasero_project_manager_set_pos (BRASERO_PROJECT_MANAGER (app->contents),
-						 pane_pos);
-
 	if (state)
 		gtk_window_maximize (GTK_WINDOW (app->mainwin));
+
+    	/* now we start the project if any */
+    	project_path = gnome_util_home_file (BRASERO_SESSION_TMP_PROJECT_PATH);
+    	if (!load_project
+	||  !g_file_test (project_path,G_FILE_TEST_EXISTS)) {
+    		g_free (project_path);
+		project_path = NULL;
+	}
+
+    	brasero_project_manager_load_session (BRASERO_PROJECT_MANAGER (app->contents),
+					      project_path,
+					      pane_pos);
+
+    	if (project_path) {
+    		/* remove the project file not to have it next time */
+    		g_remove (project_path);
+    		g_free (project_path);
+	}
 
 	return TRUE;
 }
 
 gboolean
-brasero_session_save (BraseroApp *app)
+brasero_session_save (BraseroApp *app, gboolean save_project)
 {
-	int success;
+	gint success;
 	gint pane_pos;
-	char *session_path;
+    	gchar *project_path;
+	gchar *session_path;
 	xmlTextWriter *session;
 
-	session_path = brasero_session_get_file_path ();
+    	if (save_project)
+    		project_path = gnome_util_home_file (BRASERO_SESSION_TMP_PROJECT_PATH);
+    	else
+		project_path = NULL;
+
+    	brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
+					      project_path,
+					      &pane_pos);
+    	g_free (project_path);
+
+	session_path = gnome_util_home_file (BRASERO_SESSION_TMP_SESSION_PATH);
 	if (!session_path)
 		return FALSE;
 
@@ -240,7 +261,6 @@ brasero_session_save (BraseroApp *app)
 		goto error;
 
 	/* saves internal pane geometry */
-	pane_pos = brasero_project_manager_get_pos (BRASERO_PROJECT_MANAGER (app->contents));
 	success = xmlTextWriterWriteFormatElement (session,
 						   (xmlChar *) "pane",
 						   "%i",
@@ -271,7 +291,7 @@ static void
 brasero_session_die_cb (GnomeClient *client_loc,
 			BraseroApp *app)
 {
-	brasero_session_save (app);
+	brasero_session_save (app, FALSE);
 	gtk_widget_destroy (app->mainwin);
 }
 
@@ -284,11 +304,16 @@ brasero_session_save_yourself_cb (GnomeClient *client_loc,
 				  gboolean fast_shutdown,
 				  BraseroApp *app)
 {
-	/* if we want to save the current open project, this need a
-	 * modification in BraseroProject to bypass ask_status in case
-	 * DataDisc has not finished exploration */
-	brasero_session_save (app);
-	gtk_widget_destroy (app->mainwin);
+    	const gint argc = 1;
+    	gchar *argv [] = { 	"brasero",
+				NULL	};
+
+    	brasero_session_save (app, TRUE);
+	gnome_client_set_clone_command (client_loc,
+					argc,
+					argv);
+
+    	gtk_widget_destroy (app->mainwin);
 	return TRUE; /* successs */
 }
 

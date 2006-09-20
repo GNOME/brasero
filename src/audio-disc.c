@@ -2043,14 +2043,12 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
-		gchar *uri;
 
 		song = iter->data;
 		brasero_audio_disc_add_uri_real (BRASERO_AUDIO_DISC (disc),
 						 song->uri,
 						 -1,
 						 song->gap);
-		g_free (uri);
 	}
 
 	return BRASERO_DISC_OK;

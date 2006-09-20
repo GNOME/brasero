@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
@@ -84,6 +86,8 @@ struct _BraseroDrive {
 	gint64 sectors;
 	NautilusBurnMediaType media;
 	NautilusBurnDrive *drive;
+
+    	gboolean is_blank;
 };
 typedef struct _BraseroDrive BraseroDrive;
 
@@ -196,20 +200,19 @@ brasero_project_size_class_init (BraseroProjectSizeClass *klass)
 static void
 brasero_project_size_add_default_medias (BraseroProjectSize *self)
 {
-	const BraseroDrive drives [] =  { {333000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL},
-					    {360000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL},
-					    {405000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL},
-					    {450000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL},
-					    {2295104, NAUTILUS_BURN_MEDIA_TYPE_DVDR, NULL},
-					    { 0 } };
+	const BraseroDrive drives [] =  { {333000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
+					  {360000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
+					  {405000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
+					  {450000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
+					  {2295104, NAUTILUS_BURN_MEDIA_TYPE_DVDR, NULL, TRUE},
+					  { 0 } };
 	const BraseroDrive *iter;
 
 	for (iter = drives; iter->sectors; iter ++) {
 		BraseroDrive *drive;
 
 		drive = g_new0 (BraseroDrive, 1);
-		drive->sectors =  iter->sectors;
-		drive->media = iter->media;
+	    	memcpy (drive, iter, sizeof (BraseroDrive));
 		self->priv->drives = g_list_prepend (self->priv->drives, drive);
 	}
 }
@@ -906,11 +909,7 @@ brasero_project_size_menu_position_cb (GtkMenu *menu,
 	else if (*x + req.width > monitor.x + monitor.width)
 		*x = monitor.x + monitor.width - req.width;
   
-	if (monitor.height - (*y - monitor.y) >= req.height)
-		*y += height - BRASERO_PROJECT_SIZE (self)->priv->ruler_height;
-	else
-		*y -= req.height;
-
+	*y -= req.height;
 	*push_in = FALSE;
 }
 
@@ -934,6 +933,9 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		drive = iter->data;
 
 		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+			continue;
+
+	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank))
 			continue;
 
 		if (self->priv->is_audio_context
@@ -1065,7 +1067,8 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 		
 			if ((!self->priv->is_audio_context
 			||    drive->media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-			&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+			&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
+			&&  nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)) {
 				self->priv->current = drive;
 				break;
 			}
@@ -1091,7 +1094,8 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 		
 			if ((!self->priv->is_audio_context
 			||    drive->media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-			&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+			&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
+			&&  nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)) {
 				self->priv->current = drive;
 				break;
 			}
@@ -1168,7 +1172,10 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		&&  current->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
 			current = NULL;
 		}
-		else if (current->media < NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+		else if (current->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+			current = NULL;
+		}
+	    	else if (!nautilus_burn_drive_media_type_is_writable (current->media, current->is_blank)) {
 			current = NULL;
 		}
 		else if (current->sectors >= self->priv->sectors && current->drive)
@@ -1188,7 +1195,10 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
 			continue;
 
-		if (drive->media < NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+			continue;
+
+	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank))
 			continue;
 
 		/* we must have at least one candidate */
@@ -1306,7 +1316,11 @@ brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
 		&&  nautilus_burn_drive_equal (ndrive, bdrive->drive)) {
 			gint64 size;
 
-			bdrive->media = nautilus_burn_drive_get_media_type (ndrive);
+			bdrive->media = nautilus_burn_drive_get_media_type_full (ndrive,
+										 NULL,
+										 &bdrive->is_blank,
+										 NULL,
+										 NULL);
 
 			size = NCB_MEDIA_GET_CAPACITY (ndrive);
 			size = size > 0 ? size : 0;
@@ -1375,8 +1389,13 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 				  self);
 
 		/* get all the information about the current media */
-		drive->media = nautilus_burn_drive_get_media_type (drive->drive);
-		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+		drive->media = nautilus_burn_drive_get_media_type_full (drive->drive,
+									NULL,
+									&drive->is_blank,
+									NULL,
+									NULL);
+		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
+		|| !nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)) {
 			drive->sectors = 0;
 			continue;
 		}

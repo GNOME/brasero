@@ -132,6 +132,8 @@ struct BraseroProjectPrivate {
 
 	gint is_burning:1;
 
+    	gint burnt:1;
+
 	gint empty:1;
 	gint oversized:1;
 	gint ask_overburn:1;
@@ -840,6 +842,8 @@ brasero_project_burn (BraseroProject *project)
 
 	nautilus_burn_drive_unref (drive);
 
+    	project->priv->burnt = 1;
+
 end:
 	brasero_track_source_free (source);
 	project->priv->is_burning = 0;
@@ -970,6 +974,8 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	GConfClient *client;
 
 	project->priv->empty = 1;
+    	project->priv->burnt = 0;
+
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
 					  0);
 
@@ -1566,7 +1572,8 @@ error :
 static gboolean
 brasero_project_open_project_xml (BraseroProject *proj,
 				  const gchar *uri,
-				  BraseroDiscTrack **track)
+				  BraseroDiscTrack **track,
+				  gboolean warn_user)
 {
 	xmlNodePtr track_node = NULL;
 	xmlDocPtr project;
@@ -1583,14 +1590,18 @@ brasero_project_open_project_xml (BraseroProject *proj,
     	g_free (path);
 
 	if (!project) {
-		brasero_project_invalid_project_dialog (proj, _("the project could not be opened."));
+	    	if (warn_user)
+			brasero_project_invalid_project_dialog (proj, _("the project could not be opened."));
+
 		return FALSE;
 	}
 
 	/* parses the "header" */
 	item = xmlDocGetRootElement (project);
 	if (!item) {
-		brasero_project_invalid_project_dialog (proj, _("the file is empty."));
+	    	if (warn_user)
+			brasero_project_invalid_project_dialog (proj, _("the file is empty."));
+
 		xmlFreeDoc (project);
 		return FALSE;
 	}
@@ -1619,16 +1630,17 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	retval = _get_tracks (project, track_node, track);
 	xmlFreeDoc (project);
 
-	if (!retval)
-		brasero_project_invalid_project_dialog (proj,
-							_("it doesn't seem to be a valid brasero project."));
+	if (!retval && warn_user)
+		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
 
 	return retval;
 
 error:
 
 	xmlFreeDoc (project);
-	brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
+    	if (warn_user)
+		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
+
 	return FALSE;
 }
 
@@ -1672,7 +1684,7 @@ brasero_project_open_project (BraseroProject *project,
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
  
-	if (!brasero_project_open_project_xml (project, uri, &track)) {
+	if (!brasero_project_open_project_xml (project, uri, &track, TRUE)) {
 		g_free (uri);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
@@ -1690,6 +1702,7 @@ brasero_project_open_project (BraseroProject *project,
 	}
 	else {
 	    	g_free (uri);
+		brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
 
@@ -1699,6 +1712,31 @@ brasero_project_open_project (BraseroProject *project,
 	brasero_project_set_uri (project, uri, type);
     	g_free (uri);
 	return type;
+}
+
+BraseroProjectType
+brasero_project_load_session (BraseroProject *project, const gchar *uri)
+{
+	BraseroDiscTrack *track = NULL;
+	BraseroProjectType type;
+
+    	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
+		return BRASERO_PROJECT_TYPE_INVALID;
+
+	if (track->type == BRASERO_DISC_TRACK_AUDIO)
+		brasero_project_switch (project, TRUE);
+	else if (track->type == BRASERO_DISC_TRACK_DATA)
+		brasero_project_switch (project, FALSE);
+	else {
+	    	brasero_track_free (track);
+		return BRASERO_PROJECT_TYPE_INVALID;
+	}
+
+	brasero_disc_load_track (project->priv->current, track);
+
+    	type = track->type;
+	brasero_track_free (track);
+    	return type;
 }
 
 /******************************** save project *********************************/
@@ -1770,8 +1808,8 @@ static gboolean
 _save_data_track_xml (xmlTextWriter *project,
 		      BraseroDiscTrack *track)
 {
-	char *uri;
-	int success;
+	gchar *uri;
+	gint success;
 	GSList *iter;
 	GSList *grafts;
 	BraseroGraftPt *graft;
@@ -1820,7 +1858,8 @@ _save_data_track_xml (xmlTextWriter *project,
 static gboolean 
 brasero_project_save_project_xml (BraseroProject *proj,
 				  const gchar *uri,
-				  BraseroDiscTrack *track)
+				  BraseroDiscTrack *track,
+				  gboolean use_dialog)
 {
 	xmlTextWriter *project;
 	gboolean retval;
@@ -1833,7 +1872,9 @@ brasero_project_save_project_xml (BraseroProject *proj,
 
 	project = xmlNewTextWriterFilename (path, 0);
 	if (!project) {
-		brasero_project_not_saved_dialog (proj);
+	    	if (use_dialog)
+			brasero_project_not_saved_dialog (proj);
+
 		return FALSE;
 	}
 
@@ -1908,8 +1949,10 @@ error:
 	xmlTextWriterEndDocument (project);
 	xmlFreeTextWriter (project);
 	g_remove (path);
-	
-	brasero_project_not_saved_dialog (proj);
+
+    	if (use_dialog)
+		brasero_project_not_saved_dialog (proj);
+
 	return FALSE;
 }
 
@@ -1919,7 +1962,6 @@ brasero_project_save_project_real (BraseroProject *project,
 {
 	BraseroDiscResult result;
 	BraseroDiscTrack track;
-	gboolean retval;
 
 	g_return_val_if_fail (uri != NULL || project->priv->project != NULL, FALSE);
 
@@ -1942,15 +1984,15 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 	}
 
-	retval = brasero_project_save_project_xml (project,
-						   uri ? uri : project->priv->project,
-						   &track);
-
-	if (retval)
-		brasero_project_set_uri (project, uri, track.type);
+    	brasero_project_set_uri (project, uri, track.type);
+	if (!brasero_project_save_project_xml (project,
+					       uri ? uri : project->priv->project,
+					       &track,
+					       TRUE))
+		return FALSE;
 
 	brasero_track_clear (&track);
-	return retval;
+	return TRUE;
 }
 
 static gchar *
@@ -2017,4 +2059,35 @@ brasero_project_save_project_as (BraseroProject *project)
 	g_free (uri);
 
 	return result;
+}
+
+gboolean
+brasero_project_save_session (BraseroProject *project, const gchar *uri)
+{
+    	gboolean result;
+    	BraseroDiscTrack track;
+
+    	if (!uri)
+		return FALSE;
+
+    	if (project->priv->burnt
+	||  project->priv->empty
+	||  project->priv->project)
+		return FALSE;
+
+    	if (!project->priv->current)
+		return FALSE;
+
+    	bzero (&track, sizeof (track));
+	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK) {
+		result = brasero_project_save_project_xml (project,
+							   uri,
+							   &track,
+							   FALSE);
+	}
+    	else
+		result = FALSE;
+
+	brasero_track_clear (&track);
+    	return result;
 }

@@ -809,6 +809,7 @@ brasero_burn_dialog_activity_start (BraseroBurnDialog *dialog)
 
 	gtk_button_set_use_stock (GTK_BUTTON (dialog->priv->cancel), TRUE);
 	gtk_button_set_label (GTK_BUTTON (dialog->priv->cancel), GTK_STOCK_CANCEL);
+	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), FALSE);
 
 	g_signal_handlers_disconnect_by_func (dialog->priv->cancel,
 					      brasero_burn_dialog_close_clicked_cb,
@@ -862,7 +863,7 @@ brasero_burn_dialog_activity_stop (BraseroBurnDialog *dialog,
 					  -1);
 
 	gtk_widget_show (GTK_WIDGET (dialog));
-	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), FALSE);
+	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
 }
 
 static void
@@ -1897,8 +1898,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 
 #else
 
-	if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (dialog)))
-		brasero_burn_dialog_success_run (dialog);
+	brasero_burn_dialog_success_run (dialog);
 
 #endif
 

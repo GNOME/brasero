@@ -67,10 +67,14 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri);
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
 
-gint
-brasero_project_manager_get_pos (BraseroProjectManager *manager);
-void
-brasero_project_manager_set_pos (BraseroProjectManager *manager, gint position);
+gboolean
+brasero_project_manager_save_session (BraseroProjectManager *manager,
+				      const gchar *path,
+				      gint *pos);
+gboolean
+brasero_project_manager_load_session (BraseroProjectManager *manager,
+				      const gchar *path,
+				      gint pos);
 
 void
 brasero_project_manager_register_menu (BraseroProjectManager *manager,

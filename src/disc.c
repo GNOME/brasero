@@ -296,12 +296,7 @@ brasero_track_clear (BraseroDiscTrack *track)
 		g_slist_free (track->contents.data.grafts);
 		g_slist_foreach (track->contents.data.restored, (GFunc) g_free, NULL);
 		g_slist_free (track->contents.data.restored);
-		g_slist_foreach (track->contents.data.unreadable, (GFunc) g_free, NULL);
-		g_slist_free (track->contents.data.unreadable);
-		g_free (track->contents.data.label);
 	}
-	else if (track->type == BRASERO_DISC_TRACK_SOURCE)
-		brasero_track_source_free (track->contents.src);
 }
 
 void

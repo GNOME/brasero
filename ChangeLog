@@ -1,5 +1,89 @@
 2006-09-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* po/fr.po:
+	* src/audio-disc.c: (brasero_audio_disc_load_track):
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_load_session),
+	(brasero_project_manager_save_session):
+	* src/brasero-project-manager.h:
+	* src/brasero-project-size.c:
+	(brasero_project_size_add_default_medias),
+	(brasero_project_size_menu_position_cb),
+	(brasero_project_size_build_menu),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_add_real_medias):
+	* src/brasero-session.c: (brasero_session_load),
+	(brasero_session_save), (brasero_session_die_cb),
+	(brasero_session_save_yourself_cb):
+	* src/brasero-session.h:
+	* src/burn-dialog.c: (brasero_burn_dialog_activity_start),
+	(brasero_burn_dialog_activity_stop),
+	(brasero_burn_dialog_notify_success):
+	* src/data-disc.c: (brasero_data_disc_get_track):
+	* src/disc.c: (brasero_track_clear):
+	* src/disc.h:
+	* src/main.c: (on_delete_cb), (on_exit_cb), (on_about_cb),
+	(brasero_app_recent_open), (brasero_app_create_app),
+	(brasero_app_parse_options):
+	* src/project.c: (brasero_project_burn), (brasero_project_switch),
+	(brasero_project_open_project_xml), (brasero_project_open_project),
+	(brasero_project_load_session), (_save_data_track_xml),
+	(brasero_project_save_project_xml),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project_as), (brasero_project_save_session):
+	* src/project.h:
+
+	if a user closes the app before burning,
+	work is saved in a temp project that
+	will be re-opened next time the app is
+	launched without anything on the command line
+
+2006-09-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* po/fr.po:
+	* src/audio-disc.c: (brasero_audio_disc_load_track):
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_load_session),
+	(brasero_project_manager_save_session):
+	* src/brasero-project-manager.h:
+	* src/brasero-project-size.c:
+	(brasero_project_size_add_default_medias),
+	(brasero_project_size_menu_position_cb),
+	(brasero_project_size_build_menu),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_add_real_medias):
+	* src/brasero-session.c: (brasero_session_load),
+	(brasero_session_save), (brasero_session_die_cb),
+	(brasero_session_save_yourself_cb):
+	* src/brasero-session.h:
+	* src/burn-dialog.c: (brasero_burn_dialog_activity_start),
+	(brasero_burn_dialog_activity_stop),
+	(brasero_burn_dialog_notify_success):
+	* src/data-disc.c: (brasero_data_disc_get_track):
+	* src/disc.c: (brasero_track_clear):
+	* src/disc.h:
+	* src/main.c: (on_delete_cb), (on_exit_cb), (on_about_cb),
+	(brasero_app_recent_open), (brasero_app_create_app),
+	(brasero_app_parse_options):
+	* src/project.c: (brasero_project_burn), (brasero_project_switch),
+	(brasero_project_open_project_xml), (brasero_project_open_project),
+	(brasero_project_load_session), (_save_data_track_xml),
+	(brasero_project_save_project_xml),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project_as), (brasero_project_save_session):
+	* src/project.h:
+
+	if a user closes the app before burning,
+	work is saved in a temp project that
+	will be re-opened next time the app is
+	launched with anything on the command line
+
+2006-09-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* src/brasero-project-manager.c:
 	(brasero_project_manager_burn_iso):
 

@@ -812,14 +812,61 @@ brasero_project_manager_empty (BraseroProjectManager *manager)
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
 }
 
-gint
-brasero_project_manager_get_pos (BraseroProjectManager *manager)
+gboolean
+brasero_project_manager_load_session (BraseroProjectManager *manager,
+				      const gchar *path,
+				      gint position)
 {
-	return gtk_paned_get_position (GTK_PANED (manager->priv->layout));
+    	if (position > 0)
+		gtk_paned_set_position (GTK_PANED (manager->priv->layout), position);
+
+    	if (path) {
+		gchar *uri;
+		BraseroProjectType type;
+
+		uri = gnome_vfs_make_uri_from_input (path);
+    		type = brasero_project_load_session (BRASERO_PROJECT (manager->priv->project),
+						     uri);
+		g_free (uri);
+
+		if (type == BRASERO_PROJECT_TYPE_INVALID) {
+			brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
+		    	return FALSE;
+		}
+
+		gtk_widget_show (manager->priv->layout);
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
+
+		if (type == BRASERO_PROJECT_TYPE_DATA)
+			brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
+		else
+			brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
+	}
+
+    	return TRUE;
 }
 
-void
-brasero_project_manager_set_pos (BraseroProjectManager *manager, gint position)
+gboolean
+brasero_project_manager_save_session (BraseroProjectManager *manager,
+				      const gchar *path,
+				      gint *position)
 {
-	gtk_paned_set_position (GTK_PANED (manager->priv->layout), position);
+    	gboolean result = TRUE;
+
+    	if (position)
+		*position = gtk_paned_get_position (GTK_PANED (manager->priv->layout));
+
+    	if (path) {
+		gchar *uri;
+
+		/* if we want to save the current open project, this need a
+		 * modification in BraseroProject to bypass ask_status in case
+	 	 * DataDisc has not finished exploration */
+		uri = gnome_vfs_make_uri_from_input (path);
+    		result = brasero_project_save_session (BRASERO_PROJECT (manager->priv->project),
+						       uri);
+		g_free (uri);
+	}
+
+    	return result;
 }

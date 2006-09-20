@@ -64,6 +64,7 @@ gchar **files;
 gchar **audio_project;
 gchar **data_project;
 gint copy_project;
+gint empty_project;
 gint is_escaped;
 gint open_ncb;
 gint debug;
@@ -89,6 +90,10 @@ static const GOptionEntry options [] = {
 	 N_("Uri of an image file to be burnt (autodetected)"),
           NULL },
 
+    	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
+         N_("Force brasero to display the project selection page"),
+          NULL },
+
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
 	  N_("Open a data project with the contents of nautilus-cd-burner"),
           NULL },
@@ -108,7 +113,6 @@ static const GOptionEntry options [] = {
 	gchar *uri;							\
 	uri = gnome_vfs_make_uri_from_input (path);			\
 	function (BRASERO_PROJECT_MANAGER (app->contents), uri);	\
-	return;								\
 }
 
 #define BRASERO_PROJECT_OPEN_LIST(app, function, uris)	\
@@ -124,13 +128,12 @@ static const GOptionEntry options [] = {
 	function (BRASERO_PROJECT_MANAGER (app->contents), list);		\
 	g_slist_foreach (list, (GFunc) g_free, NULL);				\
 	g_slist_free (list);							\
-	return;									\
 }
 
 static gboolean
 on_delete_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 {
-	brasero_session_save (app);
+	brasero_session_save (app, TRUE);
 	return FALSE;
 }
 
@@ -144,7 +147,7 @@ on_destroy_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 void
 on_exit_cb (GtkAction *action, BraseroApp *app)
 {
-	brasero_session_save (app);
+	brasero_session_save (app, TRUE);
 	gtk_widget_destroy (app->mainwin);
 }
 
@@ -190,7 +193,7 @@ void
 on_about_cb (GtkAction *action, BraseroApp *app)
 {
 	GtkWidget *dialog;
-	const char *authors[] = { "Philippe Rouquier", NULL };
+	const gchar *authors[] = { "Philippe Rouquier", NULL };
 	GdkPixbuf *logo;
 
 	logo = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/icon-final-128x128.png", NULL);
@@ -255,9 +258,8 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
     	item = gtk_recent_chooser_get_current_item (chooser);
     	mime = gtk_recent_info_get_mime_type (item);
 
-    if (!strcmp (mime, "application/x-brasero")) {
-
-	BRASERO_PROJECT_OPEN_URI (app,
+	if (!strcmp (mime, "application/x-brasero")) {
+		BRASERO_PROJECT_OPEN_URI (app,
 					  brasero_project_manager_open,
 					  gtk_recent_info_get_uri (item));
 	}
@@ -366,7 +368,6 @@ brasero_app_create_app (void)
 	gtk_window_set_position (GTK_WINDOW (app->mainwin), GTK_WIN_POS_CENTER);
 
 	brasero_session_connect (app);
-	brasero_session_load (app);
 
 	g_signal_connect (app->mainwin,
 			  "window-state-event",
@@ -383,6 +384,13 @@ static void
 brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
+    	gboolean load_project = FALSE;
+
+    	if (empty_project) {
+		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (app->contents));
+	    	brasero_session_load (app, FALSE);
+		return;
+	}
 
 	/* we first check that only one of the options was given
 	 * (except for --debug) */
@@ -417,28 +425,24 @@ brasero_app_parse_options (BraseroApp *app)
 		gtk_widget_destroy (message);
 
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (app->contents));
-		return;
 	}
-
-	if (copy_project) {
-		/* this can't combine with all other options */
+	else if (copy_project) {
+		/* this can't combine with any other options */
 		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (app->contents));
-		return;
 	}
-
-	if (iso_uri)
+	else if (iso_uri) {
 		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, iso_uri);
-
-	if (project_uri)
+	}
+	else if (project_uri) {
 		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open, project_uri);
-
-	if (audio_project)
+	}
+	else if (audio_project) {
 		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_audio, files);
-
-	if (data_project)
+	}
+	else if (data_project) {
 		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
-	
-	if (open_ncb) {
+	}
+	else if (open_ncb) {
 		GSList *list = NULL;
 		gchar **iter;
 
@@ -454,10 +458,8 @@ brasero_app_parse_options (BraseroApp *app)
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (app->contents), list);
 		g_slist_foreach (list, (GFunc) g_free, NULL);
 		g_slist_free (list);
-		return;
 	}
-	
-	if (files) {
+	else if (files) {
 		const gchar *mime;
 	    	gchar *uri;
 
@@ -485,8 +487,12 @@ brasero_app_parse_options (BraseroApp *app)
 		else
 			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 	}
-	else
+	else {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (app->contents));
+	    	load_project = TRUE;
+	}
+
+    	brasero_session_load (app, load_project);
 }
 
 int

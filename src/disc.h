@@ -59,7 +59,6 @@ typedef enum {
 	BRASERO_DISC_TRACK_NONE,
 	BRASERO_DISC_TRACK_AUDIO,
 	BRASERO_DISC_TRACK_DATA,
-	BRASERO_DISC_TRACK_SOURCE
 } BraseroDiscTrackType;
 
 struct _BraseroDiscSong {
@@ -73,15 +72,11 @@ typedef struct {
 
 	union  {
 		struct {
-			gchar *label;
 			GSList *grafts;
-			GSList *unreadable;
 			GSList *restored;
 		} data;
 
 		GSList *tracks; /* BraseroDiscSong */
-
-		BraseroTrackSource *src;
 	} contents;
 } BraseroDiscTrack;
 
