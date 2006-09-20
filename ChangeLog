@@ -1,3 +1,92 @@
+2006-09-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* data/brasero.desktop.in:
+	* src/audio-disc.c: (brasero_audio_disc_get_info_async),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_audio_file_processed),
+	(brasero_audio_disc_search_contents_result),
+	(brasero_audio_disc_visit_dir_thread_cb),
+	(brasero_audio_disc_visit_dir_thread),
+	(brasero_audio_disc_add_playlist), (brasero_audio_disc_new_row_cb),
+	(brasero_audio_disc_add_uri_real), (brasero_audio_disc_add_uri),
+	(brasero_audio_disc_load_track),
+	(brasero_audio_disc_clipboard_text_cb),
+	(brasero_audio_disc_get_selected_uri),
+	(brasero_audio_disc_start_monitoring),
+	(brasero_audio_disc_inotify_removal_warning),
+	(brasero_audio_disc_inotify_attributes_changed_cb),
+	(brasero_audio_disc_inotify_attributes_changed),
+	(brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-layout.c: (brasero_layout_set_active_item),
+	(brasero_layout_load):
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_burn_iso), (brasero_project_manager_iso),
+	(brasero_project_manager_open):
+	* src/brasero-project-manager.h:
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_download),
+	(brasero_sum_dialog_from_file),
+	(brasero_sum_dialog_check_md5_file):
+	* src/burn-basics.c: (brasero_track_source_get_image_localpath),
+	(brasero_track_source_get_raw_localpath),
+	(brasero_track_source_get_cue_localpath):
+	* src/burn-basics.h:
+	* src/burn-common.c: (brasero_burn_common_check_local_file),
+	(brasero_burn_common_create_tmp_directory):
+	* src/burn-libisofs.c: (brasero_libisofs_create_volume_thread):
+	* src/burn-local-image.c: (brasero_local_image_download_uri),
+	(brasero_local_image_download_non_local):
+	* src/burn-mkisofs-base.c: (brasero_mkisofs_base_write_excluded),
+	(_build_graft_point), (brasero_mkisofs_base_write_graft),
+	(brasero_mkisofs_base_set_output):
+	* src/burn-sum.c: (brasero_burn_sum_explore_grafts):
+	* src/burn-transcode.c: (brasero_transcode_bus_messages):
+	* src/burn.c: (brasero_burn_get_size):
+	* src/data-disc.c: (brasero_data_disc_tree_new_path),
+	(brasero_data_disc_get_file_info_async),
+	(brasero_data_disc_unreadable_dialog),
+	(_foreach_remove_children_files_cb),
+	(brasero_data_disc_expose_thread), (brasero_data_disc_load_thread),
+	(brasero_data_disc_new_row_real),
+	(brasero_data_disc_get_dir_contents_thread),
+	(brasero_data_disc_add_uri_real), (brasero_data_disc_add_uri),
+	(brasero_data_disc_graft_check_result),
+	(brasero_data_disc_graft_check_thread),
+	(brasero_data_disc_path_create), (brasero_data_disc_load_step_2),
+	(brasero_data_disc_drag_data_received_cb),
+	(brasero_data_disc_clipboard_text_cb),
+	(brasero_data_disc_get_selected_uri),
+	(brasero_data_disc_inotify_create_file_event_cb),
+	(brasero_data_disc_start_monitoring_real):
+	* src/disc.c: (brasero_disc_add_uri):
+	* src/disc.h:
+	* src/main.c: (brasero_app_recent_open), (brasero_app_add_recent),
+	(brasero_app_parse_options):
+	* src/metadata.c: (brasero_metadata_create_pipeline),
+	(brasero_metadata_new):
+	* src/play-list.c: (brasero_playlist_get_song_metadata_completed),
+	(brasero_playlist_dialog_error), (brasero_playlist_parse_result),
+	(brasero_playlist_entry_cb):
+	* src/player-bacon.c: (brasero_player_bacon_set_uri):
+	* src/player.c: (brasero_player_image),
+	(brasero_player_update_info_real):
+	* src/project.c: (brasero_project_set_audio),
+	(brasero_project_set_data), (brasero_project_set_uri),
+	(brasero_project_open_project_xml), (brasero_project_open_project),
+	(brasero_project_save_project_xml),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project_ask_for_path),
+	(brasero_project_save_project), (brasero_project_save_project_as):
+	* src/project.h:
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_disc_image_properties):
+	* src/search.c: (brasero_search_add_hit_to_tree):
+	* src/utils.c: (brasero_utils_empty_dir),
+	(brasero_utils_check_for_parent_symlink),
+	(brasero_utils_get_symlink_target), (brasero_utils_launch_app),
+	(brasero_utils_get_use_info_notebook):
+	* src/utils.h:
+
+	No comment
 2006-09-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* src/brasero-project-manager.c:

@@ -463,18 +463,18 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 
 static void
 brasero_project_manager_burn_iso (BraseroProjectManager *manager,
-				  const gchar *image_uri) /* must be unescaped */
+				  const gchar *escaped_uri)
 {
 	BraseroTrackSource *track = NULL;
+    	GnomeVFSFileInfoOptions flag;
     	GtkRecentManager *recent;
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
-	gchar *escaped_uri = NULL;
 	gchar *uri = NULL;
 
-	if (!image_uri) {
+	if (!escaped_uri) {
 		gint answer;
 
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
@@ -497,31 +497,28 @@ brasero_project_manager_burn_iso (BraseroProjectManager *manager,
 			return;
 		}
 
-		escaped_uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
-		uri = gnome_vfs_unescape_string_for_display (escaped_uri);
+		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
 		gtk_widget_destroy (dialog);
 	}
-	else {
-		escaped_uri = brasero_utils_validate_uri (image_uri, FALSE);
-		uri = gnome_vfs_unescape_string_for_display (escaped_uri);
-	}
+	else
+		uri = g_strdup (escaped_uri);
 
 	/* check if it is an iso and if it is not a remote file */
 	info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (escaped_uri,
-					  info,
-					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-					  GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE);
+	flag = GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
+	       GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
+
+
+retry:
+    	result = gnome_vfs_get_file_info (uri, info, flag);
 	if (result != GNOME_VFS_OK) {
-		g_free (escaped_uri);
+		g_free (uri);
 		goto error;
 	}
 
     	/* Add it to the recent files */
     	recent = gtk_recent_manager_get_default ();
-    	gtk_recent_manager_add_item (recent, escaped_uri);
-    	g_free (escaped_uri);
-
+    	gtk_recent_manager_add_item (recent, uri);
 	if (!strcmp (info->mime_type, "application/octet-stream")) {
 		track = g_new0 (BraseroTrackSource, 1);
 
@@ -536,7 +533,8 @@ brasero_project_manager_burn_iso (BraseroProjectManager *manager,
 		track->format = BRASERO_IMAGE_FORMAT_ISO;
 		track->contents.image.image = uri;
 	}
-	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc")) {
+	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc")
+	     ||  !strcmp (info->mime_type, "application/x-toc")) {
 		track = g_new0 (BraseroTrackSource, 1);
 		track->type = BRASERO_TRACK_SOURCE_IMAGE;
 		track->format = BRASERO_IMAGE_FORMAT_CUE;
@@ -546,7 +544,15 @@ brasero_project_manager_burn_iso (BraseroProjectManager *manager,
 			track->contents.image.image = g_strndup (track->contents.image.toc,
 								 strlen (track->contents.image.toc) - 4);
 	}
-	else 
+	else if (flag != GNOME_VFS_FILE_INFO_GET_MIME_TYPE) {
+	    	/* we failed to identify the type of file. We start again
+		 * but this time using the fast method which uses the extension
+		 */
+	    	flag = GNOME_VFS_FILE_INFO_GET_MIME_TYPE;
+	    	gnome_vfs_file_info_clear (info);
+	    	goto retry;
+	}
+	else
 		goto error;
 
 	gnome_vfs_file_info_unref (info);
@@ -563,7 +569,6 @@ error:
 		GtkWidget *dialog;
 		GtkWidget *toplevel;
 
-		gnome_vfs_file_info_clear (info);
 		gnome_vfs_file_info_unref (info);
 
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
@@ -780,20 +785,21 @@ brasero_project_manager_copy (BraseroProjectManager *manager)
 }
 
 void
-brasero_project_manager_iso (BraseroProjectManager *manager, const char *uri)
+brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri)
 {
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri);
 }
 
 void
-brasero_project_manager_open (BraseroProjectManager *manager, const char *uri)
+brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 {
 	BraseroProjectType type;
 
+    	gtk_widget_show (manager->priv->layout);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
 	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri);
 
-	if (type == BRASERO_PROJECT_TYPE_INVALID)
+    	if (type == BRASERO_PROJECT_TYPE_INVALID)
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
 	else if (type == BRASERO_PROJECT_TYPE_DATA)
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
