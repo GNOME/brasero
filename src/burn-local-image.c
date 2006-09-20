@@ -336,7 +336,6 @@ brasero_local_image_download_uri (BraseroLocalImage *image,
 	GnomeVFSURI *vfsuri;
 	GnomeVFSResult res;
 	gchar *localpath_tmp;
-	gchar *escaped_uri;
 	gchar *uri_dest;
 	gchar *string;
 	gchar *name;
@@ -357,14 +356,10 @@ brasero_local_image_download_uri (BraseroLocalImage *image,
 	g_free (localpath_tmp);
 
 	/* start the thing */
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri_src);
-	vfsuri = gnome_vfs_uri_new (escaped_uri);
-	g_free (escaped_uri);
+	vfsuri = gnome_vfs_uri_new (uri_src);
 	src_list = g_list_append (NULL, vfsuri);
 
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri_dest);
-	tmpuri = gnome_vfs_uri_new (escaped_uri);
-	g_free (escaped_uri);
+	tmpuri = gnome_vfs_uri_new (uri_dest);
 	dest_list = g_list_append (NULL, tmpuri);
 	
 	res = gnome_vfs_async_xfer (&image->priv->xfer_handle,
@@ -398,7 +393,7 @@ brasero_local_image_download_uri (BraseroLocalImage *image,
 	/* start the job */
 	image->priv->current_download = uri_src;
 
-	name = g_path_get_basename (image->priv->current_download);
+	BRASERO_GET_BASENAME_FOR_DISPLAY (image->priv->current_download, name);
 	string = g_strdup_printf (_("Copying \"%s\""), name);
 	g_free (name);
 
@@ -587,7 +582,6 @@ brasero_local_image_download_non_local (BraseroLocalImage *image,
 		if (g_str_has_prefix (uri, "burn://")) {
 			GnomeVFSHandle *handle = NULL;
 			GnomeVFSResult res;
-			gchar *escaped_uri;
 
 			/* these files are local files so we can check their
 			 * readability and that they are not symlinks nor
@@ -598,10 +592,7 @@ brasero_local_image_download_non_local (BraseroLocalImage *image,
 			if (result != BRASERO_BURN_OK)
 				return result;
 
-			escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-			res = gnome_vfs_open (&handle, escaped_uri, GNOME_VFS_OPEN_READ);
-			g_free (escaped_uri);
-
+			res = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ);
 			if (res != GNOME_VFS_OK || !handle)
 				return BRASERO_BURN_ERR;
 

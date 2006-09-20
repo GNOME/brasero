@@ -1713,7 +1713,6 @@ brasero_burn_get_size (BraseroBurn *burn,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult res;
-	gchar *escaped_uri;
 	gchar *uri = NULL;
 
 	switch (source->type) {
@@ -1729,11 +1728,9 @@ brasero_burn_get_size (BraseroBurn *burn,
 	}
 
 	info = gnome_vfs_file_info_new ();
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-	res = gnome_vfs_get_file_info (escaped_uri, 
+	res = gnome_vfs_get_file_info (uri, 
 				       info,
 				       GNOME_VFS_FILE_INFO_DEFAULT);
-	g_free (escaped_uri);
 
 	burn->priv->image_size = info->size;
 
@@ -1742,7 +1739,7 @@ brasero_burn_get_size (BraseroBurn *burn,
 	if (res != GNOME_VFS_OK) {
 		gchar *name;
 
-		name = g_path_get_basename (uri);
+		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 		g_free (uri);
 
 		g_set_error (error,

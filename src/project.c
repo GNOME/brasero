@@ -1040,7 +1040,7 @@ brasero_project_set_audio (BraseroProject *project, GSList *uris)
 	for (; uris; uris = uris->next) {
 		gchar *uri;
 
-		uri = uris->data;
+	    	uri = uris->data;
 		brasero_disc_add_uri (project->priv->current, uri);
 	}
 }
@@ -1053,7 +1053,7 @@ brasero_project_set_data (BraseroProject *project, GSList *uris)
 	for (; uris; uris = uris->next) {
 		gchar *uri;
 
-		uri = uris->data;
+	    	uri = uris->data;
 		brasero_disc_add_uri (project->priv->current, uri);
 	}
 }
@@ -1293,29 +1293,35 @@ brasero_project_register_menu (BraseroProject *project, GtkUIManager *manager)
 
 /******************************* common to save/open ***************************/
 static void
-brasero_project_set_path (BraseroProject *project,
-			  const gchar *path,
-			  BraseroProjectType type)
+brasero_project_set_uri (BraseroProject *project,
+			 const gchar *uri,
+			 BraseroProjectType type)
 {
-	char *title;
+     	gchar *name;
+	gchar *title;
 	GtkAction *action;
 	GtkWidget *toplevel;
+   	GtkRecentManager *recent;
 
 	/* possibly reset the name of the project */
-	if (path) {
+	if (uri) {
 		if (project->priv->project)
 			g_free (project->priv->project);
 
-		project->priv->project = g_strdup (path);
+		project->priv->project = g_strdup (uri);
 	}
 
+    	/* add it to recent manager */
+    	recent = gtk_recent_manager_get_default ();
+    	gtk_recent_manager_add_item (recent, uri);
+
 	/* update the name of the main window */
+    	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	if (type == BRASERO_PROJECT_TYPE_DATA)
-		title = g_strdup_printf (_("Brasero - %s (data disc)"),
-					 project->priv->project);
+		title = g_strdup_printf (_("Brasero - %s (data disc)"), name);
 	else
-		title = g_strdup_printf (_("Brasero - %s (audio disc)"),
-					 project->priv->project);
+		title = g_strdup_printf (_("Brasero - %s (audio disc)"), name);
+    	g_free (name);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	gtk_window_set_title (GTK_WINDOW (toplevel), title);
@@ -1566,9 +1572,16 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	xmlDocPtr project;
 	xmlNodePtr item;
 	gboolean retval;
+    	gchar *path;
+
+    	path = gnome_vfs_get_local_path_from_uri (uri);
+    	if (!path)
+		return FALSE;
 
 	/* start parsing xml doc */
-	project = xmlParseFile (uri);
+	project = xmlParseFile (path);
+    	g_free (path);
+
 	if (!project) {
 		brasero_project_invalid_project_dialog (proj, _("the project could not be opened."));
 		return FALSE;
@@ -1621,18 +1634,16 @@ error:
 
 BraseroProjectType
 brasero_project_open_project (BraseroProject *project,
-			      const gchar *name)
+			      const gchar *escaped_uri)
 {
 	BraseroDiscTrack *track = NULL;
-    	GtkRecentManager *recent;
 	BraseroProjectType type;
 	GtkWidget *toplevel;
-	gchar *path;
     	gchar *uri;
 
-	if (!name) {
+	if (!escaped_uri) {
 		GtkWidget *chooser;
-		int answer;
+		gint answer;
 
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 		chooser = gtk_file_chooser_dialog_new (_("Open a project"),
@@ -1649,25 +1660,20 @@ brasero_project_open_project (BraseroProject *project,
 		answer = gtk_dialog_run (GTK_DIALOG (chooser));
 	
 		if (answer == GTK_RESPONSE_OK)
-			path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+			uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
 		else
-			path = NULL;
+			uri = NULL;
 	
 		gtk_widget_destroy (chooser);
 	}
 	else
-		path = g_strdup (name);
+		uri = g_strdup (escaped_uri);
 
-	if (!path || *path =='\0')
+	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
  
-    	recent = gtk_recent_manager_get_default ();
-    	uri = brasero_utils_validate_uri (path, FALSE);
-    	gtk_recent_manager_add_item (recent, uri);
-    	g_free (uri);
- 
-	if (!brasero_project_open_project_xml (project, path, &track)) {
-		g_free (path);
+	if (!brasero_project_open_project_xml (project, uri, &track)) {
+		g_free (uri);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
 
@@ -1682,13 +1688,16 @@ brasero_project_open_project (BraseroProject *project,
 		brasero_project_switch (project, FALSE);
 		type = BRASERO_PROJECT_TYPE_DATA;
 	}
-	else 
+	else {
+	    	g_free (uri);
 		return BRASERO_PROJECT_TYPE_INVALID;
+	}
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
 
-	brasero_project_set_path (project, path, type);
+	brasero_project_set_uri (project, uri, type);
+    	g_free (uri);
 	return type;
 }
 
@@ -1810,12 +1819,17 @@ _save_data_track_xml (xmlTextWriter *project,
 
 static gboolean 
 brasero_project_save_project_xml (BraseroProject *proj,
-				  const gchar *path,
+				  const gchar *uri,
 				  BraseroDiscTrack *track)
 {
 	xmlTextWriter *project;
 	gboolean retval;
 	gint success;
+    	gchar *path;
+
+    	path = gnome_vfs_get_local_path_from_uri (uri);
+    	if (!path)
+		return FALSE;
 
 	project = xmlNewTextWriterFilename (path, 0);
 	if (!project) {
@@ -1901,20 +1915,13 @@ error:
 
 static gboolean
 brasero_project_save_project_real (BraseroProject *project,
-				   const gchar *path)
+				   const gchar *uri)
 {
-    	GtkRecentManager *recent;
 	BraseroDiscResult result;
 	BraseroDiscTrack track;
 	gboolean retval;
-    	gchar *uri;
 
-	g_return_val_if_fail (path != NULL || project->priv->project != NULL, FALSE);
-
-    	recent = gtk_recent_manager_get_default ();
-    	uri = brasero_utils_validate_uri (path, FALSE);
-    	gtk_recent_manager_add_item (recent, uri);
-    	g_free (uri);
+	g_return_val_if_fail (uri != NULL || project->priv->project != NULL, FALSE);
 
 	result = brasero_project_check_status (project, project->priv->current);
 	if (result != BRASERO_DISC_OK)
@@ -1936,11 +1943,11 @@ brasero_project_save_project_real (BraseroProject *project,
 	}
 
 	retval = brasero_project_save_project_xml (project,
-						   path ? path : project->priv->project,
+						   uri ? uri : project->priv->project,
 						   &track);
 
 	if (retval)
-		brasero_project_set_path (project, path, track.type);
+		brasero_project_set_uri (project, uri, track.type);
 
 	brasero_track_clear (&track);
 	return retval;
@@ -1951,7 +1958,7 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 {
 	GtkWidget *toplevel;
 	GtkWidget *chooser;
-	gchar *path = NULL;
+	gchar *uri = NULL;
 	gint answer;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
@@ -1961,6 +1968,7 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					       GTK_STOCK_SAVE, GTK_RESPONSE_OK,
 					       NULL);
+
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
 					     g_get_home_dir ());
@@ -1968,29 +1976,29 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 	gtk_widget_show (chooser);
 	answer = gtk_dialog_run (GTK_DIALOG (chooser));
 	if (answer == GTK_RESPONSE_OK) {
-		path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
-		if (*path == '\0') {
-			g_free (path);
-			path = NULL;
+		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
+		if (*uri == '\0') {
+			g_free (uri);
+			uri = NULL;
 		}
 	}
 
 	gtk_widget_destroy (chooser);
-	return path;
+	return uri;
 }
 
 gboolean
 brasero_project_save_project (BraseroProject *project)
 {
-	gchar *path = NULL;
+	gchar *uri = NULL;
 	gboolean result;
 
 	if (!project->priv->project
-	&&  !(path = brasero_project_save_project_ask_for_path (project)))
+	&&  !(uri = brasero_project_save_project_ask_for_path (project)))
 		return FALSE;
 
-	result = brasero_project_save_project_real (project, path);
-	g_free (path);
+	result = brasero_project_save_project_real (project, uri);
+	g_free (uri);
 
 	return result;
 }
@@ -1999,14 +2007,14 @@ gboolean
 brasero_project_save_project_as (BraseroProject *project)
 {
 	gboolean result;
-	gchar *path;
+	gchar *uri;
 
-	path = brasero_project_save_project_ask_for_path (project);
-	if (!path)
+	uri = brasero_project_save_project_ask_for_path (project);
+	if (!uri)
 		return FALSE;
 
-	result = brasero_project_save_project_real (project, path);
-	g_free (path);
+	result = brasero_project_save_project_real (project, uri);
+	g_free (uri);
 
 	return result;
 }

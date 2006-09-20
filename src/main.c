@@ -93,10 +93,6 @@ static const GOptionEntry options [] = {
 	  N_("Open a data project with the contents of nautilus-cd-burner"),
           NULL },
 
-	{ "escaped", 'e', 0, G_OPTION_ARG_NONE, &is_escaped,
-	  N_("URI given on the command line are escaped URI"),
-	  NULL },
-
 	{ "debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout"),
 	  NULL },
@@ -107,16 +103,12 @@ static const GOptionEntry options [] = {
 	{ NULL }
 };
 
-#define BRASERO_PROJECT_OPEN_URI(app, function, uri)	\
-{					\
-	gchar *unescaped_uri;		\
-	if (is_escaped)			\
-		unescaped_uri = gnome_vfs_unescape_string_for_display (uri);	\
-	else				\
-		unescaped_uri = g_strdup (uri);					\
-	function (BRASERO_PROJECT_MANAGER (app->contents), unescaped_uri);	\
-	g_free (unescaped_uri);		\
-	return;			\
+#define BRASERO_PROJECT_OPEN_URI(app, function, path)	\
+{									\
+	gchar *uri;							\
+	uri = gnome_vfs_make_uri_from_input (path);			\
+	function (BRASERO_PROJECT_MANAGER (app->contents), uri);	\
+	return;								\
 }
 
 #define BRASERO_PROJECT_OPEN_LIST(app, function, uris)	\
@@ -124,20 +116,15 @@ static const GOptionEntry options [] = {
 	GSList *list = NULL;			\
 	gchar **iter;				\
 	/* convert all names into a GSList * */	\
-	for (iter = uris; iter && *iter; iter ++) {	\
-		gchar *unescaped_uri;		\
-		gchar *uri;			\
-		uri = *iter;			\
-		if (is_escaped)			\
-			unescaped_uri = gnome_vfs_unescape_string_for_display (uri);		\
-		else										\
-			unescaped_uri = g_strdup (uri);						\
-		list = g_slist_prepend (list, unescaped_uri);						\
-	}											\
-	brasero_project_manager_audio (BRASERO_PROJECT_MANAGER (app->contents), list);		\
-	g_slist_foreach (list, (GFunc) g_free, NULL);						\
-	g_slist_free (list);									\
-	return;										\
+	for (iter = uris; iter && *iter; iter ++) {				\
+		gchar *uri;							\
+		uri = gnome_vfs_make_uri_from_input (*iter);			\
+		list = g_slist_prepend (list, uri);				\
+	}									\
+	function (BRASERO_PROJECT_MANAGER (app->contents), list);		\
+	g_slist_foreach (list, (GFunc) g_free, NULL);				\
+	g_slist_free (list);							\
+	return;									\
 }
 
 static gboolean
@@ -267,17 +254,16 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 
     	item = gtk_recent_chooser_get_current_item (chooser);
     	mime = gtk_recent_info_get_mime_type (item);
-    	if (!strcmp (mime, "application/x-brasero")) {
-    		BRASERO_PROJECT_OPEN_URI (app,
+
+    if (!strcmp (mime, "application/x-brasero")) {
+
+	BRASERO_PROJECT_OPEN_URI (app,
 					  brasero_project_manager_open,
 					  gtk_recent_info_get_uri (item));
 	}
-    	else if (!strcmp (mime, "application/x-cd-image")) {
-    		BRASERO_PROJECT_OPEN_URI (app,
-					  brasero_project_manager_iso,
-					  gtk_recent_info_get_uri (item));
-	}
-    	else if (!strcmp (mime, "application/x-cdrdao-toc")) {
+    	else if (!strcmp (mime, "application/x-cd-image")
+	     ||  !strcmp (mime, "application/x-cdrdao-toc")
+	     ||  !strcmp (mime, "application/x-toc")) {
     		BRASERO_PROJECT_OPEN_URI (app,
 					  brasero_project_manager_iso,
 					  gtk_recent_info_get_uri (item));
@@ -307,6 +293,7 @@ brasero_app_add_recent (BraseroApp *app)
 	gtk_recent_filter_add_mime_type (filter, "application/x-brasero");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cd-image");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");
+	gtk_recent_filter_add_mime_type (filter, "application/x-toc");
 	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (submenu), filter);
 	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (submenu), TRUE);
 
@@ -459,14 +446,9 @@ brasero_app_parse_options (BraseroApp *app)
 
 		/* in this case we can also add the files */
 		for (iter = files; iter && *iter; iter ++) {
-			gchar *unescaped_uri;
-
-			if (is_escaped)
-				unescaped_uri = gnome_vfs_unescape_string_for_display (*iter);
-			else
-				unescaped_uri = g_strdup (*iter);
-
-			list = g_slist_prepend (list, unescaped_uri);
+			gchar *uri;
+			uri = gnome_vfs_make_uri_from_input (*iter);
+			list = g_slist_prepend (list, uri);
 		}
 
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (app->contents), list);
@@ -477,23 +459,24 @@ brasero_app_parse_options (BraseroApp *app)
 	
 	if (files) {
 		const gchar *mime;
+	    	gchar *uri;
 
-		if (g_strv_length (files) != 1)
+	    	if (g_strv_length (files) > 1)
 			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 
 		/* we need to determine what type of file it is */
-		mime = gnome_vfs_get_mime_type (files [0]);
+	    	uri = gnome_vfs_make_uri_from_input (files [0]);
+		mime = gnome_vfs_get_mime_type (uri);
+	    	g_free (uri);
+
 		if (mime) {
 			if (!strcmp (mime, "application/x-brasero"))
 				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open, files [0]);
 
-			if (!strcmp (mime, "application/x-cdrdao-toc"))
-				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, files [0]);
-
-			if (!strcmp (mime, "application/x-cd-image"))
-				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, files [0]);
-
-			if (!strcmp (mime, "application/octet-stream"))
+			if (!strcmp (mime, "application/x-toc")
+			||  !strcmp (mime, "application/x-cdrdao-toc")
+			||  !strcmp (mime, "application/x-cd-image")
+			||  !strcmp (mime, "application/octet-stream"))
 				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, files [0]);
 
 			/* open it in a data project */

@@ -74,7 +74,7 @@ brasero_project_add_source (BraseroProject *project,
 			    BraseroURIContainer *source);
 
 BraseroProjectType
-brasero_project_open_project (BraseroProject *project, const char *uri);
+brasero_project_open_project (BraseroProject *project, const gchar *uri);
 gboolean
 brasero_project_save_project (BraseroProject *project);
 gboolean

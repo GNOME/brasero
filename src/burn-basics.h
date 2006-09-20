@@ -33,8 +33,18 @@ extern "C"
 
 #include <nautilus-burn-drive.h>
 
+#include <libgnomevfs/gnome-vfs.h>
+
 #define CDR_SPEED 153600
 #define DVD_SPEED 1385000
+
+#define BRASERO_GET_BASENAME_FOR_DISPLAY(uri, name)				\
+{										\
+    	gchar *escaped_basename;						\
+	escaped_basename = g_path_get_basename (uri);				\
+    	name = gnome_vfs_unescape_string_for_display (escaped_basename);	\
+	g_free (escaped_basename);						\
+}
 
 GQuark brasero_burn_quark (void);
 #define BRASERO_BURN_ERROR brasero_burn_quark()

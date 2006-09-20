@@ -650,41 +650,20 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 
 	num = 0;
 	for (iter = list; iter && num < max; iter = next, num ++) {
-		char *unescaped_uri;
+		gchar *unescaped_uri;
 
 		hit = iter->data;
 		next = iter->next;
 
 		uri = g_strdup (beagle_hit_get_uri (hit));
 	
-		/* FIXME : beagle return badly formed uri not encoded in
-		 * utf8 / locale charset so we check them just in case */
+		/* beagle return badly formed uri not encoded in UTF-8
+		 * locale charset so we check them just in case */
 		unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
 		if (!g_utf8_validate (unescaped_uri, -1, NULL)) {
-			char *tmp;
-			const char *charset;
-			GError *error = NULL;
-
 			g_free (unescaped_uri);
 			g_free (uri);
 			continue;
-
-			g_get_charset (&charset);
-			g_print ("converting to Charset %s\n", charset);
-			tmp = g_convert (unescaped_uri,
-					 -1,
-					 "UTF8",
-					 "ISO-8859-1",
-					 NULL,
-					 NULL,
-					 &error);
-
-			if (error)
-				g_warning ("PROBLEM %s for %s\n", error->message, unescaped_uri);
-
-			g_free (unescaped_uri);
-			unescaped_uri = tmp;
-			uri = gnome_vfs_escape_host_and_path_string (unescaped_uri);
 		}
 
 		name = g_path_get_basename (unescaped_uri);

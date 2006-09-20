@@ -390,7 +390,7 @@ brasero_burn_sum_explore_grafts (BraseroBurnSum *sum, GError **error)
 		&&  g_file_test (sum->priv->sums_path, G_FILE_TEST_EXISTS)) {
 			gchar *name;
 	
-			name = g_path_get_basename (sum->priv->sums_path);
+			BRASERO_GET_BASENAME_FOR_DISPLAY (sum->priv->sums_path, name);
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -419,13 +419,10 @@ brasero_burn_sum_explore_grafts (BraseroBurnSum *sum, GError **error)
 	for (iter = sum->priv->source->contents.data.excluded; iter; iter = iter->next) {
 		gchar *uri;
 		gchar *path;
-		gchar *escaped_uri;
 
 		/* get the path */
 		uri = iter->data;
-		escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-		path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-		g_free (escaped_uri);
+		path = gnome_vfs_get_local_path_from_uri (uri);
 
 		if (path)
 			g_hash_table_insert (excludedH, path, path);
@@ -443,7 +440,6 @@ brasero_burn_sum_explore_grafts (BraseroBurnSum *sum, GError **error)
 
 	for (iter = sum->priv->source->contents.data.grafts; iter; iter = iter->next) {
 		BraseroGraftPt *graft;
-		gchar *escaped_uri;
 		gchar *graft_path;
 		GSList *excluded;
 		gchar *path;
@@ -461,19 +457,13 @@ brasero_burn_sum_explore_grafts (BraseroBurnSum *sum, GError **error)
 		/* add all excluded in the excluded graft hash */
 		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
 			uri = excluded->data;
-			escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-			path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-			g_free (escaped_uri);
-
+			path = gnome_vfs_get_local_path_from_uri (uri);
 			g_hash_table_insert (excludedH, path, GINT_TO_POINTER (1));
 		}
 
 		/* get the current and futures paths */
 		uri = graft->uri;
-		escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-		path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-		g_free (escaped_uri);
-
+		path = gnome_vfs_get_local_path_from_uri (uri);
 		graft_path = graft->path;
 
 		if (g_file_test (path, G_FILE_TEST_IS_DIR))

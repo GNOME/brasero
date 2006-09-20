@@ -61,9 +61,9 @@ brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris);
 void
 brasero_project_manager_copy (BraseroProjectManager *manager);
 void
-brasero_project_manager_iso (BraseroProjectManager *manager, const char *uri);
+brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri);
 void
-brasero_project_manager_open (BraseroProjectManager *manager, const char *uri);
+brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri);
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
 

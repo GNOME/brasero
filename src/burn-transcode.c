@@ -1671,7 +1671,7 @@ brasero_transcode_bus_messages (GstBus *bus,
 						 transcode->priv->current->index,
 						 transcode->priv->current->uri);
 
-				name = g_path_get_basename (transcode->priv->current->uri);
+				BRASERO_GET_BASENAME_FOR_DISPLAY (transcode->priv->current->uri, name);
 				string = g_strdup_printf (_("Analysing \"%s\""), name);
 				g_free (name);
 
@@ -1689,9 +1689,9 @@ brasero_transcode_bus_messages (GstBus *bus,
 			else {
 				gchar *name, *string;
 
-				name = g_path_get_basename (transcode->priv->current->uri);
+				BRASERO_GET_BASENAME_FOR_DISPLAY (transcode->priv->current->uri, name);
 				string = g_strdup_printf (_("Transcoding \"%s\""), name);
-				g_free (name);
+			    	g_free (name);
 
 				BRASERO_JOB_TASK_SET_ACTION (transcode,
 							     BRASERO_BURN_ACTION_TRANSCODING,

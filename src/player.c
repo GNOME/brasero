@@ -401,15 +401,13 @@ brasero_player_image (BraseroPlayer *player)
 	GdkPixbuf *scaled = NULL;
 	GError *error = NULL;
 	GdkPixbuf *pixbuf;
-	int width, height;
-	char *string;
-	char *path;
-	char *name;
+	gint width, height;
+	gchar *string;
+	gchar *path;
+	gchar *name;
 
 	/* image */
 	/* FIXME: this does not allow to preview remote files */
-	/* NOTE: gnome_vfs_get_local_path_from_uri only works on escaped
-	 * uris */
 	path = gnome_vfs_get_local_path_from_uri (player->priv->uri);
 	pixbuf = gdk_pixbuf_new_from_file (path, &error);
 
@@ -457,11 +455,12 @@ brasero_player_image (BraseroPlayer *player)
 	/* display information about the image */
 	brasero_player_create_controls_image (player);
 
-	name = g_path_get_basename (path);
+    	BRASERO_GET_BASENAME_FOR_DISPLAY (path, name);
 	g_free (path);
 
 	string = g_strdup_printf (_("<span weight=\"bold\">Name:</span>\t %s"), name);
 	g_free (name);
+
 	gtk_label_set_markup (GTK_LABEL (player->priv->header), string);
 	g_free (string);
 
@@ -500,13 +499,9 @@ brasero_player_update_info_real (BraseroPlayer *player,
 					 PANGO_ELLIPSIZE_END);
 	}
 	else {
-		char *tmp;
-		char *name;
+		gchar *name;
 
-		tmp = gnome_vfs_unescape_string_for_display (player->priv->uri);
-		name = g_path_get_basename (tmp);
-		g_free (tmp);
-
+	    	BRASERO_GET_BASENAME_FOR_DISPLAY (player->priv->uri, name);
 		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>"),
 						  name);
 		g_free (name);

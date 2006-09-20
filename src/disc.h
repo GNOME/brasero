@@ -110,7 +110,7 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*add_uri)		(BraseroDisc *disc,
 							 const gchar *uri);
 
-	char *			(*get_selected_uri)	(BraseroDisc *disc);
+	gchar *			(*get_selected_uri)	(BraseroDisc *disc);
 
 	void			(*delete_selected)	(BraseroDisc *disc);
 	void			(*clear)		(BraseroDisc *disc);
@@ -120,8 +120,8 @@ struct _BraseroDiscIface {
 GType brasero_disc_get_type();
 
 BraseroDiscResult
-brasero_disc_add_uri (BraseroDisc *disc, const char *uri);
-char *
+brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
+gchar *
 brasero_disc_get_selected_uri (BraseroDisc *disc);
 void
 brasero_disc_delete_selected (BraseroDisc *disc);

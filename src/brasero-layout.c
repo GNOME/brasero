@@ -270,7 +270,7 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 		return;
 	}
 
-	children = gtk_container_get_children (GTK_CONTAINER (layout->priv->main_box));
+    	children = gtk_container_get_children (GTK_CONTAINER (layout->priv->main_box));
 	preview_in_project = (g_list_find (children, layout->priv->preview_pane) == NULL);
 	g_list_free (children);
 
@@ -793,7 +793,8 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 		GtkAction *action;
 		BraseroLayoutItem *item = NULL;
 
-		item = iter->data;
+	    	item = iter->data;
+
 		action = gtk_action_group_get_action (layout->priv->action_group, item->id);
 		if (!(item->types & type)) {
 			gtk_widget_hide (item->widget);
@@ -801,7 +802,7 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 			continue;
 		}
 
-		gtk_action_set_visible (action, TRUE);
+	    	gtk_action_set_visible (action, TRUE);
 		if (layout_id && !strcmp (layout_id, item->id)) {
 			/* this is it! we found the pane to display */
 			if (strcmp (layout_id, BRASERO_LAYOUT_NONE_ID))

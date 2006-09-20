@@ -246,7 +246,6 @@ brasero_burn_common_eject_async (NautilusBurnDrive *drive)
 BraseroBurnResult
 brasero_burn_common_check_local_file (const gchar *uri, GError **error)
 {
-	gchar *escaped_uri;
 	gboolean unreadable;
 	GnomeVFSResult res;
 	GnomeVFSFileInfo *info;
@@ -254,11 +253,9 @@ brasero_burn_common_check_local_file (const gchar *uri, GError **error)
 	/* since file is local no need to look it up asynchronously */
 	info = gnome_vfs_file_info_new ();
 
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-	res = gnome_vfs_get_file_info (escaped_uri,
+	res = gnome_vfs_get_file_info (uri,
 				       info,
 				       GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS);
-	g_free (escaped_uri);
 
 	if (res != GNOME_VFS_OK) {
 		g_set_error (error,
@@ -326,9 +323,9 @@ brasero_burn_common_create_tmp_directory (gchar **directory_path,
 
 	if (tmpdir && g_file_test (tmpdir, G_FILE_TEST_EXISTS)) {
 		if (!overwrite) {
-			char *name;
+			gchar *name;
 
-			name = g_path_get_basename (tmpdir);
+		    	name = g_path_get_basename (tmpdir);
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -342,7 +339,7 @@ brasero_burn_common_create_tmp_directory (gchar **directory_path,
 			g_remove (tmpdir);
 
 			if (g_file_test (tmpdir, G_FILE_TEST_EXISTS)) {
-				char *name;
+				gchar *name;
 
 				name = g_path_get_basename (tmpdir);
 				g_set_error (error,
@@ -356,7 +353,7 @@ brasero_burn_common_create_tmp_directory (gchar **directory_path,
 			}
 
 			if (g_mkdir_with_parents (tmpdir, 700) == -1) {
-				char *name;
+				gchar *name;
 	
 				name = g_path_get_basename (tmpdir);
 				g_set_error (error,
@@ -372,7 +369,7 @@ brasero_burn_common_create_tmp_directory (gchar **directory_path,
 	}
 	else if (tmpdir) {
 		if (g_mkdir_with_parents (tmpdir, 700) == -1) {
-			char *name;
+			gchar *name;
 
 			name = g_path_get_basename (tmpdir);
 			g_set_error (error,

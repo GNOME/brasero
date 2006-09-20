@@ -792,22 +792,23 @@ struct _BraseroPlaylistParseData {
 typedef struct _BraseroPlaylistParseData BraseroPlaylistParseData;
 
 static void
-brasero_playlist_add_song (BraseroPlaylist *playlist,
-			   const gchar *uri,
-			   GtkTreeRowReference *reference,
-			   gint64 length,
-			   const gchar *title,
-			   const gchar *genre)
+brasero_playlist_get_song_metadata_completed (BraseroMetadata *metadata,
+					      const GError *error,
+					      BraseroPlaylist *playlist)
 {
 	gint num;
 	gint64 total_length;
 	GtkTreeModel *model;
 	GtkTreePath *treepath;
 	GtkTreeIter parent, row;
+	BraseroPlaylistSong *song;
 	gchar *len_string, *name, *num_string;
 
+	song = playlist->priv->queue_songs->data;
+
+    	/* Tell the user we've finished loading the list */
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
-	treepath = gtk_tree_row_reference_get_path (reference);
+	treepath = gtk_tree_row_reference_get_path (song->reference);
 	gtk_tree_model_get_iter (model, &parent, treepath);
 	gtk_tree_path_free (treepath);
 
@@ -823,8 +824,11 @@ brasero_playlist_add_song (BraseroPlaylist *playlist,
 			    BRASERO_PLAYLIST_DSIZE_COL, &total_length,
 			    -1);
 
-	total_length += length; 
-	len_string = brasero_utils_get_time_string (total_length, TRUE, FALSE);
+  	total_length += metadata->len; 
+  	if (total_length > 0)
+		len_string = brasero_utils_get_time_string (total_length, TRUE, FALSE);
+	else
+		len_string = NULL;
 
 	gtk_tree_store_set (GTK_TREE_STORE (model), &parent,
 			    BRASERO_PLAYLIST_NB_SONGS_COL, num_string,
@@ -834,45 +838,27 @@ brasero_playlist_add_song (BraseroPlaylist *playlist,
 	g_free (len_string);
 	g_free (num_string);
 
-	/* add the song */
-	gtk_tree_store_append (GTK_TREE_STORE (model), &row, &parent);
-
-	if (length > 0)
-		len_string = brasero_utils_get_time_string (length, TRUE, FALSE);
-	else
-		len_string = NULL;
-
-	name = g_path_get_basename (uri);
-	gtk_tree_store_set (GTK_TREE_STORE (model), &row,
-			    BRASERO_PLAYLIST_DISPLAY_COL, title ? title : name,
-			    BRASERO_PLAYLIST_LEN_COL, len_string,
-			    BRASERO_PLAYLIST_GENRE_COL, genre,
-			    BRASERO_PLAYLIST_URI_COL, uri,
-			    BRASERO_PLAYLIST_DSIZE_COL, length,
-			    -1);
-	g_free (name);
-	g_free (len_string);
-	return;
-}
-
-static void
-brasero_playlist_get_song_metadata_completed (BraseroMetadata *metadata,
-					      const GError *error,
-					      BraseroPlaylist *playlist)
-{
-	BraseroPlaylistSong *song;
-
-	song = playlist->priv->queue_songs->data;
-
+    	/* See if the song can be added */
 	if (error)
 		goto end;
 
-	brasero_playlist_add_song (playlist,
-				   song->uri,
-				   song->reference,
-				   metadata->len,
-				   song->title ? song->title:metadata->title,
-				   song->genre);
+	gtk_tree_store_append (GTK_TREE_STORE (model), &row, &parent);
+
+    	if (metadata->len > 0)
+		len_string = brasero_utils_get_time_string (metadata->len, TRUE, FALSE);
+	else
+		len_string = NULL;
+
+	BRASERO_GET_BASENAME_FOR_DISPLAY (song->uri, name);
+	gtk_tree_store_set (GTK_TREE_STORE (model), &row,
+			    BRASERO_PLAYLIST_DISPLAY_COL, song->title ? song->title: (metadata->title ? metadata->title : name),
+			    BRASERO_PLAYLIST_LEN_COL, len_string,
+			    BRASERO_PLAYLIST_GENRE_COL, song->genre,
+			    BRASERO_PLAYLIST_URI_COL, song->uri,
+			    BRASERO_PLAYLIST_DSIZE_COL, metadata->len,
+			    -1);
+	g_free (name);
+	g_free (len_string);
 
 end:
 
@@ -932,7 +918,6 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist,
 	gchar *name;
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
-	gchar *unescaped_uri;
 
 	if (data->quiet)
 		return;
@@ -943,10 +928,7 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist,
 		return;
 	}
 
-	unescaped_uri = gnome_vfs_unescape_string_for_display (data->uri);
-	name = g_path_get_basename (unescaped_uri);
-	g_free (unescaped_uri);
-
+	BRASERO_GET_BASENAME_FOR_DISPLAY (data->uri, name);
 	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					 GTK_DIALOG_DESTROY_WITH_PARENT|
 					 GTK_DIALOG_MODAL,
@@ -970,7 +952,6 @@ brasero_playlist_parse_result (GObject *object, gpointer callback_data)
 {
 	gchar *name;
 	GSList *iter;
-	gchar *unescaped_uri;
 	GtkTreeIter parent;
 	GtkTreeModel *model;
 	GtkTreePath *treepath;
@@ -992,15 +973,13 @@ brasero_playlist_parse_result (GObject *object, gpointer callback_data)
 	}
 
 	/* actually add it */
-	unescaped_uri = gnome_vfs_unescape_string_for_display (data->uri);
-	name = g_path_get_basename (unescaped_uri);
-	g_free (unescaped_uri);
-
+	BRASERO_GET_BASENAME_FOR_DISPLAY (data->uri, name);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
 	gtk_tree_store_append (GTK_TREE_STORE (model), &parent, NULL);
 	gtk_tree_store_set (GTK_TREE_STORE (model), &parent,
 			    BRASERO_PLAYLIST_DISPLAY_COL, data->title ? data->title : name,
 			    BRASERO_PLAYLIST_URI_COL, data->uri,
+			    BRASERO_PLAYLIST_NB_SONGS_COL, _("Loading ..."),
 			    -1);
 	g_free (name);
 
@@ -1070,14 +1049,14 @@ brasero_playlist_end_cb (TotemPlParser *parser,
 
 static void
 brasero_playlist_entry_cb (TotemPlParser *parser,
-			   const char *uri,
-			   const char *title,
-			   const char *genre,
+			   const gchar *uri,
+			   const gchar *title,
+			   const gchar *genre,
 			   BraseroPlaylistParseData *data)
 {
 	BraseroPlaylistSong *song;
 
-	data->nb_songs++;
+    	data->nb_songs++;
 	song = g_new0 (BraseroPlaylistSong, 1);
 	song->uri = g_strdup (uri);
 	song->title = g_strdup (title);

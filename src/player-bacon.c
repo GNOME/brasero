@@ -512,12 +512,12 @@ error:
 }
 
 void
-brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const char *uri)
+brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 {
 	brasero_player_bacon_clear_pipe (bacon);
 
 	if (uri) {
-		bacon->priv->uri = gnome_vfs_unescape_string_for_display (uri);
+		bacon->priv->uri = g_strdup (uri);
 		brasero_player_bacon_setup_pipe (bacon, uri);
 	}
 }

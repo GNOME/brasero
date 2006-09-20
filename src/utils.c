@@ -522,7 +522,7 @@ brasero_utils_make_button (const gchar *text, const gchar *stock)
 }
 
 static gboolean
-brasero_utils_empty_dir (const char *uri, GnomeVFSFileInfo * info)
+brasero_utils_empty_dir (const gchar *uri, GnomeVFSFileInfo * info)
 {
 	GnomeVFSDirectoryHandle *handle;
 	char *file_uri, *name;
@@ -540,7 +540,7 @@ brasero_utils_empty_dir (const char *uri, GnomeVFSFileInfo * info)
 		    || *info->name == '.')
 			continue;
 
-		name = gnome_vfs_escape_path_string (info->name);
+		name = gnome_vfs_escape_string (info->name);
 		file_uri = g_strconcat (uri, "/", name, NULL);
 		g_free (name);
 
@@ -621,103 +621,98 @@ brasero_utils_escape_string (const char *text)
 	return result;
 }
 
-char *
-brasero_utils_check_for_parent_symlink (const char *uri)
+gchar *
+brasero_utils_check_for_parent_symlink (const gchar *escaped_uri)
 {
 	GnomeVFSFileInfo *info;
-	GnomeVFSResult result;
-	char *escaped_uri;
-	char *parent;
-	char *retval;
-	char *tmp;
+	GnomeVFSURI *parent;
+    	gchar *uri;
 
-	info = gnome_vfs_file_info_new ();
-	parent = g_path_get_dirname (uri);
-	retval = g_strdup (uri);
+    	parent = gnome_vfs_uri_new (escaped_uri);
+  	info = gnome_vfs_file_info_new ();
+    	uri = g_strdup (escaped_uri);
 
-	while (strcmp (parent, "/")) {
-		escaped_uri = gnome_vfs_escape_host_and_path_string (parent);
-		result = gnome_vfs_get_file_info (escaped_uri,
-						  info,
-					          GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-		g_free (escaped_uri);
+	while (gnome_vfs_uri_has_parent (parent)) {
+	    	GnomeVFSURI *tmp;
+		GnomeVFSResult result;
 
-		if (result != GNOME_VFS_OK) {
-			/* we shouldn't reached this point normally but who knows */
-			gnome_vfs_file_info_clear (info);
-			gnome_vfs_file_info_unref (info);
-			g_free (parent);
-			return retval;
-		}
+		result = gnome_vfs_get_file_info_uri (parent,
+						      info,
+					              GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+
+		if (result != GNOME_VFS_OK)
+			/* we shouldn't reached this point but who knows */
+		    	break;
 
 		/* NOTE: no need to check for broken symlinks since
 		 * we wouldn't have reached this point otherwise */
 		if (GNOME_VFS_FILE_INFO_SYMLINK (info)) {
-			char *root;
-			char *newuri;
+		    	gchar *parent_uri;
+		    	gchar *new_root;
+			gchar *newuri;
 
-			root = parent;
-			parent = g_strconcat ("file://",
-					      info->symlink_name,
+		    	parent_uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
+			new_root = gnome_vfs_get_uri_from_local_path (info->symlink_name);
+
+			newuri = g_strconcat (new_root,
+					      uri + strlen (parent_uri),
 					      NULL);
 
-			if (g_str_has_suffix (parent, "/"))
-				newuri = g_strconcat (parent,
-						      retval + strlen (root) + 1,
-						      NULL);
-			else
-				newuri = g_strconcat (parent,
-						      retval + strlen (root),
-						      NULL);
-			g_free (root);
-			g_free (retval);
-			retval = newuri;
+		    	g_free (uri);
+		    	uri = newuri;	
+
+		    	gnome_vfs_uri_unref (parent);
+		    	g_free (parent_uri);
+
+		    	parent = gnome_vfs_uri_new (new_root);
+			g_free (new_root);
 		}
 
 		tmp = parent;
-		parent = g_path_get_dirname (parent);
-		g_free (tmp);
+		parent = gnome_vfs_uri_get_parent (parent);
+		gnome_vfs_uri_unref (tmp);
 
 		gnome_vfs_file_info_clear (info);
 	}
-
 	gnome_vfs_file_info_unref (info);
-	g_free (parent);
-	return retval;
+	gnome_vfs_uri_unref (parent);
+
+	return uri;
 }
 
 gboolean
-brasero_utils_get_symlink_target (const char *uri,
+brasero_utils_get_symlink_target (const gchar *escaped_uri,
 				  GnomeVFSFileInfo *info,
 				  GnomeVFSFileInfoOptions flags)
 {
-	int size;
-	char *target;
-	char *escaped_uri;
+	gint size;
 	GnomeVFSResult result;
 
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
 	result = gnome_vfs_get_file_info (escaped_uri,
 					  info,
 					  flags|
 					  GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (escaped_uri);
 	if (result)
 		return FALSE;
 
-	target = g_strconcat ("file://", info->symlink_name, NULL);
-	if (g_str_has_suffix (target, "/"))
-		target [strlen (target) - 1] = '\0';
+    	if (info->symlink_name) {
+		gchar *target;
 
-	g_free (info->symlink_name);
-	info->symlink_name = brasero_utils_check_for_parent_symlink (target);
-	g_free (target);
+		target = gnome_vfs_get_uri_from_local_path (info->symlink_name);
+
+		g_free (info->symlink_name);
+		info->symlink_name = brasero_utils_check_for_parent_symlink (target);
+		g_free (target);
+	}
+
+    	if (!info->symlink_name)
+		return FALSE;
 
 	/* we check for circular dependency here :
 	 * if the target is one of the parent of symlink */
 	size = strlen (info->symlink_name);
-	if (!strncmp (info->symlink_name, uri, size)
-	&& (*(uri + size) == '/' || *(uri + size) == '\0'))
+	if (!strncmp (info->symlink_name, escaped_uri, size)
+	&& (*(escaped_uri + size) == '/' || *(escaped_uri + size) == '\0'))
 		return FALSE;
 	
 	return TRUE;
@@ -756,23 +751,19 @@ void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list)
 {
-	char *uri;
-	char *mime;
+	gchar *uri;
+	gchar *mime;
 	GList *uris;
 	GSList *item;
-	char *escaped_uri;
 	GnomeVFSResult result;
 	GnomeVFSMimeApplication *application;
 
 	for (item = list; item; item = item->next) {
 		uri = item->data;
-		escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
 
-		mime = gnome_vfs_get_mime_type (escaped_uri);
-		if (!mime) {
-			g_free (escaped_uri);
+		mime = gnome_vfs_get_mime_type (uri);
+		if (!mime)
 			continue;
-		}
 
 		application = gnome_vfs_mime_get_default_application (mime);
 		g_free (mime);
@@ -796,11 +787,10 @@ brasero_utils_launch_app (GtkWidget *widget,
 
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
-			g_free (escaped_uri);
 			continue;
 		}
 
-		uris = g_list_prepend (NULL, escaped_uri);
+		uris = g_list_prepend (NULL, uri);
 		result = gnome_vfs_mime_application_launch (application, uris);
 		g_list_free (uris);
 
@@ -819,15 +809,14 @@ brasero_utils_launch_app (GtkWidget *widget,
 			gtk_window_set_title (GTK_WINDOW (dialog), _("File error"));
 
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							 _("application %s can't be started."),
-							 application->name);
+								 _("application %s can't be started."),
+								 application->name);
 
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
 		}
 
 		gnome_vfs_mime_application_free (application);
-		g_free (escaped_uri);
 	}
 }
 void
@@ -1087,42 +1076,4 @@ brasero_utils_get_use_info_notebook (void)
 	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
 
 	return notebook;
-}
-
-gchar *
-brasero_utils_validate_uri (const gchar *uri, gboolean escaped)
-{
-	gchar *retval;
-	gchar *scheme;
-
-	scheme = gnome_vfs_get_uri_scheme (uri);
-	if (!scheme) {
-		gchar *full_path;
-
-		/* this looks like a local path, turn it into a URI */
-		if (uri [0] != G_DIR_SEPARATOR) {
-			/* we must have a full local path for the next function */
-			full_path = g_build_path (G_DIR_SEPARATOR_S,
-						  g_get_current_dir (),
-						  uri,
-						  NULL);
-		}
-		else
-			full_path = g_strdup (uri);
-
-		/* this is a local filename so we can't expect it to be escaped.
-		 * This function also takes care to escaped the URI. */
-		retval = gnome_vfs_get_uri_from_local_path (full_path);
-		g_free (full_path);
-	}
-	else if (escaped) {
-		g_free (scheme);
-		retval = g_strdup (uri);
-	}
-	else {
-		g_free (scheme);
-		retval = gnome_vfs_escape_host_and_path_string (uri);
-	}
-
-	return retval;
 }

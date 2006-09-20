@@ -1008,8 +1008,8 @@ brasero_recorder_selection_disc_image_properties (BraseroRecorderSelection *sele
 		if (!name) {
 			name = g_path_get_basename (selection->priv->image_path);
 			gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (chooser), name);
-			g_free (name);
 		}
+	    	g_free (name);
 	}
 	else
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),

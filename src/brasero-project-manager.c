@@ -508,7 +508,6 @@ brasero_project_manager_burn_iso (BraseroProjectManager *manager,
 	flag = GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
 	       GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE;
 
-
 retry:
     	result = gnome_vfs_get_file_info (uri, info, flag);
 	if (result != GNOME_VFS_OK) {

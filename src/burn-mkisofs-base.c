@@ -284,8 +284,6 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsData *data,
 				     GError **error)
 {
 	gchar *localpath;
-	gchar *escaped_uri;
-	gchar *escaped_path;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	/* make sure uri is local: otherwise error out */
@@ -297,13 +295,7 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsData *data,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* NOTE: gnome_vfs_get_local_path_from_uri only works on escaped
-	 * uris */
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-	escaped_path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-	g_free (escaped_uri);
-	localpath = gnome_vfs_unescape_string_for_display (escaped_path);
-	g_free (escaped_path);
+	localpath = gnome_vfs_get_local_path_from_uri (uri);
 
 	/* we just ignore if localpath is NULL:
 	 * - it could be a non local whose graft point couldn't be downloaded */
@@ -347,29 +339,23 @@ _escape_path (const char *str)
 	return escaped;
 }
 
-static char *
-_build_graft_point (const char *escaped_uri, const char *discpath) {
-	char *escaped_discpath;
-	char *escaped_path;
-	char *graft_point;
-	char *path;
+static gchar *
+_build_graft_point (const gchar *uri, const gchar *discpath) {
+	gchar *escaped_discpath;
+	gchar *graft_point;
+	gchar *path;
 
-	if (escaped_uri == NULL || discpath == NULL)
+	if (uri == NULL || discpath == NULL)
 		return NULL;
 
 	/* make up the graft point */
-	if (*escaped_uri != '/') {
-		/* NOTE: gnome_vfs_get_local_path_from_uri only works on escaped
-		 * uris */
-		escaped_path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-		path = gnome_vfs_unescape_string_for_display (escaped_path);
-		g_free (escaped_path);
-	}
+	if (*uri != '/')
+		path = gnome_vfs_get_local_path_from_uri (uri);
 	else
-		path = g_strdup (escaped_uri);
+		path = g_strdup (uri);
 
 	if (discpath) {
-		char *escaped_path;
+		gchar *escaped_path;
 
 		escaped_path = _escape_path (path);
 		g_free (path);
@@ -395,15 +381,10 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsData *data,
 				  GError **error)
 {
 	gchar *graft_point;
-	gchar *escaped_uri;
 	gchar *localpath = NULL;
 	BraseroBurnResult result;
 
-	/* NOTE: gnome_vfs_get_local_path_from_uri only works on escaped
-	 * uris */
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-	localpath = gnome_vfs_get_local_path_from_uri (escaped_uri);
-	g_free (escaped_uri);
+	localpath = gnome_vfs_get_local_path_from_uri (uri);
 
 	/* build up graft and write it */
 	graft_point = _build_graft_point (localpath, disc_path);
@@ -837,7 +818,7 @@ brasero_mkisofs_base_set_source (BraseroJob *job,
 
 static BraseroBurnResult
 brasero_mkisofs_base_set_output (BraseroImager *imager,
-				 const char *output,
+				 const gchar *output,
 				 gboolean overwrite,
 				 gboolean clean,
 				 GError **error)

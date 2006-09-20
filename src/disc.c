@@ -113,7 +113,7 @@ brasero_disc_base_init (gpointer g_class)
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc,
-		      const char *uri)
+		      const gchar *uri)
 {
 	BraseroDiscIface *iface;
 

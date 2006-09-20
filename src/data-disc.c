@@ -1508,7 +1508,7 @@ brasero_data_disc_tree_new_path (BraseroDataDisc *disc,
 	char *name;
 
 	if (!parent_treepath) {
-		char *parent;
+		gchar *parent;
 
 		parent = g_path_get_dirname (path);
 		result = brasero_data_disc_disc_path_to_tree_path (disc,
@@ -2296,9 +2296,8 @@ brasero_data_disc_get_file_info_async_results (GObject *obj, gpointer data)
 static gboolean
 brasero_data_disc_get_file_info_async (GObject *obj, gpointer data)
 {
-	char *uri;
+	gchar *uri;
 	GSList *next;
-	char *escaped_uri;
 	GnomeVFSFileInfo *info;
 	BraseroInfoAsyncResult *result;
 	GetFileInfoAsyncData *callback_data = data;
@@ -2308,6 +2307,7 @@ brasero_data_disc_get_file_info_async (GObject *obj, gpointer data)
 		if (callback_data->cancel)
 			return FALSE;
 
+	    	/* URI should be escaped here (as always) */
 		uri = callback_data->uris->data;
 		result = g_new0 (BraseroInfoAsyncResult, 1);
 
@@ -2322,12 +2322,10 @@ brasero_data_disc_get_file_info_async (GObject *obj, gpointer data)
 		next = g_slist_remove (callback_data->uris, uri);
 		g_free (uri);
 
-		escaped_uri = gnome_vfs_escape_host_and_path_string (result->uri);
 		info = gnome_vfs_file_info_new ();
-		result->result = gnome_vfs_get_file_info (escaped_uri,
+		result->result = gnome_vfs_get_file_info (result->uri,
 							  info,
 							  callback_data->flags);
-		g_free (escaped_uri);
 
 		callback_data->results = g_slist_prepend (callback_data->results,
 							  result);
@@ -2920,17 +2918,20 @@ brasero_data_disc_restored_free (BraseroDataDisc *disc,
 /****************************** filtered dialog ********************************/
 static gboolean
 brasero_data_disc_unreadable_dialog (BraseroDataDisc *disc,
-				     const char *uri,
+				     const gchar *uri,
 				     GnomeVFSResult result,
 				     gboolean isdir)
 {
-	char *name;
-	char *message_disc;
-	GtkWidget *toplevel;
-	GtkWidget *dialog;
+	gchar *name;
 	guint answer;
+	GtkWidget *dialog;
+	gchar *message_disc;
+	GtkWidget *toplevel;
+    	GnomeVFSURI *vfsuri;
 
-	name = g_filename_display_basename (uri);
+    	vfsuri = gnome_vfs_uri_new (uri);
+    	name = gnome_vfs_uri_extract_short_path_name (vfsuri);
+    	gnome_vfs_uri_unref (vfsuri);
 
 	if (!isdir)
 		message_disc = g_strdup_printf (_("The file \"%s\" is unreadable:"), name);
@@ -3677,7 +3678,7 @@ _foreach_remove_children_files_cb (char *uri,
 	excluding_num = g_slist_length (excluding);
 	grafts_num = 0;
 
-	parent = g_path_get_basename (uri);
+	parent = g_path_get_dirname (uri);
 	dir = g_hash_table_lookup (data->disc->priv->dirs, parent);
 	g_free (parent);
 
@@ -5096,15 +5097,12 @@ brasero_data_disc_expose_thread (GObject *object, gpointer data)
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
 	GSList *infos = NULL;
-	char *escaped_uri;
 
 	handle = NULL;
-	escaped_uri = gnome_vfs_escape_host_and_path_string (callback_data->uri);
 	result = gnome_vfs_directory_open (&handle,
-					   escaped_uri,
+					   callback_data->uri,
 					   GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
 					   GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE);
-	g_free (escaped_uri);
 
 	if (result != GNOME_VFS_OK || handle == NULL) {
 		BraseroLoadDirError *error;
@@ -5901,9 +5899,8 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 	GnomeVFSFileInfoOptions flags;
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
-	char *escaped_uri;
 	GSList *infos;
-	char *current;
+	gchar *current;
 
 	flags = GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS;
 
@@ -5915,11 +5912,9 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 	g_mutex_unlock (disc->priv->references_lock);
 
 	handle = NULL;
-	escaped_uri = gnome_vfs_escape_host_and_path_string (callback_data->uri);
 	result = gnome_vfs_directory_open (&handle,
-					   escaped_uri,
+					   callback_data->uri,
 					   flags);
-	g_free (escaped_uri);
 
 	if (result != GNOME_VFS_OK || handle == NULL) {
 		error = g_new0 (BraseroLoadDirError, 1);
@@ -5952,6 +5947,8 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 	infos = NULL;
 	info = gnome_vfs_file_info_new();
 	while (gnome_vfs_directory_read_next (handle, info) == GNOME_VFS_OK) {
+	    	gchar *escaped_name;
+
 		if (callback_data->cancel)
 			break;
 
@@ -5959,10 +5956,12 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 		||  (info->name[1] == '.' && info->name[2] == 0)))
 			continue;
 
+	    	escaped_name = gnome_vfs_escape_string (info->name);
 		current = g_build_path (G_DIR_SEPARATOR_S,
 					callback_data->uri,
-					info->name,
+					escaped_name,
 					NULL);
+	    	g_free (escaped_name);
 
 		if (!brasero_data_disc_is_readable (info)) {
 			_check_for_restored (disc,
@@ -6786,7 +6785,7 @@ brasero_data_disc_new_row_real (BraseroDataDisc *disc,
 				GSList *excluded)
 {
 	BraseroFilterStatus status;
-	char *excluded_uri;
+	gchar *excluded_uri;
 	BraseroFile *file;
 	GSList *iter;
 	gchar *graft;
@@ -6833,7 +6832,7 @@ brasero_data_disc_new_row_real (BraseroDataDisc *disc,
 			/* the problem here is that despite the fact this directory was explored
 			 * one or various subdirectories could have been removed because excluded */
 			brasero_data_disc_restore_excluded_children (disc, file);
-			paths = g_slist_prepend (NULL, (char*) path);
+			paths = g_slist_prepend (NULL, (gchar*) path);
 			brasero_data_disc_replace_symlink_children (disc, file, paths);
 			g_slist_free (paths);
 		}
@@ -7055,14 +7054,11 @@ brasero_data_disc_get_dir_contents_thread (GObject *object, gpointer user_data)
 	GnomeVFSDirectoryHandle *handle = NULL;
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult res;
-	gchar *escaped_uri;
 
-	escaped_uri = gnome_vfs_escape_host_and_path_string (callback_data->uri);
 	res = gnome_vfs_directory_open (&handle,
-					escaped_uri,
+					callback_data->uri,
 					callback_data->flags);
 
-	g_free (escaped_uri);
 	if (res != GNOME_VFS_OK || !handle) {
 		/* we want to signal the user something went wrong */
 		callback_data->result = res;
@@ -7152,7 +7148,7 @@ brasero_data_disc_add_directory_contents (BraseroDataDisc *disc,
 
 static BraseroDiscResult
 brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
-				const char *uri_arg,
+				const gchar *uri,
 				GtkTreePath *treeparent)
 {
 	BraseroDataDiscReference reference;
@@ -7164,14 +7160,11 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 	GSList *uris;
 	gchar *name;
 	gchar *path;
-	gchar *uri;
 
-	g_return_val_if_fail (uri_arg != NULL, BRASERO_DISC_ERROR_UNKNOWN);
+	g_return_val_if_fail (uri != NULL, BRASERO_DISC_ERROR_UNKNOWN);
 
 	if (disc->priv->reject_files || disc->priv->is_loading)
 		return BRASERO_DISC_NOT_READY;
-
-	uri = brasero_utils_validate_uri (uri_arg, TRUE);
 
 	/* g_path_get_basename is not comfortable with uri related
 	 * to the root directory so check that before */
@@ -7179,10 +7172,8 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 	name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
-	if (!name) {
-		g_free (uri);
+	if (!name)
 		return BRASERO_DISC_ERROR_FILE_NOT_FOUND;
-	}
 
 	/* create the path */
 	if (treeparent && gtk_tree_path_get_depth (treeparent) > 0) {
@@ -7226,7 +7217,6 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 								    GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
 								    path);
 
-		g_free (uri);
 		g_free (name);
 		g_free (path);
 		return success;
@@ -7240,7 +7230,6 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 							      TRUE);
 
 	if (success != BRASERO_DISC_OK) {
-		g_free (uri);
 		g_free (name);
 		g_free (path);
 		return success;
@@ -7267,7 +7256,6 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 						    references,
 						    brasero_data_disc_new_row_destroy_cb);
 	g_slist_free (uris);
-	g_free (uri);
 
 	if (success != BRASERO_DISC_OK) {
 		g_free (name);
@@ -7300,19 +7288,16 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 }
 
 static BraseroDiscResult
-brasero_data_disc_add_uri (BraseroDisc *disc, const char *uri)
+brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri)
 {
-	char *unescaped_uri;
 	BraseroDiscResult success;
 
 	if (BRASERO_DATA_DISC (disc)->priv->is_loading)
 		return BRASERO_DISC_LOADING;
 
-	unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
 	success = brasero_data_disc_add_uri_real (BRASERO_DATA_DISC (disc),
-						  unescaped_uri,
+						  uri,
 						  NULL);
-	g_free (unescaped_uri);
 	return success;
 }
 
@@ -7765,7 +7750,7 @@ brasero_data_disc_graft_check_result (GObject *object, gpointer callback_data)
 						     NULL,
 						     parent);
 
-			name = g_path_get_basename (parent);
+			BRASERO_GET_BASENAME_FOR_DISPLAY (parent, name);
 			if (strlen (name) > 64)
 				brasero_data_disc_joliet_incompat_add_path (disc, parent);
 			g_free (name);
@@ -7789,10 +7774,9 @@ brasero_data_disc_graft_check_thread (GObject *object, gpointer callback_data)
 	BraseroCheckGraftResultData *graft;
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
-	char *escaped_uri;
 	GSList *iter;
-	char *uri;
-	char *tmp;
+	gchar *uri;
+	gchar *tmp;
 
 	info = gnome_vfs_file_info_new ();
 	for (iter = callback_data; iter; iter = iter->next) {
@@ -7802,9 +7786,7 @@ brasero_data_disc_graft_check_thread (GObject *object, gpointer callback_data)
 			return FALSE;
 
 		/* check a file with the same name doesn't exist */
-		escaped_uri = gnome_vfs_escape_host_and_path_string (graft->parent);
-		result = gnome_vfs_get_file_info (escaped_uri, info, 0);
-		g_free (escaped_uri);
+		result = gnome_vfs_get_file_info (graft->parent, info, 0);
 
 		if (result != GNOME_VFS_ERROR_NOT_FOUND) {
 			if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
@@ -7828,9 +7810,7 @@ brasero_data_disc_graft_check_thread (GObject *object, gpointer callback_data)
 		g_free (graft->parent);
 
 		gnome_vfs_file_info_clear (info);
-		escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-		result = gnome_vfs_get_file_info (escaped_uri, info, 0);		
-		g_free (escaped_uri);
+		result = gnome_vfs_get_file_info (uri, info, 0);		
 
 		if (result == GNOME_VFS_OK && info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 			graft->status = BRASERO_GRAFT_CHECK_OK;
@@ -7871,9 +7851,7 @@ brasero_data_disc_graft_check_thread (GObject *object, gpointer callback_data)
 			}
 	
 			gnome_vfs_file_info_clear (info);
-			escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-			result = gnome_vfs_get_file_info (escaped_uri, info, 0);
-			g_free (escaped_uri);
+			result = gnome_vfs_get_file_info (uri, info, 0);
 		}
 		graft->parent = uri;
 		gnome_vfs_file_info_clear (info);
@@ -7897,7 +7875,7 @@ brasero_data_disc_path_create (BraseroDataDisc *disc,
 		brasero_data_disc_graft_new (disc, NULL, tmp_path);
 		brasero_data_disc_tree_new_empty_folder (disc, tmp_path);
 
-		name = g_path_get_basename (tmp_path);
+		BRASERO_GET_BASENAME_FOR_DISPLAY (tmp_path, name);
 		if (strlen (name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, tmp_path);
 		g_free (name);
@@ -8112,7 +8090,7 @@ brasero_data_disc_load_step_2 (BraseroDataDisc *disc,
 			gchar *parent;
 			gchar *name;
 
-			name = g_path_get_basename (graft->path);
+			BRASERO_GET_BASENAME_FOR_DISPLAY (graft->path, name);
 			if (strlen (name) > 64)
 				brasero_data_disc_joliet_incompat_add_path (disc, graft->path);
 			g_free (name);
@@ -8971,14 +8949,10 @@ brasero_data_disc_drag_data_received_cb (GtkTreeView *tree,
 		gtk_tree_path_up (dest);
 
 		for (uri = uris; *uri != NULL; uri++) {
-			char *unescaped_uri;
-
-			unescaped_uri = gnome_vfs_unescape_string_for_display (*uri);
 			func_results = brasero_data_disc_add_uri_real (disc,
-								       unescaped_uri,
+								       *uri,
 								       dest);
 			result = (result ? TRUE : func_results);
-			g_free (unescaped_uri);
 		}
 
 		gtk_tree_path_free (dest);
@@ -9480,9 +9454,8 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	GtkTreeModel *model = NULL;
 	GtkTreePath *parent = NULL;
 	GtkTreeIter row;
-	char **array;
-	char **item;
-	char *uri;
+	gchar **array;
+	gchar **item;
 
 	model = data->disc->priv->sort;
 	if (data->reference) {
@@ -9494,7 +9467,7 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	item = array;
 	while (*item) {
 		if (**item != '\0') {
-			char *escaped_uri;
+			gchar *uri;
 
 			if (parent) {
 				treepath = gtk_tree_path_copy (parent);
@@ -9503,13 +9476,10 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 							    (model, &row));
 			}
 
-			escaped_uri = gnome_vfs_make_uri_canonical (*item);
-			uri = gnome_vfs_unescape_string_for_display (escaped_uri);
-			g_free (escaped_uri);
+			uri = gnome_vfs_make_uri_from_input (*item);
 			brasero_data_disc_add_uri_real (data->disc,
 							uri,
 							treepath);
-			g_free (uri);
 			if (treepath)
 				gtk_tree_path_free (treepath);
 		}
@@ -9819,7 +9789,6 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc)
 {
 	gchar *uri;
 	gchar *path;
-	gchar *escaped_uri;
 	GtkTreePath *realpath;
 	BraseroDataDisc *data;
 
@@ -9836,10 +9805,7 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc)
 	uri = brasero_data_disc_path_to_uri (data, path);
 	g_free (path);
 
-	escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-	g_free (uri);
-
-	return escaped_uri;
+	return uri;
 }
 
 /******************************* monitoring ************************************/
@@ -10161,7 +10127,7 @@ brasero_data_disc_inotify_create_file_event_cb (BraseroDataDisc *disc,
 		goto cleanup;
 
 	/* check that this file is not hidden */
-	name = g_path_get_basename (result->uri);
+	BRASERO_GET_BASENAME_FOR_DISPLAY (result->uri, name);
 	if (name [0] == '.') {
 		brasero_data_disc_unreadable_new (disc,
 						  g_strdup (result->uri),
@@ -11017,16 +10983,11 @@ static gboolean
 brasero_data_disc_start_monitoring_real (BraseroDataDisc *disc,
 					 BraseroFile *file)
 {
-	gchar *escaped_uri;
 	gchar *path;
 	gint dev_fd;
 	__u32 mask;
 
-	/* NOTE: gnome_vfs_get_local_path_from_uri only works on escaped
-	 * uris */
-	escaped_uri = gnome_vfs_escape_host_and_path_string (file->uri);
-	path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-	g_free (escaped_uri);
+	path = gnome_vfs_get_local_path_from_uri (file->uri);
 
 	dev_fd = g_io_channel_unix_get_fd (disc->priv->notify);
 	mask = IN_MODIFY |

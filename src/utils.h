@@ -31,6 +31,8 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
+#include "burn-basics.h"
+
 #ifndef _UTILS_H
 #define _UTILS_H
 
@@ -47,8 +49,8 @@ extern "C" {
 #define BRASERO_ERROR brasero_error_quark()
 
 typedef char *(*BraseroFormatTime) (double time,
-				       gboolean with_unit,
-				       gboolean round);
+				    gboolean with_unit,
+				    gboolean round);
 
 typedef enum {
 	BRASERO_ERROR_NONE,
@@ -114,8 +116,6 @@ brasero_utils_show_menu (int nb_selected,
 GtkWidget *
 brasero_utils_get_use_info_notebook (void);
 
-gchar *
-brasero_utils_validate_uri (const gchar *uri, gboolean escaped);
 
 #ifdef __cplusplus
 }

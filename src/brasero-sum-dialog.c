@@ -533,7 +533,7 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 	}
 	close (fd);
 
-	uri = brasero_utils_validate_uri (tmppath, FALSE);
+	uri = gnome_vfs_get_uri_from_local_path (tmppath);
 	if (!uri) {
 		g_remove (tmppath);
 		g_free (tmppath);
@@ -592,7 +592,7 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 	int c;
 
 	/* see if this file needs downloading */
-	uri = brasero_utils_validate_uri (file_path, FALSE);
+	uri = gnome_vfs_make_uri_from_input (file_path);
 	if (!uri) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -765,12 +765,15 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	gchar file_sum [MD5_STRING_LEN + 1] = {0,}, disc_sum [MD5_STRING_LEN + 1] = {0,};
 	GError *error = NULL;
 	gboolean result;
+    	gchar *uri;
 
 	/* get the sum from the file */
+    	uri = gnome_vfs_make_uri_from_input (gtk_entry_get_text (GTK_ENTRY (self->priv->md5_entry)));
 	result = brasero_sum_dialog_from_file (self,
-					       gtk_entry_get_text (GTK_ENTRY (self->priv->md5_entry)),
+					       uri,
 					       file_sum,
 					       &error);
+	g_free (uri);
 
 	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
 					BRASERO_BURN_ACTION_NONE,

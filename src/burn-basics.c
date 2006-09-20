@@ -74,7 +74,7 @@ gchar *
 brasero_track_source_get_image_localpath (BraseroTrackSource *track)
 {
 	gchar *localpath;
-	gchar *escaped_uri;
+	gchar *uri;
 
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
 	&& (track->format & BRASERO_IMAGE_FORMAT_ISO))
@@ -86,12 +86,9 @@ brasero_track_source_get_image_localpath (BraseroTrackSource *track)
 	if (track->contents.image.image [0] == '/')
 		return g_strdup (track->contents.image.image);
 
-	if (!g_str_has_prefix (track->contents.image.image, "file://"))
-		return NULL;
-
-	escaped_uri = gnome_vfs_escape_host_and_path_string (track->contents.image.image);
-	localpath = gnome_vfs_get_local_path_from_uri (escaped_uri);
-	g_free (escaped_uri);
+	uri = gnome_vfs_make_uri_from_input (track->contents.image.image);
+	localpath = gnome_vfs_get_local_path_from_uri (uri);
+	g_free (uri);
 
 	return localpath;
 }
@@ -100,7 +97,7 @@ gchar *
 brasero_track_source_get_raw_localpath (BraseroTrackSource *track)
 {
 	gchar *localpath;
-	gchar *escaped_uri;
+	gchar *uri;
 
 	/* NOTE: here cdrecord doesn't need *.toc image but the raw part */
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
@@ -113,12 +110,9 @@ brasero_track_source_get_raw_localpath (BraseroTrackSource *track)
 	if (track->contents.image.image [0] == '/')
 		return g_strdup (track->contents.image.image);
 
-	if (!g_str_has_prefix (track->contents.image.image, "file://"))
-		return NULL;
-
-	escaped_uri = gnome_vfs_escape_host_and_path_string (track->contents.image.image);
-	localpath = gnome_vfs_get_local_path_from_uri (escaped_uri);
-	g_free (escaped_uri);
+	uri = gnome_vfs_make_uri_from_input (track->contents.image.image);
+	localpath = gnome_vfs_get_local_path_from_uri (uri);
+	g_free (uri);
 
 	return localpath;
 }
@@ -127,7 +121,7 @@ gchar *
 brasero_track_source_get_cue_localpath (BraseroTrackSource *track)
 {
 	gchar *localpath;
-	gchar *escaped_uri;
+	gchar *uri;
 
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
 	&& (track->format & BRASERO_IMAGE_FORMAT_CUE))
@@ -139,12 +133,9 @@ brasero_track_source_get_cue_localpath (BraseroTrackSource *track)
 	if (track->contents.image.toc [0] == '/')
 		return g_strdup (track->contents.image.toc);
 
-	if (!g_str_has_prefix (track->contents.image.toc, "file://"))
-		return NULL;
-
-	escaped_uri = gnome_vfs_escape_host_and_path_string (track->contents.image.toc);
-	localpath = gnome_vfs_get_local_path_from_uri (escaped_uri);
-	g_free (escaped_uri);
+    	uri = gnome_vfs_make_uri_from_input (track->contents.image.toc);
+	localpath = gnome_vfs_get_local_path_from_uri (uri);
+	g_free (uri);
 
 	return localpath;
 }

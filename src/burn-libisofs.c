@@ -465,13 +465,9 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	for (excluded = source->contents.data.excluded; excluded; excluded = excluded->next) {
 		gchar *uri;
 		gchar *path;
-		gchar *escaped_uri;
 
 		uri = excluded->data;
-		escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-		path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-		g_free (escaped_uri);
-			
+		path = gnome_vfs_get_local_path_from_uri (uri);
 		iso_exclude_add_path (path);
 		g_free (path);
 	}
@@ -493,12 +489,9 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
 			gchar *uri;
 			gchar *path;
-			gchar *escaped_uri;
 
 			uri = excluded->data;
-			escaped_uri = gnome_vfs_escape_host_and_path_string (uri);
-			path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-			g_free (escaped_uri);
+			path = gnome_vfs_get_local_path_from_uri (uri);
 			iso_exclude_add_path (path);
 
 			/* keep the path for later since we'll remove it */
@@ -508,12 +501,8 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		/* add the file/directory to the volume */
 		if (graft->uri) {
 			gchar *local_path;
-			gchar *escaped_uri;
 
-			escaped_uri = gnome_vfs_escape_host_and_path_string (graft->uri);
-			local_path = gnome_vfs_get_local_path_from_uri (escaped_uri);
-			g_free (escaped_uri);
-
+			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
 			node = iso_tree_volume_add_path (volume,
 							 graft->path,
 							 local_path);

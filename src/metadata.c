@@ -259,7 +259,6 @@ brasero_metadata_finalize (GObject *object)
 static gboolean
 brasero_metadata_create_pipeline (BraseroMetadata *metadata)
 {
-	gchar *uri;
 	GstBus *bus;
 
 	metadata->priv->pipeline = gst_pipeline_new (NULL);
@@ -270,11 +269,9 @@ brasero_metadata_create_pipeline (BraseroMetadata *metadata)
 						   metadata);
 	gst_object_unref (bus);
 
-	uri = gnome_vfs_escape_host_and_path_string (metadata->uri);
 	metadata->priv->source = gst_element_make_from_uri (GST_URI_SRC,
-							    uri,
+							    metadata->uri,
 							    NULL);
-	g_free (uri);
 
 	if (metadata->priv->source == NULL) {
 		metadata->priv->error = g_error_new (BRASERO_ERROR,
@@ -312,18 +309,15 @@ brasero_metadata_create_pipeline (BraseroMetadata *metadata)
 }
 
 BraseroMetadata *
-brasero_metadata_new (const char *uri)
+brasero_metadata_new (const gchar *uri)
 {
 	BraseroMetadata *obj = NULL;
-	char *unescaped_uri;
 
-	unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
-	if (gst_uri_is_valid (unescaped_uri)) {
+    	/* escaped URIS are only used by gnome vfs */
+	if (gst_uri_is_valid (uri)) {
 		obj = BRASERO_METADATA (g_object_new (BRASERO_TYPE_METADATA, NULL));
-		obj->uri = unescaped_uri;
+		obj->uri = g_strdup (uri);
 	}
-	else
-		g_free (unescaped_uri);
 
 	return obj;
 }
