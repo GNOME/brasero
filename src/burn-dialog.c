@@ -47,10 +47,6 @@
 #include <nautilus-burn-drive-monitor.h>
 #include <nautilus-burn-drive.h>
 
-#ifdef HAVE_LIBNOTIFY
-#include <libnotify/notify.h>
-#endif
-
 #include "utils.h"
 #include "disc.h"
 #include "tray.h"
@@ -1517,56 +1513,6 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 	return BRASERO_BURN_OK;
 }
 
-#ifdef HAVE_LIBNOTIFY
-
-static void
-brasero_burn_dialog_notify_daemon_close (NotifyNotification *notification,
-					 BraseroBurnDialog *dialog)
-{
-	if (dialog->priv->loop
-	&&  g_main_loop_is_running (dialog->priv->loop))
-		g_main_loop_quit (dialog->priv->loop);
-}
-
-gboolean
-brasero_burn_dialog_notify_daemon (BraseroBurnDialog *dialog,
-				   const gchar *primary,
-				   const gchar *secondary)
-{
-	NotifyNotification *notification;
-	gboolean result;
-
-	notification = notify_notification_new (primary,
-						secondary,
-						GTK_STOCK_CDROM,
-						GTK_STATUS_ICON (dialog->priv->tray));
-	if (!notification)
-		return FALSE;
-
-	g_signal_connect (notification,
-			  "closed",
-			  G_CALLBACK (brasero_burn_dialog_notify_daemon_close),
-			  dialog);
-
-	notify_notification_set_timeout (notification, TIMEOUT);
-	notify_notification_set_urgency (notification, NOTIFY_URGENCY_NORMAL);
-	result = notify_notification_show (notification, NULL);
-
-	/* now we wait for the notification to disappear or for the user to
-	 * click on the icon in the tray */
-	dialog->priv->loop = g_main_loop_new (NULL, FALSE);
-	g_main_loop_run (dialog->priv->loop);
-
-	if (dialog->priv->loop) {
-		g_main_loop_unref (dialog->priv->loop);
-		dialog->priv->loop = NULL;
-	}
-
-	return result;
-}
-
-#endif
-
 static void
 brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 {
@@ -1882,25 +1828,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 					      GTK_RESPONSE_OK);
 	}
 
-#ifdef HAVE_LIBNOTIFY
-
-	if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (dialog))) {
-		gchar *message;
-
-		message = g_strdup_printf ("%s.", primary);
-		brasero_burn_dialog_notify_daemon (dialog,
-						   primary,
-						   secondary);
-		g_free (message);
-	}
-	else
-		brasero_burn_dialog_success_run (dialog);
-
-#else
-
 	brasero_burn_dialog_success_run (dialog);
-
-#endif
 
 	g_free (primary);
 	g_free (secondary);

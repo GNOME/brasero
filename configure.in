@@ -89,24 +89,25 @@ fi
 AM_CONDITIONAL(HAVE_LIBBURN, test x"$build_libburn" = "xyes")
 
 dnl ****************check for libnotify (optional)**************
-LIBNOTIFY_REQUIRED=0.3.0
+dnl maybe it will be re-enabled later if I can find a use for it
+dnl LIBNOTIFY_REQUIRED=0.3.0
 
-AC_ARG_ENABLE(libnotify,
-			[  --enable-libnotify		use libnotify if available [[default = yes]]],,
-			[enable_libnotify="yes"])
+dnl AC_ARG_ENABLE(libnotify,
+dnl			[  --enable-libnotify		use libnotify if available [[default = yes]]],,
+dnl			[enable_libnotify="yes"])
 
-if test x"$enable_libnotify" = "xyes"; then
-	PKG_CHECK_MODULES(LIBNOTIFY, libnotify >= $LIBNOTIFY_REQUIRED, build_libnotify=yes, build_libnotify=no)
-else
-	build_libnotify="no"
-fi
+dnl if test x"$enable_libnotify" = "xyes"; then
+dnl	PKG_CHECK_MODULES(LIBNOTIFY, libnotify >= $LIBNOTIFY_REQUIRED, build_libnotify=yes, build_libnotify=no)
+dnl else
+dnl	build_libnotify="no"
+dnl fi
 
-if test x"$build_libnotify" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBNOTIFY_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $LIBNOTIFY_LIBS"
-	AC_DEFINE(HAVE_LIBNOTIFY, 1, [define if you  want to use with libnotify support])
-fi
-AM_CONDITIONAL(HAVE_LIBNOTIFY, test x"$build_libnotify" = "xyes")
+dnl if test x"$build_libnotify" = "xyes"; then
+dnl	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBNOTIFY_CFLAGS"
+dnl	BRASERO_LIBS="$BRASERO_LIBS $LIBNOTIFY_LIBS"
+dnl	AC_DEFINE(HAVE_LIBNOTIFY, 1, [define if you  want to use with libnotify support])
+dnl fi
+dnl AM_CONDITIONAL(HAVE_LIBNOTIFY, test x"$build_libnotify" = "xyes")
 
 dnl ****************check for search (optional)**************
 BEAGLE_REQUIRED=0.1.1

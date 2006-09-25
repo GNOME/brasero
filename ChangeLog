@@ -1,5 +1,12 @@
 2006-09-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* configure.in:
+	* src/burn-dialog.c: (brasero_burn_dialog_notify_success):
+
+	Removed dependency on libnotify since we weren't really using it anyway
+
+2006-09-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* data/brasero.desktop.in:
 	* src/Makefile.am:
 	* src/audio-disc.c: (brasero_audio_disc_init),
