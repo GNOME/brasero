@@ -327,7 +327,7 @@ brasero_app_create_app (void)
 	g_signal_connect (G_OBJECT (app->mainwin), "destroy",
 			  G_CALLBACK (on_destroy_cb), app);
 
-	/* status bar FIXME: what for ??? */
+	/* status bar to display the size of selected files */
 	app->statusbar = gtk_statusbar_new ();
 	gnome_app_set_statusbar (GNOME_APP (app->mainwin), app->statusbar);
 
@@ -335,6 +335,8 @@ brasero_app_create_app (void)
 	app->contents = brasero_project_manager_new ();
 	gtk_widget_show (app->contents);
 	gnome_app_set_contents (GNOME_APP (app->mainwin), app->contents);
+    	brasero_project_manager_set_status (BRASERO_PROJECT_MANAGER (app->contents),
+					    app->statusbar);
 
 	/* menu and toolbar */
 	app->manager = gtk_ui_manager_new ();

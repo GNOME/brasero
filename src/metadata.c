@@ -66,6 +66,7 @@ struct BraseroMetadataPrivate {
 	guint stop_id;
 
 	gint fast:1;
+	gint started:1;
 	gint complete_at_playing:1;
 };
 
@@ -191,6 +192,7 @@ brasero_metadata_set_property (GObject *obj,
 				      NULL);
 		gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
 				       GST_STATE_PAUSED);
+		meta->priv->started = 1;
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
@@ -204,6 +206,80 @@ brasero_metadata_init (BraseroMetadata *obj)
 	obj->priv = g_new0 (BraseroMetadataPrivate, 1);
 }
 
+void
+brasero_metadata_stop_pipeline (BraseroMetadata *meta)
+{
+	GstStateChangeReturn change;
+
+	if (!meta->priv->pipeline)
+		return;
+
+	if (meta->priv->watch) {
+		g_source_remove (meta->priv->watch);
+		meta->priv->watch = 0;
+	}
+
+	meta->priv->started = 0;
+
+	/* better to wait for the state change to be completed */
+	change = gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
+					GST_STATE_READY);
+
+	while (change == GST_STATE_CHANGE_ASYNC) {
+		GstState state;
+		GstState pending;
+
+		change = gst_element_get_state (meta->priv->pipeline,
+						&state,
+						&pending,
+						GST_MSECOND);
+	};
+	
+	change = gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
+					GST_STATE_NULL);
+
+	while (change == GST_STATE_CHANGE_ASYNC) {
+		GstState state;
+		GstState pending;
+
+		change = gst_element_get_state (meta->priv->pipeline,
+						&state,
+						&pending,
+						GST_MSECOND);
+	}
+
+	if (change == GST_STATE_CHANGE_FAILURE)
+		g_warning ("State change failure\n");
+
+	gst_object_unref (GST_OBJECT (meta->priv->pipeline));
+	meta->priv->pipeline = NULL;
+}
+
+void
+brasero_metadata_cancel (BraseroMetadata *meta)
+{
+	if (meta->priv->stop_id)
+		return;
+
+	brasero_metadata_stop_pipeline (meta);
+}
+
+static void
+brasero_metadata_stop (BraseroMetadata *meta)
+{
+	if (meta->priv->stop_id) {
+		g_source_remove (meta->priv->stop_id);
+		meta->priv->stop_id = 0;
+	}
+
+	if (meta->priv->error) {
+		g_error_free (meta->priv->error);
+		meta->priv->error = NULL;
+	}
+
+	brasero_metadata_stop_pipeline (meta);
+}
+
 static void
 brasero_metadata_finalize (GObject *object)
 {
@@ -211,26 +287,10 @@ brasero_metadata_finalize (GObject *object)
 
 	cobj = BRASERO_METADATA (object);
 
-	if (cobj->priv->stop_id) {
-		g_source_remove (cobj->priv->stop_id);
-		cobj->priv->stop_id = 0;
-	}
+	brasero_metadata_stop (cobj);
 
-	if (cobj->priv->watch) {
-		g_source_remove (cobj->priv->watch);
-		cobj->priv->watch = 0;
-	}
-
-	if (cobj->priv->pipeline) {
-		gst_element_set_state (GST_ELEMENT (cobj->priv->pipeline), GST_STATE_NULL);
-		gst_object_unref (cobj->priv->pipeline);
-		cobj->priv->pipeline = NULL;
-	}
-
-	if (cobj->uri) {
+	if (cobj->uri)
 		g_free (cobj->uri);
-		cobj->uri = NULL;
-	}
 
 	if (cobj->type)
 		g_free (cobj->type);
@@ -246,11 +306,6 @@ brasero_metadata_finalize (GObject *object)
 
 	if (cobj->musicbrainz_id)
 		g_free (cobj->musicbrainz_id);
-
-	if (cobj->priv->error) {
-		g_error_free (cobj->priv->error);
-		cobj->priv->error = NULL;
-	}
 
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -305,6 +360,7 @@ brasero_metadata_create_pipeline (BraseroMetadata *metadata)
 	}
 	gst_bin_add (GST_BIN (metadata->priv->pipeline), metadata->priv->sink);
 
+	gst_element_set_state (GST_ELEMENT (metadata->priv->pipeline), GST_STATE_READY);
 	return TRUE;
 }
 
@@ -313,7 +369,7 @@ brasero_metadata_new (const gchar *uri)
 {
 	BraseroMetadata *obj = NULL;
 
-    	/* escaped URIS are only used by gnome vfs */
+	/* escaped URIS are only used by gnome vfs */
 	if (gst_uri_is_valid (uri)) {
 		obj = BRASERO_METADATA (g_object_new (BRASERO_TYPE_METADATA, NULL));
 		obj->uri = g_strdup (uri);
@@ -331,6 +387,7 @@ brasero_metadata_is_seekable (BraseroMetadata *meta)
 
 	meta->is_seekable = FALSE;
 	query = gst_query_new_seeking (GST_FORMAT_DEFAULT);
+
 	if (!gst_element_query (meta->priv->pipeline, query))
 		goto end;
 
@@ -418,6 +475,8 @@ brasero_metadata_completed (BraseroMetadata *meta, gboolean eos)
 							 BRASERO_ERROR_GENERAL,
 							 _("this format is not supported by gstreamer"));
 		}
+
+		gst_query_unref (query);
 		goto signal;
 	}
 	gst_query_parse_duration (query, NULL, &duration);
@@ -433,7 +492,7 @@ brasero_metadata_completed (BraseroMetadata *meta, gboolean eos)
 	brasero_metadata_is_seekable (meta);
 
 signal:
-	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_NULL);
+	brasero_metadata_stop_pipeline (meta);
 
 	if (!meta->priv->loop
 	||  !g_main_loop_is_running (meta->priv->loop)) {
@@ -492,7 +551,7 @@ foreach_tag (const GstTagList *list,
 }
 
 static gboolean
-brasero_metadata_stop_pipeline_timeout (BraseroMetadata *meta)
+brasero_metadata_pipeline_timeout_cb (BraseroMetadata *meta)
 {
 	GstBus *bus;
 
@@ -526,13 +585,13 @@ brasero_metadata_stop_pipeline_timeout (BraseroMetadata *meta)
 }
 
 static void
-brasero_metadata_stop_pipeline (BraseroMetadata *meta)
+brasero_metadata_pipeline_timeout (BraseroMetadata *meta)
 {
 	if (meta->priv->stop_id)
 		return;
 
 	meta->priv->stop_id = g_timeout_add (1000,
-					     (GSourceFunc) brasero_metadata_stop_pipeline_timeout,
+					     (GSourceFunc) brasero_metadata_pipeline_timeout_cb,
 					     meta);
 }
 
@@ -583,11 +642,11 @@ brasero_metadata_bus_messages (GstBus *bus,
 
 		if (newstate == GST_STATE_PAUSED
 		&& !meta->priv->complete_at_playing)
-			brasero_metadata_stop_pipeline (meta);
+			brasero_metadata_pipeline_timeout (meta);
 
 		if (newstate == GST_STATE_PLAYING
 		&& !meta->priv->complete_at_playing)
-			brasero_metadata_stop_pipeline (meta);
+			brasero_metadata_pipeline_timeout (meta);
 
 		break;
 
@@ -641,7 +700,7 @@ brasero_metadata_get_sync (BraseroMetadata *meta, gboolean fast, GError **error)
 	}
 
 	meta->priv->fast = (fast == TRUE);
-
+	meta->priv->started = 1;
 	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_PLAYING);
 
 	meta->priv->loop = g_main_loop_new (NULL, FALSE);
@@ -649,7 +708,7 @@ brasero_metadata_get_sync (BraseroMetadata *meta, gboolean fast, GError **error)
 	g_main_loop_unref (meta->priv->loop);
 	meta->priv->loop = NULL;
 
-	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_NULL);
+	brasero_metadata_stop_pipeline (meta);
 	if (meta->priv->error) {
 		if (error) {
 			g_propagate_error (error, meta->priv->error);
@@ -688,24 +747,7 @@ brasero_metadata_get_async (BraseroMetadata *meta, gboolean fast)
 		return FALSE;
 	}
 
+	meta->priv->started = 1;
 	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_PLAYING);
 	return TRUE;
-}
-
-void
-brasero_metadata_cancel (BraseroMetadata *meta)
-{
-	if (meta->priv->stop_id)
-		return;
-
-	if (meta->priv->pipeline) {
-		if (meta->priv->watch) {
-			g_source_remove (meta->priv->watch);
-			meta->priv->watch = 0;
-		}
-
-		gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_NULL);
-		gst_object_unref (GST_OBJECT (meta->priv->pipeline));
-		meta->priv->pipeline = NULL;
-	}
 }

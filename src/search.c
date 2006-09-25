@@ -431,6 +431,7 @@ brasero_search_init (BraseroSearch *obj)
 	gtk_file_filter_add_pattern (file_filter, "*");
 	brasero_mime_filter_add_filter (BRASERO_MIME_FILTER (obj->priv->filter),
 					file_filter);
+	g_object_unref (file_filter);
 
 	gtk_box_pack_end (GTK_BOX (box), obj->priv->filter, FALSE, FALSE, 0);
 

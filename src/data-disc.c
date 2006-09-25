@@ -785,6 +785,9 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 
 	/* Tree */
 	obj->priv->tree = gtk_tree_view_new ();
+	gtk_tree_view_set_enable_tree_lines (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+
 	gtk_widget_show (obj->priv->tree);
 	g_signal_connect (G_OBJECT (obj->priv->tree),
 			  "button-press-event",
@@ -2362,7 +2365,7 @@ brasero_data_disc_get_info_async (BraseroDataDisc *disc,
 				  gpointer user_data,
 				  BraseroInfoAsyncDestroyFunc destroy_func)
 {
-	char *uri;
+	gchar *uri;
 	GetFileInfoAsyncData *callback_data;
 
 	if (!disc->priv->jobs)

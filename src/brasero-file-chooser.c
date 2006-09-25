@@ -195,13 +195,13 @@ brasero_file_chooser_get_selected_uris (BraseroURIContainer *container)
 {
 	BraseroFileChooser *chooser;
 	GSList *list, *iter;
-	char **uris;
-	int i;
+	gchar **uris;
+	gint i;
 
 	chooser = BRASERO_FILE_CHOOSER (container);
 	list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser->priv->chooser));
 
-	uris = g_new0 (char*, g_slist_length (list) + 1);
+	uris = g_new0 (gchar*, g_slist_length (list) + 1);
 	i = 0;
 
 	for (iter = list; iter; iter = iter->next) {

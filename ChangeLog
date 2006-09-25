@@ -1,3 +1,63 @@
+2006-09-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* data/brasero.desktop.in:
+	* src/Makefile.am:
+	* src/audio-disc.c: (brasero_audio_disc_init),
+	(brasero_audio_disc_reset_real), (brasero_audio_disc_finalize),
+	(brasero_audio_disc_new), (brasero_audio_disc_get_track_num),
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_result),
+	(brasero_audio_disc_vfs_operation_finished),
+	(brasero_audio_disc_visit_dir_async), (brasero_audio_disc_add_dir),
+	(brasero_audio_disc_add_playlist),
+	(brasero_audio_disc_unreadable_dialog),
+	(brasero_audio_disc_new_row_cb), (brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_add_pause_cb),
+	(brasero_audio_disc_inotify_attributes_changed_cb),
+	(brasero_audio_disc_inotify_attributes_changed):
+	* src/brasero-file-chooser.c:
+	(brasero_file_chooser_get_selected_uris):
+	* src/brasero-project-manager.c: (brasero_project_manager_init),
+	(brasero_project_manager_finalize),
+	(brasero_project_manager_size_preview),
+	(brasero_project_manager_selected_uris_changed),
+	(brasero_project_manager_set_status),
+	(brasero_project_manager_burn_iso),
+	(brasero_project_manager_switch),
+	(brasero_project_manager_open_cb), (brasero_project_manager_open),
+	(brasero_project_manager_load_session):
+	* src/brasero-project-manager.h:
+	* src/data-disc.c: (brasero_data_disc_init),
+	(brasero_data_disc_get_info_async):
+	* src/main.c: (brasero_app_create_app):
+	* src/metadata.c: (brasero_metadata_set_property),
+	(brasero_metadata_stop_pipeline), (brasero_metadata_cancel),
+	(brasero_metadata_stop), (brasero_metadata_finalize),
+	(brasero_metadata_create_pipeline), (brasero_metadata_new),
+	(brasero_metadata_is_seekable), (brasero_metadata_completed),
+	(brasero_metadata_pipeline_timeout_cb),
+	(brasero_metadata_pipeline_timeout),
+	(brasero_metadata_bus_messages), (brasero_metadata_get_sync),
+	(brasero_metadata_get_async):
+	* src/play-list.c: (brasero_playlist_init),
+	(brasero_playlist_drag_data_get_cb),
+	(brasero_playlist_get_song_metadata_completed):
+	* src/player.c: (brasero_player_destroy),
+	(brasero_player_set_length), (brasero_player_metadata_completed),
+	(brasero_player_set_uri_timeout), (brasero_player_set_uri),
+	(brasero_player_scale_format_value),
+	(brasero_player_source_selection_changed_cb):
+	* src/project.c: (brasero_project_transfer_uris_from_src),
+	(brasero_project_load_session), (brasero_project_save_project_xml):
+	* src/search.c: (brasero_search_init):
+
+	New abitilty to indicate the size of selected files
+	Fixed some leaks
+	Code cleanup
+	Fixed number of songs displayed in playlist widget
+	Fixed the display of duration and position in preview widget
+	Miscellaneous small improvements and fixes
+
 2006-09-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* po/fr.po:

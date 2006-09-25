@@ -158,7 +158,11 @@ brasero_SOURCES = \
 	brasero-sum-check.c         \
 	brasero-sum-check.h         \
 	burn-task.c         \
-	burn-task.h 
+	burn-task.h         \
+	brasero-vfs.c         \
+	brasero-vfs.h         \
+	brasero-async-task-manager.c         \
+	brasero-async-task-manager.h 
 
 brasero_LDFLAGS =
 

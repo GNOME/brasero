@@ -46,9 +46,10 @@
 #include <gtk/gtkmessagedialog.h>
 
 #include "player.h"
-#include "metadata.h"
 #include "player-bacon.h"
 #include "utils.h"
+#include "metadata.h"
+#include "brasero-vfs.h"
 #include "brasero-uri-container.h"
 
 static void brasero_player_class_init (BraseroPlayerClass *klass);
@@ -96,10 +97,13 @@ struct BraseroPlayerPrivate {
 	GtkWidget *size;
 	guint update_scale_id;
 	guint set_uri_id;
+
 	BraseroPlayerBaconState state;
 
-	BraseroMetadata *metadata;
-	char *uri;
+	BraseroVFS *vfs;
+	BraseroVFSDataID meta_task;
+
+	gchar *uri;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -197,12 +201,6 @@ brasero_player_destroy (GtkObject *obj)
 	if (player->priv->update_scale_id) {
 		g_source_remove (player->priv->update_scale_id);
 		player->priv->update_scale_id = 0;
-	}
-
-	if (player->priv->metadata) {
-		brasero_metadata_cancel (player->priv->metadata);
-		g_object_unref (player->priv->metadata);
-		player->priv->metadata = NULL;
 	}
 
 	if (player->priv->uri) {
@@ -331,13 +329,13 @@ brasero_player_create_controls_stream (BraseroPlayer *player)
 static void
 brasero_player_set_length (BraseroPlayer *player, gint64 len)
 {
-	char *time_string;
-	char *len_string;
+	gchar *time_string;
+	gchar *len_string;
 
 	if (len == -1)
 		return;
 
-	time_string = brasero_utils_get_time_string (len, FALSE, TRUE);
+	time_string = brasero_utils_get_time_string (len, FALSE, FALSE);
 	len_string = g_strdup_printf (_("out of %s"), time_string);
 	g_free (time_string);
 	gtk_label_set_text (GTK_LABEL (player->priv->size), len_string);
@@ -514,25 +512,21 @@ brasero_player_update_info_real (BraseroPlayer *player,
 }
 
 static void
-brasero_player_metadata_completed (BraseroMetadata *metadata,
-				   const GError *error,
-				   BraseroPlayer *player)
+brasero_player_metadata_completed (BraseroVFS *vfs,
+				   GObject *obj,
+				   GnomeVFSResult result,
+				   const gchar *uri,
+				   GnomeVFSFileInfo *info,
+				   BraseroMetadata *metadata,
+				   gpointer null_data)
 {
-	if (error) {
-		/* see if it's not an image */
-		if (metadata->type
-		&&  !strncmp ("image/", metadata->type, 6))
-			brasero_player_image (player);
-		else
-			brasero_player_no_multimedia_stream (player);
+	BraseroPlayer *player = BRASERO_PLAYER (obj);
 
-		player->priv->metadata = NULL;
-		g_object_unref (metadata);
+	if (result != GNOME_VFS_OK)
 		return;
-	}
 
 	/* based on the mime type, we try to determine the type of file */
-	if (metadata->has_video) {
+	if (metadata && metadata->has_video) {
 		/* video */
 		brasero_player_create_controls_stream (player);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
@@ -546,7 +540,7 @@ brasero_player_metadata_completed (BraseroMetadata *metadata,
 		gtk_widget_hide (player->priv->image_display);
 		gtk_widget_show (player->priv->notebook);
 	}
-	else if (metadata->has_audio) {
+	else if (metadata && metadata->has_audio) {
 		/* audio */
 		brasero_player_create_controls_stream (player);
 		gtk_widget_hide (player->priv->notebook);
@@ -557,12 +551,15 @@ brasero_player_metadata_completed (BraseroMetadata *metadata,
 		else
 			gtk_widget_set_sensitive (player->priv->progress, FALSE);
 	}
-	else if (!strncmp ("image/", metadata->type, 6)) {
+	else if (info
+	     &&  info->mime_type
+	     && !strncmp ("image/", info->mime_type, 6)) {
 		brasero_player_image (player);
 		return;
 	}
 	else {
 		brasero_player_destroy_controls (player);
+		brasero_player_no_multimedia_stream (player);
 		return;
 	}
 
@@ -573,27 +570,31 @@ brasero_player_metadata_completed (BraseroMetadata *metadata,
 					 metadata->len);
 
 	player->priv->state = BACON_STATE_READY;
-
-	player->priv->metadata = NULL;
-	g_object_unref (metadata);
 }
 
 static gboolean
 brasero_player_set_uri_timeout (BraseroPlayer *player)
 {
-	BraseroMetadata *metadata;
+	GList *uris;
 
-	metadata = brasero_metadata_new (player->priv->uri);
-	if (!metadata)
-		return FALSE;
+	if (!player->priv->vfs)
+		player->priv->vfs = brasero_vfs_get_default ();
 
-	player->priv->metadata = metadata;
-	g_signal_connect (player->priv->metadata,
-			  "completed",
-			  G_CALLBACK (brasero_player_metadata_completed),
-			  player);
+	if (!player->priv->meta_task)
+		player->priv->meta_task = brasero_vfs_register_data_type (player->priv->vfs,
+									  G_OBJECT (player),
+									  G_CALLBACK (brasero_player_metadata_completed),
+									  NULL);
 
-	brasero_metadata_get_async (player->priv->metadata, TRUE);
+	uris = g_list_prepend (NULL, player->priv->uri);
+	brasero_vfs_get_metadata (player->priv->vfs,
+				  uris,
+				  GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+				  FALSE,
+				  player->priv->meta_task,
+				  NULL);
+	g_list_free (uris);
+
 	player->priv->set_uri_id = 0;
 
 	return FALSE;
@@ -612,10 +613,8 @@ brasero_player_set_uri (BraseroPlayer *player, const char *uri)
 
 	player->priv->uri = g_strdup (uri);
 
-	if (player->priv->metadata) {
-		brasero_metadata_cancel (player->priv->metadata);
-		g_object_unref (player->priv->metadata);
-		player->priv->metadata = NULL;
+	if (player->priv->vfs) {
+		brasero_vfs_cancel (player->priv->vfs, player);
 	}
 
 	if (player->priv->set_uri_id) {
@@ -785,14 +784,14 @@ brasero_player_scale_format_value (GtkScale *scale,
 				   gdouble value,
 				   BraseroPlayer *player)
 {
-	return brasero_utils_get_time_string (value, FALSE, TRUE);
+	return brasero_utils_get_time_string (value, FALSE, FALSE);
 }
 
 static void
 brasero_player_source_selection_changed_cb (BraseroURIContainer *source,
 					    BraseroPlayer *player)
 {
-	char *uri;
+	gchar *uri;
 
 	uri = brasero_uri_container_get_selected_uri (source);
 	brasero_player_set_uri (player, uri);

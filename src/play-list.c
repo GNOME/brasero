@@ -269,12 +269,11 @@ brasero_playlist_init (BraseroPlaylist *obj)
 				    G_TYPE_INT64);
 
 	obj->priv->tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
-	gtk_tree_view_set_headers_clickable (GTK_TREE_VIEW
-					     (obj->priv->tree), TRUE);
-	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (obj->priv->tree),
-					 TRUE);
-	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree),
-				      TRUE);
+	gtk_tree_view_set_enable_tree_lines (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	gtk_tree_view_set_headers_clickable (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	gtk_tree_view_set_expander_column (GTK_TREE_VIEW (obj->priv->tree),
 					   BRASERO_PLAYLIST_DISPLAY_COL);
 
@@ -771,7 +770,7 @@ brasero_playlist_drag_data_get_cb (GtkTreeView *tree,
 				   guint info,
 				   guint time, BraseroPlaylist *playlist)
 {
-	char **uris;
+	gchar **uris;
 
 	uris = brasero_playlist_get_selected_uris_real (playlist);
 	gtk_selection_data_set_uris (selection_data, uris);
@@ -812,7 +811,27 @@ brasero_playlist_get_song_metadata_completed (BraseroMetadata *metadata,
 	gtk_tree_model_get_iter (model, &parent, treepath);
 	gtk_tree_path_free (treepath);
 
-	/* update the parent */
+    	/* See if the song can be added */
+	if (!error) {
+		gtk_tree_store_append (GTK_TREE_STORE (model), &row, &parent);
+
+		if (metadata->len > 0)
+			len_string = brasero_utils_get_time_string (metadata->len, TRUE, FALSE);
+		else
+			len_string = NULL;
+
+		BRASERO_GET_BASENAME_FOR_DISPLAY (song->uri, name);
+		gtk_tree_store_set (GTK_TREE_STORE (model), &row,
+				    BRASERO_PLAYLIST_DISPLAY_COL, song->title ? song->title: (metadata->title ? metadata->title : name),
+				    BRASERO_PLAYLIST_LEN_COL, len_string,
+				    BRASERO_PLAYLIST_GENRE_COL, song->genre,
+				    BRASERO_PLAYLIST_URI_COL, song->uri,
+				    BRASERO_PLAYLIST_DSIZE_COL, metadata->len,
+				    -1);
+		g_free (name);
+		g_free (len_string);
+	}
+	/* update the parent display */
 	num = gtk_tree_model_iter_n_children (model, &parent);
 	if (!num)
 		num_string = g_strdup (_("empty"));
@@ -837,30 +856,6 @@ brasero_playlist_get_song_metadata_completed (BraseroMetadata *metadata,
 			    -1);
 	g_free (len_string);
 	g_free (num_string);
-
-    	/* See if the song can be added */
-	if (error)
-		goto end;
-
-	gtk_tree_store_append (GTK_TREE_STORE (model), &row, &parent);
-
-    	if (metadata->len > 0)
-		len_string = brasero_utils_get_time_string (metadata->len, TRUE, FALSE);
-	else
-		len_string = NULL;
-
-	BRASERO_GET_BASENAME_FOR_DISPLAY (song->uri, name);
-	gtk_tree_store_set (GTK_TREE_STORE (model), &row,
-			    BRASERO_PLAYLIST_DISPLAY_COL, song->title ? song->title: (metadata->title ? metadata->title : name),
-			    BRASERO_PLAYLIST_LEN_COL, len_string,
-			    BRASERO_PLAYLIST_GENRE_COL, song->genre,
-			    BRASERO_PLAYLIST_URI_COL, song->uri,
-			    BRASERO_PLAYLIST_DSIZE_COL, metadata->len,
-			    -1);
-	g_free (name);
-	g_free (len_string);
-
-end:
 
 	brasero_playlist_pop_and_free_song (playlist);
 	g_object_unref (playlist->priv->metadata);

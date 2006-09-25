@@ -1143,8 +1143,8 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 static void
 brasero_project_transfer_uris_from_src (BraseroProject *project)
 {
-	char **uris;
-	char **uri;
+	gchar **uris;
+	gchar **uri;
 
 	uris = brasero_uri_container_get_selected_uris (project->priv->current_source);
 	if (!uris)
@@ -1155,6 +1155,8 @@ brasero_project_transfer_uris_from_src (BraseroProject *project)
 		brasero_disc_add_uri (project->priv->current, *uri);
 		uri ++;
 	}
+
+	g_strfreev (uris);
 }
 
 static void
@@ -1723,19 +1725,22 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
     	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO)
+	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
 		brasero_project_switch (project, TRUE);
-	else if (track->type == BRASERO_DISC_TRACK_DATA)
+		type = BRASERO_PROJECT_TYPE_AUDIO;
+	}
+	else if (track->type == BRASERO_DISC_TRACK_DATA) {
 		brasero_project_switch (project, FALSE);
+		type = BRASERO_PROJECT_TYPE_DATA;
+	}
 	else {
 	    	brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
 
 	brasero_disc_load_track (project->priv->current, track);
-
-    	type = track->type;
 	brasero_track_free (track);
+
     	return type;
 }
 
@@ -1872,6 +1877,8 @@ brasero_project_save_project_xml (BraseroProject *proj,
 
 	project = xmlNewTextWriterFilename (path, 0);
 	if (!project) {
+		g_free (path);
+
 	    	if (use_dialog)
 			brasero_project_not_saved_dialog (proj);
 
@@ -1942,13 +1949,16 @@ brasero_project_save_project_xml (BraseroProject *proj,
 
 	xmlTextWriterEndDocument (project);
 	xmlFreeTextWriter (project);
+	g_free (path);
 	return TRUE;
 
 error:
 
 	xmlTextWriterEndDocument (project);
 	xmlFreeTextWriter (project);
+
 	g_remove (path);
+	g_free (path);
 
     	if (use_dialog)
 		brasero_project_not_saved_dialog (proj);
