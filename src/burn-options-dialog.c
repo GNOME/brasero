@@ -71,10 +71,15 @@ brasero_burn_option_dialog_media_changed (BraseroRecorderSelection *selection,
 					  BraseroBurnOptionDialog *dialog);
 
 struct BraseroBurnOptionDialogPrivate {
+	BraseroBurnCaps *caps;
+
+	BraseroTrackSource *track;
+
 	GtkWidget *video_toggle;
 	GtkWidget *joliet_toggle;
 	GtkWidget *checksum_toggle;
 	GtkWidget *append_check;
+	GtkWidget *close_check;
 
 	GtkWidget *selection;
 	GtkWidget *label;
@@ -136,6 +141,8 @@ brasero_burn_option_dialog_init (BraseroBurnOptionDialog *obj)
 	g_object_ref (obj->priv->tooltips);
 	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
 
+	obj->priv->caps = brasero_burn_caps_get_default ();
+
 	/* first box */
 	obj->priv->selection = brasero_recorder_selection_new ();
 	g_object_set (G_OBJECT (obj->priv->selection),
@@ -178,6 +185,8 @@ brasero_burn_option_dialog_init (BraseroBurnOptionDialog *obj)
 			  G_CALLBACK (brasero_burn_option_dialog_burn_clicked_cb),
 			  obj);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj), burn, GTK_RESPONSE_OK);
+
+	gtk_widget_show_all (GTK_WIDGET (obj));
 }
 
 static void
@@ -186,6 +195,13 @@ brasero_burn_option_dialog_finalize (GObject *object)
 	BraseroBurnOptionDialog *cobj;
 
 	cobj = BRASERO_BURN_OPTION_DIALOG (object);
+
+	g_object_unref (cobj->priv->caps);
+
+	if (cobj->priv->track) {
+		brasero_track_source_free (cobj->priv->track);
+		cobj->priv->track = NULL;
+	}
 
 	if (cobj->priv->tooltips) {
 		g_object_unref (cobj->priv->tooltips);
@@ -201,9 +217,9 @@ brasero_burn_option_set_title_widget (BraseroBurnOptionDialog *dialog,
 				      gboolean is_data)
 {
 	GtkWidget *widget;
-	char buffer [128];
-	char *title_str;
-	char *label;
+	gchar buffer [128];
+	gchar *title_str;
+	gchar *label;
 	time_t t;
 
 	dialog->priv->label = gtk_entry_new ();
@@ -239,131 +255,207 @@ brasero_burn_option_set_title_widget (BraseroBurnOptionDialog *dialog,
 }
 
 GtkWidget *
-brasero_burn_option_dialog_new (const BraseroTrackSource *track)
+brasero_burn_option_dialog_new (void)
 {
 	BraseroBurnOptionDialog *obj;
-	GtkWidget *widget = NULL;
 	
 	obj = BRASERO_BURN_OPTION_DIALOG (g_object_new (BRASERO_TYPE_BURN_OPTION_DIALOG,
 							"title", _("Disc burning setup"),
 							NULL));
+	return GTK_WIDGET (obj);
+}
 
-	brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (obj->priv->selection),
+static void
+brasero_burn_option_dialog_add_multisession (BraseroBurnOptionDialog *dialog,
+					     GtkWidget *box)
+{
+	GtkWidget *dont_close_check;
+	GtkWidget *append_check;
+	GtkWidget *options;
+
+	/* multisession options */
+	append_check = gtk_check_button_new_with_label (_("Append the files to those already on the disc"));
+	dialog->priv->append_check = append_check;
+	gtk_tooltips_set_tip (dialog->priv->tooltips,
+			      append_check,
+			      _("Add these data to those already on the disc instead of replacing them"),
+			      _("Add these data to those already on the disc instead of replacing them"));
+	g_signal_connect (G_OBJECT (append_check),
+			  "toggled",
+			  G_CALLBACK (brasero_burn_option_dialog_append_toggled_cb),
+			  dialog);
+
+	/* DVD don't need that */
+	dont_close_check = gtk_check_button_new_with_label (_("Leave the disc open to add other files later"));
+	dialog->priv->close_check = dont_close_check;
+	gtk_tooltips_set_tip (dialog->priv->tooltips,
+			      dont_close_check,
+			      _("Allow to add more data to the disc later"),
+			      _("Allow to add more data to the disc later"));
+	g_signal_connect (G_OBJECT (dont_close_check),
+			  "toggled",
+			  G_CALLBACK (brasero_burn_option_dialog_dont_close_toggled_cb),
+			  dialog);
+
+	options = brasero_utils_pack_properties (_("<b>Multisession</b>"),
+						 dont_close_check,
+						 append_check,
+						 NULL);
+	gtk_box_pack_start (GTK_BOX (box), options, FALSE, FALSE, 0);
+}
+
+static void
+brasero_burn_option_dialog_set_state (BraseroBurnOptionDialog *dialog)
+{
+	NautilusBurnMediaType media;
+	NautilusBurnDrive *drive = NULL;
+	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
+
+	/* get the media type and drive */
+	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
+					      &drive,
+					      NULL);
+	media = nautilus_burn_drive_get_media_type (drive);
+
+	/* This option is only available if the disc is appendable 
+	 * or if it's DVD since these latters are always appendable */
+	brasero_burn_caps_get_flags (dialog->priv->caps,
+				     dialog->priv->track,
+				     drive,
+				     &default_flags,
+				     &compulsory_flags,
+				     &supported_flags);
+
+	if ((supported_flags & BRASERO_BURN_FLAG_MERGE) == 0) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), FALSE);
+		gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
+	}
+	else if (compulsory_flags & BRASERO_BURN_FLAG_MERGE) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), TRUE);
+		gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
+	}
+	else {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check),
+					     (default_flags & BRASERO_BURN_FLAG_MERGE) != 0);
+		gtk_widget_set_sensitive (dialog->priv->append_check, TRUE);	
+	}
+
+	if ((supported_flags & BRASERO_BURN_FLAG_DONT_CLOSE) == 0) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check), FALSE);
+		gtk_widget_set_sensitive (dialog->priv->close_check, FALSE);
+	}
+	else if (compulsory_flags & BRASERO_BURN_FLAG_DONT_CLOSE) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check), TRUE);
+		gtk_widget_set_sensitive (dialog->priv->close_check, FALSE);
+	}
+	else {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check),
+					     (default_flags & BRASERO_BURN_FLAG_DONT_CLOSE) != 0);
+		gtk_widget_set_sensitive (dialog->priv->close_check, TRUE);
+	}
+
+	if (dialog->priv->video_toggle) {
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+			gtk_widget_set_sensitive (dialog->priv->video_toggle, TRUE);
+		else
+			gtk_widget_set_sensitive (dialog->priv->video_toggle, FALSE);
+	}
+
+	if (drive)	
+		nautilus_burn_drive_unref (drive);
+}
+
+void
+brasero_burn_option_dialog_set_track (BraseroBurnOptionDialog *dialog,
+				      const BraseroTrackSource *track)
+{
+	GtkWidget *widget = NULL;
+
+	brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
 						     track);
+
+	if (dialog->priv->track)
+		brasero_track_source_free (dialog->priv->track);
+
+	dialog->priv->track = brasero_track_source_copy (track);
 
 	/* keep a copy of the track for later */
 	if (track->type == BRASERO_TRACK_SOURCE_DATA) {
-		NautilusBurnDrive *drive = NULL;
-		GtkWidget *dont_close_check;
-		GtkWidget *append_check;
 		GConfClient *client;
 		GtkWidget *options;
 		gboolean checksum;
 
-		brasero_burn_option_set_title_widget (obj, TRUE);
+		brasero_burn_option_set_title_widget (dialog, TRUE);
 
 		widget = gtk_vbox_new (FALSE, 0);
 
-		append_check = gtk_check_button_new_with_label (_("Append the files to those already on the disc"));
-		gtk_tooltips_set_tip (obj->priv->tooltips,
-				      append_check,
-				      _("Add these data to those already on the disc instead of replacing them"),
-				      _("Add these data to those already on the disc instead of replacing them"));
-		g_signal_connect (G_OBJECT (append_check),
-				  "toggled",
-				  G_CALLBACK (brasero_burn_option_dialog_append_toggled_cb),
-				  obj);
-		obj->priv->append_check = append_check;
-
-		/* This option is only available if the disc is appendable */
-		brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
-						      &drive,
-						      NULL);
-		if (drive && nautilus_burn_drive_media_is_appendable (drive))
-			gtk_widget_set_sensitive (append_check, TRUE);
-		else
-			gtk_widget_set_sensitive (append_check, FALSE);
-
-		if (drive)	
-			nautilus_burn_drive_unref (drive);
-
-		dont_close_check = gtk_check_button_new_with_label (_("Leave the disc open to add other files later"));
-		gtk_tooltips_set_tip (obj->priv->tooltips,
-				      dont_close_check,
-				      _("Allow to add more data to the disc later"),
-				      _("Allow to add more data to the disc later"));
-		g_signal_connect (G_OBJECT (dont_close_check),
-				  "toggled",
-				  G_CALLBACK (brasero_burn_option_dialog_dont_close_toggled_cb),
-				  obj);
-		options = brasero_utils_pack_properties (_("<b>Multisession</b>"),
-							 append_check,
-							 dont_close_check,
-							 NULL);
-		gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
-
-		obj->priv->joliet_toggle = gtk_check_button_new_with_label (_("Increase compatibility with Windows systems"));
-		gtk_tooltips_set_tip (obj->priv->tooltips,
-				      obj->priv->joliet_toggle,
+		/* general options */
+		dialog->priv->joliet_toggle = gtk_check_button_new_with_label (_("Increase compatibility with Windows systems"));
+		gtk_tooltips_set_tip (dialog->priv->tooltips,
+				      dialog->priv->joliet_toggle,
 				      _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"),
 				      _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"));
 		/* NOTE: we take for granted that if the source does not require
 		 * to have the joliet extension, it's because it does have some
 		 * incompatible filenames inside */
 		if (!(track->format & BRASERO_IMAGE_FORMAT_JOLIET))
-			g_signal_connect (obj->priv->joliet_toggle,
+			g_signal_connect (dialog->priv->joliet_toggle,
 					  "toggled",
 					  G_CALLBACK (brasero_burn_option_dialog_joliet_toggled_cb),
-					  obj);
+					  dialog);
 		else
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (obj->priv->joliet_toggle), TRUE);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->joliet_toggle), TRUE);
 
-		obj->priv->checksum_toggle = gtk_check_button_new_with_label (_("Check data integrity"));
-		gtk_tooltips_set_tip (obj->priv->tooltips,
-				      obj->priv->checksum_toggle,
+		dialog->priv->checksum_toggle = gtk_check_button_new_with_label (_("Check data integrity"));
+		gtk_tooltips_set_tip (dialog->priv->tooltips,
+				      dialog->priv->checksum_toggle,
 				      _("Allow to check the integrity of files on the disc"),
 				      _("Allow to check the integrity of files on the disc"));
 
 		client = gconf_client_get_default ();
 		checksum = gconf_client_get_bool (client, KEY_ACTIVATE_CHECKSUM, NULL);
 		g_object_unref (client);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (obj->priv->checksum_toggle), checksum);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->checksum_toggle), checksum);
 
 		/* the following option is only shown if the source has the 
 		 * video format (checked in data-disc). Like above if there 
 		 * isn't this flag we assume it's not possible. Now, this 
 		 * options isn't checked by default */
 		if (track->format & BRASERO_IMAGE_FORMAT_VIDEO) {
-			obj->priv->video_toggle = gtk_check_button_new_with_label (_("Create a video DVD"));
-			gtk_tooltips_set_tip (obj->priv->tooltips,
-					      obj->priv->video_toggle,
+			dialog->priv->video_toggle = gtk_check_button_new_with_label (_("Create a video DVD"));
+			gtk_tooltips_set_tip (dialog->priv->tooltips,
+					      dialog->priv->video_toggle,
 					      _("Create a video DVD that can be played by all DVD readers"),
 					      _("Create a video DVD that can be played by all DVD readers"));
 		}
 
 		options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
-							 obj->priv->joliet_toggle,
-							 obj->priv->checksum_toggle,
-							 obj->priv->video_toggle,
+							 dialog->priv->joliet_toggle,
+							 dialog->priv->checksum_toggle,
+							 dialog->priv->video_toggle,
 							 NULL);
 		gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
-		g_object_set (obj->priv->selection, "file-image", TRUE, NULL);
+		/* multisession options */
+		brasero_burn_option_dialog_add_multisession (dialog, widget);
+
+		gtk_widget_show_all (widget);
+		brasero_burn_option_dialog_set_state (dialog);
+
+		g_object_set (dialog->priv->selection, "file-image", TRUE, NULL);
 	}
 	else
-		g_object_set (obj->priv->selection, "file-image", FALSE, NULL);
+		g_object_set (dialog->priv->selection, "file-image", FALSE, NULL);
 
 
-	if (widget) {
-		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (obj)->vbox),
+	if (widget)
+		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 				  widget,
-				  FALSE,
-				  FALSE,
+				  TRUE,
+				  TRUE,
 				  0);
-		gtk_widget_show_all (widget);
-	}
-
-	return GTK_WIDGET (obj);
 }
 
 static void
@@ -371,8 +463,7 @@ brasero_burn_option_dialog_media_changed (BraseroRecorderSelection *selection,
 					  NautilusBurnMediaType media,
 					  BraseroBurnOptionDialog *dialog)
 {
-	if (!dialog->priv->append_check)
-		return;
+	brasero_burn_option_dialog_set_state (dialog);
 }
 
 static void
@@ -456,25 +547,30 @@ brasero_burn_option_dialog_get_session_param (BraseroBurnOptionDialog *dialog,
 					      gboolean *checksum)
 {
 	BraseroDriveProp props;
+	BraseroBurnFlag tmp;
 
 	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
 					      drive,
 					      &props);
 
-	*flags = BRASERO_BURN_FLAG_NONE;
-
+	tmp = BRASERO_BURN_FLAG_NONE;
 	if (NCB_DRIVE_GET_TYPE (*drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		*output = props.output_path;
 		*speed = 0;
 	}
 	else {
-		*flags = BRASERO_BURN_FLAG_DONT_OVERWRITE;
+		tmp = BRASERO_BURN_FLAG_DONT_OVERWRITE;
 		*speed = props.props.drive_speed;
 		*output = NULL;
 	}
 
-	if (flags)
-		*flags |= props.flags | dialog->priv->flags;
+	if (flags) {
+		tmp |= props.flags | dialog->priv->flags;
+		if ((tmp & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0)
+			tmp |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+
+		*flags = tmp;
+	}
 
 	if (format) {
 		*format = BRASERO_IMAGE_FORMAT_NONE;
@@ -484,6 +580,7 @@ brasero_burn_option_dialog_get_session_param (BraseroBurnOptionDialog *dialog,
 			*format |= BRASERO_IMAGE_FORMAT_JOLIET;
 
 		if (dialog->priv->video_toggle
+		&&  GTK_WIDGET_IS_SENSITIVE (dialog->priv->video_toggle)
 		&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->video_toggle)))
 			*format |= BRASERO_IMAGE_FORMAT_VIDEO;
 	}

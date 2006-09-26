@@ -123,6 +123,7 @@ brasero_burn_session_logv (BraseroBurnSession *session,
 			   va_list arg_list)
 {
 	gchar *message;
+	gchar *offending;
 
 	if (!format)
 		return;
@@ -131,6 +132,11 @@ brasero_burn_session_logv (BraseroBurnSession *session,
 		return;
 
 	message = g_strdup_vprintf (format, arg_list);
+
+	/* we also need to validate the messages to be in UTF-8 */
+	if (!g_utf8_validate (message, -1, &offending))
+		*offending = '\0';
+
 	if (fwrite (message, strlen (message), 1, session->priv->session) != 1)
 		g_warning ("Some log data couldn't be written: %s\n", message);
 

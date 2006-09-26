@@ -265,52 +265,6 @@ brasero_burn_caps_job_error_cb (BraseroJob *job,
 
 /* sets the best (safest) appropriate flags given the information
  * and the system configuration we have */
-BraseroBurnResult
-brasero_burn_caps_get_default_flags (BraseroBurnCaps *caps,
-				     const BraseroTrackSource *source,
-				     NautilusBurnDrive *drive,
-				     BraseroBurnFlag *flags)
-{
-	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_CHECK_SIZE |
-					  BRASERO_BURN_FLAG_NOGRACE |
-					  BRASERO_BURN_FLAG_EJECT;
-
-	g_return_val_if_fail (BRASERO_IS_BURNCAPS (caps), BRASERO_BURN_ERR);
-	g_return_val_if_fail (source != NULL, BRASERO_BURN_ERR);
-
-	if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-		default_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-		default_flags |= BRASERO_BURN_FLAG_BURNPROOF;
-		default_flags |= BRASERO_BURN_FLAG_DAO;
-
-		if (source->type == BRASERO_TRACK_SOURCE_GRAFTS
-		||  source->type == BRASERO_TRACK_SOURCE_DATA
-		||  source->type == BRASERO_TRACK_SOURCE_IMAGER)
-			default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
-	
-		if (source->type == BRASERO_TRACK_SOURCE_DISC) {
-			NautilusBurnMediaType type;
-
-			/* in cd-to-cd the only way to use on the fly burning is
-			 * to have a CD and cdrdao working */
-			type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
-			if (!nautilus_burn_drive_equal (drive, source->contents.drive.disc)
-			&&   type <= NAUTILUS_BURN_MEDIA_TYPE_CDRW
-			&&  !caps->priv->cdrdao_disabled)
-				default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
-		}
-
-		/* NOTE: for audio burning ON_THE_FLY is possible
-		 * (see below) but is no a default */
-	}
-	else
-		default_flags |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
-
-	if (flags)
-		*flags = default_flags;
-
-	return BRASERO_BURN_OK;
-}
 
 BraseroBurnResult
 brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
@@ -319,7 +273,7 @@ brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
 					      gboolean *fast_default)
 {
 	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_NOGRACE|
-					  BRASERO_BURN_FLAG_EJECT;
+					BRASERO_BURN_FLAG_EJECT;
 
 	if (media_type == NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
 	||  media_type == NAUTILUS_BURN_MEDIA_TYPE_ERROR
@@ -344,24 +298,30 @@ brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
 	return BRASERO_BURN_OK;
 }
 
-/* returns the flags that can be used given the information
- * that were passed and the system configuration 
- * track_type is the type of track that is going to be passed to the recorder */
+/**
+ * returns the flags that must be used (compulsory), the safest flags (default),
+ * and the flags that can be used (supported).
+ */
 BraseroBurnResult
-brasero_burn_caps_get_supported_flags (BraseroBurnCaps *caps,
-				       const BraseroTrackSource *source,
-				       NautilusBurnDrive *drive,
-				       BraseroBurnFlag *flags)
+brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
+			     const BraseroTrackSource *source,
+			     NautilusBurnDrive *drive,
+			     BraseroBurnFlag *default_retval,
+			     BraseroBurnFlag *compulsory_retval,
+			     BraseroBurnFlag *supported_retval)
 {
+	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_DONT_OVERWRITE|
-					    BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
-					    BRASERO_BURN_FLAG_CHECK_SIZE|
-					    BRASERO_BURN_FLAG_NOGRACE|
-					    BRASERO_BURN_FLAG_EJECT|
-					    BRASERO_BURN_FLAG_DEBUG; /* always supported */
+					  BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
+					  BRASERO_BURN_FLAG_CHECK_SIZE|
+					  BRASERO_BURN_FLAG_NOGRACE|
+					  BRASERO_BURN_FLAG_DEBUG; /* always supported */
+	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_CHECK_SIZE|
+					BRASERO_BURN_FLAG_NOGRACE;
 
 	g_return_val_if_fail (BRASERO_IS_BURNCAPS (caps), BRASERO_BURN_ERR);
 	g_return_val_if_fail (source != NULL, BRASERO_BURN_ERR);
+	g_return_val_if_fail (drive != NULL, BRASERO_BURN_ERR);
 
 	if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		NautilusBurnMediaType media_type;
@@ -369,7 +329,11 @@ brasero_burn_caps_get_supported_flags (BraseroBurnCaps *caps,
 		supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 		supported_flags |= BRASERO_BURN_FLAG_BURNPROOF;
 		supported_flags |= BRASERO_BURN_FLAG_OVERBURN;
+		supported_flags |= BRASERO_BURN_FLAG_EJECT;
 		supported_flags |= BRASERO_BURN_FLAG_DAO;
+
+		default_flags |= BRASERO_BURN_FLAG_BURNPROOF;
+		default_flags |= BRASERO_BURN_FLAG_EJECT;
 
 		media_type = nautilus_burn_drive_get_media_type (drive);
 
@@ -379,7 +343,7 @@ brasero_burn_caps_get_supported_flags (BraseroBurnCaps *caps,
 			supported_flags |= BRASERO_BURN_FLAG_DUMMY;
 
 		if (source->type == BRASERO_TRACK_SOURCE_DISC) {
-			NautilusBurnMediaType type;
+			NautilusBurnMediaType source_media;
 
 			/* check that the source and dest drive are not the same
 			 * since then on the fly is impossible */
@@ -389,45 +353,89 @@ brasero_burn_caps_get_supported_flags (BraseroBurnCaps *caps,
 			 * - make an accurate copy with an image with readcd -clone (RAW)
 			 * - make a copy of single session CD (on the fly) with readcd (ISO).
 			 *   that's what we do with DVD for example.
-			 * so if no cdrdao => no on the fly */
-			type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
-			if (!nautilus_burn_drive_equal (source->contents.drive.disc, drive)
-			&& ((type <= NAUTILUS_BURN_MEDIA_TYPE_CDRW && !caps->priv->cdrdao_disabled)
-			||   type > NAUTILUS_BURN_MEDIA_TYPE_CDRW))
+			 * so if no cdrdao => no on the fly with CDs */
+			source_media = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
+
+			/* enable on the fly for CDs only that's the safest */
+			if (!nautilus_burn_drive_equal (drive, source->contents.drive.disc)) {
 				supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+
+				if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (source_media)
+				&&  !caps->priv->cdrdao_disabled)
+					default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+			}
 		}
 		else if (source->format & (BRASERO_IMAGE_FORMAT_CUE | BRASERO_IMAGE_FORMAT_CLONE)) {
 			/* *.cue file and *.raw file only work with CDs */
-			if (media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 				return BRASERO_BURN_NOT_SUPPORTED;
 
 			/* NOTE: no need for ON_THE_FLY with _ISO or _ISO_JOLIET
 			 * since image is already done */
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_SONG
-		      || source->type == BRASERO_TRACK_SOURCE_AUDIO) {
+		     ||  source->type == BRASERO_TRACK_SOURCE_AUDIO) {
 			/* for audio burning our capabilities are limited to CDs */
-			if (media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 				return BRASERO_BURN_NOT_SUPPORTED;
 
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+
+			/* for the time being don't force on the fly */
+			/* default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY; */
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_GRAFTS
-		      ||  source->type == BRASERO_TRACK_SOURCE_DATA)
-			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY|
-					   BRASERO_BURN_FLAG_DONT_CLOSE|
-					   BRASERO_BURN_FLAG_APPEND|
-					   BRASERO_BURN_FLAG_MERGE;
-		else if (source->type == BRASERO_TRACK_SOURCE_IMAGER)
+		     ||  source->type == BRASERO_TRACK_SOURCE_DATA) {
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+			default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+
+			/* with growisofs our sole DVD backend, the burning
+			 * is always performed on the fly and allow files to 
+			 * be appended at the next session */
+			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type)) {
+				compulsory_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE|
+						     BRASERO_BURN_FLAG_ON_THE_FLY;
+
+				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE|
+						   BRASERO_BURN_FLAG_APPEND|
+						   BRASERO_BURN_FLAG_MERGE;
+			}
+			else if (!caps->priv->use_libburn && !caps->priv->use_libiso) {
+				supported_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE;
+
+				/* when we don't know the media type we allow
+				 * the following options nevertheless */
+				if (media_type < NAUTILUS_BURN_MEDIA_TYPE_CD
+				||  nautilus_burn_drive_media_is_appendable (drive))
+					supported_flags |=  BRASERO_BURN_FLAG_APPEND|
+							    BRASERO_BURN_FLAG_MERGE;
+			}
+		}
+		else if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
+			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+			default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+		}
 
 		/* NOTE: with _ISO or _ISO_JOLIET no need for ON_THE_FLY since
 		 * image is already done */
 	}
+	else {
+		if (source->type == BRASERO_TRACK_SOURCE_DISC) {
+			supported_flags |= BRASERO_BURN_FLAG_EJECT;
+			default_flags |= BRASERO_BURN_FLAG_EJECT;
+		}
 
-	if (flags)
-		*flags = supported_flags;
+		compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
+		default_flags |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
+	}
 
+	if (default_retval)
+		*default_retval = default_flags;
+	if (supported_retval)
+		*supported_retval = supported_flags;
+	if (compulsory_retval)
+		*compulsory_retval = compulsory_flags;
+	
 	return BRASERO_BURN_OK;
 }
 
@@ -475,15 +483,18 @@ brasero_burn_caps_check_flags_consistency (BraseroBurnCaps *caps,
 	BraseroBurnFlag retval;
 	BraseroBurnResult result;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
 	g_return_val_if_fail (BRASERO_IS_BURNCAPS (caps), BRASERO_BURN_FLAG_NONE);
 	g_return_val_if_fail (source != NULL, BRASERO_BURN_FLAG_NONE);
 
 	/* we make sure first that all the flags given are supported */
-	result = brasero_burn_caps_get_supported_flags (caps,
-							source,
-							drive,
-							&supported);
+	result = brasero_burn_caps_get_flags (caps,
+					      source,
+					      drive,
+					      NULL,
+					      &supported,
+					      &compulsory);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -492,6 +503,14 @@ brasero_burn_caps_check_flags_consistency (BraseroBurnCaps *caps,
 		g_warning ("Some flags were not supported (%i => %i). Corrected\n",
 			   flags,
 			   retval);
+
+	 if (retval != (retval | compulsory)) {
+		g_warning ("Some compulsory flags were forgotten (%i => %i). Corrected\n",
+			   (retval & compulsory),
+			   compulsory);
+
+		retval |= compulsory;
+	 }
 
 	/* we check flags consistency 
 	 * NOTE: should we return an error if they are not consistent? */

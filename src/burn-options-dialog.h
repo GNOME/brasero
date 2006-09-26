@@ -57,7 +57,11 @@ typedef struct {
 GType brasero_burn_option_dialog_get_type ();
 
 GtkWidget *
-brasero_burn_option_dialog_new (const BraseroTrackSource *track);
+brasero_burn_option_dialog_new (void);
+
+void
+brasero_burn_option_dialog_set_track (BraseroBurnOptionDialog *dialog,
+				      const BraseroTrackSource *track);
 
 gboolean
 brasero_burn_option_dialog_get_session_param (BraseroBurnOptionDialog *dialog,

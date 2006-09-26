@@ -877,8 +877,10 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			if ((format & BRASERO_IMAGE_FORMAT_ISO)) {
 				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
 
+				if (cdrecord->priv->dao)
+					g_ptr_array_add (argv, g_strdup ("-dao"));
+
 				g_ptr_array_add (argv, g_strdup ("-data"));
-				g_ptr_array_add (argv, g_strdup ("-dao"));
 				g_ptr_array_add (argv, g_strdup ("-nopad"));
 				g_ptr_array_add (argv, g_strdup ("-"));
 			}
@@ -954,7 +956,8 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		GSList *iter;
 
 		/* CD-text cannot be written in tao mode (which is the default) */
-		g_ptr_array_add (argv, g_strdup ("-dao"));
+		if (cdrecord->priv->dao)
+			g_ptr_array_add (argv, g_strdup ("-dao"));
 
 		g_ptr_array_add (argv, g_strdup ("fs=16m"));
 		g_ptr_array_add (argv, g_strdup ("-audio"));
@@ -980,7 +983,9 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			if (!isopath)
 				return BRASERO_BURN_ERR;
 
-			g_ptr_array_add (argv, g_strdup ("-dao"));
+			if (cdrecord->priv->dao)
+				g_ptr_array_add (argv, g_strdup ("-dao"));
+
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
 			g_ptr_array_add (argv, g_strdup ("-nopad"));
@@ -1006,8 +1011,10 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			gchar *cue_str;
 			gchar *cuepath;
 
+			if (cdrecord->priv->dao)
+				g_ptr_array_add (argv, g_strdup ("-dao"));
+
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
-			g_ptr_array_add (argv, g_strdup ("-dao"));
 
 			cuepath = brasero_track_source_get_cue_localpath (cdrecord->priv->track);
 			if (!cuepath)

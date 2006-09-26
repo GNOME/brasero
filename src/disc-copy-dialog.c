@@ -297,7 +297,7 @@ brasero_disc_copy_dialog_get_session_param (BraseroDiscCopyDialog *dialog,
 	}
 
 	*source = track;
-	*flags = props.flags;
+	*flags = props.flags | BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 
 	return TRUE;
 }

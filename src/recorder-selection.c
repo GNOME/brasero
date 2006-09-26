@@ -339,7 +339,7 @@ brasero_recorder_selection_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static char *
+static gchar *
 brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selection)
 {
 	BraseroImageFormat image_format;
@@ -378,6 +378,7 @@ brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selecti
 					suffix);
 		i ++;
 	};
+
 	return path;
 }
 
@@ -391,10 +392,12 @@ brasero_recorder_selection_set_image_properties (BraseroRecorderSelection *selec
 		props->output_path = g_strdup (selection->priv->image_path);
 
 	props->props.image_format = selection->priv->image_format;
-	brasero_burn_caps_get_default_flags (selection->priv->caps,
-					     selection->priv->track_source,
-					     selection->priv->drive,
-					     &props->flags);
+	brasero_burn_caps_get_flags (selection->priv->caps,
+				     selection->priv->track_source,
+				     selection->priv->drive,
+				     &props->flags,
+				     NULL,
+				     NULL);
 }
 
 static gboolean
@@ -403,10 +406,12 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 {
 	BraseroBurnFlag default_flags;
 
-	if (brasero_burn_caps_get_default_flags (selection->priv->caps,
-						 selection->priv->track_source,
-						 selection->priv->drive,
-						 &default_flags) != BRASERO_BURN_OK)
+	if (brasero_burn_caps_get_flags (selection->priv->caps,
+					 selection->priv->track_source,
+					 selection->priv->drive,
+					 &default_flags,
+					 NULL,
+					 NULL) != BRASERO_BURN_OK)
 		return FALSE;
 
 	props->props.image_format = BRASERO_IMAGE_FORMAT_ANY;
@@ -418,11 +423,7 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 
 static gboolean
 brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
-					NautilusBurnMediaType type,
-					gboolean is_rewritable,
-					gboolean has_audio,
-					gboolean has_data,
-					gboolean is_blank)
+					NautilusBurnDrive *drive)
 {
 	gchar *info;
 	GdkPixbuf *pixbuf = NULL;
@@ -441,6 +442,23 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 				"gnome-dev-disc-dvdrw", /* FIXME */
 				"gnome-dev-disc-dvdr-plus" /* FIXME */,
 				NULL };
+	gboolean is_appendable;
+	NautilusBurnMediaType type;
+	gboolean is_rewritable, has_audio, has_data, is_blank;
+
+	if (drive) {
+		type = nautilus_burn_drive_get_media_type_full (drive,
+								&is_blank,
+								&is_rewritable,
+								&has_data,
+								&has_audio);
+
+		is_appendable = nautilus_burn_drive_media_is_appendable (drive);
+	}
+	else {
+		has_audio = has_data = is_blank = is_appendable = is_rewritable = FALSE;
+		type = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
+	}
 
 	selection->priv->media_type = type;
 
@@ -464,6 +482,20 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 					nautilus_burn_drive_media_type_get_string (type));
 		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 		can_record = TRUE;
+
+		if (is_appendable) {
+			gchar *tmp;
+			gchar *size;
+			GnomeVFSFileSize remaining;
+
+			remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+			size = gnome_vfs_format_file_size_for_display (remaining);
+
+			tmp = g_strdup_printf (_("%s\nMore data can be added (%s free)."), info, size);
+			g_free (size);
+			g_free (info);
+			info = tmp;
+		}
 	}
 	else if (has_audio) {
 		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks."),
@@ -502,20 +534,10 @@ brasero_recorder_selection_drive_media_added_cb (NautilusBurnDriveMonitor *monit
 						 BraseroRecorderSelection *selection)
 {
 	NautilusBurnMediaType type;
-	gboolean is_rewritable, has_audio, has_data, is_blank;
 
-	type = nautilus_burn_drive_get_media_type_full (drive,
-							&is_blank,
-							&is_rewritable,
-							&has_data,
-							&has_audio);
+	brasero_recorder_selection_update_info (selection, drive);
 
-	brasero_recorder_selection_update_info (selection,
-						type,
-						is_rewritable,
-						has_audio,
-						has_data,
-						is_blank);
+	type = nautilus_burn_drive_get_media_type (drive);
 	g_signal_emit (selection,
 		       brasero_recorder_selection_signals [MEDIA_CHANGED_SIGNAL],
 		       0,
@@ -534,12 +556,7 @@ brasero_recorder_selection_drive_media_removed_cb (NautilusBurnDriveMonitor *mon
 	/* we don't look at the drive contents since we already
 	 * know that there is nothing inside. If we did, it could
 	 * force the drive to reload the disc */
-	brasero_recorder_selection_update_info (selection,
-						NAUTILUS_BURN_MEDIA_TYPE_ERROR,
-						FALSE,
-						FALSE,
-						FALSE,
-						FALSE);
+	brasero_recorder_selection_update_info (selection, NULL);
 	g_signal_emit (selection,
 		       brasero_recorder_selection_signals [MEDIA_CHANGED_SIGNAL],
 		       0,
@@ -575,7 +592,6 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 	NautilusBurnMediaType type;
 	gboolean can_record = FALSE;
 	NautilusBurnDriveMonitor *monitor;
-	gboolean is_rewritable, has_audio, has_data, is_blank;
 
 	monitor = nautilus_burn_get_drive_monitor ();
 	drive = nautilus_burn_drive_selection_get_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection));
@@ -614,19 +630,7 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 		goto end;
 	}
 
-	type = nautilus_burn_drive_get_media_type_full (drive,
-							&is_blank,
-							&is_rewritable,
-							&has_data,
-							&has_audio);
-
-	can_record = brasero_recorder_selection_update_info (selection,
-							     type,
-							     is_rewritable,
-							     has_audio,
-							     has_data,
-							     is_blank);
-
+	can_record = brasero_recorder_selection_update_info (selection, drive);
 	added_signal = g_signal_connect (G_OBJECT (monitor),
 					 "media-added",
 					 G_CALLBACK (brasero_recorder_selection_drive_media_added_cb),
@@ -804,14 +808,15 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	||  prop->props.drive_speed >= nautilus_burn_drive_get_max_speed_write (drive))
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	else
-		gtk_combo_box_set_active (GTK_COMBO_BOX (combo),
-								  prop->props.drive_speed / 2);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), prop->props.drive_speed / 2);
 
 	/* properties */
-	brasero_burn_caps_get_supported_flags (selection->priv->caps,
-					       selection->priv->track_source,
-					       selection->priv->drive,
-					       &flags);
+	brasero_burn_caps_get_flags (selection->priv->caps,
+				     selection->priv->track_source,
+				     selection->priv->drive,
+				     NULL,
+				     NULL,
+				     &flags);
 
 	if (flags & BRASERO_BURN_FLAG_DUMMY) {
 		toggle_simulation = gtk_check_button_new_with_label (_("Simulate the burning"));
@@ -1035,7 +1040,7 @@ brasero_recorder_selection_disc_image_properties (BraseroRecorderSelection *sele
 							&formats,
 							selection->priv->track_source);
 
-	for (iter = formats; iter [0] != BRASERO_TRACK_SOURCE_UNKNOWN; iter ++) {
+	for (iter = formats; iter [0] != BRASERO_IMAGE_FORMAT_NONE; iter ++) {
 		if (iter [0] & BRASERO_IMAGE_FORMAT_ISO)
 			gtk_combo_box_append_text (GTK_COMBO_BOX (type_combo), _("*.iso image"));
 		else if (iter [0] & BRASERO_IMAGE_FORMAT_CLONE)

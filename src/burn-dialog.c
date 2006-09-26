@@ -1938,6 +1938,9 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 						    &error);
 
 	if (result == BRASERO_BURN_OK) {
+		if ((flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) == 0)
+			flags |= BRASERO_BURN_FLAG_DAO;
+
 		result = brasero_burn_record (dialog->priv->burn,
 					      flags,
 					      drive,

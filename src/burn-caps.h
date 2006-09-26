@@ -83,22 +83,18 @@ GType brasero_burn_caps_get_type();
 BraseroBurnCaps *brasero_burn_caps_get_default ();
 
 BraseroBurnResult
-brasero_burn_caps_get_default_flags (BraseroBurnCaps *caps,
-				     const BraseroTrackSource *source,
-				     NautilusBurnDrive *drive,
-				     BraseroBurnFlag *flags);
+brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
+			     const BraseroTrackSource *source,
+			     NautilusBurnDrive *drive,
+			     BraseroBurnFlag *default_retval,
+			     BraseroBurnFlag *compulsory_retval,
+			     BraseroBurnFlag *supported_retval);
 
 BraseroBurnResult
 brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
 					      NautilusBurnMediaType media_type,
 					      BraseroBurnFlag *flags,
 					      gboolean *fast_default);
-
-BraseroBurnResult
-brasero_burn_caps_get_supported_flags (BraseroBurnCaps *caps,
-				       const BraseroTrackSource *source,
-				       NautilusBurnDrive *drive,
-				       BraseroBurnFlag *flags);
 BraseroBurnResult
 brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
 						NautilusBurnMediaType media_type,

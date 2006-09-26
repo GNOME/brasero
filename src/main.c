@@ -46,10 +46,6 @@
 
 #include <gconf/gconf-client.h>
 
-#ifdef HAVE_LIBNOTIFY
-#include <libnotify/notify.h>
-#endif
-
 #include "brasero-app.h"
 #include "menu.h"
 #include "blank-dialog.h"
@@ -265,7 +261,8 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 	}
     	else if (!strcmp (mime, "application/x-cd-image")
 	     ||  !strcmp (mime, "application/x-cdrdao-toc")
-	     ||  !strcmp (mime, "application/x-toc")) {
+	     ||  !strcmp (mime, "application/x-toc")
+	     ||  !strcmp (mime, "application/x-cue")) {
     		BRASERO_PROJECT_OPEN_URI (app,
 					  brasero_project_manager_iso,
 					  gtk_recent_info_get_uri (item));
@@ -296,6 +293,7 @@ brasero_app_add_recent (BraseroApp *app)
 	gtk_recent_filter_add_mime_type (filter, "application/x-cd-image");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");
 	gtk_recent_filter_add_mime_type (filter, "application/x-toc");
+	gtk_recent_filter_add_mime_type (filter, "application/x-cue");
 	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (submenu), filter);
 	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (submenu), TRUE);
 
@@ -477,7 +475,8 @@ brasero_app_parse_options (BraseroApp *app)
 			if (!strcmp (mime, "application/x-brasero"))
 				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open, files [0]);
 
-			if (!strcmp (mime, "application/x-toc")
+			if (!strcmp (mime, "application/x-cue")
+			||  !strcmp (mime, "application/x-toc")
 			||  !strcmp (mime, "application/x-cdrdao-toc")
 			||  !strcmp (mime, "application/x-cd-image")
 			||  !strcmp (mime, "application/octet-stream"))
@@ -530,10 +529,6 @@ main (int argc, char **argv)
 	gst_init (&argc, &argv);
 
 	nautilus_burn_init ();
-
-#ifdef HAVE_LIBNOTIFY
-	notify_init ("Brasero");
-#endif
 
 	client = gconf_client_get_default ();
 
