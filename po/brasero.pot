@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-25 22:36+0200\n"
+"POT-Creation-Date: 2006-09-26 19:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,6 +178,10 @@ msgstr ""
 
 #: ../src/main.c:98
 msgid "Display debug statements on stdout"
+msgstr ""
+
+#: ../src/main.c:203
+msgid "CD/DVD burning application"
 msgstr ""
 
 #: ../src/main.c:208
@@ -446,7 +450,7 @@ msgstr ""
 msgid "Replace the disc"
 msgstr ""
 
-#: ../src/burn-dialog.c:490 ../src/burn-options-dialog.c:478
+#: ../src/burn-dialog.c:490 ../src/burn-options-dialog.c:497
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
 msgstr ""
 
@@ -454,7 +458,7 @@ msgstr ""
 msgid "Do you want to continue with Windows compatibility disabled?"
 msgstr ""
 
-#: ../src/burn-dialog.c:495 ../src/burn-options-dialog.c:483
+#: ../src/burn-dialog.c:495 ../src/burn-options-dialog.c:502
 msgid "Windows compatibility"
 msgstr ""
 
@@ -1457,137 +1461,137 @@ msgstr ""
 msgid "<span weight=\"bold\">%s</span>"
 msgstr ""
 
-#: ../src/recorder-selection.c:462
+#: ../src/recorder-selection.c:466
 msgid "<i>The disc is busy.</i>"
 msgstr ""
 
-#: ../src/recorder-selection.c:466
+#: ../src/recorder-selection.c:470
 msgid "<i>There is no disc in the drive.</i>"
 msgstr ""
 
-#: ../src/recorder-selection.c:469
+#: ../src/recorder-selection.c:473
 msgid "<i>Unknown type of disc.</i>"
 msgstr ""
 
-#: ../src/recorder-selection.c:472
+#: ../src/recorder-selection.c:476
 #, c-format
 msgid "The <b>%s</b> is not writable."
 msgstr ""
 
-#: ../src/recorder-selection.c:477
+#: ../src/recorder-selection.c:481
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It contains data."
 msgstr ""
 
-#: ../src/recorder-selection.c:490
+#: ../src/recorder-selection.c:494
 #, c-format
 msgid ""
 "%s\n"
-"More data can be added (%s remaining)."
+"More data can be added (%s free)."
 msgstr ""
 
-#: ../src/recorder-selection.c:497
+#: ../src/recorder-selection.c:501
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It contains audio tracks."
 msgstr ""
 
-#: ../src/recorder-selection.c:503
+#: ../src/recorder-selection.c:507
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It is empty."
 msgstr ""
 
-#: ../src/recorder-selection.c:571 ../src/recorder-selection.c:576
+#: ../src/recorder-selection.c:575 ../src/recorder-selection.c:580
 #, c-format
 msgid ""
 "The <b>image</b> will be saved to\n"
 "%s"
 msgstr ""
 
-#: ../src/recorder-selection.c:600
+#: ../src/recorder-selection.c:604
 msgid "<b>There is no available drive.</b>"
 msgstr ""
 
-#: ../src/recorder-selection.c:717
+#: ../src/recorder-selection.c:721
 msgid "Raw image (only with CDS)"
 msgstr ""
 
-#: ../src/recorder-selection.c:719
+#: ../src/recorder-selection.c:723
 msgid "Cue image (only with CDs)"
 msgstr ""
 
-#: ../src/recorder-selection.c:750
+#: ../src/recorder-selection.c:754
 #, c-format
 msgid "Properties of %s"
 msgstr ""
 
-#: ../src/recorder-selection.c:770
+#: ../src/recorder-selection.c:774
 msgid "Max speed"
 msgstr ""
 
-#: ../src/recorder-selection.c:780
+#: ../src/recorder-selection.c:784
 msgid "DVD"
 msgstr ""
 
-#: ../src/recorder-selection.c:780
+#: ../src/recorder-selection.c:784
 msgid "CD"
 msgstr ""
 
-#: ../src/recorder-selection.c:786
+#: ../src/recorder-selection.c:790
 msgid "<b>Burning speed</b>"
 msgstr ""
 
-#: ../src/recorder-selection.c:816
+#: ../src/recorder-selection.c:822
 msgid "Simulate the burning"
 msgstr ""
 
-#: ../src/recorder-selection.c:824
+#: ../src/recorder-selection.c:830
 msgid "Eject after burning"
 msgstr ""
 
-#: ../src/recorder-selection.c:832
+#: ../src/recorder-selection.c:838
 msgid "Use burnproof (decrease the risk of failures)"
 msgstr ""
 
-#: ../src/recorder-selection.c:840
+#: ../src/recorder-selection.c:846
 msgid "Burn the image directly without saving it to disc"
 msgstr ""
 
-#: ../src/recorder-selection.c:853
+#: ../src/recorder-selection.c:859
 msgid "<b>Options</b>"
 msgstr ""
 
-#: ../src/recorder-selection.c:916
+#: ../src/recorder-selection.c:922
 msgid "Choose a location for the disc image"
 msgstr ""
 
-#: ../src/recorder-selection.c:977
+#: ../src/recorder-selection.c:983
 msgid "Disc image file properties"
 msgstr ""
 
-#: ../src/recorder-selection.c:1023
+#: ../src/recorder-selection.c:1029
 msgid "Image type: "
 msgstr ""
 
 #. now we get the targets available and display them
-#: ../src/recorder-selection.c:1032
+#: ../src/recorder-selection.c:1038
 msgid "Let brasero choose (safest)"
 msgstr ""
 
-#: ../src/recorder-selection.c:1039
+#: ../src/recorder-selection.c:1045
 msgid "*.iso image"
 msgstr ""
 
-#: ../src/recorder-selection.c:1041
+#: ../src/recorder-selection.c:1047
 msgid "*.raw image"
 msgstr ""
 
-#: ../src/recorder-selection.c:1043
+#: ../src/recorder-selection.c:1049
 msgid "*.cue image"
 msgstr ""
 
@@ -1835,37 +1839,37 @@ msgid "<b>Multisession</b>"
 msgstr ""
 
 #. general options
-#: ../src/burn-options-dialog.c:376
+#: ../src/burn-options-dialog.c:395
 msgid "Increase compatibility with Windows systems"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:379 ../src/burn-options-dialog.c:380
+#: ../src/burn-options-dialog.c:398 ../src/burn-options-dialog.c:399
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:392
+#: ../src/burn-options-dialog.c:411
 msgid "Check data integrity"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:395 ../src/burn-options-dialog.c:396
+#: ../src/burn-options-dialog.c:414 ../src/burn-options-dialog.c:415
 msgid "Allow to check the integrity of files on the disc"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:408
+#: ../src/burn-options-dialog.c:427
 msgid "Create a video DVD"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:411 ../src/burn-options-dialog.c:412
+#: ../src/burn-options-dialog.c:430 ../src/burn-options-dialog.c:431
 msgid "Create a video DVD that can be played by all DVD readers"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:415
+#: ../src/burn-options-dialog.c:434
 msgid "<b>Disc options</b>"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:481
+#: ../src/burn-options-dialog.c:500
 msgid "their names will be changed and truncated to 64 characters."
 msgstr ""
 

@@ -189,7 +189,7 @@ void
 on_about_cb (GtkAction *action, BraseroApp *app)
 {
 	GtkWidget *dialog;
-	const gchar *authors[] = { "Philippe Rouquier", NULL };
+	const gchar *authors[] = { "Philippe Rouquier <bonfire-app@wanadoo.fr>", NULL };
 	GdkPixbuf *logo;
 
 	logo = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/icon-final-128x128.png", NULL);
@@ -200,7 +200,7 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 					"Copyright (c) Philippe Rouquier");
 	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), authors);
 	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog),
-				       "Disc burning tool");
+				       _("CD/DVD burning application"));
 	gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (dialog), logo);
 	g_object_unref (logo);
 	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), VERSION);

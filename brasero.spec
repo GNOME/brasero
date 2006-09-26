@@ -1,5 +1,5 @@
 Name:		brasero
-Version:		0.4.90
+Version:		0.4.91
 Release:		1%{?dist}
 Summary:		Gnome CD/DVD burning application
 
@@ -107,6 +107,8 @@ update-desktop-database &> /dev/null ||:
 %{_sysconfdir}/gconf/schemas/%{name}.schemas
 
 %changelog
+* Wed Sep 6 2006 Rouquier Philippe <bonfire-app@wanadoo.fr> - 0.4.91-1
+- updated for 0.4.91 release
 * Wed Sep 6 2006 Rouquier Philippe <bonfire-app@wanadoo.fr> - 0.4.90-1
 - updated for 0.4.90 release
 * Mon Jul 10 2006 Rouquier Philippe <bonfire-app@wanadoo.fr> - 0.4.0-1
