@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-26 19:10+0200\n"
+"POT-Creation-Date: 2006-10-05 17:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,8 +21,12 @@ msgstr ""
 msgid "(u)mount command could not be found in the path"
 msgstr ""
 
-#: ../src/brasero-ncb.c:327
-msgid "the disc mount point cannot be retrieved."
+#: ../src/brasero-ncb.c:268
+msgid "the drive could not be mounted"
+msgstr ""
+
+#: ../src/brasero-ncb.c:424
+msgid "the disc mount point could not be retrieved."
 msgstr ""
 
 #: ../src/burn-md5.c:204 ../src/burn-md5.c:238
@@ -144,71 +148,71 @@ msgstr ""
 msgid "Display information on blank discs currently inserted"
 msgstr ""
 
-#: ../src/main.c:70
+#: ../src/main.c:71
 msgid "Open the specified project"
 msgstr ""
 
-#: ../src/main.c:71
+#: ../src/main.c:72
 msgid "PROJECT"
 msgstr ""
 
-#: ../src/main.c:74
+#: ../src/main.c:75
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr ""
 
-#: ../src/main.c:78
+#: ../src/main.c:79
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
 
-#: ../src/main.c:82 ../src/brasero-project-manager.c:118
+#: ../src/main.c:83 ../src/brasero-project-manager.c:118
 msgid "Copy a disc"
 msgstr ""
 
-#: ../src/main.c:86
+#: ../src/main.c:87
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr ""
 
-#: ../src/main.c:90
+#: ../src/main.c:91
 msgid "Force brasero to display the project selection page"
 msgstr ""
 
-#: ../src/main.c:94
+#: ../src/main.c:95
 msgid "Open a data project with the contents of nautilus-cd-burner"
 msgstr ""
 
-#: ../src/main.c:98
+#: ../src/main.c:99
 msgid "Display debug statements on stdout"
 msgstr ""
 
-#: ../src/main.c:203
+#: ../src/main.c:204
 msgid "CD/DVD burning application"
 msgstr ""
 
-#: ../src/main.c:208
+#: ../src/main.c:209
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/main.c:291
+#: ../src/main.c:292
 msgid "Brasero projects"
 msgstr ""
 
-#: ../src/main.c:418
+#: ../src/main.c:419
 msgid "Incompatible command line options used:"
 msgstr ""
 
-#: ../src/main.c:420
+#: ../src/main.c:421
 msgid "Incompatible options"
 msgstr ""
 
-#: ../src/main.c:423
+#: ../src/main.c:424
 msgid "only one option can be given at a time."
 msgstr ""
 
-#: ../src/main.c:506
+#: ../src/main.c:507
 msgid "[URI] [URI] ..."
 msgstr ""
 
-#: ../src/main.c:514
+#: ../src/main.c:515
 msgid "CD/DVD burning"
 msgstr ""
 
@@ -251,20 +255,20 @@ msgstr ""
 msgid "You can nevertheless blank it with the slow option if you want to."
 msgstr ""
 
-#: ../src/blank-dialog.c:308 ../src/burn-dialog.c:1997
+#: ../src/blank-dialog.c:308 ../src/burn-dialog.c:1982
 msgid "Do you really want to quit?"
 msgstr ""
 
-#: ../src/blank-dialog.c:310 ../src/burn-dialog.c:1999
+#: ../src/blank-dialog.c:310 ../src/burn-dialog.c:1984
 msgid "Confirm"
 msgstr ""
 
-#: ../src/blank-dialog.c:313 ../src/burn-dialog.c:2003
+#: ../src/blank-dialog.c:313 ../src/burn-dialog.c:1988
 msgid "Interrupting the process may make disc unusable."
 msgstr ""
 
-#: ../src/blank-dialog.c:318 ../src/burn-dialog.c:449 ../src/burn-dialog.c:500
-#: ../src/burn-dialog.c:2009
+#: ../src/blank-dialog.c:318 ../src/burn-dialog.c:443 ../src/burn-dialog.c:494
+#: ../src/burn-dialog.c:1994
 msgid "Continue"
 msgstr ""
 
@@ -288,569 +292,573 @@ msgstr ""
 msgid "the disc is ready for use."
 msgstr ""
 
-#: ../src/burn-dialog.c:179
+#: ../src/burn-dialog.c:173
 msgid "replace the disc with a rewritable disc holding data."
 msgstr ""
 
-#: ../src/burn-dialog.c:181
+#: ../src/burn-dialog.c:175
 msgid "replace the disc with a disc holding data."
 msgstr ""
 
-#: ../src/burn-dialog.c:185
+#: ../src/burn-dialog.c:179
 msgid "insert a rewritable disc holding data."
 msgstr ""
 
-#: ../src/burn-dialog.c:187
+#: ../src/burn-dialog.c:181
 msgid "insert a disc holding data."
 msgstr ""
 
-#: ../src/burn-dialog.c:202
+#: ../src/burn-dialog.c:196
 #, c-format
 msgid "replace the disc with a recordable CD with a least %i MiB free."
 msgstr ""
 
-#: ../src/burn-dialog.c:205
+#: ../src/burn-dialog.c:199
 msgid "replace the disc with a recordable CD."
 msgstr ""
 
-#: ../src/burn-dialog.c:209
+#: ../src/burn-dialog.c:203
 #, c-format
 msgid "insert a recordable CD with a least %i MiB free."
 msgstr ""
 
-#: ../src/burn-dialog.c:212
+#: ../src/burn-dialog.c:206
 msgid "insert a recordable CD."
 msgstr ""
 
-#: ../src/burn-dialog.c:218
+#: ../src/burn-dialog.c:212
 #, c-format
 msgid "replace the disc with a recordable DVD with a least %i MiB free."
 msgstr ""
 
-#: ../src/burn-dialog.c:221
+#: ../src/burn-dialog.c:215
 msgid "replace the disc with a recordable DVD."
 msgstr ""
 
-#: ../src/burn-dialog.c:225
+#: ../src/burn-dialog.c:219
 #, c-format
 msgid "insert a recordable DVD with a least %i MiB free."
 msgstr ""
 
-#: ../src/burn-dialog.c:228
+#: ../src/burn-dialog.c:222
 msgid "insert a recordable DVD."
 msgstr ""
 
-#: ../src/burn-dialog.c:233
+#: ../src/burn-dialog.c:227
 #, c-format
 msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
 msgstr ""
 
-#: ../src/burn-dialog.c:236
+#: ../src/burn-dialog.c:230
 msgid "replace the disc with a recordable CD or DVD."
 msgstr ""
 
-#: ../src/burn-dialog.c:240
+#: ../src/burn-dialog.c:234
 #, c-format
 msgid "insert a recordable CD or DVD with a least %i MiB free."
 msgstr ""
 
-#: ../src/burn-dialog.c:243
+#: ../src/burn-dialog.c:237
 msgid "insert a recordable CD or DVD."
 msgstr ""
 
-#: ../src/burn-dialog.c:268
+#: ../src/burn-dialog.c:262
 msgid "The disc in the drive is busy:"
 msgstr ""
 
-#: ../src/burn-dialog.c:269
+#: ../src/burn-dialog.c:263
 msgid "make sure another application is not using it."
 msgstr ""
 
-#: ../src/burn-dialog.c:272
+#: ../src/burn-dialog.c:266
 msgid "There is no disc in the drive:"
 msgstr ""
 
-#: ../src/burn-dialog.c:276
+#: ../src/burn-dialog.c:270
 msgid "The disc in the drive is not rewritable:"
 msgstr ""
 
-#: ../src/burn-dialog.c:280
+#: ../src/burn-dialog.c:274
 msgid "The disc in the drive is empty:"
 msgstr ""
 
-#: ../src/burn-dialog.c:284
+#: ../src/burn-dialog.c:278
 msgid "The disc in the drive is not writable:"
 msgstr ""
 
-#: ../src/burn-dialog.c:288
+#: ../src/burn-dialog.c:282
 msgid "The disc in the drive is a DVD:"
 msgstr ""
 
-#: ../src/burn-dialog.c:292
+#: ../src/burn-dialog.c:286
 msgid "The disc in the drive is a CD:"
 msgstr ""
 
-#: ../src/burn-dialog.c:296
+#: ../src/burn-dialog.c:290
 msgid "The disc in the drive is not big enough:"
 msgstr ""
 
-#: ../src/burn-dialog.c:304
+#: ../src/burn-dialog.c:298
 msgid "The disc in the drive needs to be reloaded:"
 msgstr ""
 
-#: ../src/burn-dialog.c:305
+#: ../src/burn-dialog.c:299
 msgid "eject the disc and reload it."
 msgstr ""
 
-#: ../src/burn-dialog.c:335
+#: ../src/burn-dialog.c:329
 msgid "Waiting for disc insertion"
 msgstr ""
 
-#: ../src/burn-dialog.c:337
+#: ../src/burn-dialog.c:331
 msgid "Waiting for disc replacement"
 msgstr ""
 
-#: ../src/burn-dialog.c:376
+#: ../src/burn-dialog.c:370
 msgid "The disc in the drive holds data:"
 msgstr ""
 
-#: ../src/burn-dialog.c:378
+#: ../src/burn-dialog.c:372
 msgid "Possible loss of data"
 msgstr ""
 
-#: ../src/burn-dialog.c:381
+#: ../src/burn-dialog.c:375
 msgid ""
 "Do you want to erase the current disc?\n"
 "Or replace the current disc with a new disc?"
 msgstr ""
 
-#: ../src/burn-dialog.c:387
+#: ../src/burn-dialog.c:381
 msgid "Replace disc"
 msgstr ""
 
-#: ../src/burn-dialog.c:392
+#: ../src/burn-dialog.c:386
 msgid "Erase disc"
 msgstr ""
 
-#: ../src/burn-dialog.c:433
+#: ../src/burn-dialog.c:427
 msgid "Recording audio tracks on a rewritable disc is not advised:"
 msgstr ""
 
-#: ../src/burn-dialog.c:435
+#: ../src/burn-dialog.c:429
 msgid "Rewritable disc"
 msgstr ""
 
-#: ../src/burn-dialog.c:438
+#: ../src/burn-dialog.c:432
 msgid ""
 "you might not be able to listen to it with stereos.\n"
 "Do you want to continue anyway?"
 msgstr ""
 
-#: ../src/burn-dialog.c:440
+#: ../src/burn-dialog.c:434
 msgid "Replace the disc"
 msgstr ""
 
-#: ../src/burn-dialog.c:490 ../src/burn-options-dialog.c:497
+#: ../src/burn-dialog.c:484 ../src/brasero-disc-option-dialog.c:288
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
 msgstr ""
 
-#: ../src/burn-dialog.c:493
+#: ../src/burn-dialog.c:487
 msgid "Do you want to continue with Windows compatibility disabled?"
 msgstr ""
 
-#: ../src/burn-dialog.c:495 ../src/burn-options-dialog.c:502
+#: ../src/burn-dialog.c:489 ../src/brasero-disc-option-dialog.c:293
 msgid "Windows compatibility"
 msgstr ""
 
-#: ../src/burn-dialog.c:704
+#: ../src/burn-dialog.c:698
 msgid "Close the application if the burn process is successful"
 msgstr ""
 
-#: ../src/burn-dialog.c:895 ../src/burn-basics.c:57
+#: ../src/burn-dialog.c:873 ../src/burn-basics.c:57
 msgid "Creating image"
 msgstr ""
 
-#: ../src/burn-dialog.c:905 ../src/burn-dialog.c:909
+#: ../src/burn-dialog.c:883 ../src/burn-dialog.c:887
 msgid "Burning DVD"
 msgstr ""
 
-#: ../src/burn-dialog.c:906
+#: ../src/burn-dialog.c:884
 msgid "<big><b>Burning data DVD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:910
+#: ../src/burn-dialog.c:888
 msgid "<big><b>Burning image to DVD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:913
+#: ../src/burn-dialog.c:891
 msgid "Copying DVD"
 msgstr ""
 
-#: ../src/burn-dialog.c:914
+#: ../src/burn-dialog.c:892
 msgid "<big><b>Copying data DVD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:919 ../src/burn-dialog.c:925 ../src/burn-dialog.c:933
+#: ../src/burn-dialog.c:897 ../src/burn-dialog.c:903 ../src/burn-dialog.c:911
 msgid "Burning CD"
 msgstr ""
 
-#: ../src/burn-dialog.c:920
+#: ../src/burn-dialog.c:898
 msgid "<big><b>Burning audio CD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:926
+#: ../src/burn-dialog.c:904
 msgid "<big><b>Burning data CD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:929
+#: ../src/burn-dialog.c:907
 msgid "Copying CD"
 msgstr ""
 
-#: ../src/burn-dialog.c:930
+#: ../src/burn-dialog.c:908
 msgid "<big><b>Copying CD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:934
+#: ../src/burn-dialog.c:912
 msgid "<big><b>Burning image to CD</b></big>"
 msgstr ""
 
-#: ../src/burn-dialog.c:1112 ../src/burn-dialog.c:1123
-#: ../src/burn-dialog.c:1133 ../src/burn-dialog.c:1171
+#: ../src/burn-dialog.c:1090 ../src/burn-dialog.c:1101
+#: ../src/burn-dialog.c:1111 ../src/burn-dialog.c:1163
 msgid "Data integrity check"
 msgstr ""
 
-#: ../src/burn-dialog.c:1113
+#: ../src/burn-dialog.c:1091
 msgid "The file integrity check succeeded:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1114 ../src/brasero-sum-dialog.c:346
+#: ../src/burn-dialog.c:1092 ../src/brasero-sum-dialog.c:327
 msgid "there seems to be no corrupted file on the disc."
 msgstr ""
 
-#: ../src/burn-dialog.c:1124
+#: ../src/burn-dialog.c:1102
 msgid "The data integrity check could not be performed:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1125
+#: ../src/burn-dialog.c:1103
 msgid "unknown error."
 msgstr ""
 
-#: ../src/burn-dialog.c:1134
+#: ../src/burn-dialog.c:1112
 msgid "The file integrity check failed:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1135
+#: ../src/burn-dialog.c:1113
 msgid "some files may be corrupted on the disc."
 msgstr ""
 
-#: ../src/burn-dialog.c:1231
+#: ../src/burn-dialog.c:1223
 msgid "The source media needs to be reloaded:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1232
+#: ../src/burn-dialog.c:1224
 msgid "Please insert it again."
 msgstr ""
 
-#: ../src/burn-dialog.c:1304 ../src/brasero-sum-dialog.c:851
+#: ../src/burn-dialog.c:1298 ../src/brasero-sum-dialog.c:806
 msgid "Checking files integrity"
 msgstr ""
 
-#: ../src/burn-dialog.c:1388 ../src/burn-basics.c:69
-msgid "Success"
-msgstr ""
-
-#: ../src/burn-dialog.c:1415
+#: ../src/burn-dialog.c:1362
 msgid "The burnt media needs to be reloaded to perform integrity check:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1416
+#: ../src/burn-dialog.c:1363
 msgid "please, insert it again."
 msgstr ""
 
-#: ../src/burn-dialog.c:1524
+#: ../src/burn-dialog.c:1382 ../src/brasero-sum-dialog.c:852
+msgid "Mounting disc"
+msgstr ""
+
+#: ../src/burn-dialog.c:1407 ../src/burn-basics.c:69
+msgid "Success"
+msgstr ""
+
+#: ../src/burn-dialog.c:1507
 msgid "Save current session"
 msgstr ""
 
-#: ../src/burn-dialog.c:1578
+#: ../src/burn-dialog.c:1561
 msgid "Session log"
 msgstr ""
 
-#: ../src/burn-dialog.c:1659
+#: ../src/burn-dialog.c:1642
 msgid "An unknown error occured. Check your disc"
 msgstr ""
 
-#: ../src/burn-dialog.c:1669
+#: ../src/burn-dialog.c:1652
 msgid "Error while burning:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1671
+#: ../src/burn-dialog.c:1654
 msgid "Burning error"
 msgstr ""
 
-#: ../src/burn-dialog.c:1677
+#: ../src/burn-dialog.c:1660
 msgid "Save log"
 msgstr ""
 
-#: ../src/burn-dialog.c:1681
+#: ../src/burn-dialog.c:1664
 msgid "View log"
 msgstr ""
 
-#: ../src/burn-dialog.c:1755
+#: ../src/burn-dialog.c:1706
+msgid "Check integrity"
+msgstr ""
+
+#: ../src/burn-dialog.c:1756
 msgid "Audio CD successfully burnt"
 msgstr ""
 
-#: ../src/burn-dialog.c:1756 ../src/burn-dialog.c:1796
-#: ../src/burn-dialog.c:1800 ../src/burn-dialog.c:1805
+#: ../src/burn-dialog.c:1757 ../src/burn-dialog.c:1797
+#: ../src/burn-dialog.c:1801 ../src/burn-dialog.c:1806
 #, c-format
 msgid "\"%s\" is now ready for use"
 msgstr ""
 
-#: ../src/burn-dialog.c:1761
+#: ../src/burn-dialog.c:1762
 msgid "DVD successfully copied"
 msgstr ""
 
-#: ../src/burn-dialog.c:1762 ../src/burn-dialog.c:1772
-#: ../src/burn-dialog.c:1784
+#: ../src/burn-dialog.c:1763 ../src/burn-dialog.c:1773
+#: ../src/burn-dialog.c:1785
 msgid "DVD is now ready for use"
 msgstr ""
 
-#: ../src/burn-dialog.c:1765
+#: ../src/burn-dialog.c:1766
 msgid "CD successfully copied"
 msgstr ""
 
-#: ../src/burn-dialog.c:1766 ../src/burn-dialog.c:1776
-#: ../src/burn-dialog.c:1788
+#: ../src/burn-dialog.c:1767 ../src/burn-dialog.c:1777
+#: ../src/burn-dialog.c:1789
 msgid "CD is now ready for use"
 msgstr ""
 
-#: ../src/burn-dialog.c:1771
+#: ../src/burn-dialog.c:1772
 msgid "Image of DVD successfully created"
 msgstr ""
 
-#: ../src/burn-dialog.c:1775
+#: ../src/burn-dialog.c:1776
 msgid "Image of CD successfully created"
 msgstr ""
 
-#: ../src/burn-dialog.c:1783
+#: ../src/burn-dialog.c:1784
 msgid "Image successfully burnt to DVD"
 msgstr ""
 
-#: ../src/burn-dialog.c:1787
+#: ../src/burn-dialog.c:1788
 msgid "Image successfully burnt to CD"
 msgstr ""
 
-#: ../src/burn-dialog.c:1795
+#: ../src/burn-dialog.c:1796
 msgid "Data DVD successfully burnt"
 msgstr ""
 
-#: ../src/burn-dialog.c:1799
+#: ../src/burn-dialog.c:1800
 msgid "Data CD successfully burnt"
 msgstr ""
 
-#: ../src/burn-dialog.c:1804
+#: ../src/burn-dialog.c:1805
 msgid "Image successfully created"
 msgstr ""
 
-#: ../src/burn-dialog.c:1815
-msgid "Check integrity"
-msgstr ""
-
-#: ../src/audio-disc.c:267 ../src/data-disc.c:471 ../src/tray.c:90
+#: ../src/audio-disc.c:272 ../src/data-disc.c:476 ../src/tray.c:90
 msgid "Menu"
 msgstr ""
 
-#: ../src/audio-disc.c:268 ../src/data-disc.c:472
+#: ../src/audio-disc.c:273 ../src/data-disc.c:477
 msgid "Open"
 msgstr ""
 
-#: ../src/audio-disc.c:270
+#: ../src/audio-disc.c:275
 msgid "Edit information"
 msgstr ""
 
-#: ../src/audio-disc.c:272 ../src/data-disc.c:476
+#: ../src/audio-disc.c:277 ../src/data-disc.c:481
 msgid "Remove"
 msgstr ""
 
-#: ../src/audio-disc.c:274 ../src/data-disc.c:478
+#: ../src/audio-disc.c:279 ../src/data-disc.c:483
 msgid "Paste"
 msgstr ""
 
-#: ../src/audio-disc.c:276
+#: ../src/audio-disc.c:281
 msgid "Add a pause"
 msgstr ""
 
-#: ../src/audio-disc.c:557
+#: ../src/audio-disc.c:563
 msgid "Title"
 msgstr ""
 
-#: ../src/audio-disc.c:583
+#: ../src/audio-disc.c:589
 msgid "Artist"
 msgstr ""
 
-#: ../src/audio-disc.c:592 ../src/play-list.c:302
+#: ../src/audio-disc.c:598 ../src/play-list.c:305
 msgid "Length"
 msgstr ""
 
-#: ../src/audio-disc.c:845
+#: ../src/audio-disc.c:857
 msgid "<i><b>Pause</b></i>"
 msgstr ""
 
-#: ../src/audio-disc.c:1032
+#: ../src/audio-disc.c:1044
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr ""
 
-#: ../src/audio-disc.c:1036
+#: ../src/audio-disc.c:1048
 msgid "Unhandled song"
 msgstr ""
 
-#: ../src/audio-disc.c:1039
+#: ../src/audio-disc.c:1051
 msgid "Make sure the appropriate codec is installed."
 msgstr ""
 
-#: ../src/audio-disc.c:1158
+#: ../src/audio-disc.c:1175
 msgid "Directories can't be added to an audio disc:"
 msgstr ""
 
-#: ../src/audio-disc.c:1160
+#: ../src/audio-disc.c:1177
 msgid "Directory search"
 msgstr ""
 
-#: ../src/audio-disc.c:1163
+#: ../src/audio-disc.c:1180
 msgid "Do you want to search for audio discs inside?"
 msgstr ""
 
-#: ../src/audio-disc.c:1167
+#: ../src/audio-disc.c:1184
 msgid "Search directory"
 msgstr ""
 
-#: ../src/audio-disc.c:1234
+#: ../src/audio-disc.c:1251
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr ""
 
-#: ../src/audio-disc.c:1238 ../src/data-disc.c:2955
+#: ../src/audio-disc.c:1255 ../src/data-disc.c:2967
 msgid "Unreadable file"
 msgstr ""
 
-#: ../src/audio-disc.c:1374 ../src/audio-disc.c:1375
+#: ../src/audio-disc.c:1391 ../src/audio-disc.c:1392
 msgid "loading"
 msgstr ""
 
-#: ../src/audio-disc.c:2571
+#: ../src/audio-disc.c:2602
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr ""
 
-#: ../src/audio-disc.c:2575
+#: ../src/audio-disc.c:2606
 msgid "File deletion noticed"
 msgstr ""
 
-#: ../src/audio-disc.c:2577
+#: ../src/audio-disc.c:2608
 msgid "it will be removed from the project."
 msgstr ""
 
-#: ../src/data-disc.c:474
+#: ../src/data-disc.c:479
 msgid "Rename"
 msgstr ""
 
-#: ../src/data-disc.c:863 ../src/search.c:364 ../src/filtered-window.c:216
+#: ../src/data-disc.c:869 ../src/search.c:367 ../src/filtered-window.c:216
 msgid "Files"
 msgstr ""
 
-#: ../src/data-disc.c:874
+#: ../src/data-disc.c:880
 msgid "Size"
 msgstr ""
 
-#: ../src/data-disc.c:885 ../src/search.c:383
+#: ../src/data-disc.c:891 ../src/search.c:386
 msgid "Description"
 msgstr ""
 
-#: ../src/data-disc.c:965 ../src/data-disc.c:4564
+#: ../src/data-disc.c:971 ../src/data-disc.c:4576
 msgid "New folder"
 msgstr ""
 
-#: ../src/data-disc.c:973
+#: ../src/data-disc.c:979
 msgid "Create a new empty folder"
 msgstr ""
 
-#: ../src/data-disc.c:977
+#: ../src/data-disc.c:983
 msgid "Filtered files"
 msgstr ""
 
-#: ../src/data-disc.c:991
+#: ../src/data-disc.c:997
 msgid "Some files were removed from the project. Clik here to see them."
 msgstr ""
 
-#: ../src/data-disc.c:1154
+#: ../src/data-disc.c:1166
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr ""
 
-#: ../src/data-disc.c:1157
+#: ../src/data-disc.c:1169
 msgid "Already existing file"
 msgstr ""
 
-#: ../src/data-disc.c:1160
+#: ../src/data-disc.c:1172
 msgid "it won't be added."
 msgstr ""
 
-#: ../src/data-disc.c:1228 ../src/data-disc.c:1244 ../src/play-list.c:837
+#: ../src/data-disc.c:1240 ../src/data-disc.c:1256 ../src/play-list.c:839
 msgid "empty"
 msgstr ""
 
-#: ../src/data-disc.c:1231
+#: ../src/data-disc.c:1243
 msgid "(empty)"
 msgstr ""
 
-#: ../src/data-disc.c:1246
+#: ../src/data-disc.c:1258
 msgid "1 item"
 msgstr ""
 
-#: ../src/data-disc.c:1261
+#: ../src/data-disc.c:1273
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/data-disc.c:1611 ../src/data-disc.c:1794 ../src/data-disc.c:1795
-#: ../src/data-disc.c:7283 ../src/data-disc.c:7284
+#: ../src/data-disc.c:1623 ../src/data-disc.c:1806 ../src/data-disc.c:1807
+#: ../src/data-disc.c:7295 ../src/data-disc.c:7296
 msgid "(loading ...)"
 msgstr ""
 
-#: ../src/data-disc.c:2940
+#: ../src/data-disc.c:2952
 #, c-format
 msgid "The file \"%s\" is unreadable:"
 msgstr ""
 
-#: ../src/data-disc.c:2942
+#: ../src/data-disc.c:2954
 #, c-format
 msgid "The directory \"%s\" is unreadable:"
 msgstr ""
 
-#: ../src/data-disc.c:3069
+#: ../src/data-disc.c:3081
 msgid "Some files couldn't be restored."
 msgstr ""
 
-#: ../src/data-disc.c:3071
+#: ../src/data-disc.c:3083
 msgid "File restoration failure"
 msgstr ""
 
-#: ../src/data-disc.c:4574
+#: ../src/data-disc.c:4586
 #, c-format
 msgid "New folder %i"
 msgstr ""
 
-#: ../src/data-disc.c:7626
+#: ../src/data-disc.c:7665
 msgid "Project couldn't be loaded:"
 msgstr ""
 
-#: ../src/data-disc.c:7628
+#: ../src/data-disc.c:7667
 msgid "Project loading failure"
 msgstr ""
 
-#: ../src/data-disc.c:7631
+#: ../src/data-disc.c:7670
 msgid "A thread couldn't be created"
 msgstr ""
 
@@ -919,7 +927,7 @@ msgstr ""
 msgid "_Save"
 msgstr ""
 
-#: ../src/project.c:144 ../src/project.c:2018
+#: ../src/project.c:144 ../src/project.c:1999
 msgid "Save current project"
 msgstr ""
 
@@ -972,7 +980,8 @@ msgid "Remove files selected in project"
 msgstr ""
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/project.c:335 ../src/burn-options-dialog.c:182
+#: ../src/project.c:335 ../src/brasero-disc-option-dialog.c:614
+#: ../src/brasero-image-option-dialog.c:450
 msgid "Burn"
 msgstr ""
 
@@ -1041,7 +1050,7 @@ msgstr ""
 msgid "please add files to the project."
 msgstr ""
 
-#: ../src/project.c:906
+#: ../src/project.c:887
 msgid "Default burning application"
 msgstr ""
 
@@ -1055,94 +1064,94 @@ msgstr ""
 #. FALSE,
 #. FALSE,
 #. 0);
-#: ../src/project.c:948
+#: ../src/project.c:929
 msgid "don't show this dialog again"
 msgstr ""
 
-#: ../src/project.c:998
+#: ../src/project.c:979
 msgid "<big><b>Audio project</b></big>"
 msgstr ""
 
-#: ../src/project.c:1000 ../src/project.c:1134
+#: ../src/project.c:981 ../src/project.c:1115
 msgid "<i>No track</i>"
 msgstr ""
 
-#: ../src/project.c:1007
+#: ../src/project.c:988
 msgid "Brasero is not the default application to burn audio CDs:"
 msgstr ""
 
-#: ../src/project.c:1008
+#: ../src/project.c:989
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
 msgstr ""
 
-#: ../src/project.c:1015
+#: ../src/project.c:996
 msgid "<big><b>Data project</b></big>"
 msgstr ""
 
-#: ../src/project.c:1017
+#: ../src/project.c:998
 msgid "<i>Contents of your data project</i>"
 msgstr ""
 
-#: ../src/project.c:1024
+#: ../src/project.c:1005
 msgid "Brasero is not the default application to burn data discs:"
 msgstr ""
 
-#: ../src/project.c:1025
+#: ../src/project.c:1006
 msgid ""
 "Would you like to make brasero the default application to burn data discs?"
 msgstr ""
 
-#: ../src/project.c:1136
+#: ../src/project.c:1117
 #, c-format
 msgid "<i>%d track</i>"
 msgid_plural "<i>%d tracks</i>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/project.c:1330
+#: ../src/project.c:1311
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr ""
 
-#: ../src/project.c:1332
+#: ../src/project.c:1313
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr ""
 
-#: ../src/project.c:1358
+#: ../src/project.c:1339
 msgid "Error while loading the project:"
 msgstr ""
 
-#: ../src/project.c:1360
+#: ../src/project.c:1341
 msgid "Project loading error"
 msgstr ""
 
-#: ../src/project.c:1597
+#: ../src/project.c:1578
 msgid "the project could not be opened."
 msgstr ""
 
-#: ../src/project.c:1606
+#: ../src/project.c:1587
 msgid "the file is empty."
 msgstr ""
 
-#: ../src/project.c:1637 ../src/project.c:1645
+#: ../src/project.c:1618 ../src/project.c:1626
 msgid "it doesn't seem to be a valid brasero project."
 msgstr ""
 
-#: ../src/project.c:1664 ../src/brasero-project-manager.c:123
+#: ../src/project.c:1645 ../src/brasero-project-manager.c:123
 msgid "Open a project"
 msgstr ""
 
-#: ../src/project.c:1762
+#: ../src/project.c:1743
 msgid "Your project has not been saved:"
 msgstr ""
 
-#: ../src/project.c:1764
+#: ../src/project.c:1745
 msgid "Unsaved project"
 msgstr ""
 
-#: ../src/project.c:1772
+#: ../src/project.c:1753
 msgid "Unknown error."
 msgstr ""
 
@@ -1154,7 +1163,8 @@ msgstr ""
 msgid "<b>Select source drive to copy</b>"
 msgstr ""
 
-#: ../src/disc-copy-dialog.c:153 ../src/burn-options-dialog.c:155
+#: ../src/disc-copy-dialog.c:153 ../src/brasero-disc-option-dialog.c:583
+#: ../src/brasero-image-option-dialog.c:397
 msgid "<b>Select a drive to write to</b>"
 msgstr ""
 
@@ -1218,156 +1228,140 @@ msgstr ""
 msgid "_Open"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:275
+#: ../src/brasero-project-manager.c:274
 msgid "<big><b>File Browser</b></big>"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:276
+#: ../src/brasero-project-manager.c:275
 msgid "<i>Browse the file system</i>"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:277
+#: ../src/brasero-project-manager.c:276
 msgid "File browser"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:278
+#: ../src/brasero-project-manager.c:277
 msgid "Display file browser"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:301
+#: ../src/brasero-project-manager.c:300
 msgid "<big><b>Search Files</b></big>"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:302
+#: ../src/brasero-project-manager.c:301
 msgid "<i>Search files using keywords</i>"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:303
+#: ../src/brasero-project-manager.c:302
 msgid "Search files"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:304
+#: ../src/brasero-project-manager.c:303
 msgid "Display search"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:326
+#: ../src/brasero-project-manager.c:325
 msgid "<big><b>Playlists</b></big>"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:327
+#: ../src/brasero-project-manager.c:326
 msgid "<i>Display playlists and their contents</i>"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:328 ../src/play-list.c:281
+#: ../src/brasero-project-manager.c:327 ../src/play-list.c:284
 msgid "Playlists"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:329
+#: ../src/brasero-project-manager.c:328
 msgid "Display playlists"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:399
+#: ../src/brasero-project-manager.c:398
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/brasero-project-manager.c:409
+#: ../src/brasero-project-manager.c:408
 #, c-format
 msgid "%d out of %d selected file is supported (%s)"
 msgid_plural "%d out of %d selected files are supported (%s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/brasero-project-manager.c:416
+#: ../src/brasero-project-manager.c:415
 #, c-format
 msgid "%d out of %d selected file can't be added (%s)"
 msgid_plural "%d out of %d selected files can't be added (%s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/brasero-project-manager.c:428
+#: ../src/brasero-project-manager.c:427
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/brasero-project-manager.c:433
+#: ../src/brasero-project-manager.c:432
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/brasero-project-manager.c:439 ../src/brasero-project-manager.c:464
+#: ../src/brasero-project-manager.c:438 ../src/brasero-project-manager.c:463
 msgid "No file selected"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:503
+#: ../src/brasero-project-manager.c:502
 msgid "Recent projects"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:504
+#: ../src/brasero-project-manager.c:503
 msgid "Display the projects recently opened"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:627
-msgid "This image can't be burnt:"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:629
-msgid "Burning failure"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:632
-msgid "it doesn't appear to be a valid image or cue file."
-msgstr ""
-
-#: ../src/brasero-project-manager.c:715
-msgid "Choose a disc image or a cue file"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:837
+#: ../src/brasero-project-manager.c:689
 msgid "Brasero - New audio disc project"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:849
+#: ../src/brasero-project-manager.c:701
 msgid "Brasero - New data disc project"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:859
+#: ../src/brasero-project-manager.c:711
 msgid "Brasero - New image file"
 msgstr ""
 
-#: ../src/brasero-project-manager.c:870
+#: ../src/brasero-project-manager.c:722
 msgid "Brasero - Copy a disc"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:141 ../src/search.c:430
+#: ../src/brasero-file-chooser.c:171 ../src/search.c:433
 #: ../src/search-entry.c:759 ../src/search-entry.c:800
 #: ../src/search-entry.c:862
 msgid "All files"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:146
+#: ../src/brasero-file-chooser.c:176
 msgid "Audio files only"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:152
+#: ../src/brasero-file-chooser.c:182
 msgid "Movies only"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:158
+#: ../src/brasero-file-chooser.c:188
 msgid "Image files only"
 msgstr ""
 
-#: ../src/metadata.c:428
+#: ../src/metadata.c:425
 msgid "unknown type of file"
 msgstr ""
 
-#: ../src/metadata.c:476
+#: ../src/metadata.c:473
 msgid "this format is not supported by gstreamer"
 msgstr ""
 
@@ -1380,43 +1374,43 @@ msgstr ""
 msgid "%s only"
 msgstr ""
 
-#: ../src/play-list.c:292
+#: ../src/play-list.c:295
 msgid "Number of songs"
 msgstr ""
 
-#: ../src/play-list.c:312
+#: ../src/play-list.c:315
 msgid "Genre"
 msgstr ""
 
-#: ../src/play-list.c:626
+#: ../src/play-list.c:629
 msgid "Select a playlist"
 msgstr ""
 
-#: ../src/play-list.c:839
+#: ../src/play-list.c:841
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/play-list.c:932
+#: ../src/play-list.c:934
 #, c-format
 msgid "Error parsing playlist \"%s\":"
 msgstr ""
 
-#: ../src/play-list.c:937 ../src/play-list.c:959
+#: ../src/play-list.c:939 ../src/play-list.c:961
 msgid "an unknown error occured."
 msgstr ""
 
-#: ../src/play-list.c:939
+#: ../src/play-list.c:941
 msgid "Playlist loading error"
 msgstr ""
 
-#: ../src/play-list.c:966
+#: ../src/play-list.c:968
 msgid "the playlist is empty."
 msgstr ""
 
-#: ../src/play-list.c:977
+#: ../src/play-list.c:979
 msgid "Loading ..."
 msgstr ""
 
@@ -1461,166 +1455,146 @@ msgstr ""
 msgid "<span weight=\"bold\">%s</span>"
 msgstr ""
 
-#: ../src/recorder-selection.c:466
+#: ../src/recorder-selection.c:472
 msgid "<i>The disc is busy.</i>"
 msgstr ""
 
-#: ../src/recorder-selection.c:470
+#: ../src/recorder-selection.c:476
 msgid "<i>There is no disc in the drive.</i>"
 msgstr ""
 
-#: ../src/recorder-selection.c:473
+#: ../src/recorder-selection.c:479
 msgid "<i>Unknown type of disc.</i>"
 msgstr ""
 
-#: ../src/recorder-selection.c:476
+#: ../src/recorder-selection.c:483
 #, c-format
 msgid "The <b>%s</b> is not writable."
-msgstr ""
-
-#: ../src/recorder-selection.c:481
-#, c-format
-msgid ""
-"The <b>%s</b> is ready.\n"
-"It contains data."
 msgstr ""
 
 #: ../src/recorder-selection.c:494
 #, c-format
 msgid ""
-"%s\n"
-"More data can be added (%s free)."
+"The <b>%s</b> is ready.\n"
+"It contains audio tracks.\n"
+"A data session can be added (%s free)."
 msgstr ""
 
-#: ../src/recorder-selection.c:501
+#: ../src/recorder-selection.c:500
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It contains audio tracks."
 msgstr ""
 
-#: ../src/recorder-selection.c:507
+#: ../src/recorder-selection.c:513
+#, c-format
+msgid ""
+"The <b>%s</b> is ready.\n"
+"It contains data.\n"
+"More data can be added (%s free)."
+msgstr ""
+
+#: ../src/recorder-selection.c:519
+#, c-format
+msgid ""
+"The <b>%s</b> is ready.\n"
+"It contains data."
+msgstr ""
+
+#: ../src/recorder-selection.c:526
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It is empty."
 msgstr ""
 
-#: ../src/recorder-selection.c:575 ../src/recorder-selection.c:580
+#: ../src/recorder-selection.c:594 ../src/recorder-selection.c:599
 #, c-format
 msgid ""
 "The <b>image</b> will be saved to\n"
 "%s"
 msgstr ""
 
-#: ../src/recorder-selection.c:604
+#: ../src/recorder-selection.c:623
 msgid "<b>There is no available drive.</b>"
 msgstr ""
 
-#: ../src/recorder-selection.c:721
-msgid "Raw image (only with CDS)"
-msgstr ""
-
-#: ../src/recorder-selection.c:723
-msgid "Cue image (only with CDs)"
-msgstr ""
-
-#: ../src/recorder-selection.c:754
+#: ../src/recorder-selection.c:762
 #, c-format
 msgid "Properties of %s"
 msgstr ""
 
-#: ../src/recorder-selection.c:774
+#: ../src/recorder-selection.c:782
 msgid "Max speed"
 msgstr ""
 
-#: ../src/recorder-selection.c:784
+#: ../src/recorder-selection.c:792
 msgid "DVD"
 msgstr ""
 
-#: ../src/recorder-selection.c:784
+#: ../src/recorder-selection.c:792
 msgid "CD"
 msgstr ""
 
-#: ../src/recorder-selection.c:790
+#: ../src/recorder-selection.c:798
 msgid "<b>Burning speed</b>"
 msgstr ""
 
-#: ../src/recorder-selection.c:822
+#: ../src/recorder-selection.c:830
 msgid "Simulate the burning"
 msgstr ""
 
-#: ../src/recorder-selection.c:830
+#: ../src/recorder-selection.c:838
 msgid "Eject after burning"
 msgstr ""
 
-#: ../src/recorder-selection.c:838
+#: ../src/recorder-selection.c:846
 msgid "Use burnproof (decrease the risk of failures)"
 msgstr ""
 
-#: ../src/recorder-selection.c:846
+#: ../src/recorder-selection.c:854
 msgid "Burn the image directly without saving it to disc"
 msgstr ""
 
-#: ../src/recorder-selection.c:859
+#: ../src/recorder-selection.c:865
 msgid "<b>Options</b>"
 msgstr ""
 
-#: ../src/recorder-selection.c:922
+#: ../src/recorder-selection.c:928
 msgid "Choose a location for the disc image"
 msgstr ""
 
-#: ../src/recorder-selection.c:983
+#: ../src/recorder-selection.c:984
 msgid "Disc image file properties"
 msgstr ""
 
-#: ../src/recorder-selection.c:1029
-msgid "Image type: "
-msgstr ""
-
-#. now we get the targets available and display them
-#: ../src/recorder-selection.c:1038
-msgid "Let brasero choose (safest)"
-msgstr ""
-
-#: ../src/recorder-selection.c:1045
-msgid "*.iso image"
-msgstr ""
-
-#: ../src/recorder-selection.c:1047
-msgid "*.raw image"
-msgstr ""
-
-#: ../src/recorder-selection.c:1049
-msgid "*.cue image"
-msgstr ""
-
-#: ../src/search.c:293
+#: ../src/search.c:294
 msgid "Previous results"
 msgstr ""
 
-#: ../src/search.c:303 ../src/search.c:731
+#: ../src/search.c:304 ../src/search.c:734
 msgid "<b>No results</b>"
 msgstr ""
 
-#: ../src/search.c:308
+#: ../src/search.c:309
 msgid "Next results"
 msgstr ""
 
-#: ../src/search.c:441
+#: ../src/search.c:444
 msgid "Number of results displayed"
 msgstr ""
 
-#: ../src/search.c:725
+#: ../src/search.c:728
 #, c-format
 msgid "<b>Results %i - %i (out of %i)</b>"
 msgstr ""
 
-#: ../src/search.c:976
+#: ../src/search.c:979
 msgid "Error querying beagle:"
 msgstr ""
 
-#: ../src/search.c:978
+#: ../src/search.c:981
 msgid "Search error"
 msgstr ""
 
@@ -1734,228 +1708,150 @@ msgstr ""
 msgid "Blanking"
 msgstr ""
 
-#: ../src/burn-common.c:123 ../src/burn-local-image.c:350
+#: ../src/burn-common.c:178 ../src/burn-local-image.c:350
 #, c-format
 msgid "a temporary file can't be created: %s"
 msgstr ""
 
-#: ../src/burn-common.c:137 ../src/burn-common.c:164 ../src/burn-common.c:332
+#: ../src/burn-common.c:192 ../src/burn-common.c:218 ../src/burn-common.c:386
 #, c-format
 msgid "%s already exists"
 msgstr ""
 
-#: ../src/burn-common.c:146 ../src/burn-common.c:173
+#: ../src/burn-common.c:201 ../src/burn-common.c:227
 #, c-format
 msgid "%s can't be removed"
 msgstr ""
 
-#: ../src/burn-common.c:281
+#: ../src/burn-common.c:335
 msgid "One file is not a directory or a regular file"
 msgstr ""
 
-#: ../src/burn-common.c:305
+#: ../src/burn-common.c:359
 msgid "the file can't be read"
 msgstr ""
 
-#: ../src/burn-common.c:348
+#: ../src/burn-common.c:402
 #, c-format
 msgid "%s can't be removed and is not a directory (%s)"
 msgstr ""
 
-#: ../src/burn-common.c:362
+#: ../src/burn-common.c:416
 #, c-format
 msgid "%s can't be created (%s)"
 msgstr ""
 
-#: ../src/burn-common.c:378
+#: ../src/burn-common.c:432
 #, c-format
 msgid "directory \"%s\" can't be created (%s)"
 msgstr ""
 
-#: ../src/burn-common.c:401
+#: ../src/burn-common.c:455
 #, c-format
 msgid "a temporary directory could not be created (%s)"
 msgstr ""
 
-#: ../src/burn-common.c:422
+#: ../src/burn-common.c:476
 #, c-format
 msgid "the pipe couldn't be created (%s)"
 msgstr ""
 
-#: ../src/burn-common.c:433 ../src/burn-common.c:452
+#: ../src/burn-common.c:487 ../src/burn-common.c:506
 msgid "couldn't set non blocking mode"
 msgstr ""
 
-#: ../src/burn-common.c:441 ../src/burn-common.c:460
+#: ../src/burn-common.c:495 ../src/burn-common.c:514
 msgid "couldn't get pipe flags"
 msgstr ""
 
-#: ../src/burn-options-dialog.c:166 ../src/burn-options-dialog.c:167
-msgid "Choose which drive holds the disc to write to"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:233
-#, c-format
-msgid "Data disc (%s)"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:235
-#, c-format
-msgid "Audio disc (%s)"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:241
-msgid "<b>Label of the disc</b>"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:243
-msgid "<b>Title</b>"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:263
-msgid "Disc burning setup"
-msgstr ""
-
-#. multisession options
-#: ../src/burn-options-dialog.c:277
-msgid "Append the files to those already on the disc"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:281 ../src/burn-options-dialog.c:282
-msgid "Add these data to those already on the disc instead of replacing them"
-msgstr ""
-
-#. DVD don't need that
-#: ../src/burn-options-dialog.c:289
-msgid "Leave the disc open to add other files later"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:293 ../src/burn-options-dialog.c:294
-msgid "Allow to add more data to the disc later"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:300
-msgid "<b>Multisession</b>"
-msgstr ""
-
-#. general options
-#: ../src/burn-options-dialog.c:395
-msgid "Increase compatibility with Windows systems"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:398 ../src/burn-options-dialog.c:399
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:411
-msgid "Check data integrity"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:414 ../src/burn-options-dialog.c:415
-msgid "Allow to check the integrity of files on the disc"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:427
-msgid "Create a video DVD"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:430 ../src/burn-options-dialog.c:431
-msgid "Create a video DVD that can be played by all DVD readers"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:434
-msgid "<b>Disc options</b>"
-msgstr ""
-
-#: ../src/burn-options-dialog.c:500
-msgid "their names will be changed and truncated to 64 characters."
-msgstr ""
-
-#: ../src/burn.c:510
+#: ../src/burn.c:516
 msgid "the drive can't be unlocked"
 msgstr ""
 
-#: ../src/burn.c:520
+#: ../src/burn.c:526
 msgid "the disc can't be ejected"
 msgstr ""
 
-#: ../src/burn.c:572
+#: ../src/burn.c:579
 msgid "ongoing copying process"
 msgstr ""
 
-#: ../src/burn.c:576 ../src/burn.c:676 ../src/burn.c:943
+#: ../src/burn.c:583 ../src/burn.c:683 ../src/burn.c:952
 #, c-format
 msgid "the drive can't be locked (%s)"
 msgstr ""
 
-#: ../src/burn.c:641
+#: ../src/burn.c:647
 msgid "the drive has no rewriting capabilities"
 msgstr ""
 
-#: ../src/burn.c:672
+#: ../src/burn.c:679
 msgid "ongoing blanking process"
 msgstr ""
 
-#: ../src/burn.c:726 ../src/burn.c:1439 ../src/burn.c:1522 ../src/burn.c:1529
-#: ../src/burn-cdrdao.c:422 ../src/burn-growisofs.c:689
+#: ../src/burn.c:733 ../src/burn.c:1448 ../src/burn.c:1531 ../src/burn.c:1538
+#: ../src/burn-cdrdao.c:480 ../src/burn-growisofs.c:689
 msgid "the drive seems to be busy"
 msgstr ""
 
-#: ../src/burn.c:860
+#: ../src/burn.c:868
 msgid "the drive has no burning capabilities"
 msgstr ""
 
-#: ../src/burn.c:939
+#: ../src/burn.c:948
 msgid "ongoing burning process"
 msgstr ""
 
-#: ../src/burn.c:1320
+#: ../src/burn.c:1329
 #, c-format
 msgid "the size of the volume can't be checked (%s)"
 msgstr ""
 
-#: ../src/burn.c:1331
+#: ../src/burn.c:1340
 #, c-format
 msgid ""
 "the selected location does not have enough free space to store the disc "
 "image (%ld MiB needed)"
 msgstr ""
 
-#: ../src/burn.c:1748
+#: ../src/burn.c:1757
 #, c-format
 msgid "the file %s can't be opened (%s)"
 msgstr ""
 
-#: ../src/burn.c:2123
+#: ../src/burn.c:2133
 #, c-format
 msgid "internal error (code %i)"
 msgstr ""
 
-#: ../src/burn-cdrdao.c:323
+#: ../src/burn-cdrdao.c:358
 msgid "Copying audio track"
 msgstr ""
 
-#: ../src/burn-cdrdao.c:329
+#: ../src/burn-cdrdao.c:364
 msgid "Copying data track"
 msgstr ""
 
-#: ../src/burn-cdrdao.c:366
+#: ../src/burn-cdrdao.c:401
 #, c-format
 msgid "Analysing track %02i"
 msgstr ""
 
-#: ../src/burn-cdrdao.c:428
+#: ../src/burn-cdrdao.c:450
+#, c-format
+msgid "the cue file (%s) seems to be invalid"
+msgstr ""
+
+#: ../src/burn-cdrdao.c:486
 msgid "your version of cdrdao doesn't seem to be supported by libbrasero"
 msgstr ""
 
-#: ../src/burn-cdrdao.c:434 ../src/burn-cdrecord.c:271
-#: ../src/burn-cdrecord.c:327
+#: ../src/burn-cdrdao.c:492 ../src/burn-cdrecord.c:271
+#: ../src/burn-cdrecord.c:333
 msgid "You don't seem to have the required permission to use this drive"
 msgstr ""
 
-#: ../src/burn-cdrdao.c:951 ../src/burn-cdrecord.c:1216
+#: ../src/burn-cdrdao.c:1104 ../src/burn-cdrecord.c:1222
 msgid "the drive cannot rewrite CDs or DVDs"
 msgstr ""
 
@@ -1964,83 +1860,87 @@ msgid "There doesn't seem to be a disc in the drive"
 msgstr ""
 
 #: ../src/burn-cdrecord.c:283
-msgid "The CD has already been recorded"
+msgid "input buffer error"
 msgstr ""
 
 #: ../src/burn-cdrecord.c:289
+msgid "The CD has already been recorded"
+msgstr ""
+
+#: ../src/burn-cdrecord.c:295
 msgid "The CD cannot be blanked"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:297 ../src/burn-growisofs.c:669
+#: ../src/burn-cdrecord.c:303 ../src/burn-growisofs.c:669
 #: ../src/burn-growisofs.c:675
 msgid "The files selected did not fit on the CD"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:303
+#: ../src/burn-cdrecord.c:309
 msgid "a write error occured which was likely due to overburning the disc"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:309
+#: ../src/burn-cdrecord.c:315
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:315
+#: ../src/burn-cdrecord.c:321
 msgid "The image does not seem to be a proper iso9660 file system"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:321
+#: ../src/burn-cdrecord.c:327
 msgid "The system is too slow to write the CD at this speed. Try a lower speed"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:333
+#: ../src/burn-cdrecord.c:339
 msgid ""
 "The drive seems to be busy (maybe check you have proper permissions to use "
 "it)"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:341
+#: ../src/burn-cdrecord.c:347
 msgid "The drive seems to be busy (maybe you should reload the media)"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:347
+#: ../src/burn-cdrecord.c:353
 msgid "the image file cannot be found"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:354 ../src/burn-cdrecord.c:542
+#: ../src/burn-cdrecord.c:360 ../src/burn-cdrecord.c:548
 msgid "internal error"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:360
+#: ../src/burn-cdrecord.c:366
 msgid "the cd information could not be written"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:366
+#: ../src/burn-cdrecord.c:372
 msgid "the disc could not be closed"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:372
+#: ../src/burn-cdrecord.c:378
 msgid "the audio tracks are too short or not a multiple of 2352"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:497
+#: ../src/burn-cdrecord.c:503
 msgid "Writing cue sheet"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:522
+#: ../src/burn-cdrecord.c:528
 msgid "The media needs to be reloaded before being recorded"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:733
+#: ../src/burn-cdrecord.c:739
 #, c-format
 msgid "the inf file can't be written : %s"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:766
+#: ../src/burn-cdrecord.c:772
 msgid "a temporary directory couldn't be created"
 msgstr ""
 
-#: ../src/burn-cdrecord.c:848 ../src/burn-cdrecord.c:859
+#: ../src/burn-cdrecord.c:854 ../src/burn-cdrecord.c:865
 #: ../src/burn-growisofs.c:867 ../src/burn-growisofs.c:887
 msgid "imager doesn't seem to be ready"
 msgstr ""
@@ -2061,12 +1961,12 @@ msgstr ""
 msgid "Unhandled error, aborting"
 msgstr ""
 
-#: ../src/burn-growisofs.c:701 ../src/burn-mkisofs.c:370
+#: ../src/burn-growisofs.c:701 ../src/burn-mkisofs.c:376
 msgid "Some files have invalid filenames"
 msgstr ""
 
-#: ../src/burn-growisofs.c:707 ../src/burn-mkisofs.c:313
-#: ../src/burn-mkisofs.c:322
+#: ../src/burn-growisofs.c:707 ../src/burn-mkisofs.c:319
+#: ../src/burn-mkisofs.c:328
 msgid "the image can't be created"
 msgstr ""
 
@@ -2104,23 +2004,27 @@ msgstr ""
 msgid "The label for the image is too long."
 msgstr ""
 
-#: ../src/burn-mkisofs.c:328
+#: ../src/burn-mkisofs.c:313
+msgid "the old image couldn't be read"
+msgstr ""
+
+#: ../src/burn-mkisofs.c:334
 msgid "this version of mkisofs doesn't seem to be supported"
 msgstr ""
 
-#: ../src/burn-mkisofs.c:376
+#: ../src/burn-mkisofs.c:382
 msgid "Unknown character encoding"
 msgstr ""
 
-#: ../src/burn-mkisofs.c:382
+#: ../src/burn-mkisofs.c:388
 msgid "There is no space left on the device"
 msgstr ""
 
-#: ../src/burn-mkisofs.c:389
+#: ../src/burn-mkisofs.c:395
 msgid "The file is too large for a CD"
 msgstr ""
 
-#: ../src/burn-mkisofs.c:713
+#: ../src/burn-mkisofs.c:722
 msgid ""
 "failed to get the start point of the track. Make sure the media allow to add "
 "files (it is not closed)"
@@ -2275,74 +2179,74 @@ msgstr ""
 msgid "<b><big>Song information for track %02i</big></b>"
 msgstr ""
 
-#: ../src/burn-transcode.c:472
+#: ../src/burn-transcode.c:487
 #, c-format
 msgid "%s is not a directory"
 msgstr ""
 
-#: ../src/burn-transcode.c:678
+#: ../src/burn-transcode.c:693
 msgid "source can't be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:708
+#: ../src/burn-transcode.c:723
 #, c-format
 msgid "%s already exist (can't overwrite)"
 msgstr ""
 
-#: ../src/burn-transcode.c:737
+#: ../src/burn-transcode.c:752
 msgid "sink can't be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:751
+#: ../src/burn-transcode.c:766
 msgid "audioconvert can't be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:779
+#: ../src/burn-transcode.c:794
 msgid "audioresample can't be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:790
+#: ../src/burn-transcode.c:805
 msgid "filter can't be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:813
+#: ../src/burn-transcode.c:828
 msgid "decode can't be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:958
+#: ../src/burn-transcode.c:973
 #, c-format
 msgid "%s already exist"
 msgstr ""
 
-#: ../src/burn-transcode.c:970
+#: ../src/burn-transcode.c:985
 #, c-format
 msgid "a symlink could not be created (%s)"
 msgstr ""
 
-#: ../src/burn-transcode.c:1020
+#: ../src/burn-transcode.c:1035
 msgid "a temporary directory could not be created"
 msgstr ""
 
-#: ../src/burn-transcode.c:1193
+#: ../src/burn-transcode.c:1208
 #, c-format
 msgid "error padding (%s)"
 msgstr ""
 
-#: ../src/burn-transcode.c:1312 ../src/burn-transcode.c:1415
+#: ../src/burn-transcode.c:1327 ../src/burn-transcode.c:1430
 msgid "error getting duration"
 msgstr ""
 
-#: ../src/burn-transcode.c:1383
+#: ../src/burn-transcode.c:1398
 #, c-format
 msgid "error opening file for padding : %s"
 msgstr ""
 
-#: ../src/burn-transcode.c:1675
+#: ../src/burn-transcode.c:1690
 #, c-format
 msgid "Analysing \"%s\""
 msgstr ""
 
-#: ../src/burn-transcode.c:1693
+#: ../src/burn-transcode.c:1708
 #, c-format
 msgid "Transcoding \"%s\""
 msgstr ""
@@ -2548,84 +2452,90 @@ msgstr ""
 msgid "%s (%s)"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:171
+#: ../src/brasero-sum-dialog.c:169
 msgid "Use a md5 file to check the disc"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:216
-msgid "Check"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:323
-msgid "Error while unmounting disc"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:324 ../src/brasero-sum-dialog.c:335
-msgid "The file integrity check cannot be performed:"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:334 ../src/brasero-sum-dialog.c:384
-msgid "File integrity check error"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:336
-msgid "unknown error"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:344
-msgid "File integrity check success"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:345
-msgid "The file integrity was performed successfully:"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:354
-msgid "Disc data corrupted"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:355
-msgid "The file integrity check showed errors:"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:356
-msgid "some files may be corrupted on the disc"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:382
-msgid "<b><big>The following files appear to be corrupted:</big></b>"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:410
-msgid "Corrupted files"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:440
+#: ../src/brasero-sum-dialog.c:182
 msgid "Open a md5 file"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:531
+#: ../src/brasero-sum-dialog.c:197
+msgid "Check"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:304
+msgid "Error while unmounting disc"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:305 ../src/brasero-sum-dialog.c:316
+#: ../src/brasero-sum-dialog.c:720
+msgid "The file integrity check cannot be performed:"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:315 ../src/brasero-sum-dialog.c:365
+#: ../src/brasero-sum-dialog.c:719
+msgid "File integrity check error"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:317
+msgid "unknown error"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:325
+msgid "File integrity check success"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:326
+msgid "The file integrity was performed successfully:"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:335
+msgid "Disc data corrupted"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:336
+msgid "The file integrity check showed errors:"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:337
+msgid "some files may be corrupted on the disc"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:363
+msgid "<b><big>The following files appear to be corrupted:</big></b>"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:391
+msgid "Corrupted files"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:477
 msgid "a temporary file couldn't be created"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:544 ../src/brasero-sum-dialog.c:600
+#: ../src/brasero-sum-dialog.c:490 ../src/brasero-sum-dialog.c:546
 msgid "URI is not valid"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:553
+#: ../src/brasero-sum-dialog.c:499
 msgid "Downloading md5 file"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:701
+#: ../src/brasero-sum-dialog.c:647
 msgid "Unknown error"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:722 ../src/burn-sum.c:576
+#: ../src/brasero-sum-dialog.c:667 ../src/burn-sum.c:576
 msgid "Creating disc checksum"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:735
+#: ../src/brasero-sum-dialog.c:680
 msgid "a thread could not a created"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:721
+msgid "no md5 file was given."
 msgstr ""
 
 #: ../src/brasero-tool-dialog.c:147
@@ -2738,4 +2648,183 @@ msgstr ""
 
 #: ../src/burn-sum.c:568
 msgid "the disc is empty or busy."
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:116
+msgid "Disc burning setup"
+msgstr ""
+
+#. multisession options
+#: ../src/brasero-disc-option-dialog.c:206
+msgid "Append the files to those already on the disc"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:210
+#: ../src/brasero-disc-option-dialog.c:211
+msgid "Add these data to those already on the disc instead of replacing them"
+msgstr ""
+
+#. DVD don't need that
+#: ../src/brasero-disc-option-dialog.c:214
+msgid "Leave the disc open to add other files later"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:218
+#: ../src/brasero-disc-option-dialog.c:219
+msgid "Allow to add more data to the disc later"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:221
+#: ../src/brasero-disc-option-dialog.c:397
+msgid "<b>Multisession</b>"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:246
+msgid "<b>Label of the disc</b>"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:247
+#, c-format
+msgid "Data disc (%s)"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:250
+msgid "<b>Title</b>"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:251
+#, c-format
+msgid "Audio disc (%s)"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:291
+msgid "their names will be changed and truncated to 64 characters."
+msgstr ""
+
+#. general options
+#: ../src/brasero-disc-option-dialog.c:321
+msgid "Increase compatibility with Windows systems"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:324
+#: ../src/brasero-disc-option-dialog.c:325
+msgid ""
+"Improve compatibility with Windows systems by allowing to display long "
+"filenames (maximum 64 characters)"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:338
+msgid "Check data integrity"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:341
+#: ../src/brasero-disc-option-dialog.c:342
+msgid "Allow to check the integrity of files on the disc"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:354
+msgid "Create a video DVD"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:357
+#: ../src/brasero-disc-option-dialog.c:358
+msgid "Create a video DVD that can be played by all DVD readers"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:361
+msgid "<b>Disc options</b>"
+msgstr ""
+
+#. multisession options
+#: ../src/brasero-disc-option-dialog.c:390
+msgid "Leave the disc open to add a data session later"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:394
+#: ../src/brasero-disc-option-dialog.c:395
+msgid "Allow create what is called an enhanced CD or CD+"
+msgstr ""
+
+#: ../src/brasero-disc-option-dialog.c:597
+#: ../src/brasero-disc-option-dialog.c:598
+#: ../src/brasero-image-option-dialog.c:411
+#: ../src/brasero-image-option-dialog.c:412
+msgid "Choose which drive holds the disc to write to"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:110
+msgid "Image burning setup"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:128
+msgid "This image can't be burnt:"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:130
+msgid "Invalid image"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:133
+msgid "it doesn't appear to be a valid image or a valid cue file."
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:245
+msgid "There is no specified image:"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:247
+msgid "No image"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:250
+msgid "Please, choose an image and retry."
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:418
+msgid "Path:\t\t"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:421
+msgid "Open an image"
+msgstr ""
+
+#: ../src/brasero-image-option-dialog.c:430
+msgid "<b>Image</b>"
+msgstr ""
+
+#: ../src/brasero-image-type-chooser.c:102
+msgid "Image type:\t"
+msgstr ""
+
+#. now we get the targets available and display them
+#: ../src/brasero-image-type-chooser.c:166
+msgid "Let brasero choose (safest)"
+msgstr ""
+
+#: ../src/brasero-image-type-chooser.c:173
+msgid "*.iso (joliet) image"
+msgstr ""
+
+#: ../src/brasero-image-type-chooser.c:175
+msgid "*.iso image"
+msgstr ""
+
+#: ../src/brasero-image-type-chooser.c:177
+msgid "*.raw image"
+msgstr ""
+
+#: ../src/brasero-image-type-chooser.c:179
+msgid "*.cue image"
+msgstr ""
+
+#: ../src/brasero-image-type-chooser.c:181
+msgid "*.toc image (cdrdao)"
+msgstr ""
+
+#: ../src/burn-toc2cue.c:217
+msgid "Converting toc file"
+msgstr ""
+
+#: ../src/burn-toc2cue.c:249
+msgid "the conversion of the toc file failed"
 msgstr ""
