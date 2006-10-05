@@ -79,9 +79,6 @@ brasero_burn_dialog_delete (GtkWidget *widget,
 static void
 brasero_burn_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroBurnDialog *dialog);
-static void
-brasero_burn_dialog_close_clicked_cb (GtkButton *button,
-				      BraseroBurnDialog *dialog);
 
 static void
 brasero_burn_dialog_tray_cancel_cb (BraseroTrayIcon *tray,
@@ -118,10 +115,7 @@ struct BraseroBurnDialogPrivate {
 	GtkWidget *image;
 	BraseroTrayIcon *tray;
 
-	GMainLoop *loop;
 	gint close_timeout;
-
-	gint mount_timeout;
 };
 
 #define TIMEOUT	10000
@@ -166,7 +160,7 @@ brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 	widget_class->delete_event = brasero_burn_dialog_delete;
 }
 
-static char *
+static gchar *
 brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 					   BraseroMediaType type,
 					   gboolean insert)
@@ -710,7 +704,9 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 
 	/* buttons */
 	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj), obj->priv->cancel, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
+				      obj->priv->cancel,
+				      GTK_RESPONSE_CANCEL);
 }
 
 static void
@@ -764,17 +760,6 @@ brasero_burn_dialog_finalize (GObject * object)
 		cobj->priv->close_timeout = 0;
 	}
 
-	if (cobj->priv->mount_timeout) {
-		g_source_remove (cobj->priv->mount_timeout);
-		cobj->priv->mount_timeout = 0;
-	}
-
-	if (cobj->priv->loop) {
-		g_main_loop_quit (cobj->priv->loop);
-		g_main_loop_unref (cobj->priv->loop);
-		cobj->priv->loop = NULL;
-	}
-
 	if (cobj->priv->session) {
 		g_object_unref (cobj->priv->session);
 		cobj->priv->session = NULL;
@@ -807,10 +792,6 @@ brasero_burn_dialog_activity_start (BraseroBurnDialog *dialog)
 	gtk_button_set_label (GTK_BUTTON (dialog->priv->cancel), GTK_STOCK_CANCEL);
 	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), FALSE);
 
-	g_signal_handlers_disconnect_by_func (dialog->priv->cancel,
-					      brasero_burn_dialog_close_clicked_cb,
-					      dialog);
-
 	g_signal_connect (dialog->priv->cancel,
 			  "clicked",
 			  G_CALLBACK (brasero_burn_dialog_cancel_clicked_cb),
@@ -841,13 +822,10 @@ brasero_burn_dialog_activity_stop (BraseroBurnDialog *dialog,
 
 	gtk_button_set_use_stock (GTK_BUTTON (dialog->priv->cancel), TRUE);
 	gtk_button_set_label (GTK_BUTTON (dialog->priv->cancel), GTK_STOCK_CLOSE);
+
 	g_signal_handlers_disconnect_by_func (dialog->priv->cancel,
 					      brasero_burn_dialog_cancel_clicked_cb,
 					      dialog);
-	g_signal_connect (dialog->priv->cancel,
-			  "clicked",
-			  G_CALLBACK (brasero_burn_dialog_close_clicked_cb),
-			  dialog);
 
 	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (dialog->priv->progress),
 					  FALSE,
@@ -865,13 +843,13 @@ brasero_burn_dialog_activity_stop (BraseroBurnDialog *dialog,
 static void
 brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 {
-	char *title = NULL;
-	char *header = NULL;
+	gchar *title = NULL;
+	gchar *header = NULL;
 	GdkPixbuf *pixbuf = NULL;
 	NautilusBurnDrive *drive;
 	NautilusBurnMediaType media_type;
 
-	char *types [] = { 	NULL,
+	gchar *types [] = { 	NULL,
 				NULL,
 				NULL,
 				"gnome-dev-cdrom",
@@ -1117,7 +1095,7 @@ brasero_burn_dialog_integrity_ok (BraseroBurnDialog *dialog)
 
 static void
 brasero_burn_dialog_integrity_error (BraseroBurnDialog *dialog,
-				     GError *error)
+				     const GError *error)
 {
 	brasero_burn_dialog_message (dialog,
 				     _("Data integrity check"),
@@ -1137,16 +1115,30 @@ brasero_burn_dialog_integrity_wrong_sums (BraseroBurnDialog *dialog)
 }
 
 static void
+brasero_burn_dialog_integrity_check_end (BraseroBurnDialog *dialog,
+					 BraseroBurnResult result,
+					 GError *error)
+{
+	if (error) {
+		brasero_burn_dialog_integrity_error (dialog, error);
+		g_error_free (error);
+	}
+	else if (result != BRASERO_BURN_OK)
+		brasero_burn_dialog_integrity_wrong_sums (dialog);
+	else
+		brasero_burn_dialog_integrity_ok (dialog);
+}
+
+static void
 brasero_burn_dialog_close_reload_disc_dlg (NautilusBurnDriveMonitor *monitor,
 					   NautilusBurnDrive *drive,
 					   BraseroBurnDialog *dialog)
 {
 	/* we might have a dialog waiting for the 
 	 * insertion of a disc if so close it */
-	if (dialog->priv->waiting_disc_dialog) {
+	if (dialog->priv->waiting_disc_dialog)
 		gtk_dialog_response (GTK_DIALOG (dialog->priv->waiting_disc_dialog),
 				     GTK_RESPONSE_OK);
-	}
 }
 
 static BraseroBurnResult
@@ -1187,7 +1179,7 @@ brasero_burn_dialog_reload_disc_dlg (BraseroBurnDialog *dialog,
 
 	g_signal_handler_disconnect (monitor, added_id);
 
-	if (answer == GTK_RESPONSE_CANCEL)
+	if (answer != GTK_RESPONSE_OK)
 		return BRASERO_BURN_CANCEL;
 
 	return BRASERO_BURN_OK;
@@ -1236,8 +1228,8 @@ brasero_burn_dialog_check_image_integrity (BraseroBurnDialog *dialog,
 		}
 	}
 
-	/* now that we have a checksum for the drive we compare
-	 * it to the one of the image */
+	/* now that we have a checksum for the drive we compare get one
+	 * for the image */
 	result = brasero_burn_dialog_job_get_track (dialog,
 						    dialog->priv->checksum,
 						    source,
@@ -1290,29 +1282,20 @@ brasero_burn_dialog_check_integrity_report (gpointer user_data)
 
 static BraseroBurnResult
 brasero_burn_dialog_check_files_integrity (BraseroBurnDialog *dialog,
-					   NautilusBurnDrive *drive,
+					   const gchar *mount_point,
 					   GError **error)
 {
 	gint id;
 	BraseroBurnResult result;
-	gchar *mount_point;
-	gboolean mounted_by_us;
 	GSList *wrong_sums = NULL;
-
-	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (dialog->priv->progress),
-					  BRASERO_BURN_ACTION_CHECKSUM,
-					  _("Checking files integrity"));
-
-	/* mount and fetch the mount point for the media */
-	mount_point = NCB_DRIVE_GET_MOUNT_POINT (drive,
-						 &mounted_by_us,
-						 error);
-	if (!mount_point)
-		return BRASERO_BURN_ERR;
 
 	id = g_timeout_add (500,
 			    brasero_burn_dialog_check_integrity_report,
 			    dialog);
+
+	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (dialog->priv->progress),
+					  BRASERO_BURN_ACTION_CHECKSUM,
+					  _("Checking files integrity"));
 
 	/* check the sum of every file */
 	dialog->priv->file_ctx = brasero_sum_check_new ();
@@ -1322,8 +1305,6 @@ brasero_burn_dialog_check_files_integrity (BraseroBurnDialog *dialog,
 				    error);
 
 	brasero_sum_check_free (dialog->priv->file_ctx);
-	g_free (mount_point);
-
 	g_source_remove (id);
 
 	if (wrong_sums) {
@@ -1333,81 +1314,47 @@ brasero_burn_dialog_check_files_integrity (BraseroBurnDialog *dialog,
 		result = BRASERO_BURN_ERR;
 	}
 
-	if (mounted_by_us)
-		NCB_DRIVE_UNMOUNT (drive, NULL);
-
 	return result;
 }
 
-typedef struct {
-	GtkWidget *button;
-	BraseroBurnDialog *dialog;
-	NautilusBurnDrive *burner;
-	const BraseroTrackSource *source;
-} IntegrityCheckData;
-
-static gboolean
-brasero_burn_dialog_integrity_start (gpointer func_data)
+static void
+brasero_burn_dialog_get_mount_point_cb (NautilusBurnDrive *drive,
+					const gchar *mount_point,
+					gboolean mounted_by_us,
+					const GError *error,
+					gpointer callback_data)
 {
-	gchar *header;
+	BraseroBurnDialog *dialog = callback_data;
+	GError *local_error = NULL;
 	gboolean success;
-	GError *error = NULL;
-	BraseroBurnDialog *dialog;
-	IntegrityCheckData *data = func_data;
-
-	dialog = data->dialog;
-
-	header = g_strdup (gtk_label_get_text (GTK_LABEL (dialog->priv->header)));
-
-	brasero_burn_dialog_activity_start (dialog);
-	gtk_label_set_text (GTK_LABEL (dialog->priv->header), 
-			    "<b><big>Performing integrity check</big></b>");
-	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
-
-	if (data->source->type == BRASERO_TRACK_SOURCE_DATA)
-		success = brasero_burn_dialog_check_files_integrity (dialog,
-								     data->burner,
-								     &error);
-	else
-		success = brasero_burn_dialog_check_image_integrity (dialog, 
-								     data->burner,
-								     data->source,
-								     &error);
 
 	if (error) {
 		brasero_burn_dialog_integrity_error (dialog, error);
-		g_error_free (error);
+		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+		return;
 	}
-	else if (success != BRASERO_BURN_OK)
-		brasero_burn_dialog_integrity_wrong_sums (dialog);
-	else
-		brasero_burn_dialog_integrity_ok (dialog);
 
-	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (dialog->priv->progress),
-					  BRASERO_BURN_ACTION_FINISHED,
-					  _("Success"));
+	success = brasero_burn_dialog_check_files_integrity (dialog,
+							     mount_point,
+							     &local_error);
 
-	gtk_widget_set_sensitive (GTK_WIDGET (data->button), TRUE);
-	brasero_burn_dialog_activity_stop (dialog, header);
-	g_free (header);
+	if (mounted_by_us)
+		NCB_DRIVE_UNMOUNT (drive, NULL);
 
-	return FALSE;
+	brasero_burn_dialog_integrity_check_end (dialog, success, local_error);
+	if (local_error)
+		g_error_free (local_error);
+
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 }
 
 static void
-brasero_burn_dialog_integrity_button_pressed (GtkButton *button,
-					      IntegrityCheckData *data)
+brasero_burn_dialog_integrity_start (BraseroBurnDialog *dialog,
+				     NautilusBurnDrive *burner,
+				     const BraseroTrackSource *source)
 {
 	BraseroBurnResult result;
-	BraseroBurnDialog *dialog;
-
-	dialog = data->dialog;
-
-	/* we remove the close timeout */
-	if (dialog->priv->close_timeout) {
-		g_source_remove (dialog->priv->close_timeout);
-		dialog->priv->close_timeout = 0;
-	}
+	gchar *header;
 
 	/* display a dialog to the user explaining what we're
 	 * going to do, that is reload the disc before checking */
@@ -1417,14 +1364,50 @@ brasero_burn_dialog_integrity_button_pressed (GtkButton *button,
 	if (result == BRASERO_BURN_CANCEL)
 		return;
 
-	/* this to leave the time to gnome-vfs to see a new drive was inserted */
-	data->button = GTK_WIDGET (button);
-	gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
+	/* change the text */
+	header = g_strdup (gtk_label_get_text (GTK_LABEL (dialog->priv->header)));
 
-	/* we give the disc 2 seconds to settle down before trying to mount */
-	dialog->priv->mount_timeout = g_timeout_add (2000,
-						     brasero_burn_dialog_integrity_start,
-						     data);
+	brasero_burn_dialog_activity_start (dialog);
+	gtk_label_set_text (GTK_LABEL (dialog->priv->header), 
+			    "<b><big>Performing integrity check</big></b>");
+	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
+
+	/* get the mount point */
+	if (source->type == BRASERO_TRACK_SOURCE_DATA) {
+		BraseroMountHandle *handle;
+		GtkResponseType answer;
+
+		brasero_burn_dialog_action_changed_real (dialog,
+							 BRASERO_BURN_ACTION_CHECKSUM,
+							 _("Mounting disc"));
+
+		handle = NCB_DRIVE_GET_MOUNT_POINT (burner,
+						    brasero_burn_dialog_get_mount_point_cb,
+						    dialog);
+
+		answer = gtk_dialog_run (GTK_DIALOG (dialog));
+		if (answer == GTK_RESPONSE_CANCEL)
+			NCB_DRIVE_GET_MOUNT_POINT_CANCEL (handle);
+	}
+	else {
+		GError *error = NULL;
+
+		result = brasero_burn_dialog_check_image_integrity (dialog,
+								    burner,
+								    source,
+								    &error);
+
+		brasero_burn_dialog_integrity_check_end (dialog,
+							 result,
+							 error);
+	}
+
+	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (dialog->priv->progress),
+					  BRASERO_BURN_ACTION_FINISHED,
+					  _("Success"));
+
+	brasero_burn_dialog_activity_stop (dialog, header);
+	g_free (header);
 }
 
 static BraseroBurnResult
@@ -1704,26 +1687,33 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 static gboolean
 brasero_burn_dialog_success_timeout (BraseroBurnDialog *dialog)
 {
-	if (dialog->priv->loop
-	&&  g_main_loop_is_running (dialog->priv->loop))
-		g_main_loop_quit (dialog->priv->loop);
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	dialog->priv->close_timeout = 0;
 
 	return FALSE;
 }
 
 static void
-brasero_burn_dialog_close_clicked_cb (GtkButton *button,
-				      BraseroBurnDialog *dialog)
+brasero_burn_dialog_success_run (BraseroBurnDialog *dialog,
+				 NautilusBurnDrive *drive,
+				 const BraseroTrackSource *source,
+				 gboolean checksum)
 {
-	if (dialog->priv->loop
-	&&  g_main_loop_is_running (dialog->priv->loop))
-		g_main_loop_quit (dialog->priv->loop);
-}
+	gint answer;
+	GtkWidget *button = NULL;
 
-static void
-brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
-{
-	dialog->priv->loop = g_main_loop_new (NULL, FALSE);
+	if (checksum) {
+		button = brasero_utils_make_button (_("Check integrity"),
+						    GTK_STOCK_FIND);
+		gtk_widget_show_all (button);
+
+		gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
+					      button,
+					      GTK_RESPONSE_APPLY);
+	}
+
+start:
+
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check))) {
 		dialog->priv->close_timeout = g_timeout_add (TIMEOUT,
 							     (GSourceFunc) brasero_burn_dialog_success_timeout,
@@ -1731,10 +1721,22 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 
 	}
 
-	g_main_loop_run (dialog->priv->loop);
-	g_main_loop_unref (dialog->priv->loop);
-	dialog->priv->close_timeout = 0;
-	dialog->priv->loop = NULL;
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	/* remove the timeout if need be */
+	if (dialog->priv->close_timeout) {
+		g_source_remove (dialog->priv->close_timeout);
+		dialog->priv->close_timeout = 0;
+	}
+
+	if (answer == GTK_RESPONSE_APPLY) {
+		gtk_widget_set_sensitive (button, FALSE);
+		brasero_burn_dialog_integrity_start (dialog,
+						     drive,
+						     source);
+		gtk_widget_set_sensitive (button, TRUE);
+		goto start;
+	}
 }
 
 static void
@@ -1746,7 +1748,6 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 	gchar *primary = NULL;
 	gchar *secondary = NULL;
 	NautilusBurnDrive *drive;
-	IntegrityCheckData check_data = {0,};
 
 	drive = dialog->priv->drive;
 
@@ -1808,27 +1809,10 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 	}
 
 	brasero_burn_dialog_activity_stop (dialog, primary);
-
-	if (checksum) {
-		GtkWidget *button;
-
-		button = brasero_utils_make_button (_("Check integrity"),
-						    GTK_STOCK_FIND);
-		gtk_widget_show_all (button);
-
-		check_data.dialog = dialog;
-		check_data.burner = burner;
-		check_data.source = track;
-		g_signal_connect (button,
-				  "clicked",
-				  G_CALLBACK (brasero_burn_dialog_integrity_button_pressed),
-				  &check_data);
-		gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
-					      button,
-					      GTK_RESPONSE_OK);
-	}
-
-	brasero_burn_dialog_success_run (dialog);
+	brasero_burn_dialog_success_run (dialog,
+					 burner,
+					 track,
+					 checksum);
 
 	g_free (primary);
 	g_free (secondary);
@@ -1938,7 +1922,8 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 						    &error);
 
 	if (result == BRASERO_BURN_OK) {
-		if ((flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) == 0)
+		if ((flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) == 0
+		&&   NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
 			flags |= BRASERO_BURN_FLAG_DAO;
 
 		result = brasero_burn_record (dialog->priv->burn,

@@ -66,6 +66,7 @@
 #include "mime-filter.h"
 #include "search.h"
 #include "brasero-uri-container.h"
+#include "eggtreemultidnd.h"
 
 static void brasero_search_class_init (BraseroSearchClass *klass);
 static void brasero_search_init (BraseroSearch *sp);
@@ -317,6 +318,8 @@ brasero_search_init (BraseroSearch *obj)
 
 	/* Tree */
 	obj->priv->tree = gtk_tree_view_new ();
+	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (obj->priv->tree));
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
@@ -579,8 +582,8 @@ static char *
 brasero_search_get_selected_uri (BraseroURIContainer *container)
 {
 	BraseroSearch *search;
-	char **uris = NULL;
-	char *uri;
+	gchar **uris = NULL;
+	gchar *uri;
 
 	search = BRASERO_SEARCH (container);
 	uris = brasero_search_get_selected_rows (search);
@@ -599,7 +602,7 @@ brasero_search_empty_tree (BraseroSearch *search)
 {
 	GtkTreeModel *model;
 	GtkTreeIter row;
-	char *mime;
+	gchar *mime;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
@@ -622,7 +625,7 @@ brasero_search_drag_data_get_cb (GtkTreeView *tree,
 				 guint info,
 				 guint time, BraseroSearch *search)
 {
-	char **uris;
+	gchar **uris;
 
 	uris = brasero_search_get_selected_rows (search);
 	gtk_selection_data_set_uris (selection_data, uris);
@@ -641,10 +644,10 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 	GSList *iter;
 	GSList *next;
 
-	const char *description;
-	char *name, *mime, *uri;
-	int score;
-	int num;
+	const gchar *description;
+	gchar *name, *mime, *uri;
+	gint score;
+	gint num;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
@@ -657,7 +660,7 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 		next = iter->next;
 
 		uri = g_strdup (beagle_hit_get_uri (hit));
-	
+
 		/* beagle return badly formed uri not encoded in UTF-8
 		 * locale charset so we check them just in case */
 		unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
@@ -715,7 +718,7 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 static void
 brasero_search_update_header (BraseroSearch *search)
 {
-	char *string;
+	gchar *string;
 
 	if (search->priv->hits_num) {
 		gint last;
@@ -893,9 +896,9 @@ brasero_search_beagle_hit_substracted_cb (BeagleQuery *query,
 					  BeagleHitsSubtractedResponse *response,
 					  BraseroSearch *search)
 {
-	char *uri;
+	gchar *uri;
 	GSList *list, *iter;
-	const char *removed_uri;
+	const gchar *removed_uri;
 
 	GtkTreeModel *model;
 	GtkTreeIter row;
@@ -1122,7 +1125,6 @@ brasero_search_get_selected_rows (BraseroSearch *search)
 	if (rows == NULL)
 		return NULL;
 
-	rows = g_list_reverse (rows);
 	uris = g_new0 (char *, g_list_length (rows) + 1);
 	for (iter = rows, i = 0; iter != NULL; iter = iter->next, i++) {
 		gtk_tree_model_get_iter (model,

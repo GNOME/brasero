@@ -47,6 +47,7 @@
 #include "utils.h"
 #include "burn.h"
 #include "brasero-ncb.h"
+#include "brasero-image-type-chooser.h"
 
 #define ICON_SIZE 48
 
@@ -91,7 +92,7 @@ struct BraseroRecorderSelectionPrivate {
 	gchar *image_path;
 	BraseroImageFormat image_format;
 
-	GtkWidget *image_type_combo;
+	GtkWidget *image_type_widget;
 	GtkWidget *selection;
 	GHashTable *settings;
 	GtkWidget *dialog;
@@ -279,6 +280,7 @@ brasero_recorder_selection_init (BraseroRecorderSelection *obj)
 
 	brasero_recorder_selection_create_prop_button (obj);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
+	gtk_widget_show_all (box);
 
 	box = gtk_hbox_new (FALSE, 12);
 	obj->priv->image = gtk_image_new ();
@@ -294,7 +296,8 @@ brasero_recorder_selection_init (BraseroRecorderSelection *obj)
 			  G_CALLBACK (brasero_recorder_selection_drive_changed_cb),
 			  obj);
 
-	obj->priv->image_format = BRASERO_IMAGE_FORMAT_ANY;	
+	obj->priv->image_format = BRASERO_IMAGE_FORMAT_ANY;
+	gtk_widget_show_all (box);
 }
 
 static void
@@ -346,6 +349,7 @@ brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selecti
 	const gchar *suffixes [] = {".iso",
 				    ".raw",
 				    ".cue",
+				    ".toc",
 				    NULL };
 	const gchar *suffix;
 	gchar *path;
@@ -362,6 +366,8 @@ brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selecti
 		suffix = suffixes [1];
 	else if (image_format & BRASERO_IMAGE_FORMAT_CUE)
 		suffix = suffixes [2];
+	else if (image_format & BRASERO_IMAGE_FORMAT_CDRDAO)
+		suffix = suffixes [3];
 	else
 		return NULL;
 	
@@ -472,34 +478,47 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 	else if (type == NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
 		info = g_strdup (_("<i>Unknown type of disc.</i>"));
 	}
-	else if (!is_blank && !is_rewritable) {
+	else if ((!is_appendable && !is_blank && !is_rewritable)
+	     || ((is_appendable && has_audio) && !is_blank && !is_rewritable)) {
 		info = g_strdup_printf (_("The <b>%s</b> is not writable."),
 					nautilus_burn_drive_media_type_get_string (type));
 		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 	}
-	else if (has_data) {
-		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data."),
-					nautilus_burn_drive_media_type_get_string (type));
-		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
-		can_record = TRUE;
-
+	else if (has_audio) {
 		if (is_appendable) {
-			gchar *tmp;
 			gchar *size;
 			GnomeVFSFileSize remaining;
 
 			remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
 			size = gnome_vfs_format_file_size_for_display (remaining);
-
-			tmp = g_strdup_printf (_("%s\nMore data can be added (%s free)."), info, size);
+			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks.\nA data session can be added (%s free)."),
+						nautilus_burn_drive_media_type_get_string (type),
+						size);
 			g_free (size);
-			g_free (info);
-			info = tmp;
 		}
+		else
+			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks."),
+						nautilus_burn_drive_media_type_get_string (type));
+
+		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
+		can_record = TRUE;
 	}
-	else if (has_audio) {
-		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks."),
-					nautilus_burn_drive_media_type_get_string (type));
+	else if (has_data) {
+		if (is_appendable) {
+			gchar *size;
+			GnomeVFSFileSize remaining;
+
+			remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+			size = gnome_vfs_format_file_size_for_display (remaining);
+			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data.\nMore data can be added (%s free)."),
+						nautilus_burn_drive_media_type_get_string (type),
+						size);
+			g_free (size);
+		}
+		else
+			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data."),
+						nautilus_burn_drive_media_type_get_string (type));
+
 		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 		can_record = TRUE;
 	}
@@ -694,8 +713,6 @@ brasero_recorder_selection_set_source_track (BraseroRecorderSelection *selection
 
 	selection->priv->track_source = brasero_track_source_copy (source);
 	if (source->type == BRASERO_TRACK_SOURCE_DISC) {
-		NautilusBurnMediaType type;
-
 		if (NCB_DRIVE_GET_TYPE (selection->priv->drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 			/* in case the user asked to copy to a file on the hard disk
 			 * then we need to update the name to change the extension
@@ -705,23 +722,12 @@ brasero_recorder_selection_set_source_track (BraseroRecorderSelection *selection
 
 		/* try to see if we need to update the image
 		 * type selection when copying a drive */
-		if (!selection->priv->image_type_combo)
+		if (!selection->priv->image_type_widget)
 			return;
 
-		type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
-		if (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
-			gtk_combo_box_remove_text (GTK_COMBO_BOX (selection->priv->image_type_combo), 3);
-			gtk_combo_box_remove_text (GTK_COMBO_BOX (selection->priv->image_type_combo), 2);
-
-			if (gtk_combo_box_get_active (GTK_COMBO_BOX (selection->priv->image_type_combo)) == -1)
-				gtk_combo_box_set_active (GTK_COMBO_BOX (selection->priv->image_type_combo), 0);
-		}
-		else {
-			gtk_combo_box_append_text (GTK_COMBO_BOX (selection->priv->image_type_combo),
-						   _("Raw image (only with CDS)"));
-			gtk_combo_box_append_text (GTK_COMBO_BOX (selection->priv->image_type_combo),
-						   _("Cue image (only with CDs)"));
-		}
+		brasero_image_type_chooser_set_source (BRASERO_IMAGE_TYPE_CHOOSER (selection->priv->image_type_widget),
+						       source,
+						       selection->priv->image_format);
 	}
 }
 
@@ -732,6 +738,8 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	NautilusBurnMediaType media;
 	BraseroDriveProp *prop;
 	BraseroBurnFlag flags = 0;
+	BraseroBurnFlag supported = 0;
+	BraseroBurnFlag compulsory = 0;
 	GtkWidget *combo;
 	GtkWindow *toplevel;
 	GtkWidget *toggle_otf = NULL;
@@ -815,10 +823,10 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 				     selection->priv->track_source,
 				     selection->priv->drive,
 				     NULL,
-				     NULL,
-				     &flags);
+				     &compulsory,
+				     &supported);
 
-	if (flags & BRASERO_BURN_FLAG_DUMMY) {
+	if (supported & BRASERO_BURN_FLAG_DUMMY) {
 		toggle_simulation = gtk_check_button_new_with_label (_("Simulate the burning"));
 		if (prop->flags & BRASERO_BURN_FLAG_DUMMY)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle_simulation), TRUE);
@@ -826,7 +834,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 		list = g_slist_prepend (list, toggle_simulation);
 	}
 
-	if (flags & BRASERO_BURN_FLAG_EJECT) {
+	if (supported & BRASERO_BURN_FLAG_EJECT) {
 		toggle_eject = gtk_check_button_new_with_label (_("Eject after burning"));
 		if (prop->flags & BRASERO_BURN_FLAG_EJECT)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle_eject), TRUE);
@@ -834,7 +842,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 		list = g_slist_prepend (list, toggle_eject);
 	}
 
-	if (flags & BRASERO_BURN_FLAG_BURNPROOF) {
+	if (supported & BRASERO_BURN_FLAG_BURNPROOF) {
 		toggle_burnproof = gtk_check_button_new_with_label (_("Use burnproof (decrease the risk of failures)"));
 		if (prop->flags & BRASERO_BURN_FLAG_BURNPROOF)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle_burnproof), TRUE);
@@ -842,14 +850,12 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 		list = g_slist_prepend (list, toggle_burnproof);
 	}
 
-	if (flags & BRASERO_BURN_FLAG_ON_THE_FLY) {
+	if (supported & BRASERO_BURN_FLAG_ON_THE_FLY) {
 		toggle_otf = gtk_check_button_new_with_label (_("Burn the image directly without saving it to disc"));
 		if (prop->flags & BRASERO_BURN_FLAG_ON_THE_FLY)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle_otf), TRUE);
 
-		if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW
-		&&  selection->priv->track_source
-		&&  selection->priv->track_source->type != BRASERO_TRACK_SOURCE_DISC)
+		if (compulsory & BRASERO_BURN_FLAG_ON_THE_FLY)
 			gtk_widget_set_sensitive (toggle_otf, FALSE);
 
 		list = g_slist_prepend (list, toggle_otf);
@@ -967,17 +973,12 @@ brasero_recorder_selection_image_properties (BraseroRecorderSelection *selection
 static void
 brasero_recorder_selection_disc_image_properties (BraseroRecorderSelection *selection)
 {
-	BraseroImageFormat *formats;
-	BraseroImageFormat *iter;
-	GtkWidget *type_combo;
+	GtkWidget *format_chooser;
 	GtkWindow *toplevel;
 	GtkWidget *chooser;
 	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *hbox;
 	GtkWidget *vbox;
 	gint answer;
-	gint type;
 
 	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (selection)));
 	dialog = gtk_dialog_new_with_buttons (_("Disc image file properties"),
@@ -1022,59 +1023,20 @@ brasero_recorder_selection_disc_image_properties (BraseroRecorderSelection *sele
 
 	gtk_box_pack_start (GTK_BOX (vbox), chooser, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	format_chooser = brasero_image_type_chooser_new ();
+	gtk_box_pack_start (GTK_BOX (vbox), format_chooser, FALSE, FALSE, 0);
+	gtk_widget_show (format_chooser);
 
-	label = gtk_label_new (_("Image type: "));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	type_combo = gtk_combo_box_new_text ();
-	gtk_widget_show (type_combo);
-	gtk_box_pack_end (GTK_BOX (hbox), type_combo, TRUE, TRUE, 0);
-
-	/* now we get the targets available and display them */
-	gtk_combo_box_append_text (GTK_COMBO_BOX (type_combo), _("Let brasero choose (safest)"));
-	brasero_burn_caps_get_imager_available_formats (selection->priv->caps,
-							&formats,
-							selection->priv->track_source);
-
-	for (iter = formats; iter [0] != BRASERO_IMAGE_FORMAT_NONE; iter ++) {
-		if (iter [0] & BRASERO_IMAGE_FORMAT_ISO)
-			gtk_combo_box_append_text (GTK_COMBO_BOX (type_combo), _("*.iso image"));
-		else if (iter [0] & BRASERO_IMAGE_FORMAT_CLONE)
-			gtk_combo_box_append_text (GTK_COMBO_BOX (type_combo), _("*.raw image"));
-		else if (iter [0] & BRASERO_IMAGE_FORMAT_CUE)
-			gtk_combo_box_append_text (GTK_COMBO_BOX (type_combo), _("*.cue image"));
-	}
-
-	if (selection->priv->image_format != BRASERO_IMAGE_FORMAT_ANY) {
-		gint i;
-
-		/* we find the number of the target if it is still available */
-		for (i = 0; formats [i] != BRASERO_IMAGE_FORMAT_NONE; i++) {
-			if (formats [i] == selection->priv->image_format) {
-				gtk_combo_box_set_active (GTK_COMBO_BOX (type_combo), i);
-				break;
-			}
-		}
-	}
-	else
-		gtk_combo_box_set_active (GTK_COMBO_BOX (type_combo), 0);
-
-	/* just to make sure we see if there is a line which is active. It can 
-	 * happens that the last time it was a CD and the user chose RAW. If it
-	 * is now a DVD it can't be raw any more */
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (type_combo)) == -1)
-		gtk_combo_box_set_active (GTK_COMBO_BOX (type_combo), 0);
+	brasero_image_type_chooser_set_source (BRASERO_IMAGE_TYPE_CHOOSER (format_chooser),
+					       selection->priv->track_source,
+					       selection->priv->image_format);
 
 	/* and here we go */
 	gtk_widget_show (dialog);
 
-	selection->priv->image_type_combo = type_combo;
+	selection->priv->image_type_widget = format_chooser;
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
-	selection->priv->image_type_combo = NULL;
+	selection->priv->image_type_widget = NULL;
 
 	if (answer != GTK_RESPONSE_OK)
 		goto end;
@@ -1084,15 +1046,11 @@ brasero_recorder_selection_disc_image_properties (BraseroRecorderSelection *sele
 
 	selection->priv->image_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
 
-	type = gtk_combo_box_get_active (GTK_COMBO_BOX (type_combo));
-	if (type == 0) 
-		selection->priv->image_format = BRASERO_IMAGE_FORMAT_ANY;
-	else
-		selection->priv->image_format = formats [type - 1];
+	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (format_chooser),
+					       &selection->priv->image_format);
 
 end:
 	gtk_widget_destroy (dialog);
-	g_free (formats);
 }
 
 static void

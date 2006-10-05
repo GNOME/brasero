@@ -57,7 +57,7 @@
 #include "disc.h"
 #include "data-disc.h"
 #include "audio-disc.h"
-#include "burn-options-dialog.h"
+#include "brasero-disc-option-dialog.h"
 #include "burn-dialog.h"
 #include "utils.h"
 #include "brasero-uri-container.h"
@@ -727,8 +727,7 @@ void
 brasero_project_burn (BraseroProject *project)
 {
 	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
-	BraseroTrackSource *source;
-	BraseroImageFormat format;
+	BraseroTrackSource *source = NULL;
 	NautilusBurnDrive *drive;
 	BraseroDiscResult result;
 	GtkWidget *toplevel;
@@ -737,7 +736,6 @@ brasero_project_burn (BraseroProject *project)
 	gboolean checksum = FALSE;
 	gboolean destroy;
 	gchar *output;
-	gchar *label;
 	gint speed;
 
 	result = brasero_project_size_check_status (BRASERO_PROJECT_SIZE (project->priv->size_display),
@@ -753,12 +751,6 @@ brasero_project_burn (BraseroProject *project)
 	}
 
 	result = brasero_project_check_status (project, project->priv->current);
-	if (result != BRASERO_DISC_OK)
-		return;
-
-	result = brasero_disc_get_track_source (project->priv->current,
-						&source,
-						BRASERO_IMAGE_FORMAT_ANY);
 	if (result == BRASERO_DISC_CANCELLED)
 		return;
 
@@ -774,14 +766,18 @@ brasero_project_burn (BraseroProject *project)
 		return;
 	}
 
+	if (result != BRASERO_DISC_OK)
+		return;
+
 	project->priv->is_burning = 1;
 	destroy = FALSE;
 
 	/* setup, show, and run options dialog */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 
-	dialog = brasero_burn_option_dialog_new ();
-	brasero_burn_option_dialog_set_track (BRASERO_BURN_OPTION_DIALOG (dialog), source);
+	dialog = brasero_disc_option_dialog_new ();
+	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
+					     project->priv->current);
 
 	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -792,31 +788,14 @@ brasero_project_burn (BraseroProject *project)
 	if (result != GTK_RESPONSE_OK)
 		goto end;
 
-	brasero_burn_option_dialog_get_session_param (BRASERO_BURN_OPTION_DIALOG (dialog),
-						      &drive,
-						      &speed,
-						      &output,
-						      &flags,
-						      &label,
-						      &format,
-						      &checksum);
+	brasero_disc_option_dialog_get_param (BRASERO_DISC_OPTION_DIALOG (dialog),
+					      &flags,
+					      &drive,
+					      &speed,
+					      &source,
+					      &output,
+					      &checksum);
 	gtk_widget_destroy (dialog);
-
-	if (source->type == BRASERO_TRACK_SOURCE_DATA) {
-		if ((format & BRASERO_IMAGE_FORMAT_JOLIET)
-		&& !(source->format & BRASERO_IMAGE_FORMAT_JOLIET)) {
-			/* the user forced the use of joliet extension */
-			brasero_track_source_free (source);
-			result = brasero_disc_get_track_source (project->priv->current,
-								&source,
-								BRASERO_IMAGE_FORMAT_JOLIET);
-		}
-		else if (!(format & BRASERO_IMAGE_FORMAT_JOLIET)
-		      && (source->format & BRASERO_IMAGE_FORMAT_JOLIET))
-			source->format &= ~BRASERO_IMAGE_FORMAT_JOLIET;			
-
-		source->contents.data.label = label;
-	}
 
 	if (overburn)
 		flags |= BRASERO_BURN_FLAG_OVERBURN;
@@ -846,7 +825,9 @@ brasero_project_burn (BraseroProject *project)
     	project->priv->burnt = 1;
 
 end:
-	brasero_track_source_free (source);
+	if (source)
+		brasero_track_source_free (source);
+
 	project->priv->is_burning = 0;
 	gtk_widget_destroy (dialog);
 

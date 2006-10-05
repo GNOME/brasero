@@ -289,15 +289,20 @@ brasero_disc_copy_dialog_get_session_param (BraseroDiscCopyDialog *dialog,
 		*output = props.output_path;
 		track->format = props.props.image_format;
 		*speed = 0;
+
+		if (flags)
+			*flags = props.flags;
 	}
 	else {
 		*speed = props.props.drive_speed;
 		track->format = BRASERO_IMAGE_FORMAT_ANY;
 		*output = NULL;
+
+		if (flags)
+			*flags = props.flags|BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 	}
 
 	*source = track;
-	*flags = props.flags | BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 
 	return TRUE;
 }

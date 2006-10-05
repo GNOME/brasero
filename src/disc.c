@@ -211,6 +211,22 @@ brasero_disc_get_track_source (BraseroDisc *disc,
 }
 
 BraseroDiscResult
+brasero_disc_get_track_type (BraseroDisc *disc,
+			     BraseroTrackSourceType *type,
+			     BraseroImageFormat *format)
+{
+	BraseroDiscIface *iface;
+
+	g_return_val_if_fail (BRASERO_IS_DISC (disc), BRASERO_DISC_ERROR_UNKNOWN);
+	
+	iface = BRASERO_DISC_GET_IFACE (disc);
+	if (iface->get_track_type)
+		return (* iface->get_track_type) (disc, type, format);
+
+	return BRASERO_DISC_ERROR_UNKNOWN;
+}
+
+BraseroDiscResult
 brasero_disc_load_track (BraseroDisc *disc,
 			 BraseroDiscTrack *track)
 {

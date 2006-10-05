@@ -37,6 +37,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <libgnomevfs/gnome-vfs-utils.h>
+
 #include <nautilus-burn-drive.h>
 
 #include "burn-cdrdao.h"
@@ -45,6 +47,8 @@
 #include "burn-process.h"
 #include "burn-recorder.h"
 #include "burn-imager.h"
+#include "burn-toc2cue.h"
+#include "burn-caps.h"
 #include "brasero-ncb.h"
 
 static void brasero_cdrdao_class_init (BraseroCdrdaoClass *klass);
@@ -129,8 +133,12 @@ struct BraseroCdrdaoPrivate {
 	BraseroTrackSource *track;
 	NautilusBurnDrive *drive;
 
+	BraseroImageFormat format;
+
 	gchar *src_output;
-	gchar *toc;
+
+	gchar *output;
+	gchar *datafile;
 
 	gint rate;               /* speed at which we should write */
 
@@ -247,11 +255,54 @@ brasero_cdrdao_init (BraseroCdrdao *obj)
 }
 
 static void
+brasero_cdrdao_clean_output (BraseroCdrdao *cdrdao)
+{
+	if (cdrdao->priv->output) {
+		BraseroImageFormat format = BRASERO_IMAGE_FORMAT_NONE;
+
+		if (cdrdao->priv->format == BRASERO_IMAGE_FORMAT_ANY) {
+			BraseroBurnCaps *caps;
+
+			caps = brasero_burn_caps_get_default ();
+			format = brasero_burn_caps_get_imager_default_format (caps,
+									      cdrdao->priv->track);
+			g_object_unref (caps);
+		}
+		else
+			format = cdrdao->priv->format;
+
+		if (cdrdao->priv->clean
+		|| !(format & BRASERO_IMAGE_FORMAT_CDRDAO))
+			g_remove (cdrdao->priv->output);
+
+		g_free (cdrdao->priv->output);
+		cdrdao->priv->output = NULL;
+	}
+
+	if (cdrdao->priv->datafile) {
+		if (cdrdao->priv->clean && cdrdao->priv->track_ready)
+			g_remove (cdrdao->priv->datafile);
+
+		g_free (cdrdao->priv->datafile);
+		cdrdao->priv->datafile = NULL;
+	}
+
+	cdrdao->priv->track_ready = 0;
+}
+
+static void
 brasero_cdrdao_finalize (GObject *object)
 {
 	BraseroCdrdao *cobj;
 	cobj = BRASERO_CDRDAO (object);
-	
+
+	if (cobj->priv->src_output) {
+		g_free (cobj->priv->src_output);
+		cobj->priv->src_output = NULL;
+	}
+
+	brasero_cdrdao_clean_output (cobj);
+
 	if (cobj->priv->drive) {
 		nautilus_burn_drive_unref (cobj->priv->drive);
 		cobj->priv->drive = NULL;
@@ -260,22 +311,6 @@ brasero_cdrdao_finalize (GObject *object)
 	if (cobj->priv->track) {
 		brasero_track_source_free (cobj->priv->track);
 		cobj->priv->track = NULL;
-	}
-
-	if (cobj->priv->src_output) {
-		if (cobj->priv->clean && cobj->priv->track_ready)
-			g_remove (cobj->priv->src_output);
-
-		g_free (cobj->priv->src_output);
-		cobj->priv->src_output = NULL;
-	}
-
-	if (cobj->priv->toc) {
-		if (cobj->priv->clean  && cobj->priv->track_ready)
-			g_remove (cobj->priv->toc);
-
-		g_free (cobj->priv->toc);
-		cobj->priv->toc = NULL;
 	}
 
 	g_free(cobj->priv);
@@ -391,8 +426,31 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const char *line)
 	     ||  strstr (line, "On-the-fly CD copying finished successfully")) {
 		brasero_job_set_dangerous (BRASERO_JOB (cdrdao), FALSE);
 	}
-	else /* this is to report progress when a cd is being analysed before copy */
-		return FALSE;
+	else {
+		gchar *cuepath, *name;
+
+		if (!cdrdao->priv->track)
+			return FALSE;
+
+		cuepath = brasero_track_source_get_cue_localpath (cdrdao->priv->track);
+		if (!cuepath)
+			return FALSE;
+
+		if (!strstr (line, cuepath)) {
+			g_free (cuepath);
+			return FALSE;
+		}
+
+		name = g_path_get_basename (cuepath);
+		g_free (cuepath);
+
+		brasero_job_error (BRASERO_JOB (cdrdao),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("the cue file (%s) seems to be invalid"),
+						name));
+		g_free (name);
+	}
 
 	return TRUE;
 }
@@ -452,8 +510,20 @@ brasero_cdrdao_get_track_type (BraseroImager *imager,
 	if (type)
 		*type = BRASERO_TRACK_SOURCE_IMAGE;
 
-	if (format)
-		*format = BRASERO_IMAGE_FORMAT_CUE;
+	if (format) {
+		BraseroImageFormat obj_format;
+		BraseroBurnCaps *caps;
+
+		caps = brasero_burn_caps_get_default ();
+		if (cdrdao->priv->format == BRASERO_IMAGE_FORMAT_ANY)
+			obj_format = brasero_burn_caps_get_imager_default_format (caps,
+										  cdrdao->priv->track);
+		else
+			obj_format = cdrdao->priv->format;
+		g_object_unref (caps);
+
+		*format = obj_format;
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -468,12 +538,8 @@ brasero_cdrdao_set_source (BraseroJob *job,
 	cdrdao = BRASERO_CDRDAO (job);
 
 	/* Remove any current output */
-	if (cdrdao->priv->src_output) {
-		if (cdrdao->priv->clean && cdrdao->priv->track_ready)
-			g_remove (cdrdao->priv->src_output);
-		if (cdrdao->priv->clean && cdrdao->priv->track_ready)
-			g_remove (cdrdao->priv->toc);
-	}
+	brasero_cdrdao_clean_output (cdrdao);
+
 	cdrdao->priv->track_ready = 0;
 
 	/* NOTE: we can accept ourselves as our source (cdrdao is both imager
@@ -490,7 +556,7 @@ brasero_cdrdao_set_source (BraseroJob *job,
 	/* NOTE: we don't check the type of source precisely since this check partly
 	 * depends on what we do with cdrdao afterward (it's both imager/recorder) */
         if (source->type != BRASERO_TRACK_SOURCE_DISC
-	&& !(source->format & BRASERO_IMAGE_FORMAT_CUE))
+	&& !(source->format & (BRASERO_IMAGE_FORMAT_CUE|BRASERO_IMAGE_FORMAT_CDRDAO)))
 		BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 
 	cdrdao->priv->track = brasero_track_source_copy (source);
@@ -511,23 +577,12 @@ brasero_cdrdao_set_output (BraseroImager *imager,
 
 	cdrdao = BRASERO_CDRDAO (imager);
 
-	if (cdrdao->priv->src_output) {
-		if (cdrdao->priv->clean && cdrdao->priv->track_ready)
-			g_remove (cdrdao->priv->src_output);
+	brasero_cdrdao_clean_output (cdrdao);
 
+	if (cdrdao->priv->src_output) {
 		g_free (cdrdao->priv->src_output);
 		cdrdao->priv->src_output = NULL;
 	}
-
-	if (cdrdao->priv->toc) {
-		if (cdrdao->priv->clean && cdrdao->priv->track_ready)
-			g_remove (cdrdao->priv->toc);
-
-		g_free (cdrdao->priv->toc);
-		cdrdao->priv->toc = NULL;
-	}
-
-	cdrdao->priv->track_ready = 0;
 
 	if (output)
 		cdrdao->priv->src_output = g_strdup (output);
@@ -552,11 +607,52 @@ brasero_cdrdao_set_output_type (BraseroImager *imager,
 	&&  type != BRASERO_TRACK_SOURCE_IMAGE)
 		BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 
-	if (!(format & BRASERO_IMAGE_FORMAT_CUE))
+	if (!(format & (BRASERO_IMAGE_FORMAT_CDRDAO|BRASERO_IMAGE_FORMAT_CUE)))
 		BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 
-	/* NOTE: no need to keep this value since cdrdao can only output cue */
+	/* no need to keep the type since it can only be an image */
+	cdrdao->priv->format = format;
 	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_cdrdao_toc2cue (BraseroCdrdao *cdrdao,
+			const BraseroTrackSource *toc_track,
+			BraseroTrackSource **cue_track,
+			GError **error)
+{
+	BraseroImager *imager;
+	BraseroBurnResult result;
+
+	imager = BRASERO_IMAGER (brasero_toc2cue_new ());
+	brasero_job_set_slave (BRASERO_JOB (cdrdao), BRASERO_JOB (imager));
+	g_object_unref (imager);
+
+	result = brasero_job_set_source (BRASERO_JOB (imager),
+					 toc_track,
+					 error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	result = brasero_imager_set_output (imager,
+					    cdrdao->priv->src_output,
+					    cdrdao->priv->overwrite,
+					    cdrdao->priv->clean,
+					    error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	brasero_job_set_relay_slave_signals (BRASERO_JOB (cdrdao), TRUE);
+	result = brasero_imager_get_track (imager,
+					   cue_track,
+					   error);
+	brasero_job_set_relay_slave_signals (BRASERO_JOB (cdrdao), FALSE);
+
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	brasero_job_set_slave (BRASERO_JOB (cdrdao), NULL);
+	return result;
 }
 
 static BraseroBurnResult
@@ -565,6 +661,7 @@ brasero_cdrdao_get_track (BraseroImager *imager,
 			  GError **error)
 {
 	BraseroCdrdao *cdrdao;
+	BraseroImageFormat format;
 	BraseroTrackSource *retval;
 
 	cdrdao = BRASERO_CDRDAO (imager);
@@ -591,12 +688,34 @@ brasero_cdrdao_get_track (BraseroImager *imager,
 	retval = g_new0 (BraseroTrackSource, 1);
 
 	retval->type = BRASERO_TRACK_SOURCE_IMAGE;
-	retval->format = BRASERO_IMAGE_FORMAT_CUE;
-	retval->contents.image.toc = g_strdup_printf ("file://%s.toc", cdrdao->priv->src_output);
-	retval->contents.image.image = g_strdup_printf ("file://%s", cdrdao->priv->src_output);
+	retval->format = BRASERO_IMAGE_FORMAT_CDRDAO;
+
+	/* the output given is the .cue file */
+	retval->contents.image.toc = gnome_vfs_get_uri_from_local_path (cdrdao->priv->output);
+	retval->contents.image.image = gnome_vfs_get_uri_from_local_path (cdrdao->priv->datafile);
+
+	if (cdrdao->priv->format == BRASERO_IMAGE_FORMAT_ANY) {
+		BraseroBurnCaps *caps;
+
+		caps = brasero_burn_caps_get_default ();
+		format = brasero_burn_caps_get_imager_default_format (caps,
+								      cdrdao->priv->track);
+		g_object_unref (caps);
+	}
+	else
+		format = cdrdao->priv->format;
+
+	if (format == BRASERO_IMAGE_FORMAT_CUE) {
+		BraseroBurnResult result;
+
+		result = brasero_cdrdao_toc2cue (cdrdao, retval, track, error);
+
+		g_remove (retval->contents.image.toc);
+		brasero_track_source_free (retval);
+		return result;
+	}
 
 	*track = retval;
-
 	return BRASERO_BURN_OK;
 }
 
@@ -627,8 +746,7 @@ brasero_cdrdao_get_size_image (BraseroImager *imager,
 			return result;
 
 		/* now we must remove the .toc and .bin in case they were created */
-		g_remove (cdrdao->priv->src_output);
-		g_remove (cdrdao->priv->toc);
+		brasero_cdrdao_clean_output (cdrdao);
 	}
 
 	if (sectors) {
@@ -645,7 +763,6 @@ static void
 brasero_cdrdao_set_argv_device (BraseroCdrdao *cdrdao,
 				GPtrArray *argv)
 {
-	/* it seems that cdrdao (1.2.0) doesn't like the cdrecord_id on my computer */
 	g_ptr_array_add (argv, g_strdup ("--device"));
 	if (NCB_DRIVE_GET_DEVICE (cdrdao->priv->drive))
 		g_ptr_array_add (argv, g_strdup (NCB_DRIVE_GET_DEVICE (cdrdao->priv->drive)));
@@ -669,7 +786,7 @@ brasero_cdrdao_set_argv_common_rec (BraseroCdrdao *cdrdao,
 
 static void
 brasero_cdrdao_set_argv_common (BraseroCdrdao *cdrdao,
-				    GPtrArray *argv)
+				GPtrArray *argv)
 {
 	if (cdrdao->priv->dummy)
 		g_ptr_array_add (argv, g_strdup ("--simulate"));
@@ -710,19 +827,24 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 		g_ptr_array_add (argv, g_strdup ("--source-device"));
 		g_ptr_array_add (argv, g_strdup (NCB_DRIVE_GET_DEVICE (source)));
 	}
-	else if (track->type == BRASERO_TRACK_SOURCE_IMAGE
-	      &&  track->format & BRASERO_IMAGE_FORMAT_CUE) {
+	else if (track->type == BRASERO_TRACK_SOURCE_IMAGE) {
 		gchar *cuepath;
+
+		if (track->format & BRASERO_IMAGE_FORMAT_CUE)
+			cuepath = brasero_track_source_get_cue_localpath (track);
+		else if (track->format & BRASERO_IMAGE_FORMAT_CDRDAO)
+			cuepath = brasero_track_source_get_cdrdao_localpath (track);
+		else
+			BRASERO_JOB_NOT_SUPPORTED (cdrdao);
+
+		if (!cuepath)
+			return BRASERO_BURN_ERR;
 
 		g_ptr_array_add (argv, g_strdup ("write"));
 
 		brasero_cdrdao_set_argv_device (cdrdao, argv);
 		brasero_cdrdao_set_argv_common (cdrdao, argv);
 		brasero_cdrdao_set_argv_common_rec (cdrdao, argv);
-
-		cuepath = brasero_track_source_get_cue_localpath (track);
-		if (!cuepath)
-			return BRASERO_BURN_ERR;
 
 		g_ptr_array_add (argv, cuepath);
 	}
@@ -767,8 +889,10 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 			       GPtrArray *argv,
 			       GError **error)
 {
+	gchar *output, *datafile;
 	BraseroBurnResult result;
 	NautilusBurnDrive *source;
+	BraseroImageFormat format;
 
 	if (!cdrdao->priv->track)
 		BRASERO_JOB_NOT_READY (cdrdao);
@@ -781,12 +905,45 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 
 	g_ptr_array_add (argv, g_strdup ("--read-raw"));
 
-	result = brasero_burn_common_check_output (&cdrdao->priv->src_output,
+	/* This is done so that if a cue file is required we first generate
+	 * a temporary toc file that will be later converted to a cue file.
+	 * The datafile is written where it should be from the start. */
+	if (cdrdao->priv->format == BRASERO_IMAGE_FORMAT_ANY) {
+		BraseroBurnCaps *caps;
+
+		caps = brasero_burn_caps_get_default ();
+		format = brasero_burn_caps_get_imager_default_format (caps,
+								      cdrdao->priv->track);
+		g_object_unref (caps);
+	}
+	else
+		format = cdrdao->priv->format;
+
+	if (cdrdao->priv->src_output
+	&& (format & BRASERO_IMAGE_FORMAT_CDRDAO))
+		output = g_strdup (cdrdao->priv->src_output);
+	else
+		output = NULL;
+
+	if (cdrdao->priv->src_output)
+		datafile = brasero_get_file_complement (format,
+							FALSE,
+							cdrdao->priv->src_output);
+	else
+		datafile = NULL;
+
+	result = brasero_burn_common_check_output (&output,
+						   BRASERO_IMAGE_FORMAT_CDRDAO,
+						   FALSE,
 						   cdrdao->priv->overwrite,
-						   &cdrdao->priv->toc,
+						   &datafile,
 						   error);
 	if (result != BRASERO_BURN_OK)
 		return result;
+
+	brasero_cdrdao_clean_output (cdrdao);
+	cdrdao->priv->datafile = g_strdup (datafile);
+	cdrdao->priv->output = g_strdup (output);
 
 	if (cdrdao->priv->action == BRASERO_CDRDAO_ACTION_GET_SIZE) {
 		BRASERO_JOB_TASK_SET_ACTION (cdrdao,
@@ -797,12 +954,12 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 	}
 
 	g_ptr_array_add (argv, g_strdup ("--datafile"));
-	g_ptr_array_add (argv, g_strdup (cdrdao->priv->src_output));
+	g_ptr_array_add (argv, datafile);
 
 	g_ptr_array_add (argv, g_strdup ("-v"));
 	g_ptr_array_add (argv, g_strdup ("2"));
 
-	g_ptr_array_add (argv, g_strdup (cdrdao->priv->toc));
+	g_ptr_array_add (argv, output);
 
 	BRASERO_JOB_TASK_SET_USE_AVERAGE_RATE (cdrdao, TRUE);
 
@@ -848,12 +1005,8 @@ brasero_cdrdao_post (BraseroProcess *process,
 
 	cdrdao = BRASERO_CDRDAO (process);
 
-	if (retval == BRASERO_BURN_CANCEL) {
-		if (cdrdao->priv->src_output)
-			g_remove (cdrdao->priv->src_output);
-		if (cdrdao->priv->toc)
-			g_remove (cdrdao->priv->toc);
-	}
+	if (retval == BRASERO_BURN_CANCEL)
+		brasero_cdrdao_clean_output (cdrdao);
 
 	return BRASERO_BURN_OK;
 }

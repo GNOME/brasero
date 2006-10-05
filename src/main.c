@@ -48,6 +48,7 @@
 
 #include "brasero-app.h"
 #include "menu.h"
+#include "brasero-multi-dnd.h"
 #include "blank-dialog.h"
 #include "brasero-sum-dialog.h"
 #include "brasero-session.h"
@@ -514,6 +515,7 @@ main (int argc, char **argv)
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("CD/DVD burning"),
 				      NULL);
 
+	brasero_enable_multi_DND ();
 	brasero_utils_init ();
 
 #ifdef ENABLE_NLS

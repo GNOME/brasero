@@ -69,6 +69,7 @@
 #include "utils.h"
 #include "song-properties.h"
 #include "brasero-vfs.h"
+#include "eggtreemultidnd.h"
 
 #ifdef BUILD_INOTIFY
 #include "inotify.h"
@@ -99,6 +100,10 @@ static BraseroDiscResult
 brasero_audio_disc_get_track_source (BraseroDisc *disc,
 				     BraseroTrackSource **source,
 				     BraseroImageFormat format);
+static BraseroDiscResult
+brasero_audio_disc_get_track_type (BraseroDisc *disc,
+				   BraseroTrackSourceType *source,
+				   BraseroImageFormat *format);
 static BraseroDiscResult
 brasero_audio_disc_load_track (BraseroDisc *disc,
 			       BraseroDiscTrack *track);
@@ -386,6 +391,7 @@ brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->reset = brasero_audio_disc_reset;
 	iface->get_track = brasero_audio_disc_get_track;
 	iface->get_track_source = brasero_audio_disc_get_track_source;
+	iface->get_track_type = brasero_audio_disc_get_track_type;
 	iface->load_track = brasero_audio_disc_load_track;
 	iface->get_status = brasero_audio_disc_get_status;
 	iface->get_selected_uri = brasero_audio_disc_get_selected_uri;
@@ -489,17 +495,17 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 
 	model = (GtkTreeModel*) gtk_list_store_new (NB_COL,
-						     G_TYPE_STRING,
-						     GDK_TYPE_PIXBUF,
-						     G_TYPE_STRING,
-						     G_TYPE_STRING,
-						     G_TYPE_STRING,
-						     G_TYPE_STRING,
-						     G_TYPE_INT64, 
-						     G_TYPE_STRING,
-						     G_TYPE_INT,
-						     G_TYPE_STRING,
-						     G_TYPE_BOOLEAN);
+						    G_TYPE_STRING,
+						    GDK_TYPE_PIXBUF,
+						    G_TYPE_STRING,
+						    G_TYPE_STRING,
+						    G_TYPE_STRING,
+						    G_TYPE_STRING,
+						    G_TYPE_INT64, 
+						    G_TYPE_STRING,
+						    G_TYPE_INT,
+						    G_TYPE_STRING,
+						    G_TYPE_BOOLEAN);
 
 	g_signal_connect (G_OBJECT (model),
 			  "row-deleted",
@@ -748,8 +754,14 @@ brasero_audio_disc_new ()
 static BraseroDiscResult
 brasero_audio_disc_get_status (BraseroDisc *disc)
 {
+	GtkTreeModel *model;
+
 	if (BRASERO_AUDIO_DISC (disc)->priv->activity_counter)
 		return BRASERO_DISC_NOT_READY;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (BRASERO_AUDIO_DISC (disc)->priv->tree));
+	if (!gtk_tree_model_iter_n_children (model, NULL))
+		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
 	return BRASERO_DISC_OK;
 }
@@ -1068,6 +1080,7 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 	gchar *markup;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
+	gchar *escaped_name;
 	BraseroAudioDisc *disc = BRASERO_AUDIO_DISC (obj);
 
 	if (result != GNOME_VFS_OK)
@@ -1082,10 +1095,14 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 
+	escaped_name = g_path_get_basename (uri);
+	name = gnome_vfs_unescape_string_for_display (escaped_name);
+	g_free (escaped_name);
+
 	markup = g_markup_escape_text (name, -1);
     	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    NAME_COL, markup,
-			    URI_COL, metadata->uri,
+			    URI_COL, uri,
 			    -1);
 	g_free (markup);
 
@@ -1095,7 +1112,7 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 						  metadata);
 
 	brasero_audio_disc_add_file (disc,
-				     metadata->uri,
+				     uri,
 				     metadata->len);
 }
 
@@ -1566,9 +1583,9 @@ brasero_audio_disc_get_track_source (BraseroDisc *disc,
 				     BraseroTrackSource **source,
 				     BraseroImageFormat format)
 {
-	char *uri;
-	char *title;
-	char *artist;
+	gchar *uri;
+	gchar *title;
+	gchar *artist;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	BraseroSongFile *song;
@@ -1619,6 +1636,20 @@ brasero_audio_disc_get_track_source (BraseroDisc *disc,
 
 	*source = src;
 	return BRASERO_DISC_OK;
+}
+
+static BraseroDiscResult
+brasero_audio_disc_get_track_type (BraseroDisc *disc,
+				   BraseroTrackSourceType *type,
+				   BraseroImageFormat *format)
+{
+	if (type)
+		*type = BRASERO_TRACK_SOURCE_AUDIO;
+
+	if (format)
+		*format = BRASERO_IMAGE_FORMAT_NONE;
+
+	return BRASERO_BURN_OK;
 }
 
 /********************************* load track **********************************/

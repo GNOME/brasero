@@ -45,8 +45,15 @@ brasero_burn_common_compute_time_remaining (gint64 bytes, gdouble bytes_per_sec)
 gboolean
 brasero_burn_common_rm (const gchar *uri);
 
+gchar *
+brasero_get_file_complement (BraseroImageFormat format,
+			     gboolean is_image,
+			     const gchar *uri);
+
 BraseroBurnResult
 brasero_burn_common_check_output (gchar **output,
+				  BraseroImageFormat format,
+				  gboolean is_image,
 				  gboolean overwrite,
 				  gchar **toc,
 				  GError **error);

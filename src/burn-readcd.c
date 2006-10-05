@@ -618,12 +618,16 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	if (!has_master) {
 		if (format & BRASERO_IMAGE_FORMAT_ISO) {
 			result = brasero_burn_common_check_output (&readcd->priv->output,
+								   BRASERO_IMAGE_FORMAT_ISO,
+								   TRUE,
 								   readcd->priv->overwrite,
 								   NULL,
 								   error);
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_CLONE) {	
 			result = brasero_burn_common_check_output (&readcd->priv->output,
+								   BRASERO_IMAGE_FORMAT_CLONE,
+								   TRUE,
 								   readcd->priv->overwrite,
 								   &readcd->priv->toc,
 								   error);

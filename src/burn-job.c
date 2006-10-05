@@ -663,6 +663,9 @@ brasero_job_log_message (BraseroJob *job,
 		va_end (arg_list);
 	}
 
+	/* it all depends on the master */
+	while (job->priv->master) job = job->priv->master;
+
 	if (job->priv->debug)
 		BRASERO_BURN_LOGV (format);
 }

@@ -276,6 +276,12 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_MEDIA_NONE,
 						_("There doesn't seem to be a disc in the drive")));
 	}
+	else if (strstr (line, "Input buffer error, aborting") != NULL) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_MEDIA_NONE,
+						_("input buffer error")));
+	}
 	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,

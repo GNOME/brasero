@@ -291,7 +291,7 @@ brasero_search_entry_separator_func (GtkTreeModel *model,
 				     GtkTreeIter *iter,
 				     gpointer data)
 {
-	char *display;
+	gchar *display;
 	gboolean result;
 
 	gtk_tree_model_get (model, iter,

@@ -45,7 +45,7 @@ extern "C"
 #endif
 
 #define NCB_DRIVE_GET_TYPE(drive) 	\
-nautilus_burn_drive_get_drive_type (drive)
+nautilus_burn_drive_get_drive_type ((drive))
 
 #define NCB_DRIVE_GET_DEVICE(drive) 	\
 nautilus_burn_drive_get_device (drive)
@@ -75,10 +75,20 @@ NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);
 gboolean
 NCB_DRIVE_MOUNT (NautilusBurnDrive *drive, GError **error);
 
-gchar *
+typedef gpointer BraseroMountHandle;
+typedef void	(*BraseroMountCallback)	(NautilusBurnDrive *drive,
+					 const gchar *mount_point,
+					 gboolean mounted_by_us,
+					 const GError *error,
+					 gpointer callback_data);
+
+BraseroMountHandle *
 NCB_DRIVE_GET_MOUNT_POINT (NautilusBurnDrive *drive,
-			   gboolean *mounted_by_us,
-			   GError **error);
+			   BraseroMountCallback callback,
+			   gpointer callback_data);
+
+void
+NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle);
 
 #ifdef __cplusplus
 }

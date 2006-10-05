@@ -100,6 +100,10 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*get_track_source)	(BraseroDisc *disc,
 							 BraseroTrackSource **track,
 							 BraseroImageFormat format);
+	BraseroDiscResult	(*get_track_type)	(BraseroDisc *disc,
+							 BraseroTrackSourceType *type,
+							 BraseroImageFormat *format);
+
 	BraseroDiscResult	(*load_track)		(BraseroDisc *disc,
 							 BraseroDiscTrack *track);
 	BraseroDiscResult	(*add_uri)		(BraseroDisc *disc,
@@ -135,6 +139,10 @@ BraseroDiscResult
 brasero_disc_get_track_source (BraseroDisc *disc,
 			       BraseroTrackSource **track,
 			       BraseroImageFormat format);
+BraseroDiscResult
+brasero_disc_get_track_type (BraseroDisc *disc,
+			     BraseroTrackSourceType *type,
+			     BraseroImageFormat *format);
 BraseroDiscResult
 brasero_disc_load_track (BraseroDisc *disc,
 			 BraseroDiscTrack *track);

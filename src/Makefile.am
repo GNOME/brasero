@@ -78,8 +78,6 @@ brasero_SOURCES = \
 	player-bacon.h         \
 	progress.c         \
 	progress.h         \
-	burn-options-dialog.c         \
-	burn-options-dialog.h         \
 	async-job-manager.c         \
 	async-job-manager.h         \
 	song-properties.c         \
@@ -162,7 +160,19 @@ brasero_SOURCES = \
 	brasero-vfs.c         \
 	brasero-vfs.h         \
 	brasero-async-task-manager.c         \
-	brasero-async-task-manager.h 
+	brasero-async-task-manager.h         \
+	eggtreemultidnd.c         \
+	eggtreemultidnd.h         \
+	brasero-multi-dnd.c         \
+	brasero-multi-dnd.h         \
+	brasero-image-option-dialog.c         \
+	brasero-image-option-dialog.h         \
+	brasero-disc-option-dialog.c         \
+	brasero-disc-option-dialog.h         \
+	burn-toc2cue.c         \
+	burn-toc2cue.h         \
+	brasero-image-type-chooser.c         \
+	brasero-image-type-chooser.h 
 
 brasero_LDFLAGS =
 

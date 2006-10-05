@@ -206,13 +206,15 @@ brasero_metadata_init (BraseroMetadata *obj)
 	obj->priv = g_new0 (BraseroMetadataPrivate, 1);
 }
 
-void
+static void
 brasero_metadata_stop_pipeline (BraseroMetadata *meta)
 {
 	GstStateChangeReturn change;
 
-	if (!meta->priv->pipeline)
-		return;
+	if (meta->priv->stop_id) {
+		g_source_remove (meta->priv->stop_id);
+		meta->priv->stop_id = 0;
+	}
 
 	if (meta->priv->watch) {
 		g_source_remove (meta->priv->watch);
@@ -220,6 +222,9 @@ brasero_metadata_stop_pipeline (BraseroMetadata *meta)
 	}
 
 	meta->priv->started = 0;
+
+	if (!meta->priv->pipeline)
+		return;
 
 	/* better to wait for the state change to be completed */
 	change = gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
@@ -258,20 +263,12 @@ brasero_metadata_stop_pipeline (BraseroMetadata *meta)
 void
 brasero_metadata_cancel (BraseroMetadata *meta)
 {
-	if (meta->priv->stop_id)
-		return;
-
 	brasero_metadata_stop_pipeline (meta);
 }
 
 static void
 brasero_metadata_stop (BraseroMetadata *meta)
 {
-	if (meta->priv->stop_id) {
-		g_source_remove (meta->priv->stop_id);
-		meta->priv->stop_id = 0;
-	}
-
 	if (meta->priv->error) {
 		g_error_free (meta->priv->error);
 		meta->priv->error = NULL;

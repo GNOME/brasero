@@ -31,7 +31,10 @@
 #include <glib-object.h>
 
 #include <gtk/gtkalignment.h>
+#include <gtk/gtktreeview.h>
 #include <gtk/gtkfilechooserwidget.h>
+
+#include "eggtreemultidnd.h"
 
 #include "brasero-file-chooser.h"
 #include "brasero-uri-container.h"
@@ -41,9 +44,9 @@ static void brasero_file_chooser_init (BraseroFileChooser *sp);
 static void brasero_file_chooser_iface_uri_container_init (BraseroURIContainerIFace *iface);
 static void brasero_file_chooser_finalize (GObject *object);
 
-static char **
+static gchar **
 brasero_file_chooser_get_selected_uris (BraseroURIContainer *container);
-static char *
+static gchar *
 brasero_file_chooser_get_selected_uri (BraseroURIContainer *container);
 
 static void
@@ -113,6 +116,33 @@ brasero_file_chooser_class_init (BraseroFileChooserClass *klass)
 }
 
 static void
+brasero_file_chooser_set_multi_DND (GtkWidget *widget, gpointer null_data)
+{
+	/* we explore everything until we reach a treeview (there are two) */
+	if (GTK_IS_TREE_VIEW (widget)) {
+		GtkTargetList *list;
+		GdkAtom target;
+		gboolean found;
+		guint num;
+
+		list = gtk_drag_source_get_target_list (widget);
+		target = gdk_atom_intern ("text/uri-list", TRUE);
+		found = gtk_target_list_find (list, target, &num);
+		gtk_target_list_unref (list);
+
+		if (found) {
+			gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (widget), TRUE);
+			egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (widget));
+		}
+	}
+	else if (GTK_IS_CONTAINER (widget)) {
+		gtk_container_foreach (GTK_CONTAINER (widget),
+				       brasero_file_chooser_set_multi_DND,
+				       NULL);
+	}
+}
+
+static void
 brasero_file_chooser_init (BraseroFileChooser *obj)
 {
 	GtkFileFilter *filter;
@@ -158,6 +188,11 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	gtk_file_filter_set_name (filter, _("Image files only"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+
+	/* this is a hack/workaround to add support for multi DND */
+	gtk_container_foreach (GTK_CONTAINER (obj->priv->chooser),
+			       brasero_file_chooser_set_multi_DND,
+			       NULL);
 }
 
 static void

@@ -62,6 +62,11 @@ brasero_transcode_set_output (BraseroImager *imager,
 			      gboolean clean,
 			      GError **error);
 static BraseroBurnResult
+brasero_transcode_set_append (BraseroImager *imager,
+			      NautilusBurnDrive *drive,
+			      gboolean merge,
+			      GError **error);
+static BraseroBurnResult
 brasero_transcode_set_output_type (BraseroImager *imager, 
 				   BraseroTrackSourceType type,
 				   BraseroImageFormat format,
@@ -227,6 +232,7 @@ brasero_transcode_iface_init_image (BraseroImagerIFace *iface)
 	iface->set_output = brasero_transcode_set_output;
 	iface->get_track_type = brasero_transcode_get_track_type;
 	iface->set_output_type = brasero_transcode_set_output_type;
+	iface->set_append = brasero_transcode_set_append;
 }
 
 static void
@@ -436,6 +442,15 @@ brasero_transcode_rm_songs_from_disc (BraseroTranscode *transcode)
 	transcode->priv->global_pos = 0;
 	transcode->priv->inf_ready = 0;
 	transcode->priv->audio_ready = 0;
+}
+
+static BraseroBurnResult
+brasero_transcode_set_append (BraseroImager *imager,
+			      NautilusBurnDrive *drive,
+			      gboolean merge,
+			      GError **error)
+{
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult

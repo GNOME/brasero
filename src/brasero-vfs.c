@@ -228,7 +228,7 @@ struct _BraseroVFSPrivate {
 /* so far one metadata at a time has shown to be the best for performance */
 #define MAX_CONCURENT_META 	1
 #define MAX_BUFFERED_META	8
-#define STOP_META_TIMEOUT	200
+#define STOP_META_TIMEOUT	500
 
 static GObjectClass *parent_class = NULL;
 static BraseroVFS *singleton = NULL;
@@ -269,6 +269,19 @@ brasero_vfs_class_init (BraseroVFSClass *klass)
 	object_class->finalize = brasero_vfs_finalize;
 }
 
+static void
+brasero_vfs_last_reference_cb (gpointer null_data,
+			       GObject *object,
+			       gboolean is_last_ref)
+{
+	if (is_last_ref) {
+		singleton = NULL;
+		g_object_remove_toggle_ref (object,
+					    brasero_vfs_last_reference_cb,
+					    null_data);
+	}
+}
+
 BraseroVFS *
 brasero_vfs_get_default ()
 {
@@ -278,6 +291,9 @@ brasero_vfs_get_default ()
 	}
 
 	singleton = BRASERO_VFS (g_object_new (BRASERO_TYPE_VFS, NULL));
+	g_object_add_toggle_ref (G_OBJECT (singleton),
+				 brasero_vfs_last_reference_cb,
+				 NULL);
 	return singleton;
 }
 
@@ -1164,7 +1180,6 @@ brasero_vfs_get_count (BraseroVFS *self,
 					     ctx);
 }
 
-
 /**
  * used to parse playlists
  */
@@ -1256,6 +1271,7 @@ brasero_vfs_playlist_result (BraseroAsyncTaskManager *manager,
 	}
 
 	BRASERO_CTX_SET_METATASK (ctx);
+	data->uris = g_list_reverse (data->uris);
 	brasero_vfs_get_metadata (self,
 				  data->uris,
 				  data->flags,

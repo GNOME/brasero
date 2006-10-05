@@ -76,15 +76,6 @@ GType brasero_burn_get_type ();
 BraseroBurn *brasero_burn_new ();
 
 BraseroBurnResult 
-brasero_burn_image (BraseroBurn *burn,
-		    BraseroBurnFlag flags,
-		    const BraseroTrackSource *source,
-		    BraseroTrackSourceType target,
-		    NautilusBurnDrive *drive, 	/* used when multisession */
-		    const char *output,
-		    GError **error);
-
-BraseroBurnResult 
 brasero_burn_record (BraseroBurn *burn,
 		     BraseroBurnFlag flags,
 		     NautilusBurnDrive *drive,

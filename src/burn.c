@@ -443,6 +443,7 @@ brasero_burn_check_media (BraseroBurn *burn,
 			  NautilusBurnDrive *drive,
 			  NautilusBurnMediaType *type,
 			  gboolean *is_rewritable,
+			  gboolean *is_appendable,
 			  gboolean *can_write,
 			  gboolean *is_blank,
 			  gboolean *has_audio,
@@ -461,12 +462,17 @@ brasero_burn_check_media (BraseroBurn *burn,
 	real_type = nautilus_burn_drive_get_media_type_full (drive,
 							     is_rewritable,
 							     &is_blank_real,
-							     has_audio,
-							     has_data);
+							     has_data,
+							     has_audio);
 	if (type)
 		*type = real_type;
+
 	if (is_blank)
 		*is_blank = is_blank_real;
+
+	if (is_appendable)
+		*is_appendable = (nautilus_burn_drive_media_is_appendable (drive) && has_audio == FALSE);
+
 	if (can_write)
 		*can_write = nautilus_burn_drive_media_type_is_writable (real_type,
 									 is_blank_real);
@@ -550,6 +556,7 @@ brasero_burn_wait_for_source_media (BraseroBurn *burn,
 				  &type,
 				  NULL,
 				  NULL,
+				  NULL,
 				  &is_blank,
 				  NULL,
 				  NULL);
@@ -622,7 +629,6 @@ brasero_burn_wait_for_rewritable_media (BraseroBurn *burn,
 {
 	gchar *failure;
 	gboolean is_blank;
-	gboolean can_write;
 	gboolean is_rewritable;
 	BraseroBurnResult result;
 	NautilusBurnMediaType type;
@@ -648,7 +654,8 @@ brasero_burn_wait_for_rewritable_media (BraseroBurn *burn,
 				  drive,
 				  &type,
 				  &is_rewritable,
-				  &can_write,
+				  NULL,
+				  NULL,
 				  &is_blank,
 				  NULL,
 				  NULL);
@@ -848,10 +855,11 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 	gint64 media_size;
 	gboolean is_blank;
 	gboolean can_write;
+	gboolean is_rewritable;
+	gboolean is_appendable;
+	BraseroBurnError berror;
 	BraseroBurnResult result;
 	NautilusBurnMediaType type;
-	gboolean is_rewritable_real;
-	BraseroBurnError berror;
 
 	if (!nautilus_burn_drive_can_write (drive)) {
 		g_set_error (error,
@@ -869,7 +877,8 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 	brasero_burn_check_media (burn,
 				  drive,
 				  &type,
-				  &is_rewritable_real,
+				  &is_rewritable,
+				  &is_appendable,
 				  &can_write,
 				  &is_blank,
 				  NULL,
@@ -877,7 +886,7 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 
 	if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (drive), IS_LOCKED))) {
 		burn->priv->dest_media_type = type;
-		burn->priv->dest_rewritable = is_rewritable_real;
+		burn->priv->dest_rewritable = is_rewritable;
 
 		/* the drive has already been checked just return its characteristics */
 		/* NOTE: after a blanking, for nautilus_burn the CD/DVD is still full of
@@ -892,7 +901,9 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		goto end;
 	}
 
-	if (!can_write) {
+	if (!can_write
+	&& (!is_appendable
+	|| (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0)) {
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE;
 		goto end;
@@ -925,9 +936,7 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 	}
 
 	/* we check that the image will fit on the media */
-	/* FIXME: that doesn't really work with multisession medias since a part
-	 * of the size returned by next function is occupied by data. Wait for NCB 2.15 */
-	media_size = NCB_MEDIA_GET_CAPACITY (drive);
+	media_size = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
 	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
 	&&  media_size < burn->priv->image_size) {
 		/* This is a recoverable error so try to ask the user again */
@@ -948,17 +957,17 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 	g_object_set_data (G_OBJECT (drive), IS_LOCKED, GINT_TO_POINTER (1));
 
 	if (!nautilus_burn_drive_can_rewrite (drive))
-		is_rewritable_real = FALSE;
+		is_rewritable = FALSE;
 
 	burn->priv->dest_media_type = type;
-	burn->priv->dest_rewritable = is_rewritable_real;
+	burn->priv->dest_rewritable = is_rewritable;
 
 	/* silently ignore if the drive is not rewritable */
 	/* NOTE: we corrected such contradictory flags setting (might be an error) as
 	 * BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE */
 	if ((flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0
 	&&  (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-	&&  is_rewritable_real
+	&&  is_rewritable
 	&&  !is_blank) {
 		g_signal_emit (burn,
 			       brasero_burn_signals [WARN_DATA_LOSS_SIGNAL],
@@ -1822,6 +1831,7 @@ again:
 
 			brasero_burn_check_media (burn,
 						  source->contents.drive.disc,
+						  NULL,
 						  NULL,
 						  NULL,
 						  NULL,

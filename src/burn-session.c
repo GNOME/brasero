@@ -134,7 +134,7 @@ brasero_burn_session_logv (BraseroBurnSession *session,
 	message = g_strdup_vprintf (format, arg_list);
 
 	/* we also need to validate the messages to be in UTF-8 */
-	if (!g_utf8_validate (message, -1, &offending))
+	if (!g_utf8_validate (message, -1, (const gchar**) &offending))
 		*offending = '\0';
 
 	if (fwrite (message, strlen (message), 1, session->priv->session) != 1)

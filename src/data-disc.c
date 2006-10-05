@@ -264,6 +264,11 @@ brasero_data_disc_get_track_source (BraseroDisc *disc,
 				    BraseroTrackSource **source,
 				    BraseroImageFormat format);
 static BraseroDiscResult
+brasero_data_disc_get_track_type (BraseroDisc *disc,
+				  BraseroTrackSourceType *type,
+				  BraseroImageFormat *format);
+
+static BraseroDiscResult
 brasero_data_disc_get_status (BraseroDisc *disc);
 
 static gboolean
@@ -565,6 +570,7 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->reset = brasero_data_disc_reset;
 	iface->get_track = brasero_data_disc_get_track;
 	iface->get_track_source = brasero_data_disc_get_track_source;
+	iface->get_track_type = brasero_data_disc_get_track_type;
 	iface->load_track = brasero_data_disc_load_track;
 	iface->get_status = brasero_data_disc_get_status;
 	iface->get_selected_uri = brasero_data_disc_get_selected_uri;
@@ -1126,6 +1132,12 @@ brasero_data_disc_get_status (BraseroDisc *disc)
 {
 	if (BRASERO_DATA_DISC (disc)->priv->activity_counter)
 		return BRASERO_DISC_NOT_READY;
+
+	if (BRASERO_DATA_DISC (disc)->priv->loading)
+		return BRASERO_DISC_LOADING;
+
+	if (!g_hash_table_size (BRASERO_DATA_DISC (disc)->priv->paths))
+		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
 	return BRASERO_DISC_OK;
 }
@@ -7607,6 +7619,33 @@ brasero_data_disc_get_track_source (BraseroDisc *disc,
 		src->format |= BRASERO_IMAGE_FORMAT_VIDEO;
 
 	*source = src;
+	return BRASERO_DISC_OK;
+}
+
+static BraseroDiscResult
+brasero_data_disc_get_track_type (BraseroDisc *disc,
+				  BraseroTrackSourceType *type,
+				  BraseroImageFormat *format)
+{
+	BraseroDiscResult result;
+
+	result = brasero_data_disc_get_status (disc);
+	if (result != BRASERO_DISC_OK)
+		return result;
+
+	if (type)
+		*type = BRASERO_TRACK_SOURCE_DATA;
+
+	if (format) {
+		*format = BRASERO_IMAGE_FORMAT_ISO;
+
+		if (!BRASERO_DATA_DISC (disc)->priv->joliet_non_compliant)
+			*format |= BRASERO_IMAGE_FORMAT_JOLIET;
+
+		if (brasero_data_disc_is_video_DVD (BRASERO_DATA_DISC (disc)))
+			*format |= BRASERO_IMAGE_FORMAT_VIDEO;
+	}
+
 	return BRASERO_DISC_OK;
 }
 

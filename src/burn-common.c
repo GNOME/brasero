@@ -99,19 +99,74 @@ brasero_burn_common_rm (const char *uri)
 	return TRUE;
 }
 
+gchar *
+brasero_get_file_complement (BraseroImageFormat format,
+			     gboolean is_image,
+			     const gchar *uri)
+{
+	gchar *retval = NULL;
+
+	if (format == BRASERO_IMAGE_FORMAT_CLONE) {
+		if (is_image)
+			retval = g_strdup_printf ("%s.toc", uri);
+		else if (g_str_has_suffix (uri, ".toc"))
+			retval = g_strdup_printf ("%.*sraw",
+						  strlen (uri) - 3,
+						  uri);
+		else
+			retval = g_strdup_printf ("%s.raw", uri);
+	}
+	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
+		if (is_image) {
+			if (g_str_has_suffix (uri, ".bin"))
+				retval = g_strdup_printf ("%.*scue",
+							  strlen (uri) - 3,
+							  uri);
+			else
+				retval = g_strdup_printf ("%s.cue", uri);
+		}
+		else if (g_str_has_suffix (uri, ".cue"))
+			retval = g_strdup_printf ("%.*sbin",
+						  strlen (uri) - 3,
+						  uri);
+		else
+			retval = g_strdup_printf ("%s.bin", uri);
+	}
+	else if (format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+		if (is_image) {
+			if (g_str_has_suffix (uri, ".bin"))
+				retval = g_strdup_printf ("%.*stoc",
+							  strlen (uri) - 3,
+							  uri);
+			else
+				retval = g_strdup_printf ("%s.toc", uri);
+		}
+		else if (g_str_has_suffix (uri, ".toc"))
+			retval = g_strdup_printf ("%.*sbin",
+						  strlen (uri) - 3,
+						  uri);
+		else
+			retval = g_strdup_printf ("%s.bin", uri);
+	}
+
+	return retval;
+}
+
 BraseroBurnResult
-brasero_burn_common_check_output (char **output,
+brasero_burn_common_check_output (gchar **output,
+				  BraseroImageFormat format,
+				  gboolean is_image,
 				  gboolean overwrite,
-				  char **toc,
+				  gchar **complement,
 				  GError **error)
 {
 	if (!output)
-		goto toc;
+		g_warning ("No output specified\n");
 
 	/* takes care of the output file */
 	if (!*output) {
 		int fd;
-		char *tmp;
+		gchar *tmp;
 
 		tmp = g_strdup_printf ("%s/"BRASERO_BURN_TMP_FILE_NAME, g_get_tmp_dir ());
 		fd = g_mkstemp (tmp);
@@ -138,8 +193,8 @@ brasero_burn_common_check_output (char **output,
 				     *output);
 			return BRASERO_BURN_ERR;
 		}
-		else if (!g_remove (*output)
-		      &&  !brasero_burn_common_rm (*output)) {
+		else if (g_remove (*output) == -1
+		     && !brasero_burn_common_rm (*output)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -149,29 +204,28 @@ brasero_burn_common_check_output (char **output,
 		}
 	}
 
-toc:
-	if (!toc)
+	if (!complement)
 		return BRASERO_BURN_OK;
 
-	if ((*toc) == NULL)
-		*toc = g_strdup_printf ("%s.toc", *output);
+	if ((*complement) == NULL)
+		*complement = brasero_get_file_complement (format, is_image, *output);
 
-	if (g_file_test (*toc, G_FILE_TEST_EXISTS)) {
+	if (g_file_test (*complement, G_FILE_TEST_EXISTS)) {
 		if (!overwrite) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("%s already exists"),
-				     *toc);
+				     *complement);
 			return BRASERO_BURN_ERR;
 		}
-		else if (!g_remove (*toc)
-		      &&  !brasero_burn_common_rm (*toc)) {
+		else if (g_remove (*complement) == -1
+		     && !brasero_burn_common_rm (*complement)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("%s can't be removed"),
-				     *toc);
+				     *complement);
 			return BRASERO_BURN_ERR;
 		}			
 	}

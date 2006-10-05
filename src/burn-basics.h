@@ -162,10 +162,12 @@ typedef enum {
 	BRASERO_IMAGE_FORMAT_ISO		= 1 << 1,
 	BRASERO_IMAGE_FORMAT_CUE		= 1 << 2,
 	BRASERO_IMAGE_FORMAT_CLONE		= 1 << 3,
-	BRASERO_IMAGE_FORMAT_VIDEO		= 1 << 4,
+	BRASERO_IMAGE_FORMAT_CDRDAO		= 1 << 4,
+	BRASERO_IMAGE_FORMAT_VIDEO		= 1 << 5,
 	BRASERO_IMAGE_FORMAT_ANY		= BRASERO_IMAGE_FORMAT_JOLIET|
 						  BRASERO_IMAGE_FORMAT_ISO|
 						  BRASERO_IMAGE_FORMAT_CUE|
+						  BRASERO_IMAGE_FORMAT_CDRDAO|
 						  BRASERO_IMAGE_FORMAT_CLONE|
 						  BRASERO_IMAGE_FORMAT_VIDEO,
 } BraseroImageFormat;
@@ -230,6 +232,8 @@ gchar *
 brasero_track_source_get_raw_localpath (BraseroTrackSource *track);
 gchar *
 brasero_track_source_get_cue_localpath (BraseroTrackSource *track);
+gchar *
+brasero_track_source_get_cdrdao_localpath (BraseroTrackSource *track);
 
 void
 brasero_track_source_free (BraseroTrackSource *source);
@@ -240,7 +244,7 @@ brasero_track_source_copy (const BraseroTrackSource *source);
 	(source->type != BRASERO_TRACK_SOURCE_AUDIO && \
 	 source->type != BRASERO_TRACK_SOURCE_SONG && \
 	 source->type != BRASERO_TRACK_SOURCE_INF && \
-	(source->format & (BRASERO_IMAGE_FORMAT_CLONE|BRASERO_IMAGE_FORMAT_CUE)) == 0)
+	(source->format & (BRASERO_IMAGE_FORMAT_CLONE|BRASERO_IMAGE_FORMAT_CUE|BRASERO_IMAGE_FORMAT_CDRDAO)) == 0)
 
 struct _BraseroGraftPt {
 	gchar *uri;

@@ -77,7 +77,7 @@ brasero_track_source_get_image_localpath (BraseroTrackSource *track)
 	gchar *uri;
 
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
-	&& (track->format & BRASERO_IMAGE_FORMAT_ISO))
+	|| !(track->format & BRASERO_IMAGE_FORMAT_ISO))
 		return NULL;
 
 	if (!track->contents.image.image)
@@ -101,7 +101,7 @@ brasero_track_source_get_raw_localpath (BraseroTrackSource *track)
 
 	/* NOTE: here cdrecord doesn't need *.toc image but the raw part */
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
-	&& (track->format & BRASERO_IMAGE_FORMAT_CLONE))
+	|| !(track->format & BRASERO_IMAGE_FORMAT_CLONE))
 		return NULL;
 
 	if (!track->contents.image.image)
@@ -124,7 +124,30 @@ brasero_track_source_get_cue_localpath (BraseroTrackSource *track)
 	gchar *uri;
 
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
-	&& (track->format & BRASERO_IMAGE_FORMAT_CUE))
+	|| !(track->format & BRASERO_IMAGE_FORMAT_CUE))
+		return NULL;
+
+	if (!track->contents.image.toc)
+		return NULL;
+
+	if (track->contents.image.toc [0] == '/')
+		return g_strdup (track->contents.image.toc);
+
+    	uri = gnome_vfs_make_uri_from_input (track->contents.image.toc);
+	localpath = gnome_vfs_get_local_path_from_uri (uri);
+	g_free (uri);
+
+	return localpath;
+}
+
+gchar *
+brasero_track_source_get_cdrdao_localpath (BraseroTrackSource *track)
+{
+	gchar *localpath;
+	gchar *uri;
+
+	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
+	|| !(track->format & BRASERO_IMAGE_FORMAT_CDRDAO))
 		return NULL;
 
 	if (!track->contents.image.toc)

@@ -192,7 +192,7 @@ brasero_mkisofs_iface_init_image (BraseroImagerIFace *iface)
 static void
 brasero_mkisofs_init (BraseroMkisofs *obj)
 {
-	char *standard_error;
+	gchar *standard_error;
 	gboolean res;
 
 	obj->priv = g_new0(BraseroMkisofsPrivate, 1);
@@ -274,7 +274,7 @@ brasero_mkisofs_read_isosize (BraseroMkisofs *mkisofs, const gchar *line)
 }
 
 static BraseroBurnResult
-brasero_mkisofs_read_stdout (BraseroProcess *process, const char *line)
+brasero_mkisofs_read_stdout (BraseroProcess *process, const gchar *line)
 {
 	BraseroMkisofs *mkisofs;
 
@@ -287,7 +287,7 @@ brasero_mkisofs_read_stdout (BraseroProcess *process, const char *line)
 }
 
 static BraseroBurnResult
-brasero_mkisofs_read_stderr (BraseroProcess *process, const char *line)
+brasero_mkisofs_read_stderr (BraseroProcess *process, const gchar *line)
 {
 	gchar fraction_str [7];
 	BraseroMkisofs *mkisofs;
@@ -305,6 +305,12 @@ brasero_mkisofs_read_stderr (BraseroProcess *process, const char *line)
 		BRASERO_JOB_TASK_SET_PROGRESS (mkisofs, fraction);
 		BRASERO_JOB_TASK_SET_WRITTEN (mkisofs, written);
 		BRASERO_JOB_TASK_START_PROGRESS (process, FALSE);
+	}
+	else if (strstr (line, "Input/output error. Read error on old image")) {
+		brasero_job_error (BRASERO_JOB (process), 
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+							_("the old image couldn't be read")));
 	}
 	else if (strstr (line, "Unable to sort directory")) {
 		brasero_job_error (BRASERO_JOB (process), 
@@ -680,6 +686,8 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	if (!has_master) {
 		/* see if an output was given otherwise create a temp one */
 		result = brasero_burn_common_check_output (&mkisofs->priv->output,
+							   BRASERO_IMAGE_FORMAT_ISO,
+							   TRUE,
 							   mkisofs->priv->overwrite,
 							   NULL,
 							   error);
@@ -693,6 +701,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	if (mkisofs->priv->drive) {
 		gchar *startpoint = NULL;
 		gchar *command = NULL;
+		gboolean has_audio;
 		gboolean res;
 		gint tmp;
 
@@ -717,7 +726,13 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		g_ptr_array_add (argv, g_strdup ("-C"));
 		g_ptr_array_add (argv, startpoint);
 
-		if (mkisofs->priv->merge) {
+		nautilus_burn_drive_get_media_type_full (mkisofs->priv->drive,
+							 NULL,
+							 NULL,
+							 NULL,
+							 &has_audio);
+
+		if (mkisofs->priv->merge && !has_audio) {
 		        gchar *dev_str = NULL;
 
 			g_ptr_array_add (argv, g_strdup ("-M"));

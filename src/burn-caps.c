@@ -325,6 +325,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 
 	if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		NautilusBurnMediaType media_type;
+		gboolean is_appendable, is_blank, is_rewritable, has_audio;
 
 		supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 		supported_flags |= BRASERO_BURN_FLAG_BURNPROOF;
@@ -335,7 +336,13 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 		default_flags |= BRASERO_BURN_FLAG_BURNPROOF;
 		default_flags |= BRASERO_BURN_FLAG_EJECT;
 
-		media_type = nautilus_burn_drive_get_media_type (drive);
+		media_type = nautilus_burn_drive_get_media_type_full (drive,
+								      &is_blank,
+								      &is_rewritable,
+								      NULL,
+								      &has_audio);
+
+		is_appendable = nautilus_burn_drive_media_is_appendable (drive);
 
 		/* we don't support this for DVD+-RW. Growisofs doesn't
 		 * honour the option */
@@ -365,7 +372,9 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 					default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 			}
 		}
-		else if (source->format & (BRASERO_IMAGE_FORMAT_CUE | BRASERO_IMAGE_FORMAT_CLONE)) {
+		else if (source->format & (BRASERO_IMAGE_FORMAT_CUE|
+					   BRASERO_IMAGE_FORMAT_CLONE|
+					   BRASERO_IMAGE_FORMAT_CDRDAO)) {
 			/* *.cue file and *.raw file only work with CDs */
 			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 				return BRASERO_BURN_NOT_SUPPORTED;
@@ -379,7 +388,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 				return BRASERO_BURN_NOT_SUPPORTED;
 
-			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY|
+					   BRASERO_BURN_FLAG_DONT_CLOSE;
 
 			/* for the time being don't force on the fly */
 			/* default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY; */
@@ -399,16 +409,39 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE|
 						   BRASERO_BURN_FLAG_APPEND|
 						   BRASERO_BURN_FLAG_MERGE;
+
+				if (is_appendable && !is_blank && !is_rewritable) {
+					compulsory_flags |=  BRASERO_BURN_FLAG_APPEND;
+
+					default_flags |= BRASERO_BURN_FLAG_APPEND|
+							 BRASERO_BURN_FLAG_MERGE;
+				}
 			}
 			else if (!caps->priv->use_libburn && !caps->priv->use_libiso) {
-				supported_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE;
+				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 
 				/* when we don't know the media type we allow
 				 * the following options nevertheless */
 				if (media_type < NAUTILUS_BURN_MEDIA_TYPE_CD
-				||  nautilus_burn_drive_media_is_appendable (drive))
-					supported_flags |=  BRASERO_BURN_FLAG_APPEND|
-							    BRASERO_BURN_FLAG_MERGE;
+				||  is_appendable) {
+					supported_flags |=  BRASERO_BURN_FLAG_APPEND;
+
+					if (!has_audio)
+						supported_flags |= BRASERO_BURN_FLAG_MERGE;
+
+					if (is_appendable
+					&& !is_blank
+					&& !is_rewritable) {
+						compulsory_flags |=  BRASERO_BURN_FLAG_APPEND;
+
+						default_flags |= BRASERO_BURN_FLAG_APPEND|
+								 BRASERO_BURN_FLAG_DONT_CLOSE;
+
+						if (!has_audio)
+							default_flags |= BRASERO_BURN_FLAG_MERGE;
+
+					}
+				}
 			}
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
@@ -493,8 +526,8 @@ brasero_burn_caps_check_flags_consistency (BraseroBurnCaps *caps,
 					      source,
 					      drive,
 					      NULL,
-					      &supported,
-					      &compulsory);
+					      &compulsory,
+					      &supported);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -606,22 +639,28 @@ brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 		break;
 
 	case BRASERO_TRACK_SOURCE_IMAGE:
-		if (media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type)) {
 			/* for the time being we can only burn ISO images on DVDs */
 			if (!(format & BRASERO_IMAGE_FORMAT_ISO))
 				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
 		}
+		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO) {
+			if (caps->priv->cdrdao_disabled)
+				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
+
+			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_CDRDAO, NULL));
+		}
 		else if (format & BRASERO_IMAGE_FORMAT_CUE) {
-			      if (!caps->priv->cdrdao_disabled) {
-					/* here we have two solution either cdrdao or cdrecord
-					 * but we'll use cdrdao only as a fallback except for 
-					 * on the fly burning see above in IMAGERS */
-					obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_CDRDAO, NULL));
-				}
-				else
-					obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_CD_RECORD, NULL));
+			if (!caps->priv->cdrdao_disabled) {
+				/* here we have two solution either cdrdao or cdrecord
+				 * but we'll use cdrdao only as a fallback except for 
+				 * on the fly burning see above in IMAGERS */
+				obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_CDRDAO, NULL));
+			}
+			else
+				obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_CD_RECORD, NULL));
 		}
 		/* both cdrecord and libburn are supposed to be able to burn raw and iso images */
 		else if (caps->priv->use_libburn)
@@ -696,29 +735,38 @@ brasero_burn_caps_get_imager_available_formats (BraseroBurnCaps *caps,
 
 	case BRASERO_TRACK_SOURCE_GRAFTS:
 	case BRASERO_TRACK_SOURCE_DATA:
-	case BRASERO_TRACK_SOURCE_IMAGE:
 		retval = g_new0 (BraseroImageFormat, 3);
 		retval [0] = BRASERO_IMAGE_FORMAT_ISO | BRASERO_IMAGE_FORMAT_JOLIET;
 		retval [1] = BRASERO_IMAGE_FORMAT_ISO;
 		retval [2] = BRASERO_IMAGE_FORMAT_NONE;
+		break;
+	
+	case BRASERO_TRACK_SOURCE_IMAGE:
+		retval = g_new0 (BraseroImageFormat, 5);
+		retval [0] = BRASERO_IMAGE_FORMAT_ISO;
+		retval [1] = BRASERO_IMAGE_FORMAT_CLONE;
+		retval [2] = BRASERO_IMAGE_FORMAT_CUE;
+		retval [3] = BRASERO_IMAGE_FORMAT_CDRDAO;
+		retval [4] = BRASERO_IMAGE_FORMAT_NONE;
 		break;
 
 	case BRASERO_TRACK_SOURCE_DISC: {
 		NautilusBurnMediaType type;
 
 		type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
-		if (type <= NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+		if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (type)) {
 			/* with CDs there are three possibilities:
 			 * - if cdrdao is working => *.cue
 			 * - readcd -clone => *.raw
 			 * - simply readcd => *.iso 
 			 */
 			if (!caps->priv->cdrdao_disabled) {
-				retval = g_new0 (BraseroImageFormat, 4);
+				retval = g_new0 (BraseroImageFormat, 5);
 				retval [0] = BRASERO_IMAGE_FORMAT_CUE;
 				retval [1] = BRASERO_IMAGE_FORMAT_CLONE;
 				retval [2] = BRASERO_IMAGE_FORMAT_ISO;
-				retval [3] = BRASERO_IMAGE_FORMAT_NONE;
+				retval [3] = BRASERO_IMAGE_FORMAT_CDRDAO;
+				retval [4] = BRASERO_IMAGE_FORMAT_NONE;
 			}
 			else {
 				retval = g_new0 (BraseroImageFormat, 3);
@@ -768,12 +816,12 @@ brasero_burn_caps_get_imager_default_format (BraseroBurnCaps *caps,
 		NautilusBurnMediaType type;
 
 		type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
-		if (type <= NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+		if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (type)) {
 			/* with CDs there are two possible default:
 			 * - if cdrdao is working => copy on the fly
 			 * - readcd -clone => image => cdrecord */
 			if (!caps->priv->cdrdao_disabled)
-				return BRASERO_IMAGE_FORMAT_CUE;
+				return BRASERO_IMAGE_FORMAT_CDRDAO;
 			else
 				return BRASERO_IMAGE_FORMAT_CLONE;
 		}
@@ -900,7 +948,7 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 			else
 				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_READCD, NULL));
 		}
-		else if (format & (BRASERO_IMAGE_FORMAT_CLONE | BRASERO_IMAGE_FORMAT_ISO)) {
+		else if (format & BRASERO_IMAGE_FORMAT_ISO) {
 			if (caps->priv->use_libread)
 				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_LIBREAD_DISC, NULL));
 			else
@@ -908,7 +956,17 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 		}
 		else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 			/* only cdrdao can create cues */
-			obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_CDRDAO, NULL));
+			if (!caps->priv->cdrdao_disabled)
+				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_CDRDAO, NULL));
+			else
+				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
+		}
+		else if (format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+			/* only cdrdao can create cues */
+			if (!caps->priv->cdrdao_disabled)
+				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_CDRDAO, NULL));
+			else
+				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 		}
 		else
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
@@ -946,6 +1004,7 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 	      ||  source->type == BRASERO_TRACK_SOURCE_GRAFTS
 	      ||  source->type == BRASERO_TRACK_SOURCE_DATA) {
 		if (source->format == BRASERO_IMAGE_FORMAT_CUE
+		||  source->format == BRASERO_IMAGE_FORMAT_CDRDAO
 		||  source->format == BRASERO_IMAGE_FORMAT_CLONE)
 			required_media |= BRASERO_MEDIA_TYPE_CD;
 	}
@@ -953,7 +1012,7 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 		NautilusBurnMediaType media;
 
 		media = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
-		if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
 			required_media |= BRASERO_MEDIA_TYPE_DVD;
 		else
 			required_media |= BRASERO_MEDIA_TYPE_CD;

@@ -54,7 +54,7 @@
 #include "brasero-file-chooser.h"
 #include "brasero-uri-container.h"
 #include "burn-caps.h"
-#include "burn-options-dialog.h"
+#include "brasero-image-option-dialog.h"
 #include "burn-dialog.h"
 #include "project-type-chooser.h"
 #include "disc-copy-dialog.h"
@@ -157,7 +157,6 @@ struct BraseroProjectManagerPrivate {
 	BraseroVFS *vfs;
 	BraseroProjectType type;
 	BraseroVFSDataID size_preview;
-	BraseroVFSDataID info_type;
 
 	GtkWidget *project;
 	GtkWidget *layout;
@@ -520,7 +519,7 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 			      NautilusBurnDrive *drive,
 			      gint speed,
 			      gchar *output,
-			      BraseroTrackSource *source,
+			      const BraseroTrackSource *source,
 			      BraseroBurnFlag flags)
 {
 	GtkWidget *toplevel;
@@ -548,12 +547,6 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 
 	gtk_widget_destroy (dialog);
 
-	nautilus_burn_drive_unref (drive);
-	brasero_track_source_free (source);
-
-	if (output)
-		g_free (output);
-
 	if (!destroy) {
 		brasero_project_manager_switch (manager,
 						BRASERO_PROJECT_TYPE_INVALID,
@@ -567,9 +560,10 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 
 static void
 brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
-					 BraseroTrackSource *track)
+					 const gchar *uri)
 {
 	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
+	BraseroTrackSource *track;
 	NautilusBurnDrive *drive;
 	GtkResponseType result;
 	gchar *output = NULL;
@@ -580,8 +574,8 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 	/* setup, show, and run options dialog */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 
-	dialog = brasero_burn_option_dialog_new ();
-	brasero_burn_option_dialog_set_track (BRASERO_BURN_OPTION_DIALOG (dialog), track);
+	dialog = brasero_image_option_dialog_new ();
+	brasero_image_option_dialog_set_image_uri (BRASERO_IMAGE_OPTION_DIALOG (dialog), uri);
 
 	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -594,14 +588,11 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 		return;
 	}
 
-	brasero_burn_option_dialog_get_session_param (BRASERO_BURN_OPTION_DIALOG (dialog),
-						      &drive,
-						      &speed,
-						      &output,
-						      &flags,
-						      NULL,
-						      NULL,
-						      NULL);
+	brasero_image_option_dialog_get_param (BRASERO_IMAGE_OPTION_DIALOG (dialog),
+					       &flags,
+					       &drive,
+					       &speed,
+					       &track);
 	gtk_widget_destroy (dialog);
 
 	brasero_project_manager_burn (manager,
@@ -610,151 +601,12 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 				      output,
 				      track,
 				      flags);
-}
 
-static void
-brasero_project_manager_burn_iso_error (BraseroProjectManager *manager)
-{
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
+	brasero_track_source_free (track);
+	nautilus_burn_drive_unref (drive);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("This image can't be burnt:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Burning failure"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("it doesn't appear to be a valid image or cue file."));
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-}
-
-static void
-brasero_project_manager_burn_iso_info_result (BraseroVFS *vfs,
-					      GObject *object,
-					      GnomeVFSResult result,
-					      const gchar *uri,
-					      GnomeVFSFileInfo *info,
-					      gpointer null_data)
-{
-	BraseroProjectManager * manager = BRASERO_PROJECT_MANAGER (object);
-	BraseroTrackSource *track = NULL;
-    	GtkRecentManager *recent;
-
-	if (result != GNOME_VFS_OK) {
-		brasero_project_manager_burn_iso_error (manager);
-		return;
-	}
-
-    	/* Add it to recent file manager */
-    	recent = gtk_recent_manager_get_default ();
-    	gtk_recent_manager_add_item (recent, uri);
-
-	if (!strcmp (info->mime_type, "application/x-toc")) {
-		track = g_new0 (BraseroTrackSource, 1);
-		track->type = BRASERO_TRACK_SOURCE_IMAGE;
-		track->format = BRASERO_IMAGE_FORMAT_CLONE;
-
-		track->contents.image.toc = g_strdup (uri);
-		if (g_str_has_suffix (track->contents.image.toc, ".toc"))
-			track->contents.image.image = g_strndup (track->contents.image.toc,
-								 strlen (track->contents.image.toc) - 4);
-	}
-	else if (!strcmp (info->mime_type, "application/octet-stream")) {
-		track = g_new0 (BraseroTrackSource, 1);
-		track->type = BRASERO_TRACK_SOURCE_IMAGE;
-		track->format = BRASERO_IMAGE_FORMAT_CLONE;
-		track->contents.image.image = g_strdup (uri);
-		track->contents.image.toc = g_strdup_printf ("%s.toc", uri);
-	}
-	else if (!strcmp (info->mime_type, "application/x-cd-image")) {
-		track = g_new0 (BraseroTrackSource, 1);
-		track->type = BRASERO_TRACK_SOURCE_IMAGE;
-		track->format = BRASERO_IMAGE_FORMAT_ISO;
-		track->contents.image.image = g_strdup (uri);
-	}
-	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc")
-	     ||  !strcmp (info->mime_type, "application/x-cue")) {
-		track = g_new0 (BraseroTrackSource, 1);
-		track->type = BRASERO_TRACK_SOURCE_IMAGE;
-		track->format = BRASERO_IMAGE_FORMAT_CUE;
-
-		track->contents.image.toc = g_strdup (uri);
-		if (g_str_has_suffix (track->contents.image.toc, ".cue"))
-			track->contents.image.image = g_strndup (track->contents.image.toc,
-								 strlen (track->contents.image.toc) - 4);
-	}
-	else {
-		brasero_project_manager_burn_iso_error (manager);
-		return;
-	}
-
-	brasero_project_manager_burn_iso_dialog (manager, track);
-	return;
-}
-
-static void
-brasero_project_manager_burn_iso (BraseroProjectManager *manager,
-				  const gchar *escaped_uri)
-{
-	GtkWidget *toplevel;
-	GtkWidget *dialog;
-	gchar *uri = NULL;
-	GList *uris;
-
-	if (!escaped_uri) {
-		gint answer;
-
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-		dialog = gtk_file_chooser_dialog_new (_("Choose a disc image or a cue file"),
-						      GTK_WINDOW (toplevel),
-						      GTK_FILE_CHOOSER_ACTION_OPEN,
-						      GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-						      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
-						      NULL);
-
-		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
-		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
-						     g_get_home_dir ());
-	
-		gtk_widget_show (dialog);
-		answer = gtk_dialog_run (GTK_DIALOG (dialog));
-
-		if (answer != GTK_RESPONSE_OK) {
-			gtk_widget_destroy (dialog);
-			return;
-		}
-
-		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
-		gtk_widget_destroy (dialog);
-	}
-	else
-		uri = g_strdup (escaped_uri);
-
-	if (!manager->priv->vfs)
-		manager->priv->vfs = brasero_vfs_get_default ();
-
-	if (!manager->priv->info_type)
-		manager->priv->info_type = brasero_vfs_register_data_type (manager->priv->vfs,
-									   G_OBJECT (manager),
-									   G_CALLBACK (brasero_project_manager_burn_iso_info_result),
-									   NULL);
-
-	uris = g_list_prepend (NULL, uri);
-	brasero_vfs_get_info (manager->priv->vfs,
-			      uris,
-			      GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-			      GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
-			      manager->priv->info_type,
-			      NULL);
-	g_list_free (uris);
-	g_free (uri);
+	if (output)
+		g_free (output);
 }
 
 static void
@@ -857,7 +709,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New image file"));
-		brasero_project_manager_burn_iso (manager, uri);
+		brasero_project_manager_burn_iso_dialog (manager, uri);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_COPY) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);

@@ -1,3 +1,192 @@
+2006-10-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* src/Makefile.am:
+	* src/audio-disc.c: (brasero_audio_disc_iface_disc_init),
+	(brasero_audio_disc_init), (brasero_audio_disc_get_status),
+	(brasero_audio_disc_result), (brasero_audio_disc_get_track_source),
+	(brasero_audio_disc_get_track_type):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_get_type),
+	(brasero_disc_option_dialog_class_init),
+	(brasero_disc_option_dialog_new),
+	(brasero_disc_option_dialog_set_state),
+	(brasero_disc_option_dialog_media_changed),
+	(brasero_disc_option_dialog_add_multisession),
+	(brasero_disc_option_set_title_widget),
+	(brasero_disc_option_dialog_joliet_toggled_cb),
+	(brasero_disc_option_dialog_add_data_options),
+	(brasero_disc_option_dialog_add_audio_options),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_burn_clicked_cb),
+	(brasero_disc_option_dialog_get_param),
+	(brasero_disc_option_dialog_cancel_clicked_cb),
+	(brasero_disc_option_dialog_init),
+	(brasero_disc_option_dialog_finalize):
+	* src/brasero-disc-option-dialog.h:
+	* src/brasero-file-chooser.c: (brasero_file_chooser_set_multi_DND),
+	(brasero_file_chooser_init):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_get_type),
+	(brasero_image_option_dialog_class_init),
+	(brasero_image_option_dialog_new),
+	(brasero_image_option_dialog_image_info_error),
+	(brasero_image_option_dialog_make_track),
+	(brasero_image_option_dialog_image_info_cb),
+	(brasero_image_option_dialog_image_empty),
+	(brasero_image_option_dialog_image_info),
+	(brasero_image_option_dialog_set_image_uri),
+	(brasero_image_option_dialog_burn_clicked_cb),
+	(brasero_image_option_dialog_get_param),
+	(brasero_image_option_dialog_cancel_clicked_cb),
+	(brasero_image_option_dialog_init),
+	(brasero_image_option_dialog_finalize):
+	* src/brasero-image-option-dialog.h:
+	* src/brasero-image-type-chooser.c:
+	(brasero_image_type_chooser_get_type),
+	(brasero_image_type_chooser_class_init),
+	(brasero_image_type_chooser_init),
+	(brasero_image_type_chooser_finalize),
+	(brasero_image_type_chooser_new),
+	(brasero_image_type_chooser_set_source),
+	(brasero_image_type_chooser_get_format):
+	* src/brasero-image-type-chooser.h:
+	* src/brasero-multi-dnd.c: (brasero_multi_DND_row_draggable),
+	(brasero_multi_DND_drag_data_get),
+	(brasero_multi_DND_drag_data_delete),
+	(brasero_multi_DND_drag_source_init), (brasero_enable_multi_DND):
+	* src/brasero-multi-dnd.h:
+	* src/brasero-ncb.c: (launch_command),
+	(NCB_DRIVE_GET_MOUNT_POINT_RESULT), (NCB_DRIVE_GET_VFS_DRIVE),
+	(NCB_VOLUME_GET_MOUNT_POINT_CB), (NCB_VOLUME_GET_MOUNT_POINT),
+	(NCB_DRIVE_GET_MOUNT_POINT), (NCB_DRIVE_GET_MOUNT_POINT_CANCEL):
+	* src/brasero-ncb.h:
+	* src/brasero-project-manager.c: (brasero_project_manager_burn),
+	(brasero_project_manager_burn_iso_dialog),
+	(brasero_project_manager_switch):
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_init),
+	(brasero_sum_dialog_md5_toggled), (brasero_sum_dialog_cancel),
+	(brasero_sum_dialog_message_error),
+	(brasero_sum_dialog_get_disc_md5),
+	(brasero_sum_dialog_check_md5_file), (brasero_sum_dialog_mount_cb),
+	(brasero_sum_dialog_check_brasero_sum):
+	* src/brasero-vfs.c: (brasero_vfs_last_reference_cb),
+	(brasero_vfs_get_default), (brasero_vfs_playlist_result):
+	* src/burn-basics.c: (brasero_track_source_get_image_localpath),
+	(brasero_track_source_get_raw_localpath),
+	(brasero_track_source_get_cue_localpath),
+	(brasero_track_source_get_cdrdao_localpath):
+	* src/burn-basics.h:
+	* src/burn-caps.c: (brasero_burn_caps_get_flags),
+	(brasero_burn_caps_check_flags_consistency),
+	(brasero_burn_caps_create_recorder),
+	(brasero_burn_caps_get_imager_available_formats),
+	(brasero_burn_caps_get_imager_default_format),
+	(brasero_burn_caps_create_imager),
+	(brasero_burn_caps_get_required_media_type):
+	* src/burn-cdrdao.c: (brasero_cdrdao_clean_output),
+	(brasero_cdrdao_finalize), (brasero_cdrdao_read_stderr_record),
+	(brasero_cdrdao_get_track_type), (brasero_cdrdao_set_source),
+	(brasero_cdrdao_set_output), (brasero_cdrdao_set_output_type),
+	(brasero_cdrdao_toc2cue), (brasero_cdrdao_get_track),
+	(brasero_cdrdao_get_size_image), (brasero_cdrdao_set_argv_device),
+	(brasero_cdrdao_set_argv_common), (brasero_cdrdao_set_argv_record),
+	(brasero_cdrdao_set_argv_image), (brasero_cdrdao_post):
+	* src/burn-cdrecord.c: (brasero_cdrecord_stderr_read):
+	* src/burn-common.c: (brasero_get_file_complement),
+	(brasero_burn_common_check_output):
+	* src/burn-common.h:
+	* src/burn-dialog.c: (brasero_burn_dialog_init),
+	(brasero_burn_dialog_finalize),
+	(brasero_burn_dialog_activity_start),
+	(brasero_burn_dialog_activity_stop),
+	(brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_integrity_error),
+	(brasero_burn_dialog_integrity_check_end),
+	(brasero_burn_dialog_close_reload_disc_dlg),
+	(brasero_burn_dialog_reload_disc_dlg),
+	(brasero_burn_dialog_check_image_integrity),
+	(brasero_burn_dialog_check_files_integrity),
+	(brasero_burn_dialog_get_mount_point_cb),
+	(brasero_burn_dialog_integrity_start),
+	(brasero_burn_dialog_success_timeout),
+	(brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success), (brasero_burn_dialog_run):
+	* src/burn-job.c: (brasero_job_log_message):
+	* src/burn-mkisofs.c: (brasero_mkisofs_init),
+	(brasero_mkisofs_read_stdout), (brasero_mkisofs_read_stderr),
+	(brasero_mkisofs_set_argv_image):
+	* src/burn-options-dialog.c:
+	* src/burn-options-dialog.h:
+	* src/burn-readcd.c: (brasero_readcd_set_argv):
+	* src/burn-session.c: (brasero_burn_session_logv):
+	* src/burn-toc2cue.c: (brasero_toc2cue_get_type),
+	(brasero_toc2cue_init), (brasero_toc2cue_finalize),
+	(brasero_toc2cue_new), (brasero_toc2cue_set_source),
+	(brasero_toc2cue_read_stdout), (brasero_toc2cue_read_stderr),
+	(brasero_toc2cue_set_argv), (brasero_toc2cue_get_track),
+	(brasero_toc2cue_set_output), (brasero_toc2cue_set_output_type),
+	(brasero_toc2cue_get_track_type), (brasero_toc2cue_class_init),
+	(brasero_toc2cue_iface_init_image):
+	* src/burn-toc2cue.h:
+	* src/burn-transcode.c: (brasero_transcode_iface_init_image),
+	(brasero_transcode_rm_songs_from_disc),
+	(brasero_transcode_set_append):
+	* src/burn.c: (brasero_burn_check_media),
+	(brasero_burn_wait_for_source_media),
+	(brasero_burn_wait_for_rewritable_media),
+	(brasero_burn_wait_for_dest_media), (brasero_burn_lock_drives):
+	* src/burn.h:
+	* src/data-disc.c: (brasero_data_disc_iface_disc_init),
+	(brasero_data_disc_get_status),
+	(brasero_data_disc_get_track_source),
+	(brasero_data_disc_get_track_type):
+	* src/disc-copy-dialog.c:
+	(brasero_disc_copy_dialog_get_session_param):
+	* src/disc.c: (brasero_disc_get_track_type):
+	* src/disc.h:
+	* src/eggtreemultidnd.c: (egg_tree_multi_drag_source_get_type),
+	(egg_tree_multi_drag_source_row_draggable),
+	(egg_tree_multi_drag_source_drag_data_delete),
+	(egg_tree_multi_drag_source_drag_data_get), (stop_drag_check),
+	(egg_tree_multi_drag_button_release_event), (selection_foreach),
+	(path_list_free), (set_context_data), (get_context_data),
+	(get_info), (egg_tree_multi_drag_drag_data_get),
+	(egg_tree_multi_drag_motion_event),
+	(egg_tree_multi_drag_button_press_event),
+	(egg_tree_multi_drag_add_drag_support):
+	* src/eggtreemultidnd.h:
+	* src/main.c: (main):
+	* src/metadata.c: (brasero_metadata_stop_pipeline),
+	(brasero_metadata_cancel), (brasero_metadata_stop):
+	* src/play-list.c: (brasero_playlist_init),
+	(brasero_playlist_get_selected_uris_real),
+	(brasero_playlist_drag_data_get_cb):
+	* src/project.c: (brasero_project_burn):
+	* src/recorder-selection.c: (brasero_recorder_selection_init),
+	(brasero_recorder_selection_get_new_image_path),
+	(brasero_recorder_selection_update_info),
+	(brasero_recorder_selection_set_source_track),
+	(brasero_recorder_selection_drive_properties),
+	(brasero_recorder_selection_disc_image_properties):
+	* src/search-entry.c: (brasero_search_entry_separator_func):
+	* src/search.c: (brasero_search_init),
+	(brasero_search_get_selected_uri), (brasero_search_empty_tree),
+	(brasero_search_drag_data_get_cb),
+	(brasero_search_add_hit_to_tree), (brasero_search_update_header),
+	(brasero_search_beagle_hit_substracted_cb),
+	(brasero_search_get_selected_rows):
+
+	Added MultiDND support and rubber-banding
+	Fixed bug #359780: brasero wrote discs in dummy mode
+	Fixed bug which prevented multisession discs from being burnt if not RW
+	Add possibility to create CD plus by allowing audio CDs not to be closed
+	Use GtkFileChooserButton wherever it makes sense
+	Fixed confusion between cue and toc files
+	Rework burn images dialog
+	Improved mounting of disc when doing integrity checks
+	In case of a multisession disc make sure there is enough free space
+	Some code cleanup and small fixes
+
 2006-09-26  Luca Ferretti  <elle.uca@libero.it>
 
 	* autogen.sh:

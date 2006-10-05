@@ -65,6 +65,7 @@
 #include "metadata.h"
 #include "brasero-uri-container.h"
 #include "async-job-manager.h"
+#include "eggtreemultidnd.h"
 
 static void brasero_playlist_class_init (BraseroPlaylistClass *klass);
 static void brasero_playlist_init (BraseroPlaylist *sp);
@@ -269,6 +270,8 @@ brasero_playlist_init (BraseroPlaylist *obj)
 				    G_TYPE_INT64);
 
 	obj->priv->tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (obj->priv->tree));
+
 	gtk_tree_view_set_enable_tree_lines (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	gtk_tree_view_set_headers_clickable (GTK_TREE_VIEW (obj->priv->tree), TRUE);
@@ -716,8 +719,6 @@ brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist)
 	if (rows == NULL)
 		return NULL;
 
-	rows = g_list_reverse (rows);
-
 	array = g_ptr_array_sized_new (g_list_length (rows) + 1);
 	for (iter = rows; iter; iter = iter->next) {
 		path = iter->data;
@@ -758,7 +759,7 @@ brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist)
 	g_list_free (rows);
 
 	g_ptr_array_set_size (array, array->len + 1);
-	uris = (char **) array->pdata;
+	uris = (gchar **) array->pdata;
 	g_ptr_array_free (array, FALSE);
 	return uris;
 }
@@ -768,7 +769,8 @@ brasero_playlist_drag_data_get_cb (GtkTreeView *tree,
 				   GdkDragContext *drag_context,
 				   GtkSelectionData *selection_data,
 				   guint info,
-				   guint time, BraseroPlaylist *playlist)
+				   guint time,
+				   BraseroPlaylist *playlist)
 {
 	gchar **uris;
 
