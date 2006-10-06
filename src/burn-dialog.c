@@ -1119,6 +1119,9 @@ brasero_burn_dialog_integrity_check_end (BraseroBurnDialog *dialog,
 					 BraseroBurnResult result,
 					 GError *error)
 {
+	if (result == BRASERO_BURN_CANCEL)
+		return;
+
 	if (error) {
 		brasero_burn_dialog_integrity_error (dialog, error);
 		g_error_free (error);
@@ -1356,13 +1359,15 @@ brasero_burn_dialog_integrity_start (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 	gchar *header;
 
-	/* display a dialog to the user explaining what we're
-	 * going to do, that is reload the disc before checking */
-	result = brasero_burn_dialog_reload_disc_dlg (dialog,
-						      _("The burnt media needs to be reloaded to perform integrity check:"),
-						      _("please, insert it again."));
-	if (result == BRASERO_BURN_CANCEL)
-		return;
+	if (nautilus_burn_drive_get_media_type (burner) < NAUTILUS_BURN_MEDIA_TYPE_CD) {
+		/* display a dialog to the user explaining what we're
+		 * going to do, that is reload the disc before checking */
+		result = brasero_burn_dialog_reload_disc_dlg (dialog,
+							      _("The burnt media needs to be reloaded to perform integrity check:"),
+							      _("please, insert it again."));
+		if (result == BRASERO_BURN_CANCEL)
+			return;
+	}
 
 	/* change the text */
 	header = g_strdup (gtk_label_get_text (GTK_LABEL (dialog->priv->header)));
