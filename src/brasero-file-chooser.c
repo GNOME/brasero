@@ -128,7 +128,8 @@ brasero_file_chooser_set_multi_DND (GtkWidget *widget, gpointer null_data)
 		list = gtk_drag_source_get_target_list (widget);
 		target = gdk_atom_intern ("text/uri-list", TRUE);
 		found = gtk_target_list_find (list, target, &num);
-		gtk_target_list_unref (list);
+		/* FIXME: should we unref them ? */
+//		gtk_target_list_unref (list);
 
 		if (found) {
 			gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (widget), TRUE);

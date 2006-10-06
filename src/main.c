@@ -43,7 +43,6 @@
 #include <nautilus-burn-recorder.h>
 #include <nautilus-burn-init.h>
 
-
 #include <gconf/gconf-client.h>
 
 #include "brasero-app.h"

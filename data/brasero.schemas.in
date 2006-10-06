@@ -134,6 +134,54 @@
 	  <long>Whether to display file preview. Set to true to use it.</long>
 	</locale>
        </schema>
- 
+
+        <schema>
+        <key>/schemas/apps/brasero/display/image_width</key>
+	<applyto>/apps/brasero/display/image_width</applyto>
+	<owner>brasero</owner>
+	<type>int</type>
+	<default>120</default>
+	<locale name="C">
+	  <short>width for image preview</short>
+	  <long>Default width for image preview.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/display/image_height</key>
+	<applyto>/apps/brasero/display/image_height</applyto>
+	<owner>brasero</owner>
+	<type>int</type>
+	<default>90</default>
+	<locale name="C">
+	  <short>Height of image preview</short>
+	  <long>Default height for image preview.</long>
+	</locale>
+       </schema>
+
+        <schema>
+        <key>/schemas/apps/brasero/display/video_width</key>
+	<applyto>/apps/brasero/display/video_width</applyto>
+	<owner>brasero</owner>
+	<type>int</type>
+	<default>120</default>
+	<locale name="C">
+	  <short>Width for video preview</short>
+	  <long>Default width for video preview.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/display/video_height</key>
+	<applyto>/apps/brasero/display/video_height</applyto>
+	<owner>brasero</owner>
+	<type>int</type>
+	<default>90</default>
+	<locale name="C">
+	  <short>Height for video preview</short>
+	  <long>Default height for video preview.</long>
+	</locale>
+       </schema>
+
   </schemalist>
 </gconfschemafile>

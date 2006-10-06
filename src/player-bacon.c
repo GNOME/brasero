@@ -335,8 +335,8 @@ brasero_player_bacon_size_allocate (GtkWidget *widget,
 		else
 			ratio = (gfloat) screen_width / PLAYER_BACON_WIDTH;
 		
-		screen_width = (double) PLAYER_BACON_WIDTH * ratio;
-		screen_height = (double) PLAYER_BACON_HEIGHT * ratio;
+		screen_width = (gdouble) PLAYER_BACON_WIDTH * ratio;
+		screen_height = (gdouble) PLAYER_BACON_HEIGHT * ratio;
 		screen_x = allocation->x + (allocation->width - (gint) screen_width) / 2;
 		screen_y = allocation->y + (allocation->height - (gint) screen_height) / 2;
 	

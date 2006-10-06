@@ -1,3 +1,26 @@
+2006-10-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* data/brasero.schemas.in:
+	* src/brasero-file-chooser.c: (brasero_file_chooser_set_multi_DND):
+	* src/main.c:
+	* src/player-bacon.c: (brasero_player_bacon_size_allocate):
+	* src/player.c: (brasero_player_init), (brasero_player_destroy),
+	(brasero_player_destroy_controls), (brasero_player_video_zoom_out),
+	(brasero_player_video_zoom_in),
+	(brasero_player_create_controls_stream),
+	(brasero_player_update_position), (brasero_player_set_length),
+	(brasero_player_scale_image), (brasero_player_image_zoom_in),
+	(brasero_player_image_zoom_out),
+	(brasero_player_create_controls_image), (brasero_player_image),
+	(brasero_player_update_info_real),
+	(brasero_player_no_multimedia_stream),
+	(brasero_player_metadata_completed),
+	(brasero_player_range_button_released_cb),
+	(brasero_player_state_changed_cb),
+	(brasero_player_range_value_changed):
+
+	Added the possibility to zoom in and out in preview
+
 2006-10-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* data/disc-00.png:

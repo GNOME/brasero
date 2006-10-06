@@ -45,6 +45,8 @@
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkmessagedialog.h>
 
+#include <gconf/gconf-client.h>
+
 #include "player.h"
 #include "player-bacon.h"
 #include "utils.h"
@@ -62,18 +64,16 @@ static void brasero_player_button_clicked_cb (GtkButton *button,
 
 static gboolean brasero_player_update_progress_cb (BraseroPlayer *player);
 
-static char *brasero_player_scale_format_value (GtkScale *scale,
-						gdouble value,
-						BraseroPlayer *player);
 static gboolean brasero_player_range_button_pressed_cb (GtkWidget *widget,
 							GdkEvent *event,
-							BraseroPlayer *
-							player);
-static gboolean brasero_player_range_button_released_cb (GtkWidget *
-							 widget,
+							BraseroPlayer *player);
+
+static void brasero_player_range_value_changed (GtkRange *range,
+						BraseroPlayer *player);
+
+static gboolean brasero_player_range_button_released_cb (GtkWidget *widget,
 							 GdkEvent *event,
-							 BraseroPlayer *
-							 player);
+							 BraseroPlayer *player);
 static void brasero_player_state_changed_cb (BraseroPlayerBacon *bacon,
 					      BraseroPlayerBaconState state,
 					      BraseroPlayer *player);
@@ -82,6 +82,7 @@ brasero_player_eof_cb (BraseroPlayerBacon *bacon, BraseroPlayer *player);
 
 struct BraseroPlayerPrivate {
 	GtkWidget *hbox;
+	GtkWidget *vbox;
 
 	GtkWidget *frame;
 	GtkWidget *notebook;
@@ -89,7 +90,19 @@ struct BraseroPlayerPrivate {
 	GtkWidget *image_display;
 	GtkWidget *controls;
 
+	gint image_width;
+	gint image_height;
+	GdkPixbuf *pixbuf;
+
 	GtkWidget *image;
+	GtkWidget *image_zoom_in;
+	GtkWidget *image_zoom_out;
+
+	gint video_width;
+	gint video_height;
+	GtkWidget *video_zoom_in;
+	GtkWidget *video_zoom_out;
+
 	GtkWidget *button;
 	GtkWidget *progress;
 
@@ -105,6 +118,11 @@ struct BraseroPlayerPrivate {
 
 	gchar *uri;
 };
+
+#define GCONF_IMAGE_SIZE_WIDTH	"/apps/brasero/display/image_width"
+#define GCONF_IMAGE_SIZE_HEIGHT	"/apps/brasero/display/image_height"
+#define GCONF_VIDEO_SIZE_WIDTH	"/apps/brasero/display/video_width"
+#define GCONF_VIDEO_SIZE_HEIGHT	"/apps/brasero/display/video_height"
 
 static GObjectClass *parent_class = NULL;
 
@@ -149,24 +167,39 @@ brasero_player_class_init (BraseroPlayerClass *klass)
 static void
 brasero_player_init (BraseroPlayer *obj)
 {
+	GtkWidget *alignment;
+	GConfClient *client;
+
 	obj->priv = g_new0 (BraseroPlayerPrivate, 1);
 
 	obj->priv->frame = gtk_frame_new (_(" Preview "));
 	gtk_container_add (GTK_CONTAINER (obj), obj->priv->frame);
 
-	obj->priv->hbox = gtk_hbox_new (FALSE, 8);
-	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->hbox), 4);
-	gtk_widget_show (obj->priv->hbox);
-	gtk_container_add (GTK_CONTAINER (obj->priv->frame), obj->priv->hbox);
+	obj->priv->vbox = gtk_vbox_new (FALSE, 8);
+	gtk_widget_show (obj->priv->vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->vbox), 4);
+	gtk_container_add (GTK_CONTAINER (obj->priv->frame), obj->priv->vbox);
 
-	obj->priv->notebook = gtk_notebook_new ();
-	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
-	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
+	obj->priv->hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (obj->priv->hbox);
+	gtk_box_pack_start (GTK_BOX (obj->priv->vbox),
+			    obj->priv->hbox,
+			    TRUE,
+			    TRUE,
+			    0);
+
+	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_widget_show (alignment);
 	gtk_box_pack_start (GTK_BOX (obj->priv->hbox),
-			    obj->priv->notebook,
+			    alignment,
 			    FALSE,
 			    FALSE,
 			    0);
+
+	obj->priv->notebook = gtk_notebook_new ();
+	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->notebook);
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
 
 	obj->priv->image_display = gtk_image_new ();
 	gtk_widget_show (obj->priv->image_display);
@@ -188,15 +221,84 @@ brasero_player_init (BraseroPlayer *obj)
 	gtk_notebook_append_page (GTK_NOTEBOOK (obj->priv->notebook),
 				  obj->priv->bacon,
 				  NULL);
+
+	client = gconf_client_get_default ();
+	obj->priv->image_width = gconf_client_get_int (client,
+						       GCONF_IMAGE_SIZE_WIDTH,
+						       NULL);
+
+	if (obj->priv->image_width > PLAYER_BACON_WIDTH * 3
+	||  obj->priv->image_width < PLAYER_BACON_WIDTH)
+		obj->priv->image_width = PLAYER_BACON_WIDTH;
+
+	obj->priv->image_height = gconf_client_get_int (client,
+						        GCONF_IMAGE_SIZE_HEIGHT,
+						        NULL);
+
+	if (obj->priv->image_height > PLAYER_BACON_HEIGHT * 3
+	||  obj->priv->image_height < PLAYER_BACON_HEIGHT)
+		obj->priv->image_height = PLAYER_BACON_HEIGHT;
+
+	obj->priv->video_width = gconf_client_get_int (client,
+						       GCONF_VIDEO_SIZE_WIDTH,
+						       NULL);
+
+	if (obj->priv->video_width > PLAYER_BACON_WIDTH * 3
+	||  obj->priv->video_width < PLAYER_BACON_WIDTH)
+		obj->priv->video_width = PLAYER_BACON_WIDTH;
+
+	obj->priv->video_height = gconf_client_get_int (client,
+							GCONF_VIDEO_SIZE_HEIGHT,
+							NULL);
+
+	if (obj->priv->video_height > PLAYER_BACON_HEIGHT * 3
+	||  obj->priv->video_height < PLAYER_BACON_HEIGHT)
+		obj->priv->video_height = PLAYER_BACON_HEIGHT;
+
+	gtk_widget_set_size_request (obj->priv->bacon,
+				     obj->priv->video_width,
+				     obj->priv->video_height);
+	g_object_unref (client);
 }
 
 static void
 brasero_player_destroy (GtkObject *obj)
 {
 	BraseroPlayer *player;
+	GConfClient *client;
 
 	player = BRASERO_PLAYER (obj);
+
+	client = gconf_client_get_default ();
+
+	gconf_client_set_int (client,
+			      GCONF_IMAGE_SIZE_WIDTH,
+			      player->priv->image_width,
+			      NULL);
+
+	gconf_client_set_int (client,
+			      GCONF_IMAGE_SIZE_HEIGHT,
+			      player->priv->image_height,
+			      NULL);
+
+	gconf_client_set_int (client,
+			      GCONF_VIDEO_SIZE_WIDTH,
+			      player->priv->video_width,
+			      NULL);
+
+	gconf_client_set_int (client,
+			      GCONF_VIDEO_SIZE_HEIGHT,
+			      player->priv->video_height,
+			      NULL);
+
+	g_object_unref (client);
+
 	player->priv->image = NULL;
+
+	if (player->priv->pixbuf) {
+		g_object_unref (player->priv->pixbuf);
+		player->priv->pixbuf = NULL;
+	}
 
 	if (player->priv->update_scale_id) {
 		g_source_remove (player->priv->update_scale_id);
@@ -244,6 +346,13 @@ brasero_player_destroy_controls (BraseroPlayer *player)
 	if (!player->priv->controls)
 		return;
 
+	gtk_box_set_child_packing (GTK_BOX (player->priv->hbox),
+				   player->priv->notebook->parent,
+				   FALSE,
+				   FALSE,
+				   0,
+				   GTK_PACK_START);
+
 	gtk_widget_destroy (player->priv->controls);
 	player->priv->controls = NULL;
 	player->priv->progress = NULL;
@@ -254,72 +363,283 @@ brasero_player_destroy_controls (BraseroPlayer *player)
 }
 
 static void
-brasero_player_create_controls_stream (BraseroPlayer *player)
+brasero_player_video_zoom_out (GtkButton *button,
+			       BraseroPlayer *player)
+{
+	gint width, height;
+
+	gtk_widget_set_sensitive (GTK_WIDGET (player->priv->video_zoom_in), TRUE);
+
+	width = GTK_WIDGET (player->priv->bacon)->allocation.width;
+	height = GTK_WIDGET (player->priv->bacon)->allocation.height;
+
+	width -= PLAYER_BACON_WIDTH / 3;
+	height -= PLAYER_BACON_HEIGHT / 3;
+
+	if (width < (GTK_WIDGET (player)->allocation.width / 2)
+	&&  player->priv->controls->parent == player->priv->vbox) {
+		g_object_ref (player->priv->controls);
+		gtk_container_remove (GTK_CONTAINER (player->priv->vbox),
+				      player->priv->controls);
+
+		gtk_box_pack_start (GTK_BOX (player->priv->hbox),
+				    player->priv->controls,
+				    TRUE,
+				    TRUE,
+				    0);
+		g_object_unref (player->priv->controls);
+
+		gtk_box_set_child_packing (GTK_BOX (player->priv->hbox),
+					   player->priv->notebook->parent,
+					   FALSE,
+					   FALSE,
+					   0,
+					   GTK_PACK_START);
+	}
+
+	if (width <= PLAYER_BACON_WIDTH ||
+	    height <= PLAYER_BACON_HEIGHT) {
+		width = PLAYER_BACON_WIDTH;
+		height = PLAYER_BACON_HEIGHT;
+		gtk_widget_set_sensitive (GTK_WIDGET (player->priv->video_zoom_out), FALSE);
+	}
+
+	player->priv->video_width = width;
+	player->priv->video_height = height;
+
+	gtk_widget_set_size_request (GTK_WIDGET (player->priv->bacon),
+				     width,
+				     height);
+}
+
+static void
+brasero_player_video_zoom_in (GtkButton *button,
+			      BraseroPlayer *player)
+{
+	gint width, height;
+
+	gtk_widget_set_sensitive (GTK_WIDGET (player->priv->video_zoom_out), TRUE);
+
+	width = player->priv->bacon->allocation.width;
+	height = player->priv->bacon->allocation.height;
+
+	width += PLAYER_BACON_WIDTH / 3;
+	height += PLAYER_BACON_HEIGHT / 3;
+
+	if (width >= (GTK_WIDGET (player)->allocation.width / 2)
+	&&  player->priv->controls->parent == player->priv->hbox) {
+		g_object_ref (player->priv->controls);
+		gtk_container_remove (GTK_CONTAINER (player->priv->hbox),
+				      player->priv->controls);
+
+		gtk_box_pack_start (GTK_BOX (player->priv->vbox),
+				    player->priv->controls,
+				    TRUE,
+				    TRUE,
+				    0);
+		g_object_unref (player->priv->controls);
+
+		gtk_box_set_child_packing (GTK_BOX (player->priv->hbox),
+					   player->priv->notebook->parent,
+					   TRUE,
+					   TRUE,
+					   0,
+					   GTK_PACK_START);
+	}
+
+	if (width >= PLAYER_BACON_WIDTH * 3 ||
+	    height >= PLAYER_BACON_HEIGHT * 3) {
+		width = PLAYER_BACON_WIDTH * 3;
+		height = PLAYER_BACON_HEIGHT * 3;
+		gtk_widget_set_sensitive (GTK_WIDGET (player->priv->video_zoom_in), FALSE);
+	}
+
+	player->priv->video_width = width;
+	player->priv->video_height = height;
+
+	gtk_widget_set_size_request (GTK_WIDGET (player->priv->bacon),
+				     width,
+				     height);
+}
+
+static void
+brasero_player_create_controls_stream (BraseroPlayer *player,
+				       gboolean video)
 {
 	GtkWidget *box = NULL;
+	GtkWidget *header_box;
+	GtkWidget *alignment;
 
 	if (player->priv->controls)
 		brasero_player_destroy_controls (player);
 
 	player->priv->controls = gtk_vbox_new (FALSE, 4);
+
+	/* first line title */
+	header_box = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (player->priv->controls),
+			    header_box,
+			    FALSE,
+			    FALSE,
+			    0);
+	
 	player->priv->header = gtk_label_new (_("No file"));
 	gtk_label_set_use_markup (GTK_LABEL (player->priv->header), TRUE);
-	gtk_label_set_justify (GTK_LABEL (player->priv->header),
-			       GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (player->priv->header), 0, 1);
-	gtk_box_pack_start (GTK_BOX (player->priv->controls),
+	gtk_label_set_justify (GTK_LABEL (player->priv->header), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (player->priv->header), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (header_box),
 			    player->priv->header,
 			    TRUE,
 			    TRUE,
 			    0);
 
-	/* second line : controls */
-	box = gtk_hbox_new (FALSE, 12);
-
-	player->priv->button = gtk_button_new ();
-	player->priv->image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON);
-	gtk_container_add (GTK_CONTAINER (player->priv->button), player->priv->image);
-	gtk_box_pack_start (GTK_BOX (box), player->priv->button, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (player->priv->button), "clicked",
-			  G_CALLBACK (brasero_player_button_clicked_cb),
-			  player);
-
-	player->priv->progress = gtk_hscale_new_with_range (0, 1, 500000000);
-	gtk_scale_set_digits (GTK_SCALE (player->priv->progress), 0);
-	gtk_scale_set_draw_value (GTK_SCALE (player->priv->progress), TRUE);
-	gtk_scale_set_value_pos (GTK_SCALE (player->priv->progress), GTK_POS_RIGHT);
-	gtk_range_set_update_policy (GTK_RANGE (player->priv->progress), GTK_UPDATE_CONTINUOUS);
-	gtk_box_pack_start (GTK_BOX (box), player->priv->progress, TRUE, TRUE, 0);
-
-	g_signal_connect (G_OBJECT (player->priv->progress),
-			  "button_press_event",
-			  G_CALLBACK (brasero_player_range_button_pressed_cb), player);
-	g_signal_connect (G_OBJECT (player->priv->progress),
-			  "button_release_event",
-			  G_CALLBACK (brasero_player_range_button_released_cb), player);
-	g_signal_connect (G_OBJECT (player->priv->progress),
-			  "format_value",
-			  G_CALLBACK (brasero_player_scale_format_value),
-			  player);
-
-	player->priv->size = gtk_label_new (_("out of 0:00"));
-	gtk_box_pack_start (GTK_BOX (box),
+	player->priv->size = gtk_label_new (NULL);
+	gtk_label_set_justify (GTK_LABEL (player->priv->size), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment (GTK_MISC (player->priv->size), 1.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (header_box),
 			    player->priv->size,
 			    FALSE,
 			    FALSE,
 			    0);
 
+	/* second line : progress */
+	box = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (player->priv->controls),
 			    box,
 			    FALSE,
 			    FALSE,
 			    0);
 
-	gtk_box_pack_start (GTK_BOX (player->priv->hbox),
-			    player->priv->controls,
-			    TRUE,
-			    TRUE,
+	player->priv->progress = gtk_hscale_new_with_range (0, 1, 500000000);
+	gtk_scale_set_digits (GTK_SCALE (player->priv->progress), 0);
+	gtk_scale_set_draw_value (GTK_SCALE (player->priv->progress), FALSE);
+	gtk_range_set_update_policy (GTK_RANGE (player->priv->progress), GTK_UPDATE_CONTINUOUS);
+	gtk_box_pack_end (GTK_BOX (box),
+			  player->priv->progress,
+			  TRUE,
+			  TRUE,
+			  0);
+
+	g_signal_connect (G_OBJECT (player->priv->progress),
+			  "button-press-event",
+			  G_CALLBACK (brasero_player_range_button_pressed_cb), player);
+	g_signal_connect (G_OBJECT (player->priv->progress),
+			  "button-release-event",
+			  G_CALLBACK (brasero_player_range_button_released_cb), player);
+	g_signal_connect (G_OBJECT (player->priv->progress),
+			  "value-changed",
+			  G_CALLBACK (brasero_player_range_value_changed),
+			  player);
+
+	/* Third line : controls */
+	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
+	player->priv->button = gtk_button_new ();
+	gtk_container_add (GTK_CONTAINER (alignment), player->priv->button);
+	gtk_box_pack_start (GTK_BOX (box),
+			    alignment,
+			    FALSE,
+			    FALSE,
 			    0);
+
+	player->priv->image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON);
+	gtk_container_add (GTK_CONTAINER (player->priv->button), player->priv->image);
+	g_signal_connect (G_OBJECT (player->priv->button), "clicked",
+			  G_CALLBACK (brasero_player_button_clicked_cb),
+			  player);
+
+	/* zoom in/out, only if video */
+	if (video) {
+		GtkWidget *image;
+		GtkWidget *zoom;
+		GtkWidget *hbox;
+
+		box = gtk_hbox_new (FALSE, 12);
+		gtk_box_pack_start (GTK_BOX (player->priv->controls),
+				    box,
+				    FALSE,
+				    FALSE,
+				    0);
+
+		hbox = gtk_hbox_new (FALSE, 0);
+		alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
+		player->priv->button = gtk_button_new ();
+		gtk_container_add (GTK_CONTAINER (alignment), hbox);
+		gtk_box_pack_start (GTK_BOX (box),
+				    alignment,
+				    TRUE,
+				    TRUE,
+				    0);
+
+		image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_BUTTON);
+		zoom = gtk_button_new ();
+		gtk_button_set_image (GTK_BUTTON (zoom), image);
+		gtk_button_set_relief (GTK_BUTTON (zoom), GTK_RELIEF_NONE);
+		gtk_button_set_focus_on_click (GTK_BUTTON (zoom), FALSE);
+		g_signal_connect (zoom,
+				  "clicked",
+				  G_CALLBACK (brasero_player_video_zoom_out),
+				  player);
+		gtk_box_pack_start (GTK_BOX (hbox),
+				    zoom,
+				    FALSE,
+				    FALSE,
+				    0);
+		player->priv->video_zoom_out = zoom;
+
+		image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_IN, GTK_ICON_SIZE_BUTTON);
+		zoom = gtk_button_new ();
+		gtk_button_set_image (GTK_BUTTON (zoom), image);
+		gtk_button_set_relief (GTK_BUTTON (zoom), GTK_RELIEF_NONE);
+		gtk_button_set_focus_on_click (GTK_BUTTON (zoom), FALSE);
+		g_signal_connect (zoom,
+				  "clicked",
+				  G_CALLBACK (brasero_player_video_zoom_in),
+				  player);
+		gtk_box_pack_start (GTK_BOX (hbox),
+				    zoom,
+				    FALSE,
+				    FALSE,
+				    0);
+		player->priv->video_zoom_in = zoom;
+
+		if (player->priv->video_height <= PLAYER_BACON_HEIGHT
+		||  player->priv->video_width  <= PLAYER_BACON_WIDTH)
+			gtk_widget_set_sensitive (player->priv->video_zoom_out, FALSE);
+		else
+			gtk_widget_set_sensitive (player->priv->video_zoom_out, TRUE);
+
+		if (player->priv->video_height >= PLAYER_BACON_HEIGHT * 3
+		||  player->priv->video_width  >= PLAYER_BACON_WIDTH * 3)
+			gtk_widget_set_sensitive (player->priv->video_zoom_in, FALSE);
+		else
+			gtk_widget_set_sensitive (player->priv->video_zoom_in, TRUE);
+
+		if (player->priv->video_width >= (GTK_WIDGET (player)->allocation.width / 2)) {
+			gtk_box_pack_start (GTK_BOX (player->priv->vbox),
+					    player->priv->controls,
+					    TRUE,
+					    TRUE,
+					    0);
+			gtk_box_set_child_packing (GTK_BOX (player->priv->hbox),
+						   player->priv->notebook->parent,
+						   TRUE,
+						   TRUE,
+						   0,
+						   GTK_PACK_START);
+		}
+		else if (player->priv->video_width < (GTK_WIDGET (player)->allocation.width / 2))
+			gtk_box_pack_start (GTK_BOX (player->priv->hbox),
+					    player->priv->controls,
+					    TRUE,
+					    TRUE,
+					    0);
+	}
+	else
+		gtk_box_pack_end (GTK_BOX (player->priv->hbox),
+				  player->priv->controls,
+				  TRUE,
+				  TRUE,
+				  0);
 
 	gtk_widget_show (player->priv->frame);
 	gtk_widget_show_all (player->priv->controls);
@@ -327,28 +647,120 @@ brasero_player_create_controls_stream (BraseroPlayer *player)
 }
 
 static void
+brasero_player_update_position (BraseroPlayer *player)
+{
+	gdouble length;
+	gdouble value;
+	GtkAdjustment *adjustment;
+	gchar *pos_string, *len_string, *result;
+
+	adjustment = gtk_range_get_adjustment (GTK_RANGE (player->priv->progress));
+	g_object_get (adjustment, "upper", &length, NULL);
+	len_string = brasero_utils_get_time_string (length, FALSE, FALSE);
+
+	value = gtk_range_get_value (GTK_RANGE (player->priv->progress));
+	pos_string = brasero_utils_get_time_string (value, FALSE, FALSE);
+
+	result = g_strdup_printf (_("%s / %s"), pos_string, len_string);
+	g_free (len_string);
+	g_free (pos_string);
+
+	gtk_label_set_text (GTK_LABEL (player->priv->size), result);
+	g_free (result);
+}
+
+static void
 brasero_player_set_length (BraseroPlayer *player, gint64 len)
 {
-	gchar *time_string;
-	gchar *len_string;
+	gtk_range_set_range (GTK_RANGE (player->priv->progress), 0.0, (gdouble) len);
+	brasero_player_update_position (player);
+}
 
-	if (len == -1)
-		return;
+static gboolean
+brasero_player_scale_image (BraseroPlayer *player)
+{
+	gint height, width;
+	GdkPixbuf *scaled;
+	gdouble ratio;
 
-	time_string = brasero_utils_get_time_string (len, FALSE, FALSE);
-	len_string = g_strdup_printf (_("out of %s"), time_string);
-	g_free (time_string);
-	gtk_label_set_text (GTK_LABEL (player->priv->size), len_string);
-	g_free (len_string);
+	height = gdk_pixbuf_get_height (player->priv->pixbuf);
+	width = gdk_pixbuf_get_width (player->priv->pixbuf);
 
-	gtk_range_set_range (GTK_RANGE (player->priv->progress), 0.0, (double) len);
+	if (player->priv->image_height == height
+	&&  player->priv->image_width == width) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (player->priv->image_display),
+					   player->priv->pixbuf);
+		return TRUE;
+	}
+
+	if (width / (gdouble) player->priv->image_width > height / (gdouble) player->priv->image_height)
+		ratio = (gdouble) width / (gdouble) player->priv->image_width;
+	else
+		ratio = (gdouble) height / (gdouble) player->priv->image_height;
+
+	scaled = gdk_pixbuf_scale_simple (player->priv->pixbuf,
+					  width / ratio,
+					  height / ratio,
+					  GDK_INTERP_BILINEAR);
+
+	if (!scaled)
+		return FALSE;
+
+	gtk_image_set_from_pixbuf (GTK_IMAGE (player->priv->image_display), scaled);
+	g_object_unref (scaled);
+
+	return TRUE;
+}
+
+static void
+brasero_player_image_zoom_in (GtkButton *button,
+			      BraseroPlayer *player)
+{
+	gtk_widget_set_sensitive (player->priv->image_zoom_out, TRUE);
+
+	player->priv->image_width += PLAYER_BACON_WIDTH / 3;
+	player->priv->image_height += PLAYER_BACON_HEIGHT / 3;
+
+	if (player->priv->image_width >= PLAYER_BACON_WIDTH * 3 ||
+	    player->priv->image_height >= PLAYER_BACON_HEIGHT * 3) {
+		gtk_widget_set_sensitive (player->priv->image_zoom_in, FALSE);
+		player->priv->image_width = PLAYER_BACON_WIDTH * 3;
+		player->priv->image_height = PLAYER_BACON_HEIGHT * 3;
+	}
+
+	brasero_player_scale_image (player);
+}
+
+static void
+brasero_player_image_zoom_out (GtkButton *button,
+			       BraseroPlayer *player)
+{
+	gint min_height, min_width;
+
+	gtk_widget_set_sensitive (player->priv->image_zoom_in, TRUE);
+
+	min_width = MIN (PLAYER_BACON_WIDTH, gdk_pixbuf_get_width (player->priv->pixbuf));
+	min_height = MIN (PLAYER_BACON_HEIGHT, gdk_pixbuf_get_height (player->priv->pixbuf));
+
+	player->priv->image_width -= PLAYER_BACON_WIDTH / 3;
+	player->priv->image_height -= PLAYER_BACON_HEIGHT / 3;
+
+	/* the image itself */
+	if (player->priv->image_width <= min_width ||
+	    player->priv->image_height <= min_height) {
+		gtk_widget_set_sensitive (player->priv->image_zoom_out, FALSE);
+		player->priv->image_width = min_width;
+		player->priv->image_height = min_height;
+	}
+
+	brasero_player_scale_image (player);
 }
 
 static void
 brasero_player_create_controls_image (BraseroPlayer *player)
 {
-	if (player->priv->controls)
-		brasero_player_destroy_controls (player);
+	GtkWidget *box, *zoom;
+	GtkWidget *image;
 
 	player->priv->controls = gtk_vbox_new (FALSE, 4);
 
@@ -374,43 +786,69 @@ brasero_player_create_controls_image (BraseroPlayer *player)
 			    FALSE,
 			    0);
 
+	box = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (player->priv->controls),
+			    box,
+			    FALSE,
+			    FALSE,
+			    0);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_BUTTON);
+	zoom = gtk_button_new ();
+	gtk_button_set_image (GTK_BUTTON (zoom), image);
+	gtk_button_set_relief (GTK_BUTTON (zoom), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (zoom), FALSE);
+	g_signal_connect (zoom,
+			  "clicked",
+			  G_CALLBACK (brasero_player_image_zoom_out),
+			  player);
+	gtk_box_pack_start (GTK_BOX (box),
+			    zoom,
+			    FALSE,
+			    FALSE,
+			    0);
+	player->priv->image_zoom_out = zoom;
+
+	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_IN, GTK_ICON_SIZE_BUTTON);
+	zoom = gtk_button_new ();
+	gtk_button_set_image (GTK_BUTTON (zoom), image);
+	gtk_button_set_relief (GTK_BUTTON (zoom), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (zoom), FALSE);
+	g_signal_connect (zoom,
+			  "clicked",
+			  G_CALLBACK (brasero_player_image_zoom_in),
+			  player);
+	gtk_box_pack_start (GTK_BOX (box),
+			    zoom,
+			    FALSE,
+			    FALSE,
+			    0);
+	player->priv->image_zoom_in = zoom;
+
 	gtk_widget_show_all (player->priv->controls);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (player), 12, 0, 0, 0);
 }
 
 static void
-brasero_player_no_multimedia_stream (BraseroPlayer *player)
-{
-	if (player->priv->update_scale_id) {
-		g_source_remove (player->priv->update_scale_id);
-		player->priv->update_scale_id = 0;
-	}
-
-	gtk_alignment_set_padding (GTK_ALIGNMENT (player), 0, 0, 0, 0);
-
-	gtk_widget_hide (player->priv->notebook);
-	gtk_widget_hide (player->priv->frame);
-	brasero_player_destroy_controls (player);
-}
-
-static void
 brasero_player_image (BraseroPlayer *player)
 {
-	GdkPixbuf *scaled = NULL;
 	GError *error = NULL;
-	GdkPixbuf *pixbuf;
 	gint width, height;
 	gchar *string;
 	gchar *path;
 	gchar *name;
 
+	if (player->priv->pixbuf) {
+		g_object_unref (player->priv->pixbuf);
+		player->priv->pixbuf = NULL;
+	}
+
 	/* image */
 	/* FIXME: this does not allow to preview remote files */
 	path = gnome_vfs_get_local_path_from_uri (player->priv->uri);
-	pixbuf = gdk_pixbuf_new_from_file (path, &error);
+	player->priv->pixbuf = gdk_pixbuf_new_from_file (path, &error);
 
-	if (!pixbuf) {
-		brasero_player_no_multimedia_stream (player);
+	if (!player->priv->pixbuf) {
 		if (error) {
 			g_warning ("Couldn't load image %s\n", error->message);
 			g_error_free (error);
@@ -420,40 +858,27 @@ brasero_player_image (BraseroPlayer *player)
 		return;
 	}
 
-	height = gdk_pixbuf_get_height (pixbuf);
-	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (player->priv->pixbuf);
+	width = gdk_pixbuf_get_width (player->priv->pixbuf);
 
-	/* the image itself */
-	if (width > PLAYER_BACON_WIDTH || height > PLAYER_BACON_HEIGHT) {
-		gdouble ratio;
-
-		if (width / (gdouble) PLAYER_BACON_WIDTH > height / (gdouble) PLAYER_BACON_HEIGHT)
-			ratio = (gdouble) width / (gdouble) PLAYER_BACON_WIDTH;
-		else
-			ratio = (gdouble) height / (gdouble) PLAYER_BACON_HEIGHT;
-
-		scaled = gdk_pixbuf_scale_simple (pixbuf,
-						  width / ratio,
-						  height / ratio,
-						  GDK_INTERP_BILINEAR);
-		g_object_unref (pixbuf);
-	}
-	else
-		scaled = pixbuf;
-
-	if (!scaled) {
-		brasero_player_no_multimedia_stream (player);
-		g_free (path);
-		return;
-	}
-
-	gtk_image_set_from_pixbuf (GTK_IMAGE (player->priv->image_display), scaled);
-	g_object_unref (scaled);
+	brasero_player_scale_image (player);
 
 	/* display information about the image */
 	brasero_player_create_controls_image (player);
 
-    	BRASERO_GET_BASENAME_FOR_DISPLAY (path, name);
+	if (player->priv->image_height <= MIN (PLAYER_BACON_HEIGHT, gdk_pixbuf_get_height (player->priv->pixbuf))
+	||  player->priv->image_width  <= MIN (PLAYER_BACON_WIDTH, gdk_pixbuf_get_width (player->priv->pixbuf)))
+		gtk_widget_set_sensitive (player->priv->image_zoom_out, FALSE);
+	else
+		gtk_widget_set_sensitive (player->priv->image_zoom_out, TRUE);
+
+	if (player->priv->image_height >= PLAYER_BACON_HEIGHT * 3
+	||  player->priv->image_width  >= PLAYER_BACON_WIDTH * 3)
+		gtk_widget_set_sensitive (player->priv->image_zoom_in, FALSE);
+	else
+		gtk_widget_set_sensitive (player->priv->image_zoom_in, TRUE);
+
+	BRASERO_GET_BASENAME_FOR_DISPLAY (path, name);
 	g_free (path);
 
 	string = g_strdup_printf (_("<span weight=\"bold\">Name:</span>\t %s"), name);
@@ -475,11 +900,11 @@ brasero_player_image (BraseroPlayer *player)
 
 static void
 brasero_player_update_info_real (BraseroPlayer *player,
-				 const char *artist,
-				 const char *title,
+				 const gchar *artist,
+				 const gchar *title,
 				 gint64 len)
 {
-	char *header;
+	gchar *header;
 
 	brasero_player_set_length (player, len);
 	if (artist && title) {
@@ -512,6 +937,20 @@ brasero_player_update_info_real (BraseroPlayer *player,
 }
 
 static void
+brasero_player_no_multimedia_stream (BraseroPlayer *player)
+{
+	if (player->priv->update_scale_id) {
+		g_source_remove (player->priv->update_scale_id);
+		player->priv->update_scale_id = 0;
+	}
+
+	gtk_alignment_set_padding (GTK_ALIGNMENT (player), 0, 0, 0, 0);
+
+	gtk_widget_hide (player->priv->notebook);
+	gtk_widget_hide (player->priv->frame);
+}
+
+static void
 brasero_player_metadata_completed (BraseroVFS *vfs,
 				   GObject *obj,
 				   GnomeVFSResult result,
@@ -522,13 +961,24 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 {
 	BraseroPlayer *player = BRASERO_PLAYER (obj);
 
-	if (result != GNOME_VFS_OK)
+	if (player->priv->pixbuf) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (player->priv->image_display), NULL);
+		g_object_unref (player->priv->pixbuf);
+		player->priv->pixbuf = NULL;
+	}
+
+	if (player->priv->controls)
+		brasero_player_destroy_controls (player);
+
+	if (result != GNOME_VFS_OK) {
+		brasero_player_no_multimedia_stream (player);
 		return;
+	}
 
 	/* based on the mime type, we try to determine the type of file */
 	if (metadata && metadata->has_video) {
 		/* video */
-		brasero_player_create_controls_stream (player);
+		brasero_player_create_controls_stream (player, TRUE);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
 
 		if (metadata->is_seekable)
@@ -542,7 +992,7 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 	}
 	else if (metadata && metadata->has_audio) {
 		/* audio */
-		brasero_player_create_controls_stream (player);
+		brasero_player_create_controls_stream (player, FALSE);
 		gtk_widget_hide (player->priv->notebook);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
 
@@ -558,7 +1008,6 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 		return;
 	}
 	else {
-		brasero_player_destroy_controls (player);
 		brasero_player_no_multimedia_stream (player);
 		return;
 	}
@@ -686,7 +1135,7 @@ brasero_player_range_button_released_cb (GtkWidget *widget,
 					 BraseroPlayer *player)
 {
 	if (player->priv->state >= BACON_STATE_PAUSED) {
-		double pos;
+		gdouble pos;
 
 		pos = gtk_range_get_value (GTK_RANGE (player->priv->progress));
 		if (brasero_player_bacon_set_pos (BRASERO_PLAYER_BACON (player->priv->bacon), pos) == FALSE) {
@@ -752,7 +1201,7 @@ brasero_player_state_changed_cb (BraseroPlayerBacon *bacon,
 
 	case BACON_STATE_PLAYING:
 		if (player->priv->state == BACON_STATE_READY) {
-			double pos;
+			gdouble pos;
 			gint64 length;
 
 			brasero_player_bacon_get_length (BRASERO_PLAYER_BACON (player->priv->bacon), &length);
@@ -779,12 +1228,11 @@ brasero_player_state_changed_cb (BraseroPlayerBacon *bacon,
 	player->priv->state = state;
 }
 
-static char *
-brasero_player_scale_format_value (GtkScale *scale,
-				   gdouble value,
-				   BraseroPlayer *player)
+static void
+brasero_player_range_value_changed (GtkRange *range,
+				    BraseroPlayer *player)
 {
-	return brasero_utils_get_time_string (value, FALSE, FALSE);
+	brasero_player_update_position (player);
 }
 
 static void
