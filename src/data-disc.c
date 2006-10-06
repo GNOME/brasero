@@ -967,20 +967,13 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 
 	/* new folder button */
 	hbox = gtk_hbox_new (FALSE, 10);
+	gtk_box_pack_start (GTK_BOX (obj), hbox, FALSE, FALSE, 0);
 
-	button = brasero_utils_make_button (_("New folder"),
-					    GTK_STOCK_DIRECTORY);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
-			  obj);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      button,
-			      _("Create a new empty folder"),
-			      NULL);
-	gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	obj->priv->filter_button = brasero_utils_make_button (NULL, GTK_STOCK_CLEAR);
+	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->filter_button), FALSE);
+	//gtk_button_new_with_label (_("Filtered files"));
+	gtk_button_set_relief (GTK_BUTTON (obj->priv->filter_button), GTK_RELIEF_NONE);
 
-	obj->priv->filter_button = gtk_button_new_with_label (_("Filtered files"));
 	gtk_widget_set_sensitive (obj->priv->filter_button, FALSE);
 	g_signal_connect (G_OBJECT (obj->priv->filter_button),
 			  "clicked",
@@ -997,7 +990,19 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 			      _("Some files were removed from the project. Clik here to see them."),
 			      NULL);
 
-	gtk_box_pack_start (GTK_BOX (obj), hbox, FALSE, FALSE, 0);
+	button = brasero_utils_make_button (NULL, GTK_STOCK_DIRECTORY);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+//	button = brasero_utils_make_button (_("New folder"), GTK_STOCK_DIRECTORY);
+	g_signal_connect (G_OBJECT (button),
+			  "clicked",
+			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
+			  obj);
+	gtk_tooltips_set_tip (obj->priv->tooltip,
+			      button,
+			      _("Create a new empty folder"),
+			      NULL);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 	/* useful things for directory exploration */
 	obj->priv->dirs = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1182,7 +1187,7 @@ brasero_data_disc_tree_check_name_validity (BraseroDataDisc *disc,
 					    GtkTreePath *treepath,
 					    gboolean usedialog)
 {
-	char *row_name;
+	gchar *row_name;
 	GtkTreeIter iter;
 	GtkTreeIter child;
 	GtkTreeModel *model;
@@ -2714,7 +2719,7 @@ brasero_data_disc_reset_real (BraseroDataDisc *disc)
 {
 	brasero_data_disc_clean (disc);
 
-	if (GTK_WIDGET (disc->priv->filter_button) && disc->priv->unreadable)
+	if (GTK_WIDGET (disc->priv->filter_button) && !disc->priv->unreadable)
 		gtk_widget_set_sensitive (disc->priv->filter_button, FALSE);
 
 	disc->priv->activity_counter = 1;

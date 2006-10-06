@@ -1,5 +1,24 @@
 2006-10-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* po/brasero.pot:
+	* src/audio-disc.c: (brasero_audio_disc_init),
+	(brasero_audio_disc_finalize), (brasero_audio_disc_result),
+	(brasero_audio_disc_add_pause),
+	(brasero_audio_disc_pause_clicked_cb),
+	(brasero_audio_disc_add_pause_cb),
+	(brasero_audio_disc_selection_changed),
+	(brasero_audio_disc_edit_song_properties):
+	* src/data-disc.c: (brasero_data_disc_init),
+	(brasero_data_disc_tree_check_name_validity),
+	(brasero_data_disc_reset_real):
+	* src/project.c: (brasero_project_check_default_burning_app):
+
+	Updated pot file
+	Fixed a crasher with filter button
+	Added a button in audio to set pauses
+
+2006-10-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* data/brasero.schemas.in:
 	* src/brasero-file-chooser.c: (brasero_file_chooser_set_multi_DND):
 	* src/main.c:

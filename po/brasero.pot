@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-05 17:34+0200\n"
+"POT-Creation-Date: 2006-10-06 19:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,71 +148,71 @@ msgstr ""
 msgid "Display information on blank discs currently inserted"
 msgstr ""
 
-#: ../src/main.c:71
+#: ../src/main.c:70
 msgid "Open the specified project"
 msgstr ""
 
-#: ../src/main.c:72
+#: ../src/main.c:71
 msgid "PROJECT"
 msgstr ""
 
-#: ../src/main.c:75
+#: ../src/main.c:74
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr ""
 
-#: ../src/main.c:79
+#: ../src/main.c:78
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
 
-#: ../src/main.c:83 ../src/brasero-project-manager.c:118
+#: ../src/main.c:82 ../src/brasero-project-manager.c:118
 msgid "Copy a disc"
 msgstr ""
 
-#: ../src/main.c:87
+#: ../src/main.c:86
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr ""
 
-#: ../src/main.c:91
+#: ../src/main.c:90
 msgid "Force brasero to display the project selection page"
 msgstr ""
 
-#: ../src/main.c:95
+#: ../src/main.c:94
 msgid "Open a data project with the contents of nautilus-cd-burner"
 msgstr ""
 
-#: ../src/main.c:99
+#: ../src/main.c:98
 msgid "Display debug statements on stdout"
 msgstr ""
 
-#: ../src/main.c:204
+#: ../src/main.c:203
 msgid "CD/DVD burning application"
 msgstr ""
 
-#: ../src/main.c:209
+#: ../src/main.c:208
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/main.c:292
+#: ../src/main.c:291
 msgid "Brasero projects"
 msgstr ""
 
-#: ../src/main.c:419
+#: ../src/main.c:418
 msgid "Incompatible command line options used:"
 msgstr ""
 
-#: ../src/main.c:421
+#: ../src/main.c:420
 msgid "Incompatible options"
 msgstr ""
 
-#: ../src/main.c:424
+#: ../src/main.c:423
 msgid "only one option can be given at a time."
 msgstr ""
 
-#: ../src/main.c:507
+#: ../src/main.c:506
 msgid "[URI] [URI] ..."
 msgstr ""
 
-#: ../src/main.c:515
+#: ../src/main.c:514
 msgid "CD/DVD burning"
 msgstr ""
 
@@ -663,98 +663,102 @@ msgstr ""
 msgid "Image successfully created"
 msgstr ""
 
-#: ../src/audio-disc.c:272 ../src/data-disc.c:476 ../src/tray.c:90
+#: ../src/audio-disc.c:279 ../src/data-disc.c:476 ../src/tray.c:90
 msgid "Menu"
 msgstr ""
 
-#: ../src/audio-disc.c:273 ../src/data-disc.c:477
+#: ../src/audio-disc.c:280 ../src/data-disc.c:477
 msgid "Open"
 msgstr ""
 
-#: ../src/audio-disc.c:275
+#: ../src/audio-disc.c:282
 msgid "Edit information"
 msgstr ""
 
-#: ../src/audio-disc.c:277 ../src/data-disc.c:481
+#: ../src/audio-disc.c:284 ../src/data-disc.c:481
 msgid "Remove"
 msgstr ""
 
-#: ../src/audio-disc.c:279 ../src/data-disc.c:483
+#: ../src/audio-disc.c:286 ../src/data-disc.c:483
 msgid "Paste"
 msgstr ""
 
-#: ../src/audio-disc.c:281
+#: ../src/audio-disc.c:288
 msgid "Add a pause"
 msgstr ""
 
-#: ../src/audio-disc.c:563
+#: ../src/audio-disc.c:574
 msgid "Title"
 msgstr ""
 
-#: ../src/audio-disc.c:589
+#: ../src/audio-disc.c:600
 msgid "Artist"
 msgstr ""
 
-#: ../src/audio-disc.c:598 ../src/play-list.c:305
+#: ../src/audio-disc.c:609 ../src/play-list.c:305
 msgid "Length"
 msgstr ""
 
-#: ../src/audio-disc.c:857
+#: ../src/audio-disc.c:677
+msgid "Add a 2 second pause after the track"
+msgstr ""
+
+#: ../src/audio-disc.c:892
 msgid "<i><b>Pause</b></i>"
 msgstr ""
 
-#: ../src/audio-disc.c:1044
+#: ../src/audio-disc.c:1079
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr ""
 
-#: ../src/audio-disc.c:1048
+#: ../src/audio-disc.c:1083
 msgid "Unhandled song"
 msgstr ""
 
-#: ../src/audio-disc.c:1051
+#: ../src/audio-disc.c:1086
 msgid "Make sure the appropriate codec is installed."
 msgstr ""
 
-#: ../src/audio-disc.c:1175
+#: ../src/audio-disc.c:1210
 msgid "Directories can't be added to an audio disc:"
 msgstr ""
 
-#: ../src/audio-disc.c:1177
+#: ../src/audio-disc.c:1212
 msgid "Directory search"
 msgstr ""
 
-#: ../src/audio-disc.c:1180
+#: ../src/audio-disc.c:1215
 msgid "Do you want to search for audio discs inside?"
 msgstr ""
 
-#: ../src/audio-disc.c:1184
+#: ../src/audio-disc.c:1219
 msgid "Search directory"
 msgstr ""
 
-#: ../src/audio-disc.c:1251
+#: ../src/audio-disc.c:1286
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr ""
 
-#: ../src/audio-disc.c:1255 ../src/data-disc.c:2967
+#: ../src/audio-disc.c:1290 ../src/data-disc.c:2972
 msgid "Unreadable file"
 msgstr ""
 
-#: ../src/audio-disc.c:1391 ../src/audio-disc.c:1392
+#: ../src/audio-disc.c:1426 ../src/audio-disc.c:1427
 msgid "loading"
 msgstr ""
 
-#: ../src/audio-disc.c:2602
+#: ../src/audio-disc.c:2687
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr ""
 
-#: ../src/audio-disc.c:2606
+#: ../src/audio-disc.c:2691
 msgid "File deletion noticed"
 msgstr ""
 
-#: ../src/audio-disc.c:2608
+#: ../src/audio-disc.c:2693
 msgid "it will be removed from the project."
 msgstr ""
 
@@ -774,91 +778,87 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: ../src/data-disc.c:971 ../src/data-disc.c:4576
-msgid "New folder"
-msgstr ""
-
-#: ../src/data-disc.c:979
-msgid "Create a new empty folder"
-msgstr ""
-
-#: ../src/data-disc.c:983
-msgid "Filtered files"
-msgstr ""
-
-#: ../src/data-disc.c:997
+#: ../src/data-disc.c:990
 msgid "Some files were removed from the project. Clik here to see them."
 msgstr ""
 
-#: ../src/data-disc.c:1166
+#: ../src/data-disc.c:1003
+msgid "Create a new empty folder"
+msgstr ""
+
+#: ../src/data-disc.c:1171
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr ""
 
-#: ../src/data-disc.c:1169
+#: ../src/data-disc.c:1174
 msgid "Already existing file"
 msgstr ""
 
-#: ../src/data-disc.c:1172
+#: ../src/data-disc.c:1177
 msgid "it won't be added."
 msgstr ""
 
-#: ../src/data-disc.c:1240 ../src/data-disc.c:1256 ../src/play-list.c:839
+#: ../src/data-disc.c:1245 ../src/data-disc.c:1261 ../src/play-list.c:839
 msgid "empty"
 msgstr ""
 
-#: ../src/data-disc.c:1243
+#: ../src/data-disc.c:1248
 msgid "(empty)"
 msgstr ""
 
-#: ../src/data-disc.c:1258
+#: ../src/data-disc.c:1263
 msgid "1 item"
 msgstr ""
 
-#: ../src/data-disc.c:1273
+#: ../src/data-disc.c:1278
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/data-disc.c:1623 ../src/data-disc.c:1806 ../src/data-disc.c:1807
-#: ../src/data-disc.c:7295 ../src/data-disc.c:7296
+#: ../src/data-disc.c:1628 ../src/data-disc.c:1811 ../src/data-disc.c:1812
+#: ../src/data-disc.c:7300 ../src/data-disc.c:7301
 msgid "(loading ...)"
 msgstr ""
 
-#: ../src/data-disc.c:2952
+#: ../src/data-disc.c:2957
 #, c-format
 msgid "The file \"%s\" is unreadable:"
 msgstr ""
 
-#: ../src/data-disc.c:2954
+#: ../src/data-disc.c:2959
 #, c-format
 msgid "The directory \"%s\" is unreadable:"
 msgstr ""
 
-#: ../src/data-disc.c:3081
+#: ../src/data-disc.c:3086
 msgid "Some files couldn't be restored."
 msgstr ""
 
-#: ../src/data-disc.c:3083
+#: ../src/data-disc.c:3088
 msgid "File restoration failure"
 msgstr ""
 
-#: ../src/data-disc.c:4586
+#: ../src/data-disc.c:4581
+msgid "New folder"
+msgstr ""
+
+#: ../src/data-disc.c:4591
 #, c-format
 msgid "New folder %i"
 msgstr ""
 
-#: ../src/data-disc.c:7665
+#: ../src/data-disc.c:7670
 msgid "Project couldn't be loaded:"
 msgstr ""
 
-#: ../src/data-disc.c:7667
+#: ../src/data-disc.c:7672
 msgid "Project loading failure"
 msgstr ""
 
-#: ../src/data-disc.c:7670
+#: ../src/data-disc.c:7675
 msgid "A thread couldn't be created"
 msgstr ""
 
@@ -927,7 +927,7 @@ msgstr ""
 msgid "_Save"
 msgstr ""
 
-#: ../src/project.c:144 ../src/project.c:1999
+#: ../src/project.c:144 ../src/project.c:1988
 msgid "Save current project"
 msgstr ""
 
@@ -1054,104 +1054,94 @@ msgstr ""
 msgid "Default burning application"
 msgstr ""
 
-#. gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
-#. 0,
-#. 0,
-#. 72,
-#. 0);
-#. gtk_box_pack_start (GTK_BOX (GTK_DIALOG (message)->vbox),
-#. alignment,
-#. FALSE,
-#. FALSE,
-#. 0);
-#: ../src/project.c:929
+#: ../src/project.c:918
 msgid "don't show this dialog again"
 msgstr ""
 
-#: ../src/project.c:979
+#: ../src/project.c:968
 msgid "<big><b>Audio project</b></big>"
 msgstr ""
 
-#: ../src/project.c:981 ../src/project.c:1115
+#: ../src/project.c:970 ../src/project.c:1104
 msgid "<i>No track</i>"
 msgstr ""
 
-#: ../src/project.c:988
+#: ../src/project.c:977
 msgid "Brasero is not the default application to burn audio CDs:"
 msgstr ""
 
-#: ../src/project.c:989
+#: ../src/project.c:978
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
 msgstr ""
 
-#: ../src/project.c:996
+#: ../src/project.c:985
 msgid "<big><b>Data project</b></big>"
 msgstr ""
 
-#: ../src/project.c:998
+#: ../src/project.c:987
 msgid "<i>Contents of your data project</i>"
 msgstr ""
 
-#: ../src/project.c:1005
+#: ../src/project.c:994
 msgid "Brasero is not the default application to burn data discs:"
 msgstr ""
 
-#: ../src/project.c:1006
+#: ../src/project.c:995
 msgid ""
 "Would you like to make brasero the default application to burn data discs?"
 msgstr ""
 
-#: ../src/project.c:1117
+#: ../src/project.c:1106
 #, c-format
 msgid "<i>%d track</i>"
 msgid_plural "<i>%d tracks</i>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/project.c:1311
+#: ../src/project.c:1300
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr ""
 
-#: ../src/project.c:1313
+#: ../src/project.c:1302
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr ""
 
-#: ../src/project.c:1339
+#: ../src/project.c:1328
 msgid "Error while loading the project:"
 msgstr ""
 
-#: ../src/project.c:1341
+#: ../src/project.c:1330
 msgid "Project loading error"
 msgstr ""
 
-#: ../src/project.c:1578
+#: ../src/project.c:1567
 msgid "the project could not be opened."
 msgstr ""
 
-#: ../src/project.c:1587
+#: ../src/project.c:1576
 msgid "the file is empty."
 msgstr ""
 
-#: ../src/project.c:1618 ../src/project.c:1626
+#: ../src/project.c:1607 ../src/project.c:1615
 msgid "it doesn't seem to be a valid brasero project."
 msgstr ""
 
-#: ../src/project.c:1645 ../src/brasero-project-manager.c:123
+#: ../src/project.c:1634 ../src/brasero-project-manager.c:123
 msgid "Open a project"
 msgstr ""
 
-#: ../src/project.c:1743
+#: ../src/project.c:1732
 msgid "Your project has not been saved:"
 msgstr ""
 
-#: ../src/project.c:1745
+#: ../src/project.c:1734
 msgid "Unsaved project"
 msgstr ""
 
-#: ../src/project.c:1753
+#: ../src/project.c:1742
 msgid "Unknown error."
 msgstr ""
 
@@ -1339,21 +1329,21 @@ msgstr ""
 msgid "Brasero - Copy a disc"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:171 ../src/search.c:433
+#: ../src/brasero-file-chooser.c:172 ../src/search.c:433
 #: ../src/search-entry.c:759 ../src/search-entry.c:800
 #: ../src/search-entry.c:862
 msgid "All files"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:176
+#: ../src/brasero-file-chooser.c:177
 msgid "Audio files only"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:182
+#: ../src/brasero-file-chooser.c:183
 msgid "Movies only"
 msgstr ""
 
-#: ../src/brasero-file-chooser.c:188
+#: ../src/brasero-file-chooser.c:189
 msgid "Image files only"
 msgstr ""
 
@@ -1414,43 +1404,39 @@ msgstr ""
 msgid "Loading ..."
 msgstr ""
 
-#: ../src/player.c:154
+#: ../src/player.c:175
 msgid " Preview "
 msgstr ""
 
-#: ../src/player.c:265
+#: ../src/player.c:486
 msgid "No file"
 msgstr ""
 
-#: ../src/player.c:305
-msgid "out of 0:00"
-msgstr ""
-
-#: ../src/player.c:339
+#: ../src/player.c:664
 #, c-format
-msgid "out of %s"
+msgid "%s / %s"
 msgstr ""
 
-#: ../src/player.c:459
+#: ../src/player.c:884
 #, c-format
 msgid "<span weight=\"bold\">Name:</span>\t %s"
 msgstr ""
 
-#: ../src/player.c:465
+#: ../src/player.c:890
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
 "pixels</span></i>"
 msgstr ""
 
-#: ../src/player.c:486
+#: ../src/player.c:911
 #, c-format
 msgid ""
 "<span weight=\"bold\">%s</span>\n"
 "by <span size=\"smaller\"><i>%s</i></span>"
 msgstr ""
 
-#: ../src/player.c:494 ../src/player.c:503
+#: ../src/player.c:919 ../src/player.c:928
 #, c-format
 msgid "<span weight=\"bold\">%s</span>"
 msgstr ""
@@ -2315,102 +2301,134 @@ msgid "Copying \"%s\""
 msgstr ""
 
 #: ../data/brasero.schemas.in.h:1
-msgid "Enable file preview"
+msgid "Default height for image preview."
 msgstr ""
 
 #: ../data/brasero.schemas.in.h:2
-msgid "Enable immed flag with cdrecord"
+msgid "Default height for video preview."
 msgstr ""
 
 #: ../data/brasero.schemas.in.h:3
-msgid "Enable use of cdrdao"
+msgid "Default width for image preview."
 msgstr ""
 
 #: ../data/brasero.schemas.in.h:4
+msgid "Default width for video preview."
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:5
+msgid "Enable file preview"
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:6
+msgid "Enable immed flag with cdrecord"
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:7
+msgid "Enable use of cdrdao"
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:8
+msgid "Height for video preview"
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:9
+msgid "Height of image preview"
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:10
 msgid ""
 "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:5
+#: ../data/brasero.schemas.in.h:11
 msgid "Pane to display for audio projects"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:6
+#: ../data/brasero.schemas.in.h:12
 msgid "Pane to display for data projects"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:7
+#: ../data/brasero.schemas.in.h:13
 msgid "Should brasero ask to be set as the default app to burn"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:8
+#: ../data/brasero.schemas.in.h:14
 msgid ""
 "Should brasero ask to be set as the default app to burn audio or data. Set "
 "to true, brasero won't ask."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:9
+#: ../data/brasero.schemas.in.h:15
 msgid "Should brasero generate activate the \"generate checksum\" button"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:10
+#: ../data/brasero.schemas.in.h:16
 msgid ""
 "Should brasero generate activate the \"generate checksum\" button by "
 "default. Set to true, brasero will check the option by default."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:11
+#: ../data/brasero.schemas.in.h:17
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "Chooser/Search/Playlist/EmptyView."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:12
+#: ../data/brasero.schemas.in.h:18
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "Chooser/Search/EmptyView."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:13
+#: ../data/brasero.schemas.in.h:19
 msgid "Use libburn to burn CDs"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:14
+#: ../data/brasero.schemas.in.h:20
 msgid "Use libburn to read CDs"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:15
+#: ../data/brasero.schemas.in.h:21
 msgid "Use libisofs to generate images"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:16
+#: ../data/brasero.schemas.in.h:22
 msgid "Used in conjunction with -immed flag with cdrecord"
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:17
+#: ../data/brasero.schemas.in.h:23
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:18
+#: ../data/brasero.schemas.in.h:24
 msgid ""
 "Whether to use -immed flag with cdrecord. Use with caution (set to true) as "
 "it's only a workaround for some drives/setups."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:19
+#: ../data/brasero.schemas.in.h:25
 msgid "Whether to use cdrdao for burning or not. Set to true to use it."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:20
+#: ../data/brasero.schemas.in.h:26
 msgid "Whether to use libburn to burn CDs. Set to true to use it."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:21
+#: ../data/brasero.schemas.in.h:27
 msgid "Whether to use libburn to read CDs. Set to true to use it."
 msgstr ""
 
-#: ../data/brasero.schemas.in.h:22
+#: ../data/brasero.schemas.in.h:28
 msgid "Whether to use libisofs to generate images. Set to true to use it."
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:29
+msgid "Width for video preview"
+msgstr ""
+
+#: ../data/brasero.schemas.in.h:30
+msgid "width for image preview"
 msgstr ""
 
 #: ../src/brasero-project-size.c:237 ../src/brasero-project-size.c:238

@@ -915,17 +915,6 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 		}
 	}
 
-	/*gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
-				   0,
-				   0,
-				   72,
-				   0);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (message)->vbox),
-			    alignment,
-			    FALSE,
-			    FALSE,
-			    0);*/
-
 	check = gtk_check_button_new_with_label (_("don't show this dialog again"));
 	gtk_container_add (GTK_CONTAINER (alignment), check);
 	gtk_widget_show (check);
