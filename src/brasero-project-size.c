@@ -494,7 +494,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	selection_size_str = brasero_utils_get_sectors_string (self->priv->sectors,
 							       self->priv->is_audio_context,
 							       TRUE,
-							       TRUE);
+							       FALSE);
 
 	if (self->priv->sectors > drive->sectors) {
 		if (drive_name)
