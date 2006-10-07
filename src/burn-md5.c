@@ -235,18 +235,22 @@ brasero_md5_sum (BraseroMD5Ctx *ctx,
 		brasero_burn_sum_process_block_md5 (md5, buffer);
 	}
 
-	if (limit > 0 && !feof (file)) {
-		read_bytes = fread (buffer, 1, limit, file);
-		ctx->written_b += read_bytes;
+	if (limit >= 0) {
+		if (limit > 0 && !feof (file)) {
+			read_bytes = fread (buffer, 1, limit, file);
+			ctx->written_b += read_bytes;
 
-		ctx->size [0] += read_bytes;
-		if (ctx->size [0] < read_bytes)
-			ctx->size [1] ++;
+			ctx->size [0] += read_bytes;
+			if (ctx->size [0] < read_bytes)
+				ctx->size [1] ++;
 
-		if (limit != read_bytes) {
-			if (!feof (file))
-				goto error;
+			if (limit != read_bytes) {
+				if (!feof (file))
+					goto error;
+			}
 		}
+		else
+			read_bytes = 0;
 	}
 
 	fclose (file);

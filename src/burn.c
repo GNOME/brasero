@@ -47,6 +47,7 @@
 #include "burn-common.h"
 #include "burn-caps.h"
 #include "burn-session.h"
+#include "burn-iso9660.h"
 #include "brasero-ncb.h"
 
 static void brasero_burn_class_init (BraseroBurnClass *klass);
@@ -544,7 +545,7 @@ brasero_burn_wait_for_source_media (BraseroBurn *burn,
 				    gboolean eject,
 				    GError **error)
 {
-	char *failure;
+	gchar *failure;
 	gboolean is_blank;
 	BraseroBurnResult result;
 	NautilusBurnMediaType type;
@@ -936,7 +937,29 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 	}
 
 	/* we check that the image will fit on the media */
-	media_size = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
+		NautilusBurnMediaType media;
+
+		media = nautilus_burn_drive_get_media_type (drive);
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+			gboolean res;
+			gint nb_blocks = 0;
+
+			/* NCB is unable to report reliably the image size */
+			res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
+							       &nb_blocks,
+							       error);
+			if (!res)
+				return BRASERO_BURN_ERR;
+
+			media_size = NCB_MEDIA_GET_CAPACITY (drive) - nb_blocks * 2048;
+		}
+		else
+			media_size = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+	}
+	else
+		media_size = NCB_MEDIA_GET_CAPACITY (drive);
+
 	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
 	&&  media_size < burn->priv->image_size) {
 		/* This is a recoverable error so try to ask the user again */
@@ -2189,4 +2212,3 @@ brasero_burn_cancel (BraseroBurn *burn, gboolean protect)
 
 	return result;
 }
-			     

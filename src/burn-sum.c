@@ -42,6 +42,7 @@
 #include "burn-imager.h"
 #include "burn-sum.h"
 #include "burn-md5.h"
+#include "burn-iso9660.h"
 #include "brasero-ncb.h"
 
 static void brasero_burn_sum_class_init (BraseroBurnSumClass *klass);
@@ -559,9 +560,6 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	drive = self->priv->source->contents.drive.disc;
 	
 	/* we get the size of the image */
-	size = nautilus_burn_drive_get_media_size (drive);
-	BRASERO_JOB_TASK_SET_TOTAL (self, size);
-
 	media = nautilus_burn_drive_get_media_type (drive);
 	if (media < NAUTILUS_BURN_MEDIA_TYPE_CD) {
 		g_set_error (error,
@@ -572,9 +570,23 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	}
 
 	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+		gboolean res;
+		gint nb_blocks;
+
 		/* This is to avoid reading till the end of the DVD */
-		limit = NCB_MEDIA_GET_SIZE (drive);
+		res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
+						       &nb_blocks,
+						       error);
+		if (!res)
+			return BRASERO_BURN_ERR;
+
+		size = nb_blocks * 2048;
+		limit = size;
 	}
+	else
+		size = nautilus_burn_drive_get_media_size (drive);
+
+	BRASERO_JOB_TASK_SET_TOTAL (self, size);
 
 	device = NCB_DRIVE_GET_DEVICE (drive);
 

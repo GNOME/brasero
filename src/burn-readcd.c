@@ -42,6 +42,7 @@
 #include "burn-process.h"
 #include "burn-job.h"
 #include "burn-caps.h"
+#include "burn-iso9660.h"
 #include "brasero-ncb.h"
 
 static void brasero_readcd_class_init (BraseroReadcdClass *klass);
@@ -298,7 +299,28 @@ brasero_readcd_get_size (BraseroImager *imager,
 	if (!readcd->priv->source)
 		BRASERO_JOB_NOT_READY (readcd);
 
-	if (readcd->priv->sectors_num == 0) {
+	format = readcd->priv->image_format;
+	if (format == BRASERO_IMAGE_FORMAT_ANY)
+		format = brasero_burn_caps_get_imager_default_format (readcd->priv->caps,
+								      readcd->priv->source);
+
+	/* if iso is required then just read the primary vol descriptor */
+	if (format == BRASERO_IMAGE_FORMAT_ISO && !readcd->priv->sectors_num) {
+		gboolean res;
+		gint nb_blocks = 0;
+		NautilusBurnDrive *drive;
+
+		drive = readcd->priv->source->contents.drive.disc;
+		res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
+						       &nb_blocks,
+						       error);
+		if (!res)
+			return BRASERO_BURN_ERR;
+
+		readcd->priv->sectors_num = nb_blocks;
+	}
+
+	if (!readcd->priv->sectors_num) {
 		if (brasero_job_is_running (BRASERO_JOB (imager)))
 			return BRASERO_BURN_RUNNING;
 
@@ -310,10 +332,6 @@ brasero_readcd_get_size (BraseroImager *imager,
 			return result;
 	}
 
-	format = readcd->priv->image_format;
-	if (format == BRASERO_IMAGE_FORMAT_ANY)
-		format = brasero_burn_caps_get_imager_default_format (readcd->priv->caps,
-								      readcd->priv->source);
 	if (sectors)
 		*size = readcd->priv->sectors_num;
 	else if (format & BRASERO_IMAGE_FORMAT_ISO)
@@ -490,8 +508,10 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 		gint64 total;
 		BraseroImageFormat format;
 
-		pos += strlen ("Capacity:");
-		readcd->priv->sectors_num = strtoll (pos, NULL, 10);
+		if (!readcd->priv->sectors_num) {
+			pos += strlen ("Capacity:");
+			readcd->priv->sectors_num = strtoll (pos, NULL, 10);
+		}
 
 		format = readcd->priv->image_format;
 		if (format == BRASERO_IMAGE_FORMAT_ANY)
@@ -548,6 +568,31 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 }
 
 static BraseroBurnResult
+brasero_readcd_argv_set_iso_boundary (GPtrArray *argv,
+				      NautilusBurnDrive *drive,
+				      GError **error)
+{
+	gboolean res;
+	gint nb_blocks;
+	NautilusBurnMediaType media;
+
+	media = nautilus_burn_drive_get_media_type (drive);
+	if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+		return BRASERO_BURN_OK;
+
+	/* This is to avoid reading till the end of the DVD */
+	res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
+					       &nb_blocks,
+					       error);
+	if (!res)
+		return BRASERO_BURN_ERR;
+
+	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%i", nb_blocks));
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_readcd_set_argv (BraseroProcess *process,
 			 GPtrArray *argv,
 			 gboolean has_master,
@@ -558,8 +603,8 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	NautilusBurnMediaType type;
 	NautilusBurnDrive *drive;
 	BraseroReadcd *readcd;
-	char *outfile_arg;
-	char *dev_str;
+	gchar *outfile_arg;
+	gchar *dev_str;
 
 	readcd = BRASERO_READCD (process);
 	brasero_job_set_run_slave (BRASERO_JOB (readcd), FALSE);
@@ -617,6 +662,10 @@ brasero_readcd_set_argv (BraseroProcess *process,
 
 	if (!has_master) {
 		if (format & BRASERO_IMAGE_FORMAT_ISO) {
+			result = brasero_readcd_argv_set_iso_boundary (argv, drive, error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
 			result = brasero_burn_common_check_output (&readcd->priv->output,
 								   BRASERO_IMAGE_FORMAT_ISO,
 								   TRUE,
@@ -642,6 +691,10 @@ brasero_readcd_set_argv (BraseroProcess *process,
 		g_ptr_array_add (argv, outfile_arg);
 	}
 	else if (format & BRASERO_IMAGE_FORMAT_ISO) {
+		result = brasero_readcd_argv_set_iso_boundary (argv, drive, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
 		outfile_arg = g_strdup ("-f=-");
 		g_ptr_array_add (argv, outfile_arg);
 	}

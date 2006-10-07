@@ -1,5 +1,20 @@
 2006-10-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* src/Makefile.am:
+	* src/burn-md5.c: (brasero_md5_sum):
+	* src/burn-readcd.c: (brasero_readcd_get_size),
+	(brasero_readcd_read_stderr),
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_set_argv):
+	* src/burn-sum.c: (brasero_burn_sum_disc):
+	* src/burn.c: (brasero_burn_wait_for_source_media),
+	(brasero_burn_wait_for_dest_media), (brasero_burn_cancel):
+
+	More fixes for DVD checksum generation and copy:
+	since we always use iso images and that ncb is unable to determine
+	the size of the data on a DVD, we read the iso primary volume desc
+
+2006-10-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* src/burn-dialog.c: (brasero_burn_dialog_media_added_cb),
 	(brasero_burn_dialog_media_removed_cb), (brasero_burn_dialog_run):
 	* src/recorder-selection.c:

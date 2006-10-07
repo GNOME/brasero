@@ -172,7 +172,9 @@ brasero_SOURCES = \
 	burn-toc2cue.c         \
 	burn-toc2cue.h         \
 	brasero-image-type-chooser.c         \
-	brasero-image-type-chooser.h 
+	brasero-image-type-chooser.h         \
+	burn-iso9660.c         \
+	burn-iso9660.h 
 
 brasero_LDFLAGS =
 
