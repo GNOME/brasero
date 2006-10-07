@@ -909,7 +909,7 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		goto end;
 	}
 
-	if (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW
+	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (type)
 	&& !BRASERO_TRACK_SOURCE_ALLOW_DVD (source)) {
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED;
@@ -922,8 +922,8 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		gboolean is_src_DVD;
 		gboolean is_dest_DVD;
 
-		is_src_DVD = (burn->priv->src_media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW);
-		is_dest_DVD = (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW);
+		is_src_DVD = (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (burn->priv->src_media_type));
+		is_dest_DVD = (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (type));
 
 		if (is_src_DVD != is_dest_DVD) {
 			result = BRASERO_BURN_NEED_RELOAD;
@@ -2133,7 +2133,12 @@ end:
 			     _("internal error (code %i)"),
 			     result);
 
-	if (result != BRASERO_BURN_OK) {
+	if (result == BRASERO_BURN_CANCEL) {
+		brasero_burn_log (burn,
+				  flags,
+				  "Session cancelled by user");
+	}
+	else if (result != BRASERO_BURN_OK) {
 		if (error && (*error)) {
 			brasero_burn_log (burn,
 					  flags,

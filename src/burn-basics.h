@@ -244,7 +244,7 @@ brasero_track_source_copy (const BraseroTrackSource *source);
 	(source->type != BRASERO_TRACK_SOURCE_AUDIO && \
 	 source->type != BRASERO_TRACK_SOURCE_SONG && \
 	 source->type != BRASERO_TRACK_SOURCE_INF && \
-	(source->format & (BRASERO_IMAGE_FORMAT_CLONE|BRASERO_IMAGE_FORMAT_CUE|BRASERO_IMAGE_FORMAT_CDRDAO)) == 0)
+	(source->format & BRASERO_IMAGE_FORMAT_ISO))
 
 struct _BraseroGraftPt {
 	gchar *uri;

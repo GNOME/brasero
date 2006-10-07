@@ -537,6 +537,7 @@ brasero_burn_sum_image (BraseroBurnSum *self, GError **error)
 	result = brasero_md5_sum (self->priv->ctx,
 				  path,
 				  &self->priv->md5,
+				  -1,
 				  error);
 	g_free (path);
 	brasero_md5_free (self->priv->ctx);
@@ -549,6 +550,7 @@ static BraseroBurnResult
 brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 {
 	gint64 size;
+	gint64 limit = -1;
 	const gchar *device;
 	BraseroBurnResult result;
 	NautilusBurnDrive *drive;
@@ -569,6 +571,11 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 		return BRASERO_BURN_ERR;
 	}
 
+	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+		/* This is to avoid reading till the end of the DVD */
+		limit = NCB_MEDIA_GET_SIZE (drive);
+	}
+
 	device = NCB_DRIVE_GET_DEVICE (drive);
 
 	BRASERO_JOB_TASK_SET_ACTION (self,
@@ -581,6 +588,7 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	result = brasero_md5_sum (self->priv->ctx,
 				  device,
 				  &self->priv->md5,
+				  limit,
 				  error);
 	brasero_md5_free (self->priv->ctx);
 	self->priv->ctx = NULL;

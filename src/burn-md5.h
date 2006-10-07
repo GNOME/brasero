@@ -50,6 +50,7 @@ BraseroBurnResult
 brasero_md5_sum (BraseroMD5Ctx *ctx,
 		 const gchar *path,
 		 BraseroMD5 *md5,
+		 gint64 limit,
 		 GError **error);
 
 BraseroBurnResult

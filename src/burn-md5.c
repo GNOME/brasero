@@ -177,10 +177,11 @@ BraseroBurnResult
 brasero_md5_sum (BraseroMD5Ctx *ctx,
 		 const gchar *path,
 		 BraseroMD5 *md5,
+		 gint64 limit,
 		 GError **error)
 {
 	FILE *file;
-	gint read_bytes;
+	gint read_bytes = 0;
 	guchar buffer [BLOCK_SIZE];
 	
 	md5->A = 0x67452301;
@@ -209,7 +210,7 @@ brasero_md5_sum (BraseroMD5Ctx *ctx,
 		return BRASERO_BURN_ERR;
 	}
 
-	while (1) {
+	while (limit < 0 || limit >= BLOCK_SIZE) {
 		if (ctx->cancel) {
 			fclose (file);
 			return BRASERO_BURN_CANCEL;
@@ -217,33 +218,35 @@ brasero_md5_sum (BraseroMD5Ctx *ctx,
 
 		read_bytes = fread (buffer, 1, BLOCK_SIZE, file);
 		ctx->written_b += read_bytes;
+		limit -= read_bytes;
 
 		ctx->size [0] += read_bytes;
 		if (ctx->size [0] < read_bytes)
 			ctx->size [1] ++;
 
 		if (read_bytes != BLOCK_SIZE) {
-			gchar *name;
-
 			/* that's either the end or an error */
 			if (feof (file))
 				break;
 
-			fclose (file);
-
-			name = g_path_get_basename (path);
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the file %s couldn't be read (%s)"),
-				     name,
-				     strerror (errno));
-			g_free (name);
-
-			return BRASERO_BURN_ERR;
+			goto error;
 		}
 
 		brasero_burn_sum_process_block_md5 (md5, buffer);
+	}
+
+	if (limit > 0 && !feof (file)) {
+		read_bytes = fread (buffer, 1, limit, file);
+		ctx->written_b += read_bytes;
+
+		ctx->size [0] += read_bytes;
+		if (ctx->size [0] < read_bytes)
+			ctx->size [1] ++;
+
+		if (limit != read_bytes) {
+			if (!feof (file))
+				goto error;
+		}
 	}
 
 	fclose (file);
@@ -263,6 +266,24 @@ brasero_md5_sum (BraseroMD5Ctx *ctx,
 	brasero_burn_sum_process_block_md5 (md5, buffer);
 
 	return BRASERO_BURN_OK;
+
+error:
+	{
+	gchar *name;
+
+	fclose (file);
+
+	name = g_path_get_basename (path);
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     _("the file %s couldn't be read (%s)"),
+		     name,
+		     strerror (errno));
+	g_free (name);
+
+	return BRASERO_BURN_ERR;
+	}
 }
 
 void
@@ -313,6 +334,7 @@ brasero_md5_sum_to_string (BraseroMD5Ctx *ctx,
 	result = brasero_md5_sum (ctx,
 				  path,
 				  &md5,
+				  -1,
 				  error);
 
 	if (result != BRASERO_BURN_OK)

@@ -1,5 +1,17 @@
 2006-10-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* src/burn-basics.h:
+	* src/burn-md5.c: (brasero_md5_sum), (brasero_md5_sum_to_string):
+	* src/burn-md5.h:
+	* src/burn-sum.c: (brasero_burn_sum_image),
+	(brasero_burn_sum_disc):
+	* src/burn.c: (brasero_burn_wait_for_dest_media),
+	(brasero_burn_record):
+
+	Fix DVD copy
+
+2006-10-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* src/brasero-image-option-dialog.c:
 	(brasero_image_option_dialog_set_image_uri):
 	* src/brasero-image-type-chooser.c:
