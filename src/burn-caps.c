@@ -372,9 +372,10 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 					default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 			}
 		}
-		else if (source->format & (BRASERO_IMAGE_FORMAT_CUE|
-					   BRASERO_IMAGE_FORMAT_CLONE|
-					   BRASERO_IMAGE_FORMAT_CDRDAO)) {
+		else if ((source->format & BRASERO_IMAGE_FORMAT_ISO) == 0
+		     &&   source->format & (BRASERO_IMAGE_FORMAT_CUE|
+					    BRASERO_IMAGE_FORMAT_CLONE|
+					    BRASERO_IMAGE_FORMAT_CDRDAO)) {
 			/* *.cue file and *.raw file only work with CDs */
 			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 				return BRASERO_BURN_NOT_SUPPORTED;
@@ -722,12 +723,13 @@ brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
  * NOTE: the first type in the array is the default one */
 BraseroBurnResult
 brasero_burn_caps_get_imager_available_formats (BraseroBurnCaps *caps,
-						BraseroImageFormat **formats,
-						const BraseroTrackSource*source)
+						NautilusBurnDrive *drive,
+						BraseroTrackSourceType type,
+						BraseroImageFormat **formats)
 {
 	BraseroImageFormat *retval;
 
-	switch (source->type) {
+	switch (type) {
 	case BRASERO_TRACK_SOURCE_SONG:
 		retval = g_new0 (BraseroImageFormat, 1);
 		retval [0] = BRASERO_IMAGE_FORMAT_NONE;
@@ -741,19 +743,30 @@ brasero_burn_caps_get_imager_available_formats (BraseroBurnCaps *caps,
 		retval [2] = BRASERO_IMAGE_FORMAT_NONE;
 		break;
 	
-	case BRASERO_TRACK_SOURCE_IMAGE:
-		retval = g_new0 (BraseroImageFormat, 5);
-		retval [0] = BRASERO_IMAGE_FORMAT_ISO;
-		retval [1] = BRASERO_IMAGE_FORMAT_CLONE;
-		retval [2] = BRASERO_IMAGE_FORMAT_CUE;
-		retval [3] = BRASERO_IMAGE_FORMAT_CDRDAO;
-		retval [4] = BRASERO_IMAGE_FORMAT_NONE;
+	case BRASERO_TRACK_SOURCE_IMAGE: {
+		NautilusBurnMediaType media;
+
+		media = nautilus_burn_drive_get_media_type (drive);
+		if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+			retval = g_new0 (BraseroImageFormat, 5);
+			retval [0] = BRASERO_IMAGE_FORMAT_ISO;
+			retval [1] = BRASERO_IMAGE_FORMAT_CLONE;
+			retval [2] = BRASERO_IMAGE_FORMAT_CUE;
+			retval [3] = BRASERO_IMAGE_FORMAT_CDRDAO;
+			retval [4] = BRASERO_IMAGE_FORMAT_NONE;
+		}
+		else {
+			retval = g_new0 (BraseroImageFormat, 2);
+			retval [0] = BRASERO_IMAGE_FORMAT_ISO;
+			retval [1] = BRASERO_IMAGE_FORMAT_NONE;
+		}
 		break;
+	}
 
 	case BRASERO_TRACK_SOURCE_DISC: {
 		NautilusBurnMediaType type;
 
-		type = nautilus_burn_drive_get_media_type (source->contents.drive.disc);
+		type = nautilus_burn_drive_get_media_type (drive);
 		if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (type)) {
 			/* with CDs there are three possibilities:
 			 * - if cdrdao is working => *.cue

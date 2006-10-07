@@ -55,7 +55,8 @@ GtkWidget *brasero_image_type_chooser_new ();
 
 void
 brasero_image_type_chooser_set_source (BraseroImageTypeChooser *self,
-				       const BraseroTrackSource *source,
+				       NautilusBurnDrive *drive,
+				       BraseroTrackSourceType type,
 				       BraseroImageFormat format);
 void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,

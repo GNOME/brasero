@@ -143,7 +143,8 @@ brasero_image_type_chooser_new ()
 
 void
 brasero_image_type_chooser_set_source (BraseroImageTypeChooser *self,
-				       const BraseroTrackSource *source,
+				       NautilusBurnDrive *drive,
+				       BraseroTrackSourceType type,
 				       BraseroImageFormat format)
 {
 	BraseroImageFormat *formats;
@@ -165,8 +166,9 @@ brasero_image_type_chooser_set_source (BraseroImageTypeChooser *self,
 	/* now we get the targets available and display them */
 	gtk_combo_box_append_text (GTK_COMBO_BOX (self->priv->combo), _("Let brasero choose (safest)"));
 	brasero_burn_caps_get_imager_available_formats (self->priv->caps,
-							&formats,
-							source);
+							drive,
+							type,
+							&formats);
 
 	for (iter = formats; iter [0] != BRASERO_IMAGE_FORMAT_NONE; iter ++) {
 		if (iter [0] & BRASERO_IMAGE_FORMAT_JOLIET)
@@ -181,7 +183,8 @@ brasero_image_type_chooser_set_source (BraseroImageTypeChooser *self,
 			gtk_combo_box_append_text (GTK_COMBO_BOX (self->priv->combo), _("*.toc image (cdrdao)"));
 	}
 
-	if (format != BRASERO_IMAGE_FORMAT_ANY) {
+	if (format != BRASERO_IMAGE_FORMAT_ANY
+	&&  format != BRASERO_IMAGE_FORMAT_NONE) {
 		gint i;
 
 		/* we find the number of the target if it is still available */

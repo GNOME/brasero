@@ -118,8 +118,9 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 
 BraseroBurnResult
 brasero_burn_caps_get_imager_available_formats (BraseroBurnCaps *caps,
-						BraseroImageFormat **formats,
-						const BraseroTrackSource *source);
+						NautilusBurnDrive *drive,
+						BraseroTrackSourceType type,
+						BraseroImageFormat **formats);
 BraseroImageFormat
 brasero_burn_caps_get_imager_default_format (BraseroBurnCaps *caps,
 					     const BraseroTrackSource *source);

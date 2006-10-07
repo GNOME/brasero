@@ -726,7 +726,8 @@ brasero_recorder_selection_set_source_track (BraseroRecorderSelection *selection
 			return;
 
 		brasero_image_type_chooser_set_source (BRASERO_IMAGE_TYPE_CHOOSER (selection->priv->image_type_widget),
-						       source,
+						       selection->priv->drive,
+						       source->type,
 						       selection->priv->image_format);
 	}
 }
@@ -1028,7 +1029,8 @@ brasero_recorder_selection_disc_image_properties (BraseroRecorderSelection *sele
 	gtk_widget_show (format_chooser);
 
 	brasero_image_type_chooser_set_source (BRASERO_IMAGE_TYPE_CHOOSER (format_chooser),
-					       selection->priv->track_source,
+					       selection->priv->drive,
+					       selection->priv->track_source->type,
 					       selection->priv->image_format);
 
 	/* and here we go */

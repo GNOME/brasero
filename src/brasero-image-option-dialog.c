@@ -291,15 +291,24 @@ brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
 					   const gchar *uri)
 {
 	BraseroTrackSource track = {0, };
+	NautilusBurnDrive *drive;
 
 	/* we need to set up a dummy track */
 	track.type = BRASERO_TRACK_SOURCE_IMAGE;
 	track.format = BRASERO_IMAGE_FORMAT_ANY;
 	brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
 						     &track);
+
+	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
+					      &drive,
+					      NULL);
+
 	brasero_image_type_chooser_set_source (BRASERO_IMAGE_TYPE_CHOOSER (dialog->priv->format_chooser),
-					       &track,
+					       drive,
+					       BRASERO_TRACK_SOURCE_IMAGE,
 					       BRASERO_IMAGE_FORMAT_ANY);
+
+	nautilus_burn_drive_unref (drive);
 
 	if (uri)
 		gtk_file_chooser_set_uri (GTK_FILE_CHOOSER (dialog->priv->chooser), uri);
