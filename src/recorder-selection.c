@@ -553,6 +553,22 @@ brasero_recorder_selection_drive_media_added_cb (NautilusBurnDriveMonitor *monit
 						 BraseroRecorderSelection *selection)
 {
 	NautilusBurnMediaType type;
+	NautilusBurnDrive *selected_drive = NULL;
+
+	/* we must make sure that the change was triggered
+	 * by the current selected drive */
+	selected_drive =  
+		nautilus_burn_drive_selection_get_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection));
+
+	if (!selected_drive)
+		return;
+
+	if (!nautilus_burn_drive_equal (drive, selected_drive)) {
+		nautilus_burn_drive_unref (selected_drive);
+		return;
+	}
+
+	nautilus_burn_drive_unref (selected_drive);
 
 	brasero_recorder_selection_update_info (selection, drive);
 
@@ -568,6 +584,23 @@ brasero_recorder_selection_drive_media_removed_cb (NautilusBurnDriveMonitor *mon
 						   NautilusBurnDrive *drive,
 						   BraseroRecorderSelection *selection)
 {
+	NautilusBurnDrive *selected_drive = NULL;
+
+	/* we must make sure that the change was triggered
+	 * by the current selected drive */
+	selected_drive =  
+		nautilus_burn_drive_selection_get_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection));
+
+	if (!selected_drive)
+		return;
+
+	if (!nautilus_burn_drive_equal (drive, selected_drive)) {
+		nautilus_burn_drive_unref (selected_drive);
+		return;
+	}
+
+	nautilus_burn_drive_unref (selected_drive);
+
 	if (selection->priv->dialog)
 		gtk_dialog_response (GTK_DIALOG (selection->priv->dialog),
 				     GTK_RESPONSE_CANCEL);

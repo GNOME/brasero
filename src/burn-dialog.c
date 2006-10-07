@@ -936,6 +936,11 @@ brasero_burn_dialog_media_added_cb (NautilusBurnDriveMonitor *monitor,
 				    NautilusBurnDrive *drive,
 				    BraseroBurnDialog *dialog)
 {
+	/* we must make sure that the change was triggered
+	 * by the current selected drive */
+	if (!nautilus_burn_drive_equal (drive, dialog->priv->drive))
+		return;
+
 	brasero_burn_dialog_update_info (dialog);
 
 	/* we might have a dialog waiting for the 
@@ -952,6 +957,11 @@ brasero_burn_dialog_media_removed_cb (NautilusBurnDriveMonitor *monitor,
 				      BraseroBurnDialog *dialog)
 {
 	GdkPixbuf *pixbuf;
+
+	/* we must make sure that the change was triggered
+	 * by the current selected drive */
+	if (!nautilus_burn_drive_equal (drive, dialog->priv->drive))
+		return;
 
 	pixbuf = brasero_utils_get_icon ("gnome-dev-removable", 48);
 	gtk_image_set_from_pixbuf (GTK_IMAGE (dialog->priv->image), pixbuf);
@@ -1903,7 +1913,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		dialog->priv->drive = drive;
 
 	nautilus_burn_drive_ref (dialog->priv->drive);
-	nautilus_burn_drive_ref (drive);
 
 	/* Leave the time to all sub systems and libs to get notified */
 	monitor = nautilus_burn_get_drive_monitor ();
@@ -1962,7 +1971,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 							result,
 							error);
 
-	nautilus_burn_drive_unref (drive);
 	nautilus_burn_drive_unref (dialog->priv->drive);
 	dialog->priv->drive = NULL;
 
