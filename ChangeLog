@@ -1,3 +1,30 @@
+2006-10-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* po/ChangeLog:
+	* po/brasero.pot:
+	* po/fr.po:
+	* src/brasero-marshal.list:
+	* src/burn-dialog.c: (brasero_burn_dialog_get_media_type_string),
+	(brasero_burn_dialog_wait_for_insertion),
+	(brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_media_added_cb),
+	(brasero_burn_dialog_reload_disc_dlg),
+	(brasero_burn_dialog_check_image_integrity),
+	(brasero_burn_dialog_integrity_start):
+	* src/burn-sum.c: (brasero_burn_sum_disc), (brasero_burn_sum_end),
+	(brasero_burn_sum_destroy):
+	* src/burn.c: (brasero_burn_class_init),
+	(brasero_burn_check_media), (brasero_burn_ask_for_media),
+	(brasero_burn_media_check_basics),
+	(brasero_burn_wait_for_source_media),
+	(brasero_burn_wait_for_rewritable_media), (brasero_burn_blank),
+	(brasero_burn_wait_for_dest_media), (brasero_burn_lock_drives):
+
+	Fixes for DVD copy
+	Fixes for DVD checksum creation
+	Fix a crasher if integrity check failed
+	Updated French translation
+
 2006-10-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* src/Makefile.am:

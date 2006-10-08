@@ -558,7 +558,7 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	NautilusBurnMediaType media;
 
 	drive = self->priv->source->contents.drive.disc;
-	
+
 	/* we get the size of the image */
 	media = nautilus_burn_drive_get_media_type (drive);
 	if (media < NAUTILUS_BURN_MEDIA_TYPE_CD) {
@@ -618,13 +618,11 @@ typedef struct _BraseroBurnSumThreadCtx BraseroBurnSumThreadCtx;
 static gboolean
 brasero_burn_sum_end (gpointer data)
 {
-	GError *error;
 	BraseroBurnSum *sum;
 	BraseroBurnSumThreadCtx *ctx;
 
 	ctx = data;
 	sum = ctx->sum;
-	error = ctx->error;
 
 	if (ctx->result == BRASERO_BURN_NOT_READY) {
 		BRASERO_JOB_NOT_READY (sum);
@@ -632,8 +630,14 @@ brasero_burn_sum_end (gpointer data)
 	else if (ctx->result == BRASERO_BURN_NOT_SUPPORTED) {
 		BRASERO_JOB_NOT_SUPPORTED (sum);
 	}
-	else if (ctx->result == BRASERO_BURN_ERR)		
+	else if (ctx->result == BRASERO_BURN_ERR) {
+		GError *error;
+
+		error = ctx->error;
+		ctx->error = NULL;
+
 		brasero_job_error (BRASERO_JOB (sum), error);
+	}
 	else
 		brasero_job_finished (BRASERO_JOB (sum));
 
@@ -647,8 +651,11 @@ brasero_burn_sum_destroy (gpointer data)
 	BraseroBurnSumThreadCtx *ctx;
 
 	ctx = data;
-	if (ctx->error)
+	if (ctx->error) {
 		g_error_free (ctx->error);
+		ctx->error = NULL;
+	}
+
 	g_free (ctx);
 }
 

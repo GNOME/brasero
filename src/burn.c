@@ -182,9 +182,10 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      G_STRUCT_OFFSET (BraseroBurnClass,
 					       insert_media_request),
 			      NULL, NULL,
-			      brasero_marshal_INT__INT_INT,
+			      brasero_marshal_INT__OBJECT_INT_INT,
 			      G_TYPE_INT, 
-			      2,
+			      3,
+			      NAUTILUS_BURN_TYPE_DRIVE,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
         brasero_burn_signals [PROGRESS_CHANGED_SIGNAL] =
@@ -465,6 +466,7 @@ brasero_burn_check_media (BraseroBurn *burn,
 							     &is_blank_real,
 							     has_data,
 							     has_audio);
+
 	if (type)
 		*type = real_type;
 
@@ -502,7 +504,6 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 
 	/* check one more time */
 	is_mounted = nautilus_burn_drive_is_mounted (drive);
-
 	if (is_mounted == TRUE)
 		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
 	if (is_reload == FALSE)
@@ -517,7 +518,6 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 			     _("the drive can't be unlocked"));
 		return BRASERO_BURN_ERROR;
 	}
-
 	g_object_set_data (G_OBJECT (drive), IS_LOCKED, GINT_TO_POINTER (0));
 
 	if (eject && !nautilus_burn_drive_eject (drive)) {
@@ -532,11 +532,47 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 	g_signal_emit (burn,
 		       brasero_burn_signals [INSERT_MEDIA_REQUEST_SIGNAL],
 		       0,
+		       drive,
 		       error_type,
 		       required_media,
 		       &result);
 
 	return result;
+}
+
+static BraseroBurnResult
+brasero_burn_media_check_basics (BraseroBurn *burn,
+				 NautilusBurnDrive *drive,
+				 NautilusBurnMediaType media,
+				 BraseroMediaType required_media,
+				 gboolean eject,
+				 GError **error)
+{
+	BraseroBurnError error_type;
+	BraseroBurnResult result;
+
+	if (media == NAUTILUS_BURN_MEDIA_TYPE_ERROR)
+		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
+	else if (media == NAUTILUS_BURN_MEDIA_TYPE_BUSY)
+		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
+	else
+		error_type = BRASERO_BURN_ERROR_NONE;
+
+	if (error_type != BRASERO_BURN_ERROR_NONE) {
+		result = brasero_burn_ask_for_media (burn,
+						     drive,
+						     error_type,
+						     required_media,
+						     eject,
+						     error);
+
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		return BRASERO_BURN_NEED_RELOAD;
+	}
+
+	return BRASERO_BURN_OK;
 }
 
 BraseroBurnResult
@@ -550,7 +586,7 @@ brasero_burn_wait_for_source_media (BraseroBurn *burn,
 	BraseroBurnResult result;
 	NautilusBurnMediaType type;
 
- again:
+again:
 
 	brasero_burn_check_media (burn,
 				  drive,
@@ -561,6 +597,18 @@ brasero_burn_wait_for_source_media (BraseroBurn *burn,
 				  &is_blank,
 				  NULL,
 				  NULL);
+
+	result = brasero_burn_media_check_basics (burn,
+						  drive,
+						  type,
+						  BRASERO_MEDIA_WITH_DATA,
+						  eject,
+						  error);
+	if (result == BRASERO_BURN_NEED_RELOAD)
+		goto again;
+
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	if (is_blank) {
 		result = brasero_burn_ask_for_media (burn,
@@ -660,6 +708,19 @@ brasero_burn_wait_for_rewritable_media (BraseroBurn *burn,
 				  &is_blank,
 				  NULL,
 				  NULL);
+
+	result = brasero_burn_media_check_basics (burn,
+						  drive,
+						  type,
+						  BRASERO_MEDIA_REWRITABLE|
+						  BRASERO_MEDIA_WITH_DATA,
+						  eject,
+						  error);
+	if (result == BRASERO_BURN_NEED_RELOAD)
+		goto again;
+	
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* if full blanking is required don't check for the blank */
 	if ((fast && is_blank) || !is_rewritable) {
@@ -803,7 +864,7 @@ brasero_burn_blank (BraseroBurn *burn,
 	&&     ret_error->code == BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE) {
 		g_error_free (ret_error);
 		ret_error = NULL;
-		
+
 		result = brasero_burn_ask_for_media (burn,
 						     drive,
 						     BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE,
@@ -896,6 +957,12 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		return result;
 	}
 
+	if (type == NAUTILUS_BURN_MEDIA_TYPE_ERROR) {
+		result = BRASERO_BURN_NEED_RELOAD;
+		berror = BRASERO_BURN_ERROR_MEDIA_NONE;
+		goto end;
+	}
+
 	if (type == NAUTILUS_BURN_MEDIA_TYPE_BUSY) {
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_MEDIA_BUSY;
@@ -976,7 +1043,6 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
-
 	g_object_set_data (G_OBJECT (drive), IS_LOCKED, GINT_TO_POINTER (1));
 
 	if (!nautilus_burn_drive_can_rewrite (drive))
@@ -1852,6 +1918,8 @@ again:
 			gboolean has_audio = FALSE;
 			gboolean has_data = FALSE;
 
+			/* NOTE: no need to check the basics here since it  
+			 * was done a little earlier */
 			brasero_burn_check_media (burn,
 						  source->contents.drive.disc,
 						  NULL,
