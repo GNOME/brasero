@@ -306,9 +306,9 @@ brasero_app_create_app (void)
 {
 	BraseroApp *app;
 	GtkWidget *menubar;
-	GtkActionGroup *action_group;
-	GtkAccelGroup *accel_group;
 	GError *error = NULL;
+	GtkAccelGroup *accel_group;
+	GtkActionGroup *action_group;
 
 	/* New window */
 	app = g_new0 (BraseroApp, 1);
@@ -332,6 +332,7 @@ brasero_app_create_app (void)
 	/* window contents */
 	app->contents = brasero_project_manager_new ();
 	gtk_widget_show (app->contents);
+
 	gnome_app_set_contents (GNOME_APP (app->mainwin), app->contents);
     	brasero_project_manager_set_status (BRASERO_PROJECT_MANAGER (app->contents),
 					    app->statusbar);

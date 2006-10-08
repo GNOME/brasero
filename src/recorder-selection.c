@@ -411,6 +411,7 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 							 BraseroDriveProp *props)
 {
 	BraseroBurnFlag default_flags;
+	gint max_rate;
 
 	if (brasero_burn_caps_get_flags (selection->priv->caps,
 					 selection->priv->track_source,
@@ -421,9 +422,14 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 		return FALSE;
 
 	props->props.image_format = BRASERO_IMAGE_FORMAT_ANY;
-	props->props.drive_speed = nautilus_burn_drive_get_max_speed_write (selection->priv->drive);
-	props->flags = default_flags;
 
+	max_rate = nautilus_burn_drive_get_max_speed_write (selection->priv->drive);
+	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (nautilus_burn_drive_get_media_type (selection->priv->drive)))
+		props->props.drive_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
+	else
+		props->props.drive_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
+	
+	props->flags = default_flags;
 	return TRUE;
 }
 
@@ -914,8 +920,12 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	}
 
 	prop->props.drive_speed = gtk_combo_box_get_active (GTK_COMBO_BOX (combo));
-	if (prop->props.drive_speed == 0)
-		prop->props.drive_speed = nautilus_burn_drive_get_max_speed_write (drive);
+	if (prop->props.drive_speed == 0) {
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+			prop->props.drive_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
+		else
+			prop->props.drive_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
+	}
 	else
 		prop->props.drive_speed = prop->props.drive_speed * 2;
 

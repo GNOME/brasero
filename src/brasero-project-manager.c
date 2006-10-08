@@ -405,16 +405,14 @@ brasero_project_manager_size_preview (BraseroVFS *vfs,
 
 		if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO) {
 			size_string = brasero_utils_get_time_string (files_size, TRUE, FALSE);
-			status_string = g_strdup_printf (ngettext ("%d out of %d selected file is supported (%s)", "%d out of %d selected files are supported (%s)", files_num),
+			status_string = g_strdup_printf (ngettext ("%d file is supported (%s)", "%d files are supported (%s)", valid_num),
 							 valid_num,
-							 files_num,
 							 size_string);
 		}
 		else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA) {
 			size_string = gnome_vfs_format_file_size_for_display (files_size);
-			status_string = g_strdup_printf (ngettext ("%d out of %d selected file can't be added (%s)", "%d out of %d selected files can't be added (%s)", files_num),
-							 invalid_num,
-							 files_num,
+			status_string = g_strdup_printf (ngettext ("%d file can be added (%s)", "%d selected files can be added (%s)", valid_num),
+							 valid_num,
 							 size_string);
 		}
 		else

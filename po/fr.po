@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero 0.4.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 16:11+0200\n"
-"PO-Revision-Date: 2006-10-08 16:15+0100\n"
+"POT-Creation-Date: 2006-10-08 17:12+0200\n"
+"PO-Revision-Date: 2006-10-08 17:14+0100\n"
 "Last-Translator: Rouquier Philippe <bonfire-app@wanadoo.fr>\n"
 "Language-Team: Philippe Rouquier <bonfire-app@wanadoo.fr>\n"
 "MIME-Version: 1.0\n"
@@ -222,23 +222,23 @@ msgstr ""
 msgid "Brasero projects"
 msgstr "Projet brasero"
 
-#: ../src/main.c:418
+#: ../src/main.c:419
 msgid "Incompatible command line options used:"
 msgstr "Les options données sur la ligne de commande sont incompatibles:"
 
-#: ../src/main.c:420
+#: ../src/main.c:421
 msgid "Incompatible options"
 msgstr "Options incompatibles"
 
-#: ../src/main.c:423
+#: ../src/main.c:424
 msgid "only one option can be given at a time."
 msgstr "une seule option peut être donnée à la fois."
 
-#: ../src/main.c:506
+#: ../src/main.c:507
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:514
+#: ../src/main.c:515
 msgid "CD/DVD burning"
 msgstr "Graver un CD/DVD"
 
@@ -1371,58 +1371,58 @@ msgstr[1] "%d fichiers sélectionnés (%s)"
 
 #: ../src/brasero-project-manager.c:408
 #, c-format
-msgid "%d out of %d selected file is supported (%s)"
-msgid_plural "%d out of %d selected files are supported (%s)"
-msgstr[0] "%d sur %d fichier sélectionné est supporté (%s)"
-msgstr[1] "%d parmi les %d fichiers sélectionnés est supporté (%s)"
+msgid "%d file is supported (%s)"
+msgid_plural "%d files are supported (%s)"
+msgstr[0] "%d fichier est supporté (%s)"
+msgstr[1] "%d fichiers sont supportés (%s)"
 
-#: ../src/brasero-project-manager.c:415
+#: ../src/brasero-project-manager.c:414
 #, c-format
-msgid "%d out of %d selected file can't be added (%s)"
-msgid_plural "%d out of %d selected files can't be added (%s)"
-msgstr[0] "%d parmi %d fichier sélectionné ne peut être ajouté (%s)"
-msgstr[1] "%d parmi les %d fichiers sélectionnés ne peuvent être ajoutés (%s)"
+msgid "%d file can be added (%s)"
+msgid_plural "%d selected files can be added (%s)"
+msgstr[0] "%d fichier peut être ajouté (%s)"
+msgstr[1] "%d fichiers sélectionnés peuvent être ajoutés (%s)"
 
-#: ../src/brasero-project-manager.c:427
+#: ../src/brasero-project-manager.c:425
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] "Aucun fichier ne peut être ajouté (%i fichier sélectionné)"
 msgstr[1] "Aucun fichier ne peut être ajouté (%i fichiers sélectionnés)"
 
-#: ../src/brasero-project-manager.c:432
+#: ../src/brasero-project-manager.c:430
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "Aucun fichier n'est supporté (%i fichier sélectionné)"
 msgstr[1] "Aucun fichier n'est supporté (%i fichiers sélectionnés)"
 
-#: ../src/brasero-project-manager.c:438
-#: ../src/brasero-project-manager.c:463
+#: ../src/brasero-project-manager.c:436
+#: ../src/brasero-project-manager.c:461
 msgid "No file selected"
 msgstr "Aucun fichier sélectionné"
 
-#: ../src/brasero-project-manager.c:502
+#: ../src/brasero-project-manager.c:500
 msgid "Recent projects"
 msgstr "Projets récents"
 
-#: ../src/brasero-project-manager.c:503
+#: ../src/brasero-project-manager.c:501
 msgid "Display the projects recently opened"
 msgstr "Affiche les projets récemment ouverts"
 
-#: ../src/brasero-project-manager.c:689
+#: ../src/brasero-project-manager.c:687
 msgid "Brasero - New audio disc project"
 msgstr "Brasero - Nouveau projet audio"
 
-#: ../src/brasero-project-manager.c:701
+#: ../src/brasero-project-manager.c:699
 msgid "Brasero - New data disc project"
 msgstr "Brasero - Nouveau projet de données"
 
-#: ../src/brasero-project-manager.c:711
+#: ../src/brasero-project-manager.c:709
 msgid "Brasero - New image file"
 msgstr "Brasero - Graver une image"
 
-#: ../src/brasero-project-manager.c:722
+#: ../src/brasero-project-manager.c:720
 msgid "Brasero - Copy a disc"
 msgstr "Brasero - Copier un disque"
 
@@ -1542,24 +1542,24 @@ msgstr ""
 msgid "<span weight=\"bold\">%s</span>"
 msgstr "<span weight=\"bold\">%s</span>"
 
-#: ../src/recorder-selection.c:472
+#: ../src/recorder-selection.c:478
 msgid "<i>The disc is busy.</i>"
 msgstr "<i>Le disque est occupé.</i>"
 
-#: ../src/recorder-selection.c:476
+#: ../src/recorder-selection.c:482
 msgid "<i>There is no disc in the drive.</i>"
 msgstr "<i>Il n'y a pas de disque dans le lecteur.</i>"
 
-#: ../src/recorder-selection.c:479
+#: ../src/recorder-selection.c:485
 msgid "<i>Unknown type of disc.</i>"
 msgstr "<i>Type de disque inconnu.</i>"
 
-#: ../src/recorder-selection.c:483
+#: ../src/recorder-selection.c:489
 #, c-format
 msgid "The <b>%s</b> is not writable."
 msgstr "Le <b>%s</b> n'est pas inscriptible."
 
-#: ../src/recorder-selection.c:494
+#: ../src/recorder-selection.c:500
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -1570,7 +1570,7 @@ msgstr ""
 "Il contient des pistes audio.\n"
 "Une session avec des données peut être ajoutée (%s libre)."
 
-#: ../src/recorder-selection.c:500
+#: ../src/recorder-selection.c:506
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -1579,7 +1579,7 @@ msgstr ""
 "Le <b>%s</b> est prêt.\n"
 "Il contient des pistes audio."
 
-#: ../src/recorder-selection.c:513
+#: ../src/recorder-selection.c:519
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -1590,7 +1590,7 @@ msgstr ""
 "Il contient des données.\n"
 "D'autres données peuvent être ajoutées (%s libre)."
 
-#: ../src/recorder-selection.c:519
+#: ../src/recorder-selection.c:525
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -1599,7 +1599,7 @@ msgstr ""
 "Le <b>%s</b> est prêt.\n"
 "Il contient des données."
 
-#: ../src/recorder-selection.c:526
+#: ../src/recorder-selection.c:532
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -1608,8 +1608,8 @@ msgstr ""
 "Le <b>%s</b> est prêt.\n"
 "Il est vide."
 
-#: ../src/recorder-selection.c:627
-#: ../src/recorder-selection.c:632
+#: ../src/recorder-selection.c:633
+#: ../src/recorder-selection.c:638
 #, c-format
 msgid ""
 "The <b>image</b> will be saved to\n"
@@ -1618,56 +1618,56 @@ msgstr ""
 "L'<b>image</b> sera enregistrée à\n"
 "%s"
 
-#: ../src/recorder-selection.c:656
+#: ../src/recorder-selection.c:662
 msgid "<b>There is no available drive.</b>"
 msgstr "<b>Il n'y pas de lecteur disponible.</b>"
 
-#: ../src/recorder-selection.c:796
+#: ../src/recorder-selection.c:802
 #, c-format
 msgid "Properties of %s"
 msgstr "Propriétés de %s"
 
-#: ../src/recorder-selection.c:816
+#: ../src/recorder-selection.c:822
 msgid "Max speed"
 msgstr "Vitesse maximum"
 
-#: ../src/recorder-selection.c:826
+#: ../src/recorder-selection.c:832
 msgid "DVD"
 msgstr "DVD"
 
-#: ../src/recorder-selection.c:826
+#: ../src/recorder-selection.c:832
 msgid "CD"
 msgstr "CD"
 
-#: ../src/recorder-selection.c:832
+#: ../src/recorder-selection.c:838
 msgid "<b>Burning speed</b>"
 msgstr "<b>Vitesse de gravure</b>"
 
-#: ../src/recorder-selection.c:864
+#: ../src/recorder-selection.c:870
 msgid "Simulate the burning"
 msgstr "Simuler la gravure"
 
-#: ../src/recorder-selection.c:872
+#: ../src/recorder-selection.c:878
 msgid "Eject after burning"
 msgstr "Éjecter après la gravure"
 
-#: ../src/recorder-selection.c:880
+#: ../src/recorder-selection.c:886
 msgid "Use burnproof (decrease the risk of failures)"
 msgstr "Utiliser la technologie burnproof (diminue les risques d'échec)"
 
-#: ../src/recorder-selection.c:888
+#: ../src/recorder-selection.c:894
 msgid "Burn the image directly without saving it to disc"
 msgstr "Graver l'image sans la sauvegarder sur le disque dur"
 
-#: ../src/recorder-selection.c:899
+#: ../src/recorder-selection.c:905
 msgid "<b>Options</b>"
 msgstr "<b>Options</b>"
 
-#: ../src/recorder-selection.c:962
+#: ../src/recorder-selection.c:972
 msgid "Choose a location for the disc image"
 msgstr "Choisissez où enregistrer l'image du disque"
 
-#: ../src/recorder-selection.c:1018
+#: ../src/recorder-selection.c:1028
 msgid "Disc image file properties"
 msgstr "Propriétés de l'image"
 
@@ -2914,7 +2914,7 @@ msgstr "Choisissez une image et ré-essayé s'il vous plaît."
 
 #: ../src/brasero-image-option-dialog.c:427
 msgid "Path:\t\t"
-msgstr "Chemin :\t\t"
+msgstr "Chemin :\t\t\t"
 
 #: ../src/brasero-image-option-dialog.c:430
 msgid "Open an image"
@@ -2961,6 +2961,15 @@ msgstr "Conversion du fichier toc"
 msgid "the conversion of the toc file failed"
 msgstr "la conversion du fichier toc a échouée"
 
+#~ msgid "%d out of %d selected file is supported (%s)"
+#~ msgid_plural "%d out of %d selected files are supported (%s)"
+#~ msgstr[0] "%d sur %d fichier sélectionné est supporté (%s)"
+#~ msgstr[1] "%d parmi les %d fichiers sélectionnés est supporté (%s)"
+#~ msgid "%d out of %d selected file can't be added (%s)"
+#~ msgid_plural "%d out of %d selected files can't be added (%s)"
+#~ msgstr[0] "%d parmi %d fichier sélectionné ne peut être ajouté (%s)"
+#~ msgstr[1] ""
+#~ "%d parmi les %d fichiers sélectionnés ne peuvent être ajoutés (%s)"
 #~ msgid "Error while unmounting disc"
 #~ msgstr "Erreur pendant le démontage du disque"
 #~ msgid "Unknown error"
