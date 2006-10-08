@@ -53,44 +53,18 @@
 
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
+#include "brasero-sum-check.h"
+#include "brasero-ncb.h"
 #include "burn-basics.h"
 #include "burn-sum.h"
-#include "brasero-ncb.h"
+#include "burn-job.h"
 #include "burn-md5.h"
 #include "burn-xfer.h"
-#include "brasero-sum-check.h"
 #include "utils.h"
 
 static void brasero_sum_dialog_class_init (BraseroSumDialogClass *klass);
 static void brasero_sum_dialog_init (BraseroSumDialog *sp);
 static void brasero_sum_dialog_finalize (GObject *object);
-
-struct _FileSumData {
-	GPid pid;
-	gint channel_id;
-
-	GMainLoop *loop;
-
-	GSList *wrong_sums;
-
-	gint files_nb;
-	gint files_num;
-};
-typedef struct _FileSumData FileSumData;
-
-struct _DiscSumData {
-	BraseroMD5Ctx *md5_ctx;
-	gchar *device;
-	gchar *md5;
-
-	gint64 total_bytes;
-
-	GMainLoop *loop;
-
-	gboolean success;
-	GError *error;
-};
-typedef struct _DiscSumData DiscSumData;
 
 struct _BraseroSumDialogPrivate {
 	GtkWidget *md5_chooser;
@@ -98,10 +72,6 @@ struct _BraseroSumDialogPrivate {
 
 	BraseroSumCheckCtx *file_ctx;
 	BraseroXferCtx *xfer_ctx;
-	DiscSumData *disc_data;
-
-	gboolean mounted_by_us;
-	gchar *mount_point;
 };
 
 static GtkDialogClass *parent_class = NULL;
@@ -115,6 +85,8 @@ static void brasero_sum_dialog_media_changed (BraseroToolDialog *dialog,
 static void
 brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
 				BraseroSumDialog *self);
+
+extern int debug;
 
 GType
 brasero_sum_dialog_get_type ()
@@ -199,16 +171,6 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 }
 
 static void
-brasero_sum_dialog_stop_disc_ops (DiscSumData *data)
-{
-	if (data->md5_ctx)
-		brasero_md5_cancel (data->md5_ctx);
-
-	if (data->loop && g_main_loop_is_running (data->loop))
-		g_main_loop_quit (data->loop);
-}
-
-static void
 brasero_sum_dialog_stop (BraseroSumDialog *self)
 {
 	if (self->priv->file_ctx)
@@ -216,9 +178,6 @@ brasero_sum_dialog_stop (BraseroSumDialog *self)
 
 	if (self->priv->xfer_ctx)
 		brasero_xfer_cancel (self->priv->xfer_ctx);
-
-	if (self->priv->disc_data)
-		brasero_sum_dialog_stop_disc_ops (self->priv->disc_data);
 }
 
 static void
@@ -262,7 +221,7 @@ brasero_sum_dialog_cancel (BraseroToolDialog *dialog)
 	/* cancel spawned process and don't return a success dialog */
 	brasero_sum_dialog_stop (self);
 
-	return TRUE;
+	return FALSE;
 }
 
 static void
@@ -294,17 +253,6 @@ brasero_sum_dialog_message (BraseroSumDialog *self,
 						  secondary_message);
 	gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
-}
-
-static void
-brasero_sum_dialog_drive_umount_error (BraseroSumDialog *self,
-				       const gchar *error)
-{
-	brasero_sum_dialog_message (self,
-				    _("Error while unmounting disc"),
-				    _("The file integrity check cannot be performed:"),
-				    error,
-				    GTK_MESSAGE_ERROR);
 }
 
 static void
@@ -418,14 +366,7 @@ brasero_sum_dialog_progress_poll (gpointer user_data)
 
 	self = BRASERO_SUM_DIALOG (user_data);
 
-	if (self->priv->disc_data) {
-		DiscSumData *disc_data = self->priv->disc_data;
-		gint64 bytes;
-
-		bytes = brasero_md5_get_written (disc_data->md5_ctx);
-		progress = (gdouble) bytes / (gdouble) disc_data->total_bytes;
-	}
-	else if (self->priv->xfer_ctx) {
+	if (self->priv->xfer_ctx) {
 		gint64 written, total;
 
 		brasero_xfer_get_progress (self->priv->xfer_ctx,
@@ -453,9 +394,10 @@ brasero_sum_dialog_progress_poll (gpointer user_data)
 	return TRUE;
 }
 
-static gchar *
+static BraseroBurnResult
 brasero_sum_dialog_download (BraseroSumDialog *self,
 			     GnomeVFSURI *vfsuri,
+			     gchar **retval,
 			     GError **error)
 {
 	BraseroBurnResult result;
@@ -475,7 +417,7 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("a temporary file couldn't be created"));
-		return NULL;
+		return BRASERO_BURN_ERR;
 	}
 	close (fd);
 
@@ -488,7 +430,7 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("URI is not valid"));
-		return NULL;
+		return BRASERO_BURN_ERR;
 	}
 
 	tmpuri = gnome_vfs_uri_new (uri);
@@ -510,20 +452,21 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 
 	gnome_vfs_uri_unref (tmpuri);
 
-	if (result != BRASERO_BURN_OK) {
-		g_remove (tmppath);
-		g_free (tmppath);
-		return NULL;
-	}
-
 	g_source_remove (id);
 	brasero_xfer_free (self->priv->xfer_ctx);
 	self->priv->xfer_ctx = NULL;
 
-	return tmppath;
+	if (result != BRASERO_BURN_OK) {
+		g_remove (tmppath);
+		g_free (tmppath);
+		return result;
+	}
+
+	*retval = tmppath;
+	return BRASERO_BURN_OK;
 }
 
-static gboolean
+static BraseroBurnResult
 brasero_sum_dialog_from_file (BraseroSumDialog *self,
 			      const gchar *file_path,
 			      gchar *buffer,
@@ -535,6 +478,7 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 	gchar *uri;
 	gchar *src;
 	FILE *file;
+	int i;
 	int c;
 
 	/* see if this file needs downloading */
@@ -551,13 +495,14 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 	if (!gnome_vfs_uri_is_local (vfsuri)) {
 		g_free (uri);
 
-		tmppath = brasero_sum_dialog_download (self,
-						       vfsuri,
-						       error);
+		result = brasero_sum_dialog_download (self,
+						      vfsuri,
+						      &tmppath,
+						      error);
 		gnome_vfs_uri_unref (vfsuri);
 
-		if (!tmppath)
-			return FALSE;
+		if (result != BRASERO_BURN_CANCEL)
+			return result;
 
 		src = tmppath;
 	}
@@ -582,15 +527,15 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     strerror (errno));
-		return FALSE;
+		return BRASERO_BURN_ERR;
 	}
 
-	result = TRUE;
-	while ((c = fgetc (file)) != EOF) {
+	i = 0;
+	while (i < MD5_STRING_LEN && (c = fgetc (file)) != EOF) {
 		if (c == ' ' || c == '\t' || c =='\n')
 			break;
 
-		*(buffer ++) = (unsigned char) c;
+		buffer [i++] = (unsigned char) c;
 	}
 
 	if (tmppath)
@@ -605,102 +550,45 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 			     strerror (errno));
 
 		fclose (file);
-		return FALSE;
+		return BRASERO_BURN_ERR;
 	}
 
 	fclose (file);
-	return TRUE;
+	return BRASERO_BURN_OK;
 }
 
-static gpointer
-brasero_sum_dialog_disc_thread (gpointer user_data)
-{
-	DiscSumData *data = user_data;
-	
-	brasero_md5_sum_to_string (data->md5_ctx,
-				   data->device,
-				   data->md5,
-				   &data->error);
-
-	g_main_loop_quit (data->loop);
-	g_thread_exit (NULL);
-
-	return NULL;
-}
-
-static gboolean
+static BraseroBurnResult
 brasero_sum_dialog_get_disc_md5 (BraseroSumDialog *self,
 				 NautilusBurnDrive *drive,
 				 gchar *md5,
 				 GError **error)
 {
-	gboolean unmounted_by_us = FALSE;
-	DiscSumData data;
-	GThread *thread;
-	gint id;
+	BraseroTrackSource track = { 0, };
+	BraseroTrackSource *retval;
+	BraseroBurnResult result;
+	BraseroJob *job;
 
-	/* unmount the drive is need be */
-	if (nautilus_burn_drive_is_mounted (drive)) {
-		GError *error = NULL;
+	job = g_object_new (BRASERO_TYPE_BURN_SUM, NULL);
 
-		if (!NCB_DRIVE_UNMOUNT (drive, &error)) {
-			brasero_sum_dialog_drive_umount_error (self, error ? error->message : _("Unknown error"));
-			return FALSE;
-		}
+	track.type = BRASERO_TRACK_SOURCE_DISC;
+	track.contents.drive.disc = drive;
 
-		unmounted_by_us = TRUE;
+	result = brasero_tool_dialog_run_job (BRASERO_TOOL_DIALOG (self),
+					      job,
+					      &track,
+					      &retval,
+					      error);
+
+	if (result != BRASERO_BURN_OK) {
+		g_object_unref (job);
+		return result;
 	}
 
-	/* get the sum of the disc */
-	data.total_bytes = NCB_MEDIA_GET_SIZE (drive);
-	data.device = (gchar*) NCB_DRIVE_GET_DEVICE (drive);
-	data.md5_ctx = brasero_md5_new ();
-	data.error = NULL;
-	data.md5 = md5;
+	brasero_md5_string (&retval->contents.sum.md5, md5);
+	brasero_track_source_free (retval);
+	g_object_unref (job);
 
-	id = g_timeout_add (500,
-			    brasero_sum_dialog_progress_poll,
-			    self);
-
-	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
-					BRASERO_BURN_ACTION_CHECKSUM,
-					_("Creating disc checksum"));
-
-	thread = g_thread_create (brasero_sum_dialog_disc_thread,
-				  &data,
-				  TRUE,
-				  error);
-
-	if (!thread) {
-		brasero_md5_free (data.md5_ctx);
-
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("a thread could not a created"));
-		return FALSE;
-	}
-
-	data.loop = g_main_loop_new (NULL, FALSE);
-
-	self->priv->disc_data = &data;
-	g_main_loop_run (data.loop);
-	self->priv->disc_data = NULL;
-
-	g_source_remove (id);
-	g_main_loop_unref (data.loop);
-	brasero_md5_free (data.md5_ctx);
-
-	if (unmounted_by_us)
-		NCB_DRIVE_MOUNT (drive, NULL);
-
-	if (data.error) {
-		g_propagate_error (error, data.error);
-		
-		return FALSE;
-	}
-
-	return TRUE;
+	return BRASERO_BURN_OK;
 }
 
 static gboolean
@@ -708,9 +596,9 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 				   NautilusBurnDrive *drive)
 {
 	gchar file_sum [MD5_STRING_LEN + 1] = {0,}, disc_sum [MD5_STRING_LEN + 1] = {0,};
-	GError *error = NULL;
-	gboolean result;
-    	gchar *uri;
+	BraseroBurnResult result;
+  	GError *error = NULL;
+  	gchar *uri;
 
 	/* get the sum from the file */
     	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (self->priv->md5_chooser));
@@ -732,6 +620,7 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
 					BRASERO_BURN_ACTION_NONE,
 					NULL);
+
 	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (self),
 					  0.0,
 					  0.0,
@@ -739,10 +628,14 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 					  -1,
 					  -1);
 
-	if (!result) {
+	if (result == BRASERO_BURN_CANCEL)
+		return FALSE;
+
+	if (result != BRASERO_BURN_OK) {
 		brasero_sum_dialog_message_error (self, error);
 
-		g_error_free (error);
+		if (error)
+			g_error_free (error);
 		return FALSE;
 	}
 
@@ -761,9 +654,14 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 					  -1,
 					  -1);
 
-	if (!result) {
+	if (result == BRASERO_BURN_CANCEL)
+		return FALSE;
+
+	if (result != BRASERO_BURN_OK) {
 		brasero_sum_dialog_message_error (self, error);
-		g_error_free (error);
+
+		if (error)
+			g_error_free (error);
 		return FALSE;
 	}
 

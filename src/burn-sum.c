@@ -244,6 +244,7 @@ brasero_burn_sum_start_md5 (BraseroBurnSum *sum,
 	result = brasero_md5_sum_to_string (sum->priv->ctx,
 					    path,
 					    md5_checksum,
+					    -1,
 					    error);
 	if (result != BRASERO_BURN_OK)
 		return result;
@@ -580,7 +581,7 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 		if (!res)
 			return BRASERO_BURN_ERR;
 
-		size = nb_blocks * 2048;
+		size = (gint64) nb_blocks * (gint64) 2048;
 		limit = size;
 	}
 	else

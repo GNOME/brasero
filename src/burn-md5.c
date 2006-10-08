@@ -327,6 +327,7 @@ BraseroBurnResult
 brasero_md5_sum_to_string (BraseroMD5Ctx *ctx,
 			   const gchar *path,
 			   gchar *string,
+			   gint64 limit,
 			   GError **error)
 {
 	BraseroMD5 md5;
@@ -338,7 +339,7 @@ brasero_md5_sum_to_string (BraseroMD5Ctx *ctx,
 	result = brasero_md5_sum (ctx,
 				  path,
 				  &md5,
-				  -1,
+				  limit,
 				  error);
 
 	if (result != BRASERO_BURN_OK)

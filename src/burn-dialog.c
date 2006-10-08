@@ -1438,7 +1438,7 @@ brasero_burn_dialog_integrity_start (BraseroBurnDialog *dialog,
 
 	brasero_burn_dialog_activity_start (dialog);
 	gtk_label_set_text (GTK_LABEL (dialog->priv->header), 
-			    "<b><big>Performing integrity check</big></b>");
+			    _("<b><big>Performing integrity check</big></b>"));
 	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
 
 	/* get the mount point */

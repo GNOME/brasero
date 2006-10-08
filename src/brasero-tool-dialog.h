@@ -31,6 +31,7 @@
 #include <gtk/gtkdialog.h>
 
 #include "burn-basics.h"
+#include "burn-job.h"
 
 G_BEGIN_DECLS
 
@@ -76,6 +77,12 @@ void brasero_tool_dialog_set_progress (BraseroToolDialog *self,
 				       glong remaining,
 				       gint size_mb,
 				       gint written_mb);
+
+BraseroBurnResult brasero_tool_dialog_run_job (BraseroToolDialog *self,
+					       BraseroJob *job,
+					       const BraseroTrackSource *track,
+					       BraseroTrackSource **retval,
+					       GError **error);
 
 NautilusBurnMediaType
 brasero_tool_dialog_get_media (BraseroToolDialog *self);

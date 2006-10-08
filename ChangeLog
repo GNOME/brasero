@@ -1,5 +1,29 @@
 2006-10-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* po/brasero.pot:
+	* po/fr.po:
+	* src/brasero-sum-check.c: (brasero_sum_check_thread):
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_stop),
+	(brasero_sum_dialog_cancel), (brasero_sum_dialog_progress_poll),
+	(brasero_sum_dialog_download), (brasero_sum_dialog_from_file),
+	(brasero_sum_dialog_get_disc_md5),
+	(brasero_sum_dialog_check_md5_file):
+	* src/brasero-tool-dialog.c:
+	(brasero_tool_dialog_job_progress_changed),
+	(brasero_tool_dialog_job_action_changed),
+	(brasero_tool_dialog_run_job),
+	(brasero_tool_dialog_cancel_clicked_cb):
+	* src/brasero-tool-dialog.h:
+	* src/burn-dialog.c: (brasero_burn_dialog_integrity_start):
+	* src/burn-md5.c: (brasero_md5_sum_to_string):
+	* src/burn-md5.h:
+	* src/burn-sum.c: (brasero_burn_sum_start_md5),
+	(brasero_burn_sum_disc):
+
+	Fix for bug where progress wasn't shown when checking DVD integrity
+
+2006-10-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* po/ChangeLog:
 	* po/brasero.pot:
 	* po/fr.po:

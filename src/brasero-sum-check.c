@@ -203,6 +203,7 @@ brasero_sum_check_thread (gpointer data)
 		result = brasero_md5_sum_to_string (ctx->md5_ctx,
 						    filename,
 						    checksum_real,
+						    -1,
 						    &ctx->error);
 
 		if (result == BRASERO_BURN_RETRY)

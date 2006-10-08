@@ -44,6 +44,7 @@
 
 #include "utils.h"
 #include "progress.h"
+#include "burn-job.h"
 #include "recorder-selection.h"
 #include "brasero-tool-dialog.h"
 
@@ -81,9 +82,13 @@ struct _BraseroToolDialogPrivate {
 	GtkWidget *options;
 	GtkWidget *cancel;
 
+	BraseroJob *job;
+
 	gboolean running;
 	gboolean close;
 };
+
+extern int debug;
 
 static GtkDialogClass *parent_class = NULL;
 
@@ -343,6 +348,91 @@ brasero_tool_dialog_set_action (BraseroToolDialog *self,
 					  string);
 }
 
+static void
+brasero_tool_dialog_job_progress_changed (BraseroTask *task,
+					  BraseroToolDialog *self)
+{
+	gdouble progress = -1.0;
+
+	if (brasero_task_get_progress (task, &progress) != BRASERO_BURN_OK)
+		return;
+
+	brasero_tool_dialog_set_progress (self,
+					  progress,
+					  -1.0,
+					  -1,
+					  -1,
+					  -1);
+}
+
+static void
+brasero_tool_dialog_job_action_changed (BraseroTask *task,
+					BraseroBurnAction action,
+					BraseroToolDialog *self)
+{
+	gchar *string;
+
+	if (brasero_task_get_action_string (task, action, &string) != BRASERO_BURN_OK)
+		string = g_strdup (brasero_burn_action_to_string (action));
+
+	brasero_tool_dialog_set_action (self,
+					action,
+					string);
+	g_free (string);
+}
+
+BraseroBurnResult
+brasero_tool_dialog_run_job (BraseroToolDialog *self,
+			     BraseroJob *job,
+			     const BraseroTrackSource *track,
+			     BraseroTrackSource **retval,
+			     GError **error)
+{
+	BraseroTask *task;
+	BraseroBurnResult result;
+
+	g_object_ref (job);
+
+	result = brasero_job_set_source (job,
+					 track,
+					 error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	brasero_job_set_debug (job, debug);
+	result = brasero_imager_set_output (BRASERO_IMAGER (job),
+					    NULL,
+					    TRUE, /* we don't overwrite */
+					    TRUE, /* we clean everything */
+					    error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	task = brasero_task_new ();
+	g_signal_connect (task,
+			  "progress_changed",
+			  G_CALLBACK (brasero_tool_dialog_job_progress_changed),
+			  self);
+	g_signal_connect (task,
+			  "action_changed",
+			  G_CALLBACK (brasero_tool_dialog_job_action_changed),
+			  self);
+
+	self->priv->job = job;
+
+	brasero_job_set_task (job, task);
+	result = brasero_imager_get_track (BRASERO_IMAGER (job),
+					   retval,
+					   error);
+	brasero_job_set_task (job, NULL);
+	g_object_unref (task);
+
+	self->priv->job = NULL;
+	g_object_unref (job);
+
+	return result;
+}
+
 void
 brasero_tool_dialog_run (BraseroToolDialog *self)
 {
@@ -473,6 +563,9 @@ brasero_tool_dialog_cancel_clicked_cb (GtkWidget *button,
 	BraseroToolDialogClass *klass;
 
 	self = BRASERO_TOOL_DIALOG (dialog);
+
+	if (self->priv->job)
+		brasero_job_cancel (self->priv->job, TRUE);
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->cancel)

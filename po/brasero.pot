@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 12:01+0200\n"
+"POT-Creation-Date: 2006-10-08 16:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -536,7 +536,7 @@ msgstr ""
 msgid "The file integrity check succeeded:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1134 ../src/brasero-sum-dialog.c:327
+#: ../src/burn-dialog.c:1134 ../src/brasero-sum-dialog.c:275
 msgid "there seems to be no corrupted file on the disc."
 msgstr ""
 
@@ -574,7 +574,7 @@ msgstr ""
 msgid "The source media needs to be reloaded:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1357 ../src/brasero-sum-dialog.c:806
+#: ../src/burn-dialog.c:1357 ../src/brasero-sum-dialog.c:704
 msgid "Checking files integrity"
 msgstr ""
 
@@ -589,7 +589,11 @@ msgstr ""
 msgid "The burnt media needs to be reloaded to perform integrity check:"
 msgstr ""
 
-#: ../src/burn-dialog.c:1451 ../src/brasero-sum-dialog.c:852
+#: ../src/burn-dialog.c:1441
+msgid "<b><big>Performing integrity check</big></b>"
+msgstr ""
+
+#: ../src/burn-dialog.c:1451 ../src/brasero-sum-dialog.c:750
 msgid "Mounting disc"
 msgstr ""
 
@@ -2492,117 +2496,100 @@ msgstr ""
 msgid "%s (%s)"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:169
+#: ../src/brasero-sum-dialog.c:141
 msgid "Use a md5 file to check the disc"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:182
+#: ../src/brasero-sum-dialog.c:154
 msgid "Open a md5 file"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:197
+#: ../src/brasero-sum-dialog.c:169
 msgid "Check"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:304
-msgid "Error while unmounting disc"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:305 ../src/brasero-sum-dialog.c:316
-#: ../src/brasero-sum-dialog.c:720
-msgid "The file integrity check cannot be performed:"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:315 ../src/brasero-sum-dialog.c:365
-#: ../src/brasero-sum-dialog.c:719
+#: ../src/brasero-sum-dialog.c:263 ../src/brasero-sum-dialog.c:313
+#: ../src/brasero-sum-dialog.c:607
 msgid "File integrity check error"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:317
+#: ../src/brasero-sum-dialog.c:264 ../src/brasero-sum-dialog.c:608
+msgid "The file integrity check cannot be performed:"
+msgstr ""
+
+#: ../src/brasero-sum-dialog.c:265
 msgid "unknown error"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:325
+#: ../src/brasero-sum-dialog.c:273
 msgid "File integrity check success"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:326
+#: ../src/brasero-sum-dialog.c:274
 msgid "The file integrity was performed successfully:"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:335
+#: ../src/brasero-sum-dialog.c:283
 msgid "Disc data corrupted"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:336
+#: ../src/brasero-sum-dialog.c:284
 msgid "The file integrity check showed errors:"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:337
+#: ../src/brasero-sum-dialog.c:285
 msgid "some files may be corrupted on the disc"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:363
+#: ../src/brasero-sum-dialog.c:311
 msgid "<b><big>The following files appear to be corrupted:</big></b>"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:391
+#: ../src/brasero-sum-dialog.c:339
 msgid "Corrupted files"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:477
+#: ../src/brasero-sum-dialog.c:419
 msgid "a temporary file couldn't be created"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:490 ../src/brasero-sum-dialog.c:546
+#: ../src/brasero-sum-dialog.c:432 ../src/brasero-sum-dialog.c:490
 msgid "URI is not valid"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:499
+#: ../src/brasero-sum-dialog.c:441
 msgid "Downloading md5 file"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:647
-msgid "Unknown error"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:667 ../src/burn-sum.c:595
-msgid "Creating disc checksum"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:680
-msgid "a thread could not a created"
-msgstr ""
-
-#: ../src/brasero-sum-dialog.c:721
+#: ../src/brasero-sum-dialog.c:609
 msgid "no md5 file was given."
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:147
+#: ../src/brasero-tool-dialog.c:152
 msgid "<b>Select a recorder:</b>"
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:170
+#: ../src/brasero-tool-dialog.c:175
 msgid "<b>Progress:</b>"
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:255 ../src/brasero-tool-dialog.c:265
+#: ../src/brasero-tool-dialog.c:260 ../src/brasero-tool-dialog.c:270
 msgid "Media error"
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:256 ../src/brasero-tool-dialog.c:266
+#: ../src/brasero-tool-dialog.c:261 ../src/brasero-tool-dialog.c:271
 msgid "The operation cannot be performed:"
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:257
+#: ../src/brasero-tool-dialog.c:262
 msgid "the inserted media is busy."
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:267
+#: ../src/brasero-tool-dialog.c:272
 msgid "the drive is empty."
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:284
+#: ../src/brasero-tool-dialog.c:289
 msgid "<b>Options:</b>"
 msgstr ""
 
@@ -2659,35 +2646,39 @@ msgstr ""
 msgid "no disc could be found"
 msgstr ""
 
-#: ../src/burn-sum.c:260 ../src/burn-sum.c:282
+#: ../src/burn-sum.c:261 ../src/burn-sum.c:283
 #, c-format
 msgid "the md5 file couldn't be written to (%s)"
 msgstr ""
 
-#: ../src/burn-sum.c:398
+#: ../src/burn-sum.c:399
 #, c-format
 msgid "\"%s\" already exists"
 msgstr ""
 
-#: ../src/burn-sum.c:412
+#: ../src/burn-sum.c:413
 #, c-format
 msgid "md5 file couldn't be opened (%s)"
 msgstr ""
 
-#: ../src/burn-sum.c:437
+#: ../src/burn-sum.c:438
 msgid "Creating checksum for image files"
 msgstr ""
 
-#: ../src/burn-sum.c:517
+#: ../src/burn-sum.c:518
 msgid "the image is not local"
 msgstr ""
 
-#: ../src/burn-sum.c:533
+#: ../src/burn-sum.c:534
 msgid "Creating image checksum"
 msgstr ""
 
-#: ../src/burn-sum.c:568
+#: ../src/burn-sum.c:569
 msgid "the disc is empty or busy."
+msgstr ""
+
+#: ../src/burn-sum.c:596
+msgid "Creating disc checksum"
 msgstr ""
 
 #: ../src/brasero-disc-option-dialog.c:116
