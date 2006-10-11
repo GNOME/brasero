@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero 0.4.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 17:12+0200\n"
-"PO-Revision-Date: 2006-10-08 17:14+0100\n"
-"Last-Translator: Rouquier Philippe <bonfire-app@wanadoo.fr>\n"
+"POT-Creation-Date: 2006-10-09 16:16+0200\n"
+"PO-Revision-Date: 2006-10-11 10:23+0100\n"
+"Last-Translator: europeen <karlkawada@wanadoo.fr>\n"
 "Language-Team: Philippe Rouquier <bonfire-app@wanadoo.fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,9 +109,9 @@ msgstr ""
 "\n"
 "\n"
 "<big>Pour enlever des fichiers de ce projet vous pouvez :\n"
-"</big>les sélectionner, cliquer sur le boutton droit et choisir \"Enlever\" dans le menu\n"
+"</big>les sélectionner, cliquer sur le bouton droit et choisir \"Enlever\" dans le menu\n"
 "les sélectionner et appuyer sur le bouton \"Enlever\"\n"
-"les sélectionner et presser la touch \"Suppr\"\n"
+"les sélectionner et presser la touche \"Suppr\"\n"
 "</span>"
 
 #: ../src/menu.h:56
@@ -799,7 +799,7 @@ msgstr "\"%s\" n'est pas supporté par gstreamer :"
 
 #: ../src/audio-disc.c:1083
 msgid "Unhandled song"
-msgstr "Morceau non supportée"
+msgstr "Morceau non supporté"
 
 #: ../src/audio-disc.c:1086
 msgid "Make sure the appropriate codec is installed."
@@ -815,7 +815,7 @@ msgstr "Chercher dans le répertoire"
 
 #: ../src/audio-disc.c:1215
 msgid "Do you want to search for audio discs inside?"
-msgstr "Voulez vous cherchez les fichiers audio à l'intérieur ?"
+msgstr "Voulez-vous cherchez les fichiers audio à l'intérieur ?"
 
 #: ../src/audio-disc.c:1219
 msgid "Search directory"
@@ -1033,7 +1033,7 @@ msgstr "_Ajouter des fichiers"
 
 #: ../src/project.c:164
 msgid "Add files to the project"
-msgstr "Ajoute des fichiers au projet"
+msgstr "Ajouter des fichiers au projet"
 
 #: ../src/project.c:165
 msgid "_Remove files"
@@ -1061,7 +1061,7 @@ msgstr "Grave le disque"
 
 #: ../src/project.c:311
 msgid "Add selected files"
-msgstr "Ajoute les fichiers sélectionnés"
+msgstr "Ajouter les fichiers sélectionnés"
 
 #: ../src/project.c:325
 msgid "Remove files selected in project"
@@ -1131,7 +1131,7 @@ msgstr "Projet vide"
 
 #: ../src/project.c:697
 msgid "please add songs to the project."
-msgstr "Veuillez ajouter des chansons au projet."
+msgstr "Veuillez ajouter des morceaux au projet."
 
 #: ../src/project.c:715
 msgid "Project is empty:"
@@ -1327,7 +1327,7 @@ msgstr "Navigateur de fichiers"
 
 #: ../src/brasero-project-manager.c:277
 msgid "Display file browser"
-msgstr "Affiche le navigateur de fichiers"
+msgstr "Afficher le navigateur de fichiers"
 
 #: ../src/brasero-project-manager.c:300
 msgid "<big><b>Search Files</b></big>"
@@ -1465,7 +1465,7 @@ msgstr "uniquement %s"
 
 #: ../src/play-list.c:295
 msgid "Number of songs"
-msgstr "Nombre de chansons"
+msgstr "Nombre de morceaux"
 
 #: ../src/play-list.c:315
 msgid "Genre"
@@ -1479,7 +1479,7 @@ msgstr "Choisir une liste de lecture"
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] "%d chanson"
+msgstr[0] "%d morceau"
 msgstr[1] "%d chansons"
 
 #: ../src/play-list.c:934
@@ -1768,7 +1768,7 @@ msgstr "Création de la somme de contrôle"
 
 #: ../src/burn-basics.c:58
 msgid "Copying disc"
-msgstr "Copie du disc"
+msgstr "Copie du CD"
 
 #: ../src/burn-basics.c:59
 msgid "Copying file"
@@ -1780,7 +1780,7 @@ msgstr "Analyse des informations audio"
 
 #: ../src/burn-basics.c:61
 msgid "Transcoding song"
-msgstr "Transcodage de la chanson"
+msgstr "Transcodage du morceau"
 
 #: ../src/burn-basics.c:62
 msgid "Preparing to write"
@@ -2384,7 +2384,7 @@ msgstr "Fermer après la gravure"
 
 #: ../src/tray.c:96
 msgid "Display file chooser"
-msgstr "Affiche le navigateur de fichiers"
+msgstr "Afficher le navigateur de fichiers"
 
 #: ../src/tray.c:98
 msgid "Show dialog"
@@ -2523,27 +2523,27 @@ msgstr "Utilisé avec -immed pour cdrecord"
 
 #: ../data/brasero.schemas.in.h:23
 msgid "Whether to display file preview. Set to true to use it."
-msgstr "Si l'aperçu de fichiers doit s'afficher. Si la valeur est vraie, l'aperçu est affiché."
+msgstr "Si la case est cochée, l'aperçu des fichiers est affiché."
 
 #: ../data/brasero.schemas.in.h:24
 msgid "Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
-msgstr "Si brasero doit utiliser -immed avec cdrecord. A utiliser avec précaution (la valeur est vraie) puisque destiné à résoudre des problèmes présentés par certains modèles de graveurs et systèmes"
+msgstr "Si la case est cochée, brasero doit utiliser -immed avec cdrecord. A utiliser avec précaution puisque destiné à résoudre des problèmes présentés par certains modèles de graveurs et systèmes"
 
 #: ../data/brasero.schemas.in.h:25
 msgid "Whether to use cdrdao for burning or not. Set to true to use it."
-msgstr "Si cdrdao doit être utilisé pour graver. Si la valeur est vraie, cdrdao est utilisé."
+msgstr "Si la case est cochée, cdrdao est utilisé comme outil de gravure."
 
 #: ../data/brasero.schemas.in.h:26
 msgid "Whether to use libburn to burn CDs. Set to true to use it."
-msgstr "Si libburn doit être utilisé pour graver des CD. Si la valeur est vraie, libburn est utilisée."
+msgstr "Si la case est cochée, libburn est utilisé comme outil de gravure."
 
 #: ../data/brasero.schemas.in.h:27
 msgid "Whether to use libburn to read CDs. Set to true to use it."
-msgstr "Si libburn doit être utilisé pour lire des CD. Si la valeur est vraie, libburn est utilisée."
+msgstr "Si la case est cochée, libburn est utilisé comme outil de lecture."
 
 #: ../data/brasero.schemas.in.h:28
 msgid "Whether to use libisofs to generate images. Set to true to use it."
-msgstr "Si libisofs doit être utilisé pour graver des CD. Si la valeur est vraie, libisofs est utilisée."
+msgstr "Si la case est cochée, libisofs est utilisé pour graver des CD."
 
 #: ../data/brasero.schemas.in.h:29
 msgid "Width for video preview"
@@ -2856,12 +2856,12 @@ msgstr "Permettre de vérifier l'intégrité des données sur le disque"
 
 #: ../src/brasero-disc-option-dialog.c:354
 msgid "Create a video DVD"
-msgstr "Crée un DVD vidéo"
+msgstr "Créer un DVD vidéo"
 
 #: ../src/brasero-disc-option-dialog.c:357
 #: ../src/brasero-disc-option-dialog.c:358
 msgid "Create a video DVD that can be played by all DVD readers"
-msgstr "Crée un DVD vidéo que peuvent jouer tous les lecteurs"
+msgstr "Créer un DVD vidéo que peuvent jouer tous les lecteurs"
 
 #: ../src/brasero-disc-option-dialog.c:361
 msgid "<b>Disc options</b>"
@@ -2910,7 +2910,7 @@ msgstr "Aucune image"
 
 #: ../src/brasero-image-option-dialog.c:250
 msgid "Please, choose an image and retry."
-msgstr "Choisissez une image et ré-essayé s'il vous plaît."
+msgstr "Choisissez une image et ré-essayez s'il vous plaît."
 
 #: ../src/brasero-image-option-dialog.c:427
 msgid "Path:\t\t"
@@ -2959,7 +2959,7 @@ msgstr "Conversion du fichier toc"
 
 #: ../src/burn-toc2cue.c:249
 msgid "the conversion of the toc file failed"
-msgstr "la conversion du fichier toc a échouée"
+msgstr "la conversion du fichier toc a échoué"
 
 #~ msgid "%d out of %d selected file is supported (%s)"
 #~ msgid_plural "%d out of %d selected files are supported (%s)"
