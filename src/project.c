@@ -61,10 +61,12 @@
 #include "burn-dialog.h"
 #include "utils.h"
 #include "brasero-uri-container.h"
+#include "brasero-layout-object.h"
 
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);
 static void brasero_project_iface_uri_container_init (BraseroURIContainerIFace *iface);
+static void brasero_project_iface_layout_object_init (BraseroLayoutObjectIFace *iface);
 static void brasero_project_finalize (GObject *object);
 
 static void
@@ -99,15 +101,28 @@ brasero_project_burn_clicked_cb (GtkButton *button, BraseroProject *project);
 
 static void
 brasero_project_contents_changed_cb (BraseroDisc *disc,
-				     int nb_files,
+				     gint nb_files,
 				     BraseroProject *project);
 static void
 brasero_project_selection_changed_cb (BraseroDisc *disc,
 				      BraseroProject *project);
-static char *
+static gchar *
 brasero_project_get_selected_uri (BraseroURIContainer *container);
 
+static void
+brasero_project_get_proportion (BraseroLayoutObject *object,
+				gint *header,
+				gint *center,
+				gint *footer);
+
+static void
+brasero_project_get_proportion (BraseroLayoutObject *object,
+				gint *header,
+				gint *center,
+				gint *footer);
+
 struct BraseroProjectPrivate {
+	GtkWidget *buttons_box;
 	GtkWidget *size_display;
 	GtkWidget *discs;
 	GtkWidget *audio;
@@ -146,7 +161,7 @@ static GtkActionEntry entries_project [] = {
 	 N_("Save current project to a different location"), G_CALLBACK (brasero_project_save_as_cb)},
 };
 
-static const char *description_project = {
+static const gchar *description_project = {
 	"<ui>"
 	    "<menubar name='menubar' >"
 		"<menu action='ProjectMenu'>"
@@ -170,7 +185,7 @@ static GtkActionEntry entries_actions [] = {
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
-static const char *description_actions = {
+static const gchar *description_actions = {
 	"<ui>"
 	    "<menubar name='menubar' >"
 		"<menu action='EditMenu'>"
@@ -191,6 +206,8 @@ static const char *description_actions = {
 };
 
 static GObjectClass *parent_class = NULL;
+
+#define BRASERO_PROJECT_SPACING	6
 
 #define KEY_DEFAULT_DATA_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_data_cd_command"
 #define KEY_DEFAULT_AUDIO_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_audio_cd_command"
@@ -228,6 +245,12 @@ brasero_project_get_type ()
 			NULL,
 			NULL
 		};
+		static const GInterfaceInfo layout_object =
+		{
+			(GInterfaceInitFunc) brasero_project_iface_layout_object_init,
+			NULL,
+			NULL
+		};
 
 		type = g_type_register_static (GTK_TYPE_VBOX, 
 					       "BraseroProject",
@@ -236,6 +259,9 @@ brasero_project_get_type ()
 		g_type_add_interface_static (type,
 					     BRASERO_TYPE_URI_CONTAINER,
 					     &uri_container_info);
+		g_type_add_interface_static (type,
+					     BRASERO_TYPE_LAYOUT_OBJECT,
+					     &layout_object);
 	}
 
 	return type;
@@ -268,6 +294,21 @@ brasero_project_iface_uri_container_init (BraseroURIContainerIFace *iface)
 }
 
 static void
+brasero_project_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
+{
+	iface->get_proportion = brasero_project_get_proportion;
+}
+
+static void
+brasero_project_get_proportion (BraseroLayoutObject *object,
+				gint *header,
+				gint *center,
+				gint *footer)
+{
+	*footer = BRASERO_PROJECT (object)->priv->size_display->allocation.height + BRASERO_PROJECT_SPACING;
+}
+
+static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkWidget *alignment;
@@ -276,12 +317,13 @@ brasero_project_init (BraseroProject *obj)
 	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
-	gtk_box_set_spacing (GTK_BOX (obj), 6);
+	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PROJECT_SPACING);
 
 	obj->priv->tooltip = gtk_tooltips_new ();
 
 	/* header */
 	box = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	obj->priv->image = gtk_image_new ();
 	gtk_misc_set_alignment (GTK_MISC (obj->priv->image), 0.0, 0.0);
@@ -298,8 +340,19 @@ brasero_project_init (BraseroProject *obj)
 	gtk_misc_set_alignment (GTK_MISC (obj->priv->subtitle), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->subtitle, FALSE, FALSE, 0);
 
+	/* this box is for the projects where they can add their buttons */
+	obj->priv->buttons_box = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (obj->priv->buttons_box);
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->buttons_box, TRUE, TRUE, 0);
+
 	/* add button set insensitive since there are no files in the selection */
+	separator = gtk_vseparator_new ();
+	gtk_widget_show (separator);
+	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);
+
 	obj->priv->add = brasero_utils_make_button (NULL, GTK_STOCK_ADD);
+	gtk_button_set_relief (GTK_BUTTON (obj->priv->add), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->add), FALSE);
 	gtk_widget_set_sensitive (obj->priv->add, FALSE);
 
 	g_signal_connect (obj->priv->add,
@@ -310,12 +363,15 @@ brasero_project_init (BraseroProject *obj)
 			      obj->priv->add,
 			      _("Add selected files"),
 			      NULL);
+
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->add);
-	gtk_box_pack_start (GTK_BOX (box), alignment, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 
 	obj->priv->remove = brasero_utils_make_button (NULL, GTK_STOCK_REMOVE);
+	gtk_button_set_relief (GTK_BUTTON (obj->priv->remove), GTK_RELIEF_NONE);
 	gtk_widget_set_sensitive (obj->priv->remove, FALSE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->remove), FALSE);
 	g_signal_connect (obj->priv->remove,
 			  "clicked",
 			  G_CALLBACK (brasero_project_remove_clicked_cb),
@@ -327,27 +383,6 @@ brasero_project_init (BraseroProject *obj)
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->remove);
 	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
-
-	separator = gtk_vseparator_new ();
-	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);
-
-	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn"), GTK_STOCK_CDROM);
-	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
-	g_signal_connect (obj->priv->burn,
-			  "clicked",
-			  G_CALLBACK (brasero_project_burn_clicked_cb),
-			  obj);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      obj->priv->burn,
-			      _("Start to burn the contents of the selection"),
-			      NULL);
-	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
-	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
-	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
-
 
 	/* The two panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
@@ -388,15 +423,35 @@ brasero_project_init (BraseroProject *obj)
 
 	gtk_box_pack_start (GTK_BOX (obj), obj->priv->discs, TRUE, TRUE, 0);
 
+	/* bottom */
+	box = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (box);
+	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, 0);
+
 	/* size widget */
 	obj->priv->size_display = brasero_project_size_new ();
 	g_signal_connect (G_OBJECT (obj->priv->size_display), 
 			  "disc-changed",
 			  G_CALLBACK (brasero_project_disc_changed_cb),
 			  obj);
-	gtk_box_pack_start (GTK_BOX (obj), obj->priv->size_display, FALSE, TRUE, 0);
-
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->size_display, TRUE, TRUE, 0);
 	obj->priv->empty = 1;
+	
+	/* burn button set insensitive since there are no files in the selection */
+	obj->priv->burn = brasero_utils_make_button (_("Burn"), GTK_STOCK_CDROM);
+	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
+	g_signal_connect (obj->priv->burn,
+			  "clicked",
+			  G_CALLBACK (brasero_project_burn_clicked_cb),
+			  obj);
+	gtk_tooltips_set_tip (obj->priv->tooltip,
+			      obj->priv->burn,
+			      _("Start to burn the contents of the selection"),
+			      NULL);
+	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
+	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 }
 
 static void
@@ -579,7 +634,7 @@ brasero_project_selection_changed_cb (BraseroDisc *disc,
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 }
 
-static char *
+static gchar *
 brasero_project_get_selected_uri (BraseroURIContainer *container)
 {
 	BraseroProject *project;
@@ -962,6 +1017,12 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	}
 
 	client = gconf_client_get_default ();
+
+	/* update the buttons from the "toolbar" */
+	gtk_container_foreach (GTK_CONTAINER (project->priv->buttons_box),
+			       (GtkCallback) gtk_widget_destroy,
+			       NULL);
+
 	if (audio) {
 		pixbuf = brasero_utils_get_icon_for_mime ("gnome-dev-cdrom-audio", 24);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
@@ -970,6 +1031,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 				      _("<i>No track</i>"));
 
 		project->priv->current = BRASERO_DISC (project->priv->audio);
+		brasero_disc_fill_toolbar (project->priv->current, GTK_BOX (project->priv->buttons_box));
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
 
@@ -987,6 +1049,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 				      _("<i>Contents of your data project</i>"));
 
 		project->priv->current = BRASERO_DISC (project->priv->data);
+		brasero_disc_fill_toolbar (project->priv->current, GTK_BOX (project->priv->buttons_box));
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
 
@@ -1116,6 +1179,9 @@ brasero_project_transfer_uris_from_src (BraseroProject *project)
 {
 	gchar **uris;
 	gchar **uri;
+
+	if (!project->priv->current_source)
+		return;
 
 	uris = brasero_uri_container_get_selected_uris (project->priv->current_source);
 	if (!uris)

@@ -98,7 +98,8 @@ static void
 brasero_project_manager_switch (BraseroProjectManager *manager,
 				BraseroProjectType type,
 				GSList *uris,
-				const gchar *uri);
+				const gchar *uri,
+				gboolean reset);
 
 void
 brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
@@ -215,6 +216,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	GtkWidget *type;
 	GtkWidget *scroll;
 	GtkWidget *chooser;
+	GtkSizeGroup *tree_group;
+	GtkSizeGroup *header_group;
 
 	obj->priv = g_new0 (BraseroProjectManagerPrivate, 1);
 
@@ -227,6 +230,10 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				      entries,
 				      G_N_ELEMENTS (entries),
 				      obj);
+
+	/* create the groups */
+	header_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+	tree_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 
 	/* add the project type chooser to the notebook */
 	type = brasero_project_type_chooser_new ();
@@ -252,7 +259,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 
 	/* create the project for audio and data discs */
 	obj->priv->project = brasero_project_new ();
-	gtk_widget_show_all (obj->priv->project);
 
 #ifdef BUILD_PREVIEW
 	GtkWidget *preview;
@@ -287,6 +293,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 
 	brasero_layout_add_project (BRASERO_LAYOUT (obj->priv->layout),
 				    obj->priv->project);
+	gtk_widget_show_all (obj->priv->project);
+
 #ifdef BUILD_SEARCH
 	GtkWidget *search;
 
@@ -549,7 +557,8 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 		brasero_project_manager_switch (manager,
 						BRASERO_PROJECT_TYPE_INVALID,
 						NULL,
-						NULL);
+						NULL,
+						TRUE);
 		gtk_widget_show (toplevel);
 	}
 	else
@@ -653,7 +662,8 @@ static void
 brasero_project_manager_switch (BraseroProjectManager *manager,
 				BraseroProjectType type,
 				GSList *uris,
-				const gchar *uri)
+				const gchar *uri,
+				gboolean reset)
 {
 	GtkWidget *toplevel;
 	GtkAction *action;
@@ -728,37 +738,37 @@ brasero_project_manager_type_changed_cb (BraseroProjectTypeChooser *chooser,
 					 BraseroProjectType type,
 					 BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, type, NULL, NULL);
+	brasero_project_manager_switch (manager, type, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_empty_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_audio_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_AUDIO, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_AUDIO, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_data_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_DATA, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_DATA, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_copy_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_iso_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, NULL, TRUE);
 }
 
 static void
@@ -788,7 +798,8 @@ brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris)
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_AUDIO,
 					uris,
-					NULL);
+					NULL,
+					TRUE);
 }
 
 void
@@ -797,19 +808,20 @@ brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris)
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_DATA,
 					uris,
-					NULL);
+					NULL,
+					TRUE);
 }
 
 void
 brasero_project_manager_copy (BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL, TRUE);
 }
 
 void
 brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri, TRUE);
 }
 
 void
@@ -824,7 +836,7 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 	manager->priv->type = type;
 
     	if (type == BRASERO_PROJECT_TYPE_INVALID)
-		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
+		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 	else if (type == BRASERO_PROJECT_TYPE_DATA)
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
 	else
@@ -834,7 +846,7 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 void
 brasero_project_manager_empty (BraseroProjectManager *manager)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 }
 
 gboolean
@@ -854,20 +866,7 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
 						     uri);
 		g_free (uri);
 
-		if (type == BRASERO_PROJECT_TYPE_INVALID) {
-			brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL);
-		    	return FALSE;
-		}
-
-		manager->priv->type = type;
-
-		gtk_widget_show (manager->priv->layout);
-		gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
-
-		if (type == BRASERO_PROJECT_TYPE_DATA)
-			brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
-		else
-			brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
+		brasero_project_manager_switch (manager, type, NULL, NULL, FALSE);
 	}
 
     	return TRUE;

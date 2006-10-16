@@ -41,6 +41,7 @@
 
 #include "brasero-project-size.h"
 #include "brasero-ncb.h"
+#include "burn-iso9660.h"
 #include "utils.h"
 
 static void brasero_project_size_class_init (BraseroProjectSizeClass *klass);
@@ -96,6 +97,7 @@ struct _BraseroProjectSizePrivate {
 	GtkTooltips *tooltips;
 
 	GtkWidget *frame;
+	GtkWidget *arrow;
 	GtkWidget *button;
 
 	gint ruler_height;
@@ -236,7 +238,7 @@ brasero_project_size_init (BraseroProjectSize *obj)
 			      obj->priv->button,
 			      _("Show the available media to be burnt"),
 			      _("Show the available media to be burnt"));
-	gtk_button_set_relief (GTK_BUTTON (obj->priv->button), GTK_RELIEF_HALF);
+	//gtk_button_set_relief (GTK_BUTTON (obj->priv->button), GTK_RELIEF_NONE);
 	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->button), 0);
 	g_signal_connect (obj->priv->button,
 			  "toggled",
@@ -251,6 +253,10 @@ brasero_project_size_init (BraseroProjectSize *obj)
 
 	gtk_widget_set_parent (obj->priv->button, GTK_WIDGET (obj));
 	gtk_widget_show_all (obj->priv->button);
+
+	obj->priv->arrow = gtk_arrow_new (GTK_ARROW_UP, GTK_SHADOW_NONE);
+	gtk_widget_set_parent (obj->priv->arrow, GTK_WIDGET (obj));
+	gtk_widget_show_all (obj->priv->arrow);
 
 	obj->priv->frame = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (obj->priv->frame), GTK_SHADOW_IN);
@@ -280,6 +286,11 @@ brasero_project_size_finalize (GObject *object)
 	if (cobj->priv->button) {
 		gtk_widget_unparent (cobj->priv->button);
 		cobj->priv->button = NULL;
+	}
+
+	if (cobj->priv->arrow) {
+		gtk_widget_unparent (cobj->priv->arrow);
+		cobj->priv->arrow = NULL;
 	}
 
 	if (cobj->priv->refresh_id) {
@@ -337,6 +348,8 @@ brasero_project_size_forall_children (GtkContainer *container,
 			(*callback) (self->priv->frame, callback_data);
 		if (self->priv->button)
 			(*callback) (self->priv->button, callback_data);
+		if (self->priv->arrow)
+			(*callback) (self->priv->arrow, callback_data);
 	}
 }
 
@@ -607,13 +620,25 @@ brasero_project_size_size_allocate (GtkWidget *widget,
 	/* NOTE: since we've got our own window, we don't need to take into
 	 * account alloc.x and alloc.y */
 	if (is_rtl)
-		alloc.x = 0;
-	else
 		alloc.x = allocation->width - req.width;
-	alloc.y = 0;
-	alloc.width = MAX (1, req.width);
-	alloc.height = MAX (req.height, allocation->height - self->priv->ruler_height);
+	else
+		alloc.x = - 1;
+
+	alloc.y = - 1;
+	alloc.width = MAX (1, req.width + self->priv->frame->style->xthickness * 2 - 2);
+	alloc.height = MAX (req.height + self->priv->frame->style->xthickness * 2 - 2, allocation->height - self->priv->ruler_height);
 	gtk_widget_size_allocate (self->priv->button, &alloc);
+
+	/* allocate the size for the arrow we want to draw on the button */
+	if (is_rtl)
+		alloc.x = alloc.width / 4;
+	else
+		alloc.x = alloc.width / 2;
+
+	alloc.y = self->priv->button->style->ythickness;
+	alloc.width /= 2.5;
+	alloc.height /= 2.5;
+	gtk_widget_size_allocate (self->priv->arrow, &alloc);
 }
 
 static gboolean
@@ -624,6 +649,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	gint interval_size, interval_width;
 	gint x, y, width, total;
+	gint button_width;
 	gdouble num, i;
 
 	BraseroProjectSize *self;
@@ -643,10 +669,18 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	self = BRASERO_PROJECT_SIZE (widget);
 
-	/* paint the button */
+	/* paint the button and arrow */
 	gtk_container_propagate_expose (GTK_CONTAINER (widget),
 					self->priv->button,
 					event);
+	gtk_container_propagate_expose (GTK_CONTAINER (widget),
+					self->priv->arrow,
+					event);
+
+	if (!is_rtl)
+		button_width = self->priv->button->allocation.width;
+	else
+		button_width = 0;
 
 	drive = self->priv->current;
 	if (!drive)
@@ -698,6 +732,8 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		else
 			x = i * interval_width + self->priv->frame->style->xthickness - widget->style->xthickness - extents.width - ARROW_WIDTH / 2;
 
+		/* add the button width */
+		x += button_width;
 		gtk_paint_layout (widget->style,
 				  widget->window,
 				  GTK_STATE_NORMAL,
@@ -717,6 +753,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		else
 			x = i * interval_width + self->priv->frame->style->xthickness - ARROW_WIDTH / 2;
 
+		x += button_width;
   		gtk_paint_arrow (widget->style,
 				 widget->window,
 				 GTK_STATE_NORMAL,
@@ -745,6 +782,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	else
 		x = self->priv->frame->style->xthickness;
 
+	x += button_width;
 	gtk_paint_flat_box (widget->style,
 			    widget->window,
 			    GTK_STATE_INSENSITIVE,
@@ -770,6 +808,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		else
 			x = width + self->priv->frame->style->xthickness;
 
+		x += button_width;
 		gtk_paint_flat_box (widget->style,
 				    widget->window,
 				    GTK_STATE_ACTIVE,
@@ -788,7 +827,8 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 			else
 				x = width + width2 + self->priv->frame->style->xthickness;
 
-			gtk_paint_flat_box (widget->style,
+		x += button_width;
+		gtk_paint_flat_box (widget->style,
 					    widget->window,
 					    GTK_STATE_PRELIGHT,
 					    GTK_SHADOW_NONE,
@@ -807,6 +847,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		else
 			x = width ? width:self->priv->frame->style->xthickness;
 
+		x += button_width;
 		gtk_paint_flat_box (widget->style,
 				    widget->window,
 				    GTK_STATE_SELECTED,
@@ -820,7 +861,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				    bar_height - self->priv->frame->style->ythickness);
 	}
 
-	alloc.x = 0;
+	alloc.x = button_width;
 	alloc.y = 0;
 	alloc.width = bar_width + self->priv->frame->style->xthickness * 2;
 	alloc.height = bar_height;
@@ -838,6 +879,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	x = (widget->allocation.width - extents.width) / 2;
 	y = (widget->allocation.height - extents.height - text_height) / 2;
 
+	x += button_width;
 	gtk_paint_layout (widget->style,
 			  widget->window,
 			  GTK_STATE_NORMAL,
@@ -935,7 +977,9 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
 			continue;
 
-	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank))
+	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
+		&& (!nautilus_burn_drive_media_is_appendable (drive->drive)
+		||   self->priv->is_audio_context))
 			continue;
 
 		if (self->priv->is_audio_context
@@ -999,6 +1043,7 @@ brasero_project_size_menu_finished_cb (GtkMenuShell *shell,
 	gtk_widget_destroy (self->priv->menu);
 	self->priv->menu = NULL;
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->button), FALSE);
+	gtk_arrow_set (GTK_ARROW (self->priv->arrow), GTK_ARROW_UP, GTK_SHADOW_NONE);
 }
 
 static void
@@ -1016,6 +1061,8 @@ brasero_project_size_show_menu_real (BraseroProjectSize *self,
 
 	self->priv->menu = menu;
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->button), TRUE);
+
+	gtk_arrow_set (GTK_ARROW (self->priv->arrow), GTK_ARROW_DOWN, GTK_SHADOW_NONE);
 
 	gtk_menu_popup (GTK_MENU (menu),
 			NULL,
@@ -1068,7 +1115,8 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			if ((!self->priv->is_audio_context
 			||    drive->media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
 			&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
-			&&  nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)) {
+			&&  (nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
+			||  (nautilus_burn_drive_media_is_appendable (drive->drive) && !self->priv->is_audio_context))) {
 				self->priv->current = drive;
 				break;
 			}
@@ -1095,7 +1143,8 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			if ((!self->priv->is_audio_context
 			||    drive->media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
 			&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
-			&&  nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)) {
+			&&  (nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
+			||  (nautilus_burn_drive_media_is_appendable (drive->drive) && !self->priv->is_audio_context))) {
 				self->priv->current = drive;
 				break;
 			}
@@ -1175,7 +1224,9 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		else if (current->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
 			current = NULL;
 		}
-	    	else if (!nautilus_burn_drive_media_type_is_writable (current->media, current->is_blank)) {
+	    	else if (!nautilus_burn_drive_media_type_is_writable (current->media, current->is_blank)
+		     && (!nautilus_burn_drive_media_is_appendable (current->drive)
+		     ||   self->priv->is_audio_context)) {
 			current = NULL;
 		}
 		else if (current->sectors >= self->priv->sectors && current->drive)
@@ -1198,7 +1249,9 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
 			continue;
 
-	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank))
+	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
+		&& (!nautilus_burn_drive_media_is_appendable (drive->drive)
+		||   self->priv->is_audio_context))
 			continue;
 
 		/* we must have at least one candidate */
@@ -1232,6 +1285,8 @@ void
 brasero_project_size_set_context (BraseroProjectSize *self,
 				  gboolean is_audio)
 {
+	BraseroDrive *current;
+
 	self->priv->sectors = 0;
 	self->priv->is_audio_context = is_audio;
 
@@ -1240,12 +1295,18 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 		self->priv->is_loaded = 1;
 	}
 
-	if (!self->priv->current)
+	/* try to find a better drive in the following cases:
+	 * - there is not real current drive selected
+	 * - the previous project was a data project and it contained an
+	 *   appendable disc or the disc is a DVD */
+	current = self->priv->current;
+	if (!current)
+		brasero_project_size_find_proper_drive (self);
+	else if (!current->drive)
 		brasero_project_size_find_proper_drive (self);
 	else if (is_audio
-	      &&  self->priv->current->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-		brasero_project_size_find_proper_drive (self);
-	else if (!self->priv->current->drive)
+	     && (current->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW
+	     ||  nautilus_burn_drive_media_is_appendable (current->drive)))
 		brasero_project_size_find_proper_drive (self);
 
 	brasero_project_size_disc_changed (self);
@@ -1322,7 +1383,22 @@ brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
 										 NULL,
 										 NULL);
 
-			size = NCB_MEDIA_GET_CAPACITY (ndrive);
+			if (nautilus_burn_drive_media_is_appendable (ndrive)) {
+				if (bdrive->media == NAUTILUS_BURN_MEDIA_TYPE_CDR)
+					size = NCB_MEDIA_GET_CAPACITY (ndrive) - NCB_MEDIA_GET_SIZE (ndrive);
+				else if (bdrive->media == NAUTILUS_BURN_MEDIA_TYPE_DVDR) {
+					gint32 volume_size = 0;
+
+					size = NCB_MEDIA_GET_CAPACITY (ndrive);
+					if (brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (ndrive), &volume_size, NULL))
+						size -= volume_size;
+				}
+				else
+					size = NCB_MEDIA_GET_CAPACITY (ndrive);
+			}
+			else
+				size = NCB_MEDIA_GET_CAPACITY (ndrive);
+
 			size = size > 0 ? size : 0;
 			bdrive->sectors = size % 2048 ? size / 2048 + 1 : size / 2048;	
 
@@ -1394,13 +1470,31 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 									&drive->is_blank,
 									NULL,
 									NULL);
-		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
-		|| !nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)) {
+		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+			continue;
+
+		/*if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
+		&& (!nautilus_burn_drive_media_is_appendable (drive->drive)) {
 			drive->sectors = 0;
 			continue;
-		}
+		}*/
 
-		size = NCB_MEDIA_GET_CAPACITY (drive->drive);
+		if (nautilus_burn_drive_media_is_appendable (drive->drive)) {
+			if (drive->media == NAUTILUS_BURN_MEDIA_TYPE_CDR)
+				size = NCB_MEDIA_GET_CAPACITY (drive->drive) - NCB_MEDIA_GET_SIZE (drive->drive);
+			else if (drive->media == NAUTILUS_BURN_MEDIA_TYPE_DVDR) {
+				gint32 volume_size = 0;
+
+				size = NCB_MEDIA_GET_CAPACITY (drive->drive);
+				if (brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive->drive), &volume_size, NULL))
+					size -= volume_size;
+			}
+			else
+				size = NCB_MEDIA_GET_CAPACITY (drive->drive);
+		}
+		else
+			size = NCB_MEDIA_GET_CAPACITY (drive->drive);
+
 		size = size > 0 ? size : 0;
 		drive->sectors = size % 2048 ? size / 2048 + 1 : size / 2048;
 
@@ -1412,4 +1506,10 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 
 	brasero_project_size_find_proper_drive (self);
 	brasero_project_size_disc_changed (self);
+}
+
+gint
+brasero_project_get_ruler_height (BraseroProjectSize *self)
+{
+	return self->priv->ruler_height;
 }

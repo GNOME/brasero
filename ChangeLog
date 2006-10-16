@@ -1,3 +1,214 @@
+2006-10-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* src/Makefile.am:
+	* src/audio-disc.c: (brasero_audio_disc_iface_disc_init),
+	(brasero_audio_disc_fill_toolbar), (brasero_audio_disc_init),
+	(brasero_audio_disc_add_gap), (brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_add_uri), (brasero_audio_disc_remove),
+	(brasero_audio_disc_delete_selected),
+	(brasero_audio_disc_get_track), (brasero_audio_disc_load_track),
+	(brasero_audio_disc_get_dest_path),
+	(brasero_audio_disc_merge_gaps), (brasero_audio_disc_move_to_dest),
+	(brasero_audio_disc_move_to_first_pos),
+	(brasero_audio_disc_drag_data_received_cb),
+	(brasero_audio_disc_drag_leave_cb),
+	(brasero_audio_disc_drag_motion_cb),
+	(brasero_audio_disc_drag_begin_cb),
+	(brasero_audio_disc_drag_end_cb),
+	(brasero_audio_disc_selection_changed),
+	(brasero_audio_disc_open_file),
+	(brasero_audio_disc_edit_information_cb),
+	(brasero_audio_disc_clipboard_text_cb),
+	(brasero_audio_disc_clipboard_targets_cb),
+	(brasero_audio_disc_button_pressed_cb),
+	(brasero_audio_disc_rename_activated):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_set_title_widget),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_get_param):
+	* src/brasero-file-chooser.c: (brasero_file_chooser_get_type),
+	(brasero_file_chooser_iface_layout_object_init),
+	(brasero_file_chooser_customize), (brasero_file_chooser_init),
+	(brasero_file_chooser_get_selected_uris),
+	(brasero_file_chooser_find_pane),
+	(brasero_file_chooser_get_proportion):
+	* src/brasero-layout-object.c: (brasero_layout_object_get_type),
+	(brasero_layout_object_base_init),
+	(brasero_layout_object_get_proportion):
+	* src/brasero-layout-object.h:
+	* src/brasero-layout.c: (brasero_layout_init),
+	(brasero_layout_finalize), (brasero_layout_set_active_item),
+	(brasero_layout_size_reallocate), (brasero_layout_page_showed),
+	(brasero_layout_project_size_allocated_cb),
+	(brasero_layout_add_project), (brasero_layout_add_preview),
+	(brasero_layout_pane_changed),
+	(brasero_layout_displayed_item_changed_cb),
+	(brasero_layout_add_source), (brasero_layout_load):
+	* src/brasero-multi-dnd.c: (brasero_multi_DND_drag_data_get):
+	* src/brasero-project-manager.c: (brasero_project_manager_init),
+	(brasero_project_manager_burn), (brasero_project_manager_switch),
+	(brasero_project_manager_type_changed_cb),
+	(brasero_project_manager_new_empty_prj_cb),
+	(brasero_project_manager_new_audio_prj_cb),
+	(brasero_project_manager_new_data_prj_cb),
+	(brasero_project_manager_new_copy_prj_cb),
+	(brasero_project_manager_new_iso_prj_cb),
+	(brasero_project_manager_audio), (brasero_project_manager_data),
+	(brasero_project_manager_copy), (brasero_project_manager_iso),
+	(brasero_project_manager_open), (brasero_project_manager_empty),
+	(brasero_project_manager_load_session):
+	* src/brasero-project-size.c: (brasero_project_size_init),
+	(brasero_project_size_finalize),
+	(brasero_project_size_forall_children),
+	(brasero_project_size_size_allocate),
+	(brasero_project_size_expose), (brasero_project_size_build_menu),
+	(brasero_project_size_menu_finished_cb),
+	(brasero_project_size_show_menu_real),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_set_context),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_add_real_medias),
+	(brasero_project_get_ruler_height):
+	* src/brasero-project-size.h:
+	* src/brasero-session.c: (brasero_session_load):
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_from_file):
+	* src/brasero-uri-container.h:
+	* src/data-disc.c: (brasero_data_disc_iface_disc_init),
+	(brasero_data_disc_sort_size), (brasero_data_disc_sort_string),
+	(brasero_data_disc_fill_toolbar), (brasero_data_disc_init),
+	(brasero_data_disc_finalize),
+	(brasero_data_disc_remove_bogus_child),
+	(brasero_data_disc_tree_update_directory_real),
+	(brasero_data_disc_tree_update_directory),
+	(brasero_data_disc_tree_update_parent),
+	(brasero_data_disc_tree_path_to_disc_path),
+	(brasero_data_disc_add_path_item_position),
+	(brasero_data_disc_disc_path_to_tree_path),
+	(brasero_data_disc_tree_remove_path),
+	(brasero_data_disc_remove_uri_from_tree),
+	(brasero_data_disc_tree_new_path),
+	(brasero_data_disc_tree_set_path_from_info),
+	(brasero_data_disc_tree_new_empty_folder_real),
+	(brasero_data_disc_tree_new_loading_row),
+	(brasero_data_disc_reference_free),
+	(brasero_data_disc_reference_get_list),
+	(_foreach_make_references_list_cb),
+	(brasero_data_disc_move_references),
+	(brasero_data_disc_reference_remove_path),
+	(_foreach_add_to_list_cb),
+	(brasero_data_disc_reference_invalidate_all),
+	(_foreach_remove_grafts_cb), (_foreach_remove_created_dirs_cb),
+	(brasero_data_disc_restore_unreadable_cb),
+	(_foreach_remove_children_dirs_cb),
+	(brasero_data_disc_directory_remove_from_tree),
+	(brasero_data_disc_remove_children_async_cb),
+	(_foreach_remove_children_files_cb),
+	(brasero_data_disc_remove_children),
+	(brasero_data_disc_graft_get_real), (brasero_data_disc_graft_get),
+	(brasero_data_disc_graft_new), (brasero_data_disc_graft_new_list),
+	(_foreach_remove_graft_pointers_cb),
+	(brasero_data_disc_graft_clean_excluded),
+	(brasero_data_disc_graft_remove),
+	(brasero_data_disc_graft_remove_all), (_foreach_graft_changed_cb),
+	(_foreach_move_children_paths_cb),
+	(_foreach_unreference_grafted_cb), (brasero_data_disc_path_to_uri),
+	(brasero_data_disc_new_folder_clicked_cb),
+	(brasero_data_disc_exclude_uri), (brasero_data_disc_restore_uri),
+	(brasero_data_disc_has_parent),
+	(brasero_data_disc_expose_grafted_cb),
+	(brasero_data_disc_expose_grafted),
+	(brasero_data_disc_expose_path_real),
+	(brasero_data_disc_expose_thread), (brasero_data_disc_expose_path),
+	(brasero_data_disc_row_collapsed_cb),
+	(brasero_data_disc_file_info), (brasero_data_disc_obj_new),
+	(_foreach_lookup_symlink_children_cb),
+	(brasero_data_disc_symlink_get_uri_children),
+	(brasero_data_disc_symlink_is_recursive),
+	(brasero_data_disc_symlink_new),
+	(brasero_data_disc_symlink_list_new),
+	(brasero_data_disc_load_thread),
+	(brasero_data_disc_delete_selected),
+	(brasero_data_disc_get_target_grafts),
+	(brasero_data_disc_replace_symlink_children_cb),
+	(brasero_data_disc_replace_symlink_children),
+	(brasero_data_disc_new_file), (brasero_data_disc_new_row_added),
+	(brasero_data_disc_new_row_real), (brasero_data_disc_new_row_cb),
+	(brasero_data_disc_add_uri_real), (brasero_data_disc_add_uri),
+	(_foreach_excluded_make_list_cb), (_foreach_grafts_make_list_cb),
+	(brasero_data_disc_graft_check_destroy),
+	(brasero_data_disc_path_create), (brasero_data_disc_load_step_2),
+	(brasero_data_disc_restore_row),
+	(brasero_data_disc_move_row_in_files_hash),
+	(brasero_data_disc_move_row_simple_file_destroy_cb),
+	(brasero_data_disc_move_row_simple_file_cb),
+	(brasero_data_disc_move_row_simple_file),
+	(brasero_data_disc_move_row), (brasero_data_disc_set_dest_row),
+	(brasero_data_disc_get_dest_path),
+	(brasero_data_disc_new_disc_path),
+	(brasero_data_disc_drag_dest_drop_row_possible),
+	(brasero_data_disc_move_to_dest),
+	(brasero_data_disc_native_data_received),
+	(brasero_data_disc_drag_data_received_dragging),
+	(brasero_data_disc_drag_data_received_cb),
+	(brasero_data_disc_drag_drop_cb), (brasero_data_disc_drag_get_cb),
+	(brasero_data_disc_scroll_timeout_cb),
+	(brasero_data_disc_expand_timeout_cb),
+	(brasero_data_disc_drag_motion_cb),
+	(brasero_data_disc_drag_leave_cb),
+	(brasero_data_disc_drag_begin_cb), (brasero_data_disc_drag_end_cb),
+	(brasero_data_disc_open_file),
+	(brasero_data_disc_rename_activated),
+	(brasero_data_disc_clipboard_text_cb),
+	(brasero_data_disc_clipboard_targets_cb),
+	(brasero_data_disc_tree_selection_changed),
+	(brasero_data_disc_button_pressed_cb),
+	(brasero_data_disc_button_released_cb),
+	(brasero_data_disc_name_edited_cb),
+	(brasero_data_disc_inotify_attributes_event_cb),
+	(brasero_data_disc_inotify_attributes_event),
+	(brasero_data_disc_inotify_modify_file_cb),
+	(brasero_data_disc_inotify_modify_file):
+	* src/disc.c: (brasero_disc_get_type),
+	(brasero_disc_get_selected_uri), (brasero_disc_fill_toolbar):
+	* src/disc.h:
+	* src/eggtreemultidnd.c: (egg_tree_multi_drag_drag_data_get),
+	(egg_tree_multi_drag_motion_event):
+	* src/main.c: (brasero_app_add_recent),
+	(brasero_app_parse_options):
+	* src/play-list.c: (brasero_playlist_get_type),
+	(brasero_playlist_iface_layout_object_init),
+	(brasero_playlist_get_proportion), (brasero_playlist_init),
+	(brasero_playlist_get_selected_uri), (brasero_playlist_add_cb),
+	(brasero_playlist_remove_cb),
+	(brasero_playlist_get_selected_uris_real):
+	* src/project.c: (brasero_project_get_type),
+	(brasero_project_iface_layout_object_init),
+	(brasero_project_get_proportion), (brasero_project_init),
+	(brasero_project_switch), (brasero_project_transfer_uris_from_src):
+	* src/project.h:
+	* src/search.c: (brasero_search_get_type),
+	(brasero_search_iface_layout_object_init),
+	(brasero_search_get_proportion), (brasero_search_init),
+	(brasero_search_get_selected_rows):
+	* src/utils.c: (brasero_utils_get_time_string),
+	(brasero_utils_get_time_string_from_size),
+	(brasero_utils_empty_dir), (brasero_utils_remove),
+	(brasero_utils_check_for_parent_symlink),
+	(brasero_utils_get_symlink_target):
+
+	Add drag and delete in projects
+	MultiDND in projects
+	Fix for newly created folders name editing
+	Fix disc label not present in burn-dialog
+	Hide side panes without changing changing project geometry
+	Fix bad audio project size when removing silences
+	Fix project loading auto-selecting row and asking for name edition
+	Fix multisession discs not recognised in project size widget
+	Project size displays remaining free space for multisession discs
+	Some GUI refactoring (suggestions in #360899)
+	Fix for title not being set when auto-loading last unfinished project
+
 2006-10-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* NEWS:

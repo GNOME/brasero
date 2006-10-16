@@ -59,6 +59,8 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtktooltips.h>
 
+#include <eggtreemultidnd.h>
+
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -92,13 +94,15 @@ struct BraseroDataDiscPrivate {
 	GtkUIManager *manager;
 
 	BraseroDragStatus drag_status;
+	GdkDragContext *drag_context;
+
 	GtkTreePath *drag_source;
-	int press_start_x;
-	int press_start_y;
+	gint press_start_x;
+	gint press_start_y;
 	gint scroll_timeout;
 	gint expand_timeout;
 
-	int activity_counter;
+	gint activity_counter;
 
 	gint64 sectors;
 	GSList *rescan;
@@ -147,9 +151,9 @@ struct BraseroDataDiscPrivate {
 
 	GSList *exposing;
 
-	int editing:1;
-	int is_loading:1;
-	int reject_files:1;
+	gint editing:1;
+	gint is_loading:1;
+	gint reject_files:1;
 };
 
 typedef enum {
@@ -173,7 +177,6 @@ enum {
 	NB_COL
 };
 
-
 struct _BraseroLoadDirError {
 	gchar *uri;
 	BraseroFilterStatus status;
@@ -192,14 +195,14 @@ static void brasero_data_disc_class_init (BraseroDataDiscClass *klass);
 static void brasero_data_disc_init (BraseroDataDisc *sp);
 static void brasero_data_disc_finalize (GObject *object);
 static void brasero_data_disc_iface_disc_init (BraseroDiscIface *iface);
-static void brasero_data_disc_get_property (GObject * object,
+static void brasero_data_disc_get_property (GObject *object,
 					    guint prop_id,
-					    GValue * value,
-					    GParamSpec * pspec);
-static void brasero_data_disc_set_property (GObject * object,
+					    GValue *value,
+					    GParamSpec *pspec);
+static void brasero_data_disc_set_property (GObject *object,
 					    guint prop_id,
-					    const GValue * value,
-					    GParamSpec * spec);
+					    const GValue *value,
+					    GParamSpec *spec);
 #ifdef BUILD_INOTIFY
 
 typedef union {
@@ -243,7 +246,7 @@ typedef struct _BraseroFile BraseroFile;
 #endif /* BUILD_INOTIFY */
 
 static BraseroDiscResult
-brasero_data_disc_add_uri (BraseroDisc *disc, const char *uri);
+brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri);
 
 static void
 brasero_data_disc_delete_selected (BraseroDisc *disc);
@@ -252,6 +255,10 @@ static void
 brasero_data_disc_clear (BraseroDisc *disc);
 static void
 brasero_data_disc_reset (BraseroDisc *disc);
+
+static void
+brasero_data_disc_fill_toolbar (BraseroDisc *disc,
+				GtkBox *toolbar);
 
 static BraseroDiscResult
 brasero_data_disc_load_track (BraseroDisc *disc,
@@ -270,6 +277,10 @@ brasero_data_disc_get_track_type (BraseroDisc *disc,
 
 static BraseroDiscResult
 brasero_data_disc_get_status (BraseroDisc *disc);
+
+static void
+brasero_data_disc_tree_selection_changed (GtkTreeSelection *selection,
+					  BraseroDataDisc *disc);
 
 static gboolean
 brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
@@ -305,7 +316,7 @@ brasero_data_disc_drag_motion_cb(GtkWidget *tree,
 				 gint y,
 				 guint time,
 				 BraseroDataDisc *disc);
-void
+static void
 brasero_data_disc_drag_leave_cb (GtkWidget *tree,
 				 GdkDragContext *drag_context,
 				 guint time,
@@ -384,12 +395,12 @@ static GSList *
 brasero_data_disc_path_find_children_grafts (BraseroDataDisc *disc,
 					     const gchar *path);
 
-static char *
+static gchar *
 brasero_data_disc_graft_get (BraseroDataDisc *disc,
-			     const char *path);
+			     const gchar *path);
 static void
 brasero_data_disc_graft_remove_all (BraseroDataDisc *disc,
-				    const char *uri);
+				    const gchar *uri);
 static void
 brasero_data_disc_graft_children_remove (BraseroDataDisc *disc,
 					 GSList *paths);
@@ -407,11 +418,11 @@ brasero_data_disc_replace_symlink_children (BraseroDataDisc *disc,
 					    GSList *grafts);
 static void
 brasero_data_disc_exclude_uri (BraseroDataDisc *disc,
-			       const char *path,
-			       const char *uri);
+			       const gchar *path,
+			       const gchar *uri);
 static gboolean
 brasero_data_disc_is_excluded (BraseroDataDisc *disc,
-			       const char *uri,
+			       const gchar *uri,
 			       BraseroFile *top);
 
 static void
@@ -419,7 +430,7 @@ brasero_data_disc_load_dir_error (BraseroDataDisc *disc, GSList *errors);
 
 static BraseroDiscResult
 brasero_data_disc_expose_path (BraseroDataDisc *disc,
-			       const char *path);
+			       const gchar *path);
 static void
 brasero_data_disc_directory_priority (BraseroDataDisc *disc,
 				      BraseroFile *file);
@@ -429,15 +440,15 @@ brasero_data_disc_directory_load (BraseroDataDisc *disc,
 				  gboolean append);
 static BraseroFile *
 brasero_data_disc_directory_new (BraseroDataDisc *disc,
-				 char *uri,
+				 gchar *uri,
 				 gboolean append);
 
 static void
 brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
-				  char *uri,
+				  gchar *uri,
 				  BraseroFilterStatus status);
 
-static char *
+static gchar *
 brasero_data_disc_get_selected_uri (BraseroDisc *disc);
 
 static gchar *BRASERO_CREATED_DIR = "created";
@@ -574,6 +585,7 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->load_track = brasero_data_disc_load_track;
 	iface->get_status = brasero_data_disc_get_status;
 	iface->get_selected_uri = brasero_data_disc_get_selected_uri;
+	iface->fill_toolbar = brasero_data_disc_fill_toolbar;
 }
 
 static void brasero_data_disc_get_property (GObject * object,
@@ -664,7 +676,7 @@ brasero_data_disc_sort_size (GtkTreeModel *model,
 		return 1;
 
 	if (isdira) {
-		int nba, nbb;
+		gint nba, nbb;
 
 		nba = gtk_tree_model_iter_n_children (model, a);
 		nbb = gtk_tree_model_iter_n_children (model, b);
@@ -684,12 +696,12 @@ static int
 brasero_data_disc_sort_string (GtkTreeModel *model,
 			       GtkTreeIter *a,
 			       GtkTreeIter *b,
-			       int column)
+			       gint column)
 {
 	gboolean isdira, isdirb;
-	char *stringa, *stringb;
+	gchar *stringa, *stringb;
 	GtkSortType order;
-	int retval;
+	gint retval;
 
 	gtk_tree_sortable_get_sort_column_id (GTK_TREE_SORTABLE (model),
 					      NULL, &order);
@@ -771,14 +783,64 @@ brasero_data_disc_build_context_menu (BraseroDataDisc *disc)
 }
 
 static void
+brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
+{
+	BraseroDataDisc *data_disc;
+	GtkWidget *button;
+
+	data_disc = BRASERO_DATA_DISC (disc);
+
+	/* toolbar buttons */
+	data_disc->priv->filter_button = brasero_utils_make_button (NULL, GTK_STOCK_CLEAR);
+	gtk_widget_show (data_disc->priv->filter_button);
+	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
+	//gtk_button_new_with_label (_("Filtered files"));
+	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
+
+	gtk_widget_set_sensitive (data_disc->priv->filter_button, FALSE);
+	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
+			  "clicked",
+			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
+			  data_disc);
+	gtk_box_pack_end (GTK_BOX (toolbar),
+			  data_disc->priv->filter_button,
+			  FALSE,
+			  FALSE,
+			  0);
+
+	gtk_tooltips_set_tip (data_disc->priv->tooltip,
+			      data_disc->priv->filter_button,
+			      _("Some files were removed from the project. Clik here to see them."),
+			      NULL);
+
+	button = brasero_utils_make_button (NULL, GTK_STOCK_DIRECTORY);
+	gtk_widget_show (button);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+//	button = brasero_utils_make_button (_("New folder"), GTK_STOCK_DIRECTORY);
+	g_signal_connect (G_OBJECT (button),
+			  "clicked",
+			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
+			  data_disc);
+	gtk_tooltips_set_tip (data_disc->priv->tooltip,
+			      button,
+			      _("Create a new empty folder"),
+			      NULL);
+	gtk_box_pack_end (GTK_BOX (toolbar),
+			  button,
+			  FALSE,
+			  FALSE,
+			  0);
+}
+
+static void
 brasero_data_disc_init (BraseroDataDisc *obj)
 {
+	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkTreeModel *model;
 	GtkWidget *scroll;
-	GtkWidget *button;
-	GtkWidget *hbox;
 
 	obj->priv = g_new0 (BraseroDataDiscPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 6);
@@ -794,6 +856,9 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 	gtk_tree_view_set_enable_tree_lines (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 
+	/* This must be before connecting to button press event */
+	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (obj->priv->tree));
+
 	gtk_widget_show (obj->priv->tree);
 	g_signal_connect (G_OBJECT (obj->priv->tree),
 			  "button-press-event",
@@ -808,11 +873,14 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 			  G_CALLBACK (brasero_data_disc_key_released_cb),
 			  obj);
 
-	gtk_tree_selection_set_mode (gtk_tree_view_get_selection
-				     (GTK_TREE_VIEW (obj->priv->tree)),
-				     GTK_SELECTION_MULTIPLE);
-	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree),
-				      TRUE);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree));
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
+	g_signal_connect (selection,
+			  "changed",
+			  G_CALLBACK (brasero_data_disc_tree_selection_changed),
+			  obj);
+
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 
 	model = (GtkTreeModel*) gtk_tree_store_new (NB_COL,
 						    GDK_TYPE_PIXBUF,
@@ -965,45 +1033,6 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 
 	brasero_data_disc_build_context_menu (obj);
 
-	/* new folder button */
-	hbox = gtk_hbox_new (FALSE, 10);
-	gtk_box_pack_start (GTK_BOX (obj), hbox, FALSE, FALSE, 0);
-
-	obj->priv->filter_button = brasero_utils_make_button (NULL, GTK_STOCK_CLEAR);
-	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->filter_button), FALSE);
-	//gtk_button_new_with_label (_("Filtered files"));
-	gtk_button_set_relief (GTK_BUTTON (obj->priv->filter_button), GTK_RELIEF_NONE);
-
-	gtk_widget_set_sensitive (obj->priv->filter_button, FALSE);
-	g_signal_connect (G_OBJECT (obj->priv->filter_button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
-			  obj);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    obj->priv->filter_button,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      obj->priv->filter_button,
-			      _("Some files were removed from the project. Clik here to see them."),
-			      NULL);
-
-	button = brasero_utils_make_button (NULL, GTK_STOCK_DIRECTORY);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-//	button = brasero_utils_make_button (_("New folder"), GTK_STOCK_DIRECTORY);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
-			  obj);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      button,
-			      _("Create a new empty folder"),
-			      NULL);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-
 	/* useful things for directory exploration */
 	obj->priv->dirs = g_hash_table_new (g_str_hash, g_str_equal);
 	obj->priv->files = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1086,8 +1115,10 @@ brasero_data_disc_finalize (GObject *object)
 	g_hash_table_destroy (cobj->priv->dirs);
 	g_hash_table_destroy (cobj->priv->files);
 
-	if (cobj->priv->tooltip)
+	if (cobj->priv->tooltip) {
 		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
+		g_object_unref (cobj->priv->tooltip);
+	}
 
 	if (cobj->priv->path_refs)
 		g_hash_table_destroy (cobj->priv->path_refs);
@@ -1229,12 +1260,37 @@ brasero_data_disc_tree_check_name_validity (BraseroDataDisc *disc,
 }
 
 static void
+brasero_data_disc_remove_bogus_child (BraseroDataDisc *disc,
+				      GtkTreeIter *iter)
+{
+	gint status;
+	GtkTreeIter child;
+	GtkTreeModel *model;
+
+	/* see if there is a bogus row lingering */
+	model = disc->priv->model;
+	if (!gtk_tree_model_iter_children (model, &child, iter))
+		return;
+
+	do {
+		gtk_tree_model_get (model, &child,
+				    ROW_STATUS_COL, &status,
+				    -1);
+
+		if (status == ROW_BOGUS) {
+			gtk_tree_store_remove (GTK_TREE_STORE (model), &child);
+			break;
+		}
+	} while (gtk_tree_model_iter_next (model, &child));
+}
+
+static void
 brasero_data_disc_tree_update_directory_real (BraseroDataDisc *disc,
 					      GtkTreeIter *iter)
 {
-	char *nb_items_string;
+	gchar *nb_items_string;
 	GtkTreeModel *model;
-	int nb_items;
+	gint nb_items;
 
 	model = disc->priv->model;
 
@@ -1250,7 +1306,7 @@ brasero_data_disc_tree_update_directory_real (BraseroDataDisc *disc,
 				    ROW_STATUS_COL, ROW_BOGUS, -1);
 	}
 	else if (nb_items == 1) {
-		int status;
+		gint status;
 		GtkTreeIter child;
 
 		gtk_tree_model_iter_children (model, &child, iter);
@@ -1262,21 +1318,8 @@ brasero_data_disc_tree_update_directory_real (BraseroDataDisc *disc,
 		else
 			nb_items_string = g_strdup (_("1 item"));
 	}
-	else {
-		int status;
-		GtkTreeIter child;
-
-		gtk_tree_model_iter_children (model, &child, iter);
-		gtk_tree_model_get (model, &child,
-				    ROW_STATUS_COL, &status, -1);
-
-		if (status == ROW_BOGUS) {
-			gtk_tree_store_remove (GTK_TREE_STORE (model), &child);
-			nb_items --;
-		}
-
+	else
 		nb_items_string = g_strdup_printf (ngettext ("%d item", "%d items", nb_items), nb_items);
-	}
 
 	gtk_tree_store_set (GTK_TREE_STORE (disc->priv->model), iter,
 			    SIZE_COL, nb_items_string,
@@ -1292,6 +1335,9 @@ brasero_data_disc_tree_update_directory (BraseroDataDisc *disc,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
+	if (!path)
+		return;
+
 	model = disc->priv->model;
 	gtk_tree_model_get_iter (model, &iter, (GtkTreePath *) path);
 	brasero_data_disc_tree_update_directory_real (disc, &iter);
@@ -1299,7 +1345,7 @@ brasero_data_disc_tree_update_directory (BraseroDataDisc *disc,
 
 static void
 brasero_data_disc_tree_update_parent (BraseroDataDisc *disc,
-				     const GtkTreePath *path)
+				      const GtkTreePath *path)
 {
 	GtkTreePath *parent_path;
 
@@ -1318,10 +1364,10 @@ brasero_data_disc_tree_update_parent (BraseroDataDisc *disc,
 static gboolean
 brasero_data_disc_tree_path_to_disc_path (BraseroDataDisc *disc,
 					  GtkTreePath *treepath,
-					  char **discpath)
+					  gchar **discpath)
 {
-	int i;
-	char *name;
+	gint i;
+	gchar *name;
 	GString *path;
 	GtkTreeIter row;
 	GtkTreePath *iter;
@@ -1369,13 +1415,13 @@ static const char *
 brasero_data_disc_add_path_item_position (GtkTreeModel *model,
 					  GtkTreeIter *row,
 					  GtkTreePath *path,
-					  const char *ptr)
+					  const gchar *ptr)
 {
 	GtkTreeIter child;
-	int position;
-	char *next;
-	char *name;
-	int len;
+	gint position;
+	gchar *next;
+	gchar *name;
+	gint len;
 
 	ptr++;
 	next = g_utf8_strchr (ptr, -1, G_DIR_SEPARATOR);
@@ -1420,9 +1466,9 @@ brasero_data_disc_add_path_item_position (GtkTreeModel *model,
 /* FIXME: this is very slow we need to come up with something else */
 static gboolean
 brasero_data_disc_disc_path_to_tree_path (BraseroDataDisc *disc,
-					  const char *path,
+					  const gchar *path,
 					  GtkTreePath **treepath,
-					  const char **end)
+					  const gchar **end)
 {
 	GtkTreeModel *model;
 	GtkTreePath *retval;
@@ -1464,7 +1510,7 @@ brasero_data_disc_disc_path_to_tree_path (BraseroDataDisc *disc,
 
 static void
 brasero_data_disc_tree_remove_path (BraseroDataDisc *disc,
-				    const char *path)
+				    const gchar *path)
 {
 	GtkTreePath *treepath;
 	GtkTreeModel *model;
@@ -1502,7 +1548,7 @@ brasero_data_disc_remove_uri_from_tree (BraseroDataDisc *disc,
 {
 	GSList *paths;
 	GSList *iter;
-	char *path;
+	gchar *path;
 
 	/* remove all occurences from the tree */
 	paths = brasero_data_disc_uri_to_paths (disc, uri, include_grafts);
@@ -1525,7 +1571,7 @@ brasero_data_disc_tree_new_path (BraseroDataDisc *disc,
 	GtkTreeModel *model;
 	GtkTreeIter child;
 	gboolean result;
-	char *name;
+	gchar *name;
 
 	if (!parent_treepath) {
 		gchar *parent;
@@ -1553,6 +1599,7 @@ brasero_data_disc_tree_new_path (BraseroDataDisc *disc,
 		if (!result)
 			return FALSE;
 
+		brasero_data_disc_remove_bogus_child (disc, &iter);
 		gtk_tree_store_append (GTK_TREE_STORE (model), &child, &iter);
 		brasero_data_disc_tree_update_directory_real (disc, &iter);
 	}
@@ -1573,11 +1620,11 @@ brasero_data_disc_tree_new_path (BraseroDataDisc *disc,
 
 static gboolean
 brasero_data_disc_tree_set_path_from_info (BraseroDataDisc *disc,
-					   const char *path,
+					   const gchar *path,
 					   const GtkTreePath *treepath,
 					   const GnomeVFSFileInfo *info)
 {
-	const char *description;
+	const gchar *description;
 	GtkTreeModel *model;
 	GtkTreeIter parent;
 	GdkPixbuf *pixbuf;
@@ -1585,8 +1632,8 @@ brasero_data_disc_tree_set_path_from_info (BraseroDataDisc *disc,
 	gboolean result;
 	gboolean isdir;
 	gint64 dsize;
-	char *name;
-	char *size;
+	gchar *name;
+	gchar *size;
 
 	if (!path)
 		return FALSE;
@@ -1662,7 +1709,7 @@ brasero_data_disc_tree_set_path_from_info (BraseroDataDisc *disc,
 
 	/* see if this directory should be explored */
 	if (gtk_tree_model_iter_parent (model, &parent, &iter)) {
-		int status;
+		gint status;
 
 		gtk_tree_model_get (model, &parent,
 				    ROW_STATUS_COL, &status,
@@ -1691,19 +1738,20 @@ brasero_data_disc_tree_set_path_from_info (BraseroDataDisc *disc,
 
 static gboolean
 brasero_data_disc_tree_new_empty_folder_real (BraseroDataDisc *disc,
-					      const char *path,
-					      gint state)
+					      const gchar *path,
+					      gint state,
+					      gboolean edit)
 {
 	GtkTreeViewColumn *column;
-	const char *description;
-	GtkTreeIter sort_iter;
+	const gchar *description;
 	GtkTreePath *treepath;
+	GtkTreeIter sort_iter;
 	GtkTreeModel *model;
 	GdkPixbuf *pixbuf;
 	GtkTreeIter child;
 	gboolean result;
-	char *parent;
-	char *name;
+	gchar *parent;
+	gchar *name;
 
 	parent = g_path_get_dirname (path);
 	result = brasero_data_disc_disc_path_to_tree_path (disc,
@@ -1719,10 +1767,12 @@ brasero_data_disc_tree_new_empty_folder_real (BraseroDataDisc *disc,
 		GtkTreeIter iter;
 
 		result = gtk_tree_model_get_iter (model, &iter, treepath);
-		gtk_tree_path_free (treepath);
-		if (!result)
+		if (!result) {
+			gtk_tree_path_free (treepath);
 			return FALSE;
+		}
 
+		brasero_data_disc_remove_bogus_child (disc, &iter);
 		gtk_tree_store_append (GTK_TREE_STORE (model), &child, &iter);
 		brasero_data_disc_tree_update_directory_real (disc, &iter);
 	}
@@ -1745,41 +1795,52 @@ brasero_data_disc_tree_new_empty_folder_real (BraseroDataDisc *disc,
 
 	brasero_data_disc_tree_update_directory_real (disc, &child);
 
-	/* we leave the possibility to the user to edit the name */
-	gtk_tree_model_sort_convert_child_iter_to_iter (GTK_TREE_MODEL_SORT (disc->priv->sort),
-							&sort_iter,
-							&child);
+	if (edit) {
+		if (treepath) {
+			GtkTreePath *sort_parent;
 
-	treepath = gtk_tree_model_get_path (disc->priv->sort, &sort_iter);
+			sort_parent = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (disc->priv->sort),
+										      treepath);
 
-	column = gtk_tree_view_get_column (GTK_TREE_VIEW (disc->priv->tree),
-					   0);
-	gtk_tree_view_set_cursor (GTK_TREE_VIEW (disc->priv->tree),
-				  treepath,
-				  column,
-				  TRUE);
-	gtk_widget_grab_focus (disc->priv->tree);
+			if (!gtk_tree_view_row_expanded (GTK_TREE_VIEW (disc->priv->tree), sort_parent))
+				gtk_tree_view_expand_row (GTK_TREE_VIEW (disc->priv->tree), sort_parent, FALSE);
+
+			gtk_tree_path_free (sort_parent);
+			gtk_tree_path_free (treepath);
+		}
+
+		/* we leave the possibility to the user to edit the name */
+		gtk_tree_model_sort_convert_child_iter_to_iter (GTK_TREE_MODEL_SORT (disc->priv->sort),
+								&sort_iter,
+								&child);
+
+		treepath = gtk_tree_model_get_path (disc->priv->sort, &sort_iter);
+
+		/* grab focus must be called before next function to avoid
+		 * triggering a bug where if pointer is not in the widget 
+		 * any more and enter is pressed the cell will remain editable */
+		column = gtk_tree_view_get_column (GTK_TREE_VIEW (disc->priv->tree), 0);
+		gtk_widget_grab_focus (disc->priv->tree);
+		gtk_tree_view_set_cursor (GTK_TREE_VIEW (disc->priv->tree),
+					  treepath,
+					  column,
+					  TRUE);
+		gtk_tree_path_free (treepath);
+	}
 
 	return TRUE;
 }
 
 static gboolean
-brasero_data_disc_tree_new_empty_folder (BraseroDataDisc *disc,
-					 const gchar *path)
-{
-	return brasero_data_disc_tree_new_empty_folder_real (disc, path, ROW_EXPLORED);
-}
-
-static gboolean
 brasero_data_disc_tree_new_loading_row (BraseroDataDisc *disc,
-					const char *path)
+					const gchar *path)
 {
 	GtkTreePath *treepath;
 	GtkTreeModel *model;
 	GtkTreeIter child;
 	gboolean result;
-	char *parent;
-	char *name;
+	gchar *parent;
+	gchar *name;
 
 	parent = g_path_get_dirname (path);
 	result = brasero_data_disc_disc_path_to_tree_path (disc,
@@ -1799,6 +1860,7 @@ brasero_data_disc_tree_new_loading_row (BraseroDataDisc *disc,
 		if (!result)
 			return FALSE;
 
+		brasero_data_disc_remove_bogus_child (disc, &iter);
 		gtk_tree_store_append (GTK_TREE_STORE (model), &child, &iter);
 		brasero_data_disc_tree_update_directory_real (disc, &iter);
 	}
@@ -1857,7 +1919,7 @@ static void
 brasero_data_disc_reference_free (BraseroDataDisc *disc,
 				  BraseroDataDiscReference ref)
 {
-	char *value;
+	gchar *value;
 
 	if (!disc->priv->path_refs)
 		return;
@@ -1906,7 +1968,7 @@ brasero_data_disc_reference_get_list (BraseroDataDisc *disc,
 				      GSList *references,
 				      gboolean free_refs)
 {
-	char *path;
+	gchar *path;
 	GSList *iter;
 	GSList *paths = NULL;
 	BraseroDataDiscReference ref;
@@ -1933,15 +1995,15 @@ brasero_data_disc_reference_get_list (BraseroDataDisc *disc,
 }
 
 struct _MakeReferencesListData {
-	char *path;
-	int len;
+	gchar *path;
+	gint len;
 	GSList *list;
 };
 typedef struct _MakeReferencesListData MakeReferencesListData;
 
 static void
 _foreach_make_references_list_cb (BraseroDataDiscReference num,
-				  char *path,
+				  gchar *path,
 				  MakeReferencesListData *data)
 {
 	if (!strncmp (path, data->path, data->len)
@@ -1951,20 +2013,20 @@ _foreach_make_references_list_cb (BraseroDataDiscReference num,
 
 static void
 brasero_data_disc_move_references (BraseroDataDisc *disc,
-				   const char *oldpath,
-				   const char *newpath)
+				   const gchar *oldpath,
+				   const gchar *newpath)
 {
 	MakeReferencesListData callback_data;
 	BraseroDataDiscReference ref;
-	char *newvalue;
-	char *value;
-	int len;
+	gchar *newvalue;
+	gchar *value;
+	gint len;
 
 	if (!disc->priv->path_refs)
 		return;
 
 	len = strlen (oldpath);
-	callback_data.path = (char*) oldpath;
+	callback_data.path = (gchar*) oldpath;
 	callback_data.len = len;
 	callback_data.list = NULL;
 
@@ -1991,12 +2053,12 @@ brasero_data_disc_reference_remove_path (BraseroDataDisc *disc,
 {
 	MakeReferencesListData callback_data;
 	BraseroDataDiscReference ref;
-	char *value;
+	gchar *value;
 
 	if (!disc->priv->path_refs)
 		return;
 
-	callback_data.path = (char*) path;
+	callback_data.path = (gchar*) path;
 	callback_data.len = strlen (path);
 	callback_data.list = NULL;
 
@@ -2017,14 +2079,46 @@ brasero_data_disc_reference_remove_path (BraseroDataDisc *disc,
 }
 
 static void
+_foreach_add_to_list_cb (BraseroDataDiscReference num,
+			 gchar *path,
+			 gpointer callback_data)
+{
+	GSList **list = callback_data;
+
+	if (path == BRASERO_INVALID_REFERENCE)
+		return;
+
+	*list = g_slist_prepend (*list, GINT_TO_POINTER (num));
+}
+
+static void
 brasero_data_disc_reference_invalidate_all (BraseroDataDisc *disc)
 {
-	char *root = G_DIR_SEPARATOR_S;
+	BraseroDataDiscReference ref;
+	GSList *list = NULL;
+	gchar *value;
 
 	if (!disc->priv->path_refs)
 		return;
 
-	brasero_data_disc_reference_remove_path (disc, root);
+
+	if (!disc->priv->path_refs)
+		return;
+
+	g_hash_table_foreach (disc->priv->path_refs,
+			      (GHFunc) _foreach_add_to_list_cb,
+			      &list);
+
+	for (; list; list = g_slist_remove (list, GINT_TO_POINTER (ref))) {
+		ref = GPOINTER_TO_INT (list->data);
+
+		value = g_hash_table_lookup (disc->priv->path_refs,
+					     GINT_TO_POINTER (ref));
+		g_hash_table_replace (disc->priv->path_refs,
+				      GINT_TO_POINTER (ref),
+				      BRASERO_INVALID_REFERENCE);
+		g_free (value);
+	}
 }
 
 /*********************** joliet non compliant files   **************************/
@@ -2506,7 +2600,7 @@ brasero_data_disc_empty_symlink_hash (BraseroDataDisc *disc)
 }
 
 static gboolean
-_foreach_remove_grafts_cb (const char *uri,
+_foreach_remove_grafts_cb (const gchar *uri,
 			   GSList *grafts,
 			   BraseroDataDisc *disc)
 {
@@ -2516,8 +2610,8 @@ _foreach_remove_grafts_cb (const char *uri,
 }
 
 static void
-_foreach_remove_created_dirs_cb (char *graft, 
-				 const char *uri,
+_foreach_remove_created_dirs_cb (gchar *graft, 
+				 const gchar *uri,
 				 BraseroDataDisc *disc)
 {
 	if (uri == BRASERO_CREATED_DIR)
@@ -3068,7 +3162,7 @@ brasero_data_disc_restore_unreadable_cb (BraseroDataDisc *disc,
 
 		if (!success)	/* keep for later to tell the user it didn't go on well */
 			unreadable = g_slist_prepend (unreadable, result);
-		else
+		else;
 			brasero_data_disc_selection_changed (disc, TRUE);
 	}
 
@@ -3493,17 +3587,17 @@ brasero_data_disc_dir_free (BraseroDataDisc *disc,
 
 
 struct _BraseroRemoveChildrenData {
-	int len;
+	gint len;
 	BraseroFile *dir;
 	GSList *dirs;
 	GSList *files;
-	char *graft;
+	gchar *graft;
 	BraseroDataDisc *disc;
 };
 typedef struct _BraseroRemoveChildrenData BraseroRemoveChildrenData;
 
 static void
-_foreach_remove_children_dirs_cb (const char *uri,
+_foreach_remove_children_dirs_cb (const gchar *uri,
 				  BraseroFile *dir,
 				  BraseroRemoveChildrenData *data)
 {
@@ -3573,7 +3667,7 @@ brasero_data_disc_directory_remove_from_tree (BraseroDataDisc *disc,
 {
 	GSList *paths;
 	GSList *iter;
-	char *path;
+	gchar *path;
 
 	/* we need to remove all occurence of file in the tree */
 	paths = brasero_data_disc_uri_to_paths (disc, dir->uri, TRUE);
@@ -3612,8 +3706,8 @@ brasero_data_disc_remove_children_async_cb (BraseroDataDisc *disc,
 	gchar *uri_dir = callback_data;
 	GnomeVFSFileInfo *info;
 	BraseroFile *dir;
-	char *parent;
-	char *uri;
+	gchar *parent;
+	gchar *uri;
 
 	dir = g_hash_table_lookup (disc->priv->dirs, uri_dir);
 	if (!dir && dir->sectors < 0)
@@ -3664,14 +3758,14 @@ brasero_data_disc_remove_children_async_cb (BraseroDataDisc *disc,
 }
 
 static void
-_foreach_remove_children_files_cb (char *uri,
+_foreach_remove_children_files_cb (gchar *uri,
 				   GSList *excluding,
 				   BraseroRemoveChildrenData *data)
 {
 	BraseroFile *dir;
-	int excluding_num;
-	int grafts_num;
-	char *parent;
+	gint excluding_num;
+	gint grafts_num;
+	gchar *parent;
 	GSList *list;
 
 	if (data->disc->priv->unreadable
@@ -3736,13 +3830,13 @@ _foreach_remove_children_files_cb (char *uri,
 static void
 brasero_data_disc_remove_children (BraseroDataDisc *disc,
 				   BraseroFile *dir,
-				   const char *graft)
+				   const gchar *graft)
 {
 	BraseroRemoveChildrenData callback_data;
 	BraseroDiscResult result;
 	BraseroFile *file;
 	GSList *iter;
-	char *uri;
+	gchar *uri;
 
 	if (!disc->priv->excluded)
 		return;
@@ -3853,12 +3947,12 @@ brasero_data_disc_remove_uri (BraseroDataDisc *disc,
 }
 
 /******************************** graft points *********************************/
-static const char *
+static const gchar *
 brasero_data_disc_graft_get_real (BraseroDataDisc *disc,
-				  const char *path)
+				  const gchar *path)
 {
-	char *tmp;
-	char *parent;
+	gchar *tmp;
+	gchar *parent;
 	gpointer key = NULL;
 
 	if (g_hash_table_lookup_extended (disc->priv->paths,
@@ -3883,17 +3977,17 @@ brasero_data_disc_graft_get_real (BraseroDataDisc *disc,
 	return key;
 }
 
-static char *
+static gchar *
 brasero_data_disc_graft_get (BraseroDataDisc *disc,
-			     const char *path)
+			     const gchar *path)
 {
 	return g_strdup (brasero_data_disc_graft_get_real (disc, path));
 }
 
 static gboolean
 brasero_data_disc_graft_new (BraseroDataDisc *disc,
-			     const char *uri,
-			     const char *graft)
+			     const gchar *uri,
+			     const gchar *graft)
 {
 	gchar *realgraft;
 	GSList *grafts;
@@ -3933,10 +4027,10 @@ brasero_data_disc_graft_new (BraseroDataDisc *disc,
 
 static GSList *
 brasero_data_disc_graft_new_list (BraseroDataDisc *disc,
-				  const char *uri,
+				  const gchar *uri,
 				  GSList *grafts)
 {
-	char *graft;
+	gchar *graft;
 	GSList *next;
 	GSList *iter;
 
@@ -3954,13 +4048,13 @@ brasero_data_disc_graft_new_list (BraseroDataDisc *disc,
 }
 
 struct _BraseroRemoveGraftPointersData {
-	char *graft;
+	gchar *graft;
 	GSList *list;
 };
 typedef struct _BraseroRemoveGraftPointersData BraseroRemoveGraftPointersData;
 
 static void
-_foreach_remove_graft_pointers_cb (char *key,
+_foreach_remove_graft_pointers_cb (gchar *key,
 				   GSList *excluding,
 				   BraseroRemoveGraftPointersData *data)
 {
@@ -3972,9 +4066,9 @@ _foreach_remove_graft_pointers_cb (char *key,
 
 static void
 brasero_data_disc_graft_clean_excluded (BraseroDataDisc *disc,
-					      const char *graft)
+					const gchar *graft)
 {
-	char *uri;
+	gchar *uri;
 	GSList *iter;
 	BraseroRemoveGraftPointersData callback_data;
 
@@ -3982,7 +4076,7 @@ brasero_data_disc_graft_clean_excluded (BraseroDataDisc *disc,
 		return;
 
 	/* we need to remove any pointer to the graft point from the excluded hash */
-	callback_data.graft = (char *) graft;
+	callback_data.graft = (gchar *) graft;
 	callback_data.list = NULL;
 	g_hash_table_foreach (disc->priv->excluded,
 			      (GHFunc) _foreach_remove_graft_pointers_cb,
@@ -4021,7 +4115,7 @@ brasero_data_disc_graft_clean_excluded (BraseroDataDisc *disc,
 
 static gboolean
 brasero_data_disc_graft_remove (BraseroDataDisc *disc,
-				const char *path)
+				const gchar *path)
 {
 	BraseroFile *file;
 	gpointer oldgraft = NULL;
@@ -4083,10 +4177,10 @@ end:
 
 static void
 brasero_data_disc_graft_remove_all (BraseroDataDisc *disc,
-				    const char *uri)
+				    const gchar *uri)
 {
 	GSList *grafts;
-	char *graft;
+	gchar *graft;
 
 	grafts = g_hash_table_lookup (disc->priv->grafts, uri);
 	if (!grafts)
@@ -4114,7 +4208,7 @@ struct _BraseroMoveGraftChildData {
 typedef struct _BraseroMoveGraftChildData BraseroMoveGraftChildData;
 
 static void
-_foreach_graft_changed_cb (char *key,
+_foreach_graft_changed_cb (gchar *key,
 			   GSList *excluding,
 			   BraseroMoveGraftChildData *data)
 {
@@ -4134,7 +4228,7 @@ _foreach_move_children_paths_cb (gchar *graft,
 {
 	if (!strncmp (graft, data->oldgraft, data->len)
 	&&  *(graft + data->len) == G_DIR_SEPARATOR) {
-		char *newgraft;
+		gchar *newgraft;
 
 		newgraft = g_strconcat (data->newgraft,
 					graft + data->len,
@@ -4214,13 +4308,13 @@ struct _BraseroRemoveGraftedData {
 typedef struct _BraseroRemoveGraftedData BraseroRemoveGraftedData;
 
 static gboolean
-_foreach_unreference_grafted_cb (char *graft,
-				 char *uri,
+_foreach_unreference_grafted_cb (gchar *graft,
+				 gchar *uri,
 				 BraseroRemoveGraftedData *data)
 {
 	GSList *iter;
-	char *path;
-	int len;
+	gchar *path;
+	gint len;
 
 	if (graft == BRASERO_CREATED_DIR)
 		return FALSE;
@@ -4468,13 +4562,13 @@ brasero_data_disc_uri_to_paths (BraseroDataDisc *disc,
 	return paths;
 }
 
-static char *
+static gchar *
 brasero_data_disc_path_to_uri (BraseroDataDisc *disc,
-			       const char *path)
+			       const gchar *path)
 {
-	const char *graft;
-	char *graft_uri;
-	char *retval;
+	const gchar *graft;
+	gchar *graft_uri;
+	gchar *retval;
 
 	graft = brasero_data_disc_graft_get_real (disc, path);
 	if (!graft)
@@ -4528,9 +4622,9 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 	GtkTreeModel *sort;
 	GtkTreeIter iter;
 	GList *list;
-	char *path;
-	char *name;
-	int nb;
+	gchar *path;
+	gchar *name;
+	gint nb;
 
 	if (disc->priv->is_loading)
 		return;
@@ -4549,7 +4643,7 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 		treepath = NULL;
 	}
 	else {
-		int explored;
+		gint explored;
 		gboolean isdir;
 		GtkTreePath *tmp;
 
@@ -4567,8 +4661,7 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 				    ROW_STATUS_COL, &explored,
 				    -1);
 
-		if (!isdir 
-		||  explored < ROW_EXPLORED) {
+		if (!isdir || explored < ROW_EXPLORED) {
 			gtk_tree_path_up (treepath);
 
 			if (gtk_tree_path_get_depth (treepath) < 1) {
@@ -4616,8 +4709,10 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 
 	/* just to make sure that tree is not hidden behind info */
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (BRASERO_DATA_DISC (disc)->priv->notebook), 1);
-
-	brasero_data_disc_tree_new_empty_folder (disc, path);
+	brasero_data_disc_tree_new_empty_folder_real (disc,
+						      path,
+						      ROW_EXPLORED,
+						      TRUE);
 	g_free (path);
 
 	brasero_data_disc_selection_changed (disc, TRUE);
@@ -4631,13 +4726,13 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
  * hash or from the file hash and check that it is not in the excluded hash */
 static void
 brasero_data_disc_exclude_uri (BraseroDataDisc *disc,
-			       const char *path,
-			       const char *uri)
+			       const gchar *path,
+			       const gchar *uri)
 {
+	BraseroFile *file;
 	gpointer key = NULL;
 	gpointer graft = NULL;
 	gpointer excluding = NULL;
-	BraseroFile *file;
 
 	if (!g_hash_table_lookup_extended (disc->priv->paths,
 					   path,
@@ -4681,8 +4776,8 @@ brasero_data_disc_exclude_uri (BraseroDataDisc *disc,
 
 static void
 brasero_data_disc_restore_uri (BraseroDataDisc *disc,
-			       const char *path,
-			       const char *uri)
+			       const gchar *path,
+			       const gchar *uri)
 {
 	gpointer excluding = NULL;
 	gpointer graft = NULL;
@@ -4728,8 +4823,8 @@ brasero_data_disc_has_parent (BraseroDataDisc *disc,
 			      const gchar *uri,
 			      BraseroFile *top)
 {
-	BraseroFile *dir;
 	gint excluding_num;
+	BraseroFile *dir;
 	gint grafts_num;
 	gchar *parent;
 	GSList *list;
@@ -4818,7 +4913,7 @@ brasero_data_disc_expose_grafted_cb (BraseroDataDisc *disc,
 	BraseroInfoAsyncResult *result;
 	GSList *refs = callback_data;
 	GnomeVFSFileInfo *info;
-	char *path;
+	gchar *path;
 
 	for (; results && refs; results = results->next, refs = refs->next) {
 		result = results->data;
@@ -4861,8 +4956,8 @@ static void
 brasero_data_disc_expose_grafted (BraseroDataDisc *disc,
 				  GSList *grafts)
 {
-	char *uri;
-	const char *path;
+	gchar *uri;
+	const gchar *path;
 	GSList *uris = NULL;
 	GSList *paths = NULL;
 	GSList *created = NULL;
@@ -4873,7 +4968,7 @@ brasero_data_disc_expose_grafted (BraseroDataDisc *disc,
 
 		uri = g_hash_table_lookup (disc->priv->paths, path);
 		if (uri == BRASERO_CREATED_DIR) {
-			created = g_slist_prepend (created, (char *) path);
+			created = g_slist_prepend (created, (gchar *) path);
 			continue;
 		}
 		else if (!uri)
@@ -4901,7 +4996,10 @@ brasero_data_disc_expose_grafted (BraseroDataDisc *disc,
 
 	for (; created; created = g_slist_remove (created, path)) {
 		path = created->data;
-		brasero_data_disc_tree_new_empty_folder (disc, path);
+		brasero_data_disc_tree_new_empty_folder_real (disc,
+							      path,
+							      ROW_NOT_EXPLORED,
+							      FALSE);
 	}
 }
 
@@ -4939,8 +5037,8 @@ brasero_data_disc_dir_contents_destroy (GObject *object, gpointer data)
 static gboolean
 brasero_data_disc_expose_path_real (BraseroDataDisc *disc)
 {
-	char *uri;
-	char *path;
+	gchar *uri;
+	gchar *path;
 	GSList *iter;
 	GSList *paths;
 	GSList *infos;
@@ -4985,7 +5083,7 @@ next:
 
 	/* for every path we look for the corresponding tree paths in treeview */
 	for (iter = paths; iter; iter = iter->next) {
-		char *path;
+		gchar *path;
 
 		path = iter->data;
 
@@ -5028,7 +5126,7 @@ next:
 		path_iter = paths;
 		treepath_iter = treepaths;
 		for (; path_iter; path_iter = path_iter->next, treepath_iter = treepath_iter->next) {
-			char *parent;
+			gchar *parent;
 			GtkTreePath *tmp_treepath = NULL;
 
 			/* make sure this file wasn't excluded */
@@ -5158,12 +5256,16 @@ brasero_data_disc_expose_thread (GObject *object, gpointer data)
 			break;
 
 		if (info->name [0] == '.' && (info->name [1] == 0
-		|| (info->name [1] == '.' && info->name [2] == 0)))
+		|| (info->name [1] == '.' && info->name [2] == 0))) {
+			gnome_vfs_file_info_clear (info);
 			continue;
+		}
 
 		/* symlinks are exposed through expose_grafted */
-		if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK)
+		if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
+			gnome_vfs_file_info_clear (info);
 			continue;
+		}
 
 		infos = g_slist_prepend (infos, info);
 		info = gnome_vfs_file_info_new ();
@@ -5233,7 +5335,7 @@ brasero_data_disc_expose_path (BraseroDataDisc *disc,
 	}
 
 	/* no need to check for dummies here are we only expose children */
-	if (!(dir = g_hash_table_lookup(disc->priv->dirs, uri))) {
+	if (!(dir = g_hash_table_lookup (disc->priv->dirs, uri))) {
 		g_free (uri);
 		return BRASERO_DISC_NOT_IN_TREE;
 	}
@@ -5276,16 +5378,16 @@ brasero_data_disc_row_collapsed_cb (GtkTreeView *tree,
 				    GtkTreePath *sortpath,
 				    BraseroDataDisc *disc)
 {
-	char *parent_discpath;
+	gchar *parent_discpath;
 	GtkTreeModel *model;
 	GtkTreeModel *sort;
 	GtkTreeIter parent;
 	GtkTreeIter child;
 	GtkTreePath *path;
+	gchar *discpath;
 	gboolean isdir;
-	char *discpath;
-	int explored;
-	char *name;
+	gint explored;
+	gchar *name;
 
 	model = disc->priv->model;
 	sort = disc->priv->sort;
@@ -5334,10 +5436,11 @@ brasero_data_disc_row_collapsed_cb (GtkTreeView *tree,
 
 	g_free(parent_discpath);
 }
+
 /************************** files, directories handling ************************/
 static gint64
 brasero_data_disc_file_info (BraseroDataDisc *disc,
-			     const char *uri,
+			     const gchar *uri,
 			     GnomeVFSFileInfo *info)
 {
 	gint64 retval = 0;
@@ -5370,8 +5473,10 @@ brasero_data_disc_obj_new (BraseroDataDisc *disc,
 					  file->uri,
 					  &key,
 					  &value)) {
-		g_hash_table_replace (disc->priv->excluded, file->uri, value);
-		g_free (key);
+		if (key != file->uri) {
+			g_hash_table_replace (disc->priv->excluded, file->uri, value);
+			g_free (key);
+		}
 	}
 
 	if (disc->priv->restored
@@ -5428,16 +5533,16 @@ brasero_data_disc_file_new (BraseroDataDisc *disc,
 
 struct _BraseroSymlinkChildrenData {
 	BraseroDataDisc *disc;
-	int len;
-	char *uri;
+	gint len;
+	gchar *uri;
 	GSList *list;
 };
 typedef struct _BraseroSymlinkChildrenData BraseroSymlinkChildrenData;
 
 static void
-_foreach_replace_symlink_children_cb (char *symlink,
-				      int value,
-				      BraseroSymlinkChildrenData *data)
+_foreach_lookup_symlink_children_cb (gchar *symlink,
+				     const gchar *targets,
+				     BraseroSymlinkChildrenData *data)
 {
 	/* symlink must be a child of uri 
 	 * NOTE: can't be uri itself since we found it in dirs hash */
@@ -5450,7 +5555,7 @@ _foreach_replace_symlink_children_cb (char *symlink,
 
 static GSList *
 brasero_data_disc_symlink_get_uri_children (BraseroDataDisc *disc,
-					    const char *uri)
+					    const gchar *uri)
 {
 	BraseroSymlinkChildrenData callback_data;
 
@@ -5458,12 +5563,12 @@ brasero_data_disc_symlink_get_uri_children (BraseroDataDisc *disc,
 		return NULL;
 
 	callback_data.disc = disc;
-	callback_data.uri = (char *) uri;
+	callback_data.uri = (gchar *) uri;
 	callback_data.len = strlen (uri);
 	callback_data.list = NULL;
 
 	g_hash_table_foreach (disc->priv->symlinks,
-			      (GHFunc) _foreach_replace_symlink_children_cb,
+			      (GHFunc) _foreach_lookup_symlink_children_cb,
 			      &callback_data);
 
 	return callback_data.list;
@@ -5471,11 +5576,11 @@ brasero_data_disc_symlink_get_uri_children (BraseroDataDisc *disc,
 
 static gboolean
 brasero_data_disc_symlink_is_recursive (BraseroDataDisc *disc,
-					const char *uri,
-					const char *target)
+					const gchar *uri,
+					const gchar *target)
 {
-	int len;
-	char *symlink;
+	gint len;
+	gchar *symlink;
 	gboolean result;
 	GSList *symlinks;
 
@@ -5522,14 +5627,14 @@ recursive:
 
 static GSList *
 brasero_data_disc_symlink_new (BraseroDataDisc *disc,
-			       const char *uri,
+			       const gchar *uri,
 			       GnomeVFSFileInfo *info,
 			       GSList *paths)
 {
 	BraseroFile *file = NULL;
 	GSList *next;
 	GSList *iter;
-	char *path;
+	gchar *path;
 
 	/* we don't want paths overlapping already grafted paths.
 	 * This might happen when we are loading a project or when
@@ -5572,7 +5677,10 @@ end :
 							      g_str_equal,
 							      (GDestroyNotify) g_free,
 							      (GDestroyNotify) g_free);
-	
+
+	if (info->symlink_name == NULL) 
+		g_warning ("SYMLINK IS NULL %s\n", uri);
+
 	if (!g_hash_table_lookup (disc->priv->symlinks, uri))
 		g_hash_table_insert (disc->priv->symlinks,
 				     g_strdup (uri),
@@ -5598,12 +5706,12 @@ end :
 static void
 brasero_data_disc_symlink_list_new (BraseroDataDisc *disc,
 				    BraseroDirectoryContentsData *content,
-				    const char *parent,
+				    const gchar *parent,
 				    GSList *symlinks)
 {
 	GSList *iter;
 	GSList *paths;
-	char *current;
+	gchar *current;
 	GSList *grafts = NULL;
 	GnomeVFSFileInfo *info;
 
@@ -5973,8 +6081,10 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 			break;
 
 		if (*info->name == '.' && (info->name[1] == 0
-		||  (info->name[1] == '.' && info->name[2] == 0)))
+		||  (info->name[1] == '.' && info->name[2] == 0))) {
+			gnome_vfs_file_info_clear (info);
 			continue;
+		}
 
 	    	escaped_name = gnome_vfs_escape_string (info->name);
 		current = g_build_path (G_DIR_SEPARATOR_S,
@@ -5992,6 +6102,8 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
  			error->uri = current;
  			error->status = BRASERO_FILTER_UNREADABLE;
 			callback_data->errors = g_slist_prepend (callback_data->errors, error);
+
+			gnome_vfs_file_info_clear (info);
 			continue;
 		}
 
@@ -6011,6 +6123,8 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 					error->uri = current;
 					error->status = status;
 					callback_data->errors = g_slist_prepend (callback_data->errors, error);
+
+					gnome_vfs_file_info_clear (info);
 					continue;
 				}
 			}
@@ -6023,6 +6137,8 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
  			error->uri = current;
  			error->status = BRASERO_FILTER_HIDDEN;
 			callback_data->errors = g_slist_prepend (callback_data->errors, error);
+
+			gnome_vfs_file_info_clear (info);
  			continue;
 		}
 
@@ -6318,7 +6434,7 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 	GtkTreeModel *sort;
 	GList *list, *iter;
 	GtkTreeIter row;
-	char *discpath;
+	gchar *discpath;
 
 	data = BRASERO_DATA_DISC (disc);
 	if (data->priv->is_loading)
@@ -6410,8 +6526,8 @@ brasero_data_disc_reset (BraseroDisc *disc)
 
 /*************************************** new row *******************************/
 struct _BraseroRestoreChildrenData {
-	int len;
-	char *uri;
+	gint len;
+	gchar *uri;
 	GSList *list;
 	BraseroDataDisc *disc;
 };
@@ -6555,19 +6671,19 @@ brasero_data_disc_restore_excluded_children (BraseroDataDisc *disc,
 
 struct _ReplaceSymlinkChildrenData {
 	GSList *grafts;
-	char *parent;
+	gchar *parent;
 };
 typedef struct _ReplaceSymlinkChildrenData ReplaceSymlinkChildrenData;
 
 static GSList *
 brasero_data_disc_get_target_grafts (BraseroDataDisc *disc,
-				     const char *sym_parent,
+				     const gchar *sym_parent,
 				     GSList *grafts,
-				     const char *symlink)
+				     const gchar *symlink)
 {
-	int len;
-	char *path;
-	char *graft;
+	gint len;
+	gchar *path;
+	gchar *graft;
 	GSList *newgrafts = NULL;
 
 	len = strlen (sym_parent);
@@ -6626,12 +6742,18 @@ brasero_data_disc_replace_symlink_children_cb (BraseroDataDisc *disc,
 	for (; results; results = results->next) {
 		result = results->data;
 
+		if (result->result != GNOME_VFS_OK)
+			continue;
+
 		info = result->info;
 		symlink = result->uri;
 		target = info->symlink_name;
 
+		if (!target)
+			continue;
+
 		if (result->result != GNOME_VFS_OK
-		||  !brasero_data_disc_is_readable (info))
+		|| !brasero_data_disc_is_readable (info))
 			continue;
 
 		/* if target is in unreadable remove it */
@@ -6707,7 +6829,7 @@ brasero_data_disc_replace_symlink_children (BraseroDataDisc *disc,
 	async_data->parent = g_strdup (dir->uri);
 
 	for (; grafts; grafts = grafts->next) {
-		char *graft;
+		gchar *graft;
 
 		graft = grafts->data;
 		ref = brasero_data_disc_reference_new (disc, graft);
@@ -6724,13 +6846,13 @@ brasero_data_disc_replace_symlink_children (BraseroDataDisc *disc,
 	g_slist_free (list);
 }
 
-static char *
+static gchar *
 brasero_data_disc_new_file (BraseroDataDisc *disc,
 			    const gchar *uri,
 			    const gchar *path,
 			    const GnomeVFSFileInfo *info)
 {
-	char *graft;
+	gchar *graft;
 
 	if (brasero_data_disc_original_parent (disc, uri, path)) {
 		if (brasero_data_disc_is_excluded (disc, uri, NULL)) {
@@ -6771,12 +6893,12 @@ brasero_data_disc_new_file (BraseroDataDisc *disc,
 	return graft;
 }
 
-static char *
+static gchar *
 brasero_data_disc_new_row_added (BraseroDataDisc *disc,
-				 const char *uri,
-				 const char *path)
+				 const gchar *uri,
+				 const gchar *path)
 {
-	char *graft = NULL;
+	gchar *graft = NULL;
 
 	/* create and add a graft point if need be, that is if the file wasn't
 	 * added to a directory which is its parent in the file system */
@@ -6845,14 +6967,16 @@ brasero_data_disc_new_row_real (BraseroDataDisc *disc,
 								 path);
 	}
 	else if ((file = g_hash_table_lookup (disc->priv->dirs, uri))
-	      &&   file->sectors >= 0) {
+	     &&   file->sectors >= 0) {
 		if (!g_slist_find (disc->priv->loading, file)) {
 			GSList *paths;
 
 			/* the problem here is that despite the fact this directory was explored
 			 * one or various subdirectories could have been removed because excluded */
 			brasero_data_disc_restore_excluded_children (disc, file);
-			paths = g_slist_prepend (NULL, (gchar*) path);
+
+			/* we also replace all its children which are symlinks */
+			paths = g_slist_prepend (NULL, (gchar *) path);
 			brasero_data_disc_replace_symlink_children (disc, file, paths);
 			g_slist_free (paths);
 		}
@@ -6903,7 +7027,7 @@ brasero_data_disc_new_row_cb (BraseroDataDisc *disc,
 			      GSList *results,
 			      gpointer callback_data)
 {
-	char *path;
+	gchar *path;
 	GSList *iter;
 	BraseroDiscResult success;
 	GSList *graft_infos = callback_data;
@@ -7169,7 +7293,8 @@ brasero_data_disc_add_directory_contents (BraseroDataDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 				const gchar *uri,
-				GtkTreePath *treeparent)
+				GtkTreePath *treeparent,
+				GtkTreePath **treepath)
 {
 	BraseroDataDiscReference reference;
 	BraseroDiscResult success;
@@ -7284,11 +7409,20 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 
 	/* make it appear in the tree */
 	model = disc->priv->model;
-	if (treeparent
-	&&  gtk_tree_path_get_depth (treeparent) > 0) {
+	if (treeparent && gtk_tree_path_get_depth (treeparent) > 0) {
 		GtkTreeIter parent;
+		GtkTreePath *sort_parent;
+
+		sort_parent = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (disc->priv->sort),
+									      treeparent);
+		if (!gtk_tree_view_row_expanded (GTK_TREE_VIEW (disc->priv->tree), sort_parent))
+			gtk_tree_view_expand_row (GTK_TREE_VIEW (disc->priv->tree),
+						  sort_parent,
+						  FALSE);
+		gtk_tree_path_free (sort_parent);
 
 		gtk_tree_model_get_iter (model, &parent, treeparent);
+		brasero_data_disc_remove_bogus_child (disc, &parent);
 		gtk_tree_store_append (GTK_TREE_STORE (model), &iter, &parent);
 		brasero_data_disc_tree_update_directory_real (disc, &parent);
 	}
@@ -7302,6 +7436,9 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 			    ROW_STATUS_COL, ROW_NEW,
 			    -1);
 
+	if (treepath)
+		*treepath = gtk_tree_model_get_path (model, &iter);
+
 	g_free (name);
 
 	return BRASERO_DISC_OK;
@@ -7310,14 +7447,45 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri)
 {
+	GList *selected;
 	BraseroDiscResult success;
+	GtkTreePath *parent = NULL;
+	BraseroDataDisc *data_disc;
+	GtkTreeSelection *selection;
 
-	if (BRASERO_DATA_DISC (disc)->priv->is_loading)
+	data_disc = BRASERO_DATA_DISC (disc);
+
+	if (data_disc->priv->is_loading)
 		return BRASERO_DISC_LOADING;
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (data_disc->priv->tree));
+	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+	if (g_list_length (selected) == 1) {
+		GtkTreePath *treepath;
+		gboolean is_directory;
+		GtkTreeIter iter;
+
+		treepath = selected->data;
+		gtk_tree_model_get_iter (data_disc->priv->sort, &iter, treepath);
+		gtk_tree_model_get (data_disc->priv->sort, &iter,
+				    ISDIR_COL, &is_directory,
+				    -1);
+
+		if (is_directory)
+			parent = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (data_disc->priv->sort),
+										 treepath);
+	}
+	g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected);
 
 	success = brasero_data_disc_add_uri_real (BRASERO_DATA_DISC (disc),
 						  uri,
+						  parent,
 						  NULL);
+
+	if (parent)
+		gtk_tree_path_free (parent);
+
 	return success;
 }
 
@@ -7359,7 +7527,7 @@ _foreach_restored_make_list_cb (const char *restored,
 }
 
 static void
-_foreach_excluded_make_list_cb (const char *uri,
+_foreach_excluded_make_list_cb (const gchar *uri,
 				GSList *grafts,
 				MakeExcludedListData *data)
 {
@@ -7372,7 +7540,7 @@ _foreach_excluded_make_list_cb (const char *uri,
 }
 
 static void
-_foreach_grafts_make_list_cb (char *path,
+_foreach_grafts_make_list_cb (gchar *path,
 			      const gchar *uri,
 			      MakeListData *data)
 {
@@ -7380,7 +7548,7 @@ _foreach_grafts_make_list_cb (char *path,
 	BraseroGraftPt *graft;
 
 	graft = g_new0 (BraseroGraftPt, 1);
-	graft->uri = uri != BRASERO_CREATED_DIR ? g_strdup (uri) : NULL;
+	graft->uri = (uri != BRASERO_CREATED_DIR) ? g_strdup (uri) : NULL;
 
 	if (data->joliet_compat)
 		/* make sure that this path is joliet compatible */
@@ -7726,6 +7894,7 @@ brasero_data_disc_graft_check_destroy (GObject *object, gpointer callback_data)
 		g_free (graft->path);
 		g_free (graft);
 	}
+	g_slist_free (callback_data);
 }
 
 static gboolean
@@ -7921,7 +8090,10 @@ brasero_data_disc_path_create (BraseroDataDisc *disc,
 		gchar *name;
 
 		brasero_data_disc_graft_new (disc, NULL, tmp_path);
-		brasero_data_disc_tree_new_empty_folder (disc, tmp_path);
+		brasero_data_disc_tree_new_empty_folder_real (disc,
+							      tmp_path,
+							      ROW_NOT_EXPLORED,
+							      FALSE);
 
 		BRASERO_GET_BASENAME_FOR_DISPLAY (tmp_path, name);
 		if (strlen (name) > 64)
@@ -8060,10 +8232,14 @@ brasero_data_disc_load_step_2 (BraseroDataDisc *disc,
 			 * if so, show it in the tree */
 			parent = g_path_get_dirname (graft->path);
 
-			if (!strcmp (parent, G_DIR_SEPARATOR_S)
-			&&  brasero_data_disc_tree_new_empty_folder (disc, graft->path))
+			if (!strcmp (parent, G_DIR_SEPARATOR_S)) {
 				/* we can expose its contents right away (won't be explored) */
-				brasero_data_disc_expose_path (disc, graft->path);
+				if (brasero_data_disc_tree_new_empty_folder_real (disc,
+										  graft->path,
+										  ROW_EXPLORED,
+										  FALSE))
+					brasero_data_disc_expose_path (disc, graft->path);
+			}
 			else if (g_hash_table_lookup (disc->priv->paths, parent)) {
 				gchar *tmp;
 
@@ -8074,7 +8250,8 @@ brasero_data_disc_load_step_2 (BraseroDataDisc *disc,
 				if (!strcmp (parent, G_DIR_SEPARATOR_S))
 					brasero_data_disc_tree_new_empty_folder_real (disc,
 										      graft->path,
-										      ROW_NOT_EXPLORED); 
+										      ROW_NOT_EXPLORED,
+										      FALSE);
 			}
 			g_free (parent);
 
@@ -8294,8 +8471,8 @@ brasero_data_disc_restore_row (BraseroDataDisc *disc,
 			       const char *newpath)
 {
 	BraseroFile *file;
-	char *newgraft;
-	char *oldgraft;
+	gchar *newgraft;
+	gchar *oldgraft;
 
 	/* the file is no longer excluded since it came back to the right place */
 	newgraft = brasero_data_disc_graft_get (disc, newpath);
@@ -8325,8 +8502,7 @@ brasero_data_disc_restore_row (BraseroDataDisc *disc,
 	else if (!g_hash_table_lookup (disc->priv->files, uri)) {
 		g_free (newgraft);
 		g_free (oldgraft);
-		g_error ("ERROR: This file (%s) must have a graft point.\n",
-			 uri);
+		g_warning ("ERROR: This file (%s) must have a graft point.\n", uri);
 		/* ERROR : this file must have a graft point since it was moved 
 		 * back to place. Now the graft points are either in loading,
 		 * dirs, files */
@@ -8395,10 +8571,10 @@ brasero_data_disc_move_row_in_dirs_hash (BraseroDataDisc *disc,
 static void
 brasero_data_disc_move_row_in_files_hash (BraseroDataDisc *disc,
 					  BraseroFile *file,
-					  const char *oldpath,
-					  const char *newpath)
+					  const gchar *oldpath,
+					  const gchar *newpath)
 {
-	char *oldgraft;
+	gchar *oldgraft;
 
 	/* see if the old path was already grafted */
 	if (g_hash_table_lookup (disc->priv->paths, oldpath)) {
@@ -8420,8 +8596,8 @@ brasero_data_disc_move_row_in_files_hash (BraseroDataDisc *disc,
 }
 
 struct _MoveRowSimpleFileData {
-	char *newpath;
-	char *oldpath;
+	BraseroDataDiscReference new_path_ref;
+	BraseroDataDiscReference old_parent_ref;
 };
 typedef struct _MoveRowSimpleFileData MoveRowSimpleFileData;
 
@@ -8431,8 +8607,8 @@ brasero_data_disc_move_row_simple_file_destroy_cb (BraseroDataDisc *disc,
 {
 	MoveRowSimpleFileData *callback_data = data;
 
-	g_free (callback_data->newpath);
-	g_free (callback_data->oldpath);
+	brasero_data_disc_reference_free (disc, callback_data->old_parent_ref);
+	brasero_data_disc_reference_free (disc, callback_data->new_path_ref);
 	g_free (callback_data);
 }
 
@@ -8443,14 +8619,16 @@ brasero_data_disc_move_row_simple_file_cb (BraseroDataDisc *disc,
 {
 	MoveRowSimpleFileData *callback_data = user_data;
 	BraseroInfoAsyncResult *result;
-	GnomeVFSFileInfo *info;
-	BraseroFile *file;
-	char *parenturi;
-	char *graft;
-	char *uri;
 
 	for (; results; results = results->next) {
+		GnomeVFSFileInfo *info;
+		BraseroFile *file;
+		gchar *parenturi;
+		gchar *newpath;
 		gint64 sectors;
+		gchar *parent;
+		gchar *graft;
+		gchar *uri;
 
 		result = results->data;
 
@@ -8474,8 +8652,8 @@ brasero_data_disc_move_row_simple_file_cb (BraseroDataDisc *disc,
 			brasero_data_disc_remove_uri_from_tree (disc, uri, TRUE);
 			brasero_data_disc_add_rescan (disc, file);
 			brasero_data_disc_unreadable_new (disc,
-								g_strdup (uri),
-								BRASERO_FILTER_RECURSIVE_SYM);
+							  g_strdup (uri),
+							  BRASERO_FILTER_RECURSIVE_SYM);
 		}
 	
 		if (result->result != GNOME_VFS_OK
@@ -8483,24 +8661,35 @@ brasero_data_disc_move_row_simple_file_cb (BraseroDataDisc *disc,
 			brasero_data_disc_remove_uri_from_tree (disc, uri, TRUE);
 			brasero_data_disc_add_rescan (disc, file);
 			brasero_data_disc_unreadable_new (disc,
-								g_strdup (uri),
-								BRASERO_FILTER_UNREADABLE);
+							  g_strdup (uri),
+							  BRASERO_FILTER_UNREADABLE);
 			continue;
 		}
 		
 		/* it's a simple file. Make a file structure and insert
 		 * it in files hash and finally exclude it from its parent */
+		newpath = brasero_data_disc_reference_get (disc, callback_data->new_path_ref);
+		if (!newpath)
+			continue;
+
 		sectors = GET_SIZE_IN_SECTORS (info->size);
 		brasero_data_disc_file_new (disc,
 					    uri,
 					    sectors);
+
 		brasero_data_disc_graft_new (disc,
 					     uri,
-					     callback_data->newpath);
-	
-		graft = brasero_data_disc_graft_get (disc, callback_data->oldpath);
-		brasero_data_disc_exclude_uri (disc, graft, uri);
-		g_free (graft);
+					     newpath);
+		g_free (newpath);
+
+		parent = brasero_data_disc_reference_get (disc, callback_data->old_parent_ref);
+		if (parent) {
+			graft = brasero_data_disc_graft_get (disc, parent);
+			g_free (parent);
+
+			brasero_data_disc_exclude_uri (disc, graft, uri);
+			g_free (graft);
+		}
 	}
 
 	/* free user_data */
@@ -8509,19 +8698,23 @@ brasero_data_disc_move_row_simple_file_cb (BraseroDataDisc *disc,
 
 static BraseroDiscResult
 brasero_data_disc_move_row_simple_file (BraseroDataDisc *disc,
-					const char *uri,
-					const char *oldpath,
-					const char *newpath)
+					const gchar *uri,
+					const gchar *oldpath,
+					const gchar *newpath)
 {
 	GSList *uris;
+	gchar *parent;
 	BraseroDiscResult result;
 	MoveRowSimpleFileData *callback_data;
 
 	callback_data = g_new0 (MoveRowSimpleFileData, 1);
-	callback_data->newpath = g_strdup (newpath);
-	callback_data->oldpath = g_strdup (oldpath);
+	callback_data->new_path_ref = brasero_data_disc_reference_new (disc, newpath);
 
-	uris = g_slist_prepend (NULL, (char *) uri);
+	parent = g_path_get_dirname (oldpath);
+	callback_data->old_parent_ref = brasero_data_disc_reference_new (disc, parent);
+	g_free (parent);
+
+	uris = g_slist_prepend (NULL, (gchar *) uri);
 	result = brasero_data_disc_get_info_async (disc,
 						   uris,
 						   GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS,
@@ -8538,12 +8731,12 @@ brasero_data_disc_move_row_simple_file (BraseroDataDisc *disc,
 
 static BraseroDiscResult
 brasero_data_disc_move_row (BraseroDataDisc *disc,
-			    const char *oldpath,
-			    const char *newpath)
+			    const gchar *oldpath,
+			    const gchar *newpath)
 {
 	BraseroDiscResult result;
 	BraseroFile *file;
-	char *uri;
+	gchar *uri;
 
 	/* update all path references */
 	brasero_data_disc_joliet_incompat_move (disc, oldpath, newpath);
@@ -8606,105 +8799,152 @@ brasero_data_disc_move_row (BraseroDataDisc *disc,
 }
 
 /************************************** DND ************************************/
-static GtkTreePath *
-brasero_data_disc_get_dest_path (BraseroDataDisc *disc,
-				 gint x,
-				 gint y)
+static GtkTreeViewDropPosition
+brasero_data_disc_set_dest_row (BraseroDataDisc *disc,
+				gint x,
+				gint y)
 {
-	GtkTreeViewDropPosition pos = 0;
-	GtkTreePath *realpath = NULL;
-	GtkTreePath *path = NULL;
-	GtkTreeModel *sort;
-
-	sort = disc->priv->sort;
+	GtkTreeViewDropPosition pos;
+	GtkTreePath *sort_dest = NULL;
 
 	/* while the treeview is still under the information pane, it is not 
-	 * realized yet and the following function will fail */
+	 * realized yet and the following function will fail. Here we shouldn't
+	 * need the test since it's called when treeview is a drag source and
+	 * therefore already mapped and realized. */
 	if (GTK_WIDGET_DRAWABLE (disc->priv->tree))
 		gtk_tree_view_get_dest_row_at_pos (GTK_TREE_VIEW (disc->priv->tree),
 						   x,
 						   y,
-						   &path,
+						   &sort_dest,
 						   &pos);
 
-	if (path) {
-		gboolean isdir;
+	if (sort_dest) {
+		GtkTreePath *old_dest = NULL;
 
-		if (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER
-		||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE) {
+		gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
+						 &old_dest,
+						 NULL);
+
+		/* if the destination is located between a directory 
+		 * and its children we change the pos to set it into */
+		if (pos != GTK_TREE_VIEW_DROP_BEFORE) {
+			gboolean is_directory;
+			GtkTreeModel *model;
 			GtkTreeIter iter;
 
-			/* the parent is the row we're dropping into 
-			 * we make sure that the parent is a directory
-			 * otherwise put it before or after */
-			gtk_tree_model_get_iter (sort, &iter, path);
-			gtk_tree_model_get (sort, &iter,
-					    ISDIR_COL,
-					    &isdir, -1);
-		}
-		else
-			isdir = FALSE;
+			model = disc->priv->sort;
 
-		if (!isdir) {
-			if (pos == GTK_TREE_VIEW_DROP_AFTER
-			||  pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER)
-				gtk_tree_path_next (path);
+			gtk_tree_model_get_iter (model, &iter, sort_dest);
+			gtk_tree_model_get (model, &iter,
+					    ISDIR_COL, &is_directory,
+					    -1);
+
+			if (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER && !is_directory)
+				pos = GTK_TREE_VIEW_DROP_AFTER;
+			else if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE && !is_directory)
+				pos = GTK_TREE_VIEW_DROP_BEFORE;
+			else if (pos == GTK_TREE_VIEW_DROP_AFTER &&
+				 gtk_tree_view_row_expanded (GTK_TREE_VIEW (disc->priv->tree), sort_dest) &&
+				 is_directory)
+				pos = GTK_TREE_VIEW_DROP_INTO_OR_AFTER;
+			else if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE && is_directory)
+				pos = GTK_TREE_VIEW_DROP_BEFORE;
+		}
+
+		if (old_dest
+		&&  sort_dest
+		&&  disc->priv->expand_timeout
+		&&  (gtk_tree_path_compare (old_dest, sort_dest) != 0
+		||   pos != GTK_TREE_VIEW_DROP_INTO_OR_AFTER 
+		||   pos != GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
+			g_source_remove (disc->priv->expand_timeout);
+			disc->priv->expand_timeout = 0;
+		}
+
+		if (old_dest)
+			gtk_tree_path_free (old_dest);
+
+		gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
+						 sort_dest,
+						 pos);
+	}
+	else {
+		gint n_children;
+		GtkTreeModel *sort;
+
+		sort = disc->priv->sort;
+		n_children = gtk_tree_model_iter_n_children (sort, NULL);
+		if (n_children) {
+			pos = GTK_TREE_VIEW_DROP_AFTER;
+			sort_dest = gtk_tree_path_new_from_indices (n_children, -1);
 		}
 		else {
-			GtkTreeIter parent;
+			/* NOTE: this case shouldn't exist since source = dest
+			 * so there must be at least one row */
+			pos = GTK_TREE_VIEW_DROP_BEFORE;
+			sort_dest = gtk_tree_path_new_from_indices (0, -1);
+		}
 
-			gtk_tree_model_get_iter (sort, &parent, path);
-			pos = gtk_tree_model_iter_n_children (sort, &parent);
-			gtk_tree_path_append_index (path, pos);
+		gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
+						 sort_dest,
+						 GTK_TREE_VIEW_DROP_BEFORE);
+
+		if (disc->priv->expand_timeout) {
+			g_source_remove (disc->priv->expand_timeout);
+			disc->priv->expand_timeout = 0;
 		}
 	}
-	else
-		path = gtk_tree_path_new_from_indices (gtk_tree_model_iter_n_children (sort, NULL), -1);
 
-	realpath = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (disc->priv->sort),
-								   path);
+	gtk_tree_path_free (sort_dest);
 
-	/* realpath can be NULL if the row has been dropped into an empty directory */
-	if(!realpath) {
-		GtkTreePath *path_parent;
-
-		path_parent = gtk_tree_path_copy(path);
-		gtk_tree_path_up(path_parent);
-
-		if(gtk_tree_path_get_depth(path_parent)) {
-			GtkTreeIter iter;
-
-			realpath = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(sort),
-										path_parent);
-			gtk_tree_model_get_iter(sort, &iter, path_parent);
-			gtk_tree_path_append_index(realpath, gtk_tree_model_iter_n_children(sort, &iter));
-		}
-		else
-			realpath = gtk_tree_path_new_from_indices(gtk_tree_model_iter_n_children(sort, NULL),
-								-1);
-
-		gtk_tree_path_free (path_parent);
-	}
-	gtk_tree_path_free (path);
-
-	return realpath;
+	return pos;
 }
 
-static char*
+static GtkTreePath *
+brasero_data_disc_get_dest_path (BraseroDataDisc *disc, gint x, gint y)
+{
+	GtkTreeViewDropPosition pos = 0;
+	GtkTreePath *dest = NULL, *sort_dest = NULL;
+
+	brasero_data_disc_set_dest_row (disc, x, y);
+	gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
+					 &sort_dest,
+					 &pos);
+
+	if (sort_dest) {
+		dest = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (disc->priv->sort), sort_dest);
+		gtk_tree_path_free (sort_dest);
+	}
+
+	/* the following means that this is not a directory */
+	if (pos == GTK_TREE_VIEW_DROP_AFTER)
+		gtk_tree_path_next (dest);
+
+	/* the following means it's a directory */
+	if (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER
+	||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE) {
+		GtkTreeIter parent;
+		guint num_children;
+
+		gtk_tree_model_get_iter (disc->priv->model, &parent, dest);
+		num_children = gtk_tree_model_iter_n_children (disc->priv->model, &parent);
+		gtk_tree_path_append_index (dest, num_children);
+	}
+
+	return dest;
+}
+
+static gchar*
 brasero_data_disc_new_disc_path (BraseroDataDisc *disc,
-				 const char *display,
+				 const gchar *display,
 				 GtkTreePath *dest)
 {
-	GtkTreePath *parent;
-	char *newparentpath;
-	char *newpath;
+	gchar *newparentpath = NULL;
+	gchar *newpath;
 
-	parent = gtk_tree_path_copy (dest);
-	gtk_tree_path_up (parent);
 	brasero_data_disc_tree_path_to_disc_path (disc,
-						  parent,
+						  dest,
 						  &newparentpath);
-	gtk_tree_path_free (parent);
 
 	newpath = g_build_path (G_DIR_SEPARATOR_S,
 				newparentpath,
@@ -8715,121 +8955,21 @@ brasero_data_disc_new_disc_path (BraseroDataDisc *disc,
 	return newpath;
 }
 
-static gboolean
-brasero_data_disc_native_data_received (BraseroDataDisc *disc,
-					GtkSelectionData *selection_data,
-					gint x,
-					gint y)
-{
-	GtkTreeRowReference *destref = NULL;
-	GtkTreeRowReference *srcref = NULL;
-	BraseroDiscResult result;
-	GtkTreeModel *model;
-	GtkTreePath *path;
-	GtkTreePath *dest;
-	GtkTreePath *src;
-	GtkTreeIter row;
-	char *oldpath;
-	char *newpath;
-	char *name;
-
-	model = disc->priv->model;
-
-	/* check again if move is possible */
-	dest = brasero_data_disc_get_dest_path (disc, x, y);
-	if (gtk_tree_drag_dest_row_drop_possible (GTK_TREE_DRAG_DEST (model),
-						  dest,
-						  selection_data) == FALSE) {
-		gtk_tree_path_free (dest);
-		return FALSE;
-	}
-
-	gtk_tree_get_row_drag_data (selection_data,
-				    &model,
-				    &src);
-
-	/* move it in the backend */
-	gtk_tree_model_get_iter (model, &row, src);
-	gtk_tree_model_get (model, &row, NAME_COL, &name, -1);
-	newpath = brasero_data_disc_new_disc_path (disc, name, dest);
-	g_free (name);
-
-	brasero_data_disc_tree_path_to_disc_path (disc, src, &oldpath);
-	result = brasero_data_disc_move_row (disc,
-					     oldpath,
-					     newpath);
-
-	if (result != BRASERO_DISC_OK)
-		goto end;
-
-	/* keep some necessary references for later */
-	srcref = gtk_tree_row_reference_new (model, src);
-	if (gtk_tree_path_get_depth (dest) > 1) {
-		int nb_children;
-
-		/* we can only put a reference on the parent
-		 * since the child doesn't exist yet */
-		gtk_tree_path_up (dest);
-		destref = gtk_tree_row_reference_new (model, dest);
-
-		gtk_tree_model_get_iter (model, &row, dest);
-		nb_children = gtk_tree_model_iter_n_children (model, &row);
-		gtk_tree_path_append_index (dest, nb_children);
-	}
-	else
-		destref = NULL;
-
-	/* move it */
-	if (!gtk_tree_drag_dest_drag_data_received (GTK_TREE_DRAG_DEST (model),
-						    dest,
-						    selection_data)) {
-		brasero_data_disc_move_row (disc,
-					    newpath,
-					    oldpath);
-		goto end;
-	}
-
-	/* update parent directories */
-	path = gtk_tree_row_reference_get_path (srcref);
-	gtk_tree_drag_source_drag_data_delete (GTK_TREE_DRAG_SOURCE (model),
-					       path);
-	brasero_data_disc_tree_update_parent (disc, path);
-	gtk_tree_path_free (path);
-
-	if (destref
-	&& (path = gtk_tree_row_reference_get_path (destref))) {
-		brasero_data_disc_tree_update_directory (disc, path);
-		gtk_tree_path_free (path);
-	}
-
-end:
-
-	if (srcref)
-		gtk_tree_row_reference_free (srcref);
-	if (destref)
-		gtk_tree_row_reference_free (destref);
-
-	gtk_tree_path_free (dest);
-	gtk_tree_path_free (src);
-	g_free (oldpath);
-	g_free (newpath);
-
-	return TRUE;
-}
-
 static GdkDragAction 
-brasero_data_disc_drag_data_received_dragging (BraseroDataDisc *disc,
-					       GtkSelectionData *selection_data)
+brasero_data_disc_drag_dest_drop_row_possible (BraseroDataDisc *disc,
+					       GtkTreePath *src,
+					       GtkSelectionData *selection_tmp)
 {
-	char *name;
+	gchar *name;
+	gint status;
 	GtkTreeIter iter;
 	GtkTreePath *dest;
-	GtkTreeModel *sort;
 	GtkTreeModel *model;
 	GtkTreePath *sort_dest;
 	GtkTreePath *src_parent;
 	GtkTreePath *dest_parent;
 	BraseroDiscResult result;
+	GtkTreeSelection *selection;
 	GtkTreeViewDropPosition pos;
 	GdkDragAction action = GDK_ACTION_MOVE;
 
@@ -8837,31 +8977,33 @@ brasero_data_disc_drag_data_received_dragging (BraseroDataDisc *disc,
 		return GDK_ACTION_DEFAULT;
 
 	model = disc->priv->model;
-	sort = disc->priv->sort;
-
 	src_parent = NULL;
 	dest_parent = NULL;
-
+	
 	gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
 					 &sort_dest,
 					 &pos);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+	if (sort_dest && gtk_tree_selection_path_is_selected (selection, sort_dest)) {
+		gtk_tree_path_free (sort_dest);
+		return GDK_ACTION_DEFAULT;
+	}
 
 	if (!sort_dest) {
 		pos = GTK_TREE_VIEW_DROP_AFTER;
 		dest = gtk_tree_path_new_from_indices (gtk_tree_model_iter_n_children (model, NULL) - 1, -1);
 	}
 	else {
-		dest = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (sort),
-								       sort_dest);
+		dest = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (disc->priv->sort), sort_dest);
 		gtk_tree_path_free (sort_dest);
 	}
 
 	/* if we drop into make sure it is a directory */
 	if (gtk_tree_model_get_iter (model, &iter, dest)
-	&& (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER
-	||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
+	&& (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER || pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
 		gboolean isdir;
-		int explored;
+		gint explored;
 
 		gtk_tree_model_get (model, &iter,
 				    ISDIR_COL, &isdir,
@@ -8889,7 +9031,7 @@ brasero_data_disc_drag_data_received_dragging (BraseroDataDisc *disc,
 	else
 		dest_parent = gtk_tree_path_copy (dest);
 
-	src_parent = gtk_tree_path_copy (disc->priv->drag_source);
+	src_parent = gtk_tree_path_copy (src);
 	gtk_tree_path_up (src_parent);
 
 	/* check that we are actually changing the directory */
@@ -8908,9 +9050,10 @@ brasero_data_disc_drag_data_received_dragging (BraseroDataDisc *disc,
 
 	/* make sure that a row doesn't exist with the same name
 	 * and it is joliet compatible */
-	gtk_tree_model_get_iter (model, &iter, disc->priv->drag_source);
+	gtk_tree_model_get_iter (model, &iter, src);
 	gtk_tree_model_get (model, &iter,
 			    NAME_COL, &name,
+			    ROW_STATUS_COL, &status,
 			    -1);
 
 	result = brasero_data_disc_tree_check_name_validity (disc,
@@ -8924,15 +9067,268 @@ brasero_data_disc_drag_data_received_dragging (BraseroDataDisc *disc,
 		goto end;
 	}
 
+	if (status == ROW_BOGUS) {
+		action = GDK_ACTION_DEFAULT;
+		goto end;
+	}
+
+	gtk_tree_set_row_drag_data (selection_tmp, model, src);
 	if (!gtk_tree_drag_dest_row_drop_possible (GTK_TREE_DRAG_DEST (model),
 						   dest,
-						   selection_data))
+						   selection_tmp))
 		action = GDK_ACTION_DEFAULT;
 
 end:
 	gtk_tree_path_free (dest);
 	gtk_tree_path_free (src_parent);
 	gtk_tree_path_free (dest_parent);
+
+	return action;
+}
+
+static void
+brasero_data_disc_move_to_dest (BraseroDataDisc *disc,
+				GtkTreeModel *model,
+				GtkTreeRowReference *srcref,
+				GtkTreeRowReference *destref,
+				GtkSelectionData *selection_data)
+{
+	GtkTreeSelection *selection;
+	BraseroDiscResult result;
+	GtkTreePath *sort_path;
+	GdkDragAction action;
+	GtkTreePath *dest;
+	GtkTreePath *src;
+	GtkTreeIter row;
+	gchar *oldpath;
+	gchar *newpath;
+	gchar *name;
+
+	/* Make sure one last time it is droppable: we must do it here
+	 * in case there are two files (in different directories) with
+	 * the same name. That way the first is moved and when the time
+	 * has come to move the second we'll notice that there is already
+	 * a file with the same name in the target directory */
+	src = gtk_tree_row_reference_get_path (srcref);
+	action = brasero_data_disc_drag_dest_drop_row_possible (disc,
+								src,
+								selection_data);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+	if (action != GDK_ACTION_MOVE) {
+		sort_path = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (disc->priv->sort), src);
+		gtk_tree_selection_unselect_path (selection, sort_path);
+		gtk_tree_path_free (sort_path);
+		gtk_tree_path_free (src);
+		return;
+	}
+
+	/* NOTE: dest refers here to the parent of
+	 * the destination or NULL if at root */
+	if (destref)
+		dest = gtk_tree_row_reference_get_path (destref);
+	else
+		dest = NULL;
+
+	/* move it in the backend */
+	gtk_tree_model_get_iter (model, &row, src);
+	gtk_tree_model_get (model, &row, NAME_COL, &name, -1);
+	newpath = brasero_data_disc_new_disc_path (disc, name, dest);
+	g_free (name);
+
+	brasero_data_disc_tree_path_to_disc_path (disc, src, &oldpath);
+	result = brasero_data_disc_move_row (disc,
+					     oldpath,
+					     newpath);
+	if (result != BRASERO_DISC_OK)
+		goto end;
+
+	/* move it in GtkTreeView */
+	gtk_tree_set_row_drag_data (selection_data, model, src);
+	gtk_tree_path_free (src);
+	src = NULL;
+
+	if (dest) {
+		gint nb_children;
+
+		/* open the directory if it isn't */
+		sort_path = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (disc->priv->sort), dest);
+		if (!gtk_tree_view_row_expanded (GTK_TREE_VIEW (disc->priv->tree), sort_path))
+			gtk_tree_view_expand_row (GTK_TREE_VIEW (disc->priv->tree), sort_path, FALSE);
+		gtk_tree_path_free (sort_path);
+
+		gtk_tree_model_get_iter (model, &row, dest);
+		nb_children = gtk_tree_model_iter_n_children (model, &row);
+		gtk_tree_path_append_index (dest, nb_children);
+	}
+	else {
+		gint nb_children;
+
+		nb_children = gtk_tree_model_iter_n_children (model, NULL);
+		dest = gtk_tree_path_new_from_indices (nb_children, -1);
+	}
+
+	if (!gtk_tree_drag_dest_drag_data_received (GTK_TREE_DRAG_DEST (model),
+						    dest,
+						    selection_data)) {
+		brasero_data_disc_move_row (disc,
+					    newpath,
+					    oldpath);
+		goto end;
+	}
+
+	/* update parent directories */
+	sort_path = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (disc->priv->sort), dest);
+	gtk_tree_selection_select_path (selection, sort_path);
+	gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (disc->priv->tree),
+				      sort_path,
+				      NULL,
+				      TRUE,
+				      0.5,
+				      0.5);
+	gtk_tree_path_free (sort_path);
+
+	src = gtk_tree_row_reference_get_path (srcref);
+
+	g_signal_handlers_block_by_func (selection,
+					 brasero_data_disc_tree_selection_changed,
+					 disc);
+	gtk_tree_drag_source_drag_data_delete (GTK_TREE_DRAG_SOURCE (model), src);
+	g_signal_handlers_unblock_by_func (selection,
+					   brasero_data_disc_tree_selection_changed,
+					   disc);
+
+	brasero_data_disc_tree_update_parent (disc, src);
+
+end:
+
+	if (src)
+		gtk_tree_path_free (src);
+
+	if (dest)
+		gtk_tree_path_free (dest);
+
+	g_free (oldpath);
+	g_free (newpath);
+}
+
+static gboolean
+brasero_data_disc_native_data_received (BraseroDataDisc *disc,
+					GtkSelectionData *selection_data,
+					gint x,
+					gint y)
+{
+	GtkTreeRowReference *destref = NULL;
+	GtkSelectionData *tmp = NULL;
+	GtkTreeSelection *selection;
+	GList *references = NULL;
+	GList *selected, *iter;
+	GtkTreeModel *model;
+	GtkTreePath *dest;
+
+	model = disc->priv->model;
+	dest = brasero_data_disc_get_dest_path (disc, x, y);
+
+	/* keep some necessary references for later */
+	if (dest && gtk_tree_path_get_depth (dest) > 1) {
+		/* we can only put a reference on the parent
+		 * since the child doesn't exist yet */
+		gtk_tree_path_up (dest);
+		destref = gtk_tree_row_reference_new (model, dest);
+		gtk_tree_path_free (dest);
+	}
+	else {
+		if (dest)
+			gtk_tree_path_free (dest);
+
+		destref = NULL;
+	}
+
+	/* get selected rows and turn them into references */
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+	tmp = gtk_selection_data_copy (selection_data);
+
+	for (iter = selected; iter; iter = iter->next) {
+		GtkTreeRowReference *reference;
+		GtkTreePath *treepath;
+
+		treepath = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (disc->priv->sort),
+									   iter->data);
+
+		reference = gtk_tree_row_reference_new (model, treepath);
+		gtk_tree_path_free (iter->data);
+		gtk_tree_path_free (treepath);
+
+		references = g_list_prepend (references, reference);
+	}
+	g_list_free (selected);
+
+	for (iter = references; iter; iter = iter->next) {
+		GtkTreeRowReference *reference;
+
+		reference = iter->data;
+		brasero_data_disc_move_to_dest (disc,
+						model,
+						reference,
+						destref,
+						tmp);
+		gtk_tree_row_reference_free (reference);
+	}
+	g_list_free (references);
+	gtk_selection_data_free (tmp);
+
+	if (destref) {
+		GtkTreeIter iter;
+
+		dest = gtk_tree_row_reference_get_path (destref);
+		if (gtk_tree_model_get_iter (disc->priv->model, &iter, dest)) {
+			brasero_data_disc_remove_bogus_child (disc, &iter);
+			brasero_data_disc_tree_update_directory_real (disc, &iter);
+		}
+		gtk_tree_path_free (dest);
+	}
+
+	return TRUE;
+}
+
+static GdkDragAction
+brasero_data_disc_drag_data_received_dragging (BraseroDataDisc *disc,
+					       GtkSelectionData *selection_data)
+{
+	GdkDragAction action = GDK_ACTION_DEFAULT;
+	GtkSelectionData *selection_tmp;
+	GtkTreeSelection *selection;
+	GList *selected;
+	GList *iter;
+
+	selection_tmp = gtk_selection_data_copy (selection_data);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+	for (iter = selected; iter; iter = iter->next) {
+		GtkTreePath *src;
+		GtkTreePath *treepath;
+
+		treepath = iter->data;
+		
+		src = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (disc->priv->sort),
+								      treepath);
+
+		action = brasero_data_disc_drag_dest_drop_row_possible (disc,
+									src,
+									selection_tmp);
+		gtk_tree_path_free (src);
+
+		/* we stop if we can simply move at least one */
+		if (action == GDK_ACTION_MOVE)
+			break;
+	}
+
+	g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected);
+
+	gtk_selection_data_free (selection_tmp);
 
 	return action;
 }
@@ -8959,10 +9355,6 @@ brasero_data_disc_drag_data_received_cb (GtkTreeView *tree,
 			action = GDK_ACTION_DEFAULT;
 
 		gdk_drag_status (drag_context, action, time);
-		if(action == GDK_ACTION_DEFAULT)
-			gtk_tree_view_set_drag_dest_row (tree,
-							 NULL,
-							 GTK_TREE_VIEW_DROP_BEFORE);
 
 		g_signal_stop_emission_by_name (tree, "drag-data-received");
 		return;
@@ -8988,23 +9380,54 @@ brasero_data_disc_drag_data_received_cb (GtkTreeView *tree,
 
 	/* we get URIS */
 	if (info == TARGET_URIS_LIST) {
+		GtkTreeSelection *selection;
 		gboolean func_results;
-		char **uri, **uris;
+		gchar **uri, **uris;
 		GtkTreePath *dest;
 
 		uris = gtk_selection_data_get_uris (selection_data);
+
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+		gtk_tree_selection_unselect_all (selection);
+
 		dest = brasero_data_disc_get_dest_path (disc, x, y);
-		gtk_tree_path_up (dest);
+		if (dest)
+			gtk_tree_path_up (dest);
 
 		for (uri = uris; *uri != NULL; uri++) {
+			GtkTreePath *treepath = NULL;
+
 			func_results = brasero_data_disc_add_uri_real (disc,
 								       *uri,
-								       dest);
-			result = (result ? TRUE : func_results);
+								       dest,
+								       &treepath);
+
+			if (func_results == BRASERO_DISC_OK && treepath) {
+				GtkTreePath *sort_path;
+
+				sort_path = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (disc->priv->sort),
+											    treepath);
+				gtk_tree_path_free (treepath);
+
+				gtk_tree_selection_select_path (selection, sort_path);
+				gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (disc->priv->tree),
+							      sort_path,
+							      NULL,
+							      TRUE,
+							      0.5,
+							      0.5);
+				gtk_tree_path_free (sort_path);
+			}
+
+			result = (result ? TRUE : (func_results == BRASERO_DISC_OK));
 		}
 
 		gtk_tree_path_free (dest);
 		g_strfreev (uris);
+
+		gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
+						 NULL,
+						 0);
 	} 
 	else if (info == TREE_MODEL_ROW)
 		result = brasero_data_disc_native_data_received (disc,
@@ -9021,62 +9444,8 @@ brasero_data_disc_drag_data_received_cb (GtkTreeView *tree,
 	disc->priv->drag_status = STATUS_NO_DRAG;
 }
 
-static void
-brasero_data_disc_drag_begin_cb (GtkTreeView *tree,
-				 GdkDragContext *drag_context,
-				 BraseroDataDisc *disc)
-{
-	GtkTreePath *sort_src;
-	GtkTreeModel *model;
-	GtkTreeModel *sort;
-	GdkPixmap *row_pix;
-	GtkTreePath *src;
-	GtkTreeIter iter;
-	gint cell_y;
-	int status;
-
-	disc->priv->drag_status = STATUS_DRAGGING;
-	g_signal_stop_emission_by_name (tree, "drag-begin");
-
-	/* Put the icon */
-	gtk_tree_view_get_path_at_pos (tree,
-				       disc->priv->press_start_x,
-				       disc->priv->press_start_y,
-				       &sort_src,
-				       NULL,
-				       NULL,
-				       &cell_y);
-	
-	g_return_if_fail (sort_src != NULL);
-	sort = disc->priv->sort;
-	src = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (sort),
-							      sort_src);
-
-	model = disc->priv->model;
-	gtk_tree_model_get_iter (model, &iter, src);
-	gtk_tree_model_get (model, &iter, ROW_STATUS_COL, &status, -1);
-	if (status == ROW_BOGUS) {
-		disc->priv->drag_source = NULL;
-		gtk_tree_path_free (sort_src);
-		gtk_tree_path_free (src);
-		return;
-	}
-
-	disc->priv->drag_source = src;
-
-	row_pix = gtk_tree_view_create_row_drag_icon (tree, sort_src);
-	gtk_drag_set_icon_pixmap (drag_context,
-				  gdk_drawable_get_colormap (row_pix),
-				  row_pix,
-				  NULL,
-				  /* the + 1 is for the black border in the icon */
-				  disc->priv->press_start_x + 1,
-				  cell_y + 1);
-	
-	gtk_tree_path_free(sort_src);
-	g_object_unref (row_pix);
-}
-
+/* in the following functions there are quick and
+ * dirty cut'n pastes from gtktreeview.c shame on me */
 static gboolean
 brasero_data_disc_drag_drop_cb (GtkTreeView *tree,
 				GdkDragContext *drag_context,
@@ -9086,6 +9455,11 @@ brasero_data_disc_drag_drop_cb (GtkTreeView *tree,
 				BraseroDataDisc *disc)
 {
 	GdkAtom target = GDK_NONE;
+
+	if (disc->priv->drag_context) {
+		g_object_unref (disc->priv->drag_context);
+		disc->priv->drag_context = NULL;
+	}
 
 	if (disc->priv->scroll_timeout) {
 		g_source_remove (disc->priv->scroll_timeout);
@@ -9109,79 +9483,45 @@ brasero_data_disc_drag_drop_cb (GtkTreeView *tree,
 				   drag_context,
 				   target,
 				   time);
-		return TRUE;
+		return FALSE;
 	}
+
+	gtk_drag_finish (drag_context,
+			 FALSE,
+			 FALSE,
+			 time);
 
 	return FALSE;
 }
 
-/* in the following functions there are quick and dirty cut'n pastes from gtktreeview.c shame on me */
-static GtkTreeViewDropPosition
-brasero_data_disc_set_dest_row (BraseroDataDisc *disc,
-				gint x,
-				gint y)
+static void
+brasero_data_disc_drag_get_cb (GtkWidget *tree,
+                               GdkDragContext *context,
+                               GtkSelectionData *selection_data,
+                               guint info,
+                               guint time,
+			       BraseroDataDisc *disc)
 {
-	GtkTreeViewDropPosition pos;
-	GtkTreePath *old_dest = NULL;
-	GtkTreePath *sort_dest = NULL;
+	g_signal_stop_emission_by_name (tree, "drag-data-get");
 
-	/* while the treeview is still under the information pane, it is not 
-	 * realized yet and the following function will fail. Here we shouldn't
-	 * need the test since it's called when treeview is a drag source and
-	 * therefore already mapped and realized. */
-	if (GTK_WIDGET_DRAWABLE (disc->priv->tree))
-		gtk_tree_view_get_dest_row_at_pos (GTK_TREE_VIEW (disc->priv->tree),
-						   x,
-						   y,
-						   &sort_dest,
-						   &pos);
+	/* that could go into begin since we only accept GTK_TREE_MODEL_ROW as our source target */
+	if (selection_data->target == gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE)
+	&&  disc->priv->drag_source) {
+		GtkTreeModel *model;
 
-	if (!sort_dest) {
-		gint n_children;
-		GtkTreeModel *sort;
-
-		sort = disc->priv->sort;
-		n_children = gtk_tree_model_iter_n_children (sort, NULL);
-		if (n_children) {
-			pos = GTK_TREE_VIEW_DROP_AFTER;
-			sort_dest = gtk_tree_path_new_from_indices (n_children - 1, -1);
-		}
-		else {
-			pos = GTK_TREE_VIEW_DROP_BEFORE;
-			sort_dest = gtk_tree_path_new_from_indices (0, -1);
-		}
+		model = disc->priv->model;
+		gtk_tree_set_row_drag_data (selection_data,
+					    model,
+					    disc->priv->drag_source);
 	}
-
-	gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
-					 &old_dest,
-					 NULL);
-
-	if (old_dest
-	&&  sort_dest
-	&&  (gtk_tree_path_compare (old_dest, sort_dest) != 0
-	||  !(pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER 
-	||    pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE))
-	&&  disc->priv->expand_timeout) {
-		g_source_remove (disc->priv->expand_timeout);
-		disc->priv->expand_timeout = 0;
-	}
-
-	gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW(disc->priv->tree),
-					 sort_dest,
-					 pos);
-	gtk_tree_path_free (sort_dest);
-
-	if (old_dest)
-		gtk_tree_path_free (old_dest);
-	return pos;
 }
 
 static gboolean
 brasero_data_disc_scroll_timeout_cb (BraseroDataDisc *data)
 {
-	int y;
-	double value;
-	int scroll_area;
+	gint y;
+	gdouble value;
+	gint scroll_area;
 	GdkWindow *window;
 	GdkRectangle area;
 	GtkAdjustment *adjustment;
@@ -9212,26 +9552,31 @@ static gboolean
 brasero_data_disc_expand_timeout_cb (BraseroDataDisc *disc)
 {
 	gboolean result;
-	GtkTreePath *dest;
 	GtkTreeViewDropPosition pos;
+	GtkTreePath *sort_dest = NULL;
 
 	gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (disc->priv->tree),
-					 &dest,
+					 &sort_dest,
 					 &pos);
 
 	/* we don't need to check if it's a directory because:
 	   - a file wouldn't have children anyway
 	   - we check while motion if it's a directory and if not remove the INTO from pos */
-	if (dest
-	&&  (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER || pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
-		gtk_tree_view_expand_row (GTK_TREE_VIEW (disc->priv->tree), dest, FALSE);
+
+	if (sort_dest
+	&& (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER || pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
+		if (!gtk_tree_view_row_expanded (GTK_TREE_VIEW (disc->priv->tree), sort_dest))
+			gtk_tree_view_expand_row (GTK_TREE_VIEW (disc->priv->tree),
+						  sort_dest,
+						  FALSE);
+
 		disc->priv->expand_timeout = 0;
-	
-		gtk_tree_path_free (dest);
+		gtk_tree_path_free (sort_dest);
+		result = FALSE;
 	}
 	else {
-		if (dest)
-			gtk_tree_path_free (dest);
+		if (sort_dest)
+			gtk_tree_path_free (sort_dest);
 	
 		result = TRUE;
 	}
@@ -9248,71 +9593,142 @@ brasero_data_disc_drag_motion_cb (GtkWidget *tree,
 				  BraseroDataDisc *disc)
 {
 	GdkAtom target;
+	GtkTreeViewDropPosition pos;
+
+	g_signal_stop_emission_by_name (tree, "drag-motion");
 
 	target = gtk_drag_dest_find_target (tree,
 					    drag_context,
 					    gtk_drag_dest_get_target_list(tree));
 
-	if (disc->priv->is_loading
-	|| (disc->priv->reject_files
-	&&  target != gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE))) {
-		g_signal_stop_emission_by_name (tree, "drag-motion");
+	/* see if we accept anything */
+	if (target == GDK_NONE
+	||  disc->priv->is_loading
+	|| (disc->priv->reject_files && target != gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE))) {
+		if (disc->priv->expand_timeout) {
+			g_source_remove (disc->priv->expand_timeout);
+			disc->priv->expand_timeout = 0;
+		}
 
-		gdk_drag_status (drag_context, GDK_ACTION_DEFAULT, time);
 		gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW (tree),
 						 NULL,
 						 GTK_TREE_VIEW_DROP_BEFORE);
-		return FALSE;
+		gdk_drag_status (drag_context, GDK_ACTION_DEFAULT, time);
+		return TRUE;
+	}
+
+	pos = brasero_data_disc_set_dest_row (disc, x, y);
+
+	/* since we mess with the model we have to re-implement the following two */
+	if (!disc->priv->expand_timeout
+	&&  (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER || pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
+		disc->priv->expand_timeout = g_timeout_add (500,
+							    (GSourceFunc) brasero_data_disc_expand_timeout_cb,
+							    disc);
+	}
+	else if (!disc->priv->scroll_timeout) {
+		disc->priv->scroll_timeout = g_timeout_add (150,
+							    (GSourceFunc) brasero_data_disc_scroll_timeout_cb,
+							    disc);
 	}
 
 	if (target == gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE)) {
-		GtkTreeViewDropPosition pos;
-
-		pos = brasero_data_disc_set_dest_row (disc, x, y);
-
-		/* since we mess with the model we have to re-implement the following two */
-		if (!disc->priv->expand_timeout
-		&&  (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER || pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)) {
-			disc->priv->expand_timeout = g_timeout_add (500,
-								    (GSourceFunc) brasero_data_disc_expand_timeout_cb,
-								    disc);
-		}
-		else if (disc->priv->scroll_timeout == 0) {
-			disc->priv->scroll_timeout = g_timeout_add (150,
-								    (GSourceFunc) brasero_data_disc_scroll_timeout_cb,
-								    disc);
-		}
+		if (disc->priv->drag_context)
+			gtk_drag_set_icon_default (disc->priv->drag_context);
+	
 		gtk_drag_get_data (tree,
 				   drag_context,
 				   target,
 				   time);
-		g_signal_stop_emission_by_name (tree, "drag-motion");
-		return TRUE;
 	}
+	else
+		gdk_drag_status (drag_context,
+				 drag_context->suggested_action,
+				 time);
 
-	return FALSE;
+	return TRUE;
 }
 
 static void
-brasero_data_disc_drag_get_cb (GtkWidget *tree,
-                               GdkDragContext *context,
-                               GtkSelectionData *selection_data,
-                               guint info,
-                               guint time,
-			       BraseroDataDisc *disc)
+brasero_data_disc_drag_leave_cb (GtkWidget *tree,
+				 GdkDragContext *drag_context,
+				 guint time,
+				 BraseroDataDisc *disc)
 {
-	g_signal_stop_emission_by_name (tree, "drag-data-get");
+	if (disc->priv->drag_context) {
+		GdkPixbuf *pixbuf;
+		GdkPixmap *pixmap;
+		GdkBitmap *mask;
 
-	/* that could go into begin since we only accept GTK_TREE_MODEL_ROW as our source target */
-	if (selection_data->target == gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE)
-	&&  disc->priv->drag_source) {
-		GtkTreeModel *model;
+		pixbuf = gtk_widget_render_icon (tree,
+						 GTK_STOCK_DELETE,
+						 GTK_ICON_SIZE_DND,
+						 NULL);
+		gdk_pixbuf_render_pixmap_and_mask_for_colormap (pixbuf,
+								gtk_widget_get_colormap (tree),
+								&pixmap,
+								&mask,
+								128);
+		g_object_unref (pixbuf);
 
-		model = disc->priv->model;
-		gtk_tree_set_row_drag_data (selection_data,
-					    model,
-					    disc->priv->drag_source);
+		gtk_drag_set_icon_pixmap (disc->priv->drag_context,
+					  gdk_drawable_get_colormap (pixmap),
+					  pixmap,
+					  mask,
+					  -2,
+					  -2);
 	}
+
+	gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW (tree),
+					 NULL,
+					 GTK_TREE_VIEW_DROP_BEFORE);
+
+	if (disc->priv->scroll_timeout) {
+		g_source_remove (disc->priv->scroll_timeout);
+		disc->priv->scroll_timeout = 0;
+	}
+	if (disc->priv->expand_timeout) {
+		g_source_remove (disc->priv->expand_timeout);
+		disc->priv->expand_timeout = 0;
+	}
+
+	g_signal_stop_emission_by_name (tree, "drag-leave");
+}
+
+static void
+brasero_data_disc_drag_begin_cb (GtkTreeView *tree,
+				 GdkDragContext *drag_context,
+				 BraseroDataDisc *disc)
+{
+	GtkTreePath *sort_src;
+	GtkTreeIter iter;
+	gint status;
+
+	disc->priv->drag_context = drag_context;
+	g_object_ref (drag_context);
+
+	gtk_tree_view_get_path_at_pos (tree,
+				       disc->priv->press_start_x,
+				       disc->priv->press_start_y,
+				       &sort_src,
+				       NULL,
+				       NULL,
+				       NULL);
+	
+	g_return_if_fail (sort_src != NULL);
+
+	gtk_tree_model_get_iter (disc->priv->sort, &iter, sort_src);
+	gtk_tree_model_get (disc->priv->sort, &iter, ROW_STATUS_COL, &status, -1);
+	if (status == ROW_BOGUS) {
+		disc->priv->drag_source = NULL;
+		gtk_tree_path_free (sort_src);
+		return;
+	}
+
+	disc->priv->drag_source = sort_src;
+
+	disc->priv->drag_status = STATUS_DRAGGING;
+	g_signal_stop_emission_by_name (tree, "drag-begin");
 }
 
 static void
@@ -9320,7 +9736,18 @@ brasero_data_disc_drag_end_cb (GtkWidget *tree,
 			       GdkDragContext *drag_context,
 			       BraseroDataDisc *disc)
 {
+	gint x, y;
+
+	if (disc->priv->drag_context) {
+		g_object_unref (disc->priv->drag_context);
+		disc->priv->drag_context = NULL;
+	}
+
 	g_signal_stop_emission_by_name (tree, "drag-end");
+
+	gtk_widget_get_pointer (tree, &x, &y);
+	if (x < 0 || y < 0 || x > tree->allocation.width || y > tree->allocation.height)
+		brasero_data_disc_delete_selected (BRASERO_DISC (disc));
 
 	gtk_tree_view_set_drag_dest_row (GTK_TREE_VIEW (tree),
 					 NULL,
@@ -9336,37 +9763,17 @@ brasero_data_disc_drag_end_cb (GtkWidget *tree,
 		disc->priv->expand_timeout = 0;
 	}
 
-	gtk_tree_path_free(disc->priv->drag_source);
+	gtk_tree_path_free (disc->priv->drag_source);
 	disc->priv->drag_source = NULL;
-}
-
-void
-brasero_data_disc_drag_leave_cb (GtkWidget *tree,
-				 GdkDragContext *drag_context,
-				 guint time,
-				 BraseroDataDisc *disc)
-{
-	if (disc->priv->scroll_timeout) {
-		g_signal_stop_emission_by_name (tree, "drag-leave");
-
-		g_source_remove (disc->priv->scroll_timeout);
-		disc->priv->scroll_timeout = 0;
-	}
-	if (disc->priv->expand_timeout) {
-		g_signal_stop_emission_by_name (tree, "drag-leave");
-
-		g_source_remove (disc->priv->expand_timeout);
-		disc->priv->expand_timeout = 0;
-	}
 }
 
 /**************************** MENUS ********************************************/
 static void
 brasero_data_disc_open_file (BraseroDataDisc *disc, GList *list)
 {
-	char *uri;
-	char *path;
-	int status;
+	gchar *uri;
+	gchar *path;
+	gint status;
 	GList *item;
 	GSList *uris;
 	GtkTreeIter iter;
@@ -9441,7 +9848,7 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GList *list;
-	int status;
+	gint status;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
 	model = disc->priv->sort;
@@ -9462,12 +9869,16 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 
 		column = gtk_tree_view_get_column (GTK_TREE_VIEW (disc->priv->tree),
 						   0);
+
+		/* grab focus must be called before next function to avoid
+		 * triggering a bug where if pointer is not in the widget 
+		 * any more and enter is pressed the cell will remain editable */
+		gtk_widget_grab_focus (disc->priv->tree);
 		gtk_tree_view_set_cursor_on_cell (GTK_TREE_VIEW (disc->priv->tree),
 						  treepath,
 						  column,
 						  NULL,
 						  TRUE);
-		gtk_widget_grab_focus (disc->priv->tree);
 
 		gtk_tree_path_free (treepath);
 	}
@@ -9527,7 +9938,8 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 			uri = gnome_vfs_make_uri_from_input (*item);
 			brasero_data_disc_add_uri_real (data->disc,
 							uri,
-							treepath);
+							treepath,
+							NULL);
 			if (treepath)
 				gtk_tree_path_free (treepath);
 		}
@@ -9552,7 +9964,7 @@ brasero_data_disc_clipboard_targets_cb (GtkClipboard *clipboard,
 					 BraseroClipData *data)
 {
 	GdkAtom *iter;
-	char *target;
+	gchar *target;
 
 	iter = atoms;
 	while (n_atoms) {
@@ -9624,6 +10036,33 @@ brasero_data_disc_paste_activated_cb (GtkAction *action,
 				       data);
 }
 
+static void
+brasero_data_disc_tree_selection_changed (GtkTreeSelection *selection,
+					  BraseroDataDisc *disc)
+{
+	GList *selected;
+	GList *iter;
+
+	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+	for (iter = selected; iter; iter = iter->next) {
+		GtkTreePath *treepath;
+		GtkTreeIter row;
+		gint status;
+
+		treepath = iter->data;
+		if (gtk_tree_model_get_iter (disc->priv->sort, &row, treepath)) {
+			gtk_tree_model_get (disc->priv->sort, &row,
+					    ROW_STATUS_COL, &status,
+					    -1);
+
+			if (status == ROW_BOGUS)
+				gtk_tree_selection_unselect_iter (selection, &row);
+		}
+		gtk_tree_path_free (treepath);
+	}
+	g_list_free (selected);
+}
+
 static gboolean
 brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				     GdkEventButton *event,
@@ -9634,17 +10073,9 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 
 	GtkWidgetClass *widget_class;
 
-	/* we call the default handler for the treeview before everything else
-	 * so it can update itself (paticularly its selection) before we use it
-	 * NOTE: since the event has been treated here we need to return TRUE to
-	 * avoid having the treeview treating this event a second time */
-	widget_class = GTK_WIDGET_GET_CLASS (tree);
-	widget_class->button_press_event (GTK_WIDGET (tree), event);
+	if (GTK_WIDGET_REALIZED (disc->priv->tree)) {
+		GtkTreeIter row;
 
-	if (disc->priv->is_loading)
-		return TRUE;
-
-	if (GTK_WIDGET_REALIZED (disc->priv->tree))
 		result = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (disc->priv->tree),
 							event->x,
 							event->y,
@@ -9652,8 +10083,36 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 							NULL,
 							NULL,
 							NULL);
+
+		if (treepath
+		&&  gtk_tree_model_get_iter (disc->priv->sort, &row, treepath)) {
+			gint status;
+
+			gtk_tree_model_get (disc->priv->sort, &row,
+					    ROW_STATUS_COL, &status,
+					    -1);
+
+			/* nothing should happen on this type of rows */
+			if (status == ROW_BOGUS) {
+				gtk_tree_path_free (treepath);
+				return TRUE;
+			}
+		}		
+	}
 	else
 		result = FALSE;
+
+	/* we call the default handler for the treeview before everything else
+	 * so it can update itself (paticularly its selection) before we use it
+	 * NOTE: since the event has been treated here we need to return TRUE to
+	 * avoid having the treeview treating this event a second time */
+	widget_class = GTK_WIDGET_GET_CLASS (tree);
+	widget_class->button_press_event (GTK_WIDGET (tree), event);
+
+	if (disc->priv->is_loading) {
+		gtk_tree_path_free (treepath);
+		return TRUE;
+	}
 
 	if ((event->state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0) {
 		if (disc->priv->selected_path)
@@ -9675,17 +10134,9 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 
 			if (status != ROW_BOGUS) {
 				if (event->state & GDK_CONTROL_MASK)
-					disc->priv->selected_path = treepath;
+					disc->priv->selected_path = gtk_tree_path_copy (treepath);
 				else if ((event->state & GDK_SHIFT_MASK) == 0)
-					disc->priv->selected_path = treepath;
-				else {
-					gtk_tree_path_free (treepath);
-					treepath = NULL;
-				}
-			}
-			else {
-				gtk_tree_path_free (treepath);
-				treepath = NULL;
+					disc->priv->selected_path = gtk_tree_path_copy (treepath);
 			}
 		}
 
@@ -9699,12 +10150,10 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 		if (event->type == GDK_2BUTTON_PRESS) {
 			GList *list;
 
-			list = g_list_prepend (NULL, treepath);
+			list = g_list_prepend (NULL, gtk_tree_path_copy (treepath));
 			brasero_data_disc_open_file (disc, list);
 			g_list_free (list);
 		}
-
-		return TRUE;
 	}
 	else if (event->button == 3) {
 		GtkTreeSelection *selection;
@@ -9713,8 +10162,9 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 		brasero_utils_show_menu (gtk_tree_selection_count_selected_rows (selection),
 					 disc->priv->manager,
 					 event);
-		return TRUE;
 	}
+
+	gtk_tree_path_free (treepath);
 
 	return TRUE;
 }
@@ -9726,8 +10176,6 @@ brasero_data_disc_button_released_cb (GtkTreeView *tree,
 {
 	if (disc->priv->is_loading)
 		return FALSE;
-
-
 
 	return FALSE;
 }
@@ -9781,10 +10229,10 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 	GtkTreeModel *sort;
 	GtkTreePath *path;
 	GtkTreeIter row;
-	char *oldpath;
-	char *newpath;
-	char *parent;
-	char *name;
+	gchar *oldpath;
+	gchar *newpath;
+	gchar *parent;
+	gchar *name;
 
 	disc->priv->editing = 0;
 
@@ -9832,7 +10280,7 @@ end:
 }
 
 /*******************************            ************************************/
-static char *
+static gchar *
 brasero_data_disc_get_selected_uri (BraseroDisc *disc)
 {
 	gchar *uri;
@@ -10268,7 +10716,7 @@ brasero_data_disc_inotify_attributes_event_cb (BraseroDataDisc *disc,
 	BraseroInfoAsyncResult *result;
 	BraseroFilterStatus status;
 	GnomeVFSFileInfo *info;
-	char *uri;
+	gchar *uri;
 
 	for (; results; results = results->next) {
 		result = results->data;
@@ -10310,7 +10758,7 @@ brasero_data_disc_inotify_attributes_event (BraseroDataDisc *disc,
 {
 	GSList *uris;
 
-	uris = g_slist_prepend (NULL, (char *) uri);
+	uris = g_slist_prepend (NULL, (gchar *) uri);
 	brasero_data_disc_get_info_async (disc,
 					  uris,
 					  GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS,
@@ -10330,7 +10778,7 @@ brasero_data_disc_inotify_modify_file_cb (BraseroDataDisc *disc,
 	GnomeVFSFileInfo *info;
 	GSList *paths;
 	GSList *iter;
-	char *uri;
+	gchar *uri;
 
 	for (; results; results = results->next) {
 		result = results->data;
@@ -10404,7 +10852,7 @@ brasero_data_disc_inotify_modify_file (BraseroDataDisc *disc,
 {
 	GSList *uris;
 
-	uris = g_slist_prepend (NULL, (char *) uri);
+	uris = g_slist_prepend (NULL, (gchar *) uri);
 	brasero_data_disc_get_info_async (disc,
 					  uris,
 					  GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS |

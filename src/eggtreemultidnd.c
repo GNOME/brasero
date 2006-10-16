@@ -21,6 +21,7 @@
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkstock.h>
 #include <gtk/gtkmain.h>
 #include "eggtreemultidnd.h"
 
@@ -275,7 +276,7 @@ egg_tree_multi_drag_drag_data_get (GtkWidget        *widget,
    * we also support.
    */
 
-  if (EGG_IS_TREE_MULTI_DRAG_SOURCE (model))
+    if (EGG_IS_TREE_MULTI_DRAG_SOURCE (model))
     {
       egg_tree_multi_drag_source_drag_data_get (EGG_TREE_MULTI_DRAG_SOURCE (model),
 						path_list,
@@ -324,7 +325,6 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
 				    (GdkEvent*)event);
 	  set_context_data (context, path_list);
 	  gtk_drag_set_icon_default (context);
-
 	}
       else
 	{

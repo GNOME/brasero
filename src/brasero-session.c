@@ -160,9 +160,9 @@ end:
 
 	xmlFreeDoc (session);
 
-	gtk_window_set_default_size (GTK_WINDOW (app->mainwin),
-				     width,
-				     height);
+	gtk_window_resize (GTK_WINDOW (app->mainwin),
+			   width,
+			   height);
 
 	if (state)
 		gtk_window_maximize (GTK_WINDOW (app->mainwin));

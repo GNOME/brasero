@@ -28,6 +28,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gtk/gtkbox.h>
+
 #include "burn-basics.h"
 
 G_BEGIN_DECLS
@@ -114,9 +116,15 @@ struct _BraseroDiscIface {
 	void			(*delete_selected)	(BraseroDisc *disc);
 	void			(*clear)		(BraseroDisc *disc);
 	void			(*reset)		(BraseroDisc *disc);
+
+	void			(*fill_toolbar)		(BraseroDisc *disc,
+							 GtkBox *box);
 };
 
-GType brasero_disc_get_type();
+GType brasero_disc_get_type ();
+
+void
+brasero_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar);
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);

@@ -65,12 +65,15 @@
 #include "search-entry.h"
 #include "mime-filter.h"
 #include "search.h"
-#include "brasero-uri-container.h"
 #include "eggtreemultidnd.h"
+
+#include "brasero-uri-container.h"
+#include "brasero-layout-object.h"
 
 static void brasero_search_class_init (BraseroSearchClass *klass);
 static void brasero_search_init (BraseroSearch *sp);
 static void brasero_search_iface_uri_container_init (BraseroURIContainerIFace *iface);
+static void brasero_search_iface_layout_object_init (BraseroLayoutObjectIFace *iface);
 static void brasero_search_finalize (GObject *object);
 static void brasero_search_destroy (GtkObject *object);
 
@@ -81,6 +84,7 @@ struct BraseroSearchPrivate {
 	GtkWidget *tree;
 	GtkWidget *entry;
 	GtkWidget *filter;
+	GtkWidget *filters;
 	GtkWidget *right;
 	GtkWidget *left;
 	GtkWidget *results_label;
@@ -118,13 +122,13 @@ enum {
 
 
 static void brasero_search_entry_activated_cb (BraseroSearchEntry *entry,
-					        BraseroSearch *obj);
+					       BraseroSearch *obj);
 static void brasero_search_tree_activated_cb (GtkTreeView *tree,
-					       GtkTreeIter *row,
-					       GtkTreeViewColumn *column,
-					       BraseroSearch *search);
+					      GtkTreeIter *row,
+					      GtkTreeViewColumn *column,
+					      BraseroSearch *search);
 static void brasero_search_tree_selection_changed_cb (GtkTreeSelection *selection,
-						       BraseroSearch *search);
+						      BraseroSearch *search);
 static void brasero_search_drag_data_get_cb (GtkTreeView *tree,
 					     GdkDragContext *drag_context,
 					     GtkSelectionData *selection_data,
@@ -148,12 +152,20 @@ brasero_search_max_results_num_changed_cb (GtkComboBox *combo,
 					   BraseroSearch *search);
 
 static void brasero_search_empty_tree (BraseroSearch *search);
-static char ** brasero_search_get_selected_rows (BraseroSearch *search);
+static gchar ** brasero_search_get_selected_rows (BraseroSearch *search);
 
-static char **
+static gchar **
 brasero_search_get_selected_uris (BraseroURIContainer *container);
-static char *
+static gchar *
 brasero_search_get_selected_uri (BraseroURIContainer *container);
+
+static void
+brasero_search_get_proportion (BraseroLayoutObject *object,
+			       gint *header,
+			       gint *center,
+			       gint *footer);
+
+#define BRASERO_SEARCH_SPACING 6
 
 GType
 brasero_search_get_type ()
@@ -179,6 +191,12 @@ brasero_search_get_type ()
 			NULL,
 			NULL
 		};
+		static const GInterfaceInfo layout_object_info =
+		{
+			(GInterfaceInitFunc) brasero_search_iface_layout_object_init,
+			NULL,
+			NULL
+		};
 
 		type = g_type_register_static (GTK_TYPE_VBOX,
 					       "BraseroSearch",
@@ -188,6 +206,9 @@ brasero_search_get_type ()
 		g_type_add_interface_static (type,
 					     BRASERO_TYPE_URI_CONTAINER,
 					     &uri_container_info);
+		g_type_add_interface_static (type,
+					     BRASERO_TYPE_LAYOUT_OBJECT,
+					     &layout_object_info);
 	}
 
 	return type;
@@ -209,6 +230,25 @@ brasero_search_iface_uri_container_init (BraseroURIContainerIFace *iface)
 {
 	iface->get_selected_uri = brasero_search_get_selected_uri;
 	iface->get_selected_uris = brasero_search_get_selected_uris;
+}
+
+static void
+brasero_search_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
+{
+	iface->get_proportion = brasero_search_get_proportion;
+}
+
+static void
+brasero_search_get_proportion (BraseroLayoutObject *object,
+			       gint *header,
+			       gint *center,
+			       gint *footer) 
+{
+	GtkRequisition requisition;
+
+	gtk_widget_size_request (BRASERO_SEARCH (object)->priv->filters,
+				 &requisition);
+	*footer = requisition.height + BRASERO_SEARCH_SPACING;
 }
 
 static void
@@ -268,7 +308,7 @@ brasero_search_init (BraseroSearch *obj)
 	GtkFileFilter *file_filter;
 	GtkTreeSelection *selection;
 
-	gtk_box_set_spacing (GTK_BOX (obj), 8);
+	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_SEARCH_SPACING);
 	obj->priv = g_new0 (BraseroSearchPrivate, 1);
 
 	/* separator */
@@ -421,6 +461,7 @@ brasero_search_init (BraseroSearch *obj)
 
 	/* filter combo */
 	box = gtk_hbox_new (FALSE, 32);
+	obj->priv->filters = box;
 	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	obj->priv->filter = brasero_mime_filter_new ();
@@ -1114,13 +1155,10 @@ brasero_search_get_selected_rows (BraseroSearch *search)
 	GtkTreeModel *model;
 	GtkTreeIter row;
 	GList *rows, *iter;
-	char **uris = NULL, *uri;
-	int i;
+	gchar **uris = NULL, *uri;
+	gint i;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (search->priv->tree));
-	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (search->priv->tree));
-
 	rows = gtk_tree_selection_get_selected_rows (selection, &model);
 	if (rows == NULL)
 		return NULL;

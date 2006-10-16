@@ -491,6 +491,7 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 		return BRASERO_BURN_ERR;
 	}
 
+	tmppath = NULL;
 	vfsuri = gnome_vfs_uri_new (uri);
 	if (!gnome_vfs_uri_is_local (vfsuri)) {
 		g_free (uri);
@@ -507,8 +508,6 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 		src = tmppath;
 	}
 	else {
-		tmppath = NULL;
-
 		src = gnome_vfs_get_local_path_from_uri (uri);
 		g_free (uri);
 

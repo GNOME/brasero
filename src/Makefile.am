@@ -174,7 +174,9 @@ brasero_SOURCES = \
 	brasero-image-type-chooser.c         \
 	brasero-image-type-chooser.h         \
 	burn-iso9660.c         \
-	burn-iso9660.h 
+	burn-iso9660.h         \
+	brasero-layout-object.c         \
+	brasero-layout-object.h 
 
 brasero_LDFLAGS =
 

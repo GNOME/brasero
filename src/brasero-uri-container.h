@@ -46,17 +46,17 @@ typedef struct {
 	void		(*uri_activated)	(BraseroURIContainer *container);
 
 	/* virtual functions */
-	char*		(*get_selected_uri)	(BraseroURIContainer *container);
-	char**		(*get_selected_uris)	(BraseroURIContainer *container);
+	gchar*		(*get_selected_uri)	(BraseroURIContainer *container);
+	gchar**		(*get_selected_uris)	(BraseroURIContainer *container);
 
 } BraseroURIContainerIFace;
 
 
 GType brasero_uri_container_get_type();
 
-char *
+gchar *
 brasero_uri_container_get_selected_uri (BraseroURIContainer *container);
-char **
+gchar **
 brasero_uri_container_get_selected_uris (BraseroURIContainer *container);
 
 void

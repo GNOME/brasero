@@ -63,13 +63,16 @@
 #include "play-list.h"
 #include "utils.h"
 #include "metadata.h"
-#include "brasero-uri-container.h"
 #include "async-job-manager.h"
 #include "eggtreemultidnd.h"
+
+#include "brasero-uri-container.h"
+#include "brasero-layout-object.h"
 
 static void brasero_playlist_class_init (BraseroPlaylistClass *klass);
 static void brasero_playlist_init (BraseroPlaylist *sp);
 static void brasero_playlist_iface_uri_container_init (BraseroURIContainerIFace *iface);
+static void brasero_playlist_iface_layout_object_init (BraseroLayoutObjectIFace *iface);
 static void brasero_playlist_finalize (GObject *object);
 static void brasero_playlist_destroy (GtkObject *object);
 
@@ -142,14 +145,20 @@ static void brasero_playlist_selection_changed_cb (GtkTreeSelection *
 						   selection,
 						   BraseroPlaylist *
 						   playlist);
-static char **brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist);
+static gchar **brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist);
 
 static gboolean brasero_playlist_get_song_metadata (BraseroPlaylist *playlist);
 
-static char **
+static gchar **
 brasero_playlist_get_selected_uris (BraseroURIContainer *container);
-static char *
+static gchar *
 brasero_playlist_get_selected_uri (BraseroURIContainer *container);
+
+static void
+brasero_playlist_get_proportion (BraseroLayoutObject *object,
+				 gint *header,
+				 gint *center,
+				 gint *footer);
 
 struct _BraseroPlaylistSong {
 	GtkTreeRowReference *reference;
@@ -169,6 +178,8 @@ static GtkTargetEntry ntables[] = {
 static guint nb_ntables = sizeof (ntables) / sizeof (ntables[0]);
 
 static GObjectClass *parent_class = NULL;
+
+#define BRASERO_PLAYLIST_SPACING 6
 
 GType
 brasero_playlist_get_type ()
@@ -194,6 +205,12 @@ brasero_playlist_get_type ()
 			NULL,
 			NULL
 		};
+		static const GInterfaceInfo layout_object_info =
+		{
+			(GInterfaceInitFunc) brasero_playlist_iface_layout_object_init,
+			NULL,
+			NULL
+		};
 
 		type = g_type_register_static (GTK_TYPE_VBOX,
 					       "BraseroPlaylist",
@@ -202,6 +219,9 @@ brasero_playlist_get_type ()
 		g_type_add_interface_static (type,
 					     BRASERO_TYPE_URI_CONTAINER,
 					     &uri_container_info);
+		g_type_add_interface_static (type,
+					     BRASERO_TYPE_LAYOUT_OBJECT,
+					     &layout_object_info);
 	}
 
 	return type;
@@ -226,6 +246,25 @@ brasero_playlist_iface_uri_container_init (BraseroURIContainerIFace *iface)
 }
 
 static void
+brasero_playlist_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
+{
+	iface->get_proportion = brasero_playlist_get_proportion;
+}
+
+static void
+brasero_playlist_get_proportion (BraseroLayoutObject *object,
+				 gint *header,
+				 gint *center,
+				 gint *footer)
+{
+	GtkRequisition requisition;
+
+	gtk_widget_size_request (BRASERO_PLAYLIST (object)->priv->button_add->parent,
+				 &requisition);
+	(*footer) = requisition.height + BRASERO_PLAYLIST_SPACING;
+}
+
+static void
 brasero_playlist_init (BraseroPlaylist *obj)
 {
 	GtkWidget *hbox, *scroll;
@@ -234,17 +273,18 @@ brasero_playlist_init (BraseroPlaylist *obj)
 	GtkTreeViewColumn *column;
 
 	obj->priv = g_new0 (BraseroPlaylistPrivate, 1);
-	gtk_box_set_spacing (GTK_BOX (obj), 6);
+	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PLAYLIST_SPACING);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
 
 	obj->priv->button_add = gtk_button_new_from_stock (GTK_STOCK_ADD);
 	gtk_widget_show (obj->priv->button_add);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    obj->priv->button_add,
-			    FALSE,
-			    FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox),
+			  obj->priv->button_add,
+			  FALSE,
+			  FALSE,
+			  0);
 	g_signal_connect (G_OBJECT (obj->priv->button_add),
 			  "clicked",
 			  G_CALLBACK (brasero_playlist_add_cb),
@@ -252,8 +292,11 @@ brasero_playlist_init (BraseroPlaylist *obj)
 
 	obj->priv->button_remove = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
 	gtk_widget_show (obj->priv->button_remove);
-	gtk_box_pack_start (GTK_BOX (hbox), obj->priv->button_remove,
-			    FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox),
+			  obj->priv->button_remove,
+			  FALSE,
+			  FALSE,
+			  0);
 	g_signal_connect (G_OBJECT (obj->priv->button_remove),
 			  "clicked",
 			  G_CALLBACK (brasero_playlist_remove_cb),
@@ -577,7 +620,7 @@ brasero_playlist_new ()
 	return GTK_WIDGET (obj);
 }
 
-static char **
+static gchar **
 brasero_playlist_get_selected_uris (BraseroURIContainer *container)
 {
 	BraseroPlaylist *playlist;
@@ -586,12 +629,12 @@ brasero_playlist_get_selected_uris (BraseroURIContainer *container)
 	return brasero_playlist_get_selected_uris_real (playlist);
 }
 
-static char *
+static gchar *
 brasero_playlist_get_selected_uri (BraseroURIContainer *container)
 {
 	BraseroPlaylist *playlist;
-	char **uris = NULL;
-	char *uri;
+	gchar **uris = NULL;
+	gchar *uri;
 
 	playlist = BRASERO_PLAYLIST (container);
 	uris = brasero_playlist_get_selected_uris_real (playlist);
@@ -618,7 +661,7 @@ static void
 brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
 {
 	GtkWidget *dialog, *toplevel;
-	char *uri;
+	gchar *uri;
 	GSList *uris, *iter;
 	gint result;
 
@@ -668,7 +711,6 @@ brasero_playlist_remove_cb (GtkButton *button, BraseroPlaylist *playlist)
 	GList *rows, *iter;
 	gboolean valid;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (playlist->priv->tree));
 	rows = gtk_tree_selection_get_selected_rows (selection, &model);
 
@@ -699,7 +741,7 @@ brasero_playlist_remove_cb (GtkButton *button, BraseroPlaylist *playlist)
 	g_list_free (rows);
 }
 
-static char **
+static gchar **
 brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist)
 {
 	GtkTreeSelection *selection;
@@ -707,13 +749,11 @@ brasero_playlist_get_selected_uris_real (BraseroPlaylist *playlist)
 	GtkTreePath *path;
 	GList *rows, *iter;
 	GtkTreeIter row;
-	char **uris = NULL, *uri;
+	gchar **uris = NULL, *uri;
 	GPtrArray *array;
 	gboolean valid;
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (playlist->priv->tree));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (playlist->priv->tree));
-
 	rows = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	if (rows == NULL)

@@ -118,6 +118,9 @@ brasero_audio_disc_clear (BraseroDisc *disc);
 static void
 brasero_audio_disc_reset (BraseroDisc *disc);
 
+static void
+brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar);
+
 static gboolean
 brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 				      GdkEventButton *event,
@@ -155,10 +158,28 @@ brasero_audio_disc_drag_drop_cb (GtkWidget *widget,
 				 gint y,
 				 guint time,
 				 BraseroAudioDisc *disc);
+static gboolean
+brasero_audio_disc_drag_motion_cb (GtkWidget *tree,
+				   GdkDragContext *drag_context,
+				   gint x,
+				   gint y,
+				   guint time,
+				   BraseroAudioDisc *disc);
+static void
+brasero_audio_disc_drag_leave_cb (GtkWidget *tree,
+				  GdkDragContext *drag_context,
+				  guint time,
+				  BraseroAudioDisc *disc);
+
 static void
 brasero_audio_disc_drag_begin_cb (GtkWidget *widget,
 				  GdkDragContext *drag_context,
 				  BraseroAudioDisc *disc);
+static void
+brasero_audio_disc_drag_end_cb (GtkWidget *tree,
+			        GdkDragContext *drag_context,
+			        BraseroAudioDisc *disc);
+
 static void
 brasero_audio_disc_row_deleted_cb (GtkTreeModel *model,
 				   GtkTreePath *arg1,
@@ -189,7 +210,7 @@ brasero_audio_disc_paste_activated_cb (GtkAction *action,
 static void
 brasero_audio_disc_decrease_activity_counter (BraseroAudioDisc *disc);
 
-static char *
+static gchar *
 brasero_audio_disc_get_selected_uri (BraseroDisc *disc);
 
 static void
@@ -252,6 +273,7 @@ struct _BraseroAudioDiscPrivate {
 	gint64 sectors;
 
 	GtkTooltips *tooltip;
+	GdkDragContext *drag_context;
 
 	int activity_counter;
 
@@ -402,6 +424,7 @@ brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->load_track = brasero_audio_disc_load_track;
 	iface->get_status = brasero_audio_disc_get_status;
 	iface->get_selected_uri = brasero_audio_disc_get_selected_uri;
+	iface->fill_toolbar = brasero_audio_disc_fill_toolbar;
 }
 
 static void brasero_audio_disc_get_property (GObject * object,
@@ -469,14 +492,47 @@ brasero_audio_disc_build_context_menu (BraseroAudioDisc *disc)
 }
 
 static void
+brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
+{
+	GtkWidget *button;
+	GtkWidget *alignment;
+	BraseroAudioDisc *audio_disc;
+
+	audio_disc = BRASERO_AUDIO_DISC (disc);
+
+	/* button to add pauses in between tracks */
+	button = brasero_utils_make_button (NULL, GTK_STOCK_MEDIA_PAUSE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	gtk_widget_set_sensitive (button, FALSE);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	g_signal_connect (G_OBJECT (button),
+			  "clicked",
+			  G_CALLBACK (brasero_audio_disc_pause_clicked_cb),
+			  audio_disc);
+	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (audio_disc->priv->tree)),
+			  "changed",
+			  G_CALLBACK (brasero_audio_disc_selection_changed),
+			  button);
+	gtk_tooltips_set_tip (audio_disc->priv->tooltip,
+			      button,
+			      _("Add a 2 second pause after the track"),
+			      NULL);
+	gtk_widget_show (button);
+	
+	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
+	gtk_widget_show (alignment);
+
+	gtk_container_add (GTK_CONTAINER (alignment), button);
+	gtk_box_pack_start (GTK_BOX (toolbar), alignment, TRUE, TRUE, 0);
+}
+
+static void
 brasero_audio_disc_init (BraseroAudioDisc *obj)
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkTreeModel *model;
 	GtkWidget *scroll;
-	GtkWidget *button;
-	GtkWidget *hbox;
 
 	obj->priv = g_new0 (BraseroAudioDiscPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 8);
@@ -490,6 +546,9 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	/* Tree */
 	obj->priv->tree = gtk_tree_view_new ();
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+
+	/* This must be before connecting to button press event */
+	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (obj->priv->tree));
 
 	gtk_widget_show (obj->priv->tree);
 	g_signal_connect (G_OBJECT (obj->priv->tree),
@@ -639,13 +698,27 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 			  G_CALLBACK (brasero_audio_disc_drag_data_received_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->tree),
+			  "drag-drop",
+			  G_CALLBACK (brasero_audio_disc_drag_drop_cb),
+			  obj);
+	g_signal_connect (G_OBJECT (obj->priv->tree),
+			  "drag_motion",
+			  G_CALLBACK (brasero_audio_disc_drag_motion_cb),
+			  obj);
+	g_signal_connect (G_OBJECT (obj->priv->tree),
+			  "drag_leave",
+			  G_CALLBACK (brasero_audio_disc_drag_leave_cb),
+			  obj);
+
+	g_signal_connect (G_OBJECT (obj->priv->tree),
 			  "drag-begin",
 			  G_CALLBACK (brasero_audio_disc_drag_begin_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->tree),
-			  "drag-drop",
-			  G_CALLBACK (brasero_audio_disc_drag_drop_cb),
+			  "drag_end",
+			  G_CALLBACK (brasero_audio_disc_drag_end_cb),
 			  obj);
+
 	gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (obj->priv->tree),
 						GDK_BUTTON1_MASK,
 						ntables_source,
@@ -655,28 +728,6 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 
 	/* create menus */
 	brasero_audio_disc_build_context_menu (obj);
-
-	/* button to add pauses in between tracks */
-	hbox = gtk_hbox_new (FALSE, 10);
-	gtk_box_pack_start (GTK_BOX (obj), hbox, FALSE, FALSE, 0);
-
-	button = brasero_utils_make_button (NULL, GTK_STOCK_MEDIA_PAUSE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	gtk_widget_set_sensitive (button, FALSE);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_audio_disc_pause_clicked_cb),
-			  obj);
-	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree)),
-			  "changed",
-			  G_CALLBACK (brasero_audio_disc_selection_changed),
-			  button);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      button,
-			      _("Add a 2 second pause after the track"),
-			      NULL);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
 #ifdef BUILD_INOTIFY
 	int fd;
@@ -863,7 +914,6 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 	gint64 sectors;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-
 	if (gap) {
 		gchar *size;
 
@@ -873,8 +923,6 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 					    -1);
 
 			disc->priv->sectors -= sectors;
-			disc->priv->sectors += BRASERO_TIME_TO_SECTORS (gap);
-			brasero_audio_disc_size_changed (disc);
 		}
 		else {
 			GdkPixbuf *pixbuf;
@@ -903,13 +951,16 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 				    SECTORS_COL, BRASERO_TIME_TO_SECTORS (gap),
 				    -1);
 		g_free (size);
+
+		disc->priv->sectors += BRASERO_TIME_TO_SECTORS (gap);
+		brasero_audio_disc_size_changed (disc);
 	}
 	else if (brasero_audio_disc_has_gap (disc, iter, &gap_iter)) {
 		gtk_tree_model_get (model, &gap_iter,
 				    SECTORS_COL, &sectors,
 				    -1);
 
-		disc->priv->sectors -= BRASERO_TIME_TO_SECTORS (gap);
+		disc->priv->sectors -= sectors;
 		brasero_audio_disc_size_changed (disc);
 		gtk_list_store_remove (GTK_LIST_STORE (model), &gap_iter);
 	}
@@ -1392,7 +1443,8 @@ static BraseroDiscResult
 brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 				 const gchar *uri,
 				 gint pos,
-				 gint64 gap_sectors)
+				 gint64 gap_sectors,
+				 GtkTreePath **path_return)
 {
 	GtkTreeRowReference *ref;
 	GtkTreePath *treepath;
@@ -1436,7 +1488,11 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 
 	treepath = gtk_tree_model_get_path (store, &iter);
 	ref = gtk_tree_row_reference_new (store, treepath);
-	gtk_tree_path_free (treepath);
+
+	if (path_return)
+		*path_return = treepath;
+	else
+		gtk_tree_path_free (treepath);
 
 	/* get info async for the file */
 	if (!disc->priv->vfs)
@@ -1473,10 +1529,28 @@ static BraseroDiscResult
 brasero_audio_disc_add_uri (BraseroDisc *disc,
 			    const gchar *uri)
 {
-	return brasero_audio_disc_add_uri_real (BRASERO_AUDIO_DISC (disc),
-						uri,
-						-1,
-						0);
+	GtkTreePath *treepath = NULL;
+	BraseroAudioDisc *audio_disc;
+	BraseroDiscResult result;
+
+	audio_disc = BRASERO_AUDIO_DISC (disc);
+	result = brasero_audio_disc_add_uri_real (audio_disc,
+						  uri,
+						  -1,
+						  0,
+						  &treepath);
+
+	if (treepath) {
+		gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (audio_disc->priv->tree),
+					      treepath,
+					      NULL,
+					      TRUE,
+					      0.5,
+					      0.5);
+		gtk_tree_path_free (treepath);
+	}
+
+	return result;
 }
 
 /******************************** Row removing *********************************/
@@ -1498,13 +1572,13 @@ brasero_audio_disc_remove (BraseroAudioDisc *disc,
 			    -1);
 
 	if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter)) {
-		gtk_tree_model_get (model, &iter,
-				    SECTORS_COL, &sectors,
+		gint64 gap_sectors = 0;
+
+		gtk_tree_model_get (model, &gap_iter,
+				    SECTORS_COL, &gap_sectors,
 				    -1);
 
-		disc->priv->sectors -= sectors;
-		brasero_audio_disc_size_changed (disc);
-
+		sectors += gap_sectors;
 		gtk_list_store_remove (GTK_LIST_STORE (model), &gap_iter);
 	}
 
@@ -1535,7 +1609,6 @@ brasero_audio_disc_delete_selected (BraseroDisc *disc)
 
 	audio = BRASERO_AUDIO_DISC (disc);
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (audio->priv->tree));
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
 
 	/* we must start by the end for the treepaths to point to valid rows */
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
@@ -1599,7 +1672,7 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 			gtk_tree_model_get (model, &iter,
 					    SECTORS_COL, &sectors,
 					    -1);
-			if (sectors)
+			if (sectors && song)
 				song->gap += sectors;
 		}
 		else {
@@ -1706,7 +1779,8 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 		brasero_audio_disc_add_uri_real (BRASERO_AUDIO_DISC (disc),
 						 song->uri,
 						 -1,
-						 song->gap);
+						 song->gap,
+						 NULL);
 	}
 
 	return BRASERO_DISC_OK;
@@ -1718,9 +1792,10 @@ brasero_audio_disc_get_dest_path (BraseroAudioDisc *disc,
 				  gint x,
 				  gint y)
 {
+	gint position;
+	GtkTreeModel *model;
 	GtkTreeViewDropPosition pos;
 	GtkTreePath *treepath = NULL;
-	gint retval;
 
 	/* while the treeview is still under the information pane, it is not 
 	 * realized yet and the following function will fail */
@@ -1731,26 +1806,51 @@ brasero_audio_disc_get_dest_path (BraseroAudioDisc *disc,
 						   &treepath,
 						   &pos);
 
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
+
 	if (treepath) {
-		gint *indices;
+		if (pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE
+		||  pos == GTK_TREE_VIEW_DROP_BEFORE) {
+			if (!gtk_tree_path_prev (treepath)) {
+				gtk_tree_path_free (treepath);
+				treepath = NULL;
+			}
+		}
 
-		if (pos == GTK_TREE_VIEW_DROP_INTO_OR_AFTER
-		||  pos == GTK_TREE_VIEW_DROP_AFTER)
-			gtk_tree_path_next (treepath);
+		if (treepath) {
+			gint *indices;
+			gboolean is_song;
+			GtkTreeIter iter;
 
-		indices = gtk_tree_path_get_indices (treepath);
-		retval = indices [0];
+			/* we check that the dest is not in between a song
+			 * and its pause/gap/silence */
+			gtk_tree_model_get_iter (model, &iter, treepath);
+			gtk_tree_model_get (model, &iter,
+					    SONG_COL, &is_song,
+					    -1);
 
-		gtk_tree_path_free (treepath);
+			if (is_song
+			&&  gtk_tree_model_iter_next (model, &iter)) {
+				gtk_tree_model_get (model, &iter,
+						    SONG_COL, &is_song,
+						    -1);
+
+				if (!is_song)
+					gtk_tree_path_next (treepath);
+			}
+
+			indices = gtk_tree_path_get_indices (treepath);
+			position = indices [0];
+
+			gtk_tree_path_free (treepath);
+		}
+		else
+			position = -1;
 	}
-	else {
-		GtkTreeModel *model;
+	else
+		position = gtk_tree_model_iter_n_children (model, NULL) - 1;
 
-		model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-		retval = gtk_tree_model_iter_n_children (model, NULL);
-	}
-
-	return retval;
+	return position;
 }
 
 static void
@@ -1759,8 +1859,19 @@ brasero_audio_disc_merge_gaps (BraseroAudioDisc *disc,
 			       GtkTreeIter *iter,
 			       GtkTreeIter *pos)
 {
+	GtkTreePath *iter_path, *pos_path;
 	gint64 sectors_iter, sectors_pos;
 	gchar *size;
+	gint equal;
+
+	iter_path = gtk_tree_model_get_path (model, iter);
+	pos_path = gtk_tree_model_get_path (model, pos);
+	equal = gtk_tree_path_compare (iter_path, pos_path);
+	gtk_tree_path_free (iter_path);
+	gtk_tree_path_free (pos_path);
+
+	if (!equal)
+		return;
 
 	gtk_tree_model_get (model, pos,
 			    SECTORS_COL, &sectors_pos,
@@ -1780,132 +1891,115 @@ brasero_audio_disc_merge_gaps (BraseroAudioDisc *disc,
 	gtk_list_store_remove (GTK_LIST_STORE (model), iter);
 }
 
-static void
-brasero_audio_disc_move_gap (BraseroAudioDisc *disc,
-			     GtkTreeModel *model,
-			     GtkTreeIter *iter,
-			     gint x,
-			     gint y)
+static GtkTreePath *
+brasero_audio_disc_move_to_dest (BraseroAudioDisc *disc,
+				 GtkTreeSelection *selection,
+				 GtkTreeModel *model,
+				 GtkTreePath *dest,
+				 GtkTreeIter *iter,
+				 gboolean is_gap)
 {
-	gint dest_pos;
-	gboolean is_song;
-	GtkTreePath *dest;
-	GtkTreeIter pos_after;
-	GtkTreeIter pos_before;
-
-	dest_pos = brasero_audio_disc_get_dest_path (disc, x, y);
-	dest = gtk_tree_path_new_from_indices (dest_pos, -1);
-	if (!gtk_tree_model_get_iter (model, &pos_after, dest)) {
-		if (!gtk_tree_path_prev (dest)
-		||  !gtk_tree_model_get_iter (model, &pos_before, dest)) {
-			gtk_tree_path_free (dest);
-			return;
-		}
-
-		/* we don't check the position after since we are at the bottom
-		 * of the list */
-		gtk_tree_model_get (model, &pos_before,
-				    SONG_COL, &is_song,
-				    -1);
-		if (is_song)
-			gtk_list_store_move_after (GTK_LIST_STORE (model),
-						   iter,
-						   &pos_before);
-		else
-			brasero_audio_disc_merge_gaps (disc,
-						       model,
-						       iter,
-						       &pos_before);
-	}
-	else {
-		if (gtk_tree_path_prev (dest)
-		&&  gtk_tree_model_get_iter (model, &pos_before, dest)) {
-			gtk_tree_model_get (model, &pos_before,
-					    SONG_COL, &is_song,
-					    -1);
-			if (!is_song) {
-				brasero_audio_disc_merge_gaps (disc,
-							       model,
-							       iter,
-							       &pos_before);
-				gtk_tree_path_free (dest);
-				return;
-			}
-		}
-
-		/* we don't seek the position after since we are at the bottom
-		 * of the list */
-		gtk_tree_model_get (model, &pos_after,
-				    SONG_COL, &is_song,
-				    -1);
-		if (is_song)
-			gtk_list_store_move_before (GTK_LIST_STORE (model),
-						    iter,
-						    &pos_after);
-		else
-			brasero_audio_disc_merge_gaps (disc,
-						       model,
-						       iter,
-						       &pos_after);
-	}
-
-	gtk_tree_path_free (dest);
-}
-
-static void
-brasero_audio_disc_move_song (BraseroAudioDisc *disc,
-			      GtkTreeModel *model,
-			      GtkTreeIter *iter,
-			      gint x,
-			      gint y)
-{
-	gint dest_pos;
-	gboolean has_gap;
-	GtkTreePath *dest;
-	GtkTreeIter gap_iter;
 	GtkTreeIter position;
+	GtkTreeIter gap_iter;
+	gboolean has_gap = FALSE;
 
-	has_gap = brasero_audio_disc_has_gap (disc, iter, &gap_iter);
-
-	dest_pos = brasero_audio_disc_get_dest_path (disc, x, y);
-	dest = gtk_tree_path_new_from_indices (dest_pos, -1);
-	if (!gtk_tree_model_get_iter (model, &position, dest)) {
-		/* This happens when the row is dragged to last position
-		 */
-
-		if (!gtk_tree_path_prev (dest)
-		||  !gtk_tree_model_get_iter (model, &position, dest)) {
-			gtk_tree_path_free (dest);
-			return;
-		}
-
-		gtk_list_store_move_after (GTK_LIST_STORE (model),
-					   iter,
-					   &position);
-	}
-	else {
+	gtk_tree_model_get_iter (model, &position, dest);
+	if (is_gap) {
 		gboolean is_song;
+		GtkTreeIter next_pos;
 
-		/* we don't want the row to be dragged in between a song
-		 * and its pause */
+		/* Check that the row and the row under the destination
+		 * row are not gaps as well and if so merge both of them */
+
 		gtk_tree_model_get (model, &position,
 				    SONG_COL, &is_song,
 				    -1);
 
-		if (is_song)
-			gtk_list_store_move_before (GTK_LIST_STORE (model),
-						    iter,
-						    &position);
-		else
-			gtk_list_store_move_after (GTK_LIST_STORE (model),
-						   iter,
-						   &position);
+		if (!is_song) {
+			/* NOTE: if the path we're moving is above the
+			 * dest the dest path won't be valid once we
+			 * have merged the two gaps */
+			gtk_tree_path_free (dest);
+			brasero_audio_disc_merge_gaps (disc,
+						       model,
+						       iter,
+						       &position);
+			return gtk_tree_model_get_path (model, &position);
+		}
+
+		gtk_tree_path_next (dest);
+		if (gtk_tree_model_get_iter (model, &next_pos, dest)) {
+			gtk_tree_model_get (model, &next_pos,
+					    SONG_COL, &is_song,
+					    -1);
+
+			if (!is_song) {
+				/* NOTE: if the path we're moving is above the
+				 * dest the dest path won't be valid once we
+				 * have merged the two gaps */
+				gtk_tree_path_free (dest);
+				brasero_audio_disc_merge_gaps (disc,
+							       model,
+							       iter,
+							       &next_pos);
+				return gtk_tree_model_get_path (model, &next_pos);
+			}
+		}
 	}
+	else
+		has_gap = brasero_audio_disc_has_gap (disc, iter, &gap_iter);
 
 	gtk_tree_path_free (dest);
+	gtk_list_store_move_after (GTK_LIST_STORE (model),
+				   iter,
+				   &position);
 
-	/* moving the gap may be needed as well */
-	if (has_gap)
+	if (has_gap && !gtk_tree_selection_iter_is_selected (selection, &gap_iter)) {
+		gtk_list_store_move_after (GTK_LIST_STORE (model),
+					   &gap_iter,
+					   iter);
+
+		return gtk_tree_model_get_path (model, &gap_iter);
+	}
+
+	return gtk_tree_model_get_path (model, iter);
+}
+
+static void
+brasero_audio_disc_move_to_first_pos (BraseroAudioDisc *disc,
+				      GtkTreeSelection *selection,
+				      GtkTreeModel *model,
+				      GtkTreeIter *iter,
+				      gboolean is_gap)
+{
+	GtkTreeIter position;
+	GtkTreeIter gap_iter;
+	gboolean has_gap = FALSE;
+
+	gtk_tree_model_get_iter_first (model, &position);
+	if (is_gap) {
+		gboolean is_song;
+
+		gtk_tree_model_get (model, &position,
+				    SONG_COL, &is_song,
+				    -1);
+
+		if (!is_song) {
+			brasero_audio_disc_merge_gaps (disc,
+						       model,
+						       iter,
+						       &position);
+			return;
+		}
+	}
+	else
+		has_gap = brasero_audio_disc_has_gap (disc, iter, &gap_iter);
+
+	gtk_list_store_move_before (GTK_LIST_STORE (model),
+				    iter,
+				    &position);
+
+	if (has_gap && !gtk_tree_selection_iter_is_selected (selection, &gap_iter))
 		gtk_list_store_move_after (GTK_LIST_STORE (model),
 					   &gap_iter,
 					   iter);
@@ -1921,6 +2015,7 @@ brasero_audio_disc_drag_data_received_cb (GtkTreeView *tree,
 					  guint time,
 					  BraseroAudioDisc *disc)
 {
+	GtkTreeSelection *selection;
 	BraseroDiscResult success;
 	gboolean result = TRUE;
 	GtkTreePath *treepath;
@@ -1931,31 +2026,72 @@ brasero_audio_disc_drag_data_received_cb (GtkTreeView *tree,
 	gint pos;
 
 	if (info == TREE_MODEL_ROW) {
+		GList *references = NULL;
+		GtkTreePath *dest;
+		GList *list_iter;
+		GList *selected;
+
 		/* this signal gets emitted during dragging */
-		if (disc->priv->dragging)
-			return;
-
-		gtk_tree_get_row_drag_data (selection_data,
-					    &model,
-					    &treepath);
-
-		if (!treepath)
-			return;
-
-		if (!gtk_tree_model_get_iter (model, &iter, treepath)) {
-			gtk_tree_path_free (treepath);
+		if (disc->priv->dragging) {
+			gdk_drag_status (drag_context,
+					 GDK_ACTION_MOVE,
+					 time);
+			g_signal_stop_emission_by_name (tree, "drag-data-received");
 			return;
 		}
-		gtk_tree_path_free (treepath);
 
-		gtk_tree_model_get (model, &iter,
-				    SONG_COL, &is_song,
-				    -1);
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+		selected = gtk_tree_selection_get_selected_rows (selection, &model);
 
-		if (is_song)
-			brasero_audio_disc_move_song (disc, model, &iter, x, y);
+		for (list_iter = selected; list_iter; list_iter = list_iter->next) {
+			GtkTreeRowReference *reference;
+
+			reference = gtk_tree_row_reference_new (model, list_iter->data);
+			references = g_list_prepend (references, reference);
+			gtk_tree_path_free (list_iter->data);
+		}
+		g_list_free (selected);
+
+		pos = brasero_audio_disc_get_dest_path (disc, x, y);
+		if (pos != -1) {
+			references = g_list_reverse (references);
+			dest = 	gtk_tree_path_new_from_indices (pos, -1);
+		}
 		else
-			brasero_audio_disc_move_gap (disc, model, &iter, x, y);
+			dest = NULL;
+
+		for (list_iter = references; list_iter; list_iter = list_iter->next) {
+			treepath = gtk_tree_row_reference_get_path (list_iter->data);
+			gtk_tree_row_reference_free (list_iter->data);
+
+			if (!gtk_tree_model_get_iter (model, &iter, treepath)) {
+				gtk_tree_path_free (treepath);
+				continue;
+			}
+			gtk_tree_path_free (treepath);
+
+			gtk_tree_model_get (model, &iter,
+					    SONG_COL, &is_song,
+					    -1);
+
+			if (dest)
+				dest = brasero_audio_disc_move_to_dest (disc,
+									selection,
+									model,
+									dest,
+									&iter,
+									is_song == FALSE);
+			else
+				brasero_audio_disc_move_to_first_pos (disc,
+								      selection,
+								      model,
+								      &iter,
+								      is_song == FALSE);
+		}
+		g_list_free (references);
+
+		if (dest)
+			gtk_tree_path_free (dest);
 
 		gtk_drag_finish (drag_context,
 				 TRUE,
@@ -1973,25 +2109,28 @@ brasero_audio_disc_drag_data_received_cb (GtkTreeView *tree,
 		return;
 	}
 
-	/* get the pos and check that this pos is not a gap */
-	pos = brasero_audio_disc_get_dest_path (disc, x, y);
-	treepath = gtk_tree_path_new_from_indices (pos, -1);
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-	if (gtk_tree_model_get_iter (model, &iter, treepath)) {
-		gtk_tree_model_get (model, &iter,
-				    SONG_COL, &is_song,
-				    -1);
-		if (!is_song)
-			pos ++;
-	}
-	gtk_tree_path_free (treepath);
+	/* get pos and URIS */
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
+	gtk_tree_selection_unselect_all (selection);
 
-	/* we get URIS */
+	pos = brasero_audio_disc_get_dest_path (disc, x, y);
+	pos ++;
+
 	uris = gtk_selection_data_get_uris (selection_data);
 	for (uri = uris; *uri != NULL; uri++) {
-		success = brasero_audio_disc_add_uri_real (disc, *uri, pos, 0);
-		if (success == BRASERO_DISC_OK)
+		treepath = NULL;
+		success = brasero_audio_disc_add_uri_real (disc,
+							   *uri,
+							   pos,
+							   0,
+							   &treepath);
+		if (success == BRASERO_DISC_OK) {
 			pos ++;
+			if (treepath) {
+				gtk_tree_selection_select_path (selection, treepath);
+				gtk_tree_path_free (treepath);
+			}
+		}
 
 		result = result ? (success == BRASERO_DISC_OK) : FALSE;
 		g_free (*uri);
@@ -2004,14 +2143,6 @@ brasero_audio_disc_drag_data_received_cb (GtkTreeView *tree,
 			 time);
 }
 
-static void
-brasero_audio_disc_drag_begin_cb (GtkWidget *widget,
-				  GdkDragContext *drag_context,
-				  BraseroAudioDisc *disc)
-{
-	disc->priv->dragging = 1;
-}
-
 static gboolean
 brasero_audio_disc_drag_drop_cb (GtkWidget *widget,
 				 GdkDragContext*drag_context,
@@ -2022,6 +2153,86 @@ brasero_audio_disc_drag_drop_cb (GtkWidget *widget,
 {
 	disc->priv->dragging = 0;
 	return FALSE;
+}
+
+static void
+brasero_audio_disc_drag_leave_cb (GtkWidget *tree,
+				  GdkDragContext *drag_context,
+				  guint time,
+				  BraseroAudioDisc *disc)
+{
+	if (disc->priv->drag_context) {
+		GdkPixbuf *pixbuf;
+		GdkPixmap *pixmap;
+		GdkBitmap *mask;
+
+		pixbuf = gtk_widget_render_icon (tree,
+						 GTK_STOCK_DELETE,
+						 GTK_ICON_SIZE_DND,
+						 NULL);
+		gdk_pixbuf_render_pixmap_and_mask_for_colormap (pixbuf,
+								gtk_widget_get_colormap (tree),
+								&pixmap,
+								&mask,
+								128);
+		g_object_unref (pixbuf);
+
+		gtk_drag_set_icon_pixmap (disc->priv->drag_context,
+					  gdk_drawable_get_colormap (pixmap),
+					  pixmap,
+					  mask,
+					  -2,
+					  -2);
+	}
+}
+
+static gboolean
+brasero_audio_disc_drag_motion_cb (GtkWidget *tree,
+				   GdkDragContext *drag_context,
+				   gint x,
+				   gint y,
+				   guint time,
+				   BraseroAudioDisc *disc)
+{
+	GdkAtom target;
+
+	target = gtk_drag_dest_find_target (tree,
+					    drag_context,
+					    gtk_drag_dest_get_target_list(tree));
+
+	if (target == gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE)
+	&&  disc->priv->drag_context)
+		gtk_drag_set_icon_default (disc->priv->drag_context);
+
+	return FALSE;
+}
+
+static void
+brasero_audio_disc_drag_begin_cb (GtkWidget *widget,
+				  GdkDragContext *drag_context,
+				  BraseroAudioDisc *disc)
+{
+	disc->priv->drag_context = drag_context;
+	g_object_ref (drag_context);
+
+	disc->priv->dragging = 1;
+}
+
+static void
+brasero_audio_disc_drag_end_cb (GtkWidget *tree,
+			        GdkDragContext *drag_context,
+			        BraseroAudioDisc *disc)
+{
+	gint x, y;
+
+	if (disc->priv->drag_context) {
+		g_object_unref (disc->priv->drag_context);
+		disc->priv->drag_context = NULL;
+	}
+
+	gtk_widget_get_pointer (tree, &x, &y);
+	if (x < 0 || y < 0 || x > tree->allocation.width || y > tree->allocation.height)
+		brasero_audio_disc_delete_selected (BRASERO_DISC (disc));
 }
 
 /********************************** Cell Editing *******************************/
@@ -2135,8 +2346,6 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	GList *iter;
 
 	treeview = gtk_tree_selection_get_tree_view (selection);
-	model = gtk_tree_view_get_model (treeview);
-
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	gtk_widget_set_sensitive (pause_button, FALSE);
@@ -2176,7 +2385,6 @@ brasero_audio_disc_open_file (BraseroAudioDisc *disc)
 	GtkTreeSelection *selection;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	for (item = list; item; item = item->next) {
@@ -2336,7 +2544,6 @@ brasero_audio_disc_edit_information_cb (GtkAction *action,
 	GtkTreeSelection *selection;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	brasero_audio_disc_edit_song_properties (disc, list);
@@ -2369,7 +2576,8 @@ brasero_audio_disc_clipboard_text_cb (GtkClipboard *clipboard,
 			brasero_audio_disc_add_uri_real (disc,
 							 uri,
 							 -1,
-							 0);
+							 0,
+							 NULL);
 			g_free (uri);
 		}
 
@@ -2384,7 +2592,7 @@ brasero_audio_disc_clipboard_targets_cb (GtkClipboard *clipboard,
 					 BraseroAudioDisc *disc)
 {
 	GdkAtom *iter;
-	char *target;
+	gchar *target;
 
 	iter = atoms;
 	while (n_atoms) {
@@ -2451,7 +2659,7 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 							NULL,
 							NULL);
 		if (!result || !treepath)
-			return TRUE;
+			return FALSE;
 
 		if (disc->priv->selected_path)
 			gtk_tree_path_free (disc->priv->selected_path);
@@ -2482,15 +2690,19 @@ brasero_audio_disc_rename_activated (BraseroAudioDisc *disc)
 	GList *list;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-
 	list = gtk_tree_selection_get_selected_rows (selection, &model);
+
 	for (; list; list = g_list_remove (list, treepath)) {
 		treepath = list->data;
 
 		gtk_widget_grab_focus (disc->priv->tree);
-		column = gtk_tree_view_get_column (GTK_TREE_VIEW (disc->priv->tree),
-						   0);
+		column = gtk_tree_view_get_column (GTK_TREE_VIEW (disc->priv->tree), 0);
+		gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (disc->priv->tree),
+					      treepath,
+					      NULL,
+					      TRUE,
+					      0.5,
+					      0.5);
 		gtk_tree_view_set_cursor (GTK_TREE_VIEW (disc->priv->tree),
 					  treepath,
 					  column,

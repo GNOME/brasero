@@ -219,22 +219,29 @@ brasero_utils_get_time_string (gint64 time,
 							 hour,
 							 minute,
 							 second);
-			else
+			else if (hour && minute)
 				return g_strdup_printf ("%i h %02i",
 							 hour,
 							 minute);
+			else
+				return g_strdup_printf ("%i h",hour);
 		}
 		else if (hour && minute && second)
 			return g_strdup_printf ("%i:%02i:%02i",
 						 hour,
 						 minute,
 						 second);
-		else
+		else if (hour && minute)
 			return g_strdup_printf ("%i:%02i", hour, minute);
 	}
 
-	if (with_unit)
-		return g_strdup_printf ("%i:%02i min", minute, second);
+	if (with_unit) {
+		/* FIXME: translation missing */
+		if (!second)
+			return g_strdup_printf ("%i min", minute);
+		else
+			return g_strdup_printf ("%i:%02i min", minute, second);
+	}
 	else
 		return g_strdup_printf ("%i:%02i", minute, second);
 }
@@ -265,8 +272,13 @@ brasero_utils_get_time_string_from_size (gint64 size,
 			return g_strdup_printf ("%i:%02i:%02i", hour,
 						minute, second);
 	}
-	else if (with_unit == TRUE)
-		return g_strdup_printf ("%i:%02i min", minute, second);
+	else if (with_unit == TRUE) {
+		/* FIXME: translation missing */
+		if (!second)
+			return g_strdup_printf ("%i min", minute);
+		else
+			return g_strdup_printf ("%i:%02i min", minute, second);
+	}
 	else
 		return g_strdup_printf ("%i:%02i", minute, second);
 }
@@ -525,7 +537,7 @@ static gboolean
 brasero_utils_empty_dir (const gchar *uri, GnomeVFSFileInfo * info)
 {
 	GnomeVFSDirectoryHandle *handle;
-	char *file_uri, *name;
+	gchar *file_uri, *name;
 
 	/* NOTE : we don't follow uris as certain files are linked by content-data */
 	if (gnome_vfs_directory_open
@@ -562,7 +574,7 @@ brasero_utils_empty_dir (const gchar *uri, GnomeVFSFileInfo * info)
 }
 
 gboolean
-brasero_utils_remove (const char *uri)
+brasero_utils_remove (const gchar *uri)
 {
 	GnomeVFSFileInfo *info;
 	gboolean result = TRUE;
@@ -630,7 +642,7 @@ brasero_utils_check_for_parent_symlink (const gchar *escaped_uri)
 
     	parent = gnome_vfs_uri_new (escaped_uri);
   	info = gnome_vfs_file_info_new ();
-    	uri = g_strdup (escaped_uri);
+    	uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
 
 	while (gnome_vfs_uri_has_parent (parent)) {
 	    	GnomeVFSURI *tmp;
@@ -652,7 +664,7 @@ brasero_utils_check_for_parent_symlink (const gchar *escaped_uri)
 			gchar *newuri;
 
 		    	parent_uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
-			new_root = gnome_vfs_get_uri_from_local_path (info->symlink_name);
+			new_root = gnome_vfs_make_uri_from_input (info->symlink_name);
 
 			newuri = g_strconcat (new_root,
 					      uri + strlen (parent_uri),
@@ -698,7 +710,7 @@ brasero_utils_get_symlink_target (const gchar *escaped_uri,
     	if (info->symlink_name) {
 		gchar *target;
 
-		target = gnome_vfs_get_uri_from_local_path (info->symlink_name);
+		target = gnome_vfs_make_uri_from_input (info->symlink_name);
 
 		g_free (info->symlink_name);
 		info->symlink_name = brasero_utils_check_for_parent_symlink (target);

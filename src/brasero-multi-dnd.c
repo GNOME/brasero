@@ -60,6 +60,9 @@ brasero_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_source,
 	GList *iter;
 	gint i;
 
+	if (selection_data->target != gdk_atom_intern ("text/uri-list", TRUE))
+		return TRUE;
+
 	for (iter = path_list; iter && iter->data; iter = iter->next) {
 		gchar **tmp;
 		gboolean result;
@@ -73,11 +76,13 @@ brasero_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_source,
 		result = gtk_tree_drag_source_drag_data_get (GTK_TREE_DRAG_SOURCE (drag_source),
 							     path,
 							     selection_tmp);
+		gtk_tree_path_free (path);
 
 		uris = gtk_selection_data_get_uris (selection_tmp);
 		for (tmp = uris; tmp && *tmp; tmp++)
 			uris_list = g_list_prepend (uris_list, *tmp);
-			
+		g_free (uris);
+
 		gtk_selection_data_free (selection_tmp);
 
 		if (!result) {
@@ -86,6 +91,7 @@ brasero_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_source,
 			return FALSE;
 		}
 	}
+
 	uris = g_new0 (gchar*, g_list_length (uris_list) + 1);
 	uris_list = g_list_reverse (uris_list);
 	for (iter = uris_list, i = 0; iter; i++, iter = iter->next)
@@ -94,6 +100,7 @@ brasero_multi_DND_drag_data_get (EggTreeMultiDragSource *drag_source,
 	g_list_free (uris_list);
 
 	gtk_selection_data_set_uris (selection_data, uris);
+	g_strfreev (uris);
 	return TRUE;
 }
 

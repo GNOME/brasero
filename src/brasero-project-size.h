@@ -58,6 +58,9 @@ struct _BraseroProjectSizeClass {
 GType brasero_project_size_get_type ();
 GtkWidget *brasero_project_size_new ();
 
+gint
+brasero_project_get_ruler_height (BraseroProjectSize *self);
+
 void
 brasero_project_size_set_sectors (BraseroProjectSize *self,
 				  gint64 sectors);

@@ -57,10 +57,10 @@ brasero_disc_get_type()
 			NULL
 		};
 
-		type = g_type_register_static(G_TYPE_INTERFACE, 
-					      "BraseroDisc",
-					      &our_info,
-					      0);
+		type = g_type_register_static (G_TYPE_INTERFACE, 
+					       "BraseroDisc",
+					       &our_info,
+					       0);
 
 		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
 	}
@@ -242,7 +242,7 @@ brasero_disc_load_track (BraseroDisc *disc,
 	return BRASERO_DISC_ERROR_UNKNOWN;
 }
 
-char *
+gchar *
 brasero_disc_get_selected_uri (BraseroDisc *disc)
 {
 	BraseroDiscIface *iface;
@@ -253,6 +253,22 @@ brasero_disc_get_selected_uri (BraseroDisc *disc)
 		return (* iface->get_selected_uri) (disc);
 
 	return NULL;
+}
+
+void
+brasero_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
+{
+	BraseroDiscIface *iface;
+
+	if (!disc)
+		return;
+
+	g_return_if_fail (BRASERO_IS_DISC (disc));
+	g_return_if_fail (toolbar != NULL);
+
+	iface = BRASERO_DISC_GET_IFACE (disc);
+	if (iface->fill_toolbar)
+		(* iface->fill_toolbar) (disc, toolbar);
 }
 
 void

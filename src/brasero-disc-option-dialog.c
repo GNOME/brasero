@@ -259,6 +259,8 @@ brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 	widget = brasero_utils_pack_properties (label, dialog->priv->label, NULL);
 	g_free (label);
 
+	gtk_widget_show_all (widget);
+
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    widget,
 			    TRUE,
@@ -422,12 +424,13 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 
 	g_object_set (dialog->priv->selection, "file-image", TRUE, NULL);
 
-	/* NOTE: the caller must have ensured the disc is ready. */
+	/* NOTE: the caller must have ensured the disc is ready */
 	dialog->priv->disc = disc;
-	brasero_disc_option_set_title_widget (dialog, type);
 
-	if (type == BRASERO_TRACK_SOURCE_DATA)
+	if (type == BRASERO_TRACK_SOURCE_DATA) {
+		brasero_disc_option_set_title_widget (dialog, type);
 		brasero_disc_option_dialog_add_data_options (dialog, format);
+	}
 	else if (type == BRASERO_TRACK_SOURCE_AUDIO)
 		brasero_disc_option_dialog_add_audio_options (dialog);
 }
@@ -476,7 +479,8 @@ brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
 					       &track,
 					       BRASERO_IMAGE_FORMAT_NONE);			
 
-	track->contents.data.label = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->priv->label)));;
+	if (dialog->priv->label)
+		track->contents.data.label = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->priv->label)));;
 
 	if (dialog->priv->video_toggle
 	&&  GTK_WIDGET_IS_SENSITIVE (dialog->priv->video_toggle)

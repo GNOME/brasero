@@ -30,7 +30,6 @@
 
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkvbox.h>
-
 #include <gtk/gtkuimanager.h>
 
 #include "disc.h"

@@ -279,7 +279,7 @@ brasero_app_add_recent (BraseroApp *app)
 
 	/* add recent files */
 	recent = gtk_recent_manager_get_default ();
- 	gtk_recent_manager_set_limit (recent, 5);
+ 	gtk_recent_manager_set_limit (recent, 20);
 
 	submenu = gtk_recent_chooser_menu_new_for_manager (recent);
 	g_signal_connect (submenu,
@@ -385,7 +385,7 @@ static void
 brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
-    	gboolean load_project = FALSE;
+    	gboolean load_default_project = FALSE;
 
     	if (empty_project) {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (app->contents));
@@ -473,28 +473,30 @@ brasero_app_parse_options (BraseroApp *app)
 	    	g_free (uri);
 
 		if (mime) {
-			if (!strcmp (mime, "application/x-brasero"))
+			if (!strcmp (mime, "application/x-brasero")) {
 				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open, files [0]);
-
-			if (!strcmp (mime, "application/x-cue")
-			||  !strcmp (mime, "application/x-toc")
-			||  !strcmp (mime, "application/x-cdrdao-toc")
-			||  !strcmp (mime, "application/x-cd-image")
-			||  !strcmp (mime, "application/octet-stream"))
+			}
+			else if (!strcmp (mime, "application/x-cue")
+			     ||  !strcmp (mime, "application/x-toc")
+			     ||  !strcmp (mime, "application/x-cdrdao-toc")
+			     ||  !strcmp (mime, "application/x-cd-image")
+			     ||  !strcmp (mime, "application/octet-stream")) {
 				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, files [0]);
-
-			/* open it in a data project */
-			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
+			}
+			else {
+				/* open it in a data project */
+				BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
+			}
 		}
 		else
 			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 	}
 	else {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (app->contents));
-	    	load_project = TRUE;
+	    	load_default_project = TRUE;
 	}
 
-    	brasero_session_load (app, load_project);
+    	brasero_session_load (app, load_default_project);
 }
 
 int
