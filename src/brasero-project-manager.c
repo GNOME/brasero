@@ -216,8 +216,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	GtkWidget *type;
 	GtkWidget *scroll;
 	GtkWidget *chooser;
-	GtkSizeGroup *tree_group;
-	GtkSizeGroup *header_group;
 
 	obj->priv = g_new0 (BraseroProjectManagerPrivate, 1);
 
@@ -230,10 +228,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				      entries,
 				      G_N_ELEMENTS (entries),
 				      obj);
-
-	/* create the groups */
-	header_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
-	tree_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
 
 	/* add the project type chooser to the notebook */
 	type = brasero_project_type_chooser_new ();
@@ -690,8 +684,10 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
 		gtk_action_set_sensitive (action, TRUE);
 
-		/* tell the BraseroProject object that we want an audio selection */
-		brasero_project_set_audio (BRASERO_PROJECT (manager->priv->project), uris);
+		if (reset) {
+			/* tell the BraseroProject object that we want an audio selection */
+			brasero_project_set_audio (BRASERO_PROJECT (manager->priv->project), uris);
+		}
 
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New audio disc project"));
@@ -702,8 +698,10 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
 		gtk_action_set_sensitive (action, TRUE);
 
-		/* tell the BraseroProject object that we want a data selection */
-		brasero_project_set_data (BRASERO_PROJECT (manager->priv->project), uris);
+		if (reset) {
+			/* tell the BraseroProject object that we want a data selection */
+			brasero_project_set_data (BRASERO_PROJECT (manager->priv->project), uris);
+		}
 
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New data disc project"));

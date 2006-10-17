@@ -461,6 +461,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 
 	/* add tooltips */
 	obj->priv->tooltip = gtk_tooltips_new ();
+	g_object_ref_sink (obj->priv->tooltip);
 
 	gtk_tooltips_set_tip (obj->priv->tooltip, 
 			      GTK_BIN (obj->priv->combo)->child,
@@ -556,9 +557,10 @@ brasero_search_entry_finalize (GObject *object)
 		cobj->priv->search_id = 0;
 	}
 
-	if (cobj->priv->tooltip)
-		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
+	if (cobj->priv->tooltip) {
+		g_object_unref (cobj->priv->tooltip);
 		cobj->priv->tooltip = NULL;
+	}
 
 	g_free (cobj->priv);
 	cobj->priv = NULL;

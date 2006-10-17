@@ -501,7 +501,7 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	audio_disc = BRASERO_AUDIO_DISC (disc);
 
 	/* button to add pauses in between tracks */
-	button = brasero_utils_make_button (NULL, GTK_STOCK_MEDIA_PAUSE);
+	button = brasero_utils_make_button (NULL, GTK_STOCK_MEDIA_PAUSE, NULL);
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
 	gtk_widget_set_sensitive (button, FALSE);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
@@ -538,6 +538,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	gtk_box_set_spacing (GTK_BOX (obj), 8);
 
 	obj->priv->tooltip = gtk_tooltips_new ();
+	g_object_ref_sink (obj->priv->tooltip);
 
 	/* notebook to display information about how to use the tree */
 	obj->priv->notebook = brasero_utils_get_use_info_notebook ();
@@ -810,8 +811,10 @@ brasero_audio_disc_finalize (GObject *object)
 	}
 
 #endif
-	if (cobj->priv->tooltip)
-		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
+	if (cobj->priv->tooltip) {
+		g_object_unref (cobj->priv->tooltip);
+		cobj->priv->tooltip = NULL;
+	}
 
 	if (cobj->priv->vfs) {
 		brasero_vfs_cancel (cobj->priv->vfs, G_OBJECT (cobj));

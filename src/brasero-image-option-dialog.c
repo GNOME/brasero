@@ -456,7 +456,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  obj);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj), cancel, GTK_RESPONSE_CANCEL);
 
-	burn = brasero_utils_make_button (_("Burn"), GTK_STOCK_CDROM);
+	burn = brasero_utils_make_button (_("Burn"), BRASERO_STOCK_BURN, NULL);
 	gtk_widget_show (burn);
 	g_signal_connect (G_OBJECT (burn),
 			  "clicked",

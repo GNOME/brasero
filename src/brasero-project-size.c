@@ -104,7 +104,7 @@ struct _BraseroProjectSizePrivate {
 
 	gint refresh_id;
 
-	PangoLayout *layout;
+	PangoLayout *text_layout;
 
 	gint64 sectors;
 	GList *drives;
@@ -122,6 +122,8 @@ enum _BraseroProjectSizeSignalType {
 };
 
 #define BRASERO_PROJECT_SIZE_HEIGHT	42
+
+#define BRASERO_PROJECT_SIZE_SPACE	12
 
 #define BRASERO_ARROW_NUM	4
 #define ARROW_WIDTH	6
@@ -207,6 +209,7 @@ brasero_project_size_add_default_medias (BraseroProjectSize *self)
 					  {405000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
 					  {450000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
 					  {2295104, NAUTILUS_BURN_MEDIA_TYPE_DVDR, NULL, TRUE},
+					  {4150390, NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_R_DL, NULL, TRUE},
 					  { 0 } };
 	const BraseroDrive *iter;
 
@@ -227,7 +230,7 @@ brasero_project_size_init (BraseroProjectSize *obj)
 	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (obj), GTK_NO_WINDOW);
 
 	obj->priv = g_new0 (BraseroProjectSizePrivate, 1);
-	obj->priv->layout = gtk_widget_create_pango_layout (GTK_WIDGET (obj), "");
+	obj->priv->text_layout = gtk_widget_create_pango_layout (GTK_WIDGET (obj), "");
 
 	obj->priv->tooltips = gtk_tooltips_new ();
 
@@ -238,7 +241,6 @@ brasero_project_size_init (BraseroProjectSize *obj)
 			      obj->priv->button,
 			      _("Show the available media to be burnt"),
 			      _("Show the available media to be burnt"));
-	//gtk_button_set_relief (GTK_BUTTON (obj->priv->button), GTK_RELIEF_NONE);
 	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->button), 0);
 	g_signal_connect (obj->priv->button,
 			  "toggled",
@@ -303,9 +305,9 @@ brasero_project_size_finalize (GObject *object)
 		cobj->priv->menu = NULL;
 	}
 
-	if (cobj->priv->layout) {
-		g_object_unref (cobj->priv->layout);
-		cobj->priv->layout = NULL;
+	if (cobj->priv->text_layout) {
+		g_object_unref (cobj->priv->text_layout);
+		cobj->priv->text_layout = NULL;
 	}
 
 	for (iter = cobj->priv->drives; iter; iter = iter->next) {
@@ -455,6 +457,7 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 
 		markup = g_strdup_printf ("<span size='x-small' foreground='grey10'>%s</span>", string);
 		g_free (string);
+
 		pango_layout_set_markup (layout, markup, -1);
 		g_free (markup);
 
@@ -500,8 +503,18 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 								     TRUE,
 								     TRUE);
 
-		if (drive->drive)
+		if (drive->drive) {
+			/* we ellipsize to max characters to avoid having
+			 * a too long string with the drive full name. */
 			drive_name = nautilus_burn_drive_get_name_for_display (drive->drive);
+			if (strlen (drive_name) > 19) {
+				gchar *tmp;
+
+				tmp = g_strdup_printf ("%.16s...", drive_name);
+				g_free (drive_name);
+				drive_name = tmp;
+			}
+		}
 	}
 
 	selection_size_str = brasero_utils_get_sectors_string (self->priv->sectors,
@@ -559,17 +572,18 @@ brasero_project_size_size_request (GtkWidget *widget,
 
 	self = BRASERO_PROJECT_SIZE (widget);
 
-	if (self->priv->layout) {
+	if (self->priv->text_layout) {
 		gchar *text;
 
+		/* Set markup (every time a size change this function is called */
 		text = brasero_project_size_get_media_string (self);
-		pango_layout_set_markup (self->priv->layout, text, -1);
+		pango_layout_set_markup (self->priv->text_layout, text, -1);
 		g_free (text);
 
-		pango_layout_get_pixel_extents (self->priv->layout,
+		pango_layout_get_pixel_extents (self->priv->text_layout,
 						NULL,
 						&extents);
-		text_width = extents.width;
+		text_width = extents.width + BRASERO_PROJECT_SIZE_SPACE * 2;
 	}
 	else
 		text_width = 0;
@@ -871,15 +885,13 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 					event);
 
 	/* set the text */
-	markup = brasero_project_size_get_media_string (self);
-	pango_layout_set_markup (self->priv->layout, markup, -1);
-	g_free (markup);
-	pango_layout_get_pixel_extents (self->priv->layout, NULL, &extents);
-
-	x = (widget->allocation.width - extents.width) / 2;
+	pango_layout_get_pixel_extents (self->priv->text_layout, NULL, &extents);
+	x = (widget->allocation.width - button_width - extents.width) / 2;
 	y = (widget->allocation.height - extents.height - text_height) / 2;
 
-	x += button_width;
+	if (!is_rtl)
+		x += button_width;
+
 	gtk_paint_layout (widget->style,
 			  widget->window,
 			  GTK_STATE_NORMAL,
@@ -889,7 +901,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 			  NULL,
 			  x,
 			  y,
-			  self->priv->layout);
+			  self->priv->text_layout);
 
  	return FALSE;
 }
@@ -1014,11 +1026,11 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		g_free (label);
 
 		if (!drive->drive)
-			image = gtk_image_new_from_stock (BRASERO_STOCK_DRIVE, GTK_ICON_SIZE_MENU);
+			image = gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_MENU);
 		else if (drive->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-			image = gtk_image_new_from_stock (BRASERO_STOCK_DVDR, GTK_ICON_SIZE_MENU);
+			image = gtk_image_new_from_icon_name ("gnome-dev-disc-dvdr", GTK_ICON_SIZE_MENU);
 		else
-			image = gtk_image_new_from_stock (BRASERO_STOCK_CDR, GTK_ICON_SIZE_MENU);
+			image = gtk_image_new_from_icon_name ("gnome-dev-disc-cdr", GTK_ICON_SIZE_MENU);
 
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
 
@@ -1162,7 +1174,8 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 static gboolean
 brasero_project_size_update_sectors (BraseroProjectSize *self)
 {
-	gtk_widget_queue_draw (GTK_WIDGET (self));
+	gtk_widget_queue_resize (GTK_WIDGET (self));
+//	gtk_widget_queue_draw (GTK_WIDGET (self));
 	self->priv->refresh_id = 0;
 	return FALSE;
 }

@@ -315,7 +315,7 @@ brasero_blank_dialog_cancel_dialog (GtkWidget *toplevel)
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK);
+	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);

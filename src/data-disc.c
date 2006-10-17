@@ -791,10 +791,9 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	data_disc = BRASERO_DATA_DISC (disc);
 
 	/* toolbar buttons */
-	data_disc->priv->filter_button = brasero_utils_make_button (NULL, GTK_STOCK_CLEAR);
+	data_disc->priv->filter_button = brasero_utils_make_button (NULL, GTK_STOCK_UNDELETE, NULL);
 	gtk_widget_show (data_disc->priv->filter_button);
 	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
-	//gtk_button_new_with_label (_("Filtered files"));
 	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
 
 	gtk_widget_set_sensitive (data_disc->priv->filter_button, FALSE);
@@ -813,11 +812,10 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			      _("Some files were removed from the project. Clik here to see them."),
 			      NULL);
 
-	button = brasero_utils_make_button (NULL, GTK_STOCK_DIRECTORY);
+	button = brasero_utils_make_button (NULL, NULL, "folder-new");
 	gtk_widget_show (button);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-//	button = brasero_utils_make_button (_("New folder"), GTK_STOCK_DIRECTORY);
 	g_signal_connect (G_OBJECT (button),
 			  "clicked",
 			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
@@ -3237,14 +3235,14 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 		paths = brasero_data_disc_uri_to_paths (disc, uri, TRUE);
 		for (iter = paths; iter; iter = iter->next) {
 			BraseroDataDiscReference ref;
-			char *path_uri;
-			char *path;
+			gchar *path_uri;
+			gchar *path;
 
 			path = iter->data;
 			path_uri = g_hash_table_lookup (disc->priv->paths, path);
 			if (path_uri) {
-				char *graft;
-				char *parent;
+				gchar *graft;
+				gchar *parent;
 		
 				/* see if it's not this uri that is grafted there */
 				if (!strcmp (path_uri, uri))
@@ -4719,6 +4717,12 @@ brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 }
 
 /************************************ files excluded ***************************/
+#define BRASERO_URI_EXCLUDED_FROM_GRAFT(disc, graft, uri)	\
+	(disc->priv->excluded && g_slist_find (g_hash_table_lookup (disc->priv->excluded, uri), graft) != NULL)
+
+#define BRASERO_URI_EXCLUDED_FROM_PATH(disc, path, uri)		\
+	BRASERO_URI_EXCLUDED_FROM_GRAFT (disc, brasero_data_disc_graft_get_real (disc, path), uri)
+
 /* this is done in order:
  * - to minimize memory usage as much as possible ??? if we've got just one excluded ....
  * - to help building of lists of excluded files
@@ -4734,6 +4738,7 @@ brasero_data_disc_exclude_uri (BraseroDataDisc *disc,
 	gpointer graft = NULL;
 	gpointer excluding = NULL;
 
+	/* make sure the path given is actually a graft */
 	if (!g_hash_table_lookup_extended (disc->priv->paths,
 					   path,
 					   &graft,
@@ -5023,7 +5028,6 @@ brasero_data_disc_dir_contents_destroy (GObject *object, gpointer data)
 {
 	BraseroDirectoryContentsData *callback_data = data;
 
-	g_slist_foreach (callback_data->infos, (GFunc) gnome_vfs_file_info_clear, NULL);
 	g_slist_foreach (callback_data->infos, (GFunc) gnome_vfs_file_info_unref, NULL);
 	g_slist_free (callback_data->infos);
 
@@ -5625,24 +5629,122 @@ recursive:
 	return TRUE;
 }
 
+static gint
+_find_name_in_info_list (gconstpointer a, gconstpointer b)
+{
+	const GnomeVFSFileInfo *info = a;
+	const gchar *name = b;
+	return strcmp (info->name, name);
+}
+
+#define BRASERO_FIND_NAME_IN_INFO_LIST(infos, name)	\
+	(g_slist_find_custom (infos, name, (GCompareFunc) _find_name_in_info_list))
+
+static gchar *
+brasero_data_disc_get_unique_valid_utf8_name (const gchar *name,
+					      GSList *infos)
+{
+	gchar *utf8_name;
+
+	/* create a new valid name and make sure it doesn't
+	 * already exist in the directory */
+	utf8_name = brasero_utils_validate_utf8 (name);
+
+	if (BRASERO_FIND_NAME_IN_INFO_LIST (infos, utf8_name)) {
+		gchar *new_name;
+		gint attempts;
+
+		attempts = 0;
+		new_name = g_strdup_printf ("%s%i", utf8_name, attempts);
+		while (BRASERO_FIND_NAME_IN_INFO_LIST (infos, new_name)) {
+			g_free (new_name);
+
+			new_name = g_strdup_printf ("%s%i", utf8_name, attempts);
+			attempts++;
+		}
+
+		g_free (utf8_name);
+		utf8_name = new_name;
+	}
+
+	return utf8_name;
+}
+
+static gchar *
+brasero_data_disc_get_unique_valid_utf8_path (BraseroDataDisc *disc,
+					      const gchar *name,
+					      const gchar *parent_path,
+					      GnomeVFSFileInfo *info,
+					      GSList *infos)
+{
+	gchar *utf8_name = NULL;
+	gint attempts;
+	gchar *path;
+
+	if (!name)
+		utf8_name = brasero_data_disc_get_unique_valid_utf8_name (info->name, infos);
+	
+	path = g_build_path (G_DIR_SEPARATOR_S,
+			     parent_path,
+			     name ? name:utf8_name,
+			     NULL);
+
+	attempts = 0;
+	while (g_hash_table_lookup (disc->priv->paths, path)) {
+		gchar *new_name;
+
+		new_name = g_strdup_printf ("%s%i", name ? name:utf8_name, attempts);
+
+		/* check that this new path doesn't conflict with an existing
+		 * grafted one (it'll be in paths). If it does recheck that the
+		 * name doesn't exist in the directory (unlikely but who knows) */
+		while (BRASERO_FIND_NAME_IN_INFO_LIST (infos, new_name)) {
+			g_free (new_name);
+
+			new_name = g_strdup_printf ("%s%i", name ? name:utf8_name, attempts);
+			attempts++;
+		}
+
+		g_free (path);
+		path = g_build_path (G_DIR_SEPARATOR_S,
+				     parent_path,
+				     new_name,
+				     NULL);
+		g_free (new_name);
+		attempts ++;
+	}
+
+	if (!utf8_name)
+		g_free (utf8_name);
+
+	return path;
+}
+
 static GSList *
 brasero_data_disc_symlink_new (BraseroDataDisc *disc,
 			       const gchar *uri,
 			       GnomeVFSFileInfo *info,
-			       GSList *paths)
+			       GSList *paths,
+			       GSList *infos)
 {
 	BraseroFile *file = NULL;
 	GSList *next;
 	GSList *iter;
 	gchar *path;
 
-	/* we don't want paths overlapping already grafted paths.
-	 * This might happen when we are loading a project or when
-	 * we are notified of the creation of a new file */
+	/* we don't want paths overlapping already grafted paths. This might
+	 * happen when we are loading a project or when we are notified of the
+	 * creation of a new file i.e. rescanning a directory. Since all the
+	 * paths of a symlink are graft (it's replaced by its target) they are
+	 * easy to spot. */
 	for (iter = paths; iter; iter = next) {
 		next = iter->next;
 		path = iter->data;
 
+		/* see comment in function underneath about UTF8 names:
+		 * since it's a symlink all already spotted paths ARE grafts and
+		 * therefore have been validated. The new and yet unvalidated 
+		 * won't be in the paths hash table. */
 		if (g_hash_table_lookup (disc->priv->paths, path)) {
 			paths = g_slist_remove (paths, path);
 			g_free (path);
@@ -5689,6 +5791,19 @@ end :
 	/* add graft points to the target */
 	for (iter = paths; iter; iter = iter->next) {
 		path = iter->data;
+
+		if (!g_utf8_validate (info->name, -1, NULL)) {
+			gchar *dirname;
+
+			dirname = g_path_get_dirname (path);
+			path = brasero_data_disc_get_unique_valid_utf8_path (disc,
+									     NULL,
+									     dirname,
+									     info,
+									     infos);
+			g_free (dirname);
+		}
+
 		brasero_data_disc_graft_new (disc,
 					     file->uri,
 					     path);
@@ -5698,15 +5813,15 @@ end :
 }
 
 /* NOTE: it has a parent so if it is strictly excluded, it MUST have excluding */
-#define EXPLORE_EXCLUDED_FILE(disc, uri)	\
+#define EXPLORE_IS_NOT_STRICTLY_EXCLUDED(disc, uri)	\
 	(!disc->priv->excluded	\
 	 || !g_hash_table_lookup (disc->priv->excluded, uri) \
 	 || !brasero_data_disc_is_excluded (disc, uri, NULL))
 
 static void
 brasero_data_disc_symlink_list_new (BraseroDataDisc *disc,
-				    BraseroDirectoryContentsData *content,
-				    const gchar *parent,
+				    BraseroDirectoryContentsData *contents,
+				    const gchar *parent_uri,
 				    GSList *symlinks)
 {
 	GSList *iter;
@@ -5717,14 +5832,14 @@ brasero_data_disc_symlink_list_new (BraseroDataDisc *disc,
 
 	for (iter = symlinks; iter; iter = iter->next) {
 		info = iter->data;
-		content->infos = g_slist_remove (content->infos, info);
+		contents->infos = g_slist_remove (contents->infos, info);
 
 		if (disc->priv->unreadable
 		&&  g_hash_table_lookup (disc->priv->unreadable, info->symlink_name))
 			continue;
 
 		current = g_build_path (G_DIR_SEPARATOR_S,
-					parent,
+					parent_uri,
 					info->name,
 					NULL);
 
@@ -5751,11 +5866,17 @@ brasero_data_disc_symlink_list_new (BraseroDataDisc *disc,
 			continue;
 		}
 
+		/* NOTE: the paths ARE utf8 valid since for a symlink they are
+		 * all grafts and are excluded from their parent. So all paths
+		 * have been validated before being added to graft hash table.
+		 * If it's the first time that a symlink is spotted then all 
+		 * paths are not UTF8 valid but they will be. */
 		paths = brasero_data_disc_uri_to_paths (disc, current, TRUE);
 		paths = brasero_data_disc_symlink_new (disc,
 						       current,
 						       info,
-						       paths);
+						       paths,
+						       contents->infos);
 		g_free (current);
 
 		grafts = g_slist_concat (grafts, paths);
@@ -5763,16 +5884,142 @@ brasero_data_disc_symlink_list_new (BraseroDataDisc *disc,
 
 	if (grafts) {
 		if (disc->priv->references
-		&&  g_hash_table_lookup (disc->priv->references, parent))
+		&&  g_hash_table_lookup (disc->priv->references, parent_uri))
 			brasero_data_disc_expose_grafted (disc, grafts);
 
 		g_slist_foreach (grafts, (GFunc) g_free, NULL);
 		g_slist_free (grafts);
 	}
 
-	g_slist_foreach (symlinks, (GFunc) gnome_vfs_file_info_clear, NULL);
+	/* we unref the infos since we removed them from the contents->infos list */
 	g_slist_foreach (symlinks, (GFunc) gnome_vfs_file_info_unref, NULL);
 	g_slist_free (symlinks);
+}
+
+static void
+brasero_data_disc_invalid_utf8_new (BraseroDataDisc *disc,
+				    const gchar *parent_uri,
+				    GSList *parent_paths,
+				    GnomeVFSFileInfo *info,
+				    GSList *infos)
+{
+	gchar *uri;
+	GSList *iter;
+	gchar *utf8_name;
+	GSList *grafts = NULL;
+
+	/* create a new valid name and make sure it doesn't
+	 * already exist in the directory */
+	utf8_name = brasero_data_disc_get_unique_valid_utf8_name (info->name, infos);
+
+	/* create URI (note: it is made from the invalid name) */
+	uri = g_build_path (G_DIR_SEPARATOR_S,
+			    parent_uri,
+			    info->name,
+			    NULL);
+
+	for (iter = parent_paths; iter; iter = iter->next) {
+		const gchar *graft;
+		gchar *parent_path;
+		gchar *name;
+		gchar *path;
+
+		parent_path = iter->data;
+		graft = brasero_data_disc_graft_get_real (disc, parent_path);
+
+		/* We must make sure that this invalid name hasn't already been
+		 * processed. This can happen if we load a project (URI is then
+		 * a graft point with a valid UTF8 name) or when we rescan a 
+		 * directory after an inotify call. If it has been processed,
+		 * it is excluded from its parent path. */
+		if (BRASERO_URI_EXCLUDED_FROM_GRAFT (disc, graft, uri))
+			continue;
+
+		path = brasero_data_disc_get_unique_valid_utf8_path (disc,
+								     utf8_name,
+								     parent_path,
+								     info,
+								     infos);
+
+		/* check if the new path should go into joliet hash */
+		name = g_path_get_basename (path);
+		if (strlen (name) > 64)
+			brasero_data_disc_joliet_incompat_add_path (disc, path);
+		g_free (name);
+
+		/* create the new graft point and file/directory if needed */
+		if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+			BraseroFile *tmp;
+
+			tmp = g_hash_table_lookup (disc->priv->dirs, uri);
+			if ((tmp == NULL || tmp->sectors < 0)
+			&&   EXPLORE_IS_NOT_STRICTLY_EXCLUDED (disc, uri)) {
+				brasero_data_disc_directory_new (disc,
+								 g_strdup (uri),
+								 TRUE);
+			}
+		}
+		else if (!g_hash_table_lookup (disc->priv->files, uri)
+		     &&  EXPLORE_IS_NOT_STRICTLY_EXCLUDED (disc, uri)) {
+			gint64 sectors;
+
+			sectors = GET_SIZE_IN_SECTORS (info->size);
+			brasero_data_disc_file_new (disc,
+						    g_strdup (uri),
+						    sectors);
+		}
+	
+		brasero_data_disc_graft_new (disc, uri, path);
+		grafts = g_slist_prepend (grafts, path);
+
+		/* exclude it */
+		brasero_data_disc_exclude_uri (disc, graft, uri);
+	}
+
+	/* expose new grafted files if need be */
+	if (grafts) {
+		if (disc->priv->references
+		&&  g_hash_table_lookup (disc->priv->references, parent_uri))
+			brasero_data_disc_expose_grafted (disc, grafts);
+
+		g_slist_foreach (grafts, (GFunc) g_free, NULL);
+		g_slist_free (grafts);
+	}
+
+	g_free (utf8_name);
+	g_free (uri);
+}
+
+static void
+brasero_data_disc_invalid_utf8_list_new (BraseroDataDisc *disc,
+					 BraseroDirectoryContentsData *contents,
+					 const gchar *parent_uri,
+					 GSList *list)
+{
+	GSList *paths;
+	GSList *iter;
+
+	/* get all the paths where the parent could appear */
+	paths = brasero_data_disc_uri_to_paths (disc, parent_uri, TRUE);
+	for (iter = list; iter; iter = iter->next) {
+		GnomeVFSFileInfo *info;
+
+		info = iter->data;
+		contents->infos = g_slist_remove (contents->infos, info);
+
+		brasero_data_disc_invalid_utf8_new (disc,
+						    parent_uri,
+						    paths,
+						    info,
+						    contents->infos);
+	}
+
+	g_slist_foreach (paths, (GFunc) g_free, NULL);
+	g_slist_free (paths);
+
+	/* we unref the infos since we removed them from the contents->infos list */
+	g_slist_foreach (list, (GFunc) gnome_vfs_file_info_unref, NULL);
+	g_slist_free (list);
 }
 
 static gboolean
@@ -5780,13 +6027,13 @@ brasero_data_disc_load_result (GObject *object, gpointer data)
 {
 	BraseroDirectoryContentsData *callback_data = data;
 	BraseroDataDisc *disc = BRASERO_DATA_DISC (object);
+	GSList *invalid_utf8 = NULL;
 	GSList *symlinks = NULL;
 	GnomeVFSFileInfo *info;
 	gint64 dir_sectors = 0;
 	gint64 diffsectors;
 	BraseroFile *dir;
 	gchar *current;
-	GSList *next;
 	GSList *iter;
 
 	brasero_data_disc_decrease_activity_counter (disc);
@@ -5813,12 +6060,16 @@ brasero_data_disc_load_result (GObject *object, gpointer data)
 
 	disc->priv->loading = g_slist_remove (disc->priv->loading, dir);
 	disc->priv->rescan = g_slist_remove (disc->priv->rescan, dir);
-	for (iter = callback_data->infos; iter; iter = next) {
+	for (iter = callback_data->infos; iter; iter = iter->next) {
 		info = iter->data;
-		next = iter->next;
-		
+
 		if (GNOME_VFS_FILE_INFO_SYMLINK (info)) {
 			symlinks = g_slist_prepend (symlinks, info);
+			continue;
+		}
+
+		if (!g_utf8_validate (info->name, -1, NULL)) {
+			invalid_utf8 = g_slist_prepend (invalid_utf8, info);
 			continue;
 		}
 
@@ -5832,14 +6083,14 @@ brasero_data_disc_load_result (GObject *object, gpointer data)
 
 			tmp = g_hash_table_lookup (disc->priv->dirs, current);
 			if ((tmp == NULL || tmp->sectors < 0)
-			&&  EXPLORE_EXCLUDED_FILE (disc, current)) {
+			&&   EXPLORE_IS_NOT_STRICTLY_EXCLUDED (disc, current)) {
 				brasero_data_disc_directory_new (disc,
 								 g_strdup (current),
 								 TRUE);
 			}
 		}
 		else if (!g_hash_table_lookup (disc->priv->files, current)
-		      &&  EXPLORE_EXCLUDED_FILE (disc, current)) {
+		     &&   EXPLORE_IS_NOT_STRICTLY_EXCLUDED (disc, current)) {
 			dir_sectors += GET_SIZE_IN_SECTORS (info->size);
 		}
 
@@ -5865,7 +6116,13 @@ brasero_data_disc_load_result (GObject *object, gpointer data)
 		brasero_data_disc_size_changed (disc, diffsectors);
 	}
 
-	/* we need to check that they are not symlinks */
+	/* process invalid utf8 filenames */
+	brasero_data_disc_invalid_utf8_list_new (disc,
+						 callback_data,
+						 dir->uri,
+						 invalid_utf8);
+
+	/* process symlinks */
 	brasero_data_disc_symlink_list_new (disc,
 					    callback_data,
 					    dir->uri,
@@ -5904,7 +6161,7 @@ brasero_data_disc_load_dir_error (BraseroDataDisc *disc, GSList *errors)
 {
 	BraseroLoadDirError *error;
 	BraseroFile *file;
-	char *parent;
+	gchar *parent;
 
 	for (; errors; errors = errors->next) {
 		error = errors->data;
@@ -6280,11 +6537,11 @@ brasero_data_disc_remove_row_in_dirs_hash (BraseroDataDisc *disc,
 static void
 brasero_data_disc_remove_row_in_files_hash (BraseroDataDisc *disc,
 					    BraseroFile *file,
-					    const char *path)
+					    const gchar *path)
 {
 	/* see if path == graft point. If so, remove it */
 	if (!brasero_data_disc_graft_remove (disc, path)) {
-		char *graft;
+		gchar *graft;
 
 		/* the path was not of the graft points of the file so 
 		 * it has a parent graft point, find it and exclude it */
@@ -6398,7 +6655,7 @@ brasero_data_disc_path_remove_user (BraseroDataDisc *disc,
 							    path);
 	}
 	else {
-		char *graft;
+		gchar *graft;
 
 		/* exclude it from parent */
 		graft = brasero_data_disc_graft_get (disc, path);
@@ -7130,20 +7387,29 @@ brasero_data_disc_get_dir_contents_results (GObject *object, gpointer user_data)
 	for (iter = callback_data->list; iter; iter = iter->next) {
 		BraseroDiscResult success;
 		GnomeVFSFileInfo *info;
+		gchar *utf8_name;
 		gchar *uri_path;
 		gchar *uri;
 
 		info = iter->data;
 
+		/* check for invalid utf8 characters */
+		utf8_name = brasero_utils_validate_utf8 (info->name);
+
 		/* check joliet compatibility for this path inside the parent
 		 * directory in the selection */
 		success = brasero_data_disc_tree_check_name_validity (disc,
-								      info->name,
+								      utf8_name ? utf8_name:info->name,
 								      treeparent,
 								      TRUE);
-		if (success != BRASERO_DISC_OK)
-			continue;
+		if (success != BRASERO_DISC_OK) {
+			if (utf8_name)
+				g_free (utf8_name);
 
+			continue;
+		}
+
+		/* here we must keep the exact same name */
 		uri = g_build_path (G_DIR_SEPARATOR_S,
 				    callback_data->uri,
 				    info->name,
@@ -7151,11 +7417,13 @@ brasero_data_disc_get_dir_contents_results (GObject *object, gpointer user_data)
 
 		uri_path = g_build_path (G_DIR_SEPARATOR_S,
 					 path,
-					 info->name,
+					 utf8_name ? utf8_name:info->name,
 					 NULL);
 
-		if (strlen (info->name) > 64)
+		if (strlen (utf8_name ? utf8_name:info->name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, uri_path);
+
+		g_free (utf8_name);
 
 		if (!brasero_data_disc_tree_new_path (disc,
 						      uri_path,
@@ -7302,10 +7570,14 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 	GnomeVFSURI *vfs_uri;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
+	gchar *unescaped_name;
+	gchar *utf8_name;
 	GSList *uris;
 	gchar *name;
 	gchar *path;
 
+	/* NOTE: this function receives URIs only from utf8 origins (not from
+	 * gnome-vfs for example) so we can assume that this is safe */
 	g_return_val_if_fail (uri != NULL, BRASERO_DISC_ERROR_UNKNOWN);
 
 	if (disc->priv->reject_files || disc->priv->is_loading)
@@ -7317,17 +7589,22 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 	name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
 
+	unescaped_name = gnome_vfs_unescape_string_for_display (name);
+	g_free (name);
+	name = unescaped_name;
+
+	utf8_name = brasero_utils_validate_utf8 (name);
+	if (utf8_name) {
+		g_free (name);
+		name = utf8_name;
+	}
+
 	if (!name)
 		return BRASERO_DISC_ERROR_FILE_NOT_FOUND;
 
 	/* create the path */
 	if (treeparent && gtk_tree_path_get_depth (treeparent) > 0) {
 		gchar *parent;
-		gchar *unescaped_name;
-
-		unescaped_name = gnome_vfs_unescape_string_for_display (name);
-		g_free (name);
-		name = unescaped_name;
 
 		brasero_data_disc_tree_path_to_disc_path (disc,
 							  treeparent,
@@ -7339,15 +7616,8 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 				     NULL);
 		g_free (parent);
 	}
-	else if (strcmp (name, G_DIR_SEPARATOR_S)) {
-		gchar *unescaped_name;
-
-		unescaped_name = gnome_vfs_unescape_string_for_display (name);
-		g_free (name);
-		name = unescaped_name;
-
+	else if (strcmp (name, G_DIR_SEPARATOR_S))
 		path = g_build_path (G_DIR_SEPARATOR_S, G_DIR_SEPARATOR_S, name, NULL);
-	}
 	else
 		path = g_strdup (G_DIR_SEPARATOR_S);
 
@@ -7383,10 +7653,8 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (BRASERO_DATA_DISC (disc)->priv->notebook), 1);
 
 	reference = brasero_data_disc_reference_new (disc, path);
-
 	if (strlen (name) > 64)
 		brasero_data_disc_joliet_incompat_add_path (disc, path);
-
 	g_free (path);
 
 	references = g_slist_prepend (NULL, GINT_TO_POINTER (reference));
@@ -8415,7 +8683,7 @@ static BraseroDiscResult
 brasero_data_disc_load_track (BraseroDisc *disc,
 			      BraseroDiscTrack *track)
 {
-	char *uri;
+	gchar *uri;
 	GSList *iter;
 	GSList *uris = NULL;
 	GSList *grafts = NULL;
@@ -8526,10 +8794,10 @@ brasero_data_disc_restore_row (BraseroDataDisc *disc,
 static void
 brasero_data_disc_move_row_in_dirs_hash (BraseroDataDisc *disc,
 					 BraseroFile *dir,
-					 const char *oldpath,
-					 const char *newpath)
+					 const gchar *oldpath,
+					 const gchar *newpath)
 {
-	char *oldgraft;
+	gchar *oldgraft;
 
 	/* move all children graft points */
 	brasero_data_disc_graft_children_move (disc,
@@ -10097,15 +10365,15 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				gtk_tree_path_free (treepath);
 				return TRUE;
 			}
-		}		
+		}
 	}
 	else
 		result = FALSE;
 
 	/* we call the default handler for the treeview before everything else
-	 * so it can update itself (paticularly its selection) before we use it
-	 * NOTE: since the event has been treated here we need to return TRUE to
-	 * avoid having the treeview treating this event a second time */
+	 * so it can update itself (particularly its selection) before we use it
+	 * NOTE: since the event has been processed here we need to return TRUE
+	 * to avoid having the treeview processing this event a second time. */
 	widget_class = GTK_WIDGET_GET_CLASS (tree);
 	widget_class->button_press_event (GTK_WIDGET (tree), event);
 
@@ -10251,7 +10519,8 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 		goto end;
 
 	/* make sure there isn't the same name in the directory and it is joliet
-	 * compatible */
+	 * compatible.
+	 * NOTE: this has to be a UTF8 name since it's a GTK+ gift */
 	gtk_tree_path_up (realpath);
 	res = brasero_data_disc_tree_check_name_validity (disc,
 							  text,
@@ -10508,10 +10777,13 @@ brasero_data_disc_inotify_create_paths (BraseroDataDisc *disc,
 		/* NOTE: normally brasero_data_disc_symlink_new can free some
 		 * paths but it does it only if there is an overlap which can't
 		 * be the case here since it is checked above */
+		/* FIXME: we don't allow to check a possible new UTF8 name
+		 * against the other filenames in the directory */
 		paths = brasero_data_disc_symlink_new (disc,
 						       uri,
 						       info,
-						       paths);
+						       paths,
+						       NULL);
 	}
 
 	file = g_hash_table_lookup (disc->priv->dirs, uri);

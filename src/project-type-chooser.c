@@ -72,17 +72,17 @@ static ItemDescription items [] = {
        {N_("<big>Audio project</big>"),
 	N_("Create a traditional audio CD"),
 	N_("Create a traditional audio CD that will be playable on computers and stereos"),
-	"gnome-dev-cdrom-audio", 0,
+	"audio-x-generic", 0,
 	BRASERO_PROJECT_TYPE_AUDIO},
        {N_("<big>Data project</big>"),
 	N_("Create a data CD/DVD"),
 	N_("Create a CD/DVD containing any type of data that can only be read on a computer"),
-	"gnome-dev-cdrom", 0,
+	"media-optical", 0,
 	BRASERO_PROJECT_TYPE_DATA},
        {N_("<big>Disc copy</big>"),
 	N_("Create 1:1 copy of a CD/DVD"),
 	N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"),
-	"gnome-dev-removable", 0,
+	"drive-optical", 0,
 	BRASERO_PROJECT_TYPE_COPY},
        {N_("<big>Burn image</big>"),
 	N_("Burn an existing CD/DVD image to disc"),
@@ -274,6 +274,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	obj->priv = g_new0 (BraseroProjectTypeChooserPrivate, 1);
 
 	obj->priv->tooltips = gtk_tooltips_new ();
+	g_object_ref_sink (obj->priv->tooltips);
 	gtk_tooltips_enable (obj->priv->tooltips);
 
 	obj->priv->background = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/logo.png", &error);
@@ -377,7 +378,7 @@ brasero_project_type_chooser_finalize (GObject *object)
 	cobj = BRASERO_PROJECT_TYPE_CHOOSER (object);
 
 	if (cobj->priv->tooltips) {
-		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltips));
+		g_object_unref (cobj->priv->tooltips);
 		cobj->priv->tooltips = NULL;
 	}
 

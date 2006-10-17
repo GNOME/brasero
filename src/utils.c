@@ -128,29 +128,14 @@ brasero_utils_init (void)
 	factory = gtk_icon_factory_new ();
 
 	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_ICON,
-				     BRASERO_DATADIR G_DIR_SEPARATOR_S "brasero.png",
+				     BRASERO_STOCK_BURN,
+				     BRASERO_DATADIR G_DIR_SEPARATOR_S "cd-action-burn.png",
 				     FROM_FILE,
 				     0);
 	brasero_utils_register_icon (factory,
 				     BRASERO_STOCK_PLAYLIST,
 				     "audio/x-scpls",
 				     FROM_MIME,
-				     48);
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_DVDR,
-				     "gnome-dev-disc-dvdr",
-				     FROM_THEME,
-				     48);
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_CDR,
-				     "gnome-dev-disc-cdr",
-				     FROM_THEME,
-				     48);
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_DRIVE,
-				     "gnome-dev-removable",
-				     FROM_THEME,
 				     48);
 
 	gtk_icon_factory_add_default (factory);
@@ -290,7 +275,6 @@ enum {
 	BRASERO_UTILS_GO
 };
 
-
 gchar *
 brasero_utils_get_size_string (gint64 dsize,
 			       gboolean with_unit,
@@ -419,7 +403,7 @@ brasero_utils_get_icon (const gchar *name, gint size)
 GdkPixbuf *
 brasero_utils_get_icon_for_mime (const gchar *mime, gint size)
 {
-	char *icon_string;
+	gchar *icon_string;
 	GdkPixbuf *pixbuf;
 
 	icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
@@ -497,16 +481,23 @@ brasero_utils_pack_properties (const gchar *title, ...)
 }
 
 GtkWidget *
-brasero_utils_make_button (const gchar *text, const gchar *stock)
+brasero_utils_make_button (const gchar *text,
+			   const gchar *stock,
+			   const gchar *theme)
 {
+	GtkWidget *image = NULL;
 	GtkWidget *button;
-	GtkWidget *image;
 	GtkWidget *box;
 
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
-	image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
+	if (theme)
+		image = gtk_image_new_from_icon_name (theme, GTK_ICON_SIZE_BUTTON);
+
+	if (!image && stock)
+		image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
+
 	gtk_widget_show (image);
 	gtk_box_pack_start (GTK_BOX (box),
 			    image,
@@ -1088,4 +1079,30 @@ brasero_utils_get_use_info_notebook (void)
 	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
 
 	return notebook;
+}
+
+gchar*
+brasero_utils_validate_utf8 (const gchar *name)
+{
+	gchar *retval, *ptr;
+	const gchar *invalid;
+
+	if (!name)
+		return NULL;
+
+	if (g_utf8_validate (name, -1, &invalid))
+		return NULL;
+
+	retval = g_strdup (name);
+	ptr = retval + (invalid - name);
+	*ptr = '_';
+	ptr++;
+
+	while (!g_utf8_validate (ptr, -1, &invalid)) {
+		ptr = (gchar*) invalid;
+		*ptr = '?';
+		ptr ++;
+	}
+
+	return retval;
 }

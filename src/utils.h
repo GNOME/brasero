@@ -40,11 +40,9 @@
 extern "C" {
 #endif
 
-#define BRASERO_STOCK_ICON	"brasero-stock-icon"
+#define BRASERO_STOCK_BURN	"brasero-stock-burn"
 #define BRASERO_STOCK_PLAYLIST	"brasero-playlist-icon"
-#define BRASERO_STOCK_DVDR	"brasero-dvdr-icon"
-#define BRASERO_STOCK_CDR	"brasero-cdr-icon"
-#define BRASERO_STOCK_DRIVE	"brasero-drive-icon"
+
 
 #define BRASERO_ERROR brasero_error_quark()
 
@@ -86,7 +84,7 @@ GdkPixbuf *brasero_utils_get_icon (const gchar *name, gint size);
 GtkWidget *brasero_utils_pack_properties (const gchar *title, ...);
 GtkWidget *brasero_utils_pack_properties_list (const gchar *title, GSList *list);
 
-GtkWidget *brasero_utils_make_button (const gchar *text, const gchar *stock);
+GtkWidget *brasero_utils_make_button (const gchar *text, const gchar *stock, const gchar *theme);
 
 gboolean brasero_utils_remove (const gchar *uri);
 
@@ -116,6 +114,8 @@ brasero_utils_show_menu (int nb_selected,
 GtkWidget *
 brasero_utils_get_use_info_notebook (void);
 
+gchar*
+brasero_utils_validate_utf8 (const gchar *name);
 
 #ifdef __cplusplus
 }

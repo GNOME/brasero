@@ -363,6 +363,21 @@ brasero_player_destroy_controls (BraseroPlayer *player)
 }
 
 static void
+brasero_player_no_multimedia_stream (BraseroPlayer *player)
+{
+	if (player->priv->update_scale_id) {
+		g_source_remove (player->priv->update_scale_id);
+		player->priv->update_scale_id = 0;
+	}
+
+	gtk_alignment_set_padding (GTK_ALIGNMENT (player), 0, 0, 0, 0);
+
+	gtk_widget_hide (player->priv->notebook);
+	gtk_widget_hide (player->priv->frame);
+}
+
+
+static void
 brasero_player_video_zoom_out (GtkButton *button,
 			       BraseroPlayer *player)
 {
@@ -854,6 +869,8 @@ brasero_player_image (BraseroPlayer *player)
 			g_error_free (error);
 		}
 
+		brasero_player_no_multimedia_stream (player);
+
 		g_free (path);
 		return;
 	}
@@ -934,20 +951,6 @@ brasero_player_update_info_real (BraseroPlayer *player,
 
 	gtk_label_set_markup (GTK_LABEL (player->priv->header), header);
 	g_free (header);
-}
-
-static void
-brasero_player_no_multimedia_stream (BraseroPlayer *player)
-{
-	if (player->priv->update_scale_id) {
-		g_source_remove (player->priv->update_scale_id);
-		player->priv->update_scale_id = 0;
-	}
-
-	gtk_alignment_set_padding (GTK_ALIGNMENT (player), 0, 0, 0, 0);
-
-	gtk_widget_hide (player->priv->notebook);
-	gtk_widget_hide (player->priv->frame);
 }
 
 static void

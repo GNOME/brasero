@@ -42,8 +42,11 @@ brasero_multi_DND_row_draggable (EggTreeMultiDragSource *drag_source,
 
 		reference = iter->data;
 		path = gtk_tree_row_reference_get_path (reference);
-		if (gtk_tree_drag_source_row_draggable (GTK_TREE_DRAG_SOURCE (drag_source), path) == FALSE)
+		if (gtk_tree_drag_source_row_draggable (GTK_TREE_DRAG_SOURCE (drag_source), path) == FALSE) {
+			gtk_tree_path_free (path);
 			return FALSE;
+		}
+		gtk_tree_path_free (path);
 	}
 
 	return TRUE;

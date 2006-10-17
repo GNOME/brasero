@@ -336,7 +336,13 @@ brasero_file_chooser_find_pane (GtkWidget *child,
 							     &packing);
 
 				if (packing == GTK_PACK_START) {
-					*((gint *) footer) = vbox->allocation.height - GTK_WIDGET (iter_vbox->data)->allocation.height;
+					GtkRequisition total_request, footer_request;
+
+					gtk_widget_size_request (GTK_WIDGET (vbox),
+								 &total_request);
+					gtk_widget_size_request (GTK_WIDGET (iter_vbox->data),
+								 &footer_request);
+					*((gint *) footer) = total_request.height - footer_request.height;
 					break;
 				}
 			}

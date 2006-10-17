@@ -45,6 +45,7 @@
 #include <libxml/xmlwriter.h>
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
+#include <libxml/uri.h>
 
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -181,7 +182,7 @@ static GtkActionEntry entries_actions [] = {
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
-	{"Burn", GTK_STOCK_CDROM, N_("_Burn"), NULL,
+	{"Burn", BRASERO_STOCK_BURN, N_("_Burn"), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
@@ -320,6 +321,7 @@ brasero_project_init (BraseroProject *obj)
 	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PROJECT_SPACING);
 
 	obj->priv->tooltip = gtk_tooltips_new ();
+	g_object_ref_sink (obj->priv->tooltip);
 
 	/* header */
 	box = gtk_hbox_new (FALSE, 8);
@@ -350,7 +352,7 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);
 
-	obj->priv->add = brasero_utils_make_button (NULL, GTK_STOCK_ADD);
+	obj->priv->add = brasero_utils_make_button (NULL, GTK_STOCK_ADD, NULL);
 	gtk_button_set_relief (GTK_BUTTON (obj->priv->add), GTK_RELIEF_NONE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->add), FALSE);
 	gtk_widget_set_sensitive (obj->priv->add, FALSE);
@@ -368,7 +370,7 @@ brasero_project_init (BraseroProject *obj)
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->add);
 	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 
-	obj->priv->remove = brasero_utils_make_button (NULL, GTK_STOCK_REMOVE);
+	obj->priv->remove = brasero_utils_make_button (NULL, GTK_STOCK_REMOVE, NULL);
 	gtk_button_set_relief (GTK_BUTTON (obj->priv->remove), GTK_RELIEF_NONE);
 	gtk_widget_set_sensitive (obj->priv->remove, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->remove), FALSE);
@@ -438,7 +440,8 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->empty = 1;
 	
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn"), GTK_STOCK_CDROM);
+	
+	obj->priv->burn = brasero_utils_make_button (_("Burn"), BRASERO_STOCK_BURN, NULL);
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
 	g_signal_connect (obj->priv->burn,
@@ -464,7 +467,7 @@ brasero_project_finalize (GObject *object)
 		g_free (cobj->priv->project);
 
 	if (cobj->priv->tooltip) {
-		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
+		g_object_unref (cobj->priv->tooltip);
 		cobj->priv->tooltip = NULL;
 	}
 
@@ -1024,7 +1027,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 			       NULL);
 
 	if (audio) {
-		pixbuf = brasero_utils_get_icon_for_mime ("gnome-dev-cdrom-audio", 24);
+		pixbuf = brasero_utils_get_icon_for_mime ("audio-x-generic", 24);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
 				      _("<big><b>Audio project</b></big>"));
 		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle),
@@ -1042,7 +1045,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 							   "brasero -a");
 	}
 	else {
-		pixbuf = brasero_utils_get_icon_for_mime ("gnome-dev-cdrom", 24);
+		pixbuf = brasero_utils_get_icon_for_mime ("media-optical", 24);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
 				      _("<big><b>Data project</b></big>"));
 		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle),
@@ -1411,12 +1414,16 @@ _read_graft_point (xmlDocPtr project,
 	retval = g_new0 (BraseroGraftPt, 1);
 	while (graft) {
 		if (!xmlStrcmp (graft->name, (const xmlChar *) "uri")) {
+			xmlChar *uri;
+
 			if (retval->uri)
 				goto error;
 
-			retval->uri = (char*) xmlNodeListGetString (project,
-							    graft->xmlChildrenNode,
-							    1);
+			uri = xmlNodeListGetString (project,
+						    graft->xmlChildrenNode,
+						    1);
+			retval->uri = xmlURIUnescapeString ((char*) uri, 0, NULL);
+			g_free (uri);
 			if (!retval->uri)
 				goto error;
 		}
@@ -1440,7 +1447,8 @@ _read_graft_point (xmlDocPtr project,
 				goto error;
 
 			retval->excluded = g_slist_prepend (retval->excluded,
-							    excluded);
+							    xmlURIUnescapeString ((char*) excluded, 0, NULL));
+			g_free (excluded);
 		}
 		else if (graft->type == XML_ELEMENT_NODE)
 			goto error;
@@ -1514,16 +1522,17 @@ _read_audio_track (xmlDocPtr project,
 
 	while (uris) {
 		if (!xmlStrcmp (uris->name, (const xmlChar *) "uri")) {
-			gchar *uri;
+			xmlChar *uri;
 
-			uri = (gchar *) xmlNodeListGetString (project,
-							      uris->xmlChildrenNode,
-							      1);
+			uri = xmlNodeListGetString (project,
+						    uris->xmlChildrenNode,
+						    1);
 			if (!uri)
 				goto error;
 
 			song = g_new0 (BraseroDiscSong, 1);
-			song->uri = uri;
+			song->uri = xmlURIUnescapeString ((char*) uri, 0, NULL);
+			g_free (uri);
 			track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
 		}
 		else if (!xmlStrcmp (uris->name, (const xmlChar *) "silence")) {
@@ -1759,7 +1768,7 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
 
-    	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
+	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
@@ -1821,11 +1830,15 @@ _save_audio_track_xml (xmlTextWriter *project,
 
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
+		xmlChar *escaped;
 
 		song = iter->data;
+		escaped = xmlURIEscapeStr ((xmlChar *) song->uri, NULL);
 		success = xmlTextWriterWriteElement (project,
-						     (xmlChar *) "uri",
-						     (xmlChar *) song->uri);
+						    (xmlChar *) "uri",
+						     escaped);
+		g_free (escaped);
+
 		if (success == -1)
 			return FALSE;
 
@@ -1868,14 +1881,21 @@ _save_data_track_xml (xmlTextWriter *project,
 			return FALSE;
 
 		if (graft->uri) {
-			success = xmlTextWriterWriteElement (project, (xmlChar *) "uri", (xmlChar *) graft->uri);
+			xmlChar *escaped;
+
+			escaped = xmlURIEscapeStr ((xmlChar *) graft->uri, NULL);
+			success = xmlTextWriterWriteElement (project, (xmlChar *) "uri", escaped);
+			g_free (escaped);
 			if (success < 0)
 				return FALSE;
 		}
 
 		for (iter = graft->excluded; iter; iter = iter->next) {
-			uri = iter->data;
-			success = xmlTextWriterWriteElement (project, (xmlChar *) "excluded", (xmlChar *) uri);
+			xmlChar *escaped;
+
+			escaped = xmlURIEscapeStr ((xmlChar *) iter->data, NULL);
+			success = xmlTextWriterWriteElement (project, (xmlChar *) "excluded", (xmlChar *) escaped);
+			g_free (escaped);
 			if (success < 0)
 				return FALSE;
 		}
@@ -1927,7 +1947,7 @@ brasero_project_save_project_xml (BraseroProject *proj,
 
 	success = xmlTextWriterStartDocument (project,
 					      NULL,
-					      NULL,
+					      "UTF8",
 					      NULL);
 	if (success < 0)
 		goto error;

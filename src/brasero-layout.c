@@ -395,6 +395,10 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 					      &pr_footer);
 
 	source = NULL;
+	if (!layout->priv->active_item
+	||  !GTK_IS_CONTAINER (layout->priv->active_item->widget))
+		return;
+
 	children = gtk_container_get_children (GTK_CONTAINER (layout->priv->active_item->widget));
 	for (child = children; child; child = child->next) {
 		if (BRASERO_IS_LAYOUT_OBJECT (child->data)) {

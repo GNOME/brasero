@@ -1,3 +1,85 @@
+2006-10-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* data/Makefile.am:
+	* data/cd-action-burn.png:
+	* po/ChangeLog:
+	* po/fr.po:
+	* src/audio-disc.c: (brasero_audio_disc_fill_toolbar),
+	(brasero_audio_disc_init), (brasero_audio_disc_finalize):
+	* src/blank-dialog.c: (brasero_blank_dialog_cancel_dialog):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_init):
+	* src/brasero-file-chooser.c: (brasero_file_chooser_find_pane):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_init):
+	* src/brasero-layout.c: (brasero_layout_size_reallocate):
+	* src/brasero-multi-dnd.c: (brasero_multi_DND_row_draggable):
+	* src/brasero-project-manager.c: (brasero_project_manager_init),
+	(brasero_project_manager_switch):
+	* src/brasero-project-size.c:
+	(brasero_project_size_add_default_medias),
+	(brasero_project_size_init), (brasero_project_size_finalize),
+	(brasero_project_size_get_ruler_min_width),
+	(brasero_project_size_get_media_string),
+	(brasero_project_size_size_request), (brasero_project_size_expose),
+	(brasero_project_size_build_menu),
+	(brasero_project_size_update_sectors):
+	* src/brasero-tool-dialog.c: (brasero_tool_dialog_set_button):
+	* src/burn-dialog.c: (brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_notify_error),
+	(brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_cancel_dialog):
+	* src/data-disc.c: (brasero_data_disc_fill_toolbar),
+	(brasero_data_disc_filtered_restore),
+	(brasero_data_disc_exclude_uri),
+	(brasero_data_disc_dir_contents_destroy),
+	(_find_name_in_info_list),
+	(brasero_data_disc_get_unique_valid_utf8_name),
+	(brasero_data_disc_get_unique_valid_utf8_path),
+	(brasero_data_disc_symlink_new),
+	(brasero_data_disc_symlink_list_new),
+	(brasero_data_disc_invalid_utf8_new),
+	(brasero_data_disc_invalid_utf8_list_new),
+	(brasero_data_disc_load_result),
+	(brasero_data_disc_load_dir_error),
+	(brasero_data_disc_remove_row_in_files_hash),
+	(brasero_data_disc_path_remove_user),
+	(brasero_data_disc_get_dir_contents_results),
+	(brasero_data_disc_add_uri_real), (brasero_data_disc_load_track),
+	(brasero_data_disc_move_row_in_dirs_hash),
+	(brasero_data_disc_button_pressed_cb),
+	(brasero_data_disc_name_edited_cb),
+	(brasero_data_disc_inotify_create_paths):
+	* src/disc-copy-dialog.c: (brasero_disc_copy_dialog_init):
+	* src/player.c: (brasero_player_no_multimedia_stream),
+	(brasero_player_image), (brasero_player_update_info_real):
+	* src/project-type-chooser.c: (brasero_project_type_chooser_init),
+	(brasero_project_type_chooser_finalize):
+	* src/project.c: (brasero_project_init),
+	(brasero_project_finalize), (brasero_project_switch),
+	(_read_graft_point), (_read_audio_track),
+	(brasero_project_load_session), (_save_audio_track_xml),
+	(_save_data_track_xml), (brasero_project_save_project_xml):
+	* src/search-entry.c: (brasero_search_entry_init),
+	(brasero_search_entry_finalize):
+	* src/search.c: (brasero_search_init):
+	* src/utils.c: (brasero_utils_init),
+	(brasero_utils_get_icon_for_mime), (brasero_utils_make_button),
+	(brasero_utils_get_use_info_notebook),
+	(brasero_utils_validate_utf8):
+	* src/utils.h:
+
+	Fix warning
+	Workaround filenames with bad charset
+	Fix for last session project autoloading problem
+	Better use of icons (new burn-action icon)
+	Fix for preview remaining open whereas an image has failed to load
+	Fixes for project-size string resize problem
+	Add dual layer DVD size to default sizes
+	Fixes for French translation
+
 2006-10-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* src/Makefile.am:

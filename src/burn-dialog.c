@@ -417,12 +417,12 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Replace disc"), GTK_STOCK_REFRESH);
+	button = brasero_utils_make_button (_("Replace disc"), GTK_STOCK_REFRESH, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_ACCEPT);
 
-	button = brasero_utils_make_button (_("Erase disc"), GTK_STOCK_CLEAR);
+	button = brasero_utils_make_button (_("Erase disc"), GTK_STOCK_CLEAR, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);
@@ -470,7 +470,7 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("you might not be able to listen to it with stereos.\nDo you want to continue anyway?"));
 
-	button = brasero_utils_make_button (_("Replace the disc"), GTK_STOCK_REFRESH);
+	button = brasero_utils_make_button (_("Replace the disc"), GTK_STOCK_REFRESH, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_ACCEPT);
@@ -479,7 +479,7 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK);
+	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);
@@ -530,7 +530,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK);
+	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);
@@ -1726,11 +1726,11 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 						  secondary);
 	g_free (secondary);
 
-	button = brasero_utils_make_button (_("Save log"), GTK_STOCK_SAVE_AS);
+	button = brasero_utils_make_button (_("Save log"), GTK_STOCK_SAVE_AS, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message), button, GTK_RESPONSE_APPLY);
 
-	button = brasero_utils_make_button (_("View log"), GTK_STOCK_EDIT);
+	button = brasero_utils_make_button (_("View log"), GTK_STOCK_EDIT, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message), button, GTK_RESPONSE_OK);
 
@@ -1773,7 +1773,7 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog,
 
 	if (checksum) {
 		button = brasero_utils_make_button (_("Check integrity"),
-						    GTK_STOCK_FIND);
+						    GTK_STOCK_FIND, NULL);
 		gtk_widget_show_all (button);
 
 		gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
@@ -2058,7 +2058,7 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK);
+	button = brasero_utils_make_button (_("Continue"), GTK_STOCK_OK, NULL);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);

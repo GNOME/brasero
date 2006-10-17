@@ -307,7 +307,7 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 	if (self->priv->button)
 		g_object_unref (self->priv->button);
 
-	button = brasero_utils_make_button (text, image);
+	button = brasero_utils_make_button (text, image, NULL);
 	gtk_widget_show_all (button);
 	g_signal_connect (G_OBJECT (button), "clicked",
 			  G_CALLBACK (brasero_tool_dialog_button_clicked),
