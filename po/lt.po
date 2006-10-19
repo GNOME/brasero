@@ -7,15 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Brasero HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-17 11:10+0300\n"
-"PO-Revision-Date: 2006-10-17 11:47+0300\n"
+"POT-Creation-Date: 2006-10-19 13:46+0300\n"
+"PO-Revision-Date: 2006-10-19 13:51+0300\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/brasero-ncb.c:240
 msgid "(u)mount command could not be found in the path"
@@ -34,7 +33,7 @@ msgstr "nepavyko gauti disko prijungimo taško."
 msgid "the file %s couldn't be read (%s)"
 msgstr "rinkmenos %s nepavyko perskaityti (%s)"
 
-#: ../src/utils.c:270
+#: ../src/utils.c:255
 #, c-format
 msgid "%d:%02i hour"
 msgid_plural "%i:%02i hours"
@@ -42,40 +41,40 @@ msgstr[0] "%d:%02i valanda"
 msgstr[1] "%d:%02i valandos"
 msgstr[2] "%d:%02i valandų"
 
-#: ../src/utils.c:302
+#: ../src/utils.c:286
 msgid "KiB"
 msgstr "KiB"
 
-#: ../src/utils.c:302
+#: ../src/utils.c:286
 msgid "MiB"
 msgstr "MiB"
 
-#: ../src/utils.c:302
+#: ../src/utils.c:286
 msgid "GiB"
 msgstr "GiB"
 
-#: ../src/utils.c:793
+#: ../src/utils.c:784
 msgid "This file can't be opened:"
 msgstr "Šios rinkmenos nepavyko atverti:"
 
-#: ../src/utils.c:795 ../src/utils.c:821
+#: ../src/utils.c:786 ../src/utils.c:812
 msgid "File error"
 msgstr "Rinkmenos klaida"
 
-#: ../src/utils.c:798
+#: ../src/utils.c:789
 msgid "there is no application defined for this file."
 msgstr "šiai rinkmenai nėra nurodytos programos."
 
-#: ../src/utils.c:819
+#: ../src/utils.c:810
 msgid "File can't be opened:"
 msgstr "Rinkmena negali būti atverta:"
 
-#: ../src/utils.c:824
+#: ../src/utils.c:815
 #, c-format
 msgid "application %s can't be started."
 msgstr "programa %s negali būti paleista."
 
-#: ../src/utils.c:1071
+#: ../src/utils.c:1062
 msgid ""
 "<span foreground='grey50'><big>To add files to this project you can:\n"
 "</big>copy them (from nautilus for example) and paste them here\n"
@@ -739,74 +738,74 @@ msgstr "Pridėti pauzę"
 msgid "Add a 2 second pause after the track"
 msgstr "Po kiekvieno takelio pridėti 2 sekundžių pauzę"
 
-#: ../src/audio-disc.c:633
+#: ../src/audio-disc.c:634
 msgid "Title"
 msgstr "Pavadinimas"
 
-#: ../src/audio-disc.c:659
+#: ../src/audio-disc.c:660
 msgid "Artist"
 msgstr "Atlikėjas"
 
-#: ../src/audio-disc.c:668 ../src/play-list.c:348
+#: ../src/audio-disc.c:669 ../src/play-list.c:348
 msgid "Length"
 msgstr "Trukmė"
 
-#: ../src/audio-disc.c:940
+#: ../src/audio-disc.c:943
 msgid "<i><b>Pause</b></i>"
 msgstr "<i><b>Pauzė</b></i>"
 
-#: ../src/audio-disc.c:1130
+#: ../src/audio-disc.c:1133
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr "GStreamer negali apdoroti „%s“:"
 
-#: ../src/audio-disc.c:1134
+#: ../src/audio-disc.c:1137
 msgid "Unhandled song"
 msgstr "Neapdorojama daina"
 
-#: ../src/audio-disc.c:1137
+#: ../src/audio-disc.c:1140
 msgid "Make sure the appropriate codec is installed."
 msgstr "Įsitikinkite jog įdiegtas atitinkamos kodavimo bibliotekos."
 
-#: ../src/audio-disc.c:1261
+#: ../src/audio-disc.c:1264
 msgid "Directories can't be added to an audio disc:"
 msgstr "Įdėti aplankų į Audio diską negalima:"
 
-#: ../src/audio-disc.c:1263
+#: ../src/audio-disc.c:1266
 msgid "Directory search"
 msgstr "Paieška aplanke"
 
-#: ../src/audio-disc.c:1266
+#: ../src/audio-disc.c:1269
 msgid "Do you want to search for audio discs inside?"
 msgstr "Ar norite viduje ieškoti audio diskų?"
 
-#: ../src/audio-disc.c:1270
+#: ../src/audio-disc.c:1273
 msgid "Search directory"
 msgstr "Ieškoti aplanke"
 
-#: ../src/audio-disc.c:1337
+#: ../src/audio-disc.c:1340
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr "Rinkmenos „%s“ atverti nepavyko."
 
-#: ../src/audio-disc.c:1341 ../src/data-disc.c:3066
+#: ../src/audio-disc.c:1344 ../src/data-disc.c:3064
 msgid "Unreadable file"
 msgstr "Neperskaitoma rinkmena"
 
-#: ../src/audio-disc.c:1478 ../src/audio-disc.c:1479
+#: ../src/audio-disc.c:1481 ../src/audio-disc.c:1482
 msgid "loading"
 msgstr "įkeliama"
 
-#: ../src/audio-disc.c:2899
+#: ../src/audio-disc.c:2902
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr "Rinkmena „%s“ buvo pašalinti iš rinkmenų sistemos:"
 
-#: ../src/audio-disc.c:2903
+#: ../src/audio-disc.c:2906
 msgid "File deletion noticed"
 msgstr "Pastebėtas rinkmenos ištrynimas"
 
-#: ../src/audio-disc.c:2905
+#: ../src/audio-disc.c:2908
 msgid "it will be removed from the project."
 msgstr "ji bus ištrinta iš projekto."
 
@@ -814,54 +813,54 @@ msgstr "ji bus ištrinta iš projekto."
 msgid "Rename"
 msgstr "Pervadinti"
 
-#: ../src/data-disc.c:813
+#: ../src/data-disc.c:812
 msgid "Some files were removed from the project. Clik here to see them."
 msgstr ""
 "Kai kurios rinkmenos buvo pašalintos iš projekto. Norėdami jas pamatyti "
 "spragtelėkite čia."
 
-#: ../src/data-disc.c:827
+#: ../src/data-disc.c:825
 msgid "Create a new empty folder"
 msgstr "Sukurti naują tuščią aplanką"
 
-#: ../src/data-disc.c:937 ../src/search.c:407 ../src/filtered-window.c:216
+#: ../src/data-disc.c:935 ../src/search.c:407 ../src/filtered-window.c:216
 msgid "Files"
 msgstr "Rinkmenos"
 
-#: ../src/data-disc.c:948
+#: ../src/data-disc.c:946
 msgid "Size"
 msgstr "Dydis"
 
-#: ../src/data-disc.c:959 ../src/search.c:426
+#: ../src/data-disc.c:957 ../src/search.c:426
 msgid "Description"
 msgstr "Aprašymas"
 
-#: ../src/data-disc.c:1202
+#: ../src/data-disc.c:1200
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr "„%s“ jau egzistuoja aplanke."
 
-#: ../src/data-disc.c:1205
+#: ../src/data-disc.c:1203
 msgid "Already existing file"
 msgstr "Jau egzistuojanti rinkmena"
 
-#: ../src/data-disc.c:1208
+#: ../src/data-disc.c:1206
 msgid "it won't be added."
 msgstr "ji nebus pridėta."
 
-#: ../src/data-disc.c:1301 ../src/data-disc.c:1317 ../src/play-list.c:879
+#: ../src/data-disc.c:1299 ../src/data-disc.c:1315 ../src/play-list.c:879
 msgid "empty"
 msgstr "tuščia"
 
-#: ../src/data-disc.c:1304
+#: ../src/data-disc.c:1302
 msgid "(empty)"
 msgstr "(tuščia)"
 
-#: ../src/data-disc.c:1319
+#: ../src/data-disc.c:1317
 msgid "1 item"
 msgstr "1 elementas"
 
-#: ../src/data-disc.c:1322
+#: ../src/data-disc.c:1320
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
@@ -869,47 +868,47 @@ msgstr[0] "%d elementas"
 msgstr[1] "%d elementai"
 msgstr[2] "%d elementų"
 
-#: ../src/data-disc.c:1675 ../src/data-disc.c:1873 ../src/data-disc.c:1874
-#: ../src/data-disc.c:7434 ../src/data-disc.c:7435
+#: ../src/data-disc.c:1673 ../src/data-disc.c:1871 ../src/data-disc.c:1872
+#: ../src/data-disc.c:7702 ../src/data-disc.c:7703
 msgid "(loading ...)"
 msgstr "(įkeliama...)"
 
-#: ../src/data-disc.c:3051
+#: ../src/data-disc.c:3049
 #, c-format
 msgid "The file \"%s\" is unreadable:"
 msgstr "Rinkmena „%s“ neperskaitoma:"
 
-#: ../src/data-disc.c:3053
+#: ../src/data-disc.c:3051
 #, c-format
 msgid "The directory \"%s\" is unreadable:"
 msgstr "Aplankas „%s“ neperskaitomas:"
 
-#: ../src/data-disc.c:3180
+#: ../src/data-disc.c:3178
 msgid "Some files couldn't be restored."
 msgstr "Kai kurių rinkmenų nepavyko atkurti."
 
-#: ../src/data-disc.c:3182
+#: ../src/data-disc.c:3180
 msgid "File restoration failure"
 msgstr "Rinkmenų atkurti nepavyko"
 
-#: ../src/data-disc.c:4674
+#: ../src/data-disc.c:4672
 msgid "New folder"
 msgstr "Naujas aplankas"
 
-#: ../src/data-disc.c:4684
+#: ../src/data-disc.c:4682
 #, c-format
 msgid "New folder %i"
 msgstr "Naujas aplankas %i"
 
-#: ../src/data-disc.c:7838
+#: ../src/data-disc.c:8106
 msgid "Project couldn't be loaded:"
 msgstr "Nepavyko įkelti projekto:"
 
-#: ../src/data-disc.c:7840
+#: ../src/data-disc.c:8108
 msgid "Project loading failure"
 msgstr "Nepavyko įkelti projekto"
 
-#: ../src/data-disc.c:7843
+#: ../src/data-disc.c:8111
 msgid "A thread couldn't be created"
 msgstr "Nepavyko sukurti gijos"
 
@@ -968,7 +967,7 @@ msgstr "<big>Įrašyti atvaizdį</big>"
 msgid "Burn an existing CD/DVD image to disc"
 msgstr "Įrašyti egzistuojantį CD/DVD atvaizdį į diską"
 
-#: ../src/project-type-chooser.c:301
+#: ../src/project-type-chooser.c:302
 msgid ""
 "<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></"
 "span></u>"
@@ -976,98 +975,98 @@ msgstr ""
 "<u><span size='xx-large' foreground='grey50'><b>Sukurti naują projektą:</b></"
 "span></u>"
 
-#: ../src/project-type-chooser.c:306
+#: ../src/project-type-chooser.c:307
 msgid ""
 "<span foreground='grey60'><b><i>Choose from the following options</i></b></"
 "span>"
 msgstr ""
 "<span foreground='grey60'><b><i>Pasirinkite iš šių parinkčių</i></b></span>"
 
-#: ../src/project.c:158
+#: ../src/project.c:159
 msgid "_Save"
 msgstr "Iš_saugoti"
 
-#: ../src/project.c:159 ../src/project.c:2054
+#: ../src/project.c:160 ../src/project.c:2074
 msgid "Save current project"
 msgstr "Išsaugoti šį projektą"
 
-#: ../src/project.c:160
+#: ../src/project.c:161
 msgid "_Save as"
 msgstr "Iš_saugoti kaip"
 
-#: ../src/project.c:161
+#: ../src/project.c:162
 msgid "Save current project to a different location"
 msgstr "Išsaugoti šį projektą kitoje vietoje"
 
-#: ../src/project.c:178
+#: ../src/project.c:179
 msgid "_Add files"
 msgstr "P_ridėti rinkmenas"
 
-#: ../src/project.c:179
+#: ../src/project.c:180
 msgid "Add files to the project"
 msgstr "Įdėti rinkmenas į projektą"
 
-#: ../src/project.c:180
+#: ../src/project.c:181
 msgid "_Remove files"
 msgstr "_Pašalinti rinkmenas"
 
-#: ../src/project.c:181
+#: ../src/project.c:182
 msgid "Remove the selected files from the project"
 msgstr "Pašalinti pasirinktas rinkmenas iš projekto"
 
-#: ../src/project.c:182
+#: ../src/project.c:183
 msgid "E_mpty Project"
 msgstr "Iš_valyti projektą"
 
-#: ../src/project.c:183
+#: ../src/project.c:184
 msgid "Delete all files from the project"
 msgstr "Ištrinti visas rinkmenas iš projekto"
 
-#: ../src/project.c:184
+#: ../src/project.c:185
 msgid "_Burn"
 msgstr "Įr_ašyti"
 
-#: ../src/project.c:185
+#: ../src/project.c:186
 msgid "Burn the disc"
 msgstr "Įrašyti diską"
 
-#: ../src/project.c:364
+#: ../src/project.c:366
 msgid "Add selected files"
 msgstr "Pridėti pasirinktas rinkmenas"
 
-#: ../src/project.c:381
+#: ../src/project.c:383
 msgid "Remove files selected in project"
 msgstr "Pašalinti projekte pasirinktas rinkmenas"
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/project.c:441 ../src/brasero-disc-option-dialog.c:618
+#: ../src/project.c:444 ../src/brasero-disc-option-dialog.c:618
 #: ../src/brasero-image-option-dialog.c:459
 msgid "Burn"
 msgstr "Įrašyti"
 
-#: ../src/project.c:450
+#: ../src/project.c:453
 msgid "Start to burn the contents of the selection"
 msgstr "Pradėti pasirinkto turinio įrašymą"
 
-#: ../src/project.c:499
+#: ../src/project.c:502
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option:"
 msgstr "Projektas per didelis diskui netgi su „overburn“ parinktimi:"
 
-#: ../src/project.c:501 ../src/project.c:525
+#: ../src/project.c:504 ../src/project.c:528
 msgid "Project size"
 msgstr "Projekto dydis"
 
-#: ../src/project.c:504
+#: ../src/project.c:507
 msgid "you must delete some files."
 msgstr "turite ištrinti keletą rinkmenų."
 
-#: ../src/project.c:523
+#: ../src/project.c:526
 msgid "The size of the project is too large for the disc:"
 msgstr "Projekto dydis per didelis diskui:"
 
-#: ../src/project.c:528
+#: ../src/project.c:531
 msgid ""
 "Would you like to activate overburn (otherwise you must delete files) ?\n"
 "NOTE: This option might cause failure."
@@ -1076,86 +1075,86 @@ msgstr ""
 "rinkmenas)?\n"
 "PASTABA: įjungus šią parinktį galima nesėkmė."
 
-#: ../src/project.c:694
+#: ../src/project.c:697
 msgid "Please wait:"
 msgstr "Palaukite:"
 
-#: ../src/project.c:696
+#: ../src/project.c:699
 msgid "Please wait"
 msgstr "Palaukite"
 
-#: ../src/project.c:699
+#: ../src/project.c:702
 msgid "some tasks are not completed yet."
 msgstr "kai kurios užduotys dar neatliktos."
 
-#: ../src/project.c:701
+#: ../src/project.c:704
 msgid "Waiting for ongoing tasks"
 msgstr "Laukiama vykdomų užduočių"
 
-#: ../src/project.c:747
+#: ../src/project.c:750
 msgid "No song in the project:"
 msgstr "Projekte nėra dainų:"
 
-#: ../src/project.c:749 ../src/project.c:772
+#: ../src/project.c:752 ../src/project.c:775
 #: ../src/brasero-project-manager.c:112
 msgid "Empty project"
 msgstr "Tuščias projektas"
 
-#: ../src/project.c:752
+#: ../src/project.c:755
 msgid "please add songs to the project."
 msgstr "įdėkite į projektą dainų"
 
-#: ../src/project.c:770
+#: ../src/project.c:773
 msgid "Project is empty:"
 msgstr "Projektas tuščias:"
 
-#: ../src/project.c:775
+#: ../src/project.c:778
 msgid "please add files to the project."
 msgstr "įdėkite į projektą rinkmenų."
 
-#: ../src/project.c:942
+#: ../src/project.c:945
 msgid "Default burning application"
 msgstr "Numatytoji įrašymo programa"
 
-#: ../src/project.c:973
+#: ../src/project.c:976
 msgid "don't show this dialog again"
 msgstr "daugiau nerodyti šio lango"
 
-#: ../src/project.c:1029
+#: ../src/project.c:1032
 msgid "<big><b>Audio project</b></big>"
 msgstr "<big><b>Audio projektas</b></big>"
 
-#: ../src/project.c:1031 ../src/project.c:1167
+#: ../src/project.c:1034 ../src/project.c:1170
 msgid "<i>No track</i>"
 msgstr "<i>Nėra takelių</i>"
 
-#: ../src/project.c:1039
+#: ../src/project.c:1042
 msgid "Brasero is not the default application to burn audio CDs:"
 msgstr "Brasero nėra numatytoji Audio diskų įrašymo programa:"
 
-#: ../src/project.c:1040
+#: ../src/project.c:1043
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
 msgstr "Ar norite padaryti Brasero numatytaja Audio diskų įrašymo programa?"
 
-#: ../src/project.c:1047
+#: ../src/project.c:1050
 msgid "<big><b>Data project</b></big>"
 msgstr "<big><b>Duomenų projektas</b></big>"
 
-#: ../src/project.c:1049
+#: ../src/project.c:1052
 msgid "<i>Contents of your data project</i>"
 msgstr "<i>Jūsų duomenų projekto turinys</i>"
 
-#: ../src/project.c:1057
+#: ../src/project.c:1060
 msgid "Brasero is not the default application to burn data discs:"
 msgstr "Brasero nėra numatytoji diskų įrašymo programa:"
 
-#: ../src/project.c:1058
+#: ../src/project.c:1061
 msgid ""
 "Would you like to make brasero the default application to burn data discs?"
 msgstr "Ar norite padaryti Brasero numatytaja diskų įrašymo programa?"
 
-#: ../src/project.c:1169
+#: ../src/project.c:1172
 #, c-format
 msgid "<i>%d track</i>"
 msgid_plural "<i>%d tracks</i>"
@@ -1163,49 +1162,49 @@ msgstr[0] "<i>%d takelis</i>"
 msgstr[1] "<i>%d takeliai</i>"
 msgstr[2] "<i>%d takelių</i>"
 
-#: ../src/project.c:1366
+#: ../src/project.c:1369
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr "Brasero - %s (duomenų diskas)"
 
-#: ../src/project.c:1368
+#: ../src/project.c:1371
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr "Brasero - %s (audio diskas)"
 
-#: ../src/project.c:1394
+#: ../src/project.c:1397
 msgid "Error while loading the project:"
 msgstr "Klaida įkeliant projektą:"
 
-#: ../src/project.c:1396
+#: ../src/project.c:1399
 msgid "Project loading error"
 msgstr "Klaida įkeliant projektą"
 
-#: ../src/project.c:1633
+#: ../src/project.c:1642
 msgid "the project could not be opened."
 msgstr "projekto atverti nepavyko."
 
-#: ../src/project.c:1642
+#: ../src/project.c:1651
 msgid "the file is empty."
 msgstr "rinkmena tuščia"
 
-#: ../src/project.c:1673 ../src/project.c:1681
+#: ../src/project.c:1682 ../src/project.c:1690
 msgid "it doesn't seem to be a valid brasero project."
 msgstr "nepanašu, jog tai būtų tinkamas brasero projektas."
 
-#: ../src/project.c:1700 ../src/brasero-project-manager.c:124
+#: ../src/project.c:1709 ../src/brasero-project-manager.c:124
 msgid "Open a project"
 msgstr "Atverti projektą"
 
-#: ../src/project.c:1798
+#: ../src/project.c:1807
 msgid "Your project has not been saved:"
 msgstr "Jūsų projektas neišsaugotas."
 
-#: ../src/project.c:1800
+#: ../src/project.c:1809
 msgid "Unsaved project"
 msgstr "Neišsaugotas projektas"
 
-#: ../src/project.c:1808
+#: ../src/project.c:1817
 msgid "Unknown error."
 msgstr "Nežinoma klaida."
 
@@ -1282,55 +1281,55 @@ msgstr "Įrašyti atvaizdį"
 msgid "_Open"
 msgstr "_Atverti"
 
-#: ../src/brasero-project-manager.c:280
+#: ../src/brasero-project-manager.c:274
 msgid "<big><b>File Browser</b></big>"
 msgstr "<big><b>Rinkmenų naršyklė</b></big>"
 
-#: ../src/brasero-project-manager.c:281
+#: ../src/brasero-project-manager.c:275
 msgid "<i>Browse the file system</i>"
 msgstr "<i>Naršyti rinkmenų sistemą</i>"
 
-#: ../src/brasero-project-manager.c:282
+#: ../src/brasero-project-manager.c:276
 msgid "File browser"
 msgstr "Rinkmenų naršyklė"
 
-#: ../src/brasero-project-manager.c:283
+#: ../src/brasero-project-manager.c:277
 msgid "Display file browser"
 msgstr "Rodyti rinkmenų naršyklę"
 
-#: ../src/brasero-project-manager.c:308
+#: ../src/brasero-project-manager.c:302
 msgid "<big><b>Search Files</b></big>"
 msgstr "<big><b>Ieškoti rinkmenų</b></big>"
 
-#: ../src/brasero-project-manager.c:309
+#: ../src/brasero-project-manager.c:303
 msgid "<i>Search files using keywords</i>"
 msgstr "<i>Ieškoti rinkmenų naudojant raktažodžius</i>"
 
-#: ../src/brasero-project-manager.c:310
+#: ../src/brasero-project-manager.c:304
 msgid "Search files"
 msgstr "Ieškoti rinkmenų"
 
-#: ../src/brasero-project-manager.c:311
+#: ../src/brasero-project-manager.c:305
 msgid "Display search"
 msgstr "Rodyti paiešką"
 
-#: ../src/brasero-project-manager.c:333
+#: ../src/brasero-project-manager.c:327
 msgid "<big><b>Playlists</b></big>"
 msgstr "<big><b>Grojaraščiai</b></big>"
 
-#: ../src/brasero-project-manager.c:334
+#: ../src/brasero-project-manager.c:328
 msgid "<i>Display playlists and their contents</i>"
 msgstr "<i>Rodyti grojaraščius ir jų turinį</i>"
 
-#: ../src/brasero-project-manager.c:335 ../src/play-list.c:327
+#: ../src/brasero-project-manager.c:329 ../src/play-list.c:327
 msgid "Playlists"
 msgstr "Grojaraščiai"
 
-#: ../src/brasero-project-manager.c:336
+#: ../src/brasero-project-manager.c:330
 msgid "Display playlists"
 msgstr "Rodyti grojaraščius"
 
-#: ../src/brasero-project-manager.c:406
+#: ../src/brasero-project-manager.c:400
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
@@ -1338,69 +1337,69 @@ msgstr[0] "pasirinkta %d rinkmena (%s)"
 msgstr[1] "pasirinktos %d rinkmenos (%s)"
 msgstr[2] "pasirinkta %d rinkmenų (%s)"
 
-#: ../src/brasero-project-manager.c:416
+#: ../src/brasero-project-manager.c:410
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "palaikoma %d rinkmena (%s)"
+msgstr[1] "palaikomos %d rinkmenos (%s)"
+msgstr[2] "palaikomos %d rinkmenų (%s)"
 
-#: ../src/brasero-project-manager.c:422
+#: ../src/brasero-project-manager.c:416
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "gali būti pridėta %d rinkmena (%s)"
+msgstr[1] "gali būti pridėtos %d rinkmenos (%s)"
+msgstr[2] "gali būti pridėta %d rinkmenų (%s)"
 
-#: ../src/brasero-project-manager.c:433
+#: ../src/brasero-project-manager.c:427
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Negali būti pridėta jokia rinkmena (pasrinkta %i rinkmena)"
+msgstr[1] "Negali būti pridėta jokia rinkmena (pasrinktos %i rinkmenos)"
+msgstr[2] "Negali būti pridėta jokia rinkmena (pasrinkta %i rinkmenų)"
 
-#: ../src/brasero-project-manager.c:438
+#: ../src/brasero-project-manager.c:432
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Nepalaikoma jokia rinkmena (pasirinkta %i rinkmena)"
+msgstr[1] "Nepalaikoma jokia rinkmena (pasirinktos %i rinkmenos)"
+msgstr[2] "Nepalaikoma jokia rinkmena (pasirinkta %i rinkmenų)"
 
-#: ../src/brasero-project-manager.c:444 ../src/brasero-project-manager.c:469
+#: ../src/brasero-project-manager.c:438 ../src/brasero-project-manager.c:463
 msgid "No file selected"
 msgstr "Nepasirinkta jokių rinkmenų"
 
-#: ../src/brasero-project-manager.c:508
+#: ../src/brasero-project-manager.c:502
 msgid "Recent projects"
 msgstr "Paskutinieji projektai"
 
-#: ../src/brasero-project-manager.c:509
+#: ../src/brasero-project-manager.c:503
 msgid "Display the projects recently opened"
 msgstr "Rodyti paskutiniuosius atvertus projektus"
 
-#: ../src/brasero-project-manager.c:697
+#: ../src/brasero-project-manager.c:693
 msgid "Brasero - New audio disc project"
 msgstr "Brasero - Naujas audio disko projektas"
 
-#: ../src/brasero-project-manager.c:709
+#: ../src/brasero-project-manager.c:707
 msgid "Brasero - New data disc project"
 msgstr "Brasero - Naujas duomenų disko projektas"
 
-#: ../src/brasero-project-manager.c:719
+#: ../src/brasero-project-manager.c:717
 msgid "Brasero - New image file"
 msgstr "Brasero - Nauja atvaizdžio rinkmena"
 
-#: ../src/brasero-project-manager.c:730
+#: ../src/brasero-project-manager.c:728
 msgid "Brasero - Copy a disc"
 msgstr "Brasero - Kopijuoti diską"
 
 #: ../src/brasero-file-chooser.c:235 ../src/search.c:474
-#: ../src/search-entry.c:759 ../src/search-entry.c:800
-#: ../src/search-entry.c:862
+#: ../src/search-entry.c:761 ../src/search-entry.c:802
+#: ../src/search-entry.c:864
 msgid "All files"
 msgstr "Visos rinkmenos"
 
@@ -1478,21 +1477,21 @@ msgstr "Įkeliama..."
 msgid " Preview "
 msgstr "Peržiūra"
 
-#: ../src/player.c:486
+#: ../src/player.c:501
 msgid "No file"
 msgstr "Nėra rinkmenos"
 
-#: ../src/player.c:664
+#: ../src/player.c:679
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/player.c:884
+#: ../src/player.c:901
 #, c-format
 msgid "<span weight=\"bold\">Name:</span>\t %s"
 msgstr "<span weight=\"bold\">Pavadinimas:</span>\t %s"
 
-#: ../src/player.c:890
+#: ../src/player.c:907
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
@@ -1501,7 +1500,7 @@ msgstr ""
 "<span weight=\"bold\">Dydis:</span>\t<i><span size=\"smaller\"> %i x %i "
 "pikselių</span></i>"
 
-#: ../src/player.c:911
+#: ../src/player.c:928
 #, c-format
 msgid ""
 "<span weight=\"bold\">%s</span>\n"
@@ -1510,7 +1509,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "sukurta <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/player.c:919 ../src/player.c:928
+#: ../src/player.c:936 ../src/player.c:945
 #, c-format
 msgid "<span weight=\"bold\">%s</span>"
 msgstr "<span weight=\"bold\">%s</span>"
@@ -2209,27 +2208,27 @@ msgstr "_muzikoje"
 msgid "_video"
 msgstr "_video"
 
-#: ../src/search-entry.c:467
+#: ../src/search-entry.c:468
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Įveskite jūsų raktažodžius ar meniu pasirinkite „Visos rinkmenos“"
 
-#: ../src/search-entry.c:471
+#: ../src/search-entry.c:472
 msgid "Select if you want to search among image files only"
 msgstr "Pasirinkite jei norite ieškoti tik tarp paveikslėlių"
 
-#: ../src/search-entry.c:475
+#: ../src/search-entry.c:476
 msgid "Select if you want to search among video files only"
 msgstr "Pasirinkite jei norite ieškoti tik tarp video rinkmenų"
 
-#: ../src/search-entry.c:479
+#: ../src/search-entry.c:480
 msgid "Select if you want to search among audio files only"
 msgstr "Pasirinkite jei norite ieškoti tik tarp audio rinkmenų"
 
-#: ../src/search-entry.c:483
+#: ../src/search-entry.c:484
 msgid "Select if you want to search among your text documents only"
 msgstr "Pasirinkite jei norite ieškoti tik tarp tekstinių dokumentų"
 
-#: ../src/search-entry.c:487
+#: ../src/search-entry.c:488
 msgid "Click to start the search"
 msgstr "Spragtelėkite norėdami pradėti paiešką"
 
@@ -2483,24 +2482,24 @@ msgid ""
 "Should brasero generate activate the \"generate checksum\" button by "
 "default. Set to true, brasero will check the option by default."
 msgstr ""
-"Ar Brasero turėtų sukurti numatytąjį aktyvų „sukurti kontrolinę sumą“ mygtuką."
-" Jei reikšmė teigiama, Brasero ši parinktis bus numatytoji."
+"Ar Brasero turėtų sukurti numatytąjį aktyvų „sukurti kontrolinę sumą“ "
+"mygtuką. Jei reikšmė teigiama, Brasero ši parinktis bus numatytoji."
 
 #: ../data/brasero.schemas.in.h:17
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "Chooser/Search/Playlist/EmptyView."
 msgstr ""
-"Audio projektams rodomas polangis. Jis turėtų būti vienas iš šių: "
-"Chooser/Search/Playlist/EmptyView."
+"Audio projektams rodomas polangis. Jis turėtų būti vienas iš šių: Chooser/"
+"Search/Playlist/EmptyView."
 
 #: ../data/brasero.schemas.in.h:18
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "Chooser/Search/EmptyView."
 msgstr ""
-"Duomenų projektams rodomas polangis. Jis turėtų būti vienas iš šių: "
-"Chooser/Search/EmptyView."
+"Duomenų projektams rodomas polangis. Jis turėtų būti vienas iš šių: Chooser/"
+"Search/EmptyView."
 
 #: ../data/brasero.schemas.in.h:19
 msgid "Use libburn to burn CDs"
@@ -2554,41 +2553,41 @@ msgstr "Video peržiūros plotis"
 msgid "width for image preview"
 msgstr "peržiūros lango plotis"
 
-#: ../src/brasero-project-size.c:239 ../src/brasero-project-size.c:240
+#: ../src/brasero-project-size.c:242 ../src/brasero-project-size.c:243
 msgid "Show the available media to be burnt"
 msgstr "Rodyti įdiegtinas laikmenas"
 
-#: ../src/brasero-project-size.c:494
+#: ../src/brasero-project-size.c:497
 #, c-format
 msgid "(mounted drive) <i>%s</i>"
 msgstr "(prijungtas įrenginys) <i>%s</i>"
 
-#: ../src/brasero-project-size.c:514
+#: ../src/brasero-project-size.c:527
 #, c-format
 msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
 msgstr "<b>Perpildytas</b> (%s / %s esantis <i>%s</i>)"
 
-#: ../src/brasero-project-size.c:519
+#: ../src/brasero-project-size.c:532
 #, c-format
 msgid "<b>Oversized</b> (%s / %s)"
 msgstr "<b>Perpildytas</b> (%s / %s)"
 
-#: ../src/brasero-project-size.c:525
+#: ../src/brasero-project-size.c:538
 #, c-format
 msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
 msgstr "<b>Tuščias</b> (%s / %s <i>%s</i>)"
 
-#: ../src/brasero-project-size.c:530
+#: ../src/brasero-project-size.c:543
 #, c-format
 msgid "<b>Empty</b> (%s / %s)"
 msgstr "<b>Tuščias</b> (%s / %s)"
 
-#: ../src/brasero-project-size.c:1003
+#: ../src/brasero-project-size.c:1015
 #, c-format
 msgid "%s (%s) inserted in %s"
 msgstr "%s (%s) įdėtas į %s"
 
-#: ../src/brasero-project-size.c:1008
+#: ../src/brasero-project-size.c:1020
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
