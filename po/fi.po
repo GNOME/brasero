@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-15 07:02+0300\n"
-"PO-Revision-Date: 2006-10-15 12:13+0300\n"
+"POT-Creation-Date: 2006-10-22 08:18+0300\n"
+"PO-Revision-Date: 2006-10-22 08:19+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -32,47 +32,47 @@ msgstr "levyn liitospistettä ei voitu selvittää."
 msgid "the file %s couldn't be read (%s)"
 msgstr "tiedostoa %s ei voi lukea (%s)"
 
-#: ../src/utils.c:263
+#: ../src/utils.c:255
 #, c-format
 msgid "%d:%02i hour"
 msgid_plural "%i:%02i hours"
 msgstr[0] "%d:%02i tunti"
 msgstr[1] "%i:%02i tuntia"
 
-#: ../src/utils.c:290
+#: ../src/utils.c:286
 msgid "KiB"
 msgstr "KiB"
 
-#: ../src/utils.c:290
+#: ../src/utils.c:286
 msgid "MiB"
 msgstr "MiB"
 
-#: ../src/utils.c:290
+#: ../src/utils.c:286
 msgid "GiB"
 msgstr "GiB"
 
-#: ../src/utils.c:781
+#: ../src/utils.c:784
 msgid "This file can't be opened:"
 msgstr "Tätä tiedostoa ei voi avata:"
 
-#: ../src/utils.c:783 ../src/utils.c:809
+#: ../src/utils.c:786 ../src/utils.c:812
 msgid "File error"
 msgstr "Tiedostovirhe"
 
-#: ../src/utils.c:786
+#: ../src/utils.c:789
 msgid "there is no application defined for this file."
 msgstr "tälle tiedostolle ei ole määritelty sovellusta."
 
-#: ../src/utils.c:807
+#: ../src/utils.c:810
 msgid "File can't be opened:"
 msgstr "Tiedostoa ei voi avata:"
 
-#: ../src/utils.c:812
+#: ../src/utils.c:815
 #, c-format
 msgid "application %s can't be started."
 msgstr "sovellusta %s ei voi käynnistää."
 
-#: ../src/utils.c:1059
+#: ../src/utils.c:1062
 msgid ""
 "<span foreground='grey50'><big>To add files to this project you can:\n"
 "</big>copy them (from nautilus for example) and paste them here\n"
@@ -89,8 +89,8 @@ msgid ""
 "select them and press \"Delete\" key\n"
 "</span>"
 msgstr ""
-"<span foreground='grey50'>"
-"<big>Voit lisätä tiedostoja tähän projektiin joko:</big>\n"
+"<span foreground='grey50'><big>Voit lisätä tiedostoja tähän projektiin joko:"
+"</big>\n"
 "- kopiomalla ja liittämällä tiedostot esimerkiksi nautiluksesta\n"
 "- valitsemalla tiedostomt ja napsauttamalla lisäyspainiketta\n"
 "- kaksoisnapsauttamalla tiedostoja tiedostoselaimesta\n"
@@ -99,8 +99,9 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-"<big>Voit poistaa tiedostoja tästä projektista:</big>\n" 
-"- valitsemalla tiedostot, napsauttamalla oikeaa nappia ja valitsemalla \"Poista\"\n"
+"<big>Voit poistaa tiedostoja tästä projektista:</big>\n"
+"- valitsemalla tiedostot, napsauttamalla oikeaa nappia ja valitsemalla "
+"\"Poista\"\n"
 "- valitsemalla tiedostot ja painamalla Poista-painiketta\n"
 "- valitsemalla tiedostot ja painamalla \"Delete\"-näppäintä\n"
 "</span>"
@@ -177,7 +178,7 @@ msgstr "Avaa äänilevyprojekti lisäämällä komentorivillä annetut URIt"
 msgid "Open a data project adding the URIs given on the command line"
 msgstr "Avaa datalevyprojekti lisäämällä komentorivillä annetut URIt"
 
-#: ../src/main.c:82 ../src/brasero-project-manager.c:118
+#: ../src/main.c:82 ../src/brasero-project-manager.c:119
 msgid "Copy a disc"
 msgstr "Kopioi levy"
 
@@ -224,11 +225,11 @@ msgstr "Epäyhteensopivat komentorivivalitsimet"
 msgid "only one option can be given at a time."
 msgstr "vain yksi valitsin voidaan antaa kerralla."
 
-#: ../src/main.c:507
+#: ../src/main.c:509
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:515
+#: ../src/main.c:517
 msgid "CD/DVD burning"
 msgstr "CD- ja DVD-kirjoitus"
 
@@ -490,7 +491,7 @@ msgstr ""
 msgid "Replace the disc"
 msgstr "Korvaa levy"
 
-#: ../src/burn-dialog.c:523 ../src/brasero-disc-option-dialog.c:288
+#: ../src/burn-dialog.c:523 ../src/brasero-disc-option-dialog.c:290
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
 msgstr "Jotkut tiedostonimet eivät ole Windows-yhteensopivia CD:lle:"
 
@@ -498,7 +499,7 @@ msgstr "Jotkut tiedostonimet eivät ole Windows-yhteensopivia CD:lle:"
 msgid "Do you want to continue with Windows compatibility disabled?"
 msgstr "Haluatko jatkaa ilman Windows-yhteensopivuutta?"
 
-#: ../src/burn-dialog.c:528 ../src/brasero-disc-option-dialog.c:293
+#: ../src/burn-dialog.c:528 ../src/brasero-disc-option-dialog.c:295
 msgid "Windows compatibility"
 msgstr "Windows-yhteensopivuus"
 
@@ -601,7 +602,7 @@ msgstr "Laita se uudestaan asemaa \"%s\""
 msgid "The source media needs to be reloaded:"
 msgstr "Lähdemedia täytyy ladata uudestaan:"
 
-#: ../src/burn-dialog.c:1357 ../src/brasero-sum-dialog.c:704
+#: ../src/burn-dialog.c:1357 ../src/brasero-sum-dialog.c:703
 msgid "Checking files integrity"
 msgstr "Tarkistetaan tiedostojen eheys"
 
@@ -621,7 +622,7 @@ msgstr ""
 msgid "<b><big>Performing integrity check</big></b>"
 msgstr "<b><big>Tarkistetaan levyn eheyttä</big></b>"
 
-#: ../src/burn-dialog.c:1451 ../src/brasero-sum-dialog.c:750
+#: ../src/burn-dialog.c:1451 ../src/brasero-sum-dialog.c:749
 msgid "Mounting disc"
 msgstr "Liitetään levyä"
 
@@ -717,203 +718,203 @@ msgstr "Data-CD kirjoitettiin onnistuneesti"
 msgid "Image successfully created"
 msgstr "Levykuva luotiin onnistuneesti"
 
-#: ../src/audio-disc.c:279 ../src/data-disc.c:476 ../src/tray.c:90
+#: ../src/audio-disc.c:301 ../src/data-disc.c:487 ../src/tray.c:90
 msgid "Menu"
 msgstr "Valikko"
 
-#: ../src/audio-disc.c:280 ../src/data-disc.c:477
+#: ../src/audio-disc.c:302 ../src/data-disc.c:488
 msgid "Open"
 msgstr "Avaa"
 
-#: ../src/audio-disc.c:282
+#: ../src/audio-disc.c:304
 msgid "Edit information"
 msgstr "Muokkaa tietoja"
 
-#: ../src/audio-disc.c:284 ../src/data-disc.c:481
+#: ../src/audio-disc.c:306 ../src/data-disc.c:492
 msgid "Remove"
 msgstr "Poista"
 
-#: ../src/audio-disc.c:286 ../src/data-disc.c:483
+#: ../src/audio-disc.c:308 ../src/data-disc.c:494
 msgid "Paste"
 msgstr "Liitä"
 
-#: ../src/audio-disc.c:288
+#: ../src/audio-disc.c:310
 msgid "Add a pause"
 msgstr "Lisää tauko"
 
-#: ../src/audio-disc.c:574
-msgid "Title"
-msgstr "Nimi"
-
-#: ../src/audio-disc.c:600
-msgid "Artist"
-msgstr "Esittäjä"
-
-#: ../src/audio-disc.c:609 ../src/play-list.c:305
-msgid "Length"
-msgstr "Pituus"
-
-#: ../src/audio-disc.c:677
+#: ../src/audio-disc.c:518
 msgid "Add a 2 second pause after the track"
 msgstr "Lisää kahden sekunnin tauko kappaleen jälkeen"
 
-#: ../src/audio-disc.c:892
+#: ../src/audio-disc.c:634
+msgid "Title"
+msgstr "Nimi"
+
+#: ../src/audio-disc.c:660
+msgid "Artist"
+msgstr "Esittäjä"
+
+#: ../src/audio-disc.c:669 ../src/play-list.c:348
+msgid "Length"
+msgstr "Pituus"
+
+#: ../src/audio-disc.c:943
 msgid "<i><b>Pause</b></i>"
 msgstr "<i><b>Tauko</b></i>"
 
-#: ../src/audio-disc.c:1079
+#: ../src/audio-disc.c:1133
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr "\"%s\" ei voi käsitellä gstreamerilla:"
 
-#: ../src/audio-disc.c:1083
+#: ../src/audio-disc.c:1137
 msgid "Unhandled song"
 msgstr "Käsittelemätön kappale"
 
-#: ../src/audio-disc.c:1086
+#: ../src/audio-disc.c:1140
 msgid "Make sure the appropriate codec is installed."
 msgstr "Varmista, että tarvittava kodekki on asennettu."
 
-#: ../src/audio-disc.c:1210
+#: ../src/audio-disc.c:1264
 msgid "Directories can't be added to an audio disc:"
 msgstr "Äänilevylle ei voi lisätä kansioita:"
 
-#: ../src/audio-disc.c:1212
+#: ../src/audio-disc.c:1266
 msgid "Directory search"
 msgstr "Hae kansioita"
 
-#: ../src/audio-disc.c:1215
+#: ../src/audio-disc.c:1269
 msgid "Do you want to search for audio discs inside?"
 msgstr "Haluatko etsiä äänilevyjä kansiosta?"
 
-#: ../src/audio-disc.c:1219
+#: ../src/audio-disc.c:1273
 msgid "Search directory"
 msgstr "Etsi kansiosta"
 
-#: ../src/audio-disc.c:1286
+#: ../src/audio-disc.c:1340
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr "Tiedostoa \"%s\" ei voi kopioida."
 
-#: ../src/audio-disc.c:1290 ../src/data-disc.c:2972
+#: ../src/audio-disc.c:1344 ../src/data-disc.c:3064
 msgid "Unreadable file"
 msgstr "Tiedostoa ei voi lukea"
 
-#: ../src/audio-disc.c:1426 ../src/audio-disc.c:1427
+#: ../src/audio-disc.c:1481 ../src/audio-disc.c:1482
 msgid "loading"
 msgstr "ladataan"
 
-#: ../src/audio-disc.c:2687
+#: ../src/audio-disc.c:2902
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr "Tiedosto \"%s\" oli poistettu tiedostojärjestelmästä:"
 
-#: ../src/audio-disc.c:2691
+#: ../src/audio-disc.c:2906
 msgid "File deletion noticed"
 msgstr "Tiedoston poisto havaittu"
 
-#: ../src/audio-disc.c:2693
+#: ../src/audio-disc.c:2908
 msgid "it will be removed from the project."
 msgstr "tiedosto poistetaan projektista."
 
-#: ../src/data-disc.c:479
+#: ../src/data-disc.c:490
 msgid "Rename"
 msgstr "Nimeä uudestaan"
 
-#: ../src/data-disc.c:869 ../src/search.c:367 ../src/filtered-window.c:216
-msgid "Files"
-msgstr "Tiedostot"
-
-#: ../src/data-disc.c:880
-msgid "Size"
-msgstr "Koko"
-
-#: ../src/data-disc.c:891 ../src/search.c:386
-msgid "Description"
-msgstr "Kuvaus"
-
-#: ../src/data-disc.c:990
+#: ../src/data-disc.c:812
 msgid "Some files were removed from the project. Clik here to see them."
 msgstr ""
 "Joitain tiedostoja poistettiin projektista. Napsauta tästä nähdäksesi ne."
 
-#: ../src/data-disc.c:1003
+#: ../src/data-disc.c:825
 msgid "Create a new empty folder"
 msgstr "Luo uusi tyhjä kansio"
 
-#: ../src/data-disc.c:1171
+#: ../src/data-disc.c:935 ../src/search.c:407 ../src/filtered-window.c:216
+msgid "Files"
+msgstr "Tiedostot"
+
+#: ../src/data-disc.c:946
+msgid "Size"
+msgstr "Koko"
+
+#: ../src/data-disc.c:957 ../src/search.c:426
+msgid "Description"
+msgstr "Kuvaus"
+
+#: ../src/data-disc.c:1200
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr "\"%s\" on jo olemassa kansiossa:"
 
-#: ../src/data-disc.c:1174
+#: ../src/data-disc.c:1203
 msgid "Already existing file"
 msgstr "Tiedosto on jo olemassa"
 
-#: ../src/data-disc.c:1177
+#: ../src/data-disc.c:1206
 msgid "it won't be added."
 msgstr "sitä ei lisätä."
 
-#: ../src/data-disc.c:1245 ../src/data-disc.c:1261 ../src/play-list.c:839
+#: ../src/data-disc.c:1299 ../src/data-disc.c:1315 ../src/play-list.c:879
 msgid "empty"
 msgstr "tyhjä"
 
-#: ../src/data-disc.c:1248
+#: ../src/data-disc.c:1302
 msgid "(empty)"
 msgstr "(tyhjä)"
 
-#: ../src/data-disc.c:1263
+#: ../src/data-disc.c:1317
 msgid "1 item"
 msgstr "1 kohta"
 
-#: ../src/data-disc.c:1278
+#: ../src/data-disc.c:1320
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d kohta"
 msgstr[1] "%d kohtaa"
 
-#: ../src/data-disc.c:1628 ../src/data-disc.c:1811 ../src/data-disc.c:1812
-#: ../src/data-disc.c:7300 ../src/data-disc.c:7301
+#: ../src/data-disc.c:1673 ../src/data-disc.c:1871 ../src/data-disc.c:1872
+#: ../src/data-disc.c:7702 ../src/data-disc.c:7703
 msgid "(loading ...)"
 msgstr "(ladataan...)"
 
-#: ../src/data-disc.c:2957
+#: ../src/data-disc.c:3049
 #, c-format
 msgid "The file \"%s\" is unreadable:"
 msgstr "Tiedosto \"%s\" ei ole luettavissa:"
 
-#: ../src/data-disc.c:2959
+#: ../src/data-disc.c:3051
 #, c-format
 msgid "The directory \"%s\" is unreadable:"
 msgstr "Kansio \"%s\" ei ole luettavissa:"
 
-#: ../src/data-disc.c:3086
+#: ../src/data-disc.c:3178
 msgid "Some files couldn't be restored."
 msgstr "Joitain tiedostoja ei voitu palauttaa."
 
-#: ../src/data-disc.c:3088
+#: ../src/data-disc.c:3180
 msgid "File restoration failure"
 msgstr "Virhe tiedoston palauttamisessa"
 
-#: ../src/data-disc.c:4581
+#: ../src/data-disc.c:4672
 msgid "New folder"
 msgstr "Uusi kansio"
 
-#: ../src/data-disc.c:4591
+#: ../src/data-disc.c:4682
 #, c-format
 msgid "New folder %i"
 msgstr "Uusi kansio %i"
 
-#: ../src/data-disc.c:7670
+#: ../src/data-disc.c:8106
 msgid "Project couldn't be loaded:"
 msgstr "Projektia ei voitu ladata:"
 
-#: ../src/data-disc.c:7672
+#: ../src/data-disc.c:8108
 msgid "Project loading failure"
 msgstr "Projektin latausvirhe"
 
-#: ../src/data-disc.c:7675
+#: ../src/data-disc.c:8111
 msgid "A thread couldn't be created"
 msgstr "Säiettä ei voitu luoda"
 
@@ -970,7 +971,7 @@ msgstr "<big>Kirjoita levykuva</big>"
 msgid "Burn an existing CD/DVD image to disc"
 msgstr "Kirjoita olemassaoleva CD- tai DVD-levykuva levylle"
 
-#: ../src/project-type-chooser.c:301
+#: ../src/project-type-chooser.c:302
 msgid ""
 "<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></"
 "span></u>"
@@ -978,80 +979,80 @@ msgstr ""
 "<u><span size='xx-large' foreground='grey50'><b>Luo uusi projekti:</b></"
 "span></u>"
 
-#: ../src/project-type-chooser.c:306
+#: ../src/project-type-chooser.c:307
 msgid ""
 "<span foreground='grey60'><b><i>Choose from the following options</i></b></"
 "span>"
 msgstr ""
 "<span foreground='grey60'><b><i>Valitse joku seuraavista</i></b></span>"
 
-#: ../src/project.c:143
+#: ../src/project.c:159
 msgid "_Save"
 msgstr "_Tallenna"
 
-#: ../src/project.c:144 ../src/project.c:1988
+#: ../src/project.c:160 ../src/project.c:2074
 msgid "Save current project"
 msgstr "Tallenna nykyinen projekti"
 
-#: ../src/project.c:145
+#: ../src/project.c:161
 msgid "_Save as"
 msgstr "_Tallenna nimellä"
 
-#: ../src/project.c:146
+#: ../src/project.c:162
 msgid "Save current project to a different location"
 msgstr "Tallenna nykyinen projekti toiseen paikkaan"
 
-#: ../src/project.c:163
+#: ../src/project.c:179
 msgid "_Add files"
 msgstr "_Lisää tiedostoja"
 
-#: ../src/project.c:164
+#: ../src/project.c:180
 msgid "Add files to the project"
 msgstr "Lisää tiedostoja projektiin"
 
-#: ../src/project.c:165
+#: ../src/project.c:181
 msgid "_Remove files"
 msgstr "_Poista tiedostot"
 
-#: ../src/project.c:166
+#: ../src/project.c:182
 msgid "Remove the selected files from the project"
 msgstr "Poista valitut tiedostot projektista"
 
-#: ../src/project.c:167
+#: ../src/project.c:183
 msgid "E_mpty Project"
 msgstr "T_yhjennä projekti"
 
-#: ../src/project.c:168
+#: ../src/project.c:184
 msgid "Delete all files from the project"
 msgstr "Poista kaikki tiedostot projektista"
 
-#: ../src/project.c:169
+#: ../src/project.c:185
 msgid "_Burn"
 msgstr "_Kirjoita"
 
-#: ../src/project.c:170
+#: ../src/project.c:186
 msgid "Burn the disc"
 msgstr "Kirjoita levy"
 
-#: ../src/project.c:311
+#: ../src/project.c:366
 msgid "Add selected files"
 msgstr "Lisää valitut tiedostot"
 
-#: ../src/project.c:325
+#: ../src/project.c:383
 msgid "Remove files selected in project"
 msgstr "Poista projektissa valitut tiedostot"
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/project.c:335 ../src/brasero-disc-option-dialog.c:614
+#: ../src/project.c:444 ../src/brasero-disc-option-dialog.c:618
 #: ../src/brasero-image-option-dialog.c:459
 msgid "Burn"
 msgstr "Kirjoita"
 
-#: ../src/project.c:343
+#: ../src/project.c:453
 msgid "Start to burn the contents of the selection"
 msgstr "Aloita valitun sisällön kirjoittaminen"
 
-#: ../src/project.c:444
+#: ../src/project.c:502
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option:"
@@ -1059,19 +1060,19 @@ msgstr ""
 "Krojektin koko on liian suuri levylle, vaikka käytettäsiin myös valitsinta "
 "overburn:"
 
-#: ../src/project.c:446 ../src/project.c:470
+#: ../src/project.c:504 ../src/project.c:528
 msgid "Project size"
 msgstr "Projektin koko"
 
-#: ../src/project.c:449
+#: ../src/project.c:507
 msgid "you must delete some files."
 msgstr "joitain tiedostoja täytyy poistaa."
 
-#: ../src/project.c:468
+#: ../src/project.c:526
 msgid "The size of the project is too large for the disc:"
 msgstr "Projektin koko on liian suuri projektille:"
 
-#: ../src/project.c:473
+#: ../src/project.c:531
 msgid ""
 "Would you like to activate overburn (otherwise you must delete files) ?\n"
 "NOTE: This option might cause failure."
@@ -1080,135 +1081,135 @@ msgstr ""
 "tiedostoja?\n"
 "HUOMAUTUS: Tämä valitsin saattaa aiheuttaa ongelmia."
 
-#: ../src/project.c:639
+#: ../src/project.c:697
 msgid "Please wait:"
 msgstr "Odota, ole hyvä:"
 
-#: ../src/project.c:641
+#: ../src/project.c:699
 msgid "Please wait"
 msgstr "Odota, ole hyvä"
 
-#: ../src/project.c:644
+#: ../src/project.c:702
 msgid "some tasks are not completed yet."
 msgstr "jotkut tehtävät eivät ole vielä valmistuneet."
 
-#: ../src/project.c:646
+#: ../src/project.c:704
 msgid "Waiting for ongoing tasks"
 msgstr "Odotetaan keskeneräisiä tehtäviä"
 
-#: ../src/project.c:692
+#: ../src/project.c:750
 msgid "No song in the project:"
 msgstr "Projekti ei sisällä kappaleita:"
 
-#: ../src/project.c:694 ../src/project.c:717
-#: ../src/brasero-project-manager.c:111
+#: ../src/project.c:752 ../src/project.c:775
+#: ../src/brasero-project-manager.c:112
 msgid "Empty project"
 msgstr "Tyhjö projekti"
 
-#: ../src/project.c:697
+#: ../src/project.c:755
 msgid "please add songs to the project."
 msgstr "lisää kappaleita projektiin."
 
-#: ../src/project.c:715
+#: ../src/project.c:773
 msgid "Project is empty:"
 msgstr "Projekti on tyhjä."
 
-#: ../src/project.c:720
+#: ../src/project.c:778
 msgid "please add files to the project."
 msgstr "lisää tiedostoja projektiin."
 
-#: ../src/project.c:887
+#: ../src/project.c:945
 msgid "Default burning application"
 msgstr "Levyjen kirjoituksen oletusohjelma"
 
-#: ../src/project.c:918
+#: ../src/project.c:976
 msgid "don't show this dialog again"
 msgstr "älä näytä tätä ikkunaa enää"
 
-#: ../src/project.c:968
+#: ../src/project.c:1032
 msgid "<big><b>Audio project</b></big>"
 msgstr "<big><b>Äänilevyprojekti</b></big>"
 
-#: ../src/project.c:970 ../src/project.c:1104
+#: ../src/project.c:1034 ../src/project.c:1170
 msgid "<i>No track</i>"
 msgstr "<i>Ei kappaleita</i>"
 
-#: ../src/project.c:977
+#: ../src/project.c:1042
 msgid "Brasero is not the default application to burn audio CDs:"
 msgstr "Brasero ei ole oletusohjelma ääni-CD-levyjen kirjoittamiseen:"
 
-#: ../src/project.c:978
+#: ../src/project.c:1043
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
 msgstr "Haluatko käyttää braseroa oletuksena ääni-CD-levyjen kirjoittamiseen?"
 
-#: ../src/project.c:985
+#: ../src/project.c:1050
 msgid "<big><b>Data project</b></big>"
 msgstr "<big><bi>Dataprojekti</b></big>"
 
-#: ../src/project.c:987
+#: ../src/project.c:1052
 msgid "<i>Contents of your data project</i>"
 msgstr "<i>Datprojektin sisältö</i>"
 
-#: ../src/project.c:994
+#: ../src/project.c:1060
 msgid "Brasero is not the default application to burn data discs:"
 msgstr "Brasero ei ole oletusohjelma datalevyjen kirjoittamiseen:"
 
-#: ../src/project.c:995
+#: ../src/project.c:1061
 msgid ""
 "Would you like to make brasero the default application to burn data discs?"
 msgstr "Haluatko käyttää braseroa oletuksena datalevyjen kirjoittamiseen?"
 
-#: ../src/project.c:1106
+#: ../src/project.c:1172
 #, c-format
 msgid "<i>%d track</i>"
 msgid_plural "<i>%d tracks</i>"
 msgstr[0] "<i>%d raita</i>"
 msgstr[1] "<i>%d raitaa</i>"
 
-#: ../src/project.c:1300
+#: ../src/project.c:1369
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr "Brasero - %s (datalevy)"
 
-#: ../src/project.c:1302
+#: ../src/project.c:1371
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr "Brasero - %s (äänilevy)"
 
-#: ../src/project.c:1328
+#: ../src/project.c:1397
 msgid "Error while loading the project:"
 msgstr "Virhe ladattaessa projektia"
 
-#: ../src/project.c:1330
+#: ../src/project.c:1399
 msgid "Project loading error"
 msgstr "Projektin latausvirhe"
 
-#: ../src/project.c:1567
+#: ../src/project.c:1642
 msgid "the project could not be opened."
 msgstr "projektia ei voitu avata."
 
-#: ../src/project.c:1576
+#: ../src/project.c:1651
 msgid "the file is empty."
 msgstr "tiedosto on tyhjä."
 
-#: ../src/project.c:1607 ../src/project.c:1615
+#: ../src/project.c:1682 ../src/project.c:1690
 msgid "it doesn't seem to be a valid brasero project."
 msgstr "se ei näytä olevan kelvollinen braseron projekti."
 
-#: ../src/project.c:1634 ../src/brasero-project-manager.c:123
+#: ../src/project.c:1709 ../src/brasero-project-manager.c:124
 msgid "Open a project"
 msgstr "Avaa projekti"
 
-#: ../src/project.c:1732
+#: ../src/project.c:1807
 msgid "Your project has not been saved:"
 msgstr "Projektia ei ole tallennettu:"
 
-#: ../src/project.c:1734
+#: ../src/project.c:1809
 msgid "Unsaved project"
 msgstr "Tallentamaton projekti"
 
-#: ../src/project.c:1742
+#: ../src/project.c:1817
 msgid "Unknown error."
 msgstr "Tuntematon virhe."
 
@@ -1220,7 +1221,7 @@ msgstr "CD- tai DVD-kopioinnin valinnat"
 msgid "<b>Select source drive to copy</b>"
 msgstr "<b>Valitse luettava asema</b>"
 
-#: ../src/disc-copy-dialog.c:153 ../src/brasero-disc-option-dialog.c:583
+#: ../src/disc-copy-dialog.c:153 ../src/brasero-disc-option-dialog.c:587
 #: ../src/brasero-image-option-dialog.c:406
 msgid "<b>Select a drive to write to</b>"
 msgstr "<b>Valitse kirjoittava asema</b>"
@@ -1229,59 +1230,59 @@ msgstr "<b>Valitse kirjoittava asema</b>"
 msgid "Copy"
 msgstr "Kopioi"
 
-#: ../src/brasero-layout.c:101 ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106 ../src/brasero-layout.c:107
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: ../src/brasero-layout.c:103
+#: ../src/brasero-layout.c:108
 msgid "Display video, audio and image preview"
 msgstr "Video-, ääni- ja kuvatiedostojen esikatselu"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:112
 msgid "None"
 msgstr "Ei mitään"
 
-#: ../src/brasero-layout.c:108
+#: ../src/brasero-layout.c:113
 msgid "Show the project only"
 msgstr "Näytä vain projekti"
 
-#: ../src/brasero-project-manager.c:109
+#: ../src/brasero-project-manager.c:110
 msgid "New project"
 msgstr "Uusi projekti"
 
-#: ../src/brasero-project-manager.c:110
+#: ../src/brasero-project-manager.c:111
 msgid "Create a new project"
 msgstr "Luo uusi projekti"
 
-#: ../src/brasero-project-manager.c:112
+#: ../src/brasero-project-manager.c:113
 msgid "Let you choose your new project"
 msgstr "Antaa sinun valita uuden projektin"
 
-#: ../src/brasero-project-manager.c:113
+#: ../src/brasero-project-manager.c:114
 msgid "New audio project"
 msgstr "Uusi äänilevyprojekti"
 
-#: ../src/brasero-project-manager.c:114
+#: ../src/brasero-project-manager.c:115
 msgid "Create a new audio project"
 msgstr "Luo uusi äänilevyprojekti"
 
-#: ../src/brasero-project-manager.c:115
+#: ../src/brasero-project-manager.c:116
 msgid "New data project"
 msgstr "Uusi dataprojekti"
 
-#: ../src/brasero-project-manager.c:116
+#: ../src/brasero-project-manager.c:117
 msgid "Create a new data project"
 msgstr "Luo uusi datalevyprojekti"
 
-#: ../src/brasero-project-manager.c:117
+#: ../src/brasero-project-manager.c:118
 msgid "Copy disc"
 msgstr "Kopioi levy"
 
-#: ../src/brasero-project-manager.c:119 ../src/brasero-project-manager.c:120
+#: ../src/brasero-project-manager.c:120 ../src/brasero-project-manager.c:121
 msgid "Burn an image"
 msgstr "Kirjoita levykuva"
 
-#: ../src/brasero-project-manager.c:122
+#: ../src/brasero-project-manager.c:123
 msgid "_Open"
 msgstr "_Avaa"
 
@@ -1301,116 +1302,116 @@ msgstr "Tiedostoselain"
 msgid "Display file browser"
 msgstr "Näytä tiedostoselain"
 
-#: ../src/brasero-project-manager.c:300
+#: ../src/brasero-project-manager.c:302
 msgid "<big><b>Search Files</b></big>"
 msgstr "<big><b>Etsi tiedostoja</b></big>"
 
-#: ../src/brasero-project-manager.c:301
+#: ../src/brasero-project-manager.c:303
 msgid "<i>Search files using keywords</i>"
 msgstr "<i>Etsi tiedostoja avainsanoilla</i>"
 
-#: ../src/brasero-project-manager.c:302
+#: ../src/brasero-project-manager.c:304
 msgid "Search files"
 msgstr "Etsi tiedostoja"
 
-#: ../src/brasero-project-manager.c:303
+#: ../src/brasero-project-manager.c:305
 msgid "Display search"
 msgstr "Näytä haku"
 
-#: ../src/brasero-project-manager.c:325
+#: ../src/brasero-project-manager.c:327
 msgid "<big><b>Playlists</b></big>"
 msgstr "<big><b>Soittolistat</b></big>"
 
-#: ../src/brasero-project-manager.c:326
+#: ../src/brasero-project-manager.c:328
 msgid "<i>Display playlists and their contents</i>"
 msgstr "<i>Näytä soittolistoja ja niiden sisältöjä</i>"
 
-#: ../src/brasero-project-manager.c:327 ../src/play-list.c:284
+#: ../src/brasero-project-manager.c:329 ../src/play-list.c:327
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/brasero-project-manager.c:328
+#: ../src/brasero-project-manager.c:330
 msgid "Display playlists"
 msgstr "Näytä soittolistoja"
 
-#: ../src/brasero-project-manager.c:398
+#: ../src/brasero-project-manager.c:400
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d tiedosto valittu (%s)"
 msgstr[1] "%d tiedostoa valittu (%s)"
 
-#: ../src/brasero-project-manager.c:408
+#: ../src/brasero-project-manager.c:410
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
 msgstr[0] "%d tiedosto on tuettu (%s)"
 msgstr[1] "%d tiedostoa on tuettu (%s)"
 
-#: ../src/brasero-project-manager.c:414
+#: ../src/brasero-project-manager.c:416
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
 msgstr[0] "%d tiedosto voidaan lisätä (%s)"
 msgstr[1] "%d tiedostoa voidaan lisätä (%s)"
 
-#: ../src/brasero-project-manager.c:425
+#: ../src/brasero-project-manager.c:427
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] "Tiedostoja ei voi lisätä (%i valittu tiedosto)"
 msgstr[1] "Tiedostoja ei voi lisätä (%i valittua tiedostoa)"
 
-#: ../src/brasero-project-manager.c:430
+#: ../src/brasero-project-manager.c:432
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "Yhtään tiedostoa ei ole tuettu (%i valittu tiedosto)"
 msgstr[1] "Yhtään tiedostoa ei ole tuettu (%i valittua tiedostoa)"
 
-#: ../src/brasero-project-manager.c:436 ../src/brasero-project-manager.c:461
+#: ../src/brasero-project-manager.c:438 ../src/brasero-project-manager.c:463
 msgid "No file selected"
 msgstr "Ei valittua tiedostoa"
 
-#: ../src/brasero-project-manager.c:500
+#: ../src/brasero-project-manager.c:502
 msgid "Recent projects"
 msgstr "Viimeisimmät projektit"
 
-#: ../src/brasero-project-manager.c:501
+#: ../src/brasero-project-manager.c:503
 msgid "Display the projects recently opened"
 msgstr "Näytä äskettäin avatut projektit"
 
-#: ../src/brasero-project-manager.c:687
+#: ../src/brasero-project-manager.c:693
 msgid "Brasero - New audio disc project"
 msgstr "Brasero - uusi äänilevyprojekti"
 
-#: ../src/brasero-project-manager.c:699
+#: ../src/brasero-project-manager.c:707
 msgid "Brasero - New data disc project"
 msgstr "Brasero - uusi datalevyprojekti"
 
-#: ../src/brasero-project-manager.c:709
+#: ../src/brasero-project-manager.c:717
 msgid "Brasero - New image file"
 msgstr "Brasero - uusi levykuvatiedosto"
 
-#: ../src/brasero-project-manager.c:720
+#: ../src/brasero-project-manager.c:728
 msgid "Brasero - Copy a disc"
 msgstr "Brasero - kopioi levy"
 
-#: ../src/brasero-file-chooser.c:172 ../src/search.c:433
-#: ../src/search-entry.c:759 ../src/search-entry.c:800
-#: ../src/search-entry.c:862
+#: ../src/brasero-file-chooser.c:235 ../src/search.c:474
+#: ../src/search-entry.c:761 ../src/search-entry.c:802
+#: ../src/search-entry.c:864
 msgid "All files"
 msgstr "Kaikki tiedostot"
 
-#: ../src/brasero-file-chooser.c:177
+#: ../src/brasero-file-chooser.c:240
 msgid "Audio files only"
 msgstr "Vain äänitiedostot"
 
-#: ../src/brasero-file-chooser.c:183
+#: ../src/brasero-file-chooser.c:246
 msgid "Movies only"
 msgstr "Vain elokuvat"
 
-#: ../src/brasero-file-chooser.c:189
+#: ../src/brasero-file-chooser.c:252
 msgid "Image files only"
 msgstr "Vain kuvatiedostot"
 
@@ -1431,43 +1432,43 @@ msgstr "Näytä"
 msgid "%s only"
 msgstr "vain %s"
 
-#: ../src/play-list.c:295
+#: ../src/play-list.c:338
 msgid "Number of songs"
 msgstr "Kappaleita"
 
-#: ../src/play-list.c:315
+#: ../src/play-list.c:358
 msgid "Genre"
 msgstr "Tyyli"
 
-#: ../src/play-list.c:629
+#: ../src/play-list.c:672
 msgid "Select a playlist"
 msgstr "Valitse soittolista"
 
-#: ../src/play-list.c:841
+#: ../src/play-list.c:881
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d kappale"
 msgstr[1] "%d kappaletta"
 
-#: ../src/play-list.c:934
+#: ../src/play-list.c:974
 #, c-format
 msgid "Error parsing playlist \"%s\":"
 msgstr "Virhe tulkittaessa soittolistaa \"%s\":"
 
-#: ../src/play-list.c:939 ../src/play-list.c:961
+#: ../src/play-list.c:979 ../src/play-list.c:1001
 msgid "an unknown error occured."
 msgstr "tapahtui tuntematon virhe."
 
-#: ../src/play-list.c:941
+#: ../src/play-list.c:981
 msgid "Playlist loading error"
 msgstr "Virhe ladattaessa soittolistaa"
 
-#: ../src/play-list.c:968
+#: ../src/play-list.c:1008
 msgid "the playlist is empty."
 msgstr "soittolista on tyhjä."
 
-#: ../src/play-list.c:979
+#: ../src/play-list.c:1019
 msgid "Loading ..."
 msgstr "Ladataan..."
 
@@ -1475,21 +1476,21 @@ msgstr "Ladataan..."
 msgid " Preview "
 msgstr "Esikatselu"
 
-#: ../src/player.c:486
+#: ../src/player.c:501
 msgid "No file"
 msgstr "Ei tiedostoa"
 
-#: ../src/player.c:664
+#: ../src/player.c:679
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/player.c:884
+#: ../src/player.c:901
 #, c-format
 msgid "<span weight=\"bold\">Name:</span>\t %s"
 msgstr "<span weight=\"bold\">Nimi:</span>\t %s"
 
-#: ../src/player.c:890
+#: ../src/player.c:907
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
@@ -1498,7 +1499,7 @@ msgstr ""
 "<span weight=\"bold\">Koko:</span>\t<i><span size=\"smaller\"> %i x %i "
 "pikseliä</span></i>"
 
-#: ../src/player.c:911
+#: ../src/player.c:928
 #, c-format
 msgid ""
 "<span weight=\"bold\">%s</span>\n"
@@ -1507,7 +1508,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "- <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/player.c:919 ../src/player.c:928
+#: ../src/player.c:936 ../src/player.c:945
 #, c-format
 msgid "<span weight=\"bold\">%s</span>"
 msgstr "<span weight=\"bold\">%s</span>"
@@ -1640,32 +1641,32 @@ msgstr "Valitse levykuvatiedoston sijainti"
 msgid "Disc image file properties"
 msgstr "Levykuvatiedoston ominaisuudet"
 
-#: ../src/search.c:294
+#: ../src/search.c:334
 msgid "Previous results"
 msgstr "Edelliset tulokset"
 
-#: ../src/search.c:304 ../src/search.c:734
+#: ../src/search.c:344 ../src/search.c:775
 msgid "<b>No results</b>"
 msgstr "<b>Ei tuloksia</b>"
 
-#: ../src/search.c:309
+#: ../src/search.c:349
 msgid "Next results"
 msgstr "Seuraavat tulokset"
 
-#: ../src/search.c:444
+#: ../src/search.c:485
 msgid "Number of results displayed"
 msgstr "Näytettävien tulosten lukumäärä"
 
-#: ../src/search.c:728
+#: ../src/search.c:769
 #, c-format
 msgid "<b>Results %i - %i (out of %i)</b>"
 msgstr "<b>Tuloket %i - %i (kaikkiaan %i)</b>"
 
-#: ../src/search.c:979
+#: ../src/search.c:1020
 msgid "Error querying beagle:"
 msgstr "Virhe kysyttäessä beaglelta:"
 
-#: ../src/search.c:981
+#: ../src/search.c:1022
 msgid "Search error"
 msgstr "Hakuvirhe"
 
@@ -2064,6 +2065,14 @@ msgstr "Tiedosto /proc/self/fd/0 puuttuu"
 msgid "the image is not stored locally"
 msgstr "Levykuva ei voi tallennettu paikallisesti"
 
+#: ../src/burn-iso9660.c:101
+msgid "it does not appear to be a primary volume descriptor"
+msgstr "ei näytä olevan ensisijainnen taltion kuvaus"
+
+#: ../src/burn-iso9660.c:110
+msgid "it does not appear to be a valid iso9660 image"
+msgstr "ei näytä olevan kelvollinen iso9660-levykuva"
+
 #: ../src/burn-mkisofs-base.c:294 ../src/burn-mkisofs-base.c:585
 msgid "the file is not stored locally"
 msgstr "levykuva ei voi tallennettu paikallisesti"
@@ -2199,27 +2208,27 @@ msgstr "_musiikki"
 msgid "_video"
 msgstr "_video"
 
-#: ../src/search-entry.c:467
+#: ../src/search-entry.c:468
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Syötä avainsanat tai valitse \"Kaikki tiedostot\" valikosta"
 
-#: ../src/search-entry.c:471
+#: ../src/search-entry.c:472
 msgid "Select if you want to search among image files only"
 msgstr "Valitse tämä, jos haluat etsiä vain kuvatiedostoja"
 
-#: ../src/search-entry.c:475
+#: ../src/search-entry.c:476
 msgid "Select if you want to search among video files only"
 msgstr "Valitse tämä, jos haluat etsiä vain videotiedostoja"
 
-#: ../src/search-entry.c:479
+#: ../src/search-entry.c:480
 msgid "Select if you want to search among audio files only"
 msgstr "Valitse tämä, jos haluat etsiä vain äänitiedostoja"
 
-#: ../src/search-entry.c:483
+#: ../src/search-entry.c:484
 msgid "Select if you want to search among your text documents only"
 msgstr "Valitse tämä, jos haluat etsiä vain tekstitiedostoja"
 
-#: ../src/search-entry.c:487
+#: ../src/search-entry.c:488
 msgid "Click to start the search"
 msgstr "Käynnistä haku napsauttamalla"
 
@@ -2545,41 +2554,41 @@ msgstr "Videon esikatselun leveys"
 msgid "width for image preview"
 msgstr "Levykuvan esikatselun leveys"
 
-#: ../src/brasero-project-size.c:237 ../src/brasero-project-size.c:238
+#: ../src/brasero-project-size.c:242 ../src/brasero-project-size.c:243
 msgid "Show the available media to be burnt"
 msgstr "Näytä kirjoitukselle käytettävissä olevat mediat"
 
-#: ../src/brasero-project-size.c:481
+#: ../src/brasero-project-size.c:497
 #, c-format
 msgid "(mounted drive) <i>%s</i>"
 msgstr "(liitetty asema) <i>%s</i>"
 
-#: ../src/brasero-project-size.c:501
+#: ../src/brasero-project-size.c:527
 #, c-format
 msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
 msgstr "<b>Ylisuuri</b> (%s/%s asemassa <i>%s</i>)"
 
-#: ../src/brasero-project-size.c:506
+#: ../src/brasero-project-size.c:532
 #, c-format
 msgid "<b>Oversized</b> (%s / %s)"
 msgstr "<b>Ylisuuri</b> (%s/%s)"
 
-#: ../src/brasero-project-size.c:512
+#: ../src/brasero-project-size.c:538
 #, c-format
 msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
 msgstr "<b>Tyhjä</b> (%s/%s asemassa <i>%s</i>)"
 
-#: ../src/brasero-project-size.c:517
+#: ../src/brasero-project-size.c:543
 #, c-format
 msgid "<b>Empty</b> (%s / %s)"
 msgstr "<b>Tyhjä</b> (%s/%s)"
 
-#: ../src/brasero-project-size.c:959
+#: ../src/brasero-project-size.c:1015
 #, c-format
 msgid "%s (%s) inserted in %s"
 msgstr "%s (%s) laitettu asemaan %s"
 
-#: ../src/brasero-project-size.c:964
+#: ../src/brasero-project-size.c:1020
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2597,11 +2606,11 @@ msgid "Check"
 msgstr "Tarkista"
 
 #: ../src/brasero-sum-dialog.c:263 ../src/brasero-sum-dialog.c:313
-#: ../src/brasero-sum-dialog.c:607
+#: ../src/brasero-sum-dialog.c:606
 msgid "File integrity check error"
 msgstr "Tiedoston eheystarkistuksen virhe"
 
-#: ../src/brasero-sum-dialog.c:264 ../src/brasero-sum-dialog.c:608
+#: ../src/brasero-sum-dialog.c:264 ../src/brasero-sum-dialog.c:607
 msgid "The file integrity check cannot be performed:"
 msgstr "Tiedoston eheystarkistusta ei voida suorittaa:"
 
@@ -2649,7 +2658,7 @@ msgstr "URI ei ole kelvollinen"
 msgid "Downloading md5 file"
 msgstr "Haetaan md5-tiedostoa"
 
-#: ../src/brasero-sum-dialog.c:609
+#: ../src/brasero-sum-dialog.c:608
 msgid "no md5 file was given."
 msgstr "md5-tiedostoa ei annettu."
 
@@ -2794,7 +2803,7 @@ msgid "Allow to add more data to the disc later"
 msgstr "Salli lisätiedon lisääminen levyyn myöhemmin"
 
 #: ../src/brasero-disc-option-dialog.c:221
-#: ../src/brasero-disc-option-dialog.c:397
+#: ../src/brasero-disc-option-dialog.c:399
 msgid "<b>Multisession</b>"
 msgstr "<b>Usea istunto</b>"
 
@@ -2816,17 +2825,17 @@ msgstr "<b>Nimi</b>"
 msgid "Audio disc (%s)"
 msgstr "Äänilevy (%s)"
 
-#: ../src/brasero-disc-option-dialog.c:291
+#: ../src/brasero-disc-option-dialog.c:293
 msgid "their names will be changed and truncated to 64 characters."
 msgstr "näiden nimiä muutetaan ja ne rajataan 64 merkkiin."
 
 #. general options
-#: ../src/brasero-disc-option-dialog.c:321
+#: ../src/brasero-disc-option-dialog.c:323
 msgid "Increase compatibility with Windows systems"
 msgstr "Kasvata yhteensopivuutta Windows-järjestelmien kanssa"
 
-#: ../src/brasero-disc-option-dialog.c:324
-#: ../src/brasero-disc-option-dialog.c:325
+#: ../src/brasero-disc-option-dialog.c:326
+#: ../src/brasero-disc-option-dialog.c:327
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
@@ -2834,41 +2843,41 @@ msgstr ""
 "Kasvata Windows-yhteensopivuutta sallimalla pitkien tiedostonimien näytön "
 "(enintään 64 merkkiä)"
 
-#: ../src/brasero-disc-option-dialog.c:338
+#: ../src/brasero-disc-option-dialog.c:340
 msgid "Check data integrity"
 msgstr "Tarkista tiedon eheys"
 
-#: ../src/brasero-disc-option-dialog.c:341
-#: ../src/brasero-disc-option-dialog.c:342
+#: ../src/brasero-disc-option-dialog.c:343
+#: ../src/brasero-disc-option-dialog.c:344
 msgid "Allow to check the integrity of files on the disc"
 msgstr "Salli levylle kirjoitettujen tietojen eheystarkistus"
 
-#: ../src/brasero-disc-option-dialog.c:354
+#: ../src/brasero-disc-option-dialog.c:356
 msgid "Create a video DVD"
 msgstr "Luo video-DVD"
 
-#: ../src/brasero-disc-option-dialog.c:357
-#: ../src/brasero-disc-option-dialog.c:358
+#: ../src/brasero-disc-option-dialog.c:359
+#: ../src/brasero-disc-option-dialog.c:360
 msgid "Create a video DVD that can be played by all DVD readers"
 msgstr "Luo video-DVD, joka voidaan näyttää kaikissa DVD-soittimissa"
 
-#: ../src/brasero-disc-option-dialog.c:361
+#: ../src/brasero-disc-option-dialog.c:363
 msgid "<b>Disc options</b>"
 msgstr "<b>Levyn valitsimet</b>"
 
 #. multisession options
-#: ../src/brasero-disc-option-dialog.c:390
+#: ../src/brasero-disc-option-dialog.c:392
 msgid "Leave the disc open to add a data session later"
 msgstr ""
 "Jätä levy viimeistelemättä, jotta data-istunto voidaan lisätä myöhemmin"
 
-#: ../src/brasero-disc-option-dialog.c:394
-#: ../src/brasero-disc-option-dialog.c:395
+#: ../src/brasero-disc-option-dialog.c:396
+#: ../src/brasero-disc-option-dialog.c:397
 msgid "Allow create what is called an enhanced CD or CD+"
 msgstr "Salli \"Enhanced CD tai CD+\"-levyjen luonti"
 
-#: ../src/brasero-disc-option-dialog.c:597
-#: ../src/brasero-disc-option-dialog.c:598
+#: ../src/brasero-disc-option-dialog.c:601
+#: ../src/brasero-disc-option-dialog.c:602
 #: ../src/brasero-image-option-dialog.c:420
 #: ../src/brasero-image-option-dialog.c:421
 msgid "Choose which drive holds the disc to write to"
