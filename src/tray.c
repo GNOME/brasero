@@ -224,8 +224,10 @@ brasero_tray_icon_init (BraseroTrayIcon *obj)
 			  NULL);
 
 	pixbuf = gdk_pixbuf_new_from_file (BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-00.png", NULL);
-	if (pixbuf)
+	if (pixbuf) {
 		gtk_status_icon_set_from_pixbuf (GTK_STATUS_ICON (obj), pixbuf);
+		g_object_unref (pixbuf);
+	}
 	else
 		g_warning ("Faulty installation. \"%s\" can't be found.\n",
 			   BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-00.png");
@@ -333,7 +335,8 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 	else
 		percent -= remains;
 
-	if (tray->priv->rounded_percent == percent)
+	if (tray->priv->rounded_percent == percent
+	||  percent < 100)
 		return;
 
 	tray->priv->rounded_percent = percent;

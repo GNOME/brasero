@@ -199,6 +199,7 @@ brasero_md5_sum (BraseroMD5Ctx *ctx,
 			return BRASERO_BURN_RETRY;
 
 		name = g_path_get_basename (path);
+
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,

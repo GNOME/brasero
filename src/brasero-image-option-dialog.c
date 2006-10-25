@@ -411,7 +411,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			    options,
 			    FALSE,
 			    FALSE,
-			    0);
+			    6);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
 							 BRASERO_MEDIA_WRITABLE);

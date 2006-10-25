@@ -143,11 +143,11 @@ brasero_burn_get_type ()
 static void
 brasero_burn_class_init (BraseroBurnClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = g_type_class_peek_parent(klass);
+	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_burn_finalize;
-	
+
 	brasero_burn_signals [ASK_DISABLE_JOLIET_SIGNAL] =
 		g_signal_new ("disable_joliet",
 			      G_TYPE_FROM_CLASS (klass),
@@ -212,6 +212,30 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      G_TYPE_NONE, 
 			      1,
 			      G_TYPE_INT);
+}
+
+static BraseroBurnResult
+brasero_burn_emit_signal (BraseroBurn *burn, guint signal)
+{
+	GValue instance_and_params;
+	GValue return_value;
+
+	instance_and_params.g_type = 0;
+	g_value_init (&instance_and_params, G_TYPE_FROM_INSTANCE (burn));
+	g_value_set_instance (&instance_and_params, burn);
+
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (&instance_and_params,
+			brasero_burn_signals [signal],
+			0,
+			&return_value);
+
+	g_value_unset (&instance_and_params);
+
+	return g_value_get_int (&return_value);
 }
 
 static void
@@ -492,8 +516,10 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 	gint64 media_size;
 	gboolean is_reload;
 	gboolean is_mounted;
-	BraseroBurnResult result;
 	NautilusBurnMediaType type;
+
+	GValue instance_and_params [4];
+	GValue return_value;
 
 	media_size = NCB_MEDIA_GET_CAPACITY (drive);
 	type = nautilus_burn_drive_get_media_type (drive);
@@ -528,16 +554,35 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 
-	result = BRASERO_BURN_CANCEL;
-	g_signal_emit (burn,
-		       brasero_burn_signals [INSERT_MEDIA_REQUEST_SIGNAL],
-		       0,
-		       drive,
-		       error_type,
-		       required_media,
-		       &result);
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (burn));
+	g_value_set_instance (instance_and_params, burn);
+	
+	instance_and_params [1].g_type = 0;
+	g_value_init (instance_and_params + 1, G_TYPE_FROM_INSTANCE (drive));
+	g_value_set_instance (instance_and_params + 1, drive);
+	
+	instance_and_params [2].g_type = 0;
+	g_value_init (instance_and_params + 2, G_TYPE_INT);
+	g_value_set_int (instance_and_params + 2, error_type);
+	
+	instance_and_params [3].g_type = 0;
+	g_value_init (instance_and_params + 3, G_TYPE_INT);
+	g_value_set_int (instance_and_params + 3, required_media);
+	
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
 
-	return result;
+	g_signal_emitv (instance_and_params,
+			brasero_burn_signals [INSERT_MEDIA_REQUEST_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (instance_and_params + 1);
+
+	return g_value_get_int (&return_value);
 }
 
 static BraseroBurnResult
@@ -1058,11 +1103,7 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 	&&  (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 	&&  is_rewritable
 	&&  !is_blank) {
-		g_signal_emit (burn,
-			       brasero_burn_signals [WARN_DATA_LOSS_SIGNAL],
-			       0,
-			       &result);
-
+		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
 		if (result != BRASERO_BURN_OK)
 			goto end;
 	
@@ -1369,11 +1410,7 @@ brasero_burn_ask_for_joliet (BraseroBurn *burn)
 {
 	BraseroBurnResult result;
 
-	g_signal_emit (burn,
-		       brasero_burn_signals [ASK_DISABLE_JOLIET_SIGNAL],
-		       0,
-		       &result);
-
+	result = brasero_burn_emit_signal (burn, ASK_DISABLE_JOLIET_SIGNAL);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -1945,11 +1982,7 @@ again:
 		&& (type == BRASERO_TRACK_SOURCE_AUDIO
 		||  type == BRASERO_TRACK_SOURCE_INF
 		||  type == BRASERO_TRACK_SOURCE_SONG)) {
-			g_signal_emit (burn,
-				       brasero_burn_signals [WARN_REWRITABLE_SIGNAL],
-				       0,
-				       &result);
-
+			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL);
 			if (result == BRASERO_BURN_NEED_RELOAD) {
 				result = brasero_burn_reload_dest_media (burn,
 									 BRASERO_BURN_ERROR_NONE,
@@ -2063,6 +2096,7 @@ brasero_burn_record_real (BraseroBurn *burn,
 		else
 			g_object_set_data (G_OBJECT (drive), IS_LOCKED, GINT_TO_POINTER (0));
 
+		/* FIXME: we should put a message here saying that all went well */
 		result = brasero_burn_reload_dest_media (burn,
 							 BRASERO_BURN_ERROR_NONE,
 							 flags,

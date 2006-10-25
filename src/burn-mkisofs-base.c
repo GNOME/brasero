@@ -588,6 +588,9 @@ brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 
 	/* make up the graft point */
 	list = g_hash_table_lookup (data->grafts, graft->uri);
+	if (list)
+		g_hash_table_steal (data->grafts, graft->uri);
+
 	list = g_slist_prepend (list, graft);
 	g_hash_table_insert (data->grafts, graft->uri, list);
 
@@ -659,7 +662,10 @@ brasero_mkisofs_base_init_data (BraseroMkisofsBase *base,
 		return BRASERO_BURN_ERR;
 	}
 
-	data->grafts = g_hash_table_new (g_str_hash, g_str_equal);
+	data->grafts = g_hash_table_new_full (g_str_hash,
+					      g_str_equal,
+					      NULL,
+					      (GDestroyNotify) g_slist_free);
 	return BRASERO_BURN_OK;
 }
 

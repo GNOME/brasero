@@ -175,7 +175,8 @@ brasero_process_finalize (GObject *object)
 	}
 
 	if (cobj->priv->argv) {
-		g_ptr_array_free (cobj->priv->argv, TRUE);
+		g_strfreev ((gchar**) cobj->priv->argv->pdata);
+		g_ptr_array_free (cobj->priv->argv, FALSE);
 		cobj->priv->argv = NULL;
 	}
 
@@ -201,8 +202,10 @@ brasero_process_pre_init (BraseroJob *job,
 
 	BRASERO_JOB_LOG (process, "getting varg");
 
-	if (process->priv->argv)
-		g_ptr_array_free (process->priv->argv, TRUE);
+	if (process->priv->argv) {
+		g_strfreev ((gchar**) process->priv->argv->pdata);
+		g_ptr_array_free (process->priv->argv, FALSE);
+	}
 
 	process->priv->argv = g_ptr_array_new ();
 	result = klass->set_argv (process,
@@ -218,7 +221,8 @@ brasero_process_pre_init (BraseroJob *job,
 				     process->priv->argv->pdata [i]);
 
 	if (result != BRASERO_BURN_OK) {
-		g_ptr_array_free (process->priv->argv, TRUE);
+		g_strfreev ((gchar**) process->priv->argv->pdata);
+		g_ptr_array_free (process->priv->argv, FALSE);
 		process->priv->argv = NULL;
 		return result;
 	}
@@ -381,8 +385,8 @@ brasero_process_read_stderr (GIOChannel *source,
 	process->priv->err_buffer = NULL;
 	
 	if (process->priv->pid
-	&&  !process->priv->io_err
-	&&  !process->priv->io_out)
+	&& !process->priv->io_err
+	&& !process->priv->io_out)
 		brasero_job_finished (BRASERO_JOB (process));
 
 	return FALSE;
@@ -418,8 +422,8 @@ brasero_process_read_stdout (GIOChannel *source,
 	process->priv->out_buffer = NULL;
 
 	if (process->priv->pid
-	&&  !process->priv->io_err
-	&&  !process->priv->io_out)
+	&& !process->priv->io_err
+	&& !process->priv->io_out)
 		brasero_job_finished (BRASERO_JOB (process));
 
 	return FALSE;
@@ -597,7 +601,8 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (process->priv->argv) {
-		g_ptr_array_free (process->priv->argv, TRUE);
+		g_strfreev ((gchar**) process->priv->argv->pdata);
+		g_ptr_array_free (process->priv->argv, FALSE);
 		process->priv->argv = NULL;
 	}
 

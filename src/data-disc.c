@@ -1276,7 +1276,13 @@ brasero_data_disc_remove_bogus_child (BraseroDataDisc *disc,
 				    -1);
 
 		if (status == ROW_BOGUS) {
+			g_signal_handlers_block_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree)),
+							 brasero_data_disc_tree_selection_changed,
+							 disc);
 			gtk_tree_store_remove (GTK_TREE_STORE (model), &child);
+			g_signal_handlers_unblock_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree)),
+							   brasero_data_disc_tree_selection_changed,
+							   disc);
 			break;
 		}
 	} while (gtk_tree_model_iter_next (model, &child));
@@ -1533,7 +1539,13 @@ brasero_data_disc_tree_remove_path (BraseroDataDisc *disc,
 		return;
 	}
 
+	g_signal_handlers_block_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree)),
+					 brasero_data_disc_tree_selection_changed,
+					 disc);
 	gtk_tree_store_remove (GTK_TREE_STORE (model), &iter);
+	g_signal_handlers_unblock_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree)),
+					   brasero_data_disc_tree_selection_changed,
+					   disc);
 
 	brasero_data_disc_tree_update_parent (disc, treepath);
 	gtk_tree_path_free (treepath);
@@ -6728,8 +6740,15 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
  				gboolean is_valid;
  
  				is_valid = gtk_tree_model_iter_parent (model, &parent, &row);
+
+				g_signal_handlers_block_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
+								 brasero_data_disc_tree_selection_changed,
+								 disc);
   				gtk_tree_store_remove (GTK_TREE_STORE (model), &row);
- 	
+				g_signal_handlers_unblock_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
+								   brasero_data_disc_tree_selection_changed,
+								   disc);
+
  				if (is_valid)
  					brasero_data_disc_tree_update_directory_real (data, &parent);
  
@@ -6759,7 +6778,14 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	if (data->priv->is_loading)
 		return;
 
+	g_signal_handlers_block_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
+					 brasero_data_disc_tree_selection_changed,
+					 disc);
 	gtk_tree_store_clear (GTK_TREE_STORE (data->priv->model));
+	g_signal_handlers_unblock_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
+					   brasero_data_disc_tree_selection_changed,
+					   disc);
+
 	brasero_data_disc_reset_real (data);
 
 	brasero_disc_size_changed (disc, 0);
@@ -6773,7 +6799,14 @@ brasero_data_disc_reset (BraseroDisc *disc)
 
 	data = BRASERO_DATA_DISC (disc);
 
+	g_signal_handlers_block_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
+					 brasero_data_disc_tree_selection_changed,
+					 disc);
 	gtk_tree_store_clear (GTK_TREE_STORE (data->priv->model));
+	g_signal_handlers_unblock_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
+					   brasero_data_disc_tree_selection_changed,
+					   disc);
+
 	brasero_data_disc_reset_real (data);
 
 	brasero_disc_size_changed (disc, 0);
@@ -11741,7 +11774,9 @@ brasero_data_disc_cancel_monitoring (BraseroDataDisc *disc,
 		}
 
 		brasero_data_disc_remove_top_reference (disc, file);
-		brasero_data_disc_cancel_monitoring_real (disc, file);
+
+		if (g_hash_table_lookup (disc->priv->dirs, file->uri))
+			brasero_data_disc_cancel_monitoring_real (disc, file);
 	}
 
 	return TRUE;

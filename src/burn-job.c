@@ -43,11 +43,6 @@ static void brasero_job_class_init (BraseroJobClass *klass);
 static void brasero_job_init (BraseroJob *sp);
 static void brasero_job_finalize (GObject *object);
 
-static BraseroBurnResult
-brasero_job_stop (BraseroJob *job,
-		  BraseroBurnResult retval,
-		  GError *error);
-
 struct BraseroJobPrivate {
 	BraseroBurnSession *session;
 	BraseroTask *task;
@@ -99,17 +94,16 @@ brasero_job_get_type ()
 static void
 brasero_job_class_init (BraseroJobClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = g_type_class_peek_parent(klass);
+	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_job_finalize;
-	
+
 	brasero_job_signals [ERROR_SIGNAL] =
 	    g_signal_new ("error",
 			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  G_STRUCT_OFFSET (BraseroJobClass,
-					   error),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  G_STRUCT_OFFSET (BraseroJobClass, error),
 			  NULL, NULL,
 			  brasero_marshal_INT__INT,
 			  G_TYPE_INT, 1, G_TYPE_INT);
@@ -500,7 +494,6 @@ brasero_job_stop (BraseroJob *job,
 	/* tell all the jobs we've stopped */
 	result = brasero_job_send_stop_signal (leader, retval, &error);
 	brasero_task_stop (task, retval, error);
-
 	BRASERO_JOB_LOG (job, "got out of loop");
 	return result;
 }
@@ -526,17 +519,31 @@ brasero_job_finished (BraseroJob *job)
 BraseroBurnResult
 brasero_job_error (BraseroJob *job, GError *error)
 {
-	BraseroBurnResult result = BRASERO_BURN_ERR;
+	GValue instance_and_params [2];
+	GValue return_value;
+
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (job));
+	g_value_set_instance (instance_and_params, job);
+
+	instance_and_params [1].g_type = 0;
+	g_value_init (instance_and_params + 1, G_TYPE_INT);
+	g_value_set_int (instance_and_params + 1, error->code);
+
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_ERR);
 
 	/* There was an error: signal it. That's mainly done
 	 * for BraseroBurnCaps to override the result value */
-	g_signal_emit (job,
-		       brasero_job_signals [ERROR_SIGNAL],
-		       0,
-		       error->code,
-		       &result);
+	g_signal_emitv (instance_and_params,
+			brasero_job_signals [ERROR_SIGNAL],
+			0,
+			&return_value);
 
-	return brasero_job_stop (job, result, error);
+	g_value_unset (instance_and_params);
+
+	return brasero_job_stop (job, g_value_get_int (&return_value), error);
 }
 
 /*******************************************************************************/

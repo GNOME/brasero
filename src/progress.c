@@ -285,7 +285,10 @@ brasero_burn_progress_finalize (GObject *object)
 	BraseroBurnProgress *cobj;
 
 	cobj = BRASERO_BURN_PROGRESS (object);
-	brasero_burn_progress_stop_blinking (cobj);
+	if (cobj->priv->pulse_id) {
+		g_source_remove (cobj->priv->pulse_id);
+		cobj->priv->pulse_id = 0;
+	}
 
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);

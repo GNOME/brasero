@@ -64,11 +64,11 @@ typedef struct {
 	BraseroBurnResult		(*warn_data_loss)		(BraseroBurn *obj);
 	BraseroBurnResult		(*warn_rewritable)		(BraseroBurn *obj);
 
-	BraseroBurnResult		(*progress_changed)		(BraseroBurn *obj,
+	void				(*progress_changed)		(BraseroBurn *obj,
 									 gdouble overall_progress,
 									 gdouble action_progress,
 									 glong time_remaining);
-	BraseroBurnResult		(*action_changed)		(BraseroBurn *obj,
+	void				(*action_changed)		(BraseroBurn *obj,
 									 BraseroBurnAction action);
 } BraseroBurnClass;
 

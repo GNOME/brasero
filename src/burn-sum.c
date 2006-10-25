@@ -598,6 +598,7 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	BRASERO_JOB_TASK_START_PROGRESS (self, FALSE);
 
 	self->priv->ctx = brasero_md5_new ();
+
 	result = brasero_md5_sum (self->priv->ctx,
 				  device,
 				  &self->priv->md5,
@@ -663,8 +664,8 @@ brasero_burn_sum_destroy (gpointer data)
 static gpointer
 brasero_burn_sum_thread (gpointer data)
 {
-	GError *error = NULL;
 	BraseroBurnSum *sum;
+	GError *error = NULL;
 	BraseroBurnResult result;
 	BraseroTrackSourceType type;
 	BraseroBurnSumThreadCtx *ctx;
@@ -823,13 +824,11 @@ brasero_burn_sum_set_output (BraseroImager *imager,
 		g_free (sum->priv->sums_path);
 		sum->priv->sums_path = NULL;
 	}
-
 	sum->priv->sums_ready = 0;
 
 	if (output)
 		sum->priv->sums_path = g_strdup (output);
 
-	sum->priv->sums_ready = 0;
 	sum->priv->clean = (clean == TRUE);
 	sum->priv->overwrite = (overwrite == TRUE);
 
@@ -845,6 +844,15 @@ brasero_burn_sum_set_output_type (BraseroImager *imager,
 	BraseroBurnSum *sum;
 
 	sum = BRASERO_BURN_SUM (imager);
+
+	if (sum->priv->sums_path) {
+		if (sum->priv->clean)
+			g_remove (sum->priv->sums_path);
+
+		g_free (sum->priv->sums_path);
+		sum->priv->sums_path = NULL;
+	}
+	sum->priv->sums_ready = 0;
 
 	if (type == BRASERO_TRACK_SOURCE_DATA) {
 		if (sum->priv->source

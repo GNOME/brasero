@@ -273,6 +273,12 @@ brasero_task_report_progress_cb (gpointer data)
 static void
 brasero_task_reset (BraseroTask *task)
 {
+	if (task->priv->loop)
+		g_main_loop_unref (task->priv->loop);
+
+	if (task->priv->timer)
+		g_timer_destroy (task->priv->timer);
+
 	task->priv->loop = NULL;
 	task->priv->progress_report_id = 0;
 	task->priv->progress = -1.0;
@@ -321,6 +327,8 @@ brasero_task_start (BraseroTask *task,
 							task);
 
 	g_main_loop_run (task->priv->loop);
+	g_main_loop_unref (task->priv->loop);
+	task->priv->loop = NULL;
 
 	if (task->priv->error) {
 		g_propagate_error (error, task->priv->error);

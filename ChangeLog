@@ -1,3 +1,52 @@
+2006-10-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_set_title_widget),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_init),
+	(brasero_disc_option_dialog_finalize):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_init):
+	* src/brasero-ncb.c: (free_command_data), (try_hidden_locations),
+	(create_command):
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_burn_disc):
+	* src/burn-dialog.c: (brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_job_get_track),
+	(brasero_burn_dialog_check_image_integrity),
+	(brasero_burn_dialog_integrity_start):
+	* src/burn-job.c: (brasero_job_class_init), (brasero_job_stop),
+	(brasero_job_error):
+	* src/burn-md5.c: (brasero_md5_sum):
+	* src/burn-mkisofs-base.c: (brasero_mkisofs_base_add_graft),
+	(brasero_mkisofs_base_init_data):
+	* src/burn-process.c: (brasero_process_finalize),
+	(brasero_process_pre_init), (brasero_process_read_stderr),
+	(brasero_process_read_stdout), (brasero_process_stop):
+	* src/burn-sum.c: (brasero_burn_sum_disc),
+	(brasero_burn_sum_thread), (brasero_burn_sum_set_output),
+	(brasero_burn_sum_set_output_type):
+	* src/burn-task.c: (brasero_task_reset), (brasero_task_start):
+	* src/burn.c: (brasero_burn_class_init),
+	(brasero_burn_emit_signal), (brasero_burn_ask_for_media),
+	(brasero_burn_wait_for_dest_media), (brasero_burn_ask_for_joliet),
+	(brasero_burn_lock_drives), (brasero_burn_record_real):
+	* src/burn.h:
+	* src/data-disc.c: (brasero_data_disc_remove_bogus_child),
+	(brasero_data_disc_tree_remove_path),
+	(brasero_data_disc_delete_selected), (brasero_data_disc_clear),
+	(brasero_data_disc_reset), (brasero_data_disc_cancel_monitoring):
+	* src/progress.c: (brasero_burn_progress_finalize):
+	* src/tray.c: (brasero_tray_icon_init),
+	(brasero_tray_icon_set_progress):
+	* src/utils.c: (brasero_utils_pack_properties_list):
+
+	Some minor GUI improvements to burn dialogs
+	Fixes for inotify backend in data project
+	Valgrinded brasero and fixed a lot of  memleaks
+	Fix for media checking (GError set twice and possible crasher)
+	Fixed "umount" typo 
+
 2006-10-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* data/Makefile.am:

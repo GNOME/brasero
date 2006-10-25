@@ -650,6 +650,7 @@ brasero_project_manager_burn_disc (BraseroProjectManager *manager)
 				      output,
 				      source,
 				      flags);
+	brasero_track_source_free (source);
 }
 
 static void

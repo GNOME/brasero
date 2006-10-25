@@ -59,7 +59,9 @@ static void
 free_command_data (CommandData *unmount_data)
 {
 	g_ptr_array_foreach (unmount_data->argv, (GFunc)g_free, NULL);
-	g_ptr_array_free (unmount_data->argv, TRUE);
+	g_ptr_array_add (unmount_data->argv, NULL);
+	g_strfreev ((gchar**) unmount_data->argv->pdata);
+	g_ptr_array_free (unmount_data->argv, FALSE);
 
 	g_free (unmount_data);
 }
@@ -109,6 +111,33 @@ command_timeout (gpointer data)
 }
 
 /* Returns the full command */
+static const gchar *locations [] = {
+	"/bin",
+	"/sbin",
+	"/usr/sbin",
+	NULL
+};
+
+static gchar *
+try_hidden_locations (const gchar *name) {
+	int i;
+
+	for (i = 0; locations [i]; i++) {
+		gchar *path;
+
+		path = g_build_path (G_DIR_SEPARATOR_S,
+				     locations [i],
+				     path,
+				     NULL);
+		if (g_file_test (path, G_FILE_TEST_EXISTS))
+			return path;
+
+		g_free (path);
+	}
+
+	return NULL;
+}
+
 static gboolean
 create_command (const gchar *device,
 		GPtrArray *argv,
@@ -137,10 +166,15 @@ create_command (const gchar *device,
 	}
 	else if (!mount) {
 		/* try to use traditional ways */
-		str = g_find_program_in_path ("unmount");
+		str = g_find_program_in_path ("umount");
 
-		if (str == NULL) {
-			g_ptr_array_free (argv, TRUE);
+		if (!str)
+			str = try_hidden_locations ("umount");
+
+		if (!str) {
+			g_ptr_array_add (argv, NULL);
+			g_strfreev ((gchar**) argv->pdata);
+			g_ptr_array_free (argv, FALSE);
 			return FALSE;
 		}
 
@@ -152,8 +186,13 @@ create_command (const gchar *device,
 		/* try to use traditional ways */
 		str = g_find_program_in_path ("mount");
 
-		if (str == NULL) {
-			g_ptr_array_free (argv, TRUE);
+		if (!str)
+			str = try_hidden_locations ("mount");
+
+		if (!str) {
+			g_ptr_array_add (argv, NULL);
+			g_strfreev ((gchar**) argv->pdata);
+			g_ptr_array_free (argv, FALSE);
 			return FALSE;
 		}
 

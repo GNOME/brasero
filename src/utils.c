@@ -429,18 +429,6 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 
 	vbox_main = gtk_vbox_new (FALSE, 6);
 
-	if (title) {
-		gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 6);
-		label = gtk_label_new (title);
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-		gtk_box_pack_start (GTK_BOX (vbox_main),
-				    label,
-				    FALSE,
-				    FALSE,
-				    0);
-	}
-
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_end (GTK_BOX (vbox_main), hbox, TRUE, TRUE, 0);
 
@@ -456,6 +444,21 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 				    TRUE,
 				    TRUE,
 				    0);
+	}
+
+	if (title) {
+		GtkWidget *frame;
+
+		frame = gtk_frame_new (title);
+		gtk_widget_show (frame);
+		gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
+
+		label = gtk_frame_get_label_widget (GTK_FRAME (frame));
+		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+
+		gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 8);
+		gtk_container_add (GTK_CONTAINER (frame), vbox_main);
+		return frame;
 	}
 
 	return vbox_main;

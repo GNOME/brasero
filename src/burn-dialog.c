@@ -269,6 +269,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 {
 	gint result;
 	gint added_id;
+	gchar *drive_name;
 	GtkWindow *window;
 	GtkWidget *message;
 	gboolean hide = FALSE;
@@ -281,55 +282,64 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	}
 
 	/* FIXME: we should specify the name of the drive where to put the disc */
+	if (drive)
+		drive_name = nautilus_burn_drive_get_name_for_display (drive);
+	else
+		drive_name = NULL;
+
 	if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is busy:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = g_strdup (_("make sure another application is not using it."));
 	} 
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NONE) {
 		main_message = g_strdup_printf (_("There is no disc in \"%s\":"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is not rewritable:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_BLANK) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is empty:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is not writable:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is a DVD:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_CD_NOT_SUPPORTED) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is a CD:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_SPACE) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is not big enough:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_NONE) {
-		main_message = g_strdup_printf ("<b><big>%s</big></b>",
-						brasero_burn_dialog_get_media_type_string (burn, type, FALSE));
+		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		main_message = g_strdup_printf ("<b><big>%s</big></b>", secondary_message);
+		g_free (secondary_message);
+		secondary_message = NULL;
 	}
 	else if (error == BRASERO_BURN_ERROR_RELOAD_MEDIA) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" needs to be reloaded:"),
-						nautilus_burn_drive_get_name_for_display (drive));
+						drive_name);
 		secondary_message = g_strdup (_("eject the disc and reload it."));
 	}
+
+	g_free (drive_name);
 
 	window = GTK_WINDOW (dialog);
 
@@ -1047,6 +1057,7 @@ brasero_burn_dialog_job_get_track (BraseroBurnDialog *dialog,
 	result = brasero_imager_get_track (BRASERO_IMAGER (job),
 					   retval,
 					   error);
+
 	brasero_job_set_task (job, NULL);
 	g_object_unref (task);
 
@@ -1256,9 +1267,12 @@ brasero_burn_dialog_check_image_integrity (BraseroBurnDialog *dialog,
 		media = nautilus_burn_drive_get_media_type (src_drive);
 		if (media == NAUTILUS_BURN_MEDIA_TYPE_ERROR) {
 			gchar *message;
+			gchar *name;
 
+			name = nautilus_burn_drive_get_name_for_display (src_drive);
 			message = g_strdup_printf (_("Please insert it in \"%s\"."),
-						   nautilus_burn_drive_get_name_for_display (src_drive));
+						   name);
+			g_free (name);
 
 			result = brasero_burn_dialog_reload_disc_dlg (dialog,
 								      src_drive,
@@ -1268,11 +1282,13 @@ brasero_burn_dialog_check_image_integrity (BraseroBurnDialog *dialog,
 		}
 		else if (nautilus_burn_drive_equal (drive, src_drive)) {
 			gchar *message;
+			gchar *name;
 
 			nautilus_burn_drive_eject (src_drive);
 
-			message = g_strdup_printf (_("Please insert it again in \"%s\"."),
-						   nautilus_burn_drive_get_name_for_display (src_drive));
+			name = nautilus_burn_drive_get_name_for_display (src_drive);
+			message = g_strdup_printf (_("Please insert it again in \"%s\"."), name);
+			g_free (name);
 
 			result = brasero_burn_dialog_reload_disc_dlg (dialog,
 								      src_drive,
@@ -1417,11 +1433,14 @@ brasero_burn_dialog_integrity_start (BraseroBurnDialog *dialog,
 
 	if (nautilus_burn_drive_get_media_type (burner) < NAUTILUS_BURN_MEDIA_TYPE_CD) {
 		gchar *message;
+		gchar *name;
 
 		/* display a dialog to the user explaining what we're
 		 * going to do, that is reload the disc before checking */
+		name = nautilus_burn_drive_get_name_for_display (burner);
 		message = g_strdup_printf (_("please, insert it again in \"%s\"."),
-					   nautilus_burn_drive_get_name_for_display (burner));
+					   name);
+		g_free (name);
 
 		result = brasero_burn_dialog_reload_disc_dlg (dialog,
 							      burner,

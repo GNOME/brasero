@@ -263,10 +263,9 @@ brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    widget,
-			    TRUE,
-			    TRUE,
+			    FALSE,
+			    FALSE,
 			    0);
-	gtk_box_reorder_child (GTK_BOX (GTK_DIALOG (dialog)->vbox), widget, 0);
 }
 
 static void
@@ -415,6 +414,9 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 	brasero_disc_get_track_type (disc, &type, &format);
 
 	/* we need to set a dummy track */
+	if (dialog->priv->track)
+		brasero_track_source_free (dialog->priv->track);
+
 	dialog->priv->track = g_new0 (BraseroTrackSource, 1);
 	dialog->priv->track->type = type;
 	dialog->priv->track->format = format;
@@ -570,7 +572,6 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 
 	obj->priv->tooltips = gtk_tooltips_new ();
-	g_object_ref (obj->priv->tooltips);
 	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
 
 	obj->priv->caps = brasero_burn_caps_get_default ();
@@ -592,7 +593,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 			    options,
 			    FALSE,
 			    FALSE,
-			    0);
+			    6);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
 							 BRASERO_MEDIA_WRITABLE);
@@ -639,6 +640,11 @@ brasero_disc_option_dialog_finalize (GObject *object)
 	if (cobj->priv->tooltips) {
 		g_object_unref (cobj->priv->tooltips);
 		cobj->priv->tooltips = NULL;
+	}
+
+	if (cobj->priv->track) {
+		brasero_track_source_free (cobj->priv->track);
+		cobj->priv->track = NULL;
 	}
 
 	g_free (cobj->priv);
