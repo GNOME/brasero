@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-13 23:36+0900\n"
-"PO-Revision-Date: 2006-10-13 23:31+0900\n"
+"POT-Creation-Date: 2006-10-29 22:05+0900\n"
+"PO-Revision-Date: 2006-10-29 22:04+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -16,63 +16,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/brasero-ncb.c:240
+#: ../src/brasero-ncb.c:279
 msgid "(u)mount command could not be found in the path"
 msgstr "(u)mount コマンドが見つかりませんでした"
 
-#: ../src/brasero-ncb.c:268
+#: ../src/brasero-ncb.c:307
 msgid "the drive could not be mounted"
 msgstr "ドライブをマウントできませんでした"
 
-#: ../src/brasero-ncb.c:424
+#: ../src/brasero-ncb.c:463
 msgid "the disc mount point could not be retrieved."
 msgstr "ディスクのマウント・ポイントを取得できませんでした"
 
-#: ../src/burn-md5.c:205 ../src/burn-md5.c:284
+#: ../src/burn-md5.c:206 ../src/burn-md5.c:285
 #, c-format
 msgid "the file %s couldn't be read (%s)"
 msgstr "ファイル %s を読み込めませんでした (%s)"
 
-#: ../src/utils.c:263
+#: ../src/utils.c:255
 #, c-format
 msgid "%d:%02i hour"
 msgid_plural "%i:%02i hours"
 msgstr[0] "%d:%02i時間"
 
-#: ../src/utils.c:290
+#: ../src/utils.c:286
 msgid "KiB"
 msgstr "KiB"
 
-#: ../src/utils.c:290
+#: ../src/utils.c:286
 msgid "MiB"
 msgstr "MiB"
 
-#: ../src/utils.c:290
+#: ../src/utils.c:286
 msgid "GiB"
 msgstr "GiB"
 
-#: ../src/utils.c:781
+#: ../src/utils.c:787
 msgid "This file can't be opened:"
 msgstr "このファイルを開けません:"
 
-#: ../src/utils.c:783 ../src/utils.c:809
+#: ../src/utils.c:789 ../src/utils.c:815
 msgid "File error"
 msgstr "ファイルのエラー"
 
-#: ../src/utils.c:786
+#: ../src/utils.c:792
 msgid "there is no application defined for this file."
 msgstr "このファイルを開くことが可能なアプリケーションがありません。"
 
-#: ../src/utils.c:807
+#: ../src/utils.c:813
 msgid "File can't be opened:"
 msgstr "ファイルを開けません:"
 
-#: ../src/utils.c:812
+#: ../src/utils.c:818
 #, c-format
 msgid "application %s can't be started."
 msgstr "アプリケーション \"%s\" を起動できません。"
 
-#: ../src/utils.c:1059
+#: ../src/utils.c:1065
 msgid ""
 "<span foreground='grey50'><big>To add files to this project you can:\n"
 "</big>copy them (from nautilus for example) and paste them here\n"
@@ -178,7 +178,7 @@ msgstr "指定した URI を楽曲プロジェクトに追加して開く"
 msgid "Open a data project adding the URIs given on the command line"
 msgstr "指定した URI をデータ・プロジェクトに追加して開く"
 
-#: ../src/main.c:82 ../src/brasero-project-manager.c:118
+#: ../src/main.c:82 ../src/brasero-project-manager.c:119
 msgid "Copy a disc"
 msgstr "ディスクのコピーを作成します"
 
@@ -224,11 +224,11 @@ msgstr "互換性のないオプション"
 msgid "only one option can be given at a time."
 msgstr "一度に１つのオプションしか指定できません"
 
-#: ../src/main.c:507
+#: ../src/main.c:509
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:515
+#: ../src/main.c:517
 msgid "CD/DVD burning"
 msgstr "CD/DVD の作成"
 
@@ -273,20 +273,20 @@ msgstr ""
 msgid "You can nevertheless blank it with the slow option if you want to."
 msgstr "それでも slow 操作でディスクの内容を消去できます。"
 
-#: ../src/blank-dialog.c:308 ../src/burn-dialog.c:2049
+#: ../src/blank-dialog.c:308 ../src/burn-dialog.c:2068
 msgid "Do you really want to quit?"
 msgstr "本当に終了してもよろしいですか？"
 
-#: ../src/blank-dialog.c:310 ../src/burn-dialog.c:2051
+#: ../src/blank-dialog.c:310 ../src/burn-dialog.c:2070
 msgid "Confirm"
 msgstr "確認"
 
-#: ../src/blank-dialog.c:313 ../src/burn-dialog.c:2055
+#: ../src/blank-dialog.c:313 ../src/burn-dialog.c:2074
 msgid "Interrupting the process may make disc unusable."
 msgstr "操作を中断するとディスクのデータを破壊するかもしれません。"
 
-#: ../src/blank-dialog.c:318 ../src/burn-dialog.c:482 ../src/burn-dialog.c:533
-#: ../src/burn-dialog.c:2061
+#: ../src/blank-dialog.c:318 ../src/burn-dialog.c:492 ../src/burn-dialog.c:543
+#: ../src/burn-dialog.c:2080
 msgid "Continue"
 msgstr "続行する"
 
@@ -383,76 +383,76 @@ msgstr ""
 msgid "insert a recordable CD or DVD."
 msgstr "書き込み可能な CD または DVD を挿入して下さい。"
 
-#: ../src/burn-dialog.c:285
+#: ../src/burn-dialog.c:291
 #, c-format
 msgid "The disc in \"%s\" is busy:"
 msgstr "\"%s\" のディスクは使用中です:"
 
-#: ../src/burn-dialog.c:287
+#: ../src/burn-dialog.c:293
 msgid "make sure another application is not using it."
 msgstr "他のアプリが使用していないことを確認して下さい。"
 
-#: ../src/burn-dialog.c:290
+#: ../src/burn-dialog.c:296
 #, c-format
 msgid "There is no disc in \"%s\":"
 msgstr "\"%s\" の中にディスクがありません:"
 
-#: ../src/burn-dialog.c:295
+#: ../src/burn-dialog.c:301
 #, c-format
 msgid "The disc in \"%s\" is not rewritable:"
 msgstr "\"%s\" の中にあるディスクは書き換えできません:"
 
-#: ../src/burn-dialog.c:300
+#: ../src/burn-dialog.c:306
 #, c-format
 msgid "The disc in \"%s\" is empty:"
 msgstr "\"%s\" の中にあるディスクは空です:"
 
-#: ../src/burn-dialog.c:305
+#: ../src/burn-dialog.c:311
 #, c-format
 msgid "The disc in \"%s\" is not writable:"
 msgstr "\"%s\" の中にあるディスクには書き込めません:"
 
-#: ../src/burn-dialog.c:310
+#: ../src/burn-dialog.c:316
 #, c-format
 msgid "The disc in \"%s\" is a DVD:"
 msgstr "\"%s\" の中にあるディスクは DVD です:"
 
-#: ../src/burn-dialog.c:315
+#: ../src/burn-dialog.c:321
 #, c-format
 msgid "The disc in \"%s\" is a CD:"
 msgstr "\"%s\" の中にあるディスクは CD です:"
 
-#: ../src/burn-dialog.c:320
+#: ../src/burn-dialog.c:326
 #, c-format
 msgid "The disc in \"%s\" is not big enough:"
 msgstr "\"%s\" にあるディスクの容量が足りません:"
 
-#: ../src/burn-dialog.c:329
+#: ../src/burn-dialog.c:337
 #, c-format
 msgid "The disc in \"%s\" needs to be reloaded:"
 msgstr "\"%s\" の中にあるディスクをもう一度読み込む必要があります:"
 
-#: ../src/burn-dialog.c:331
+#: ../src/burn-dialog.c:339
 msgid "eject the disc and reload it."
 msgstr "ディスクを取り出してから、もう一度読み込んで下さい。"
 
-#: ../src/burn-dialog.c:361
+#: ../src/burn-dialog.c:371
 msgid "Waiting for disc insertion"
 msgstr "ディスクが挿入されるまで待機します"
 
-#: ../src/burn-dialog.c:363
+#: ../src/burn-dialog.c:373
 msgid "Waiting for disc replacement"
 msgstr "ディスクが入れ替えられるまで待機します"
 
-#: ../src/burn-dialog.c:409
+#: ../src/burn-dialog.c:419
 msgid "The disc in the drive holds data:"
 msgstr "ドライブの中にあるディスクにはデータがあります:"
 
-#: ../src/burn-dialog.c:411
+#: ../src/burn-dialog.c:421
 msgid "Possible loss of data"
 msgstr "データ欠損の可能性"
 
-#: ../src/burn-dialog.c:414
+#: ../src/burn-dialog.c:424
 msgid ""
 "Do you want to erase the current disc?\n"
 "Or replace the current disc with a new disc?"
@@ -460,23 +460,23 @@ msgstr ""
 "このディスクを消去しますか？\n"
 "あるいは新しいディスクに入れ替えますか？"
 
-#: ../src/burn-dialog.c:420
+#: ../src/burn-dialog.c:430
 msgid "Replace disc"
 msgstr "入れ替える"
 
-#: ../src/burn-dialog.c:425
+#: ../src/burn-dialog.c:435
 msgid "Erase disc"
 msgstr "消去する"
 
-#: ../src/burn-dialog.c:466
+#: ../src/burn-dialog.c:476
 msgid "Recording audio tracks on a rewritable disc is not advised:"
 msgstr "書き換えが可能なディスクに楽曲データを保存することはお勧めしません:"
 
-#: ../src/burn-dialog.c:468
+#: ../src/burn-dialog.c:478
 msgid "Rewritable disc"
 msgstr "書き換え可能なディスク"
 
-#: ../src/burn-dialog.c:471
+#: ../src/burn-dialog.c:481
 msgid ""
 "you might not be able to listen to it with stereos.\n"
 "Do you want to continue anyway?"
@@ -484,436 +484,434 @@ msgstr ""
 "その楽曲をミニ・コンポ等で演奏することはできないかもしれません。\n"
 "それでも続行しますか？"
 
-#: ../src/burn-dialog.c:473
+#: ../src/burn-dialog.c:483
 msgid "Replace the disc"
 msgstr "ディスクを入れ替える"
 
-#: ../src/burn-dialog.c:523 ../src/brasero-disc-option-dialog.c:288
+#: ../src/burn-dialog.c:533 ../src/brasero-disc-option-dialog.c:289
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
 msgstr ""
 "いくつかのファイルは Windows 互換の CD では利用できない名前になっています:"
 
-#: ../src/burn-dialog.c:526
+#: ../src/burn-dialog.c:536
 msgid "Do you want to continue with Windows compatibility disabled?"
 msgstr "Windows 互換モードを無効にして続行しますか？"
 
-#: ../src/burn-dialog.c:528 ../src/brasero-disc-option-dialog.c:293
+#: ../src/burn-dialog.c:538 ../src/brasero-disc-option-dialog.c:294
 msgid "Windows compatibility"
 msgstr "Windows 互換"
 
-#: ../src/burn-dialog.c:737
+#: ../src/burn-dialog.c:747
 msgid "Close the application if the burn process is successful"
 msgstr "ディスクへの書き込みが完了したらアプリケーションを閉じる"
 
-#: ../src/burn-dialog.c:912 ../src/burn-basics.c:57
+#: ../src/burn-dialog.c:922 ../src/burn-basics.c:57
 msgid "Creating image"
 msgstr "イメージの生成"
 
-#: ../src/burn-dialog.c:922 ../src/burn-dialog.c:926
+#: ../src/burn-dialog.c:932 ../src/burn-dialog.c:936
 msgid "Burning DVD"
 msgstr "DVD へ書き込み中"
 
-#: ../src/burn-dialog.c:923
+#: ../src/burn-dialog.c:933
 msgid "<big><b>Burning data DVD</b></big>"
 msgstr "<big><b>データ DVD の書き込み中</b></big>"
 
-#: ../src/burn-dialog.c:927
+#: ../src/burn-dialog.c:937
 msgid "<big><b>Burning image to DVD</b></big>"
 msgstr "<big><b>DVD の書き込み中</b></big>"
 
-#: ../src/burn-dialog.c:930
+#: ../src/burn-dialog.c:940
 msgid "Copying DVD"
 msgstr "DVD のコピー中"
 
-#: ../src/burn-dialog.c:931
+#: ../src/burn-dialog.c:941
 msgid "<big><b>Copying data DVD</b></big>"
 msgstr "<big><b>データ DVD のコピー中</b></big>"
 
-#: ../src/burn-dialog.c:936 ../src/burn-dialog.c:942 ../src/burn-dialog.c:950
+#: ../src/burn-dialog.c:946 ../src/burn-dialog.c:952 ../src/burn-dialog.c:960
 msgid "Burning CD"
 msgstr "CD へ書き込み中"
 
-#: ../src/burn-dialog.c:937
+#: ../src/burn-dialog.c:947
 msgid "<big><b>Burning audio CD</b></big>"
 msgstr "<big><b>音楽 CD の書き込み中</b></big>"
 
-#: ../src/burn-dialog.c:943
+#: ../src/burn-dialog.c:953
 msgid "<big><b>Burning data CD</b></big>"
 msgstr "<big><b>データ CD の書き込み中</b></big>"
 
-#: ../src/burn-dialog.c:946
+#: ../src/burn-dialog.c:956
 msgid "Copying CD"
 msgstr "CD のコピー中"
 
-#: ../src/burn-dialog.c:947
+#: ../src/burn-dialog.c:957
 msgid "<big><b>Copying CD</b></big>"
 msgstr "<big><b>CD のコピー中</b></big>"
 
-#: ../src/burn-dialog.c:951
+#: ../src/burn-dialog.c:961
 msgid "<big><b>Burning image to CD</b></big>"
 msgstr "<big><b>CD の書き込み中</b></big>"
 
-#: ../src/burn-dialog.c:1132 ../src/burn-dialog.c:1143
-#: ../src/burn-dialog.c:1153 ../src/burn-dialog.c:1197
+#: ../src/burn-dialog.c:1143 ../src/burn-dialog.c:1154
+#: ../src/burn-dialog.c:1164 ../src/burn-dialog.c:1208
 msgid "Data integrity check"
 msgstr "データの一貫性のチェック"
 
-#: ../src/burn-dialog.c:1133
+#: ../src/burn-dialog.c:1144
 msgid "The file integrity check succeeded:"
 msgstr "一貫性のチェックが完了しました:"
 
-#: ../src/burn-dialog.c:1134 ../src/brasero-sum-dialog.c:275
+#: ../src/burn-dialog.c:1145 ../src/brasero-sum-dialog.c:275
 msgid "there seems to be no corrupted file on the disc."
 msgstr "そのデバイスにはおかしなファイルはないようです。"
 
-#: ../src/burn-dialog.c:1144
+#: ../src/burn-dialog.c:1155
 msgid "The data integrity check could not be performed:"
 msgstr "データの一貫性をチェックできませんでした:"
 
-#: ../src/burn-dialog.c:1145
+#: ../src/burn-dialog.c:1156
 msgid "unknown error."
 msgstr "原因不明のエラーです。"
 
-#: ../src/burn-dialog.c:1154
+#: ../src/burn-dialog.c:1165
 msgid "The file integrity check failed:"
 msgstr "ファイルの一貫性のチェックに失敗しました:"
 
-#: ../src/burn-dialog.c:1155
+#: ../src/burn-dialog.c:1166
 msgid "some files may be corrupted on the disc."
 msgstr "そのディスクにあるファイルがいくつか壊れています。"
 
-#: ../src/burn-dialog.c:1260
+#: ../src/burn-dialog.c:1273
 #, c-format
 msgid "Please insert it in \"%s\"."
 msgstr "\"%s\" に挿入して下さい。"
 
-#: ../src/burn-dialog.c:1265
+#: ../src/burn-dialog.c:1279
 msgid "The source media needs to be inserted:"
 msgstr "メディアを挿入して下さい:"
 
-#: ../src/burn-dialog.c:1274
+#: ../src/burn-dialog.c:1290
 #, c-format
 msgid "Please insert it again in \"%s\"."
 msgstr "もう一度 \"%s\" に挿入して下さい。"
 
-#: ../src/burn-dialog.c:1279
+#: ../src/burn-dialog.c:1295
 msgid "The source media needs to be reloaded:"
 msgstr "ソースのメディアを読み込んで下さい:"
 
-#: ../src/burn-dialog.c:1357 ../src/brasero-sum-dialog.c:704
+#: ../src/burn-dialog.c:1373 ../src/brasero-sum-dialog.c:703
 msgid "Checking files integrity"
 msgstr "ファイルの一貫性の確認中"
 
-#. display a dialog to the user explaining what we're
-#. * going to do, that is reload the disc before checking
-#: ../src/burn-dialog.c:1423
+#: ../src/burn-dialog.c:1441
 #, c-format
 msgid "please, insert it again in \"%s\"."
 msgstr "もう一度 \"%s\" に挿入して下さい。"
 
-#: ../src/burn-dialog.c:1428
+#: ../src/burn-dialog.c:1447
 msgid "The burnt media needs to be reloaded to perform integrity check:"
 msgstr ""
 "もう一度、書き込みが完了したメディアを読み込んで一貫性のチェックを実行して下"
 "さい:"
 
-#: ../src/burn-dialog.c:1441
+#: ../src/burn-dialog.c:1460
 msgid "<b><big>Performing integrity check</big></b>"
 msgstr "<b><big>一貫性のチェックを行っています</big></b>"
 
-#: ../src/burn-dialog.c:1451 ../src/brasero-sum-dialog.c:750
+#: ../src/burn-dialog.c:1470 ../src/brasero-sum-dialog.c:749
 msgid "Mounting disc"
 msgstr "ディスクをマウントしています"
 
-#: ../src/burn-dialog.c:1476 ../src/burn-basics.c:69
+#: ../src/burn-dialog.c:1495 ../src/burn-basics.c:69
 msgid "Success"
 msgstr "完了"
 
-#: ../src/burn-dialog.c:1576
+#: ../src/burn-dialog.c:1595
 msgid "Save current session"
 msgstr "このセッションの保存"
 
-#: ../src/burn-dialog.c:1630
+#: ../src/burn-dialog.c:1649
 msgid "Session log"
 msgstr "セッションのログ"
 
-#: ../src/burn-dialog.c:1711
+#: ../src/burn-dialog.c:1730
 msgid "An unknown error occured. Check your disc"
 msgstr "原因不明のエラーが発生しました。ディスクを確認して下さい。"
 
-#: ../src/burn-dialog.c:1721
+#: ../src/burn-dialog.c:1740
 msgid "Error while burning:"
 msgstr "書き込み中にエラー:"
 
-#: ../src/burn-dialog.c:1723
+#: ../src/burn-dialog.c:1742
 msgid "Burning error"
 msgstr "書き込みエラー"
 
-#: ../src/burn-dialog.c:1729
+#: ../src/burn-dialog.c:1748
 msgid "Save log"
 msgstr "ログの保存"
 
-#: ../src/burn-dialog.c:1733
+#: ../src/burn-dialog.c:1752
 msgid "View log"
 msgstr "ログの表示"
 
-#: ../src/burn-dialog.c:1775
+#: ../src/burn-dialog.c:1794
 msgid "Check integrity"
 msgstr "一貫性のチェック"
 
-#: ../src/burn-dialog.c:1825
+#: ../src/burn-dialog.c:1844
 msgid "Audio CD successfully burnt"
 msgstr "音楽 CD の書き込みが完了しました"
 
-#: ../src/burn-dialog.c:1826 ../src/burn-dialog.c:1866
-#: ../src/burn-dialog.c:1870 ../src/burn-dialog.c:1875
+#: ../src/burn-dialog.c:1845 ../src/burn-dialog.c:1885
+#: ../src/burn-dialog.c:1889 ../src/burn-dialog.c:1894
 #, c-format
 msgid "\"%s\" is now ready for use"
 msgstr "\"%s\" を使用する準備が整いました"
 
-#: ../src/burn-dialog.c:1831
+#: ../src/burn-dialog.c:1850
 msgid "DVD successfully copied"
 msgstr "DVD のコピーが完了しました"
 
-#: ../src/burn-dialog.c:1832 ../src/burn-dialog.c:1842
-#: ../src/burn-dialog.c:1854
+#: ../src/burn-dialog.c:1851 ../src/burn-dialog.c:1861
+#: ../src/burn-dialog.c:1873
 msgid "DVD is now ready for use"
 msgstr "DVD を使用する準備が整いました"
 
-#: ../src/burn-dialog.c:1835
+#: ../src/burn-dialog.c:1854
 msgid "CD successfully copied"
 msgstr "CD のコピーが完了しました"
 
-#: ../src/burn-dialog.c:1836 ../src/burn-dialog.c:1846
-#: ../src/burn-dialog.c:1858
+#: ../src/burn-dialog.c:1855 ../src/burn-dialog.c:1865
+#: ../src/burn-dialog.c:1877
 msgid "CD is now ready for use"
 msgstr "CD を使用する準備が整いました"
 
-#: ../src/burn-dialog.c:1841
+#: ../src/burn-dialog.c:1860
 msgid "Image of DVD successfully created"
 msgstr "DVD イメージの生成が完了しました"
 
-#: ../src/burn-dialog.c:1845
+#: ../src/burn-dialog.c:1864
 msgid "Image of CD successfully created"
 msgstr "CD イメージの生成が完了しました"
 
-#: ../src/burn-dialog.c:1853
+#: ../src/burn-dialog.c:1872
 msgid "Image successfully burnt to DVD"
 msgstr "イメージを DVD に書き込みました"
 
-#: ../src/burn-dialog.c:1857
+#: ../src/burn-dialog.c:1876
 msgid "Image successfully burnt to CD"
 msgstr "イメージを CD に書き込みました"
 
-#: ../src/burn-dialog.c:1865
+#: ../src/burn-dialog.c:1884
 msgid "Data DVD successfully burnt"
 msgstr "データ DVD の書き込みが完了しました"
 
-#: ../src/burn-dialog.c:1869
+#: ../src/burn-dialog.c:1888
 msgid "Data CD successfully burnt"
 msgstr "データ CD の書き込みが完了しました"
 
-#: ../src/burn-dialog.c:1874
+#: ../src/burn-dialog.c:1893
 msgid "Image successfully created"
 msgstr "イメージの生成が完了しました"
 
-#: ../src/audio-disc.c:279 ../src/data-disc.c:476 ../src/tray.c:90
+#: ../src/audio-disc.c:301 ../src/data-disc.c:487 ../src/tray.c:90
 msgid "Menu"
 msgstr "メニュー"
 
-#: ../src/audio-disc.c:280 ../src/data-disc.c:477
+#: ../src/audio-disc.c:302 ../src/data-disc.c:488
 msgid "Open"
 msgstr "開く"
 
-#: ../src/audio-disc.c:282
+#: ../src/audio-disc.c:304
 msgid "Edit information"
 msgstr "情報の編集"
 
-#: ../src/audio-disc.c:284 ../src/data-disc.c:481
+#: ../src/audio-disc.c:306 ../src/data-disc.c:492
 msgid "Remove"
 msgstr "削除"
 
-#: ../src/audio-disc.c:286 ../src/data-disc.c:483
+#: ../src/audio-disc.c:308 ../src/data-disc.c:494
 msgid "Paste"
 msgstr "貼り付け"
 
-#: ../src/audio-disc.c:288
+#: ../src/audio-disc.c:310
 msgid "Add a pause"
 msgstr "ポーズの追加"
 
-#: ../src/audio-disc.c:574
-msgid "Title"
-msgstr "タイトル"
-
-#: ../src/audio-disc.c:600
-msgid "Artist"
-msgstr "演奏者"
-
-#: ../src/audio-disc.c:609 ../src/play-list.c:305
-msgid "Length"
-msgstr "演奏時間"
-
-#: ../src/audio-disc.c:677
+#: ../src/audio-disc.c:518
 msgid "Add a 2 second pause after the track"
 msgstr "トラックの後ろに２秒間のポーズを追加します"
 
-#: ../src/audio-disc.c:892
+#: ../src/audio-disc.c:634
+msgid "Title"
+msgstr "タイトル"
+
+#: ../src/audio-disc.c:660
+msgid "Artist"
+msgstr "演奏者"
+
+#: ../src/audio-disc.c:669 ../src/play-list.c:348
+msgid "Length"
+msgstr "演奏時間"
+
+#: ../src/audio-disc.c:943
 msgid "<i><b>Pause</b></i>"
 msgstr "<i><b>ポーズ</b></i>"
 
-#: ../src/audio-disc.c:1079
+#: ../src/audio-disc.c:1133
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr "GStreamer では \"%s\" を処理できません:"
 
-#: ../src/audio-disc.c:1083
+#: ../src/audio-disc.c:1137
 msgid "Unhandled song"
 msgstr "処理できない楽曲"
 
-#: ../src/audio-disc.c:1086
+#: ../src/audio-disc.c:1140
 msgid "Make sure the appropriate codec is installed."
 msgstr "適切なコーデックがインストールされているか確認して下さい。"
 
-#: ../src/audio-disc.c:1210
+#: ../src/audio-disc.c:1264
 msgid "Directories can't be added to an audio disc:"
 msgstr "音楽ディスクにはフォルダを追加できません:"
 
-#: ../src/audio-disc.c:1212
+#: ../src/audio-disc.c:1266
 msgid "Directory search"
 msgstr "フォルダの検索"
 
-#: ../src/audio-disc.c:1215
+#: ../src/audio-disc.c:1269
 msgid "Do you want to search for audio discs inside?"
 msgstr "このフォルダの中に楽曲ファイルがあるか調べてみますか？"
 
-#: ../src/audio-disc.c:1219
+#: ../src/audio-disc.c:1273
 msgid "Search directory"
 msgstr "フォルダだけ調べる"
 
-#: ../src/audio-disc.c:1286
+#: ../src/audio-disc.c:1340
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr "ファイル \"%s\" を開けません。"
 
-#: ../src/audio-disc.c:1290 ../src/data-disc.c:2972
+#: ../src/audio-disc.c:1344 ../src/data-disc.c:3076
 msgid "Unreadable file"
 msgstr "読み込み不可のファイル"
 
-#: ../src/audio-disc.c:1426 ../src/audio-disc.c:1427
+#: ../src/audio-disc.c:1481 ../src/audio-disc.c:1482
 msgid "loading"
 msgstr "読み込み中"
 
-#: ../src/audio-disc.c:2687
+#: ../src/audio-disc.c:2902
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr "\"%s\" というファイルはありません:"
 
-#: ../src/audio-disc.c:2691
+#: ../src/audio-disc.c:2906
 msgid "File deletion noticed"
 msgstr "ファイルは削除済み"
 
-#: ../src/audio-disc.c:2693
+#: ../src/audio-disc.c:2908
 msgid "it will be removed from the project."
 msgstr "プロジェクトから削除します。"
 
-#: ../src/data-disc.c:479
+#: ../src/data-disc.c:490
 msgid "Rename"
 msgstr "名前の変更"
 
-#: ../src/data-disc.c:869 ../src/search.c:367 ../src/filtered-window.c:216
-msgid "Files"
-msgstr "ファイル"
-
-#: ../src/data-disc.c:880
-msgid "Size"
-msgstr "サイズ"
-
-#: ../src/data-disc.c:891 ../src/search.c:386
-msgid "Description"
-msgstr "説明"
-
-#: ../src/data-disc.c:990
+#: ../src/data-disc.c:812
 msgid "Some files were removed from the project. Clik here to see them."
 msgstr ""
 "いくつかのファイルがプロジェクトから削除されました (ここをクリックすると参照"
 "できます)"
 
-#: ../src/data-disc.c:1003
+#: ../src/data-disc.c:825
 msgid "Create a new empty folder"
 msgstr "新しい空のフォルダを生成します"
 
-#: ../src/data-disc.c:1171
+#: ../src/data-disc.c:935 ../src/search.c:407 ../src/filtered-window.c:216
+msgid "Files"
+msgstr "ファイル"
+
+#: ../src/data-disc.c:946
+msgid "Size"
+msgstr "サイズ"
+
+#: ../src/data-disc.c:957 ../src/search.c:426
+msgid "Description"
+msgstr "説明"
+
+#: ../src/data-disc.c:1200
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr "既に \"%s\" を追加しています:"
 
-#: ../src/data-disc.c:1174
+#: ../src/data-disc.c:1203
 msgid "Already existing file"
 msgstr "既にファイルがあります"
 
-#: ../src/data-disc.c:1177
+#: ../src/data-disc.c:1206
 msgid "it won't be added."
 msgstr "追加はしません。"
 
-#: ../src/data-disc.c:1245 ../src/data-disc.c:1261 ../src/play-list.c:839
+#: ../src/data-disc.c:1305 ../src/data-disc.c:1321 ../src/play-list.c:879
 msgid "empty"
 msgstr "空です"
 
-#: ../src/data-disc.c:1248
+#: ../src/data-disc.c:1308
 msgid "(empty)"
 msgstr "(空です)"
 
-#: ../src/data-disc.c:1263
+#: ../src/data-disc.c:1323
 msgid "1 item"
 msgstr "1個のアイテム"
 
-#: ../src/data-disc.c:1278
+#: ../src/data-disc.c:1326
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d個のアイテム"
 
-#: ../src/data-disc.c:1628 ../src/data-disc.c:1811 ../src/data-disc.c:1812
-#: ../src/data-disc.c:7300 ../src/data-disc.c:7301
+#: ../src/data-disc.c:1685 ../src/data-disc.c:1883 ../src/data-disc.c:1884
+#: ../src/data-disc.c:7735 ../src/data-disc.c:7736
 msgid "(loading ...)"
 msgstr "(読み込み中 ...)"
 
-#: ../src/data-disc.c:2957
+#: ../src/data-disc.c:3061
 #, c-format
 msgid "The file \"%s\" is unreadable:"
 msgstr "ファイル \"%s\" を読み込めません:"
 
-#: ../src/data-disc.c:2959
+#: ../src/data-disc.c:3063
 #, c-format
 msgid "The directory \"%s\" is unreadable:"
 msgstr "フォルダ \"%s\" を読み込めません:"
 
-#: ../src/data-disc.c:3086
+#: ../src/data-disc.c:3190
 msgid "Some files couldn't be restored."
 msgstr "いくつかのファイルを復活できませんでした。"
 
-#: ../src/data-disc.c:3088
+#: ../src/data-disc.c:3192
 msgid "File restoration failure"
 msgstr "ファイルの復活エラー"
 
-#: ../src/data-disc.c:4581
+#: ../src/data-disc.c:4684
 msgid "New folder"
 msgstr "新しいフォルダ"
 
-#: ../src/data-disc.c:4591
+#: ../src/data-disc.c:4694
 #, c-format
 msgid "New folder %i"
 msgstr "新しいフォルダ %i"
 
-#: ../src/data-disc.c:7670
+#: ../src/data-disc.c:8139
 msgid "Project couldn't be loaded:"
 msgstr "プロジェクトを読み込めませんでした:"
 
-#: ../src/data-disc.c:7672
+#: ../src/data-disc.c:8141
 msgid "Project loading failure"
 msgstr "プロジェクトの読み込みエラー"
 
-#: ../src/data-disc.c:7675
+#: ../src/data-disc.c:8144
 msgid "A thread couldn't be created"
 msgstr "スレッドを生成できませんでした"
 
@@ -967,7 +965,7 @@ msgstr "<big><b>イメージの書き込み</b></big>"
 msgid "Burn an existing CD/DVD image to disc"
 msgstr "既存の CD/DVD イメージをディスクに書き込みます"
 
-#: ../src/project-type-chooser.c:301
+#: ../src/project-type-chooser.c:302
 msgid ""
 "<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></"
 "span></u>"
@@ -975,7 +973,7 @@ msgstr ""
 "<u><span size='xx-large' foreground='grey50'><b>新しいプロジェクトの選択:</"
 "b></span></u>"
 
-#: ../src/project-type-chooser.c:306
+#: ../src/project-type-chooser.c:307
 msgid ""
 "<span foreground='grey60'><b><i>Choose from the following options</i></b></"
 "span>"
@@ -983,73 +981,73 @@ msgstr ""
 "<span foreground='grey60'><b><i>次のプロジェクトから選択して下さい</i></b></"
 "span>"
 
-#: ../src/project.c:143
+#: ../src/project.c:159
 msgid "_Save"
 msgstr "保存(_S)"
 
-#: ../src/project.c:144 ../src/project.c:1988
+#: ../src/project.c:160 ../src/project.c:2074
 msgid "Save current project"
 msgstr "プロジェクトの保存"
 
-#: ../src/project.c:145
+#: ../src/project.c:161
 msgid "_Save as"
 msgstr "別名で保存(_S)"
 
-#: ../src/project.c:146
+#: ../src/project.c:162
 msgid "Save current project to a different location"
 msgstr "プロジェクトを別の場所に保存します"
 
-#: ../src/project.c:163
+#: ../src/project.c:179
 msgid "_Add files"
 msgstr "ファイルの追加(_A)"
 
-#: ../src/project.c:164
+#: ../src/project.c:180
 msgid "Add files to the project"
 msgstr "指定したファイルをプロジェクトに追加します"
 
-#: ../src/project.c:165
+#: ../src/project.c:181
 msgid "_Remove files"
 msgstr "ファイルの削除(_R)"
 
-#: ../src/project.c:166
+#: ../src/project.c:182
 msgid "Remove the selected files from the project"
 msgstr "指定したファイルをプロジェクトから削除します"
 
-#: ../src/project.c:167
+#: ../src/project.c:183
 msgid "E_mpty Project"
 msgstr "プロジェクトのクリア(_M)"
 
-#: ../src/project.c:168
+#: ../src/project.c:184
 msgid "Delete all files from the project"
 msgstr "全てのファイルをプロジェクトから削除します"
 
-#: ../src/project.c:169
+#: ../src/project.c:185
 msgid "_Burn"
 msgstr "作成(_B)"
 
-#: ../src/project.c:170
+#: ../src/project.c:186
 msgid "Burn the disc"
 msgstr "ディスクを作成します"
 
-#: ../src/project.c:311
+#: ../src/project.c:366
 msgid "Add selected files"
 msgstr "選択したファイルを追加します"
 
-#: ../src/project.c:325
+#: ../src/project.c:383
 msgid "Remove files selected in project"
 msgstr "プロジェクトから指定したファイルを削除します"
 
 #. burn button set insensitive since there are no files in the selection
-#: ../src/project.c:335 ../src/brasero-disc-option-dialog.c:614
+#: ../src/project.c:444 ../src/brasero-disc-option-dialog.c:619
 #: ../src/brasero-image-option-dialog.c:459
 msgid "Burn"
 msgstr "書き込む"
 
-#: ../src/project.c:343
+#: ../src/project.c:453
 msgid "Start to burn the contents of the selection"
 msgstr "選択したデータの書き込みを開始します"
 
-#: ../src/project.c:444
+#: ../src/project.c:502
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option:"
@@ -1057,19 +1055,19 @@ msgstr ""
 "ディスクの容量に対してプロジェクトのサイズが大きすぎます (overburn オプション"
 "をつけたとしても):"
 
-#: ../src/project.c:446 ../src/project.c:470
+#: ../src/project.c:504 ../src/project.c:528
 msgid "Project size"
 msgstr "プロジェクトのサイズ"
 
-#: ../src/project.c:449
+#: ../src/project.c:507
 msgid "you must delete some files."
 msgstr "ファイルをいくつか削除して下さい。"
 
-#: ../src/project.c:468
+#: ../src/project.c:526
 msgid "The size of the project is too large for the disc:"
 msgstr "ディスクの容量に対してプロジェクトのサイズが大きすぎます:"
 
-#: ../src/project.c:473
+#: ../src/project.c:531
 msgid ""
 "Would you like to activate overburn (otherwise you must delete files) ?\n"
 "NOTE: This option might cause failure."
@@ -1078,137 +1076,137 @@ msgstr ""
 "(そうでなければ、ファイルをいくつか削除する必要があります)\n"
 "注意: この機能が使えない場合もあります。"
 
-#: ../src/project.c:639
+#: ../src/project.c:697
 msgid "Please wait:"
 msgstr "少々、お待ち下さい:"
 
-#: ../src/project.c:641
+#: ../src/project.c:699
 msgid "Please wait"
 msgstr "少々、お待ち下さい"
 
-#: ../src/project.c:644
+#: ../src/project.c:702
 msgid "some tasks are not completed yet."
 msgstr "いくつかの処理がまだ完了していません。"
 
-#: ../src/project.c:646
+#: ../src/project.c:704
 msgid "Waiting for ongoing tasks"
 msgstr "待機する"
 
-#: ../src/project.c:692
+#: ../src/project.c:750
 msgid "No song in the project:"
 msgstr "プロジェクトには楽曲がありません:"
 
-#: ../src/project.c:694 ../src/project.c:717
-#: ../src/brasero-project-manager.c:111
+#: ../src/project.c:752 ../src/project.c:775
+#: ../src/brasero-project-manager.c:112
 msgid "Empty project"
 msgstr "空のプロジェクト"
 
-#: ../src/project.c:697
+#: ../src/project.c:755
 msgid "please add songs to the project."
 msgstr "楽曲をプロジェクトに追加して下さい。"
 
-#: ../src/project.c:715
+#: ../src/project.c:773
 msgid "Project is empty:"
 msgstr "プロジェクトが空です:"
 
-#: ../src/project.c:720
+#: ../src/project.c:778
 msgid "please add files to the project."
 msgstr "ファイルをプロジェクトに追加して下さい。"
 
-#: ../src/project.c:887
+#: ../src/project.c:945
 msgid "Default burning application"
 msgstr "デフォルトのディスク作成アプリケーション"
 
-#: ../src/project.c:918
+#: ../src/project.c:976
 msgid "don't show this dialog again"
 msgstr "このダイアログを次回から表示しない"
 
-#: ../src/project.c:968
+#: ../src/project.c:1032
 msgid "<big><b>Audio project</b></big>"
 msgstr "<big><b>楽曲プロジェクト</b></big>"
 
-#: ../src/project.c:970 ../src/project.c:1104
+#: ../src/project.c:1034 ../src/project.c:1170
 msgid "<i>No track</i>"
 msgstr "<i>トラックなし</i>"
 
-#: ../src/project.c:977
+#: ../src/project.c:1042
 msgid "Brasero is not the default application to burn audio CDs:"
 msgstr ""
 "Brasero が音楽 CD を作成するデフォルトのアプリケーションに指定されていません:"
 
-#: ../src/project.c:978
+#: ../src/project.c:1043
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
 msgstr "Brasero を音楽 CD 作成アプリケーションに指定しますか？"
 
-#: ../src/project.c:985
+#: ../src/project.c:1050
 msgid "<big><b>Data project</b></big>"
 msgstr "<big><b>データ・プロジェクト</b></big>"
 
-#: ../src/project.c:987
+#: ../src/project.c:1052
 msgid "<i>Contents of your data project</i>"
 msgstr "<i>データ・プロジェクトの内容です</i>"
 
-#: ../src/project.c:994
+#: ../src/project.c:1060
 msgid "Brasero is not the default application to burn data discs:"
 msgstr ""
 "Brasero がデータ・ディスクを作成するデフォルトのアプリケーションに指定されて"
 "いません:"
 
-#: ../src/project.c:995
+#: ../src/project.c:1061
 msgid ""
 "Would you like to make brasero the default application to burn data discs?"
 msgstr "Brasero をデータ・ディスク作成アプリケーションに指定しますか？"
 
-#: ../src/project.c:1106
+#: ../src/project.c:1172
 #, c-format
 msgid "<i>%d track</i>"
 msgid_plural "<i>%d tracks</i>"
 msgstr[0] "<i>%d個のトラック</i>"
 
-#: ../src/project.c:1300
+#: ../src/project.c:1369
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr "Brasero - %s (データ・ディスク)"
 
-#: ../src/project.c:1302
+#: ../src/project.c:1371
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr "Brasero - %s (音楽ディスク)"
 
-#: ../src/project.c:1328
+#: ../src/project.c:1397
 msgid "Error while loading the project:"
 msgstr "プロジェクトを読み込む際にエラー:"
 
-#: ../src/project.c:1330
+#: ../src/project.c:1399
 msgid "Project loading error"
 msgstr "プロジェクトの読み込みエラー"
 
-#: ../src/project.c:1567
+#: ../src/project.c:1642
 msgid "the project could not be opened."
 msgstr "プロジェクトをオープンできませんでした。"
 
-#: ../src/project.c:1576
+#: ../src/project.c:1651
 msgid "the file is empty."
 msgstr "ファイルが空です。"
 
-#: ../src/project.c:1607 ../src/project.c:1615
+#: ../src/project.c:1682 ../src/project.c:1690
 msgid "it doesn't seem to be a valid brasero project."
 msgstr "Brasero プロジェクトではないようです。"
 
-#: ../src/project.c:1634 ../src/brasero-project-manager.c:123
+#: ../src/project.c:1709 ../src/brasero-project-manager.c:124
 msgid "Open a project"
 msgstr "プロジェクトを開く"
 
-#: ../src/project.c:1732
+#: ../src/project.c:1807
 msgid "Your project has not been saved:"
 msgstr "プロジェクトを保存していません:"
 
-#: ../src/project.c:1734
+#: ../src/project.c:1809
 msgid "Unsaved project"
 msgstr "保存していないプロジェクト"
 
-#: ../src/project.c:1742
+#: ../src/project.c:1817
 msgid "Unknown error."
 msgstr "原因不明のエラーです。"
 
@@ -1220,7 +1218,7 @@ msgstr "CD/DVD のコピー"
 msgid "<b>Select source drive to copy</b>"
 msgstr "<b>コピー元のドライブ</b>"
 
-#: ../src/disc-copy-dialog.c:153 ../src/brasero-disc-option-dialog.c:583
+#: ../src/disc-copy-dialog.c:153 ../src/brasero-disc-option-dialog.c:588
 #: ../src/brasero-image-option-dialog.c:406
 msgid "<b>Select a drive to write to</b>"
 msgstr "<b>書き込み先のドライブ</b>"
@@ -1229,59 +1227,59 @@ msgstr "<b>書き込み先のドライブ</b>"
 msgid "Copy"
 msgstr "開始"
 
-#: ../src/brasero-layout.c:101 ../src/brasero-layout.c:102
+#: ../src/brasero-layout.c:106 ../src/brasero-layout.c:107
 msgid "Preview"
 msgstr "プレビュー"
 
-#: ../src/brasero-layout.c:103
+#: ../src/brasero-layout.c:108
 msgid "Display video, audio and image preview"
 msgstr "動画や楽曲、そして画像をプレビュー表示します"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:112
 msgid "None"
 msgstr "なし"
 
-#: ../src/brasero-layout.c:108
+#: ../src/brasero-layout.c:113
 msgid "Show the project only"
 msgstr "プロジェクトのみ表示します"
 
-#: ../src/brasero-project-manager.c:109
+#: ../src/brasero-project-manager.c:110
 msgid "New project"
 msgstr "新しいプロジェクト"
 
-#: ../src/brasero-project-manager.c:110
+#: ../src/brasero-project-manager.c:111
 msgid "Create a new project"
 msgstr "新しいプロジェクトを生成します"
 
-#: ../src/brasero-project-manager.c:112
+#: ../src/brasero-project-manager.c:113
 msgid "Let you choose your new project"
 msgstr "新しいプロジェクトを選択します"
 
-#: ../src/brasero-project-manager.c:113
+#: ../src/brasero-project-manager.c:114
 msgid "New audio project"
 msgstr "新しい楽曲プロジェクト"
 
-#: ../src/brasero-project-manager.c:114
+#: ../src/brasero-project-manager.c:115
 msgid "Create a new audio project"
 msgstr "新しい楽曲プロジェクトを生成します"
 
-#: ../src/brasero-project-manager.c:115
+#: ../src/brasero-project-manager.c:116
 msgid "New data project"
 msgstr "新しいデータ・プロジェクト"
 
-#: ../src/brasero-project-manager.c:116
+#: ../src/brasero-project-manager.c:117
 msgid "Create a new data project"
 msgstr "新しいデータ・プロジェクトを生成します"
 
-#: ../src/brasero-project-manager.c:117
+#: ../src/brasero-project-manager.c:118
 msgid "Copy disc"
 msgstr "ディスクのコピー"
 
-#: ../src/brasero-project-manager.c:119 ../src/brasero-project-manager.c:120
+#: ../src/brasero-project-manager.c:120 ../src/brasero-project-manager.c:121
 msgid "Burn an image"
 msgstr "イメージの作成"
 
-#: ../src/brasero-project-manager.c:122
+#: ../src/brasero-project-manager.c:123
 msgid "_Open"
 msgstr "開く(_O)"
 
@@ -1301,111 +1299,111 @@ msgstr "ファイル・ブラウザ"
 msgid "Display file browser"
 msgstr "ファイル・ブラウザを表示します"
 
-#: ../src/brasero-project-manager.c:300
+#: ../src/brasero-project-manager.c:302
 msgid "<big><b>Search Files</b></big>"
 msgstr "<big><b>ファイルの検索</b></big>"
 
-#: ../src/brasero-project-manager.c:301
+#: ../src/brasero-project-manager.c:303
 msgid "<i>Search files using keywords</i>"
 msgstr "<i>キーワードでファイルを検索して下さい</i>"
 
-#: ../src/brasero-project-manager.c:302
+#: ../src/brasero-project-manager.c:304
 msgid "Search files"
 msgstr "ファイルの検索"
 
-#: ../src/brasero-project-manager.c:303
+#: ../src/brasero-project-manager.c:305
 msgid "Display search"
 msgstr "検索ブラウザを表示します"
 
-#: ../src/brasero-project-manager.c:325
+#: ../src/brasero-project-manager.c:327
 msgid "<big><b>Playlists</b></big>"
 msgstr "<big><b>演奏一覧</b></big>"
 
-#: ../src/brasero-project-manager.c:326
+#: ../src/brasero-project-manager.c:328
 msgid "<i>Display playlists and their contents</i>"
 msgstr "<i>演奏一覧とその内容を表示します</i>"
 
-#: ../src/brasero-project-manager.c:327 ../src/play-list.c:284
+#: ../src/brasero-project-manager.c:329 ../src/play-list.c:327
 msgid "Playlists"
 msgstr "演奏一覧"
 
-#: ../src/brasero-project-manager.c:328
+#: ../src/brasero-project-manager.c:330
 msgid "Display playlists"
 msgstr "演奏一覧を表示します"
 
-#: ../src/brasero-project-manager.c:398
+#: ../src/brasero-project-manager.c:400
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d個のファイルを選択済み (%s)"
 
-#: ../src/brasero-project-manager.c:408
+#: ../src/brasero-project-manager.c:410
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
 msgstr[0] "%d個のファイルはサポート済み (%s)"
 
-#: ../src/brasero-project-manager.c:414
+#: ../src/brasero-project-manager.c:416
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
 msgstr[0] "%d個のファイルが追加可能 (%s)"
 
-#: ../src/brasero-project-manager.c:425
+#: ../src/brasero-project-manager.c:427
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] "ファイルを追加できません (%i個のファイルを選択済み)"
 
-#: ../src/brasero-project-manager.c:430
+#: ../src/brasero-project-manager.c:432
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "サポートしているファイルがありません (%i個のファイルを選択済み)"
 
-#: ../src/brasero-project-manager.c:436 ../src/brasero-project-manager.c:461
+#: ../src/brasero-project-manager.c:438 ../src/brasero-project-manager.c:463
 msgid "No file selected"
 msgstr "ファイルが選択されていません"
 
-#: ../src/brasero-project-manager.c:500
+#: ../src/brasero-project-manager.c:502
 msgid "Recent projects"
 msgstr "最近開いたプロジェクト"
 
-#: ../src/brasero-project-manager.c:501
+#: ../src/brasero-project-manager.c:503
 msgid "Display the projects recently opened"
 msgstr "最近開いたプロジェクトを表示します"
 
-#: ../src/brasero-project-manager.c:687
+#: ../src/brasero-project-manager.c:694
 msgid "Brasero - New audio disc project"
 msgstr "Brasero - 新しい音楽ディスクのプロジェクト"
 
-#: ../src/brasero-project-manager.c:699
+#: ../src/brasero-project-manager.c:708
 msgid "Brasero - New data disc project"
 msgstr "Brasero - 新しいデータ・ディスクのプロジェクト"
 
-#: ../src/brasero-project-manager.c:709
+#: ../src/brasero-project-manager.c:718
 msgid "Brasero - New image file"
 msgstr "Brasero - 新しいイメージ・ファイル"
 
-#: ../src/brasero-project-manager.c:720
+#: ../src/brasero-project-manager.c:729
 msgid "Brasero - Copy a disc"
 msgstr "Brasero - ディスクのコピー"
 
-#: ../src/brasero-file-chooser.c:172 ../src/search.c:433
-#: ../src/search-entry.c:759 ../src/search-entry.c:800
-#: ../src/search-entry.c:862
+#: ../src/brasero-file-chooser.c:235 ../src/search.c:474
+#: ../src/search-entry.c:761 ../src/search-entry.c:802
+#: ../src/search-entry.c:864
 msgid "All files"
 msgstr "全てのファイル"
 
-#: ../src/brasero-file-chooser.c:177
+#: ../src/brasero-file-chooser.c:240
 msgid "Audio files only"
 msgstr "楽曲ファイルのみ"
 
-#: ../src/brasero-file-chooser.c:183
+#: ../src/brasero-file-chooser.c:246
 msgid "Movies only"
 msgstr "動画のみ"
 
-#: ../src/brasero-file-chooser.c:189
+#: ../src/brasero-file-chooser.c:252
 msgid "Image files only"
 msgstr "イメージ・ファイルのみ"
 
@@ -1426,42 +1424,42 @@ msgstr "表示する種類:"
 msgid "%s only"
 msgstr "%sのみ"
 
-#: ../src/play-list.c:295
+#: ../src/play-list.c:338
 msgid "Number of songs"
 msgstr "楽曲の総数"
 
-#: ../src/play-list.c:315
+#: ../src/play-list.c:358
 msgid "Genre"
 msgstr "ジャンル"
 
-#: ../src/play-list.c:629
+#: ../src/play-list.c:672
 msgid "Select a playlist"
 msgstr "演奏一覧の選択"
 
-#: ../src/play-list.c:841
+#: ../src/play-list.c:881
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d曲"
 
-#: ../src/play-list.c:934
+#: ../src/play-list.c:974
 #, c-format
 msgid "Error parsing playlist \"%s\":"
 msgstr "演奏一覧 \"%s\" を解析する際にエラー:"
 
-#: ../src/play-list.c:939 ../src/play-list.c:961
+#: ../src/play-list.c:979 ../src/play-list.c:1001
 msgid "an unknown error occured."
 msgstr "原因不明のエラーが発生しました。"
 
-#: ../src/play-list.c:941
+#: ../src/play-list.c:981
 msgid "Playlist loading error"
 msgstr "演奏一覧を読み込み際にエラー"
 
-#: ../src/play-list.c:968
+#: ../src/play-list.c:1008
 msgid "the playlist is empty."
 msgstr "演奏一覧が空です。"
 
-#: ../src/play-list.c:979
+#: ../src/play-list.c:1019
 msgid "Loading ..."
 msgstr "読み込み中..."
 
@@ -1469,21 +1467,21 @@ msgstr "読み込み中..."
 msgid " Preview "
 msgstr " プレビュー "
 
-#: ../src/player.c:486
+#: ../src/player.c:501
 msgid "No file"
 msgstr "ファイルなし"
 
-#: ../src/player.c:664
+#: ../src/player.c:679
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/player.c:884
+#: ../src/player.c:901
 #, c-format
 msgid "<span weight=\"bold\">Name:</span>\t %s"
 msgstr "<span weight=\"bold\">ファイル名:</span>\t %s"
 
-#: ../src/player.c:890
+#: ../src/player.c:907
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
@@ -1492,7 +1490,7 @@ msgstr ""
 "<span weight=\"bold\">サイズ:</span>\t<i><span size=\"smaller\"> %i x %i ピク"
 "セル</span></i>"
 
-#: ../src/player.c:911
+#: ../src/player.c:928
 #, c-format
 msgid ""
 "<span weight=\"bold\">%s</span>\n"
@@ -1501,7 +1499,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "演奏者 <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/player.c:919 ../src/player.c:928
+#: ../src/player.c:936 ../src/player.c:945
 #, c-format
 msgid "<span weight=\"bold\">%s</span>"
 msgstr "<span weight=\"bold\">%s</span>"
@@ -1634,32 +1632,32 @@ msgstr "ディスク・イメージの場所を選択する"
 msgid "Disc image file properties"
 msgstr "ディスク・イメージのプロパティ"
 
-#: ../src/search.c:294
+#: ../src/search.c:334
 msgid "Previous results"
 msgstr "前の検索結果"
 
-#: ../src/search.c:304 ../src/search.c:734
+#: ../src/search.c:344 ../src/search.c:775
 msgid "<b>No results</b>"
 msgstr "<b>検索結果なし</b>"
 
-#: ../src/search.c:309
+#: ../src/search.c:349
 msgid "Next results"
 msgstr "次の検索結果"
 
-#: ../src/search.c:444
+#: ../src/search.c:485
 msgid "Number of results displayed"
 msgstr "表示する検索結果の数:"
 
-#: ../src/search.c:728
+#: ../src/search.c:769
 #, c-format
 msgid "<b>Results %i - %i (out of %i)</b>"
 msgstr "<b>検索結果: %i 〜 %i (合計 %i個)</b>"
 
-#: ../src/search.c:979
+#: ../src/search.c:1020
 msgid "Error querying beagle:"
 msgstr "Beagle に問い合わせ中にエラー:"
 
-#: ../src/search.c:981
+#: ../src/search.c:1022
 msgid "Search error"
 msgstr "検索エラー"
 
@@ -1831,50 +1829,50 @@ msgstr "ブロック・モードを解除できませんでした"
 msgid "couldn't get pipe flags"
 msgstr "パイプのフラグを取得できませんでした"
 
-#: ../src/burn.c:518
+#: ../src/burn.c:544
 msgid "the drive can't be unlocked"
 msgstr "ドライブをロックできません"
 
-#: ../src/burn.c:527
+#: ../src/burn.c:553
 msgid "the disc can't be ejected"
 msgstr "ディスクを取り出せません"
 
-#: ../src/burn.c:628
+#: ../src/burn.c:673
 msgid "ongoing copying process"
 msgstr "コピー処理が進行中です"
 
-#: ../src/burn.c:632 ../src/burn.c:745 ../src/burn.c:1042
+#: ../src/burn.c:677 ../src/burn.c:790 ../src/burn.c:1087
 #, c-format
 msgid "the drive can't be locked (%s)"
 msgstr "ドライブをロックできません (%s)"
 
-#: ../src/burn.c:696
+#: ../src/burn.c:741
 msgid "the drive has no rewriting capabilities"
 msgstr "そのドライブは書き換え機能をサポートしていません"
 
-#: ../src/burn.c:741
+#: ../src/burn.c:786
 msgid "ongoing blanking process"
 msgstr "ディスクの消去処理が進行中です"
 
-#: ../src/burn.c:795 ../src/burn.c:1537 ../src/burn.c:1620 ../src/burn.c:1627
+#: ../src/burn.c:840 ../src/burn.c:1574 ../src/burn.c:1657 ../src/burn.c:1664
 #: ../src/burn-cdrdao.c:480 ../src/burn-growisofs.c:689
 msgid "the drive seems to be busy"
 msgstr "そのドライブは使用中です"
 
-#: ../src/burn.c:930
+#: ../src/burn.c:975
 msgid "the drive has no burning capabilities"
 msgstr "そのドライブは書き込み機能をサポートしていません"
 
-#: ../src/burn.c:1038
+#: ../src/burn.c:1083
 msgid "ongoing burning process"
 msgstr "書き込み処理が進行中です"
 
-#: ../src/burn.c:1418
+#: ../src/burn.c:1455
 #, c-format
 msgid "the size of the volume can't be checked (%s)"
 msgstr "ディスクの容量を確認できません (%s)"
 
-#: ../src/burn.c:1429
+#: ../src/burn.c:1466
 #, c-format
 msgid ""
 "the selected location does not have enough free space to store the disc "
@@ -1883,12 +1881,12 @@ msgstr ""
 "指定した場所はディスク・イメージを保存するだけの十分な容量ではありません (要 "
 "%ldMバイト)"
 
-#: ../src/burn.c:1846
+#: ../src/burn.c:1883
 #, c-format
 msgid "the file %s can't be opened (%s)"
 msgstr "ファイル %s を開けません (%s)"
 
-#: ../src/burn.c:2224
+#: ../src/burn.c:2258
 #, c-format
 msgid "internal error (code %i)"
 msgstr "内部エラーです (コード %i)"
@@ -2059,6 +2057,14 @@ msgstr "ファイル /proc/self/fd/0 が見つかりません"
 msgid "the image is not stored locally"
 msgstr "未だイメージをローカルのディスクに保存していません"
 
+#: ../src/burn-iso9660.c:101
+msgid "it does not appear to be a primary volume descriptor"
+msgstr "これはプライマリのボリューム・ディスクリプタではないようです"
+
+#: ../src/burn-iso9660.c:110
+msgid "it does not appear to be a valid iso9660 image"
+msgstr "これは妥当な iso9660 イメージではないようです"
+
 #: ../src/burn-mkisofs-base.c:294 ../src/burn-mkisofs-base.c:585
 msgid "the file is not stored locally"
 msgstr "未だファイルをローカルのディスクに保存していません"
@@ -2072,12 +2078,12 @@ msgstr "null graft point"
 msgid "a temporary directory couldn't be created : %s"
 msgstr "作業用フォルダを生成できませんでした: %s"
 
-#: ../src/burn-mkisofs-base.c:633 ../src/burn-mkisofs-base.c:657
+#: ../src/burn-mkisofs-base.c:636 ../src/burn-mkisofs-base.c:660
 #, c-format
 msgid "a temporary file couldn't be created: %s"
 msgstr "作業用ファイルを生成できませんでした: %s"
 
-#: ../src/burn-mkisofs-base.c:811
+#: ../src/burn-mkisofs-base.c:817
 msgid "The label for the image is too long."
 msgstr "イメージのラベルが長すぎます"
 
@@ -2117,7 +2123,7 @@ msgstr "残り時間:"
 msgid "Estimated drive speed:"
 msgstr "ドライブの書き込み速度:"
 
-#: ../src/progress.c:392
+#: ../src/progress.c:395
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB / %i MiB"
@@ -2194,29 +2200,29 @@ msgstr "楽曲(_M)"
 msgid "_video"
 msgstr "動画(_V)"
 
-#: ../src/search-entry.c:467
+#: ../src/search-entry.c:468
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr ""
 "キーワードを入力するか、プルダウン・メニューから \"全てのファイル\" を選択し"
 "て下さい"
 
-#: ../src/search-entry.c:471
+#: ../src/search-entry.c:472
 msgid "Select if you want to search among image files only"
 msgstr "画像ファイルだけ検索する時に ON にして下さい"
 
-#: ../src/search-entry.c:475
+#: ../src/search-entry.c:476
 msgid "Select if you want to search among video files only"
 msgstr "動画ファイルだけ検索する時に ON にして下さい"
 
-#: ../src/search-entry.c:479
+#: ../src/search-entry.c:480
 msgid "Select if you want to search among audio files only"
 msgstr "楽曲ファイルだけ検索する時に ON にして下さい"
 
-#: ../src/search-entry.c:483
+#: ../src/search-entry.c:484
 msgid "Select if you want to search among your text documents only"
 msgstr "通常のドキュメントだけ検索する時に ON にして下さい"
 
-#: ../src/search-entry.c:487
+#: ../src/search-entry.c:488
 msgid "Click to start the search"
 msgstr "検索を開始します"
 
@@ -2354,16 +2360,16 @@ msgstr "ファイル選択ダイアログを表示します"
 msgid "Show dialog"
 msgstr "ダイアログの表示"
 
-#: ../src/tray.c:233
+#: ../src/tray.c:235
 msgid "waiting"
 msgstr "待機中"
 
-#: ../src/tray.c:271
+#: ../src/tray.c:273
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
 msgstr "%s (%02i%% 完了、残り %s)"
 
-#: ../src/tray.c:278
+#: ../src/tray.c:280
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s (%02i%% 完了)"
@@ -2538,41 +2544,41 @@ msgstr "動画プレビューの幅"
 msgid "width for image preview"
 msgstr "画像プレビューの幅"
 
-#: ../src/brasero-project-size.c:237 ../src/brasero-project-size.c:238
+#: ../src/brasero-project-size.c:242 ../src/brasero-project-size.c:243
 msgid "Show the available media to be burnt"
 msgstr "利用できるメディアを表示します"
 
-#: ../src/brasero-project-size.c:481
+#: ../src/brasero-project-size.c:497
 #, c-format
 msgid "(mounted drive) <i>%s</i>"
 msgstr "(マウント中のドライブ) <i>%s</i>"
 
-#: ../src/brasero-project-size.c:501
+#: ../src/brasero-project-size.c:527
 #, c-format
 msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
 msgstr "<b>書き込み可能なサイズを超えました</b> (%s / %s in <i>%s</i>)"
 
-#: ../src/brasero-project-size.c:506
+#: ../src/brasero-project-size.c:532
 #, c-format
 msgid "<b>Oversized</b> (%s / %s)"
 msgstr "<b>書き込み可能なサイズを超えました</b> (%s / %s)"
 
-#: ../src/brasero-project-size.c:512
+#: ../src/brasero-project-size.c:538
 #, c-format
 msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
 msgstr "<b>空です</b> (%s / %s in <i>%s</i>)"
 
-#: ../src/brasero-project-size.c:517
+#: ../src/brasero-project-size.c:543
 #, c-format
 msgid "<b>Empty</b> (%s / %s)"
 msgstr "<b>空です</b> (%s / %s)"
 
-#: ../src/brasero-project-size.c:959
+#: ../src/brasero-project-size.c:1015
 #, c-format
 msgid "%s (%s) inserted in %s"
 msgstr "%3$s に挿入した %1$s (%2$s)"
 
-#: ../src/brasero-project-size.c:964
+#: ../src/brasero-project-size.c:1020
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -2590,11 +2596,11 @@ msgid "Check"
 msgstr "チェック開始"
 
 #: ../src/brasero-sum-dialog.c:263 ../src/brasero-sum-dialog.c:313
-#: ../src/brasero-sum-dialog.c:607
+#: ../src/brasero-sum-dialog.c:606
 msgid "File integrity check error"
 msgstr "ファイルの一貫性チェックでエラー"
 
-#: ../src/brasero-sum-dialog.c:264 ../src/brasero-sum-dialog.c:608
+#: ../src/brasero-sum-dialog.c:264 ../src/brasero-sum-dialog.c:607
 msgid "The file integrity check cannot be performed:"
 msgstr "ファイルの一貫性をチェックできません:"
 
@@ -2642,7 +2648,7 @@ msgstr "URI が間違っています"
 msgid "Downloading md5 file"
 msgstr "md5 ファイルのダウンロード中"
 
-#: ../src/brasero-sum-dialog.c:609
+#: ../src/brasero-sum-dialog.c:608
 msgid "no md5 file was given."
 msgstr "md5 ファイルが指定されていません"
 
@@ -2787,7 +2793,7 @@ msgid "Allow to add more data to the disc later"
 msgstr "後でデータをさらに追加できるようにする"
 
 #: ../src/brasero-disc-option-dialog.c:221
-#: ../src/brasero-disc-option-dialog.c:397
+#: ../src/brasero-disc-option-dialog.c:398
 msgid "<b>Multisession</b>"
 msgstr "<b>マルチ・セッション</b>"
 
@@ -2809,17 +2815,17 @@ msgstr "<b>タイトル</b>"
 msgid "Audio disc (%s)"
 msgstr "音楽ディスク (%s)"
 
-#: ../src/brasero-disc-option-dialog.c:291
+#: ../src/brasero-disc-option-dialog.c:292
 msgid "their names will be changed and truncated to 64 characters."
 msgstr "名前を変更して 64文字に切りつめます。"
 
 #. general options
-#: ../src/brasero-disc-option-dialog.c:321
+#: ../src/brasero-disc-option-dialog.c:322
 msgid "Increase compatibility with Windows systems"
 msgstr "MS Windows システムとの互換性を上げる"
 
-#: ../src/brasero-disc-option-dialog.c:324
 #: ../src/brasero-disc-option-dialog.c:325
+#: ../src/brasero-disc-option-dialog.c:326
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
@@ -2827,40 +2833,40 @@ msgstr ""
 "Windows システムとの互換性を改善して長いファイル名を表示できるようにします "
 "(最大 64文字まで)"
 
-#: ../src/brasero-disc-option-dialog.c:338
+#: ../src/brasero-disc-option-dialog.c:339
 msgid "Check data integrity"
 msgstr "データの一貫性をチェックする"
 
-#: ../src/brasero-disc-option-dialog.c:341
 #: ../src/brasero-disc-option-dialog.c:342
+#: ../src/brasero-disc-option-dialog.c:343
 msgid "Allow to check the integrity of files on the disc"
 msgstr "ディスクの中にあるファイルの一貫性をチェックできるようにする"
 
-#: ../src/brasero-disc-option-dialog.c:354
+#: ../src/brasero-disc-option-dialog.c:355
 msgid "Create a video DVD"
 msgstr "動画 DVD の作成"
 
-#: ../src/brasero-disc-option-dialog.c:357
 #: ../src/brasero-disc-option-dialog.c:358
+#: ../src/brasero-disc-option-dialog.c:359
 msgid "Create a video DVD that can be played by all DVD readers"
 msgstr "DVD プレイヤーで再生できる動画の DVD を作成します"
 
-#: ../src/brasero-disc-option-dialog.c:361
+#: ../src/brasero-disc-option-dialog.c:362
 msgid "<b>Disc options</b>"
 msgstr "<b>ディスクのオプション</b>"
 
 #. multisession options
-#: ../src/brasero-disc-option-dialog.c:390
+#: ../src/brasero-disc-option-dialog.c:391
 msgid "Leave the disc open to add a data session later"
 msgstr "後でデータ・セッションを追加するためにドライブを開いたままにする"
 
-#: ../src/brasero-disc-option-dialog.c:394
 #: ../src/brasero-disc-option-dialog.c:395
+#: ../src/brasero-disc-option-dialog.c:396
 msgid "Allow create what is called an enhanced CD or CD+"
 msgstr "拡張 CD/CD+ も生成できるようにする"
 
-#: ../src/brasero-disc-option-dialog.c:597
-#: ../src/brasero-disc-option-dialog.c:598
+#: ../src/brasero-disc-option-dialog.c:602
+#: ../src/brasero-disc-option-dialog.c:603
 #: ../src/brasero-image-option-dialog.c:420
 #: ../src/brasero-image-option-dialog.c:421
 msgid "Choose which drive holds the disc to write to"
