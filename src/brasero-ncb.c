@@ -58,7 +58,6 @@ typedef struct {
 static void
 free_command_data (CommandData *unmount_data)
 {
-	g_ptr_array_foreach (unmount_data->argv, (GFunc)g_free, NULL);
 	g_ptr_array_add (unmount_data->argv, NULL);
 	g_strfreev ((gchar**) unmount_data->argv->pdata);
 	g_ptr_array_free (unmount_data->argv, FALSE);
