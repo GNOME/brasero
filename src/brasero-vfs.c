@@ -115,6 +115,8 @@ struct _BraseroCountData {
 };
 typedef struct _BraseroCountData BraseroCountData;
 
+#ifdef BUILD_PLAYLIST
+
 struct _BraseroVFSPlaylistData {
 	gchar *uri;
 	GList *uris;
@@ -123,6 +125,8 @@ struct _BraseroVFSPlaylistData {
 	GnomeVFSFileInfoOptions flags;
 };
 typedef struct _BraseroVFSPlaylistData BraseroVFSPlaylistData;
+
+#endif
 
 struct _BraseroInfoResult  {
 	GnomeVFSFileInfo *info;
@@ -211,7 +215,12 @@ struct _BraseroVFSPrivate {
 
 	BraseroAsyncTaskTypeID info_type;
 	BraseroAsyncTaskTypeID load_type;
+
+#ifdef BUILD_PLAYLIST
+
 	BraseroAsyncTaskTypeID playlist_type;
+
+#endif
 
 	/* used for metadata */
 	GSList *processing_meta;
@@ -1085,11 +1094,16 @@ brasero_vfs_count_result_audio (BraseroVFS *self,
 	||   !strcmp (info->mime_type, "audio/x-mpegurl"))) {
 		/* it's a playlist so let's parse it */
 		data->refcount ++;
+
+#ifdef BUILD_PLAYLIST
+
 		brasero_vfs_parse_playlist (self,
 					    uri,
 					    GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 					    BRASERO_TASK_TYPE_COUNT_SUBTASK_PLAYLIST,
 					    ctx);
+#endif
+
 		return;
 	}
 
@@ -1483,10 +1497,15 @@ brasero_vfs_init (BraseroVFS *obj)
 		brasero_async_task_manager_register_type (BRASERO_ASYNC_TASK_MANAGER (obj),
 							  brasero_vfs_load_thread,
 							  brasero_vfs_load_result);
+
+#ifdef BUILD_PLAYLIST
+
 	obj->priv->playlist_type =
 		brasero_async_task_manager_register_type (BRASERO_ASYNC_TASK_MANAGER (obj),
 							  brasero_vfs_playlist_thread,
 							  brasero_vfs_playlist_result);
+
+#endif
 
 	brasero_vfs_register_data_type (obj,
 					G_OBJECT (obj),
@@ -1520,14 +1539,21 @@ brasero_vfs_init (BraseroVFS *obj)
 					G_OBJECT (obj),
 					G_CALLBACK (brasero_vfs_metadata_result),
 					brasero_vfs_metadata_subtask_destroy);
+
+#ifdef BUILD_PLAYLIST
+
 	brasero_vfs_register_data_type (obj,
 					G_OBJECT (obj),
 					NULL,
 					brasero_vfs_playlist_destroy);
+
 	brasero_vfs_register_data_type (obj,
 					G_OBJECT (obj),
 					G_CALLBACK (brasero_vfs_playlist_subtask_result),
 					brasero_vfs_playlist_subtask_destroy);
+
+#endif
+
 }
 
 static void

@@ -640,7 +640,7 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const char *line)
 		BRASERO_JOB_TASK_SET_TOTAL (growisofs, growisofs->priv->sectors_num * 2048);
 	}
 	else if (strstr (line, "unsupported MMC profile")
-	      || (strstr (line, "already carries isofs") && strstr (line, "FATAL:"))) {
+	     || (strstr (line, "already carries isofs") && strstr (line, "FATAL:"))) {
 		/* This is not supposed to happen since we checked for the cd
 		   type before starting, but we try to handle it anyway, since mmc
 		   profiling can fail. */
