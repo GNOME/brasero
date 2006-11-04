@@ -582,6 +582,7 @@ brasero_layout_add_preview (BraseroLayout *layout,
 	entry.tooltip = BRASERO_LAYOUT_PREVIEW_TOOLTIP;
 	entry.is_active = FALSE;
 	entry.callback = G_CALLBACK (brasero_layout_preview_toggled_cb);
+
 	gtk_action_group_add_toggle_actions (layout->priv->action_group,
 					     &entry,
 					     1,

@@ -356,6 +356,7 @@ brasero_app_create_app (void)
 		g_error_free (error);
 	}
 
+	gtk_ui_manager_ensure_update (app->manager);
 	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");
 	gnome_app_set_menus (GNOME_APP (app->mainwin), GTK_MENU_BAR (menubar));
 

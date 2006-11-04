@@ -337,12 +337,15 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 #ifdef BUILD_PREVIEW
 	brasero_player_add_source (BRASERO_PLAYER (preview),
 				   BRASERO_URI_CONTAINER (playlist));
-
-	brasero_layout_add_preview (BRASERO_LAYOUT (obj->priv->layout),
-				    preview);
 #endif
 
 #endif /* BUILD_PLAYLIST */
+
+#ifdef BUILD_PREVIEW
+	brasero_layout_add_preview (BRASERO_LAYOUT (obj->priv->layout),
+				    preview);
+#endif
+	
 }
 
 static void

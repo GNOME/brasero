@@ -1086,6 +1086,8 @@ brasero_vfs_count_result_audio (BraseroVFS *self,
 
 	data = BRASERO_CTX_TASK_DATA (ctx);
 
+#ifdef BUILD_PLAYLIST
+
 	if (info
 	&&  info->mime_type
 	&&  (!strcmp (info->mime_type, "audio/x-scpls")
@@ -1095,17 +1097,16 @@ brasero_vfs_count_result_audio (BraseroVFS *self,
 		/* it's a playlist so let's parse it */
 		data->refcount ++;
 
-#ifdef BUILD_PLAYLIST
-
 		brasero_vfs_parse_playlist (self,
 					    uri,
 					    GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 					    BRASERO_TASK_TYPE_COUNT_SUBTASK_PLAYLIST,
 					    ctx);
-#endif
 
 		return;
 	}
+
+#endif
 
 	data->files_num ++;
 	
