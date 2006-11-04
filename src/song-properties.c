@@ -103,7 +103,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 {
 	GtkWidget *label;
 	GtkWidget *table;
-	GtkWidget *vbox;
+	GtkWidget *frame;
 
 	obj->priv = g_new0 (BraseroSongPropsPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (obj)->vbox), 0);
@@ -113,21 +113,22 @@ brasero_song_props_init (BraseroSongProps *obj)
 	g_object_ref (obj->priv->tooltips);
 	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
 
-	obj->priv->label = gtk_label_new (NULL);
-	gtk_label_set_single_line_mode (GTK_LABEL (obj->priv->label), FALSE);
-	gtk_label_set_use_markup (GTK_LABEL (obj->priv->label), TRUE);
-	gtk_label_set_justify (GTK_LABEL (obj->priv->label), GTK_JUSTIFY_FILL);
-	gtk_label_set_line_wrap (GTK_LABEL (obj->priv->label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->label), 0.0, 0.5);
-
 	table = gtk_table_new (4, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 
-	vbox = brasero_utils_pack_properties (NULL, table, NULL);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox), vbox, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->label, FALSE, FALSE, 4);
+	frame = brasero_utils_pack_properties ("", table, NULL);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+			    frame,
+			    FALSE,
+			    FALSE,
+			    0);
+
+	obj->priv->label = gtk_frame_get_label_widget (GTK_FRAME (frame));
+	gtk_label_set_single_line_mode (GTK_LABEL (obj->priv->label), FALSE);
+	gtk_label_set_use_markup (GTK_LABEL (obj->priv->label), TRUE);
+	gtk_label_set_line_wrap (GTK_LABEL (obj->priv->label), TRUE);
 
 	label = gtk_label_new (_("Title:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -170,10 +171,11 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 
-	vbox = brasero_utils_pack_properties (_("<big><b>Options</b></big>"),
-					      table,
-					      NULL);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox), vbox, FALSE, FALSE, 0);
+	frame = brasero_utils_pack_properties (_("<big><b>Options</b></big>"),
+					       table,
+					       NULL);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox), frame, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("Pause length:\t"));
 	obj->priv->gap = gtk_spin_button_new_with_range (0.0, 100.0, 1.0);
