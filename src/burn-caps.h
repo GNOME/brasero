@@ -125,6 +125,10 @@ BraseroImageFormat
 brasero_burn_caps_get_imager_default_format (BraseroBurnCaps *caps,
 					     const BraseroTrackSource *source);
 
+BraseroTrackSourceType
+brasero_burn_caps_get_imager_default_target (BraseroBurnCaps *caps,
+					     const BraseroTrackSource *source);
+
 BraseroBurnResult
 brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 				   BraseroRecorder **recorder,

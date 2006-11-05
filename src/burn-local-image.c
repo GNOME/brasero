@@ -739,11 +739,6 @@ brasero_local_image_get_track (BraseroImager *imager,
 		}
 		break;
 
-	case BRASERO_TRACK_SOURCE_AUDIO:
-		for (iter = retval->contents.audio.files; iter; iter = iter->next)
-			ADD_IF_NON_LOCAL (image, iter->data);
-		break;
-
 	case BRASERO_TRACK_SOURCE_GRAFTS:
 		ADD_IF_NON_LOCAL (image, retval->contents.grafts.excluded_path);
 		ADD_IF_NON_LOCAL (image, retval->contents.grafts.grafts_path);
@@ -798,12 +793,6 @@ brasero_local_image_get_track (BraseroImager *imager,
 
 	case BRASERO_TRACK_SOURCE_SONG:
 		for (iter = retval->contents.songs.files; iter; iter = iter->next)
-			iter->data = brasero_local_image_translate_uri (image,
-									iter->data);
-		break;
-
-	case BRASERO_TRACK_SOURCE_AUDIO:
-		for (iter = retval->contents.audio.files; iter; iter = iter->next)
 			iter->data = brasero_local_image_translate_uri (image,
 									iter->data);
 		break;

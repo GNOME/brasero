@@ -483,13 +483,13 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 
 		self->priv->dao = 1;
 
-		for (iter = source->contents.audio.files; iter; iter = iter->next) {
-			gchar *path;
+		for (iter = source->contents.audio.infos; iter; iter = iter->next) {
+			BraseroSongInfo *info;
 
-			path = iter->data;
+			info = iter->data;
 
 			result = brasero_libburn_add_file_track (session,
-								 path,
+								 info->path,
 								 BURN_AUDIO,
 								 error);
 			if (result != BRASERO_BURN_OK)
@@ -581,7 +581,7 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 				if (!self->priv->infs)
 					BRASERO_JOB_NOT_READY (self);
 
-				for (iter = self->priv->infs->contents.inf.infos; iter; iter = iter->next) {
+				for (iter = self->priv->infs->contents.audio.infos; iter; iter = iter->next) {
 					BraseroSongInfo *info;
 
 					info = iter->data;

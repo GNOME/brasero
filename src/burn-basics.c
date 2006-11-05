@@ -231,23 +231,16 @@ brasero_track_source_free (BraseroTrackSource *track)
 	}
 	else if (track->type == BRASERO_TRACK_SOURCE_DISC)
 		nautilus_burn_drive_unref (track->contents.drive.disc);
-	else if (track->type == BRASERO_TRACK_SOURCE_INF) {
-		if (track->contents.inf.album)
-			g_free (track->contents.inf.album);
+	else if (track->type == BRASERO_TRACK_SOURCE_INF
+	     ||  track->type == BRASERO_TRACK_SOURCE_AUDIO) {
+		if (track->contents.audio.album)
+			g_free (track->contents.audio.album);
 
-		g_slist_foreach (track->contents.inf.infos,
+		g_slist_foreach (track->contents.audio.infos,
 				 (GFunc) brasero_song_info_free,
 				 NULL);
 
-		g_slist_free (track->contents.inf.infos);
-	}
-	else if (track->type == BRASERO_TRACK_SOURCE_AUDIO) {
-		GSList *iter;
-
-		for (iter = track->contents.audio.files; iter; iter = iter->next)
-			g_free (iter->data);
-
-		g_slist_free (track->contents.audio.files);
+		g_slist_free (track->contents.audio.infos);
 	}
 	else if (track->type == BRASERO_TRACK_SOURCE_IMAGE) {
 		g_free (track->contents.image.image);
@@ -342,28 +335,19 @@ brasero_track_source_copy (const BraseroTrackSource *track)
 		copy->contents.drive.disc = track->contents.drive.disc;
 		nautilus_burn_drive_ref (track->contents.drive.disc);
 	}
-	else if (track->type == BRASERO_TRACK_SOURCE_INF) {
+	else if (track->type == BRASERO_TRACK_SOURCE_INF
+	     ||  track->type == BRASERO_TRACK_SOURCE_AUDIO) {
 		GSList *iter;
 
-		if (track->contents.inf.album)
-			copy->contents.inf.album = g_strdup (track->contents.inf.album);
+		if (track->contents.audio.album)
+			copy->contents.audio.album = g_strdup (track->contents.audio.album);
 
-		for (iter = track->contents.inf.infos; iter; iter = iter->next) {
+		for (iter = track->contents.audio.infos; iter; iter = iter->next) {
 			BraseroSongInfo *info;
 
 			info = iter->data;
-			copy->contents.inf.infos = g_slist_append (copy->contents.inf.infos,
-								   brasero_song_info_copy (info));
-		}
-	}
-	else if (track->type == BRASERO_TRACK_SOURCE_AUDIO) {
-		GSList *iter;
-
-		for (iter = track->contents.audio.files; iter; iter = iter->next) {
-			char *file;
-
-			file = g_strdup (iter->data);
-			copy->contents.audio.files = g_slist_append (copy->contents.audio.files, file);
+			copy->contents.audio.infos = g_slist_append (copy->contents.audio.infos,
+								     brasero_song_info_copy (info));
 		}
 	}
 	else if (track->type == BRASERO_TRACK_SOURCE_IMAGE) {

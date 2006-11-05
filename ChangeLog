@@ -1,5 +1,25 @@
 2006-11-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
+	* src/burn-basics.c: (brasero_track_source_free),
+	(brasero_track_source_copy):
+	* src/burn-basics.h:
+	* src/burn-caps.c: (brasero_burn_caps_create_recorder):
+	* src/burn-caps.h:
+	* src/burn-cdrecord.c: (brasero_cdrecord_write_inf),
+	(brasero_cdrecord_write_infs), (brasero_cdrecord_set_argv_record),
+	(brasero_cdrecord_set_source):
+	* src/burn-growisofs.c: (brasero_growisofs_set_argv_record):
+	* src/burn-libburn.c: (brasero_libburn_setup_disc):
+	* src/burn-local-image.c: (brasero_local_image_get_track):
+	* src/burn-transcode.c: (brasero_transcode_init),
+	(brasero_transcode_finalize), (brasero_transcode_set_source),
+	(brasero_transcode_set_output_type), (brasero_transcode_get_track),
+	(brasero_transcode_start), (brasero_transcode_get_track_type):
+
+	Fixed CD-TEXT not being written if mode isn't on the fly
+
+2006-11-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	* src/blank-dialog.c: (brasero_blank_dialog_device_opts_setup),
 	(brasero_blank_dialog_progress_changed_cb):
 	* src/burn-caps.c: (brasero_burn_caps_blanking_get_default_flags),

@@ -189,7 +189,7 @@ struct _BraseroTrackSource {
 	union {
 		struct {
 			gchar *label;
-			GSList *grafts;		/* BraseroGraftPt *graft */
+			GSList *grafts;			/* BraseroGraftPt *graft */
 			GSList *excluded;		/* list of uris (char*) that are to be always excluded */
 		} data;
 		struct {
@@ -199,15 +199,15 @@ struct _BraseroTrackSource {
 		} grafts;
 		struct {
 			gchar *album;
-			GSList *files;			/* BraseroSongFile *file */
+			GSList *files;			/* BraseroSongFile * */
 		} songs;
-		struct {
-			GSList *files;			/* char *uri */
-		} audio;
+		/* NOTE: _INF and _AUDIO share the same structure but the 
+		 * difference is that with _INF the song are not transcoded.
+		 * Files must be local. */
 		struct {
 			gchar *album;
-			GSList *infos;			/* BraseroSongInfo *info */
-		} inf;
+			GSList *infos;			/* BraseroSongInfo * */
+		} audio;
 		struct {
 			NautilusBurnDrive *disc;
 		} drive;

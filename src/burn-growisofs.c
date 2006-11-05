@@ -815,8 +815,9 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	if (growisofs->priv->rate > 0)
 		g_ptr_array_add (argv, g_strdup_printf ("-speed=%d", growisofs->priv->rate));
 
-	/* dvd-compat closes the discs and could cause
-	 * problems if multi session is required */
+	/* dvd-compat closes the discs and could cause problems if multi session
+	* is required. NOTE: it doesn't work with DVD+RW and DVD-RW in restricted
+	* overwrite mode. */
 	if (!growisofs->priv->multi)
 		g_ptr_array_add (argv, g_strdup ("-dvd-compat"));
 

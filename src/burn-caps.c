@@ -73,7 +73,6 @@
 /* FIXME: extension
 	  gboolean cdrecord_02  => no on the fly
 	  gboolean cdrecord_02_1 => no the fly for audio
-	  gboolean dvdrecord
 */
 	 
 
@@ -635,6 +634,7 @@ brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 
 	switch (type) {
 	case BRASERO_TRACK_SOURCE_AUDIO:
+	case BRASERO_TRACK_SOURCE_INF:
 		if (media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 

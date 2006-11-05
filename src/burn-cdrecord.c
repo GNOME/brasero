@@ -577,7 +577,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 		separator = strrchr (info->path, G_DIR_SEPARATOR);
 
 		if (dot && dot > separator)
-			path = g_strdup_printf ("%*s.inf",
+			path = g_strdup_printf ("%.*s.inf",
 						dot - info->path,
 						info->path);
 		else
@@ -724,7 +724,13 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 
 	cdrecord->priv->infs = g_slist_prepend (cdrecord->priv->infs,
 						g_strdup (path));
-	g_ptr_array_add (argv, path);
+
+	if (info->path) {
+		g_ptr_array_add (argv, g_strdup (info->path));
+		g_free (path);
+	}
+	else
+		g_ptr_array_add (argv, path);
 
 	return BRASERO_BURN_OK;
 
@@ -774,11 +780,11 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 		}
 	}
 
-	album = infs->contents.inf.album;
+	album = infs->contents.audio.album;
 	index = 0;
 	start = 0;
 
-	for (iter = infs->contents.inf.infos; iter; iter = iter->next) {
+	for (iter = infs->contents.audio.infos; iter; iter = iter->next) {
 		BraseroSongInfo *info;
 		BraseroBurnResult result;
 
@@ -959,7 +965,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		brasero_job_set_relay_slave_signals (BRASERO_JOB (cdrecord), FALSE);
 	}
 	else if (source->type == BRASERO_TRACK_SOURCE_AUDIO) {
-		GSList *iter;
+		BraseroBurnResult result;
 
 		/* CD-text cannot be written in tao mode (which is the default) */
 		if (cdrecord->priv->dao)
@@ -969,15 +975,17 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		g_ptr_array_add (argv, g_strdup ("-audio"));
 		g_ptr_array_add (argv, g_strdup ("-swab"));
 		g_ptr_array_add (argv, g_strdup ("-pad"));
+	
 		g_ptr_array_add (argv, g_strdup ("-useinfo"));
 		g_ptr_array_add (argv, g_strdup ("-text"));
 
-		for (iter = cdrecord->priv->track->contents.audio.files; iter; iter = iter->next) {
-			gchar *arg;
+		result = brasero_cdrecord_write_infs (cdrecord,
+						      argv,
+						      source,
+						      error);
 
-			arg = g_strdup (iter->data);
-			g_ptr_array_add (argv, arg);
-		}
+		if (result != BRASERO_BURN_OK)
+			return result;
 
 		brasero_job_set_run_slave (BRASERO_JOB (cdrecord), FALSE);
 	}
@@ -1150,7 +1158,8 @@ brasero_cdrecord_set_source (BraseroJob *job,
 
 	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
 	&&  track->type != BRASERO_TRACK_SOURCE_IMAGER
-	&&  track->type != BRASERO_TRACK_SOURCE_AUDIO)
+	&&  track->type != BRASERO_TRACK_SOURCE_AUDIO
+	&&  track->type != BRASERO_TRACK_SOURCE_INF)
 		BRASERO_JOB_NOT_SUPPORTED (cdrecord);
 
 	if (cdrecord->priv->infs) {

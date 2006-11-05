@@ -41,6 +41,7 @@
 
 #include "burn-basics.h"
 #include "brasero-marshal.h"
+#include "burn-caps.h"
 #include "burn-common.h"
 #include "burn-job.h"
 #include "burn-imager.h"
@@ -140,6 +141,8 @@ typedef enum {
 } BraseroTranscodeAction;
 
 struct BraseroTranscodePrivate {
+	BraseroBurnCaps *caps;
+
 	BraseroTranscodeAction action;
 
 	GstElement *pipeline;
@@ -158,6 +161,7 @@ struct BraseroTranscodePrivate {
 	gint64 global_pos;
 
 	BraseroTrackSourceType track_type;
+	BraseroTrackSource *source_track;
 	BraseroSong *current;
 	BraseroSong *songs;
 	gchar *album;
@@ -257,6 +261,7 @@ brasero_transcode_init (BraseroTranscode *obj)
 
 	obj->priv->clean = TRUE;
 	obj->priv->pipe_out = -1;
+	obj->priv->caps = brasero_burn_caps_get_default ();
 }
 
 static void
@@ -325,6 +330,16 @@ brasero_transcode_finalize (GObject *object)
 	if (cobj->priv->pipeline) {
 		gst_element_set_state (cobj->priv->pipeline, GST_STATE_NULL);
 		gst_object_unref (GST_OBJECT (cobj->priv->pipeline));
+	}
+
+	if (cobj->priv->caps) {
+		g_object_unref (cobj->priv->caps);
+		cobj->priv->caps = NULL;
+	}
+
+	if (cobj->priv->source_track) {
+		brasero_track_source_free (cobj->priv->source_track);
+		cobj->priv->source_track = NULL;
 	}
 
 	brasero_transcode_free_songs (cobj);
@@ -417,6 +432,11 @@ brasero_transcode_set_source (BraseroJob *job,
 		song->index = num;
 		num ++;
 	}
+
+	if (transcode->priv->source_track)
+		brasero_track_source_free (transcode->priv->source_track);
+
+	transcode->priv->source_track = brasero_track_source_copy (source);
 
 	return BRASERO_BURN_OK;
 }
@@ -514,10 +534,9 @@ brasero_transcode_set_output_type (BraseroImager *imager,
 	if (format != BRASERO_IMAGE_FORMAT_NONE)
 		BRASERO_JOB_NOT_SUPPORTED (transcode);
 
-	if (type == BRASERO_TRACK_SOURCE_DEFAULT)
-		type = BRASERO_TRACK_SOURCE_AUDIO;
-	else if (type != BRASERO_TRACK_SOURCE_INF
-	      &&  type != BRASERO_TRACK_SOURCE_AUDIO)
+	if (type != BRASERO_TRACK_SOURCE_INF
+	&&  type != BRASERO_TRACK_SOURCE_AUDIO
+	&&  type != BRASERO_TRACK_SOURCE_DEFAULT)
 		BRASERO_JOB_NOT_SUPPORTED (transcode);
 
 	transcode->priv->track_type = type;
@@ -529,6 +548,7 @@ brasero_transcode_get_track (BraseroImager *imager,
 			     BraseroTrackSource **track,
 			     GError **error)
 {
+	BraseroTrackSourceType target;
 	BraseroTranscode *transcode;
 	BraseroTrackSource *retval;
 	BraseroBurnResult result;
@@ -536,65 +556,58 @@ brasero_transcode_get_track (BraseroImager *imager,
 
 	transcode = BRASERO_TRANSCODE (imager);
 
-	if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_INF && !transcode->priv->inf_ready) {
+	if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_DEFAULT)
+		target = brasero_burn_caps_get_imager_default_target (transcode->priv->caps,
+								      transcode->priv->source_track);
+	else
+		target = transcode->priv->track_type;
+
+	if (target == BRASERO_TRACK_SOURCE_INF && !transcode->priv->inf_ready) {
 		transcode->priv->global_pos = 0;
 	
 		transcode->priv->action = BRASERO_TRANSCODE_ACTION_INF;
 		result = brasero_job_run (BRASERO_JOB (imager), error);
 		transcode->priv->action = BRASERO_TRANSCODE_ACTION_NONE;
 	
-		if (result != BRASERO_BURN_OK) {
-			transcode->priv->track_type = BRASERO_TRACK_SOURCE_UNKNOWN;
+		if (result != BRASERO_BURN_OK)
 			return result;
-		}
+
+		transcode->priv->inf_ready = 1;
 	}
-	else if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_AUDIO) {
+	else if (target == BRASERO_TRACK_SOURCE_AUDIO) {
 		transcode->priv->global_pos = 0;
 	
 		transcode->priv->action = BRASERO_TRANSCODE_ACTION_TRANSCODING;
 		result = brasero_job_run (BRASERO_JOB (imager), error);
 		transcode->priv->action = BRASERO_TRANSCODE_ACTION_NONE;
 	
-		if (result != BRASERO_BURN_OK) {
-			transcode->priv->track_type = BRASERO_TRACK_SOURCE_UNKNOWN;
+		if (result != BRASERO_BURN_OK)
 			return result;
-		}
-	}
-
-	retval = g_new0 (BraseroTrackSource, 1);
-	retval->type = transcode->priv->track_type;
-
-	if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_AUDIO) {
-		for (iter = transcode->priv->songs; iter; iter = iter->next) {
-			retval->contents.audio.files = g_slist_append (retval->contents.audio.files,
-								       g_strdup (iter->dest));
-		}
 
 		transcode->priv->audio_ready = 1;
 		transcode->priv->inf_ready = 1;
 	}
-	else if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_INF) {
-		if (transcode->priv->album)
-			retval->contents.inf.album = g_strdup (transcode->priv->album);
 
-		for (iter = transcode->priv->songs; iter; iter = iter->next) {
-			BraseroSongInfo *info;
+	retval = g_new0 (BraseroTrackSource, 1);
+	retval->type = target;
 
-			info = g_new0 (BraseroSongInfo, 1);
+	if (transcode->priv->album)
+		retval->contents.audio.album = g_strdup (transcode->priv->album);
 
-			info->title = g_strdup (iter->title);
-			info->artist = g_strdup (iter->artist);
-			info->composer = g_strdup (iter->composer);
-			info->path = g_strdup (iter->dest);
-			info->isrc = iter->isrc;
-			info->duration = iter->duration;
-			info->sectors = iter->sectors;
+	for (iter = transcode->priv->songs; iter; iter = iter->next) {
+		BraseroSongInfo *info;
+
+		info = g_new0 (BraseroSongInfo, 1);
+		info->title = g_strdup (iter->title);
+		info->artist = g_strdup (iter->artist);
+		info->composer = g_strdup (iter->composer);
+		info->path = g_strdup (iter->dest);
+		info->isrc = iter->isrc;
+		info->duration = iter->duration;
+		info->sectors = iter->sectors;
 			
-			retval->contents.inf.infos = g_slist_append (retval->contents.inf.infos,
-								     info);
-		}
-
-		transcode->priv->inf_ready = 1;
+		retval->contents.audio.infos = g_slist_append (retval->contents.audio.infos,
+							       info);
 	}
 
 	*track = retval;
@@ -1082,7 +1095,6 @@ brasero_transcode_start (BraseroJob *job,
 		int pipe_out [2];
 		BraseroBurnResult result;
 
-		transcode->priv->track_type = BRASERO_TRACK_SOURCE_AUDIO;
 		transcode->priv->action = BRASERO_TRANSCODE_ACTION_TRANSCODING;
 
 		/* now we generate the data, piping it to cdrecord presumably */
@@ -1772,16 +1784,23 @@ brasero_transcode_get_track_type (BraseroImager *imager,
 				  BraseroImageFormat *format)
 {
 	BraseroTranscode *transcode;
+	BraseroTrackSourceType target;
 
 	g_return_val_if_fail (type != NULL, BRASERO_BURN_ERR);
 
 	transcode = BRASERO_TRANSCODE (imager);
 
-	if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_UNKNOWN)
+	if (transcode->priv->track_type == BRASERO_TRACK_SOURCE_DEFAULT)
+		target = brasero_burn_caps_get_imager_default_target (transcode->priv->caps,
+								      transcode->priv->source_track);
+	else
+		target = transcode->priv->track_type;
+	
+	if (target == BRASERO_TRACK_SOURCE_UNKNOWN)
 		BRASERO_JOB_NOT_READY (transcode);
 
 	if (type)
-		*type = transcode->priv->track_type;
+		*type = target;
 
 	if (format)
 		format = BRASERO_IMAGE_FORMAT_NONE;
