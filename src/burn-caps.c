@@ -403,8 +403,14 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 				/* FIXME: check for restricted overwrite DVD-RW */
 				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 				if (media_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-					compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 					is_appendable = TRUE;
+
+					/* that's to increase DVD compatibility */
+					if ((source->format & BRASERO_IMAGE_FORMAT_VIDEO) == 0) {
+						g_print ("REACHED\n");
+						default_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
+						compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
+					}
 				}
 
 				if (is_appendable)

@@ -125,6 +125,7 @@ brasero_disc_option_dialog_new ()
 static void
 brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 {
+	gboolean has_video;
 	NautilusBurnMediaType media;
 	NautilusBurnDrive *drive = NULL;
 	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_NONE;
@@ -137,6 +138,22 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 					      NULL);
 	media = nautilus_burn_drive_get_media_type (drive);
 
+	if (dialog->priv->video_toggle) {
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+			has_video = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->video_toggle));
+			gtk_widget_set_sensitive (dialog->priv->video_toggle, TRUE);
+		}
+		else {
+			has_video = FALSE;
+			gtk_widget_set_sensitive (dialog->priv->video_toggle, FALSE);
+		}
+	}
+
+	if (has_video)
+		dialog->priv->track->format |= BRASERO_IMAGE_FORMAT_VIDEO;
+	else
+		dialog->priv->track->format &= ~BRASERO_IMAGE_FORMAT_VIDEO;
+
 	/* This option is only available if the disc is appendable 
 	 * or if it's DVD since these latters are always appendable */
 	brasero_burn_caps_get_flags (dialog->priv->caps,
@@ -147,7 +164,11 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 				     &supported_flags);
 
 	if (dialog->priv->close_check) {
-		if ((supported_flags & BRASERO_BURN_FLAG_DONT_CLOSE) == 0) {
+		if (has_video) {
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check), FALSE);
+			gtk_widget_set_sensitive (dialog->priv->close_check, FALSE);
+		}
+		else if ((supported_flags & BRASERO_BURN_FLAG_DONT_CLOSE) == 0) {
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check), FALSE);
 			gtk_widget_set_sensitive (dialog->priv->close_check, FALSE);
 		}
@@ -163,7 +184,11 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 	}
 
 	if (dialog->priv->append_check) {
-		if ((supported_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0) {
+		if (has_video) {
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), FALSE);
+			gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
+		}
+		else if ((supported_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0) {
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), FALSE);
 			gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
 		}
@@ -176,13 +201,6 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 						     (default_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) != 0);
 			gtk_widget_set_sensitive (dialog->priv->append_check, TRUE);	
 		}
-	}
-
-	if (dialog->priv->video_toggle) {
-		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
-			gtk_widget_set_sensitive (dialog->priv->video_toggle, TRUE);
-		else
-			gtk_widget_set_sensitive (dialog->priv->video_toggle, FALSE);
 	}
 
 	/* if it's a multisession disc we also need to reset the title as the
@@ -223,6 +241,13 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 static void
 brasero_disc_option_dialog_media_changed (BraseroRecorderSelection *selection,
 					  NautilusBurnMediaType media,
+					  BraseroDiscOptionDialog *dialog)
+{
+	brasero_disc_option_dialog_set_state (dialog);
+}
+
+static void
+brasero_disc_option_dialog_video_clicked (GtkToggleButton *video,
 					  BraseroDiscOptionDialog *dialog)
 {
 	brasero_disc_option_dialog_set_state (dialog);
@@ -422,6 +447,11 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog,
 	 * options isn't checked by default */
 	if (format & BRASERO_IMAGE_FORMAT_VIDEO) {
 		dialog->priv->video_toggle = gtk_check_button_new_with_label (_("Create a video DVD"));
+		g_signal_connect (dialog->priv->video_toggle,
+				  "toggled",
+				  G_CALLBACK (brasero_disc_option_dialog_video_clicked),
+				  dialog);
+
 		gtk_tooltips_set_tip (dialog->priv->tooltips,
 				      dialog->priv->video_toggle,
 				      _("Create a video DVD that can be played by all DVD readers"),
@@ -535,6 +565,7 @@ brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
 	BraseroTrackSource *track;
 	BraseroDriveProp props;
 	BraseroBurnFlag tmp;
+	gboolean dvd_video;
 
 	g_return_val_if_fail (source != NULL, FALSE);
 	g_return_val_if_fail (drive != NULL, FALSE);
@@ -553,10 +584,16 @@ brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
 	if (dialog->priv->label)
 		track->contents.data.label = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->priv->label)));;
 
-	if (dialog->priv->video_toggle
-	&&  GTK_WIDGET_IS_SENSITIVE (dialog->priv->video_toggle)
-	&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->video_toggle)))
+	if (!dialog->priv->video_toggle
+	|| !GTK_WIDGET_IS_SENSITIVE (dialog->priv->video_toggle)
+	|| !gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->video_toggle))) {
+		dvd_video = FALSE;
 		track->format &= ~BRASERO_IMAGE_FORMAT_VIDEO;
+	}
+	else {
+		dvd_video = TRUE;
+		track->format |= BRASERO_IMAGE_FORMAT_VIDEO;
+	}
 
 	*source = track;
 
@@ -585,11 +622,15 @@ brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
 	if (flags) {
 		tmp |= props.flags;
 
-		if (dialog->priv->close_check
+		if (!dvd_video
+		&&  dialog->priv->close_check
 		&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check)))
 			tmp |= BRASERO_BURN_FLAG_DONT_CLOSE;
+		else /* this is because for DVD the flag is compulsory */
+			tmp &= ~BRASERO_BURN_FLAG_DONT_CLOSE;
 
-		if (dialog->priv->append_check
+		if (!dvd_video
+		&&  dialog->priv->append_check
 		&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check))) {
 			BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NONE;
 
