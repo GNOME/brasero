@@ -177,7 +177,6 @@ brasero_blank_dialog_new ()
 	return GTK_WIDGET (obj);
 }
 
-
 static void
 brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 					NautilusBurnMediaType type,
@@ -204,9 +203,6 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 								 type,
 								 &flags,
 								 &fast_supported);
-
-//	gtk_widget_set_sensitive (dialog->priv->blank_button,
-//				  (result == BRASERO_BURN_OK));
 
 	gtk_widget_set_sensitive (dialog->priv->dummy_toggle,
 				  (flags & BRASERO_BURN_FLAG_DUMMY));
@@ -238,27 +234,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 		return;
 
 	/* FIXME: do we really need this following messages ? */
-	if (type == NAUTILUS_BURN_MEDIA_TYPE_DVDRW) {
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->dummy_toggle))) {
-			GtkWidget *message;
-
-			/* simulation doesn't work with DVDs */
-			message = gtk_message_dialog_new (GTK_WINDOW (dialog),
-							  GTK_DIALOG_MODAL |
-							  GTK_DIALOG_DESTROY_WITH_PARENT,
-							  GTK_MESSAGE_INFO,
-							  GTK_BUTTONS_CLOSE,
-							  _("DVDRW discs don't support simulated blanking."));
-
-			gtk_window_set_title (GTK_WINDOW (message), _("Unneeded operation"));
-
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  _("You can nevertheless blank it."));
-			gtk_dialog_run (GTK_DIALOG (message));
-			gtk_widget_destroy (message);
-		}
-	}
-	else if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+	if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->fast_enabled))) {
 			GtkWidget *message;
 
@@ -359,7 +335,6 @@ brasero_blank_dialog_progress_changed_cb (BraseroBurn *burn,
 					  glong remaining,
 					  BraseroBlankDialog *dialog)
 {
-	/* FIXME: with DVDs we'd better write speed in DVD speed not CD */
 	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (dialog),
 					  overall_progress,
 					  task_progress,

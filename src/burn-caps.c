@@ -285,12 +285,8 @@ brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
 	&&  media_type != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	if (fast_default) {
-		if (media_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
-			*fast_default = FALSE;
-		else
-			*fast_default = TRUE;
-	}
+	if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type) && fast_default)
+		*fast_default = TRUE;
 
 	if (flags)
 		*flags = default_flags;
@@ -400,19 +396,24 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 			default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 
-			/* with growisofs our sole DVD backend, the burning
-			 * is always performed on the fly and allow files to 
-			 * be appended at the next session */
+			/* with growisofs as our sole DVD backend, the burning
+			 * is always performed on the fly */
 			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type)) {
-				compulsory_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE|
-						     BRASERO_BURN_FLAG_ON_THE_FLY;
+				compulsory_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 
-				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE|
-						   BRASERO_BURN_FLAG_APPEND|
-						   BRASERO_BURN_FLAG_MERGE;
+				/* FIXME: check for restricted overwrite DVD-RW */
+				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
+				if (media_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+					compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
+					is_appendable = TRUE;
+				}
+
+				if (is_appendable)
+					supported_flags |= BRASERO_BURN_FLAG_APPEND|
+							   BRASERO_BURN_FLAG_MERGE;
 
 				if (is_appendable && !is_blank && !is_rewritable) {
-					compulsory_flags |=  BRASERO_BURN_FLAG_APPEND;
+					compulsory_flags |= BRASERO_BURN_FLAG_APPEND;
 
 					default_flags |= BRASERO_BURN_FLAG_APPEND|
 							 BRASERO_BURN_FLAG_MERGE;
@@ -423,8 +424,12 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 
 				/* when we don't know the media type we allow
 				 * the following options nevertheless */
-				if (media_type < NAUTILUS_BURN_MEDIA_TYPE_CD
-				||  is_appendable) {
+				if (media_type < NAUTILUS_BURN_MEDIA_TYPE_CD) {
+					supported_flags |=  BRASERO_BURN_FLAG_APPEND|
+							    BRASERO_BURN_FLAG_MERGE;
+
+				}
+				else if (is_appendable) {
 					supported_flags |=  BRASERO_BURN_FLAG_APPEND;
 
 					if (!has_audio)
@@ -440,10 +445,13 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 
 						if (!has_audio)
 							default_flags |= BRASERO_BURN_FLAG_MERGE;
-
 					}
 				}
 			}
+			else
+				supported_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE|
+						    BRASERO_BURN_FLAG_APPEND|
+						    BRASERO_BURN_FLAG_MERGE;
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
@@ -480,8 +488,8 @@ brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
 						gboolean *fast_supported)
 {
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NOGRACE|
-					    BRASERO_BURN_FLAG_EJECT|
-					    BRASERO_BURN_FLAG_DEBUG;
+					  BRASERO_BURN_FLAG_EJECT|
+					  BRASERO_BURN_FLAG_DEBUG;
 
 	if (media_type == NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN
 	||  media_type == NAUTILUS_BURN_MEDIA_TYPE_ERROR
@@ -493,14 +501,11 @@ brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
 	&&  media_type != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	if (media_type != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+	if (media_type <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
 		supported_flags |= BRASERO_BURN_FLAG_DUMMY;
 
-		if (fast_supported)
-			*fast_supported = TRUE;
-	}
-	else if (fast_supported)
-		*fast_supported = FALSE;
+	if (fast_supported)
+		*fast_supported = TRUE;
 
 	if (flags)
 		*flags = supported_flags;
@@ -696,12 +701,17 @@ BraseroBurnResult
 brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 						BraseroRecorder **recorder,
 						NautilusBurnMediaType type,
+						gboolean fast,
 						GError **error)
 {
 	BraseroRecorder *obj;
 
 	if (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
-		if (type == NAUTILUS_BURN_MEDIA_TYPE_DVDRW || type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
+		/* FIXME: the problem here is that DVD-RW in restricted overwrite
+		 * behaves in the same way as +RW. They have only one session and
+		 * don't need to be formatted. We need to make a difference between
+		 * the two modes for DVD-RW. */
+		if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW && !fast)
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
 		else
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));

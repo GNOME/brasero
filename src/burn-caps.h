@@ -136,6 +136,7 @@ BraseroBurnResult
 brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 						BraseroRecorder **recorder,
 						NautilusBurnMediaType media_type,
+						gboolean fast,
 						GError **error);
 
 BraseroMediaType

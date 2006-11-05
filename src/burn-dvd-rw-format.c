@@ -28,6 +28,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -142,7 +143,7 @@ brasero_dvd_rw_format_init (BraseroDvdRwFormat *obj)
 }
 
 static void
-brasero_dvd_rw_format_finalize(GObject *object)
+brasero_dvd_rw_format_finalize (GObject *object)
 {
 	BraseroDvdRwFormat *cobj;
 	cobj = BRASERO_DVD_RW_FORMAT (object);
@@ -152,8 +153,8 @@ brasero_dvd_rw_format_finalize(GObject *object)
 		cobj->priv->drive = NULL;
 	}
 
-	g_free(cobj->priv);
-	G_OBJECT_CLASS(parent_class)->finalize(object);
+	g_free (cobj->priv);
+	G_OBJECT_CLASS(parent_class)->finalize (object);
 }
 
 BraseroDvdRwFormat *
@@ -178,11 +179,7 @@ brasero_dvd_rw_format_blank (BraseroRecorder *recorder,
 	media = nautilus_burn_drive_get_media_type (dvdformat->priv->drive);
 
 	if (media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-		BRASERO_JOB_NOT_SUPPORTED (dvdformat);;
-
-	/* There is no need to format RW+ in a fast way */
-        if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW && dvdformat->priv->blank_fast)
-		return BRASERO_BURN_OK;
+		BRASERO_JOB_NOT_SUPPORTED (dvdformat);
 
 	result = brasero_job_run (BRASERO_JOB (dvdformat), error);
 
@@ -231,10 +228,28 @@ brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const char *line)
 
 	dvdformat = BRASERO_DVD_RW_FORMAT (process);
 
+	if (strstr (line, "unable to proceed with format")
+	||  strstr (line, "unable to umount")
+	||  strstr (line, "media is not blank")
+	||  strstr (line, "media is already formatted")
+	||  strstr (line, "you have the option to re-run")) {
+		/* FIXME: this error needs a better message */
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("Unhandled error, aborting")));
+		return BRASERO_BURN_OK;
+	}
+
 	if ((sscanf (line, "* blanking %f%%,", &percent) == 1)
 	||  (sscanf (line, "* formatting %f%%,", &percent) == 1)
 	||  (sscanf (line, "* relocating lead-out %f%%,", &percent) == 1))
 		brasero_job_set_dangerous (BRASERO_JOB (process), TRUE);
+
+	if (percent > 1.0) {
+		BRASERO_JOB_TASK_SET_WRITTEN (process, percent);
+		BRASERO_JOB_TASK_SET_TOTAL (process, 100);
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -265,12 +280,21 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
         if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 		gchar *blank_str;
 
+		/* This creates produce a sequential DVD-RW */
 		blank_str = g_strdup_printf ("-blank%s",
 					     dvdformat->priv->blank_fast ? "" : "=full");
 		g_ptr_array_add (argv, blank_str);
 	}
+	else {
+		gchar *format_str;
 
-	/* it seems that dvd-format prefers the device path not cdrecord_id */
+		/* This creates a restricted overwrite DVD-RW */
+		/* FIXME: that's the mode we should also use for DVD-RW
+		 * in restricted overwrite mode. For the time being there
+		 * is no way to distinguish the two modes with ncb. */
+		format_str = g_strdup ("-force");
+	}
+
 	dev_str = g_strdup (NCB_DRIVE_GET_DEVICE (dvdformat->priv->drive));
 	g_ptr_array_add (argv, dev_str);
 
@@ -280,4 +304,3 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 				     FALSE);
 	return BRASERO_BURN_OK;
 }
-

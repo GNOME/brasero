@@ -688,6 +688,7 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 		goto end;
 	}
 
+	type = nautilus_burn_drive_get_media_type (drive);
 	can_record = brasero_recorder_selection_update_info (selection, drive);
 	added_signal = g_signal_connect (G_OBJECT (monitor),
 					 "media-added",

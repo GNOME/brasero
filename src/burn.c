@@ -811,6 +811,7 @@ brasero_burn_blank_real (BraseroBurn *burn,
 	result = brasero_burn_caps_create_recorder_for_blanking (burn->priv->caps,
 								 &burn->priv->recorder,
 								 burn->priv->dest_media_type,
+								 (flags & BRASERO_RECORDER_FLAG_FAST_BLANK),
 								 error);
 	if (result != BRASERO_BURN_OK)
 		return result;
@@ -1106,7 +1107,9 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
 		if (result != BRASERO_BURN_OK)
 			goto end;
-	
+
+		/* FIXME: we need to make another distinction with DVD-RW in
+		 * restricted overwrite mode which don't need blanking as well */
 		if (type != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 			BraseroRecorderFlag blank_flags = BRASERO_RECORDER_FLAG_FAST_BLANK;
 

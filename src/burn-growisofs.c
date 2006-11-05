@@ -494,13 +494,16 @@ brasero_growisofs_blank (BraseroRecorder *recorder,
 
 	media = nautilus_burn_drive_get_media_type (growisofs->priv->drive);
 
-	if (media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
-	/* There is no need to format RW+ in a fast way */
-        if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW
-	&&  growisofs->priv->fast_blank)
-		return BRASERO_BURN_OK;
+	/* There is no way to format RW+ or RW- in restricted overwrite mode in a fast way */
+	/* FIXME: actually there is: just reformat them (with dvd+rw-format -force) */
+	/* FIXME: we should use the same thing for DVD+RW and DVD-RW in restricted
+	 * overwrite mode */
+        if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW
+	||  growisofs->priv->fast_blank)
+		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
 	/* if we have a slave we don't want it to run */
 	brasero_job_set_run_slave (BRASERO_JOB (recorder), FALSE);
@@ -639,18 +642,22 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const char *line)
 		growisofs->priv->sectors_num = strtoll (line, NULL, 10);
 		BRASERO_JOB_TASK_SET_TOTAL (growisofs, growisofs->priv->sectors_num * 2048);
 	}
-	else if (strstr (line, "unsupported MMC profile")
-	     || (strstr (line, "already carries isofs") && strstr (line, "FATAL:"))) {
-		/* This is not supposed to happen since we checked for the cd
-		   type before starting, but we try to handle it anyway, since mmc
-		   profiling can fail. */
+	else if (strstr (line, "flushing cache") != NULL) {
+		BRASERO_JOB_TASK_SET_PROGRESS (growisofs, 1.0);
+		BRASERO_JOB_TASK_SET_WRITTEN (growisofs, growisofs->priv->sectors_num * 2048);
+		BRASERO_JOB_TASK_SET_ACTION (growisofs,
+					     BRASERO_BURN_ACTION_FIXATING,
+					     NULL,
+					     FALSE);
+	}
+	else if (strstr (line, "already carries isofs") && strstr (line, "FATAL:")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE,
 						_("The disc is already burnt")));
 	}
-	else if (strstr (line, "unable to open") || strstr (line, "unable to stat")) {
-		/* This fits the "open6" and "open"-like messages */
+	else if (strstr (line, "unable to open")
+	     ||  strstr (line, "unable to stat")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_BUSY_DRIVE,
@@ -673,14 +680,6 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const char *line)
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
 						_("The files selected did not fit on the CD")));
-	}
-	else if (strstr (line, "flushing cache") != NULL) {
-		BRASERO_JOB_TASK_SET_PROGRESS (growisofs, 1.0);
-		BRASERO_JOB_TASK_SET_WRITTEN (growisofs, growisofs->priv->sectors_num * 2048);
-		BRASERO_JOB_TASK_SET_ACTION (growisofs,
-					     BRASERO_BURN_ACTION_FIXATING,
-					     NULL,
-					     FALSE);
 	}
 	else if (strstr (line, "unable to proceed with recording: unable to unmount")) {
 		brasero_job_error (BRASERO_JOB (process),
@@ -780,6 +779,13 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * Some info about use-the-force-luke options
+ * dry-run => stops after invoking mkisofs
+ * no_tty => avoids fatal error if an isofs exists and an image is piped
+ *  	  => skip the five seconds waiting
+ * 
+ */
 static BraseroBurnResult
 brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 				   GPtrArray *argv,
@@ -984,6 +990,15 @@ brasero_growisofs_set_argv_blank (BraseroGrowisofs *growisofs,
 							NCB_DRIVE_GET_DEVICE (growisofs->priv->drive),
 							"/dev/zero"));
 
+		/* That should fix a problem where when the DVD had an isofs
+		 * growisofs warned that it had an isofs already on the disc */
+		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tty"));
+
+		/* set a decent speed since from growisofs point of view this
+		 * is still writing. Set 4x and growisofs will adapt the speed
+		 * anyway if disc or drive can't be used at this speed. */
+		g_ptr_array_add (argv, g_strdup_printf ("-speed=%d", 4));
+
 		if (growisofs->priv->dummy)
 			g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=dummy"));
 
@@ -1031,4 +1046,3 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 
 	return result;
 }
-
