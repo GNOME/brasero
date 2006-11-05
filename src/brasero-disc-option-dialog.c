@@ -21,6 +21,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+
 #include <string.h>
 
 #ifdef HAVE_CONFIG_H
@@ -65,6 +66,8 @@ struct _BraseroDiscOptionDialogPrivate {
 	GtkWidget *label;
 
 	GtkTooltips *tooltips;
+
+	gint label_modified:1;
 };
 
 #define KEY_ACTIVATE_CHECKSUM	"/apps/brasero/config/activate_checksum"
@@ -182,6 +185,37 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 			gtk_widget_set_sensitive (dialog->priv->video_toggle, FALSE);
 	}
 
+	/* if it's a multisession disc we also need to reset the title as the
+	 * label of the last session on condition the user didn't modify the 
+	 * default title. In the same way if the previous media was multisession
+	 * but the new one isn't we reset our default label on condition it 
+	 * hasn't been modified. */
+	if (dialog->priv->track
+	&&  dialog->priv->label
+	&& !dialog->priv->label_modified) {
+		time_t t;
+		gchar buffer [128];
+		gchar *title_str = NULL;
+
+		t = time (NULL);
+		strftime (buffer, sizeof (buffer), "%d %b %y", localtime (&t));
+
+		if (dialog->priv->track->type == BRASERO_TRACK_SOURCE_DATA) {
+			if ((NCB_DRIVE_GET_TYPE (drive) & NAUTILUS_BURN_DRIVE_TYPE_FILE) == 0
+			&& (nautilus_burn_drive_media_is_appendable (drive)
+			||  media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW))
+				title_str = nautilus_burn_drive_get_media_label (drive);
+
+			if (!title_str || title_str [0] == '\0')
+				title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
+		}
+		else if (dialog->priv->track->type == BRASERO_TRACK_SOURCE_AUDIO)
+			title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
+
+		gtk_entry_set_text (GTK_ENTRY (dialog->priv->label), title_str);
+		g_free (title_str);
+	}
+
 	if (drive)	
 		nautilus_burn_drive_unref (drive);
 }
@@ -226,25 +260,55 @@ brasero_disc_option_dialog_add_multisession (BraseroDiscOptionDialog *dialog,
 }
 
 static void
+brasero_disc_option_label_changed (GtkEditable *editable,
+				   BraseroDiscOptionDialog *dialog)
+{
+	dialog->priv->label_modified = 1;
+}
+
+static void
 brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 				      BraseroTrackSourceType type)
 {
-	GtkWidget *widget;
+	gchar *title_str = NULL;
 	gchar buffer [128];
-	gchar *title_str;
+	GtkWidget *widget;
 	gchar *label;
 	time_t t;
 
-	dialog->priv->label = gtk_entry_new ();
-	gtk_entry_set_max_length(GTK_ENTRY (dialog->priv->label), 32);
+	if (!dialog->priv->label) {
+		dialog->priv->label = gtk_entry_new ();
+		gtk_entry_set_max_length (GTK_ENTRY (dialog->priv->label), 32);
+	}
+
+	dialog->priv->label_modified = 0;
 
 	/* Header : This must be less that 32 characters long */
 	t = time (NULL);
 	strftime (buffer, sizeof (buffer), "%d %b %y", localtime (&t));
 
 	if (type == BRASERO_TRACK_SOURCE_DATA) {
+		NautilusBurnDrive *drive = NULL;
+		NautilusBurnMediaType media;
+
 		label = g_strdup (_("<b>Label of the disc</b>"));
-		title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
+
+		/* we need to know if it's multisession disc. In this case
+		 * it's better to set the name of the previous session */
+		brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
+						      &drive,
+						      NULL);
+
+		media = nautilus_burn_drive_get_media_type (drive);
+
+		if (drive
+		&& (NCB_DRIVE_GET_TYPE (drive) & NAUTILUS_BURN_DRIVE_TYPE_FILE) == 0
+		&& (nautilus_burn_drive_media_is_appendable (drive)
+		||  media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW))
+			title_str = nautilus_burn_drive_get_media_label (drive);
+
+		if (!title_str || title_str [0] == '\0')
+			title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
 	}
 	else if (type == BRASERO_TRACK_SOURCE_AUDIO) {
 		label = g_strdup (_("<b>Title</b>"));
@@ -255,6 +319,11 @@ brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 
 	gtk_entry_set_text (GTK_ENTRY (dialog->priv->label), title_str);
 	g_free (title_str);
+
+	g_signal_connect (dialog->priv->label,
+			  "changed",
+			  G_CALLBACK (brasero_disc_option_label_changed),
+			  dialog);
 
 	widget = brasero_utils_pack_properties (label, dialog->priv->label, NULL);
 	g_free (label);
@@ -429,10 +498,10 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 	/* NOTE: the caller must have ensured the disc is ready */
 	dialog->priv->disc = disc;
 
-	if (type == BRASERO_TRACK_SOURCE_DATA) {
-		brasero_disc_option_set_title_widget (dialog, type);
+	brasero_disc_option_set_title_widget (dialog, type);
+
+	if (type == BRASERO_TRACK_SOURCE_DATA)
 		brasero_disc_option_dialog_add_data_options (dialog, format);
-	}
 	else if (type == BRASERO_TRACK_SOURCE_AUDIO)
 		brasero_disc_option_dialog_add_audio_options (dialog);
 }
