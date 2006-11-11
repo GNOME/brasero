@@ -311,9 +311,9 @@ brasero_readcd_get_size (BraseroImager *imager,
 		NautilusBurnDrive *drive;
 
 		drive = readcd->priv->source->contents.drive.disc;
-		res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
-						       &nb_blocks,
-						       error);
+		res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
+					       &nb_blocks,
+					       error);
 		if (!res)
 			return BRASERO_BURN_ERR;
 
@@ -577,18 +577,19 @@ brasero_readcd_argv_set_iso_boundary (GPtrArray *argv,
 	NautilusBurnMediaType media;
 
 	media = nautilus_burn_drive_get_media_type (drive);
-	if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+
+	/* FIXME: we should do the same for DVD-RW restricted ... */
+	if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
 		return BRASERO_BURN_OK;
 
 	/* This is to avoid reading till the end of the DVD */
-	res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
-					       &nb_blocks,
-					       error);
+	res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
+				       &nb_blocks,
+				       NULL);
 	if (!res)
-		return BRASERO_BURN_ERR;
+		nb_blocks = NCB_MEDIA_GET_SIZE (drive) / 2048;
 
 	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%i", nb_blocks));
-
 	return BRASERO_BURN_OK;
 }
 

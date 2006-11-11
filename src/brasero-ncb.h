@@ -69,6 +69,15 @@ nautilus_burn_drive_get_media_capacity (drive)
 		list = g_list_prepend (list, nautilus_burn_drive_monitor_get_drive_for_image (monitor));	\
 }
 
+NautilusBurnMediaType
+NCB_DRIVE_MEDIA_GET_TYPE (NautilusBurnDrive *drive,
+			  gboolean *is_rewritable,
+			  gboolean *is_blank,
+			  gboolean *has_data,
+			  gboolean *has_audio);
+gboolean
+NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive);
+
 gboolean
 NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);
 

@@ -485,11 +485,11 @@ brasero_burn_check_media (BraseroBurn *burn,
 				   NCB_DRIVE_GET_DEVICE (drive));
 	}
 
-	real_type = nautilus_burn_drive_get_media_type_full (drive,
-							     is_rewritable,
-							     &is_blank_real,
-							     has_data,
-							     has_audio);
+	real_type = NCB_DRIVE_MEDIA_GET_TYPE (drive,
+					      is_rewritable,
+					      &is_blank_real,
+					      has_data,
+					      has_audio);
 
 	if (type)
 		*type = real_type;
@@ -497,8 +497,12 @@ brasero_burn_check_media (BraseroBurn *burn,
 	if (is_blank)
 		*is_blank = is_blank_real;
 
-	if (is_appendable)
-		*is_appendable = (nautilus_burn_drive_media_is_appendable (drive) && has_audio == FALSE);
+	if (is_appendable) {
+		if (real_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
+			*is_appendable = TRUE;
+		else
+			*is_appendable = (nautilus_burn_drive_media_is_appendable (drive) && has_audio == FALSE);
+	}
 
 	if (can_write)
 		*can_write = nautilus_burn_drive_media_type_is_writable (real_type,
@@ -768,7 +772,7 @@ brasero_burn_wait_for_rewritable_media (BraseroBurn *burn,
 		return result;
 
 	/* if full blanking is required don't check for the blank */
-	if ((fast && is_blank) || !is_rewritable) {
+	if (!is_rewritable) {
 		result = brasero_burn_ask_for_media (burn,
 						     drive,
 						     is_blank ? BRASERO_BURN_ERROR_MEDIA_BLANK : BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE,
@@ -875,6 +879,7 @@ brasero_burn_blank (BraseroBurn *burn,
 							 fast,
 							 (burn_flags & BRASERO_BURN_FLAG_EJECT),
 							 error);
+
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -1054,18 +1059,22 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		NautilusBurnMediaType media;
 
 		media = nautilus_burn_drive_get_media_type (drive);
-		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+		/* FIXME: the same should be done for DVD-RW restricted ... */
+		if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+			gint size;
 			gboolean res;
 			gint nb_blocks = 0;
 
 			/* NCB is unable to report reliably the image size */
-			res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
-							       &nb_blocks,
-							       error);
+			res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
+						       &nb_blocks,
+						       NULL);
 			if (!res)
-				return BRASERO_BURN_ERR;
+				size = NCB_MEDIA_GET_SIZE (drive);
+			else
+				size = nb_blocks * 2048;
 
-			media_size = NCB_MEDIA_GET_CAPACITY (drive) - nb_blocks * 2048;
+			media_size = NCB_MEDIA_GET_CAPACITY (drive) - size;
 		}
 		else
 			media_size = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
@@ -1661,7 +1670,7 @@ start:
 		result = BRASERO_BURN_ERR;
 	}
 	else if (nautilus_burn_drive_is_mounted (drive)
-	      && !nautilus_burn_drive_unmount (drive)) {
+	     && !nautilus_burn_drive_unmount (drive)) {
 		ret_error = g_error_new (BRASERO_BURN_ERROR,
 					 BRASERO_BURN_ERROR_BUSY_DRIVE,
 					 _("the drive seems to be busy"));

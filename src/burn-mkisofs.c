@@ -726,11 +726,11 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		g_ptr_array_add (argv, g_strdup ("-C"));
 		g_ptr_array_add (argv, startpoint);
 
-		nautilus_burn_drive_get_media_type_full (mkisofs->priv->drive,
-							 NULL,
-							 NULL,
-							 NULL,
-							 &has_audio);
+		NCB_DRIVE_MEDIA_GET_TYPE (mkisofs->priv->drive,
+					  NULL,
+					  NULL,
+					  NULL,
+					  &has_audio);
 
 		if (mkisofs->priv->merge && !has_audio) {
 		        gchar *dev_str = NULL;

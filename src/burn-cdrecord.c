@@ -990,7 +990,24 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		brasero_job_set_run_slave (BRASERO_JOB (cdrecord), FALSE);
 	}
 	else if (source->type == BRASERO_TRACK_SOURCE_IMAGE) {
-		if (source->format & BRASERO_IMAGE_FORMAT_ISO) {
+		if (source->format == BRASERO_IMAGE_FORMAT_NONE) {
+			gchar *image_path;
+
+			image_path = brasero_track_source_get_image_localpath (cdrecord->priv->track);
+			if (!image_path)
+				return BRASERO_BURN_ERR;
+
+			if (cdrecord->priv->dao)
+				g_ptr_array_add (argv, g_strdup ("-dao"));
+
+			g_ptr_array_add (argv, g_strdup ("fs=16m"));
+			g_ptr_array_add (argv, g_strdup ("-data"));
+			g_ptr_array_add (argv, g_strdup ("-nopad"));
+			g_ptr_array_add (argv, image_path);
+
+			brasero_job_set_run_slave (BRASERO_JOB (cdrecord), FALSE);
+		}
+		else if (source->format & BRASERO_IMAGE_FORMAT_ISO) {
 			gchar *isopath;
 
 			isopath = brasero_track_source_get_image_localpath (cdrecord->priv->track);

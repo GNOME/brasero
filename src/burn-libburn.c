@@ -235,7 +235,8 @@ brasero_libburn_set_source (BraseroJob *job,
 	self = BRASERO_LIBBURN (job);
 
 	if (source->type == BRASERO_TRACK_SOURCE_IMAGE) {
-		if ((source->format & (BRASERO_IMAGE_FORMAT_ISO|BRASERO_IMAGE_FORMAT_CLONE)) == 0)
+		if ((source->format & (BRASERO_IMAGE_FORMAT_ISO|BRASERO_IMAGE_FORMAT_CLONE)) == 0
+		&&   source->format != BRASERO_IMAGE_FORMAT_NONE)
 			BRASERO_JOB_NOT_SUPPORTED (self);
 	}
 	else if (source->type != BRASERO_TRACK_SOURCE_IMAGER
@@ -434,9 +435,11 @@ brasero_libburn_pre_init (BraseroJob *job,
 							 BRASERO_IMAGE_FORMAT_NONE,
 							 error);
 	}
-	else if (output_type == BRASERO_TRACK_SOURCE_IMAGE
-	      && (format & (BRASERO_IMAGE_FORMAT_ISO|BRASERO_IMAGE_FORMAT_CLONE))) {
+	else if (output_type == BRASERO_TRACK_SOURCE_IMAGE) {
 		gint64 size;
+
+		if ((format & (BRASERO_IMAGE_FORMAT_ISO|BRASERO_IMAGE_FORMAT_CLONE)) == 0)
+			BRASERO_JOB_NOT_SUPPORTED (self);
 
 		result = brasero_imager_get_size (imager,
 						  &size,
@@ -500,7 +503,8 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 		gchar *imagepath;
 		gint mode;
 
-		if ((source->format & (BRASERO_IMAGE_FORMAT_ISO)) == 0)
+		if ((source->format & (BRASERO_IMAGE_FORMAT_ISO)) == 0
+		&&   source->format != BRASERO_IMAGE_FORMAT_NONE)
 				       /*|BRASERO_IMAGE_FORMAT_CLONE) == 0)*/
 			BRASERO_JOB_NOT_SUPPORTED (self);
 
@@ -509,6 +513,10 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 		self->priv->dao = 1;
 
 		if (self->priv->source->format & BRASERO_IMAGE_FORMAT_ISO) {
+			mode = BURN_MODE1;
+			imagepath = brasero_track_source_get_image_localpath (source);
+		}
+		else if (self->priv->source->format == BRASERO_IMAGE_FORMAT_NONE) {
 			mode = BURN_MODE1;
 			imagepath = brasero_track_source_get_image_localpath (source);
 		}

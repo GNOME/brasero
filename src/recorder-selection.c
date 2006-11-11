@@ -46,6 +46,7 @@
 #include "recorder-selection.h"
 #include "utils.h"
 #include "burn.h"
+#include "burn-iso9660.h"
 #include "brasero-ncb.h"
 #include "brasero-image-type-chooser.h"
 
@@ -459,11 +460,11 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 	gboolean is_rewritable, has_audio, has_data, is_blank;
 
 	if (drive) {
-		type = nautilus_burn_drive_get_media_type_full (drive,
-								&is_blank,
-								&is_rewritable,
-								&has_data,
-								&has_audio);
+		type = NCB_DRIVE_MEDIA_GET_TYPE (drive,
+						 &is_blank,
+						 &is_rewritable,
+						 &has_data,
+						 &has_audio);
 
 		is_appendable = nautilus_burn_drive_media_is_appendable (drive);
 	}
@@ -510,11 +511,26 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 		can_record = TRUE;
 	}
 	else if (has_data) {
-		if (is_appendable) {
+		if (is_appendable
+		||  type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 			gchar *size;
 			GnomeVFSFileSize remaining;
 
-			remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+			if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+				gint num_blocks;
+				gboolean result;
+
+				result = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
+								  &num_blocks,
+								  NULL);
+				if (result)
+					remaining = NCB_MEDIA_GET_CAPACITY (drive) - num_blocks * 2048;
+				else
+					remaining = NCB_MEDIA_GET_CAPACITY (drive);
+			}
+			else
+				remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+
 			size = gnome_vfs_format_file_size_for_display (remaining);
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data.\nMore data can be added (%s free)."),
 						nautilus_burn_drive_media_type_get_string (type),
@@ -1215,11 +1231,11 @@ brasero_recorder_selection_select_default_drive (BraseroRecorderSelection *selec
 		if (!drive || NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE)
 			continue;
 
-		media_type = nautilus_burn_drive_get_media_type_full (drive,
-								      &is_rewritable,
-								      &is_blank,
-								      &has_data,
-								      &has_audio);
+		media_type = NCB_DRIVE_MEDIA_GET_TYPE (drive,
+						       &is_rewritable,
+						       &is_blank,
+						       &has_data,
+						       &has_audio);
 
 		if ((type & BRASERO_MEDIA_WRITABLE) &&  nautilus_burn_drive_media_type_is_writable (media_type, is_blank)) {
 			/* the perfect candidate would be blank; if not keep for later and see if no better media comes up */

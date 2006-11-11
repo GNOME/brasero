@@ -76,8 +76,11 @@ brasero_track_source_get_image_localpath (BraseroTrackSource *track)
 	gchar *localpath;
 	gchar *uri;
 
-	if (track->type != BRASERO_TRACK_SOURCE_IMAGE
-	|| !(track->format & BRASERO_IMAGE_FORMAT_ISO))
+	if (track->type != BRASERO_TRACK_SOURCE_IMAGE)
+		return NULL;
+
+	if (!(track->format & BRASERO_IMAGE_FORMAT_ISO)
+	&&    track->format != BRASERO_IMAGE_FORMAT_NONE)
 		return NULL;
 
 	if (!track->contents.image.image)

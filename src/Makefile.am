@@ -176,7 +176,7 @@ brasero_SOURCES = \
 	burn-iso9660.c         \
 	burn-iso9660.h         \
 	brasero-layout-object.c         \
-	brasero-layout-object.h 
+	brasero-layout-object.h         
 
 brasero_LDFLAGS =
 

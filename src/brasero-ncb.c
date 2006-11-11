@@ -28,6 +28,7 @@
  * by gnome-mount since it uses plain unmount command */
 
 #include <string.h>
+#include <stdio.h>
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -45,6 +46,7 @@
 
 #include "brasero-ncb.h"
 #include "burn-basics.h"
+#include "burn-iso9660.h"
 
 typedef struct {
 	gboolean    timeout;
@@ -126,7 +128,7 @@ try_hidden_locations (const gchar *name) {
 
 		path = g_build_path (G_DIR_SEPARATOR_S,
 				     locations [i],
-				     path,
+				     name,
 				     NULL);
 		if (g_file_test (path, G_FILE_TEST_EXISTS))
 			return path;
@@ -143,6 +145,7 @@ create_command (const gchar *device,
 		gboolean mount)
 {
 	gchar *gnome_mount_path;
+	gchar *pmount_path;
 	gchar *str;
 
 	/* try to see if gnome-mount is available */
@@ -162,6 +165,20 @@ create_command (const gchar *device,
 
 		str = g_strdup ("-t");
 		g_ptr_array_add (argv, str);
+
+		g_ptr_array_add (argv, NULL);
+		return TRUE;
+	}
+
+	/* see if pmount or pumount are on the file system (used by ubuntu) */
+	if (mount)
+		pmount_path = g_find_program_in_path ("pmount");
+	else
+		pmount_path = g_find_program_in_path ("pumount");
+
+	if (pmount_path) {
+		g_ptr_array_add (argv, pmount_path);
+		g_ptr_array_add (argv, g_strdup (device));
 	}
 	else if (!mount) {
 		/* try to use traditional ways */
@@ -178,8 +195,7 @@ create_command (const gchar *device,
 		}
 
 		g_ptr_array_add (argv, str);
-		str = g_strdup_printf ("%s", device);
-		g_ptr_array_add (argv, str);
+		g_ptr_array_add (argv, g_strdup (device));
 	}
 	else {
 		/* try to use traditional ways */
@@ -196,8 +212,7 @@ create_command (const gchar *device,
 		}
 
 		g_ptr_array_add (argv, str);
-		str = g_strdup_printf ("%s", device);
-		g_ptr_array_add (argv, str);
+		g_ptr_array_add (argv, g_strdup (device));
 	}
 
 	g_ptr_array_add (argv, NULL);
@@ -517,9 +532,73 @@ NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle)
 	g_free (data);
 }
 
-NautilusBurnMediaType
-NCB_DRIVE_GET_MEDIA (NautilusBurnDrive *drive)
+/**
+ * This is to work around the inability for ncb to check if there really is 
+ * data on a DVD+RW. Indeed ncb uses HAL which only considers there is data
+ * if there is at least one session. Now DVD+RW once formatted always have a
+ * session but not necessarily data.
+ */
+
+gboolean
+NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive)
 {
-	
-	return NAUTILUS_BURN_MEDIA_TYPE_ERROR;
+	GList *volumes, *iter;
+	GnomeVFSDrive *vfsdrive = NULL;
+	gboolean has_filesystem = FALSE;
+
+	/* get the uri for the mount point */
+	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (drive);
+	if (!vfsdrive)
+		return FALSE;
+
+	volumes = gnome_vfs_drive_get_mounted_volumes (vfsdrive);
+	gnome_vfs_drive_unref (vfsdrive);
+
+	if (!volumes)
+		return FALSE;
+
+	for (iter = volumes; iter;iter = iter->next) {
+		gchar *type;
+		GnomeVFSVolume *volume;
+
+		volume = iter->data;
+		type = gnome_vfs_volume_get_filesystem_type (volume);
+		if (type && type [0] != '\0') {
+			has_filesystem = TRUE;
+			g_free (type);
+			break;
+		}
+	}
+	gnome_vfs_drive_volume_list_free (volumes);
+
+	return has_filesystem;
+}
+
+NautilusBurnMediaType
+NCB_DRIVE_MEDIA_GET_TYPE (NautilusBurnDrive *drive,
+			  gboolean *is_rewritable,
+			  gboolean *is_blank,
+			  gboolean *has_data,
+			  gboolean *has_audio)
+{
+	NautilusBurnMediaType media;
+
+	media = nautilus_burn_drive_get_media_type_full (drive,
+							 is_rewritable,
+							 is_blank,
+							 has_data,
+							 has_audio);
+
+	if ((has_data || is_blank)
+	&&   media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+		if (NCB_MEDIA_HAS_VALID_FS (drive))
+			return media;
+
+		if (has_data)
+			*has_data = FALSE;
+		if (is_blank)
+			*is_blank = TRUE;
+	}
+
+	return media;
 }

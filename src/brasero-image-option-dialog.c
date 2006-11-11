@@ -208,6 +208,11 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 								BRASERO_IMAGE_FORMAT_CLONE,
 								TRUE,
 								uri);
+		else
+			brasero_image_option_dialog_make_track (dialog,
+								BRASERO_IMAGE_FORMAT_NONE,
+								TRUE,
+								uri);
 	}
 	else if (!strcmp (info->mime_type, "application/x-cd-image"))
 		brasero_image_option_dialog_make_track (dialog,

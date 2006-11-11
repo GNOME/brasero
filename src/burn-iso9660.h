@@ -30,10 +30,17 @@ extern "C"
 {
 #endif
 
+#define ISO9660_BLOCK_SIZE 2048
+
 gboolean
-brasero_iso9660_get_volume_size (const gchar *path,
-				 gint32 *nb_blocks,
-				 GError **error);
+brasero_volume_get_size (const gchar *path,
+			 gint32 *nb_blocks,
+			 GError **error);
+
+gboolean
+brasero_volume_get_label (const gchar *path,
+			  gchar **label,
+			  GError **error);
 
 #ifdef __cplusplus
 }

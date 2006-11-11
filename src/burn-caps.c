@@ -28,6 +28,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gi18n.h>
 
 #include <nautilus-burn-drive.h>
 
@@ -108,7 +109,7 @@ static BraseroBurnCaps *default_caps = NULL;
 		g_set_error (error,						\
 			     BRASERO_BURN_ERROR,				\
 			     BRASERO_BURN_ERROR_GENERAL,			\
-			     "unsupported operation (at %s)",			\
+			     _("unsupported operation (at %s)"),			\
 			     G_STRLOC);						\
 		return BRASERO_BURN_NOT_SUPPORTED;				\
 	}
@@ -331,11 +332,11 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 		default_flags |= BRASERO_BURN_FLAG_BURNPROOF;
 		default_flags |= BRASERO_BURN_FLAG_EJECT;
 
-		media_type = nautilus_burn_drive_get_media_type_full (drive,
-								      &is_blank,
-								      &is_rewritable,
-								      NULL,
-								      &has_audio);
+		media_type = NCB_DRIVE_MEDIA_GET_TYPE (drive,
+						       &is_blank,
+						       &is_rewritable,
+						       NULL,
+						       &has_audio);
 
 		is_appendable = nautilus_burn_drive_media_is_appendable (drive);
 
@@ -398,16 +399,15 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 			/* with growisofs as our sole DVD backend, the burning
 			 * is always performed on the fly */
 			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type)) {
+				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 				compulsory_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 
 				/* FIXME: check for restricted overwrite DVD-RW */
-				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 				if (media_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 					is_appendable = TRUE;
 
 					/* that's to increase DVD compatibility */
 					if ((source->format & BRASERO_IMAGE_FORMAT_VIDEO) == 0) {
-						g_print ("REACHED\n");
 						default_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 						compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 					}
@@ -506,7 +506,7 @@ brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
 	&&  media_type != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	if (media_type <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	if (!NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 		supported_flags |= BRASERO_BURN_FLAG_DUMMY;
 
 	if (fast_supported)
@@ -641,7 +641,7 @@ brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 	switch (type) {
 	case BRASERO_TRACK_SOURCE_AUDIO:
 	case BRASERO_TRACK_SOURCE_INF:
-		if (media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 
 		if (caps->priv->use_libburn)
@@ -653,7 +653,8 @@ brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 	case BRASERO_TRACK_SOURCE_IMAGE:
 		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type)) {
 			/* for the time being we can only burn ISO images on DVDs */
-			if (!(format & BRASERO_IMAGE_FORMAT_ISO))
+			if (format != BRASERO_IMAGE_FORMAT_NONE
+			&&!(format & BRASERO_IMAGE_FORMAT_ISO))
 				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
@@ -712,7 +713,7 @@ brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 {
 	BraseroRecorder *obj;
 
-	if (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+	if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 		/* FIXME: the problem here is that DVD-RW in restricted overwrite
 		 * behaves in the same way as +RW. They have only one session and
 		 * don't need to be formatted. We need to make a difference between
@@ -722,13 +723,17 @@ brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 		else
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
 	}
+	else if (type == NAUTILUS_BURN_MEDIA_TYPE_DVDRW
+	     ||  type == NAUTILUS_BURN_MEDIA_TYPE_DVD_RAM) {
+		obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
+	}
 	else if (type == NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
 		if (caps->priv->use_libburn)
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_LIBBURN, NULL));
 		else
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_CD_RECORD, NULL));
 	}
-	else
+	else		
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 
 	*recorder = obj;

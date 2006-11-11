@@ -570,22 +570,24 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 		return BRASERO_BURN_ERR;
 	}
 
-	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+	/* FIXME: the same should be done for DVD-RW restricted ... */
+	if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 		gboolean res;
-		gint nb_blocks;
+		gint nb_blocks = 0;
 
 		/* This is to avoid reading till the end of the DVD */
-		res = brasero_iso9660_get_volume_size (NCB_DRIVE_GET_DEVICE (drive),
-						       &nb_blocks,
-						       error);
+		res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
+					       &nb_blocks,
+					       NULL);
 		if (!res)
-			return BRASERO_BURN_ERR;
+			size = NCB_MEDIA_GET_SIZE (drive);
+		else
+			size = (gint64) nb_blocks * (gint64) 2048;
 
-		size = (gint64) nb_blocks * (gint64) 2048;
 		limit = size;
 	}
 	else
-		size = nautilus_burn_drive_get_media_size (drive);
+		size = NCB_MEDIA_GET_SIZE (drive);
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, size);
 

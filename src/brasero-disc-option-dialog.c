@@ -148,6 +148,8 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 			gtk_widget_set_sensitive (dialog->priv->video_toggle, FALSE);
 		}
 	}
+	else
+		has_video = FALSE;
 
 	if (has_video)
 		dialog->priv->track->format |= BRASERO_IMAGE_FORMAT_VIDEO;

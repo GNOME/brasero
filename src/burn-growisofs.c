@@ -377,8 +377,13 @@ brasero_growisofs_set_source (BraseroJob *job,
 	&&  source->type != BRASERO_TRACK_SOURCE_IMAGE)
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
-	if (source->type != BRASERO_TRACK_SOURCE_IMAGER
-	&& !(source->format & BRASERO_IMAGE_FORMAT_ISO))
+	if (source->type == BRASERO_TRACK_SOURCE_IMAGE) {
+		if (source->format != BRASERO_IMAGE_FORMAT_NONE
+		&& (source->format & BRASERO_IMAGE_FORMAT_ISO) == 0)
+			BRASERO_JOB_NOT_SUPPORTED (growisofs);
+	}
+	else if (source->type != BRASERO_TRACK_SOURCE_IMAGER
+	     && !(source->format & BRASERO_IMAGE_FORMAT_ISO))
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
 	if (source->type == BRASERO_TRACK_SOURCE_DATA)
@@ -918,9 +923,12 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			brasero_job_set_relay_slave_signals (BRASERO_JOB (growisofs), FALSE);
 			brasero_job_set_run_slave (BRASERO_JOB (growisofs), TRUE);
 		}
-		else if (source->type == BRASERO_TRACK_SOURCE_IMAGE
-		      && (source->format & BRASERO_IMAGE_FORMAT_ISO)) {
+		else if (source->type == BRASERO_TRACK_SOURCE_IMAGE) {
 			gchar *localpath;
+
+			if (source->format != BRASERO_IMAGE_FORMAT_NONE
+			&& (source->format & BRASERO_IMAGE_FORMAT_ISO) == 0)
+				BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
 			if (growisofs->priv->sectors_num)
 				g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=tracksize:%"G_GINT64_FORMAT, growisofs->priv->sectors_num));
@@ -929,7 +937,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			if (!localpath) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
 					     _("the image is not stored locally"));
 				return BRASERO_BURN_ERR;
 			}
@@ -939,7 +947,6 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 								NCB_DRIVE_GET_DEVICE (growisofs->priv->drive),
 								localpath));
 			g_free (localpath);
-
 			brasero_job_set_run_slave (BRASERO_JOB (growisofs), FALSE);
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_GRAFTS) {

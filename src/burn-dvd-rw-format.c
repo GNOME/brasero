@@ -214,8 +214,8 @@ brasero_dvd_rw_format_set_flags (BraseroRecorder *recorder,
 	dvdformat = BRASERO_DVD_RW_FORMAT (recorder);
 
 	/* apparently there is no switch for BRASERO_RECORDER_BLANK_FLAG_NOGRACE */
-	dvdformat->priv->blank_fast = (flags & BRASERO_RECORDER_FLAG_FAST_BLANK);
-	dvdformat->priv->dummy = (flags & BRASERO_RECORDER_FLAG_DUMMY);
+	dvdformat->priv->blank_fast = (flags & BRASERO_RECORDER_FLAG_FAST_BLANK) != 0;
+	dvdformat->priv->dummy = (flags & BRASERO_RECORDER_FLAG_DUMMY) != 0;
 
 	return BRASERO_BURN_OK;
 }
@@ -246,7 +246,7 @@ brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const char *line)
 	||  (sscanf (line, "* relocating lead-out %f%%,", &percent) == 1))
 		brasero_job_set_dangerous (BRASERO_JOB (process), TRUE);
 
-	if (percent > 1.0) {
+	if (percent >= 1.0) {
 		BRASERO_JOB_TASK_SET_WRITTEN (process, percent);
 		BRASERO_JOB_TASK_SET_TOTAL (process, 100);
 	}
@@ -293,6 +293,7 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 		 * in restricted overwrite mode. For the time being there
 		 * is no way to distinguish the two modes with ncb. */
 		format_str = g_strdup ("-force");
+		g_ptr_array_add (argv, format_str);
 	}
 
 	dev_str = g_strdup (NCB_DRIVE_GET_DEVICE (dvdformat->priv->drive));

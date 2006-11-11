@@ -1,3 +1,53 @@
+2006-11-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* src/Makefile.am:
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_set_state):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_image_info_cb):
+	* src/brasero-ncb.c: (try_hidden_locations), (create_command),
+	(NCB_MEDIA_HAS_VALID_FS), (NCB_DRIVE_MEDIA_GET_TYPE):
+	* src/brasero-ncb.h:
+	* src/brasero-project-size.c: (brasero_project_size_build_menu),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_set_context),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_add_real_medias):
+	* src/burn-basics.c: (brasero_track_source_get_image_localpath):
+	* src/burn-basics.h:
+	* src/burn-caps.c: (brasero_burn_caps_get_flags),
+	(brasero_burn_caps_blanking_get_supported_flags),
+	(brasero_burn_caps_create_recorder),
+	(brasero_burn_caps_create_recorder_for_blanking):
+	* src/burn-cdrecord.c: (brasero_cdrecord_set_argv_record):
+	* src/burn-dvd-rw-format.c: (brasero_dvd_rw_format_set_flags),
+	(brasero_dvd_rw_format_read_stderr),
+	(brasero_dvd_rw_format_set_argv):
+	* src/burn-growisofs.c: (brasero_growisofs_set_source),
+	(brasero_growisofs_set_argv_record):
+	* src/burn-iso9660.c: (brasero_volume_get_primary),
+	(brasero_iso9660_get_733_val), (brasero_volume_get_size),
+	(brasero_volume_get_label):
+	* src/burn-iso9660.h:
+	* src/burn-libburn.c: (brasero_libburn_set_source),
+	(brasero_libburn_pre_init), (brasero_libburn_setup_disc):
+	* src/burn-mkisofs.c: (brasero_mkisofs_set_argv_image):
+	* src/burn-readcd.c: (brasero_readcd_get_size),
+	(brasero_readcd_argv_set_iso_boundary):
+	* src/burn-sum.c: (brasero_burn_sum_disc):
+	* src/burn.c: (brasero_burn_check_media),
+	(brasero_burn_wait_for_rewritable_media), (brasero_burn_blank),
+	(brasero_burn_wait_for_dest_media), (brasero_burn_run_recorder):
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_update_info),
+	(brasero_recorder_selection_select_default_drive):
+
+	Many fixes for DVD+RW size detection
+	Fixes for blanking DVD+-RW, now allow to use quick option
+	Add pmount to potentially (u)mount volumes
+	Allow arbitrary images to be written to discs
+
 2006-11-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* src/brasero-disc-option-dialog.c:
