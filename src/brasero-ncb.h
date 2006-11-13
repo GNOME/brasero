@@ -79,6 +79,9 @@ gboolean
 NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive);
 
 gboolean
+NCB_MEDIA_IS_APPENDABLE (NautilusBurnDrive *drive);
+
+gboolean
 NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);
 
 gboolean

@@ -397,7 +397,6 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 
 	obj->priv->tooltips = gtk_tooltips_new ();
-	g_object_ref (obj->priv->tooltips);
 	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
 
 	/* first box */

@@ -497,12 +497,8 @@ brasero_burn_check_media (BraseroBurn *burn,
 	if (is_blank)
 		*is_blank = is_blank_real;
 
-	if (is_appendable) {
-		if (real_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
-			*is_appendable = TRUE;
-		else
-			*is_appendable = (nautilus_burn_drive_media_is_appendable (drive) && has_audio == FALSE);
-	}
+	if (is_appendable)
+		*is_appendable = (NCB_MEDIA_IS_APPENDABLE (drive) && has_audio == FALSE);
 
 	if (can_write)
 		*can_write = nautilus_burn_drive_media_type_is_writable (real_type,
@@ -1621,7 +1617,7 @@ start:
 		g_error_free (ret_error);
 		ret_error = NULL;
 
-		/* The media has data on it: ask for a new one:
+		/* The media hasn't data on it: ask for a new one.
 		 * NOTE: we'll check the size later after the retry */
 		result = brasero_burn_reload_src_media (burn,
 							error_code,

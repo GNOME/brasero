@@ -518,9 +518,6 @@ main (int argc, char **argv)
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("CD/DVD burning"),
 				      NULL);
 
-	brasero_enable_multi_DND ();
-	brasero_utils_init ();
-
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -530,13 +527,16 @@ main (int argc, char **argv)
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
 
+	nautilus_burn_init ();
+
 	gnome_vfs_init ();
 	gst_init (&argc, &argv);
 
-	nautilus_burn_init ();
-
 	client = gconf_client_get_default ();
 
+	brasero_enable_multi_DND ();
+	brasero_utils_init ();
+	
 	app = brasero_app_create_app ();
 	if (app == NULL)
 		return 1;

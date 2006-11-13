@@ -415,8 +415,10 @@ brasero_process_read_stdout (GIOChannel *source,
 
 	process->priv->io_out = 0;
 
-	g_io_channel_unref (process->priv->std_out);
-	process->priv->std_out = NULL;
+	if (process->priv->std_out) {
+		g_io_channel_unref (process->priv->std_out);
+		process->priv->std_out = NULL;
+	}
 
 	g_string_free (process->priv->out_buffer, TRUE);
 	process->priv->out_buffer = NULL;
@@ -441,12 +443,34 @@ brasero_process_setup_stdin (gpointer data)
 		g_warning ("Dup2 failed\n");
 }
 
+static GIOChannel *
+brasero_process_setup_channel (BraseroProcess *process,
+			       int pipe,
+			       gint *watch,
+			       GIOFunc function)
+{
+	GIOChannel *channel;
+
+	fcntl (pipe, F_SETFL, O_NONBLOCK);
+	channel = g_io_channel_unix_new (pipe);
+	g_io_channel_set_flags (channel,
+				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
+				NULL);
+	g_io_channel_set_encoding (channel, NULL, NULL);
+	*watch = g_io_add_watch (channel,
+				(G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL),
+				 function,
+				 process);
+
+	g_io_channel_set_close_on_unref (channel, TRUE);
+	return channel;
+}
+
 static BraseroBurnResult
 brasero_process_start (BraseroJob *job, int in_fd, int *out_fd, GError **error)
 {
 	BraseroProcess *process = BRASERO_PROCESS (job);
 	int stdout_pipe, stderr_pipe;
-	GIOChannel *channel;
 	/* that's to make sure programs are not translated */
 	gchar *envp [] = {	"LANG=C",
 				"LANGUAGE=C"
@@ -472,32 +496,17 @@ brasero_process_start (BraseroJob *job, int in_fd, int *out_fd, GError **error)
 		return BRASERO_BURN_ERR;
 
 	/* error channel */
-	fcntl (stderr_pipe, F_SETFL, O_NONBLOCK);
-	channel = g_io_channel_unix_new (stderr_pipe);
-	g_io_channel_set_flags (channel,
-				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
-				NULL);
-	g_io_channel_set_encoding (channel, NULL, NULL);
-	process->priv->io_err = g_io_add_watch (channel,
-						(G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL),
-						(GIOFunc) brasero_process_read_stderr,
-						process);
-	process->priv->std_error = channel;
+	process->priv->std_error = brasero_process_setup_channel (process,
+								  stderr_pipe,
+								  &process->priv->io_err,
+								  (GIOFunc) brasero_process_read_stderr);
 
 	/* we only watch stdout coming from the last object in the queue */
-	if (!out_fd) {
-		fcntl (stdout_pipe, F_SETFL, O_NONBLOCK);
-		channel = g_io_channel_unix_new (stdout_pipe);
-		g_io_channel_set_flags (channel,
-					g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
-					NULL);
-		g_io_channel_set_encoding (channel, NULL, NULL);
-		process->priv->io_out = g_io_add_watch (channel,
-							(G_IO_IN | G_IO_HUP | G_IO_ERR | G_IO_NVAL),
-							(GIOFunc) brasero_process_read_stdout,
-							process);
-		process->priv->std_out = channel;
-	}
+	if (!out_fd)
+		process->priv->std_out = brasero_process_setup_channel (process,
+									stdout_pipe,
+									&process->priv->io_out,
+									(GIOFunc) brasero_process_read_stdout);
 	else
 		*out_fd = stdout_pipe;
 

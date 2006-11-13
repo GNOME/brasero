@@ -23,6 +23,7 @@ mime_DATA = brasero.xml
 IMAGES=	logo.png \
 		brasero.png \
 		cd-action-burn.png	\
+		cd-action-burn-16.png	\
 		disc-00.png	\
 		disc-05.png	\
 		disc-100.png	\

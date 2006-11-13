@@ -465,8 +465,7 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 						 &is_rewritable,
 						 &has_data,
 						 &has_audio);
-
-		is_appendable = nautilus_burn_drive_media_is_appendable (drive);
+		is_appendable = NCB_MEDIA_IS_APPENDABLE (drive);
 	}
 	else {
 		has_audio = has_data = is_blank = is_appendable = is_rewritable = FALSE;
@@ -511,8 +510,7 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 		can_record = TRUE;
 	}
 	else if (has_data) {
-		if (is_appendable
-		||  type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+		if (is_appendable) {
 			gchar *size;
 			GnomeVFSFileSize remaining;
 

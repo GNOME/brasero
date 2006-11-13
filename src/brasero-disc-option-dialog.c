@@ -222,8 +222,7 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 
 		if (dialog->priv->track->type == BRASERO_TRACK_SOURCE_DATA) {
 			if ((NCB_DRIVE_GET_TYPE (drive) & NAUTILUS_BURN_DRIVE_TYPE_FILE) == 0
-			&& (nautilus_burn_drive_media_is_appendable (drive)
-			||  media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW))
+			&&  NCB_MEDIA_IS_APPENDABLE (drive))
 				title_str = nautilus_burn_drive_get_media_label (drive);
 
 			if (!title_str || title_str [0] == '\0')
@@ -330,8 +329,7 @@ brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 
 		if (drive
 		&& (NCB_DRIVE_GET_TYPE (drive) & NAUTILUS_BURN_DRIVE_TYPE_FILE) == 0
-		&& (nautilus_burn_drive_media_is_appendable (drive)
-		||  media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW))
+		&&  NCB_MEDIA_IS_APPENDABLE (drive))
 			title_str = nautilus_burn_drive_get_media_label (drive);
 
 		if (!title_str || title_str [0] == '\0')

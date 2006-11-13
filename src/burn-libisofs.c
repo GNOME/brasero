@@ -633,6 +633,7 @@ brasero_libisofs_write_image_to_fd_thread (gpointer data)
 		if (result != BRASERO_BURN_OK)
 			break;
 
+		written_sectors ++;
 		BRASERO_JOB_TASK_SET_WRITTEN (self, written_sectors << 11);
 	}
 
@@ -657,11 +658,12 @@ brasero_libisofs_write_image_to_fd (BraseroLibisofs *self,
 	BraseroBurnResult result;
 
 	result = brasero_common_create_pipe (pipe_out, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	if (self->priv->thread)
 		return BRASERO_BURN_RUNNING;
+
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	*out_fd = pipe_out [0];
 	self->priv->pipe_out = pipe_out [1];

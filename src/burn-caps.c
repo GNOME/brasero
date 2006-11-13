@@ -338,7 +338,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 						       NULL,
 						       &has_audio);
 
-		is_appendable = nautilus_burn_drive_media_is_appendable (drive);
+		is_appendable = NCB_MEDIA_IS_APPENDABLE (drive);
 
 		/* we don't support this for DVD+-RW. Growisofs doesn't
 		 * honour the option */
@@ -404,8 +404,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 
 				/* FIXME: check for restricted overwrite DVD-RW */
 				if (media_type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-					is_appendable = TRUE;
-
 					/* that's to increase DVD compatibility */
 					if ((source->format & BRASERO_IMAGE_FORMAT_VIDEO) == 0) {
 						default_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;

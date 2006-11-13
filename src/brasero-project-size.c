@@ -990,8 +990,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 			continue;
 
 	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-		&& ((drive->media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW
-		&&  !nautilus_burn_drive_media_is_appendable (drive->drive))
+		&& (!NCB_MEDIA_IS_APPENDABLE (drive->drive)
 		||   self->priv->is_audio_context))
 			continue;
 
@@ -1136,8 +1135,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			 * data context) at least appendable */
 			else if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
 			     && ( self->priv->is_audio_context
-			     || (!nautilus_burn_drive_media_is_appendable (drive->drive)
-			     &&   drive->media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)))
+			     ||  !NCB_MEDIA_IS_APPENDABLE (drive->drive)))
 				iter = g_list_next (iter);
 			else {
 				self->priv->current = drive;
@@ -1173,8 +1171,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			 * data context) at least appendable */
 			else if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
 			     && ( self->priv->is_audio_context
-			     || (!nautilus_burn_drive_media_is_appendable (drive->drive)
-			     &&   drive->media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)))
+			     ||  !NCB_MEDIA_IS_APPENDABLE (drive->drive)))
 				iter = g_list_previous (iter);
 			else {
 				self->priv->current = drive;
@@ -1257,8 +1254,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			current = NULL;
 		}
 	    	else if (!nautilus_burn_drive_media_type_is_writable (current->media, current->is_blank)
-		     && ((current->media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW
-		     &&  !nautilus_burn_drive_media_is_appendable (current->drive))
+		     && (!NCB_MEDIA_IS_APPENDABLE (current->drive)
 		     ||   self->priv->is_audio_context)) {
 			current = NULL;
 		}
@@ -1283,8 +1279,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			continue;
 
 	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-		&& ((drive->media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW
-		&&  !nautilus_burn_drive_media_is_appendable (drive->drive))
+		&& (!NCB_MEDIA_IS_APPENDABLE (drive->drive)
 		||   self->priv->is_audio_context))
 			continue;
 
@@ -1341,7 +1336,7 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 		brasero_project_size_find_proper_drive (self);
 	else if (is_audio
 	     && (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (current->media)
-	     ||  nautilus_burn_drive_media_is_appendable (current->drive)))
+	     ||  NCB_MEDIA_IS_APPENDABLE (current->drive)))
 		brasero_project_size_find_proper_drive (self);
 
 	brasero_project_size_disc_changed (self);
@@ -1418,18 +1413,20 @@ brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
 								  NULL,
 								  NULL);
 
-			/* FIXME: the same should be done for DVD-RW restricted ... */
-			if (bdrive->media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-				gboolean res;
-				gint volume_blocks = 0;
-			
-				size = NCB_MEDIA_GET_CAPACITY (ndrive);
-				res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (ndrive), &volume_blocks, NULL);
-				if (res)
-					size -= volume_blocks * 2048;
+			if (NCB_MEDIA_IS_APPENDABLE (ndrive)) {
+				/* FIXME: the same should be done for DVD-RW restricted ... */
+				if (bdrive->media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+					gboolean res;
+					gint volume_blocks = 0;
+				
+					size = NCB_MEDIA_GET_CAPACITY (ndrive);
+					res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (ndrive), &volume_blocks, NULL);
+					if (res)
+						size -= volume_blocks * 2048;
+				}
+				else
+					size = NCB_MEDIA_GET_CAPACITY (ndrive) - NCB_MEDIA_GET_SIZE (ndrive);
 			}
-			else if (nautilus_burn_drive_media_is_appendable (ndrive))
-				size = NCB_MEDIA_GET_CAPACITY (ndrive) - NCB_MEDIA_GET_SIZE (ndrive);
 			else
 				size = NCB_MEDIA_GET_CAPACITY (ndrive);
 
@@ -1508,23 +1505,25 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 			continue;
 
 		/*if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-		&& (!nautilus_burn_drive_media_is_appendable (drive->drive)) {
+		&& (!NCB_MEDIA_IS_APPENDABLE (drive->drive)) {
 			drive->sectors = 0;
 			continue;
 		}*/
 
 		/* FIXME: the same should be done for DVD-RW restricted ... */
-		if (drive->media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-			gboolean res;
-			gint volume_blocks = 0;
-		
-			size = NCB_MEDIA_GET_CAPACITY (drive->drive);
-			res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive->drive), &volume_blocks, NULL);
-			if (res)
-				size -= volume_blocks * 2048;
+		if (NCB_MEDIA_IS_APPENDABLE (drive->drive)) {
+			if (drive->media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+				gboolean res;
+				gint volume_blocks = 0;
+			
+				size = NCB_MEDIA_GET_CAPACITY (drive->drive);
+				res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive->drive), &volume_blocks, NULL);
+				if (res)
+					size -= volume_blocks * 2048;
+			}
+			else
+				size = NCB_MEDIA_GET_CAPACITY (drive->drive) - NCB_MEDIA_GET_SIZE (drive->drive);
 		}
-		else if (nautilus_burn_drive_media_is_appendable (drive->drive))
-			size = NCB_MEDIA_GET_CAPACITY (drive->drive) - NCB_MEDIA_GET_SIZE (drive->drive);
 		else
 			size = NCB_MEDIA_GET_CAPACITY (drive->drive);
 

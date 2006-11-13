@@ -182,7 +182,7 @@ static GtkActionEntry entries_actions [] = {
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
-	{"Burn", BRASERO_STOCK_BURN, N_("_Burn"), NULL,
+	{"Burn", BRASERO_STOCK_BURN_16, N_("_Burn"), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
@@ -208,7 +208,8 @@ static const gchar *description_actions = {
 
 static GObjectClass *parent_class = NULL;
 
-#define BRASERO_PROJECT_SPACING	6
+#define BRASERO_PROJECT_SPACING			6
+#define BRASERO_PROJECT_SIZE_WIDGET_BORDER	1
 
 #define KEY_DEFAULT_DATA_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_data_cd_command"
 #define KEY_DEFAULT_AUDIO_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_audio_cd_command"
@@ -306,7 +307,9 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *center,
 				gint *footer)
 {
-	*footer = BRASERO_PROJECT (object)->priv->size_display->allocation.height + BRASERO_PROJECT_SPACING;
+	*footer = BRASERO_PROJECT (object)->priv->size_display->allocation.height +
+		  BRASERO_PROJECT_SPACING +
+		  BRASERO_PROJECT_SIZE_WIDGET_BORDER * 2;
 }
 
 static void
@@ -431,16 +434,21 @@ brasero_project_init (BraseroProject *obj)
 	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	/* size widget */
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), BRASERO_PROJECT_SIZE_WIDGET_BORDER);
+	gtk_box_pack_start (GTK_BOX (box), vbox, TRUE, TRUE, 0);
+
 	obj->priv->size_display = brasero_project_size_new ();
+	gtk_widget_show (obj->priv->size_display);
 	g_signal_connect (G_OBJECT (obj->priv->size_display), 
 			  "disc-changed",
 			  G_CALLBACK (brasero_project_disc_changed_cb),
 			  obj);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->size_display, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->size_display, TRUE, TRUE, 0);
 	obj->priv->empty = 1;
 	
 	/* burn button set insensitive since there are no files in the selection */
-	
 	obj->priv->burn = brasero_utils_make_button (_("Burn"), BRASERO_STOCK_BURN, NULL);
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);

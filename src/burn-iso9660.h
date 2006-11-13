@@ -42,6 +42,14 @@ brasero_volume_get_label (const gchar *path,
 			  gchar **label,
 			  GError **error);
 
+gboolean
+brasero_volume_is_valid (const gchar *path,
+			 GError **error);
+
+gboolean
+brasero_volume_is_iso9660 (const gchar *path,
+			   GError **error);
+
 #ifdef __cplusplus
 }
 #endif

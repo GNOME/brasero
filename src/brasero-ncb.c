@@ -539,23 +539,25 @@ NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle)
  * session but not necessarily data.
  */
 
-gboolean
-NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive)
+#if 0
+/* this is only valid for mounted volume =( */
+static GSList *
+NCB_MEDIA_GET_FS_TYPE (NautilusBurnDrive *drive)
 {
+	GSList *fs = NULL;
 	GList *volumes, *iter;
 	GnomeVFSDrive *vfsdrive = NULL;
-	gboolean has_filesystem = FALSE;
 
 	/* get the uri for the mount point */
 	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (drive);
 	if (!vfsdrive)
-		return FALSE;
+		return NULL;
 
 	volumes = gnome_vfs_drive_get_mounted_volumes (vfsdrive);
 	gnome_vfs_drive_unref (vfsdrive);
 
 	if (!volumes)
-		return FALSE;
+		return NULL;
 
 	for (iter = volumes; iter;iter = iter->next) {
 		gchar *type;
@@ -563,15 +565,50 @@ NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive)
 
 		volume = iter->data;
 		type = gnome_vfs_volume_get_filesystem_type (volume);
-		if (type && type [0] != '\0') {
-			has_filesystem = TRUE;
-			g_free (type);
-			break;
+
+		if (type) {
+			if (type [0] != '\0')
+				fs = g_slist_prepend (fs, type);
+			else
+				g_free (type);
 		}
 	}
 	gnome_vfs_drive_volume_list_free (volumes);
 
-	return has_filesystem;
+	return fs;
+}
+
+gboolean
+NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive)
+{
+	gint num = 0;
+	GSList *fs;
+
+	fs = NCB_MEDIA_GET_FS_TYPE (drive);
+
+	num = g_slist_length (fs);
+	g_slist_foreach (fs, (GFunc) g_free, NULL);
+	g_slist_free (fs);
+
+	if (num)
+		return TRUE;
+
+	return FALSE;
+}
+
+#endif
+
+gboolean
+NCB_MEDIA_IS_APPENDABLE (NautilusBurnDrive *drive)
+{
+	NautilusBurnMediaType media;
+
+	/* it is a DVD+RW, it is only appendable if the fs is iso9660 */
+	media = nautilus_burn_drive_get_media_type (drive);
+	if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
+		return brasero_volume_is_iso9660 (NCB_DRIVE_GET_DEVICE (drive), NULL);
+
+	return nautilus_burn_drive_media_is_appendable (drive);
 }
 
 NautilusBurnMediaType
@@ -591,7 +628,11 @@ NCB_DRIVE_MEDIA_GET_TYPE (NautilusBurnDrive *drive,
 
 	if ((has_data || is_blank)
 	&&   media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-		if (NCB_MEDIA_HAS_VALID_FS (drive))
+		if ((has_data && !(*has_data))
+		||  (is_blank &&  (*is_blank)))
+			return media;
+
+		if (brasero_volume_is_valid (NCB_DRIVE_GET_DEVICE (drive), NULL))
 			return media;
 
 		if (has_data)

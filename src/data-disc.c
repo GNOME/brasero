@@ -6696,6 +6696,7 @@ static void
 brasero_data_disc_delete_selected (BraseroDisc *disc)
 {
 	GtkTreeSelection *selection;
+	GtkTreePath *cursorpath;
 	GtkTreePath *realpath;
 	GtkTreePath *treepath;
 	BraseroDataDisc *data;
@@ -6717,8 +6718,26 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 	list = gtk_tree_selection_get_selected_rows (selection, &sort);
 	list = g_list_reverse (list);
 
+	gtk_tree_view_get_cursor (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree),
+				  &cursorpath,
+				  NULL);
+	
 	for (iter = list; iter; iter = iter->next) {
 		treepath = iter->data;
+
+		if (!gtk_tree_path_compare (cursorpath, treepath)) {
+			GtkTreePath *tmp_path;
+
+			/* this is to silence a warning with SortModel when
+			 * removing a row being edited. We can only hope that
+			 * there won't be G_MAXINT rows =) */
+			tmp_path = gtk_tree_path_new_from_indices (G_MAXINT, -1);
+			gtk_tree_view_set_cursor (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree),
+						  tmp_path,
+						  NULL,
+						  FALSE);
+			gtk_tree_path_free (tmp_path);
+		}
 
 		realpath = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (sort),
 									   treepath);
@@ -6740,7 +6759,6 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
  				gboolean is_valid;
  
  				is_valid = gtk_tree_model_iter_parent (model, &parent, &row);
-
 				g_signal_handlers_block_by_func (gtk_tree_view_get_selection (GTK_TREE_VIEW (BRASERO_DATA_DISC (disc)->priv->tree)),
 								 brasero_data_disc_tree_selection_changed,
 								 disc);
@@ -6761,6 +6779,7 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 		g_free (discpath);
 	}
 
+	gtk_tree_path_free (cursorpath);
 	g_list_free (list);
 
 	if (g_hash_table_size (data->priv->paths) == 0)
@@ -10533,18 +10552,28 @@ brasero_data_disc_name_edited_cb (GtkCellRendererText *cellrenderertext,
 	gchar *oldpath;
 	gchar *newpath;
 	gchar *parent;
-	gchar *name;
+	gchar *name = NULL;
 
 	disc->priv->editing = 0;
 
 	sort = disc->priv->sort;
 	path = gtk_tree_path_new_from_string (path_string);
+
+	/* see if this is still a valid path. It can happen a user removes it
+	 * while the name of the row is being edited */
+	if (!gtk_tree_model_get_iter (disc->priv->sort, &row, path)) {
+		gtk_tree_path_free (path);
+		return;
+	}
+
 	realpath = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT(sort),
 								   path);
 	gtk_tree_path_free (path);
 
 	model = disc->priv->model;
-	gtk_tree_model_get_iter (model, &row, realpath);
+	if (!gtk_tree_model_get_iter (model, &row, realpath))
+		goto end;
+
 	gtk_tree_model_get (model, &row, NAME_COL, &name, -1);
 
 	/* make sure it actually changed */

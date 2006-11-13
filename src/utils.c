@@ -133,6 +133,11 @@ brasero_utils_init (void)
 				     FROM_FILE,
 				     0);
 	brasero_utils_register_icon (factory,
+				     BRASERO_STOCK_BURN_16,
+				     BRASERO_DATADIR G_DIR_SEPARATOR_S "cd-action-burn-16.png",
+				     FROM_FILE,
+				     0);
+	brasero_utils_register_icon (factory,
 				     BRASERO_STOCK_PLAYLIST,
 				     "audio/x-scpls",
 				     FROM_MIME,
@@ -490,40 +495,16 @@ brasero_utils_make_button (const gchar *text,
 {
 	GtkWidget *image = NULL;
 	GtkWidget *button;
-	GtkWidget *box;
-
-	box = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (box);
 
 	if (theme)
 		image = gtk_image_new_from_icon_name (theme, GTK_ICON_SIZE_BUTTON);
 
 	if (!image && stock)
-		image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_BUTTON);
-
-	gtk_widget_show (image);
-	gtk_box_pack_start (GTK_BOX (box),
-			    image,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	if (text) {
-		GtkWidget *label;
-
-		label = gtk_label_new (text);
-		gtk_widget_show (label);
-		gtk_box_pack_start (GTK_BOX (box),
-				    label,
-				    FALSE,
-				    FALSE,
-				    0);
-	}
+		image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_LARGE_TOOLBAR);
 
 	button = gtk_button_new ();
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_button_set_alignment (GTK_BUTTON (button), 0.5, 0.5);
-
+	gtk_button_set_image (GTK_BUTTON (button), image);
+	gtk_button_set_label (GTK_BUTTON (button), text);
 	return button;
 }
 
