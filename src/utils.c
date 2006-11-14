@@ -998,6 +998,9 @@ brasero_utils_get_use_info_notebook (void)
 	GtkWidget *notebook;
 	GtkWidget *event_box;
 	GtkWidget *first_use;
+	GtkWidget *alignment;
+	gchar     *message_add, *message_add_header;
+	gchar     *message_remove, *message_remove_header;
 
 	notebook = gtk_notebook_new ();
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
@@ -1043,24 +1046,52 @@ brasero_utils_get_use_info_notebook (void)
 
 	gtk_container_add (GTK_CONTAINER (frame), event_box);
 
-	first_use = gtk_label_new (_("<span foreground='grey50'><big>To add files to this project you can:\n</big>"
-				     "copy them (from nautilus for example) and paste them here\n"
-				     "select them and click on the add button\n"
-				     "double click on them\n"
-				     "drag them here\n"
-				     "\n\n\n\n"
-				     "<big>To remove files from this project you can:\n</big>"
-				     "select them, click right and choose \"Remove\" from the menu\n"
-				     "select them and click on the remove button\n"
-				     "select them and press \"Delete\" key\n"
-//				     "drag them out"
-				     "</span>"));
+	alignment = gtk_alignment_new (0.50, 0.30, 0, 0);
+	gtk_container_add (GTK_CONTAINER (event_box), alignment);
+
+	/* Translators: this messages will appear as a list of possible
+	 * actions, like:
+	 *   To add/remove files you can:
+         *      * perform action one
+         *      * perform action two
+	 * The full message will be showed in the main area of an empty
+	 * project, suggesting users how to add and remove items to project.
+	 * You simply have to translate messages in the best form
+         * for a list of actions. */
+	message_add_header = g_strconcat ("<big>", _("To add files to this project you can:"), "\n</big>", NULL);
+	message_add = g_strconcat ("\t* ", _("click the \"Add\" button to show the selection pane"), "\n",
+				   "\t* ", _("select files in selection pane and click the \"Add\" button"), "\n",
+				   "\t* ", _("drag files in this area from the selection pane or from the file manager"), "\n",
+				   "\t* ", _("double click on files in the selection pane"), "\n",
+
+				   "\t* ", _("copy files (from file manager for example) and paste in this area"), "\n",
+				   NULL);
+
+	message_remove_header = g_strconcat ("<big>", _("To remove files from this project you can:"), "\n</big>", NULL);
+	message_remove = g_strconcat ("\t* ", _("click on the \"Remove\" button to remove selected items in this area"), "\n",
+				      "\t* ", _("drag and release items out from this area"), "\n",
+				      "\t* ", _("select items in this area, and choose \"Remove\" from context menu"), "\n",
+				      "\t* ", _("select items in this area, and press \"Delete\" key"), "\n",
+				      NULL);
+	
+
+
+	first_use = gtk_label_new (g_strconcat ("<span foreground='grey50'>",
+						message_add_header, message_add,
+						"\n\n\n",
+						message_remove_header, message_remove,
+						"</span>", NULL));
 
 	gtk_misc_set_padding (GTK_MISC (first_use), 24, 0);
-	gtk_label_set_justify (GTK_LABEL (first_use), GTK_JUSTIFY_CENTER);
+	gtk_label_set_justify (GTK_LABEL (first_use), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (first_use), TRUE);
-	gtk_container_add (GTK_CONTAINER (event_box), first_use);
+	gtk_container_add (GTK_CONTAINER (alignment), first_use);
 	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
+
+	g_free (message_add_header);
+	g_free (message_add);
+	g_free (message_remove_header);
+	g_free (message_remove);
 
 	return notebook;
 }
