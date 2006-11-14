@@ -1259,7 +1259,7 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					 GTK_DIALOG_DESTROY_WITH_PARENT |
 					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_QUESTION,
+					 GTK_MESSAGE_WARNING,
 					 GTK_BUTTONS_NONE,
 					 _("Directories can't be added to an audio disc:"));
 

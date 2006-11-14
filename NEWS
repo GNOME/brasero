@@ -1,3 +1,19 @@
+2006 : 0.5.1
+This is a bug fix release:
+- Some GUI improvements (2 patches from Luca Feretti closing #374710 #374677)
+- Fixed burn icons (added 16x16)
+- Fixed crash when removing a file whose name is being edited
+- Fixed file descriptor leak
+- Many fixes for DVD+RW size/content detection
+- Fixes/improvements for blanking DVD+-RW, now allow to use quick option
+- Add pmount to potentially (u)mount volumes
+- Allow arbitrary images to be written to discs
+- Improved DVD Video compatibility
+- Fixed CD-TEXT not being written if mode isn't on the fly
+- Retrieve the label from the last session (if any) and use it in burn dialog
+- Fixed crasher when unmounting a disc
+- Fixed build without totem
+
 2006-10-25: release 0.5.0
 This is the last stable release.
 

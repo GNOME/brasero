@@ -188,34 +188,68 @@ on_disc_info_cb (GtkAction *button, BraseroApp *app)
 void
 on_about_cb (GtkAction *action, BraseroApp *app)
 {
-	GtkWidget *dialog;
-	const gchar *authors[] = { "Philippe Rouquier <bonfire-app@wanadoo.fr>", NULL };
-	GdkPixbuf *logo;
+	const gchar *authors[] = {
+		"Philippe Rouquier <bonfire-app@wanadoo.fr>",
+		NULL
+	};
 
-	logo = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/icon-final-128x128.png", NULL);
+	const gchar *documenters[] = {
+		N_("Sorry, no documentation for Brasero."),
+		NULL
+	};
 
-	dialog = gtk_about_dialog_new ();
-	gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (dialog), "Brasero");
-	gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog),
-					"Copyright (c) Philippe Rouquier");
-	gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), authors);
-	gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog),
-				       _("CD/DVD burning application"));
-	gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (dialog), logo);
-	g_object_unref (logo);
-	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), VERSION);
-	gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (dialog),
-						 _("translator-credits"));
+	const gchar *license_part[] = {
+		N_("Brasero is free software; you can redistribute "
+		   "it and/or modify it under the terms of the GNU "
+		   "General Public License as published by the Free "
+		   "Software Foundation; either version 2 of the "
+		   "License, or (at your option) any later version."),
+                N_("Brasero is distributed in the hope that it will "
+		   "be useful, but WITHOUT ANY WARRANTY; without even "
+		   "the implied warranty of MERCHANTABILITY or FITNESS "
+		   "FOR A PARTICULAR PURPOSE.  See the GNU General "
+		   "Public License for more details."),
+                N_("You should have received a copy of the GNU General "
+		   "Public License along with Brasero; if not, write "
+		   "to the Free Software Foundation, Inc., "
+                   "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"),
+		NULL
+        };
 
-	gtk_window_set_transient_for (GTK_WINDOW (dialog),
-				      GTK_WINDOW (app->mainwin));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_position (GTK_WINDOW (dialog),
-				 GTK_WIN_POS_CENTER_ON_PARENT);
+	gchar  *license, *comments;
 
-	gtk_widget_show (dialog);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	comments = g_strdup (_("A simple to use CD/DVD burning application for GNOME"));
+
+	license = g_strjoin ("\n\n",
+                             _(license_part[0]),
+                             _(license_part[1]),
+                             _(license_part[2]),
+			     NULL);
+
+	gtk_show_about_dialog (GTK_WINDOW (app->mainwin),
+			       "name", "Brasero",
+			       "comments", comments,
+			       "version", VERSION,
+			       "copyright", "Copyright © 2006 Philippe Rouquier",
+			       "authors", authors,
+			       "documenters", documenters,
+			       "website", "http://perso.orange.fr/bonfire/",
+			       "website-label", _("Brasero Homepage"),
+			       "license", license,
+			       "wrap-license", TRUE,
+			       /* Translators: This is a special message that shouldn't be translated
+                                 * literally. It is used in the about box to give credits to
+                                 * the translators.
+                                 * Thus, you should translate it to your name and email address.
+                                 * You should also include other translators who have contributed to
+                                 * this translation; in that case, please write each of them on a separate
+                                 * line seperated by newlines (\n).
+                                 */
+                               "translator-credits", _("translator-credits"),
+			       NULL);
+
+	g_free (comments);
+	g_free (license);
 }
 
 static gboolean

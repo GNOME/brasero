@@ -279,7 +279,7 @@ brasero_blank_dialog_cancel_dialog (GtkWidget *toplevel)
 	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
 					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_QUESTION,
+					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to quit?"));
 

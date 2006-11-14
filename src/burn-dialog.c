@@ -347,7 +347,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		message = gtk_message_dialog_new (window,
 						  GTK_DIALOG_DESTROY_WITH_PARENT|
 						  GTK_DIALOG_MODAL,
-						  GTK_MESSAGE_QUESTION,
+						  GTK_MESSAGE_WARNING,
 						  GTK_BUTTONS_CANCEL,
 						  main_message);
 
@@ -361,7 +361,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		message = gtk_message_dialog_new_with_markup (window,
 							      GTK_DIALOG_DESTROY_WITH_PARENT|
 							      GTK_DIALOG_MODAL,
-							      GTK_MESSAGE_QUESTION,
+							      GTK_MESSAGE_WARNING,
 							      GTK_BUTTONS_CANCEL,
 							      main_message);
 
@@ -414,7 +414,7 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 	message = gtk_message_dialog_new (window,
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
 					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_QUESTION,
+					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 					  _("The disc in the drive holds data:"));
 
@@ -471,7 +471,7 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 	message = gtk_message_dialog_new (window,
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
 					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_QUESTION,
+					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 					  _("Recording audio tracks on a rewritable disc is not advised:"));
 
@@ -528,7 +528,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 	message = gtk_message_dialog_new (window,
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
 					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_QUESTION,
+					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 					  _("Some files don't have a suitable name for a Windows-compatible CD:"));
 
@@ -2063,7 +2063,7 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					  GTK_DIALOG_DESTROY_WITH_PARENT |
 					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_QUESTION,
+					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to quit?"));
 

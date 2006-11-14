@@ -946,7 +946,7 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					  GTK_DIALOG_MODAL|
 					  GTK_DIALOG_DESTROY_WITH_PARENT,
-					  GTK_MESSAGE_QUESTION,
+					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_YES_NO,
 					  primary);
 
