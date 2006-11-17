@@ -336,7 +336,7 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 		percent -= remains;
 
 	if (tray->priv->rounded_percent == percent
-	||  percent < 100)
+	||  percent < 0 || percent > 100)
 		return;
 
 	tray->priv->rounded_percent = percent;
