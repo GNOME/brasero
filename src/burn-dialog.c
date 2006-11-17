@@ -24,6 +24,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -1637,12 +1638,13 @@ static void
 brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 {
 	gint words_num;
-	gchar *contents;
 	GtkWidget *view;
 	GtkTextIter iter;
+	struct stat stats;
 	GtkWidget *message;
 	GtkWidget *scrolled;
 	GtkTextBuffer *text;
+	const gchar *logfile;
 	GtkTextTag *object_tag;
 	GtkTextTag *domain_tag;
 
@@ -1670,14 +1672,66 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (view), FALSE);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolled), view);
 
-	/* fill the buffer */
+	/* we better make sure the session log is not too big < 10 MB otherwise
+	 * everything will freeze and will take a huge part of memory. If it is
+	 * bigger then only show the end which is the most relevant. */
+	logfile = brasero_burn_session_get_log_path (dialog->priv->session);
+	if (g_stat (logfile, &stats) == -1) {
+		brasero_burn_dialog_message (dialog,
+					     _("Session log error"),
+					     _("The session log cannot be displayed:"),
+					     _("the log file could not be found."),
+					     GTK_MESSAGE_ERROR);
+		gtk_widget_destroy (message);
+		return;
+	}
+
 	text = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
-	g_file_get_contents (brasero_burn_session_get_log_path (dialog->priv->session),
-			     &contents,
-			     NULL,
-			     NULL);
-	gtk_text_buffer_set_text (text, contents, -1);
-	g_free (contents);
+	if (stats.st_size > 10 * 1024 * 1024) {
+		gchar contents [10 * 1024 * 1024];
+		GtkTextIter iter;
+		FILE *file;
+
+		gtk_text_buffer_get_start_iter (text, &iter);
+		gtk_text_buffer_insert (text,
+					&iter,
+					_("This is a excerpt from the session log (the last 10 MiB):\n\n"),
+					-1);
+
+		file = g_fopen (logfile, "r");
+		if (!file) {
+			brasero_burn_dialog_message (dialog,
+						     _("Session log error"),
+						     _("The session log cannot be displayed:"),
+						     strerror (errno),
+						     GTK_MESSAGE_ERROR);
+			gtk_widget_destroy (message);
+			return;
+		}
+
+		if (fread (contents, 1, sizeof (contents), file) != sizeof (contents)) {
+			brasero_burn_dialog_message (dialog,
+						     _("Session log error"),
+						     _("The session log cannot be displayed:"),
+						     strerror (errno),
+						     GTK_MESSAGE_ERROR);
+			gtk_widget_destroy (message);
+			return;
+		}
+
+		gtk_text_buffer_insert (text, &iter, contents, sizeof (contents));
+	}
+	else {
+		gchar *contents;
+
+		/* fill the buffer */
+		g_file_get_contents (brasero_burn_session_get_log_path (dialog->priv->session),
+				     &contents,
+				     NULL,
+				     NULL);
+		gtk_text_buffer_set_text (text, contents, -1);
+		g_free (contents);
+	}
 
 	/* create tags and apply them */
 	object_tag = gtk_text_buffer_create_tag (text,

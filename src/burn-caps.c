@@ -54,6 +54,7 @@
 #include "burn-libburn.h"
 #include "burn-libisofs.h"
 #include "burn-libread-disc.h"
+#include "burn-dvdcss.h"
 #include "brasero-ncb.h"
 
 #ifdef HAVE_LIBBURN
@@ -857,6 +858,9 @@ brasero_burn_caps_get_imager_default_format (BraseroBurnCaps *caps,
 			else
 				return BRASERO_IMAGE_FORMAT_CLONE;
 		}
+		else if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD)
+			return BRASERO_IMAGE_FORMAT_NONE;
+
 		return BRASERO_IMAGE_FORMAT_ISO;
 	}
 
@@ -970,15 +974,19 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 		if (target != BRASERO_TRACK_SOURCE_IMAGE)
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 
-		if (src_media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
-			if (!(format & BRASERO_IMAGE_FORMAT_ISO))
-				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
-
-			/* FIXME: not sure if libread disc could do anything here */
-			if (caps->priv->use_libread)
-				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_LIBREAD_DISC, NULL));
+		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (src_media_type)) {
+			if (src_media_type == NAUTILUS_BURN_MEDIA_TYPE_DVD) {
+				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_DVDCSS, NULL));
+			}
+			else if (format & BRASERO_IMAGE_FORMAT_ISO) {
+				/* FIXME: not sure if libread disc could do anything here */
+				if (caps->priv->use_libread)
+					obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_LIBREAD_DISC, NULL));
+				else
+					obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_READCD, NULL));
+			}
 			else
-				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_READCD, NULL));
+				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_ISO) {
 			if (caps->priv->use_libread)

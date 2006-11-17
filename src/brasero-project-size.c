@@ -41,7 +41,7 @@
 
 #include "brasero-project-size.h"
 #include "brasero-ncb.h"
-#include "burn-iso9660.h"
+#include "burn-volume.h"
 #include "utils.h"
 
 static void brasero_project_size_class_init (BraseroProjectSizeClass *klass);

@@ -33,112 +33,65 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "burn-basics.h"
 #include "burn-iso9660.h"
+#include "burn-volume.h"
+#include "burn-basics.h"
 
-struct _BraseroVolDesc {
-	guchar type;
-	gchar id			[5];
-	guchar version;
+typedef enum {
+BRASERO_ISO_FILE_EXISTENCE		= 1,
+BRASERO_ISO_FILE_DIRECTORY		= 1 << 1,
+BRASERO_ISO_FILE_ASSOCIATED		= 1 << 2,
+BRASERO_ISO_FILE_RECORD			= 1 << 3,
+BRASERO_ISO_FILE_PROTECTION		= 1 << 4,
+	/* Reserved */
+BRASERO_ISO_FILE_MULTI_EXTENT_FINAL	= 1 << 7
+} BraseroIsoFileFlag;
+
+struct _BraseroIsoDirRec {
+	guchar record_size;
+	guchar x_attr_size;
+	guchar address			[8];
+	guchar file_size		[8];
+	guchar date_time		[7];
+	guchar flags;
+	guchar file_unit;
+	guchar gap_size;
+	guchar volseq_num		[4];
+	guchar id_size;
+	gchar id			[0];
 };
-typedef struct _BraseroVolDesc BraseroVolDesc;
+typedef struct _BraseroIsoDirRec BraseroIsoDirRec;
 
 struct _BraseroIsoPrimary {
 	guchar type;
 	gchar id			[5];
 	guchar version;
 
+	guchar unused_0;
+
 	gchar system_id			[32];
 	gchar vol_id			[32];
 
-	guchar unused			[8];
+	guchar unused_1			[8];
 
 	guchar vol_size			[8];
 
+	guchar escapes			[32];
+	guchar volset_size		[4];
+	guchar sequence_num		[4];
+	guchar block_size		[4];
+	guchar path_table_size		[8];
+	guchar L_table_loc		[4];
+	guchar opt_L_table_loc		[4];
+	guchar M_table_loc		[4];
+	guchar opt_M_table_loc		[4];
+
+	/* the following has a fixed size of 34 bytes */
+	BraseroIsoDirRec root_rec	[0];
+
+	/* to be continued if needed */
 };
 typedef struct _BraseroIsoPrimary BraseroIsoPrimary;
-
-struct _BraseroTagDesc {
-	guint16 id;
-	guint16 version;
-	guchar checksum;
-	guchar reserved;
-	guint16 serial;
-	guint16 crc;
-	guint16 crc_len;
-	guint32 location;
-};
-typedef struct _BraseroTagDesc BraseroTagDesc;
-
-struct _BraseroAnchorDesc {
-	BraseroTagDesc tag;
-
-	guchar main_extent		[8];
-	guchar reserve_extent		[8];
-};
-typedef struct _BraseroAnchorDesc BraseroAnchorDesc;
-
-#define FORBIDDEN_AREA_SECTORS		16
-#define ANCHOR_AREA_SECTORS		256
-
-static gboolean
-brasero_volume_get_primary (const gchar *path,
-			    gchar *primary_vol,
-			    GError **error)
-{
-	BraseroVolDesc *vol;
-	int bytes_read;
-	FILE *file;
-
-	file = fopen (path, "r");
-	if (!file) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		return FALSE;
-	}
-
-	/* skip the first 16 blocks */
-	if (fseek (file, FORBIDDEN_AREA_SECTORS * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		fclose (file);
-		return FALSE;
-	}
-
-	bytes_read = fread (primary_vol, 1, ISO9660_BLOCK_SIZE, file);
-	if (bytes_read != ISO9660_BLOCK_SIZE) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		fclose (file);
-		return FALSE;
-	}
-
-	fclose (file);
-
-	/* make a few checks to ensure this is an ECMA volume */
-	vol = (BraseroVolDesc *) primary_vol;
-	if (memcmp (vol->id, "CD001", 5)
-	&&  memcmp (vol->id, "BEA01", 5)
-	&&  memcmp (vol->id, "BOOT2", 5)
-	&&  memcmp (vol->id, "CDW02", 5)
-	&&  memcmp (vol->id, "NSR02", 5)	/* usually UDF */
-	&&  memcmp (vol->id, "NSR03", 5)	/* usually UDF */
-	&&  memcmp (vol->id, "TEA01", 5)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("it does not appear to be a valid iso9660 image"));
-		return FALSE;
-	}
-
-	return TRUE;
-}
 
 static gint32
 brasero_iso9660_get_733_val (guchar *buffer)
@@ -150,9 +103,9 @@ brasero_iso9660_get_733_val (guchar *buffer)
 	return GUINT32_FROM_LE (*ptr);
 }
 
-static gboolean
-brasero_volume_is_iso9660_primary_real (const char *buffer,
-					GError **error)
+gboolean
+brasero_iso9660_is_primary_descriptor (const char *buffer,
+				       GError **error)
 {
 	BraseroVolDesc *vol;
 
@@ -179,71 +132,159 @@ brasero_volume_is_iso9660_primary_real (const char *buffer,
 }
 
 gboolean
-brasero_volume_get_size (const gchar *path,
-			 gint32 *nb_blocks,
-			 GError **error)
+brasero_iso9660_get_size (const gchar *block,
+			  gint32 *nb_blocks,
+			  GError **error)
 {
-	gchar buffer [ISO9660_BLOCK_SIZE];
 	BraseroIsoPrimary *vol;
 
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
-
-	if (!brasero_volume_is_iso9660_primary_real (buffer, error))
-		return FALSE;
-
 	/* read the size of the volume */
-	vol = (BraseroIsoPrimary *) buffer;
+	vol = (BraseroIsoPrimary *) block;
 	*nb_blocks = brasero_iso9660_get_733_val (vol->vol_size);
 
 	return TRUE;
 }
 
 gboolean
-brasero_volume_get_label (const gchar *path,
-			  gchar **label,
-			  GError **error)
+brasero_iso9660_get_label (const gchar *block,
+			   gchar **label,
+			   GError **error)
 {
-	gchar buffer [ISO9660_BLOCK_SIZE];
 	BraseroIsoPrimary *vol;
 
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
-
-	if (!brasero_volume_is_iso9660_primary_real (buffer, error))
-		return FALSE;
-
 	/* read the identifier */
-	vol = (BraseroIsoPrimary *) buffer;
+	vol = (BraseroIsoPrimary *) block;
 	*label = g_strndup (vol->vol_id, sizeof (vol->vol_id));
 
 	return TRUE;	
 }
 
-gboolean
-brasero_volume_is_iso9660 (const gchar *path, GError **error)
+static BraseroVolFile *
+brasero_iso9660_read_directory_records (FILE *file, gint address, GError **error)
 {
+	gint offset;
+	GSList *iter;
+	gint max_record_size;
+	BraseroIsoDirRec *record;
+	GSList *directories = NULL;
+	BraseroVolFile *parent = NULL;
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
+	/* The size of all the records is given by size member and its location
+	 * by its address member. In a set of directory records the first two 
+	 * records are: '.' (id == 0) and '..' (id == 1). So since we've got
+	 * the address of the set load the block. */
+	if (fseek (file, address * ISO9660_BLOCK_SIZE, SEEK_SET) == -1)
+		goto error;
 
-	if (!brasero_volume_is_iso9660_primary_real (buffer, error))
-		return FALSE;
-	
-	/* udf has an anchor descriptor at logical sector 256,
-	 * then we have an iso9660/UDF bridge format */
+	if (fread (buffer, 1, sizeof (buffer), file) != sizeof (buffer))
+		goto error;
 
-	return TRUE;
+	/* setup the parent directory from the first record */
+	parent = g_new0 (BraseroVolFile, 1);
+	parent->isdir = 1;
+
+	/* skip the second record */
+	record = (BraseroIsoDirRec *) buffer;
+	max_record_size = brasero_iso9660_get_733_val (record->file_size);
+
+	offset = record->record_size;
+	record = (BraseroIsoDirRec *) (buffer + offset);
+	offset += record->record_size;
+	record = (BraseroIsoDirRec *) (buffer + offset);
+
+	max_record_size -= offset;
+	while (record->record_size) {
+		BraseroVolFile *volfile;
+
+		/* for the time being just do the file and keep a record
+		 * for the directories that'll be done later (we don't 
+		 * want to change the reading offset for the moment) */
+		if (record->flags & BRASERO_ISO_FILE_DIRECTORY) {
+			gpointer copy;
+
+			copy = g_new0 (gchar, record->record_size);
+			memcpy (copy, record, record->record_size);
+			directories = g_slist_prepend (directories, copy);
+		}
+		else {
+			volfile = g_new0 (BraseroVolFile, 1);
+
+			volfile->parent = parent;
+			volfile->name = g_strndup (record->id, record->id_size);
+			volfile->specific.file.size_bytes = brasero_iso9660_get_733_val (record->file_size);
+			volfile->specific.file.address_block = brasero_iso9660_get_733_val (record->address);
+			volfile->isdir = 0;
+
+			parent->specific.children = g_list_prepend (parent->specific.children, volfile);
+		}
+
+		offset += record->record_size;
+		max_record_size -= record->record_size;
+		if (max_record_size <= 0)
+			break;
+
+		if (offset >= sizeof (buffer) || buffer [offset] == 0) {
+			max_record_size -= (ISO9660_BLOCK_SIZE - offset);
+			if (max_record_size < ISO9660_BLOCK_SIZE)
+				break;
+
+			/* we reached the end of the block, or, the size of the next
+			 * directory record is 0 because we reached a block boundary
+			 * and must read another block. We must make sure that reading
+			 * another block won't be too much. */
+			offset = 0;
+
+			if (fread (buffer, 1, sizeof (buffer), file) != sizeof (buffer))
+				goto error;
+		}
+		record = (BraseroIsoDirRec *) (buffer + offset);
+	}
+
+	for (iter = directories; iter; iter = iter->next) {
+		BraseroVolFile *volfile;
+		gint address;
+
+		record = iter->data;
+
+		address = brasero_iso9660_get_733_val (record->address);
+		volfile = brasero_iso9660_read_directory_records (file,
+								  address,
+								  error);
+		volfile->name = g_strndup (record->id, record->id_size);
+		volfile->parent = parent;
+
+		parent->specific.children = g_list_prepend (parent->specific.children, volfile);
+
+		g_free (record);
+	}
+	g_slist_free (directories);
+
+	return parent;
+
+error:
+
+	g_slist_foreach (directories, (GFunc) g_free, NULL);
+	g_slist_free (directories);
+
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     strerror (errno));
+
+	/* clean parent */
+	brasero_volume_file_free (parent);
+
+	return NULL;
 }
 
-gboolean
-brasero_volume_is_valid (const gchar *path, GError **error)
+BraseroVolFile *
+brasero_iso9660_get_contents (FILE *file,
+			      const gchar *block,
+			      GError **error)
 {
-	gchar buffer [ISO9660_BLOCK_SIZE];
+	BraseroIsoPrimary *primary;
 
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
-
-	return TRUE;	
+	primary = (BraseroIsoPrimary *) block;
+	return brasero_iso9660_read_directory_records (file, brasero_iso9660_get_733_val (primary->root_rec->address), error);
 }

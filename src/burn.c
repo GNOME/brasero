@@ -47,7 +47,7 @@
 #include "burn-common.h"
 #include "burn-caps.h"
 #include "burn-session.h"
-#include "burn-iso9660.h"
+#include "burn-volume.h"
 #include "brasero-ncb.h"
 
 static void brasero_burn_class_init (BraseroBurnClass *klass);
@@ -1792,7 +1792,7 @@ brasero_burn_imager_get_track (BraseroBurn *burn,
 			       NautilusBurnDrive *drive,
 			       const BraseroTrackSource *source,
 			       BraseroTrackSource **track,
-			       const char *output,
+			       const gchar *output,
 			       GError **error)
 {
 	GError *ret_error = NULL;

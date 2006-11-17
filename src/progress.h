@@ -72,8 +72,4 @@ brasero_burn_progress_set_action (BraseroBurnProgress *progress,
 				  BraseroBurnAction action,
 				  const gchar *string);
 
-void
-brasero_burn_progress_set_spinning (BraseroBurnProgress *progress,
-				    gboolean spinning);
-
 #endif /* PROGRESS_H */

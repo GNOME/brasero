@@ -880,8 +880,16 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 				return BRASERO_BURN_ERR;
 			}
 
-			if (track_type != BRASERO_TRACK_SOURCE_IMAGE
-			|| !(format & BRASERO_IMAGE_FORMAT_ISO)) {
+			if (track_type != BRASERO_TRACK_SOURCE_IMAGE) {
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("imager can't create iso9660 images"));
+				return BRASERO_BURN_ERR;
+			}
+
+			if (!(format & BRASERO_IMAGE_FORMAT_ISO)
+			&&    format != BRASERO_IMAGE_FORMAT_NONE) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,

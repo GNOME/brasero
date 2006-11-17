@@ -42,7 +42,7 @@
 #include "burn-imager.h"
 #include "burn-sum.h"
 #include "burn-md5.h"
-#include "burn-iso9660.h"
+#include "burn-volume.h"
 #include "brasero-ncb.h"
 
 static void brasero_burn_sum_class_init (BraseroBurnSumClass *klass);

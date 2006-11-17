@@ -176,9 +176,14 @@ brasero_SOURCES = \
 	burn-iso9660.c         \
 	burn-iso9660.h         \
 	brasero-layout-object.c         \
-	brasero-layout-object.h         
+	brasero-layout-object.h         \
+	burn-dvdcss.c         \
+	burn-dvdcss.h         \
+	burn-volume.c         \
+	burn-volume.h         \
+	burn-dvdcss-private.h 
 
-brasero_LDFLAGS =
+brasero_LDFLAGS = 
 
 brasero_LDADD = $(BRASERO_LIBS)
 

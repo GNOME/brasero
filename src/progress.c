@@ -451,10 +451,3 @@ brasero_burn_progress_set_action (BraseroBurnProgress *self,
 	if (action == BRASERO_BURN_ACTION_ERASING)
 		brasero_burn_progress_start_blinking (self);
 }
-
-void
-brasero_burn_progress_set_spinning (BraseroBurnProgress *progress,
-				    gboolean spinning)
-{
-	
-}

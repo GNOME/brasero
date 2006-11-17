@@ -1,7 +1,7 @@
 /***************************************************************************
- *            burn-iso9660.h
+ *            burn-dvdcss-private.h
  *
- *  Sat Oct  7 17:10:09 2006
+ *  Thu Nov 16 16:20:39 2006
  *  Copyright  2006  algernon
  *  <algernon@localhost.localdomain>
  ****************************************************************************/
@@ -22,45 +22,49 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <stdio.h>
 
-#include <glib.h>
+#include <gmodule.h>
 
-#include "burn-volume.h"
-
-#ifndef _BURN_ISO9660_H
-#define _BURN_ISO9660_H
+#ifndef _BURN_DVDCSS_PRIVATE_H
+#define _BURN_DVDCSS_PRIVATE_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define ISO9660_BLOCK_SIZE 2048
+static gboolean css_ready = FALSE;
 
-gboolean
-brasero_iso9660_is_primary_descriptor (const char *buffer,
-				       GError **error);
+typedef gpointer dvdcss_handle;
 
-gboolean
-brasero_iso9660_get_size (const gchar *block,
-			  gint32 *nb_blocks,
-			  GError **error);
+#define DVDCSS_NOFLAGS		0x00
 
-gboolean
-brasero_iso9660_get_label (const gchar *block,
-			   gchar **label,
-			   GError **error);
+#define DVDCSS_READ_DECRYPT	(1 << 0)
 
-BraseroVolFile *
-brasero_iso9660_get_contents (FILE *file,
-			      const gchar *block,
-			      GError **error);
+#define DVDCSS_SEEK_MPEG	(1 << 0)
+#define DVDCSS_SEEK_KEY		(1 << 1)
+
+#define DVDCSS_BLOCK_SIZE	2048
+
+static dvdcss_handle *
+(*dvdcss_open)	(gchar *device) = NULL;
+
+static gint
+(*dvdcss_close)	(dvdcss_handle *handle) = NULL;
+
+static gint
+(*dvdcss_read)	(dvdcss_handle *handle, gpointer p_buffer, gint i_blocks, gint i_flags) = NULL;
+
+static gint
+(*dvdcss_seek)	(dvdcss_handle *handle, gint i_blocks, gint i_flags) = NULL;
+
+static gchar *
+(*dvdcss_error)	(dvdcss_handle *handle) = NULL;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _BURN_ISO9660_H */
+#endif /* _BURN_DVDCSS_PRIVATE_H */
 
  

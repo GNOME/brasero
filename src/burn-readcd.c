@@ -42,7 +42,7 @@
 #include "burn-process.h"
 #include "burn-job.h"
 #include "burn-caps.h"
-#include "burn-iso9660.h"
+#include "burn-volume.h"
 #include "brasero-ncb.h"
 
 static void brasero_readcd_class_init (BraseroReadcdClass *klass);

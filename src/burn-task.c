@@ -584,7 +584,7 @@ brasero_task_get_rate (BraseroTask *task, gint64 *rate)
 	else {
 		if (!task->priv->last_written)
 			return BRASERO_BURN_NOT_READY;
-
+			
 		*rate = (gdouble) (task->priv->current_written - task->priv->last_written) /
 			(gdouble) (task->priv->current_elapsed - task->priv->last_elapsed);
 	}

@@ -46,7 +46,7 @@
 
 #include "brasero-ncb.h"
 #include "burn-basics.h"
-#include "burn-iso9660.h"
+#include "burn-volume.h"
 
 typedef struct {
 	gboolean    timeout;

@@ -46,7 +46,7 @@
 #include "recorder-selection.h"
 #include "utils.h"
 #include "burn.h"
-#include "burn-iso9660.h"
+#include "burn-volume.h"
 #include "brasero-ncb.h"
 #include "brasero-image-type-chooser.h"
 
@@ -351,6 +351,7 @@ brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selecti
 				    ".raw",
 				    ".cue",
 				    ".toc",
+				    ".bin",
 				    NULL };
 	const gchar *suffix;
 	gchar *path;
@@ -369,6 +370,8 @@ brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selecti
 		suffix = suffixes [2];
 	else if (image_format & BRASERO_IMAGE_FORMAT_CDRDAO)
 		suffix = suffixes [3];
+	else if (image_format == BRASERO_IMAGE_FORMAT_NONE)
+		suffix = suffixes [4];
 	else
 		return NULL;
 	

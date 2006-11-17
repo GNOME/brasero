@@ -1,3 +1,56 @@
+2006-11-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* po/POTFILES.in:
+	* src/Makefile.am:
+	* src/brasero-ncb.c:
+	* src/brasero-project-size.c:
+	* src/burn-caps.c: (brasero_burn_caps_get_imager_default_format),
+	(brasero_burn_caps_create_imager):
+	* src/burn-dialog.c: (brasero_burn_dialog_show_log):
+	* src/burn-dvdcss-private.h:
+	* src/burn-dvdcss.c: (brasero_dvdcss_get_type),
+	(brasero_dvdcss_library_init), (brasero_dvdcss_iface_init_image),
+	(brasero_dvdcss_class_init), (brasero_dvdcss_init),
+	(brasero_dvdcss_stop_real), (brasero_dvdcss_clean_output),
+	(brasero_dvdcss_finalize), (brasero_dvdcss_new),
+	(brasero_dvdcss_get_size_real), (brasero_dvdcss_set_source),
+	(brasero_dvdcss_set_output_type), (brasero_dvdcss_set_output),
+	(brasero_dvdcss_thread_finished),
+	(brasero_dvdcss_write_sector_to_fd),
+	(brasero_dvdcss_create_scrambled_sectors_map),
+	(brasero_dvdcss_sort_ranges), (brasero_dvdcss_write_image_thread),
+	(brasero_dvdcss_write_image_to_fd),
+	(brasero_dvdcss_write_image_to_file), (brasero_dvdcss_start),
+	(brasero_dvdcss_stop), (brasero_dvdcss_get_track),
+	(brasero_dvdcss_get_size), (brasero_dvdcss_get_track_type):
+	* src/burn-dvdcss.h:
+	* src/burn-growisofs.c: (brasero_growisofs_set_argv_record):
+	* src/burn-iso9660.c: (brasero_iso9660_is_primary_descriptor),
+	(brasero_iso9660_get_size), (brasero_iso9660_get_label),
+	(brasero_iso9660_read_directory_records),
+	(brasero_iso9660_get_contents):
+	* src/burn-iso9660.h:
+	* src/burn-readcd.c:
+	* src/burn-sum.c:
+	* src/burn-task.c: (brasero_task_get_rate):
+	* src/burn-volume.c: (brasero_volume_file_free),
+	(brasero_volume_get_primary_from_file),
+	(brasero_volume_get_primary), (brasero_volume_is_valid),
+	(brasero_volume_is_iso9660), (brasero_volume_get_label),
+	(brasero_volume_get_size), (brasero_volume_get_files):
+	* src/burn-volume.h:
+	* src/burn.c: (brasero_burn_imager_get_track):
+	* src/progress.c: (brasero_burn_progress_set_action):
+	* src/progress.h:
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_get_new_image_path):
+	* src/tray.c: (brasero_tray_icon_set_progress):
+
+	New feature: video DVD copy (require libdvdcss at run-time)
+	Fixed tray not showing progress
+	Fixed session logs too big to be displayed
+	Fixed file forgotten in POTFILES.in
+
 2006-11-14  Luca Ferretti  <elle.uca@libero.it>
 
 	* src/utils.c: (brasero_utils_get_use_info_notebook):
@@ -51,7 +104,7 @@
 	* src/burn-iso9660.c: (brasero_volume_get_primary),
 	(brasero_iso9660_get_733_val),
 	(brasero_volume_is_iso9660_primary_real),
-	(brasero_volume_get_size), (brasero_volume_get_label),
+	(brasero_iso9660_get_size), (brasero_iso9660_get_label),
 	(brasero_volume_is_iso9660), (brasero_volume_is_valid):
 	* src/burn-iso9660.h:
 	* src/burn-libisofs.c: (brasero_libisofs_write_image_to_fd_thread),
@@ -104,8 +157,8 @@
 	* src/burn-growisofs.c: (brasero_growisofs_set_source),
 	(brasero_growisofs_set_argv_record):
 	* src/burn-iso9660.c: (brasero_volume_get_primary),
-	(brasero_iso9660_get_733_val), (brasero_volume_get_size),
-	(brasero_volume_get_label):
+	(brasero_iso9660_get_733_val), (brasero_iso9660_get_size),
+	(brasero_iso9660_get_label):
 	* src/burn-iso9660.h:
 	* src/burn-libburn.c: (brasero_libburn_set_source),
 	(brasero_libburn_pre_init), (brasero_libburn_setup_disc):
