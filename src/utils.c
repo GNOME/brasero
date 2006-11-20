@@ -170,7 +170,7 @@ brasero_utils_is_gid_in_groups (gid_t gid)
 		return FALSE;
 	}
 
-	for (group = groups; group; group ++) {
+	for (group = groups; group && *group; group ++) {
 		if (*group == gid) {
 			G_UNLOCK (groups_mutex);
 			return TRUE;

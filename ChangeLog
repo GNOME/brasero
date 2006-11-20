@@ -1,3 +1,42 @@
+2006-11-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* configure.in:
+	* data/brasero.schemas.in:
+	* src/data-disc.c: (brasero_data_disc_get_type),
+	(brasero_data_disc_filter_notify_cb),
+	(brasero_data_disc_filter_hidden_cb),
+	(brasero_data_disc_filter_broken_sym_cb),
+	(brasero_data_disc_base_init), (brasero_data_disc_fill_toolbar),
+	(brasero_data_disc_tree_new_loading_row),
+	(brasero_data_disc_reset_real), (brasero_data_disc_unreadable_new),
+	(brasero_data_disc_unreadable_free),
+	(brasero_data_disc_restored_new),
+	(brasero_data_disc_restored_free),
+	(brasero_data_disc_restore_unreadable),
+	(brasero_data_disc_filtered_restore), (_foreach_add_unreadable),
+	(brasero_data_disc_filtered_files_clicked_cb),
+	(brasero_data_disc_update_hashes), (_check_for_restored),
+	(brasero_data_disc_load_thread):
+	* src/filtered-window.c: (brasero_filtered_dialog_init),
+	(brasero_filtered_dialog_finalize),
+	(brasero_filtered_dialog_filter_hidden_cb),
+	(brasero_filtered_dialog_filter_broken_sym_cb),
+	(brasero_filtered_dialog_filter_notify_cb),
+	(brasero_filtered_dialog_gconf_notify_cb),
+	(brasero_filtered_dialog_add),
+	(brasero_filtered_dialog_get_status):
+	* src/filtered-window.h:
+	* src/main.c: (main):
+	* src/search-entry.c: (brasero_search_entry_save_history):
+	* src/utils.c: (brasero_utils_is_gid_in_groups):
+
+	Don't allow empty names when renaming
+	Update parent directory file count after restoring files
+	Reworked the filter dialog GUI
+	New options to chose what type of files to filter
+	Re-add libnotify dependency to warn the user when files were filtered
+	Fixed a crash with groups
+
 2006-11-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* po/POTFILES.in:

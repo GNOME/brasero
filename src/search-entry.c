@@ -782,8 +782,7 @@ brasero_search_entry_save_history (BraseroSearchEntry *entry)
 
 	entry->priv->cxn = gconf_client_notify_add (entry->priv->client,
 						    BRASERO_SEARCH_ENTRY_HISTORY_KEY,
-						    (GConfClientNotifyFunc)
-						    brasero_search_entry_history_changed_cb,
+						    (GConfClientNotifyFunc) brasero_search_entry_history_changed_cb,
 						    entry, NULL, &error);
 	if (error) {
 		g_warning ("ERROR : %s\n", error->message);

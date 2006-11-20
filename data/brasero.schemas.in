@@ -183,5 +183,41 @@
 	</locale>
        </schema>
 
+      <schema>
+        <key>/schemas/apps/brasero/filter/hidden</key>
+	<applyto>/apps/brasero/filter/hidden</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>true</default>
+	<locale name="C">
+	  <short>Should brasero filter hidden files</short>
+	  <long>Should brasero filter hidden files. Set to true, brasero will filter hidden files.</long>
+	</locale>
+       </schema>
+
+        <schema>
+        <key>/schemas/apps/brasero/filter/broken_sym</key>
+	<applyto>/apps/brasero/filter/broken_sym</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>true</default>
+	<locale name="C">
+	  <short>Should brasero filter broken symlinks files</short>
+	  <long>Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks.</long>
+	</locale>
+       </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/filter/notify</key>
+	<applyto>/apps/brasero/filter/notify</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>true</default>
+	<locale name="C">
+	  <short>Should brasero notify when files are filtered</short>
+	  <long>Should brasero notify when files are filtered. Set to true, brasero will display the notification.</long>
+	</locale>
+       </schema>
+
   </schemalist>
 </gconfschemafile>

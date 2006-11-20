@@ -49,6 +49,10 @@ typedef enum {
 	BRASERO_FILTER_UNKNOWN
 } BraseroFilterStatus;
 
+#define BRASERO_FILTER_HIDDEN_KEY		"/apps/brasero/filter/hidden"
+#define BRASERO_FILTER_BROKEN_SYM_KEY		"/apps/brasero/filter/broken_sym"
+#define BRASERO_FILTER_NOTIFY_KEY		"/apps/brasero/filter/notify"
+
 typedef struct {
 	GtkDialog parent;
 	BraseroFilteredDialogPrivate *priv;

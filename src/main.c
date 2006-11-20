@@ -45,6 +45,10 @@
 
 #include <gconf/gconf-client.h>
 
+#ifdef HAVE_LIBNOTIFY
+#include <libnotify/notify.h>
+#endif
+
 #include "brasero-app.h"
 #include "menu.h"
 #include "brasero-multi-dnd.h"
@@ -560,6 +564,10 @@ main (int argc, char **argv)
 
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
+
+#ifdef HAVE_LIBNOTIFY
+	notify_init (PACKAGE);
+#endif
 
 	nautilus_burn_init ();
 

@@ -61,9 +61,15 @@
 
 #include <eggtreemultidnd.h>
 
+#include <gconf/gconf-client.h>
+
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+
+#ifdef HAVE_LIBNOTIFY
+#include <libnotify/notification.h>
+#endif
 
 #ifdef BUILD_INOTIFY
 #include "inotify.h"
@@ -191,6 +197,7 @@ struct _BraseroDirectoryContentsData {
 };
 typedef struct _BraseroDirectoryContentsData BraseroDirectoryContentsData;
 
+static void brasero_data_disc_base_init (gpointer g_class);
 static void brasero_data_disc_class_init (BraseroDataDiscClass *klass);
 static void brasero_data_disc_init (BraseroDataDisc *sp);
 static void brasero_data_disc_finalize (GObject *object);
@@ -481,6 +488,13 @@ enum {
 	PROP_REJECT_FILE,
 };
 
+static gboolean filter_notify = FALSE;
+static gboolean filter_hidden = FALSE;
+static gboolean filter_broken_sym = FALSE;
+static guint notify_notify = 0;
+static guint hidden_notify = 0;
+static guint broken_sym_notify = 0;
+
 static GObjectClass *parent_class = NULL;
 
 static GtkActionEntry entries [] = {
@@ -523,7 +537,7 @@ brasero_data_disc_get_type ()
 	if(type == 0) {
 		static const GTypeInfo our_info = {
 			sizeof (BraseroDataDiscClass),
-			NULL,
+			brasero_data_disc_base_init,
 			NULL,
 			(GClassInitFunc) brasero_data_disc_class_init,
 			NULL,
@@ -550,6 +564,89 @@ brasero_data_disc_get_type ()
 	}
 
 	return type;
+}
+
+static void
+brasero_data_disc_filter_notify_cb (GConfClient *client,
+				    guint cnxn_id,
+				    GConfEntry *entry,
+				    gpointer user_data)
+{
+	GConfValue *value;
+
+	value = gconf_entry_get_value (entry);
+	filter_notify = gconf_value_get_bool (value);
+}
+
+static void
+brasero_data_disc_filter_hidden_cb (GConfClient *client,
+				    guint cnxn_id,
+				    GConfEntry *entry,
+				    gpointer user_data)
+{
+	GConfValue *value;
+
+	value = gconf_entry_get_value (entry);
+	filter_hidden = gconf_value_get_bool (value);
+}
+
+static void
+brasero_data_disc_filter_broken_sym_cb (GConfClient *client,
+					guint cnxn_id,
+					GConfEntry *entry,
+					gpointer user_data)
+{
+	GConfValue *value;
+
+	value = gconf_entry_get_value (entry);
+	filter_broken_sym = gconf_value_get_bool (value);
+}
+
+static void
+brasero_data_disc_base_init (gpointer g_class)
+{
+	GConfClient *client;
+	GError *error = NULL;
+
+	client = gconf_client_get_default ();
+
+	filter_notify = gconf_client_get_bool (client,
+					       BRASERO_FILTER_NOTIFY_KEY,
+					       NULL);
+	notify_notify = gconf_client_notify_add (client,
+						 BRASERO_FILTER_NOTIFY_KEY,
+						 brasero_data_disc_filter_notify_cb,
+						 NULL, NULL, &error);
+	if (error) {
+		g_warning ("GConf : %s\n", error->message);
+		g_error_free (error);
+	}
+
+	filter_hidden = gconf_client_get_bool (client,
+					       BRASERO_FILTER_HIDDEN_KEY,
+					       NULL);
+	hidden_notify = gconf_client_notify_add (client,
+						 BRASERO_FILTER_HIDDEN_KEY,
+						 brasero_data_disc_filter_hidden_cb,
+						 NULL, NULL, &error);
+	if (error) {
+		g_warning ("GConf : %s\n", error->message);
+		g_error_free (error);
+	}
+
+	filter_broken_sym = gconf_client_get_bool (client,
+						   BRASERO_FILTER_BROKEN_SYM_KEY,
+						   NULL);
+	broken_sym_notify = gconf_client_notify_add (client,
+						     BRASERO_FILTER_BROKEN_SYM_KEY,
+						     brasero_data_disc_filter_broken_sym_cb,
+						     NULL, NULL, &error);
+	if (error) {
+		g_warning ("GConf : %s\n", error->message);
+		g_error_free (error);
+	}
+
+	g_object_unref (client);
 }
 
 static void
@@ -796,7 +893,6 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
 
-	gtk_widget_set_sensitive (data_disc->priv->filter_button, FALSE);
 	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
 			  "clicked",
 			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
@@ -809,7 +905,7 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 
 	gtk_tooltips_set_tip (data_disc->priv->tooltip,
 			      data_disc->priv->filter_button,
-			      _("Some files were removed from the project. Clik here to see them."),
+			      _("Display the files filtered from the project"),
 			      NULL);
 
 	button = brasero_utils_make_button (NULL, NULL, "folder-new");
@@ -1854,9 +1950,9 @@ brasero_data_disc_tree_new_loading_row (BraseroDataDisc *disc,
 
 	parent = g_path_get_dirname (path);
 	result = brasero_data_disc_disc_path_to_tree_path (disc,
-							    parent,
-							    &treepath,
-							    NULL);
+							   parent,
+							   &treepath,
+							   NULL);
 	g_free (parent);
 	if (!result)
 		return FALSE;
@@ -2823,9 +2919,6 @@ brasero_data_disc_reset_real (BraseroDataDisc *disc)
 {
 	brasero_data_disc_clean (disc);
 
-	if (GTK_WIDGET (disc->priv->filter_button) && !disc->priv->unreadable)
-		gtk_widget_set_sensitive (disc->priv->filter_button, FALSE);
-
 	disc->priv->activity_counter = 1;
 	brasero_data_disc_decrease_activity_counter (disc);
 
@@ -2911,7 +3004,7 @@ brasero_data_disc_original_parent (BraseroDataDisc *disc,
 /******************************* unreadable files ******************************/
 static void
 brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
-				  char *uri,
+				  gchar *uri,
 				  BraseroFilterStatus status)
 {
 	char *parenturi;
@@ -2933,8 +3026,22 @@ brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
 							        NULL);
 
 		/* we can now signal the user that some files were removed */
-		gtk_widget_set_sensitive (disc->priv->filter_button, TRUE);
 		gtk_tooltips_enable (disc->priv->tooltip);
+
+#ifdef HAVE_LIBNOTIFY
+
+		if (filter_notify) {
+			/* see if we should notify the user */
+			NotifyNotification *notification;
+			notification = notify_notification_new (_("Some files were filtered:"),
+								_("click here to see the list."),
+								NULL,
+								disc->priv->filter_button);
+			notify_notification_set_timeout (notification, 5000);
+			notify_notification_show (notification, NULL);
+		}
+
+#endif
 	}
 
 	if (disc->priv->filter_dialog
@@ -2962,11 +3069,6 @@ brasero_data_disc_unreadable_free (BraseroDataDisc *disc,
 	status = GPOINTER_TO_INT (g_hash_table_lookup (disc->priv->unreadable, uri));
 	g_hash_table_remove (disc->priv->unreadable, uri);
 	if (!g_hash_table_size (disc->priv->unreadable)) {
-		if (!disc->priv->restored) {
-			gtk_widget_set_sensitive (disc->priv->filter_button,
-						  FALSE);
-		}
-
 		g_hash_table_destroy (disc->priv->unreadable);
 		disc->priv->unreadable = NULL;
 	}
@@ -2982,10 +3084,8 @@ brasero_data_disc_restored_new (BraseroDataDisc *disc,
 	BraseroFile *file;
 	gchar *key;
 
-	if (!disc->priv->restored) {
+	if (!disc->priv->restored)
 		disc->priv->restored = g_hash_table_new (g_str_hash, g_str_equal);
-		gtk_widget_set_sensitive (disc->priv->filter_button, TRUE);
-	}
 
 	if (!status)
 		status = brasero_data_disc_unreadable_free (disc, uri);
@@ -3028,10 +3128,6 @@ brasero_data_disc_restored_free (BraseroDataDisc *disc,
 		g_free (key);
 
 	if (!g_hash_table_size (disc->priv->restored)) {
-		if (!disc->priv->unreadable) {
-			gtk_widget_set_sensitive (disc->priv->filter_button,
-						  FALSE);
-		}
 		g_hash_table_destroy (disc->priv->restored);
 		disc->priv->restored = NULL;
 	}
@@ -3093,7 +3189,7 @@ brasero_data_disc_restore_unreadable (BraseroDataDisc *disc,
 				      GSList *references)
 {
 	GSList *paths;
-	char *path;
+	gchar *path;
 
 	/* NOTE: it can only be unreadable here or perhaps a
 	 * recursive symlink if it was broken symlinks and a
@@ -3231,7 +3327,7 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 	GSList *paths;
 	GSList *iter;
 	GSList *uris;
-	char *uri;
+	gchar *uri;
 
 	referencess = NULL;
 	uris = NULL;
@@ -3247,6 +3343,7 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 		paths = brasero_data_disc_uri_to_paths (disc, uri, TRUE);
 		for (iter = paths; iter; iter = iter->next) {
 			BraseroDataDiscReference ref;
+			GtkTreePath *treepath;
 			gchar *path_uri;
 			gchar *path;
 
@@ -3270,6 +3367,16 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 			}
 
 			brasero_data_disc_tree_new_loading_row (disc, path);
+
+			/* update parent directory */
+			if (brasero_data_disc_disc_path_to_tree_path (disc,
+								      path,
+								      &treepath,
+								      NULL)) {
+				brasero_data_disc_tree_update_parent (disc, treepath);
+				gtk_tree_path_free (treepath);
+			}
+
 			ref = brasero_data_disc_reference_new (disc, path);
 			references = g_slist_prepend (references, GINT_TO_POINTER (ref));
 		}
@@ -3300,18 +3407,7 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 }
 
 static void
-_foreach_add_restored (char *uri,
-		       BraseroFilterStatus status,
-		       BraseroFilteredDialog *dialog)
-{
-	if (status == BRASERO_FILTER_UNKNOWN)
-		return;
-
-	brasero_filtered_dialog_add (dialog, uri, TRUE, status);
-}
-
-static void
-_foreach_add_unreadable (char *uri,
+_foreach_add_unreadable (gchar *uri,
 			 BraseroFilterStatus status,
 			 BraseroFilteredDialog *dialog)
 {
@@ -3323,14 +3419,8 @@ brasero_data_disc_filtered_files_clicked_cb (GtkButton *button,
 					     BraseroDataDisc *disc)
 {
 	GSList *restored;
-	GSList *removed;
 
 	disc->priv->filter_dialog = brasero_filtered_dialog_new ();
-	if (disc->priv->restored)
-		g_hash_table_foreach (disc->priv->restored,
-				      (GHFunc) _foreach_add_restored,
-				      disc->priv->filter_dialog);
-
 	if (disc->priv->unreadable)
 		g_hash_table_foreach (disc->priv->unreadable,
 				      (GHFunc) _foreach_add_unreadable,
@@ -3345,31 +3435,13 @@ brasero_data_disc_filtered_files_clicked_cb (GtkButton *button,
 	/* lets get the list of uri that were restored */
 	brasero_filtered_dialog_get_status (BRASERO_FILTERED_DIALOG (disc->priv->filter_dialog),
 					    &restored,
-					    &removed);
+					    NULL);
 	gtk_widget_destroy (disc->priv->filter_dialog);
 	disc->priv->filter_dialog = NULL;
 
 	brasero_data_disc_filtered_restore (disc, restored);
 	g_slist_foreach (restored, (GFunc) g_free, NULL);
 	g_slist_free (restored);
-
-	for (; removed; removed = g_slist_remove (removed, removed->data)) {
-		BraseroFilterStatus status;
-		gchar *uri;
-
-		uri = removed->data;
-
-		if (disc->priv->unreadable
-		&&  g_hash_table_lookup (disc->priv->unreadable, uri)) {
-			g_free (uri);
-			continue;
-		}
-
-		status = brasero_data_disc_restored_free (disc, uri);
-		brasero_data_disc_remove_uri (disc, uri, TRUE);
-		brasero_data_disc_unreadable_new (disc, uri, status);
-		brasero_data_disc_selection_changed (disc, TRUE);
-	}
 }
 
 /**************************** file/dir freeing *********************************/
@@ -3519,10 +3591,6 @@ brasero_data_disc_update_hashes (BraseroDataDisc *disc)
 		if (!g_hash_table_size (disc->priv->unreadable)) {
 			g_hash_table_destroy (disc->priv->unreadable);
 			disc->priv->unreadable = NULL;
-			if (!disc->priv->restored) {
-				gtk_widget_set_sensitive (disc->priv->filter_button,
-							  FALSE);
-			}
 		}
 	}
 
@@ -3548,10 +3616,6 @@ brasero_data_disc_update_hashes (BraseroDataDisc *disc)
 		if (!g_hash_table_size (disc->priv->restored)) {
 			g_hash_table_destroy (disc->priv->restored);
 			disc->priv->restored = NULL;
-			if (!disc->priv->unreadable) {
-				gtk_widget_set_sensitive (disc->priv->filter_button,
-							  FALSE);
-			}
 		}
 		g_mutex_unlock (disc->priv->restored_lock);
 	}
@@ -6219,7 +6283,7 @@ brasero_data_disc_load_dir_error (BraseroDataDisc *disc, GSList *errors)
 struct _BraseroCheckRestoredData {
 	BraseroFilterStatus status;
 	BraseroDataDisc *disc;
-	char *uri;
+	gchar *uri;
 };
 typedef struct _BraseroCheckRestoredData BraseroCheckRestoredData;
 
@@ -6253,6 +6317,12 @@ _check_for_restored (BraseroDataDisc *disc,
 
 	retval = FALSE;
 	g_mutex_lock (disc->priv->restored_lock);
+	
+	if (status == BRASERO_FILTER_BROKEN_SYM && !filter_broken_sym)
+		retval = TRUE;
+	else if (status == BRASERO_FILTER_HIDDEN && !filter_hidden)
+		retval = TRUE;
+
 	if (!disc->priv->restored)
 		goto end;
 
@@ -6279,7 +6349,6 @@ _check_for_restored (BraseroDataDisc *disc,
 			    data);
 	}
 	retval = TRUE;
-
 
 end:
 	g_mutex_unlock (disc->priv->restored_lock);
@@ -6349,8 +6418,8 @@ brasero_data_disc_load_thread (GObject *object, gpointer data)
 		if (callback_data->cancel)
 			break;
 
-		if (*info->name == '.' && (info->name[1] == 0
-		||  (info->name[1] == '.' && info->name[2] == 0))) {
+		if (info->name [0] == '.' && (info->name [1] == 0
+		|| (info->name [1] == '.' && info->name [2] == 0))) {
 			gnome_vfs_file_info_clear (info);
 			continue;
 		}

@@ -50,9 +50,10 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <gconf/gconf-client.h>
+
 #include "filtered-window.h"
 #include "utils.h"
-
 
 static void brasero_filtered_dialog_class_init (BraseroFilteredDialogClass *klass);
 static void brasero_filtered_dialog_init (BraseroFilteredDialog *sp);
@@ -60,8 +61,11 @@ static void brasero_filtered_dialog_finalize (GObject *object);
 
 struct BraseroFilteredDialogPrivate {
 	GtkWidget *tree;
-	GtkWidget *restore_hidden;
-	GtkWidget *restore_broken;
+	GConfClient *client;
+
+	guint broken_sym_notify;
+	guint hidden_notify;
+	guint notify_notify;
 
 	int broken_state:1;
 	int hidden_state:1;
@@ -69,11 +73,11 @@ struct BraseroFilteredDialogPrivate {
 
 enum  {
 	STOCK_ID_COL,
+	UNESCAPED_URI_COL,
 	URI_COL,
 	TYPE_COL,
 	STATUS_COL,
 	ACTIVABLE_COL,
-	INCLUDED_COL,
 	NB_COL,
 };
 
@@ -83,24 +87,24 @@ typedef enum {
 	LAST_SIGNAL
 } BraseroFilteredDialogSignalType;
 
-static guint brasero_filtered_dialog_signals[LAST_SIGNAL] = { 0 };
+static guint brasero_filtered_dialog_signals [LAST_SIGNAL] = { 0 };
 static GObjectClass *parent_class = NULL;
 
 static void
-brasero_filtered_dialog_item_toggled_cb (GtkCellRendererToggle *toggle,
-					 const gchar *path,
-					 BraseroFilteredDialog *dialog);
+brasero_filtered_dialog_gconf_notify_cb (GConfClient *client,
+					 guint cnxn_id,
+					 GConfEntry *entry,
+					 gpointer user_data);
+
 static void
-brasero_filtered_dialog_restore_hidden_cb (GtkButton *button,
-					   BraseroFilteredDialog *dialog);
+brasero_filtered_dialog_filter_hidden_cb (GtkToggleButton *button,
+					  BraseroFilteredDialog *dialog);
 static void
-brasero_filtered_dialog_restore_broken_symlink_cb (GtkButton *button,
-						   BraseroFilteredDialog *dialog);
+brasero_filtered_dialog_filter_broken_sym_cb (GtkToggleButton *button,
+					      BraseroFilteredDialog *dialog);
 static void
-brasero_filtered_dialog_row_activated_cb (GtkTreeView *tree,
-                                          GtkTreePath *path,
-                                          GtkTreeViewColumn *column,
-                                          BraseroFilteredDialog *dialog);
+brasero_filtered_dialog_filter_notify_cb (GtkToggleButton *button,
+					  BraseroFilteredDialog *dialog);
 
 GType
 brasero_filtered_dialog_get_type ()
@@ -159,30 +163,47 @@ brasero_filtered_dialog_class_init (BraseroFilteredDialogClass *klass)
 static void
 brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 {
-	GtkWidget *box;
+	gboolean active;
+	GtkWidget *vbox;
 	GtkWidget *label;
+	GtkWidget *frame;
 	GtkWidget *scroll;
 	GtkListStore *model;
+	GError *error = NULL;
+	GtkWidget *button_sym;
+	GtkWidget *button_notify;
+	GtkWidget *button_hidden;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 
 	obj->priv = g_new0 (BraseroFilteredDialogPrivate, 1);
 	gtk_window_set_title (GTK_WINDOW (obj), _("Removed files"));
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_BOX (GTK_DIALOG (obj)->vbox)), 16);
+	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (obj)->vbox), 10);
 
-	label = gtk_label_new (_("<span weight=\"bold\" size=\"larger\">The following files were removed automatically from the project.</span>"));
-	g_object_set (G_OBJECT (label), "use-markup", TRUE, NULL);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	frame = gtk_frame_new ("");
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
+	gtk_widget_show (frame);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    label,
-			    FALSE,
+			    frame,
+			    TRUE,
 			    TRUE,
 			    0);
 
-	label = gtk_label_new (_("Select the files you want to restore:"));
+	vbox = gtk_vbox_new (FALSE, 10);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (frame), vbox);
+
+	label = gtk_frame_get_label_widget (GTK_FRAME (frame));
+	gtk_label_set_markup (GTK_LABEL (label),
+			      _("<span weight=\"bold\" size=\"larger\">The following files were removed automatically from the project.</span>"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+
+	label = gtk_label_new (_("Select the files you want to restore:"));
+	gtk_misc_set_padding (GTK_MISC (label), 0, 2);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    label,
 			    FALSE,
 			    TRUE,
@@ -192,16 +213,16 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 				    G_TYPE_STRING,
 				    G_TYPE_STRING,
 				    G_TYPE_STRING,
+				    G_TYPE_STRING,
 				    G_TYPE_INT,
-				    G_TYPE_BOOLEAN,
 				    G_TYPE_BOOLEAN);
 
 	obj->priv->tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree)),
+				     GTK_SELECTION_MULTIPLE);
+	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	g_object_unref (model);
-
-	g_signal_connect (G_OBJECT (obj->priv->tree), "row-activated",
-			  G_CALLBACK (brasero_filtered_dialog_row_activated_cb), obj);
 
 	column = gtk_tree_view_column_new ();
 	renderer = gtk_cell_renderer_pixbuf_new ();
@@ -228,17 +249,6 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 	gtk_tree_view_column_set_sort_column_id (column, TYPE_COL);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 
-	renderer = gtk_cell_renderer_toggle_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Status"), renderer,
-							   "inconsistent", ACTIVABLE_COL,
-							   "active", INCLUDED_COL, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree), column);
-	gtk_tree_view_column_set_sort_column_id (column, INCLUDED_COL);
-	gtk_tree_view_column_set_clickable (column, TRUE);
-
-	g_signal_connect (G_OBJECT (renderer), "toggled",
-			  G_CALLBACK (brasero_filtered_dialog_item_toggled_cb), obj);
-
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
 					     GTK_SHADOW_IN);
@@ -247,41 +257,90 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 					GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scroll), obj->priv->tree);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+	gtk_box_pack_start (GTK_BOX (vbox),
 			    scroll,
 			    TRUE,
 			    TRUE,
 			    0);
 
-	box = gtk_hbox_new (FALSE, 8);
-	obj->priv->restore_hidden = gtk_button_new_with_label (_("Restore hidden files"));
-	gtk_widget_set_sensitive (obj->priv->restore_hidden, FALSE);
-	g_signal_connect (G_OBJECT (obj->priv->restore_hidden),
-			  "clicked",
-			  G_CALLBACK (brasero_filtered_dialog_restore_hidden_cb),
+	/* options */
+	obj->priv->client = gconf_client_get_default ();
+
+	active = gconf_client_get_bool (obj->priv->client,
+					BRASERO_FILTER_HIDDEN_KEY,
+					NULL);
+
+	button_hidden = gtk_check_button_new_with_label (_("Filter hidden files"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_hidden), active);
+	g_signal_connect (button_hidden,
+			  "toggled",
+			  G_CALLBACK (brasero_filtered_dialog_filter_hidden_cb),
 			  obj);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->restore_hidden, FALSE, FALSE, 0);
 
-	obj->priv->restore_broken = gtk_button_new_with_label (_("Restore broken symlink"));
-	gtk_widget_set_sensitive (obj->priv->restore_broken, FALSE);
-	g_signal_connect (G_OBJECT (obj->priv->restore_broken),
-			  "clicked",
-			  G_CALLBACK (brasero_filtered_dialog_restore_broken_symlink_cb),
+	obj->priv->hidden_notify = gconf_client_notify_add (obj->priv->client,
+							    BRASERO_FILTER_HIDDEN_KEY,
+							    brasero_filtered_dialog_gconf_notify_cb,
+							    button_hidden, NULL, &error);
+	if (error) {
+		g_warning ("GConf : %s\n", error->message);
+		g_error_free (error);
+	}
+
+	active = gconf_client_get_bool (obj->priv->client,
+					BRASERO_FILTER_BROKEN_SYM_KEY,
+					NULL);
+	
+	button_sym = gtk_check_button_new_with_label (_("Filter broken symlinks"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_sym), active);
+	g_signal_connect (button_sym,
+			  "toggled",
+			  G_CALLBACK (brasero_filtered_dialog_filter_broken_sym_cb),
 			  obj);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->restore_broken, FALSE, FALSE, 0);
 
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			  box,
-			  FALSE,
-			  FALSE,
-			  0);
+	obj->priv->broken_sym_notify = gconf_client_notify_add (obj->priv->client,
+								BRASERO_FILTER_BROKEN_SYM_KEY,
+								brasero_filtered_dialog_gconf_notify_cb,
+								button_sym, NULL, &error);
+	if (error) {
+		g_warning ("GConf : %s\n", error->message);
+		g_error_free (error);
+	}
 
+	active = gconf_client_get_bool (obj->priv->client,
+					BRASERO_FILTER_NOTIFY_KEY,
+					NULL);
+	
+	button_notify = gtk_check_button_new_with_label (_("Notify when files are filtered"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_notify), active);
+	g_signal_connect (button_notify,
+			  "toggled",
+			  G_CALLBACK (brasero_filtered_dialog_filter_notify_cb),
+			  obj);
+
+	obj->priv->notify_notify = gconf_client_notify_add (obj->priv->client,
+							    BRASERO_FILTER_NOTIFY_KEY,
+							    brasero_filtered_dialog_gconf_notify_cb,
+							    button_notify, NULL, &error);
+	if (error) {
+		g_warning ("GConf : %s\n", error->message);
+		g_error_free (error);
+	}
+
+	frame = brasero_utils_pack_properties (_("<b>Filtering options</b>"),
+					       button_hidden,
+					       button_sym,
+					       button_notify);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+			    frame,
+			    FALSE,
+			    FALSE,
+			    0);
+
+	/* buttons */
 	gtk_dialog_add_button (GTK_DIALOG (obj),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (obj),
 				GTK_STOCK_OK, GTK_RESPONSE_OK);
-
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), TRUE);
 }
 
 static void
@@ -290,8 +349,31 @@ brasero_filtered_dialog_finalize (GObject *object)
 	BraseroFilteredDialog *cobj;
 
 	cobj = BRASERO_FILTERED_DIALOG (object);
-	g_free (cobj->priv);
 
+	if (cobj->priv->notify_notify) {
+		gconf_client_notify_remove (cobj->priv->client,
+					    cobj->priv->notify_notify);
+		cobj->priv->notify_notify = 0;
+	}
+
+	if (cobj->priv->hidden_notify) {
+		gconf_client_notify_remove (cobj->priv->client,
+					    cobj->priv->hidden_notify);
+		cobj->priv->hidden_notify = 0;
+	}
+
+	if (cobj->priv->broken_sym_notify) {
+		gconf_client_notify_remove (cobj->priv->client,
+					    cobj->priv->broken_sym_notify);
+		cobj->priv->broken_sym_notify = 0;
+	}
+	
+	if (cobj->priv->client) {
+		g_object_unref (cobj->priv->client);
+		cobj->priv->client = NULL;
+	}
+
+	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -305,18 +387,62 @@ brasero_filtered_dialog_new ()
 	return GTK_WIDGET (obj);
 }
 
+static void
+brasero_filtered_dialog_filter_hidden_cb (GtkToggleButton *button,
+					  BraseroFilteredDialog *dialog)
+{
+	gconf_client_set_bool (dialog->priv->client,
+			       BRASERO_FILTER_HIDDEN_KEY,
+			       gtk_toggle_button_get_active (button),
+			       NULL);
+}
+
+static void
+brasero_filtered_dialog_filter_broken_sym_cb (GtkToggleButton *button,
+					      BraseroFilteredDialog *dialog)
+{
+	gconf_client_set_bool (dialog->priv->client,
+			       BRASERO_FILTER_BROKEN_SYM_KEY,
+			       gtk_toggle_button_get_active (button),
+			       NULL);
+}
+
+static void
+brasero_filtered_dialog_filter_notify_cb (GtkToggleButton *button,
+					  BraseroFilteredDialog *dialog)
+{
+	gconf_client_set_bool (dialog->priv->client,
+			       BRASERO_FILTER_NOTIFY_KEY,
+			       gtk_toggle_button_get_active (button),
+			       NULL);
+}
+
+static void
+brasero_filtered_dialog_gconf_notify_cb (GConfClient *client,
+					 guint cnxn_id,
+					 GConfEntry *entry,
+					 gpointer user_data)
+{
+	GConfValue *value;
+	GtkToggleButton *button = user_data;
+
+	value = gconf_entry_get_value (entry);
+	gtk_toggle_button_set_active (button, gconf_value_get_bool (value));
+}
+
 void
 brasero_filtered_dialog_add (BraseroFilteredDialog *dialog,
-			     const char *uri,
+			     const gchar *uri,
 			     gboolean restored,
 			     BraseroFilterStatus status)
 {
-	char *labels [] = { N_("hidden file"),
-			    N_("unreadable file"),
-			    N_("broken symlink"),
-			    N_("recursive symlink"),
-			    NULL };
+	gchar *labels [] = { N_("hidden file"),
+			     N_("unreadable file"),
+			     N_("broken symlink"),
+			     N_("recursive symlink"),
+			     NULL };
 	const gchar *stock_id;
+	gchar *unescaped_uri;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gchar *type;
@@ -329,20 +455,18 @@ brasero_filtered_dialog_add (BraseroFilteredDialog *dialog,
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->tree));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+
+	unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    STOCK_ID_COL, stock_id,
+			    UNESCAPED_URI_COL, unescaped_uri,
 			    URI_COL, uri,
 			    TYPE_COL, _(type),
 			    STATUS_COL, status,
-			    INCLUDED_COL, restored,
 			    ACTIVABLE_COL, (status == BRASERO_FILTER_UNREADABLE || status == BRASERO_FILTER_RECURSIVE_SYM),
 			    -1);
 
-	if (status == BRASERO_FILTER_HIDDEN)
-		gtk_widget_set_sensitive (dialog->priv->restore_hidden, TRUE);
-
-	if (status == BRASERO_FILTER_BROKEN_SYM)
-		gtk_widget_set_sensitive (dialog->priv->restore_broken, TRUE);
+	g_free (unescaped_uri);
 }
 
 void
@@ -350,14 +474,20 @@ brasero_filtered_dialog_get_status (BraseroFilteredDialog *dialog,
 				    GSList **restored,
 				    GSList **removed)
 {
+	GtkTreeSelection *selection;
 	BraseroFilterStatus status;
 	GSList *retval_restored;
 	GSList *retval_removed;
 	GtkTreeModel *model;
-	gboolean included;
 	GtkTreeIter iter;
-	char *uri;
+	gchar *uri;
 
+	if (removed)
+		*removed = NULL;
+	if (restored)
+		*restored = NULL;
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dialog->priv->tree));
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->tree));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return;
@@ -367,8 +497,7 @@ brasero_filtered_dialog_get_status (BraseroFilteredDialog *dialog,
 	do {
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
-				    STATUS_COL, &status,
-				    INCLUDED_COL, &included, -1);
+				    STATUS_COL, &status, -1);
 
 		if (status == BRASERO_FILTER_UNREADABLE
 		||  status == BRASERO_FILTER_RECURSIVE_SYM) {
@@ -376,142 +505,15 @@ brasero_filtered_dialog_get_status (BraseroFilteredDialog *dialog,
 			continue;
 		}
 
-		if (included)
+		if (gtk_tree_selection_iter_is_selected (selection, &iter))
 			retval_restored = g_slist_prepend (retval_restored, uri);
 		else
 			retval_removed = g_slist_prepend (retval_removed, uri);
 	} while (gtk_tree_model_iter_next (model, &iter));
 
-	*restored = retval_restored;
-	*removed = retval_removed;
-}
+	if (restored)
+		*restored = retval_restored;
 
-static void
-brasero_filtered_dialog_item_state_changed (BraseroFilteredDialog *dialog,
-				            const GtkTreePath *path)
-{
-	BraseroFilterStatus status;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	gboolean active;
-	char *uri;
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->tree));
-	gtk_tree_model_get_iter (model, &iter, (GtkTreePath*) path);
-
-	gtk_tree_model_get (model, &iter,
-			    URI_COL, &uri,
-			    STATUS_COL, &status,
-			    INCLUDED_COL, &active, -1);
-
-	if (active) { /* (RE) EXCLUDE */
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-				    INCLUDED_COL, FALSE, -1);
-	}
-	else { /* RESTORE */
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-				    INCLUDED_COL, TRUE, -1);
-	}
-
-	g_free (uri);
-}
-
-static void
-brasero_filtered_dialog_item_toggled_cb (GtkCellRendererToggle *toggle,
-					 const gchar *path,
-					 BraseroFilteredDialog *dialog)
-{
-	GtkTreePath *treepath;
-
-	treepath = gtk_tree_path_new_from_string (path);
-	brasero_filtered_dialog_item_state_changed (dialog, treepath);
-	gtk_tree_path_free (treepath);
-}
-
-static void
-brasero_filtered_dialog_restore_all (BraseroFilteredDialog *dialog,
-				     BraseroFilterStatus status)
-{
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	BraseroFilterStatus row_status;
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->tree));
-	if (!gtk_tree_model_get_iter_first (model, &iter))
-		return;
-
-	do {
-		gtk_tree_model_get (model, &iter,
-				    STATUS_COL, &row_status, -1);
-
-		if (status == row_status) {
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    INCLUDED_COL, TRUE, -1);
-		}
-
-	} while (gtk_tree_model_iter_next (model, &iter));
-}
-
-static void
-brasero_filtered_dialog_exclude_all (BraseroFilteredDialog *dialog,
-				     BraseroFilterStatus status)
-{
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	BraseroFilterStatus row_status;
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->tree));
-	if (!gtk_tree_model_get_iter_first (model, &iter))
-		return;
-
-	do {
-		gtk_tree_model_get (model, &iter,
-				    STATUS_COL, &row_status, -1);
-
-		if (status == row_status)
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    INCLUDED_COL, FALSE, -1);
-
-	} while (gtk_tree_model_iter_next (model, &iter));
-}
-
-static void
-brasero_filtered_dialog_restore_hidden_cb (GtkButton *button,
-					   BraseroFilteredDialog *dialog)
-{
-	if (!dialog->priv->hidden_state) {
-		gtk_button_set_label (button, _("Exclude hidden files"));
-		brasero_filtered_dialog_restore_all (dialog, BRASERO_FILTER_HIDDEN);
-		dialog->priv->hidden_state = 1;
-	}
-	else {
-		gtk_button_set_label (button, _("Restore hidden files"));
-		brasero_filtered_dialog_exclude_all (dialog, BRASERO_FILTER_HIDDEN);
-		dialog->priv->hidden_state = 0;
-	}
-}
-
-static void
-brasero_filtered_dialog_restore_broken_symlink_cb (GtkButton *button,
-						   BraseroFilteredDialog *dialog)
-{
-	if (!dialog->priv->broken_state) {
-		gtk_button_set_label (button, _("Exclude broken symlinks"));
-		brasero_filtered_dialog_restore_all (dialog, BRASERO_FILTER_BROKEN_SYM);
-		dialog->priv->broken_state = 1;
-	}
-	else {
-		gtk_button_set_label (button, _("Restore broken symlinks"));
-		brasero_filtered_dialog_exclude_all (dialog, BRASERO_FILTER_BROKEN_SYM);
-		dialog->priv->broken_state = 0;
-	}
-}
-
-static void
-brasero_filtered_dialog_row_activated_cb (GtkTreeView *tree,
-                                          GtkTreePath *path,
-                                          GtkTreeViewColumn *column,
-                                          BraseroFilteredDialog *dialog)
-{
-	brasero_filtered_dialog_item_state_changed (dialog, path);
+	if (removed)
+		*removed = retval_removed;
 }
