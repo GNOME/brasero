@@ -1317,6 +1317,9 @@ brasero_data_disc_tree_check_name_validity (BraseroDataDisc *disc,
 	GtkTreeIter child;
 	GtkTreeModel *model;
 
+	if (name && name [0] == '\0')
+		return BRASERO_DISC_ERROR_UNKNOWN;
+
 	model = disc->priv->model;
 	if (!treepath || gtk_tree_path_get_depth (treepath) < 1) {
 		if (!gtk_tree_model_get_iter_first (model, &child))
