@@ -1221,6 +1221,9 @@ brasero_data_disc_tree_check_name_validity (BraseroDataDisc *disc,
 	GtkTreeIter child;
 	GtkTreeModel *model;
 
+	if (name && name [0] == '\0')
+		return BRASERO_DISC_ERROR_NO_NAME;
+
 	model = disc->priv->model;
 	if (!treepath || gtk_tree_path_get_depth (treepath) < 1) {
 		if (!gtk_tree_model_get_iter_first (model, &child))
@@ -3247,6 +3250,7 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 		paths = brasero_data_disc_uri_to_paths (disc, uri, TRUE);
 		for (iter = paths; iter; iter = iter->next) {
 			BraseroDataDiscReference ref;
+			GtkTreePath *treepath;
 			gchar *path_uri;
 			gchar *path;
 
@@ -3270,6 +3274,16 @@ brasero_data_disc_filtered_restore (BraseroDataDisc *disc,
 			}
 
 			brasero_data_disc_tree_new_loading_row (disc, path);
+
+			/* update parent directory */
+			if (brasero_data_disc_disc_path_to_tree_path (disc,
+								      path,
+								      &treepath,
+								      NULL)) {
+				brasero_data_disc_tree_update_parent (disc, treepath);
+				gtk_tree_path_free (treepath);
+			}
+
 			ref = brasero_data_disc_reference_new (disc, path);
 			references = g_slist_prepend (references, GINT_TO_POINTER (ref));
 		}
