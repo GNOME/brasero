@@ -20,38 +20,14 @@ mimedir = $(datadir)/mime/packages
 mime_DATA = brasero.xml
 
 
-IMAGES=	logo.png \
-		brasero.png \
-		cd-action-burn.png	\
-		cd-action-burn-16.png	\
-		disc-00.png	\
-		disc-05.png	\
-		disc-100.png	\
-		disc-10.png	\
-		disc-15.png	\
-		disc-20.png	\
-		disc-25.png	\
-		disc-30.png	\
-		disc-35.png	\
-		disc-40.png	\
-		disc-45.png	\
-		disc-50.png	\
-		disc-55.png	\
-		disc-60.png	\
-		disc-65.png	\
-		disc-70.png	\
-		disc-75.png	\
-		disc-80.png	\
-		disc-85.png	\
-		disc-90.png	\
-		disc-95.png
+IMAGES=	logo.png
 
 CLEANFILES =	$(desktop_DATA)\
-			$(mime_DATA)
+		$(mime_DATA)
 
-EXTRA_DIST = $(desktop_in_files)\
-			$(MIMEFILES)\
-			$(IMAGES)
+EXTRA_DIST = 	$(desktop_in_files)\
+		$(MIMEFILES)\
+		$(IMAGES)
 
 braserodistpixdir = $(datadir)/brasero/
 braserodistpix_DATA = $(IMAGES)

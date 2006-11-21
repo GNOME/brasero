@@ -182,7 +182,7 @@ static GtkActionEntry entries_actions [] = {
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
-	{"Burn", BRASERO_STOCK_BURN_16, N_("_Burn"), NULL,
+	{"Burn", "brasero-action-burn", N_("_Burn"), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
@@ -449,7 +449,7 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->empty = 1;
 	
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn"), BRASERO_STOCK_BURN, NULL);
+	obj->priv->burn = brasero_utils_make_button (_("Burn"), NULL, "brasero-action-burn");
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
 	g_signal_connect (obj->priv->burn,

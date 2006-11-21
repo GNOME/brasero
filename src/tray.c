@@ -210,8 +210,6 @@ brasero_tray_icon_build_menu (BraseroTrayIcon *tray)
 static void
 brasero_tray_icon_init (BraseroTrayIcon *obj)
 {
-	GdkPixbuf *pixbuf;
-
 	obj->priv = g_new0 (BraseroTrayIconPrivate, 1);
 	brasero_tray_icon_build_menu (obj);
 	g_signal_connect (obj,
@@ -223,15 +221,7 @@ brasero_tray_icon_init (BraseroTrayIcon *obj)
 			  G_CALLBACK (brasero_tray_icon_activate_cb),
 			  NULL);
 
-	pixbuf = gdk_pixbuf_new_from_file (BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-00.png", NULL);
-	if (pixbuf) {
-		gtk_status_icon_set_from_pixbuf (GTK_STATUS_ICON (obj), pixbuf);
-		g_object_unref (pixbuf);
-	}
-	else
-		g_warning ("Faulty installation. \"%s\" can't be found.\n",
-			   BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-00.png");
-
+	gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (obj), "brasero-disc-00");
 	gtk_status_icon_set_tooltip (GTK_STATUS_ICON (obj), _("waiting"));
 	obj->priv->first_burning_percent = -1;
 }
@@ -304,10 +294,9 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 				gdouble fraction,
 				long remaining)
 {
-	int percent;
-	int remains;
-	char *icon_name;
-	GdkPixbuf *pixbuf;
+	gint percent;
+	gint remains;
+	gchar *icon_name;
 
 	percent = fraction * 100;
 	tray->priv->percent = percent;
@@ -341,14 +330,9 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 
 	tray->priv->rounded_percent = percent;
 
-	icon_name = g_strdup_printf (BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-%02i.png", percent);
-	pixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
+	icon_name = g_strdup_printf ("brasero-disc-%02i", percent);
+	gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (tray), icon_name);
 	g_free (icon_name);
-
-	if (pixbuf)
-		gtk_status_icon_set_from_pixbuf (GTK_STATUS_ICON (tray), pixbuf);
-	else
-		g_warning ("Faulty installation. \"%s\" can't be found.\n", icon_name);
 }
 
 static void

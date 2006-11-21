@@ -123,20 +123,12 @@ brasero_utils_init (void)
 
 	/* This function does two things:
 	 * - register brasero icons
-	 * - load all the gid of the user
-	 */
+	 * - load all the gid of the user */
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   BRASERO_DATADIR "/icons");
+
 	factory = gtk_icon_factory_new ();
 
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_BURN,
-				     BRASERO_DATADIR G_DIR_SEPARATOR_S "cd-action-burn.png",
-				     FROM_FILE,
-				     0);
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_BURN_16,
-				     BRASERO_DATADIR G_DIR_SEPARATOR_S "cd-action-burn-16.png",
-				     FROM_FILE,
-				     0);
 	brasero_utils_register_icon (factory,
 				     BRASERO_STOCK_PLAYLIST,
 				     "audio/x-scpls",
@@ -170,7 +162,7 @@ brasero_utils_is_gid_in_groups (gid_t gid)
 		return FALSE;
 	}
 
-	for (group = groups; group; group ++) {
+	for (group = groups; group && *groups; group ++) {
 		if (*group == gid) {
 			G_UNLOCK (groups_mutex);
 			return TRUE;
@@ -362,7 +354,7 @@ brasero_utils_get_sectors_string (gint64 sectors,
 GdkPixbuf *
 brasero_utils_get_icon (const gchar *name, gint size)
 {
-	char *real;
+	gchar *real;
 	GError *error = NULL;
 	GdkPixbuf *icon_pix = NULL;
 
@@ -497,7 +489,7 @@ brasero_utils_make_button (const gchar *text,
 	GtkWidget *button;
 
 	if (theme)
-		image = gtk_image_new_from_icon_name (theme, GTK_ICON_SIZE_BUTTON);
+		image = gtk_image_new_from_icon_name (theme, GTK_ICON_SIZE_LARGE_TOOLBAR);
 
 	if (!image && stock)
 		image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_LARGE_TOOLBAR);
@@ -575,12 +567,12 @@ brasero_utils_remove (const gchar *uri)
 }
 
 char *
-brasero_utils_escape_string (const char *text)
+brasero_utils_escape_string (const gchar *text)
 {
-	char *ptr, *result;
-	int len = 1;
+	gchar *ptr, *result;
+	gint len = 1;
 
-	ptr = (char *) text;
+	ptr = (gchar *) text;
 	while (*ptr != '\0') {
 		if (*ptr == '\\' || *ptr == '=')
 			len++;
