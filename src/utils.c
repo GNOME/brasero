@@ -482,16 +482,17 @@ brasero_utils_pack_properties (const gchar *title, ...)
 GtkWidget *
 brasero_utils_make_button (const gchar *text,
 			   const gchar *stock,
-			   const gchar *theme)
+			   const gchar *theme, 
+			   GtkIconSize size)
 {
 	GtkWidget *image = NULL;
 	GtkWidget *button;
 
 	if (theme)
-		image = gtk_image_new_from_icon_name (theme, GTK_ICON_SIZE_BUTTON);
+		image = gtk_image_new_from_icon_name (theme, size);
 
 	if (!image && stock)
-		image = gtk_image_new_from_stock (stock, GTK_ICON_SIZE_LARGE_TOOLBAR);
+		image = gtk_image_new_from_stock (stock, size);
 
 	button = gtk_button_new ();
 	gtk_button_set_image (GTK_BUTTON (button), image);

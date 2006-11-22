@@ -82,7 +82,10 @@ GdkPixbuf *brasero_utils_get_icon (const gchar *name, gint size);
 GtkWidget *brasero_utils_pack_properties (const gchar *title, ...);
 GtkWidget *brasero_utils_pack_properties_list (const gchar *title, GSList *list);
 
-GtkWidget *brasero_utils_make_button (const gchar *text, const gchar *stock, const gchar *theme);
+GtkWidget *brasero_utils_make_button (const gchar *text,
+				      const gchar *stock,
+				      const gchar *theme,
+				      GtkIconSize size);
 
 gboolean brasero_utils_remove (const gchar *uri);
 

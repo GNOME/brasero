@@ -726,7 +726,10 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 			  obj);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj), cancel, GTK_RESPONSE_CANCEL);
 
-	burn = brasero_utils_make_button (_("Burn"), NULL, "brasero-action-burn");
+	burn = brasero_utils_make_button (_("Burn"),
+					  NULL,
+					  "brasero-action-burn",
+					  GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_widget_show (burn);
 	g_signal_connect (G_OBJECT (burn),
 			  "clicked",

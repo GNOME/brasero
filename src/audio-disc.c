@@ -501,7 +501,10 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	audio_disc = BRASERO_AUDIO_DISC (disc);
 
 	/* button to add pauses in between tracks */
-	button = brasero_utils_make_button (NULL, GTK_STOCK_MEDIA_PAUSE, NULL);
+	button = brasero_utils_make_button (NULL,
+					    GTK_STOCK_MEDIA_PAUSE,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
 	gtk_widget_set_sensitive (button, FALSE);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
