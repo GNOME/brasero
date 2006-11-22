@@ -191,7 +191,10 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 			  obj);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj), cancel, GTK_RESPONSE_CANCEL);
 
-	burn = brasero_utils_make_button (_("Copy"), NULL, "brasero-action-burn");
+	burn = brasero_utils_make_button (_("Copy"),
+					  NULL,
+					  "brasero-action-burn",
+					  GTK_ICON_SIZE_LARGE_TOOLBAR);
 	g_signal_connect (G_OBJECT (burn),
 			  "clicked",
 			  G_CALLBACK (brasero_disc_copy_dialog_burn_clicked_cb),

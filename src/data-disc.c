@@ -791,7 +791,10 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	data_disc = BRASERO_DATA_DISC (disc);
 
 	/* toolbar buttons */
-	data_disc->priv->filter_button = brasero_utils_make_button (NULL, GTK_STOCK_UNDELETE, NULL);
+	data_disc->priv->filter_button = brasero_utils_make_button (NULL,
+								    GTK_STOCK_UNDELETE,
+								    NULL,
+								    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (data_disc->priv->filter_button);
 	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
 	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
@@ -812,7 +815,10 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			      _("Some files were removed from the project. Clik here to see them."),
 			      NULL);
 
-	button = brasero_utils_make_button (NULL, NULL, "folder-new");
+	button = brasero_utils_make_button (NULL,
+					    NULL,
+					    "folder-new",
+					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);

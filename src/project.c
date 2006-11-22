@@ -355,7 +355,10 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (separator);
 	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);
 
-	obj->priv->add = brasero_utils_make_button (NULL, GTK_STOCK_ADD, NULL);
+	obj->priv->add = brasero_utils_make_button (NULL,
+						    GTK_STOCK_ADD,
+						    NULL,
+						    GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_relief (GTK_BUTTON (obj->priv->add), GTK_RELIEF_NONE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->add), FALSE);
 	gtk_widget_set_sensitive (obj->priv->add, FALSE);
@@ -373,7 +376,10 @@ brasero_project_init (BraseroProject *obj)
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->add);
 	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 
-	obj->priv->remove = brasero_utils_make_button (NULL, GTK_STOCK_REMOVE, NULL);
+	obj->priv->remove = brasero_utils_make_button (NULL,
+						       GTK_STOCK_REMOVE,
+						       NULL,
+						       GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_relief (GTK_BUTTON (obj->priv->remove), GTK_RELIEF_NONE);
 	gtk_widget_set_sensitive (obj->priv->remove, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->remove), FALSE);
@@ -449,7 +455,10 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->empty = 1;
 	
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn"), NULL, "brasero-action-burn");
+	obj->priv->burn = brasero_utils_make_button (_("Burn"),
+						     NULL,
+						     "brasero-action-burn",
+						     GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
 	g_signal_connect (obj->priv->burn,
