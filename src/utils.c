@@ -125,18 +125,11 @@ brasero_utils_init (void)
 	 * - register brasero icons
 	 * - load all the gid of the user
 	 */
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   BRASERO_DATADIR "/icons");
+
 	factory = gtk_icon_factory_new ();
 
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_BURN,
-				     BRASERO_DATADIR G_DIR_SEPARATOR_S "cd-action-burn.png",
-				     FROM_FILE,
-				     0);
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_BURN_16,
-				     BRASERO_DATADIR G_DIR_SEPARATOR_S "cd-action-burn-16.png",
-				     FROM_FILE,
-				     0);
 	brasero_utils_register_icon (factory,
 				     BRASERO_STOCK_PLAYLIST,
 				     "audio/x-scpls",

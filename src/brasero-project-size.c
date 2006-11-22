@@ -1417,7 +1417,7 @@ brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
 				/* FIXME: the same should be done for DVD-RW restricted ... */
 				if (bdrive->media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 					gboolean res;
-					gint volume_blocks = 0;
+					gint64 volume_blocks = 0;
 				
 					size = NCB_MEDIA_GET_CAPACITY (ndrive);
 					res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (ndrive), &volume_blocks, NULL);
@@ -1514,7 +1514,7 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 		if (NCB_MEDIA_IS_APPENDABLE (drive->drive)) {
 			if (drive->media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 				gboolean res;
-				gint volume_blocks = 0;
+				gint64 volume_blocks = 0;
 			
 				size = NCB_MEDIA_GET_CAPACITY (drive->drive);
 				res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive->drive), &volume_blocks, NULL);

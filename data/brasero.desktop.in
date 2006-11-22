@@ -4,7 +4,7 @@ _Comment=Write and copy CD / DVD
 Categories=GNOME;Application;AudioVideo;
 Encoding=UTF-8
 Exec=brasero %U
-Icon=brasero.png
+Icon=brasero
 MimeType=application/x-cd-image;application/x-cdrdao-toc;application/x-toc;application/x-cue;application/x-brasero;
 StartupNotify=true
 Terminal=false
@@ -13,13 +13,13 @@ Type=Application
 Actions=BurnImage;OpenProject;
 
 [Desktop Action BurnImage]
-Icon=brasero.png
+Icon=brasero
 MimeType=application/x-cd-image;application/x-cdrdao-toc;application/x-cue;application/x-toc;
 Exec=brasero -i %u
 _Name=Burn Image
 
 [Desktop Action OpenProject]
-Icon=brasero.png
+Icon=brasero
 MimeType=application/x-brasero;
 Exec=brasero -p %u
 _Name=Open project

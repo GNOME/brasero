@@ -40,8 +40,6 @@
 extern "C" {
 #endif
 
-#define BRASERO_STOCK_BURN	"brasero-stock-burn"
-#define BRASERO_STOCK_BURN_16	"brasero-stock-burn-16"
 #define BRASERO_STOCK_PLAYLIST	"brasero-playlist-icon"
 
 #define BRASERO_ERROR brasero_error_quark()
