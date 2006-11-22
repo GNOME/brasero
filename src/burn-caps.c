@@ -386,8 +386,10 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 			if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media_type))
 				return BRASERO_BURN_NOT_SUPPORTED;
 
-			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY|
-					   BRASERO_BURN_FLAG_DONT_CLOSE;
+			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+
+			if (!caps->priv->use_libburn)
+				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 
 			/* for the time being don't force on the fly */
 			/* default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY; */
@@ -423,7 +425,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 							 BRASERO_BURN_FLAG_MERGE;
 				}
 			}
-			else if (!caps->priv->use_libburn && !caps->priv->use_libiso) {
+			else if (!caps->priv->use_libburn || !caps->priv->use_libiso) {
 				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 
 				/* when we don't know the media type we allow
@@ -452,10 +454,12 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 					}
 				}
 			}
-			else
+			/* libburn doesn't support this (yet) */
+			/*else
 				supported_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE|
 						    BRASERO_BURN_FLAG_APPEND|
 						    BRASERO_BURN_FLAG_MERGE;
+			*/
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;

@@ -189,7 +189,7 @@ brasero_volume_get_label (const gchar *path,
 
 gboolean
 brasero_volume_get_size (const gchar *path,
-			 gint32 *nb_blocks,
+			 gint64 *nb_blocks,
 			 GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
@@ -206,7 +206,7 @@ brasero_volume_get_size (const gchar *path,
 BraseroVolFile *
 brasero_volume_get_files (const gchar *path,
 			  gchar **label,
-			  gint32 *nb_blocks,
+			  gint64 *nb_blocks,
 			  GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];

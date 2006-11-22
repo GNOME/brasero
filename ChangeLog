@@ -1,3 +1,159 @@
+2006-11-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* configure.in:
+	* data/Makefile.am:
+	* data/brasero.png:
+	* data/cd-action-burn-16.png:
+	* data/cd-action-burn.png:
+	* data/disc-00.png:
+	* data/disc-05.png:
+	* data/disc-10.png:
+	* data/disc-100.png:
+	* data/disc-15.png:
+	* data/disc-20.png:
+	* data/disc-25.png:
+	* data/disc-30.png:
+	* data/disc-35.png:
+	* data/disc-40.png:
+	* data/disc-45.png:
+	* data/disc-50.png:
+	* data/disc-55.png:
+	* data/disc-60.png:
+	* data/disc-65.png:
+	* data/disc-70.png:
+	* data/disc-75.png:
+	* data/disc-80.png:
+	* data/disc-85.png:
+	* data/disc-90.png:
+	* data/disc-95.png:
+	* data/icons/16x16/Makefile.am:
+	* data/icons/16x16/actions/Makefile.am:
+	* data/icons/16x16/actions/brasero-action-burn.png:
+	* data/icons/16x16/apps/Makefile.am:
+	* data/icons/16x16/apps/brasero-disc-00.png:
+	* data/icons/16x16/apps/brasero-disc-05.png:
+	* data/icons/16x16/apps/brasero-disc-10.png:
+	* data/icons/16x16/apps/brasero-disc-100.png:
+	* data/icons/16x16/apps/brasero-disc-15.png:
+	* data/icons/16x16/apps/brasero-disc-20.png:
+	* data/icons/16x16/apps/brasero-disc-25.png:
+	* data/icons/16x16/apps/brasero-disc-30.png:
+	* data/icons/16x16/apps/brasero-disc-35.png:
+	* data/icons/16x16/apps/brasero-disc-40.png:
+	* data/icons/16x16/apps/brasero-disc-45.png:
+	* data/icons/16x16/apps/brasero-disc-50.png:
+	* data/icons/16x16/apps/brasero-disc-55.png:
+	* data/icons/16x16/apps/brasero-disc-60.png:
+	* data/icons/16x16/apps/brasero-disc-65.png:
+	* data/icons/16x16/apps/brasero-disc-70.png:
+	* data/icons/16x16/apps/brasero-disc-75.png:
+	* data/icons/16x16/apps/brasero-disc-80.png:
+	* data/icons/16x16/apps/brasero-disc-85.png:
+	* data/icons/16x16/apps/brasero-disc-90.png:
+	* data/icons/16x16/apps/brasero-disc-95.png:
+	* data/icons/16x16/apps/brasero.png:
+	* data/icons/16x16/brasero.png:
+	* data/icons/24x24/Makefile.am:
+	* data/icons/24x24/actions/Makefile.am:
+	* data/icons/24x24/actions/brasero-action-burn.png:
+	* data/icons/24x24/apps/Makefile.am:
+	* data/icons/24x24/apps/brasero-disc-00.png:
+	* data/icons/24x24/apps/brasero-disc-05.png:
+	* data/icons/24x24/apps/brasero-disc-10.png:
+	* data/icons/24x24/apps/brasero-disc-100.png:
+	* data/icons/24x24/apps/brasero-disc-15.png:
+	* data/icons/24x24/apps/brasero-disc-20.png:
+	* data/icons/24x24/apps/brasero-disc-25.png:
+	* data/icons/24x24/apps/brasero-disc-30.png:
+	* data/icons/24x24/apps/brasero-disc-35.png:
+	* data/icons/24x24/apps/brasero-disc-40.png:
+	* data/icons/24x24/apps/brasero-disc-45.png:
+	* data/icons/24x24/apps/brasero-disc-50.png:
+	* data/icons/24x24/apps/brasero-disc-55.png:
+	* data/icons/24x24/apps/brasero-disc-60.png:
+	* data/icons/24x24/apps/brasero-disc-65.png:
+	* data/icons/24x24/apps/brasero-disc-70.png:
+	* data/icons/24x24/apps/brasero-disc-75.png:
+	* data/icons/24x24/apps/brasero-disc-80.png:
+	* data/icons/24x24/apps/brasero-disc-85.png:
+	* data/icons/24x24/apps/brasero-disc-90.png:
+	* data/icons/24x24/apps/brasero-disc-95.png:
+	* data/icons/24x24/apps/brasero.png:
+	* data/icons/24x24/brasero.png:
+	* data/icons/32x32/Makefile.am:
+	* data/icons/32x32/apps/Makefile.am:
+	* data/icons/32x32/apps/brasero-disc-00.png:
+	* data/icons/32x32/apps/brasero-disc-05.png:
+	* data/icons/32x32/apps/brasero-disc-10.png:
+	* data/icons/32x32/apps/brasero-disc-100.png:
+	* data/icons/32x32/apps/brasero-disc-15.png:
+	* data/icons/32x32/apps/brasero-disc-20.png:
+	* data/icons/32x32/apps/brasero-disc-25.png:
+	* data/icons/32x32/apps/brasero-disc-30.png:
+	* data/icons/32x32/apps/brasero-disc-35.png:
+	* data/icons/32x32/apps/brasero-disc-40.png:
+	* data/icons/32x32/apps/brasero-disc-45.png:
+	* data/icons/32x32/apps/brasero-disc-50.png:
+	* data/icons/32x32/apps/brasero-disc-55.png:
+	* data/icons/32x32/apps/brasero-disc-60.png:
+	* data/icons/32x32/apps/brasero-disc-65.png:
+	* data/icons/32x32/apps/brasero-disc-70.png:
+	* data/icons/32x32/apps/brasero-disc-75.png:
+	* data/icons/32x32/apps/brasero-disc-80.png:
+	* data/icons/32x32/apps/brasero-disc-85.png:
+	* data/icons/32x32/apps/brasero-disc-90.png:
+	* data/icons/32x32/apps/brasero-disc-95.png:
+	* data/icons/48x48/Makefile.am:
+	* data/icons/48x48/apps/Makefile.am:
+	* data/icons/48x48/apps/brasero-disc-00.png:
+	* data/icons/48x48/apps/brasero-disc-05.png:
+	* data/icons/48x48/apps/brasero-disc-10.png:
+	* data/icons/48x48/apps/brasero-disc-100.png:
+	* data/icons/48x48/apps/brasero-disc-15.png:
+	* data/icons/48x48/apps/brasero-disc-20.png:
+	* data/icons/48x48/apps/brasero-disc-25.png:
+	* data/icons/48x48/apps/brasero-disc-30.png:
+	* data/icons/48x48/apps/brasero-disc-35.png:
+	* data/icons/48x48/apps/brasero-disc-40.png:
+	* data/icons/48x48/apps/brasero-disc-45.png:
+	* data/icons/48x48/apps/brasero-disc-50.png:
+	* data/icons/48x48/apps/brasero-disc-55.png:
+	* data/icons/48x48/apps/brasero-disc-60.png:
+	* data/icons/48x48/apps/brasero-disc-65.png:
+	* data/icons/48x48/apps/brasero-disc-70.png:
+	* data/icons/48x48/apps/brasero-disc-75.png:
+	* data/icons/48x48/apps/brasero-disc-80.png:
+	* data/icons/48x48/apps/brasero-disc-85.png:
+	* data/icons/48x48/apps/brasero-disc-90.png:
+	* data/icons/48x48/apps/brasero-disc-95.png:
+	* data/icons/Makefile.am:
+	* data/icons/scalable/Makefile.am:
+	* data/icons/scalable/apps/Makefile.am:
+	* data/icons/scalable/apps/brasero.svg:
+	* src/blank-dialog.c: (brasero_blank_dialog_new),
+	(brasero_blank_dialog_device_opts_setup),
+	(brasero_blank_dialog_media_changed):
+	* src/burn-caps.c: (brasero_burn_caps_get_flags):
+	* src/burn-dvdcss.c: (brasero_dvdcss_library_init),
+	(brasero_dvdcss_get_size_real):
+	* src/burn-iso9660.c: (brasero_iso9660_get_size):
+	* src/burn-iso9660.h:
+	* src/burn-volume.c: (brasero_volume_get_size),
+	(brasero_volume_get_files):
+	* src/burn-volume.h:
+	* src/burn.c: (brasero_burn_wait_for_dest_media):
+	* src/data-disc.c: (brasero_data_disc_unreadable_dialog):
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_update_info):
+	* src/utils.c: (brasero_utils_get_time_string),
+	(brasero_utils_get_time_string_from_size):
+
+	Fix #376813 – problem with filenames that contain whitespace ...
+	Partly fix #374700: still missing tango icons
+	Fix libburn capabilities about multisession
+	Marked some strings for translations
+	Removed unneeded dialogs
+
 2006-11-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* src/data-disc.c: (brasero_data_disc_tree_check_name_validity):

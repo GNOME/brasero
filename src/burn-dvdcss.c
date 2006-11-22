@@ -177,7 +177,7 @@ brasero_dvdcss_library_init (BraseroDvdcss *self, GError **error)
 {
 	GModule *module;
 	gpointer address;
-	gchar *dvdcss_interface_2;
+	gchar *dvdcss_interface_2 = NULL;
 
 	if (css_ready)
 		return TRUE;
@@ -365,7 +365,7 @@ brasero_dvdcss_get_size_real (BraseroDvdcss *self,
 			      gint64 *sectors,
 			      GError **error)
 {
-	gint64 blocks;
+	guint64 blocks;
 	NautilusBurnDrive *drive;
 	NautilusBurnMediaType media;
 
@@ -378,7 +378,7 @@ brasero_dvdcss_get_size_real (BraseroDvdcss *self,
 	/* FIXME: the same of restricted DVD-RW */
 	if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
 		blocks = NCB_MEDIA_GET_SIZE (drive) / DVDCSS_BLOCK_SIZE;
-	else if (brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive), (gint32 *) &blocks, error))
+	else if (!brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive), &blocks, error))
 		return BRASERO_BURN_ERR;
 
 	*sectors = blocks;

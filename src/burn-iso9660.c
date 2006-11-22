@@ -133,14 +133,14 @@ brasero_iso9660_is_primary_descriptor (const char *buffer,
 
 gboolean
 brasero_iso9660_get_size (const gchar *block,
-			  gint32 *nb_blocks,
+			  gint64 *nb_blocks,
 			  GError **error)
 {
 	BraseroIsoPrimary *vol;
 
 	/* read the size of the volume */
 	vol = (BraseroIsoPrimary *) block;
-	*nb_blocks = brasero_iso9660_get_733_val (vol->vol_size);
+	*nb_blocks = (gint64) brasero_iso9660_get_733_val (vol->vol_size);
 
 	return TRUE;
 }

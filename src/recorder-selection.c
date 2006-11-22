@@ -518,7 +518,7 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 			GnomeVFSFileSize remaining;
 
 			if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-				gint num_blocks;
+				gint64 num_blocks;
 				gboolean result;
 
 				result = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),

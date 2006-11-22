@@ -1059,7 +1059,7 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 		if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 			gint size;
 			gboolean res;
-			gint nb_blocks = 0;
+			gint64 nb_blocks = 0;
 
 			/* NCB is unable to report reliably the image size */
 			res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),

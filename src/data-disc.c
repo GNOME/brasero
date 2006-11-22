@@ -3148,13 +3148,17 @@ brasero_data_disc_unreadable_dialog (BraseroDataDisc *disc,
 	gchar *name;
 	guint answer;
 	GtkWidget *dialog;
+	gchar *escaped_name;
 	gchar *message_disc;
 	GtkWidget *toplevel;
     	GnomeVFSURI *vfsuri;
 
     	vfsuri = gnome_vfs_uri_new (uri);
-    	name = gnome_vfs_uri_extract_short_path_name (vfsuri);
+    	escaped_name = gnome_vfs_uri_extract_short_path_name (vfsuri);
     	gnome_vfs_uri_unref (vfsuri);
+
+	name = gnome_vfs_unescape_string_for_display (escaped_name);
+	g_free (escaped_name);
 
 	if (!isdir)
 		message_disc = g_strdup_printf (_("The file \"%s\" is unreadable:"), name);

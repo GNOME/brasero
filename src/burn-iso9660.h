@@ -44,7 +44,7 @@ brasero_iso9660_is_primary_descriptor (const char *buffer,
 
 gboolean
 brasero_iso9660_get_size (const gchar *block,
-			  gint32 *nb_blocks,
+			  gint64 *nb_blocks,
 			  GError **error);
 
 gboolean

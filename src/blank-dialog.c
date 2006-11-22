@@ -63,8 +63,7 @@ static void brasero_blank_dialog_media_changed (BraseroToolDialog *dialog,
 						 NautilusBurnMediaType media);
 
 static void brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
-						    NautilusBurnMediaType type,
-						    gboolean messages);
+						    NautilusBurnMediaType type);
 
 struct BraseroBlankDialogPrivate {
 	BraseroBurn *burn;
@@ -172,15 +171,14 @@ brasero_blank_dialog_new ()
 						  NULL));
 
 	media = brasero_tool_dialog_get_media (BRASERO_TOOL_DIALOG (obj));
-	brasero_blank_dialog_device_opts_setup (obj, media, FALSE);
+	brasero_blank_dialog_device_opts_setup (obj, media);
 
 	return GTK_WIDGET (obj);
 }
 
 static void
 brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
-					NautilusBurnMediaType type,
-					gboolean messages)
+					NautilusBurnMediaType type)
 {
 	BraseroBurnResult result;
 	gboolean fast_enabled = FALSE;
@@ -212,16 +210,13 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 	if (result == BRASERO_BURN_NOT_SUPPORTED) {
 		GtkWidget *message;
 
-		if (!messages)
-			return;
-
 		/* we don't need / can't blank(ing) so tell the user */
 		message = gtk_message_dialog_new_with_markup (GTK_WINDOW (dialog),
 							      GTK_DIALOG_MODAL |
 							      GTK_DIALOG_DESTROY_WITH_PARENT,
 							      GTK_MESSAGE_INFO,
 							      GTK_BUTTONS_CLOSE,
-							      "<big><b>This type of disc can't or doesn't require to be blanked.</b></big>");
+							      "<big><b>This type of disc can't be blanked.</b></big>");
 		gtk_window_set_title (GTK_WINDOW (message), _("Unneeded operation"));
 
 		gtk_dialog_run (GTK_DIALOG (message));
@@ -229,33 +224,6 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 	}
 	else if (result == BRASERO_BURN_ERR)
 		return;
-
-	if (!messages)
-		return;
-
-	/* FIXME: do we really need this following messages ? */
-	if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->fast_enabled))) {
-			GtkWidget *message;
-
-			/* simulation doesn't work with DVDs */
-			/* Tell the user fast blanking is not required with this kind of drive */
-			message = gtk_message_dialog_new (GTK_WINDOW (dialog),
-							  GTK_DIALOG_MODAL |
-							  GTK_DIALOG_DESTROY_WITH_PARENT,
-							  GTK_MESSAGE_INFO,
-							  GTK_BUTTONS_CLOSE,
-							  _("You can use this type of DVD without prior blanking.\n"
-							    "NOTE: it doesn't support simulation."));
-
-			gtk_window_set_title (GTK_WINDOW (message), _("Unneeded operation"));
-
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  _("You can nevertheless blank it with the slow option if you want to."));
-			gtk_dialog_run (GTK_DIALOG (message));
-			gtk_widget_destroy (message);
-		}
-	}
 }
 
 static void
@@ -266,7 +234,7 @@ brasero_blank_dialog_media_changed (BraseroToolDialog *dialog,
 
 	self = BRASERO_BLANK_DIALOG (dialog);
 
-	brasero_blank_dialog_device_opts_setup (self, media, TRUE);
+	brasero_blank_dialog_device_opts_setup (self, media);
 }
 
 static gboolean

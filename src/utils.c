@@ -226,11 +226,10 @@ brasero_utils_get_time_string (gint64 time,
 	}
 
 	if (with_unit) {
-		/* FIXME: translation missing */
 		if (!second)
-			return g_strdup_printf ("%i min", minute);
+			return g_strdup_printf (_("%i min"), minute);
 		else
-			return g_strdup_printf ("%i:%02i min", minute, second);
+			return g_strdup_printf (_("%i:%02i min"), minute, second);
 	}
 	else
 		return g_strdup_printf ("%i:%02i", minute, second);
@@ -263,11 +262,10 @@ brasero_utils_get_time_string_from_size (gint64 size,
 						minute, second);
 	}
 	else if (with_unit == TRUE) {
-		/* FIXME: translation missing */
 		if (!second)
-			return g_strdup_printf ("%i min", minute);
+			return g_strdup_printf (_("%i min"), minute);
 		else
-			return g_strdup_printf ("%i:%02i min", minute, second);
+			return g_strdup_printf (_("%i:%02i min"), minute, second);
 	}
 	else
 		return g_strdup_printf ("%i:%02i", minute, second);
