@@ -910,13 +910,13 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 {
 	gchar *title = NULL;
 	gchar *header = NULL;
-	GdkPixbuf *pixbuf = NULL;
+//	GdkPixbuf *pixbuf = NULL;
 	NautilusBurnDrive *drive;
 	NautilusBurnMediaType media_type;
 
-	gchar *types [] = { 	NULL,
-				NULL,
-				NULL,
+	gchar *types [] = { 	"gnome-dev-removable",
+				"gnome-dev-removable",
+				"gnome-dev-removable",
 				"gnome-dev-cdrom",
 				"gnome-dev-disc-cdr",
 				"gnome-dev-disc-cdrw",
@@ -932,7 +932,9 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 	drive = dialog->priv->drive;
 	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		/* we are creating an image to the hard drive */
-		pixbuf = brasero_utils_get_icon_for_mime ("application/x-cd-image", 48);
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "binary",
+					      GTK_ICON_SIZE_DIALOG);
 
 		header = g_strdup_printf ("<big><b>Creating image</b></big>");
 		title = g_strdup (_("Creating image"));
@@ -958,13 +960,15 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 		}
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_AUDIO
-	      ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_SONG) {
+	     ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_SONG) {
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
-		pixbuf = brasero_utils_get_icon ("gnome-dev-cdrom-audio", 48);
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "audio-x-generic",
+					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_DATA
-	      ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_GRAFTS) {
+	     ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_GRAFTS) {
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup_printf (_("<big><b>Burning data CD</b></big>"));
 	}
@@ -976,20 +980,15 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup (_("<big><b>Burning image to CD</b></big>"));
 	}
-
-	if (!pixbuf) {
-		pixbuf = brasero_utils_get_icon (types [media_type], 48);
-		if (!pixbuf)
-			pixbuf = brasero_utils_get_icon ("gnome-dev-removable", 48);
-	}
+	
+	gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+				      types [media_type],
+				      GTK_ICON_SIZE_DIALOG);
 
 end:
 
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
 	g_free (title);
-
-	gtk_image_set_from_pixbuf (GTK_IMAGE (dialog->priv->image), pixbuf);
-	g_object_unref (pixbuf);
 
 	gtk_label_set_text (GTK_LABEL (dialog->priv->header), header);
 	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
@@ -1014,16 +1013,14 @@ brasero_burn_dialog_media_removed_cb (NautilusBurnDriveMonitor *monitor,
 				      NautilusBurnDrive *drive,
 				      BraseroBurnDialog *dialog)
 {
-	GdkPixbuf *pixbuf;
-
 	/* we must make sure that the change was triggered
 	 * by the current selected drive */
 	if (!nautilus_burn_drive_equal (drive, dialog->priv->drive))
 		return;
 
-	pixbuf = brasero_utils_get_icon ("gnome-dev-removable", 48);
-	gtk_image_set_from_pixbuf (GTK_IMAGE (dialog->priv->image), pixbuf);
-	g_object_unref (pixbuf);
+	gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+				      "gnome-dev-removable",
+				      GTK_ICON_SIZE_DIALOG);
 }
 
 static BraseroBurnResult
@@ -1097,10 +1094,10 @@ brasero_burn_dialog_get_local_source (BraseroBurnDialog *dialog,
 
 	dialog->priv->local_image = g_object_new (BRASERO_TYPE_LOCAL_IMAGE, NULL);
 	return brasero_burn_dialog_job_get_track (dialog,
-						   dialog->priv->local_image,
-						   source,
-						   local,
-						   error);
+						  dialog->priv->local_image,
+						  source,
+						  local,
+						  error);
 }
 
 static BraseroBurnResult
@@ -1521,7 +1518,7 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 				   gboolean checksum,
 				   GError **error)
 {
-	BraseroTrackSource *local_track;
+	BraseroTrackSource *local_track = NULL;
 	BraseroBurnResult result;
 
 	dialog->priv->session = brasero_burn_session_new ();
@@ -1532,9 +1529,12 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 						       source,
 						       &local_track,
 						       error);
+	if (result != BRASERO_BURN_OK) {
+		if (local_track)
+			brasero_track_source_free (local_track);
 
-	if (result != BRASERO_BURN_OK)
 		return result;
+	}
 
 	/* generates a checksum if the user wants it */
 	if (checksum && local_track->type == BRASERO_TRACK_SOURCE_DATA) {

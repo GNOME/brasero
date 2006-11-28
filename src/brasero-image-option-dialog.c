@@ -283,6 +283,7 @@ brasero_image_option_dialog_image_info (BraseroImageOptionDialog *dialog)
 	uris = g_list_prepend (NULL, uri);
 	brasero_vfs_get_info (dialog->priv->vfs,
 			      uris,
+			      FALSE,
 			      GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
 			      GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
 			      dialog->priv->info_type,

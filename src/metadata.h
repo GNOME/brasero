@@ -48,6 +48,7 @@ typedef struct {
 	gchar *title;
 	gchar *artist;
 	gchar *album;
+	gchar *genre;
 	gchar *composer;
 	gchar *musicbrainz_id;
 	int isrc;

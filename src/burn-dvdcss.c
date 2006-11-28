@@ -365,7 +365,7 @@ brasero_dvdcss_get_size_real (BraseroDvdcss *self,
 			      gint64 *sectors,
 			      GError **error)
 {
-	guint64 blocks;
+	gint64 blocks;
 	NautilusBurnDrive *drive;
 	NautilusBurnMediaType media;
 
@@ -540,7 +540,7 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 	GList *iter;
 
 	/* this allows to cache keys for encrypted files */
-	for (iter = parent->specific.children; iter; iter = iter->next) {
+	for (iter = parent->specific.dir.children; iter; iter = iter->next) {
 		BraseroVolFile *file;
 
 		file = iter->data;
@@ -605,6 +605,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	/* get the contents of the DVD */
 	drive = self->priv->source->contents.drive.disc;
 	files = brasero_volume_get_files (NCB_DRIVE_GET_DEVICE (drive),
+					  NULL,
 					  NULL,
 					  NULL,
 					  &self->priv->error);

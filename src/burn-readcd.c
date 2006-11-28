@@ -307,7 +307,7 @@ brasero_readcd_get_size (BraseroImager *imager,
 	/* if iso is required then just read the primary vol descriptor */
 	if (format == BRASERO_IMAGE_FORMAT_ISO && !readcd->priv->sectors_num) {
 		gboolean res;
-		gint nb_blocks = 0;
+		gint64 nb_blocks = 0;
 		NautilusBurnDrive *drive;
 
 		drive = readcd->priv->source->contents.drive.disc;
@@ -573,7 +573,7 @@ brasero_readcd_argv_set_iso_boundary (GPtrArray *argv,
 				      GError **error)
 {
 	gboolean res;
-	gint nb_blocks;
+	gint64 nb_blocks;
 	NautilusBurnMediaType media;
 
 	media = nautilus_burn_drive_get_media_type (drive);
@@ -589,7 +589,7 @@ brasero_readcd_argv_set_iso_boundary (GPtrArray *argv,
 	if (!res)
 		nb_blocks = NCB_MEDIA_GET_SIZE (drive) / 2048;
 
-	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%i", nb_blocks));
+	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
 	return BRASERO_BURN_OK;
 }
 

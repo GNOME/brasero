@@ -301,6 +301,9 @@ brasero_metadata_finalize (GObject *object)
 	if (cobj->album)
 		g_free (cobj->album);
 
+	if (cobj->genre)
+		g_free (cobj->genre);
+
 	if (cobj->musicbrainz_id)
 		g_free (cobj->musicbrainz_id);
 
@@ -529,6 +532,12 @@ foreach_tag (const GstTagList *list,
 			g_free (meta->album);
 
 		gst_tag_list_get_string (list, tag, &(meta->album));
+	}
+	else if (!strcmp (tag, GST_TAG_GENRE)) {
+		if (meta->genre)
+			g_free (meta->genre);
+
+		gst_tag_list_get_string (list, tag, &(meta->genre));
 	}
 /*	else if (!strcmp (tag, GST_TAG_COMPOSER)) {
 		if (meta->composer)

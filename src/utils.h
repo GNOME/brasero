@@ -15,7 +15,7 @@
  */
 
 /***************************************************************************
- *            gstreamer.h
+ *            utils.h
  *
  *  Wed May 18 16:58:16 2005
  *  Copyright  2005  Philippe Rouquier
@@ -90,12 +90,6 @@ GtkWidget *brasero_utils_make_button (const gchar *text,
 gboolean brasero_utils_remove (const gchar *uri);
 
 gchar *brasero_utils_escape_string (const gchar *text);
-
-gchar *brasero_utils_check_for_parent_symlink (const gchar *uri);
-
-gboolean brasero_utils_get_symlink_target (const gchar *uri,
-					   GnomeVFSFileInfo *info,
-					   GnomeVFSFileInfoOptions flags);
 
 gboolean
 brasero_utils_str_equal_64 (gconstpointer v1,

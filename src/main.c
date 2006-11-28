@@ -35,10 +35,10 @@
 
 #include <gst/gst.h>
 
+#include <libgnomeui/libgnomeui.h>
+
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
 
 #include <nautilus-burn-recorder.h>
 #include <nautilus-burn-init.h>

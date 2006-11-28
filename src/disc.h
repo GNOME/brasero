@@ -30,6 +30,8 @@
 
 #include <gtk/gtkbox.h>
 
+#include <nautilus-burn-drive.h>
+
 #include "burn-basics.h"
 
 G_BEGIN_DECLS
@@ -119,6 +121,9 @@ struct _BraseroDiscIface {
 
 	void			(*fill_toolbar)		(BraseroDisc *disc,
 							 GtkBox *box);
+
+	void			(*set_drive)		(BraseroDisc *disc,
+							 NautilusBurnDrive *drive);
 };
 
 GType brasero_disc_get_type ();
@@ -167,5 +172,9 @@ void
 brasero_track_clear (BraseroDiscTrack *track);
 void
 brasero_track_free (BraseroDiscTrack *track);
+
+void
+brasero_disc_set_current_drive (BraseroDisc *disc,
+				NautilusBurnDrive *drive);
 
 #endif /* DISC_H */

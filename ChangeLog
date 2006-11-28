@@ -1,3 +1,226 @@
+2006-11-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	* src/Makefile.am:
+	* src/audio-disc.c: (brasero_audio_disc_init),
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_result), (brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_cancel_monitoring),
+	(brasero_audio_disc_inotify_attributes_changed):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_image_info):
+	* src/brasero-project-size.c: (brasero_project_size_disc_added_cb),
+	(brasero_project_size_add_real_medias),
+	(brasero_project_get_ruler_height),
+	(brasero_project_get_active_drive):
+	* src/brasero-project-size.h:
+	* src/brasero-vfs.c: (brasero_vfs_check_for_parent_symlink),
+	(brasero_utils_get_symlink_target), (brasero_vfs_info_destroy),
+	(brasero_vfs_info_thread), (brasero_vfs_get_info),
+	(brasero_vfs_load_result), (brasero_vfs_load_thread),
+	(brasero_vfs_get_metadata), (brasero_vfs_count_result_data),
+	(brasero_vfs_get_count), (brasero_vfs_playlist_destroy),
+	(brasero_vfs_playlist_subtask_result),
+	(brasero_vfs_playlist_result), (brasero_vfs_start_end_playlist_cb),
+	(brasero_vfs_playlist_thread), (brasero_vfs_stop_all),
+	(brasero_vfs_compare_unprocessed_task), (brasero_vfs_find_urgent):
+	* src/brasero-vfs.h:
+	* src/burn-basics.c: (brasero_track_source_free):
+	* src/burn-caps.c: (brasero_burn_caps_get_flags):
+	* src/burn-dialog.c: (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_media_removed_cb),
+	(brasero_burn_dialog_get_local_source),
+	(brasero_burn_dialog_setup_session):
+	* src/burn-dvdcss.c: (brasero_dvdcss_get_size_real),
+	(brasero_dvdcss_create_scrambled_sectors_map),
+	(brasero_dvdcss_write_image_thread):
+	* src/burn-iso-field.c: (brasero_iso9660_get_733_val):
+	* src/burn-iso-field.h:
+	* src/burn-iso9660.c: (brasero_iso9660_seek),
+	(brasero_iso9660_next_block), (brasero_iso9660_get_susp),
+	(brasero_iso9660_next_record), (brasero_iso9660_read_file_record),
+	(brasero_iso9660_read_directory_record),
+	(brasero_iso9660_read_directory_records),
+	(brasero_iso9660_ctx_init), (brasero_iso9660_get_contents):
+	* src/burn-iso9660.h:
+	* src/burn-libisofs.c: (brasero_libisofs_sort_graft_points):
+	* src/burn-readcd.c: (brasero_readcd_get_size),
+	(brasero_readcd_argv_set_iso_boundary):
+	* src/burn-sum.c: (brasero_burn_sum_disc):
+	* src/burn-susp.c: (brasero_susp_ctx_clean), (brasero_susp_SP),
+	(brasero_susp_NM), (brasero_susp_CL), (brasero_susp_PL),
+	(brasero_susp_read):
+	* src/burn-susp.h:
+	* src/burn-volume.c: (brasero_volume_file_free),
+	(brasero_volume_get_files), (brasero_volume_file_to_path),
+	(brasero_volume_file_from_path), (brasero_volume_file_size):
+	* src/burn-volume.h:
+	* src/data-disc.c: (brasero_data_disc_iface_disc_init),
+	(brasero_data_disc_notification_free),
+	(brasero_data_disc_notification_closed),
+	(brasero_data_disc_notify_user_real),
+	(brasero_data_disc_notify_user), (brasero_data_disc_fill_toolbar),
+	(brasero_data_disc_init), (brasero_data_disc_finalize),
+	(brasero_data_disc_name_exist_dialog),
+	(brasero_data_disc_tree_check_name_validity),
+	(brasero_data_disc_remove_bogus_child),
+	(brasero_data_disc_tree_update_directory_real),
+	(brasero_data_disc_tree_path_to_disc_path),
+	(brasero_data_disc_disc_path_to_tree_path),
+	(brasero_data_disc_tree_remove_path),
+	(brasero_data_disc_tree_new_path),
+	(brasero_data_disc_tree_set_path_from_info),
+	(brasero_data_disc_tree_new_empty_folder_real),
+	(brasero_data_disc_tree_new_loading_row),
+	(_foreach_remove_created_dirs_cb), (brasero_data_disc_clean),
+	(brasero_data_disc_reset_real), (brasero_data_disc_unreadable_new),
+	(brasero_data_disc_unreadable_free),
+	(brasero_data_disc_restored_new),
+	(brasero_data_disc_restored_free),
+	(brasero_data_disc_restore_unreadable_destroy),
+	(brasero_data_disc_restore_unreadable),
+	(brasero_data_disc_restore_unreadable_cb),
+	(brasero_data_disc_filtered_restore),
+	(brasero_data_disc_update_hashes), (brasero_data_disc_dir_free),
+	(brasero_data_disc_remove_children_destroy_cb),
+	(brasero_data_disc_remove_children_async_cb),
+	(_foreach_remove_children_files_cb),
+	(brasero_data_disc_remove_children), (brasero_data_disc_graft_new),
+	(brasero_data_disc_graft_remove),
+	(_foreach_move_children_paths_cb),
+	(brasero_data_disc_graft_children_move),
+	(_foreach_unreference_grafted_cb),
+	(brasero_data_disc_graft_changed), (brasero_data_disc_path_to_uri),
+	(brasero_data_disc_expose_grafted_destroy_cb),
+	(brasero_data_disc_expose_grafted_cb),
+	(brasero_data_disc_expose_grafted),
+	(brasero_data_disc_tree_new_imported_session_file),
+	(brasero_data_disc_expose_imported_session_file),
+	(brasero_data_disc_directory_entry_free),
+	(brasero_data_disc_directory_contents_free),
+	(brasero_data_disc_directory_entry_error),
+	(brasero_data_disc_expose_path_real),
+	(brasero_data_disc_expose_end), (brasero_data_disc_expose_result),
+	(brasero_data_disc_expose_insert_path_real),
+	(brasero_data_disc_expose_path),
+	(brasero_data_disc_row_collapsed_cb),
+	(brasero_data_disc_row_expanded_cb), (brasero_data_disc_obj_new),
+	(brasero_data_disc_file_new),
+	(_foreach_lookup_symlink_children_cb),
+	(brasero_data_disc_symlink_is_recursive),
+	(_find_name_in_info_list),
+	(brasero_data_disc_get_unique_valid_utf8_name),
+	(brasero_data_disc_get_unique_valid_utf8_path),
+	(brasero_data_disc_symlink_new),
+	(brasero_data_disc_symlink_list_new),
+	(brasero_data_disc_invalid_utf8_new),
+	(brasero_data_disc_invalid_utf8_list_new),
+	(brasero_data_disc_dir_contents_end), (_check_for_restored),
+	(brasero_data_disc_load_result),
+	(brasero_data_disc_directory_load),
+	(brasero_data_disc_directory_priority_cb),
+	(brasero_data_disc_directory_priority),
+	(brasero_data_disc_remove_row_in_dirs_hash),
+	(brasero_data_disc_delete_row_cb),
+	(braseri_data_disc_delete_row_end),
+	(brasero_data_disc_is_session_path_deleted),
+	(brasero_data_disc_path_remove_user),
+	(brasero_data_disc_replace_file),
+	(brasero_data_disc_delete_selected), (brasero_data_disc_clear),
+	(brasero_data_disc_reset),
+	(brasero_data_disc_restore_excluded_children_destroy_cb),
+	(brasero_data_disc_restore_excluded_children_cb),
+	(_foreach_restore_strictly_excluded_children_cb),
+	(brasero_data_disc_restore_excluded_children),
+	(brasero_data_disc_replace_symlink_children_destroy_cb),
+	(brasero_data_disc_replace_symlink_children_cb),
+	(brasero_data_disc_replace_symlink_children),
+	(brasero_data_disc_new_row_destroy_cb),
+	(brasero_data_disc_new_row_cb),
+	(brasero_data_disc_get_dir_contents_destroy),
+	(brasero_data_disc_get_dir_contents_results),
+	(brasero_data_disc_add_directory_contents),
+	(brasero_data_disc_add_uri_real),
+	(brasero_data_disc_remove_imported_session),
+	(brasero_data_disc_import_session_error),
+	(brasero_data_disc_import_session_cb),
+	(brasero_data_disc_update_multi_button_state),
+	(brasero_data_disc_media_added), (brasero_data_disc_set_drive),
+	(_foreach_grafts_make_list_cb), (brasero_data_disc_path_create),
+	(brasero_data_disc_graft_check_destroy),
+	(brasero_data_disc_graft_check_result),
+	(brasero_data_disc_graft_find_first_parent),
+	(brasero_data_disc_graft_check_parent),
+	(brasero_data_disc_graft_check_existence),
+	(brasero_data_disc_graft_check),
+	(brasero_data_disc_load_graft_end),
+	(brasero_data_disc_load_graft_result),
+	(brasero_data_disc_load_restored_end),
+	(brasero_data_disc_load_restored_result),
+	(brasero_data_disc_load_track), (brasero_data_disc_restore_row),
+	(brasero_data_disc_move_row_simple_file_destroy_cb),
+	(brasero_data_disc_move_row_simple_file_cb),
+	(brasero_data_disc_move_row_simple_file),
+	(brasero_data_disc_move_imported_session_file),
+	(brasero_data_disc_move_row),
+	(brasero_data_disc_drag_dest_drop_row_possible),
+	(brasero_data_disc_move_to_dest),
+	(brasero_data_disc_native_data_received),
+	(brasero_data_disc_drag_data_received_dragging),
+	(brasero_data_disc_drag_data_received_cb),
+	(brasero_data_disc_drag_get_cb),
+	(brasero_data_disc_drag_motion_cb),
+	(brasero_data_disc_drag_begin_cb), (brasero_data_disc_drag_end_cb),
+	(brasero_data_disc_open_file),
+	(brasero_data_disc_rename_activated),
+	(brasero_data_disc_tree_select_function),
+	(brasero_data_disc_button_pressed_cb),
+	(brasero_data_disc_name_edited_cb),
+	(brasero_data_disc_get_selected_uri),
+	(brasero_data_disc_inotify_create_file_event_destroy_cb),
+	(brasero_data_disc_inotify_create_paths),
+	(brasero_data_disc_inotify_create_file_event_cb),
+	(brasero_data_disc_inotify_create_file_event),
+	(brasero_data_disc_inotify_attributes_event_cb),
+	(brasero_data_disc_inotify_attributes_event_destroy_cb),
+	(brasero_data_disc_inotify_attributes_event),
+	(brasero_data_disc_inotify_modify_file_cb),
+	(brasero_data_disc_inotify_modify_file_end),
+	(brasero_data_disc_inotify_modify_file):
+	* src/data-disc.h:
+	* src/disc.c: (brasero_disc_fill_toolbar),
+	(brasero_disc_set_current_drive):
+	* src/disc.h:
+	* src/filtered-window.c: (brasero_filtered_dialog_class_init):
+	* src/main.c:
+	* src/metadata.c: (brasero_metadata_finalize), (foreach_tag):
+	* src/metadata.h:
+	* src/mime-filter.c: (brasero_mime_filter_init),
+	(brasero_mime_filter_add_mime):
+	* src/play-list.c: (brasero_playlist_init),
+	(brasero_playlist_destroy), (brasero_playlist_dialog_error),
+	(brasero_playlist_parse_end), (brasero_playlist_parse_result),
+	(brasero_playlist_insert), (brasero_playlist_add_uri_playlist):
+	* src/project-type-chooser.c:
+	(brasero_project_type_chooser_new_item):
+	* src/project.c: (brasero_project_disc_changed_cb),
+	(brasero_project_switch):
+	* src/recorder-selection.c:
+	(brasero_recorder_selection_update_info),
+	(brasero_recorder_selection_update_drive_info):
+	* src/search.c: (brasero_search_init),
+	(brasero_search_add_hit_to_tree):
+	* src/tray.c: (brasero_tray_icon_set_progress):
+	* src/utils.c: (brasero_utils_free), (brasero_utils_register_icon),
+	(brasero_utils_init), (brasero_utils_escape_string),
+	(brasero_utils_get_use_info_notebook):
+	* src/utils.h:
+
+	BraseroDataDisc/BraseroPlaylist only use BraseroVFS
+	Minor GUI improvements
+	Added multisession to display first session in BraseroDataDisc
+	Drop icon caching
+	Miscellaneous things (fixes/improvements)
+
 2006-11-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* src/audio-disc.c: (brasero_audio_disc_fill_toolbar):
@@ -837,7 +1060,7 @@
 	(brasero_data_disc_expose_grafted),
 	(brasero_data_disc_expose_path_real),
 	(brasero_data_disc_expose_thread), (brasero_data_disc_expose_path),
-	(brasero_data_disc_row_collapsed_cb),
+	(brasero_data_disc_row_expanded_cb),
 	(brasero_data_disc_file_info), (brasero_data_disc_obj_new),
 	(_foreach_lookup_symlink_children_cb),
 	(brasero_data_disc_symlink_get_uri_children),

@@ -425,7 +425,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 							 BRASERO_BURN_FLAG_MERGE;
 				}
 			}
-			else if (!caps->priv->use_libburn || !caps->priv->use_libiso) {
+			else if (!caps->priv->use_libburn && !caps->priv->use_libiso) {
 				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 
 				/* when we don't know the media type we allow

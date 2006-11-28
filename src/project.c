@@ -642,7 +642,15 @@ static void
 brasero_project_disc_changed_cb (BraseroProjectSize *size,
 				 BraseroProject *project)
 {
+	NautilusBurnDrive *drive;
+
 	brasero_project_check_size (project);
+
+	/* get the current device name and set it for the disc project in
+	 * case that is a multisession disc and a data project */
+	drive = brasero_project_get_active_drive (size);
+	brasero_disc_set_current_drive (project->priv->current, drive);
+	nautilus_burn_drive_unref (drive);
 }
 
 /***************************** URIContainer ************************************/
@@ -1015,7 +1023,6 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 static void
 brasero_project_switch (BraseroProject *project, gboolean audio)
 {
-	GdkPixbuf *pixbuf;
 	GtkAction *action;
 	GConfClient *client;
 
@@ -1044,7 +1051,9 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 			       NULL);
 
 	if (audio) {
-		pixbuf = brasero_utils_get_icon_for_mime ("audio-x-generic", 24);
+		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->image),
+					      "audio-x-generic",
+					      GTK_ICON_SIZE_DND);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
 				      _("<big><b>Audio project</b></big>"));
 		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle),
@@ -1062,7 +1071,9 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 							   "brasero -a");
 	}
 	else {
-		pixbuf = brasero_utils_get_icon_for_mime ("media-optical", 24);
+		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->image),
+					      "media-optical",
+					      GTK_ICON_SIZE_DND);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
 				      _("<big><b>Data project</b></big>"));
 		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle),
@@ -1080,10 +1091,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 							   "brasero -d");
 	}
 
-	/* set the title */
-	gtk_image_set_from_pixbuf (GTK_IMAGE (project->priv->image), pixbuf);
-	g_object_unref (pixbuf);
-	
 	/* update the menus */
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
 	gtk_action_set_sensitive (action, TRUE);

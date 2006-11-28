@@ -573,7 +573,7 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	/* FIXME: the same should be done for DVD-RW restricted ... */
 	if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
 		gboolean res;
-		gint nb_blocks = 0;
+		gint64 nb_blocks = 0;
 
 		/* This is to avoid reading till the end of the DVD */
 		res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),

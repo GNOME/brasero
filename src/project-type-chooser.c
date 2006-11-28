@@ -59,11 +59,10 @@ enum {
 };
 
 struct _ItemDescription {
-	char *text;
-	char *description;
-	char *tooltip;
-	char *image;
-	gboolean is_mime;
+	gchar *text;
+	gchar *description;
+	gchar *tooltip;
+	gchar *image;
 	BraseroProjectType type;
 };
 typedef struct _ItemDescription ItemDescription;
@@ -72,22 +71,22 @@ static ItemDescription items [] = {
        {N_("<big>Audio project</big>"),
 	N_("Create a traditional audio CD"),
 	N_("Create a traditional audio CD that will be playable on computers and stereos"),
-	"audio-x-generic", 0,
+	"audio-x-generic",
 	BRASERO_PROJECT_TYPE_AUDIO},
        {N_("<big>Data project</big>"),
 	N_("Create a data CD/DVD"),
 	N_("Create a CD/DVD containing any type of data that can only be read on a computer"),
-	"media-optical", 0,
+	"media-optical",
 	BRASERO_PROJECT_TYPE_DATA},
        {N_("<big>Disc copy</big>"),
 	N_("Create 1:1 copy of a CD/DVD"),
 	N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"),
-	"drive-optical", 0,
+	"drive-optical",
 	BRASERO_PROJECT_TYPE_COPY},
        {N_("<big>Burn image</big>"),
 	N_("Burn an existing CD/DVD image to disc"),
 	N_("Burn an existing CD/DVD image to disc"),
-	"application/x-cd-image", 1,
+	"binary",
 	BRASERO_PROJECT_TYPE_ISO},
 };
 
@@ -178,7 +177,6 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	GtkWidget *vbox;
 	GtkWidget *image;
 	GtkWidget *label;
-	GdkPixbuf *pixbuf;
 	GtkWidget *frame;
 	GtkWidget *event;
 	GtkWidget *eventbox;
@@ -234,13 +232,7 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, FALSE, 0);
 
-	if (description->is_mime)
-		pixbuf = brasero_utils_get_icon_for_mime (description->image, 48);
-	else
-		pixbuf = brasero_utils_get_icon (description->image, 48);
-	image = gtk_image_new_from_pixbuf (pixbuf);
-	g_object_unref (pixbuf);
-
+	image = gtk_image_new_from_icon_name (description->image, GTK_ICON_SIZE_DIALOG);
 	gtk_widget_show (image);
 	gtk_misc_set_alignment (GTK_MISC (image), 1.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 0);

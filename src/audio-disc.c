@@ -58,6 +58,8 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkstock.h>
 
+#include <libgnomeui/libgnomeui.h>
+
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -570,7 +572,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 
 	model = (GtkTreeModel*) gtk_list_store_new (NB_COL,
 						    G_TYPE_STRING,
-						    GDK_TYPE_PIXBUF,
+						    G_TYPE_STRING,
 						    G_TYPE_STRING,
 						    G_TYPE_STRING,
 						    G_TYPE_STRING,
@@ -610,7 +612,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "pixbuf", ICON_COL);
+					    "icon-name", ICON_COL);
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set_data (G_OBJECT (renderer), COL_KEY, GINT_TO_POINTER (NAME_COL));
@@ -1079,17 +1081,16 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 					  GtkTreeIter *iter,
 					  const BraseroMetadata *metadata)
 {
-	GdkPixbuf *icon_pix;
 	gchar *size;
+	gchar *icon_string;
 
-	if (metadata->type)
-		icon_pix = brasero_utils_get_icon_for_mime (metadata->type, 16);
-	else
-		icon_pix = NULL;
+	icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
+					 NULL, NULL, NULL, metadata->type,
+					 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
 
 	size = brasero_utils_get_time_string (metadata->len, TRUE, FALSE);
 	gtk_list_store_set (GTK_LIST_STORE (model), iter,
-			    ICON_COL, icon_pix,
+			    ICON_COL, icon_string,
 			    ARTIST_COL, metadata->artist,
 			    SIZE_COL, size,
 			    SECTORS_COL, BRASERO_TIME_TO_SECTORS (metadata->len),
@@ -1097,6 +1098,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 			    ISRC_COL, metadata->isrc,
 			    SONG_COL, TRUE,
 			    -1);
+	g_free (icon_string);
 
 	if (metadata->title) {
 		gchar *name;
@@ -1109,8 +1111,6 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	}
 
 	g_free (size);
-	if (icon_pix)
-		g_object_unref (icon_pix);
 }
 
 /*************** shared code for dir/playlist addition *************************/
@@ -1178,6 +1178,7 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 	if (result != GNOME_VFS_OK)
 		return;
 
+	/* we silently ignore the title and any error */
 	if (!metadata)
 		return;
 
@@ -1480,6 +1481,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 
     	gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 			    NAME_COL, markup,
+			    ICON_COL, "image-loading",
 			    URI_COL, uri,
 			    ARTIST_COL, _("loading"),
 			    SIZE_COL, _("loading"),
@@ -2879,9 +2881,11 @@ brasero_audio_disc_cancel_monitoring (BraseroAudioDisc *disc,
 
 	callback_data.uri = g_path_get_dirname (uri);
 	callback_data.disc = disc;
-	g_hash_table_foreach_remove (disc->priv->monitored,
-				     (GHRFunc) _foreach_monitored_remove_uri_cb,
-				     &callback_data);
+
+	if (disc->priv->monitored)
+		g_hash_table_foreach_remove (disc->priv->monitored,
+					     (GHRFunc) _foreach_monitored_remove_uri_cb,
+					     &callback_data);
 
 	g_free (callback_data.uri);
 }
@@ -3246,6 +3250,7 @@ brasero_audio_disc_inotify_attributes_changed (BraseroAudioDisc *disc,
 	uris = g_list_prepend (NULL, (gchar *) uri);
 	result = brasero_vfs_get_info (disc->priv->vfs,
 				       uris,
+				       FALSE,
 				       GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS |
 				       GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 				       disc->priv->attr_changed,

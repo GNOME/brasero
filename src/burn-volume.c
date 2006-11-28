@@ -70,10 +70,13 @@ brasero_volume_file_free (BraseroVolFile *file)
 	if (file->isdir) {
 		GList *iter;
 
-		for (iter = file->specific.children; iter; iter = iter->next)
+		for (iter = file->specific.dir.children; iter; iter = iter->next)
 			brasero_volume_file_free (iter->data);
+
+		g_list_free (file->specific.dir.children);
 	}
 
+	g_free (file->rr_name);
 	g_free (file->name);
 	g_free (file);
 }
@@ -207,6 +210,7 @@ BraseroVolFile *
 brasero_volume_get_files (const gchar *path,
 			  gchar **label,
 			  gint64 *nb_blocks,
+			  gint64 *data_blocks,
 			  GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
@@ -244,8 +248,101 @@ brasero_volume_get_files (const gchar *path,
 		return NULL;
 	}
 
-	volroot = brasero_iso9660_get_contents (file, buffer, error);
+	volroot = brasero_iso9660_get_contents (file, buffer, data_blocks, error);
 	fclose (file);
 
 	return volroot;
+}
+
+gchar *
+brasero_volume_file_to_path (BraseroVolFile *file)
+{
+	GString *path;
+	BraseroVolFile *parent;
+	GSList *components = NULL, *iter, *next;
+
+	if (!file)
+		return NULL;
+
+	/* make a list of all the components of the path by going up to root */
+	parent = file->parent;
+	while (parent && parent->name) {
+		components = g_slist_prepend (components, BRASERO_VOLUME_FILE_NAME (parent));
+		parent = parent->parent;
+	}
+
+	if (!components)
+		return NULL;
+
+	path = g_string_new (NULL);
+	for (iter = components; iter; iter = next) {
+		gchar *name;
+
+		name = iter->data;
+		next = iter->next;
+		components = g_slist_remove (components, name);
+
+		g_string_append_c (path, G_DIR_SEPARATOR);
+		g_string_append (path, name);
+	}
+
+	g_slist_free (components);
+	return g_string_free (path, FALSE);
+}
+
+BraseroVolFile *
+brasero_volume_file_from_path (const gchar *ptr,
+			       BraseroVolFile *parent)
+{
+	GList *iter;
+	gchar *next;
+	gint len;
+
+	/* first determine the name of the directory / file to look for */
+	if (!ptr || ptr [0] != '/' || !parent)
+		return NULL;
+
+	ptr ++;
+	next = g_utf8_strchr (ptr, -1, G_DIR_SEPARATOR);
+	if (!next)
+		len = strlen (ptr);
+	else
+		len = next - ptr;
+
+	for (iter = parent->specific.dir.children; iter; iter = iter->next) {
+		BraseroVolFile *file;
+
+		file = iter->data;
+		if (!strncmp (ptr, BRASERO_VOLUME_FILE_NAME (file), len)) {
+			/* we've found it seek for the next if any */
+			if (!next)
+				return file;
+
+			ptr = next;
+			return brasero_volume_file_from_path (ptr, file);
+		}
+	}
+
+	return NULL;
+}
+
+gint64
+brasero_volume_file_size (BraseroVolFile *file)
+{
+	GList *iter;
+	gint64 size = 0;
+
+	if (!file->isdir)
+		return BRASERO_BYTES_TO_BLOCKS (file->specific.file.size_bytes, 2048);
+
+	for (iter = file->specific.dir.children; iter; iter = iter->next) {
+		file = iter->data;
+
+		if (file->isdir)
+			size += brasero_volume_file_size (file);
+		else
+			size += BRASERO_BYTES_TO_BLOCKS (file->specific.file.size_bytes, 2048);
+	}
+
+	return size;
 }

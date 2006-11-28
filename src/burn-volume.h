@@ -41,18 +41,27 @@ struct _BraseroVolFile {
 	BraseroVolFile *parent;
 
 	gchar *name;
+	gchar *rr_name;
 
 	union {
+
 	struct {
 		gint address_block;
 		gint size_bytes;
 	} file;
 
+	struct {
 		GList *children;
+		GList *rr_children;
+	} dir;
+
 	} specific;
 
-	gint isdir:1;
+	guint isdir:1;
 };
+
+#define BRASERO_VOLUME_FILE_NAME(file)			((file)->rr_name?(file)->rr_name:(file)->name)
+#define BRASERO_BYTES_TO_BLOCKS(size, block_size)	(((size)%(block_size))?((size)/(block_size))+1:(size)/(block_size))
 
 void
 brasero_volume_file_free (BraseroVolFile *file);
@@ -77,9 +86,18 @@ BraseroVolFile *
 brasero_volume_get_files (const gchar *path,
 			  gchar **label,
 			  gint64 *nb_blocks,
+			  gint64 *data_blocks,
 			  GError **error);
 
+gchar *
+brasero_volume_file_to_path (BraseroVolFile *file);
 
+BraseroVolFile *
+brasero_volume_file_from_path (const gchar *ptr,
+			       BraseroVolFile *parent);
+
+gint64
+brasero_volume_file_size (BraseroVolFile *file);
 
 G_END_DECLS
 

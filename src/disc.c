@@ -25,6 +25,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <nautilus-burn-drive.h>
+
 #include "brasero-marshal.h"
 #include "disc.h"
  
@@ -269,6 +271,21 @@ brasero_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	iface = BRASERO_DISC_GET_IFACE (disc);
 	if (iface->fill_toolbar)
 		(* iface->fill_toolbar) (disc, toolbar);
+}
+
+void
+brasero_disc_set_current_drive (BraseroDisc *disc, NautilusBurnDrive *drive)
+{
+	BraseroDiscIface *iface;
+
+	if (!disc)
+		return;
+
+	g_return_if_fail (BRASERO_IS_DISC (disc));
+
+	iface = BRASERO_DISC_GET_IFACE (disc);
+	if (iface->set_drive)
+		(* iface->set_drive) (disc, drive);
 }
 
 void

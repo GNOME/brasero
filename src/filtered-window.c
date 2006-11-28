@@ -157,7 +157,6 @@ brasero_filtered_dialog_class_init (BraseroFilteredDialogClass *klass)
 			  NULL, NULL,
 			  g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1,
 			  G_TYPE_STRING);
-
 }
 
 static void

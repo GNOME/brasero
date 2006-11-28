@@ -38,6 +38,9 @@
 #include <gtk/gtkliststore.h>
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtklabel.h>
+
+#include <libgnomeui/libgnomeui.h>
+
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 #include "mime-filter.h"
@@ -110,7 +113,7 @@ brasero_mime_filter_init (BraseroMimeFilter * obj)
 	obj->priv = g_new0 (BraseroMimeFilterPrivate, 1);
 
 	store = gtk_list_store_new (BRASERO_MIME_FILTER_NB_COL,
-				    GDK_TYPE_PIXBUF,
+				    G_TYPE_STRING,
 				    G_TYPE_STRING,
 				    G_TYPE_INT,
 				    G_TYPE_POINTER);
@@ -122,7 +125,7 @@ brasero_mime_filter_init (BraseroMimeFilter * obj)
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (obj->combo), renderer,
 				    FALSE);
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (obj->combo),
-				       renderer, "pixbuf",
+				       renderer, "icon-name",
 				       BRASERO_MIME_FILTER_ICON_COL);
 
 	renderer = gtk_cell_renderer_text_new ();
@@ -230,16 +233,18 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 
 	item = g_hash_table_lookup (filter->priv->table, mime);
 	if (item == NULL) {
-		char *display;
+		gchar *display;
 		GtkTreeIter row;
-		GdkPixbuf *icon_pix;
+		gchar *icon_string;
 		GtkTreeModel *model;
-		const char *description;
+		const gchar *description;
 
 		description = gnome_vfs_mime_get_description (mime);
 		display = g_strdup_printf (_("%s only"), description);
-		icon_pix = brasero_utils_get_icon_for_mime (mime, 16);
-
+		icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
+						 NULL, NULL, NULL, mime,
+						 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
+		
 		/* create the GtkFileFilter */
 		item = gtk_file_filter_new ();
 		gtk_file_filter_set_name (item, mime);
@@ -258,14 +263,12 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 		g_object_ref (item);
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    BRASERO_MIME_FILTER_DISPLAY_COL, display,
-				    BRASERO_MIME_FILTER_ICON_COL, icon_pix,
+				    BRASERO_MIME_FILTER_ICON_COL, icon_string,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
 		g_object_ref_sink (GTK_OBJECT (item));
-
+		g_free (icon_string);
 		g_free (display);
-		if (icon_pix)
-			g_object_unref (icon_pix);
 
 		/* we check that the first entry at least is visible */
 		if (gtk_combo_box_get_active (GTK_COMBO_BOX (filter->combo)) == -1

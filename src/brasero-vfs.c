@@ -89,6 +89,8 @@ struct _BraseroInfoData {
 	GSList *results;
 	GSList *uris;
 	gint flags;
+
+	guint check_parent_sym:1;
 };
 typedef struct _BraseroInfoData BraseroInfoData;
 
@@ -119,6 +121,8 @@ typedef struct _BraseroCountData BraseroCountData;
 
 struct _BraseroVFSPlaylistData {
 	gchar *uri;
+	gchar *title;
+
 	GList *uris;
 	TotemPlParser *parser;
 	TotemPlParserResult res;
@@ -153,6 +157,7 @@ typedef struct _BraseroMetadataResult BraseroMetadataResult;
 #define BRASERO_CTX_INFO_CALLBACK(ctx)		((BraseroVFSInfoCallback) BRASERO_CTX_CALLBACK (ctx))
 #define BRASERO_CTX_COUNT_CALLBACK(ctx)		((BraseroVFSCountCallback) BRASERO_CTX_CALLBACK (ctx))
 #define BRASERO_CTX_META_CALLBACK(ctx)		((BraseroVFSMetaCallback) BRASERO_CTX_CALLBACK (ctx))
+#define BRASERO_CTX_PLAYLIST_CALLBACK(ctx)	((BraseroVFSPlaylistCallback) BRASERO_CTX_CALLBACK (ctx))
 
 #define BRASERO_CTX_INFO_CB(ctx, result, uri, info)				\
 	if (BRASERO_CTX_CALLBACK (ctx))						\
@@ -191,15 +196,6 @@ typedef struct _BraseroMetadataResult BraseroMetadataResult;
 						   metadata,			\
 						   BRASERO_CTX_USER_DATA (ctx))
 
-#define BRASERO_CTX_PLAYLIST_CB(ctx, result, uri, info, metadata)		\
-	if (BRASERO_CTX_CALLBACK (ctx))						\
-		(BRASERO_CTX_META_CALLBACK (ctx)) (BRASERO_CTX_SELF (ctx),	\
-						   BRASERO_CTX_OWNER (ctx),	\
-						   result,			\
-						   uri,				\
-						   info,			\
-						   metadata,			\
-						   BRASERO_CTX_USER_DATA (ctx))
 
 #define BRASERO_CTX_SET_TASK_METHOD(self, ctx, id) 				\
 	((ctx)->task_method = g_hash_table_lookup (self->priv->types, GINT_TO_POINTER (id)))
@@ -306,6 +302,109 @@ brasero_vfs_get_default ()
 	return singleton;
 }
 
+/**
+ * This part deals with symlinks, that allows to get unique filenames by
+ * replacing any parent symlink by its target and check for recursive
+ * symlinks
+ */
+
+static gchar *
+brasero_vfs_check_for_parent_symlink (const gchar *escaped_uri)
+{
+	GnomeVFSFileInfo *info;
+	GnomeVFSURI *parent;
+    	gchar *uri;
+
+    	parent = gnome_vfs_uri_new (escaped_uri);
+  	info = gnome_vfs_file_info_new ();
+    	uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
+
+	while (gnome_vfs_uri_has_parent (parent)) {
+	    	GnomeVFSURI *tmp;
+		GnomeVFSResult result;
+
+		result = gnome_vfs_get_file_info_uri (parent,
+						      info,
+					              GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+
+		if (result != GNOME_VFS_OK)
+			/* we shouldn't reached this point but who knows */
+		    	break;
+
+		/* NOTE: no need to check for broken symlinks since
+		 * we wouldn't have reached this point otherwise */
+		if (GNOME_VFS_FILE_INFO_SYMLINK (info)) {
+		    	gchar *parent_uri;
+		    	gchar *new_root;
+			gchar *newuri;
+
+		    	parent_uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
+			new_root = gnome_vfs_make_uri_from_input (info->symlink_name);
+
+			newuri = g_strconcat (new_root,
+					      uri + strlen (parent_uri),
+					      NULL);
+
+		    	g_free (uri);
+		    	uri = newuri;	
+
+		    	gnome_vfs_uri_unref (parent);
+		    	g_free (parent_uri);
+
+		    	parent = gnome_vfs_uri_new (new_root);
+			g_free (new_root);
+		}
+
+		tmp = parent;
+		parent = gnome_vfs_uri_get_parent (parent);
+		gnome_vfs_uri_unref (tmp);
+
+		gnome_vfs_file_info_clear (info);
+	}
+	gnome_vfs_file_info_unref (info);
+	gnome_vfs_uri_unref (parent);
+
+	return uri;
+}
+
+static gboolean
+brasero_utils_get_symlink_target (const gchar *escaped_uri,
+				  GnomeVFSFileInfo *info,
+				  GnomeVFSFileInfoOptions flags)
+{
+	gint size;
+	GnomeVFSResult result;
+
+	result = gnome_vfs_get_file_info (escaped_uri,
+					  info,
+					  flags|
+					  GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+	if (result)
+		return FALSE;
+
+    	if (info->symlink_name) {
+		gchar *target;
+
+		target = gnome_vfs_make_uri_from_input (info->symlink_name);
+
+		g_free (info->symlink_name);
+		info->symlink_name = brasero_vfs_check_for_parent_symlink (target);
+		g_free (target);
+	}
+
+    	if (!info->symlink_name)
+		return FALSE;
+
+	/* we check for circular dependency here :
+	 * if the target is one of the parent of symlink */
+	size = strlen (info->symlink_name);
+	if (!strncmp (info->symlink_name, escaped_uri, size)
+	&& (*(escaped_uri + size) == '/' || *(escaped_uri + size) == '\0'))
+		return FALSE;
+	
+	return TRUE;
+}
+
 static void
 brasero_vfs_task_ctx_free (BraseroVFSTaskCtx *ctx, gboolean cancelled)
 {
@@ -371,7 +470,7 @@ brasero_vfs_info_destroy (GObject *obj, gpointer user_data, gboolean cancelled)
 	}
 
 	if (data->uris) {
-		g_slist_foreach (data->uris, (GFunc) gnome_vfs_uri_unref, NULL);
+		g_slist_foreach (data->uris, (GFunc) g_free, NULL);
 		g_slist_free (data->uris);
 	}
 
@@ -416,25 +515,60 @@ brasero_vfs_info_thread (BraseroAsyncTaskManager *manager,
 	data = BRASERO_CTX_TASK_DATA (ctx);
 	for (iter = data->uris; iter; iter = next) {
 		BraseroInfoResult *result;
+		GnomeVFSFileInfo *info;
 		GnomeVFSURI *vfsuri;
+		gchar *uri;
 
 		if (ctx->cancelled)
 			break;
 
 		next = iter->next;
-		vfsuri = iter->data;
-		data->uris = g_slist_remove (data->uris, vfsuri);
+		uri = iter->data;
+		data->uris = g_slist_remove (data->uris, uri);
 
 		result = g_new0 (BraseroInfoResult, 1);
 		data->results = g_slist_prepend (data->results, result);
 
-		result->info = gnome_vfs_file_info_new ();
-		result->uri = gnome_vfs_uri_to_string (vfsuri, GNOME_VFS_URI_HIDE_NONE);
-		result->result = gnome_vfs_get_file_info_uri (vfsuri,
-							      result->info,
-							      data->flags);
+		if (data->check_parent_sym) {
+			gchar *tmp;
 
+			/* If we want to make sure a directory is not added twice we have to make sure
+			 * that it doesn't have a symlink as parent otherwise "/home/Foo/Bar" with Foo
+			 * as a symlink pointing to /tmp would be seen as a different file from /tmp/Bar 
+			 * It would be much better if we could use the inode numbers provided by gnome_vfs
+			 * unfortunately they are guint64 and can't be used in hash tables as keys.
+			 * Therefore we check parents up to root to see if there are symlinks and if so
+			 * we get a path without symlinks in it. This is done only for local file */
+			tmp = uri;
+			uri = brasero_vfs_check_for_parent_symlink (uri);
+			g_free (tmp);
+		}
+
+		result->uri = uri;
+		info = gnome_vfs_file_info_new ();
+		vfsuri = gnome_vfs_uri_new (uri);
+		result->result = gnome_vfs_get_file_info_uri (vfsuri,
+							      info,
+							      data->flags);
 		gnome_vfs_uri_unref (vfsuri);
+
+		if (result->result != GNOME_VFS_OK) {
+			result->info = info;
+			continue;
+		}
+
+		if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
+			gnome_vfs_file_info_clear (info);
+			if (!brasero_utils_get_symlink_target (uri,
+							       info,
+							       data->flags)) {
+				/* since we checked for the existence of the file
+				 * an error means a looping symbolic link */
+				if (info->symlink_name)
+					result->result = GNOME_VFS_ERROR_LOOP;
+			}
+		}
+		result->info = info;
 	}
 
 	data->uris = NULL;
@@ -443,6 +577,7 @@ brasero_vfs_info_thread (BraseroAsyncTaskManager *manager,
 gboolean
 brasero_vfs_get_info (BraseroVFS *self,
 		      GList *uris,
+		      gboolean check_parent_sym,
 		      GnomeVFSFileInfoOptions flags,
 		      BraseroVFSDataID id,
 		      gpointer callback_data)
@@ -457,14 +592,13 @@ brasero_vfs_get_info (BraseroVFS *self,
 
 	data = g_new0 (BraseroInfoData, 1);
 	data->flags = flags;
+	data->check_parent_sym = check_parent_sym;
 
 	for (iter = uris; iter; iter = iter->next) {
-		GnomeVFSURI *vfsuri;
 		gchar *uri;
 
 		uri = iter->data;
-		vfsuri = gnome_vfs_uri_new (uri);
-		data->uris = g_slist_prepend (data->uris, vfsuri);
+		data->uris = g_slist_prepend (data->uris, g_strdup (uri));
 	}
 
 	BRASERO_CTX_TASK_DATA (ctx) = data;
@@ -528,9 +662,8 @@ brasero_vfs_load_result (BraseroAsyncTaskManager *manager,
 		BraseroInfoResult *result;
 
 		result = iter->data;
-
 		BRASERO_CTX_LOAD_CB (ctx,
-				     GNOME_VFS_OK,
+				     result->result,
 				     result->uri,
 				     result->info);
 	}
@@ -553,7 +686,6 @@ brasero_vfs_load_thread (BraseroAsyncTaskManager *manager,
 					data->root,
 					data->flags);
 	data->result = res;
-
 	if (res != GNOME_VFS_OK)
 		return;
 
@@ -561,6 +693,7 @@ brasero_vfs_load_thread (BraseroAsyncTaskManager *manager,
 	while (gnome_vfs_directory_read_next (handle, info) == GNOME_VFS_OK) {
 		BraseroInfoResult *result;
 		gchar *name;
+		gchar *uri;
 
 		if (ctx->cancelled)
 			break;
@@ -576,9 +709,24 @@ brasero_vfs_load_thread (BraseroAsyncTaskManager *manager,
 		data->results = g_slist_prepend (data->results, result);
 
 		name = gnome_vfs_escape_string (info->name);
-		result->uri = g_build_filename (data->root, name, NULL);
+		uri = g_build_filename (data->root, name, NULL);
 		g_free (name);
 
+		/* special case for symlinks */
+		result->result = GNOME_VFS_OK;
+		if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
+			gnome_vfs_file_info_clear (info);
+			if (!brasero_utils_get_symlink_target (uri,
+							       info,
+							       data->flags)) {
+				/* since we checked for the existence of the file
+				 * an error means a looping symbolic link */
+				if (info->symlink_name)
+					result->result = GNOME_VFS_ERROR_LOOP;
+			}
+		}
+
+		result->uri = uri;
 		result->info = info;
 
 		info = gnome_vfs_file_info_new ();
@@ -1017,6 +1165,7 @@ brasero_vfs_get_metadata (BraseroVFS *self,
 	BRASERO_CTX_SET_METATASK (ctx);
 	result = brasero_vfs_get_info (self,
 				       uris,
+				       FALSE,
 				       flags|
 				       GNOME_VFS_FILE_INFO_FOLLOW_LINKS|
 				       GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
@@ -1137,7 +1286,6 @@ brasero_vfs_count_result_data (BraseroVFS *self,
 	data = BRASERO_CTX_TASK_DATA (ctx);
 
 	data->files_num ++;
-
 	if (result != GNOME_VFS_OK) {
 		data->invalid_num ++;
 		return;
@@ -1147,7 +1295,7 @@ brasero_vfs_count_result_data (BraseroVFS *self,
 		data->refcount ++;
 		brasero_vfs_load_directory (BRASERO_CTX_SELF (ctx),
 					    uri,
-					    GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+					    GNOME_VFS_FILE_INFO_DEFAULT,//GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 					    BRASERO_TASK_TYPE_COUNT_SUBTASK_DATA,
 					    ctx);
 	}
@@ -1181,7 +1329,7 @@ brasero_vfs_get_count (BraseroVFS *self,
 	if (audio)
 		return brasero_vfs_get_metadata (self,
 						 uris,
-						 GNOME_VFS_FILE_INFO_FOLLOW_LINKS|
+						// GNOME_VFS_FILE_INFO_FOLLOW_LINKS|
 						 GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE|
 						 GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
 						 FALSE,
@@ -1190,7 +1338,8 @@ brasero_vfs_get_count (BraseroVFS *self,
 	else
 		return brasero_vfs_get_info (self,
 					     uris,
-					     GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+					     TRUE,
+					     GNOME_VFS_FILE_INFO_DEFAULT,//GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
 					     BRASERO_TASK_TYPE_COUNT_SUBTASK_DATA,
 					     ctx);
 }
@@ -1218,6 +1367,11 @@ brasero_vfs_playlist_destroy (GObject *object,
 	if (data->uri) {
 		g_free (data->uri);
 		data->uri = NULL;
+	}
+
+	if (data->title) {
+		g_free (data->title);
+		data->title = NULL;
 	}
 
 	if (data->parser) {
@@ -1255,12 +1409,14 @@ brasero_vfs_playlist_subtask_result (BraseroVFS *self,
 				     gpointer user_data)
 {
 	BraseroVFSTaskCtx *ctx = user_data;
+	BraseroVFSPlaylistData *data;
 
-	BRASERO_CTX_PLAYLIST_CB (ctx,
-				 result,
-				 uri,
-				 info,
-				 metadata);
+	data = BRASERO_CTX_TASK_DATA (ctx);
+	BRASERO_CTX_META_CB (ctx,
+			     result,
+			     uri,
+			     info,
+			     metadata);
 }
 
 static void
@@ -1277,13 +1433,19 @@ brasero_vfs_playlist_result (BraseroAsyncTaskManager *manager,
 	data->parser = NULL;
 
 	if (data->res != TOTEM_PL_PARSER_RESULT_SUCCESS) {
-		BRASERO_CTX_PLAYLIST_CB (ctx,
-					 GNOME_VFS_ERROR_GENERIC,
-					 data->uri,
-					 NULL,
-					 NULL);
+		BRASERO_CTX_META_CB (ctx,
+				     GNOME_VFS_ERROR_GENERIC,
+				     data->uri,
+				     NULL,
+				     NULL);
 		return;
 	}
+	
+	BRASERO_CTX_META_CB (ctx,
+			     GNOME_VFS_OK,
+			     data->title,
+			     NULL,
+			     NULL);
 
 	BRASERO_CTX_SET_METATASK (ctx);
 	data->uris = g_list_reverse (data->uris);
@@ -1306,6 +1468,17 @@ brasero_vfs_add_playlist_entry_cb (TotemPlParser *parser,
 }
 
 static void
+brasero_vfs_start_end_playlist_cb (TotemPlParser *parser,
+				   const gchar *title,
+				   BraseroVFSPlaylistData *data)
+{
+	if (!title)
+		return;
+
+	if (!data->title)
+		data->title = g_strdup (title);}
+
+static void
 brasero_vfs_playlist_thread (BraseroAsyncTaskManager *manager,
 			     gpointer callback_data)
 {
@@ -1313,6 +1486,14 @@ brasero_vfs_playlist_thread (BraseroAsyncTaskManager *manager,
 	BraseroVFSTaskCtx *ctx = callback_data;
 
 	data = BRASERO_CTX_TASK_DATA (ctx);
+	g_signal_connect (G_OBJECT (data->parser),
+			  "playlist-start",
+			  G_CALLBACK (brasero_vfs_start_end_playlist_cb),
+			  data);
+	g_signal_connect (G_OBJECT (data->parser),
+			  "playlist-end",
+			  G_CALLBACK (brasero_vfs_start_end_playlist_cb),
+			  data);
 	g_signal_connect (G_OBJECT (data->parser),
 			  "entry",
 			  G_CALLBACK (brasero_vfs_add_playlist_entry_cb),
@@ -1436,6 +1617,48 @@ brasero_vfs_stop_all (BraseroVFS *self)
 		next = iter->next;
 		brasero_vfs_task_ctx_free (ctx, TRUE);
 	}
+}
+
+struct _BraseroVFSTaskCompareData {
+	BraseroVFSCompareFunc func;
+	BraseroVFSDataType *type;
+	gpointer user_data;
+};
+typedef struct _BraseroVFSTaskCompareData BraseroVFSTaskCompareData;
+
+static gboolean
+brasero_vfs_compare_unprocessed_task (BraseroAsyncTaskManager *manager,
+				      gpointer task,
+				      gpointer callback_data)
+{
+	BraseroVFSTaskCtx *ctx = task;
+	BraseroVFSTaskCompareData *data = callback_data;
+
+	if (ctx->user_method != data->type)
+		return FALSE;
+
+	return data->func (ctx->user_data, data->user_data);
+}
+
+gboolean
+brasero_vfs_find_urgent (BraseroVFS *self,
+			 BraseroVFSDataID id,
+			 BraseroVFSCompareFunc func,
+			 gpointer user_data)
+{
+	BraseroVFSTaskCompareData callback_data;
+
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	callback_data.func = func;
+	callback_data.user_data = user_data;
+	callback_data.type = g_hash_table_lookup (self->priv->types,
+						  GINT_TO_POINTER (id));
+
+	return brasero_async_task_manager_find_urgent_task (BRASERO_ASYNC_TASK_MANAGER (self),
+							    brasero_vfs_compare_unprocessed_task,
+							    &callback_data);
 }
 
 /**

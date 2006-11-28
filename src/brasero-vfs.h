@@ -60,31 +60,41 @@ BraseroVFS *brasero_vfs_get_default ();
 
 typedef guint BraseroVFSDataID;
 
-typedef void	(*BraseroVFSInfoCallback)	(BraseroVFS *self,
-						 GObject *owner,
-						 GnomeVFSResult result,
-						 const gchar *uri,
-						 GnomeVFSFileInfo *info,
-						 gpointer callback_data);
+typedef void		(*BraseroVFSInfoCallback)	(BraseroVFS *self,
+							 GObject *owner,
+							 GnomeVFSResult result,
+							 const gchar *uri,
+							 GnomeVFSFileInfo *info,
+							 gpointer callback_data);
 
-typedef void	(*BraseroVFSMetaCallback)	(BraseroVFS *self,
-						 GObject *owner,
-						 GnomeVFSResult result,
-						 const gchar *uri,
-						 GnomeVFSFileInfo *info,
-						 BraseroMetadata *meta,
-						 gpointer callback_data);
+typedef void		(*BraseroVFSMetaCallback)	(BraseroVFS *self,
+							 GObject *owner,
+							 GnomeVFSResult result,
+							 const gchar *uri,
+							 GnomeVFSFileInfo *info,
+							 BraseroMetadata *meta,
+							 gpointer callback_data);
 
-typedef void	(*BraseroVFSCountCallback)	(BraseroVFS *self,
-						 GObject *owner,
-						 gint files_num,
-						 gint invalid_num,
-						 gint64 files_size,
-						 gpointer callback_data);
+typedef void		(*BraseroVFSPlaylistCallback)	(BraseroVFS *self,
+							 GObject *owner,
+							 GnomeVFSResult result,
+							 const gchar *uri,
+							 const gchar *title,
+							 gpointer callback_data);
 
-typedef void	(*BraseroVFSDestroyCallback)	(GObject *object,
-						 gpointer callback_data,
-						 gboolean cancelled);
+typedef void		(*BraseroVFSCountCallback)	(BraseroVFS *self,
+							 GObject *owner,
+							 gint files_num,
+							 gint invalid_num,
+							 gint64 files_size,
+							 gpointer callback_data);
+
+typedef void		(*BraseroVFSDestroyCallback)	(GObject *object,
+							 gpointer callback_data,
+							 gboolean cancelled);
+
+typedef gboolean	(*BraseroVFSCompareFunc)	(gpointer data,
+							 gpointer user_data);
 
 BraseroVFSDataID
 brasero_vfs_register_data_type (BraseroVFS *self,
@@ -102,6 +112,7 @@ brasero_vfs_get_count (BraseroVFS *self,
 gboolean
 brasero_vfs_get_info (BraseroVFS *self,
 		      GList *uris,
+		      gboolean check_parent_sym,
 		      GnomeVFSFileInfoOptions flags,
 		      BraseroVFSDataID type,
 		      gpointer callback_data);
@@ -129,7 +140,14 @@ brasero_vfs_load_directory (BraseroVFS *self,
 			    gpointer callback_data);
 
 void
-brasero_vfs_cancel (BraseroVFS *self, gpointer object);
+brasero_vfs_cancel (BraseroVFS *self,
+		    gpointer object);
+
+gboolean
+brasero_vfs_find_urgent (BraseroVFS *self,
+			 BraseroVFSDataID id,
+			 BraseroVFSCompareFunc func,
+			 gpointer user_data);
 
 G_END_DECLS
 

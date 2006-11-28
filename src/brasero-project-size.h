@@ -31,6 +31,8 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkcontainer.h>
 
+#include <nautilus-burn-drive.h>
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_PROJECT_SIZE         (brasero_project_size_get_type ())
@@ -72,6 +74,9 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 gboolean
 brasero_project_size_check_status (BraseroProjectSize *self,
 				   gboolean *overburn);
+
+NautilusBurnDrive *
+brasero_project_get_active_drive (BraseroProjectSize *self);
 
 G_END_DECLS
 

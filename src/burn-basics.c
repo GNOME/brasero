@@ -221,13 +221,11 @@ brasero_track_source_free (BraseroTrackSource *track)
 		g_slist_free (track->contents.data.excluded);
 	}
 	else if (track->type == BRASERO_TRACK_SOURCE_GRAFTS) {
-		if (track->contents.grafts.grafts_path) {
+		if (track->contents.grafts.grafts_path)
 			g_free (track->contents.grafts.grafts_path);
-		}
 
-		if (track->contents.grafts.excluded_path) {
+		if (track->contents.grafts.excluded_path)
 			g_free (track->contents.grafts.excluded_path);
-		}
 
 		if (track->contents.grafts.label)
 			g_free (track->contents.grafts.label);

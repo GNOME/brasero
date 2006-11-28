@@ -1,7 +1,7 @@
 /***************************************************************************
- *            burn-iso9660.h
+ *            burn-iso-field.h
  *
- *  Sat Oct  7 17:10:09 2006
+ *  Mon Nov 27 17:32:39 2006
  *  Copyright  2006  algernon
  *  <algernon@localhost.localdomain>
  ****************************************************************************/
@@ -22,46 +22,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <stdio.h>
-
 #include <glib.h>
 
-#include "burn-volume.h"
-
-#ifndef _BURN_ISO9660_H
-#define _BURN_ISO9660_H
+#ifndef _BURN_ISO_FIELD_H
+#define _BURN_ISO_FIELD_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define ISO9660_BLOCK_SIZE 2048
-
-gboolean
-brasero_iso9660_is_primary_descriptor (const char *buffer,
-				       GError **error);
-
-gboolean
-brasero_iso9660_get_size (const gchar *block,
-			  gint64 *nb_blocks,
-			  GError **error);
-
-gboolean
-brasero_iso9660_get_label (const gchar *block,
-			   gchar **label,
-			   GError **error);
-
-BraseroVolFile *
-brasero_iso9660_get_contents (FILE *file,
-			      const gchar *block,
-			      gint64 *nb_blocks,
-			      GError **error);
+gint32
+brasero_iso9660_get_733_val (guchar *buffer);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _BURN_ISO9660_H */
+#endif /* _BURN_ISO_FIELD_H */
 
  

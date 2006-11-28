@@ -57,6 +57,8 @@
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
 
+#include <libgnomeui/libgnomeui.h>
+
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 #include <beagle/beagle.h>
@@ -111,7 +113,7 @@ static GtkTargetEntry ntables_find[] = {
 static guint nb_ntables_find = sizeof (ntables_find) / sizeof (ntables_find[0]);
 
 enum {
-	BRASERO_SEARCH_TREE_PIXBUF_COL,
+	BRASERO_SEARCH_TREE_ICON_COL,
 	BRASERO_SEARCH_TREE_TITLE_COL,
 	BRASERO_SEARCH_TREE_DESCRIPTION_COL,
 	BRASERO_SEARCH_TREE_SCORE_COL,
@@ -382,7 +384,7 @@ brasero_search_init (BraseroSearch *obj)
 
 	gtk_tree_view_set_headers_clickable (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 	store = gtk_list_store_new (BRASERO_SEARCH_TREE_NB_COL,
-				    GDK_TYPE_PIXBUF,
+				    G_TYPE_STRING,
 				    G_TYPE_STRING,
 				    G_TYPE_STRING,
 				    G_TYPE_INT,
@@ -417,8 +419,8 @@ brasero_search_init (BraseroSearch *obj)
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
-	gtk_tree_view_column_add_attribute (column, renderer, "pixbuf",
-					    BRASERO_SEARCH_TREE_PIXBUF_COL);
+	gtk_tree_view_column_add_attribute (column, renderer, "icon-name",
+					    BRASERO_SEARCH_TREE_ICON_COL);
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_start (column, renderer, TRUE);
@@ -616,7 +618,7 @@ brasero_search_decrease_activity (BraseroSearch *search)
 		gdk_window_set_cursor (GTK_WIDGET (search)->window, NULL);
 }
 
-static char **
+static gchar **
 brasero_search_get_selected_uris (BraseroURIContainer *container)
 {
 	BraseroSearch *search;
@@ -625,7 +627,7 @@ brasero_search_get_selected_uris (BraseroURIContainer *container)
 	return brasero_search_get_selected_rows (search);
 }
 
-static char *
+static gchar *
 brasero_search_get_selected_uri (BraseroURIContainer *container)
 {
 	BraseroSearch *search;
@@ -685,14 +687,13 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 				gint max)
 {
 	GtkTreeModel *model;
-	GdkPixbuf *icon_pix;
 	GtkTreeIter row;
 	BeagleHit *hit;
 	GSList *iter;
 	GSList *next;
 
+	gchar *name, *mime, *uri, *icon_string;
 	const gchar *description;
-	gchar *name, *mime, *uri;
 	gint score;
 	gint num;
 
@@ -734,12 +735,14 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 		}
 
 		description = gnome_vfs_mime_get_description (mime);
-		icon_pix = brasero_utils_get_icon_for_mime (mime, 16);
+		icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
+						 NULL, NULL, NULL, mime,
+						 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
 		score = (int) (beagle_hit_get_score (hit) * 100);
 
 		gtk_list_store_append (GTK_LIST_STORE (model), &row);
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
-				    BRASERO_SEARCH_TREE_PIXBUF_COL, icon_pix,
+				    BRASERO_SEARCH_TREE_ICON_COL, icon_string,
 				    BRASERO_SEARCH_TREE_TITLE_COL, name,
 				    BRASERO_SEARCH_TREE_DESCRIPTION_COL, description,
 				    BRASERO_SEARCH_TREE_URI_COL, uri,
@@ -751,12 +754,10 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 		brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter),
 					      mime);
 
+		g_free (icon_string);
 		g_free (name);
 		g_free (mime);
 		g_free (uri);
-
-		if (icon_pix)
-			g_object_unref (icon_pix);
 	}
 
 	return iter;

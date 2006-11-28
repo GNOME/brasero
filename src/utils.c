@@ -34,7 +34,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <gtk/gtk.h>
-#include <libgnome/libgnome.h>
+
 #include <libgnomeui/libgnomeui.h>
 
 #include <libgnomevfs/gnome-vfs.h>
@@ -48,18 +48,12 @@
 #include "utils.h"
 #define BRASERO_ERROR brasero_error_quark()
 
-static GHashTable *icons = NULL;
 static gid_t *groups = NULL;
 G_LOCK_DEFINE (groups_mutex);
 
 static void
 brasero_utils_free (void)
 {
-	if (icons) {
-		g_hash_table_destroy (icons);
-		icons = NULL;
-	}
-
 	if (groups) {
 		G_LOCK (groups_mutex);
 		g_free (groups);
@@ -79,7 +73,6 @@ brasero_error_quark (void)
 	return quark;
 }
 
-
 /* utils */
 enum {
 	FROM_FILE,
@@ -91,17 +84,30 @@ static void
 brasero_utils_register_icon (GtkIconFactory *factory,
 			     const gchar *key,
 			     const gchar *icon,
-			     gint type,
 			     gint size)
 {
 	GdkPixbuf *pixbuf = NULL;
+	gchar *icon_string;
 
-	if (type == FROM_FILE)
-		pixbuf = gdk_pixbuf_new_from_file (icon, NULL);
-	else if (type == FROM_MIME)
-		pixbuf = brasero_utils_get_icon_for_mime (icon, size);
-	else if (type == FROM_THEME)
-		pixbuf = brasero_utils_get_icon_for_mime (icon, size);
+	icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
+					 NULL, NULL, NULL, icon,
+					 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
+
+	if (icon_string) {
+		GError *error = NULL;
+
+		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+						   icon_string,
+						   size,
+						   0,
+						   &error);
+		g_free (icon_string);
+
+		if (error) {
+			g_warning ("Failed to load icon %s\n", error->message);
+			g_error_free (error);
+		}
+	}
 
 	if (pixbuf) {
 		GtkIconSet *iconset;
@@ -133,7 +139,6 @@ brasero_utils_init (void)
 	brasero_utils_register_icon (factory,
 				     BRASERO_STOCK_PLAYLIST,
 				     "audio/x-scpls",
-				     FROM_MIME,
 				     48);
 
 	gtk_icon_factory_add_default (factory);
@@ -350,72 +355,6 @@ brasero_utils_get_sectors_string (gint64 sectors,
 	}
 }
 
-GdkPixbuf *
-brasero_utils_get_icon (const gchar *name, gint size)
-{
-	char *real;
-	GError *error = NULL;
-	GdkPixbuf *icon_pix = NULL;
-
-	if (!name)
-		return NULL;
-
-	/* fetch the icon in default factory */
-	if (icons == NULL)
-		icons = g_hash_table_new_full (g_str_hash,
-					       g_str_equal,
-					       (GDestroyNotify) g_free,
-					       (GDestroyNotify) g_object_unref);
-
-	real = g_strdup_printf ("%s-%i", name, size);
-	icon_pix = g_hash_table_lookup (icons, real);
-	if (!icon_pix) {
-		icon_pix = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-						     name,
-						     size,
-						     0,
-						     &error);
-
-		if (!icon_pix) {
-			if (error) {
-				g_warning ("Couldn't load icon: %s\n", error->message);
-				g_error_free (error);
-			}
-			g_free (real);
-			return NULL;
-		}
-		else if (icons)
-			g_hash_table_insert (icons,
-					     real,
-					     icon_pix);
-	}
-	else
-		g_free (real);
-
-	g_object_ref (icon_pix);
-	return icon_pix;
-}
-
-GdkPixbuf *
-brasero_utils_get_icon_for_mime (const gchar *mime, gint size)
-{
-	gchar *icon_string;
-	GdkPixbuf *pixbuf;
-
-	icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
-					 NULL, NULL, NULL, mime,
-					 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
-
-	if (!icon_string) {
-		g_warning ("Couldn't load icon:\n no icon registered for this type.\n");
-		return NULL;
-	}
-
-	pixbuf = brasero_utils_get_icon (icon_string, size);
-	g_free (icon_string);
-	return pixbuf;
-}
-
 GtkWidget *
 brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 {
@@ -566,13 +505,13 @@ brasero_utils_remove (const gchar *uri)
 	return result;
 }
 
-char *
-brasero_utils_escape_string (const char *text)
+gchar *
+brasero_utils_escape_string (const gchar *text)
 {
-	char *ptr, *result;
-	int len = 1;
+	gchar *ptr, *result;
+	gint len = 1;
 
-	ptr = (char *) text;
+	ptr = (gchar *) text;
 	while (*ptr != '\0') {
 		if (*ptr == '\\' || *ptr == '=')
 			len++;
@@ -581,7 +520,7 @@ brasero_utils_escape_string (const char *text)
 		ptr++;
 	}
 
-	result = g_new (char, len);
+	result = g_new (gchar, len);
 
 	ptr = result;
 	while (*text != '\0') {
@@ -598,103 +537,6 @@ brasero_utils_escape_string (const char *text)
 	*ptr = '\0';
 
 	return result;
-}
-
-gchar *
-brasero_utils_check_for_parent_symlink (const gchar *escaped_uri)
-{
-	GnomeVFSFileInfo *info;
-	GnomeVFSURI *parent;
-    	gchar *uri;
-
-    	parent = gnome_vfs_uri_new (escaped_uri);
-  	info = gnome_vfs_file_info_new ();
-    	uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
-
-	while (gnome_vfs_uri_has_parent (parent)) {
-	    	GnomeVFSURI *tmp;
-		GnomeVFSResult result;
-
-		result = gnome_vfs_get_file_info_uri (parent,
-						      info,
-					              GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-
-		if (result != GNOME_VFS_OK)
-			/* we shouldn't reached this point but who knows */
-		    	break;
-
-		/* NOTE: no need to check for broken symlinks since
-		 * we wouldn't have reached this point otherwise */
-		if (GNOME_VFS_FILE_INFO_SYMLINK (info)) {
-		    	gchar *parent_uri;
-		    	gchar *new_root;
-			gchar *newuri;
-
-		    	parent_uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
-			new_root = gnome_vfs_make_uri_from_input (info->symlink_name);
-
-			newuri = g_strconcat (new_root,
-					      uri + strlen (parent_uri),
-					      NULL);
-
-		    	g_free (uri);
-		    	uri = newuri;	
-
-		    	gnome_vfs_uri_unref (parent);
-		    	g_free (parent_uri);
-
-		    	parent = gnome_vfs_uri_new (new_root);
-			g_free (new_root);
-		}
-
-		tmp = parent;
-		parent = gnome_vfs_uri_get_parent (parent);
-		gnome_vfs_uri_unref (tmp);
-
-		gnome_vfs_file_info_clear (info);
-	}
-	gnome_vfs_file_info_unref (info);
-	gnome_vfs_uri_unref (parent);
-
-	return uri;
-}
-
-gboolean
-brasero_utils_get_symlink_target (const gchar *escaped_uri,
-				  GnomeVFSFileInfo *info,
-				  GnomeVFSFileInfoOptions flags)
-{
-	gint size;
-	GnomeVFSResult result;
-
-	result = gnome_vfs_get_file_info (escaped_uri,
-					  info,
-					  flags|
-					  GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	if (result)
-		return FALSE;
-
-    	if (info->symlink_name) {
-		gchar *target;
-
-		target = gnome_vfs_make_uri_from_input (info->symlink_name);
-
-		g_free (info->symlink_name);
-		info->symlink_name = brasero_utils_check_for_parent_symlink (target);
-		g_free (target);
-	}
-
-    	if (!info->symlink_name)
-		return FALSE;
-
-	/* we check for circular dependency here :
-	 * if the target is one of the parent of symlink */
-	size = strlen (info->symlink_name);
-	if (!strncmp (info->symlink_name, escaped_uri, size)
-	&& (*(escaped_uri + size) == '/' || *(escaped_uri + size) == '\0'))
-		return FALSE;
-	
-	return TRUE;
 }
 
 /* Copied from glib-2.8.3 (glib.c) but slightly
@@ -993,6 +835,7 @@ brasero_utils_get_use_info_notebook (void)
 	GtkWidget *alignment;
 	gchar     *message_add, *message_add_header;
 	gchar     *message_remove, *message_remove_header;
+	gchar	  *first_use_message;
 
 	notebook = gtk_notebook_new ();
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
@@ -1067,12 +910,13 @@ brasero_utils_get_use_info_notebook (void)
 				      NULL);
 	
 
-
-	first_use = gtk_label_new (g_strconcat ("<span foreground='grey50'>",
-						message_add_header, message_add,
-						"\n\n\n",
-						message_remove_header, message_remove,
-						"</span>", NULL));
+	first_use_message = g_strconcat ("<span foreground='grey50'>",
+					 message_add_header, message_add,
+					 "\n\n\n",
+					 message_remove_header, message_remove,
+					 "</span>", NULL);
+	first_use = gtk_label_new (first_use_message);
+	g_free (first_use_message);
 
 	gtk_misc_set_padding (GTK_MISC (first_use), 24, 0);
 	gtk_label_set_justify (GTK_LABEL (first_use), GTK_JUSTIFY_LEFT);

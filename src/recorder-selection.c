@@ -50,8 +50,6 @@
 #include "brasero-ncb.h"
 #include "brasero-image-type-chooser.h"
 
-#define ICON_SIZE 48
-
 static void brasero_recorder_selection_class_init (BraseroRecorderSelectionClass *klass);
 static void brasero_recorder_selection_init (BraseroRecorderSelection *sp);
 static void brasero_recorder_selection_finalize (GObject * object);
@@ -442,11 +440,10 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 					NautilusBurnDrive *drive)
 {
 	gchar *info;
-	GdkPixbuf *pixbuf = NULL;
 	gboolean can_record = FALSE;
-	gchar *types [] = { 	NULL,
-				NULL,
-				NULL,
+	gchar *types [] = { 	"gnome-dev-removable",
+				"gnome-dev-removable",
+				"gnome-dev-removable",
 				"gnome-dev-cdrom",
 				"gnome-dev-disc-cdr",
 				"gnome-dev-disc-cdrw",
@@ -491,7 +488,6 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 	     || ((is_appendable && has_audio) && !is_blank && !is_rewritable)) {
 		info = g_strdup_printf (_("The <b>%s</b> is not writable."),
 					nautilus_burn_drive_media_type_get_string (type));
-		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 	}
 	else if (has_audio) {
 		if (is_appendable) {
@@ -509,7 +505,6 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks."),
 						nautilus_burn_drive_media_type_get_string (type));
 
-		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 		can_record = TRUE;
 	}
 	else if (has_data) {
@@ -542,13 +537,11 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data."),
 						nautilus_burn_drive_media_type_get_string (type));
 
-		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 		can_record = TRUE;
 	}
 	else {
 		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt is empty."),
 					nautilus_burn_drive_media_type_get_string (type));
-		pixbuf = brasero_utils_get_icon (types [type], ICON_SIZE);
 		can_record = TRUE;
 	}
 
@@ -560,11 +553,9 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 	}
 
 	gtk_label_set_markup (GTK_LABEL (selection->priv->infos), info);
-	if (!pixbuf)
-		pixbuf = brasero_utils_get_icon ("gnome-dev-removable", ICON_SIZE);
-
-	gtk_image_set_from_pixbuf (GTK_IMAGE (selection->priv->image), pixbuf);
-	g_object_unref (pixbuf);
+	gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+				      types [type],
+				      GTK_ICON_SIZE_DIALOG);
 	g_free (info);
 
 	return can_record;
@@ -672,16 +663,14 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 	drive = nautilus_burn_drive_selection_get_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection));
 
 	if (drive == NULL) {
-		GdkPixbuf *pixbuf;
-
 	    	gtk_widget_set_sensitive (selection->priv->selection, FALSE);
 		gtk_label_set_markup (GTK_LABEL (selection->priv->infos),
 				      _("<b>There is no available drive.</b>"));
 
 		type = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
-		pixbuf = brasero_utils_get_icon ("gnome-dev-removable", ICON_SIZE);
-		gtk_image_set_from_pixbuf (GTK_IMAGE (selection->priv->image), pixbuf);
-		g_object_unref (pixbuf);
+		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
 		goto end;
 	}
 
@@ -692,15 +681,12 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 	}
 
 	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-		GdkPixbuf *pixbuf;
-
 		brasero_recorder_selection_update_image_path (selection);
 
 		type = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
-		pixbuf = brasero_utils_get_icon_for_mime ("application/x-cd-image", ICON_SIZE);
-		gtk_image_set_from_pixbuf (GTK_IMAGE (selection->priv->image), pixbuf);
-		g_object_unref (pixbuf);
-
+		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+					      "binary",
+					      GTK_ICON_SIZE_DIALOG);
 		gtk_widget_set_sensitive (selection->priv->props, TRUE);
 		goto end;
 	}

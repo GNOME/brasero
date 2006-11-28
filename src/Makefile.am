@@ -78,8 +78,6 @@ brasero_SOURCES = \
 	player-bacon.h         \
 	progress.c         \
 	progress.h         \
-	async-job-manager.c         \
-	async-job-manager.h         \
 	song-properties.c         \
 	song-properties.h         \
 	tray.c         \
@@ -181,7 +179,11 @@ brasero_SOURCES = \
 	burn-dvdcss.h         \
 	burn-volume.c         \
 	burn-volume.h         \
-	burn-dvdcss-private.h 
+	burn-dvdcss-private.h         \
+	burn-susp.c         \
+	burn-susp.h         \
+	burn-iso-field.c         \
+	burn-iso-field.h 
 
 brasero_LDFLAGS = 
 

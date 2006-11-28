@@ -301,21 +301,10 @@ brasero_libisofs_sort_graft_points (gconstpointer a, gconstpointer b)
 	/* we only want to know if:
 	 * - a is a parent of b (a > b, retval < 0) 
 	 * - b is a parent of a (b > a, retval > 0). */
-
 	len_a = strlen (graft_a->path);
 	len_b = strlen (graft_b->path);
 
-	if (len_a < len_b
-	&&  graft_b->path [len_a] == G_DIR_SEPARATOR
-	&&  !strncmp (graft_a->path, graft_b->path, len_a))
-		return -1;
-		
-	if (len_a > len_b
-	&&  graft_a->path [len_b] == G_DIR_SEPARATOR
-	&&  !strncmp (graft_b->path, graft_a->path, len_b))
-		return 1;
-
-	return 0;
+	return len_a - len_b;
 }
 
 static BraseroBurnResult

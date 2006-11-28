@@ -330,7 +330,7 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 
 	tray->priv->rounded_percent = percent;
 
-	icon_name = g_strdup_printf (BRASERO_DATADIR G_DIR_SEPARATOR_S "disc-%02i.png", percent);
+	icon_name = g_strdup_printf ("brasero-disc-%02i", percent);
 	gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (tray), icon_name);
 	g_free (icon_name);
 }

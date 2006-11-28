@@ -51,7 +51,7 @@ typedef struct {
 	GtkVBoxClass parent_class;
 } BraseroDataDiscClass;
 
-GType brasero_data_disc_get_type();
-GtkWidget *brasero_data_disc_new();
+GType brasero_data_disc_get_type ();
+GtkWidget *brasero_data_disc_new ();
 
 #endif /* DATA_DISC_H */
