@@ -1702,8 +1702,8 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 	}
 
 	text = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
-	if (stats.st_size > 10 * 1024 * 1024) {
-		gchar contents [10 * 1024 * 1024];
+	if (stats.st_size > 1 * 1024 * 1024) {
+		gchar contents [1 * 1024 * 1024];
 		GtkTextIter iter;
 		FILE *file;
 
