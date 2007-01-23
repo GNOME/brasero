@@ -29,6 +29,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
+#include <string.h>
 
 #include "burn-basics.h"
 #include "burn-job.h"
@@ -248,34 +249,38 @@ brasero_libburn_common_get_disc (BraseroLibburnCommon *self,
 }
 
 static gboolean
-brasero_libburn_common_process_message (BraseroLibburnCommon *self,
-					struct burn_message *mes)
+brasero_libburn_common_process_message (BraseroLibburnCommon *self)
 {
 	GError *error;
 	gboolean retval = TRUE;
+	int err_code = 0;
+	int err_errno = 0;
+	char err_txt[BURN_MSGS_MESSAGE_LEN];
+	char err_sev[80];
 
-	switch (mes->type) {
-		case BURN_MESSAGE_ERROR:
-			if (mes->detail.error.message == BURN_ERROR_CANCELLED) {
-				retval = TRUE;
-				break;
-			}
+	while (1) {
+		int ret = burn_msgs_obtain("ALL", &err_code,err_txt,
+								   &err_errno, err_sev);
 
-		case BURN_MESSAGE_WARNING:
+		if (!ret) {
+		        retval = FALSE;      
+		        break;
+		}
+
+		if (ret < 0) {
 			error = g_error_new (BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("an unknown error occured with libburn"));
+								 BRASERO_BURN_ERROR_GENERAL,
+								 err_txt);
 			brasero_job_error (BRASERO_JOB (self), error);
 			retval = FALSE;
 			break;
-
-		case BURN_MESSAGE_INFO:
-			BRASERO_JOB_LOG (self, _("(%s) libburn tried to say something"));
+		} else {
+			BRASERO_JOB_LOG (self, _("(%s) libburn tried to say something"),
+							 err_txt);
 			retval = TRUE;
 			break;
+		}
 	}
-
-	burn_message_free (mes);
 	return retval;
 }
 
@@ -381,13 +386,11 @@ brasero_libburn_common_clock_id (BraseroTask *task, BraseroLibburnCommon *self)
 	gdouble fraction;
 	gint64 sectors;
 
-	struct burn_message *message;
 	enum burn_drive_status status;
 	struct burn_progress progress;
 
 	/* see if there is any pending message */
-	message = burn_get_message ();
-	if (message && !brasero_libburn_common_process_message (self, message))
+	if (!brasero_libburn_common_process_message (self))
 		return;
 
 	if (!self->priv->drive)
