@@ -46,7 +46,7 @@
 
 #ifdef HAVE_LIBBURN
 
-#include <libburn/libisofs.h>
+#include <libisofs/libisofs.h>
 #include <libburn/libburn.h>
 
 static void brasero_libisofs_class_init (BraseroLibisofsClass *klass);
