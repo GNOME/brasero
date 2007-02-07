@@ -652,7 +652,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	}
 
 	if (mkisofs->priv->action == BRASERO_MKISOFS_ACTION_GET_SIZE) {
-		g_ptr_array_add (argv, g_strdup ("-q"));
+		g_ptr_array_add (argv, g_strdup ("-quiet"));
 		g_ptr_array_add (argv, g_strdup ("-print-size"));
 
 		BRASERO_JOB_TASK_SET_ACTION (mkisofs,
