@@ -237,6 +237,7 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 			       "website-label", _("Brasero Homepage"),
 			       "license", license,
 			       "wrap-license", TRUE,
+			       "logo-icon-name", "brasero",
 			       /* Translators: This is a special message that shouldn't be translated
                                  * literally. It is used in the about box to give credits to
                                  * the translators.
