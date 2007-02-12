@@ -1,20 +1,18 @@
 # French translation of brasero.
-# Copyright (C) 2005-2006 THE brasero'S COPYRIGHT HOLDER
+# Copyright (C) 2005-2007 The Free Software Foundation, Inc.
 # This file is distributed under the same license as the brasero package.
 #
-# Please see: http://live.gnome.org/GnomeFr/Traduire for translation guidelines.
-#
 # Philippe Rouquier <brasero@wanadoo.fr>, 2005.
-# Jonathan Ernst <jonathan@ernstfamily.ch>, 2006.
-# Stéphane Raimbault <stephane.raimbault@gmail.com>, 2006
+# Jonathan Ernst <jonathan@ernstfamily.ch>, 2006-2007.
+# Stéphane Raimbault <stephane.raimbault@gmail.com>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero 0.4.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-12-26 20:12+0100\n"
-"PO-Revision-Date: 2006-12-26 21:52+0100\n"
-"Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
+"POT-Creation-Date: 2007-02-12 22:30+0100\n"
+"PO-Revision-Date: 2007-02-10 15:29+0100\n"
+"Last-Translator: Jonathan Ernst <jonathan@ernstfamily.ch>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -224,11 +222,14 @@ msgstr "PROJET"
 
 #: ../src/main.c:78
 msgid "Open an audio project adding the URIs given on the command line"
-msgstr "Ouvre un projet audio et ajoute les URI donnés dans la ligne de commande"
+msgstr ""
+"Ouvre un projet audio et ajoute les URI donnés dans la ligne de commande"
 
 #: ../src/main.c:82
 msgid "Open a data project adding the URIs given on the command line"
-msgstr "Ouvre un projet de données et ajoute les URI spécifiés sur la ligne de commande"
+msgstr ""
+"Ouvre un projet de données et ajoute les URI spécifiés sur la ligne de "
+"commande"
 
 #: ../src/main.c:86 ../src/brasero-project-manager.c:119
 msgid "Copy a disc"
@@ -296,7 +297,7 @@ msgstr "Une application simple à utiliser pour la gravure de CD/DVD"
 
 #: ../src/main.c:241
 msgid "Brasero Homepage"
-msgstr "Site web de Brasero"
+msgstr "Site Web de Brasero"
 
 #. Translators: This is a special message that shouldn't be translated
 #. * literally. It is used in the about box to give credits to
@@ -360,7 +361,7 @@ msgstr "Opération non nécessaire"
 
 #: ../src/blank-dialog.c:252 ../src/burn-dialog.c:2145
 msgid "Do you really want to quit?"
-msgstr "Voulez-vous vraiment quitter ?"
+msgstr "Voulez-vous vraiment quitter ?"
 
 #: ../src/blank-dialog.c:254 ../src/burn-dialog.c:2147
 msgid "Confirm"
@@ -546,7 +547,7 @@ msgstr "Perte de données possible"
 msgid ""
 "Do you want to erase the current disc?\n"
 "Or replace the current disc with a new disc?"
-msgstr "Voulez-vous effacer le disque ou le remplacer par un autre ?"
+msgstr "Voulez-vous effacer le disque ou le remplacer par un autre ?"
 
 #: ../src/burn-dialog.c:431
 msgid "Replace disc"
@@ -743,7 +744,9 @@ msgstr "Le fichier du journal n'a pas pu être trouvé."
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
-msgstr "Extrait du journal de la session (les 10 derniers Mio) :\n\n"
+msgstr ""
+"Extrait du journal de la session (les 10 derniers Mio) :\n"
+"\n"
 
 #: ../src/burn-dialog.c:1799
 msgid "An unknown error occured. Check your disc"
@@ -892,7 +895,7 @@ msgstr "Recherche dans un répertoire"
 
 #: ../src/audio-disc.c:1273
 msgid "Do you want to search for audio discs inside?"
-msgstr "Voulez-vous chercher les fichiers audio qu'il contient ?"
+msgstr "Voulez-vous chercher les fichiers audio qu'il contient ?"
 
 #: ../src/audio-disc.c:1277
 msgid "Search directory"
@@ -1127,7 +1130,9 @@ msgstr "Grave l'image d'un CD/DVD sur un disque"
 msgid ""
 "<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></"
 "span></u>"
-msgstr "<u><span size='xx-large' foreground='grey60'><b>Créer un nouveau projet :</b></span></u>"
+msgstr ""
+"<u><span size='xx-large' foreground='grey60'><b>Créer un nouveau projet :</"
+"b></span></u>"
 
 #: ../src/project-type-chooser.c:299
 msgid ""
@@ -1207,7 +1212,9 @@ msgstr "Démarre la gravure du contenu sélectionné"
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option:"
-msgstr "La taille du projet est supérieure à la capacité du disque même avec l'option « overburn » activée :"
+msgstr ""
+"La taille du projet est supérieure à la capacité du disque même avec "
+"l'option « overburn » activée :"
 
 #: ../src/project.c:521 ../src/project.c:545
 msgid "Project size"
@@ -1290,7 +1297,9 @@ msgstr "Brasero n'est pas l'application par défaut pour graver des CD audio :"
 #: ../src/project.c:1069
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
-msgstr "Voulez-vous que Brasero soit l'application par défaut pour graver vos CD audio ?"
+msgstr ""
+"Voulez-vous que Brasero soit l'application par défaut pour graver vos CD "
+"audio ?"
 
 #: ../src/project.c:1078
 msgid "<big><b>Data project</b></big>"
@@ -2269,7 +2278,9 @@ msgstr "La taille de la sélection excède la capacité du CD"
 msgid ""
 "failed to get the start point of the track. Make sure the media allow to add "
 "files (it is not closed)"
-msgstr "Impossible d'obtenir le secteur de départ de la piste. Assurez vous que le média permet l'ajout de fichiers (qu'il n'est pas clos)"
+msgstr ""
+"Impossible d'obtenir le secteur de départ de la piste. Assurez vous que le "
+"média permet l'ajout de fichiers (qu'il n'est pas clos)"
 
 #: ../src/progress.c:138
 msgid "Estimated remaining time:"
@@ -2533,12 +2544,12 @@ msgid "%s, %02i%% done"
 msgstr "%s, %02i%% réalisé"
 
 #: ../data/brasero.desktop.in.h:1
-msgid "Burn Image"
-msgstr "Graver une image"
+msgid "Brasero Disc Burning Application"
+msgstr "Application de gravure de disque Brasero"
 
 #: ../data/brasero.desktop.in.h:2
-msgid "Disc burning application"
-msgstr "Application de gravure de disque"
+msgid "Burn Image"
+msgstr "Graver une image"
 
 #: ../data/brasero.desktop.in.h:3
 msgid "Open project"
@@ -2633,7 +2644,9 @@ msgstr "Brasero doit filtrer les liens brisés vers des fichiers."
 msgid ""
 "Should brasero filter broken symlinks. Set to true, brasero will filter "
 "broken symlinks."
-msgstr "Indique si Brasero doit filtrer les liens brisés. Si l'option est active, Brasero filtrera les liens brisés."
+msgstr ""
+"Indique si Brasero doit filtrer les liens brisés. Si l'option est active, "
+"Brasero filtrera les liens brisés."
 
 #: ../data/brasero.schemas.in.h:17
 msgid "Should brasero filter hidden files"
@@ -2720,19 +2733,27 @@ msgstr ""
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to use cdrdao for burning or not. Set to true to use it."
-msgstr "Indique si utiliser cdrdao pour la gravure. Si l'option est active, cdrdao sera utilisé."
+msgstr ""
+"Indique si utiliser cdrdao pour la gravure. Si l'option est active, cdrdao "
+"sera utilisé."
 
 #: ../data/brasero.schemas.in.h:32
 msgid "Whether to use libburn to burn CDs. Set to true to use it."
-msgstr "Indique si utiliser libburn pour la gravure des CD. Si l'option est active, libburn sera utilisé."
+msgstr ""
+"Indique si utiliser libburn pour la gravure des CD. Si l'option est active, "
+"libburn sera utilisé."
 
 #: ../data/brasero.schemas.in.h:33
 msgid "Whether to use libburn to read CDs. Set to true to use it."
-msgstr "Indique si utiliser libburn pour la lecture des CD. Si l'option est active, libburn sera utilisé."
+msgstr ""
+"Indique si utiliser libburn pour la lecture des CD. Si l'option est active, "
+"libburn sera utilisé."
 
 #: ../data/brasero.schemas.in.h:34
 msgid "Whether to use libisofs to generate images. Set to true to use it."
-msgstr "Indique si utiliser libisofs pour générer les images. Si l'option est active, libisofs sera utilisé."
+msgstr ""
+"Indique si utiliser libisofs pour générer les images. Si l'option est "
+"active, libisofs sera utilisé."
 
 #: ../data/brasero.schemas.in.h:35
 msgid "Width for video preview"
@@ -2878,20 +2899,16 @@ msgstr "Le lecteur est vide."
 msgid "<b>Options:</b>"
 msgstr "<b>Options :</b>"
 
-#: ../src/burn-libburn-common.c:213
+#: ../src/burn-libburn-common.c:214
 msgid "the drive couldn't be initialized"
 msgstr "Impossible d'initialiser le lecteur"
 
-#: ../src/burn-libburn-common.c:267
-msgid "an unknown error occured with libburn"
-msgstr "Une erreur inconnue est survenue avec libburn"
-
-#: ../src/burn-libburn-common.c:273
+#: ../src/burn-libburn-common.c:278
 #, c-format
 msgid "(%s) libburn tried to say something"
-msgstr "(%s) libburn a essayé dire quelque chose (Omar m'a tuer :o)"
+msgstr "(%s) libburn a essayé dire quelque chose"
 
-#: ../src/burn-libburn-common.c:419
+#: ../src/burn-libburn-common.c:422
 #, c-format
 msgid "Writing track %02i"
 msgstr "Écriture de la piste %02i"
@@ -2991,7 +3008,8 @@ msgstr "Ajouter les fichiers à ceux existants sur le disque"
 #: ../src/brasero-disc-option-dialog.c:270
 #: ../src/brasero-disc-option-dialog.c:271
 msgid "Add these data to those already on the disc instead of replacing them"
-msgstr "Ajoute les fichiers à ceux existants sur le disque au lieu de les remplacer"
+msgstr ""
+"Ajoute les fichiers à ceux existants sur le disque au lieu de les remplacer"
 
 #. DVD don't need that
 #: ../src/brasero-disc-option-dialog.c:274
