@@ -402,7 +402,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	/* first box */
 	obj->priv->selection = brasero_recorder_selection_new ();
 	g_object_set (G_OBJECT (obj->priv->selection),
-		      "file-image", TRUE,
+		      "file-image", FALSE,
 		      "show-properties", TRUE,
 		      "show-recorders-only", TRUE,
 		      NULL);
