@@ -1376,6 +1376,8 @@ brasero_project_set_uri (BraseroProject *project,
 		project->priv->project = g_strdup (uri);
 	}
 
+	uri = uri ? uri : project->priv->project;
+
     	/* add it to recent manager */
     	recent = gtk_recent_manager_get_default ();
     	gtk_recent_manager_add_item (recent, uri);
