@@ -136,7 +136,8 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
 					_("Blank"),
-					GTK_STOCK_CDROM);
+					NULL,
+					"brasero-action-blank");
 }
 
 static void

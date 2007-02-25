@@ -67,7 +67,8 @@ void brasero_tool_dialog_pack_options (BraseroToolDialog *self,
 				       ...);
 void brasero_tool_dialog_set_button (BraseroToolDialog *self,
 				     const gchar *text,
-				     const gchar *image);
+				     const gchar *image,
+				     const gchar *theme);
 void brasero_tool_dialog_set_action (BraseroToolDialog *self,
 				     BraseroBurnAction action,
 				     const gchar *string);
