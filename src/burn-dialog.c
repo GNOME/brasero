@@ -437,7 +437,7 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 				      button, GTK_RESPONSE_ACCEPT);
 
 	button = brasero_utils_make_button (_("Erase disc"),
-					    GTK_STOCK_CLEAR,
+					    "brasero-action-blank",
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show_all (button);

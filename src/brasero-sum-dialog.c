@@ -30,6 +30,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -167,7 +168,8 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
 					_("Check"),
-					GTK_STOCK_FIND);
+					GTK_STOCK_FIND,
+					NULL);
 }
 
 static void

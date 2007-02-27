@@ -1,8 +1,4 @@
-EXTRA_DIST = $(icon_DATA) $(progress_DATA)
-
-icondir = $(datadir)/icons/hicolor/24x24/apps
-
-icon_DATA =	brasero.png
+EXTRA_DIST = $(progress_DATA)
 
 progressdir = $(datadir)/brasero/icons/hicolor/24x24/apps
 

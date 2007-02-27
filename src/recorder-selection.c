@@ -355,6 +355,9 @@ brasero_recorder_selection_get_new_image_path (BraseroRecorderSelection *selecti
 	gchar *path;
 	gint i = 0;
 
+	if (!selection->priv->track_source)
+		return NULL;
+
 	image_format = selection->priv->image_format;
 	if (image_format == BRASERO_IMAGE_FORMAT_ANY)
 		image_format = brasero_burn_caps_get_imager_default_format (selection->priv->caps,
@@ -639,12 +642,13 @@ brasero_recorder_selection_update_image_path (BraseroRecorderSelection *selectio
 
 		path = brasero_recorder_selection_get_new_image_path (selection);
 		info = g_strdup_printf (_("The <b>image</b> will be saved to\n%s"),
-					path);
+					path? path:"");
 		g_free (path);
 	}
 	else
 		info = g_strdup_printf (_("The <b>image</b> will be saved to\n%s"),
 					selection->priv->image_path);
+
 	gtk_label_set_markup (GTK_LABEL (selection->priv->infos), info);
 	g_free (info);
 }

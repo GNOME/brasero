@@ -300,7 +300,8 @@ brasero_tool_dialog_pack_options (BraseroToolDialog *self,
 void
 brasero_tool_dialog_set_button (BraseroToolDialog *self,
 				const gchar *text,
-				const gchar *image)
+				const gchar *image,
+				const gchar *theme)
 {
 	GtkWidget *button;
 
@@ -309,7 +310,7 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 
 	button = brasero_utils_make_button (text,
 					    image,
-					    NULL,
+					    theme,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show_all (button);
 	g_signal_connect (G_OBJECT (button), "clicked",
