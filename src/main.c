@@ -237,7 +237,7 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 			       "copyright", "Copyright © 2006 Philippe Rouquier",
 			       "authors", authors,
 			       "documenters", documenters,
-			       "website", "http://perso.orange.fr/bonfire/",
+			       "website", "http://www.gnome.org/projects/brasero",
 			       "website-label", _("Brasero Homepage"),
 			       "license", license,
 			       "wrap-license", TRUE,
