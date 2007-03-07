@@ -721,14 +721,22 @@ brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 		 * behaves in the same way as +RW. They have only one session and
 		 * don't need to be formatted. We need to make a difference between
 		 * the two modes for DVD-RW. */
-		if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW && !fast)
+	  	if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW && !fast) {
 			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
-		else
-			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
+		}
+                else if (caps->priv->use_libburn) {
+                      	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_LIBBURN, NULL));
+ 	  	}
+		else {
+		       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
+		}
 	}
 	else if (type == NAUTILUS_BURN_MEDIA_TYPE_DVDRW
 	     ||  type == NAUTILUS_BURN_MEDIA_TYPE_DVD_RAM) {
-		obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
+	       if (caps->priv->use_libburn)
+		       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_LIBBURN, NULL));
+	       else
+	       	       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
 	}
 	else if (type == NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
 		if (caps->priv->use_libburn)
