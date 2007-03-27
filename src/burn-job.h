@@ -256,4 +256,6 @@ brasero_job_set_run_slave (BraseroJob *job, gboolean run_slave);
 void
 brasero_job_set_relay_slave_signals (BraseroJob *job, gboolean relay);
 
+G_END_DECLS
+
 #endif /* JOB_H */

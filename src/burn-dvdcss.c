@@ -605,6 +605,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	/* get the contents of the DVD */
 	drive = self->priv->source->contents.drive.disc;
 	files = brasero_volume_get_files (NCB_DRIVE_GET_DEVICE (drive),
+					  0,
 					  NULL,
 					  NULL,
 					  NULL,

@@ -2,8 +2,8 @@
  *            burn-dvdcss-private.h
  *
  *  Thu Nov 16 16:20:39 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*

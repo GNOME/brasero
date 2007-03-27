@@ -90,7 +90,7 @@ brasero_volume_get_primary_from_file (FILE *file,
 	int bytes_read;
 
 	/* skip the first 16 blocks */
-	if (fseek (file, SYSTEM_AREA_SECTORS * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
+	if (fseek (file, SYSTEM_AREA_SECTORS * ISO9660_BLOCK_SIZE, SEEK_CUR) == -1) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -208,6 +208,7 @@ brasero_volume_get_size (const gchar *path,
 
 BraseroVolFile *
 brasero_volume_get_files (const gchar *path,
+			  gint64 block,
 			  gchar **label,
 			  gint64 *nb_blocks,
 			  gint64 *data_blocks,
@@ -219,6 +220,14 @@ brasero_volume_get_files (const gchar *path,
 
 	file = fopen (path, "r");
 	if (!file) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return NULL;
+	}
+
+	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,

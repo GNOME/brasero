@@ -84,6 +84,7 @@ brasero_volume_get_label (const gchar *path,
 			  GError **error);
 BraseroVolFile *
 brasero_volume_get_files (const gchar *path,
+			  gint64 block,
 			  gchar **label,
 			  gint64 *nb_blocks,
 			  gint64 *data_blocks,

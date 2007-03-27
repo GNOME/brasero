@@ -3,7 +3,7 @@
  *
  *  Sat Sep  9 17:16:43 2006
  *  Copyright  2006  philippe
- *  <philippe@algernon.localdomain>
+ *  <philippe@Rouquier Philippe.localdomain>
  ****************************************************************************/
 
 /*

@@ -1,7 +1,7 @@
 /***************************************************************************
- *            multi-dnd.h
+ *            scsi-cmd-opcodes.h
  *
- *  Wed Sep 27 17:43:05 2006
+ *  Sun Oct 22 11:07:53 2006
  *  Copyright  2006  Rouquier Philippe
  *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
@@ -21,22 +21,56 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
-#ifndef _MULTI_DND_H
-#define _MULTI_DND_H
+
+#ifndef _SCSI_CMD_OPCODES_H
+#define _SCSI_CMD_OPCODES_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-void
-brasero_enable_multi_DND (void);
+/**
+ *	SPC1
+ */
+
+#define BRASERO_TEST_UNIT_READY_OPCODE			0x00
+#define BRASERO_INQUIRY_OPCODE				0x12
+#define BRASERO_MODE_SENSE_OPCODE			0x5a
+
+
+/**
+ *	MMC1
+ */
+
+#define BRASERO_MECHANISM_STATUS_OPCODE			0xBD
+#define BRASERO_READ_DISC_INFORMATION_OPCODE		0x51
+#define BRASERO_READ_TRACK_INFORMATION_OPCODE		0x52
+#define BRASERO_READ_TOC_PMA_ATIP_OPCODE		0x43
+#define BRASERO_READ_BUFFER_CAPACITY_OPCODE		0x5C
+#define BRASERO_READ_HEADER_OPCODE			0x44
+#define BRASERO_READ_SUB_CHANNEL_OPCODE			0x42
+#define BRASERO_READ_MASTER_CUE_OPCODE			0x59
+
+/**
+ *	MMC2
+ */
+
+#define BRASERO_GET_PERFORMANCE_OPCODE			0xac
+#define BRASERO_GET_CONFIGURATION_OPCODE		0x46
+#define BRASERO_READ_CAPACITY_OPCODE			0x25
+#define BRASERO_READ_FORMAT_CAPACITIES_OPCODE		0x23
+
+/**
+ *	MMC3
+ */
+
+#define BRASERO_READ_DISC_STRUCTURE_OPCODE		0xAD
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _MULTI_DND_H */
+#endif /* _SCSI_CMD-OPCODES_H */
 
  

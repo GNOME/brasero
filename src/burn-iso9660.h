@@ -2,8 +2,8 @@
  *            burn-iso9660.h
  *
  *  Sat Oct  7 17:10:09 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*

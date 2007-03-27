@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-xfer.h
+ *            burn-mmc1.h
  *
- *  Sun Sep 10 09:08:59 2006
- *  Copyright  2006  philippe
- *  <philippe@Rouquier Philippe.localdomain>
+ *  Thu Oct 19 14:17:47 2006
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*
@@ -22,46 +22,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <glib.h>
+#include "scsi-error.h"
+#include "scsi-read-disc-info.h"
+#include "scsi-read-toc-pma-atip.h"
 
-#include <libgnomevfs/gnome-vfs.h>
 
-#include "burn-basics.h"
+#ifndef _BURN_MMC1_H
+#define _BURN_MMC1_H
 
-#ifndef _BURN_XFER_H
-#define _BURN_XFER_H
+G_BEGIN_DECLS
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+BraseroScsiResult
+brasero_mmc1_read_disc_information_std (int fd,
+					BraseroScsiDiscInfoStd **info_return,
+					int *size,
+					BraseroScsiErrCode *error);
 
-typedef struct _BraseroXferCtx BraseroXferCtx;
+BraseroScsiResult
+brasero_mmc1_read_toc_formatted (int fd,
+				 int track_num,
+				 BraseroScsiFormattedTocData **data,
+				 int *size,
+				 BraseroScsiErrCode *error);
 
-BraseroXferCtx *
-brasero_xfer_new (void);
+G_END_DECLS
 
-void
-brasero_xfer_free (BraseroXferCtx *ctx);
-
-BraseroBurnResult
-brasero_xfer (BraseroXferCtx *ctx,
-	      GnomeVFSURI *uri,
-	      GnomeVFSURI *dest,
-	      GError **error);
-
-BraseroBurnResult
-brasero_xfer_cancel (BraseroXferCtx *ctx);
-
-BraseroBurnResult
-brasero_xfer_get_progress (BraseroXferCtx *ctx,
-			   gint64 *written,
-			   gint64 *total);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _BURN_XFER_H */
+#endif /* _BURN_MMC1_H */
 
  

@@ -19,7 +19,7 @@
  *
  *  Sat Feb 11 16:55:54 2006
  *  Copyright  2006  philippe
- *  <philippe@algernon.localdomain>
+ *  <philippe@Rouquier Philippe.localdomain>
  ****************************************************************************/
 
 #include <string.h>

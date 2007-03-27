@@ -2,8 +2,8 @@
  *            multi-dnd.c
  *
  *  Wed Sep 27 17:34:41 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*

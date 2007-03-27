@@ -3,7 +3,7 @@
  *
  *  Sat Sep  9 17:16:16 2006
  *  Copyright  2006  philippe
- *  <philippe@algernon.localdomain>
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

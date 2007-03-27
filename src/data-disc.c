@@ -8021,6 +8021,7 @@ brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
 	GtkTreeModel *model;
 	gint64 data_blocks;
 	GtkTreeIter row;
+	gint64 block;
 	GList *iter;
 
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
@@ -8043,8 +8044,16 @@ brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
 	if (disc->priv->session)
 		brasero_data_disc_remove_imported_session (disc);
 
+	/* get the address for the last track and retrieve the file list */
+	block = NCB_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive);
+	if (block == -1) {
+		brasero_data_disc_import_session_error (disc, _("there isn't any available session on the disc"));
+		return;
+	}
+
 	device = NCB_DRIVE_GET_DEVICE (disc->priv->drive);
 	volume = brasero_volume_get_files (device,
+					   block,
 					   NULL,
 					   NULL,
 					   &data_blocks,

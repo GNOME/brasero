@@ -56,6 +56,7 @@
 #include "brasero-sum-dialog.h"
 #include "brasero-session.h"
 #include "brasero-project-manager.h"
+#include "brasero-ncb.h"
 
 static GConfClient *client;
 gchar *project_uri;
@@ -568,6 +569,7 @@ main (int argc, char **argv)
 #endif
 
 	nautilus_burn_init ();
+	NCB_INIT ();
 
 	gnome_vfs_init ();
 	gst_init (&argc, &argv);

@@ -2,8 +2,8 @@
  *            burn-susp.c
  *
  *  Sun Nov 26 19:06:31 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*

@@ -51,7 +51,7 @@ typedef char *(*BraseroFormatTime) (double time,
 typedef enum {
 	BRASERO_ERROR_NONE,
 	BRASERO_ERROR_GENERAL
-} BraSeroErrors;
+} BraseroErrors;
 
 void brasero_utils_init (void);
 

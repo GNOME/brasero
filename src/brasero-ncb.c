@@ -3,7 +3,7 @@
  *
  *  Sat Sep  9 11:00:42 2006
  *  Copyright  2006  philippe
- *  <philippe@algernon.localdomain>
+ *  <philippe@Rouquier Philippe.localdomain>
  ****************************************************************************/
 
 /*
@@ -44,9 +44,14 @@
 #include <libgnomevfs/gnome-vfs-drive.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include <nautilus-burn-drive-monitor.h>
+
 #include "brasero-ncb.h"
 #include "burn-basics.h"
 #include "burn-volume.h"
+#include "burn-medium.h"
+
+#define BRASERO_MEDIUM_KEY "brasero-medium-key"
 
 typedef struct {
 	gboolean    timeout;
@@ -642,4 +647,72 @@ NCB_DRIVE_MEDIA_GET_TYPE (NautilusBurnDrive *drive,
 	}
 
 	return media;
+}
+
+gint64
+NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return -1;
+
+	return brasero_medium_get_last_data_track_address (medium);
+}
+
+static void
+brasero_ncb_inserted_medium_cb (NautilusBurnDriveMonitor *monitor,
+				NautilusBurnDrive *drive,
+				gpointer null_data)
+{
+	BraseroMedium *medium;
+
+	medium = brasero_medium_new (drive);
+	g_object_set_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY, medium);
+}
+
+static void
+brasero_ncb_removed_medium_cb (NautilusBurnDriveMonitor *monitor,
+			       NautilusBurnDrive *drive,
+			       gpointer null_data)
+{
+	BraseroMedium *medium;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	g_object_set_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY, NULL);
+
+	if (!medium)
+		return;
+	g_object_unref (medium);
+}
+
+void
+NCB_INIT (void)
+{
+	NautilusBurnDriveMonitor *monitor;
+	GList *iter, *list;
+
+	monitor = nautilus_burn_get_drive_monitor ();
+
+	list = nautilus_burn_drive_monitor_get_drives (monitor);
+	for (iter = list; iter; iter = iter->next) {
+		BraseroMedium *medium;
+		NautilusBurnDrive *drive;
+
+		drive = iter->data;
+		medium = brasero_medium_new (drive);
+		g_object_set_data (G_OBJECT (drive),
+				   BRASERO_MEDIUM_KEY,
+				   medium);
+	}
+
+	g_signal_connect (monitor,
+			  "media-added",
+			  G_CALLBACK (brasero_ncb_inserted_medium_cb),
+			  NULL);
+	g_signal_connect (monitor,
+			  "media-removed",
+			  G_CALLBACK (brasero_ncb_removed_medium_cb),
+			  NULL);
 }

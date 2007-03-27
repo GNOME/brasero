@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-xfer.h
+ *            burn-sense-data.h
  *
- *  Sun Sep 10 09:08:59 2006
- *  Copyright  2006  philippe
- *  <philippe@Rouquier Philippe.localdomain>
+ *  Fri Oct 20 12:24:21 2006
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*
@@ -22,46 +22,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <glib.h>
+#include "scsi-error.h"
+#include "scsi-base.h"
 
-#include <libgnomevfs/gnome-vfs.h>
-
-#include "burn-basics.h"
-
-#ifndef _BURN_XFER_H
-#define _BURN_XFER_H
+#ifndef _BURN_SENSE_DATA_H
+#define _BURN_SENSE_DATA_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-typedef struct _BraseroXferCtx BraseroXferCtx;
+#define BRASERO_SENSE_DATA_SIZE		19
 
-BraseroXferCtx *
-brasero_xfer_new (void);
-
-void
-brasero_xfer_free (BraseroXferCtx *ctx);
-
-BraseroBurnResult
-brasero_xfer (BraseroXferCtx *ctx,
-	      GnomeVFSURI *uri,
-	      GnomeVFSURI *dest,
-	      GError **error);
-
-BraseroBurnResult
-brasero_xfer_cancel (BraseroXferCtx *ctx);
-
-BraseroBurnResult
-brasero_xfer_get_progress (BraseroXferCtx *ctx,
-			   gint64 *written,
-			   gint64 *total);
+BraseroScsiResult
+brasero_sense_data_process (uchar *sense_data, BraseroScsiErrCode *err);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _BURN_XFER_H */
+#endif /* _BURN_SENSE_DATA_H */
 
  

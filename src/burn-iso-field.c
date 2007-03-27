@@ -2,8 +2,8 @@
  *            burn-iso-field.c
  *
  *  Mon Nov 27 17:31:40 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*

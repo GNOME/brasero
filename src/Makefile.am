@@ -9,6 +9,7 @@ DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
 INCLUDES = \
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
+	-I./scsi				\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           		\
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
@@ -183,10 +184,68 @@ brasero_SOURCES = \
 	burn-susp.c         \
 	burn-susp.h         \
 	burn-iso-field.c         \
-	burn-iso-field.h 
-
-brasero_LDFLAGS = 
+	burn-iso-field.h         \
+	burn-medium.h         \
+	burn-medium.c         \
+	scsi/scsi-base.h         \
+	scsi/scsi-command.c         \
+	scsi/scsi-command.h         \
+	scsi/scsi-error.h         \
+	scsi/scsi-get-configuration.c         \
+	scsi/scsi-get-configuration.h         \
+	scsi/scsi-mmc1.h         \
+	scsi/scsi-mmc2.h         \
+	scsi/scsi-opcodes.h         \
+	scsi/scsi-read-disc-info.c         \
+	scsi/scsi-read-disc-info.h         \
+	scsi/scsi-read-toc-pma-atip.c         \
+	scsi/scsi-read-toc-pma-atip.h         \
+	scsi/scsi-sense-data.c         \
+	scsi/scsi-sense-data.h         \
+	scsi/scsi-sg.c         \
+	scsi/scsi-sg.h         \
+	scsi/scsi-utils.h         \
+	scsi/scsi-q-subchannel.h         \
+	scsi/scsi-error.c 
 
 brasero_LDADD = $(BRASERO_LIBS)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

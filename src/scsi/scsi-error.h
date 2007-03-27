@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-xfer.h
+ *            burn-error.h
  *
- *  Sun Sep 10 09:08:59 2006
- *  Copyright  2006  philippe
- *  <philippe@Rouquier Philippe.localdomain>
+ *  Fri Oct 20 12:23:20 2006
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*
@@ -22,46 +22,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <stdio.h>
+
+#include <errno.h>
+#include <string.h>
+
 #include <glib.h>
 
-#include <libgnomevfs/gnome-vfs.h>
+#ifndef _BURN_ERROR_H
+#define _BURN_ERROR_H
 
-#include "burn-basics.h"
+G_BEGIN_DECLS
 
-#ifndef _BURN_XFER_H
-#define _BURN_XFER_H
+typedef enum {
+	BRASERO_SCSI_ERR_UNKNOWN,
+	BRASERO_SCSI_SIZE_MISMATCH,
+	BRASERO_SCSI_TYPE_MISMATCH,
+	BRASERO_SCSI_BAD_ARGUMENT,
+	BRASERO_SCSI_ERRNO,
+	BRASERO_SCSI_NOT_READY,
+	BRASERO_SCSI_OUTRANGE_ADDRESS,
+	BRASERO_SCSI_INVALID_ADDRESS,
+	BRASERO_SCSI_INVALID_COMMAND,
+	BRASERO_SCSI_INVALID_PARAMETER,
+	BRASERO_SCSI_INVALID_FIELD,
+	BRASERO_SCSI_TIMEOUT,
+	BRASERO_SCSI_KEY_NOT_ESTABLISHED,
+} BraseroScsiErrCode;
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-typedef struct _BraseroXferCtx BraseroXferCtx;
-
-BraseroXferCtx *
-brasero_xfer_new (void);
+typedef enum {
+	BRASERO_SCSI_OK,
+	BRASERO_SCSI_FAILURE,
+	BRASERO_SCSI_RECOVERABLE,
+} BraseroScsiResult;
 
 void
-brasero_xfer_free (BraseroXferCtx *ctx);
+brasero_scsi_set_error (GError **error, BraseroScsiErrCode code);
 
-BraseroBurnResult
-brasero_xfer (BraseroXferCtx *ctx,
-	      GnomeVFSURI *uri,
-	      GnomeVFSURI *dest,
-	      GError **error);
+G_END_DECLS
 
-BraseroBurnResult
-brasero_xfer_cancel (BraseroXferCtx *ctx);
-
-BraseroBurnResult
-brasero_xfer_get_progress (BraseroXferCtx *ctx,
-			   gint64 *written,
-			   gint64 *total);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _BURN_XFER_H */
-
- 
+#endif /* _BURN_ERROR_H */
