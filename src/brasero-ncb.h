@@ -105,6 +105,9 @@ NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle);
 gint64
 NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
 
+gint64
+NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive);
+
 void
 NCB_INIT (void);
 

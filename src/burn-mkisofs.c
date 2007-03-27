@@ -699,23 +699,13 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	}
 
 	if (mkisofs->priv->drive) {
+		gint64 last_session, next_wr_add;
 		gchar *startpoint = NULL;
-		gchar *command = NULL;
 		gboolean has_audio;
-		gboolean res;
-		gint tmp;
 
-		command = g_strdup_printf ("cdrecord -msinfo dev=%s",
-					   NCB_DRIVE_GET_DEVICE (mkisofs->priv->drive));
-		 
-		res = g_spawn_command_line_sync (command,
-						 &startpoint,
-						 NULL,
-						 NULL,
-						 NULL);
-		g_free (command);
-
-		if (!res && sscanf (startpoint, "%d,%d", &tmp, &tmp) != 2) {
+		last_session = NCB_GET_LAST_DATA_TRACK_ADDRESS (mkisofs->priv->drive);
+		next_wr_add = NCB_GET_NEXT_WRITABLE_ADDRESS (mkisofs->priv->drive);
+		if (last_session == -1 || next_wr_add == -1) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -723,6 +713,9 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 			return BRASERO_BURN_ERR;
 		}
 
+		startpoint = g_strdup_printf ("%"G_GINT64_FORMAT",%"G_GINT64_FORMAT,
+					      last_session,
+					      next_wr_add);
 		g_ptr_array_add (argv, g_strdup ("-C"));
 		g_ptr_array_add (argv, startpoint);
 

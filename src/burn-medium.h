@@ -100,7 +100,7 @@ gint64
 brasero_medium_get_last_data_track_address (BraseroMedium *medium);
 
 gint64
-brasero_medium_get_last_writable_address (BraseroMedium *medium);
+brasero_medium_get_next_writable_address (BraseroMedium *medium);
 
 G_END_DECLS
 

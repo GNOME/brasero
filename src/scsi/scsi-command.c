@@ -154,8 +154,8 @@ brasero_scsi_command_issue_immediate (gpointer command,
 				  cmd,
 				  buffer,
 				  size);
-g_print ("eeee %p\n", transport.dxferp);
-transport.pack_id = 7;
+
+	transport.pack_id = 7;
 	transport.timeout = 2000;
 	do {
 		count = write (cmd->fd, &transport, sizeof (struct sg_io_hdr));
@@ -166,11 +166,10 @@ transport.pack_id = 7;
 		return BRASERO_SCSI_FAILURE;
 	}
 
-//	memset (&transport, 0, sizeof (struct sg_io_hdr));
+	memset (&transport, 0, sizeof (struct sg_io_hdr));
 	do {
 		count = read (cmd->fd, &transport, sizeof (struct sg_io_hdr));
 	} while (count != sizeof (struct sg_io_hdr) && errno == EAGAIN);
-g_print ("aaaa %p\n", transport.dxferp);
 
 	if (count != sizeof (struct sg_io_hdr)) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);

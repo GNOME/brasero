@@ -104,7 +104,7 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium)
 }
 
 gint64
-brasero_medium_get_last_writable_address (BraseroMedium *medium)
+brasero_medium_get_next_writable_address (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
@@ -262,7 +262,10 @@ brasero_medium_get_info (BraseroMedium *self,
 		break;
 	case BRASERO_SCSI_DISC_INCOMPLETE:
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
-		priv->next_wr_add = BRASERO_GET_32 (info->last_session_leadin);
+		priv->next_wr_add = BRASERO_MSF_TO_LBA (info->last_session_leadin [3],
+							info->last_session_leadin [2],
+							info->last_session_leadin [1]) + 
+							1;
 		break;
 	case BRASERO_SCSI_DISC_FINALIZED:
 	case BRASERO_SCSI_DISC_OTHERS:
@@ -380,6 +383,11 @@ end:
 static void
 brasero_medium_init (BraseroMedium *object)
 {
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (object);
+	priv->next_wr_add = -1;
+
 	/* we can't do anything here since properties haven't been set yet */
 }
 

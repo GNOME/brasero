@@ -661,6 +661,18 @@ NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive)
 	return brasero_medium_get_last_data_track_address (medium);
 }
 
+gint64
+NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return -1;
+
+	return brasero_medium_get_next_writable_address (medium);
+}
+
 static void
 brasero_ncb_inserted_medium_cb (NautilusBurnDriveMonitor *monitor,
 				NautilusBurnDrive *drive,
