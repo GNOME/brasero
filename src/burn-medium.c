@@ -236,6 +236,28 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 }
 
 static BraseroBurnResult
+brasero_medium_get_open_session (BraseroMedium *self,
+				 int fd,
+				 BraseroScsiErrCode *code)
+{
+	BraseroScsiTrackInfo open_track;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	result = brasero_mmc1_read_first_open_session_track_info (fd,
+								  &open_track,
+								  sizeof (BraseroScsiTrackInfo),
+								  code);
+	if (result != BRASERO_SCSI_OK)
+		return BRASERO_BURN_ERR;
+
+	priv->next_wr_add = BRASERO_GET_32 (open_track.next_wrt_address);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_medium_get_info (BraseroMedium *self,
 			 int fd,
 			 BraseroScsiErrCode *code)
@@ -262,10 +284,7 @@ brasero_medium_get_info (BraseroMedium *self,
 		break;
 	case BRASERO_SCSI_DISC_INCOMPLETE:
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
-		priv->next_wr_add = BRASERO_MSF_TO_LBA (info->last_session_leadin [3],
-							info->last_session_leadin [2],
-							info->last_session_leadin [1]) + 
-							1;
+		brasero_medium_get_open_session (self, fd, code);
 		break;
 	case BRASERO_SCSI_DISC_FINALIZED:
 	case BRASERO_SCSI_DISC_OTHERS:

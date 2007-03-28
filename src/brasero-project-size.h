@@ -76,7 +76,7 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 				   gboolean *overburn);
 
 NautilusBurnDrive *
-brasero_project_get_active_drive (BraseroProjectSize *self);
+brasero_project_size_get_active_drive (BraseroProjectSize *self);
 
 G_END_DECLS
 

@@ -716,6 +716,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		startpoint = g_strdup_printf ("%"G_GINT64_FORMAT",%"G_GINT64_FORMAT,
 					      last_session,
 					      next_wr_add);
+
 		g_ptr_array_add (argv, g_strdup ("-C"));
 		g_ptr_array_add (argv, startpoint);
 

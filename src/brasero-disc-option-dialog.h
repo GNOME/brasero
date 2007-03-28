@@ -31,6 +31,8 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkdialog.h>
 
+#include <nautilus-burn-drive.h>
+
 #include "disc.h"
 #include "burn-caps.h"
 
@@ -61,6 +63,7 @@ GtkWidget *brasero_disc_option_dialog_new ();
 
 void
 brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
+				     NautilusBurnDrive *drive,
 				     BraseroDisc *disc);
 
 gboolean

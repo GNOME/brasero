@@ -1521,7 +1521,7 @@ brasero_project_get_ruler_height (BraseroProjectSize *self)
 }
 
 NautilusBurnDrive *
-brasero_project_get_active_drive (BraseroProjectSize *self)
+brasero_project_size_get_active_drive (BraseroProjectSize *self)
 {
 	NautilusBurnDrive *drive;
 

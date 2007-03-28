@@ -53,13 +53,14 @@ static void brasero_disc_option_dialog_finalize (GObject *object);
 struct _BraseroDiscOptionDialogPrivate {
 	BraseroBurnCaps *caps;
 
+	BraseroBurnFlag flags;
+
 	BraseroTrackSource *track;
 	BraseroDisc *disc;
 
 	GtkWidget *video_toggle;
 	GtkWidget *joliet_toggle;
 	GtkWidget *checksum_toggle;
-	GtkWidget *append_check;
 	GtkWidget *close_check;
 
 	GtkWidget *selection;
@@ -185,26 +186,6 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 		}
 	}
 
-	if (dialog->priv->append_check) {
-		if (has_video) {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), FALSE);
-			gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
-		}
-		else if ((supported_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0) {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), FALSE);
-			gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
-		}
-		else if (compulsory_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check), TRUE);
-			gtk_widget_set_sensitive (dialog->priv->append_check, FALSE);
-		}
-		else {
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check),
-						     (default_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) != 0);
-			gtk_widget_set_sensitive (dialog->priv->append_check, TRUE);	
-		}
-	}
-
 	/* if it's a multisession disc we also need to reset the title as the
 	 * label of the last session on condition the user didn't modify the 
 	 * default title. In the same way if the previous media was multisession
@@ -259,16 +240,7 @@ brasero_disc_option_dialog_add_multisession (BraseroDiscOptionDialog *dialog,
 					     GtkWidget *box)
 {
 	GtkWidget *dont_close_check;
-	GtkWidget *append_check;
 	GtkWidget *options;
-
-	/* multisession options */
-	append_check = gtk_check_button_new_with_label (_("Append the files to those already on the disc"));
-	dialog->priv->append_check = append_check;
-	gtk_tooltips_set_tip (dialog->priv->tooltips,
-			      append_check,
-			      _("Add these data to those already on the disc instead of replacing them"),
-			      _("Add these data to those already on the disc instead of replacing them"));
 
 	/* DVD don't need that */
 	dont_close_check = gtk_check_button_new_with_label (_("Leave the disc open to add other files later"));
@@ -280,7 +252,6 @@ brasero_disc_option_dialog_add_multisession (BraseroDiscOptionDialog *dialog,
 
 	options = brasero_utils_pack_properties (_("<b>Multisession</b>"),
 						 dont_close_check,
-						 append_check,
 						 NULL);
 	gtk_box_pack_start (GTK_BOX (box), options, FALSE, FALSE, 0);
 }
@@ -505,12 +476,13 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 
 void
 brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
+				     NautilusBurnDrive *drive,
 				     BraseroDisc *disc)
 {
 	BraseroTrackSourceType type = BRASERO_TRACK_SOURCE_UNKNOWN;
 	BraseroImageFormat format = BRASERO_IMAGE_FORMAT_NONE;
 
-	brasero_disc_get_track_type (disc, &type, &format);
+	brasero_disc_get_track_type (disc, &type, &dialog->priv->flags, &format);
 
 	/* we need to set a dummy track */
 	if (dialog->priv->track)
@@ -519,6 +491,11 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 	dialog->priv->track = g_new0 (BraseroTrackSource, 1);
 	dialog->priv->track->type = type;
 	dialog->priv->track->format = format;
+
+	if (drive && (dialog->priv->flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))) {
+		brasero_recorder_selection_set_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection), drive);
+		gtk_widget_set_sensitive (dialog->priv->selection, FALSE);
+	}
 
 	brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
 						     dialog->priv->track);
@@ -629,12 +606,8 @@ brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
 		else /* this is because for DVD the flag is compulsory */
 			tmp &= ~BRASERO_BURN_FLAG_DONT_CLOSE;
 
-		if (!dvd_video
-		&&  dialog->priv->append_check
-		&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->append_check))) {
+		if ((dialog->priv->flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))) {
 			BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NONE;
-
-			tmp |= BRASERO_BURN_FLAG_APPEND;
 
 			/* see if merge flag is supported if that's an audio
 			 * track we can't use merge just append */
@@ -645,8 +618,7 @@ brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
 						     NULL,
 						     &supported_flags);
 
-			if (supported_flags & BRASERO_BURN_FLAG_MERGE)
-				tmp |= BRASERO_BURN_FLAG_MERGE;
+			tmp |= (dialog->priv->flags & supported_flags);
 		}
 		else if (NCB_DRIVE_GET_TYPE (*drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
 			tmp |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;

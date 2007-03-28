@@ -92,6 +92,7 @@
 #include "utils.h"
 #include "brasero-vfs.h"
 #include "burn-volume.h"
+#include "burn-caps.h"
 
 typedef enum {
 	STATUS_NO_DRAG,
@@ -321,6 +322,7 @@ brasero_data_disc_get_track_source (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_get_track_type (BraseroDisc *disc,
 				  BraseroTrackSourceType *type,
+				  BraseroBurnFlag *flags,
 				  BraseroImageFormat *format);
 
 static BraseroDiscResult
@@ -8129,7 +8131,9 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 		return;
 	}
 
-	multisession = NCB_MEDIA_IS_APPENDABLE (disc->priv->drive);
+	multisession = NCB_MEDIA_IS_APPENDABLE (disc->priv->drive) &&
+		      (NCB_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive) != -1);
+
 	if (multisession && disc->priv->session_button) {
 		gtk_widget_set_sensitive (disc->priv->session_button, TRUE);
 		brasero_data_disc_notify_user (disc,
@@ -8506,6 +8510,7 @@ brasero_data_disc_get_track_source (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_get_track_type (BraseroDisc *disc,
 				  BraseroTrackSourceType *type,
+				  BraseroBurnFlag *flags,
 				  BraseroImageFormat *format)
 {
 	BraseroDiscResult result;
@@ -8526,6 +8531,9 @@ brasero_data_disc_get_track_type (BraseroDisc *disc,
 		if (brasero_data_disc_is_video_DVD (BRASERO_DATA_DISC (disc)))
 			*format |= BRASERO_IMAGE_FORMAT_VIDEO;
 	}
+
+	if (flags &&  BRASERO_DATA_DISC (disc)->priv->session)
+		*flags = BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE;
 
 	return BRASERO_DISC_OK;
 }

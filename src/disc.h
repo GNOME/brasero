@@ -33,6 +33,7 @@
 #include <nautilus-burn-drive.h>
 
 #include "burn-basics.h"
+#include "burn-caps.h"
 
 G_BEGIN_DECLS
 
@@ -106,6 +107,7 @@ struct _BraseroDiscIface {
 							 BraseroImageFormat format);
 	BraseroDiscResult	(*get_track_type)	(BraseroDisc *disc,
 							 BraseroTrackSourceType *type,
+							 BraseroBurnFlag *flags,
 							 BraseroImageFormat *format);
 
 	BraseroDiscResult	(*load_track)		(BraseroDisc *disc,
@@ -155,6 +157,7 @@ brasero_disc_get_track_source (BraseroDisc *disc,
 BraseroDiscResult
 brasero_disc_get_track_type (BraseroDisc *disc,
 			     BraseroTrackSourceType *type,
+			     BraseroBurnFlag *flags,
 			     BraseroImageFormat *format);
 BraseroDiscResult
 brasero_disc_load_track (BraseroDisc *disc,

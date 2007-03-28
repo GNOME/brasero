@@ -105,6 +105,7 @@ brasero_audio_disc_get_track_source (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_audio_disc_get_track_type (BraseroDisc *disc,
 				   BraseroTrackSourceType *source,
+				   BraseroBurnFlag *flags,
 				   BraseroImageFormat *format);
 static BraseroDiscResult
 brasero_audio_disc_load_track (BraseroDisc *disc,
@@ -1757,6 +1758,7 @@ brasero_audio_disc_get_track_source (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_audio_disc_get_track_type (BraseroDisc *disc,
 				   BraseroTrackSourceType *type,
+				   BraseroBurnFlag *flags,
 				   BraseroImageFormat *format)
 {
 	if (type)

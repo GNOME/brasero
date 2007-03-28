@@ -648,7 +648,7 @@ brasero_project_disc_changed_cb (BraseroProjectSize *size,
 
 	/* get the current device name and set it for the disc project in
 	 * case that is a multisession disc and a data project */
-	drive = brasero_project_get_active_drive (size);
+	drive = brasero_project_size_get_active_drive (size);
 	brasero_disc_set_current_drive (project->priv->current, drive);
 	nautilus_burn_drive_unref (drive);
 }
@@ -811,7 +811,7 @@ brasero_project_burn (BraseroProject *project)
 {
 	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
 	BraseroTrackSource *source = NULL;
-	NautilusBurnDrive *drive;
+	NautilusBurnDrive *drive = NULL;
 	BraseroDiscResult result;
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
@@ -856,20 +856,32 @@ brasero_project_burn (BraseroProject *project)
 	destroy = FALSE;
 
 	/* setup, show, and run options dialog */
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	brasero_disc_get_track_type (project->priv->current, NULL, &flags, NULL);
+	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
+		drive = brasero_project_size_get_active_drive (BRASERO_PROJECT_SIZE (project->priv->size_display));
+		nautilus_burn_drive_lock (drive, _("ongoing burning process"), NULL);
+	}
 
 	dialog = brasero_disc_option_dialog_new ();
 	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
+					     drive,
 					     project->priv->current);
 
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_widget_show (dialog);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (drive)
+		nautilus_burn_drive_unlock (drive);
+
 	if (result != GTK_RESPONSE_OK)
 		goto end;
+
+	drive = NULL;
+	flags = BRASERO_BURN_FLAG_NONE;
 
 	brasero_disc_option_dialog_get_param (BRASERO_DISC_OPTION_DIALOG (dialog),
 					      &flags,

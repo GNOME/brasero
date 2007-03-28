@@ -25,6 +25,7 @@
 #include "scsi-error.h"
 #include "scsi-read-disc-info.h"
 #include "scsi-read-toc-pma-atip.h"
+#include "scsi-read-track-information.h"
 
 
 #ifndef _BURN_MMC1_H
@@ -44,6 +45,12 @@ brasero_mmc1_read_toc_formatted (int fd,
 				 BraseroScsiFormattedTocData **data,
 				 int *size,
 				 BraseroScsiErrCode *error);
+
+BraseroScsiResult
+brasero_mmc1_read_first_open_session_track_info (int fd,
+						 BraseroScsiTrackInfo *track_info,
+						 int size,
+						 BraseroScsiErrCode *error);
 
 G_END_DECLS
 
