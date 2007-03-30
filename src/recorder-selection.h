@@ -76,6 +76,10 @@ void
 brasero_recorder_selection_set_drive (BraseroRecorderSelection *selection,
 				      NautilusBurnDrive *drive);
 void
+brasero_recorder_selection_lock (BraseroRecorderSelection *selection,
+				 gboolean locked);
+
+void
 brasero_recorder_selection_select_default_drive (BraseroRecorderSelection *selection,
 						 BraseroMediaType type);
 void

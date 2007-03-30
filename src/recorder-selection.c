@@ -26,7 +26,6 @@
 #  include <config.h>
 #endif
 
-
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
@@ -428,7 +427,7 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 
 	props->props.image_format = BRASERO_IMAGE_FORMAT_ANY;
 
-	max_rate = nautilus_burn_drive_get_max_speed_write (selection->priv->drive);
+	max_rate = NCB_GET_MAX_WRITE_SPEED (selection->priv->drive);
 	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (nautilus_burn_drive_get_media_type (selection->priv->drive)))
 		props->props.drive_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
 	else
@@ -824,7 +823,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 
 	/* Speed combo */
 	media = nautilus_burn_drive_get_media_type (drive);
-	max_rate = nautilus_burn_drive_get_max_speed_write (drive);
+	max_rate = NCB_GET_MAX_WRITE_SPEED (drive);
 
 	combo = gtk_combo_box_new_text ();
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Max speed"));
@@ -861,7 +860,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 		g_free (display_name);
 
 	if (prop->props.drive_speed == 0
-	||  prop->props.drive_speed >= nautilus_burn_drive_get_max_speed_write (drive))
+	||  prop->props.drive_speed >= NCB_GET_MAX_WRITE_SPEED (drive))
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), prop->props.drive_speed / 2);
@@ -1187,6 +1186,14 @@ brasero_recorder_selection_set_drive (BraseroRecorderSelection *selection,
 {
 	nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection),
 						  drive);
+}
+
+void
+brasero_recorder_selection_lock (BraseroRecorderSelection *selection,
+				 gboolean locked)
+{
+	/* we prevent the user to change the current drive */
+	gtk_widget_set_sensitive (selection->priv->selection, locked);
 }
 
 void

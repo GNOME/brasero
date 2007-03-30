@@ -208,9 +208,25 @@ brasero_SOURCES = \
 	scsi/scsi-q-subchannel.h         \
 	scsi/scsi-error.c         \
 	scsi/scsi-read-track-information.c         \
-	scsi/scsi-read-track-information.h 
+	scsi/scsi-read-track-information.h         \
+	scsi/scsi-get-performance.c         \
+	scsi/scsi-get-performance.h         \
+	scsi/scsi-mmc3.h         \
+	scsi/scsi-mode-pages.h         \
+	scsi/scsi-mode-sense.c         \
+	scsi/scsi-status-page.h         \
+	scsi/scsi-spc1.h 
 
 brasero_LDADD = $(BRASERO_LIBS)
+
+
+
+
+
+
+
+
+
 
 
 

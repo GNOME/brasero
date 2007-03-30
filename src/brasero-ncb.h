@@ -108,6 +108,12 @@ NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
 gint64
 NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive);
 
+gint
+NCB_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive);
+
+gboolean
+NCB_IS_PROTECTED (NautilusBurnDrive *drive);
+
 void
 NCB_INIT (void);
 

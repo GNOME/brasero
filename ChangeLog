@@ -1,5 +1,15 @@
 2007-03-28  Philippe Rouquier <bonfire-app@wanadoo.fr>
 
+	Extended library:
+	brasero can retrieve write speeds by itself (Fixes #366183)
+	brasero can check if a medium is protected through CSS
+
+	Fixed a bug introduced in previous patch whereby properties button
+	was greyed out when multisession was used.
+	
+
+2007-03-28  Philippe Rouquier <bonfire-app@wanadoo.fr>
+
 	Fix multisession button state in data project view.
 	Don't retrieve medium information if drive has not finished loading.
 	Fix introduced bug where wrong next session address was used.

@@ -39,19 +39,38 @@
 #include "burn-medium.h"
 #include "scsi-mmc1.h"
 #include "scsi-mmc2.h"
+#include "scsi-mmc3.h"
+#include "scsi-spc1.h"
 #include "scsi-utils.h"
+#include "scsi-mode-pages.h"
+#include "scsi-status-page.h"
 #include "scsi-q-subchannel.h"
 
 typedef struct _BraseroMediumPrivate BraseroMediumPrivate;
 struct _BraseroMediumPrivate
 {
 	GSList * tracks;
+
+	gint max_rd;
+	gint max_wrt;
+
+	gint *rd_speeds;
+	gint *wr_speeds;
+
 	guint64 next_wr_add;
 	BraseroMediumInfo info;
 	NautilusBurnDrive * drive;
 };
 
 #define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
+
+#define BRASERO_WRONG_SIZE_WARN(desc) 											\
+{																				\
+		g_print ("Size error: skipping descriptor (%s) (size = %i)\n",			\
+			 __FUNCTION__,													\
+			 desc->add_len);												\
+		goto end;																	\
+}
 
 enum
 {
@@ -112,24 +131,190 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
 	return priv->next_wr_add;
 }
 
+gint
+brasero_medium_get_max_write_speed (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->max_wrt;
+}
+
+static BraseroBurnResult
+brasero_medium_get_speed_mmc3 (BraseroMedium *self,
+			       int fd,
+			       BraseroScsiErrCode *code)
+{
+	int size;
+	int num_desc, i;
+	gint max_rd, max_wrt;
+	BraseroScsiResult result;
+	BraseroMediumPrivate *priv;
+	BraseroScsiWrtSpdDesc *desc;
+	BraseroScsiGetPerfData *wrt_perf = NULL;
+
+	/* NOTE: this only work if there is RT streaming feature with
+	 * wspd bit set to 1. At least an MMC3 drive. */
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	result = brasero_mmc3_get_performance_wrt_spd_desc (fd,
+							    &wrt_perf,
+							    &size,
+							    code);
+
+	if (result != BRASERO_SCSI_OK) {
+		g_free (wrt_perf);
+		return BRASERO_BURN_ERR;
+	}
+
+	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) /
+		    sizeof (BraseroScsiWrtSpdDesc);
+
+	priv->rd_speeds = g_new0 (gint, num_desc + 1);
+	priv->wr_speeds = g_new0 (gint, num_desc + 1);
+
+	max_rd = 0;
+	max_wrt = 0;
+
+	desc = (BraseroScsiWrtSpdDesc*) &wrt_perf->data;
+	for (i = 0; i < num_desc; i ++, desc ++) {
+		priv->rd_speeds [i] = BRASERO_GET_32 (desc->rd_speed);
+		priv->wr_speeds [i] = BRASERO_GET_32 (desc->wr_speed);
+
+		max_rd = MAX (max_rd, priv->rd_speeds [i]);
+		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
+	}
+
+	priv->max_rd = max_rd;
+	priv->max_wrt = max_wrt;
+
+	g_free (wrt_perf);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
+					     int fd,
+					     BraseroScsiErrCode *code)
+{
+	BraseroScsiStatusPage *page_2A = NULL;
+	BraseroScsiStatusWrSpdDesc *desc;
+	BraseroScsiModeData *data = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	gint desc_num, i;
+	gint max_wrt = 0;
+	gint max_num;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	result = brasero_spc1_mode_sense_get_page (fd,
+						   BRASERO_SPC_PAGE_STATUS,
+						   &data,
+						   &size,
+						   code);
+	if (!result) {
+		g_free (data);
+		return BRASERO_BURN_ERR;
+	}
+
+	page_2A = (BraseroScsiStatusPage *) &data->page;
+
+	if (size < sizeof (BraseroScsiStatusPage)) {
+		g_free (data);
+		return BRASERO_BURN_ERR;
+	}
+
+	desc_num = BRASERO_GET_16 (page_2A->wr_speed_desc_num);
+	max_num = size -
+		  sizeof (BraseroScsiStatusPage) -
+		  sizeof (BraseroScsiModeHdr);
+
+	if (desc_num > max_num)
+		desc_num = max_num;
+
+	priv->wr_speeds = g_new0 (gint, desc_num + 1);
+	desc = page_2A->wr_spd_desc;
+	for (i = 0; i < desc_num; i ++, desc ++) {
+		priv->wr_speeds [i] = BRASERO_GET_16 (desc->speed);
+		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
+	}
+
+	priv->max_wrt = max_wrt;
+
+	g_free (data);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
+				      int fd,
+				      BraseroScsiErrCode *code)
+{
+	BraseroScsiStatusPage *page_2A = NULL;
+	BraseroScsiModeData *data = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	result = brasero_spc1_mode_sense_get_page (fd,
+						   BRASERO_SPC_PAGE_STATUS,
+						   &data,
+						   &size,
+						   code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (data);
+		return BRASERO_BURN_ERR;
+	}
+
+	page_2A = (BraseroScsiStatusPage *) &data->page;
+
+	if (size < 0x14) {
+		g_free (data);
+		return BRASERO_BURN_ERR;
+	}
+
+	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
+	priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
+
+	g_free (data);
+	return BRASERO_BURN_OK;
+}
+
 static BraseroBurnResult
 brasero_medium_get_medium_type (BraseroMedium *self,
 				int fd,
 				BraseroScsiErrCode *code)
 {
 	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroScsiRTStreamDesc *stream;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
 	int size;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc2_get_configuration_feature (fd,
-							 BRASERO_SCSI_FEAT_PROFILES,
+							 BRASERO_SCSI_FEAT_REAL_TIME_STREAM,
 							 &hdr,
 							 &size,
 							 code);
 
+	if (result == BRASERO_SCSI_INVALID_COMMAND) {
+		g_free (hdr);
+
+		/* This is probably a MMC1 drive since this command was
+		 * introduced in MMC2 and is supported onward. So it
+		 * has to be a CD (R/RW). The rest of the information
+		 * will be provided by read_disc_information. */
+		priv->info = BRASERO_MEDIUM_CD;
+
+		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+		return result;
+	}
+
 	if (result != BRASERO_SCSI_OK) {
+		/* All other commands means an error */
 		g_free (hdr);
 		return BRASERO_BURN_ERR;
 	}
@@ -231,6 +416,60 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
+	/* see how we should get the speeds */
+	if (hdr->desc->add_len != sizeof (BraseroScsiRTStreamDesc)) {
+		g_free (hdr);
+		return BRASERO_BURN_ERR;
+	}
+
+	stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
+	if (stream->wrt_spd)
+		result = brasero_medium_get_speed_mmc3 (self, fd, code);
+	else if (stream->mp2a)
+		result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
+	else
+		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+
+	g_free (hdr);
+
+	if (result != BRASERO_BURN_OK)
+		return BRASERO_BURN_ERR;
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_get_css_feature (BraseroMedium *self,
+				int fd,
+				BraseroScsiErrCode *code)
+{
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	result = brasero_mmc2_get_configuration_feature (fd,
+							 BRASERO_SCSI_FEAT_DVD_CSS,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (hdr);
+		return BRASERO_BURN_ERR;
+	}
+
+	if (hdr->desc->add_len != sizeof (BraseroScsiDVDCssDesc)) {
+		g_free (hdr);
+		return BRASERO_BURN_ERR;
+	}
+
+	/* here we just need to see if this feature is current or not */
+	if (hdr->desc->current)
+		priv->info |= BRASERO_MEDIUM_PROTECTED;
+	else
+		priv->info |= BRASERO_MEDIUM_PROTECTED;
+
 	g_free (hdr);
 	return BRASERO_BURN_OK;
 }
@@ -254,46 +493,6 @@ brasero_medium_get_open_session (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 
 	priv->next_wr_add = BRASERO_GET_32 (open_track.next_wrt_address);
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
-brasero_medium_get_info (BraseroMedium *self,
-			 int fd,
-			 BraseroScsiErrCode *code)
-{
-	int size;
-	BraseroScsiResult result;
-	BraseroMediumPrivate *priv;
-	BraseroScsiDiscInfoStd *info = NULL;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-
-	result = brasero_mmc1_read_disc_information_std (fd,
-							 &info,
-							 &size,
-							 code);
-	if (result != BRASERO_SCSI_OK) {
-		g_free (info);
-		return BRASERO_BURN_ERR;
-	}
-
-	switch (info->status) {
-	case BRASERO_SCSI_DISC_EMPTY:
-		priv->info |= BRASERO_MEDIUM_BLANK;
-		break;
-	case BRASERO_SCSI_DISC_INCOMPLETE:
-		priv->info |= BRASERO_MEDIUM_APPENDABLE;
-		brasero_medium_get_open_session (self, fd, code);
-		break;
-	case BRASERO_SCSI_DISC_FINALIZED:
-	case BRASERO_SCSI_DISC_OTHERS:
-		priv->info &= ~BRASERO_MEDIUM_WRITABLE;
-	default:
-		break;
-	}
-
-	g_free (info);
 	return BRASERO_BURN_OK;
 }
 
@@ -366,6 +565,53 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
+static BraseroBurnResult
+brasero_medium_get_info (BraseroMedium *self,
+			 int fd,
+			 BraseroScsiErrCode *code)
+{
+	int size;
+	BraseroScsiResult result;
+	BraseroMediumPrivate *priv;
+	BraseroScsiDiscInfoStd *info = NULL;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	result = brasero_mmc1_read_disc_information_std (fd,
+							 &info,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (info);
+		return BRASERO_BURN_ERR;
+	}
+
+	if (info->erasable)
+		priv->info |= BRASERO_MEDIUM_REWRITABLE;
+
+	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
+		priv->info |= BRASERO_MEDIUM_BLANK;
+		priv->info |= BRASERO_MEDIUM_WRITABLE;
+		goto end;
+	}
+
+	result = brasero_medium_get_sessions_info (self, fd, code);
+	if (result != BRASERO_BURN_OK)
+		goto end;
+
+	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
+		priv->info |= BRASERO_MEDIUM_APPENDABLE & BRASERO_MEDIUM_WRITABLE;
+		brasero_medium_get_open_session (self, fd, code);
+	}
+	else
+		priv->info &= ~BRASERO_MEDIUM_WRITABLE;
+
+end:
+
+	g_free (info);
+	return BRASERO_BURN_OK;
+}
+
 static void
 brasero_medium_init_real (BraseroMedium *object)
 {
@@ -386,11 +632,11 @@ brasero_medium_init_real (BraseroMedium *object)
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
-	result = brasero_medium_get_info (object, fd, &code);
+	result = brasero_medium_get_css_feature (object, fd, &code);
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
-	result = brasero_medium_get_sessions_info (object, fd, &code);
+	result = brasero_medium_get_info (object, fd, &code);
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
@@ -416,6 +662,9 @@ brasero_medium_finalize (GObject *object)
 	BraseroMediumPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
+
+	g_free (priv->rd_speeds);
+	g_free (priv->wr_speeds);
 
 	g_slist_foreach (priv->tracks, (GFunc) g_free, NULL);
 	g_slist_free (priv->tracks);

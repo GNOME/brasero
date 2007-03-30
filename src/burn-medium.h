@@ -70,7 +70,8 @@ typedef enum {
 	BRASERO_MEDIUM_JUMP			= 1 << 9,
 	BRASERO_MEDIUM_SEQUENTIAL		= 1 << 10,
 	BRASERO_MEDIUM_RESTRICTED		= 1 << 11,
-	BRASERO_MEDIUM_APPENDABLE		= 1 << 12
+	BRASERO_MEDIUM_APPENDABLE		= 1 << 12,
+	BRASERO_MEDIUM_PROTECTED		= 1 << 13
 } BraseroMediumInfo;
 
 typedef enum {
@@ -101,6 +102,9 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium);
 
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium);
+
+gint
+brasero_medium_get_max_write_speed (BraseroMedium *medium);
 
 G_END_DECLS
 

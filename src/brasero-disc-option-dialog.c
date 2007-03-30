@@ -494,7 +494,7 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 
 	if (drive && (dialog->priv->flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))) {
 		brasero_recorder_selection_set_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection), drive);
-		gtk_widget_set_sensitive (dialog->priv->selection, FALSE);
+		brasero_recorder_selection_lock (BRASERO_RECORDER_SELECTION (dialog->priv->selection), FALSE);
 	}
 
 	brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (dialog->priv->selection),

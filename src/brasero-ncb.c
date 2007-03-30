@@ -673,6 +673,32 @@ NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
 	return brasero_medium_get_next_writable_address (medium);
 }
 
+gint
+NCB_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return -1;
+
+	return brasero_medium_get_max_write_speed (medium);
+}
+
+gboolean
+NCB_IS_PROTECTED (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+	BraseroMediumInfo info;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return -1;
+
+	info = brasero_medium_get_status (medium);
+	return (info & BRASERO_MEDIUM_PROTECTED);
+}
+
 static void
 brasero_ncb_inserted_medium_cb (NautilusBurnDriveMonitor *monitor,
 				NautilusBurnDrive *drive,
