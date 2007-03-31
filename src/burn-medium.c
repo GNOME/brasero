@@ -188,6 +188,13 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	priv->max_wrt = max_wrt;
 
 	g_free (wrt_perf);
+
+	/* strangely there are so drives (I know one case) which support this
+	 * function but don't report any speed. So if our top speed is 0 then
+	 * use the other way to get the speed. It was a Teac */
+	if (!priv->max_wrt)
+		return BRASERO_BURN_RETRY;
+
 	return BRASERO_BURN_OK;
 }
 
@@ -229,7 +236,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 		  sizeof (BraseroScsiStatusPage) -
 		  sizeof (BraseroScsiModeHdr);
 
-	if (desc_num > max_num)
+	if (desc_num >= max_num)
 		desc_num = max_num;
 
 	priv->wr_speeds = g_new0 (gint, desc_num + 1);
@@ -239,9 +246,14 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
 	}
 
-	priv->max_wrt = max_wrt;
+	if (!max_wrt)
+		priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
+	else
+		priv->max_wrt = max_wrt;
 
+	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
 	g_free (data);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -422,13 +434,21 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
+	/* try all SCSI functions to get write/read speeds in order */
 	stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
-	if (stream->wrt_spd)
+	if (stream->wrt_spd) {
 		result = brasero_medium_get_speed_mmc3 (self, fd, code);
-	else if (stream->mp2a)
+		if (result != BRASERO_BURN_RETRY)
+			goto end;
+	}
+
+	if (stream->mp2a)
 		result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
 	else
 		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+
+
+end:
 
 	g_free (hdr);
 
