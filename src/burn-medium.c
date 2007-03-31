@@ -219,7 +219,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 						   &data,
 						   &size,
 						   code);
-	if (!result) {
+	if (result != BRASERO_SCSI_OK) {
 		g_free (data);
 		return BRASERO_BURN_ERR;
 	}
@@ -266,7 +266,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	BraseroScsiModeData *data = NULL;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
-	int size;
+	int size = 0;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -311,7 +311,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 							 &hdr,
 							 &size,
 							 code);
-
 	if (result == BRASERO_SCSI_INVALID_COMMAND) {
 		g_free (hdr);
 
