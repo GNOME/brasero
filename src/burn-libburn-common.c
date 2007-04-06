@@ -184,7 +184,7 @@ brasero_libburn_common_set_drive (BraseroLibburnCommon *self,
 				  NautilusBurnDrive *drive,
 				  GError **error)
 {
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 	gchar *device;
 	int res;
 
@@ -197,9 +197,9 @@ brasero_libburn_common_set_drive (BraseroLibburnCommon *self,
 	if (!drive)
 		return BRASERO_BURN_OK;
 
-	media = nautilus_burn_drive_get_media_type (drive);
-	if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-		return BRASERO_BURN_NOT_SUPPORTED;
+	media = NCB_MEDIA_GET_STATUS (drive);
+	if (media & BRASERO_MEDIUM_DVD)
+		BRASERO_JOB_NOT_SUPPORTED (self);
 
 	/* we just want to scan the drive proposed by NCB drive */
 	device = (gchar*) NCB_DRIVE_GET_DEVICE (drive);

@@ -23,12 +23,21 @@
  */
 
 #include "scsi-error.h"
+#include "scsi-read-capacity.h"
 #include "scsi-get-configuration.h"
+#include "scsi-read-disc-structure.h"
+#include "scsi-read-format-capacities.h"
 
 #ifndef _SCSI_MMC2_H
 #define _SCSI_MMC2_H
 
 G_BEGIN_DECLS
+
+BraseroScsiResult
+brasero_mmc2_read_capacity (int fd,
+			    BraseroScsiReadCapacityData *data,
+			    int size,
+			    BraseroScsiErrCode *error);
 
 BraseroScsiResult
 brasero_mmc2_get_configuration_feature (int fd,
@@ -37,6 +46,18 @@ brasero_mmc2_get_configuration_feature (int fd,
 					int *size,
 					BraseroScsiErrCode *error);
 
+BraseroScsiResult
+brasero_mmc2_read_generic_structure (int fd,
+				     BraseroScsiGenericFormatType type,
+				     BraseroScsiReadDiscStructureHdr **data,
+				     int *size,
+				     BraseroScsiErrCode *error);
+
+BraseroScsiResult
+brasero_mmc2_read_format_capacities (int fd,
+				     BraseroScsiFormatCapacitiesHdr **data,
+				     int *size,
+				     BraseroScsiErrCode *error);
 G_END_DECLS
 
 #endif /* _SCSI_MMC2_H */

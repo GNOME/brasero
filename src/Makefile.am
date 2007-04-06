@@ -215,9 +215,23 @@ brasero_SOURCES = \
 	scsi/scsi-mode-pages.h         \
 	scsi/scsi-mode-sense.c         \
 	scsi/scsi-status-page.h         \
-	scsi/scsi-spc1.h 
+	scsi/scsi-spc1.h         \
+	scsi/scsi-read-capacity.c         \
+	scsi/scsi-read-capacity.h         \
+	scsi/scsi-read-disc-structure.c         \
+	scsi/scsi-read-disc-structure.h         \
+	scsi/scsi-dvd-structures.h         \
+	scsi/scsi-read-format-capacities.c         \
+	scsi/scsi-read-format-capacities.h 
 
 brasero_LDADD = $(BRASERO_LIBS)
+
+
+
+
+
+
+
 
 
 

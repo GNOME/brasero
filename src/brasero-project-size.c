@@ -85,10 +85,9 @@ brasero_project_size_forall_children (GtkContainer *container,
 
 struct _BraseroDrive {
 	gint64 sectors;
-	NautilusBurnMediaType media;
+	gint64 free_space;
+	BraseroMediumInfo media;
 	NautilusBurnDrive *drive;
-
-    	gboolean is_blank;
 };
 typedef struct _BraseroDrive BraseroDrive;
 
@@ -110,9 +109,10 @@ struct _BraseroProjectSizePrivate {
 	GList *drives;
 	BraseroDrive *current;
 
-	gint is_audio_context:1;
-	gint was_chosen:1;
-	gint is_loaded:1;
+	guint is_audio_context:1;
+	guint was_chosen:1;
+	guint is_loaded:1;
+	guint multi:1;
 };
 
 
@@ -204,12 +204,12 @@ brasero_project_size_class_init (BraseroProjectSizeClass *klass)
 static void
 brasero_project_size_add_default_medias (BraseroProjectSize *self)
 {
-	const BraseroDrive drives [] =  { {333000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
-					  {360000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
-					  {405000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
-					  {450000, NAUTILUS_BURN_MEDIA_TYPE_CDR, NULL, TRUE},
-					  {2295104, NAUTILUS_BURN_MEDIA_TYPE_DVDR, NULL, TRUE},
-					  {4150390, NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_R_DL, NULL, TRUE},
+	const BraseroDrive drives [] =  { {333000, 333000, BRASERO_MEDIUM_CDR, NULL},
+					  {360000, 360000, BRASERO_MEDIUM_CDR, NULL},
+					  {405000, 405000, BRASERO_MEDIUM_CDR, NULL},
+					  {450000, 450000, BRASERO_MEDIUM_CDR, NULL},
+					  {2295104, 2295104, BRASERO_MEDIUM_DVDR, NULL},
+					  {4150390, 4150390, BRASERO_MEDIUM_DVDR_DL, NULL},
 					  { 0 } };
 	const BraseroDrive *iter;
 
@@ -426,15 +426,33 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 		return;
 	}
 
+	/* the number of interval needs to be reasonable, not over 8 not under 5 */
 	if (self->priv->is_audio_context)
 		interval_size = AUDIO_INTERVAL_CD;
-	else if (self->priv->current->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	else if (self->priv->current->media & BRASERO_MEDIUM_DVD)
 		interval_size = DATA_INTERVAL_DVD;
 	else
 		interval_size = DATA_INTERVAL_CD;
 
-	/* the number of interval needs to be reasonable, not over 8 not under 5 */
-	total = drive->sectors > self->priv->sectors ? drive->sectors:self->priv->sectors;
+	/* Here is the rule for the displaying of sizes:
+	 * if the disc is rewritable and multisession is on, then show the
+	 * remaining space
+	 * if the disc is rewritable and multisession is off, then show the
+	 * capacity
+	 * if the disc is just writable show the remaining free space whether
+	 * multisession is on or off. If multisession is not on then we'll only
+	 * use APPEND flag.
+	 * Basically the rule is display disc capacity only when the medium is 
+	 * rewritable and multisession is off. That also applies to the widget
+	 * to select recorders.	 
+	 */
+	if (drive->drive
+	&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+	&& !self->priv->multi)
+		total = drive->sectors > self->priv->sectors ? drive->sectors:self->priv->sectors;
+	else
+		total = drive->free_space > self->priv->sectors ? drive->free_space:self->priv->sectors;
+
 	do {
 		num = (gdouble) total / (gdouble) interval_size;
 		if (num > MAX_INTERVAL)
@@ -474,6 +492,7 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 static gchar *
 brasero_project_size_get_media_string (BraseroProjectSize *self)
 {
+	gint64 disc_size;
 	gchar *text = NULL;
 	BraseroDrive *drive;
 	gchar *drive_name = NULL;
@@ -483,6 +502,13 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	drive = self->priv->current;
 	if (!drive)
 		return NULL;
+
+	if (drive->drive
+	&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+	&& !self->priv->multi)
+		disc_size = drive->sectors;
+	else
+		disc_size = drive->free_space;
 
 	/* we should round the disc sizes / length */
 	if (drive->sectors == -2) {
@@ -498,7 +524,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		g_free (name);
 	}
 	else {
-		disc_sectors_str = brasero_utils_get_sectors_string (drive->sectors,
+		disc_sectors_str = brasero_utils_get_sectors_string (disc_size,
 								     self->priv->is_audio_context,
 								     TRUE,
 								     TRUE);
@@ -522,7 +548,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 							       TRUE,
 							       FALSE);
 
-	if (self->priv->sectors > drive->sectors) {
+	if (self->priv->sectors > disc_size) {
 		if (drive_name)
 			text = g_strdup_printf (_("<b>Oversized</b> (%s / %s in <i>%s</i>)"),
 						selection_size_str,
@@ -575,7 +601,7 @@ brasero_project_size_size_request (GtkWidget *widget,
 	if (self->priv->text_layout) {
 		gchar *text;
 
-		/* Set markup (every time a size change this function is called */
+		/* Set markup every time a size change this function is called */
 		text = brasero_project_size_get_media_string (self);
 		pango_layout_set_markup (self->priv->text_layout, text, -1);
 		g_free (text);
@@ -676,6 +702,8 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	GtkAllocation alloc;
 
+	gint64 disc_size;
+
 	gboolean is_rtl = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
 
 	if (!GTK_WIDGET_DRAWABLE (widget))
@@ -703,7 +731,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	/* the number of interval needs to be reasonable, not over 8 not under 5 */
 	if (self->priv->is_audio_context)
 		interval_size = AUDIO_INTERVAL_CD;
-	else if (self->priv->current->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	else if (self->priv->current->media & BRASERO_MEDIUM_DVD)
 		interval_size = DATA_INTERVAL_DVD;
 	else
 		interval_size = DATA_INTERVAL_CD;
@@ -785,7 +813,14 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	bar_height = widget->allocation.height - text_height;
 
-	fraction = ((gdouble) self->priv->sectors / (gdouble) drive->sectors);
+	if (drive->drive
+	&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+	&& !self->priv->multi)	
+		disc_size = drive->sectors;
+	else
+		disc_size = drive->free_space;
+
+	fraction = ((gdouble) self->priv->sectors / (gdouble) disc_size);
 	if (fraction > 1.0)
 		width = bar_width / fraction * 1.0;
 	else
@@ -971,6 +1006,7 @@ static GtkWidget *
 brasero_project_size_build_menu (BraseroProjectSize *self)
 {
 	gboolean separator;
+	gint64 disc_size;
 	GtkWidget *menu;
 	GtkWidget *item;
 	GList *iter;
@@ -986,16 +1022,17 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 		drive = iter->data;
 
-		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+		if (drive->media == BRASERO_MEDIUM_NONE
+		||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
 			continue;
 
-	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-		&& (!NCB_MEDIA_IS_APPENDABLE (drive->drive)
+	    	if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
+		&& (!(drive->media & BRASERO_MEDIUM_APPENDABLE)
 		||   self->priv->is_audio_context))
 			continue;
 
 		if (self->priv->is_audio_context
-		&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+		&& (drive->media & BRASERO_MEDIUM_DVD))
 			continue;
 
 		if (!drive->drive && !separator) {
@@ -1006,20 +1043,33 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		else if (drive->drive)
 			separator = FALSE;
 
-		if (self->priv->is_audio_context)
-			size_str = brasero_utils_get_time_string_from_size (drive->sectors * DATA_SECTOR_SIZE, TRUE, TRUE);
+		if (drive->drive
+		&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+		&& !self->priv->multi)
+			disc_size = drive->sectors;
 		else
-			size_str = brasero_utils_get_size_string (drive->sectors * DATA_SECTOR_SIZE, TRUE, TRUE); 
+			disc_size = drive->free_space;
+
+		if (self->priv->is_audio_context)
+			size_str = brasero_utils_get_time_string_from_size (disc_size * DATA_SECTOR_SIZE, TRUE, TRUE);
+		else
+			size_str = brasero_utils_get_size_string (disc_size * DATA_SECTOR_SIZE, TRUE, TRUE); 
 
 		if (drive->drive)
 			label = g_strdup_printf (_("%s (%s) inserted in %s"),
 						 size_str,
-						 nautilus_burn_drive_media_type_get_string (drive->media),
+						 NCB_MEDIA_GET_TYPE_STRING (drive->drive),
 						 nautilus_burn_drive_get_name_for_display (drive->drive));
+		else if (drive->media & BRASERO_MEDIUM_DL)
+			label = g_strdup_printf (_("%s (DVD-R Dual Layer)"),
+						 size_str);
+		else if (drive->media & BRASERO_MEDIUM_DVD)
+			label = g_strdup_printf (_("%s (DVD-R)"),
+						 size_str);
 		else
-			label = g_strdup_printf (_("%s (%s)"),
-						 size_str,
-						 nautilus_burn_drive_media_type_get_string (drive->media));
+			label = g_strdup_printf (_("%s (CD-R)"),
+						 size_str);
+
 		g_free (size_str);
 
 		item = gtk_image_menu_item_new_with_label (label);
@@ -1027,7 +1077,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 		if (!drive->drive)
 			image = gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_MENU);
-		else if (drive->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+		else if (drive->media & BRASERO_MEDIUM_DVD)
 			image = gtk_image_new_from_icon_name ("gnome-dev-disc-dvdr", GTK_ICON_SIZE_MENU);
 		else
 			image = gtk_image_new_from_icon_name ("gnome-dev-disc-cdr", GTK_ICON_SIZE_MENU);
@@ -1125,17 +1175,18 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			drive = iter->data;
 
 			/* must be a valid media */
-			if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+			if (drive->media == BRASERO_MEDIUM_NONE
+			||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
 				iter = g_list_next (iter);
 			/* in an audio context only CDs are valid */
 			else if (self->priv->is_audio_context
-			     &&  NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (drive->media))
+			     && (drive->media & BRASERO_MEDIUM_DVD))
 				iter = g_list_next (iter);
 			/* the media must be writable or rewritable or (in a
 			 * data context) at least appendable */
-			else if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
+			else if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
 			     && ( self->priv->is_audio_context
-			     ||  !NCB_MEDIA_IS_APPENDABLE (drive->drive)))
+			     ||  !(drive->media & BRASERO_MEDIUM_APPENDABLE)))
 				iter = g_list_next (iter);
 			else {
 				self->priv->current = drive;
@@ -1161,17 +1212,18 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			drive = iter->data;
 
 			/* must be a valid media */
-			if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+			if (drive->media == BRASERO_MEDIUM_NONE
+			||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
 				iter = g_list_previous (iter);
 			/* in an audio context only CDs are valid */
 			else if (self->priv->is_audio_context
-			     &&  NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (drive->media))
+			     && (drive->media & BRASERO_MEDIUM_DVD))
 				iter = g_list_previous (iter);
 			/* the media must be writable or rewritable or (in a
 			 * data context) at least appendable */
-			else if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-			     && ( self->priv->is_audio_context
-			     ||  !NCB_MEDIA_IS_APPENDABLE (drive->drive)))
+			else if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
+			     && (self->priv->is_audio_context
+			     ||!(drive->media & BRASERO_MEDIUM_APPENDABLE)))
 				iter = g_list_previous (iter);
 			else {
 				self->priv->current = drive;
@@ -1191,7 +1243,6 @@ static gboolean
 brasero_project_size_update_sectors (BraseroProjectSize *self)
 {
 	gtk_widget_queue_resize (GTK_WIDGET (self));
-//	gtk_widget_queue_draw (GTK_WIDGET (self));
 	self->priv->refresh_id = 0;
 	return FALSE;
 }
@@ -1236,10 +1287,6 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 	GList *iter;
 	BraseroDrive *candidate = NULL;
 
-	/* The rule:
-	 * we don't change the current drive if it is real unless another
-	 * real drive comes up with a size fitting the size of the selection. */
-
 	if (self->priv->current) {
 		BraseroDrive *current;
 
@@ -1247,23 +1294,37 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		current = self->priv->current;
 
 		if (self->priv->is_audio_context
-		&&  NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (current->media)) {
+		&& (current->media & BRASERO_MEDIUM_DVD)) {
 			current = NULL;
 		}
-		else if (current->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+		else if (current->media == BRASERO_MEDIUM_NONE
+		     ||  current->media == BRASERO_MEDIUM_UNSUPPORTED) {
 			current = NULL;
 		}
-	    	else if (!nautilus_burn_drive_media_type_is_writable (current->media, current->is_blank)
-		     && (!NCB_MEDIA_IS_APPENDABLE (current->drive)
+	    	else if (!(current->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
+		     && (!(current->media & BRASERO_MEDIUM_APPENDABLE)
 		     ||   self->priv->is_audio_context)) {
 			current = NULL;
 		}
-		else if (current->sectors >= self->priv->sectors && current->drive)
+		else if (current->sectors >= self->priv->sectors && current->drive) {
+			/* The current drive is still a perfect fit keep it */
 			return;
+		}
+		else if (self->priv->multi) {
+			/* The rule:
+			 * - we don't change the current drive if multisession
+			 * is on to avoid disrupting the user current selection
+			 * (except of course if the media used for multisession
+			 * is the one removed)
+			 * - we don't change the current drive if it is real
+			 * unless another real drive comes up with a size
+			 * fitting the size of the selection. */
+			return;
+		}
 		else /* see if there is better */
 			candidate = self->priv->current;
 	}
-		 
+
 	/* Try to find the first best candidate */
 	for (iter = self->priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
@@ -1272,14 +1333,15 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 
 		/* No DVD if context is audio */
 		if (self->priv->is_audio_context
-		&&  drive->media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+		&& (drive->media & BRASERO_MEDIUM_DVD))
 			continue;
 
-		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+		if (drive->media == BRASERO_MEDIUM_NONE
+		||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
 			continue;
 
-	    	if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-		&& (!NCB_MEDIA_IS_APPENDABLE (drive->drive)
+	    	if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
+		&& (!(drive->media & BRASERO_MEDIUM_APPENDABLE)
 		||   self->priv->is_audio_context))
 			continue;
 
@@ -1294,6 +1356,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		if (candidate->sectors < self->priv->sectors) {
 			if (!candidate->drive) {
 				candidate = drive;
+
 				if (drive->drive)
 					break;
 			}
@@ -1335,10 +1398,17 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 	else if (!current->drive)
 		brasero_project_size_find_proper_drive (self);
 	else if (is_audio
-	     && (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (current->media)
-	     ||  NCB_MEDIA_IS_APPENDABLE (current->drive)))
+	     && (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_APPENDABLE)))
 		brasero_project_size_find_proper_drive (self);
 
+	brasero_project_size_disc_changed (self);
+}
+
+void
+brasero_project_size_set_multisession (BraseroProjectSize *self,
+				       gboolean multi)
+{
+	self->priv->multi = multi;
 	brasero_project_size_disc_changed (self);
 }
 
@@ -1347,14 +1417,20 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 				   gboolean *overburn)
 {
 	gint64 max_sectors;
-	gint64 disc_sectors;
+	gint64 disc_size;
 
 	if (!self->priv->current)
 		return FALSE;
-	
-	disc_sectors = self->priv->current->sectors;
-	if (disc_sectors < 0)
-		disc_sectors = 0;
+
+	if (self->priv->current->drive
+	&& (NCB_MEDIA_GET_STATUS (self->priv->current->drive) & BRASERO_MEDIUM_REWRITABLE)
+	&& !self->priv->multi)
+		disc_size = self->priv->current->sectors;
+	else
+		disc_size = self->priv->current->free_space;
+
+	if (disc_size < 0)
+		disc_size = 0;
 
 	/* FIXME: This is not good since with a DVD 3% of 4.3G may be too much
 	 * with 3% we are slightly over the limit of the most overburnable discs
@@ -1365,9 +1441,9 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 	 * when we propose overburning to the user, we could ask if he wants
 	 * us to determine how much data can be written to a particular disc
 	 * provided he has chosen a real disc. */
-	max_sectors = disc_sectors * 103 / 100;
+	max_sectors = disc_size * 103 / 100;
 
-	if (disc_sectors <= 0) {
+	if (disc_size <= 0) {
 		if (overburn)
 			*overburn = FALSE;
 
@@ -1381,7 +1457,7 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 		return FALSE;
 	}
 
-	if (disc_sectors < self->priv->sectors) {
+	if (disc_size < self->priv->sectors) {
 		if (overburn)
 			*overburn = TRUE;
 
@@ -1405,20 +1481,15 @@ brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
 		bdrive = iter->data;
 		if (bdrive->drive
 		&&  nautilus_burn_drive_equal (ndrive, bdrive->drive)) {
-			gint64 size;
 
-			bdrive->media = NCB_DRIVE_MEDIA_GET_TYPE (ndrive,
-								  NULL,
-								  &bdrive->is_blank,
-								  NULL,
-								  NULL);
+			bdrive->media = NCB_MEDIA_GET_STATUS (bdrive->drive);
 
-			/* If there is an appendable session we just ignore it, the size
-			* of this session will simply be added to the size of the
-			* project if the user decides to merge them */
-			size = NCB_MEDIA_GET_CAPACITY (ndrive);
-			size = size > 0 ? size : 0;
-			bdrive->sectors = size % 2048 ? size / 2048 + 1 : size / 2048;	
+			/* If there is an appendable session we just ignore it,
+			 * the size of this session will simply be added to the
+			 * size of the project if the user decides to merge them
+			 */
+			NCB_MEDIA_GET_CAPACITY (ndrive, NULL, &bdrive->sectors);
+			NCB_MEDIA_GET_FREE_SPACE (ndrive, NULL, &bdrive->free_space);
 
 			brasero_project_size_find_proper_drive (self);
 			brasero_project_size_disc_changed (self);
@@ -1443,8 +1514,9 @@ brasero_project_size_disc_removed_cb (NautilusBurnDriveMonitor *monitor,
 		bdrive = iter->data;
 		if (bdrive->drive
 		&&  nautilus_burn_drive_equal (ndrive, bdrive->drive)) {
-			bdrive->media = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
+			bdrive->media = BRASERO_MEDIUM_NONE;
 			bdrive->sectors = 0;
+			bdrive->free_space = 0;
 
 			brasero_project_size_find_proper_drive (self);
 			brasero_project_size_disc_changed (self);
@@ -1465,7 +1537,6 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 	for (iter = list; iter; iter = iter->next) {
 		NautilusBurnDriveMonitor *monitor;
 		BraseroDrive *drive;
-		gint64 size;
 
 		drive = g_new0 (BraseroDrive, 1);
 		drive->drive = iter->data;
@@ -1483,30 +1554,13 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 				  self);
 
 		/* get all the information about the current media */
-		drive->media = NCB_DRIVE_MEDIA_GET_TYPE (drive->drive,
-							 NULL,
-							 &drive->is_blank,
-							 NULL,
-							 NULL);
-		if (drive->media <= NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
+		drive->media = NCB_MEDIA_GET_STATUS (drive->drive);
+		if (drive->media == BRASERO_MEDIUM_NONE
+		||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
 			continue;
 
-		/*if (!nautilus_burn_drive_media_type_is_writable (drive->media, drive->is_blank)
-		&& (!NCB_MEDIA_IS_APPENDABLE (drive->drive)) {
-			drive->sectors = 0;
-			continue;
-		}*/
-
-		/* If there is an appendable session we just ignore it, the size
-		 * of this session will simply be added to the size of the
-		 * project if the user decides to merge them */
-		size = NCB_MEDIA_GET_CAPACITY (drive->drive);
-		size = size > 0 ? size : 0;
-		drive->sectors = size % 2048 ? size / 2048 + 1 : size / 2048;
-
-		/* FIXME: when we add an appendable disc maybe we could display 
-		 * its label. Moreover we should get the name of the already 
-		 * existing label in burn-dialog.c */
+		NCB_MEDIA_GET_CAPACITY (drive->drive, NULL, &drive->sectors);
+		NCB_MEDIA_GET_FREE_SPACE (drive->drive, NULL, &drive->free_space);
 	}
 	g_list_free (list);
 

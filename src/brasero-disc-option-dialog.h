@@ -64,6 +64,7 @@ GtkWidget *brasero_disc_option_dialog_new ();
 void
 brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 				     NautilusBurnDrive *drive,
+				     BraseroBurnFlag flags,
 				     BraseroDisc *disc);
 
 gboolean

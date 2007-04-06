@@ -537,122 +537,13 @@ NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle)
 	g_free (data);
 }
 
-/**
- * This is to work around the inability for ncb to check if there really is 
- * data on a DVD+RW. Indeed ncb uses HAL which only considers there is data
- * if there is at least one session. Now DVD+RW once formatted always have a
- * session but not necessarily data.
- */
-
-#if 0
-/* this is only valid for mounted volume =( */
-static GSList *
-NCB_MEDIA_GET_FS_TYPE (NautilusBurnDrive *drive)
-{
-	GSList *fs = NULL;
-	GList *volumes, *iter;
-	GnomeVFSDrive *vfsdrive = NULL;
-
-	/* get the uri for the mount point */
-	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (drive);
-	if (!vfsdrive)
-		return NULL;
-
-	volumes = gnome_vfs_drive_get_mounted_volumes (vfsdrive);
-	gnome_vfs_drive_unref (vfsdrive);
-
-	if (!volumes)
-		return NULL;
-
-	for (iter = volumes; iter;iter = iter->next) {
-		gchar *type;
-		GnomeVFSVolume *volume;
-
-		volume = iter->data;
-		type = gnome_vfs_volume_get_filesystem_type (volume);
-
-		if (type) {
-			if (type [0] != '\0')
-				fs = g_slist_prepend (fs, type);
-			else
-				g_free (type);
-		}
-	}
-	gnome_vfs_drive_volume_list_free (volumes);
-
-	return fs;
-}
-
-gboolean
-NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive)
-{
-	gint num = 0;
-	GSList *fs;
-
-	fs = NCB_MEDIA_GET_FS_TYPE (drive);
-
-	num = g_slist_length (fs);
-	g_slist_foreach (fs, (GFunc) g_free, NULL);
-	g_slist_free (fs);
-
-	if (num)
-		return TRUE;
-
-	return FALSE;
-}
-
-#endif
-
-gboolean
-NCB_MEDIA_IS_APPENDABLE (NautilusBurnDrive *drive)
-{
-	NautilusBurnMediaType media;
-
-	/* it is a DVD+RW, it is only appendable if the fs is iso9660 */
-	media = nautilus_burn_drive_get_media_type (drive);
-	if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
-		return brasero_volume_is_iso9660 (NCB_DRIVE_GET_DEVICE (drive), NULL);
-
-	return nautilus_burn_drive_media_is_appendable (drive);
-}
-
-NautilusBurnMediaType
-NCB_DRIVE_MEDIA_GET_TYPE (NautilusBurnDrive *drive,
-			  gboolean *is_rewritable,
-			  gboolean *is_blank,
-			  gboolean *has_data,
-			  gboolean *has_audio)
-{
-	NautilusBurnMediaType media;
-
-	media = nautilus_burn_drive_get_media_type_full (drive,
-							 is_rewritable,
-							 is_blank,
-							 has_data,
-							 has_audio);
-
-	if ((has_data || is_blank)
-	&&   media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-		if ((has_data && !(*has_data))
-		||  (is_blank &&  (*is_blank)))
-			return media;
-
-		if (brasero_volume_is_valid (NCB_DRIVE_GET_DEVICE (drive), NULL))
-			return media;
-
-		if (has_data)
-			*has_data = FALSE;
-		if (is_blank)
-			*is_blank = TRUE;
-	}
-
-	return media;
-}
-
 gint64
-NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive)
+NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive)
 {
 	BraseroMedium *medium;
+
+	if (!drive)
+		return -1;
 
 	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
 	if (!medium)
@@ -662,9 +553,12 @@ NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive)
 }
 
 gint64
-NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
+NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
 {
 	BraseroMedium *medium;
+
+	if (!drive)
+		return -1;
 
 	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
 	if (!medium)
@@ -674,9 +568,12 @@ NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
 }
 
 gint
-NCB_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive)
+NCB_MEDIA_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive)
 {
 	BraseroMedium *medium;
+
+	if (!drive)
+		return -1;
 
 	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
 	if (!medium)
@@ -685,18 +582,121 @@ NCB_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive)
 	return brasero_medium_get_max_write_speed (medium);
 }
 
-gboolean
-NCB_IS_PROTECTED (NautilusBurnDrive *drive)
+BraseroMediumInfo
+NCB_MEDIA_GET_STATUS (NautilusBurnDrive *drive)
 {
 	BraseroMedium *medium;
-	BraseroMediumInfo info;
+
+	if (!drive)
+		return BRASERO_MEDIUM_NONE;
 
 	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
 	if (!medium)
-		return -1;
+		return BRASERO_MEDIUM_NONE;
 
-	info = brasero_medium_get_status (medium);
-	return (info & BRASERO_MEDIUM_PROTECTED);
+	return brasero_medium_get_status (medium);
+}
+
+void
+NCB_MEDIA_GET_DATA_SIZE (NautilusBurnDrive *drive,
+			 gint64 *size,
+			 gint64 *blocks)
+{
+	BraseroMedium *medium;
+
+	if (!drive)
+		goto end;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium) 
+		goto end;
+
+	brasero_medium_get_data_size (medium, size, blocks);
+	return;
+
+end:
+	if (size)
+		*size = -1;
+	if (blocks)
+		*blocks = -1;
+}
+
+void
+NCB_MEDIA_GET_CAPACITY (NautilusBurnDrive *drive,
+			gint64 *size,
+			gint64 *blocks)
+{
+	BraseroMedium *medium;
+
+	if (!drive)
+		goto end;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		goto end;
+
+	brasero_medium_get_capacity (medium, size, blocks);
+	return;
+
+end:
+	if (size)
+		*size = -1;
+	if (blocks)
+		*blocks = -1;
+}
+
+void
+NCB_MEDIA_GET_FREE_SPACE (NautilusBurnDrive *drive,
+			  gint64 *size,
+			  gint64 *blocks)
+{
+	BraseroMedium *medium;
+
+	if (!drive)
+		goto end;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		goto end;
+
+	brasero_medium_get_free_space (medium, size, blocks);
+	return;
+
+end:
+	if (size)
+		*size = -1;
+	if (blocks)
+		*blocks = -1;
+}
+
+const gchar *
+NCB_MEDIA_GET_TYPE_STRING (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+
+	if (!drive)
+		return NULL;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return NULL;
+
+	return brasero_medium_get_type_string (medium);
+}
+
+const gchar *
+NCB_MEDIA_GET_ICON (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+
+	if (!drive)
+		return NULL;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return NULL;
+
+	return brasero_medium_get_icon (medium);
 }
 
 static void

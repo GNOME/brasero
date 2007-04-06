@@ -68,6 +68,10 @@ brasero_project_size_set_sectors (BraseroProjectSize *self,
 				  gint64 sectors);
 
 void
+brasero_project_size_set_multisession (BraseroProjectSize *self,
+				       gboolean multi);
+
+void
 brasero_project_size_set_context (BraseroProjectSize *self,
 				  gboolean is_audio);
 

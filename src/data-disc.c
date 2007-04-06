@@ -322,7 +322,6 @@ brasero_data_disc_get_track_source (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_get_track_type (BraseroDisc *disc,
 				  BraseroTrackSourceType *type,
-				  BraseroBurnFlag *flags,
 				  BraseroImageFormat *format);
 
 static BraseroDiscResult
@@ -1083,6 +1082,7 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 
 	/* Import session */
 	button = gtk_toggle_button_new ();
+	gtk_widget_set_sensitive (button, FALSE);
 	gtk_button_set_image (GTK_BUTTON (button),
 			      gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_BUTTON));
 
@@ -5146,7 +5146,7 @@ brasero_data_disc_tree_new_imported_session_file (BraseroDataDisc *disc,
 			    NAME_COL, BRASERO_VOLUME_FILE_NAME (file),
 			    STYLE_COL, PANGO_STYLE_ITALIC,
 			    MIME_COL, _("Disc file"),
-			    DSIZE_COL, dsize,
+			    DSIZE_COL, (gint64) 0,
 			    SIZE_COL, size,
 			    ISDIR_COL, file->isdir ? TRUE:FALSE,
 			    ROW_TYPE_COL, ROW_SESSION,
@@ -7935,6 +7935,8 @@ brasero_data_disc_remove_imported_session (BraseroDataDisc *disc)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
+	brasero_disc_flags_changed (BRASERO_DISC (disc), BRASERO_BURN_FLAG_NONE);
+
 	if (!disc->priv->session)
 		return;
 
@@ -7982,7 +7984,6 @@ brasero_data_disc_remove_imported_session (BraseroDataDisc *disc)
 			break;
 	} while (1);
 
-	brasero_data_disc_size_changed (disc, (-1) * brasero_volume_file_size (disc->priv->session));
 	brasero_volume_file_free (disc->priv->session);
 	disc->priv->session = NULL;
 }
@@ -8043,11 +8044,13 @@ brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
 	}
 
 	/* check that there isn't already an imported session. */
-	if (disc->priv->session)
+	if (disc->priv->session) {
 		brasero_data_disc_remove_imported_session (disc);
+		
+	}
 
 	/* get the address for the last track and retrieve the file list */
-	block = NCB_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive);
+	block = NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive);
 	if (block == -1) {
 		brasero_data_disc_import_session_error (disc, _("there isn't any available session on the disc"));
 		return;
@@ -8117,13 +8120,16 @@ brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
 	disc->priv->session = volume;
 
 	/* add the size of the session files */
-	brasero_data_disc_size_changed (disc, data_blocks);	
+	brasero_disc_flags_changed (BRASERO_DISC (disc),
+				    BRASERO_BURN_FLAG_APPEND|
+				    BRASERO_BURN_FLAG_MERGE);
 }
 
 static void
 brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 {
 	gboolean multisession;
+	BraseroMediumInfo media;
 
 	if (!disc->priv->drive) {
 		gtk_widget_set_sensitive (disc->priv->session_button, FALSE);
@@ -8131,8 +8137,9 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 		return;
 	}
 
-	multisession = NCB_MEDIA_IS_APPENDABLE (disc->priv->drive) &&
-		      (NCB_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive) != -1);
+	media = NCB_MEDIA_GET_STATUS (disc->priv->drive);
+	multisession = (media & BRASERO_MEDIUM_APPENDABLE) &&
+		       (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive) != -1);
 
 	if (multisession && disc->priv->session_button) {
 		gtk_widget_set_sensitive (disc->priv->session_button, TRUE);
@@ -8510,7 +8517,6 @@ brasero_data_disc_get_track_source (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_get_track_type (BraseroDisc *disc,
 				  BraseroTrackSourceType *type,
-				  BraseroBurnFlag *flags,
 				  BraseroImageFormat *format)
 {
 	BraseroDiscResult result;
@@ -8531,9 +8537,6 @@ brasero_data_disc_get_track_type (BraseroDisc *disc,
 		if (brasero_data_disc_is_video_DVD (BRASERO_DATA_DISC (disc)))
 			*format |= BRASERO_IMAGE_FORMAT_VIDEO;
 	}
-
-	if (flags &&  BRASERO_DATA_DISC (disc)->priv->session)
-		*flags = BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE;
 
 	return BRASERO_DISC_OK;
 }

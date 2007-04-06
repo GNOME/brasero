@@ -1,3 +1,21 @@
+2007-04-06  Philippe Rouquier <bonfire-app@wanadoo.fr>
+
+        Improved library by adding more functions
+	Replace as much we can the use of ncb when
+	dealing with media functions
+	This fixed a number of side bugs namely:
+	- the inability to make any difference between the two types of DVD-RW (see #426104 for an example of the type of problems it caused)
+	- the inability to have the right size for tracks < 300 kio
+	- the inability to detect a protected DVD
+	- the inability to translate drive types
+
+	Improved multisession a lot
+	Fixed the creation of multisession DVD+/-R by not using DAO
+	When a multisession disc (not RW) is inserted only show free space
+	Allow to append any kind of tracks to the latter discs (audio, data)
+
+	A couple of other small bugs were fixed here and there
+
 2007-03-31  Philippe Rouquier <bonfire-app@wanadoo.fr>
 
         Another fix.
@@ -14,6 +32,7 @@
 
 	Fixed a bug introduced in previous patch whereby properties button
 	was greyed out when multisession was used.
+	Some small improvements to previously committed code.
 	
 
 2007-03-28  Philippe Rouquier <bonfire-app@wanadoo.fr>

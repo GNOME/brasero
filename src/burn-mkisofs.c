@@ -701,10 +701,9 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	if (mkisofs->priv->drive) {
 		gint64 last_session, next_wr_add;
 		gchar *startpoint = NULL;
-		gboolean has_audio;
 
-		last_session = NCB_GET_LAST_DATA_TRACK_ADDRESS (mkisofs->priv->drive);
-		next_wr_add = NCB_GET_NEXT_WRITABLE_ADDRESS (mkisofs->priv->drive);
+		last_session = NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (mkisofs->priv->drive);
+		next_wr_add = NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (mkisofs->priv->drive);
 		if (last_session == -1 || next_wr_add == -1) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -720,13 +719,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		g_ptr_array_add (argv, g_strdup ("-C"));
 		g_ptr_array_add (argv, startpoint);
 
-		NCB_DRIVE_MEDIA_GET_TYPE (mkisofs->priv->drive,
-					  NULL,
-					  NULL,
-					  NULL,
-					  &has_audio);
-
-		if (mkisofs->priv->merge && !has_audio) {
+		if (mkisofs->priv->merge) {
 		        gchar *dev_str = NULL;
 
 			g_ptr_array_add (argv, g_strdup ("-M"));

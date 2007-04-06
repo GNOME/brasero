@@ -92,6 +92,10 @@ static void
 brasero_project_size_changed_cb (BraseroDisc *disc,
 			         gint64 size,
 			         BraseroProject *project);
+static void
+brasero_project_flags_changed_cb (BraseroDisc *disc,
+				  BraseroBurnFlag flags,
+				  BraseroProject *project);
 
 static void
 brasero_project_add_clicked_cb (GtkButton *button, BraseroProject *project);
@@ -144,6 +148,7 @@ struct BraseroProjectPrivate {
 	gchar *project;
 	gint64 sectors;
 	BraseroDisc *current;
+	BraseroBurnFlag flags;
 	BraseroURIContainer *current_source;
 
 	gint is_burning:1;
@@ -398,29 +403,33 @@ brasero_project_init (BraseroProject *obj)
 	/* The two panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
 	g_signal_connect (G_OBJECT (obj->priv->audio),
-			  "contents_changed",
+			  "contents-changed",
 			  G_CALLBACK (brasero_project_contents_changed_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->audio),
-			  "size_changed",
+			  "size-changed",
 			  G_CALLBACK (brasero_project_size_changed_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->audio),
-			  "selection_changed",
+			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
 
 	obj->priv->data = brasero_data_disc_new ();
 	g_signal_connect (G_OBJECT (obj->priv->data),
-			  "contents_changed",
+			  "contents-changed",
 			  G_CALLBACK (brasero_project_contents_changed_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->data),
-			  "size_changed",
+			  "size-changed",
 			  G_CALLBACK (brasero_project_size_changed_cb),
 			  obj);
 	g_signal_connect (G_OBJECT (obj->priv->data),
-			  "selection_changed",
+			  "flags-changed",
+			  G_CALLBACK (brasero_project_flags_changed_cb),
+			  obj);
+	  g_signal_connect (G_OBJECT (obj->priv->data),
+			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
 
@@ -636,6 +645,16 @@ brasero_project_size_changed_cb (BraseroDisc *disc,
 					  sectors);
 
 	brasero_project_check_size (project);
+}
+
+static void
+brasero_project_flags_changed_cb (BraseroDisc *disc,
+				  BraseroBurnFlag flags,
+				  BraseroProject *project)
+{
+	project->priv->flags = flags;
+	brasero_project_size_set_multisession (BRASERO_PROJECT_SIZE (project->priv->size_display),
+					      (flags & BRASERO_BURN_FLAG_MERGE) != 0);
 }
 
 static void
@@ -856,15 +875,15 @@ brasero_project_burn (BraseroProject *project)
 	destroy = FALSE;
 
 	/* setup, show, and run options dialog */
-	brasero_disc_get_track_type (project->priv->current, NULL, &flags, NULL);
-	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
-		drive = brasero_project_size_get_active_drive (BRASERO_PROJECT_SIZE (project->priv->size_display));
+	drive = brasero_project_size_get_active_drive (BRASERO_PROJECT_SIZE (project->priv->size_display));
+
+	if (project->priv->flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
 		nautilus_burn_drive_lock (drive, _("ongoing burning process"), NULL);
-	}
 
 	dialog = brasero_disc_option_dialog_new ();
 	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
 					     drive,
+					     project->priv->flags,
 					     project->priv->current);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
@@ -1040,6 +1059,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 	project->priv->empty = 1;
     	project->priv->burnt = 0;
+	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
 					  0);
@@ -1146,6 +1166,7 @@ brasero_project_set_none (BraseroProject *project)
 		brasero_disc_reset (project->priv->current);
 
 	project->priv->current = NULL;
+	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
 	/* update button */
 	gtk_action_group_set_visible (project->priv->action_group, FALSE);
@@ -1293,6 +1314,7 @@ static void
 brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 {
 	brasero_disc_reset (BRASERO_DISC (project->priv->current));
+	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 }
 
 static void

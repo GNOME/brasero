@@ -551,47 +551,33 @@ static BraseroBurnResult
 brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 {
 	gint64 size;
-	gint64 limit = -1;
 	const gchar *device;
 	BraseroBurnResult result;
 	NautilusBurnDrive *drive;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 
 	drive = self->priv->source->contents.drive.disc;
 
 	/* we get the size of the image */
-	media = nautilus_burn_drive_get_media_type (drive);
-	if (media < NAUTILUS_BURN_MEDIA_TYPE_CD) {
+	media = NCB_MEDIA_GET_STATUS (drive);
+	if (media == BRASERO_MEDIUM_NONE) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the disc is empty or busy."));
+			     _("there is no disc."));
+	}
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the disc is unsupported."));
 		return BRASERO_BURN_ERR;
 	}
 
-	/* FIXME: the same should be done for DVD-RW restricted ... */
-	if (media == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-		gboolean res;
-		gint64 nb_blocks = 0;
-
-		/* This is to avoid reading till the end of the DVD */
-		res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
-					       &nb_blocks,
-					       NULL);
-		if (!res)
-			size = NCB_MEDIA_GET_SIZE (drive);
-		else
-			size = (gint64) nb_blocks * (gint64) 2048;
-
-		limit = size;
-	}
-	else
-		size = NCB_MEDIA_GET_SIZE (drive);
-
+	NCB_MEDIA_GET_DATA_SIZE (drive, &size, NULL);
 	BRASERO_JOB_TASK_SET_TOTAL (self, size);
 
 	device = NCB_DRIVE_GET_DEVICE (drive);
-
 	BRASERO_JOB_TASK_SET_ACTION (self,
 				     BRASERO_BURN_ACTION_CHECKSUM,
 				     _("Creating disc checksum"),
@@ -599,11 +585,10 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 	BRASERO_JOB_TASK_START_PROGRESS (self, FALSE);
 
 	self->priv->ctx = brasero_md5_new ();
-
 	result = brasero_md5_sum (self->priv->ctx,
 				  device,
 				  &self->priv->md5,
-				  limit,
+				  size,
 				  error);
 	brasero_md5_free (self->priv->ctx);
 	self->priv->ctx = NULL;

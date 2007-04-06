@@ -276,7 +276,7 @@ brasero_libburn_set_flags (BraseroRecorder *recorder,
 	self = BRASERO_LIBBURN (recorder);
 
 	self->priv->dummy = (flags & BRASERO_RECORDER_FLAG_DUMMY) != 0;
-//	self->priv->dao = (flags & BRASERO_RECORDER_FLAG_DAO) != 0;
+	self->priv->dao = (flags & BRASERO_RECORDER_FLAG_DAO) != 0;
 	self->priv->burnproof = (flags & BRASERO_RECORDER_FLAG_BURNPROOF) != 0;
 	self->priv->overburn = (flags & BRASERO_RECORDER_FLAG_OVERBURN) != 0;
 	self->priv->blank_fast = (flags & BRASERO_RECORDER_FLAG_FAST_BLANK) != 0;
@@ -484,8 +484,6 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 
 		BRASERO_ASSERT_NO_SLAVE_RUNNING (in_fd, error);
 
-		self->priv->dao = 1;
-
 		for (iter = source->contents.audio.infos; iter; iter = iter->next) {
 			BraseroSongInfo *info;
 
@@ -509,8 +507,6 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 			BRASERO_JOB_NOT_SUPPORTED (self);
 
 		BRASERO_ASSERT_NO_SLAVE_RUNNING (in_fd, error);
-
-		self->priv->dao = 1;
 
 		if (self->priv->source->format & BRASERO_IMAGE_FORMAT_ISO) {
 			mode = BURN_MODE1;
@@ -567,7 +563,6 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 /*					       BRASERO_IMAGE_FORMAT_CLONE)) == 0)*/
 					BRASERO_JOB_NOT_SUPPORTED (self);
 
-				self->priv->dao = 1;
 				if (format & BRASERO_IMAGE_FORMAT_ISO)
 					mode = BURN_MODE1;
 				else
@@ -585,7 +580,6 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 			{
 				GSList *iter;
 
-				self->priv->dao = 1;
 				if (!self->priv->infs)
 					BRASERO_JOB_NOT_READY (self);
 
@@ -664,8 +658,18 @@ brasero_libburn_start (BraseroJob *job,
 							BURN_BLOCK_SAO);
 		else
 			burn_write_opts_set_write_type (opts,
+							BURN_WRITE_TAO,
+							BURN_BLOCK_MODE1);
+
+#if 0
+	burn_write_opts_set_multi (opts, self->priv->multi);
+
+	/* crufts from the time libburn didn't support TAO */
+		else
+			burn_write_opts_set_write_type (opts,
 							BURN_WRITE_RAW,
 							BURN_BLOCK_RAW96R);
+#endif
 
 		if (self->priv->burnproof)
 			burn_write_opts_set_underrun_proof (opts, 1);

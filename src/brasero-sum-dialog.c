@@ -79,9 +79,9 @@ static GtkDialogClass *parent_class = NULL;
 
 static gboolean brasero_sum_dialog_cancel (BraseroToolDialog *dialog);
 static gboolean brasero_sum_dialog_activate (BraseroToolDialog *dialog,
-					       NautilusBurnDrive *drive);
+					     NautilusBurnDrive *drive);
 static void brasero_sum_dialog_media_changed (BraseroToolDialog *dialog,
-					       NautilusBurnMediaType media);
+					      BraseroMediumInfo media);
 
 static void
 brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
@@ -228,7 +228,7 @@ brasero_sum_dialog_cancel (BraseroToolDialog *dialog)
 
 static void
 brasero_sum_dialog_media_changed (BraseroToolDialog *dialog,
-				  NautilusBurnMediaType media)
+				  BraseroMediumInfo media)
 {
 	
 }

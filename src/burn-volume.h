@@ -69,6 +69,8 @@ brasero_volume_file_free (BraseroVolFile *file);
 gboolean
 brasero_volume_is_valid (const gchar *path,
 			 GError **error);
+gboolean
+brasero_volume_is_valid_fd (int fd, GError **error);
 
 gboolean
 brasero_volume_is_iso9660 (const gchar *path,
@@ -78,6 +80,12 @@ gboolean
 brasero_volume_get_size (const gchar *path,
 			 gint64 *nb_blocks,
 			 GError **error);
+gboolean
+brasero_volume_get_size_fd (int fd,
+			    gint64 block,
+			    gint64 *nb_blocks,
+			    GError **error);
+
 gboolean
 brasero_volume_get_label (const gchar *path,
 			  gchar **label,

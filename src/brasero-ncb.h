@@ -29,10 +29,6 @@
 #  include <config.h>
 #endif
 
-#include <nautilus-burn-drive.h>
-
-#ifdef __cplusplus
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -40,21 +36,15 @@
 #include <nautilus-burn-drive-monitor.h>
 #include <nautilus-burn-drive.h>
 
-extern "C"
-{
-#endif
+#include "burn-medium.h"
+
+G_BEGIN_DECLS
 
 #define NCB_DRIVE_GET_TYPE(drive) 	\
 nautilus_burn_drive_get_drive_type ((drive))
 
 #define NCB_DRIVE_GET_DEVICE(drive) 	\
 nautilus_burn_drive_get_device (drive)
-
-#define NCB_MEDIA_GET_SIZE(drive)			\
-nautilus_burn_drive_get_media_size (drive)
-
-#define NCB_MEDIA_GET_CAPACITY(drive)	\
-nautilus_burn_drive_get_media_capacity (drive)
 
 #define NCB_DRIVE_GET_LIST(list, recorders, image)	\
 {	\
@@ -68,18 +58,6 @@ nautilus_burn_drive_get_media_capacity (drive)
 	if (image)	\
 		list = g_list_prepend (list, nautilus_burn_drive_monitor_get_drive_for_image (monitor));	\
 }
-
-NautilusBurnMediaType
-NCB_DRIVE_MEDIA_GET_TYPE (NautilusBurnDrive *drive,
-			  gboolean *is_rewritable,
-			  gboolean *is_blank,
-			  gboolean *has_data,
-			  gboolean *has_audio);
-gboolean
-NCB_MEDIA_HAS_VALID_FS (NautilusBurnDrive *drive);
-
-gboolean
-NCB_MEDIA_IS_APPENDABLE (NautilusBurnDrive *drive);
 
 gboolean
 NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);
@@ -103,23 +81,45 @@ void
 NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle);
 
 gint64
-NCB_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
+NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
 
 gint64
-NCB_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive);
+NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive);
 
 gint
-NCB_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive);
+NCB_MEDIA_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive);
 
-gboolean
-NCB_IS_PROTECTED (NautilusBurnDrive *drive);
+void
+NCB_MEDIA_GET_DATA_SIZE (NautilusBurnDrive *drive,
+			 gint64 *size,
+			 gint64 *blocks);
+
+void
+NCB_MEDIA_GET_CAPACITY (NautilusBurnDrive *drive,
+			gint64 *size,
+			gint64 *blocks);
+
+void
+NCB_MEDIA_GET_FREE_SPACE (NautilusBurnDrive *drive,
+			  gint64 *size,
+			  gint64 *blocks);
+
+BraseroMediumInfo
+NCB_MEDIA_GET_STATUS (NautilusBurnDrive *drive);
+
+const gchar *
+NCB_MEDIA_GET_TYPE_STRING (NautilusBurnDrive *drive);
+
+const gchar *
+NCB_MEDIA_GET_ICON (NautilusBurnDrive *drive);
+
+#define NCB_MEDIA_IS(drive, flags)			\
+BRASERO_MEDIUM_IS (NCB_MEDIA_GET_STATUS (drive),(flags))
 
 void
 NCB_INIT (void);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BRASERO_NCB_H */
 

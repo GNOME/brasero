@@ -48,6 +48,7 @@
 #include "disc-copy-dialog.h"
 #include "recorder-selection.h"
 #include "brasero-ncb.h"
+#include "burn-medium.h"
 
 static void brasero_disc_copy_dialog_class_init (BraseroDiscCopyDialogClass *klass);
 static void brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *sp);
@@ -55,7 +56,7 @@ static void brasero_disc_copy_dialog_finalize (GObject *object);
 
 static void
 brasero_disc_copy_dialog_src_media_changed (BraseroRecorderSelection *src_selection,
-					    NautilusBurnMediaType media_type,
+					    BraseroMediumInfo media_type,
 					    BraseroDiscCopyDialog *dialog);
 static void
 brasero_disc_copy_dialog_burn_clicked_cb (GtkWidget *button,
@@ -140,7 +141,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 			    6);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->source),
-							 BRASERO_MEDIA_WITH_DATA);
+							 BRASERO_MEDIUM_HAS_DATA);
 
 	/* destination drive */
 	obj->priv->selection = brasero_recorder_selection_new ();
@@ -158,7 +159,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 			    6);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
-							 BRASERO_MEDIA_WRITABLE);
+							 BRASERO_MEDIUM_WRITABLE);
 
 	/* tell the destination what type of media to expect from source */
 	g_signal_connect (G_OBJECT (obj->priv->source),
@@ -172,9 +173,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 
 	if (drive && NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		BraseroTrackSource source;
-		NautilusBurnMediaType type;
 
-		type = nautilus_burn_drive_get_media_type (drive);
 		source.type = BRASERO_TRACK_SOURCE_DISC;
 		source.contents.drive.disc = drive;
 		brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (obj->priv->selection),
@@ -226,7 +225,7 @@ brasero_disc_copy_dialog_new ()
 
 static void
 brasero_disc_copy_dialog_src_media_changed (BraseroRecorderSelection *src_selection,
-					    NautilusBurnMediaType media_type,
+					    BraseroMediumInfo media,
 					    BraseroDiscCopyDialog *dialog)
 {
 	NautilusBurnDrive *drive;
@@ -236,9 +235,7 @@ brasero_disc_copy_dialog_src_media_changed (BraseroRecorderSelection *src_select
 					      NULL);
 	if (drive) {
 		BraseroTrackSource source;
-		NautilusBurnMediaType type;
 
-		type = nautilus_burn_drive_get_media_type (drive);
 		source.type = BRASERO_TRACK_SOURCE_DISC;
 		source.contents.drive.disc = drive;
 		brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (dialog->priv->selection),

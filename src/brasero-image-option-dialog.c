@@ -419,7 +419,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			    6);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
-							 BRASERO_MEDIA_WRITABLE);
+							 BRASERO_MEDIUM_WRITABLE);
 	gtk_tooltips_set_tip (obj->priv->tooltips,
 			      obj->priv->selection,
 			      _("Choose which drive holds the disc to write to"),

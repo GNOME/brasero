@@ -40,6 +40,7 @@
 #include "burn-dvd-rw-format.h"
 #include "burn-recorder.h"
 #include "burn-process.h"
+#include "burn-medium.h"
 #include "brasero-ncb.h"
 
 static void brasero_dvd_rw_format_class_init (BraseroDvdRwFormatClass *klass);
@@ -172,13 +173,13 @@ brasero_dvd_rw_format_blank (BraseroRecorder *recorder,
 			     GError **error)
 {
 	BraseroDvdRwFormat *dvdformat;
-	NautilusBurnMediaType media;
 	BraseroBurnResult result;
+	BraseroMediumInfo media;
 
 	dvdformat = BRASERO_DVD_RW_FORMAT (recorder);
-	media = nautilus_burn_drive_get_media_type (dvdformat->priv->drive);
+	media = NCB_MEDIA_GET_STATUS (dvdformat->priv->drive);
 
-	if (media <= NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	if (media == BRASERO_MEDIUM_NONE)
 		BRASERO_JOB_NOT_SUPPORTED (dvdformat);
 
 	result = brasero_job_run (BRASERO_JOB (dvdformat), error);
@@ -261,7 +262,7 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 				GError **error)
 {
 	BraseroDvdRwFormat *dvdformat;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 	gchar *dev_str;
 
 	dvdformat = BRASERO_DVD_RW_FORMAT (process);
@@ -276,11 +277,12 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 	/* undocumented option to show progress */
 	g_ptr_array_add (argv, g_strdup ("-gui"));
 
-	media = nautilus_burn_drive_get_media_type (dvdformat->priv->drive);
-        if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
+	media = NCB_MEDIA_GET_STATUS (dvdformat->priv->drive);
+        if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 		gchar *blank_str;
 
-		/* This creates produce a sequential DVD-RW */
+		/* This creates a sequential DVD-RW */
 		blank_str = g_strdup_printf ("-blank%s",
 					     dvdformat->priv->blank_fast ? "" : "=full");
 		g_ptr_array_add (argv, blank_str);
@@ -288,10 +290,7 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 	else {
 		gchar *format_str;
 
-		/* This creates a restricted overwrite DVD-RW */
-		/* FIXME: that's the mode we should also use for DVD-RW
-		 * in restricted overwrite mode. For the time being there
-		 * is no way to distinguish the two modes with ncb. */
+		/* This creates a restricted overwrite DVD-RW or reformat a + */
 		format_str = g_strdup ("-force");
 		g_ptr_array_add (argv, format_str);
 	}

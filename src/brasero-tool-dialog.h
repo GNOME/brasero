@@ -32,6 +32,7 @@
 
 #include "burn-basics.h"
 #include "burn-job.h"
+#include "burn-medium.h"
 
 G_BEGIN_DECLS
 
@@ -58,7 +59,7 @@ struct _BraseroToolDialogClass {
 	gboolean	(*activate)		(BraseroToolDialog *self,
 						 NautilusBurnDrive *drive);
 	void		(*media_changed)	(BraseroToolDialog *self,
-						 NautilusBurnMediaType media);
+						 BraseroMediumInfo media);
 };
 
 GType brasero_tool_dialog_get_type ();
@@ -85,7 +86,7 @@ BraseroBurnResult brasero_tool_dialog_run_job (BraseroToolDialog *self,
 					       BraseroTrackSource **retval,
 					       GError **error);
 
-NautilusBurnMediaType
+BraseroMediumInfo
 brasero_tool_dialog_get_media (BraseroToolDialog *self);
 
 NautilusBurnDrive *

@@ -57,22 +57,87 @@ BraseroMedium *
 brasero_medium_new (NautilusBurnDrive *drive);
 
 typedef enum {
+	BRASERO_MEDIUM_UNSUPPORTED		= -1,
 	BRASERO_MEDIUM_NONE			= 0,
-	BRASERO_MEDIUM_DVD			= 1,
-	BRASERO_MEDIUM_CD			= 1 << 1,
-	BRASERO_MEDIUM_BLANK			= 1 << 2,
-	BRASERO_MEDIUM_HAS_DATA			= 1 << 3,
-	BRASERO_MEDIUM_HAS_AUDIO		= 1 << 4,
-	BRASERO_MEDIUM_REWRITABLE		= 1 << 5,
-	BRASERO_MEDIUM_WRITABLE			= 1 << 6,
-	BRASERO_MEDIUM_PLUS			= 1 << 7,
-	BRASERO_MEDIUM_DL			= 1 << 8,
-	BRASERO_MEDIUM_JUMP			= 1 << 9,
-	BRASERO_MEDIUM_SEQUENTIAL		= 1 << 10,
-	BRASERO_MEDIUM_RESTRICTED		= 1 << 11,
-	BRASERO_MEDIUM_APPENDABLE		= 1 << 12,
-	BRASERO_MEDIUM_PROTECTED		= 1 << 13
+	BRASERO_MEDIUM_FILE			= 1,
+	BRASERO_MEDIUM_DVD			= 1 << 1,
+	BRASERO_MEDIUM_CD			= 1 << 2,
+	BRASERO_MEDIUM_RAM			= 1 << 3,
+	BRASERO_MEDIUM_BD			= 1 << 4,
+	BRASERO_MEDIUM_BLANK			= 1 << 5,
+	BRASERO_MEDIUM_HAS_DATA			= 1 << 6,
+	BRASERO_MEDIUM_HAS_AUDIO		= 1 << 7,
+	BRASERO_MEDIUM_REWRITABLE		= 1 << 8,
+	BRASERO_MEDIUM_WRITABLE			= 1 << 9,
+	BRASERO_MEDIUM_APPENDABLE		= 1 << 10,
+	BRASERO_MEDIUM_PLUS			= 1 << 11,
+	BRASERO_MEDIUM_DL			= 1 << 12,
+	BRASERO_MEDIUM_JUMP			= 1 << 13,
+	BRASERO_MEDIUM_SEQUENTIAL		= 1 << 14,
+	BRASERO_MEDIUM_RESTRICTED		= 1 << 15,
+	BRASERO_MEDIUM_PROTECTED		= 1 << 16,
+	BRASERO_MEDIUM_RANDOM			= 1 << 17
+
 } BraseroMediumInfo;
+
+#define BRASERO_MEDIUM_CDR		(BRASERO_MEDIUM_CD|		\
+					 BRASERO_MEDIUM_WRITABLE)
+#define BRASERO_MEDIUM_CDRW		(BRASERO_MEDIUM_CD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE)
+#define BRASERO_MEDIUM_DVD_RAM		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_RAM)
+#define BRASERO_MEDIUM_DVDR		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE)
+#define BRASERO_MEDIUM_DVDRW		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE|	\
+					 BRASERO_MEDIUM_SEQUENTIAL)
+#define BRASERO_MEDIUM_DVDRW_RESTRICTED	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE|	\
+					 BRASERO_MEDIUM_RESTRICTED)
+#define BRASERO_MEDIUM_DVDR_DL		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_SEQUENTIAL|	\
+					 BRASERO_MEDIUM_DL)
+#define BRASERO_MEDIUM_DVDR_JUMP_DL	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_JUMP|		\
+					 BRASERO_MEDIUM_DL)
+#define BRASERO_MEDIUM_DVDR_PLUS	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_PLUS)
+#define BRASERO_MEDIUM_DVDRW_PLUS	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE|	\
+					 BRASERO_MEDIUM_PLUS)
+#define BRASERO_MEDIUM_DVDR_PLUS_DL	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_PLUS|		\
+					 BRASERO_MEDIUM_DL)
+#define BRASERO_MEDIUM_DVDRW_PLUS_DL	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE|	\
+					 BRASERO_MEDIUM_PLUS|		\
+					 BRASERO_MEDIUM_DL)
+#define BRASERO_MEDIUM_BD_ROM		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_BD)
+#define BRASERO_MEDIUM_BDR		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_BD)
+#define BRASERO_MEDIUM_BDR_RANDOM	(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_RANDOM|		\
+					 BRASERO_MEDIUM_BD)
+#define BRASERO_MEDIUM_BDRW		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE|	\
+					 BRASERO_MEDIUM_PLUS|		\
+					 BRASERO_MEDIUM_BD)
+
+#define BRASERO_MEDIUM_IS(media, type)	(((media)&(type))==(type))
 
 typedef enum {
 	BRASERO_MEDIUM_TRACK_NONE		= 0,
@@ -88,6 +153,7 @@ typedef enum {
 struct _BraseroMediumTrack {
 	BraseroMediumTrackType type;
 	guint64 start;
+	guint64 blocks_num;
 };
 typedef struct _BraseroMediumTrack BraseroMediumTrack;
 
@@ -105,6 +171,27 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium);
 
 gint
 brasero_medium_get_max_write_speed (BraseroMedium *medium);
+
+void
+brasero_medium_get_free_space (BraseroMedium *medium,
+			       gint64 *size,
+			       gint64 *blocks);
+
+void
+brasero_medium_get_capacity (BraseroMedium *medium,
+			     gint64 *size,
+			     gint64 *blocks);
+
+void
+brasero_medium_get_data_size (BraseroMedium *medium,
+			      gint64 *size,
+			      gint64 *blocks);
+
+const gchar *
+brasero_medium_get_type_string (BraseroMedium *medium);
+
+const gchar *
+brasero_medium_get_icon (BraseroMedium *medium);
 
 G_END_DECLS
 

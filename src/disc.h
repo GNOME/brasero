@@ -97,6 +97,8 @@ struct _BraseroDiscIface {
 							 gint nb_files);
 	void	(*size_changed)				(BraseroDisc *disc,
 							 gint64 size);
+	void	(*flags_changed)			(BraseroDisc *disc,
+							 BraseroBurnFlag flags);
 
 	/* virtual functions */
 	BraseroDiscResult	(*get_status)		(BraseroDisc *disc);
@@ -107,7 +109,6 @@ struct _BraseroDiscIface {
 							 BraseroImageFormat format);
 	BraseroDiscResult	(*get_track_type)	(BraseroDisc *disc,
 							 BraseroTrackSourceType *type,
-							 BraseroBurnFlag *flags,
 							 BraseroImageFormat *format);
 
 	BraseroDiscResult	(*load_track)		(BraseroDisc *disc,
@@ -157,14 +158,17 @@ brasero_disc_get_track_source (BraseroDisc *disc,
 BraseroDiscResult
 brasero_disc_get_track_type (BraseroDisc *disc,
 			     BraseroTrackSourceType *type,
-			     BraseroBurnFlag *flags,
 			     BraseroImageFormat *format);
 BraseroDiscResult
 brasero_disc_load_track (BraseroDisc *disc,
 			 BraseroDiscTrack *track);
 
 void
-brasero_disc_size_changed (BraseroDisc *disc, gint64 size);
+brasero_disc_size_changed (BraseroDisc *disc,
+			   gint64 size);
+void
+brasero_disc_flags_changed (BraseroDisc *disc,
+			    BraseroBurnFlag flags);
 void
 brasero_disc_contents_changed (BraseroDisc *disc,
 			       gint nb_files);

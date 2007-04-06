@@ -103,7 +103,7 @@ struct BraseroRecorderSelectionPrivate {
 	gint removed_signal;
 
 	BraseroBurnCaps *caps;
-	NautilusBurnMediaType media_type;
+	BraseroMediumInfo media;
 	BraseroTrackSource *track_source;
 };
 
@@ -427,8 +427,8 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 
 	props->props.image_format = BRASERO_IMAGE_FORMAT_ANY;
 
-	max_rate = NCB_GET_MAX_WRITE_SPEED (selection->priv->drive);
-	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (nautilus_burn_drive_get_media_type (selection->priv->drive)))
+	max_rate = NCB_MEDIA_GET_MAX_WRITE_SPEED (selection->priv->drive);
+	if (NCB_MEDIA_GET_STATUS (selection->priv->drive) & BRASERO_MEDIUM_DVD)
 		props->props.drive_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
 	else
 		props->props.drive_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
@@ -442,108 +442,85 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 					NautilusBurnDrive *drive)
 {
 	gchar *info;
+	BraseroMediumInfo media;
 	gboolean can_record = FALSE;
-	gchar *types [] = { 	"gnome-dev-removable",
-				"gnome-dev-removable",
-				"gnome-dev-removable",
-				"gnome-dev-cdrom",
-				"gnome-dev-disc-cdr",
-				"gnome-dev-disc-cdrw",
-				"gnome-dev-disc-dvdrom",
-				"gnome-dev-disc-dvdr",
-				"gnome-dev-disc-dvdrw",
-				"gnome-dev-disc-dvdram",
-				"gnome-dev-disc-dvdr-plus",
-				"gnome-dev-disc-dvdrw", /* FIXME */
-				"gnome-dev-disc-dvdr-plus" /* FIXME */,
-				NULL };
-	gboolean is_appendable;
-	NautilusBurnMediaType type;
-	gboolean is_rewritable, has_audio, has_data, is_blank;
 
-	if (drive) {
-		type = NCB_DRIVE_MEDIA_GET_TYPE (drive,
-						 &is_blank,
-						 &is_rewritable,
-						 &has_data,
-						 &has_audio);
-		is_appendable = NCB_MEDIA_IS_APPENDABLE (drive);
-	}
-	else {
-		has_audio = has_data = is_blank = is_appendable = is_rewritable = FALSE;
-		type = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
-	}
+	if (drive)
+		media = NCB_MEDIA_GET_STATUS (drive);
+	else
+		media = BRASERO_MEDIUM_NONE;
 
-	selection->priv->media_type = type;
+	selection->priv->media = media;
 
-	if (type == NAUTILUS_BURN_MEDIA_TYPE_BUSY) {
-		info = g_strdup (_("<i>The disc is busy.</i>"));
-		can_record = TRUE;
-	}
-	else if (type == NAUTILUS_BURN_MEDIA_TYPE_ERROR) {
+	if (media == BRASERO_MEDIUM_NONE) {
 		info = g_strdup (_("<i>There is no disc in the drive.</i>"));
 	}
-	else if (type == NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN) {
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		info = g_strdup (_("<i>Unknown type of disc.</i>"));
 	}
-	else if ((!is_appendable && !is_blank && !is_rewritable)
-	     || ((is_appendable && has_audio) && !is_blank && !is_rewritable)) {
+	else if (!(media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_APPENDABLE))
+	     ||   (media & BRASERO_MEDIUM_APPENDABLE
+	     &&  !(media & (BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_HAS_DATA)))) {
 		info = g_strdup_printf (_("The <b>%s</b> is not writable."),
-					nautilus_burn_drive_media_type_get_string (type));
+					NCB_MEDIA_GET_TYPE_STRING (drive));
 	}
-	else if (has_audio) {
-		if (is_appendable) {
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		if (media & BRASERO_MEDIUM_APPENDABLE) {
 			gchar *size;
-			GnomeVFSFileSize remaining;
+			gint64 remaining;
 
-			remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
+			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			size = gnome_vfs_format_file_size_for_display (remaining);
+			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio and data tracks.\nA data session can be added (%s free)."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						size);
+			g_free (size);
+		}
+		else
+			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio and data tracks."),
+						NCB_MEDIA_GET_TYPE_STRING (drive));
+
+		can_record = TRUE;
+	}
+	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
+		if (media & BRASERO_MEDIUM_APPENDABLE) {
+			gchar *size;
+			gint64 remaining;
+
+			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
 			size = gnome_vfs_format_file_size_for_display (remaining);
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks.\nA data session can be added (%s free)."),
-						nautilus_burn_drive_media_type_get_string (type),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
 						size);
 			g_free (size);
 		}
 		else
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks."),
-						nautilus_burn_drive_media_type_get_string (type));
+						NCB_MEDIA_GET_TYPE_STRING (drive));
 
 		can_record = TRUE;
 	}
-	else if (has_data) {
-		if (is_appendable) {
+	else if (media & BRASERO_MEDIUM_HAS_DATA) {
+		if (media & BRASERO_MEDIUM_APPENDABLE) {
 			gchar *size;
-			GnomeVFSFileSize remaining;
+			gint64 remaining;
 
-			if (type == NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW) {
-				gint64 num_blocks;
-				gboolean result;
-
-				result = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
-								  &num_blocks,
-								  NULL);
-				if (result)
-					remaining = NCB_MEDIA_GET_CAPACITY (drive) - num_blocks * 2048;
-				else
-					remaining = NCB_MEDIA_GET_CAPACITY (drive);
-			}
-			else
-				remaining = NCB_MEDIA_GET_CAPACITY (drive) - NCB_MEDIA_GET_SIZE (drive);
-
+			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
 			size = gnome_vfs_format_file_size_for_display (remaining);
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data.\nMore data can be added (%s free)."),
-						nautilus_burn_drive_media_type_get_string (type),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
 						size);
 			g_free (size);
 		}
 		else
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data."),
-						nautilus_burn_drive_media_type_get_string (type));
+						NCB_MEDIA_GET_TYPE_STRING (drive));
 
 		can_record = TRUE;
 	}
 	else {
 		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt is empty."),
-					nautilus_burn_drive_media_type_get_string (type));
+					NCB_MEDIA_GET_TYPE_STRING (drive));
 		can_record = TRUE;
 	}
 
@@ -556,7 +533,7 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 
 	gtk_label_set_markup (GTK_LABEL (selection->priv->infos), info);
 	gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
-				      types [type],
+				      NCB_MEDIA_GET_ICON (drive),
 				      GTK_ICON_SIZE_DIALOG);
 	g_free (info);
 
@@ -568,7 +545,7 @@ brasero_recorder_selection_drive_media_added_cb (NautilusBurnDriveMonitor *monit
 						 NautilusBurnDrive *drive,
 						 BraseroRecorderSelection *selection)
 {
-	NautilusBurnMediaType type;
+	BraseroMediumInfo media;
 	NautilusBurnDrive *selected_drive = NULL;
 
 	/* we must make sure that the change was triggered
@@ -588,11 +565,11 @@ brasero_recorder_selection_drive_media_added_cb (NautilusBurnDriveMonitor *monit
 
 	brasero_recorder_selection_update_info (selection, drive);
 
-	type = nautilus_burn_drive_get_media_type (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
 	g_signal_emit (selection,
 		       brasero_recorder_selection_signals [MEDIA_CHANGED_SIGNAL],
 		       0,
-		       type);
+		       media);
 }
 
 static void
@@ -657,8 +634,8 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 {
 	guint added_signal = 0;
 	guint removed_signal = 0;
+	BraseroMediumInfo media;
 	NautilusBurnDrive *drive;
-	NautilusBurnMediaType type;
 	gboolean can_record = FALSE;
 	NautilusBurnDriveMonitor *monitor;
 
@@ -670,7 +647,7 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 		gtk_label_set_markup (GTK_LABEL (selection->priv->infos),
 				      _("<b>There is no available drive.</b>"));
 
-		type = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
+		media = BRASERO_MEDIUM_NONE;
 		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
@@ -686,7 +663,7 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		brasero_recorder_selection_update_image_path (selection);
 
-		type = NAUTILUS_BURN_MEDIA_TYPE_ERROR;
+		media = BRASERO_MEDIUM_FILE;
 		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
 					      "binary",
 					      GTK_ICON_SIZE_DIALOG);
@@ -694,7 +671,7 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 		goto end;
 	}
 
-	type = nautilus_burn_drive_get_media_type (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
 	can_record = brasero_recorder_selection_update_info (selection, drive);
 	added_signal = g_signal_connect (G_OBJECT (monitor),
 					 "media-added",
@@ -728,7 +705,7 @@ end:
 	g_signal_emit (selection,
 		       brasero_recorder_selection_signals [MEDIA_CHANGED_SIGNAL],
 		       0,
-		       type);
+		       media);
 }
 
 static void
@@ -782,7 +759,7 @@ static void
 brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection)
 {
 	NautilusBurnDrive *drive;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 	BraseroDriveProp *prop;
 	BraseroBurnFlag flags = 0;
 	BraseroBurnFlag supported = 0;
@@ -822,13 +799,13 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	g_free (header);
 
 	/* Speed combo */
-	media = nautilus_burn_drive_get_media_type (drive);
-	max_rate = NCB_GET_MAX_WRITE_SPEED (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
+	max_rate = NCB_MEDIA_GET_MAX_WRITE_SPEED (drive);
 
 	combo = gtk_combo_box_new_text ();
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Max speed"));
 	
-	if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+	if (media & BRASERO_MEDIUM_DVD)
 		max_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
 	else
 		max_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
@@ -836,7 +813,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	for (i = 2; i <= max_speed; i += 2) {
 		text = g_strdup_printf ("%i x (%s)",
 					i,
-					NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media) ? _("DVD"):_("CD"));
+					(media & BRASERO_MEDIUM_DVD) ? _("DVD"):_("CD"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), text);
 		g_free (text);
 	}
@@ -860,7 +837,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 		g_free (display_name);
 
 	if (prop->props.drive_speed == 0
-	||  prop->props.drive_speed >= NCB_GET_MAX_WRITE_SPEED (drive))
+	||  prop->props.drive_speed >= NCB_MEDIA_GET_MAX_WRITE_SPEED (drive))
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), prop->props.drive_speed / 2);
@@ -928,7 +905,7 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 
 	prop->props.drive_speed = gtk_combo_box_get_active (GTK_COMBO_BOX (combo));
 	if (prop->props.drive_speed == 0) {
-		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media))
+		if (media & BRASERO_MEDIUM_DVD)
 			prop->props.drive_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
 		else
 			prop->props.drive_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
@@ -1169,15 +1146,15 @@ brasero_recorder_selection_get_drive (BraseroRecorderSelection *selection,
 
 void
 brasero_recorder_selection_get_media (BraseroRecorderSelection *selection,
-				      NautilusBurnMediaType *media)
+				      BraseroMediumInfo *media)
 {
 	if (!media)
 		return;
 
 	if (selection->priv->drive)
-		*media = nautilus_burn_drive_get_media_type (selection->priv->drive);
+		*media = NCB_MEDIA_GET_STATUS (selection->priv->drive);
 	else
-		*media = NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN;
+		*media = BRASERO_MEDIUM_NONE;
 }
 
 void
@@ -1198,18 +1175,14 @@ brasero_recorder_selection_lock (BraseroRecorderSelection *selection,
 
 void
 brasero_recorder_selection_select_default_drive (BraseroRecorderSelection *selection,
-						 BraseroMediaType type)
+						 BraseroMediumInfo type)
 {
 	GList *iter;
 	GList *drives;
 	gboolean image;
-	gboolean is_blank;
-	gboolean has_data;
-	gboolean has_audio;
 	gboolean recorders;
-	gboolean is_rewritable;
+	BraseroMediumInfo media;
 	NautilusBurnDrive *drive;
-	NautilusBurnMediaType media_type;
 	NautilusBurnDrive *candidate = NULL;
 
 	g_object_get (selection->priv->selection,
@@ -1229,33 +1202,52 @@ brasero_recorder_selection_select_default_drive (BraseroRecorderSelection *selec
 		if (!drive || NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE)
 			continue;
 
-		media_type = NCB_DRIVE_MEDIA_GET_TYPE (drive,
-						       &is_rewritable,
-						       &is_blank,
-						       &has_data,
-						       &has_audio);
-
-		if ((type & BRASERO_MEDIA_WRITABLE) &&  nautilus_burn_drive_media_type_is_writable (media_type, is_blank)) {
+		media = NCB_MEDIA_GET_STATUS (drive);
+		if (type == BRASERO_MEDIUM_WRITABLE && (media & (BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_BLANK))) {
 			/* the perfect candidate would be blank; if not keep for later and see if no better media comes up */
-			if (is_blank) {
+			if (media & BRASERO_MEDIUM_BLANK) {
 				nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection), drive);
 				goto end;
 			}
 
-			candidate = drive;
+			/* a second choice would be rewritable media and if not appendable */
+			if (media & BRASERO_MEDIUM_REWRITABLE) {
+				if (NCB_MEDIA_GET_STATUS (candidate) & BRASERO_MEDIUM_REWRITABLE){
+					gint64 size_candidate;
+					gint64 size;
+
+					NCB_MEDIA_GET_FREE_SPACE (candidate, &size_candidate, NULL);
+					NCB_MEDIA_GET_FREE_SPACE (drive, &size, NULL);
+					if (size_candidate < size)
+						candidate = drive;
+				}
+				else
+					candidate = drive;
+
+			}
+			/* if both are appendable choose the one with the bigger free space */
+			else if (!(NCB_MEDIA_GET_STATUS (candidate) & BRASERO_MEDIUM_REWRITABLE)) {
+				gint64 size_candidate;
+				gint64 size;
+
+				NCB_MEDIA_GET_FREE_SPACE (candidate, &size_candidate, NULL);
+				NCB_MEDIA_GET_FREE_SPACE (drive, &size, NULL);
+				if (size_candidate < size)
+					candidate = drive;
+			}
 		}
-		else if ((type & BRASERO_MEDIA_REWRITABLE) && is_rewritable) {
+		else if (type == BRASERO_MEDIUM_REWRITABLE && (media & BRASERO_MEDIUM_REWRITABLE)) {
 			/* the perfect candidate would have data; if not keep it for later and see if no better media comes up */
-			if (has_data || has_audio) {
+			if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
 				nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection), drive);
 				goto end;
 			}
 
 			candidate = drive;
 		}
-		else if ((type & BRASERO_MEDIA_WITH_DATA) && (has_data || has_audio)) {
+		else if (type == BRASERO_MEDIUM_HAS_DATA && (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO))) {
 			/* the perfect candidate would not be rewritable; if not keep it for later and see if no better media comes up */
-			if (!is_rewritable) {
+			if (!(media & BRASERO_MEDIUM_REWRITABLE)) {
 				nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (selection->priv->selection), drive);
 				goto end;
 			}

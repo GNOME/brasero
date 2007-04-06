@@ -361,31 +361,6 @@ brasero_dvdcss_new ()
 }
 
 static BraseroBurnResult
-brasero_dvdcss_get_size_real (BraseroDvdcss *self,
-			      gint64 *sectors,
-			      GError **error)
-{
-	gint64 blocks;
-	NautilusBurnDrive *drive;
-	NautilusBurnMediaType media;
-
-	if (!self->priv->source)
-		BRASERO_JOB_NOT_READY (self);
-
-	drive = self->priv->source->contents.drive.disc;
-	media = nautilus_burn_drive_get_media_type (drive);
-
-	/* FIXME: the same of restricted DVD-RW */
-	if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
-		blocks = NCB_MEDIA_GET_SIZE (drive) / DVDCSS_BLOCK_SIZE;
-	else if (!brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive), &blocks, error))
-		return BRASERO_BURN_ERR;
-
-	*sectors = blocks;
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
 brasero_dvdcss_set_source (BraseroJob *job,
 			     const BraseroTrackSource *source,
 			     GError **error)
@@ -591,7 +566,6 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	gint64 written_sectors = 0;
 	BraseroDvdcss *self = data;
 	guint64 remaining_sectors;
-	BraseroBurnResult result;
 	gint64 volume_size;
 	GQueue *map = NULL;
 
@@ -613,11 +587,13 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	if (!files)
 		goto end;
 
-	result = brasero_dvdcss_get_size_real (self,
-					       &volume_size,
-					       &self->priv->error);
-	if (result != BRASERO_BURN_OK)
+	NCB_MEDIA_GET_DATA_SIZE (self->priv->source->contents.drive.disc, NULL, &volume_size);
+	if (volume_size == -1) {
+		self->priv->error = g_error_new (BRASERO_BURN_ERROR,
+						 BRASERO_BURN_ERROR_GENERAL,
+						 _("the size of the volume couln't be retrieved"));
 		goto end;
+	}
 
 	/* create a handle/open DVD */
 	handle = dvdcss_open (g_strdup (NCB_DRIVE_GET_DEVICE (drive)));
@@ -930,13 +906,17 @@ brasero_dvdcss_get_size (BraseroImager *imager,
 {
 	gint64 blocks;
 	BraseroDvdcss *self;
-	BraseroBurnResult result;
 
 	self = BRASERO_DVDCSS (imager);
 
-	result = brasero_dvdcss_get_size_real (self, &blocks, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
+	NCB_MEDIA_GET_DATA_SIZE (self->priv->source->contents.drive.disc, NULL, &blocks);
+	if (blocks == -1) {
+		g_set_error (error,
+			    BRASERO_BURN_ERROR,
+			    BRASERO_BURN_ERROR_GENERAL,
+			    _("the size of the volume couln't be retrieved"));
+		return BRASERO_BURN_ERR;
+	}
 
 	if (sectors)
 		*size_return = blocks;

@@ -488,26 +488,24 @@ static BraseroBurnResult
 brasero_growisofs_blank (BraseroRecorder *recorder,
 			 GError **error)
 {
+	BraseroMediumInfo media;
 	BraseroBurnResult result;
 	BraseroGrowisofs *growisofs;
-	NautilusBurnMediaType media;
 
 	growisofs = BRASERO_GROWISOFS (recorder);
 
 	if (!growisofs->priv->drive)
 		BRASERO_JOB_NOT_READY (growisofs);
 
-	media = nautilus_burn_drive_get_media_type (growisofs->priv->drive);
-
-	if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
+	media = NCB_MEDIA_GET_STATUS (growisofs->priv->drive);
+	if (!(media & BRASERO_MEDIUM_REWRITABLE))
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
-	/* There is no way to format RW+ or RW- in restricted overwrite mode in a fast way */
-	/* FIXME: actually there is: just reformat them (with dvd+rw-format -force) */
-	/* FIXME: we should use the same thing for DVD+RW and DVD-RW in restricted
-	 * overwrite mode */
-        if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW
-	||  growisofs->priv->fast_blank)
+	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		BRASERO_JOB_NOT_SUPPORTED (growisofs);
+
+	if (growisofs->priv->fast_blank)
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
 	/* if we have a slave we don't want it to run */
@@ -791,6 +789,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
  *  	  => skip the five seconds waiting
  * 
  */
+ 
 static BraseroBurnResult
 brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 				   GPtrArray *argv,
@@ -813,18 +812,24 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	if (growisofs->priv->dummy)
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=dummy"));
 
-	/* NOTE: dao is supported for DL DVD after 6.0 (think about that for BurnCaps) */
+	/* NOTE 1: dao is not a good thing if you want to make multisession
+	 * DVD+-R. It will close the disc. Which make sense since DAO means
+	 * Disc At Once. That's checked in burn-caps.c with coherency checks.
+	 * NOTE 2: dao is supported for DL DVD after 6.0 (think about that for
+	 * BurnCaps) */
 	if (growisofs->priv->dao)
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=dao"));
 
+	if (!growisofs->priv->multi) {
+		/* This option seems to help creating DVD more compatible
+		 * with DVD readers.
+		 * NOTE: it doesn't work with DVD+RW and DVD-RW in restricted
+		 * overwrite mode */
+		g_ptr_array_add (argv, g_strdup ("-dvd-compat"));
+	}
+
 	if (growisofs->priv->rate > 0)
 		g_ptr_array_add (argv, g_strdup_printf ("-speed=%d", growisofs->priv->rate));
-
-	/* dvd-compat closes the discs and could cause problems if multi session
-	* is required. NOTE: it doesn't work with DVD+RW and DVD-RW in restricted
-	* overwrite mode. */
-	if (!growisofs->priv->multi)
-		g_ptr_array_add (argv, g_strdup ("-dvd-compat"));
 
 	/* see if we're asked to merge some new data: in this case we MUST have
 	 * a list of grafts. The image can't come through stdin or an already 
@@ -855,8 +860,10 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 		brasero_job_set_run_slave (BRASERO_JOB (growisofs), FALSE);
 	}
 	else {
-		if (!growisofs->priv->multi)
-			g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tty"));
+		/* apparently we are not merging but growisofs will refuse to 
+		 * write a piped image if there is one already on the disc;
+		 * except with this option */
+		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tty"));
 
 		if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
 			BraseroTrackSourceType track_type;

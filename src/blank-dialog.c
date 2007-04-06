@@ -58,12 +58,12 @@ static void brasero_blank_dialog_finalize (GObject *object);
 
 static gboolean brasero_blank_dialog_cancel (BraseroToolDialog *dialog);
 static gboolean brasero_blank_dialog_activate (BraseroToolDialog *dialog,
-					         NautilusBurnDrive *drive);
+					       NautilusBurnDrive *drive);
 static void brasero_blank_dialog_media_changed (BraseroToolDialog *dialog,
-						 NautilusBurnMediaType media);
+						BraseroMediumInfo media);
 
 static void brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
-						    NautilusBurnMediaType type);
+						    BraseroMediumInfo type);
 
 struct BraseroBlankDialogPrivate {
 	BraseroBurn *burn;
@@ -165,7 +165,7 @@ GtkWidget *
 brasero_blank_dialog_new ()
 {
 	BraseroBlankDialog *obj;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 
 	obj = BRASERO_BLANK_DIALOG (g_object_new (BRASERO_TYPE_BLANK_DIALOG,
 						  "title", _("Disc blanking"),
@@ -179,7 +179,7 @@ brasero_blank_dialog_new ()
 
 static void
 brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
-					NautilusBurnMediaType type)
+					BraseroMediumInfo media)
 {
 	BraseroBurnResult result;
 	gboolean fast_enabled = FALSE;
@@ -188,7 +188,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 
 	/* set the options */
 	brasero_burn_caps_blanking_get_default_flags (dialog->priv->caps,
-						      type,
+						      media,
 						      &flags,
 						      &fast_enabled);
 
@@ -199,7 +199,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 				      fast_enabled);
 
 	result = brasero_burn_caps_blanking_get_supported_flags (dialog->priv->caps,
-								 type,
+								 media,
 								 &flags,
 								 &fast_supported);
 
@@ -229,7 +229,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 
 static void
 brasero_blank_dialog_media_changed (BraseroToolDialog *dialog,
-				    NautilusBurnMediaType media)
+				    BraseroMediumInfo media)
 {
 	BraseroBlankDialog *self;
 
@@ -332,7 +332,7 @@ brasero_blank_dialog_action_changed_cb (BraseroBurn *burn,
 static BraseroBurnResult
 brasero_blank_dialog_blank_insert_media_cb (BraseroBurn *burn,
 					    BraseroBurnError error,
-					    BraseroMediaType type,
+					    BraseroMediumInfo media,
 					    BraseroBlankDialog *dialog)
 {
 	return BRASERO_BURN_CANCEL;
@@ -375,7 +375,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 			  G_CALLBACK (brasero_blank_dialog_action_changed_cb),
 			  self);
 	g_signal_connect (G_OBJECT (self->priv->burn),
-			  "insert_media",
+			  "insert-media",
 			  G_CALLBACK (brasero_blank_dialog_blank_insert_media_cb),
 			  self);
 

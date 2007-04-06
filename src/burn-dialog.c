@@ -64,6 +64,7 @@
 #include "progress.h"
 #include "brasero-sum-check.h"
 #include "brasero-ncb.h"
+#include "burn-medium.h"
 #include "burn-task.h"
 
 extern gint debug;
@@ -104,7 +105,7 @@ struct BraseroBurnDialogPrivate {
 
 	gint64 isosize;
 	NautilusBurnDrive *drive;
-	NautilusBurnMediaType media_type;
+	BraseroMediumInfo media_type;
 	BraseroTrackSourceType track_type;
 
 	GtkWidget *close_check;
@@ -163,26 +164,26 @@ brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 
 static gchar *
 brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
-					   BraseroMediaType type,
+					   BraseroMediumInfo type,
 					   gboolean insert)
 {
 	gchar *message = NULL;
 
-	if (type & BRASERO_MEDIA_WITH_DATA) {
+	if (type & BRASERO_MEDIUM_HAS_DATA) {
 		if (!insert) {
-			if (type & BRASERO_MEDIA_REWRITABLE)
+			if (type & BRASERO_MEDIUM_REWRITABLE)
 				message = g_strdup (_("replace the disc with a rewritable disc holding data."));
 			else
 				message = g_strdup (_("replace the disc with a disc holding data."));
 		}
 		else {
-			if (type & BRASERO_MEDIA_REWRITABLE)
+			if (type & BRASERO_MEDIUM_REWRITABLE)
 				message = g_strdup (_("insert a rewritable disc holding data."));
 			else
 				message = g_strdup (_("insert a disc holding data."));
 		}
 	}
-	else if (type & BRASERO_MEDIA_WRITABLE) {
+	else if (type & BRASERO_MEDIUM_BLANK) {
 		gint64 isosize = 0;
 	
 		brasero_burn_status (burn,
@@ -191,7 +192,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 				     NULL,
 				     NULL);
 
-		if ((type & BRASERO_MEDIA_TYPE_CD) && !(type & BRASERO_MEDIA_TYPE_DVD)) {
+		if ((type & BRASERO_MEDIUM_CD) && !(type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
 				if (isosize)
 					message = g_strdup_printf (_("replace the disc with a recordable CD with a least %i MiB free."), 
@@ -207,7 +208,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 					message = g_strdup_printf (_("insert a recordable CD."));
 			}
 		}
-		else if (!(type & BRASERO_MEDIA_TYPE_CD) && (type & BRASERO_MEDIA_TYPE_DVD)) {
+		else if (!(type & BRASERO_MEDIUM_CD) && (type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
 				if (isosize)
 					message = g_strdup_printf (_("replace the disc with a recordable DVD with a least %i MiB free."), 
@@ -265,7 +266,7 @@ static BraseroBurnResult
 brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 				    NautilusBurnDrive *drive,
 				    BraseroBurnError error,
-				    BraseroMediaType type,
+				    BraseroMediumInfo type,
 				    BraseroBurnDialog *dialog)
 {
 	gint result;
@@ -295,6 +296,11 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	} 
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NONE) {
 		main_message = g_strdup_printf (_("There is no disc in \"%s\":"),
+						drive_name);
+		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
+	}
+	else if (error == BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED) {
+		main_message = g_strdup_printf (_("The disc in \"%s\" is not supported:"),
 						drive_name);
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
@@ -397,8 +403,12 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
-brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
-				  GtkDialog *dialog)
+brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog, 
+				      const gchar *title,
+				      const gchar *main_message,
+				      const gchar *secondary_message,
+				      const gchar *button_text,
+				      const gchar *button_icon)
 {
 	gint result;
 	GtkWindow *window;
@@ -417,12 +427,12 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
-					  _("The disc in the drive holds data:"));
+					  main_message);
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Possible loss of data"));
+	gtk_window_set_title (GTK_WINDOW (message), title);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						 _("Do you want to erase the current disc?\nOr replace the current disc with a new disc?"));
+						 secondary_message);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -436,9 +446,9 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_ACCEPT);
 
-	button = brasero_utils_make_button (_("Erase disc"),
-					    "brasero-action-blank",
+	button = brasero_utils_make_button (button_text,
 					    NULL,
+					    button_icon,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
@@ -460,66 +470,51 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
+brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
+				  GtkDialog *dialog)
+{
+	return brasero_burn_dialog_loss_warnings_cb (dialog,
+						     _("Possible loss of data"),
+						     _("The disc in the drive holds data:"),
+						     _("Do you want to erase the current disc?\nOr replace the current disc with a new disc?"),
+						     _("Erase disc"),
+						     "brasero-action-blank");
+}
+
+static BraseroBurnResult
+brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
+					      GtkDialog *dialog)
+{
+	return brasero_burn_dialog_loss_warnings_cb (dialog,
+						     _("Multisession disc"),
+						     _("Appending new files to a multisession disc is not advised:"),
+						     _("already burnt files will be invisible (though still readable).\nDo you want to continue anyway?"),
+						     _("Continue"),
+						     "brasero-action-burn");
+}
+
+static BraseroBurnResult
+brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
+					    GtkDialog *dialog)
+{
+	return brasero_burn_dialog_loss_warnings_cb (dialog,
+						     _("Multisession disc"),
+						     _("Appending audio tracks to a CD is not advised:"),
+						     _("you might not be able to listen to them with stereos and CD-TEXT won't be written.\nDo you want to continue anyway?"),
+						     _("Continue"),
+						     "brasero-action-burn");
+}
+
+static BraseroBurnResult
 brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 				   GtkDialog *dialog)
 {
-	gint result;
-	GtkWindow *window;
-	GtkWidget *button;
-	GtkWidget *message;
-	gboolean hide = FALSE;
-
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
-		gtk_widget_show (GTK_WIDGET (dialog));
-		hide = TRUE;
-	}
-
-	window = GTK_WINDOW (dialog);
-	message = gtk_message_dialog_new (window,
-					  GTK_DIALOG_DESTROY_WITH_PARENT|
-					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_NONE,
-					  _("Recording audio tracks on a rewritable disc is not advised:"));
-
-	gtk_window_set_title (GTK_WINDOW (message), _("Rewritable disc"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("you might not be able to listen to it with stereos.\nDo you want to continue anyway?"));
-
-	button = brasero_utils_make_button (_("Replace the disc"),
-					    GTK_STOCK_REFRESH,
-					    NULL,
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show_all (button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (message),
-				      button, GTK_RESPONSE_ACCEPT);
-
-	gtk_dialog_add_buttons (GTK_DIALOG (message),
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				NULL);
-
-	button = brasero_utils_make_button (_("Continue"),
-					    GTK_STOCK_OK,
-					    NULL,
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show_all (button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (message),
-				      button, GTK_RESPONSE_OK);
-
-	result = gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
-
-	if (hide)
-		gtk_widget_hide (GTK_WIDGET (dialog));
-
-	if (result == GTK_RESPONSE_ACCEPT)
-		return BRASERO_BURN_NEED_RELOAD;
-
-	if (result != GTK_RESPONSE_OK)
-		return BRASERO_BURN_CANCEL;
-
-	return BRASERO_BURN_OK;
+	return brasero_burn_dialog_loss_warnings_cb (dialog,
+						     _("Rewritable disc"),
+						     _("Recording audio tracks on a rewritable disc is not advised:"),
+						     _("you might not be able to listen to it with stereos.\nDo you want to continue anyway?"),
+						     _("Continue"),
+						     "brasero-action-burn");
 }
 
 static BraseroBurnResult
@@ -639,19 +634,19 @@ brasero_burn_dialog_progress_changed_cb (BraseroBurn *burn,
 					 glong remaining,
 					 BraseroBurnDialog *dialog)
 {
-	NautilusBurnMediaType type = NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN;
+	BraseroMediumInfo info = BRASERO_MEDIUM_NONE;
 	gint64 isosize = -1;
 	gint64 written = -1;
 	gint64 rate = -1;
 
 	brasero_burn_status (dialog->priv->burn,
-			     &type,
+			     &info,
 			     &isosize,
 			     &written,
 			     &rate);
 
-	if (type != NAUTILUS_BURN_MEDIA_TYPE_UNKNOWN)
-		dialog->priv->media_type = type;
+	if (info != BRASERO_MEDIUM_NONE)
+		dialog->priv->media_type = info;
 
 	brasero_burn_dialog_progress_changed_real (dialog,
 						   written,
@@ -660,7 +655,7 @@ brasero_burn_dialog_progress_changed_cb (BraseroBurn *burn,
 						   overall_progress,
 						   task_progress,
 						   remaining,
-						   dialog->priv->media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW);
+						   (info & BRASERO_MEDIUM_DVD));
 }
 
 static void
@@ -910,24 +905,8 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 {
 	gchar *title = NULL;
 	gchar *header = NULL;
-//	GdkPixbuf *pixbuf = NULL;
+	BraseroMediumInfo media;
 	NautilusBurnDrive *drive;
-	NautilusBurnMediaType media_type;
-
-	gchar *types [] = { 	"gnome-dev-removable",
-				"gnome-dev-removable",
-				"gnome-dev-removable",
-				"gnome-dev-cdrom",
-				"gnome-dev-disc-cdr",
-				"gnome-dev-disc-cdrw",
-				"gnome-dev-disc-dvdrom",
-				"gnome-dev-disc-dvdr",
-				"gnome-dev-disc-dvdrw",
-				"gnome-dev-disc-dvdram",
-				"gnome-dev-disc-dvdr-plus",
-				"gnome-dev-disc-dvdrw", /* FIXME */
-				"gnome-dev-disc-dvdr-plus" /* FIXME */,
-				NULL };
 
 	drive = dialog->priv->drive;
 	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
@@ -941,9 +920,9 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 		goto end;
 	}
 
-	media_type = nautilus_burn_drive_get_media_type (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
 
-	if (media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+	if (media & BRASERO_MEDIUM_DVD) {
 		if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_DATA
 		||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_IMAGE
 		||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_GRAFTS) {
@@ -982,7 +961,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 	}
 	
 	gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-				      types [media_type],
+				      NCB_MEDIA_GET_ICON (drive),
 				      GTK_ICON_SIZE_DIALOG);
 
 end:
@@ -1273,12 +1252,12 @@ brasero_burn_dialog_check_image_integrity (BraseroBurnDialog *dialog,
 		return result;
 
 	if (source->type == BRASERO_TRACK_SOURCE_DISC) {
-		NautilusBurnMediaType media;
+		BraseroMediumInfo media;
 		NautilusBurnDrive *src_drive;
 
 		src_drive = source->contents.drive.disc;
-		media = nautilus_burn_drive_get_media_type (src_drive);
-		if (media == NAUTILUS_BURN_MEDIA_TYPE_ERROR) {
+		media = NCB_MEDIA_GET_STATUS (src_drive);
+		if (media == BRASERO_MEDIUM_NONE) {
 			gchar *message;
 			gchar *name;
 
@@ -1327,6 +1306,10 @@ brasero_burn_dialog_check_image_integrity (BraseroBurnDialog *dialog,
 		brasero_track_source_free (checksum_disc);
 		return result;
 	}
+
+	gchar string1 [40], string2[40];
+	brasero_md5_string (&checksum_track->contents.sum.md5, string1);
+	brasero_md5_string (&checksum_disc->contents.sum.md5, string2);
 
 	/* compare the checksums */
 	success = brasero_md5_equal (&checksum_track->contents.sum.md5,
@@ -1444,7 +1427,7 @@ brasero_burn_dialog_integrity_start (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 	gchar *header;
 
-	if (nautilus_burn_drive_get_media_type (burner) < NAUTILUS_BURN_MEDIA_TYPE_CD) {
+	if (NCB_MEDIA_GET_STATUS (burner) == BRASERO_MEDIUM_NONE) {
 		gchar *message;
 		gchar *name;
 
@@ -1557,6 +1540,14 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 	g_signal_connect (dialog->priv->burn,
 			  "warn-data-loss",
 			  G_CALLBACK (brasero_burn_dialog_data_loss_cb),
+			  dialog);
+	g_signal_connect (dialog->priv->burn,
+			  "warn-previous-session-loss",
+			  G_CALLBACK (brasero_burn_dialog_previous_session_loss_cb),
+			  dialog);
+	g_signal_connect (dialog->priv->burn,
+			  "warn-audio-to-appendable",
+			  G_CALLBACK (brasero_burn_dialog_audio_to_appendable_cb),
 			  dialog);
 	g_signal_connect (dialog->priv->burn,
 			  "warn-rewritable",
@@ -1923,7 +1914,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 		break;
 	case BRASERO_TRACK_SOURCE_DISC:
 		if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-			if (dialog->priv->media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+			if (dialog->priv->media_type & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("DVD successfully copied"));
 				secondary = g_strdup_printf (_("DVD is now ready for use"));
 			}
@@ -1933,7 +1924,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 			}
 		}
 		else {
-			if (dialog->priv->media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+			if (dialog->priv->media_type & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("Image of DVD successfully created"));
 				secondary = g_strdup_printf (_("DVD is now ready for use"));
 			}
@@ -1945,7 +1936,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 		break;
 	case BRASERO_TRACK_SOURCE_IMAGE:
 		if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-			if (dialog->priv->media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+			if (dialog->priv->media_type & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("Image successfully burnt to DVD"));
 				secondary = g_strdup_printf (_("DVD is now ready for use"));
 			}
@@ -1957,7 +1948,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog,
 		break;
 	default:
 		if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-			if (dialog->priv->media_type > NAUTILUS_BURN_MEDIA_TYPE_CDRW) {
+			if (dialog->priv->media_type & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("Data DVD successfully burnt"));
 				secondary = g_strdup_printf (_("\"%s\" is now ready for use"), track->contents.data.label);
 			}
@@ -2086,8 +2077,15 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 						    &error);
 
 	if (result == BRASERO_BURN_OK) {
-		if ((flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) == 0
-		&&   NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
+		/* see burn-caps.c for more details:
+		 * basically we don't use DAO when:
+		 * - we're appending to a CD/DVD
+		 * - starting a multisession DVD-/+ R
+		 * - we're writing to a file
+		 */
+		if (!(flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
+		&&   !NCB_MEDIA_IS (drive, BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_WRITABLE) /* that targets DVD+/-R */
+		&&    NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
 			flags |= BRASERO_BURN_FLAG_DAO;
 
 		result = brasero_burn_record (dialog->priv->burn,

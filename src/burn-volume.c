@@ -161,6 +161,35 @@ brasero_volume_is_valid (const gchar *path, GError **error)
 }
 
 gboolean
+brasero_volume_is_valid_fd (int fd, GError **error)
+{
+	int dup_fd;
+	FILE *file;
+	gboolean result;
+	gchar buffer [ISO9660_BLOCK_SIZE];
+
+	dup_fd = dup (fd);
+	if (dup_fd == -1)
+		goto error;
+
+	file = fdopen (dup (fd), "r");
+	if (!file)
+		goto error;
+
+	result = brasero_volume_get_primary_from_file (file, buffer, error);
+	fclose (file);
+
+	return TRUE;
+
+error:
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     strerror (errno));
+	return FALSE;
+}
+
+gboolean
 brasero_volume_is_iso9660 (const gchar *path, GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
@@ -188,6 +217,49 @@ brasero_volume_get_label (const gchar *path,
 		return FALSE;
 
 	return brasero_iso9660_get_label (buffer, label, error);
+}
+
+gboolean
+brasero_volume_get_size_fd (int fd,
+			    gint64 block,
+			    gint64 *nb_blocks,
+			    GError **error)
+{
+	int dup_fd;
+	FILE *file;
+	gboolean result;
+	gchar buffer [ISO9660_BLOCK_SIZE];
+
+	dup_fd = dup (fd);
+	if (dup_fd == -1)
+		goto error;
+
+	file = fdopen (dup (fd), "r");
+	if (!file)
+		goto error;
+
+	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return FALSE;
+	}
+
+	result = brasero_volume_get_primary_from_file (file, buffer, error);
+	fclose (file);
+
+	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
+		return FALSE;
+
+	return brasero_iso9660_get_size (buffer, nb_blocks, error);
+
+error:
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     strerror (errno));
+	return FALSE;
 }
 
 gboolean

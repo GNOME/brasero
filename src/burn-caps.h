@@ -33,6 +33,7 @@
 #include "burn-basics.h"
 #include "burn-recorder.h"
 #include "burn-imager.h"
+#include "burn-medium.h"
 
 G_BEGIN_DECLS
 
@@ -92,12 +93,12 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 
 BraseroBurnResult
 brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
-					      NautilusBurnMediaType media_type,
+					      BraseroMediumInfo media,
 					      BraseroBurnFlag *flags,
 					      gboolean *fast_default);
 BraseroBurnResult
 brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
-						NautilusBurnMediaType media_type,
+						BraseroMediumInfo media,
 						BraseroBurnFlag *flags,
 						gboolean *fast_supported);
 
@@ -112,8 +113,8 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 				 BraseroImager **imager,
 				 const BraseroTrackSource *source,
 				 BraseroTrackSourceType target,
-				 NautilusBurnMediaType src_media_type,
-				 NautilusBurnMediaType dest_media_type,
+				 BraseroMediumInfo src_media,
+				 BraseroMediumInfo dest_media,
 				 GError **error);
 
 BraseroBurnResult
@@ -133,17 +134,17 @@ BraseroBurnResult
 brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 				   BraseroRecorder **recorder,
 				   const BraseroTrackSource *source,
-				   NautilusBurnMediaType media_type,
+				   BraseroMediumInfo media,
 				   GError **error);
 
 BraseroBurnResult
 brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 						BraseroRecorder **recorder,
-						NautilusBurnMediaType media_type,
+						BraseroMediumInfo media,
 						gboolean fast,
 						GError **error);
 
-BraseroMediaType
+BraseroMediumInfo
 brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 					   const BraseroTrackSource *source);
 

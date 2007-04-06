@@ -63,7 +63,7 @@ typedef struct {
 
 	/* signal */
 	void		(*media_changed)	(BraseroRecorderSelection *selection,
-						 NautilusBurnMediaType type);
+						 BraseroMediumInfo media);
 
 } BraseroRecorderSelectionClass;
 
@@ -81,7 +81,7 @@ brasero_recorder_selection_lock (BraseroRecorderSelection *selection,
 
 void
 brasero_recorder_selection_select_default_drive (BraseroRecorderSelection *selection,
-						 BraseroMediaType type);
+						 BraseroMediumInfo type);
 void
 brasero_recorder_selection_set_source_track (BraseroRecorderSelection *selection,
 					     const BraseroTrackSource *source);
@@ -91,6 +91,6 @@ brasero_recorder_selection_get_drive (BraseroRecorderSelection *selection,
 				      BraseroDriveProp *props);
 void
 brasero_recorder_selection_get_media (BraseroRecorderSelection *selection,
-				      NautilusBurnMediaType *media);
+				      BraseroMediumInfo *media);
 
 #endif				/* RECORDER_SELECTION_H */

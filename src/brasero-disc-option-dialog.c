@@ -44,6 +44,7 @@
 #include "brasero-disc-option-dialog.h"
 #include "recorder-selection.h"
 #include "brasero-ncb.h"
+#include "burn-medium.h"
 #include "disc.h"
  
 static void brasero_disc_option_dialog_class_init (BraseroDiscOptionDialogClass *klass);
@@ -127,7 +128,7 @@ static void
 brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 {
 	gboolean has_video;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 	NautilusBurnDrive *drive = NULL;
 	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NONE;
@@ -137,10 +138,10 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
 					      &drive,
 					      NULL);
-	media = nautilus_burn_drive_get_media_type (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
 
 	if (dialog->priv->video_toggle) {
-		if (NAUTILUS_BURN_DRIVE_MEDIA_TYPE_IS_DVD (media)) {
+		if (media & BRASERO_MEDIUM_DVD) {
 			has_video = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->video_toggle));
 			gtk_widget_set_sensitive (dialog->priv->video_toggle, TRUE);
 		}
@@ -203,7 +204,7 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 
 		if (dialog->priv->track->type == BRASERO_TRACK_SOURCE_DATA) {
 			if ((NCB_DRIVE_GET_TYPE (drive) & NAUTILUS_BURN_DRIVE_TYPE_FILE) == 0
-			&&  NCB_MEDIA_IS_APPENDABLE (drive))
+			&&  (media & BRASERO_MEDIUM_APPENDABLE))
 				title_str = nautilus_burn_drive_get_media_label (drive);
 
 			if (!title_str || title_str [0] == '\0')
@@ -222,7 +223,7 @@ brasero_disc_option_dialog_set_state (BraseroDiscOptionDialog *dialog)
 
 static void
 brasero_disc_option_dialog_media_changed (BraseroRecorderSelection *selection,
-					  NautilusBurnMediaType media,
+					  BraseroMediumInfo media,
 					  BraseroDiscOptionDialog *dialog)
 {
 	brasero_disc_option_dialog_set_state (dialog);
@@ -286,7 +287,7 @@ brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 
 	if (type == BRASERO_TRACK_SOURCE_DATA) {
 		NautilusBurnDrive *drive = NULL;
-		NautilusBurnMediaType media;
+		BraseroMediumInfo media;
 
 		label = g_strdup (_("<b>Label of the disc</b>"));
 
@@ -296,11 +297,11 @@ brasero_disc_option_set_title_widget (BraseroDiscOptionDialog *dialog,
 						      &drive,
 						      NULL);
 
-		media = nautilus_burn_drive_get_media_type (drive);
+		media = NCB_MEDIA_GET_STATUS (drive);
 
 		if (drive
 		&& (NCB_DRIVE_GET_TYPE (drive) & NAUTILUS_BURN_DRIVE_TYPE_FILE) == 0
-		&&  NCB_MEDIA_IS_APPENDABLE (drive))
+		&& (media & BRASERO_MEDIUM_APPENDABLE))
 			title_str = nautilus_burn_drive_get_media_label (drive);
 
 		if (!title_str || title_str [0] == '\0')
@@ -477,12 +478,15 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 void
 brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 				     NautilusBurnDrive *drive,
+				     BraseroBurnFlag flags,
 				     BraseroDisc *disc)
 {
 	BraseroTrackSourceType type = BRASERO_TRACK_SOURCE_UNKNOWN;
 	BraseroImageFormat format = BRASERO_IMAGE_FORMAT_NONE;
 
-	brasero_disc_get_track_type (disc, &type, &dialog->priv->flags, &format);
+	brasero_disc_get_track_type (disc, &type, &format);
+
+	dialog->priv->flags = flags;
 
 	/* we need to set a dummy track */
 	if (dialog->priv->track)
@@ -678,7 +682,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 			    6);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
-							 BRASERO_MEDIA_WRITABLE);
+							 BRASERO_MEDIUM_WRITABLE);
 	gtk_tooltips_set_tip (obj->priv->tooltips,
 			      obj->priv->selection,
 			      _("Choose which drive holds the disc to write to"),

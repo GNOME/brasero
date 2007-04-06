@@ -889,6 +889,8 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			if ((format & BRASERO_IMAGE_FORMAT_ISO)) {
 				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
 
+				/* DAO can't be used if we're appending to a 
+				 * disc with audio track(s) on it */
 				if (cdrecord->priv->dao)
 					g_ptr_array_add (argv, g_strdup ("-dao"));
 
@@ -905,7 +907,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 				g_ptr_array_add (argv, g_strdup ("-"));
 
 				/* we need to generate the toc first */
-
 				if (result != BRASERO_BURN_OK)
 					return result;
 			} 
@@ -944,7 +945,9 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 					      (cdrecord->priv->rate + 1) * CDR_SPEED);
 
 			/* now set the rest of the arguments */
-			g_ptr_array_add (argv, g_strdup ("-dao"));
+			if (cdrecord->priv->dao)
+				g_ptr_array_add (argv, g_strdup ("-dao"));
+
 			g_ptr_array_add (argv, g_strdup ("-swab"));
 			g_ptr_array_add (argv, g_strdup ("-audio"));
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
@@ -1145,12 +1148,12 @@ brasero_cdrecord_set_drive (BraseroRecorder *recorder,
 			    GError **error)
 {
 	BraseroCDRecord *cdrecord;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 
 	cdrecord = BRASERO_CD_RECORD (recorder);
 
-	media = nautilus_burn_drive_get_media_type (drive);
-	if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	media = NCB_MEDIA_GET_STATUS (drive);
+	if (media & BRASERO_MEDIUM_DVD)
 		BRASERO_JOB_NOT_SUPPORTED (cdrecord);
 
 	if (cdrecord->priv->drive) {

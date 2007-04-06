@@ -36,6 +36,7 @@ typedef enum {
 	SELECTION_CHANGED_SIGNAL,
 	CONTENTS_CHANGED_SIGNAL,
 	SIZE_CHANGED_SIGNAL,
+	FLAGS_CHANGED_SIGNAL,
 	LAST_SIGNAL
 } BraseroDiscSignalType;
 
@@ -110,6 +111,17 @@ brasero_disc_base_init (gpointer g_class)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_INT64);
+	brasero_disc_signals [FLAGS_CHANGED_SIGNAL] =
+	    g_signal_new ("flags_changed",
+			  BRASERO_TYPE_DISC,
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  G_STRUCT_OFFSET (BraseroDiscIface, flags_changed),
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__INT,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_INT);
 	initialized = TRUE;
 }
 
@@ -215,7 +227,6 @@ brasero_disc_get_track_source (BraseroDisc *disc,
 BraseroDiscResult
 brasero_disc_get_track_type (BraseroDisc *disc,
 			     BraseroTrackSourceType *type,
-			     BraseroBurnFlag *flags,
 			     BraseroImageFormat *format)
 {
 	BraseroDiscIface *iface;
@@ -224,7 +235,7 @@ brasero_disc_get_track_type (BraseroDisc *disc,
 	
 	iface = BRASERO_DISC_GET_IFACE (disc);
 	if (iface->get_track_type)
-		return (* iface->get_track_type) (disc, type, flags, format);
+		return (* iface->get_track_type) (disc, type, format);
 
 	return BRASERO_DISC_ERROR_UNKNOWN;
 }
@@ -313,11 +324,21 @@ brasero_disc_size_changed (BraseroDisc *disc,
 			   gint64 size)
 {
 	g_return_if_fail (BRASERO_IS_DISC (disc));
-
 	g_signal_emit (disc,
 		       brasero_disc_signals [SIZE_CHANGED_SIGNAL],
 		       0,
 		       size);
+}
+
+void
+brasero_disc_flags_changed (BraseroDisc *disc,
+			    BraseroBurnFlag flags)
+{
+	g_return_if_fail (BRASERO_IS_DISC (disc));
+	g_signal_emit (disc,
+		       brasero_disc_signals [FLAGS_CHANGED_SIGNAL],
+		       0,
+		       flags);
 }
 
 /************************************ ******************************************/

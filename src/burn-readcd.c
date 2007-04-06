@@ -241,14 +241,11 @@ brasero_readcd_get_track (BraseroImager *imager,
 	if (!readcd->priv->track_ready) {
 		NautilusBurnDrive *drive;
 		BraseroBurnResult result;
-		NautilusBurnMediaType media;
+		BraseroMediumInfo media;
 
 		drive = readcd->priv->source->contents.drive.disc;
-		media = nautilus_burn_drive_get_media_type (drive);
-		if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
-			readcd->priv->is_DVD = TRUE;
-		else
-			readcd->priv->is_DVD = FALSE;
+		media = NCB_MEDIA_GET_STATUS (drive);
+		readcd->priv->is_DVD = (media & BRASERO_MEDIUM_DVD);
 
 		readcd->priv->action = BRASERO_READCD_ACTION_IMAGING;
 		result = brasero_job_run (BRASERO_JOB (readcd), error);
@@ -572,22 +569,16 @@ brasero_readcd_argv_set_iso_boundary (GPtrArray *argv,
 				      NautilusBurnDrive *drive,
 				      GError **error)
 {
-	gboolean res;
 	gint64 nb_blocks;
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 
-	media = nautilus_burn_drive_get_media_type (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
 
-	/* FIXME: we should do the same for DVD-RW restricted ... */
-	if (media != NAUTILUS_BURN_MEDIA_TYPE_DVD_PLUS_RW)
+	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))
 		return BRASERO_BURN_OK;
 
-	/* This is to avoid reading till the end of the DVD */
-	res = brasero_volume_get_size (NCB_DRIVE_GET_DEVICE (drive),
-				       &nb_blocks,
-				       NULL);
-	if (!res)
-		nb_blocks = NCB_MEDIA_GET_SIZE (drive) / 2048;
+	NCB_MEDIA_GET_DATA_SIZE (drive, NULL, &nb_blocks);
 
 	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
 	return BRASERO_BURN_OK;
@@ -601,8 +592,8 @@ brasero_readcd_set_argv (BraseroProcess *process,
 {
 	BraseroBurnResult result = FALSE;
 	BraseroImageFormat format;
-	NautilusBurnMediaType type;
 	NautilusBurnDrive *drive;
+	BraseroMediumInfo media;
 	BraseroReadcd *readcd;
 	gchar *outfile_arg;
 	gchar *dev_str;
@@ -625,13 +616,13 @@ brasero_readcd_set_argv (BraseroProcess *process,
 
 	g_ptr_array_add (argv, g_strdup ("-nocorr"));
 
-	type = nautilus_burn_drive_get_media_type (drive);
+	media = NCB_MEDIA_GET_STATUS (drive);
 	format = readcd->priv->image_format;
 
 	if (format == BRASERO_IMAGE_FORMAT_ANY)
 		format = brasero_burn_caps_get_imager_default_format (readcd->priv->caps,
 								      readcd->priv->source);
-	if (type > NAUTILUS_BURN_MEDIA_TYPE_CDRW 
+	if ((media & BRASERO_MEDIUM_DVD) 
 	&& !(format & BRASERO_IMAGE_FORMAT_ISO)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,

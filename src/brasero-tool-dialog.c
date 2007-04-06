@@ -47,6 +47,8 @@
 #include "burn-job.h"
 #include "recorder-selection.h"
 #include "brasero-tool-dialog.h"
+#include "burn-medium.h"
+#include "brasero-ncb.h"
 
 static void brasero_tool_dialog_class_init (BraseroToolDialogClass *klass);
 static void brasero_tool_dialog_init (BraseroToolDialog *sp);
@@ -70,7 +72,7 @@ brasero_tool_dialog_button_clicked (GtkButton *button,
 
 static void
 brasero_tool_dialog_device_changed_cb (BraseroRecorderSelection *selection,
-				       NautilusBurnMediaType media_type,
+				       BraseroMediumInfo media,
 				       BraseroToolDialog *self);
 
 struct _BraseroToolDialogPrivate {
@@ -155,7 +157,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 			    FALSE, FALSE, 0);
 
 	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selector),
-							 BRASERO_MEDIA_REWRITABLE);
+							 BRASERO_MEDIUM_REWRITABLE);
 
 	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
 
@@ -259,7 +261,7 @@ brasero_tool_dialog_media_error (BraseroToolDialog *self)
 	brasero_tool_dialog_message (self,
 				     _("Media error"),
 				     _("The operation cannot be performed:"),
-				     _("the inserted media is busy."),
+				     _("the inserted media is not supported."),
 				     GTK_MESSAGE_ERROR);
 }
 
@@ -441,8 +443,8 @@ void
 brasero_tool_dialog_run (BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
-	NautilusBurnMediaType media;
 	NautilusBurnDrive *drive;
+	BraseroMediumInfo media;
 	gboolean close = FALSE;
 	GdkCursor *cursor;
 
@@ -462,12 +464,12 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CANCEL);
 
 	/* check the contents of the drive */
-	media = nautilus_burn_drive_get_media_type (drive);
-	if (media == NAUTILUS_BURN_MEDIA_TYPE_ERROR) {
+	media = NCB_MEDIA_GET_STATUS (drive);
+	if (media == BRASERO_MEDIUM_NONE) {
 		brasero_tool_dialog_no_media (self);
 		goto end;
 	}
-	else if (media < NAUTILUS_BURN_MEDIA_TYPE_CD) {
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		/* error out */
 		brasero_tool_dialog_media_error (self);
 		goto end;
@@ -503,10 +505,10 @@ brasero_tool_dialog_set_active (BraseroToolDialog *self,
 	brasero_recorder_selection_set_drive (BRASERO_RECORDER_SELECTION (self->priv->selector), drive);
 }
 
-NautilusBurnMediaType
+BraseroMediumInfo
 brasero_tool_dialog_get_media (BraseroToolDialog *self)
 {
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 
 	brasero_recorder_selection_get_media (BRASERO_RECORDER_SELECTION (self->priv->selector),
 					      &media);
@@ -534,14 +536,14 @@ brasero_tool_dialog_button_clicked (GtkButton *button,
 
 static void
 brasero_tool_dialog_device_changed_cb (BraseroRecorderSelection *selection,
-				       NautilusBurnMediaType media_type,
+				       BraseroMediumInfo media,
 				       BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->media_changed)
-		klass->media_changed (self, media_type);
+		klass->media_changed (self, media);
 }
 
 static gboolean

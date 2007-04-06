@@ -50,6 +50,7 @@
 #include "burn-toc2cue.h"
 #include "burn-caps.h"
 #include "brasero-ncb.h"
+#include "burn-medium.h"
 
 static void brasero_cdrdao_class_init (BraseroCdrdaoClass *klass);
 static void brasero_cdrdao_init (BraseroCdrdao *sp);
@@ -1016,13 +1017,13 @@ brasero_cdrdao_set_drive (BraseroRecorder *recorder,
 			  NautilusBurnDrive *drive,
 			  GError **error)
 {
-	NautilusBurnMediaType media;
+	BraseroMediumInfo media;
 	BraseroCdrdao *cdrdao;
 
 	cdrdao = BRASERO_CDRDAO (recorder);
 
-	media = nautilus_burn_drive_get_media_type (drive);
-	if (media > NAUTILUS_BURN_MEDIA_TYPE_CDRW)
+	media = NCB_MEDIA_GET_STATUS (drive);
+	if (media & BRASERO_MEDIUM_DVD)
 		BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 
 	if (cdrdao->priv->drive) {
@@ -1111,4 +1112,3 @@ brasero_cdrdao_blank (BraseroRecorder *recorder,
 
 	return result;
 }
-

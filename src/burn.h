@@ -34,6 +34,7 @@
 #include "burn-caps.h"
 #include "burn-session.h"
 #include "burn-task.h"
+#include "burn-medium.h"
 
 G_BEGIN_DECLS
 
@@ -56,12 +57,14 @@ typedef struct {
 
 	/* signals */
 	BraseroBurnResult		(*insert_media_request)		(BraseroBurn *obj,
-									 BraseroMediaType error,
-									 BraseroMediaType required_media);
+									 BraseroBurnError error,
+									 BraseroMediumInfo required_media);
 
 	BraseroBurnResult		(*ask_disable_joliet)		(BraseroBurn *obj);
 
 	BraseroBurnResult		(*warn_data_loss)		(BraseroBurn *obj);
+	BraseroBurnResult		(*warn_previous_session_loss)	(BraseroBurn *obj);
+	BraseroBurnResult		(*warn_audio_to_appendable)	(BraseroBurn *obj);
 	BraseroBurnResult		(*warn_rewritable)		(BraseroBurn *obj);
 
 	void				(*progress_changed)		(BraseroBurn *obj,
@@ -96,7 +99,7 @@ brasero_burn_cancel (BraseroBurn *burn, gboolean protect);
 
 BraseroBurnResult
 brasero_burn_status (BraseroBurn *burn,
-		     NautilusBurnMediaType *media,
+		     BraseroMediumInfo *info,
 		     gint64 *isosize,
 		     gint64 *written,
 		     gint64 *rate);
