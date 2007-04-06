@@ -1095,6 +1095,7 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 {
 	BraseroCDRecord *cdrecord;
 	BraseroBurnResult result;
+	gchar *prog_name;
 	gchar *dev_str;
 
 	cdrecord = BRASERO_CD_RECORD (process);
@@ -1105,7 +1106,13 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	if (!cdrecord->priv->drive)
 		BRASERO_JOB_NOT_READY (cdrecord);
 
-	g_ptr_array_add (argv, g_strdup ("cdrecord"));
+	/* This is to support cdrkit. We give it the priority. */
+	prog_name = g_find_program_in_path ("wodim");
+	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
+		g_ptr_array_add (argv, prog_name);
+	else
+		g_ptr_array_add (argv, g_strdup ("cdrecord"));
+
 	g_ptr_array_add (argv, g_strdup ("-v"));
 
 	dev_str = g_strdup_printf ("dev=%s",
