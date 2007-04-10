@@ -183,7 +183,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 				message = g_strdup (_("insert a disc holding data."));
 		}
 	}
-	else if (type & BRASERO_MEDIUM_BLANK) {
+	else if (type & BRASERO_MEDIUM_WRITABLE) {
 		gint64 isosize = 0;
 	
 		brasero_burn_status (burn,
