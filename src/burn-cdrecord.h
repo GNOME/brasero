@@ -53,7 +53,5 @@ typedef struct {
 GType brasero_cdrecord_get_type ();
 BraseroCDRecord *brasero_cdrecord_new ();
 
-void
-brasero_cdrecord_set_immediate (BraseroCDRecord *cdrecord, gint minbuf);
 
 #endif /* CDRECORD_H */

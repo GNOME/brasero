@@ -73,11 +73,6 @@
  * supported and safest default flags according to system config and arguments
  * given, and also creates the most appropriate recorder and imager objects */
 
-/* FIXME: extension
-	  gboolean cdrecord_02  => no on the fly
-	  gboolean cdrecord_02_1 => no the fly for audio
-*/
-	 
 
 static void brasero_burn_caps_class_init (BraseroBurnCapsClass *klass);
 static void brasero_burn_caps_init (BraseroBurnCaps *sp);
@@ -85,19 +80,14 @@ static void brasero_burn_caps_finalize (GObject *object);
 
 struct BraseroBurnCapsPrivate {
 	/* if FALSE: we can't create *.cue files and can't copy on the fly */
-	gint minbuf;
-
 	gboolean use_libburn;
 	gboolean use_libiso;
 	gboolean use_libread;
 
 	gboolean cdrdao_disabled;
-	gboolean immediate;
 };
 
 #define GCONF_KEY_CDRDAO_DISABLED	"/apps/brasero/config/cdrdao_disabled"
-#define GCONF_KEY_IMMEDIATE_FLAG	"/apps/brasero/config/immed_flag"
-#define GCONF_KEY_MINBUF_VALUE		"/apps/brasero/config/minbuf_value"
 
 #define GCONF_KEY_USE_LIBBURN_BURN	"/apps/brasero/config/libburn_burn"
 #define GCONF_KEY_USE_LIBBURN_ISO	"/apps/brasero/config/libburn_iso"
@@ -190,12 +180,6 @@ brasero_burn_caps_init (BraseroBurnCaps *obj)
 	obj->priv->cdrdao_disabled = gconf_client_get_bool (client,
 							    GCONF_KEY_CDRDAO_DISABLED,
 							    NULL);
-	obj->priv->immediate = gconf_client_get_bool (client,
-						      GCONF_KEY_IMMEDIATE_FLAG,
-						      NULL);
-	obj->priv->minbuf = gconf_client_get_int (client,
-						  GCONF_KEY_MINBUF_VALUE,
-						  NULL);
 	g_object_unref (client);
 }
 
@@ -706,10 +690,6 @@ brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 	}
 
 end:
-	/* This is for certain type of screwed up setup */
-	if (BRASERO_IS_CD_RECORD (obj) && caps->priv->immediate)
-		brasero_cdrecord_set_immediate (BRASERO_CD_RECORD (obj),
-						caps->priv->minbuf);
 
 	*recorder = obj;
 

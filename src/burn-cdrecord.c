@@ -41,6 +41,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <gconf/gconf-client.h>
+
 #include <nautilus-burn-drive.h>
 
 #include "burn-basics.h"
@@ -132,6 +134,9 @@ struct BraseroCDRecordPrivate {
 
 static GObjectClass *parent_class = NULL;
 
+#define GCONF_KEY_IMMEDIATE_FLAG	"/apps/brasero/config/immed_flag"
+#define GCONF_KEY_MINBUF_VALUE		"/apps/brasero/config/minbuf_value"
+
 GType
 brasero_cdrecord_get_type ()
 {
@@ -200,7 +205,22 @@ brasero_cdrecord_iface_init_record (BraseroRecorderIFace *iface)
 static void
 brasero_cdrecord_init (BraseroCDRecord *obj)
 {
+	GConfClient *client;
+
 	obj->priv = g_new0 (BraseroCDRecordPrivate, 1);
+
+	/* load our "configuration" */
+	client = gconf_client_get_default ();
+	obj->priv->immediate = gconf_client_get_bool (client,
+						      GCONF_KEY_IMMEDIATE_FLAG,
+						      NULL);
+	obj->priv->minbuf = gconf_client_get_int (client,
+						  GCONF_KEY_MINBUF_VALUE,
+						  NULL);
+	if (obj->priv->minbuf > 95 || obj->priv->minbuf < 25)
+		obj->priv->minbuf = 30;
+
+	g_object_unref (client);
 }
 
 static void
@@ -1283,16 +1303,4 @@ brasero_cdrecord_record (BraseroRecorder *recorder,
 	cdrecord->priv->action = BRASERO_CD_RECORD_ACTION_NONE;
 
 	return result;				
-}
-
-void
-brasero_cdrecord_set_immediate (BraseroCDRecord *cdrecord, gint minbuf)
-{
-	g_return_if_fail (BRASERO_IS_CD_RECORD (cdrecord));
-
-	if (minbuf > 95 || minbuf < 25)
-		minbuf = 30;
-
-	cdrecord->priv->immediate = 1;
-	cdrecord->priv->minbuf = minbuf;
 }
