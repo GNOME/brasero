@@ -22,9 +22,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* This for large file support */
-#define _GNU_SOURCE 1
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -799,7 +796,7 @@ brasero_dvdcss_write_image_to_file (BraseroDvdcss *self,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	self->priv->out.file = fopen64 (self->priv->output, "w");
+	self->priv->out.file = fopen (self->priv->output, "w");
 	if (!self->priv->out.file) {
 		g_set_error (error, 
 			     BRASERO_BURN_ERROR,

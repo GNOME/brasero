@@ -27,13 +27,12 @@
  * gnome-mount support and therefore can't unmount the volumes mounted
  * by gnome-mount since it uses plain unmount command */
 
-#include <string.h>
-#include <stdio.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+#include <string.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #include <glib.h>

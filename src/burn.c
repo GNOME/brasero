@@ -571,6 +571,8 @@ brasero_burn_media_check_basics (BraseroBurn *burn,
 	BraseroBurnError error_type;
 	BraseroBurnResult result;
 
+	g_return_val_if_fail (drive != NULL, BRASERO_BURN_ERR);
+
 	if (media == BRASERO_MEDIUM_NONE)
 		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
 	else
@@ -1122,6 +1124,8 @@ again:
 	&&  (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 	&&  (media & BRASERO_MEDIUM_REWRITABLE)
 	&& !(media & BRASERO_MEDIUM_BLANK)) {
+		/* we warn the user is going to lose data even if in the case of
+		 * DVD+/-RW we don't really blank the disc */
 		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
 		if (result != BRASERO_BURN_OK)
 			goto end;

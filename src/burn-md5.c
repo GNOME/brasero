@@ -22,13 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <errno.h>
-#include <string.h>
-#include <stdio.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <errno.h>
+#include <string.h>
+#include <stdio.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
