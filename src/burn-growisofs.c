@@ -414,9 +414,9 @@ brasero_growisofs_set_append (BraseroImager *imager,
 		growisofs->priv->drive = drive;
 	}
 
-	/* growisofs doesn't give the choice it merges */
+	/* growisofs doesn't give the choice it appends */
 	growisofs->priv->append = 1;
-	growisofs->priv->merge = 1;
+	growisofs->priv->merge = merge;
 
 	return BRASERO_BURN_OK;
 }

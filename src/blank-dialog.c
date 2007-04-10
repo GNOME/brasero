@@ -207,7 +207,6 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *dialog,
 				  (flags & BRASERO_BURN_FLAG_DUMMY));
 
 	gtk_widget_set_sensitive (dialog->priv->fast_enabled, fast_supported);
-
 	if (result == BRASERO_BURN_NOT_SUPPORTED) {
 		GtkWidget *message;
 

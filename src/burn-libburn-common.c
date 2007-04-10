@@ -184,8 +184,8 @@ brasero_libburn_common_set_drive (BraseroLibburnCommon *self,
 				  NautilusBurnDrive *drive,
 				  GError **error)
 {
+	gchar libburn_device [BURN_DRIVE_ADR_LEN];
 	BraseroMediumInfo media;
-	gchar *device;
 	int res;
 
 	if (self->priv->drive_info) {
@@ -197,16 +197,17 @@ brasero_libburn_common_set_drive (BraseroLibburnCommon *self,
 	if (!drive)
 		return BRASERO_BURN_OK;
 
+	/* libburn now supports DVD+/-R(W) but DL */
 	media = NCB_MEDIA_GET_STATUS (drive);
-	if (media & BRASERO_MEDIUM_DVD)
+	if (media & BRASERO_MEDIUM_DL)
 		BRASERO_JOB_NOT_SUPPORTED (self);
 
 	/* we just want to scan the drive proposed by NCB drive */
-	device = (gchar*) NCB_DRIVE_GET_DEVICE (drive);
-	device = g_strdup (device);
-	res = burn_drive_scan_and_grab (&self->priv->drive_info, device, 0);
-	g_free (device);
+	res = burn_drive_convert_fs_adr ((gchar*) NCB_DRIVE_GET_DEVICE (drive), libburn_device);
+	if (res <= 0)
+		BRASERO_JOB_NOT_SUPPORTED (self);
 
+	res = burn_drive_scan_and_grab (&self->priv->drive_info, libburn_device, 0);
 	if (res <= 0) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -251,37 +252,34 @@ brasero_libburn_common_get_disc (BraseroLibburnCommon *self,
 static gboolean
 brasero_libburn_common_process_message (BraseroLibburnCommon *self)
 {
+	int ret;
 	GError *error;
-	gboolean retval = TRUE;
 	int err_code = 0;
 	int err_errno = 0;
-	char err_txt[BURN_MSGS_MESSAGE_LEN];
-	char err_sev[80];
+	char err_sev [80];
+	char err_txt [BURN_MSGS_MESSAGE_LEN] = {0};
 
-	while (1) {
-		int ret = burn_msgs_obtain("ALL", &err_code,err_txt,
-								   &err_errno, err_sev);
+	ret = burn_msgs_obtain ("FATAL",
+				&err_code,
+				err_txt,
+				&err_errno,
+				err_sev);
 
-		if (!ret) {
-		        retval = FALSE;      
-		        break;
-		}
+	if (ret == 0)
+	        return TRUE;
 
-		if (ret < 0) {
-			error = g_error_new (BRASERO_BURN_ERROR,
-								 BRASERO_BURN_ERROR_GENERAL,
-								 err_txt);
-			brasero_job_error (BRASERO_JOB (self), error);
-			retval = FALSE;
-			break;
-		} else {
-			BRASERO_JOB_LOG (self, _("(%s) libburn tried to say something"),
-							 err_txt);
-			retval = TRUE;
-			break;
-		}
+	if (ret < 0) {
+		error = g_error_new (BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     err_txt);
+		brasero_job_error (BRASERO_JOB (self), error);
+		return FALSE;
 	}
-	return retval;
+
+	BRASERO_JOB_LOG (self,
+			 _("(%s) libburn tried to say something"),
+		         err_txt);
+	return TRUE;
 }
 
 static void
@@ -294,10 +292,12 @@ brasero_libburn_common_status_changed (BraseroLibburnCommon *self,
 	switch (status) {
 		case BURN_DRIVE_WRITING:
 			/* we ignore it if it happens after leadout */
-			if (self->priv->status == BURN_DRIVE_WRITING_LEADOUT)
+			if (self->priv->status == BURN_DRIVE_WRITING_LEADOUT
+			||  self->priv->status == BURN_DRIVE_CLOSING_TRACK)
 				return;
 
-			if (self->priv->status == BURN_DRIVE_WRITING_LEADIN) {
+			if (self->priv->status == BURN_DRIVE_WRITING_LEADIN
+			||  self->priv->status == BURN_DRIVE_WRITING_PREGAP) {
 				self->priv->sectors += self->priv->track_sectors;
 				self->priv->track_sectors = progress->sectors;
 				self->priv->track_num = progress->track;
@@ -307,13 +307,15 @@ brasero_libburn_common_status_changed (BraseroLibburnCommon *self,
 			brasero_job_set_dangerous (BRASERO_JOB (self), TRUE);
 			break;
 
-		case BURN_DRIVE_WRITING_LEADIN:
+		case BURN_DRIVE_WRITING_LEADIN:		/* DAO */
+		case BURN_DRIVE_WRITING_PREGAP:		/* TAO */
 			self->priv->has_leadin = 1;
 			action = BRASERO_BURN_ACTION_PREPARING;
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
 			break;
 
-		case BURN_DRIVE_WRITING_LEADOUT:
+		case BURN_DRIVE_WRITING_LEADOUT: 	/* DAO */
+		case BURN_DRIVE_CLOSING_TRACK:		/* TAO */
 			self->priv->sectors += self->priv->track_sectors;
 			self->priv->track_sectors = progress->sectors;
 
@@ -322,6 +324,7 @@ brasero_libburn_common_status_changed (BraseroLibburnCommon *self,
 			break;
 
 		case BURN_DRIVE_ERASING:
+		case BURN_DRIVE_FORMATTING:
 			action = BRASERO_BURN_ACTION_ERASING;
 			brasero_job_set_dangerous (BRASERO_JOB (self), TRUE);
 			break;
@@ -368,13 +371,13 @@ brasero_libburn_common_get_session_size (BraseroLibburnCommon *self)
 		sectors += burn_session_get_sectors (sessions [i]);
 
 		/* add the size for lead-out in case of raw */
-		if (self->priv->has_leadin)
-			sectors += (i == 0) ? 6750:2250;
+//		if (self->priv->has_leadin)
+//			sectors += (i == 0) ? 6750:2250;
 	}
 
 	/* add the size for lead-in in case of raw */
-	if (self->priv->has_leadin)
-		sectors += 11475;
+//	if (self->priv->has_leadin)
+//		sectors += 11475;
 
 	return sectors;
 }
@@ -397,6 +400,9 @@ brasero_libburn_common_clock_id (BraseroTask *task, BraseroLibburnCommon *self)
 		return;
 
 	status = burn_drive_get_status (self->priv->drive, &progress);
+
+	/* FIXME! for some operations that libburn can't perform the drive stays
+	 * idle and we've got no way to tell that kind of use case */
 	if (self->priv->status != status)
 		brasero_libburn_common_status_changed (self, status, &progress);
 
@@ -411,7 +417,8 @@ brasero_libburn_common_clock_id (BraseroTask *task, BraseroLibburnCommon *self)
 		return;
 	}
 
-	if (status != BURN_DRIVE_ERASING) {
+	if (status != BURN_DRIVE_ERASING
+	&&  status != BURN_DRIVE_FORMATTING) {
 		if (self->priv->track_num != progress.track) {
 			gchar *string;
 

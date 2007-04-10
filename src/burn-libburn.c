@@ -27,6 +27,9 @@
 #  include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -40,6 +43,8 @@
 #include "burn-job.h"
 #include "burn-libburn-common.h"
 #include "burn-libburn.h"
+
+#include "scsi-get-configuration.h"
 
 #ifdef HAVE_LIBBURN
 
@@ -240,7 +245,7 @@ brasero_libburn_set_source (BraseroJob *job,
 			BRASERO_JOB_NOT_SUPPORTED (self);
 	}
 	else if (source->type != BRASERO_TRACK_SOURCE_IMAGER
-	      &&  source->type != BRASERO_TRACK_SOURCE_AUDIO)
+	     &&  source->type != BRASERO_TRACK_SOURCE_AUDIO)
 		BRASERO_JOB_NOT_SUPPORTED (self);
 
 	if (self->priv->source)
@@ -330,6 +335,7 @@ static BraseroBurnResult
 brasero_libburn_add_file_track (struct burn_session *session,
 				const gchar *path,
 				gint mode,
+				off_t size,
 				GError **error)
 {
 	struct burn_source *src;
@@ -341,6 +347,9 @@ brasero_libburn_add_file_track (struct burn_session *session,
 
 	src = burn_file_source_new (path, NULL);
 	result = brasero_libburn_add_track (session, track, src, mode, error);
+
+	if (size > 0)
+		burn_track_set_default_size (track, size);
 
 	burn_source_free (src);
 	burn_track_free (track);
@@ -492,6 +501,7 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 			result = brasero_libburn_add_file_track (session,
 								 info->path,
 								 BURN_AUDIO,
+								 -1,
 								 error);
 			if (result != BRASERO_BURN_OK)
 				break;
@@ -527,6 +537,7 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 		result = brasero_libburn_add_file_track (session,
 							 imagepath,
 							 mode,
+							 -1,
 							 error);
 	}
 	else if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
@@ -559,7 +570,7 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 			{
 				gint mode;
 
-				if ((format & (BRASERO_IMAGE_FORMAT_ISO))== 0)
+				if ((format & (BRASERO_IMAGE_FORMAT_ISO)) == 0)
 /*					       BRASERO_IMAGE_FORMAT_CLONE)) == 0)*/
 					BRASERO_JOB_NOT_SUPPORTED (self);
 
@@ -608,12 +619,171 @@ brasero_libburn_setup_disc (BraseroLibburn *self,
 			default:
 				return BRASERO_BURN_NOT_SUPPORTED;
 		}
-
 	}
 	else
 		BRASERO_JOB_NOT_SUPPORTED (self);
 
 	*retval = disc;
+	return result;
+}
+
+static BraseroBurnResult
+brasero_libburn_start_record (BraseroLibburn *self,
+			      struct burn_drive *drive,
+			      int in_fd,
+			      GError **error)
+{
+	int profile;
+	char prof_name [80];
+	BraseroBurnResult result;
+	struct burn_write_opts *opts;
+	struct burn_disc *disc = NULL;
+
+	if (burn_disc_get_profile (drive, &profile, prof_name) < 0) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("no profile available for the medium"));
+		return BRASERO_BURN_ERR;
+	}
+
+	result = brasero_libburn_setup_disc (self, &disc, in_fd, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	brasero_libburn_common_set_disc (BRASERO_LIBBURN_COMMON (self),
+					 disc);
+
+	/* Note: we don't need to call burn_drive_get_status nor
+	 * burn_disc_get_status since we took care of the disc
+	 * checking thing earlier ourselves. Now there is a proper
+	 * disc and tray is locked. */
+	opts = burn_write_opts_new (drive);
+	burn_write_opts_set_perform_opc (opts, 0);
+
+	if (profile != BRASERO_SCSI_PROF_DVD_RW_RESTRICTED
+	&&  profile != BRASERO_SCSI_PROF_DVD_RW_PLUS
+	&&  self->priv->dao)
+		burn_write_opts_set_write_type (opts,
+						BURN_WRITE_SAO,
+						BURN_BLOCK_SAO);
+	else
+		burn_write_opts_set_write_type (opts,
+						BURN_WRITE_TAO,
+						BURN_BLOCK_MODE1);
+
+	burn_write_opts_set_multi (opts, self->priv->multi);
+	burn_write_opts_set_underrun_proof (opts, self->priv->burnproof);
+	burn_write_opts_set_simulate (opts, self->priv->dummy);
+
+	burn_drive_set_speed (drive, self->priv->rate, 0);
+	burn_disc_write (opts, disc);
+	burn_write_opts_free (opts);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_libburn_start_erase (BraseroLibburn *self,
+			     struct burn_drive *drive,
+			     GError **error)
+{
+	char reasons [BURN_REASONS_LEN];
+	struct burn_session *session;
+	struct burn_write_opts *opts;
+	BraseroBurnResult result;
+	struct burn_disc *disc;
+	char prof_name [80];
+	int profile;
+	int fd;
+
+	if (burn_disc_get_profile (drive, &profile, prof_name) < 0) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("no profile available for the medium"));
+		return BRASERO_BURN_ERR;
+	}
+
+	/* here we try to respect the current formatting of DVD-RW. For 
+	 * overwritable media fast option means erase the first 64 Kib
+	 * and long a forced reformatting */
+	if (profile == BRASERO_SCSI_PROF_DVD_RW_RESTRICTED) {
+		if (!self->priv->blank_fast) {
+			/* leave libburn choose the best format */
+			burn_disc_format (drive,
+					  (off_t) 0,
+					  (1 << 4));
+			return BRASERO_BURN_OK;
+		}
+	}
+	else if (profile == BRASERO_SCSI_PROF_DVD_RW_PLUS) {
+		if (!self->priv->blank_fast) {
+			/* Bit 2 is for format max available size
+			 * Bit 4 is enforce (re)-format if needed
+			 * 0x26 is DVD+RW format is to be set from bit 8
+			 * in the latter case bit 7 needs to be set as 
+			 * well.
+			 */
+			burn_disc_format (drive,
+					  (off_t) 0,
+					  (1 << 2)|(1 << 4));
+			return BRASERO_BURN_OK;
+		}
+	}
+	else if (burn_disc_erasable (drive)) {
+		/* This is mainly for CDRW and sequential DVD-RW */
+		burn_disc_erase (drive, self->priv->blank_fast);
+		return BRASERO_BURN_OK;
+	}
+	else
+		BRASERO_JOB_NOT_SUPPORTED (self);
+
+	/* This is the "fast option": basically we only write 64 Kib of 0 from
+	 * /dev/null */
+	fd = open ("/dev/null", O_RDONLY);
+	if (fd == -1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("/dev/null can't be opened"));
+		return BRASERO_BURN_ERR;
+	}
+
+	disc = burn_disc_create ();
+	brasero_libburn_common_set_disc (BRASERO_LIBBURN_COMMON (self), disc);
+
+	/* create the session */
+	session = burn_session_create ();
+	burn_disc_add_session (disc, session, BURN_POS_END);
+	burn_session_free (session);
+
+	result = brasero_libburn_add_fd_track (session,
+					       fd,
+					       BURN_MODE1,
+					       65536,		/* 32 blocks */
+					       error);
+	opts = burn_write_opts_new (drive);
+	burn_write_opts_set_perform_opc (opts, 0);
+	burn_write_opts_set_underrun_proof (opts, 1);
+	burn_write_opts_set_simulate (opts, self->priv->dummy);
+	burn_drive_set_speed (drive, burn_drive_get_write_speed (drive), 0);
+	burn_write_opts_set_write_type (opts,
+					BURN_WRITE_TAO,
+					BURN_BLOCK_MODE1);
+
+	if (burn_precheck_write (opts, disc, reasons, 0) <= 0) {
+		burn_write_opts_free (opts);
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("libburn can't burn: %s"), reasons);
+		return BRASERO_BURN_ERR;
+	}
+
+	burn_disc_write (opts, disc);
+	burn_write_opts_free (opts);
+
 	return result;
 }
 
@@ -624,6 +794,7 @@ brasero_libburn_start (BraseroJob *job,
 		       GError **error)
 {
 	BraseroLibburn *self;
+	BraseroBurnResult result;
 	struct burn_drive *drive = NULL;
 
 	self = BRASERO_LIBBURN (job);
@@ -634,56 +805,12 @@ brasero_libburn_start (BraseroJob *job,
 		BRASERO_JOB_NOT_READY (self);
 
 	if (self->priv->action == BRASERO_LIBBURN_ACTION_RECORD) {
-		BraseroBurnResult result;
-		struct burn_write_opts *opts;
-		struct burn_disc *disc = NULL;
-
-		result = brasero_libburn_setup_disc (self, &disc, in_fd, error);
+		result = brasero_libburn_start_record (self,
+						       drive,
+						       in_fd,
+						       error);
 		if (result != BRASERO_BURN_OK)
 			return result;
-
-		brasero_libburn_common_set_disc (BRASERO_LIBBURN_COMMON (self),
-						 disc);
-
-		/* Note: we don't need to call burn_drive_get_status nor
-		 * burn_disc_get_status since we took care of the disc
-		 * checking thing earlier through ncb. Now there is a 
-		 * proper disc and tray is locked. */
-		opts = burn_write_opts_new (drive);
-		burn_write_opts_set_perform_opc (opts, 0);
-
-		if (self->priv->dao)
-			burn_write_opts_set_write_type (opts,
-							BURN_WRITE_SAO,
-							BURN_BLOCK_SAO);
-		else
-			burn_write_opts_set_write_type (opts,
-							BURN_WRITE_TAO,
-							BURN_BLOCK_MODE1);
-
-#if 0
-	burn_write_opts_set_multi (opts, self->priv->multi);
-
-	/* crufts from the time libburn didn't support TAO */
-		else
-			burn_write_opts_set_write_type (opts,
-							BURN_WRITE_RAW,
-							BURN_BLOCK_RAW96R);
-#endif
-
-		if (self->priv->burnproof)
-			burn_write_opts_set_underrun_proof (opts, 1);
-		else
-			burn_write_opts_set_underrun_proof (opts, 0);
-
-		if (self->priv->dummy)
-			burn_write_opts_set_simulate (opts, 1);
-		else
-			burn_write_opts_set_simulate (opts, 0);
-
-		burn_drive_set_speed (drive, self->priv->rate, 0);
-		burn_disc_write (opts, disc);
-		burn_write_opts_free (opts);
 
 		BRASERO_JOB_TASK_SET_ACTION (self,
 					     BRASERO_BURN_ACTION_PREPARING,
@@ -691,11 +818,16 @@ brasero_libburn_start (BraseroJob *job,
 					     FALSE);
 	}
 	else if (self->priv->action == BRASERO_LIBBURN_ACTION_ERASE) {
+		result = brasero_libburn_start_erase (self,
+						      drive,
+						      error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
 		BRASERO_JOB_TASK_SET_ACTION (self,
 					     BRASERO_BURN_ACTION_ERASING,
 					     NULL,
 					     FALSE);
-		burn_disc_erase (drive, self->priv->blank_fast);
 	}
 	else
 		BRASERO_JOB_NOT_READY (self);

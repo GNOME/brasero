@@ -434,10 +434,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	GSList *iter;
 	gint flags;
 
-	/* FIXME!
-	if (self->priv->volset)
-		iso_volset_free (self->priv->volume); */
-
 	publisher = g_strdup_printf ("Brasero-%i.%i.%i",
 				     BRASERO_MAJOR_VERSION,
 				     BRASERO_MINOR_VERSION,
@@ -536,6 +532,7 @@ end:
 							  0,
 							  2,
 							  flags);
+	iso_volset_free (volset);
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
 	self->priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);

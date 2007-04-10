@@ -68,9 +68,10 @@ struct _BraseroTaskPrivate {
 	BraseroBurnResult retval;
 	GError *error;
 
-	gint action_changed:1;
-	gint written_changed:1;
-	gint use_average_rate:1;
+	guint action_changed:1;
+	guint written_changed:1;
+	guint progress_changed:1;
+	guint use_average_rate:1;
 };
 
 enum _BraseroTaskSignalType {
@@ -245,7 +246,13 @@ brasero_task_report_progress_cb (gpointer data)
 		task->priv->action_changed = 0;
 	}
 
-	if (task->priv->written_changed) {
+	if (task->priv->progress_changed) {
+		task->priv->progress_changed = 0;
+		g_signal_emit (task,
+			       brasero_task_signals [PROGRESS_CHANGED_SIGNAL],
+			       0);
+	}
+	else if (task->priv->written_changed) {
 		task->priv->written_changed = 0;
 		g_signal_emit (task,
 			       brasero_task_signals [PROGRESS_CHANGED_SIGNAL],
@@ -392,6 +399,7 @@ brasero_task_set_progress (BraseroTask *task, gdouble progress)
 	if (!task)
 		return BRASERO_BURN_NOT_RUNNING;
 
+	task->priv->progress_changed = 1;
 	task->priv->progress = progress;
 	return BRASERO_BURN_OK;
 }

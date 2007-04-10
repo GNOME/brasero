@@ -355,20 +355,20 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 			if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)) {
 				if (desc->format_type == BRASERO_SCSI_DVDRW_PLUS) {
 					priv->block_num = BRASERO_GET_32 (desc->blocks_num);
-					priv->block_size = BRASERO_GET_32 (desc->type_param);
+					priv->block_size = BRASERO_GET_24 (desc->type_param);
 					break;
 				}
 			}
 			else if (desc->format_type == BRASERO_SCSI_BLOCK_SIZE_DEFAULT_AND_DB) {
 				priv->block_num = BRASERO_GET_32 (desc->blocks_num);
-				priv->block_size = BRASERO_GET_32 (desc->type_param);
+				priv->block_size = BRASERO_GET_24 (desc->type_param);
 				break;
 			}
 		}
 	}
 	else {
 		priv->block_num = BRASERO_GET_32 (current->blocks_num);
-		priv->block_size = BRASERO_GET_32 (current->block_size);
+		priv->block_size = BRASERO_GET_24 (current->block_size);
 	}
 
 	g_free (hdr);
@@ -823,9 +823,6 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	if (!res)
 		return BRASERO_BURN_ERR;
 
-	priv->info |= BRASERO_MEDIUM_APPENDABLE|
-		      BRASERO_MEDIUM_HAS_DATA;
-
 	track->blocks_num = nb_blocks;
 	return BRASERO_BURN_OK;
 }
@@ -916,8 +913,11 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 					       fd,
 					       code);
 
-		if ((desc->control & BRASERO_SCSI_TRACK_DATA) == 0) {
-			track->type = BRASERO_MEDIUM_TRACK_AUDIO;
+		if (desc->control & BRASERO_SCSI_TRACK_COPY)
+			track->type |= BRASERO_MEDIUM_TRACK_COPY;
+
+		if (!(desc->control & BRASERO_SCSI_TRACK_DATA)) {
+			track->type |= BRASERO_MEDIUM_TRACK_AUDIO;
 			priv->info |= BRASERO_MEDIUM_HAS_AUDIO;
 
 			if (desc->control & BRASERO_SCSI_TRACK_PREEMP)
@@ -926,23 +926,38 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			if (desc->control & BRASERO_SCSI_TRACK_4_CHANNELS)
 				track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
 		}
+		else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+		     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+				BraseroBurnResult result;
+
+			/* a special case for these two kinds of media
+			 * which have only one track: the first. */
+			result = brasero_medium_track_volume_size (self, 
+								   track,
+								   fd);
+			if (result == BRASERO_BURN_OK) {
+				track->type |= BRASERO_MEDIUM_TRACK_DATA;
+				priv->info |= BRASERO_MEDIUM_APPENDABLE|
+					      BRASERO_MEDIUM_HAS_DATA;
+				priv->next_wr_add = 0;
+
+				if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
+					track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
+			}
+			else {
+				priv->tracks = g_slist_remove (priv->tracks, track);
+				g_free (track);
+
+				priv->info |= BRASERO_MEDIUM_BLANK;
+			}
+		}
 		else {
-			track->type = BRASERO_MEDIUM_TRACK_DATA;
+			track->type |= BRASERO_MEDIUM_TRACK_DATA;
 			priv->info |= BRASERO_MEDIUM_HAS_DATA;
 
 			if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
 				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
 		}
-
-		if (desc->control & BRASERO_SCSI_TRACK_COPY)
-			track->type |= BRASERO_MEDIUM_TRACK_COPY;
-	}
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-		/* a special case for these two kinds of media which have only
-		 * one track: the first. */
-		brasero_medium_track_volume_size (self, priv->tracks->data, fd);
 	}
 
 	/* we shouldn't request info on leadout if the disc is closed */
@@ -963,6 +978,19 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 	/* put the tracks in the right order */
 	priv->tracks = g_slist_reverse (priv->tracks);
+
+	if (priv->tracks
+	&& (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))) {
+		GSList *node;
+		BraseroMediumTrack *leadout, *track;
+
+		track = priv->tracks->data;
+		node = g_slist_last (priv->tracks);
+		leadout = node->data;
+		leadout->blocks_num -= track->blocks_num;
+	}
+
 	g_free (toc);
 
 	return BRASERO_BURN_OK;

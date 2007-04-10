@@ -400,11 +400,16 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 			default_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 
-			/* with growisofs as our sole DVD backend, the burning
-			 * is always performed on the fly */
 			if (media & BRASERO_MEDIUM_DVD) {
 				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
-				compulsory_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
+
+				/* If growisofs is our sole backend then we have
+				 * to burn on the fly.
+				 * NOTE that in this case no appending or
+				 * merging is possible.
+				 */
+				if (!caps->priv->use_libburn)
+					compulsory_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
 
 				if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
 				||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
@@ -429,7 +434,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 							 BRASERO_BURN_FLAG_MERGE;
 				}
 			}
-			else if (!caps->priv->use_libburn && !caps->priv->use_libiso) {
+			else if (!caps->priv->use_libiso) {
 				supported_flags |= BRASERO_BURN_FLAG_DONT_CLOSE;
 
 				/* when we don't know the media type we allow
@@ -457,12 +462,15 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 					}
 				}
 			}
-			/* libburn doesn't support this (yet) */
-			/*else
-				supported_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE|
-						    BRASERO_BURN_FLAG_APPEND|
-						    BRASERO_BURN_FLAG_MERGE;
-			*/
+			/* FIXME: this logic is wrong in the end: 
+			 * libburn can APPEND but libisofs cannot MERGE nor
+			 * APPEND. The latter flag depends on both and MERGE 
+			 * only on libisofs. In fact we should allow all flags
+			 * and according to the flags chosen by the user create
+			 * the proper object (mkisofs or libisofs) */
+			/* libisofs doesn't support this (yet) */
+			else
+				supported_flags |=  BRASERO_BURN_FLAG_DONT_CLOSE;
 		}
 		else if (source->type == BRASERO_TRACK_SOURCE_IMAGER) {
 			supported_flags |= BRASERO_BURN_FLAG_ON_THE_FLY;
@@ -505,9 +513,6 @@ brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
 	if (media == BRASERO_MEDIUM_NONE)
 		return BRASERO_BURN_ERR;
     
-	if (!(media & BRASERO_MEDIUM_REWRITABLE))
-		return BRASERO_BURN_NOT_SUPPORTED;
-
 	if (!(media & BRASERO_MEDIUM_DVD))
 		supported_flags |= BRASERO_BURN_FLAG_DUMMY;
 
@@ -656,7 +661,21 @@ brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
 			&&!(format & BRASERO_IMAGE_FORMAT_ISO))
 				BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 
-			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
+			/* libburn allow to burn DVD+/-R and DVD-RW sequential
+			 * in multisession mode. But it can't do the same trick
+			 * as growisofs with DVD+RW and DVD-RW restricted. So
+			 * we check the type of DVD and in the latter case we
+			 * use growisofs.
+			 * FIXME: once we have a session object then we could
+			 * check the flags and see if MERGE/APPEND flags were
+			 * set and then not choose libburn.
+			 */
+			if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS|BRASERO_MEDIUM_APPENDABLE)
+			&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED|BRASERO_MEDIUM_APPENDABLE)
+			&&  caps->priv->use_libburn)
+				obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_LIBBURN, NULL));
+			else
+				obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
 		}
 		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO) {
 			if (caps->priv->cdrdao_disabled)
@@ -728,9 +747,10 @@ brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
 		}
 	}
 	else if (media & BRASERO_MEDIUM_DVD) {
-	       if (caps->priv->use_libburn)
+		/* That's for DVD-RW in sequential mode */
+		if (caps->priv->use_libburn)
 		       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_LIBBURN, NULL));
-	       else
+		else
 	       	       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
@@ -947,8 +967,18 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (caps, error);
 		
 		if (format & BRASERO_IMAGE_FORMAT_ISO) {
-			if (dest_media & BRASERO_MEDIUM_DVD) 
-				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
+			if (dest_media & BRASERO_MEDIUM_DVD) {
+				if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS|BRASERO_MEDIUM_APPENDABLE)
+				&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED|BRASERO_MEDIUM_APPENDABLE)
+				&&  caps->priv->use_libburn) {
+					if (caps->priv->use_libiso)
+						obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_LIBISOFS, NULL));
+					else
+						obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_MKISOFS, NULL));
+				}
+				else
+					obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
+			}
 			else if (caps->priv->use_libiso)
 				obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_LIBISOFS, NULL));
 			 else
