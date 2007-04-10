@@ -687,6 +687,12 @@ brasero_project_get_selected_uri (BraseroURIContainer *container)
 	BraseroProject *project;
 
 	project = BRASERO_PROJECT (container);
+
+	/* if we are burning we better not return anything so as to stop 
+	 * preview widget from carrying on to play */
+	if (project->priv->is_burning)
+		return NULL;
+
 	return brasero_disc_get_selected_uri (project->priv->current);
 }
 
@@ -873,6 +879,9 @@ brasero_project_burn (BraseroProject *project)
 
 	project->priv->is_burning = 1;
 	destroy = FALSE;
+
+	/* This is to stop the preview widget from playing */
+	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 
 	/* setup, show, and run options dialog */
 	drive = brasero_project_size_get_active_drive (BRASERO_PROJECT_SIZE (project->priv->size_display));
