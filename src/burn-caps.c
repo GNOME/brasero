@@ -968,8 +968,8 @@ brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
 		
 		if (format & BRASERO_IMAGE_FORMAT_ISO) {
 			if (dest_media & BRASERO_MEDIUM_DVD) {
-				if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS|BRASERO_MEDIUM_APPENDABLE)
-				&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED|BRASERO_MEDIUM_APPENDABLE)
+				if (!BRASERO_MEDIUM_IS (dest_media, BRASERO_MEDIUM_DVDRW_PLUS|BRASERO_MEDIUM_APPENDABLE)
+				&&  !BRASERO_MEDIUM_IS (dest_media, BRASERO_MEDIUM_DVDRW_RESTRICTED|BRASERO_MEDIUM_APPENDABLE)
 				&&  caps->priv->use_libburn) {
 					if (caps->priv->use_libiso)
 						obj = BRASERO_IMAGER (g_object_new (BRASERO_TYPE_LIBISOFS, NULL));
