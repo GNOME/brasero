@@ -125,13 +125,13 @@ struct BraseroGrowisofsPrivate {
 
 	gint64 sectors_num;
 
-	int fast_blank:1;
-	int use_utf8:1;
-	int append:1;
-	int merge:1;
-	int dummy:1;
-	int multi:1;
-	int dao:1;
+	guint fast_blank:1;
+	guint use_utf8:1;
+	guint append:1;
+	guint merge:1;
+	guint dummy:1;
+	guint multi:1;
+	guint dao:1;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -498,14 +498,11 @@ brasero_growisofs_blank (BraseroRecorder *recorder,
 		BRASERO_JOB_NOT_READY (growisofs);
 
 	media = NCB_MEDIA_GET_STATUS (growisofs->priv->drive);
-	if (!(media & BRASERO_MEDIUM_REWRITABLE))
-		BRASERO_JOB_NOT_SUPPORTED (growisofs);
-
 	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
 	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
-	if (growisofs->priv->fast_blank)
+	if (!growisofs->priv->fast_blank)
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
 
 	/* if we have a slave we don't want it to run */
@@ -580,9 +577,17 @@ brasero_growisofs_read_stdout (BraseroProcess *process, const char *line)
 	BraseroGrowisofs *growisofs;
 
 	growisofs = BRASERO_GROWISOFS (process);
-
-	if (sscanf (line, "%10lld/%lld ( %2d.%1d%%) @%2d.%1dx, remaining %*d:%*d",
+	if (sscanf (line, "%10lld/%lld (%2d.%1d%%) @%2d.%1dx, remaining %*d:%*d",
 		    &b_written, &b_total, &perc_1, &perc_2, &speed_1, &speed_2) == 6) {
+		if (growisofs->priv->action == BRASERO_GROWISOFS_ACTION_BLANK
+		&&  b_written >= 65536) {
+			/* we nullified 65536 that's enough. A signal SIGTERM
+			 * will be sent in process.c. That's not the best way
+			 * to do it but it works. */
+			brasero_job_finished (BRASERO_JOB (process));
+			return BRASERO_BURN_OK;
+		}
+
 		BRASERO_JOB_TASK_SET_WRITTEN (growisofs, b_written);
 		BRASERO_JOB_TASK_SET_TOTAL (growisofs, b_total);
 		BRASERO_JOB_TASK_SET_RATE (growisofs, (gdouble) (speed_1 * 10 + speed_2) / 10.0 * (gdouble) DVD_SPEED);
@@ -626,6 +631,14 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const char *line)
 
 		total = growisofs->priv->sectors_num * 2048;
 		written = total * fraction;
+
+		if (growisofs->priv->action == BRASERO_GROWISOFS_ACTION_BLANK
+		&&  written >= 65536) {
+			/* we nullified 65536 that's enough. A signal SIGTERM
+			 * will be sent. */
+			brasero_job_finished (BRASERO_JOB (process));
+			return BRASERO_BURN_OK;
+		}
 
 		BRASERO_JOB_TASK_SET_TOTAL (growisofs, total);
 		BRASERO_JOB_TASK_SET_WRITTEN (growisofs, written);
@@ -1007,8 +1020,10 @@ static BraseroBurnResult
 brasero_growisofs_set_argv_blank (BraseroGrowisofs *growisofs,
 				  GPtrArray *argv)
 {
-	if (!growisofs->priv->fast_blank) {
+	if (growisofs->priv->fast_blank) {
 		g_ptr_array_add (argv, g_strdup ("-Z"));
+
+		/* NOTE: /dev/zero works but not /dev/null. Why ? */
 		g_ptr_array_add (argv, g_strdup_printf ("%s=%s", 
 							NCB_DRIVE_GET_DEVICE (growisofs->priv->drive),
 							"/dev/zero"));
@@ -1017,10 +1032,15 @@ brasero_growisofs_set_argv_blank (BraseroGrowisofs *growisofs,
 		 * growisofs warned that it had an isofs already on the disc */
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tty"));
 
-		/* set a decent speed since from growisofs point of view this
-		 * is still writing. Set 4x and growisofs will adapt the speed
-		 * anyway if disc or drive can't be used at this speed. */
-		g_ptr_array_add (argv, g_strdup_printf ("-speed=%d", 4));
+		/* set maximum write speed */
+		g_ptr_array_add (argv, g_strdup_printf ("-speed=%d",
+							NCB_MEDIA_GET_MAX_WRITE_SPEED (growisofs->priv->drive) * 1024 / DVD_SPEED));
+
+		/* we only need to nullify 64 KiB: we'll stop the process when
+		 * at least 65536 bytes have been written. We put a little more
+		 * so in stdout parsing function remaining time is not negative
+		 * if that's too fast. */
+		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tracksize:1024"));
 
 		if (growisofs->priv->dummy)
 			g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=dummy"));

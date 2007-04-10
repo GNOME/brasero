@@ -534,7 +534,7 @@ brasero_process_stop (BraseroJob *job,
 		pid = process->priv->pid;
 		process->priv->pid = 0;
 
-		if (kill (pid, SIGQUIT) == -1 && errno != ESRCH) {
+		if (kill (pid, SIGTERM) == -1 && errno != ESRCH) {
 			BRASERO_JOB_LOG (process, 
 					 "process (%s) couldn't be killed: terminating",
 					 strerror (errno));

@@ -740,10 +740,10 @@ brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
                       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_LIBBURN, NULL));
  	  	}
 		else if (!fast) {
-			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
+			obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
 		}
 		else {
-		       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_DVD_RW_FORMAT, NULL));
+		       	obj = BRASERO_RECORDER (g_object_new (BRASERO_TYPE_GROWISOFS, NULL));
 		}
 	}
 	else if (media & BRASERO_MEDIUM_DVD) {
