@@ -1376,6 +1376,7 @@ brasero_burn_dialog_check_files_integrity (BraseroBurnDialog *dialog,
 				    error);
 
 	brasero_sum_check_free (dialog->priv->file_ctx);
+	dialog->priv->file_ctx = NULL;
 	g_source_remove (id);
 
 	if (wrong_sums) {
@@ -2172,10 +2173,10 @@ brasero_burn_dialog_cancel (BraseroBurnDialog *dialog)
 	if (dialog->priv->file_ctx)
 		brasero_sum_check_cancel (dialog->priv->file_ctx);
 	else if (dialog->priv->local_image
-	      &&  brasero_job_is_running (dialog->priv->local_image))
+	     &&  brasero_job_is_running (dialog->priv->local_image))
 		brasero_job_cancel (dialog->priv->local_image, TRUE);
 	else if (dialog->priv->checksum
-	      &&  brasero_job_is_running (dialog->priv->checksum))
+	     &&  brasero_job_is_running (dialog->priv->checksum))
 		brasero_job_cancel (dialog->priv->checksum, TRUE);
 	else if (dialog->priv->burn) {
 		BraseroBurnResult result;
