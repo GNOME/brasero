@@ -5337,8 +5337,12 @@ next:
 		&&  g_hash_table_lookup (disc->priv->unreadable, uri))
 			continue;
 
-		/* NOTE: that can't be a symlink as they are handled
-		 * separately (or rather their targets) */
+		/* symlinks should be handled by this function but by the one 
+		 * handling the graft points */
+		if (disc->priv->symlinks
+		&& g_hash_table_lookup (disc->priv->symlinks, uri))
+			continue;
+
 		path_iter = paths;
 		treepath_iter = treepaths;
 		for (; path_iter; path_iter = path_iter->next, treepath_iter = treepath_iter->next) {
@@ -5436,7 +5440,13 @@ brasero_data_disc_expose_result (BraseroVFS *self,
 		return;
 	}
 
-	if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK)
+	/* We don't check the type to see if it is a symlink since load function
+	 * replaces the information in the structure (including the type) by the
+	 * information of the target when it meets a symlink. The symlinks are
+	 * treated in a different function (the one dealing with graft points) 
+	 */
+	if (disc->priv->symlinks
+	&&  g_hash_table_lookup (disc->priv->symlinks, uri))
 		return;
 
 	entry = g_new0 (BraseroDirectoryEntry, 1);
@@ -5970,7 +5980,6 @@ brasero_data_disc_symlink_new (BraseroDataDisc *disc,
 						   info->symlink_name,
 						   GET_SIZE_IN_SECTORS (info->size));
 
-
 end :
 	
 	uri = entry->uri;
@@ -6258,7 +6267,6 @@ brasero_data_disc_dir_contents_end (GObject *object,
 		}
 
 		current = entry->uri;
-
 		if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 			BraseroFile *tmp;
 
