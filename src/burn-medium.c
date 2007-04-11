@@ -775,8 +775,6 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	/* here we just need to see if this feature is current or not */
 	if (hdr->desc->current)
 		priv->info |= BRASERO_MEDIUM_PROTECTED;
-	else
-		priv->info |= BRASERO_MEDIUM_PROTECTED;
 
 	g_free (hdr);
 	return BRASERO_BURN_OK;
