@@ -73,75 +73,15 @@ brasero_error_quark (void)
 	return quark;
 }
 
-/* utils */
-enum {
-	FROM_FILE,
-	FROM_MIME,
-	FROM_THEME
-};
-
-static void
-brasero_utils_register_icon (GtkIconFactory *factory,
-			     const gchar *key,
-			     const gchar *icon,
-			     gint size)
-{
-	GdkPixbuf *pixbuf = NULL;
-	gchar *icon_string;
-
-	icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
-					 NULL, NULL, NULL, icon,
-					 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
-
-	if (icon_string) {
-		GError *error = NULL;
-
-		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-						   icon_string,
-						   size,
-						   0,
-						   &error);
-		g_free (icon_string);
-
-		if (error) {
-			g_warning ("Failed to load icon %s\n", error->message);
-			g_error_free (error);
-		}
-	}
-
-	if (pixbuf) {
-		GtkIconSet *iconset;
-
-		iconset = gtk_icon_set_new_from_pixbuf (pixbuf);
-		g_object_unref (pixbuf);
-
-		gtk_icon_factory_add (factory, key, iconset);
-		gtk_icon_set_unref (iconset);
-	}
-	else
-		g_warning ("icon %s can't be loaded\n", icon);
-}
-
 void
 brasero_utils_init (void)
 {
-	GtkIconFactory *factory;
-
 	/* This function does two things:
 	 * - register brasero icons
 	 * - load all the gid of the user
 	 */
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
 					   BRASERO_DATADIR "/icons");
-
-	factory = gtk_icon_factory_new ();
-
-	brasero_utils_register_icon (factory,
-				     BRASERO_STOCK_PLAYLIST,
-				     "audio/x-scpls",
-				     48);
-
-	gtk_icon_factory_add_default (factory);
 
 	/* load gids of the user */
 	if (groups == NULL) {

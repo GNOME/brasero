@@ -464,7 +464,8 @@ brasero_layout_add_project (BraseroLayout *layout,
 
 static GtkWidget *
 _make_pane (GtkWidget *widget,
-	    const gchar *icon,
+	    const gchar *stock_id,
+	    const gchar *icon_name,
 	    const gchar *text,
 	    const gchar *subtitle,
 	    gboolean fill)
@@ -484,7 +485,11 @@ _make_pane (GtkWidget *widget,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (retval), hbox, FALSE, FALSE, 0);
 
-	image = gtk_image_new_from_stock (icon, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	if (stock_id)
+		image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	else
+		image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_LARGE_TOOLBAR);
+
 	gtk_widget_show (image);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.0, 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
@@ -766,7 +771,8 @@ brasero_layout_add_source (BraseroLayout *layout,
 			   const gchar *subtitle,
 			   const gchar *menu,
 			   const gchar *tooltip,
-			   const gchar *icon,
+			   const gchar *stock_id,
+			   const gchar *icon_name,
 			   BraseroLayoutType types)
 {
 	GtkWidget *pane;
@@ -774,7 +780,7 @@ brasero_layout_add_source (BraseroLayout *layout,
 	BraseroLayoutItem *item;
 	GtkRadioActionEntry entries;
 
-	pane = _make_pane (source, icon, name, subtitle, TRUE);
+	pane = _make_pane (source, stock_id, icon_name, name, subtitle, TRUE);
 	g_signal_connect (pane,
 			  "show",
 			  G_CALLBACK (brasero_layout_page_showed),
@@ -786,7 +792,7 @@ brasero_layout_add_source (BraseroLayout *layout,
 	/* add menu radio entry in display */
 	accelerator = g_strdup_printf ("F%i", (layout->priv->accel ++) + 8);
 	entries.name = id;
-	entries.stock_id = icon;
+	entries.stock_id = stock_id?stock_id:icon_name;
 	entries.label = menu;
 	entries.accelerator = accelerator;
 	entries.tooltip = tooltip;

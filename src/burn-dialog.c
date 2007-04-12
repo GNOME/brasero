@@ -928,42 +928,64 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 		||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_GRAFTS) {
 			title = g_strdup (_("Burning DVD"));
 			header = g_strdup (_("<big><b>Burning data DVD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical-data-new",
+						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_IMAGE) {
 			title = g_strdup (_("Burning DVD"));
 			header = g_strdup (_("<big><b>Burning image to DVD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      NCB_MEDIA_GET_ICON (drive),
+						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_DISC) {
 			title = g_strdup (_("Copying DVD"));
 			header = g_strdup (_("<big><b>Copying data DVD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						"media-optical-copy",
+						GTK_ICON_SIZE_DIALOG);
 		}
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_AUDIO
 	     ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_SONG) {
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
+
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
 					      "media-optical-audio-new",
 					      GTK_ICON_SIZE_DIALOG);
-		goto end;
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_DATA
 	     ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_GRAFTS) {
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup_printf (_("<big><b>Burning data CD</b></big>"));
+
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "media-optical-data-new",
+					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_DISC) {
 		title = g_strdup (_("Copying CD"));
 		header = g_strdup(_("<big><b>Copying CD</b></big>"));
+
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "media-optical-copy",
+					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_IMAGE) {
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup (_("<big><b>Burning image to CD</b></big>"));
+	
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      NCB_MEDIA_GET_ICON (drive),
+					      GTK_ICON_SIZE_DIALOG);
 	}
 	
-	gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-				      NCB_MEDIA_GET_ICON (drive),
-				      GTK_ICON_SIZE_DIALOG);
+
 
 end:
 

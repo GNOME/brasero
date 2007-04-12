@@ -40,8 +40,6 @@
 extern "C" {
 #endif
 
-#define BRASERO_STOCK_PLAYLIST	"brasero-playlist-icon"
-
 #define BRASERO_ERROR brasero_error_quark()
 
 typedef char *(*BraseroFormatTime) (double time,

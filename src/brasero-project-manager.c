@@ -275,7 +275,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   _("<i>Browse the file system</i>"),
 				   _("File browser"),
 				   _("Display file browser"),
-				   GTK_STOCK_DIRECTORY, 
+				   GTK_STOCK_DIRECTORY,
+				   NULL,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
 	brasero_project_add_source (BRASERO_PROJECT (obj->priv->project),
 				    BRASERO_URI_CONTAINER (chooser));
@@ -303,7 +304,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   _("<i>Search files using keywords</i>"),
 				   _("Search files"),
 				   _("Display search"),
-				   GTK_STOCK_FIND, 
+				   GTK_STOCK_FIND,
+				   NULL,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
 	brasero_project_add_source (BRASERO_PROJECT (obj->priv->project),
 				    BRASERO_URI_CONTAINER (search));
@@ -328,7 +330,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   _("<i>Display playlists and their contents</i>"),
 				   _("Playlists"),
 				   _("Display playlists"),
-				   BRASERO_STOCK_PLAYLIST, 
+				   NULL,
+				   "audio-x-generic", 
 				   BRASERO_LAYOUT_AUDIO);
 
 	brasero_project_add_source (BRASERO_PROJECT (obj->priv->project),

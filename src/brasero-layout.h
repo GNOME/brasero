@@ -79,7 +79,8 @@ brasero_layout_add_source (BraseroLayout *layout,
 			   const gchar *subtitle,
 			   const gchar *menu,
 			   const gchar *tooltip,
-			   const gchar *icon,
+			   const gchar *stock_id,
+			   const gchar *icon_name,
 			   BraseroLayoutType types);
 void
 brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type);
