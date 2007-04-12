@@ -946,6 +946,7 @@ brasero_data_disc_build_context_menu (BraseroDataDisc *disc)
 	}
 }
 
+
 /******************************* notifications    ******************************/
 struct _BraseroNotification {
 	gchar *primary;
@@ -963,6 +964,8 @@ brasero_data_disc_notification_free (BraseroNotification *notification)
 	g_free (notification);
 }
 
+#ifdef HAVE_LIBNOTIFY
+
 static void
 brasero_data_disc_notification_closed (NotifyNotification *notification,
 				       BraseroDataDisc *disc)
@@ -971,12 +974,13 @@ brasero_data_disc_notification_closed (NotifyNotification *notification,
 	disc->priv->notification = NULL;
 }
 
+#endif
+
 static gboolean
 brasero_data_disc_notify_user_real (gpointer data)
 {
 	BraseroNotification *notification;
 	BraseroDataDisc *disc;
-	GtkWidget *toplevel;
 
 	disc = data;
 	if (!disc->priv->libnotify) {
@@ -987,6 +991,8 @@ brasero_data_disc_notify_user_real (gpointer data)
 	notification = disc->priv->libnotify->data;
 
 #ifdef HAVE_LIBNOTIFY
+
+	GtkWidget *toplevel;
 
 	/* see if we should notify the user. What we want to avoid is to have
 	 * two notifications at the same time */
