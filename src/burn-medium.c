@@ -472,7 +472,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	gint desc_num, i;
 	gint max_wrt = 0;
 	gint max_num;
-	int size;
+	int size = 0;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_spc1_mode_sense_get_page (fd,
@@ -497,7 +497,10 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 		  sizeof (BraseroScsiStatusPage) -
 		  sizeof (BraseroScsiModeHdr);
 
-	if (desc_num >= max_num)
+	if (max_num < 0)
+		max_num = 0;
+
+	if (desc_num > max_num)
 		desc_num = max_num;
 
 	priv->wr_speeds = g_new0 (gint, desc_num + 1);
