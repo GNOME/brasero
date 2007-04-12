@@ -187,7 +187,7 @@ static GtkActionEntry entries_actions [] = {
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
-	{"Burn", "brasero-action-burn", N_("_Burn"), NULL,
+	{"Burn", "media-optical-burn", N_("_Burn"), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
@@ -466,7 +466,7 @@ brasero_project_init (BraseroProject *obj)
 	/* burn button set insensitive since there are no files in the selection */
 	obj->priv->burn = brasero_utils_make_button (_("Burn"),
 						     NULL,
-						     "brasero-action-burn",
+						     "media-optical-burn",
 						     GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
@@ -1093,7 +1093,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 	if (audio) {
 		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->image),
-					      "audio-x-generic",
+					      "media-optical-audio-new",
 					      GTK_ICON_SIZE_DND);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
 				      _("<big><b>Audio project</b></big>"));
@@ -1113,7 +1113,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	}
 	else {
 		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->image),
-					      "media-optical",
+					      "media-optical-data-new",
 					      GTK_ICON_SIZE_DND);
 		gtk_label_set_markup (GTK_LABEL (project->priv->label),
 				      _("<big><b>Data project</b></big>"));

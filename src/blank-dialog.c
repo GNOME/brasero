@@ -136,7 +136,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
 					_("Blank"),
 					NULL,
-					"brasero-action-blank");
+					"media-optical-blank");
 }
 
 static void

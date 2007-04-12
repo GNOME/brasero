@@ -192,7 +192,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog * obj)
 
 	burn = brasero_utils_make_button (_("Copy"),
 					  NULL,
-					  "brasero-action-burn",
+					  "media-optical-burn",
 					  GTK_ICON_SIZE_LARGE_TOOLBAR);
 	g_signal_connect (G_OBJECT (burn),
 			  "clicked",

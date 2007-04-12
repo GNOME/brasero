@@ -478,7 +478,7 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 						     _("The disc in the drive holds data:"),
 						     _("Do you want to erase the current disc?\nOr replace the current disc with a new disc?"),
 						     _("Erase disc"),
-						     "brasero-action-blank");
+						     "media-optical-blank");
 }
 
 static BraseroBurnResult
@@ -490,7 +490,7 @@ brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
 						     _("Appending new files to a multisession disc is not advised:"),
 						     _("already burnt files will be invisible (though still readable).\nDo you want to continue anyway?"),
 						     _("Continue"),
-						     "brasero-action-burn");
+						     "media-optical-burn");
 }
 
 static BraseroBurnResult
@@ -502,7 +502,7 @@ brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 						     _("Appending audio tracks to a CD is not advised:"),
 						     _("you might not be able to listen to them with stereos and CD-TEXT won't be written.\nDo you want to continue anyway?"),
 						     _("Continue"),
-						     "brasero-action-burn");
+						     "media-optical-burn");
 }
 
 static BraseroBurnResult
@@ -514,7 +514,7 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 						     _("Recording audio tracks on a rewritable disc is not advised:"),
 						     _("you might not be able to listen to it with stereos.\nDo you want to continue anyway?"),
 						     _("Continue"),
-						     "brasero-action-burn");
+						     "media-optical-burn");
 }
 
 static BraseroBurnResult
@@ -943,8 +943,9 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 		title = g_strdup (_("Burning CD"));
 		header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-					      "audio-x-generic",
+					      "media-optical-audio-new",
 					      GTK_ICON_SIZE_DIALOG);
+		goto end;
 	}
 	else if (dialog->priv->track_type == BRASERO_TRACK_SOURCE_DATA
 	     ||  dialog->priv->track_type == BRASERO_TRACK_SOURCE_GRAFTS) {

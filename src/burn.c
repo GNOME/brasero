@@ -1466,6 +1466,7 @@ brasero_burn_check_volume_free_space (BraseroBurn *burn,
 		dirname = g_path_get_dirname (output);
 
 	uri_str = gnome_vfs_get_uri_from_local_path (dirname);
+	g_print ("DIRNAME %s\n", dirname);
 	g_free (dirname);
 
 	uri = gnome_vfs_uri_new (uri_str);
@@ -1485,7 +1486,7 @@ brasero_burn_check_volume_free_space (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 	gnome_vfs_uri_unref (uri);
-
+g_print ("OUTPUT %s %lli\n", output, vol_size);
 	if (burn->priv->image_size > vol_size) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,

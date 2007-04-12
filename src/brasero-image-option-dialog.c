@@ -463,7 +463,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 
 	burn = brasero_utils_make_button (_("Burn"),
 					  NULL,
-					  "brasero-action-burn",
+					  "media-optical-burn",
 					  GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_widget_show (burn);
 	g_signal_connect (G_OBJECT (burn),
