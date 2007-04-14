@@ -63,9 +63,8 @@ typedef enum {
 	BRASERO_BURN_FLAG_MERGE			= 1 << 11,
 
 	BRASERO_BURN_FLAG_DUMMY			= 1 << 12,
-	BRASERO_BURN_FLAG_DEBUG			= 1 << 13,
 
-	BRASERO_BURN_FLAG_CHECK_SIZE		= 1 << 14,
+	BRASERO_BURN_FLAG_CHECK_SIZE		= 1 << 13,
 } BraseroBurnFlag;
 
 typedef struct BraseroBurnCapsPrivate BraseroBurnCapsPrivate;

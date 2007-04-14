@@ -61,6 +61,7 @@
 #include "burn-job.h"
 #include "burn-md5.h"
 #include "burn-xfer.h"
+#include "burn-debug.h"
 #include "utils.h"
 
 static void brasero_sum_dialog_class_init (BraseroSumDialogClass *klass);
@@ -86,8 +87,6 @@ static void brasero_sum_dialog_media_changed (BraseroToolDialog *dialog,
 static void
 brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
 				BraseroSumDialog *self);
-
-extern int debug;
 
 GType
 brasero_sum_dialog_get_type ()

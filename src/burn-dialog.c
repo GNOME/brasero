@@ -67,8 +67,6 @@
 #include "burn-medium.h"
 #include "burn-task.h"
 
-extern gint debug;
-
 static void brasero_burn_dialog_class_init (BraseroBurnDialogClass *klass);
 static void brasero_burn_dialog_init (BraseroBurnDialog *obj);
 static void brasero_burn_dialog_finalize (GObject *object);
@@ -1042,7 +1040,6 @@ brasero_burn_dialog_job_get_track (BraseroBurnDialog *dialog,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	brasero_job_set_debug (job, debug);
 	brasero_job_set_session (job, dialog->priv->session);
 
 	/* NOTE: here we don't obey the flags as that data is ours and not
@@ -2066,9 +2063,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 
 	dialog->priv->track_type = source->type;
 	dialog->priv->isosize = sectors * 2048;
-
-	if (debug)
-		flags |= BRASERO_BURN_FLAG_DEBUG;
 
 	/* try to get the media type for the title */
 	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE

@@ -22,7 +22,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -35,6 +34,7 @@
 
 #include "burn-job.h"
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-session.h"
 #include "burn-task.h"
 #include "brasero-marshal.h"
@@ -50,12 +50,11 @@ struct BraseroJobPrivate {
 	BraseroJob *master;
 	BraseroJob *slave;
 
-	int relay_slave_signal:1;
-	int run_slave:1;
+	guint relay_slave_signal:1;
+	guint run_slave:1;
 
-	int is_running:1;
-	int dangerous:1;
-	int debug:1;
+	guint is_running:1;
+	guint dangerous:1;
 };
 
 typedef enum {
@@ -152,12 +151,6 @@ void
 brasero_job_set_dangerous (BraseroJob *job, gboolean value)
 {
 	job->priv->dangerous = value;
-}
-
-void
-brasero_job_set_debug (BraseroJob *job, gboolean value)
-{
-	job->priv->debug = value;
 }
 
 void
@@ -673,6 +666,5 @@ brasero_job_log_message (BraseroJob *job,
 	/* it all depends on the master */
 	while (job->priv->master) job = job->priv->master;
 
-	if (job->priv->debug)
-		BRASERO_BURN_LOGV (format);
+	BRASERO_BURN_LOGV (format);
 }

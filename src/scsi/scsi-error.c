@@ -14,11 +14,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <errno.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <errno.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -26,94 +26,40 @@
 #include "burn-basics.h"
 #include "scsi/scsi-error.h"
 
+static const gchar *error_string [] = {	N_("unknown error"),
+					N_("size mismatch"),
+					N_("type mismatch"),
+					N_("bad argument"),
+					N_("the device is not ready"),
+					N_("outrange address"),
+					N_("invalid address"),
+					N_("invalid command"),
+					N_("invalid parameter in command"),
+					N_("invalid field in command"),
+					N_("the device timed out"),
+					N_("key not established"),
+					NULL	};	/* errno */
+
+const gchar *
+brasero_scsi_strerror (BraseroScsiErrCode code)
+{
+	if (code > BRASERO_SCSI_ERROR_LAST || code < 0)
+		return NULL;
+
+	if (code == BRASERO_SCSI_ERRNO)
+		return strerror (errno);
+
+	return _(error_string [code]);
+}
+
 void
 brasero_scsi_set_error (GError **error, BraseroScsiErrCode code)
 {
 	if (!error)
 		return;
 
-	switch (code) {
-	case BRASERO_SCSI_ERR_UNKNOWN:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("unknown error"));
-		break;
-
-	case BRASERO_SCSI_SIZE_MISMATCH:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size mismatch"));
-		break;
-
-	case BRASERO_SCSI_TYPE_MISMATCH:
-		break;
-
-	case BRASERO_SCSI_BAD_ARGUMENT:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("bad argument"));
-		break;
-
-	case BRASERO_SCSI_ERRNO:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		break;
-
-	case BRASERO_SCSI_NOT_READY:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the device is not ready"));
-		break;
-
-	case BRASERO_SCSI_OUTRANGE_ADDRESS:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("outrange address"));
-	     break;
-
-	case BRASERO_SCSI_INVALID_ADDRESS:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("invalid address"));
-		break;
-
-	case BRASERO_SCSI_INVALID_COMMAND:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("invalid SCSI command"));
-		break;
-
-	case BRASERO_SCSI_INVALID_PARAMETER:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("invalid parameter in command"));
-		break;
-
-	case BRASERO_SCSI_INVALID_FIELD:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("invalid field in command"));
-		break;
-
-	case BRASERO_SCSI_TIMEOUT:
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the device timed out"));
-		break;
-
-	case BRASERO_SCSI_KEY_NOT_ESTABLISHED:
-		break;
-	}
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     brasero_scsi_strerror (code));
 }

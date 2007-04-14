@@ -38,8 +38,7 @@
 
 #include "metadata.h"
 #include "utils.h"
-
-extern gint debug;
+#include "burn-debug.h"
 
 static void brasero_metadata_class_init (BraseroMetadataClass *klass);
 static void brasero_metadata_init (BraseroMetadata *sp);
@@ -616,9 +615,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 	case GST_MESSAGE_ERROR:
 		/* when stopping the pipeline we are only interested in TAGS */
 		gst_message_parse_error (msg, &error, &debug_string);
-		if (debug && debug_string)
-			g_warning ("DEBUG: %s\n", debug_string);
-
+		BRASERO_BURN_LOG (debug_string);
 		g_free (debug_string);
 
 		meta->priv->error = error;

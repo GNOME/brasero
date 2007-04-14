@@ -49,23 +49,6 @@ extern "C"
 GQuark brasero_burn_quark (void);
 #define BRASERO_BURN_ERROR brasero_burn_quark()
 
-#define BRASERO_BURN_LOG_DOMAIN				"BraseroBurn"
-#define BRASERO_BURN_LOG(format, ...)				\
-		g_log (BRASERO_BURN_LOG_DOMAIN,			\
-		       G_LOG_LEVEL_DEBUG,			\
-		       format,					\
-		       ##__VA_ARGS__);
-#define BRASERO_BURN_LOGV(format)				\
-	{							\
-		va_list arg_list;				\
-		va_start (arg_list, format);			\
-		g_logv (BRASERO_BURN_LOG_DOMAIN,		\
-			G_LOG_LEVEL_DEBUG,			\
-			format,					\
-			arg_list);				\
-		va_end (arg_list);				\
-	}
-	
 #define BRASERO_BURN_TMP_FILE_NAME		"brasero_tmp_XXXXXX"
 
 typedef enum {

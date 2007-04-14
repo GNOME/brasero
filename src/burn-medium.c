@@ -22,13 +22,14 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -36,6 +37,7 @@
 #include <nautilus-burn-drive.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-medium.h"
 #include "scsi-mmc1.h"
 #include "scsi-mmc2.h"
@@ -59,28 +61,30 @@ const gchar *icons [] = { 	"gnome-dev-removable",
 				"gnome-dev-disc-dvdr-plus",
 				"gnome-dev-disc-dvdram",
 				NULL };
-const gchar *types [] = {	"file",
-				"CDROM",
-				"CD-R",
-				"CD-RW",
-				"DVDROM",
-				"DVD-R",
-				"DVD-RW",
-				"DVD+R",
-				"DVD+RW",
-				"DVD+R dual layer",
-				"DVD+RW dual layer",
-				"DVD-R dual layer",
-				"DVD-RAM",
-				"blue ray disc",
-				"writable blue ray disc",
-				"rewritable blue ray disc",
+const gchar *types [] = {	N_("file"),
+				N_("CDROM"),
+				N_("CD-R"),
+				N_("CD-RW"),
+				N_("DVDROM"),
+				N_("DVD-R"),
+				N_("DVD-RW"),
+				N_("DVD+R"),
+				N_("DVD+RW"),
+				N_("DVD+R dual layer"),
+				N_("DVD+RW dual layer"),
+				N_("DVD-R dual layer"),
+				N_("DVD-RAM"),
+				N_("blue ray disc"),
+				N_("writable blue ray disc"),
+				N_("rewritable blue ray disc"),
 				NULL };
 
 
 typedef struct _BraseroMediumPrivate BraseroMediumPrivate;
 struct _BraseroMediumPrivate
 {
+	gint retry_id;
+
 	GSList * tracks;
 
 	const gchar *type;
@@ -307,8 +311,10 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 					 sizeof (atip_data),
 					 NULL);
 
-	if (result != BRASERO_SCSI_OK)
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("READ ATIP failed");
 		return BRASERO_BURN_ERR;
+	}
 
 	priv->block_num = BRASERO_MSF_TO_LBA (atip_data.desc->leadout_mn,
 					      atip_data.desc->leadout_sec,
@@ -335,6 +341,8 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 						      code);
 	if (result != BRASERO_SCSI_OK) {
 		g_free (hdr);
+
+		BRASERO_BURN_LOG ("READ FORMAT CAPACITIES failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -424,11 +432,16 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 
 	if (result != BRASERO_SCSI_OK) {
 		g_free (wrt_perf);
+
+		BRASERO_BURN_LOG ("GET PERFORMANCE failed");
 		return BRASERO_BURN_ERR;
 	}
 
 	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) /
 		    sizeof (BraseroScsiWrtSpdDesc);
+
+	if (num_desc <=  0)
+		goto end; 
 
 	priv->rd_speeds = g_new0 (gint, num_desc + 1);
 	priv->wr_speeds = g_new0 (gint, num_desc + 1);
@@ -447,6 +460,8 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 
 	priv->max_rd = max_rd;
 	priv->max_wrt = max_wrt;
+
+end:
 
 	g_free (wrt_perf);
 
@@ -482,6 +497,8 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 						   code);
 	if (result != BRASERO_SCSI_OK) {
 		g_free (data);
+
+		BRASERO_BURN_LOG ("MODE SENSE failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -489,6 +506,8 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	if (size < sizeof (BraseroScsiStatusPage)) {
 		g_free (data);
+
+		BRASERO_BURN_LOG ("wrong size in page");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -496,6 +515,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	max_num = size -
 		  sizeof (BraseroScsiStatusPage) -
 		  sizeof (BraseroScsiModeHdr);
+	max_num /= sizeof (BraseroScsiWrtSpdDesc);
 
 	if (max_num < 0)
 		max_num = 0;
@@ -541,6 +561,8 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 						   code);
 	if (result != BRASERO_SCSI_OK) {
 		g_free (data);
+
+		BRASERO_BURN_LOG ("MODE SENSE failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -548,6 +570,8 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 
 	if (size < 0x14) {
 		g_free (data);
+
+		BRASERO_BURN_LOG ("wrong page size");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -578,6 +602,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	if (result == BRASERO_SCSI_INVALID_COMMAND) {
 		g_free (hdr);
 
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+
 		/* This is probably a MMC1 drive since this command was
 		 * introduced in MMC2 and is supported onward. So it
 		 * has to be a CD (R/RW). The rest of the information
@@ -591,6 +617,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		/* All other commands means an error */
 		g_free (hdr);
+
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -722,6 +750,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	/* see how we should get the speeds */
 	if (hdr->desc->add_len != sizeof (BraseroScsiRTStreamDesc)) {
 		g_free (hdr);
+
+		BRASERO_BURN_LOG ("wrong size for Stream descriptor");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -767,6 +797,8 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
 		g_free (hdr);
+
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -847,8 +879,10 @@ brasero_medium_track_get_info (BraseroMedium *self,
 					       sizeof (BraseroScsiTrackInfo),
 					       code);
 
-	if (result != BRASERO_SCSI_OK)
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("READ TRACK INFO failed");
 		return BRASERO_BURN_ERR;
+	}
 
 	track->blocks_num = BRASERO_GET_32 (track_info.track_size);
 
@@ -888,14 +922,14 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 						  code);
 	if (result != BRASERO_SCSI_OK) {
 		g_free (toc);
+
+		BRASERO_BURN_LOG ("READ TOC failed");
 		return BRASERO_BURN_ERR;
 	}
 
-	num = (BRASERO_GET_16 (toc->hdr->len) +
-	      sizeof (toc->hdr->len) -
-	      sizeof (BraseroScsiTocPmaAtipHdr)) /
-	      sizeof (BraseroScsiTocDesc);
-	
+	num = (size - sizeof (BraseroScsiFormattedTocData)) /
+	       sizeof (BraseroScsiTocDesc);
+
 	desc = toc->desc;
 	for (i = 0; i < num; i ++, desc ++) {
 		BraseroMediumTrack *track;
@@ -1015,6 +1049,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
 		g_free (info);
+	
+		BRASERO_BURN_LOG ("READ DISC INFORMATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1050,39 +1086,101 @@ end:
 }
 
 static void
-brasero_medium_init_real (BraseroMedium *object)
+brasero_medium_init_real (BraseroMedium *object, int fd)
 {
-	int fd;
-	const gchar *path;
 	BraseroBurnResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiErrCode code = 0;
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
-	path = nautilus_burn_drive_get_device (priv->drive);
-
-	fd = open (path, O_RDONLY);
-	if (fd < 1)
-		return;
 
 	result = brasero_medium_get_medium_type (object, fd, &code);
 	if (result != BRASERO_BURN_OK)
-		goto end;
+		return;
 
 	if (priv->info & BRASERO_MEDIUM_DVD) {
 		result = brasero_medium_get_css_feature (object, fd, &code);
 		if (result != BRASERO_BURN_OK)
-			goto end;
+			return;
 	}
 
 	result = brasero_medium_get_contents (object, fd, &code);
 	if (result != BRASERO_BURN_OK)
-		goto end;
+		return;
 
 	brasero_medium_get_capacity_by_type (object, fd, &code);
+}
 
-end:
+static gboolean
+brasero_medium_retry_open (gpointer object)
+{
+	int fd;
+	const gchar *path;
+	BraseroMedium *self;
+	BraseroMediumPrivate *priv;
 
+	self = BRASERO_MEDIUM (object);
+	priv = BRASERO_MEDIUM_PRIVATE (object);
+	path = nautilus_burn_drive_get_device (priv->drive);
+
+	BRASERO_BURN_LOG ("Retrying to open device %s", path);
+	fd = open (path, O_RDONLY|O_NONBLOCK);
+	if (fd < 0) {
+		if (errno == EBUSY
+		||  errno == EAGAIN
+		||  errno == EWOULDBLOCK) {
+			BRASERO_BURN_LOG ("Device busy");
+			/* we'll retry in a second */
+			return TRUE;
+		}
+
+		g_print ("Open () failed");
+		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
+		priv->retry_id = 0;
+		return FALSE;
+	}
+
+	g_print ("Open () succeeded\n");
+	priv->info = BRASERO_MEDIUM_NONE;
+	priv->retry_id = 0;
+
+	brasero_medium_init_real (self, fd);
+	close (fd);
+
+	return FALSE;
+}
+
+static void
+brasero_medium_try_open (BraseroMedium *self)
+{
+	int fd;
+	const gchar *path;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	path = nautilus_burn_drive_get_device (priv->drive);
+
+	/* the drive might be busy (a burning is going on) so we don't block
+	 * but we re-try to open it every second */
+	BRASERO_BURN_LOG ("Trying to open device %s", path);
+	fd = open (path, O_RDONLY|O_NONBLOCK);
+	if (fd < 0) {
+		if (errno == EAGAIN
+		||  errno == EWOULDBLOCK
+		||  errno == EBUSY) {
+			BRASERO_BURN_LOG ("Device busy");
+			priv->info = BRASERO_MEDIUM_BUSY;
+			priv->retry_id = g_timeout_add (1000,
+							brasero_medium_retry_open,
+							self);
+		}
+
+		BRASERO_BURN_LOG ("Open () failed");
+		return;
+	}
+
+	BRASERO_BURN_LOG ("Open () succeeded");
+	brasero_medium_init_real (self, fd);
 	close (fd);
 }
 
@@ -1104,13 +1202,23 @@ brasero_medium_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
+	if (priv->retry_id) {
+		g_source_remove (priv->retry_id);
+		priv->retry_id = 0;
+	}
+
 	g_free (priv->rd_speeds);
+	priv->rd_speeds = NULL;
+
 	g_free (priv->wr_speeds);
+	priv->wr_speeds = NULL;
 
 	g_slist_foreach (priv->tracks, (GFunc) g_free, NULL);
 	g_slist_free (priv->tracks);
+	priv->tracks = NULL;
 
 	nautilus_burn_drive_unref (priv->drive);
+	priv->drive = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1129,7 +1237,7 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 	case PROP_DRIVE:
 		priv->drive = g_value_get_object (value);
 		nautilus_burn_drive_ref (priv->drive);
-		brasero_medium_init_real (BRASERO_MEDIUM (object));
+		brasero_medium_try_open (BRASERO_MEDIUM (object));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

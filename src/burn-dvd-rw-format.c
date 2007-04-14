@@ -178,7 +178,7 @@ brasero_dvd_rw_format_blank (BraseroRecorder *recorder,
 	dvdformat = BRASERO_DVD_RW_FORMAT (recorder);
 	media = NCB_MEDIA_GET_STATUS (dvdformat->priv->drive);
 
-	if (media == BRASERO_MEDIUM_NONE)
+	if (!BRASERO_MEDIUM_VALID (media))
 		BRASERO_JOB_NOT_SUPPORTED (dvdformat);
 
 	result = brasero_job_run (BRASERO_JOB (dvdformat), error);

@@ -1022,8 +1022,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 		drive = iter->data;
 
-		if (drive->media == BRASERO_MEDIUM_NONE
-		||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
+		if (!BRASERO_MEDIUM_VALID (drive->media))
 			continue;
 
 	    	if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
@@ -1175,8 +1174,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			drive = iter->data;
 
 			/* must be a valid media */
-			if (drive->media == BRASERO_MEDIUM_NONE
-			||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
+			if (!BRASERO_MEDIUM_VALID (drive->media))
 				iter = g_list_next (iter);
 			/* in an audio context only CDs are valid */
 			else if (self->priv->is_audio_context
@@ -1212,8 +1210,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			drive = iter->data;
 
 			/* must be a valid media */
-			if (drive->media == BRASERO_MEDIUM_NONE
-			||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
+			if (!BRASERO_MEDIUM_VALID (drive->media))
 				iter = g_list_previous (iter);
 			/* in an audio context only CDs are valid */
 			else if (self->priv->is_audio_context
@@ -1297,8 +1294,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		&& (current->media & BRASERO_MEDIUM_DVD)) {
 			current = NULL;
 		}
-		else if (current->media == BRASERO_MEDIUM_NONE
-		     ||  current->media == BRASERO_MEDIUM_UNSUPPORTED) {
+		else if (!BRASERO_MEDIUM_VALID (current->media)) {
 			current = NULL;
 		}
 	    	else if (!(current->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
@@ -1336,8 +1332,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		&& (drive->media & BRASERO_MEDIUM_DVD))
 			continue;
 
-		if (drive->media == BRASERO_MEDIUM_NONE
-		||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
+		if (!BRASERO_MEDIUM_VALID (drive->media))
 			continue;
 
 	    	if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
@@ -1555,8 +1550,7 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 
 		/* get all the information about the current media */
 		drive->media = NCB_MEDIA_GET_STATUS (drive->drive);
-		if (drive->media == BRASERO_MEDIUM_NONE
-		||  drive->media == BRASERO_MEDIUM_UNSUPPORTED)
+		if (!BRASERO_MEDIUM_VALID (drive->media))
 			continue;
 
 		NCB_MEDIA_GET_CAPACITY (drive->drive, NULL, &drive->sectors);

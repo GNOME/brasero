@@ -33,6 +33,7 @@
 #include <scsi/scsi.h>
 #include <scsi/sg.h>
 
+#include "burn-debug.h"
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"

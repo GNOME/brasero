@@ -573,6 +573,13 @@ brasero_burn_sum_disc (BraseroBurnSum *self, GError **error)
 			     _("the disc is unsupported."));
 		return BRASERO_BURN_ERR;
 	}
+	else if (media == BRASERO_MEDIUM_BUSY) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the disc is busy."));
+		return BRASERO_BURN_ERR;
+	}
 
 	NCB_MEDIA_GET_DATA_SIZE (drive, &size, NULL);
 	BRASERO_JOB_TASK_SET_TOTAL (self, size);

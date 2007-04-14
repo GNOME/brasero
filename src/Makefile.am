@@ -222,9 +222,13 @@ brasero_SOURCES = \
 	scsi/scsi-read-disc-structure.h         \
 	scsi/scsi-dvd-structures.h         \
 	scsi/scsi-read-format-capacities.c         \
-	scsi/scsi-read-format-capacities.h 
+	scsi/scsi-read-format-capacities.h         \
+	burn-debug.c         \
+	burn-debug.h 
 
 brasero_LDADD = $(BRASERO_LIBS)
+
+
 
 
 

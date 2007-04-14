@@ -40,6 +40,7 @@
 
 #include "brasero-marshal.h"
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn.h"
 #include "burn-job.h"
 #include "burn-imager.h"
@@ -335,8 +336,7 @@ brasero_burn_log (BraseroBurn *burn,
 		va_end (arg_list);
 	}		
 
-	if (flags & BRASERO_BURN_FLAG_DEBUG)
-		BRASERO_BURN_LOGV (format);
+	BRASERO_BURN_LOGV (format);
 }
 
 static gboolean
@@ -501,7 +501,6 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 	GValue return_value;
 
 	media = NCB_MEDIA_GET_STATUS (drive);
-
 	if (media != BRASERO_MEDIUM_NONE) {
 		/* check one more time */
 		is_mounted = nautilus_burn_drive_is_mounted (drive);
@@ -575,6 +574,10 @@ brasero_burn_media_check_basics (BraseroBurn *burn,
 
 	if (media == BRASERO_MEDIUM_NONE)
 		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
+	else if (media == BRASERO_MEDIUM_BUSY)
+		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED)
+		error_type = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
 	else
 		error_type = BRASERO_BURN_ERROR_NONE;
 
@@ -776,7 +779,6 @@ static BraseroBurnResult
 brasero_burn_blank_real (BraseroBurn *burn,
 			 NautilusBurnDrive *drive,
 			 BraseroRecorderFlag flags,
-			 gboolean is_debug,
 			 GError **error)
 {
 	BraseroBurnResult result;
@@ -793,7 +795,6 @@ brasero_burn_blank_real (BraseroBurn *burn,
 		brasero_job_set_session (BRASERO_JOB (burn->priv->recorder),
 					 burn->priv->session);
 
-	brasero_job_set_debug (BRASERO_JOB (burn->priv->recorder), is_debug);
 	result = brasero_recorder_set_drive (burn->priv->recorder,
 					     drive,
 					     error);
@@ -876,7 +877,6 @@ brasero_burn_blank (BraseroBurn *burn,
 	result = brasero_burn_blank_real (burn,
 					  drive,
 					  blank_flags,
-					  (burn_flags & BRASERO_BURN_FLAG_DEBUG) != 0,
 					  &ret_error);
 
 	while (result == BRASERO_BURN_ERR
@@ -906,7 +906,6 @@ brasero_burn_blank (BraseroBurn *burn,
 		result = brasero_burn_blank_real (burn,
 						  drive,
 						  blank_flags,
-						  (burn_flags & BRASERO_BURN_FLAG_DEBUG) != 0,
 						  &ret_error);
 	}
 
@@ -980,6 +979,12 @@ again:
 	if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		goto end;
+	}
+
+	if (media == BRASERO_MEDIUM_BUSY) {
+		result = BRASERO_BURN_NEED_RELOAD;
+		berror = BRASERO_BURN_ERROR_MEDIA_BUSY;
 		goto end;
 	}
 
@@ -1143,7 +1148,6 @@ again:
 			result = brasero_burn_blank_real (burn,
 							  drive,
 							  blank_flags,
-							  (flags & BRASERO_BURN_FLAG_DEBUG) != 0,
 							  error);
 		}
 	}
@@ -1251,9 +1255,6 @@ brasero_burn_setup_recorder (BraseroBurn *burn,
 {
 	BraseroRecorderFlag rec_flags;
 	BraseroBurnResult result;
-
-	if ((flags & BRASERO_BURN_FLAG_DEBUG) != 0)
-		brasero_job_set_debug (BRASERO_JOB (burn->priv->recorder), TRUE);
 
 	/* set up the flags */
 	rec_flags = BRASERO_RECORDER_FLAG_NONE;
@@ -1425,9 +1426,6 @@ brasero_burn_create_imager (BraseroBurn *burn,
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
-
-	if ((flags & BRASERO_BURN_FLAG_DEBUG) != 0)
-		brasero_job_set_debug (BRASERO_JOB (imager), TRUE);
 
 	return BRASERO_BURN_OK;
 }

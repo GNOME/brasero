@@ -57,7 +57,8 @@ BraseroMedium *
 brasero_medium_new (NautilusBurnDrive *drive);
 
 typedef enum {
-	BRASERO_MEDIUM_UNSUPPORTED		= -1,
+	BRASERO_MEDIUM_UNSUPPORTED		= -2,
+	BRASERO_MEDIUM_BUSY			= -1,
 	BRASERO_MEDIUM_NONE			= 0,
 	BRASERO_MEDIUM_FILE			= 1,
 	BRASERO_MEDIUM_DVD			= 1 << 1,
@@ -136,6 +137,10 @@ typedef enum {
 					 BRASERO_MEDIUM_REWRITABLE|	\
 					 BRASERO_MEDIUM_PLUS|		\
 					 BRASERO_MEDIUM_BD)
+
+#define BRASERO_MEDIUM_VALID(media)	((media) != BRASERO_MEDIUM_NONE		\
+					&& (media) != BRASERO_MEDIUM_BUSY	\
+					&& (media) != BRASERO_MEDIUM_UNSUPPORTED)
 
 #define BRASERO_MEDIUM_IS(media, type)	(((media)&(type))==(type))
 

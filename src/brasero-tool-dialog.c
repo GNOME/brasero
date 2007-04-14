@@ -90,8 +90,6 @@ struct _BraseroToolDialogPrivate {
 	gboolean close;
 };
 
-extern int debug;
-
 static GtkDialogClass *parent_class = NULL;
 
 GType
@@ -259,6 +257,16 @@ static void
 brasero_tool_dialog_media_error (BraseroToolDialog *self)
 {
 	brasero_tool_dialog_message (self,
+				     _("Media busy"),
+				     _("The operation cannot be performed:"),
+				     _("the inserted media is busy."),
+				     GTK_MESSAGE_ERROR);
+}
+
+static void
+brasero_tool_dialog_media_busy (BraseroToolDialog *self)
+{
+	brasero_tool_dialog_message (self,
 				     _("Media error"),
 				     _("The operation cannot be performed:"),
 				     _("the inserted media is not supported."),
@@ -405,7 +413,6 @@ brasero_tool_dialog_run_job (BraseroToolDialog *self,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	brasero_job_set_debug (job, debug);
 	result = brasero_imager_set_output (BRASERO_IMAGER (job),
 					    NULL,
 					    TRUE, /* we don't overwrite */
@@ -472,6 +479,10 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		/* error out */
 		brasero_tool_dialog_media_error (self);
+		goto end;
+	}
+	else if (media == BRASERO_MEDIUM_BUSY) {
+		brasero_tool_dialog_media_busy (self);
 		goto end;
 	}
 

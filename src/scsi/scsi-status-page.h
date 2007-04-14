@@ -50,7 +50,7 @@ struct _BraseroScsiStatusWrSpdDesc {
 };
 
 struct _BraseroScsiStatusPage {
-	uchar code			:5;			/* 0 */
+	uchar code			:6;			/* 0 */
 	uchar reserved0			:1;
 	uchar ps			:1;
 
@@ -149,7 +149,7 @@ struct _BraseroScsiStatusWrSpdDesc {
 struct _BraseroScsiStatusPage {
 	uchar ps			:1;			/* 0 */
 	uchar reserved0			:1;
-	uchar code			:5;
+	uchar code			:6;
 
 	uchar len			:8;			/* 1 */
 

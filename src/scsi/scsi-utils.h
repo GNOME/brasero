@@ -26,14 +26,12 @@
 #include <glib.h>
 
 #include "scsi-base.h"
+#include "burn-debug.h"
 
 #ifndef _BURN_UTILS_H
 #define _BURN_UTILS_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #define BRASERO_GET_BCD(data)		((((uchar)(data)&0xF0)>>4)*10+((uchar)(data)&0x0F))
 #define BRASERO_GET_16(data)		(((uchar)(data)[0]<<8)+(uchar)(data)[1])
@@ -52,18 +50,18 @@ extern "C"
 
 #define BRASERO_SCSI_SET_ERRCODE(err, code)					\
 {										\
-	if (code == BRASERO_SCSI_ERRNO)						\
-		g_warning ("ERROR : in "__FILE__" at "G_STRLOC": %i (errno) %s)\n", \
-			errno, strerror (errno));				\
-	else									\
-		g_warning ("ERROR : in "__FILE__" at "G_STRLOC": %i\n", code);	\
+	if (code == BRASERO_SCSI_ERRNO)	 {					\
+		BRASERO_BURN_LOG ("SCSI command error: %s",			\
+				  strerror (errno));				\
+	} else {								\
+		BRASERO_BURN_LOG ("SCSI command error: %s",			\
+				  brasero_scsi_strerror (errno));		\
+	}									\
 	if (err)								\
 		*(err) = code;							\
 }
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_UTILS_H */
 

@@ -458,6 +458,9 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		info = g_strdup (_("<i>Unknown type of disc.</i>"));
 	}
+	else if (media == BRASERO_MEDIUM_BUSY) {
+		info = g_strdup (_("<i>The disc is busy.</i>"));
+	}
 	else if (!(media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_APPENDABLE))
 	     ||   (media & BRASERO_MEDIUM_APPENDABLE
 	     &&  !(media & (BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_HAS_DATA)))) {

@@ -261,7 +261,7 @@ brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
 	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_EJECT;
 
-	if (media == BRASERO_MEDIUM_NONE)
+	if (!BRASERO_MEDIUM_VALID (!media))
 		return BRASERO_BURN_ERR;
 
 	if (!(media & BRASERO_MEDIUM_REWRITABLE))
@@ -292,8 +292,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_DONT_OVERWRITE|
 					  BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
 					  BRASERO_BURN_FLAG_CHECK_SIZE|
-					  BRASERO_BURN_FLAG_NOGRACE|
-					  BRASERO_BURN_FLAG_DEBUG; /* always supported */
+					  BRASERO_BURN_FLAG_NOGRACE;
 	BraseroBurnFlag default_flags = BRASERO_BURN_FLAG_CHECK_SIZE|
 					BRASERO_BURN_FLAG_NOGRACE;
 
@@ -423,7 +422,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
 
 				/* when we don't know the media type we allow
 				 * the following options nevertheless */
-				if (media == BRASERO_MEDIUM_NONE) {
+				if (!BRASERO_MEDIUM_VALID (!media)) {
 					supported_flags |=  BRASERO_BURN_FLAG_APPEND|
 							    BRASERO_BURN_FLAG_MERGE;
 
@@ -491,10 +490,9 @@ brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
 						gboolean *fast_supported)
 {
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NOGRACE|
-					  BRASERO_BURN_FLAG_EJECT|
-					  BRASERO_BURN_FLAG_DEBUG;
+					  BRASERO_BURN_FLAG_EJECT;
 
-	if (media == BRASERO_MEDIUM_NONE)
+	if (!BRASERO_MEDIUM_VALID (media))
 		return BRASERO_BURN_ERR;
     
 	if (!(media & BRASERO_MEDIUM_DVD))

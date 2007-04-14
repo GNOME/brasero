@@ -57,6 +57,7 @@
 #include "brasero-session.h"
 #include "brasero-project-manager.h"
 #include "brasero-ncb.h"
+#include "burn-debug.h"
 
 static GConfClient *client;
 gchar *project_uri;
@@ -569,10 +570,11 @@ main (int argc, char **argv)
 #endif
 
 	nautilus_burn_init ();
-	NCB_INIT ();
-
 	gnome_vfs_init ();
 	gst_init (&argc, &argv);
+
+	brasero_burn_set_debug (debug);
+	NCB_INIT ();
 
 	client = gconf_client_get_default ();
 

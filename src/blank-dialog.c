@@ -50,8 +50,6 @@
 #include "brasero-tool-dialog.h"
 #include "blank-dialog.h"
 
-extern gint debug;
-
 static void brasero_blank_dialog_class_init (BraseroBlankDialogClass *klass);
 static void brasero_blank_dialog_init (BraseroBlankDialog *sp);
 static void brasero_blank_dialog_finalize (GObject *object);
@@ -351,8 +349,6 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 
 	/* set the flags */
 	flags = BRASERO_BURN_FLAG_EJECT | BRASERO_BURN_FLAG_NOGRACE;
-	if (debug)
-		flags |= BRASERO_BURN_FLAG_DEBUG;
 
 	if (GTK_WIDGET_SENSITIVE (self->priv->dummy_toggle)
 	&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->dummy_toggle)))

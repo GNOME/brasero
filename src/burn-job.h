@@ -108,9 +108,6 @@ brasero_job_is_running (BraseroJob *job);
 
 /* logging facilities */
 void
-brasero_job_set_debug (BraseroJob *job,
-		       gboolean value);
-void
 brasero_job_set_session (BraseroJob *job,
 			 BraseroBurnSession *session);
 
