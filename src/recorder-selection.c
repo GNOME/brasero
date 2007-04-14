@@ -806,14 +806,13 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	max_rate = NCB_MEDIA_GET_MAX_WRITE_SPEED (drive);
 
 	combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Max speed"));
-	
 	if (media & BRASERO_MEDIUM_DVD)
 		max_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
 	else
 		max_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
 
-	for (i = 2; i <= max_speed; i += 2) {
+	gtk_combo_box_prepend_text (GTK_COMBO_BOX (combo), _("Max speed"));
+	for (i = max_speed; i > 0; i -= 2) {
 		text = g_strdup_printf ("%i x (%s)",
 					i,
 					(media & BRASERO_MEDIUM_DVD) ? _("DVD"):_("CD"));
@@ -828,22 +827,27 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 
 	prop = g_hash_table_lookup (selection->priv->settings,
 				    display_name); /* FIXME what about drives with the same display names */
-
 	if (!prop) {
 		prop = g_new0 (BraseroDriveProp, 1);
 		brasero_recorder_selection_set_drive_default_properties (selection, prop);
 		g_hash_table_insert (selection->priv->settings,
 				     display_name,
 				     prop);
+
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	}
-	else
+	else {
+		gint speed;
+
 		g_free (display_name);
 
-	if (prop->props.drive_speed == 0
-	||  prop->props.drive_speed >= NCB_MEDIA_GET_MAX_WRITE_SPEED (drive))
-		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
-	else
-		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), prop->props.drive_speed / 2);
+		speed = prop->props.drive_speed;
+		if (!speed || speed >= max_speed)
+			gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+		else
+			gtk_combo_box_set_active (GTK_COMBO_BOX (combo),
+						 (max_speed - speed) / 2 + 1);
+	}
 
 	/* properties */
 	brasero_burn_caps_get_flags (selection->priv->caps,
@@ -909,12 +913,12 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 	prop->props.drive_speed = gtk_combo_box_get_active (GTK_COMBO_BOX (combo));
 	if (prop->props.drive_speed == 0) {
 		if (media & BRASERO_MEDIUM_DVD)
-			prop->props.drive_speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (max_rate);
+			prop->props.drive_speed = max_speed;
 		else
-			prop->props.drive_speed = NAUTILUS_BURN_DRIVE_CD_SPEED (max_rate);
+			prop->props.drive_speed = max_speed;
 	}
 	else
-		prop->props.drive_speed = prop->props.drive_speed * 2;
+		prop->props.drive_speed = max_speed - (prop->props.drive_speed - 1) * 2;
 
 	flags = prop->flags;
 
