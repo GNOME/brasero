@@ -86,7 +86,7 @@ static ItemDescription items [] = {
        {N_("<big>Burn image</big>"),
 	N_("Burn an existing CD/DVD image to disc"),
 	N_("Burn an existing CD/DVD image to disc"),
-	"binary",
+	"iso-image-burn",
 	BRASERO_PROJECT_TYPE_ISO},
 };
 

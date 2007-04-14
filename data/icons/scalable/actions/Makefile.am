@@ -6,4 +6,6 @@ icons_DATA =	media-optical-blank.svg		\
 		media-optical-burn.svg		\
 		media-optical-data-new.svg	\
 		media-optical-audio-new.svg	\
-		media-optical-copy.svg
+		media-optical-copy.svg		\
+		iso-image-new.svg		\
+		iso-image-burn.svg

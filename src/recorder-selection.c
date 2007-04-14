@@ -668,7 +668,7 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 
 		media = BRASERO_MEDIUM_FILE;
 		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
-					      "binary",
+					      "iso-image-new",
 					      GTK_ICON_SIZE_DIALOG);
 		gtk_widget_set_sensitive (selection->priv->props, TRUE);
 		goto end;

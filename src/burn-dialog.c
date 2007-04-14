@@ -910,7 +910,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
 	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
 		/* we are creating an image to the hard drive */
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-					      "binary",
+					      "iso-image-new",
 					      GTK_ICON_SIZE_DIALOG);
 
 		header = g_strdup_printf ("<big><b>Creating image</b></big>");
