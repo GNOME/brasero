@@ -287,6 +287,8 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 		if (blocks)
 			*blocks = priv->block_num;
 	}
+	else  if (!(priv->info & BRASERO_MEDIUM_WRITABLE))
+		brasero_medium_get_data_size (medium, size, blocks);
 	else
 		brasero_medium_get_free_space (medium, size, blocks);
 }
@@ -1014,16 +1016,24 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	/* put the tracks in the right order */
 	priv->tracks = g_slist_reverse (priv->tracks);
 
-	if (priv->tracks
-	&& (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))) {
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 		GSList *node;
-		BraseroMediumTrack *leadout, *track;
+		BraseroMediumTrack *leadout;
 
-		track = priv->tracks->data;
 		node = g_slist_last (priv->tracks);
 		leadout = node->data;
-		leadout->blocks_num -= track->blocks_num;
+
+		if (g_slist_length (priv->tracks) > 1) {
+			BraseroMediumTrack *track;
+
+			track = priv->tracks->data;
+			leadout->blocks_num -= track->blocks_num;
+		}
+		else {
+			leadout->blocks_num = leadout->start;
+			leadout->start = 0;
+		}
 	}
 
 	g_free (toc);

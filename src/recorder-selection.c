@@ -94,8 +94,17 @@ struct BraseroRecorderSelectionPrivate {
 	GtkWidget *selection;
 	GHashTable *settings;
 	GtkWidget *dialog;
+
+	GtkWidget *notebook;
+
+	GtkWidget *type;
+	GtkWidget *capacity;
+	GtkWidget *contents;
+	GtkWidget *status;
+	
 	GtkWidget *infos;
 	GtkWidget *image;
+
 	GtkWidget *props;
 	NautilusBurnDrive *drive;
 
@@ -258,6 +267,8 @@ static void
 brasero_recorder_selection_init (BraseroRecorderSelection *obj)
 {
 	GtkWidget *box;
+	GtkWidget *table;
+	GtkWidget *label;
 
 	obj->priv = g_new0 (BraseroRecorderSelectionPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 12);
@@ -282,11 +293,61 @@ brasero_recorder_selection_init (BraseroRecorderSelection *obj)
 
 	box = gtk_hbox_new (FALSE, 12);
 	obj->priv->image = gtk_image_new ();
+
+	obj->priv->notebook = gtk_notebook_new ();
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
+
+	table = gtk_table_new (4, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
+
+	label = gtk_label_new ("<b>Type:</b>");
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 0, 1);
+
+	obj->priv->type = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->type), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->type, 1, 2, 0, 1);
+
+	label = gtk_label_new ("<b>Size:</b>");
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 1, 2);
+
+	obj->priv->capacity = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->capacity), 0.0, 0.0);
+	gtk_table_attach (GTK_TABLE (table), obj->priv->capacity, 1, 2, 1, 2,
+			  GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
+
+	label = gtk_label_new ("<b>Contents:</b>");
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 2, 3);
+
+	obj->priv->contents = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->contents), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->contents, 1, 2, 2, 3);
+
+	label = gtk_label_new ("<b>Status:</b>");
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 3, 4);
+
+	obj->priv->status = gtk_label_new ("");
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->status), 0.0, 0.0);
+	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->status, 1, 2, 3, 4);
+
 	obj->priv->infos = gtk_label_new ("");
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->infos), 0.0, 0.0);
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->infos), 0.0, 0.5);
+
+	gtk_notebook_append_page (GTK_NOTEBOOK (obj->priv->notebook), table, NULL);
+	gtk_notebook_append_page (GTK_NOTEBOOK (obj->priv->notebook), obj->priv->infos, NULL);
+	gtk_widget_show_all (obj->priv->notebook);
 
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->image, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->infos, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->notebook, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	g_signal_connect (obj->priv->selection,
@@ -437,6 +498,151 @@ brasero_recorder_selection_set_drive_default_properties (BraseroRecorderSelectio
 	return TRUE;
 }
 
+static gboolean
+brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
+					NautilusBurnDrive *drive)
+{
+	BraseroMediumInfo media;
+	gboolean can_record = FALSE;
+
+	if (drive)
+		media = NCB_MEDIA_GET_STATUS (drive);
+	else
+		media = BRASERO_MEDIUM_NONE;
+
+	selection->priv->media = media;
+
+	gtk_label_set_text (GTK_LABEL (selection->priv->type), "");
+	gtk_label_set_text (GTK_LABEL (selection->priv->capacity), "");
+	gtk_label_set_text (GTK_LABEL (selection->priv->contents), "");
+	gtk_label_set_text (GTK_LABEL (selection->priv->status), "");
+
+	/* type */
+	if (media == BRASERO_MEDIUM_NONE) {
+		gtk_label_set_markup (GTK_LABEL (selection->priv->type),
+				      _("<i>no disc</i>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+		goto end;
+	}
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
+		gtk_label_set_markup (GTK_LABEL (selection->priv->type),
+				      _("<i>unknown type</i>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+		goto end;
+	}
+	else if (media == BRASERO_MEDIUM_BUSY) {
+		gtk_label_set_markup (GTK_LABEL (selection->priv->type),
+				      _("<i>busy disc</i>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+		goto end;
+	}
+
+	gtk_label_set_markup (GTK_LABEL (selection->priv->type),
+			      NCB_MEDIA_GET_TYPE_STRING (drive));
+
+	/* contents */
+	if (media & BRASERO_MEDIUM_BLANK)
+		gtk_label_set_markup (GTK_LABEL (selection->priv->contents), _("empty"));
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+		gtk_label_set_markup (GTK_LABEL (selection->priv->contents), _("audio and data tracks"));
+	else if (media & BRASERO_MEDIUM_HAS_AUDIO)
+		gtk_label_set_markup (GTK_LABEL (selection->priv->contents), _("audio tracks"));
+	else if (media & BRASERO_MEDIUM_HAS_DATA) 
+		gtk_label_set_markup (GTK_LABEL (selection->priv->contents), _("data tracks"));
+
+	/* status  and capacity */
+	if (media & BRASERO_MEDIUM_BLANK) {
+		gchar *remaining_string, *info;
+		gint64 remaining;
+
+		NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		info = g_strdup_printf (_("%s free"), remaining_string);
+		g_free (remaining_string);
+	
+		gtk_label_set_markup (GTK_LABEL (selection->priv->capacity), info);
+		g_free (info);
+
+		gtk_label_set_markup (GTK_LABEL (selection->priv->status), _("the medium can be recorded"));
+		can_record = TRUE;
+	}
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_APPENDABLE)) {
+		gchar *remaining_string, *capacity_string, *info;
+		gint64 remaining, capacity;
+
+		NCB_MEDIA_GET_CAPACITY (drive, &capacity, NULL);
+		NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		capacity_string = gnome_vfs_format_file_size_for_display (capacity);
+		info = g_strdup_printf (_("%s (%s free)"),
+					capacity_string,
+					remaining_string);
+		g_free (remaining_string);
+		g_free (capacity_string);
+	
+		gtk_label_set_markup (GTK_LABEL (selection->priv->capacity), info);
+		g_free (info);
+
+		gtk_label_set_markup (GTK_LABEL (selection->priv->status),
+				      _("data can be written or appended to the medium"));
+		can_record = TRUE;
+	}
+	else if (media & BRASERO_MEDIUM_APPENDABLE) {
+		gchar *remaining_string, *info;
+		gint64 remaining;
+
+		NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		info = g_strdup_printf (_("%s free"), remaining_string);
+		g_free (remaining_string);
+	
+		gtk_label_set_markup (GTK_LABEL (selection->priv->capacity), info);
+		g_free (info);
+
+		gtk_label_set_markup (GTK_LABEL (selection->priv->status),
+				      _("data can be appended to the medium"));
+		can_record = TRUE;
+	}
+	else {
+		gchar *data_size_string, *info;
+		gint64 data_size;
+
+		NCB_MEDIA_GET_CAPACITY (drive, &data_size, NULL);
+		data_size_string = gnome_vfs_format_file_size_for_display (data_size);
+		info = g_strdup_printf (_("%s of data"), data_size_string);
+		g_free (data_size_string);
+	
+		gtk_label_set_markup (GTK_LABEL (selection->priv->capacity), info);
+		g_free (info);
+
+		gtk_label_set_markup (GTK_LABEL (selection->priv->status),
+				      _("<i>the medium is not writable</i>"));
+
+		can_record = FALSE;
+	}
+
+	gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
+				      NCB_MEDIA_GET_ICON (drive),
+				      GTK_ICON_SIZE_DIALOG);
+
+end:
+	if (selection->priv->props) {
+		if (can_record)
+			gtk_widget_set_sensitive (selection->priv->props, TRUE);
+		else
+			gtk_widget_set_sensitive (selection->priv->props, FALSE);
+	}
+
+	return can_record;
+}
+
+#if 0
 static gboolean
 brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 					NautilusBurnDrive *drive)
@@ -623,6 +829,8 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 	return can_record;
 }
 
+#endif
+
 static void
 brasero_recorder_selection_drive_media_added_cb (NautilusBurnDriveMonitor *monitor,
 						 NautilusBurnDrive *drive,
@@ -730,6 +938,8 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 		gtk_label_set_markup (GTK_LABEL (selection->priv->infos),
 				      _("<b>There is no available drive.</b>"));
 
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (selection->priv->notebook), 1);
+
 		media = BRASERO_MEDIUM_NONE;
 		gtk_image_set_from_icon_name (GTK_IMAGE (selection->priv->image),
 					      "gnome-dev-removable",
@@ -751,8 +961,12 @@ brasero_recorder_selection_update_drive_info (BraseroRecorderSelection *selectio
 					      "iso-image-new",
 					      GTK_ICON_SIZE_DIALOG);
 		gtk_widget_set_sensitive (selection->priv->props, TRUE);
+
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (selection->priv->notebook), 1);
 		goto end;
 	}
+
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (selection->priv->notebook), 0);
 
 	media = NCB_MEDIA_GET_STATUS (drive);
 	can_record = brasero_recorder_selection_update_info (selection, drive);
