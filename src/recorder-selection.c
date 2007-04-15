@@ -468,62 +468,142 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 					NCB_MEDIA_GET_TYPE_STRING (drive));
 	}
 	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-		if (media & BRASERO_MEDIUM_APPENDABLE) {
+		if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_REWRITABLE)) {
+			gchar *remaining_string, *capacity_string;
+			gint64 remaining, capacity;
+
+			NCB_MEDIA_GET_CAPACITY (drive, &capacity, NULL);
+			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+			capacity_string = gnome_vfs_format_file_size_for_display (capacity);
+			info = g_strdup_printf (_("The <b>%s</b> is ready (%s).\nIt contains audio and data.\nMore data can be added (%s free)."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						capacity_string,
+						remaining_string);
+			g_free (remaining_string);
+			g_free (capacity_string);
+		}
+		else if (media & BRASERO_MEDIUM_APPENDABLE) {
 			gchar *size;
 			gint64 remaining;
 
-			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
 			size = gnome_vfs_format_file_size_for_display (remaining);
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio and data tracks.\nA data session can be added (%s free)."),
 						NCB_MEDIA_GET_TYPE_STRING (drive),
 						size);
 			g_free (size);
 		}
-		else
-			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio and data tracks."),
-						NCB_MEDIA_GET_TYPE_STRING (drive));
+		else {
+			gchar *size;
+			gint64 remaining;
+
+			/* for closed rewritable media */
+			NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
+			size = gnome_vfs_format_file_size_for_display (remaining);
+			info = g_strdup_printf (_("The <b>%s</b> is ready (%s).\nIt contains audio and data tracks."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						size);
+			g_free (size);
+		}
 
 		can_record = TRUE;
 	}
 	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
-		if (media & BRASERO_MEDIUM_APPENDABLE) {
+		if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_REWRITABLE)) {
+			gchar *remaining_string, *capacity_string;
+			gint64 remaining, capacity;
+
+			NCB_MEDIA_GET_CAPACITY (drive, &capacity, NULL);
+			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+			capacity_string = gnome_vfs_format_file_size_for_display (capacity);
+			info = g_strdup_printf (_("The <b>%s</b> is ready (%s).\nIt contains audio.\nMore data can be added (%s free)."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						capacity_string,
+						remaining_string);
+			g_free (remaining_string);
+			g_free (capacity_string);
+		}
+		else if (media & BRASERO_MEDIUM_APPENDABLE) {
 			gchar *size;
 			gint64 remaining;
 
-			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
 			size = gnome_vfs_format_file_size_for_display (remaining);
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks.\nA data session can be added (%s free)."),
 						NCB_MEDIA_GET_TYPE_STRING (drive),
 						size);
 			g_free (size);
 		}
-		else
-			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains audio tracks."),
-						NCB_MEDIA_GET_TYPE_STRING (drive));
+		else {
+			gchar *size;
+			gint64 remaining;
+
+			/* for closed rewritable media */
+			NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
+			size = gnome_vfs_format_file_size_for_display (remaining);
+			info = g_strdup_printf (_("The <b>%s</b> is ready (%s).\nIt contains audio tracks."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						size);
+			g_free (size);
+		}
 
 		can_record = TRUE;
 	}
 	else if (media & BRASERO_MEDIUM_HAS_DATA) {
-		if (media & BRASERO_MEDIUM_APPENDABLE) {
+		if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_REWRITABLE)) {
+			gchar *remaining_string, *capacity_string;
+			gint64 remaining, capacity;
+
+			NCB_MEDIA_GET_CAPACITY (drive, &capacity, NULL);
+			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+			capacity_string = gnome_vfs_format_file_size_for_display (capacity);
+			info = g_strdup_printf (_("The <b>%s</b> is ready (%s).\nIt contains data.\nMore data can be added (%s free)."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						capacity_string,
+						remaining_string);
+			g_free (remaining_string);
+			g_free (capacity_string);
+		}
+		else if (media & BRASERO_MEDIUM_APPENDABLE) {
 			gchar *size;
 			gint64 remaining;
 
-			NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
+			NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
 			size = gnome_vfs_format_file_size_for_display (remaining);
 			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data.\nMore data can be added (%s free)."),
 						NCB_MEDIA_GET_TYPE_STRING (drive),
 						size);
 			g_free (size);
 		}
-		else
-			info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt contains data."),
-						NCB_MEDIA_GET_TYPE_STRING (drive));
+		else {
+			gchar *size;
+			gint64 remaining;
+
+			/* for closed rewritable media */
+			NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
+			size = gnome_vfs_format_file_size_for_display (remaining);
+			info = g_strdup_printf (_("The <b>%s</b> is ready (%s).\nIt contains data."),
+						NCB_MEDIA_GET_TYPE_STRING (drive),
+						size);
+			g_free (size);
+		}
 
 		can_record = TRUE;
 	}
 	else {
-		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt is empty."),
-					NCB_MEDIA_GET_TYPE_STRING (drive));
+		gchar *size;
+		gint64 remaining;
+
+		NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
+		size = gnome_vfs_format_file_size_for_display (remaining);
+		info = g_strdup_printf (_("The <b>%s</b> is ready.\nIt is empty.\n (%s free)"),
+					NCB_MEDIA_GET_TYPE_STRING (drive),
+					size);
+		g_free (size);
+
 		can_record = TRUE;
 	}
 
@@ -825,8 +905,11 @@ brasero_recorder_selection_drive_properties (BraseroRecorderSelection *selection
 							   combo, NULL),
 			    FALSE, FALSE, 0);
 
-	prop = g_hash_table_lookup (selection->priv->settings,
-				    display_name); /* FIXME what about drives with the same display names */
+	if (display_name)
+		prop = g_hash_table_lookup (selection->priv->settings, display_name); /* FIXME what about drives with the same display names */
+	else
+		prop = NULL;
+
 	if (!prop) {
 		prop = g_new0 (BraseroDriveProp, 1);
 		brasero_recorder_selection_set_drive_default_properties (selection, prop);

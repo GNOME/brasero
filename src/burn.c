@@ -467,9 +467,19 @@ brasero_burn_status (BraseroBurn *burn,
 		     gint64 *written,
 		     gint64 *rate)
 {
-	brasero_task_get_rate (burn->priv->task, rate);
-	brasero_task_get_total (burn->priv->task, isosize);
-	brasero_task_get_written (burn->priv->task, written);
+	if (burn->priv->task) {
+		brasero_task_get_rate (burn->priv->task, rate);
+		brasero_task_get_total (burn->priv->task, isosize);
+		brasero_task_get_written (burn->priv->task, written);
+	}
+	else {
+		if (rate)
+			*rate = 0;
+		if (written)
+			*written = 0;
+		if (isosize)
+			*isosize = burn->priv->image_size;
+	}
 
 	if (burn->priv->recorder
 	&&  brasero_job_is_running (BRASERO_JOB (burn->priv->recorder))) {
@@ -1102,8 +1112,11 @@ again:
 	else
 		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
 
+	/* NOTE: this is useful only for reloads since otherwise we still don't
+	 * know what's the image size yet */
 	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
-	&&  media_size < burn->priv->image_size) {
+	&&   (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
+	&&    media_size < burn->priv->image_size) {
 		/* This is a recoverable error so try to ask the user again */
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_MEDIA_SPACE;
@@ -1464,7 +1477,6 @@ brasero_burn_check_volume_free_space (BraseroBurn *burn,
 		dirname = g_path_get_dirname (output);
 
 	uri_str = gnome_vfs_get_uri_from_local_path (dirname);
-	g_print ("DIRNAME %s\n", dirname);
 	g_free (dirname);
 
 	uri = gnome_vfs_uri_new (uri_str);
@@ -1484,7 +1496,7 @@ brasero_burn_check_volume_free_space (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 	gnome_vfs_uri_unref (uri);
-g_print ("OUTPUT %s %lli\n", output, vol_size);
+
 	if (burn->priv->image_size > vol_size) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -1535,7 +1547,6 @@ brasero_burn_get_imager (BraseroBurn *burn,
 	 * the volume is big enough */
 	/* NOTE: this part is important since it is actually a test that the 
 	 * imager _can_ work with such a setup */
-
 	brasero_burn_get_task (burn);
 	brasero_job_set_task (BRASERO_JOB (burn->priv->imager),
 			      burn->priv->task);
@@ -1828,6 +1839,27 @@ brasero_burn_imager_get_track (BraseroBurn *burn,
 			g_propagate_error (error, ret_error);
 
 		return result;
+	}
+
+	if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+		gint64 media_size;
+
+		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
+
+		/* check that the image can fit on the media */
+		if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
+		&&  media_size < burn->priv->image_size) {
+			/* This is a recoverable error so try to ask the user again */
+			result = brasero_burn_reload_dest_media (burn,
+								 BRASERO_BURN_ERROR_MEDIA_SPACE,
+								 flags,
+								 drive,
+								 source,
+								 error);
+
+			if (result != BRASERO_BURN_OK)
+				return result;
+		}
 	}
 
 	if (flags & BRASERO_BURN_FLAG_ON_THE_FLY) {

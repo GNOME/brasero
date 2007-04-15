@@ -916,7 +916,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc1_read_toc_formatted (fd,
-						  1,
+						  0,
 						  &toc,
 						  &size,
 						  code);
@@ -1071,9 +1071,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 		goto end;
 	}
 
-	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
+	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE)
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
-	}
 
 	result = brasero_medium_get_sessions_info (self, fd, code);
 	if (result != BRASERO_BURN_OK)
@@ -1134,13 +1133,13 @@ brasero_medium_retry_open (gpointer object)
 			return TRUE;
 		}
 
-		g_print ("Open () failed");
+		BRASERO_BURN_LOG ("Open () failed");
 		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
 		priv->retry_id = 0;
 		return FALSE;
 	}
 
-	g_print ("Open () succeeded\n");
+	BRASERO_BURN_LOG ("Open () succeeded\n");
 	priv->info = BRASERO_MEDIUM_NONE;
 	priv->retry_id = 0;
 
