@@ -1,66 +1,13 @@
 2007 : 0.5.90
-First realease  in the next unstable series
+First (and maybe only) release in the next unstable series
 - backported patches/fixes from stable branch
-- added real multi session support
-- use libdvdcss to allow copy of protected DVDs
+- added multi session import in data project view
+- use libdvdcss to copy protected DVDs
+- updated libburn support to 0.3.4
+- new small SCSI library for a better device detection that will hopefully lead us to drop nautilus-cd-burner
+- small GUI improvements
+- new icons (thanks to Josef Vybíra and Kalle Person)
+- lots of fixes
+- some new translations
 
-2006 : 0.5.2
-Release from the stable series:
-- Fixed log size to 1MB that was causing problems closing #377198
-- Added Support for libisofs >=0.2.4 patch from Denis Leroy and 
-Luis Medinas closing #395594
-- Minor Change on Brasero desktop entry
-- New brasero icon by Ulisse <ulisail@yahoo.it>
-- Fix for bug #399962 (Large file support now enabled)
-- Fix audio title set to "null" (#401340)
-- Fix #378061
-- New icon for blank action by Josef Vybiral <newsgroups@vybiral.info>
-- Fix for bug #399962 (Large file support now enabled)
-
-2006 : 0.5.1
-This is a bug fix release:
-- Some GUI improvements (2 patches from Luca Feretti closing #374710 #374677)
-- Fixed burn icons (added 16x16)
-- Fixed crash when removing a file whose name is being edited
-- Fixed file descriptor leak
-- Many fixes for DVD+RW size/content detection
-- Fixes/improvements for blanking DVD+-RW, now allow to use quick option
-- Add pmount to potentially (u)mount volumes
-- Allow arbitrary images to be written to discs
-- Improved DVD Video compatibility
-- Fixed CD-TEXT not being written if mode isn't on the fly
-- Retrieve the label from the last session (if any) and use it in burn dialog
-- Fixed crasher when unmounting a disc
-- Fixed build without totem
-
-2006-10-25: release 0.5.0
-This is the last stable release.
-
-Since 0.4.92:
-A few last bugs were fixed (See ChangeLog).
-New features:
-- some minor GUI refactoring
-- multiDND works for projects
-- add drag-n-delete to projects
-
-Updated translations:
-Spanish, French, German, Italian, Polish, Japanese
-
-New translations:
-Swedish, Hungarian, Lituanian, Finnish
-
-Highlights since 0.4.x stable series:
-- multi DND and rubber banding
-- disc integrity checking
-- various GUI improvements
-- new project size widget
-- support for GTK+ 2.10 and GNOME 2.10 (now required)
-- better integration with GNOME
-- support new libburn backend
-- possibility to add silence individually between tracks
-- improved error reporting
-- fixes for multisession support
-
-and lots of other small fixes and improvements (See ChangeLog)
-
-Thanks to all the people who contributed to this release by their suggestions, translations, bug reporting.
+Thanks to all the people who contributed to this release through patches, translation, advice, artwork, bug reports.
