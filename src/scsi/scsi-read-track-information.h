@@ -85,7 +85,7 @@ struct _BraseroScsiTrackInfo {
 
 #else
 
-struct _BraseroScsiTrackInfo {
+struct _BraseroScsiTrackInfo {
 	uchar len			[2];
 
 	uchar track_num_low;

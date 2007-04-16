@@ -144,9 +144,10 @@ struct _BraseroScsiPOWResInfo {
 
 #else
 
-struct _BraseroScsiDiscInfoStd {
+struct _BraseroScsiDiscInfoStd {
 	uchar len			[2];
 
+	uchar status			:2;
 	uchar info_type			:3;
 	uchar erasable			:1;
 	uchar last_session_state	:2;
