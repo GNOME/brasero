@@ -859,11 +859,8 @@ struct _BraseroScsiCoreDescMMC4 {
 };
 
 struct _BraseroScsiCoreDescMMC3 {
-	uchar interface		[4];
-};
-	
-struct _BraseroScsiCoreDescMMC4 {
-	uchar mmc4		[0];
+	uchar interface				[4];
+  	struct _BraseroScsiCoreDescMMC4 mmc4	[0];
 };
 
 struct _BraseroScsiMorphingDesc {
