@@ -408,11 +408,11 @@ brasero_app_create_app (void)
 	/* set up the window geometry */
 	
 	hints.min_width = 720;
-        hints.min_height = 460; 
+        hints.min_height = 520; 
 
 	gtk_window_set_position (GTK_WINDOW (app->mainwin), GTK_WIN_POS_CENTER);
 
-	gtk_window_set_geometry_hints(GTK_WINDOW (app->mainwin), menubar, &hints, GDK_HINT_MIN_SIZE);
+	gtk_window_set_geometry_hints(GTK_WINDOW (app->mainwin), NULL, &hints, GDK_HINT_MIN_SIZE);
 
 	brasero_session_connect (app);
 
