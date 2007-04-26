@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-04-20 06:09+0100\n"
-"PO-Revision-Date: 2007-04-25 09:05-0000\n"
+"PO-Revision-Date: 2007-04-26 10:03+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
@@ -1797,14 +1797,13 @@ msgid "no profile available for the medium"
 msgstr "%s: لا معامل متوفرة للعنوان `%s'"
 
 #: ../src/burn-libburn.c:749
-#, fuzzy
 msgid "/dev/null can't be opened"
-msgstr "لا يمكن فتح ملف %s للكتابة."
+msgstr "لا يمكن فتح /dev/null"
 
 #: ../src/burn-libburn.c:780
-#, fuzzy, c-format
+#, c-format
 msgid "libburn can't burn: %s"
-msgstr "سرعة الكتابة الافتراضية"
+msgstr "لا يكمنه لـ libburn الكتابة: %s "
 
 #: ../src/burn-libisofs.c:504
 #, c-format
@@ -1812,111 +1811,92 @@ msgid "a parent for the path (%s) could not be found in the tree"
 msgstr ""
 
 #: ../src/burn-libread-disc.c:290
-#, fuzzy
 msgid "no disc could be found"
-msgstr "لم يمكن ايجاد بيانات اللعبة."
+msgstr "لم يمكن ايجاد القرص"
 
 #: ../src/burn-local-image.c:397
-#, fuzzy, c-format
+#, c-format
 msgid "Copying \"%s\""
 msgstr "جاري نسخ '%s'"
 
 #: ../src/burn-md5.c:206
 #: ../src/burn-md5.c:285
-#, fuzzy, c-format
+#, c-format
 msgid "the file %s couldn't be read (%s)"
-msgstr "الملف \"%s\" للقراءة فقط."
+msgstr "الملف \"%s\" لم يمكن قراءته (%s)"
 
 #: ../src/burn-medium.c:64
-#, fuzzy
 msgid "file"
 msgstr "ملفّ"
 
 #: ../src/burn-medium.c:65
-#, fuzzy
 msgid "CDROM"
-msgstr "قرص مدمج"
+msgstr "CDROM"
 
 #: ../src/burn-medium.c:66
-#, fuzzy
 msgid "CD-R"
 msgstr "CD-R"
 
 #: ../src/burn-medium.c:67
-#, fuzzy
 msgid "CD-RW"
 msgstr "CD-RW"
 
 #: ../src/burn-medium.c:68
-#, fuzzy
 msgid "DVDROM"
-msgstr "DVD"
+msgstr "DVDROM"
 
 #: ../src/burn-medium.c:69
-#, fuzzy
 msgid "DVD-R"
 msgstr "DVD-R"
 
 #: ../src/burn-medium.c:70
-#, fuzzy
 msgid "DVD-RW"
 msgstr "DVD-RW"
 
 #: ../src/burn-medium.c:71
-#, fuzzy
 msgid "DVD+R"
 msgstr "DVD+R"
 
 #: ../src/burn-medium.c:72
-#, fuzzy
 msgid "DVD+RW"
 msgstr "DVD+RW"
 
 #: ../src/burn-medium.c:73
-#, fuzzy
 msgid "DVD+R dual layer"
-msgstr "طبقة أمن غير مدعومة."
+msgstr "DVD+R بطبقتين"
 
 #: ../src/burn-medium.c:74
-#, fuzzy
 msgid "DVD+RW dual layer"
-msgstr "فارغ DVD-RW قرص"
+msgstr "DVD+RW بطبقتين"
 
 #: ../src/burn-medium.c:75
-#, fuzzy
 msgid "DVD-R dual layer"
-msgstr "طبقة أمن غير مدعومة."
+msgstr "DVD-R بطبقتين"
 
 #: ../src/burn-medium.c:76
-#, fuzzy
 msgid "DVD-RAM"
 msgstr "DVD-RAM"
 
 #: ../src/burn-medium.c:77
-#, fuzzy
 msgid "blue ray disc"
-msgstr "افتح قرص صوتي %s"
+msgstr "قرص بلو راي (blue ray)"
 
 #: ../src/burn-medium.c:78
-#, fuzzy
 msgid "writable blue ray disc"
-msgstr "هوية القرص"
+msgstr "اكتب قرص بلو راي"
 
 #: ../src/burn-medium.c:79
-#, fuzzy
 msgid "rewritable blue ray disc"
-msgstr "أدرج وسيط فارغ أو قابل لإعادة الكتابة"
+msgstr "قرص بلو راي قابل لإعادة الكتابة"
 
 #: ../src/burn-mkisofs-base.c:294
 #: ../src/burn-mkisofs-base.c:585
-#, fuzzy
 msgid "the file is not stored locally"
-msgstr "الملف %s·ليس ملف wav سليم"
+msgstr "الملف ليس محفوظا محليا"
 
 #: ../src/burn-mkisofs-base.c:397
-#, fuzzy
 msgid "null graft point"
-msgstr "بروتكول Point-to-Point"
+msgstr "نقطة تطعيم صفرية"
 
 #: ../src/burn-mkisofs-base.c:547
 #, c-format
@@ -1925,12 +1905,11 @@ msgstr ""
 
 #: ../src/burn-mkisofs-base.c:636
 #: ../src/burn-mkisofs-base.c:660
-#, fuzzy, c-format
+#, c-format
 msgid "a temporary file couldn't be created: %s"
-msgstr "تعذّر إنشاء ملف مؤقّت لحفظ: %s"
+msgstr "تعذّر إنشاء ملف مؤقّت: %s"
 
 #: ../src/burn-mkisofs-base.c:817
-#, fuzzy
 msgid "The label for the image is too long."
 msgstr "اسم الصورة طويل جدا."
 
@@ -1943,12 +1922,10 @@ msgid "this version of mkisofs doesn't seem to be supported"
 msgstr ""
 
 #: ../src/burn-mkisofs.c:382
-#, fuzzy
 msgid "Unknown character encoding"
 msgstr "ترميز محارف غير معروف."
 
 #: ../src/burn-mkisofs.c:388
-#, fuzzy
 msgid "There is no space left on the device"
 msgstr "لا يوجد مساحة على القرص."
 
@@ -1961,9 +1938,8 @@ msgid "failed to get the start point of the track. Make sure the media allow to 
 msgstr ""
 
 #: ../src/burn-readcd.c:540
-#, fuzzy
 msgid "the drive is not ready"
-msgstr "تحويل قاعدة البيانات جاهز."
+msgstr "المشغل غير جاهز."
 
 #: ../src/burn-readcd.c:546
 #: ../src/burn-readcd.c:552
@@ -1986,28 +1962,26 @@ msgid "the md5 file couldn't be written to (%s)"
 msgstr ""
 
 #: ../src/burn-sum.c:398
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" already exists"
-msgstr "%s موجود مسبقاً\n"
+msgstr "\"%s\" موجود مسبقاً"
 
 #: ../src/burn-sum.c:412
-#, fuzzy, c-format
+#, c-format
 msgid "md5 file couldn't be opened (%s)"
-msgstr "لا يمكن فتح ملف %s للكتابة."
+msgstr "لا يمكن فتح ملف md5  (%s)"
 
 #: ../src/burn-sum.c:437
-#, fuzzy
 msgid "Creating checksum for image files"
-msgstr "ملفّات تطوير لمكتبة تحميل الصّور لـSDL."
+msgstr "انشاء امضاء لملفات الصور"
 
 #: ../src/burn-sum.c:517
 msgid "the image is not local"
 msgstr "الصورة ليست محلية"
 
 #: ../src/burn-sum.c:533
-#, fuzzy
 msgid "Creating image checksum"
-msgstr "انشاء صورة قرص"
+msgstr "انشاء امضاء للصورة"
 
 #: ../src/burn-sum.c:567
 msgid "there is no disc."
@@ -2669,9 +2643,8 @@ msgid "<big>Disc copy</big>"
 msgstr "<big>نسخ القرص</big>"
 
 #: ../src/project-type-chooser.c:82
-#, fuzzy
 msgid "Create 1:1 copy of a CD/DVD"
-msgstr "انشاء محفوظات CD/DVD"
+msgstr "انشاء نسخة مطابقة لـ CD/DVD"
 
 #: ../src/project-type-chooser.c:83
 msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"
@@ -2683,9 +2656,8 @@ msgstr "<big>اكتب صورة</big>"
 
 #: ../src/project-type-chooser.c:87
 #: ../src/project-type-chooser.c:88
-#, fuzzy
 msgid "Burn an existing CD/DVD image to disc"
-msgstr "اكتب صورة القرص إلى قرص مدمج أو قرص DVD"
+msgstr "اكتب صورة قرص CD/DVD إلى القرص"
 
 #: ../src/project-type-chooser.c:294
 msgid "<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></span></u>"
@@ -2701,49 +2673,40 @@ msgstr "ا_حفظ"
 
 #: ../src/project.c:165
 #: ../src/project.c:2143
-#, fuzzy
 msgid "Save current project"
-msgstr "إ_حفظ المشروع الحالي"
+msgstr "إحفظ المشروع الحالي"
 
 #: ../src/project.c:166
-#, fuzzy
 msgid "_Save as"
 msgstr "احفظ _كـ"
 
 #: ../src/project.c:167
-#, fuzzy
 msgid "Save current project to a different location"
-msgstr "احفظ المشروع الحالي الحالي بإسم مغاير"
+msgstr "احفظ المشروع الحالي الحالي الى مكان مغاير"
 
 #: ../src/project.c:184
-#, fuzzy
 msgid "_Add files"
-msgstr "أضف ملفات"
+msgstr "أ_ضف ملفات"
 
 #: ../src/project.c:185
-#, fuzzy
 msgid "Add files to the project"
-msgstr "أضِف الملفات للمحفوظة"
+msgstr "أضِف ملفات للمشروع"
 
 #: ../src/project.c:186
-#, fuzzy
 msgid "_Remove files"
-msgstr "كل الملفّات"
+msgstr "ا_حذف ملفّات"
 
 #: ../src/project.c:187
-#, fuzzy
 msgid "Remove the selected files from the project"
-msgstr "احذف العنصر المحدد من شريط الأدوات"
+msgstr "احذف الملفات المحددة من المشروع"
 
 #: ../src/project.c:188
-#, fuzzy
 msgid "E_mpty Project"
-msgstr "موقع المشروع"
+msgstr "م_شروع فارغ"
 
 #: ../src/project.c:189
-#, fuzzy
 msgid "Delete all files from the project"
-msgstr "ÙÙ Ø¨Ø­Ø°Ù Ø¬ÙÙØ¹ Ø§ÙÙÙÙØ§Øª ÙÙ Ø§ÙØ¯ÙÙÙ Ø§ÙÙØ§"
+msgstr "احذف كل الملفات من المشروع"
 
 #: ../src/project.c:190
 msgid "_Burn"
@@ -2801,43 +2764,36 @@ msgid "some tasks are not completed yet."
 msgstr ""
 
 #: ../src/project.c:754
-#, fuzzy
 msgid "Waiting for ongoing tasks"
-msgstr "بانتظار اتّصال telnet..."
+msgstr "بانتظار  الأعمال الحالية"
 
 #: ../src/project.c:800
-#, fuzzy
 msgid "No song in the project:"
-msgstr "اختر %s في هذا المشروع"
+msgstr "لا وجود لمقطع في المشروع:"
 
 #: ../src/project.c:805
-#, fuzzy
 msgid "please add songs to the project."
-msgstr "رجاء حدّد كلمة إنذار لإضافتها."
+msgstr "الرجاء اضافة مقاطع للمشروع"
 
 #: ../src/project.c:823
 msgid "Project is empty:"
 msgstr "المشروع فارغ:"
 
 #: ../src/project.c:828
-#, fuzzy
 msgid "please add files to the project."
-msgstr "لا يمكن اضافة الملفات للمحفوظة"
+msgstr "الرجاء اضافة ملفات للمشروع"
 
 #: ../src/project.c:1010
-#, fuzzy
 msgid "Default burning application"
-msgstr "برنامج الشاشة الطرفية الافتراضي"
+msgstr "برنامج الكتابة الإفتراضي"
 
 #: ../src/project.c:1041
-#, fuzzy
 msgid "don't show this dialog again"
-msgstr "لا تُرِني هذا مجدداً"
+msgstr "لا تُرِني هذا الحوار مجددا"
 
 #: ../src/project.c:1099
-#, fuzzy
 msgid "<big><b>Audio project</b></big>"
-msgstr "جاري انشاء مشروع K3b..."
+msgstr "<big><b>مشروع صوتي</b></big>"
 
 #: ../src/project.c:1101
 #: ../src/project.c:1236
@@ -2853,14 +2809,12 @@ msgid "Would you like to make brasero the default application to burn audio CDs?
 msgstr ""
 
 #: ../src/project.c:1119
-#, fuzzy
 msgid "<big><b>Data project</b></big>"
-msgstr "جاري انشاء مشروع K3b..."
+msgstr "<big><b>مشروع بيانات</b></big>"
 
 #: ../src/project.c:1121
-#, fuzzy
 msgid "<i>Contents of your data project</i>"
-msgstr "يقوم بيجل بفهرسة بياناتك"
+msgstr "<i>محتويات مشروع بياناتك</i>"
 
 #: ../src/project.c:1129
 msgid "Brasero is not the default application to burn data discs:"
@@ -2871,11 +2825,13 @@ msgid "Would you like to make brasero the default application to burn data discs
 msgstr ""
 
 #: ../src/project.c:1238
-#, fuzzy, c-format
+#, c-format
 msgid "<i>%d track</i>"
 msgid_plural "<i>%d tracks</i>"
-msgstr[0] "المقطوعة %s"
-msgstr[1] ""
+msgstr[0] "<i>%d مقطع</i>"
+msgstr[1] "<i>%d مقطعان</i>"
+msgstr[2] "<i>%d مقاطع</i>"
+msgstr[3] "<i>%d مقطع</i>"
 
 #: ../src/project.c:1438
 #, c-format
@@ -3148,118 +3104,96 @@ msgid "Choose a location for the disc image"
 msgstr "اختر موقع صورة القرص"
 
 #: ../src/recorder-selection.c:1316
-#, fuzzy
 msgid "Disc image file properties"
-msgstr "إنشاء قرص يحتوي على صورة قرص واحدة فقط؟"
+msgstr "خصائص ملف الصورة"
 
 #: ../src/scsi/scsi-error.c:30
-#, fuzzy
 msgid "size mismatch"
-msgstr "لخبطة في النوع"
+msgstr "إختلاف في الحجم"
 
 #: ../src/scsi/scsi-error.c:31
-#, fuzzy
 msgid "type mismatch"
-msgstr "لخبطة في النوع"
+msgstr "إختلاف في النوع"
 
 #: ../src/scsi/scsi-error.c:32
-#, fuzzy
 msgid "bad argument"
-msgstr "%s: مُعطى سيّئ %s: %s\n"
+msgstr "مُعطى سيّئ"
 
 #: ../src/scsi/scsi-error.c:33
-#, fuzzy
 msgid "the device is not ready"
-msgstr "الجهاز المُدخل '$device' غير مدعوم (المُعطى الأوّل)"
+msgstr "الجهاز غير جاهز"
 
 #: ../src/scsi/scsi-error.c:34
-#, fuzzy
 msgid "outrange address"
-msgstr "عنوان البريد الإلكتروني"
+msgstr "عنوان خارج النطاق"
 
 #: ../src/scsi/scsi-error.c:35
-#, fuzzy
 msgid "invalid address"
 msgstr "عنوان غير صحيح"
 
 #: ../src/scsi/scsi-error.c:36
-#, fuzzy
 msgid "invalid command"
-msgstr "أمر خادم غير سليم "
+msgstr "أمر غير سليم"
 
 #: ../src/scsi/scsi-error.c:37
-#, fuzzy
 msgid "invalid parameter in command"
-msgstr "شغّل الأمر في طرفيّة"
+msgstr "حقل غير سليم للأمر"
 
 #: ../src/scsi/scsi-error.c:38
-#, fuzzy
 msgid "invalid field in command"
-msgstr "شغّل الأمر في طرفيّة"
+msgstr "حقل غير سليم للأمر"
 
 #: ../src/scsi/scsi-error.c:39
-#, fuzzy
 msgid "the device timed out"
-msgstr "انتهى الوقت المسموح به للعملية."
+msgstr "انتهى الوقت الانتظار للجهاز"
 
 #: ../src/scsi/scsi-error.c:40
-#, fuzzy
 msgid "key not established"
-msgstr "المفتاح غير موجود [%s]\n"
+msgstr "المفتاح غير منشأ"
 
 #: ../src/search-entry.c:90
-#, fuzzy
 msgid "Find all available music"
-msgstr "استعمل _كل الحيز المتوفر"
+msgstr "ابحث عن كل ملفات الصوث المتوفرة"
 
 #: ../src/search-entry.c:105
-#, fuzzy
 msgid "Find all available videos"
-msgstr "استعمل _كل الحيز المتوفر"
+msgstr "ابحث عن كل ملفات الفيديو المتوفرة"
 
 #: ../src/search-entry.c:121
-#, fuzzy
 msgid "Find all available pictures"
-msgstr "استعمل _كل الحيز المتوفر"
+msgstr "ابحث عن كل الصور المتوفرة"
 
 #: ../src/search-entry.c:151
-#, fuzzy
 msgid "Find all available documents"
-msgstr "استعمل _كل الحيز المتوفر"
+msgstr "ابحث عن كل المستندات المتوفرة"
 
 #: ../src/search-entry.c:169
-#, fuzzy
 msgid "Find all available spreadsheets"
-msgstr "استعمل _كل الحيز المتوفر"
+msgstr "ابحث عن كل ملفات الجدولة المتوفرة"
 
 #: ../src/search-entry.c:185
-#, fuzzy
 msgid "Find all available presentations"
-msgstr "استعمل _كل الحيز المتوفر"
+msgstr "ابحث عن كل ملفات العروض المتوفرة"
 
 #: ../src/search-entry.c:194
 msgid "Find all available Pdf / Postscripts"
 msgstr ""
 
 #: ../src/search-entry.c:203
-#, fuzzy
 msgid "Text File"
 msgstr "ملف نصي"
 
 #: ../src/search-entry.c:329
-#, fuzzy
 msgid "<b>Search:\t</b>"
-msgstr "<b>ابحث:</b>"
+msgstr "<b>:\tابحث</b>"
 
 #: ../src/search-entry.c:390
-#, fuzzy
 msgid "<b>only in\t</b>"
-msgstr "فقط في الذاكرة"
+msgstr "<b>فقط في\t</b>"
 
 #: ../src/search-entry.c:402
-#, fuzzy
 msgid "_text documents"
-msgstr "المستندات الحديثة"
+msgstr "مستندات _نصية:"
 
 #: ../src/search-entry.c:417
 msgid "_pictures"
@@ -3294,14 +3228,12 @@ msgid "Select if you want to search among your text documents only"
 msgstr ""
 
 #: ../src/search-entry.c:488
-#, fuzzy
 msgid "Click to start the search"
-msgstr "انقر للقيام بالبحث."
+msgstr "انقر للقيام بالبحث"
 
 #: ../src/search.c:336
-#, fuzzy
 msgid "Previous results"
-msgstr "نتائج ال_بحث:"
+msgstr "النتائج السابقة"
 
 #: ../src/search.c:349
 #: ../src/search.c:782
@@ -3313,19 +3245,17 @@ msgid "Next results"
 msgstr "النتائج التالية:"
 
 #: ../src/search.c:493
-#, fuzzy
 msgid "Number of results displayed"
-msgstr "أ_قصى عدد معروض من النتائج:"
+msgstr "عدد النتائج المعروضة"
 
 #: ../src/search.c:776
-#, fuzzy, c-format
+#, c-format
 msgid "<b>Results %i - %i (out of %i)</b>"
-msgstr "اخرج"
+msgstr "<b>النتائج %i - %i (من %i)</b>"
 
 #: ../src/search.c:1027
-#, fuzzy
 msgid "Error querying beagle:"
-msgstr "خطأ عند استعلام نادل LDAP : %s"
+msgstr "خطأ عند استعلام بيغل:"
 
 #: ../src/search.c:1029
 msgid "Search error"
@@ -3346,19 +3276,16 @@ msgid "Artist:"
 msgstr "الفنان:"
 
 #: ../src/song-properties.c:153
-#, fuzzy
 msgid "Composer:\t"
-msgstr "الملحن"
+msgstr "المشغل:\t"
 
 #: ../src/song-properties.c:174
-#, fuzzy
 msgid "<big><b>Options</b></big>"
-msgstr "<big><b>خيارات المرة الأولى:</b></big>"
+msgstr "<big><b>خيارات:</b></big>"
 
 #: ../src/song-properties.c:180
-#, fuzzy
 msgid "Pause length:\t"
-msgstr "طول التكملة التلقائية"
+msgstr "طول الإيقاف:\t"
 
 #: ../src/song-properties.c:186
 msgid "Gives the length of the pause that should follow the track"
@@ -3378,18 +3305,16 @@ msgid "Cancel"
 msgstr "الغ"
 
 #: ../src/tray.c:91
-#, fuzzy
 msgid "Cancel ongoing burning"
-msgstr "كتابة الـCD/DVD"
+msgstr "الغِ الكتابة الحالية"
 
 #: ../src/tray.c:96
 msgid "Close if successfull"
 msgstr "اقفل اذا كان ناجحا"
 
 #: ../src/tray.c:96
-#, fuzzy
 msgid "Display file chooser"
-msgstr "زر حوار تصفّح الملفات"
+msgstr "عرض منتقي الملفات"
 
 #: ../src/tray.c:98
 msgid "Show dialog"
@@ -3400,9 +3325,9 @@ msgid "waiting"
 msgstr "يجري الإنتظار..."
 
 #: ../src/tray.c:263
-#, fuzzy, c-format
+#, c-format
 msgid "%s, %02i%% done, %s remaining"
-msgstr "بقي وقت غير معروف (%d%%)"
+msgstr "%s, %02i%% اكتملت, %s متبقية"
 
 #: ../src/tray.c:270
 #, c-format
@@ -3422,11 +3347,13 @@ msgid "%i:%02i min"
 msgstr "%i:%02i min دق"
 
 #: ../src/utils.c:197
-#, fuzzy, c-format
+#, c-format
 msgid "%d:%02i hour"
 msgid_plural "%i:%02i hours"
-msgstr[0] "_24 ساعة"
-msgstr[1] ""
+msgstr[0] "%i:%02i ساعة"
+msgstr[1] "%i:%02i ساعة"
+msgstr[2] "%i:%02i ساعات"
+msgstr[3] "%i:%02i ساعة"
 
 #: ../src/utils.c:227
 msgid "KiB"
