@@ -350,7 +350,6 @@ brasero_app_create_app (void)
 	GError *error = NULL;
 	GtkAccelGroup *accel_group;
 	GtkActionGroup *action_group;
-	GdkGeometry hints;
 
 	/* New window */
 	app = g_new0 (BraseroApp, 1);
@@ -406,13 +405,7 @@ brasero_app_create_app (void)
 	gtk_window_add_accel_group (GTK_WINDOW (app->mainwin), accel_group);
 
 	/* set up the window geometry */
-	
-	hints.min_width = 720;
-        hints.min_height = 520; 
-
 	gtk_window_set_position (GTK_WINDOW (app->mainwin), GTK_WIN_POS_CENTER);
-
-	gtk_window_set_geometry_hints(GTK_WINDOW (app->mainwin), NULL, &hints, GDK_HINT_MIN_SIZE);
 
 	brasero_session_connect (app);
 
