@@ -2,25 +2,25 @@ EXTRA_DIST = $(icons_DATA)
 
 iconsdir = $(datadir)/icons/hicolor/scalable/apps
 
-icons_DATA =	brasero-disc-00.png	\
-		brasero-disc-05.png	\
-		brasero-disc-100.png	\
-		brasero-disc-10.png	\
-		brasero-disc-15.png	\
-		brasero-disc-20.png	\
-		brasero-disc-25.png	\
-		brasero-disc-30.png	\
-		brasero-disc-35.png	\
-		brasero-disc-40.png	\
-		brasero-disc-45.png	\
-		brasero-disc-50.png	\
-		brasero-disc-55.png	\
-		brasero-disc-60.png	\
-		brasero-disc-65.png	\
-		brasero-disc-70.png	\
-		brasero-disc-75.png	\
-		brasero-disc-80.png	\
-		brasero-disc-85.png	\
-		brasero-disc-90.png	\
-		brasero-disc-95.png	\
+icons_DATA =	brasero-disc-00.svg	\
+		brasero-disc-05.svg	\
+		brasero-disc-100.svg	\
+		brasero-disc-10.svg	\
+		brasero-disc-15.svg	\
+		brasero-disc-20.svg	\
+		brasero-disc-25.svg	\
+		brasero-disc-30.svg	\
+		brasero-disc-35.svg	\
+		brasero-disc-40.svg	\
+		brasero-disc-45.svg	\
+		brasero-disc-50.svg	\
+		brasero-disc-55.svg	\
+		brasero-disc-60.svg	\
+		brasero-disc-65.svg	\
+		brasero-disc-70.svg	\
+		brasero-disc-75.svg	\
+		brasero-disc-80.svg	\
+		brasero-disc-85.svg	\
+		brasero-disc-90.svg	\
+		brasero-disc-95.svg	\
 		brasero.svg
