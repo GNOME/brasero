@@ -2,15 +2,15 @@
 # Copyright (C) 2006 THE brasero'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the brasero package.
 # Popović Miloš <gpopac@gmail.com>, 2007.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-25 19:18+0200\n"
-"PO-Revision-Date: 2007-04-24 17:03-0400\n"
-"Last-Translator: Popović Miloš <gpopac@gmail.com>\n"
+"POT-Creation-Date: 2007-05-20 15:53+0200\n"
+"PO-Revision-Date: 2007-04-30 20:29+0100\n"
+"Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,9 +19,8 @@ msgstr ""
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/brasero.desktop.in.h:1
-#, fuzzy
 msgid "Brasero Disc Burning Application"
-msgstr "Program za upis"
+msgstr "Program za upis diskova"
 
 #: ../data/brasero.desktop.in.h:2
 msgid "Burn Image"
@@ -817,17 +816,17 @@ msgstr "%s (%s) ubačeno u %s"
 #: ../src/brasero-project-size.c:1063
 #, c-format
 msgid "%s (DVD-R Dual Layer)"
-msgstr ""
+msgstr "%s (Dvoslojni DVD)"
 
 #: ../src/brasero-project-size.c:1066
 #, c-format
 msgid "%s (DVD-R)"
-msgstr ""
+msgstr "%s (DVD)"
 
 #: ../src/brasero-project-size.c:1069
-#, fuzzy, c-format
+#, c-format
 msgid "%s (CD-R)"
-msgstr "%s (%s)"
+msgstr "%s (CD)"
 
 #: ../src/brasero-sum-dialog.c:141
 msgid "Use a md5 file to check the disc"
@@ -920,7 +919,7 @@ msgstr "<b>Napredak:</b>"
 
 #: ../src/brasero-tool-dialog.c:260
 msgid "Media busy"
-msgstr ""
+msgstr "Disk je zauzet"
 
 #: ../src/brasero-tool-dialog.c:261 ../src/brasero-tool-dialog.c:271
 #: ../src/brasero-tool-dialog.c:281
@@ -936,9 +935,8 @@ msgid "Media error"
 msgstr "Greška sa diskom"
 
 #: ../src/brasero-tool-dialog.c:272
-#, fuzzy
 msgid "the inserted media is not supported."
-msgstr "učitan disk je zauzet."
+msgstr "učitan disk nije podržan."
 
 #: ../src/brasero-tool-dialog.c:282
 msgid "the drive is empty."
@@ -1191,7 +1189,6 @@ msgid "couldn't set non blocking mode"
 msgstr "neblokirajući režim se nije mogao postaviti"
 
 #: ../src/burn-common.c:495 ../src/burn-common.c:514
-#, fuzzy
 msgid "couldn't get pipe flags"
 msgstr "nemogu se dobiti zastavice cevi"
 
@@ -1215,7 +1212,7 @@ msgstr "ubacite disk koji sadrži podatke."
 #, c-format
 msgid "replace the disc with a recordable CD with a least %i MiB free."
 msgstr ""
-"zamenite disk sa upisivim CD diskom sa najmanje %i MB slobodnog prostora."
+"zamenite disk sa upisivim CD diskom sa najmanje %i MiB slobodnog prostora."
 
 #: ../src/burn-dialog.c:199
 msgid "replace the disc with a recordable CD."
@@ -1224,7 +1221,7 @@ msgstr "zamenite disk za upisivim CD disom."
 #: ../src/burn-dialog.c:203
 #, c-format
 msgid "insert a recordable CD with a least %i MiB free."
-msgstr "ubacite upisivi CD sa najmanje %i MB slobodnog prostora."
+msgstr "ubacite upisivi CD sa najmanje %i MiB slobodnog prostora."
 
 #: ../src/burn-dialog.c:206
 msgid "insert a recordable CD."
@@ -1234,7 +1231,7 @@ msgstr "ubacite upisiv CD."
 #, c-format
 msgid "replace the disc with a recordable DVD with a least %i MiB free."
 msgstr ""
-"zamenite disk sa upisivim DVD diskom sa najmanje %i MB slobodnog prostora."
+"zamenite disk sa upisivim DVD diskom sa najmanje %i MiB slobodnog prostora."
 
 #: ../src/burn-dialog.c:215
 msgid "replace the disc with a recordable DVD."
@@ -1243,7 +1240,7 @@ msgstr "zamenite disk za upisivim DVD diskom."
 #: ../src/burn-dialog.c:219
 #, c-format
 msgid "insert a recordable DVD with a least %i MiB free."
-msgstr "ubacite upisivi DVD sa najmanje %i MB slobodnog prostora."
+msgstr "ubacite upisivi DVD sa najmanje %i MiB slobodnog prostora."
 
 #: ../src/burn-dialog.c:222
 msgid "insert a recordable DVD."
@@ -1253,7 +1250,7 @@ msgstr "ubacite upisiv DVD."
 #, c-format
 msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
 msgstr ""
-"zamenite disk sa upisivim CD ili DVD diskom sa najmanje %i MB slobodnog "
+"zamenite disk sa upisivim CD ili DVD diskom sa najmanje %i MiB slobodnog "
 "prostora."
 
 #: ../src/burn-dialog.c:230
@@ -1263,7 +1260,7 @@ msgstr "zamenite disk sa upisivim CD ili DVD diskom."
 #: ../src/burn-dialog.c:234
 #, c-format
 msgid "insert a recordable CD or DVD with a least %i MiB free."
-msgstr "ubacite upisivi CD ili DVD sa najmanje %i MB slobodnog prostora."
+msgstr "ubacite upisivi CD ili DVD sa najmanje %i MiB slobodnog prostora."
 
 #: ../src/burn-dialog.c:237
 msgid "insert a recordable CD or DVD."
@@ -1284,9 +1281,9 @@ msgid "There is no disc in \"%s\":"
 msgstr "Nema diska u „%s“:"
 
 #: ../src/burn-dialog.c:301
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not supported:"
-msgstr "Disk u „%s“ nije upisiv:"
+msgstr "Disk u „%s“ nije podržan:"
 
 #: ../src/burn-dialog.c:306
 #, c-format
@@ -1360,37 +1357,33 @@ msgid "Erase disc"
 msgstr "Obriši disk"
 
 #: ../src/burn-dialog.c:487 ../src/burn-dialog.c:499
-#, fuzzy
 msgid "Multisession disc"
-msgstr "Montiranje diska"
+msgstr "Diska sa više sesija"
 
 #: ../src/burn-dialog.c:488
-#, fuzzy
 msgid "Appending new files to a multisession disc is not advised:"
-msgstr "Disk sa više sesija je ubačen:"
+msgstr "Dodavanje novih datoteka na disk sa više sesija nije preporučljivo:"
 
 #: ../src/burn-dialog.c:489
-#, fuzzy
 msgid ""
 "already burnt files will be invisible (though still readable).\n"
 "Do you want to continue anyway?"
 msgstr ""
-"moguće je da nećete moći da ga slušate na muzičkim stubovima.\n"
+"već upisane datoteke će biti nevidljive (iako i dalje čitljive).\n"
 "Da li, svejedno, želite da nastavite?"
 
 #: ../src/burn-dialog.c:500
-#, fuzzy
 msgid "Appending audio tracks to a CD is not advised:"
-msgstr "Upisivanje audio traka na prepisiv disk nije preporučljivo:"
+msgstr "Dodavanje audio traka na disk nije preporučljivo:"
 
 #: ../src/burn-dialog.c:501
-#, fuzzy
 msgid ""
 "you might not be able to listen to them with stereos and CD-TEXT won't be "
 "written.\n"
 "Do you want to continue anyway?"
 msgstr ""
-"moguće je da nećete moći da ga slušate na muzičkim stubovima.\n"
+"moguće je da nećete moći da ga slušate na muzičkim stubovima i CD-TEKST neće "
+"biti upisan.\n"
 "Da li, svejedno, želite da nastavite?"
 
 #: ../src/burn-dialog.c:511
@@ -1489,7 +1482,7 @@ msgstr "neke datoteke na disku mogu biti oštećene."
 #: ../src/burn-dialog.c:1285
 #, c-format
 msgid "Please insert it in \"%s\"."
-msgstr "Ubacite ga u „%s“."
+msgstr "Ubacite disk u „%s“."
 
 #: ../src/burn-dialog.c:1291
 msgid "The source media needs to be inserted:"
@@ -1498,7 +1491,7 @@ msgstr "Izvorni disk mora biti ubačen:"
 #: ../src/burn-dialog.c:1302
 #, c-format
 msgid "Please insert it again in \"%s\"."
-msgstr "Ubacite ga ponovo u „%s“."
+msgstr "Ponovo ubacite disk u „%s“."
 
 #: ../src/burn-dialog.c:1307
 msgid "The source media needs to be reloaded:"
@@ -1507,7 +1500,7 @@ msgstr "Izvorni disk se mora ponovo učitati:"
 #: ../src/burn-dialog.c:1458
 #, c-format
 msgid "please, insert it again in \"%s\"."
-msgstr "ubacite ga ponovo u „%s“."
+msgstr "ponovo ubacite disk u „%s“."
 
 #: ../src/burn-dialog.c:1464
 msgid "The burnt media needs to be reloaded to perform integrity check:"
@@ -1544,7 +1537,7 @@ msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
 msgstr ""
-"Ovo je isečak iz dnevnika sesije (poslednjih 10 MB):\n"
+"Ovo je isečak iz dnevnika sesije (poslednjih 10 MiB):\n"
 "\n"
 
 #: ../src/burn-dialog.c:1811
@@ -1664,9 +1657,8 @@ msgid "Retrieving DVD keys"
 msgstr "Prikupljam DVD ključeve"
 
 #: ../src/burn-dvdcss.c:591 ../src/burn-dvdcss.c:914
-#, fuzzy
 msgid "the size of the volume couln't be retrieved"
-msgstr "ne mogu da proverim veličinu uređaja (%s)"
+msgstr "ne mogu da odredim veličinu uređaja (%s)"
 
 #: ../src/burn-dvdcss.c:600
 msgid "DVD could not be opened"
@@ -1757,24 +1749,22 @@ msgid "unable to connect to imager"
 msgstr "ne mogu da se povežem sa programom za pravljenje odraza"
 
 #: ../src/burn-libburn.c:646 ../src/burn-libburn.c:704
-#, fuzzy
 msgid "no profile available for the medium"
-msgstr "Nedovoljno slobodnog prostora na disku"
+msgstr "nema slobodnog profila za disku"
 
 #: ../src/burn-libburn.c:749
-#, fuzzy
 msgid "/dev/null can't be opened"
-msgstr "Datoteku nije moguće otvoriti:"
+msgstr "ne mogu da otvorim /dev/null"
 
 #: ../src/burn-libburn.c:780
-#, fuzzy, c-format
+#, c-format
 msgid "libburn can't burn: %s"
-msgstr "Koristi libburn za upis na CD"
+msgstr "libburn ne može da upiše: %s"
 
 #: ../src/burn-libisofs.c:504
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
-msgstr "roditeljska putanja za (%s) se ne može naći u drvetu"
+msgstr "roditeljska putanja za (%s) se ne može naći u stablu"
 
 #: ../src/burn-libread-disc.c:290
 msgid "no disc could be found"
@@ -1788,82 +1778,71 @@ msgstr "Umnožavanje „%s“"
 #: ../src/burn-md5.c:206 ../src/burn-md5.c:285
 #, c-format
 msgid "the file %s couldn't be read (%s)"
-msgstr "datoteke %s nije moguće pročitati (%s)"
+msgstr "datoteku %s nije moguće pročitati (%s)"
 
 #: ../src/burn-medium.c:64
-#, fuzzy
 msgid "file"
-msgstr "Nema datoteke"
+msgstr "datoteka"
 
 #: ../src/burn-medium.c:65
 msgid "CDROM"
-msgstr ""
+msgstr "CD čitač"
 
 #: ../src/burn-medium.c:66
-#, fuzzy
 msgid "CD-R"
-msgstr "CD"
+msgstr "Jednom upisiv CD"
 
 #: ../src/burn-medium.c:67
 msgid "CD-RW"
-msgstr ""
+msgstr "Prepisiv CD"
 
 #: ../src/burn-medium.c:68
-#, fuzzy
 msgid "DVDROM"
-msgstr "DVD"
+msgstr "DVD čitač"
 
 #: ../src/burn-medium.c:69
-#, fuzzy
 msgid "DVD-R"
-msgstr "DVD"
+msgstr "Jednom upisiv DVD-"
 
 #: ../src/burn-medium.c:70
-#, fuzzy
 msgid "DVD-RW"
-msgstr "DVD"
+msgstr "Prepisiv DVD-"
 
 #: ../src/burn-medium.c:71
-#, fuzzy
 msgid "DVD+R"
-msgstr "DVD"
+msgstr "Jednom upisiv DVD+"
 
 #: ../src/burn-medium.c:72
-#, fuzzy
 msgid "DVD+RW"
-msgstr "DVD"
+msgstr "Prepisiv DVD+"
 
 #: ../src/burn-medium.c:73
 msgid "DVD+R dual layer"
-msgstr ""
+msgstr "Dvoslojni jednom upisiv DVD+"
 
 #: ../src/burn-medium.c:74
 msgid "DVD+RW dual layer"
-msgstr ""
+msgstr "Dvoslojni prepisiv DVD+"
 
 #: ../src/burn-medium.c:75
 msgid "DVD-R dual layer"
-msgstr ""
+msgstr "Dvoslojni jednom upisiv DVD-"
 
 #: ../src/burn-medium.c:76
-#, fuzzy
 msgid "DVD-RAM"
-msgstr "DVD"
+msgstr "DVD RAM"
 
 #: ../src/burn-medium.c:77
-#, fuzzy
 msgid "blue ray disc"
-msgstr "Izbriši disk"
+msgstr "Blue Ray disk"
 
 #: ../src/burn-medium.c:78
-#, fuzzy
 msgid "writable blue ray disc"
-msgstr "Prepisiv disk"
+msgstr "Upisiv Blue Ray disk"
 
 #: ../src/burn-medium.c:79
-#, fuzzy
 msgid "rewritable blue ray disc"
-msgstr "Prepisiv disk"
+msgstr "Prepisiv Blue Ray disk"
 
 #: ../src/burn-mkisofs-base.c:294 ../src/burn-mkisofs-base.c:585
 msgid "the file is not stored locally"
@@ -1959,19 +1938,16 @@ msgid "Creating image checksum"
 msgstr "Pravim sumu za proveru odraza"
 
 #: ../src/burn-sum.c:567
-#, fuzzy
 msgid "there is no disc."
-msgstr "nije odabran disk"
+msgstr "nema diska"
 
 #: ../src/burn-sum.c:573
-#, fuzzy
 msgid "the disc is unsupported."
-msgstr "uređaj nije spreman"
+msgstr "disk nije podržan"
 
 #: ../src/burn-sum.c:580
-#, fuzzy
 msgid "the disc is busy."
-msgstr "disk je prazan ili zauzet."
+msgstr "disk je zauzet."
 
 #: ../src/burn-sum.c:590
 msgid "Creating disc checksum"
@@ -2036,7 +2012,7 @@ msgstr "privremeni direktorijum se nije mogao napraviti"
 #: ../src/burn-transcode.c:1220
 #, c-format
 msgid "error padding (%s)"
-msgstr "popunjavanje za greške·(%s)"
+msgstr "greška u popunjavanju (%s)"
 
 #: ../src/burn-transcode.c:1339 ../src/burn-transcode.c:1442
 msgid "error getting duration"
@@ -2105,8 +2081,8 @@ msgid ""
 "the selected location does not have enough free space to store the disc "
 "image (%ld MiB needed)"
 msgstr ""
-"odabrana putanja nema dovoljno slobodnog prostora za snimanje odraza (potrebno %"
-"ld MB)"
+"odabrana putanja nema dovoljno slobodnog prostora za snimanje odraza(potrebno %"
+"ld MiB)"
 
 #: ../src/burn.c:1941
 #, c-format
@@ -2132,7 +2108,7 @@ msgstr "Uvezi sesiju"
 
 #: ../src/data-disc.c:1137
 msgid "Create a new empty folder"
-msgstr "Napravi novi prazan direktorijum"
+msgstr "Napravi novu praznu fasciklu"
 
 #: ../src/data-disc.c:1251 ../src/filtered-window.c:236 ../src/search.c:415
 msgid "Files"
@@ -2213,12 +2189,12 @@ msgstr "Greška pri povratku datoteka"
 
 #: ../src/data-disc.c:4791
 msgid "New folder"
-msgstr "Novi direktorijum"
+msgstr "Nova fascikla"
 
 #: ../src/data-disc.c:4801
 #, c-format
 msgid "New folder %i"
-msgstr "Novi direktorijum %i"
+msgstr "Nova fascikla %i"
 
 #: ../src/data-disc.c:5154
 msgid "Disc file"
@@ -2241,9 +2217,8 @@ msgid "there is no selected disc"
 msgstr "nije odabran disk"
 
 #: ../src/data-disc.c:8069
-#, fuzzy
 msgid "there isn't any available session on the disc"
-msgstr "Nedovoljno slobodnog prostora na disku"
+msgstr "nema ni jedne dostupne sesije na disku"
 
 #: ../src/data-disc.c:8088
 msgid "unknown volume type"
@@ -2419,7 +2394,9 @@ msgstr "Brasero Internet adresa"
 #.
 #: ../src/main.c:255
 msgid "translator-credits"
-msgstr "Miloš Popović <gpopac@gmail.com>"
+msgstr ""
+"Miloš Popović <gpopac@gmail.com> \n"
+"Igor Miletić <igor.miletic@rogers.com>"
 
 #: ../src/main.c:332
 msgid "Brasero projects"
@@ -2607,7 +2584,7 @@ msgstr "Procena brzine uređaja:"
 #: ../src/progress.c:395
 #, c-format
 msgid "%i MiB of %i MiB"
-msgstr "%i MB od %i MB"
+msgstr "%i MiB od %i MiB"
 
 #: ../src/project-type-chooser.c:71
 msgid "<big>Audio project</big>"
@@ -2894,67 +2871,59 @@ msgid "Unknown error."
 msgstr "Nepoznata greška."
 
 #: ../src/recorder-selection.c:523
-#, fuzzy
 msgid "<i>no disc</i>"
-msgstr "<i>Nema traka</i>"
+msgstr "<i>nema diska</i>"
 
 #: ../src/recorder-selection.c:531
-#, fuzzy
 msgid "<i>unknown type</i>"
-msgstr "<i>Nepoznata vrsta diska.</i>"
+msgstr "<i>nepoznat tip</i>"
 
 #: ../src/recorder-selection.c:539
-#, fuzzy
 msgid "<i>busy disc</i>"
-msgstr "<i>Disk je zauzet.</i>"
+msgstr "<i>disk je zauzet.</i>"
 
 #: ../src/recorder-selection.c:553
-#, fuzzy
 msgid "audio and data tracks"
 msgstr "Umnožavam traku sa podacima"
 
 #: ../src/recorder-selection.c:555
-#, fuzzy
 msgid "audio tracks"
-msgstr "Umnožavam audio traku"
+msgstr "audio trake"
 
 #: ../src/recorder-selection.c:557
-#, fuzzy
 msgid "data tracks"
-msgstr "Umnožavam traku sa podacima"
+msgstr "trake sa podacima"
 
 #: ../src/recorder-selection.c:566 ../src/recorder-selection.c:602
 #, c-format
 msgid "%s free"
-msgstr ""
+msgstr "%s slobodno"
 
 #: ../src/recorder-selection.c:572
-#, fuzzy
 msgid "the medium can be recorded"
-msgstr "ne mogu da izbacim disk"
+msgstr "disk je upisiv"
 
 #: ../src/recorder-selection.c:583
-#, fuzzy, c-format
+#, c-format
 msgid "%s (%s free)"
-msgstr "%s (%s)"
+msgstr "%s (%s slobodno)"
 
 #: ../src/recorder-selection.c:593
 msgid "data can be written or appended to the medium"
-msgstr ""
+msgstr "podaci mogu biti upisani ili dodati na disk"
 
 #: ../src/recorder-selection.c:609
 msgid "data can be appended to the medium"
-msgstr ""
+msgstr "podaci mogu biti dodati na disk"
 
 #: ../src/recorder-selection.c:618
 #, c-format
 msgid "%s of data"
-msgstr ""
+msgstr "%s podataka"
 
 #: ../src/recorder-selection.c:625
-#, fuzzy
 msgid "<i>the medium is not writable</i>"
-msgstr "Disk u „%s“ nije upisiv:"
+msgstr "<i>Disk nije upisiv:</i>"
 
 #: ../src/recorder-selection.c:662
 msgid "<i>There is no disc in the drive.</i>"
@@ -2974,44 +2943,44 @@ msgid "The <b>%s</b> is not writable."
 msgstr "<b>%s</b> nije upisiv."
 
 #: ../src/recorder-selection.c:685
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
 "It contains audio and data.\n"
 "More data can be added (%s free)."
 msgstr ""
-"<b>%s</b> je spreman.\n"
-"Disk poseduje podatke.\n"
+"<b>%s</b> je spreman (%s).\n"
+"Disk poseduje audio i podatke.\n"
 "Još podataka može biti dodato (%s slobodno)."
 
 #: ../src/recorder-selection.c:698
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It contains audio and data tracks.\n"
 "A data session can be added (%s free)."
 msgstr ""
 "<b>%s</b> je spreman.\n"
-"Disk poseduje audio trake.\n"
+"Disk poseduje audio i trake sa podacima.\n"
 "Sesija sa podacima može biti dodata (%s slobodno)."
 
 #: ../src/recorder-selection.c:710
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
 "It contains audio and data tracks."
 msgstr ""
-"<b>%s</b> je spreman.\n"
-"Disk poseduje audio trake."
+"<b>%s</b> je spreman (%s).\n"
+"Disk poseduje audio i trake sa podacima."
 
 #: ../src/recorder-selection.c:727
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
 "It contains audio.\n"
 "More data can be added (%s free)."
 msgstr ""
-"<b>%s</b> je spreman.\n"
+"<b>%s</b> je spreman (%s).\n"
 "Disk poseduje podatke.\n"
 "Još podataka može biti dodato (%s slobodno)."
 
@@ -3027,22 +2996,22 @@ msgstr ""
 "Sesija sa podacima može biti dodata (%s slobodno)."
 
 #: ../src/recorder-selection.c:752
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
 "It contains audio tracks."
 msgstr ""
-"<b>%s</b> je spreman.\n"
+"<b>%s</b> je spreman (%s).\n"
 "Disk poseduje audio trake."
 
 #: ../src/recorder-selection.c:769
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
 "It contains data.\n"
 "More data can be added (%s free)."
 msgstr ""
-"<b>%s</b> je spreman.\n"
+"<b>%s</b> je spreman (%s).\n"
 "Disk poseduje podatke.\n"
 "Još podataka može biti dodato (%s slobodno)."
 
@@ -3058,23 +3027,23 @@ msgstr ""
 "Još podataka može biti dodato (%s slobodno)."
 
 #: ../src/recorder-selection.c:794
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
 "It contains data."
 msgstr ""
-"<b>%s</b> je spreman.\n"
+"<b>%s</b> je spreman (%s).\n"
 "Disk poseduje podatke."
 
 #: ../src/recorder-selection.c:808
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
 "It is empty.\n"
 " (%s free)"
 msgstr ""
 "<b>%s</b> je spreman.\n"
-"Disk je prazan."
+"Disk je prazan. (%s slobodno)"
 
 #: ../src/recorder-selection.c:911 ../src/recorder-selection.c:916
 #, c-format
@@ -3140,52 +3109,47 @@ msgstr "Podešavanje odraza diska"
 
 #: ../src/scsi/scsi-error.c:30
 msgid "size mismatch"
-msgstr ""
+msgstr "veličina se ne poklapa"
 
 #: ../src/scsi/scsi-error.c:31
 msgid "type mismatch"
-msgstr ""
+msgstr "tip se ne poklapa"
 
 #: ../src/scsi/scsi-error.c:32
 msgid "bad argument"
-msgstr ""
+msgstr "loš argument"
 
 #: ../src/scsi/scsi-error.c:33
-#, fuzzy
 msgid "the device is not ready"
 msgstr "uređaj nije spreman"
 
 #: ../src/scsi/scsi-error.c:34
 msgid "outrange address"
-msgstr ""
+msgstr "adresa van opsega"
 
 #: ../src/scsi/scsi-error.c:35
-#, fuzzy
 msgid "invalid address"
-msgstr "Neispravan odraz"
+msgstr "neispravna adresa"
 
 #: ../src/scsi/scsi-error.c:36
-#, fuzzy
 msgid "invalid command"
-msgstr "Neispravan odraz"
+msgstr "neispravna komanda"
 
 #: ../src/scsi/scsi-error.c:37
-#, fuzzy
 msgid "invalid parameter in command"
-msgstr "nevažeći zapis direktorijuma"
+msgstr "nevažeći parametar u komandi"
 
 #: ../src/scsi/scsi-error.c:38
 msgid "invalid field in command"
-msgstr ""
+msgstr "pogrešno polje u komandi"
 
 #: ../src/scsi/scsi-error.c:39
-#, fuzzy
 msgid "the device timed out"
-msgstr "disk je spreman za upotrebu."
+msgstr "vreme uređaja je isteklo"
 
 #: ../src/scsi/scsi-error.c:40
 msgid "key not established"
-msgstr ""
+msgstr "ključ nije utvrđen"
 
 #: ../src/search-entry.c:90
 msgid "Find all available music"
@@ -3336,7 +3300,7 @@ msgstr "Informacije o pesmi"
 #: ../src/song-properties.c:258
 #, c-format
 msgid "<b><big>Song information for track %02i</big></b>"
-msgstr "<b><big>Informacije o traci %02i</big></b>"
+msgstr "<b><big>Informacije o audio traci %02i</big></b>"
 
 #: ../src/tray.c:91
 msgid "Cancel"
@@ -3392,15 +3356,15 @@ msgstr[2] "%d:%02i sati"
 
 #: ../src/utils.c:227
 msgid "KiB"
-msgstr "KB"
+msgstr "KiB"
 
 #: ../src/utils.c:227
 msgid "MiB"
-msgstr "MB"
+msgstr "MiB"
 
 #: ../src/utils.c:227
 msgid "GiB"
-msgstr "GB"
+msgstr "GiB"
 
 #: ../src/utils.c:542
 msgid "This file can't be opened:"
