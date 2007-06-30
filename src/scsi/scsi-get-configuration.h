@@ -177,12 +177,12 @@ struct _BraseroScsiCoreDescMMC4 {
 	uchar inq2		:1;
 	uchar reserved0		:6;
 
+  	uchar mmc4		[0];
 	uchar reserved1		[3];
 };
 
 struct _BraseroScsiCoreDescMMC3 {
-	uchar interface				[4];
-	struct _BraseroScsiCoreDescMMC4	mmc4	[0];
+	uchar interface		[4];
 };
 
 struct _BraseroScsiProfileDesc {
@@ -855,12 +855,12 @@ struct _BraseroScsiCoreDescMMC4 {
 	uchar inq2		:1;
 	uchar dbe		:1;
 
+  	uchar mmc4		[0];
 	uchar reserved1		[3];
 };
 
 struct _BraseroScsiCoreDescMMC3 {
-	uchar interface				[4];
-  	struct _BraseroScsiCoreDescMMC4 mmc4	[0];
+	uchar interface		[4];
 };
 
 struct _BraseroScsiMorphingDesc {
