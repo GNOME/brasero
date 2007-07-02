@@ -1,4 +1,4 @@
-Brasero is a CD/DVD mastering tool for the gnome desktop. It is designed to be simple and easy to use. 
+Brasero is a CD/DVD mastering tool for the GNOME Desktop. It is designed to be simple and easy to use. 
 
 Features:
 
@@ -37,13 +37,17 @@ Others:
 - can search for files thanks to beagle (search is based on keywords or on file type)
 - can display a playlist and its contents (note that playlists are automatically searched through beagle)
 - all disc IO is done asynchronously to prevent the application from blocking
+- Brasero default backend is provided by cdrtools/cdrkit but libburn can be used as an alternative
 
 Requirements:
 - gnome 2.14.x (gnome-vfs, nautilus-cd-burner)
 - gstreamer (>=0.10.0)
 - Hal (>= 0.50)
-- libxml2 
+- libxml2
+- cdrtools or cdrkit (default backend, any recent version)
 - a fairly new kernel (>= 2.6.13 because of inotify) (optional)
 - totem (>= 2.14) (optional)
 - beagle (>= 0.2.5) (optional)
 - GDL (>= 0.6) (optional)
+- libburn (>=0.3.4) (optional)
+- libisofs (>=0.2.4) (optional)
