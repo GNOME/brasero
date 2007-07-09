@@ -59,7 +59,7 @@ struct _BraseroRdTrackInfoCDB {
 	uchar open			:1;
 	uchar addr_num_type		:2;
 
-	uchar blk_trk_ses_num		[4];
+	uchar blk_addr_trk_ses_num	[4];
 
 	uchar reserved1;
 
