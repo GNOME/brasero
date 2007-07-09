@@ -153,7 +153,7 @@ brasero_image_option_dialog_make_track (BraseroImageOptionDialog *dialog,
 	track = g_new0 (BraseroTrackSource, 1);
 	track->type = BRASERO_TRACK_SOURCE_IMAGE;
 	track->format = format;
-
+g_print ("UIR %s %i\n", uri,is_image); 
 	complement = brasero_get_file_complement (format,
 						  is_image,
 						  uri);
@@ -335,7 +335,7 @@ brasero_image_option_dialog_burn_clicked_cb (GtkWidget *button,
 		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog->priv->chooser));
 		brasero_image_option_dialog_make_track (dialog,
 							format,
-							FALSE,
+							(format & (BRASERO_IMAGE_FORMAT_ISO|BRASERO_IMAGE_FORMAT_NONE)),
 							uri);
 		g_free (uri);
 	}
