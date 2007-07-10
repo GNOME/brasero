@@ -153,7 +153,7 @@ brasero_image_option_dialog_make_track (BraseroImageOptionDialog *dialog,
 	track = g_new0 (BraseroTrackSource, 1);
 	track->type = BRASERO_TRACK_SOURCE_IMAGE;
 	track->format = format;
-g_print ("UIR %s %i\n", uri,is_image); 
+
 	complement = brasero_get_file_complement (format,
 						  is_image,
 						  uri);

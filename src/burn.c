@@ -1695,7 +1695,7 @@ start:
 		result = BRASERO_BURN_ERR;
 	}
 	else if (nautilus_burn_drive_is_mounted (drive)
-	     && !nautilus_burn_drive_unmount (drive)) {
+	     && !NCB_DRIVE_UNMOUNT (drive, NULL)) {
 		ret_error = g_error_new (BRASERO_BURN_ERROR,
 					 BRASERO_BURN_ERROR_BUSY_DRIVE,
 					 _("the drive seems to be busy"));

@@ -1,3 +1,9 @@
+2007-07-10  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Handle unmounts more subtely and don't unset environment variables
+	at mount and unmount times as gnome-mount seems to need them.
+	That fixes some failures happening on my system (Fedora 7)
+
 2007-07-09  Rouquier Philippe <bonfire-app@wanadoo.fr>
 
 	Fix a bug in image recording dialog which prevented images
