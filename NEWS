@@ -1,6 +1,8 @@
-2007 : 0.5.90
-First (and maybe only) release in the next unstable series
-- backported patches/fixes from stable branch
+11-07-2007 : 0.6.0
+
+New stable series
+
+- backported patches/fixes from trunk to the stable branch
 - added multi session import in data project view
 - use libdvdcss to copy protected DVDs
 - updated libburn support to 0.3.4
@@ -8,6 +10,15 @@ First (and maybe only) release in the next unstable series
 - small GUI improvements
 - new icons (thanks to Josef Vybíra and Kalle Person)
 - lots of fixes
-- some new translations
+- new translations
 
-Thanks to all the people who contributed to this release through patches, translation, advice, artwork, bug reports.
+Changes since 0.5.90:
+
+- Fixed filter dialog crash
+- Fixes in the new SCSI library
+- Fix a bug in image recording dialog
+- Fixed bgo #439744, #439744, #430621, #435162, #430117.
+- Added more information about the backends on README
+- Better unmount handling 
+
+Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
