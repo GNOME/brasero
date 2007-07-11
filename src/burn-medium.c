@@ -749,6 +749,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
+	BRASERO_BURN_LOG ("medium is %d", priv->info);
+
 	/* see how we should get the speeds */
 	if (hdr->desc->add_len != sizeof (BraseroScsiRTStreamDesc)) {
 		g_free (hdr);

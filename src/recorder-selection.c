@@ -511,7 +511,7 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 		media = BRASERO_MEDIUM_NONE;
 
 	selection->priv->media = media;
-
+g_print ("%i\n", media);
 	gtk_label_set_text (GTK_LABEL (selection->priv->type), "");
 	gtk_label_set_text (GTK_LABEL (selection->priv->capacity), "");
 	gtk_label_set_text (GTK_LABEL (selection->priv->contents), "");
@@ -607,6 +607,22 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 
 		gtk_label_set_markup (GTK_LABEL (selection->priv->status),
 				      _("data can be appended to the medium"));
+		can_record = TRUE;
+	}
+	else if (media & BRASERO_MEDIUM_REWRITABLE) {
+		gchar *remaining_string, *info;
+		gint64 remaining;
+
+		NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
+		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		info = g_strdup_printf (_("%s free"), remaining_string);
+		g_free (remaining_string);
+	
+		gtk_label_set_markup (GTK_LABEL (selection->priv->capacity), info);
+		g_free (info);
+
+		gtk_label_set_markup (GTK_LABEL (selection->priv->status),
+				      _("the medium can be recorded"));
 		can_record = TRUE;
 	}
 	else {
