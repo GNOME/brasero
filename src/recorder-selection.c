@@ -511,7 +511,7 @@ brasero_recorder_selection_update_info (BraseroRecorderSelection *selection,
 		media = BRASERO_MEDIUM_NONE;
 
 	selection->priv->media = media;
-g_print ("%i\n", media);
+
 	gtk_label_set_text (GTK_LABEL (selection->priv->type), "");
 	gtk_label_set_text (GTK_LABEL (selection->priv->capacity), "");
 	gtk_label_set_text (GTK_LABEL (selection->priv->contents), "");
