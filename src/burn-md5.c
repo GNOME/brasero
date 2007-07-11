@@ -42,7 +42,7 @@ struct _BraseroMD5Ctx {
 	gboolean cancel;
 };
 
-#if G_BYTE_ORDER == G_BIG_ENDIAN
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
 #define SWAP(num)	GUINT32_SWAP_LE_BE (num)
 #else
 #define SWAP(num)	num

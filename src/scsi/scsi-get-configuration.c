@@ -52,7 +52,7 @@ struct _BraseroGetConfigCDB {
 
 #else
 
-struct _BraseroGetConfignCDB {
+struct _BraseroGetConfigCDB {
 	uchar opcode		:8;
 
 	uchar reserved1		:6;

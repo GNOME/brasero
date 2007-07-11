@@ -496,7 +496,6 @@ brasero_app_parse_options (BraseroApp *app)
 		}
 
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (app->contents), list);
-		g_slist_foreach (list, (GFunc) g_free, NULL);
 		g_slist_free (list);
 	}
 	else if (files) {

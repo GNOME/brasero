@@ -230,9 +230,6 @@ command_thread_start (void *arg)
 	GError      *error;
 	CommandData *data;
 	gint         exit_status;
-	gchar        *envp [] = { 	"LC_ALL=C",
-					NULL
-	};
 
 	data = arg;
 
@@ -241,7 +238,7 @@ command_thread_start (void *arg)
 	error = NULL;
 	if (g_spawn_sync (NULL,
 			  (char **) data->argv->pdata,
-			  envp,
+			  NULL,
 			  G_SPAWN_STDOUT_TO_DEV_NULL|G_SPAWN_STDERR_TO_DEV_NULL,
 			  NULL, NULL,
 			  NULL,
@@ -314,15 +311,25 @@ launch_command (NautilusBurnDrive *drive,
 	g_main_loop_unref (data->loop);
 	data->loop = NULL;
 
-	command_ok = data->command_ok;
+	/* WORKAROUND: on my system (fedora 6/7) gnome-mount manages to unmount
+	 * a volume but returns an error since it can't remove the mount point
+	 * directory. So to avoid that (after all we don't care about this kind
+	 * of error since in the end the volume gets unmounted) we only error
+	 * out if the volume wasn't unmounted (which makes it our only criterium
+	 * for success/failure) */
+	if (mount != nautilus_burn_drive_is_mounted (drive)) {
+		command_ok = FALSE;
 
-	if (data->error)
-		g_propagate_error (error, data->error);
-	else if (!command_ok)
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive could not be mounted"));
+		if (data->error)
+			g_propagate_error (error, data->error);
+		else if (!command_ok)
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("the drive could not be mounted"));
+	}
+	else
+		command_ok = TRUE;
 
 	/* Don't free data if mount operation still running. */
 	if (!data->timeout)

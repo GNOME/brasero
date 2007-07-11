@@ -1,3 +1,61 @@
+2007-07-11  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	Merge fixes from trunk to brasero_0_6 stable branch
+	in preparation for 0.6.0 release.
+
+2007-07-10  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Handle unmounts more subtely and don't unset environment variables
+	at mount and unmount times as gnome-mount seems to need them.
+	That fixes some failures happening on my system (Fedora 7)
+
+2007-07-09  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Fix a bug in image recording dialog which prevented images
+	to be burnt when type was explicitly set to ISO
+
+2007-07-09  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Another attempt at fixing #430117 for good this time
+
+2007-07-03  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/main.c: (brasero_app_parse_options):
+
+	Fix bug #439744.
+
+2007-07-02  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* MAINTAINERS: Add new mail.
+	* README: Add more information about the libburn backend.
+
+2007-06-30  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/filtered-window.c: (brasero_filtered_dialog_init):
+	* src/scsi/scsi-get-configuration.h:
+
+	Fix segfault on filter window.
+	Fix typos on scsi library.
+
+2007-05-01  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Change status icons to orange and put them in proper folder (status not apps) (Björn Martensen)
+
+2007-05-01  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Revert patch to set minimum window size (it was already implemented)
+	but also improved the logic by asking the monitor screen size and
+	setting the default size to 85% of it.
+
+2007-05-01  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Fix a stupid cut'n paste
+
+2007-05-01  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Last tangoification (status icons) (Björn Martensen)
+	Added 24x24 icons (Michael Monreal)
+	
 2007-04-20  Philippe Rouquier <bonfire-app@wanadoo.fr>
 
 	another fix for big endian machines
