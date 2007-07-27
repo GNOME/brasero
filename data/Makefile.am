@@ -42,7 +42,6 @@ UPDATE_MIME = \
 UPDATE_DESKTOP = \
 	if which update-desktop-database>/dev/null 2>&1 ; then \
 		update-desktop-database; \
-	fi
 
 if GCONF_SCHEMAS_INSTALL
 # don't do this if we are building in eg. rpm
