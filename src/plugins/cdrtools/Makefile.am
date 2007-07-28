@@ -1,0 +1,42 @@
+
+DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
+		     -DGDK_DISABLE_DEPRECATED \
+		     -DGDK_PIXBUF_DISABLE_DEPRECATED \
+		     -DGTK_DISABLE_DEPRECATED \
+		     -DGNOME_VFS_DISABLE_DEPRECATED \
+		     -DGNOME_DISABLE_DEPRECATED
+
+INCLUDES = \
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/src				\
+	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
+	-DBRASERO_PREFIX=\"$(prefix)\"           		\
+	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
+	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
+	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
+	$(DISABLE_DEPRECATED)				\
+	$(BRASERO_BASE_CFLAGS)
+
+AM_CFLAGS = -Wall -g
+
+#cdrecord
+cdrecorddir = $(libdir)/brasero/plugins
+cdrecord_LTLIBRARIES = libbrasero-cdrecord.la
+libbrasero_cdrecord_la_SOURCES = burn-cdrecord.c burn-cdrecord.h
+libbrasero_cdrecord_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_cdrecord_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+
+#mkisofs
+mkisofsdir = $(libdir)/brasero/plugins
+mkisofs_LTLIBRARIES = libbrasero-mkisofs.la
+libbrasero_mkisofs_la_SOURCES = burn-mkisofs.c burn-mkisofs.h 
+libbrasero_mkisofs_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_mkisofs_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+
+#readcd
+readcddir = $(libdir)/brasero/plugins
+readcd_LTLIBRARIES = libbrasero-readcd.la
+libbrasero_readcd_la_SOURCES = burn-readcd.c burn-readcd.h
+libbrasero_readcd_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_readcd_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)

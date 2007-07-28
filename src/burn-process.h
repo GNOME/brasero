@@ -40,11 +40,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_PROCESS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_PROCESS))
 #define BRASERO_PROCESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_PROCESS, BraseroProcessClass))
 
-typedef struct BraseroProcessPrivate BraseroProcessPrivate;
-
 typedef struct {
 	BraseroJob parent;
-	BraseroProcessPrivate *priv;
 } BraseroProcess;
 
 typedef struct {
@@ -57,10 +54,8 @@ typedef struct {
 						 const gchar *line);
 	BraseroBurnResult	(*set_argv)	(BraseroProcess *process,
 						 GPtrArray *argv,
-						 gboolean has_master,
 						 GError **error);
-	BraseroBurnResult      (*post)        (BraseroProcess *process,
-					         BraseroBurnResult retval);
+	BraseroBurnResult      	(*post)       	(BraseroProcess *process);
 } BraseroProcessClass;
 
 GType brasero_process_get_type();

@@ -48,17 +48,17 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 #include "utils.h"
-#include "project.h"
+#include "brasero-project.h"
 #include "brasero-layout.h"
 #include "brasero-project-manager.h"
 #include "brasero-file-chooser.h"
 #include "brasero-uri-container.h"
-#include "burn-caps.h"
 #include "brasero-image-option-dialog.h"
-#include "burn-dialog.h"
-#include "project-type-chooser.h"
+#include "brasero-burn-dialog.h"
+#include "brasero-project-type-chooser.h"
 #include "disc-copy-dialog.h"
 #include "brasero-vfs.h"
+#include "burn-caps.h"
 
 #ifdef BUILD_SEARCH
 #include "search.h"
@@ -69,7 +69,7 @@
 #endif
 
 #ifdef BUILD_PREVIEW
-#include "player.h"
+#include "brasero-player.h"
 #endif
 
 static void brasero_project_manager_class_init (BraseroProjectManagerClass *klass);
@@ -522,11 +522,7 @@ brasero_project_manager_register_menu (BraseroProjectManager *manager,
 
 static void
 brasero_project_manager_burn (BraseroProjectManager *manager,
-			      NautilusBurnDrive *drive,
-			      gint speed,
-			      gchar *output,
-			      const BraseroTrackSource *source,
-			      BraseroBurnFlag flags)
+			      BraseroBurnSession *session)
 {
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
@@ -543,13 +539,7 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 	gtk_widget_show_all (dialog);
 
 	destroy = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
-					   drive,
-					   speed,
-					   output,
-					   source,
-					   flags,
-					   0,
-					   FALSE);
+					   session);
 
 	gtk_widget_destroy (dialog);
 
@@ -569,14 +559,10 @@ static void
 brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 					 const gchar *uri)
 {
-	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
-	BraseroTrackSource *track;
-	NautilusBurnDrive *drive;
+	BraseroBurnSession *session;
 	GtkResponseType result;
-	gchar *output = NULL;
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
-	gint speed;
 
 	/* setup, show, and run options dialog */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
@@ -595,38 +581,22 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 		return;
 	}
 
-	brasero_image_option_dialog_get_param (BRASERO_IMAGE_OPTION_DIALOG (dialog),
-					       &flags,
-					       &drive,
-					       &speed,
-					       &track);
+	session = brasero_image_option_dialog_get_session (BRASERO_IMAGE_OPTION_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	brasero_project_manager_burn (manager,
-				      drive,
-				      speed,
-				      output,
-				      track,
-				      flags);
+	if (!session)
+		return;
 
-	brasero_track_source_free (track);
-	nautilus_burn_drive_unref (drive);
-
-	if (output)
-		g_free (output);
+	brasero_project_manager_burn (manager, session);
 }
 
 static void
 brasero_project_manager_burn_disc (BraseroProjectManager *manager)
 {
-	BraseroTrackSource *source;
-	NautilusBurnDrive *drive;
+	BraseroBurnSession *session;
 	GtkResponseType result;
-	BraseroBurnFlag flags;
-	gchar *output = NULL;
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
-	gint speed;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 
@@ -642,21 +612,10 @@ brasero_project_manager_burn_disc (BraseroProjectManager *manager)
 		return;
 	}
 
-	brasero_disc_copy_dialog_get_session_param (BRASERO_DISC_COPY_DIALOG (dialog),
-						    &drive,
-						    &speed,
-						    &output,
-						    &source,
-						    &flags);
+	session = brasero_disc_copy_dialog_get_session (BRASERO_DISC_COPY_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	brasero_project_manager_burn (manager,
-				      drive,
-				      speed,
-				      output,
-				      source,
-				      flags);
-	brasero_track_source_free (source);
+	brasero_project_manager_burn (manager, session);
 }
 
 static void

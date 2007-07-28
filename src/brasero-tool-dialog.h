@@ -32,7 +32,9 @@
 
 #include "burn-basics.h"
 #include "burn-job.h"
+#include "burn.h"
 #include "burn-medium.h"
+#include "burn-session.h"
 
 G_BEGIN_DECLS
 
@@ -55,48 +57,38 @@ struct _BraseroToolDialog {
 struct _BraseroToolDialogClass {
 	GtkDialogClass parent_class;
 
-	gboolean	(*cancel)		(BraseroToolDialog *self);
-	gboolean	(*activate)		(BraseroToolDialog *self,
+	gboolean	(*activate)		(BraseroToolDialog *dialog,
 						 NautilusBurnDrive *drive);
-	void		(*media_changed)	(BraseroToolDialog *self,
-						 BraseroMediumInfo media);
+	void		(*drive_changed)	(BraseroToolDialog *dialog,
+						 NautilusBurnDrive *drive);
 };
 
 GType brasero_tool_dialog_get_type ();
 
-void brasero_tool_dialog_pack_options (BraseroToolDialog *self,
+void brasero_tool_dialog_pack_options (BraseroToolDialog *dialog,
 				       ...);
-void brasero_tool_dialog_set_button (BraseroToolDialog *self,
+void brasero_tool_dialog_set_button (BraseroToolDialog *dialog,
 				     const gchar *text,
 				     const gchar *image,
 				     const gchar *theme);
-void brasero_tool_dialog_set_action (BraseroToolDialog *self,
-				     BraseroBurnAction action,
-				     const gchar *string);
-void brasero_tool_dialog_set_progress (BraseroToolDialog *self,
-				       gdouble overall_progress,
-				       gdouble task_progress,
-				       glong remaining,
-				       gint size_mb,
-				       gint written_mb);
 
-BraseroBurnResult brasero_tool_dialog_run_job (BraseroToolDialog *self,
-					       BraseroJob *job,
-					       const BraseroTrackSource *track,
-					       BraseroTrackSource **retval,
-					       GError **error);
+void
+brasero_tool_dialog_set_progress (BraseroToolDialog *self,
+				  gdouble overall_progress,
+				  gdouble task_progress,
+				  glong remaining,
+				  gint size_mb,
+				  gint written_mb);
+void
+brasero_tool_dialog_set_action (BraseroToolDialog *self,
+				BraseroBurnAction action,
+				const gchar *string);
 
-BraseroMediumInfo
-brasero_tool_dialog_get_media (BraseroToolDialog *self);
+BraseroBurn *
+brasero_tool_dialog_get_burn (BraseroToolDialog *dialog);
 
 NautilusBurnDrive *
-brasero_tool_dialog_get_drive (BraseroToolDialog *self);
-
-/* methods to be used */
-void brasero_tool_dialog_run (BraseroToolDialog *self);
-
-void brasero_tool_dialog_set_active (BraseroToolDialog *self,
-				     NautilusBurnDrive *drive);
+brasero_tool_dialog_get_drive (BraseroToolDialog *dialog);
 
 G_END_DECLS
 

@@ -45,11 +45,8 @@ G_BEGIN_DECLS
 #define BRASERO_IS_BURN_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURN))
 #define BRASERO_BURN_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN, BraseroBurnClass))
 
-typedef struct BraseroBurnPrivate BraseroBurnPrivate;
-
 typedef struct {
 	GObject parent;
-	BraseroBurnPrivate *priv;
 } BraseroBurn;
 
 typedef struct {
@@ -58,7 +55,7 @@ typedef struct {
 	/* signals */
 	BraseroBurnResult		(*insert_media_request)		(BraseroBurn *obj,
 									 BraseroBurnError error,
-									 BraseroMediumInfo required_media);
+									 BraseroMedia required_media);
 
 	BraseroBurnResult		(*ask_disable_joliet)		(BraseroBurn *obj);
 
@@ -80,33 +77,29 @@ BraseroBurn *brasero_burn_new ();
 
 BraseroBurnResult 
 brasero_burn_record (BraseroBurn *burn,
-		     BraseroBurnFlag flags,
-		     NautilusBurnDrive *drive,
-		     gint speed,
-		     const BraseroTrackSource *source,
-		     const gchar *output,
+		     BraseroBurnSession *session,
 		     GError **error);
 
 BraseroBurnResult
-brasero_burn_blank (BraseroBurn *burn,
-		    BraseroBurnFlag flags,
-		    NautilusBurnDrive *drive,
-		    gboolean fast,
+brasero_burn_check (BraseroBurn *burn,
+		    BraseroBurnSession *session,
 		    GError **error);
 
 BraseroBurnResult
-brasero_burn_cancel (BraseroBurn *burn, gboolean protect);
+brasero_burn_blank (BraseroBurn *burn,
+		    BraseroBurnSession *session,
+		    GError **error);
+
+BraseroBurnResult
+brasero_burn_cancel (BraseroBurn *burn,
+		     gboolean protect);
 
 BraseroBurnResult
 brasero_burn_status (BraseroBurn *burn,
-		     BraseroMediumInfo *info,
+		     BraseroMedia *info,
 		     gint64 *isosize,
 		     gint64 *written,
 		     gint64 *rate);
-
-void
-brasero_burn_set_session (BraseroBurn *burn,
-			  BraseroBurnSession *session);
 
 void
 brasero_burn_get_action_string (BraseroBurn *burn,

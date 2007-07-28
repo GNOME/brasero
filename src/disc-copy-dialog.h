@@ -30,18 +30,19 @@
 
 #include <gtk/gtkdialog.h>
 
+#include "burn-session.h"
+
 G_BEGIN_DECLS
+
 #define BRASERO_TYPE_DISC_COPY_DIALOG         (brasero_disc_copy_dialog_get_type ())
 #define BRASERO_DISC_COPY_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_DISC_COPY_DIALOG, BraseroDiscCopyDialog))
 #define BRASERO_DISC_COPY_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_DISC_COPY_DIALOG, BraseroDiscCopyDialogClass))
 #define BRASERO_IS_DISC_COPY_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_DISC_COPY_DIALOG))
 #define BRASERO_IS_DISC_COPY_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_DISC_COPY_DIALOG))
 #define BRASERO_DISC_COPY_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_DISC_COPY_DIALOG, BraseroDiscCopyDialogClass))
-typedef struct BraseroDiscCopyDialogPrivate BraseroDiscCopyDialogPrivate;
 
 typedef struct {
 	GtkDialog parent;
-	BraseroDiscCopyDialogPrivate *priv;
 } BraseroDiscCopyDialog;
 
 typedef struct {
@@ -53,12 +54,9 @@ GType brasero_disc_copy_dialog_get_type ();
 GtkWidget *
 brasero_disc_copy_dialog_new ();
 
-gboolean
-brasero_disc_copy_dialog_get_session_param (BraseroDiscCopyDialog *dialog,
-					    NautilusBurnDrive **drive,
-					    gint *speed,
-					    gchar **ouput,
-					    BraseroTrackSource **source,
-					    BraseroBurnFlag *flags);
+BraseroBurnSession *
+brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self);
+
+G_END_DECLS
 
 #endif				/* DISC_COPY_DIALOG_H */

@@ -100,7 +100,7 @@ struct _BraseroMediumPrivate
 	gint64 block_size;
 
 	guint64 next_wr_add;
-	BraseroMediumInfo info;
+	BraseroMedia info;
 	NautilusBurnDrive * drive;
 };
 
@@ -109,7 +109,6 @@ struct _BraseroMediumPrivate
 enum
 {
 	PROP_0,
-
 	PROP_DRIVE
 };
 
@@ -133,7 +132,7 @@ brasero_medium_get_icon (BraseroMedium *medium)
 	return priv->icon;
 }
 
-BraseroMediumInfo
+BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
@@ -182,13 +181,13 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
 	return priv->next_wr_add;
 }
 
-gint
+gint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
-	return priv->max_wrt;
+	return priv->max_wrt * 1024;
 }
 
 /**
@@ -287,7 +286,7 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 		if (blocks)
 			*blocks = priv->block_num;
 	}
-	else  if (!(priv->info & BRASERO_MEDIUM_WRITABLE))
+	else  if (priv->info & BRASERO_MEDIUM_CLOSED)
 		brasero_medium_get_data_size (medium, size, blocks);
 	else
 		brasero_medium_get_free_space (medium, size, blocks);
@@ -626,7 +625,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 	switch (BRASERO_GET_16 (hdr->current_profile)) {
 	case BRASERO_SCSI_PROF_CDROM:
-		priv->info = BRASERO_MEDIUM_CD;
+		priv->info = BRASERO_MEDIUM_CDROM;
 		priv->type = types [1];
 		priv->icon = icons [1];
 		break;
@@ -644,7 +643,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_ROM:
-		priv->info = BRASERO_MEDIUM_DVD;
+		priv->info = BRASERO_MEDIUM_DVD_ROM;
 		priv->type = types [4];
 		priv->icon = icons [4];
 		break;
@@ -679,6 +678,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		priv->icon = icons [7];
 		break;
 
+	/* WARNING: these types are recognized, no more */
 	case BRASERO_SCSI_PROF_DVD_R_PLUS_DL:
 		priv->info = BRASERO_MEDIUM_DVDR_PLUS_DL;
 		priv->type = types [9];
@@ -769,7 +769,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
 	else
 		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
-
 
 end:
 
@@ -974,8 +973,9 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 								   fd);
 			if (result == BRASERO_BURN_OK) {
 				track->type |= BRASERO_MEDIUM_TRACK_DATA;
-				priv->info |= BRASERO_MEDIUM_APPENDABLE|
-					      BRASERO_MEDIUM_HAS_DATA;
+				priv->info |= BRASERO_MEDIUM_HAS_DATA;
+				priv->info &= ~BRASERO_MEDIUM_CLOSED;
+
 				priv->next_wr_add = 0;
 
 				if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
@@ -986,6 +986,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				g_free (track);
 
 				priv->info |= BRASERO_MEDIUM_BLANK;
+				priv->info &= ~BRASERO_MEDIUM_CLOSED;
 			}
 		}
 		else {
@@ -997,8 +998,9 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		}
 	}
 
-	/* we shouldn't request info on leadout if the disc is closed */
-	if (priv->info & (BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK)) {
+	/* we shouldn't request info on leadout if the disc is closed (except
+	 * for DVD+/- (restricted) RW */
+	if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
 		BraseroMediumTrack *track;
 
 		track = g_new0 (BraseroMediumTrack, 1);
@@ -1019,8 +1021,18 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 		GSList *node;
-		BraseroMediumTrack *leadout;
+		BraseroMediumTrack *leadout, *track;
 
+		track = g_new0 (BraseroMediumTrack, 1);
+		priv->tracks = g_slist_prepend (priv->tracks, track);
+		track->start = BRASERO_GET_32 (desc->track_start);
+		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+
+		brasero_medium_track_get_info (self,
+					       track,
+					       g_slist_length (priv->tracks),
+					       fd,
+					       code);
 		node = g_slist_last (priv->tracks);
 		leadout = node->data;
 
@@ -1083,6 +1095,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 
 	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE)
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
+	else if (info->status == BRASERO_SCSI_DISC_FINALIZED)
+		priv->info |= BRASERO_MEDIUM_CLOSED;
 
 	result = brasero_medium_get_sessions_info (self, fd, code);
 	if (result != BRASERO_BURN_OK)

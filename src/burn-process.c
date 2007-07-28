@@ -43,23 +43,8 @@
 #include "burn-process.h"
 #include "burn-job.h"
 
-static void brasero_process_class_init (BraseroProcessClass *klass);
-static void brasero_process_init (BraseroProcess *sp);
-static void brasero_process_finalize (GObject *object);
+G_DEFINE_TYPE (BraseroProcess, brasero_process, BRASERO_TYPE_JOB);
 
-static BraseroBurnResult
-brasero_process_pre_init (BraseroJob *job,
-			  gboolean has_master,
-			  GError **error);
-static BraseroBurnResult
-brasero_process_start (BraseroJob *job,
-		       int in_fd,
-		       int *out_fd,
-		       GError **error);
-static BraseroBurnResult
-brasero_process_stop (BraseroJob *job,
-		      BraseroBurnResult retval,
-		      GError **error);
 enum {
 	BRASERO_CHANNEL_STDOUT	= 0,
 	BRASERO_CHANNEL_STDERR
@@ -70,8 +55,10 @@ static const gchar *debug_prefixes [] = {	"stdout: %s",
 						NULL };
 
 typedef BraseroBurnResult	(*BraseroProcessReadFunc)	(BraseroProcess *process,
-								 const char *line);
-struct BraseroProcessPrivate {
+								 const gchar *line);
+
+typedef struct _BraseroProcessPrivate BraseroProcessPrivate;
+struct _BraseroProcessPrivate {
 	GPtrArray *argv;
 
 	GIOChannel *std_out;
@@ -86,115 +73,22 @@ struct BraseroProcessPrivate {
 	gint io_in;
 };
 
+#define BRASERO_PROCESS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROCESS, BraseroProcessPrivate))
+
 static GObjectClass *parent_class = NULL;
 
-GType
-brasero_process_get_type ()
-{
-	static GType type = 0;
-
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroProcessClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)brasero_process_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroProcess),
-			0,
-			(GInstanceInitFunc)brasero_process_init,
-		};
-
-		type = g_type_register_static(BRASERO_TYPE_JOB, 
-			"BraseroProcess", &our_info, 0);
-	}
-
-	return type;
-}
-
-static void
-brasero_process_class_init (BraseroProcessClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent(klass);
-	object_class->finalize = brasero_process_finalize;
-
-	job_class->start_init = brasero_process_pre_init;
-	job_class->start = brasero_process_start;
-	job_class->stop = brasero_process_stop;
-}
-
-static void
-brasero_process_init (BraseroProcess *obj)
-{
-	obj->priv = g_new0 (BraseroProcessPrivate, 1);
-}
-
-static void
-brasero_process_finalize (GObject *object)
-{
-	BraseroProcess *cobj;
-	cobj = BRASERO_PROCESS(object);
-
-	if (cobj->priv->io_out) {
-		g_source_remove (cobj->priv->io_out);
-		cobj->priv->io_out = 0;
-	}
-
-	if (cobj->priv->std_out) {
-		g_io_channel_unref (cobj->priv->std_out);
-		cobj->priv->std_out = NULL;
-	}
-
-	if (cobj->priv->out_buffer) {
-		g_string_free (cobj->priv->out_buffer, TRUE);
-		cobj->priv->out_buffer = NULL;
-	}
-
-	if (cobj->priv->io_err) {
-		g_source_remove (cobj->priv->io_err);
-		cobj->priv->io_err = 0;
-	}
-
-	if (cobj->priv->std_error) {
-		g_io_channel_unref (cobj->priv->std_error);
-		cobj->priv->std_error = NULL;
-	}
-
-	if (cobj->priv->err_buffer) {
-		g_string_free (cobj->priv->err_buffer, TRUE);
-		cobj->priv->err_buffer = NULL;
-	}
-
-	if (cobj->priv->pid) {
-		kill (cobj->priv->pid, SIGKILL);
-		cobj->priv->pid = 0;
-	}
-
-	if (cobj->priv->argv) {
-		g_strfreev ((gchar**) cobj->priv->argv->pdata);
-		g_ptr_array_free (cobj->priv->argv, FALSE);
-		cobj->priv->argv = NULL;
-	}
-
-	g_free (cobj->priv);
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
 
 static BraseroBurnResult
-brasero_process_pre_init (BraseroJob *job,
-			  gboolean has_master,
+brasero_process_ask_argv (BraseroJob *job,
 			  GError **error)
 {
 	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (job);
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (job);
 	BraseroProcess *process = BRASERO_PROCESS (job);
 	BraseroBurnResult result;
 	int i;
 
-	if (process->priv->pid)
+	if (priv->pid)
 		return BRASERO_BURN_RUNNING;
 
 	if (!klass->set_argv)
@@ -202,28 +96,27 @@ brasero_process_pre_init (BraseroJob *job,
 
 	BRASERO_JOB_LOG (process, "getting varg");
 
-	if (process->priv->argv) {
-		g_strfreev ((gchar**) process->priv->argv->pdata);
-		g_ptr_array_free (process->priv->argv, FALSE);
+	if (priv->argv) {
+		g_strfreev ((gchar**) priv->argv->pdata);
+		g_ptr_array_free (priv->argv, FALSE);
 	}
 
-	process->priv->argv = g_ptr_array_new ();
+	priv->argv = g_ptr_array_new ();
 	result = klass->set_argv (process,
-				  process->priv->argv,
-				  has_master,
+				  priv->argv,
 				  error);
-	g_ptr_array_add (process->priv->argv, NULL);
+	g_ptr_array_add (priv->argv, NULL);
 
 	BRASERO_JOB_LOG (process, "got varg:");
 
-	for (i = 0; process->priv->argv->pdata [i]; i++)
+	for (i = 0; priv->argv->pdata [i]; i++)
 		BRASERO_JOB_LOG_ARG (process,
-				     process->priv->argv->pdata [i]);
+				     priv->argv->pdata [i]);
 
 	if (result != BRASERO_BURN_OK) {
-		g_strfreev ((gchar**) process->priv->argv->pdata);
-		g_ptr_array_free (process->priv->argv, FALSE);
-		process->priv->argv = NULL;
+		g_strfreev ((gchar**) priv->argv->pdata);
+		g_ptr_array_free (priv->argv, FALSE);
+		priv->argv = NULL;
 		return result;
 	}
 
@@ -240,14 +133,15 @@ brasero_process_read (BraseroProcess *process,
 	GString *buffer;
 	GIOStatus status;
 	BraseroBurnResult result = BRASERO_BURN_OK;
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
 
 	if (!channel)
 		return FALSE;
 
 	if (channel_type == BRASERO_CHANNEL_STDERR)
-		buffer = process->priv->err_buffer;
+		buffer = priv->err_buffer;
 	else
-		buffer = process->priv->out_buffer;
+		buffer = priv->out_buffer;
 
 	if (condition & G_IO_IN) {
 		gsize term;
@@ -290,9 +184,9 @@ brasero_process_read (BraseroProcess *process,
 					 * been called and the buffer deallocated. So we
 					 * check that it still exists */
 					if (channel_type == BRASERO_CHANNEL_STDERR)
-						buffer = process->priv->err_buffer;
+						buffer = priv->err_buffer;
 					else
-						buffer = process->priv->out_buffer;
+						buffer = priv->out_buffer;
 
 					if (buffer)
 						g_string_set_size (buffer, 0);
@@ -325,9 +219,9 @@ brasero_process_read (BraseroProcess *process,
 			 * been called and the buffer deallocated. So we
 			 * check that it still exists */
 			if (channel_type == BRASERO_CHANNEL_STDERR)
-				buffer = process->priv->err_buffer;
+				buffer = priv->err_buffer;
 			else
-				buffer = process->priv->out_buffer;
+				buffer = priv->out_buffer;
 
 			if (buffer)
 				g_string_set_size (buffer, 0);
@@ -355,6 +249,61 @@ brasero_process_read (BraseroProcess *process,
 	return TRUE;
 }
 
+static BraseroBurnResult
+brasero_process_finished (BraseroProcess *self)
+{
+	BraseroTrackType type;
+	BraseroBurnResult result;
+	BraseroTrack *track = NULL;
+	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
+
+	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
+		brasero_job_finished (BRASERO_JOB (self), NULL);
+		return BRASERO_BURN_OK;
+	}
+
+	/* only for the last running job with imaging/recording action */
+	brasero_job_get_action (BRASERO_JOB (self), &action);
+	if (action != BRASERO_JOB_ACTION_IMAGE) {
+		brasero_job_finished (BRASERO_JOB (self), NULL);
+		return BRASERO_BURN_OK;
+	}
+
+	result = brasero_job_get_output_type (BRASERO_JOB (self), &type);
+	if (result != BRASERO_BURN_OK || type.type == BRASERO_TRACK_TYPE_DISC) {
+		brasero_job_finished (BRASERO_JOB (self), NULL);
+		return BRASERO_BURN_OK;
+	}
+
+	if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+		gchar *toc = NULL;
+		gchar *image = NULL;
+
+		track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
+		brasero_job_get_image_output (BRASERO_JOB (self),
+					      &image,
+					      &toc);
+
+		brasero_track_set_image_source (track,
+						image,
+						toc,
+						type.subtype.img_format);
+	}
+	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
+		gchar *uri = NULL;
+
+		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
+		brasero_job_get_audio_output (BRASERO_JOB (self),
+					      &uri);
+		brasero_track_set_audio_source (track,
+						uri,
+						type.subtype.audio_format);
+	}
+
+	brasero_job_finished (BRASERO_JOB (self), track);
+	return BRASERO_BURN_OK;
+}
+
 static gboolean
 brasero_process_read_stderr (GIOChannel *source,
 			     GIOCondition condition,
@@ -362,9 +311,10 @@ brasero_process_read_stderr (GIOChannel *source,
 {
 	gboolean result;
 	BraseroProcessClass *klass;
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
 
-	if (!process->priv->err_buffer)
-		process->priv->err_buffer = g_string_new (NULL);
+	if (!priv->err_buffer)
+		priv->err_buffer = g_string_new (NULL);
 
 	klass = BRASERO_PROCESS_GET_CLASS (process);
 	result = brasero_process_read (process,
@@ -376,18 +326,18 @@ brasero_process_read_stderr (GIOChannel *source,
 	if (result)
 		return result;
 
-	process->priv->io_err = 0;
+	priv->io_err = 0;
 
-	g_io_channel_unref (process->priv->std_error);
-	process->priv->std_error = NULL;
+	g_io_channel_unref (priv->std_error);
+	priv->std_error = NULL;
 
-	g_string_free (process->priv->err_buffer, TRUE);
-	process->priv->err_buffer = NULL;
+	g_string_free (priv->err_buffer, TRUE);
+	priv->err_buffer = NULL;
 	
-	if (process->priv->pid
-	&& !process->priv->io_err
-	&& !process->priv->io_out)
-		brasero_job_finished (BRASERO_JOB (process));
+	if (priv->pid
+	&& !priv->io_err
+	&& !priv->io_out)
+		brasero_process_finished (process);
 
 	return FALSE;
 }
@@ -399,9 +349,10 @@ brasero_process_read_stdout (GIOChannel *source,
 {
 	gboolean result;
 	BraseroProcessClass *klass;
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
 
-	if (!process->priv->out_buffer)
-		process->priv->out_buffer = g_string_new (NULL);
+	if (!priv->out_buffer)
+		priv->out_buffer = g_string_new (NULL);
 
 	klass = BRASERO_PROCESS_GET_CLASS (process);
 	result = brasero_process_read (process,
@@ -413,34 +364,45 @@ brasero_process_read_stdout (GIOChannel *source,
 	if (result)
 		return result;
 
-	process->priv->io_out = 0;
+	priv->io_out = 0;
 
-	if (process->priv->std_out) {
-		g_io_channel_unref (process->priv->std_out);
-		process->priv->std_out = NULL;
+	if (priv->std_out) {
+		g_io_channel_unref (priv->std_out);
+		priv->std_out = NULL;
 	}
 
-	g_string_free (process->priv->out_buffer, TRUE);
-	process->priv->out_buffer = NULL;
+	g_string_free (priv->out_buffer, TRUE);
+	priv->out_buffer = NULL;
 
-	if (process->priv->pid
-	&& !process->priv->io_err
-	&& !process->priv->io_out)
-		brasero_job_finished (BRASERO_JOB (process));
+	if (priv->pid
+	&& !priv->io_err
+	&& !priv->io_out)
+		brasero_process_finished (process);
 
 	return FALSE;
 }
 
 static void
-brasero_process_setup_stdin (gpointer data)
+brasero_process_setup (gpointer data)
 {
-	int stdin_pipe = GPOINTER_TO_INT (data);
+	BraseroProcessPrivate *priv;
+	BraseroProcess *process;
+	int fd;
 
-	if (stdin_pipe == -1)
-		return;
+	process = BRASERO_PROCESS (data);
+	priv = BRASERO_PROCESS_PRIVATE (process);
 
-	if (dup2 (stdin_pipe, 0) == -1)
-		g_warning ("Dup2 failed\n");
+	fd = -1;
+	if (brasero_job_get_fd_in (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
+		if (dup2 (fd, 0) == -1)
+			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
+	}
+
+	fd = -1;
+	if (brasero_job_get_fd_out (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
+		if (dup2 (fd, 1) == -1)
+			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
+	}
 }
 
 static GIOChannel *
@@ -467,72 +429,82 @@ brasero_process_setup_channel (BraseroProcess *process,
 }
 
 static BraseroBurnResult
-brasero_process_start (BraseroJob *job, int in_fd, int *out_fd, GError **error)
+brasero_process_start (BraseroJob *job, GError **error)
 {
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (job);
 	BraseroProcess *process = BRASERO_PROCESS (job);
 	int stdout_pipe, stderr_pipe;
+	BraseroProcessClass *klass;
+	gboolean read_stdout;
 	/* that's to make sure programs are not translated */
 	gchar *envp [] = {	"LANG=C",
 				"LANGUAGE=C"
 				"LC_ALL=C",
 				NULL};
 
-	if (process->priv->pid)
+	if (priv->pid)
 		return BRASERO_BURN_RUNNING;
 
 	BRASERO_JOB_LOG (process, "launching command");
 
+	klass = BRASERO_PROCESS_GET_CLASS (process);
+
+	/* only watch stdout coming from the last object in the queue */
+	read_stdout = (klass->stdout_func &&
+		       brasero_job_get_fd_out (BRASERO_JOB (process), NULL) != BRASERO_BURN_OK);
+
 	if (!g_spawn_async_with_pipes (NULL,
-				       (gchar **) process->priv->argv->pdata,
+				       (gchar **) priv->argv->pdata,
 				       (gchar **) envp,
 				       G_SPAWN_SEARCH_PATH,
-				       brasero_process_setup_stdin,
-				       GINT_TO_POINTER (in_fd),
-				       &process->priv->pid,
+				       brasero_process_setup,
+				       process,
+				       &priv->pid,
 				       NULL,
-				       &stdout_pipe,
+				       read_stdout ? &stdout_pipe : NULL,
 				       &stderr_pipe,
 				       error))
 		return BRASERO_BURN_ERR;
 
 	/* error channel */
-	process->priv->std_error = brasero_process_setup_channel (process,
-								  stderr_pipe,
-								  &process->priv->io_err,
-								  (GIOFunc) brasero_process_read_stderr);
+	priv->std_error = brasero_process_setup_channel (process,
+							 stderr_pipe,
+							&priv->io_err,
+							(GIOFunc) brasero_process_read_stderr);
 
-	/* we only watch stdout coming from the last object in the queue */
-	if (!out_fd)
-		process->priv->std_out = brasero_process_setup_channel (process,
-									stdout_pipe,
-									&process->priv->io_out,
-									(GIOFunc) brasero_process_read_stdout);
-	else
-		*out_fd = stdout_pipe;
+	if (read_stdout)
+		priv->std_out = brasero_process_setup_channel (process,
+							       stdout_pipe,
+							       &priv->io_out,
+							       (GIOFunc) brasero_process_read_stdout);
 
 	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
 brasero_process_stop (BraseroJob *job,
-		      BraseroBurnResult retval,
 		      GError **error)
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
+	BraseroProcessPrivate *priv;
 	BraseroProcessClass *klass;
 	BraseroProcess *process;
 	GIOCondition condition;
 
 	process = BRASERO_PROCESS (job);
+	priv = BRASERO_PROCESS_PRIVATE (process);
+
+	/* FIXME! it would be good to know what's the return number of a child
+	 * to make sure we don't miss any error */
 
 	/* it might happen that the slave detected an error triggered by the master
 	 * BEFORE the master so we finish reading whatever is in the pipes to see: 
 	 * fdsink will notice cdrecord closed the pipe before cdrecord reports it */
-	if (process->priv->pid) {
+	if (priv->pid) {
 		GPid pid;
 
-		pid = process->priv->pid;
-		process->priv->pid = 0;
+		pid = priv->pid;
+		priv->pid = 0;
 
 		if (kill (pid, SIGTERM) == -1 && errno != ESRCH) {
 			BRASERO_JOB_LOG (process, 
@@ -547,79 +519,148 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	/* read every pending data and close the pipes */
-	if (process->priv->io_out) {
-		g_source_remove (process->priv->io_out);
-		process->priv->io_out = 0;
+	if (priv->io_out) {
+		g_source_remove (priv->io_out);
+		priv->io_out = 0;
 	}
 
-	if (process->priv->std_out) {
-		condition = g_io_channel_get_buffer_condition (process->priv->std_out);
+	if (priv->std_out) {
+		condition = g_io_channel_get_buffer_condition (priv->std_out);
 		if (condition == G_IO_IN) {
 			BraseroProcessClass *klass;
 	
 			klass = BRASERO_PROCESS_GET_CLASS (process);
 			while (brasero_process_read (process,
-						     process->priv->std_out,
+						     priv->std_out,
 						     G_IO_IN,
 						     BRASERO_CHANNEL_STDOUT,
 						     klass->stdout_func));
 		}
 
-	    	/* NOTE: we already checked if process->priv->std_out wasn't 
+	    	/* NOTE: we already checked if priv->std_out wasn't 
 		 * NULL but brasero_process_read could have closed it */
-	    	if (process->priv->std_out) {
-			g_io_channel_unref (process->priv->std_out);
-			process->priv->std_out = NULL;
+	    	if (priv->std_out) {
+			g_io_channel_unref (priv->std_out);
+			priv->std_out = NULL;
 		}
 	}
 
-	if (process->priv->out_buffer) {
-		g_string_free (process->priv->out_buffer, TRUE);
-		process->priv->out_buffer = NULL;
+	if (priv->out_buffer) {
+		g_string_free (priv->out_buffer, TRUE);
+		priv->out_buffer = NULL;
 	}
 
-	if (process->priv->io_err) {
-		g_source_remove (process->priv->io_err);
-		process->priv->io_err = 0;
+	if (priv->io_err) {
+		g_source_remove (priv->io_err);
+		priv->io_err = 0;
 	}
 
-	if (process->priv->std_error) {
-		condition = g_io_channel_get_buffer_condition (process->priv->std_error);
+	if (priv->std_error) {
+		condition = g_io_channel_get_buffer_condition (priv->std_error);
 		if (condition == G_IO_IN) {
 			BraseroProcessClass *klass;
 	
 			klass = BRASERO_PROCESS_GET_CLASS (process);
 			while (brasero_process_read (process,
-						     process->priv->std_error,
+						     priv->std_error,
 						     G_IO_IN,
 						     BRASERO_CHANNEL_STDERR,
 						     klass->stderr_func));
 		}
 
-	    	/* NOTE: we already checked if process->priv->std_out wasn't 
+	    	/* NOTE: we already checked if priv->std_out wasn't 
 		 * NULL but brasero_process_read could have closed it */
-	    	if (process->priv->std_error) {
-			g_io_channel_unref (process->priv->std_error);
-			process->priv->std_error = NULL;
+	    	if (priv->std_error) {
+			g_io_channel_unref (priv->std_error);
+			priv->std_error = NULL;
 		}
 	}
 
-	if (process->priv->err_buffer) {
-		g_string_free (process->priv->err_buffer, TRUE);
-		process->priv->err_buffer = NULL;
+	if (priv->err_buffer) {
+		g_string_free (priv->err_buffer, TRUE);
+		priv->err_buffer = NULL;
 	}
 
-	if (process->priv->argv) {
-		g_strfreev ((gchar**) process->priv->argv->pdata);
-		g_ptr_array_free (process->priv->argv, FALSE);
-		process->priv->argv = NULL;
+	if (priv->argv) {
+		g_strfreev ((gchar**) priv->argv->pdata);
+		g_ptr_array_free (priv->argv, FALSE);
+		priv->argv = NULL;
 	}
 
 	klass = BRASERO_PROCESS_GET_CLASS (process);
 	if (klass->post) {
-		result = klass->post (process, retval);
+		result = klass->post (process);
 		return result;
 	}
 
-	return retval;
+	return result;
 }
+
+static void
+brasero_process_finalize (GObject *object)
+{
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (object);
+
+	if (priv->io_out) {
+		g_source_remove (priv->io_out);
+		priv->io_out = 0;
+	}
+
+	if (priv->std_out) {
+		g_io_channel_unref (priv->std_out);
+		priv->std_out = NULL;
+	}
+
+	if (priv->out_buffer) {
+		g_string_free (priv->out_buffer, TRUE);
+		priv->out_buffer = NULL;
+	}
+
+	if (priv->io_err) {
+		g_source_remove (priv->io_err);
+		priv->io_err = 0;
+	}
+
+	if (priv->std_error) {
+		g_io_channel_unref (priv->std_error);
+		priv->std_error = NULL;
+	}
+
+	if (priv->err_buffer) {
+		g_string_free (priv->err_buffer, TRUE);
+		priv->err_buffer = NULL;
+	}
+
+	if (priv->pid) {
+		kill (priv->pid, SIGKILL);
+		priv->pid = 0;
+	}
+
+	if (priv->argv) {
+		g_strfreev ((gchar**) priv->argv->pdata);
+		g_ptr_array_free (priv->argv, FALSE);
+		priv->argv = NULL;
+	}
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_process_class_init (BraseroProcessClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	BraseroJobClass *job_class = BRASERO_JOB_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroProcessPrivate));
+
+	parent_class = g_type_class_peek_parent(klass);
+	object_class->finalize = brasero_process_finalize;
+
+	job_class->init = brasero_process_ask_argv;
+	job_class->start = brasero_process_start;
+	job_class->stop = brasero_process_stop;
+}
+
+static void
+brasero_process_init (BraseroProcess *obj)
+{ }

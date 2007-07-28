@@ -22,42 +22,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MKISOFS_CASE_H
-#define MKISOFS_CASE_H
+#ifndef MKISOFS_BASE_H
+#define MKISOFS_BASE_H
 
 #include <glib.h>
 #include <glib-object.h>
 
-#include "burn-process.h"
-
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_MKISOFS_BASE         (brasero_mkisofs_base_get_type ())
-#define BRASERO_MKISOFS_BASE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_MKISOFS_BASE, BraseroMkisofsBase))
-#define BRASERO_MKISOFS_BASE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_MKISOFS_BASE, BraseroMkisofsBaseClass))
-#define BRASERO_IS_MKISOFS_BASE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_MKISOFS_BASE))
-#define BRASERO_IS_MKISOFS_BASE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_MKISOFS_BASE))
-#define BRASERO_MKISOFS_BASE_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_MKISOFS_BASE, BraseroMkisofsBaseClass))
+/**
+ * This is used by both growisofs and mkisofs objects to write grafts to a file
+ */
+BraseroBurnResult
+brasero_mkisofs_base_write_to_files (GSList *grafts,
+				     GSList *excluded,
+				     const gchar *emptydir,
+				     const gchar *grafts_path,
+				     const gchar *excluded_path,
+				     GError **error);
 
-typedef struct BraseroMkisofsBasePrivate BraseroMkisofsBasePrivate;
-
-typedef struct {
-	BraseroJob parent;
-	BraseroMkisofsBasePrivate *priv;
-} BraseroMkisofsBase;
-
-typedef struct {
-	BraseroJobClass parent_class;
-
-	/* virtual methods */
-	BraseroBurnResult	(*set_image_src)	(BraseroMkisofsBase *base,
-							 const gchar *label,
-							 const gchar *grafts_list,
-							 const gchar *excluded_list,
-							 gboolean use_utf8,
-							 GError **error);
-} BraseroMkisofsBaseClass;
-
-GType brasero_mkisofs_base_get_type ();
+G_END_DECLS
 
 #endif /* MKISOFS_CASE_H */

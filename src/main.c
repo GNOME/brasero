@@ -568,12 +568,11 @@ main (int argc, char **argv)
 	notify_init (PACKAGE);
 #endif
 
-	nautilus_burn_init ();
 	gnome_vfs_init ();
 	gst_init (&argc, &argv);
 
 	brasero_burn_set_debug (debug);
-	NCB_INIT ();
+	brasero_burn_library_init ();
 
 	client = gconf_client_get_default ();
 
@@ -590,8 +589,10 @@ main (int argc, char **argv)
 
 	gtk_widget_show (app->mainwin);
 
+	/* debug */
 	gtk_main ();
 
+	brasero_burn_library_shutdown ();
 	brasero_session_disconnect (app);
 	g_object_unref (program);
 	g_free (app);

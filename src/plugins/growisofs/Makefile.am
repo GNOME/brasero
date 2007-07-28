@@ -1,0 +1,35 @@
+
+DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
+		     -DGDK_DISABLE_DEPRECATED \
+		     -DGDK_PIXBUF_DISABLE_DEPRECATED \
+		     -DGTK_DISABLE_DEPRECATED \
+		     -DGNOME_VFS_DISABLE_DEPRECATED \
+		     -DGNOME_DISABLE_DEPRECATED
+
+INCLUDES = \
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/src				\
+	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
+	-DBRASERO_PREFIX=\"$(prefix)\"           		\
+	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
+	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
+	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
+	$(DISABLE_DEPRECATED)				\
+	$(BRASERO_BASE_CFLAGS)
+
+AM_CFLAGS = -Wall -g
+
+#growisofs
+growisofsdir = $(libdir)/brasero/plugins
+growisofs_LTLIBRARIES = libbrasero-growisofs.la
+libbrasero_growisofs_la_SOURCES = burn-growisofs.c burn-growisofs.h
+libbrasero_growisofs_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_growisofs_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+
+#dvdrwformat
+dvdrwformatdir = $(libdir)/brasero/plugins
+dvdrwformat_LTLIBRARIES = libbrasero-dvdrwformat.la
+libbrasero_dvdrwformat_la_SOURCES = burn-dvd-rw-format.c burn-dvd-rw-format.h
+libbrasero_dvdrwformat_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_dvdrwformat_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)

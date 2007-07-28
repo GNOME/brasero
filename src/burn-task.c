@@ -22,194 +22,455 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "burn-task.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <glib.h>
+#include <glib-object.h>
+#include <glib/gi18n-lib.h>
+
 #include "burn-basics.h"
-#include "burn-common.h"
+#include "burn-debug.h"
+#include "burn-session.h"
+#include "burn-task.h"
+#include "burn-task-item.h"
+#include "burn-task-ctx.h"
 
 static void brasero_task_class_init (BraseroTaskClass *klass);
 static void brasero_task_init (BraseroTask *sp);
 static void brasero_task_finalize (GObject *object);
+
+typedef struct _BraseroTaskPrivate BraseroTaskPrivate;
 
 struct _BraseroTaskPrivate {
 	/* The loop for the task */
 	GMainLoop *loop;
 
 	/* used to poll for progress (every 0.5 sec) */
-	gint progress_report_id;
-	gdouble progress;
+	gint clock_id;
 
-	gint64 written;
-	gint64 total;
-
-	/* keep track of time */
-	GTimer *timer;
-	gint64 first_written;
-
-	/* used for immediate rate */
-	gint64 current_written;
-	gdouble current_elapsed;
-	gint64 last_written;
-	gdouble last_elapsed;
-
-	/* used for remaining time */
-	GSList *times;
-	gdouble total_time;
-
-	/* used for rates that certain jobs are able to report */
-	gint64 rate;
-
-	/* the current action */
-	BraseroBurnAction action;
-	gchar *action_string;
-
-	GMutex *action_mutex;
+	BraseroTaskItem *leader;
 
 	/* result of the task */
 	BraseroBurnResult retval;
 	GError *error;
-
-	guint action_changed:1;
-	guint written_changed:1;
-	guint progress_changed:1;
-	guint use_average_rate:1;
 };
 
-enum _BraseroTaskSignalType {
-	CLOCK_TICK_SIGNAL,
-	ACTION_CHANGED_SIGNAL,
-	PROGRESS_CHANGED_SIGNAL,
-	LAST_SIGNAL
-};
+#define BRASERO_TASK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TASK, BraseroTaskPrivate))
+G_DEFINE_TYPE (BraseroTask, brasero_task, BRASERO_TYPE_TASK_CTX);
 
-static guint brasero_task_signals [LAST_SIGNAL] = { 0 };
 static GObjectClass *parent_class = NULL;
 
-GType
-brasero_task_get_type ()
+void
+brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item)
 {
-	static GType type = 0;
+	BraseroTaskPrivate *priv;
 
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroTaskClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)brasero_task_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroTask),
-			0,
-			(GInstanceInitFunc)brasero_task_init,
-		};
+	g_return_if_fail (BRASERO_IS_TASK (task));
+	g_return_if_fail (BRASERO_IS_TASK_ITEM (item));
 
-		type = g_type_register_static (G_TYPE_OBJECT, 
-					       "BraseroTask",
-					       &our_info,
-					       0);
+	priv = BRASERO_TASK_PRIVATE (task);
+
+	if (priv->leader) {
+		brasero_task_item_connect (priv->leader, item);
+		g_object_unref (priv->leader);
 	}
 
-	return type;
+	priv->leader = item;
+	g_object_ref (priv->leader);
+}
+
+static void
+brasero_task_reset_real (BraseroTask *task)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+
+	if (priv->loop)
+		g_main_loop_unref (priv->loop);
+
+	priv->loop = NULL;
+	priv->clock_id = 0;
+	priv->retval = BRASERO_BURN_OK;
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
+
+	brasero_task_ctx_reset (BRASERO_TASK_CTX (task));
+}
+
+void
+brasero_task_reset (BraseroTask *task)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+
+	if (brasero_task_is_running (task))
+		brasero_task_cancel (task, TRUE);
+
+	g_object_unref (priv->leader);
+	brasero_task_reset_real (task);
+}
+
+static gboolean
+brasero_task_clock_tick (gpointer data)
+{
+	BraseroTask *task = BRASERO_TASK (data);
+	BraseroTaskPrivate *priv;
+	BraseroTaskItem *item;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+
+	/* some jobs need to be called periodically to update their status
+	 * because the main process run in a thread. We do it before calling
+	 * progress/action changed so they can update the task on time */
+	for (item = priv->leader; item; item = brasero_task_item_previous (item)) {
+		BraseroTaskItemIFace *klass;
+
+		klass = BRASERO_TASK_ITEM_GET_CLASS (item);
+		if (klass->clock_tick)
+			klass->clock_tick (item, BRASERO_TASK_CTX (task), NULL);
+	}
+
+	/* now call ctx to update progress */
+	brasero_task_ctx_report_progress (BRASERO_TASK_CTX (data));
+
+	return TRUE;
+}
+
+/**
+ * Used to run/stop task
+ */
+
+static BraseroBurnResult
+brasero_task_send_stop_signal (BraseroTask *task,
+			       BraseroBurnResult retval,
+			       GError **error)
+{
+	BraseroTaskItem *item;
+	BraseroTaskPrivate *priv;
+	GError *local_error = NULL;
+	BraseroBurnResult result = retval;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+
+	item = priv->leader;
+	while (brasero_task_item_previous (item))
+		item = brasero_task_item_previous (item);
+
+	/* we stop all the slaves first and then go up the list */
+	for (; item; item = brasero_task_item_next (item)) {
+		BraseroTaskItemIFace *klass;
+		GError *item_error;
+
+		item_error = NULL;
+
+		/* stop task for real now */
+		BRASERO_BURN_LOG ("stopping %s", G_OBJECT_TYPE_NAME (item));
+
+		klass = BRASERO_TASK_ITEM_GET_CLASS (item);
+		if (klass->stop)
+			result = klass->stop (item,
+					      BRASERO_TASK_CTX (task),
+					      &item_error);
+
+		BRASERO_BURN_LOG ("stopped %s", G_OBJECT_TYPE_NAME (item));
+
+		if (item_error) {
+			g_error_free (local_error);
+			local_error = item_error;
+		}
+	};
+
+	if (local_error) {
+		if (error && *error == NULL)
+			g_propagate_error (error, local_error);
+		else
+			g_error_free (local_error);
+	}
+
+	/* we don't want to lose the original result if it was not OK */
+	return (result == BRASERO_BURN_OK? retval:result);
+}
+
+static BraseroBurnResult
+brasero_task_start_item (BraseroTask *task,
+			 BraseroTaskItem *item,
+			 GError **error)
+{
+	BraseroBurnResult result;
+	BraseroTaskItemIFace *klass;
+
+	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
+	if (!klass->start) {
+		BRASERO_BURN_LOG ("no start method %s", G_OBJECT_TYPE_NAME (item));
+		BRASERO_JOB_NOT_SUPPORTED (item);
+	}
+
+	BRASERO_BURN_LOG ("start method %s", G_OBJECT_TYPE_NAME (item));
+
+	result = klass->start (item, BRASERO_TASK_CTX (task), error);
+	return result;
+}
+
+static BraseroBurnResult
+brasero_task_init_item (BraseroTask *task,
+		        BraseroTaskItem *item,
+		        GError **error)
+{
+	BraseroTaskItemIFace *klass;
+	BraseroBurnResult result = BRASERO_BURN_OK;
+
+	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
+	if (!klass->init) {
+		BRASERO_BURN_LOG ("no init method %s", G_OBJECT_TYPE_NAME (item));
+		return BRASERO_BURN_ERR;
+	}
+
+	BRASERO_BURN_LOG ("init method %s", G_OBJECT_TYPE_NAME (item));
+
+	result = klass->init (item, BRASERO_TASK_CTX (task), error);
+	return result;
+}
+
+static void
+brasero_task_stop (BraseroTask *task,
+		   BraseroBurnResult retval,
+		   GError *error)
+{
+	BraseroBurnResult result;
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+
+	result = brasero_task_send_stop_signal (task, retval, &error);
+
+	priv->retval = retval;
+	priv->error = error;
+
+	if (priv->loop
+	&&  g_main_loop_is_running (priv->loop))
+		g_main_loop_quit (priv->loop);
+}
+
+BraseroBurnResult
+brasero_task_cancel (BraseroTask *task,
+		     gboolean protect)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+	if (protect && brasero_task_ctx_get_dangerous (BRASERO_TASK_CTX (task)))
+		return BRASERO_BURN_DANGEROUS;
+
+	brasero_task_stop (task, BRASERO_BURN_CANCEL, NULL);
+	return BRASERO_BURN_OK;
+}
+
+gboolean
+brasero_task_is_running (BraseroTask *task)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (task);
+	return (priv->loop && g_main_loop_is_running (priv->loop));
+}
+
+static void
+brasero_task_finished (BraseroTaskCtx *ctx,
+		       BraseroBurnResult retval,
+		       GError *error)
+{
+	BraseroTask *self;
+	BraseroTaskPrivate *priv;
+
+	self = BRASERO_TASK (ctx);
+	priv = BRASERO_TASK_PRIVATE (self);
+
+	if (retval == BRASERO_BURN_RETRY) {
+		BraseroTaskItem *item;
+		GError *error_item = NULL;
+
+		/* There are some tracks left, get the first task item and
+		 * restart it. */
+		item = priv->leader;
+		while (brasero_task_item_previous (item))
+			item = brasero_task_item_previous (item);
+
+		if(brasero_task_item_init (item, ctx, &error_item) != BRASERO_BURN_OK
+		|| brasero_task_item_start (item, ctx, &error_item) != BRASERO_BURN_OK)
+			brasero_task_stop (self, BRASERO_BURN_ERR, error_item);
+
+		return;
+	}
+
+	brasero_task_stop (self, retval, error);
+}
+
+static BraseroBurnResult
+brasero_task_run_real (BraseroTask *self,
+		       GError **error)
+{
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (self);
+
+	brasero_task_ctx_report_progress (BRASERO_TASK_CTX (self));
+
+	priv->clock_id = g_timeout_add (500,
+					brasero_task_clock_tick,
+					self);
+
+	priv->loop = g_main_loop_new (NULL, FALSE);
+	BRASERO_BURN_LOG ("entering loop");
+	g_main_loop_run (priv->loop);
+	BRASERO_BURN_LOG ("got out of loop");
+	g_main_loop_unref (priv->loop);
+	priv->loop = NULL;
+
+	if (priv->error) {
+		g_propagate_error (error, priv->error);
+		priv->error = NULL;
+	}
+
+	/* stop all progress reporting thing */
+	if (priv->clock_id) {
+		g_source_remove (priv->clock_id);
+		priv->clock_id = 0;
+	}
+
+	if (priv->retval == BRASERO_BURN_OK
+	&&  brasero_task_ctx_get_progress (BRASERO_TASK_CTX (self), NULL) == BRASERO_BURN_OK) {
+		brasero_task_ctx_set_progress (BRASERO_TASK_CTX (self), 1.0);
+		brasero_task_ctx_set_written (BRASERO_TASK_CTX (self), -1.0);
+		brasero_task_ctx_report_progress (BRASERO_TASK_CTX (self));
+	}
+
+	return priv->retval;	
+}
+
+static BraseroBurnResult
+brasero_task_start (BraseroTask *self,
+		    gboolean fake,
+		    GError **error)
+{
+	BraseroBurnResult result = BRASERO_BURN_OK;
+	BraseroTaskItem *item, *first, *last;
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Starting %s task (%i)",
+			  fake ? "fake":"normal",
+			  brasero_task_ctx_get_action (BRASERO_TASK_CTX (self)));
+
+	/* check the task is not running */
+	if (brasero_task_is_running (self)) {
+		BRASERO_BURN_LOG ("task is already running");
+		return BRASERO_BURN_RUNNING;
+	}
+
+	if (!priv->leader) {
+		BRASERO_BURN_LOG ("no jobs");
+		return BRASERO_BURN_RUNNING;
+	}
+
+	brasero_task_ctx_set_fake (BRASERO_TASK_CTX (self), fake);
+	brasero_task_ctx_reset (BRASERO_TASK_CTX (self));
+
+	/* first init all jobs starting from the master down to the slave */
+	last = NULL;
+	first = NULL;
+	item = priv->leader;
+	for (; item; item = brasero_task_item_previous (item)) {
+		result = brasero_task_init_item (self, item, error);
+		if (result == BRASERO_BURN_NOT_RUNNING) {
+			/* some jobs don't need to/can't run in fake mode and so
+			 * return this value to be skipped. we don't go any
+			 * further but run all previous jobs which accepted */
+			BRASERO_BURN_LOG ("init method skipped for %s",
+					  G_OBJECT_TYPE_NAME (item));
+			last = item;
+			continue;
+		}
+
+		if (result != BRASERO_BURN_OK)
+			goto error;
+
+		first = item;
+	}	
+
+	/* now start from the slave up to the master */
+	for (item = first; item != last; item = brasero_task_item_next (item)) {
+		result = brasero_task_start_item (self, item, error);
+		if (result != BRASERO_BURN_OK)
+			goto error;
+	}
+
+	if (first)
+		result = brasero_task_run_real (self, error);
+
+	return result;
+
+error:
+	brasero_task_send_stop_signal (self, result, NULL);
+	return result;
+}
+
+BraseroBurnResult
+brasero_task_check (BraseroTask *self,
+		    GError **error)
+{
+	g_return_val_if_fail (BRASERO_IS_TASK (self), BRASERO_BURN_ERR);
+
+	return brasero_task_start (self, TRUE, error);
+}
+
+BraseroBurnResult
+brasero_task_run (BraseroTask *self,
+		  GError **error)
+{
+	g_return_val_if_fail (BRASERO_IS_TASK (self), BRASERO_BURN_ERR);
+
+	return brasero_task_start (self, FALSE, error);
 }
 
 static void
 brasero_task_class_init (BraseroTaskClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	BraseroTaskCtxClass *ctx_class = BRASERO_TASK_CTX_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroTaskPrivate));
 
 	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_task_finalize;
 
-	brasero_task_signals [CLOCK_TICK_SIGNAL] =
-	    g_signal_new ("clock-tick",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  G_STRUCT_OFFSET (BraseroTaskClass,
-					   clock_tick),
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__VOID,
-			  G_TYPE_NONE,
-			  0);
-
-	brasero_task_signals [PROGRESS_CHANGED_SIGNAL] =
-	    g_signal_new ("progress_changed",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  G_STRUCT_OFFSET (BraseroTaskClass,
-					   progress_changed),
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__VOID,
-			  G_TYPE_NONE,
-			  0);
-
-	brasero_task_signals [ACTION_CHANGED_SIGNAL] =
-	    g_signal_new ("action_changed",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  G_STRUCT_OFFSET (BraseroTaskClass,
-					   action_changed),
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__INT,
-			  G_TYPE_NONE,
-			  1,
-			  G_TYPE_INT);
+	ctx_class->finished = brasero_task_finished;
 }
 
 static void
 brasero_task_init (BraseroTask *obj)
-{
-	obj->priv = g_new0 (BraseroTaskPrivate, 1);
-}
-
-static void
-brasero_task_stop_real (BraseroTask *task)
-{
-	if (task->priv->action_string) {
-		g_free (task->priv->action_string);
-		task->priv->action_string = NULL;
-	}
-	task->priv->action = BRASERO_BURN_ACTION_NONE;
-	task->priv->action_changed = 0;
-
-	/* stop all progress reporting thing */
-	if (task->priv->progress_report_id) {
-		g_source_remove (task->priv->progress_report_id);
-		task->priv->progress_report_id = 0;
-	}
-
-	if (task->priv->timer) {
-		g_timer_destroy (task->priv->timer);
-		task->priv->timer = NULL;
-	}
-	task->priv->first_written = 0;
-
-	g_mutex_lock (task->priv->action_mutex);
-	if (task->priv->times) {
-		g_slist_free (task->priv->times);
-		task->priv->times = NULL;
-	}
-	g_mutex_unlock (task->priv->action_mutex);
-}
+{ }
 
 static void
 brasero_task_finalize (GObject *object)
 {
 	BraseroTask *cobj;
+	BraseroTaskPrivate *priv;
 
 	cobj = BRASERO_TASK (object);
+	priv = BRASERO_TASK_PRIVATE (cobj);
 
-	brasero_task_stop_real (cobj);
-
-	if (cobj->priv->action_mutex) {
-		g_mutex_free (cobj->priv->action_mutex);
-		cobj->priv->action_mutex = NULL;
+	if (priv->leader) {
+		g_object_unref (priv->leader);
+		priv->leader = NULL;
 	}
-
-	if (cobj->priv->error) {
-		g_error_free (cobj->priv->error);
-		cobj->priv->error = NULL;
-	}
-
-	g_free (cobj->priv);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -220,478 +481,5 @@ brasero_task_new ()
 	BraseroTask *obj;
 	
 	obj = BRASERO_TASK (g_object_new (BRASERO_TYPE_TASK, NULL));
-	obj->priv->action_mutex = g_mutex_new ();
 	return obj;
-}
-
-static gboolean
-brasero_task_report_progress_cb (gpointer data)
-{
-	BraseroTask *task = BRASERO_TASK (data);
-	gdouble progress, elapsed;
-
-	/* some jobs need to be called periodically to update their status
-	 * because the main process run in a thread. We do it before calling
-	 * progress/action changed so they can update the task on time */
-	g_signal_emit (task,
-		       brasero_task_signals [CLOCK_TICK_SIGNAL],
-		       0);
-
-	if (task->priv->action_changed) {
-		g_signal_emit (task,
-			       brasero_task_signals [ACTION_CHANGED_SIGNAL],
-			       0,
-			       task->priv->action);
-
-		task->priv->action_changed = 0;
-	}
-
-	if (task->priv->progress_changed) {
-		task->priv->progress_changed = 0;
-		g_signal_emit (task,
-			       brasero_task_signals [PROGRESS_CHANGED_SIGNAL],
-			       0);
-	}
-	else if (task->priv->written_changed) {
-		task->priv->written_changed = 0;
-		g_signal_emit (task,
-			       brasero_task_signals [PROGRESS_CHANGED_SIGNAL],
-			       0);
-	}
-
-	if (!task->priv->timer)
-		return TRUE;
-
-	elapsed = g_timer_elapsed (task->priv->timer, NULL);
-	if (brasero_task_get_progress (task, &progress) == BRASERO_BURN_OK) {
-		gdouble total_time;
-
-		total_time = (gdouble) elapsed / (gdouble) progress;
-
-		g_mutex_lock (task->priv->action_mutex);
-		task->priv->total_time = brasero_burn_common_get_average (&task->priv->times,
-									  total_time);
-		g_mutex_unlock (task->priv->action_mutex);
-	}
-
-	return TRUE;
-}
-
-static void
-brasero_task_reset (BraseroTask *task)
-{
-	if (task->priv->loop)
-		g_main_loop_unref (task->priv->loop);
-
-	if (task->priv->timer)
-		g_timer_destroy (task->priv->timer);
-
-	task->priv->loop = NULL;
-	task->priv->progress_report_id = 0;
-	task->priv->progress = -1.0;
-	task->priv->written = -1;
-	task->priv->written_changed = 0;
-	task->priv->timer = NULL;
-	task->priv->current_written = 0;
-	task->priv->current_elapsed = 0;
-	task->priv->last_written = 0;
-	task->priv->last_elapsed = 0;
-	task->priv->retval = BRASERO_BURN_OK;
-
-	if (task->priv->error) {
-		g_error_free (task->priv->error);
-		task->priv->error = NULL;
-	}
-
-	if (task->priv->times) {
-		g_slist_free (task->priv->times);
-		task->priv->times = NULL;
-	}
-}
-
-BraseroBurnResult
-brasero_task_start (BraseroTask *task,
-		    GError **error)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	brasero_task_reset (task);
-
-	task->priv->loop = g_main_loop_new (NULL, FALSE);
-
-	g_signal_emit (task,
-		       brasero_task_signals [ACTION_CHANGED_SIGNAL],
-		       0,
-		       task->priv->action);
-
-	g_signal_emit (task,
-		       brasero_task_signals [PROGRESS_CHANGED_SIGNAL],
-		       0);
-
-	task->priv->progress_report_id = g_timeout_add (500,
-							brasero_task_report_progress_cb,
-							task);
-
-	g_main_loop_run (task->priv->loop);
-	g_main_loop_unref (task->priv->loop);
-	task->priv->loop = NULL;
-
-	if (task->priv->error) {
-		g_propagate_error (error, task->priv->error);
-		task->priv->error = NULL;
-	}
-
-	brasero_task_stop_real (task);
-
-	if (task->priv->retval == BRASERO_BURN_OK
-	&&  brasero_task_get_progress (task, NULL) == BRASERO_BURN_OK) {
-		task->priv->progress = 1.0;
-		task->priv->written = -1;
-	}
-
-	g_signal_emit (task,
-		       brasero_task_signals [PROGRESS_CHANGED_SIGNAL],
-		       0);
-
-	return task->priv->retval;	
-}
-
-BraseroBurnResult
-brasero_task_start_progress (BraseroTask *task,
-			     gboolean force)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!task->priv->timer) {
-		task->priv->timer = g_timer_new ();
-		task->priv->first_written = task->priv->written;
-	}
-	else if (force) {
-		g_timer_start (task->priv->timer);
-		task->priv->first_written = task->priv->written;
-	}
-
-	return BRASERO_BURN_OK;
-}
-
-void
-brasero_task_stop (BraseroTask *task,
-		   BraseroBurnResult retval,
-		   GError *error)
-{
-	if (!task)
-		return;
-
-	task->priv->retval = retval;
-	task->priv->error = error;
-
-	if (task->priv->loop
-	&&  g_main_loop_is_running (task->priv->loop))
-		g_main_loop_quit (task->priv->loop);
-}
-
-/* used to set the different values of the task by the jobs */
-BraseroBurnResult
-brasero_task_set_progress (BraseroTask *task, gdouble progress)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	task->priv->progress_changed = 1;
-	task->priv->progress = progress;
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_set_action (BraseroTask *task,
-			 BraseroBurnAction action,
-			 const gchar *string,
-			 gboolean force)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!force && task->priv->action == action)
-		return BRASERO_BURN_OK;
-
-	g_mutex_lock (task->priv->action_mutex);
-
-	task->priv->action = action;
-	task->priv->action_changed = 1;
-
-	if (task->priv->action_string)
-		g_free (task->priv->action_string);
-
-	task->priv->action_string = string ? g_strdup (string): NULL;
-
-	if (!force) {
-		g_slist_free (task->priv->times);
-		task->priv->times = NULL;
-	}
-
-	g_mutex_unlock (task->priv->action_mutex);
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_set_rate (BraseroTask *task,
-		       gint64 rate)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	task->priv->rate = rate;
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_set_total (BraseroTask *task,
-			gint64 total)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	task->priv->total = total;
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_set_written (BraseroTask *task,
-			  gint64 written)
-{
-	gdouble elapsed = 0.0;
-
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	task->priv->written = written;
-	task->priv->written_changed = 1;
-
-	if (task->priv->use_average_rate)
-		return BRASERO_BURN_OK;
-
-	if (task->priv->timer)
-		elapsed = g_timer_elapsed (task->priv->timer, NULL);
-
-	if ((elapsed - task->priv->last_elapsed) > 0.5) {
-		task->priv->last_written = task->priv->current_written;
-		task->priv->last_elapsed = task->priv->current_elapsed;
-		task->priv->current_written = written;
-		task->priv->current_elapsed = elapsed;
-	}
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_action (BraseroTask *task,
-			 BraseroBurnAction *action)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	g_mutex_lock (task->priv->action_mutex);
-	*action = task->priv->action;
-	g_mutex_unlock (task->priv->action_mutex);
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_action_string (BraseroTask *task,
-				BraseroBurnAction action,
-				gchar **string)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!string)
-		return BRASERO_BURN_OK;
-
-	if (action != task->priv->action)
-		return BRASERO_BURN_ERR;
-
-	*string = task->priv->action_string ? g_strdup (task->priv->action_string):
-					      g_strdup (brasero_burn_action_to_string (task->priv->action));
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_progress (BraseroTask *task, gdouble *progress)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (task->priv->progress >= 0.0) {
-		if (progress)
-			*progress = task->priv->progress;
-
-		return BRASERO_BURN_OK;
-	}
-
-	if (task->priv->written < 0 || task->priv->total <= 0)
-		return BRASERO_BURN_NOT_READY;
-
-	if (!progress)
-		return BRASERO_BURN_OK;
-
-	*progress = (gdouble) task->priv->written /
-		    (gdouble) task->priv->total;
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_elapsed (BraseroTask *task, gdouble *elapsed)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!task->priv->timer)
-		return BRASERO_BURN_NOT_READY;
-
-	if (elapsed)
-		*elapsed = g_timer_elapsed (task->priv->timer, NULL);
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_rate (BraseroTask *task, gint64 *rate)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!rate)
-		return BRASERO_BURN_OK;
-
-	if (task->priv->action != BRASERO_BURN_ACTION_WRITING
-	&&  task->priv->action != BRASERO_BURN_ACTION_DRIVE_COPY) {
-		*rate = -1;
-		return BRASERO_BURN_OK;
-	}
-
-	if (task->priv->rate) {
-		*rate = task->priv->rate;
-		return BRASERO_BURN_OK;
-	}
-
-	if (task->priv->use_average_rate){
-		gdouble elapsed;
-
-		if (!task->priv->written || !task->priv->timer)
-			return BRASERO_BURN_NOT_READY;
-
-		elapsed = g_timer_elapsed (task->priv->timer, NULL);
-		*rate = (gdouble) task->priv->written / elapsed;
-	}
-	else {
-		if (!task->priv->last_written)
-			return BRASERO_BURN_NOT_READY;
-			
-		*rate = (gdouble) (task->priv->current_written - task->priv->last_written) /
-			(gdouble) (task->priv->current_elapsed - task->priv->last_elapsed);
-	}
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_average_rate (BraseroTask *task, gint64 *rate)
-{
-	gdouble elapsed;
-
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!rate)
-		return BRASERO_BURN_OK;
-
-	if (!task->priv->timer)
-		return BRASERO_BURN_NOT_READY;
-
-	elapsed = g_timer_elapsed (task->priv->timer, NULL);
-	if (!elapsed)
-		return BRASERO_BURN_NOT_READY;
-
-	/* calculate average rate */
-	*rate = ((task->priv->written - task->priv->first_written) / elapsed);
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_remaining_time (BraseroTask *task, long *remaining)
-{
-	gdouble elapsed;
-	gint len;
-
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (!remaining)
-		return BRASERO_BURN_OK;
-
-	g_mutex_lock (task->priv->action_mutex);
-	len = g_slist_length (task->priv->times);
-	g_mutex_unlock (task->priv->action_mutex);
-
-	if (len < MAX_VALUE_AVERAGE)
-		return BRASERO_BURN_NOT_READY;
-
-	elapsed = g_timer_elapsed (task->priv->timer, NULL);
-	*remaining = (gdouble) task->priv->total_time - (gdouble) elapsed;
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_written (BraseroTask *task, gint64 *written)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (task->priv->written <= 0)
-		return BRASERO_BURN_NOT_READY;
-
-	if (!written)
-		return BRASERO_BURN_OK;
-
-	*written = task->priv->written;
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_task_get_total (BraseroTask *task, gint64 *total)
-{
-	if (!task)
-		return BRASERO_BURN_NOT_RUNNING;
-
-	if (task->priv->total <= 0
-	&&  task->priv->written
-	&&  task->priv->progress)
-		return BRASERO_BURN_NOT_READY;
-
-	if (!total)
-		return BRASERO_BURN_OK;
-
-	if (task->priv->total <= 0)
-		*total = task->priv->written / task->priv->progress;
-	else
-		*total = task->priv->total;
-
-	return BRASERO_BURN_OK;
-}
-
-void
-brasero_task_set_use_average_rate (BraseroTask *task, gboolean value)
-{
-	if (!task)
-		return;
-
-	task->priv->use_average_rate = value;
 }

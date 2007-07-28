@@ -22,14 +22,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <time.h>
 #include <errno.h>
 #include <string.h>
-
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -65,8 +64,8 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 
 #include "burn-basics.h"
-#include "disc.h"
-#include "audio-disc.h"
+#include "brasero-disc.h"
+#include "brasero-audio-disc.h"
 #include "metadata.h"
 #include "utils.h"
 #include "song-properties.h"
@@ -99,16 +98,15 @@ static BraseroDiscResult
 brasero_audio_disc_get_track (BraseroDisc *disc,
 			      BraseroDiscTrack *track);
 static BraseroDiscResult
-brasero_audio_disc_get_track_source (BraseroDisc *disc,
-				     BraseroTrackSource **source,
-				     BraseroImageFormat format);
-static BraseroDiscResult
-brasero_audio_disc_get_track_type (BraseroDisc *disc,
-				   BraseroTrackSourceType *source,
-				   BraseroImageFormat *format);
-static BraseroDiscResult
 brasero_audio_disc_load_track (BraseroDisc *disc,
 			       BraseroDiscTrack *track);
+
+static BraseroDiscResult
+brasero_audio_disc_set_session_param (BraseroDisc *disc,
+				      BraseroBurnSession *session);
+static BraseroDiscResult
+brasero_audio_disc_set_session_contents (BraseroDisc *disc,
+					 BraseroBurnSession *session);
 
 static BraseroDiscResult
 brasero_audio_disc_add_uri (BraseroDisc *disc,
@@ -421,18 +419,19 @@ brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->clear = brasero_audio_disc_clear;
 	iface->reset = brasero_audio_disc_reset;
 	iface->get_track = brasero_audio_disc_get_track;
-	iface->get_track_source = brasero_audio_disc_get_track_source;
-	iface->get_track_type = brasero_audio_disc_get_track_type;
+	iface->set_session_param = brasero_audio_disc_set_session_param;
+	iface->set_session_contents = brasero_audio_disc_set_session_contents;
 	iface->load_track = brasero_audio_disc_load_track;
 	iface->get_status = brasero_audio_disc_get_status;
 	iface->get_selected_uri = brasero_audio_disc_get_selected_uri;
 	iface->fill_toolbar = brasero_audio_disc_fill_toolbar;
 }
 
-static void brasero_audio_disc_get_property (GObject * object,
-					     guint prop_id,
-					     GValue * value,
-					     GParamSpec * pspec)
+static void
+brasero_audio_disc_get_property (GObject * object,
+				 guint prop_id,
+				 GValue * value,
+				 GParamSpec * pspec)
 {
 	BraseroAudioDisc *disc;
 
@@ -448,10 +447,11 @@ static void brasero_audio_disc_get_property (GObject * object,
 	}
 }
 
-static void brasero_audio_disc_set_property (GObject * object,
-					     guint prop_id,
-					     const GValue * value,
-					     GParamSpec * pspec)
+static void
+brasero_audio_disc_set_property (GObject * object,
+				 guint prop_id,
+				 const GValue * value,
+				 GParamSpec * pspec)
 {
 	BraseroAudioDisc *disc;
 
@@ -1695,77 +1695,66 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 }
 
 static BraseroDiscResult
-brasero_audio_disc_get_track_source (BraseroDisc *disc,
-				     BraseroTrackSource **source,
-				     BraseroImageFormat format)
+brasero_audio_disc_set_session_param (BraseroDisc *disc,
+				      BraseroBurnSession *session)
 {
-	gchar *uri;
-	gchar *title;
-	gchar *artist;
+	BraseroTrackType type;
+
+	type.type = BRASERO_TRACK_TYPE_AUDIO;
+	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED;
+	brasero_burn_session_set_input_type (session, &type);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroDiscResult
+brasero_audio_disc_set_session_contents (BraseroDisc *disc,
+					 BraseroBurnSession *session)
+{
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	BraseroSongFile *song;
+	BraseroTrack *track;
 	BraseroAudioDisc *audio;
-	BraseroTrackSource *src;
 
 	audio = BRASERO_AUDIO_DISC (disc);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
-	src = g_new0 (BraseroTrackSource, 1);
-	src->type = BRASERO_TRACK_SOURCE_SONG;
-
-	song = NULL;
-
+	track = NULL;
 	do {
+		gchar *uri;
+		gchar *title;
+		gchar *artist;
+		gint64 sectors;
+		BraseroSongInfo *info;
+
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
 				    NAME_COL, &title,
 				    ARTIST_COL, &artist,
+				    SECTORS_COL, &sectors,
 				    -1);
 
 		if (!uri) {
-			gint64 sectors;
-
-			g_free (title);
-			g_free (artist);
-
-			/* This is a gap */
-			gtk_tree_model_get (model, &iter,
-					    SECTORS_COL, &sectors,
-					    -1);
-
-			if (song)
-				song->gap += sectors;
-
+			brasero_track_set_audio_boundaries (track,
+							    0,
+							    sectors);
 			continue;
 		}
 
-		song = g_new0 (BraseroSongFile, 1);
-		song->uri = uri;
-		song->title = title;
-		song->artist = artist;
+		info = g_new0 (BraseroSongInfo, 1);
+		info->title = title;
+		info->artist = artist;
 
-		src->contents.songs.files = g_slist_append (src->contents.songs.files, song);
+		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
+		brasero_track_set_estimated_size (track, 2352, sectors, -1);
+		brasero_track_set_audio_source (track, uri, BRASERO_AUDIO_FORMAT_UNDEFINED);
+		brasero_track_set_audio_info (track, info);
+		brasero_burn_session_add_track (session, track);
+
 	} while (gtk_tree_model_iter_next (model, &iter));
 
-	*source = src;
 	return BRASERO_DISC_OK;
-}
-
-static BraseroDiscResult
-brasero_audio_disc_get_track_type (BraseroDisc *disc,
-				   BraseroTrackSourceType *type,
-				   BraseroImageFormat *format)
-{
-	if (type)
-		*type = BRASERO_TRACK_SOURCE_AUDIO;
-
-	if (format)
-		*format = BRASERO_IMAGE_FORMAT_NONE;
-
-	return BRASERO_BURN_OK;
 }
 
 /********************************* load track **********************************/

@@ -1,0 +1,84 @@
+/***************************************************************************
+ *            burn-plugin-private.h
+ *
+ *  Mon Feb 12 10:40:55 2007
+ *  Copyright  2007  algernon
+ *  <algernon@localhost.localdomain>
+ ****************************************************************************/
+
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Library General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ */
+ 
+#ifndef _BURN_PLUGIN_PRIVATE_H
+#define _BURN_PLUGIN_PRIVATE_H
+
+#include <glib.h>
+#include <glib-object.h>
+
+#include "burn-basics.h"
+#include "burn-session.h"
+#include "burn-plugin.h"
+
+G_BEGIN_DECLS
+
+BraseroPlugin *
+brasero_plugin_new (const gchar *path);
+
+void
+brasero_plugin_set_active (BraseroPlugin *plugin, gboolean active);
+
+gboolean
+brasero_plugin_get_active (BraseroPlugin *plugin);
+
+void
+brasero_plugin_get_info (BraseroPlugin *plugin,
+			 gchar **name,
+			 gchar **author,
+			 gchar **description);
+
+const gchar *
+brasero_plugin_get_error (BraseroPlugin *self);
+
+GType
+brasero_plugin_get_gtype (BraseroPlugin *plugin);
+
+guint
+brasero_plugin_get_priority (BraseroPlugin *plugin);
+
+gboolean
+brasero_plugin_get_image_flags (BraseroPlugin *plugin,
+			        BraseroMedia media,
+			        BraseroBurnFlag *supported,
+			        BraseroBurnFlag *compulsory);
+gboolean
+brasero_plugin_get_blank_flags (BraseroPlugin *plugin,
+				BraseroMedia media,
+				BraseroBurnFlag *supported,
+				BraseroBurnFlag *compulsory);
+gboolean
+brasero_plugin_get_record_flags (BraseroPlugin *plugin,
+				 BraseroMedia media,
+				 BraseroBurnFlag *supported,
+				 BraseroBurnFlag *compulsory);
+gboolean
+brasero_plugin_get_process_flags (BraseroPlugin *plugin,
+				  BraseroPluginProcessFlag *flags);
+
+G_END_DECLS
+
+#endif /* _BURN_PLUGIN_PRIVATE_H */
+
+ 

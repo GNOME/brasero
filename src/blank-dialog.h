@@ -33,17 +33,16 @@
 #include "brasero-tool-dialog.h"
 
 G_BEGIN_DECLS
+
 #define BRASERO_TYPE_BLANK_DIALOG         (brasero_blank_dialog_get_type ())
 #define BRASERO_BLANK_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_BLANK_DIALOG, BraseroBlankDialog))
 #define BRASERO_BLANK_DIALOG_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_BLANK_DIALOG, BraseroBlankDialogClass))
 #define BRASERO_IS_BLANK_DIALOG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_BLANK_DIALOG))
 #define BRASERO_IS_BLANK_DIALOG_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BLANK_DIALOG))
 #define BRASERO_BLANK_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BLANK_DIALOG, BraseroBlankDialogClass))
-typedef struct BraseroBlankDialogPrivate BraseroBlankDialogPrivate;
 
 typedef struct {
 	BraseroToolDialog parent;
-	BraseroBlankDialogPrivate *priv;
 } BraseroBlankDialog;
 
 typedef struct {
@@ -52,5 +51,7 @@ typedef struct {
 
 GType brasero_blank_dialog_get_type ();
 GtkWidget *brasero_blank_dialog_new ();
+
+G_END_DECLS
 
 #endif				/* BLANK_DIALOG_H */

@@ -31,9 +31,11 @@
 #include <nautilus-burn-drive.h>
 
 #include "burn-basics.h"
-#include "burn-recorder.h"
-#include "burn-imager.h"
 #include "burn-medium.h"
+#include "burn-session.h"
+#include "burn-plugin.h"
+#include "burn-task.h"
+#include "burn-caps.h"
 
 G_BEGIN_DECLS
 
@@ -44,29 +46,6 @@ G_BEGIN_DECLS
 #define BRASERO_IS_BURNCAPS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_BURNCAPS))
 #define BRASERO_BURNCAPS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURNCAPS, BraseroBurnCapsClass))
 
-typedef enum {
-	BRASERO_BURN_FLAG_NONE			= 0,
-	BRASERO_BURN_FLAG_EJECT			= 1,
-	BRASERO_BURN_FLAG_NOGRACE		= 1 << 1,
-
-	BRASERO_BURN_FLAG_DAO			= 1 << 2,
-	BRASERO_BURN_FLAG_OVERBURN		= 1 << 3,
-	BRASERO_BURN_FLAG_BURNPROOF		= 1 << 4,
-	BRASERO_BURN_FLAG_ON_THE_FLY		= 1 << 5,
-
-	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE	= 1 << 6,
-	BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT	= 1 << 7,
-	BRASERO_BURN_FLAG_DONT_OVERWRITE	= 1 << 8,
-
-	BRASERO_BURN_FLAG_DONT_CLOSE		= 1 << 9,
-	BRASERO_BURN_FLAG_APPEND		= 1 << 10,
-	BRASERO_BURN_FLAG_MERGE			= 1 << 11,
-
-	BRASERO_BURN_FLAG_DUMMY			= 1 << 12,
-
-	BRASERO_BURN_FLAG_CHECK_SIZE		= 1 << 13,
-} BraseroBurnFlag;
-
 typedef struct BraseroBurnCapsPrivate BraseroBurnCapsPrivate;
 
 typedef struct {
@@ -76,75 +55,79 @@ typedef struct {
 
 typedef struct {
 	GObjectClass parent_class;
+
+	void	(*caps_changed)		(BraseroBurnCaps *caps);
 } BraseroBurnCapsClass;
 
 GType brasero_burn_caps_get_type();
 
 BraseroBurnCaps *brasero_burn_caps_get_default ();
 
+void
+brasero_caps_unregister_plugin (BraseroPlugin *plugin);
+
+/**
+ *
+ */
+
+BraseroMedia
+brasero_burn_caps_media_capabilities (BraseroBurnCaps *self,
+				      BraseroMedia media);
+
+/**
+ * Returns a GSList * of BraseroTask * for a given session
+ */
+
+GSList *
+brasero_burn_caps_new_task (BraseroBurnCaps *caps,
+			    BraseroBurnSession *session,
+			    GError **error);
+BraseroTask *
+brasero_burn_caps_new_blanking_task (BraseroBurnCaps *caps,
+				     BraseroBurnSession *session,
+				     GError **error);
+BraseroTask *
+brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
+					BraseroBurnSession *session,
+					GError **error);
+
+/**
+ * Used to test the possibilities offered for a given session
+ */
+
+BraseroBurnResult
+brasero_burn_caps_can_blank (BraseroBurnCaps *caps,
+			     BraseroBurnSession *session);
+
+BraseroBurnResult
+brasero_burn_caps_is_input_supported (BraseroBurnCaps *caps,
+				      BraseroBurnSession *session,
+				      BraseroTrackType *input);
+
+BraseroBurnResult
+brasero_burn_caps_is_output_supported (BraseroBurnCaps *caps,
+				       BraseroBurnSession *session,
+				       BraseroTrackType *output);
+
+BraseroMedia
+brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
+					   BraseroBurnSession *session);
+
+/**
+ * Test the supported or compulsory flags for a given session
+ */
+
 BraseroBurnResult
 brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
-			     const BraseroTrackSource *source,
-			     NautilusBurnDrive *drive,
-			     BraseroBurnFlag *default_retval,
-			     BraseroBurnFlag *compulsory_retval,
-			     BraseroBurnFlag *supported_retval);
+			     BraseroBurnSession *session,
+			     BraseroBurnFlag *supported,
+			     BraseroBurnFlag *compulsory);
 
 BraseroBurnResult
-brasero_burn_caps_blanking_get_default_flags (BraseroBurnCaps *caps,
-					      BraseroMediumInfo media,
-					      BraseroBurnFlag *flags,
-					      gboolean *fast_default);
-BraseroBurnResult
-brasero_burn_caps_blanking_get_supported_flags (BraseroBurnCaps *caps,
-						BraseroMediumInfo media,
-						BraseroBurnFlag *flags,
-						gboolean *fast_supported);
+brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
+				      BraseroBurnSession *session,
+				      BraseroBurnFlag *supported,
+				      BraseroBurnFlag *compulsory);
 
-BraseroBurnFlag
-brasero_burn_caps_check_flags_consistency (BraseroBurnCaps *caps,
-					   const BraseroTrackSource *source,
-					   NautilusBurnDrive *drive,
-					   BraseroBurnFlag flags);
-
-BraseroBurnResult
-brasero_burn_caps_create_imager (BraseroBurnCaps *caps,
-				 BraseroImager **imager,
-				 const BraseroTrackSource *source,
-				 BraseroTrackSourceType target,
-				 BraseroMediumInfo src_media,
-				 BraseroMediumInfo dest_media,
-				 GError **error);
-
-BraseroBurnResult
-brasero_burn_caps_get_imager_available_formats (BraseroBurnCaps *caps,
-						NautilusBurnDrive *drive,
-						BraseroTrackSourceType type,
-						BraseroImageFormat **formats);
-BraseroImageFormat
-brasero_burn_caps_get_imager_default_format (BraseroBurnCaps *caps,
-					     const BraseroTrackSource *source);
-
-BraseroTrackSourceType
-brasero_burn_caps_get_imager_default_target (BraseroBurnCaps *caps,
-					     const BraseroTrackSource *source);
-
-BraseroBurnResult
-brasero_burn_caps_create_recorder (BraseroBurnCaps *caps,
-				   BraseroRecorder **recorder,
-				   const BraseroTrackSource *source,
-				   BraseroMediumInfo media,
-				   GError **error);
-
-BraseroBurnResult
-brasero_burn_caps_create_recorder_for_blanking (BraseroBurnCaps *caps,
-						BraseroRecorder **recorder,
-						BraseroMediumInfo media,
-						gboolean fast,
-						GError **error);
-
-BraseroMediumInfo
-brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
-					   const BraseroTrackSource *source);
 
 #endif /* BURN_CAPS_H */

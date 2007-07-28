@@ -33,8 +33,8 @@
 
 #include <nautilus-burn-drive.h>
 
-#include "disc.h"
-#include "burn-caps.h"
+#include "brasero-disc.h"
+#include "burn-session.h"
 
 G_BEGIN_DECLS
 
@@ -46,12 +46,10 @@ G_BEGIN_DECLS
 #define BRASERO_DISC_OPTION_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_DISC_OPTION_DIALOG, BraseroDiscOptionDialogClass))
 
 typedef struct _BraseroDiscOptionDialog BraseroDiscOptionDialog;
-typedef struct _BraseroDiscOptionDialogPrivate BraseroDiscOptionDialogPrivate;
 typedef struct _BraseroDiscOptionDialogClass BraseroDiscOptionDialogClass;
 
 struct _BraseroDiscOptionDialog {
 	GtkDialog parent;
-	BraseroDiscOptionDialogPrivate *priv;
 };
 
 struct _BraseroDiscOptionDialogClass {
@@ -63,18 +61,10 @@ GtkWidget *brasero_disc_option_dialog_new ();
 
 void
 brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
-				     NautilusBurnDrive *drive,
-				     BraseroBurnFlag flags,
 				     BraseroDisc *disc);
 
-gboolean
-brasero_disc_option_dialog_get_param (BraseroDiscOptionDialog *dialog,
-				      BraseroBurnFlag *flags,
-				      NautilusBurnDrive **drive,
-				      gint *speed,
-				      BraseroTrackSource **source,
-				      gchar **output,
-				      gboolean *checksum);
+BraseroBurnSession *
+brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *dialog);
 
 G_END_DECLS
 

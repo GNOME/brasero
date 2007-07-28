@@ -41,6 +41,7 @@
 
 #include "brasero-project-size.h"
 #include "brasero-ncb.h"
+#include "burn-caps.h"
 #include "burn-volume.h"
 #include "utils.h"
 
@@ -86,7 +87,7 @@ brasero_project_size_forall_children (GtkContainer *container,
 struct _BraseroDrive {
 	gint64 sectors;
 	gint64 free_space;
-	BraseroMediumInfo media;
+	BraseroMedia media;
 	NautilusBurnDrive *drive;
 };
 typedef struct _BraseroDrive BraseroDrive;
@@ -1158,20 +1159,27 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 				   GdkEventScroll *event)
 {
 	BraseroProjectSize *self;
+	BraseroBurnCaps *caps;
 
 	self = BRASERO_PROJECT_SIZE (widget);
+	caps = brasero_burn_caps_get_default ();
+
 	if (event->direction == GDK_SCROLL_DOWN) {
 		GList *node, *iter;
 
 		node = g_list_find (self->priv->drives, self->priv->current);
 		iter = g_list_next (node);
-		if (!iter)
+		if (!iter) {
+			g_object_unref (caps);
 			return TRUE;
+		}
 
 		while (iter != node) {
 			BraseroDrive *drive;
+			BraseroMedia media_status;
 
 			drive = iter->data;
+			media_status = brasero_burn_caps_media_capabilities (caps, drive->media);
 
 			/* must be a valid media */
 			if (!BRASERO_MEDIUM_VALID (drive->media))
@@ -1180,19 +1188,22 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			else if (self->priv->is_audio_context
 			     && (drive->media & BRASERO_MEDIUM_DVD))
 				iter = g_list_next (iter);
-			/* the media must be writable or rewritable or (in a
-			 * data context) at least appendable */
-			else if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
-			     && ( self->priv->is_audio_context
-			     ||  !(drive->media & BRASERO_MEDIUM_APPENDABLE)))
+			/* we want a drive supported by the library */
+			else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
+				iter = g_list_next (iter);
+			/* if we are in an audio context no drive with data */
+			else if (self->priv->is_audio_context
+			     &&  drive->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
 				iter = g_list_next (iter);
 			else {
 				self->priv->current = drive;
 				break;
 			}
 
-			if (!iter)
+			if (!iter) {
+				g_object_unref (caps);
 				return TRUE;
+			}
 		}
 		brasero_project_size_disc_changed (self);
 	}
@@ -1201,13 +1212,17 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 
 		node = g_list_find (self->priv->drives, self->priv->current);
 		iter = g_list_previous (node);
-		if (!iter)
+		if (!iter) {
+			g_object_unref (caps);
 			return TRUE;
+		}
 
 		while (iter != node) {
 			BraseroDrive *drive;
+			BraseroMedia media_status;
 
 			drive = iter->data;
+			media_status = brasero_burn_caps_media_capabilities (caps, drive->media);
 
 			/* must be a valid media */
 			if (!BRASERO_MEDIUM_VALID (drive->media))
@@ -1216,23 +1231,27 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 			else if (self->priv->is_audio_context
 			     && (drive->media & BRASERO_MEDIUM_DVD))
 				iter = g_list_previous (iter);
-			/* the media must be writable or rewritable or (in a
-			 * data context) at least appendable */
-			else if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
-			     && (self->priv->is_audio_context
-			     ||!(drive->media & BRASERO_MEDIUM_APPENDABLE)))
+			/* we want a drive supported by the library */
+			else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
+				iter = g_list_previous (iter);
+			/* if we are in an audio context no drive with data */
+			else if (self->priv->is_audio_context
+			     &&  drive->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
 				iter = g_list_previous (iter);
 			else {
 				self->priv->current = drive;
 				break;
 			}
 
-			if (!iter)
+			if (!iter) {
+				g_object_unref (caps);
 				return TRUE;
+			}
 		}
 		brasero_project_size_disc_changed (self);
 	}
 
+	g_object_unref (caps);
 	return FALSE;
 }
 
@@ -1282,13 +1301,18 @@ static void
 brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 {
 	GList *iter;
+	BraseroBurnCaps *caps;
+	BraseroMedia media_status;
 	BraseroDrive *candidate = NULL;
+
+	caps = brasero_burn_caps_get_default ();
 
 	if (self->priv->current) {
 		BraseroDrive *current;
 
 		/* we check the current drive to see if it is suitable */
 		current = self->priv->current;
+		media_status = brasero_burn_caps_media_capabilities (caps, current->media);
 
 		if (self->priv->is_audio_context
 		&& (current->media & BRASERO_MEDIUM_DVD)) {
@@ -1297,13 +1321,18 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		else if (!BRASERO_MEDIUM_VALID (current->media)) {
 			current = NULL;
 		}
-	    	else if (!(current->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
-		     && (!(current->media & BRASERO_MEDIUM_APPENDABLE)
-		     ||   self->priv->is_audio_context)) {
+		else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE))) {
+			/* we want a drive supported by the library */
+			current = NULL;
+		}
+	    	else if (self->priv->is_audio_context
+		     &&  current->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+			/* if we are in an audio context no drive with data */
 			current = NULL;
 		}
 		else if (current->sectors >= self->priv->sectors && current->drive) {
 			/* The current drive is still a perfect fit keep it */
+			g_object_unref (caps);
 			return;
 		}
 		else if (self->priv->multi) {
@@ -1315,6 +1344,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			 * - we don't change the current drive if it is real
 			 * unless another real drive comes up with a size
 			 * fitting the size of the selection. */
+			g_object_unref (caps);
 			return;
 		}
 		else /* see if there is better */
@@ -1335,9 +1365,14 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		if (!BRASERO_MEDIUM_VALID (drive->media))
 			continue;
 
-	    	if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
-		&& (!(drive->media & BRASERO_MEDIUM_APPENDABLE)
-		||   self->priv->is_audio_context))
+		/* we want a drive supported by the library */
+		media_status = brasero_burn_caps_media_capabilities (caps, drive->media);
+		if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
+			continue;
+
+		/* if we are in an audio context no drive with data */
+	    	if (self->priv->is_audio_context
+		&&  drive->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
 			continue;
 
 		/* we must have at least one candidate */
@@ -1365,6 +1400,8 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			break;
 		}
 	}
+
+	g_object_unref (caps);
 	self->priv->current = candidate;
 }
 

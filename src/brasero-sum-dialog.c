@@ -54,155 +54,26 @@
 
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
-#include "brasero-sum-check.h"
 #include "brasero-ncb.h"
+#include "brasero-xfer.h"
 #include "burn-basics.h"
 #include "burn-sum.h"
-#include "burn-job.h"
-#include "burn-md5.h"
-#include "burn-xfer.h"
 #include "burn-debug.h"
+#include "burn.h"
 #include "utils.h"
 
-static void brasero_sum_dialog_class_init (BraseroSumDialogClass *klass);
-static void brasero_sum_dialog_init (BraseroSumDialog *sp);
-static void brasero_sum_dialog_finalize (GObject *object);
+G_DEFINE_TYPE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
 
 struct _BraseroSumDialogPrivate {
+	BraseroBurnSession *session;
+
 	GtkWidget *md5_chooser;
 	GtkWidget *md5_check;
 
-	BraseroSumCheckCtx *file_ctx;
 	BraseroXferCtx *xfer_ctx;
 };
 
 static GtkDialogClass *parent_class = NULL;
-
-static gboolean brasero_sum_dialog_cancel (BraseroToolDialog *dialog);
-static gboolean brasero_sum_dialog_activate (BraseroToolDialog *dialog,
-					     NautilusBurnDrive *drive);
-static void brasero_sum_dialog_media_changed (BraseroToolDialog *dialog,
-					      BraseroMediumInfo media);
-
-static void
-brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
-				BraseroSumDialog *self);
-
-GType
-brasero_sum_dialog_get_type ()
-{
-	static GType type = 0;
-
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroSumDialogClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)brasero_sum_dialog_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroSumDialog),
-			0,
-			(GInstanceInitFunc)brasero_sum_dialog_init,
-		};
-
-		type = g_type_register_static (BRASERO_TYPE_TOOL_DIALOG, 
-					       "BraseroSumDialog",
-					       &our_info,
-					       0);
-	}
-
-	return type;
-}
-
-static void
-brasero_sum_dialog_class_init (BraseroSumDialogClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
-	object_class->finalize = brasero_sum_dialog_finalize;
-
-	tool_dialog_class->activate = brasero_sum_dialog_activate;
-	tool_dialog_class->media_changed = brasero_sum_dialog_media_changed;
-	tool_dialog_class->cancel = brasero_sum_dialog_cancel;
-}
-
-static void
-brasero_sum_dialog_init (BraseroSumDialog *obj)
-{
-	GtkWidget *box;
-
-	obj->priv = g_new0 (BraseroSumDialogPrivate, 1);
-
-	box = gtk_vbox_new (FALSE, 6);
-
-	obj->priv->md5_check = gtk_check_button_new_with_label (_("Use a md5 file to check the disc"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (obj->priv->md5_check), FALSE);
-	g_signal_connect (obj->priv->md5_check,
-			  "toggled",
-			  G_CALLBACK (brasero_sum_dialog_md5_toggled),
-			  obj);
-
-	gtk_box_pack_start (GTK_BOX (box),
-			    obj->priv->md5_check,
-			    TRUE,
-			    TRUE,
-			    0);
-
-	obj->priv->md5_chooser = gtk_file_chooser_button_new (_("Open a md5 file"), GTK_FILE_CHOOSER_ACTION_OPEN);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (obj->priv->md5_chooser), FALSE);
-	gtk_widget_set_sensitive (obj->priv->md5_chooser, FALSE);
-	gtk_box_pack_start (GTK_BOX (box),
-			    obj->priv->md5_chooser,
-			    TRUE,
-			    TRUE,
-			    0);
-
-	gtk_widget_show_all (box);
-	brasero_tool_dialog_pack_options (BRASERO_TOOL_DIALOG (obj),
-					  box,
-					  NULL);
-
-	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
-					_("Check"),
-					GTK_STOCK_FIND,
-					NULL);
-}
-
-static void
-brasero_sum_dialog_stop (BraseroSumDialog *self)
-{
-	if (self->priv->file_ctx)
-		brasero_sum_check_cancel (self->priv->file_ctx);
-
-	if (self->priv->xfer_ctx)
-		brasero_xfer_cancel (self->priv->xfer_ctx);
-}
-
-static void
-brasero_sum_dialog_finalize (GObject *object)
-{
-	BraseroSumDialog *cobj;
-
-	cobj = BRASERO_SUM_DIALOG (object);
-
-	brasero_sum_dialog_stop (cobj);
-
-	g_free (cobj->priv);
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-GtkWidget *
-brasero_sum_dialog_new ()
-{
-	BraseroSumDialog *obj;
-	
-	obj = BRASERO_SUM_DIALOG (g_object_new (BRASERO_TYPE_SUM_DIALOG, NULL));
-	
-	return GTK_WIDGET (obj);
-}
 
 static void
 brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
@@ -212,24 +83,11 @@ brasero_sum_dialog_md5_toggled (GtkToggleButton *button,
 				  gtk_toggle_button_get_active (button));  
 }
 
-static gboolean
-brasero_sum_dialog_cancel (BraseroToolDialog *dialog)
-{
-	BraseroSumDialog *self;
-
-	self = BRASERO_SUM_DIALOG (dialog);
-
-	/* cancel spawned process and don't return a success dialog */
-	brasero_sum_dialog_stop (self);
-
-	return FALSE;
-}
-
 static void
-brasero_sum_dialog_media_changed (BraseroToolDialog *dialog,
-				  BraseroMediumInfo media)
+brasero_sum_dialog_stop (BraseroSumDialog *self)
 {
-	
+	if (self->priv->xfer_ctx)
+		brasero_xfer_cancel (self->priv->xfer_ctx);
 }
 
 static void
@@ -275,16 +133,6 @@ brasero_sum_dialog_success (BraseroSumDialog *self)
 				    _("The file integrity was performed successfully:"),
 				    _("there seems to be no corrupted file on the disc."),
 				    GTK_MESSAGE_INFO);
-}
-
-static void
-brasero_sum_dialog_disc_corrupted_error (BraseroSumDialog *self)
-{
-	brasero_sum_dialog_message (self,
-				    _("Disc data corrupted"),
-				    _("The file integrity check showed errors:"),
-				    _("some files may be corrupted on the disc"),
-				    GTK_MESSAGE_ERROR);
 }
 
 enum {
@@ -364,27 +212,18 @@ brasero_sum_dialog_progress_poll (gpointer user_data)
 {
 	BraseroSumDialog *self;
 	gdouble progress = 0.0;
+	gint64 written, total;
 
 	self = BRASERO_SUM_DIALOG (user_data);
 
-	if (self->priv->xfer_ctx) {
-		gint64 written, total;
+	if (!self->priv->xfer_ctx)
+		return TRUE;
 
-		brasero_xfer_get_progress (self->priv->xfer_ctx,
-					   &written,
-					   &total);
+	brasero_xfer_get_progress (self->priv->xfer_ctx,
+				   &written,
+				   &total);
 
-		progress = (gdouble) written / (gdouble) total;
-	}
-	else if (self->priv->file_ctx) {
-		gint checked, total;
-
-		brasero_sum_check_progress (self->priv->file_ctx,
-					    &checked,
-					    &total);
-
-		progress = (gdouble) checked / (gdouble) total;
-	}
+	progress = (gdouble) written / (gdouble) total;
 
 	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (self),
 					  progress,
@@ -468,19 +307,19 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 }
 
 static BraseroBurnResult
-brasero_sum_dialog_from_file (BraseroSumDialog *self,
-			      const gchar *file_path,
-			      gchar *buffer,
-			      GError **error)
+brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
+				      const gchar *file_path,
+				      gchar **checksum,
+				      GError **error)
 {
 	BraseroBurnResult result;
 	GnomeVFSURI *vfsuri;
+	gchar buffer [129];
 	gchar *tmppath;
 	gchar *uri;
 	gchar *src;
 	FILE *file;
-	int i;
-	int c;
+	int read;
 
 	/* see if this file needs downloading */
 	uri = gnome_vfs_make_uri_from_input (file_path);
@@ -530,13 +369,9 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	i = 0;
-	while (i < MD5_STRING_LEN && (c = fgetc (file)) != EOF) {
-		if (c == ' ' || c == '\t' || c =='\n')
-			break;
-
-		buffer [i++] = (unsigned char) c;
-	}
+	read = fread (buffer, 1, sizeof (buffer) - 1, file);
+	if (read)
+		buffer [read] = '\0';
 
 	if (tmppath)
 		g_remove (tmppath);
@@ -554,51 +389,40 @@ brasero_sum_dialog_from_file (BraseroSumDialog *self,
 	}
 
 	fclose (file);
+
+	*checksum = strdup (buffer);
 	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_sum_dialog_get_disc_md5 (BraseroSumDialog *self,
-				 NautilusBurnDrive *drive,
-				 gchar *md5,
-				 GError **error)
+brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
+				      NautilusBurnDrive *drive,
+				      gchar *checksum,
+				      GError **error)
 {
-	BraseroTrackSource track = { 0, };
-	BraseroTrackSource *retval;
+	BraseroTrack *track = NULL;
 	BraseroBurnResult result;
-	BraseroJob *job;
+	BraseroBurn *burn;
 
-	job = g_object_new (BRASERO_TYPE_BURN_SUM, NULL);
+	track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
+	brasero_track_set_drive_source (track, drive);
+	brasero_track_set_checksum (track, BRASERO_CHECKSUM_MD5, checksum);
+	brasero_burn_session_add_track (self->priv->session, track);
 
-	track.type = BRASERO_TRACK_SOURCE_DISC;
-	track.contents.drive.disc = drive;
+	burn = brasero_tool_dialog_get_burn (BRASERO_TOOL_DIALOG (self));
+	result = brasero_burn_check (burn, self->priv->session, error);
 
-	result = brasero_tool_dialog_run_job (BRASERO_TOOL_DIALOG (self),
-					      job,
-					      &track,
-					      &retval,
-					      error);
-
-	if (result != BRASERO_BURN_OK) {
-		g_object_unref (job);
-		return result;
-	}
-
-	brasero_md5_string (&retval->contents.sum.md5, md5);
-	brasero_track_source_free (retval);
-	g_object_unref (job);
-
-	return BRASERO_BURN_OK;
+	return result;
 }
 
 static gboolean
 brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 				   NautilusBurnDrive *drive)
 {
-	gchar file_sum [MD5_STRING_LEN + 1] = {0,}, disc_sum [MD5_STRING_LEN + 1] = {0,};
 	BraseroBurnResult result;
-  	GError *error = NULL;
-  	gchar *uri;
+	gchar *file_sum = NULL;
+	GError *error = NULL;
+	gchar *uri;
 
 	/* get the sum from the file */
     	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (self->priv->md5_chooser));
@@ -611,23 +435,9 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 		return FALSE;
 	}
 
-	result = brasero_sum_dialog_from_file (self,
-					       uri,
-					       file_sum,
-					       &error);
+	result = brasero_sum_dialog_get_file_checksum (self, uri, &file_sum, &error);
 	g_free (uri);
 
-	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
-					BRASERO_BURN_ACTION_NONE,
-					NULL);
-
-	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (self),
-					  0.0,
-					  0.0,
-					  -1,
-					  -1,
-					  -1);
-
 	if (result == BRASERO_BURN_CANCEL)
 		return FALSE;
 
@@ -636,38 +446,23 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 
 		if (error)
 			g_error_free (error);
+
 		return FALSE;
 	}
 
-	result = brasero_sum_dialog_get_disc_md5 (self,
-						  drive,
-						  disc_sum,
-						  &error);
-
-	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
-					BRASERO_BURN_ACTION_NONE,
-					NULL);
-	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (self),
-					  -1.0,
-					  -1.0,
-					  -1,
-					  -1,
-					  -1);
-
-	if (result == BRASERO_BURN_CANCEL)
+	result = brasero_sum_dialog_get_disc_checksum (self, drive, file_sum, &error);
+	if (result == BRASERO_BURN_CANCEL) {
+		g_free (file_sum);
 		return FALSE;
+	}
 
 	if (result != BRASERO_BURN_OK) {
+		g_free (file_sum);
+
 		brasero_sum_dialog_message_error (self, error);
 
 		if (error)
 			g_error_free (error);
-		return FALSE;
-	}
-
-	/* both sums must be equal */
-	if (strcmp (disc_sum, file_sum)) {
-		brasero_sum_dialog_disc_corrupted_error (self);
 		return FALSE;
 	}
 
@@ -675,94 +470,56 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	return TRUE;
 }
 
-static void
-brasero_sum_dialog_mount_cb (NautilusBurnDrive *drive,
-			     const gchar *mount_point,
-			     gboolean mounted_by_us,
-			     const GError *error,
-			     gpointer callback_data)
+static gboolean
+brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
+				   NautilusBurnDrive *drive)
 {
-	BraseroSumDialog *self = BRASERO_SUM_DIALOG (callback_data);
-	GError *local_error = NULL;
 	GSList *wrong_sums = NULL;
 	BraseroBurnResult result;
-	gint id;
-
-	if (error) {
-		brasero_sum_dialog_message_error (self, error);
-		gtk_dialog_response (GTK_DIALOG (self), GTK_RESPONSE_CLOSE);
-		return;
-	}
+	GError *error = NULL;
+	BraseroTrack *track;
+	BraseroBurn *burn;
 
 	/* get the checksum */
-	id = g_timeout_add (500,
-			    brasero_sum_dialog_progress_poll,
-			    self);
+	track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
+	brasero_track_set_drive_source (track, drive);
+	brasero_track_set_checksum (track,
+				    BRASERO_CHECKSUM_MD5_FILE,
+				    BRASERO_MD5_FILE);
+	brasero_burn_session_add_track (self->priv->session, track);
 
-	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
-					BRASERO_BURN_ACTION_CHECKSUM,
-					_("Checking files integrity"));
-
-	/* check the sum of every file */
-	self->priv->file_ctx = brasero_sum_check_new ();
-	result = brasero_sum_check (self->priv->file_ctx,
-				    mount_point,
-				    &wrong_sums,
-				    &local_error);
-
-	/* clean up */
-	brasero_sum_check_free (self->priv->file_ctx);
-	self->priv->file_ctx = NULL;
-	g_source_remove (id);
-
-	if (mounted_by_us)
-		NCB_DRIVE_UNMOUNT (drive, NULL);
+	burn = brasero_tool_dialog_get_burn (BRASERO_TOOL_DIALOG (self));
+	result = brasero_burn_check (burn, self->priv->session, &error);
 
 	if (result == BRASERO_BURN_CANCEL) {
-		if (local_error)
-			g_error_free (local_error);
+		if (error)
+			g_error_free (error);
+
+		return FALSE;
 	}
-	else if (local_error) {
-		brasero_sum_dialog_message_error (self, local_error);
-		g_error_free (local_error);					  
-	}
-	else if (wrong_sums) {
-		brasero_sum_dialog_corruption_warning (self, wrong_sums);
-		g_slist_foreach (wrong_sums, (GFunc) g_free, NULL);
-		g_slist_free (wrong_sums);
-	}
-	else
+
+	if (result == BRASERO_BURN_OK) {
 		brasero_sum_dialog_success (self);
+		return TRUE;
+	}
 
-	gtk_dialog_response (GTK_DIALOG (self), GTK_RESPONSE_OK);
-}
+	if (!error || error->code != BRASERO_BURN_ERROR_BAD_CHECKSUM) {
+		brasero_sum_dialog_message_error (self, error);
 
-static gboolean
-brasero_sum_dialog_check_brasero_sum (BraseroSumDialog *self,
-				      NautilusBurnDrive *drive)
-{
-	BraseroMountHandle handle = NULL;
-	gint answer;
+		if (error)
+			g_error_free (error);
 
-	/* get the mount point */
-	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
-					BRASERO_BURN_ACTION_CHECKSUM,
-					_("Mounting disc"));
-
-	handle = NCB_DRIVE_GET_MOUNT_POINT (drive,
-					    brasero_sum_dialog_mount_cb,
-					    self);
-
-	answer = gtk_dialog_run (GTK_DIALOG (self));
-	if (answer == GTK_RESPONSE_CANCEL) {
-		NCB_DRIVE_GET_MOUNT_POINT_CANCEL (handle);
 		return FALSE;
 	}
 
-	if (answer != GTK_RESPONSE_OK)
-		return FALSE;
+	g_error_free (error);
 
-	return TRUE;
+	wrong_sums = brasero_burn_session_get_wrong_checksums (self->priv->session);
+	brasero_sum_dialog_corruption_warning (self, wrong_sums);
+	g_slist_foreach (wrong_sums, (GFunc) g_free, NULL);
+	g_slist_free (wrong_sums);
+
+	return FALSE;
 }
 
 static gboolean
@@ -774,7 +531,7 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 	self = BRASERO_SUM_DIALOG (dialog);
 
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->md5_check)))
-		brasero_sum_dialog_check_brasero_sum (self, drive);
+		brasero_sum_dialog_check_disc_sum (self, drive);
 	else
 		brasero_sum_dialog_check_md5_file (self, drive);
 
@@ -788,4 +545,88 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 					  -1,
 					  -1);
 	return FALSE;
+}
+
+static void
+brasero_sum_dialog_finalize (GObject *object)
+{
+	BraseroSumDialog *cobj;
+
+	cobj = BRASERO_SUM_DIALOG (object);
+
+	brasero_sum_dialog_stop (cobj);
+
+	if (cobj->priv->session) {
+		g_object_unref (cobj->priv->session);
+		cobj->priv->session = NULL;
+	}
+
+	g_free (cobj->priv);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_sum_dialog_class_init (BraseroSumDialogClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	BraseroToolDialogClass *tool_dialog_class = BRASERO_TOOL_DIALOG_CLASS (klass);
+
+	parent_class = g_type_class_peek_parent (klass);
+	object_class->finalize = brasero_sum_dialog_finalize;
+
+	tool_dialog_class->activate = brasero_sum_dialog_activate;
+}
+
+static void
+brasero_sum_dialog_init (BraseroSumDialog *obj)
+{
+	GtkWidget *box;
+
+	obj->priv = g_new0 (BraseroSumDialogPrivate, 1);
+
+	obj->priv->session = brasero_burn_session_new ();
+
+	box = gtk_vbox_new (FALSE, 6);
+
+	obj->priv->md5_check = gtk_check_button_new_with_label (_("Use a md5 file to check the disc"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (obj->priv->md5_check), FALSE);
+	g_signal_connect (obj->priv->md5_check,
+			  "toggled",
+			  G_CALLBACK (brasero_sum_dialog_md5_toggled),
+			  obj);
+
+	gtk_box_pack_start (GTK_BOX (box),
+			    obj->priv->md5_check,
+			    TRUE,
+			    TRUE,
+			    0);
+
+	obj->priv->md5_chooser = gtk_file_chooser_button_new (_("Open a md5 file"), GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (obj->priv->md5_chooser), FALSE);
+	gtk_widget_set_sensitive (obj->priv->md5_chooser, FALSE);
+	gtk_box_pack_start (GTK_BOX (box),
+			    obj->priv->md5_chooser,
+			    TRUE,
+			    TRUE,
+			    0);
+
+	gtk_widget_show_all (box);
+	brasero_tool_dialog_pack_options (BRASERO_TOOL_DIALOG (obj),
+					  box,
+					  NULL);
+
+	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
+					_("Check"),
+					GTK_STOCK_FIND,
+					NULL);
+}
+
+GtkWidget *
+brasero_sum_dialog_new ()
+{
+	BraseroSumDialog *obj;
+	
+	obj = BRASERO_SUM_DIALOG (g_object_new (BRASERO_TYPE_SUM_DIALOG, NULL));
+	
+	return GTK_WIDGET (obj);
 }

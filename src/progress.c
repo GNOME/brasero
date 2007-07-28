@@ -43,8 +43,9 @@
 #include <gtk/gtkimage.h>
 
 #include "utils.h"
-#include "progress.h"
+#include "brasero-progress.h"
 #include "burn-basics.h"
+#include "burn-medium.h"
 
 static void brasero_burn_progress_class_init (BraseroBurnProgressClass *klass);
 static void brasero_burn_progress_init (BraseroBurnProgress *sp);
@@ -325,7 +326,7 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		return;
 	}
 
-	if (self->priv->current == BRASERO_BURN_ACTION_ERASING) {
+	if (self->priv->current == BRASERO_BURN_ACTION_BLANKING) {
 		/* growisofs /libburn in particular when they blanks DVD RW+ 
 		 * or a CD can report the progress so no need for blinking */
 		brasero_burn_progress_stop_blinking (self);
@@ -361,7 +362,7 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 	else if (self->priv->time)
 		gtk_label_set_text (GTK_LABEL (self->priv->time), " ");
 
-	if (self->priv->current == BRASERO_BURN_ACTION_ERASING) {
+	if (self->priv->current == BRASERO_BURN_ACTION_BLANKING) {
 		if (self->priv->bytes_written)
 			gtk_label_set_text (GTK_LABEL (self->priv->bytes_written), " ");
 		if (self->priv->speed)
@@ -373,9 +374,9 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		gfloat speed;
 
 		if (rate >= 0 && is_DVD)
-			speed = (gfloat) ((gdouble) rate / (gdouble) DVD_SPEED);
+			speed = (gfloat) ((gdouble) rate / (gdouble) DVD_RATE);
 		else
-			speed = (gfloat) ((gdouble) rate / (gdouble) CDR_SPEED);
+			speed = (gfloat) ((gdouble) rate / (gdouble) CD_RATE);
 
 		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f x)", rate / 1024, speed);
 		gtk_label_set_text (GTK_LABEL (self->priv->speed), text);
@@ -424,7 +425,7 @@ brasero_burn_progress_set_action (BraseroBurnProgress *self,
 {
 	gchar *final_text;
 
-	if (action != BRASERO_BURN_ACTION_ERASING)
+	if (action != BRASERO_BURN_ACTION_BLANKING)
 		brasero_burn_progress_stop_blinking (self);
 
 	if (action != BRASERO_BURN_ACTION_NONE) {
@@ -448,6 +449,6 @@ brasero_burn_progress_set_action (BraseroBurnProgress *self,
 
 	self->priv->current = action;
 
-	if (action == BRASERO_BURN_ACTION_ERASING)
+	if (action == BRASERO_BURN_ACTION_BLANKING)
 		brasero_burn_progress_start_blinking (self);
 }

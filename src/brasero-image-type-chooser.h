@@ -28,6 +28,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gtk/gtkhbox.h>
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_IMAGE_TYPE_CHOOSER         (brasero_image_type_chooser_get_type ())
@@ -43,7 +45,6 @@ typedef struct _BraseroImageTypeChooserClass BraseroImageTypeChooserClass;
 
 struct _BraseroImageTypeChooser {
 	GtkHBox parent;
-	BraseroImageTypeChooserPrivate *priv;
 };
 
 struct _BraseroImageTypeChooserClass {
@@ -54,9 +55,10 @@ GType brasero_image_type_chooser_get_type ();
 GtkWidget *brasero_image_type_chooser_new ();
 
 void
-brasero_image_type_chooser_set_source (BraseroImageTypeChooser *self,
-				       NautilusBurnDrive *drive,
-				       BraseroTrackSourceType type,
+brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
+				        BraseroImageFormat formats);
+void
+brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat format);
 void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,

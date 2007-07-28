@@ -39,78 +39,307 @@
 
 #include "utils.h"
 #include "burn-basics.h"
-#include "burn-common.h"
 #include "brasero-image-option-dialog.h"
-#include "recorder-selection.h"
+#include "brasero-image-type-chooser.h"
+#include "brasero-dest-selection.h"
 #include "brasero-ncb.h"
 #include "brasero-vfs.h"
-#include "brasero-image-type-chooser.h"
  
-static void brasero_image_option_dialog_class_init (BraseroImageOptionDialogClass *klass);
-static void brasero_image_option_dialog_init (BraseroImageOptionDialog *sp);
-static void brasero_image_option_dialog_finalize (GObject *object);
+G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, GTK_TYPE_DIALOG);
 
 struct _BraseroImageOptionDialogPrivate {
-	BraseroTrackSource *track;
+	BraseroBurnSession *session;
+	BraseroTrack *track;
+
+	BraseroBurnCaps *caps;
+
+	guint caps_sig;
 
 	BraseroVFS *vfs;
 	BraseroVFSDataID info_type;
 
-	GtkWidget *format_chooser;
 	GtkWidget *selection;
-	GtkWidget *chooser;
+	GtkWidget *format;
+	GtkWidget *file;
 
 	GtkTooltips *tooltips;
 };
+typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
+
+#define BRASERO_IMAGE_OPTION_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_OPTION_DIALOG, BraseroImageOptionDialogPrivate))
 
 static GtkDialogClass *parent_class = NULL;
 
-GType
-brasero_image_option_dialog_get_type ()
+
+static void
+brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
+				       BraseroImageFormat format,
+				       const gchar *image,
+				       const gchar *toc)
 {
-	static GType type = 0;
+    	GtkRecentManager *recent;
+	BraseroImageOptionDialogPrivate *priv;
 
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroImageOptionDialogClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)brasero_image_option_dialog_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroImageOptionDialog),
-			0,
-			(GInstanceInitFunc)brasero_image_option_dialog_init,
-		};
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
-		type = g_type_register_static (GTK_TYPE_DIALOG, 
-					       "BraseroImageOptionDialog",
-					       &our_info,
-					       0);
+    	/* Add it to recent file manager */
+	if (toc || image) {
+		recent = gtk_recent_manager_get_default ();
+		gtk_recent_manager_add_item (recent, toc ? toc:image);
 	}
 
-	return type;
+	if (!priv->track) {
+		priv->track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
+		brasero_burn_session_add_track (priv->session, priv->track);
+	}
+
+	brasero_track_set_image_source (priv->track,
+					image,
+					toc,
+					format);
 }
 
 static void
-brasero_image_option_dialog_class_init (BraseroImageOptionDialogClass *klass)
+brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
+					   GObject *object,
+					   GnomeVFSResult result,
+					   const gchar *uri,
+					   GnomeVFSFileInfo *info,
+					   gpointer null_data)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	BraseroImageOptionDialog *dialog = BRASERO_IMAGE_OPTION_DIALOG (object);
+	BraseroImageOptionDialogPrivate *priv;
 
-	parent_class = g_type_class_peek_parent (klass);
-	object_class->finalize = brasero_image_option_dialog_finalize;
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
+
+	if (result != GNOME_VFS_OK) {
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_NONE,
+						       NULL,
+						       NULL);
+		return;
+	}
+
+    	/* Add it to recent file manager */
+	if (!strcmp (info->mime_type, "application/x-toc"))
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_CLONE,
+						       NULL,
+						       uri);
+	else if (!strcmp (info->mime_type, "application/octet-stream")) {
+		/* that could be an image, so here is the deal:
+		 * if we can find the type through the extension, fine.
+		 * if not default to CLONE */
+		if (g_str_has_suffix (uri, ".bin"))
+			brasero_image_option_dialog_set_track (dialog,
+							       BRASERO_IMAGE_FORMAT_CDRDAO,
+							       uri,
+							       NULL);
+		else if (g_str_has_suffix (uri, ".raw"))
+			brasero_image_option_dialog_set_track (dialog,
+							       BRASERO_IMAGE_FORMAT_CLONE,
+							       uri,
+							       NULL);
+		else
+			brasero_image_option_dialog_set_track (dialog,
+							       BRASERO_IMAGE_FORMAT_NONE,
+							       uri,
+							       NULL);
+	}
+	else if (!strcmp (info->mime_type, "application/x-cd-image"))
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_BIN,
+						       uri,
+						       NULL);
+	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc"))
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_CDRDAO,
+						       NULL,
+						       uri);
+	else if (!strcmp (info->mime_type, "application/x-cue"))
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_CUE,
+						       NULL,
+						       uri);
+	else
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_NONE,
+						       NULL,
+						       NULL);
 }
 
-GtkWidget *
-brasero_image_option_dialog_new ()
+static void
+brasero_image_option_dialog_get_format (BraseroImageOptionDialog *dialog,
+					gchar *uri)
 {
-	BraseroImageOptionDialog *obj;
-	
-	obj = BRASERO_IMAGE_OPTION_DIALOG (g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
-							"title", _("Image burning setup"),
-							NULL));
-	
-	return GTK_WIDGET (obj);
+	GList *uris;
+	BraseroImageOptionDialogPrivate *priv;
+
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
+
+	if (!uri) {
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_NONE,
+						       NULL,
+						       NULL);
+		return;
+	}
+
+	if (!priv->vfs)
+		priv->vfs = brasero_vfs_get_default ();
+
+	if (!priv->info_type)
+		priv->info_type = brasero_vfs_register_data_type (priv->vfs,
+								  G_OBJECT (dialog),
+								  G_CALLBACK (brasero_image_option_dialog_image_info_cb),
+								  NULL);
+
+	uris = g_list_prepend (NULL, uri);
+	brasero_vfs_get_info (priv->vfs,
+			      uris,
+			      FALSE,
+			      GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
+			      GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
+			      priv->info_type,
+			      NULL);
+	g_list_free (uris);
+	g_free (uri);
+}
+
+static void
+brasero_image_option_dialog_changed (BraseroImageOptionDialog *dialog)
+{
+	gchar *uri;
+	BraseroImageFormat format;
+	BraseroImageOptionDialogPrivate *priv;
+
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
+
+	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (priv->file));
+	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
+					       &format);
+
+	if (format == BRASERO_IMAGE_FORMAT_ANY) {
+		/* NOTE: uri is freed by following function */
+		brasero_image_option_dialog_get_format (dialog, uri);
+		return;
+	}
+
+	switch (format) {
+	case BRASERO_IMAGE_FORMAT_BIN:
+		brasero_image_option_dialog_set_track (dialog,
+						       format,
+						       uri,
+						       NULL);
+		break;
+	case BRASERO_IMAGE_FORMAT_CUE:
+		brasero_image_option_dialog_set_track (dialog,
+						       format,
+						       NULL,
+						       uri);
+		break;
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+		brasero_image_option_dialog_set_track (dialog,
+						       format,
+						       NULL,
+						       uri);
+		break;
+	case BRASERO_IMAGE_FORMAT_CLONE:
+		brasero_image_option_dialog_set_track (dialog,
+						       format,
+						       NULL,
+						       uri);
+		break;
+	default:
+		break;
+	}
+	g_free (uri);	
+}
+
+static void
+brasero_image_option_dialog_format_changed (BraseroImageTypeChooser *format,
+					    BraseroImageOptionDialog *dialog)
+{
+	brasero_image_option_dialog_changed (dialog);
+}
+
+static void
+brasero_image_option_dialog_file_changed (GtkFileChooser *chooser,
+					  BraseroImageOptionDialog *dialog)
+{
+	brasero_image_option_dialog_changed (dialog);
+}
+
+static void
+brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
+{
+	BraseroImageOptionDialogPrivate *priv;
+	BraseroImageFormat formats;
+	BraseroImageFormat format;
+	NautilusBurnDrive *drive;
+	BraseroTrackType output;
+	BraseroTrackType input;
+
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
+
+	/* get the available image types */
+	output.type = BRASERO_TRACK_TYPE_DISC;
+	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection),
+					   &drive);
+	output.subtype.media = NCB_MEDIA_GET_STATUS (drive);
+	nautilus_burn_drive_unref (drive);
+
+	input.type = BRASERO_TRACK_TYPE_IMAGE;
+	formats = BRASERO_IMAGE_FORMAT_NONE;
+	format = BRASERO_IMAGE_FORMAT_CDRDAO;
+
+	for (; format != BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
+		BraseroBurnResult result;
+
+		input.subtype.img_format = format;
+		result = brasero_burn_caps_is_input_supported (priv->caps,
+							       priv->session,
+							       &input);
+		if (result == BRASERO_BURN_OK)
+			formats |= format;
+	}
+	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
+					        formats);
+}
+
+static void
+brasero_image_option_dialog_media_changed (BraseroDriveSelection *selection,
+					   BraseroImageOptionDialog *dialog)
+{
+	brasero_image_option_dialog_set_formats (dialog);
+}
+
+static void
+brasero_image_option_dialog_caps_changed (BraseroBurnCaps *caps,
+					  BraseroImageOptionDialog *dialog)
+{
+	brasero_image_option_dialog_set_formats (dialog);
+}
+
+void
+brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
+					   const gchar *uri)
+{
+	BraseroImageOptionDialogPrivate *priv;
+
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
+
+	brasero_image_option_dialog_set_formats (dialog);
+
+	if (uri) {
+		gtk_file_chooser_set_uri (GTK_FILE_CHOOSER (priv->file), uri);
+		brasero_image_option_dialog_changed (dialog);
+	}
+	else
+		brasero_image_option_dialog_set_track (dialog,
+						       BRASERO_IMAGE_FORMAT_NONE,
+						       NULL,
+						       NULL);
 }
 
 static void
@@ -137,105 +366,6 @@ brasero_image_option_dialog_image_info_error (BraseroImageOptionDialog *dialog)
 }
 
 static void
-brasero_image_option_dialog_make_track (BraseroImageOptionDialog *dialog,
-					BraseroImageFormat format,
-					gboolean is_image,
-					const gchar *uri)
-{
-	BraseroTrackSource *track = NULL;
-    	GtkRecentManager *recent;
-	gchar *complement = NULL;
-
-    	/* Add it to recent file manager */
-    	recent = gtk_recent_manager_get_default ();
-    	gtk_recent_manager_add_item (recent, uri);
-
-	track = g_new0 (BraseroTrackSource, 1);
-	track->type = BRASERO_TRACK_SOURCE_IMAGE;
-	track->format = format;
-
-	complement = brasero_get_file_complement (format,
-						  is_image,
-						  uri);
-	if (is_image) {
-		track->contents.image.toc = complement;
-		track->contents.image.image = g_strdup (uri);
-	}
-	else {
-		track->contents.image.toc = g_strdup (uri);
-		track->contents.image.image = complement;
-	}
-
-	if (dialog->priv->track)
-		brasero_track_source_free (dialog->priv->track);
-
-	dialog->priv->track = track;
-	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-}
-
-static void
-brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
-					   GObject *object,
-					   GnomeVFSResult result,
-					   const gchar *uri,
-					   GnomeVFSFileInfo *info,
-					   gpointer null_data)
-{
-	BraseroImageOptionDialog *dialog = BRASERO_IMAGE_OPTION_DIALOG (object);
-
-	if (result != GNOME_VFS_OK) {
-		brasero_image_option_dialog_image_info_error (dialog);
-		return;
-	}
-
-    	/* Add it to recent file manager */
-	if (!strcmp (info->mime_type, "application/x-toc"))
-		brasero_image_option_dialog_make_track (dialog,
-							BRASERO_IMAGE_FORMAT_CLONE,
-							FALSE,
-							uri);
-	else if (!strcmp (info->mime_type, "application/octet-stream")) {
-		/* that could be an image, so here is the deal:
-		 * if we can find the type through the extension, fine.
-		 * if not default to CLONE */
-		if (g_str_has_suffix (uri, ".bin"))
-			brasero_image_option_dialog_make_track (dialog,
-								BRASERO_IMAGE_FORMAT_CDRDAO,
-								TRUE,
-								uri);
-		else if (g_str_has_suffix (uri, ".raw"))
-			brasero_image_option_dialog_make_track (dialog,
-								BRASERO_IMAGE_FORMAT_CLONE,
-								TRUE,
-								uri);
-		else
-			brasero_image_option_dialog_make_track (dialog,
-								BRASERO_IMAGE_FORMAT_NONE,
-								TRUE,
-								uri);
-	}
-	else if (!strcmp (info->mime_type, "application/x-cd-image"))
-		brasero_image_option_dialog_make_track (dialog,
-							BRASERO_IMAGE_FORMAT_ISO,
-							TRUE,
-							uri);
-	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc"))
-		brasero_image_option_dialog_make_track (dialog,
-							BRASERO_IMAGE_FORMAT_CDRDAO,
-							FALSE,
-							uri);
-	else if (!strcmp (info->mime_type, "application/x-cue"))
-		brasero_image_option_dialog_make_track (dialog,
-							BRASERO_IMAGE_FORMAT_CUE,
-							FALSE,
-							uri);
-	else {
-		brasero_image_option_dialog_image_info_error (dialog);
-		return;
-	}
-}
-
-static void
 brasero_image_option_dialog_image_empty (BraseroImageOptionDialog *dialog)
 {
 	GtkWidget *message;
@@ -258,159 +388,92 @@ brasero_image_option_dialog_image_empty (BraseroImageOptionDialog *dialog)
 	gtk_widget_destroy (message);
 }
 
-static void
-brasero_image_option_dialog_image_info (BraseroImageOptionDialog *dialog)
+BraseroBurnSession *
+brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 {
-	gchar *uri;
-	GList *uris;
+	BraseroImageOptionDialogPrivate *priv;
+	BraseroTrackType type;
+	gchar *image;
 
-	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog->priv->chooser));
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
-	if (!uri) {
+	/* check that all could be set for the session */
+	image = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->file));
+	if (!image) {
 		brasero_image_option_dialog_image_empty (dialog);
-		return;
+		return NULL;
+	}
+	g_free (image);
+
+	brasero_track_get_type (priv->track, &type);
+	if (type.type == BRASERO_TRACK_TYPE_NONE
+	||  type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+		brasero_image_option_dialog_image_info_error (dialog);
+		return NULL;
 	}
 
-	if (!dialog->priv->vfs)
-		dialog->priv->vfs = brasero_vfs_get_default ();
-
-	if (!dialog->priv->info_type)
-		dialog->priv->info_type = brasero_vfs_register_data_type (dialog->priv->vfs,
-									  G_OBJECT (dialog),
-									  G_CALLBACK (brasero_image_option_dialog_image_info_cb),
-									  NULL);
-
-	uris = g_list_prepend (NULL, uri);
-	brasero_vfs_get_info (dialog->priv->vfs,
-			      uris,
-			      FALSE,
-			      GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-			      GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
-			      dialog->priv->info_type,
-			      NULL);
-	g_list_free (uris);
-	g_free (uri);
-}
-
-void
-brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
-					   const gchar *uri)
-{
-	BraseroTrackSource track = {0, };
-	NautilusBurnDrive *drive;
-
-	/* we need to set up a dummy track */
-	track.type = BRASERO_TRACK_SOURCE_IMAGE;
-	track.format = BRASERO_IMAGE_FORMAT_ANY;
-	brasero_recorder_selection_set_source_track (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
-						     &track);
-
-	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
-					      &drive,
-					      NULL);
-
-	brasero_image_type_chooser_set_source (BRASERO_IMAGE_TYPE_CHOOSER (dialog->priv->format_chooser),
-					       drive,
-					       BRASERO_TRACK_SOURCE_IMAGE,
-					       BRASERO_IMAGE_FORMAT_ANY);
-
-	nautilus_burn_drive_unref (drive);
-
-	if (uri)
-		gtk_file_chooser_set_uri (GTK_FILE_CHOOSER (dialog->priv->chooser), uri);
-}
-
-static void
-brasero_image_option_dialog_burn_clicked_cb (GtkWidget *button,
-					     BraseroImageOptionDialog *dialog)
-{
-	BraseroImageFormat format = BRASERO_IMAGE_FORMAT_ANY;
-
-	brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (dialog->priv->format_chooser),
-					       &format);
-
-	if (format != BRASERO_IMAGE_FORMAT_ANY) {
-		gchar *uri;
-
-		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog->priv->chooser));
-		brasero_image_option_dialog_make_track (dialog,
-							format,
-							(format & (BRASERO_IMAGE_FORMAT_ISO|BRASERO_IMAGE_FORMAT_NONE)),
-							uri);
-		g_free (uri);
-	}
-	else
-		brasero_image_option_dialog_image_info (dialog);
-}
-
-gboolean
-brasero_image_option_dialog_get_param (BraseroImageOptionDialog *dialog,
-				       BraseroBurnFlag *flags,
-				       NautilusBurnDrive **drive,
-				       gint *speed,
-				       BraseroTrackSource **source)
-{
-	BraseroDriveProp props;
-
-	g_return_val_if_fail (drive != NULL, FALSE);
-	g_return_val_if_fail (source != NULL, FALSE);
-
-	*source = dialog->priv->track;
-	dialog->priv->track = NULL;
-
-	/* get drive, speed and flags */
-	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (dialog->priv->selection),
-					      drive,
-					      &props);
-
-	if (speed)
-		*speed = props.props.drive_speed;
-
-	if (flags) {
-		BraseroBurnFlag tmp;
-
-		tmp = BRASERO_BURN_FLAG_DONT_OVERWRITE|
-		      BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-
-		tmp |= props.flags;
-		*flags = tmp;
-	}
-
-	return TRUE;
-}
-
-static void
-brasero_image_option_dialog_cancel_clicked_cb (GtkButton *cancel, GtkWidget *dialog)
-{
-	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
+	g_object_ref (priv->session);
+	return priv->session;
 }
 
 static void
 brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 {
-	GtkWidget *burn;
 	GtkWidget *label;
-	GtkWidget *cancel;
+	GtkWidget *button;
 	GtkWidget *options;
 	GtkWidget *box, *box1;
+	BraseroImageOptionDialogPrivate *priv;
 
-	obj->priv = g_new0 (BraseroImageOptionDialogPrivate, 1);
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (obj);
+
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 
-	obj->priv->tooltips = gtk_tooltips_new ();
-	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
+	priv->tooltips = gtk_tooltips_new ();
+	g_object_ref_sink (GTK_OBJECT (priv->tooltips));
+
+	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
+				      button,
+				      GTK_RESPONSE_CANCEL);
+
+	button = brasero_utils_make_button (_("Burn"),
+					    NULL,
+					    "media-optical-burn",
+					    GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
+				      button,
+				      GTK_RESPONSE_CANCEL);
+
+	priv->caps = brasero_burn_caps_get_default ();
+	priv->caps_sig = g_signal_connect (priv->caps,
+					   "caps-changed",
+					   G_CALLBACK (brasero_image_option_dialog_caps_changed),
+					   obj);
+
+	priv->session = brasero_burn_session_new ();
+	brasero_burn_session_add_flag (priv->session,
+				       BRASERO_BURN_FLAG_EJECT|
+				       BRASERO_BURN_FLAG_NOGRACE|
+				       BRASERO_BURN_FLAG_BURNPROOF|
+				       BRASERO_BURN_FLAG_CHECK_SIZE|
+				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
+				       BRASERO_BURN_FLAG_FAST_BLANK|
+				       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
 
 	/* first box */
-	obj->priv->selection = brasero_recorder_selection_new ();
-	g_object_set (G_OBJECT (obj->priv->selection),
-		      "file-image", FALSE,
-		      "show-properties", TRUE,
-		      "show-recorders-only", TRUE,
-		      NULL);
+	priv->selection = brasero_dest_selection_new (priv->session);
+	g_signal_connect (priv->selection,
+			  "drive-changed",
+			  G_CALLBACK (brasero_image_option_dialog_media_changed),
+			  obj);
 
 	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
-						 obj->priv->selection,
+						 priv->selection,
 						 NULL);
+
 	gtk_widget_show_all (options);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    options,
@@ -418,88 +481,107 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			    FALSE,
 			    6);
 
-	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selection),
-							 BRASERO_MEDIUM_WRITABLE);
-	gtk_tooltips_set_tip (obj->priv->tooltips,
-			      obj->priv->selection,
+	gtk_tooltips_set_tip (priv->tooltips,
+			      priv->selection,
 			      _("Choose which drive holds the disc to write to"),
 			      _("Choose which drive holds the disc to write to"));
 
-	g_object_set (obj->priv->selection, "file-image", FALSE, NULL);
+	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), FALSE);
 
 	/* Image properties */
 	box1 = gtk_hbox_new (FALSE, 0);
+
 	label = gtk_label_new (_("Path:\t\t"));
 	gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
 
-	obj->priv->chooser = gtk_file_chooser_button_new (_("Open an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
-	gtk_box_pack_start (GTK_BOX (box1), obj->priv->chooser, TRUE, TRUE, 0);
+	priv->file = gtk_file_chooser_button_new (_("Open an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_box_pack_start (GTK_BOX (box1), priv->file, TRUE, TRUE, 0);
+	g_signal_connect (priv->file,
+			  "file-activated",
+			  G_CALLBACK (brasero_image_option_dialog_file_changed),
+			  obj);
 
-	gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (obj->priv->chooser),
-						 g_get_home_dir ());
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (obj->priv->chooser), FALSE);
+	gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
 
-	obj->priv->format_chooser = brasero_image_type_chooser_new ();
+	priv->format = brasero_image_type_chooser_new ();
+	g_signal_connect (priv->format,
+			  "changed",
+			  G_CALLBACK (brasero_image_option_dialog_format_changed),
+			  obj);
 
 	box = brasero_utils_pack_properties (_("<b>Image</b>"),
-					     obj->priv->format_chooser,
+					     priv->format,
 					     box1,
 					     NULL);
+
 	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			  box,
 			  TRUE,
 			  FALSE,
 			  6);
+
 	gtk_widget_show_all (box);
 
-	/* buttons */
-	cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_widget_show (cancel);
-	g_signal_connect (G_OBJECT (cancel),
-			  "clicked",
-			  G_CALLBACK (brasero_image_option_dialog_cancel_clicked_cb),
-			  obj);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj), cancel, GTK_RESPONSE_CANCEL);
-
-	burn = brasero_utils_make_button (_("Burn"),
-					  NULL,
-					  "media-optical-burn",
-					  GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_widget_show (burn);
-	g_signal_connect (G_OBJECT (burn),
-			  "clicked",
-			  G_CALLBACK (brasero_image_option_dialog_burn_clicked_cb),
-			  obj);
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (obj)->action_area),
-			  burn,
-			  FALSE,
-			  FALSE,
-			  0);
+	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
+						      BRASERO_MEDIUM_WRITABLE);
 }
 
 static void
 brasero_image_option_dialog_finalize (GObject *object)
 {
-	BraseroImageOptionDialog *cobj;
+	BraseroImageOptionDialogPrivate *priv;
 
-	cobj = BRASERO_IMAGE_OPTION_DIALOG (object);
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (object);
 
-	if (cobj->priv->vfs) {
-		brasero_vfs_cancel (cobj->priv->vfs, object);
-		g_object_unref (cobj->priv->vfs);
-		cobj->priv->vfs = NULL;
+	if (priv->vfs) {
+		brasero_vfs_cancel (priv->vfs, object);
+		g_object_unref (priv->vfs);
+		priv->vfs = NULL;
 	}
 
-	if (cobj->priv->track) {
-		brasero_track_source_free (cobj->priv->track);
-		cobj->priv->track = NULL;
+	if (priv->track) {
+		brasero_track_unref (priv->track);
+		priv->track = NULL;
 	}
 
-	if (cobj->priv->tooltips) {
-		g_object_unref (cobj->priv->tooltips);
-		cobj->priv->tooltips = NULL;
+	if (priv->tooltips) {
+		g_object_unref (priv->tooltips);
+		priv->tooltips = NULL;
 	}
 
-	g_free (cobj->priv);
+	if (priv->caps_sig) {
+		g_signal_handler_disconnect (priv->caps, priv->caps_sig);
+		priv->caps_sig = 0;
+	}
+
+	if (priv->caps) {
+		g_object_unref (priv->caps);
+		priv->caps = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_image_option_dialog_class_init (BraseroImageOptionDialogClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroImageOptionDialogPrivate));
+
+	parent_class = g_type_class_peek_parent (klass);
+	object_class->finalize = brasero_image_option_dialog_finalize;
+}
+
+GtkWidget *
+brasero_image_option_dialog_new ()
+{
+	BraseroImageOptionDialog *obj;
+	
+	obj = BRASERO_IMAGE_OPTION_DIALOG (g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
+							"title", _("Image burning setup"),
+							NULL));
+	
+	return GTK_WIDGET (obj);
 }

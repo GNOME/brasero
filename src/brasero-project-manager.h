@@ -83,4 +83,6 @@ void
 brasero_project_manager_set_status (BraseroProjectManager *manager,
 				    GtkWidget *status);
 
+G_END_DECLS
+
 #endif /* BRASERO_PROJECT_MANAGER_H */

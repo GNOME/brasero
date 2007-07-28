@@ -29,10 +29,6 @@
 #  include <config.h>
 #endif
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #include <nautilus-burn-drive-monitor.h>
 #include <nautilus-burn-drive.h>
 
@@ -65,20 +61,8 @@ NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);
 gboolean
 NCB_DRIVE_MOUNT (NautilusBurnDrive *drive, GError **error);
 
-typedef gpointer BraseroMountHandle;
-typedef void	(*BraseroMountCallback)	(NautilusBurnDrive *drive,
-					 const gchar *mount_point,
-					 gboolean mounted_by_us,
-					 const GError *error,
-					 gpointer callback_data);
-
-BraseroMountHandle *
-NCB_DRIVE_GET_MOUNT_POINT (NautilusBurnDrive *drive,
-			   BraseroMountCallback callback,
-			   gpointer callback_data);
-
-void
-NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle);
+gchar *
+NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive, GError **error);
 
 gint64
 NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
@@ -86,8 +70,8 @@ NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
 gint64
 NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive);
 
-gint
-NCB_MEDIA_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive);
+gint64
+NCB_MEDIA_GET_MAX_WRITE_RATE (NautilusBurnDrive *drive);
 
 void
 NCB_MEDIA_GET_DATA_SIZE (NautilusBurnDrive *drive,
@@ -104,7 +88,7 @@ NCB_MEDIA_GET_FREE_SPACE (NautilusBurnDrive *drive,
 			  gint64 *size,
 			  gint64 *blocks);
 
-BraseroMediumInfo
+BraseroMedia
 NCB_MEDIA_GET_STATUS (NautilusBurnDrive *drive);
 
 const gchar *

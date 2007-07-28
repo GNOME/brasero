@@ -43,12 +43,10 @@ G_BEGIN_DECLS
 #define BRASERO_IMAGE_OPTION_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_IMAGE_OPTION_DIALOG, BraseroImageOptionDialogClass))
 
 typedef struct _BraseroImageOptionDialog BraseroImageOptionDialog;
-typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
 typedef struct _BraseroImageOptionDialogClass BraseroImageOptionDialogClass;
 
 struct _BraseroImageOptionDialog {
 	GtkDialog parent;
-	BraseroImageOptionDialogPrivate *priv;
 };
 
 struct _BraseroImageOptionDialogClass {
@@ -62,12 +60,8 @@ void
 brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
 					   const gchar *uri);
 
-gboolean
-brasero_image_option_dialog_get_param (BraseroImageOptionDialog *dialog,
-				       BraseroBurnFlag *flags,
-				       NautilusBurnDrive **drive,
-				       gint *speed,
-				       BraseroTrackSource **source);
+BraseroBurnSession *
+brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog);
 
 G_END_DECLS
 

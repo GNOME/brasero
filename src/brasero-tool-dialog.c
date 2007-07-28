@@ -43,37 +43,15 @@
 #include <nautilus-burn-drive.h>
 
 #include "utils.h"
-#include "progress.h"
-#include "burn-job.h"
-#include "recorder-selection.h"
+#include "brasero-progress.h"
+#include "brasero-drive-selection.h"
 #include "brasero-tool-dialog.h"
+#include "burn-session.h"
+#include "burn.h"
 #include "burn-medium.h"
 #include "brasero-ncb.h"
 
-static void brasero_tool_dialog_class_init (BraseroToolDialogClass *klass);
-static void brasero_tool_dialog_init (BraseroToolDialog *sp);
-static void brasero_tool_dialog_finalize (GObject *object);
-
-static gboolean
-brasero_tool_dialog_delete (GtkWidget *widget,
-			    GdkEventAny *event);
-
-static void
-brasero_tool_dialog_button_clicked (GtkButton *button,
-				    BraseroToolDialog *self);
-
-static void
-brasero_tool_dialog_cancel_clicked_cb (GtkWidget *button,
-				       BraseroToolDialog *dialog);
-
-static void
-brasero_tool_dialog_button_clicked (GtkButton *button,
-				    BraseroToolDialog *dialog);
-
-static void
-brasero_tool_dialog_device_changed_cb (BraseroRecorderSelection *selection,
-				       BraseroMediumInfo media,
-				       BraseroToolDialog *self);
+G_DEFINE_TYPE (BraseroToolDialog, brasero_tool_dialog, GTK_TYPE_DIALOG);
 
 struct _BraseroToolDialogPrivate {
 	GtkWidget *upper_box;
@@ -84,150 +62,13 @@ struct _BraseroToolDialogPrivate {
 	GtkWidget *options;
 	GtkWidget *cancel;
 
-	BraseroJob *job;
+	BraseroBurn *burn;
 
 	gboolean running;
 	gboolean close;
 };
 
 static GtkDialogClass *parent_class = NULL;
-
-GType
-brasero_tool_dialog_get_type ()
-{
-	static GType type = 0;
-
-	if(type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroToolDialogClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)brasero_tool_dialog_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroToolDialog),
-			0,
-			(GInstanceInitFunc)brasero_tool_dialog_init,
-		};
-
-		type = g_type_register_static (GTK_TYPE_DIALOG, 
-					       "BraseroToolDialog",
-					       &our_info,
-					       0);
-	}
-
-	return type;
-}
-
-static void
-brasero_tool_dialog_class_init (BraseroToolDialogClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent(klass);
-	object_class->finalize = brasero_tool_dialog_finalize;
-
-	widget_class->delete_event = brasero_tool_dialog_delete;
-}
-
-static void
-brasero_tool_dialog_init (BraseroToolDialog *obj)
-{
-	GtkWidget *title;
-
-	obj->priv = g_new0 (BraseroToolDialogPrivate, 1);
-	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 300);
-
-	/* upper part */
-	obj->priv->upper_box = gtk_vbox_new (FALSE, 0);
-	obj->priv->selector = brasero_recorder_selection_new ();
-	g_object_set (G_OBJECT (obj->priv->selector),
-		      "show-recorders-only", TRUE,
-		      "show-properties", FALSE,
-		      "file-image", FALSE,
-		      NULL);
-
-	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
-			    brasero_utils_pack_properties (_("<b>Select a recorder:</b>"),
-							   obj->priv->selector,
-							   NULL),
-			    FALSE, FALSE, 0);
-
-	brasero_recorder_selection_select_default_drive (BRASERO_RECORDER_SELECTION (obj->priv->selector),
-							 BRASERO_MEDIUM_REWRITABLE);
-
-	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
-
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    obj->priv->upper_box,
-			    FALSE,
-			    FALSE,
-			    0);
-	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
-
-	/* lower part */
-	obj->priv->lower_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->lower_box), 6);
-	gtk_widget_set_sensitive (obj->priv->lower_box, FALSE);
-	gtk_widget_show (obj->priv->lower_box);
-
-	title = gtk_label_new (_("<b>Progress:</b>"));
-	gtk_label_set_use_markup (GTK_LABEL (title), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
-	gtk_misc_set_padding(GTK_MISC (title), 0, 6);
-	gtk_widget_show (title);
-	gtk_box_pack_start (GTK_BOX (obj->priv->lower_box),
-			    title,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	obj->priv->progress = brasero_burn_progress_new ();
-	gtk_widget_show (obj->priv->progress);
-	g_object_set (G_OBJECT (obj->priv->progress),
-		      "show-info", FALSE,
-		      NULL);
-
-	gtk_box_pack_start (GTK_BOX (obj->priv->lower_box),
-			    obj->priv->progress,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    obj->priv->lower_box,
-			    FALSE,
-			    FALSE,
-			    6);
-
-	/* buttons */
-	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-	gtk_widget_show (obj->priv->cancel);
-	g_signal_connect (G_OBJECT (obj->priv->cancel), "clicked",
-			  G_CALLBACK (brasero_tool_dialog_cancel_clicked_cb),
-			  obj);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      obj->priv->cancel,
-				      GTK_RESPONSE_CANCEL);
-
-	g_signal_connect (G_OBJECT (obj->priv->selector),
-			  "media-changed",
-			  G_CALLBACK (brasero_tool_dialog_device_changed_cb),
-			  obj);
-}
-
-static void
-brasero_tool_dialog_finalize (GObject *object)
-{
-	BraseroToolDialog *cobj;
-
-	cobj = BRASERO_TOOL_DIALOG (object);
-
-	g_free (cobj->priv);
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
 
 static void
 brasero_tool_dialog_message (BraseroToolDialog *self,
@@ -284,6 +125,155 @@ brasero_tool_dialog_no_media (BraseroToolDialog *self)
 }
 
 void
+brasero_tool_dialog_set_progress (BraseroToolDialog *self,
+				  gdouble overall_progress,
+				  gdouble task_progress,
+				  glong remaining,
+				  gint size_mb,
+				  gint written_mb)
+{
+	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (self->priv->progress),
+					  FALSE,
+					  overall_progress,
+					  task_progress,
+					  remaining,
+					  -1,
+					  -1,
+					  -1);
+}
+
+void
+brasero_tool_dialog_set_action (BraseroToolDialog *self,
+				BraseroBurnAction action,
+				const gchar *string)
+{
+	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (self->priv->progress),
+					  action,
+					  string);
+}
+
+static void
+brasero_tool_dialog_progress_changed (BraseroBurn *burn,
+				      gdouble overall_progress,
+				      gdouble progress,
+				      glong time_remaining,
+				      BraseroToolDialog *self)
+{
+	brasero_tool_dialog_set_progress (self,
+					  progress,
+					  -1.0,
+					  -1,
+					  -1,
+					  -1);
+}
+
+static void
+brasero_tool_dialog_action_changed (BraseroBurn *burn,
+				    BraseroBurnAction action,
+				    BraseroToolDialog *self)
+{
+	gchar *string;
+
+	brasero_burn_get_action_string (burn, action, &string);
+	brasero_tool_dialog_set_action (self,
+					action,
+					string);
+	g_free (string);
+}
+
+BraseroBurn *
+brasero_tool_dialog_get_burn (BraseroToolDialog *self)
+{
+	if (self->priv->burn) {
+		brasero_burn_cancel (self->priv->burn, FALSE);
+		g_object_unref (self->priv->burn);
+	}
+
+	self->priv->burn = brasero_burn_new ();
+	g_signal_connect (self->priv->burn,
+			  "progress_changed",
+			  G_CALLBACK (brasero_tool_dialog_progress_changed),
+			  self);
+	g_signal_connect (self->priv->burn,
+			  "action_changed",
+			  G_CALLBACK (brasero_tool_dialog_action_changed),
+			  self);
+
+	return self->priv->burn;
+}
+
+static void
+brasero_tool_dialog_run (BraseroToolDialog *self)
+{
+	BraseroToolDialogClass *klass;
+	NautilusBurnDrive *drive;
+	BraseroMedia media;
+	gboolean close = FALSE;
+	GdkCursor *cursor;
+
+	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector),
+					   &drive);
+
+	/* set up */
+	gtk_widget_set_sensitive (self->priv->upper_box, FALSE);
+	gtk_widget_set_sensitive (self->priv->lower_box, TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), FALSE);
+
+	cursor = gdk_cursor_new (GDK_WATCH);
+	gdk_window_set_cursor (GTK_WIDGET (self)->window, cursor);
+	gdk_cursor_unref (cursor);
+
+	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CANCEL);
+
+	/* check the contents of the drive */
+	media = NCB_MEDIA_GET_STATUS (drive);
+	if (media == BRASERO_MEDIUM_NONE) {
+		brasero_tool_dialog_no_media (self);
+		goto end;
+	}
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
+		/* error out */
+		brasero_tool_dialog_media_error (self);
+		goto end;
+	}
+	else if (media == BRASERO_MEDIUM_BUSY) {
+		brasero_tool_dialog_media_busy (self);
+		goto end;
+	}
+
+	self->priv->running = TRUE;
+	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
+	if (klass->activate)
+		close = klass->activate (self, drive);
+	self->priv->running = FALSE;
+
+	nautilus_burn_drive_unref (drive);
+
+	if (close || self->priv->close) {
+		gtk_widget_destroy (GTK_WIDGET (self));
+		return;
+	}
+
+end:
+	gdk_window_set_cursor (GTK_WIDGET (self)->window, NULL);
+	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CLOSE);
+
+	gtk_widget_set_sensitive (self->priv->upper_box, TRUE);
+	gtk_widget_set_sensitive (self->priv->lower_box, FALSE);
+	gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
+
+	brasero_tool_dialog_set_progress (self, -1.0, -1.0, -1, -1, -1);
+	brasero_tool_dialog_set_action (self, BRASERO_BURN_ACTION_NONE, NULL);
+}
+
+static void
+brasero_tool_dialog_button_clicked (GtkButton *button,
+				    BraseroToolDialog *self)
+{
+	brasero_tool_dialog_run (self);
+}
+
+void
 brasero_tool_dialog_pack_options (BraseroToolDialog *self,
 				  ...)
 {
@@ -334,260 +324,210 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 	self->priv->button = button;
 }
 
-void
-brasero_tool_dialog_set_progress (BraseroToolDialog *self,
-				  gdouble overall_progress,
-				  gdouble task_progress,
-				  glong remaining,
-				  gint size_mb,
-				  gint written_mb)
-{
-	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (self->priv->progress),
-					  FALSE,
-					  overall_progress,
-					  task_progress,
-					  remaining,
-					  -1,
-					  -1,
-					  -1);
-}
-
-void
-brasero_tool_dialog_set_action (BraseroToolDialog *self,
-				BraseroBurnAction action,
-				const gchar *string)
-{
-	brasero_burn_progress_set_action (BRASERO_BURN_PROGRESS (self->priv->progress),
-					  action,
-					  string);
-}
-
-static void
-brasero_tool_dialog_job_progress_changed (BraseroTask *task,
-					  BraseroToolDialog *self)
-{
-	gdouble progress = -1.0;
-
-	if (brasero_task_get_progress (task, &progress) != BRASERO_BURN_OK)
-		return;
-
-	brasero_tool_dialog_set_progress (self,
-					  progress,
-					  -1.0,
-					  -1,
-					  -1,
-					  -1);
-}
-
-static void
-brasero_tool_dialog_job_action_changed (BraseroTask *task,
-					BraseroBurnAction action,
-					BraseroToolDialog *self)
-{
-	gchar *string;
-
-	if (brasero_task_get_action_string (task, action, &string) != BRASERO_BURN_OK)
-		string = g_strdup (brasero_burn_action_to_string (action));
-
-	brasero_tool_dialog_set_action (self,
-					action,
-					string);
-	g_free (string);
-}
-
-BraseroBurnResult
-brasero_tool_dialog_run_job (BraseroToolDialog *self,
-			     BraseroJob *job,
-			     const BraseroTrackSource *track,
-			     BraseroTrackSource **retval,
-			     GError **error)
-{
-	BraseroTask *task;
-	BraseroBurnResult result;
-
-	g_object_ref (job);
-
-	result = brasero_job_set_source (job,
-					 track,
-					 error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	result = brasero_imager_set_output (BRASERO_IMAGER (job),
-					    NULL,
-					    TRUE, /* we don't overwrite */
-					    TRUE, /* we clean everything */
-					    error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	task = brasero_task_new ();
-	g_signal_connect (task,
-			  "progress_changed",
-			  G_CALLBACK (brasero_tool_dialog_job_progress_changed),
-			  self);
-	g_signal_connect (task,
-			  "action_changed",
-			  G_CALLBACK (brasero_tool_dialog_job_action_changed),
-			  self);
-
-	self->priv->job = job;
-
-	brasero_job_set_task (job, task);
-	result = brasero_imager_get_track (BRASERO_IMAGER (job),
-					   retval,
-					   error);
-	brasero_job_set_task (job, NULL);
-	g_object_unref (task);
-
-	self->priv->job = NULL;
-	g_object_unref (job);
-
-	return result;
-}
-
-void
-brasero_tool_dialog_run (BraseroToolDialog *self)
-{
-	BraseroToolDialogClass *klass;
-	NautilusBurnDrive *drive;
-	BraseroMediumInfo media;
-	gboolean close = FALSE;
-	GdkCursor *cursor;
-
-	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (self->priv->selector),
-					      &drive,
-					      NULL);
-
-	/* set up */
-	gtk_widget_set_sensitive (self->priv->upper_box, FALSE);
-	gtk_widget_set_sensitive (self->priv->lower_box, TRUE);
-	gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), FALSE);
-
-	cursor = gdk_cursor_new (GDK_WATCH);
-	gdk_window_set_cursor (GTK_WIDGET (self)->window, cursor);
-	gdk_cursor_unref (cursor);
-
-	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CANCEL);
-
-	/* check the contents of the drive */
-	media = NCB_MEDIA_GET_STATUS (drive);
-	if (media == BRASERO_MEDIUM_NONE) {
-		brasero_tool_dialog_no_media (self);
-		goto end;
-	}
-	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
-		/* error out */
-		brasero_tool_dialog_media_error (self);
-		goto end;
-	}
-	else if (media == BRASERO_MEDIUM_BUSY) {
-		brasero_tool_dialog_media_busy (self);
-		goto end;
-	}
-
-	self->priv->running = TRUE;
-	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
-	if (klass->activate)
-		close = klass->activate (self, drive);
-	self->priv->running = FALSE;
-
-	if (close || self->priv->close) {
-		gtk_widget_destroy (GTK_WIDGET (self));
-		return;
-	}
-
-end:
-	gdk_window_set_cursor (GTK_WIDGET (self)->window, NULL);
-	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CLOSE);
-
-	gtk_widget_set_sensitive (self->priv->upper_box, TRUE);
-	gtk_widget_set_sensitive (self->priv->lower_box, FALSE);
-	gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
-
-	brasero_tool_dialog_set_progress (self, -1.0, -1.0, -1, -1, -1);
-	brasero_tool_dialog_set_action (self, BRASERO_BURN_ACTION_NONE, NULL);
-}
-
-void
-brasero_tool_dialog_set_active (BraseroToolDialog *self,
-				NautilusBurnDrive *drive)
-{
-	brasero_recorder_selection_set_drive (BRASERO_RECORDER_SELECTION (self->priv->selector), drive);
-}
-
-BraseroMediumInfo
-brasero_tool_dialog_get_media (BraseroToolDialog *self)
-{
-	BraseroMediumInfo media;
-
-	brasero_recorder_selection_get_media (BRASERO_RECORDER_SELECTION (self->priv->selector),
-					      &media);
-	return media;
-}
-
 NautilusBurnDrive *
 brasero_tool_dialog_get_drive (BraseroToolDialog *self)
 {
-	NautilusBurnDrive *drive;
+	NautilusBurnDrive *drive = NULL;
 
-	brasero_recorder_selection_get_drive (BRASERO_RECORDER_SELECTION (self->priv->selector),
-					      &drive,
-					      NULL);
-
+	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector), &drive);
 	return drive;
 }
 
 static void
-brasero_tool_dialog_button_clicked (GtkButton *button,
-				    BraseroToolDialog *self)
-{
-	brasero_tool_dialog_run (self);
-}
-
-static void
-brasero_tool_dialog_device_changed_cb (BraseroRecorderSelection *selection,
-				       BraseroMediumInfo media,
-				       BraseroToolDialog *self)
+brasero_tool_dialog_drive_changed_cb (BraseroDriveSelection *selection,
+				      NautilusBurnDrive *drive,
+				      BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
-	if (klass->media_changed)
-		klass->media_changed (self, media);
+	if (klass->drive_changed)
+		klass->drive_changed (self, drive);
 }
 
 static gboolean
-brasero_tool_dialog_delete (GtkWidget *widget, GdkEventAny *event)
+brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 {
-	BraseroToolDialog *self;
-	BraseroToolDialogClass *klass;
+	gint result;
+	GtkWidget *button;
+	GtkWidget *message;
 
-	self = BRASERO_TOOL_DIALOG (widget);
+	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					  GTK_DIALOG_DESTROY_WITH_PARENT|
+					  GTK_DIALOG_MODAL,
+					  GTK_MESSAGE_WARNING,
+					  GTK_BUTTONS_NONE,
+					  _("Do you really want to quit?"));
 
-	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
-	if (klass->cancel)
-		return klass->cancel (self);
+	gtk_window_set_title (GTK_WINDOW (message), _("Confirm"));
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+						  _("Interrupting the process may make disc unusable."));
+	gtk_dialog_add_buttons (GTK_DIALOG (message),
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				NULL);
+
+	button = brasero_utils_make_button (_("Continue"),
+					    GTK_STOCK_OK,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show_all (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (message),
+				      button, GTK_RESPONSE_OK);
+
+	result = gtk_dialog_run (GTK_DIALOG (message));
+	gtk_widget_destroy (message);
+
+	if (result != GTK_RESPONSE_OK)
+		return TRUE;
 
 	return FALSE;
+}
+
+static gboolean
+brasero_tool_dialog_cancel (BraseroToolDialog *self)
+{
+	BraseroBurnResult result = BRASERO_BURN_OK;
+
+	if (self->priv->burn)
+		result = brasero_burn_cancel (self->priv->burn, TRUE);
+
+	if (result == BRASERO_BURN_DANGEROUS) {
+		if (brasero_tool_dialog_cancel_dialog (GTK_WIDGET (self))) {
+			if (self->priv->burn)
+				brasero_burn_cancel (self->priv->burn, FALSE);
+		}
+		else
+			return FALSE;
+	}
+
+	self->priv->close = TRUE;
+
+	if (!self->priv->running)
+		gtk_widget_destroy (GTK_WIDGET (self));
+
+	return TRUE;
 }
 
 static void
 brasero_tool_dialog_cancel_clicked_cb (GtkWidget *button,
 				       BraseroToolDialog *dialog)
 {
+	brasero_tool_dialog_cancel (dialog);
+}
+
+static gboolean
+brasero_tool_dialog_delete (GtkWidget *widget, GdkEventAny *event)
+{
 	BraseroToolDialog *self;
-	BraseroToolDialogClass *klass;
 
-	self = BRASERO_TOOL_DIALOG (dialog);
+	self = BRASERO_TOOL_DIALOG (widget);
 
-	if (self->priv->job)
-		brasero_job_cancel (self->priv->job, TRUE);
+	brasero_tool_dialog_cancel (self);
+	return FALSE;
+}
 
-	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
-	if (klass->cancel)
-		self->priv->close = klass->cancel (self);
+static void
+brasero_tool_dialog_finalize (GObject *object)
+{
+	BraseroToolDialog *cobj;
 
-	if (!self->priv->running)
-		gtk_widget_destroy (GTK_WIDGET (self));
+	cobj = BRASERO_TOOL_DIALOG (object);
+
+	g_free (cobj->priv);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_tool_dialog_class_init (BraseroToolDialogClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+	parent_class = g_type_class_peek_parent(klass);
+	object_class->finalize = brasero_tool_dialog_finalize;
+
+	widget_class->delete_event = brasero_tool_dialog_delete;
+}
+
+static void
+brasero_tool_dialog_init (BraseroToolDialog *obj)
+{
+	GtkWidget *title;
+
+	obj->priv = g_new0 (BraseroToolDialogPrivate, 1);
+	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 300);
+
+	/* upper part */
+	obj->priv->upper_box = gtk_vbox_new (FALSE, 0);
+	obj->priv->selector = brasero_drive_selection_new ();
+
+	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
+			    brasero_utils_pack_properties (_("<b>Select a recorder:</b>"),
+							   obj->priv->selector,
+							   NULL),
+			    FALSE, FALSE, 0);
+
+	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (obj->priv->selector),
+						      BRASERO_MEDIUM_REWRITABLE);
+
+	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+			    obj->priv->upper_box,
+			    FALSE,
+			    FALSE,
+			    0);
+	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
+
+	/* lower part */
+	obj->priv->lower_box = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->lower_box), 6);
+	gtk_widget_set_sensitive (obj->priv->lower_box, FALSE);
+	gtk_widget_show (obj->priv->lower_box);
+
+	title = gtk_label_new (_("<b>Progress:</b>"));
+	gtk_label_set_use_markup (GTK_LABEL (title), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
+	gtk_misc_set_padding(GTK_MISC (title), 0, 6);
+	gtk_widget_show (title);
+	gtk_box_pack_start (GTK_BOX (obj->priv->lower_box),
+			    title,
+			    FALSE,
+			    FALSE,
+			    0);
+
+	obj->priv->progress = brasero_burn_progress_new ();
+	gtk_widget_show (obj->priv->progress);
+	g_object_set (G_OBJECT (obj->priv->progress),
+		      "show-info", FALSE,
+		      NULL);
+
+	gtk_box_pack_start (GTK_BOX (obj->priv->lower_box),
+			    obj->priv->progress,
+			    FALSE,
+			    FALSE,
+			    0);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
+			    obj->priv->lower_box,
+			    FALSE,
+			    FALSE,
+			    6);
+
+	/* buttons */
+	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	gtk_widget_show (obj->priv->cancel);
+	g_signal_connect (G_OBJECT (obj->priv->cancel), "clicked",
+			  G_CALLBACK (brasero_tool_dialog_cancel_clicked_cb),
+			  obj);
+	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
+				      obj->priv->cancel,
+				      GTK_RESPONSE_CANCEL);
+
+	g_signal_connect (G_OBJECT (obj->priv->selector),
+			  "drive-changed",
+			  G_CALLBACK (brasero_tool_dialog_drive_changed_cb),
+			  obj);
 }

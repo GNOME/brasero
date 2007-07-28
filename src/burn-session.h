@@ -28,6 +28,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <nautilus-burn-drive.h>
+
+#include "burn-basics.h"
+#include "burn-track.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_BURN_SESSION         (brasero_burn_session_get_type ())
@@ -38,38 +43,253 @@ G_BEGIN_DECLS
 #define BRASERO_BURN_SESSION_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionClass))
 
 typedef struct _BraseroBurnSession BraseroBurnSession;
-typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 typedef struct _BraseroBurnSessionClass BraseroBurnSessionClass;
 
 struct _BraseroBurnSession {
 	GObject parent;
-	BraseroBurnSessionPrivate *priv;
 };
 
 struct _BraseroBurnSessionClass {
 	GObjectClass parent_class;
+
+	/**
+	 * GObject signals could be used to warned of individual property
+	 * changes but since changing one property could change others
+	 * it's better to have one global signal and dialogs asking for
+	 * the session properties they are interested in.
+	 */
+	void	(*input_changed)		(BraseroBurnSession *session);
+
+	void	(*output_changed)		(BraseroBurnSession *session);
 };
 
 GType brasero_burn_session_get_type ();
+
 BraseroBurnSession *brasero_burn_session_new ();
 
-void
-brasero_burn_session_logv (BraseroBurnSession *session,
-			   const gchar *format,
-			   va_list arg_list);
+
+/**
+ * Used to manage tracks for input
+ */
+
+BraseroBurnResult
+brasero_burn_session_add_track (BraseroBurnSession *session,
+				BraseroTrack *track);
+
+GSList *
+brasero_burn_session_get_tracks (BraseroBurnSession *session);
 
 void
-brasero_burn_session_set_log_path (BraseroBurnSession *session,
-				   const gchar *session_path);
+brasero_burn_session_set_input_type (BraseroBurnSession *session,
+				     BraseroTrackType *type);
+
+BraseroTrackDataType
+brasero_burn_session_get_input_type (BraseroBurnSession *session,
+				     BraseroTrackType *type);
+
+const gchar *
+brasero_burn_session_get_label (BraseroBurnSession *session);
+
+void
+brasero_burn_session_set_label (BraseroBurnSession *session,
+				const gchar *label);
+
+
+/**
+ * 
+ */
+
+BraseroBurnResult
+brasero_burn_session_set_rate (BraseroBurnSession *session,
+			       guint64 rate);
+
+guint64
+brasero_burn_session_get_rate (BraseroBurnSession *session);
+
+void
+brasero_burn_session_set_num_copies (BraseroBurnSession *session,
+				     guint copies);
+
+guint
+brasero_burn_session_get_num_copies (BraseroBurnSession *session);
+
+NautilusBurnDrive *
+brasero_burn_session_get_burner (BraseroBurnSession *session);
+
+
+/**
+ * When outputting to an image file burner needs to be set to a drive with FILE type
+ */
+
+void
+brasero_burn_session_set_burner (BraseroBurnSession *session,
+				 NautilusBurnDrive *burner);
+
+BraseroBurnResult
+brasero_burn_session_set_output (BraseroBurnSession *session,
+				 BraseroImageFormat format,
+				 const gchar *path);
+
+BraseroBurnResult
+brasero_burn_session_get_output (BraseroBurnSession *session,
+				 gchar **image,
+				 gchar **toc,
+				 GError **error);
+
+BraseroImageFormat
+brasero_burn_session_get_output_format (BraseroBurnSession *session);
+
+
+/**
+ * Used to deal with the temporary files
+ */
+
+BraseroBurnResult
+brasero_burn_session_set_tmpdir (BraseroBurnSession *session,
+				 const gchar *path);
+
+BraseroBurnResult
+brasero_burn_session_get_tmp_image (BraseroBurnSession *session,
+				    BraseroImageFormat format,
+				    gchar **image,
+				    gchar **toc,
+				    GError **error);
+
+BraseroBurnResult
+brasero_burn_session_get_tmp_file (BraseroBurnSession *session,
+				   gchar **path,
+				   GError **error);
+
+BraseroBurnResult
+brasero_burn_session_get_tmp_dir (BraseroBurnSession *session,
+				  gchar **path,
+				  GError **error);
+
+/**
+ * Session flags
+ */
+
+void
+brasero_burn_session_set_flags (BraseroBurnSession *session,
+			        BraseroBurnFlag flag);
+
+void
+brasero_burn_session_add_flag (BraseroBurnSession *session,
+			       BraseroBurnFlag flag);
+
+void
+brasero_burn_session_remove_flag (BraseroBurnSession *session,
+				  BraseroBurnFlag flag);
+
+BraseroBurnFlag
+brasero_burn_session_get_flags (BraseroBurnSession *session);
+
+
+/**
+ * Allow to save a whole session settings/source and restore it later.
+ */
+
+void
+brasero_burn_session_push_settings (BraseroBurnSession *session);
+void
+brasero_burn_session_pop_settings (BraseroBurnSession *session);
+
+void
+brasero_burn_session_push_tracks (BraseroBurnSession *session);
+void
+brasero_burn_session_pop_tracks (BraseroBurnSession *session);
+
+
+/**
+ * Used to manage the sizes
+ */
+
+BraseroBurnResult
+brasero_burn_session_get_size (BraseroBurnSession *session,
+			       guint64 *blocks,
+			       guint64 *size);
+
+BraseroBurnResult
+brasero_burn_session_set_image_size (BraseroBurnSession *session,
+				     GError **error);
+
+BraseroBurnResult
+brasero_burn_session_check_tmpdir_volume_free_space (BraseroBurnSession *session,
+						     GError **error);
+
+BraseroBurnResult
+brasero_burn_session_check_output_volume_free_space (BraseroBurnSession *session,
+						     GError **error);
+
+/**
+ * Some convenient functions
+ */
+
+gboolean
+brasero_burn_session_same_src_dest_drive (BraseroBurnSession *session);
+
+BraseroMedia
+brasero_burn_session_get_dest_media (BraseroBurnSession *session);
+
+NautilusBurnDrive *
+brasero_burn_session_get_src_drive (BraseroBurnSession *session);
+
+gboolean
+brasero_burn_session_is_dest_file (BraseroBurnSession *session);
+
+
+#define BRASERO_BURN_SESSION_EJECT(session)					\
+(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_EJECT)
+
+#define BRASERO_BURN_SESSION_CHECK_SIZE(session)				\
+(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_CHECK_SIZE)
+
+#define BRASERO_BURN_SESSION_NO_TMP_FILE(session)				\
+(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_NO_TMP_FILES)
+
+#define BRASERO_BURN_SESSION_OVERBURN(session)					\
+(brasero_burn_session_get_flags ((session)) & BRASERO_BURN_FLAG_OVERBURN)
+
+#define BRASERO_BURN_SESSION_APPEND(session)					\
+(brasero_burn_session_get_flags ((session)) & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
+
+
+/**
+ * Used to report wrong checksum
+ */
+
+void
+brasero_burn_session_add_wrong_checksum (BraseroBurnSession *session,
+					 const gchar *path);
+
+GSList *
+brasero_burn_session_get_wrong_checksums (BraseroBurnSession *session);
+
+
+/**
+ * This is to log a session
+ */
 
 const gchar *
 brasero_burn_session_get_log_path (BraseroBurnSession *session);
 
+void
+brasero_burn_session_set_log_path (BraseroBurnSession *session,
+				   const gchar *session_path);
 gboolean
 brasero_burn_session_start (BraseroBurnSession *session);
 
 void
 brasero_burn_session_stop (BraseroBurnSession *session);
+
+void
+brasero_burn_session_logv (BraseroBurnSession *session,
+			   const gchar *format,
+			   va_list arg_list);
+void
+brasero_burn_session_log (BraseroBurnSession *session,
+			  const gchar *format,
+			  ...);
 
 G_END_DECLS
 

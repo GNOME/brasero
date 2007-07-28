@@ -338,16 +338,6 @@ launch_command (NautilusBurnDrive *drive,
 	return command_ok;
 }
 
-/**
- * nautilus_burn_drive_unmount:
- * @drive: #NautilusBurnDrive
- *
- * Unmount the media in a #NautilusBurnDrive.
- *
- * Return value: %TRUE if the media was sucessfully unmounted, %FALSE otherwise.
- *
- * Since: 2.10
- **/
 gboolean
 NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive,
 		   GError **error)
@@ -360,39 +350,6 @@ NCB_DRIVE_MOUNT (NautilusBurnDrive *drive,
 		 GError **error)
 {
 	return launch_command (drive, TRUE, error);
-}
-
-struct _BraseroMountData {
-	gboolean mounted_by_us;
-	NautilusBurnDrive *drive;
-
-	BraseroMountCallback callback_func;
-	gpointer callback_data;
-
-	guint num_attempts;
-	gint mount_timeout;
-};
-typedef struct _BraseroMountData BraseroMountData;
-
-#define MAX_MOUNT_ATTEMPS 10
-#define MOUNT_TIMEOUT 500
-
-static void
-NCB_DRIVE_GET_MOUNT_POINT_RESULT (BraseroMountData *data,
-				  gchar *mount_point,
-				  GError *error)
-{
-	data->callback_func (data->drive,
-			     mount_point,
-			     data->mounted_by_us,
-			     error,
-			     data->callback_data);
-
-	if (error)
-		g_error_free (error);
-
-	nautilus_burn_drive_unref (data->drive);
-	g_free (data);
 }
 
 static GnomeVFSDrive *
@@ -436,28 +393,17 @@ NCB_DRIVE_GET_VFS_DRIVE (NautilusBurnDrive *drive)
 	return NULL;
 }
 
-static gboolean
-NCB_VOLUME_GET_MOUNT_POINT_CB (gpointer callback_data)
+gchar *
+NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
+			    GError **error)
 {
-	BraseroMountData *data = callback_data;
 	GnomeVFSDrive *vfsdrive = NULL;
 	gchar *mount_point = NULL;
 	gchar *local_path = NULL;
 	GList *iter, *volumes;
-	GError *error = NULL;
-
-	if (!nautilus_burn_drive_is_mounted (data->drive)) {
-		/* try to mount the disc */
-		if (!NCB_DRIVE_MOUNT (data->drive, &error)) {
-			NCB_DRIVE_GET_MOUNT_POINT_RESULT (data, NULL, error);
-			return FALSE;
-		}
-
-		data->mounted_by_us = TRUE;
-	}
 
 	/* get the uri for the mount point */
-	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (data->drive);
+	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (drive);
 	volumes = gnome_vfs_drive_get_mounted_volumes (vfsdrive);
 	gnome_vfs_drive_unref (vfsdrive);
 
@@ -471,76 +417,22 @@ NCB_VOLUME_GET_MOUNT_POINT_CB (gpointer callback_data)
 	}
 	gnome_vfs_drive_volume_list_free (volumes);
 
-	if (!mount_point) {
-		/* retry if we couldn't get the mount point this time */
-		data->num_attempts ++;
-		if (data->num_attempts < MAX_MOUNT_ATTEMPS)
-			return TRUE;
-	}
-
 	if (!mount_point || strncmp (mount_point, "file://", 7)) {
 		/* mount point won't be usable */
 		if (mount_point)
 			g_free (mount_point);
 
-		error = g_error_new (BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the disc mount point could not be retrieved."));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the disc mount point could not be retrieved."));
 	}
 	else {
 		local_path = gnome_vfs_get_local_path_from_uri (mount_point);
 		g_free (mount_point);
 	}
 
-	NCB_DRIVE_GET_MOUNT_POINT_RESULT (data, local_path, error);
-	return FALSE;
-}
-
-static BraseroMountHandle *
-NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
-			    BraseroMountCallback callback,
-			    gpointer callback_data)
-{
-	BraseroMountData *data;
-
-	data = g_new0 (BraseroMountData,1);
-
-	data->callback_func = callback;
-	data->callback_data = callback_data;
-
-	data->drive = drive;
-	nautilus_burn_drive_ref (drive);
-
-	data->mount_timeout = g_timeout_add (MOUNT_TIMEOUT,
-					     NCB_VOLUME_GET_MOUNT_POINT_CB,
-					     data);
-
-	return (BraseroMountHandle *) data;
-}
-
-BraseroMountHandle *
-NCB_DRIVE_GET_MOUNT_POINT (NautilusBurnDrive *drive,
-			   BraseroMountCallback callback,
-			   gpointer callback_data)
-{
-	BraseroMountHandle *handle;
-
-	handle = NCB_VOLUME_GET_MOUNT_POINT (drive,
-					     callback,
-					     callback_data);
-
-	return handle;
-}
-
-void
-NCB_DRIVE_GET_MOUNT_POINT_CANCEL (BraseroMountHandle handle)
-{
-	BraseroMountData *data = handle;
-
-	g_source_remove (data->mount_timeout);
-	nautilus_burn_drive_unref (data->drive);
-
-	g_free (data);
+	return local_path;
 }
 
 gint64
@@ -573,8 +465,8 @@ NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
 	return brasero_medium_get_next_writable_address (medium);
 }
 
-gint
-NCB_MEDIA_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive)
+gint64
+NCB_MEDIA_GET_MAX_WRITE_RATE (NautilusBurnDrive *drive)
 {
 	BraseroMedium *medium;
 
@@ -588,7 +480,7 @@ NCB_MEDIA_GET_MAX_WRITE_SPEED (NautilusBurnDrive *drive)
 	return brasero_medium_get_max_write_speed (medium);
 }
 
-BraseroMediumInfo
+BraseroMedia
 NCB_MEDIA_GET_STATUS (NautilusBurnDrive *drive)
 {
 	BraseroMedium *medium;

@@ -1,4 +1,4 @@
-
+SUBDIRS = plugins
 DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
 					-DGDK_DISABLE_DEPRECATED \
 					-DGDK_PIXBUF_DISABLE_DEPRECATED \
@@ -7,22 +7,21 @@ DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
 					-DGNOME_DISABLE_DEPRECATED
 
 INCLUDES = \
-	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	-I./scsi				\
+	-I$(top_srcdir)							\
+	-I$(top_builddir)						\
+	-I./scsi							\
+	-I./md5								\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
-	-DBRASERO_PREFIX=\"$(prefix)\"           		\
-	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
-	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
-	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
-	$(DISABLE_DEPRECATED)				\
+	-DBRASERO_PREFIX=\"$(prefix)\"           			\
+	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   			\
+	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    		\
+	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
+	$(DISABLE_DEPRECATED)						\
 	$(BRASERO_CFLAGS)
 
 CLEANFILES = $(RECMARSHALFILES)
 
-AM_CFLAGS =\
-		 -Wall\
-		 -g
+AM_CFLAGS = -Wall -g
 
 EXTRA_DIST = cd-content-marshal.list
 
@@ -48,13 +47,11 @@ brasero_SOURCES = \
 	mime-filter.h         \
 	play-list.c         \
 	play-list.h         \
-	player.c         \
-	player.h         \
+	brasero-player.c         \
+	brasero-player.h         \
 	menu.h         \
-	recorder-selection.c         \
-	recorder-selection.h         \
-	burn-dialog.c         \
-	burn-dialog.h         \
+	brasero-burn-dialog.c         \
+	brasero-burn-dialog.h         \
 	disc-copy-dialog.c         \
 	disc-copy-dialog.h         \
 	blank-dialog.c         \
@@ -65,54 +62,32 @@ brasero_SOURCES = \
 	inotify-syscalls.h         \
 	filtered-window.c         \
 	filtered-window.h         \
-	disc.c         \
-	disc.h         \
-	data-disc.c         \
-	data-disc.h         \
+	brasero-disc.c         \
+	brasero-disc.h         \
+	brasero-data-disc.c         \
+	brasero-data-disc.h         \
 	audio-disc.c         \
-	audio-disc.h         \
-	project.c         \
-	project.h         \
-	project-type-chooser.c         \
-	project-type-chooser.h         \
-	player-bacon.c         \
-	player-bacon.h         \
+	brasero-audio-disc.h         \
+	brasero-project.c         \
+	brasero-project.h         \
+	brasero-project-type-chooser.c         \
+	brasero-project-type-chooser.h         \
+	brasero-player-bacon.c         \
+	brasero-player-bacon.h         \
 	progress.c         \
-	progress.h         \
+	brasero-progress.h         \
 	song-properties.c         \
 	song-properties.h         \
 	tray.c         \
-	tray.h         \
+	brasero-tray.h         \
 	burn.c         \
 	burn.h         \
 	burn-job.c         \
 	burn-job.h         \
 	burn-process.c         \
 	burn-process.h         \
-	burn-recorder.c         \
-	burn-recorder.h         \
-	burn-imager.c         \
-	burn-imager.h         \
-	burn-mkisofs.c         \
-	burn-mkisofs.h         \
-	burn-cdrecord.c         \
-	burn-cdrecord.h         \
-	burn-cdrdao.c         \
-	burn-cdrdao.h         \
-	burn-growisofs.c         \
-	burn-growisofs.h         \
-	burn-readcd.c         \
-	burn-readcd.h         \
-	burn-mkisofs-base.c         \
-	burn-mkisofs-base.h         \
-	burn-dvd-rw-format.c         \
-	burn-dvd-rw-format.h         \
-	burn-transcode.c         \
-	burn-transcode.h         \
 	burn-basics.h         \
 	burn-basics.c         \
-	burn-common.c         \
-	burn-common.h         \
 	burn-caps.c         \
 	burn-caps.h         \
 	brasero-session.c         \
@@ -126,34 +101,15 @@ brasero_SOURCES = \
 	brasero-layout.h         \
 	brasero-file-chooser.c         \
 	brasero-file-chooser.h         \
-	burn-local-image.c         \
-	burn-local-image.h         \
 	brasero-project-size.c         \
 	brasero-project-size.h         \
-	burn-sum.c         \
-	burn-sum.h         \
-	burn-session.c         \
 	burn-session.h 		\
-	burn-libburn.c         \
-	burn-libburn.h         \
-	burn-libisofs.c         \
-	burn-libisofs.h         \
-	burn-libread-disc.c         \
-	burn-libread-disc.h         \
-	burn-libburn-common.c         \
-	burn-libburn-common.h         \
 	brasero-sum-dialog.c         \
 	brasero-sum-dialog.h         \
 	brasero-tool-dialog.c         \
 	brasero-tool-dialog.h         \
 	brasero-ncb.h         \
 	brasero-ncb.c         \
-	burn-md5.c         \
-	burn-md5.h         \
-	burn-xfer.c         \
-	burn-xfer.h         \
-	brasero-sum-check.c         \
-	brasero-sum-check.h         \
 	burn-task.c         \
 	burn-task.h         \
 	brasero-vfs.c         \
@@ -168,19 +124,14 @@ brasero_SOURCES = \
 	brasero-image-option-dialog.h         \
 	brasero-disc-option-dialog.c         \
 	brasero-disc-option-dialog.h         \
-	burn-toc2cue.c         \
-	burn-toc2cue.h         \
 	brasero-image-type-chooser.c         \
 	brasero-image-type-chooser.h         \
 	burn-iso9660.c         \
 	burn-iso9660.h         \
 	brasero-layout-object.c         \
 	brasero-layout-object.h         \
-	burn-dvdcss.c         \
-	burn-dvdcss.h         \
 	burn-volume.c         \
 	burn-volume.h         \
-	burn-dvdcss-private.h         \
 	burn-susp.c         \
 	burn-susp.h         \
 	burn-iso-field.c         \
@@ -224,9 +175,73 @@ brasero_SOURCES = \
 	scsi/scsi-read-format-capacities.c         \
 	scsi/scsi-read-format-capacities.h         \
 	burn-debug.c         \
-	burn-debug.h 
+	burn-debug.h         \
+	burn-track.h         \
+	burn-plugin.h         \
+	burn-plugin.c         \
+	burn-plugin-private.h         \
+	burn-plugin-manager.c         \
+	burn-plugin-manager.h         \
+	burn-task-ctx.h         \
+	burn-task-item.c         \
+	burn-task-item.h         \
+	burn-task-ctx.c         \
+	burn-mkisofs-base.c         \
+	burn-mkisofs-base.h         \
+	brasero-drive-selection.h         \
+	brasero-drive-selection.c         \
+	brasero-src-selection.h         \
+	brasero-src-selection.c         \
+	brasero-dest-selection.h         \
+	brasero-dest-selection.c         \
+	brasero-drive-info.c         \
+	brasero-drive-info.h         \
+	brasero-drive-properties.h         \
+	brasero-drive-properties.c         \
+	brasero-image-properties.h         \
+	brasero-image-properties.c         \
+	brasero-xfer.c         \
+	brasero-xfer.h         \
+	burn-session.c         \
+	burn-track.c 
 
 brasero_LDADD = $(BRASERO_LIBS)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

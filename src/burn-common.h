@@ -31,19 +31,10 @@
 #include <nautilus-burn-drive.h>
 
 #include "burn-basics.h"
+#include "burn-track.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
-#define MAX_VALUE_AVERAGE	16
-
-long
-brasero_burn_common_compute_time_remaining (gint64 bytes, gdouble bytes_per_sec);
-
-gboolean
-brasero_burn_common_rm (const gchar *uri);
 
 gchar *
 brasero_get_file_complement (BraseroImageFormat format,
@@ -51,32 +42,10 @@ brasero_get_file_complement (BraseroImageFormat format,
 			     const gchar *uri);
 
 BraseroBurnResult
-brasero_burn_common_check_output (gchar **output,
-				  BraseroImageFormat format,
-				  gboolean is_image,
-				  gboolean overwrite,
-				  gchar **toc,
-				  GError **error);
-gdouble
-brasero_burn_common_get_average (GSList **values, gdouble value);
-
-void
-brasero_burn_common_eject_async (NautilusBurnDrive *drive);
-
-BraseroBurnResult
-brasero_burn_common_check_local_file (const gchar *uri,
-				      GError **error);
-
-BraseroBurnResult
 brasero_burn_common_create_tmp_directory (gchar **directory_path,
 					  gboolean overwrite,
 					  GError **error);
 
-BraseroBurnResult
-brasero_common_create_pipe (int pipe [2], GError **error);
-
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN-COMMON_H */

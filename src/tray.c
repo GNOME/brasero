@@ -43,7 +43,7 @@
 
 #include "burn-basics.h"
 #include "utils.h"
-#include "tray.h"
+#include "brasero-tray.h"
 
 static void brasero_tray_icon_class_init (BraseroTrayIconClass *klass);
 static void brasero_tray_icon_init (BraseroTrayIcon *sp);
@@ -282,7 +282,7 @@ brasero_tray_icon_set_action (BraseroTrayIcon *tray,
 			      BraseroBurnAction action)
 {
 	if (action == BRASERO_BURN_ACTION_DRIVE_COPY
-	||  action == BRASERO_BURN_ACTION_WRITING)
+	||  action == BRASERO_BURN_ACTION_RECORDING)
 		tray->priv->show_disc = TRUE;
 
 	tray->priv->action = action;

@@ -29,6 +29,9 @@
 #include <glib-object.h>
 
 #include "burn-basics.h"
+#include "burn-job.h"
+#include "burn-task-ctx.h"
+#include "burn-task-item.h"
 
 G_BEGIN_DECLS
 
@@ -40,91 +43,40 @@ G_BEGIN_DECLS
 #define BRASERO_TASK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_TASK, BraseroTaskClass))
 
 typedef struct _BraseroTask BraseroTask;
-typedef struct _BraseroTaskPrivate BraseroTaskPrivate;
 typedef struct _BraseroTaskClass BraseroTaskClass;
 
 struct _BraseroTask {
-	GObject parent;
-	BraseroTaskPrivate *priv;
+	BraseroTaskCtx parent;
 };
 
 struct _BraseroTaskClass {
-	GObjectClass parent_class;
-
-	/* signals */
-	void			(*progress_changed)	(BraseroTask *task,
-							 gdouble fraction,
-							 glong remaining_time);
-	void			(*action_changed)	(BraseroTask *task,
-							 BraseroBurnAction action);
-	void			(*clock_tick)		(BraseroTask *task);
+	BraseroTaskCtxClass parent_class;
 };
 
 GType brasero_task_get_type ();
+
 BraseroTask *brasero_task_new ();
 
+void
+brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item);
+
+void
+brasero_task_reset (BraseroTask *task);
+
 BraseroBurnResult
-brasero_task_start (BraseroTask *task,
+brasero_task_run (BraseroTask *task,
+		  GError **error);
+
+BraseroBurnResult
+brasero_task_check (BraseroTask *task,
 		    GError **error);
-void
-brasero_task_stop (BraseroTask *task,
-		   BraseroBurnResult retval,
-		   GError *error);
 
 BraseroBurnResult
-brasero_task_start_progress (BraseroTask *task,
-			     gboolean force);
+brasero_task_cancel (BraseroTask *task,
+		     gboolean protect);
 
-BraseroBurnResult
-brasero_task_get_rate (BraseroTask *task,
-		       gint64 *rate);
-BraseroBurnResult
-brasero_task_get_average_rate (BraseroTask *task,
-			       gint64 *rate);
-BraseroBurnResult
-brasero_task_get_remaining_time (BraseroTask *task,
-				 long *remaining);
-BraseroBurnResult
-brasero_task_get_total (BraseroTask *task,
-			gint64 *total);
-BraseroBurnResult
-brasero_task_get_written (BraseroTask *task,
-			  gint64 *written);
-BraseroBurnResult
-brasero_task_get_action_string (BraseroTask *task,
-				BraseroBurnAction action,
-				gchar **string);
-BraseroBurnResult
-brasero_task_get_elapsed (BraseroTask *task,
-			  gdouble *elapsed);
-BraseroBurnResult
-brasero_task_get_progress (BraseroTask *task, 
-			   gdouble *progress);
-BraseroBurnResult
-brasero_task_get_action (BraseroTask *task,
-			 BraseroBurnAction *action);
-
-BraseroBurnResult
-brasero_task_set_rate (BraseroTask *task,
-		       gint64 rate);
-BraseroBurnResult
-brasero_task_set_total (BraseroTask *task,
-			gint64 total);
-BraseroBurnResult
-brasero_task_set_written (BraseroTask *task,
-			  gint64 written);
-BraseroBurnResult
-brasero_task_set_progress (BraseroTask *task,
-			   gdouble progress);
-BraseroBurnResult
-brasero_task_set_action (BraseroTask *task,
-			 BraseroBurnAction action,
-			 const gchar *string,
-			 gboolean force);
-
-/* This is for apps with a jerky current rate (like cdrdao) */
-void
-brasero_task_set_use_average_rate (BraseroTask *task, gboolean value);
+gboolean
+brasero_task_is_running (BraseroTask *task);
 
 G_END_DECLS
 

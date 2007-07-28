@@ -31,6 +31,15 @@
 
 G_BEGIN_DECLS
 
+/* rates are in Kio/sec */
+#define CD_RATE 153600
+#define DVD_RATE 1385000
+
+#define BRASERO_SPEED_TO_RATE_CD(speed)		(guint) ((speed) * CD_RATE)
+#define BRASERO_SPEED_TO_RATE_DVD(speed)	(guint) ((speed) * DVD_RATE)
+#define BRASERO_RATE_TO_SPEED_CD(rate)		(guint) ((rate) / CD_RATE)
+#define BRASERO_RATE_TO_SPEED_DVD(rate)		(guint) ((rate) / DVD_RATE)
+
 #define BRASERO_TYPE_MEDIUM             (brasero_medium_get_type ())
 #define BRASERO_MEDIUM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_MEDIUM, BraseroMedium))
 #define BRASERO_MEDIUM_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_MEDIUM, BraseroMediumClass))
@@ -60,42 +69,70 @@ typedef enum {
 	BRASERO_MEDIUM_UNSUPPORTED		= -2,
 	BRASERO_MEDIUM_BUSY			= -1,
 	BRASERO_MEDIUM_NONE			= 0,
+
+	/* types */
 	BRASERO_MEDIUM_FILE			= 1,
-	BRASERO_MEDIUM_DVD			= 1 << 1,
-	BRASERO_MEDIUM_CD			= 1 << 2,
+
+	BRASERO_MEDIUM_CD			= 1 << 1,
+
+	BRASERO_MEDIUM_DVD			= 1 << 2,
+
 	BRASERO_MEDIUM_RAM			= 1 << 3,
+
 	BRASERO_MEDIUM_BD			= 1 << 4,
-	BRASERO_MEDIUM_BLANK			= 1 << 5,
-	BRASERO_MEDIUM_HAS_DATA			= 1 << 6,
-	BRASERO_MEDIUM_HAS_AUDIO		= 1 << 7,
-	BRASERO_MEDIUM_REWRITABLE		= 1 << 8,
-	BRASERO_MEDIUM_WRITABLE			= 1 << 9,
-	BRASERO_MEDIUM_APPENDABLE		= 1 << 10,
-	BRASERO_MEDIUM_PLUS			= 1 << 11,
-	BRASERO_MEDIUM_DL			= 1 << 12,
-	BRASERO_MEDIUM_JUMP			= 1 << 13,
-	BRASERO_MEDIUM_SEQUENTIAL		= 1 << 14,
-	BRASERO_MEDIUM_RESTRICTED		= 1 << 15,
-	BRASERO_MEDIUM_PROTECTED		= 1 << 16,
-	BRASERO_MEDIUM_RANDOM			= 1 << 17
 
-} BraseroMediumInfo;
+	/* DVD subtypes */
+	BRASERO_MEDIUM_PLUS			= 1 << 5,
+	BRASERO_MEDIUM_SEQUENTIAL		= 1 << 6,
+	BRASERO_MEDIUM_RESTRICTED		= 1 << 7,
 
+	BRASERO_MEDIUM_DL			= 1 << 8,
+
+	/* BD subtypes */
+	BRASERO_MEDIUM_JUMP			= 1 << 9,
+	BRASERO_MEDIUM_RANDOM			= 1 << 10,
+
+	/* discs attributes */
+	BRASERO_MEDIUM_REWRITABLE		= 1 << 14,
+	BRASERO_MEDIUM_WRITABLE			= 1 << 15,
+	BRASERO_MEDIUM_ROM			= 1 << 16,
+
+	/* status of the disc */
+	BRASERO_MEDIUM_BLANK			= 1 << 17,
+	BRASERO_MEDIUM_CLOSED			= 1 << 18,
+	BRASERO_MEDIUM_APPENDABLE		= 1 << 19,
+
+	BRASERO_MEDIUM_PROTECTED		= 1 << 20,
+	BRASERO_MEDIUM_HAS_DATA			= 1 << 21,
+	BRASERO_MEDIUM_HAS_AUDIO		= 1 << 22,
+} BraseroMedia;
+
+#define BRASERO_MEDIUM_ALL_TYPE		(BRASERO_MEDIUM_CD|		\
+					 BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_DL|		\
+					 BRASERO_MEDIUM_PLUS|		\
+					 BRASERO_MEDIUM_RESTRICTED|	\
+					 BRASERO_MEDIUM_SEQUENTIAL|	\
+					 BRASERO_MEDIUM_ROM|	\
+					 BRASERO_MEDIUM_WRITABLE|	\
+					 BRASERO_MEDIUM_REWRITABLE)
+#define BRASERO_MEDIUM_CDROM		(BRASERO_MEDIUM_CD|		\
+					 BRASERO_MEDIUM_ROM)
 #define BRASERO_MEDIUM_CDR		(BRASERO_MEDIUM_CD|		\
 					 BRASERO_MEDIUM_WRITABLE)
 #define BRASERO_MEDIUM_CDRW		(BRASERO_MEDIUM_CD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_REWRITABLE)
 #define BRASERO_MEDIUM_DVD_RAM		(BRASERO_MEDIUM_DVD|		\
 					 BRASERO_MEDIUM_RAM)
+#define BRASERO_MEDIUM_DVD_ROM		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_ROM)
 #define BRASERO_MEDIUM_DVDR		(BRASERO_MEDIUM_DVD|		\
+					 BRASERO_MEDIUM_SEQUENTIAL|	\
 					 BRASERO_MEDIUM_WRITABLE)
 #define BRASERO_MEDIUM_DVDRW		(BRASERO_MEDIUM_DVD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
-					 BRASERO_MEDIUM_REWRITABLE|	\
-					 BRASERO_MEDIUM_SEQUENTIAL)
+					 BRASERO_MEDIUM_SEQUENTIAL|	\
+					 BRASERO_MEDIUM_REWRITABLE)
 #define BRASERO_MEDIUM_DVDRW_RESTRICTED	(BRASERO_MEDIUM_DVD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_REWRITABLE|	\
 					 BRASERO_MEDIUM_RESTRICTED)
 #define BRASERO_MEDIUM_DVDR_DL		(BRASERO_MEDIUM_DVD|		\
@@ -110,7 +147,6 @@ typedef enum {
 					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_PLUS)
 #define BRASERO_MEDIUM_DVDRW_PLUS	(BRASERO_MEDIUM_DVD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_REWRITABLE|	\
 					 BRASERO_MEDIUM_PLUS)
 #define BRASERO_MEDIUM_DVDR_PLUS_DL	(BRASERO_MEDIUM_DVD|		\
@@ -118,13 +154,11 @@ typedef enum {
 					 BRASERO_MEDIUM_PLUS|		\
 					 BRASERO_MEDIUM_DL)
 #define BRASERO_MEDIUM_DVDRW_PLUS_DL	(BRASERO_MEDIUM_DVD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_REWRITABLE|	\
 					 BRASERO_MEDIUM_PLUS|		\
 					 BRASERO_MEDIUM_DL)
-#define BRASERO_MEDIUM_BD_ROM		(BRASERO_MEDIUM_DVD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
-					 BRASERO_MEDIUM_BD)
+#define BRASERO_MEDIUM_BD_ROM		(BRASERO_MEDIUM_BD|		\
+					 BRASERO_MEDIUM_ROM)
 #define BRASERO_MEDIUM_BDR		(BRASERO_MEDIUM_DVD|		\
 					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_BD)
@@ -133,7 +167,6 @@ typedef enum {
 					 BRASERO_MEDIUM_RANDOM|		\
 					 BRASERO_MEDIUM_BD)
 #define BRASERO_MEDIUM_BDRW		(BRASERO_MEDIUM_DVD|		\
-					 BRASERO_MEDIUM_WRITABLE|	\
 					 BRASERO_MEDIUM_REWRITABLE|	\
 					 BRASERO_MEDIUM_PLUS|		\
 					 BRASERO_MEDIUM_BD)
@@ -141,6 +174,13 @@ typedef enum {
 #define BRASERO_MEDIUM_VALID(media)	((media) != BRASERO_MEDIUM_NONE		\
 					&& (media) != BRASERO_MEDIUM_BUSY	\
 					&& (media) != BRASERO_MEDIUM_UNSUPPORTED)
+
+
+#define BRASERO_MEDIUM_TYPE(media)	((media) & 0x001F)
+#define BRASERO_MEDIUM_ATTR(media)	((media) & 0x1C000)
+#define BRASERO_MEDIUM_STATUS(media)	((media) & 0xE0000)
+#define BRASERO_MEDIUM_SUBTYPE(media)	((media) & 0x07E0)
+#define BRASERO_MEDIUM_INFO(media)	((media) & 0x700000)
 
 #define BRASERO_MEDIUM_IS(media, type)	(((media)&(type))==(type))
 
@@ -162,7 +202,7 @@ struct _BraseroMediumTrack {
 };
 typedef struct _BraseroMediumTrack BraseroMediumTrack;
 
-BraseroMediumInfo
+BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium);
 
 GSList *
@@ -174,7 +214,7 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium);
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium);
 
-gint
+gint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium);
 
 void

@@ -26,26 +26,53 @@
 #define _BURN_DEBUG_H
 
 #include <glib.h>
+#include <gmodule.h>
+
+#include "burn-medium.h"
+#include "burn-track.h"
+#include "burn-plugin.h"
 
 G_BEGIN_DECLS
 
-#define BRASERO_BURN_LOG_DOMAIN				"BraseroBurn"
+#define BRASERO_BURN_LOG_DOMAIN					"BraseroBurn"
+
 #define BRASERO_BURN_LOG(format, ...)				\
 		brasero_burn_debug_message (G_STRLOC,		\
 					    format,		\
 					    ##__VA_ARGS__);
-#define BRASERO_BURN_LOGV(format)				\
-	{							\
-		va_list args_list;				\
-		va_start (args_list, format);			\
+
+#define BRASERO_BURN_LOGV(format, args_list)			\
 		brasero_burn_debug_messagev (G_STRLOC,		\
 					     format,		\
-					     args_list);	\
-		va_end (args_list);				\
-	}
+					     args_list);
 
+#define BRASERO_BURN_LOG_WITH_TYPE(type_MACRO, flags_MACRO, format, ...)	\
+		BRASERO_BURN_LOG_WITH_FULL_TYPE ((type_MACRO)->type,		\
+						 (type_MACRO)->subtype.media,	\
+						 flags_MACRO,			\
+						 format,			\
+						 ##__VA_ARGS__);
+
+#define BRASERO_BURN_LOG_WITH_FULL_TYPE(type_MACRO, subtype_MACRO, flags_MACRO, format, ...)	\
+		brasero_burn_debug_track_type_message ((type_MACRO),				\
+						       (subtype_MACRO),				\
+						       (flags_MACRO),				\
+						       G_STRLOC,				\
+						       format,					\
+						       ##__VA_ARGS__);
 void
 brasero_burn_set_debug (gboolean debug_value);
+
+void
+brasero_burn_debug_setup_module (GModule *handle);
+
+void
+brasero_burn_debug_track_type_message (BraseroTrackDataType type,
+				       guint subtype,
+				       BraseroPluginIOFlag flags,
+				       const gchar *location,
+				       const gchar *format,
+				       ...);
 
 void
 brasero_burn_debug_message (const gchar *location,

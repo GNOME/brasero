@@ -29,8 +29,7 @@
 #include <glib-object.h>
 
 #include "burn-basics.h"
-#include "burn-session.h"
-#include "burn-task.h"
+#include "burn-track.h"
 
 G_BEGIN_DECLS
 
@@ -41,217 +40,256 @@ G_BEGIN_DECLS
 #define BRASERO_IS_JOB_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_JOB))
 #define BRASERO_JOB_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_JOB, BraseroJobClass))
 
-typedef struct BraseroJobPrivate BraseroJobPrivate;
+typedef enum {
+	BRASERO_JOB_ACTION_NONE		= 0,
+	BRASERO_JOB_ACTION_SIZE,
+	BRASERO_JOB_ACTION_IMAGE,
+	BRASERO_JOB_ACTION_RECORD,
+	BRASERO_JOB_ACTION_ERASE,
+	BRASERO_JOB_ACTION_CHECKSUM
+} BraseroJobAction;
 
 typedef struct {
 	GObject parent;
-	BraseroJobPrivate *priv;
 } BraseroJob;
 
 typedef struct {
 	GObjectClass parent_class;
 
-	/* virtual functions */
+	/**
+	 * Virtual functions to implement in each object deriving from
+	 * BraseroJob. start is the only one which is compulsory.
+	 */
 
-	BraseroBurnResult	(*start_init)		(BraseroJob *job,
-							 gboolean has_master,
+	BraseroBurnResult	(*init)			(BraseroJob *job,
 							 GError **error);
 
 	BraseroBurnResult	(*start)		(BraseroJob *job,
-							 gint in_fd,
-							 gint *out_fd,
 							 GError **error);
+
+	BraseroBurnResult	(*clock_tick)		(BraseroJob *job);
 
 	BraseroBurnResult	(*stop)			(BraseroJob *job,
-							 BraseroBurnResult retval,
 							 GError **error);
 
-	BraseroBurnResult	(*set_source)		(BraseroJob *job,
-							 const BraseroTrackSource *source,
-							 GError **error);
-	BraseroBurnResult	(*set_rate)		(BraseroJob *job,
-							 gint64 rate);
-
-	/* you should not connect to this signal. It's used internally to 
-	 * "autoconfigure" the backend */
+	/**
+	 * you should not connect to this signal. It's used internally to 
+	 * "autoconfigure" the backend when an error occurs
+	 */
 	BraseroBurnResult	(*error)		(BraseroJob *job,
 							 BraseroBurnError error);
 } BraseroJobClass;
 
 GType brasero_job_get_type ();
 
-BraseroBurnResult
-brasero_job_cancel (BraseroJob *job,
-		    gboolean protect);
+/**
+ * These functions are to be used to get information for running jobs.
+ * They are only available when a job is running.
+ */
 
 BraseroBurnResult
-brasero_job_set_task (BraseroJob *job,
-		      BraseroTask *task);
+brasero_job_get_action (BraseroJob *job, BraseroJobAction *action);
+
 BraseroBurnResult
-brasero_job_get_task (BraseroJob *job,
-		      BraseroTask **task,
-		      BraseroJob **leader);
+brasero_job_get_flags (BraseroJob *job, BraseroBurnFlag *flags);
+
+BraseroBurnResult
+brasero_job_get_fd_in (BraseroJob *job, int *fd_in);
+
+BraseroBurnResult
+brasero_job_get_tracks (BraseroJob *job, GSList **tracks);
+
+BraseroBurnResult
+brasero_job_get_done_tracks (BraseroJob *job, GSList **tracks);
+
+BraseroBurnResult
+brasero_job_get_current_track (BraseroJob *job, BraseroTrack **track);
+
+BraseroBurnResult
+brasero_job_get_input_type (BraseroJob *job, BraseroTrackType *type);
+
+BraseroBurnResult
+brasero_job_get_audio_title (BraseroJob *job, gchar **album);
+
+BraseroBurnResult
+brasero_job_get_data_label (BraseroJob *job, gchar **label);
+
+BraseroBurnResult
+brasero_job_get_session_size (BraseroJob *job, guint64 *blocks, guint64 *size);
+
+/**
+ * Used to get information of the destination media
+ */
+
+BraseroBurnResult
+brasero_job_get_device (BraseroJob *job, gchar **device);
+
+BraseroBurnResult
+brasero_job_get_media (BraseroJob *job, BraseroMedia *media);
+
+BraseroBurnResult
+brasero_job_get_last_session_address (BraseroJob *job, guint64 *address);
+
+BraseroBurnResult
+brasero_job_get_next_writable_address (BraseroJob *job, guint64 *address);
+
+BraseroBurnResult
+brasero_job_get_rate (BraseroJob *job, guint64 *rate);
+
+BraseroBurnResult
+brasero_job_get_speed (BraseroJob *self, guint *speed);
+
+BraseroBurnResult
+brasero_job_get_max_rate (BraseroJob *job, guint64 *rate);
+
+BraseroBurnResult
+brasero_job_get_max_speed (BraseroJob *job, guint *speed);
+
+/**
+ * necessary for objects imaging either to another or to a file
+ */
+
+BraseroBurnResult
+brasero_job_get_output_type (BraseroJob *job, BraseroTrackType *type);
+
+BraseroBurnResult
+brasero_job_get_fd_out (BraseroJob *job, int *fd_out);
+
+BraseroBurnResult
+brasero_job_get_image_output (BraseroJob *job,
+			      gchar **image,
+			      gchar **toc);
+BraseroBurnResult
+brasero_job_get_audio_output (BraseroJob *job,
+			      gchar **output);
+
+/**
+ * get a temporary file that will be deleted once the session is finished
+ */
+ 
+BraseroBurnResult
+brasero_job_get_tmp_file (BraseroJob *job,
+			  gchar **output,
+			  GError **error);
+
+BraseroBurnResult
+brasero_job_get_tmp_dir (BraseroJob *job,
+			 gchar **path,
+			 GError **error);
+
+/**
+ * Used to give job results and tell when a job has finished
+ */
+
+BraseroBurnResult
+brasero_job_finished (BraseroJob *job,
+		      BraseroTrack *track);
+
+BraseroBurnResult
+brasero_job_error (BraseroJob *job,
+		   GError *error);
+
+/**
+ * Used to start progress reporting and starts an internal timer to keep track
+ * of remaining time among other things
+ */
+
+BraseroBurnResult
+brasero_job_start_progress (BraseroJob *job,
+			    gboolean force);
+
+/**
+ * task progress report: you can use only some of these functions
+ */
 
 BraseroBurnResult
 brasero_job_set_rate (BraseroJob *job,
 		      gint64 rate);
+BraseroBurnResult
+brasero_job_set_written (BraseroJob *job,
+			 gint64 written);
+BraseroBurnResult
+brasero_job_set_progress (BraseroJob *job,
+			  gdouble progress);
+BraseroBurnResult
+brasero_job_set_current_action (BraseroJob *job,
+				BraseroBurnAction action,
+				const gchar *string,
+				gboolean force);
+BraseroBurnResult
+brasero_job_get_current_action (BraseroJob *job,
+				BraseroBurnAction *action);
+BraseroBurnResult
+brasero_job_set_current_track_size (BraseroJob *job,
+				    guint64 block_size,
+				    guint64 sectors,
+				    gint64 size);
 
 BraseroBurnResult
-brasero_job_set_source (BraseroJob *job,
-			const BraseroTrackSource *source,
-			GError **error);
+brasero_job_add_wrong_checksum (BraseroJob *job,
+				const gchar *path);
 
-gboolean
-brasero_job_is_running (BraseroJob *job);
+/**
+ * Used to tell it's (or not) dangerous to interrupt this job
+ */
 
-/* The following macros and functions are for implementation purposes */
-
-/* logging facilities */
 void
-brasero_job_set_session (BraseroJob *job,
-			 BraseroBurnSession *session);
+brasero_job_set_dangerous (BraseroJob *job, gboolean value);
+
+/**
+ * This is for apps with a jerky current rate (like cdrdao)
+ */
+
+BraseroBurnResult
+brasero_job_set_use_average_rate (BraseroJob *job,
+				  gboolean value);
+
+/**
+ * logging facilities
+ */
 
 void
 brasero_job_log_message (BraseroJob *job,
+			 const gchar *location,
 			 const gchar *format,
 			 ...);
 
 #define BRASERO_JOB_LOG(job, message, ...) 			\
 {								\
 	gchar *format;						\
-	format = g_strdup_printf ("%s (%s) %s",			\
-				  G_STRINGIFY_ARG (job),	\
+	format = g_strdup_printf ("%s %s",			\
 				  G_OBJECT_TYPE_NAME (job),	\
 				  message);			\
 	brasero_job_log_message (BRASERO_JOB (job),		\
+				 G_STRLOC,			\
 				 format,		 	\
 				 ##__VA_ARGS__);		\
 	g_free (format);					\
 }
-#define BRASERO_JOB_LOG_ARG(job, message, ...)		\
-{							\
-	gchar *format;					\
-	format = g_strdup_printf ("\t%s",		\
+#define BRASERO_JOB_LOG_ARG(job, message, ...)			\
+{								\
+	gchar *format;						\
+	format = g_strdup_printf ("\t%s",			\
 				  (gchar*) message);		\
-	brasero_job_log_message (BRASERO_JOB (job),	\
-				 format,		\
-				 ##__VA_ARGS__);	\
-	g_free (format);				\
+	brasero_job_log_message (BRASERO_JOB (job),		\
+				 G_STRLOC,			\
+				 format,			\
+				 ##__VA_ARGS__);		\
+	g_free (format);					\
 }
 
 #define BRASERO_JOB_NOT_SUPPORTED(job) 					\
 	{								\
-		BRASERO_JOB_LOG (job,					\
-				 "unsupported operation (in %s at %s)",	\
-				 G_STRFUNC,				\
-				 G_STRLOC);				\
+		BRASERO_JOB_LOG (job, "unsupported operation");		\
 		return BRASERO_BURN_NOT_SUPPORTED;			\
 	}
 
-#define BRASERO_JOB_NOT_READY(job)					\
-	{								\
-		BRASERO_JOB_LOG (job,					\
-				 "not ready to operate (in %s at %s)",	\
-				 G_STRFUNC,				\
-				 G_STRLOC);				\
-		return BRASERO_BURN_NOT_READY;				\
+#define BRASERO_JOB_NOT_READY(job)						\
+	{									\
+		BRASERO_JOB_LOG (job, "not ready to operate");	\
+		return BRASERO_BURN_NOT_READY;					\
 	}
 
-/* task progress report */
-#define BRASERO_JOB_TASK_CONNECT_TO_CLOCK(job, function, clock_id)	\
-{									\
-	BraseroTask *task = NULL;					\
-	brasero_job_get_task (BRASERO_JOB (job), &task,  NULL);		\
-	if (task) {							\
-		BRASERO_JOB_LOG (job, "connect_to_clock");		\
-		clock_id = g_signal_connect (task,			\
-					     "clock-tick",		\
-					     G_CALLBACK (function),	\
-					     job);			\
-	}								\
-}
-
-#define BRASERO_JOB_TASK_DISCONNECT_FROM_CLOCK(job, clock_id)		\
-{									\
-	BraseroTask *task = NULL;					\
-	brasero_job_get_task (BRASERO_JOB (job), &task,  NULL);		\
-	if (task && clock_id) {							\
-		BRASERO_JOB_LOG (job, "disconnect_from_clock");		\
-		g_signal_handler_disconnect (task, clock_id);		\
-		clock_id = 0;						\
-	}								\
-}
-
-#define BRASERO_JOB_TASK_SET_ACTION(job, action, string, force)		\
-{									\
-	BraseroTask *task = NULL;					\
-	brasero_job_get_task (BRASERO_JOB (job), &task,  NULL);		\
-	if (task) {							\
-		BRASERO_JOB_LOG (job, "set_action");			\
-		brasero_task_set_action (task, action, string, force);	\
-	}								\
-}
-
-#define BRASERO_JOB_TASK_GET_ACTION(job, action)			\
-{									\
-	BraseroTask *task = NULL;					\
-	brasero_job_get_task (BRASERO_JOB (job), &task,  NULL);		\
-	if (task) {							\
-		BRASERO_JOB_LOG (job, "get_action");		\
-		brasero_task_get_action (task, action);			\
-	}								\
-}
-
-
-#define BRASERO_JOB_TASK_SET(job, action, info, function)	\
-{								\
-	BraseroTask *task = NULL;				\
-	brasero_job_get_task (BRASERO_JOB (job), &task,  NULL);	\
-	if (task) {						\
-		BRASERO_JOB_LOG (job, action);			\
-		function (task, info);				\
-	}							\
-}
-
-#define BRASERO_JOB_TASK_SET_PROGRESS(job, progress)				\
-	BRASERO_JOB_TASK_SET (job, "set_progress", progress, brasero_task_set_progress);
-
-#define BRASERO_JOB_TASK_SET_WRITTEN(job, written)				\
-	BRASERO_JOB_TASK_SET (job, "set_written", written, brasero_task_set_written)
-
-#define BRASERO_JOB_TASK_SET_TOTAL(job, total)					\
-	BRASERO_JOB_TASK_SET (job, "set_total", total, brasero_task_set_total)
-
-#define BRASERO_JOB_TASK_SET_RATE(job, rate)					\
-	BRASERO_JOB_TASK_SET (job, "set_rate", rate, brasero_task_set_rate)
-
-#define BRASERO_JOB_TASK_SET_USE_AVERAGE_RATE(job, value)					\
-	BRASERO_JOB_TASK_SET (job, "set_use_average_rate", value, brasero_task_set_use_average_rate)
-
-/* job activation */
-BraseroBurnResult
-brasero_job_run (BraseroJob *last_job, GError **error);
-BraseroBurnResult
-brasero_job_finished (BraseroJob *job);
-BraseroBurnResult
-brasero_job_error (BraseroJob *job, GError *error);
-
-#define BRASERO_JOB_TASK_START_PROGRESS(job, force)				\
-	BRASERO_JOB_TASK_SET (job, "start_progress", force, brasero_task_start_progress);
-
-void
-brasero_job_set_dangerous (BraseroJob *job, gboolean value);
-
-/* slave management */
-BraseroJob *
-brasero_job_get_slave (BraseroJob *master);
-BraseroBurnResult
-brasero_job_set_slave (BraseroJob *master, BraseroJob *slave);
-
-void
-brasero_job_set_run_slave (BraseroJob *job, gboolean run_slave);
-void
-brasero_job_set_relay_slave_signals (BraseroJob *job, gboolean relay);
 
 G_END_DECLS
 

@@ -233,69 +233,7 @@ brasero_burn_common_check_output (gchar **output,
 	return BRASERO_BURN_OK;
 }
 
-gdouble
-brasero_burn_common_get_average (GSList **values, gdouble value)
-{
-	const unsigned int scale = 10000;
-	unsigned int num = 0;
-	gdouble average;
-	gint32 int_value;
-	GSList *l;
 
-	if (value * scale < G_MAXINT)
-		int_value = (gint32) ceil (scale * value);
-	else if (value / scale < G_MAXINT)
-		int_value = (gint32) ceil (-1.0 * value / scale);
-	else
-		return value;
-		
-	*values = g_slist_prepend (*values, GINT_TO_POINTER (int_value));
-
-	average = 0;
-	for (l = *values; l; l = l->next) {
-		gdouble r = (gdouble) GPOINTER_TO_INT (l->data);
-
-		if (r < 0)
-			r *= scale * -1.0;
-		else
-			r /= scale;
-
-		average += r;
-		num++;
-		if (num == MAX_VALUE_AVERAGE && l->next)
-			l = g_slist_delete_link (l, l->next);
-	}
-
-	average /= num;
-	return average;
-}
-
-static gpointer
-_eject_async (gpointer data)
-{
-	NautilusBurnDrive *drive = NAUTILUS_BURN_DRIVE (data);
-
-	nautilus_burn_drive_eject (drive);
-	nautilus_burn_drive_unref (drive);
-
-	return NULL;
-}
-
-void
-brasero_burn_common_eject_async (NautilusBurnDrive *drive)
-{
-	GError *error = NULL;
-
-	nautilus_burn_drive_ref (drive);
-	g_thread_create (_eject_async, drive, FALSE, &error);
-	if (error) {
-		g_warning ("Could not create thread %s\n", error->message);
-		g_error_free (error);
-
-		nautilus_burn_drive_unref (drive);
-		nautilus_burn_drive_eject (drive);
-	}
-}
 
 BraseroBurnResult
 brasero_burn_common_check_local_file (const gchar *uri, GError **error)
@@ -306,7 +244,6 @@ brasero_burn_common_check_local_file (const gchar *uri, GError **error)
 
 	/* since file is local no need to look it up asynchronously */
 	info = gnome_vfs_file_info_new ();
-
 	res = gnome_vfs_get_file_info (uri,
 				       info,
 				       GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS);
@@ -458,61 +395,6 @@ brasero_burn_common_create_tmp_directory (gchar **directory_path,
 		}
 
 		*directory_path = tmpdir;
-	}
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_common_create_pipe (int fd [2], GError **error)
-{
-	long flags = 0;
-
-	/* now we generate the data, piping it to cdrecord presumably */
-	if (pipe (fd)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the pipe couldn't be created (%s)"),
-			     strerror (errno));
-		return BRASERO_BURN_ERR;
-	}
-
-	if (fcntl (fd [0], F_GETFL, &flags) != -1) {
-		flags |= O_NONBLOCK;
-		if (fcntl (fd [0], F_SETFL, flags) == -1) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("couldn't set non blocking mode"));
-			return BRASERO_BURN_ERR;
-		}
-	}
-	else {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("couldn't get pipe flags"));
-		return BRASERO_BURN_ERR;
-	}
-
-	flags = 0;
-	if (fcntl (fd [1], F_GETFL, &flags) != -1) {
-		flags |= O_NONBLOCK;
-		if (fcntl (fd [1], F_SETFL, flags) == -1) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("couldn't set non blocking mode"));
-			return BRASERO_BURN_ERR;
-		}
-	}
-	else {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("couldn't get pipe flags"));
-		return BRASERO_BURN_ERR;
 	}
 
 	return BRASERO_BURN_OK;
