@@ -57,7 +57,6 @@
 #include "brasero-ncb.h"
 #include "brasero-xfer.h"
 #include "burn-basics.h"
-#include "burn-sum.h"
 #include "burn-debug.h"
 #include "burn.h"
 #include "utils.h"
