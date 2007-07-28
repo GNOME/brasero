@@ -248,14 +248,18 @@ brasero_task_stop (BraseroTask *task,
 
 	priv = BRASERO_TASK_PRIVATE (task);
 
+	/* brasero_job_error/brasero_job_finished should not be called during
+	 * ::init and ::start. Instead a job should return any error directly */
 	result = brasero_task_send_stop_signal (task, retval, &error);
 
 	priv->retval = retval;
 	priv->error = error;
 
-	if (priv->loop
-	&&  g_main_loop_is_running (priv->loop))
+	if (priv->loop && g_main_loop_is_running (priv->loop))
 		g_main_loop_quit (priv->loop);
+	else
+		BRASERO_BURN_LOG ("Task was asked to stop (%i/%i) during ::init or ::start",
+				  result, retval);
 }
 
 BraseroBurnResult
@@ -392,7 +396,10 @@ brasero_task_start (BraseroTask *self,
 		if (result == BRASERO_BURN_NOT_RUNNING) {
 			/* some jobs don't need to/can't run in fake mode and so
 			 * return this value to be skipped. we don't go any
-			 * further but run all previous jobs which accepted */
+			 * further but run all previous jobs which accepted.
+			 * NOTE: it is strictly forbidden for a job to call 
+			 * brasero_job_finished within an init method. Only 
+			 * brasero_job_error can be called from ::init. */
 			BRASERO_BURN_LOG ("init method skipped for %s",
 					  G_OBJECT_TYPE_NAME (item));
 			last = item;
@@ -408,6 +415,16 @@ brasero_task_start (BraseroTask *self,
 	/* now start from the slave up to the master */
 	for (item = first; item != last; item = brasero_task_item_next (item)) {
 		result = brasero_task_start_item (self, item, error);
+
+		/* here again some jobs can decide not to run any further since
+		 * their start method determined they didn't need to (see 
+		 * local-track for example). They called  brasero_job_finished
+		 * before the above function returns. */
+		if (result == BRASERO_BURN_NOT_RUNNING) {
+			BRASERO_BURN_LOG ("start method aborted for %s", G_OBJECT_TYPE_NAME (item));
+			return brasero_task_send_stop_signal (self, BRASERO_BURN_OK, error);
+		}
+
 		if (result != BRASERO_BURN_OK)
 			goto error;
 	}

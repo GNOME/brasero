@@ -64,6 +64,12 @@ typedef struct {
 	BraseroBurnResult	(*init)			(BraseroJob *job,
 							 GError **error);
 
+	/**
+	 * returns 	OK if we should carry on
+	 * 		NOT_RUNNING if it completed successfully but task
+	 *		shouldn't go any further
+	 * 		ERROR otherwise
+	 */
 	BraseroBurnResult	(*start)		(BraseroJob *job,
 							 GError **error);
 

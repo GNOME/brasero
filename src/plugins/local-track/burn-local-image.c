@@ -573,8 +573,8 @@ brasero_local_track_start (BraseroJob *job,
 
 	/* see if there is anything to download */
 	if (!priv->nonlocals) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
-		return BRASERO_BURN_OK;
+		BRASERO_JOB_LOG (self, "no foreign URIs");
+		return BRASERO_BURN_NOT_RUNNING;
 	}
 
 	/* first we create a list of all the non local files that need to be
@@ -591,8 +591,8 @@ brasero_local_track_start (BraseroJob *job,
 	/* if there are files in list then download them otherwise stop */
 	if (!callback_data.src_list) {
 		/* that means there were only burn:// uris in nonlocals */
-		brasero_local_track_finished (self);
-		return BRASERO_BURN_OK;
+		BRASERO_JOB_LOG (self, "no foreign URIs");
+		return BRASERO_BURN_NOT_RUNNING;
 	}
 
 	return brasero_local_track_xfer (self,
