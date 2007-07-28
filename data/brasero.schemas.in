@@ -16,6 +16,21 @@
       </schema>
 
       <schema>
+        <key>/schemas/apps/brasero/plugins</key>
+	<applyto>/apps/brasero/plugins</applyto>
+	<owner>brasero</owner>
+	<type>list</type>
+	<list_type>string</list_type>
+	<default>[]</default>
+	<locale name="C">
+	  <short>White list of plugins to use</short>
+	  <long>
+	    Contains the list of plugings brasero will use to burn discs. If set to NULL, brasero will load them all.
+	  </long>
+	</locale>
+      </schema>
+
+      <schema>
         <key>/schemas/apps/brasero/config/activate_checksum</key>
 	<applyto>/apps/brasero/config/activate_checksum</applyto>
 	<owner>brasero</owner>
