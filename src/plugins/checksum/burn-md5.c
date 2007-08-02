@@ -200,29 +200,31 @@ brasero_md5_sum (BraseroMD5Ctx *ctx,
 			return -1;
 
 		/* written_b is used to report progress */
-		ctx->written_b += bytes;
+		ctx->written_b += BLOCK_SIZE;
 
 		/* this is part of the md5 algo */
-		ctx->size [0] += bytes;
-		if (ctx->size [0] < bytes)
+		ctx->size [0] += BLOCK_SIZE;
+		if (ctx->size [0] < BLOCK_SIZE)
 			ctx->size [1] ++;
 
 		brasero_md5_process_block (md5, buffer);
 
-		/* move all pointers forward */
+		/* move pointer forward */
 		buffer += BLOCK_SIZE;
 		bytes -= BLOCK_SIZE;
 	}
 
-	/* it must be a multiple of BLOCK_SIZE */
-	if ((bytes % BLOCK_SIZE) != 0) {
-		/* "acknowledge the last bytes */
+	/* bytes is necessarily < BLOCK_SIZE */
+	if (bytes) {
+		/* "acknowledge the last bytes not processed */
 		ctx->written_b += bytes;
+
+		/* md5 algo */
 		ctx->size [0] += bytes;
 		if (ctx->size [0] < bytes)
 			ctx->size [1] ++;
 
-		return (bytes % BLOCK_SIZE);
+		return bytes;
 	}
 
 	return 0;
@@ -285,6 +287,12 @@ brasero_md5_file (BraseroMD5Ctx *ctx,
 
 	while (limit < 0 || limit >= BLOCK_SIZE) {
 		read_bytes = fread (buffer, 1, BLOCK_SIZE, file);
+		if (!read_bytes) {
+			/* EOF */
+			limit = -1;
+			break;
+		}
+
 		limit -= read_bytes;
 
 		read_bytes = brasero_md5_sum (ctx, md5, buffer, read_bytes);

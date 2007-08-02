@@ -226,11 +226,13 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 
 		handle = g_module_open (path, 0);
 		if (!handle) {
+			g_free (path);
 			BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed");
 			continue;
 		}
 
 		if (!g_module_symbol (handle, "brasero_plugin_register", &function)) {
+			g_free (path);
 			BRASERO_BURN_LOG ("Module can't be loaded: no register function");
 			continue;
 		}

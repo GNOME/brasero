@@ -284,8 +284,7 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 
 	/* get the available image types */
 	output.type = BRASERO_TRACK_TYPE_DISC;
-	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection),
-					   &drive);
+	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
 	output.subtype.media = NCB_MEDIA_GET_STATUS (drive);
 	nautilus_burn_drive_unref (drive);
 

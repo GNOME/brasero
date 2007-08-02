@@ -365,6 +365,10 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 				if (desc->format_type == BRASERO_SCSI_DVDRW_PLUS) {
 					priv->block_num = BRASERO_GET_32 (desc->blocks_num);
 					priv->block_size = BRASERO_GET_24 (desc->type_param);
+
+					/* that can happen */
+					if (!priv->block_size)
+						priv->block_size = 2048;
 					break;
 				}
 			}
@@ -1089,7 +1093,11 @@ brasero_medium_get_contents (BraseroMedium *self,
 		track->start = 0;
 		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 		priv->tracks = g_slist_prepend (priv->tracks, track);
-		brasero_medium_track_get_info (self, track, 1, fd, code);
+		brasero_medium_track_get_info (self,
+					       track,
+					       1,
+					       fd,
+					       code);
 		goto end;
 	}
 

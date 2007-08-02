@@ -211,8 +211,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	gboolean close = FALSE;
 	GdkCursor *cursor;
 
-	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector),
-					   &drive);
+	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector));
 
 	/* set up */
 	gtk_widget_set_sensitive (self->priv->upper_box, FALSE);
@@ -327,10 +326,7 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 NautilusBurnDrive *
 brasero_tool_dialog_get_drive (BraseroToolDialog *self)
 {
-	NautilusBurnDrive *drive = NULL;
-
-	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector), &drive);
-	return drive;
+	return brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector));
 }
 
 static void

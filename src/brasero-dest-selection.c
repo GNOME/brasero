@@ -790,7 +790,7 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 	}
 
 	/* make sure the current displayed drive reflects that */
-	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self), &drive);
+	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self));
 	if (drive && burner && !nautilus_burn_drive_equal (burner, drive)) {
 		brasero_drive_selection_set_drive (BRASERO_DRIVE_SELECTION (self), drive);
 	}
@@ -898,7 +898,7 @@ brasero_dest_selection_set_property (GObject *object,
 		priv->session = session;
 		g_object_ref (session);
 
-		brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object), &drive);
+		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
 		brasero_burn_session_set_burner (session, drive);
 		nautilus_burn_drive_unref (drive);
 

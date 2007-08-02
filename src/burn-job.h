@@ -94,6 +94,10 @@ GType brasero_job_get_type ();
  */
 
 BraseroBurnResult
+brasero_job_set_nonblocking (BraseroJob *self,
+			     GError **error);
+
+BraseroBurnResult
 brasero_job_get_action (BraseroJob *job, BraseroJobAction *action);
 
 BraseroBurnResult

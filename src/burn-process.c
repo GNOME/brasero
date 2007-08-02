@@ -27,6 +27,7 @@
 #endif
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <unistd.h>
 #include <errno.h>
@@ -71,6 +72,9 @@ struct _BraseroProcessPrivate {
 	gint io_out;
 	gint io_err;
 	gint io_in;
+
+	guint watch;
+	guint return_status;
 };
 
 #define BRASERO_PROCESS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROCESS, BraseroProcessPrivate))
@@ -121,6 +125,95 @@ brasero_process_ask_argv (BraseroJob *job,
 	}
 
 	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_process_finished (BraseroProcess *self)
+{
+	BraseroTrackType type;
+	BraseroBurnResult result;
+	BraseroTrack *track = NULL;
+	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
+
+	/* check if an error went undetected */
+	if (priv->return_status) {
+		brasero_job_error (BRASERO_JOB (self),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("process %s ended with an error code (%i)"),
+						G_OBJECT_TYPE_NAME (self),
+						priv->return_status));
+		return BRASERO_BURN_OK;
+	}
+
+	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
+		brasero_job_finished (BRASERO_JOB (self), NULL);
+		return BRASERO_BURN_OK;
+	}
+
+	/* only for the last running job with imaging/recording action */
+	brasero_job_get_action (BRASERO_JOB (self), &action);
+	if (action != BRASERO_JOB_ACTION_IMAGE) {
+		brasero_job_finished (BRASERO_JOB (self), NULL);
+		return BRASERO_BURN_OK;
+	}
+
+	result = brasero_job_get_output_type (BRASERO_JOB (self), &type);
+	if (result != BRASERO_BURN_OK || type.type == BRASERO_TRACK_TYPE_DISC) {
+		brasero_job_finished (BRASERO_JOB (self), NULL);
+		return BRASERO_BURN_OK;
+	}
+
+	if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+		gchar *toc = NULL;
+		gchar *image = NULL;
+
+		track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
+		brasero_job_get_image_output (BRASERO_JOB (self),
+					      &image,
+					      &toc);
+
+		brasero_track_set_image_source (track,
+						image,
+						toc,
+						type.subtype.img_format);
+	}
+	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
+		gchar *uri = NULL;
+
+		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
+		brasero_job_get_audio_output (BRASERO_JOB (self),
+					      &uri);
+		brasero_track_set_audio_source (track,
+						uri,
+						type.subtype.audio_format);
+	}
+
+	brasero_job_finished (BRASERO_JOB (self), track);
+	return BRASERO_BURN_OK;
+}
+
+static gboolean
+brasero_process_watch_child (gpointer data)
+{
+	int status;
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (data);
+
+	if (waitpid (priv->pid, &status, WNOHANG) <= 0)
+		return TRUE;
+
+	/* store the return value it will be checked only if no 
+	 * brasero_job_finished/_error is called before the pipes are closed so
+	 * as to let plugins read stderr / stdout till the end and set a better
+	 * error message or simply decide all went well, in one word override */
+	priv->return_status = WEXITSTATUS (status);
+	priv->watch = 0;
+
+	BRASERO_JOB_LOG (data, "process finished with status %i", WEXITSTATUS (status));
+	brasero_process_finished (BRASERO_PROCESS (data));
+
+	return FALSE;
 }
 
 static gboolean
@@ -249,61 +342,6 @@ brasero_process_read (BraseroProcess *process,
 	return TRUE;
 }
 
-static BraseroBurnResult
-brasero_process_finished (BraseroProcess *self)
-{
-	BraseroTrackType type;
-	BraseroBurnResult result;
-	BraseroTrack *track = NULL;
-	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
-
-	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
-		return BRASERO_BURN_OK;
-	}
-
-	/* only for the last running job with imaging/recording action */
-	brasero_job_get_action (BRASERO_JOB (self), &action);
-	if (action != BRASERO_JOB_ACTION_IMAGE) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
-		return BRASERO_BURN_OK;
-	}
-
-	result = brasero_job_get_output_type (BRASERO_JOB (self), &type);
-	if (result != BRASERO_BURN_OK || type.type == BRASERO_TRACK_TYPE_DISC) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
-		return BRASERO_BURN_OK;
-	}
-
-	if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
-		gchar *toc = NULL;
-		gchar *image = NULL;
-
-		track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-		brasero_job_get_image_output (BRASERO_JOB (self),
-					      &image,
-					      &toc);
-
-		brasero_track_set_image_source (track,
-						image,
-						toc,
-						type.subtype.img_format);
-	}
-	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-		gchar *uri = NULL;
-
-		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-		brasero_job_get_audio_output (BRASERO_JOB (self),
-					      &uri);
-		brasero_track_set_audio_source (track,
-						uri,
-						type.subtype.audio_format);
-	}
-
-	brasero_job_finished (BRASERO_JOB (self), track);
-	return BRASERO_BURN_OK;
-}
-
 static gboolean
 brasero_process_read_stderr (GIOChannel *source,
 			     GIOCondition condition,
@@ -333,11 +371,17 @@ brasero_process_read_stderr (GIOChannel *source,
 
 	g_string_free (priv->err_buffer, TRUE);
 	priv->err_buffer = NULL;
-	
+
 	if (priv->pid
 	&& !priv->io_err
-	&& !priv->io_out)
-		brasero_process_finished (process);
+	&& !priv->io_out) {
+		/* setup a child watch callback to be warned when it finishes so
+		 * as to check the return value for errors.
+		 * need to reap our children by ourselves g_child_watch_add
+		 * doesn't work well with multiple processes. regularly poll
+		 * with waitpid ()*/
+		priv->watch = g_timeout_add (500, brasero_process_watch_child, process);
+	}
 
 	return FALSE;
 }
@@ -376,33 +420,16 @@ brasero_process_read_stdout (GIOChannel *source,
 
 	if (priv->pid
 	&& !priv->io_err
-	&& !priv->io_out)
-		brasero_process_finished (process);
+	&& !priv->io_out) {
+		/* setup a child watch callback to be warned when it finishes so
+		 * as to check the return value for errors.
+		 * need to reap our children by ourselves g_child_watch_add
+		 * doesn't work well with multiple processes. regularly poll
+		 * with waitpid ()*/
+		priv->watch = g_timeout_add (500, brasero_process_watch_child, process);
+	}
 
 	return FALSE;
-}
-
-static void
-brasero_process_setup (gpointer data)
-{
-	BraseroProcessPrivate *priv;
-	BraseroProcess *process;
-	int fd;
-
-	process = BRASERO_PROCESS (data);
-	priv = BRASERO_PROCESS_PRIVATE (process);
-
-	fd = -1;
-	if (brasero_job_get_fd_in (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
-		if (dup2 (fd, 0) == -1)
-			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
-	}
-
-	fd = -1;
-	if (brasero_job_get_fd_out (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
-		if (dup2 (fd, 1) == -1)
-			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
-	}
 }
 
 static GIOChannel *
@@ -426,6 +453,29 @@ brasero_process_setup_channel (BraseroProcess *process,
 
 	g_io_channel_set_close_on_unref (channel, TRUE);
 	return channel;
+}
+
+static void
+brasero_process_setup (gpointer data)
+{
+	BraseroProcessPrivate *priv;
+	BraseroProcess *process;
+	int fd;
+
+	process = BRASERO_PROCESS (data);
+	priv = BRASERO_PROCESS_PRIVATE (process);
+
+	fd = -1;
+	if (brasero_job_get_fd_in (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
+		if (dup2 (fd, 0) == -1)
+			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
+	}
+
+	fd = -1;
+	if (brasero_job_get_fd_out (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
+		if (dup2 (fd, 1) == -1)
+			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
+	}
 }
 
 static BraseroBurnResult
@@ -453,10 +503,12 @@ brasero_process_start (BraseroJob *job, GError **error)
 	read_stdout = (klass->stdout_func &&
 		       brasero_job_get_fd_out (BRASERO_JOB (process), NULL) != BRASERO_BURN_OK);
 
+	priv->return_status = 0;
 	if (!g_spawn_async_with_pipes (NULL,
 				       (gchar **) priv->argv->pdata,
 				       (gchar **) envp,
-				       G_SPAWN_SEARCH_PATH,
+				       G_SPAWN_SEARCH_PATH|
+				       G_SPAWN_DO_NOT_REAP_CHILD,
 				       brasero_process_setup,
 				       process,
 				       &priv->pid,
@@ -494,8 +546,13 @@ brasero_process_stop (BraseroJob *job,
 	process = BRASERO_PROCESS (job);
 	priv = BRASERO_PROCESS_PRIVATE (process);
 
-	/* FIXME! it would be good to know what's the return number of a child
-	 * to make sure we don't miss any error */
+	if (priv->watch) {
+		/* if the child is still running at this stage that means that
+		 * we were cancelled or that we decided to stop ourselves so
+		 * don't check the returned value */
+		g_source_remove (priv->watch);
+		priv->watch = 0;
+	}
 
 	/* it might happen that the slave detected an error triggered by the master
 	 * BEFORE the master so we finish reading whatever is in the pipes to see: 
@@ -600,6 +657,11 @@ static void
 brasero_process_finalize (GObject *object)
 {
 	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (object);
+
+	if (priv->watch) {
+		g_source_remove (priv->watch);
+		priv->watch = 0;
+	}
 
 	if (priv->io_out) {
 		g_source_remove (priv->io_out);

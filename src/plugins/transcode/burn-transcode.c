@@ -912,9 +912,9 @@ foreach_tag (const GstTagList *list,
 {
 	BraseroTrack *track;
 	BraseroSongInfo *info;
-	BraseroBurnAction action;
+	BraseroJobAction action;
 
-	brasero_job_get_current_action (BRASERO_JOB (transcode), &action);
+	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	info = brasero_track_get_audio_info (track);
 
@@ -933,7 +933,7 @@ foreach_tag (const GstTagList *list,
 		if (!info->artist)
 			gst_tag_list_get_string (list, tag, &(info->artist));
 	}
-	else if (action == BRASERO_BURN_ACTION_GETTING_SIZE
+	else if (action == BRASERO_JOB_ACTION_SIZE
 	     &&  !strcmp (tag, GST_TAG_DURATION)) {
 		guint64 duration;
 

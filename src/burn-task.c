@@ -355,6 +355,7 @@ brasero_task_run_real (BraseroTask *self,
 		brasero_task_ctx_report_progress (BRASERO_TASK_CTX (self));
 	}
 
+	brasero_task_ctx_stop_progress (BRASERO_TASK_CTX (self));
 	return priv->retval;	
 }
 
@@ -403,6 +404,7 @@ brasero_task_start (BraseroTask *self,
 			BRASERO_BURN_LOG ("init method skipped for %s",
 					  G_OBJECT_TYPE_NAME (item));
 			last = item;
+			result = BRASERO_BURN_OK;
 			continue;
 		}
 
@@ -413,7 +415,7 @@ brasero_task_start (BraseroTask *self,
 	}	
 
 	/* now start from the slave up to the master */
-	for (item = first; item != last; item = brasero_task_item_next (item)) {
+	for (item = first; item && item != last; item = brasero_task_item_next (item)) {
 		result = brasero_task_start_item (self, item, error);
 
 		/* here again some jobs can decide not to run any further since

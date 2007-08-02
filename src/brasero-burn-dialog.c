@@ -86,6 +86,7 @@ brasero_burn_dialog_tray_close_after_cb (BraseroTrayIcon *tray,
 
 struct BraseroBurnDialogPrivate {
 	BraseroBurn *burn;
+	BraseroTrackDataType input;
 	BraseroBurnSession *session;
 
 	GtkWidget *close_check;
@@ -99,7 +100,6 @@ struct BraseroBurnDialogPrivate {
 };
 
 #define TIMEOUT	10000
-#define WAITED_FOR_DRIVE	"WaitedForDriveKey"
 
 static GObjectClass *parent_class = NULL;
 
@@ -142,6 +142,125 @@ brasero_burn_dialog_class_init (BraseroBurnDialogClass * klass)
 	widget_class->delete_event = brasero_burn_dialog_delete;
 }
 
+/**
+ * NOTE: if input is DISC then media is the media input
+ */
+
+static void
+brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
+				 BraseroTrackDataType input,
+				 BraseroMedia media)
+{
+	gchar *title = NULL;
+	gchar *header = NULL;
+
+	if (media == BRASERO_MEDIUM_FILE) {
+		/* we are creating an image to the hard drive */
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "iso-image-new",
+					      GTK_ICON_SIZE_DIALOG);
+
+		header = g_strdup_printf ("<big><b>Creating image</b></big>");
+		title = g_strdup (_("Creating image"));
+	}
+	else if (media & BRASERO_MEDIUM_DVD) {
+		if (input == BRASERO_TRACK_TYPE_DATA) {
+			title = g_strdup (_("Burning DVD"));
+			header = g_strdup (_("<big><b>Burning data DVD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical-data-new",
+						      GTK_ICON_SIZE_DIALOG);
+		}
+		else if (input == BRASERO_TRACK_TYPE_IMAGE) {
+			title = g_strdup (_("Burning DVD"));
+			header = g_strdup (_("<big><b>Burning image to DVD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical",
+						      GTK_ICON_SIZE_DIALOG);
+		}
+		else if (input == BRASERO_TRACK_TYPE_DISC) {
+			title = g_strdup (_("Copying DVD"));
+			header = g_strdup (_("<big><b>Copying data DVD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						"media-optical-copy",
+						GTK_ICON_SIZE_DIALOG);
+		}
+	}
+	else if (media & BRASERO_MEDIUM_CD) {
+		if (input == BRASERO_TRACK_TYPE_AUDIO) {
+			title = g_strdup (_("Burning CD"));
+			header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical-audio-new",
+						      GTK_ICON_SIZE_DIALOG);
+		}
+		else if (input == BRASERO_TRACK_TYPE_DATA) {
+			title = g_strdup (_("Burning CD"));
+			header = g_strdup_printf (_("<big><b>Burning data CD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical-data-new",
+						      GTK_ICON_SIZE_DIALOG);
+		}
+		else if (input == BRASERO_TRACK_TYPE_DISC) {
+			title = g_strdup (_("Copying CD"));
+			header = g_strdup(_("<big><b>Copying CD</b></big>"));
+
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical-copy",
+						      GTK_ICON_SIZE_DIALOG);
+		}
+		else if (input == BRASERO_TRACK_TYPE_IMAGE) {
+			title = g_strdup (_("Burning CD"));
+			header = g_strdup (_("<big><b>Burning image to CD</b></big>"));
+		
+			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+						      "media-optical",
+						      GTK_ICON_SIZE_DIALOG);
+		}
+	}
+	else if (input == BRASERO_TRACK_TYPE_AUDIO) {
+		title = g_strdup (_("Burning CD"));
+		header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+	}
+	else if (input == BRASERO_TRACK_TYPE_DATA) {
+		title = g_strdup (_("Burning disc"));
+		header = g_strdup_printf (_("<big><b>Burning data disc</b></big>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+	}
+	else if (input == BRASERO_TRACK_TYPE_DISC) {
+		title = g_strdup (_("Copying disc"));
+		header = g_strdup(_("<big><b>Copying disc</b></big>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+	}
+	else if (input == BRASERO_TRACK_TYPE_IMAGE) {
+		title = g_strdup (_("Burning disc"));
+		header = g_strdup (_("<big><b>Burning image to disc</b></big>"));
+		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
+					      "gnome-dev-removable",
+					      GTK_ICON_SIZE_DIALOG);
+	}
+
+
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	g_free (title);
+
+	gtk_label_set_text (GTK_LABEL (dialog->priv->header), header);
+	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
+	g_free (header);
+}
+
 static gchar *
 brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 					   BraseroMedia type,
@@ -152,7 +271,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 	if (type & BRASERO_MEDIUM_HAS_DATA) {
 		if (!insert) {
 			if (type & BRASERO_MEDIUM_WRITABLE) 
-				message = g_strdup (_("replace the disc with the burnt media to perform an integrity check"));
+				message = g_strdup (_("replace the disc with the media to check its integrity"));
 			else if (type & BRASERO_MEDIUM_REWRITABLE)
 				message = g_strdup (_("replace the disc with a rewritable disc holding data."));
 			else
@@ -160,7 +279,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		}
 		else {
 			if (type & BRASERO_MEDIUM_WRITABLE) 
-				message = g_strdup (_("insert the burnt media to perform an integrity check"));
+				message = g_strdup (_("insert the media to check its integrity"));
 			else if (type & BRASERO_MEDIUM_REWRITABLE)
 				message = g_strdup (_("insert a rewritable disc holding data."));
 			else
@@ -228,19 +347,9 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 }
 
 static void
-brasero_burn_dialog_wait_for_insertion (NautilusBurnDriveMonitor *monitor,
-					NautilusBurnDrive *drive,
+brasero_burn_dialog_wait_for_insertion (NautilusBurnDrive *drive,
 					GtkDialog *message)
 {
-	NautilusBurnDrive *waited_drive;
-
-	waited_drive = g_object_get_data (G_OBJECT (message), WAITED_FOR_DRIVE);
-
-	/* we must make sure that the change was triggered
-	 * by the current selected drive */
-	if (!nautilus_burn_drive_equal (drive, waited_drive))
-		return;
-
 	/* we might have a dialog waiting for the 
 	 * insertion of a disc if so close it */
 	gtk_dialog_response (GTK_DIALOG (message), GTK_RESPONSE_OK);
@@ -259,7 +368,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	GtkWindow *window;
 	GtkWidget *message;
 	gboolean hide = FALSE;
-	NautilusBurnDriveMonitor *monitor;
 	gchar *main_message = NULL, *secondary_message = NULL;
 
 	if (!GTK_WIDGET_VISIBLE (dialog)) {
@@ -267,7 +375,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		hide = TRUE;
 	}
 
-	/* FIXME: we should specify the name of the drive where to put the disc */
 	if (drive)
 		drive_name = nautilus_burn_drive_get_name_for_display (drive);
 	else
@@ -364,18 +471,31 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		gtk_window_set_title (GTK_WINDOW (message), _("Waiting for disc replacement"));
 
 	/* connect to signals to be warned when media is inserted */
-	g_object_set_data (G_OBJECT (message), WAITED_FOR_DRIVE, drive);
-
-	monitor = nautilus_burn_get_drive_monitor ();
-	added_id = g_signal_connect_after (monitor,
+	added_id = g_signal_connect_after (drive,
 					   "media-added",
 					   G_CALLBACK (brasero_burn_dialog_wait_for_insertion),
 					   message);
 
 	result = gtk_dialog_run (GTK_DIALOG (message));
 
-	g_signal_handler_disconnect (monitor, added_id);
+	g_signal_handler_disconnect (drive, added_id);
 	gtk_widget_destroy (message);
+
+	/* see if we should update the infos */
+	if (dialog->priv->input == BRASERO_TRACK_TYPE_DISC) {
+		NautilusBurnDrive *src;
+
+		/* see if the drive is the source */
+		src = brasero_burn_session_get_src_drive (dialog->priv->session);
+		if (nautilus_burn_drive_equal (src, drive))
+			brasero_burn_dialog_update_info (dialog,
+							 dialog->priv->input, 
+							 NCB_MEDIA_GET_STATUS (drive));
+	}
+	else
+		brasero_burn_dialog_update_info (dialog,
+						 dialog->priv->input, 
+						 NCB_MEDIA_GET_STATUS (drive));
 
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
@@ -827,151 +947,6 @@ brasero_burn_dialog_activity_stop (BraseroBurnDialog *dialog,
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
-}
-
-static void
-brasero_burn_dialog_update_info (BraseroBurnDialog *dialog)
-{
-	gchar *title = NULL;
-	gchar *header = NULL;
-	BraseroMedia media;
-	BraseroTrackType source;
-	NautilusBurnDrive *drive;
-
-	/* check what drive we should display */
-	brasero_burn_session_get_input_type (dialog->priv->session, &source);
-	if (!BRASERO_BURN_SESSION_NO_TMP_FILE (dialog->priv->session)
-	||   source.type != BRASERO_TRACK_TYPE_DISC) {
-		drive = brasero_burn_session_get_burner (dialog->priv->session);
-
-		if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-			/* we are creating an image to the hard drive */
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      "iso-image-new",
-						      GTK_ICON_SIZE_DIALOG);
-
-			header = g_strdup_printf ("<big><b>Creating image</b></big>");
-			title = g_strdup (_("Creating image"));
-			goto end;
-		}
-	}
-	else
-		drive = brasero_burn_session_get_src_drive (dialog->priv->session);
-
-	media = NCB_MEDIA_GET_STATUS (drive);
-	if (media & BRASERO_MEDIUM_DVD) {
-		if (source.type == BRASERO_TRACK_TYPE_DATA) {
-			title = g_strdup (_("Burning DVD"));
-			header = g_strdup (_("<big><b>Burning data DVD</b></big>"));
-
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      "media-optical-data-new",
-						      GTK_ICON_SIZE_DIALOG);
-		}
-		else if (source.type == BRASERO_TRACK_TYPE_IMAGE) {
-			title = g_strdup (_("Burning DVD"));
-			header = g_strdup (_("<big><b>Burning image to DVD</b></big>"));
-
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      NCB_MEDIA_GET_ICON (drive),
-						      GTK_ICON_SIZE_DIALOG);
-		}
-		else if (source.type == BRASERO_TRACK_TYPE_DISC) {
-			title = g_strdup (_("Copying DVD"));
-			header = g_strdup (_("<big><b>Copying data DVD</b></big>"));
-
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						"media-optical-copy",
-						GTK_ICON_SIZE_DIALOG);
-		}
-	}
-	else if (media & BRASERO_MEDIUM_CD) {
-		if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
-			title = g_strdup (_("Burning CD"));
-			header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
-
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      "media-optical-audio-new",
-						      GTK_ICON_SIZE_DIALOG);
-		}
-		else if (source.type == BRASERO_TRACK_TYPE_DATA) {
-			title = g_strdup (_("Burning CD"));
-			header = g_strdup_printf (_("<big><b>Burning data CD</b></big>"));
-
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      "media-optical-data-new",
-						      GTK_ICON_SIZE_DIALOG);
-		}
-		else if (source.type == BRASERO_TRACK_TYPE_DISC) {
-			title = g_strdup (_("Copying CD"));
-			header = g_strdup(_("<big><b>Copying CD</b></big>"));
-
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      "media-optical-copy",
-						      GTK_ICON_SIZE_DIALOG);
-		}
-		else if (source.type == BRASERO_TRACK_TYPE_IMAGE) {
-			title = g_strdup (_("Burning CD"));
-			header = g_strdup (_("<big><b>Burning image to CD</b></big>"));
-		
-			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-						      NCB_MEDIA_GET_ICON (drive),
-						      GTK_ICON_SIZE_DIALOG);
-		}
-	}
-	else if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
-		title = g_strdup (_("Burning CD"));
-		header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
-		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-					      "gnome-dev-removable",
-					      GTK_ICON_SIZE_DIALOG);
-	}
-	else if (source.type == BRASERO_TRACK_TYPE_DATA) {
-		title = g_strdup (_("Burning disc"));
-		header = g_strdup_printf (_("<big><b>Burning data disc</b></big>"));
-		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-					      "gnome-dev-removable",
-					      GTK_ICON_SIZE_DIALOG);
-	}
-	else if (source.type == BRASERO_TRACK_TYPE_DISC) {
-		title = g_strdup (_("Copying disc"));
-		header = g_strdup(_("<big><b>Copying disc</b></big>"));
-		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-					      "gnome-dev-removable",
-					      GTK_ICON_SIZE_DIALOG);
-	}
-	else if (source.type == BRASERO_TRACK_TYPE_IMAGE) {
-		title = g_strdup (_("Burning disc"));
-		header = g_strdup (_("<big><b>Burning image to disc</b></big>"));
-		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
-					      "gnome-dev-removable",
-					      GTK_ICON_SIZE_DIALOG);
-	}
-
-end:
-
-	nautilus_burn_drive_unref (drive);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-	g_free (title);
-
-	gtk_label_set_text (GTK_LABEL (dialog->priv->header), header);
-	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
-	g_free (header);
-}
-
-static void
-brasero_burn_dialog_input_changed_cb (BraseroBurnSession *session,
-				      BraseroBurnDialog *dialog)
-{
-	brasero_burn_dialog_update_info (dialog);
-}
-
-static void
-brasero_burn_dialog_output_changed_cb (BraseroBurnSession *session,
-				       BraseroBurnDialog *dialog)
-{
-	brasero_burn_dialog_update_info (dialog);
 }
 
 static BraseroBurnResult
@@ -1455,8 +1430,7 @@ gboolean
 brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 			 BraseroBurnSession *session)
 {
-	gint input_sig;
-	gint output_sig;
+	BraseroMedia media;
 	GError *error = NULL;
 	gboolean close_dialog;
 	BraseroBurnResult result;
@@ -1464,20 +1438,24 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	dialog->priv->session = session;
 	g_object_ref (session);
 
-	/* Leave the time to all sub systems and libs to get notified */
-	brasero_burn_dialog_update_info (dialog);		
-	input_sig = g_signal_connect_after (session,
-					     "input-changed",
-					     G_CALLBACK (brasero_burn_dialog_input_changed_cb),
-					     dialog);
-	output_sig = g_signal_connect_after (session,
-					     "output-changed",
-					     G_CALLBACK (brasero_burn_dialog_output_changed_cb),
-					     dialog);
+	/* update what we should display */
+	dialog->priv->input = brasero_burn_session_get_input_type (session, NULL);
+	if (brasero_burn_session_is_dest_file (session))
+		media = BRASERO_MEDIUM_FILE;
+	else if (dialog->priv->input != BRASERO_TRACK_TYPE_DISC)
+		media = brasero_burn_session_get_dest_media (session);
+	else {
+		NautilusBurnDrive *drive;
 
-	brasero_burn_dialog_activity_start (dialog);
+		drive = brasero_burn_session_get_src_drive (dialog->priv->session);
+		media = NCB_MEDIA_GET_STATUS (drive);
+	}
+
+	brasero_burn_dialog_update_info (dialog, dialog->priv->input, media);
 
 	/* start the recording session */
+	brasero_burn_dialog_activity_start (dialog);
+
 	result = brasero_burn_dialog_setup_session (dialog, &error);
 	if (result == BRASERO_BURN_OK) {
 		NautilusBurnDrive *drive;
@@ -1500,16 +1478,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		result = brasero_burn_record (dialog->priv->burn,
 					      session,
 					      &error);
-	}
-
-	if (input_sig) {
-		g_signal_handler_disconnect (session, input_sig);
-		input_sig = 0;
-	}
-
-	if (output_sig) {
-		g_signal_handler_disconnect (session, output_sig);
-		output_sig = 0;
 	}
 
 	close_dialog = brasero_burn_dialog_end_session (dialog,

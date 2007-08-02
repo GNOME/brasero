@@ -285,6 +285,8 @@ brasero_task_ctx_next_track (BraseroTaskCtx *self,
 	if (retval == BRASERO_BURN_RETRY) {
 		BraseroTaskCtxClass *klass;
 
+		BRASERO_BURN_LOG ("Setting next track to be processed");
+
 		if (!priv->added_track) {
 			/* push the current tracks to add the new track */
 			priv->added_track = 1;
@@ -300,7 +302,8 @@ brasero_task_ctx_next_track (BraseroTaskCtx *self,
 				 BRASERO_BURN_RETRY,
 				 NULL);
 	}
-	
+
+	BRASERO_BURN_LOG ("No next track to process");
 	return BRASERO_BURN_OK;
 }
 
@@ -910,6 +913,11 @@ brasero_task_ctx_finalize (GObject *object)
 	if (priv->lock) {
 		g_mutex_free (priv->lock);
 		priv->lock = NULL;
+	}
+
+	if (priv->timer) {
+		g_timer_destroy (priv->timer);
+		priv->timer = NULL;
 	}
 
 	if (priv->current_track) {

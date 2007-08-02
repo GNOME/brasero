@@ -127,6 +127,38 @@ brasero_job_item_previous (BraseroTaskItem *item)
 	return BRASERO_TASK_ITEM (priv->previous);
 }
 
+static gboolean
+brasero_job_is_last_running (BraseroJob *self)
+{
+	BraseroJobPrivate *priv, *priv_next;
+
+	priv = BRASERO_JOB_PRIVATE (self);
+	if (!priv->next)
+		return TRUE;
+
+	priv_next = BRASERO_JOB_PRIVATE (priv->next);
+	if (!priv_next->ctx)
+		return TRUE;
+
+	return FALSE;
+}
+
+static gboolean
+brasero_job_is_first_running (BraseroJob *self)
+{
+	BraseroJobPrivate *priv, *priv_prev;
+
+	priv = BRASERO_JOB_PRIVATE (self);
+	if (!priv->previous)
+		return TRUE;
+
+	priv_prev = BRASERO_JOB_PRIVATE (priv->previous);
+	if (!priv_prev->ctx)
+		return TRUE;
+
+	return FALSE;
+}
+
 static BraseroBurnResult
 brasero_job_item_connect (BraseroTaskItem *input,
 			  BraseroTaskItem *output)
@@ -156,7 +188,6 @@ brasero_job_set_output (BraseroJob *self,
 
 	if (priv->next) {
 		BraseroJobPrivate *next_priv;
-		long flags = 0;
 		int fd [2];
 
 		BRASERO_BURN_LOG ("Creating pipe between %s and %s",
@@ -178,43 +209,8 @@ brasero_job_set_output (BraseroJob *self,
 			return BRASERO_BURN_ERR;
 		}
 
-		if (fcntl (fd [0], F_GETFL, &flags) != -1) {
-			flags |= O_NONBLOCK;
-			if (fcntl (fd [0], F_SETFL, flags) == -1) {
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("couldn't set non blocking mode"));
-				return BRASERO_BURN_ERR;
-			}
-		}
-		else {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("couldn't get pipe flags"));
-			return BRASERO_BURN_ERR;
-		}
-
-		flags = 0;
-		if (fcntl (fd [1], F_GETFL, &flags) != -1) {
-			flags |= O_NONBLOCK;
-			if (fcntl (fd [1], F_SETFL, flags) == -1) {
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("couldn't set non blocking mode"));
-				return BRASERO_BURN_ERR;
-			}
-		}
-		else {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("couldn't get pipe flags"));
-			return BRASERO_BURN_ERR;
-		}
-
+		/* NOTE: don't set O_NONBLOCK automatically as some plugins 
+		 * don't like that (genisoimage, mkisofs) */
 		priv->output.fd.out = fd [1];
 		next_priv = BRASERO_JOB_PRIVATE (priv->next);
 		next_priv->output.fd.in = fd [0];
@@ -288,27 +284,38 @@ brasero_job_item_init (BraseroTaskItem *item,
 	session = brasero_task_ctx_get_session (ctx);
 
 	action = brasero_task_ctx_get_action (ctx);
+	if (priv->previous && action == BRASERO_TASK_ACTION_NONE) {
+		/* when running task in fake mode (usually to get the size), we
+		 * don't want to run:
+		 * - jobs which will record (except if that's the only job 
+		 * => growisofs) ... */
+		if (priv->type.type == BRASERO_TRACK_TYPE_DISC)
+			return BRASERO_BURN_NOT_RUNNING;
 
-	if (!priv->next
-	&&   priv->previous
-	&&   action == BRASERO_TASK_ACTION_NONE
-	&&   priv->type.type == BRASERO_TRACK_TYPE_DISC)
-		return BRASERO_BURN_NOT_RUNNING;
+		/* ... - job that are modifiers (input type == output type) */
+	}
 
 	g_object_ref (ctx);
 	priv->ctx = ctx;
 
-	/* set the output for the job */
 	if (action == BRASERO_JOB_ACTION_IMAGE
 	&&  priv->type.type == BRASERO_TRACK_TYPE_IMAGE) {
+		/* set the output for the job since it's the last and is
+		 * supposed to image. */
 		result = brasero_job_set_output (self, session, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
 
 	klass = BRASERO_JOB_GET_CLASS (self);
-	if (klass->init)
+	if (klass->init) {
 		result = klass->init (self, error);
+		if (result != BRASERO_BURN_OK) {
+			/* the job is not running set ctx to NULL */
+			g_object_unref (ctx);
+			priv->ctx = NULL;
+		}
+	}
 
 	return result;
 }
@@ -369,6 +376,10 @@ brasero_job_disconnect (BraseroJob *self,
 	priv = BRASERO_JOB_PRIVATE (self);
 
 	if (priv->next) {
+		BRASERO_JOB_LOG (self,
+				 "disconnecting from (next) %s",
+				 G_OBJECT_TYPE_NAME (priv->next));
+
 		if (priv->output.fd.out > 0) {
 			close (priv->output.fd.out);
 			priv->output.fd.out = 0;
@@ -383,8 +394,12 @@ brasero_job_disconnect (BraseroJob *self,
 	}
 
 	if (priv->previous) {
-		if (priv->output.fd.in) {
-			close (priv->output.fd.in > 0);
+		BRASERO_JOB_LOG (self,
+				 "disconnecting from (previous) %s",
+				 G_OBJECT_TYPE_NAME (priv->previous));
+
+		if (priv->output.fd.in > 0) {
+			close (priv->output.fd.in);
 			priv->output.fd.in = 0;
 		}
 	}
@@ -405,14 +420,15 @@ brasero_job_item_stop (BraseroTaskItem *item,
 	self = BRASERO_JOB (item);
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	brasero_job_disconnect (self, error);
-
 	if (!priv->ctx)
 		return BRASERO_BURN_OK;
 
+	/* the order is important here */
 	klass = BRASERO_JOB_GET_CLASS (self);
 	if (klass->stop)
 		result = klass->stop (self, error);
+
+	brasero_job_disconnect (self, error);
 
 	g_object_unref (priv->ctx);
 	priv->ctx = NULL;
@@ -436,38 +452,6 @@ brasero_job_iface_init_task_item (BraseroTaskItemIFace *iface)
  * Means a job successfully completed its task.
  * track can be NULL, depending on whether or not the job created a track.
  */
-
-static gboolean
-brasero_job_is_last_running (BraseroJob *self)
-{
-	BraseroJobPrivate *priv, *priv_next;
-
-	priv = BRASERO_JOB_PRIVATE (self);
-	if (!priv->next)
-		return TRUE;
-
-	priv_next = BRASERO_JOB_PRIVATE (priv->next);
-	if (!priv_next->ctx)
-		return TRUE;
-
-	return FALSE;
-}
-
-static gboolean
-brasero_job_is_first_running (BraseroJob *self)
-{
-	BraseroJobPrivate *priv, *priv_prev;
-
-	priv = BRASERO_JOB_PRIVATE (self);
-	if (!priv->previous)
-		return TRUE;
-
-	priv_prev = BRASERO_JOB_PRIVATE (priv->previous);
-	if (!priv_prev->ctx)
-		return TRUE;
-
-	return FALSE;
-}
 
 BraseroBurnResult
 brasero_job_finished (BraseroJob *self, BraseroTrack *track)
@@ -505,6 +489,10 @@ brasero_job_finished (BraseroJob *self, BraseroTrack *track)
 			 * let the next job know that there isn't any more data
 			 * to be expected */
 			result = brasero_job_disconnect (self, &error);
+
+			g_object_unref (priv->ctx);
+			priv->ctx = NULL;
+
 			if (result != BRASERO_BURN_OK)
 				return brasero_task_ctx_error (priv->ctx,
 							       result,
@@ -547,7 +535,11 @@ brasero_job_error (BraseroJob *self, GError *error)
 
 	instance_and_params [1].g_type = 0;
 	g_value_init (instance_and_params + 1, G_TYPE_INT);
-	g_value_set_int (instance_and_params + 1, error->code);
+
+	if (error)
+		g_value_set_int (instance_and_params + 1, error->code);
+	else
+		g_value_set_int (instance_and_params + 1, BRASERO_BURN_ERROR_GENERAL);
 
 	return_value.g_type = 0;
 	g_value_init (&return_value, G_TYPE_INT);
@@ -597,6 +589,64 @@ brasero_job_get_fd_in (BraseroJob *self, int *fd_in)
 	return BRASERO_BURN_OK;
 }
 
+static BraseroBurnResult
+brasero_job_set_nonblocking_fd (int fd, GError **error)
+{
+	long flags = 0;
+
+	if (fcntl (fd, F_GETFL, &flags) != -1) {
+		/* Unfortunately some plugin (mkisofs/genisofs don't like 
+		 * O_NONBLOCK (which is a shame) so we don't set them
+		 * automatically but still offer that possibility. */
+		flags |= O_NONBLOCK;
+		if (fcntl (fd, F_SETFL, flags) == -1) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("couldn't set non blocking mode"));
+			return BRASERO_BURN_ERR;
+		}
+	}
+	else {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("couldn't get pipe flags"));
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_job_set_nonblocking (BraseroJob *self,
+			     GError **error)
+{
+	BraseroBurnResult result;
+	BraseroJobPrivate *priv;
+	int fd;
+
+	BRASERO_JOB_DEBUG (self);
+
+	priv = BRASERO_JOB_PRIVATE (self);
+
+	fd = -1;
+	if (brasero_job_get_fd_in (self, &fd) == BRASERO_BURN_OK) {
+		result = brasero_job_set_nonblocking_fd (fd, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
+
+	fd = -1;
+	if (brasero_job_get_fd_out (self, &fd) == BRASERO_BURN_OK) {
+		result = brasero_job_set_nonblocking_fd (fd, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
 BraseroBurnResult
 brasero_job_get_current_track (BraseroJob *self,
 			       BraseroTrack **track)
@@ -606,9 +656,6 @@ brasero_job_get_current_track (BraseroJob *self,
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	if (priv->previous)
-		return BRASERO_BURN_ERR;
-
 	if (!track)
 		return BRASERO_BURN_OK;
 
@@ -649,19 +696,12 @@ BraseroBurnResult
 brasero_job_get_fd_out (BraseroJob *self, int *fd_out)
 {
 	BraseroJobPrivate *priv;
-	BraseroJobPrivate *priv_next;
 
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	/* To have a pipe we need another job ... */
-	if (!priv->next)
-		return BRASERO_BURN_ERR;
-
-	/* ... and it must be running as well */
-	priv_next = BRASERO_JOB_PRIVATE (priv->next);
-	if (!priv_next->ctx)
+	if (brasero_job_is_last_running (self))
 		return BRASERO_BURN_ERR;
 
 	if (!fd_out)
@@ -681,7 +721,7 @@ brasero_job_get_image_output (BraseroJob *self,
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	if (priv->next)
+	if (!brasero_job_is_last_running (self))
 		return BRASERO_BURN_ERR;
 
 	if (image)
@@ -795,10 +835,10 @@ brasero_job_get_action (BraseroJob *self, BraseroJobAction *action)
 		break;
 
 	case BRASERO_TASK_ACTION_NORMAL:
-		if (priv->type.type == BRASERO_TRACK_TYPE_IMAGE)
-			*action = BRASERO_JOB_ACTION_IMAGE;
-		else
+		if (priv->type.type == BRASERO_TRACK_TYPE_DISC)
 			*action = BRASERO_JOB_ACTION_RECORD;
+		else
+			*action = BRASERO_JOB_ACTION_IMAGE;
 		break;
 
 	case BRASERO_TASK_ACTION_CHECKSUM:
@@ -1147,6 +1187,14 @@ brasero_job_get_current_action (BraseroJob *self,
 	g_return_val_if_fail (action != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_JOB_PRIVATE (self);
+
+	if (!priv->ctx) {
+		BRASERO_JOB_LOG (self,
+				 "called %s whereas it wasn't running",
+				 G_STRFUNC);
+		return BRASERO_BURN_NOT_RUNNING;
+	}
+
 	return brasero_task_ctx_get_current_action (priv->ctx, action);
 }
 
@@ -1355,4 +1403,6 @@ brasero_job_class_init (BraseroJobClass *klass)
 
 static void
 brasero_job_init (BraseroJob *obj)
-{ }
+{
+	
+}

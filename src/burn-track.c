@@ -41,9 +41,9 @@ struct _BraseroTrack {
 
 	int ref;
 
-	guint64 size;
-	guint64 blocks;
-	guint block_size;
+	gint64 size;
+	gint64 blocks;
+	gint block_size;
 
 	gchar *checksum;
 	BraseroChecksumType checksum_type;
@@ -261,8 +261,8 @@ brasero_track_clean (BraseroTrack *track)
 		g_free (image->toc);
 	}
 
-	memset (track, 0, sizeof (BraseroTrack));
 	g_free (track->checksum);
+	memset (track, 0, sizeof (BraseroTrack));
 }
 
 void
@@ -433,8 +433,9 @@ brasero_track_set_drive_source (BraseroTrack *track, NautilusBurnDrive *drive)
 	if (disc->disc)
 		nautilus_burn_drive_unref (disc->disc);
 
-	disc->disc = drive;
 	nautilus_burn_drive_ref (drive);
+	disc->disc = drive;
+
 	return BRASERO_BURN_OK;
 }
 

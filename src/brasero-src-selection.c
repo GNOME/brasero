@@ -122,7 +122,7 @@ brasero_src_selection_set_property (GObject *object,
 		brasero_track_set_drive_source (priv->track, NULL);
 		brasero_burn_session_add_track (priv->session, priv->track);
 
-		brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object), &drive);
+		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
 		if (drive) {
 			brasero_src_selection_drive_changed (BRASERO_DRIVE_SELECTION (object), drive);
 			nautilus_burn_drive_unref (drive);

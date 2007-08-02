@@ -1,3 +1,14 @@
+2007-08-2  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	In the process of making md5checksum work, lots of bugs and leaks fixed
+	Now reap the processes ourselves to get return values and make sure nothing goes wrong
+	Fixed a small bug in medium for blank DVD+RW (bad free space)
+	Don't set non blocking by default now plugins have to ask for it
+	Fix build and don't set brasero depend on libisofs/libburn but their plugins only
+	Fixed and improved burn-dialog.c
+	Fixed confusion between brasero_job_get_action and brasero_job_get_current_action
+	Fixed growisofs not burning from pipe
+
 2007-07-28  Rouquier Philippe <bonfire-app@wanadoo.fr>
 	
 	Better handling of jobs that don't want to run further than ::start.

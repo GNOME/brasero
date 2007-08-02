@@ -173,6 +173,12 @@ brasero_mkisofs_read_stderr (BraseroProcess *process, const gchar *line)
 							BRASERO_BURN_ERROR_GENERAL,
 							_("Unknown character encoding")));
 	}
+	else if (strstr (line, "Resource temporarily unavailable")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+							_("writing to file descriptor failed")));
+	}
 	else if (strstr (line, "No space left on device")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,

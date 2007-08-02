@@ -133,11 +133,20 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_start_progress (BRASERO_JOB (process), FALSE);
 	}
 	else if (strstr (line, "Total extents scheduled to be written = ")) {
+		BraseroJobAction action;
+
 		line += strlen ("Total extents scheduled to be written = ");
 		brasero_job_set_current_track_size (BRASERO_JOB (process),
 						    2048,
 						    strtoll (line, NULL, 10),
 						    -1);
+
+		brasero_job_get_action (BRASERO_JOB (process), &action);
+		if (action == BRASERO_JOB_ACTION_SIZE) {
+			/* we better tell growisofs to stop here as it returns 
+			 * a value of 1 when mkisofs is run with --print-size */
+			brasero_job_finished (BRASERO_JOB (process), NULL);
+		}
 	}
 	else if (strstr (line, "flushing cache") != NULL) {
 		brasero_job_set_progress (BRASERO_JOB (process), 1.0);
@@ -214,7 +223,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	BraseroTrack *track = NULL;
 	gchar *excluded_path = NULL;
 	gchar *grafts_path = NULL;
-	BraseroBurnAction action;
+	BraseroJobAction action;
 	BraseroBurnResult result;
 	BraseroTrackType input;
 	gchar *emptydir = NULL;
@@ -281,8 +290,8 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	g_ptr_array_add (argv, g_strdup ("-exclude-list"));
 	g_ptr_array_add (argv, excluded_path);
 
-	brasero_job_get_current_action (BRASERO_JOB (growisofs), &action);
-	if (action != BRASERO_BURN_ACTION_GETTING_SIZE) {
+	brasero_job_get_action (BRASERO_JOB (growisofs), &action);
+	if (action != BRASERO_JOB_ACTION_SIZE) {
 		gchar *label = NULL;
 
 		brasero_job_get_data_label (BRASERO_JOB (growisofs), &label);
@@ -330,9 +339,8 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 				   GError **error)
 {
 	BraseroBurnResult result;
-	BraseroBurnAction action;
+	BraseroJobAction action;
 	BraseroBurnFlag flags;
-	BraseroTrack *track;
 	guint64 sectors;
 	gchar *device;
 	guint speed;
@@ -367,9 +375,8 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	/* see if we're asked to merge some new data: in this case we MUST have
 	 * a list of grafts. The image can't come through stdin or an already 
 	 * made image */
-
 	brasero_job_get_device (BRASERO_JOB (growisofs), &device);
-	brasero_job_get_current_action (BRASERO_JOB (growisofs), &action);
+	brasero_job_get_action (BRASERO_JOB (growisofs), &action);
 	brasero_job_get_session_size (BRASERO_JOB (growisofs), 
 				      &sectors,
 				      NULL);
@@ -380,7 +387,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 		g_ptr_array_add (argv, device);
 		
 		/* this can only happen if source->type == BRASERO_TRACK_SOURCE_GRAFTS */
-		if (action == BRASERO_BURN_ACTION_GETTING_SIZE)
+		if (action == BRASERO_JOB_ACTION_SIZE)
 			g_ptr_array_add (argv, g_strdup ("-dry-run"));
 
 		result = brasero_growisofs_set_mkisofs_argv (growisofs, 
@@ -398,7 +405,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=tty"));
 
 		brasero_job_get_input_type (BRASERO_JOB (growisofs), &input);
-		if (brasero_job_get_current_track (BRASERO_JOB (growisofs), &track) != BRASERO_BURN_OK) {
+		if (brasero_job_get_fd_in (BRASERO_JOB (growisofs), NULL) == BRASERO_BURN_OK) {
 			/* set the buffer. NOTE: apparently this needs to be a power of 2 */
 			/* FIXME: is it right to mess with it ? 
 			   g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=bufsize:%im", 32)); */
@@ -420,9 +427,11 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 		}
 		else if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
 			gchar *localpath;
+			BraseroTrack *track;
 
 			g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=tracksize:%"G_GINT64_FORMAT, sectors));
 
+			brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
 			localpath = brasero_track_get_image_source (track, FALSE);
 			if (!localpath) {
 				g_set_error (error,
@@ -447,7 +456,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			g_ptr_array_add (argv, device);
 
 			/* this can only happen if source->type == BRASERO_TRACK_SOURCE_GRAFTS */
-			if (action == BRASERO_BURN_ACTION_GETTING_SIZE)
+			if (action == BRASERO_JOB_ACTION_SIZE)
 				g_ptr_array_add (argv, g_strdup ("-dry-run"));
 
 			result = brasero_growisofs_set_mkisofs_argv (growisofs, 
@@ -460,7 +469,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			BRASERO_JOB_NOT_SUPPORTED (growisofs);
 	}
 
-	if (action == BRASERO_BURN_ACTION_GETTING_SIZE)
+	if (action == BRASERO_JOB_ACTION_SIZE)
 		brasero_job_set_current_action (BRASERO_JOB (growisofs),
 						BRASERO_BURN_ACTION_GETTING_SIZE,
 						NULL,

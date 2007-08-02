@@ -654,13 +654,13 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 	GSList *iter;
 
 	brasero_burn_session_get_input_type (session, &input);
+	BRASERO_BURN_LOG_WITH_TYPE (&input,
+				    BRASERO_PLUGIN_IO_NONE,
+				    "Creating checksuming task with input");
+
 	caps = brasero_caps_find_start_caps (&input);
 	if (!caps)
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
-
-	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
-				    BRASERO_PLUGIN_IO_NONE,
-				    "Creating checksuming task with input");
 
 	tracks = brasero_burn_session_get_tracks (session);
 	if (g_slist_length (tracks) != 1) {

@@ -314,9 +314,14 @@ brasero_burn_status (BraseroBurn *burn,
 	if (!priv->task || !brasero_task_is_running (priv->task))
 		return BRASERO_BURN_NOT_READY;
 
-	brasero_task_ctx_get_rate (BRASERO_TASK_CTX (priv->task), rate);
-	brasero_task_ctx_get_total (BRASERO_TASK_CTX (priv->task), isosize);
-	brasero_task_ctx_get_written (BRASERO_TASK_CTX (priv->task), written);
+	if (rate)
+		brasero_task_ctx_get_rate (BRASERO_TASK_CTX (priv->task), rate);
+
+	if (isosize)
+		brasero_task_ctx_get_total (BRASERO_TASK_CTX (priv->task), isosize);
+
+	if (written)
+		brasero_task_ctx_get_written (BRASERO_TASK_CTX (priv->task), written);
 
 	if (!media)
 		return BRASERO_BURN_OK;
@@ -382,8 +387,6 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 			return BRASERO_BURN_ERR;
 		}
 	}
-	else
-		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
 
 	instance_and_params [0].g_type = 0;
 	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (burn));
@@ -1702,7 +1705,6 @@ brasero_burn_mount_media (BraseroBurn *self,
 {
 	guint retries = 0;
 	BraseroBurnPrivate *priv;
-	BraseroBurnResult result;
 
 	priv = BRASERO_BURN_PRIVATE (self);
 
@@ -1721,10 +1723,8 @@ brasero_burn_mount_media (BraseroBurn *self,
 			return BRASERO_BURN_ERR;
 		}
 
-		result = NCB_DRIVE_MOUNT (drive, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-
+		/* NOTE: we don't really care about the return value */
+		NCB_DRIVE_MOUNT (drive, error);
 		brasero_burn_sleep (self, MOUNT_TIMEOUT);
 	}
 
@@ -1736,32 +1736,47 @@ brasero_burn_wait_for_checksum_media (BraseroBurn *burn,
 				      GError **error)
 {
 	gchar *failure;
-	NautilusBurnDrive *src;
 	BraseroMedia media;
+	NautilusBurnDrive *src;
 	BraseroBurnResult result;
+	BraseroBurnError error_type;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
 	src = brasero_burn_session_get_src_drive (priv->session);
 
 again:
 
-	result = brasero_burn_media_check_basics (burn,
-						  src,
-						  BRASERO_MEDIUM_HAS_DATA,
-						  error);
-	if (result == BRASERO_BURN_NEED_RELOAD)
-		goto again;
-
-	if (result != BRASERO_BURN_OK)
-		return result;
-
 	media = NCB_MEDIA_GET_STATUS (src);
-	if (media & BRASERO_MEDIUM_BLANK) {
-		/* FIXME: the problem here is that when things are not connected
-		 * like with blank dialog we nevertheless return cancel */
+	error_type = BRASERO_BURN_ERROR_NONE;
+	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
+					 media,
+					 BRASERO_PLUGIN_IO_NONE,
+					 "Waiting for media to checksum");
+
+	if (media == BRASERO_MEDIUM_NONE) {
+		/* NOTE: that's done on purpose since here if the drive is empty
+		 * that's because we ejected it */
 		result = brasero_burn_ask_for_media (burn,
 						     src,
-						     BRASERO_BURN_ERROR_MEDIA_BLANK,
+						     BRASERO_BURN_ERROR_NONE,
+						     BRASERO_MEDIUM_HAS_DATA|
+						     BRASERO_MEDIUM_WRITABLE,
+						     error);
+
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
+	else if (media == BRASERO_MEDIUM_BUSY)
+		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
+	else if (media == BRASERO_MEDIUM_UNSUPPORTED)
+		error_type = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+	else if (media & BRASERO_MEDIUM_BLANK)
+		error_type = BRASERO_BURN_ERROR_MEDIA_BLANK;
+
+	if (error_type != BRASERO_BURN_ERROR_NONE) {
+		result = brasero_burn_ask_for_media (burn,
+						     src,
+						     error_type,
 						     BRASERO_MEDIUM_HAS_DATA|
 						     BRASERO_MEDIUM_WRITABLE,
 						     error);
@@ -1773,7 +1788,7 @@ again:
 
 	/* we set IS_LOCKED to remind ourselves that we were the ones that locked it */
 	if (!GPOINTER_TO_INT (g_object_get_data (G_OBJECT (src), IS_LOCKED))
-	&&  !nautilus_burn_drive_lock (src, _("ongoing copying process"), &failure)) {
+	&&  !nautilus_burn_drive_lock (src, _("ongoing checksuming operation"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -1799,6 +1814,8 @@ brasero_burn_check_real (BraseroBurn *self,
 	BraseroChecksumType checksum_type;
 
 	priv = BRASERO_BURN_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Starting to check track integrity");
 
 	/* NOTE: no need to check for parameters here;
 	 * that'll be done when asking for a task */
@@ -1829,12 +1846,17 @@ brasero_burn_check_real (BraseroBurn *self,
 		if (checksum_type == BRASERO_CHECKSUM_MD5_FILE
 		&& !nautilus_burn_drive_is_mounted (drive)) {
 			result = brasero_burn_mount_media (self, drive, error);
-			if (result != BRASERO_BURN_OK)
+			if (result != BRASERO_BURN_OK) {
+				brasero_burn_unlock_drives (self);
 				return result;
+			}
 
 			priv->mounted_by_us = TRUE;
 		}
 	}
+
+	/* re-ask for the input type (it depends on the media) once loaded */
+	brasero_track_get_type (track, &type);
 
 	/* get the task and run it */
 	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
@@ -1857,8 +1879,10 @@ brasero_burn_check_real (BraseroBurn *self,
 		g_object_unref (priv->task);
 		priv->task = NULL;
 	}
-	else
+	else {
+		BRASERO_BURN_LOG ("the track can't be checked");
 		result = BRASERO_BURN_NOT_SUPPORTED;
+	}
 
 	/* unmount disc (if any) if we mounted it, ... */
 	brasero_burn_unlock_drives (self);
@@ -1870,6 +1894,9 @@ static BraseroBurnResult
 brasero_burn_record_session (BraseroBurn *burn,
 			     GError **error)
 {
+	BraseroTrack *track = NULL;
+	BraseroChecksumType type;
+	NautilusBurnDrive *drive;
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
@@ -1906,8 +1933,19 @@ brasero_burn_record_session (BraseroBurn *burn,
 		brasero_burn_session_pop_settings (priv->session);
 	} while (result == BRASERO_BURN_RETRY);
 
-	/* unlock all drives */
+	/* unlock all drives that's necessary if we want to check burnt drives
+	 * it seems that the kernel caches its contents and can't/don't update
+	 * its caches after a blanking/recording. */
+	/* NOTE: that work if the disc had not been mounted before. That's the 
+	 * mount that triggers the caches. So maybe if the disc was blank (and
+	 * therefore couldn't have been previously mounted) we could skip that
+	 * unlock/eject step. A better way would be to have a system call to 
+	 * force a re-load. */
 	brasero_burn_unlock_drives (burn);
+
+	/* sleep here to make sure that we got time to eject */
+	while (brasero_burn_session_get_dest_media (priv->session) != BRASERO_MEDIUM_NONE)
+		brasero_burn_sleep (burn, 2000);
 
 	if (result != BRASERO_BURN_OK) {
 		/* handle errors */
@@ -1922,13 +1960,45 @@ brasero_burn_record_session (BraseroBurn *burn,
 	 * it to check if the recording went well remaining on the top of
 	 * the session should be the last track burnt/imaged */
 	tracks = brasero_burn_session_get_tracks (priv->session);
-	if (g_slist_length (tracks) == 1) {
-		BraseroTrack *track;
+	if (g_slist_length (tracks) != 1)
+		return result;
 
-		track = tracks->data;
-		if (brasero_track_get_checksum_type (track) != BRASERO_CHECKSUM_NONE)
-			result = brasero_burn_check_real (burn, error);
+	track = tracks->data;
+	type = brasero_track_get_checksum_type (track);
+	if (type == BRASERO_CHECKSUM_NONE)
+		return result;
+
+	if (type == BRASERO_CHECKSUM_MD5) {
+		const gchar *checksum = NULL;
+		guint64 blocks = -1;
+		guint64 size = -1;
+
+		checksum = brasero_track_get_checksum (track);
+		brasero_track_get_estimated_size (track, NULL, &blocks, &size);
+
+		/* the idea is to push a new track on the stack with
+		 * the current disc burnt and the checksum generated
+		 * during the session recording */
+
+		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
+		brasero_track_set_estimated_size (track, -1, blocks, size);
+		brasero_track_set_checksum (track, type, checksum);
 	}
+	else if (type == BRASERO_CHECKSUM_MD5_FILE) {
+		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
+		brasero_track_set_checksum (track,
+					    BRASERO_CHECKSUM_MD5_FILE,
+					    BRASERO_MD5_FILE);
+	}
+
+	brasero_burn_session_push_tracks (priv->session);
+
+	drive = brasero_burn_session_get_burner (priv->session);
+	brasero_track_set_drive_source (track, drive);
+	brasero_burn_session_add_track (priv->session, track);
+
+	result = brasero_burn_check_real (burn, error);
+	brasero_burn_session_pop_tracks (priv->session);
 
 	return result;
 }

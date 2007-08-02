@@ -860,6 +860,7 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	brasero_job_get_device (BRASERO_JOB (cdrecord), &device);
 	dev_str = g_strdup_printf ("dev=%s", device);
 	g_ptr_array_add (argv, dev_str);
+	g_free (device);
 
 	brasero_job_get_flags (BRASERO_JOB (cdrecord), &flags);
         if (flags & BRASERO_BURN_FLAG_DUMMY)

@@ -228,12 +228,12 @@ brasero_drive_selection_set_drive (BraseroDriveSelection *self,
 						  drive);
 }
 
-void
-brasero_drive_selection_get_drive (BraseroDriveSelection *self,
-				   NautilusBurnDrive **drive)
+NautilusBurnDrive *
+brasero_drive_selection_get_drive (BraseroDriveSelection *self)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
+	NautilusBurnDrive *drive;
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
@@ -241,17 +241,16 @@ brasero_drive_selection_get_drive (BraseroDriveSelection *self,
 	/* This is a hack to work around the inability of ncb to return the
 	 * current selected drive while we're initting an object derived from it
 	 */
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->selection), &iter)) {
-		*drive = NULL;
-		return;
-	}
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->selection), &iter))
+		return NULL;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->selection));
 	gtk_tree_model_get (model, &iter,
-			    1, drive,
+			    1, &drive,
 			    -1);
 
-	nautilus_burn_drive_ref (*drive);
+	nautilus_burn_drive_ref (drive);
+	return drive;
 }
 
 void
@@ -272,7 +271,7 @@ brasero_drive_selection_lock (BraseroDriveSelection *self,
 	if (locked) {
 		NautilusBurnDrive *drive;
 
-		brasero_drive_selection_get_drive (self, &drive);
+		drive = brasero_drive_selection_get_drive (self);
 		priv->locked_drive = drive;
 		if (priv->locked_drive)
 			nautilus_burn_drive_lock (priv->locked_drive,
@@ -355,7 +354,7 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 			    FALSE,
 			    0);
 
-	brasero_drive_selection_get_drive (object, &drive);
+	drive = brasero_drive_selection_get_drive (object);
 	brasero_drive_info_set_drive (BRASERO_DRIVE_INFO (priv->info), drive);
 	nautilus_burn_drive_unref (drive);
 

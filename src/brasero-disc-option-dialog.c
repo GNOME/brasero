@@ -98,7 +98,7 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 
 	brasero_burn_session_get_input_type (priv->session, &source);
 
-	brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection), &drive);
+	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
 	media = NCB_MEDIA_GET_STATUS (drive);
 
 	t = time (NULL);

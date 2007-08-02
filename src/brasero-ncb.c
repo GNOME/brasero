@@ -239,7 +239,7 @@ command_thread_start (void *arg)
 	if (g_spawn_sync (NULL,
 			  (char **) data->argv->pdata,
 			  NULL,
-			  G_SPAWN_STDOUT_TO_DEV_NULL|G_SPAWN_STDERR_TO_DEV_NULL,
+			  0,
 			  NULL, NULL,
 			  NULL,
 			  NULL,
@@ -322,7 +322,7 @@ launch_command (NautilusBurnDrive *drive,
 
 		if (data->error)
 			g_propagate_error (error, data->error);
-		else if (!command_ok)
+		else
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -419,8 +419,10 @@ NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 
 	if (!mount_point || strncmp (mount_point, "file://", 7)) {
 		/* mount point won't be usable */
-		if (mount_point)
+		if (mount_point) {
 			g_free (mount_point);
+			mount_point = NULL;
+		}
 
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -647,6 +649,7 @@ NCB_INIT (void)
 				   BRASERO_MEDIUM_KEY,
 				   medium);
 	}
+	g_list_free (list);
 
 	g_signal_connect (monitor,
 			  "media-added",
