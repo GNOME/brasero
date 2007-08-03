@@ -568,7 +568,7 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 static BraseroBurnResult
 brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 {
-	guint64 size;
+	gint64 size;
 	const gchar *device;
 	BraseroTrack *track;
 	BraseroBurnResult result;

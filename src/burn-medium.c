@@ -968,7 +968,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		}
 		else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
 		     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-				BraseroBurnResult result;
+			BraseroBurnResult result;
 
 			/* a special case for these two kinds of media
 			 * which have only one track: the first. */
@@ -978,7 +978,6 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			if (result == BRASERO_BURN_OK) {
 				track->type |= BRASERO_MEDIUM_TRACK_DATA;
 				priv->info |= BRASERO_MEDIUM_HAS_DATA;
-				priv->info &= ~BRASERO_MEDIUM_CLOSED;
 
 				priv->next_wr_add = 0;
 

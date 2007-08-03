@@ -91,7 +91,7 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 	gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 			    FORMAT_TEXT, _("Let brasero choose (safest)"),
-			    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_ANY,
+			    FORMAT_TYPE, BRASERO_IMAGE_FORMAT_NONE,
 			    -1);
 
 	if (formats & BRASERO_IMAGE_FORMAT_BIN) {
@@ -141,8 +141,7 @@ brasero_image_type_chooser_set_format (BraseroImageTypeChooser *self,
 
 	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 	
-	if (format == BRASERO_IMAGE_FORMAT_ANY
-	&&  format == BRASERO_IMAGE_FORMAT_NONE) {
+	if (format == BRASERO_IMAGE_FORMAT_NONE) {
 		gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
 		return;
 	}

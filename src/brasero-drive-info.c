@@ -336,7 +336,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	label = gtk_label_new ("<b>Type:</b>");
+	label = gtk_label_new (_("<b>Type:</b>"));
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 0, 1);
@@ -345,7 +345,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_misc_set_alignment (GTK_MISC (priv->type), 0.0, 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->type, 1, 2, 0, 1);
 
-	label = gtk_label_new ("<b>Size:</b>");
+	label = gtk_label_new (_("<b>Size:</b>"));
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 1, 2);
@@ -355,7 +355,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_table_attach (GTK_TABLE (table), priv->capacity, 1, 2, 1, 2,
 			  GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 
-	label = gtk_label_new ("<b>Contents:</b>");
+	label = gtk_label_new (_("<b>Contents:</b>"));
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 2, 3);
@@ -364,7 +364,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_misc_set_alignment (GTK_MISC (priv->contents), 0.0, 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->contents, 1, 2, 2, 3);
 
-	label = gtk_label_new ("<b>Status:</b>");
+	label = gtk_label_new (_("<b>Status:</b>"));
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 1, 3, 4);

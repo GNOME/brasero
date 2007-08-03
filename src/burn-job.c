@@ -1089,8 +1089,8 @@ brasero_job_get_data_label (BraseroJob *self, gchar **label)
 
 BraseroBurnResult
 brasero_job_get_session_size (BraseroJob *self,
-			      guint64 *blocks,
-			      guint64 *size)
+			      gint64 *blocks,
+			      gint64 *size)
 {
 	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;

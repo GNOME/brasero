@@ -277,7 +277,7 @@ brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
 
 		priv->current_track_written = mb_written * 1048576;
 		if (brasero_job_get_fd_in (BRASERO_JOB (woodim), NULL) == BRASERO_BURN_OK) {
-			guint64 bytes = 0;
+			gint64 bytes = 0;
 
 			/* we must ask the imager what is the total size */
 			brasero_job_get_session_size (BRASERO_JOB (woodim),
@@ -366,7 +366,7 @@ brasero_woodim_write_inf (BraseroWoodim *woodim,
 	gchar *path;
 	gchar *string;
 	gint b_written;
-	guint64 sectors;
+	gint64 sectors;
 	gchar buffer [128];
 	BraseroSongInfo *info;
 	BraseroWoodimPrivate *priv;
@@ -579,7 +579,7 @@ brasero_woodim_write_infs (BraseroWoodim *woodim,
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
-		guint64 size;
+		gint64 size;
 		BraseroTrack *track;
 
 		track = iter->data;
@@ -642,7 +642,7 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 	if (brasero_job_get_fd_in (BRASERO_JOB (woodim), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
 		int buffer_size;
-		guint64 sectors;
+		gint64 sectors;
 		
 		/* we need to know what is the type of the track (audio / data) */
 		result = brasero_job_get_input_type (BRASERO_JOB (woodim), &type);

@@ -341,7 +341,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroBurnFlag flags;
-	guint64 sectors;
+	gint64 sectors;
 	gchar *device;
 	guint speed;
 
@@ -624,18 +624,28 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 			       0);
 
 	/* growisofs can write images to any type of DVD as long as it's blank */
-	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_PLUS|
-					BRASERO_MEDIUM_RESTRICTED|
-					BRASERO_MEDIUM_SEQUENTIAL|
-					BRASERO_MEDIUM_WRITABLE|
-					BRASERO_MEDIUM_REWRITABLE|
-					BRASERO_MEDIUM_BLANK);
-
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
 
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_PLUS|
+					BRASERO_MEDIUM_SEQUENTIAL|
+					BRASERO_MEDIUM_WRITABLE|
+					BRASERO_MEDIUM_BLANK);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+
+	/* and images to DVD RW +/-(restricted) whatever the status */
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_PLUS|
+					BRASERO_MEDIUM_RESTRICTED|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);

@@ -331,9 +331,9 @@ brasero_task_ctx_finished (BraseroTaskCtx *self,
 	}
 
 	if (track) {
-		guint64 size;
-		guint64 blocks;
-		guint64 block_size;
+		gint64 size;
+		gint64 blocks;
+		gint64 block_size;
 
 		brasero_track_get_estimated_size (priv->current_track,
 						  &block_size,
@@ -527,7 +527,7 @@ brasero_task_ctx_set_track_size (BraseroTaskCtx *self,
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroTrack *track;
-		guint64 blocks;
+		gint64 blocks;
 
 		track = iter->data;
 		brasero_track_get_estimated_size (track,

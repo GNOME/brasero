@@ -253,8 +253,10 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 
 
-	gtk_window_set_title (GTK_WINDOW (dialog), title);
-	g_free (title);
+	if (title) {
+		gtk_window_set_title (GTK_WINDOW (dialog), title);
+		g_free (title);
+	}
 
 	gtk_label_set_text (GTK_LABEL (dialog->priv->header), header);
 	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);

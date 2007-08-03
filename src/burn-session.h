@@ -206,8 +206,8 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *session);
 
 BraseroBurnResult
 brasero_burn_session_get_size (BraseroBurnSession *session,
-			       guint64 *blocks,
-			       guint64 *size);
+			       gint64 *blocks,
+			       gint64 *size);
 
 BraseroBurnResult
 brasero_burn_session_set_image_size (BraseroBurnSession *session,

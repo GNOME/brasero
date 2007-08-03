@@ -344,7 +344,7 @@ brasero_transcode_create_info_siblings (BraseroTranscode *transcode,
 {
 	BraseroSongInfo *src_info, *dest_info;
 	BraseroTrack *dest;
-	guint64 duration;
+	gint64 duration;
 
 	/* it means the same file uri is in the selection and
 	 * was already created. Simply get the values for the 
@@ -412,8 +412,8 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 	BraseroJobAction action;
 	GSList *iter, *songs;
 	BraseroTrack *track;
-	guint64 start;
-	guint64 size;
+	gint64 start;
+	gint64 size;
 	gchar *uri;
 
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
@@ -427,8 +427,8 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 	uri = brasero_track_get_audio_source (track, TRUE);
 	for (iter = songs; iter; iter = iter->next) {
 		gchar *iter_uri;
-		guint64 iter_size;
-		guint64 iter_start;
+		gint64 iter_size;
+		gint64 iter_start;
 		BraseroTrack *iter_track;
 
 		iter_track = iter->data;
@@ -766,7 +766,7 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 	gint64 duration;
 	gint64 b_written;
 	gint64 bytes2write;
-	guint64 track_sectors = 0;
+	gint64 track_sectors = 0;
 	BraseroTrack *track = NULL;
 
 	duration = brasero_transcode_get_duration (transcode);
@@ -951,8 +951,8 @@ brasero_transcode_set_boundaries (BraseroTranscode *transcode)
 {
 	BraseroTranscodePrivate *priv;
 	BraseroTrack *track;
-	guint64 start;
-	guint64 size;
+	gint64 start;
+	gint64 size;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 

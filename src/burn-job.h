@@ -125,7 +125,7 @@ BraseroBurnResult
 brasero_job_get_data_label (BraseroJob *job, gchar **label);
 
 BraseroBurnResult
-brasero_job_get_session_size (BraseroJob *job, guint64 *blocks, guint64 *size);
+brasero_job_get_session_size (BraseroJob *job, gint64 *blocks, gint64 *size);
 
 /**
  * Used to get information of the destination media

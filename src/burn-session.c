@@ -251,7 +251,8 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-					if (!priv->tracks) {
+	brasero_track_ref (new_track);
+	if (!priv->tracks) {
 		/* we only need to emit the signal here since if there are multiple tracks they must be
 		 * exactly of the same time */
 		priv->tracks = g_slist_prepend (NULL, new_track);
@@ -866,12 +867,12 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 
 BraseroBurnResult
 brasero_burn_session_get_size (BraseroBurnSession *self,
-			       guint64 *blocks,
-			       guint64 *size)
+			       gint64 *blocks,
+			       gint64 *size)
 {
 	GSList *iter;
-	guint64 size_num = 0;
-	guint64 blocks_num = 0;
+	gint64 size_num = 0;
+	gint64 blocks_num = 0;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
@@ -884,9 +885,9 @@ brasero_burn_session_get_size (BraseroBurnSession *self,
 	}
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
+		gint64 track_size;
+		gint64 track_blocks;
 		BraseroTrack *track;
-		guint64 track_size;
-		guint64 track_blocks;
 		BraseroBurnResult result;
 
 		track = iter->data;
@@ -960,7 +961,7 @@ brasero_burn_session_check_volume_size (BraseroBurnSession *self,
 {
 	BraseroBurnSessionPrivate *priv;
 	BraseroBurnResult result;
-	guint64 image_size;
+	gint64 image_size;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	result = brasero_burn_session_get_size (self, NULL, &image_size);
@@ -1046,8 +1047,8 @@ brasero_burn_session_set_image_size (BraseroBurnSession *self,
 	BraseroBurnSessionPrivate *priv;
 	BraseroTrack *track = NULL;
 	GnomeVFSFileInfo *info;
-	guint64 track_size;
 	GnomeVFSResult res;
+	gint64 track_size;
 	gchar *uri = NULL;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
@@ -1614,6 +1615,7 @@ brasero_burn_session_finalize (GObject *object)
 		g_slist_foreach (priv->tracks,
 				 (GFunc) brasero_track_unref,
 				 NULL);
+		g_slist_free (priv->tracks);
 		priv->tracks = NULL;
 	}
 

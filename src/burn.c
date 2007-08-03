@@ -148,6 +148,7 @@ brasero_burn_eject_async (NautilusBurnDrive *drive)
 {
 	GError *error = NULL;
 
+	BRASERO_BURN_LOG ("Asynchronous ejection");
 	nautilus_burn_drive_ref (drive);
 	g_thread_create (_eject_async, drive, FALSE, &error);
 	if (error) {
@@ -744,15 +745,22 @@ end:
 	return result;
 }
 
+/**
+ * must_blank indicates whether we'll have to blank the disc before writing 
+ * either because it was requested or because we have no choice (the disc can be
+ * appended but is rewritable
+ */
 static BraseroBurnResult
 brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
-					     BraseroMedia media)
+					     BraseroMedia media,
+					     gboolean *must_blank)
 {
 	BraseroMedia required_media;
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 	BraseroMedia unsupported;
 	BraseroTrackType output;
+	BraseroBurnFlag flags;
 	BraseroMedia missing;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
@@ -764,8 +772,23 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 	result = brasero_burn_caps_is_output_supported (priv->caps,
 							priv->session,
 							&output);
-	if (result == BRASERO_BURN_OK)
+
+	flags = brasero_burn_session_get_flags (priv->session);
+
+	if (result == BRASERO_BURN_OK) {
+		/* NOTE: this flag is only supported when the media has some
+		 * data and/or audio and when we can blank it */
+		if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
+			*must_blank = FALSE;
+		else
+			*must_blank = TRUE;
 		return BRASERO_BURN_ERROR_NONE;
+	}
+
+	if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+		*must_blank = FALSE;
+		return BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+	}
 
 	/* let's see what our media is missing and what's not supported */
 	required_media = brasero_burn_caps_get_required_media_type (priv->caps,
@@ -776,8 +799,10 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 	if (missing & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_APPENDABLE)) {
 		/* there is a special case if the disc is rewritable */
 		if ((media & BRASERO_MEDIUM_REWRITABLE)
-		&&   brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK)
+		&&   brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK) {
+			*must_blank = TRUE;
 			return BRASERO_BURN_ERROR_NONE;
+		}
 
 		return BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE;
 	}
@@ -791,17 +816,18 @@ static BraseroBurnResult
 brasero_burn_wait_for_dest_media (BraseroBurn *burn, GError **error)
 {
 	gchar *failure;
-	guint64 img_size;
+	gint64 img_size;
 	gint64 media_size;
 	BraseroMedia media;
-	BraseroTrackType type;
+	gboolean must_blank;
 	BraseroBurnFlag flags;
+	BraseroTrackType input;
 	BraseroBurnError berror;
 	BraseroBurnResult result;
 	NautilusBurnDrive *drive;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
-	brasero_burn_session_get_input_type (priv->session, &type);
+	brasero_burn_session_get_input_type (priv->session, &input);
 	flags = brasero_burn_session_get_flags (priv->session);
 	drive = brasero_burn_session_get_burner (priv->session);
 	if (!nautilus_burn_drive_can_write (drive)) {
@@ -812,10 +838,10 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn, GError **error)
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
 
+	img_size = 0;
 	brasero_burn_session_get_size (priv->session,
-				      &img_size,
-				       NULL);
-
+				       NULL,
+				       &img_size);
 	result = BRASERO_BURN_OK;
 
 again:
@@ -836,9 +862,10 @@ again:
 					 "Waiting for dest drive");
 
 	if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (drive), IS_LOCKED))) {
-		/* NOTE: after a blanking, for nautilus_burn the CD/DVD is still full of
-		 * data so if the drive has already been checked there is no need to do
-		 * that again since we would be asked if we want to blank it again */
+		/* NOTE: after a blanking, for nautilus_burn the CD/DVD is still
+		 * full of data so if the drive has already been checked there
+		 * is no need to do that again since we would be asked if we 
+		 * want to blank it again */
 		return result;
 	}
 
@@ -860,95 +887,85 @@ again:
 		goto end;
 	}
 
-	/* make sure that media is supported */
-	berror = brasero_burn_is_loaded_dest_media_supported (burn, media);
+	/* make sure that media is supported and can be written to */
+	berror = brasero_burn_is_loaded_dest_media_supported (burn,
+							      media,
+							      &must_blank);
+
 	if (berror != BRASERO_BURN_ERROR_NONE) {
 		BRASERO_BURN_LOG ("the media is not supported");
 		result = BRASERO_BURN_NEED_RELOAD;
 		goto end;
 	}
 
-	if (media & BRASERO_MEDIUM_APPENDABLE) {
-		/* For the moment let's just allow data to be appended to open
-		 * discs. Images should not be allowed. One reason for this is
-		 * that an unskilled user could try to add an iso image created
-		 * earlier without the "-C" flag of mkisofs. Now this image 
-		 * wouldn't work if burnt as a second session as the addresses
-		 * would have been set for a first session. I think that would
-		 * be the same problem for other FSs as they would think that
-		 * the FS starts from sector 0. Maybe one day, once we've got
-		 * a working file system handler (at least for iso and udf),
-		 * then we might think about changing the addresses? 
-		 * Another reason is that we consider DVD+RW and DVD-RW as
-		 * appendable whereas they are not really multisession. Only
-		 * growisofs can add data to an already ISO FS. Adding an image
-		 * to them would be impossible.
-		 * When we append data, we warn the users that their previous
-		 * session will not be mounted by default by the OS and that it
-		 * could be "invisible".
-		 * As for for audio we allow it as well but with the warning 
-		 * that it might not work as the audio tracks won't have been
-		 * burnt in the first session whereas most CD players look into
-		 * the first session. NOTE that gnome-cd can play such tracks 
-		 */
+	if (must_blank) {
+		/* There is an error if APPEND was set since this disc is not
+		 * supported without a prior blanking. */
 
-		if (type.type == BRASERO_TRACK_TYPE_DATA) {
-			gint64 size;
-
-			/* For discs with data tracks we append them rather than
-			 * blank and rewrite as we won't lose the data. There is
-			 * one exception if we don't have enough space left on
-			 * the disc.
-			 * NOTE: if MERGE or APPEND flag is on then don't check
-			 */
-			NCB_MEDIA_GET_FREE_SPACE (drive, &size, NULL);
-			if (!BRASERO_BURN_SESSION_APPEND (priv->session)
-			&&   size > img_size
-			&&  !BRASERO_BURN_SESSION_OVERBURN (priv->session)) {
-				/* only warn if there are some data track
-				 * otherwise that is fine since if there is only
-				 * audio, these first tracks can still be read
-				 */
-				if (media & BRASERO_MEDIUM_HAS_DATA) {
-					result = brasero_burn_emit_signal (burn, WARN_PREVIOUS_SESSION_LOSS_SIGNAL);
-					if (result != BRASERO_BURN_OK)
-						goto end;
-				}
-
-				brasero_burn_session_add_flag (priv->session,
-							       BRASERO_BURN_FLAG_APPEND);
-			}
-		}
-		else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-			/* We rather blank and rewrite a disc rather than append
-			 * data for audio discs. That's because audio tracks
-			 * have more chance to be readable by common CD players
-			 * as first tracks rather than as last tracks.
-			 * MERGE flag is impossible here. */
-			if (!(media & BRASERO_MEDIUM_REWRITABLE)
-			&&  !BRASERO_BURN_SESSION_APPEND (priv->session)) {
-				result = brasero_burn_emit_signal (burn, WARN_AUDIO_TO_APPENDABLE_SIGNAL);
-				if (result != BRASERO_BURN_OK)
-					goto end;
-
-				brasero_burn_session_add_flag (priv->session,
-							       BRASERO_BURN_FLAG_APPEND);
-			}
-		}
-		else if (!(media & BRASERO_MEDIUM_REWRITABLE)) {
-			result = BRASERO_BURN_NEED_RELOAD;
-			berror = BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE;
+		
+		/* we warn the user is going to lose data even if in the case of
+		 * DVD+/-RW we don't really blank the disc we rather overwrite */
+		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
+		if (result != BRASERO_BURN_OK)
 			goto end;
+
+		/* medium can be considered as being BLANK */
+		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
+	}
+	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
+		/* A few special warnings for the discs with data/audio on them
+		 * that don't need prior blanking or can't be blanked */
+		if (input.type == BRASERO_TRACK_TYPE_AUDIO) {
+			/* We'd rather blank and rewrite a disc rather than
+			 * append audio to appendable disc. That's because audio
+			 * tracks have little chance to be readable by common CD
+			 * player as last tracks */
+			result = brasero_burn_emit_signal (burn, WARN_AUDIO_TO_APPENDABLE_SIGNAL);
+			if (result != BRASERO_BURN_OK)
+				goto end;
 		}
+
+		/* NOTE: if input is AUDIO we don't care since the OS
+		 * will load the last session of DATA anyway */
+		if ((media & BRASERO_MEDIUM_HAS_DATA)
+		&&   input.type == BRASERO_TRACK_TYPE_DATA
+		&& !(flags & BRASERO_BURN_FLAG_MERGE)) {
+			/* warn the users that their previous data
+			 * session (s) will not be mounted by default by
+			 * the OS and that it'll be invisible */
+			result = brasero_burn_emit_signal (burn, WARN_PREVIOUS_SESSION_LOSS_SIGNAL);
+			if (result != BRASERO_BURN_OK)
+				goto end;
+		}
+
+		NCB_MEDIA_GET_FREE_SPACE (drive, &media_size, NULL);
+	}
+	else
+		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
+
+	/* we check that the image will fit on the media */
+	/* NOTE: this is useful only for reloads since otherwise we usually
+	 * don't know what's the image size yet */
+	if (!BRASERO_BURN_SESSION_OVERBURN (priv->session)
+	&& (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
+	&&  media_size < img_size) {
+		BRASERO_BURN_LOG ("Insufficient space on media %lli/%lli",
+				  media_size,
+				  img_size);
+
+		/* This is a recoverable error so try to ask the user again */
+		result = BRASERO_BURN_NEED_RELOAD;
+		berror = BRASERO_BURN_ERROR_MEDIA_SPACE;
+		goto end;
 	}
 
 	/* check that if we copy a CD/DVD we are copying it to an
 	 * equivalent media (not a CD => DVD or a DVD => CD) */
-	if (type.type == BRASERO_TRACK_TYPE_DISC) {
+	if (input.type == BRASERO_TRACK_TYPE_DISC) {
 		gboolean is_src_DVD;
 		gboolean is_dest_DVD;
 
-		is_src_DVD = (type.subtype.media & BRASERO_MEDIUM_DVD);
+		is_src_DVD = (input.subtype.media & BRASERO_MEDIUM_DVD);
 		is_dest_DVD = (media & BRASERO_MEDIUM_DVD);
 
 		if (is_src_DVD != is_dest_DVD) {
@@ -961,23 +978,6 @@ again:
 		}
 	}
 
-	/* we check that the image will fit on the media */
-	if (BRASERO_BURN_SESSION_APPEND (priv->session))
-		NCB_MEDIA_GET_FREE_SPACE (drive, &media_size, NULL);
-	else
-		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
-
-	/* NOTE: this is useful only for reloads since otherwise we still don't
-	 * know what's the image size yet */
-	if (!BRASERO_BURN_SESSION_OVERBURN (priv->session)
-	&& (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
-	&&  media_size < img_size) {
-		/* This is a recoverable error so try to ask the user again */
-		result = BRASERO_BURN_NEED_RELOAD;
-		berror = BRASERO_BURN_ERROR_MEDIA_SPACE;
-		goto end;
-	}
-
 	if (!nautilus_burn_drive_lock (drive, _("ongoing burning process"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -988,16 +988,6 @@ again:
 	}
 	g_object_set_data (G_OBJECT (drive), IS_LOCKED, GINT_TO_POINTER (1));
 
-	if ((flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == 0
-	&&  (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-	&&  (media & BRASERO_MEDIUM_REWRITABLE)
-	&& !(media & BRASERO_MEDIUM_BLANK)) {
-		/* we warn the user is going to lose data even if in the case of
-		 * DVD+/-RW we don't really blank the disc */
-		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
-		if (result != BRASERO_BURN_OK)
-			goto end;
-	}
 
 end:
 
@@ -1420,7 +1410,7 @@ brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 	/* make sure the disc size is sufficient for the size */
 	if (!brasero_burn_session_is_dest_file (priv->session)
 	&&  !BRASERO_BURN_SESSION_OVERBURN (priv->session)) {
-		guint64 img_size;
+		gint64 img_size;
 		gint64 media_size;
 		NautilusBurnDrive *burner;
 
@@ -1527,6 +1517,18 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 	flags = brasero_burn_session_get_flags (priv->session);
 	retval = flags & supported;
+
+	if ((flags & BRASERO_BURN_FLAG_MERGE)
+	&& !(retval & BRASERO_BURN_FLAG_MERGE)) {
+		/* we pay attention to one flag in particular (MERGE) if it was
+		 * set then it must be supported. Otherwise error out. */
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("merging data is impossible with this disc"));
+		return BRASERO_BURN_ERR;
+	}
+
 	if (retval != flags)
 		BRASERO_BURN_DEBUG (burn,
 				    "Some flags were not supported (%i => %i). Corrected",
@@ -1585,7 +1587,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		retval |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
 	}
 
-	brasero_burn_session_set_flags (priv->session, flags);
+	brasero_burn_session_set_flags (priv->session, retval);
 	return BRASERO_BURN_OK;
 }
 
@@ -1668,9 +1670,6 @@ brasero_burn_unlock_drives (BraseroBurn *burn)
 			g_object_set_data (G_OBJECT (drive),
 					   IS_LOCKED,
 					   GINT_TO_POINTER (0));
-
-			if (BRASERO_BURN_SESSION_EJECT (priv->session))
-				brasero_burn_eject_async (drive);
 		}
 	}
 
@@ -1811,6 +1810,7 @@ brasero_burn_check_real (BraseroBurn *self,
 	BraseroTrackType type;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
+	NautilusBurnDrive *drive = NULL;
 	BraseroChecksumType checksum_type;
 
 	priv = BRASERO_BURN_PRIVATE (self);
@@ -1835,8 +1835,6 @@ brasero_burn_check_real (BraseroBurn *self,
 
 	/* if the input is a DISC, ask/mount/unmount and lock it */
 	if (type.type == BRASERO_TRACK_TYPE_DISC) {
-		NautilusBurnDrive *drive;
-
 		/* make sure there is a disc. If not, ask one and lock it */
 		result = brasero_burn_wait_for_checksum_media (self, error);
 		if (result != BRASERO_BURN_OK)
@@ -1848,6 +1846,9 @@ brasero_burn_check_real (BraseroBurn *self,
 			result = brasero_burn_mount_media (self, drive, error);
 			if (result != BRASERO_BURN_OK) {
 				brasero_burn_unlock_drives (self);
+				if (BRASERO_BURN_SESSION_EJECT (priv->session))
+					brasero_burn_eject_async (drive);
+
 				return result;
 			}
 
@@ -1884,8 +1885,13 @@ brasero_burn_check_real (BraseroBurn *self,
 		result = BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	/* unmount disc (if any) if we mounted it, ... */
-	brasero_burn_unlock_drives (self);
+	if (drive) {
+		/* unmount disc (if any) if we mounted it and eject it */
+		brasero_burn_unlock_drives (self);
+
+		if (BRASERO_BURN_SESSION_EJECT (priv->session))
+			brasero_burn_eject_async (drive);
+	}
 
 	return result;
 }
@@ -1919,8 +1925,10 @@ brasero_burn_record_session (BraseroBurn *burn,
 		 * flag with one element could not be supported by its fallback
 		 */
 		result = brasero_burn_check_session_consistency (burn, error);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			brasero_burn_session_pop_settings (priv->session);
 			break;
+		}
 
 		if (ret_error) {
 			g_error_free (ret_error);
@@ -1933,26 +1941,19 @@ brasero_burn_record_session (BraseroBurn *burn,
 		brasero_burn_session_pop_settings (priv->session);
 	} while (result == BRASERO_BURN_RETRY);
 
-	/* unlock all drives that's necessary if we want to check burnt drives
-	 * it seems that the kernel caches its contents and can't/don't update
-	 * its caches after a blanking/recording. */
-	/* NOTE: that work if the disc had not been mounted before. That's the 
-	 * mount that triggers the caches. So maybe if the disc was blank (and
-	 * therefore couldn't have been previously mounted) we could skip that
-	 * unlock/eject step. A better way would be to have a system call to 
-	 * force a re-load. */
+	drive = brasero_burn_session_get_burner (priv->session);
+
 	brasero_burn_unlock_drives (burn);
-
-	/* sleep here to make sure that we got time to eject */
-	while (brasero_burn_session_get_dest_media (priv->session) != BRASERO_MEDIUM_NONE)
-		brasero_burn_sleep (burn, 2000);
-
 	if (result != BRASERO_BURN_OK) {
 		/* handle errors */
 		if (ret_error) {
 			g_propagate_error (error, ret_error);
 			ret_error = NULL;
 		}
+
+		if (BRASERO_BURN_SESSION_EJECT (priv->session))
+			brasero_burn_eject_async (drive);
+
 		return result;
 	}
 
@@ -1965,13 +1966,31 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	track = tracks->data;
 	type = brasero_track_get_checksum_type (track);
-	if (type == BRASERO_CHECKSUM_NONE)
+	if (type == BRASERO_CHECKSUM_NONE) {
+		if (BRASERO_BURN_SESSION_EJECT (priv->session))
+			brasero_burn_eject_async (drive);
+
 		return result;
+	}
+
+	/* unlock all drives that's necessary if we want to check burnt drives
+	 * it seems that the kernel caches its contents and can't/don't update
+	 * its caches after a blanking/recording. */
+	/* NOTE: that work if the disc had not been mounted before. That's the 
+	 * mount that triggers the caches. So maybe if the disc was blank (and
+	 * therefore couldn't have been previously mounted) we could skip that
+	 * unlock/eject step. A better way would be to have a system call to 
+	 * force a re-load. */
+	brasero_burn_eject_async (drive);
+
+	/* sleep here to make sure that we got time to eject */
+	while (brasero_burn_session_get_dest_media (priv->session) != BRASERO_MEDIUM_NONE)
+		brasero_burn_sleep (burn, 2000);
 
 	if (type == BRASERO_CHECKSUM_MD5) {
 		const gchar *checksum = NULL;
-		guint64 blocks = -1;
-		guint64 size = -1;
+		gint64 blocks = -1;
+		gint64 size = -1;
 
 		checksum = brasero_track_get_checksum (track);
 		brasero_track_get_estimated_size (track, NULL, &blocks, &size);
@@ -1993,7 +2012,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	brasero_burn_session_push_tracks (priv->session);
 
-	drive = brasero_burn_session_get_burner (priv->session);
 	brasero_track_set_drive_source (track, drive);
 	brasero_burn_session_add_track (priv->session, track);
 

@@ -1274,7 +1274,9 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 					input,
 					BRASERO_PLUGIN_IO_ACCEPT_FILE);
 	if (!list) {
-		BRASERO_BURN_LOG ("Input not supported %i.%i", input->type, input->subtype.img_format);
+		BRASERO_BURN_LOG_WITH_TYPE (input,
+					    BRASERO_PLUGIN_IO_NONE,
+					    "Input not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -1521,19 +1523,66 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 	supported_flags |= BRASERO_BURN_FLAG_EJECT;
 	compulsory_flags = BRASERO_BURN_FLAG_ALL;
 
-	/* The following flag is enabled only if it's possible to find an
-	 * eraser for the inserted disc, or when there is no disc */
-	if (brasero_burn_caps_can_blank (self, session))
-		supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+	/* create the output to find first caps */
+	output.type = BRASERO_TRACK_TYPE_DISC;
+	output.subtype.media = brasero_burn_session_get_dest_media (session);
 
-	/* first find the output caps */
-	brasero_burn_caps_get_output (self, session, &output);
-	caps = brasero_caps_find_start_caps (&output);
+	/* BLANK_BEFORE_WRITE is enabled only if it's possible to find a plugin
+	 * able to erase and if APPEND/MERGE flags have not been set since they
+	 * are contradictory.
+	 * On the other hand if BLANK_BEFORE_WRITE is not set or if we can't 
+	 * find a plugin to erase the disc, if it has data on it and if input 
+	 * is not AUDIO, then APPEND flag is necessary */
+	caps = NULL;
+	if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		gboolean can_blank;
+		BraseroBurnFlag flags;
+
+		flags = brasero_burn_session_get_flags (session);
+		can_blank = brasero_burn_caps_can_blank (self, session);
+		if (can_blank && !(flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))) {
+			supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+
+			/* see if this flag is compulsory then the disc is not
+			 * supported without prior blanking */
+			caps = brasero_caps_find_start_caps (&output);
+			if (!caps) {
+				/* pretends it is blank and see if it would work */
+				output.subtype.media &= ~(BRASERO_MEDIUM_CLOSED|
+							  BRASERO_MEDIUM_APPENDABLE|
+							  BRASERO_MEDIUM_HAS_DATA|
+							  BRASERO_MEDIUM_HAS_AUDIO);
+				output.subtype.media |= BRASERO_MEDIUM_BLANK;
+
+				caps = brasero_caps_find_start_caps (&output);
+				if (!caps) {
+					BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
+									 media,
+									 BRASERO_PLUGIN_IO_NONE,
+									 "FLAGS: no caps could be found for");
+					return BRASERO_BURN_NOT_SUPPORTED;
+				}
+
+				compulsory_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+			}
+		}
+		else if (!can_blank
+		     && (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) == 0
+		     &&  input.type == BRASERO_TRACK_TYPE_DATA) {
+			/* since APPEND is set as compulsory and since it is 
+			 * contradictory with BLANK_BEFORE_WRITE then both */
+			compulsory_flags = BRASERO_BURN_FLAG_APPEND;
+		}
+	}
+
 	if (!caps) {
-		BRASERO_BURN_LOG_WITH_TYPE (&output,
-					    BRASERO_PLUGIN_IO_NONE,
-					    "FLAGS: no caps could be found for");
-		return BRASERO_BURN_NOT_SUPPORTED;
+		caps = brasero_caps_find_start_caps (&output);
+		if (!caps) {
+			BRASERO_BURN_LOG_WITH_TYPE (&output,
+						    BRASERO_PLUGIN_IO_NONE,
+						    "FLAGS: no caps could be found for");
+			return BRASERO_BURN_NOT_SUPPORTED;
+		}
 	}
 
 	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
@@ -1561,13 +1610,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		&& (io_flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) == 0)
 			compulsory_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 	}
-
-	/* if medium can be appended but is not rewritable
-	 * then APPEND/MERGE flags are compulsory */
-	media = brasero_burn_session_get_dest_media (session);
-	if ((media & BRASERO_MEDIUM_APPENDABLE)
-	&& !(media & BRASERO_MEDIUM_REWRITABLE))
-		compulsory_flags |= BRASERO_BURN_FLAG_APPEND;
 
 	*supported = supported_flags;
 	*compulsory = compulsory_flags;

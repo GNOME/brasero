@@ -121,7 +121,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			          GError **error)
 {
 	int fd;
-	guint64 size;
+	gint64 size;
 	BraseroTrackType type;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 

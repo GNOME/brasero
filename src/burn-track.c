@@ -820,9 +820,9 @@ brasero_track_set_estimated_size (BraseroTrack *track,
 
 BraseroBurnResult
 brasero_track_get_estimated_size (BraseroTrack *track,
-				  guint64 *block_size,
-				  guint64 *blocks,
-				  guint64 *size)
+				  gint64 *block_size,
+				  gint64 *blocks,
+				  gint64 *size)
 {
 	if (track->block_size <= 0
 	&&  track->blocks <= 0
