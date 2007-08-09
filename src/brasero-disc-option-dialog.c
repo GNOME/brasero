@@ -67,8 +67,6 @@ struct _BraseroDiscOptionDialogPrivate {
 	GtkWidget *selection;
 	GtkWidget *label;
 
-	GtkTooltips *tooltips;
-
 	guint label_modified:1;
 	guint joliet_warning:1;
 
@@ -584,9 +582,7 @@ brasero_disc_option_dialog_video_widget (BraseroDiscOptionDialog *dialog)
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_video_toggled),
 			  dialog);
-	gtk_tooltips_set_tip (priv->tooltips,
-			      priv->video_toggle,
-			      _("Create a video DVD that can be played by all DVD readers"),
+	gtk_widget_set_tooltip_text (priv->video_toggle,
 			      _("Create a video DVD that can be played by all DVD readers"));
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->video_toggle), TRUE);
@@ -604,9 +600,7 @@ brasero_disc_option_dialog_joliet_widget (BraseroDiscOptionDialog *dialog)
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	priv->joliet_toggle = gtk_check_button_new_with_label (_("Increase compatibility with Windows systems"));
-	gtk_tooltips_set_tip (priv->tooltips,
-			      priv->joliet_toggle,
-			      _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"),
+	gtk_widget_set_tooltip_text (priv->joliet_toggle,
 			      _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"));
 
 	/* NOTE: we take for granted that if the source does not require
@@ -638,9 +632,7 @@ brasero_disc_option_dialog_multi_widget (BraseroDiscOptionDialog *dialog)
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
 			  dialog);
-	gtk_tooltips_set_tip (priv->tooltips,
-			      priv->multi_toggle,
-			      _("Allow to add more data to the disc later"),
+	gtk_widget_set_tooltip_text (priv->multi_toggle,
 			      _("Allow to add more data to the disc later"));
 
 	brasero_disc_option_dialog_update_multi (dialog);
@@ -712,9 +704,7 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
 			  dialog);
-	gtk_tooltips_set_tip (priv->tooltips,
-			      priv->multi_toggle,
-			      _("Allow create what is called an enhanced CD or CD+"),
+	gtk_widget_set_tooltip_text (priv->multi_toggle,
 			      _("Allow create what is called an enhanced CD or CD+"));
 
 	options = brasero_utils_pack_properties (_("<b>Multisession</b>"),
@@ -814,9 +804,6 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 				      button,
 				      GTK_RESPONSE_OK);
 
-	priv->tooltips = gtk_tooltips_new ();
-	g_object_ref_sink (GTK_OBJECT (priv->tooltips));
-
 	priv->caps = brasero_burn_caps_get_default ();
 	priv->caps_sig = g_signal_connect (priv->caps,
 					   "caps-changed",
@@ -837,9 +824,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 	priv->selection = brasero_dest_selection_new (priv->session);
 	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
 						      BRASERO_MEDIUM_WRITABLE);
-	gtk_tooltips_set_tip (priv->tooltips,
-			      priv->selection,
-			      _("Choose which drive holds the disc to write to"),
+	gtk_widget_set_tooltip_text (priv->selection,
 			      _("Choose which drive holds the disc to write to"));
 
 	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
@@ -869,11 +854,6 @@ brasero_disc_option_dialog_finalize (GObject *object)
 	if (priv->caps) {
 		g_object_unref (priv->caps);
 		priv->caps = NULL;
-	}
-
-	if (priv->tooltips) {
-		g_object_unref (priv->tooltips);
-		priv->tooltips = NULL;
 	}
 
 	if (priv->output_sig) {

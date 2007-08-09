@@ -36,7 +36,6 @@
 #include <gtk/gtktable.h>
 #include <gtk/gtkcontainer.h>
 #include <gtk/gtkmisc.h>
-#include <gtk/gtktooltips.h>
 
 #include "brasero-project-type-chooser.h"
 #include "utils.h"
@@ -60,9 +59,9 @@ enum {
 
 struct _ItemDescription {
 	gchar *text;
+  	gchar *tooltip;
 	gchar *description;
-	gchar *tooltip;
-	gchar *image;
+       	gchar *image;
 	BraseroProjectType type;
 };
 typedef struct _ItemDescription ItemDescription;
@@ -99,7 +98,6 @@ struct BraseroProjectTypeChooserPrivate {
 	GtkWidget *selected;
 	GtkWidget *hovered;
 
-	GtkTooltips *tooltips;
 };
 
 static gboolean
@@ -208,10 +206,8 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 			  chooser);
 
 	if (description->tooltip) {
-		gtk_tooltips_set_tip (chooser->priv->tooltips,
-				      event,
-				      _(description->tooltip),
-				      NULL);
+		gtk_widget_set_tooltip_text (event,
+				      _(description->tooltip));
 	}
 
 	eventbox = gtk_event_box_new ();
@@ -265,9 +261,6 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	obj->priv = g_new0 (BraseroProjectTypeChooserPrivate, 1);
 
-	obj->priv->tooltips = gtk_tooltips_new ();
-	g_object_ref_sink (obj->priv->tooltips);
-	gtk_tooltips_enable (obj->priv->tooltips);
 
 	obj->priv->background = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/logo.png", &error);
 	if (error) {
@@ -369,11 +362,7 @@ brasero_project_type_chooser_finalize (GObject *object)
 
 	cobj = BRASERO_PROJECT_TYPE_CHOOSER (object);
 
-	if (cobj->priv->tooltips) {
-		g_object_unref (cobj->priv->tooltips);
-		cobj->priv->tooltips = NULL;
-	}
-
+	
 	if (cobj->priv->background) {
 		g_object_unref (G_OBJECT (cobj->priv->background));
 		cobj->priv->background = NULL;

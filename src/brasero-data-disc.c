@@ -57,7 +57,6 @@
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
-#include <gtk/gtktooltips.h>
 
 #include <eggtreemultidnd.h>
 
@@ -106,8 +105,7 @@ struct BraseroDataDiscPrivate {
 	GtkWidget *tree;
 	GtkTreeModel *model;
 	GtkTreeModel *sort;
-	GtkTooltips *tooltip;
-	GtkWidget *filter_dialog;
+       	GtkWidget *filter_dialog;
 	GtkWidget *filter_button;
 	GtkWidget *notebook;
 
@@ -1081,10 +1079,8 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			  FALSE,
 			  0);
 
-	gtk_tooltips_set_tip (data_disc->priv->tooltip,
-			      data_disc->priv->filter_button,
-			      _("Display the files filtered from the project"),
-			      NULL);
+	gtk_widget_set_tooltip_text (data_disc->priv->filter_button,
+				     _("Display the files filtered from the project"));
 
 	/* Import session */
 	button = gtk_toggle_button_new ();
@@ -1099,10 +1095,8 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			  "clicked",
 			  G_CALLBACK (brasero_data_disc_import_session_cb),
 			  disc);
-	gtk_tooltips_set_tip (data_disc->priv->tooltip,
-			      button,
-			      _("Import session"),
-			      NULL);
+	gtk_widget_set_tooltip_text (button,
+			      _("Import session"));
 	gtk_box_pack_end (GTK_BOX (toolbar),
 			  button,
 			  FALSE,
@@ -1132,10 +1126,8 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			  "clicked",
 			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
 			  data_disc);
-	gtk_tooltips_set_tip (data_disc->priv->tooltip,
-			      button,
-			      _("Create a new empty folder"),
-			      NULL);
+	gtk_widget_set_tooltip_text (button,
+			      _("Create a new empty folder"));
 	gtk_box_pack_end (GTK_BOX (toolbar),
 			  button,
 			  FALSE,
@@ -1156,8 +1148,6 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 	gtk_box_set_spacing (GTK_BOX (obj), 6);
 
 	obj->priv->vfs = brasero_vfs_get_default ();
-
-	obj->priv->tooltip = gtk_tooltips_new ();
 
 	/* the information displayed about how to use this tree */
 	obj->priv->notebook = brasero_utils_get_use_info_notebook ();
@@ -1430,11 +1420,6 @@ brasero_data_disc_finalize (GObject *object)
 	g_hash_table_destroy (cobj->priv->paths);
 	g_hash_table_destroy (cobj->priv->dirs);
 	g_hash_table_destroy (cobj->priv->files);
-
-	if (cobj->priv->tooltip) {
-		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltip));
-		g_object_unref (cobj->priv->tooltip);
-	}
 
 	if (cobj->priv->path_refs)
 		g_hash_table_destroy (cobj->priv->path_refs);
@@ -3075,8 +3060,7 @@ brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
 							        NULL);
 
 		/* we can now signal the user that some files were removed */
-		gtk_tooltips_enable (disc->priv->tooltip);
-
+		
 		if (filter_notify)
 			brasero_data_disc_notify_user (disc,
 						       _("Some files were filtered:"),

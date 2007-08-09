@@ -94,8 +94,7 @@ typedef struct _BraseroDrive BraseroDrive;
 
 struct _BraseroProjectSizePrivate {
 	GtkWidget *menu;
-	GtkTooltips *tooltips;
-
+	
 	GtkWidget *frame;
 	GtkWidget *arrow;
 	GtkWidget *button;
@@ -233,14 +232,10 @@ brasero_project_size_init (BraseroProjectSize *obj)
 	obj->priv = g_new0 (BraseroProjectSizePrivate, 1);
 	obj->priv->text_layout = gtk_widget_create_pango_layout (GTK_WIDGET (obj), "");
 
-	obj->priv->tooltips = gtk_tooltips_new ();
-
 	brasero_project_size_add_default_medias (obj);
 
 	obj->priv->button = gtk_toggle_button_new ();
-	gtk_tooltips_set_tip (obj->priv->tooltips,
-			      obj->priv->button,
-			      _("Show the available media to be burnt"),
+	gtk_widget_set_tooltip_text (obj->priv->button,
 			      _("Show the available media to be burnt"));
 	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->button), 0);
 	g_signal_connect (obj->priv->button,
@@ -275,11 +270,6 @@ brasero_project_size_finalize (GObject *object)
 	GList *iter;
 
 	cobj = BRASERO_PROJECT_SIZE (object);
-
-	if (cobj->priv->tooltips) {
-		g_object_ref_sink (GTK_OBJECT (cobj->priv->tooltips));
-		cobj->priv->tooltips = NULL;
-	}
 
 	if (cobj->priv->frame) {
 		gtk_widget_unparent (cobj->priv->frame);

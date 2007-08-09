@@ -142,7 +142,6 @@ struct BraseroProjectPrivate {
 	GtkWidget *remove;
 	GtkWidget *burn;
 
-	GtkTooltips *tooltip;
 	GtkActionGroup *project_group;
 	GtkActionGroup *action_group;
 
@@ -329,9 +328,7 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PROJECT_SPACING);
 
-	obj->priv->tooltip = gtk_tooltips_new ();
-	g_object_ref_sink (obj->priv->tooltip);
-
+	
 	/* header */
 	box = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
@@ -373,10 +370,8 @@ brasero_project_init (BraseroProject *obj)
 			  "clicked",
 			  G_CALLBACK (brasero_project_add_clicked_cb),
 			  obj);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      obj->priv->add,
-			      _("Add selected files"),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->add,
+				     _("Add selected files"));
 
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->add);
@@ -393,10 +388,8 @@ brasero_project_init (BraseroProject *obj)
 			  "clicked",
 			  G_CALLBACK (brasero_project_remove_clicked_cb),
 			  obj);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      obj->priv->remove,
-			      _("Remove files selected in project"),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->remove,
+			      _("Remove files selected in project"));
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->remove);
 	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
@@ -475,10 +468,8 @@ brasero_project_init (BraseroProject *obj)
 			  "clicked",
 			  G_CALLBACK (brasero_project_burn_clicked_cb),
 			  obj);
-	gtk_tooltips_set_tip (obj->priv->tooltip,
-			      obj->priv->burn,
-			      _("Start to burn the contents of the selection"),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->burn,
+			      _("Start to burn the contents of the selection"));
 	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
 	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, FALSE, 0);
@@ -492,11 +483,6 @@ brasero_project_finalize (GObject *object)
 
 	if (cobj->priv->project)
 		g_free (cobj->priv->project);
-
-	if (cobj->priv->tooltip) {
-		g_object_unref (cobj->priv->tooltip);
-		cobj->priv->tooltip = NULL;
-	}
 
 	g_free(cobj->priv);
 	G_OBJECT_CLASS(parent_class)->finalize(object);

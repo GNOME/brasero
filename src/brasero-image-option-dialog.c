@@ -61,8 +61,6 @@ struct _BraseroImageOptionDialogPrivate {
 	GtkWidget *selection;
 	GtkWidget *format;
 	GtkWidget *file;
-
-	GtkTooltips *tooltips;
 };
 typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
 
@@ -460,9 +458,6 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 
-	priv->tooltips = gtk_tooltips_new ();
-	g_object_ref_sink (GTK_OBJECT (priv->tooltips));
-
 	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 	gtk_widget_show (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
@@ -512,9 +507,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			    FALSE,
 			    6);
 
-	gtk_tooltips_set_tip (priv->tooltips,
-			      priv->selection,
-			      _("Choose which drive holds the disc to write to"),
+	gtk_widget_set_tooltip_text (priv->selection,
 			      _("Choose which drive holds the disc to write to"));
 
 	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), FALSE);
@@ -576,10 +569,6 @@ brasero_image_option_dialog_finalize (GObject *object)
 		priv->track = NULL;
 	}
 
-	if (priv->tooltips) {
-		g_object_unref (priv->tooltips);
-		priv->tooltips = NULL;
-	}
 
 	if (priv->caps_sig) {
 		g_signal_handler_disconnect (priv->caps, priv->caps_sig);

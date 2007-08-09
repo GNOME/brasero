@@ -272,8 +272,7 @@ struct _BraseroAudioDiscPrivate {
 
 	gint64 sectors;
 
-	GtkTooltips *tooltip;
-	GdkDragContext *drag_context;
+       	GdkDragContext *drag_context;
 
 	int activity_counter;
 
@@ -518,10 +517,8 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			  "changed",
 			  G_CALLBACK (brasero_audio_disc_selection_changed),
 			  button);
-	gtk_tooltips_set_tip (audio_disc->priv->tooltip,
-			      button,
-			      _("Add a 2 second pause after the track"),
-			      NULL);
+	gtk_widget_set_tooltip_text (button,
+			      _("Add a 2 second pause after the track"));
 	gtk_widget_show (button);
 	
 	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
@@ -542,8 +539,6 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	obj->priv = g_new0 (BraseroAudioDiscPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 8);
 
-	obj->priv->tooltip = gtk_tooltips_new ();
-	g_object_ref_sink (obj->priv->tooltip);
 
 	/* notebook to display information about how to use the tree */
 	obj->priv->notebook = brasero_utils_get_use_info_notebook ();
@@ -816,11 +811,7 @@ brasero_audio_disc_finalize (GObject *object)
 	}
 
 #endif
-	if (cobj->priv->tooltip) {
-		g_object_unref (cobj->priv->tooltip);
-		cobj->priv->tooltip = NULL;
-	}
-
+	
 	if (cobj->priv->vfs) {
 		brasero_vfs_cancel (cobj->priv->vfs, G_OBJECT (cobj));
 		g_object_unref (cobj->priv->vfs);

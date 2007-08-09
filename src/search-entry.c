@@ -51,7 +51,6 @@
 #include <gtk/gtkcellrenderer.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcelllayout.h>
-#include <gtk/gtktooltips.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkdialog.h>
 
@@ -77,7 +76,6 @@ struct BraseroSearchEntryPrivate {
 	GtkWidget *music;
 	GtkWidget *video;
 
-	GtkTooltips *tooltip;
 };
 
 /* cut and pasted from nautilus */
@@ -460,33 +458,18 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  obj);
 
 	/* add tooltips */
-	obj->priv->tooltip = gtk_tooltips_new ();
-	g_object_ref_sink (obj->priv->tooltip);
-
-	gtk_tooltips_set_tip (obj->priv->tooltip, 
-			      GTK_BIN (obj->priv->combo)->child,
-			      _("Type your keywords or choose 'All files' from the menu"),
-			      NULL);
-	gtk_tooltips_set_tip (obj->priv->tooltip, 
-			      obj->priv->pictures,
-			      _("Select if you want to search among image files only"),
-			      NULL);
-	gtk_tooltips_set_tip (obj->priv->tooltip, 
-			      obj->priv->video,
-			      _("Select if you want to search among video files only"),
-			      NULL);
-	gtk_tooltips_set_tip (obj->priv->tooltip, 
-			      obj->priv->music,
-			      _("Select if you want to search among audio files only"),
-			      NULL);
-	gtk_tooltips_set_tip (obj->priv->tooltip, 
-			      obj->priv->documents,
-			      _("Select if you want to search among your text documents only"),
-			      NULL);
-	gtk_tooltips_set_tip (obj->priv->tooltip, 
-			      obj->priv->button,
-			      _("Click to start the search"),
-			      NULL);
+	gtk_widget_set_tooltip_text (GTK_BIN (obj->priv->combo)->child,
+				     _("Type your keywords or choose 'All files' from the menu"));
+	gtk_widget_set_tooltip_text (obj->priv->pictures,
+				     _("Select if you want to search among image files only"));
+	gtk_widget_set_tooltip_text (obj->priv->video,
+				     _("Select if you want to search among video files only"));
+	gtk_widget_set_tooltip_text (obj->priv->music,
+				     _("Select if you want to search among audio files only"));
+	gtk_widget_set_tooltip_text (obj->priv->documents,
+				     _("Select if you want to search among your text documents only"));
+	gtk_widget_set_tooltip_text (obj->priv->button,
+				     _("Click to start the search"));
 
 	/* Set up GConf Client */
 	obj->priv->client = gconf_client_get_default ();
@@ -555,11 +538,6 @@ brasero_search_entry_finalize (GObject *object)
 	if (cobj->priv->search_id) {
 		g_source_remove (cobj->priv->search_id);
 		cobj->priv->search_id = 0;
-	}
-
-	if (cobj->priv->tooltip) {
-		g_object_unref (cobj->priv->tooltip);
-		cobj->priv->tooltip = NULL;
 	}
 
 	g_free (cobj->priv);

@@ -38,7 +38,6 @@
 #include <gtk/gtktable.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkspinbutton.h>
-#include <gtk/gtktooltips.h>
 
 #include <gst/gst.h>
 
@@ -50,9 +49,7 @@ static void brasero_song_props_init (BraseroSongProps *sp);
 static void brasero_song_props_finalize (GObject *object);
 
 struct BraseroSongPropsPrivate {
-	GtkTooltips *tooltips;
-
-	GtkWidget *title;
+       	GtkWidget *title;
 	GtkWidget *artist;
 	GtkWidget *composer;
 	GtkWidget *isrc;
@@ -109,10 +106,6 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (obj)->vbox), 0);
 	gtk_window_set_default_size (GTK_WINDOW (obj), 400, 300);
 
-	obj->priv->tooltips = gtk_tooltips_new ();
-	g_object_ref (obj->priv->tooltips);
-	g_object_ref_sink (GTK_OBJECT (obj->priv->tooltips));
-
 	table = gtk_table_new (4, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
@@ -135,30 +128,24 @@ brasero_song_props_init (BraseroSongProps *obj)
 	obj->priv->title = gtk_entry_new ();
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->title, 1, 2, 0, 1);
-	gtk_tooltips_set_tip (obj->priv->tooltips,
-			      obj->priv->title,
-			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->title,
+			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
 
 	label = gtk_label_new (_("Artist:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->artist = gtk_entry_new ();
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->artist, 1, 2, 1, 2);
-	gtk_tooltips_set_tip (obj->priv->tooltips,
-			      obj->priv->artist,
-			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->artist,
+				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
 
 	label = gtk_label_new (_("Composer:\t"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->composer = gtk_entry_new ();
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->composer, 1, 2, 2, 3);
-	gtk_tooltips_set_tip (obj->priv->tooltips,
-			      obj->priv->composer,
-			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->composer,
+			      _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
 
 	label = gtk_label_new ("ISRC:");
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -181,10 +168,8 @@ brasero_song_props_init (BraseroSongProps *obj)
 	obj->priv->gap = gtk_spin_button_new_with_range (0.0, 100.0, 1.0);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->gap, 1, 2, 0, 1, 0, 0, 0, 0);
-	gtk_tooltips_set_tip (obj->priv->tooltips,
-			      obj->priv->gap,
-			      _("Gives the length of the pause that should follow the track"),
-			      NULL);
+	gtk_widget_set_tooltip_text (obj->priv->gap,
+			      _("Gives the length of the pause that should follow the track"));
 
 	/* buttons */
 	gtk_dialog_add_buttons (GTK_DIALOG (obj),
@@ -202,7 +187,6 @@ brasero_song_props_finalize (GObject *object)
 
 	cobj = BRASERO_SONG_PROPS(object);
 
-	g_object_unref (cobj->priv->tooltips);
 	g_free (cobj->priv);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
