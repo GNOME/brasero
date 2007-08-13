@@ -772,7 +772,6 @@ brasero_utils_get_use_info_notebook (void)
 	GtkWidget *notebook;
 	GtkWidget *event_box;
 	GtkWidget *first_use;
-	GtkWidget *alignment;
 	gchar     *message_add, *message_add_header;
 	gchar     *message_remove, *message_remove_header;
 	gchar	  *first_use_message;
@@ -821,9 +820,6 @@ brasero_utils_get_use_info_notebook (void)
 
 	gtk_container_add (GTK_CONTAINER (frame), event_box);
 
-	alignment = gtk_alignment_new (0.50, 0.30, 0, 0);
-	gtk_container_add (GTK_CONTAINER (event_box), alignment);
-
 	/* Translators: this messages will appear as a list of possible
 	 * actions, like:
 	 *   To add/remove files you can:
@@ -856,12 +852,15 @@ brasero_utils_get_use_info_notebook (void)
 					 message_remove_header, message_remove,
 					 "</span>", NULL);
 	first_use = gtk_label_new (first_use_message);
+	gtk_misc_set_alignment (GTK_MISC (first_use), 0.50, 0.30);
+	gtk_label_set_ellipsize (GTK_LABEL (first_use), PANGO_ELLIPSIZE_END);
 	g_free (first_use_message);
 
 	gtk_misc_set_padding (GTK_MISC (first_use), 24, 0);
 	gtk_label_set_justify (GTK_LABEL (first_use), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (first_use), TRUE);
-	gtk_container_add (GTK_CONTAINER (alignment), first_use);
+	gtk_container_add (GTK_CONTAINER (event_box), first_use);
+
 	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
 
 	g_free (message_add_header);
