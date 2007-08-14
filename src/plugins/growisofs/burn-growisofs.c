@@ -79,7 +79,6 @@ brasero_growisofs_read_stdout (BraseroProcess *process, const gchar *line)
 		}
 
 		brasero_job_set_written (BRASERO_JOB (process), b_written);
-		brasero_job_set_current_track_size (BRASERO_JOB (process), 2048, -1, b_total);
 		brasero_job_set_rate (BRASERO_JOB (process), (gdouble) (speed_1 * 10 + speed_2) / 10.0 * (gdouble) DVD_RATE);
 
 		if (action == BRASERO_JOB_ACTION_ERASE) {
@@ -136,13 +135,17 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 		BraseroJobAction action;
 
 		line += strlen ("Total extents scheduled to be written = ");
-		brasero_job_set_current_track_size (BRASERO_JOB (process),
-						    2048,
-						    strtoll (line, NULL, 10),
-						    -1);
-
 		brasero_job_get_action (BRASERO_JOB (process), &action);
 		if (action == BRASERO_JOB_ACTION_SIZE) {
+			gint64 sectors;
+
+			sectors = strtoll (line, NULL, 10);
+
+			/* NOTE: this has to be a multiple of 2048 */
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
+								       sectors * 2048,
+								       sectors);
+
 			/* we better tell growisofs to stop here as it returns 
 			 * a value of 1 when mkisofs is run with --print-size */
 			brasero_job_finished (BRASERO_JOB (process), NULL);
@@ -341,11 +344,12 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroBurnFlag flags;
-	gint64 sectors;
+	gint64 sectors = 0;
 	gchar *device;
 	guint speed;
 
 	/* This seems to help to eject tray after burning (at least with mine) */
+	g_ptr_array_add (argv, g_strdup ("growisofs"));
 	g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=notray"));
 
 	brasero_job_get_flags (BRASERO_JOB (growisofs), &flags);
@@ -377,12 +381,18 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	 * made image */
 	brasero_job_get_device (BRASERO_JOB (growisofs), &device);
 	brasero_job_get_action (BRASERO_JOB (growisofs), &action);
-	brasero_job_get_session_size (BRASERO_JOB (growisofs), 
-				      &sectors,
-				      NULL);
-	
+	brasero_job_get_session_output_size (BRASERO_JOB (growisofs),
+					     &sectors,
+					     NULL);
+	if (sectors) {
+		/* NOTE: tracksize is in block number (2048 bytes) */
+		g_ptr_array_add (argv,
+				 g_strdup_printf ("-use-the-force-luke=tracksize:%"
+						  G_GINT64_FORMAT,
+						  sectors));
+	}
+
 	if (flags & BRASERO_BURN_FLAG_MERGE) {
-		g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=tracksize:%"G_GINT64_FORMAT, sectors));
 		g_ptr_array_add (argv, g_strdup ("-M"));
 		g_ptr_array_add (argv, device);
 		
@@ -410,8 +420,6 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			/* FIXME: is it right to mess with it ? 
 			   g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=bufsize:%im", 32)); */
 
-			/* NOTE: tracksize is in block number (2048 bytes) */
-			g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=tracksize:%"G_GINT64_FORMAT, sectors));
 			if (!g_file_test ("/proc/self/fd/0", G_FILE_TEST_EXISTS)) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
@@ -428,8 +436,6 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 		else if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
 			gchar *localpath;
 			BraseroTrack *track;
-
-			g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=tracksize:%"G_GINT64_FORMAT, sectors));
 
 			brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
 			localpath = brasero_track_get_image_source (track, FALSE);
@@ -450,12 +456,10 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			g_free (localpath);
 		}
 		else if (input.type == BRASERO_TRACK_TYPE_DATA) {
-			g_ptr_array_add (argv, g_strdup_printf ("-use-the-force-luke=tracksize:%"G_GINT64_FORMAT, sectors));
-
 			g_ptr_array_add (argv, g_strdup ("-Z"));
 			g_ptr_array_add (argv, device);
 
-			/* this can only happen if source->type == BRASERO_TRACK_SOURCE_GRAFTS */
+			/* this can only happen if source->type == BRASERO_TRACK_SOURCE_DATA */
 			if (action == BRASERO_JOB_ACTION_SIZE)
 				g_ptr_array_add (argv, g_strdup ("-dry-run"));
 
@@ -491,6 +495,7 @@ brasero_growisofs_set_argv_blank (BraseroGrowisofs *growisofs,
 	gchar *device;
 	guint speed;
 
+	g_ptr_array_add (argv, g_strdup ("growisofs"));
 	brasero_job_get_flags (BRASERO_JOB (growisofs), &flags);
 	if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK))
 		BRASERO_JOB_NOT_SUPPORTED (growisofs);
@@ -536,14 +541,45 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 	BraseroJobAction action;
 	BraseroBurnResult result;
 
-	g_ptr_array_add (argv, g_strdup ("growisofs"));
-
 	brasero_job_get_action(BRASERO_JOB (process), &action);
-	if (action == BRASERO_JOB_ACTION_RECORD)
+
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		BraseroTrackType input;
+
+		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
+			return BRASERO_BURN_NOT_RUNNING;
+
+		/* only do it if that's DATA as input */
+		brasero_job_get_input_type (BRASERO_JOB (process), &input);
+		if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
+			BraseroTrack *track = NULL;
+			gint64 sectors = 0;
+			gint64 size = 0;
+
+			/* there is just one case where we can set the output size which
+			 * is when the input is IMAGE type */
+			brasero_job_get_current_track (BRASERO_JOB (process), &track);
+			result = brasero_track_get_image_size (track,
+							       NULL,
+							       &sectors,
+							       &size,
+							       error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
+								       sectors,
+								       size);
+			return BRASERO_BURN_NOT_RUNNING;
+		}
+		else if (input.type != BRASERO_TRACK_TYPE_DATA)
+			return BRASERO_BURN_NOT_RUNNING;
+
 		result = brasero_growisofs_set_argv_record (BRASERO_GROWISOFS (process),
 							    argv,
 							    error);
-	else if (action == BRASERO_JOB_ACTION_SIZE)
+	}
+	else if (action == BRASERO_JOB_ACTION_RECORD)
 		result = brasero_growisofs_set_argv_record (BRASERO_GROWISOFS (process),
 							    argv,
 							    error);

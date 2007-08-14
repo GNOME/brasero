@@ -662,6 +662,11 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 	if (!caps)
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
+	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
+				    BRASERO_PLUGIN_IO_NONE,
+				    "TESTING: found first caps (%i plugins for testing)",
+				    g_slist_length (caps->tests));
+
 	tracks = brasero_burn_session_get_tracks (session);
 	if (g_slist_length (tracks) != 1) {
 		g_set_error (error,
@@ -672,8 +677,8 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 	}
 
 	track = tracks->data;
-
 	checksum_type = brasero_track_get_checksum_type (track);
+
 	for (iter = caps->tests; iter; iter = iter->next) {
 		BraseroCapsTest *test;
 		GSList *plugins;
@@ -1021,6 +1026,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			    GError **error)
 {
 	BraseroPluginProcessFlag position;
+	BraseroTask *blanking = NULL;
 	BraseroPluginIOFlag flags;
 	BraseroTask *task = NULL;
 	BraseroTrackType output;
@@ -1066,7 +1072,6 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 				       flags);
 	if (!list) {
 		BraseroBurnFlag session_flags;
-		BraseroTask *task;
 
 		BRASERO_BURN_LOG ("failed to create proper task. Trying with initial blanking");
 
@@ -1101,8 +1106,15 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 		BRASERO_BURN_LOG ("initial blank/erase task required")
 
-		task = brasero_burn_caps_new_blanking_task (self, session, error);
-		retval = g_slist_prepend (NULL, task);
+		blanking = brasero_burn_caps_new_blanking_task (self, session, error);
+		/* The problem here is that we shouldn't always prepend such a 
+		 * task. For example when we copy a disc to another using the 
+		 * same drive. In this case we should insert it before the last.
+		 * Now, that always work so that's what we do in all cases. Once
+		 * the whole list of tasks is created we insert this blanking
+		 * task just before the last one. Another advantage is that the
+		 * blanking of the disc is delayed as late as we can which means
+		 * in case of error we keep it intact as late as we can. */
 	}
 
 	/* reverse the list of links to have them in the right order */
@@ -1193,6 +1205,11 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 								      last_caps,
 								      BRASERO_PLUGIN_RUN_LAST);
 		retval = g_slist_concat (retval, result);
+	}
+	else if (blanking) {
+		retval = g_slist_insert_before (retval,
+						g_slist_last (retval),
+						blanking);
 	}
 
 	return retval;
@@ -1476,122 +1493,43 @@ brasero_caps_get_flags (BraseroBurnSession *session,
 	return retval;
 }
 
-BraseroBurnResult
-brasero_burn_caps_get_flags (BraseroBurnCaps *self,
-			     BraseroBurnSession *session,
-			     BraseroBurnFlag *supported,
-			     BraseroBurnFlag *compulsory)
+static BraseroBurnResult
+brasero_caps_get_flags_for_disc (BraseroBurnSession *session,
+				 BraseroMedia media,
+				 BraseroBurnFlag *supported,
+				 BraseroBurnFlag *compulsory)
 {
+	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_ALL;
 	BraseroPluginIOFlag io_flags;
-	BraseroMedia media;
-
-	/* FIXME: what's the meaning of NOGRACE when outputting ? */
-	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
-	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_DONT_OVERWRITE|
-					  BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
-					  BRASERO_BURN_FLAG_CHECK_SIZE|
-					  BRASERO_BURN_FLAG_NOGRACE;
 	BraseroTrackType output;
 	BraseroTrackType input;
 	BraseroCaps *caps;
 
-	g_return_val_if_fail (BRASERO_IS_BURNCAPS (self), BRASERO_BURN_ERR);
+	/* create the output to find first caps */
+	output.type = BRASERO_TRACK_TYPE_DISC;
+	output.subtype.media = media;
+
+	caps = brasero_caps_find_start_caps (&output);
+	if (!caps) {
+		BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
+						 media,
+						 BRASERO_PLUGIN_IO_NONE,
+						 "FLAGS: no caps could be found for");
+		return BRASERO_BURN_NOT_SUPPORTED;
+	}
 
 	brasero_burn_session_get_input_type (session, &input);
 	BRASERO_BURN_LOG_WITH_TYPE (&input,
 				    BRASERO_PLUGIN_IO_NONE,
 				    "FLAGS: searching available flags for input");
-
-	if (brasero_burn_session_is_dest_file (session)) {
-		BRASERO_BURN_LOG ("FLAGS: image required");
-
-		/* In this case no APPEND/MERGE is possible */
-		if (input.type == BRASERO_TRACK_TYPE_DISC)
-			supported_flags |= BRASERO_BURN_FLAG_EJECT;
-
-		/* FIXME: do the flag have the same meaning now with session
-		 * making a clear distinction between tmp files and output */
-		compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
-
-		*supported = supported_flags;
-		*compulsory = compulsory_flags;
-
-		return BRASERO_BURN_OK;
-	}
-
-	/* Let's get recorder flags */
-	supported_flags |= BRASERO_BURN_FLAG_EJECT;
-	compulsory_flags = BRASERO_BURN_FLAG_ALL;
-
-	/* create the output to find first caps */
-	output.type = BRASERO_TRACK_TYPE_DISC;
-	output.subtype.media = brasero_burn_session_get_dest_media (session);
-
-	/* BLANK_BEFORE_WRITE is enabled only if it's possible to find a plugin
-	 * able to erase and if APPEND/MERGE flags have not been set since they
-	 * are contradictory.
-	 * On the other hand if BLANK_BEFORE_WRITE is not set or if we can't 
-	 * find a plugin to erase the disc, if it has data on it and if input 
-	 * is not AUDIO, then APPEND flag is necessary */
-	caps = NULL;
-	if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-		gboolean can_blank;
-		BraseroBurnFlag flags;
-
-		flags = brasero_burn_session_get_flags (session);
-		can_blank = brasero_burn_caps_can_blank (self, session);
-		if (can_blank && !(flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))) {
-			supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-
-			/* see if this flag is compulsory then the disc is not
-			 * supported without prior blanking */
-			caps = brasero_caps_find_start_caps (&output);
-			if (!caps) {
-				/* pretends it is blank and see if it would work */
-				output.subtype.media &= ~(BRASERO_MEDIUM_CLOSED|
-							  BRASERO_MEDIUM_APPENDABLE|
-							  BRASERO_MEDIUM_HAS_DATA|
-							  BRASERO_MEDIUM_HAS_AUDIO);
-				output.subtype.media |= BRASERO_MEDIUM_BLANK;
-
-				caps = brasero_caps_find_start_caps (&output);
-				if (!caps) {
-					BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
-									 media,
-									 BRASERO_PLUGIN_IO_NONE,
-									 "FLAGS: no caps could be found for");
-					return BRASERO_BURN_NOT_SUPPORTED;
-				}
-
-				compulsory_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-			}
-		}
-		else if (!can_blank
-		     && (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) == 0
-		     &&  input.type == BRASERO_TRACK_TYPE_DATA) {
-			/* since APPEND is set as compulsory and since it is 
-			 * contradictory with BLANK_BEFORE_WRITE then both */
-			compulsory_flags = BRASERO_BURN_FLAG_APPEND;
-		}
-	}
-
-	if (!caps) {
-		caps = brasero_caps_find_start_caps (&output);
-		if (!caps) {
-			BRASERO_BURN_LOG_WITH_TYPE (&output,
-						    BRASERO_PLUGIN_IO_NONE,
-						    "FLAGS: no caps could be found for");
-			return BRASERO_BURN_NOT_SUPPORTED;
-		}
-	}
-
 	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
 				    caps->flags,
-				    "FLAGS: found start caps");
+				    "FLAGS: trying caps");
 
 	io_flags = brasero_caps_get_flags (session,
 					   caps,
-					   output.type == BRASERO_TRACK_TYPE_DISC ? output.subtype.media : BRASERO_MEDIUM_FILE,
+					   media,
 					   &input,
 					   BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					   BRASERO_PLUGIN_IO_ACCEPT_PIPE,
@@ -1611,9 +1549,123 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 			compulsory_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 	}
 
+	*supported |= supported_flags;
+	*compulsory |= compulsory_flags;
+	BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_caps_get_flags (BraseroBurnCaps *self,
+			     BraseroBurnSession *session,
+			     BraseroBurnFlag *supported,
+			     BraseroBurnFlag *compulsory)
+{
+	BraseroMedia media;
+	BraseroBurnResult result;
+	BraseroTrackDataType input;
+
+	/* FIXME: what's the meaning of NOGRACE when outputting ? */
+	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_DONT_OVERWRITE|
+					  BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
+					  BRASERO_BURN_FLAG_CHECK_SIZE|
+					  BRASERO_BURN_FLAG_NOGRACE;
+
+	g_return_val_if_fail (BRASERO_IS_BURNCAPS (self), BRASERO_BURN_ERR);
+
+	input = brasero_burn_session_get_input_type (session, NULL);
+
+	if (brasero_burn_session_is_dest_file (session)) {
+		BRASERO_BURN_LOG ("FLAGS: image required");
+
+		/* In this case no APPEND/MERGE is possible */
+		if (input == BRASERO_TRACK_TYPE_DISC)
+			supported_flags |= BRASERO_BURN_FLAG_EJECT;
+
+		/* FIXME: do the flag have the same meaning now with session
+		 * making a clear distinction between tmp files and output */
+		compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
+
+		*supported = supported_flags;
+		*compulsory = compulsory_flags;
+
+		return BRASERO_BURN_OK;
+	}
+
+	/* Let's get flags for recording */
+	supported_flags |= BRASERO_BURN_FLAG_EJECT;
+	media = brasero_burn_session_get_dest_media (session);
+
+	/* BLANK_BEFORE_WRITE is enabled only if it's possible to find a plugin
+	 * able to erase and if APPEND/MERGE flags have not been set since they
+	 * are contradictory.
+	 * On the other hand if BLANK_BEFORE_WRITE is not set or if we can't 
+	 * find a plugin to erase the disc, if it has data on it and if input 
+	 * is not AUDIO, then APPEND flag is necessary */
+	if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		BraseroBurnFlag flags;
+
+		flags = brasero_burn_session_get_flags (session);
+		result = brasero_burn_caps_can_blank (self, session);
+
+		if (result == BRASERO_BURN_OK) {
+			if (!(flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))) {
+				BraseroBurnFlag blank_compulsory = BRASERO_BURN_FLAG_NONE;
+				BraseroBurnFlag blank_supported = BRASERO_BURN_FLAG_NONE;
+
+				supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+
+				/* since this disc can be blanked, let's add the 
+				 * blank flags (supported and compulsory) */
+				brasero_burn_caps_get_blanking_flags (self,
+								      session,
+								      &blank_supported,
+								      &blank_compulsory);
+				supported_flags |= blank_supported;
+				compulsory_flags |= blank_compulsory;
+			}
+		}
+		else {
+			if ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) == 0
+			&&  input == BRASERO_TRACK_TYPE_DATA) {
+				compulsory_flags = BRASERO_BURN_FLAG_APPEND;
+				supported_flags = BRASERO_BURN_FLAG_APPEND;
+			}
+		}
+	}
+
+	result = brasero_caps_get_flags_for_disc (session,
+						  media,
+						 &supported_flags,
+						 &compulsory_flags);
+
+	if (result != BRASERO_BURN_OK) {
+		if (supported_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+			/* pretends it is blank and see if it would work */
+			media &= ~(BRASERO_MEDIUM_CLOSED|
+				   BRASERO_MEDIUM_APPENDABLE|
+				   BRASERO_MEDIUM_HAS_DATA|
+				   BRASERO_MEDIUM_HAS_AUDIO);
+			media |= BRASERO_MEDIUM_BLANK;
+
+			result = brasero_caps_get_flags_for_disc (session,
+								  media,
+								  &supported_flags,
+								  &compulsory_flags);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			compulsory_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+		}
+		else
+			return result;
+	}
+
 	*supported = supported_flags;
 	*compulsory = compulsory_flags;
-	BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -2232,6 +2284,7 @@ brasero_caps_disc_new (BraseroMedia media)
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroMedia common;
+		BraseroMedia media_less;
 		BraseroMedia caps_media;
 		BraseroMedia common_type;
 		BraseroMedia common_attr;
@@ -2240,6 +2293,8 @@ brasero_caps_disc_new (BraseroMedia media)
 		BraseroMedia common_subtype;
 
 		caps = iter->data;
+
+		media_less = BRASERO_MEDIUM_NONE;
 
 		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
 			continue;
@@ -2322,13 +2377,13 @@ brasero_caps_disc_new (BraseroMedia media)
 								       brasero_burn_caps_sort);
 			caps = new_caps;
 
-			media &= ~common_type;
+			media_less = common_type;
 			if (!(media & BRASERO_MEDIUM_DVD)
 			&&   (media & BRASERO_MEDIUM_CD))
-				media &= ~(BRASERO_MEDIUM_DL|
-					   BRASERO_MEDIUM_PLUS|
-					   BRASERO_MEDIUM_SEQUENTIAL|
-					   BRASERO_MEDIUM_RESTRICTED);
+				media_less |= (BRASERO_MEDIUM_DL|
+					       BRASERO_MEDIUM_PLUS|
+					       BRASERO_MEDIUM_SEQUENTIAL|
+					       BRASERO_MEDIUM_RESTRICTED);
 		}
 		else if (BRASERO_MEDIUM_TYPE (media) != common_type) {
 			BraseroMedia first_half, second_half;
@@ -2382,7 +2437,7 @@ brasero_caps_disc_new (BraseroMedia media)
 									       caps,
 									       brasero_burn_caps_sort);
 
-				media &= ~common_subtype;
+				media_less = common_subtype;
 			}
 			else if (BRASERO_MEDIUM_SUBTYPE (media) != common_subtype) {
 				BraseroMedia first_half, second_half;
@@ -2434,12 +2489,11 @@ brasero_caps_disc_new (BraseroMedia media)
 								       brasero_burn_caps_sort);
 			caps = new_caps;
 
-			media &= ~common_attr;
-
+			media_less = common_attr;
 			if (!(media & BRASERO_MEDIUM_WRITABLE)
 			&&  !(media & BRASERO_MEDIUM_REWRITABLE)
 			&&   (media & BRASERO_MEDIUM_ROM))
-				media &= ~(BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
+				media_less |= (BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
 		}
 		else if (BRASERO_MEDIUM_ATTR (media) != common_attr) {
 			BraseroMedia first_half, second_half;
@@ -2498,11 +2552,11 @@ brasero_caps_disc_new (BraseroMedia media)
 
 			caps = new_caps;
 
-			media &= ~common_status;
+			media_less = common_status;
 			if (!(media & BRASERO_MEDIUM_APPENDABLE)
 			&&  !(media & BRASERO_MEDIUM_CLOSED)
 			&&   (media & BRASERO_MEDIUM_BLANK))
-				media &= ~(BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA);
+				media_less |= (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA);
 		}
 		else if (BRASERO_MEDIUM_STATUS (media) != common_status) {
 			BraseroMedia first_half, second_half;
@@ -2531,6 +2585,8 @@ brasero_caps_disc_new (BraseroMedia media)
 			goto end;
 		}
 
+		media &= ~media_less;
+
 		/* If we find a caps encompassing ours then duplicate it.
 		 * If we find a caps encompassed by ours then add it to retval.
 		 * The above rule also applies to perfect hit */
@@ -2540,7 +2596,7 @@ brasero_caps_disc_new (BraseroMedia media)
 			retval = g_slist_prepend (retval, caps);
 
 			if (common_info == BRASERO_MEDIUM_INFO (media))
-				goto end;
+				break;
 
 			continue;
 		}

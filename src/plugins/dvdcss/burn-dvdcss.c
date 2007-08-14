@@ -352,7 +352,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 					BRASERO_BURN_ACTION_DRIVE_COPY,
 					_("Copying Video DVD"),
 					FALSE);
-	brasero_job_set_current_track_size (BRASERO_JOB (self), DVDCSS_BLOCK_SIZE, volume_size, -1);
+
 	brasero_job_start_progress (BRASERO_JOB (self), TRUE);
 
 	remaining_sectors = volume_size;
@@ -488,25 +488,10 @@ brasero_dvdcss_start (BraseroJob *job,
 		      GError **error)
 {
 	BraseroDvdcss *self;
-	BraseroJobAction action;
 	BraseroDvdcssPrivate *priv;
 
 	self = BRASERO_DVDCSS (job);
 	priv = BRASERO_DVDCSS_PRIVATE (self);
-
-	brasero_job_get_action (job, &action);
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		gint64 blocks;
-		BraseroTrack *track;
-		NautilusBurnDrive *drive;
-
-		/* FIXME: still need something to tell no need to go further */
-		brasero_job_get_current_track (job, &track);
-		drive = brasero_track_get_drive_source (track);
-		NCB_MEDIA_GET_DATA_SIZE (drive, NULL, &blocks);
-		brasero_job_set_current_track_size (job, DVDCSS_BLOCK_SIZE, blocks, -1);
-		return BRASERO_BURN_OK;
-	}
 
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
@@ -521,6 +506,32 @@ brasero_dvdcss_start (BraseroJob *job,
 
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_dvdcss_init_real (BraseroJob *job,
+			  GError **error)
+{
+	BraseroJobAction action;
+
+	brasero_job_get_action (job, &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		gint64 blocks;
+		BraseroTrack *track;
+
+		/* FIXME: still need something to tell no need to go further */
+		brasero_job_get_current_track (job, &track);
+		brasero_track_get_disc_data_size (track, &blocks, NULL);
+		brasero_job_set_output_size_for_current_track (job,
+							       blocks,
+							       blocks * DVDCSS_BLOCK_SIZE);
+		return BRASERO_BURN_NOT_RUNNING;
+	}
+
+	if (action != BRASERO_JOB_ACTION_IMAGE)
+		return BRASERO_BURN_NOT_SUPPORTED;
 
 	return BRASERO_BURN_OK;
 }
@@ -571,6 +582,7 @@ brasero_dvdcss_class_init (BraseroDvdcssClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_dvdcss_finalize;
 
+	job_class->init = brasero_dvdcss_init_real;
 	job_class->start = brasero_dvdcss_start;
 	job_class->stop = brasero_dvdcss_stop;
 }

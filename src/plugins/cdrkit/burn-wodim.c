@@ -1,5 +1,5 @@
 /***************************************************************************
- *            woodim.c
+ *            wodim.c
  *
  *  dim jan 22 15:22:52 2006
  *  Copyright  2006  Rouquier Philippe
@@ -49,9 +49,9 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-plugin.h"
-#include "burn-woodim.h"
+#include "burn-wodim.h"
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroWoodim, brasero_woodim, BRASERO_TYPE_PROCESS, BraseroProcess);
+BRASERO_PLUGIN_BOILERPLATE (BraseroWoodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
 
 struct _BraseroWoodimPrivate {
 	gint64 current_track_end_pos;
@@ -65,7 +65,7 @@ struct _BraseroWoodimPrivate {
 	guint immediate:1;
 };
 typedef struct _BraseroWoodimPrivate BraseroWoodimPrivate;
-#define BRASERO_WOODIM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_WOODIM, BraseroWoodimPrivate))
+#define BRASERO_WODIM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_WODIM, BraseroWoodimPrivate))
 
 static GObjectClass *parent_class = NULL;
 
@@ -73,14 +73,14 @@ static GObjectClass *parent_class = NULL;
 #define GCONF_KEY_MINBUF_VALUE		"/apps/brasero/config/minbuf_value"
 
 static BraseroBurnResult
-brasero_woodim_stderr_read (BraseroProcess *process, const gchar *line)
+brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 {
-	BraseroWoodim *woodim = BRASERO_WOODIM (process);
+	BraseroWoodim *wodim = BRASERO_WODIM (process);
 	BraseroWoodimPrivate *priv;
 	BraseroBurnFlag flags;
 
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
-	brasero_job_get_flags (BRASERO_JOB (woodim), &flags);
+	priv = BRASERO_WODIM_PRIVATE (wodim);
+	brasero_job_get_flags (BRASERO_JOB (wodim), &flags);
 
 	if (strstr (line, "Cannot open SCSI driver.")) {
 		brasero_job_error (BRASERO_JOB (process),
@@ -120,7 +120,7 @@ brasero_woodim_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_MEDIA_SPACE,
 						_("The files selected did not fit on the CD")));
 	}
-	else if (strstr (line ,"woodim: A write error occured")) {
+	else if (strstr (line ,"wodim: A write error occured")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
@@ -164,7 +164,7 @@ brasero_woodim_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_BUSY_DRIVE,
 						_("The drive seems to be busy (maybe you should reload the media)")));
 	}
-	else if (strstr (line, "woodim: No such file or directory. Cannot open")) {
+	else if (strstr (line, "wodim: No such file or directory. Cannot open")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
@@ -200,7 +200,7 @@ brasero_woodim_stderr_read (BraseroProcess *process, const gchar *line)
 }
 
 static void
-brasero_woodim_compute (BraseroWoodim *woodim,
+brasero_wodim_compute (BraseroWoodim *wodim,
 			gint mb_written,
 			gint mb_total,
 			gint track_num)
@@ -212,7 +212,7 @@ brasero_woodim_compute (BraseroWoodim *woodim,
 	gint64 bytes;
 	gint64 total;
 
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
+	priv = BRASERO_WODIM_PRIVATE (wodim);
 	if (mb_total <= 0)
 		return;
 
@@ -226,10 +226,10 @@ brasero_woodim_compute (BraseroWoodim *woodim,
 
 	this_remain = (mb_total - mb_written) * 1048576;
 	bytes = (total - priv->current_track_end_pos) + this_remain;
-	brasero_job_set_written (BRASERO_JOB (woodim), total - bytes);
+	brasero_job_set_written (BRASERO_JOB (wodim), total - bytes);
 
 	action_string = g_strdup_printf ("Writing track %02i", track_num);
-	brasero_job_set_current_action (BRASERO_JOB (woodim),
+	brasero_job_set_current_action (BRASERO_JOB (wodim),
 					BRASERO_BURN_ACTION_RECORDING,
 					action_string,
 					track_num_changed);
@@ -237,16 +237,16 @@ brasero_woodim_compute (BraseroWoodim *woodim,
 }
 
 static BraseroBurnResult
-brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
+brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 {
 	guint track;
 	guint speed_1, speed_2;
-	BraseroWoodim *woodim;
+	BraseroWoodim *wodim;
 	BraseroWoodimPrivate *priv;
 	int mb_written = 0, mb_total = 0, fifo = 0, buf = 0;
 
-	woodim = BRASERO_WOODIM (process);
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
+	wodim = BRASERO_WODIM (process);
+	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	if (sscanf (line, "Track %2u: %d of %d MB written (fifo %d%%) [buf %d%%] %d.%dx.",
 		    &track, &mb_written, &mb_total, &fifo, &buf, &speed_1, &speed_2) == 7) {
@@ -255,42 +255,42 @@ brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
 		current_rate = (gdouble) ((gdouble) speed_1 +
 			       (gdouble) speed_2 / 10.0) *
 			       (gdouble) CD_RATE;
-		brasero_job_set_rate (BRASERO_JOB (woodim), current_rate);
+		brasero_job_set_rate (BRASERO_JOB (wodim), current_rate);
 
 		priv->current_track_written = mb_written * 1048576;
-		brasero_woodim_compute (woodim,
+		brasero_wodim_compute (wodim,
 					  mb_written,
 					  mb_total,
 					  track);
 
-		brasero_job_start_progress (BRASERO_JOB (woodim), FALSE);
+		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	} 
 	else if (sscanf (line, "Track %2u:    %d MB written (fifo %d%%) [buf  %d%%]  %d.%dx.",
 			 &track, &mb_written, &fifo, &buf, &speed_1, &speed_2) == 6) {
 		gdouble current_rate;
 
-		/* this line is printed when woodim writes on the fly */
+		/* this line is printed when wodim writes on the fly */
 		current_rate = (gdouble) ((gdouble) speed_1 +
 			       (gdouble) speed_2 / 10.0) *
 			       (gdouble) CD_RATE;
-		brasero_job_set_rate (BRASERO_JOB (woodim), current_rate);
+		brasero_job_set_rate (BRASERO_JOB (wodim), current_rate);
 
 		priv->current_track_written = mb_written * 1048576;
-		if (brasero_job_get_fd_in (BRASERO_JOB (woodim), NULL) == BRASERO_BURN_OK) {
+		if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) == BRASERO_BURN_OK) {
 			gint64 bytes = 0;
 
 			/* we must ask the imager what is the total size */
-			brasero_job_get_session_size (BRASERO_JOB (woodim),
-						      NULL,
-						      &bytes);
+			brasero_job_get_session_output_size (BRASERO_JOB (wodim),
+							     NULL,
+							     &bytes);
 			mb_total = bytes / 1048576;
-			brasero_woodim_compute (woodim,
-						  mb_written,
-						  mb_total,
-						  track);
+			brasero_wodim_compute (wodim,
+						mb_written,
+						mb_total,
+						track);
 		}
 
-		brasero_job_start_progress (BRASERO_JOB (woodim), FALSE);
+		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	}
 	else if (sscanf (line, "Track %*d: %*s %d MB ", &mb_total) == 1) {
 /*		if (mb_total > 0)
@@ -301,7 +301,7 @@ brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
 
 		/* See if we are in an audio case which would mean we're writing
 		 * CD-TEXT */
-		brasero_job_get_input_type (BRASERO_JOB (woodim), &type);
+		brasero_job_get_input_type (BRASERO_JOB (wodim), &type);
 		brasero_job_set_current_action (BRASERO_JOB (process),
 						BRASERO_BURN_ACTION_RECORDING_CD_TEXT,
 						(type.type == BRASERO_TRACK_TYPE_AUDIO) ? NULL:_("Writing cue sheet"),
@@ -314,7 +314,7 @@ brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
 		brasero_job_get_current_action (BRASERO_JOB (process), &action);
 
 		/* NOTE: There seems to be a BUG somewhere when writing raw images
-		 * with clone mode. After disc has been written and fixated woodim
+		 * with clone mode. After disc has been written and fixated wodim
 		 * asks the media to be reloaded. So we simply ignore this message
 		 * and returns that everything went well. Which is indeed the case */
 		if (action == BRASERO_BURN_ACTION_FIXATING) {
@@ -339,7 +339,7 @@ brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
 	}
 	else if (g_str_has_prefix (line, "Blanking PMA, TOC, pregap")
 	     ||  strstr (line, "Blanking entire disk")) {
-		brasero_job_start_progress (BRASERO_JOB (woodim), FALSE);
+		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	}
 	else if (strstr (line, "Use tsize= option in SAO mode to specify track size")) {
 		brasero_job_error (BRASERO_JOB (process),
@@ -352,7 +352,7 @@ brasero_woodim_stdout_read (BraseroProcess *process, const gchar *line)
 }
 
 static gboolean
-brasero_woodim_write_inf (BraseroWoodim *woodim,
+brasero_wodim_write_inf (BraseroWoodim *wodim,
 			  GPtrArray *argv,
 			  BraseroTrack *track,
 			  const gchar *tmpdir,
@@ -364,6 +364,7 @@ brasero_woodim_write_inf (BraseroWoodim *woodim,
 	gint fd;
 	gint size;
 	gchar *path;
+	gint64 length;
 	gchar *string;
 	gint b_written;
 	gint64 sectors;
@@ -371,7 +372,7 @@ brasero_woodim_write_inf (BraseroWoodim *woodim,
 	BraseroSongInfo *info;
 	BraseroWoodimPrivate *priv;
 
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
+	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	/* NOTE: about the .inf files: they should have the exact same path
 	 * but the ending suffix file is replaced by inf:
@@ -400,7 +401,7 @@ brasero_woodim_write_inf (BraseroWoodim *woodim,
 	if (fd < 0)
 		goto error;
 
-	BRASERO_JOB_LOG (woodim, "writing inf (%s)", path);
+	BRASERO_JOB_LOG (wodim, "writing inf (%s)", path);
 
 	info = brasero_track_get_audio_info (track);
 
@@ -486,7 +487,8 @@ brasero_woodim_write_inf (BraseroWoodim *woodim,
 	if (b_written != size)
 		goto error;
 
-	brasero_track_get_estimated_size (track, NULL, NULL, &sectors);
+	brasero_track_get_audio_length (track, &length);
+	sectors = BRASERO_DURATION_TO_SECTORS (length);
 	string = g_strdup_printf ("Tracklength=\t%"G_GINT64_FORMAT", 0\n", sectors);
 	size = strlen (string);
 	b_written = write (fd, string, size);
@@ -550,7 +552,7 @@ error:
 }
 
 static BraseroBurnResult
-brasero_woodim_write_infs (BraseroWoodim *woodim,
+brasero_wodim_write_infs (BraseroWoodim *wodim,
 			   GPtrArray *argv,
 			   GError **error)
 {
@@ -563,41 +565,41 @@ brasero_woodim_write_infs (BraseroWoodim *woodim,
 	gint index;
 	gint start;
 
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
-	if (brasero_job_get_fd_in (BRASERO_JOB (woodim), NULL)) {
+	priv = BRASERO_WODIM_PRIVATE (wodim);
+	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL)) {
 		/* if burning on the fly we need a tmp directory for the infs */
-		result = brasero_job_get_tmp_dir (BRASERO_JOB (woodim),
+		result = brasero_job_get_tmp_dir (BRASERO_JOB (wodim),
 						  &tmpdir,
 						  error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
 
-	brasero_job_get_audio_title (BRASERO_JOB (woodim), &album);
-	brasero_job_get_tracks (BRASERO_JOB (woodim), &tracks);
+	brasero_job_get_audio_title (BRASERO_JOB (wodim), &album);
+	brasero_job_get_tracks (BRASERO_JOB (wodim), &tracks);
 	index = 0;
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
-		gint64 size;
+		gint64 length;
 		BraseroTrack *track;
 
 		track = iter->data;
-		result = brasero_woodim_write_inf (woodim,
+		result = brasero_wodim_write_inf (wodim,
 						   argv,
 						   track,
 						   tmpdir,
 						   album,
-						   start,
+						   BRASERO_DURATION_TO_SECTORS (start),
 						   index,
 						   error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
 		index ++;
-		size = 0;
-		brasero_track_get_estimated_size (track, NULL, &size, NULL);
-		start += size;
+		length = 0;
+		brasero_track_get_audio_length (track, &length);
+		start += length;
 	}
 
 	g_slist_free (tracks);
@@ -607,7 +609,7 @@ brasero_woodim_write_infs (BraseroWoodim *woodim,
 }
 
 static BraseroBurnResult
-brasero_woodim_set_argv_record (BraseroWoodim *woodim,
+brasero_wodim_set_argv_record (BraseroWoodim *wodim,
 				GPtrArray *argv, 
 				GError **error)
 {
@@ -616,21 +618,21 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 	BraseroTrackType type;
 	BraseroWoodimPrivate *priv;
 
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
+	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	if (priv->immediate) {
 		g_ptr_array_add (argv, g_strdup ("-immed"));
 		g_ptr_array_add (argv, g_strdup_printf ("minbuf=%i", priv->minbuf));
 	}
 
-	if (brasero_job_get_speed (BRASERO_JOB (woodim), &speed) == BRASERO_BURN_OK) {
+	if (brasero_job_get_speed (BRASERO_JOB (wodim), &speed) == BRASERO_BURN_OK) {
 		gchar *speed_str;
 
 		speed_str = g_strdup_printf ("speed=%d", speed);
 		g_ptr_array_add (argv, speed_str);
 	}
 
-	brasero_job_get_flags (BRASERO_JOB (woodim), &flags);
+	brasero_job_get_flags (BRASERO_JOB (wodim), &flags);
 	if (flags & BRASERO_BURN_FLAG_OVERBURN)
 		g_ptr_array_add (argv, g_strdup ("-overburn"));
 	if (flags & BRASERO_BURN_FLAG_BURNPROOF)
@@ -638,14 +640,14 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 	if (flags & BRASERO_BURN_FLAG_MULTI)
 		g_ptr_array_add (argv, g_strdup ("-multi"));
 
-	brasero_job_get_input_type (BRASERO_JOB (woodim), &type);
-	if (brasero_job_get_fd_in (BRASERO_JOB (woodim), NULL) == BRASERO_BURN_OK) {
+	brasero_job_get_input_type (BRASERO_JOB (wodim), &type);
+	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
 		int buffer_size;
 		gint64 sectors;
 		
 		/* we need to know what is the type of the track (audio / data) */
-		result = brasero_job_get_input_type (BRASERO_JOB (woodim), &type);
+		result = brasero_job_get_input_type (BRASERO_JOB (wodim), &type);
 		if (result != BRASERO_BURN_OK) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -655,9 +657,9 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 		}
 		
 		/* ask the size */
-		result = brasero_job_get_session_size (BRASERO_JOB (woodim),
-						       &sectors,
-						       NULL);
+		result = brasero_job_get_session_output_size (BRASERO_JOB (wodim),
+							      &sectors,
+							      NULL);
 		if (result != BRASERO_BURN_OK) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -689,7 +691,7 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 				g_ptr_array_add (argv, g_strdup ("-"));
 			}
 			else
-				BRASERO_JOB_NOT_SUPPORTED (woodim);;
+				BRASERO_JOB_NOT_SUPPORTED (wodim);;
 		}
 		else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 			/* now set the rest of the arguments */
@@ -701,14 +703,14 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
 			g_ptr_array_add (argv, g_strdup ("-text"));
 
-			result = brasero_woodim_write_infs (woodim,
-							      argv,
-							      error);
+			result = brasero_wodim_write_infs (wodim,
+							   argv,
+							   error);
 			if (result != BRASERO_BURN_OK)
 				return result;
 		}
 		else
-			BRASERO_JOB_NOT_SUPPORTED (woodim);
+			BRASERO_JOB_NOT_SUPPORTED (wodim);
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		BraseroBurnResult result;
@@ -725,25 +727,25 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 		g_ptr_array_add (argv, g_strdup ("-useinfo"));
 		g_ptr_array_add (argv, g_strdup ("-text"));
 
-		result = brasero_woodim_write_infs (woodim,
-						      argv,
-						      error);
+		result = brasero_wodim_write_infs (wodim,
+						   argv,
+						   error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroTrack *track = NULL;
 
-		brasero_job_get_current_track (BRASERO_JOB (woodim), &track);
+		brasero_job_get_current_track (BRASERO_JOB (wodim), &track);
 		if (!track)
-			BRASERO_JOB_NOT_READY (woodim);
+			BRASERO_JOB_NOT_READY (wodim);
 
 		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 			gchar *image_path;
 
-			image_path = brasero_track_get_image_source (track, TRUE);
+			image_path = brasero_track_get_image_source (track, FALSE);
 			if (!image_path)
-				BRASERO_JOB_NOT_READY (woodim);
+				BRASERO_JOB_NOT_READY (wodim);
 
 			if (flags & BRASERO_BURN_FLAG_DAO)
 				g_ptr_array_add (argv, g_strdup ("-dao"));
@@ -756,9 +758,9 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 			gchar *isopath;
 
-			isopath = brasero_track_get_image_source (track, TRUE);
+			isopath = brasero_track_get_image_source (track, FALSE);
 			if (!isopath)
-				BRASERO_JOB_NOT_READY (woodim);
+				BRASERO_JOB_NOT_READY (wodim);
 
 			if (flags & BRASERO_BURN_FLAG_DAO)
 				g_ptr_array_add (argv, g_strdup ("-dao"));
@@ -771,9 +773,9 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
 			gchar *rawpath;
 
-			rawpath = brasero_track_get_image_source (track, TRUE);
+			rawpath = brasero_track_get_image_source (track, FALSE);
 			if (!rawpath)
-				BRASERO_JOB_NOT_READY (woodim);
+				BRASERO_JOB_NOT_READY (wodim);
 
 			if (flags & BRASERO_BURN_FLAG_DAO)
 				return BRASERO_BURN_ERR;
@@ -787,9 +789,9 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 			gchar *cue_str;
 			gchar *cuepath;
 
-			cuepath = brasero_track_get_toc_source (track, TRUE);
+			cuepath = brasero_track_get_toc_source (track, FALSE);
 			if (!cuepath)
-				BRASERO_JOB_NOT_READY (woodim);
+				BRASERO_JOB_NOT_READY (wodim);
 
 			if (flags & BRASERO_BURN_FLAG_DAO)
 				g_ptr_array_add (argv, g_strdup ("-dao"));
@@ -801,12 +803,12 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 			g_free (cuepath);
 		}
 		else
-			BRASERO_JOB_NOT_SUPPORTED (woodim);
+			BRASERO_JOB_NOT_SUPPORTED (wodim);
 	}
 	else
-		BRASERO_JOB_NOT_SUPPORTED (woodim);
+		BRASERO_JOB_NOT_SUPPORTED (wodim);
 
-	brasero_job_set_current_action (BRASERO_JOB (woodim),
+	brasero_job_set_current_action (BRASERO_JOB (wodim),
 					BRASERO_BURN_ACTION_PREPARING,
 					NULL,
 					FALSE);
@@ -814,17 +816,17 @@ brasero_woodim_set_argv_record (BraseroWoodim *woodim,
 }
 
 static BraseroBurnResult
-brasero_woodim_set_argv_blank (BraseroWoodim *woodim, GPtrArray *argv)
+brasero_wodim_set_argv_blank (BraseroWoodim *wodim, GPtrArray *argv)
 {
 	gchar *blank_str;
 	BraseroBurnFlag flags;
 
-	brasero_job_get_flags (BRASERO_JOB (woodim), &flags);
+	brasero_job_get_flags (BRASERO_JOB (wodim), &flags);
 	blank_str = g_strdup_printf ("blank=%s",
 				    (flags & BRASERO_BURN_FLAG_FAST_BLANK) ? "fast" : "all");
 	g_ptr_array_add (argv, blank_str);
 
-	brasero_job_set_current_action (BRASERO_JOB (woodim),
+	brasero_job_set_current_action (BRASERO_JOB (wodim),
 					BRASERO_BURN_ACTION_BLANKING,
 					NULL,
 					FALSE);
@@ -832,56 +834,81 @@ brasero_woodim_set_argv_blank (BraseroWoodim *woodim, GPtrArray *argv)
 }
 
 static BraseroBurnResult
-brasero_woodim_set_argv (BraseroProcess *process,
+brasero_wodim_set_argv (BraseroProcess *process,
 			 GPtrArray *argv,
 			 GError **error)
 {
 	BraseroWoodimPrivate *priv;
 	BraseroBurnResult result;
 	BraseroJobAction action;
-	BraseroWoodim *woodim;
+	BraseroWoodim *wodim;
 	BraseroBurnFlag flags;
-	gchar *prog_name;
 	gchar *dev_str;
 	gchar *device;
 
-	woodim = BRASERO_WOODIM (process);
-	priv = BRASERO_WOODIM_PRIVATE (woodim);
+	wodim = BRASERO_WODIM (process);
+	priv = BRASERO_WODIM_PRIVATE (wodim);
+
+	brasero_job_get_action (BRASERO_JOB (wodim), &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		BraseroTrackType input = { 0 };
+		BraseroTrack *track = NULL;
+
+		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
+			return BRASERO_BURN_NOT_RUNNING;
+
+		/* there is just one case where we can set the output size which
+		 * is when the input is IMAGE type */
+		brasero_job_get_current_track (BRASERO_JOB (process), &track);
+		brasero_track_get_type (track, &input);
+		if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
+			gint64 sectors = 0;
+			gint64 size = 0;
+
+			result = brasero_track_get_image_size (track,
+							       NULL,
+							       &sectors,
+							       &size,
+							       error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
+								       sectors,
+								       size);
+		}
+
+		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	/* This is to support cdrkit. We give it the priority. */
-	prog_name = g_find_program_in_path ("wodim");
-	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
-		g_ptr_array_add (argv, prog_name);
-	else
-		g_ptr_array_add (argv, g_strdup ("woodim"));
-
+	g_ptr_array_add (argv, g_strdup ("wodim"));
 	g_ptr_array_add (argv, g_strdup ("-v"));
 
-	brasero_job_get_device (BRASERO_JOB (woodim), &device);
+	brasero_job_get_device (BRASERO_JOB (wodim), &device);
 	dev_str = g_strdup_printf ("dev=%s", device);
 	g_ptr_array_add (argv, dev_str);
 	g_free (device);
 
-	brasero_job_get_flags (BRASERO_JOB (woodim), &flags);
+	brasero_job_get_flags (BRASERO_JOB (wodim), &flags);
         if (flags & BRASERO_BURN_FLAG_DUMMY)
 		g_ptr_array_add (argv, g_strdup ("-dummy"));
 
 	if (flags & BRASERO_BURN_FLAG_NOGRACE)
 		g_ptr_array_add (argv, g_strdup ("gracetime=0"));
 
-	brasero_job_get_action (BRASERO_JOB (woodim), &action);
 	if (action == BRASERO_JOB_ACTION_RECORD)
-		result = brasero_woodim_set_argv_record (woodim, argv, error);
+		result = brasero_wodim_set_argv_record (wodim, argv, error);
 	else if (action == BRASERO_JOB_ACTION_ERASE)
-		result = brasero_woodim_set_argv_blank (woodim, argv);
+		result = brasero_wodim_set_argv_blank (wodim, argv);
 	else
-		BRASERO_JOB_NOT_SUPPORTED (woodim);
+		BRASERO_JOB_NOT_SUPPORTED (wodim);
 
 	return result;	
 }
 
 static void
-brasero_woodim_class_init (BraseroWoodimClass *klass)
+brasero_wodim_class_init (BraseroWoodimClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
@@ -889,21 +916,21 @@ brasero_woodim_class_init (BraseroWoodimClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroWoodimPrivate));
 
 	parent_class = g_type_class_peek_parent (klass);
-	object_class->finalize = brasero_woodim_finalize;
+	object_class->finalize = brasero_wodim_finalize;
 
-	process_class->stderr_func = brasero_woodim_stderr_read;
-	process_class->stdout_func = brasero_woodim_stdout_read;
-	process_class->set_argv = brasero_woodim_set_argv;
+	process_class->stderr_func = brasero_wodim_stderr_read;
+	process_class->stdout_func = brasero_wodim_stdout_read;
+	process_class->set_argv = brasero_wodim_set_argv;
 }
 
 static void
-brasero_woodim_init (BraseroWoodim *obj)
+brasero_wodim_init (BraseroWoodim *obj)
 {
 	GConfClient *client;
 	BraseroWoodimPrivate *priv;
 
 	/* load our "configuration" */
-	priv = BRASERO_WOODIM_PRIVATE (obj);
+	priv = BRASERO_WODIM_PRIVATE (obj);
 
 	client = gconf_client_get_default ();
 	priv->immediate = gconf_client_get_bool (client,
@@ -919,7 +946,7 @@ brasero_woodim_init (BraseroWoodim *obj)
 }
 
 static void
-brasero_woodim_finalize (GObject *object)
+brasero_wodim_finalize (GObject *object)
 {
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -944,18 +971,17 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	GSList *output;
 	GSList *input;
 
-	/* First see if this plugin can be used, i.e. if woodim/woodim is in
-	 * the path */
+	/* First see if this plugin can be used, i.e. if wodim is in da path */
 	prog_name = g_find_program_in_path ("wodim");
 	if (!prog_name) {
-		*error = g_strdup (_("woodim could not be found in the path"));
+		*error = g_strdup (_("wodim could not be found in the path"));
 		return G_TYPE_NONE;
 	}
 	g_free (prog_name);
 
 	brasero_plugin_define (plugin,
-			       "woodim",
-			       _("use woodim to burn CDs"),
+			       "wodim",
+			       _("use wodim to burn CDs"),
 			       "Philippe Rouquier",
 			       1);
 
@@ -1005,5 +1031,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
-	return brasero_woodim_get_type (plugin);
+	return brasero_wodim_get_type (plugin);
 }

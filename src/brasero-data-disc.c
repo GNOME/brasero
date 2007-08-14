@@ -8510,13 +8510,15 @@ brasero_data_disc_set_session_contents (BraseroDisc *disc,
 	/* there should be only one data track */
 	brasero_burn_session_get_input_type (session, &type);
 	track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
-	brasero_track_set_estimated_size (track,
+
+	/* FIXME! now we should set the number of files and not the size */
+/*	brasero_track_set_estimated_size (track,
 					  2048,
 					  BRASERO_DATA_DISC (disc)->priv->sectors,
 					  -1);
-
+*/
 	joliet_compat = (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET);
-	brasero_track_set_data_fs (track, type.subtype.fs_type);
+	brasero_track_add_data_fs (track, type.subtype.fs_type);
 	brasero_data_disc_get_track_real (BRASERO_DATA_DISC (disc),
 					  &grafts,
 					  &unreadable,

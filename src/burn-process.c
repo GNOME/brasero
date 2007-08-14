@@ -221,7 +221,7 @@ brasero_process_read (BraseroProcess *process,
 		      GIOChannel *channel,
 		      GIOCondition condition,
 		      gint channel_type,
-		      BraseroProcessReadFunc read)
+		      BraseroProcessReadFunc readfunc)
 {
 	GString *buffer;
 	GIOStatus status;
@@ -269,8 +269,8 @@ brasero_process_read (BraseroProcess *process,
 							 debug_prefixes [channel_type],
 							 buffer->str);
 
-					if (read)
-						result = read (process, buffer->str);
+					if (readfunc)
+						result = readfunc (process, buffer->str);
 
 					/* a subclass could have stopped or errored out.
 					 * in this case brasero_process_stop will have 
@@ -304,8 +304,8 @@ brasero_process_read (BraseroProcess *process,
 					 debug_prefixes [channel_type],
 					 buffer->str);
 
-			if (read)
-				result = read (process, buffer->str);
+			if (readfunc)
+				result = readfunc (process, buffer->str);
 
 			/* a subclass could have stopped or errored out.
 			 * in this case brasero_process_stop will have 
@@ -372,6 +372,8 @@ brasero_process_read_stderr (GIOChannel *source,
 	g_string_free (priv->err_buffer, TRUE);
 	priv->err_buffer = NULL;
 
+	/* What if the above function (brasero_process_read called
+	 * brasero_job_finished */
 	if (priv->pid
 	&& !priv->io_err
 	&& !priv->io_out) {
@@ -382,7 +384,6 @@ brasero_process_read_stderr (GIOChannel *source,
 		 * with waitpid ()*/
 		priv->watch = g_timeout_add (500, brasero_process_watch_child, process);
 	}
-
 	return FALSE;
 }
 
@@ -515,8 +516,9 @@ brasero_process_start (BraseroJob *job, GError **error)
 				       NULL,
 				       read_stdout ? &stdout_pipe : NULL,
 				       &stderr_pipe,
-				       error))
+				       error)) {
 		return BRASERO_BURN_ERR;
+	}
 
 	/* error channel */
 	priv->std_error = brasero_process_setup_channel (process,
@@ -541,7 +543,6 @@ brasero_process_stop (BraseroJob *job,
 	BraseroProcessPrivate *priv;
 	BraseroProcessClass *klass;
 	BraseroProcess *process;
-	GIOCondition condition;
 
 	process = BRASERO_PROCESS (job);
 	priv = BRASERO_PROCESS_PRIVATE (process);
@@ -582,17 +583,22 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (priv->std_out) {
-		condition = g_io_channel_get_buffer_condition (priv->std_out);
-		if (condition == G_IO_IN) {
-			BraseroProcessClass *klass;
-	
-			klass = BRASERO_PROCESS_GET_CLASS (process);
-			while (brasero_process_read (process,
-						     priv->std_out,
-						     G_IO_IN,
-						     BRASERO_CHANNEL_STDOUT,
-						     klass->stdout_func));
-		}
+		BraseroProcessClass *klass;
+
+		/* we need to nullify the buffer since we've just read a line
+		 * that got the job to stop so if we don't do that following 
+		 * data will be appended to this line but each will provoke the
+		 * same stop every time */
+		if (priv->out_buffer)
+			g_string_set_size (priv->out_buffer, 0);
+
+		klass = BRASERO_PROCESS_GET_CLASS (process);
+		while (g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
+			brasero_process_read (process,
+					      priv->std_out,
+					      G_IO_IN,
+					      BRASERO_CHANNEL_STDOUT,
+					      klass->stdout_func);
 
 	    	/* NOTE: we already checked if priv->std_out wasn't 
 		 * NULL but brasero_process_read could have closed it */
@@ -613,17 +619,22 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (priv->std_error) {
-		condition = g_io_channel_get_buffer_condition (priv->std_error);
-		if (condition == G_IO_IN) {
-			BraseroProcessClass *klass;
+		BraseroProcessClass *klass;
 	
-			klass = BRASERO_PROCESS_GET_CLASS (process);
-			while (brasero_process_read (process,
-						     priv->std_error,
-						     G_IO_IN,
-						     BRASERO_CHANNEL_STDERR,
-						     klass->stderr_func));
-		}
+		/* we need to nullify the buffer since we've just read a line
+		 * that got the job to stop so if we don't do that following 
+		 * data will be appended to this line but each will provoke the
+		 * same stop every time */
+		if (priv->err_buffer)
+			g_string_set_size (priv->err_buffer, 0);
+
+		klass = BRASERO_PROCESS_GET_CLASS (process);
+		while (g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
+			brasero_process_read (process,
+					     priv->std_error,
+					     G_IO_IN,
+					     BRASERO_CHANNEL_STDERR,
+					     klass->stderr_func);
 
 	    	/* NOTE: we already checked if priv->std_out wasn't 
 		 * NULL but brasero_process_read could have closed it */

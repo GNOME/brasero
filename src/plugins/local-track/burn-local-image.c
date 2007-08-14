@@ -50,6 +50,9 @@ struct _BraseroLocalTrackPrivate {
 	gchar *checksum_src;
 	gchar *checksum_dest;
 
+	GList *src_list;
+	GList *dest_list;
+
 	GHashTable *nonlocals;
 	GnomeVFSAsyncHandle *xfer_handle;
 };
@@ -57,14 +60,12 @@ typedef struct _BraseroLocalTrackPrivate BraseroLocalTrackPrivate;
 
 #define BRASERO_LOCAL_TRACK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrackPrivate))
 
-static BraseroBurnResult
-brasero_local_track_xfer (BraseroLocalTrack *self,
-			  GList *src_list,
-			  GList *dest_list,
-			  GError **error);
-
-
 static GObjectClass *parent_class = NULL;
+
+static gint
+brasero_local_track_xfer_async_cb (GnomeVFSAsyncHandle *handle,
+				   GnomeVFSXferProgressInfo *info,
+				   BraseroLocalTrack *self);
 
 
 static gchar *
@@ -162,6 +163,7 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 {
 	BraseroLocalTrackPrivate *priv;
 	BraseroBurnResult result;
+	GnomeVFSResult res;
 	GnomeVFSURI *dest;
 	GList *dest_list;
 	GnomeVFSURI *src;
@@ -190,13 +192,33 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 	dest = gnome_vfs_uri_new (priv->checksum_dest);
 	dest_list = g_list_prepend (NULL, dest);
 
-	result = brasero_local_track_xfer (self,
-					   src_list,
-					   dest_list,
-					   NULL);
-	if (result != BRASERO_BURN_OK)
-		goto error;
+	res = gnome_vfs_async_xfer (&priv->xfer_handle,
+				    src_list,
+				    dest_list,
+				    GNOME_VFS_XFER_DEFAULT|
+				    GNOME_VFS_XFER_USE_UNIQUE_NAMES|
+				    GNOME_VFS_XFER_RECURSIVE,
+				    GNOME_VFS_XFER_ERROR_MODE_ABORT,
+				    GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
+				    GNOME_VFS_PRIORITY_DEFAULT,
+				    (GnomeVFSAsyncXferProgressCallback) brasero_local_track_xfer_async_cb,
+				    self,
+				    NULL, NULL);
+	
+	g_list_foreach (src_list, (GFunc) gnome_vfs_uri_unref, NULL);
+	g_list_foreach (dest_list, (GFunc) gnome_vfs_uri_unref, NULL);
+	g_list_free (src_list);
+	g_list_free (dest_list);
 
+	if (res != GNOME_VFS_OK) {
+		result = BRASERO_BURN_ERR;
+		goto error;
+	}
+
+	brasero_job_set_current_action (BRASERO_JOB (self),
+					BRASERO_BURN_ACTION_FILE_COPY,
+					_("Copying files md5sum file"),
+					TRUE);
 	return BRASERO_BURN_OK;
 
 error:
@@ -232,6 +254,8 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 	track = brasero_track_copy (track);
 	brasero_track_get_type (track, &input);
 
+	/* FIXME: we'd better make a copy of the tracks instead of modifying
+	 * them */
 	switch (input.type) {
 	case BRASERO_TRACK_TYPE_DATA: {
 		GSList *grafts;
@@ -253,7 +277,6 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 		unreadable = brasero_track_get_data_excluded_source (track);
 		for (; unreadable; unreadable = unreadable->next)
 			unreadable->data = brasero_local_track_translate_uri (self, unreadable->data);
-
 	}
 	break;
 
@@ -315,17 +338,11 @@ brasero_local_track_xfer_async_cb (GnomeVFSAsyncHandle *handle,
 		g_free (string);
 	}
 
-	/* that where we"ll treat the errors and decide to retry or not */
+	/* that where we'll treat the errors and decide to retry or not */
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
-
-	if (info->file_size)
-		brasero_job_set_current_track_size (BRASERO_JOB (self),
-						    1,
-						    -1,
-						    info->bytes_total);
-
-	if (info->bytes_copied)
-		brasero_job_set_written (BRASERO_JOB (self), info->total_bytes_copied);
+	brasero_job_set_progress (BRASERO_JOB (self),
+				  (gdouble) info->total_bytes_copied /
+				  (gdouble) info->bytes_total);
 
 	if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
 		brasero_local_track_finished (self);
@@ -356,19 +373,19 @@ brasero_local_track_xfer_async_cb (GnomeVFSAsyncHandle *handle,
 }
 
 static BraseroBurnResult
-brasero_local_track_xfer (BraseroLocalTrack *self,
-			  GList *src_list,
-			  GList *dest_list,
-			  GError **error)
+brasero_local_track_start (BraseroJob *job,
+			   GError **error)
 {
 	GnomeVFSResult res;
+	BraseroLocalTrack *self;
 	BraseroLocalTrackPrivate *priv;
 
+	self = BRASERO_LOCAL_TRACK (job);
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
 	res = gnome_vfs_async_xfer (&priv->xfer_handle,
-				    src_list,
-				    dest_list,
+				    priv->src_list,
+				    priv->dest_list,
 				    GNOME_VFS_XFER_DEFAULT|
 				    GNOME_VFS_XFER_USE_UNIQUE_NAMES|
 				    GNOME_VFS_XFER_RECURSIVE,
@@ -379,10 +396,12 @@ brasero_local_track_xfer (BraseroLocalTrack *self,
 				    self,
 				    NULL, NULL);
 
-	g_list_foreach (src_list, (GFunc) gnome_vfs_uri_unref, NULL);
-	g_list_foreach (dest_list, (GFunc) gnome_vfs_uri_unref, NULL);
-	g_list_free (src_list);
-	g_list_free (dest_list);
+	g_list_foreach (priv->src_list, (GFunc) gnome_vfs_uri_unref, NULL);
+	g_list_foreach (priv->dest_list, (GFunc) gnome_vfs_uri_unref, NULL);
+	g_list_free (priv->src_list);
+	g_list_free (priv->dest_list);
+	priv->src_list = NULL;
+	priv->dest_list = NULL;
 
 	if (res != GNOME_VFS_OK) {
 		if (error)
@@ -518,16 +537,26 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 }
 
 static BraseroBurnResult
-brasero_local_track_start (BraseroJob *job,
-			   GError **error)
+brasero_local_track_init_real (BraseroJob *job,
+			       GError **error)
 {
 	BraseroDownloadableListData callback_data;
 	BraseroLocalTrackPrivate *priv;
+	BraseroJobAction action;
 	BraseroLocalTrack *self;
 	BraseroTrackType input;
 	BraseroTrack *track;
 	GSList *grafts;
 	gchar *uri;
+
+	brasero_job_get_action (job, &action);
+
+	/* skip that part */
+	if (action == BRASERO_JOB_ACTION_SIZE)
+		return BRASERO_BURN_NOT_RUNNING;
+
+	if (action != BRASERO_JOB_ACTION_IMAGE)
+		return BRASERO_BURN_NOT_SUPPORTED;
 
 	/* we can't pipe or be piped */
 	self = BRASERO_LOCAL_TRACK (job);
@@ -595,10 +624,9 @@ brasero_local_track_start (BraseroJob *job,
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
-	return brasero_local_track_xfer (self,
-					 callback_data.src_list,
-					 callback_data.dest_list,
-					 error);
+	priv->src_list = callback_data.src_list;
+	priv->dest_list = callback_data.dest_list;
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
@@ -633,6 +661,22 @@ brasero_local_track_stop (BraseroJob *job,
 static void
 brasero_local_track_finalize (GObject *object)
 {
+	BraseroLocalTrackPrivate *priv;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (object);
+
+	if (priv->src_list) {
+		g_list_foreach (priv->src_list, (GFunc) gnome_vfs_uri_unref, NULL);
+		g_list_free (priv->src_list);
+		priv->src_list = NULL;
+	}
+
+	if (priv->dest_list) {
+		g_list_foreach (priv->dest_list, (GFunc) gnome_vfs_uri_unref, NULL);
+		g_list_free (priv->dest_list);
+		priv->dest_list = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -647,6 +691,7 @@ brasero_local_track_class_init (BraseroLocalTrackClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_local_track_finalize;
 
+	job_class->init = brasero_local_track_init_real;
 	job_class->start = brasero_local_track_start;
 	job_class->stop = brasero_local_track_stop;
 }

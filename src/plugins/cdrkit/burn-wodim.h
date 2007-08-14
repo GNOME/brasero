@@ -1,5 +1,5 @@
 /***************************************************************************
- *            woodim.h
+ *            wodim.h
  *
  *  dim jan 22 15:22:52 2006
  *  Copyright  2006  Rouquier Philippe
@@ -22,21 +22,21 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef WOODIM_H
-#define WOODIM_H
+#ifndef WODIM_H
+#define WODIM_H
 
 #include <glib.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_WOODIM         (brasero_woodim_get_type (NULL))
-#define BRASERO_WOODIM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_WOODIM, BraseroWoodim))
-#define BRASERO_WOODIM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_WOODIM, BraseroWoodimClass))
-#define BRASERO_IS_WOODIM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_WOODIM))
-#define BRASERO_IS_WOODIM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_WOODIM))
-#define BRASERO_WOODIM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_WOODIM, BraseroWoodimClass))
+#define BRASERO_TYPE_WODIM         (brasero_wodim_get_type (NULL))
+#define BRASERO_WODIM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_WODIM, BraseroWoodim))
+#define BRASERO_WODIM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_WODIM, BraseroWoodimClass))
+#define BRASERO_IS_WODIM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_WODIM))
+#define BRASERO_IS_WODIM_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_WODIM))
+#define BRASERO_WODIM_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_WODIM, BraseroWoodimClass))
 
 G_END_DECLS
 
-#endif /* WOODIM_H */
+#endif /* WODIM_H */

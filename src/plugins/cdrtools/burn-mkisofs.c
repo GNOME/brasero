@@ -60,11 +60,16 @@ static GObjectClass *parent_class = NULL;
 static BraseroBurnResult
 brasero_mkisofs_read_isosize (BraseroProcess *process, const gchar *line)
 {
+	gint sectors;
+
+	sectors = strtoll (line, NULL, 10);
+	if (!sectors)
+		return BRASERO_BURN_OK;
+
 	/* mkisofs reports blocks of 2048 bytes */
-	brasero_job_set_current_track_size (BRASERO_JOB (process),
-					    2048,
-					    strtoll (line, NULL, 10),
-					    0);
+	brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
+						       sectors,
+						       sectors * 2048);
 	return BRASERO_BURN_OK;
 }
 
@@ -182,7 +187,7 @@ brasero_mkisofs_read_stderr (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "No space left on device")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_DISC_SPACE,
+							BRASERO_BURN_ERROR_DISK_SPACE,
 							_("There is no space left on the device")));
 	}
 	else if (strstr (line, "Value too large for defined data type")) {

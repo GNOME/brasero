@@ -35,10 +35,7 @@
 #ifndef _BRASERO_MD5_H
 #define _BRASERO_MD5_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #define MD5_STRING_LEN			32
 #define BLOCK_SIZE			64
@@ -108,9 +105,7 @@ brasero_md5_equal (BraseroMD5 *a, BraseroMD5 *b);
 void
 brasero_md5_string (BraseroMD5 *md5, gchar *string);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BRASERO_MD5_H */
 

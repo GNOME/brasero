@@ -313,7 +313,7 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 {
 	BraseroBurnResult result;
 	GnomeVFSURI *vfsuri;
-	gchar buffer [129];
+	gchar buffer [33];
 	gchar *tmppath;
 	gchar *uri;
 	gchar *src;

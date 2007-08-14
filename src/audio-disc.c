@@ -1727,9 +1727,8 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 				    -1);
 
 		if (!uri) {
-			brasero_track_set_audio_boundaries (track,
-							    0,
-							    sectors);
+			/* This is a gap so sectors refers to its size */
+			brasero_track_set_audio_boundaries (track, -1, -1, sectors);
 			continue;
 		}
 
@@ -1738,8 +1737,8 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		info->artist = artist;
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-		brasero_track_set_estimated_size (track, 2352, sectors, -1);
 		brasero_track_set_audio_source (track, uri, BRASERO_AUDIO_FORMAT_UNDEFINED);
+		brasero_track_set_audio_boundaries (track, 0, sectors, -1);
 		brasero_track_set_audio_info (track, info);
 		brasero_burn_session_add_track (session, track);
 

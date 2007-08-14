@@ -73,9 +73,7 @@ static void
 brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 				       BraseroImageFormat format,
 				       const gchar *image,
-				       const gchar *toc,
-				       guint block_size,
-				       guint64 size)
+				       const gchar *toc)
 {
     	GtkRecentManager *recent;
 	BraseroImageOptionDialogPrivate *priv;
@@ -97,10 +95,6 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 					image,
 					toc,
 					format);
-	brasero_track_set_estimated_size (priv->track,
-					  block_size,
-					  -1,
-					  size);
 }
 
 static void
@@ -120,9 +114,7 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL,
-						       NULL,
-						       -1,
-						       -1);
+						       NULL);
 		return;
 	}
 
@@ -131,9 +123,7 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CLONE,
 						       NULL,
-						       uri,
-						       -1,
-						       -1);
+						       uri);
 	else if (!strcmp (info->mime_type, "application/octet-stream")) {
 		/* that could be an image, so here is the deal:
 		 * if we can find the type through the extension, fine.
@@ -142,52 +132,38 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 			brasero_image_option_dialog_set_track (dialog,
 							       BRASERO_IMAGE_FORMAT_CDRDAO,
 							       uri,
-							       NULL,
-							       -1,
-							       -1);
+							       NULL);
 		else if (g_str_has_suffix (uri, ".raw"))
 			brasero_image_option_dialog_set_track (dialog,
 							       BRASERO_IMAGE_FORMAT_CLONE,
 							       uri,
-							       NULL,
-							       -1,
-							       -1);
+							       NULL);
 		else
 			brasero_image_option_dialog_set_track (dialog,
 							       BRASERO_IMAGE_FORMAT_BIN,
 							       uri,
-							       NULL,
-							       2048,
-							       info->size);
+							       NULL);
 	}
 	else if (!strcmp (info->mime_type, "application/x-cd-image"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_BIN,
 						       uri,
-						       NULL,
-						       2048,
-						       info->size);
+						       NULL);
 	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CDRDAO,
 						       NULL,
-						       uri,
-						       -1,
-						       -1);
+						       uri);
 	else if (!strcmp (info->mime_type, "application/x-cue"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CUE,
 						       NULL,
-						       uri,
-						       -1,
-						       -1);
+						       uri);
 	else
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL,
-						       uri,
-						       2048,
-						       info->size);
+						       uri);
 }
 
 static void
@@ -203,9 +179,7 @@ brasero_image_option_dialog_get_format (BraseroImageOptionDialog *dialog,
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL,
-						       NULL,
-						       -1,
-						       -1);
+						       NULL);
 		return;
 	}
 
@@ -250,33 +224,25 @@ brasero_image_option_dialog_changed (BraseroImageOptionDialog *dialog)
 		brasero_image_option_dialog_set_track (dialog,
 						       format,
 						       uri,
-						       NULL,
-						       -1,
-						       -1);
+						       NULL);
 		break;
 	case BRASERO_IMAGE_FORMAT_CUE:
 		brasero_image_option_dialog_set_track (dialog,
 						       format,
 						       NULL,
-						       uri,
-						       -1,
-						       -1);
+						       uri);
 		break;
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
 		brasero_image_option_dialog_set_track (dialog,
 						       format,
 						       NULL,
-						       uri,
-						       -1,
-						       -1);
+						       uri);
 		break;
 	case BRASERO_IMAGE_FORMAT_CLONE:
 		brasero_image_option_dialog_set_track (dialog,
 						       format,
 						       NULL,
-						       uri,
-						       -1,
-						       -1);
+						       uri);
 		break;
 	default:
 		break;
@@ -366,9 +332,7 @@ brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL,
-						       NULL,
-						       -1,
-						       -1);
+						       NULL);
 }
 
 static void

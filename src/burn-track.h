@@ -79,6 +79,13 @@ typedef enum {
 	BRASERO_CHECKSUM_ANY			= BRASERO_CHECKSUM_MD5
 } BraseroChecksumType;
 
+
+#define BRASERO_DURATION_TO_BYTES(duration)			\
+	((gint64) (duration) * 75 * 2352 / 1000000000 +		\
+	((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0)
+#define BRASERO_DURATION_TO_SECTORS(duration)			\
+	((gint64) (duration) * 75 / 1000000000 +		\
+	((gint64) ((duration) * 75) % 1000000000) ? 1:0)
 /**
  *
  */
@@ -175,22 +182,22 @@ brasero_track_set_audio_info (BraseroTrack *track,
 BraseroBurnResult
 brasero_track_set_audio_boundaries (BraseroTrack *track,
 				    gint64 start,
+				    gint64 end,
 				    gint64 gap);
 
 BraseroBurnResult
 brasero_track_set_data_source (BraseroTrack *track,
 			       GSList *grafts,
 			       GSList *unreadable);
-
-BraseroBurnResult
-brasero_track_set_data_fs (BraseroTrack *track,
-			   BraseroImageFS fstype);
 BraseroBurnResult
 brasero_track_add_data_fs (BraseroTrack *track,
 			   BraseroImageFS fstype);
 BraseroBurnResult
 brasero_track_unset_data_fs (BraseroTrack *track,
 			     BraseroImageFS fstype);
+BraseroBurnResult
+brasero_track_set_data_file_num (BraseroTrack *track,
+				 gint64 number);
 
 BraseroBurnResult
 brasero_track_set_drive_source (BraseroTrack *track,
@@ -201,7 +208,6 @@ brasero_track_set_image_source (BraseroTrack *track,
 				const gchar *image,
 				const gchar *toc,
 				BraseroImageFormat format);
-
 
 /**
  * Function to get the track contents
@@ -251,17 +257,36 @@ brasero_track_get_checksum (BraseroTrack *track);
 BraseroChecksumType
 brasero_track_get_checksum_type (BraseroTrack *track);
 
-
-void
-brasero_track_set_estimated_size (BraseroTrack *track,
-				  gint64 block_size,
-				  gint64 blocks,
-				  gint64 size);
+/**
+ * These functions are all about sizes
+ */
 BraseroBurnResult
-brasero_track_get_estimated_size (BraseroTrack *track,
-				  gint64 *block_size,
+brasero_track_get_disc_capacity (BraseroTrack *track,
+				 gint64 *blocks,
+				 gint64 *size);
+BraseroBurnResult
+brasero_track_get_disc_data_size (BraseroTrack *track,
 				  gint64 *blocks,
 				  gint64 *size);
+BraseroBurnResult
+brasero_track_get_disc_free_space (BraseroTrack *track,
+				   gint64 *blocks,
+				   gint64 *size);
+
+BraseroBurnResult
+brasero_track_get_image_size (BraseroTrack *track,
+			      gint64 *block_size,
+			      gint64 *blocks,
+			      gint64 *size,
+			      GError **error);
+
+BraseroBurnResult
+brasero_track_get_audio_length (BraseroTrack *track,
+				gint64 *length);
+
+BraseroBurnResult
+brasero_track_get_data_file_num (BraseroTrack *track,
+				 gint64 *num_files);
 
 G_END_DECLS
 

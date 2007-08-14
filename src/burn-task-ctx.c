@@ -50,7 +50,9 @@ struct _BraseroTaskCtxPrivate
 	/* used to poll for progress (every 0.5 sec) */
 	gdouble progress;
 	gint64 written;
-	gint64 total;
+
+	gint64 size;
+	gint64 blocks;
 
 	/* keep track of time */
 	GTimer *timer;
@@ -331,23 +333,8 @@ brasero_task_ctx_finished (BraseroTaskCtx *self,
 	}
 
 	if (track) {
-		gint64 size;
-		gint64 blocks;
-		gint64 block_size;
-
-		brasero_track_get_estimated_size (priv->current_track,
-						  &block_size,
-						  &blocks,
-						  &size);
-
-		brasero_track_set_estimated_size (track,
-						  block_size,
-						  blocks,
-						  size);
-
-		BRASERO_BURN_LOG ("Adding track (type = %i, size = %lli) %s",
+		BRASERO_BURN_LOG ("Adding track (type = %i) %s",
 				  brasero_track_get_type (track, NULL),
-				  size,
 				  priv->added_track? "already some tracks":"");
 
 		if (!priv->added_track) {
@@ -506,36 +493,38 @@ brasero_task_ctx_set_rate (BraseroTaskCtx *self,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * This is used by jobs that are imaging to tell what's going to be the output 
+ * size for a particular track
+ */
+
 BraseroBurnResult
-brasero_task_ctx_set_track_size (BraseroTaskCtx *self,
-				 guint64 block_size,
-				 guint64 sectors,
-				 gint64 size)
+brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *self,
+						    gint64 sectors,
+						    gint64 size)
 {
 	BraseroTaskCtxPrivate *priv;
-	GSList *iter;
+
+	/* NOTE: we don't need block size here as it's pretty easy to have it by
+	 * dividing size by sectors or by guessing it with image or audio format
+	 * of the output */
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	brasero_track_set_estimated_size (priv->current_track,
-					  block_size,
-					  sectors,
-					  size);
-	priv->total = -1;
+	/* we only allow plugins to set these values during the init phase of a 
+	 * task when it's fakely running. One exception is if size or blocks are
+	 * 0 at the start of a task in normal mode */
+	if (sectors >= 0)
+		priv->blocks += sectors;
 
-	for (iter = priv->tracks; iter; iter = iter->next) {
-		BraseroTrack *track;
-		gint64 blocks;
+	if (size >= 0)
+		priv->size += size;
 
-		track = iter->data;
-		brasero_track_get_estimated_size (track,
-						  NULL,
-						  &blocks,
-						  NULL);
-		priv->total += blocks;		
-	}
+	BRASERO_BURN_LOG ("Task output modified %lli blocks %lli bytes",
+			  priv->blocks,
+			  priv->size);
 
 	return BRASERO_BURN_OK;
 }
@@ -731,28 +720,25 @@ brasero_task_ctx_get_remaining_time (BraseroTaskCtx *self,
 }
 
 BraseroBurnResult
-brasero_task_ctx_get_total (BraseroTaskCtx *self,
-			    gint64 *total)
+brasero_task_ctx_get_session_output_size (BraseroTaskCtx *self,
+					  gint64 *blocks,
+					  gint64 *size)
 {
 	BraseroTaskCtxPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
-	g_return_val_if_fail (total != NULL, BRASERO_BURN_ERR);
+	g_return_val_if_fail (blocks != NULL || size != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	if (priv->total <= 0
-	&&  priv->written
-	&&  priv->progress)
+	if (priv->size <= 0 && priv->blocks <= 0)
 		return BRASERO_BURN_NOT_READY;
 
-	if (!total)
-		return BRASERO_BURN_OK;
+	if (size)
+		*size = priv->size;
 
-	if (priv->total <= 0)
-		*total = priv->written / priv->progress;
-	else
-		*total = priv->total;
+	if (blocks)
+		*blocks = priv->blocks;
 
 	return BRASERO_BURN_OK;
 }
@@ -832,7 +818,7 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 		return BRASERO_BURN_OK;
 	}
 
-	brasero_task_ctx_get_total (self, &total);
+	brasero_task_ctx_get_session_output_size (self, NULL, &total);
 	if (priv->written < 0 || total <= 0)
 		return BRASERO_BURN_NOT_READY;
 
@@ -900,7 +886,6 @@ brasero_task_ctx_init (BraseroTaskCtx *object)
 
 	priv = BRASERO_TASK_CTX_PRIVATE (object);
 	priv->lock = g_mutex_new ();
-	priv->total = -1;
 }
 
 static void

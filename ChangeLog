@@ -1,3 +1,21 @@
+2007-08-14  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Another round of fixes to get disc copy working (using growisofs/cdrkit)
+	More specifically:
+	- improve image size handling/checking
+	- allow copy between two different types of disc (CD->DVD, ...) if size is OK
+	- fix some confusion with error handling in burn.c (appearing when a process didn't properly start)
+	- in a task list put blanking task before the last
+	- emit another finished signal after checking is done
+	- fix infinite loop on error in burn-process.c
+	- added an icon when drive is empty
+	- improved available flags discovery logic
+	- fixed a bug in DISC caps creation
+	- fixed speed reporting for jobs
+	- clarify how jobs should implement ::init and ::start methods
+	- fixed type it's WODIM and not WOODIM
+	- updated POTFILES.in for files renaming / changes
+
 2007-08-14  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/scsi/scsi-sg.c: (brasero_sg_send_command):
@@ -56,6 +74,16 @@
 	(brasero_song_props_finalize):
 
 	Migrate to the new GtkTooltip API. Now requires Gtk+ 2.11.6. 
+
+2007-08-2  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	Another bunch of fixes mainly to get image burning with (tested with growisofs)
+	fix for sizes 
+	improved destination media checks
+	improved flags testing
+	fix a small bug with DVD+RW in medium.c
+	marked forgotten strings for translation
+	updated file list for translations
 
 2007-08-2  Rouquier Philippe <bonfire-app@wanadoo.fr>
 

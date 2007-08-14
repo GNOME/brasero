@@ -58,18 +58,18 @@ typedef struct {
 
 	/**
 	 * Virtual functions to implement in each object deriving from
-	 * BraseroJob. start is the only one which is compulsory.
+	 * BraseroJob.
 	 */
-
-	BraseroBurnResult	(*init)			(BraseroJob *job,
-							 GError **error);
 
 	/**
 	 * returns 	OK if we should carry on
 	 * 		NOT_RUNNING if it completed successfully but task
-	 *		shouldn't go any further
-	 * 		ERROR otherwise
+	 *		shouldn't go any further (i.e. not run ::start)
+	 * 		ERR otherwise
 	 */
+	BraseroBurnResult	(*init)			(BraseroJob *job,
+							 GError **error);
+
 	BraseroBurnResult	(*start)		(BraseroJob *job,
 							 GError **error);
 
@@ -125,7 +125,7 @@ BraseroBurnResult
 brasero_job_get_data_label (BraseroJob *job, gchar **label);
 
 BraseroBurnResult
-brasero_job_get_session_size (BraseroJob *job, gint64 *blocks, gint64 *size);
+brasero_job_get_session_output_size (BraseroJob *job, gint64 *blocks, gint64 *size);
 
 /**
  * Used to get information of the destination media
@@ -230,10 +230,9 @@ BraseroBurnResult
 brasero_job_get_current_action (BraseroJob *job,
 				BraseroBurnAction *action);
 BraseroBurnResult
-brasero_job_set_current_track_size (BraseroJob *job,
-				    guint64 block_size,
-				    guint64 sectors,
-				    gint64 size);
+brasero_job_set_output_size_for_current_track (BraseroJob *job,
+					       gint64 sectors,
+					       gint64 size);
 
 BraseroBurnResult
 brasero_job_add_wrong_checksum (BraseroJob *job,

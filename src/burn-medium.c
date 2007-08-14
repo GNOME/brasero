@@ -749,6 +749,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	case BRASERO_SCSI_PROF_HD_DVD_R:
 	case BRASERO_SCSI_PROF_HD_DVD_RAM:
 		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
+		priv->icon = icons [0];
 		g_free (hdr);
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
@@ -1027,7 +1028,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		BraseroMediumTrack *leadout, *track;
 
 		track = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_prepend (priv->tracks, track);
+		priv->tracks = g_slist_append (priv->tracks, track);
 		track->start = BRASERO_GET_32 (desc->track_start);
 		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 
@@ -1172,6 +1173,8 @@ brasero_medium_retry_open (gpointer object)
 
 	BRASERO_BURN_LOG ("Open () succeeded\n");
 	priv->info = BRASERO_MEDIUM_NONE;
+	priv->icon = icons [0];
+
 	priv->retry_id = 0;
 
 	brasero_medium_init_real (self, fd);
@@ -1200,6 +1203,8 @@ brasero_medium_try_open (BraseroMedium *self)
 		||  errno == EBUSY) {
 			BRASERO_BURN_LOG ("Device busy");
 			priv->info = BRASERO_MEDIUM_BUSY;
+			priv->icon = icons [0];
+
 			priv->retry_id = g_timeout_add (1000,
 							brasero_medium_retry_open,
 							self);

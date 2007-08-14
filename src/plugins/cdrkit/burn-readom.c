@@ -77,45 +77,10 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 			brasero_job_start_progress (BRASERO_JOB (readom), FALSE);
 	}
 	else if ((pos = strstr (line, "Capacity:"))) {
-		gint64 total;
-		gint64 sectors;
-		BraseroTrackType output;
-		BraseroJobAction action;
-
-		pos += strlen ("Capacity:");
-		sectors = strtoll (pos, NULL, 10);
-
-		brasero_job_get_output_type (BRASERO_JOB (readom), &output);
-		if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
-			total = sectors * 2048;
-			brasero_job_set_current_track_size (BRASERO_JOB (readom),
-							    2048,
-							    sectors,
-							    -1);
-		}
-		else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
-			total = sectors * 2448;
-			brasero_job_set_current_track_size (BRASERO_JOB (readom),
-							    2448,
-							    sectors,
-							    -1);
-		}
-		else {
-			total = sectors * 2048;
-			brasero_job_set_current_track_size (BRASERO_JOB (readom),
-							    2048,
-							    sectors,
-							    -1);
-		}
-
-		brasero_job_get_action (BRASERO_JOB (readom), &action);
-		if (action != BRASERO_JOB_ACTION_SIZE)
-			brasero_job_set_current_action (BRASERO_JOB (readom),
-							BRASERO_BURN_ACTION_DRIVE_COPY,
-							NULL,
-							FALSE);
-		else
-			brasero_job_finished (BRASERO_JOB (readom), NULL);
+		brasero_job_set_current_action (BRASERO_JOB (readom),
+						BRASERO_BURN_ACTION_DRIVE_COPY,
+						NULL,
+						FALSE);
 	}
 	else if (strstr (line, "Device not ready.")) {
 		brasero_job_error (BRASERO_JOB (readom),
@@ -141,27 +106,6 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_SCSI_IOCTL,
 						_("you don't seem to have the required permissions to access the drive")));
 	}
-	else if (strstr (line, "Time total:")) {
-		BraseroTrackType output;
-		BraseroTrack *track;
-		gchar *image;
-		gchar *toc;
-
-		brasero_job_get_output_type (BRASERO_JOB (readom), &output);
-		brasero_job_get_image_output (BRASERO_JOB (readom),
-					      &image,
-					      &toc);
-
-		track = brasero_track_new (output.type);
-		brasero_track_set_image_source (track,
-						image,
-						toc,
-						output.subtype.img_format);
-		g_free (image);
-		g_free (toc);
-
-		brasero_job_finished (BRASERO_JOB (process), track);
-	}
 
 	return BRASERO_BURN_OK;
 }
@@ -173,21 +117,40 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 {
 	gint64 nb_blocks;
 	BraseroTrack *track;
-	BraseroMedia media;
-	NautilusBurnDrive *drive;
 
 	brasero_job_get_current_track (BRASERO_JOB (readom), &track);
-	drive = brasero_track_get_drive_source (track);
-	
-	media = NCB_MEDIA_GET_STATUS (drive);
-	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-		return BRASERO_BURN_OK;
-
-	NCB_MEDIA_GET_DATA_SIZE (drive, NULL, &nb_blocks);
-
+	brasero_track_get_disc_data_size (track, &nb_blocks, NULL);
 	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
 	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_readom_get_size (BraseroReadom *self,
+			 GError **error)
+{
+	gint64 blocks;
+	BraseroTrackType output;
+	BraseroTrack *track = NULL;
+
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
+	brasero_track_get_disc_data_size (track, &blocks, NULL);
+	brasero_job_get_output_type (BRASERO_JOB (self), &output);
+	if (output.type != BRASERO_TRACK_TYPE_IMAGE)
+		return BRASERO_BURN_ERR;
+
+	if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+							       blocks,
+							       blocks * 2048);
+	}
+	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+							       blocks,
+							       blocks * 2448);
+	}
+
+	/* no need to go any further */
+	return BRASERO_BURN_NOT_RUNNING;
 }
 
 static BraseroBurnResult
@@ -206,6 +169,11 @@ brasero_readom_set_argv (BraseroProcess *process,
 	gchar *dev_str;
 
 	readom = BRASERO_READOM (process);
+
+	/* This is a kind of shortcut */
+	brasero_job_get_action (BRASERO_JOB (process), &action);
+	if (action == BRASERO_JOB_ACTION_SIZE)
+		return brasero_readom_get_size (readom, error);
 
 	g_ptr_array_add (argv, g_strdup ("readom"));
 
@@ -253,7 +221,7 @@ brasero_readom_set_argv (BraseroProcess *process,
 		return BRASERO_BURN_OK;
 	}
 
-	if (!brasero_job_get_fd_out (BRASERO_JOB (readom), NULL)) {
+	if (brasero_job_get_fd_out (BRASERO_JOB (readom), NULL) != BRASERO_BURN_OK) {
 		gchar *image;
 
 		if (output.subtype.img_format != BRASERO_IMAGE_FORMAT_CLONE

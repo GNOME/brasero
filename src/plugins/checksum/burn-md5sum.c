@@ -59,6 +59,10 @@ struct _BraseroMd5sumPrivate {
 	gchar *sums_path;
 	FILE *file;
 
+	gint64 total;
+
+	gint64 file_num;
+
 	/* this is for the thread and the end of it */
 	GThread *thread;
 	gint end_id;
@@ -310,6 +314,7 @@ brasero_md5sum_start_md5 (BraseroMd5sum *self,
 
 static BraseroBurnResult
 brasero_md5sum_explore_directory (BraseroMd5sum *self,
+				  gint64 file_nb,
 				  const gchar *directory,
 				  const gchar *disc_path,
 				  GHashTable *excludedH,
@@ -344,6 +349,7 @@ brasero_md5sum_explore_directory (BraseroMd5sum *self,
 		graft_path = g_build_path (G_DIR_SEPARATOR_S, disc_path, name, NULL);
 		if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
 			result = brasero_md5sum_explore_directory (self,
+								   file_nb,
 								   path,
 								   graft_path,
 								   excludedH,
@@ -356,7 +362,7 @@ brasero_md5sum_explore_directory (BraseroMd5sum *self,
 
 			continue;
 		}
-			
+
 		result = brasero_md5sum_start_md5 (self,
 						   path,
 						   graft_path,
@@ -366,6 +372,11 @@ brasero_md5sum_explore_directory (BraseroMd5sum *self,
 
 		if (result != BRASERO_BURN_OK)
 			break;
+
+		priv->file_num ++;
+		brasero_job_set_progress (BRASERO_JOB (self),
+					  (gdouble) priv->file_num /
+					  (gdouble) file_nb);
 	}
 	g_dir_close (dir);
 
@@ -391,6 +402,7 @@ static BraseroBurnResult
 brasero_md5sum_grafts (BraseroMd5sum *self, GError **error)
 {
 	GSList *iter;
+	gint64 file_nb;
 	BraseroTrack *track;
 	GHashTable *excludedH;
 	BraseroMd5sumPrivate *priv;
@@ -418,6 +430,10 @@ brasero_md5sum_grafts (BraseroMd5sum *self, GError **error)
 
 	if (brasero_job_get_current_track (BRASERO_JOB (self), &track) != BRASERO_BURN_OK) 
 		BRASERO_JOB_NOT_SUPPORTED (self);
+
+	file_nb = 0;
+	priv->file_num = 0;
+	brasero_track_get_data_file_num (track, &file_nb);
 
 	/* we fill a hash table with all the files that are excluded globally */
 	excludedH = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -475,15 +491,21 @@ brasero_md5sum_grafts (BraseroMd5sum *self, GError **error)
 
 		if (g_file_test (path, G_FILE_TEST_IS_DIR))
 			result = brasero_md5sum_explore_directory (self,
+								   file_nb,
 								   path,
 								   graft_path,
 								   excludedH,
 								   error);
-		else
+		else {
 			result = brasero_md5sum_start_md5 (self,
 							   path,
 							   graft_path,
 							   error);
+			priv->file_num ++;
+			brasero_job_set_progress (BRASERO_JOB (self),
+						  (gdouble) priv->file_num /
+						  (gdouble) file_nb);
+		}
 
 		g_free (path);
 
@@ -514,7 +536,6 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 	BraseroMd5sumPrivate *priv;
 	BraseroBurnResult result;
 	BraseroTrack *track;
-	struct stat stats;
 	gchar *path;
 
 	priv = BRASERO_MD5SUM_PRIVATE (self);
@@ -532,18 +553,9 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 		return BRASERO_BURN_ERR;
 	}
 
-	if (stat (path, &stats) < 0) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		return BRASERO_BURN_ERR;
-	}
-
-	brasero_job_set_current_track_size (BRASERO_JOB (self),
-					    2048,
-					    -1,
-					    stats.st_size);
+	result = brasero_track_get_image_size (track, NULL, NULL, &priv->total, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CHECKSUM,
@@ -568,7 +580,6 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 static BraseroBurnResult
 brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 {
-	gint64 size;
 	const gchar *device;
 	BraseroTrack *track;
 	BraseroBurnResult result;
@@ -582,22 +593,8 @@ brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 
 	/* we get the size of the image 
 	 * NOTE: media was already checked in burn.c */
-	/* NOTE: the problem here is that if the media was just burnt it wasn't
-	 * reloaded and NCB_MEDIA_* functions will return the state of the media
-	 * before any operation took place. So here, we first rely on the track
-	 * size which should have been set and if not, we ask for the media size
-	 * using NCB_MEDIA_* */
-	result = brasero_track_get_estimated_size (track, NULL, NULL, &size);
-	if (result != BRASERO_BURN_OK) {
-		gint64 disc_size = 0;
-
-		NCB_MEDIA_GET_DATA_SIZE (drive, &disc_size, NULL);
-		brasero_track_set_estimated_size (track,
-						  2048,
-						  -1,
-						  disc_size);
-		size = disc_size;
-	}
+	priv->total = 0;
+	result = brasero_track_get_disc_data_size (track, NULL, &priv->total);
 
 	device = NCB_DRIVE_GET_DEVICE (drive);
 	brasero_job_set_current_action (BRASERO_JOB (self),
@@ -610,7 +607,7 @@ brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 	result = brasero_md5_file (priv->ctx,
 				   device,
 				   &priv->md5,
-				   size,
+				   priv->total,
 				   error);
 	brasero_md5_free (priv->ctx);
 	priv->ctx = NULL;
@@ -930,7 +927,7 @@ brasero_md5sum_end (gpointer data)
 		new_grafts = g_slist_prepend (new_grafts, graft);
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
-		brasero_track_set_data_fs (track, type.subtype.fs_type);
+		brasero_track_add_data_fs (track, type.subtype.fs_type);
 		brasero_track_set_data_source (track,
 					       new_grafts,
 					       g_slist_copy (excluded));
@@ -1057,8 +1054,11 @@ brasero_md5sum_init_real (BraseroJob *self,
 	BraseroJobAction action;
 
 	brasero_job_get_action (self, &action);
-	if (action == BRASERO_JOB_ACTION_SIZE)
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		/* we're not outputting anything so we don't have to set an 
+		 * output size. On the other hand we'll set a progress */
 		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -1092,7 +1092,14 @@ brasero_md5sum_clock_tick (BraseroJob *job)
 	if (!priv->ctx)
 		return BRASERO_BURN_OK;
 
-	brasero_job_set_written (job, brasero_md5_get_written (priv->ctx));
+	if (priv->total) {
+		gint64 written = 0;
+
+		written = brasero_md5_get_written (priv->ctx);
+		brasero_job_set_progress (job,
+					  (gdouble) written /
+					  (gdouble) priv->total);
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -1211,7 +1218,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 					  BRASERO_PLUGIN_RUN_LAST);
 
 	/* FIXME: we might want to add a DISC process as well when using cdrdao for example */
-
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
 				       BRASERO_MEDIUM_DVD|
 				       BRASERO_MEDIUM_PLUS|
@@ -1224,7 +1230,21 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 				       BRASERO_MEDIUM_APPENDABLE|
 				       BRASERO_MEDIUM_HAS_DATA);
 	brasero_plugin_check_caps (plugin,
-				   BRASERO_CHECKSUM_MD5|
+				   BRASERO_CHECKSUM_MD5,
+				   input);
+	g_slist_free (input);
+
+	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
+				       BRASERO_MEDIUM_DVD|
+				       BRASERO_MEDIUM_PLUS|
+				       BRASERO_MEDIUM_RESTRICTED|
+				       BRASERO_MEDIUM_SEQUENTIAL|
+				       BRASERO_MEDIUM_WRITABLE|
+				       BRASERO_MEDIUM_REWRITABLE|
+				       BRASERO_MEDIUM_CLOSED|
+				       BRASERO_MEDIUM_APPENDABLE|
+				       BRASERO_MEDIUM_HAS_DATA);
+	brasero_plugin_check_caps (plugin,
 				   BRASERO_CHECKSUM_MD5_FILE,
 				   input);
 	g_slist_free (input);

@@ -201,27 +201,6 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *session);
 
 
 /**
- * Used to manage the sizes
- */
-
-BraseroBurnResult
-brasero_burn_session_get_size (BraseroBurnSession *session,
-			       gint64 *blocks,
-			       gint64 *size);
-
-BraseroBurnResult
-brasero_burn_session_set_image_size (BraseroBurnSession *session,
-				     GError **error);
-
-BraseroBurnResult
-brasero_burn_session_check_tmpdir_volume_free_space (BraseroBurnSession *session,
-						     GError **error);
-
-BraseroBurnResult
-brasero_burn_session_check_output_volume_free_space (BraseroBurnSession *session,
-						     GError **error);
-
-/**
  * Some convenient functions
  */
 

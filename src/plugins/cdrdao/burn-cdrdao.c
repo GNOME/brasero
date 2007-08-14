@@ -68,12 +68,12 @@ brasero_cdrdao_read_stderr_image (BraseroCdrdao *cdrdao, const gchar *line)
 	else if (sscanf (line, "Leadout %*s %*d %d:%d:%*d(%i)", &min, &sec, &s1) == 3) {
 		BraseroJobAction action;
 
-		/* get the number of sectors. As we added -raw sector = 2352 bytes */
-		brasero_job_set_current_track_size (BRASERO_JOB (cdrdao), 2352, s1, -1);
-
 		brasero_job_get_action (BRASERO_JOB (cdrdao), &action);
-		if (action == BRASERO_JOB_ACTION_SIZE)
+		if (action == BRASERO_JOB_ACTION_SIZE) {
+			/* get the number of sectors. As we added -raw sector = 2352 bytes */
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao), s1, s1 * 2352);
 			brasero_job_finished (BRASERO_JOB (cdrdao), NULL);
+		}
 	}
 	else if (strstr (line, "Copying audio tracks")) {
 		brasero_job_set_current_action (BRASERO_JOB (cdrdao),
@@ -103,7 +103,6 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		brasero_job_set_dangerous (BRASERO_JOB (cdrdao), TRUE);
 
 		brasero_job_set_written (BRASERO_JOB (cdrdao), written * 1048576);
-		brasero_job_set_current_track_size (BRASERO_JOB (cdrdao), 2352, -1, total * 1048576);
 		brasero_job_set_current_action (BRASERO_JOB (cdrdao),
 						BRASERO_BURN_ACTION_RECORDING,
 						NULL,
@@ -449,8 +448,17 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 		return brasero_cdrdao_set_argv_blank (cdrdao, argv);
 	else if (action == BRASERO_JOB_ACTION_IMAGE)
 		return brasero_cdrdao_set_argv_image (cdrdao, argv, error);
-	else if (action == BRASERO_JOB_ACTION_SIZE)
-		return brasero_cdrdao_set_argv_image (cdrdao, argv, error);
+	else if (action == BRASERO_JOB_ACTION_SIZE) {
+		BraseroTrack *track;
+		gint64 sectors = 0;
+
+		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
+		brasero_track_get_disc_data_size (track, &sectors, NULL);
+		brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao),
+							       sectors,
+							       sectors * 2352);
+		return BRASERO_BURN_OK;
+	}
 
 	BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 }

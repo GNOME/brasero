@@ -78,6 +78,9 @@ brasero_task_cancel (BraseroTask *task,
 gboolean
 brasero_task_is_running (BraseroTask *task);
 
+BraseroBurnResult
+brasero_task_get_output_type (BraseroTask *task, BraseroTrackType *output);
+
 G_END_DECLS
 
 #endif /* BURN_TASK_H */

@@ -319,7 +319,7 @@ brasero_burn_status (BraseroBurn *burn,
 		brasero_task_ctx_get_rate (BRASERO_TASK_CTX (priv->task), rate);
 
 	if (isosize)
-		brasero_task_ctx_get_total (BRASERO_TASK_CTX (priv->task), isosize);
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task), NULL, isosize);
 
 	if (written)
 		brasero_task_ctx_get_written (BRASERO_TASK_CTX (priv->task), written);
@@ -780,6 +780,8 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 		 * data and/or audio and when we can blank it */
 		if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
 			*must_blank = FALSE;
+		else if (!(flags & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)))
+			*must_blank = FALSE;
 		else
 			*must_blank = TRUE;
 		return BRASERO_BURN_ERROR_NONE;
@@ -816,8 +818,6 @@ static BraseroBurnResult
 brasero_burn_wait_for_dest_media (BraseroBurn *burn, GError **error)
 {
 	gchar *failure;
-	gint64 img_size;
-	gint64 media_size;
 	BraseroMedia media;
 	gboolean must_blank;
 	BraseroBurnFlag flags;
@@ -837,11 +837,6 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn, GError **error)
 			     _("the drive has no burning capabilities"));
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
-
-	img_size = 0;
-	brasero_burn_session_get_size (priv->session,
-				       NULL,
-				       &img_size);
 	result = BRASERO_BURN_OK;
 
 again:
@@ -908,9 +903,6 @@ again:
 		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
 		if (result != BRASERO_BURN_OK)
 			goto end;
-
-		/* medium can be considered as being BLANK */
-		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
 	}
 	else if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
 		/* A few special warnings for the discs with data/audio on them
@@ -936,45 +928,6 @@ again:
 			result = brasero_burn_emit_signal (burn, WARN_PREVIOUS_SESSION_LOSS_SIGNAL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
-		}
-
-		NCB_MEDIA_GET_FREE_SPACE (drive, &media_size, NULL);
-	}
-	else
-		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
-
-	/* we check that the image will fit on the media */
-	/* NOTE: this is useful only for reloads since otherwise we usually
-	 * don't know what's the image size yet */
-	if (!BRASERO_BURN_SESSION_OVERBURN (priv->session)
-	&& (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
-	&&  media_size < img_size) {
-		BRASERO_BURN_LOG ("Insufficient space on media %lli/%lli",
-				  media_size,
-				  img_size);
-
-		/* This is a recoverable error so try to ask the user again */
-		result = BRASERO_BURN_NEED_RELOAD;
-		berror = BRASERO_BURN_ERROR_MEDIA_SPACE;
-		goto end;
-	}
-
-	/* check that if we copy a CD/DVD we are copying it to an
-	 * equivalent media (not a CD => DVD or a DVD => CD) */
-	if (input.type == BRASERO_TRACK_TYPE_DISC) {
-		gboolean is_src_DVD;
-		gboolean is_dest_DVD;
-
-		is_src_DVD = (input.subtype.media & BRASERO_MEDIUM_DVD);
-		is_dest_DVD = (media & BRASERO_MEDIUM_DVD);
-
-		if (is_src_DVD != is_dest_DVD) {
-			result = BRASERO_BURN_NEED_RELOAD;
-			if (is_src_DVD)
-				berror = BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED;
-			else
-				berror = BRASERO_BURN_ERROR_CD_NOT_SUPPORTED;
-			goto end;
 		}
 	}
 
@@ -1043,6 +996,29 @@ again:
 		goto again;
 
 	return result;
+}
+
+static BraseroBurnResult
+brasero_burn_reload_for_copy (BraseroBurn *burn,
+			      GError **error)
+{
+	NautilusBurnDrive *src;
+	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+
+	/* before recording if we are copying a disc check that the source and 
+	 * the destination drive are not the same. Otherwise reload the media */
+
+	/* NOTE: we use track->contents.drive.disc here
+	 * so as to keep the IS_LOCKED value consistent */
+	src = brasero_burn_session_get_src_drive (priv->session);
+	if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (src), IS_LOCKED)))
+		g_object_set_data (G_OBJECT (src), IS_LOCKED, GINT_TO_POINTER (1));
+	else
+		g_object_set_data (G_OBJECT (src), IS_LOCKED, GINT_TO_POINTER (0));
+
+	return brasero_burn_reload_dest_media (burn,
+					       BRASERO_BURN_ERROR_NONE, 
+					       error);
 }
 
 static BraseroBurnResult
@@ -1133,15 +1109,26 @@ start:
 		g_error_free (ret_error);
 		ret_error = NULL;
 
-		/* The media hasn't data on it: ask for a new one.
-		 * NOTE: we'll check the size later after the retry */
+		/* The media hasn't data on it: ask for a new one. */
 		result = brasero_burn_reload_src_media (burn,
 							error_code,
 							error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		return BRASERO_BURN_RETRY;
+		goto start;
+	}
+	else if (error_code == BRASERO_BURN_ERROR_MEDIA_SPACE) {
+		/* clean the error anyway since at worst the user will cancel */
+		g_error_free (ret_error);
+		ret_error = NULL;
+
+		/* the space left on the media is insufficient */
+		result = brasero_burn_reload_dest_media (burn, error_code, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		goto start;
 	}
 
 	/* not recoverable propagate the error */
@@ -1201,7 +1188,9 @@ start:
 		return BRASERO_BURN_OK;
 	}
 
-	if (result != BRASERO_BURN_ERR || !ret_error) {
+	if (result != BRASERO_BURN_ERR
+	|| !ret_error
+	||  ret_error->domain != BRASERO_BURN_ERROR) {
 		if (ret_error)
 			g_propagate_error (error, ret_error);
 
@@ -1241,7 +1230,7 @@ start:
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		return BRASERO_BURN_RETRY;
+		goto start;
 	}
 	else if (error_code == BRASERO_BURN_ERROR_SLOW_DMA) {
 		guint64 rate;
@@ -1249,7 +1238,7 @@ start:
 		/* The whole system has just made a great effort. Sometimes it 
 		 * helps to let it rest for a sec or two => that's what we do
 		 * before retrying. (That's why usually cdrecord waits a little
-		* bit but sometimes it doesn't). Another solution would be to
+		 * bit but sometimes it doesn't). Another solution would be to
 		 * lower the speed a little (we could do both) */
 		g_error_free (ret_error);
 		ret_error = NULL;
@@ -1270,7 +1259,7 @@ start:
 		brasero_burn_session_set_rate (priv->session, rate);
 		goto start;
 	}
-	else if (error_code >= BRASERO_BURN_ERROR_DISC_SPACE) {
+	else if (error_code >= BRASERO_BURN_ERROR_MEDIA_SPACE) {
 		/* NOTE: these errors can only come from the dest drive */
 
 		/* clean error and indicates this is a recoverable error */
@@ -1285,7 +1274,7 @@ start:
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		return BRASERO_BURN_RETRY;
+		goto start;
 	}
 
 	g_propagate_error (error, ret_error);
@@ -1296,6 +1285,7 @@ start:
 static BraseroBurnResult
 brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 {
+	gboolean need_reload;
 	BraseroTrackType input;
 	BraseroBurnResult result;
 	GSList *tasks, *next, *iter;
@@ -1310,6 +1300,8 @@ brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 					    error);
 	if (!tasks)
 		return BRASERO_BURN_NOT_SUPPORTED;
+
+	need_reload = brasero_burn_session_same_src_dest_drive (priv->session);
 
 	priv->tasks_done = 0;
 	priv->task_nb = g_slist_length (tasks);
@@ -1335,6 +1327,14 @@ brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 		/* see what type of task it is. It could be a blank/erase one */
 		action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (priv->task));
 		if (action == BRASERO_TASK_ACTION_ERASE) {
+			if (need_reload) {
+				result = brasero_burn_reload_for_copy (burn, error);
+				if (result != BRASERO_BURN_OK)
+					goto end;
+
+				need_reload = FALSE;
+			}
+
 			result = brasero_burn_run_eraser (burn, error);
 
 			if (result != BRASERO_BURN_OK)
@@ -1346,53 +1346,17 @@ brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 			continue;
 		}
 
-		/* If it's an image as input we don't need to ask the plugin to 
-		 * calculate the size, that's pretty trivial to get it.
-		 * Otherwise we ask the plugin to tell use what will be the size
-		 * of the image it'll create. after either one of these
-		 * functions session size should be avalaible.
-		 * NOTE: we need to re-evaluate everytime the input type as a
-		 * previous plugin can have changed it. */
-
-		/* NOTE: if we are imaging maybe we don't need to search for the
-		 * size, as the plugin will set the track size just before it 
-		 * begins. Yes for all the DATA tracks but not for AUDIO since
-		 * we have several tracks. */
-		brasero_burn_session_get_input_type (priv->session, &input);
-		if (input.type == BRASERO_TRACK_TYPE_IMAGE)
-			result = brasero_burn_session_set_image_size (priv->session, error);
-		else
-			result = brasero_burn_run_imager (burn, TRUE, error);
-
-		/* FIXME: for the time being we require every task to set the 
-		 * session entire size. But since now size can be set for every
-		 * track individually we could skip that in a near future by 
-		 * having another argument for brasero_track_set_size which
-		 * would tell if it's an estimation or not */
+		/* Init the task and set the task output size. The task should
+		 * then check that the disc has enough space. If the output is
+		 * to the hard drive it will be done afterwards when not in fake
+		 * mode. */
+		result = brasero_burn_run_imager (burn, TRUE, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;
 
 		/* see if we reached a recording task: it's the last task */
 		if (!next && !brasero_burn_session_is_dest_file (priv->session))
 			break;
-
-		/* since we're outputting to the hard drive (either a tmp image or a final one) 
-		 * make sure we have enough free space to output the image */
-		if (BRASERO_BURN_SESSION_CHECK_SIZE (priv->session)) {
-			if (brasero_burn_session_is_dest_file (priv->session)) {
-				result = brasero_burn_session_check_output_volume_free_space (priv->session,
-											      error);
-				if (result != BRASERO_BURN_OK)
-					goto end;
-			}
-
-			if (!BRASERO_BURN_SESSION_NO_TMP_FILE (priv->session)) {
-				result = brasero_burn_session_check_tmpdir_volume_free_space (priv->session,
-											      error);
-				if (result != BRASERO_BURN_OK)
-					goto end;
-			}
-		}
 
 		/* run the imager */
 		result = brasero_burn_run_imager (burn, FALSE, error);
@@ -1406,51 +1370,13 @@ brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 
 	if (brasero_burn_session_is_dest_file (priv->session))
 		goto end;
-	
-	/* make sure the disc size is sufficient for the size */
-	if (!brasero_burn_session_is_dest_file (priv->session)
-	&&  !BRASERO_BURN_SESSION_OVERBURN (priv->session)) {
-		gint64 img_size;
-		gint64 media_size;
-		NautilusBurnDrive *burner;
 
-		burner = brasero_burn_session_get_burner (priv->session);
-		NCB_MEDIA_GET_CAPACITY (burner, &media_size, NULL);
-		brasero_burn_session_get_size (priv->session,
-					       NULL,
-					       &img_size);
-
-		/* check that the image can fit on the media */
-		if (media_size < img_size) {
-			/* This is a recoverable error so try to ask the user again */
-			result = brasero_burn_reload_dest_media (burn,
-								 BRASERO_BURN_ERROR_MEDIA_SPACE,
-								 error);
-			if (result != BRASERO_BURN_OK)
-				goto end;
-		}
-	}
-
-	/* before recording if we are copying a disc check that the source and 
-	 * the destination drive are not the same. Otherwise reload the media */
-	if (brasero_burn_session_same_src_dest_drive (priv->session)
-	&& !BRASERO_BURN_SESSION_NO_TMP_FILE (priv->session)) {
-		NautilusBurnDrive *src;
-
-		/* NOTE: we use track->contents.drive.disc here
-		 * so as to keep the IS_LOCKED value consistent */
-		src = brasero_burn_session_get_src_drive (priv->session);
-		if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (src), IS_LOCKED)))
-			g_object_set_data (G_OBJECT (src), IS_LOCKED, GINT_TO_POINTER (1));
-		else
-			g_object_set_data (G_OBJECT (src), IS_LOCKED, GINT_TO_POINTER (0));
-
-		/* FIXME: we should put a message here saying that all went well */
-		result = brasero_burn_reload_dest_media (burn,
-							 BRASERO_BURN_ERROR_NONE, 
-							 error);
+	if (need_reload) {
+		result = brasero_burn_reload_for_copy (burn, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;
+
+		need_reload = FALSE;
 	}
 
 	result = brasero_burn_run_recorder (burn, error);
@@ -1877,6 +1803,17 @@ brasero_burn_check_real (BraseroBurn *self,
 
 		result = brasero_task_run (priv->task, error);
 
+		if (result == BRASERO_BURN_OK) {
+			brasero_burn_action_changed_real (self,
+							  BRASERO_BURN_ACTION_FINISHED);
+			g_signal_emit (self,
+				       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
+				       0,
+				       1.0,
+				       1.0,
+				       -1);
+		}
+
 		g_object_unref (priv->task);
 		priv->task = NULL;
 	}
@@ -1957,6 +1894,13 @@ brasero_burn_record_session (BraseroBurn *burn,
 		return result;
 	}
 
+	if (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_DUMMY) {
+		/* no need to check if it was dummy */
+		if (BRASERO_BURN_SESSION_EJECT (priv->session))
+			brasero_burn_eject_async (drive);
+		return BRASERO_BURN_OK;
+	}
+
 	/* see if we have a checksum generated for the session if so use
 	 * it to check if the recording went well remaining on the top of
 	 * the session should be the last track burnt/imaged */
@@ -1989,18 +1933,14 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	if (type == BRASERO_CHECKSUM_MD5) {
 		const gchar *checksum = NULL;
-		gint64 blocks = -1;
-		gint64 size = -1;
 
 		checksum = brasero_track_get_checksum (track);
-		brasero_track_get_estimated_size (track, NULL, &blocks, &size);
 
 		/* the idea is to push a new track on the stack with
 		 * the current disc burnt and the checksum generated
 		 * during the session recording */
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-		brasero_track_set_estimated_size (track, -1, blocks, size);
 		brasero_track_set_checksum (track, type, checksum);
 	}
 	else if (type == BRASERO_CHECKSUM_MD5_FILE) {

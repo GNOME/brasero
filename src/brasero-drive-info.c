@@ -99,23 +99,25 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
-		goto end;
+		return;
 	}
-	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
+
+	if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		gtk_label_set_markup (GTK_LABEL (priv->type),
 				      _("<i>unknown type</i>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
-		goto end;
+		return;
 	}
-	else if (media == BRASERO_MEDIUM_BUSY) {
+
+	if (media == BRASERO_MEDIUM_BUSY) {
 		gtk_label_set_markup (GTK_LABEL (priv->type),
 				      _("<i>busy disc</i>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
-		goto end;
+		return;
 	}
 
 	gtk_label_set_markup (GTK_LABEL (priv->type),
@@ -228,7 +230,6 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 				      _("data can be appended to the medium"));
 	}
 
-end:
 	gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
 				      NCB_MEDIA_GET_ICON (drive),
 				      GTK_ICON_SIZE_DIALOG);

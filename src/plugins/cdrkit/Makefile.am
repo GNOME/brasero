@@ -20,12 +20,12 @@ INCLUDES = \
 
 AM_CFLAGS = -Wall -g
 
-#woodim
-woodimdir = $(libdir)/brasero/plugins
-woodim_LTLIBRARIES = libbrasero-woodim.la
-libbrasero_woodim_la_SOURCES = burn-woodim.c burn-woodim.h
-libbrasero_woodim_la_LIBADD = $(BRASERO_BASE_LIBS)
-libbrasero_woodim_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+#wodim
+wodimdir = $(libdir)/brasero/plugins
+wodim_LTLIBRARIES = libbrasero-wodim.la
+libbrasero_wodim_la_SOURCES = burn-wodim.c burn-wodim.h
+libbrasero_wodim_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_wodim_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
 
 #genisoimage
 genisoimagedir = $(libdir)/brasero/plugins

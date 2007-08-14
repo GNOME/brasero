@@ -440,6 +440,7 @@ guint64
 brasero_burn_session_get_rate (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
+	gint64 max_rate;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), 0);
 
@@ -448,10 +449,11 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
 		return 0;
 
-	if (!priv->settings->rate)
-		return NCB_MEDIA_GET_MAX_WRITE_RATE (priv->settings->burner);
+	max_rate = NCB_MEDIA_GET_MAX_WRITE_RATE (priv->settings->burner);
+	if (priv->settings->rate > 0)
+		return max_rate;
 	else
-		return priv->settings->rate;
+		return MIN (max_rate, priv->settings->rate);
 }
 
 void
@@ -863,236 +865,6 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 						complement);
 
 	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
-brasero_burn_session_get_size (BraseroBurnSession *self,
-			       gint64 *blocks,
-			       gint64 *size)
-{
-	GSList *iter;
-	gint64 size_num = 0;
-	gint64 blocks_num = 0;
-	BraseroBurnSessionPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (!priv->tracks) {
-		BRASERO_BURN_LOG ("No track");
-		return BRASERO_BURN_NOT_READY;
-	}
-
-	for (iter = priv->tracks; iter; iter = iter->next) {
-		gint64 track_size;
-		gint64 track_blocks;
-		BraseroTrack *track;
-		BraseroBurnResult result;
-
-		track = iter->data;
-
-		track_size = 0;
-		track_blocks = 0;
-		result = brasero_track_get_estimated_size (track,
-							   NULL,
-							   &track_blocks,
-							   &track_size);
-		if (result != BRASERO_BURN_OK)
-			return result;
-
-		size_num += track_size;
-		blocks_num += track_blocks;
-	}
-
-	if (blocks)
-		*blocks = blocks_num;
-
-	if (size)
-		*size = size_num;
-
-	return BRASERO_BURN_OK;
-}
-
-/**
- * Used to get the volume free space for any output to disc (tmp or not)
- * used whenever brasero_burn_session_estimated_size is set 
- */
-
-static BraseroBurnResult
-brasero_burn_session_volume_free_space (const gchar *directory,
-					GnomeVFSFileSize *vol_size,
-					GError **error)
-{
-	gchar *uri_str;
-	GnomeVFSURI *uri;
-	BraseroBurnResult result = BRASERO_BURN_ERR;
-
-	uri_str = gnome_vfs_get_uri_from_local_path (directory);
-	uri = gnome_vfs_uri_new (uri_str);
-	g_free (uri_str);
-
-	if (uri == NULL)
-		goto error;
-
-	result = gnome_vfs_get_volume_free_space (uri, vol_size);
-	if (result != GNOME_VFS_OK)
-		goto error;
-
-	gnome_vfs_uri_unref (uri);
-	BRASERO_BURN_LOG ("Volume size %lli", *vol_size);
-	return BRASERO_BURN_OK;
-
-error:
-
-	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
-		     _("the size of the volume can't be checked (%s)"),
-		     gnome_vfs_result_to_string (result));
-	gnome_vfs_uri_unref (uri);
-	return BRASERO_BURN_ERR;
-}
-
-static BraseroBurnResult
-brasero_burn_session_check_volume_size (BraseroBurnSession *self,
-					guint64 vol_size,
-					GError **error)
-{
-	BraseroBurnSessionPrivate *priv;
-	BraseroBurnResult result;
-	gint64 image_size;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	result = brasero_burn_session_get_size (self, NULL, &image_size);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	if (vol_size > image_size)
-		return BRASERO_BURN_OK;
-
-	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_DISC_SPACE,
-		     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
-		     (unsigned long) image_size / 1048576);
-
-	return BRASERO_BURN_ERR;
-}
-
-BraseroBurnResult
-brasero_burn_session_check_output_volume_free_space (BraseroBurnSession *self,
-						     GError **error)
-{
-	BraseroBurnSessionPrivate *priv;
-	BraseroBurnResult result;
-	guint64 vol_size = 0;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	if (priv->settings->path) {
-		gchar *parent;
-
-		parent = g_path_get_dirname (priv->settings->path);
-		result = brasero_burn_session_volume_free_space (parent,
-								 &vol_size,
-								 error);
-		g_free (parent);
-	}
-	else {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("output is not set"));
-		return BRASERO_BURN_ERR;
-	}
-
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	return brasero_burn_session_check_volume_size (self, vol_size, error);
-}
-
-BraseroBurnResult
-brasero_burn_session_check_tmpdir_volume_free_space (BraseroBurnSession *self,
-						     GError **error)
-{
-	const gchar *directory;
-	BraseroBurnResult result;
-	GnomeVFSFileSize vol_size = 0;
-	BraseroBurnSessionPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	directory = priv->settings->tmpdir ?
-		    priv->settings->tmpdir :
-		    g_get_tmp_dir ();
-
-	result = brasero_burn_session_volume_free_space (directory,
-							&vol_size,
-							 error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	return brasero_burn_session_check_volume_size (self, vol_size, error);
-}
-
-BraseroBurnResult
-brasero_burn_session_set_image_size (BraseroBurnSession *self,
-				     GError **error)
-{
-	BraseroBurnResult result = BRASERO_BURN_OK;
-	BraseroBurnSessionPrivate *priv;
-	BraseroTrack *track = NULL;
-	GnomeVFSFileInfo *info;
-	GnomeVFSResult res;
-	gint64 track_size;
-	gchar *uri = NULL;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	if (g_slist_length (priv->tracks) != 1)
-		return BRASERO_BURN_ERR;
-
-	track = priv->tracks->data;
-	if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_IMAGE)
-		return BRASERO_BURN_ERR;
-
-	brasero_track_get_estimated_size (track, NULL, NULL, &track_size);
-	if (track_size > 0)
-		return BRASERO_BURN_OK;
-
-	uri = brasero_track_get_image_source (track, TRUE);
-	info = gnome_vfs_file_info_new ();
-	res = gnome_vfs_get_file_info (uri, 
-				       info,
-				       GNOME_VFS_FILE_INFO_DEFAULT);
-
-	if (res != GNOME_VFS_OK) {
-		gchar *name;
-
-		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-		g_free (uri);
-		gnome_vfs_file_info_unref (info);
-
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the file %s can't be opened (%s)"),
-			     name,
-			     gnome_vfs_result_to_string (res));
-		brasero_track_set_estimated_size (track, -1, -1, -1);
-		g_free (name);
-		return BRASERO_BURN_ERR;
-	}
-
-	brasero_track_set_estimated_size (track, 2048, -1, info->size);
-	gnome_vfs_file_info_unref (info);
-	g_free (uri);
-	return result;
 }
 
 /**

@@ -694,9 +694,9 @@ static void
 brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 					     NautilusBurnDrive *drive)
 {
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroDestSelectionPrivate *priv;
-	BraseroBurnFlag compulsory;
-	BraseroBurnFlag supported;
 	BraseroBurnResult result;
 	BraseroBurnFlag flags;
 

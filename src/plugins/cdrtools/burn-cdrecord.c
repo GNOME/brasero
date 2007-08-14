@@ -280,9 +280,9 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 			gint64 bytes = 0;
 
 			/* we must ask the imager what is the total size */
-			brasero_job_get_session_size (BRASERO_JOB (cdrecord),
-						      NULL,
-						      &bytes);
+			brasero_job_get_session_output_size (BRASERO_JOB (cdrecord),
+							     NULL,
+							     &bytes);
 			mb_total = bytes / 1048576;
 			brasero_cdrecord_compute (cdrecord,
 						  mb_written,
@@ -364,6 +364,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	gint fd;
 	gint size;
 	gchar *path;
+	gint64 length;
 	gchar *string;
 	gint b_written;
 	gint64 sectors;
@@ -486,7 +487,8 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	brasero_track_get_estimated_size (track, NULL, NULL, &sectors);
+	brasero_track_get_audio_length (track, &length);
+	sectors = BRASERO_DURATION_TO_SECTORS (length);
 	string = g_strdup_printf ("Tracklength=\t%"G_GINT64_FORMAT", 0\n", sectors);
 	size = strlen (string);
 	b_written = write (fd, string, size);
@@ -579,7 +581,7 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
-		gint64 size;
+		gint64 length;
 		BraseroTrack *track;
 
 		track = iter->data;
@@ -588,16 +590,16 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 						     track,
 						     tmpdir,
 						     album,
-						     start,
+						     BRASERO_DURATION_TO_SECTORS (start),
 						     index,
 						     error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
 		index ++;
-		size = 0;
-		brasero_track_get_estimated_size (track, NULL, &size, NULL);
-		start += size;
+		length = 0;
+		brasero_track_get_audio_length (track, &length);
+		start += length;
 	}
 
 	g_slist_free (tracks);
@@ -655,9 +657,9 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		}
 		
 		/* ask the size */
-		result = brasero_job_get_session_size (BRASERO_JOB (cdrecord),
-						       &sectors,
-						       NULL);
+		result = brasero_job_get_session_output_size (BRASERO_JOB (cdrecord),
+							      &sectors,
+							      NULL);
 		if (result != BRASERO_BURN_OK) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -741,7 +743,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 			gchar *image_path;
 
-			image_path = brasero_track_get_image_source (track, TRUE);
+			image_path = brasero_track_get_image_source (track, FALSE);
 			if (!image_path)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
@@ -756,7 +758,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 			gchar *isopath;
 
-			isopath = brasero_track_get_image_source (track, TRUE);
+			isopath = brasero_track_get_image_source (track, FALSE);
 			if (!isopath)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
@@ -771,7 +773,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
 			gchar *rawpath;
 
-			rawpath = brasero_track_get_image_source (track, TRUE);
+			rawpath = brasero_track_get_image_source (track, FALSE);
 			if (!rawpath)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
@@ -787,7 +789,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			gchar *cue_str;
 			gchar *cuepath;
 
-			cuepath = brasero_track_get_toc_source (track, TRUE);
+			cuepath = brasero_track_get_toc_source (track, FALSE);
 			if (!cuepath)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
@@ -841,7 +843,6 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroBurnFlag flags;
-	gchar *prog_name;
 	gchar *dev_str;
 	gchar *device;
 
@@ -849,12 +850,39 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
 	/* This is to support cdrkit. We give it the priority. */
-	prog_name = g_find_program_in_path ("wodim");
-	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
-		g_ptr_array_add (argv, prog_name);
-	else
-		g_ptr_array_add (argv, g_strdup ("cdrecord"));
+	brasero_job_get_action (BRASERO_JOB (cdrecord), &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		BraseroTrackType input = { 0 };
+		BraseroTrack *track = NULL;
 
+		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
+			return BRASERO_BURN_NOT_RUNNING;
+
+		/* there is just one case where we can set the output size which
+		 * is when the input is IMAGE type */
+		brasero_job_get_current_track (BRASERO_JOB (process), &track);
+		brasero_track_get_type (track, &input);
+		if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
+			gint64 sectors = 0;
+			gint64 size = 0;
+
+			result = brasero_track_get_image_size (track,
+							       NULL,
+							       &sectors,
+							       &size,
+							       error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
+								       sectors,
+								       size);
+		}
+
+		return BRASERO_BURN_NOT_RUNNING;
+	}
+
+	g_ptr_array_add (argv, g_strdup ("cdrecord"));
 	g_ptr_array_add (argv, g_strdup ("-v"));
 
 	brasero_job_get_device (BRASERO_JOB (cdrecord), &device);
@@ -869,7 +897,6 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	if (flags & BRASERO_BURN_FLAG_NOGRACE)
 		g_ptr_array_add (argv, g_strdup ("gracetime=0"));
 
-	brasero_job_get_action (BRASERO_JOB (cdrecord), &action);
 	if (action == BRASERO_JOB_ACTION_RECORD)
 		result = brasero_cdrecord_set_argv_record (cdrecord, argv, error);
 	else if (action == BRASERO_JOB_ACTION_ERASE)

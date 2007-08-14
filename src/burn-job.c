@@ -177,12 +177,75 @@ brasero_job_item_connect (BraseroTaskItem *input,
 }
 
 static BraseroBurnResult
+brasero_job_check_output_volume_space (BraseroJob *self,
+				       GError **error)
+{
+	gchar *uri_str;
+	gchar *directory;
+	GnomeVFSURI *uri;
+	gint64 output_size = 0;
+	BraseroJobPrivate *priv;
+	GnomeVFSFileSize vol_size = 0;
+	BraseroBurnResult result = BRASERO_BURN_ERR;
+
+	/* now that the job has a known output we must check that the volume the
+	 * job is writing to has enough space for all output */
+
+	priv = BRASERO_JOB_PRIVATE (self);
+
+	/* get the size of the volume first */
+	directory = g_path_get_dirname (priv->output.file.image);
+
+	uri_str = gnome_vfs_get_uri_from_local_path (directory);
+	g_free (directory);
+
+	uri = gnome_vfs_uri_new (uri_str);
+	g_free (uri_str);
+
+	if (uri == NULL)
+		goto error;
+
+	result = gnome_vfs_get_volume_free_space (uri, &vol_size);
+	if (result != GNOME_VFS_OK)
+		goto error;
+
+	gnome_vfs_uri_unref (uri);
+
+	/* get the size of the output this job is supposed to create */
+	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
+
+	BRASERO_BURN_LOG ("Volume size %lli, output size %lli", vol_size, output_size);
+
+	if (output_size > vol_size) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_DISK_SPACE,
+			     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
+			     (unsigned long) output_size / 1048576);
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+
+error:
+
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     _("the size of the volume can't be checked (%s)"),
+		     gnome_vfs_result_to_string (result));
+	gnome_vfs_uri_unref (uri);
+	return BRASERO_BURN_ERR;
+}
+
+static BraseroBurnResult
 brasero_job_set_output (BraseroJob *self,
 			BraseroBurnSession *session,
 			GError **error)
 {
 	BraseroBurnResult result;
 	BraseroJobPrivate *priv;
+	BraseroBurnFlag flags;
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
@@ -249,7 +312,7 @@ brasero_job_set_output (BraseroJob *self,
 								     &priv->output.file.image,
 								     &priv->output.file.toc,
 								     error);
-		BRASERO_JOB_LOG (self, "Ouput set (IMAGE) image = %s toc = %s",
+		BRASERO_JOB_LOG (self, "Output set (IMAGE) image = %s toc = %s",
 				 priv->output.file.image,
 				 priv->output.file.toc);
 	}
@@ -258,11 +321,20 @@ brasero_job_set_output (BraseroJob *self,
 		result = brasero_burn_session_get_tmp_file (session,
 							    &priv->output.file.image,
 							    error);
-		BRASERO_JOB_LOG (self, "Ouput set (AUDIO) image = %s",
+		BRASERO_JOB_LOG (self, "Output set (AUDIO) image = %s",
 				 priv->output.file.image);
 	}
-	else
-		BRASERO_JOB_NOT_SUPPORTED (self);
+	else {
+		/* other types don't need an output */
+		return BRASERO_BURN_OK;
+	}
+
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	flags = brasero_burn_session_get_flags (session);
+	if (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
+		return brasero_job_check_output_volume_space (self, error);
 
 	return result;
 }
@@ -273,6 +345,7 @@ brasero_job_item_init (BraseroTaskItem *item,
 		       GError **error)
 {
 	BraseroJob *self;
+	BraseroBurnFlag flags;
 	BraseroJobClass *klass;
 	BraseroJobPrivate *priv;
 	BraseroTaskAction action;
@@ -283,28 +356,53 @@ brasero_job_item_init (BraseroTaskItem *item,
 	priv = BRASERO_JOB_PRIVATE (self);
 	session = brasero_task_ctx_get_session (ctx);
 
-	action = brasero_task_ctx_get_action (ctx);
-	if (priv->previous && action == BRASERO_TASK_ACTION_NONE) {
-		/* when running task in fake mode (usually to get the size), we
-		 * don't want to run:
-		 * - jobs which will record (except if that's the only job 
-		 * => growisofs) ... */
-		if (priv->type.type == BRASERO_TRACK_TYPE_DISC)
-			return BRASERO_BURN_NOT_RUNNING;
-
-		/* ... - job that are modifiers (input type == output type) */
-	}
-
 	g_object_ref (ctx);
 	priv->ctx = ctx;
 
-	if (action == BRASERO_JOB_ACTION_IMAGE
-	&&  priv->type.type == BRASERO_TRACK_TYPE_IMAGE) {
-		/* set the output for the job since it's the last and is
-		 * supposed to image. */
+	/* connect if need be and check that whatever we're outputting to -
+	 * whether a disc or a hard drive (tmp or final file) - we have enough
+	 * space */
+
+	action = brasero_task_ctx_get_action (ctx);
+	flags = brasero_burn_session_get_flags (session);
+	if (action == BRASERO_JOB_ACTION_IMAGE) {
 		result = brasero_job_set_output (self, session, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
+	}
+	else if (action == BRASERO_JOB_ACTION_RECORD
+	     && (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
+	     && !(flags & BRASERO_BURN_FLAG_OVERBURN)) {
+		NautilusBurnDrive *drive;
+		gint64 output_blocks = 0;
+		gint64 media_blocks = 0;
+
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (ctx),
+							  &output_blocks,
+							  NULL);
+
+		drive = brasero_burn_session_get_burner (session);
+
+		/* see if we are appending or not */
+		if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
+			NCB_MEDIA_GET_FREE_SPACE (drive, NULL, &media_blocks);
+		else
+			NCB_MEDIA_GET_CAPACITY (drive, NULL, &media_blocks);
+
+		/* this is not really an error, we'll probably ask the 
+		 * user to load a new disc */
+		if (output_blocks > media_blocks) {
+			BRASERO_BURN_LOG ("Insufficient space on media %lli/%lli",
+					  media_blocks,
+					  output_blocks);
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_MEDIA_SPACE,
+				     _("Insufficient space on media (%lli available for %lli)"),
+				     media_blocks,
+				     output_blocks);
+			return BRASERO_BURN_NEED_RELOAD;
+		}
 	}
 
 	klass = BRASERO_JOB_GET_CLASS (self);
@@ -963,9 +1061,9 @@ brasero_job_get_speed (BraseroJob *self, guint *speed)
 
 	media = brasero_burn_session_get_dest_media (session);
 	if (media & BRASERO_MEDIUM_DVD)
-		*speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (rate);
+		*speed = BRASERO_RATE_TO_SPEED_DVD (rate);
 	else 
-		*speed = NAUTILUS_BURN_DRIVE_CD_SPEED (rate);
+		*speed = BRASERO_RATE_TO_SPEED_CD (rate);
 
 	return BRASERO_BURN_OK;
 }
@@ -1088,18 +1186,16 @@ brasero_job_get_data_label (BraseroJob *self, gchar **label)
 }
 
 BraseroBurnResult
-brasero_job_get_session_size (BraseroJob *self,
-			      gint64 *blocks,
-			      gint64 *size)
+brasero_job_get_session_output_size (BraseroJob *self,
+				     gint64 *blocks,
+				     gint64 *size)
 {
-	BraseroBurnSession *session;
 	BraseroJobPrivate *priv;
 
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	session = brasero_task_ctx_get_session (priv->ctx);
-	return brasero_burn_session_get_size (session, blocks, size);
+	return brasero_task_ctx_get_session_output_size (priv->ctx, blocks, size);
 }
 
 /**
@@ -1214,23 +1310,29 @@ brasero_job_set_rate (BraseroJob *self,
 }
 
 BraseroBurnResult
-brasero_job_set_current_track_size (BraseroJob *self,
-				    guint64 block_size,
-				    guint64 sectors,
-				    gint64 size)
+brasero_job_set_output_size_for_current_track (BraseroJob *self,
+					       gint64 sectors,
+					       gint64 size)
 {
 	BraseroJobPrivate *priv;
 
+	/* this function can only be used by the last job which is not recording
+	 * all other jobs trying to set this value will be ignored.
+	 * It should be used mostly during a fake running. This value is stored
+	 * by the task context as the amount of bytes/blocks produced by a task.
+	 * That's why it's not possible to set the DATA type number of files.
+	 * NOTE: the values passed on by this function to context may be added 
+	 * to other when there are multiple tracks. */
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
+
 	if (!brasero_job_is_last_running (self))
 		return BRASERO_BURN_ERR;
 
-	return brasero_task_ctx_set_track_size (priv->ctx,
-						block_size,
-						sectors,
-						size);
+	return brasero_task_ctx_set_output_size_for_current_track (priv->ctx,
+								   sectors,
+								   size);
 }
 
 BraseroBurnResult

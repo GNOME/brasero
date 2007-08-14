@@ -395,9 +395,9 @@ brasero_task_start (BraseroTask *self,
 	for (; item; item = brasero_task_item_previous (item)) {
 		result = brasero_task_init_item (self, item, error);
 		if (result == BRASERO_BURN_NOT_RUNNING) {
-			/* some jobs don't need to/can't run in fake mode and so
-			 * return this value to be skipped. we don't go any
-			 * further but run all previous jobs which accepted.
+			/* Some jobs don't need to/can't run in fake mode or 
+			 * have been already completed in ::init. So they return
+			 * this value to skip ::start.
 			 * NOTE: it is strictly forbidden for a job to call 
 			 * brasero_job_finished within an init method. Only 
 			 * brasero_job_error can be called from ::init. */
@@ -418,15 +418,10 @@ brasero_task_start (BraseroTask *self,
 	for (item = first; item && item != last; item = brasero_task_item_next (item)) {
 		result = brasero_task_start_item (self, item, error);
 
-		/* here again some jobs can decide not to run any further since
-		 * their start method determined they didn't need to (see 
-		 * local-track for example). They called  brasero_job_finished
-		 * before the above function returns. */
-		if (result == BRASERO_BURN_NOT_RUNNING) {
-			BRASERO_BURN_LOG ("start method aborted for %s", G_OBJECT_TYPE_NAME (item));
-			return brasero_task_send_stop_signal (self, BRASERO_BURN_OK, error);
-		}
-
+		/* For ::start the only successful value is BRASERO_BURN_OK. All
+		 * others are considered as errors. If a job is not always sure
+		 * to run then it must implement ::init and tell us through the 
+		 * return value. Again ::start is bound to succeed or fail. */
 		if (result != BRASERO_BURN_OK)
 			goto error;
 	}
@@ -445,7 +440,30 @@ BraseroBurnResult
 brasero_task_check (BraseroTask *self,
 		    GError **error)
 {
+	BraseroTaskAction action;
+
 	g_return_val_if_fail (BRASERO_IS_TASK (self), BRASERO_BURN_ERR);
+
+	/* the task MUST be of a BRASERO_TASK_ACTION_NORMAL type */
+	action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (self));
+	if (action != BRASERO_TASK_ACTION_NORMAL)
+		return BRASERO_BURN_OK;
+
+	/* The main purpose of this function is to get the final size of the
+	 * task output whether it be recorded to disc or stored as a file later.
+	 * That size will be stored by task-ctx.
+	 * To do this we run all the task in fake mode that means we don't write
+	 * anything to disc or hard drive. Only the last running job in the
+	 * chain will be aware that we're running in fake mode / get-size mode.
+	 * All others will be told to image. To determine what should be the
+	 * last job and therefore the one telling the final size of the output,
+	 * we start to call ::init for each job starting from the leader. we
+	 * don't skip recording jobs in case they modify the contents (and
+	 * therefore the output size). When a job returns NOT_RUNNING after
+	 * ::init then we skip it; this return value will mean that it won't
+	 * change the output size or that it has already determined the output
+	 * size. Only the last running job is allowed to set the final size (see
+	 * burn-jobs.c), all values from other jobs will be ignored. */
 
 	return brasero_task_start (self, TRUE, error);
 }

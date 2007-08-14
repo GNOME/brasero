@@ -158,10 +158,9 @@ BraseroBurnResult
 brasero_task_ctx_set_use_average (BraseroTaskCtx *ctx,
 				  gboolean use_average);
 BraseroBurnResult
-brasero_task_ctx_set_track_size (BraseroTaskCtx *ctx,
-				 guint64 block_size,
-				 guint64 sectors,
-				 gint64 size);
+brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *ctx,
+						    gint64 sectors,
+						    gint64 size);
 
 /**
  * task progress for library
@@ -177,8 +176,9 @@ BraseroBurnResult
 brasero_task_ctx_get_remaining_time (BraseroTaskCtx *ctx,
 				     long *remaining);
 BraseroBurnResult
-brasero_task_ctx_get_total (BraseroTaskCtx *ctx,
-			    gint64 *total);
+brasero_task_ctx_get_session_output_size (BraseroTaskCtx *ctx,
+					  gint64 *blocks,
+					  gint64 *size);
 BraseroBurnResult
 brasero_task_ctx_get_written (BraseroTaskCtx *ctx,
 			      gint64 *written);

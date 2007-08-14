@@ -26,9 +26,12 @@
 #  include <config.h>
 #endif
 
+#include <errno.h>
 #include <string.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
 #include "burn-track.h"
 #include "burn-debug.h"
@@ -41,10 +44,6 @@ struct _BraseroTrack {
 
 	int ref;
 
-	gint64 size;
-	gint64 blocks;
-	gint block_size;
-
 	gchar *checksum;
 	BraseroChecksumType checksum_type;
 };
@@ -54,11 +53,11 @@ typedef struct {
 
 	GSList *grafts;			/* BraseroGraftPt */
 	GSList *excluded;		/* list of uris (char*) that are to be always excluded */
+	gint64 file_num;
 } BraseroTrackData;
 
 typedef struct {
 	BraseroTrack track;
-
 	NautilusBurnDrive *disc;
 } BraseroTrackDisc;
 
@@ -68,9 +67,10 @@ typedef struct {
 	gchar *location;
 	BraseroSongInfo *info;
 
-	/* only used when it's a song */
-	guint64 start;
-	guint64 gap;
+	/* mostly used when it's a song not in RAW format */
+	gint64 start;
+	gint64 end;
+	gint64 gap;
 } BraseroTrackAudio;
 
 typedef struct {
@@ -490,6 +490,7 @@ brasero_track_set_audio_info (BraseroTrack *track,
 BraseroBurnResult
 brasero_track_set_audio_boundaries (BraseroTrack *track,
 				    gint64 start,
+				    gint64 end,
 				    gint64 gap)
 {
 	BraseroTrackAudio *audio;
@@ -499,8 +500,15 @@ brasero_track_set_audio_boundaries (BraseroTrack *track,
 
 	audio = (BraseroTrackAudio *) track;
 
-	audio->gap = gap;
-	audio->start = start;
+	if (gap >= 0)
+		audio->gap = gap;
+
+	if (end > 0)
+		audio->end = end;
+
+	if (start >= 0)
+		audio->start = start;
+
 	return BRASERO_BURN_OK;
 }
 
@@ -532,18 +540,6 @@ brasero_track_set_data_source (BraseroTrack *track,
 }
 
 BraseroBurnResult
-brasero_track_set_data_fs (BraseroTrack *track,
-			   BraseroImageFS fstype)
-{
-	if (track->type.type != BRASERO_TRACK_TYPE_DATA)
-		return BRASERO_BURN_NOT_SUPPORTED;
-
-	track->type.subtype.fs_type = fstype;
-
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
 brasero_track_add_data_fs (BraseroTrack *track,
 			   BraseroImageFS fstype)
 {
@@ -569,6 +565,20 @@ brasero_track_unset_data_fs (BraseroTrack *track,
 	fstypes &= ~fstype;
 	track->type.subtype.fs_type = fstypes;
 
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_set_data_file_num (BraseroTrack *track,
+				 gint64 number)
+{
+	BraseroTrackData *data;
+
+	if (track->type.type != BRASERO_TRACK_TYPE_DATA)
+		return BRASERO_BURN_NOT_SUPPORTED;
+
+	data = (BraseroTrackData *) track;
+	data->file_num = number;
 	return BRASERO_BURN_OK;
 }
 
@@ -807,48 +817,161 @@ brasero_track_get_checksum_type (BraseroTrack *track)
 	return track->checksum_type;
 }
 
-void
-brasero_track_set_estimated_size (BraseroTrack *track,
-				  gint64 block_size,
-				  gint64 blocks,
-				  gint64 size)
+/**
+ * This function is merely a wrapper
+ */
+
+BraseroBurnResult
+brasero_track_get_disc_capacity (BraseroTrack *track,
+				 gint64 *blocks,
+				 gint64 *size)
 {
-	track->block_size = block_size;
-	track->blocks = blocks;
-	track->size = size;
+	NautilusBurnDrive *drive;
+
+	drive = brasero_track_get_drive_source (track);
+	if (!drive)
+		return BRASERO_BURN_ERR;
+
+	NCB_MEDIA_GET_CAPACITY (drive, size, blocks);
+	return BRASERO_BURN_OK;
 }
 
 BraseroBurnResult
-brasero_track_get_estimated_size (BraseroTrack *track,
-				  gint64 *block_size,
+brasero_track_get_disc_data_size (BraseroTrack *track,
 				  gint64 *blocks,
 				  gint64 *size)
 {
-	if (track->block_size <= 0
-	&&  track->blocks <= 0
-	&&  track->size <= 0)
-		return BRASERO_BURN_NOT_READY;
+	NautilusBurnDrive *drive;
 
-	if (block_size) {
-		if (track->block_size <= 0)
-			*block_size = track->size / track->blocks;
-		else
-			*block_size = track->block_size;
+	drive = brasero_track_get_drive_source (track);
+	if (!drive)
+		return BRASERO_BURN_ERR;
+
+	NCB_MEDIA_GET_DATA_SIZE (drive, size, blocks);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_get_disc_free_space (BraseroTrack *track,
+				   gint64 *blocks,
+				   gint64 *size)
+{
+	NautilusBurnDrive *drive;
+
+	drive = brasero_track_get_drive_source (track);
+	if (!drive)
+		return BRASERO_BURN_ERR;
+
+	NCB_MEDIA_GET_FREE_SPACE (drive, size, blocks);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_get_image_size (BraseroTrack *track,
+			      gint64 *block_size,
+			      gint64 *blocks,
+			      gint64 *size,
+			      GError **error)
+{
+	struct stat buffer;
+	gchar *image;
+	int res;
+
+	/* Convienience function */
+
+	/* a simple stat () will do. That means of course that the image must be
+	 * local. Now if local-track is enabled, it will always run first and we
+	 * don't need that size before it starts. During the GET_SIZE phase of 
+	 * the task it runs for, it can set the output size of the task by using
+	 * gnome-vfs to retrieve it. That means this particular task will know
+	 * the image size once it gets downloaded. local-task will also be able
+	 * to report how much it downloads and therefore the task will be able
+	 * to report its progress. Afterwards, no problem to get the image size
+	 * since it'll be local and stat() will work.
+	 * if local-track is not enabled we can't use non-local images anyway so
+	 * there is no need to have a function set_size */
+	image = brasero_track_get_image_source (track, FALSE);
+	if (!image)
+		return BRASERO_BURN_ERR;
+
+	res = g_lstat (image, &buffer);
+	g_free (image);
+
+	if (res == -1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("size can't be retrieved (%s)"),
+			     strerror (errno));
+
+		return BRASERO_BURN_ERR;
 	}
 
-	if (blocks) {
-		if (track->blocks <= 0)
-			*blocks = track->size / track->block_size;
-		else
-			*blocks = track->blocks;
+	if (size)
+		*size = buffer.st_size;
+
+	if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+		if (block_size)
+			*block_size = 2048;
+		if (blocks)
+			*blocks = (buffer.st_size / 2048) + ((buffer.st_size % 2048) ? 1:0);
+	}
+	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+		if (block_size)
+			*block_size = 2448;
+		if (blocks)
+			*blocks = buffer.st_size / 2448 +
+				 (buffer.st_size % 2448) ? 1:0;
+	}
+	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+		if (block_size)
+			*block_size = 2448;
+		if (blocks)
+			*blocks = buffer.st_size / 2448 +
+				 (buffer.st_size % 2448) ? 1:0;
+	}
+	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
+		if (block_size)
+			*block_size = 2448;
+		if (blocks)
+			*blocks = buffer.st_size / 2448 +
+				 (buffer.st_size % 2448) ? 1:0;
 	}
 
-	if (size) {
-		if (track->size <= 0)
-			*size = track->blocks * track->block_size;
-		else
-			*size = track->size;
-	}
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_get_data_file_num (BraseroTrack *track,
+				 gint64 *num_files)
+{
+	BraseroTrackData *data;
+
+	g_return_val_if_fail (num_files != NULL, BRASERO_BURN_ERR);
+
+	if (track->type.type != BRASERO_TRACK_TYPE_DATA)
+		return BRASERO_BURN_NOT_SUPPORTED;
+
+	data = (BraseroTrackData *) track;
+	*num_files = data->file_num;
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_get_audio_length (BraseroTrack *track,
+				gint64 *length)
+{
+	BraseroTrackAudio *audio;
+
+	g_return_val_if_fail (length != NULL, BRASERO_BURN_ERR);
+
+	audio = (BraseroTrackAudio *) track;
+
+	if (audio->start < 0 || audio->end <= 0)
+		return BRASERO_BURN_ERR;
+
+	*length = audio->end - audio->start;
 
 	return BRASERO_BURN_OK;
 }
