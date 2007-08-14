@@ -1,6 +1,6 @@
-11-07-2007 : 0.6.0
+11-07-2007 : 0.6.1
 
-New stable series
+New release of stable 
 
 - backported patches/fixes from trunk to the stable branch
 - added multi session import in data project view
@@ -12,13 +12,11 @@ New stable series
 - lots of fixes
 - new translations
 
-Changes since 0.5.90:
+Changes since 0.6.1:
 
-- Fixed filter dialog crash
-- Fixes in the new SCSI library
-- Fix a bug in image recording dialog
-- Fixed bgo #439744, #439744, #430621, #435162, #430117.
-- Added more information about the backends on README
-- Better unmount handling 
+- Fixed the filter crasher UI.
+- Fix scsi library bug with memset with swapped arguments bug #466290.
+- Workaround the main window bug #459939.
+- Fixed a small bug where closed rewritable discs with data were flagged as not writable
 
 Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
