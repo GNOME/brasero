@@ -40,8 +40,11 @@ UPDATE_MIME = \
 	fi
 
 UPDATE_DESKTOP = \
-	if which update-desktop-database>/dev/null 2>&1 ; then \
-		update-desktop-database; \
+	if [ -f $(DESTDIR)$(datadir)/applications/defaults.list ] ; then \
+		if which update-desktop-database>/dev/null 2>&1 ; then \
+			update-desktop-database; \
+		fi \
+	fi
 
 if GCONF_SCHEMAS_INSTALL
 # don't do this if we are building in eg. rpm
