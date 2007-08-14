@@ -41,7 +41,7 @@ brasero_sg_send_command (int fd, struct sg_io_hdr *command, BraseroScsiErrCode *
 
 	/* NOTE: the sense buffer is the result of the first write command
 	 * (REQUEST SENSE usually) since SG_IO is both write and read. */
-	memset (&sense_buffer, sizeof (sense_buffer), 0);
+	memset (&sense_buffer, 0, sizeof (sense_buffer));
 
 	command->interface_id = 'S';				/* mandatory */
 	command->flags = SG_FLAG_LUN_INHIBIT|SG_FLAG_DIRECT_IO;
