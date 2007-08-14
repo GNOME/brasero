@@ -326,7 +326,7 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 	}
 
 	frame = brasero_utils_pack_properties (_("<b>Filtering options</b>"),
-					       button_notify
+					       button_notify,
 					       NULL);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    frame,
