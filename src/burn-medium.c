@@ -436,7 +436,7 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 		g_free (wrt_perf);
 
 		BRASERO_BURN_LOG ("GET PERFORMANCE failed");
-		return BRASERO_BURN_ERR;
+		return BRASERO_BURN_RETRY;
 	}
 
 	num_desc = (size - sizeof (BraseroScsiGetPerfHdr)) /
@@ -762,6 +762,9 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	/* try all SCSI functions to get write/read speeds in order */
 	stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
 	if (stream->wrt_spd) {
+		/* NOTE: the next function returns either OK or RETRY to make 
+		 * sure we always go and get over an error. There are other ways
+		 * to get the information we want */
 		result = brasero_medium_get_speed_mmc3 (self, fd, code);
 		if (result != BRASERO_BURN_RETRY)
 			goto end;
