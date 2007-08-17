@@ -578,6 +578,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 			    gint index,
 			    gint start,
 			    BraseroSongInfo *info,
+			    gboolean last_track,
 			    GError **error)
 {
 	gint fd;
@@ -704,7 +705,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	strcpy (buffer, "Pre-emphasis=\tyes\n");
+	strcpy (buffer, "Pre-emphasis=\tno\n");
 	size = strlen (buffer);
 	b_written = write (fd, buffer, size);
 	if (b_written != size)
@@ -734,7 +735,13 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	string = g_strdup_printf ("Index0=\t\t%i\n", info->sectors);
+	if (!last_track) {
+		/* K3b does this to remove silences */
+		string = g_strdup_printf ("Index0=\t\t%i\n", info->sectors - 150);
+	}
+	else
+		string = g_strdup_printf ("Index0=\t\t-1\n");
+
 	size = strlen (string);
 	b_written = write (fd, string, size);
 	if (b_written != size)
@@ -801,7 +808,7 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	}
 
 	album = infs->contents.audio.album;
-	index = 0;
+	index = 1;
 	start = 0;
 
 	for (iter = infs->contents.audio.infos; iter; iter = iter->next) {
@@ -815,6 +822,7 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 						     index,
 						     start,
 						     info,
+						     (iter->next == NULL),
 						     error);
 
 		if (result != BRASERO_BURN_OK)
