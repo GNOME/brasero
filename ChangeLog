@@ -1,3 +1,16 @@
+2007-08-17  Luis Medinas  <metalgod@svn.gnome.org>
+
+	* NEWS:
+	* src/burn-growisofs.c: (brasero_growisofs_init):
+	* src/burn-mkisofs.c: (brasero_mkisofs_init),
+	(brasero_mkisofs_set_argv):
+	* src/burn-readcd.c: (brasero_readcd_set_argv):
+
+	Add complete support for cdrkit. Closes bug #456860.
+        Patch by Otavio Salvador <octavio@debian.org> and
+        Luis Medinas <lmedinas@svn.gnome.org>.
+	Update NEWS.
+
 2007-08-17  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/Makefile.am:

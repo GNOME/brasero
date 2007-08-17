@@ -193,6 +193,7 @@ static void
 brasero_mkisofs_init (BraseroMkisofs *obj)
 {
 	gchar *standard_error;
+	gchar *prog_name;
 	gboolean res;
 
 	obj->priv = g_new0(BraseroMkisofsPrivate, 1);
@@ -200,12 +201,22 @@ brasero_mkisofs_init (BraseroMkisofs *obj)
 	obj->priv->caps = brasero_burn_caps_get_default ();
 
 	/* this code used to be ncb_mkisofs_supports_utf8 */
-	res = g_spawn_command_line_sync ("mkisofs -input-charset utf8",
+	prog_name = g_find_program_in_path("genisoimage");
+	
+	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE)) {
+	  	res = g_spawn_command_line_sync ("genisoimage -input-charset utf8",
 					 NULL,
 					 &standard_error,
 					 NULL,
 					 NULL);
-
+	}
+	else {
+		res = g_spawn_command_line_sync ("mkisofs -input-charset utf8",
+					 NULL,
+					 &standard_error,
+					 NULL,
+					 NULL);
+	}	
 	if (res && !g_strrstr (standard_error, "Unknown charset"))
 		obj->priv->use_utf8 = TRUE;
 	else
@@ -748,11 +759,17 @@ brasero_mkisofs_set_argv (BraseroProcess *process,
 {
 	BraseroMkisofs *mkisofs;
 	BraseroBurnResult result;
+	gchar *prog_name;
 
 	mkisofs = BRASERO_MKISOFS (process);
-
-	g_ptr_array_add (argv, g_strdup ("mkisofs"));
-
+	
+	prog_name = g_find_program_in_path ("genisoimage");
+	
+	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
+		g_ptr_array_add (argv, prog_name);
+	else
+		g_ptr_array_add (argv, g_strdup ("mkisofs"));
+	
 	if (mkisofs->priv->use_utf8) {
 		g_ptr_array_add (argv, g_strdup ("-input-charset"));
 		g_ptr_array_add (argv, g_strdup ("utf8"));

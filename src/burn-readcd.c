@@ -597,6 +597,7 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	BraseroReadcd *readcd;
 	gchar *outfile_arg;
 	gchar *dev_str;
+	gchar *prog_name;
 
 	readcd = BRASERO_READCD (process);
 	brasero_job_set_run_slave (BRASERO_JOB (readcd), FALSE);
@@ -604,7 +605,12 @@ brasero_readcd_set_argv (BraseroProcess *process,
 	if (!readcd->priv->source)
 		BRASERO_JOB_NOT_READY (readcd);
 
-	g_ptr_array_add (argv, g_strdup ("readcd"));
+	prog_name = g_find_program_in_path ("readom");
+
+	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
+		g_ptr_array_add (argv, prog_name);
+	else
+		g_ptr_array_add (argv, g_strdup ("readcd"));
 
 	drive = readcd->priv->source->contents.drive.disc;
 	if (NCB_DRIVE_GET_DEVICE (drive))
