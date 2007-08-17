@@ -412,6 +412,7 @@ brasero_md5sum_grafts (BraseroMd5sum *self, GError **error)
 
 	/* opens a file for the sums */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
+					   ".md5",
 					   &priv->sums_path,
 					   error);
 	if (result != BRASERO_BURN_OK)
@@ -873,7 +874,7 @@ brasero_md5sum_end (gpointer data)
 
 		if (type == BRASERO_CHECKSUM_MD5_FILE) {
 			/* in this case all was already set in session */
-			brasero_job_finished (BRASERO_JOB (self), NULL);
+			brasero_job_finished_track (BRASERO_JOB (self));
 			return FALSE;
 		}
 
@@ -894,7 +895,7 @@ brasero_md5sum_end (gpointer data)
 		if (result != BRASERO_BURN_OK)
 			goto error;
 
-		brasero_job_finished (BRASERO_JOB (self), NULL);
+		brasero_job_finished_track (BRASERO_JOB (self));
 		return FALSE;
 	}
 
@@ -936,7 +937,8 @@ brasero_md5sum_end (gpointer data)
 					    BRASERO_CHECKSUM_MD5_FILE,
 					    graft->uri);
 
-		brasero_job_finished (BRASERO_JOB (self), track);
+		brasero_job_add_track (BRASERO_JOB (self), track);
+		brasero_job_finished_track (BRASERO_JOB (self));
 		return FALSE;
 	}
 	else if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
@@ -957,7 +959,7 @@ brasero_md5sum_end (gpointer data)
 		if (result != BRASERO_BURN_OK)
 			goto error;
 
-		brasero_job_finished (BRASERO_JOB (self), NULL);
+		brasero_job_finished_track (BRASERO_JOB (self));
 	}
 	else
 		goto error;

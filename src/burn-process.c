@@ -135,6 +135,7 @@ brasero_process_finished (BraseroProcess *self)
 	BraseroTrack *track = NULL;
 	BraseroJobAction action = BRASERO_BURN_ACTION_NONE;
 	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
+	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (self);
 
 	/* check if an error went undetected */
 	if (priv->return_status) {
@@ -148,20 +149,20 @@ brasero_process_finished (BraseroProcess *self)
 	}
 
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
+		klass->post (BRASERO_JOB (self));
 		return BRASERO_BURN_OK;
 	}
 
-	/* only for the last running job with imaging/recording action */
+	/* only for the last running job with imaging action */
 	brasero_job_get_action (BRASERO_JOB (self), &action);
 	if (action != BRASERO_JOB_ACTION_IMAGE) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
+		klass->post (BRASERO_JOB (self));
 		return BRASERO_BURN_OK;
 	}
 
 	result = brasero_job_get_output_type (BRASERO_JOB (self), &type);
 	if (result != BRASERO_BURN_OK || type.type == BRASERO_TRACK_TYPE_DISC) {
-		brasero_job_finished (BRASERO_JOB (self), NULL);
+		klass->post (BRASERO_JOB (self));
 		return BRASERO_BURN_OK;
 	}
 
@@ -190,7 +191,8 @@ brasero_process_finished (BraseroProcess *self)
 						type.subtype.audio_format);
 	}
 
-	brasero_job_finished (BRASERO_JOB (self), track);
+	brasero_job_add_track (BRASERO_JOB (self), track);
+	klass->post (BRASERO_JOB (self));
 	return BRASERO_BURN_OK;
 }
 
@@ -541,7 +543,6 @@ brasero_process_stop (BraseroJob *job,
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroProcessPrivate *priv;
-	BraseroProcessClass *klass;
 	BraseroProcess *process;
 
 	process = BRASERO_PROCESS (job);
@@ -583,22 +584,24 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (priv->std_out) {
-		BraseroProcessClass *klass;
+		if (!error) {
+			BraseroProcessClass *klass;
 
-		/* we need to nullify the buffer since we've just read a line
-		 * that got the job to stop so if we don't do that following 
-		 * data will be appended to this line but each will provoke the
-		 * same stop every time */
-		if (priv->out_buffer)
-			g_string_set_size (priv->out_buffer, 0);
+			/* we need to nullify the buffer since we've just read a line
+			 * that got the job to stop so if we don't do that following 
+			 * data will be appended to this line but each will provoke the
+			 * same stop every time */
+			if (priv->out_buffer)
+				g_string_set_size (priv->out_buffer, 0);
 
-		klass = BRASERO_PROCESS_GET_CLASS (process);
-		while (g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
-			brasero_process_read (process,
-					      priv->std_out,
-					      G_IO_IN,
-					      BRASERO_CHANNEL_STDOUT,
-					      klass->stdout_func);
+			klass = BRASERO_PROCESS_GET_CLASS (process);
+			while (g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
+				brasero_process_read (process,
+						      priv->std_out,
+						      G_IO_IN,
+						      BRASERO_CHANNEL_STDOUT,
+						      klass->stdout_func);
+		}
 
 	    	/* NOTE: we already checked if priv->std_out wasn't 
 		 * NULL but brasero_process_read could have closed it */
@@ -619,22 +622,24 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (priv->std_error) {
-		BraseroProcessClass *klass;
-	
-		/* we need to nullify the buffer since we've just read a line
-		 * that got the job to stop so if we don't do that following 
-		 * data will be appended to this line but each will provoke the
-		 * same stop every time */
-		if (priv->err_buffer)
-			g_string_set_size (priv->err_buffer, 0);
+		if (!error) {
+			BraseroProcessClass *klass;
+		
+			/* we need to nullify the buffer since we've just read a line
+			 * that got the job to stop so if we don't do that following 
+			 * data will be appended to this line but each will provoke the
+			 * same stop every time */
+			if (priv->err_buffer)
+				g_string_set_size (priv->err_buffer, 0);
 
-		klass = BRASERO_PROCESS_GET_CLASS (process);
-		while (g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
-			brasero_process_read (process,
-					     priv->std_error,
-					     G_IO_IN,
-					     BRASERO_CHANNEL_STDERR,
-					     klass->stderr_func);
+			klass = BRASERO_PROCESS_GET_CLASS (process);
+			while (g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
+				brasero_process_read (process,
+						     priv->std_error,
+						     G_IO_IN,
+						     BRASERO_CHANNEL_STDERR,
+						     klass->stderr_func);
+		}
 
 	    	/* NOTE: we already checked if priv->std_out wasn't 
 		 * NULL but brasero_process_read could have closed it */
@@ -653,12 +658,6 @@ brasero_process_stop (BraseroJob *job,
 		g_strfreev ((gchar**) priv->argv->pdata);
 		g_ptr_array_free (priv->argv, FALSE);
 		priv->argv = NULL;
-	}
-
-	klass = BRASERO_PROCESS_GET_CLASS (process);
-	if (klass->post) {
-		result = klass->post (process);
-		return result;
 	}
 
 	return result;
@@ -732,6 +731,8 @@ brasero_process_class_init (BraseroProcessClass *klass)
 	job_class->init = brasero_process_ask_argv;
 	job_class->start = brasero_process_start;
 	job_class->stop = brasero_process_stop;
+
+	klass->post = brasero_job_finished_track;
 }
 
 static void

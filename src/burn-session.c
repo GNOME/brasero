@@ -253,8 +253,8 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	brasero_track_ref (new_track);
 	if (!priv->tracks) {
-		/* we only need to emit the signal here since if there are multiple tracks they must be
-		 * exactly of the same time */
+		/* we only need to emit the signal here since if there are
+		 * multiple tracks they must be exactly of the same time */
 		priv->tracks = g_slist_prepend (NULL, new_track);
 		brasero_burn_session_start_src_drive_monitoring (self);
 
@@ -777,11 +777,13 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 
 BraseroBurnResult
 brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
+				   const gchar *suffix,
 				   gchar **path,
 				   GError **error)
 {
 	BraseroBurnSessionPrivate *priv;
 	const gchar *tmpdir;
+	gchar *name;
 	gchar *tmp;
 	int fd;
 
@@ -797,10 +799,12 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 		 priv->settings->tmpdir :
 		 g_get_tmp_dir ();
 
+	name = g_strconcat (BRASERO_BURN_TMP_FILE_NAME, suffix, NULL);
 	tmp = g_build_path (G_DIR_SEPARATOR_S,
 			    tmpdir,
-			    BRASERO_BURN_TMP_FILE_NAME,
+			    name,
 			    NULL);
+	g_free (name);
 
 	fd = g_mkstemp (tmp);
 	if (fd == -1) {
@@ -815,7 +819,7 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 
 	/* this must be removed when session is completly unreffed */
 	priv->tmpfiles = g_slist_prepend (priv->tmpfiles,
-						   g_strdup (tmp));
+					  g_strdup (tmp));
 
 	close (fd);
 	*path = tmp;
@@ -839,7 +843,7 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	/* Image tmp file */
-	result = brasero_burn_session_get_tmp_file (self, &path, error);
+	result = brasero_burn_session_get_tmp_file (self, NULL, &path, error);
 	if (result != BRASERO_BURN_OK)
 		return result;
 

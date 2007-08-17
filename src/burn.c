@@ -1438,8 +1438,13 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 					      priv->session,
 					      &supported,
 					      &compulsory);
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		g_set_error (error,
+			    BRASERO_BURN_ERROR,
+			    BRASERO_BURN_ERROR_GENERAL,
+			    _("this operation is not supported. Try to activate proper plugins"));
 		return result;
+	}
 
 	flags = brasero_burn_session_get_flags (priv->session);
 	retval = flags & supported;

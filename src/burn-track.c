@@ -637,8 +637,20 @@ brasero_track_get_localpath (const gchar *uri)
 	return localpath;
 }
 
+static gchar *
+brasero_track_get_uri (const gchar *uri)
+{
+	if (!uri)
+		return NULL;
+
+	if (uri [0] != '/')
+		return g_strdup (uri);
+		
+	return gnome_vfs_make_uri_from_input (uri);
+}
+
 gchar *
-brasero_track_get_audio_source (BraseroTrack *track, gboolean local)
+brasero_track_get_audio_source (BraseroTrack *track, gboolean uri)
 {
 	BraseroTrackAudio *audio;
 
@@ -646,10 +658,10 @@ brasero_track_get_audio_source (BraseroTrack *track, gboolean local)
 		return NULL;
 
 	audio = (BraseroTrackAudio *) track;
-	if (local)
+	if (uri)
+		return brasero_track_get_uri (audio->location);
+	else
 		return brasero_track_get_localpath (audio->location);
-
-	return g_strdup (audio->location);
 }
 
 gint64
@@ -685,7 +697,7 @@ brasero_track_get_audio_info (BraseroTrack *track)
 		return NULL;
 
 	audio = (BraseroTrackAudio *) track;
-	return brasero_song_info_copy (audio->info);
+	return audio->info;
 }
 
 GSList *
@@ -760,7 +772,7 @@ brasero_track_get_image_source (BraseroTrack *track, gboolean uri)
 	image = (BraseroTrackImage *) track;
 
 	if (uri)
-		return g_strdup (image->image);
+		return brasero_track_get_uri (image->image);
 	else
 		return brasero_track_get_localpath (image->image);
 }
@@ -776,7 +788,7 @@ brasero_track_get_toc_source (BraseroTrack *track, gboolean uri)
 	image = (BraseroTrackImage *) track;
 
 	if (uri)
-		return g_strdup (image->toc);
+		return brasero_track_get_uri (image->toc);
 	else
 		return brasero_track_get_localpath (image->toc);
 }

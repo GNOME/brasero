@@ -234,12 +234,14 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	g_ptr_array_add (argv, g_strdup ("-D"));	// This is dangerous the manual says but apparently it works well
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (mkisofs),
+					   NULL,
 					   &grafts_path,
 					   error);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (mkisofs),
+					   NULL,
 					   &excluded_path,
 					   error);
 	if (result != BRASERO_BURN_OK) {

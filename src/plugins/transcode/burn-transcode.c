@@ -48,12 +48,12 @@
 BRASERO_PLUGIN_BOILERPLATE (BraseroTranscode, brasero_transcode, BRASERO_TYPE_JOB, BraseroJob);
 
 static gboolean brasero_transcode_bus_messages (GstBus *bus,
-						  GstMessage *msg,
-						  BraseroTranscode *transcode);
+						GstMessage *msg,
+						BraseroTranscode *transcode);
 static void brasero_transcode_new_decoded_pad_cb (GstElement *decode,
-						   GstPad *pad,
-						   gboolean arg2,
-						   GstElement *convert);
+						  GstPad *pad,
+						  gboolean arg2,
+						  GstElement *convert);
 
 struct BraseroTranscodePrivate {
 	GstElement *pipeline;
@@ -73,10 +73,6 @@ struct BraseroTranscodePrivate {
 typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
 
 #define BRASERO_TRANSCODE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TRANSCODE, BraseroTranscodePrivate))
-
-#define SIZE_TO_DURATION(size)		((gint64) (size) * GST_SECOND / (75*2352))
-#define SECTORS_TO_DURATION(sectors)	((gint64) (sectors) * GST_SECOND / 75)
-#define DURATION_TO_SECTORS(duration)	((gint64) (duration) * 75 / GST_SECOND)
 
 static GObjectClass *parent_class = NULL;
 
@@ -99,6 +95,8 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	BraseroTranscodePrivate *priv;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	BRASERO_JOB_LOG (transcode, "Creating new pipeline");
 
 	priv->set_boundaries = 0;
 	priv->set_active_state = 0;
@@ -185,6 +183,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 			     _("sink can't be created"));
 		goto error;
 	}
+
 	gst_bin_add (GST_BIN (pipeline), sink);
 	g_object_set (sink,
 		      "sync", FALSE,
@@ -292,36 +291,54 @@ error:
 	return FALSE;
 }
 
+static BraseroBurnResult
+brasero_transcode_start (BraseroJob *job,
+			 GError **error)
+{
+	BraseroTranscode *transcode;
+	BraseroJobAction action;
+
+	transcode = BRASERO_TRANSCODE (job);
+
+	brasero_job_get_action (job, &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		if (!brasero_transcode_create_pipeline (transcode, error))
+			return BRASERO_BURN_ERR;
+
+		brasero_job_set_current_action (job,
+						BRASERO_BURN_ACTION_GETTING_SIZE,
+						NULL,
+						TRUE);
+
+		brasero_job_start_progress (job, FALSE);
+		return BRASERO_BURN_OK;
+	}
+	else if (action == BRASERO_JOB_ACTION_IMAGE) {
+		if (!brasero_transcode_create_pipeline (transcode, error))
+			return BRASERO_BURN_ERR;
+	}
+	else
+		BRASERO_JOB_NOT_SUPPORTED (transcode);
+
+	return BRASERO_BURN_OK;
+}
+
 static void
 brasero_transcode_set_track_size (BraseroTranscode *transcode,
 				  gint64 duration)
 {
 	gchar *uri;
-	gint64 gap;
-	gint64 sectors;
 	BraseroTrack *track;
 
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	brasero_track_set_audio_boundaries (track, -1, duration, -1);
-
-	/* 1 sec = 75 sectors = 2352 bytes */
-	sectors = duration * 75;
-	if (sectors % 1000000000)
-		sectors = sectors / 1000000000 + 1;
-	else
-		sectors /= 1000000000;
-
-	/* gap > 0 means a gap is required after the song */
-	gap = brasero_track_get_audio_gap (track);
-	if (gap >= 0)
-		sectors += gap;
+	duration += brasero_track_get_audio_gap (track);
 
 	/* if transcoding on the fly we should add some length just to make
 	 * sure we won't be too short (gstreamer duration discrepancy) */
-	
 	brasero_job_set_output_size_for_current_track (BRASERO_JOB (transcode),
-						       sectors,
-						       sectors * 2352);
+						       BRASERO_DURATION_TO_SECTORS (duration),
+						       BRASERO_DURATION_TO_BYTES (duration));
 
 	uri = brasero_track_get_audio_source (track, FALSE);
 	BRASERO_JOB_LOG (transcode,
@@ -329,7 +346,7 @@ brasero_transcode_set_track_size (BraseroTranscode *transcode,
 			 "\nsectors %" G_GINT64_FORMAT
 			 "\ntime %" G_GINT64_FORMAT, 
 			 uri,
-			 sectors,
+			 BRASERO_DURATION_TO_SECTORS (duration),
 			 duration);
 	g_free (uri);
 }
@@ -339,7 +356,7 @@ brasero_transcode_set_track_size (BraseroTranscode *transcode,
  */
 
 static BraseroBurnResult
-brasero_transcode_create_info_siblings (BraseroTranscode *transcode,
+brasero_transcode_create_sibling_size (BraseroTranscode *transcode,
 				        BraseroTrack *src,
 				        GError **error)
 {
@@ -347,21 +364,21 @@ brasero_transcode_create_info_siblings (BraseroTranscode *transcode,
 	BraseroTrack *dest;
 	gint64 duration;
 
-	/* it means the same file uri is in the selection and
-	 * was already created. Simply get the values for the 
-	 * inf file from the already created one and write the
-	 * inf file */
+	/* it means the same file uri is in the selection and was already
+	 * checked. Simply get the values for the length and other information
+	 * and copy them. */
+	/* NOTE: no need to copy the length since if they are sibling that means
+	 * that they have the same length */
 	brasero_track_get_audio_length (src, &duration);
 	brasero_job_set_output_size_for_current_track (BRASERO_JOB (transcode),
 						       BRASERO_DURATION_TO_SECTORS (duration),
 						       BRASERO_DURATION_TO_BYTES (duration));
 
+	/* copy the info we are missing */
 	src_info = brasero_track_get_audio_info (src);
-	
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &dest);
 	dest_info = brasero_track_get_audio_info (dest);
 
-	/* let's not forget the tags */
 	if (!dest_info->artist)
 		dest_info->artist = g_strdup (src_info->artist);
 	if (!dest_info->composer)
@@ -373,16 +390,19 @@ brasero_transcode_create_info_siblings (BraseroTranscode *transcode,
 }
 
 static BraseroBurnResult
-brasero_transcode_create_song_siblings (BraseroTranscode *transcode,
+brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 					BraseroTrack *src,
 					GError **error)
 {
+	BraseroSongInfo *info;
+	BraseroTrack *track;
+	BraseroTrack *dest;
+	gint64 length = 0;
 	gchar *path_dest;
 	gchar *path_src;
 
-	/* it means the file is already in the selection.
-	 * Simply create a symlink pointing to the first
-	 * file in the selection with the same uri */
+	/* it means the file is already in the selection. Simply create a 
+	 * symlink pointing to first file in the selection with the same uri */
 	path_src = brasero_track_get_audio_source (src, FALSE);
 	brasero_job_get_audio_output (BRASERO_JOB (transcode), &path_dest);
 
@@ -396,11 +416,26 @@ brasero_transcode_create_song_siblings (BraseroTranscode *transcode,
 		goto error;
 	}
 
+	dest = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
+	brasero_track_set_audio_source (dest, path_dest, BRASERO_AUDIO_FORMAT_RAW);
+
+	/* NOTE: there is no gap and start = 0 since these tracks are the result
+	 * of the transformation of previous ones */
+	brasero_track_get_audio_length (src, &length);
+	brasero_track_set_audio_boundaries (track, 0, length, 0);
+
+	/* copy all infos but from the current track */
+	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
+	info = brasero_track_get_audio_info (track);
+	info = brasero_song_info_copy (info);
+	brasero_track_set_audio_info (track, info);
+
+	brasero_job_add_track (BRASERO_JOB (transcode), dest);
+
 	g_free (path_src);
 	g_free (path_dest);
 
-	/* now we generate the associated inf path */
-	return brasero_transcode_create_info_siblings (transcode, src, error);
+	return BRASERO_BURN_NOT_RUNNING;
 
 error:
 	g_free (path_src);
@@ -419,15 +454,15 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 	gint64 size;
 	gchar *uri;
 
-	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
-	brasero_job_get_done_tracks (BRASERO_JOB (transcode), &songs);
-
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 
+	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	start = brasero_track_get_audio_start (track);
 	brasero_track_get_audio_length (track, &size);
-
 	uri = brasero_track_get_audio_source (track, TRUE);
+
+	brasero_job_get_done_tracks (BRASERO_JOB (transcode), &songs);
+
 	for (iter = songs; iter; iter = iter->next) {
 		gchar *iter_uri;
 		gint64 iter_size;
@@ -436,18 +471,19 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 
 		iter_track = iter->data;
 		iter_uri = brasero_track_get_audio_source (iter_track, TRUE);
+
 		if (strcmp (iter_uri, uri))
 			continue;
 
-		if (action == BRASERO_JOB_ACTION_SIZE)
-			return iter_track;
-
-		iter_start = brasero_track_get_audio_start (iter_track);
-		if (iter_start != start)
+		brasero_track_get_audio_length (iter_track, &iter_size);
+		if (!iter_size)
 			continue;
 
-		brasero_track_get_audio_length (iter_track, &iter_size);
-		if (iter_size == size)
+		if (iter_size != size)
+			continue;
+
+		iter_start = brasero_track_get_audio_start (track);
+		if (iter_start == start)
 			return iter_track;
 	}
 
@@ -458,9 +494,9 @@ static BraseroBurnResult
 brasero_transcode_has_track_sibling (BraseroTranscode *transcode,
 				     GError **error)
 {
-	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroTrack *sibling = NULL;
+	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	if (brasero_job_get_fd_out (BRASERO_JOB (transcode), NULL) == BRASERO_BURN_OK)
 		return BRASERO_BURN_OK;
@@ -471,81 +507,16 @@ brasero_transcode_has_track_sibling (BraseroTranscode *transcode,
 
 	BRASERO_JOB_LOG (transcode, "found sibling: skipping");
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
-	if (action == BRASERO_JOB_ACTION_IMAGE) {
-		result = brasero_transcode_create_song_siblings (transcode,
+	if (action == BRASERO_JOB_ACTION_IMAGE)
+		result = brasero_transcode_create_sibling_image (transcode,
 								 sibling,
 								 error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
-	else if (action == BRASERO_JOB_ACTION_SIZE) {
-		BraseroTrack *track = NULL;
+	else if (action == BRASERO_JOB_ACTION_SIZE)
+		result = brasero_transcode_create_sibling_size (transcode,
+								sibling,
+								error);
 
-		/* FIXME: this code is never gonna run since to get a sibling it
-		 * must have the same length. Now obviously if we reached this 
-		 * part that means we don't have the size for the current track
-		 */
-
-		brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
-		brasero_transcode_create_info_siblings (transcode, sibling, error);
-	}
-
-	return BRASERO_BURN_NOT_RUNNING;
-}
-
-static BraseroBurnResult
-brasero_transcode_start (BraseroJob *job,
-			 GError **error)
-{
-	BraseroTranscode *transcode;
-	BraseroJobAction action;
-
-	transcode = BRASERO_TRANSCODE (job);
-
-	brasero_job_get_action (job, &action);
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		//BraseroTrack *track;
-
-		/* See if this track has its size already set and in this case
-		 * just say that everything is OK.
-		 * It can happend when the user/brasero/a program has already
-		 * set it or if the end of the track was set
-		 */
-		//brasero_job_get_current_track (job, &track);
-
-		/* Look for a sibling to avoid analysing the same track twice. */
-		/* FIXME look for the FIXME above */
-		/* if (brasero_transcode_has_track_sibling (transcode, error))
-			return BRASERO_BURN_OK;
-		*/
-
-		if (!brasero_transcode_create_pipeline (transcode, error))
-			return BRASERO_BURN_ERR;
-
-		brasero_job_set_current_action (job,
-						BRASERO_BURN_ACTION_GETTING_SIZE,
-						NULL,
-						TRUE);
-
-		brasero_job_start_progress (job, FALSE);
-		return BRASERO_BURN_OK;
-	}
-	else if (action == BRASERO_JOB_ACTION_IMAGE) {
-		/* Look for a sibling to avoid transcoding twice. In this case
-		 * though start and end of this track must be inside start and
-		 * end of the previous track. Of course if we are piping that
-		 * operation is simply impossible. */
-		if (brasero_job_get_fd_out (job, NULL) != BRASERO_BURN_OK
-		&&  brasero_transcode_has_track_sibling (transcode, error))
-			return BRASERO_BURN_OK;
-
-		if (!brasero_transcode_create_pipeline (transcode, error))
-			return BRASERO_BURN_ERR;
-	}
-	else
-		BRASERO_JOB_NOT_SUPPORTED (transcode);
-
-	return BRASERO_BURN_OK;
+	return result;
 }
 
 static BraseroBurnResult
@@ -553,11 +524,22 @@ brasero_transcode_init_real (BraseroJob *job,
 			     GError **error)
 {
 	BraseroJobAction action;
+	BraseroBurnResult result;
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		BraseroTrack *track;
 		gint64 length;
+
+		/* See if this track has its size already set and in this case
+		 * just say that everything is OK.
+		 * It can happen when the user/brasero/a program has already
+		 * set it or if the end of the track was set */
+
+		/* Look for a sibling to avoid analysing the same track twice. */
+		result = brasero_transcode_has_track_sibling (BRASERO_TRANSCODE (job), error);
+		if (result != BRASERO_BURN_OK)
+			return result;
 
 		/* See if the track size was already set since then no need to 
 		 * carry on with a lengthy get size.
@@ -568,16 +550,33 @@ brasero_transcode_init_real (BraseroJob *job,
 		length = 0;
 		brasero_track_get_audio_length (track, &length);
 		if (length > 0) {
+			gint64 gap;
+
+			BRASERO_JOB_LOG (job, "Got a track length %lli", length);
+			gap = brasero_track_get_audio_gap (track);
+			length += gap;
+
 			brasero_job_set_output_size_for_current_track (job,
-								       DURATION_TO_SECTORS (length),
-								       DURATION_TO_SECTORS (length) * 2352);
+								       BRASERO_DURATION_TO_SECTORS (length),
+								       BRASERO_DURATION_TO_BYTES (length));
 			return BRASERO_BURN_NOT_RUNNING;
 		}
 	}
-	else if (action != BRASERO_JOB_ACTION_IMAGE)
-		return BRASERO_BURN_NOT_SUPPORTED;
+	else if (action == BRASERO_JOB_ACTION_IMAGE) {
+		/* Look for a sibling to avoid transcoding twice. In this case
+		 * though start and end of this track must be inside start and
+		 * end of the previous track. Of course if we are piping that
+		 * operation is simply impossible. */
+		if (brasero_job_get_fd_out (job, NULL) != BRASERO_BURN_OK) {
+			result = brasero_transcode_has_track_sibling (BRASERO_TRANSCODE (job), error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+		}
 
-	return BRASERO_BURN_OK;
+		return BRASERO_BURN_OK;
+	}
+
+	BRASERO_JOB_NOT_SUPPORTED (job);
 }
 
 static void
@@ -746,6 +745,7 @@ brasero_transcode_pad_real (BraseroTranscode *transcode,
 static void
 brasero_transcode_push_track (BraseroTranscode *transcode)
 {
+	gint64 length = 0;
 	BraseroTrack *track;
 	gchar *output = NULL;
 	BraseroSongInfo *info;
@@ -753,6 +753,10 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 
 	brasero_job_get_audio_output (BRASERO_JOB (transcode), &output);
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
+
+	brasero_track_get_audio_length (track, &length);
+	length += brasero_track_get_audio_gap (track);
+
 	info = brasero_track_get_audio_info (track);
 	info = brasero_song_info_copy (info);
 
@@ -760,8 +764,11 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
 
 	brasero_track_set_audio_source (track, output, BRASERO_AUDIO_FORMAT_RAW);
+	brasero_track_set_audio_boundaries (track, 0, length, 0);
 	brasero_track_set_audio_info (track, info);
-	brasero_job_finished (BRASERO_JOB (transcode), track);
+
+	brasero_job_add_track (BRASERO_JOB (transcode), track);
+	brasero_job_finished_track (BRASERO_JOB (transcode));
 }
 
 static gboolean
@@ -803,7 +810,6 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 {
 	gint64 length = 0;
 	gint64 duration = 0;
-	gint64 b_written = 0;
 	gint64 bytes2write = 0;
 	BraseroTrack *track = NULL;
 
@@ -817,25 +823,38 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 	 *   boundaries */
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	brasero_track_get_audio_length (track, &length);
+	length += brasero_track_get_audio_gap (track);
 
-	b_written = BRASERO_DURATION_TO_BYTES (duration);
-	bytes2write = BRASERO_DURATION_TO_BYTES (length);
+	if (duration < length) {
+		gint64 b_written = 0;
 
-	if (bytes2write - b_written > 0) {
-		/* make sure we respect sector boundary */
-		bytes2write += bytes2write % 2352;
-		bytes2write -= b_written;
+		/* Check bytes boundary for length */
+		b_written = BRASERO_DURATION_TO_BYTES (length);
+		b_written += (b_written % 2352) ? 2352 - (b_written % 2352):0;
+		bytes2write = b_written - BRASERO_DURATION_TO_BYTES (duration);
+
+		BRASERO_JOB_LOG (transcode,
+				 "Wrote %lli bytes (= %lli ns) out of %lli (= %lli ns)"
+				 "\n=> padding %lli bytes",
+				 BRASERO_DURATION_TO_BYTES (duration),
+				 duration,
+				 BRASERO_DURATION_TO_BYTES (length),
+				 length,
+				 bytes2write);
 	}
 	else {
-		/* make sure we respect sector boundary */
-		bytes2write %= 2352;
-	}
+		gint64 b_written = 0;
 
-	BRASERO_JOB_LOG (transcode,
-			 "Padding\t= %" G_GINT64_FORMAT 
-			 "\n\t\t\t\t%" G_GINT64_FORMAT,
-			 bytes2write,
-			 b_written);
+		/* wrote more bytes than expected. Check bytes boundary */
+		b_written = BRASERO_DURATION_TO_BYTES (duration);
+		bytes2write = (b_written % 2352) ? 2352 - (b_written % 2352):0;
+		BRASERO_JOB_LOG (transcode,
+				 "Wrote %lli bytes (= %lli ns)"
+				 "\n=> padding %lli bytes",
+				 b_written,
+				 duration,
+				 bytes2write);
+	}
 
 	if (!bytes2write)
 		return TRUE;
@@ -927,7 +946,7 @@ brasero_transcode_song_end_reached (BraseroTranscode *transcode)
 			return FALSE;
 
 		brasero_transcode_set_track_size (transcode, duration);
-		brasero_job_finished (BRASERO_JOB (transcode), NULL);
+		brasero_job_finished_track (BRASERO_JOB (transcode));
 		return TRUE;
 	}
 
@@ -1008,7 +1027,7 @@ brasero_transcode_set_boundaries (BraseroTranscode *transcode)
 	 * needed when it is decoding a song. Otherwise*/
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	start = brasero_track_get_audio_start (track);
-	start = SIZE_TO_DURATION (start);
+	start = start;
 
 	/* NOTE: when end has been set that value is used by the following 
 	 * function to estimate the size. Size here is end (set or not) - start
@@ -1242,7 +1261,7 @@ brasero_transcode_clock_tick (BraseroJob *job)
 			 "got position (%" G_GINT64_FORMAT ")",
 			 pos);
 
-	brasero_job_set_written (job, DURATION_TO_SECTORS (pos) * 2352);
+	brasero_job_set_written (job, BRASERO_DURATION_TO_BYTES (pos));
 	return BRASERO_BURN_OK;
 }
 static void

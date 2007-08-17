@@ -96,8 +96,8 @@ BraseroTaskAction
 brasero_task_ctx_get_action (BraseroTaskCtx *ctx);
 
 BraseroBurnResult
-brasero_task_ctx_get_tracks (BraseroTaskCtx *ctx,
-			     GSList **tracks);
+brasero_task_ctx_get_stored_tracks (BraseroTaskCtx *ctx,
+				    GSList **tracks);
 
 BraseroBurnResult
 brasero_task_ctx_get_current_track (BraseroTaskCtx *ctx,
@@ -108,12 +108,14 @@ brasero_task_ctx_get_current_track (BraseroTaskCtx *ctx,
  */
 
 BraseroBurnResult
-brasero_task_ctx_next_track (BraseroTaskCtx *ctx,
-			     BraseroTrack *track);
+brasero_task_ctx_add_track (BraseroTaskCtx *ctx,
+			    BraseroTrack *track);
 
 BraseroBurnResult
-brasero_task_ctx_finished (BraseroTaskCtx *ctx,
-			   BraseroTrack *track);
+brasero_task_ctx_next_track (BraseroTaskCtx *ctx);
+
+BraseroBurnResult
+brasero_task_ctx_finished (BraseroTaskCtx *ctx);
 
 BraseroBurnResult
 brasero_task_ctx_error (BraseroTaskCtx *ctx,

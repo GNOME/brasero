@@ -85,7 +85,9 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 
 	g_free (image);
 	g_free (toc);
-	brasero_job_finished (BRASERO_JOB (process), track);
+
+	brasero_job_add_track (BRASERO_JOB (process), track);
+	brasero_job_finished_track (BRASERO_JOB (process));
 	return BRASERO_BURN_OK;
 }
 

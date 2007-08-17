@@ -1,3 +1,19 @@
+2007-08-17  Rouquier Philippe <bonfire-app@wanadoo.fr>
+	Another round of fixes to get audio disc working (using cdrkit/transcode)
+	More specifically:
+	- several improvements/fixes to handle multiple tracks (burn-task.c/burn-task-ctx.c/burn-job.c)
+	- improvements for transcode
+	- updated the code for metadata.c to be more precise
+	- brasero-audio.c stores song size as duration not sectors
+	- burn-process.c do something useful with ::post
+	- burn-process.c don't overwrite previous error
+	- burn-caps.c be more careful when following links between caps:
+	  check that at least one plugin is active
+	- burn-job.c modified the API for a job to finish and store a new track
+	- burn-track.c ensure a conversion is possible for path => URI
+	- burn-wodim.c fix a remaining typo/improved .inf generation
+	- allow to indicate a suffix for a temp file
+
 2007-08-14  Rouquier Philippe <bonfire-app@wanadoo.fr>
 
 	Another round of fixes to get disc copy working (using growisofs/cdrkit)

@@ -55,7 +55,11 @@ typedef struct {
 	BraseroBurnResult	(*set_argv)	(BraseroProcess *process,
 						 GPtrArray *argv,
 						 GError **error);
-	BraseroBurnResult      	(*post)       	(BraseroProcess *process);
+
+	/* since burn-process.c doesn't know if it should call finished_session
+	 * of finished track this allows to override the default call which is
+	 * brasero_job_finished_track */
+	BraseroBurnResult      	(*post)       	(BraseroJob *job);
 } BraseroProcessClass;
 
 GType brasero_process_get_type();

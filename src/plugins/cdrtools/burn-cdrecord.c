@@ -62,6 +62,8 @@ struct _BraseroCDRecordPrivate {
 
 	gint minbuf;
 
+	GSList *infs;
+
 	guint immediate:1;
 };
 typedef struct _BraseroCDRecordPrivate BraseroCDRecordPrivate;
@@ -97,7 +99,7 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Input buffer error, aborting") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_NONE,
+						BRASERO_BURN_ERROR_GENERAL,
 						_("input buffer error")));
 	}
 	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
@@ -318,7 +320,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 		 * asks the media to be reloaded. So we simply ignore this message
 		 * and returns that everything went well. Which is indeed the case */
 		if (action == BRASERO_BURN_ACTION_FIXATING) {
-			brasero_job_finished (BRASERO_JOB (process), NULL);
+			brasero_job_finished_session (BRASERO_JOB (process));
 			return BRASERO_BURN_OK;
 		}
 
@@ -359,6 +361,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 			    const gchar *album,
 			    gint index,
 			    gint start,
+			    gboolean last_track,
 			    GError **error)
 {
 	gint fd;
@@ -377,9 +380,10 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	/* NOTE: about the .inf files: they should have the exact same path
 	 * but the ending suffix file is replaced by inf:
 	 * example : /path/to/file.mp3 => /path/to/file.inf */
-	path = brasero_track_get_audio_source (track, TRUE);
-	if (path) {
+	if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) != BRASERO_BURN_OK) {
 		gchar *dot, *separator;
+
+		path = brasero_track_get_audio_source (track, FALSE);
 
 		dot = strrchr (path, '.');
 		separator = strrchr (path, G_DIR_SEPARATOR);
@@ -391,11 +395,23 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 		else
 			path = g_strdup_printf ("%s.inf",
 						path);
+
+		/* since this file was not returned by brasero_job_get_tmp_file
+		 * it won't be erased when session is unrefed so we have to do 
+		 * it ourselves */
+		priv->infs = g_slist_prepend (priv->infs, g_strdup (path));
 	}
-	else
-		path = g_strdup_printf ("%s/Track%02i.inf",
-					tmpdir,
-					index);
+	else {
+		BraseroBurnResult result;
+
+		/* in this case don't care about the name since stdin is used */
+		result = brasero_job_get_tmp_file (BRASERO_JOB (cdrecord),
+						   ".inf",
+						   &path,
+						   error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
 
 	fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd < 0)
@@ -487,8 +503,11 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
+	length = 0;
 	brasero_track_get_audio_length (track, &length);
 	sectors = BRASERO_DURATION_TO_SECTORS (length);
+
+	BRASERO_JOB_LOG (cdrecord, "Got track length %lli", length);
 	string = g_strdup_printf ("Tracklength=\t%"G_GINT64_FORMAT", 0\n", sectors);
 	size = strlen (string);
 	b_written = write (fd, string, size);
@@ -496,7 +515,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	strcpy (buffer, "Pre-emphasis=\tyes\n");
+	strcpy (buffer, "Pre-emphasis=\tno\n");
 	size = strlen (buffer);
 	b_written = write (fd, buffer, size);
 	if (b_written != size)
@@ -526,14 +545,25 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
-	string = g_strdup_printf ("Index0=\t\t%"G_GINT64_FORMAT"\n", sectors);
+	if (!last_track) {
+		/* K3b does this (possibly to remove silence) */
+		string = g_strdup_printf ("Index0=\t\t%"G_GINT64_FORMAT"\n",
+					  sectors - 150);
+	}
+	else
+		string = g_strdup_printf ("Index0=\t\t-1\n");
+
 	size = strlen (string);
 	b_written = write (fd, string, size);
 	if (b_written != size)
 		goto error;
 
 	close (fd);
-	g_ptr_array_add (argv, path);
+
+	if (argv)
+		g_ptr_array_add (argv, path);
+	else
+		g_free (path);
 
 	return BRASERO_BURN_OK;
 
@@ -566,18 +596,10 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 	gint start;
 
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
-	if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL)) {
-		/* if burning on the fly we need a tmp directory for the infs */
-		result = brasero_job_get_tmp_dir (BRASERO_JOB (cdrecord),
-						  &tmpdir,
-						  error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
 
 	brasero_job_get_audio_title (BRASERO_JOB (cdrecord), &album);
 	brasero_job_get_tracks (BRASERO_JOB (cdrecord), &tracks);
-	index = 0;
+	index = 1;
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
@@ -590,19 +612,22 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 						     track,
 						     tmpdir,
 						     album,
-						     BRASERO_DURATION_TO_SECTORS (start),
 						     index,
+						     start,
+						     (iter->next == NULL),
 						     error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
 		index ++;
 		length = 0;
+
 		brasero_track_get_audio_length (track, &length);
-		start += length;
+		length += brasero_track_get_audio_gap (track);
+
+		start += BRASERO_DURATION_TO_SECTORS (length);
 	}
 
-	g_slist_free (tracks);
 	g_free (tmpdir);
 
 	return BRASERO_BURN_OK;
@@ -714,8 +739,11 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		BraseroBurnResult result;
+		GSList *tracks;
 
-		/* CD-text cannot be written in tao mode (which is the default) */
+		/* CD-text cannot be written in tao mode (which is the default)
+		 * NOTE: when we don't want wodim to use stdin then we give the
+		 * audio file on the command line. Otherwise we use the .inf */
 		if (flags & BRASERO_BURN_FLAG_DAO)
 			g_ptr_array_add (argv, g_strdup ("-dao"));
 
@@ -728,10 +756,21 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		g_ptr_array_add (argv, g_strdup ("-text"));
 
 		result = brasero_cdrecord_write_infs (cdrecord,
-						      argv,
+						      NULL,
 						      error);
 		if (result != BRASERO_BURN_OK)
 			return result;
+
+		tracks = NULL;
+		brasero_job_get_tracks (BRASERO_JOB (cdrecord), &tracks);
+		for (; tracks; tracks = tracks->next) {
+			BraseroTrack *track;
+			gchar *path;
+
+			track = tracks->data;
+			path = brasero_track_get_audio_source (track, FALSE);
+			g_ptr_array_add (argv, path);
+		}
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroTrack *track = NULL;
@@ -849,7 +888,6 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	cdrecord = BRASERO_CD_RECORD (process);
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
-	/* This is to support cdrkit. We give it the priority. */
 	brasero_job_get_action (BRASERO_JOB (cdrecord), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		BraseroTrackType input = { 0 };
@@ -907,6 +945,27 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	return result;	
 }
 
+static BraseroBurnResult
+brasero_cdrecord_post (BraseroJob *job)
+{
+	BraseroCDRecordPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_CD_RECORD_PRIVATE (job);
+	for (iter = priv->infs; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		g_remove (path);
+		g_free (path);
+	}
+
+	g_slist_free (priv->infs);
+	priv->infs = NULL;
+
+	return brasero_job_finished_session (job);
+}
+
 static void
 brasero_cdrecord_class_init (BraseroCDRecordClass *klass)
 {
@@ -921,6 +980,7 @@ brasero_cdrecord_class_init (BraseroCDRecordClass *klass)
 	process_class->stderr_func = brasero_cdrecord_stderr_read;
 	process_class->stdout_func = brasero_cdrecord_stdout_read;
 	process_class->set_argv = brasero_cdrecord_set_argv;
+	process_class->post = brasero_cdrecord_post;
 }
 
 static void
@@ -948,6 +1008,22 @@ brasero_cdrecord_init (BraseroCDRecord *obj)
 static void
 brasero_cdrecord_finalize (GObject *object)
 {
+	BraseroCDRecordPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_CD_RECORD_PRIVATE (object);
+
+	for (iter = priv->infs; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		g_remove (path);
+		g_free (path);
+	}
+
+	g_slist_free (priv->infs);
+	priv->infs = NULL;
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -980,6 +1056,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	}
 	g_free (prog_name);
 
+	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "cdrecord",
 			       _("use cdrecord to burn CDs"),

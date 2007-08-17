@@ -157,6 +157,7 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *session,
 
 BraseroBurnResult
 brasero_burn_session_get_tmp_file (BraseroBurnSession *session,
+				   const gchar *suffix,
 				   gchar **path,
 				   GError **error);
 

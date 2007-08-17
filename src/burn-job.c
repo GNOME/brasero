@@ -319,6 +319,7 @@ brasero_job_set_output (BraseroJob *self,
 	else if (priv->type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		/* NOTE: this one can only a temporary file */
 		result = brasero_burn_session_get_tmp_file (session,
+							    ".cdr",
 							    &priv->output.file.image,
 							    error);
 		BRASERO_JOB_LOG (self, "Output set (AUDIO) image = %s",
@@ -552,7 +553,86 @@ brasero_job_iface_init_task_item (BraseroTaskItemIFace *iface)
  */
 
 BraseroBurnResult
-brasero_job_finished (BraseroJob *self, BraseroTrack *track)
+brasero_job_add_track (BraseroJob *self,
+		       BraseroTrack *track)
+{
+	BraseroJobPrivate *priv;
+	BraseroJobAction action;
+
+	BRASERO_JOB_DEBUG (self);
+
+	priv = BRASERO_JOB_PRIVATE (self);
+
+	/* to add a track to the session, a job :
+	 * - must be the last running in the chain
+	 * - the action for the job must be IMAGE */
+
+	action = BRASERO_JOB_ACTION_NONE;
+	brasero_job_get_action (self, &action);
+	if (action != BRASERO_JOB_ACTION_IMAGE)
+		return BRASERO_BURN_ERR;
+
+	if (!brasero_job_is_last_running (self))
+		return BRASERO_BURN_ERR;
+
+	return brasero_task_ctx_add_track (priv->ctx, track);
+}
+
+BraseroBurnResult
+brasero_job_finished_session (BraseroJob *self)
+{
+	GError *error = NULL;
+	BraseroJobClass *klass;
+	BraseroJobPrivate *priv;
+	BraseroBurnResult result;
+
+	priv = BRASERO_JOB_PRIVATE (self);
+
+	BRASERO_JOB_LOG (self, "finished successfully");
+
+	if (brasero_job_is_last_running (self))
+		return brasero_task_ctx_finished (priv->ctx);
+
+	if (!brasero_job_is_first_running (self)) {
+		/* This job is apparently a go between job. It should
+		 * only call for a stop on an error. */
+		BRASERO_JOB_LOG (self, "is not a leader");
+		error = g_error_new (BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("a plugin did not behave properly"));
+		return brasero_task_ctx_error (priv->ctx,
+					       BRASERO_BURN_ERR,
+					       error);
+	}
+
+	/* call the stop method of the job since it's finished */ 
+	klass = BRASERO_JOB_GET_CLASS (self);
+	if (klass->stop) {
+		result = klass->stop (self, &error);
+		if (result != BRASERO_BURN_OK)
+			return brasero_task_ctx_error (priv->ctx,
+						       result,
+						       error);
+	}
+
+	/* this job is finished but it's not the leader so the
+	 * task is not finished. Close the pipe on one side to
+	 * let the next job know that there isn't any more data
+	 * to be expected */
+	result = brasero_job_disconnect (self, &error);
+	g_object_unref (priv->ctx);
+	priv->ctx = NULL;
+
+	if (result != BRASERO_BURN_OK)
+		return brasero_task_ctx_error (priv->ctx,
+					       result,
+					       error);
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_job_finished_track (BraseroJob *self)
 {
 	GError *error = NULL;
 	BraseroJobPrivate *priv;
@@ -560,12 +640,13 @@ brasero_job_finished (BraseroJob *self, BraseroTrack *track)
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "finished successfully %s", track? "(adding track)":"");
+	BRASERO_JOB_LOG (self, "finished successfully");
 
+	/* we first check if it's the first job */
 	if (brasero_job_is_first_running (self)) {
 		BraseroJobClass *klass;
 
-		/* call the stop method of the job since it's finished */ 
+		/* call ::stop for the job since it's finished */ 
 		klass = BRASERO_JOB_GET_CLASS (self);
 		if (klass->stop) {
 			result = klass->stop (self, &error);
@@ -577,7 +658,7 @@ brasero_job_finished (BraseroJob *self, BraseroTrack *track)
 		}
 
 		/* go to next track and see if there is one. If so, restart job */
-		result = brasero_task_ctx_next_track (priv->ctx, track);
+		result = brasero_task_ctx_next_track (priv->ctx);
 		if (result == BRASERO_BURN_RETRY)
 			return BRASERO_BURN_OK;
 
@@ -609,7 +690,7 @@ brasero_job_finished (BraseroJob *self, BraseroTrack *track)
 		return brasero_task_ctx_error (priv->ctx, BRASERO_BURN_ERR, error);
 	}
 
-	return brasero_task_ctx_finished (priv->ctx, track);
+	return brasero_task_ctx_finished (priv->ctx);
 }
 
 /**
@@ -764,7 +845,6 @@ BraseroBurnResult
 brasero_job_get_done_tracks (BraseroJob *self, GSList **tracks)
 {
 	BraseroJobPrivate *priv;
-	BraseroBurnSession *session;
 
 	BRASERO_JOB_DEBUG (self);
 
@@ -772,22 +852,23 @@ brasero_job_get_done_tracks (BraseroJob *self, GSList **tracks)
 
 	/* tracks already done are those that are in session */
 	priv = BRASERO_JOB_PRIVATE (self);
-	session = brasero_task_ctx_get_session (priv->ctx);
-	*tracks = brasero_burn_session_get_tracks (session);
-	return BRASERO_BURN_OK;
+	return brasero_task_ctx_get_stored_tracks (priv->ctx, tracks);
 }
 
 BraseroBurnResult
 brasero_job_get_tracks (BraseroJob *self, GSList **tracks)
 {
 	BraseroJobPrivate *priv;
+	BraseroBurnSession *session;
 
 	BRASERO_JOB_DEBUG (self);
 
 	g_return_val_if_fail (tracks != NULL, BRASERO_BURN_ERR);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	return brasero_task_ctx_get_tracks (priv->ctx, tracks);
+	session = brasero_task_ctx_get_session (priv->ctx);
+	*tracks = brasero_burn_session_get_tracks (session);
+	return BRASERO_BURN_OK;
 }
 
 BraseroBurnResult
@@ -1117,6 +1198,7 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 
 BraseroBurnResult
 brasero_job_get_tmp_file (BraseroJob *self,
+			  const gchar *suffix,
 			  gchar **output,
 			  GError **error)
 {
@@ -1126,6 +1208,7 @@ brasero_job_get_tmp_file (BraseroJob *self,
 	priv = BRASERO_JOB_PRIVATE (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	brasero_burn_session_get_tmp_file (session,
+					   suffix,
 					   output,
 					   error);
 

@@ -133,6 +133,7 @@ brasero_dvd_rw_format_class_init (BraseroDvdRwFormatClass *klass)
 
 	process_class->set_argv = brasero_dvd_rw_format_set_argv;
 	process_class->stderr_func = brasero_dvd_rw_format_read_stderr;
+	process_class->post = brasero_job_finished_session;
 }
 
 static void

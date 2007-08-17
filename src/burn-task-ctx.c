@@ -79,7 +79,6 @@ struct _BraseroTaskCtxPrivate
 	guint dangerous;
 
 	guint fake:1;
-	guint added_track:1;
 	guint action_changed:1;
 	guint written_changed:1;
 	guint progress_changed:1;
@@ -133,16 +132,23 @@ void
 brasero_task_ctx_reset (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
+	GSList *tracks;
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	priv->tracks = brasero_burn_session_get_tracks (priv->session);
-	BRASERO_BURN_LOG ("Setting current track (%i tracks)", g_slist_length (priv->tracks));
 	if (priv->tracks) {
-		if (priv->current_track)
-			brasero_track_unref (priv->current_track);
+		g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
+		g_slist_free (priv->tracks);
+		priv->tracks = NULL;
+	}
 
-		priv->current_track = priv->tracks->data;
+	tracks = brasero_burn_session_get_tracks (priv->session);
+	BRASERO_BURN_LOG ("Setting current track (%i tracks)", g_slist_length (tracks));
+	if (priv->current_track)
+		brasero_track_unref (priv->current_track);
+
+	if (tracks) {
+		priv->current_track = tracks->data;
 		brasero_track_ref (priv->current_track);
 	}
 	else
@@ -165,12 +171,6 @@ brasero_task_ctx_reset (BraseroTaskCtx *self)
 	if (priv->times) {
 		g_slist_free (priv->times);
 		priv->times = NULL;
-	}
-
-	if (priv->tracks) {
-		brasero_track_unref (priv->current_track);
-		priv->current_track = priv->tracks->data;
-		brasero_track_ref (priv->current_track);
 	}
 }
 
@@ -201,8 +201,8 @@ brasero_task_ctx_get_session (BraseroTaskCtx *self)
 }
 
 BraseroBurnResult
-brasero_task_ctx_get_tracks (BraseroTaskCtx *self,
-			     GSList **tracks)
+brasero_task_ctx_get_stored_tracks (BraseroTaskCtx *self,
+				    GSList **tracks)
 {
 	BraseroTaskCtxPrivate *priv;
 
@@ -249,16 +249,39 @@ brasero_task_ctx_get_action (BraseroTaskCtx *self)
  * Used to report task status
  */
 
+BraseroBurnResult
+brasero_task_ctx_add_track (BraseroTaskCtx *self,
+			    BraseroTrack *track)
+{
+	BraseroTaskCtxPrivate *priv;
+
+	priv = BRASERO_TASK_CTX_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Adding track (type = %i) %s",
+			  brasero_track_get_type (track, NULL),
+			  priv->tracks? "already some tracks":"");
+	
+	priv->tracks = g_slist_prepend (priv->tracks, track);
+	return BRASERO_BURN_OK;
+}
+
 static gboolean
 brasero_task_ctx_set_next_track (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
+	GSList *tracks;
 	GSList *node;
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
+	/* we need to set the next track if our action is NORMAL or CHECKSUM */
+	if (priv->action != BRASERO_TASK_ACTION_NORMAL
+	&&  priv->action != BRASERO_TASK_ACTION_CHECKSUM)
+		return BRASERO_BURN_OK;
+
 	/* see if there is another track left */
-	node = g_slist_find (priv->tracks, priv->current_track);
+	tracks = brasero_burn_session_get_tracks (priv->session);
+	node = g_slist_find (tracks, priv->current_track);
 	if (!node || !node->next)
 		return BRASERO_BURN_OK;
 
@@ -272,8 +295,7 @@ brasero_task_ctx_set_next_track (BraseroTaskCtx *self)
 }
 
 BraseroBurnResult
-brasero_task_ctx_next_track (BraseroTaskCtx *self,
-			     BraseroTrack *track)
+brasero_task_ctx_next_track (BraseroTaskCtx *self)
 
 {
 	BraseroTaskCtxPrivate *priv;
@@ -287,14 +309,7 @@ brasero_task_ctx_next_track (BraseroTaskCtx *self,
 	if (retval == BRASERO_BURN_RETRY) {
 		BraseroTaskCtxClass *klass;
 
-		BRASERO_BURN_LOG ("Setting next track to be processed");
-
-		if (!priv->added_track) {
-			/* push the current tracks to add the new track */
-			priv->added_track = 1;
-			brasero_burn_session_push_tracks (priv->session);
-		}
-		brasero_burn_session_add_track (priv->session, track);
+		BRASERO_BURN_LOG ("Set next track to be processed");
 
 		klass = BRASERO_TASK_CTX_GET_CLASS (self);
 		if (!klass->finished)
@@ -303,6 +318,7 @@ brasero_task_ctx_next_track (BraseroTaskCtx *self,
 		klass->finished (self,
 				 BRASERO_BURN_RETRY,
 				 NULL);
+		return BRASERO_BURN_RETRY;
 	}
 
 	BRASERO_BURN_LOG ("No next track to process");
@@ -310,45 +326,35 @@ brasero_task_ctx_next_track (BraseroTaskCtx *self,
 }
 
 BraseroBurnResult
-brasero_task_ctx_finished (BraseroTaskCtx *self,
-			   BraseroTrack *track)
+brasero_task_ctx_finished (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
 	BraseroTaskCtxClass *klass;
-	BraseroBurnResult retval;
 	GError *error = NULL;
+	GSList *iter;
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 	klass = BRASERO_TASK_CTX_GET_CLASS (self);
 	if (!klass->finished)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	retval = brasero_task_ctx_set_next_track (self);
-	if (retval != BRASERO_BURN_OK) {
-		/* there are some tracks left ! */
-		retval = BRASERO_BURN_ERR;
-		error = g_error_new (BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("there are some tracks left"));
-	}
-
-	if (track) {
-		BRASERO_BURN_LOG ("Adding track (type = %i) %s",
-				  brasero_track_get_type (track, NULL),
-				  priv->added_track? "already some tracks":"");
-
-		if (!priv->added_track) {
-			/* push the current tracks to add the new track */
-			priv->added_track = 1;
-			brasero_burn_session_push_tracks (priv->session);
-		}
-
-		brasero_burn_session_add_track (priv->session, track);
-	}
-
 	klass->finished (self,
-			 retval,
+			 BRASERO_BURN_OK,
 			 error);
+
+	if (priv->tracks) {
+		brasero_burn_session_push_tracks (priv->session);
+		priv->tracks = g_slist_reverse (priv->tracks);
+		for (iter = priv->tracks; iter; iter = iter->next) {
+			BraseroTrack *track;
+
+			track = iter->data;
+			brasero_burn_session_add_track (priv->session, track);
+		}
+	
+		g_slist_free (priv->tracks);
+		priv->tracks = NULL;
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -365,9 +371,6 @@ brasero_task_ctx_error (BraseroTaskCtx *self,
 	klass = BRASERO_TASK_CTX_GET_CLASS (self);
 	if (!klass->finished)
 		return BRASERO_BURN_NOT_SUPPORTED;
-
-	if (priv->added_track)
-		brasero_burn_session_pop_tracks (priv->session);
 
 	klass->finished (self,
 			 retval,
@@ -807,13 +810,20 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 			       gdouble *progress)
 {
 	BraseroTaskCtxPrivate *priv;
+	gdouble track_num = 0;
+	gdouble track_nb = 0;
 	gint64 total = -1;
+	GSList *tracks;
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
+	tracks = brasero_burn_session_get_tracks (priv->session);
+	track_num = g_slist_length (tracks);
+	track_nb = g_slist_index (tracks, priv->current_track);	
+
 	if (priv->progress >= 0.0) {
 		if (progress)
-			*progress = priv->progress;
+			*progress = (gdouble) (track_nb + priv->progress) / track_num;
 
 		return BRASERO_BURN_OK;
 	}
@@ -825,8 +835,7 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 	if (!progress)
 		return BRASERO_BURN_OK;
 
-	*progress = (gdouble) priv->written /
-		    (gdouble) total;
+	*progress = (gdouble) (((gdouble) priv->written / (gdouble) total) + track_nb) / track_num;
 
 	return BRASERO_BURN_OK;
 }
@@ -908,6 +917,12 @@ brasero_task_ctx_finalize (GObject *object)
 	if (priv->current_track) {
 		brasero_track_unref (priv->current_track);
 		priv->current_track = NULL;
+	}
+
+	if (priv->tracks) {
+		g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
+		g_slist_free (priv->tracks);
+		priv->tracks = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

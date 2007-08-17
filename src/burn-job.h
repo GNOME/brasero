@@ -179,6 +179,7 @@ brasero_job_get_audio_output (BraseroJob *job,
  
 BraseroBurnResult
 brasero_job_get_tmp_file (BraseroJob *job,
+			  const gchar *suffix,
 			  gchar **output,
 			  GError **error);
 
@@ -192,8 +193,14 @@ brasero_job_get_tmp_dir (BraseroJob *job,
  */
 
 BraseroBurnResult
-brasero_job_finished (BraseroJob *job,
-		      BraseroTrack *track);
+brasero_job_add_track (BraseroJob *job,
+		       BraseroTrack *track);
+
+BraseroBurnResult
+brasero_job_finished_track (BraseroJob *job);
+
+BraseroBurnResult
+brasero_job_finished_session (BraseroJob *job);
 
 BraseroBurnResult
 brasero_job_error (BraseroJob *job,

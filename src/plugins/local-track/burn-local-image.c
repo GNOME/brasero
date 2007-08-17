@@ -176,6 +176,7 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 
 	/* generate a unique name for dest */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
+					   NULL,
 					   &priv->checksum_dest,
 					   NULL);
 	if (result != BRASERO_BURN_OK)
@@ -306,7 +307,8 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 		BRASERO_JOB_NOT_SUPPORTED (self);
 	}
 
-	brasero_job_finished (BRASERO_JOB (self), track);
+	brasero_job_add_track (BRASERO_JOB (self), track);
+	brasero_job_finished_track (BRASERO_JOB (self));
 	return BRASERO_BURN_OK;
 }
 
@@ -516,6 +518,7 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 
 	/* generate a unique name */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
+					   NULL,
 					   &localuri,
 					   error);
 	if (result != BRASERO_BURN_OK)
@@ -526,7 +529,7 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 
 		tmp = localuri;
 		localuri = g_strconcat ("file://", tmp, NULL);
-		g_free (localuri);
+		g_free (tmp);
 	}
 
 	/* we don't want to replace it if it has already been downloaded */

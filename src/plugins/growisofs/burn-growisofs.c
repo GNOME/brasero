@@ -74,7 +74,7 @@ brasero_growisofs_read_stdout (BraseroProcess *process, const gchar *line)
 			/* we nullified 65536 that's enough. A signal SIGTERM
 			 * will be sent in process.c. That's not the best way
 			 * to do it but it works. */
-			brasero_job_finished (BRASERO_JOB (process), NULL);
+			brasero_job_finished_session (BRASERO_JOB (process));
 			return BRASERO_BURN_OK;
 		}
 
@@ -121,7 +121,7 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 		&&  fraction >= 0.01) {
 			/* we nullified 1% (more than 65536) that's enough. A 
 			 * signal SIGTERM will be sent. */
-			brasero_job_finished (BRASERO_JOB (process), NULL);
+			brasero_job_finished_session (BRASERO_JOB (process));
 			return BRASERO_BURN_OK;
 		}
 
@@ -148,7 +148,7 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 
 			/* we better tell growisofs to stop here as it returns 
 			 * a value of 1 when mkisofs is run with --print-size */
-			brasero_job_finished (BRASERO_JOB (process), NULL);
+			brasero_job_finished_session (BRASERO_JOB (process));
 		}
 	}
 	else if (strstr (line, "flushing cache") != NULL) {
@@ -252,12 +252,14 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	g_ptr_array_add (argv, g_strdup ("-D"));	// This is dangerous the manual says but apparently it works well
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (growisofs),
+					   NULL,
 					   &grafts_path,
 					   error);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (growisofs),
+					   NULL,
 					   &excluded_path,
 					   error);
 	if (result != BRASERO_BURN_OK) {
@@ -605,6 +607,7 @@ brasero_growisofs_class_init (BraseroGrowisofsClass *klass)
 	process_class->stdout_func = brasero_growisofs_read_stdout;
 	process_class->stderr_func = brasero_growisofs_read_stderr;
 	process_class->set_argv = brasero_growisofs_set_argv;
+	process_class->post = brasero_job_finished_session;
 }
 
 static void

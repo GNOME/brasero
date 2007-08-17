@@ -62,11 +62,10 @@ struct BraseroMetadataPrivate {
 	GMainLoop *loop;
 	GError *error;
 	guint watch;
-	guint stop_id;
 
-	gint fast:1;
-	gint started:1;
-	gint complete_at_playing:1;
+	guint fast:1;
+	guint started:1;
+	guint moved_forward:1;
 };
 
 typedef enum {
@@ -210,11 +209,6 @@ brasero_metadata_stop_pipeline (BraseroMetadata *meta)
 {
 	GstStateChangeReturn change;
 
-	if (meta->priv->stop_id) {
-		g_source_remove (meta->priv->stop_id);
-		meta->priv->stop_id = 0;
-	}
-
 	if (meta->priv->watch) {
 		g_source_remove (meta->priv->watch);
 		meta->priv->watch = 0;
@@ -339,7 +333,7 @@ brasero_metadata_create_pipeline (BraseroMetadata *metadata)
 	if (metadata->priv->decode == NULL) {
 		metadata->priv->error = g_error_new (BRASERO_ERROR,
 						     BRASERO_ERROR_GENERAL,
-						     "Can't create decode");
+						     "decode can't be created");
 		return FALSE;
 	}
 	g_signal_connect (G_OBJECT (metadata->priv->decode), "new-decoded-pad",
@@ -347,8 +341,7 @@ brasero_metadata_create_pipeline (BraseroMetadata *metadata)
 			  metadata);
 
 	gst_bin_add (GST_BIN (metadata->priv->pipeline), metadata->priv->decode);
-
-	gst_element_link_many (metadata->priv->source, metadata->priv->decode, NULL);
+	gst_element_link (metadata->priv->source, metadata->priv->decode);
 
 	metadata->priv->sink = gst_element_factory_make ("fakesink", NULL);
 	if (metadata->priv->sink == NULL) {
@@ -403,91 +396,98 @@ end:
 }
 
 static gboolean
-brasero_metadata_completed (BraseroMetadata *meta, gboolean eos)
+brasero_metadata_get_mime_type (BraseroMetadata *meta)
 {
-	GstFormat format = GST_FORMAT_TIME;
 	GstElement *typefind;
 	GstCaps *caps = NULL;
-	GstQuery *query;
-	gint64 duration;
+	GstElement *decode;
+	const gchar *mime;
+
+	if (meta->type) {
+		g_free (meta->type);
+		meta->type = NULL;
+	}
 
 	/* find the type of the file */
-	typefind = gst_bin_get_by_name (GST_BIN (meta->priv->decode), "typefind");
-	if (typefind == NULL) {
-		meta->priv->error = g_error_new (BRASERO_ERROR,
-						 BRASERO_ERROR_GENERAL,
-						 "can't get typefind");
-		goto signal;
-	}
+	decode = gst_bin_get_by_name (GST_BIN (meta->priv->pipeline),
+				      "decode");
+	typefind = gst_bin_get_by_name (GST_BIN (meta->priv->decode),
+					"typefind");
 
 	g_object_get (typefind, "caps", &caps, NULL);
 	if (!caps) {
-		meta->priv->error = g_error_new (BRASERO_ERROR,
-						 BRASERO_ERROR_GENERAL,
-						_("unknown type of file"));
 		gst_object_unref (typefind);
-		goto signal;
+		return FALSE;
 	}
 
-	if (caps && gst_caps_get_size (caps) > 0) {
-		if (meta->type)
-			g_free (meta->type);
-
-		meta->type = g_strdup (gst_structure_get_name (gst_caps_get_structure (caps, 0)));
+	if (gst_caps_get_size (caps) <= 0) {
 		gst_object_unref (typefind);
-
-		if (meta->type && !strcmp (meta->type, "application/x-id3")) {
-			/* if slow was chosen we return and read the mp3 till 
-			 * the end in case it's VBR. In the latter case the 
-			 * following only gives an approximation. */
-			g_free (meta->type);
-			meta->type = g_strdup ("audio/mpeg");
-		}
-
-		if (!eos
-		&&  !meta->priv->fast
-		&&  !strcmp (meta->type, "audio/mpeg")) {
-			/* we try to go forward. This allows us to avoid reading
-			 * the whole file till the end. The byte format is 
-			 * really important here as time format needs calculation
-			 * and is dead slow. The number of bytes is important to
-			 * reach the end. */
-			if (!gst_element_seek (meta->priv->pipeline,
-					       1.0,
-					       GST_FORMAT_BYTES,
-					       GST_SEEK_FLAG_FLUSH,
-					       GST_SEEK_TYPE_SET,
-					       52428800,
-					       GST_FORMAT_UNDEFINED,
-					       GST_CLOCK_TIME_NONE))
-				g_warning ("Forward move was impossible.\n");
-			return FALSE;
-		}
+		return FALSE;
 	}
+
+	mime = gst_structure_get_name (gst_caps_get_structure (caps, 0));
+	gst_object_unref (typefind);
+
+	if (!strcmp (mime, "application/x-id3"))
+		meta->type = g_strdup ("audio/mpeg");
 	else
-		gst_object_unref (typefind);
+		meta->type = g_strdup (mime);
 
-	query = gst_query_new_duration (format);
-	if (!gst_element_query (GST_ELEMENT (meta->priv->pipeline), query)) {
-		if (meta->priv->error == NULL) {
+	return TRUE;
+}
+
+static gboolean
+brasero_metadata_is_mp3 (BraseroMetadata *meta)
+{
+	if (!meta->type
+	&&  !brasero_metadata_get_mime_type (meta))
+		return FALSE;
+
+	if (!strcmp (meta->type, "audio/mpeg"))
+		return TRUE;
+
+	return FALSE;
+}
+
+static gboolean
+brasero_metadata_completed (BraseroMetadata *meta)
+{
+	GstFormat format = GST_FORMAT_TIME;
+	gint64 duration = -1;
+
+	/* find the type of the file */
+	brasero_metadata_get_mime_type (meta);
+
+	/* get the size */
+	if (!meta->priv->fast && brasero_metadata_is_mp3 (meta)) {
+		GstElement *convert;
+
+		convert = gst_bin_get_by_name (GST_BIN (meta->priv->pipeline), "decodebin");
+		gst_element_query_position (GST_ELEMENT (meta->priv->sink),
+					    &format,
+					    &duration);
+	}
+
+	if (duration == -1)
+		gst_element_query_duration (GST_ELEMENT (meta->priv->pipeline),
+					    &format,
+					    &duration);
+
+	if (duration == -1) {
+		if (!meta->priv->error) {
 			meta->priv->error = g_error_new (BRASERO_ERROR,
 							 BRASERO_ERROR_GENERAL,
 							 _("this format is not supported by gstreamer"));
 		}
 
-		gst_query_unref (query);
 		goto signal;
 	}
-	gst_query_parse_duration (query, NULL, &duration);
 
-	/* we use this value only if there is not a tag for duration or if this 
-	 * value = +/- 3% of the tag value */
-	if (!meta->len
-	||  (duration <= meta->len * 103 / 100 && duration >= meta->len * 97 / 100))
-		meta->len = duration;
+	BRASERO_BURN_LOG ("Found duration %lli", duration);
 
-	gst_query_unref (query);
+	meta->len = duration;
 
+	/* check if that's a seekable one */
 	brasero_metadata_is_seekable (meta);
 
 signal:
@@ -550,54 +550,6 @@ foreach_tag (const GstTagList *list,
 	else if (!strcmp (tag, GST_TAG_MUSICBRAINZ_TRACKID)) {
 		gst_tag_list_get_string (list, tag, &(meta->musicbrainz_id));
 	}
-	else if (!strcmp (tag, GST_TAG_DURATION)) {
-		gst_tag_list_get_uint64 (list, tag, &(meta->len));
-	}
-}
-
-static gboolean
-brasero_metadata_pipeline_timeout_cb (BraseroMetadata *meta)
-{
-	GstBus *bus;
-
-	meta->priv->stop_id = 0;
-	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
-			       GST_STATE_PAUSED);
-
-	/* read all messages from the queue (might be tags) */
-	bus = gst_pipeline_get_bus (GST_PIPELINE (meta->priv->pipeline));
-	while (gst_bus_have_pending (bus)) {
-		GstMessage *msg;
-		GstTagList *tags = NULL;
-
-		msg = gst_bus_pop (bus);
-		if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_TAG) {
-			gst_message_parse_tag (msg, &tags);
-			gst_tag_list_foreach (tags, (GstTagForeachFunc) foreach_tag, meta);
-			gst_tag_list_free (tags);
-		}
-		gst_message_unref (msg);
-	}
-	gst_object_unref (bus);
-
-	if (!brasero_metadata_completed (meta, FALSE)) {
-		meta->priv->complete_at_playing = 1;
-		gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
-				       GST_STATE_PLAYING);
-	}
-
-	return FALSE;
-}
-
-static void
-brasero_metadata_pipeline_timeout (BraseroMetadata *meta)
-{
-	if (meta->priv->stop_id)
-		return;
-
-	meta->priv->stop_id = g_timeout_add (1000,
-					     (GSourceFunc) brasero_metadata_pipeline_timeout_cb,
-					     meta);
 }
 
 static gboolean
@@ -613,18 +565,16 @@ brasero_metadata_bus_messages (GstBus *bus,
 
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_ERROR:
-		/* when stopping the pipeline we are only interested in TAGS */
 		gst_message_parse_error (msg, &error, &debug_string);
 		BRASERO_BURN_LOG (debug_string);
 		g_free (debug_string);
 
 		meta->priv->error = error;
-		brasero_metadata_completed (meta, TRUE);
+		brasero_metadata_completed (meta);
 		return FALSE;
 
 	case GST_MESSAGE_EOS:
-		/* when stopping the pipeline we are only interested in TAGS */
-		brasero_metadata_completed (meta, TRUE);
+		brasero_metadata_completed (meta);
 		return FALSE;
 
 	case GST_MESSAGE_TAG:
@@ -643,14 +593,29 @@ brasero_metadata_bus_messages (GstBus *bus,
 		if (result != GST_STATE_CHANGE_SUCCESS)
 			break;
 
-		if (newstate == GST_STATE_PAUSED
-		&& !meta->priv->complete_at_playing)
-			brasero_metadata_pipeline_timeout (meta);
+		if (brasero_metadata_is_mp3 (meta)) {
+			if (meta->priv->fast
+			&& !meta->priv->moved_forward) {
+				/* we try to go forward. This allows us to avoid reading
+				 * the whole file till the end. The byte format is 
+				 * really important here as time format needs calculation
+				 * and is dead slow. The number of bytes is important to
+				 * reach the end. */
+				gst_element_seek (meta->priv->pipeline,
+						  1.0,
+						  GST_FORMAT_BYTES,
+						  GST_SEEK_FLAG_FLUSH,
+						  GST_SEEK_TYPE_SET,
+						  52428800,
+						  GST_FORMAT_UNDEFINED,
+						  GST_CLOCK_TIME_NONE);
+				meta->priv->moved_forward = 1;
+			}
 
-		if (newstate == GST_STATE_PLAYING
-		&& !meta->priv->complete_at_playing)
-			brasero_metadata_pipeline_timeout (meta);
+			break;
+		}
 
+		brasero_metadata_completed (meta);
 		break;
 
 	default:

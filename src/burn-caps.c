@@ -776,6 +776,22 @@ brasero_caps_link_get_data_flags (BraseroCapsLink *link,
 	}
 }
 
+static gboolean
+brasero_caps_link_active (BraseroCapsLink *link)
+{
+	GSList *iter;
+
+	for (iter = link->plugins; iter; iter = iter->next) {
+		BraseroPlugin *plugin;
+
+		plugin = iter->data;
+		if (brasero_plugin_get_active (plugin))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 static BraseroBurnResult
 brasero_burn_caps_link_check_data_flags (BraseroBurnSession *session,
 					 BraseroMedia media,
@@ -859,6 +875,10 @@ brasero_caps_try_links (BraseroBurnSession *session,
 		link = iter->data;
 
 		if (!link->caps)
+			continue;
+
+		/* check that the link has some active plugin */
+		if (!brasero_caps_link_active (link))
 			continue;
 
 		/* since this link contains recorders, check that at least one
@@ -1415,6 +1435,10 @@ brasero_caps_get_flags (BraseroBurnSession *session,
 		link = iter->data;
 
 		if (!link->caps)
+			continue;
+
+		/* check that the link has some active plugin */
+		if (!brasero_caps_link_active (link))
 			continue;
 
 		if (caps->type.type == BRASERO_TRACK_TYPE_DISC) {

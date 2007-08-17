@@ -296,6 +296,12 @@ brasero_task_finished (BraseroTaskCtx *ctx,
 	self = BRASERO_TASK (ctx);
 	priv = BRASERO_TASK_PRIVATE (self);
 
+	/* see if we have really started a loop */
+	/* FIXME: shouldn't it be an error if it is called while the loop is 
+	 * not running ? */
+	if (!brasero_task_is_running (self))
+		return;
+		
 	if (retval == BRASERO_BURN_RETRY) {
 		BraseroTaskItem *item;
 		GError *error_item = NULL;
@@ -317,7 +323,7 @@ brasero_task_finished (BraseroTaskCtx *ctx,
 }
 
 static BraseroBurnResult
-brasero_task_run_real (BraseroTask *self,
+brasero_task_run_loop (BraseroTask *self,
 		       GError **error)
 {
 	BraseroTaskPrivate *priv;
@@ -360,33 +366,14 @@ brasero_task_run_real (BraseroTask *self,
 }
 
 static BraseroBurnResult
-brasero_task_start (BraseroTask *self,
-		    gboolean fake,
-		    GError **error)
+brasero_task_run_items (BraseroTask *self,
+			GError **error)
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroTaskItem *item, *first, *last;
 	BraseroTaskPrivate *priv;
 
 	priv = BRASERO_TASK_PRIVATE (self);
-
-	BRASERO_BURN_LOG ("Starting %s task (%i)",
-			  fake ? "fake":"normal",
-			  brasero_task_ctx_get_action (BRASERO_TASK_CTX (self)));
-
-	/* check the task is not running */
-	if (brasero_task_is_running (self)) {
-		BRASERO_BURN_LOG ("task is already running");
-		return BRASERO_BURN_RUNNING;
-	}
-
-	if (!priv->leader) {
-		BRASERO_BURN_LOG ("no jobs");
-		return BRASERO_BURN_RUNNING;
-	}
-
-	brasero_task_ctx_set_fake (BRASERO_TASK_CTX (self), fake);
-	brasero_task_ctx_reset (BRASERO_TASK_CTX (self));
 
 	/* first init all jobs starting from the master down to the slave */
 	last = NULL;
@@ -414,6 +401,9 @@ brasero_task_start (BraseroTask *self,
 		first = item;
 	}	
 
+	if (!first)
+		return BRASERO_BURN_NOT_RUNNING;
+
 	/* now start from the slave up to the master */
 	for (item = first; item && item != last; item = brasero_task_item_next (item)) {
 		result = brasero_task_start_item (self, item, error);
@@ -426,13 +416,52 @@ brasero_task_start (BraseroTask *self,
 			goto error;
 	}
 
-	if (first)
-		result = brasero_task_run_real (self, error);
-
-	return result;
+	return brasero_task_run_loop (self, error);
 
 error:
 	brasero_task_send_stop_signal (self, result, NULL);
+	return result;
+}
+
+static BraseroBurnResult
+brasero_task_start (BraseroTask *self,
+		    gboolean fake,
+		    GError **error)
+{
+	BraseroBurnResult result = BRASERO_BURN_OK;
+	BraseroTaskPrivate *priv;
+
+	priv = BRASERO_TASK_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Starting %s task (%i)",
+			  fake ? "fake":"normal",
+			  brasero_task_ctx_get_action (BRASERO_TASK_CTX (self)));
+
+	/* check the task is not running */
+	if (brasero_task_is_running (self)) {
+		BRASERO_BURN_LOG ("task is already running");
+		return BRASERO_BURN_RUNNING;
+	}
+
+	if (!priv->leader) {
+		BRASERO_BURN_LOG ("no jobs");
+		return BRASERO_BURN_RUNNING;
+	}
+
+	brasero_task_ctx_set_fake (BRASERO_TASK_CTX (self), fake);
+	brasero_task_ctx_reset (BRASERO_TASK_CTX (self));
+
+	result = brasero_task_run_items (self, error);
+	while (result == BRASERO_BURN_NOT_RUNNING) {
+		/* All jobs have decided to skip therefore see if there is
+		 * another track and if there is start again */
+		result = brasero_task_ctx_next_track (BRASERO_TASK_CTX (self));
+		if (result != BRASERO_BURN_RETRY)
+			return result;
+
+		result = brasero_task_run_items (self, error);
+	}
+
 	return result;
 }
 

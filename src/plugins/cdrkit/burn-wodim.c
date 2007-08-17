@@ -51,9 +51,9 @@
 #include "burn-plugin.h"
 #include "burn-wodim.h"
 
-BRASERO_PLUGIN_BOILERPLATE (BraseroWoodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
+BRASERO_PLUGIN_BOILERPLATE (BraseroWodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
 
-struct _BraseroWoodimPrivate {
+struct _BraseroWodimPrivate {
 	gint64 current_track_end_pos;
 	gint64 current_track_written;
 
@@ -62,10 +62,12 @@ struct _BraseroWoodimPrivate {
 
 	gint minbuf;
 
+	GSList *infs;
+
 	guint immediate:1;
 };
-typedef struct _BraseroWoodimPrivate BraseroWoodimPrivate;
-#define BRASERO_WODIM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_WODIM, BraseroWoodimPrivate))
+typedef struct _BraseroWodimPrivate BraseroWodimPrivate;
+#define BRASERO_WODIM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_WODIM, BraseroWodimPrivate))
 
 static GObjectClass *parent_class = NULL;
 
@@ -75,8 +77,8 @@ static GObjectClass *parent_class = NULL;
 static BraseroBurnResult
 brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 {
-	BraseroWoodim *wodim = BRASERO_WODIM (process);
-	BraseroWoodimPrivate *priv;
+	BraseroWodim *wodim = BRASERO_WODIM (process);
+	BraseroWodimPrivate *priv;
 	BraseroBurnFlag flags;
 
 	priv = BRASERO_WODIM_PRIVATE (wodim);
@@ -97,7 +99,7 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Input buffer error, aborting") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_NONE,
+						BRASERO_BURN_ERROR_GENERAL,
 						_("input buffer error")));
 	}
 	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
@@ -200,13 +202,13 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 }
 
 static void
-brasero_wodim_compute (BraseroWoodim *wodim,
+brasero_wodim_compute (BraseroWodim *wodim,
 			gint mb_written,
 			gint mb_total,
 			gint track_num)
 {
 	gboolean track_num_changed = FALSE;
-	BraseroWoodimPrivate *priv;
+	BraseroWodimPrivate *priv;
 	gchar *action_string;
 	gint64 this_remain;
 	gint64 bytes;
@@ -241,8 +243,8 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 {
 	guint track;
 	guint speed_1, speed_2;
-	BraseroWoodim *wodim;
-	BraseroWoodimPrivate *priv;
+	BraseroWodim *wodim;
+	BraseroWodimPrivate *priv;
 	int mb_written = 0, mb_total = 0, fifo = 0, buf = 0;
 
 	wodim = BRASERO_WODIM (process);
@@ -318,7 +320,7 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 		 * asks the media to be reloaded. So we simply ignore this message
 		 * and returns that everything went well. Which is indeed the case */
 		if (action == BRASERO_BURN_ACTION_FIXATING) {
-			brasero_job_finished (BRASERO_JOB (process), NULL);
+			brasero_job_finished_session (BRASERO_JOB (process));
 			return BRASERO_BURN_OK;
 		}
 
@@ -352,14 +354,15 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 }
 
 static gboolean
-brasero_wodim_write_inf (BraseroWoodim *wodim,
-			  GPtrArray *argv,
-			  BraseroTrack *track,
-			  const gchar *tmpdir,
-			  const gchar *album,
-			  gint index,
-			  gint start,
-			  GError **error)
+brasero_wodim_write_inf (BraseroWodim *wodim,
+			 GPtrArray *argv,
+			 BraseroTrack *track,
+			 const gchar *tmpdir,
+			 const gchar *album,
+			 gint index,
+			 gint start,
+			 gboolean last_track,
+			 GError **error)
 {
 	gint fd;
 	gint size;
@@ -370,32 +373,42 @@ brasero_wodim_write_inf (BraseroWoodim *wodim,
 	gint64 sectors;
 	gchar buffer [128];
 	BraseroSongInfo *info;
-	BraseroWoodimPrivate *priv;
+	BraseroWodimPrivate *priv;
 
 	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	/* NOTE: about the .inf files: they should have the exact same path
 	 * but the ending suffix file is replaced by inf:
 	 * example : /path/to/file.mp3 => /path/to/file.inf */
-	path = brasero_track_get_audio_source (track, TRUE);
-	if (path) {
+	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) != BRASERO_BURN_OK) {
 		gchar *dot, *separator;
+
+		path = brasero_track_get_audio_source (track, FALSE);
 
 		dot = strrchr (path, '.');
 		separator = strrchr (path, G_DIR_SEPARATOR);
 
 		if (dot && dot > separator)
-			path = g_strdup_printf ("%.*s.inf",
-						dot - path,
-						path);
+			path = g_strdup_printf ("%.*s.inf", dot - path, path);
 		else
-			path = g_strdup_printf ("%s.inf",
-						path);
+			path = g_strdup_printf ("%s.inf", path);
+
+		/* since this file was not returned by brasero_job_get_tmp_file
+		 * it won't be erased when session is unrefed so we have to do 
+		 * it ourselves */
+		priv->infs = g_slist_prepend (priv->infs, g_strdup (path));
 	}
-	else
-		path = g_strdup_printf ("%s/Track%02i.inf",
-					tmpdir,
-					index);
+	else {
+		BraseroBurnResult result;
+
+		/* in this case don't care about the name since stdin is used */
+		result = brasero_job_get_tmp_file (BRASERO_JOB (wodim),
+						   ".inf",
+						   &path,
+						   error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
 
 	fd = open (path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd < 0)
@@ -487,8 +500,11 @@ brasero_wodim_write_inf (BraseroWoodim *wodim,
 	if (b_written != size)
 		goto error;
 
+	length = 0;
 	brasero_track_get_audio_length (track, &length);
 	sectors = BRASERO_DURATION_TO_SECTORS (length);
+
+	BRASERO_JOB_LOG (wodim, "Got track length %lli %lli", length, sectors);
 	string = g_strdup_printf ("Tracklength=\t%"G_GINT64_FORMAT", 0\n", sectors);
 	size = strlen (string);
 	b_written = write (fd, string, size);
@@ -496,7 +512,7 @@ brasero_wodim_write_inf (BraseroWoodim *wodim,
 	if (b_written != size)
 		goto error;
 
-	strcpy (buffer, "Pre-emphasis=\tyes\n");
+	strcpy (buffer, "Pre-emphasis=\tno\n");
 	size = strlen (buffer);
 	b_written = write (fd, buffer, size);
 	if (b_written != size)
@@ -526,14 +542,25 @@ brasero_wodim_write_inf (BraseroWoodim *wodim,
 	if (b_written != size)
 		goto error;
 
-	string = g_strdup_printf ("Index0=\t\t%"G_GINT64_FORMAT"\n", sectors);
+	if (!last_track) {
+		/* K3b does this (possibly to remove silence) */
+		string = g_strdup_printf ("Index0=\t\t%"G_GINT64_FORMAT"\n",
+					  sectors - 150);
+	}
+	else
+		string = g_strdup_printf ("Index0=\t\t-1\n");
+
 	size = strlen (string);
 	b_written = write (fd, string, size);
 	if (b_written != size)
 		goto error;
 
 	close (fd);
-	g_ptr_array_add (argv, path);
+
+	if (argv)
+		g_ptr_array_add (argv, path);
+	else
+		g_free (path);
 
 	return BRASERO_BURN_OK;
 
@@ -552,11 +579,11 @@ error:
 }
 
 static BraseroBurnResult
-brasero_wodim_write_infs (BraseroWoodim *wodim,
+brasero_wodim_write_infs (BraseroWodim *wodim,
 			   GPtrArray *argv,
 			   GError **error)
 {
-	BraseroWoodimPrivate *priv;
+	BraseroWodimPrivate *priv;
 	BraseroBurnResult result;
 	gchar *tmpdir = NULL;
 	GSList *tracks;
@@ -566,18 +593,10 @@ brasero_wodim_write_infs (BraseroWoodim *wodim,
 	gint start;
 
 	priv = BRASERO_WODIM_PRIVATE (wodim);
-	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL)) {
-		/* if burning on the fly we need a tmp directory for the infs */
-		result = brasero_job_get_tmp_dir (BRASERO_JOB (wodim),
-						  &tmpdir,
-						  error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
 
 	brasero_job_get_audio_title (BRASERO_JOB (wodim), &album);
 	brasero_job_get_tracks (BRASERO_JOB (wodim), &tracks);
-	index = 0;
+	index = 1;
 	start = 0;
 
 	for (iter = tracks; iter; iter = iter->next) {
@@ -586,37 +605,40 @@ brasero_wodim_write_infs (BraseroWoodim *wodim,
 
 		track = iter->data;
 		result = brasero_wodim_write_inf (wodim,
-						   argv,
-						   track,
-						   tmpdir,
-						   album,
-						   BRASERO_DURATION_TO_SECTORS (start),
-						   index,
-						   error);
+						  argv,
+						  track,
+						  tmpdir,
+						  album,
+						  index,
+						  start,
+						  (iter->next == NULL),
+						  error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 
 		index ++;
 		length = 0;
+
 		brasero_track_get_audio_length (track, &length);
-		start += length;
+		length += brasero_track_get_audio_gap (track);
+
+		start += BRASERO_DURATION_TO_SECTORS (length);
 	}
 
-	g_slist_free (tracks);
 	g_free (tmpdir);
 
 	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_wodim_set_argv_record (BraseroWoodim *wodim,
+brasero_wodim_set_argv_record (BraseroWodim *wodim,
 				GPtrArray *argv, 
 				GError **error)
 {
 	guint speed;
 	BraseroBurnFlag flags;
 	BraseroTrackType type;
-	BraseroWoodimPrivate *priv;
+	BraseroWodimPrivate *priv;
 
 	priv = BRASERO_WODIM_PRIVATE (wodim);
 
@@ -698,6 +720,9 @@ brasero_wodim_set_argv_record (BraseroWoodim *wodim,
 			if (flags & BRASERO_BURN_FLAG_DAO)
 				g_ptr_array_add (argv, g_strdup ("-dao"));
 
+			/* NOTE: when we don't want wodim to use stdin then we
+			 * give the audio file on the command line. Otherwise we
+			 * use the .inf */
 			g_ptr_array_add (argv, g_strdup ("-swab"));
 			g_ptr_array_add (argv, g_strdup ("-audio"));
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
@@ -714,8 +739,11 @@ brasero_wodim_set_argv_record (BraseroWoodim *wodim,
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		BraseroBurnResult result;
+		GSList *tracks;
 
-		/* CD-text cannot be written in tao mode (which is the default) */
+		/* CD-text cannot be written in tao mode (which is the default)
+		 * NOTE: when we don't want wodim to use stdin then we give the
+		 * audio file on the command line. Otherwise we use the .inf */
 		if (flags & BRASERO_BURN_FLAG_DAO)
 			g_ptr_array_add (argv, g_strdup ("-dao"));
 
@@ -728,10 +756,21 @@ brasero_wodim_set_argv_record (BraseroWoodim *wodim,
 		g_ptr_array_add (argv, g_strdup ("-text"));
 
 		result = brasero_wodim_write_infs (wodim,
-						   argv,
+						   NULL,
 						   error);
 		if (result != BRASERO_BURN_OK)
 			return result;
+
+		tracks = NULL;
+		brasero_job_get_tracks (BRASERO_JOB (wodim), &tracks);
+		for (; tracks; tracks = tracks->next) {
+			BraseroTrack *track;
+			gchar *path;
+
+			track = tracks->data;
+			path = brasero_track_get_audio_source (track, FALSE);
+			g_ptr_array_add (argv, path);
+		}
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroTrack *track = NULL;
@@ -816,7 +855,7 @@ brasero_wodim_set_argv_record (BraseroWoodim *wodim,
 }
 
 static BraseroBurnResult
-brasero_wodim_set_argv_blank (BraseroWoodim *wodim, GPtrArray *argv)
+brasero_wodim_set_argv_blank (BraseroWodim *wodim, GPtrArray *argv)
 {
 	gchar *blank_str;
 	BraseroBurnFlag flags;
@@ -838,10 +877,10 @@ brasero_wodim_set_argv (BraseroProcess *process,
 			 GPtrArray *argv,
 			 GError **error)
 {
-	BraseroWoodimPrivate *priv;
+	BraseroWodimPrivate *priv;
 	BraseroBurnResult result;
 	BraseroJobAction action;
-	BraseroWoodim *wodim;
+	BraseroWodim *wodim;
 	BraseroBurnFlag flags;
 	gchar *dev_str;
 	gchar *device;
@@ -881,7 +920,6 @@ brasero_wodim_set_argv (BraseroProcess *process,
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
-	/* This is to support cdrkit. We give it the priority. */
 	g_ptr_array_add (argv, g_strdup ("wodim"));
 	g_ptr_array_add (argv, g_strdup ("-v"));
 
@@ -907,13 +945,34 @@ brasero_wodim_set_argv (BraseroProcess *process,
 	return result;	
 }
 
+static BraseroBurnResult
+brasero_wodim_post (BraseroJob *job)
+{
+	BraseroWodimPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_WODIM_PRIVATE (job);
+	for (iter = priv->infs; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		g_remove (path);
+		g_free (path);
+	}
+
+	g_slist_free (priv->infs);
+	priv->infs = NULL;
+
+	return brasero_job_finished_session (job);
+}
+
 static void
-brasero_wodim_class_init (BraseroWoodimClass *klass)
+brasero_wodim_class_init (BraseroWodimClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof (BraseroWoodimPrivate));
+	g_type_class_add_private (klass, sizeof (BraseroWodimPrivate));
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_wodim_finalize;
@@ -921,13 +980,14 @@ brasero_wodim_class_init (BraseroWoodimClass *klass)
 	process_class->stderr_func = brasero_wodim_stderr_read;
 	process_class->stdout_func = brasero_wodim_stdout_read;
 	process_class->set_argv = brasero_wodim_set_argv;
+	process_class->post = brasero_wodim_post;
 }
 
 static void
-brasero_wodim_init (BraseroWoodim *obj)
+brasero_wodim_init (BraseroWodim *obj)
 {
 	GConfClient *client;
-	BraseroWoodimPrivate *priv;
+	BraseroWodimPrivate *priv;
 
 	/* load our "configuration" */
 	priv = BRASERO_WODIM_PRIVATE (obj);
@@ -948,6 +1008,22 @@ brasero_wodim_init (BraseroWoodim *obj)
 static void
 brasero_wodim_finalize (GObject *object)
 {
+	BraseroWodimPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_WODIM_PRIVATE (object);
+
+	for (iter = priv->infs; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		g_remove (path);
+		g_free (path);
+	}
+
+	g_slist_free (priv->infs);
+	priv->infs = NULL;
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -979,6 +1055,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	}
 	g_free (prog_name);
 
+	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "wodim",
 			       _("use wodim to burn CDs"),

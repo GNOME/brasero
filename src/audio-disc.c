@@ -288,7 +288,7 @@ enum {
 	SIZE_COL,
 	ARTIST_COL,
 	URI_COL,
-	SECTORS_COL,
+	LENGTH_COL,
 	COMPOSER_COL,
 	ISRC_COL,
 	BACKGROUND_COL,
@@ -348,7 +348,6 @@ enum {
 };
 
 /* 1 sec = 75 sectors, len is in nanosecond */
-#define BRASERO_TIME_TO_SECTORS(len)		(gint64) (len * 75 / GST_SECOND)
 #define BRASERO_SECTORS_TO_TIME(sectors)	(gint64) (sectors * GST_SECOND / 75)
 #define COL_KEY "column_key"
 
@@ -910,7 +909,7 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 {
 	GtkTreeIter gap_iter;
 	GtkTreeModel *model;
-	gint64 sectors;
+	gint64 length;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	if (gap) {
@@ -918,10 +917,10 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 
 		if (brasero_audio_disc_has_gap (disc, iter, &gap_iter)) {
 			gtk_tree_model_get (model, &gap_iter,
-					    SECTORS_COL, &sectors,
+					    LENGTH_COL, &length,
 					    -1);
 
-			disc->priv->sectors -= sectors;
+			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 		}
 		else {
 			GdkPixbuf *pixbuf;
@@ -947,19 +946,19 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 		size = brasero_utils_get_time_string (gap, TRUE, FALSE);
 		gtk_list_store_set (GTK_LIST_STORE (model), &gap_iter,
 				    SIZE_COL, size,
-				    SECTORS_COL, BRASERO_TIME_TO_SECTORS (gap),
+				    LENGTH_COL, gap,
 				    -1);
 		g_free (size);
 
-		disc->priv->sectors += BRASERO_TIME_TO_SECTORS (gap);
+		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (gap);
 		brasero_audio_disc_size_changed (disc);
 	}
 	else if (brasero_audio_disc_has_gap (disc, iter, &gap_iter)) {
 		gtk_tree_model_get (model, &gap_iter,
-				    SECTORS_COL, &sectors,
+				    LENGTH_COL, &length,
 				    -1);
 
-		disc->priv->sectors -= sectors;
+		disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 		brasero_audio_disc_size_changed (disc);
 		gtk_list_store_remove (GTK_LIST_STORE (model), &gap_iter);
 	}
@@ -1084,7 +1083,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 			    ICON_COL, icon_string,
 			    ARTIST_COL, metadata->artist,
 			    SIZE_COL, size,
-			    SECTORS_COL, BRASERO_TIME_TO_SECTORS (metadata->len),
+			    LENGTH_COL, metadata->len,
 			    COMPOSER_COL, metadata->composer,
 			    ISRC_COL, metadata->isrc,
 			    SONG_COL, TRUE,
@@ -1146,7 +1145,7 @@ brasero_audio_disc_add_file (BraseroAudioDisc *disc,
 	brasero_audio_disc_start_monitoring (disc, uri);
 #endif
 
-	disc->priv->sectors += BRASERO_TIME_TO_SECTORS (duration);
+	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (duration);
 	brasero_audio_disc_size_changed (disc);
 }
 
@@ -1561,23 +1560,25 @@ brasero_audio_disc_remove (BraseroAudioDisc *disc,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gint64 sectors;
+	gint64 length;
 	gchar *uri;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	gtk_tree_model_get_iter (model, &iter, treepath);
 	gtk_tree_model_get (model, &iter,
 			    URI_COL, &uri,
-			    SECTORS_COL, &sectors,
+			    LENGTH_COL, &length,
 			    -1);
 
+	sectors = BRASERO_DURATION_TO_SECTORS (length);
 	if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter)) {
-		gint64 gap_sectors = 0;
+		gint64 gap_length = 0;
 
 		gtk_tree_model_get (model, &gap_iter,
-				    SECTORS_COL, &gap_sectors,
+				    LENGTH_COL, &gap_length,
 				    -1);
 
-		sectors += gap_sectors;
+		sectors += BRASERO_DURATION_TO_SECTORS (gap_length);
 		gtk_list_store_remove (GTK_LIST_STORE (model), &gap_iter);
 	}
 
@@ -1666,13 +1667,13 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 				    -1);
 
 		if (!uri) {
-			gint64 sectors;
+			gint64 length;
 
 			gtk_tree_model_get (model, &iter,
-					    SECTORS_COL, &sectors,
+					    LENGTH_COL, &length,
 					    -1);
-			if (sectors && song)
-				song->gap += sectors;
+			if (length && song)
+				song->gap += BRASERO_DURATION_TO_SECTORS (length);
 		}
 		else {
 			song = g_new0 (BraseroDiscSong, 1);
@@ -1716,19 +1717,22 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		gchar *uri;
 		gchar *title;
 		gchar *artist;
-		gint64 sectors;
+		gint64 length;
 		BraseroSongInfo *info;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
 				    NAME_COL, &title,
 				    ARTIST_COL, &artist,
-				    SECTORS_COL, &sectors,
+				    LENGTH_COL, &length,
 				    -1);
 
 		if (!uri) {
 			/* This is a gap so sectors refers to its size */
-			brasero_track_set_audio_boundaries (track, -1, -1, sectors);
+			brasero_track_set_audio_boundaries (track,
+							    -1,
+							    -1,
+							    length);
 			continue;
 		}
 
@@ -1738,7 +1742,7 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
 		brasero_track_set_audio_source (track, uri, BRASERO_AUDIO_FORMAT_UNDEFINED);
-		brasero_track_set_audio_boundaries (track, 0, sectors, -1);
+		brasero_track_set_audio_boundaries (track, 0, length, -1);
 		brasero_track_set_audio_info (track, info);
 		brasero_burn_session_add_track (session, track);
 
@@ -1766,7 +1770,7 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 		brasero_audio_disc_add_uri_real (BRASERO_AUDIO_DISC (disc),
 						 song->uri,
 						 -1,
-						 song->gap,
+						 BRASERO_SECTORS_TO_TIME (song->gap),
 						 NULL);
 	}
 
@@ -1847,7 +1851,7 @@ brasero_audio_disc_merge_gaps (BraseroAudioDisc *disc,
 			       GtkTreeIter *pos)
 {
 	GtkTreePath *iter_path, *pos_path;
-	gint64 sectors_iter, sectors_pos;
+	gint64 length_iter, length_pos;
 	gchar *size;
 	gint equal;
 
@@ -1861,17 +1865,17 @@ brasero_audio_disc_merge_gaps (BraseroAudioDisc *disc,
 		return;
 
 	gtk_tree_model_get (model, pos,
-			    SECTORS_COL, &sectors_pos,
+			    LENGTH_COL, &length_pos,
 			    -1);
 	gtk_tree_model_get (model, iter,
-			    SECTORS_COL, &sectors_iter,
+			    LENGTH_COL, &length_iter,
 			    -1);
 
-	sectors_pos += sectors_iter;
-	size = brasero_utils_get_time_string (BRASERO_SECTORS_TO_TIME (sectors_pos), TRUE, FALSE);
+	length_pos += length_iter;
+	size = brasero_utils_get_time_string (length_pos, TRUE, FALSE);
 	gtk_list_store_set (GTK_LIST_STORE (model), pos,
 			    SIZE_COL, size,
-			    SECTORS_COL, sectors_pos,
+			    LENGTH_COL, length_pos,
 			    -1);
 	g_free (size);
 
@@ -2449,12 +2453,10 @@ brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 				    ISRC_COL, &isrc,
 				    -1);
 
-		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter)) {
+		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
 			gtk_tree_model_get (model, &gap_iter,
-					    SECTORS_COL, &gap,
+					    LENGTH_COL, &gap,
 					    -1);
-			gap = BRASERO_SECTORS_TO_TIME (gap);
-		}
 		else
 			gap = 0;
 
@@ -2916,17 +2918,17 @@ brasero_audio_disc_inotify_remove_all (BraseroAudioDisc *disc,
 
 	len = strlen (dir->uri);
 	do {
-		gint64 sectors;
+		gint64 length;
 		gchar *row_uri;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &row_uri,
-				    SECTORS_COL, &sectors,
+				    LENGTH_COL, &length,
 				    -1);
 
 		if (row_uri && !strncmp (row_uri, dir->uri, len)) {
-			if (sectors > 0)
-				disc->priv->sectors -= sectors;
+			if (length > 0)
+				disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 
 			if (!gtk_list_store_remove (GTK_LIST_STORE (model), &iter)) {
 				g_free (row_uri);
@@ -2998,17 +3000,17 @@ brasero_audio_disc_inotify_remove (BraseroAudioDisc *disc,
 	for (iter_list = list; iter_list; iter_list = iter_list->next) {
 		GtkTreePath *treepath;
 		GtkTreeIter iter;
-		gint64 sectors;
+		gint64 length;
 
 		treepath = iter_list->data;
 
 		gtk_tree_model_get_iter (model, &iter, treepath);
 		gtk_tree_model_get (model, &iter,
-				    SECTORS_COL, &sectors,
+				    LENGTH_COL, &length,
 				    -1);
 
-		if (sectors > 0)
-			disc->priv->sectors -= sectors;
+		if (length > 0)
+			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 	}
@@ -3022,12 +3024,12 @@ brasero_audio_disc_inotify_remove (BraseroAudioDisc *disc,
 
 static void
 brasero_audio_disc_inotify_modify (BraseroAudioDisc *disc,
-				   const char *uri,
+				   const gchar *uri,
 				   BraseroMetadata *metadata)
 {
 	GSList *list, *list_iter;
 	GtkTreeModel *model;
-	gint64 sectors;
+	gint64 length;
 
 	list = brasero_audio_disc_inotify_find_rows (disc, uri);
 	if (!list)
@@ -3042,13 +3044,13 @@ brasero_audio_disc_inotify_modify (BraseroAudioDisc *disc,
 
 		gtk_tree_model_get_iter (model, &iter, treepath);
 		gtk_tree_model_get (model, &iter,
-				    SECTORS_COL, &sectors,
+				    LENGTH_COL, &length,
 				    -1);
 
-		if (sectors > 0)
-			disc->priv->sectors -= sectors;
+		if (length > 0)
+			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 
-		disc->priv->sectors += BRASERO_TIME_TO_SECTORS (metadata->len);
+		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (metadata->len);
 		brasero_audio_disc_set_row_from_metadata (disc,
 							  model,
 							  &iter,

@@ -82,10 +82,10 @@ typedef enum {
 
 #define BRASERO_DURATION_TO_BYTES(duration)			\
 	((gint64) (duration) * 75 * 2352 / 1000000000 +		\
-	((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0)
+	(((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0))
 #define BRASERO_DURATION_TO_SECTORS(duration)			\
 	((gint64) (duration) * 75 / 1000000000 +		\
-	((gint64) ((duration) * 75) % 1000000000) ? 1:0)
+	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
 /**
  *
  */

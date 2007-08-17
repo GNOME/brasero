@@ -169,7 +169,9 @@ brasero_dvdcss_thread_finished (gpointer data)
 					image,
 					NULL,
 					BRASERO_IMAGE_FORMAT_BIN);
-	brasero_job_finished (BRASERO_JOB (self), track);
+
+	brasero_job_add_track (BRASERO_JOB (self), track);
+	brasero_job_finished_track (BRASERO_JOB (self));
 
 	return FALSE;
 }
