@@ -15,7 +15,6 @@ INCLUDES = \
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
-	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_CFLAGS)
 
 CLEANFILES = $(RECMARSHALFILES)
@@ -227,15 +226,6 @@ brasero_SOURCES = \
 	burn-debug.h 
 
 brasero_LDADD = $(BRASERO_LIBS)
-
-
-
-
-
-
-
-
-
 
 
 
