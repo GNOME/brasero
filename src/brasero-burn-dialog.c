@@ -48,7 +48,7 @@
 #include <nautilus-burn-drive-monitor.h>
 #include <nautilus-burn-drive.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-disc.h"
 #include "brasero-tray.h"
 #include "brasero-burn-dialog.h"

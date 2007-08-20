@@ -43,7 +43,6 @@
 #include "burn-basics.h"
 #include "burn-track.h"
 #include "burn-mkisofs-base.h"
-#include "utils.h"
 
 struct _BraseroMkisofsBase {
 	const gchar *emptydir;

@@ -54,7 +54,7 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkdialog.h>
 
-#include "search-entry.h"
+#include "brasero-search-entry.h"
 
 static void brasero_search_entry_class_init (BraseroSearchEntryClass *klass);
 static void brasero_search_entry_init (BraseroSearchEntry *sp);

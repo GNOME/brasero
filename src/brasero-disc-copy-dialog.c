@@ -42,9 +42,9 @@
 #include <gtk/gtkwindow.h>
 
 #include "burn-basics.h"
-#include "utils.h"
-#include "disc-copy-dialog.h"
 #include "burn-session.h"
+#include "brasero-utils.h"
+#include "brasero-disc-copy-dialog.h"
 #include "brasero-dest-selection.h"
 #include "brasero-src-selection.h"
 

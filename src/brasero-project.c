@@ -60,7 +60,7 @@
 #include "brasero-audio-disc.h"
 #include "brasero-disc-option-dialog.h"
 #include "brasero-burn-dialog.h"
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
 #include "burn-session.h"

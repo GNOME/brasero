@@ -46,7 +46,7 @@
 #include "burn-basics.h"
 #include "burn-medium.h"
 #include "brasero-ncb.h"
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-drive-properties.h"
 
 typedef struct _BraseroDrivePropertiesPrivate BraseroDrivePropertiesPrivate;

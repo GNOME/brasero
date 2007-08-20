@@ -35,7 +35,7 @@
 
 #include "brasero-xfer.h"
 #include "burn-basics.h"
-#include "utils.h"
+#include "brasero-utils.h"
 
 struct _BraseroXferCtx {
 	gint64 current_copy_size;

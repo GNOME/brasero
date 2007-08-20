@@ -45,7 +45,8 @@
 
 #include <gst/gst.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
+
 #define BRASERO_ERROR brasero_error_quark()
 
 static gid_t *groups = NULL;

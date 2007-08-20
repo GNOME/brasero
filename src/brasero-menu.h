@@ -40,7 +40,7 @@ extern "C" {
 #include <gtk/gtkaction.h>
 #include <gtk/gtktoggleaction.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-app.h"
 
 void on_erase_cb (GtkAction *action, BraseroApp *app);

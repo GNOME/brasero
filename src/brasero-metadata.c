@@ -36,8 +36,8 @@
 #include <gst/base/gstbasesink.h>
 #include <gst/tag/tag.h>
 
-#include "metadata.h"
-#include "utils.h"
+#include "brasero-metadata.h"
+#include "brasero-utils.h"
 #include "burn-debug.h"
 
 static void brasero_metadata_class_init (BraseroMetadataClass *klass);

@@ -59,7 +59,7 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn.h"
-#include "utils.h"
+#include "brasero-utils.h"
 
 G_DEFINE_TYPE (BraseroSumDialog, brasero_sum_dialog, BRASERO_TYPE_TOOL_DIALOG);
 

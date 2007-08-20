@@ -42,7 +42,7 @@
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtkimage.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-progress.h"
 #include "burn-basics.h"
 #include "burn-medium.h"

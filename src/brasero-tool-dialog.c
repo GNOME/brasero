@@ -42,7 +42,7 @@
 
 #include <nautilus-burn-drive.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-progress.h"
 #include "brasero-drive-selection.h"
 #include "brasero-tool-dialog.h"

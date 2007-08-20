@@ -39,7 +39,7 @@
 
 #include <gconf/gconf-client.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "burn-basics.h"
 #include "burn-medium.h"
 #include "burn-session.h"

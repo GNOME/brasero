@@ -50,9 +50,9 @@
 #endif
 
 #include "brasero-app.h"
-#include "menu.h"
+#include "brasero-menu.h"
 #include "brasero-multi-dnd.h"
-#include "blank-dialog.h"
+#include "brasero-blank-dialog.h"
 #include "brasero-sum-dialog.h"
 #include "brasero-session.h"
 #include "brasero-project-manager.h"

@@ -37,7 +37,7 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkbutton.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "burn-basics.h"
 #include "brasero-image-option-dialog.h"
 #include "brasero-image-type-chooser.h"

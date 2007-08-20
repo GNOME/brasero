@@ -47,9 +47,9 @@
 #include "burn-basics.h"
 #include "burn-session.h"
 #include "burn.h"
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-tool-dialog.h"
-#include "blank-dialog.h"
+#include "brasero-blank-dialog.h"
 
 G_DEFINE_TYPE (BraseroBlankDialog, brasero_blank_dialog, BRASERO_TYPE_TOOL_DIALOG);
 

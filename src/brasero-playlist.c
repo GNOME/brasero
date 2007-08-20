@@ -60,9 +60,9 @@
 
 #include <totem-pl-parser.h>
 
-#include "play-list.h"
-#include "utils.h"
-#include "metadata.h"
+#include "brasero-playlist.h"
+#include "brasero-utils.h"
+#include "brasero-metadata.h"
 #include "brasero-vfs.h"
 #include "eggtreemultidnd.h"
 

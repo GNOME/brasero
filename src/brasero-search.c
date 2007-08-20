@@ -63,10 +63,10 @@
 
 #include <beagle/beagle.h>
 
-#include "utils.h"
-#include "search-entry.h"
-#include "mime-filter.h"
-#include "search.h"
+#include "brasero-utils.h"
+#include "brasero-search-entry.h"
+#include "brasero-mime-filter.h"
+#include "brasero-search.h"
 #include "eggtreemultidnd.h"
 
 #include "brasero-uri-container.h"

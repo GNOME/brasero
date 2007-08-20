@@ -43,8 +43,8 @@
 
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
-#include "mime-filter.h"
-#include "utils.h"
+#include "brasero-mime-filter.h"
+#include "brasero-utils.h"
 
 static void brasero_mime_filter_class_init (BraseroMimeFilterClass *
 					    klass);

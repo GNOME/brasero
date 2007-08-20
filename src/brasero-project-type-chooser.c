@@ -38,7 +38,7 @@
 #include <gtk/gtkmisc.h>
 
 #include "brasero-project-type-chooser.h"
-#include "utils.h"
+#include "brasero-utils.h"
 
 static void brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass);
 static void brasero_project_type_chooser_init (BraseroProjectTypeChooser *sp);
@@ -207,7 +207,7 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 
 	if (description->tooltip) {
 		gtk_widget_set_tooltip_text (event,
-				      _(description->tooltip));
+					     _(description->tooltip));
 	}
 
 	eventbox = gtk_event_box_new ();

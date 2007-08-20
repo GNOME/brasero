@@ -39,7 +39,7 @@
 
 #include "brasero-vfs.h"
 #include "brasero-async-task-manager.h"
-#include "metadata.h"
+#include "brasero-metadata.h"
 
 static void brasero_vfs_class_init (BraseroVFSClass *klass);
 static void brasero_vfs_init (BraseroVFS *sp);

@@ -37,36 +37,36 @@ bin_PROGRAMS = brasero
 brasero_SOURCES = \
 	$(RECMARSHALFILES)			\
 	main.c		\
-	utils.h		\
-	utils.c         \
-	search-entry.c         \
-	search-entry.h         \
-	search.c         \
-	search.h         \
-	mime-filter.c         \
-	mime-filter.h         \
-	play-list.c         \
-	play-list.h         \
+	brasero-utils.h		\
+	brasero-utils.c         \
+	brasero-search-entry.c         \
+	brasero-search-entry.h         \
+	brasero-search.c         \
+	brasero-search.h         \
+	brasero-mime-filter.c         \
+	brasero-mime-filter.h         \
+	brasero-playlist.c         \
+	brasero-playlist.h         \
 	brasero-player.c         \
 	brasero-player.h         \
-	menu.h         \
+	brasero-menu.h         \
 	brasero-burn-dialog.c         \
 	brasero-burn-dialog.h         \
-	disc-copy-dialog.c         \
-	disc-copy-dialog.h         \
-	blank-dialog.c         \
-	blank-dialog.h         \
+	brasero-disc-copy-dialog.c         \
+	brasero-disc-copy-dialog.h         \
+	brasero-blank-dialog.c         \
+	brasero-blank-dialog.h         \
 	inotify.h         \
-	metadata.c         \
-	metadata.h         \
+	brasero-metadata.c         \
+	brasero-metadata.h         \
 	inotify-syscalls.h         \
-	filtered-window.c         \
-	filtered-window.h         \
+	brasero-filtered-window.c         \
+	brasero-filtered-window.h         \
 	brasero-disc.c         \
 	brasero-disc.h         \
 	brasero-data-disc.c         \
 	brasero-data-disc.h         \
-	audio-disc.c         \
+	brasero-audio-disc.c         \
 	brasero-audio-disc.h         \
 	brasero-project.c         \
 	brasero-project.h         \
@@ -74,11 +74,11 @@ brasero_SOURCES = \
 	brasero-project-type-chooser.h         \
 	brasero-player-bacon.c         \
 	brasero-player-bacon.h         \
-	progress.c         \
+	brasero-progress.c         \
 	brasero-progress.h         \
-	song-properties.c         \
-	song-properties.h         \
-	tray.c         \
+	brasero-song-properties.c         \
+	brasero-song-properties.h         \
+	brasero-tray.c         \
 	brasero-tray.h         \
 	burn.c         \
 	burn.h         \

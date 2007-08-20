@@ -47,7 +47,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-#include "utils.h"
+#include "brasero-utils.h"
 #include "brasero-project.h"
 #include "brasero-layout.h"
 #include "brasero-project-manager.h"
@@ -56,16 +56,16 @@
 #include "brasero-image-option-dialog.h"
 #include "brasero-burn-dialog.h"
 #include "brasero-project-type-chooser.h"
-#include "disc-copy-dialog.h"
+#include "brasero-disc-copy-dialog.h"
 #include "brasero-vfs.h"
 #include "burn-caps.h"
 
 #ifdef BUILD_SEARCH
-#include "search.h"
+#include "brasero-search.h"
 #endif
 
 #ifdef BUILD_PLAYLIST
-#include "play-list.h"
+#include "brasero-playlist.h"
 #endif
 
 #ifdef BUILD_PREVIEW

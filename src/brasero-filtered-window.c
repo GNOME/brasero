@@ -52,8 +52,8 @@
 
 #include <gconf/gconf-client.h>
 
-#include "filtered-window.h"
-#include "utils.h"
+#include "brasero-filtered-window.h"
+#include "brasero-utils.h"
 
 static void brasero_filtered_dialog_class_init (BraseroFilteredDialogClass *klass);
 static void brasero_filtered_dialog_init (BraseroFilteredDialog *sp);

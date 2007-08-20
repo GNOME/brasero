@@ -31,7 +31,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 
 #include "brasero-async-task-manager.h"
-#include "metadata.h"
+#include "brasero-metadata.h"
 
 G_BEGIN_DECLS
 

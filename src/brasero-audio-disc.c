@@ -66,9 +66,9 @@
 #include "burn-basics.h"
 #include "brasero-disc.h"
 #include "brasero-audio-disc.h"
-#include "metadata.h"
-#include "utils.h"
-#include "song-properties.h"
+#include "brasero-metadata.h"
+#include "brasero-utils.h"
+#include "brasero-song-properties.h"
 #include "brasero-vfs.h"
 #include "eggtreemultidnd.h"
 

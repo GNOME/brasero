@@ -41,8 +41,8 @@
 
 #include <gst/gst.h>
 
-#include "song-properties.h"
-#include "utils.h"
+#include "brasero-song-properties.h"
+#include "brasero-utils.h"
 
 static void brasero_song_props_class_init (BraseroSongPropsClass *klass);
 static void brasero_song_props_init (BraseroSongProps *sp);

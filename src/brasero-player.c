@@ -49,8 +49,8 @@
 
 #include "brasero-player.h"
 #include "brasero-player-bacon.h"
-#include "utils.h"
-#include "metadata.h"
+#include "brasero-utils.h"
+#include "brasero-metadata.h"
 #include "brasero-vfs.h"
 #include "brasero-uri-container.h"
 
