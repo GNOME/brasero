@@ -250,10 +250,8 @@ brasero_burn_progress_changed (BraseroTaskCtx *task,
 		overall_progress = (task_progress + (gdouble) priv->tasks_done) /
 				   (gdouble) priv->task_nb;
 	}
-	else if (action != BRASERO_BURN_ACTION_BLANKING)
-		overall_progress = (gdouble) priv->tasks_done / (gdouble) priv->task_nb;
 	else
-		overall_progress = 0.0;
+		overall_progress =  (gdouble) priv->tasks_done / (gdouble) priv->task_nb;
 
 	g_signal_emit (burn,
 		       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],

@@ -553,28 +553,7 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 
 		/* only do it if that's DATA as input */
 		brasero_job_get_input_type (BRASERO_JOB (process), &input);
-		if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
-			BraseroTrack *track = NULL;
-			gint64 sectors = 0;
-			gint64 size = 0;
-
-			/* there is just one case where we can set the output size which
-			 * is when the input is IMAGE type */
-			brasero_job_get_current_track (BRASERO_JOB (process), &track);
-			result = brasero_track_get_image_size (track,
-							       NULL,
-							       &sectors,
-							       &size,
-							       error);
-			if (result != BRASERO_BURN_OK)
-				return result;
-
-			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
-								       sectors,
-								       size);
-			return BRASERO_BURN_NOT_RUNNING;
-		}
-		else if (input.type != BRASERO_TRACK_TYPE_DATA)
+		if (input.type != BRASERO_TRACK_TYPE_DATA)
 			return BRASERO_BURN_NOT_RUNNING;
 
 		result = brasero_growisofs_set_argv_record (BRASERO_GROWISOFS (process),

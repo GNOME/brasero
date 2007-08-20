@@ -96,6 +96,7 @@ brasero_toc2cue_set_argv (BraseroProcess *process,
 			  GPtrArray *argv,
 			  GError **error)
 {
+	BraseroJobAction action;
 	BraseroToc2Cue *self;
 	BraseroTrack *track;
 	gchar *tocpath;
@@ -103,11 +104,15 @@ brasero_toc2cue_set_argv (BraseroProcess *process,
 
 	self = BRASERO_TOC2CUE (process);
 
-	brasero_job_get_image_output (BRASERO_JOB (process),
+	brasero_job_get_action (BRASERO_JOB (self), &action);
+	if (action == BRASERO_JOB_ACTION_SIZE)
+		return BRASERO_BURN_NOT_RUNNING;
+
+	brasero_job_get_image_output (BRASERO_JOB (self),
 				      NULL,
 				      &output);
 
-	brasero_job_get_current_track (BRASERO_JOB (process), &track);
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	tocpath = brasero_track_get_toc_source (track, TRUE);
 
 	g_ptr_array_add (argv, g_strdup ("toc2cue"));

@@ -317,9 +317,9 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 {
 	gchar *text;
 
-	if (!self->priv->pulse_id && overall_progress >= 0.0)
+	if (!self->priv->pulse_id && action_progress >= 0.0)
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->priv->progress), 
-					       overall_progress);
+					       action_progress);
 
 	if (action_progress < 0.0) {
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), " ");
@@ -332,7 +332,7 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		brasero_burn_progress_stop_blinking (self);
 	}
 
-	text = g_strdup_printf ("%i%%", (gint) (overall_progress * 100));
+	text = g_strdup_printf ("%i%%", (gint) (action_progress * 100));
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), text);
 	g_free (text);
  

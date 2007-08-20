@@ -357,12 +357,56 @@ brasero_task_run_loop (BraseroTask *self,
 	if (priv->retval == BRASERO_BURN_OK
 	&&  brasero_task_ctx_get_progress (BRASERO_TASK_CTX (self), NULL) == BRASERO_BURN_OK) {
 		brasero_task_ctx_set_progress (BRASERO_TASK_CTX (self), 1.0);
-		brasero_task_ctx_set_written (BRASERO_TASK_CTX (self), -1.0);
 		brasero_task_ctx_report_progress (BRASERO_TASK_CTX (self));
 	}
 
 	brasero_task_ctx_stop_progress (BRASERO_TASK_CTX (self));
 	return priv->retval;	
+}
+
+static BraseroBurnResult
+brasero_task_set_track_output_size_default (BraseroTask *self,
+					    GError **error)
+{
+	BraseroTrackType input = { 0 };
+	BraseroTrack *track = NULL;
+
+	brasero_task_ctx_get_current_track (BRASERO_TASK_CTX (self), &track);
+	brasero_track_get_type (track, &input);
+	if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
+		BraseroBurnResult result;
+		gint64 sectors = 0;
+		gint64 size = 0;
+
+		result = brasero_track_get_image_size (track,
+						       NULL,
+						       &sectors,
+						       &size,
+						       error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		BRASERO_BURN_LOG ("Got a default image track length %lli", sectors);
+
+		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
+								    sectors,
+								    size);
+	}
+	else if (input.type == BRASERO_TRACK_TYPE_AUDIO) {
+		gint64 length;
+
+		length = 0;
+		brasero_track_get_audio_length (track, &length);
+		length += brasero_track_get_audio_gap (track);
+
+		BRASERO_BURN_LOG ("Got a default audio track length %lli", length);
+
+		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
+								    BRASERO_DURATION_TO_SECTORS (length),
+								    BRASERO_DURATION_TO_BYTES (length));
+	}
+
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
@@ -372,6 +416,7 @@ brasero_task_run_items (BraseroTask *self,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroTaskItem *item, *first, *last;
 	BraseroTaskPrivate *priv;
+	gint64 size_before;
 
 	priv = BRASERO_TASK_PRIVATE (self);
 
@@ -380,6 +425,11 @@ brasero_task_run_items (BraseroTask *self,
 	first = NULL;
 	item = priv->leader;
 	for (; item; item = brasero_task_item_previous (item)) {
+		size_before = 0;
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (self),
+							  NULL,
+							  &size_before);
+
 		result = brasero_task_init_item (self, item, error);
 		if (result == BRASERO_BURN_NOT_RUNNING) {
 			/* Some jobs don't need to/can't run in fake mode or 
@@ -401,8 +451,21 @@ brasero_task_run_items (BraseroTask *self,
 		first = item;
 	}	
 
-	if (!first)
+	if (!first) {
+		gint64 size_after = 0;
+
+		/* see if the output size changed */
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (self),
+							  NULL,
+							  &size_after);
+		if (size_after == size_before) {
+			result = brasero_task_set_track_output_size_default (self, error);
+			if (result != BRASERO_BURN_OK)
+				return result;
+		}
+
 		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	/* now start from the slave up to the master */
 	for (item = first; item && item != last; item = brasero_task_item_next (item)) {

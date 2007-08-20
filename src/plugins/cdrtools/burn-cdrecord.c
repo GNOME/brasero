@@ -889,36 +889,8 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
 
 	brasero_job_get_action (BRASERO_JOB (cdrecord), &action);
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		BraseroTrackType input = { 0 };
-		BraseroTrack *track = NULL;
-
-		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
-			return BRASERO_BURN_NOT_RUNNING;
-
-		/* there is just one case where we can set the output size which
-		 * is when the input is IMAGE type */
-		brasero_job_get_current_track (BRASERO_JOB (process), &track);
-		brasero_track_get_type (track, &input);
-		if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
-			gint64 sectors = 0;
-			gint64 size = 0;
-
-			result = brasero_track_get_image_size (track,
-							       NULL,
-							       &sectors,
-							       &size,
-							       error);
-			if (result != BRASERO_BURN_OK)
-				return result;
-
-			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
-								       sectors,
-								       size);
-		}
-
+	if (action == BRASERO_JOB_ACTION_SIZE)
 		return BRASERO_BURN_NOT_RUNNING;
-	}
 
 	g_ptr_array_add (argv, g_strdup ("cdrecord"));
 	g_ptr_array_add (argv, g_strdup ("-v"));

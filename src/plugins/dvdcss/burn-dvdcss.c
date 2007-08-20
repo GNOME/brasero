@@ -520,10 +520,9 @@ brasero_dvdcss_init_real (BraseroJob *job,
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
-		gint64 blocks;
+		gint64 blocks = 0;
 		BraseroTrack *track;
 
-		/* FIXME: still need something to tell no need to go further */
 		brasero_job_get_current_track (job, &track);
 		brasero_track_get_disc_data_size (track, &blocks, NULL);
 		brasero_job_set_output_size_for_current_track (job,

@@ -1332,6 +1332,9 @@ brasero_job_set_progress (BraseroJob *self,
 	if (priv->next)
 		return BRASERO_BURN_NOT_RUNNING;
 
+	if (progress < 0.0)
+		progress = 0.0;
+
 	return brasero_task_ctx_set_progress (priv->ctx, progress);
 }
 
@@ -1588,6 +1591,4 @@ brasero_job_class_init (BraseroJobClass *klass)
 
 static void
 brasero_job_init (BraseroJob *obj)
-{
-	
-}
+{ }

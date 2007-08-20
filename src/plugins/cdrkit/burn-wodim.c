@@ -203,9 +203,9 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 
 static void
 brasero_wodim_compute (BraseroWodim *wodim,
-			gint mb_written,
-			gint mb_total,
-			gint track_num)
+		       gint mb_written,
+		       gint mb_total,
+		       gint track_num)
 {
 	gboolean track_num_changed = FALSE;
 	BraseroWodimPrivate *priv;
@@ -287,9 +287,9 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 							     &bytes);
 			mb_total = bytes / 1048576;
 			brasero_wodim_compute (wodim,
-						mb_written,
-						mb_total,
-						track);
+					       mb_written,
+					       mb_total,
+					       track);
 		}
 
 		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
@@ -889,36 +889,8 @@ brasero_wodim_set_argv (BraseroProcess *process,
 	priv = BRASERO_WODIM_PRIVATE (wodim);
 
 	brasero_job_get_action (BRASERO_JOB (wodim), &action);
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		BraseroTrackType input = { 0 };
-		BraseroTrack *track = NULL;
-
-		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
-			return BRASERO_BURN_NOT_RUNNING;
-
-		/* there is just one case where we can set the output size which
-		 * is when the input is IMAGE type */
-		brasero_job_get_current_track (BRASERO_JOB (process), &track);
-		brasero_track_get_type (track, &input);
-		if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
-			gint64 sectors = 0;
-			gint64 size = 0;
-
-			result = brasero_track_get_image_size (track,
-							       NULL,
-							       &sectors,
-							       &size,
-							       error);
-			if (result != BRASERO_BURN_OK)
-				return result;
-
-			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
-								       sectors,
-								       size);
-		}
-
+	if (action == BRASERO_JOB_ACTION_SIZE)
 		return BRASERO_BURN_NOT_RUNNING;
-	}
 
 	g_ptr_array_add (argv, g_strdup ("wodim"));
 	g_ptr_array_add (argv, g_strdup ("-v"));

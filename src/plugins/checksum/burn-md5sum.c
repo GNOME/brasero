@@ -432,7 +432,7 @@ brasero_md5sum_grafts (BraseroMd5sum *self, GError **error)
 	if (brasero_job_get_current_track (BRASERO_JOB (self), &track) != BRASERO_BURN_OK) 
 		BRASERO_JOB_NOT_SUPPORTED (self);
 
-	file_nb = 0;
+	file_nb = -1;
 	priv->file_num = 0;
 	brasero_track_get_data_file_num (track, &file_nb);
 

@@ -172,9 +172,6 @@ BraseroBurnResult
 brasero_task_ctx_get_rate (BraseroTaskCtx *ctx,
 			   gint64 *rate);
 BraseroBurnResult
-brasero_task_ctx_get_average_rate (BraseroTaskCtx *ctx,
-				   gint64 *rate);
-BraseroBurnResult
 brasero_task_ctx_get_remaining_time (BraseroTaskCtx *ctx,
 				     long *remaining);
 BraseroBurnResult
@@ -188,9 +185,6 @@ BraseroBurnResult
 brasero_task_ctx_get_current_action_string (BraseroTaskCtx *ctx,
 					    BraseroBurnAction action,
 					    gchar **string);
-BraseroBurnResult
-brasero_task_ctx_get_elapsed (BraseroTaskCtx *ctx,
-			      gdouble *elapsed);
 BraseroBurnResult
 brasero_task_ctx_get_progress (BraseroTaskCtx *ctx, 
 			       gdouble *progress);

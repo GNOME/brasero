@@ -450,14 +450,20 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 	else if (action == BRASERO_JOB_ACTION_IMAGE)
 		return brasero_cdrdao_set_argv_image (cdrdao, argv, error);
 	else if (action == BRASERO_JOB_ACTION_SIZE) {
+		BraseroTrackDataType input;
 		BraseroTrack *track;
-		gint64 sectors = 0;
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
-		brasero_track_get_disc_data_size (track, &sectors, NULL);
-		brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao),
-							       sectors,
-							       sectors * 2352);
+		input = brasero_track_get_type (track, NULL);
+		if (input == BRASERO_TRACK_TYPE_DISC) {
+			gint64 sectors = 0;
+
+			brasero_track_get_disc_data_size (track, &sectors, NULL);
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao),
+								       sectors,
+								       sectors * 2352);
+		}
+
 		return BRASERO_BURN_OK;
 	}
 

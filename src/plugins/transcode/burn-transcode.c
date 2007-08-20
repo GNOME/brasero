@@ -301,6 +301,8 @@ brasero_transcode_start (BraseroJob *job,
 	transcode = BRASERO_TRANSCODE (job);
 
 	brasero_job_get_action (job, &action);
+	brasero_job_set_use_average_rate (job, TRUE);
+
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		if (!brasero_transcode_create_pipeline (transcode, error))
 			return BRASERO_BURN_ERR;
@@ -549,18 +551,8 @@ brasero_transcode_init_real (BraseroJob *job,
 
 		length = 0;
 		brasero_track_get_audio_length (track, &length);
-		if (length > 0) {
-			gint64 gap;
-
-			BRASERO_JOB_LOG (job, "Got a track length %lli", length);
-			gap = brasero_track_get_audio_gap (track);
-			length += gap;
-
-			brasero_job_set_output_size_for_current_track (job,
-								       BRASERO_DURATION_TO_SECTORS (length),
-								       BRASERO_DURATION_TO_BYTES (length));
+		if (length > 0)
 			return BRASERO_BURN_NOT_RUNNING;
-		}
 	}
 	else if (action == BRASERO_JOB_ACTION_IMAGE) {
 		/* Look for a sibling to avoid transcoding twice. In this case
