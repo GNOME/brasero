@@ -13,7 +13,7 @@ New release of stable
 - new translations
 - Complete support for cdrkit.
 
-Changes since 0.6.1:
+Changes since 0.6.0:
 
 - Fixed the filter crasher UI.
 - Fix scsi library bug with memset with swapped arguments bug #466290.
@@ -22,5 +22,6 @@ Changes since 0.6.1:
 - Don't run update-desktop-database if we're installing in a not full system.
 - Added complete support for cdrkit bug #456860.
 - Removed DISABLE_DEPRECATED from the Makefile to avoid problems with Gtk+ API.
+- Fix 2 sec between tracks on audiocd bug #459023.
 
 Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
