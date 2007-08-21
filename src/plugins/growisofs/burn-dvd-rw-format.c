@@ -158,6 +158,12 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	gchar *prog_name;
 	GSList *output;
 
+	brasero_plugin_define (plugin,
+			       "dvd+rw-format",
+			       _("dvd+rw-format erases and formats DVD+/-RW"),
+			       "Philippe Rouquier",
+			       0);
+
 	/* First see if this plugin can be used, i.e. if growisofs is in
 	 * the path */
 	prog_name = g_find_program_in_path ("dvd+rw-format");
@@ -165,14 +171,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		*error = g_strdup (_("dvd+rw-format could not be found in the path"));
 		return G_TYPE_NONE;
 	}
-
 	g_free (prog_name);
-
-	brasero_plugin_define (plugin,
-			       "dvd+rw-format",
-			       _("dvd+rw-format erases and formats DVD+/-RW"),
-			       "Philippe Rouquier",
-			       0);
 
 	output = brasero_caps_disc_new (media|
 					BRASERO_MEDIUM_PLUS|

@@ -46,7 +46,8 @@ struct _BraseroPluginClass {
 	GTypeModuleClass parent_class;
 
 	/* Signals */
-	void	(* loaded) (BraseroPlugin *plugin);
+	void	(* loaded)	(BraseroPlugin *plugin);
+	void	(* activated)	(BraseroPlugin *plugin);
 };
 
 struct _BraseroPlugin {
@@ -65,8 +66,8 @@ void	brasero_plugin_cleanup		(BraseroPlugin *plugin);
 void
 brasero_plugin_define (BraseroPlugin *plugin,
 		       const gchar *name,
-		       const gchar *author,
 		       const gchar *description,
+		       const gchar *author,
 		       guint priority);
 
 typedef enum {

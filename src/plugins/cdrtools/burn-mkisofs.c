@@ -453,6 +453,12 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	GSList *output;
 	GSList *input;
 
+	brasero_plugin_define (plugin,
+			       "mkisofs",
+			       _("use genisoimage/mkisofs to create images from files"),
+			       "Philippe Rouquier",
+			       0);
+
 	/* First see if this plugin can be used, i.e. if mkisofs is in
 	 * the path */
 	prog_name = g_find_program_in_path ("genisoimage");
@@ -464,12 +470,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		}
 	}
 	g_free (prog_name);
-
-	brasero_plugin_define (plugin,
-			       "mkisofs",
-			       _("use genisoimage/mkisofs to create images from files"),
-			       "Philippe Rouquier",
-			       0);
 
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CDR|

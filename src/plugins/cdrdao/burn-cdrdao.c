@@ -511,6 +511,12 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_HAS_DATA|
 				      BRASERO_MEDIUM_HAS_AUDIO;
 
+	brasero_plugin_define (plugin,
+			       "cdrdao",
+			       _("use cdrdao to image and burn CDs"),
+			       "Philippe Rouquier",
+			       20);
+
 	/* First see if this plugin can be used, i.e. if readcd is in
 	 * the path */
 	prog_name = g_find_program_in_path ("cdrdao");
@@ -518,14 +524,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		*error = g_strdup (_("cdrdao could not be found in the path"));
 		return G_TYPE_NONE;
 	}
-
 	g_free (prog_name);
-
-	brasero_plugin_define (plugin,
-			       "cdrdao",
-			       _("use cdrdao to image and burn CDs"),
-			       "Philippe Rouquier",
-			       20);
 
 	/* that's for cdrdao images: CDs only as input */
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|

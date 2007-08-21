@@ -286,6 +286,12 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	GSList *output;
 	GSList *input;
 
+	brasero_plugin_define (plugin,
+			       "readcd",
+			       _("use readcd to image CDs"),
+			       "Philippe Rouquier",
+			       0);
+
 	/* First see if this plugin can be used, i.e. if readcd is in
 	 * the path */
 	prog_name = g_find_program_in_path ("readcd");
@@ -293,14 +299,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		*error = g_strdup (_("readcd could not be found in the path"));
 		return G_TYPE_NONE;
 	}
-
 	g_free (prog_name);
-
-	brasero_plugin_define (plugin,
-			       "readcd",
-			       _("use readcd to image CDs"),
-			       "Philippe Rouquier",
-			       0);
 
 	/* that's for clone mode only */
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,

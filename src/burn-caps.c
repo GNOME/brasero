@@ -999,7 +999,6 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 		BraseroPluginProcessFlag flags;
 		BraseroPlugin *plugin;
 		BraseroJob *job;
-		gchar *name;
 		GType type;
 
 		plugin = iter->data;
@@ -1030,9 +1029,8 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 			retval = g_slist_prepend (retval, task);
 		}
 
-		brasero_plugin_get_info (plugin, &name, NULL, NULL);
-		BRASERO_BURN_LOG ("%s (modifier) added to task", name);
-		g_free (name);
+		BRASERO_BURN_LOG ("%s (modifier) added to task",
+				  brasero_plugin_get_name (plugin));
 
 		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
 	}
@@ -1146,7 +1144,6 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		BraseroPlugin *plugin;
 		BraseroJob *job;
 		GSList *result;
-		gchar *name;
 		GType type;
 
 		link = iter->data;
@@ -1206,9 +1203,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
 
-		brasero_plugin_get_info (plugin, &name, NULL, NULL);
-		BRASERO_BURN_LOG ("%s added to task", name);
-		g_free (name);
+		BRASERO_BURN_LOG ("%s added to task", brasero_plugin_get_name (plugin));
 
 		position = BRASERO_PLUGIN_RUN_NEVER;
 	}

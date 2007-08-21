@@ -57,6 +57,7 @@
 #include "brasero-session.h"
 #include "brasero-project-manager.h"
 #include "brasero-ncb.h"
+#include "brasero-pref.h"
 #include "burn-debug.h"
 
 static GConfClient *client;
@@ -176,6 +177,22 @@ on_integrity_check_cb (GtkAction *action, BraseroApp *app)
 	GtkWidget *toplevel;
 
 	dialog = brasero_sum_dialog_new ();
+	toplevel = gtk_widget_get_toplevel (app->mainwin);
+
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+
+	gtk_widget_show_all (dialog);
+}
+
+void
+on_prefs_cb (GtkAction *action, BraseroApp *app)
+{
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+
+	dialog = brasero_pref_new ();
 	toplevel = gtk_widget_get_toplevel (app->mainwin);
 
 	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));

@@ -56,6 +56,8 @@ struct _BraseroPluginPrivate
 	gchar *name;
 	gchar *author;
 	gchar *description;
+	gchar *copyright;
+	gchar *website;
 
 	guint priority;
 
@@ -66,6 +68,8 @@ struct _BraseroPluginPrivate
 
 	BraseroPluginCleanup cleanup;
 };
+
+static const gchar *default_icon = "gtk-cdrom";
 
 #define BRASERO_PLUGIN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PLUGIN, BraseroPluginPrivate))
 G_DEFINE_TYPE (BraseroPlugin, brasero_plugin, G_TYPE_TYPE_MODULE);
@@ -79,6 +83,7 @@ enum
 enum
 {
 	LOADED_SIGNAL,
+	ACTIVATED_SIGNAL,
 	LAST_SIGNAL
 };
 
@@ -95,7 +100,14 @@ brasero_plugin_set_active (BraseroPlugin *self, gboolean active)
 	if (priv->type == G_TYPE_NONE)
 		return;
 
+	if (priv->active == active)
+		return;
+
 	priv->active = active;
+	g_signal_emit (self,
+		       plugin_signals [ACTIVATED_SIGNAL],
+		       0,
+		       active);
 }
 
 gboolean
@@ -124,7 +136,10 @@ brasero_plugin_cleanup_definition (BraseroPlugin *self)
 	priv->author = NULL;
 	g_free (priv->description);
 	priv->description = NULL;
-
+	g_free (priv->copyright);
+	priv->copyright = NULL;
+	g_free (priv->website);
+	priv->website = NULL;
 	if (priv->error) {
 		g_free (priv->error);
 		priv->error = NULL;
@@ -138,8 +153,8 @@ brasero_plugin_cleanup_definition (BraseroPlugin *self)
 void
 brasero_plugin_define (BraseroPlugin *self,
 		       const gchar *name,
-		       const gchar *author,
 		       const gchar *description,
+		       const gchar *author,
 		       guint priority)
 {
 	BraseroPluginPrivate *priv;
@@ -353,22 +368,58 @@ brasero_plugin_get_process_flags (BraseroPlugin *plugin,
 	return TRUE;
 }
 
-void
-brasero_plugin_get_info (BraseroPlugin *self,
-			 gchar **name,
-			 gchar **author,
-			 gchar **description)
+const gchar *
+brasero_plugin_get_name (BraseroPlugin *plugin)
 {
 	BraseroPluginPrivate *priv;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return priv->name;
+}
 
-	if (name)
-		*name = g_strdup (priv->name);
-	if (author)
-		*author = g_strdup (priv->author);
-	if (description)
-		*description = g_strdup (priv->description);
+const gchar *
+brasero_plugin_get_author (BraseroPlugin *plugin)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return priv->author;
+}
+
+const gchar *
+brasero_plugin_get_copyright (BraseroPlugin *plugin)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return priv->copyright;
+}
+
+const gchar *
+brasero_plugin_get_website (BraseroPlugin *plugin)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return priv->website;
+}
+
+const gchar *
+brasero_plugin_get_description (BraseroPlugin *plugin)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return priv->description;
+}
+
+const gchar *
+brasero_plugin_get_icon_name (BraseroPlugin *plugin)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+	return default_icon;
 }
 
 guint
@@ -593,8 +644,18 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
 		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
 		              G_STRUCT_OFFSET (BraseroPluginClass, loaded),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
+
+	plugin_signals [ACTIVATED_SIGNAL] =
+		g_signal_new ("activated",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              G_STRUCT_OFFSET (BraseroPluginClass, activated),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__BOOLEAN,
+		              G_TYPE_NONE, 1,
+			      G_TYPE_BOOLEAN);
 }
 
 BraseroPlugin *

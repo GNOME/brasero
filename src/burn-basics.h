@@ -42,6 +42,8 @@ G_BEGIN_DECLS
 GQuark brasero_burn_quark (void);
 #define BRASERO_BURN_ERROR brasero_burn_quark()
 
+#define BRASERO_PLUGIN_DIRECTORY		BRASERO_LIBDIR "/brasero/plugins"
+
 #define BRASERO_BURN_TMP_FILE_NAME		"brasero_tmp_XXXXXX"
 #define BRASERO_MD5_FILE			".checksum.md5"
 

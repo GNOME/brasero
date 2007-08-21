@@ -1019,6 +1019,13 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	GSList *output;
 	GSList *input;
 
+	/* NOTE: it seems that cdrecord can burn cue files on the fly */
+	brasero_plugin_define (plugin,
+			       "wodim",
+			       _("use wodim to burn CDs"),
+			       "Philippe Rouquier",
+			       1);
+
 	/* First see if this plugin can be used, i.e. if wodim is in da path */
 	prog_name = g_find_program_in_path ("wodim");
 	if (!prog_name) {
@@ -1026,13 +1033,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		return G_TYPE_NONE;
 	}
 	g_free (prog_name);
-
-	/* NOTE: it seems that cdrecord can burn cue files on the fly */
-	brasero_plugin_define (plugin,
-			       "wodim",
-			       _("use wodim to burn CDs"),
-			       "Philippe Rouquier",
-			       1);
 
 	/* for recording */
 	output = brasero_caps_disc_new (media);

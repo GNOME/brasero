@@ -36,9 +36,7 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
 #define BRASERO_ERROR brasero_error_quark()
 
@@ -110,7 +108,6 @@ brasero_utils_get_use_info_notebook (void);
 gchar*
 brasero_utils_validate_utf8 (const gchar *name);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
+
 #endif				/* _UTILS_H */

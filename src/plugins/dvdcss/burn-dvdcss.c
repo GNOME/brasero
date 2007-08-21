@@ -606,6 +606,12 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	GSList *output;
 	GSList *input;
 
+	brasero_plugin_define (plugin,
+			       "dvdcss",
+			       _("Dvdcss allows to read css encrypted video DVDs"),
+			       "Philippe Rouquier",
+			       0);
+
 	/* see if libdvdcss can be initted */
 	if (!brasero_dvdcss_library_init (&gerror)) {
 		if (gerror) {
@@ -614,12 +620,6 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		}
 		return G_TYPE_NONE;
 	}
-
-	brasero_plugin_define (plugin,
-			       "dvdcss",
-			       _("Dvdcss allows to read css encrypted video DVDs"),
-			       "Philippe Rouquier",
-			       0);
 
 	/* to my knowledge, css can only be applied to pressed discs so no need
 	 * to specify anything else but ROM */

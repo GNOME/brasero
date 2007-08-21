@@ -63,10 +63,13 @@ struct _BraseroPluginManagerPrivate {
 
 G_DEFINE_TYPE (BraseroPluginManager, brasero_plugin_manager, G_TYPE_OBJECT);
 
-#define BRASERO_PLUGIN_DIRECTORY	BRASERO_LIBDIR "/brasero/plugins"
-
 static void
 brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self);
+
+static void
+brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
+					     gboolean active,
+					     BraseroPluginManager *self);
 
 static GObjectClass* parent_class = NULL;
 
@@ -84,8 +87,7 @@ brasero_plugin_manager_get_plugins_list (BraseroPluginManager *self)
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
-		if (brasero_plugin_get_gtype (plugin) != G_TYPE_NONE)
-			retval = g_slist_prepend (retval, plugin);
+		retval = g_slist_prepend (retval, plugin);
 	}
 
 	return retval;
@@ -98,6 +100,22 @@ brasero_plugin_manager_plugins_list_changed_cb (GConfClient *client,
 						gpointer user_data)
 {
 	brasero_plugin_manager_set_plugins_state (BRASERO_PLUGIN_MANAGER (user_data));
+}
+
+static gint
+brasero_plugin_strcmp (gconstpointer a, gconstpointer b)
+{
+	if (!a) {
+		if (!b)
+			return 0;
+
+		return -1;
+	}
+
+	if (!b)
+		return 1;
+
+	return strcmp (a, b);
 }
 
 static void
@@ -151,25 +169,39 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 
 	for (iter = priv->plugins; iter; iter = iter->next) {
 		GSList *node;
-		gchar *real_name;
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
-		brasero_plugin_get_info (plugin, &real_name, NULL, NULL);
 
 		/* See if this plugin is in the names list. If not,
 		 * de-activate it. */
 		node = g_slist_find_custom (names,
-					    real_name,
-					    (GCompareFunc) strcmp);
+					    brasero_plugin_get_name (plugin),
+					    brasero_plugin_strcmp);
 
 		BRASERO_BURN_LOG ("Settings plugin %s %s",
-				  real_name,
+				  brasero_plugin_get_name (plugin),
 				  node != NULL? "active":"inactive");
+
+		/* we don't want to receive a signal from this plugin if its 
+		 * active state changes */
+		g_signal_handlers_block_matched (plugin,
+						 G_SIGNAL_MATCH_FUNC,
+						 0,
+						 0,
+						 0,
+						 brasero_plugin_manager_plugin_state_changed,
+						 NULL);
 
 		brasero_plugin_set_active (plugin, node != NULL);
 
-		g_free (real_name);
+		g_signal_handlers_unblock_matched (plugin,
+						   G_SIGNAL_MATCH_FUNC,
+						   0,
+						   0,
+						   0,
+						   brasero_plugin_manager_plugin_state_changed,
+						   NULL);
 	}
 
 	g_slist_free (names);
@@ -185,6 +217,63 @@ end:
 						      NULL);
 	
 	g_object_unref (client);
+}
+
+static void
+brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
+					     gboolean active,
+					     BraseroPluginManager *self)
+{
+	BraseroPluginManagerPrivate *priv;
+	GError *error = NULL;
+	GConfClient *client;
+	GSList *list = NULL;
+	gboolean res;
+	GSList *iter;
+
+	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+
+	/* build a list of all active plugins */
+	for (iter = priv->plugins; iter; iter = iter->next) {
+		BraseroPlugin *plugin;
+		const gchar *name;
+
+		plugin = iter->data;
+		if (!brasero_plugin_get_active (plugin))
+			continue;
+
+		name = brasero_plugin_get_name (plugin);
+		if (name)
+			list = g_slist_prepend (list, (gchar *) name);
+	}
+
+	client = gconf_client_get_default ();
+
+	if (priv->notification) {
+		gconf_client_notify_remove (client, priv->notification);
+		priv->notification = 0;
+	}
+	res = gconf_client_set_list (client,
+	    			     BRASERO_PLUGIN_KEY,
+				     GCONF_VALUE_STRING,
+				     list,
+				     &error);
+
+	if (!res)
+		BRASERO_BURN_LOG ("Error saving list of active plugins: %s",
+				  error ? error->message:"no message");
+
+	BRASERO_BURN_LOG ("Watching GConf plugin key");
+	priv->notification = gconf_client_notify_add (client,
+						      BRASERO_PLUGIN_KEY,
+						      brasero_plugin_manager_plugins_list_changed_cb,
+						      self,
+						      NULL,
+						      NULL);
+	
+	g_object_unref (client);
+
+	g_slist_free (list);
 }
 
 static void
@@ -241,6 +330,11 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 
 		plugin = brasero_plugin_new (path);
 		g_free (path);
+
+		g_signal_connect (plugin,
+				  "activated",
+				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
+				  self);
 
 		if (!plugin) {
 			BRASERO_BURN_LOG ("Load failure");

@@ -158,6 +158,12 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	GSList *output;
 	GSList *input;
 
+	brasero_plugin_define (plugin,
+			       "toc2cue",
+			       _("toc2cue converts .toc files into .cue files"),
+			       "Philippe Rouquier",
+			       0);
+
 	/* First see if this plugin can be used, i.e. if readcd is in
 	 * the path */
 	prog_name = g_find_program_in_path ("toc2cue");
@@ -165,14 +171,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 		*error = g_strdup (_("toc2cue could not be found in the path"));
 		return G_TYPE_NONE;
 	}
-
 	g_free (prog_name);
-
-	brasero_plugin_define (plugin,
-			       "toc2cue",
-			       _("toc2cue converts .toc files into .cue files"),
-			       "Philippe Rouquier",
-			       0);
 
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_CDRDAO);

@@ -203,7 +203,11 @@ brasero_SOURCES = \
 	brasero-xfer.c         \
 	brasero-xfer.h         \
 	burn-session.c         \
-	burn-track.c 
+	burn-track.c         \
+	brasero-plugin-manager-ui.c         \
+	brasero-plugin-manager-ui.h         \
+	brasero-pref.h         \
+	brasero-pref.c 
 
 brasero_LDADD = $(BRASERO_LIBS)
 

@@ -43,11 +43,23 @@ brasero_plugin_set_active (BraseroPlugin *plugin, gboolean active);
 gboolean
 brasero_plugin_get_active (BraseroPlugin *plugin);
 
-void
-brasero_plugin_get_info (BraseroPlugin *plugin,
-			 gchar **name,
-			 gchar **author,
-			 gchar **description);
+const gchar *
+brasero_plugin_get_name (BraseroPlugin *plugin);
+
+const gchar *
+brasero_plugin_get_author (BraseroPlugin *plugin);
+
+const gchar *
+brasero_plugin_get_copyright (BraseroPlugin *plugin);
+
+const gchar *
+brasero_plugin_get_website (BraseroPlugin *plugin);
+
+const gchar *
+brasero_plugin_get_description (BraseroPlugin *plugin);
+
+const gchar *
+brasero_plugin_get_icon_name (BraseroPlugin *plugin);
 
 const gchar *
 brasero_plugin_get_error (BraseroPlugin *self);

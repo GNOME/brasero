@@ -25,9 +25,7 @@
 #ifndef _MENU_H
 #define _MENU_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -43,6 +41,7 @@ extern "C" {
 #include "brasero-utils.h"
 #include "brasero-app.h"
 
+void on_prefs_cb (GtkAction *action, BraseroApp *app);
 void on_erase_cb (GtkAction *action, BraseroApp *app);
 void on_integrity_check_cb (GtkAction *action, BraseroApp *app);
 
@@ -59,12 +58,18 @@ static GtkActionEntry entries[] = {
 	{"DiscMenu", NULL, N_("_Disc")},
 	{"HelpMenu", NULL, N_("_Help")},
 
+	{"Prefs", GTK_STOCK_PREFERENCES, N_("Pre_ferences"), NULL,
+	 N_("Set preferences for brasero"), G_CALLBACK (on_prefs_cb)},
+
 	{"Erase", "media-optical-blank", N_("_Erase"), NULL,
 	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
+
 	{"Check", GTK_STOCK_FIND, N_("_Check integrity"), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
+
 	{"Exit", GTK_STOCK_QUIT, N_("E_xit"), NULL,
 	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
+
 	{"About", GTK_STOCK_ABOUT, N_("About"), NULL, N_("About"),
 	 G_CALLBACK (on_about_cb)},
 
@@ -84,6 +89,8 @@ static const gchar *description = {
 	    "</menu>"
 	    "<menu action='EditMenu'>"
 	    "<placeholder name='EditPlaceholder'/>"
+	    "<separator/>"
+	    "<menuitem action='Prefs'/>"
 	    "</menu>"
 	    "<menu action='ViewMenu'>"
 	    "<placeholder name='ViewPlaceholder'/>"
@@ -100,8 +107,6 @@ static const gchar *description = {
 	"</ui>"
 };
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif				/* _MENU_H */
