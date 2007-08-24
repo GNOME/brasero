@@ -49,6 +49,12 @@
 #include <libisofs/libisofs.h>
 #include <libburn/libburn.h>
 
+#ifndef LIBISOFS_CHECK_VERSION
+#define LIBISOFS_CHECK_VERSION(a,b,c) TRUE
+#endif
+
+#define LIF_028 LIBISOFS_CHECK_VERSION(0,2,8)
+
 static void brasero_libisofs_class_init (BraseroLibisofsClass *klass);
 static void brasero_libisofs_init (BraseroLibisofs *sp);
 static void brasero_libisofs_finalize (GObject *object);
@@ -477,7 +483,11 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 			uri = excluded->data;
 			path = gnome_vfs_get_local_path_from_uri (uri);
+		#if LIF_028
+			iso_exclude_add_path (0,path);
+	       	#else
 			iso_exclude_add_path (path);
+		#endif
 
 			/* keep the path for later since we'll remove it */
 			excluded_path = g_slist_prepend (excluded_path, path);
@@ -488,13 +498,24 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			gchar *local_path;
 
 			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
+	       	#if LIF_028
+			node = iso_tree_volume_path_to_node (volume,
+							 local_path);
+	       	#else
 			node = iso_tree_volume_add_path (volume,
 							 graft->path,
 							 local_path);
+		#endif
+
 			g_free (local_path);
 		}
 		else
+
+		#if LIF_028
+		  	node = NULL;
+		#else
 			node = iso_tree_volume_add_new_dir (volume, graft->path);
+		#endif
 
 		if (!node) {
 			/* an error has occured, possibly libisofs hasn't been
@@ -511,7 +532,11 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			gchar *path;
 
 			path = excluded->data;
+ 		#if LIF_028
+			iso_exclude_empty(path);
+		#else
 			iso_exclude_remove_path (path);
+		#endif
 			g_free (path);
 		}
 		g_slist_free (excluded_path);
@@ -528,10 +553,15 @@ end:
 	flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	flags |= ECMA119_ROCKRIDGE;
 
+#if LIF_028
+	self->priv->libburn_src = iso_source_new_ecma119 (volset,
+							  flags);
+#else
 	self->priv->libburn_src = iso_source_new_ecma119 (volset,
 							  0,
 							  2,
 							  flags);
+#endif
 	iso_volset_free (volset);
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
