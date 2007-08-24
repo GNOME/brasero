@@ -253,6 +253,16 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
 
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Text files only"));
+	gtk_file_filter_add_mime_type (filter, "text/*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+	
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Application files only"));
+	gtk_file_filter_add_mime_type (filter, "application/*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+
 	/* this is a hack/workaround to add support for multi DND */
 	gtk_container_foreach (GTK_CONTAINER (obj->priv->chooser),
 			       brasero_file_chooser_customize,
