@@ -427,6 +427,7 @@ brasero_libisofs_thread_finished (gpointer data)
 static gpointer
 brasero_libisofs_create_volume_thread (gpointer data)
 {
+	struct ecma119_source_opts opts;
 	BraseroLibisofs *self = data;
 	BraseroTrackSource *source;
 	struct iso_volume *volume;
@@ -434,7 +435,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	gchar *publisher;
 	GSList *excluded;
 	GSList *iter;
-	gint flags;
 
 	publisher = g_strdup_printf ("Brasero-%i.%i.%i",
 				     BRASERO_MAJOR_VERSION,
@@ -525,7 +525,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			g_free (local_path);
 		}
 		else
-			node = iso_tree_add_node_dir (node, path_name);
+			iso_tree_add_dir (node, path_name);
 
 		g_free (path_name);
 		g_strfreev (excluded_array);
@@ -533,18 +533,14 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 end:
 
-	/* clean the exclusion */
-	iso_exclude_empty ();
-
 	volset = iso_volset_new (volume, "VOLSETID");
 	iso_volume_free (volume);
 
-	flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
-	flags |= ECMA119_ROCKRIDGE;
+	opts.flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
+	opts.flags |= ECMA119_ROCKRIDGE;
 
 
-	self->priv->libburn_src = iso_source_new_ecma119 (volset,
-							  flags);
+	self->priv->libburn_src = iso_source_new_ecma119 (volset, &opts);
 	iso_volset_free (volset);
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
