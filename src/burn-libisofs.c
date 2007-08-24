@@ -511,7 +511,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 			behavior.stop_on_error = 0;
 			behavior.excludes = excluded_array;
-			iso_tree_radd_dir (node, local_path, &behavior);
+			iso_tree_radd_dir ((struct iso_tree_node_dir *) node, local_path, &behavior);
 
 			if (behavior.error) {
 				/* an error has occured, possibly libisofs hasn't been
@@ -525,7 +525,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			g_free (local_path);
 		}
 		else
-			iso_tree_add_dir (node, path_name);
+			iso_tree_add_dir ((struct iso_tree_node_dir *) node, path_name);
 
 		g_free (path_name);
 		g_strfreev (excluded_array);
@@ -536,6 +536,7 @@ end:
 	volset = iso_volset_new (volume, "VOLSETID");
 	iso_volume_free (volume);
 
+	opts.level = 2;
 	opts.flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	opts.flags |= ECMA119_ROCKRIDGE;
 
