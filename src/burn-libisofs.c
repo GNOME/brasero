@@ -497,6 +497,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 							 BRASERO_BURN_ERROR_GENERAL,
 							 _("a parent for the path (%s) could not be found in the tree"),
 							 graft->path);
+			g_strfreev (excluded_array);
 			goto end;
 		}
 
@@ -520,6 +521,9 @@ brasero_libisofs_create_volume_thread (gpointer data)
 								 BRASERO_BURN_ERROR_GENERAL,
 								 _("a parent for the path (%s) could not be found in the tree"),
 								 graft->path);
+				g_free (path_name);
+				g_strfreev (excluded_array);
+				goto end;
 			}
 
 			g_free (local_path);
@@ -539,7 +543,6 @@ end:
 	opts.level = 2;
 	opts.flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	opts.flags |= ECMA119_ROCKRIDGE;
-
 
 	self->priv->libburn_src = iso_source_new_ecma119 (volset, &opts);
 	iso_volset_free (volset);
