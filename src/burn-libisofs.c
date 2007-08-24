@@ -422,6 +422,8 @@ brasero_libisofs_thread_finished (gpointer data)
 	return FALSE;
 }
 
+#ifdef HAVE_LIBISOFS_0_2_8
+
 static gpointer
 brasero_libisofs_create_volume_thread (gpointer data)
 {
@@ -447,6 +449,141 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	source = self->priv->source;
 
 	/* we add the globally excluded */
+	BRASERO_JOB_TASK_START_PROGRESS (self, FALSE);
+
+	for (iter = source->contents.data.grafts; iter; iter = iter->next) {
+		struct iso_tree_node *node;
+		BraseroGraftPt *graft;
+		gchar **excluded_array;
+		gchar *path_parent;
+		gchar *path_name;
+		guint size;
+
+		if (self->priv->cancel)
+			goto end;
+
+		graft = iter->data;
+
+		size = g_slist_length (source->contents.data.excluded);
+		size += g_slist_length (graft->excluded);
+		excluded_array = g_new0 (gchar *, size + 1);
+		size = 0;
+
+		/* add global exclusions */
+		for (excluded = source->contents.data.excluded; excluded; excluded = excluded->next) {
+			gchar *uri;
+
+			uri = excluded->data;
+			excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
+		}
+
+		/* now let's take care of the excluded files */
+		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
+			gchar *uri;
+
+			uri = excluded->data;
+			excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
+		}
+
+		/* search for parent node */
+		path_parent = g_path_get_dirname (graft->path);
+		node = iso_tree_volume_path_to_node (volume, path_parent);
+		g_free (path_parent);
+
+		if (!node) {
+			/* an error has occured, possibly libisofs hasn't been
+			 * able to find a parent for this node */
+			self->priv->error = g_error_new (BRASERO_BURN_ERROR,
+							 BRASERO_BURN_ERROR_GENERAL,
+							 _("a parent for the path (%s) could not be found in the tree"),
+							 graft->path);
+			goto end;
+		}
+
+		path_name = g_path_get_basename (graft->path);
+
+		/* add the file/directory to the volume */
+		if (graft->uri) {
+			gchar *local_path;
+			struct iso_tree_radd_dir_behavior behavior;
+
+			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
+
+			behavior.stop_on_error = 0;
+			behavior.excludes = excluded_array;
+			iso_tree_radd_dir (node, local_path, &behavior);
+
+			if (behavior.error) {
+				/* an error has occured, possibly libisofs hasn't been
+				 * able to find a parent for this node */
+				self->priv->error = g_error_new (BRASERO_BURN_ERROR,
+								 BRASERO_BURN_ERROR_GENERAL,
+								 _("a parent for the path (%s) could not be found in the tree"),
+								 graft->path);
+			}
+
+			g_free (local_path);
+		}
+		else
+			node = iso_tree_add_node_dir (node, path_name);
+
+		g_free (path_name);
+		g_strfreev (excluded_array);
+	}
+
+end:
+
+	/* clean the exclusion */
+	iso_exclude_empty ();
+
+	volset = iso_volset_new (volume, "VOLSETID");
+	iso_volume_free (volume);
+
+	flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
+	flags |= ECMA119_ROCKRIDGE;
+
+
+	self->priv->libburn_src = iso_source_new_ecma119 (volset,
+							  flags);
+	iso_volset_free (volset);
+
+	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
+	self->priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
+	self->priv->thread = NULL;
+
+	return NULL;
+}
+
+#else
+
+static gpointer
+brasero_libisofs_create_volume_thread (gpointer data)
+{
+	BraseroLibisofs *self = data;
+	BraseroTrackSource *source;
+	struct iso_volume *volume;
+	struct iso_volset *volset;
+	gchar *publisher;
+	GSList *excluded;
+	GSList *iter;
+	gint flags;
+
+	publisher = g_strdup_printf ("Brasero-%i.%i.%i",
+				     BRASERO_MAJOR_VERSION,
+				     BRASERO_MINOR_VERSION,
+				     BRASERO_SUB);
+
+	volume = iso_volume_new (self->priv->source->contents.grafts.label,
+				 publisher,
+				 g_get_real_name ());
+	g_free (publisher);
+
+	source = self->priv->source;
+
+	/* we add the globally excluded */
+	BRASERO_JOB_TASK_START_PROGRESS (self, FALSE);
+
+	/* set up the exclusion table by first adding global exclusion */
 	for (excluded = source->contents.data.excluded; excluded; excluded = excluded->next) {
 		gchar *uri;
 		gchar *path;
@@ -456,8 +593,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		iso_exclude_add_path (path);
 		g_free (path);
 	}
-
-	BRASERO_JOB_TASK_START_PROGRESS (self, FALSE);
 
 	for (iter = source->contents.data.grafts; iter; iter = iter->next) {
 		GSList *excluded_path;
@@ -477,11 +612,8 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 			uri = excluded->data;
 			path = gnome_vfs_get_local_path_from_uri (uri);
-		#if HAVE_LIBISOFS_0_2_8
-			iso_exclude_add_path (0,path);
-	       	#else
+
 			iso_exclude_add_path (path);
-		#endif
 
 			/* keep the path for later since we'll remove it */
 			excluded_path = g_slist_prepend (excluded_path, path);
@@ -493,24 +625,14 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
 
-	       	#if HAVE_LIBISOFS_0_2_8
-			node = iso_tree_volume_path_to_node (volume,
-							 local_path);
-	       	#else
 			node = iso_tree_volume_add_path (volume,
 							 graft->path,
 							 local_path);
-		#endif
 
 			g_free (local_path);
 		}
 		else
-
-		#if HAVE_LIBISOFS_0_2_8
-		  	node = NULL;
-		#else
-=			node = iso_tree_volume_add_new_dir (volume, graft->path);
-		#endif
+			node = iso_tree_volume_add_new_dir (volume, graft->path);
 
 		if (!node) {
 			/* an error has occured, possibly libisofs hasn't been
@@ -527,19 +649,11 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			gchar *path;
 
 			path = excluded->data;
-<<<<<<< .mine
- 		#if HAVE_LIBISOFS_0_2_8
-			iso_exclude_empty(path);
-		#else
-=======
- 		#if LIF_028
-			iso_exclude_empty(path);
-		#else
->>>>>>> .r302
+
 			iso_exclude_remove_path (path);
-		#endif
 			g_free (path);
 		}
+
 		g_slist_free (excluded_path);
 	}
 
@@ -554,19 +668,10 @@ end:
 	flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	flags |= ECMA119_ROCKRIDGE;
 
-<<<<<<< .mine
-#if HAVE_LIBISOFS_0_2_8
-=======
-#if LIF_028
->>>>>>> .r302
-	self->priv->libburn_src = iso_source_new_ecma119 (volset,
-							  flags);
-#else
 	self->priv->libburn_src = iso_source_new_ecma119 (volset,
 							  0,
 							  2,
 							  flags);
-#endif
 	iso_volset_free (volset);
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
@@ -575,6 +680,8 @@ end:
 
 	return NULL;
 }
+
+#endif
 
 static BraseroBurnResult
 brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
