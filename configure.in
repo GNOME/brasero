@@ -86,7 +86,7 @@ else
 fi
 
 if test x"$build_libburn" = "xyes"; then
-	PKG_CHECK_MODULES(LIBISOFS_0_2_8, libisofs-1 > 0.2.8, has_libisofs_0_2_8=yes, has_libisofs_0_2_8=no)
+	PKG_CHECK_MODULES(LIBISOFS_0_2_8, libisofs-1 >= 0.2.8, has_libisofs_0_2_8=yes, has_libisofs_0_2_8=no)
 	if test x"$has_libisofs_0_2_8" = "xyes"; then
 		AC_DEFINE(HAVE_LIBISOFS_0_2_8, 1, [define if you have libisofs-0.2.8])
 	fi	
