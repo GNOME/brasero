@@ -49,12 +49,6 @@
 #include <libisofs/libisofs.h>
 #include <libburn/libburn.h>
 
-#ifndef LIBISOFS_CHECK_VERSION
-#define LIBISOFS_CHECK_VERSION(a,b,c) TRUE
-#endif
-
-#define LIF_028 LIBISOFS_CHECK_VERSION(0,2,8)
-
 static void brasero_libisofs_class_init (BraseroLibisofsClass *klass);
 static void brasero_libisofs_init (BraseroLibisofs *sp);
 static void brasero_libisofs_finalize (GObject *object);
@@ -483,7 +477,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 			uri = excluded->data;
 			path = gnome_vfs_get_local_path_from_uri (uri);
-		#if LIF_028
+		#if HAVE_LIBISOFS_0_2_8
 			iso_exclude_add_path (0,path);
 	       	#else
 			iso_exclude_add_path (path);
@@ -498,7 +492,8 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			gchar *local_path;
 
 			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
-	       	#if LIF_028
+
+	       	#if HAVE_LIBISOFS_0_2_8
 			node = iso_tree_volume_path_to_node (volume,
 							 local_path);
 	       	#else
@@ -511,10 +506,10 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		}
 		else
 
-		#if LIF_028
+		#if HAVE_LIBISOFS_0_2_8
 		  	node = NULL;
 		#else
-			node = iso_tree_volume_add_new_dir (volume, graft->path);
+=			node = iso_tree_volume_add_new_dir (volume, graft->path);
 		#endif
 
 		if (!node) {
@@ -532,9 +527,15 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			gchar *path;
 
 			path = excluded->data;
+<<<<<<< .mine
+ 		#if HAVE_LIBISOFS_0_2_8
+			iso_exclude_empty(path);
+		#else
+=======
  		#if LIF_028
 			iso_exclude_empty(path);
 		#else
+>>>>>>> .r302
 			iso_exclude_remove_path (path);
 		#endif
 			g_free (path);
@@ -553,7 +554,11 @@ end:
 	flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	flags |= ECMA119_ROCKRIDGE;
 
+<<<<<<< .mine
+#if HAVE_LIBISOFS_0_2_8
+=======
 #if LIF_028
+>>>>>>> .r302
 	self->priv->libburn_src = iso_source_new_ecma119 (volset,
 							  flags);
 #else
