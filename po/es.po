@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.brasero_0_6.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-17 03:42+0100\n"
-"PO-Revision-Date: 2007-05-05 15:13+0200\n"
+"POT-Creation-Date: 2007-08-25 03:47+0100\n"
+"PO-Revision-Date: 2007-08-25 14:40+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -526,6 +526,14 @@ msgstr "Sólo películas"
 msgid "Image files only"
 msgstr "Sólo archivos de imágenes"
 
+#: ../src/brasero-file-chooser.c:257
+msgid "Text files only"
+msgstr "Sólo archivos de texto"
+
+#: ../src/brasero-file-chooser.c:262
+msgid "Application files only"
+msgstr "Sólo archivos de aplicación"
+
 #: ../src/brasero-image-option-dialog.c:110
 msgid "Image burning setup"
 msgstr "Opciones de grabado de imagen"
@@ -611,15 +619,15 @@ msgstr "Ninguno"
 msgid "Show the project only"
 msgstr "Mostrar solamente el proyecto"
 
-#: ../src/brasero-ncb.c:297
+#: ../src/brasero-ncb.c:294
 msgid "(u)mount command could not be found in the path"
 msgstr "no se encontró el comando (u)mount en la ruta"
 
-#: ../src/brasero-ncb.c:325
+#: ../src/brasero-ncb.c:329
 msgid "the drive could not be mounted"
 msgstr "no se puede montar la unidad"
 
-#: ../src/brasero-ncb.c:481
+#: ../src/brasero-ncb.c:488
 msgid "the disc mount point could not be retrieved."
 msgstr "no se puede obtener el punto de montaje del disco."
 
@@ -1032,7 +1040,7 @@ msgstr "Analizando pista %02i"
 msgid "the cue file (%s) seems to be invalid"
 msgstr "el archivo cue (%s) parece ser inválido"
 
-#: ../src/burn-cdrdao.c:480 ../src/burn-growisofs.c:703 ../src/burn.c:825
+#: ../src/burn-cdrdao.c:480 ../src/burn-growisofs.c:716 ../src/burn.c:825
 #: ../src/burn.c:1611 ../src/burn.c:1694 ../src/burn.c:1701
 msgid "the drive seems to be busy"
 msgstr "la unidad parece estar ocupada"
@@ -1046,7 +1054,7 @@ msgstr "su versión de cdrdao no está soportada por libbrasero"
 msgid "You don't seem to have the required permission to use this drive"
 msgstr "no tiene los permisos necesarios para usar esta unidad"
 
-#: ../src/burn-cdrdao.c:1104 ../src/burn-cdrecord.c:1278
+#: ../src/burn-cdrdao.c:1104 ../src/burn-cdrecord.c:1286
 msgid "the drive cannot rewrite CDs or DVDs"
 msgstr "la unidad no puede reescribir CDs o DVDs"
 
@@ -1066,8 +1074,8 @@ msgstr "El CD ya ha sido grabado"
 msgid "The CD cannot be blanked"
 msgstr "El CD no se puede borrar"
 
-#: ../src/burn-cdrecord.c:323 ../src/burn-growisofs.c:691
-#: ../src/burn-growisofs.c:697
+#: ../src/burn-cdrecord.c:323 ../src/burn-growisofs.c:704
+#: ../src/burn-growisofs.c:710
 msgid "The files selected did not fit on the CD"
 msgstr "Los archivos seleccionados no caben en el CD"
 
@@ -1133,17 +1141,17 @@ msgstr "Grabando hoja cue"
 msgid "The media needs to be reloaded before being recorded"
 msgstr "Necesita recargar el medio antes de su grabación"
 
-#: ../src/burn-cdrecord.c:765
+#: ../src/burn-cdrecord.c:772
 #, c-format
 msgid "the inf file can't be written : %s"
 msgstr "No se puede grabar el archivo inf : %s"
 
-#: ../src/burn-cdrecord.c:798
+#: ../src/burn-cdrecord.c:805
 msgid "a temporary directory couldn't be created"
 msgstr "No se puede crear un directorio temporal"
 
-#: ../src/burn-cdrecord.c:880 ../src/burn-cdrecord.c:891
-#: ../src/burn-growisofs.c:898 ../src/burn-growisofs.c:926
+#: ../src/burn-cdrecord.c:888 ../src/burn-cdrecord.c:899
+#: ../src/burn-growisofs.c:911 ../src/burn-growisofs.c:939
 msgid "imager doesn't seem to be ready"
 msgstr "El creador de imágenes no parece estar listo"
 
@@ -1376,7 +1384,8 @@ msgid ""
 "already burnt files will be invisible (though still readable).\n"
 "Do you want to continue anyway?"
 msgstr ""
-"los archivos ya grabados serán invisibles (aunque seguirá pudiendo leerlos).\n"
+"los archivos ya grabados serán invisibles (aunque seguirá pudiendo "
+"leerlos).\n"
 "¿Desea continuar de todos modos?"
 
 #: ../src/burn-dialog.c:500
@@ -1389,7 +1398,8 @@ msgid ""
 "written.\n"
 "Do you want to continue anyway?"
 msgstr ""
-"quizá no puedo escucharlos con cadenas musicales y el CD-TEXT no se escribirá.\n"
+"quizá no puedo escucharlos con cadenas musicales y el CD-TEXT no se "
+"escribirá.\n"
 "¿Desea continuar de todos modos?"
 
 #: ../src/burn-dialog.c:511
@@ -1626,7 +1636,7 @@ msgstr "CD de datos grabado correctamente"
 msgid "Image successfully created"
 msgstr "Imagen creada correctamente"
 
-#: ../src/burn-dvd-rw-format.c:240 ../src/burn-growisofs.c:709
+#: ../src/burn-dvd-rw-format.c:240 ../src/burn-growisofs.c:722
 msgid "Unhandled error, aborting"
 msgstr "Error no manejado, abortando"
 
@@ -1647,7 +1657,7 @@ msgstr ""
 msgid "libdvdcss couldn't be loaded properly"
 msgstr "No se puede cargar libdvdcss"
 
-#: ../src/burn-dvdcss.c:482 ../src/burn-libisofs.c:582
+#: ../src/burn-dvdcss.c:482 ../src/burn-libisofs.c:724
 #, c-format
 msgid "the data couldn't be written to the pipe (%i: %s)"
 msgstr "los datos no se pueden escribir en la tubería (%i: %s)"
@@ -1674,41 +1684,41 @@ msgstr "No se pudo abrir el DVD"
 msgid "Copying Video DVD"
 msgstr "Copiando vídeo DVD"
 
-#: ../src/burn-dvdcss.c:693 ../src/burn-libisofs.c:689
+#: ../src/burn-dvdcss.c:693 ../src/burn-libisofs.c:831
 #, c-format
 msgid "the data couldn't be written to the file (%i: %s)"
 msgstr "los datos no se pueden escribir al archivo (%i: %s)"
 
-#: ../src/burn-growisofs.c:672
+#: ../src/burn-growisofs.c:685
 msgid "The disc is already burnt"
 msgstr "El disco ya está grabado"
 
-#: ../src/burn-growisofs.c:679
+#: ../src/burn-growisofs.c:692
 msgid "The recorder could not be accessed"
 msgstr "No se puede acceder a la grabadora"
 
-#: ../src/burn-growisofs.c:685
+#: ../src/burn-growisofs.c:698
 msgid "Not enough space available on the disc"
 msgstr "No hay suficiente espacio disponible en el disco"
 
-#: ../src/burn-growisofs.c:715 ../src/burn-mkisofs.c:376
+#: ../src/burn-growisofs.c:728 ../src/burn-mkisofs.c:387
 msgid "Some files have invalid filenames"
 msgstr "Algunos archivos tienen nombres no válidos"
 
-#: ../src/burn-growisofs.c:721 ../src/burn-mkisofs.c:319
-#: ../src/burn-mkisofs.c:328
+#: ../src/burn-growisofs.c:734 ../src/burn-mkisofs.c:330
+#: ../src/burn-mkisofs.c:339
 msgid "the image can't be created"
 msgstr "No se puede crear la imagen"
 
-#: ../src/burn-growisofs.c:906 ../src/burn-growisofs.c:915
+#: ../src/burn-growisofs.c:919 ../src/burn-growisofs.c:928
 msgid "imager can't create iso9660 images"
 msgstr "El creador de imágenes no puede crear imágenes iso9660"
 
-#: ../src/burn-growisofs.c:940
+#: ../src/burn-growisofs.c:953
 msgid "the file /proc/self/fd/0 is missing"
 msgstr "No se encuentra el archivo /proc/self/fd/0"
 
-#: ../src/burn-growisofs.c:968
+#: ../src/burn-growisofs.c:981
 msgid "the image is not stored locally"
 msgstr "La imagen no está almacenada localmente"
 
@@ -1767,7 +1777,8 @@ msgstr "no se pudo abrir /dev/null"
 msgid "libburn can't burn: %s"
 msgstr "libburn no puede grabar: %s"
 
-#: ../src/burn-libisofs.c:504
+#: ../src/burn-libisofs.c:498 ../src/burn-libisofs.c:522
+#: ../src/burn-libisofs.c:642
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
 msgstr "no se encuentra en el árbol el antecesor de la ruta (%s)"
@@ -1872,27 +1883,27 @@ msgstr "No se puede crear un archivo temporal: %s"
 msgid "The label for the image is too long."
 msgstr "La etiqueta de esta imagen es demasiado larga."
 
-#: ../src/burn-mkisofs.c:313
+#: ../src/burn-mkisofs.c:324
 msgid "the old image couldn't be read"
 msgstr "No se puede leer la imagen antigua"
 
-#: ../src/burn-mkisofs.c:334
+#: ../src/burn-mkisofs.c:345
 msgid "this version of mkisofs doesn't seem to be supported"
 msgstr "esta versión de mkisofs no está soportada"
 
-#: ../src/burn-mkisofs.c:382
+#: ../src/burn-mkisofs.c:393
 msgid "Unknown character encoding"
 msgstr "Códificación caracteres desconocida"
 
-#: ../src/burn-mkisofs.c:388
+#: ../src/burn-mkisofs.c:399
 msgid "There is no space left on the device"
 msgstr "No queda espacio en el dispositivo"
 
-#: ../src/burn-mkisofs.c:395
+#: ../src/burn-mkisofs.c:406
 msgid "The file is too large for a CD"
 msgstr "El archivo es demasiado grande para un CD"
 
-#: ../src/burn-mkisofs.c:711
+#: ../src/burn-mkisofs.c:722
 msgid ""
 "failed to get the start point of the track. Make sure the media allow to add "
 "files (it is not closed)"
@@ -1908,7 +1919,7 @@ msgstr "La unidad no está lista"
 msgid "you don't seem to have the required permissions to access the drive"
 msgstr "No tiene los permisos necesarios para acceder a la unidad"
 
-#: ../src/burn-readcd.c:630
+#: ../src/burn-readcd.c:636
 msgid "raw images cannot be created with DVDs"
 msgstr "No se pueden crear imágenes en bruto con DVDs"
 
@@ -2297,19 +2308,19 @@ msgstr "Notificar cuando se filtren archivos"
 msgid "<b>Filtering options</b>"
 msgstr "<b>Opciones de filtrado</b>"
 
-#: ../src/filtered-window.c:438
+#: ../src/filtered-window.c:437
 msgid "hidden file"
 msgstr "archivo oculto"
 
-#: ../src/filtered-window.c:439
+#: ../src/filtered-window.c:438
 msgid "unreadable file"
 msgstr "archivo ilegible"
 
-#: ../src/filtered-window.c:440
+#: ../src/filtered-window.c:439
 msgid "broken symlink"
 msgstr "enlace simbólico roto"
 
-#: ../src/filtered-window.c:441
+#: ../src/filtered-window.c:440
 msgid "recursive symlink"
 msgstr "enlace simbólico recursivo"
 
@@ -2402,6 +2413,7 @@ msgstr "Página web de Brasero"
 #: ../src/main.c:255
 msgid "translator-credits"
 msgstr ""
+"Jorge González <jorgegonz@svn.gnome.org>\n"
 "Francisco Javier F. Serrador <serrador@openshine.com>\n"
 "Sergio Rivadero <sergiorivadero@argentina.com>\n"
 "Rafael Bermúdez <rafaelbermudez@gmail.com>"
@@ -2422,11 +2434,11 @@ msgstr "Opciones incompatibles"
 msgid "only one option can be given at a time."
 msgstr "solamente se puede especificar una opción por vez."
 
-#: ../src/main.c:548
+#: ../src/main.c:547
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:556
+#: ../src/main.c:555
 msgid "CD/DVD burning"
 msgstr "Grabación de CD/DVD"
 
@@ -2899,11 +2911,12 @@ msgid "data tracks"
 msgstr "pistas de datos"
 
 #: ../src/recorder-selection.c:566 ../src/recorder-selection.c:602
+#: ../src/recorder-selection.c:618
 #, c-format
 msgid "%s free"
 msgstr "%s libres"
 
-#: ../src/recorder-selection.c:572
+#: ../src/recorder-selection.c:572 ../src/recorder-selection.c:625
 msgid "the medium can be recorded"
 msgstr "se puede grabar en el medio"
 
@@ -2920,33 +2933,33 @@ msgstr "se pueden añadir o escribir datos al medio"
 msgid "data can be appended to the medium"
 msgstr "se pueden añadir datos al medio"
 
-#: ../src/recorder-selection.c:618
+#: ../src/recorder-selection.c:634
 #, c-format
 msgid "%s of data"
 msgstr "%s de datos"
 
-#: ../src/recorder-selection.c:625
+#: ../src/recorder-selection.c:641
 msgid "<i>the medium is not writable</i>"
 msgstr "<i>el medio no es escribible</i>"
 
-#: ../src/recorder-selection.c:662
+#: ../src/recorder-selection.c:678
 msgid "<i>There is no disc in the drive.</i>"
 msgstr "<i>No hay disco en la unidad.</i>"
 
-#: ../src/recorder-selection.c:665
+#: ../src/recorder-selection.c:681
 msgid "<i>Unknown type of disc.</i>"
 msgstr "<i>Tipo de disco desconocido.</i>"
 
-#: ../src/recorder-selection.c:668
+#: ../src/recorder-selection.c:684
 msgid "<i>The disc is busy.</i>"
 msgstr "<i>El disco está ocupado.</i>"
 
-#: ../src/recorder-selection.c:673
+#: ../src/recorder-selection.c:689
 #, c-format
 msgid "The <b>%s</b> is not writable."
 msgstr "El <b>%s</b> no es grabable."
 
-#: ../src/recorder-selection.c:685
+#: ../src/recorder-selection.c:701
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -2957,7 +2970,7 @@ msgstr ""
 "Contiene audio y datos.\n"
 "Se pueden añadir más datos (%s libres)."
 
-#: ../src/recorder-selection.c:698
+#: ../src/recorder-selection.c:714
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -2968,7 +2981,7 @@ msgstr ""
 "Contiene pistas de audio y datos.\n"
 "Se puede añadir una sesión de datos (%s libres)."
 
-#: ../src/recorder-selection.c:710
+#: ../src/recorder-selection.c:726
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -2977,7 +2990,7 @@ msgstr ""
 "El <b>%s</b> está listo (%s).\n"
 "Contiene pistas de audio y datos."
 
-#: ../src/recorder-selection.c:727
+#: ../src/recorder-selection.c:743
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -2988,7 +3001,7 @@ msgstr ""
 "Contiene audio.\n"
 "Se pueden añadir más datos (%s libres)."
 
-#: ../src/recorder-selection.c:740
+#: ../src/recorder-selection.c:756
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -2999,7 +3012,7 @@ msgstr ""
 "Contiene pistas de audio.\n"
 "Se puede añadir una sesión de datos (%s libres)."
 
-#: ../src/recorder-selection.c:752
+#: ../src/recorder-selection.c:768
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -3008,7 +3021,7 @@ msgstr ""
 "El <b>%s</b> está listo (%s).\n"
 "Contiene pistas de audio."
 
-#: ../src/recorder-selection.c:769
+#: ../src/recorder-selection.c:785
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -3019,7 +3032,7 @@ msgstr ""
 "Contiene datos.\n"
 "Se pueden añadir más datos (%s libres)."
 
-#: ../src/recorder-selection.c:782
+#: ../src/recorder-selection.c:798
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -3030,7 +3043,7 @@ msgstr ""
 "Contiene datos.\n"
 "Se pueden añadir más datos (%s libres)."
 
-#: ../src/recorder-selection.c:794
+#: ../src/recorder-selection.c:810
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -3039,7 +3052,7 @@ msgstr ""
 "El <b>%s</b> está listo (%s).\n"
 "Contiene datos."
 
-#: ../src/recorder-selection.c:808
+#: ../src/recorder-selection.c:824
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -3050,7 +3063,7 @@ msgstr ""
 "Está vacío.\n"
 " (%s libres)"
 
-#: ../src/recorder-selection.c:911 ../src/recorder-selection.c:916
+#: ../src/recorder-selection.c:927 ../src/recorder-selection.c:932
 #, c-format
 msgid ""
 "The <b>image</b> will be saved to\n"
@@ -3059,56 +3072,56 @@ msgstr ""
 "La <b>imagen</b> se guardará en\n"
 "%s"
 
-#: ../src/recorder-selection.c:939
+#: ../src/recorder-selection.c:955
 msgid "<b>There is no available drive.</b>"
 msgstr "<b>No hay ninguna unidad disponible.</b>"
 
-#: ../src/recorder-selection.c:1083
+#: ../src/recorder-selection.c:1099
 #, c-format
 msgid "Properties of %s"
 msgstr "Propiedades de %s"
 
-#: ../src/recorder-selection.c:1108
+#: ../src/recorder-selection.c:1124
 msgid "Max speed"
 msgstr "Velocidad máxima"
 
-#: ../src/recorder-selection.c:1112
+#: ../src/recorder-selection.c:1128
 msgid "DVD"
 msgstr "DVD"
 
-#: ../src/recorder-selection.c:1112
+#: ../src/recorder-selection.c:1128
 msgid "CD"
 msgstr "CD"
 
-#: ../src/recorder-selection.c:1118
+#: ../src/recorder-selection.c:1134
 msgid "<b>Burning speed</b>"
 msgstr "<b>Velocidad de grabación</b>"
 
-#: ../src/recorder-selection.c:1158
+#: ../src/recorder-selection.c:1174
 msgid "Simulate the burning"
 msgstr "Simular la grabación"
 
-#: ../src/recorder-selection.c:1166
+#: ../src/recorder-selection.c:1182
 msgid "Eject after burning"
 msgstr "Expulsar después de grabar"
 
-#: ../src/recorder-selection.c:1174
+#: ../src/recorder-selection.c:1190
 msgid "Use burnproof (decrease the risk of failures)"
 msgstr "Usar burnproof (reduce el riesgo de fallos)"
 
-#: ../src/recorder-selection.c:1182
+#: ../src/recorder-selection.c:1198
 msgid "Burn the image directly without saving it to disc"
 msgstr "Grabar la imagen directamente sin guardarla en el disco"
 
-#: ../src/recorder-selection.c:1193
+#: ../src/recorder-selection.c:1209
 msgid "<b>Options</b>"
 msgstr "<b>Opciones</b>"
 
-#: ../src/recorder-selection.c:1260
+#: ../src/recorder-selection.c:1276
 msgid "Choose a location for the disc image"
 msgstr "Seleccione la ubicación para la imagen de disco"
 
-#: ../src/recorder-selection.c:1316
+#: ../src/recorder-selection.c:1332
 msgid "Disc image file properties"
 msgstr "Propiedades de la imagen de disco"
 
@@ -3400,55 +3413,55 @@ msgstr "La aplicación %s no se puede iniciar."
 #. * project, suggesting users how to add and remove items to project.
 #. * You simply have to translate messages in the best form
 #. * for a list of actions.
-#: ../src/utils.c:836
+#: ../src/utils.c:832
 msgid "To add files to this project you can:"
 msgstr "Para añadir archivos a este proyecto puede:"
 
-#: ../src/utils.c:837
+#: ../src/utils.c:833
 msgid "click the \"Add\" button to show the selection pane"
 msgstr "pulsar el botón «Añadir» para mostrar el panel de selección"
 
-#: ../src/utils.c:838
+#: ../src/utils.c:834
 msgid "select files in selection pane and click the \"Add\" button"
 msgstr ""
 "seleccionar los archivos en el panel de selección y pulsar en el botón "
 "«Añadir»"
 
-#: ../src/utils.c:839
+#: ../src/utils.c:835
 msgid "drag files in this area from the selection pane or from the file manager"
 msgstr ""
 "arrastrar los archivos en este área desde el panel de selección o desde el "
 "gestor de archivos"
 
-#: ../src/utils.c:840
+#: ../src/utils.c:836
 msgid "double click on files in the selection pane"
 msgstr "pulsar dos veces en el panel de selección"
 
-#: ../src/utils.c:842
+#: ../src/utils.c:838
 msgid "copy files (from file manager for example) and paste in this area"
 msgstr ""
 "copiar los archivos (desde el gestor de archivos por ejemplo) y pegarlos en "
 "este área"
 
-#: ../src/utils.c:845
+#: ../src/utils.c:841
 msgid "To remove files from this project you can:"
 msgstr "Para quitar archivos de este proyecto puede:"
 
-#: ../src/utils.c:846
+#: ../src/utils.c:842
 msgid "click on the \"Remove\" button to remove selected items in this area"
 msgstr ""
 "pulsar en el botón «Quitar» para quitar los archivos seleccionados en este "
 "área"
 
-#: ../src/utils.c:847
+#: ../src/utils.c:843
 msgid "drag and release items out from this area"
 msgstr "arrastrar y soltar elementos fuera de este área"
 
-#: ../src/utils.c:848
+#: ../src/utils.c:844
 msgid "select items in this area, and choose \"Remove\" from context menu"
 msgstr "seleccionar los elementos en este área, y elegir «Quitar» del menú contextual"
 
-#: ../src/utils.c:849
+#: ../src/utils.c:845
 msgid "select items in this area, and press \"Delete\" key"
 msgstr "seleccionar los elementos en este área y pulsar la tecla «Supr»"
 
