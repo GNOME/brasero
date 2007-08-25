@@ -174,6 +174,10 @@ brasero_task_ctx_reset (BraseroTaskCtx *self)
 		g_slist_free (priv->times);
 		priv->times = NULL;
 	}
+
+	g_signal_emit (self,
+		       brasero_task_ctx_signals [PROGRESS_CHANGED_SIGNAL],
+		       0);
 }
 
 void
@@ -891,6 +895,11 @@ brasero_task_ctx_finalize (GObject *object)
 		priv->tracks = NULL;
 	}
 
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -912,6 +921,7 @@ brasero_task_ctx_set_property (GObject *object, guint prop_id, const GValue *val
 		break;
 	case PROP_SESSION:
 		priv->session = g_value_get_object (value);
+		g_object_ref (priv->session);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

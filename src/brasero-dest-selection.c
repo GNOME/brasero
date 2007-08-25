@@ -36,6 +36,10 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkbox.h>
+#include <gtk/gtkhbox.h>
 
 #include <nautilus-burn-drive.h>
 
@@ -59,9 +63,11 @@ struct _BraseroDestSelectionPrivate
 	BraseroBurnCaps *caps;
 	BraseroBurnSession *session;
 
-	GtkWidget *image_prop;
 	GtkWidget *drive_prop;
 	GtkWidget *button;
+
+	GtkWidget *copies_box;
+	GtkWidget *copies_spin;
 
 	guint caps_sig;
 	guint input_sig;
@@ -164,6 +170,7 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 	BraseroTrackType input;
 	BraseroBurnFlag flags;
 	GConfClient *client;
+	const gchar *path;
 	guint64 rate;
 	guint speed;
 	gchar *key;
@@ -198,6 +205,12 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 	gconf_client_set_int (client, key, flags, NULL);
 	g_free (key);
 
+	/* temporary directory */
+	path = brasero_burn_session_get_tmpdir (priv->session);
+	key = g_strdup_printf ("%s/tmpdir", BRASERO_DRIVE_PROPERTIES_KEY);
+	gconf_client_set_string (client, key, path, NULL);
+	g_free (key);
+
 	g_object_unref (client);
 }
 
@@ -210,6 +223,7 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	BraseroBurnFlag flags = 0;
 	NautilusBurnDrive *drive;
 	GtkWidget *toplevel;
+	const gchar *path;
 	gint result;
 	gint64 rate;
 
@@ -241,6 +255,10 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 					    supported,
 					    compulsory);
 
+	path = brasero_burn_session_get_tmpdir (priv->session);
+	brasero_drive_properties_set_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
+					     path);
+
 	/* launch the dialog */
 	gtk_widget_show_all (priv->drive_prop);
 	result = gtk_dialog_run (GTK_DIALOG (priv->drive_prop));
@@ -257,6 +275,9 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
 	flags = brasero_drive_properties_get_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop));
 	brasero_burn_session_add_flag (priv->session, flags);
+
+	path = brasero_drive_properties_get_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->drive_prop));
+	brasero_burn_session_set_tmpdir (priv->session, path);
 
 	brasero_dest_selection_save_drive_properties (self);
 
@@ -329,8 +350,11 @@ brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 	output->type = BRASERO_TRACK_TYPE_IMAGE;
 	output->subtype.img_format = BRASERO_IMAGE_FORMAT_NONE;
 
-	if (source.type == BRASERO_TRACK_TYPE_IMAGE
-	||  source.type == BRASERO_TRACK_TYPE_AUDIO)
+	if (source.type == BRASERO_TRACK_TYPE_IMAGE) {
+		output->subtype.img_format = source.subtype.img_format;
+		return;
+	}
+	else if (source.type == BRASERO_TRACK_TYPE_AUDIO)
 		return;
 
 	if (source.type == BRASERO_TRACK_TYPE_DATA
@@ -346,11 +370,13 @@ brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 	}
 
 	/* for the input which are CDs there are lots of possible formats */
-	for (; output->subtype.img_format == BRASERO_IMAGE_FORMAT_NONE;
+	output->subtype.img_format = BRASERO_IMAGE_FORMAT_CDRDAO;
+	for (; output->subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
 	       output->subtype.img_format >>= 1) {
-	       result = brasero_burn_caps_is_output_supported (priv->caps,
-							       priv->session,
-							       output);
+	
+		result = brasero_burn_caps_is_output_supported (priv->caps,
+								priv->session,
+								output);
 		if (result == BRASERO_BURN_OK)
 			return;
 	}
@@ -374,14 +400,14 @@ brasero_dest_selection_get_possible_output_formats (BraseroDestSelection *self,
 	(*formats) = BRASERO_IMAGE_FORMAT_NONE;
 	output.type = BRASERO_TRACK_TYPE_IMAGE;
 
-	for (; format <= BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
+	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
 		gboolean result;
 
 		output.subtype.img_format = format;
 		result = brasero_burn_caps_is_output_supported (priv->caps,
 								priv->session,
 								&output);
-		if (result) {
+		if (result == BRASERO_BURN_OK) {
 			(*formats) |= format;
 			num ++;
 		}
@@ -405,16 +431,16 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	priv->image_prop = brasero_image_properties_new ();
+	priv->drive_prop = brasero_image_properties_new ();
 
 	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self)));
-	gtk_window_set_transient_for (GTK_WINDOW (priv->image_prop), GTK_WINDOW (toplevel));
-	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->image_prop), TRUE);
+	gtk_window_set_transient_for (GTK_WINDOW (priv->drive_prop), GTK_WINDOW (toplevel));
+	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->drive_prop), TRUE);
 	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	/* set all information namely path and format */
 	original_path = brasero_dest_selection_get_output_path (self);
-	brasero_image_properties_set_path (BRASERO_IMAGE_PROPERTIES (priv->image_prop), original_path);
+	brasero_image_properties_set_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop), original_path);
 
 	if (!priv->default_format)
 		format = brasero_burn_session_get_output_format (priv->session);
@@ -422,8 +448,8 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 		format = BRASERO_IMAGE_FORMAT_ANY;
 
 	num = brasero_dest_selection_get_possible_output_formats (self, &formats);
-	brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->image_prop),
-					      num > 1 ? formats:BRASERO_IMAGE_FORMAT_NONE,
+	brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->drive_prop),
+					      num > 0 ? formats:BRASERO_IMAGE_FORMAT_NONE,
 					      format);
 
 	/* and here we go ... run the thing */
@@ -432,13 +458,13 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 
 	if (answer != GTK_RESPONSE_OK) {
 		gtk_widget_destroy (priv->drive_prop);
-		priv->image_prop = NULL;
+		priv->drive_prop = NULL;
 		g_free (original_path);
 		return;
 	}
 
 	/* see if the user has changed the path */
-	image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->image_prop));
+	image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
 	if (strcmp (original_path, image_path)) {
 		priv->default_path = FALSE;
 		brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), image_path);
@@ -447,7 +473,7 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 	g_free (original_path);
 
 	/* get and check format */
-	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->image_prop));
+	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
 	if (format != BRASERO_IMAGE_FORMAT_NONE) {
 		/* see if we are to choose the format ourselves */
 		if (format == BRASERO_IMAGE_FORMAT_ANY) {
@@ -457,12 +483,12 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 		}
 	}
 
-	brasero_burn_session_set_output (priv->session,
+	brasero_burn_session_set_image_output (priv->session,
 					 format,
 					 image_path);
 
 	gtk_widget_destroy (priv->drive_prop);
-	priv->image_prop = NULL;
+	priv->drive_prop = NULL;
 	g_free (image_path);
 }
 
@@ -494,6 +520,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	BraseroBurnFlag flags;
 	GError *error = NULL;
 	GConfClient *client;
+	gchar *path;
 	guint64 rate;
 	gint speed;
 	gchar *key;
@@ -573,6 +600,13 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	}
 
 	nautilus_burn_drive_unref (drive);
+
+	key = g_strdup_printf ("%s/tmpdir", BRASERO_DRIVE_PROPERTIES_KEY);
+	path = gconf_client_get_string (client, key, NULL);
+	brasero_burn_session_set_tmpdir (priv->session, path);
+	g_free (path);
+	g_free (key);
+
 	g_object_unref (client);
 }
 
@@ -580,8 +614,8 @@ static void
 brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 {
 	const gchar *suffixes [] = {".iso",
-				    ".raw",
-				    ".cue",
+				    ".toc",
+				    ".toc",
 				    ".toc",
 				    ".bin",
 				    NULL };
@@ -601,7 +635,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 
 	if (output.type == BRASERO_TRACK_TYPE_NONE
 	||  output.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
-		brasero_burn_session_set_output (priv->session,
+		brasero_burn_session_set_image_output (priv->session,
 						 BRASERO_IMAGE_FORMAT_NONE,
 						 NULL);
 		return;
@@ -632,7 +666,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 		i ++;
 	};
 
-	brasero_burn_session_set_output (priv->session,
+	brasero_burn_session_set_image_output (priv->session,
 					 output.subtype.img_format,
 					 path);
 	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self),
@@ -649,12 +683,15 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	/* make sure the current output format is still possible given the new source. If not, find a better one */
+	/* make sure the current output format is still possible given the new
+	 * source. If not, find a better one */
+	output.type = BRASERO_TRACK_TYPE_IMAGE;
 	output.subtype.img_format = brasero_burn_session_get_output_format (priv->session);
 	result = brasero_burn_caps_is_output_supported (priv->caps,
 							priv->session,
 							&output);
-	if (result == BRASERO_BURN_OK) {
+
+	if (result != BRASERO_BURN_OK) {
 		if (priv->button)
 			gtk_widget_set_sensitive (priv->button, FALSE);
 		return;
@@ -670,7 +707,7 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 		path = brasero_dest_selection_get_output_path (self);
 		brasero_dest_selection_get_default_output_format (self, &output);
 
-		brasero_burn_session_set_output (priv->session,
+		brasero_burn_session_set_image_output (priv->session,
 						 output.subtype.img_format,
 						 path);
 		g_free (path);
@@ -678,13 +715,13 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 	else
 		brasero_dest_selection_set_image_properties (self);
 
-	if (priv->image_prop) {
+	if (priv->drive_prop) {
 		BraseroImageFormat formats;
 		guint num;
 
 		/* update image settings dialog if needed */
 		num = brasero_dest_selection_get_possible_output_formats (self, &formats);
-		brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->image_prop),
+		brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->drive_prop),
 						      num > 1 ? formats:BRASERO_IMAGE_FORMAT_NONE,
 						      BRASERO_IMAGE_FORMAT_ANY);
 	}
@@ -799,13 +836,25 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 		nautilus_burn_drive_unref (drive);
 
 	if (NCB_DRIVE_GET_TYPE (burner) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+		gint numcopies;
+
 		brasero_dest_selection_set_drive_properties (self);
 		brasero_dest_selection_check_drive_settings (self, burner);
+
+		gtk_widget_set_sensitive (priv->copies_box, TRUE);
+		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
+		brasero_burn_session_set_num_copies (priv->session, numcopies);
 	}
-	/* Make sure there is an output path/type in case that's an image; if not, set default ones */
-	else if (!brasero_burn_session_get_output (priv->session, NULL, NULL, NULL)) {
-		brasero_dest_selection_set_image_properties (self);
-		brasero_dest_selection_check_image_settings (self);
+	else {
+		gtk_widget_set_sensitive (priv->copies_box, FALSE);
+		brasero_burn_session_set_num_copies (priv->session, 1);
+
+		/* Make sure there is an output path/type in case that's an image;
+		 * if not, set default ones */
+		if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) != BRASERO_BURN_OK)
+			brasero_dest_selection_set_image_properties (self);
+		else
+			brasero_dest_selection_check_image_settings (self);
 	}
 }
 
@@ -817,12 +866,28 @@ brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
 	brasero_burn_session_set_burner (priv->session, drive);
+
+	if (brasero_burn_session_same_src_dest_drive (priv->session))
+		brasero_drive_selection_set_same_src_dest (selection);
+}
+
+static void
+brasero_dest_selection_copies_num_changed_cb (GtkSpinButton *button,
+					      BraseroDestSelection *self)
+{
+	gint numcopies;
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
+	brasero_burn_session_set_num_copies (priv->session, numcopies);
 }
 
 static void
 brasero_dest_selection_init (BraseroDestSelection *object)
 {
 	BraseroDestSelectionPrivate *priv;
+	GtkWidget *label;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
@@ -840,6 +905,23 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 
 	brasero_drive_selection_set_button (BRASERO_DRIVE_SELECTION (object),
 					    priv->button);
+
+	priv->copies_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (priv->copies_box);
+	gtk_box_pack_end (GTK_BOX (object), priv->copies_box, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Number of copies "));
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (priv->copies_box), label, FALSE, FALSE, 0);
+
+	priv->copies_spin = gtk_spin_button_new_with_range (1.0, 99.0, 1.0);
+	gtk_widget_show (priv->copies_spin);
+	gtk_box_pack_start (GTK_BOX (priv->copies_box), priv->copies_spin, FALSE, FALSE, 0);
+	g_signal_connect (priv->copies_spin,
+			  "value-changed",
+			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
+			  object);
 }
 
 static void

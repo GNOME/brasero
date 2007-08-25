@@ -585,6 +585,7 @@ brasero_local_track_init_real (BraseroJob *job,
 	case BRASERO_TRACK_TYPE_AUDIO:
 		uri = brasero_track_get_audio_source (track, TRUE);
 		brasero_local_track_add_if_non_local (self, uri, error);
+		g_free (uri);
 		break;
 
 	case BRASERO_TRACK_TYPE_IMAGE:
@@ -594,9 +595,11 @@ brasero_local_track_init_real (BraseroJob *job,
 		/* This is an image. See if there is any md5 sum sitting in the
 		 * same directory to check our download integrity */
 		priv->checksum_src = g_strdup_printf ("%s.md5", uri);
+		g_free (uri);
 
 		uri = brasero_track_get_toc_source (track, TRUE);
 		brasero_local_track_add_if_non_local (self, uri, error);
+		g_free (uri);
 		break;
 
 	default:
@@ -703,8 +706,8 @@ static void
 brasero_local_track_init (BraseroLocalTrack *obj)
 { }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *caps;
 
@@ -732,5 +735,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_FIRST);
 
-	return brasero_local_track_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

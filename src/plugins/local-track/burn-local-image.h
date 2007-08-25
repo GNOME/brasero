@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_LOCAL_TRACK         (brasero_local_track_get_type (NULL))
+#define BRASERO_TYPE_LOCAL_TRACK         (brasero_local_track_get_type ())
 #define BRASERO_LOCAL_TRACK(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrack))
 #define BRASERO_LOCAL_TRACK_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_LOCAL_TRACK, BraseroLocalTrackClass))
 #define BRASERO_IS_LOCAL_TRACK(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_LOCAL_TRACK))

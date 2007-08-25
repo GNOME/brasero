@@ -28,10 +28,7 @@
 #ifndef _BURN_DVDCSS_PRIVATE_H
 #define _BURN_DVDCSS_PRIVATE_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 static gboolean css_ready = FALSE;
 
@@ -47,7 +44,7 @@ typedef gpointer dvdcss_handle;
 #define DVDCSS_BLOCK_SIZE	2048
 
 static dvdcss_handle *
-(*dvdcss_open)	(gchar *device) = NULL;
+(*dvdcss_open)	(const gchar *device) = NULL;
 
 static gint
 (*dvdcss_close)	(dvdcss_handle *handle) = NULL;
@@ -61,9 +58,7 @@ static gint
 static gchar *
 (*dvdcss_error)	(dvdcss_handle *handle) = NULL;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_DVDCSS_PRIVATE_H */
 

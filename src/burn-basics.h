@@ -76,6 +76,10 @@ typedef enum {
 	BRASERO_BURN_ERROR_CD_NOT_SUPPORTED,
 
 	BRASERO_BURN_ERROR_BAD_CHECKSUM,
+
+	/* these are not necessarily error */
+	BRASERO_BURN_WARNING_NEXT_COPY,
+	BRASERO_BURN_WARNING_CHECKSUM
 } BraseroBurnError;
 
 typedef enum {

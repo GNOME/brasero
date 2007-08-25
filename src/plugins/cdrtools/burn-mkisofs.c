@@ -446,8 +446,8 @@ brasero_mkisofs_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	gchar *prog_name;
 	GSList *output;
@@ -461,13 +461,10 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 
 	/* First see if this plugin can be used, i.e. if mkisofs is in
 	 * the path */
-	prog_name = g_find_program_in_path ("genisoimage");
+	prog_name = g_find_program_in_path ("mkisofs");
 	if (!prog_name) {
-		prog_name = g_find_program_in_path ("mkisofs");
-		if (!prog_name) {
-			*error = g_strdup (_("mkisofs could not be found in the path"));
-			return G_TYPE_NONE;
-		}
+		*error = g_strdup (_("mkisofs could not be found in the path"));
+		return BRASERO_BURN_ERR;
 	}
 	g_free (prog_name);
 
@@ -496,5 +493,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
-	return brasero_mkisofs_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

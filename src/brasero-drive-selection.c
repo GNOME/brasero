@@ -215,6 +215,15 @@ brasero_drive_selection_set_image_path (BraseroDriveSelection *self,
 }
 
 void
+brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *self)
+{
+	BraseroDriveSelectionPrivate *priv;
+
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+	brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info));
+}
+
+void
 brasero_drive_selection_set_drive (BraseroDriveSelection *self,
 				   NautilusBurnDrive *drive)
 {

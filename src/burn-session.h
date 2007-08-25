@@ -126,9 +126,15 @@ brasero_burn_session_set_burner (BraseroBurnSession *session,
 				 NautilusBurnDrive *burner);
 
 BraseroBurnResult
-brasero_burn_session_set_output (BraseroBurnSession *session,
-				 BraseroImageFormat format,
-				 const gchar *path);
+brasero_burn_session_set_image_output (BraseroBurnSession *session,
+				       BraseroImageFormat format,
+				       const gchar *path);
+
+BraseroBurnResult
+brasero_burn_session_set_image_output_full (BraseroBurnSession *session,
+					    BraseroImageFormat format,
+					    const gchar *image,
+					    const gchar *toc);
 
 BraseroBurnResult
 brasero_burn_session_get_output (BraseroBurnSession *session,
@@ -147,6 +153,8 @@ brasero_burn_session_get_output_format (BraseroBurnSession *session);
 BraseroBurnResult
 brasero_burn_session_set_tmpdir (BraseroBurnSession *session,
 				 const gchar *path);
+const gchar *
+brasero_burn_session_get_tmpdir (BraseroBurnSession *session);
 
 BraseroBurnResult
 brasero_burn_session_get_tmp_image (BraseroBurnSession *session,

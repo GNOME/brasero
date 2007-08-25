@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_CD_RECORD         (brasero_cdrecord_get_type (NULL))
+#define BRASERO_TYPE_CD_RECORD         (brasero_cdrecord_get_type ())
 #define BRASERO_CD_RECORD(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_CD_RECORD, BraseroCDRecord))
 #define BRASERO_CD_RECORD_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_CD_RECORD, BraseroCDRecordClass))
 #define BRASERO_IS_CD_RECORD(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_CD_RECORD))

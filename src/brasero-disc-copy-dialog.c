@@ -125,6 +125,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	/* destination drive */
 	priv->selection = brasero_dest_selection_new (priv->session);
+	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), TRUE);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
 							   priv->selection,
@@ -140,6 +141,14 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 static void
 brasero_disc_copy_dialog_finalize (GObject *object)
 {
+	BraseroDiscCopyDialogPrivate *priv;
+
+	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (object);
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

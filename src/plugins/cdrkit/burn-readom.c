@@ -279,8 +279,8 @@ brasero_readom_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_readom_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	gchar *prog_name;
 	GSList *output;
@@ -297,7 +297,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	prog_name = g_find_program_in_path ("readom");
 	if (!prog_name) {
 		*error = g_strdup (_("readom could not be found in the path"));
-		return G_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 	}
 	g_free (prog_name);
 
@@ -341,5 +341,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
-	return brasero_readom_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

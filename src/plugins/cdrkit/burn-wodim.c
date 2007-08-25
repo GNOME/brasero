@@ -999,8 +999,8 @@ brasero_wodim_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	const BraseroMedia media = BRASERO_MEDIUM_CD|
 				   BRASERO_MEDIUM_WRITABLE|
@@ -1030,7 +1030,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	prog_name = g_find_program_in_path ("wodim");
 	if (!prog_name) {
 		*error = g_strdup (_("wodim could not be found in the path"));
-		return G_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 	}
 	g_free (prog_name);
 
@@ -1080,5 +1080,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
-	return brasero_wodim_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

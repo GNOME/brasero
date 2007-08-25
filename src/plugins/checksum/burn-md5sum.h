@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_MD5SUM		(brasero_md5sum_get_type (NULL))
+#define BRASERO_TYPE_MD5SUM		(brasero_md5sum_get_type ())
 #define BRASERO_MD5SUM(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_MD5SUM, BraseroMd5sum))
 #define BRASERO_MD5SUM_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_MD5SUM, BraseroMd5sumClass))
 #define BRASERO_IS_MD5SUM(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_MD5SUM))

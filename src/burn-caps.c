@@ -850,6 +850,8 @@ brasero_caps_try_links (BraseroBurnSession *session,
 {
 	GSList *iter;
 
+	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "try_links");
+
 	/* For a link to be followed it must first:
 	 * - link to a caps with correct io flags
 	 * - have at least a plugin accepting the record flags if caps type is
@@ -1083,6 +1085,10 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
 	brasero_burn_session_get_input_type (session, &input);
+	BRASERO_BURN_LOG_WITH_TYPE (&input,
+				    BRASERO_PLUGIN_IO_NONE,
+				    "Input set =");
+
 	list = brasero_caps_try_links (session,
 				       last_caps,
 				       media,
@@ -1091,6 +1097,10 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 	if (!list) {
 		BraseroBurnFlag session_flags;
 
+		if (output.type != BRASERO_TRACK_TYPE_DISC)
+			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
+
+		/* output is a disc try with initial blanking */
 		BRASERO_BURN_LOG ("failed to create proper task. Trying with initial blanking");
 
 		/* apparently nothing can be done to reach our goal. Maybe that
@@ -1297,6 +1307,10 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 	GSList *list;
 	BraseroTrackType output;
 
+	BRASERO_BURN_LOG_WITH_TYPE (input,
+				    BRASERO_PLUGIN_IO_NONE,
+				    "Checking support for input");
+
 	brasero_burn_caps_get_output (self,
 				      session,
 				      &output);
@@ -1324,6 +1338,10 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *caps,
 	GSList *list;
 	BraseroTrackType input;
 	BraseroPluginIOFlag flags;
+
+	BRASERO_BURN_LOG_WITH_TYPE (output,
+				    BRASERO_PLUGIN_IO_NONE,
+				    "Checking support for output");
 
 	/* Here flags don't matter as we don't record anything.
 	 * Even the IOFlags since that can be checked later with

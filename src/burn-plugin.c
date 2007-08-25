@@ -39,9 +39,6 @@ struct _BraseroPluginFlags {
 };
 typedef struct _BraseroPluginFlags BraseroPluginFlags;
 
-typedef GType (* BraseroPluginRegister) (BraseroPlugin *plugin, gchar **error);
-typedef void (* BraseroPluginCleanup) (BraseroPlugin *plugin);
-
 typedef struct _BraseroPluginPrivate BraseroPluginPrivate;
 struct _BraseroPluginPrivate
 {
@@ -65,8 +62,6 @@ struct _BraseroPluginPrivate
 	GSList *blank_flags;
 
 	BraseroPluginProcessFlag process_flags;
-
-	BraseroPluginCleanup cleanup;
 };
 
 static const gchar *default_icon = "gtk-cdrom";
@@ -444,19 +439,51 @@ brasero_plugin_get_gtype (BraseroPlugin *self)
  * Function to initialize and load
  */
 
-static gboolean
-brasero_plugin_load_real (BraseroPlugin *plugin) 
+static void
+brasero_plugin_unload (GTypeModule *module)
 {
 	BraseroPluginPrivate *priv;
 
+	priv = BRASERO_PLUGIN_PRIVATE (module);
+	if (!priv->handle)
+		return;
+
+	g_module_close (priv->handle);
+	priv->handle = NULL;
+}
+
+static gboolean
+brasero_plugin_load_real (BraseroPlugin *plugin) 
+{
+	gchar *error = NULL;
+	BraseroPluginPrivate *priv;
+	BraseroPluginRegisterType register_func;
+
 	priv = BRASERO_PLUGIN_PRIVATE (plugin);
+
 	if (!priv->path)
 		return FALSE;
 
-	priv->handle = g_module_open (priv->path, 0);
+	if (priv->handle)
+		return TRUE;
+
+	priv->handle = g_module_open (priv->path, G_MODULE_BIND_LAZY);
 	if (!priv->handle) {
 		priv->error = g_strdup (g_module_error ());
 		return FALSE;
+	}
+
+	if (!g_module_symbol (priv->handle, "brasero_plugin_register", (gpointer) &register_func)) {
+		BRASERO_BURN_LOG ("it doesn't appear to be a valid brasero plugin");
+		brasero_plugin_unload (G_TYPE_MODULE (plugin));
+		return FALSE;
+	}
+
+	priv->type = register_func (plugin, &error);
+	if (error) {
+		if (priv->error)
+			g_free (priv->error);
+		priv->error = error;
 	}
 
 	brasero_burn_debug_setup_module (priv->handle);
@@ -476,56 +503,38 @@ brasero_plugin_load (GTypeModule *module)
 }
 
 static void
-brasero_plugin_unload (GTypeModule *module)
-{
-	BraseroPluginPrivate *priv;
-
-	priv = BRASERO_PLUGIN_PRIVATE (module);
-	if (!priv->handle)
-		return;
-
-	if (priv->cleanup)
-		priv->cleanup (BRASERO_PLUGIN (module));
-
-	g_module_close (priv->handle);
-	priv->handle = NULL;
-}
-
-static void
 brasero_plugin_init_real (BraseroPlugin *object)
 {
+	GModule *handle;
 	BraseroPluginPrivate *priv;
-	BraseroPluginRegister register_func;
-
-	/* during init, query the module to know what its caps are */
-	if (!brasero_plugin_load_real (object)) {
-		BRASERO_BURN_LOG ("Module couldn't be loaded");
-		return;
-	}
+	BraseroPluginRegisterType function;
 
 	priv = BRASERO_PLUGIN_PRIVATE (object);
 
-	/* retrieve the functions */
-	if (!g_module_symbol (priv->handle, "brasero_plugin_register", (gpointer) &register_func)) {
-		BRASERO_BURN_LOG ("it doesn't appear to be a valid brasero plugin");
-		brasero_plugin_unload (G_TYPE_MODULE (object));
+	g_type_module_set_name (G_TYPE_MODULE (object), priv->name);
+
+	handle = g_module_open (priv->name, 0);
+	if (!handle) {
+		BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed");
 		return;
 	}
 
-	BRASERO_BURN_LOG ("registering module %s", priv->path);
+	if (!g_module_symbol (handle, "brasero_plugin_register", (gpointer) &function)) {
+		g_module_close (handle);
+		BRASERO_BURN_LOG ("Module can't be loaded: no register function");
+		return;
+	}
 
-	/* this one is not compulsory */
-	g_module_symbol (priv->handle,
-			 "brasero_plugin_cleanup",
-			 (gpointer) &priv->cleanup);
+	priv->type = function (BRASERO_PLUGIN (object), &priv->error);
+	if (priv->type == G_TYPE_NONE) {
+		g_module_close (handle);
+		BRASERO_BURN_LOG ("Module encountered an error while registering its capabilities:\n%s",
+				  priv->error ? priv->error:"unknown error");
+		return;
+	}
 
-	/* Query information about the plugin and copy them. The plugin is
-	 * also supposed to register itself for the glib GObject system */
-	priv->type = register_func (BRASERO_PLUGIN (object), &priv->error);
-
-	/* now we should have all information we need */
-	g_type_module_set_name (G_TYPE_MODULE (object), priv->name);
-	brasero_plugin_unload (G_TYPE_MODULE (object));
+	BRASERO_BURN_LOG ("Module %s successfully loaded", priv->name);
+	g_module_close (handle);
 }
 
 static void
@@ -612,7 +621,12 @@ brasero_plugin_get_property (GObject *object,
 
 static void
 brasero_plugin_init (BraseroPlugin *object)
-{ }
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (object);
+	priv->type = G_TYPE_NONE;
+}
 
 static void
 brasero_plugin_class_init (BraseroPluginClass *klass)

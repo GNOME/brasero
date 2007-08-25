@@ -34,7 +34,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_LIBISOFS         (brasero_libisofs_get_type (NULL))
+#define BRASERO_TYPE_LIBISOFS         (brasero_libisofs_get_type ())
 #define BRASERO_LIBISOFS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_LIBISOFS, BraseroLibisofs))
 #define BRASERO_LIBISOFS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_LIBISOFS, BraseroLibisofsClass))
 #define BRASERO_IS_LIBISOFS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_LIBISOFS))

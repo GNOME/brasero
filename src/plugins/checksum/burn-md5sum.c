@@ -435,6 +435,8 @@ brasero_md5sum_grafts (BraseroMd5sum *self, GError **error)
 	file_nb = -1;
 	priv->file_num = 0;
 	brasero_track_get_data_file_num (track, &file_nb);
+	if (!file_nb)
+		file_nb = -1;
 
 	/* we fill a hash table with all the files that are excluded globally */
 	excludedH = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -1061,6 +1063,29 @@ brasero_md5sum_init_real (BraseroJob *self,
 		 * output size. On the other hand we'll set a progress */
 		return BRASERO_BURN_NOT_RUNNING;
 	}
+	else if (action == BRASERO_JOB_ACTION_IMAGE) {
+		BraseroTrackType output;
+
+		brasero_job_get_output_type (self, &output);
+		if (output.type == BRASERO_TRACK_TYPE_DATA) {
+			BraseroTrack *track = NULL;
+			GSList *grafts;
+
+			/* see that a file with graft "/BRASERO_CHECKSUM_FILE"
+			 * doesn't already exists (possible when doint several
+			 * copies */
+			brasero_job_get_current_track (self, &track);
+			grafts = brasero_track_get_data_grafts_source (track);
+			for (; grafts; grafts = grafts->next) {
+				BraseroGraftPt *graft;
+
+				graft = grafts->data;
+				if (graft->path 
+				&& !strcmp (graft->path, "/"BRASERO_CHECKSUM_FILE))
+					return BRASERO_BURN_NOT_RUNNING;
+			}
+		}
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -1190,8 +1215,8 @@ brasero_md5sum_class_init (BraseroMd5sumClass *klass)
 	job_class->clock_tick = brasero_md5sum_clock_tick;
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_md5sum_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *input;
 
@@ -1251,5 +1276,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 				   input);
 	g_slist_free (input);
 
-	return brasero_md5sum_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

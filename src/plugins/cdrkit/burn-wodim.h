@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_WODIM         (brasero_wodim_get_type (NULL))
+#define BRASERO_TYPE_WODIM         (brasero_wodim_get_type ())
 #define BRASERO_WODIM(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_WODIM, BraseroWodim))
 #define BRASERO_WODIM_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_WODIM, BraseroWodimClass))
 #define BRASERO_IS_WODIM(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_WODIM))

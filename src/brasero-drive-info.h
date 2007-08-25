@@ -63,6 +63,9 @@ void
 brasero_drive_info_set_image_path (BraseroDriveInfo *self,
 				   const gchar *path);
 
+void
+brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self);
+
 G_END_DECLS
 
 #endif /* _BRASERO_DRIVE_INFO_H_ */

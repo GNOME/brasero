@@ -32,7 +32,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_GENISOIMAGE         (brasero_genisoimage_get_type (NULL))
+#define BRASERO_TYPE_GENISOIMAGE         (brasero_genisoimage_get_type ())
 #define BRASERO_GENISOIMAGE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimage))
 #define BRASERO_GENISOIMAGE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_GENISOIMAGE, BraseroGenisoimageClass))
 #define BRASERO_IS_GENISOIMAGE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_GENISOIMAGE))

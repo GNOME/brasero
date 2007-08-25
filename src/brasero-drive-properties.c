@@ -56,6 +56,7 @@ struct _BraseroDrivePropertiesPrivate
 	GtkWidget *dummy;
 	GtkWidget *burnproof;
 	GtkWidget *notmp;
+	GtkWidget *tmpdir;
 	GtkWidget *eject;
 };
 
@@ -114,6 +115,31 @@ brasero_drive_properties_get_rate (BraseroDriveProperties *self)
 			    -1);
 
 	return rate;
+}
+
+gchar *
+brasero_drive_properties_get_tmpdir (BraseroDriveProperties *self)
+{
+	BraseroDrivePropertiesPrivate *priv;
+
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->tmpdir));
+}
+
+void
+brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
+				     const gchar *path)
+{
+	BraseroDrivePropertiesPrivate *priv;
+
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+
+	if (!path)
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir),
+					       g_get_tmp_dir ());
+	else
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir),
+					       path);
 }
 
 static void
@@ -275,16 +301,27 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	priv->burnproof = gtk_check_button_new_with_label (_("Use burnproof (decrease the risk of failures)"));
 	priv->eject = gtk_check_button_new_with_label (_("Eject after burning"));
 	priv->notmp = gtk_check_button_new_with_label (_("Burn the image directly without saving it to disc"));
+	priv->tmpdir = gtk_file_chooser_button_new (_("Directory for temporary files"), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
 			    brasero_utils_pack_properties (_("<b>Options</b>"),
+							   priv->eject,
 							   priv->dummy,
 							   priv->burnproof,
-							   priv->eject,
 							   priv->notmp,
 							   NULL),
 			    FALSE,
 			    FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+			    brasero_utils_pack_properties (_("<b>Temporary files</b>"),
+							   priv->tmpdir,
+							   NULL),
+			    FALSE,
+			    FALSE, 0);
+
+	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir),
+				       g_get_tmp_dir ());
 
 	gtk_widget_show_all (GTK_DIALOG (object)->vbox);
 }

@@ -82,6 +82,9 @@ brasero_drive_selection_set_image_path (BraseroDriveSelection *selection,
 					const gchar *path);
 
 void
+brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *selection);
+
+void
 brasero_drive_selection_select_default_drive (BraseroDriveSelection *selection,
 					      BraseroMedia type);
 

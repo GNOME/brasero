@@ -46,7 +46,6 @@
 typedef struct _BraseroImagePropertiesPrivate BraseroImagePropertiesPrivate;
 struct _BraseroImagePropertiesPrivate
 {
-	GtkWidget *vbox;
 	GtkWidget *file;
 	GtkWidget *format;
 };
@@ -133,7 +132,8 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 
 	if (!priv->format) {
 		priv->format = brasero_image_type_chooser_new ();
-		gtk_box_pack_start (GTK_BOX (priv->vbox),
+		gtk_widget_show (priv->format);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (self)->vbox),
 				    priv->format,
 				    FALSE,
 				    FALSE,
@@ -162,23 +162,20 @@ brasero_image_properties_init (BraseroImageProperties *object)
 				GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
 				NULL);
 
-	priv->vbox = gtk_vbox_new (FALSE, 12);
-	gtk_widget_show (priv->vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (priv->vbox), 10);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    priv->vbox,
-			    TRUE,
-			    TRUE,
-			    4);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (object)->vbox), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_BOX (GTK_DIALOG (object)->vbox)), 10);
 
 	/* create file chooser */
 	priv->file = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_SAVE);
 	gtk_widget_show_all (priv->file);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+			    priv->file,
+			    TRUE,
+			    TRUE,
+			    4);
 
 	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (priv->file), TRUE);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), TRUE);
-
-	gtk_widget_show_all (priv->vbox);
 }
 
 static void

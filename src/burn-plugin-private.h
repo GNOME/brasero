@@ -64,9 +64,6 @@ brasero_plugin_get_icon_name (BraseroPlugin *plugin);
 const gchar *
 brasero_plugin_get_error (BraseroPlugin *self);
 
-GType
-brasero_plugin_get_gtype (BraseroPlugin *plugin);
-
 guint
 brasero_plugin_get_priority (BraseroPlugin *plugin);
 

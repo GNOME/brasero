@@ -55,7 +55,8 @@ struct _BraseroSessionSetting {
 	 * Used when outputting an image instead of burning
 	 */
 	BraseroImageFormat format;
-	gchar *path;
+	gchar *image;
+	gchar *toc;
 
 	/**
 	 * Used when burning
@@ -98,6 +99,7 @@ typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 #define BRASERO_BURN_SESSION_WRITE_TO_FILE(priv)	(priv->settings->burner			\
 							&& NCB_DRIVE_GET_TYPE (priv->settings->burner) \
 							== NAUTILUS_BURN_DRIVE_TYPE_FILE)
+#define BRASERO_STRCMP(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
 typedef enum {
 	INPUT_CHANGED_SIGNAL,
@@ -111,9 +113,14 @@ static GObjectClass *parent_class = NULL;
 static void
 brasero_session_settings_clean (BraseroSessionSetting *settings)
 {
-	if (settings->path) {
-		g_free (settings->path);
-		settings->path = NULL;
+	if (settings->image) {
+		g_free (settings->image);
+		settings->image = NULL;
+	}
+
+	if (settings->toc) {
+		g_free (settings->toc);
+		settings->toc = NULL;
 	}
 
 	if (settings->tmpdir) {
@@ -141,7 +148,8 @@ brasero_session_settings_copy (BraseroSessionSetting *dest,
 	memcpy (dest, original, sizeof (BraseroSessionSetting));
 
 	nautilus_burn_drive_ref (dest->burner);
-	dest->path = g_strdup (original->path);
+	dest->image = g_strdup (original->image);
+	dest->toc = g_strdup (original->toc);
 	dest->label = g_strdup (original->label);
 	dest->tmpdir = g_strdup (original->tmpdir);
 }
@@ -482,7 +490,7 @@ brasero_burn_session_get_num_copies (BraseroBurnSession *self)
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
-		return 0;
+		return 1;
 
 	return priv->settings->num_copies;
 }
@@ -536,6 +544,9 @@ brasero_burn_session_file_test (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
+					if (!path)
+		return BRASERO_BURN_ERR;
+
 	if (!g_file_test (path, G_FILE_TEST_EXISTS))
 		return BRASERO_BURN_OK;
 	
@@ -552,7 +563,7 @@ brasero_burn_session_file_test (BraseroBurnSession *self,
 }
 
 static BraseroBurnResult
-brasero_burn_session_set_output_retval (BraseroBurnSession *self,
+brasero_burn_session_set_image_output_retval (BraseroBurnSession *self,
 					BraseroImageFormat format,
 					gchar **image,
 					gchar **toc,
@@ -621,7 +632,6 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 				 GError **error)
 {
 	BraseroBurnResult result;
-	gchar *complement = NULL;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
@@ -632,31 +642,27 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 		return BRASERO_BURN_ERR;
 
 	/* output paths were set so test them and returns them if OK */
-	result = brasero_burn_session_file_test (self,
-						 priv->settings->path,
-						 error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	complement = brasero_burn_session_get_file_complement (self,
-							       priv->settings->format,
-							       priv->settings->path);
-	if (complement) {
+	if (priv->settings->image) {
 		result = brasero_burn_session_file_test (self,
-							 complement,
+							 priv->settings->image,
 							 error);
-		if (result != BRASERO_BURN_OK) {
-			g_free (complement);
+		if (result != BRASERO_BURN_OK)
 			return result;
-		}
 	}
 
-	brasero_burn_session_set_output_retval (self,
-						priv->settings->format,
-						image,
-						toc,
-						g_strdup (priv->settings->path),
-						complement);
+	if (priv->settings->toc) {
+		result = brasero_burn_session_file_test (self,
+							 priv->settings->toc,
+							 error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
+
+	if (image)
+		*image = g_strdup (priv->settings->image);
+	if (toc)
+		*toc = g_strdup (priv->settings->toc);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -681,33 +687,87 @@ brasero_burn_session_get_output_format (BraseroBurnSession *self)
  */
 
 BraseroBurnResult
-brasero_burn_session_set_output (BraseroBurnSession *self,
-				 BraseroImageFormat format,
-				 const gchar *path)
+brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
+					    BraseroImageFormat format,
+					    const gchar *image,
+					    const gchar *toc)
 {
 	BraseroBurnSessionPrivate *priv;
+	NautilusBurnDriveMonitor *monitor;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (priv->settings->path)
-		g_free (priv->settings->path);
+	monitor = nautilus_burn_get_drive_monitor ();
+	brasero_burn_session_set_burner (self, nautilus_burn_drive_monitor_get_drive_for_image (monitor));
 
-	priv->settings->path = NULL;
+	if (priv->settings->format == format
+	&&  BRASERO_STRCMP (image, priv->settings->image)
+	&&  BRASERO_STRCMP (toc, priv->settings->toc))
+		return BRASERO_BURN_OK;
 
-	if (path)
-		priv->settings->path = g_strdup (path);
+	if (priv->settings->image)
+		g_free (priv->settings->image);
+
+	if (image)
+		priv->settings->image = g_strdup (image);
 	else
-		priv->settings->path = NULL;
+		priv->settings->image = NULL;
+
+	if (priv->settings->toc)
+		g_free (priv->settings->toc);
+
+	if (toc)
+		priv->settings->toc = g_strdup (toc);
+	else
+		priv->settings->toc = NULL;
 
 	priv->settings->format = format;
 
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
 		       0);
-
 	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_session_set_image_output (BraseroBurnSession *self,
+				       BraseroImageFormat format,
+				       const gchar *path)
+{
+	BraseroBurnSessionPrivate *priv;
+	BraseroBurnResult result;
+	gchar *complement;
+	gchar *image = NULL;
+	gchar *toc = NULL;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	/* find the file complement */
+	complement = brasero_burn_session_get_file_complement (self,
+							       format,
+							       path);
+	if (!complement)
+		return BRASERO_BURN_ERR;
+
+	brasero_burn_session_set_image_output_retval (self,
+						format,
+						&image,
+						&toc,
+						g_strdup (path),
+						complement);
+
+	result = brasero_burn_session_set_image_output_full (self,
+							     format,
+							     image,
+							     toc);
+	g_free (image);
+	g_free (toc);
+
+	return result;
 }
 
 /**
@@ -733,6 +793,17 @@ brasero_burn_session_set_tmpdir (BraseroBurnSession *self,
 		priv->settings->tmpdir = NULL;
 
 	return BRASERO_BURN_OK;
+}
+
+const gchar *
+brasero_burn_session_get_tmpdir (BraseroBurnSession *self)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	return priv->settings->tmpdir? priv->settings->tmpdir:g_get_tmp_dir ();
 }
 
 BraseroBurnResult
@@ -861,12 +932,13 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 		}
 	}
 
-	brasero_burn_session_set_output_retval (self,
-						format,
-						image,
-						toc,
-						path,
-						complement);
+	priv->tmpfiles = g_slist_prepend (priv->tmpfiles, g_strdup (complement));
+	brasero_burn_session_set_image_output_retval (self,
+						      format,
+						      image,
+						      toc,
+						      path,
+						      complement);
 
 	return BRASERO_BURN_OK;
 }
@@ -1005,6 +1077,8 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 	settings = priv->pile_settings->data;
 	priv->pile_settings = g_slist_remove (priv->pile_settings, settings);
 	brasero_session_settings_copy (priv->settings, settings);
+
+	brasero_session_settings_free (settings);
 
 	if (priv->settings->burner) {
 		priv->dest_added_sig = g_signal_connect (priv->settings->burner,
@@ -1319,12 +1393,16 @@ brasero_burn_session_start (BraseroBurnSession *self)
 					 "\tmedia type\t= %i\n"
 					 "\tspeed\t\t= %lli\n"
 					 "\ttrack format\t= %i\n"
-					 "\toutput\t\t= %s",
+					 "\toutput\t\t= %s"
+					 "\tnumber of copies = %i\n",
 					 priv->settings->flags,
 					 NCB_MEDIA_GET_STATUS (priv->settings->burner),
 					 priv->settings->rate,
 					 output,
-					 priv->settings->path ? priv->settings->path:"none");
+					 priv->settings->image ? priv->settings->image:"none",
+					 priv->settings->num_copies);
+
+	BRASERO_BURN_LOG (start_message);
 
 	brasero_burn_session_logv (self, start_message, NULL);
 	g_free (start_message);

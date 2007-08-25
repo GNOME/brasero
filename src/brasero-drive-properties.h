@@ -60,20 +60,27 @@ GType brasero_drive_properties_get_type (void) G_GNUC_CONST;
 GtkWidget *brasero_drive_properties_new ();
 
 void
-brasero_drive_properties_set_drive (BraseroDriveProperties *self,
+brasero_drive_properties_set_drive (BraseroDriveProperties *props,
 				    NautilusBurnDrive *drive,
 				    gint64 rate);
 void
-brasero_drive_properties_set_flags (BraseroDriveProperties *self,
+brasero_drive_properties_set_flags (BraseroDriveProperties *props,
 				    BraseroBurnFlag flags,
 				    BraseroBurnFlag supported,
 				    BraseroBurnFlag compulsory);
 
+void
+brasero_drive_properties_set_tmpdir (BraseroDriveProperties *props,
+				     const gchar *path);
+
 BraseroBurnFlag
-brasero_drive_properties_get_flags (BraseroDriveProperties *self);
+brasero_drive_properties_get_flags (BraseroDriveProperties *props);
 
 gint64
-brasero_drive_properties_get_rate (BraseroDriveProperties *self);
+brasero_drive_properties_get_rate (BraseroDriveProperties *props);
+
+gchar *
+brasero_drive_properties_get_tmpdir (BraseroDriveProperties *props);
 
 G_END_DECLS
 

@@ -278,6 +278,8 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 {
 	BraseroTrackType type;
 
+	g_ptr_array_add (argv, g_strdup ("cdrdao"));
+
 	brasero_job_get_input_type (BRASERO_JOB (cdrdao), &type);
         if (type.type == BRASERO_TRACK_TYPE_DISC) {
 		NautilusBurnDrive *drive;
@@ -306,9 +308,9 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 
 		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE)
-			cuepath = brasero_track_get_toc_source (track, TRUE);
+			cuepath = brasero_track_get_toc_source (track, FALSE);
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO)
-			cuepath = brasero_track_get_toc_source (track, TRUE);
+			cuepath = brasero_track_get_toc_source (track, FALSE);
 		else
 			BRASERO_JOB_NOT_SUPPORTED (cdrdao);
 
@@ -340,6 +342,7 @@ brasero_cdrdao_set_argv_blank (BraseroCdrdao *cdrdao,
 {
 	BraseroBurnFlag flags;
 
+	g_ptr_array_add (argv, g_strdup ("cdrdao"));
 	g_ptr_array_add (argv, g_strdup ("blank"));
 
 	brasero_cdrdao_set_argv_device (cdrdao, argv);
@@ -371,6 +374,7 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 	BraseroTrackType output;
 	BraseroTrack *track;
 
+	g_ptr_array_add (argv, g_strdup ("cdrdao"));
 	g_ptr_array_add (argv, g_strdup ("read-cd"));
 	g_ptr_array_add (argv, g_strdup ("--device"));
 
@@ -440,8 +444,6 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 	cdrdao = BRASERO_CDRDAO (process);
 
 	/* sets the first argv */
-	g_ptr_array_add (argv, g_strdup ("cdrdao"));
-
 	brasero_job_get_action (BRASERO_JOB (cdrdao), &action);
 	if (action == BRASERO_JOB_ACTION_RECORD)
 		return brasero_cdrdao_set_argv_record (cdrdao, argv);
@@ -464,7 +466,7 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 								       sectors * 2352);
 		}
 
-		return BRASERO_BURN_OK;
+		return BRASERO_BURN_NOT_RUNNING;
 	}
 
 	BRASERO_JOB_NOT_SUPPORTED (cdrdao);
@@ -494,8 +496,8 @@ brasero_cdrdao_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *input;
 	GSList *output;
@@ -522,7 +524,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	prog_name = g_find_program_in_path ("cdrdao");
 	if (!prog_name) {
 		*error = g_strdup (_("cdrdao could not be found in the path"));
-		return G_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 	}
 	g_free (prog_name);
 
@@ -578,5 +580,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
-	return brasero_cdrdao_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

@@ -588,6 +588,7 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 		return;
 
 	brasero_project_manager_burn (manager, session);
+	g_object_unref (session);
 }
 
 static void
@@ -616,6 +617,7 @@ brasero_project_manager_burn_disc (BraseroProjectManager *manager)
 	gtk_widget_destroy (dialog);
 
 	brasero_project_manager_burn (manager, session);
+	g_object_unref (session);
 }
 
 static void

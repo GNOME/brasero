@@ -87,7 +87,7 @@ brasero_dvdcss_library_init (GError **error)
 	BRASERO_BURN_LOG ("libdvdcss version %c.%c.%c\n",
 			  (guchar) dvdcss_interface_2 [0],
 			  (guchar) dvdcss_interface_2 [1],
-			  (guchar) dvdcss_interface_2 [3]);
+			  (guchar) dvdcss_interface_2 [2]);
 
 	if (!g_module_symbol (module, "dvdcss_open", &address))
 		goto error_loading;
@@ -323,7 +323,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	}
 
 	/* create a handle/open DVD */
-	handle = dvdcss_open (g_strdup (NCB_DRIVE_GET_DEVICE (drive)));
+	handle = dvdcss_open (NCB_DRIVE_GET_DEVICE (drive));
 	if (!handle) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
@@ -599,8 +599,8 @@ brasero_dvdcss_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_dvdcss_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GError *gerror = NULL;
 	GSList *output;
@@ -618,7 +618,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 			*error = g_strdup (gerror->message);
 			g_error_free (gerror);
 		}
-		return G_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 	}
 
 	/* to my knowledge, css can only be applied to pressed discs so no need
@@ -637,5 +637,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 	g_slist_free (output);
 
-	return brasero_dvdcss_get_type (plugin);
+	return BRASERO_BURN_ERR;
 }

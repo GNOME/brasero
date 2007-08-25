@@ -204,6 +204,7 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 						   NULL);
 	}
 
+	g_slist_foreach (names, (GFunc) g_free, NULL);
 	g_slist_free (names);
 
 end:
@@ -299,8 +300,8 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 
 	/* load all plugins from directory */
 	while ((name = g_dir_read_name (directory))) {
+		BraseroPluginRegisterType function;
 		BraseroPlugin *plugin;
-		gpointer function;
 		GModule *handle;
 		gchar *path;
 
@@ -320,26 +321,27 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 			continue;
 		}
 
-		if (!g_module_symbol (handle, "brasero_plugin_register", &function)) {
+		if (!g_module_symbol (handle, "brasero_plugin_register", (gpointer) &function)) {
 			g_free (path);
+			g_module_close (handle);
 			BRASERO_BURN_LOG ("Module can't be loaded: no register function");
 			continue;
 		}
 
-		g_module_close (handle);
-
+		/* now we can create the plugin */
 		plugin = brasero_plugin_new (path);
+		g_module_close (handle);
 		g_free (path);
-
-		g_signal_connect (plugin,
-				  "activated",
-				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
-				  self);
 
 		if (!plugin) {
 			BRASERO_BURN_LOG ("Load failure");
 			continue;
 		}
+
+		g_signal_connect (plugin,
+				  "activated",
+				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
+				  self);
 
 		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
 			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",

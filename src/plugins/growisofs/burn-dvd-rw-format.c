@@ -146,8 +146,8 @@ brasero_dvd_rw_format_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	/* NOTE: sequential and restricted are added later on demand */
 	const BraseroMedia media = BRASERO_MEDIUM_DVD|
@@ -169,7 +169,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	prog_name = g_find_program_in_path ("dvd+rw-format");
 	if (!prog_name) {
 		*error = g_strdup (_("dvd+rw-format could not be found in the path"));
-		return G_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 	}
 	g_free (prog_name);
 
@@ -197,5 +197,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NONE);
 	
 
-	return brasero_dvd_rw_format_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

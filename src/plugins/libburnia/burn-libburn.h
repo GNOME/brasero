@@ -34,7 +34,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_LIBBURN         (brasero_libburn_get_type (NULL))
+#define BRASERO_TYPE_LIBBURN         (brasero_libburn_get_type ())
 #define BRASERO_LIBBURN(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_LIBBURN, BraseroLibburn))
 #define BRASERO_LIBBURN_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_LIBBURN, BraseroLibburnClass))
 #define BRASERO_IS_LIBBURN(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_LIBBURN))

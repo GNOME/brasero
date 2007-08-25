@@ -618,8 +618,8 @@ brasero_growisofs_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-G_MODULE_EXPORT GType
-brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
+static BraseroBurnResult
+brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	gchar *prog_name;
 	GSList *output;
@@ -636,7 +636,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 	prog_name = g_find_program_in_path ("growisofs");
 	if (!prog_name) {
 		*error = g_strdup (_("growisofs could not be found in the path"));
-		return G_TYPE_NONE;
+		return BRASERO_BURN_ERR;
 	}
 	g_free (prog_name);
 
@@ -741,5 +741,5 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_FAST_BLANK);
 
-	return brasero_growisofs_get_type (plugin);
+	return BRASERO_BURN_OK;
 }

@@ -60,8 +60,7 @@ GType brasero_plugin_get_type (void) G_GNUC_CONST;
  * These are the functions a plugin must implement
  */
 
-GType	brasero_plugin_register		(BraseroPlugin *plugin, gchar **error);
-void	brasero_plugin_cleanup		(BraseroPlugin *plugin);
+GType	brasero_plugin_register_caps	(BraseroPlugin *plugin, gchar **error);
 
 void
 brasero_plugin_define (BraseroPlugin *plugin,
@@ -81,6 +80,9 @@ typedef enum {
 	BRASERO_PLUGIN_RUN_FIRST		= 1,
 	BRASERO_PLUGIN_RUN_LAST			= 1 << 1,
 } BraseroPluginProcessFlag;
+
+GType
+brasero_plugin_get_gtype (BraseroPlugin *plugin);
 
 GSList *
 brasero_caps_image_new (BraseroPluginIOFlag flags,
@@ -137,40 +139,56 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
  * Boiler plate for plugin definition to save the hassle of definition.
  * To be put at the beginning of the .c file.
  */
+typedef GType	(* BraseroPluginRegisterType)	(BraseroPlugin *plugin, gchar **error);
 
-#define BRASERO_PLUGIN_BOILERPLATE(TN, t_n, TP, t_p)				\
+#define BRASERO_PLUGIN_BOILERPLATE(PluginName, plugin_name, PARENT_NAME, ParentName) \
 typedef struct {								\
-	t_p parent;								\
-} TN;										\
+	ParentName parent;							\
+} PluginName;									\
+										\
 typedef struct {								\
-	t_p##Class parent_class;						\
-} TN##Class;									\
-static void t_n##_class_init (TN##Class *klass);				\
-static void t_n##_init (TN *sp);						\
-static void t_n##_finalize (GObject *object);					\
+	ParentName##Class parent_class;						\
+} PluginName##Class;								\
+										\
+static GType plugin_name##_type = 0;						\
+										\
 static GType									\
-t_n##_get_type (BraseroPlugin *plugin)						\
+plugin_name##_get_type (void)							\
 {										\
-	static GType type = 0;							\
-	if(type == 0) {								\
-		static const GTypeInfo our_info = {				\
-			sizeof (TN##Class),					\
-			NULL,							\
-			NULL,							\
-			(GClassInitFunc)t_n##_class_init,			\
-			NULL,							\
-			NULL,							\
-			sizeof (TN),						\
-			0,							\
-			(GInstanceInitFunc)t_n##_init,				\
-		};								\
-		type = g_type_module_register_type (G_TYPE_MODULE (plugin),	\
-						    TP,				\
-						    G_STRINGIFY (TN),		\
-						    &our_info,			\
-						    0);				\
+	return plugin_name##_type;						\
+}										\
+										\
+static void plugin_name##_class_init (PluginName##Class *klass);		\
+static void plugin_name##_init (PluginName *sp);				\
+static void plugin_name##_finalize (GObject *object);				\
+static BraseroBurnResult plugin_name##_export_caps (BraseroPlugin *plugin, gchar **error);	\
+										\
+G_MODULE_EXPORT GType								\
+brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
+{										\
+	if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {			\
+		BraseroBurnResult result;					\
+		result = plugin_name##_export_caps (plugin, error);		\
+		if (result != BRASERO_BURN_OK)					\
+			return G_TYPE_NONE;					\
 	}									\
-	return type;								\
+	static const GTypeInfo our_info = {					\
+		sizeof (PluginName##Class),					\
+		NULL,								\
+		NULL,								\
+		(GClassInitFunc)plugin_name##_class_init,			\
+		NULL,								\
+		NULL,								\
+		sizeof (PluginName),						\
+		0,								\
+		(GInstanceInitFunc)plugin_name##_init,				\
+	};									\
+	plugin_name##_type = g_type_module_register_type (G_TYPE_MODULE (plugin),		\
+							  PARENT_NAME,		\
+							  G_STRINGIFY (PluginName),		\
+							  &our_info,		\
+							  0);			\
+	return plugin_name##_type;						\
 }
 
 G_END_DECLS

@@ -539,6 +539,11 @@ brasero_image_option_dialog_finalize (GObject *object)
 		priv->caps_sig = 0;
 	}
 
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
 	if (priv->caps) {
 		g_object_unref (priv->caps);
 		priv->caps = NULL;

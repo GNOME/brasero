@@ -178,7 +178,7 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 		g_free (info);
 
 		gtk_label_set_markup (GTK_LABEL (priv->status),
-				      _("the medium can be recorded (blanking required)"));
+				      _("the medium can be recorded (automatic blanking required)"));
 	}
 	else if (media & BRASERO_MEDIUM_BLANK) {
 		gchar *remaining_string, *info;
@@ -252,6 +252,18 @@ brasero_drive_info_set_image_path (BraseroDriveInfo *self,
 	 * retrieving some information about it like size .... */
 }
 
+void
+brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self)
+{
+	BraseroDriveInfoPrivate *priv;
+
+	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
+
+	/* This is to handle a special case when copying a media using same 
+	 * drive as source and destination */
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
+}
+
 static void
 brasero_drive_info_media_added (NautilusBurnDrive *drive,
 				BraseroDriveInfo *self)
@@ -293,7 +305,7 @@ brasero_drive_info_set_drive (BraseroDriveInfo *self,
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
 					      "iso-image-new",
 					      GTK_ICON_SIZE_DIALOG);
-		gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 2);
 		return;
 	}
 
@@ -311,7 +323,7 @@ brasero_drive_info_set_drive (BraseroDriveInfo *self,
 	}
 
 	brasero_drive_info_update_info (self, drive);
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
 }
 
 static void
@@ -332,6 +344,16 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
 	gtk_box_pack_start (GTK_BOX (object), priv->notebook, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("<b><i>The drive that holds the source media will also be the one used to record.\n\n</i></b>"
+				 "<i>A new recordable media will be required once the one currently loaded has been copied.</i>"));
+	gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+	gtk_notebook_prepend_page (GTK_NOTEBOOK (priv->notebook),
+				   label,
+				   NULL);
 
 	table = gtk_table_new (4, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);

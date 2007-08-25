@@ -272,17 +272,13 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 
 	if (type & BRASERO_MEDIUM_HAS_DATA) {
 		if (!insert) {
-			if (type & BRASERO_MEDIUM_WRITABLE) 
-				message = g_strdup (_("replace the disc with the media to check its integrity"));
-			else if (type & BRASERO_MEDIUM_REWRITABLE)
+			if (type & BRASERO_MEDIUM_REWRITABLE)
 				message = g_strdup (_("replace the disc with a rewritable disc holding data."));
 			else
 				message = g_strdup (_("replace the disc with a disc holding data."));
 		}
 		else {
-			if (type & BRASERO_MEDIUM_WRITABLE) 
-				message = g_strdup (_("insert the media to check its integrity"));
-			else if (type & BRASERO_MEDIUM_REWRITABLE)
+			if (type & BRASERO_MEDIUM_REWRITABLE)
 				message = g_strdup (_("insert a rewritable disc holding data."));
 			else
 				message = g_strdup (_("insert a disc holding data."));
@@ -382,7 +378,17 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	else
 		drive_name = NULL;
 
-	if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
+	if (error == BRASERO_BURN_WARNING_CHECKSUM) {
+		main_message = g_strdup (_("A data integrity test is about to begin:"));
+		secondary_message = g_strdup_printf (_("please, insert the disc to check in \"%s\"."),
+						     drive_name);
+	}
+	else if (error == BRASERO_BURN_WARNING_NEXT_COPY) {
+		main_message = g_strdup (_("A recording was successfully completed."
+					   "\nThe next recording is about to begin:"));
+		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
+	}
+	else if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
 		main_message = g_strdup_printf (_("The disc in \"%s\" is busy:"),
 						drive_name);
 		secondary_message = g_strdup (_("make sure another application is not using it."));
@@ -1476,7 +1482,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		&&   NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
 			brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_DAO);
 
-		brasero_burn_session_set_num_copies (session, 1);
 		result = brasero_burn_record (dialog->priv->burn,
 					      session,
 					      &error);
@@ -1485,6 +1490,9 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	close_dialog = brasero_burn_dialog_end_session (dialog,
 							result,
 							error);
+	
+	g_object_unref (dialog->priv->session);
+	dialog->priv->session = NULL;
 
 	return close_dialog;
 }

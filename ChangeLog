@@ -1,5 +1,18 @@
 2007-08-21  Rouquier Philippe <bonfire-app@wanadoo.fr>
 
+	- Rework plugin so they register their type everytime they load (fix crash when no --debug)
+	- added multiple copies feature (tested only with data project)
+	- added temporary directory setting
+	- improved disc copy using same source and destination drive
+	- fixed bugs in cdrdao/dvdcss/md5sum plugins
+	- rework/improve drive locking in burn.c
+	- make sure session object is properly unreffed so tmp files are removed
+	- fix image property dialog
+	- other fixes
+
+
+2007-08-21  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
 	remove some "bonfire" references
 
 2007-08-21  Rouquier Philippe <bonfire-app@wanadoo.fr>

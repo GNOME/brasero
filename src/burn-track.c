@@ -705,6 +705,7 @@ brasero_track_get_data_grafts_source (BraseroTrack *track)
 {
 	BraseroTrackData *data;
 
+	g_return_val_if_fail (track != NULL, NULL);
 	if (track->type.type != BRASERO_TRACK_TYPE_DATA)
 		return NULL;
 
@@ -813,7 +814,11 @@ brasero_track_set_checksum (BraseroTrack *track,
 		g_free (track->checksum);
 
 	track->checksum_type = type;
-	track->checksum = g_strdup (checksum);
+	if (checksum)
+		track->checksum = g_strdup (checksum);
+	else
+		track->checksum = NULL;
+
 	return result;
 }
 

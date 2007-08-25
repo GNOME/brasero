@@ -179,6 +179,9 @@ brasero_process_finished (BraseroProcess *self)
 						image,
 						toc,
 						type.subtype.img_format);
+
+		g_free (image);
+		g_free (toc);
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		gchar *uri = NULL;
@@ -189,6 +192,8 @@ brasero_process_finished (BraseroProcess *self)
 		brasero_track_set_audio_source (track,
 						uri,
 						type.subtype.audio_format);
+
+		g_free (uri);
 	}
 
 	brasero_job_add_track (BRASERO_JOB (self), track);
@@ -584,7 +589,7 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (priv->std_out) {
-		if (!error) {
+		if (error && !(*error)) {
 			BraseroProcessClass *klass;
 
 			/* we need to nullify the buffer since we've just read a line
@@ -622,7 +627,7 @@ brasero_process_stop (BraseroJob *job,
 	}
 
 	if (priv->std_error) {
-		if (!error) {
+		if (error && !(*error)) {
 			BraseroProcessClass *klass;
 		
 			/* we need to nullify the buffer since we've just read a line

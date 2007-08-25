@@ -32,7 +32,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_TYPE_MKISOFS         (brasero_mkisofs_get_type (NULL))
+#define BRASERO_TYPE_MKISOFS         (brasero_mkisofs_get_type ())
 #define BRASERO_MKISOFS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_MKISOFS, BraseroMkisofs))
 #define BRASERO_MKISOFS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_MKISOFS, BraseroMkisofsClass))
 #define BRASERO_IS_MKISOFS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_MKISOFS))
