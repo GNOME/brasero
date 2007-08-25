@@ -120,7 +120,8 @@ static void
 brasero_libburn_common_init (BraseroLibburnCommon *obj)
 {
 	obj->priv = g_new0 (BraseroLibburnCommonPrivate, 1);
-	//burn_set_verbosity (666);
+	burn_set_verbosity (666);
+	burn_msgs_set_severities ("ALL", "ALL", "brasero (libburn):");
 }
 
 static void
@@ -184,7 +185,7 @@ brasero_libburn_common_set_drive (BraseroLibburnCommon *self,
 				  NautilusBurnDrive *drive,
 				  GError **error)
 {
-	gchar libburn_device [BURN_DRIVE_ADR_LEN];
+	gchar libburn_device [BURN_DRIVE_ADR_LEN] = { 0 };
 	BraseroMediumInfo media;
 	int res;
 

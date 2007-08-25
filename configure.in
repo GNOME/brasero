@@ -89,7 +89,13 @@ if test x"$build_libburn" = "xyes"; then
 	PKG_CHECK_MODULES(LIBISOFS_0_2_8, libisofs-1 >= 0.2.8, has_libisofs_0_2_8=yes, has_libisofs_0_2_8=no)
 	if test x"$has_libisofs_0_2_8" = "xyes"; then
 		AC_DEFINE(HAVE_LIBISOFS_0_2_8, 1, [define if you have libisofs-0.2.8])
-	fi	
+	else
+		PKG_CHECK_MODULES(LIBISOFS_0_2_5, libisofs-1 >= 0.2.5, has_libisofs_under_0_2_5=no, has_libisofs_under_0_2_5=yes)
+		if test x"$has_libisofs_under_0_2_5" = "xyes"; then
+			AC_DEFINE(HAVE_LIBISOFS_UNDER_0_2_5, 1, [define if you have libisofs version is under 0.2.5])
+		fi
+	fi
+
 	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBBURN_CFLAGS"
 	BRASERO_LIBS="$BRASERO_LIBS $LIBBURN_LIBS"
 	AC_DEFINE(HAVE_LIBBURN, 1, [define if you  want to use with libburn support])

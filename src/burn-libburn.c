@@ -264,11 +264,9 @@ brasero_libburn_set_drive (BraseroRecorder *recorder,
 	BraseroLibburn *self;
 
 	self = BRASERO_LIBBURN (recorder);
-	brasero_libburn_common_set_drive (BRASERO_LIBBURN_COMMON (self),
-					  drive,
-					  error);
-
-	return BRASERO_BURN_OK;
+	return brasero_libburn_common_set_drive (BRASERO_LIBBURN_COMMON (self),
+						 drive,
+						 error);
 }
 
 static BraseroBurnResult

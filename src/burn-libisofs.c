@@ -39,6 +39,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-common.h"
 #include "burn-caps.h"
 #include "burn-imager.h"
@@ -452,7 +453,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	BRASERO_JOB_TASK_START_PROGRESS (self, FALSE);
 
 	for (iter = source->contents.data.grafts; iter; iter = iter->next) {
-		struct iso_tree_node *node;
+		struct iso_tree_node_dir *parent;
 		BraseroGraftPt *graft;
 		gchar **excluded_array;
 		gchar *path_parent;
@@ -463,6 +464,8 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			goto end;
 
 		graft = iter->data;
+
+		BRASERO_BURN_LOG ("Adding graft disc path = %s, URI = %s", graft->path, graft->uri);
 
 		size = g_slist_length (source->contents.data.excluded);
 		size += g_slist_length (graft->excluded);
@@ -487,69 +490,105 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 		/* search for parent node */
 		path_parent = g_path_get_dirname (graft->path);
-		node = iso_tree_volume_path_to_node (volume, path_parent);
+		parent = (struct iso_tree_node_dir *) iso_tree_volume_path_to_node (volume, path_parent);
 		g_free (path_parent);
 
-		if (!node) {
+		if (!parent) {
 			/* an error has occured, possibly libisofs hasn't been
 			 * able to find a parent for this node */
 			self->priv->error = g_error_new (BRASERO_BURN_ERROR,
 							 BRASERO_BURN_ERROR_GENERAL,
 							 _("a parent for the path (%s) could not be found in the tree"),
 							 graft->path);
-			g_strfreev (excluded_array);
+			g_free (excluded_array);
 			goto end;
 		}
 
+		BRASERO_BURN_LOG ("Found parent");
 		path_name = g_path_get_basename (graft->path);
 
 		/* add the file/directory to the volume */
 		if (graft->uri) {
 			gchar *local_path;
-			struct iso_tree_radd_dir_behavior behavior;
 
 			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
-
-			behavior.stop_on_error = 0;
-			behavior.excludes = excluded_array;
-			iso_tree_radd_dir ((struct iso_tree_node_dir *) node, local_path, &behavior);
-
-			if (behavior.error) {
-				/* an error has occured, possibly libisofs hasn't been
-				 * able to find a parent for this node */
+			if (!local_path){
 				self->priv->error = g_error_new (BRASERO_BURN_ERROR,
 								 BRASERO_BURN_ERROR_GENERAL,
-								 _("a parent for the path (%s) could not be found in the tree"),
-								 graft->path);
+								 _("unsupported operation (at %s)"),
+								 G_STRLOC);
 				g_free (path_name);
-				g_strfreev (excluded_array);
+				g_free (excluded_array);
+				goto end;
+			}
+
+			if  (g_file_test (local_path, G_FILE_TEST_IS_DIR)) {
+				struct iso_tree_radd_dir_behavior behavior;
+
+				/* first add directory node ... */
+				parent = (struct iso_tree_node_dir *) iso_tree_add_dir (parent, path_name);
+
+				/* ... then its contents */
+				behavior.stop_on_error = 1;
+				behavior.excludes = excluded_array;
+
+				iso_tree_radd_dir (parent,
+						   local_path,
+						   &behavior);
+
+				if (behavior.error) {
+					/* an error has occured, possibly libisofs hasn't been
+					 * able to find a parent for this node */
+					self->priv->error = g_error_new (BRASERO_BURN_ERROR,
+									 BRASERO_BURN_ERROR_GENERAL,
+									 _("a parent for the path (%s) could not be found in the tree"),
+									 graft->path);
+					g_free (path_name);
+					g_free (excluded_array);
+					goto end;
+				}
+			}
+			else if (g_file_test (local_path, G_FILE_TEST_IS_REGULAR)) {
+				struct iso_tree_node *node;
+
+				node = iso_tree_add_file (parent, local_path);
+				iso_tree_node_set_name (node, path_name);
+			}
+			else {
+				self->priv->error = g_error_new (BRASERO_BURN_ERROR,
+								 BRASERO_BURN_ERROR_GENERAL,
+								 _("unsupported operation (at %s)"),
+								 G_STRLOC);
+				g_free (path_name);
+				g_free (excluded_array);
 				goto end;
 			}
 
 			g_free (local_path);
 		}
 		else
-			iso_tree_add_dir ((struct iso_tree_node_dir *) node, path_name);
+			iso_tree_add_dir (parent, path_name);
 
 		g_free (path_name);
-		g_strfreev (excluded_array);
+		g_free (excluded_array);
 	}
 
 end:
 
 	volset = iso_volset_new (volume, "VOLSETID");
-	iso_volume_free (volume);
 
+	memset (&opts, 0, sizeof (struct ecma119_source_opts));
 	opts.level = 2;
+	opts.relaxed_constraints = ECMA119_NO_DIR_REALOCATION;
 	opts.flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	opts.flags |= ECMA119_ROCKRIDGE;
 
 	self->priv->libburn_src = iso_source_new_ecma119 (volset, &opts);
-	iso_volset_free (volset);
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
 	self->priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
 	self->priv->thread = NULL;
+	g_thread_exit (NULL);
 
 	return NULL;
 }
@@ -663,7 +702,11 @@ end:
 	iso_exclude_empty ();
 
 	volset = iso_volset_new (volume, "VOLSETID");
+
+#ifdef HAVE_LIBISOFS_UNDER_0_2_5
+	/* in 0.2.5 and after libisofs doesn't use reffing anymore */
 	iso_volume_free (volume);
+#endif
 
 	flags = ((self->priv->image_format & BRASERO_IMAGE_FORMAT_JOLIET) ? ECMA119_JOLIET : 0);
 	flags |= ECMA119_ROCKRIDGE;
@@ -672,11 +715,17 @@ end:
 							  0,
 							  2,
 							  flags);
+
+#ifdef HAVE_LIBISOFS_UNDER_0_2_5
+	/* in 0.2.5 and after libisofs doesn't use reffing anymore */
 	iso_volset_free (volset);
+#endif
 
 	BRASERO_JOB_TASK_SET_TOTAL (self, self->priv->libburn_src->get_size (self->priv->libburn_src));
-	self->priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
+	if (!self->priv->cancel)
+		self->priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
 	self->priv->thread = NULL;
+	g_thread_exit (NULL);
 
 	return NULL;
 }
