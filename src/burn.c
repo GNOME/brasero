@@ -2055,8 +2055,8 @@ brasero_burn_record (BraseroBurn *burn,
 		while (--num_copies > 0 && result == BRASERO_BURN_OK) {
 			GSList *tracks;
 
-			track = brasero_burn_session_get_tracks (session);
-			for (; tracks; tracks = tracks->next) {
+			tracks = brasero_burn_session_get_tracks (session);
+			for (; tracks; tracks = tracks->next) {
 				BraseroTrack *track;
 
 				/* unset checksum (might depend from copy to 
