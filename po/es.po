@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.brasero_0_6.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-25 03:47+0100\n"
-"PO-Revision-Date: 2007-08-25 14:40+0200\n"
+"POT-Creation-Date: 2007-08-25 19:39+0100\n"
+"PO-Revision-Date: 2007-08-27 14:54+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "libdvdcss couldn't be loaded properly"
 msgstr "No se puede cargar libdvdcss"
 
-#: ../src/burn-dvdcss.c:482 ../src/burn-libisofs.c:724
+#: ../src/burn-dvdcss.c:482 ../src/burn-libisofs.c:773
 #, c-format
 msgid "the data couldn't be written to the pipe (%i: %s)"
 msgstr "los datos no se pueden escribir en la tubería (%i: %s)"
@@ -1684,7 +1684,7 @@ msgstr "No se pudo abrir el DVD"
 msgid "Copying Video DVD"
 msgstr "Copiando vídeo DVD"
 
-#: ../src/burn-dvdcss.c:693 ../src/burn-libisofs.c:831
+#: ../src/burn-dvdcss.c:693 ../src/burn-libisofs.c:880
 #, c-format
 msgid "the data couldn't be written to the file (%i: %s)"
 msgstr "los datos no se pueden escribir al archivo (%i: %s)"
@@ -1734,54 +1734,59 @@ msgstr "registro de directorio inválido"
 msgid "file name is too long"
 msgstr "el nombre del archivo es demasiado largo"
 
-#: ../src/burn-libburn-common.c:215
+#: ../src/burn-libburn-common.c:216
 msgid "the drive couldn't be initialized"
 msgstr "La unidad no se puede inicializar"
 
-#: ../src/burn-libburn-common.c:280
+#: ../src/burn-libburn-common.c:281
 #, c-format
 msgid "(%s) libburn tried to say something"
-msgstr "(%s) libburn intenta decir algo"
+msgstr "(%s) libburn intentó decir algo"
 
-#: ../src/burn-libburn-common.c:429
+#: ../src/burn-libburn-common.c:430
 #, c-format
 msgid "Writing track %02i"
 msgstr "Escribiendo pista %02i"
 
-#: ../src/burn-libburn.c:319
+#: ../src/burn-libburn.c:317
 msgid "unable to set the source"
 msgstr "imposible establecer el origen"
 
-#: ../src/burn-libburn.c:327
+#: ../src/burn-libburn.c:325
 msgid "unable to add the track to the session"
 msgstr "imposible añadir la pista a la sesión"
 
-#: ../src/burn-libburn.c:388
+#: ../src/burn-libburn.c:386
 msgid "a slave tried to get connected"
 msgstr "ha intentado conectarse un esclavo"
 
-#: ../src/burn-libburn.c:552
+#: ../src/burn-libburn.c:550
 msgid "unable to connect to imager"
 msgstr "incapaz de conectarse con el creador de imágenes"
 
-#: ../src/burn-libburn.c:646 ../src/burn-libburn.c:704
+#: ../src/burn-libburn.c:644 ../src/burn-libburn.c:702
 msgid "no profile available for the medium"
 msgstr "no hay un perfil disponible para el medio"
 
-#: ../src/burn-libburn.c:749
+#: ../src/burn-libburn.c:747
 msgid "/dev/null can't be opened"
 msgstr "no se pudo abrir /dev/null"
 
-#: ../src/burn-libburn.c:780
+#: ../src/burn-libburn.c:778
 #, c-format
 msgid "libburn can't burn: %s"
 msgstr "libburn no puede grabar: %s"
 
-#: ../src/burn-libisofs.c:498 ../src/burn-libisofs.c:522
-#: ../src/burn-libisofs.c:642
+#: ../src/burn-libisofs.c:501 ../src/burn-libisofs.c:544
+#: ../src/burn-libisofs.c:681
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
 msgstr "no se encuentra en el árbol el antecesor de la ruta (%s)"
+
+#: ../src/burn-libisofs.c:518 ../src/burn-libisofs.c:560
+#, c-format
+msgid "unsupported operation (at %s)"
+msgstr "operación no soportada (en %s)"
 
 #: ../src/burn-libread-disc.c:290
 msgid "no disc could be found"
