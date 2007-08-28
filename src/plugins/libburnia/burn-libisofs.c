@@ -465,8 +465,6 @@ end:
 	flags |= ECMA119_ROCKRIDGE;
 
 	priv->libburn_src = iso_source_new_ecma119 (volset,
-						    0,
-						    2,
 						    flags);
 	iso_volset_free (volset);
 
