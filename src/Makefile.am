@@ -207,7 +207,9 @@ brasero_SOURCES = \
 	brasero-plugin-manager-ui.c         \
 	brasero-plugin-manager-ui.h         \
 	brasero-pref.h         \
-	brasero-pref.c 
+	brasero-pref.c         \
+	brasero-plugin-option.h         \
+	brasero-plugin-option.c 
 
 brasero_LDADD = $(BRASERO_LIBS)
 

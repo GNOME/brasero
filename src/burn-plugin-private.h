@@ -86,6 +86,28 @@ gboolean
 brasero_plugin_get_process_flags (BraseroPlugin *plugin,
 				  BraseroPluginProcessFlag *flags);
 
+/**
+ * Plugin configuration options
+ */
+
+BraseroPluginConfOption *
+brasero_plugin_get_next_conf_option (BraseroPlugin *plugin,
+				     BraseroPluginConfOption *current);
+
+BraseroBurnResult
+brasero_plugin_conf_option_get_info (BraseroPluginConfOption *option,
+				     gchar **key,
+				     gchar **description,
+				     BraseroPluginConfOptionType *type);
+
+GSList *
+brasero_plugin_conf_option_bool_get_suboptions (BraseroPluginConfOption *option);
+
+gint
+brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option);
+gint
+brasero_plugin_conf_option_int_get_max (BraseroPluginConfOption *option);
+
 G_END_DECLS
 
 #endif /* _BURN_PLUGIN_PRIVATE_H */

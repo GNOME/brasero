@@ -134,6 +134,36 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 			   BraseroChecksumType type,
 			   GSList *caps);
 
+/**
+ * Plugin configure options
+ */
+
+typedef struct _BraseroPluginConfOption BraseroPluginConfOption;
+
+typedef enum {
+	BRASERO_PLUGIN_OPTION_NONE	= 0,
+	BRASERO_PLUGIN_OPTION_BOOL,
+	BRASERO_PLUGIN_OPTION_INT,
+	BRASERO_PLUGIN_OPTION_STRING,
+} BraseroPluginConfOptionType;
+
+BraseroPluginConfOption *
+brasero_plugin_conf_option_new (const gchar *key,
+				const gchar *description,
+				BraseroPluginConfOptionType type);
+
+BraseroBurnResult
+brasero_plugin_add_conf_option (BraseroPlugin *plugin,
+				BraseroPluginConfOption *option);
+
+BraseroBurnResult
+brasero_plugin_conf_option_bool_add_suboption (BraseroPluginConfOption *option,
+					       BraseroPluginConfOption *suboption);
+
+BraseroBurnResult
+brasero_plugin_conf_option_int_set_range (BraseroPluginConfOption *option,
+					  gint min,
+					  gint max);
 
 /**
  * Boiler plate for plugin definition to save the hassle of definition.

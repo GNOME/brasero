@@ -21,6 +21,10 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <string.h>
 
 #include <glib.h>
@@ -39,10 +43,27 @@ struct _BraseroPluginFlags {
 };
 typedef struct _BraseroPluginFlags BraseroPluginFlags;
 
+struct _BraseroPluginConfOption {
+	gchar *key;
+	gchar *description;
+	BraseroPluginConfOptionType type;
+
+	union {
+		struct {
+			guint max;
+			guint min;
+		} range;
+
+		GSList *suboptions;
+	} specifics;
+};
+
 typedef struct _BraseroPluginPrivate BraseroPluginPrivate;
 struct _BraseroPluginPrivate
 {
 	gboolean active;
+
+	GSList *options;
 
 	gchar *error;
 
@@ -139,6 +160,146 @@ brasero_plugin_cleanup_definition (BraseroPlugin *self)
 		g_free (priv->error);
 		priv->error = NULL;
 	}
+}
+
+/**
+ * Plugin configure options
+ */
+
+static void
+brasero_plugin_conf_option_free (BraseroPluginConfOption *option)
+{
+	if (option->type == BRASERO_PLUGIN_OPTION_BOOL)
+		g_slist_free (option->specifics.suboptions);
+
+	g_free (option->key);
+	g_free (option->description);
+
+	g_free (option);
+}
+
+BraseroPluginConfOption *
+brasero_plugin_get_next_conf_option (BraseroPlugin *self,
+				     BraseroPluginConfOption *current)
+{
+	BraseroPluginPrivate *priv;
+	GSList *node;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	if (!priv->options)
+		return NULL;
+
+	if (!current)
+		return priv->options->data;
+
+	node = g_slist_find (priv->options, current);
+	if (!node)
+		return NULL;
+
+	if (!node->next)
+		return NULL;
+
+	return node->next->data;
+}
+
+BraseroBurnResult
+brasero_plugin_conf_option_get_info (BraseroPluginConfOption *option,
+				     gchar **key,
+				     gchar **description,
+				     BraseroPluginConfOptionType *type)
+{
+	g_return_val_if_fail (option != NULL, BRASERO_BURN_ERR);
+
+	if (key)
+		*key = g_strdup (option->key);
+
+	if (description)
+		*description = g_strdup (option->description);
+
+	if (type)
+		*type = option->type;
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroPluginConfOption *
+brasero_plugin_conf_option_new (const gchar *key,
+				const gchar *description,
+				BraseroPluginConfOptionType type)
+{
+	BraseroPluginConfOption *option;
+
+	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (description != NULL, NULL);
+	g_return_val_if_fail (type != BRASERO_PLUGIN_OPTION_NONE, NULL);
+
+	option = g_new0 (BraseroPluginConfOption, 1);
+	option->key = g_strdup (key);
+	option->description = g_strdup (description);
+	option->type = type;
+
+	return option;
+}
+
+BraseroBurnResult
+brasero_plugin_add_conf_option (BraseroPlugin *self,
+				BraseroPluginConfOption *option)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	priv->options = g_slist_append (priv->options, option);
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_plugin_conf_option_bool_add_suboption (BraseroPluginConfOption *option,
+					       BraseroPluginConfOption *suboption)
+{
+	if (option->type != BRASERO_PLUGIN_OPTION_BOOL)
+		return BRASERO_BURN_ERR;
+
+	option->specifics.suboptions = g_slist_prepend (option->specifics.suboptions,
+						        suboption);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_plugin_conf_option_int_set_range (BraseroPluginConfOption *option,
+					  gint min,
+					  gint max)
+{
+	if (option->type != BRASERO_PLUGIN_OPTION_INT)
+		return BRASERO_BURN_ERR;
+
+	option->specifics.range.max = max;
+	option->specifics.range.min = min;
+	return BRASERO_BURN_OK;
+}
+
+GSList *
+brasero_plugin_conf_option_bool_get_suboptions (BraseroPluginConfOption *option)
+{
+	if (option->type != BRASERO_PLUGIN_OPTION_BOOL)
+		return NULL;
+	return option->specifics.suboptions;
+}
+
+gint
+brasero_plugin_conf_option_int_get_max (BraseroPluginConfOption *option) 
+{
+	if (option->type != BRASERO_PLUGIN_OPTION_INT)
+		return -1;
+	return option->specifics.range.max;
+}
+
+gint
+brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option)
+{
+	if (option->type != BRASERO_PLUGIN_OPTION_INT)
+		return -1;
+	return option->specifics.range.min;
 }
 
 /**
@@ -543,6 +704,12 @@ brasero_plugin_finalize (GObject *object)
 	BraseroPluginPrivate *priv;
 
 	priv = BRASERO_PLUGIN_PRIVATE (object);
+
+	if (priv->options) {
+		g_slist_foreach (priv->options, (GFunc) brasero_plugin_conf_option_free, NULL);
+		g_slist_free (priv->options);
+		priv->options = NULL;
+	}
 
 	if (priv->handle) {
 		brasero_plugin_unload (G_TYPE_MODULE (object));

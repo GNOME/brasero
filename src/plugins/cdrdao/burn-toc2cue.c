@@ -62,22 +62,27 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	gchar *image = NULL, *toc = NULL;
 	BraseroToc2Cue *self;
 	BraseroTrack *track;
+	gchar *img_path;
 
 	self = BRASERO_TOC2CUE (process);
 
 	if (!strstr (line, "Converted toc-file"))
 		return BRASERO_BURN_OK;
 
-	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-
-	/* FIXME: it this is the result of a previous cdrdao run then the image
-	 * path is flagged as temporary in the session and will be deleted with
-	 * the end of it: Should we move it then ? but therefore the path of the
-	 * image in the .cue file will still point to the temporary location */
 	brasero_job_get_image_output (BRASERO_JOB (self),
 				      &image,
 				      &toc);
 
+	/* get the path of the image that should remain unchanged */
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
+	img_path = brasero_track_get_image_source (track, FALSE);
+
+	/* the previous track image path will now be a link pointing to the
+	 * image path of the new track just created */
+	g_rename (img_path, image);
+	link (img_path, image); /* symlink () could also be used */
+
+	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
 	brasero_track_set_image_source (track,
 					image,
 					toc,

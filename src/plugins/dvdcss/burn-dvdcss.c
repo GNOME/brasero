@@ -637,5 +637,5 @@ brasero_dvdcss_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 	g_slist_free (output);
 
-	return BRASERO_BURN_ERR;
+	return BRASERO_BURN_OK;
 }

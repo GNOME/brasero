@@ -1,3 +1,8 @@
+2007-08-28  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	add global configure options for plugins and dialog to set them (currently cdrecord, wodim, md5sum)
+	have toc2cue plugin work
+
 2007-08-28  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* configure.in:
@@ -18,7 +23,6 @@
 	- fix image property dialog
 	- other fixes
 
-
 2007-08-21  Rouquier Philippe <bonfire-app@wanadoo.fr>
 
 	remove some "bonfire" references
@@ -36,6 +40,7 @@
 	Fix progression report
 
 2007-08-17  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
 	Another round of fixes to get audio disc working (using cdrkit/transcode)
 	More specifically:
 	- several improvements/fixes to handle multiple tracks (burn-task.c/burn-task-ctx.c/burn-job.c)

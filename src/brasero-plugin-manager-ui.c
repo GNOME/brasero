@@ -36,6 +36,7 @@
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"
 #include "burn-plugin-manager.h"
+#include "brasero-plugin-option.h"
 
 enum
 {
@@ -154,8 +155,10 @@ static void
 configure_button_cb (GtkWidget          *button,
 		     BraseroPluginManagerUI *pm)
 {
+	GtkResponseType result;
 	BraseroPlugin *plugin;
 	GtkWindow *toplevel;
+	GtkWidget *dialog;
 
 	plugin = plugin_manager_ui_get_selected_plugin (pm);
 
@@ -163,7 +166,20 @@ configure_button_cb (GtkWidget          *button,
 
 	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET(pm)));
 
-	//brasero_plugin_configure_plugin (plugin, toplevel);	
+	dialog = brasero_plugin_option_new ();
+
+	brasero_plugin_option_set_plugin (BRASERO_PLUGIN_OPTION (dialog), plugin);
+	gtk_window_set_transient_for (GTK_WINDOW (dialog),
+				      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (pm))));
+
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (result == GTK_RESPONSE_OK)
+		brasero_plugin_option_save_settings (BRASERO_PLUGIN_OPTION (dialog));
+
+	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -267,9 +283,9 @@ cursor_changed_cb (GtkTreeView *view,
 
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->about_button),
 				  plugin != NULL);
-/*	gtk_widget_set_sensitive (GTK_WIDGET (priv->configure_button),
+	gtk_widget_set_sensitive (GTK_WIDGET (priv->configure_button),
 				  (plugin != NULL) && 
-				   brasero_plugin_is_configurable (plugin));*/
+				   brasero_plugin_get_next_conf_option (plugin, NULL));
 }
 
 static void
@@ -334,9 +350,8 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 		gtk_tree_model_get (GTK_TREE_MODEL (model), &iter,
 				    PLUGIN_COLUMN, &plugin, -1);
 
-/*		gtk_widget_set_sensitive (GTK_WIDGET (priv->configure_button),
-					  brasero_plugin_plugin_is_configurable (plugin));
-*/
+		gtk_widget_set_sensitive (GTK_WIDGET (priv->configure_button),
+					  (brasero_plugin_get_next_conf_option (plugin, NULL) != NULL));
 	}
 }
 
@@ -499,9 +514,9 @@ create_tree_popup_menu (BraseroPluginManagerUI *pm)
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
 	g_signal_connect (item, "activate",
 			  G_CALLBACK (configure_button_cb), pm);
-/*	gtk_widget_set_sensitive (item,
-				  brasero_plugin_plugin_is_configurable (plugin));
-*/	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_set_sensitive (item,
+				  (brasero_plugin_get_next_conf_option (plugin, NULL) != NULL));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
 	item = gtk_check_menu_item_new_with_mnemonic (_("A_ctivate"));
 	gtk_widget_set_sensitive (item,

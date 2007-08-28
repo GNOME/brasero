@@ -39,6 +39,7 @@
 
 #include <gmodule.h>
 
+#include <gconf/gconf-client.h>
 #include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-plugin.h"
@@ -48,6 +49,7 @@
 #include "burn-volume.h"
 #include "brasero-ncb.h"
 
+#define GCONF_DONT_ADD_MD5SUM_FILE_TO_DATA	"/apps/brasero/config/dont_add_md5"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroMd5sum, brasero_md5sum, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -1065,6 +1067,15 @@ brasero_md5sum_init_real (BraseroJob *self,
 	}
 	else if (action == BRASERO_JOB_ACTION_IMAGE) {
 		BraseroTrackType output;
+		GConfClient *client;
+
+		/* See if we need to perform this operation */
+		client = gconf_client_get_default ();
+		if (gconf_client_get_bool (client, GCONF_DONT_ADD_MD5SUM_FILE_TO_DATA, NULL)) {
+			g_object_unref (client);
+			return BRASERO_BURN_NOT_RUNNING;
+		}
+		g_object_unref (client);
 
 		brasero_job_get_output_type (self, &output);
 		if (output.type == BRASERO_TRACK_TYPE_DATA) {
@@ -1219,6 +1230,7 @@ static BraseroBurnResult
 brasero_md5sum_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *input;
+	BraseroPluginConfOption *option;
 
 	/* FIXME: all this could be fine-tuned a little bit more thanks to some
 	 * GConf key specific to this plugin (like for cdrecord) to allow the 
@@ -1275,6 +1287,13 @@ brasero_md5sum_export_caps (BraseroPlugin *plugin, gchar **error)
 				   BRASERO_CHECKSUM_MD5_FILE,
 				   input);
 	g_slist_free (input);
+
+	/* configure options */
+	option = brasero_plugin_conf_option_new (GCONF_DONT_ADD_MD5SUM_FILE_TO_DATA,
+						 _("don't add a md5sum file to all data projects"),
+						 BRASERO_PLUGIN_OPTION_BOOL);
+
+	brasero_plugin_add_conf_option (plugin, option);
 
 	return BRASERO_BURN_OK;
 }

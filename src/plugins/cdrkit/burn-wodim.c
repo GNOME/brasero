@@ -1002,6 +1002,7 @@ brasero_wodim_finalize (GObject *object)
 static BraseroBurnResult
 brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 {
+	BraseroPluginConfOption *immed, *minbuf;
 	const BraseroMedia media = BRASERO_MEDIUM_CD|
 				   BRASERO_MEDIUM_WRITABLE|
 				   BRASERO_MEDIUM_REWRITABLE|
@@ -1079,6 +1080,18 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
+
+	/* add some configure options */
+	immed = brasero_plugin_conf_option_new (GCONF_KEY_IMMEDIATE_FLAG,
+						_("enable -immed flag (see wodim manual)"),
+						BRASERO_PLUGIN_OPTION_BOOL);
+	minbuf = brasero_plugin_conf_option_new (GCONF_KEY_MINBUF_VALUE,
+						 _("minimum drive buffer fill ratio (in %) (see wodim manual):"),
+						 BRASERO_PLUGIN_OPTION_INT);
+	brasero_plugin_conf_option_int_set_range (minbuf, 25, 95);
+
+	brasero_plugin_conf_option_bool_add_suboption (immed, minbuf);
+	brasero_plugin_add_conf_option (plugin, immed);
 
 	return BRASERO_BURN_OK;
 }
