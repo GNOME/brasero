@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 #define BRASERO_IS_PLAYER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_PLAYER))
 #define BRASERO_IS_PLAYER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_PLAYER))
 #define BRASERO_PLAYER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_PLAYER, BraseroPlayerClass))
+
 typedef struct BraseroPlayerPrivate BraseroPlayerPrivate;
 
 typedef struct {

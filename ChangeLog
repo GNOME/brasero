@@ -1,4 +1,10 @@
-2007-08-30  Rouquier Philippe <bonfire-app@wanadoo.fr>
+2007-09-01  Rouquier Philippe <bonfire-app@wanadoo.fr>
+
+	added a volume button to player
+	also don't recreate playbin for every song, just re-use the pipeline
+	(that may increase gstreamer requirements since that feature is recent for playbin)
+
+2007-09-01  Rouquier Philippe <bonfire-app@wanadoo.fr>
 
 	- improved overall progress/action reporting (also fix some bugs)
 	- changed/improved the way jobs are started in a task and the way they interact

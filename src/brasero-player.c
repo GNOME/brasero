@@ -478,12 +478,22 @@ brasero_player_video_zoom_in (GtkButton *button,
 }
 
 static void
+brasero_player_volume_changed_cb (GtkScaleButton *button,
+				  gdouble volume,
+				  BraseroPlayer *player)
+{
+	brasero_player_bacon_set_volume (BRASERO_PLAYER_BACON (player->priv->bacon),
+					 volume);
+}
+
+static void
 brasero_player_create_controls_stream (BraseroPlayer *player,
 				       gboolean video)
 {
 	GtkWidget *box = NULL;
 	GtkWidget *header_box;
 	GtkWidget *alignment;
+	GtkWidget *volume;
 
 	if (player->priv->controls)
 		brasero_player_destroy_controls (player);
@@ -517,7 +527,7 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 			    FALSE,
 			    0);
 
-	/* second line : progress */
+	/* second line : play, progress, volume button */
 	box = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (player->priv->controls),
 			    box,
@@ -525,11 +535,26 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 			    FALSE,
 			    0);
 
+	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
+	player->priv->button = gtk_button_new ();
+	gtk_container_add (GTK_CONTAINER (alignment), player->priv->button);
+	gtk_box_pack_start (GTK_BOX (box),
+			    alignment,
+			    FALSE,
+			    FALSE,
+			    0);
+
+	player->priv->image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON);
+	gtk_container_add (GTK_CONTAINER (player->priv->button), player->priv->image);
+	g_signal_connect (G_OBJECT (player->priv->button), "clicked",
+			  G_CALLBACK (brasero_player_button_clicked_cb),
+			  player);
+
 	player->priv->progress = gtk_hscale_new_with_range (0, 1, 500000000);
 	gtk_scale_set_digits (GTK_SCALE (player->priv->progress), 0);
 	gtk_scale_set_draw_value (GTK_SCALE (player->priv->progress), FALSE);
 	gtk_range_set_update_policy (GTK_RANGE (player->priv->progress), GTK_UPDATE_CONTINUOUS);
-	gtk_box_pack_end (GTK_BOX (box),
+	gtk_box_pack_start (GTK_BOX (box),
 			  player->priv->progress,
 			  TRUE,
 			  TRUE,
@@ -546,20 +571,21 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 			  G_CALLBACK (brasero_player_range_value_changed),
 			  player);
 
-	/* Third line : controls */
-	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
-	player->priv->button = gtk_button_new ();
-	gtk_container_add (GTK_CONTAINER (alignment), player->priv->button);
+	volume = gtk_volume_button_new ();
+	gtk_widget_show (volume);
 	gtk_box_pack_start (GTK_BOX (box),
-			    alignment,
+			    volume,
 			    FALSE,
 			    FALSE,
 			    0);
 
-	player->priv->image = gtk_image_new_from_stock (GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON);
-	gtk_container_add (GTK_CONTAINER (player->priv->button), player->priv->image);
-	g_signal_connect (G_OBJECT (player->priv->button), "clicked",
-			  G_CALLBACK (brasero_player_button_clicked_cb),
+	if (player->priv->bacon)
+		gtk_scale_button_set_value (GTK_SCALE_BUTTON (volume),
+					    brasero_player_bacon_get_volume (BRASERO_PLAYER_BACON (player->priv->bacon)));
+
+	g_signal_connect (volume,
+			  "value-changed",
+			  G_CALLBACK (brasero_player_volume_changed_cb),
 			  player);
 
 	/* zoom in/out, only if video */

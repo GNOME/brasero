@@ -36,12 +36,15 @@
 
 #include <gtk/gtkwidget.h>
 
+#include <gconf/gconf-client.h>
+
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <gst/gst.h>
 #include <gst/interfaces/xoverlay.h>
 
 #include "brasero-player-bacon.h"
+#include "burn-debug.h"
  
 static void brasero_player_bacon_class_init(BraseroPlayerBaconClass *klass);
 static void brasero_player_bacon_init(BraseroPlayerBacon *sp);
@@ -78,7 +81,7 @@ struct BraseroPlayerBaconPrivate {
 	GstState state;
 
 	GstXOverlay *xoverlay;
-	char *uri;
+	gchar *uri;
 };
 
 enum {
@@ -91,6 +94,8 @@ typedef enum {
 	EOF_SIGNAL,
 	LAST_SIGNAL
 } BraseroPlayerBaconSignalType;
+
+#define GCONF_PLAYER_VOLUME	"/apps/brasero/display/volume"
 
 static guint brasero_player_bacon_signals [LAST_SIGNAL] = { 0 };
 static GObjectClass *parent_class = NULL;
@@ -355,14 +360,34 @@ static void
 brasero_player_bacon_init (BraseroPlayerBacon *obj)
 {
 	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (obj), GTK_DOUBLE_BUFFERED);
-	obj->priv = g_new0(BraseroPlayerBaconPrivate, 1);
+	obj->priv = g_new0 (BraseroPlayerBaconPrivate, 1);
 }
 
 static void
 brasero_player_bacon_destroy (GtkObject *obj)
 {
 	BraseroPlayerBacon *cobj;
+
 	cobj = BRASERO_PLAYER_BACON (obj);
+
+	/* save volume */
+	if (cobj->priv->pipe) {
+		GConfClient *client;
+		gdouble volume;
+
+		client = gconf_client_get_default ();
+		g_object_get (cobj->priv->pipe,
+			      "volume", &volume,
+			      NULL);
+
+		volume = gconf_client_set_int (client,
+					       GCONF_PLAYER_VOLUME,
+					       (gint) (volume * 100.0),
+					       NULL);
+		g_object_unref (client);
+	}
+	else
+		BRASERO_BURN_LOG ("volume can't be saved");
 
 	if (cobj->priv->xoverlay
 	&&  GST_IS_X_OVERLAY (cobj->priv->xoverlay)) {
@@ -388,10 +413,11 @@ static void
 brasero_player_bacon_finalize (GObject *object)
 {
 	BraseroPlayerBacon *cobj;
-	cobj = BRASERO_PLAYER_BACON(object);
 
-	g_free(cobj->priv);
-	G_OBJECT_CLASS(parent_class)->finalize(object);
+	cobj = BRASERO_PLAYER_BACON (object);
+
+	g_free (cobj->priv);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 GtkWidget *
@@ -452,11 +478,12 @@ brasero_player_bacon_clear_pipe (BraseroPlayerBacon *bacon)
 }
 
 static void
-brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon,
-				 const char *uri)
+brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 {
 	GstElement *video_sink, *audio_sink;
 	GstBus *bus = NULL;
+	GConfClient *client;
+	gdouble volume;
 
 	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
 	if (!bacon->priv->pipe) {
@@ -495,14 +522,19 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon,
 				  bacon);
 	gst_object_unref (bus);
 
-	g_object_set (G_OBJECT (bacon->priv->pipe),
-		      "uri",
-		      uri,
+	/* set saved volume */
+	client = gconf_client_get_default ();
+	volume = gconf_client_get_int (client, GCONF_PLAYER_VOLUME, NULL);
+	volume = CLAMP (volume, 0, 500);
+	g_object_set (bacon->priv->pipe,
+		      "volume", (gdouble) volume / 100.0,
 		      NULL);
-	gst_element_set_state (bacon->priv->pipe, GST_STATE_PAUSED);
+	g_object_unref (client);
+
 	return;
 
 error:
+	BRASERO_BURN_LOG ("player creation error");
 	brasero_player_bacon_clear_pipe (bacon);
 	g_signal_emit (bacon,
 		       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
@@ -514,12 +546,53 @@ error:
 void
 brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 {
-	brasero_player_bacon_clear_pipe (bacon);
+	if (bacon->priv->uri) {
+		g_free (bacon->priv->uri);
+		bacon->priv->uri = NULL;
+	}
+
+	if (!bacon->priv->pipe)
+		brasero_player_bacon_setup_pipe (bacon);
+
 
 	if (uri) {
 		bacon->priv->uri = g_strdup (uri);
-		brasero_player_bacon_setup_pipe (bacon, uri);
+
+		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
+		g_object_set (G_OBJECT (bacon->priv->pipe),
+			      "uri", uri,
+			      NULL);
+		gst_element_set_state (bacon->priv->pipe, GST_STATE_PAUSED);
 	}
+	else
+		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
+}
+
+void
+brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon, gdouble volume)
+{
+	if (!bacon->priv->pipe)
+		return;
+
+	volume = CLAMP (volume, 0.0, 5.0);
+	g_object_set (bacon->priv->pipe,
+		      "volume", volume * 5.0,
+		      NULL);
+}
+
+gdouble
+brasero_player_bacon_get_volume (BraseroPlayerBacon *bacon)
+{
+	gdouble volume;
+
+	if (!bacon->priv->pipe)
+		return -1.0;
+
+	g_object_get (bacon->priv->pipe,
+		      "volume", &volume,
+		      NULL);
+
+	return volume / 5.0;
 }
 
 static gboolean
@@ -539,7 +612,6 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 		break;
 
 	case GST_MESSAGE_ERROR:
-		brasero_player_bacon_clear_pipe (bacon);
 		g_signal_emit (bacon,
 			       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
 			       0,
