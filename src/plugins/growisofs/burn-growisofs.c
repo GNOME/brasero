@@ -78,7 +78,7 @@ brasero_growisofs_read_stdout (BraseroProcess *process, const gchar *line)
 			return BRASERO_BURN_OK;
 		}
 
-		brasero_job_set_written (BRASERO_JOB (process), b_written);
+		brasero_job_set_written_session (BRASERO_JOB (process), b_written);
 		brasero_job_set_rate (BRASERO_JOB (process), (gdouble) (speed_1 * 10 + speed_2) / 10.0 * (gdouble) DVD_RATE);
 
 		if (action == BRASERO_JOB_ACTION_ERASE) {
@@ -482,7 +482,7 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 						FALSE);
 	else
 		brasero_job_set_current_action (BRASERO_JOB (growisofs),
-						BRASERO_BURN_ACTION_PREPARING,
+						BRASERO_BURN_ACTION_START_RECORDING,
 						NULL,
 						FALSE);
 
@@ -543,13 +543,9 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 	BraseroJobAction action;
 	BraseroBurnResult result;
 
-	brasero_job_get_action(BRASERO_JOB (process), &action);
-
+	brasero_job_get_action (BRASERO_JOB (process), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		BraseroTrackType input;
-
-		if (brasero_job_get_fd_in (BRASERO_JOB (process), NULL) == BRASERO_BURN_OK)
-			return BRASERO_BURN_NOT_RUNNING;
 
 		/* only do it if that's DATA as input */
 		brasero_job_get_input_type (BRASERO_JOB (process), &input);

@@ -54,6 +54,8 @@ struct BraseroDiscCopyDialogPrivate {
 	GtkWidget *selection;
 	GtkWidget *source;
 
+	GtkWidget *button;
+
 	BraseroBurnSession *session;
 };
 typedef struct BraseroDiscCopyDialogPrivate BraseroDiscCopyDialogPrivate;
@@ -74,6 +76,23 @@ brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self)
 }
 
 static void
+brasero_disc_copy_dialog_valid_media_cb (BraseroDestSelection *selection,
+					 gboolean valid,
+					 BraseroDiscCopyDialog *self)
+{
+	BraseroDiscCopyDialogPrivate *priv;
+
+	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
+
+	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
+		gtk_widget_set_sensitive (priv->button, TRUE);
+		return;
+	}
+
+	gtk_widget_set_sensitive (priv->button, valid);
+}
+
+static void
 brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 {
 	GtkWidget *button;
@@ -89,12 +108,12 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 				      button, 
 				      GTK_RESPONSE_CANCEL);
 
-	button = brasero_utils_make_button (_("Copy"),
-					    NULL,
-					    "media-optical-burn",
-					    GTK_ICON_SIZE_LARGE_TOOLBAR);
+	priv->button = brasero_utils_make_button (_("Copy"),
+						  NULL,
+						  "media-optical-burn",
+						    GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      button,
+				      priv->button,
 				      GTK_RESPONSE_OK);
 
 	/* create a session and add some default sane flags */
@@ -125,6 +144,11 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	/* destination drive */
 	priv->selection = brasero_dest_selection_new (priv->session);
+	g_signal_connect (priv->selection,
+			  "valid-media",
+			  G_CALLBACK (brasero_disc_copy_dialog_valid_media_cb),
+			  obj);
+	
 	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), TRUE);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),

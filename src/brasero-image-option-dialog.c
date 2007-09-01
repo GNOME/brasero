@@ -61,6 +61,7 @@ struct _BraseroImageOptionDialogPrivate {
 	GtkWidget *selection;
 	GtkWidget *format;
 	GtkWidget *file;
+	GtkWidget *button;
 };
 typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
 
@@ -410,6 +411,23 @@ brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 }
 
 static void
+brasero_image_option_dialog_valid_media_cb (BraseroDestSelection *selection,
+					    gboolean valid,
+					    BraseroImageOptionDialog *self)
+{
+	BraseroImageOptionDialogPrivate *priv;
+
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (self);
+
+	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
+		gtk_widget_set_sensitive (priv->button, TRUE);
+		return;
+	}
+
+	gtk_widget_set_sensitive (priv->button, valid);
+}
+
+static void
 brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 {
 	GtkWidget *label;
@@ -428,13 +446,13 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 				      button,
 				      GTK_RESPONSE_CANCEL);
 
-	button = brasero_utils_make_button (_("Burn"),
-					    NULL,
-					    "media-optical-burn",
-					    GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_widget_show (button);
+	priv->button = brasero_utils_make_button (_("Burn"),
+						  NULL,
+						  "media-optical-burn",
+						  GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (priv->button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      button,
+				      priv->button,
 				      GTK_RESPONSE_OK);
 
 	priv->caps = brasero_burn_caps_get_default ();
@@ -458,6 +476,10 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	g_signal_connect (priv->selection,
 			  "drive-changed",
 			  G_CALLBACK (brasero_image_option_dialog_media_changed),
+			  obj);
+	g_signal_connect (priv->selection,
+			  "valid-media",
+			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
 			  obj);
 
 	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),

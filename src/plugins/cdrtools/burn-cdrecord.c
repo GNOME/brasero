@@ -228,7 +228,7 @@ brasero_cdrecord_compute (BraseroCDRecord *cdrecord,
 
 	this_remain = (mb_total - mb_written) * 1048576;
 	bytes = (total - priv->current_track_end_pos) + this_remain;
-	brasero_job_set_written (BRASERO_JOB (cdrecord), total - bytes);
+	brasero_job_set_written_session (BRASERO_JOB (cdrecord), total - bytes);
 
 	action_string = g_strdup_printf ("Writing track %02i", track_num);
 	brasero_job_set_current_action (BRASERO_JOB (cdrecord),
@@ -341,7 +341,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 	}
 	else if (g_str_has_prefix (line, "Blanking PMA, TOC, pregap")
 	     ||  strstr (line, "Blanking entire disk")) {
-		brasero_job_start_progress (BRASERO_JOB (cdrecord), FALSE);
+
 	}
 	else if (strstr (line, "Use tsize= option in SAO mode to specify track size")) {
 		brasero_job_error (BRASERO_JOB (process),
@@ -848,7 +848,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		BRASERO_JOB_NOT_SUPPORTED (cdrecord);
 
 	brasero_job_set_current_action (BRASERO_JOB (cdrecord),
-					BRASERO_BURN_ACTION_PREPARING,
+					BRASERO_BURN_ACTION_START_RECORDING,
 					NULL,
 					FALSE);
 	return BRASERO_BURN_OK;
@@ -890,7 +890,7 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 
 	brasero_job_get_action (BRASERO_JOB (cdrecord), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE)
-		return BRASERO_BURN_NOT_RUNNING;
+		return BRASERO_BURN_NOT_SUPPORTED;
 
 	g_ptr_array_add (argv, g_strdup ("cdrecord"));
 	g_ptr_array_add (argv, g_strdup ("-v"));

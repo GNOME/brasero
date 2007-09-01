@@ -291,40 +291,6 @@ error:
 	return FALSE;
 }
 
-static BraseroBurnResult
-brasero_transcode_start (BraseroJob *job,
-			 GError **error)
-{
-	BraseroTranscode *transcode;
-	BraseroJobAction action;
-
-	transcode = BRASERO_TRANSCODE (job);
-
-	brasero_job_get_action (job, &action);
-	brasero_job_set_use_average_rate (job, TRUE);
-
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		if (!brasero_transcode_create_pipeline (transcode, error))
-			return BRASERO_BURN_ERR;
-
-		brasero_job_set_current_action (job,
-						BRASERO_BURN_ACTION_GETTING_SIZE,
-						NULL,
-						TRUE);
-
-		brasero_job_start_progress (job, FALSE);
-		return BRASERO_BURN_OK;
-	}
-	else if (action == BRASERO_JOB_ACTION_IMAGE) {
-		if (!brasero_transcode_create_pipeline (transcode, error))
-			return BRASERO_BURN_ERR;
-	}
-	else
-		BRASERO_JOB_NOT_SUPPORTED (transcode);
-
-	return BRASERO_BURN_OK;
-}
-
 static void
 brasero_transcode_set_track_size (BraseroTranscode *transcode,
 				  gint64 duration)
@@ -485,10 +451,13 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 			continue;
 
 		iter_start = brasero_track_get_audio_start (track);
-		if (iter_start == start)
+		if (iter_start == start) {
+			g_free (uri);
 			return iter_track;
+		}
 	}
 
+	g_free (uri);
 	return NULL;
 }
 
@@ -522,13 +491,18 @@ brasero_transcode_has_track_sibling (BraseroTranscode *transcode,
 }
 
 static BraseroBurnResult
-brasero_transcode_init_real (BraseroJob *job,
-			     GError **error)
+brasero_transcode_start (BraseroJob *job,
+			 GError **error)
 {
-	BraseroJobAction action;
+	BraseroTranscode *transcode;
 	BraseroBurnResult result;
+	BraseroJobAction action;
+
+	transcode = BRASERO_TRANSCODE (job);
 
 	brasero_job_get_action (job, &action);
+	brasero_job_set_use_average_rate (job, TRUE);
+
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		BraseroTrack *track;
 		gint64 length;
@@ -543,8 +517,9 @@ brasero_transcode_init_real (BraseroJob *job,
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		/* See if the track size was already set since then no need to 
-		 * carry on with a lengthy get size.
+		/* see if the track size was already set since then no need to 
+		 * carry on with a lengthy get size and the library will do it
+		 * itself.
 		 * NOTE since for the moment we can only output RAW audio that 
 		 * means that the block size is 2352. */
 		brasero_job_get_current_track (job, &track);
@@ -552,7 +527,18 @@ brasero_transcode_init_real (BraseroJob *job,
 		length = 0;
 		brasero_track_get_audio_length (track, &length);
 		if (length > 0)
-			return BRASERO_BURN_NOT_RUNNING;
+			return BRASERO_BURN_NOT_SUPPORTED;
+		
+		if (!brasero_transcode_create_pipeline (transcode, error))
+			return BRASERO_BURN_ERR;
+
+		brasero_job_set_current_action (job,
+						BRASERO_BURN_ACTION_GETTING_SIZE,
+						NULL,
+						TRUE);
+
+		brasero_job_start_progress (job, FALSE);
+		return BRASERO_BURN_OK;
 	}
 	else if (action == BRASERO_JOB_ACTION_IMAGE) {
 		/* Look for a sibling to avoid transcoding twice. In this case
@@ -564,11 +550,14 @@ brasero_transcode_init_real (BraseroJob *job,
 			if (result != BRASERO_BURN_OK)
 				return result;
 		}
-
-		return BRASERO_BURN_OK;
+		
+		if (!brasero_transcode_create_pipeline (transcode, error))
+			return BRASERO_BURN_ERR;
 	}
+	else
+		BRASERO_JOB_NOT_SUPPORTED (transcode);
 
-	BRASERO_JOB_NOT_SUPPORTED (job);
+	return BRASERO_BURN_OK;
 }
 
 static void
@@ -900,6 +889,7 @@ brasero_transcode_pad_file (BraseroTranscode *transcode, GError **error)
 	gchar *output;
 	gboolean result;
 
+	output = NULL;
 	brasero_job_get_audio_output (BRASERO_JOB (transcode), &output);
 	fd = open (output, O_WRONLY | O_CREAT | O_APPEND);
 	g_free (output);
@@ -1097,7 +1087,7 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 		brasero_job_start_progress (BRASERO_JOB (transcode), FALSE);
 
 		if (brasero_job_get_fd_out (BRASERO_JOB (transcode), NULL) != BRASERO_BURN_OK) {
-			gchar *dest;
+			gchar *dest = NULL;
 
 			brasero_job_get_audio_output (BRASERO_JOB (transcode), &dest);
 			BRASERO_JOB_LOG (transcode,
@@ -1249,13 +1239,10 @@ brasero_transcode_clock_tick (BraseroJob *job)
 		return BRASERO_BURN_ERR;
 	}
 
-	BRASERO_JOB_LOG (job,
-			 "got position (%" G_GINT64_FORMAT ")",
-			 pos);
-
-	brasero_job_set_written (job, BRASERO_DURATION_TO_BYTES (pos));
+	brasero_job_set_written_track (job, BRASERO_DURATION_TO_BYTES (pos));
 	return BRASERO_BURN_OK;
 }
+
 static void
 brasero_transcode_class_init (BraseroTranscodeClass *klass)
 {
@@ -1267,7 +1254,6 @@ brasero_transcode_class_init (BraseroTranscodeClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_transcode_finalize;
 
-	job_class->init = brasero_transcode_init_real;
 	job_class->start = brasero_transcode_start;
 	job_class->clock_tick = brasero_transcode_clock_tick;
 	job_class->stop = brasero_transcode_stop;

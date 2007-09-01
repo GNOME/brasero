@@ -99,7 +99,7 @@ typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 #define BRASERO_BURN_SESSION_WRITE_TO_FILE(priv)	(priv->settings->burner			\
 							&& NCB_DRIVE_GET_TYPE (priv->settings->burner) \
 							== NAUTILUS_BURN_DRIVE_TYPE_FILE)
-#define BRASERO_STRCMP(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
+#define BRASERO_STR_EQUAL(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
 typedef enum {
 	INPUT_CHANGED_SIGNAL,
@@ -382,6 +382,9 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
+	if (nautilus_burn_drive_equal (drive, priv->settings->burner))
+		return;
+
 	if (priv->settings->burner) {
 		if (priv->dest_added_sig) {
 			g_signal_handler_disconnect (priv->settings->burner,
@@ -544,8 +547,13 @@ brasero_burn_session_file_test (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-					if (!path)
+	if (!path) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("no path"));
 		return BRASERO_BURN_ERR;
+	}
 
 	if (!g_file_test (path, G_FILE_TEST_EXISTS))
 		return BRASERO_BURN_OK;
@@ -638,8 +646,10 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
+	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
+		BRASERO_BURN_LOG ("no file disc");
 		return BRASERO_BURN_ERR;
+	}
 
 	/* output paths were set so test them and returns them if OK */
 	if (priv->settings->image) {
@@ -648,6 +658,13 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 							 error);
 		if (result != BRASERO_BURN_OK)
 			return result;
+	}
+	else {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("no output specified"));
+		return BRASERO_BURN_ERR;
 	}
 
 	if (priv->settings->toc) {
@@ -698,13 +715,12 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
 	monitor = nautilus_burn_get_drive_monitor ();
 	brasero_burn_session_set_burner (self, nautilus_burn_drive_monitor_get_drive_for_image (monitor));
 
 	if (priv->settings->format == format
-	&&  BRASERO_STRCMP (image, priv->settings->image)
-	&&  BRASERO_STRCMP (toc, priv->settings->toc))
+	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
+	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc))
 		return BRASERO_BURN_OK;
 
 	if (priv->settings->image)
@@ -750,8 +766,6 @@ brasero_burn_session_set_image_output (BraseroBurnSession *self,
 	complement = brasero_burn_session_get_file_complement (self,
 							       format,
 							       path);
-	if (!complement)
-		return BRASERO_BURN_ERR;
 
 	brasero_burn_session_set_image_output_retval (self,
 						format,

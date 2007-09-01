@@ -62,14 +62,27 @@ typedef struct {
 	 */
 
 	/**
-	 * returns 	OK if we should carry on
-	 * 		NOT_RUNNING if it completed successfully but task
-	 *		shouldn't go any further (i.e. not run ::start)
-	 * 		ERR otherwise
+	 * This function is not compulsory. If not implemented then the library
+	 * will act as if OK had been returned.
+	 * returns 	BRASERO_BURN_OK on successful initialization
+	 *		The job can return BRASERO_BURN_NOT_RUNNING if it should
+	 *		not be started.
+	 * 		BRASERO_BURN_ERR otherwise
 	 */
-	BraseroBurnResult	(*init)			(BraseroJob *job,
+	BraseroBurnResult	(*activate)		(BraseroJob *job,
 							 GError **error);
 
+	/**
+	 * This function is compulsory.
+	 * returns 	BRASERO_BURN_OK if a loop should be run afterward
+	 *		The job can return BRASERO_BURN_NOT_RUNNING if it can't
+	 *		or already completed successfully the task then ::start
+	 * 		won't be called
+	 *		NOT_SUPPORTED if it can't do the action required. It
+	 *		must be noted that jobs can be required to do a SIZE 
+	 * 		action.
+	 * 		ERR otherwise
+	 */
 	BraseroBurnResult	(*start)		(BraseroJob *job,
 							 GError **error);
 
@@ -223,8 +236,11 @@ BraseroBurnResult
 brasero_job_set_rate (BraseroJob *job,
 		      gint64 rate);
 BraseroBurnResult
-brasero_job_set_written (BraseroJob *job,
-			 gint64 written);
+brasero_job_set_written_track (BraseroJob *job,
+			       gint64 written);
+BraseroBurnResult
+brasero_job_set_written_session (BraseroJob *job,
+				 gint64 written);
 BraseroBurnResult
 brasero_job_set_progress (BraseroJob *job,
 			  gdouble progress);

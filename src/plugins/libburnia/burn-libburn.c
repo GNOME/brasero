@@ -139,9 +139,9 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			else
 				mode = BURN_MODE1|BURN_MODE_RAW|BURN_SUBCODE_R96;
 
-			brasero_job_get_session_size (BRASERO_JOB (self),
-						      NULL,
-						      &size);
+			brasero_job_get_session_output_size (BRASERO_JOB (self),
+							     NULL,
+							     &size);
 			result = brasero_libburn_add_fd_track (session,
 							       fd,
 							       mode,
@@ -159,10 +159,8 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 				BraseroTrack *track;
 
 				track = tracks->data;
-				brasero_track_get_estimated_size (track,
-								  NULL,
-								  NULL,
-								  &size);
+				brasero_track_get_audio_length (track, &size);
+				size = BRASERO_DURATION_TO_BYTES (size);
 
 				/* we dup the descriptor so the same 
 				 * will be shared by all tracks */
@@ -488,7 +486,7 @@ brasero_libburn_start (BraseroJob *job,
 			return result;
 
 		brasero_job_set_current_action (job,
-						BRASERO_BURN_ACTION_PREPARING,
+						BRASERO_BURN_ACTION_START_RECORDING,
 						NULL,
 						FALSE);
 	}
@@ -504,6 +502,8 @@ brasero_libburn_start (BraseroJob *job,
 	}
 	else
 		BRASERO_JOB_NOT_SUPPORTED (self);
+
+	burn_msgs_set_severities ("ALL", "ALL", "brasero (libburn):");
 
 	return BRASERO_BURN_OK;
 }
@@ -546,7 +546,10 @@ brasero_libburn_class_init (BraseroLibburnClass *klass)
 
 static void
 brasero_libburn_init (BraseroLibburn *obj)
-{ }
+{
+	/* that's for debugging */
+	burn_set_verbosity (666);
+}
 
 static void
 brasero_libburn_finalize (GObject *object)

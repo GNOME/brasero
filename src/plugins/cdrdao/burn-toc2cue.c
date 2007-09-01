@@ -110,8 +110,8 @@ brasero_toc2cue_set_argv (BraseroProcess *process,
 	self = BRASERO_TOC2CUE (process);
 
 	brasero_job_get_action (BRASERO_JOB (self), &action);
-	if (action == BRASERO_JOB_ACTION_SIZE)
-		return BRASERO_BURN_NOT_RUNNING;
+	if (action != BRASERO_JOB_ACTION_IMAGE)
+		BRASERO_JOB_NOT_SUPPORTED (process);
 
 	brasero_job_get_image_output (BRASERO_JOB (self),
 				      NULL,

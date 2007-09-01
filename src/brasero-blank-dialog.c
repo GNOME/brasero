@@ -132,6 +132,9 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 						       &supported,
 						       &compulsory);
 
+	brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (self),
+				       (brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK));
+
 	priv->fast_saved = brasero_blank_dialog_set_button (priv->session,
 							    priv->fast_saved,
 							    priv->fast,
@@ -344,6 +347,11 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (obj);
 
+	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
+					_("Blank"),
+					NULL,
+					"media-optical-blank");
+
 	drive = brasero_tool_dialog_get_drive (BRASERO_TOOL_DIALOG (obj));
 
 	priv->session = brasero_burn_session_new ();
@@ -382,11 +390,6 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
 	brasero_blank_dialog_device_opts_setup (obj);
-
-	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
-					_("Blank"),
-					NULL,
-					"media-optical-blank");
 }
 
 GtkWidget *

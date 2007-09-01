@@ -86,7 +86,7 @@ brasero_burn_dialog_tray_close_after_cb (BraseroTrayIcon *tray,
 
 struct BraseroBurnDialogPrivate {
 	BraseroBurn *burn;
-	BraseroTrackDataType input;
+	BraseroTrackType input;
 	BraseroBurnSession *session;
 
 	GtkWidget *close_check;
@@ -490,19 +490,19 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	gtk_widget_destroy (message);
 
 	/* see if we should update the infos */
-	if (dialog->priv->input == BRASERO_TRACK_TYPE_DISC) {
+	if (dialog->priv->input.type == BRASERO_TRACK_TYPE_DISC) {
 		NautilusBurnDrive *src;
 
 		/* see if the drive is the source */
 		src = brasero_burn_session_get_src_drive (dialog->priv->session);
 		if (nautilus_burn_drive_equal (src, drive))
 			brasero_burn_dialog_update_info (dialog,
-							 dialog->priv->input, 
+							 dialog->priv->input.type, 
 							 NCB_MEDIA_GET_STATUS (drive));
 	}
 	else
 		brasero_burn_dialog_update_info (dialog,
-						 dialog->priv->input, 
+						 dialog->priv->input.type, 
 						 NCB_MEDIA_GET_STATUS (drive));
 
 	if (hide)
@@ -1323,20 +1323,18 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 static void
 brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 {
+	BraseroMedia media;
 	gchar *primary = NULL;
 	gchar *secondary = NULL;
-	BraseroTrackType source;
-	BraseroMedia media;
 	NautilusBurnDrive *drive;
 
 	drive = brasero_burn_session_get_burner (dialog->priv->session);
-	brasero_burn_session_get_input_type (dialog->priv->session, &source);
-	if (source.type != BRASERO_TRACK_TYPE_DISC)
+	if (dialog->priv->input.type != BRASERO_TRACK_TYPE_DISC)
 		media = brasero_burn_session_get_dest_media (dialog->priv->session);
 	else
-		media = source.subtype.media;
+		media = dialog->priv->input.subtype.media;
 
-	switch (source.type) {
+	switch (dialog->priv->input.type) {
 	case BRASERO_TRACK_TYPE_AUDIO:
 		primary = g_strdup (_("Audio CD successfully burnt"));
 		secondary = g_strdup_printf (_("\"%s\" is now ready for use"), 
@@ -1447,10 +1445,10 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	g_object_ref (session);
 
 	/* update what we should display */
-	dialog->priv->input = brasero_burn_session_get_input_type (session, NULL);
+	brasero_burn_session_get_input_type (session, &dialog->priv->input);
 	if (brasero_burn_session_is_dest_file (session))
 		media = BRASERO_MEDIUM_FILE;
-	else if (dialog->priv->input != BRASERO_TRACK_TYPE_DISC)
+	else if (dialog->priv->input.type != BRASERO_TRACK_TYPE_DISC)
 		media = brasero_burn_session_get_dest_media (session);
 	else {
 		NautilusBurnDrive *drive;
@@ -1459,7 +1457,7 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		media = NCB_MEDIA_GET_STATUS (drive);
 	}
 
-	brasero_burn_dialog_update_info (dialog, dialog->priv->input, media);
+	brasero_burn_dialog_update_info (dialog, dialog->priv->input.type, media);
 
 	/* start the recording session */
 	brasero_burn_dialog_activity_start (dialog);

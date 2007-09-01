@@ -67,6 +67,8 @@ struct _BraseroDiscOptionDialogPrivate {
 	GtkWidget *selection;
 	GtkWidget *label;
 
+	GtkWidget *button;
+
 	guint label_modified:1;
 	guint joliet_warning:1;
 
@@ -665,17 +667,13 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	/* video toggle */
 	brasero_disc_option_dialog_video_widget (dialog);
 
-	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
-						 priv->joliet_toggle,
-						 priv->video_toggle,
-						 NULL);
-	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
-
 	/* multisession options */
 	brasero_disc_option_dialog_multi_widget (dialog);
 
-	options = brasero_utils_pack_properties (_("<b>Multisession</b>"),
+	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
 						 priv->multi_toggle,
+						 priv->joliet_toggle,
+						 priv->video_toggle,
 						 NULL);
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
@@ -707,7 +705,7 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 	gtk_widget_set_tooltip_text (priv->multi_toggle,
 			      _("Allow create what is called an enhanced CD or CD+"));
 
-	options = brasero_utils_pack_properties (_("<b>Multisession</b>"),
+	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
 						 priv->multi_toggle,
 						 NULL);
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
@@ -765,6 +763,17 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 	}
 }
 
+static void
+brasero_disc_option_dialog_valid_media_cb (BraseroDestSelection *selection,
+					   gboolean valid,
+					   BraseroDiscOptionDialog *self)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (self);
+	gtk_widget_set_sensitive (priv->button, valid);
+}
+
 BraseroBurnSession *
 brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *dialog)
 {
@@ -795,13 +804,13 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 				      button,
 				      GTK_RESPONSE_CANCEL);
 
-	button = brasero_utils_make_button (_("Burn"),
-					    NULL,
-					    "media-optical-burn",
-					    GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_widget_show (button);
+	priv->button = brasero_utils_make_button (_("Burn"),
+						  NULL,
+						  "media-optical-burn",
+						  GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (priv->button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      button,
+				      priv->button,
 				      GTK_RESPONSE_OK);
 
 	priv->caps = brasero_burn_caps_get_default ();
@@ -822,10 +831,15 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 
 	/* first box */
 	priv->selection = brasero_dest_selection_new (priv->session);
+	g_signal_connect (priv->selection,
+			  "valid-media",
+			  G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
+			  obj);
+
 	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
 						      BRASERO_MEDIUM_WRITABLE);
 	gtk_widget_set_tooltip_text (priv->selection,
-			      _("Choose which drive holds the disc to write to"));
+				     _("Choose which drive holds the disc to write to"));
 
 	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
 						 priv->selection,

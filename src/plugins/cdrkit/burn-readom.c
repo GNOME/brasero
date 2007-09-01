@@ -71,7 +71,7 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 		else
 			written = sector * 2048;
 
-		brasero_job_set_written (BRASERO_JOB (readom), written);
+		brasero_job_set_written_track (BRASERO_JOB (readom), written);
 
 		if (sector > 10)
 			brasero_job_start_progress (BRASERO_JOB (readom), FALSE);

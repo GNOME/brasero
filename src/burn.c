@@ -1257,8 +1257,6 @@ start:
 
 	if (result == BRASERO_BURN_OK) {
 		if (!fake) {
-			brasero_burn_action_changed_real (burn,
-							  BRASERO_BURN_ACTION_FINISHED);
 			g_signal_emit (burn,
 				       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
 				       0,
@@ -1365,8 +1363,6 @@ start:
 
 	/* let's see the results */
 	if (result == BRASERO_BURN_OK) {
-		brasero_burn_action_changed_real (burn,
-						  BRASERO_BURN_ACTION_FINISHED);
 		g_signal_emit (burn,
 			       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
 			       0,
@@ -1825,6 +1821,9 @@ brasero_burn_record_session (BraseroBurn *burn,
 		return result;
 	}
 
+	/* recording was successfull, so tell it */
+	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
+
 	if (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_DUMMY) {
 		/* no need to check if it was dummy */
 		return BRASERO_BURN_OK;
@@ -2023,6 +2022,9 @@ brasero_burn_record (BraseroBurn *burn,
 
 	g_object_ref (session);
 	priv->session = session;
+
+	/* say to the whole world we started */
+	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_PREPARING);
 
 	if (brasero_burn_session_same_src_dest_drive (session)) {
 		/* This is a special case */

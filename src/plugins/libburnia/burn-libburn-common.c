@@ -154,7 +154,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 		case BURN_DRIVE_WRITING_LEADIN:		/* DAO */
 		case BURN_DRIVE_WRITING_PREGAP:		/* TAO */
 			ctx->has_leadin = 1;
-			action = BRASERO_BURN_ACTION_PREPARING;
+			action = BRASERO_BURN_ACTION_START_RECORDING;
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
 			break;
 
@@ -175,13 +175,13 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 
 		case BURN_DRIVE_IDLE:
 			/* FIXME: that's where a track is returned */
-			brasero_job_finished (BRASERO_JOB (self), NULL);
+			brasero_job_finished_session (BRASERO_JOB (self));
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
 			break;
 
 		case BURN_DRIVE_SPAWNING:
 			if (ctx->status == BURN_DRIVE_IDLE)
-				action = BRASERO_BURN_ACTION_PREPARING;
+				action = BRASERO_BURN_ACTION_START_RECORDING;
 			else
 				action = BRASERO_BURN_ACTION_FIXATING;
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
@@ -203,39 +203,10 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 					FALSE);
 }
 
-static gint64
-brasero_libburn_common_get_session_size (BraseroJob *self,
-					 BraseroLibburnCtx *ctx)
-{
-	struct burn_session **sessions;
-	gint64 sectors = 0;
-	int num_sessions;
-	int i;
-
-	sessions = burn_disc_get_sessions (ctx->disc, &num_sessions);
-	for (i = 0; i < num_sessions; i ++) {
-		sectors += burn_session_get_sectors (sessions [i]);
-
-		/* add the size for lead-out in case of raw */
-//		if (self->priv->has_leadin)
-//			sectors += (i == 0) ? 6750:2250;
-	}
-
-	/* add the size for lead-in in case of raw */
-//	if (self->priv->has_leadin)
-//		sectors += 11475;
-
-	return sectors;
-}
-
 void
 brasero_libburn_common_clock_id (BraseroJob *self,
 				 BraseroLibburnCtx *ctx)
 {
-	gint64 cur_sector;
-	gdouble fraction;
-	gint64 sectors;
-
 	enum burn_drive_status status;
 	struct burn_progress progress;
 
@@ -266,6 +237,8 @@ brasero_libburn_common_clock_id (BraseroJob *self,
 
 	if (status != BURN_DRIVE_ERASING
 	&&  status != BURN_DRIVE_FORMATTING) {
+		gint64 cur_sector;
+
 		if (ctx->track_num != progress.track) {
 			gchar *string;
 
@@ -282,18 +255,17 @@ brasero_libburn_common_clock_id (BraseroJob *self,
 		}
 
 		cur_sector = progress.sector + ctx->sectors;
-		sectors = brasero_libburn_common_get_session_size (self, ctx);
-		brasero_job_set_written (self, cur_sector * 2048);
-		brasero_job_set_current_track_size (self, 2048, sectors, -1);
+		brasero_job_set_written_session (self, cur_sector * 2048);
 	}
 	else {
-		cur_sector = progress.sector;
-		sectors = progress.sectors;
+		gdouble fraction;
+
+		/* when erasing only set progress */
+		fraction = (gdouble) (progress.sector) /
+			   (gdouble) (progress.sectors);
+
+		brasero_job_set_progress (self, fraction);
 	}
 
-	fraction = (gdouble) (cur_sector) /
-		   (gdouble) (sectors);
-
-	brasero_job_set_progress (self, fraction);
 	brasero_job_start_progress (self, FALSE);
 }

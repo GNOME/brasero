@@ -52,12 +52,10 @@ BRASERO_PLUGIN_BOILERPLATE (BraseroLibisofs, brasero_libisofs, BRASERO_TYPE_JOB,
 struct _BraseroLibisofsPrivate {
 	struct burn_source *libburn_src;
 
-	FILE *file;
-	int pipe_out;
-
 	GError *error;
 	GThread *thread;
 	guint thread_id;
+
 	guint cancel:1;
 };
 typedef struct _BraseroLibisofsPrivate BraseroLibisofsPrivate;
@@ -69,9 +67,6 @@ static GObjectClass *parent_class = NULL;
 static gboolean
 brasero_libisofs_thread_finished (gpointer data)
 {
-	gchar *output = NULL;
-	BraseroTrackType type;
-	BraseroTrack *track = NULL;
 	BraseroLibisofs *self = data;
 	BraseroLibisofsPrivate *priv;
 
@@ -87,34 +82,41 @@ brasero_libisofs_thread_finished (gpointer data)
 		return FALSE;
 	}
 
-	/* Let's make a track */
-	brasero_job_get_output_type (BRASERO_JOB (self), &type);
-	track = brasero_track_new (type.type);
+	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) != BRASERO_BURN_OK) {
+		BraseroTrack *track = NULL;
+		BraseroTrackType type;
+		gchar *output = NULL;
 
-	brasero_job_get_image_output (BRASERO_JOB (self),
-				      &output,
-				      NULL);
-	brasero_track_set_image_source (track,
-					output,
-					NULL,
-					BRASERO_IMAGE_FORMAT_BIN);
+		/* Let's make a track */
+		brasero_job_get_output_type (BRASERO_JOB (self), &type);
+		track = brasero_track_new (type.type);
 
-	brasero_job_finished (BRASERO_JOB (self), track);
+		brasero_job_get_image_output (BRASERO_JOB (self),
+					      &output,
+					      NULL);
+		brasero_track_set_image_source (track,
+						output,
+						NULL,
+						BRASERO_IMAGE_FORMAT_BIN);
+
+		brasero_job_add_track (BRASERO_JOB (self), track);
+	}
+
+	brasero_job_finished_track (BRASERO_JOB (self));
 	return FALSE;
 }
 
 static BraseroBurnResult
 brasero_libisofs_write_sector_to_fd (BraseroLibisofs *self,
+				     int fd,
 				     gpointer buffer,
 				     gint bytes_remaining)
 {
-	int fd;
 	gint bytes_written = 0;
 	BraseroLibisofsPrivate *priv;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
-	brasero_job_get_fd_out (BRASERO_JOB (self), &fd);
 	while (bytes_remaining) {
 		gint written;
 
@@ -156,6 +158,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	gint64 written_sectors = 0;
 	BraseroBurnResult result;
 	guchar buf [sector_size];
+	int fd = -1;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
@@ -164,24 +167,23 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 					NULL,
 					FALSE);
 
-	brasero_job_set_current_track_size (BRASERO_JOB (self),
-					    2048,
-					    -1,
-					    priv->libburn_src->get_size (priv->libburn_src));
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
+	brasero_job_get_fd_out (BRASERO_JOB (self), &fd);
 
+	BRASERO_JOB_LOG (self, "writing to pipe");
 	while (priv->libburn_src->read (priv->libburn_src, buf, sector_size) == sector_size) {
 		if (priv->cancel)
 			break;
 
 		result = brasero_libisofs_write_sector_to_fd (self,
+							      fd,
 							      buf,
 							      sector_size);
 		if (result != BRASERO_BURN_OK)
 			break;
 
 		written_sectors ++;
-		brasero_job_set_written (BRASERO_JOB (self), written_sectors << 11);
+		brasero_job_set_written_track (BRASERO_JOB (self), written_sectors << 11);
 	}
 }
 
@@ -206,16 +208,14 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 		return;
 	}
 
+	BRASERO_JOB_LOG (self, "writing to file %s", output);
+
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CREATING_IMAGE,
 					NULL,
 					FALSE);
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
-	brasero_job_set_current_track_size (BRASERO_JOB (self),
-					    2048,
-					    -1,
-					    priv->libburn_src->get_size (priv->libburn_src));
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 	while (priv->libburn_src->read (priv->libburn_src, buf, sector_size) == sector_size) {
@@ -235,7 +235,7 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 			break;
 
 		written_sectors ++;
-		brasero_job_set_written (BRASERO_JOB (self), written_sectors << 11);
+		brasero_job_set_written_track (BRASERO_JOB (self), written_sectors << 11);
 	}
 
 	fclose (file);
@@ -251,6 +251,7 @@ brasero_libisofs_thread_started (gpointer data)
 	self = BRASERO_LIBISOFS (data);
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
+	BRASERO_JOB_LOG (self, "entering thread");
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
 		brasero_libisofs_write_image_to_fd_thread (self);
 	else
@@ -304,11 +305,6 @@ brasero_libisofs_create_volume_thread_finished (gpointer data)
 		return FALSE;
 	}
 
-	brasero_job_set_current_track_size (BRASERO_JOB (self),
-					    2048,
-					    -1,
-					    priv->libburn_src->get_size (priv->libburn_src));
-
 	brasero_job_get_action (BRASERO_JOB (self), &action);
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
 		BraseroBurnResult result;
@@ -317,11 +313,11 @@ brasero_libisofs_create_volume_thread_finished (gpointer data)
 		result = brasero_libisofs_create_image (self, &error);
 		if (error)
 			priv->error = error;
-
-		return FALSE;
+		else
+			return FALSE;
 	}
 
-	brasero_job_finished (BRASERO_JOB (self), NULL);
+	brasero_job_finished_track (BRASERO_JOB (self));
 	return FALSE;
 }
 
@@ -346,20 +342,25 @@ brasero_libisofs_sort_graft_points (gconstpointer a, gconstpointer b)
 static gpointer
 brasero_libisofs_create_volume_thread (gpointer data)
 {
+	BraseroLibisofs *self = BRASERO_LIBISOFS (data);
 	BraseroLibisofsPrivate *priv;
-	BraseroLibisofs *self = data;
 	BraseroTrack *track = NULL;
 	struct iso_volume *volume;
-	struct iso_volset *volset;
-	GSList *excluded = NULL;
 	GSList *grafts = NULL;
-	BraseroTrackType type;
 	gchar *label = NULL;
 	gchar *publisher;
 	GSList *iter;
-	gint flags;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
+
+	if (priv->libburn_src) {
+		burn_source_free (priv->libburn_src);
+		priv->libburn_src = NULL;
+	}
+
+	BRASERO_JOB_LOG (self, "creating volume");
+
+	/* create volume */
 	publisher = g_strdup_printf ("Brasero-%i.%i.%i",
 				     BRASERO_MAJOR_VERSION,
 				     BRASERO_MINOR_VERSION,
@@ -372,81 +373,138 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	g_free (publisher);
 	g_free (label);
 
-	/* we add the globally excluded */
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	excluded = brasero_track_get_data_excluded_source (track);
-	for (; excluded; excluded = excluded->next) {
-		gchar *uri;
-		gchar *path;
-
-		uri = excluded->data;
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		iso_exclude_add_path (path);
-		g_free (path);
-	}
-
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
-	/* we need to copy the list as we're going to reorder it */
+	/* copy the list as we're going to reorder it */
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	grafts = brasero_track_get_data_grafts_source (track);
 	grafts = g_slist_copy (grafts);
 	grafts = g_slist_sort (grafts, brasero_libisofs_sort_graft_points);
+
 	for (iter = grafts; iter; iter = iter->next) {
-		GSList *excluded_path;
+		struct iso_tree_node_dir *parent;
+		gchar **excluded_array;
 		BraseroGraftPt *graft;
-		struct iso_tree_node *node;
+		gchar *path_parent;
+		gchar *path_name;
+		GSList *excluded;
+		guint size;
 
 		if (priv->cancel)
 			goto end;
 
 		graft = iter->data;
 
-		/* now let's take care of the excluded files */
-		excluded_path = NULL;
-		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
+		BRASERO_JOB_LOG (self,
+				 "Adding graft disc path = %s, URI = %s",
+				 graft->path,
+				 graft->uri);
+
+		size = g_slist_length (brasero_track_get_data_excluded_source (track));
+		size += g_slist_length (graft->excluded);
+		excluded_array = g_new0 (gchar *, size + 1);
+		size = 0;
+
+		/* add global exclusions */
+		for (excluded = brasero_track_get_data_excluded_source (track);
+		     excluded; excluded = excluded->next) {
 			gchar *uri;
-			gchar *path;
 
 			uri = excluded->data;
-			path = gnome_vfs_get_local_path_from_uri (uri);
-			iso_exclude_add_path (path);
-
-			/* keep the path for later since we'll remove it */
-			excluded_path = g_slist_prepend (excluded_path, path);
+			excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
 		}
 
-		/* add the file/directory to the volume */
-		if (graft->uri) {
-			gchar *local_path;
+		/* now let's take care of the excluded files */
+		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
+			gchar *uri;
 
-			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
-			node = iso_tree_volume_add_path (volume,
-							 graft->path,
-							 local_path);
-			g_free (local_path);
+			uri = excluded->data;
+			excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
 		}
-		else
-			node = iso_tree_volume_add_new_dir (volume, graft->path);
 
-		if (!node) {
+		/* search for parent node */
+		path_parent = g_path_get_dirname (graft->path);
+		parent = (struct iso_tree_node_dir *) iso_tree_volume_path_to_node (volume, path_parent);
+		g_free (path_parent);
+
+		if (!parent) {
 			/* an error has occured, possibly libisofs hasn't been
 			 * able to find a parent for this node */
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
 						   _("a parent for the path (%s) could not be found in the tree"),
 						   graft->path);
+			g_free (excluded_array);
 			goto end;
 		}
 
-		/* remove all path from exclusion */
-		for (excluded = excluded_path; excluded; excluded = excluded->next) {
-			gchar *path;
+		BRASERO_JOB_LOG (self, "Found parent");
+		path_name = g_path_get_basename (graft->path);
 
-			path = excluded->data;
-			iso_exclude_remove_path (path);
-			g_free (path);
+		/* add the file/directory to the volume */
+		if (graft->uri) {
+			gchar *local_path;
+
+			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
+			if (!local_path){
+				priv->error = g_error_new (BRASERO_BURN_ERROR,
+							   BRASERO_BURN_ERROR_GENERAL,
+							   _("non local file %s"),
+							   G_STRLOC);
+				g_free (excluded_array);
+				g_free (path_name);
+				goto end;
+			}
+
+			if  (g_file_test (local_path, G_FILE_TEST_IS_DIR)) {
+				struct iso_tree_radd_dir_behavior behavior;
+
+				/* first add directory node ... */
+				parent = (struct iso_tree_node_dir *) iso_tree_add_dir (parent, path_name);
+
+				/* ... then its contents */
+				behavior.stop_on_error = 1;
+				behavior.excludes = excluded_array;
+
+				iso_tree_radd_dir (parent,
+						   local_path,
+						   &behavior);
+
+				if (behavior.error) {
+					/* an error has occured, possibly libisofs hasn't been
+					 * able to find a parent for this node */
+					priv->error = g_error_new (BRASERO_BURN_ERROR,
+								   BRASERO_BURN_ERROR_GENERAL,
+								   _("libisofs reported an error while adding directory %s"),
+								   graft->path);
+					g_free (path_name);
+					g_free (excluded_array);
+					goto end;
+				}
+			}
+			else if (g_file_test (local_path, G_FILE_TEST_IS_REGULAR)) {
+				struct iso_tree_node *node;
+
+				node = iso_tree_add_file (parent, local_path);
+				iso_tree_node_set_name (node, path_name);
+			}
+			else {
+				priv->error = g_error_new (BRASERO_BURN_ERROR,
+							   BRASERO_BURN_ERROR_GENERAL,
+							   _("unsupported type of file (at %s)"),
+							   G_STRLOC);
+				g_free (path_name);
+				g_free (excluded_array);
+				goto end;
+			}
+
+			g_free (local_path);
 		}
-		g_slist_free (excluded_path);
+		else
+			iso_tree_add_dir (parent, path_name);
+
+		g_free (path_name);
+		g_free (excluded_array);
 	}
 
 end:
@@ -454,26 +512,34 @@ end:
 	if (iter)
 		g_slist_free (iter);
 
-	/* clean the exclusion */
-	iso_exclude_empty ();
+	if (!priv->error && !priv->cancel) {
+		gint64 size;
+		BraseroTrackType type;
+		struct iso_volset *volset;
+		struct ecma119_source_opts opts;
 
-	volset = iso_volset_new (volume, "VOLSETID");
-	iso_volume_free (volume);
+		brasero_track_get_type (track, &type);
+		volset = iso_volset_new (volume, "VOLSETID");
 
-	brasero_track_get_type (track, &type);
-	flags = ((type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) ? ECMA119_JOLIET : 0);
-	flags |= ECMA119_ROCKRIDGE;
+		memset (&opts, 0, sizeof (struct ecma119_source_opts));
+		opts.level = 2;
+		opts.relaxed_constraints = ECMA119_NO_DIR_REALOCATION;
+		opts.flags = ((type.subtype.img_format & BRASERO_IMAGE_FS_JOLIET) ? ECMA119_JOLIET : 0);
+		opts.flags |= ECMA119_ROCKRIDGE;
 
-	priv->libburn_src = iso_source_new_ecma119 (volset,
-						    flags);
-	iso_volset_free (volset);
+		priv->libburn_src = iso_source_new_ecma119 (volset, &opts);
 
-	brasero_job_set_current_track_size (BRASERO_JOB (self), 
-					    2048,
-					    -1,
-					    priv->libburn_src->get_size (priv->libburn_src));
-	priv->thread_id = g_idle_add (brasero_libisofs_create_volume_thread_finished, self);
+		size = priv->libburn_src->get_size (priv->libburn_src);
+		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+							       BRASERO_SIZE_TO_SECTORS (size, 2048),
+							       size);
+	}
+
+	if (!priv->cancel)
+		priv->thread_id = g_idle_add (brasero_libisofs_create_volume_thread_finished, self);
+
 	priv->thread = NULL;
+	g_thread_exit (NULL);
 
 	return NULL;
 }
@@ -509,8 +575,7 @@ brasero_libisofs_start (BraseroJob *job,
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
 	brasero_job_get_action (job, &action);
-	if (action == BRASERO_JOB_ACTION_SIZE
-	|| !priv->libburn_src) {
+	if (action == BRASERO_JOB_ACTION_SIZE) {
 		brasero_job_set_current_action (BRASERO_JOB (self),
 						BRASERO_BURN_ACTION_GETTING_SIZE,
 						NULL,
@@ -518,6 +583,9 @@ brasero_libisofs_start (BraseroJob *job,
 		return brasero_libisofs_create_volume (self, error);
 	}
 
+	/* we need the source before starting anything */
+	if (!priv->libburn_src)
+		return brasero_libisofs_create_volume (self, error);
 
 	return brasero_libisofs_create_image (self, error);
 }

@@ -542,8 +542,8 @@ brasero_task_ctx_set_output_size_for_current_track (BraseroTaskCtx *self,
 }
 
 BraseroBurnResult
-brasero_task_ctx_set_written (BraseroTaskCtx *self,
-			      gint64 written)
+brasero_task_ctx_set_written_track (BraseroTaskCtx *self,
+				    gint64 written)
 {
 	BraseroTaskCtxPrivate *priv;
 	gdouble elapsed = 0.0;
@@ -572,6 +572,20 @@ brasero_task_ctx_set_written (BraseroTaskCtx *self,
 }
 
 BraseroBurnResult
+brasero_task_ctx_set_written_session (BraseroTaskCtx *self,
+				      gint64 written)
+{
+	BraseroTaskCtxPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_TASK_CTX_PRIVATE (self);
+
+	priv->session_bytes = 0;
+	return brasero_task_ctx_set_written_track (self, written);
+}
+
+BraseroBurnResult
 brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 			       gdouble progress)
 {
@@ -580,6 +594,7 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
+
 	priv->progress_changed = 1;
 	priv->progress = progress;
 
@@ -794,8 +809,22 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 	}
 
 	brasero_task_ctx_get_session_output_size (self, NULL, &total);
-	if ((priv->session_bytes + priv->track_bytes) <= 0 || total <= 0)
+	if ((priv->session_bytes + priv->track_bytes) <= 0 || total <= 0) {
+		/* if brasero_task_ctx_start_progress () was called (and a timer
+		 * created), assume that the task will report either a progress
+		 * of the written bytes. Then it means we just started. */
+		if (priv->timer) {
+			if (progress)
+				*progress = 0.0;
+
+			return BRASERO_BURN_OK;
+		}
+
+		if (progress)
+			*progress = -1.0;
+
 		return BRASERO_BURN_NOT_READY;
+	}
 
 	if (!progress)
 		return BRASERO_BURN_OK;

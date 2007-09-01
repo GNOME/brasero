@@ -493,6 +493,7 @@ brasero_process_start (BraseroJob *job, GError **error)
 	BraseroProcess *process = BRASERO_PROCESS (job);
 	int stdout_pipe, stderr_pipe;
 	BraseroProcessClass *klass;
+	BraseroBurnResult result;
 	gboolean read_stdout;
 	/* that's to make sure programs are not translated */
 	gchar *envp [] = {	"LANG=C",
@@ -502,6 +503,11 @@ brasero_process_start (BraseroJob *job, GError **error)
 
 	if (priv->pid)
 		return BRASERO_BURN_RUNNING;
+
+	/* ask the arguments for the program */
+	result = brasero_process_ask_argv (job, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	BRASERO_JOB_LOG (process, "launching command");
 
@@ -733,7 +739,6 @@ brasero_process_class_init (BraseroProcessClass *klass)
 	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_process_finalize;
 
-	job_class->init = brasero_process_ask_argv;
 	job_class->start = brasero_process_start;
 	job_class->stop = brasero_process_stop;
 

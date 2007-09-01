@@ -43,8 +43,11 @@
 
 #include <nautilus-burn-drive.h>
 
+#include <libgnomevfs/gnome-vfs.h>
+
 #include "burn-basics.h"
 #include "burn-medium.h"
+#include "burn-debug.h"
 #include "brasero-ncb.h"
 #include "brasero-utils.h"
 #include "brasero-drive-properties.h"
@@ -56,8 +59,10 @@ struct _BraseroDrivePropertiesPrivate
 	GtkWidget *dummy;
 	GtkWidget *burnproof;
 	GtkWidget *notmp;
-	GtkWidget *tmpdir;
 	GtkWidget *eject;
+
+	GtkWidget *tmpdir;
+	GtkWidget *tmpdir_size;
 };
 
 #define BRASERO_DRIVE_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_PROPERTIES, BraseroDrivePropertiesPrivate))
@@ -130,6 +135,12 @@ void
 brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 				     const gchar *path)
 {
+	gchar *string;
+	gchar *uri_str;
+	gchar *directory;
+	GnomeVFSURI *uri;
+	BraseroBurnResult result;
+	GnomeVFSFileSize vol_size = 0;
 	BraseroDrivePropertiesPrivate *priv;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
@@ -140,6 +151,33 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 	else
 		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir),
 					       path);
+
+	/* get the volume free space */
+	directory = g_path_get_dirname (path);
+	uri_str = gnome_vfs_get_uri_from_local_path (directory);
+	g_free (directory);
+
+	uri = gnome_vfs_uri_new (uri_str);
+	g_free (uri_str);
+
+	if (uri == NULL) {
+		BRASERO_BURN_LOG ("impossible to retrieve size for %s", path);
+		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
+		return;
+	}
+
+	result = gnome_vfs_get_volume_free_space (uri, &vol_size);
+	if (result != GNOME_VFS_OK) {
+		BRASERO_BURN_LOG ("impossible to retrieve size for %s", path);
+		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
+		return;
+	}
+
+	gnome_vfs_uri_unref (uri);
+
+	string = brasero_utils_get_size_string (vol_size, TRUE, TRUE);
+	gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), string);
+	g_free (string);
 }
 
 static void
@@ -271,6 +309,8 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	BraseroDrivePropertiesPrivate *priv;
 	GtkCellRenderer *renderer;
 	GtkTreeModel *model;
+	GtkWidget *label;
+	GtkWidget *box;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
 
@@ -301,7 +341,6 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	priv->burnproof = gtk_check_button_new_with_label (_("Use burnproof (decrease the risk of failures)"));
 	priv->eject = gtk_check_button_new_with_label (_("Eject after burning"));
 	priv->notmp = gtk_check_button_new_with_label (_("Burn the image directly without saving it to disc"));
-	priv->tmpdir = gtk_file_chooser_button_new (_("Directory for temporary files"), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
 			    brasero_utils_pack_properties (_("<b>Options</b>"),
@@ -313,8 +352,23 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 			    FALSE,
 			    FALSE, 0);
 
+	priv->tmpdir = gtk_file_chooser_button_new (_("Directory for temporary files"),
+						    GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+
+	box = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (box);
+
+	label = gtk_label_new (_("Temporary directory free space:"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
+	priv->tmpdir_size = gtk_label_new ("");
+	gtk_widget_show (priv->tmpdir_size);
+	gtk_box_pack_start (GTK_BOX (box), priv->tmpdir_size, FALSE, FALSE, 0);
+
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
 			    brasero_utils_pack_properties (_("<b>Temporary files</b>"),
+							   box,
 							   priv->tmpdir,
 							   NULL),
 			    FALSE,

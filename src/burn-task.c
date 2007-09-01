@@ -51,6 +51,7 @@ struct _BraseroTaskPrivate {
 	gint clock_id;
 
 	BraseroTaskItem *leader;
+	BraseroTaskItem *first;
 
 	/* result of the task */
 	BraseroBurnResult retval;
@@ -73,9 +74,12 @@ brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item)
 	priv = BRASERO_TASK_PRIVATE (task);
 
 	if (priv->leader) {
-		brasero_task_item_connect (priv->leader, item);
+		brasero_task_item_link (priv->leader, item);
 		g_object_unref (priv->leader);
 	}
+
+	if (!priv->first)
+		priv->first = item;
 
 	priv->leader = item;
 	g_object_ref (priv->leader);
@@ -148,6 +152,33 @@ brasero_task_clock_tick (gpointer data)
  */
 
 static BraseroBurnResult
+brasero_task_deactivate_item (BraseroTask *task,
+			      BraseroTaskItem *item,
+			      GError **error)
+{
+	BraseroBurnResult result = BRASERO_BURN_OK;
+	BraseroTaskItemIFace *klass;
+
+	if (brasero_task_item_is_active (item)) {
+		BRASERO_BURN_LOG ("%s already stopped", G_OBJECT_TYPE_NAME (item));
+		return BRASERO_BURN_OK;
+	}
+
+	/* stop task for real now */
+	BRASERO_BURN_LOG ("stopping %s", G_OBJECT_TYPE_NAME (item));
+
+	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
+	if (klass->stop)
+		result = klass->stop (item,
+				      BRASERO_TASK_CTX (task),
+				      error);
+
+	BRASERO_BURN_LOG ("stopped %s", G_OBJECT_TYPE_NAME (item));
+
+	return result;
+}
+
+static BraseroBurnResult
 brasero_task_send_stop_signal (BraseroTask *task,
 			       BraseroBurnResult retval,
 			       GError **error)
@@ -165,22 +196,12 @@ brasero_task_send_stop_signal (BraseroTask *task,
 
 	/* we stop all the slaves first and then go up the list */
 	for (; item; item = brasero_task_item_next (item)) {
-		BraseroTaskItemIFace *klass;
 		GError *item_error;
 
 		item_error = NULL;
 
 		/* stop task for real now */
-		BRASERO_BURN_LOG ("stopping %s", G_OBJECT_TYPE_NAME (item));
-
-		klass = BRASERO_TASK_ITEM_GET_CLASS (item);
-		if (klass->stop)
-			result = klass->stop (item,
-					      BRASERO_TASK_CTX (task),
-					      &item_error);
-
-		BRASERO_BURN_LOG ("stopped %s", G_OBJECT_TYPE_NAME (item));
-
+		result = brasero_task_deactivate_item (task, item, &item_error);
 		if (item_error) {
 			g_error_free (local_error);
 			local_error = item_error;
@@ -207,34 +228,30 @@ brasero_task_start_item (BraseroTask *task,
 	BraseroTaskItemIFace *klass;
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
-	if (!klass->start) {
-		BRASERO_BURN_LOG ("no start method %s", G_OBJECT_TYPE_NAME (item));
-		BRASERO_JOB_NOT_SUPPORTED (item);
-	}
+	if (!klass->start)
+		return BRASERO_BURN_ERR;
 
-	BRASERO_BURN_LOG ("start method %s", G_OBJECT_TYPE_NAME (item));
+	BRASERO_BURN_LOG ("::start method %s", G_OBJECT_TYPE_NAME (item));
 
-	result = klass->start (item, BRASERO_TASK_CTX (task), error);
+	result = klass->start (item, error);
 	return result;
 }
 
 static BraseroBurnResult
-brasero_task_init_item (BraseroTask *task,
-		        BraseroTaskItem *item,
-		        GError **error)
+brasero_task_activate_item (BraseroTask *task,
+			    BraseroTaskItem *item,
+			    GError **error)
 {
 	BraseroTaskItemIFace *klass;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
-	if (!klass->init) {
-		BRASERO_BURN_LOG ("no init method %s", G_OBJECT_TYPE_NAME (item));
+	if (!klass->activate)
 		return BRASERO_BURN_ERR;
-	}
 
-	BRASERO_BURN_LOG ("init method %s", G_OBJECT_TYPE_NAME (item));
+	BRASERO_BURN_LOG ("::activate method %s", G_OBJECT_TYPE_NAME (item));
 
-	result = klass->init (item, BRASERO_TASK_CTX (task), error);
+	result = klass->activate (item, BRASERO_TASK_CTX (task), error);
 	return result;
 }
 
@@ -258,7 +275,7 @@ brasero_task_stop (BraseroTask *task,
 	if (priv->loop && g_main_loop_is_running (priv->loop))
 		g_main_loop_quit (priv->loop);
 	else
-		BRASERO_BURN_LOG ("Task was asked to stop (%i/%i) during ::init or ::start",
+		BRASERO_BURN_LOG ("task was asked to stop (%i/%i) during ::init or ::start",
 				  result, retval);
 }
 
@@ -312,8 +329,7 @@ brasero_task_finished (BraseroTaskCtx *ctx,
 		while (brasero_task_item_previous (item))
 			item = brasero_task_item_previous (item);
 
-		if(brasero_task_item_init (item, ctx, &error_item) != BRASERO_BURN_OK
-		|| brasero_task_item_start (item, ctx, &error_item) != BRASERO_BURN_OK)
+		if (brasero_task_item_start (item, &error_item) != BRASERO_BURN_OK)
 			brasero_task_stop (self, BRASERO_BURN_ERR, error_item);
 
 		return;
@@ -410,80 +426,87 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 }
 
 static BraseroBurnResult
-brasero_task_run_items (BraseroTask *self,
-			GError **error)
+brasero_task_activate_items (BraseroTask *self,
+			     GError **error)
 {
-	BraseroBurnResult result = BRASERO_BURN_OK;
-	BraseroTaskItem *item, *first, *last;
 	BraseroTaskPrivate *priv;
-	gint64 size_before;
+	BraseroBurnResult retval;
+	BraseroTaskItem *item;
 
 	priv = BRASERO_TASK_PRIVATE (self);
 
-	/* first init all jobs starting from the master down to the slave */
-	last = NULL;
-	first = NULL;
-	item = priv->leader;
-	for (; item; item = brasero_task_item_previous (item)) {
-		size_before = 0;
-		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (self),
-							  NULL,
-							  &size_before);
+	retval = BRASERO_BURN_NOT_RUNNING;
+	for (item = priv->first; item; item = brasero_task_item_next (item)) {
+		BraseroBurnResult result;
 
-		result = brasero_task_init_item (self, item, error);
+		result = brasero_task_activate_item (self, item, error);
 		if (result == BRASERO_BURN_NOT_RUNNING) {
-			/* Some jobs don't need to/can't run in fake mode or 
-			 * have been already completed in ::init. So they return
-			 * this value to skip ::start.
-			 * NOTE: it is strictly forbidden for a job to call 
-			 * brasero_job_finished within an init method. Only 
-			 * brasero_job_error can be called from ::init. */
-			BRASERO_BURN_LOG ("init method skipped for %s",
+			BRASERO_BURN_LOG ("::start skipped for %s",
 					  G_OBJECT_TYPE_NAME (item));
-			last = item;
-			result = BRASERO_BURN_OK;
 			continue;
 		}
 
 		if (result != BRASERO_BURN_OK)
-			goto error;
+			return result;
 
-		first = item;
-	}	
+		retval = BRASERO_BURN_OK;
+	}
 
-	if (!first) {
-		gint64 size_after = 0;
+	return retval;
+}
 
-		/* see if the output size changed */
-		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (self),
-							  NULL,
-							  &size_after);
-		if (size_after == size_before) {
-			result = brasero_task_set_track_output_size_default (self, error);
-			if (result != BRASERO_BURN_OK)
-				return result;
+static BraseroBurnResult
+brasero_task_start_items (BraseroTask *self,
+			  GError **error)
+{
+	BraseroBurnResult retval;
+	BraseroTaskPrivate *priv;
+	BraseroTaskItem *item;
+
+	priv = BRASERO_TASK_PRIVATE (self);
+
+	/* start from the master down to the slave */
+	retval = BRASERO_BURN_NOT_SUPPORTED;
+	for (item = priv->leader; item; item = brasero_task_item_previous (item)) {
+		BraseroBurnResult result;
+
+		if (!brasero_task_item_is_active (item))
+			continue;
+
+		result = brasero_task_start_item (self, item, error);
+		if (result == BRASERO_BURN_NOT_SUPPORTED) {
+			BRASERO_BURN_LOG ("%s doesn't support action",
+					  G_OBJECT_TYPE_NAME (item));
+
+			/* "fake mode" to get size. Forgive the jobs that cannot
+			 * retrieve the size for one track. Just deactivate and
+			 * go on with the next.
+			 * NOTE: aftere this result the job is no longer active
+			 */
+			continue;
 		}
+
+		/* if the following is true don't stop everything */
+		if (result == BRASERO_BURN_NOT_RUNNING)
+			return result;
+
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		retval = BRASERO_BURN_OK;
+	}
+
+	if (retval == BRASERO_BURN_NOT_SUPPORTED) {
+		/* if all jobs did not want/could not run then resort to a
+		 * default function and return BRASERO_BURN_NOT_RUNNING */
+		retval = brasero_task_set_track_output_size_default (self, error);
+		if (retval != BRASERO_BURN_OK)
+			return retval;
 
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
-	/* now start from the slave up to the master */
-	for (item = first; item && item != last; item = brasero_task_item_next (item)) {
-		result = brasero_task_start_item (self, item, error);
-
-		/* For ::start the only successful value is BRASERO_BURN_OK. All
-		 * others are considered as errors. If a job is not always sure
-		 * to run then it must implement ::init and tell us through the 
-		 * return value. Again ::start is bound to succeed or fail. */
-		if (result != BRASERO_BURN_OK)
-			goto error;
-	}
-
 	return brasero_task_run_loop (self, error);
-
-error:
-	brasero_task_send_stop_signal (self, result, NULL);
-	return result;
 }
 
 static BraseroBurnResult
@@ -514,16 +537,31 @@ brasero_task_start (BraseroTask *self,
 	brasero_task_ctx_set_fake (BRASERO_TASK_CTX (self), fake);
 	brasero_task_ctx_reset (BRASERO_TASK_CTX (self));
 
-	result = brasero_task_run_items (self, error);
+	/* Activate all items that can be. If no item can be then skip */
+	result = brasero_task_activate_items (self, error);
+	if (result == BRASERO_BURN_NOT_RUNNING) {
+		BRASERO_BURN_LOG ("task skipped");
+		return BRASERO_BURN_OK;
+	}
+
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	result = brasero_task_start_items (self, error);
 	while (result == BRASERO_BURN_NOT_RUNNING) {
-		/* All jobs have decided to skip therefore see if there is
-		 * another track and if there is start again */
+		BRASERO_BURN_LOG ("current track skipped");
+
+		/* this track was skipped without actual loop therefore see if
+		 * there is another track and, if there is, start again */
 		result = brasero_task_ctx_next_track (BRASERO_TASK_CTX (self));
 		if (result != BRASERO_BURN_RETRY)
-			return result;
+			break;
 
-		result = brasero_task_run_items (self, error);
+		result = brasero_task_start_items (self, error);
 	}
+
+	if (result != BRASERO_BURN_OK)
+		brasero_task_send_stop_signal (self, result, NULL);
 
 	return result;
 }

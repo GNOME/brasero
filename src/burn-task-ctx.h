@@ -146,8 +146,12 @@ brasero_task_ctx_set_rate (BraseroTaskCtx *ctx,
 			   gint64 rate);
 
 BraseroBurnResult
-brasero_task_ctx_set_written (BraseroTaskCtx *ctx,
-			      gint64 written);
+brasero_task_ctx_set_written_session (BraseroTaskCtx *ctx,
+				      gint64 written);
+BraseroBurnResult
+brasero_task_ctx_set_written_track (BraseroTaskCtx *ctx,
+				    gint64 written);
+
 BraseroBurnResult
 brasero_task_ctx_set_progress (BraseroTaskCtx *ctx,
 			       gdouble progress);

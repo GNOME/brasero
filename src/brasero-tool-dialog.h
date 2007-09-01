@@ -65,12 +65,17 @@ struct _BraseroToolDialogClass {
 
 GType brasero_tool_dialog_get_type ();
 
-void brasero_tool_dialog_pack_options (BraseroToolDialog *dialog,
-				       ...);
-void brasero_tool_dialog_set_button (BraseroToolDialog *dialog,
-				     const gchar *text,
-				     const gchar *image,
-				     const gchar *theme);
+void
+brasero_tool_dialog_pack_options (BraseroToolDialog *dialog, ...);
+
+void
+brasero_tool_dialog_set_button (BraseroToolDialog *dialog,
+				const gchar *text,
+				const gchar *image,
+				const gchar *theme);
+void
+brasero_tool_dialog_set_valid (BraseroToolDialog *dialog,
+			       gboolean valid);
 
 void
 brasero_tool_dialog_set_progress (BraseroToolDialog *self,

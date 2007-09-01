@@ -72,6 +72,7 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 							N_("Writing CD-TEXT information"),
 							N_("Fixating"),
 							N_("Writing leadout"),
+						        N_("Starting to record"),
 							N_("Success") };
 	return _(strings [action]);
 }

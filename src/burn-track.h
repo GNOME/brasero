@@ -86,6 +86,9 @@ typedef enum {
 #define BRASERO_DURATION_TO_SECTORS(duration)			\
 	((gint64) (duration) * 75 / 1000000000 +		\
 	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
+#define BRASERO_SIZE_TO_SECTORS(size, secsize)			\
+	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
+
 /**
  *
  */

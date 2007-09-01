@@ -454,7 +454,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 
 		written_sectors += num_blocks;
 		remaining_sectors -= num_blocks;
-		brasero_job_set_written (BRASERO_JOB (self), written_sectors * DVDCSS_BLOCK_SIZE);
+		brasero_job_set_written_track (BRASERO_JOB (self), written_sectors * DVDCSS_BLOCK_SIZE);
 	}
 
 end:
@@ -490,33 +490,11 @@ brasero_dvdcss_start (BraseroJob *job,
 		      GError **error)
 {
 	BraseroDvdcss *self;
+	BraseroJobAction action;
 	BraseroDvdcssPrivate *priv;
 
 	self = BRASERO_DVDCSS (job);
 	priv = BRASERO_DVDCSS_PRIVATE (self);
-
-	if (priv->thread)
-		return BRASERO_BURN_RUNNING;
-
-	if (!brasero_dvdcss_library_init (error))
-		return BRASERO_BURN_ERR;
-
-	priv->thread = g_thread_create (brasero_dvdcss_write_image_thread,
-					self,
-					TRUE,
-					error);
-
-	if (!priv->thread)
-		return BRASERO_BURN_ERR;
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
-brasero_dvdcss_init_real (BraseroJob *job,
-			  GError **error)
-{
-	BraseroJobAction action;
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
@@ -533,6 +511,20 @@ brasero_dvdcss_init_real (BraseroJob *job,
 
 	if (action != BRASERO_JOB_ACTION_IMAGE)
 		return BRASERO_BURN_NOT_SUPPORTED;
+
+	if (priv->thread)
+		return BRASERO_BURN_RUNNING;
+
+	if (!brasero_dvdcss_library_init (error))
+		return BRASERO_BURN_ERR;
+
+	priv->thread = g_thread_create (brasero_dvdcss_write_image_thread,
+					self,
+					TRUE,
+					error);
+
+	if (!priv->thread)
+		return BRASERO_BURN_ERR;
 
 	return BRASERO_BURN_OK;
 }
@@ -583,7 +575,6 @@ brasero_dvdcss_class_init (BraseroDvdcssClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_dvdcss_finalize;
 
-	job_class->init = brasero_dvdcss_init_real;
 	job_class->start = brasero_dvdcss_start;
 	job_class->stop = brasero_dvdcss_stop;
 }

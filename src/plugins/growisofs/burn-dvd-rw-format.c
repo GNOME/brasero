@@ -72,7 +72,7 @@ brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_set_dangerous (BRASERO_JOB (process), TRUE);
 
 	if (percent >= 1.0) {
-		brasero_job_set_written (BRASERO_JOB (process), percent);
+		brasero_job_set_written_session (BRASERO_JOB (process), percent);
 		brasero_job_set_progress (BRASERO_JOB (process), 1.0);
 	}
 

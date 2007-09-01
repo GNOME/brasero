@@ -44,16 +44,16 @@ typedef struct _BraseroTaskItemIFace BraseroTaskItemIFace;
 struct _BraseroTaskItemIFace {
 	GTypeInterface parent;
 
-	BraseroBurnResult	(*connect)	(BraseroTaskItem *input,
+	BraseroBurnResult	(*link)		(BraseroTaskItem *input,
 						 BraseroTaskItem *output);
 	BraseroTaskItem *	(*previous)	(BraseroTaskItem *item);
 	BraseroTaskItem *	(*next)		(BraseroTaskItem *item);
 
-	BraseroBurnResult	(*init)		(BraseroTaskItem *item,
+	gboolean		(*is_active)	(BraseroTaskItem *item);
+	BraseroBurnResult	(*activate)	(BraseroTaskItem *item,
 						 BraseroTaskCtx *ctx,
 						 GError **error);
 	BraseroBurnResult	(*start)	(BraseroTaskItem *item,
-						 BraseroTaskCtx *ctx,
 						 GError **error);
 	BraseroBurnResult	(*clock_tick)	(BraseroTaskItem *item,
 						 BraseroTaskCtx *ctx,
@@ -67,8 +67,8 @@ GType
 brasero_task_item_get_type (void);
 
 BraseroBurnResult
-brasero_task_item_connect (BraseroTaskItem *input,
-			   BraseroTaskItem *output);
+brasero_task_item_link (BraseroTaskItem *input,
+			BraseroTaskItem *output);
 
 BraseroTaskItem *
 brasero_task_item_previous (BraseroTaskItem *item);
@@ -76,14 +76,16 @@ brasero_task_item_previous (BraseroTaskItem *item);
 BraseroTaskItem *
 brasero_task_item_next (BraseroTaskItem *item);
 
+gboolean
+brasero_task_item_is_active (BraseroTaskItem *item);
+
 BraseroBurnResult
-brasero_task_item_init (BraseroTaskItem *item,
-			BraseroTaskCtx *ctx,
-			GError **error);
+brasero_task_item_activate (BraseroTaskItem *item,
+			    BraseroTaskCtx *ctx,
+			    GError **error);
 
 BraseroBurnResult
 brasero_task_item_start (BraseroTaskItem *item,
-			 BraseroTaskCtx *ctx,
 			 GError **error);
 
 BraseroBurnResult

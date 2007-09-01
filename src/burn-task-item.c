@@ -57,7 +57,7 @@ brasero_task_item_get_type (void)
 }
 
 BraseroBurnResult
-brasero_task_item_connect (BraseroTaskItem *input, BraseroTaskItem *output)
+brasero_task_item_link (BraseroTaskItem *input, BraseroTaskItem *output)
 {
 	BraseroTaskItemIFace *klass;
 
@@ -65,12 +65,12 @@ brasero_task_item_connect (BraseroTaskItem *input, BraseroTaskItem *output)
 	g_return_val_if_fail (BRASERO_IS_TASK_ITEM (output), BRASERO_BURN_ERR);
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (input);
-	if (klass->connect)
-		return klass->connect (input, output);
+	if (klass->link)
+		return klass->link (input, output);
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (output);
-	if (klass->connect)
-		return klass->connect (input, output);
+	if (klass->link)
+		return klass->link (input, output);
 
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
@@ -103,25 +103,38 @@ brasero_task_item_next (BraseroTaskItem *item)
 	return NULL;
 }
 
+gboolean
+brasero_task_item_is_active (BraseroTaskItem *item)
+{
+	BraseroTaskItemIFace *klass;
+
+	g_return_val_if_fail (BRASERO_IS_TASK_ITEM (item), FALSE);
+
+	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
+	if (klass->is_active)
+		return klass->is_active (item);
+
+	return FALSE;
+}
+
 BraseroBurnResult
-brasero_task_item_init (BraseroTaskItem *item,
-			BraseroTaskCtx *ctx,
-			GError **error)
+brasero_task_item_activate (BraseroTaskItem *item,
+			    BraseroTaskCtx *ctx,
+			    GError **error)
 {
 	BraseroTaskItemIFace *klass;
 
 	g_return_val_if_fail (BRASERO_IS_TASK_ITEM (item), BRASERO_BURN_ERR);
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
-	if (klass->init)
-		return klass->init (item, ctx, error);
+	if (klass->activate)
+		return klass->activate (item, ctx, error);
 
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
 
 BraseroBurnResult
 brasero_task_item_start (BraseroTaskItem *item,
-			 BraseroTaskCtx *ctx,
 			 GError **error)
 {
 	BraseroTaskItemIFace *klass;
@@ -130,7 +143,7 @@ brasero_task_item_start (BraseroTaskItem *item,
 
 	klass = BRASERO_TASK_ITEM_GET_CLASS (item);
 	if (klass->start)
-		return klass->start (item, ctx, error);
+		return klass->start (item, error);
 
 	return BRASERO_BURN_NOT_SUPPORTED;
 }

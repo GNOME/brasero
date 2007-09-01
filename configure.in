@@ -103,27 +103,47 @@ BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_BASE_LIBS $BRASERO_GNOMEVFS_LIBS $BRAS
 
 dnl ****************check for libburn (optional)**************
 LIBBURN_REQUIRED=0.3.4
-LIBISOFS_REQUIRED=0.2.5
+LIBISOFS_REQUIRED=0.2.8
 
 AC_ARG_ENABLE(libburn,
 			[  --enable-libburn		use libburn if available [[default = yes]]],,
 			[enable_libburn="yes"])
 
 if test x"$enable_libburn" = "xyes"; then
-	PKG_CHECK_MODULES(LIBBURN, libburn-1 >= $LIBBURN_REQUIRED libisofs-1 >= $LIBISOFS_REQUIRED, build_libburn=yes, build_libburn=no)
+	PKG_CHECK_MODULES(LIBBURN, libburn-1 >= $LIBBURN_REQUIRED, build_libburn=yes, build_libburn=no)
 else
 	build_libburn="no"
 fi
 
 if test x"$build_libburn" = "xyes"; then
-	AC_SUBST(BRASERO_LIBBURNIA_CFLAGS)
-	AC_SUBST(BRASERO_LIBBURNIA_LIBS)
+	AC_SUBST(BRASERO_LIBBURN_CFLAGS)
+	AC_SUBST(BRASERO_LIBBURN_LIBS)
 
-	BRASERO_LIBBURNIA_CFLAGS="$LIBBURN_CFLAGS"
-	BRASERO_LIBBURNIA_LIBS="$LIBBURN_LIBS"
+	BRASERO_LIBBURN_CFLAGS="$LIBBURN_CFLAGS"
+	BRASERO_LIBBURN_LIBS="$LIBBURN_LIBS"
 	AC_DEFINE(HAVE_LIBBURN, 1, [define if you  want to use with libburn support])
 fi
 AM_CONDITIONAL(HAVE_LIBBURN, test x"$build_libburn" = "xyes")
+
+AC_ARG_ENABLE(libisofs,
+			[  --enable-libisofs		use libisofs if available [[default = yes]]],,
+			[enable_libisofs="yes"])
+
+if test x"$enable_libisofs" = "xyes"; then
+	PKG_CHECK_MODULES(LIBISOFS,  libisofs-1 >= $LIBISOFS_REQUIRED, build_libisofs=yes, build_libisofs=no)
+else
+	build_libisofs="no"
+fi
+
+if test x"$build_libisofs" = "xyes"; then
+	AC_SUBST(BRASERO_LIBISOFS_CFLAGS)
+	AC_SUBST(BRASERO_LIBISOFS_LIBS)
+
+	BRASERO_LIBISOFS_CFLAGS="$LIBISOFS_CFLAGS"
+	BRASERO_LIBISOFS_LIBS="$LIBISOFS_LIBS"
+	AC_DEFINE(HAVE_LIBISOFS, 1, [define if you  want to use with libisofs support])
+fi
+AM_CONDITIONAL(HAVE_LIBISOFS, test x"$build_libisofs" = "xyes")
 
 dnl ****************check for libnotify (optional)**************
 dnl maybe it will be re-enabled later if I can find a use for it
@@ -304,6 +324,7 @@ echo "Version: $BRASERO_VERSION
 	Build Preview pane : ${enable_preview}
 	Build libnotify support : ${build_libnotify}
 	Use libburn : ${build_libburn}
+	Use libisofs : ${build_libisofs}
 "
 echo
 echo

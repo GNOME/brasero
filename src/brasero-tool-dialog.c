@@ -323,6 +323,13 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 	self->priv->button = button;
 }
 
+void
+brasero_tool_dialog_set_valid (BraseroToolDialog *self,
+			       gboolean valid)
+{
+	gtk_widget_set_sensitive (self->priv->button, valid);
+}
+
 NautilusBurnDrive *
 brasero_tool_dialog_get_drive (BraseroToolDialog *self)
 {

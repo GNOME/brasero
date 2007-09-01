@@ -90,6 +90,12 @@ G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_DRIVE_
 
 #define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
 
+enum {
+	VALID_MEDIA_SIGNAL,
+	LAST_SIGNAL
+};
+static guint brasero_dest_selection_signals [LAST_SIGNAL] = { 0 };
+
 static gchar *
 brasero_dest_selection_get_config_key (BraseroTrackDataType input,
 				       NautilusBurnDrive *drive,
@@ -636,8 +642,8 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	if (output.type == BRASERO_TRACK_TYPE_NONE
 	||  output.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 		brasero_burn_session_set_image_output (priv->session,
-						 BRASERO_IMAGE_FORMAT_NONE,
-						 NULL);
+						       BRASERO_IMAGE_FORMAT_NONE,
+						       NULL);
 		return;
 	}
 
@@ -667,8 +673,8 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	};
 
 	brasero_burn_session_set_image_output (priv->session,
-					 output.subtype.img_format,
-					 path);
+					       output.subtype.img_format,
+					       path);
 	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self),
 						path);
 	g_free (path);
@@ -706,10 +712,9 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 
 		path = brasero_dest_selection_get_output_path (self);
 		brasero_dest_selection_get_default_output_format (self, &output);
-
 		brasero_burn_session_set_image_output (priv->session,
-						 output.subtype.img_format,
-						 path);
+						       output.subtype.img_format,
+						       path);
 		g_free (path);
 	}
 	else
@@ -744,6 +749,12 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 					      priv->session,
 					      &supported,
 					      &compulsory);
+
+	/* send a signal to tell whether we support this disc or not */
+	g_signal_emit (self,
+		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+		       0,
+		       (result == BRASERO_BURN_OK));
 
 	if (priv->button) {
 		if (result != BRASERO_BURN_OK)
@@ -842,11 +853,14 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 		brasero_dest_selection_check_drive_settings (self, burner);
 
 		gtk_widget_set_sensitive (priv->copies_box, TRUE);
+		gtk_widget_show (priv->copies_box);
+
 		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
 		brasero_burn_session_set_num_copies (priv->session, numcopies);
 	}
 	else {
 		gtk_widget_set_sensitive (priv->copies_box, FALSE);
+		gtk_widget_hide (priv->copies_box);
 		brasero_burn_session_set_num_copies (priv->session, 1);
 
 		/* Make sure there is an output path/type in case that's an image;
@@ -922,6 +936,8 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  "value-changed",
 			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
 			  object);
+
+	priv->default_path = 1;
 }
 
 static void
@@ -1034,6 +1050,15 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 	object_class->get_property = brasero_dest_selection_get_property;
 
 	select_class->drive_changed = brasero_dest_selection_drive_changed;
+
+	brasero_dest_selection_signals [VALID_MEDIA_SIGNAL] =
+	    g_signal_new ("valid_media",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__BOOLEAN,
+			  G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
 
 	g_object_class_install_property (object_class,
 					 PROP_SESSION,

@@ -347,6 +347,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 
 	label = gtk_label_new (_("<b><i>The drive that holds the source media will also be the one used to record.\n\n</i></b>"
 				 "<i>A new recordable media will be required once the one currently loaded has been copied.</i>"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);

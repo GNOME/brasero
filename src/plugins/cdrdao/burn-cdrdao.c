@@ -61,7 +61,7 @@ brasero_cdrdao_read_stderr_image (BraseroCdrdao *cdrdao, const gchar *line)
 	if (sscanf (line, "%d:%d:%d", &min, &sec, &sub) == 3) {
 		guint64 secs = min * 60 + sec;
 
-		brasero_job_set_written (BRASERO_JOB (cdrdao), secs * 75 * 2352);
+		brasero_job_set_written_track (BRASERO_JOB (cdrdao), secs * 75 * 2352);
 		if (secs > 2)
 			brasero_job_start_progress (BRASERO_JOB (cdrdao), FALSE);
 	}
@@ -102,7 +102,7 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 	if (sscanf (line, "Wrote %u of %u (Buffers %d%%  %*s", &written, &total, &fifo) >= 2) {
 		brasero_job_set_dangerous (BRASERO_JOB (cdrdao), TRUE);
 
-		brasero_job_set_written (BRASERO_JOB (cdrdao), written * 1048576);
+		brasero_job_set_written_session (BRASERO_JOB (cdrdao), written * 1048576);
 		brasero_job_set_current_action (BRASERO_JOB (cdrdao),
 						BRASERO_BURN_ACTION_RECORDING,
 						NULL,
@@ -135,7 +135,7 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 			brasero_job_start_progress (BRASERO_JOB (cdrdao), FALSE);
 
 		written = secs * 75 * 2352;
-		brasero_job_set_written (BRASERO_JOB (cdrdao), written);
+		brasero_job_set_written_session (BRASERO_JOB (cdrdao), written);
 	}
 	else if (strstr (line, "Writing track")) {
 		brasero_job_set_dangerous (BRASERO_JOB (cdrdao), TRUE);
@@ -330,7 +330,7 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 	brasero_job_set_use_average_rate (BRASERO_JOB (cdrdao), TRUE);
 	brasero_job_set_current_action (BRASERO_JOB (cdrdao),
-					BRASERO_BURN_ACTION_PREPARING,
+					BRASERO_BURN_ACTION_START_RECORDING,
 					NULL,
 					FALSE);
 	return BRASERO_BURN_OK;

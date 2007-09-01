@@ -305,6 +305,23 @@ brasero_burn_progress_new ()
 	return GTK_WIDGET (obj);
 }
 
+static gboolean
+brasero_burn_progress_pulse_cb (BraseroBurnProgress *self)
+{
+	gtk_progress_bar_pulse (GTK_PROGRESS_BAR (self->priv->progress));
+	return TRUE;
+}
+
+static void
+brasero_burn_progress_start_blinking (BraseroBurnProgress *self)
+{
+	self->priv->current_progress = gtk_progress_bar_get_fraction (GTK_PROGRESS_BAR (self->priv->progress));
+	if (!self->priv->pulse_id)
+		self->priv->pulse_id = g_timeout_add (150,
+						      (GSourceFunc) brasero_burn_progress_pulse_cb,
+						      self);
+}
+
 void
 brasero_burn_progress_set_status (BraseroBurnProgress *self,
 				  gboolean is_DVD,
@@ -317,25 +334,12 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 {
 	gchar *text;
 
-	if (!self->priv->pulse_id && action_progress >= 0.0)
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->priv->progress), 
-					       action_progress);
-
 	if (action_progress < 0.0) {
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), " ");
+		brasero_burn_progress_start_blinking (self);
 		return;
 	}
 
-	if (self->priv->current == BRASERO_BURN_ACTION_BLANKING) {
-		/* growisofs /libburn in particular when they blanks DVD RW+ 
-		 * or a CD can report the progress so no need for blinking */
-		brasero_burn_progress_stop_blinking (self);
-	}
-
-	text = g_strdup_printf ("%i%%", (gint) (action_progress * 100));
-	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), text);
-	g_free (text);
- 
 	if (self->priv->current == BRASERO_BURN_ACTION_NONE) {
 		if (self->priv->time)
 			gtk_label_set_text (GTK_LABEL (self->priv->time), " ");
@@ -346,6 +350,16 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 
 		return;
 	}
+
+	if (self->priv->pulse_id)
+		brasero_burn_progress_stop_blinking (self);
+
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->priv->progress), 
+				       action_progress);
+
+	text = g_strdup_printf ("%i%%", (gint) (action_progress * 100));
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), text);
+	g_free (text);
 
 	if (remaining >= 0 && self->priv->time) {
 		int hrs, mn, sec;
@@ -401,32 +415,12 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		gtk_label_set_text (GTK_LABEL (self->priv->bytes_written), " ");
 }
 
-static gboolean
-brasero_burn_progress_pulse_cb (BraseroBurnProgress *self)
-{
-	gtk_progress_bar_pulse (GTK_PROGRESS_BAR (self->priv->progress));
-	return TRUE;
-}
-
-static void
-brasero_burn_progress_start_blinking (BraseroBurnProgress *self)
-{
-	self->priv->current_progress = gtk_progress_bar_get_fraction (GTK_PROGRESS_BAR (self->priv->progress));
-	if (!self->priv->pulse_id)
-		self->priv->pulse_id = g_timeout_add (150,
-						      (GSourceFunc) brasero_burn_progress_pulse_cb,
-						      self);
-}
-
 void
 brasero_burn_progress_set_action (BraseroBurnProgress *self,
 				  BraseroBurnAction action,
 				  const gchar *string)
 {
 	gchar *final_text;
-
-	if (action != BRASERO_BURN_ACTION_BLANKING)
-		brasero_burn_progress_stop_blinking (self);
 
 	if (action != BRASERO_BURN_ACTION_NONE) {
 		if (!string)
