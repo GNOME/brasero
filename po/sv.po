@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-25 08:53+0200\n"
-"PO-Revision-Date: 2007-08-25 08:53+0100\n"
+"POT-Creation-Date: 2007-09-03 23:33+0200\n"
+"PO-Revision-Date: 2007-09-03 23:33+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -1703,7 +1703,7 @@ msgid "libdvdcss couldn't be loaded properly"
 msgstr "libdvdcss kunde inte läsas in korrekt"
 
 #: ../src/burn-dvdcss.c:482
-#: ../src/burn-libisofs.c:724
+#: ../src/burn-libisofs.c:773
 #, c-format
 msgid "the data couldn't be written to the pipe (%i: %s)"
 msgstr "data kunde inte skrivas till röret (%i: %s)"
@@ -1736,7 +1736,7 @@ msgid "Copying Video DVD"
 msgstr "Kopierar video-dvd"
 
 #: ../src/burn-dvdcss.c:693
-#: ../src/burn-libisofs.c:831
+#: ../src/burn-libisofs.c:880
 #, c-format
 msgid "the data couldn't be written to the file (%i: %s)"
 msgstr "data kunde inte skrivas till filen (%i: %s)"
@@ -1800,63 +1800,69 @@ msgstr "ogiltig katalogpost"
 msgid "file name is too long"
 msgstr "filnamnet är för långt"
 
-#: ../src/burn-libburn-common.c:215
+#: ../src/burn-libburn-common.c:216
 #, c-format
 msgid "the drive couldn't be initialized"
 msgstr "enheten kunde inte initieras"
 
-#: ../src/burn-libburn-common.c:280
+#: ../src/burn-libburn-common.c:281
 #, c-format
 msgid "(%s) libburn tried to say something"
 msgstr "(%s) libburn försökte säga någonting"
 
-#: ../src/burn-libburn-common.c:429
+#: ../src/burn-libburn-common.c:430
 #, c-format
 msgid "Writing track %02i"
 msgstr "Skriver spår %02i"
 
-#: ../src/burn-libburn.c:319
+#: ../src/burn-libburn.c:317
 #, c-format
 msgid "unable to set the source"
 msgstr "kunde inte ställa in källan"
 
-#: ../src/burn-libburn.c:327
+#: ../src/burn-libburn.c:325
 #, c-format
 msgid "unable to add the track to the session"
 msgstr "kunde inte lägga till spåret till sessionen"
 
-#: ../src/burn-libburn.c:388
+#: ../src/burn-libburn.c:386
 #, c-format
 msgid "a slave tried to get connected"
 msgstr "en slav försökte ansluta"
 
-#: ../src/burn-libburn.c:552
+#: ../src/burn-libburn.c:550
 #, c-format
 msgid "unable to connect to imager"
 msgstr "kunde inte ansluta till avbildaren"
 
-#: ../src/burn-libburn.c:646
-#: ../src/burn-libburn.c:704
+#: ../src/burn-libburn.c:644
+#: ../src/burn-libburn.c:702
 #, c-format
 msgid "no profile available for the medium"
 msgstr "ingen profil tillgänglig för mediet"
 
-#: ../src/burn-libburn.c:749
+#: ../src/burn-libburn.c:747
 #, c-format
 msgid "/dev/null can't be opened"
 msgstr "/dev/null kan inte öppnas"
 
-#: ../src/burn-libburn.c:780
+#: ../src/burn-libburn.c:778
 #, c-format
 msgid "libburn can't burn: %s"
 msgstr "libburn kan inte bränna: %s"
 
-#: ../src/burn-libisofs.c:498
-#: ../src/burn-libisofs.c:522
-#: ../src/burn-libisofs.c:642
+#: ../src/burn-libisofs.c:501
+#: ../src/burn-libisofs.c:544
+#: ../src/burn-libisofs.c:681
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
 msgstr "en förälder för sökvägen (%s) kunde inte hittas i trädet"
+
+#: ../src/burn-libisofs.c:518
+#: ../src/burn-libisofs.c:560
+#, c-format
+msgid "unsupported operation (at %s)"
+msgstr "åtgärden stöds inte (vid %s)"
 
 #: ../src/burn-libread-disc.c:290
 #, c-format
