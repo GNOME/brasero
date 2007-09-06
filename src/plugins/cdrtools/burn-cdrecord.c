@@ -1084,10 +1084,10 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* add some configure options */
 	immed = brasero_plugin_conf_option_new (GCONF_KEY_IMMEDIATE_FLAG,
-						_("enable -immed flag (see wodim manual)"),
+						_("enable -immed flag (see cdrecord manual)"),
 						BRASERO_PLUGIN_OPTION_BOOL);
 	minbuf = brasero_plugin_conf_option_new (GCONF_KEY_MINBUF_VALUE,
-						 _("minimum drive buffer fill ratio (in %)(see wodim manual):"),
+						 _("minimum drive buffer fill ratio (in %)(see cdrecord manual):"),
 						 BRASERO_PLUGIN_OPTION_INT);
 	brasero_plugin_conf_option_int_set_range (minbuf, 25, 95);
 

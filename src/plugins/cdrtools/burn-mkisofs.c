@@ -455,7 +455,7 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "mkisofs",
-			       _("use genisoimage/mkisofs to create images from files"),
+			       _("use mkisofs to create images from files"),
 			       "Philippe Rouquier",
 			       0);
 
