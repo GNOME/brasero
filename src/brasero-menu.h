@@ -58,7 +58,7 @@ static GtkActionEntry entries[] = {
 	{"DiscMenu", NULL, N_("_Disc")},
 	{"HelpMenu", NULL, N_("_Help")},
 
-	{"Plugins", GTK_STOCK_EXECUTE, N_("P_lugins"), NULL,
+	{"Plugins", NULL, N_("P_lugins..."), NULL,
 	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
 
 	{"Erase", "media-optical-blank", N_("_Erase"), NULL,
