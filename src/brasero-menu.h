@@ -58,8 +58,8 @@ static GtkActionEntry entries[] = {
 	{"DiscMenu", NULL, N_("_Disc")},
 	{"HelpMenu", NULL, N_("_Help")},
 
-	{"Prefs", GTK_STOCK_PREFERENCES, N_("Pre_ferences"), NULL,
-	 N_("Set preferences for brasero"), G_CALLBACK (on_prefs_cb)},
+	{"Plugins", GTK_STOCK_EXECUTE, N_("P_lugins"), NULL,
+	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
 
 	{"Erase", "media-optical-blank", N_("_Erase"), NULL,
 	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
@@ -90,7 +90,7 @@ static const gchar *description = {
 	    "<menu action='EditMenu'>"
 	    "<placeholder name='EditPlaceholder'/>"
 	    "<separator/>"
-	    "<menuitem action='Prefs'/>"
+	    "<menuitem action='Plugins'/>"
 	    "</menu>"
 	    "<menu action='ViewMenu'>"
 	    "<placeholder name='ViewPlaceholder'/>"
