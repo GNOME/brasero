@@ -1375,6 +1375,7 @@ gboolean
 brasero_burn_session_start (BraseroBurnSession *self)
 {
 	gchar *start_message;
+	va_list args;
 	BraseroImageFormat output;
 	BraseroBurnSessionPrivate *priv;
 
@@ -1418,7 +1419,7 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	BRASERO_BURN_LOG (start_message);
 
-	brasero_burn_session_logv (self, start_message, NULL);
+	brasero_burn_session_logv (self, start_message, args);
 	g_free (start_message);
 	return TRUE;
 }
