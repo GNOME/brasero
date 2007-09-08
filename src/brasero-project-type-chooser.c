@@ -59,8 +59,8 @@ enum {
 
 struct _ItemDescription {
 	gchar *text;
+  	gchar *description;
   	gchar *tooltip;
-	gchar *description;
        	gchar *image;
 	BraseroProjectType type;
 };
