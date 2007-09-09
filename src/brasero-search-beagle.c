@@ -66,7 +66,7 @@
 #include "brasero-utils.h"
 #include "brasero-search-entry.h"
 #include "brasero-mime-filter.h"
-#include "brasero-search.h"
+#include "brasero-search-beagle.h"
 #include "eggtreemultidnd.h"
 
 #include "brasero-uri-container.h"

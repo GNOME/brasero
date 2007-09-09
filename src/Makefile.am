@@ -41,8 +41,8 @@ brasero_SOURCES = \
 	brasero-utils.c         \
 	brasero-search-entry.c         \
 	brasero-search-entry.h         \
-	brasero-search.c         \
-	brasero-search.h         \
+	brasero-search-beagle.c         \
+	brasero-search-beagle.h         \
 	brasero-mime-filter.c         \
 	brasero-mime-filter.h         \
 	brasero-playlist.c         \

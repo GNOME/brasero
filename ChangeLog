@@ -1,3 +1,41 @@
+2007-09-09  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/Makefile.am:
+	* src/brasero-project-manager.c:
+	* src/brasero-search-beagle.c: (brasero_search_get_type),
+	(brasero_search_class_init),
+	(brasero_search_iface_uri_container_init),
+	(brasero_search_iface_layout_object_init),
+	(brasero_search_get_proportion), (brasero_search_column_clicked),
+	(brasero_search_init), (brasero_search_destroy),
+	(brasero_search_finalize), (brasero_search_try_again),
+	(brasero_search_new), (brasero_search_increase_activity),
+	(brasero_search_decrease_activity),
+	(brasero_search_get_selected_uris),
+	(brasero_search_get_selected_uri), (brasero_search_empty_tree),
+	(brasero_search_drag_data_get_cb),
+	(brasero_search_add_hit_to_tree), (brasero_search_update_header),
+	(brasero_search_max_results_num_changed_cb),
+	(brasero_search_left_button_clicked_cb),
+	(brasero_search_right_button_clicked_cb),
+	(brasero_search_check_for_possible_missing), (_sort_hits_by_score),
+	(brasero_search_beagle_hit_added_cb),
+	(brasero_search_beagle_hit_substracted_cb),
+	(brasero_search_beagle_finished_cb),
+	(brasero_search_beagle_error_dialog),
+	(brasero_search_beagle_error_cb),
+	(brasero_search_entry_activated_cb),
+	(brasero_search_is_visible_cb),
+	(brasero_search_mime_filter_changed),
+	(brasero_search_tree_activated_cb),
+	(brasero_search_tree_selection_changed_cb),
+	(brasero_search_get_selected_rows):
+	* src/brasero-search-beagle.h:
+	* src/brasero-search.c:
+	* src/brasero-search.h:
+
+	Rename brasero-search to brasero-search-beagle.
+	
 2007-09-08  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-project-type-chooser.c:

@@ -61,7 +61,7 @@
 #include "burn-caps.h"
 
 #ifdef BUILD_SEARCH
-#include "brasero-search.h"
+#include "brasero-search-beagle.h"
 #endif
 
 #ifdef BUILD_PLAYLIST
