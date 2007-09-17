@@ -10,12 +10,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-14 22:31+0200\n"
-"PO-Revision-Date: 2007-09-09 16:59+0100\n"
+"POT-Creation-Date: 2007-09-17 22:39+0200\n"
+"PO-Revision-Date: 2007-09-17 16:59+0100\n"
 "Last-Translator: Francesc Vilches <francesc.vilches@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 
@@ -534,6 +534,7 @@ msgid "Display information on blank discs currently inserted"
 msgstr "Mostra la informació dels discs verges inserits"
 
 #: ../src/brasero-metadata.c:480
+#, c-format
 msgid "this format is not supported by gstreamer"
 msgstr "El GStreamer no és compatible amb aquest format"
 
@@ -999,10 +1000,12 @@ msgid "Burning CD"
 msgstr "S'està gravant el CD"
 
 #: ../src/brasero-burn-dialog.c:195 ../src/brasero-burn-dialog.c:228
+#, c-format
 msgid "<big><b>Burning audio CD</b></big>"
 msgstr "<big><b>S'està gravant el CD d'àudio</b></big>"
 
 #: ../src/brasero-burn-dialog.c:203
+#, c-format
 msgid "<big><b>Burning data CD</b></big>"
 msgstr "<big><b>S'està gravant el CD de dades</b></big>"
 
@@ -1023,6 +1026,7 @@ msgid "Burning disc"
 msgstr "S'està gravant el disc"
 
 #: ../src/brasero-burn-dialog.c:235
+#, c-format
 msgid "<big><b>Burning data disc</b></big>"
 msgstr "<big><b>S'està gravant el disc de dades</b></big>"
 
@@ -1060,6 +1064,7 @@ msgid "replace the disc with a recordable CD with a least %i MiB free."
 msgstr "substituïu el disc per un CD gravable amb almenys %i MB lliures."
 
 #: ../src/brasero-burn-dialog.c:302
+#, c-format
 msgid "replace the disc with a recordable CD."
 msgstr "substituïu el disc per un CD gravable."
 
@@ -1069,6 +1074,7 @@ msgid "insert a recordable CD with a least %i MiB free."
 msgstr "inseriu un CD gravable amb almenys %i MB lliures."
 
 #: ../src/brasero-burn-dialog.c:309
+#, c-format
 msgid "insert a recordable CD."
 msgstr "inseriu un CD gravable."
 
@@ -1078,6 +1084,7 @@ msgid "replace the disc with a recordable DVD with a least %i MiB free."
 msgstr "substituïu el disc per un DVD gravable amb almenys %i MB lliures."
 
 #: ../src/brasero-burn-dialog.c:318
+#, c-format
 msgid "replace the disc with a recordable DVD."
 msgstr "substituïu el disc per un DVD gravable."
 
@@ -1087,6 +1094,7 @@ msgid "insert a recordable DVD with a least %i MiB free."
 msgstr "inseriu un DVD gravable amb almenys %i MB lliures."
 
 #: ../src/brasero-burn-dialog.c:325
+#, c-format
 msgid "insert a recordable DVD."
 msgstr "inseriu un DVD gravable."
 
@@ -1096,6 +1104,7 @@ msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
 msgstr "substituïu el disc per un CD o DVD gravable amb almenys %i MB lliures."
 
 #: ../src/brasero-burn-dialog.c:333
+#, c-format
 msgid "replace the disc with a recordable CD or DVD."
 msgstr "substituïu el disc per un CD o DVD gravable."
 
@@ -1105,6 +1114,7 @@ msgid "insert a recordable CD or DVD with a least %i MiB free."
 msgstr "inseriu un CD o DVD gravable amb almenys %i MB lliures."
 
 #: ../src/brasero-burn-dialog.c:340
+#, c-format
 msgid "insert a recordable CD or DVD."
 msgstr "inseriu un CD o DVD gravable."
 
@@ -1351,6 +1361,7 @@ msgstr "El DVD s'ha copiat amb èxit"
 
 #: ../src/brasero-burn-dialog.c:1347 ../src/brasero-burn-dialog.c:1357
 #: ../src/brasero-burn-dialog.c:1369
+#, c-format
 msgid "DVD is now ready for use"
 msgstr "El DVD està llest per al seu ús"
 
@@ -1360,6 +1371,7 @@ msgstr "El CD s'ha copiat amb èxit"
 
 #: ../src/brasero-burn-dialog.c:1351 ../src/brasero-burn-dialog.c:1361
 #: ../src/brasero-burn-dialog.c:1373
+#, c-format
 msgid "CD is now ready for use"
 msgstr "El CD està llest per al seu ús"
 
@@ -1484,6 +1496,7 @@ msgid "File restoration failure"
 msgstr "Ha fallat la restauració de fitxers"
 
 #: ../src/brasero-data-disc.c:4775
+#, c-format
 msgid "New folder"
 msgstr "Carpeta nova"
 
@@ -1887,14 +1900,17 @@ msgid "Show the project only"
 msgstr "Mostra només el projecte"
 
 #: ../src/brasero-ncb.c:294
+#, c-format
 msgid "(u)mount command could not be found in the path"
 msgstr "No s'ha trobat l'ordre (u)mount en el camí"
 
 #: ../src/brasero-ncb.c:329
+#, c-format
 msgid "the drive could not be mounted"
 msgstr "no es pot muntar la unitat"
 
 #: ../src/brasero-ncb.c:430
+#, c-format
 msgid "the disc mount point could not be retrieved."
 msgstr "no es pot obtenir el punt de muntatge del disc"
 
@@ -2468,10 +2484,12 @@ msgid "Corrupted files"
 msgstr "Fitxers corromputs"
 
 #: ../src/brasero-sum-dialog.c:258
+#, c-format
 msgid "a temporary file couldn't be created"
 msgstr "no s'ha pogut crear un fitxer temporal"
 
 #: ../src/brasero-sum-dialog.c:271 ../src/brasero-sum-dialog.c:329
+#, c-format
 msgid "URI is not valid"
 msgstr "L'URI no és vàlid"
 
@@ -2599,6 +2617,7 @@ msgid "the media in %s can't be ejected"
 msgstr "no es pot expulsar el mitjà a %s"
 
 #: ../src/burn.c:477
+#, c-format
 msgid "no drive specified as source"
 msgstr "no s'ha especificat cap unitat com a origen"
 
@@ -2612,10 +2631,12 @@ msgid "the drive can't be locked (%s)"
 msgstr "no es pot bloquejar la unitat (%s)"
 
 #: ../src/burn.c:562 ../src/burn.c:711
+#, c-format
 msgid "no drive specified"
 msgstr "no s'ha especificat cap unitat"
 
 #: ../src/burn.c:570
+#, c-format
 msgid "the drive has no rewriting capabilities"
 msgstr "la unitat no té capacitat de reescriptura"
 
@@ -2624,10 +2645,12 @@ msgid "ongoing blanking process"
 msgstr "procés d'esborrat en curs"
 
 #: ../src/burn.c:721
+#, c-format
 msgid "the drive has no burning capabilities"
 msgstr "la unitat no pot gravar discs"
 
 #: ../src/burn.c:927
+#, c-format
 msgid "the disc could not be mounted (max attemps reached)"
 msgstr "no s'ha pogut muntar el disc (s'ha assolit el nombre màxim d'intents)"
 
@@ -2638,32 +2661,39 @@ msgstr "comprovació de suma de verificació en curs"
 #: ../src/burn.c:1217 ../src/burn.c:1246 ../src/burn.c:1350 ../src/burn.c:1357
 #: ../src/plugins/cdrdao/burn-cdrdao.c:207
 #: ../src/plugins/growisofs/burn-growisofs.c:196
+#, c-format
 msgid "the drive seems to be busy"
 msgstr "sembla que la unitat està ocupada"
 
 #: ../src/burn.c:1579 ../src/burn-caps.c:675
+#, c-format
 msgid "only one track at a time can be checked"
 msgstr "només es pot comprovar una pista cada vegada"
 
 #: ../src/burn.c:1666
+#, c-format
 msgid "there is no track to be burn"
 msgstr "no hi ha cap pista per gravar"
 
 #: ../src/burn.c:1680
+#, c-format
 msgid "there is no drive to burn to"
 msgstr "no hi ha cap unitat on gravar"
 
 #: ../src/burn.c:1699 ../src/burn-caps.c:99
+#, c-format
 msgid "this operation is not supported. Try to activate proper plugins"
 msgstr ""
 "Aquesta operació no està implementada. Proveu d'activar els connectors "
 "adients"
 
 #: ../src/burn.c:1713
+#, c-format
 msgid "merging data is impossible with this disc"
 msgstr "No es poden combinar dades amb aquest disc"
 
 #: ../src/burn.c:1955
+#, c-format
 msgid "impossible to find a format for the temporary image"
 msgstr "No és possible trobar un format per a la imatge temporal"
 
@@ -2689,10 +2719,12 @@ msgid "%s can't be removed"
 msgstr "no es pot suprimir %s"
 
 #: ../src/burn-common.c:272
+#, c-format
 msgid "One file is not a directory or a regular file"
 msgstr "Un dels fitxers no és un directori o un fitxer normal"
 
 #: ../src/burn-common.c:296
+#, c-format
 msgid "the file can't be read"
 msgstr "no es pot llegir el fitxer"
 
@@ -2717,14 +2749,17 @@ msgid "a temporary directory could not be created (%s)"
 msgstr "no s'ha pogut crear un directori temporal (%s)"
 
 #: ../src/burn-iso9660.c:140 ../src/burn-iso9660.c:149
+#, c-format
 msgid "it does not appear to be a primary volume descriptor"
 msgstr "sembla que no és un descriptor de volum primari"
 
 #: ../src/burn-iso9660.c:310
+#, c-format
 msgid "invalid directory record"
 msgstr "registre de directori invàlid"
 
 #: ../src/burn-iso9660.c:326 ../src/burn-iso9660.c:370
+#, c-format
 msgid "file name is too long"
 msgstr "el fitxer és massa llarg"
 
@@ -2776,14 +2811,17 @@ msgstr ""
 "Proveu de desactivar-lo"
 
 #: ../src/burn-job.c:832 ../src/burn-job.c:921
+#, c-format
 msgid "a plugin did not behave properly"
 msgstr "un dels connectors no es comporta correctament"
 
 #: ../src/burn-job.c:1019
+#, c-format
 msgid "couldn't set non blocking mode"
 msgstr "no es pot establir el mode sense bloqueig"
 
 #: ../src/burn-job.c:1027
+#, c-format
 msgid "couldn't get pipe flags"
 msgstr "No es pot obtenir el senyalador de conducte"
 
@@ -2852,23 +2890,31 @@ msgid "rewritable blue ray disc"
 msgstr "disc blue ray regravable"
 
 #: ../src/burn-mkisofs-base.c:123 ../src/burn-mkisofs-base.c:377
+#, c-format
 msgid "the file is not stored locally"
 msgstr "el fitxer no està desat en local"
 
 #: ../src/burn-mkisofs-base.c:226
+#, c-format
 msgid "null graft point"
 msgstr "punt d'ancoratge nul"
 
-#: ../src/burn-process.c:145
+#: ../src/burn-process.c:93
+msgid "Burning CD/DVD"
+msgstr "S'està gravant el CD/DVD"
+
+#: ../src/burn-process.c:167
 #, c-format
 msgid "process %s ended with an error code (%i)"
 msgstr "el proces %s ha acabat amb un codi d'error (%i)"
 
 #: ../src/burn-session.c:554
+#, c-format
 msgid "no path"
 msgstr "sense camí"
 
 #: ../src/burn-session.c:666
+#, c-format
 msgid "no output specified"
 msgstr "no s'ha especificat cap sortida"
 
@@ -2878,6 +2924,7 @@ msgid "size can't be retrieved (%s)"
 msgstr "no es pot obtenir la mida (%s)"
 
 #: ../src/burn-volume.c:122
+#, c-format
 msgid "there isn't a valid volume descriptor"
 msgstr "no hi ha cap descriptor de volum vàlid"
 
@@ -3017,6 +3064,7 @@ msgid "the cue file (%s) seems to be invalid"
 msgstr "el fitxer cue (%s) sembla invàlid"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:213
+#, c-format
 msgid "your version of cdrdao doesn't seem to be supported by libbrasero"
 msgstr "sembla que el libbrasero no admet la vostra versió del cdrdao"
 
@@ -3025,6 +3073,7 @@ msgstr "sembla que el libbrasero no admet la vostra versió del cdrdao"
 #: ../src/plugins/cdrkit/burn-wodim.c:153
 #: ../src/plugins/cdrtools/burn-cdrecord.c:91
 #: ../src/plugins/cdrtools/burn-cdrecord.c:153
+#, c-format
 msgid "You don't seem to have the required permission to use this drive"
 msgstr "Sembla que no teniu els permisos necessaris per a usar aquesta unitat"
 
@@ -3097,6 +3146,7 @@ msgstr "El fitxer és massa llarg per a un CD"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:328
 #: ../src/plugins/cdrtools/burn-mkisofs.c:325
+#, c-format
 msgid ""
 "failed to get the start point of the track. Make sure the media allow to add "
 "files (it is not closed)"
@@ -3114,6 +3164,7 @@ msgstr "no s'ha pogut trobar el genisoimage al camí"
 
 #: ../src/plugins/cdrkit/burn-readom.c:89
 #: ../src/plugins/cdrtools/burn-readcd.c:89
+#, c-format
 msgid "the drive is not ready"
 msgstr "la unitat no està llesta"
 
@@ -3123,11 +3174,13 @@ msgstr "la unitat no està llesta"
 #: ../src/plugins/cdrtools/burn-readcd.c:95
 #: ../src/plugins/cdrtools/burn-readcd.c:101
 #: ../src/plugins/cdrtools/burn-readcd.c:107
+#, c-format
 msgid "you don't seem to have the required permissions to access the drive"
 msgstr "sembla que no teniu els permisos adequats per a accedir a la unitat"
 
 #: ../src/plugins/cdrkit/burn-readom.c:198
 #: ../src/plugins/cdrtools/burn-readcd.c:198
+#, c-format
 msgid "raw images cannot be created with DVDs"
 msgstr "no es poden crear imatges raw amb DVD"
 
@@ -3141,21 +3194,25 @@ msgstr "no s'ha trobar el readom al camí"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:97
 #: ../src/plugins/cdrtools/burn-cdrecord.c:97
+#, c-format
 msgid "There doesn't seem to be a disc in the drive"
 msgstr "Sembla que no hi ha cap disc a la unitat"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:103
 #: ../src/plugins/cdrtools/burn-cdrecord.c:103
+#, c-format
 msgid "input buffer error"
 msgstr "error al buffer d'entrada"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:109
 #: ../src/plugins/cdrtools/burn-cdrecord.c:109
+#, c-format
 msgid "The CD has already been recorded"
 msgstr "Ja s'ha gravat el CD"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:115
 #: ../src/plugins/cdrtools/burn-cdrecord.c:115
+#, c-format
 msgid "The CD cannot be blanked"
 msgstr "No es pot esborrar el CD"
 
@@ -3163,11 +3220,13 @@ msgstr "No es pot esborrar el CD"
 #: ../src/plugins/cdrtools/burn-cdrecord.c:123
 #: ../src/plugins/growisofs/burn-growisofs.c:184
 #: ../src/plugins/growisofs/burn-growisofs.c:190
+#, c-format
 msgid "The files selected did not fit on the CD"
 msgstr "Els fitxers seleccionats no caben al CD"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:129
 #: ../src/plugins/cdrtools/burn-cdrecord.c:129
+#, c-format
 msgid "a write error occured which was likely due to overburning the disc"
 msgstr ""
 "S'ha produït un error d'escriptura segurament per haver activat l'opció "
@@ -3175,6 +3234,7 @@ msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:135
 #: ../src/plugins/cdrtools/burn-cdrecord.c:135
+#, c-format
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
@@ -3183,11 +3243,13 @@ msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:141
 #: ../src/plugins/cdrtools/burn-cdrecord.c:141
+#, c-format
 msgid "The image does not seem to be a proper iso9660 file system"
 msgstr "Sembla que la imatge no és un sistema de fitxers iso9660"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:147
 #: ../src/plugins/cdrtools/burn-cdrecord.c:147
+#, c-format
 msgid "The system is too slow to write the CD at this speed. Try a lower speed"
 msgstr ""
 "El sistema és massa lent per a gravar el CD a aquesta velocitat. Proveu amb "
@@ -3195,6 +3257,7 @@ msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:159
 #: ../src/plugins/cdrtools/burn-cdrecord.c:159
+#, c-format
 msgid ""
 "The drive seems to be busy (maybe check you have proper permissions to use "
 "it)"
@@ -3204,11 +3267,13 @@ msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:167
 #: ../src/plugins/cdrtools/burn-cdrecord.c:167
+#, c-format
 msgid "The drive seems to be busy (maybe you should reload the media)"
 msgstr "La unitat sembla ocupada (potser hauríeu de recarregar el mitjà)"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:173
 #: ../src/plugins/cdrtools/burn-cdrecord.c:173
+#, c-format
 msgid "the image file cannot be found"
 msgstr "no es pot trobar el fitxer d'imatge"
 
@@ -3216,21 +3281,25 @@ msgstr "no es pot trobar el fitxer d'imatge"
 #: ../src/plugins/cdrkit/burn-wodim.c:350
 #: ../src/plugins/cdrtools/burn-cdrecord.c:180
 #: ../src/plugins/cdrtools/burn-cdrecord.c:350
+#, c-format
 msgid "internal error"
 msgstr "error intern"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:186
 #: ../src/plugins/cdrtools/burn-cdrecord.c:186
+#, c-format
 msgid "the cd information could not be written"
 msgstr "no s'ha pogut escriure la informació del cd"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:192
 #: ../src/plugins/cdrtools/burn-cdrecord.c:192
+#, c-format
 msgid "the disc could not be closed"
 msgstr "no s'ha pogut tancar el disc"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:198
 #: ../src/plugins/cdrtools/burn-cdrecord.c:198
+#, c-format
 msgid "the audio tracks are too short or not a multiple of 2352"
 msgstr "les pistes d'àudio són massa curtes o no són múltiples de 2352"
 
@@ -3241,6 +3310,7 @@ msgstr "S'està escrivint una fulla cue"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:330
 #: ../src/plugins/cdrtools/burn-cdrecord.c:330
+#, c-format
 msgid "The media needs to be reloaded before being recorded"
 msgstr "És necessari recarregar el mitjà abans de gravar-lo"
 
@@ -3252,11 +3322,13 @@ msgstr "el fitxer inf no es pot escriure: %s"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:677
 #: ../src/plugins/cdrtools/burn-cdrecord.c:680
+#, c-format
 msgid "imager doesn't seem to be ready"
 msgstr "el creador d'imatge sembla que no està llest"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:689
 #: ../src/plugins/cdrtools/burn-cdrecord.c:692
+#, c-format
 msgid "the size of the session cannot be retrieved"
 msgstr "no es pot obtenir la mida de la sessió"
 
@@ -3346,6 +3418,7 @@ msgid "Creating checksum for image files"
 msgstr "S'està creant la suma de verificació per als fitxers imatge"
 
 #: ../src/plugins/checksum/burn-md5sum.c:557
+#, c-format
 msgid "the image is not local"
 msgstr "la unitat no està en local"
 
@@ -3359,6 +3432,7 @@ msgstr "S'està creant la suma de verificació del disc"
 
 #: ../src/plugins/checksum/burn-md5sum.c:826
 #: ../src/plugins/checksum/burn-md5sum.c:979
+#, c-format
 msgid "some files may be corrupted on the disc"
 msgstr "Alguns fitxers poden estar corromputs al disc"
 
@@ -3372,6 +3446,7 @@ msgid "don't add a md5sum file to all data projects"
 msgstr "no afegeixis un fitxer md5sum a tots els projectes de dades"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:119
+#, c-format
 msgid "encrypted DVD: please, install libdvdcss version 1.2.x"
 msgstr "DVD xifrat: Instal·leu la versió 1.2.x del libdvdcss"
 
@@ -3385,6 +3460,7 @@ msgstr ""
 "Instal·leu la versió 1.2.x"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:136
+#, c-format
 msgid "libdvdcss couldn't be loaded properly"
 msgstr "no s'ha pogut carregar correctament el libdvdcss"
 
@@ -3401,10 +3477,12 @@ msgid "Retrieving DVD keys"
 msgstr "Obtenint les claus del DVD"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:321
+#, c-format
 msgid "the size of the volume couln't be retrieved"
 msgstr "no es pot obtenir la mida del volum"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:330
+#, c-format
 msgid "DVD could not be opened"
 msgstr "No s'ha pogut obrir el DVD"
 
@@ -3424,6 +3502,7 @@ msgstr "El Dvdcss permet llegir DVD xifrats amb css"
 
 #: ../src/plugins/growisofs/burn-dvd-rw-format.c:65
 #: ../src/plugins/growisofs/burn-growisofs.c:202
+#, c-format
 msgid "Unhandled error, aborting"
 msgstr "S'ha produït un error sense tractament, avortant"
 
@@ -3436,22 +3515,27 @@ msgid "dvd+rw-format could not be found in the path"
 msgstr "no s'ha pogut trobar el dvd+rw-format al camí"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:165
+#, c-format
 msgid "The disc is already burnt"
 msgstr "El disc ja està gravat"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:172
+#, c-format
 msgid "The recorder could not be accessed"
 msgstr "No s'ha pogut accedir a la gravadora"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:178
+#, c-format
 msgid "Not enough space available on the disc"
 msgstr "No hi ha prou espai disponible al disc"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:429
+#, c-format
 msgid "the file /proc/self/fd/0 is missing"
 msgstr "el fitxer /proc/self/fd/0 no hi és"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:448
+#, c-format
 msgid "the image is not stored locally"
 msgstr "la imatge no està desada en local"
 
@@ -3464,19 +3548,23 @@ msgid "growisofs could not be found in the path"
 msgstr "no s'ha pogut trobar el growisofs al camí"
 
 #: ../src/plugins/libburnia/burn-libburn.c:80
+#, c-format
 msgid "unable to set the source"
 msgstr "no s'ha pogut establir l'origen"
 
 #: ../src/plugins/libburnia/burn-libburn.c:88
+#, c-format
 msgid "unable to add the track to the session"
 msgstr "no s'ha pogut afegir la pista a la sessió"
 
 #: ../src/plugins/libburnia/burn-libburn.c:319
 #: ../src/plugins/libburnia/burn-libburn.c:377
+#, c-format
 msgid "no profile available for the medium"
 msgstr "no hi ha cap perfil disponible pel mitjà"
 
 #: ../src/plugins/libburnia/burn-libburn.c:423
+#, c-format
 msgid "/dev/null can't be opened"
 msgstr "no es pot obrir /dev/null"
 
@@ -3490,10 +3578,12 @@ msgid "libburn burns CD(RW), DVD+/-(RW)"
 msgstr "el libburn grava CD(RW), DVD+/-(RW)"
 
 #: ../src/plugins/libburnia/burn-libburn-common.c:76
+#, c-format
 msgid "the drive address couldn't be retrieved"
 msgstr "no es pot obtenir l'adreça de la unitat"
 
 #: ../src/plugins/libburnia/burn-libburn-common.c:87
+#, c-format
 msgid "the drive couldn't be initialized"
 msgstr "no es pot inicialitzar la unitat"
 
@@ -3532,6 +3622,7 @@ msgid "libisofs creates disc images from files"
 msgstr "el libisofs crea imatges de disc de fitxers"
 
 #: ../src/plugins/libburnia/burn-libread-disc.c:290
+#, c-format
 msgid "no disc could be found"
 msgstr "no s'ha trobat cap disc"
 
@@ -3553,26 +3644,32 @@ msgid "local-track allows to burn files not stored locally"
 msgstr "El local-track us permet gravar fitxers no guardats en local"
 
 #: ../src/plugins/transcode/burn-transcode.c:137
+#, c-format
 msgid "source can't be created"
 msgstr "no es pot crear la font"
 
 #: ../src/plugins/transcode/burn-transcode.c:183
+#, c-format
 msgid "sink can't be created"
 msgstr "no es pot crear el retorn"
 
 #: ../src/plugins/transcode/burn-transcode.c:198
+#, c-format
 msgid "audioconvert can't be created"
 msgstr "no es pot crear la conversió d'àudio"
 
 #: ../src/plugins/transcode/burn-transcode.c:210
+#, c-format
 msgid "audioresample can't be created"
 msgstr "no es pot crear el remostreig d'àudio"
 
 #: ../src/plugins/transcode/burn-transcode.c:221
+#, c-format
 msgid "filter can't be created"
 msgstr "no es pot crear el filtre"
 
 #: ../src/plugins/transcode/burn-transcode.c:244
+#, c-format
 msgid "decode can't be created"
 msgstr "no es pot crear la descodificació"
 
@@ -3582,6 +3679,7 @@ msgid "a symlink could not be created (%s)"
 msgstr "no s'ha pogut crear un enllaç simbòlic (%s)"
 
 #: ../src/plugins/transcode/burn-transcode.c:675
+#, c-format
 msgid "error getting duration"
 msgstr "error calculant la durada"
 
@@ -3596,6 +3694,7 @@ msgid "error opening file for padding : %s"
 msgstr "error obrint el fitxer per a emplenar : %s"
 
 #: ../src/plugins/transcode/burn-transcode.c:1039
+#, c-format
 msgid "impossible to set start or end of song"
 msgstr "no es pot deteminar el principi o final de la cançó"
 
