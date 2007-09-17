@@ -39,6 +39,8 @@ brasero_SOURCES = \
 	main.c		\
 	brasero-utils.h		\
 	brasero-utils.c         \
+	burn-dbus.h	\
+	burn-dbus.c	\
 	brasero-search-entry.c         \
 	brasero-search-entry.h         \
 	brasero-search-beagle.c         \
