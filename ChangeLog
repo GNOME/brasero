@@ -1,3 +1,15 @@
+2007-09-17  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* configure.in:
+	* src/burn-dbus.c: (brasero_uninhibit_suspend),
+	(brasero_inhibit_suspend):
+	* src/burn-dbus.h:
+	* src/burn-process.c: (brasero_powermanagement),
+	(brasero_process_finished), (brasero_process_start):
+
+	Add Power Management inhibit/uninhibit suspend to Gnome PowerManager
+	via DBus (build optional).
+
 2007-09-09  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/Makefile.am:
