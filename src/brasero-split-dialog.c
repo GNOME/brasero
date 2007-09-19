@@ -793,7 +793,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 
-	radio = gtk_radio_button_new_with_label (NULL, _("Find silences"));
+	radio = gtk_radio_button_new_with_label (NULL, _("for every silence (automatic search)"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (vbox2), radio, FALSE, FALSE, 0);
 
@@ -803,7 +803,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	/* Translators: this goes with the next (= "seconds") */
 	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio),
-							     _("Split track every \"x\" seconds"));
+							     _("every \"x\" seconds"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
 	priv->radio_sec = radio;
@@ -821,7 +821,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio), _("Split track in \"x\" parts"));
+	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio), _("in \"x\" parts"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
 	priv->radio_parts = radio;
@@ -847,7 +847,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 			  object);
 	priv->auto_cut = button;
 
-	label = gtk_label_new (_("This allows to split a track automatically."));
+	label = gtk_label_new (_("Split track automatically:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 
