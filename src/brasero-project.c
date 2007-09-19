@@ -166,9 +166,9 @@ struct BraseroProjectPrivate {
 };
 
 static GtkActionEntry entries_project [] = {
-	{"Save", GTK_STOCK_SAVE, N_("_Save"), NULL,
+	{"Save", GTK_STOCK_SAVE, NULL, NULL,
 	 N_("Save current project"), G_CALLBACK (brasero_project_save_cb)},
-	{"SaveAs", GTK_STOCK_SAVE_AS, N_("_Save as"), NULL,
+	{"SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL,
 	 N_("Save current project to a different location"), G_CALLBACK (brasero_project_save_as_cb)},
 };
 

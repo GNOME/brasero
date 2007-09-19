@@ -107,20 +107,20 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 /* menus */
 static GtkActionEntry entries [] = {
-	{"New", GTK_STOCK_NEW, N_("New project"), NULL,
+	{"New", GTK_STOCK_NEW, N_("_New Project"), NULL,
 	 N_("Create a new project"), NULL },
-	{"NewChoose", GTK_STOCK_NEW, N_("Empty project"), NULL,
+	{"NewChoose", GTK_STOCK_NEW, N_("_Empty Project"), NULL,
 	 N_("Let you choose your new project"), G_CALLBACK (brasero_project_manager_new_empty_prj_cb)},
-	{"NewAudio", NULL, N_("New audio project"), NULL,
+	{"NewAudio", "media-optical-audio-new", N_("New _Audio Project"), NULL,
 	 N_("Create a new audio project"), G_CALLBACK (brasero_project_manager_new_audio_prj_cb)},
-	{"NewData", NULL, N_("New data project"), NULL,
+	{"NewData", "media-optical-data-new", N_("New _Data Project"), NULL,
 	 N_("Create a new data project"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
-	{"NewCopy", NULL, N_("Copy disc"), NULL,
+	{"NewCopy", "media-optical-copy", N_("Copy _Disc"), NULL,
 	 N_("Copy a disc"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
-	{"NewIso", NULL, N_("Burn an image"), NULL,
+	{"NewIso", "media-optical-burn", N_("_Burn Image"), NULL,
 	 N_("Burn an image"), G_CALLBACK (brasero_project_manager_new_iso_prj_cb)},
 
-	{"Open", GTK_STOCK_OPEN, N_("_Open"), NULL,
+	{"Open", GTK_STOCK_OPEN, NULL, NULL,
 	 N_("Open a project"), G_CALLBACK (brasero_project_manager_open_cb)},
 };
 
@@ -506,7 +506,7 @@ brasero_project_manager_register_menu (BraseroProjectManager *manager,
 	GError *error = NULL;
 
 	action = gtk_action_new ("Recent",
-				 _("Recent projects"),
+				 _("_Recent Projects"),
 				 _("Display the projects recently opened"),
 				 NULL);
 	gtk_action_group_add_action (manager->priv->action_group, action);

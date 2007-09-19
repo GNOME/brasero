@@ -64,13 +64,13 @@ static GtkActionEntry entries[] = {
 	{"Erase", "media-optical-blank", N_("_Erase"), NULL,
 	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
 
-	{"Check", GTK_STOCK_FIND, N_("_Check integrity"), NULL,
+	{"Check", GTK_STOCK_FIND, N_("_Check Integrity"), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
 
-	{"Exit", GTK_STOCK_QUIT, N_("E_xit"), NULL,
+	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
 	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
 
-	{"About", GTK_STOCK_ABOUT, N_("About"), NULL, N_("About"),
+	{"About", GTK_STOCK_ABOUT, NULL, NULL, N_("About"),
 	 G_CALLBACK (on_about_cb)},
 
 	{"DiscInfo", GTK_STOCK_CDROM, N_("_Disc Info"), NULL,
