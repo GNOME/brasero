@@ -72,7 +72,7 @@ typedef void		(*BraseroVFSMetaCallback)	(BraseroVFS *self,
 							 GnomeVFSResult result,
 							 const gchar *uri,
 							 GnomeVFSFileInfo *info,
-							 BraseroMetadata *meta,
+							 const BraseroMetadataInfo *meta,
 							 gpointer callback_data);
 
 typedef void		(*BraseroVFSPlaylistCallback)	(BraseroVFS *self,
@@ -120,7 +120,8 @@ brasero_vfs_get_info (BraseroVFS *self,
 gboolean
 brasero_vfs_get_metadata (BraseroVFS *self,
 			  GList *uris,
-			  GnomeVFSFileInfoOptions flags,
+			  GnomeVFSFileInfoOptions vfs_flags,
+			  BraseroMetadataFlag meta_flags,
 			  gboolean recursive,
 			  BraseroVFSDataID id,
 			  gpointer callback_data);

@@ -46,6 +46,9 @@ typedef struct {
 	void		(*uri_activated)	(BraseroURIContainer *container);
 
 	/* virtual functions */
+	gboolean	(*get_boundaries)	(BraseroURIContainer *container,
+						 gint64 *start,
+						 gint64 *end);
 	gchar*		(*get_selected_uri)	(BraseroURIContainer *container);
 	gchar**		(*get_selected_uris)	(BraseroURIContainer *container);
 
@@ -54,6 +57,10 @@ typedef struct {
 
 GType brasero_uri_container_get_type();
 
+gboolean
+brasero_uri_container_get_boundaries (BraseroURIContainer *container,
+				      gint64 *start,
+				      gint64 *end);
 gchar *
 brasero_uri_container_get_selected_uri (BraseroURIContainer *container);
 gchar **

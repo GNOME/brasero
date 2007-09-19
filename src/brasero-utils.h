@@ -72,18 +72,25 @@ brasero_utils_get_sectors_string (gint64 sectors,
 				  gboolean with_unit,
 				  gboolean round);
 
-GdkPixbuf *brasero_utils_get_icon_for_mime (const gchar *mime, gint size);
-GdkPixbuf *brasero_utils_get_icon (const gchar *name, gint size);
+GdkPixbuf *
+brasero_utils_get_icon_for_mime (const gchar *mime,
+				 gint size);
+GdkPixbuf *
+brasero_utils_get_icon (const gchar *name,
+			gint size);
 
-GtkWidget *brasero_utils_pack_properties (const gchar *title, ...);
-GtkWidget *brasero_utils_pack_properties_list (const gchar *title, GSList *list);
+GtkWidget *
+brasero_utils_pack_properties (const gchar *title, ...);
+GtkWidget *
+brasero_utils_pack_properties_list (const gchar *title, GSList *list);
+GtkWidget *
+brasero_utils_make_button (const gchar *text,
+			   const gchar *stock,
+			   const gchar *theme,
+			   GtkIconSize size);
 
-GtkWidget *brasero_utils_make_button (const gchar *text,
-				      const gchar *stock,
-				      const gchar *theme,
-				      GtkIconSize size);
-
-gboolean brasero_utils_remove (const gchar *uri);
+gboolean
+brasero_utils_remove (const gchar *uri);
 
 gchar *brasero_utils_escape_string (const gchar *text);
 

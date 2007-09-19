@@ -112,8 +112,13 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 static void
 brasero_project_selection_changed_cb (BraseroDisc *disc,
 				      BraseroProject *project);
+
 static gchar *
 brasero_project_get_selected_uri (BraseroURIContainer *container);
+static gboolean
+brasero_project_get_boundaries (BraseroURIContainer *container,
+				gint64 *start,
+				gint64 *end);
 
 static void
 brasero_project_get_proportion (BraseroLayoutObject *object,
@@ -298,6 +303,7 @@ static void
 brasero_project_iface_uri_container_init (BraseroURIContainerIFace *iface)
 {
 	iface->get_selected_uri = brasero_project_get_selected_uri;
+	iface->get_boundaries = brasero_project_get_boundaries;
 }
 
 static void
@@ -680,6 +686,25 @@ brasero_project_get_selected_uri (BraseroURIContainer *container)
 		return NULL;
 
 	return brasero_disc_get_selected_uri (project->priv->current);
+}
+
+static gboolean
+brasero_project_get_boundaries (BraseroURIContainer *container,
+				gint64 *start,
+				gint64 *end)
+{
+	BraseroProject *project;
+
+	project = BRASERO_PROJECT (container);
+
+	/* if we are burning we better not return anything so as to stop 
+	 * preview widget from carrying on to play */
+	if (project->priv->is_burning)
+		return FALSE;
+
+	return brasero_disc_get_boundaries (project->priv->current,
+					    start,
+					    end);
 }
 
 /******************** useful function to wait when burning/saving **************/
@@ -1550,7 +1575,11 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
 			song = g_new0 (BraseroDiscSong, 1);
-			song->uri = xmlURIUnescapeString ((char*) uri, 0, NULL);
+			song->uri = xmlURIUnescapeString ((gchar*) uri, 0, NULL);
+
+			/* to know if this info was set or not */
+			song->start = -1;
+			song->end = -1;
 			g_free (uri);
 			track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
 		}
@@ -1558,6 +1587,10 @@ _read_audio_track (xmlDocPtr project,
 			gchar *silence;
 
 			if (!song)
+				goto error;
+
+			/* impossible to have two gaps in a row */
+			if (song->gap)
 				goto error;
 
 			silence = (gchar *) xmlNodeListGetString (project,
@@ -1568,9 +1601,36 @@ _read_audio_track (xmlDocPtr project,
 
 			song->gap = (gint64) g_ascii_strtoull (silence, NULL, 10);
 			g_free (silence);
+		}
+		else if (!xmlStrcmp (uris->name, (const xmlChar *) "start")) {
+			gchar *start;
 
-			/* This is to prevent two gaps in a row */
-			song = NULL;
+			if (!song)
+				goto error;
+
+			start = (gchar *) xmlNodeListGetString (project,
+								uris->xmlChildrenNode,
+								1);
+			if (!start)
+				goto error;
+
+			song->start = (gint64) g_ascii_strtoull (start, NULL, 10);
+			g_free (start);
+		}
+		else if (!xmlStrcmp (uris->name, (const xmlChar *) "end")) {
+			gchar *end;
+
+			if (!song)
+				goto error;
+
+			end = (gchar *) xmlNodeListGetString (project,
+							      uris->xmlChildrenNode,
+							      1);
+			if (!end)
+				goto error;
+
+			song->end = (gint64) g_ascii_strtoull (end, NULL, 10);
+			g_free (end);
 		}
 		else if (uris->type == XML_ELEMENT_NODE)
 			goto error;
@@ -1850,6 +1910,8 @@ _save_audio_track_xml (xmlTextWriter *project,
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
 		xmlChar *escaped;
+		gchar *start;
+		gchar *end;
 
 		song = iter->data;
 		escaped = xmlURIEscapeStr ((xmlChar *) song->uri, NULL);
@@ -1873,6 +1935,26 @@ _save_audio_track_xml (xmlTextWriter *project,
 			if (success == -1)
 				return FALSE;
 		}
+
+		/* start of the song */
+		start = g_strdup_printf ("%"G_GINT64_FORMAT, song->start);
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "start",
+						     (xmlChar *) start);
+
+		g_free (start);
+		if (success == -1)
+			return FALSE;
+
+		/* end of the song */
+		end = g_strdup_printf ("%"G_GINT64_FORMAT, song->end);
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "end",
+						     (xmlChar *) end);
+
+		g_free (end);
+		if (success == -1)
+			return FALSE;
 	}
 
 	return TRUE;

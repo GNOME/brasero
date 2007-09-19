@@ -69,6 +69,8 @@ typedef enum {
 struct _BraseroDiscSong {
 	gchar *uri;
 	gint64 gap;
+	gint64 start;
+	gint64 end;
 };
 typedef struct _BraseroDiscSong BraseroDiscSong;
 
@@ -117,6 +119,9 @@ struct _BraseroDiscIface {
 							 const gchar *uri);
 
 	gchar *			(*get_selected_uri)	(BraseroDisc *disc);
+	gboolean		(*get_boundaries)	(BraseroDisc *disc,
+							 gint64 *start,
+							 gint64 *end);
 
 	void			(*delete_selected)	(BraseroDisc *disc);
 	void			(*clear)		(BraseroDisc *disc);
@@ -136,8 +141,14 @@ brasero_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar);
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
+
 gchar *
 brasero_disc_get_selected_uri (BraseroDisc *disc);
+gboolean
+brasero_disc_get_boundaries (BraseroDisc *disc,
+			     gint64 *start,
+			     gint64 *end);
+
 void
 brasero_disc_delete_selected (BraseroDisc *disc);
 void

@@ -61,6 +61,8 @@ brasero_song_props_get_properties (BraseroSongProps *self,
 				   gchar **title,
 				   gchar **composer,
 				   gint *isrc,
+				   gint64 *start,
+				   gint64 *end,
 				   gint64 *gap);
 void
 brasero_song_props_set_properties (BraseroSongProps *self,
@@ -69,5 +71,8 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 				   const gchar *title,
 				   const gchar *composer,
 				   gint isrc,
+				   gint64 length,
+				   gint64 start,
+				   gint64 end,
 				   gint64 gap);
 #endif /* SONG_PROPERTIES_H */

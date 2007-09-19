@@ -304,14 +304,18 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 	GSList *iter;
 
 	vbox_main = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (vbox_main);
 
 	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
 	gtk_box_pack_end (GTK_BOX (vbox_main), hbox, TRUE, TRUE, 0);
 
 	label = gtk_label_new ("\t");
+	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	vbox_prop = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (vbox_prop);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox_prop, TRUE, TRUE, 0);
 
 	for (iter = list; iter; iter = iter->next) {

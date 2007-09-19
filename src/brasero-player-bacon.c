@@ -26,7 +26,6 @@
 #  include <config.h>
 #endif
 
-#ifdef BUILD_PREVIEW
 #include <string.h>
 
 #include <glib.h>
@@ -81,7 +80,9 @@ struct BraseroPlayerBaconPrivate {
 	GstState state;
 
 	GstXOverlay *xoverlay;
+
 	gchar *uri;
+	gint64 end;
 };
 
 enum {
@@ -94,10 +95,10 @@ typedef enum {
 	EOF_SIGNAL,
 	LAST_SIGNAL
 } BraseroPlayerBaconSignalType;
+static guint brasero_player_bacon_signals [LAST_SIGNAL] = { 0 };
 
 #define GCONF_PLAYER_VOLUME	"/apps/brasero/display/volume"
 
-static guint brasero_player_bacon_signals [LAST_SIGNAL] = { 0 };
 static GObjectClass *parent_class = NULL;
 
 GType
@@ -386,8 +387,6 @@ brasero_player_bacon_destroy (GtkObject *obj)
 					       NULL);
 		g_object_unref (client);
 	}
-	else
-		BRASERO_BURN_LOG ("volume can't be saved");
 
 	if (cobj->priv->xoverlay
 	&&  GST_IS_X_OVERLAY (cobj->priv->xoverlay)) {
@@ -554,7 +553,6 @@ brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 	if (!bacon->priv->pipe)
 		brasero_player_bacon_setup_pipe (bacon);
 
-
 	if (uri) {
 		bacon->priv->uri = g_strdup (uri);
 
@@ -566,6 +564,24 @@ brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 	}
 	else
 		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
+}
+
+gboolean
+brasero_player_bacon_set_boundaries (BraseroPlayerBacon *bacon, gint64 start, gint64 end)
+{
+	if (!bacon->priv->pipe)
+		return FALSE;
+
+	bacon->priv->end = end;
+	return gst_element_seek (bacon->priv->pipe,
+				 1.0,
+				 GST_FORMAT_TIME,
+				 GST_SEEK_FLAG_FLUSH|
+				 GST_SEEK_FLAG_ACCURATE,
+				 GST_SEEK_TYPE_SET,
+				 start,
+				 GST_SEEK_TYPE_SET,
+				 end);
 }
 
 void
@@ -691,7 +707,7 @@ brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon,
 				    &format,
 				    &duration);
 
-	if ((gint64) pos > duration)
+	if ((gint64) pos > duration || pos > bacon->priv->end)
 		return FALSE;
 
 	return gst_element_seek (bacon->priv->pipe,
@@ -700,8 +716,8 @@ brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon,
 				 GST_SEEK_FLAG_FLUSH,
 				 GST_SEEK_TYPE_SET,
 				 (gint64) pos,
-				 GST_SEEK_TYPE_NONE,
-				 GST_CLOCK_TIME_NONE);
+				 bacon->priv->end ? GST_SEEK_TYPE_SET:GST_SEEK_TYPE_NONE,
+				 bacon->priv->end);
 }
 
 gboolean
@@ -716,35 +732,14 @@ brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon,
 		return FALSE;
 
 	if (pos) {
-		result = gst_element_query_position (bacon->priv->pipe, &format, &value);
-		if (result)
-			*pos = value;
-		else
+		result = gst_element_query_position (bacon->priv->pipe,
+						     &format,
+						     &value);
+		if (!result)
 			return FALSE;
+
+		*pos = value;
 	}
 
 	return TRUE;
 }
-
-gboolean
-brasero_player_bacon_get_length (BraseroPlayerBacon *bacon, gint64 *length)
-{
-	gint64 duration;
-	gboolean result;
-	GstFormat format = GST_FORMAT_TIME;
-
-	if (!bacon->priv->pipe)
-		return FALSE;
-
-	result = gst_element_query_duration (bacon->priv->pipe,
-					     &format,
-					     &duration);
-
-	if (!result)
-		return FALSE;
-
-	*length = duration;
-	return TRUE;
-}
-
-#endif

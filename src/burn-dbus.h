@@ -8,7 +8,7 @@
 #include <dbus/dbus-glib.h>
 
 void
-brasero_uninibit_suspend (guint cookie);
+brasero_uninhibit_suspend (guint cookie);
 
 DBusGConnection *
 brasero_inhibit_suspend (const char *reason);

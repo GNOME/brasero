@@ -504,7 +504,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	brasero_track_get_audio_length (track, &length);
 	sectors = BRASERO_DURATION_TO_SECTORS (length);
 
-	BRASERO_JOB_LOG (wodim, "Got track length %lli %lli", length, sectors);
+	BRASERO_JOB_LOG (wodim, "got track length %lli %lli", length, sectors);
 	string = g_strdup_printf ("Tracklength=\t%"G_GINT64_FORMAT", 0\n", sectors);
 	size = strlen (string);
 	b_written = write (fd, string, size);
@@ -620,8 +620,6 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 		length = 0;
 
 		brasero_track_get_audio_length (track, &length);
-		length += brasero_track_get_audio_gap (track);
-
 		start += BRASERO_DURATION_TO_SECTORS (length);
 	}
 

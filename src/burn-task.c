@@ -413,8 +413,6 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 
 		length = 0;
 		brasero_track_get_audio_length (track, &length);
-		length += brasero_track_get_audio_gap (track);
-
 		BRASERO_BURN_LOG ("Got a default audio track length %lli", length);
 
 		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),

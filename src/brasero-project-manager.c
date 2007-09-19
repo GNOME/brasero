@@ -69,7 +69,7 @@
 #endif
 
 #ifdef BUILD_PREVIEW
-#include "brasero-player.h"
+#include "brasero-preview.h"
 #endif
 
 static void brasero_project_manager_class_init (BraseroProjectManagerClass *klass);
@@ -255,12 +255,13 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	obj->priv->project = brasero_project_new ();
 
 #ifdef BUILD_PREVIEW
+
 	GtkWidget *preview;
 
-	preview = brasero_player_new ();
+	preview = brasero_preview_new ();
 	gtk_widget_show (preview);
-	brasero_player_add_source (BRASERO_PLAYER (preview),
-				   BRASERO_URI_CONTAINER (obj->priv->project));
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (obj->priv->project));
 
 #endif /* BUILD_PREVIEW */
 
@@ -282,8 +283,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				    BRASERO_URI_CONTAINER (chooser));
 
 #ifdef BUILD_PREVIEW
-	brasero_player_add_source (BRASERO_PLAYER (preview),
-				   BRASERO_URI_CONTAINER (chooser));
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (chooser));
 #endif
 
 	brasero_layout_add_project (BRASERO_LAYOUT (obj->priv->layout),
@@ -311,8 +312,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				    BRASERO_URI_CONTAINER (search));
 
 #ifdef BUILD_PREVIEW
-	brasero_player_add_source (BRASERO_PLAYER (preview),
-				   BRASERO_URI_CONTAINER (search));
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (search));
 #endif
 
 #endif /* BUILD_SEARCH */
@@ -338,8 +339,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				    BRASERO_URI_CONTAINER (playlist));
 
 #ifdef BUILD_PREVIEW
-	brasero_player_add_source (BRASERO_PLAYER (preview),
-				   BRASERO_URI_CONTAINER (playlist));
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (playlist));
 #endif
 
 #endif /* BUILD_PLAYLIST */

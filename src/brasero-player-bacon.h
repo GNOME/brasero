@@ -71,10 +71,11 @@ GtkWidget *brasero_player_bacon_new (void);
 
 void brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri);
 void brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon, gdouble volume);
+gboolean brasero_player_bacon_set_boundaries (BraseroPlayerBacon *bacon, gint64 start, gint64 end);
 gboolean brasero_player_bacon_play (BraseroPlayerBacon *bacon);
 gboolean brasero_player_bacon_stop (BraseroPlayerBacon *bacon);
 gboolean brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon, gdouble pos);
 gboolean brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon, gint64 *pos);
-gboolean brasero_player_bacon_get_length (BraseroPlayerBacon *bacon, gint64 *length);
 gdouble  brasero_player_bacon_get_volume (BraseroPlayerBacon *bacon);
+
 #endif /* PLAYER_BACON_H */

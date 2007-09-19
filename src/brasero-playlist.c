@@ -827,7 +827,7 @@ brasero_playlist_parse_result (BraseroVFS *vfs,
 			       GnomeVFSResult result,
 			       const gchar *uri,
 			       GnomeVFSFileInfo *info,
-			       BraseroMetadata *metadata,
+			       BraseroMetadataInfo *metadata,
 			       gpointer callback_data)
 {
 	gint num;

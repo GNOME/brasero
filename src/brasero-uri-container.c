@@ -97,7 +97,26 @@ brasero_uri_container_base_init (gpointer g_class)
 	initialized = TRUE;
 }
 
-char *
+gboolean
+brasero_uri_container_get_boundaries (BraseroURIContainer *container,
+				      gint64 *start,
+				      gint64 *end)
+{
+	BraseroURIContainerIFace *iface;
+
+	g_return_val_if_fail (BRASERO_IS_URI_CONTAINER (container), FALSE);
+
+	if (!GTK_WIDGET_MAPPED (container))
+		return FALSE;
+
+	iface = BRASERO_URI_CONTAINER_GET_IFACE (container);
+	if (iface->get_boundaries)
+		return (* iface->get_boundaries) (container, start, end);
+
+	return FALSE;
+}
+
+gchar *
 brasero_uri_container_get_selected_uri (BraseroURIContainer *container)
 {
 	BraseroURIContainerIFace *iface;
@@ -114,7 +133,7 @@ brasero_uri_container_get_selected_uri (BraseroURIContainer *container)
 	return NULL;
 }
 
-char **
+gchar **
 brasero_uri_container_get_selected_uris (BraseroURIContainer *container)
 {
 	BraseroURIContainerIFace *iface;

@@ -31,6 +31,13 @@
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
+
+typedef enum {
+	BRASERO_METADATA_FLAG_NONE			= 0,
+	BRASERO_METADATA_FLAG_FAST,
+	BRASERO_METADATA_FLAG_SILENCES
+} BraseroMetadataFlag;
+
 #define BRASERO_TYPE_METADATA         (brasero_metadata_get_type ())
 #define BRASERO_METADATA(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_METADATA, BraseroMetadata))
 #define BRASERO_METADATA_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_METADATA, BraseroMetadataClass))
@@ -38,11 +45,12 @@ G_BEGIN_DECLS
 #define BRASERO_IS_METADATA_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_METADATA))
 #define BRASERO_METADATA_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_METADATA, BraseroMetadataClass))
 
-typedef struct BraseroMetadataPrivate BraseroMetadataPrivate;
+typedef struct {
+	gint64 start;
+	gint64 end;
+} BraseroMetadataSilence;
 
 typedef struct {
-	GObject parent;
-
 	gchar *uri;
 	gchar *type;
 	gchar *title;
@@ -54,36 +62,51 @@ typedef struct {
 	int isrc;
 	guint64 len;
 
+	GSList *silences;
+
 	gboolean is_seekable;
 	gboolean has_audio;
 	gboolean has_video;
+} BraseroMetadataInfo;
 
-	BraseroMetadataPrivate *priv;
+void
+brasero_metadata_info_clear (BraseroMetadataInfo *info);
+void
+brasero_metadata_info_free (BraseroMetadataInfo *info);
+
+typedef struct {
+	GObject parent;
 } BraseroMetadata;
 
 typedef struct {
 	GObjectClass parent_class;
 
-	void (*completed) (BraseroMetadata *meta, const GError *error);
+	void		(*completed)	(BraseroMetadata *meta,
+					 const GError *error);
+	void		(*progress)	(BraseroMetadata *meta,
+					 gdouble progress);
 
 } BraseroMetadataClass;
 
 GType brasero_metadata_get_type ();
-BraseroMetadata *brasero_metadata_new (const char *uri);
+BraseroMetadata *brasero_metadata_new (void);
 
-void brasero_metadata_cancel (BraseroMetadata *metadata);
+void
+brasero_metadata_cancel (BraseroMetadata *metadata);
 
-gboolean brasero_metadata_get (BraseroMetadata * meta,
-			       GError ** error);
-gboolean brasero_metadata_get_sync (BraseroMetadata * metadata,
-				     gboolean fast,
-				     GError ** error);
-gboolean brasero_metadata_get_async (BraseroMetadata * metadata,
-				      gboolean fast);
+gboolean
+brasero_metadata_get_info_sync (BraseroMetadata *meta,
+				const gchar *uri,
+				BraseroMetadataFlag flags,
+				GError **error);
 
-const char *brasero_metadata_get_title (BraseroMetadata * metadata);
-const char *brasero_metadata_get_length (BraseroMetadata * metadata);
-const char *brasero_metadata_get_artist (BraseroMetadata * metadata);
+gboolean
+brasero_metadata_get_info_async (BraseroMetadata *meta,
+				 const gchar *uri,
+				 BraseroMetadataFlag flags);
 
+gboolean
+brasero_metadata_set_info (BraseroMetadata *meta,
+			   BraseroMetadataInfo *info);
 
 #endif				/* METADATA_H */

@@ -22,11 +22,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <string.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <string.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -40,347 +40,163 @@
 #include "brasero-utils.h"
 #include "burn-debug.h"
 
-static void brasero_metadata_class_init (BraseroMetadataClass *klass);
-static void brasero_metadata_init (BraseroMetadata *sp);
-static void brasero_metadata_finalize (GObject *object);
 
-static void brasero_metadata_get_property (GObject *obj,
-					   guint prop_id,
-					   GValue *value,
-					   GParamSpec *pspec);
-static void brasero_metadata_set_property (GObject *obj,
-					   guint prop_id,
-					   const GValue *value,
-					   GParamSpec *pspec);
+G_DEFINE_TYPE(BraseroMetadata, brasero_metadata, G_TYPE_OBJECT)
+
+#define BRASERO_METADATA_SILENCE_INTERVAL		100000000
 
 struct BraseroMetadataPrivate {
 	GstElement *pipeline;
 	GstElement *source;
 	GstElement *decode;
+	GstElement *convert;
+	GstElement *level;
 	GstElement *sink;
+	GstElement *first;
 
 	GMainLoop *loop;
 	GError *error;
 	guint watch;
 
-	guint fast:1;
+	guint progress_id;
+
+	BraseroMetadataSilence *silence;
+
+	BraseroMetadataFlag flags;
+	BraseroMetadataInfo *info;
+
 	guint started:1;
 	guint moved_forward:1;
+	guint prev_level_mes:1;
 };
-
-typedef enum {
-	COMPLETED_SIGNAL,
-	LAST_SIGNAL
-} BraseroMetadataSignalType;
-
-static guint brasero_metadata_signals[LAST_SIGNAL] = { 0 };
-static GObjectClass *parent_class = NULL;
-
-static gboolean brasero_metadata_bus_messages (GstBus *bus,
-					       GstMessage *msg,
-					       BraseroMetadata *meta);
-
-static void brasero_metadata_new_decoded_pad_cb (GstElement *decode,
-						 GstPad *pad,
-						 gboolean arg2,
-						 BraseroMetadata *meta);
+typedef struct BraseroMetadataPrivate BraseroMetadataPrivate;
+#define BRASERO_METADATA_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), BRASERO_TYPE_METADATA, BraseroMetadataPrivate))
 
 enum {
 	PROP_NONE,
 	PROP_URI
 };
 
-GType
-brasero_metadata_get_type ()
+typedef enum {
+	COMPLETED_SIGNAL,
+	PROGRESS_CHANGED_SIGNAL,
+	LAST_SIGNAL
+} BraseroMetadataSignalType;
+
+static guint brasero_metadata_signals [LAST_SIGNAL] = { 0 };
+
+#define BRASERO_METADATA_IS_FAST(flags) 					\
+	(!((flags) & BRASERO_METADATA_FLAG_SILENCES) &&				\
+	((flags) & BRASERO_METADATA_FLAG_FAST))
+
+static GObjectClass *parent_class = NULL;
+
+void
+brasero_metadata_info_clear (BraseroMetadataInfo *info)
 {
-	static GType type = 0;
-
-	if (type == 0) {
-		static const GTypeInfo our_info = {
-			sizeof (BraseroMetadataClass),
-			NULL,
-			NULL,
-			(GClassInitFunc) brasero_metadata_class_init,
-			NULL,
-			NULL,
-			sizeof (BraseroMetadata),
-			0,
-			(GInstanceInitFunc) brasero_metadata_init,
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT,
-					       "BraseroMetadata",
-					       &our_info, 0);
-	}
-
-	return type;
-}
-
-static void
-brasero_metadata_class_init (BraseroMetadataClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
-	object_class->finalize = brasero_metadata_finalize;
-	object_class->set_property = brasero_metadata_set_property;
-	object_class->get_property = brasero_metadata_get_property;
-
-	brasero_metadata_signals[COMPLETED_SIGNAL] =
-	    g_signal_new ("completed",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  G_STRUCT_OFFSET (BraseroMetadataClass,
-					   completed),
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__POINTER,
-			  G_TYPE_NONE,
-			  1,
-			  G_TYPE_POINTER);
-
-	g_object_class_install_property (object_class,
-					 PROP_URI,
-					 g_param_spec_string ("uri",
-							      "The uri of the song",
-							      "The uri of the song",
-							      NULL,
-							      G_PARAM_READWRITE));
-}
-
-static void
-brasero_metadata_get_property (GObject *obj,
-			       guint prop_id,
-			       GValue *value,
-			       GParamSpec *pspec)
-{
-	char *uri;
-	BraseroMetadata *meta;
-
-	meta = BRASERO_METADATA (obj);
-	switch (prop_id) {
-	case PROP_URI:
-		g_object_get (G_OBJECT (meta->priv->source), "location",
-			      &uri, NULL);
-		g_value_set_string (value, uri);
-		g_free (uri);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
-	}
-}
-
-static void
-brasero_metadata_set_property (GObject *obj,
-			       guint prop_id,
-			       const GValue *value,
-			       GParamSpec *pspec)
-{
-	const char *uri;
-	BraseroMetadata *meta;
-
-	meta = BRASERO_METADATA (obj);
-	switch (prop_id) {
-	case PROP_URI:
-		uri = g_value_get_string (value);
-		gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_NULL);
-		if (meta->priv->source)
-			g_object_set (G_OBJECT (meta->priv->source),
-				      "location", uri,
-				      NULL);
-		gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
-				       GST_STATE_PAUSED);
-		meta->priv->started = 1;
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
-		break;
-	}
-}
-
-static void
-brasero_metadata_init (BraseroMetadata *obj)
-{
-	obj->priv = g_new0 (BraseroMetadataPrivate, 1);
-}
-
-static void
-brasero_metadata_stop_pipeline (BraseroMetadata *meta)
-{
-	GstStateChangeReturn change;
-
-	if (meta->priv->watch) {
-		g_source_remove (meta->priv->watch);
-		meta->priv->watch = 0;
-	}
-
-	meta->priv->started = 0;
-
-	if (!meta->priv->pipeline)
+	if (!info)
 		return;
 
-	/* better to wait for the state change to be completed */
-	change = gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
-					GST_STATE_READY);
+	if (info->uri)
+		g_free (info->uri);
 
-	while (change == GST_STATE_CHANGE_ASYNC) {
-		GstState state;
-		GstState pending;
+	if (info->type)
+		g_free (info->type);
 
-		change = gst_element_get_state (meta->priv->pipeline,
-						&state,
-						&pending,
-						GST_MSECOND);
-	};
-	
-	change = gst_element_set_state (GST_ELEMENT (meta->priv->pipeline),
-					GST_STATE_NULL);
+	if (info->title)
+		g_free (info->title);
 
-	while (change == GST_STATE_CHANGE_ASYNC) {
-		GstState state;
-		GstState pending;
+	if (info->artist)
+		g_free (info->artist);
 
-		change = gst_element_get_state (meta->priv->pipeline,
-						&state,
-						&pending,
-						GST_MSECOND);
+	if (info->album)
+		g_free (info->album);
+
+	if (info->genre)
+		g_free (info->genre);
+
+	if (info->musicbrainz_id)
+		g_free (info->musicbrainz_id);
+
+	if (info->silences) {
+		g_slist_foreach (info->silences, (GFunc) g_free, NULL);
+		g_slist_free (info->silences);
+		info->silences = NULL;
 	}
-
-	if (change == GST_STATE_CHANGE_FAILURE)
-		g_warning ("State change failure\n");
-
-	gst_object_unref (GST_OBJECT (meta->priv->pipeline));
-	meta->priv->pipeline = NULL;
 }
 
 void
-brasero_metadata_cancel (BraseroMetadata *meta)
+brasero_metadata_info_free (BraseroMetadataInfo *info)
 {
-	brasero_metadata_stop_pipeline (meta);
+	if (!info)
+		return;
+
+	brasero_metadata_info_clear (info);
+
+	g_free (info);
 }
 
-static void
-brasero_metadata_stop (BraseroMetadata *meta)
+void
+brasero_metadata_cancel (BraseroMetadata *self)
 {
-	if (meta->priv->error) {
-		g_error_free (meta->priv->error);
-		meta->priv->error = NULL;
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
 	}
 
-	brasero_metadata_stop_pipeline (meta);
+	if (priv->watch) {
+		g_source_remove (priv->watch);
+		priv->watch = 0;
+	}
+
+	if (priv->loop && g_main_loop_is_running (priv->loop))
+		g_main_loop_quit (priv->loop);
+
+	gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
 }
 
-static void
-brasero_metadata_finalize (GObject *object)
+static gint
+brasero_metadata_report_progress (BraseroMetadata *self)
 {
-	BraseroMetadata *cobj;
+	gdouble progress;
+	gint64 position = -1;
+	gint64 duration = -1;
+	BraseroMetadataPrivate *priv;
+	GstFormat format = GST_FORMAT_BYTES;
 
-	cobj = BRASERO_METADATA (object);
+	priv = BRASERO_METADATA_PRIVATE (self);
+	if (!gst_element_query_duration (priv->pipeline, &format, &duration))
+		return TRUE;
 
-	brasero_metadata_stop (cobj);
+	if (!gst_element_query_position (priv->pipeline, &format, &position))
+		return TRUE;
 
-	if (cobj->uri)
-		g_free (cobj->uri);
+	progress = position / duration;
+	g_signal_emit (self,
+		       brasero_metadata_signals [PROGRESS_CHANGED_SIGNAL],
+		       0,
+		       progress);
 
-	if (cobj->type)
-		g_free (cobj->type);
-
-	if (cobj->title)
-		g_free (cobj->title);
-
-	if (cobj->artist)
-		g_free (cobj->artist);
-
-	if (cobj->album)
-		g_free (cobj->album);
-
-	if (cobj->genre)
-		g_free (cobj->genre);
-
-	if (cobj->musicbrainz_id)
-		g_free (cobj->musicbrainz_id);
-
-	g_free (cobj->priv);
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-static gboolean
-brasero_metadata_create_pipeline (BraseroMetadata *metadata)
-{
-	GstBus *bus;
-
-	metadata->priv->pipeline = gst_pipeline_new (NULL);
-
-	bus = gst_pipeline_get_bus (GST_PIPELINE (metadata->priv->pipeline));
-	metadata->priv->watch = gst_bus_add_watch (bus,
-						   (GstBusFunc) brasero_metadata_bus_messages,
-						   metadata);
-	gst_object_unref (bus);
-
-	metadata->priv->source = gst_element_make_from_uri (GST_URI_SRC,
-							    metadata->uri,
-							    NULL);
-
-	if (metadata->priv->source == NULL) {
-		metadata->priv->error = g_error_new (BRASERO_ERROR,
-						     BRASERO_ERROR_GENERAL,
-						     "Can't create file source");
-		return FALSE;
-	}
-	gst_bin_add (GST_BIN (metadata->priv->pipeline), metadata->priv->source);
-
-	metadata->priv->decode = gst_element_factory_make ("decodebin", NULL);
-	if (metadata->priv->decode == NULL) {
-		metadata->priv->error = g_error_new (BRASERO_ERROR,
-						     BRASERO_ERROR_GENERAL,
-						     "decode can't be created");
-		return FALSE;
-	}
-	g_signal_connect (G_OBJECT (metadata->priv->decode), "new-decoded-pad",
-			  G_CALLBACK (brasero_metadata_new_decoded_pad_cb),
-			  metadata);
-
-	gst_bin_add (GST_BIN (metadata->priv->pipeline), metadata->priv->decode);
-	gst_element_link (metadata->priv->source, metadata->priv->decode);
-
-	metadata->priv->sink = gst_element_factory_make ("fakesink", NULL);
-	if (metadata->priv->sink == NULL) {
-		metadata->priv->error = g_error_new (BRASERO_ERROR,
-				                BRASERO_ERROR_GENERAL,
-						"Can't create fake sink");
-		return FALSE;
-	}
-	gst_bin_add (GST_BIN (metadata->priv->pipeline), metadata->priv->sink);
-
-	gst_element_set_state (GST_ELEMENT (metadata->priv->pipeline), GST_STATE_READY);
 	return TRUE;
 }
 
-BraseroMetadata *
-brasero_metadata_new (const gchar *uri)
-{
-	BraseroMetadata *obj = NULL;
-
-	/* escaped URIS are only used by gnome vfs */
-	if (gst_uri_is_valid (uri)) {
-		obj = BRASERO_METADATA (g_object_new (BRASERO_TYPE_METADATA, NULL));
-		obj->uri = g_strdup (uri);
-	}
-
-	return obj;
-}
-
 static void
-brasero_metadata_is_seekable (BraseroMetadata *meta)
+brasero_metadata_is_seekable (BraseroMetadata *self)
 {
 	GstQuery *query;
 	GstFormat format;
 	gboolean seekable;
+	BraseroMetadataPrivate *priv;
 
-	meta->is_seekable = FALSE;
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->info->is_seekable = FALSE;
 	query = gst_query_new_seeking (GST_FORMAT_DEFAULT);
-
-	if (!gst_element_query (meta->priv->pipeline, query))
+	if (!gst_element_query (priv->source, query))
 		goto end;
 
 	gst_query_parse_seeking (query,
@@ -389,29 +205,32 @@ brasero_metadata_is_seekable (BraseroMetadata *meta)
 				 NULL,
 				 NULL);
 
-	meta->is_seekable = seekable;
+	priv->info->is_seekable = seekable;
 
 end:
 	gst_query_unref (query);
 }
 
 static gboolean
-brasero_metadata_get_mime_type (BraseroMetadata *meta)
+brasero_metadata_get_mime_type (BraseroMetadata *self)
 {
+	BraseroMetadataPrivate *priv;
 	GstElement *typefind;
 	GstCaps *caps = NULL;
 	GstElement *decode;
 	const gchar *mime;
 
-	if (meta->type) {
-		g_free (meta->type);
-		meta->type = NULL;
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	if (priv->info->type) {
+		g_free (priv->info->type);
+		priv->info->type = NULL;
 	}
 
 	/* find the type of the file */
-	decode = gst_bin_get_by_name (GST_BIN (meta->priv->pipeline),
+	decode = gst_bin_get_by_name (GST_BIN (priv->pipeline),
 				      "decode");
-	typefind = gst_bin_get_by_name (GST_BIN (meta->priv->decode),
+	typefind = gst_bin_get_by_name (GST_BIN (priv->decode),
 					"typefind");
 
 	g_object_get (typefind, "caps", &caps, NULL);
@@ -429,193 +248,278 @@ brasero_metadata_get_mime_type (BraseroMetadata *meta)
 	gst_object_unref (typefind);
 
 	if (!strcmp (mime, "application/x-id3"))
-		meta->type = g_strdup ("audio/mpeg");
+		priv->info->type = g_strdup ("audio/mpeg");
 	else
-		meta->type = g_strdup (mime);
+		priv->info->type = g_strdup (mime);
 
 	return TRUE;
 }
 
 static gboolean
-brasero_metadata_is_mp3 (BraseroMetadata *meta)
+brasero_metadata_is_mp3 (BraseroMetadata *self)
 {
-	if (!meta->type
-	&&  !brasero_metadata_get_mime_type (meta))
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	if (!priv->info->type
+	&&  !brasero_metadata_get_mime_type (self))
 		return FALSE;
 
-	if (!strcmp (meta->type, "audio/mpeg"))
+	if (!strcmp (priv->info->type, "audio/mpeg"))
 		return TRUE;
 
 	return FALSE;
 }
 
 static gboolean
-brasero_metadata_completed (BraseroMetadata *meta)
+brasero_metadata_completed (BraseroMetadata *self)
 {
 	GstFormat format = GST_FORMAT_TIME;
+	BraseroMetadataPrivate *priv;
 	gint64 duration = -1;
 
+	priv = BRASERO_METADATA_PRIVATE (self);
+
 	/* find the type of the file */
-	brasero_metadata_get_mime_type (meta);
+	brasero_metadata_get_mime_type (self);
 
 	/* get the size */
-	if (!meta->priv->fast && brasero_metadata_is_mp3 (meta)) {
-		GstElement *convert;
-
-		convert = gst_bin_get_by_name (GST_BIN (meta->priv->pipeline), "decodebin");
-		gst_element_query_position (GST_ELEMENT (meta->priv->sink),
+	if (!BRASERO_METADATA_IS_FAST (priv->flags)
+	&&   brasero_metadata_is_mp3 (self))
+		gst_element_query_position (GST_ELEMENT (priv->sink),
 					    &format,
 					    &duration);
-	}
 
 	if (duration == -1)
-		gst_element_query_duration (GST_ELEMENT (meta->priv->pipeline),
+		gst_element_query_duration (GST_ELEMENT (priv->pipeline),
 					    &format,
 					    &duration);
 
 	if (duration == -1) {
-		if (!meta->priv->error) {
-			meta->priv->error = g_error_new (BRASERO_ERROR,
-							 BRASERO_ERROR_GENERAL,
-							 _("this format is not supported by gstreamer"));
+		if (!priv->error) {
+			priv->error = g_error_new (BRASERO_ERROR,
+						   BRASERO_ERROR_GENERAL,
+						   _("this format is not supported by gstreamer"));
 		}
 
 		goto signal;
 	}
 
-	BRASERO_BURN_LOG ("Found duration %lli", duration);
+	BRASERO_BURN_LOG ("found duration %lli", duration);
 
-	meta->len = duration;
+	priv->info->len = duration;
 
 	/* check if that's a seekable one */
-	brasero_metadata_is_seekable (meta);
+	brasero_metadata_is_seekable (self);
+
+	if (priv->silence) {
+		priv->silence->end = duration;
+		priv->info->silences = g_slist_append (priv->info->silences, priv->silence);
+		priv->silence = NULL;
+	}
 
 signal:
-	brasero_metadata_stop_pipeline (meta);
 
-	if (!meta->priv->loop
-	||  !g_main_loop_is_running (meta->priv->loop)) {
+	if (priv->progress_id) {
+		g_source_remove (priv->progress_id);
+		priv->progress_id = 0;
+	}
+
+	/* stop the pipeline */
+	priv->started = 0;
+	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
+
+	if (!priv->loop || !g_main_loop_is_running (priv->loop)) {
 		/* we send a message only if we haven't got a loop (= async mode) */
-		g_object_ref (meta);
-		g_signal_emit (G_OBJECT (meta),
+		g_object_ref (self);
+		g_signal_emit (G_OBJECT (self),
 			       brasero_metadata_signals [COMPLETED_SIGNAL],
 			       0,
-			       meta->priv->error);
-		g_object_unref (meta);
+			       priv->error);
+		g_object_unref (self);
 	}
 	else
-		g_main_loop_quit (meta->priv->loop);
+		g_main_loop_quit (priv->loop);
 
 	return TRUE;
 }
 
 static void
 foreach_tag (const GstTagList *list,
-	     const char *tag,
-	     BraseroMetadata *meta)
+	     const gchar *tag,
+	     BraseroMetadata *self)
 {
-	if (!strcmp (tag, GST_TAG_TITLE)) {
-		if (meta->title)
-			g_free (meta->title);
+	BraseroMetadataPrivate *priv;
+	priv = BRASERO_METADATA_PRIVATE (self);
 
-		gst_tag_list_get_string (list, tag, &(meta->title));
+	if (!strcmp (tag, GST_TAG_TITLE)) {
+		if (priv->info->title)
+			g_free (priv->info->title);
+
+		gst_tag_list_get_string (list, tag, &(priv->info->title));
 	} else if (!strcmp (tag, GST_TAG_ARTIST)
 	       ||  !strcmp (tag, GST_TAG_PERFORMER)) {
-		if (meta->artist)
-			g_free (meta->artist);
+		if (priv->info->artist)
+			g_free (priv->info->artist);
 
-		gst_tag_list_get_string (list, tag, &(meta->artist));
+		gst_tag_list_get_string (list, tag, &(priv->info->artist));
 	}
 	else if (!strcmp (tag, GST_TAG_ALBUM)) {
-		if (meta->album)
-			g_free (meta->album);
+		if (priv->info->album)
+			g_free (priv->info->album);
 
-		gst_tag_list_get_string (list, tag, &(meta->album));
+		gst_tag_list_get_string (list, tag, &(priv->info->album));
 	}
 	else if (!strcmp (tag, GST_TAG_GENRE)) {
-		if (meta->genre)
-			g_free (meta->genre);
+		if (priv->info->genre)
+			g_free (priv->info->genre);
 
-		gst_tag_list_get_string (list, tag, &(meta->genre));
+		gst_tag_list_get_string (list, tag, &(priv->info->genre));
 	}
 /*	else if (!strcmp (tag, GST_TAG_COMPOSER)) {
-		if (meta->composer)
-			g_free (meta->composer);
+		if (self->composer)
+			g_free (self->composer);
 
-		gst_tag_list_get_string (list, tag, &(meta->composer));
+		gst_tag_list_get_string (list, tag, &(self->composer));
 	}
 */	else if (!strcmp (tag, GST_TAG_ISRC)) {
-		gst_tag_list_get_int (list, tag, &(meta->isrc));
+		gst_tag_list_get_int (list, tag, &(priv->info->isrc));
 	}
 	else if (!strcmp (tag, GST_TAG_MUSICBRAINZ_TRACKID)) {
-		gst_tag_list_get_string (list, tag, &(meta->musicbrainz_id));
+		gst_tag_list_get_string (list, tag, &(priv->info->musicbrainz_id));
 	}
 }
 
 static gboolean
 brasero_metadata_bus_messages (GstBus *bus,
 			       GstMessage *msg,
-			       BraseroMetadata *meta)
+			       BraseroMetadata *self)
 {
+	BraseroMetadataPrivate *priv;
 	GstStateChangeReturn result;
 	gchar *debug_string = NULL;
 	GstTagList *tags = NULL;
 	GError *error = NULL;
 	GstState newstate;
 
+	priv = BRASERO_METADATA_PRIVATE (self);
+
 	switch (GST_MESSAGE_TYPE (msg)) {
+	case GST_MESSAGE_ELEMENT:
+		if (!strcmp (gst_structure_get_name (msg->structure), "level")
+		&&   gst_structure_has_field (msg->structure, "peak")) {
+			const GValue *value;
+			const GValue *list;
+			gdouble peak;
+
+			list = gst_structure_get_value (msg->structure, "peak");
+			value = gst_value_list_get_value (list, 0);
+			peak = g_value_get_double (value);
+
+			/* detection of silence */
+			if (peak < -50.0) {
+				gint64 pos = -1;
+				GstFormat format = GST_FORMAT_TIME;
+	
+				/* was there a silence last time we check ?
+				 * NOTE: if that's the first signal we receive
+				 * then consider that silence started from 0 */
+				gst_element_query_position (priv->pipeline, &format, &pos);
+				if (pos == -1) {
+					BRASERO_BURN_LOG ("impossible to retrieve position");
+					return TRUE;
+				}
+
+				if (!priv->silence) {
+					priv->silence = g_new0 (BraseroMetadataSilence, 1);
+					if (priv->prev_level_mes) {
+						priv->silence->start = pos;
+						priv->silence->end = pos;
+					}
+					else {
+						priv->silence->start = 0;
+						priv->silence->end = pos;
+					}
+				}				
+				else
+					priv->silence->end = pos;
+
+				BRASERO_BURN_LOG ("silence detected at %lli", pos);
+			}
+			else if (priv->silence) {
+				BRASERO_BURN_LOG ("silence finished");
+
+				priv->info->silences = g_slist_append (priv->info->silences,
+								       priv->silence);
+				priv->silence = NULL;
+			}
+			priv->prev_level_mes = 1;
+		}
+		break;
 	case GST_MESSAGE_ERROR:
 		gst_message_parse_error (msg, &error, &debug_string);
 		BRASERO_BURN_LOG (debug_string);
 		g_free (debug_string);
 
-		meta->priv->error = error;
-		brasero_metadata_completed (meta);
-		return FALSE;
+		priv->error = error;
+		brasero_metadata_completed (self);
+		break;
 
 	case GST_MESSAGE_EOS:
-		brasero_metadata_completed (meta);
-		return FALSE;
+		brasero_metadata_completed (self);
+		break;
 
 	case GST_MESSAGE_TAG:
 		gst_message_parse_tag (msg, &tags);
-		gst_tag_list_foreach (tags, (GstTagForeachFunc) foreach_tag, meta);
+		gst_tag_list_foreach (tags, (GstTagForeachFunc) foreach_tag, self);
 		gst_tag_list_free (tags);
 		break;
 
 	case GST_MESSAGE_STATE_CHANGED:
 		/* when stopping the pipeline we are only interested in TAGS */
-		result = gst_element_get_state (GST_ELEMENT (meta->priv->pipeline),
+		result = gst_element_get_state (GST_ELEMENT (priv->pipeline),
 						&newstate,
 						NULL,
 						0);
-
 		if (result != GST_STATE_CHANGE_SUCCESS)
 			break;
 
-		if (brasero_metadata_is_mp3 (meta)) {
-			if (meta->priv->fast
-			&& !meta->priv->moved_forward) {
-				/* we try to go forward. This allows us to avoid reading
-				 * the whole file till the end. The byte format is 
-				 * really important here as time format needs calculation
-				 * and is dead slow. The number of bytes is important to
-				 * reach the end. */
-				gst_element_seek (meta->priv->pipeline,
+		if (newstate != GST_STATE_PAUSED && newstate != GST_STATE_PLAYING)
+			break;
+
+		if ((priv->flags & BRASERO_METADATA_FLAG_SILENCES)
+		||   brasero_metadata_is_mp3 (self)) {
+			gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
+
+			if (BRASERO_METADATA_IS_FAST (priv->flags)
+			&& !priv->moved_forward) {
+				/* we try to go forward. This allows us to avoid
+				 * reading the whole file till the end. The byte
+				 * format is really important here as time
+				 * format needs calculation and is dead slow. 
+				 * The number of bytes is important to reach 
+				 * the end. */
+				gst_element_seek (priv->pipeline,
 						  1.0,
 						  GST_FORMAT_BYTES,
 						  GST_SEEK_FLAG_FLUSH,
 						  GST_SEEK_TYPE_SET,
 						  52428800,
-						  GST_FORMAT_UNDEFINED,
+						  GST_SEEK_TYPE_NONE,
 						  GST_CLOCK_TIME_NONE);
-				meta->priv->moved_forward = 1;
+				priv->moved_forward = 1;
 			}
+
+			if (!priv->progress_id)
+				priv->progress_id = g_timeout_add (500,
+								   (GSourceFunc) brasero_metadata_report_progress,
+								   self);
 
 			break;
 		}
 
-		brasero_metadata_completed (meta);
+		brasero_metadata_completed (self);
 		break;
 
 	default:
@@ -629,13 +533,17 @@ static void
 brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 				     GstPad *pad,
 				     gboolean arg2,
-				     BraseroMetadata *meta)
+				     BraseroMetadata *self)
 {
 	GstPad *sink;
 	GstCaps *caps;
 	GstStructure *structure;
+	BraseroMetadataPrivate *priv;
 
-	sink = gst_element_get_pad (meta->priv->sink, "sink");
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("new pad");
+	sink = gst_element_get_pad (priv->first, "sink");
 	if (GST_PAD_IS_LINKED (sink))
 		return;
 
@@ -646,10 +554,10 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 		const gchar *name;
 
 		name = gst_structure_get_name (structure);
-		meta->has_audio = (g_strrstr (name, "audio") != NULL);
-		meta->has_video = (g_strrstr (name, "video") != NULL);
+		priv->info->has_audio = (g_strrstr (name, "audio") != NULL);
+		priv->info->has_video = (g_strrstr (name, "video") != NULL);
 
-		if (meta->has_audio || meta->has_video)
+		if (priv->info->has_audio || priv->info->has_video)
 			gst_pad_link (pad, sink);
 	}
 
@@ -657,37 +565,204 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	gst_caps_unref (caps);
 }
 
-gboolean
-brasero_metadata_get_sync (BraseroMetadata *meta, gboolean fast, GError **error)
+static gboolean
+brasero_metadata_create_pipeline (BraseroMetadata *self)
 {
-	if (!meta->priv->pipeline
-	&&  !brasero_metadata_create_pipeline (meta)) {
-		g_propagate_error (error, meta->priv->error);
-		meta->priv->error = NULL;
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->pipeline = gst_pipeline_new (NULL);
+
+	priv->decode = gst_element_factory_make ("decodebin", NULL);
+	if (priv->decode == NULL) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "decode can't be created");
+		return FALSE;
+	}
+	g_signal_connect (G_OBJECT (priv->decode), "new-decoded-pad",
+			  G_CALLBACK (brasero_metadata_new_decoded_pad_cb),
+			  self);
+
+	gst_bin_add (GST_BIN (priv->pipeline), priv->decode);
+
+	/* the two following objects don't always run */
+	priv->convert = gst_element_factory_make ("audioconvert", NULL);
+	if (!priv->convert) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "Can't create audioconvert");
 		return FALSE;
 	}
 
-	meta->priv->fast = (fast == TRUE);
-	meta->priv->started = 1;
-	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_PLAYING);
+	priv->level = gst_element_factory_make ("level", NULL);
+	if (!priv->level) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "Can't create level");
+		return FALSE;
+	}
+	g_object_set (priv->level,
+		      "message", TRUE,
+		      "interval", (guint64) BRASERO_METADATA_SILENCE_INTERVAL,
+		      NULL);
 
-	meta->priv->loop = g_main_loop_new (NULL, FALSE);
-	g_main_loop_run (meta->priv->loop);
-	g_main_loop_unref (meta->priv->loop);
-	meta->priv->loop = NULL;
+	priv->sink = gst_element_factory_make ("fakesink", NULL);
+	if (priv->sink == NULL) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "Can't create fake sink");
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), priv->sink);
 
-	brasero_metadata_stop_pipeline (meta);
-	if (meta->priv->error) {
+	return TRUE;
+}
+
+static gboolean
+brasero_metadata_set_new_uri (BraseroMetadata *self,
+			      const gchar *uri)
+{
+	BraseroMetadataPrivate *priv;
+	GstBus *bus;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	if (priv->silence) {
+		g_free (priv->silence);
+		priv->silence = NULL;
+	}
+
+	if (priv->progress_id) {
+		g_source_remove (priv->progress_id);
+		priv->progress_id = 0;
+	}
+
+	if (priv->pipeline){
+		gst_element_set_state (priv->pipeline, GST_STATE_NULL);
+		if (priv->source) {
+			gst_bin_remove (GST_BIN (priv->pipeline), priv->source);
+			priv->source = NULL;
+		}
+	}
+	else if (!brasero_metadata_create_pipeline (self))
+		return FALSE;
+
+	if (!gst_uri_is_valid (uri))
+		return FALSE;
+
+	brasero_metadata_info_free (priv->info);
+	priv->info = g_new0 (BraseroMetadataInfo, 1);
+	priv->info->uri = g_strdup (uri);
+
+	/* set up the pipeline according to flags */
+	if (priv->flags & BRASERO_METADATA_FLAG_SILENCES) {
+		priv->prev_level_mes = 0;
+		if (priv->first != priv->convert) {
+			gst_bin_add_many (GST_BIN (priv->pipeline),
+					  priv->convert,
+					  priv->level,
+					  NULL);
+			gst_element_link_many (priv->convert,
+					       priv->level,
+					       priv->sink,
+					       NULL);
+
+			priv->first = priv->convert;
+		}
+	}
+	else {
+		if (priv->first == priv->convert) {
+			gst_object_ref (priv->convert);
+			gst_object_ref (priv->level);
+
+			gst_bin_remove_many (GST_BIN (priv->pipeline),
+					     priv->convert,
+					     priv->level,
+					     NULL);
+		}
+
+		if (priv->first != priv->sink)
+			priv->first = priv->sink;
+	}
+
+	/* create a necessary source */
+	priv->source = gst_element_make_from_uri (GST_URI_SRC,
+						  uri,
+						  NULL);
+	if (!priv->source) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "Can't create file source");
+		return FALSE;
+	}
+
+	gst_bin_add (GST_BIN (priv->pipeline), priv->source);
+	gst_element_link (priv->source, priv->decode);
+
+	/* apparently we need to reconnect to the bus every time */
+	if (priv->watch)
+		g_source_remove (priv->watch);
+
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
+	priv->watch = gst_bus_add_watch (bus,
+					 (GstBusFunc) brasero_metadata_bus_messages,
+					 self);
+	gst_object_unref (bus);
+
+	/* launch the pipeline */
+	gst_element_set_state (priv->pipeline, GST_STATE_PAUSED);
+
+	return TRUE;
+}
+
+gboolean
+brasero_metadata_get_info_sync (BraseroMetadata *self,
+				const gchar *uri,
+				BraseroMetadataFlag flags,
+				GError **error)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->flags = flags;
+
+	if (!brasero_metadata_set_new_uri (self, uri)) {
+		g_propagate_error (error, priv->error);
+		priv->error = NULL;
+
+		brasero_metadata_info_free (priv->info);
+		priv->info = NULL;
+
+		return FALSE;
+	}
+
+	priv->started = 1;
+	gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_PLAYING);
+
+	/* run the loop until it's finished */
+	priv->loop = g_main_loop_new (NULL, FALSE);
+	g_main_loop_run (priv->loop);
+	g_main_loop_unref (priv->loop);
+	priv->loop = NULL;
+
+	if (priv->error) {
 		if (error) {
-			g_propagate_error (error, meta->priv->error);
-			meta->priv->error = NULL;
+			g_propagate_error (error, priv->error);
+			priv->error = NULL;
 		} 
 		else {
 			g_warning ("ERROR getting metadata : %s\n",
-				   meta->priv->error->message);
-			g_error_free (meta->priv->error);
-			meta->priv->error = NULL;
+				   priv->error->message);
+			g_error_free (priv->error);
+			priv->error = NULL;
 		}
+
+		brasero_metadata_info_free (priv->info);
+		priv->info = NULL;
+
 		return FALSE;
 	}
 
@@ -695,27 +770,299 @@ brasero_metadata_get_sync (BraseroMetadata *meta, gboolean fast, GError **error)
 }
 
 gboolean
-brasero_metadata_get_async (BraseroMetadata *meta, gboolean fast)
+brasero_metadata_get_info_async (BraseroMetadata *self,
+				 const gchar *uri,
+				 BraseroMetadataFlag flags)
 {
-	meta->priv->fast = (fast == TRUE);
+	BraseroMetadataPrivate *priv;
 
-	if (!meta->priv->pipeline
-	&&  !brasero_metadata_create_pipeline (meta)) {
-		g_object_ref (meta);
-		g_signal_emit (G_OBJECT (meta),
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->flags = flags;
+
+	if (!brasero_metadata_set_new_uri (self, uri)) {
+		g_object_ref (self);
+		g_signal_emit (G_OBJECT (self),
 			       brasero_metadata_signals [COMPLETED_SIGNAL],
 			       0,
-			       meta->priv->error);
-		g_object_unref (meta);
+			       priv->error);
+		g_object_unref (self);
 
-		if (meta->priv->error) {
-			g_error_free (meta->priv->error);
-			meta->priv->error = NULL;
+		if (priv->error) {
+			g_error_free (priv->error);
+			priv->error = NULL;
 		}
 		return FALSE;
 	}
 
-	meta->priv->started = 1;
-	gst_element_set_state (GST_ELEMENT (meta->priv->pipeline), GST_STATE_PLAYING);
+	priv->started = 1;
+	gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_PLAYING);
+
 	return TRUE;
+}
+
+gboolean
+brasero_metadata_set_info (BraseroMetadata *self,
+			   BraseroMetadataInfo *info)
+{
+	BraseroMetadataPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	if (!priv->info)
+		return FALSE;
+
+	memset (info, 0, sizeof (BraseroMetadataInfo));
+
+	info->isrc = priv->info->isrc;
+	info->len = priv->info->len;
+	info->is_seekable = priv->info->is_seekable;
+	info->has_audio = priv->info->has_audio;
+	info->has_video = priv->info->has_video;
+
+	if (priv->info->uri)
+		info->uri = g_strdup (priv->info->uri);
+
+	if (priv->info->type)
+		info->type = g_strdup (priv->info->type);
+
+	if (priv->info->title)
+		info->title = g_strdup (priv->info->title);
+
+	if (priv->info->artist)
+		info->artist = g_strdup (priv->info->artist);
+
+	if (priv->info->album)
+		info->album = g_strdup (priv->info->album);
+
+	if (priv->info->genre)
+		info->genre = g_strdup (priv->info->genre);
+
+	if (priv->info->musicbrainz_id)
+		info->musicbrainz_id = g_strdup (priv->info->musicbrainz_id);
+
+	for (iter = priv->info->silences; iter; iter = iter->next) {
+		BraseroMetadataSilence *silence, *copy;
+
+		silence = iter->data;
+
+		copy = g_new0 (BraseroMetadataSilence, 1);
+		copy->start = silence->start;
+		copy->end = silence->end;
+
+		info->silences = g_slist_append (info->silences, copy);
+	}
+
+	return TRUE;
+}
+
+static void
+brasero_metadata_init (BraseroMetadata *obj)
+{ }
+
+static void
+brasero_metadata_destroy_pipeline (BraseroMetadata *self)
+{
+	GstStateChangeReturn change;
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->started = 0;
+
+	if (!priv->pipeline)
+		return;
+
+	/* better to wait for the state change to be completed */
+	change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
+					GST_STATE_READY);
+
+	while (change == GST_STATE_CHANGE_ASYNC) {
+		GstState state;
+		GstState pending;
+
+		change = gst_element_get_state (priv->pipeline,
+						&state,
+						&pending,
+						GST_MSECOND);
+	};
+	
+	change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
+					GST_STATE_NULL);
+
+	while (change == GST_STATE_CHANGE_ASYNC) {
+		GstState state;
+		GstState pending;
+
+		change = gst_element_get_state (priv->pipeline,
+						&state,
+						&pending,
+						GST_MSECOND);
+	}
+
+	if (change == GST_STATE_CHANGE_FAILURE)
+		g_warning ("State change failure\n");
+
+	gst_object_unref (GST_OBJECT (priv->pipeline));
+	priv->pipeline = NULL;
+
+	if (priv->first == priv->sink) {
+		gst_object_unref (GST_OBJECT (priv->convert));
+		priv->convert = NULL;
+
+		gst_object_unref (GST_OBJECT (priv->level));
+		priv->level = NULL;
+	}
+}
+
+static void
+brasero_metadata_finalize (GObject *object)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (object);
+
+	brasero_metadata_destroy_pipeline (BRASERO_METADATA (object));
+
+	if (priv->silence) {
+		g_free (priv->silence);
+		priv->silence = NULL;
+	}
+
+	if (priv->progress_id) {
+		g_source_remove (priv->progress_id);
+		priv->progress_id = 0;
+	}
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
+
+	if (priv->watch) {
+		g_source_remove (priv->watch);
+		priv->watch = 0;
+	}
+
+	if (priv->loop) {
+		if (g_main_loop_is_running (priv->loop))
+			g_main_loop_quit (priv->loop);
+
+		g_main_loop_unref (priv->loop);
+		priv->loop = NULL;
+	}
+
+	if (priv->info) {
+		brasero_metadata_info_free (priv->info);
+		priv->info = NULL;
+	}
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_metadata_get_property (GObject *obj,
+			       guint prop_id,
+			       GValue *value,
+			       GParamSpec *pspec)
+{
+	gchar *uri;
+	BraseroMetadata *self;
+	BraseroMetadataPrivate *priv;
+
+	self = BRASERO_METADATA (obj);
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	switch (prop_id) {
+	case PROP_URI:
+		g_object_get (G_OBJECT (priv->source), "location",
+			      &uri, NULL);
+		g_value_set_string (value, uri);
+		g_free (uri);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_metadata_set_property (GObject *obj,
+			       guint prop_id,
+			       const GValue *value,
+			       GParamSpec *pspec)
+{
+	const gchar *uri;
+	BraseroMetadata *self;
+	BraseroMetadataPrivate *priv;
+
+	self = BRASERO_METADATA (obj);
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	switch (prop_id) {
+	case PROP_URI:
+		uri = g_value_get_string (value);
+		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
+		if (priv->source)
+			g_object_set (G_OBJECT (priv->source),
+				      "location", uri,
+				      NULL);
+		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_PAUSED);
+		priv->started = 1;
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_metadata_class_init (BraseroMetadataClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	parent_class = g_type_class_peek_parent (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroMetadataPrivate));
+
+	object_class->finalize = brasero_metadata_finalize;
+	object_class->set_property = brasero_metadata_set_property;
+	object_class->get_property = brasero_metadata_get_property;
+
+	brasero_metadata_signals[COMPLETED_SIGNAL] =
+	    g_signal_new ("completed",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST,
+			  G_STRUCT_OFFSET (BraseroMetadataClass,
+					   completed),
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__POINTER,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_POINTER);
+	brasero_metadata_signals[PROGRESS_CHANGED_SIGNAL] =
+	    g_signal_new ("progress",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST,
+			  G_STRUCT_OFFSET (BraseroMetadataClass,
+					   progress),
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__DOUBLE,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_DOUBLE);
+	g_object_class_install_property (object_class,
+					 PROP_URI,
+					 g_param_spec_string ("uri",
+							      "The uri of the song",
+							      "The uri of the song",
+							      NULL,
+							      G_PARAM_READWRITE));
+}
+
+BraseroMetadata *
+brasero_metadata_new (void)
+{
+	return BRASERO_METADATA (g_object_new (BRASERO_TYPE_METADATA, NULL));
 }

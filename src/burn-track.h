@@ -79,15 +79,22 @@ typedef enum {
 	BRASERO_CHECKSUM_ANY			= BRASERO_CHECKSUM_MD5
 } BraseroChecksumType;
 
+#define	BRASERO_MIN_AUDIO_TRACK_LENGTH		((gint64) 6 * 1000000000)
+#define BRASERO_AUDIO_TRACK_LENGTH(start, end)					\
+	((end) - (start) > BRASERO_MIN_AUDIO_TRACK_LENGTH) ?			\
+	((end) - (start)) : BRASERO_MIN_AUDIO_TRACK_LENGTH
 
-#define BRASERO_DURATION_TO_BYTES(duration)			\
-	((gint64) (duration) * 75 * 2352 / 1000000000 +		\
+#define BRASERO_DURATION_TO_BYTES(duration)					\
+	((gint64) (duration) * 75 * 2352 / 1000000000 +				\
 	(((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0))
-#define BRASERO_DURATION_TO_SECTORS(duration)			\
-	((gint64) (duration) * 75 / 1000000000 +		\
+#define BRASERO_DURATION_TO_SECTORS(duration)					\
+	((gint64) (duration) * 75 / 1000000000 +				\
 	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
-#define BRASERO_SIZE_TO_SECTORS(size, secsize)			\
+#define BRASERO_SIZE_TO_SECTORS(size, secsize)					\
 	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
+#define BRASERO_BYTES_TO_DURATION(bytes)					\
+	(((bytes) * 1000000000) / (2352 * 75) + 				\
+	((((bytes) * 1000000000) % (2352 * 75)) ? 1:0))
 
 /**
  *
@@ -222,6 +229,9 @@ gint64
 brasero_track_get_audio_gap (BraseroTrack *track);
 gint64
 brasero_track_get_audio_start (BraseroTrack *track);
+gint64
+brasero_track_get_audio_end (BraseroTrack *track);
+
 BraseroSongInfo *
 brasero_track_get_audio_info (BraseroTrack *track);
 

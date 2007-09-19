@@ -211,7 +211,13 @@ brasero_SOURCES = \
 	brasero-pref.h         \
 	brasero-pref.c         \
 	brasero-plugin-option.h         \
-	brasero-plugin-option.c 
+	brasero-plugin-option.c         \
+	brasero-split-dialog.h         \
+	brasero-split-dialog.c         \
+	brasero-time-button.h         \
+	brasero-time-button.c         \
+	brasero-preview.h         \
+	brasero-preview.c 
 
 brasero_LDADD = $(BRASERO_LIBS)
 

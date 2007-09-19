@@ -1,3 +1,18 @@
+2007-09-19 Rouquier Philippe <philippr@svn.gnome.org>
+
+	Added audio track splitting which leads to
+	- new UI dialog for splitting
+	- large improvements in transcode plugin
+	- some refactoring of player code
+	- some refactoring of song properties dialog
+	- player can now play only a segment of a song
+	- uri-container class was extended
+	- metadata object doesn't recreate its pipeline for every new song
+	- metadata object can now detect silences
+	- brasero-vfs object now reuses metadata objects
+	- brasero-project saves track boundaries
+	
+
 2007-09-17  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/Makefile.am:
@@ -555,7 +570,7 @@
 	(brasero_burn_caps_create_recorder_for_blanking):
 
 	Libburn is suppose to support dvd+rw and dvd-rw so
-	adding support to brasero trunk.
+	adding support to brasero trunk
 
 2007-03-04  Luis Medinas  <lmedinas@svn.gnome.org>
 
@@ -565,7 +580,7 @@
 
 2007-02-27  Luis Medinas <lmedinas@svn.gnome.org>
 
-	Merge work done on stable branch to trunk:
+	Merge work done on stable branch to brasero:
 	New icon for blank action by Josef Vybiral <newsgroups@vybiral.info>
 	New brasero icon based on the old one but tango-ified.
 	Done by Ulisse <ulisail@yahoo.it>.

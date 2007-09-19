@@ -688,6 +688,18 @@ brasero_track_get_audio_start (BraseroTrack *track)
 	return audio->start;
 }
 
+gint64
+brasero_track_get_audio_end (BraseroTrack *track)
+{
+	BraseroTrackAudio *audio;
+
+	if (track->type.type != BRASERO_TRACK_TYPE_AUDIO)
+		return -1;
+
+	audio = (BraseroTrackAudio *) track;
+	return audio->end;
+}
+
 BraseroSongInfo *
 brasero_track_get_audio_info (BraseroTrack *track)
 {
@@ -988,7 +1000,7 @@ brasero_track_get_audio_length (BraseroTrack *track,
 	if (audio->start < 0 || audio->end <= 0)
 		return BRASERO_BURN_ERR;
 
-	*length = audio->end - audio->start;
+	*length = BRASERO_AUDIO_TRACK_LENGTH (audio->start, audio->end + audio->gap);
 
 	return BRASERO_BURN_OK;
 }

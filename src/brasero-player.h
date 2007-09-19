@@ -22,12 +22,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
-
-#ifdef BUILD_PREVIEW
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -35,8 +32,6 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtkalignment.h>
-
-#include "brasero-uri-container.h"
 
 G_BEGIN_DECLS
 
@@ -56,16 +51,26 @@ typedef struct {
 
 typedef struct {
 	GtkAlignmentClass parent_class;
+
+	void		(*ready)	(BraseroPlayer *player);
 } BraseroPlayerClass;
 
 GType brasero_player_get_type ();
 GtkWidget *brasero_player_new ();
 
 void
-brasero_player_set_uri (BraseroPlayer *player, const char *uri);
+brasero_player_set_uri (BraseroPlayer *player,
+			const gchar *uri);
 void
-brasero_player_add_source (BraseroPlayer *player, BraseroURIContainer *source);
+brasero_player_set_boundaries (BraseroPlayer *player, 
+			       gint64 start,
+			       gint64 end);
 
-#endif				/* PLAYER_H */
+const gchar *
+brasero_player_get_uri (BraseroPlayer *player);
+gint64
+brasero_player_get_pos (BraseroPlayer *player);
+gint64
+brasero_player_get_length (BraseroPlayer *player);
 
 #endif

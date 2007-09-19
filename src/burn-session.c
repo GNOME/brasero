@@ -1311,7 +1311,10 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 	if (!priv->session)
 		return;
 
-	message = g_strdup_vprintf (format, arg_list);
+	if (arg_list)
+		message = g_strdup_vprintf (format, arg_list);
+	else
+		message = g_strdup (format);
 
 	/* we also need to validate the messages to be in UTF-8 */
 	if (!g_utf8_validate (message, -1, (const gchar**) &offending))
@@ -1375,7 +1378,6 @@ gboolean
 brasero_burn_session_start (BraseroBurnSession *self)
 {
 	gchar *start_message;
-	va_list args;
 	BraseroImageFormat output;
 	BraseroBurnSessionPrivate *priv;
 
@@ -1387,9 +1389,9 @@ brasero_burn_session_start (BraseroBurnSession *self)
 		int fd;
 
 		priv->session_path = g_build_path (G_DIR_SEPARATOR_S,
-							    g_get_tmp_dir (),
-							    BRASERO_BURN_TMP_FILE_NAME,
-							    NULL);
+						   g_get_tmp_dir (),
+						   BRASERO_BURN_TMP_FILE_NAME,
+						   NULL);
 
 		fd = g_mkstemp (priv->session_path);
 		priv->session = fdopen (fd, "w");
@@ -1419,7 +1421,7 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	BRASERO_BURN_LOG (start_message);
 
-	brasero_burn_session_logv (self, start_message, args);
+	brasero_burn_session_logv (self, start_message, NULL);
 	g_free (start_message);
 	return TRUE;
 }

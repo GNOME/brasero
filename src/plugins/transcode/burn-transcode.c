@@ -57,7 +57,6 @@ static void brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 
 struct BraseroTranscodePrivate {
 	GstElement *pipeline;
-	GstElement *identity;
 	GstElement *convert;
 	GstElement *decode;
 	GstElement *source;
@@ -67,7 +66,13 @@ struct BraseroTranscodePrivate {
 	gint pad_fd;
 	gint pad_id;
 
-	guint set_boundaries;
+	gint64 size;
+	gint64 pos;
+
+	gulong probe;
+	gint64 segment_start;
+	gint64 segment_end;
+
 	guint set_active_state:1;
 };
 typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
@@ -77,9 +82,121 @@ typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
 static GObjectClass *parent_class = NULL;
 
 static gboolean
+brasero_transcode_buffer_handler (GstPad *pad, GstBuffer *buffer, BraseroTranscode *self)
+{
+	BraseroTranscodePrivate *priv;
+	GstPad *peer;
+	gint64 size;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (self);
+
+	size = GST_BUFFER_SIZE (buffer);
+
+	if (priv->segment_start <= 0 && priv->segment_end <= 0)
+		return TRUE;
+
+	/* what we do here is more or less what gstreamer does when seeking:
+	 * it reads and process from 0 to the seek position (I tried).
+	 * It even forwards the data before the seek position to the sink (which
+	 * is a problem in our case as it would be written) */
+	if (priv->size > priv->segment_end) {
+		priv->size += size;
+		return FALSE;
+	}
+
+	if (priv->size + size > priv->segment_end) {
+		GstBuffer *new_buffer;
+		int data_size;
+
+		/* the entire the buffer is not interesting for us */
+		/* create a new buffer and push it on the pad:
+		 * NOTE: we're going to receive it ... */
+		data_size = priv->segment_end - priv->size;
+		new_buffer = gst_buffer_new_and_alloc (data_size);
+		memcpy (GST_BUFFER_DATA (new_buffer), GST_BUFFER_DATA (buffer), data_size);
+
+		/* Recursive: the following calls ourselves BEFORE we finish */
+		peer = gst_pad_get_peer (pad);
+		gst_pad_push (peer, new_buffer);
+
+		/* post an EOS event to stop pipeline */
+		gst_pad_push_event (peer, gst_event_new_eos ());
+		
+		gst_object_unref (peer);
+
+		priv->size += size - data_size;
+		return FALSE;
+	}
+
+	/* see if the buffer is in the segment */
+	if (priv->size < priv->segment_start) {
+		GstBuffer *new_buffer;
+		gint data_size;
+
+		/* see if all the buffer is interesting for us */
+		if (priv->size + size < priv->segment_start) {
+			priv->size += size;
+			return FALSE;
+		}
+
+		/* create a new buffer and push it on the pad:
+		 * NOTE: we're going to receive it ... */
+		data_size = priv->size + size - priv->segment_start;
+		new_buffer = gst_buffer_new_and_alloc (data_size);
+		memcpy (GST_BUFFER_DATA (new_buffer),
+			GST_BUFFER_DATA (buffer) +
+			GST_BUFFER_SIZE (buffer) -
+			data_size,
+			data_size);
+		GST_BUFFER_TIMESTAMP (new_buffer) = GST_BUFFER_TIMESTAMP (buffer) + data_size;
+
+		/* this is recursive the following calls ourselves 
+		 * BEFORE we finish */
+		peer = gst_pad_get_peer (pad);
+		gst_pad_push (peer, new_buffer);
+		gst_object_unref (peer);
+
+		priv->size += size - data_size;
+		return FALSE;
+	}
+
+	priv->size += size;
+	priv->pos += size;
+
+	return TRUE;
+}
+
+static BraseroBurnResult
+brasero_transcode_set_boundaries (BraseroTranscode *transcode)
+{
+	BraseroTranscodePrivate *priv;
+	BraseroTrack *track;
+	gint64 start;
+	gint64 end;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	/* we need to reach the song start and set a possible end; this is only
+	 * needed when it is decoding a song. Otherwise*/
+	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
+	start = brasero_track_get_audio_start (track);
+	end = brasero_track_get_audio_end (track);
+
+	priv->segment_start = BRASERO_DURATION_TO_BYTES (start);
+	priv->segment_end = BRASERO_DURATION_TO_BYTES (end);
+
+	BRASERO_JOB_LOG (transcode, "settings track boundaries time = %lli %lli / bytes = %lli %lli",
+			 start, end,
+			 priv->segment_start, priv->segment_end);
+
+	return BRASERO_BURN_OK;
+}
+
+static gboolean
 brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 {
 	gchar *uri;
+	GstPad *sinkpad;
 	GstElement *decode;
 	GstElement *source;
 	GstBus *bus = NULL;
@@ -91,14 +208,12 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	GstElement *convert = NULL;
 	BraseroTrack *track = NULL;
 	GstElement *resample = NULL;
-	GstElement *identity = NULL;
 	BraseroTranscodePrivate *priv;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
 	BRASERO_JOB_LOG (transcode, "Creating new pipeline");
 
-	priv->set_boundaries = 0;
 	priv->set_active_state = 0;
 
 	/* free the possible current pipeline and create a new one */
@@ -109,7 +224,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 		priv->sink = NULL;
 		priv->source = NULL;
 		priv->convert = NULL;
-		priv->identity = NULL;
 		priv->pipeline = NULL;
 	}
 
@@ -236,7 +350,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	}
 
 	/* decode */
-	decode = gst_element_factory_make ("decodebin", NULL);
+	decode = gst_element_factory_make ("decodebin2", NULL);
 	if (decode == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -248,9 +362,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	priv->decode = decode;
 
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
-		if (brasero_job_get_fd_out (BRASERO_JOB (transcode), NULL) == BRASERO_BURN_OK)
-			priv->sink = sink;
-
 		gst_element_link_many (source, decode, NULL);
 		g_signal_connect (G_OBJECT (decode),
 				  "new-decoded-pad",
@@ -272,10 +383,20 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 				  convert);
 	}
 
+	priv->sink = sink;
 	priv->source = source;
 	priv->convert = convert;
-	priv->identity = identity;
 	priv->pipeline = pipeline;
+
+	/* This is an ugly workaround for the lack of accuracy with gstreamer.
+	 * Yet this is unfortunately a necessary evil. */
+	priv->pos = 0;
+	priv->size = 0;
+	sinkpad = gst_element_get_pad (priv->sink, "sink");
+	priv->probe = gst_pad_add_buffer_probe (sinkpad,
+						G_CALLBACK (brasero_transcode_buffer_handler),
+						transcode);
+	gst_object_unref (sinkpad);
 
 	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
 	return TRUE;
@@ -419,21 +540,21 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 	GSList *iter, *songs;
 	BraseroTrack *track;
 	gint64 start;
-	gint64 size;
+	gint64 end;
 	gchar *uri;
 
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	start = brasero_track_get_audio_start (track);
-	brasero_track_get_audio_length (track, &size);
+	end = brasero_track_get_audio_end (track);
 	uri = brasero_track_get_audio_source (track, TRUE);
 
 	brasero_job_get_done_tracks (BRASERO_JOB (transcode), &songs);
 
 	for (iter = songs; iter; iter = iter->next) {
 		gchar *iter_uri;
-		gint64 iter_size;
+		gint64 iter_end;
 		gint64 iter_start;
 		BraseroTrack *iter_track;
 
@@ -443,11 +564,11 @@ brasero_transcode_search_for_sibling (BraseroTranscode *transcode)
 		if (strcmp (iter_uri, uri))
 			continue;
 
-		brasero_track_get_audio_length (iter_track, &iter_size);
-		if (!iter_size)
+		iter_end = brasero_track_get_audio_end (iter_track);
+		if (!iter_end)
 			continue;
 
-		if (iter_size != size)
+		if (iter_end != end)
 			continue;
 
 		iter_start = brasero_track_get_audio_start (track);
@@ -505,30 +626,15 @@ brasero_transcode_start (BraseroJob *job,
 
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		BraseroTrack *track;
-		gint64 length;
-
-		/* See if this track has its size already set and in this case
-		 * just say that everything is OK.
-		 * It can happen when the user/brasero/a program has already
-		 * set it or if the end of the track was set */
-
-		/* Look for a sibling to avoid analysing the same track twice. */
-		result = brasero_transcode_has_track_sibling (BRASERO_TRANSCODE (job), error);
-		if (result != BRASERO_BURN_OK)
-			return result;
 
 		/* see if the track size was already set since then no need to 
 		 * carry on with a lengthy get size and the library will do it
-		 * itself.
-		 * NOTE since for the moment we can only output RAW audio that 
-		 * means that the block size is 2352. */
+		 * itself. */
 		brasero_job_get_current_track (job, &track);
 
-		length = 0;
-		brasero_track_get_audio_length (track, &length);
-		if (length > 0)
+		if (brasero_track_get_audio_end (track) > 0)
 			return BRASERO_BURN_NOT_SUPPORTED;
-		
+
 		if (!brasero_transcode_create_pipeline (transcode, error))
 			return BRASERO_BURN_ERR;
 
@@ -550,7 +656,8 @@ brasero_transcode_start (BraseroJob *job,
 			if (result != BRASERO_BURN_OK)
 				return result;
 		}
-		
+
+		brasero_transcode_set_boundaries (transcode);
 		if (!brasero_transcode_create_pipeline (transcode, error))
 			return BRASERO_BURN_ERR;
 	}
@@ -564,10 +671,15 @@ static void
 brasero_transcode_stop_pipeline (BraseroTranscode *transcode)
 {
 	BraseroTranscodePrivate *priv;
+	GstPad *sinkpad;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 	if (!priv->pipeline)
 		return;
+
+	sinkpad = gst_element_get_pad (priv->sink, "sink");
+	gst_pad_remove_buffer_probe (sinkpad, priv->probe);
+	gst_object_unref (sinkpad);
 
 	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
 	gst_object_unref (GST_OBJECT (priv->pipeline));
@@ -575,10 +687,8 @@ brasero_transcode_stop_pipeline (BraseroTranscode *transcode)
 	priv->sink = NULL;
 	priv->source = NULL;
 	priv->convert = NULL;
-	priv->identity = NULL;
 	priv->pipeline = NULL;
 
-	priv->set_boundaries = 0;
 	priv->set_active_state = 0;
 }
 
@@ -597,83 +707,6 @@ brasero_transcode_stop (BraseroJob *job,
 
 	brasero_transcode_stop_pipeline (BRASERO_TRANSCODE (job));
 	return BRASERO_BURN_OK;
-}
-
-static gboolean
-brasero_transcode_is_mp3 (BraseroTranscode *transcode)
-{
-	BraseroTranscodePrivate *priv;
-	GstElement *typefind;
-	GstCaps *caps = NULL;
-	const gchar *mime;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
-
-	/* find the type of the file */
-	typefind = gst_bin_get_by_name (GST_BIN (priv->decode),
-					"typefind");
-
-	g_object_get (typefind, "caps", &caps, NULL);
-	if (!caps) {
-		gst_object_unref (typefind);
-		return TRUE;
-	}
-
-	if (caps && gst_caps_get_size (caps) > 0) {
-		mime = gst_structure_get_name (gst_caps_get_structure (caps, 0));
-		gst_object_unref (typefind);
-
-		if (mime && !strcmp (mime, "application/x-id3"))
-			return TRUE;
-
-		if (!strcmp (mime, "audio/mpeg"))
-			return TRUE;
-	}
-	else
-		gst_object_unref (typefind);
-
-	return FALSE;
-}
-
-static gint64
-brasero_transcode_get_duration (BraseroTranscode *transcode)
-{
-	GstElement *element;
-	gint64 duration = -1;
-	BraseroJobAction action;
-	BraseroTranscodePrivate *priv;
-	GstFormat format = GST_FORMAT_TIME;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
-
-	/* this is the most reliable way to get the duration for mp3 read them
-	 * till the end and get the position. Convert is then needed. */
-	brasero_job_get_action (BRASERO_JOB (transcode), &action);
-	if (action != BRASERO_JOB_ACTION_SIZE
-	&&  brasero_transcode_is_mp3 (transcode)) {
-		if (priv->convert)
-			element = priv->convert;
-		else
-			element = priv->pipeline;
-
-		gst_element_query_position (GST_ELEMENT (element),
-					    &format,
-					    &duration);
-	}
-
-	if (duration == -1)
-		gst_element_query_duration (GST_ELEMENT (priv->pipeline),
-					    &format,
-					    &duration);
-
-	BRASERO_JOB_LOG (transcode, "got duration %"G_GINT64_FORMAT"\n", duration);
-
-	if (duration == -1)	
-	    brasero_job_error (BRASERO_JOB (transcode),
-			       g_error_new (BRASERO_BURN_ERROR,
-					    BRASERO_BURN_ERROR_GENERAL,
-					    _("error getting duration")));
-	return duration;
 }
 
 /* we must make sure that the track size is a multiple
@@ -736,7 +769,6 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 
 	brasero_track_get_audio_length (track, &length);
-	length += brasero_track_get_audio_gap (track);
 
 	info = brasero_track_get_audio_info (track);
 	info = brasero_song_info_copy (info);
@@ -790,12 +822,12 @@ static gboolean
 brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 {
 	gint64 length = 0;
-	gint64 duration = 0;
 	gint64 bytes2write = 0;
 	BraseroTrack *track = NULL;
+	BraseroTranscodePrivate *priv;
 
-	duration = brasero_transcode_get_duration (transcode);
-	if (duration == -1)
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	if (priv->pos < 0)
 		return TRUE;
 
 	/* Padding is important for two reasons:
@@ -804,21 +836,20 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 	 *   boundaries */
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	brasero_track_get_audio_length (track, &length);
-	length += brasero_track_get_audio_gap (track);
 
-	if (duration < length) {
+	if (priv->pos < BRASERO_DURATION_TO_BYTES (length)) {
 		gint64 b_written = 0;
 
 		/* Check bytes boundary for length */
 		b_written = BRASERO_DURATION_TO_BYTES (length);
 		b_written += (b_written % 2352) ? 2352 - (b_written % 2352):0;
-		bytes2write = b_written - BRASERO_DURATION_TO_BYTES (duration);
+		bytes2write = b_written - priv->pos;
 
 		BRASERO_JOB_LOG (transcode,
-				 "Wrote %lli bytes (= %lli ns) out of %lli (= %lli ns)"
+				 "wrote %lli bytes (= %lli ns) out of %lli (= %lli ns)"
 				 "\n=> padding %lli bytes",
-				 BRASERO_DURATION_TO_BYTES (duration),
-				 duration,
+				 priv->pos,
+				 BRASERO_BYTES_TO_DURATION (priv->pos),
 				 BRASERO_DURATION_TO_BYTES (length),
 				 length,
 				 bytes2write);
@@ -826,14 +857,14 @@ brasero_transcode_pad (BraseroTranscode *transcode, int fd, GError **error)
 	else {
 		gint64 b_written = 0;
 
-		/* wrote more bytes than expected. Check bytes boundary */
-		b_written = BRASERO_DURATION_TO_BYTES (duration);
+		/* wrote more or the exact amount of bytes. Check bytes boundary */
+		b_written = priv->pos;
 		bytes2write = (b_written % 2352) ? 2352 - (b_written % 2352):0;
 		BRASERO_JOB_LOG (transcode,
-				 "Wrote %lli bytes (= %lli ns)"
+				 "wrote %lli bytes (= %lli ns)"
 				 "\n=> padding %lli bytes",
 				 b_written,
-				 duration,
+				 priv->pos,
 				 bytes2write);
 	}
 
@@ -908,6 +939,95 @@ brasero_transcode_pad_file (BraseroTranscode *transcode, GError **error)
 		close (fd);
 
 	return result;
+}
+
+static gboolean
+brasero_transcode_is_mp3 (BraseroTranscode *transcode)
+{
+	BraseroTranscodePrivate *priv;
+	GstElement *typefind;
+	GstCaps *caps = NULL;
+	const gchar *mime;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	/* find the type of the file */
+	typefind = gst_bin_get_by_name (GST_BIN (priv->decode),
+					"typefind");
+
+	g_object_get (typefind, "caps", &caps, NULL);
+	if (!caps) {
+		gst_object_unref (typefind);
+		return TRUE;
+	}
+
+	if (caps && gst_caps_get_size (caps) > 0) {
+		mime = gst_structure_get_name (gst_caps_get_structure (caps, 0));
+		gst_object_unref (typefind);
+
+		if (mime && !strcmp (mime, "application/x-id3"))
+			return TRUE;
+
+		if (!strcmp (mime, "audio/mpeg"))
+			return TRUE;
+	}
+	else
+		gst_object_unref (typefind);
+
+	return FALSE;
+}
+
+static gint64
+brasero_transcode_get_position (BraseroTranscode *transcode)
+{
+	gint64 position;
+	GstElement *element;
+	BraseroTranscodePrivate *priv;
+	GstFormat format = GST_FORMAT_TIME;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+	if (priv->convert)
+		element = priv->convert;
+	else
+		element = priv->pipeline;
+
+	gst_element_query_position (GST_ELEMENT (element),
+				    &format,
+				    &position);
+
+	return position;
+}
+
+static gint64
+brasero_transcode_get_duration (BraseroTranscode *transcode)
+{
+	gint64 duration = -1;
+	BraseroJobAction action;
+	BraseroTranscodePrivate *priv;
+	GstFormat format = GST_FORMAT_TIME;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	/* this is the most reliable way to get the duration for mp3 read them
+	 * till the end and get the position. Convert is then needed. */
+	brasero_job_get_action (BRASERO_JOB (transcode), &action);
+	if (action == BRASERO_JOB_ACTION_IMAGE
+	&&  brasero_transcode_is_mp3 (transcode))
+		duration = brasero_transcode_get_position (transcode);
+
+	if (duration == -1)
+		gst_element_query_duration (GST_ELEMENT (priv->pipeline),
+					    &format,
+					    &duration);
+
+	BRASERO_JOB_LOG (transcode, "got duration %"G_GINT64_FORMAT, duration);
+
+	if (duration == -1)	
+	    brasero_job_error (BRASERO_JOB (transcode),
+			       g_error_new (BRASERO_BURN_ERROR,
+					    BRASERO_BURN_ERROR_GENERAL,
+					    _("error getting duration")));
+	return duration;
 }
 
 static gboolean
@@ -995,65 +1115,22 @@ foreach_tag (const GstTagList *list,
 }
 
 static BraseroBurnResult
-brasero_transcode_set_boundaries (BraseroTranscode *transcode)
-{
-	BraseroTranscodePrivate *priv;
-	BraseroTrack *track;
-	gint64 length = 0;
-	gboolean result;
-	gint64 start;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
-
-	/* we need to reach the song start and set a possible end; this is only
-	 * needed when it is decoding a song. Otherwise*/
-	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
-	start = brasero_track_get_audio_start (track);
-	start = start;
-
-	/* NOTE: when end has been set that value is used by the following 
-	 * function to estimate the size. Size here is end (set or not) - start
-	 * which can be 0. */
-	brasero_track_get_audio_length (track, &length);
-
-	if (!length)
-		return BRASERO_BURN_OK;
-
-	if (start < 0)
-		start = 0;
-
-	result = gst_element_seek (priv->pipeline,
-				   1.0,
-				   GST_FORMAT_TIME,
-				   GST_SEEK_FLAG_FLUSH,
-				   GST_SEEK_TYPE_SET,
-				   start,
-				   GST_SEEK_TYPE_SET,
-				   start + length);
-	if (!result) {
-		GError *error = NULL;
-
-		BRASERO_JOB_LOG (transcode, "Seeking forward was impossible");
-		error = g_error_new (BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("impossible to set start or end of song"));
-		brasero_job_error (BRASERO_JOB (transcode), error);
-		return BRASERO_BURN_ERR;
-	}
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
 brasero_transcode_active_state (BraseroTranscode *transcode)
 {
+	BraseroTranscodePrivate *priv;
 	gchar *name, *string, *uri;
 	BraseroJobAction action;
 	BraseroTrack *track;
 
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	if (priv->set_active_state)
+		return BRASERO_BURN_OK;
+
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	uri = brasero_track_get_audio_source (track, FALSE);
 
+	priv->set_active_state = 1;
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
@@ -1102,7 +1179,6 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 	}
 
 	g_free (uri);
-
 	return BRASERO_BURN_OK;
 }
 
@@ -1141,7 +1217,6 @@ brasero_transcode_bus_messages (GstBus *bus,
 
 	case GST_MESSAGE_STATE_CHANGED: {
 		GstStateChangeReturn result;
-		BraseroJobAction action;
 
 		result = gst_element_get_state (priv->pipeline,
 						&state,
@@ -1151,21 +1226,21 @@ brasero_transcode_bus_messages (GstBus *bus,
 		if (result != GST_STATE_CHANGE_SUCCESS)
 			return TRUE;
 
-		if (state != GST_STATE_PAUSED && state != GST_STATE_PLAYING)
-			return TRUE;
+		if (state == GST_STATE_PLAYING) {
+			BraseroJobAction action;
 
-		brasero_job_get_action (BRASERO_JOB (transcode), &action);
-		if (action == BRASERO_JOB_ACTION_IMAGE
-		&& !priv->set_boundaries) {
-			brasero_transcode_set_boundaries (transcode);
-			priv->set_boundaries = 1;
-		}
-		else if (!priv->set_active_state) {
+			brasero_job_get_action (BRASERO_JOB (transcode), &action);
+			if (action == BRASERO_JOB_ACTION_SIZE) {
+				if (!brasero_transcode_is_mp3 (transcode)) {
+					brasero_transcode_song_end_reached (transcode);
+					return TRUE;
+				}
+			}
+
 			brasero_transcode_active_state (transcode);
-			priv->set_active_state = 1;
 		}
 
-		return TRUE;
+		break;
 	}
 
 	default:
@@ -1206,40 +1281,14 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 static BraseroBurnResult
 brasero_transcode_clock_tick (BraseroJob *job)
 {
-	gint64 pos = -1;
-	gpointer element;
-	GstIterator *iterator;
 	BraseroTranscodePrivate *priv;
-	GstFormat format = GST_FORMAT_TIME;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (job);
 
 	if (!priv->pipeline)
 		return BRASERO_BURN_ERR;
 
-	/* this is a workaround : when asking the pipeline especially
-	 * a pipeline such as filesrc ! decodebin ! fakesink we can't
-	 * get the position in time or the results are simply crazy.
-	 * so we iterate through the elements in decodebin until we
-	 * find an element that can tell us the position. */
-	iterator = gst_bin_iterate_sorted (GST_BIN (priv->decode));
-	while (gst_iterator_next (iterator, &element) == GST_ITERATOR_OK) {
-		if (gst_element_query_position (GST_ELEMENT (element),
-						&format,
-						&pos)) {
-			gst_object_unref (element);
-			break;
-		}
-		gst_object_unref (element);
-	}
-	gst_iterator_free (iterator);
-
-	if (pos == -1) {
-		BRASERO_JOB_LOG (job, "can't get position in the stream");
-		return BRASERO_BURN_ERR;
-	}
-
-	brasero_job_set_written_track (job, BRASERO_DURATION_TO_BYTES (pos));
+	brasero_job_set_written_track (job, priv->pos);
 	return BRASERO_BURN_OK;
 }
 
@@ -1275,10 +1324,7 @@ brasero_transcode_finalize (GObject *object)
 		priv->pad_id = 0;
 	}
 
-	if (priv->pipeline) {
-		gst_element_set_state (priv->pipeline, GST_STATE_NULL);
-		gst_object_unref (GST_OBJECT (priv->pipeline));
-	}
+	brasero_transcode_stop_pipeline (BRASERO_TRANSCODE (object));
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

@@ -37,6 +37,7 @@
 #include <totem-pl-parser.h>
 #endif
 
+#include "burn-debug.h"
 #include "brasero-vfs.h"
 #include "brasero-async-task-manager.h"
 #include "brasero-metadata.h"
@@ -78,12 +79,12 @@ struct _BraseroVFSTaskCtx {
 };
 typedef struct _BraseroVFSTaskCtx BraseroVFSTaskCtx;
 
-struct _BraseroVFSMetaCtx {
-	BraseroVFSTaskCtx *ctx;
-	GnomeVFSFileInfo *info;
+struct _BraseroVFSMetadataTask {
+	gchar *uri;
+	GSList *ctx;
 	BraseroMetadata *metadata;
 };
-typedef struct _BraseroVFSMetaCtx BraseroVFSMetaCtx;
+typedef struct _BraseroVFSMetadataTask BraseroVFSMetadataTask;
 
 struct _BraseroInfoData {
 	GSList *results;
@@ -105,6 +106,7 @@ typedef struct _BraseroLoadData BraseroLoadData;
 struct _BraseroMetadataData {
 	gint refcount;
 	gboolean recursive;
+	BraseroMetadataFlag flags;
 	GSList *results;
 };
 typedef struct _BraseroMetadataData BraseroMetadataData;
@@ -141,10 +143,10 @@ typedef struct _BraseroInfoResult BraseroInfoResult;
 
 struct _BraseroMetadataResult {
 	GnomeVFSFileInfo *info;
-	BraseroMetadata *metadata;
-	gulong signal;
+	BraseroVFSMetadataTask *item;
 };
 typedef struct _BraseroMetadataResult BraseroMetadataResult;
+
 
 #define BRASERO_CTX_OWNER(ctx)			((ctx)->user_method->owner)
 #define BRASERO_CTX_USER_DATA(ctx)		((ctx)->user_data)
@@ -219,6 +221,7 @@ struct _BraseroVFSPrivate {
 #endif
 
 	/* used for metadata */
+	GSList *metadatas;
 	GSList *processing_meta;
 	GSList *unprocessed_meta;
 	gint meta_process_id;
@@ -231,9 +234,8 @@ struct _BraseroVFSPrivate {
 };
 
 /* so far one metadata at a time has shown to be the best for performance */
-#define MAX_CONCURENT_META 	1
-#define MAX_BUFFERED_META	8
-#define STOP_META_TIMEOUT	500
+#define MAX_CONCURENT_META 	2
+#define MAX_BUFFERED_META	20
 
 static GObjectClass *parent_class = NULL;
 static BraseroVFS *singleton = NULL;
@@ -772,102 +774,82 @@ brasero_vfs_load_directory (BraseroVFS *self,
 static gboolean
 brasero_vfs_process_metadata (gpointer callback_data)
 {
-	BraseroMetadata *metadata;
+	BraseroMetadataFlag flags = BRASERO_METADATA_FLAG_NONE;
 	BraseroVFS *self = BRASERO_VFS (callback_data);
+	BraseroVFSMetadataTask *item;
+	GSList *iter;
 
 	if (!self->priv->unprocessed_meta) {
 		self->priv->meta_process_id = 0;
 		return FALSE;
 	}
 
-	/* to avoid too much overhead we only fetch
-	 * MAX_CONCURENT_META metadata files at a time */
-	if (g_slist_length (self->priv->processing_meta) >= MAX_CONCURENT_META) {
+	if (!self->priv->metadatas) {
+		/* Once one metadata object is free, this function will be
+		 * called again */
 		self->priv->meta_process_id = 0;
 		return FALSE;
 	}
 
-	metadata = self->priv->unprocessed_meta->data;
-	self->priv->unprocessed_meta = g_slist_remove (self->priv->unprocessed_meta, metadata);
-	self->priv->processing_meta = g_slist_prepend (self->priv->processing_meta, metadata);
+	item = self->priv->unprocessed_meta->data;
+	item->metadata = self->priv->metadatas->data;
+	self->priv->metadatas = g_slist_remove (self->priv->metadatas,
+						item->metadata);
 
-	brasero_metadata_get_async (metadata, FALSE);
+	BRASERO_BURN_LOG ("starting analysis of %s", item->uri);
+
+	self->priv->unprocessed_meta = g_slist_remove (self->priv->unprocessed_meta, item);
+	self->priv->processing_meta = g_slist_prepend (self->priv->processing_meta, item);
+
+	/* merge the flags of all contexts. NOTE: since the search for silences
+	 * implies and forces a thorough/long search, no need to care about fast
+	 * flag */
+	for (iter = item->ctx; iter; iter = iter->next) {
+		BraseroVFSTaskCtx *ctx;
+		BraseroMetadataData *data;
+
+		ctx = iter->data;
+		data = BRASERO_CTX_TASK_DATA (ctx);
+		flags |= data->flags;
+	}
+
+	brasero_metadata_get_info_async (item->metadata,
+					 item->uri,
+					 flags);
 	return TRUE;
 }
 
 static void
-brasero_vfs_metadata_processed (BraseroVFS *self,
-				BraseroMetadata *metadata)
+brasero_vfs_metadata_task_free (BraseroVFS *self,
+				BraseroVFSMetadataTask *item)
 {
-	if (!metadata)
+	if (!item)
 		return;
 
-	self->priv->processing_meta = g_slist_remove (self->priv->processing_meta,
-						      metadata);
-	if (!self->priv->meta_process_id
-	&&  g_slist_length (self->priv->processing_meta) < MAX_CONCURENT_META)
-		self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata,
-							  self);
-
-	if (!metadata->has_audio && !metadata->has_video)
+	if (item->ctx)
 		return;
 
-	if (g_queue_find (self->priv->meta_buffer, metadata))
-		return;
+	/* there are no more context waiting, remove from the queue */
+	self->priv->unprocessed_meta = g_slist_remove (self->priv->unprocessed_meta, item);
+	self->priv->processing_meta = g_slist_remove (self->priv->processing_meta, item);
+	g_free (item->uri);
 
-	g_object_ref (metadata);
-	g_queue_push_head (self->priv->meta_buffer, metadata);
+	/* if there is a metadata (if it is processing) then:
+	 * cancel operation, put metadata in metadatas queue
+	 * and schedule a brasero_vfs_process_metadata */
+	if (item->metadata) {
+		brasero_metadata_cancel (item->metadata);
+		self->priv->metadatas = g_slist_prepend (self->priv->metadatas, item->metadata);
 
-	if (g_queue_get_length (self->priv->meta_buffer) > MAX_BUFFERED_META) {
-		metadata = g_queue_pop_tail (self->priv->meta_buffer);
-		g_object_unref (metadata);
+		if (!self->priv->meta_process_id && !self->priv->processing_meta)
+			self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata, self);
 	}
-}
-
-static gboolean
-brasero_vfs_metadata_unref_cb (gpointer callback_data)
-{
-	BraseroMetadata *metadata = BRASERO_METADATA (callback_data);
-
-	brasero_metadata_cancel (metadata);
-	g_object_unref (metadata);
-
-	return FALSE;
-}
-
-static void
-brasero_vfs_metadata_refcount_changed (gpointer data,
-				       GObject *object,
-				       gboolean is_last_ref)
-{
-	BraseroVFS *self = BRASERO_VFS (data);
-
-	if (is_last_ref) {
-		self->priv->processing_meta = g_slist_remove (self->priv->processing_meta,
-							      object);
-		self->priv->unprocessed_meta = g_slist_remove (self->priv->unprocessed_meta,
-							       object);
-
-		g_object_ref (object);
-		g_object_remove_toggle_ref (object,
-					    brasero_vfs_metadata_refcount_changed,
-				            self);
-
-		/* NOTE: to work around a bug in Gstreamer (appearing with ogg)
-		 * we delay the unreffing */
-		g_timeout_add (STOP_META_TIMEOUT,
-			       brasero_vfs_metadata_unref_cb,
-			       object);
-
-		if (!self->priv->meta_process_id
-		&&  g_slist_length (self->priv->processing_meta) < MAX_CONCURENT_META)
-			self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata,
-								  self);
-	}
+	g_free (item);
 }
 
 static void
 brasero_vfs_metadata_result_free (BraseroVFS *self,
+				  BraseroVFSTaskCtx *ctx,
 				  BraseroMetadataResult *result,
 				  gboolean cancelled)
 {
@@ -876,43 +858,46 @@ brasero_vfs_metadata_result_free (BraseroVFS *self,
 		result->info = NULL;
 	}
 
-	if (result->signal)
-		g_signal_handler_disconnect (result->metadata, result->signal);
-
-	if (result->metadata) {
-		g_object_unref (result->metadata);
-		result->metadata = NULL;
+	if (result->item) {
+		result->item->ctx = g_slist_remove (result->item->ctx, ctx);
+		brasero_vfs_metadata_task_free (self, result->item);
 	}
 
 	g_free (result);
 }
 
-static void
-brasero_vfs_metadata_completed_cb (BraseroMetadata *metadata,
-				   GError *error,
-				   gpointer user_data)
+static gint
+brasero_vfs_metadata_lookup_buffer (gconstpointer a, gconstpointer b)
 {
-	BraseroVFSTaskCtx *ctx = user_data;
-	BraseroMetadataResult *result;
-	BraseroMetadataData *data;
-	GSList *iter;
+	const BraseroMetadataInfo *metadata = a;
+	const gchar *uri = b;
 
-	brasero_vfs_metadata_processed (BRASERO_CTX_SELF (ctx),
-					metadata);
+	return strcmp (uri, metadata->uri);
+}
+
+static void
+brasero_vfs_metadata_ctx_completed (BraseroVFSTaskCtx *ctx,
+				    BraseroMetadataInfo *info)
+{
+	GSList *iter;
+	BraseroMetadataData *data;
+	BraseroMetadataResult *result;
 
 	data = BRASERO_CTX_TASK_DATA (ctx);
 
+	result = NULL;
 	for (iter = data->results; iter; iter = iter->next) {
 		result = iter->data;
 
-		if (result->metadata == metadata)
+		if (result->item
+		&& !strcmp (result->item->uri, info->uri))
 			break;
 
 		result = NULL;
 	}
 
 	if (!result) {
-		g_warning ("No corresponding BraseroMetadataResult found.\n");
+		BRASERO_BURN_LOG ("no corresponding BraseroMetadataResult found");
 		brasero_vfs_task_ctx_free (ctx, FALSE);
 		return;
 	}
@@ -925,23 +910,81 @@ brasero_vfs_metadata_completed_cb (BraseroMetadata *metadata,
 	 * is to look at has_audio/video */
 	BRASERO_CTX_META_CB (ctx,
 			     GNOME_VFS_OK, /* the result is OK since we searched for metadata */
-			     metadata->uri,
+			     info->uri,
 			     result->info,
-			     metadata);
+			     info);
 
-	brasero_vfs_metadata_result_free (BRASERO_CTX_SELF (ctx), result, FALSE);
+	brasero_vfs_metadata_result_free (BRASERO_CTX_SELF (ctx),
+					  ctx,
+					  result,
+					  FALSE);
 
 	if (!data->results || !data->refcount)
 		brasero_vfs_task_ctx_free (ctx, FALSE);
 }
 
-static gint
-brasero_vfs_metadata_lookup_buffer (gconstpointer a, gconstpointer b)
+static void
+brasero_vfs_metadata_completed_cb (BraseroMetadata *metadata,
+				   GError *error,
+				   gpointer user_data)
 {
-	const BraseroMetadata *metadata = a;
-	const gchar *uri = b;
+	BraseroVFS *self = BRASERO_VFS (user_data);
+	BraseroVFSMetadataTask *item = NULL;
+	BraseroMetadataInfo *info;
+	GSList *iter;
 
-	return strcmp (uri, metadata->uri);
+	info = g_new0 (BraseroMetadataInfo, 1);
+	brasero_metadata_set_info (metadata, info);
+
+	BRASERO_BURN_LOG ("analysis finished for %s", info->uri);
+
+	/* removed the currently processing metadata from the queue and possibly
+	 * add it to the buffer in case it is required again */
+	for (iter = self->priv->processing_meta; iter; iter = iter->next) {
+		item = iter->data;
+		if (!strcmp (item->uri, info->uri))
+			break;
+
+		item = NULL;
+	}
+
+	if (item) {
+		GSList *next;
+
+		self->priv->processing_meta = g_slist_remove (self->priv->processing_meta, item);
+
+		/* process results */
+		for (iter = item->ctx; iter; iter = next) {
+			BraseroVFSTaskCtx *ctx;
+
+			ctx = iter->data;
+			next = iter->next;
+			brasero_vfs_metadata_ctx_completed (ctx, info);
+	}
+
+		/* NOTE: no need to free item here it is freed once all contexts
+		 * have been removed from its queue by the above function */
+	}
+	else
+		BRASERO_BURN_LOG ("couldn't find waiting item in queue (cancelled?)");
+
+	/* remove it and check for the next file to process */
+	if (!self->priv->meta_process_id && !self->priv->processing_meta)
+		self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata, self);
+
+	/* see if info is already in cache buffer */
+	if (g_queue_find_custom (self->priv->meta_buffer, info->uri, brasero_vfs_metadata_lookup_buffer))
+		return;
+
+	if (!info->has_audio && !info->has_video)
+		return;
+
+	g_queue_push_head (self->priv->meta_buffer, info);
+
+	if (g_queue_get_length (self->priv->meta_buffer) > MAX_BUFFERED_META) {
+		info = g_queue_pop_tail (self->priv->meta_buffer);
+		brasero_metadata_info_free (info);
+	}
 }
 
 static gboolean
@@ -950,68 +993,55 @@ brasero_vfs_metadata_ctx_new (BraseroVFS *self,
 			      const gchar *uri,
 			      GnomeVFSFileInfo *info)
 {
-	BraseroMetadata *metadata = NULL;
-	BraseroMetadataData *data;
+	BraseroVFSMetadataTask *item = NULL;
 	BraseroMetadataResult *result;
+	BraseroMetadataData *data;
 	GSList *iter;
 
-	/* see if one of the metadata in the queue (unprocessed or processing)
-	 * is not about the same uri: if so ref the metadata and add a CB */
+	/* make sure the URI is going to be processed. see if self isn't already
+	 * processing the same URI or if the URI is not in the unprocessed queue
+	 */
 	for (iter = self->priv->unprocessed_meta; iter; iter = iter->next) {
-		metadata = iter->data;
-		if (!strcmp (metadata->uri, uri)) {
-			g_object_ref (metadata);
+		item = iter->data;
+		if (!strcmp (item->uri, uri))
 			break;
-		}
 
-		metadata = NULL;
+		item = NULL;
 	}
 
-	for (iter = self->priv->processing_meta; iter && !metadata; iter = iter->next) {
-		metadata = iter->data;
-		if (!strcmp (metadata->uri, uri))
-			g_object_ref (metadata);
-		else
-			metadata = NULL;
+	/* see if it is currently being processed */
+	for (iter = self->priv->processing_meta; iter; iter = iter->next) {
+		item = iter->data;
+		if (!strcmp (item->uri, uri))
+			break;
+
+		item = NULL;
 	}
+	
+	if (!item) {
+		/* there was nothing to process. Add it */
+		item = g_new0 (BraseroVFSMetadataTask, 1);
+		item->uri = g_strdup (uri);
 
-	if (!metadata) {
-		metadata = brasero_metadata_new (uri);
+		if (!self->priv->meta_process_id && !self->priv->processing_meta)
+			self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata, self);
 
-		if (!metadata)
-			return FALSE;
-
-		g_object_add_toggle_ref (G_OBJECT (metadata),
-					 brasero_vfs_metadata_refcount_changed,
-					 self);
-
-		if (!self->priv->meta_process_id
-		&&  g_slist_length (self->priv->processing_meta) <= MAX_CONCURENT_META)
-			self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata,
-								  self);
-
-		self->priv->unprocessed_meta = g_slist_append (self->priv->unprocessed_meta, metadata);
+		self->priv->unprocessed_meta = g_slist_append (self->priv->unprocessed_meta, item);
 	}
 
 	/* add a reference to the parent */
 	data = BRASERO_CTX_TASK_DATA (ctx);
 	data->refcount ++;
 
-	/* we start with a refcount of 1 since we're going to call a function */
 	result = g_new0 (BraseroMetadataResult, 1);
 	data->results = g_slist_prepend (data->results, result);
 
 	/* keep info for later: add a reference */
 	gnome_vfs_file_info_ref (info);
 	result->info = info;
+	result->item = item;
 
-	/* connect to the completed signal and wait for metadata object
-	 * to be started and to complete its job */
-	result->metadata = metadata;
-	result->signal = g_signal_connect (G_OBJECT (metadata),
-					   "completed",
-					   G_CALLBACK (brasero_vfs_metadata_completed_cb),
-					   ctx);
+	item->ctx = g_slist_prepend (item->ctx, ctx);
 	return TRUE;
 }
 
@@ -1037,7 +1067,10 @@ brasero_vfs_metadata_destroy (GObject *object,
 		BraseroMetadataResult *result;
 
 		result = iter->data;
-		brasero_vfs_metadata_result_free (self, result, cancelled);
+		brasero_vfs_metadata_result_free (self,
+						  ctx,
+						  result,
+						  cancelled);
 	}
 
 	g_slist_free (data->results);
@@ -1124,7 +1157,7 @@ brasero_vfs_metadata_result (BraseroVFS *self,
 					    brasero_vfs_metadata_lookup_buffer);
 
 		if (node) {
-			BraseroMetadata *metadata;
+			BraseroMetadataInfo *metadata;
 
 			metadata = node->data;
 			BRASERO_CTX_META_CB (ctx,
@@ -1141,7 +1174,8 @@ brasero_vfs_metadata_result (BraseroVFS *self,
 gboolean
 brasero_vfs_get_metadata (BraseroVFS *self,
 			  GList *uris,
-			  GnomeVFSFileInfoOptions flags,
+			  GnomeVFSFileInfoOptions vfs_flags,
+			  BraseroMetadataFlag meta_flags,
 			  gboolean recursive,
 			  BraseroVFSDataID id,
 			  gpointer callback_data)
@@ -1158,6 +1192,7 @@ brasero_vfs_get_metadata (BraseroVFS *self,
 	data = g_new0 (BraseroMetadataData, 1);
 	data->refcount = 1;
 	data->recursive = recursive;
+	data->flags = meta_flags;
 
 	BRASERO_CTX_TASK_DATA (ctx) = data;
 	BRASERO_CTX_SET_TASK_METHOD (self, ctx, BRASERO_TASK_TYPE_METADATA);
@@ -1166,7 +1201,7 @@ brasero_vfs_get_metadata (BraseroVFS *self,
 	result = brasero_vfs_get_info (self,
 				       uris,
 				       FALSE,
-				       flags|
+				       vfs_flags|
 				       GNOME_VFS_FILE_INFO_FOLLOW_LINKS|
 				       GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
 				       GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
@@ -1227,7 +1262,7 @@ brasero_vfs_count_result_audio (BraseroVFS *self,
 			        GnomeVFSResult result,
 			        const gchar *uri,
 			        GnomeVFSFileInfo *info,
-			        BraseroMetadata *metadata,
+			        BraseroMetadataInfo *metadata,
 			        gpointer user_data)
 {
 	BraseroVFSTaskCtx *ctx = user_data;
@@ -1332,6 +1367,7 @@ brasero_vfs_get_count (BraseroVFS *self,
 						// GNOME_VFS_FILE_INFO_FOLLOW_LINKS|
 						 GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE|
 						 GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
+						 BRASERO_METADATA_FLAG_FAST,
 						 FALSE,
 						 BRASERO_TASK_TYPE_COUNT_SUBTASK_AUDIO,
 						 ctx);
@@ -1405,7 +1441,7 @@ brasero_vfs_playlist_subtask_result (BraseroVFS *self,
 				     GnomeVFSResult result,
 				     const gchar *uri,
 				     GnomeVFSFileInfo *info,
-				     BraseroMetadata *metadata,
+				     BraseroMetadataInfo *metadata,
 				     gpointer user_data)
 {
 	BraseroVFSTaskCtx *ctx = user_data;
@@ -1452,6 +1488,7 @@ brasero_vfs_playlist_result (BraseroAsyncTaskManager *manager,
 	brasero_vfs_get_metadata (self,
 				  data->uris,
 				  data->flags,
+				  BRASERO_METADATA_FLAG_NONE,
 				  FALSE,
 				  BRASERO_TASK_TYPE_PLAYLIST_SUBTASK,
 				  ctx);				       
@@ -1704,7 +1741,20 @@ brasero_vfs_register_data_type (BraseroVFS *self,
 static void
 brasero_vfs_init (BraseroVFS *obj)
 {
+	int i;
+
 	obj->priv = g_new0 (BraseroVFSPrivate, 1);
+
+	for (i = 0; i < MAX_CONCURENT_META; i ++) {
+		BraseroMetadata *metadata;
+
+		metadata = brasero_metadata_new ();
+		g_signal_connect (G_OBJECT (metadata),
+				  "completed",
+				  G_CALLBACK (brasero_vfs_metadata_completed_cb),
+				  obj);
+		obj->priv->metadatas = g_slist_prepend (obj->priv->metadatas, metadata);
+	}
 
 	obj->priv->meta_buffer = g_queue_new ();
 
@@ -1788,10 +1838,10 @@ brasero_vfs_finalize (GObject *object)
 	cobj = BRASERO_VFS (object);
 
 	if (cobj->priv->meta_buffer) {
-		BraseroMetadata *metadata;
+		BraseroMetadataInfo *metadata;
 
 		while ((metadata = g_queue_pop_head (cobj->priv->meta_buffer)) != NULL)
-			g_object_unref (metadata);
+			brasero_metadata_info_free (metadata);
 
 		g_queue_free (cobj->priv->meta_buffer);
 		cobj->priv->meta_buffer = NULL;
@@ -1803,6 +1853,18 @@ brasero_vfs_finalize (GObject *object)
 		g_hash_table_destroy (cobj->priv->types);
 		cobj->priv->types = NULL;
 	}
+
+	g_slist_foreach (cobj->priv->unprocessed_meta, (GFunc) brasero_vfs_metadata_task_free, NULL);
+	g_slist_free (cobj->priv->unprocessed_meta);
+	cobj->priv->unprocessed_meta = NULL;
+
+	g_slist_foreach (cobj->priv->processing_meta, (GFunc) brasero_vfs_metadata_task_free, NULL);
+	g_slist_free (cobj->priv->processing_meta);
+	cobj->priv->processing_meta = NULL;
+
+	g_slist_foreach (cobj->priv->metadatas, (GFunc) g_object_unref, NULL);
+	g_slist_free (cobj->priv->metadatas);
+	cobj->priv->metadatas = NULL;
 
 	g_free (cobj->priv);
 
