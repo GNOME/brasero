@@ -40,10 +40,6 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#ifdef BUILD_DBUS
-  #include "burn-dbus.h"
-#endif
-
 #include "burn-basics.h"
 #include "burn-process.h"
 #include "burn-job.h"
@@ -85,20 +81,6 @@ struct _BraseroProcessPrivate {
 
 static GObjectClass *parent_class = NULL;
 
-#ifdef BUILD_DBUS
-static void
-brasero_powermanagement (gchar *option)
-{
-	if (option == "wake") {
-	  	brasero_inhibit_suspend (_("Burning CD/DVD"));
-	}	
-	else {
-		guint appcookie = -1;
-		brasero_uninhibit_suspend (appcookie);
-	}
- 
-}
-#endif
 
 static BraseroBurnResult
 brasero_process_ask_argv (BraseroJob *job,
@@ -155,10 +137,6 @@ brasero_process_finished (BraseroProcess *self)
 	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (self);
 	BraseroProcessClass *klass = BRASERO_PROCESS_GET_CLASS (self);
 	
-#ifdef BUILD_DBUS
-	brasero_powermanagement ("sleep");
-#endif
-
 	/* check if an error went undetected */
 	if (priv->return_status) {
 		brasero_job_error (BRASERO_JOB (self),
@@ -522,10 +500,6 @@ brasero_process_start (BraseroJob *job, GError **error)
 				"LANGUAGE=C"
 				"LC_ALL=C",
 				NULL};
-
-#ifdef BUILD_DBUS
-	brasero_powermanagement ("wake");
-#endif
 
 	if (priv->pid)
 		return BRASERO_BURN_RUNNING;

@@ -37,6 +37,10 @@
 #include "burn-task-item.h"
 #include "burn-task-ctx.h"
 
+#ifdef BUILD_DBUS
+  #include "burn-dbus.h"
+#endif
+
 static void brasero_task_class_init (BraseroTaskClass *klass);
 static void brasero_task_init (BraseroTask *sp);
 static void brasero_task_finalize (GObject *object);
@@ -56,12 +60,32 @@ struct _BraseroTaskPrivate {
 	/* result of the task */
 	BraseroBurnResult retval;
 	GError *error;
+
+#ifdef BUILD_DBUS
+	gint appcookie;
+#endif
 };
 
 #define BRASERO_TASK_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_TASK, BraseroTaskPrivate))
 G_DEFINE_TYPE (BraseroTask, brasero_task, BRASERO_TYPE_TASK_CTX);
 
 static GObjectClass *parent_class = NULL;
+
+#ifdef BUILD_DBUS
+
+static void
+brasero_task_powermanagement (BraseroTask *self,
+			      gboolean wake)
+{
+	BraseroTaskPrivate *priv = BRASERO_TASK_PRIVATE (self);
+
+	if (wake)
+	  	priv->appcookie = brasero_inhibit_suspend (_("Burning CD/DVD"));
+	else
+		brasero_uninhibit_suspend (priv->appcookie); 
+}
+
+#endif
 
 void
 brasero_task_add_item (BraseroTask *task, BraseroTaskItem *item)
@@ -352,12 +376,20 @@ brasero_task_run_loop (BraseroTask *self,
 					brasero_task_clock_tick,
 					self);
 
+#ifdef BUILD_DBUS
+	brasero_task_powermanagement (self, TRUE);
+#endif
+
 	priv->loop = g_main_loop_new (NULL, FALSE);
 	BRASERO_BURN_LOG ("entering loop");
 	g_main_loop_run (priv->loop);
 	BRASERO_BURN_LOG ("got out of loop");
 	g_main_loop_unref (priv->loop);
 	priv->loop = NULL;
+
+#ifdef BUILD_DBUS
+	brasero_task_powermanagement (self, FALSE);
+#endif
 
 	if (priv->error) {
 		g_propagate_error (error, priv->error);

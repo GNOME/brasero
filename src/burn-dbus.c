@@ -20,10 +20,16 @@ brasero_uninhibit_suspend (guint cookie)
 	GError		*error = NULL;
 	DBusGConnection *conn	= NULL;
 
-	g_return_if_fail (conn != NULL);
-
 	if (cookie < 0) {
 		g_warning ("Invalid cookie");
+		return;
+	}
+
+	conn = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (!conn) {
+		g_warning ("Couldn't get a DBUS connection: %s",
+			    error->message);
+		g_error_free (error);
 		return;
 	}
 
@@ -31,6 +37,12 @@ brasero_uninhibit_suspend (guint cookie)
 					   GPM_DBUS_SERVICE,
 					   GPM_DBUS_INHIBIT_PATH,
 					   GPM_DBUS_INHIBIT_INTERFACE);
+	if (proxy == NULL) {
+		g_warning ("Could not get DBUS proxy: %s", GPM_DBUS_SERVICE);
+		dbus_g_connection_unref (conn);
+		return;
+	}
+
 	res = dbus_g_proxy_call (proxy,
 				 "UnInhibit", &error,
 	    			 G_TYPE_STRING, "Brasero",
@@ -42,11 +54,12 @@ brasero_uninhibit_suspend (guint cookie)
 			    error->message);
 		g_error_free (error);
 	}
-	g_object_unref (G_OBJECT (proxy));
 
+	g_object_unref (G_OBJECT (proxy));
+	dbus_g_connection_unref (conn);
 }
 
-DBusGConnection *
+gint
 brasero_inhibit_suspend (const char *reason)
 {
 	DBusGProxy	*proxy;
@@ -55,14 +68,14 @@ brasero_inhibit_suspend (const char *reason)
 	GError		*error	= NULL;
 	DBusGConnection *conn	= NULL;
 
-	g_return_val_if_fail (reason != NULL, NULL);
+	g_return_val_if_fail (reason != NULL, -1);
 
 	conn = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
 	if (!conn) {
 		g_warning ("Couldn't get a DBUS connection: %s",
 			    error->message);
 		g_error_free (error);
-		return NULL;
+		return -1;
 	}
 
 	proxy = dbus_g_proxy_new_for_name (conn,
@@ -72,11 +85,12 @@ brasero_inhibit_suspend (const char *reason)
 	
 	if (proxy == NULL) {
 		g_warning ("Could not get DBUS proxy: %s", GPM_DBUS_SERVICE);
-		return NULL;
+		return -1;
 	}
+
 	res = dbus_g_proxy_call (proxy,
 				 "Inhibit", &error,
-				 G_TYPE_STRING, ("Brasero"),
+				 G_TYPE_STRING, "Brasero",
 				 G_TYPE_STRING, reason,
 				 G_TYPE_INVALID,
 				 G_TYPE_UINT, &cookie,
@@ -89,8 +103,9 @@ brasero_inhibit_suspend (const char *reason)
 	}
 
 	g_object_unref (G_OBJECT (proxy));
-	return cookie;
+	dbus_g_connection_unref (conn);
 
+	return cookie;
 }
 
 #endif

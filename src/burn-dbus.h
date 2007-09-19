@@ -10,7 +10,7 @@
 void
 brasero_uninhibit_suspend (guint cookie);
 
-DBusGConnection *
+gint
 brasero_inhibit_suspend (const char *reason);
 
 #endif
