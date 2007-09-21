@@ -8,4 +8,5 @@ icons_DATA =	media-optical-blank.png		\
 		media-optical-audio-new.png	\
 		media-optical-copy.png		\
 		iso-image-new.png		\
-		iso-image-burn.png
+		iso-image-burn.png \
+		stock-tool-crop.png

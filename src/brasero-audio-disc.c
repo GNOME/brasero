@@ -326,7 +326,7 @@ static GtkActionEntry entries[] = {
 	{"Pause", GTK_STOCK_MEDIA_PAUSE, N_("Add a pause"), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
 
-	{"Split", GTK_STOCK_CUT, N_("Split"), NULL, NULL,
+	{"Split", "stock-tool-crop", N_("Split"), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_split_cb)}
 };
 
@@ -524,8 +524,8 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 
 	/* button to split tracks */
 	button = brasero_utils_make_button (NULL,
-					    GTK_STOCK_CUT,
 					    NULL,
+					    "stock-tool-crop",
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
 	gtk_widget_set_sensitive (button, FALSE);
