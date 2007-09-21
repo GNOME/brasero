@@ -1712,6 +1712,7 @@ brasero_audio_disc_remove (BraseroAudioDisc *disc,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gint64 sectors;
+	gint64 length;
 	gint64 start;
 	gint64 end;
 	gchar *uri;
@@ -1722,9 +1723,14 @@ brasero_audio_disc_remove (BraseroAudioDisc *disc,
 			    URI_COL, &uri,
 			    START_COL, &start,
 			    END_COL, &end,
+			    LENGTH_COL, &length,
 			    -1);
 
-	sectors = BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	if (uri)
+		sectors = BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	else /* gap */
+		sectors = BRASERO_DURATION_TO_SECTORS (length);
+
 	if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter)) {
 		gint64 gap_length = 0;
 
@@ -1934,10 +1940,11 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 		BraseroDiscSong *song;
 
 		song = iter->data;
+
 		brasero_audio_disc_add_uri_real (BRASERO_AUDIO_DISC (disc),
 						 song->uri,
 						 -1,
-						 BRASERO_SECTORS_TO_TIME (song->gap),
+						 song->gap,
 						 song->start,
 						 song->end,
 						 NULL);
