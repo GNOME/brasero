@@ -62,6 +62,7 @@ brasero_pref_init (BraseroPref *object)
 	priv = BRASERO_PREF_PRIVATE (object);
 
 	gtk_window_set_default_size (GTK_WINDOW (object), 500, 400);
+	gtk_window_set_title (GTK_WINDOW (object), "Brasero Plugins");
 
 	notebook = gtk_notebook_new ();
 

@@ -626,6 +626,7 @@ brasero_sum_dialog_new ()
 	BraseroSumDialog *obj;
 	
 	obj = BRASERO_SUM_DIALOG (g_object_new (BRASERO_TYPE_SUM_DIALOG, NULL));
+	gtk_window_set_title (GTK_WINDOW (obj), "Disc checking");
 	
 	return GTK_WIDGET (obj);
 }
