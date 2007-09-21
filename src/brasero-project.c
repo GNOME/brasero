@@ -340,7 +340,7 @@ brasero_project_init (BraseroProject *obj)
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
 	/* this box is for the projects where they can add their buttons */
-	obj->priv->buttons_box = gtk_hbox_new (FALSE, 6);
+	obj->priv->buttons_box = gtk_toolbar_new ();
 	gtk_widget_show (obj->priv->buttons_box);
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->buttons_box, FALSE, FALSE, 0);
 
