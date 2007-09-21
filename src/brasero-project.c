@@ -168,7 +168,7 @@ struct BraseroProjectPrivate {
 static GtkActionEntry entries_project [] = {
 	{"Save", GTK_STOCK_SAVE, NULL, NULL,
 	 N_("Save current project"), G_CALLBACK (brasero_project_save_cb)},
-	{"SaveAs", GTK_STOCK_SAVE_AS, NULL, NULL,
+	{"SaveAs", GTK_STOCK_SAVE_AS, N_("Save _As..."), NULL,
 	 N_("Save current project to a different location"), G_CALLBACK (brasero_project_save_as_cb)},
 };
 
@@ -186,13 +186,13 @@ static const gchar *description_project = {
 };
 
 static GtkActionEntry entries_actions [] = {
-	{"Add", GTK_STOCK_ADD, N_("_Add files"), NULL,
+	{"Add", GTK_STOCK_ADD, N_("_Add Files"), NULL,
 	 N_("Add files to the project"), G_CALLBACK (brasero_project_add_uris_cb)},
-	{"Delete", GTK_STOCK_REMOVE, N_("_Remove files"), NULL,
+	{"Delete", GTK_STOCK_REMOVE, N_("_Remove Files"), NULL,
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
-	{"Burn", "media-optical-burn", N_("_Burn"), NULL,
+	{"Burn", "media-optical-burn", N_("_Burn..."), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
@@ -445,7 +445,7 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->empty = 1;
 	
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn"),
+	obj->priv->burn = brasero_utils_make_button (_("Burn..."),
 						     NULL,
 						     "media-optical-burn",
 						     GTK_ICON_SIZE_LARGE_TOOLBAR);

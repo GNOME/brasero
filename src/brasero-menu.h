@@ -58,13 +58,13 @@ static GtkActionEntry entries[] = {
 	{"DiscMenu", NULL, N_("_Disc")},
 	{"HelpMenu", NULL, N_("_Help")},
 
-	{"Plugins", NULL, N_("P_lugins..."), NULL,
+	{"Plugins", NULL, N_("P_lugins"), NULL,
 	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
 
-	{"Erase", "media-optical-blank", N_("_Erase"), NULL,
+	{"Erase", "media-optical-blank", N_("_Erase..."), NULL,
 	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
 
-	{"Check", GTK_STOCK_FIND, N_("_Check Integrity"), NULL,
+	{"Check", GTK_STOCK_FIND, N_("_Check Integrity..."), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
 
 	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
