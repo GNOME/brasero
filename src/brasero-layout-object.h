@@ -28,6 +28,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "brasero-layout.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_LAYOUT_OBJECT         (brasero_layout_object_get_type ())
@@ -45,6 +47,8 @@ struct _BraseroLayoutIFace {
 					 gint *header,
 					 gint *center,
 					 gint *footer);
+	void	(*set_context)		(BraseroLayoutObject *self,
+					 BraseroLayoutType type);
 };
 
 GType brasero_layout_object_get_type ();
@@ -53,6 +57,9 @@ void brasero_layout_object_get_proportion (BraseroLayoutObject *self,
 					   gint *header,
 					   gint *center,
 					   gint *footer);
+
+void brasero_layout_object_set_context (BraseroLayoutObject *self,
+					BraseroLayoutType type);
 
 G_END_DECLS
 

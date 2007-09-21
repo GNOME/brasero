@@ -83,7 +83,8 @@ brasero_layout_add_source (BraseroLayout *layout,
 			   const gchar *icon_name,
 			   BraseroLayoutType types);
 void
-brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type);
+brasero_layout_load (BraseroLayout *layout,
+		     BraseroLayoutType type);
 
 void
 brasero_layout_register_menu (BraseroLayout *layout,

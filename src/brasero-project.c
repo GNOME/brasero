@@ -140,9 +140,9 @@ struct BraseroProjectPrivate {
 	GtkWidget *data;
 
 	/* header */
-	GtkWidget *image;
+	/*GtkWidget *image;
 	GtkWidget *label;
-	GtkWidget *subtitle;
+	GtkWidget *subtitle;*/
 	GtkWidget *add;
 	GtkWidget *remove;
 	GtkWidget *burn;
@@ -339,25 +339,10 @@ brasero_project_init (BraseroProject *obj)
 	box = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
-	obj->priv->image = gtk_image_new ();
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->image), 0.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->image, FALSE, FALSE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (box), vbox, FALSE, FALSE, 0);
-
-	obj->priv->label = gtk_label_new (NULL);
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->label, FALSE, FALSE, 0);
-
-	obj->priv->subtitle = gtk_label_new (NULL);
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->subtitle), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->subtitle, FALSE, FALSE, 0);
-
 	/* this box is for the projects where they can add their buttons */
 	obj->priv->buttons_box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (obj->priv->buttons_box);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->buttons_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->buttons_box, FALSE, FALSE, 0);
 
 	/* add button set insensitive since there are no files in the selection */
 	separator = gtk_vseparator_new ();
@@ -376,12 +361,9 @@ brasero_project_init (BraseroProject *obj)
 			  "clicked",
 			  G_CALLBACK (brasero_project_add_clicked_cb),
 			  obj);
-	gtk_widget_set_tooltip_text (obj->priv->add,
-				     _("Add selected files"));
+	gtk_widget_set_tooltip_text (obj->priv->add, _("Add selected files"));
 
-	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
-	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->add);
-	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->add, FALSE, FALSE, 0);
 
 	obj->priv->remove = brasero_utils_make_button (NULL,
 						       GTK_STOCK_REMOVE,
@@ -396,9 +378,8 @@ brasero_project_init (BraseroProject *obj)
 			  obj);
 	gtk_widget_set_tooltip_text (obj->priv->remove,
 			      _("Remove files selected in project"));
-	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
-	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->remove);
-	gtk_box_pack_start (GTK_BOX (box), alignment, FALSE, FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->remove, FALSE, FALSE, 0);
 
 	/* The two panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
@@ -1067,14 +1048,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 			       NULL);
 
 	if (audio) {
-		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->image),
-					      "media-optical-audio-new",
-					      GTK_ICON_SIZE_DND);
-		gtk_label_set_markup (GTK_LABEL (project->priv->label),
-				      _("<big><b>Audio project</b></big>"));
-		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle),
-				      _("<i>No track</i>"));
-
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		brasero_disc_fill_toolbar (project->priv->current, GTK_BOX (project->priv->buttons_box));
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
@@ -1087,14 +1060,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 							   "brasero -a");
 	}
 	else {
-		gtk_image_set_from_icon_name (GTK_IMAGE (project->priv->image),
-					      "media-optical-data-new",
-					      GTK_ICON_SIZE_DND);
-		gtk_label_set_markup (GTK_LABEL (project->priv->label),
-				      _("<big><b>Data project</b></big>"));
-		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle),
-				      _("<i>Contents of your data project</i>"));
-
 		project->priv->current = BRASERO_DISC (project->priv->data);
 		brasero_disc_fill_toolbar (project->priv->current, GTK_BOX (project->priv->buttons_box));
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
@@ -1203,18 +1168,6 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 		gtk_action_set_sensitive (action, TRUE);
 	else
 		gtk_action_set_sensitive (action, FALSE);
-
-	if (BRASERO_IS_AUDIO_DISC (disc)) {
-		gchar *string;
-
-		if (!nb_files)
-			string = g_strdup (_("<i>No track</i>"));
-		else if (nb_files)
-			string = g_strdup_printf (ngettext ("<i>%d track</i>", "<i>%d tracks</i>", nb_files), nb_files);
-
-		gtk_label_set_markup (GTK_LABEL (project->priv->subtitle), string);
-		g_free (string);
-	}
 }
 
 /**************************** manage the relations with the sources ************/

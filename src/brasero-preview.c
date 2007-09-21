@@ -100,11 +100,10 @@ brasero_preview_init (BraseroPreview *object)
 	priv = BRASERO_PREVIEW_PRIVATE (object);
 
 	priv->frame = gtk_frame_new (_(" Preview "));
-	gtk_widget_show (priv->frame);
 	gtk_container_add (GTK_CONTAINER (object), priv->frame);
 
 	priv->player = brasero_player_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (priv->player), 8);
+	gtk_container_set_border_width (GTK_CONTAINER (priv->player), 4);
 	gtk_widget_show (priv->player);
 	gtk_container_add (GTK_CONTAINER (priv->frame), priv->player);
 	g_signal_connect (priv->player,

@@ -84,3 +84,16 @@ brasero_layout_object_get_proportion (BraseroLayoutObject *self,
 					   center,
 					   footer);
 }
+
+void
+brasero_layout_object_set_context (BraseroLayoutObject *self,
+				   BraseroLayoutType type)
+{
+	BraseroLayoutObjectIFace *iface;
+
+	g_return_if_fail (BRASERO_IS_LAYOUT_OBJECT (self));
+	
+	iface = BRASERO_LAYOUT_OBJECT_GET_IFACE (self);
+	if (iface->set_context)
+		(* iface->set_context) (self, type);
+}

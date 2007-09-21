@@ -55,17 +55,6 @@ static void brasero_file_chooser_iface_uri_container_init (BraseroURIContainerIF
 static void brasero_file_chooser_iface_layout_object_init (BraseroLayoutObjectIFace *iface);
 static void brasero_file_chooser_finalize (GObject *object);
 
-static gchar **
-brasero_file_chooser_get_selected_uris (BraseroURIContainer *container);
-static gchar *
-brasero_file_chooser_get_selected_uri (BraseroURIContainer *container);
-
-static void
-brasero_file_chooser_get_proportion (BraseroLayoutObject *object,
-				     gint *header,
-				     gint *center,
-				     gint *footer);
-
 static void
 brasero_file_chooser_uri_activated_cb (GtkFileChooser *widget,
 				       BraseroFileChooser *chooser);
@@ -74,6 +63,9 @@ brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser *widget,
 					       BraseroFileChooser *chooser);
 struct BraseroFileChooserPrivate {
 	GtkWidget *chooser;
+
+	GtkFileFilter *filter_any;
+	GtkFileFilter *filter_audio;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -124,19 +116,6 @@ brasero_file_chooser_get_type ()
 	}
 
 	return type;
-}
-
-static void
-brasero_file_chooser_iface_uri_container_init (BraseroURIContainerIFace *iface)
-{
-	iface->get_selected_uri = brasero_file_chooser_get_selected_uri;
-	iface->get_selected_uris = brasero_file_chooser_get_selected_uris;
-}
-
-static void
-brasero_file_chooser_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
-{
-	iface->get_proportion = brasero_file_chooser_get_proportion;
 }
 
 static void
@@ -236,11 +215,15 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	gtk_file_filter_add_pattern (filter, "*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
 
+	obj->priv->filter_any = filter;
+
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Audio files only"));
 	gtk_file_filter_add_mime_type (filter, "audio/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
+
+	obj->priv->filter_audio = filter;
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Movies only"));
@@ -278,39 +261,6 @@ brasero_file_chooser_new ()
 	obj = g_object_new (BRASERO_TYPE_FILE_CHOOSER, NULL);
 	
 	return GTK_WIDGET (obj);
-}
-
-static gchar *
-brasero_file_chooser_get_selected_uri (BraseroURIContainer *container)
-{
-	BraseroFileChooser *chooser;
-
-	chooser = BRASERO_FILE_CHOOSER (container);
-	return gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser->priv->chooser));
-}
-
-static gchar **
-brasero_file_chooser_get_selected_uris (BraseroURIContainer *container)
-{
-	BraseroFileChooser *chooser;
-	GSList *list, *iter;
-	gchar **uris;
-	gint i;
-
-	chooser = BRASERO_FILE_CHOOSER (container);
-	list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser->priv->chooser));
-
-	uris = g_new0 (gchar*, g_slist_length (list) + 1);
-	i = 0;
-
-	for (iter = list; iter; iter = iter->next) {
-		uris [i] = iter->data;
-		i++;
-	}
-
-	g_slist_free (list);
-
-	return uris;
 }
 
 static void
@@ -357,17 +307,6 @@ brasero_file_chooser_find_pane (GtkWidget *child,
 }
 
 static void
-brasero_file_chooser_get_proportion (BraseroLayoutObject *object,
-				     gint *header,
-				     gint *center,
-				     gint *footer)
-{
-	gtk_container_foreach (GTK_CONTAINER (object),
-			       brasero_file_chooser_find_pane,
-			       footer);
-}
-
-static void
 brasero_file_chooser_uri_activated_cb (GtkFileChooser *widget,
 				       BraseroFileChooser *chooser)
 {
@@ -379,4 +318,77 @@ brasero_file_chooser_uri_selection_changed_cb (GtkFileChooser *widget,
 					       BraseroFileChooser *chooser)
 {
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (chooser));
+}
+
+static gchar *
+brasero_file_chooser_get_selected_uri (BraseroURIContainer *container)
+{
+	BraseroFileChooser *chooser;
+
+	chooser = BRASERO_FILE_CHOOSER (container);
+	return gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser->priv->chooser));
+}
+
+static gchar **
+brasero_file_chooser_get_selected_uris (BraseroURIContainer *container)
+{
+	BraseroFileChooser *chooser;
+	GSList *list, *iter;
+	gchar **uris;
+	gint i;
+
+	chooser = BRASERO_FILE_CHOOSER (container);
+	list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser->priv->chooser));
+
+	uris = g_new0 (gchar*, g_slist_length (list) + 1);
+	i = 0;
+
+	for (iter = list; iter; iter = iter->next) {
+		uris [i] = iter->data;
+		i++;
+	}
+
+	g_slist_free (list);
+
+	return uris;
+}
+
+static void
+brasero_file_chooser_iface_uri_container_init (BraseroURIContainerIFace *iface)
+{
+	iface->get_selected_uri = brasero_file_chooser_get_selected_uri;
+	iface->get_selected_uris = brasero_file_chooser_get_selected_uris;
+}
+
+static void
+brasero_file_chooser_set_context (BraseroLayoutObject *object,
+				  BraseroLayoutType type)
+{
+	BraseroFileChooser *self;
+
+	self = BRASERO_FILE_CHOOSER (object);
+	if (type == BRASERO_LAYOUT_AUDIO)
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
+					     self->priv->filter_audio);
+	else
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
+					     self->priv->filter_any);
+}
+
+static void
+brasero_file_chooser_get_proportion (BraseroLayoutObject *object,
+				     gint *header,
+				     gint *center,
+				     gint *footer)
+{
+	gtk_container_foreach (GTK_CONTAINER (object),
+			       brasero_file_chooser_find_pane,
+			       footer);
+}
+
+static void
+brasero_file_chooser_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
+{
+	iface->get_proportion = brasero_file_chooser_get_proportion;
+	iface->set_context = brasero_file_chooser_set_context;
 }

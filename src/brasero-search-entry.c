@@ -55,6 +55,7 @@
 #include <gtk/gtkdialog.h>
 
 #include "brasero-search-entry.h"
+#include "brasero-layout.h"
 
 static void brasero_search_entry_class_init (BraseroSearchEntryClass *klass);
 static void brasero_search_entry_init (BraseroSearchEntry *sp);
@@ -69,7 +70,7 @@ struct BraseroSearchEntryPrivate {
 	guint cxn;
 	gint search_id;
 
-	char *keywords;
+	gchar *keywords;
 
 	GtkWidget *documents;
 	GtkWidget *pictures;
@@ -80,8 +81,8 @@ struct BraseroSearchEntryPrivate {
 
 /* cut and pasted from nautilus */
 struct _MimeTypeGroup{
-	char *name;
-	char *mimetypes[30];
+	gchar *name;
+	gchar *mimetypes[30];
 };
 typedef struct _MimeTypeGroup MimeTypeGroup;
 const static MimeTypeGroup mime_type_groups [] = {
@@ -842,6 +843,18 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 		beagle_query_add_text (query, entry->priv->keywords);
 
 	return query;
+}
+
+void
+brasero_search_entry_set_context (BraseroSearchEntry *self,
+				  BraseroLayoutType type)
+{
+	if (type == BRASERO_LAYOUT_AUDIO) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->video), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->music), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->pictures), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->documents), FALSE);
+	}
 }
 
 #endif /*BUILD_SEARCH*/

@@ -161,12 +161,6 @@ brasero_search_get_selected_uris (BraseroURIContainer *container);
 static gchar *
 brasero_search_get_selected_uri (BraseroURIContainer *container);
 
-static void
-brasero_search_get_proportion (BraseroLayoutObject *object,
-			       gint *header,
-			       gint *center,
-			       gint *footer);
-
 #define BRASERO_SEARCH_SPACING 6
 
 GType
@@ -235,12 +229,6 @@ brasero_search_iface_uri_container_init (BraseroURIContainerIFace *iface)
 }
 
 static void
-brasero_search_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
-{
-	iface->get_proportion = brasero_search_get_proportion;
-}
-
-static void
 brasero_search_get_proportion (BraseroLayoutObject *object,
 			       gint *header,
 			       gint *center,
@@ -251,6 +239,23 @@ brasero_search_get_proportion (BraseroLayoutObject *object,
 	gtk_widget_size_request (BRASERO_SEARCH (object)->priv->filters,
 				 &requisition);
 	*footer = requisition.height + BRASERO_SEARCH_SPACING;
+}
+
+static void
+brasero_search_set_context (BraseroLayoutObject *object,
+			    BraseroLayoutType type)
+{
+	BraseroSearch *self;
+
+	self = BRASERO_SEARCH (object);
+	brasero_search_entry_set_context (BRASERO_SEARCH_ENTRY (self->priv->entry), type);
+}
+
+static void
+brasero_search_iface_layout_object_init (BraseroLayoutObjectIFace *iface)
+{
+	iface->get_proportion = brasero_search_get_proportion;
+	iface->set_context = brasero_search_set_context;
 }
 
 static void

@@ -546,7 +546,7 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	gtk_widget_show (alignment);
 
 	gtk_container_add (GTK_CONTAINER (alignment), button);
-	gtk_box_pack_end (GTK_BOX (toolbar), alignment, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (toolbar), alignment, FALSE, FALSE, 0);
 
 	/* button to add pauses in between tracks */
 	button = brasero_utils_make_button (NULL,
@@ -572,7 +572,7 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	gtk_widget_show (alignment);
 
 	gtk_container_add (GTK_CONTAINER (alignment), button);
-	gtk_box_pack_end (GTK_BOX (toolbar), alignment, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (toolbar), alignment, FALSE, FALSE, 0);
 }
 
 static void
@@ -973,24 +973,16 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 		}
 		else {
-			GdkPixbuf *pixbuf;
-
 			gtk_list_store_insert_after (GTK_LIST_STORE (model),
 						     &gap_iter,
 						     iter);
-
-			pixbuf = gtk_widget_render_icon (GTK_WIDGET (disc),
-							 GTK_STOCK_MEDIA_PAUSE,
-							 GTK_ICON_SIZE_MENU,
-							 NULL);
 
 			gtk_list_store_set (GTK_LIST_STORE (model), &gap_iter,
 					    NAME_COL, _("<i><b>Pause</b></i>"),
 					    SONG_COL, FALSE,
 					    //BACKGROUND_COL, "green yellow",
-					    ICON_COL, pixbuf,
+					    ICON_COL, GTK_STOCK_MEDIA_PAUSE,
 					    -1);
-			g_object_unref (pixbuf);
 		}
 
 		size = brasero_utils_get_time_string (gap, TRUE, FALSE);

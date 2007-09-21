@@ -1055,32 +1055,29 @@ static void
 brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 {
 	BraseroDataDisc *data_disc;
-	GtkWidget *separator;
 	GtkWidget *button;
 
 	data_disc = BRASERO_DATA_DISC (disc);
 
-	/* Filter buttons */
-	data_disc->priv->filter_button = brasero_utils_make_button (NULL,
-								    GTK_STOCK_UNDELETE,
-								    NULL,
-								    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (data_disc->priv->filter_button);
-	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
-	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
-
-	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
+	/* New folder */
+	button = brasero_utils_make_button (NULL,
+					    NULL,
+					    "folder-new",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	g_signal_connect (G_OBJECT (button),
 			  "clicked",
-			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
+			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
 			  data_disc);
-	gtk_box_pack_end (GTK_BOX (toolbar),
-			  data_disc->priv->filter_button,
+	gtk_widget_set_tooltip_text (button,
+			      _("Create a new empty folder"));
+	gtk_box_pack_start (GTK_BOX (toolbar),
+			  button,
 			  FALSE,
 			  FALSE,
 			  0);
-
-	gtk_widget_set_tooltip_text (data_disc->priv->filter_button,
-				     _("Display the files filtered from the project"));
 
 	/* Import session */
 	button = gtk_toggle_button_new ();
@@ -1097,7 +1094,7 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			  disc);
 	gtk_widget_set_tooltip_text (button,
 			      _("Import session"));
-	gtk_box_pack_end (GTK_BOX (toolbar),
+	gtk_box_pack_start (GTK_BOX (toolbar),
 			  button,
 			  FALSE,
 			  FALSE,
@@ -1105,34 +1102,27 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 
 	data_disc->priv->session_button = button;
 
-	/* seperator */
-	separator = gtk_vseparator_new ();
-	gtk_widget_show (separator);
-	gtk_box_pack_end (GTK_BOX (toolbar),
-			  separator,
+	/* Filter buttons */
+	data_disc->priv->filter_button = brasero_utils_make_button (NULL,
+								    GTK_STOCK_UNDELETE,
+								    NULL,
+								    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (data_disc->priv->filter_button);
+	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
+	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
+
+	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
+			  "clicked",
+			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
+			  data_disc);
+	gtk_box_pack_start (GTK_BOX (toolbar),
+			  data_disc->priv->filter_button,
 			  FALSE,
 			  FALSE,
 			  0);
 
-	/* New folder */
-	button = brasero_utils_make_button (NULL,
-					    NULL,
-					    "folder-new",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
-			  data_disc);
-	gtk_widget_set_tooltip_text (button,
-			      _("Create a new empty folder"));
-	gtk_box_pack_end (GTK_BOX (toolbar),
-			  button,
-			  FALSE,
-			  FALSE,
-			  0);
+	gtk_widget_set_tooltip_text (data_disc->priv->filter_button,
+				     _("Display the files filtered from the project"));
 }
 
 static void

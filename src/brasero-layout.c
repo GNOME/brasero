@@ -374,16 +374,40 @@ brasero_layout_add_pressed_cb (GtkWidget *project,
 	}
 }
 
+static BraseroLayoutObject *
+brasero_layout_item_get_object (BraseroLayoutItem *item)
+{
+	BraseroLayoutObject *source;
+	GList *children;
+	GList *child;
+
+	source = NULL;
+	if (!item || !GTK_IS_CONTAINER (item->widget))
+		return NULL;
+
+	children = gtk_container_get_children (GTK_CONTAINER (item->widget));
+	for (child = children; child; child = child->next) {
+		if (BRASERO_IS_LAYOUT_OBJECT (child->data)) {
+			source = child->data;
+			break;
+		}
+	}
+	g_list_free (children);
+
+	if (!source || !BRASERO_IS_LAYOUT_OBJECT (source)) 
+		return NULL;
+
+	return source;
+}
+
 static void
 brasero_layout_size_reallocate (BraseroLayout *layout)
 {
 	gint pr_header, pr_center, pr_footer;
 	gint header, center, footer;
+	BraseroLayoutObject *source;
 	GtkWidget *alignment;
 	GtkWidget *project;
-	GtkWidget *source;
-	GList *children;
-	GList *child;
 
 	project = gtk_paned_get_child1 (GTK_PANED (layout));
 	if (!project)
@@ -394,21 +418,8 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 					      &pr_center,
 					      &pr_footer);
 
-	source = NULL;
-	if (!layout->priv->active_item
-	||  !GTK_IS_CONTAINER (layout->priv->active_item->widget))
-		return;
-
-	children = gtk_container_get_children (GTK_CONTAINER (layout->priv->active_item->widget));
-	for (child = children; child; child = child->next) {
-		if (BRASERO_IS_LAYOUT_OBJECT (child->data)) {
-			source = child->data;
-			break;
-		}
-	}
-	g_list_free (children);
-
-	if (!source || !BRASERO_IS_LAYOUT_OBJECT (source)) 
+	source = brasero_layout_item_get_object (layout->priv->active_item);
+	if (!source);
 		return;
 
 	header = 0;
@@ -575,7 +586,7 @@ brasero_layout_add_preview (BraseroLayout *layout,
 			  layout->priv->preview_pane,
 			  FALSE,
 			  FALSE,
-			  0);
+			  8);
 
 	/* add menu entry in display */
 	accelerator = g_strdup ("F11");
@@ -865,8 +876,8 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 		gtk_widget_hide (GTK_WIDGET (layout));
 		return;
 	}
-	else
-		gtk_widget_show (GTK_WIDGET (layout));
+
+	gtk_widget_show (GTK_WIDGET (layout));
 
 	/* takes care of other panes */
 	if (type == BRASERO_LAYOUT_AUDIO)
@@ -909,9 +920,15 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	layout->priv->type = type;
 	for (iter = layout->priv->items; iter; iter = iter->next) {
 		GtkAction *action;
+		BraseroLayoutObject *object;
 		BraseroLayoutItem *item = NULL;
 
 	    	item = iter->data;
+
+		/* tell all the object what context we are in */
+		object = brasero_layout_item_get_object (item);
+		if (object)
+			brasero_layout_object_set_context (object, type);
 
 		action = gtk_action_group_get_action (layout->priv->action_group, item->id);
 		if (!(item->types & type)) {

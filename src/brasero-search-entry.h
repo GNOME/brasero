@@ -37,6 +37,8 @@
 
 #include <beagle/beagle-query.h>
 
+#include "brasero-layout.h"
+
 G_BEGIN_DECLS
 #define BRASERO_TYPE_SEARCH_ENTRY         (brasero_search_entry_get_type ())
 #define BRASERO_SEARCH_ENTRY(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_SEARCH_ENTRY, BraseroSearchEntry))
@@ -44,6 +46,7 @@ G_BEGIN_DECLS
 #define BRASERO_IS_SEARCH_ENTRY(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_SEARCH_ENTRY))
 #define BRASERO_IS_SEARCH_ENTRY_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), BRASERO_TYPE_SEARCH_ENTRY))
 #define BRASERO_SEARCH_ENTRY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_SEARCH_ENTRY, BraseroSearchEntryClass))
+
 typedef struct BraseroSearchEntryPrivate BraseroSearchEntryPrivate;
 
 typedef struct {
@@ -63,6 +66,10 @@ GtkWidget *brasero_search_entry_new ();
 
 BeagleQuery *
 brasero_search_entry_get_query (BraseroSearchEntry *entry);
+
+void
+brasero_search_entry_set_context (BraseroSearchEntry *entry,
+				  BraseroLayoutType type);
 
 #endif				/* SEARCH_ENTRY_H */
 

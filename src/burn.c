@@ -52,6 +52,10 @@
 #include "burn-volume.h"
 #include "brasero-ncb.h"
 
+#ifdef BUILD_DBUS
+  #include "burn-dbus.h"
+#endif
+
 G_DEFINE_TYPE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
 
 typedef struct _BraseroBurnPrivate BraseroBurnPrivate;
@@ -67,6 +71,10 @@ struct _BraseroBurnPrivate {
 
 	NautilusBurnDrive *src;
 	NautilusBurnDrive *dest;
+
+#ifdef BUILD_DBUS
+	gint appcookie;
+#endif
 
 	guint src_locked:1;
 	guint dest_locked:1;
@@ -127,6 +135,21 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
 static GObjectClass *parent_class = NULL;
 
+#ifdef BUILD_DBUS
+
+static void
+brasero_burn_powermanagement (BraseroBurn *self,
+			      gboolean wake)
+{
+	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (self);
+
+	if (wake)
+	  	priv->appcookie = brasero_inhibit_suspend (_("Burning CD/DVD"));
+	else
+		brasero_uninhibit_suspend (priv->appcookie); 
+}
+
+#endif
 
 BraseroBurn *
 brasero_burn_new ()
@@ -1908,9 +1931,18 @@ brasero_burn_check (BraseroBurn *self,
 	g_object_ref (session);
 	priv->session = session;
 
+#ifdef BUILD_DBUS
+	brasero_burn_powermanagement (self, TRUE);
+#endif
+
 	result = brasero_burn_check_real (self, error);
 
 	brasero_burn_unlock_medias (self);
+
+
+#ifdef BUILD_DBUS
+	brasero_burn_powermanagement (self, FALSE);
+#endif
 
 	/* no need to check the result of the comparison, it's set in session */
 	priv->session = NULL;
@@ -2023,6 +2055,10 @@ brasero_burn_record (BraseroBurn *burn,
 	g_object_ref (session);
 	priv->session = session;
 
+#ifdef BUILD_DBUS
+	brasero_burn_powermanagement (burn, TRUE);
+#endif
+
 	/* say to the whole world we started */
 	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_PREPARING);
 
@@ -2090,6 +2126,7 @@ brasero_burn_record (BraseroBurn *burn,
 	}
 
 end:
+
 	brasero_burn_unlock_medias (burn);
 
 	if (error && (*error) == NULL
@@ -2117,6 +2154,10 @@ end:
 	}
 	else
 		BRASERO_BURN_DEBUG (burn, "Session successfully finished");
+
+#ifdef BUILD_DBUS
+	brasero_burn_powermanagement (burn, FALSE);
+#endif
 
 	/* release session object */
 	g_object_unref (priv->session);
@@ -2173,6 +2214,10 @@ brasero_burn_blank (BraseroBurn *burn,
 	g_object_ref (session);
 	priv->session = session;
 
+#ifdef BUILD_DBUS
+	brasero_burn_powermanagement (burn, TRUE);
+#endif
+
 	/* we wait for the insertion of a media and lock it */
 	result = brasero_burn_lock_rewritable_media (burn, error);
 	if (result != BRASERO_BURN_OK)
@@ -2208,6 +2253,11 @@ end:
 
 	if (result == BRASERO_BURN_OK)
 		brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
+
+
+#ifdef BUILD_DBUS
+	brasero_burn_powermanagement (burn, FALSE);
+#endif
 
 	/* release session */
 	g_object_unref (priv->session);
