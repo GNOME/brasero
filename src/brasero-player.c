@@ -92,6 +92,7 @@ struct BraseroPlayerPrivate {
 
 	gchar *uri;
 	gint64 start;
+	gint64 end;
 	gint64 length;
 };
 
@@ -143,8 +144,9 @@ brasero_player_no_multimedia_stream (BraseroPlayer *player)
 
 	gtk_widget_hide (player->priv->notebook);
 
-	player->priv->length = -1;
+	player->priv->length = 0;
 	player->priv->start = 0;
+	player->priv->end = 0;
 }
 
 static void
@@ -258,7 +260,7 @@ brasero_player_update_position (BraseroPlayer *player)
 		return;
 
 	adjustment = gtk_range_get_adjustment (GTK_RANGE (player->priv->progress));
-	len_string = brasero_utils_get_time_string (player->priv->length, FALSE, FALSE);
+	len_string = brasero_utils_get_time_string (player->priv->end - player->priv->start, FALSE, FALSE);
 
 	value = gtk_range_get_value (GTK_RANGE (player->priv->progress));
 	pos_string = brasero_utils_get_time_string (value, FALSE, FALSE);
@@ -293,7 +295,7 @@ brasero_player_set_length (BraseroPlayer *player)
 	if (player->priv->progress)
 		gtk_range_set_range (GTK_RANGE (player->priv->progress),
 				     0.0,
-				     (gdouble) player->priv->length);
+				     (gdouble) player->priv->end - player->priv->start);
 
 	brasero_player_update_position (player);
 }
@@ -890,8 +892,10 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 		return;
 	}
 
-	if (player->priv->length <= 0)
-		player->priv->length = metadata->len;
+	if (player->priv->end <= 0)
+		player->priv->end = metadata->len;
+
+	player->priv->length = metadata->len;
 
 	/* only reached for audio/video */
 	brasero_player_update_info_real (player,
@@ -899,7 +903,6 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 					 metadata->title);
 
 	player->priv->state = BACON_STATE_READY;
-
 	g_signal_emit (player,
 		       brasero_player_signals [READY_SIGNAL],
 		       0);
@@ -941,6 +944,32 @@ brasero_player_get_uri (BraseroPlayer *player)
 }
 
 void
+brasero_player_set_boundaries (BraseroPlayer *player, 
+			       gint64 start,
+			       gint64 end)
+{
+	if (start <= 0)
+		player->priv->start = 0;
+	else
+		player->priv->start = start;
+
+	if (end <= 0)
+		player->priv->end = player->priv->length;
+	else
+		player->priv->end = end;
+
+	if (player->priv->progress) {
+		brasero_player_set_length (player);
+		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0);
+	}
+
+	if (player->priv->bacon)
+		brasero_player_bacon_set_boundaries (BRASERO_PLAYER_BACON (player->priv->bacon),
+						     player->priv->start,
+						     player->priv->end);
+}
+
+void
 brasero_player_set_uri (BraseroPlayer *player,
 			const gchar *uri)
 {
@@ -955,17 +984,17 @@ brasero_player_set_uri (BraseroPlayer *player,
 		if (!player->priv->controls)
 			return;
 
-		/* just stop the pipeline and reset to 0 */
-		if (player->priv->state == BACON_STATE_PLAYING)
-			gtk_button_clicked (GTK_BUTTON (player->priv->button));
+		if (player->priv->progress) {
+			brasero_player_bacon_set_uri (BRASERO_PLAYER_BACON (player->priv->bacon), uri);
+			brasero_player_set_boundaries (player, -1, -1);
 
-		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0);
-		brasero_player_bacon_set_pos (BRASERO_PLAYER_BACON (player->priv->bacon),
-					      player->priv->start);
+			/* the existence of progress is the surest way to know
+			 * if that uri was successfully loaded */
+			g_signal_emit (player,
+				       brasero_player_signals [READY_SIGNAL],
+				       0);
+		}
 
-		g_signal_emit (player,
-			       brasero_player_signals [READY_SIGNAL],
-			       0);
 		return;
 	}
 
@@ -974,6 +1003,8 @@ brasero_player_set_uri (BraseroPlayer *player,
 
 	player->priv->uri = g_strdup (uri);
 	player->priv->length = 0;
+	player->priv->start = 0;
+	player->priv->end = 0;
 
 	if (player->priv->vfs)
 		brasero_vfs_cancel (player->priv->vfs, player);
@@ -1030,21 +1061,6 @@ brasero_player_set_uri (BraseroPlayer *player,
 	player->priv->set_uri_id = g_timeout_add (400,
 						  (GSourceFunc) brasero_player_set_uri_timeout,
 						  player);
-}
-
-void
-brasero_player_set_boundaries (BraseroPlayer *player, 
-			       gint64 start,
-			       gint64 end)
-{
-	if (player->priv->bacon)
-		brasero_player_bacon_set_boundaries (BRASERO_PLAYER_BACON (player->priv->bacon),
-						     start,
-						     end);
-
-	player->priv->length = end - start;
-	player->priv->start = start;
-	brasero_player_set_length (player);
 }
 
 static void
@@ -1120,7 +1136,7 @@ brasero_player_get_length (BraseroPlayer *self)
 	if (!self->priv->bacon)
 		return -1;
 
-	return self->priv->length;
+	return self->priv->end - self->priv->start;
 }
 
 gint64
@@ -1255,6 +1271,7 @@ brasero_player_init (BraseroPlayer *obj)
 			    0);
 
 	obj->priv->notebook = gtk_notebook_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->notebook), 6);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->notebook);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj->priv->notebook), FALSE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj->priv->notebook), FALSE);

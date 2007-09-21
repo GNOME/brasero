@@ -66,8 +66,8 @@ brasero_preview_source_selection_changed_cb (BraseroURIContainer *source,
 					     BraseroPreview *self)
 {
 	gchar *uri;
-	gint64 end;
-	gint64 start;
+	gint64 end = -1;
+	gint64 start = -1;
 	BraseroPreviewPrivate *priv;
 
 	priv = BRASERO_PREVIEW_PRIVATE (self);

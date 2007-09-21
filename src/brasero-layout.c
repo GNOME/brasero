@@ -419,7 +419,7 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 					      &pr_footer);
 
 	source = brasero_layout_item_get_object (layout->priv->active_item);
-	if (!source);
+	if (!source)
 		return;
 
 	header = 0;
@@ -586,7 +586,7 @@ brasero_layout_add_preview (BraseroLayout *layout,
 			  layout->priv->preview_pane,
 			  FALSE,
 			  FALSE,
-			  8);
+			  0);
 
 	/* add menu entry in display */
 	accelerator = g_strdup ("F11");

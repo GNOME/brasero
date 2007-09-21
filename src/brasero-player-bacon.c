@@ -358,13 +358,6 @@ brasero_player_bacon_size_allocate (GtkWidget *widget,
 }
 
 static void
-brasero_player_bacon_init (BraseroPlayerBacon *obj)
-{
-	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (obj), GTK_DOUBLE_BUFFERED);
-	obj->priv = g_new0 (BraseroPlayerBaconPrivate, 1);
-}
-
-static void
 brasero_player_bacon_destroy (GtkObject *obj)
 {
 	BraseroPlayerBacon *cobj;
@@ -476,72 +469,6 @@ brasero_player_bacon_clear_pipe (BraseroPlayerBacon *bacon)
 	}
 }
 
-static void
-brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
-{
-	GstElement *video_sink, *audio_sink;
-	GstBus *bus = NULL;
-	GConfClient *client;
-	gdouble volume;
-
-	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
-	if (!bacon->priv->pipe) {
-		g_warning ("Pipe creation error : can't create pipe.\n");
-		return;
-	}
-
-	audio_sink = gst_element_factory_make ("gconfaudiosink", NULL);
-	if (audio_sink)
-		g_object_set (G_OBJECT (bacon->priv->pipe),
-			      "audio-sink", audio_sink,
-			      NULL);
-	else
-		goto error;
-
-	video_sink = gst_element_factory_make ("gconfvideosink", NULL);
-	if (video_sink) {
-		GstElement *element;
-
-		g_object_set (G_OBJECT (bacon->priv->pipe),
-			      "video-sink", video_sink,
-			      NULL);
-
-		element = gst_bin_get_by_interface (GST_BIN (video_sink),
-						    GST_TYPE_X_OVERLAY);
-		if (element && GST_IS_X_OVERLAY (element))
-			bacon->priv->xoverlay = GST_X_OVERLAY (element);
-	}
-
-	bus = gst_pipeline_get_bus (GST_PIPELINE (bacon->priv->pipe));
-	gst_bus_add_watch (bus,
-			   (GstBusFunc) brasero_player_bacon_bus_messages,
-			   bacon);
-	gst_bus_set_sync_handler (bus,
-				  (GstBusSyncHandler) brasero_player_bacon_bus_messages_handler,
-				  bacon);
-	gst_object_unref (bus);
-
-	/* set saved volume */
-	client = gconf_client_get_default ();
-	volume = gconf_client_get_int (client, GCONF_PLAYER_VOLUME, NULL);
-	volume = CLAMP (volume, 0, 500);
-	g_object_set (bacon->priv->pipe,
-		      "volume", (gdouble) volume / 100.0,
-		      NULL);
-	g_object_unref (client);
-
-	return;
-
-error:
-	BRASERO_BURN_LOG ("player creation error");
-	brasero_player_bacon_clear_pipe (bacon);
-	g_signal_emit (bacon,
-		       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
-		       0,
-		       BACON_STATE_ERROR);
-	gtk_widget_queue_resize (GTK_WIDGET (bacon));
-}
-
 void
 brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 {
@@ -550,19 +477,19 @@ brasero_player_bacon_set_uri (BraseroPlayerBacon *bacon, const gchar *uri)
 		bacon->priv->uri = NULL;
 	}
 
-	if (!bacon->priv->pipe)
-		brasero_player_bacon_setup_pipe (bacon);
-
 	if (uri) {
 		bacon->priv->uri = g_strdup (uri);
 
 		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
+		bacon->priv->state = GST_STATE_NULL;
+
 		g_object_set (G_OBJECT (bacon->priv->pipe),
 			      "uri", uri,
 			      NULL);
+
 		gst_element_set_state (bacon->priv->pipe, GST_STATE_PAUSED);
 	}
-	else
+	else if (bacon->priv->pipe)
 		gst_element_set_state (bacon->priv->pipe, GST_STATE_NULL);
 }
 
@@ -742,4 +669,79 @@ brasero_player_bacon_get_pos (BraseroPlayerBacon *bacon,
 	}
 
 	return TRUE;
+}
+
+static void
+brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
+{
+	GstElement *video_sink, *audio_sink;
+	GstBus *bus = NULL;
+	GConfClient *client;
+	gdouble volume;
+
+	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
+	if (!bacon->priv->pipe) {
+		g_warning ("Pipe creation error : can't create pipe.\n");
+		return;
+	}
+
+	audio_sink = gst_element_factory_make ("gconfaudiosink", NULL);
+	if (audio_sink)
+		g_object_set (G_OBJECT (bacon->priv->pipe),
+			      "audio-sink", audio_sink,
+			      NULL);
+	else
+		goto error;
+
+	video_sink = gst_element_factory_make ("gconfvideosink", NULL);
+	if (video_sink) {
+		GstElement *element;
+
+		g_object_set (G_OBJECT (bacon->priv->pipe),
+			      "video-sink", video_sink,
+			      NULL);
+
+		element = gst_bin_get_by_interface (GST_BIN (video_sink),
+						    GST_TYPE_X_OVERLAY);
+		if (element && GST_IS_X_OVERLAY (element))
+			bacon->priv->xoverlay = GST_X_OVERLAY (element);
+	}
+
+	bus = gst_pipeline_get_bus (GST_PIPELINE (bacon->priv->pipe));
+	gst_bus_set_sync_handler (bus,
+				  (GstBusSyncHandler) brasero_player_bacon_bus_messages_handler,
+				  bacon);
+	gst_bus_add_watch (bus,
+			   (GstBusFunc) brasero_player_bacon_bus_messages,
+			   bacon);
+	gst_object_unref (bus);
+
+	/* set saved volume */
+	client = gconf_client_get_default ();
+	volume = gconf_client_get_int (client, GCONF_PLAYER_VOLUME, NULL);
+	volume = CLAMP (volume, 0, 500);
+	g_object_set (bacon->priv->pipe,
+		      "volume", (gdouble) volume / 100.0,
+		      NULL);
+	g_object_unref (client);
+
+	return;
+
+error:
+	BRASERO_BURN_LOG ("player creation error");
+	brasero_player_bacon_clear_pipe (bacon);
+	g_signal_emit (bacon,
+		       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
+		       0,
+		       BACON_STATE_ERROR);
+	gtk_widget_queue_resize (GTK_WIDGET (bacon));
+}
+
+static void
+brasero_player_bacon_init (BraseroPlayerBacon *obj)
+{
+	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (obj), GTK_DOUBLE_BUFFERED);
+
+	obj->priv = g_new0 (BraseroPlayerBaconPrivate, 1);
+	brasero_player_bacon_setup_pipe (obj);
 }

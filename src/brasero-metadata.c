@@ -156,7 +156,8 @@ brasero_metadata_cancel (BraseroMetadata *self)
 	if (priv->loop && g_main_loop_is_running (priv->loop))
 		g_main_loop_quit (priv->loop);
 
-	gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
+	if (priv->pipeline)
+		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
 }
 
 static gint
@@ -629,6 +630,9 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
+	brasero_metadata_info_free (priv->info);
+	priv->info = NULL;
+
 	if (priv->silence) {
 		g_free (priv->silence);
 		priv->silence = NULL;
@@ -638,6 +642,9 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 		g_source_remove (priv->progress_id);
 		priv->progress_id = 0;
 	}
+
+	priv->info = g_new0 (BraseroMetadataInfo, 1);
+	priv->info->uri = g_strdup (uri);
 
 	if (priv->pipeline){
 		gst_element_set_state (priv->pipeline, GST_STATE_NULL);
@@ -651,10 +658,6 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 
 	if (!gst_uri_is_valid (uri))
 		return FALSE;
-
-	brasero_metadata_info_free (priv->info);
-	priv->info = g_new0 (BraseroMetadataInfo, 1);
-	priv->info->uri = g_strdup (uri);
 
 	/* set up the pipeline according to flags */
 	if (priv->flags & BRASERO_METADATA_FLAG_SILENCES) {
