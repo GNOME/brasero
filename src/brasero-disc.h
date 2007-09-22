@@ -28,7 +28,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkbox.h>
+#include <gtk/gtktoolbar.h>
 
 #include <nautilus-burn-drive.h>
 
@@ -128,7 +128,7 @@ struct _BraseroDiscIface {
 	void			(*reset)		(BraseroDisc *disc);
 
 	void			(*fill_toolbar)		(BraseroDisc *disc,
-							 GtkBox *box);
+							 GtkToolbar *box);
 
 	void			(*set_drive)		(BraseroDisc *disc,
 							 NautilusBurnDrive *drive);
@@ -137,7 +137,7 @@ struct _BraseroDiscIface {
 GType brasero_disc_get_type ();
 
 void
-brasero_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar);
+brasero_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar);
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);

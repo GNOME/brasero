@@ -318,68 +318,23 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *center,
 				gint *footer)
 {
-	*footer = BRASERO_PROJECT (object)->priv->size_display->allocation.height +
-		  BRASERO_PROJECT_SPACING +
-		  BRASERO_PROJECT_SIZE_WIDGET_BORDER * 2;
+	*footer = BRASERO_PROJECT (object)->priv->size_display->allocation.height + 
+		  BRASERO_PROJECT_SPACING * 2 + BRASERO_PROJECT_SIZE_WIDGET_BORDER * 2;
 }
 
 static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkWidget *alignment;
-	GtkWidget *separator;
 	GtkWidget *vbox;
 	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
-	gtk_box_set_spacing (GTK_BOX (obj), BRASERO_PROJECT_SPACING);
-
 	
-	/* header */
-	box = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
-
-	/* this box is for the projects where they can add their buttons */
+	/* this toolbar is for the projects where they can add their buttons */
 	obj->priv->buttons_box = gtk_toolbar_new ();
 	gtk_widget_show (obj->priv->buttons_box);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->buttons_box, FALSE, FALSE, 0);
-
-	/* add button set insensitive since there are no files in the selection */
-	separator = gtk_vseparator_new ();
-	gtk_widget_show (separator);
-	gtk_box_pack_start (GTK_BOX (box), separator, FALSE, FALSE, 0);
-
-	obj->priv->add = brasero_utils_make_button (NULL,
-						    GTK_STOCK_ADD,
-						    NULL,
-						    GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_relief (GTK_BUTTON (obj->priv->add), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->add), FALSE);
-	gtk_widget_set_sensitive (obj->priv->add, FALSE);
-
-	g_signal_connect (obj->priv->add,
-			  "clicked",
-			  G_CALLBACK (brasero_project_add_clicked_cb),
-			  obj);
-	gtk_widget_set_tooltip_text (obj->priv->add, _("Add selected files"));
-
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->add, FALSE, FALSE, 0);
-
-	obj->priv->remove = brasero_utils_make_button (NULL,
-						       GTK_STOCK_REMOVE,
-						       NULL,
-						       GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_relief (GTK_BUTTON (obj->priv->remove), GTK_RELIEF_NONE);
-	gtk_widget_set_sensitive (obj->priv->remove, FALSE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->remove), FALSE);
-	g_signal_connect (obj->priv->remove,
-			  "clicked",
-			  G_CALLBACK (brasero_project_remove_clicked_cb),
-			  obj);
-	gtk_widget_set_tooltip_text (obj->priv->remove,
-			      _("Remove files selected in project"));
-
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->remove, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (obj), obj->priv->buttons_box, FALSE, FALSE, 0);
 
 	/* The two panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
@@ -422,12 +377,16 @@ brasero_project_init (BraseroProject *obj)
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
 				   obj->priv->audio, NULL);
 
-	gtk_box_pack_start (GTK_BOX (obj), obj->priv->discs, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (obj),
+			    obj->priv->discs,
+			    TRUE,
+			    TRUE,
+			    0);
 
 	/* bottom */
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
-	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, BRASERO_PROJECT_SPACING);
 
 	/* size widget */
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -597,7 +556,8 @@ end:
 
 	action = gtk_action_group_get_action (project->priv->action_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
-	gtk_widget_set_sensitive (project->priv->add, sensitive);
+	if (project->priv->add)
+		gtk_widget_set_sensitive (project->priv->add, sensitive);
 
 	/* we need to make sure there is actually something to burn */
 	sensitive = (project->priv->empty == FALSE &&
@@ -1017,6 +977,62 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 }
 
 static void
+brasero_project_fill_toolbar (BraseroProject *self)
+{
+	GtkWidget *separator;
+	GtkToolItem *item;
+
+	/* add button set insensitive since there are no files in the selection */
+	self->priv->add = brasero_utils_make_button (NULL,
+						     GTK_STOCK_ADD,
+						     NULL,
+						     GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_relief (GTK_BUTTON (self->priv->add), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (self->priv->add), FALSE);
+	gtk_widget_show (self->priv->add);
+	g_signal_connect (self->priv->add,
+			  "clicked",
+			  G_CALLBACK (brasero_project_add_clicked_cb),
+			  self);
+	gtk_widget_set_tooltip_text (self->priv->add, _("Add selected files"));
+
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), self->priv->add);
+	gtk_toolbar_insert (GTK_TOOLBAR (self->priv->buttons_box), item, 0);
+
+	self->priv->remove = brasero_utils_make_button (NULL,
+						       GTK_STOCK_REMOVE,
+						       NULL,
+						       GTK_ICON_SIZE_BUTTON);
+	gtk_widget_set_sensitive (self->priv->remove, FALSE);
+	gtk_button_set_relief (GTK_BUTTON (self->priv->remove), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (self->priv->remove), FALSE);
+	gtk_widget_show (self->priv->remove);
+	g_signal_connect (self->priv->remove,
+			  "clicked",
+			  G_CALLBACK (brasero_project_remove_clicked_cb),
+			  self);
+	gtk_widget_set_tooltip_text (self->priv->remove,
+			      _("Remove files selected in project"));
+
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), self->priv->remove);
+	gtk_toolbar_insert (GTK_TOOLBAR (self->priv->buttons_box), item, 0);
+
+	separator = gtk_vseparator_new ();
+	gtk_widget_show (separator);
+
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), separator);
+	gtk_toolbar_insert (GTK_TOOLBAR (self->priv->buttons_box), item, 0);
+
+	brasero_disc_fill_toolbar (self->priv->current, GTK_TOOLBAR (self->priv->buttons_box));
+}
+
+static void
 brasero_project_switch (BraseroProject *project, gboolean audio)
 {
 	GtkAction *action;
@@ -1030,7 +1046,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 					  0);
 
 	gtk_action_group_set_visible (project->priv->action_group, TRUE);
-	gtk_widget_set_sensitive (project->priv->add, TRUE);
 
 	if (project->priv->current)
 		brasero_disc_reset (project->priv->current);
@@ -1042,14 +1057,15 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 	client = gconf_client_get_default ();
 
-	/* update the buttons from the "toolbar" */
+	/* rempove the buttons from the "toolbar" */
 	gtk_container_foreach (GTK_CONTAINER (project->priv->buttons_box),
 			       (GtkCallback) gtk_widget_destroy,
 			       NULL);
 
 	if (audio) {
 		project->priv->current = BRASERO_DISC (project->priv->audio);
-		brasero_disc_fill_toolbar (project->priv->current, GTK_BOX (project->priv->buttons_box));
+		brasero_project_fill_toolbar (project);
+
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
 
@@ -1061,7 +1077,8 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	}
 	else {
 		project->priv->current = BRASERO_DISC (project->priv->data);
-		brasero_disc_fill_toolbar (project->priv->current, GTK_BOX (project->priv->buttons_box));
+		brasero_project_fill_toolbar (project);
+
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
 
@@ -1119,7 +1136,9 @@ brasero_project_set_none (BraseroProject *project)
 
 	/* update button */
 	gtk_action_group_set_visible (project->priv->action_group, FALSE);
-	gtk_widget_set_sensitive (project->priv->add, FALSE);
+
+	if (project->priv->add)
+		gtk_widget_set_sensitive (project->priv->add, FALSE);
 
 	/* update the menus */
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
@@ -1145,7 +1164,9 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 	gtk_action_set_sensitive (action, sensitive);
 	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
 	gtk_action_set_sensitive (action, sensitive);
-	gtk_widget_set_sensitive (project->priv->remove, sensitive);
+
+	if (project->priv->remove)
+		gtk_widget_set_sensitive (project->priv->remove, sensitive);
 
 	/* the following button/action states depend on the project size too */
 	sensitive = (project->priv->oversized == 0 &&
@@ -1160,7 +1181,8 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 
 	action = gtk_action_group_get_action (project->priv->action_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
-	gtk_widget_set_sensitive (project->priv->add, sensitive);
+	if (project->priv->add)
+		gtk_widget_set_sensitive (project->priv->add, sensitive);
 
 	/* the state of the following depends on the existence of an opened project */
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");

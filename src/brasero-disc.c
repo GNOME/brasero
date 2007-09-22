@@ -25,6 +25,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gtk/gtktoolbar.h>
+
 #include <nautilus-burn-drive.h>
 
 #include "brasero-marshal.h"
@@ -287,7 +289,7 @@ brasero_disc_get_boundaries (BraseroDisc *disc,
 }
 
 void
-brasero_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
+brasero_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
 {
 	BraseroDiscIface *iface;
 

@@ -57,6 +57,7 @@
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
+#include <gtk/gtktoolbar.h>
 
 #include <eggtreemultidnd.h>
 
@@ -307,7 +308,7 @@ brasero_data_disc_reset (BraseroDisc *disc);
 
 static void
 brasero_data_disc_fill_toolbar (BraseroDisc *disc,
-				GtkBox *toolbar);
+				GtkToolbar *toolbar);
 
 static BraseroDiscResult
 brasero_data_disc_load_track (BraseroDisc *disc,
@@ -1052,32 +1053,34 @@ brasero_data_disc_notify_user (BraseroDataDisc *disc,
 }
 
 static void
-brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
+brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
 {
 	BraseroDataDisc *data_disc;
+	GtkToolItem *item;
 	GtkWidget *button;
 
 	data_disc = BRASERO_DATA_DISC (disc);
 
-	/* New folder */
-	button = brasero_utils_make_button (NULL,
-					    NULL,
-					    "folder-new",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	g_signal_connect (G_OBJECT (button),
+	/* Filter buttons */
+	data_disc->priv->filter_button = brasero_utils_make_button (NULL,
+								    GTK_STOCK_UNDELETE,
+								    NULL,
+								    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (data_disc->priv->filter_button);
+	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
+	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
+
+	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
 			  "clicked",
-			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
+			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
 			  data_disc);
-	gtk_widget_set_tooltip_text (button,
-			      _("Create a new empty folder"));
-	gtk_box_pack_start (GTK_BOX (toolbar),
-			  button,
-			  FALSE,
-			  FALSE,
-			  0);
+	gtk_widget_set_tooltip_text (data_disc->priv->filter_button,
+				     _("Display the files filtered from the project"));
+
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), data_disc->priv->filter_button);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
 
 	/* Import session */
 	button = gtk_toggle_button_new ();
@@ -1094,35 +1097,33 @@ brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 			  disc);
 	gtk_widget_set_tooltip_text (button,
 			      _("Import session"));
-	gtk_box_pack_start (GTK_BOX (toolbar),
-			  button,
-			  FALSE,
-			  FALSE,
-			  0);
+
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), button);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
 
 	data_disc->priv->session_button = button;
 
-	/* Filter buttons */
-	data_disc->priv->filter_button = brasero_utils_make_button (NULL,
-								    GTK_STOCK_UNDELETE,
-								    NULL,
-								    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (data_disc->priv->filter_button);
-	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
-	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
-
-	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
+	/* New folder */
+	button = brasero_utils_make_button (NULL,
+					    NULL,
+					    "folder-new",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	g_signal_connect (G_OBJECT (button),
 			  "clicked",
-			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
+			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
 			  data_disc);
-	gtk_box_pack_start (GTK_BOX (toolbar),
-			  data_disc->priv->filter_button,
-			  FALSE,
-			  FALSE,
-			  0);
+	gtk_widget_set_tooltip_text (button,
+			      _("Create a new empty folder"));
 
-	gtk_widget_set_tooltip_text (data_disc->priv->filter_button,
-				     _("Display the files filtered from the project"));
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), button);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
 }
 
 static void

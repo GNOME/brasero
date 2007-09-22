@@ -56,6 +56,7 @@
 #include <gtk/gtkuimanager.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtktoolbar.h>
 
 #include <libgnomeui/libgnomeui.h>
 
@@ -120,7 +121,7 @@ static void
 brasero_audio_disc_reset (BraseroDisc *disc);
 
 static void
-brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar);
+brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar);
 
 static gboolean
 brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
@@ -514,48 +515,22 @@ brasero_audio_disc_build_context_menu (BraseroAudioDisc *disc)
 }
 
 static void
-brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
+brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
 {
 	GtkWidget *button;
-	GtkWidget *alignment;
+	GtkToolItem *item;
 	BraseroAudioDisc *audio_disc;
 
 	audio_disc = BRASERO_AUDIO_DISC (disc);
-
-	/* button to split tracks */
-	button = brasero_utils_make_button (NULL,
-					    NULL,
-					    "stock-tool-crop",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	gtk_widget_set_sensitive (button, FALSE);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_audio_disc_split_clicked_cb),
-			  audio_disc);
-	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (audio_disc->priv->tree)),
-			  "changed",
-			  G_CALLBACK (brasero_audio_disc_selection_changed),
-			  button);
-	gtk_widget_set_tooltip_text (button,
-				     _("split the track"));
-	gtk_widget_show (button);
-	
-	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
-	gtk_widget_show (alignment);
-
-	gtk_container_add (GTK_CONTAINER (alignment), button);
-	gtk_box_pack_start (GTK_BOX (toolbar), alignment, FALSE, FALSE, 0);
 
 	/* button to add pauses in between tracks */
 	button = brasero_utils_make_button (NULL,
 					    GTK_STOCK_MEDIA_PAUSE,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
 	gtk_widget_set_sensitive (button, FALSE);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
 	g_signal_connect (G_OBJECT (button),
 			  "clicked",
 			  G_CALLBACK (brasero_audio_disc_pause_clicked_cb),
@@ -567,12 +542,36 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkBox *toolbar)
 	gtk_widget_set_tooltip_text (button,
 			      _("Add a 2 second pause after the track"));
 	gtk_widget_show (button);
-	
-	alignment = gtk_alignment_new (1.0, 0.5, 0.0, 0.0);
-	gtk_widget_show (alignment);
 
-	gtk_container_add (GTK_CONTAINER (alignment), button);
-	gtk_box_pack_start (GTK_BOX (toolbar), alignment, FALSE, FALSE, 0);
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), button);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
+
+	/* button to split tracks */
+	button = brasero_utils_make_button (NULL,
+					    NULL,
+					    "stock-tool-crop",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	gtk_widget_set_sensitive (button, FALSE);
+	g_signal_connect (G_OBJECT (button),
+			  "clicked",
+			  G_CALLBACK (brasero_audio_disc_split_clicked_cb),
+			  audio_disc);
+	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (audio_disc->priv->tree)),
+			  "changed",
+			  G_CALLBACK (brasero_audio_disc_selection_changed),
+			  button);
+	gtk_widget_set_tooltip_text (button,
+				     _("split the track"));
+	gtk_widget_show (button);
+
+	item = gtk_tool_item_new ();
+	gtk_widget_show (GTK_WIDGET (item));
+	gtk_container_add (GTK_CONTAINER (item), button);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
 }
 
 static void
@@ -584,8 +583,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	GtkWidget *scroll;
 
 	obj->priv = g_new0 (BraseroAudioDiscPrivate, 1);
-	gtk_box_set_spacing (GTK_BOX (obj), 8);
-
+	gtk_box_set_spacing (GTK_BOX (obj), 0);
 
 	/* notebook to display information about how to use the tree */
 	obj->priv->notebook = brasero_utils_get_use_info_notebook ();

@@ -179,7 +179,6 @@ brasero_layout_init (BraseroLayout *obj)
 
 	obj->priv->main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->main_box);
-	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->main_box), 6);
 	gtk_widget_show (obj->priv->main_box);
 
 	obj->priv->notebook = gtk_notebook_new ();
@@ -409,6 +408,8 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 	GtkWidget *alignment;
 	GtkWidget *project;
 
+	alignment = layout->priv->main_box->parent;
+
 	project = gtk_paned_get_child1 (GTK_PANED (layout));
 	if (!project)
 		return;
@@ -430,7 +431,6 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 					      &center,
 					      &footer);
 
-	alignment = layout->priv->main_box->parent;
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
 				   0.0,	
 				   pr_footer - footer,
@@ -469,7 +469,6 @@ brasero_layout_add_project (BraseroLayout *layout,
 			  G_CALLBACK (brasero_layout_project_size_allocated_cb),
 			  layout);
 
-	gtk_container_set_border_width (GTK_CONTAINER (project), 6);
 	gtk_paned_pack1 (GTK_PANED (layout), project, TRUE, FALSE);
 }
 
@@ -481,20 +480,26 @@ _make_pane (GtkWidget *widget,
 	    const gchar *subtitle,
 	    gboolean fill)
 {
+	GtkWidget *alignment;
 	GtkWidget *retval;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *image;
 
-	retval = gtk_vbox_new (FALSE, 6);
+	retval = gtk_vbox_new (FALSE, 1);
 	gtk_widget_show (retval);
 
 	gtk_box_pack_end (GTK_BOX (retval), widget, fill, fill, 0);
 
+	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 0, 0);
+	gtk_widget_show (alignment);
+	gtk_box_pack_start (GTK_BOX (retval), alignment, FALSE, FALSE, 0);
+
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (retval), hbox, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (alignment), hbox);
 
 	if (stock_id)
 		image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_LARGE_TOOLBAR);
