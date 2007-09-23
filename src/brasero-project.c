@@ -156,13 +156,14 @@ struct BraseroProjectPrivate {
 	BraseroBurnFlag flags;
 	BraseroURIContainer *current_source;
 
-	gint is_burning:1;
+	guint is_burning:1;
 
-    	gint burnt:1;
+    	guint burnt:1;
 
-	gint empty:1;
-	gint oversized:1;
-	gint ask_overburn:1;
+	guint empty:1;
+	guint has_focus:1;
+	guint oversized:1;
+	guint ask_overburn:1;
 };
 
 static GtkActionEntry entries_project [] = {
@@ -323,6 +324,58 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 }
 
 static void
+brasero_project_set_remove_button_state (BraseroProject *project)
+{
+	GtkAction *action;
+	gboolean sensitive;
+
+	sensitive = (project->priv->has_focus && !project->priv->empty);
+
+	action = gtk_action_group_get_action (project->priv->action_group, "Delete");
+	gtk_action_set_sensitive (action, sensitive);
+
+	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
+	gtk_action_set_sensitive (action, sensitive);
+
+	/* take care of the state of remove button */
+	if (!project->priv->remove)
+		return;
+
+	gtk_widget_set_sensitive (project->priv->remove, sensitive);
+}
+
+static void
+brasero_project_set_add_button_state (BraseroProject *project)
+{
+	GtkAction *action;
+	gboolean sensitive;
+
+	sensitive = (!project->priv->has_focus && !project->priv->oversized);
+
+	action = gtk_action_group_get_action (project->priv->action_group, "Add");
+	gtk_action_set_sensitive (action, sensitive);
+
+	if (!project->priv->add)
+		return;
+
+	gtk_widget_set_sensitive (project->priv->add, sensitive);
+}
+
+static void
+brasero_project_focus_changed_cb (GtkContainer *container,
+				  GtkWidget *widget,
+				  gpointer NULL_data)
+{
+	BraseroProject *project;
+
+	project = BRASERO_PROJECT (container);
+	project->priv->has_focus = (widget != NULL);
+
+	brasero_project_set_remove_button_state (project);
+	brasero_project_set_add_button_state (project);
+}
+
+static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkWidget *alignment;
@@ -330,7 +383,12 @@ brasero_project_init (BraseroProject *obj)
 	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroProjectPrivate, 1);
-	
+
+	g_signal_connect (G_OBJECT (obj),
+			  "set-focus-child",
+			  G_CALLBACK (brasero_project_focus_changed_cb),
+			  NULL);
+
 	/* this toolbar is for the projects where they can add their buttons */
 	obj->priv->buttons_box = gtk_toolbar_new ();
 	gtk_widget_show (obj->priv->buttons_box);
@@ -610,7 +668,6 @@ static void
 brasero_project_selection_changed_cb (BraseroDisc *disc,
 				      BraseroProject *project)
 {
-	/* FIXME! from here we can control the add button state depending on the source URI */
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 }
 
@@ -1158,15 +1215,8 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 
 	project->priv->empty = (nb_files == 0);
 
-	sensitive = (project->priv->empty == FALSE);
-
-	action = gtk_action_group_get_action (project->priv->action_group, "Delete");
-	gtk_action_set_sensitive (action, sensitive);
-	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
-	gtk_action_set_sensitive (action, sensitive);
-
-	if (project->priv->remove)
-		gtk_widget_set_sensitive (project->priv->remove, sensitive);
+	brasero_project_set_remove_button_state (project);
+	brasero_project_set_add_button_state (project);
 
 	/* the following button/action states depend on the project size too */
 	sensitive = (project->priv->oversized == 0 &&
@@ -1175,14 +1225,6 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 	action = gtk_action_group_get_action (project->priv->action_group, "Burn");
 	gtk_action_set_sensitive (action, sensitive);
 	gtk_widget_set_sensitive (project->priv->burn, sensitive);
-
-	/* the following button/action states depend on the project size only */
-	sensitive = (project->priv->oversized == FALSE);
-
-	action = gtk_action_group_get_action (project->priv->action_group, "Add");
-	gtk_action_set_sensitive (action, sensitive);
-	if (project->priv->add)
-		gtk_widget_set_sensitive (project->priv->add, sensitive);
 
 	/* the state of the following depends on the existence of an opened project */
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
@@ -1228,6 +1270,7 @@ brasero_project_source_uri_selected_cb (BraseroURIContainer *container,
 					BraseroProject *project)
 {
 	project->priv->current_source = container;
+	brasero_project_set_add_button_state (project);
 }
 
 void

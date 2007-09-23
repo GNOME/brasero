@@ -129,6 +129,23 @@ brasero_disc_base_init (gpointer g_class)
 }
 
 BraseroDiscResult
+brasero_disc_can_add_uri (BraseroDisc *disc,
+			  const gchar *uri)
+{
+	BraseroDiscIface *iface;
+
+	g_return_val_if_fail (BRASERO_IS_DISC (disc), BRASERO_DISC_ERROR_UNKNOWN);
+	g_return_val_if_fail (uri != NULL, BRASERO_DISC_ERROR_UNKNOWN);
+	
+	iface = BRASERO_DISC_GET_IFACE (disc);
+	if (iface->can_add_uri)
+		return (* iface->can_add_uri) (disc, uri);
+
+	/* default to OK */
+	return BRASERO_DISC_OK;
+}
+
+BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc,
 		      const gchar *uri)
 {

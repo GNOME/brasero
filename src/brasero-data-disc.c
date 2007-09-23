@@ -296,6 +296,9 @@ typedef struct _BraseroFile BraseroFile;
 #endif /* BUILD_INOTIFY */
 
 static BraseroDiscResult
+brasero_data_disc_can_add_uri (BraseroDisc *disc, const gchar *uri);
+
+static BraseroDiscResult
 brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri);
 
 static void
@@ -737,6 +740,7 @@ brasero_data_disc_class_init (BraseroDataDiscClass *klass)
 static void
 brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 {
+	iface->can_add_uri = brasero_data_disc_can_add_uri;
 	iface->add_uri = brasero_data_disc_add_uri;
 	iface->delete_selected = brasero_data_disc_delete_selected;
 	iface->clear = brasero_data_disc_clear;
@@ -751,10 +755,11 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->set_drive = brasero_data_disc_set_drive;
 }
 
-static void brasero_data_disc_get_property (GObject * object,
-					    guint prop_id,
-					    GValue * value,
-					    GParamSpec * pspec)
+static void
+brasero_data_disc_get_property (GObject * object,
+				guint prop_id,
+				GValue * value,
+				GParamSpec * pspec)
 {
 	BraseroDataDisc *disc;
 
@@ -770,10 +775,11 @@ static void brasero_data_disc_get_property (GObject * object,
 	}
 }
 
-static void brasero_data_disc_set_property (GObject * object,
-					    guint prop_id,
-					    const GValue * value,
-					    GParamSpec * pspec)
+static void
+brasero_data_disc_set_property (GObject * object,
+				guint prop_id,
+				const GValue * value,
+				GParamSpec * pspec)
 {
 	BraseroDataDisc *disc;
 
@@ -7914,6 +7920,79 @@ brasero_data_disc_add_uri (BraseroDisc *disc, const gchar *uri)
 	if (parent)
 		gtk_tree_path_free (parent);
 
+	return success;
+}
+
+BraseroDiscResult
+brasero_data_disc_can_add_uri (BraseroDisc *disc,
+			       const gchar *uri)
+{
+	gchar *name;
+	GList *selected;
+	gchar *utf8_name;
+	GnomeVFSURI *vfs_uri;
+	gchar *unescaped_name;
+	BraseroDiscResult success;
+	GtkTreePath *parent = NULL;
+	BraseroDataDisc *data_disc;
+	GtkTreeSelection *selection;
+
+	data_disc = BRASERO_DATA_DISC (disc);
+
+	if (data_disc->priv->is_loading)
+		return BRASERO_DISC_LOADING;
+
+	if (data_disc->priv->reject_files)
+		return BRASERO_DISC_NOT_READY;
+
+	/* g_path_get_basename is not comfortable with uri related
+	 * to the root directory so check that before */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+
+	unescaped_name = gnome_vfs_unescape_string_for_display (name);
+	g_free (name);
+	name = unescaped_name;
+
+	utf8_name = brasero_utils_validate_utf8 (name);
+	if (utf8_name) {
+		g_free (name);
+		name = utf8_name;
+	}
+
+	if (!name)
+		return BRASERO_DISC_ERROR_FILE_NOT_FOUND;
+
+	/* create the path */
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (data_disc->priv->tree));
+	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+	if (g_list_length (selected) == 1) {
+		GtkTreePath *treepath;
+		gboolean is_directory;
+		GtkTreeIter iter;
+
+		treepath = selected->data;
+		gtk_tree_model_get_iter (data_disc->priv->sort, &iter, treepath);
+		gtk_tree_model_get (data_disc->priv->sort, &iter,
+				    ISDIR_COL, &is_directory,
+				    -1);
+
+		if (is_directory)
+			parent = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (data_disc->priv->sort),
+										 treepath);
+	}
+	g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected);
+
+	/* We make sure there isn't the same file in the directory
+	 * and it is joliet compatible */
+	success = brasero_data_disc_tree_check_name_validity (data_disc,
+							      name,
+							      parent,
+							      FALSE);
+
+	g_free (name);
 	return success;
 }
 

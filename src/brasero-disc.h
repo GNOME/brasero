@@ -115,6 +115,8 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*set_session_contents)	(BraseroDisc *disc,
 							 BraseroBurnSession *session);
 
+	BraseroDiscResult	(*can_add_uri)		(BraseroDisc *disc,
+							 const gchar *uri);
 	BraseroDiscResult	(*add_uri)		(BraseroDisc *disc,
 							 const gchar *uri);
 
@@ -141,6 +143,9 @@ brasero_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar);
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
+
+BraseroDiscResult
+brasero_disc_can_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
 
 gchar *
 brasero_disc_get_selected_uri (BraseroDisc *disc);
