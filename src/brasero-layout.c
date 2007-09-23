@@ -104,12 +104,12 @@ static GObjectClass *parent_class = NULL;
 
 #define BRASERO_LAYOUT_PREVIEW_ID	"Viewer"
 #define BRASERO_LAYOUT_PREVIEW_NAME	N_("Preview")
-#define BRASERO_LAYOUT_PREVIEW_MENU	N_("Preview")
+#define BRASERO_LAYOUT_PREVIEW_MENU	N_("P_review")
 #define BRASERO_LAYOUT_PREVIEW_TOOLTIP	N_("Display video, audio and image preview")
 #define BRASERO_LAYOUT_PREVIEW_ICON	GTK_STOCK_FILE
 
 #define BRASERO_LAYOUT_NONE_ID		"EmptyView"
-#define BRASERO_LAYOUT_NONE_MENU	N_("None")
+#define BRASERO_LAYOUT_NONE_MENU	N_("_No Selection Pane")
 #define BRASERO_LAYOUT_NONE_TOOLTIP	N_("Show the project only")
 #define BRASERO_LAYOUT_NONE_ICON	NULL
 

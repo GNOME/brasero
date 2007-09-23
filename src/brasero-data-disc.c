@@ -564,13 +564,13 @@ static GObjectClass *parent_class = NULL;
 
 static GtkActionEntry entries [] = {
 	{"ContextualMenu", NULL, N_("Menu")},
-	{"Open", GTK_STOCK_OPEN, N_("Open"), NULL, NULL,
+	{"Open", GTK_STOCK_OPEN, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_data_disc_open_activated_cb)},
-	{"Rename", NULL, N_("Rename"), NULL, NULL,
+	{"Rename", NULL, N_("R_ename..."), NULL, NULL,
 	 G_CALLBACK (brasero_data_disc_rename_activated_cb)},
-	{"Delete", GTK_STOCK_REMOVE, N_("Remove"), NULL, NULL,
+	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_data_disc_delete_activated_cb)},
-	{"Paste", GTK_STOCK_PASTE, N_("Paste"), NULL, NULL,
+	{"Paste", GTK_STOCK_PASTE, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_data_disc_paste_activated_cb)},
 };
 

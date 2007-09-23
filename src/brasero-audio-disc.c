@@ -312,22 +312,22 @@ enum {
 static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
 
-	{"Open", GTK_STOCK_OPEN, N_("Open"), NULL, NULL,
+	{"Open", GTK_STOCK_OPEN, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_open_activated_cb)},
 
-	{"Edit", GTK_STOCK_PROPERTIES, N_("Edit information"), NULL, NULL,
+	{"Edit", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
 
-	{"Delete", GTK_STOCK_REMOVE, N_("Remove"), NULL, NULL,
+	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
 
-	{"Paste", GTK_STOCK_PASTE, N_("Paste"), NULL, NULL,
+	{"Paste", GTK_STOCK_PASTE, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
 
-	{"Pause", GTK_STOCK_MEDIA_PAUSE, N_("Add a pause"), NULL, NULL,
+	{"Pause", GTK_STOCK_MEDIA_PAUSE, N_("I_nsert a Pause"), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
 
-	{"Split", "stock-tool-crop", N_("Split"), NULL, NULL,
+	{"Split", "stock-tool-crop", N_("_Split..."), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_split_cb)}
 };
 
@@ -336,12 +336,13 @@ static const gchar *description = {
 	"<popup action='ContextMenu'>"
 		"<menuitem action='Open'/>"
 		"<menuitem action='Delete'/>"
-		"<menuitem action='Edit'/>"
 		"<separator/>"
 		"<menuitem action='Paste'/>"
 		"<separator/>"
 		"<menuitem action='Pause'/>"
 		"<menuitem action='Split'/>"
+		"<separator/>"
+		"<menuitem action='Edit'/>"
 	"</popup>"
 	"</ui>"
 };
