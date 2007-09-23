@@ -631,6 +631,11 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	GtkWidget *toplevel;
 	GtkAction *action;
 
+	if ((manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
+	||   manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
+	&&  !brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
+		return;
+
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status), 1);

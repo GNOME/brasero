@@ -140,9 +140,6 @@ struct BraseroProjectPrivate {
 	GtkWidget *data;
 
 	/* header */
-	/*GtkWidget *image;
-	GtkWidget *label;
-	GtkWidget *subtitle;*/
 	GtkWidget *add;
 	GtkWidget *remove;
 	GtkWidget *burn;
@@ -334,9 +331,6 @@ brasero_project_set_remove_button_state (BraseroProject *project)
 	action = gtk_action_group_get_action (project->priv->action_group, "Delete");
 	gtk_action_set_sensitive (action, sensitive);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
-	gtk_action_set_sensitive (action, sensitive);
-
 	/* take care of the state of remove button */
 	if (!project->priv->remove)
 		return;
@@ -422,7 +416,7 @@ brasero_project_init (BraseroProject *obj)
 			  "flags-changed",
 			  G_CALLBACK (brasero_project_flags_changed_cb),
 			  obj);
-	  g_signal_connect (G_OBJECT (obj->priv->data),
+	g_signal_connect (G_OBJECT (obj->priv->data),
 			  "selection-changed",
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
@@ -539,7 +533,7 @@ brasero_project_overburn_dialog (BraseroProject *project)
 					 GTK_DIALOG_DESTROY_WITH_PARENT|
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
+					 GTK_BUTTONS_YES_NO,
 					 _("The size of the project is too large for the disc:"));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Project size"));
@@ -547,11 +541,6 @@ brasero_project_overburn_dialog (BraseroProject *project)
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("Would you like to activate overburn (otherwise you must delete files) ?"
 						    "\nNOTE: This option might cause failure."));
-
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				GTK_STOCK_NO, GTK_RESPONSE_NO,
-				GTK_STOCK_YES, GTK_RESPONSE_YES,
-				NULL);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -1180,6 +1169,44 @@ brasero_project_set_data (BraseroProject *project, GSList *uris)
 	}
 }
 
+gboolean
+brasero_project_confirm_switch (BraseroProject *project)
+{
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	GtkResponseType answer;
+
+	if (project->priv->empty)
+		return TRUE;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT |
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_CANCEL,
+					 _("Do you really want to create a new project and discard the current one?"));
+
+	
+	gtk_window_set_title (GTK_WINDOW (dialog), _("New project"));
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("If you choose to create a new project, "
+						    "all files already added will be discarded. "
+						    "Note that files will not be deleted from their own location, "
+						    "just no longer listed here."));
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Discard Project"), GTK_RESPONSE_OK);
+
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (answer != GTK_RESPONSE_OK)
+		return FALSE;
+
+	return TRUE;
+}
+
 void
 brasero_project_set_none (BraseroProject *project)
 {
@@ -1217,6 +1244,9 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 
 	brasero_project_set_remove_button_state (project);
 	brasero_project_set_add_button_state (project);
+
+	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
+	gtk_action_set_sensitive (action, (project->priv->empty == FALSE));
 
 	/* the following button/action states depend on the project size too */
 	sensitive = (project->priv->oversized == 0 &&
@@ -1315,6 +1345,37 @@ brasero_project_remove_selected_uris_cb (GtkAction *action, BraseroProject *proj
 static void
 brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 {
+	if (!project->priv->empty) {
+		GtkWidget *dialog;
+		GtkWidget *toplevel;
+		GtkResponseType answer;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_CANCEL,
+						 _("Do you really want to empty the current project?"));
+
+		
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Empty project"));
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("Emptying a project will remove all files already added. "
+							    "All the work will be lost. "
+							    "Note that files will not be deleted from their own location, "
+							    "just no longer listed here."));
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Empty Project"), GTK_RESPONSE_OK);
+
+		answer = gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		if (answer != GTK_RESPONSE_OK)
+			return;
+	}
+
 	brasero_disc_reset (BRASERO_DISC (project->priv->current));
 	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 }

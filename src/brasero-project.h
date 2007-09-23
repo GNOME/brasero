@@ -61,6 +61,9 @@ typedef struct {
 GType brasero_project_get_type ();
 GtkWidget *brasero_project_new ();
 
+gboolean
+brasero_project_confirm_switch (BraseroProject *project);
+
 void
 brasero_project_set_audio (BraseroProject *project, GSList *uris);
 void
