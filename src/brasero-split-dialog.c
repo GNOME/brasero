@@ -771,7 +771,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
 
-	button = brasero_utils_make_button ("Cut",
+	button = brasero_utils_make_button (_("Cut"),
 					    NULL,
 					    "stock-tool-crop",
 					    GTK_ICON_SIZE_BUTTON);
@@ -841,7 +841,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	
-	button = brasero_utils_make_button ("Cut",
+	button = brasero_utils_make_button (_("Cut"),
 					    NULL,
 					    "stock-tool-crop",
 					    GTK_ICON_SIZE_BUTTON);
