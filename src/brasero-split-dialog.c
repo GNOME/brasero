@@ -164,7 +164,7 @@ brasero_split_dialog_size_error (BraseroSplitDialog *self)
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_QUESTION,
 					  GTK_BUTTONS_YES_NO,
-					  _("The size of the new track is shorted than 6 seconds and will be padded."));
+					  _("The size of the new track is shorter than 6 seconds and will be padded."));
 	gtk_window_set_title (GTK_WINDOW (message), _("size error"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Do you want to split it nevertheless?"));
