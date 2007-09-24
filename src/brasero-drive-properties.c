@@ -234,6 +234,26 @@ brasero_drive_properties_set_flags (BraseroDriveProperties *self,
 						   compulsory);
 }
 
+static gchar *
+brasero_drive_properties_format_disc_speed (BraseroMedia media,
+					    gint64 rate)
+{
+	gchar *text;
+
+	if (media & BRASERO_MEDIUM_DVD)
+		text = g_strdup_printf (_("%d x (DVD)"),
+					BRASERO_RATE_TO_SPEED_DVD (rate));
+	else if (media & BRASERO_MEDIUM_CD)
+		text = g_strdup_printf (_("%d x (CD)"),
+					BRASERO_RATE_TO_SPEED_CD (rate));
+	else
+		text = g_strdup_printf (_("%d x (DVD) %d x (CD)"),
+					BRASERO_RATE_TO_SPEED_DVD (rate),
+					BRASERO_RATE_TO_SPEED_CD (rate));
+
+	return text;
+}
+
 void
 brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 				    NautilusBurnDrive *drive,
@@ -248,6 +268,8 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	gchar *header;
 	gint64 rate;
 	gint64 step;
+	gchar *max_text;
+	gchar *text;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
 
@@ -268,28 +290,22 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 		step = DVD_RATE;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->speed));
+
+	max_text = g_strdup_printf (_("Max speed"));
+
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-			    PROP_TEXT, _("Max speed"),
+			    PROP_TEXT, max_text,
 			    PROP_RATE, max_rate,
 			    -1);
+	g_free (max_text);
+
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->speed), 0);
 
-	for (rate = max_rate; rate > step; rate -= step * 2) {
+	for (rate = max_rate - step; rate > step; rate -= step * 2) {
 		GtkTreeIter iter;
-		gchar *text;
 
-		if (media & BRASERO_MEDIUM_DVD)
-			text = g_strdup_printf (_("%d x (DVD)"),
-						BRASERO_RATE_TO_SPEED_DVD (rate));
-		else if (media & BRASERO_MEDIUM_CD)
-			text = g_strdup_printf (_("%d x (CD)"),
-						BRASERO_RATE_TO_SPEED_CD (rate));
-		else
-			text = g_strdup_printf (_("%d x (DVD) %d x (CD)"),
-						BRASERO_RATE_TO_SPEED_DVD (rate),
-						BRASERO_RATE_TO_SPEED_CD (rate));
-
+		text = brasero_drive_properties_format_disc_speed (media, rate);
 		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 				    PROP_TEXT, text,

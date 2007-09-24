@@ -480,7 +480,7 @@ brasero_task_start_items (BraseroTask *self,
 			/* "fake mode" to get size. Forgive the jobs that cannot
 			 * retrieve the size for one track. Just deactivate and
 			 * go on with the next.
-			 * NOTE: aftere this result the job is no longer active
+			 * NOTE: after this result the job is no longer active
 			 */
 			continue;
 		}

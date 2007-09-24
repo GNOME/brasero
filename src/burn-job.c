@@ -441,6 +441,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	BRASERO_BURN_LOG ("Volume size %lli, output size %lli", vol_size, output_size);
 
+	/* it's fine here to check size in bytes */
 	if (output_size > vol_size) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
