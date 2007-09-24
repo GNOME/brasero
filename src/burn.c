@@ -943,7 +943,8 @@ brasero_burn_wait_for_dest_media (BraseroBurn *burn,
 				  GError **error)
 {
 	gchar *failure;
-	gint64 media_size;
+	gint64 img_sectors;
+	gint64 media_sectors;
 	BraseroBurnError berror;
 	BraseroMediumInfo media;
 	BraseroBurnResult result;
@@ -1045,7 +1046,7 @@ again:
 			 * one exception if we don't have enough space left on
 			 * the disc.
 			 * NOTE: if MERGE or APPEND flag is on then don't check
-			 */
+			 * NOTE: it's safe to compare size in bytes here */
 			NCB_MEDIA_GET_FREE_SPACE (drive, &size, NULL);
 			if (!(flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
 			&&    size > burn->priv->image_size
@@ -1106,17 +1107,36 @@ again:
 		}
 	}
 
-	/* we check that the image will fit on the media */
+	/* we check that the image will fit on the media 
+	 * NOTE: we must use the sectors for comparison */
 	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-		NCB_MEDIA_GET_FREE_SPACE (drive, &media_size, NULL);
+		NCB_MEDIA_GET_FREE_SPACE (drive, NULL, &media_sectors);
 	else
-		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
+		NCB_MEDIA_GET_CAPACITY (drive, NULL, &media_sectors);
+
+	if (source->type == BRASERO_TRACK_SOURCE_DATA)
+		img_sectors = burn->priv->image_size / 2048;
+	else if (source->type == BRASERO_TRACK_SOURCE_AUDIO)
+		img_sectors = burn->priv->image_size / 2352;
+	else if (source->type == BRASERO_TRACK_SOURCE_IMAGE) {
+		if (source->format == BRASERO_IMAGE_FORMAT_CLONE)
+			img_sectors = burn->priv->image_size / 2448;
+		else if (source->format == BRASERO_IMAGE_FORMAT_CUE
+		     ||  source->format == BRASERO_IMAGE_FORMAT_CDRDAO)
+			img_sectors = burn->priv->image_size / 2352;
+		else
+			img_sectors = burn->priv->image_size / 2048;
+	}
+	else if (source->type == BRASERO_TRACK_SOURCE_DISC)
+		NCB_MEDIA_GET_DATA_SIZE (source->contents.drive.disc, NULL, &img_sectors);
+	else
+		img_sectors = 0;
 
 	/* NOTE: this is useful only for reloads since otherwise we still don't
 	 * know what's the image size yet */
 	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
 	&&   (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
-	&&    media_size < burn->priv->image_size) {
+	&&    media_sectors < img_sectors) {
 		/* This is a recoverable error so try to ask the user again */
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_MEDIA_SPACE;
@@ -1497,6 +1517,7 @@ brasero_burn_check_volume_free_space (BraseroBurn *burn,
 	}
 	gnome_vfs_uri_unref (uri);
 
+	/* it's safe here to check with sizes */
 	if (burn->priv->image_size > vol_size) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -1824,6 +1845,7 @@ brasero_burn_imager_get_track (BraseroBurn *burn,
 			       const gchar *output,
 			       GError **error)
 {
+	gint64 img_sectors;
 	GError *ret_error = NULL;
 	BraseroBurnResult result;
 
@@ -1842,13 +1864,31 @@ brasero_burn_imager_get_track (BraseroBurn *burn,
 	}
 
 	if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
-		gint64 media_size;
+		gint64 media_sectors;
 
-		NCB_MEDIA_GET_CAPACITY (drive, &media_size, NULL);
+		NCB_MEDIA_GET_CAPACITY (drive, NULL, &media_sectors);
+
+		if (source->type == BRASERO_TRACK_SOURCE_DATA)
+			img_sectors = burn->priv->image_size / 2048;
+		else if (source->type == BRASERO_TRACK_SOURCE_AUDIO)
+			img_sectors = burn->priv->image_size / 2352;
+		else if (source->type == BRASERO_TRACK_SOURCE_IMAGE) {
+			if (source->format == BRASERO_IMAGE_FORMAT_CLONE)
+				img_sectors = burn->priv->image_size / 2448;
+			else if (source->format == BRASERO_IMAGE_FORMAT_CUE
+			     ||  source->format == BRASERO_IMAGE_FORMAT_CDRDAO)
+				img_sectors = burn->priv->image_size / 2352;
+			else
+				img_sectors = burn->priv->image_size / 2048;
+		}
+		else if (source->type == BRASERO_TRACK_SOURCE_DISC)
+			NCB_MEDIA_GET_DATA_SIZE (source->contents.drive.disc, NULL, &img_sectors);
+		else
+			img_sectors = 0;
 
 		/* check that the image can fit on the media */
 		if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
-		&&  media_size < burn->priv->image_size) {
+		&&  media_sectors < img_sectors) {
 			/* This is a recoverable error so try to ask the user again */
 			result = brasero_burn_reload_dest_media (burn,
 								 BRASERO_BURN_ERROR_MEDIA_SPACE,
