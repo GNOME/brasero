@@ -8048,6 +8048,9 @@ brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
 	}
 
 	if (disc->priv->is_loading) {
+		/* Translators: the following text is the reason why brasero
+		 * failed to load a project: because it is already loading
+		 * another project */
 		brasero_data_disc_import_session_error (disc, _("loading project"));
 		return;
 	}
