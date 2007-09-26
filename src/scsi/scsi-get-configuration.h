@@ -177,7 +177,6 @@ struct _BraseroScsiCoreDescMMC4 {
 	uchar inq2		:1;
 	uchar reserved0		:6;
 
-  	uchar mmc4		[0];
 	uchar reserved1		[3];
 };
 

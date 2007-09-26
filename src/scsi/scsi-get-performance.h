@@ -29,10 +29,7 @@
 #ifndef _BURN_GET_PERFORMANCE_H
 #define _BURN_GET_PERFORMANCE_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
@@ -88,15 +85,7 @@ struct _BraseroScsiWrtSpdDesc {
 
 #endif
 
-struct _BraseroScsiPerfDesc {
-	uchar start_lba	[4];
-	uchar start_perf	[4];
-	uchar end_lba	[4];
-	uchar end_perf	[4];
-};
-
 typedef struct _BraseroScsiGetPerfHdr BraseroScsiGetPerfHdr;
-typedef struct _BraseroScsiPerfDesc BraseroScsiPerfDesc;
 typedef struct _BraseroScsiWrtSpdDesc BraseroScsiWrtSpdDesc;
 
 struct _BraseroScsiGetPerfData {
@@ -105,15 +94,7 @@ struct _BraseroScsiGetPerfData {
 };
 typedef struct _BraseroScsiGetPerfData BraseroScsiGetPerfData;
 
-typedef enum {
-	BRASERO_SCSI_PERF_READ	= 0,
-	BRASERO_SCSI_PERF_WRITE = 1,
-	BRASERO_SCSI_PERF_LIST	= 1 << 1,
-} BraseroScsiPerfParam;
-
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_GET_PERFORMANCE_H */
 

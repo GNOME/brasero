@@ -99,18 +99,25 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 		return BRASERO_SCSI_FAILURE;
 	}
 
+	/* first issue the command once ... */
 	memset (&hdr, 0, sizeof (hdr));
-
 	BRASERO_SET_16 (cdb->alloc_len, sizeof (hdr));
 	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
 	if (res)
 		return res;
 
-	/* ... allocate a buffer and re-issue the command */
+	/* ... check the size returned ... */
 	request_size = BRASERO_GET_32 (hdr.len) +
 		       G_STRUCT_OFFSET (BraseroScsiGetConfigHdr, len) +
 		       sizeof (hdr.len);
 
+	/* NOTE: if size is not valid use the maximum possible size */
+	if ((request_size - sizeof (hdr)) % 8)
+		request_size = 65535;
+	else if (request_size <= sizeof (hdr))
+		request_size = 65535;
+
+	/* ... allocate a buffer and re-issue the command */
 	buffer = (BraseroScsiGetConfigHdr *) g_new0 (uchar, request_size);
 
 	BRASERO_SET_16 (cdb->alloc_len, request_size);
@@ -125,16 +132,8 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 		      G_STRUCT_OFFSET (BraseroScsiGetConfigHdr, len) +
 		      sizeof (hdr.len);
 
-	if (buffer_size != request_size) {
-		g_free (buffer);
-
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_SIZE_MISMATCH);
-		return BRASERO_SCSI_FAILURE;
-	}
-
 	*data = buffer;
-	*size = request_size;
-
+	*size = MIN (buffer_size, request_size);
 	return BRASERO_SCSI_OK;
 }
 
@@ -151,29 +150,6 @@ brasero_mmc2_get_configuration_feature (int fd,
 	cdb = brasero_scsi_command_new (&info, fd);
 	BRASERO_SET_16 (cdb->feature_num, type);
 	cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ONLY_FEATURE;
-
-	res = brasero_get_configuration (cdb, data, size, error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-BraseroScsiResult
-brasero_mmc2_get_configuration_all_features (int fd,
-					     int only_current,
-					     BraseroScsiGetConfigHdr **data,
-					     int *size,
-					     BraseroScsiErrCode *error)
-{
-	BraseroGetConfigCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	BRASERO_SET_16 (cdb->feature_num, BRASERO_SCSI_FEAT_PROFILES);
-
-	if (only_current)
-		cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ALL_CURRENT;
-	else
-		cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ALL_FEATURES;
 
 	res = brasero_get_configuration (cdb, data, size, error);
 	brasero_scsi_command_free (cdb);

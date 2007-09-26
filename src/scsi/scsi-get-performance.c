@@ -112,22 +112,31 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		return BRASERO_SCSI_FAILURE;
 	}
 
+	/* Issue the command once to get the size ... */
 	memset (&hdr, 0, sizeof (hdr));
 	BRASERO_SET_16 (cdb->max_desc, 0);
 	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
 	if (res)
 		return res;
 
-	/* ... allocate a buffer and re-issue the command */
+	/* ... check the request size ... */
 	request_size = BRASERO_GET_32 (hdr.len) +
 		       G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
 		       sizeof (hdr.len);
 
-	desc_num = (request_size - sizeof (BraseroScsiGetPerfHdr)) / sizeof_descriptors;
-	BRASERO_SET_16 (cdb->max_desc, desc_num);
+	if (request_size > 2048)
+		request_size = 2048;
+	else if ((request_size - sizeof (hdr)) % sizeof_descriptors)
+		request_size = 2048;
+	else if (request_size < sizeof (hdr))
+		request_size = 2048;
 
+	desc_num = (request_size - sizeof (hdr)) / sizeof_descriptors;
+
+	/* ... allocate a buffer and re-issue the command */
 	buffer = (BraseroScsiGetPerfData *) g_new0 (uchar, request_size);
 
+	BRASERO_SET_16 (cdb->max_desc, desc_num);
 	res = brasero_scsi_command_issue_sync (cdb, buffer, request_size, error);
 	if (res) {
 		g_free (buffer);
@@ -139,44 +148,9 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		      G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
 		      sizeof (buffer->hdr.len);
 
-	if (buffer_size != request_size) {
-		g_free (buffer);
-
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_SIZE_MISMATCH);
-		return BRASERO_SCSI_FAILURE;
-	}
-
 	*data = buffer;
-	*data_size = request_size;
+	*data_size = MIN (buffer_size, request_size);
 
-	return res;
-}
-
-/**
- * MMC2 command extension
- */
-
-BraseroScsiResult
-brasero_mmc2_get_performance_perf (int fd,
-				   BraseroScsiPerfParam param,
-				   BraseroScsiGetPerfData **data,
-				   int *size,
-				   BraseroScsiErrCode *error)
-{
-	BraseroGetPerformanceCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->type = BRASERO_GET_PERFORMANCE_PERF_TYPE;
-
-	if (param & BRASERO_SCSI_PERF_LIST)
-		cdb->except= 0x01;
-
-	if (param & BRASERO_SCSI_PERF_WRITE)
-		cdb->write = 0x01;
-
-	res = brasero_get_performance (cdb, sizeof (BraseroScsiPerfDesc), data, size, error);
-	brasero_scsi_command_free (cdb);
 	return res;
 }
 

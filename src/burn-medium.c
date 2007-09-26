@@ -471,7 +471,7 @@ end:
 	 * function but don't report any speed. So if our top speed is 0 then
 	 * use the other way to get the speed. It was a Teac */
 	if (!priv->max_wrt)
-		return BRASERO_BURN_RETRY;
+		return BRASERO_BURN_ERR;
 
 	return BRASERO_BURN_OK;
 }
@@ -506,6 +506,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	page_2A = (BraseroScsiStatusPage *) &data->page;
 
+	/* FIXME: the following is not necessarily true */
 	if (size < sizeof (BraseroScsiStatusPage)) {
 		g_free (data);
 
@@ -590,7 +591,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 				BraseroScsiErrCode *code)
 {
 	BraseroScsiGetConfigHdr *hdr = NULL;
-	BraseroScsiRTStreamDesc *stream;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
 	int size;
@@ -751,29 +751,27 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 	BRASERO_BURN_LOG ("medium is %d", priv->info);
 
-	/* see how we should get the speeds */
-	if (hdr->desc->add_len != sizeof (BraseroScsiRTStreamDesc)) {
-		g_free (hdr);
-
-		BRASERO_BURN_LOG ("wrong size for Stream descriptor");
-		return BRASERO_BURN_ERR;
-	}
-
 	/* try all SCSI functions to get write/read speeds in order */
-	stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
-	if (stream->wrt_spd) {
-		/* NOTE: the next function returns either OK or RETRY to make 
-		 * sure we always go and get over an error. There are other ways
-		 * to get the information we want */
-		result = brasero_medium_get_speed_mmc3 (self, fd, code);
-		if (result != BRASERO_BURN_RETRY)
-			goto end;
+	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
+		BraseroScsiRTStreamDesc *stream;
+
+		/* means it's at least an MMC3 drive */
+		stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
+		if (stream->wrt_spd) {
+			result = brasero_medium_get_speed_mmc3 (self, fd, code);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+		}
+
+		if (stream->mp2a) {
+			result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+		}
 	}
 
-	if (stream->mp2a)
-		result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
-	else
-		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+	/* fallback for speeds */
+	result = brasero_medium_get_page_2A_max_speed (self, fd, code);
 
 
 end:
@@ -781,7 +779,7 @@ end:
 	g_free (hdr);
 
 	if (result != BRASERO_BURN_OK)
-		return BRASERO_BURN_ERR;
+		return result;
 
 	return BRASERO_BURN_OK;
 }
@@ -877,13 +875,24 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	BraseroScsiTrackInfo track_info;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
+	int size;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* at this point we know the type of the disc that's why we set the 
+	 * size according to this type. That may help to avoid outrange address
+	 * errors. */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DL|BRASERO_MEDIUM_WRITABLE))
+		size = 48;
+	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_WRITABLE))
+		size = 40;
+	else
+		size = 36;
 
 	result = brasero_mmc1_read_track_info (fd,
 					       track_num,
 					       &track_info,
-					       sizeof (BraseroScsiTrackInfo),
+					       &size,
 					       code);
 
 	if (result != BRASERO_SCSI_OK) {
