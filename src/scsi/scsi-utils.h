@@ -55,7 +55,7 @@ G_BEGIN_DECLS
 				  strerror (errno));				\
 	} else {								\
 		BRASERO_BURN_LOG ("SCSI command error: %s",			\
-				  brasero_scsi_strerror (errno));		\
+				  brasero_scsi_strerror (code));		\
 	}									\
 	if (err)								\
 		*(err) = code;							\
