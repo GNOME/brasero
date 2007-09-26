@@ -761,22 +761,14 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_widget_show (vbox);
 
-	label = gtk_label_new (_("Move the slider of the player and press \"Cut\" when you want to add a splitting point."));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-
 	priv->player = brasero_player_new ();
 	gtk_widget_show (priv->player);
-
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
 
 	button = brasero_utils_make_button (_("Cut"),
 					    NULL,
 					    "stock-tool-crop",
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 	g_signal_connect (button,
 			  "clicked",
 			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
@@ -784,19 +776,18 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	priv->cut = button;
 
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Manual splitting</b>"),
-							   hbox,
+			    brasero_utils_pack_properties (_("<b>Use manual slicing</b>"),
+							   button,
 							   priv->player,
-							   label,
 							   NULL),
 			    FALSE,
 			    FALSE,
 			    0);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox2);
 
-	radio = gtk_radio_button_new_with_label (NULL, _("for every silence (automatic search)"));
+	radio = gtk_radio_button_new_with_label (NULL, _("Split this track for every silence (automatic search)"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (vbox2), radio, FALSE, FALSE, 0);
 
@@ -806,7 +797,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	/* Translators: this goes with the next (= "seconds") */
 	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio),
-							     _("every \"x\" seconds"));
+							     _("Split this track every"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
 	priv->radio_sec = radio;
@@ -824,7 +815,8 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio), _("in \"x\" parts"));
+	/* Translators: this goes with the next (= "parts") */
+	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio), _("Split this track in"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
 	priv->radio_parts = radio;
@@ -833,34 +825,26 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (priv->spin_parts);
 	gtk_box_pack_start (GTK_BOX (hbox), priv->spin_parts, FALSE, FALSE, 0);
 
+	/* Translators: this goes with the previous (= "Split this track in") */
 	label = gtk_label_new (_("parts"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-	
 	button = brasero_utils_make_button (_("Cut"),
 					    NULL,
 					    "stock-tool-crop",
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
 	g_signal_connect (button,
 			  "clicked",
 			  G_CALLBACK (brasero_split_dialog_autocut_clicked_cb),
 			  object);
 	priv->auto_cut = button;
 
-	label = gtk_label_new (_("Split track automatically:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Automatic splitting</b>"),
+			    brasero_utils_pack_properties (_("<b>Use automatic slicing</b>"),
 							   vbox2,
-							   label,
 							   NULL),
 			    FALSE,
 			    FALSE,
@@ -911,7 +895,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
 
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Slices</b>"),
+			    brasero_utils_pack_properties (_("<b>Slices preview</b>"),
 							   scroll,
 							   NULL),
 			    TRUE,
