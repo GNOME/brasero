@@ -160,7 +160,7 @@ brasero_task_deactivate_item (BraseroTask *task,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroTaskItemIFace *klass;
 
-	if (brasero_task_item_is_active (item)) {
+	if (!brasero_task_item_is_active (item)) {
 		BRASERO_BURN_LOG ("%s already stopped", G_OBJECT_TYPE_NAME (item));
 		return BRASERO_BURN_OK;
 	}
