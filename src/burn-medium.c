@@ -754,6 +754,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
+	BRASERO_BURN_LOG ("medium is %d", priv->info);
+
 	/* try all SCSI functions to get write/read speeds in order */
 	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
 		BraseroScsiRTStreamDesc *stream;

@@ -113,19 +113,12 @@ brasero_mmc1_read_disc_information_std (int fd,
 
 	request_size = BRASERO_GET_16 (std_info.len) + 
 		       sizeof (std_info.len);
+	
 	buffer = (BraseroScsiDiscInfoStd *) g_new0 (uchar, request_size);
 
 	BRASERO_SET_16 (cdb->alloc_len, request_size);
 	res = brasero_scsi_command_issue_sync (cdb, buffer, request_size, error);
 	if (res) {
-		g_free (buffer);
-		goto end;
-	}
-
-	if (request_size != BRASERO_GET_16 (buffer->len) + sizeof (buffer->len)) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_SIZE_MISMATCH);
-
-		res = BRASERO_SCSI_FAILURE;
 		g_free (buffer);
 		goto end;
 	}

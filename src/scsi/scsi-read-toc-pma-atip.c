@@ -91,6 +91,7 @@ BRASERO_RD_TAP_CD_TEXT			= 0x05	/* Introduced in MMC3 */
 
 static BraseroScsiResult
 brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
+			   int desc_size,
 			   BraseroScsiTocPmaAtipHdr **data,
 			   int *size,
 			   BraseroScsiErrCode *error)
@@ -99,6 +100,7 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
 	BraseroScsiTocPmaAtipHdr hdr;
 	BraseroScsiResult res;
 	int request_size;
+	int buffer_size;
 
 	if (!data || !size) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
@@ -116,6 +118,13 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
 		return res;
 
 	request_size = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
+
+	/* NOTE: if size is not valid use the maximum possible size */
+	if ((request_size - sizeof (hdr)) % desc_size)
+		request_size = 65535;
+	else if (request_size - sizeof (hdr) < desc_size)
+		request_size = 65535;
+
 	buffer = (BraseroScsiTocPmaAtipHdr *) g_new0 (uchar, request_size);
 
 	BRASERO_SET_16 (cdb->alloc_len, request_size);
@@ -125,14 +134,10 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
 		return res;
 	}
 
-	if (request_size != BRASERO_GET_16 (buffer->len) + sizeof (buffer->len)) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_SIZE_MISMATCH);
-		g_free (buffer);
-		return BRASERO_SCSI_FAILURE;
-	}
+	buffer_size = BRASERO_GET_16 (buffer->len) + sizeof (buffer->len);
 
 	*data = buffer;
-	*size = request_size;
+	*size = MIN (buffer_size, request_size);
 
 	return res;
 }
@@ -156,6 +161,7 @@ brasero_mmc1_read_toc_formatted (int fd,
 	cdb->track_session_num = track_num;
 
 	res = brasero_read_toc_pma_atip (cdb,
+					 sizeof (BraseroScsiTocDesc),
 					(BraseroScsiTocPmaAtipHdr **) data,
 					 size,
 					 error);
@@ -164,13 +170,12 @@ brasero_mmc1_read_toc_formatted (int fd,
 }
 
 /**
- * Returns Q sub-channel in leadins starting from a session number
+ * Returns CD-TEXT information recorded in the leadin area as R-W sub-channel
  */
 
 BraseroScsiResult
-brasero_mmc1_read_toc_raw (int fd,
-			   int session_num,
-			   BraseroScsiRawTocData **data,
+brasero_mmc3_read_cd_text (int fd,
+			   BraseroScsiCDTextData **data,
 			   int *size,
 			   BraseroScsiErrCode *error)
 {
@@ -178,32 +183,10 @@ brasero_mmc1_read_toc_raw (int fd,
 	BraseroScsiResult res;
 
 	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->format = BRASERO_RD_TAP_RAW_TOC;
-	cdb->msf = 1;				/* specs says it's compulsory */
-	cdb->track_session_num = session_num;
+	cdb->format = BRASERO_RD_TAP_CD_TEXT;
 
 	res = brasero_read_toc_pma_atip (cdb,
-					(BraseroScsiTocPmaAtipHdr **) data,
-					 size,
-					 error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-BraseroScsiResult
-brasero_mmc1_read_pma (int fd,
-		       BraseroScsiPmaData **data,
-		       int *size,
-		       BraseroScsiErrCode *error)
-{
-	BraseroRdTocPmaAtipCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->format = BRASERO_RD_TAP_PMA;
-	cdb->msf = 1;				/* specs says it's compulsory */
-
-	res = brasero_read_toc_pma_atip (cdb,
+					 sizeof (BraseroScsiTocDesc),
 					(BraseroScsiTocPmaAtipHdr **) data,
 					 size,
 					 error);
@@ -231,53 +214,6 @@ brasero_mmc1_read_atip (int fd,
 
 	memset (data, 0, size);
 	res = brasero_scsi_command_issue_sync (cdb, data, size, error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-/**
- * Returns last closed session starting address
- */
-
-BraseroScsiResult
-brasero_mmc1_read_multisession_info (int fd,
-				     BraseroScsiMultisessionData *data,
-				     int size,
-				     BraseroScsiErrCode *error)
-{
-	BraseroRdTocPmaAtipCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->format = BRASERO_RD_TAP_MULTISESSION_INFO;
-	BRASERO_SET_16 (cdb->alloc_len, size);
-
-	memset (data, 0, size);
-	res = brasero_scsi_command_issue_sync (cdb, data, size, error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-/**
- * Returns CD-TEXT information recorded in the leadin area as R-W sub-channel
- */
-
-BraseroScsiResult
-brasero_mmc3_read_cd_text (int fd,
-			   BraseroScsiCDTextData **data,
-			   int *size,
-			   BraseroScsiErrCode *error)
-{
-	BraseroRdTocPmaAtipCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->format = BRASERO_RD_TAP_CD_TEXT;
-
-	res = brasero_read_toc_pma_atip (cdb,
-					 (BraseroScsiTocPmaAtipHdr **) data,
-					 size,
-					 error);
 	brasero_scsi_command_free (cdb);
 	return res;
 }
