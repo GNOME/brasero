@@ -29,10 +29,7 @@
 #ifndef _SCSI_READ_TRACK_INFORMATION_H
 #define _SCSI_READ_TRACK_INFORMATION_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 typedef enum {
 BRASERO_SCSI_DATA_MODE_1			= 0x01,
@@ -135,9 +132,7 @@ typedef struct _BraseroScsiTrackInfo BraseroScsiTrackInfo;
 #define BRASERO_SCSI_TRACK_NUM_PTR(track)	(((track)->track_num_high << 8) + (track)->track_num_low)
 #define BRASERO_SCSI_SESSION_NUM_PTR(track)	(((track)->session_num_high << 8) + (track)->session_num_low)
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_READ_TRACK_INFORMATION_H */
 

@@ -52,16 +52,10 @@ brasero_mmc1_read_atip (int fd,
 			BraseroScsiErrCode *error);
 
 BraseroScsiResult
-brasero_mmc1_read_first_open_session_track_info (int fd,
-						 BraseroScsiTrackInfo *track_info,
-						 int size,
-						 BraseroScsiErrCode *error);
-
-BraseroScsiResult
 brasero_mmc1_read_track_info (int fd,
 			      int track_num,
 			      BraseroScsiTrackInfo *track_info,
-			      int size,
+			      int *size,
 			      BraseroScsiErrCode *error);
 
 G_END_DECLS

@@ -85,6 +85,52 @@ BRASERO_FIELD_SESSION_NUM		= 0x02,
 
 #define BRASERO_SCSI_INCOMPLETE_TRACK	0xFF
 
+static BraseroScsiResult
+brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
+			 BraseroScsiTrackInfo *info,
+			 int *size,
+			 BraseroScsiErrCode *error)
+{
+	BraseroScsiTrackInfo hdr;
+	BraseroScsiResult res;
+	int datasize;
+
+	if (!info || !size) {
+		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
+		return BRASERO_SCSI_FAILURE;
+	}
+
+	/* first ask the drive how long should the data be and then ... */
+	datasize = 4;
+	memset (&hdr, 0, sizeof (info));
+	BRASERO_SET_16 (cdb->alloc_len, datasize);
+	res = brasero_scsi_command_issue_sync (cdb, &hdr, datasize, error);
+	if (res)
+		return res;
+
+	/* ... check the size in case of a buggy firmware ... */
+	if (BRASERO_GET_16 (hdr.len) + sizeof (hdr.len) >= datasize) {
+		datasize = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
+
+		if (datasize > *size)
+			datasize = *size;
+		else if (*size < datasize)
+			*size = datasize;
+	}
+	else
+		datasize = *size;
+
+	/* ... and re-issue the command */
+	memset (info, 0, sizeof (BraseroScsiTrackInfo));
+	BRASERO_SET_16 (cdb->alloc_len, datasize);
+	res = brasero_scsi_command_issue_sync (cdb, info, datasize, error);
+
+	if (!res)
+		*size = MIN (datasize, BRASERO_GET_16 (info->len) + sizeof (info->len));
+
+	return res;
+}
+
 /**
  * 
  * NOTE: if media is a CD and track_num = 0 then returns leadin
@@ -96,7 +142,7 @@ BraseroScsiResult
 brasero_mmc1_read_track_info (int fd,
 			      int track_num,
 			      BraseroScsiTrackInfo *track_info,
-			      int size,
+			      int *size,
 			      BraseroScsiErrCode *error)
 {
 	BraseroRdTrackInfoCDB *cdb;
@@ -105,95 +151,9 @@ brasero_mmc1_read_track_info (int fd,
 	cdb = brasero_scsi_command_new (&info, fd);
 	cdb->addr_num_type = BRASERO_FIELD_TRACK_NUM;
 	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, track_num);
-	BRASERO_SET_16 (cdb->alloc_len, size);
 
-	memset (track_info, 0, sizeof (BraseroScsiTrackInfo));
-	res = brasero_scsi_command_issue_sync (cdb, track_info, size, error);
+	res = brasero_read_track_info (cdb, track_info, size, error);
 	brasero_scsi_command_free (cdb);
-	return res;
-}
 
-BraseroScsiResult
-brasero_mmc1_read_track_info_for_block (int fd,
-					int block,
-					BraseroScsiTrackInfo *track_info,
-					int size,
-					BraseroScsiErrCode *error)
-{
-	BraseroRdTrackInfoCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-
-	cdb->addr_num_type = BRASERO_FIELD_LBA;
-	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, block);
-	BRASERO_SET_16 (cdb->alloc_len, size);
-
-	memset (track_info, 0, sizeof (BraseroScsiTrackInfo));
-	res = brasero_scsi_command_issue_sync (cdb, track_info, size, error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-BraseroScsiResult
-brasero_mmc1_read_session_first_track_info (int fd,
-					    int session,
-					    BraseroScsiTrackInfo *track_info,
-					    int size,
-					    BraseroScsiErrCode *error)
-{
-	BraseroRdTrackInfoCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-
-	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, session);
-	cdb->addr_num_type = BRASERO_FIELD_SESSION_NUM;
-	BRASERO_SET_16 (cdb->alloc_len, size);
-
-	memset (track_info, 0, sizeof (BraseroScsiTrackInfo));
-	res = brasero_scsi_command_issue_sync (cdb, track_info, size, error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-BraseroScsiResult
-brasero_mmc1_read_first_open_session_track_info (int fd,
-						 BraseroScsiTrackInfo *track_info,
-						 int size,
-						 BraseroScsiErrCode *error)
-{
-	BraseroRdTrackInfoCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->addr_num_type = BRASERO_FIELD_TRACK_NUM;
-	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, BRASERO_SCSI_INCOMPLETE_TRACK);
-	BRASERO_SET_16 (cdb->alloc_len, size);
-
-	memset (track_info, 0, sizeof (BraseroScsiTrackInfo));
-	res = brasero_scsi_command_issue_sync (cdb, track_info, size, error);
-	brasero_scsi_command_free (cdb);
-	return res;
-}
-
-BraseroScsiResult
-brasero_mmc5_read_first_open_session_track_info (int fd,
-						 BraseroScsiTrackInfo *track_info,
-						 int size,
-						 BraseroScsiErrCode *error)
-{
-	BraseroRdTrackInfoCDB *cdb;
-	BraseroScsiResult res;
-
-	cdb = brasero_scsi_command_new (&info, fd);
-	cdb->open = 1;
-	cdb->addr_num_type = BRASERO_FIELD_TRACK_NUM;
-	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, 1);
-	BRASERO_SET_16 (cdb->alloc_len, size);
-
-	memset (track_info, 0, sizeof (BraseroScsiTrackInfo));
-	res = brasero_scsi_command_issue_sync (cdb, track_info, size, error);
-	brasero_scsi_command_free (cdb);
 	return res;
 }

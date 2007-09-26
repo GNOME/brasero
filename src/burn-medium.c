@@ -877,13 +877,24 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	BraseroScsiTrackInfo track_info;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
+	int size;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* at this point we know the type of the disc that's why we set the 
+	 * size according to this type. That may help to avoid outrange address
+	 * errors. */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DL|BRASERO_MEDIUM_WRITABLE))
+		size = 48;
+	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_WRITABLE))
+		size = 40;
+	else
+		size = 36;
 
 	result = brasero_mmc1_read_track_info (fd,
 					       track_num,
 					       &track_info,
-					       sizeof (BraseroScsiTrackInfo),
+					       &size,
 					       code);
 
 	if (result != BRASERO_SCSI_OK) {
