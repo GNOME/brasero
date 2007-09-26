@@ -474,7 +474,7 @@ end:
 	 * function but don't report any speed. So if our top speed is 0 then
 	 * use the other way to get the speed. It was a Teac */
 	if (!priv->max_wrt)
-		return BRASERO_BURN_RETRY;
+		return BRASERO_BURN_ERR;
 
 	return BRASERO_BURN_OK;
 }
@@ -509,6 +509,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	page_2A = (BraseroScsiStatusPage *) &data->page;
 
+	/* FIXME: the following is not necessarily true */
 	if (size < sizeof (BraseroScsiStatusPage)) {
 		g_free (data);
 
@@ -593,7 +594,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 				BraseroScsiErrCode *code)
 {
 	BraseroScsiGetConfigHdr *hdr = NULL;
-	BraseroScsiRTStreamDesc *stream;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
 	int size;
@@ -754,33 +754,34 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	/* see how we should get the speeds */
-	if (hdr->desc->add_len != sizeof (BraseroScsiRTStreamDesc)) {
-		g_free (hdr);
-
-		BRASERO_BURN_LOG ("wrong size for Stream descriptor");
-		return BRASERO_BURN_ERR;
-	}
-
 	/* try all SCSI functions to get write/read speeds in order */
-	stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
-	if (stream->wrt_spd) {
-		result = brasero_medium_get_speed_mmc3 (self, fd, code);
-		if (result != BRASERO_BURN_RETRY)
-			goto end;
+	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
+		BraseroScsiRTStreamDesc *stream;
+
+		/* means it's at least an MMC3 drive */
+		stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
+		if (stream->wrt_spd) {
+			result = brasero_medium_get_speed_mmc3 (self, fd, code);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+		}
+
+		if (stream->mp2a) {
+			result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+		}
 	}
 
-	if (stream->mp2a)
-		result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
-	else
-		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+	/* fallback for speeds */
+	result = brasero_medium_get_page_2A_max_speed (self, fd, code);
 
 end:
 
 	g_free (hdr);
 
 	if (result != BRASERO_BURN_OK)
-		return BRASERO_BURN_ERR;
+		return result;
 
 	return BRASERO_BURN_OK;
 }
