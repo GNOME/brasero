@@ -71,6 +71,7 @@ struct _BraseroSplitDialogPrivate
 	GtkWidget *remove;
 	GtkWidget *player;
 
+	GtkWidget *radio_slider;
 	GtkWidget *radio_parts;
 	GtkWidget *radio_sec;
 
@@ -318,19 +319,6 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	return TRUE;
-}
-
-static void
-brasero_split_dialog_cut_clicked_cb (GtkButton *button,
-				     BraseroSplitDialog *self)
-{
-	BraseroSplitDialogPrivate *priv;
-	gint64 pos;
-
-	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
-
-	pos = brasero_player_get_pos (BRASERO_PLAYER (priv->player));
-	brasero_split_dialog_cut (self, pos + priv->start, TRUE);
 }
 
 static void
@@ -646,8 +634,8 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 }
 
 static void
-brasero_split_dialog_autocut_clicked_cb (GtkButton *button,
-					 BraseroSplitDialog *self)
+brasero_split_dialog_cut_clicked_cb (GtkButton *button,
+				     BraseroSplitDialog *self)
 {
 	BraseroSplitDialogPrivate *priv;
 	GtkTreeModel *model;
@@ -655,6 +643,15 @@ brasero_split_dialog_autocut_clicked_cb (GtkButton *button,
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->radio_slider))) {
+		gint64 pos;
+
+		/* this one is before since it doesn't wipe all slices */
+		pos = brasero_player_get_pos (BRASERO_PLAYER (priv->player));
+		brasero_split_dialog_cut (self, pos + priv->start, TRUE);
+		return;
+	}
+
 	if (gtk_tree_model_iter_n_children (model, NULL)) {
 		GtkWidget *message;
 		GtkResponseType answer;
@@ -751,10 +748,11 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (object);
 
-	gtk_window_set_title (GTK_WINDOW (object), _("Track splitting dialog"));
-	gtk_window_set_default_size (GTK_WINDOW (object), 550, 400);
+	gtk_window_set_title (GTK_WINDOW (object), _("Track split"));
+	gtk_window_set_default_size (GTK_WINDOW (object), 500, 600);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
+
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_OK, GTK_RESPONSE_OK);
 
@@ -763,31 +761,23 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	priv->player = brasero_player_new ();
 	gtk_widget_show (priv->player);
-
-	button = brasero_utils_make_button (_("Cut"),
-					    NULL,
-					    "stock-tool-crop",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
-			  object);
-	priv->cut = button;
-
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Use manual slicing</b>"),
-							   button,
+			    brasero_utils_pack_properties (_("<b>Preview</b>"),
 							   priv->player,
 							   NULL),
 			    FALSE,
 			    FALSE,
 			    0);
 
-	vbox2 = gtk_vbox_new (FALSE, 6);
+	vbox2 = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (vbox2);
 
-	radio = gtk_radio_button_new_with_label (NULL, _("Split this track for every silence (automatic search)"));
+	priv->radio_slider = gtk_radio_button_new_with_label_from_widget (NULL, _("Split this track manually at preview current position"));
+	gtk_widget_show (priv->radio_slider);
+	gtk_box_pack_start (GTK_BOX (vbox2), priv->radio_slider, FALSE, FALSE, 0);
+
+	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (priv->radio_slider),
+							     _("Split this track for every silence (automatic search)"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (vbox2), radio, FALSE, FALSE, 0);
 
@@ -796,7 +786,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
 	/* Translators: this goes with the next (= "seconds") */
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio),
+	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (priv->radio_slider),
 							     _("Split this track every"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
@@ -816,7 +806,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
 	/* Translators: this goes with the next (= "parts") */
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (radio), _("Split this track in"));
+	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (priv->radio_slider), _("Split this track in"));
 	gtk_widget_show (radio);
 	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
 	priv->radio_parts = radio;
@@ -830,7 +820,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	button = brasero_utils_make_button (_("Cut"),
+	button = brasero_utils_make_button (_("_Slice"),
 					    NULL,
 					    "stock-tool-crop",
 					    GTK_ICON_SIZE_BUTTON);
@@ -838,12 +828,12 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
 	g_signal_connect (button,
 			  "clicked",
-			  G_CALLBACK (brasero_split_dialog_autocut_clicked_cb),
+			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
 			  object);
 	priv->auto_cut = button;
 
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Use automatic slicing</b>"),
+			    brasero_utils_pack_properties (_("<b>Slicing method</b>"),
 							   vbox2,
 							   NULL),
 			    FALSE,
