@@ -158,6 +158,7 @@ struct BraseroProjectPrivate {
     	guint burnt:1;
 
 	guint empty:1;
+	guint modified:1;
 	guint has_focus:1;
 	guint oversized:1;
 	guint ask_overburn:1;
@@ -1086,6 +1087,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 	project->priv->empty = 1;
     	project->priv->burnt = 0;
+	project->priv->modified = 0;
 	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
@@ -1176,27 +1178,51 @@ brasero_project_confirm_switch (BraseroProject *project)
 	GtkWidget *toplevel;
 	GtkResponseType answer;
 
-	if (project->priv->empty)
-		return TRUE;
-
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_CANCEL,
-					 _("Do you really want to create a new project and discard the current one?"));
 
-	
-	gtk_window_set_title (GTK_WINDOW (dialog), _("New project"));
+	if (project->priv->project) {
+		if (!project->priv->modified)
+			return TRUE;
 
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("If you choose to create a new project, "
-						    "all files already added will be discarded. "
-						    "Note that files will not be deleted from their own location, "
-						    "just no longer listed here."));
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("_Discard Project"), GTK_RESPONSE_OK);
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_CANCEL,
+						 _("Do you really want to create a new project and discard the changes to current one?"));
+
+		
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved project"));
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("If you choose to create a new project, all changes made will be lost."));
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Discard Changes"), GTK_RESPONSE_OK);
+
+	}
+	else {
+		if (project->priv->empty)
+			return TRUE;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_CANCEL,
+						 _("Do you really want to create a new project and discard the current one?"));
+
+		
+		gtk_window_set_title (GTK_WINDOW (dialog), _("New project"));
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("If you choose to create a new project, "
+							    "all files already added will be discarded. "
+							    "Note that files will not be deleted from their own location, "
+							    "just no longer listed here."));
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Discard Project"), GTK_RESPONSE_OK);
+	}
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -1241,6 +1267,9 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 	gboolean sensitive;
 
 	project->priv->empty = (nb_files == 0);
+
+	if (brasero_disc_get_status (disc) != BRASERO_DISC_LOADING)
+		project->priv->modified = 1;
 
 	brasero_project_set_remove_button_state (project);
 	brasero_project_set_add_button_state (project);
@@ -1915,6 +1944,8 @@ brasero_project_open_project (BraseroProject *project,
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
 
+	project->priv->modified = 0;
+
 	brasero_project_set_uri (project, uri, type);
     	g_free (uri);
 	return type;
@@ -1944,6 +1975,8 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
+
+	project->priv->modified = 0;
 
     	return type;
 }
@@ -1977,6 +2010,41 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
+}
+
+static gboolean
+brasero_project_save_project_dialog (BraseroProject *project)
+{
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	GtkResponseType result;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT|
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_NONE,
+					 _("Save the changes of current project before closing?"));
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Modified project"));
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("If you don't save, changes will be permanently lost."));
+
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+				_("_Close without saving"), GTK_RESPONSE_CANCEL,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_SAVE, GTK_RESPONSE_YES,
+				NULL);
+
+	result = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (result == GTK_RESPONSE_YES)
+		return TRUE;
+
+	return FALSE;
 }
 
 static gboolean
@@ -2238,6 +2306,7 @@ brasero_project_save_project_real (BraseroProject *project,
 					       TRUE))
 		return FALSE;
 
+	project->priv->modified = 0;
 	brasero_track_clear (&track);
 	return TRUE;
 }
@@ -2317,13 +2386,43 @@ brasero_project_save_session (BraseroProject *project, const gchar *uri)
     	if (!uri)
 		return FALSE;
 
-    	if (project->priv->burnt
-	||  project->priv->empty
-	||  project->priv->project)
+	if (project->priv->project) {
+		if (!project->priv->modified) {
+			/* there is a saved project but unmodified.
+			 * No need to ask anything */
+			return FALSE;
+		}
+
+		/* ask the user if he wants to save the changes */
+		if (!brasero_project_save_project_dialog (project))
+			return FALSE;
+
+		brasero_project_save_project_real (project, NULL);
+
+		/* return FALSE since this is not a tmp project */
 		return FALSE;
+	}
+
+	if (project->priv->empty) {
+		/* the project is empty anyway. No need to ask anything.
+		 * return FALSE since this is not a tmp project */
+		return FALSE;
+	}
 
     	if (!project->priv->current)
 		return FALSE;
+
+    	if (project->priv->burnt) {
+		/* the project wasn't saved but burnt ask if the user wants to
+		 * keep it for another time by saving it */
+		if (!brasero_project_save_project_dialog (project))
+			return FALSE;
+
+		brasero_project_save_project_as (project);
+
+		/* return FALSE since this is not a tmp project */
+		return FALSE;
+	}
 
     	bzero (&track, sizeof (track));
 	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK) {
