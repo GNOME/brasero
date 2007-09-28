@@ -167,6 +167,17 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 			  G_TYPE_UINT);
 }
 
+static void
+brasero_project_type_chooser_item_realize (GtkWidget *widget,
+					   BraseroProjectTypeChooser *chooser)
+{
+	GdkCursor *cursor;
+
+	cursor = gdk_cursor_new (GDK_HAND2);
+	gdk_window_set_cursor (widget->window, cursor);
+	gdk_cursor_unref (cursor);
+}
+
 static GtkWidget *
 brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 				       ItemDescription *description)
@@ -176,43 +187,43 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	GtkWidget *image;
 	GtkWidget *label;
 	GtkWidget *frame;
-	GtkWidget *event;
 	GtkWidget *eventbox;
 
 	frame = gtk_frame_new (NULL);
+	gtk_widget_show (frame);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 24);
 
-	/* one is for the signal the other for the background */
-	event = gtk_event_box_new ();
-	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event), FALSE);
-	gtk_event_box_set_above_child (GTK_EVENT_BOX (event), TRUE);
-	gtk_container_add (GTK_CONTAINER (frame), event);
-	g_signal_connect (G_OBJECT (event),
+	eventbox = gtk_event_box_new ();
+	gtk_widget_show (eventbox);
+	gtk_event_box_set_visible_window (GTK_EVENT_BOX (eventbox), TRUE);
+	gtk_container_add (GTK_CONTAINER (frame), eventbox);
+
+	g_signal_connect (eventbox,
 			  "button-press-event",
 			  G_CALLBACK (brasero_project_type_chooser_button_press),
 			  chooser);
-	g_signal_connect (G_OBJECT (event),
+	g_signal_connect (eventbox,
 			  "button-release-event",
 			  G_CALLBACK (brasero_project_type_chooser_button_release),
 			  chooser);
-	g_signal_connect (G_OBJECT (event),
+
+	g_signal_connect (eventbox,
 			  "enter-notify-event",
 			  G_CALLBACK (brasero_project_type_chooser_enter),
 			  chooser);
-	g_signal_connect (G_OBJECT (event),
+	g_signal_connect (eventbox,
 			  "leave-notify-event",
 			  G_CALLBACK (brasero_project_type_chooser_leave),
 			  chooser);
 
-	if (description->tooltip) {
-		gtk_widget_set_tooltip_text (event,
-					     _(description->tooltip));
-	}
+	g_signal_connect (eventbox,
+			  "realize",
+			  G_CALLBACK (brasero_project_type_chooser_item_realize),
+			  chooser);
 
-	eventbox = gtk_event_box_new ();
-	gtk_event_box_set_visible_window (GTK_EVENT_BOX (eventbox), TRUE);
-	gtk_container_add (GTK_CONTAINER (event), eventbox);
+	if (description->tooltip)
+		gtk_widget_set_tooltip_text (eventbox, _(description->tooltip));
 
 	g_object_set_data (G_OBJECT (eventbox),
 			   ID_KEY,
@@ -229,7 +240,6 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, FALSE, 0);
 
 	image = gtk_image_new_from_icon_name (description->image, GTK_ICON_SIZE_DIALOG);
-	gtk_widget_show (image);
 	gtk_misc_set_alignment (GTK_MISC (image), 1.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 0);
 
@@ -242,6 +252,8 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	label = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (label), _(description->description));
 	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
+
+	gtk_widget_set_state (eventbox, GTK_STATE_ACTIVE);
 
 	return frame;
 }
@@ -260,7 +272,6 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	int i;
 
 	obj->priv = g_new0 (BraseroProjectTypeChooserPrivate, 1);
-
 
 	obj->priv->background = gdk_pixbuf_new_from_file (BRASERO_DATADIR "/logo.png", &error);
 	if (error) {
@@ -362,7 +373,6 @@ brasero_project_type_chooser_finalize (GObject *object)
 
 	cobj = BRASERO_PROJECT_TYPE_CHOOSER (object);
 
-	
 	if (cobj->priv->background) {
 		g_object_unref (G_OBJECT (cobj->priv->background));
 		cobj->priv->background = NULL;
@@ -388,8 +398,6 @@ brasero_project_type_chooser_enter (GtkWidget *widget,
 				    GdkEventCrossing *event,
 				    BraseroProjectTypeChooser *chooser)
 {
-	widget = gtk_bin_get_child (GTK_BIN (widget));
-
 	chooser->priv->hovered = widget;
 
 	if (chooser->priv->hovered == chooser->priv->selected)
@@ -405,9 +413,7 @@ brasero_project_type_chooser_leave (GtkWidget *widget,
 				    GdkEventCrossing *event,
 				    BraseroProjectTypeChooser *chooser)
 {
-	widget = gtk_bin_get_child (GTK_BIN (widget));
-
-	gtk_widget_set_state (widget, GTK_STATE_NORMAL);
+	gtk_widget_set_state (widget, GTK_STATE_ACTIVE);
 	if (chooser->priv->hovered == widget)
 		chooser->priv->hovered = NULL;
 
@@ -419,7 +425,6 @@ brasero_project_type_chooser_button_press (GtkWidget *widget,
 					   GdkEventButton *event,
 					   BraseroProjectTypeChooser *chooser)
 {
-	widget = gtk_bin_get_child (GTK_BIN (widget));
 	gtk_widget_set_state (widget, GTK_STATE_SELECTED);
 	chooser->priv->selected = widget;
 
@@ -433,9 +438,10 @@ brasero_project_type_chooser_button_release (GtkWidget *widget,
 {
 	BraseroProjectType type;
 
-	widget = gtk_bin_get_child (GTK_BIN (widget));
-	if (chooser->priv->selected != chooser->priv->hovered)
+	if (chooser->priv->selected != chooser->priv->hovered) {
+		chooser->priv->selected = NULL;
 		return FALSE;
+	}
 
 	gtk_widget_set_state (widget, GTK_STATE_PRELIGHT);
 	chooser->priv->selected = NULL;
