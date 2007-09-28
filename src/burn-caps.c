@@ -356,10 +356,7 @@ brasero_burn_caps_media_capabilities (BraseroBurnCaps *self,
 	BraseroCaps *caps = NULL;
 
 	retval = BRASERO_MEDIUM_NONE;
-	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
-					 media,
-					 BRASERO_PLUGIN_IO_NONE,
-					 "checking media caps for");
+	BRASERO_BURN_LOG_DISC_TYPE (media, "checking media caps for");
 
 	/* we're only interested in DISC caps. There should be only one caps fitting */
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
@@ -586,10 +583,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 							    BRASERO_BURN_FLAG_NOGRACE|
 							    BRASERO_BURN_FLAG_FAST_BLANK);
 
-	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
-					 media,
-					 BRASERO_PLUGIN_IO_NONE,
-					 "checking blanking caps for");
+	BRASERO_BURN_LOG_DISC_TYPE (media, "checking blanking caps for");
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
@@ -1549,10 +1543,7 @@ brasero_caps_get_flags_for_disc (BraseroBurnSession *session,
 
 	caps = brasero_caps_find_start_caps (&output);
 	if (!caps) {
-		BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
-						 media,
-						 BRASERO_PLUGIN_IO_NONE,
-						 "FLAGS: no caps could be found for");
+		BRASERO_BURN_LOG_DISC_TYPE (media, "FLAGS: no caps could be found for");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -2312,10 +2303,7 @@ brasero_caps_disc_new (BraseroMedia media)
 	BraseroCaps *caps = NULL;
 	GSList *encompassing = NULL;
  
-	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
-					 media,
-					 BRASERO_PLUGIN_IO_NONE,
-					 "Creating new caps");
+	BRASERO_BURN_LOG_DISC_TYPE (media, "Creating new caps");
 
 	self = brasero_burn_caps_get_default ();
 

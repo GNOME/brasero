@@ -26,6 +26,8 @@
 
 #include <glib.h>
 
+#include "burn-debug.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"
@@ -112,21 +114,33 @@ brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
 	if (BRASERO_GET_16 (hdr.len) + sizeof (hdr.len) >= datasize) {
 		datasize = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
 
-		if (datasize > *size)
+		if (datasize > *size) {
+			BRASERO_BURN_LOG ("Oversized data received (%i) setting to %i", datasize, *size);
 			datasize = *size;
-		else if (*size < datasize)
+		}
+		else if (*size < datasize) {
+			BRASERO_BURN_LOG ("Oversized data required (%i) setting to %i", *size, datasize);
 			*size = datasize;
+		}
 	}
-	else
+	else {
+		BRASERO_BURN_LOG ("Undersized data received (%i) setting to %i", datasize, *size);
 		datasize = *size;
+	}
 
 	/* ... and re-issue the command */
 	memset (info, 0, sizeof (BraseroScsiTrackInfo));
 	BRASERO_SET_16 (cdb->alloc_len, datasize);
 	res = brasero_scsi_command_issue_sync (cdb, info, datasize, error);
 
-	if (!res)
+	if (!res) {
+		if (datasize != BRASERO_GET_16 (info->len) + sizeof (info->len))
+			BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+					  datasize,
+					  BRASERO_GET_16 (info->len) + sizeof (info->len));
+
 		*size = MIN (datasize, BRASERO_GET_16 (info->len) + sizeof (info->len));
+	}
 
 	return res;
 }

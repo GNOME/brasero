@@ -120,10 +120,14 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
 	request_size = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
 
 	/* NOTE: if size is not valid use the maximum possible size */
-	if ((request_size - sizeof (hdr)) % desc_size)
-		request_size = 65535;
-	else if (request_size - sizeof (hdr) < desc_size)
-		request_size = 65535;
+	if ((request_size - sizeof (hdr)) % desc_size) {
+		BRASERO_BURN_LOG ("Unaligned data (%i) setting to max (65530)", request_size);
+		request_size = 65530;
+	}
+	else if (request_size - sizeof (hdr) < desc_size) {
+		BRASERO_BURN_LOG ("Undersized data (%i) setting to max (65530)", request_size);
+		request_size = 65530;
+	}
 
 	buffer = (BraseroScsiTocPmaAtipHdr *) g_new0 (uchar, request_size);
 

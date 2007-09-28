@@ -977,10 +977,7 @@ again:
 
 	media = NCB_MEDIA_GET_STATUS (priv->dest);
 	error_type = BRASERO_BURN_ERROR_NONE;
-	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
-					 media,
-					 BRASERO_PLUGIN_IO_NONE,
-					 "Waiting for media to checksum");
+	BRASERO_BURN_LOG_DISC_TYPE (media, "Waiting for media to checksum");
 
 	if (media == BRASERO_MEDIUM_NONE) {
 		/* NOTE: that's done on purpose since here if the drive is empty

@@ -30,6 +30,8 @@
 
 #include <glib.h>
 
+#include "burn-debug.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"
@@ -93,6 +95,7 @@ brasero_mmc1_read_disc_information_std (int fd,
 	BraseroRdDiscInfoCDB *cdb;
 	BraseroScsiResult res;
 	int request_size;
+	int buffer_size;
 
 	if (!info_return || !size) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
@@ -123,8 +126,16 @@ brasero_mmc1_read_disc_information_std (int fd,
 		goto end;
 	}
 
+	buffer_size = BRASERO_GET_16 (buffer->len) +
+		      sizeof (buffer->len);
+
+	if (request_size != buffer_size)
+		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+				  request_size,
+				  buffer_size);
+
 	*info_return = buffer;
-	*size = request_size;
+	*size = MIN (request_size, buffer_size);
 
 end:
 
