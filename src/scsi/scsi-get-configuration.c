@@ -26,6 +26,8 @@
 
 #include <glib.h>
 
+#include "burn-debug.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"
@@ -112,10 +114,14 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 		       sizeof (hdr.len);
 
 	/* NOTE: if size is not valid use the maximum possible size */
-	if ((request_size - sizeof (hdr)) % 8)
-		request_size = 65535;
-	else if (request_size <= sizeof (hdr))
-		request_size = 65535;
+	if ((request_size - sizeof (hdr)) % 8) {
+		BRASERO_BURN_LOG ("Unaligned data (%i) setting to max (65530)", request_size);
+		request_size = 65530;
+	}
+	else if (request_size <= sizeof (hdr)) {
+		BRASERO_BURN_LOG ("Undersized data (%i) setting to max (65530)", request_size);
+		request_size = 65530;
+	}
 
 	/* ... allocate a buffer and re-issue the command */
 	buffer = (BraseroScsiGetConfigHdr *) g_new0 (uchar, request_size);
@@ -132,6 +138,11 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 		      G_STRUCT_OFFSET (BraseroScsiGetConfigHdr, len) +
 		      sizeof (hdr.len);
 
+	if (buffer_size != request_size)
+		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+				  request_size,
+				  buffer_size);
+
 	*data = buffer;
 	*size = MIN (buffer_size, request_size);
 	return BRASERO_SCSI_OK;
@@ -147,11 +158,24 @@ brasero_mmc2_get_configuration_feature (int fd,
 	BraseroGetConfigCDB *cdb;
 	BraseroScsiResult res;
 
+	g_return_val_if_fail (data != NULL, BRASERO_SCSI_FAILURE);
+	g_return_val_if_fail (size != NULL, BRASERO_SCSI_FAILURE);
+
 	cdb = brasero_scsi_command_new (&info, fd);
 	BRASERO_SET_16 (cdb->feature_num, type);
 	cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ONLY_FEATURE;
 
 	res = brasero_get_configuration (cdb, data, size, error);
 	brasero_scsi_command_free (cdb);
+
+	/* make sure the desc is the one we want */
+	if ((*data) && BRASERO_GET_16 ((*data)->desc->code) != type) {
+		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_TYPE_MISMATCH);
+
+		g_free (*data);
+		*size = 0;
+		return BRASERO_SCSI_FAILURE;
+	}
+
 	return res;
 }

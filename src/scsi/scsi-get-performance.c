@@ -25,6 +25,8 @@
 #include <fcntl.h>
 #include <glib.h>
 
+#include "burn-debug.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-command.h"
@@ -124,12 +126,18 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		       G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
 		       sizeof (hdr.len);
 
-	if (request_size > 2048)
+	if (request_size > 2048) {
+		BRASERO_BURN_LOG ("Oversized data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
-	else if ((request_size - sizeof (hdr)) % sizeof_descriptors)
+	}
+	else if ((request_size - sizeof (hdr)) % sizeof_descriptors) {
+		BRASERO_BURN_LOG ("Unaligned data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
-	else if (request_size < sizeof (hdr))
+	}
+	else if (request_size < sizeof (hdr)) {
+		BRASERO_BURN_LOG ("Undersized data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
+	}
 
 	desc_num = (request_size - sizeof (hdr)) / sizeof_descriptors;
 
@@ -147,6 +155,11 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 	buffer_size = BRASERO_GET_32 (buffer->hdr.len) +
 		      G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
 		      sizeof (buffer->hdr.len);
+
+	if (request_size != buffer_size)
+		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+				  request_size,
+				  buffer_size);
 
 	*data = buffer;
 	*data_size = MIN (buffer_size, request_size);

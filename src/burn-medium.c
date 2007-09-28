@@ -308,6 +308,8 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
+	BRASERO_BURN_LOG ("Retrieving capacity from atip");
+
 	result = brasero_mmc1_read_atip (fd,
 					 &atip_data,
 					 sizeof (atip_data),
@@ -335,6 +337,8 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
 	gint size;
+
+	BRASERO_BURN_LOG ("Retrieving format capacity");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc2_read_format_capacities (fd,
@@ -424,6 +428,8 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	BraseroScsiWrtSpdDesc *desc;
 	BraseroScsiGetPerfData *wrt_perf = NULL;
 
+	BRASERO_BURN_LOG ("Retrieving speed (Get Performance)");
+
 	/* NOTE: this only work if there is RT streaming feature with
 	 * wspd bit set to 1. At least an MMC3 drive. */
 	priv = BRASERO_MEDIUM_PRIVATE (self);
@@ -491,6 +497,8 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	gint max_num;
 	int size = 0;
 
+	BRASERO_BURN_LOG ("Retrieving speed (2A speeds)");
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_spc1_mode_sense_get_page (fd,
 						   BRASERO_SPC_PAGE_STATUS,
@@ -555,6 +563,8 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size = 0;
 
+	BRASERO_BURN_LOG ("Retrieving speed (2A max)");
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	result = brasero_spc1_mode_sense_get_page (fd,
@@ -594,6 +604,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
 	int size;
+
+	BRASERO_BURN_LOG ("Retrieving media profile");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc2_get_configuration_feature (fd,
@@ -749,8 +761,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	BRASERO_BURN_LOG ("medium is %d", priv->info);
-
 	/* try all SCSI functions to get write/read speeds in order */
 	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
 		BraseroScsiRTStreamDesc *stream;
@@ -795,6 +805,8 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	int size;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Testing for Css encrypted media");
 	result = brasero_mmc2_get_configuration_feature (fd,
 							 BRASERO_SCSI_FEAT_DVD_CSS,
 							 &hdr,
@@ -807,14 +819,16 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (hdr->desc->add_len != sizeof (BraseroScsiDVDCssDesc)) {
+	if (hdr->desc->add_len < sizeof (BraseroScsiDVDCssDesc)) {
 		g_free (hdr);
-		return BRASERO_BURN_ERR;
+		return BRASERO_BURN_OK;
 	}
 
 	/* here we just need to see if this feature is current or not */
-	if (hdr->desc->current)
+	if (hdr->desc->current) {
 		priv->info |= BRASERO_MEDIUM_PROTECTED;
+		BRASERO_BURN_LOG ("media is Css protected");
+	}
 
 	g_free (hdr);
 	return BRASERO_BURN_OK;
@@ -877,6 +891,8 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
+	BRASERO_BURN_LOG ("Retrieving track information for %i", track_num);
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	/* at this point we know the type of the disc that's why we set the 
@@ -930,6 +946,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiFormattedTocData *toc = NULL;
 
+	BRASERO_BURN_LOG ("Reading toc");
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc1_read_toc_formatted (fd,
 						  0,
@@ -945,6 +963,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 	num = (size - sizeof (BraseroScsiFormattedTocData)) /
 	       sizeof (BraseroScsiTocDesc);
+
+	BRASERO_BURN_LOG ("%i track(s) found", num);
 
 	desc = toc->desc;
 	for (i = 0; i < num; i ++, desc ++) {
@@ -1065,6 +1085,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiDiscInfoStd *info = NULL;
 
+	BRASERO_BURN_LOG ("Retrieving media status");
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	result = brasero_mmc1_read_disc_information_std (fd,
@@ -1084,6 +1106,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
 		BraseroMediumTrack *track;
 
+		BRASERO_BURN_LOG ("Empty media");
+
 		priv->info |= BRASERO_MEDIUM_BLANK;
 		priv->block_size = 2048;
 
@@ -1095,8 +1119,12 @@ brasero_medium_get_contents (BraseroMedium *self,
 		goto end;
 	}
 
-	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE)
+	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
+		BRASERO_BURN_LOG ("Appendable media");
+	}
+	else if (info->status == BRASERO_SCSI_DISC_FINALIZED)
+		BRASERO_BURN_LOG ("Closed media");
 
 	result = brasero_medium_get_sessions_info (self, fd, code);
 	if (result != BRASERO_BURN_OK)
@@ -1121,17 +1149,17 @@ brasero_medium_init_real (BraseroMedium *object, int fd)
 	if (result != BRASERO_BURN_OK)
 		return;
 
-	if (priv->info & BRASERO_MEDIUM_DVD) {
-		result = brasero_medium_get_css_feature (object, fd, &code);
-		if (result != BRASERO_BURN_OK)
-			return;
-	}
-
 	result = brasero_medium_get_contents (object, fd, &code);
 	if (result != BRASERO_BURN_OK)
 		return;
 
+	/* assume that css feature is only for DVD-ROM which might be wrong but some drives
+	 * wrongly reports that css is enabled for some blank DVD+R */
+	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD/*|BRASERO_MEDIUM_ROM*/)))
+		brasero_medium_get_css_feature (object, fd, &code);
+
 	brasero_medium_get_capacity_by_type (object, fd, &code);
+	BRASERO_BURN_LOG ("media is %i", priv->info);
 }
 
 static gboolean
