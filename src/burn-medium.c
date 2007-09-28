@@ -1175,9 +1175,9 @@ brasero_medium_init_real (BraseroMedium *object, int fd)
 	if (result != BRASERO_BURN_OK)
 		return;
 
-	/* assume that css feature is only for DVD-ROM which might be wrong but some drives
-	 * wrongly reports that css is enabled for some blank DVD+R */
-	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD/*|BRASERO_MEDIUM_ROM*/)))
+	/* assume that css feature is only for DVD-ROM which might be wrong but
+	 * some drives wrongly reports that css is enabled for blank DVD+R/W */
+	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_ROM)))
 		brasero_medium_get_css_feature (object, fd, &code);
 
 	brasero_medium_get_capacity_by_type (object, fd, &code);
