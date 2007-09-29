@@ -67,6 +67,10 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri);
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
 
+/**
+ * returns TRUE on error to try to stop app closing
+ */
+
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,

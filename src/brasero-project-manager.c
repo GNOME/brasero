@@ -849,7 +849,7 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
 				      gint *position)
 {
-    	gboolean result = TRUE;
+    	gboolean result = FALSE;
 
     	if (position)
 		*position = gtk_paned_get_position (GTK_PANED (manager->priv->layout));

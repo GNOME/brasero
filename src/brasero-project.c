@@ -2012,7 +2012,7 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 	gtk_widget_destroy (dialog);
 }
 
-static gboolean
+static GtkResponseType
 brasero_project_save_project_dialog (BraseroProject *project)
 {
 	GtkWidget *dialog;
@@ -2041,10 +2041,14 @@ brasero_project_save_project_dialog (BraseroProject *project)
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	if (result == GTK_RESPONSE_YES)
-		return TRUE;
+	if (result == GTK_RESPONSE_CANCEL
+	||  result == GTK_RESPONSE_DELETE_EVENT)
+		return GTK_RESPONSE_CANCEL;
 
-	return FALSE;
+	if (result != GTK_RESPONSE_YES)
+		return GTK_RESPONSE_NO;
+
+	return GTK_RESPONSE_YES;
 }
 
 static gboolean
@@ -2377,16 +2381,21 @@ brasero_project_save_project_as (BraseroProject *project)
 	return result;
 }
 
+/**
+ * NOTE: this function returns FALSE if it succeeds and TRUE otherwise.
+ * this value is mainly used by the session object to cancel or not the app
+ * closing
+ */
+
 gboolean
-brasero_project_save_session (BraseroProject *project, const gchar *uri)
+brasero_project_save_session (BraseroProject *project,
+			      const gchar *uri)
 {
-    	gboolean result;
     	BraseroDiscTrack track;
 
-    	if (!uri)
-		return FALSE;
-
 	if (project->priv->project) {
+		GtkResponseType answer;
+
 		if (!project->priv->modified) {
 			/* there is a saved project but unmodified.
 			 * No need to ask anything */
@@ -2394,7 +2403,11 @@ brasero_project_save_session (BraseroProject *project, const gchar *uri)
 		}
 
 		/* ask the user if he wants to save the changes */
-		if (!brasero_project_save_project_dialog (project))
+		answer = brasero_project_save_project_dialog (project);
+		if (answer == GTK_RESPONSE_CANCEL)
+			return TRUE;
+
+		if (answer != GTK_RESPONSE_YES)
 			return FALSE;
 
 		brasero_project_save_project_real (project, NULL);
@@ -2413,9 +2426,15 @@ brasero_project_save_session (BraseroProject *project, const gchar *uri)
 		return FALSE;
 
     	if (project->priv->burnt) {
+		GtkResponseType answer;
+
 		/* the project wasn't saved but burnt ask if the user wants to
 		 * keep it for another time by saving it */
-		if (!brasero_project_save_project_dialog (project))
+		answer = brasero_project_save_project_dialog (project);
+		if (answer == GTK_RESPONSE_CANCEL)
+			return TRUE;
+
+		if (answer != GTK_RESPONSE_YES)
 			return FALSE;
 
 		brasero_project_save_project_as (project);
@@ -2424,16 +2443,19 @@ brasero_project_save_session (BraseroProject *project, const gchar *uri)
 		return FALSE;
 	}
 
+    	if (!uri)
+		return FALSE;
+
     	bzero (&track, sizeof (track));
-	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK) {
-		result = brasero_project_save_project_xml (project,
-							   uri,
-							   &track,
-							   FALSE);
-	}
-    	else
-		result = FALSE;
+	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK)
+		brasero_project_save_project_xml (project,
+						  uri,
+						  &track,
+						  FALSE);
 
 	brasero_track_clear (&track);
-    	return result;
+
+	/* let the application close itself anyway. It wasn't asked by the user
+	 * and it may get into some critical shutdown */
+    	return FALSE;
 }

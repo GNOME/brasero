@@ -1,3 +1,15 @@
+2007-09-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_save_session):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c: (brasero_project_save_project_dialog),
+	(brasero_project_save_session):
+	* src/brasero-session.c: (brasero_session_save):
+	* src/main.c: (on_delete_cb), (on_exit_cb):
+
+	fix a bug where CANCEL didn't cancel application closing
+
 2007-09-29 Rouquier Philippe <philippr@svn.gnome.org>
 
 	fix #437148 also fix a small HIG problem where name was missing 

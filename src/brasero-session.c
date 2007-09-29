@@ -206,7 +206,8 @@ brasero_session_save (BraseroApp *app, gboolean save_project)
 {
 	gint success;
 	gint pane_pos;
-    	gchar *project_path;
+	gboolean cancel;
+	gchar *project_path;
 	gchar *session_path;
 	xmlTextWriter *session;
 
@@ -215,11 +216,16 @@ brasero_session_save (BraseroApp *app, gboolean save_project)
     	else
 		project_path = NULL;
 
-    	brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
-					      project_path,
-					      &pane_pos);
+    	cancel = brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
+						       project_path,
+						       &pane_pos);
     	g_free (project_path);
 
+	/* see if we should try to cancel shutdown */
+	if (cancel)
+		return TRUE;
+
+	/* now save the state of the window */
 	session_path = gnome_util_home_file (BRASERO_SESSION_TMP_SESSION_PATH);
 	if (!session_path)
 		return FALSE;
@@ -289,7 +295,7 @@ brasero_session_save (BraseroApp *app, gboolean save_project)
 	xmlFreeTextWriter (session);
 	g_free (session_path);
 
-	return TRUE;
+	return FALSE;
 
 error:
 	xmlTextWriterEndDocument (session);
