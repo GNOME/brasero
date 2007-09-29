@@ -97,6 +97,8 @@ struct BraseroBurnDialogPrivate {
 	BraseroTrayIcon *tray;
 
 	gint close_timeout;
+
+	guint is_writing:1;
 };
 
 #define TIMEOUT	10000
@@ -161,11 +163,11 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 					      GTK_ICON_SIZE_DIALOG);
 
 		header = g_strdup_printf ("<big><b>Creating image</b></big>");
-		title = g_strdup (_("Creating image"));
+		title = g_strdup (_("Brasero - Creating image"));
 	}
 	else if (media & BRASERO_MEDIUM_DVD) {
 		if (input == BRASERO_TRACK_TYPE_DATA) {
-			title = g_strdup (_("Burning DVD"));
+			title = g_strdup (_("Brasero - Burning DVD"));
 			header = g_strdup (_("<big><b>Burning data DVD</b></big>"));
 
 			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
@@ -181,7 +183,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input == BRASERO_TRACK_TYPE_DISC) {
-			title = g_strdup (_("Copying DVD"));
+			title = g_strdup (_("Brasero - Copying DVD"));
 			header = g_strdup (_("<big><b>Copying data DVD</b></big>"));
 
 			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
@@ -191,7 +193,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
 		if (input == BRASERO_TRACK_TYPE_AUDIO) {
-			title = g_strdup (_("Burning CD"));
+			title = g_strdup (_("Brasero - Burning CD"));
 			header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
 
 			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
@@ -199,7 +201,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input == BRASERO_TRACK_TYPE_DATA) {
-			title = g_strdup (_("Burning CD"));
+			title = g_strdup (_("Brasero - Burning CD"));
 			header = g_strdup_printf (_("<big><b>Burning data CD</b></big>"));
 
 			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
@@ -207,7 +209,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input == BRASERO_TRACK_TYPE_DISC) {
-			title = g_strdup (_("Copying CD"));
+			title = g_strdup (_("Brasero - Copying CD"));
 			header = g_strdup(_("<big><b>Copying CD</b></big>"));
 
 			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
@@ -215,7 +217,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 						      GTK_ICON_SIZE_DIALOG);
 		}
 		else if (input == BRASERO_TRACK_TYPE_IMAGE) {
-			title = g_strdup (_("Burning CD"));
+			title = g_strdup (_("Brasero - Burning CD"));
 			header = g_strdup (_("<big><b>Burning image to CD</b></big>"));
 		
 			gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
@@ -224,28 +226,28 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		}
 	}
 	else if (input == BRASERO_TRACK_TYPE_AUDIO) {
-		title = g_strdup (_("Burning CD"));
+		title = g_strdup (_("Brasero - Burning CD"));
 		header = g_strdup_printf (_("<big><b>Burning audio CD</b></big>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input == BRASERO_TRACK_TYPE_DATA) {
-		title = g_strdup (_("Burning disc"));
+		title = g_strdup (_("Brasero - Burning disc"));
 		header = g_strdup_printf (_("<big><b>Burning data disc</b></big>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input == BRASERO_TRACK_TYPE_DISC) {
-		title = g_strdup (_("Copying disc"));
+		title = g_strdup (_("Brasero - Copying disc"));
 		header = g_strdup(_("<big><b>Copying disc</b></big>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
 					      "gnome-dev-removable",
 					      GTK_ICON_SIZE_DIALOG);
 	}
 	else if (input == BRASERO_TRACK_TYPE_IMAGE) {
-		title = g_strdup (_("Burning disc"));
+		title = g_strdup (_("Brasero - Burning disc"));
 		header = g_strdup (_("<big><b>Burning image to disc</b></big>"));
 		gtk_image_set_from_icon_name (GTK_IMAGE (dialog->priv->image),
 					      "gnome-dev-removable",
@@ -261,6 +263,9 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 	gtk_label_set_text (GTK_LABEL (dialog->priv->header), header);
 	gtk_label_set_use_markup (GTK_LABEL (dialog->priv->header), TRUE);
 	g_free (header);
+
+	/* it may have changed */
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), "brasero");
 }
 
 static gchar *
@@ -681,6 +686,66 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 }
 
 static void
+brasero_burn_dialog_update_title_writing_progress (BraseroBurnDialog *dialog,
+						   BraseroTrackDataType input,
+						   BraseroMedia media,
+						   guint percent)
+{
+	gchar *title = NULL;
+	gchar *icon_name;
+	guint remains;
+
+	/* This is used only when actually writing to a disc */
+	if (media == BRASERO_MEDIUM_FILE)
+		title = g_strdup_printf (_("Brasero - Creating image (%i%% done)"), percent);
+	else if (media & BRASERO_MEDIUM_DVD) {
+		if (input == BRASERO_TRACK_TYPE_DATA)
+			title = g_strdup_printf (_("Brasero - Burning DVD (%i%% done)"), percent);
+		else if (input == BRASERO_TRACK_TYPE_IMAGE)
+			title = g_strdup_printf (_("Brasero - Burning DVD (%i%% done)"), percent);
+		else if (input == BRASERO_TRACK_TYPE_DISC)
+			title = g_strdup_printf (_("Brasero - Copying DVD (%i%% done)"), percent);
+	}
+	else if (media & BRASERO_MEDIUM_CD) {
+		if (input == BRASERO_TRACK_TYPE_AUDIO)
+			title = g_strdup_printf (_("Brasero - Burning CD (%i%% done)"), percent);
+		else if (input == BRASERO_TRACK_TYPE_DATA)
+			title = g_strdup_printf (_("Brasero - Burning CD (%i%% done)"), percent);
+		else if (input == BRASERO_TRACK_TYPE_DISC)
+			title = g_strdup_printf (_("Brasero - Copying CD (%i%% done)"), percent);
+		else if (input == BRASERO_TRACK_TYPE_IMAGE)
+			title = g_strdup_printf (_("Brasero - Burning CD (%i%% done)"), percent);
+	}
+	else if (input == BRASERO_TRACK_TYPE_AUDIO)
+		title = g_strdup_printf (_("Brasero - Burning CD (%i%% done)"), percent);
+	else if (input == BRASERO_TRACK_TYPE_DATA)
+		title = g_strdup_printf (_("Brasero - Burning disc (%i%% done)"), percent);
+	else if (input == BRASERO_TRACK_TYPE_DISC)
+		title = g_strdup_printf (_("Brasero - Copying disc (%i%% done)"), percent);
+	else if (input == BRASERO_TRACK_TYPE_IMAGE)
+		title = g_strdup_printf (_("Brasero - Burning disc (%i%% done)"), percent);
+	else
+		return;
+
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	g_free (title);
+
+	/* also update the icon */
+	remains = percent % 5;
+	if (remains > 3)
+		percent += 5 - remains;
+	else
+		percent -= remains;
+
+	if (percent < 0 || percent > 100)
+		return;
+
+	icon_name = g_strdup_printf ("brasero-disc-%02i", percent);
+	gtk_window_set_icon_name (GTK_WINDOW (dialog), icon_name);
+	g_free (icon_name);
+}
+
+static void
 brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 					   gint64 written,
 					   gint64 isosize,
@@ -688,7 +753,7 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 					   gdouble overall_progress,
 					   gdouble task_progress,
 					   glong remaining,
-					   gboolean is_DVD)
+					   BraseroMedia media)
 {
 	gint mb_isosize = -1;
 	gint mb_written = -1;
@@ -699,8 +764,14 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 	if (isosize > 0)
 		mb_isosize = (gint) (isosize / 1048576);
 
+	if (task_progress >= 0.0 && dialog->priv->is_writing)
+		brasero_burn_dialog_update_title_writing_progress (dialog,
+								   dialog->priv->input.type,
+								   media,
+								   (guint) (task_progress * 100.0));
+
 	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (dialog->priv->progress),
-					  is_DVD,
+					  (media & BRASERO_MEDIUM_DVD),
 					  overall_progress,
 					  task_progress,
 					  remaining,
@@ -738,7 +809,7 @@ brasero_burn_dialog_progress_changed_cb (BraseroBurn *burn,
 						   overall_progress,
 						   task_progress,
 						   remaining,
-						   (media & BRASERO_MEDIUM_DVD));
+						   media);
 }
 
 static void
@@ -759,6 +830,25 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 				       BraseroBurnDialog *dialog)
 {
 	gchar *string = NULL;
+	gboolean is_writing;
+
+	is_writing = (action == BRASERO_BURN_ACTION_RECORDING ||
+		      action == BRASERO_BURN_ACTION_DRIVE_COPY ||
+		      action == BRASERO_BURN_ACTION_RECORDING_CD_TEXT ||
+		      action == BRASERO_BURN_ACTION_LEADIN ||
+		      action == BRASERO_BURN_ACTION_LEADOUT ||
+		      action == BRASERO_BURN_ACTION_FIXATING);
+
+	if (dialog->priv->is_writing && !is_writing) {
+		BraseroMedia media;
+
+		brasero_burn_status (burn, &media, NULL, NULL, NULL);
+		brasero_burn_dialog_update_info (dialog,
+						 dialog->priv->input.type,
+						 media);
+	}
+
+	dialog->priv->is_writing = is_writing;
 
 	brasero_burn_get_action_string (dialog->priv->burn, action, &string);
 	brasero_burn_dialog_action_changed_real (dialog, action, string);
