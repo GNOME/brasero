@@ -143,8 +143,8 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 
 			/* NOTE: this has to be a multiple of 2048 */
 			brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
-								       sectors * 2048,
-								       sectors);
+								       sectors,
+								       sectors * 2048);
 
 			/* we better tell growisofs to stop here as it returns 
 			 * a value of 1 when mkisofs is run with --print-size */

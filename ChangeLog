@@ -1,3 +1,10 @@
+2007-09-30  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a bug (specific to trunk) whereby growisofs didn't return the size of data properly
+
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_read_stderr):
+
 2007-09-30  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Improved and fixed previous patch:
