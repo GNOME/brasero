@@ -374,6 +374,10 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 	drive = brasero_burn_session_get_burner (session);
 	flags = brasero_burn_session_get_flags (session);
 
+	/* FIXME: if we can't recover the size of the medium 
+	 * what should we do ? do as if we could ?
+	 */
+
 	/* see if we are appending or not */
 	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
 		NCB_MEDIA_GET_FREE_SPACE (drive, NULL, &media_blocks);

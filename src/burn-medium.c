@@ -169,6 +169,7 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium)
 
 	if (!track)
 		return -1;
+
 	return track->start;
 }
 
@@ -253,6 +254,15 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
+	if (!priv->tracks) {
+		if (size)
+			*size = priv->block_num * priv->block_size;
+
+		if (blocks)
+			*blocks = priv->block_num;
+		return;
+	}
+
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroMediumTrack *tmp;
 
@@ -263,11 +273,23 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 		}
 	}
 
-	if (size)
-		*size = track ? track->blocks_num * priv->block_size: -1;
+	if (size) {
+		if (!track)
+			*size = -1;
+		else if (!track->blocks_num)
+			*size = (priv->block_num - track->start) * priv->block_size;
+		else
+			*size = track->blocks_num * priv->block_size;
+	}
 
-	if (blocks)
-		*blocks = track ? track->blocks_num: -1;
+	if (blocks) {
+		if (!track)
+			*blocks = -1;
+		else if (!track->blocks_num)
+			*blocks = priv->block_num - track->blocks_num;
+		else
+			*blocks = track->blocks_num;
+	}
 }
 
 void
@@ -930,11 +952,19 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	 * use the old value.
 	 * That's important for checksuming to have a perfect account of the 
 	 * data size. */
-	if (track->blocks_num == 300)
+	if (track->blocks_num == 300) {
+		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
 		brasero_medium_track_volume_size (self, track, fd);
+	}
 
 	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
+
+	BRASERO_BURN_LOG ("Track %i: type = %i start = %lli size = %lli",
+			  track_num,
+			  track->type,
+			  track->start,
+			  track->blocks_num);
 
 	return BRASERO_BURN_OK;
 }
@@ -1036,29 +1066,11 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		}
 	}
 
-	/* we shouldn't request info on leadout if the disc is closed (except
-	 * for DVD+/- (restricted) RW */
-	if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
-		BraseroMediumTrack *track;
-
-		track = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_prepend (priv->tracks, track);
-		track->start = BRASERO_GET_32 (desc->track_start);
-		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
-
-		brasero_medium_track_get_info (self,
-					       track,
-					       g_slist_length (priv->tracks),
-					       fd,
-					       code);
-	}
-
 	/* put the tracks in the right order */
 	priv->tracks = g_slist_reverse (priv->tracks);
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-		GSList *node;
 		BraseroMediumTrack *leadout, *track;
 
 		track = g_new0 (BraseroMediumTrack, 1);
@@ -1066,14 +1078,14 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		track->start = BRASERO_GET_32 (desc->track_start);
 		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 
-		brasero_medium_track_get_info (self,
-					       track,
-					       g_slist_length (priv->tracks),
-					       fd,
-					       code);
-		node = g_slist_last (priv->tracks);
-		leadout = node->data;
+		/* we fabricate the leadout here. We don't really need one in 
+		 * fact since it is always at the last sector whatever the
+		 * amount of data written. So we need in fact to read the file
+		 * system and get the last sector from it. Hopefully it won't be
+		 * buggy */
+		priv->next_wr_add = 0;
 
+		leadout = track;
 		if (g_slist_length (priv->tracks) > 1) {
 			BraseroMediumTrack *track;
 
@@ -1084,6 +1096,22 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			leadout->blocks_num = leadout->start;
 			leadout->start = 0;
 		}
+	}
+	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
+		BraseroMediumTrack *track;
+
+		/* we shouldn't request info on leadout if the disc is closed
+		 * (except for DVD+/- (restricted) RW (see above) */
+		track = g_new0 (BraseroMediumTrack, 1);
+		priv->tracks = g_slist_append (priv->tracks, track);
+		track->start = BRASERO_GET_32 (desc->track_start);
+		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+
+		brasero_medium_track_get_info (self,
+					       track,
+					       g_slist_length (priv->tracks),
+					       fd,
+					       code);
 	}
 
 	g_free (toc);
