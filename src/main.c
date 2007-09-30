@@ -136,7 +136,7 @@ static const GOptionEntry options [] = {
 static gboolean
 on_delete_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 {
-	return brasero_session_save (app, TRUE);
+	return brasero_session_save (app, TRUE, TRUE);
 }
 
 static gboolean
@@ -149,7 +149,7 @@ on_destroy_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 void
 on_exit_cb (GtkAction *action, BraseroApp *app)
 {
-	if (!brasero_session_save (app, TRUE))
+	if (brasero_session_save (app, TRUE, TRUE))
 		return;
 
 	gtk_widget_destroy (app->mainwin);

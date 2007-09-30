@@ -2013,7 +2013,8 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 }
 
 static GtkResponseType
-brasero_project_save_project_dialog (BraseroProject *project)
+brasero_project_save_project_dialog (BraseroProject *project,
+				     gboolean show_cancel)
 {
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
@@ -2032,17 +2033,25 @@ brasero_project_save_project_dialog (BraseroProject *project)
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("If you don't save, changes will be permanently lost."));
 
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-				_("_Close without saving"), GTK_RESPONSE_CANCEL,
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				GTK_STOCK_SAVE, GTK_RESPONSE_YES,
-				NULL);
+	if (show_cancel)
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+					_("_Close without saving"), GTK_RESPONSE_NO,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					GTK_STOCK_SAVE, GTK_RESPONSE_YES,
+					NULL);
+	else
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+					_("_Close without saving"), GTK_RESPONSE_NO,
+					GTK_STOCK_SAVE, GTK_RESPONSE_YES,
+					NULL);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	if (result == GTK_RESPONSE_CANCEL
-	||  result == GTK_RESPONSE_DELETE_EVENT)
+	if (result == GTK_RESPONSE_CANCEL)
+		return GTK_RESPONSE_CANCEL;
+
+	if (show_cancel && result == GTK_RESPONSE_DELETE_EVENT)
 		return GTK_RESPONSE_CANCEL;
 
 	if (result != GTK_RESPONSE_YES)
@@ -2389,7 +2398,8 @@ brasero_project_save_project_as (BraseroProject *project)
 
 gboolean
 brasero_project_save_session (BraseroProject *project,
-			      const gchar *uri)
+			      const gchar *uri,
+			      gboolean show_cancel)
 {
     	BraseroDiscTrack track;
 
@@ -2403,7 +2413,7 @@ brasero_project_save_session (BraseroProject *project,
 		}
 
 		/* ask the user if he wants to save the changes */
-		answer = brasero_project_save_project_dialog (project);
+		answer = brasero_project_save_project_dialog (project, show_cancel);
 		if (answer == GTK_RESPONSE_CANCEL)
 			return TRUE;
 
@@ -2430,7 +2440,7 @@ brasero_project_save_session (BraseroProject *project,
 
 		/* the project wasn't saved but burnt ask if the user wants to
 		 * keep it for another time by saving it */
-		answer = brasero_project_save_project_dialog (project);
+		answer = brasero_project_save_project_dialog (project, show_cancel);
 		if (answer == GTK_RESPONSE_CANCEL)
 			return TRUE;
 

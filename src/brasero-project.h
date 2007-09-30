@@ -85,7 +85,9 @@ brasero_project_save_project_as (BraseroProject *project);
 BraseroProjectType
 brasero_project_load_session (BraseroProject *project, const gchar *uri);
 gboolean
-brasero_project_save_session (BraseroProject *project, const gchar *uri);
+brasero_project_save_session (BraseroProject *project,
+			      const gchar *uri,
+			      gboolean show_cancel);
 
 void
 brasero_project_register_menu (BraseroProject *project, GtkUIManager *manager);

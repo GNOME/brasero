@@ -847,6 +847,7 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
+				      gboolean cancellable,
 				      gint *position)
 {
     	gboolean result = FALSE;
@@ -862,7 +863,8 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 	 	 * DataDisc has not finished exploration */
 		uri = gnome_vfs_make_uri_from_input (path);
     		result = brasero_project_save_session (BRASERO_PROJECT (manager->priv->project),
-						       uri);
+						       uri,
+						       cancellable);
 		g_free (uri);
 	}
 

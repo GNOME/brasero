@@ -74,6 +74,7 @@ brasero_project_manager_empty (BraseroProjectManager *manager);
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
+				      gboolean cancellable,
 				      gint *pos);
 gboolean
 brasero_project_manager_load_session (BraseroProjectManager *manager,

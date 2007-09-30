@@ -1,4 +1,21 @@
-2007-09-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2007-09-30  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Improved and fixed previous patch:
+	- fixed not working buttons
+	- don't show cancel button if we must die (session is closing)
+
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_save_session):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c: (brasero_project_save_project_dialog),
+	(brasero_project_save_session):
+	* src/brasero-project.h:
+	* src/brasero-session.c: (brasero_session_save),
+	(brasero_session_die_cb), (brasero_session_save_yourself_cb):
+	* src/brasero-session.h:
+	* src/main.c: (on_delete_cb), (on_exit_cb)
+
+2007-09-29  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	* src/brasero-project-manager.c:
 	(brasero_project_manager_save_session):

@@ -43,7 +43,9 @@ brasero_session_connect (BraseroApp *app);
 void
 brasero_session_disconnect (BraseroApp *app);
 gboolean
-brasero_session_save (BraseroApp *app, gboolean save_project);
+brasero_session_save (BraseroApp *app,
+		      gboolean save_project,
+		      gboolean cancellable);
 gboolean
 brasero_session_load (BraseroApp *app, gboolean load_project);
 

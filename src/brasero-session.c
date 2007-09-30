@@ -202,7 +202,9 @@ end:
 }
 
 gboolean
-brasero_session_save (BraseroApp *app, gboolean save_project)
+brasero_session_save (BraseroApp *app,
+		      gboolean save_project,
+		      gboolean cancellable)
 {
 	gint success;
 	gint pane_pos;
@@ -218,6 +220,7 @@ brasero_session_save (BraseroApp *app, gboolean save_project)
 
     	cancel = brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
 						       project_path,
+						       cancellable,
 						       &pane_pos);
     	g_free (project_path);
 
@@ -310,7 +313,7 @@ static void
 brasero_session_die_cb (GnomeClient *client_loc,
 			BraseroApp *app)
 {
-	brasero_session_save (app, FALSE);
+	brasero_session_save (app, FALSE, FALSE);
 	gtk_widget_destroy (app->mainwin);
 }
 
@@ -327,7 +330,7 @@ brasero_session_save_yourself_cb (GnomeClient *client_loc,
     	gchar *argv [] = { 	"brasero",
 				NULL	};
 
-    	brasero_session_save (app, TRUE);
+    	brasero_session_save (app, TRUE, FALSE);
 	gnome_client_set_clone_command (client_loc,
 					argc,
 					argv);
