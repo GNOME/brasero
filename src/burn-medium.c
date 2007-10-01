@@ -226,6 +226,17 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
+	if (!priv->tracks) {
+		/* that's probably because it wasn't possible to retrieve info */
+		if (size)
+			*size = 0;
+
+		if (blocks)
+			*blocks = 0;
+
+		return;
+	}
+
 	for (iter = priv->tracks; iter; iter = iter->next) {
 		BraseroMediumTrack *tmp;
 
@@ -237,10 +248,10 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 	}
 
 	if (size)
-		*size = track ? (track->start + track->blocks_num) * priv->block_size: -1;
+		*size = track ? (track->start + track->blocks_num) * priv->block_size: 0;
 
 	if (blocks)
-		*blocks = track ? track->start + track->blocks_num: -1;
+		*blocks = track ? track->start + track->blocks_num: 0;
 }
 
 void
@@ -255,11 +266,24 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	if (!priv->tracks) {
-		if (size)
-			*size = priv->block_num * priv->block_size;
+		/* that's probably because it wasn't possible to retrieve info.
+		 * maybe it also happens with unformatted DVD+RW */
 
-		if (blocks)
-			*blocks = priv->block_num;
+		if (priv->info & BRASERO_MEDIUM_CLOSED) {
+			if (size)
+				*size = 0;
+
+			if (blocks)
+				*blocks = 0;
+		}
+		else {
+			if (size)
+				*size = priv->block_num * priv->block_size;
+
+			if (blocks)
+				*blocks = priv->block_num;
+		}
+
 		return;
 	}
 
@@ -274,8 +298,11 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 	}
 
 	if (size) {
-		if (!track)
-			*size = -1;
+		if (!track) {
+			/* No leadout was found so the disc is probably closed:
+			 * no free space left. */
+			*size = 0;
+		}
 		else if (!track->blocks_num)
 			*size = (priv->block_num - track->start) * priv->block_size;
 		else
@@ -283,8 +310,11 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 	}
 
 	if (blocks) {
-		if (!track)
-			*blocks = -1;
+		if (!track) {
+			/* No leadout was found so the disc is probably closed:
+			 * no free space left. */
+			*blocks = 0;
+		}
 		else if (!track->blocks_num)
 			*blocks = priv->block_num - track->blocks_num;
 		else
@@ -344,6 +374,10 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 	priv->block_num = BRASERO_MSF_TO_LBA (atip_data.desc->leadout_mn,
 					      atip_data.desc->leadout_sec,
 					      atip_data.desc->leadout_frame);
+
+	BRASERO_BURN_LOG ("Format capacity %lli %lli",
+			  priv->block_num,
+			  priv->block_size);
 
 	return BRASERO_BURN_OK;
 }
@@ -409,6 +443,10 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 		priv->block_num = BRASERO_GET_32 (current->blocks_num);
 		priv->block_size = BRASERO_GET_24 (current->block_size);
 	}
+
+	BRASERO_BURN_LOG ("Format capacity %lli %lli",
+			  priv->block_num,
+			  priv->block_size);
 
 	g_free (hdr);
 	return BRASERO_BURN_OK;
@@ -969,6 +1007,43 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
+static void
+brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
+					gint32 start)
+{
+	BraseroMediumTrack *leadout;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Adding fabricated leadout start = %i length = %lli",
+			  start,
+			  priv->block_num);
+
+	leadout = g_new0 (BraseroMediumTrack, 1);
+	priv->tracks = g_slist_append (priv->tracks, leadout);
+
+	leadout->start = start;
+	leadout->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+
+	/* we fabricate the leadout here. We don't really need one in 
+	 * fact since it is always at the last sector whatever the
+	 * amount of data written. So we need in fact to read the file
+	 * system and get the last sector from it. Hopefully it won't be
+	 * buggy */
+	priv->next_wr_add = 0;
+
+	if (g_slist_length (priv->tracks) > 1) {
+		BraseroMediumTrack *track;
+
+		track = priv->tracks->data;
+		leadout->blocks_num -= (track->blocks_num > 300) ?
+					track->blocks_num : 300;
+	}
+	else
+		leadout->blocks_num = priv->block_num;
+}
+
 static BraseroBurnResult
 brasero_medium_get_sessions_info (BraseroMedium *self,
 				  int fd,
@@ -1070,33 +1145,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	priv->tracks = g_slist_reverse (priv->tracks);
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-		BraseroMediumTrack *leadout, *track;
-
-		track = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_append (priv->tracks, track);
-		track->start = BRASERO_GET_32 (desc->track_start);
-		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
-
-		/* we fabricate the leadout here. We don't really need one in 
-		 * fact since it is always at the last sector whatever the
-		 * amount of data written. So we need in fact to read the file
-		 * system and get the last sector from it. Hopefully it won't be
-		 * buggy */
-		priv->next_wr_add = 0;
-
-		leadout = track;
-		if (g_slist_length (priv->tracks) > 1) {
-			BraseroMediumTrack *track;
-
-			track = priv->tracks->data;
-			leadout->blocks_num -= track->blocks_num;
-		}
-		else {
-			leadout->blocks_num = leadout->start;
-			leadout->start = 0;
-		}
-	}
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		brasero_medium_add_DVD_plus_RW_leadout (self, BRASERO_GET_32 (desc->track_start));
 	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
 		BraseroMediumTrack *track;
 
@@ -1155,15 +1205,21 @@ brasero_medium_get_contents (BraseroMedium *self,
 		priv->info |= BRASERO_MEDIUM_BLANK;
 		priv->block_size = 2048;
 
-		track = g_new0 (BraseroMediumTrack, 1);
-		track->start = 0;
-		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
-		priv->tracks = g_slist_prepend (priv->tracks, track);
-		brasero_medium_track_get_info (self,
-					       track,
-					       1,
-					       fd,
-					       code);
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+			brasero_medium_add_DVD_plus_RW_leadout (self, 0);
+		else {
+			track = g_new0 (BraseroMediumTrack, 1);
+			track->start = 0;
+			track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+			priv->tracks = g_slist_prepend (priv->tracks, track);
+			
+			brasero_medium_track_get_info (self,
+						       track,
+						       1,
+						       fd,
+						       code);
+		}
 		goto end;
 	}
 
@@ -1199,6 +1255,8 @@ brasero_medium_init_real (BraseroMedium *object, int fd)
 	if (result != BRASERO_BURN_OK)
 		return;
 
+	brasero_medium_get_capacity_by_type (object, fd, &code);
+
 	result = brasero_medium_get_contents (object, fd, &code);
 	if (result != BRASERO_BURN_OK)
 		return;
@@ -1208,7 +1266,6 @@ brasero_medium_init_real (BraseroMedium *object, int fd)
 	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_ROM)))
 		brasero_medium_get_css_feature (object, fd, &code);
 
-	brasero_medium_get_capacity_by_type (object, fd, &code);
 	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
 }
 
