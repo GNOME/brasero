@@ -303,7 +303,7 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 			 * no free space left. */
 			*size = 0;
 		}
-		else if (!track->blocks_num)
+		else if (track->blocks_num <= 0)
 			*size = (priv->block_num - track->start) * priv->block_size;
 		else
 			*size = track->blocks_num * priv->block_size;
@@ -315,7 +315,7 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 			 * no free space left. */
 			*blocks = 0;
 		}
-		else if (!track->blocks_num)
+		else if (track->blocks_num <= 0)
 			*blocks = priv->block_num - track->blocks_num;
 		else
 			*blocks = track->blocks_num;
@@ -998,7 +998,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
 
-	BRASERO_BURN_LOG ("Track %i: type = %i start = %lli size = %lli",
+	BRASERO_BURN_LOG ("Track %i: type = %i start = %llu size = %llu",
 			  track_num,
 			  track->type,
 			  track->start,
@@ -1016,10 +1016,6 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Adding fabricated leadout start = %i length = %lli",
-			  start,
-			  priv->block_num);
-
 	leadout = g_new0 (BraseroMediumTrack, 1);
 	priv->tracks = g_slist_append (priv->tracks, leadout);
 
@@ -1033,15 +1029,16 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
 	 * buggy */
 	priv->next_wr_add = 0;
 
+	leadout->blocks_num = priv->block_num;
 	if (g_slist_length (priv->tracks) > 1) {
 		BraseroMediumTrack *track;
 
 		track = priv->tracks->data;
-		leadout->blocks_num -= (track->blocks_num > 300) ?
-					track->blocks_num : 300;
+		leadout->blocks_num -= ((track->blocks_num > 300) ? track->blocks_num : 300);
 	}
-	else
-		leadout->blocks_num = priv->block_num;
+	BRASERO_BURN_LOG ("Adding fabricated leadout start = %llu length = %llu",
+			  leadout->start,
+			  leadout->blocks_num);
 }
 
 static BraseroBurnResult
