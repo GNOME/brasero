@@ -632,14 +632,30 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
-	/* ... and DVDs */
+	/* ... and DVDs +-R ... */
 	brasero_plugin_set_flags (plugin,
-				  media_dvd_w,
+				  BRASERO_MEDIUM_DVDR|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA|
+				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* NOTE: DVD+R don't have a dummy mode */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
@@ -647,8 +663,12 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
+	/* ... and finally DVDs +-RW */
 	brasero_plugin_set_flags (plugin,
-				  media_dvd_rw,
+				  BRASERO_MEDIUM_DVDRW|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA|
+				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -656,20 +676,32 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
+
 	output = brasero_caps_disc_new (media_dvd_rw);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
-	/* NOTE: libburn can't append anything to DVDRW+ and restricted */
+	/* NOTE: libburn can't append anything to DVDRW+ and restricted
+	 * moreover DVD+ R/RW don't have a dummy mode. */
 	brasero_plugin_set_flags (plugin,
-				  media_dvd_rw_plus,
+				  BRASERO_MEDIUM_DVDRW_RESTRICTED|
+				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
-	
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
 	output = brasero_caps_disc_new (media_dvd_rw_plus);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
@@ -699,7 +731,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_blank_flags (plugin,
 					BRASERO_MEDIUM_CD|
 					BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_SEQUENTIAL|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_REWRITABLE|
@@ -708,6 +739,16 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_HAS_AUDIO,
 					BRASERO_BURN_FLAG_DUMMY|
+					BRASERO_BURN_FLAG_NOGRACE|
+					BRASERO_BURN_FLAG_FAST_BLANK,
+					BRASERO_BURN_FLAG_NONE);
+
+	/* no dummy mode for DVD+RW */
+	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_DVDRW_PLUS|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_HAS_DATA,
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);

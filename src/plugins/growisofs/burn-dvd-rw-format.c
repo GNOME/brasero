@@ -184,18 +184,14 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 					media|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED,
-					BRASERO_BURN_FLAG_DUMMY|
 					BRASERO_BURN_FLAG_NOGRACE,
 					BRASERO_BURN_FLAG_NONE);
-
 	brasero_plugin_set_blank_flags (plugin,
 					media|
 					BRASERO_MEDIUM_SEQUENTIAL,
-					BRASERO_BURN_FLAG_DUMMY|
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 	
-
 	return BRASERO_BURN_OK;
 }

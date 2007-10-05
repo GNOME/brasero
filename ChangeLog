@@ -1,5 +1,16 @@
 2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix the dummy mode that isn't available for DVD + R/RW
+
+	* src/plugins/growisofs/burn-dvd-rw-format.c:
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libburn.c:
+	(brasero_libburn_export_caps):
+
+2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix a small bug where user could choose 76 frames in song properties dialog
 
 	* src/brasero-time-button.c: (brasero_time_button_sec_changed),
