@@ -58,7 +58,6 @@ struct BraseroBlankDialogPrivate {
 	BraseroBurnCaps *caps;
 
 	GtkWidget *fast;
-	GtkWidget *dummy;
 
 	guint caps_sig;
 	guint output_sig;
@@ -142,13 +141,6 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 							    supported,
 							    compulsory);
 
-	priv->fast_saved = brasero_blank_dialog_set_button (priv->session,
-							    priv->dummy_saved,
-							    priv->dummy,
-							    BRASERO_BURN_FLAG_DUMMY,
-							    supported,
-							    compulsory);
-
 	if (result == BRASERO_BURN_NOT_SUPPORTED) {
 		GtkWidget *message;
 
@@ -178,19 +170,6 @@ brasero_blank_dialog_output_changed (BraseroBurnSession *session,
 				     BraseroBlankDialog *dialog)
 {
 	brasero_blank_dialog_device_opts_setup (dialog);
-}
-
-static void
-brasero_blank_dialog_dummy_toggled (GtkToggleButton *toggle,
-				    BraseroBlankDialog *self)
-{
-	BraseroBlankDialogPrivate *priv;
-
-	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
-	if (gtk_toggle_button_get_active (toggle))
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
-	else
-		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
 }
 
 static void
@@ -377,14 +356,8 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 			  "clicked",
 			  G_CALLBACK (brasero_blank_dialog_fast_toggled),
 			  obj);
-	priv->dummy = gtk_check_button_new_with_label (_("simulation"));
-	g_signal_connect (priv->dummy,
-			  "clicked",
-			  G_CALLBACK (brasero_blank_dialog_dummy_toggled),
-			  obj);
 
 	brasero_tool_dialog_pack_options (BRASERO_TOOL_DIALOG (obj),
-					  priv->dummy,
 					  priv->fast,
 					  NULL);
 

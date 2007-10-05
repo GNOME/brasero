@@ -1075,7 +1075,6 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_set_blank_flags (plugin,
 					media_rw,
-					BRASERO_BURN_FLAG_DUMMY|
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);

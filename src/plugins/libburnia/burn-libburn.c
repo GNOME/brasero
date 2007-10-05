@@ -738,7 +738,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_HAS_AUDIO,
-					BRASERO_BURN_FLAG_DUMMY|
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
