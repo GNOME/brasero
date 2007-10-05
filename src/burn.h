@@ -64,6 +64,8 @@ typedef struct {
 	BraseroBurnResult		(*warn_audio_to_appendable)	(BraseroBurn *obj);
 	BraseroBurnResult		(*warn_rewritable)		(BraseroBurn *obj);
 
+	BraseroBurnResult		(*dummy_success)		(BraseroBurn *obj);
+
 	void				(*progress_changed)		(BraseroBurn *obj,
 									 gdouble overall_progress,
 									 gdouble action_progress,

@@ -1,5 +1,24 @@
 2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #433965 bad behaviour for simulating burn process
+
+	* src/brasero-burn-dialog.c: (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_dummy_success_timeout),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_setup_session):
+	* src/brasero-tray.c:
+	* src/brasero-utils.c: (brasero_utils_make_button):
+	* src/burn.c: (brasero_burn_emit_signal),
+	(brasero_burn_eject_dest_media), (brasero_burn_eject_src_media),
+	(brasero_burn_lock_dest_media), (brasero_burn_ask_for_joliet),
+	(brasero_burn_run_tasks), (brasero_burn_unset_checksums),
+	(brasero_burn_record_session), (brasero_burn_same_src_dest),
+	(brasero_burn_record), (brasero_burn_class_init):
+	* src/burn.h:
+
+2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix the dummy mode that isn't available for DVD + R/RW
 
 	* src/plugins/growisofs/burn-dvd-rw-format.c:

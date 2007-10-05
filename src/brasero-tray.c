@@ -93,7 +93,7 @@ static GtkActionEntry entries[] = {
 };
 
 static GtkToggleActionEntry toggle_entries[] = {
-	{"Close", NULL, N_("Close if successfull"), NULL, N_("Display file chooser"),
+	{"Close", NULL, N_("Close if successful"), NULL, N_("Display file chooser"),
 	 G_CALLBACK (brasero_tray_icon_close_toggled_cb), FALSE},
 	{"Show", NULL, N_("Show dialog"), NULL, N_("Show dialog"),
 	 G_CALLBACK (brasero_tray_icon_show_cb), TRUE,},

@@ -123,6 +123,7 @@ typedef enum {
 	INSERT_MEDIA_REQUEST_SIGNAL,
 	PROGRESS_CHANGED_SIGNAL,
 	ACTION_CHANGED_SIGNAL,
+	DUMMY_SUCCESS_SIGNAL,
 	LAST_SIGNAL
 } BraseroBurnSignalType;
 
@@ -130,8 +131,9 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
 #define BRASERO_BURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN, BraseroBurnPrivate))
 
-#define MAX_MOUNT_ATTEMPS 10
-#define MOUNT_TIMEOUT 500
+#define MAX_EJECT_WAIT_TIME	20000
+#define MAX_MOUNT_ATTEMPS	10
+#define MOUNT_TIMEOUT		500
 
 static GObjectClass *parent_class = NULL;
 
@@ -177,7 +179,7 @@ brasero_burn_log (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
-brasero_burn_emit_signal (BraseroBurn *burn, guint signal)
+brasero_burn_emit_signal (BraseroBurn *burn, guint signal, BraseroBurnResult default_answer)
 {
 	GValue instance_and_params;
 	GValue return_value;
@@ -188,7 +190,7 @@ brasero_burn_emit_signal (BraseroBurn *burn, guint signal)
 
 	return_value.g_type = 0;
 	g_value_init (&return_value, G_TYPE_INT);
-	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+	g_value_set_int (&return_value, default_answer);
 
 	g_signal_emitv (&instance_and_params,
 			brasero_burn_signals [signal],
@@ -300,7 +302,7 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 		brasero_burn_sleep (self, 500);
 		elapsed += 500;
 
-		if (elapsed > 10000)
+		if (elapsed > MAX_EJECT_WAIT_TIME)
 			break;
 	}
 
@@ -367,7 +369,7 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 		brasero_burn_sleep (self, 500);
 		elapsed += 500;
 
-		if (elapsed > 10000)
+		if (elapsed > MAX_EJECT_WAIT_TIME)
 			break;
 	}
 
@@ -807,7 +809,7 @@ again:
 		
 		/* we warn the user is going to lose data even if in the case of
 		 * DVD+/-RW we don't really blank the disc we rather overwrite */
-		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL);
+		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL, BRASERO_BURN_CANCEL);
 		if (result != BRASERO_BURN_OK)
 			goto end;
 	}
@@ -819,7 +821,7 @@ again:
 			 * append audio to appendable disc. That's because audio
 			 * tracks have little chance to be readable by common CD
 			 * player as last tracks */
-			result = brasero_burn_emit_signal (burn, WARN_AUDIO_TO_APPENDABLE_SIGNAL);
+			result = brasero_burn_emit_signal (burn, WARN_AUDIO_TO_APPENDABLE_SIGNAL, BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
@@ -832,7 +834,7 @@ again:
 			/* warn the users that their previous data
 			 * session (s) will not be mounted by default by
 			 * the OS and that it'll be invisible */
-			result = brasero_burn_emit_signal (burn, WARN_PREVIOUS_SESSION_LOSS_SIGNAL);
+			result = brasero_burn_emit_signal (burn, WARN_PREVIOUS_SESSION_LOSS_SIGNAL, BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
@@ -846,7 +848,7 @@ again:
 		 * we are interested in is if it is AUDIO or not or if
 		 * the disc we are copying has audio tracks only or not */
 		if (input.type == BRASERO_TRACK_TYPE_AUDIO) {
-			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL);
+			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL, BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
@@ -855,7 +857,7 @@ again:
 		 * emitted */
 		if (input.type == BRASERO_TRACK_TYPE_DISC
 		&& (input.subtype.media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == BRASERO_MEDIUM_HAS_AUDIO) {
-			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL);
+			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL, BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
@@ -1205,7 +1207,7 @@ brasero_burn_ask_for_joliet (BraseroBurn *burn)
 	GSList *tracks;
 	GSList *iter;
 
-	result = brasero_burn_emit_signal (burn, ASK_DISABLE_JOLIET_SIGNAL);
+	result = brasero_burn_emit_signal (burn, ASK_DISABLE_JOLIET_SIGNAL, BRASERO_BURN_CANCEL);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -1488,7 +1490,9 @@ start:
 
 /* FIXME: for the moment we don't allow for mixed CD type */
 static BraseroBurnResult
-brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
+brasero_burn_run_tasks (BraseroBurn *burn,
+			gboolean erase_allowed,
+			GError **error)
 {
 	BraseroBurnResult result;
 	GSList *tasks, *next, *iter;
@@ -1524,10 +1528,18 @@ brasero_burn_run_tasks (BraseroBurn *burn, GError **error)
 		/* see what type of task it is. It could be a blank/erase one */
 		action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (priv->task));
 		if (action == BRASERO_TASK_ACTION_ERASE) {
-			result = brasero_burn_run_eraser (burn, error);
-
-			if (result != BRASERO_BURN_OK)
-				break;;
+			/* this is to avoid a potential problem when running a 
+			 * dummy session first. When running dummy session the 
+			 * media gets erased if need be. Since it is not
+			 * reloaded afterwards, for brasero it has still got 
+			 * data on it when we get to the real recording. */
+			if (erase_allowed) {
+				result = brasero_burn_run_eraser (burn, error);
+				if (result != BRASERO_BURN_OK)
+					break;
+			}
+			else
+				result = BRASERO_BURN_OK;
 
 			g_object_unref (priv->task);
 			priv->task = NULL;
@@ -1796,8 +1808,29 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	return BRASERO_BURN_OK;
 }
 
+static void
+brasero_burn_unset_checksums (BraseroBurn *self)
+{
+	GSList *tracks;
+	BraseroBurnPrivate *priv;
+
+	priv = BRASERO_BURN_PRIVATE (self);
+
+	tracks = brasero_burn_session_get_tracks (priv->session);
+	for (; tracks; tracks = tracks->next) {
+		BraseroTrack *track;
+
+		/* unset checksum (might depend from copy to another). */
+		track = tracks->data;
+		brasero_track_set_checksum (track,
+					    BRASERO_CHECKSUM_NONE,
+					    NULL);
+	}
+}
+
 static BraseroBurnResult
 brasero_burn_record_session (BraseroBurn *burn,
+			     gboolean erase_allowed,
 			     GError **error)
 {
 	BraseroTrack *track = NULL;
@@ -1808,6 +1841,10 @@ brasero_burn_record_session (BraseroBurn *burn,
 	GSList *tracks;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
+
+	/* unset checksum since no image has the exact same even if it is 
+	 * created from the same files */
+	brasero_burn_unset_checksums (burn);
 
 	do {
 		/* push the session settings to keep the original session untainted */
@@ -1825,7 +1862,9 @@ brasero_burn_record_session (BraseroBurn *burn,
 			ret_error = NULL;
 		}
 
-		result = brasero_burn_run_tasks (burn, &ret_error);
+		result = brasero_burn_run_tasks (burn,
+						 erase_allowed,
+						 &ret_error);
 
 		/* restore the session settings */
 		brasero_burn_session_pop_settings (priv->session);
@@ -1841,12 +1880,35 @@ brasero_burn_record_session (BraseroBurn *burn,
 		return result;
 	}
 
-	/* recording was successfull, so tell it */
+	/* recording was successful, so tell it */
 	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
 	if (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_DUMMY) {
-		/* no need to check if it was dummy */
-		return BRASERO_BURN_OK;
+		/* if we are in dummy mode and successfully completed then:
+		 * - no need to checksum the media afterward (done later)
+		 * - no eject to have automatic real burning */
+	
+		BRASERO_BURN_DEBUG (burn, "Dummy session successfully finished");
+
+		/* need to try again but this time for real */
+		result = brasero_burn_emit_signal (burn,
+						   DUMMY_SUCCESS_SIGNAL,
+						   BRASERO_BURN_OK);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		/* unset checksum since no image has the exact same even if it
+		 * is created from the same files */
+		brasero_burn_unset_checksums (burn);
+
+		/* remove dummy flag and restart real burning calling ourselves
+		 * NOTE: don't bother to push the session. We know the changes 
+		 * that were made. */
+		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
+		result = brasero_burn_record_session (burn, FALSE, error);
+		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
+
+		return result;
 	}
 
 	/* see if we have a checksum generated for the session if so use
@@ -2012,7 +2074,7 @@ brasero_burn_same_src_dest (BraseroBurn *self,
 		goto end;
 
 	/* run */
-	result = brasero_burn_record_session (self, error);
+	result = brasero_burn_record_session (self, TRUE, error);
 	if (result != BRASERO_BURN_OK) {
 		brasero_burn_unlock_src_media (self);
 		goto end;
@@ -2080,28 +2142,14 @@ brasero_burn_record (BraseroBurn *burn,
 			goto end;
 	}
 
-	/* burn the session a first time whatever the number of copies required */
-	result = brasero_burn_record_session (burn, error);
+	/* burn the session a first time whatever the number of copies required except if dummy session */
+	result = brasero_burn_record_session (burn, TRUE, error);
 	if (result == BRASERO_BURN_OK) {
 		gint num_copies;
 
 		/* burn all other required copies */
 		num_copies = brasero_burn_session_get_num_copies (session);
 		while (--num_copies > 0 && result == BRASERO_BURN_OK) {
-			GSList *tracks;
-
-			tracks = brasero_burn_session_get_tracks (session);
-			for (; tracks; tracks = tracks->next) {
-				BraseroTrack *track;
-
-				/* unset checksum (might depend from copy to 
-				 * another). */
-				track = tracks->data;
-				brasero_track_set_checksum (track,
-							    BRASERO_CHECKSUM_NONE,
-							    NULL);
-			}
-
 			BRASERO_BURN_LOG ("Burning additional copies (%i left)",
 					  num_copies);
 
@@ -2116,7 +2164,7 @@ brasero_burn_record (BraseroBurn *burn,
 			if (brasero_burn_session_get_input_type (session, NULL) != BRASERO_TRACK_TYPE_DISC)
 				brasero_burn_unlock_src_media (burn);
 
-			result = brasero_burn_record_session (burn, error);
+			result = brasero_burn_record_session (burn, TRUE, error);
 			if (result != BRASERO_BURN_OK)
 				break;
 		}
@@ -2156,7 +2204,7 @@ end:
 	brasero_burn_powermanagement (burn, FALSE);
 #endif
 
-	/* release session object */
+	/* release session */
 	g_object_unref (priv->session);
 	priv->session = NULL;
 
@@ -2402,6 +2450,15 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      G_TYPE_NONE, 
 			      1,
 			      G_TYPE_INT);
+        brasero_burn_signals [DUMMY_SUCCESS_SIGNAL] =
+		g_signal_new ("dummy_success",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BraseroBurnClass,
+					       dummy_success),
+			      NULL, NULL,
+			      brasero_marshal_INT__VOID,
+			      G_TYPE_INT, 0);
 }
 
 static void
