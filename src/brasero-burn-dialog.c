@@ -1001,7 +1001,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	gtk_window_set_title (GTK_WINDOW (message), _("Successful simulation"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Real disc burning will take place in 10 seconds"));
+						  _("Real disc burning will take place in 10 seconds."));
 
 	id = g_timeout_add (10000,
 			    brasero_burn_dialog_dummy_success_timeout,
