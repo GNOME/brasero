@@ -1,5 +1,22 @@
 2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix a few tooltips and add some missing ones.
+	see #481350 – Tooltips in burn dialog.
+	Reworked patch by Carl-Anton Ingmarsson 
+
+	* src/brasero-dest-selection.c: (brasero_dest_selection_init):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_init):
+	* src/brasero-drive-selection.c:
+	(brasero_drive_selection_set_tooltip):
+	* src/brasero-drive-selection.h:
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_init):
+	* src/brasero-player.c: (brasero_player_create_controls_stream):
+	* src/brasero-src-selection.c: (brasero_src_selection_init):
+
+2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #433965 bad behaviour for simulating burn process
 
 	* src/brasero-burn-dialog.c: (brasero_burn_dialog_update_info),

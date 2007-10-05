@@ -493,9 +493,6 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			    FALSE,
 			    6);
 
-	gtk_widget_set_tooltip_text (priv->selection,
-			      _("Choose which drive holds the disc to write to"));
-
 	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), FALSE);
 
 	/* Image properties */

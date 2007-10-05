@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <glib/gi18n-lib.h>
+
 #include <nautilus-burn-drive.h>
 
 #include "brasero-src-selection.h"
@@ -82,7 +84,10 @@ brasero_src_selection_new (BraseroBurnSession *session)
 
 static void
 brasero_src_selection_init (BraseroSrcSelection *object)
-{ }
+{
+	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
+					     _("Choose which drive holds the disc to read from"));
+}
 
 static void
 brasero_src_selection_finalize (GObject *object)

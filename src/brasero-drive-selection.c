@@ -333,6 +333,16 @@ brasero_drive_selection_show_file_drive (BraseroDriveSelection *self,
 		gtk_widget_set_sensitive (priv->selection, FALSE);
 }
 
+void
+brasero_drive_selection_set_tooltip (BraseroDriveSelection *self,
+				     const gchar *tooltip)
+{
+	BraseroDriveSelectionPrivate *priv;
+
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+	gtk_widget_set_tooltip_text (priv->selection, tooltip);
+}
+
 static void
 brasero_drive_selection_init (BraseroDriveSelection *object)
 {

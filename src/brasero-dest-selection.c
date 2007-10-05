@@ -912,10 +912,14 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 					   object);
 
 	priv->button = gtk_button_new_from_stock (GTK_STOCK_PROPERTIES);
+	gtk_widget_set_tooltip_text (priv->button, _("Configure some options for the recording"));
 	g_signal_connect (G_OBJECT (priv->button),
 			  "clicked",
 			  G_CALLBACK (brasero_dest_selection_properties_button_cb),
 			  object);
+
+	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
+					     _("Choose which drive holds the disc to write to"));
 
 	brasero_drive_selection_set_button (BRASERO_DRIVE_SELECTION (object),
 					    priv->button);

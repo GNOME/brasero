@@ -838,8 +838,6 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 
 	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
 						      BRASERO_MEDIUM_WRITABLE);
-	gtk_widget_set_tooltip_text (priv->selection,
-				     _("Choose which drive holds the disc to write to"));
 
 	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
 						 priv->selection,

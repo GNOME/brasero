@@ -70,6 +70,10 @@ void
 brasero_drive_selection_set_drive (BraseroDriveSelection *selection,
 				   NautilusBurnDrive *drive);
 
+void
+brasero_drive_selection_set_tooltip (BraseroDriveSelection *selection,
+				     const gchar *tooltip);
+
 NautilusBurnDrive *
 brasero_drive_selection_get_drive (BraseroDriveSelection *selection);
 

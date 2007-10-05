@@ -419,6 +419,7 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 
 	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
 	player->priv->button = gtk_button_new ();
+	gtk_widget_set_tooltip_text (player->priv->button, _("Start and stop playing"));
 	gtk_container_add (GTK_CONTAINER (alignment), player->priv->button);
 	gtk_box_pack_start (GTK_BOX (box),
 			    alignment,
