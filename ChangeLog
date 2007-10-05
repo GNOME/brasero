@@ -1,5 +1,12 @@
 2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix a small bug where user could choose 76 frames in song properties dialog
+
+	* src/brasero-time-button.c: (brasero_time_button_sec_changed),
+	(brasero_time_button_set_max), (brasero_time_button_init)
+
+2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Last version (hopefully) for split dialog to fix #479342
 
 	* src/brasero-split-dialog.c: (brasero_split_dialog_cut),
@@ -13,8 +20,7 @@
 	(brasero_split_dialog_combo_changed_cb),
 	(brasero_split_dialog_selection_changed_cb),
 	(brasero_split_dialog_row_inserted_cb),
-	(brasero_split_dialog_row_deleted_cb), (brasero_split_dialog_init):
-
+	(brasero_split_dialog_row_deleted_cb), (brasero_split_dialog_init)
 
 2007-10-03  Philippe Rouquier  <philippr@svn.gnome.org>
 

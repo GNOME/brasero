@@ -145,7 +145,7 @@ brasero_time_button_sec_changed (GtkSpinButton *button,
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, priv->max_frame);
 	}
 	else {
-		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 75.0);
+		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 74.0);
 		g_signal_emit (self,
 			       time_button_signals [VALUE_CHANGED_SIGNAL],
 			       0);	
@@ -192,7 +192,7 @@ brasero_time_button_set_max (BraseroTimeButton *self,
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->hrs), 0.0, priv->max_hrs);
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->min), 0.0, 60.0);
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->sec), 0.0, 60.0);
-		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 75.0);
+		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 74.0);
 		return;
 	}
 	else
@@ -206,7 +206,7 @@ brasero_time_button_set_max (BraseroTimeButton *self,
 		gtk_widget_set_sensitive (priv->frame, TRUE);
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->min), 0.0, priv->max_min);
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->sec), 0.0, 60.0);
-		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 75.0);
+		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 74.0);
 		return;
 	}
 	else
@@ -216,7 +216,7 @@ brasero_time_button_set_max (BraseroTimeButton *self,
 		gtk_widget_set_sensitive (priv->sec, TRUE);
 		gtk_widget_set_sensitive (priv->frame, TRUE);
 		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->sec), 0.0, priv->max_sec);
-		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 75.0);
+		gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->frame), 0.0, 74.0);
 		return;
 	}
 	else
@@ -301,7 +301,7 @@ brasero_time_button_init (BraseroTimeButton *object)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (object), label, FALSE, FALSE, 0);
 
-	priv->frame = gtk_spin_button_new_with_range (0, 75, 1);
+	priv->frame = gtk_spin_button_new_with_range (0, 74, 1);
 	gtk_widget_set_tooltip_text (priv->frame, _("Frames (1 second = 75 frames)"));
 	gtk_widget_show (priv->frame);
 	gtk_box_pack_start (GTK_BOX (object), priv->frame, FALSE, FALSE, 0);
