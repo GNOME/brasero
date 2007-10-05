@@ -44,6 +44,8 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkradiobutton.h>
+#include <gtk/gtkcombobox.h>
+#include <gtk/gtknotebook.h>
 
 #include "brasero-split-dialog.h"
 #include "brasero-player.h"
@@ -65,18 +67,23 @@ typedef struct _BraseroSplitDialogPrivate BraseroSplitDialogPrivate;
 struct _BraseroSplitDialogPrivate
 {
 	GtkWidget *cut;
-	GtkWidget *auto_cut;
+
+	GtkListStore *model;
 
 	GtkWidget *tree;
-	GtkWidget *remove;
 	GtkWidget *player;
 
-	GtkWidget *radio_slider;
-	GtkWidget *radio_parts;
-	GtkWidget *radio_sec;
+	GtkWidget *notebook;
+	GtkWidget *combo;
 
 	GtkWidget *spin_parts;
 	GtkWidget *spin_sec;
+
+	GtkWidget *silence_label;
+
+	GtkWidget *reset_button;
+	GtkWidget *merge_button;
+	GtkWidget *remove_button;
 
 	gint64 start;
 	gint64 end;
@@ -226,8 +233,8 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		start_str = brasero_utils_get_time_string (priv->start, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
 
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_append (priv->model, &iter);
+		gtk_list_store_set (priv->model, &iter,
 				    START_COL, (gint64) priv->start,
 				    END_COL, (gint64) pos,
 				    LENGTH_COL, (gint64) pos - priv->start,
@@ -244,8 +251,8 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		start_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (end, TRUE, FALSE);
 		
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_append (priv->model, &iter);
+		gtk_list_store_set (priv->model, &iter,
 				    START_COL, pos,
 				    END_COL, end,
 				    LENGTH_COL, (gint64) (end - pos),
@@ -260,6 +267,7 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 	}
 
 	do {
+		GtkTreeIter child;
 		gint64 start;
 		gint64 end;
 
@@ -287,7 +295,11 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		length_str = brasero_utils_get_time_string (pos - start, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
 
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
+								&child,
+								&iter);
+
+		gtk_list_store_set (priv->model, &child,
 				    END_COL, (gint64)  pos,
 				    LENGTH_COL, (gint64) (pos - start),
 				    END_STR_COL, end_str,
@@ -296,14 +308,14 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		g_free (length_str);
 		g_free (end_str);
 
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+		gtk_list_store_append (priv->model, &child);
 
 		pos ++;
 		length_str = brasero_utils_get_time_string (end - pos, TRUE, FALSE);
 		start_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (end, TRUE, FALSE);
 
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_set (priv->model, &child,
 				    START_COL, pos,
 				    END_COL, end,
 				    LENGTH_COL, (gint64) (end - pos),
@@ -311,6 +323,7 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 				    END_STR_COL, end_str,
 				    LENGTH_STR_COL, length_str,
 				    -1);
+
 		g_free (length_str);
 		g_free (start_str);
 		g_free (end_str);
@@ -368,8 +381,8 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 		start_str = brasero_utils_get_time_string (priv->start, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (start, TRUE, FALSE);
 
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_append (priv->model, &iter);
+		gtk_list_store_set (priv->model, &iter,
 				    START_COL, (gint64) priv->start,
 				    END_COL, (gint64) start,
 				    LENGTH_COL, (gint64) start - priv->start,
@@ -388,8 +401,8 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 		start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (length, TRUE, FALSE);
 		
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+		gtk_list_store_append (priv->model, &iter);
+		gtk_list_store_set (priv->model, &iter,
 				    START_COL, end,
 				    END_COL, length,
 				    LENGTH_COL, (gint64) (length - end),
@@ -404,6 +417,7 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 	}
 
 	do {
+		GtkTreeIter child;
 		gint64 track_start;
 		gint64 track_end;
 
@@ -412,13 +426,17 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 				    END_COL, &track_end,
 				    -1);
 
+		gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
+								&child,
+								&iter);
+
 		if (start == track_start) {
 			if (start == end)
 				return;
 
 			if (end == track_end) {
 				/* suppress it */
-				gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+				gtk_list_store_remove (priv->model, &child);
 				return;
 			}
 
@@ -431,7 +449,7 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 
 				start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
 				length_str = brasero_utils_get_time_string (track_end - end, TRUE, FALSE);
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				gtk_list_store_set (priv->model, &child,
 						    START_COL, end,
 						    START_STR_COL, start_str,
 						    LENGTH_COL, track_end - end,
@@ -440,7 +458,7 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 				g_free (length_str);
 				g_free (start_str);
 			}
-			else if (!gtk_list_store_remove (GTK_LIST_STORE (model), &iter))
+			else if (!gtk_list_store_remove (priv->model, &child))
 				return;
 		}
 		else if (start > track_start) {
@@ -455,7 +473,7 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 
 			start_str = brasero_utils_get_time_string (start, TRUE, FALSE);
 			length_str = brasero_utils_get_time_string (start - track_start, TRUE, FALSE);
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			gtk_list_store_set (priv->model, &child,
 					    END_COL, start,
 					    END_STR_COL, start_str,
 					    LENGTH_COL, start - track_start,
@@ -479,13 +497,13 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			&& !brasero_split_dialog_size_error (self))
 				end = track_end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
 
-			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+			gtk_list_store_append (priv->model, &child);
 
 			length_str = brasero_utils_get_time_string (track_end - end, TRUE, FALSE);
 			start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
 			end_str = brasero_utils_get_time_string (track_end, TRUE, FALSE);
 
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			gtk_list_store_set (priv->model, &child,
 					    START_COL, end,
 					    END_COL, track_end,
 					    LENGTH_COL, (gint64) (track_end - end),
@@ -498,16 +516,16 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			g_free (end_str);
 		}
 		else if (end > track_end) {
-			if (!gtk_list_store_remove (GTK_LIST_STORE (model), &iter))
+			if (!gtk_list_store_remove (priv->model, &child))
 				return;
 		}
 		else if (end == track_end) {
-			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+			gtk_list_store_remove (priv->model, &child);
 			return;
 		}
 		else {
 			if (end == length) {
-				gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+				gtk_list_store_remove (priv->model, &child);
 				return;
 			}
 
@@ -518,7 +536,7 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 
 			start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
 			length_str = brasero_utils_get_time_string (track_end - end, TRUE, FALSE);
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			gtk_list_store_set (priv->model, &child,
 					    START_COL, end,
 					    START_STR_COL, start_str,
 					    LENGTH_COL, track_end - end,
@@ -528,6 +546,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			g_free (start_str);
 		}
 
+		gtk_tree_model_sort_convert_child_iter_to_iter (GTK_TREE_MODEL_SORT (model),
+								&iter,
+								&child);
 	} while (gtk_tree_model_iter_next (model, &iter));
 }
 
@@ -565,7 +586,6 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
 
 	gtk_widget_set_sensitive (priv->cut, TRUE);
-	gtk_widget_set_sensitive (priv->auto_cut, TRUE);
 
 	g_object_unref (priv->metadata);
 	priv->metadata = NULL;
@@ -633,17 +653,51 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 	brasero_metadata_info_clear (&info);
 }
 
+static gboolean
+brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	GtkResponseType answer;
+	GtkTreeModel *model;
+	GtkWidget *message;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if (!gtk_tree_model_iter_n_children (model, NULL))
+		return TRUE;
+
+	message = gtk_message_dialog_new (GTK_WINDOW (self),
+					  GTK_DIALOG_DESTROY_WITH_PARENT|
+					  GTK_DIALOG_MODAL,
+					  GTK_MESSAGE_QUESTION,
+					  GTK_BUTTONS_YES_NO,
+					  _("This will remove all previous results."));
+	gtk_window_set_title (GTK_WINDOW (message), _("automatic split"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+						  _("Do you want to carry on with automatic splitting nevertheless?"));
+
+	answer = gtk_dialog_run (GTK_DIALOG (message));
+	gtk_widget_destroy (message);
+
+	if (answer != GTK_RESPONSE_YES)
+		return FALSE;
+
+	return TRUE;
+}
+
 static void
 brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 				     BraseroSplitDialog *self)
 {
 	BraseroSplitDialogPrivate *priv;
 	GtkTreeModel *model;
+	guint page;
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
 
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->radio_slider))) {
+	page = gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo));
+	if (page == 0) {
 		gint64 pos;
 
 		/* this one is before since it doesn't wipe all slices */
@@ -652,28 +706,11 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 		return;
 	}
 
-	if (gtk_tree_model_iter_n_children (model, NULL)) {
-		GtkWidget *message;
-		GtkResponseType answer;
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if (!brasero_split_dialog_clear_confirm_dialog (self))
+		return;
 
-		message = gtk_message_dialog_new (GTK_WINDOW (self),
-						  GTK_DIALOG_DESTROY_WITH_PARENT|
-						  GTK_DIALOG_MODAL,
-						  GTK_MESSAGE_QUESTION,
-						  GTK_BUTTONS_YES_NO,
-						  _("This will remove all previous results."));
-		gtk_window_set_title (GTK_WINDOW (message), _("automatic splitting"));
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  _("Do you want to carry on with automatic splitting nevertheless?"));
-
-		answer = gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
-
-		if (answer != GTK_RESPONSE_YES)
-			return;
-	}
-
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->radio_sec))) {
+	if (page == 1) {
 		gint64 sec;
 		gint64 start;
 		gint64 length;
@@ -687,14 +724,14 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 
 		length = priv->end - priv->start;
 
-		gtk_list_store_clear (GTK_LIST_STORE (model));
+		gtk_list_store_clear (priv->model);
 		for (start = sec; start < length; start += sec)
 			brasero_split_dialog_cut (self, start, FALSE);
 
 		return;
 	}
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->radio_parts))) {
+	if (page == 2) {
 		gint64 step;
 		gint64 start;
 		gint64 parts;
@@ -709,13 +746,14 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 		&& !brasero_split_dialog_size_error (self))
 			return;
 
-		gtk_list_store_clear (GTK_LIST_STORE (model));
+		gtk_list_store_clear (priv->model);
 		for (start = step; start < length; start += step)
 			brasero_split_dialog_cut (self, start, FALSE);
+
 		return;
 	}
 
-	gtk_list_store_clear (GTK_LIST_STORE (model));
+	gtk_list_store_clear (priv->model);
 
 	priv->metadata = brasero_metadata_new ();
 	g_signal_connect (priv->metadata,
@@ -728,7 +766,226 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 
 	/* stop anything from playing and grey out things */
 	gtk_widget_set_sensitive (priv->cut, FALSE);
-	gtk_widget_set_sensitive (priv->auto_cut, FALSE);
+}
+
+static void
+brasero_split_dialog_merge_clicked_cb (GtkButton *button,
+				       BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
+	do {
+		guint64 end;
+		guint64 start;
+		gchar *end_str;
+		gchar *start_str;
+		GtkTreeIter next;
+		gchar *length_str;
+		GtkTreeIter child;
+
+		if (!gtk_tree_selection_iter_is_selected (selection, &iter))
+			continue;
+
+		next = iter;
+		if (!gtk_tree_model_iter_next (model, &next))
+			continue;
+
+		if (!gtk_tree_selection_iter_is_selected (selection, &next))
+			continue;
+
+		gtk_tree_model_get (model, &iter,
+				    START_COL, &start,
+				    -1);
+
+		gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
+								&child,
+								&iter);
+
+		do {
+			GtkTreeIter next_child;
+
+			gtk_tree_model_get (model, &next,
+					    END_COL, &end,
+					   -1);
+
+			gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
+									&next_child,
+									&next);
+
+			if (!gtk_list_store_remove (priv->model, &next_child))
+				break;
+
+			gtk_tree_model_sort_convert_child_iter_to_iter (GTK_TREE_MODEL_SORT (model),
+									&next,
+									&next_child);
+
+		} while (gtk_tree_selection_iter_is_selected (selection, &next));
+
+		length_str = brasero_utils_get_time_string (end - start, TRUE, FALSE);
+		start_str = brasero_utils_get_time_string (start, TRUE, FALSE);
+		end_str = brasero_utils_get_time_string (end, TRUE, FALSE);
+
+		gtk_list_store_set (priv->model, &child,
+				    START_COL, (gint64) start,
+				    END_COL, (gint64) end,
+				    LENGTH_COL, (gint64) end - start,
+				    START_STR_COL, start_str,
+				    END_STR_COL, end_str,
+				    LENGTH_STR_COL, length_str,
+				    -1);
+		g_free (length_str);
+		g_free (start_str);
+		g_free (end_str);
+
+		gtk_tree_model_sort_convert_child_iter_to_iter (GTK_TREE_MODEL_SORT (model),
+								&iter,
+								&child);
+
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	if (gtk_tree_model_iter_n_children (GTK_TREE_MODEL (priv->model), NULL) == 1)
+		gtk_list_store_clear (priv->model);
+}
+
+static void
+brasero_split_dialog_remove_clicked_cb (GtkButton *button,
+				        BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	GList *references = NULL;
+	GtkTreeModel *model;
+	GList *selected;
+	GList *iter;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+
+	selected = gtk_tree_selection_get_selected_rows (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)), &model);
+
+	/* since we are going to modify the tree take references */
+	for (iter = selected; iter; iter = iter->next) {
+		GtkTreePath *treepath;
+		GtkTreeRowReference *reference;
+
+		treepath = iter->data;
+		reference = gtk_tree_row_reference_new (model, treepath);
+		gtk_tree_path_free (treepath);
+
+		references = g_list_prepend (references, reference);
+	}
+	g_list_free (selected);
+
+	for (iter = references; iter; iter = iter->next) {
+		GtkTreeRowReference *reference;
+		GtkTreePath *treepath;
+		GtkTreeIter child;
+		GtkTreeIter row;
+
+		reference = iter->data;
+
+		treepath = gtk_tree_row_reference_get_path (reference);
+		gtk_tree_row_reference_free (reference);
+		if (!treepath)
+			continue;
+
+		if (!gtk_tree_model_get_iter (model, &row, treepath)) {
+			gtk_tree_path_free (treepath);
+			continue;
+		}
+
+		gtk_tree_path_free (treepath);
+
+		gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
+								&child,
+								&row);
+
+		gtk_list_store_remove (priv->model, &child);
+	}
+	g_list_free (references);
+}
+
+static void
+brasero_split_dialog_reset_clicked_cb (GtkButton *button,
+				       BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	GtkTreeModel *model;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	if (!brasero_split_dialog_clear_confirm_dialog (self))
+		return;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	gtk_list_store_clear (priv->model);
+}
+
+static void
+brasero_split_dialog_combo_changed_cb (GtkComboBox *combo,
+				       BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	guint page;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	page = gtk_combo_box_get_active (combo);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), page);
+}
+
+static void
+brasero_split_dialog_selection_changed_cb (GtkTreeSelection *selection,
+					   BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	GList *selected;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+
+	selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+	if (selected) {
+		g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+		g_list_free (selected);
+
+		gtk_widget_set_sensitive (priv->merge_button, TRUE);
+		gtk_widget_set_sensitive (priv->remove_button, TRUE);
+	}
+	else {
+		gtk_widget_set_sensitive (priv->merge_button, FALSE);
+		gtk_widget_set_sensitive (priv->remove_button, FALSE);
+	}
+}
+
+static void
+brasero_split_dialog_row_inserted_cb (GtkTreeModel *model,
+				      GtkTreePath *path,
+				      GtkTreeIter *iter,
+				      BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	gtk_widget_set_sensitive (priv->reset_button, TRUE);
+}
+
+static void
+brasero_split_dialog_row_deleted_cb (GtkTreeModel *model,
+				     GtkTreePath *path,
+				     BraseroSplitDialog *self)
+{
+	BraseroSplitDialogPrivate *priv;
+	GtkTreeIter iter;
+
+	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		gtk_widget_set_sensitive (priv->reset_button, FALSE);
 }
 
 static void
@@ -737,11 +994,12 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *vbox2;
+	GtkWidget *hbox2;
 	GtkWidget *label;
-	GtkWidget *radio;
 	GtkWidget *scroll;
 	GtkWidget *button;
-	GtkListStore *model;
+	GtkTreeModel *model;
+	GtkSizeGroup *size_group;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	BraseroSplitDialogPrivate *priv;
@@ -758,95 +1016,39 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_widget_show (vbox);
-
-	priv->player = brasero_player_new ();
-	gtk_widget_show (priv->player);
-	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Preview</b>"),
-							   priv->player,
-							   NULL),
-			    FALSE,
-			    FALSE,
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+			    vbox,
+			    TRUE,
+			    TRUE,
 			    0);
 
-	vbox2 = gtk_vbox_new (FALSE, 8);
-	gtk_widget_show (vbox2);
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
-	priv->radio_slider = gtk_radio_button_new_with_label_from_widget (NULL, _("Split this track manually at preview current position"));
-	gtk_widget_show (priv->radio_slider);
-	gtk_box_pack_start (GTK_BOX (vbox2), priv->radio_slider, FALSE, FALSE, 0);
-
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (priv->radio_slider),
-							     _("Split this track for every silence (automatic search)"));
-	gtk_widget_show (radio);
-	gtk_box_pack_start (GTK_BOX (vbox2), radio, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 6);
+	/* slices preview */
+	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	/* Translators: this goes with the next (= "seconds") */
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (priv->radio_slider),
-							     _("Split this track every"));
-	gtk_widget_show (radio);
-	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
-	priv->radio_sec = radio;
+	priv->model = gtk_list_store_new (COLUMN_NUM,
+					  G_TYPE_INT64,
+					  G_TYPE_INT64,
+					  G_TYPE_INT64,
+					  G_TYPE_STRING,
+					  G_TYPE_STRING,
+					  G_TYPE_STRING);
 
-	priv->spin_sec = gtk_spin_button_new_with_range (1.0, 1000.0, 1.0);
-	gtk_widget_show (priv->spin_sec);
-	gtk_box_pack_start (GTK_BOX (hbox), priv->spin_sec, FALSE, FALSE, 0);
-
-	/* Translators: this goes with the previous (= "Split track every") */
-	label = gtk_label_new (_("seconds"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-
-	/* Translators: this goes with the next (= "parts") */
-	radio = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (priv->radio_slider), _("Split this track in"));
-	gtk_widget_show (radio);
-	gtk_box_pack_start (GTK_BOX (hbox), radio, FALSE, FALSE, 0);
-	priv->radio_parts = radio;
-
-	priv->spin_parts = gtk_spin_button_new_with_range (2.0, 1000.0, 1.0);
-	gtk_widget_show (priv->spin_parts);
-	gtk_box_pack_start (GTK_BOX (hbox), priv->spin_parts, FALSE, FALSE, 0);
-
-	/* Translators: this goes with the previous (= "Split this track in") */
-	label = gtk_label_new (_("parts"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	button = brasero_utils_make_button (_("_Slice"),
-					    NULL,
-					    "stock-tool-crop",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
+	g_signal_connect (priv->model,
+			  "row-inserted",
+			  G_CALLBACK (brasero_split_dialog_row_inserted_cb),
 			  object);
-	priv->auto_cut = button;
+	g_signal_connect (priv->model,
+			  "row-deleted",
+			  G_CALLBACK (brasero_split_dialog_row_deleted_cb),
+			  object);
 
-	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Slicing method</b>"),
-							   vbox2,
-							   NULL),
-			    FALSE,
-			    FALSE,
-			    0);
-
-	model = gtk_list_store_new (COLUMN_NUM,
-				    G_TYPE_INT64,
-				    G_TYPE_INT64,
-				    G_TYPE_INT64,
-				    G_TYPE_STRING,
-				    G_TYPE_STRING,
-				    G_TYPE_STRING);
+	model = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (priv->model));
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
+					      START_COL,
+					      GTK_SORT_ASCENDING);
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
@@ -855,10 +1057,15 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_widget_show (scroll);
+	gtk_box_pack_start (GTK_BOX (hbox), scroll, TRUE, TRUE, 0);
 
 	priv->tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
 	gtk_tree_view_set_enable_tree_lines (GTK_TREE_VIEW (priv->tree), TRUE);
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (priv->tree), TRUE);
+	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (priv->tree), TRUE);
+
+	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)),
+				     GTK_SELECTION_MULTIPLE);
 
 	gtk_widget_show (priv->tree);
 	gtk_container_add (GTK_CONTAINER (scroll), priv->tree);
@@ -884,19 +1091,160 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 							   NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
 
+	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)),
+			  "changed",
+			  G_CALLBACK (brasero_split_dialog_selection_changed_cb),
+			  object);
+
+	/* buttons */
+	vbox2 = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
+
+	button = brasero_utils_make_button (_("_Merge"),
+					    NULL,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_size_group_add_widget (size_group, button);
+	gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_split_dialog_merge_clicked_cb),
+			  object);
+	gtk_widget_set_tooltip_text (button, _("Merge a selected slice with the next selected one"));
+	priv->merge_button = button;
+
+	button = brasero_utils_make_button (_("_Remove"),
+					    GTK_STOCK_REMOVE,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_size_group_add_widget (size_group, button);
+	gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_split_dialog_remove_clicked_cb),
+			  object);
+	gtk_widget_set_tooltip_text (button, _("Remove the selected slices"));
+	priv->remove_button = button;
+
+	button = brasero_utils_make_button (_("_Reset"),
+					    GTK_STOCK_CLEAR,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_size_group_add_widget (size_group, button);
+	gtk_box_pack_start (GTK_BOX (vbox2), button, FALSE, FALSE, 0);
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_split_dialog_reset_clicked_cb),
+			  object);
+	gtk_widget_set_tooltip_text (button, _("Clear the slices preview"));
+	priv->reset_button = button;
+
+	gtk_widget_set_sensitive (priv->reset_button, FALSE);
+	gtk_widget_set_sensitive (priv->merge_button, FALSE);
+	gtk_widget_set_sensitive (priv->remove_button, FALSE);
+
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    brasero_utils_pack_properties (_("<b>Slices preview</b>"),
-							   scroll,
+							   hbox,
 							   NULL),
 			    TRUE,
 			    TRUE,
 			    0);
 
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    vbox,
-			    TRUE,
-			    TRUE,
+	/* Slicing method */
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+
+	priv->combo = gtk_combo_box_new_text ();
+	gtk_widget_set_tooltip_text (priv->combo, _("Method to be used to split the track"));
+	gtk_widget_show (priv->combo);
+	gtk_box_pack_start (GTK_BOX (hbox), priv->combo, TRUE, TRUE, 0);
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track manually"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in parts with a fixed length"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in a fixed number of parts"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track for each silence"));
+	g_signal_connect (priv->combo,
+			  "changed",
+			  G_CALLBACK (brasero_split_dialog_combo_changed_cb),
+			  object);
+
+	button = brasero_utils_make_button (_("_Slice"),
+					    NULL,
+					    "stock-tool-crop",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_size_group_add_widget (size_group, button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
+			  object);
+	gtk_widget_set_tooltip_text (button, _("Press to add a splitting point"));
+	priv->cut = button;
+
+	priv->notebook = gtk_notebook_new ();
+	gtk_widget_show (priv->notebook);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
+
+	priv->player = brasero_player_new ();
+	gtk_widget_show (priv->player);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->player, NULL);
+
+	hbox2 = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox2);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
+
+	/* Translators: this goes with the next (= "seconds") */
+	label = gtk_label_new (_("Split this track every"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	priv->spin_sec = gtk_spin_button_new_with_range (1.0, 1000.0, 1.0);
+	gtk_widget_show (priv->spin_sec);
+	gtk_box_pack_start (GTK_BOX (hbox2), priv->spin_sec, FALSE, FALSE, 0);
+
+	/* Translators: this goes with the previous (= "Split track every") */
+	label = gtk_label_new (_("seconds"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox2);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
+
+	/* Translators: this goes with the next (= "parts") */
+	label = gtk_label_new (_("Split this track in"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	priv->spin_parts = gtk_spin_button_new_with_range (2.0, 1000.0, 1.0);
+	gtk_widget_show (priv->spin_parts);
+	gtk_box_pack_start (GTK_BOX (hbox2), priv->spin_parts, FALSE, FALSE, 0);
+
+	/* Translators: this goes with the previous (= "Split this track in") */
+	label = gtk_label_new (_("parts"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	priv->silence_label = gtk_label_new (NULL);
+	gtk_widget_show (priv->silence_label);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->silence_label, NULL);
+
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    brasero_utils_pack_properties (_("<b>Slicing method</b>"),
+							   priv->notebook,
+							   hbox,
+							   NULL),
+			    FALSE,
+			    FALSE,
 			    0);
+
+	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
 }
 
 static void
