@@ -1207,6 +1207,16 @@ brasero_player_destroy (GtkObject *obj)
 		player->priv->set_uri_id = 0;
 	}
 
+	if (player->priv->meta_task){
+		brasero_vfs_cancel (player->priv->vfs, player);
+		player->priv->meta_task = 0;
+	}
+
+	if (player->priv->vfs) {
+		g_object_unref (player->priv-vfs);
+		player->priv->vfs = NULL;
+	}
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		GTK_OBJECT_CLASS (parent_class)->destroy (obj);
 }
