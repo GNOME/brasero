@@ -72,7 +72,7 @@ void
 brasero_project_set_none (BraseroProject *project);
 
 void
-brasero_project_add_source (BraseroProject *project,
+brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source);
 
 BraseroProjectType

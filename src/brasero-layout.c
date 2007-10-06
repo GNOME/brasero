@@ -47,10 +47,12 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkalignment.h>
-
 #include <gconf/gconf-client.h>
 
+#include "burn-debug.h"
 #include "brasero-layout.h"
+#include "brasero-project.h"
+#include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
 
 static void brasero_layout_class_init (BraseroLayoutClass *klass);
@@ -260,6 +262,32 @@ brasero_layout_hide (GtkWidget *widget)
 		GTK_WIDGET_CLASS (parent_class)->hide (widget);
 }
 
+static BraseroLayoutObject *
+brasero_layout_item_get_object (BraseroLayoutItem *item)
+{
+	BraseroLayoutObject *source;
+	GList *children;
+	GList *child;
+
+	source = NULL;
+	if (!item || !GTK_IS_CONTAINER (item->widget))
+		return NULL;
+
+	children = gtk_container_get_children (GTK_CONTAINER (item->widget));
+	for (child = children; child; child = child->next) {
+		if (BRASERO_IS_LAYOUT_OBJECT (child->data)) {
+			source = child->data;
+			break;
+		}
+	}
+	g_list_free (children);
+
+	if (!source || !BRASERO_IS_LAYOUT_OBJECT (source)) 
+		return NULL;
+
+	return source;
+}
+
 static void
 brasero_layout_set_active_item (BraseroLayout *layout,
 				BraseroLayoutItem *item,
@@ -322,8 +350,28 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 			width += toplevel->allocation.width;
 
 		height = MAX (height, layout->priv->main_box->allocation.height);
+
+		/* Now tell the project which source it gets URIs from */
+		if (project) {
+			BraseroLayoutObject *source;
+
+			source = brasero_layout_item_get_object (item);
+			if (!BRASERO_IS_URI_CONTAINER (source)) {
+				BRASERO_BURN_LOG ("Item is not an URI container");
+				brasero_project_set_source (BRASERO_PROJECT (project),
+							    NULL);
+			}
+			else
+				brasero_project_set_source (BRASERO_PROJECT (project),
+							    BRASERO_URI_CONTAINER (source));
+		}
 	}
 	else {
+		/* means we aren't showing anything */
+
+		if (project)
+			brasero_project_set_source (BRASERO_PROJECT (project), NULL);
+
 		if (!preview_in_project) {
 			/* we need to unparent the preview widget
 			 * and set it under the project */
@@ -344,59 +392,6 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 	}
 
 	gtk_window_resize (GTK_WINDOW (toplevel), width, height);
-}
-
-static void
-brasero_layout_add_pressed_cb (GtkWidget *project,
-			       BraseroLayout *layout)
-{
-	GtkAction *action;
-
-	action = gtk_action_group_get_action (layout->priv->action_group,
-					      BRASERO_LAYOUT_NONE_ID);
-
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		GSList *iter;
-
-		for (iter = layout->priv->items; iter; iter = iter->next) {
-			BraseroLayoutItem *item;
-
-			item = iter->data;
-
-			if ((item->types & layout->priv->type)
-			&&   strcmp (item->id, BRASERO_LAYOUT_NONE_ID)) {
-				action = gtk_action_group_get_action (layout->priv->action_group, item->id);
-				gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), TRUE);
-				break;
-			}
-		}
-	}
-}
-
-static BraseroLayoutObject *
-brasero_layout_item_get_object (BraseroLayoutItem *item)
-{
-	BraseroLayoutObject *source;
-	GList *children;
-	GList *child;
-
-	source = NULL;
-	if (!item || !GTK_IS_CONTAINER (item->widget))
-		return NULL;
-
-	children = gtk_container_get_children (GTK_CONTAINER (item->widget));
-	for (child = children; child; child = child->next) {
-		if (BRASERO_IS_LAYOUT_OBJECT (child->data)) {
-			source = child->data;
-			break;
-		}
-	}
-	g_list_free (children);
-
-	if (!source || !BRASERO_IS_LAYOUT_OBJECT (source)) 
-		return NULL;
-
-	return source;
 }
 
 static void
@@ -457,13 +452,6 @@ void
 brasero_layout_add_project (BraseroLayout *layout,
 			    GtkWidget *project)
 {
-	/* we connect to project to know when add button is clicked. That
-	 * way if nothing but the project is shown we'll show the first
-	 * pane in the list */
-	g_signal_connect (project,
-			  "add-pressed",
-			  G_CALLBACK (brasero_layout_add_pressed_cb),
-			  layout);
 	g_signal_connect (project,
 			  "size-allocate",
 			  G_CALLBACK (brasero_layout_project_size_allocated_cb),
@@ -956,7 +944,7 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 
 	if (!right_pane_visible) {
 		GtkAction *action;
-
+	
 		gtk_widget_hide (layout->priv->main_box->parent);
 
 		action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);

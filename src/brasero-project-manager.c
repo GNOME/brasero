@@ -279,8 +279,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   GTK_STOCK_DIRECTORY,
 				   NULL,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
-	brasero_project_add_source (BRASERO_PROJECT (obj->priv->project),
-				    BRASERO_URI_CONTAINER (chooser));
 
 #ifdef BUILD_PREVIEW
 	brasero_preview_add_source (BRASERO_PREVIEW (preview),
@@ -308,8 +306,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   GTK_STOCK_FIND,
 				   NULL,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
-	brasero_project_add_source (BRASERO_PROJECT (obj->priv->project),
-				    BRASERO_URI_CONTAINER (search));
 
 #ifdef BUILD_PREVIEW
 	brasero_preview_add_source (BRASERO_PREVIEW (preview),
@@ -334,9 +330,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   NULL,
 				   "audio-x-generic", 
 				   BRASERO_LAYOUT_AUDIO);
-
-	brasero_project_add_source (BRASERO_PROJECT (obj->priv->project),
-				    BRASERO_URI_CONTAINER (playlist));
 
 #ifdef BUILD_PREVIEW
 	brasero_preview_add_source (BRASERO_PREVIEW (preview),

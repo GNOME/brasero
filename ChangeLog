@@ -1,3 +1,23 @@
+2007-10-06  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #469530 – Edit - Add Files does not work if File Viewer hidden
+	(also fix #478899 – Weird behavior of Edit -> Add command)
+	Add button will now trigger a GtkFileChooserDialog if no side pane is visible
+
+	* src/brasero-layout.c: (brasero_layout_item_get_object),
+	(brasero_layout_set_active_item), (brasero_layout_add_project):
+	* src/brasero-project-manager.c: (brasero_project_manager_init):
+	* src/brasero-project.c: (brasero_project_class_init),
+	(brasero_project_set_add_button_state), (brasero_project_switch),
+	(brasero_project_set_none),
+	(brasero_project_source_uri_activated_cb),
+	(brasero_project_source_uri_selected_cb),
+	(brasero_project_set_source),
+	(brasero_project_file_chooser_activated_cb),
+	(brasero_project_file_chooser_response_cb),
+	(brasero_project_add_clicked_cb):
+	* src/brasero-project.h:
+
 2007-10-05  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	removed dummy mode option from blanking since it's not possible actually

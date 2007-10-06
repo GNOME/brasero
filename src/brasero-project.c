@@ -40,6 +40,8 @@
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkimage.h>
+#include <gtk/gtkfilechooser.h>
+#include <gtk/gtkfilechooserdialog.h>
 
 #include <libxml/xmlerror.h>
 #include <libxml/xmlwriter.h>
@@ -151,7 +153,12 @@ struct BraseroProjectPrivate {
 	gint64 sectors;
 	BraseroDisc *current;
 	BraseroBurnFlag flags;
+
 	BraseroURIContainer *current_source;
+
+	GtkWidget *chooser;
+	gulong selected_id;
+	gulong activated_id;
 
 	guint is_burning:1;
 
@@ -224,12 +231,6 @@ static GObjectClass *parent_class = NULL;
 #define KEY_DEFAULT_AUDIO_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_audio_cd_command"
 #define KEY_ASK_DEFAULT_BURNING_APP		"/apps/brasero/ask_default_app"
 
-enum {
-	ADD_PRESSED_SIGNAL,
-	LAST_SIGNAL
-};
-static guint brasero_project_signals[LAST_SIGNAL] = { 0 };
-
 #define BRASERO_PROJECT_VERSION "0.2"
 
 GType
@@ -285,17 +286,6 @@ brasero_project_class_init (BraseroProjectClass *klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_project_finalize;
-
-	brasero_project_signals [ADD_PRESSED_SIGNAL] =
-	    g_signal_new ("add_pressed",
-			  BRASERO_TYPE_PROJECT,
-			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
-			  G_STRUCT_OFFSET (BraseroProjectClass, add_pressed),
-			  NULL,
-			  NULL,
-			  g_cclosure_marshal_VOID__VOID,
-			  G_TYPE_NONE,
-			  0);
 }
 
 static void
@@ -345,7 +335,8 @@ brasero_project_set_add_button_state (BraseroProject *project)
 	GtkAction *action;
 	gboolean sensitive;
 
-	sensitive = (!project->priv->has_focus && !project->priv->oversized);
+	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
+		      !project->priv->oversized);
 
 	action = gtk_action_group_get_action (project->priv->action_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
@@ -1085,6 +1076,11 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	GtkAction *action;
 	GConfClient *client;
 
+	if (project->priv->chooser) {
+		gtk_widget_destroy (project->priv->chooser);
+		project->priv->chooser = NULL;
+	}
+
 	project->priv->empty = 1;
     	project->priv->burnt = 0;
 	project->priv->modified = 0;
@@ -1238,6 +1234,11 @@ brasero_project_set_none (BraseroProject *project)
 {
 	GtkAction *action;
 
+	if (project->priv->chooser) {
+		gtk_widget_destroy (project->priv->chooser);
+		project->priv->chooser = NULL;
+	}
+
 	if (project->priv->current)
 		brasero_disc_reset (project->priv->current);
 
@@ -1320,7 +1321,6 @@ static void
 brasero_project_source_uri_activated_cb (BraseroURIContainer *container,
 					 BraseroProject *project)
 {
-	project->priv->current_source = container;
 	brasero_project_transfer_uris_from_src (project);
 }
 
@@ -1328,22 +1328,39 @@ static void
 brasero_project_source_uri_selected_cb (BraseroURIContainer *container,
 					BraseroProject *project)
 {
-	project->priv->current_source = container;
 	brasero_project_set_add_button_state (project);
 }
 
 void
-brasero_project_add_source (BraseroProject *project,
+brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source)
 {
-	g_signal_connect (source,
-			  "uri-activated",
-			  G_CALLBACK (brasero_project_source_uri_activated_cb),
-			  project);
-	g_signal_connect (source,
-			  "uri-selected",
-			  G_CALLBACK (brasero_project_source_uri_selected_cb),
-			  project);
+	if (project->priv->activated_id) {
+		g_signal_handler_disconnect (project->priv->current_source,
+					     project->priv->activated_id);
+		project->priv->activated_id = 0;
+	}
+
+	if (project->priv->selected_id) {
+		g_signal_handler_disconnect (project->priv->current_source,
+					     project->priv->selected_id);
+		project->priv->selected_id = 0;
+	}
+
+	project->priv->current_source = source;
+
+	if (source) {
+		project->priv->activated_id = g_signal_connect (source,
+							        "uri-activated",
+							        G_CALLBACK (brasero_project_source_uri_activated_cb),
+							        project);
+		project->priv->selected_id = g_signal_connect (source,
+							       "uri-selected",
+							       G_CALLBACK (brasero_project_source_uri_selected_cb),
+							       project);
+	}
+
+	brasero_project_set_add_button_state (project);
 }
 
 /******************************* menus/buttons *********************************/
@@ -1416,13 +1433,112 @@ brasero_project_burn_cb (GtkAction *action, BraseroProject *project)
 }
 
 static void
+brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
+					   BraseroProject *project)
+{
+	GSList *uris;
+	GSList *iter;
+
+	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
+	for (iter = uris; iter; iter = iter->next) {
+		gchar *uri;
+
+		uri = iter->data;
+		brasero_disc_add_uri (project->priv->current, uri);
+	}
+	g_slist_foreach (uris, (GFunc) g_free, NULL);
+	g_slist_free (uris);
+
+	gtk_widget_destroy (GTK_WIDGET (project->priv->chooser));
+}
+
+static void
+brasero_project_file_chooser_response_cb (GtkWidget *chooser,
+					  GtkResponseType response,
+					  BraseroProject *project)
+{
+	GSList *uris;
+	GSList *iter;
+
+	if (response != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
+	uris = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (chooser));
+	for (iter = uris; iter; iter = iter->next) {
+		gchar *uri;
+
+		uri = iter->data;
+		brasero_disc_add_uri (project->priv->current, uri);
+	}
+	g_slist_foreach (uris, (GFunc) g_free, NULL);
+	g_slist_free (uris);
+
+	gtk_widget_destroy (GTK_WIDGET (project->priv->chooser));
+}
+
+static void
 brasero_project_add_clicked_cb (GtkButton *button, BraseroProject *project)
 {
-	brasero_project_transfer_uris_from_src (project);
+	GtkWidget *toplevel;
+	GtkFileFilter *filter;
 
-	g_signal_emit (project,
-		       brasero_project_signals [ADD_PRESSED_SIGNAL],
-		       0);
+	if (project->priv->current_source) {
+		brasero_project_transfer_uris_from_src (project);
+		return;
+	}
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	project->priv->chooser = gtk_file_chooser_dialog_new (_("Select files"),
+							      GTK_WINDOW (toplevel),
+							      GTK_FILE_CHOOSER_ACTION_OPEN,
+							      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+							      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+							      NULL);
+	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (project->priv->chooser),
+					     g_get_home_dir ());
+	gtk_widget_show (project->priv->chooser);
+
+	g_signal_connect (project->priv->chooser,
+			  "file-activated",
+			  G_CALLBACK (brasero_project_file_chooser_activated_cb),
+			  project);
+	g_signal_connect (project->priv->chooser,
+			  "response",
+			  G_CALLBACK (brasero_project_file_chooser_response_cb),
+			  project);
+	g_signal_connect (project->priv->chooser,
+			  "close",
+			  G_CALLBACK (brasero_project_file_chooser_activated_cb),
+			  project);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("All files"));
+	gtk_file_filter_add_pattern (filter, "*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Audio files only"));
+	gtk_file_filter_add_mime_type (filter, "audio/*");
+	gtk_file_filter_add_mime_type (filter, "application/ogg");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
+
+	if (BRASERO_IS_AUDIO_DISC (project->priv->current))
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Movies only"));
+	gtk_file_filter_add_mime_type (filter, "video/*");
+	gtk_file_filter_add_mime_type (filter, "application/ogg");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Image files only"));
+	gtk_file_filter_add_mime_type (filter, "image/*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
 }
 
 static void
