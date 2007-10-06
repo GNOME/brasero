@@ -214,7 +214,6 @@ static void
 brasero_project_manager_init (BraseroProjectManager *obj)
 {
 	GtkWidget *type;
-	GtkWidget *scroll;
 	GtkWidget *chooser;
 
 	obj->priv = g_new0 (BraseroProjectManagerPrivate, 1);
@@ -232,19 +231,12 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	/* add the project type chooser to the notebook */
 	type = brasero_project_type_chooser_new ();
 	gtk_widget_show (type);
-	scroll = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scroll);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroll), type);
-
 	g_signal_connect (G_OBJECT (type),
 			  "chosen",
 			  G_CALLBACK (brasero_project_manager_type_changed_cb),
 			  obj);
 
-	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj), scroll, NULL);
+	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj), type, NULL);
 
 	/* add the layout */
 	obj->priv->layout = brasero_layout_new ();
