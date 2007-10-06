@@ -9,4 +9,8 @@ icons_DATA =	media-optical-blank.png		\
 		media-optical-copy.png		\
 		iso-image-new.png		\
 		iso-image-burn.png \
-		stock-tool-crop.png
+		stock-tool-crop.png \
+		insert-pause.png
+
+noinst_DATA = \
+		insert-pause.svg

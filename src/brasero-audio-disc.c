@@ -324,7 +324,7 @@ static GtkActionEntry entries[] = {
 	{"Paste", GTK_STOCK_PASTE, NULL, NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
 
-	{"Pause", GTK_STOCK_MEDIA_PAUSE, N_("I_nsert a Pause"), NULL, NULL,
+	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
 
 	{"Split", "stock-tool-crop", N_("_Split Track..."), NULL, NULL,
@@ -526,8 +526,8 @@ brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
 
 	/* button to add pauses in between tracks */
 	button = brasero_utils_make_button (NULL,
-					    GTK_STOCK_MEDIA_PAUSE,
 					    NULL,
+					    "insert-pause",
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_set_sensitive (button, FALSE);
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
