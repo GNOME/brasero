@@ -303,12 +303,12 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 	GtkWidget *label;
 	GSList *iter;
 
-	vbox_main = gtk_vbox_new (FALSE, 6);
+	vbox_main = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox_main);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
-	gtk_box_pack_end (GTK_BOX (vbox_main), hbox, TRUE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (vbox_main), hbox, TRUE, TRUE, 6);
 
 	label = gtk_label_new ("\t");
 	gtk_widget_show (label);
@@ -336,7 +336,7 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 		label = gtk_frame_get_label_widget (GTK_FRAME (frame));
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 
-		gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 8);
+		gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 		gtk_container_add (GTK_CONTAINER (frame), vbox_main);
 		return frame;
 	}

@@ -1006,7 +1006,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (object);
 
-	gtk_window_set_title (GTK_WINDOW (object), _("Track split"));
+	gtk_window_set_title (GTK_WINDOW (object), _("Split Track"));
 	gtk_window_set_default_size (GTK_WINDOW (object), 500, 600);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
@@ -1014,18 +1014,109 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (object), GTK_STOCK_OK, GTK_RESPONSE_OK);
 
-	vbox = gtk_vbox_new (FALSE, 12);
-	gtk_widget_show (vbox);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    vbox,
-			    TRUE,
-			    TRUE,
-			    0);
+	vbox = GTK_DIALOG (object)->vbox;
+	gtk_box_set_spacing (GTK_BOX (vbox), 0);
 
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 
+	/* Slicing method */
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox);
+
+	priv->combo = gtk_combo_box_new_text ();
+
+	label = gtk_label_new_with_mnemonic (_("M_ethod:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->combo);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	gtk_widget_set_tooltip_text (priv->combo, _("Method to be used to split the track"));
+	gtk_widget_show (priv->combo);
+	gtk_box_pack_start (GTK_BOX (hbox), priv->combo, TRUE, TRUE, 0);
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track manually"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in parts with a fixed length"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in a fixed number of parts"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track for each silence"));
+	g_signal_connect (priv->combo,
+			  "changed",
+			  G_CALLBACK (brasero_split_dialog_combo_changed_cb),
+			  object);
+
+	button = brasero_utils_make_button (_("_Slice"),
+					    NULL,
+					    "stock-tool-crop",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_size_group_add_widget (size_group, button);
+	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
+			  object);
+	gtk_widget_set_tooltip_text (button, _("Press to add a splitting point"));
+	priv->cut = button;
+
+	priv->notebook = gtk_notebook_new ();
+	gtk_widget_show (priv->notebook);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
+
+	priv->player = brasero_player_new ();
+	gtk_widget_show (priv->player);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->player, NULL);
+
+	hbox2 = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox2);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
+
+	/* Translators: this goes with the next (= "seconds") */
+	label = gtk_label_new (_("Split this track every"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	priv->spin_sec = gtk_spin_button_new_with_range (1.0, 1000.0, 1.0);
+	gtk_widget_show (priv->spin_sec);
+	gtk_box_pack_start (GTK_BOX (hbox2), priv->spin_sec, FALSE, FALSE, 0);
+
+	/* Translators: this goes with the previous (= "Split track every") */
+	label = gtk_label_new (_("seconds"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox2);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
+
+	/* Translators: this goes with the next (= "parts") */
+	label = gtk_label_new (_("Split this track in"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	priv->spin_parts = gtk_spin_button_new_with_range (2.0, 1000.0, 1.0);
+	gtk_widget_show (priv->spin_parts);
+	gtk_box_pack_start (GTK_BOX (hbox2), priv->spin_parts, FALSE, FALSE, 0);
+
+	/* Translators: this goes with the previous (= "Split this track in") */
+	label = gtk_label_new (_("parts"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	priv->silence_label = gtk_label_new (NULL);
+	gtk_widget_show (priv->silence_label);
+	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->silence_label, NULL);
+
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    brasero_utils_pack_properties (_("<b>Slicing Method</b>"),
+							   priv->notebook,
+							   hbox,
+							   NULL),
+			    FALSE,
+			    FALSE,
+			    0);
+
 	/* slices preview */
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (hbox);
 
 	priv->model = gtk_list_store_new (COLUMN_NUM,
@@ -1129,7 +1220,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_set_tooltip_text (button, _("Remove the selected slices"));
 	priv->remove_button = button;
 
-	button = brasero_utils_make_button (_("_Reset"),
+	button = brasero_utils_make_button (_("Re_set"),
 					    GTK_STOCK_CLEAR,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -1147,101 +1238,23 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_set_sensitive (priv->merge_button, FALSE);
 	gtk_widget_set_sensitive (priv->remove_button, FALSE);
 
+	vbox2 = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (vbox2);
+
+	label = gtk_label_new_with_mnemonic (_("_List of slices that are to be created:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->tree);
+	gtk_widget_show (label);
+
+	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, TRUE, TRUE, 0);
+
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Slices preview</b>"),
-							   hbox,
+			    brasero_utils_pack_properties (_("<b>Slices Preview</b>"),
+							   vbox2,
 							   NULL),
 			    TRUE,
 			    TRUE,
-			    0);
-
-	/* Slicing method */
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-
-	priv->combo = gtk_combo_box_new_text ();
-	gtk_widget_set_tooltip_text (priv->combo, _("Method to be used to split the track"));
-	gtk_widget_show (priv->combo);
-	gtk_box_pack_start (GTK_BOX (hbox), priv->combo, TRUE, TRUE, 0);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track manually"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in parts with a fixed length"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track in a fixed number of parts"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Split track for each silence"));
-	g_signal_connect (priv->combo,
-			  "changed",
-			  G_CALLBACK (brasero_split_dialog_combo_changed_cb),
-			  object);
-
-	button = brasero_utils_make_button (_("_Slice"),
-					    NULL,
-					    "stock-tool-crop",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	gtk_size_group_add_widget (size_group, button);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	g_signal_connect (button,
-			  "clicked",
-			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
-			  object);
-	gtk_widget_set_tooltip_text (button, _("Press to add a splitting point"));
-	priv->cut = button;
-
-	priv->notebook = gtk_notebook_new ();
-	gtk_widget_show (priv->notebook);
-	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
-	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
-
-	priv->player = brasero_player_new ();
-	gtk_widget_show (priv->player);
-	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->player, NULL);
-
-	hbox2 = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (hbox2);
-	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
-
-	/* Translators: this goes with the next (= "seconds") */
-	label = gtk_label_new (_("Split this track every"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
-
-	priv->spin_sec = gtk_spin_button_new_with_range (1.0, 1000.0, 1.0);
-	gtk_widget_show (priv->spin_sec);
-	gtk_box_pack_start (GTK_BOX (hbox2), priv->spin_sec, FALSE, FALSE, 0);
-
-	/* Translators: this goes with the previous (= "Split track every") */
-	label = gtk_label_new (_("seconds"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (hbox2);
-	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox2, NULL);
-
-	/* Translators: this goes with the next (= "parts") */
-	label = gtk_label_new (_("Split this track in"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
-
-	priv->spin_parts = gtk_spin_button_new_with_range (2.0, 1000.0, 1.0);
-	gtk_widget_show (priv->spin_parts);
-	gtk_box_pack_start (GTK_BOX (hbox2), priv->spin_parts, FALSE, FALSE, 0);
-
-	/* Translators: this goes with the previous (= "Split this track in") */
-	label = gtk_label_new (_("parts"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
-
-	priv->silence_label = gtk_label_new (NULL);
-	gtk_widget_show (priv->silence_label);
-	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->silence_label, NULL);
-
-	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Slicing method</b>"),
-							   priv->notebook,
-							   hbox,
-							   NULL),
-			    FALSE,
-			    FALSE,
 			    0);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);

@@ -327,7 +327,7 @@ static GtkActionEntry entries[] = {
 	{"Pause", GTK_STOCK_MEDIA_PAUSE, N_("I_nsert a Pause"), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
 
-	{"Split", "stock-tool-crop", N_("_Split..."), NULL, NULL,
+	{"Split", "stock-tool-crop", N_("_Split Track..."), NULL, NULL,
 	 G_CALLBACK (brasero_audio_disc_split_cb)}
 };
 
