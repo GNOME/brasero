@@ -1213,7 +1213,7 @@ brasero_player_destroy (GtkObject *obj)
 	}
 
 	if (player->priv->vfs) {
-		g_object_unref (player->priv-vfs);
+		g_object_unref (player->priv->vfs);
 		player->priv->vfs = NULL;
 	}
 
