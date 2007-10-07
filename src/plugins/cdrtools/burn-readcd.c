@@ -148,6 +148,8 @@ brasero_readcd_get_size (BraseroReadcd *self,
 							       blocks,
 							       blocks * 2448);
 	}
+	else
+		return BRASERO_BURN_NOT_SUPPORTED;
 
 	/* no need to go any further */
 	return BRASERO_BURN_NOT_RUNNING;

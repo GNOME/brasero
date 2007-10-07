@@ -1,3 +1,15 @@
+2007-10-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	fix #461429 Comment #22:
+	default size retrieval function wasn't called because of bad return 
+	value in some plugins and particularly growisofs
+
+	* src/plugins/cdrdao/burn-cdrdao.c: (brasero_cdrdao_set_argv):
+	* src/plugins/cdrkit/burn-readom.c: (brasero_readom_get_size):
+	* src/plugins/cdrtools/burn-readcd.c: (brasero_readcd_get_size):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_set_argv):
+
 2007-10-06  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	removed scroll window from project type chooser to avoid ugly window size at startup

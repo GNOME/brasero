@@ -550,7 +550,7 @@ brasero_growisofs_set_argv (BraseroProcess *process,
 		/* only do it if that's DATA as input */
 		brasero_job_get_input_type (BRASERO_JOB (process), &input);
 		if (input.type != BRASERO_TRACK_TYPE_DATA)
-			return BRASERO_BURN_NOT_RUNNING;
+			return BRASERO_BURN_NOT_SUPPORTED;
 
 		result = brasero_growisofs_set_argv_record (BRASERO_GROWISOFS (process),
 							    argv,

@@ -465,6 +465,8 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 								       sectors,
 								       sectors * 2352);
 		}
+		else
+			return BRASERO_BURN_NOT_SUPPORTED;
 
 		return BRASERO_BURN_NOT_RUNNING;
 	}
