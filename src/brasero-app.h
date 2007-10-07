@@ -40,6 +40,8 @@ struct _BraseroApp {
 	GtkWidget *statusbar;
 	GtkUIManager *manager;
 
+	guint tooltip_ctx;
+
 	gint width;
 	gint height;
 

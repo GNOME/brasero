@@ -360,6 +360,69 @@ brasero_app_add_recent (BraseroApp *app)
  	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), submenu);    
 }
 
+static void
+brasero_menu_item_selected_cb (GtkMenuItem *proxy,
+			       BraseroApp *app)
+{
+	GtkAction *action;
+	gchar *message;
+
+	action = g_object_get_data (G_OBJECT (proxy),  "gtk-action");
+	g_return_if_fail (action != NULL);
+
+	g_object_get (G_OBJECT (action), "tooltip", &message, NULL);
+	if (message) {
+		gtk_statusbar_push (GTK_STATUSBAR (app->statusbar),
+				    app->tooltip_ctx,
+				    message);
+		g_free (message);
+	}
+}
+
+static void
+brasero_menu_item_deselected_cb (GtkMenuItem *proxy,
+				 BraseroApp *app)
+{
+	gtk_statusbar_pop (GTK_STATUSBAR (app->statusbar),
+			   app->tooltip_ctx);
+}
+
+static void
+brasero_connect_ui_manager_proxy_cb (GtkUIManager *manager,
+				     GtkAction *action,
+				     GtkWidget *proxy,
+				     BraseroApp *app)
+{
+	if (!GTK_IS_MENU_ITEM (proxy))
+		return;
+
+	g_signal_connect (proxy,
+			  "select",
+			  G_CALLBACK (brasero_menu_item_selected_cb),
+			  app);
+	g_signal_connect (proxy,
+			  "deselect",
+			  G_CALLBACK (brasero_menu_item_deselected_cb),
+			  app);
+}
+
+static void
+brasero_disconnect_ui_manager_proxy_cb (GtkUIManager *manager,
+					GtkAction *action,
+					GtkWidget *proxy,
+					BraseroApp *app)
+{
+	if (!GTK_IS_MENU_ITEM (proxy))
+		return;
+
+	g_signal_handlers_disconnect_by_func (proxy,
+					      G_CALLBACK (brasero_menu_item_selected_cb),
+					      app);
+	g_signal_handlers_disconnect_by_func (proxy,
+					      G_CALLBACK (brasero_menu_item_deselected_cb),
+					      app);
+}
+
 static BraseroApp *
 brasero_app_create_app (void)
 {
@@ -383,6 +446,7 @@ brasero_app_create_app (void)
 
 	/* status bar to display the size of selected files */
 	app->statusbar = gtk_statusbar_new ();
+	app->tooltip_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (app->statusbar), "tooltip_info");
 	gnome_app_set_statusbar (GNOME_APP (app->mainwin), app->statusbar);
 
 	/* window contents */
@@ -395,6 +459,14 @@ brasero_app_create_app (void)
 
 	/* menu and toolbar */
 	app->manager = gtk_ui_manager_new ();
+	g_signal_connect (app->manager,
+			  "connect-proxy",
+			  G_CALLBACK (brasero_connect_ui_manager_proxy_cb),
+			  app);
+	g_signal_connect (app->manager,
+			  "disconnect-proxy",
+			  G_CALLBACK (brasero_disconnect_ui_manager_proxy_cb),
+			  app);
 	brasero_project_manager_register_menu (BRASERO_PROJECT_MANAGER (app->contents),
 					       app->manager);
 

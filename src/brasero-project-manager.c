@@ -163,6 +163,8 @@ struct BraseroProjectManagerPrivate {
 	GtkWidget *layout;
 	GtkWidget *status;
 
+	guint status_ctx;
+
 	GtkActionGroup *action_group;
 };
 
@@ -377,7 +379,8 @@ brasero_project_manager_size_preview (BraseroVFS *vfs,
 	gint valid_num = files_num - invalid_num;
     	gchar *status_string = NULL;
 
-	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status), 1);
+	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
+			   manager->priv->status_ctx);
 
 	if (!invalid_num && valid_num) {
 		gchar *size_string;
@@ -430,7 +433,7 @@ brasero_project_manager_size_preview (BraseroVFS *vfs,
 		status_string = g_strdup (_("No file selected"));
 
 	gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
-			    1,
+			    manager->priv->status_ctx,
 			    status_string);
 	g_free (status_string);
 }
@@ -449,9 +452,10 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 	uris = brasero_uri_container_get_selected_uris (container);
     	if (!uris) {
-		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status), 1);
+		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
+				   manager->priv->status_ctx);
 		gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
-				    1,
+				    manager->priv->status_ctx,
 				    _("No file selected"));
 		return;
 	}
@@ -481,6 +485,8 @@ brasero_project_manager_set_status (BraseroProjectManager *manager,
 				    GtkWidget *status)
 {
 	manager->priv->status = status;
+	manager->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
+								  "size_info");
 }
 
 void
@@ -621,9 +627,11 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	&&  !brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
 		return;
 
+	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
+			   manager->priv->status_ctx);
+
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
-	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status), 1);
 
 	manager->priv->type = type;
 

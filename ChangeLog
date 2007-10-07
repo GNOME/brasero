@@ -1,5 +1,20 @@
 2007-10-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #478416 – Statusbar should show tooltips for selected menu entries
+
+	* src/brasero-app.h:
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_size_preview),
+	(brasero_project_manager_selected_uris_changed),
+	(brasero_project_manager_set_status),
+	(brasero_project_manager_switch):
+	* src/main.c: (brasero_menu_item_selected_cb),
+	(brasero_menu_item_deselected_cb),
+	(brasero_connect_ui_manager_proxy_cb),
+	(brasero_disconnect_ui_manager_proxy_cb), (brasero_app_create_app):
+
+2007-10-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix memory leak that was leading to session object not being properly unreffed
 	which in turn led to temporary files not being removed
 
