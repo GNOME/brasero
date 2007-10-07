@@ -993,6 +993,9 @@ brasero_dest_selection_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_SESSION:
+		if (priv->session)
+			g_object_unref (priv->session);
+
 		session = g_value_get_object (value);
 
 		/* NOTE: no need to unref a potential previous session since

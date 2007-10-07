@@ -1562,6 +1562,9 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			else
 				result = brasero_burn_run_recorder (burn, error);
 
+			if (result == BRASERO_BURN_OK)
+				priv->tasks_done ++;
+
 			break;
 		}
 

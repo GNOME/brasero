@@ -1,5 +1,19 @@
 2007-10-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix memory leak that was leading to session object not being properly unreffed
+	which in turn led to temporary files not being removed
+
+	* src/brasero-burn-dialog.c:
+	(brasero_burn_dialog_action_changed_cb):
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_set_property):
+	* src/burn-session.c: (brasero_burn_session_get_tmp_image),
+	(brasero_burn_session_finalize):
+	* src/burn-task.c: (brasero_task_start):
+	* src/burn.c: (brasero_burn_run_tasks):
+
+2007-10-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	fix #461429 Comment #22:
 	default size retrieval function wasn't called because of bad return 
 	value in some plugins and particularly growisofs

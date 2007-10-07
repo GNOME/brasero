@@ -632,7 +632,7 @@ brasero_job_item_start (BraseroTaskItem *item,
 		BRASERO_JOB_LOG (self, "no ::start method");
 		BRASERO_JOB_NOT_SUPPORTED (self);
 	}
-	
+
 	result = klass->start (self, error);
 	if (result == BRASERO_BURN_NOT_RUNNING) {
 		/* this means that the task is already completed. This 

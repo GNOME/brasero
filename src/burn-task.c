@@ -553,8 +553,10 @@ brasero_task_start (BraseroTask *self,
 		/* this track was skipped without actual loop therefore see if
 		 * there is another track and, if there is, start again */
 		result = brasero_task_ctx_next_track (BRASERO_TASK_CTX (self));
-		if (result != BRASERO_BURN_RETRY)
-			break;
+		if (result != BRASERO_BURN_RETRY) {
+			brasero_task_send_stop_signal (self, result, NULL);
+			return result;
+		}
 
 		result = brasero_task_start_items (self, error);
 	}
@@ -645,7 +647,7 @@ BraseroTask *
 brasero_task_new ()
 {
 	BraseroTask *obj;
-	
+
 	obj = BRASERO_TASK (g_object_new (BRASERO_TYPE_TASK, NULL));
 	return obj;
 }

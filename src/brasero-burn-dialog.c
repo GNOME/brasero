@@ -958,7 +958,7 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 		      action == BRASERO_BURN_ACTION_FIXATING);
 
 	if (dialog->priv->is_writing && !is_writing) {
-		BraseroMedia media;
+		BraseroMedia media = BRASERO_MEDIUM_NONE;
 
 		brasero_burn_status (burn, &media, NULL, NULL, NULL);
 		brasero_burn_dialog_update_info (dialog,

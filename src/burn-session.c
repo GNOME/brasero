@@ -946,7 +946,10 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 		}
 	}
 
-	priv->tmpfiles = g_slist_prepend (priv->tmpfiles, g_strdup (complement));
+	if (complement)
+		priv->tmpfiles = g_slist_prepend (priv->tmpfiles,
+						  g_strdup (complement));
+
 	brasero_burn_session_set_image_output_retval (self,
 						      format,
 						      image,
@@ -1503,6 +1506,7 @@ brasero_burn_session_finalize (GObject *object)
 		gchar *tmpfile;
 
 		tmpfile = iter->data;
+
 		g_remove (tmpfile);
 		g_free (tmpfile);
 	}
