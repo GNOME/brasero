@@ -89,6 +89,8 @@ struct BraseroLayoutPrivate {
 
 	gint accel;
 
+	GtkWidget *project;
+
 	BraseroLayoutType type;
 	GSList *items;
 	BraseroLayoutItem *active_item;
@@ -294,8 +296,8 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 				gboolean active)
 {
 	gboolean preview_in_project;
+	GtkWidget *project_box;
 	GtkWidget *toplevel;
-	GtkWidget *project;
 	gint width, height;
 	GtkAction *action;
 	GList *children;
@@ -316,7 +318,7 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 	preview_in_project = (g_list_find (children, layout->priv->preview_pane) == NULL);
 	g_list_free (children);
 
-	project = gtk_paned_get_child1 (GTK_PANED (layout));
+	project_box = gtk_paned_get_child1 (GTK_PANED (layout));
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (layout));
 	gtk_window_get_size (GTK_WINDOW (toplevel), &width, &height);
@@ -328,7 +330,7 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 			/* we need to unparent the preview widget
 			 * and set it back where it was */
 			g_object_ref (layout->priv->preview_pane);
-			gtk_container_remove (GTK_CONTAINER (project),
+			gtk_container_remove (GTK_CONTAINER (project_box),
 					      layout->priv->preview_pane);
 
 			gtk_box_pack_end (GTK_BOX (layout->priv->main_box),
@@ -352,25 +354,23 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 		height = MAX (height, layout->priv->main_box->allocation.height);
 
 		/* Now tell the project which source it gets URIs from */
-		if (project) {
+		if (project_box) {
 			BraseroLayoutObject *source;
 
 			source = brasero_layout_item_get_object (item);
 			if (!BRASERO_IS_URI_CONTAINER (source)) {
 				BRASERO_BURN_LOG ("Item is not an URI container");
-				brasero_project_set_source (BRASERO_PROJECT (project),
+				brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 							    NULL);
 			}
 			else
-				brasero_project_set_source (BRASERO_PROJECT (project),
+				brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 							    BRASERO_URI_CONTAINER (source));
 		}
 	}
 	else {
 		/* means we aren't showing anything */
-
-		if (project)
-			brasero_project_set_source (BRASERO_PROJECT (project), NULL);
+		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
 
 		if (!preview_in_project) {
 			/* we need to unparent the preview widget
@@ -379,7 +379,7 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 			gtk_container_remove (GTK_CONTAINER (layout->priv->main_box),
 					      layout->priv->preview_pane);
 
-			gtk_box_pack_end (GTK_BOX (project),
+			gtk_box_pack_end (GTK_BOX (project_box),
 					  layout->priv->preview_pane,
 					  FALSE,
 					  FALSE,
@@ -401,15 +401,9 @@ brasero_layout_size_reallocate (BraseroLayout *layout)
 	gint header, center, footer;
 	BraseroLayoutObject *source;
 	GtkWidget *alignment;
-	GtkWidget *project;
 
 	alignment = layout->priv->main_box->parent;
-
-	project = gtk_paned_get_child1 (GTK_PANED (layout));
-	if (!project)
-		return;
-
-	brasero_layout_object_get_proportion (BRASERO_LAYOUT_OBJECT (project),
+	brasero_layout_object_get_proportion (BRASERO_LAYOUT_OBJECT (layout->priv->project),
 					      &pr_header,
 					      &pr_center,
 					      &pr_footer);
@@ -452,12 +446,19 @@ void
 brasero_layout_add_project (BraseroLayout *layout,
 			    GtkWidget *project)
 {
+	GtkWidget *box;
+
 	g_signal_connect (project,
 			  "size-allocate",
 			  G_CALLBACK (brasero_layout_project_size_allocated_cb),
 			  layout);
 
-	gtk_paned_pack1 (GTK_PANED (layout), project, TRUE, FALSE);
+	box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (box);
+	gtk_paned_pack1 (GTK_PANED (layout), box, TRUE, FALSE);
+
+	gtk_box_pack_start (GTK_BOX (box), project, TRUE, TRUE, 0);
+	layout->priv->project = project;
 }
 
 static GtkWidget *
