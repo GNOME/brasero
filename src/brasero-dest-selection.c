@@ -581,7 +581,6 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 					       BRASERO_BURN_FLAG_BURNPROOF);
 
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
-
 		brasero_burn_session_get_input_type (priv->session, &source);
 		if (source.type == BRASERO_TRACK_TYPE_DATA
 		||  source.type == BRASERO_TRACK_TYPE_DISC
@@ -591,18 +590,22 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_NO_TMP_FILES);
 	}
 	else {
-		BraseroBurnFlag supported;
-		BraseroBurnFlag compulsory;
+		BraseroBurnResult result;
+		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-		flags &= (supported & BRASERO_DRIVE_PROPERTIES_FLAGS);
-		flags |= (compulsory & BRASERO_DRIVE_PROPERTIES_FLAGS);
+		result = brasero_burn_caps_get_flags (priv->caps,
+						      priv->session,
+						      &supported,
+						      &compulsory);
 
-		brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
-		brasero_burn_session_add_flag (priv->session, flags);
+		if (result == BRASERO_BURN_OK) {
+			flags &= (supported & BRASERO_DRIVE_PROPERTIES_FLAGS);
+			flags |= (compulsory & BRASERO_DRIVE_PROPERTIES_FLAGS);
+
+			brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
+			brasero_burn_session_add_flag (priv->session, flags);
+		}
 	}
 
 	nautilus_burn_drive_unref (drive);
@@ -770,6 +773,9 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 	brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
 	brasero_burn_session_add_flag (priv->session, flags);
 
+	/* NOTE: we save even if result != BRASERO_BURN_OK. That way if a flag
+	 * is no longer supported after the removal of a plugin then the 
+	 * properties are reset and the user can access them again */
 	/* save potential changes for the new profile */
 	brasero_dest_selection_save_drive_properties (self);
 

@@ -1,5 +1,22 @@
 2007-10-10  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Small improvement for dummy mode (add burn now button)
+	Fix problems introduced by earlier patches related to dummy mode
+
+	* src/brasero-audio-disc.c: (brasero_audio_disc_add_ui):
+	* src/brasero-burn-dialog.c:
+	(brasero_burn_dialog_dummy_success_cb):
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_check_drive_settings):
+	* src/burn-caps.c: (brasero_burn_caps_new_blanking_task),
+	(brasero_burn_caps_can_blank), (brasero_caps_get_flags_for_disc),
+	(brasero_burn_caps_get_flags):
+	* src/burn-plugin.c: (brasero_plugin_get_blank_flags):
+	* src/burn-session.c: (brasero_burn_session_add_track):
+
+2007-10-10  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #478416 – Statusbar should show tooltips for selected menu entries (for popup menus)
 	and #484157 – Directly use GtkActions to populate toolbar
 	These were related bugs.

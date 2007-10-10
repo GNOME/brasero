@@ -491,12 +491,10 @@ brasero_plugin_get_blank_flags (BraseroPlugin *self,
 	}
 
 	if (supported)
-		*supported = flags->supported & (BRASERO_BURN_FLAG_DUMMY|
-						 BRASERO_BURN_FLAG_NOGRACE|
+		*supported = flags->supported & (BRASERO_BURN_FLAG_NOGRACE|
 						 BRASERO_BURN_FLAG_FAST_BLANK);
 	if (compulsory)
-		*compulsory = flags->compulsory & (BRASERO_BURN_FLAG_DUMMY|
-						   BRASERO_BURN_FLAG_NOGRACE|
+		*compulsory = flags->compulsory & (BRASERO_BURN_FLAG_NOGRACE|
 						   BRASERO_BURN_FLAG_FAST_BLANK);
 	return TRUE;
 }

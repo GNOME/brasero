@@ -261,14 +261,19 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 
 	brasero_track_ref (new_track);
 	if (!priv->tracks) {
+		BraseroTrackType new_type;
+
+		brasero_track_get_type (new_track, &new_type);
+
 		/* we only need to emit the signal here since if there are
 		 * multiple tracks they must be exactly of the same time */
 		priv->tracks = g_slist_prepend (NULL, new_track);
 		brasero_burn_session_start_src_drive_monitoring (self);
 
-		g_signal_emit (self,
-			       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-			       0);
+		/* if (!brasero_track_type_equal (priv->input, &new_type)) */
+			g_signal_emit (self,
+				       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
+				       0);
 
 		return BRASERO_BURN_OK;
 	}

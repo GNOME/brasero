@@ -988,6 +988,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	GtkResponseType answer;
 	GtkWidget *message;
 	GtkWindow *window;
+	GtkWidget *button;
 	gint id;
 
 	window = GTK_WINDOW (dialog);
@@ -1002,6 +1003,13 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Real disc burning will take place in 10 seconds."));
+
+	button = brasero_utils_make_button (_("Burn Now"),
+					    NULL,
+					    "media-optical-burn",
+					    GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (message), button, GTK_RESPONSE_OK);
 
 	id = g_timeout_add (10000,
 			    brasero_burn_dialog_dummy_success_timeout,

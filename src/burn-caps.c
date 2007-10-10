@@ -502,8 +502,7 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 	BraseroTask *task = NULL;
 
 	media = brasero_burn_session_get_dest_media (session);
-	flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_DUMMY|
-							    BRASERO_BURN_FLAG_NOGRACE|
+	flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_NOGRACE|
 							    BRASERO_BURN_FLAG_FAST_BLANK);
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
@@ -579,8 +578,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 	BraseroBurnFlag flags;
 
 	media = brasero_burn_session_get_dest_media (session);
-	flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_DUMMY|
-							    BRASERO_BURN_FLAG_NOGRACE|
+	flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_NOGRACE|
 							    BRASERO_BURN_FLAG_FAST_BLANK);
 
 	BRASERO_BURN_LOG_DISC_TYPE (media, "checking blanking caps for");
@@ -596,6 +594,10 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 		if ((media & caps->type.subtype.media) != media)
 			continue;
 
+		BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
+					    BRASERO_PLUGIN_IO_NONE,
+					    "Searching links for caps");
+
 		for (links = caps->links; links; links = links->next) {
 			GSList *plugins;
 			BraseroCapsLink *link;
@@ -605,6 +607,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 			if (link->caps != NULL)
 				continue;
 
+			BRASERO_BURN_LOG ("Searching plugins");
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroBurnFlag compulsory;
 				BraseroBurnFlag supported;
@@ -1579,7 +1582,6 @@ brasero_caps_get_flags_for_disc (BraseroBurnSession *session,
 
 	*supported |= supported_flags;
 	*compulsory |= compulsory_flags;
-	BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
 
 	return BRASERO_BURN_OK;
 }
@@ -1603,6 +1605,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 
 	g_return_val_if_fail (BRASERO_IS_BURNCAPS (self), BRASERO_BURN_ERR);
 
+	BRASERO_BURN_LOG ("FLAGS: Searching ...");
 	input = brasero_burn_session_get_input_type (session, NULL);
 
 	if (brasero_burn_session_is_dest_file (session)) {
@@ -1619,6 +1622,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		*supported = supported_flags;
 		*compulsory = compulsory_flags;
 
+		BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
 		return BRASERO_BURN_OK;
 	}
 
@@ -1693,6 +1697,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 
 	*supported = supported_flags;
 	*compulsory = compulsory_flags;
+
+	BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
 
 	return BRASERO_BURN_OK;
 }

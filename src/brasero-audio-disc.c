@@ -515,7 +515,7 @@ brasero_audio_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 						      -1,
 						      &error);
 	if (!merge_id) {
-		g_print ("Adding ui elements failed: %s", error->message);
+		BRASERO_BURN_LOG ("Adding ui elements failed: %s", error->message);
 		g_error_free (error);
 		return 0;
 	}
