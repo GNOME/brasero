@@ -65,6 +65,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "brasero-disc.h"
 #include "brasero-audio-disc.h"
 #include "brasero-metadata.h"
@@ -120,8 +121,8 @@ brasero_audio_disc_clear (BraseroDisc *disc);
 static void
 brasero_audio_disc_reset (BraseroDisc *disc);
 
-static void
-brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar);
+static guint
+brasero_audio_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager);
 
 static gboolean
 brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
@@ -212,8 +213,9 @@ brasero_audio_disc_paste_activated_cb (GtkAction *action,
 static void
 brasero_audio_disc_decrease_activity_counter (BraseroAudioDisc *disc);
 
-static gchar *
-brasero_audio_disc_get_selected_uri (BraseroDisc *disc);
+static gboolean
+brasero_audio_disc_get_selected_uri (BraseroDisc *disc,
+				     gchar **uri);
 static gboolean
 brasero_audio_disc_get_boundaries (BraseroDisc *disc,
 				   gint64 *start,
@@ -222,15 +224,10 @@ brasero_audio_disc_get_boundaries (BraseroDisc *disc,
 static void
 brasero_audio_disc_add_pause_cb (GtkAction *action, BraseroAudioDisc *disc);
 static void
-brasero_audio_disc_pause_clicked_cb (GtkButton *button, BraseroAudioDisc *disc);
-
-static void
 brasero_audio_disc_split_cb (GtkAction *action, BraseroAudioDisc *disc);
-static void
-brasero_audio_disc_split_clicked_cb (GtkButton *button, BraseroAudioDisc *disc);
 
 static void
-brasero_audio_disc_selection_changed (GtkTreeSelection *selection, GtkWidget *pause_button);
+brasero_audio_disc_selection_changed (GtkTreeSelection *selection, BraseroAudioDisc *disc);
 
 #ifdef BUILD_INOTIFY
 
@@ -268,6 +265,7 @@ struct _BraseroAudioDiscPrivate {
 	GtkWidget *tree;
 
 	GtkUIManager *manager;
+	GtkActionGroup *disc_group;
 
 	GtkTreePath *selected_path;
 
@@ -311,23 +309,17 @@ enum {
 
 static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
-
-	{"Open", GTK_STOCK_OPEN, NULL, NULL, NULL,
+	{"Open", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_audio_disc_open_activated_cb)},
-
-	{"Edit", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, NULL,
+	{"Edit", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the track information (start, end, author, ...)"),
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
-
-	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, NULL,
+	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
-
-	{"Paste", GTK_STOCK_PASTE, NULL, NULL, NULL,
+	{"Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
-
-	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, NULL,
+	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, N_("Add a 2 second pause after the track"),
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
-
-	{"Split", "stock-tool-crop", N_("_Split Track..."), NULL, NULL,
+	{"Split", "stock-tool-crop", N_("_Split Track..."), NULL, N_("Split the selected track"),
 	 G_CALLBACK (brasero_audio_disc_split_cb)}
 };
 
@@ -344,6 +336,13 @@ static const gchar *description = {
 		"<separator/>"
 		"<menuitem action='Edit'/>"
 	"</popup>"
+	"<toolbar name='Toolbar'>"
+		"<placeholder name='DiscButtonPlaceholder'>"
+			"<separator/>"
+			"<toolitem action='Pause'/>"
+			"<toolitem action='Split'/>"
+		"</placeholder>"
+	"</toolbar>"
 	"</ui>"
 };
 
@@ -446,7 +445,7 @@ brasero_audio_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->get_status = brasero_audio_disc_get_status;
 	iface->get_selected_uri = brasero_audio_disc_get_selected_uri;
 	iface->get_boundaries = brasero_audio_disc_get_boundaries;
-	iface->fill_toolbar = brasero_audio_disc_fill_toolbar;
+	iface->add_ui = brasero_audio_disc_add_ui;
 }
 
 static void
@@ -489,90 +488,54 @@ brasero_audio_disc_set_property (GObject * object,
 	}
 }
 
-static void
-brasero_audio_disc_build_context_menu (BraseroAudioDisc *disc)
+static guint
+brasero_audio_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 {
-	GtkActionGroup *action_group;
-	GError *error = NULL;
-
-	action_group = gtk_action_group_new ("MenuAction");
-	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
-	gtk_action_group_add_actions (action_group, entries,
-				      G_N_ELEMENTS (entries),
-				      disc);
-
-	disc->priv->manager = gtk_ui_manager_new ();
-	gtk_ui_manager_insert_action_group (disc->priv->manager,
-					    action_group,
-					    0);
-
-	if (!gtk_ui_manager_add_ui_from_string (disc->priv->manager,
-						description,
-						-1,
-						&error)) {
-		g_message ("building menus failed: %s", error->message);
-		g_error_free (error);
-	}
-}
-
-static void
-brasero_audio_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
-{
-	GtkWidget *button;
-	GtkToolItem *item;
 	BraseroAudioDisc *audio_disc;
+	GError *error = NULL;
+	GtkAction *action;
+	guint merge_id;
 
 	audio_disc = BRASERO_AUDIO_DISC (disc);
 
-	/* button to add pauses in between tracks */
-	button = brasero_utils_make_button (NULL,
-					    NULL,
-					    "insert-pause",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_set_sensitive (button, FALSE);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_audio_disc_pause_clicked_cb),
-			  audio_disc);
-	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (audio_disc->priv->tree)),
-			  "changed",
-			  G_CALLBACK (brasero_audio_disc_selection_changed),
-			  button);
-	gtk_widget_set_tooltip_text (button,
-			      _("Add a 2 second pause after the track"));
-	gtk_widget_show (button);
+	if (!audio_disc->priv->disc_group) {
+		audio_disc->priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION);
+		gtk_action_group_set_translation_domain (audio_disc->priv->disc_group, GETTEXT_PACKAGE);
+		gtk_action_group_add_actions (audio_disc->priv->disc_group,
+					      entries,
+					      G_N_ELEMENTS (entries),
+					      disc);
+		gtk_ui_manager_insert_action_group (manager,
+						    audio_disc->priv->disc_group,
+						    0);
+	}
 
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), button);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
+	merge_id = gtk_ui_manager_add_ui_from_string (manager,
+						      description,
+						      -1,
+						      &error);
+	if (!merge_id) {
+		g_print ("Adding ui elements failed: %s", error->message);
+		g_error_free (error);
+		return 0;
+	}
 
-	/* button to split tracks */
-	button = brasero_utils_make_button (NULL,
-					    NULL,
-					    "stock-tool-crop",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	gtk_widget_set_sensitive (button, FALSE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_audio_disc_split_clicked_cb),
-			  audio_disc);
-	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (audio_disc->priv->tree)),
-			  "changed",
-			  G_CALLBACK (brasero_audio_disc_selection_changed),
-			  button);
-	gtk_widget_set_tooltip_text (button,
-				     _("split the track"));
-	gtk_widget_show (button);
+	action = gtk_action_group_get_action (audio_disc->priv->disc_group, "Pause");
+	g_object_set (action,
+		      "short-label", _("Pause"), /* for toolbar buttons */
+		      NULL);
+	gtk_action_set_sensitive (action, FALSE);
 
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), button);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
+	action = gtk_action_group_get_action (audio_disc->priv->disc_group, "Split");
+	g_object_set (action,
+		      "short-label", _("Split"), /* for toolbar buttons */
+		      NULL);
+	gtk_action_set_sensitive (action, FALSE);
+
+	audio_disc->priv->manager = manager;
+	g_object_ref (manager);
+
+	return merge_id;
 }
 
 static void
@@ -593,6 +556,11 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	/* Tree */
 	obj->priv->tree = gtk_tree_view_new ();
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (obj->priv->tree), TRUE);
+
+	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree)),
+			  "changed",
+			  G_CALLBACK (brasero_audio_disc_selection_changed),
+			  obj);
 
 	/* This must be before connecting to button press event */
 	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (obj->priv->tree));
@@ -775,9 +743,6 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 						GDK_ACTION_COPY |
 						GDK_ACTION_MOVE);
 
-	/* create menus */
-	brasero_audio_disc_build_context_menu (obj);
-
 #ifdef BUILD_INOTIFY
 	int fd;
 
@@ -866,8 +831,10 @@ brasero_audio_disc_finalize (GObject *object)
 		cobj->priv->vfs = NULL;
 	}
 
-	g_object_unref (cobj->priv->manager);
-	cobj->priv->manager = NULL;
+	if (cobj->priv->manager) {
+		g_object_unref (cobj->priv->manager);
+		cobj->priv->manager = NULL;
+	}
 
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -1777,6 +1744,13 @@ brasero_audio_disc_delete_selected (BraseroDisc *disc)
 		brasero_audio_disc_remove (audio, treepath);
 		gtk_tree_path_free (treepath);
 	}
+
+	/* warn that the selection changed (there are no more selected paths) */
+	if (audio->priv->selected_path) {
+		gtk_tree_path_free (audio->priv->selected_path);
+		audio->priv->selected_path = NULL;
+	}
+	brasero_disc_selection_changed (disc);
 }
 
 static void
@@ -2492,12 +2466,6 @@ brasero_audio_disc_add_pause (BraseroAudioDisc *disc)
 }
 
 static void
-brasero_audio_disc_pause_clicked_cb (GtkButton *button,
-				     BraseroAudioDisc *disc)
-{
-	brasero_audio_disc_add_pause (disc);
-}
-static void
 brasero_audio_disc_add_pause_cb (GtkAction *action,
 				 BraseroAudioDisc *disc)
 {
@@ -2668,13 +2636,6 @@ brasero_audio_disc_split (BraseroAudioDisc *disc)
 }
 
 static void
-brasero_audio_disc_split_clicked_cb (GtkButton *button,
-				     BraseroAudioDisc *disc)
-{
-	brasero_audio_disc_split (disc);
-}
-
-static void
 brasero_audio_disc_split_cb (GtkAction *action,
 			     BraseroAudioDisc *disc)
 {
@@ -2683,17 +2644,28 @@ brasero_audio_disc_split_cb (GtkAction *action,
 
 static void
 brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
-				      GtkWidget *button)
+				      BraseroAudioDisc *disc)
 {
+	GtkAction *action_pause;
+	GtkAction *action_split;
+	guint selected_num = 0;
 	GtkTreeView *treeview;
 	GtkTreeModel *model;
 	GList *selected;
 	GList *iter;
 
+	if (!disc->priv->disc_group)
+		return;
+
+	action_split = gtk_action_group_get_action (disc->priv->disc_group, "Split");
+	action_pause = gtk_action_group_get_action (disc->priv->disc_group, "Pause");
+
 	treeview = gtk_tree_selection_get_tree_view (selection);
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
 
-	gtk_widget_set_sensitive (button, FALSE);
+	gtk_action_set_sensitive (action_split, FALSE);
+	gtk_action_set_sensitive (action_pause, FALSE);
+
 	for (iter = selected; iter; iter = iter->next) {
 		GtkTreeIter row;
 		GtkTreePath *treepath;
@@ -2706,8 +2678,15 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 					    SONG_COL, &is_song,
 					    -1);
 			if (is_song) {
-				gtk_widget_set_sensitive (button, TRUE);
-				break;
+				selected_num ++;
+
+				gtk_action_set_sensitive (action_pause, TRUE);
+				if (selected_num != 1) {
+					gtk_action_set_sensitive (action_split, FALSE);
+					break;
+				}
+				else
+					gtk_action_set_sensitive (action_split, TRUE);
 			}
 		}
 	}
@@ -3101,28 +3080,31 @@ brasero_audio_disc_key_released_cb (GtkTreeView *tree,
 }
 
 /**********************************               ******************************/
-static gchar *
-brasero_audio_disc_get_selected_uri (BraseroDisc *disc)
+static gboolean
+brasero_audio_disc_get_selected_uri (BraseroDisc *disc,
+				     gchar **uri)
 {
-	gchar *uri;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	BraseroAudioDisc *audio;
 
 	audio = BRASERO_AUDIO_DISC (disc);
 	if (!audio->priv->selected_path)
-		return NULL;
+		return FALSE;
+
+	if (!uri)
+		return TRUE;
 
 	/* we are asked for just one uri so return the first one */
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
 	if (!gtk_tree_model_get_iter (model, &iter, audio->priv->selected_path)) {
 		gtk_tree_path_free (audio->priv->selected_path);
 		audio->priv->selected_path = NULL;
-		return NULL;
+		return FALSE;
 	}
 
-	gtk_tree_model_get (model, &iter, URI_COL, &uri, -1);
-	return uri;
+	gtk_tree_model_get (model, &iter, URI_COL, uri, -1);
+	return TRUE;
 }
 
 static gboolean

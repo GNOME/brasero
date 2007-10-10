@@ -681,7 +681,7 @@ brasero_player_bacon_setup_pipe (BraseroPlayerBacon *bacon)
 
 	bacon->priv->pipe = gst_element_factory_make ("playbin", NULL);
 	if (!bacon->priv->pipe) {
-		g_warning ("Pipe creation error : can't create pipe.\n");
+		BRASERO_BURN_LOG ("Pipe creation error : can't create pipe.\n");
 		return;
 	}
 

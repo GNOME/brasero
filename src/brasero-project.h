@@ -90,6 +90,7 @@ brasero_project_save_session (BraseroProject *project,
 			      gboolean show_cancel);
 
 void
-brasero_project_register_menu (BraseroProject *project, GtkUIManager *manager);
+brasero_project_register_ui (BraseroProject *project,
+			     GtkUIManager *manager);
 
 #endif /* PROJECT_H */

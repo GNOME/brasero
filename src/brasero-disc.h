@@ -29,6 +29,7 @@
 #include <glib-object.h>
 
 #include <gtk/gtktoolbar.h>
+#include <gtk/gtkuimanager.h>
 
 #include <nautilus-burn-drive.h>
 
@@ -41,6 +42,8 @@ G_BEGIN_DECLS
 #define BRASERO_DISC(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_DISC, BraseroDisc))
 #define BRASERO_IS_DISC(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), BRASERO_TYPE_DISC))
 #define BRASERO_DISC_GET_IFACE(o) (G_TYPE_INSTANCE_GET_INTERFACE ((o), BRASERO_TYPE_DISC, BraseroDiscIface))
+
+#define BRASERO_DISC_ACTION "DiscAction"
 
 typedef enum {
 	BRASERO_DISC_OK = 0,
@@ -120,7 +123,8 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*add_uri)		(BraseroDisc *disc,
 							 const gchar *uri);
 
-	gchar *			(*get_selected_uri)	(BraseroDisc *disc);
+	gboolean		(*get_selected_uri)	(BraseroDisc *disc,
+							 gchar **uri);
 	gboolean		(*get_boundaries)	(BraseroDisc *disc,
 							 gint64 *start,
 							 gint64 *end);
@@ -129,8 +133,8 @@ struct _BraseroDiscIface {
 	void			(*clear)		(BraseroDisc *disc);
 	void			(*reset)		(BraseroDisc *disc);
 
-	void			(*fill_toolbar)		(BraseroDisc *disc,
-							 GtkToolbar *box);
+	guint			(*add_ui)		(BraseroDisc *disc,
+							 GtkUIManager *manager);
 
 	void			(*set_drive)		(BraseroDisc *disc,
 							 NautilusBurnDrive *drive);
@@ -138,8 +142,8 @@ struct _BraseroDiscIface {
 
 GType brasero_disc_get_type ();
 
-void
-brasero_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar);
+guint
+brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager);
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
@@ -147,8 +151,9 @@ brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
 BraseroDiscResult
 brasero_disc_can_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
 
-gchar *
-brasero_disc_get_selected_uri (BraseroDisc *disc);
+gboolean
+brasero_disc_get_selected_uri (BraseroDisc *disc, gchar **uri);
+
 gboolean
 brasero_disc_get_boundaries (BraseroDisc *disc,
 			     gint64 *start,

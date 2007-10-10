@@ -1,3 +1,43 @@
+2007-10-10  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #478416 – Statusbar should show tooltips for selected menu entries (for popup menus)
+	and #484157 – Directly use GtkActions to populate toolbar
+	These were related bugs.
+
+	* src/brasero-audio-disc.c: (brasero_audio_disc_iface_disc_init),
+	(brasero_audio_disc_add_ui), (brasero_audio_disc_init),
+	(brasero_audio_disc_finalize),
+	(brasero_audio_disc_delete_selected),
+	(brasero_audio_disc_selection_changed),
+	(brasero_audio_disc_get_selected_uri):
+	* src/brasero-data-disc.c: (brasero_data_disc_iface_disc_init),
+	(brasero_data_disc_add_ui), (brasero_data_disc_init),
+	(brasero_data_disc_finalize), (brasero_data_disc_reset_real),
+	(brasero_data_disc_unreadable_new),
+	(brasero_data_disc_delete_selected),
+	(brasero_data_disc_import_session_error),
+	(brasero_data_disc_update_multi_button_state),
+	(brasero_data_disc_get_selected_uri):
+	* src/brasero-disc.c: (brasero_disc_get_selected_uri),
+	(brasero_disc_add_ui):
+	* src/brasero-disc.h:
+	* src/brasero-player-bacon.c: (brasero_player_bacon_setup_pipe):
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_register_ui):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c: (brasero_project_set_remove_button_state),
+	(brasero_project_set_add_button_state), (brasero_project_init),
+	(brasero_project_check_size),
+	(brasero_project_selection_changed_cb),
+	(brasero_project_get_selected_uri), (brasero_project_switch),
+	(brasero_project_set_none), (brasero_project_contents_changed_cb),
+	(brasero_project_add_uris_cb),
+	(brasero_project_remove_selected_uris_cb),
+	(brasero_project_empty_cb), (brasero_project_burn_cb),
+	(brasero_project_register_ui):
+	* src/brasero-project.h:
+	* src/main.c: (brasero_app_add_recent), (brasero_app_create_app):
+
 2007-10-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix #478416 – Statusbar should show tooltips for selected menu entries

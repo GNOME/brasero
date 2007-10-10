@@ -356,7 +356,7 @@ brasero_app_add_recent (BraseroApp *app)
 	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (submenu), filter);
 	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (submenu), TRUE);
 
-	menu = gtk_ui_manager_get_widget (app->manager, "/menubar/ProjectMenu/Recent");
+	menu = gtk_ui_manager_get_widget (app->manager, "/menubar/ProjectMenu/ProjectPlaceholder/Recent");
  	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), submenu);    
 }
 
@@ -467,8 +467,6 @@ brasero_app_create_app (void)
 			  "disconnect-proxy",
 			  G_CALLBACK (brasero_disconnect_ui_manager_proxy_cb),
 			  app);
-	brasero_project_manager_register_menu (BRASERO_PROJECT_MANAGER (app->contents),
-					       app->manager);
 
 	action_group = gtk_action_group_new ("MenuActions");
 	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
@@ -483,6 +481,9 @@ brasero_app_create_app (void)
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
 	}
+
+	brasero_project_manager_register_ui (BRASERO_PROJECT_MANAGER (app->contents),
+					     app->manager);
 
 	gtk_ui_manager_ensure_update (app->manager);
 	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");

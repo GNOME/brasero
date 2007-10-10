@@ -54,6 +54,8 @@
 
 #include <gconf/gconf-client.h>
 
+#include "burn-debug.h"
+#include "burn-session.h"
 #include "brasero-project.h"
 #include "brasero-project-size.h"
 #include "brasero-project-type-chooser.h"
@@ -65,7 +67,6 @@
 #include "brasero-utils.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
-#include "burn-session.h"
 
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);
@@ -101,10 +102,6 @@ brasero_project_flags_changed_cb (BraseroDisc *disc,
 				  BraseroProject *project);
 
 static void
-brasero_project_add_clicked_cb (GtkButton *button, BraseroProject *project);
-static void
-brasero_project_remove_clicked_cb (GtkButton *button, BraseroProject *project);
-static void
 brasero_project_burn_clicked_cb (GtkButton *button, BraseroProject *project);
 
 static void
@@ -135,19 +132,18 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *footer);
 
 struct BraseroProjectPrivate {
-	GtkWidget *buttons_box;
 	GtkWidget *size_display;
 	GtkWidget *discs;
 	GtkWidget *audio;
 	GtkWidget *data;
 
+	GtkUIManager *manager;
+
 	/* header */
-	GtkWidget *add;
-	GtkWidget *remove;
 	GtkWidget *burn;
 
 	GtkActionGroup *project_group;
-	GtkActionGroup *action_group;
+	guint merge_id;
 
 	gchar *project;
 	gint64 sectors;
@@ -169,32 +165,17 @@ struct BraseroProjectPrivate {
 	guint has_focus:1;
 	guint oversized:1;
 	guint ask_overburn:1;
+	guint selected_uris:1;
 };
 
-static GtkActionEntry entries_project [] = {
+static GtkActionEntry entries [] = {
 	{"Save", GTK_STOCK_SAVE, NULL, NULL,
 	 N_("Save current project"), G_CALLBACK (brasero_project_save_cb)},
 	{"SaveAs", GTK_STOCK_SAVE_AS, N_("Save _As..."), NULL,
 	 N_("Save current project to a different location"), G_CALLBACK (brasero_project_save_as_cb)},
-};
-
-static const gchar *description_project = {
-	"<ui>"
-	    "<menubar name='menubar' >"
-		"<menu action='ProjectMenu'>"
-			"<placeholder name='ProjectPlaceholder'/>"
-			    "<menuitem action='Save'/>"
-			    "<menuitem action='SaveAs'/>"
-			    "<separator/>"
-		"</menu>"
-	    "</menubar>"
-	"</ui>"
-};
-
-static GtkActionEntry entries_actions [] = {
 	{"Add", GTK_STOCK_ADD, N_("_Add Files"), NULL,
 	 N_("Add files to the project"), G_CALLBACK (brasero_project_add_uris_cb)},
-	{"Delete", GTK_STOCK_REMOVE, N_("_Remove Files"), NULL,
+	{"DeleteProject", GTK_STOCK_REMOVE, N_("_Remove Files"), NULL,
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
@@ -202,23 +183,40 @@ static GtkActionEntry entries_actions [] = {
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
 
-static const gchar *description_actions = {
+static const gchar *description = {
 	"<ui>"
 	    "<menubar name='menubar' >"
+		"<menu action='ProjectMenu'>"
+			"<placeholder name='ProjectPlaceholder'>"
+			    "<menuitem action='Save'/>"
+			    "<menuitem action='SaveAs'/>"
+			    "<separator/>"
+			"</placeholder>"
+		"</menu>"
+		
 		"<menu action='EditMenu'>"
-			"<placeholder name='EditPlaceholder'/>"
+			"<placeholder name='EditPlaceholder'>"
 			    "<menuitem action='Add'/>"
-			    "<menuitem action='Delete'/>"
+			    "<menuitem action='DeleteProject'/>"
 			    "<menuitem action='DeleteAll'/>"
 			    "<separator/>"
+			"</placeholder>"
 		"</menu>"
+
 		"<menu action='ViewMenu'>"
 		"</menu>"
+
 		"<menu action='DiscMenu'>"
 			"<placeholder name='DiscPlaceholder'/>"
 			"<menuitem action='Burn'/>"
 		"</menu>"
-		"</menubar>"
+	     "</menubar>"
+	    "<toolbar name='Toolbar'>"
+		"<placeholder name='DiscButtonPlaceholder'/>"
+		"<separator/>"
+		"<toolitem action='Add'/>"
+		"<toolitem action='DeleteProject'/>"
+	     "</toolbar>"
 	"</ui>"
 };
 
@@ -317,16 +315,12 @@ brasero_project_set_remove_button_state (BraseroProject *project)
 	GtkAction *action;
 	gboolean sensitive;
 
-	sensitive = (project->priv->has_focus && !project->priv->empty);
+	sensitive = (project->priv->has_focus &&
+		    !project->priv->empty &&
+		     project->priv->selected_uris);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "Delete");
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
 	gtk_action_set_sensitive (action, sensitive);
-
-	/* take care of the state of remove button */
-	if (!project->priv->remove)
-		return;
-
-	gtk_widget_set_sensitive (project->priv->remove, sensitive);
 }
 
 static void
@@ -338,13 +332,8 @@ brasero_project_set_add_button_state (BraseroProject *project)
 	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
 		      !project->priv->oversized);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "Add");
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
-
-	if (!project->priv->add)
-		return;
-
-	gtk_widget_set_sensitive (project->priv->add, sensitive);
 }
 
 static void
@@ -375,10 +364,42 @@ brasero_project_init (BraseroProject *obj)
 			  G_CALLBACK (brasero_project_focus_changed_cb),
 			  NULL);
 
-	/* this toolbar is for the projects where they can add their buttons */
-	obj->priv->buttons_box = gtk_toolbar_new ();
-	gtk_widget_show (obj->priv->buttons_box);
-	gtk_box_pack_start (GTK_BOX (obj), obj->priv->buttons_box, FALSE, FALSE, 0);
+	/* bottom */
+	box = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (box);
+	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, BRASERO_PROJECT_SPACING);
+
+	/* size widget */
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), BRASERO_PROJECT_SIZE_WIDGET_BORDER);
+	gtk_box_pack_start (GTK_BOX (box), vbox, TRUE, TRUE, 0);
+
+	obj->priv->size_display = brasero_project_size_new ();
+	gtk_widget_show (obj->priv->size_display);
+	g_signal_connect (G_OBJECT (obj->priv->size_display), 
+			  "disc-changed",
+			  G_CALLBACK (brasero_project_disc_changed_cb),
+			  obj);
+	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->size_display, TRUE, TRUE, 0);
+	obj->priv->empty = 1;
+	
+	/* burn button set insensitive since there are no files in the selection */
+	obj->priv->burn = brasero_utils_make_button (_("Burn..."),
+						     NULL,
+						     "media-optical-burn",
+						     GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
+	g_signal_connect (obj->priv->burn,
+			  "clicked",
+			  G_CALLBACK (brasero_project_burn_clicked_cb),
+			  obj);
+	gtk_widget_set_tooltip_text (obj->priv->burn,
+			      _("Start to burn the contents of the selection"));
+	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
+	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
+	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 
 	/* The two panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
@@ -421,48 +442,11 @@ brasero_project_init (BraseroProject *obj)
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
 				   obj->priv->audio, NULL);
 
-	gtk_box_pack_start (GTK_BOX (obj),
+	gtk_box_pack_end (GTK_BOX (obj),
 			    obj->priv->discs,
 			    TRUE,
 			    TRUE,
 			    0);
-
-	/* bottom */
-	box = gtk_hbox_new (FALSE, 6);
-	gtk_widget_show (box);
-	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, FALSE, BRASERO_PROJECT_SPACING);
-
-	/* size widget */
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), BRASERO_PROJECT_SIZE_WIDGET_BORDER);
-	gtk_box_pack_start (GTK_BOX (box), vbox, TRUE, TRUE, 0);
-
-	obj->priv->size_display = brasero_project_size_new ();
-	gtk_widget_show (obj->priv->size_display);
-	g_signal_connect (G_OBJECT (obj->priv->size_display), 
-			  "disc-changed",
-			  G_CALLBACK (brasero_project_disc_changed_cb),
-			  obj);
-	gtk_box_pack_start (GTK_BOX (vbox), obj->priv->size_display, TRUE, TRUE, 0);
-	obj->priv->empty = 1;
-	
-	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn..."),
-						     NULL,
-						     "media-optical-burn",
-						     GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
-	g_signal_connect (obj->priv->burn,
-			  "clicked",
-			  G_CALLBACK (brasero_project_burn_clicked_cb),
-			  obj);
-	gtk_widget_set_tooltip_text (obj->priv->burn,
-			      _("Start to burn the contents of the selection"));
-	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
-	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
-	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 }
 
 static void
@@ -593,16 +577,14 @@ end:
 		g_object_set (G_OBJECT (project->priv->data), "reject-file", FALSE, NULL);
 	}
 
-	action = gtk_action_group_get_action (project->priv->action_group, "Add");
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
-	if (project->priv->add)
-		gtk_widget_set_sensitive (project->priv->add, sensitive);
 
 	/* we need to make sure there is actually something to burn */
 	sensitive = (project->priv->empty == FALSE &&
 		     project->priv->oversized == FALSE);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "Burn");
+	action = gtk_action_group_get_action (project->priv->project_group, "Burn");
 	gtk_action_set_sensitive (action, sensitive);
 	gtk_widget_set_sensitive (project->priv->burn, sensitive);
 }
@@ -649,6 +631,8 @@ static void
 brasero_project_selection_changed_cb (BraseroDisc *disc,
 				      BraseroProject *project)
 {
+	project->priv->selected_uris = brasero_disc_get_selected_uri (project->priv->current, NULL);
+	brasero_project_set_remove_button_state (project);
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
 }
 
@@ -656,6 +640,7 @@ static gchar *
 brasero_project_get_selected_uri (BraseroURIContainer *container)
 {
 	BraseroProject *project;
+	gchar *uri = NULL;
 
 	project = BRASERO_PROJECT (container);
 
@@ -664,7 +649,10 @@ brasero_project_get_selected_uri (BraseroURIContainer *container)
 	if (project->priv->is_burning)
 		return NULL;
 
-	return brasero_disc_get_selected_uri (project->priv->current);
+	if (brasero_disc_get_selected_uri (project->priv->current, &uri))
+		return uri;
+
+	return NULL;
 }
 
 static gboolean
@@ -1015,62 +1003,6 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 }
 
 static void
-brasero_project_fill_toolbar (BraseroProject *self)
-{
-	GtkWidget *separator;
-	GtkToolItem *item;
-
-	/* add button set insensitive since there are no files in the selection */
-	self->priv->add = brasero_utils_make_button (NULL,
-						     GTK_STOCK_ADD,
-						     NULL,
-						     GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_relief (GTK_BUTTON (self->priv->add), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (self->priv->add), FALSE);
-	gtk_widget_show (self->priv->add);
-	g_signal_connect (self->priv->add,
-			  "clicked",
-			  G_CALLBACK (brasero_project_add_clicked_cb),
-			  self);
-	gtk_widget_set_tooltip_text (self->priv->add, _("Add selected files"));
-
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), self->priv->add);
-	gtk_toolbar_insert (GTK_TOOLBAR (self->priv->buttons_box), item, 0);
-
-	self->priv->remove = brasero_utils_make_button (NULL,
-						       GTK_STOCK_REMOVE,
-						       NULL,
-						       GTK_ICON_SIZE_BUTTON);
-	gtk_widget_set_sensitive (self->priv->remove, FALSE);
-	gtk_button_set_relief (GTK_BUTTON (self->priv->remove), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (self->priv->remove), FALSE);
-	gtk_widget_show (self->priv->remove);
-	g_signal_connect (self->priv->remove,
-			  "clicked",
-			  G_CALLBACK (brasero_project_remove_clicked_cb),
-			  self);
-	gtk_widget_set_tooltip_text (self->priv->remove,
-			      _("Remove files selected in project"));
-
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), self->priv->remove);
-	gtk_toolbar_insert (GTK_TOOLBAR (self->priv->buttons_box), item, 0);
-
-	separator = gtk_vseparator_new ();
-	gtk_widget_show (separator);
-
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), separator);
-	gtk_toolbar_insert (GTK_TOOLBAR (self->priv->buttons_box), item, 0);
-
-	brasero_disc_fill_toolbar (self->priv->current, GTK_TOOLBAR (self->priv->buttons_box));
-}
-
-static void
 brasero_project_switch (BraseroProject *project, gboolean audio)
 {
 	GtkAction *action;
@@ -1086,10 +1018,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	project->priv->modified = 0;
 	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
-	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
-					  0);
-
-	gtk_action_group_set_visible (project->priv->action_group, TRUE);
+	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display), 0);
 
 	if (project->priv->current)
 		brasero_disc_reset (project->priv->current);
@@ -1102,13 +1031,14 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	client = gconf_client_get_default ();
 
 	/* rempove the buttons from the "toolbar" */
-	gtk_container_foreach (GTK_CONTAINER (project->priv->buttons_box),
-			       (GtkCallback) gtk_widget_destroy,
-			       NULL);
+	if (project->priv->merge_id)
+		gtk_ui_manager_remove_ui (project->priv->manager,
+					  project->priv->merge_id);
 
 	if (audio) {
 		project->priv->current = BRASERO_DISC (project->priv->audio);
-		brasero_project_fill_toolbar (project);
+		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
+							       project->priv->manager);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
@@ -1121,7 +1051,8 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	}
 	else {
 		project->priv->current = BRASERO_DISC (project->priv->data);
-		brasero_project_fill_toolbar (project);
+		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
+							       project->priv->manager);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
@@ -1134,9 +1065,17 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	}
 
 	/* update the menus */
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
+	gtk_action_set_visible (action, TRUE);
+	gtk_action_set_sensitive (action, TRUE);
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
+	gtk_action_set_visible (action, TRUE);
+	gtk_action_set_sensitive (action, FALSE);
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
+	gtk_action_set_visible (action, TRUE);
+	gtk_action_set_sensitive (action, FALSE);
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
 	gtk_action_set_sensitive (action, TRUE);
-
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
 	gtk_action_set_sensitive (action, FALSE);
 }
@@ -1245,17 +1184,21 @@ brasero_project_set_none (BraseroProject *project)
 	project->priv->current = NULL;
 	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
-	/* update button */
-	gtk_action_group_set_visible (project->priv->action_group, FALSE);
-
-	if (project->priv->add)
-		gtk_widget_set_sensitive (project->priv->add, FALSE);
-
-	/* update the menus */
+	/* update buttons/menus */
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
+	gtk_action_set_visible (action, FALSE);
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
+	gtk_action_set_visible (action, FALSE);
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
+	gtk_action_set_visible (action, FALSE);
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
 	gtk_action_set_sensitive (action, FALSE);
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
 	gtk_action_set_sensitive (action, FALSE);
+
+	if (project->priv->merge_id)
+		gtk_ui_manager_remove_ui (project->priv->manager,
+					  project->priv->merge_id);
 }
 
 /********************* update the appearance of menus and buttons **************/
@@ -1275,14 +1218,14 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 	brasero_project_set_remove_button_state (project);
 	brasero_project_set_add_button_state (project);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
 	gtk_action_set_sensitive (action, (project->priv->empty == FALSE));
 
 	/* the following button/action states depend on the project size too */
 	sensitive = (project->priv->oversized == 0 &&
 		     project->priv->empty == 0);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "Burn");
+	action = gtk_action_group_get_action (project->priv->project_group, "Burn");
 	gtk_action_set_sensitive (action, sensitive);
 	gtk_widget_set_sensitive (project->priv->burn, sensitive);
 
@@ -1377,62 +1320,6 @@ brasero_project_save_as_cb (GtkAction *action, BraseroProject *project)
 }
 
 static void
-brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
-{
-	brasero_project_transfer_uris_from_src (project);
-}
-
-static void
-brasero_project_remove_selected_uris_cb (GtkAction *action, BraseroProject *project)
-{
-	brasero_disc_delete_selected (BRASERO_DISC (project->priv->current));
-}
-
-static void
-brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
-{
-	if (!project->priv->empty) {
-		GtkWidget *dialog;
-		GtkWidget *toplevel;
-		GtkResponseType answer;
-
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						 GTK_DIALOG_DESTROY_WITH_PARENT |
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_WARNING,
-						 GTK_BUTTONS_CANCEL,
-						 _("Do you really want to empty the current project?"));
-
-		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Empty project"));
-
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("Emptying a project will remove all files already added. "
-							    "All the work will be lost. "
-							    "Note that files will not be deleted from their own location, "
-							    "just no longer listed here."));
-		gtk_dialog_add_button (GTK_DIALOG (dialog),
-				       _("_Empty Project"), GTK_RESPONSE_OK);
-
-		answer = gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-
-		if (answer != GTK_RESPONSE_OK)
-			return;
-	}
-
-	brasero_disc_reset (BRASERO_DISC (project->priv->current));
-	project->priv->flags = BRASERO_BURN_FLAG_NONE;
-}
-
-static void
-brasero_project_burn_cb (GtkAction *action, BraseroProject *project)
-{
-	brasero_project_burn (project);
-}
-
-static void
 brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
 					   BraseroProject *project)
 {
@@ -1479,7 +1366,7 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 }
 
 static void
-brasero_project_add_clicked_cb (GtkButton *button, BraseroProject *project)
+brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 {
 	GtkWidget *toplevel;
 	GtkFileFilter *filter;
@@ -1542,9 +1429,53 @@ brasero_project_add_clicked_cb (GtkButton *button, BraseroProject *project)
 }
 
 static void
-brasero_project_remove_clicked_cb (GtkButton *button, BraseroProject *project)
+brasero_project_remove_selected_uris_cb (GtkAction *action, BraseroProject *project)
 {
 	brasero_disc_delete_selected (BRASERO_DISC (project->priv->current));
+}
+
+static void
+brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
+{
+	if (!project->priv->empty) {
+		GtkWidget *dialog;
+		GtkWidget *toplevel;
+		GtkResponseType answer;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_CANCEL,
+						 _("Do you really want to empty the current project?"));
+
+		
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Empty project"));
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("Emptying a project will remove all files already added. "
+							    "All the work will be lost. "
+							    "Note that files will not be deleted from their own location, "
+							    "just no longer listed here."));
+		gtk_dialog_add_button (GTK_DIALOG (dialog),
+				       _("_Empty Project"), GTK_RESPONSE_OK);
+
+		answer = gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		if (answer != GTK_RESPONSE_OK)
+			return;
+	}
+
+	brasero_disc_reset (BRASERO_DISC (project->priv->current));
+	project->priv->flags = BRASERO_BURN_FLAG_NONE;
+}
+
+static void
+brasero_project_burn_cb (GtkAction *action, BraseroProject *project)
+{
+	brasero_project_burn (project);
 }
 
 static void
@@ -1554,55 +1485,54 @@ brasero_project_burn_clicked_cb (GtkButton *button, BraseroProject *project)
 }
 
 void
-brasero_project_register_menu (BraseroProject *project, GtkUIManager *manager)
+brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 {
 	GError *error = NULL;
+	GtkWidget *toolbar;
 	GtkAction *action;
 
 	/* menus */
 	project->priv->project_group = gtk_action_group_new ("ProjectActions1");
 	gtk_action_group_set_translation_domain (project->priv->project_group, GETTEXT_PACKAGE);
 	gtk_action_group_add_actions (project->priv->project_group,
-				      entries_project,
-				      G_N_ELEMENTS (entries_project),
+				      entries,
+				      G_N_ELEMENTS (entries),
 				      project);
 
 	gtk_ui_manager_insert_action_group (manager, project->priv->project_group, 0);
 	if (!gtk_ui_manager_add_ui_from_string (manager,
-						description_project,
+						description,
 						-1,
 						&error)) {
-		g_message ("building menus failed: %s", error->message);
+		BRASERO_BURN_LOG ("building menus/toolbar failed: %s", error->message);
 		g_error_free (error);
 	}
-
+	
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
 	gtk_action_set_sensitive (action, FALSE);
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
 	gtk_action_set_sensitive (action, FALSE);
 
-	project->priv->action_group = gtk_action_group_new ("ProjectActions2");
-	gtk_action_group_set_translation_domain (project->priv->action_group, GETTEXT_PACKAGE);
-	gtk_action_group_add_actions (project->priv->action_group,
-				      entries_actions,
-				      G_N_ELEMENTS (entries_actions),
-				      project);
+	action = gtk_action_group_get_action (project->priv->project_group, "Burn");
+	gtk_action_set_sensitive (action, FALSE);
+	action = gtk_action_group_get_action (project->priv->project_group, "Add");
+	gtk_action_set_sensitive (action, FALSE);
+	g_object_set (action,
+		      "short-label", _("Add"), /* for toolbar buttons */
+		      NULL);
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
+	gtk_action_set_sensitive (action, FALSE);
+	g_object_set (action,
+		      "short-label", _("Remove"), /* for toolbar buttons */
+		      NULL);
+	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
+	gtk_action_set_sensitive (action, FALSE);
 
-	gtk_ui_manager_insert_action_group (manager, project->priv->action_group, 0);
-	if (!gtk_ui_manager_add_ui_from_string (manager,
-						description_actions,
-						-1,
-						&error)) {
-		g_message ("building menus failed: %s", error->message);
-		g_error_free (error);
-	}
+	toolbar = gtk_ui_manager_get_widget (manager, "/Toolbar");
+	if (toolbar)
+		gtk_box_pack_start (GTK_BOX (project), toolbar, FALSE, FALSE, 0);
 
-	action = gtk_action_group_get_action (project->priv->action_group, "Burn");
-	gtk_action_set_sensitive (action, FALSE);
-	action = gtk_action_group_get_action (project->priv->action_group, "Delete");
-	gtk_action_set_sensitive (action, FALSE);
-	action = gtk_action_group_get_action (project->priv->action_group, "DeleteAll");
-	gtk_action_set_sensitive (action, FALSE);
+	project->priv->manager = manager;
 }
 
 /******************************* common to save/open ***************************/

@@ -82,8 +82,8 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
 				      gint pos);
 
 void
-brasero_project_manager_register_menu (BraseroProjectManager *manager,
-				       GtkUIManager *ui_manager);
+brasero_project_manager_register_ui (BraseroProjectManager *manager,
+				     GtkUIManager *ui_manager);
 void
 brasero_project_manager_set_status (BraseroProjectManager *manager,
 				    GtkWidget *status);

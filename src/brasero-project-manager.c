@@ -128,29 +128,24 @@ static const char *description = {
 	"<ui>"
 	    "<menubar name='menubar' >"
 		"<menu action='ProjectMenu'>"
-			"<placeholder name='ViewPlaceholder'/>"
-
-			"<menu action='New'>"
-				"<menuitem action='NewAudio'/>"
-				"<menuitem action='NewData'/>"
-				"<menuitem action='NewCopy'/>"	
-				"<menuitem action='NewIso'/>"	
+			"<placeholder name='ProjectPlaceholder'>"
+				"<placeholder name='ViewPlaceholder'/>"
+				"<menu action='New'>"
+					"<menuitem action='NewAudio'/>"
+					"<menuitem action='NewData'/>"
+					"<menuitem action='NewCopy'/>"	
+					"<menuitem action='NewIso'/>"	
 			"</menu>"
+			"</placeholder>"
 
-			"<separator/>"
-			"<placeholder name='ProjectPlaceholder'/>"
+			"<placeholder name='ProjectPlaceholder'>"
+			    "<separator/>"
 			    "<menuitem action='Open'/>"
 			    "<menuitem action='Recent'/>"
 			    "<separator/>"
+			"</placeholder>"
 		"</menu>"
 	    "</menubar>"
-
-	    "<toolbar name='toolbar'>"
-		"<toolitem action='NewChoose'/>"
-		"<toolitem action='Open'/>"
-		"<toolitem action='Save'/>"
-		"<separator/>"
-	    "</toolbar>"
 	"</ui>"
 };
 
@@ -490,8 +485,8 @@ brasero_project_manager_set_status (BraseroProjectManager *manager,
 }
 
 void
-brasero_project_manager_register_menu (BraseroProjectManager *manager,
-				       GtkUIManager *ui_manager)
+brasero_project_manager_register_ui (BraseroProjectManager *manager,
+				     GtkUIManager *ui_manager)
 {
 	GtkAction *action;
 	GError *error = NULL;
@@ -508,8 +503,9 @@ brasero_project_manager_register_menu (BraseroProjectManager *manager,
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
 	}
+
    	brasero_layout_register_menu (BRASERO_LAYOUT (manager->priv->layout), ui_manager);
-	brasero_project_register_menu (BRASERO_PROJECT (manager->priv->project), ui_manager);
+	brasero_project_register_ui (BRASERO_PROJECT (manager->priv->project), ui_manager);
 }
 
 static void

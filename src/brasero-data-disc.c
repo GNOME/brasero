@@ -95,6 +95,7 @@
 #include "burn-volume.h"
 #include "burn-caps.h"
 #include "burn-track.h"
+#include "burn-debug.h"
 
 typedef enum {
 	STATUS_NO_DRAG,
@@ -107,10 +108,10 @@ struct BraseroDataDiscPrivate {
 	GtkTreeModel *model;
 	GtkTreeModel *sort;
        	GtkWidget *filter_dialog;
-	GtkWidget *filter_button;
 	GtkWidget *notebook;
 
 	GtkUIManager *manager;
+	GtkActionGroup *disc_group;
 
 	BraseroDragStatus drag_status;
 	GdkDragContext *drag_context;
@@ -183,7 +184,6 @@ struct BraseroDataDiscPrivate {
 
 	GSList *exposing;
 
-	GtkWidget *session_button;
 	BraseroVolFile *session;
 
 #ifdef HAVE_LIBNOTIFY
@@ -309,9 +309,9 @@ brasero_data_disc_clear (BraseroDisc *disc);
 static void
 brasero_data_disc_reset (BraseroDisc *disc);
 
-static void
-brasero_data_disc_fill_toolbar (BraseroDisc *disc,
-				GtkToolbar *toolbar);
+static guint
+brasero_data_disc_add_ui (BraseroDisc *disc,
+			  GtkUIManager *manager);
 
 static BraseroDiscResult
 brasero_data_disc_load_track (BraseroDisc *disc,
@@ -505,8 +505,9 @@ brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
 				  gchar *uri,
 				  BraseroFilterStatus status);
 
-static gchar *
-brasero_data_disc_get_selected_uri (BraseroDisc *disc);
+static gboolean
+brasero_data_disc_get_selected_uri (BraseroDisc *disc,
+				    gchar **array);
 
 static void
 brasero_data_disc_set_drive (BraseroDisc *disc,
@@ -567,17 +568,26 @@ static GObjectClass *parent_class = NULL;
 
 static GtkActionEntry entries [] = {
 	{"ContextualMenu", NULL, N_("Menu")},
-	{"Open", GTK_STOCK_OPEN, NULL, NULL, NULL,
+	{"Open", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_data_disc_open_activated_cb)},
-	{"Rename", NULL, N_("R_ename..."), NULL, NULL,
+	{"Rename", NULL, N_("R_ename..."), NULL, N_("Rename the selected file"),
 	 G_CALLBACK (brasero_data_disc_rename_activated_cb)},
-	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, NULL,
+	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_data_disc_delete_activated_cb)},
-	{"Paste", GTK_STOCK_PASTE, NULL, NULL, NULL,
+	{"Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_data_disc_paste_activated_cb)},
+	{"NewFolder", "folder-new", N_("New folder"), NULL, N_("Create a new empty folder"),
+	 G_CALLBACK (brasero_data_disc_new_folder_clicked_cb)},
+	{"FileFilter", GTK_STOCK_UNDELETE, N_("Removed Files"), NULL, N_("Display the files filtered from the project"),
+	 G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb)},	
 };
 
-static const gchar *menu_description = {
+static GtkToggleActionEntry toggle_entries [] = {
+	{"ImportSession", "drive-optical", N_("Import Session"), NULL, N_("Import session"),
+	 G_CALLBACK (brasero_data_disc_import_session_cb), FALSE},
+};
+
+static const gchar *description = {
 	"<ui>"
 	"<popup action='ContextMenu'>"
 		"<menuitem action='Open'/>"
@@ -586,8 +596,17 @@ static const gchar *menu_description = {
 		"<separator/>"
 		"<menuitem action='Paste'/>"
 	"</popup>"
+	"<toolbar name='Toolbar'>"
+		"<placeholder name='DiscButtonPlaceholder'>"
+			"<separator/>"
+			"<toolitem action='NewFolder'/>"
+			"<toolitem action='ImportSession'/>"
+			"<toolitem action='FileFilter'/>"
+		"</placeholder>"
+	"</toolbar>"
 	"</ui>"
 };
+
 
 /* Like mkisofs we count in sectors (= 2048 bytes). So we need to divide the 
  * size of each file by 2048 and if it is not a multiple we add one sector. That
@@ -751,7 +770,7 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->load_track = brasero_data_disc_load_track;
 	iface->get_status = brasero_data_disc_get_status;
 	iface->get_selected_uri = brasero_data_disc_get_selected_uri;
-	iface->fill_toolbar = brasero_data_disc_fill_toolbar;
+	iface->add_ui = brasero_data_disc_add_ui;
 	iface->set_drive = brasero_data_disc_set_drive;
 }
 
@@ -924,34 +943,6 @@ brasero_data_disc_sort_description (GtkTreeModel *model,
 	return brasero_data_disc_sort_string(model, a, b, MIME_COL);
 }
 
-static void
-brasero_data_disc_build_context_menu (BraseroDataDisc *disc)
-{
-	GtkActionGroup *action_group;
-	GError *error = NULL;
-
-	action_group = gtk_action_group_new ("MenuAction");
-	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
-	gtk_action_group_add_actions (action_group,
-				      entries,
-				      G_N_ELEMENTS (entries),
-				      disc);
-
-	disc->priv->manager = gtk_ui_manager_new ();
-	gtk_ui_manager_insert_action_group (disc->priv->manager,
-					    action_group,
-					    0);
-
-	if (!gtk_ui_manager_add_ui_from_string (disc->priv->manager,
-						menu_description,
-						-1,
-						&error)) {
-		g_message ("building menus failed: %s", error->message);
-		g_error_free (error);
-	}
-}
-
-
 /******************************* notifications    ******************************/
 struct _BraseroNotification {
 	gchar *primary;
@@ -1058,78 +1049,60 @@ brasero_data_disc_notify_user (BraseroDataDisc *disc,
 							  disc);
 }
 
-static void
-brasero_data_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
+static guint
+brasero_data_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 {
 	BraseroDataDisc *data_disc;
-	GtkToolItem *item;
-	GtkWidget *button;
+	GError *error = NULL;
+	GtkAction *action;
+	guint merge_id;
 
 	data_disc = BRASERO_DATA_DISC (disc);
 
-	/* Filter buttons */
-	data_disc->priv->filter_button = brasero_utils_make_button (NULL,
-								    GTK_STOCK_UNDELETE,
-								    NULL,
-								    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (data_disc->priv->filter_button);
-	gtk_button_set_focus_on_click (GTK_BUTTON (data_disc->priv->filter_button), FALSE);
-	gtk_button_set_relief (GTK_BUTTON (data_disc->priv->filter_button), GTK_RELIEF_NONE);
+	if (!data_disc->priv->disc_group) {
+		data_disc->priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION);
+		gtk_action_group_set_translation_domain (data_disc->priv->disc_group, GETTEXT_PACKAGE);
+		gtk_action_group_add_actions (data_disc->priv->disc_group,
+					      entries,
+					      G_N_ELEMENTS (entries),
+					      disc);
+		gtk_action_group_add_toggle_actions (data_disc->priv->disc_group,
+						     toggle_entries,
+						     G_N_ELEMENTS (toggle_entries),
+						     disc);
+		gtk_ui_manager_insert_action_group (manager,
+						    data_disc->priv->disc_group,
+						    0);
+	}
 
-	g_signal_connect (G_OBJECT (data_disc->priv->filter_button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_filtered_files_clicked_cb),
-			  data_disc);
-	gtk_widget_set_tooltip_text (data_disc->priv->filter_button,
-				     _("Display the files filtered from the project"));
+	merge_id = gtk_ui_manager_add_ui_from_string (manager,
+						      description,
+						      -1,
+						      &error);
+	if (!merge_id) {
+		BRASERO_BURN_LOG ("Adding ui elements failed: %s", error->message);
+		g_error_free (error);
+		return 0;
+	}
 
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), data_disc->priv->filter_button);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
+	action = gtk_action_group_get_action (data_disc->priv->disc_group, "ImportSession");
+	g_object_set (action,
+		      "short-label", _("Import"), /* for toolbar buttons */
+		      NULL);
 
-	/* Import session */
-	button = gtk_toggle_button_new ();
-	gtk_widget_set_sensitive (button, FALSE);
-	gtk_button_set_image (GTK_BUTTON (button),
-			      gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_BUTTON));
+	action = gtk_action_group_get_action (data_disc->priv->disc_group, "FileFilter");
+	g_object_set (action,
+		      "short-label", _("Filtered Files"), /* for toolbar buttons */
+		      NULL);
+	action = gtk_action_group_get_action (data_disc->priv->disc_group, "NewFolder");
+	g_object_set (action,
+		      "short-label", _("New Folder"), /* for toolbar buttons */
+		      NULL);
 
-	gtk_widget_show (button);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_import_session_cb),
-			  disc);
-	gtk_widget_set_tooltip_text (button,
-			      _("Import session"));
+	data_disc->priv->manager = manager;
+	g_object_ref (manager);
 
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), button);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
-
-	data_disc->priv->session_button = button;
-
-	/* New folder */
-	button = brasero_utils_make_button (NULL,
-					    NULL,
-					    "folder-new",
-					    GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (button);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
-	g_signal_connect (G_OBJECT (button),
-			  "clicked",
-			  G_CALLBACK (brasero_data_disc_new_folder_clicked_cb),
-			  data_disc);
-	gtk_widget_set_tooltip_text (button,
-			      _("Create a new empty folder"));
-
-	item = gtk_tool_item_new ();
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_container_add (GTK_CONTAINER (item), button);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), item, 0);
+	return merge_id;
 }
 
 static void
@@ -1336,8 +1309,6 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 			  G_CALLBACK (brasero_data_disc_row_collapsed_cb),
 			  obj);
 
-	brasero_data_disc_build_context_menu (obj);
-
 	/* useful things for directory exploration */
 	obj->priv->dirs = g_hash_table_new (g_str_hash, g_str_equal);
 	obj->priv->files = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1421,7 +1392,10 @@ brasero_data_disc_finalize (GObject *object)
 	if (cobj->priv->path_refs)
 		g_hash_table_destroy (cobj->priv->path_refs);
 
-	g_object_unref (cobj->priv->manager);
+	if (cobj->priv->manager) {
+		g_object_unref (cobj->priv->manager);
+		cobj->priv->manager = NULL;
+	}
 
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -2946,12 +2920,17 @@ brasero_data_disc_clean (BraseroDataDisc *disc)
 static void
 brasero_data_disc_reset_real (BraseroDataDisc *disc)
 {
+	GtkAction *action;
+
 	brasero_data_disc_clean (disc);
 
 	disc->priv->activity_counter = 1;
 	brasero_data_disc_decrease_activity_counter (disc);
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disc->priv->session_button), FALSE);
+	if (disc->priv->disc_group) {
+		action = gtk_action_group_get_action (GTK_ACTION_GROUP (disc->priv->disc_group), "ImportSession");
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
+	}
 
 	/* reset size */
 	disc->priv->sectors = 0;
@@ -3058,11 +3037,16 @@ brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
 
 		/* we can now signal the user that some files were removed */
 		
-		if (filter_notify)
+		if (filter_notify) {
+			GtkWidget *widget;
+
+			widget = gtk_ui_manager_get_widget (disc->priv->manager,
+							    "/Toolbar/FileFilter");
 			brasero_data_disc_notify_user (disc,
 						       _("Some files were filtered:"),
 						       _("click here to see the list."),
-						       disc->priv->filter_button);
+						       widget);
+		}
 	}
 
 	if (disc->priv->filter_dialog
@@ -6991,6 +6975,13 @@ brasero_data_disc_delete_selected (BraseroDisc *disc)
 		brasero_data_disc_selection_changed (data, FALSE);
 	else
 		brasero_data_disc_selection_changed (data, TRUE);
+
+	/* warn that the selection changed (there are no more selected paths) */
+	if (data->priv->selected_path) {
+		gtk_tree_path_free (data->priv->selected_path);
+		data->priv->selected_path = NULL;
+	}
+	brasero_disc_selection_changed (disc);
 }
 
 static void
@@ -8061,6 +8052,7 @@ brasero_data_disc_import_session_error (BraseroDataDisc *disc,
 					gchar *message)
 {
 	GtkWidget *dialog;
+	GtkAction *action;
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
@@ -8080,7 +8072,8 @@ brasero_data_disc_import_session_error (BraseroDataDisc *disc,
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disc->priv->session_button), FALSE);
+	action = gtk_action_group_get_action (disc->priv->disc_group, "ImportSession");
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 }
 
 static void
@@ -8199,10 +8192,12 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 	gboolean multisession;
 	BraseroBurnCaps *caps;
 	BraseroMedia media;
+	GtkAction *action;
 
+	action = gtk_action_group_get_action (disc->priv->disc_group, "ImportSession");
 	if (!disc->priv->drive) {
-		gtk_widget_set_sensitive (disc->priv->session_button, FALSE);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disc->priv->session_button), FALSE);
+		gtk_action_set_sensitive (action, FALSE);
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 		return;
 	}
 
@@ -8216,16 +8211,20 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 		       (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) &&
 		       (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive) != -1);
 
-	if (multisession && disc->priv->session_button) {
-		gtk_widget_set_sensitive (disc->priv->session_button, TRUE);
+	if (multisession) {
+		GtkWidget *widget;
+
+		gtk_action_set_sensitive (action, TRUE);
+		widget = gtk_ui_manager_get_widget (disc->priv->manager,
+						    "/Toolbar/ImportSession");
 		brasero_data_disc_notify_user (disc,
 					       _("A multisession disc is inserted:"),
 					       _("Click here to import its contents"),
-					       disc->priv->session_button);
+					       widget);
 	}
 	else {
-		gtk_widget_set_sensitive (disc->priv->session_button, FALSE);
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disc->priv->session_button), FALSE);
+		gtk_action_set_sensitive (action, FALSE);
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 	}
 }
 
@@ -11221,10 +11220,10 @@ end:
 }
 
 /*******************************            ************************************/
-static gchar *
-brasero_data_disc_get_selected_uri (BraseroDisc *disc)
+static gboolean
+brasero_data_disc_get_selected_uri (BraseroDisc *disc,
+				    gchar **uri)
 {
-	gchar *uri;
 	gchar *path;
 	GtkTreePath *realpath;
 	BraseroDataDisc *data;
@@ -11232,20 +11231,24 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc)
 	data = BRASERO_DATA_DISC (disc);
 
 	if (!data->priv->selected_path)
-		return NULL;
+		return FALSE;
+
+	if (!uri)
+		return TRUE;
 
 	realpath = gtk_tree_model_sort_convert_path_to_child_path (GTK_TREE_MODEL_SORT (data->priv->sort),
 								   data->priv->selected_path);
 	brasero_data_disc_tree_path_to_disc_path (data, realpath, &path);
 	gtk_tree_path_free (realpath);
 
-	uri = brasero_data_disc_path_to_uri (data, path);
-	if (uri == BRASERO_IMPORTED_FILE)
-		return NULL;
+	*uri = brasero_data_disc_path_to_uri (data, path);
+	if (*uri == BRASERO_IMPORTED_FILE) {
+		*uri = NULL;
+		return TRUE;
+	}
 
 	g_free (path);
-
-	return uri;
+	return TRUE;
 }
 
 /******************************* monitoring ************************************/

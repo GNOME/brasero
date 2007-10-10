@@ -26,6 +26,7 @@
 #include <glib-object.h>
 
 #include <gtk/gtktoolbar.h>
+#include <gtk/gtkuimanager.h>
 
 #include <nautilus-burn-drive.h>
 
@@ -275,17 +276,17 @@ brasero_disc_load_track (BraseroDisc *disc,
 	return BRASERO_DISC_ERROR_UNKNOWN;
 }
 
-gchar *
-brasero_disc_get_selected_uri (BraseroDisc *disc)
+gboolean
+brasero_disc_get_selected_uri (BraseroDisc *disc, gchar **uri)
 {
 	BraseroDiscIface *iface;
 
-	g_return_val_if_fail (BRASERO_IS_DISC (disc), NULL);
+	g_return_val_if_fail (BRASERO_IS_DISC (disc), FALSE);
 	iface = BRASERO_DISC_GET_IFACE (disc);
 	if (iface->get_selected_uri)
-		return (* iface->get_selected_uri) (disc);
+		return (* iface->get_selected_uri) (disc, uri);
 
-	return NULL;
+	return FALSE;
 }
 
 gboolean
@@ -305,20 +306,22 @@ brasero_disc_get_boundaries (BraseroDisc *disc,
 	return FALSE;
 }
 
-void
-brasero_disc_fill_toolbar (BraseroDisc *disc, GtkToolbar *toolbar)
+guint
+brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 {
 	BraseroDiscIface *iface;
 
 	if (!disc)
-		return;
+		return 0;
 
-	g_return_if_fail (BRASERO_IS_DISC (disc));
-	g_return_if_fail (toolbar != NULL);
+	g_return_val_if_fail (BRASERO_IS_DISC (disc), 0);
+	g_return_val_if_fail (GTK_IS_UI_MANAGER (manager), 0);
 
 	iface = BRASERO_DISC_GET_IFACE (disc);
-	if (iface->fill_toolbar)
-		(* iface->fill_toolbar) (disc, toolbar);
+	if (iface->add_ui)
+		return (* iface->add_ui) (disc, manager);
+
+	return 0;
 }
 
 void
