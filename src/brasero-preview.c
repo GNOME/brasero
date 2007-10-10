@@ -84,6 +84,17 @@ brasero_preview_source_selection_changed_cb (BraseroURIContainer *source,
 }
 
 void
+brasero_preview_set_uri (BraseroPreview *self,
+			 const gchar *uri)
+{
+	BraseroPreviewPrivate *priv;
+
+	priv = BRASERO_PREVIEW_PRIVATE (self);
+	gtk_widget_hide (priv->frame);
+	brasero_player_set_uri (BRASERO_PLAYER (priv->player), uri);
+}
+
+void
 brasero_preview_add_source (BraseroPreview *self, BraseroURIContainer *source)
 {
 	g_signal_connect (source,

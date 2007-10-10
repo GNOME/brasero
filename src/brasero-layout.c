@@ -51,6 +51,7 @@
 
 #include "burn-debug.h"
 #include "brasero-layout.h"
+#include "brasero-preview.h"
 #include "brasero-project.h"
 #include "brasero-uri-container.h"
 #include "brasero-layout-object.h"
@@ -865,6 +866,9 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	if (layout->priv->radio_notify)
 		gconf_client_notify_remove (layout->priv->client,
 					    layout->priv->radio_notify);
+
+	if (layout->priv->preview_pane)
+		brasero_preview_set_uri (BRASERO_PREVIEW (layout->priv->preview_pane), NULL);
 
 	if (type == BRASERO_LAYOUT_NONE) {
 		gtk_widget_hide (GTK_WIDGET (layout));

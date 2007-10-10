@@ -65,6 +65,10 @@ void
 brasero_preview_add_source (BraseroPreview *preview,
 			    BraseroURIContainer *source);
 
+void
+brasero_preview_set_uri (BraseroPreview *preview,
+			 const gchar *uri);
+
 G_END_DECLS
 
 #endif				/* PLAYER_H */
