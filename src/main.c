@@ -68,6 +68,7 @@ gchar **audio_project;
 gchar **data_project;
 gint copy_project;
 gint empty_project;
+gint disc_blank;
 gint is_escaped;
 gint open_ncb;
 gint debug;
@@ -96,6 +97,10 @@ static const GOptionEntry options [] = {
     	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
          N_("Force brasero to display the project selection page"),
           NULL },
+
+	{ "blank", 'b', 0, G_OPTION_ARG_NONE, &disc_blank,
+	  N_("Open the blank disc dialog"),
+	  NULL },
 
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
 	  N_("Open a data project with the contents of nautilus-cd-burner"),
@@ -535,6 +540,8 @@ brasero_app_parse_options (BraseroApp *app)
 		nb ++;
 	if (data_project)
 		nb ++;
+	if (disc_blank)
+	  	nb ++;
 	if (open_ncb)
 		nb ++;
 
@@ -572,6 +579,9 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else if (data_project) {
 		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
+	}
+	else if (disc_blank) {
+		on_erase_cb (NULL, app);
 	}
 	else if (open_ncb) {
 		GSList *list = NULL;
