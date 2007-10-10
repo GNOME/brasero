@@ -309,9 +309,9 @@ enum {
 
 static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
-	{"Open", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
+	{"OpenSong", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_audio_disc_open_activated_cb)},
-	{"Edit", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the track information (start, end, author, ...)"),
+	{"EditSong", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the track information (start, end, author, ...)"),
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
 	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
@@ -326,7 +326,7 @@ static GtkActionEntry entries[] = {
 static const gchar *description = {
 	"<ui>"
 	"<popup action='ContextMenu'>"
-		"<menuitem action='Open'/>"
+		"<menuitem action='OpenSong'/>"
 		"<menuitem action='Delete'/>"
 		"<separator/>"
 		"<menuitem action='Paste'/>"
@@ -334,7 +334,7 @@ static const gchar *description = {
 		"<menuitem action='Pause'/>"
 		"<menuitem action='Split'/>"
 		"<separator/>"
-		"<menuitem action='Edit'/>"
+		"<menuitem action='EditSong'/>"
 	"</popup>"
 	"<toolbar name='Toolbar'>"
 		"<placeholder name='DiscButtonPlaceholder'>"
@@ -2648,6 +2648,8 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 {
 	GtkAction *action_pause;
 	GtkAction *action_split;
+	GtkAction *action_edit;
+	GtkAction *action_open;
 	guint selected_num = 0;
 	GtkTreeView *treeview;
 	GtkTreeModel *model;
@@ -2657,6 +2659,8 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	if (!disc->priv->disc_group)
 		return;
 
+	action_open = gtk_action_group_get_action (disc->priv->disc_group, "OpenSong");
+	action_edit = gtk_action_group_get_action (disc->priv->disc_group, "EditSong");
 	action_split = gtk_action_group_get_action (disc->priv->disc_group, "Split");
 	action_pause = gtk_action_group_get_action (disc->priv->disc_group, "Pause");
 
@@ -2665,6 +2669,8 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 
 	gtk_action_set_sensitive (action_split, FALSE);
 	gtk_action_set_sensitive (action_pause, FALSE);
+	gtk_action_set_sensitive (action_edit, FALSE);
+	gtk_action_set_sensitive (action_open, FALSE);
 
 	for (iter = selected; iter; iter = iter->next) {
 		GtkTreeIter row;
@@ -2680,6 +2686,8 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 			if (is_song) {
 				selected_num ++;
 
+				gtk_action_set_sensitive (action_open, TRUE);
+				gtk_action_set_sensitive (action_edit, TRUE);
 				gtk_action_set_sensitive (action_pause, TRUE);
 				if (selected_num != 1) {
 					gtk_action_set_sensitive (action_split, FALSE);
@@ -2722,7 +2730,8 @@ brasero_audio_disc_open_file (BraseroAudioDisc *disc)
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri, -1);
 
-		uris = g_slist_prepend (uris, uri);
+		if (uri)
+			uris = g_slist_prepend (uris, uri);
 	}
 	g_list_free (list);
 
