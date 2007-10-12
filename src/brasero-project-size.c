@@ -1062,8 +1062,29 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 		g_free (size_str);
 
-		item = gtk_image_menu_item_new_with_label (label);
-		g_free (label);
+		if (self->priv->current == drive) {
+			gchar *tmp;
+			GtkWidget *widget;
+
+			/* This is the selected drive mark it as such */
+			tmp = g_strdup_printf ("<b><i>%s</i></b>", label);
+			g_free (label);
+			label = tmp;
+
+			widget = gtk_label_new (label);
+			gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.5);
+			gtk_label_set_use_markup (GTK_LABEL (widget), TRUE);
+			gtk_label_set_ellipsize (GTK_LABEL (widget), PANGO_ELLIPSIZE_END);
+			g_free (label);
+
+			item = gtk_image_menu_item_new ();
+			gtk_item_select (GTK_ITEM (item));
+			gtk_container_add (GTK_CONTAINER (item), widget);
+		}
+		else {
+			item = gtk_image_menu_item_new_with_label (label);
+			g_free (label);
+		}
 
 		if (!drive->drive)
 			image = gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_MENU);
