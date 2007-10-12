@@ -1,3 +1,11 @@
+2007-10-12  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #478754 – Brasero tells that sucessfully burned CUE/BIN image file even if it didn't
+	(should be backportable)
+
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	(brasero_cdrdao_read_stderr_record):
+
 2007-10-10  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix #485476 – Pause menu options

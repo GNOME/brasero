@@ -161,7 +161,8 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		if (!cuepath)
 			return FALSE;
 
-		if (!strstr (line, cuepath)) {
+		if (!strstr (line, cuepath)
+		&&  !strstr (line, "ERROR: Could not find input file")) {
 			g_free (cuepath);
 			return FALSE;
 		}
