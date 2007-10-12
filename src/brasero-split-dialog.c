@@ -1192,7 +1192,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
 
-	button = brasero_utils_make_button (_("_Merge"),
+	button = brasero_utils_make_button (_("Mer_ge"),
 					    NULL,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -1220,8 +1220,8 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_set_tooltip_text (button, _("Remove the selected slices"));
 	priv->remove_button = button;
 
-	button = brasero_utils_make_button (_("Re_set"),
-					    GTK_STOCK_CLEAR,
+	button = brasero_utils_make_button (_("Re_move All"),
+					    NULL,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);

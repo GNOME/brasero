@@ -379,7 +379,10 @@ brasero_utils_make_button (const gchar *text,
 		image = gtk_image_new_from_stock (stock, size);
 
 	button = gtk_button_new ();
-	gtk_button_set_image (GTK_BUTTON (button), image);
+
+	if (image)
+		gtk_button_set_image (GTK_BUTTON (button), image);
+
 	gtk_button_set_label (GTK_BUTTON (button), text);
 	gtk_button_set_use_underline (GTK_BUTTON (button), TRUE);
 	return button;
