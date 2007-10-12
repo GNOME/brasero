@@ -486,6 +486,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	gint64 disc_size;
 	gchar *text = NULL;
 	BraseroDrive *drive;
+	BraseroMedia status;
 	gchar *drive_name = NULL;
 	gchar *disc_sectors_str = NULL;
 	gchar *selection_size_str = NULL;
@@ -494,8 +495,9 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	if (!drive)
 		return NULL;
 
+	status = NCB_MEDIA_GET_STATUS (drive->drive);
 	if (drive->drive
-	&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+	&& (status & BRASERO_MEDIUM_REWRITABLE)
 	&& !self->priv->multi)
 		disc_size = drive->sectors;
 	else
@@ -506,31 +508,55 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		/* this is an empty drive */
 		return NULL;
 	}
-	else if (drive->sectors == -1) {
+
+	if (status == BRASERO_MEDIUM_BUSY) {
 		gchar *name;
 
-		/* this is a mounted drive */
+		/* this is a busy drive */
 		name = nautilus_burn_drive_get_name_for_display (drive->drive);
-		disc_sectors_str = g_strdup_printf (_("(mounted drive) <i>%s</i>"), name);
+		disc_sectors_str = g_strdup_printf (_("<i>%s</i> is busy"), name);
 		g_free (name);
+
+		return disc_sectors_str;
 	}
-	else {
-		disc_sectors_str = brasero_utils_get_sectors_string (disc_size,
-								     self->priv->is_audio_context,
-								     TRUE,
-								     TRUE);
 
-		if (drive->drive) {
-			/* we ellipsize to max characters to avoid having
-			 * a too long string with the drive full name. */
-			drive_name = nautilus_burn_drive_get_name_for_display (drive->drive);
-			if (strlen (drive_name) > 19) {
-				gchar *tmp;
+	if (drive->sectors == -1) {
+		gchar *name;
 
-				tmp = g_strdup_printf ("%.16s...", drive_name);
-				g_free (drive_name);
-				drive_name = tmp;
-			}
+		/* this is a drive probably not fully supported by brasero */
+		name = nautilus_burn_drive_get_name_for_display (drive->drive);
+		disc_sectors_str = g_strdup_printf (_("<i>%s</i> not properly supported"), name);
+		g_free (name);
+
+		return disc_sectors_str;
+	}
+
+	if (status == BRASERO_MEDIUM_UNSUPPORTED) {
+		gchar *name;
+
+		/* this is an unsupported medium */
+		name = nautilus_burn_drive_get_name_for_display (drive->drive);
+		disc_sectors_str = g_strdup_printf (_("The disc in <i>%s</i> is not supported"), name);
+		g_free (name);
+
+		return disc_sectors_str;
+	}
+
+	disc_sectors_str = brasero_utils_get_sectors_string (disc_size,
+							     self->priv->is_audio_context,
+							     TRUE,
+							     TRUE);
+
+	if (drive->drive) {
+		/* we ellipsize to max characters to avoid having
+		 * a too long string with the drive full name. */
+		drive_name = nautilus_burn_drive_get_name_for_display (drive->drive);
+		if (strlen (drive_name) > 19) {
+			gchar *tmp;
+
+			tmp = g_strdup_printf ("%.16s...", drive_name);
+			g_free (drive_name);
+			drive_name = tmp;
 		}
 	}
 
