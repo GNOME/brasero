@@ -168,6 +168,7 @@ static void
 brasero_layout_init (BraseroLayout *obj)
 {
 	GtkWidget *alignment;
+	GtkWidget *box;
 
 	obj->priv = g_new0 (BraseroLayoutPrivate, 1);
 
@@ -176,6 +177,11 @@ brasero_layout_init (BraseroLayout *obj)
 
 	/* init GConf */
 	obj->priv->client = gconf_client_get_default ();
+
+	/* set up pane 1 */
+	box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (box);
+	gtk_paned_pack1 (GTK_PANED (obj), box, TRUE, FALSE);
 
 	/* set up containers */
 	alignment = gtk_alignment_new (0.0, 0.0, 1.0, 1.0);
@@ -297,7 +303,6 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 				gboolean active)
 {
 	gboolean preview_in_project;
-	GtkWidget *project_box;
 	GtkWidget *toplevel;
 	gint width, height;
 	GtkAction *action;
@@ -319,19 +324,18 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 	preview_in_project = (g_list_find (children, layout->priv->preview_pane) == NULL);
 	g_list_free (children);
 
-	project_box = gtk_paned_get_child1 (GTK_PANED (layout));
-
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (layout));
 	gtk_window_get_size (GTK_WINDOW (toplevel), &width, &height);
 
 	if (item->widget) {
 		gboolean add_size = TRUE;
+		BraseroLayoutObject *source;
 
 		if (preview_in_project) {
 			/* we need to unparent the preview widget
 			 * and set it back where it was */
 			g_object_ref (layout->priv->preview_pane);
-			gtk_container_remove (GTK_CONTAINER (project_box),
+			gtk_container_remove (GTK_CONTAINER (layout->priv->project),
 					      layout->priv->preview_pane);
 
 			gtk_box_pack_end (GTK_BOX (layout->priv->main_box),
@@ -355,19 +359,15 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 		height = MAX (height, layout->priv->main_box->allocation.height);
 
 		/* Now tell the project which source it gets URIs from */
-		if (project_box) {
-			BraseroLayoutObject *source;
-
-			source = brasero_layout_item_get_object (item);
-			if (!BRASERO_IS_URI_CONTAINER (source)) {
-				BRASERO_BURN_LOG ("Item is not an URI container");
-				brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
-							    NULL);
-			}
-			else
-				brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
-							    BRASERO_URI_CONTAINER (source));
+		source = brasero_layout_item_get_object (item);
+		if (!BRASERO_IS_URI_CONTAINER (source)) {
+			BRASERO_BURN_LOG ("Item is not an URI container");
+			brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
+						    NULL);
 		}
+		else
+			brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
+						    BRASERO_URI_CONTAINER (source));
 	}
 	else {
 		/* means we aren't showing anything */
@@ -380,11 +380,11 @@ brasero_layout_set_active_item (BraseroLayout *layout,
 			gtk_container_remove (GTK_CONTAINER (layout->priv->main_box),
 					      layout->priv->preview_pane);
 
-			gtk_box_pack_end (GTK_BOX (project_box),
-					  layout->priv->preview_pane,
-					  FALSE,
-					  FALSE,
-					  0);
+			gtk_box_pack_start (GTK_BOX (layout->priv->project),
+					    layout->priv->preview_pane,
+					    FALSE,
+					    FALSE,
+					    0);
 			g_object_unref (layout->priv->preview_pane);
 		}
 
@@ -454,11 +454,8 @@ brasero_layout_add_project (BraseroLayout *layout,
 			  G_CALLBACK (brasero_layout_project_size_allocated_cb),
 			  layout);
 
-	box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (box);
-	gtk_paned_pack1 (GTK_PANED (layout), box, TRUE, FALSE);
-
-	gtk_box_pack_start (GTK_BOX (box), project, TRUE, TRUE, 0);
+	box = gtk_paned_get_child1 (GTK_PANED (layout));
+	gtk_box_pack_end (GTK_BOX (box), project, TRUE, TRUE, 0);
 	layout->priv->project = project;
 }
 
@@ -868,7 +865,7 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 					    layout->priv->radio_notify);
 
 	if (layout->priv->preview_pane)
-		brasero_preview_set_uri (BRASERO_PREVIEW (layout->priv->preview_pane), NULL);
+		brasero_preview_hide (BRASERO_PREVIEW (layout->priv->preview_pane));
 
 	if (type == BRASERO_LAYOUT_NONE) {
 		gtk_widget_hide (GTK_WIDGET (layout));
@@ -962,11 +959,12 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 }
 
 void
-brasero_layout_register_menu (BraseroLayout *layout,
-			      GtkUIManager *manager)
+brasero_layout_register_ui (BraseroLayout *layout,
+			    GtkUIManager *manager)
 {
 	GSList *iter;
 	GtkAction *action;
+	GtkWidget *toolbar;
 	GSList *group = NULL;
 	GString *description;
 	GError *error = NULL;
@@ -1012,4 +1010,13 @@ brasero_layout_register_menu (BraseroLayout *layout,
 	}
 
 	g_string_free (description, TRUE);
+
+	/* get the toolbar */
+	toolbar = gtk_ui_manager_get_widget (manager, "/Toolbar");
+	if (toolbar) {
+		GtkWidget *box;
+
+		box = gtk_paned_get_child1 (GTK_PANED (layout));
+		gtk_box_pack_start (GTK_BOX (box), toolbar, FALSE, FALSE, 0);
+	}
 }

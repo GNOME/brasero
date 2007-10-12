@@ -52,6 +52,7 @@ typedef struct {
 typedef struct {
 	GtkAlignmentClass parent_class;
 
+	void		(*error)	(BraseroPlayer *player);
 	void		(*ready)	(BraseroPlayer *player);
 } BraseroPlayerClass;
 

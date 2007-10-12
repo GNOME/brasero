@@ -1,5 +1,34 @@
 2007-10-12  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Another go at fixing 485479 – Preview area jumping around
+	From now on the toolbar position is controlled by layout and not project object
+	Moreover the delay for setting URIs in preview is in preview itself not player.
+	
+	* src/brasero-layout.c: (brasero_layout_init),
+	(brasero_layout_set_active_item), (brasero_layout_add_project),
+	(brasero_layout_load), (brasero_layout_register_ui):
+	* src/brasero-layout.h:
+	* src/brasero-player.c: (brasero_player_destroy_controls),
+	(brasero_player_create_controls_image),
+	(brasero_player_update_info_real),
+	(brasero_player_metadata_completed),
+	(brasero_player_retrieve_metadata), (brasero_player_set_uri),
+	(brasero_player_destroy), (brasero_player_class_init):
+	* src/brasero-player.h:
+	* src/brasero-preview.c: (brasero_preview_set_uri_delayed_cb),
+	(brasero_preview_source_selection_changed_cb),
+	(brasero_preview_add_source), (brasero_preview_hide),
+	(brasero_preview_player_error_cb),
+	(brasero_preview_player_ready_cb), (brasero_preview_init),
+	(brasero_preview_finalize):
+	* src/brasero-preview.h:
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_register_ui):
+	* src/brasero-project.c: (brasero_project_init),
+	(brasero_project_register_ui):
+
+2007-10-12  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #478613 – Oversized projects
 	Highlight the currently selected drive
 

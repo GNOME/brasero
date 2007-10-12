@@ -442,7 +442,7 @@ brasero_project_init (BraseroProject *obj)
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
 				   obj->priv->audio, NULL);
 
-	gtk_box_pack_end (GTK_BOX (obj),
+	gtk_box_pack_start (GTK_BOX (obj),
 			    obj->priv->discs,
 			    TRUE,
 			    TRUE,
@@ -1488,7 +1488,6 @@ void
 brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 {
 	GError *error = NULL;
-	GtkWidget *toolbar;
 	GtkAction *action;
 
 	/* menus */
@@ -1527,10 +1526,6 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 		      NULL);
 	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
 	gtk_action_set_sensitive (action, FALSE);
-
-	toolbar = gtk_ui_manager_get_widget (manager, "/Toolbar");
-	if (toolbar)
-		gtk_box_pack_start (GTK_BOX (project), toolbar, FALSE, FALSE, 0);
 
 	project->priv->manager = manager;
 }

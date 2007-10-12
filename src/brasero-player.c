@@ -83,7 +83,6 @@ struct BraseroPlayerPrivate {
 	GtkWidget *header;
 	GtkWidget *size;
 	guint update_scale_id;
-	guint set_uri_id;
 
 	BraseroPlayerBaconState state;
 
@@ -103,6 +102,7 @@ struct BraseroPlayerPrivate {
 
 typedef enum {
 	READY_SIGNAL,
+	ERROR_SIGNAL,
 	EOF_SIGNAL,
 	LAST_SIGNAL
 } BraseroPlayerSignalType;
@@ -130,6 +130,10 @@ brasero_player_destroy_controls (BraseroPlayer *player)
 	player->priv->button = NULL;
 	player->priv->image = NULL;
 	player->priv->size = NULL;
+	player->priv->video_zoom_in = NULL;
+	player->priv->video_zoom_out = NULL;
+	player->priv->image_zoom_in = NULL;
+	player->priv->image_zoom_out = NULL;
 }
 
 static void
@@ -655,6 +659,9 @@ brasero_player_create_controls_image (BraseroPlayer *player)
 	GtkWidget *box, *zoom;
 	GtkWidget *image;
 
+	if (player->priv->image_display)
+		gtk_widget_set_sensitive (player->priv->image_display, TRUE);
+
 	player->priv->controls = gtk_vbox_new (FALSE, 4);
 
 	gtk_box_pack_end (GTK_BOX (player->priv->hbox),
@@ -813,7 +820,7 @@ brasero_player_update_info_real (BraseroPlayer *player,
 
 	}
 	else if (title) {
-		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>"),
+		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>\n"),
 						  title);
 		gtk_label_set_ellipsize (GTK_LABEL (player->priv->header),
 					 PANGO_ELLIPSIZE_END);
@@ -822,7 +829,7 @@ brasero_player_update_info_real (BraseroPlayer *player,
 		gchar *name;
 
 	    	BRASERO_GET_BASENAME_FOR_DISPLAY (player->priv->uri, name);
-		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>"),
+		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>\n"),
 						  name);
 		g_free (name);
 		gtk_label_set_ellipsize (GTK_LABEL (player->priv->header),
@@ -855,6 +862,9 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 
 	if (result != GNOME_VFS_OK) {
 		brasero_player_no_multimedia_stream (player);
+		g_signal_emit (player,
+			       brasero_player_signals [ERROR_SIGNAL],
+			       0);
 		return;
 	}
 
@@ -890,7 +900,10 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 	}
 	else {
 		brasero_player_no_multimedia_stream (player);
-		return;
+		g_signal_emit (player,
+			       brasero_player_signals [ERROR_SIGNAL],
+			       0);
+	       return;
 	}
 
 	if (player->priv->end <= 0)
@@ -909,8 +922,8 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 		       0);
 }
 
-static gboolean
-brasero_player_set_uri_timeout (BraseroPlayer *player)
+static void
+brasero_player_retrieve_metadata (BraseroPlayer *player)
 {
 	GList *uris;
 
@@ -932,10 +945,6 @@ brasero_player_set_uri_timeout (BraseroPlayer *player)
 				  player->priv->meta_task,
 				  NULL);
 	g_list_free (uris);
-
-	player->priv->set_uri_id = 0;
-
-	return FALSE;
 }
 
 const gchar *
@@ -974,9 +983,8 @@ void
 brasero_player_set_uri (BraseroPlayer *player,
 			const gchar *uri)
 {
-	gchar *uri_unescaped;
-	GtkWidget *label;
 	gchar *song_uri;
+	gchar *name;
 
 	/* avoid reloading everything if it's the same uri */
 	if (uri && player->priv->uri
@@ -1010,58 +1018,60 @@ brasero_player_set_uri (BraseroPlayer *player,
 	if (player->priv->vfs)
 		brasero_vfs_cancel (player->priv->vfs, player);
 
-	if (player->priv->set_uri_id) {
-		g_source_remove (player->priv->set_uri_id);
-		player->priv->set_uri_id = 0;
+	/* That stops the pipeline from playing */
+	brasero_player_bacon_set_uri (BRASERO_PLAYER_BACON (player->priv->bacon), NULL);
+
+	if (!uri) {
+		brasero_player_no_multimedia_stream (player);
+		brasero_player_destroy_controls (player);
+		return;
 	}
 
-	brasero_player_bacon_set_uri (BRASERO_PLAYER_BACON (player->priv->bacon), NULL);
-	brasero_player_no_multimedia_stream (player);
-	brasero_player_destroy_controls (player);
-	if (!uri)
-		return;
+	if (player->priv->controls) {
+		if (player->priv->header) {
+			BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+			song_uri = g_markup_printf_escaped (_("<span weight=\"bold\">Loading information</span>\nabout <span size=\"smaller\"><i>%s</i></span>"),
+							  name);
+			g_free (name);
 
-	player->priv->controls = gtk_vbox_new (FALSE, 4);
-	gtk_widget_show (player->priv->controls);
-	gtk_box_pack_end (GTK_BOX (player->priv->vbox),
-			  player->priv->controls,
-			  TRUE,
-			  TRUE,
-			  0);
+			gtk_label_set_markup (GTK_LABEL (player->priv->header), song_uri);
+		}
 
-	/* first line title */
-	label = gtk_label_new (_("<span weight=\"bold\">loading ...</span>"));
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (player->priv->controls),
-			    label,
-			    TRUE,
-			    TRUE,
-			    0);
+		/* grey out the rest of the control while it's loading */
+		if (player->priv->progress) {
+			gtk_widget_set_sensitive (player->priv->progress, FALSE);
+			gtk_range_set_value (GTK_RANGE (player->priv->progress), 0);
+		}
 
-	uri_unescaped = gnome_vfs_unescape_string_for_display (uri);
-	song_uri = g_strdup_printf ("<span size=\"smaller\"><i>%s</i></span>", uri_unescaped);
-	g_free (uri_unescaped);
-	label = gtk_label_new (song_uri);
-	g_free (song_uri);
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (player->priv->controls),
-			    label,
-			    TRUE,
-			    TRUE,
-			    0);
+		if (player->priv->size)
+			gtk_label_set_text (GTK_LABEL (player->priv->size), NULL);
 
-	/* we add a timeout to wait a little since it could be the arrow keys
-	 * which are pressed and in this case we can't keep on setting uris */
-	player->priv->set_uri_id = g_timeout_add (400,
-						  (GSourceFunc) brasero_player_set_uri_timeout,
-						  player);
+		if (player->priv->button)
+			gtk_widget_set_sensitive (player->priv->button, FALSE);
+
+		if (player->priv->image) {
+			gtk_image_set_from_stock (GTK_IMAGE (player->priv->image),
+						  GTK_STOCK_MEDIA_PLAY,
+						  GTK_ICON_SIZE_BUTTON);
+		}
+
+		if (player->priv->image_zoom_in)
+			gtk_widget_set_sensitive (player->priv->image_zoom_in, FALSE);
+
+		if (player->priv->image_zoom_out)
+			gtk_widget_set_sensitive (player->priv->image_zoom_out, FALSE);
+
+		if (player->priv->video_zoom_in)
+			gtk_widget_set_sensitive (player->priv->video_zoom_in, FALSE);
+
+		if (player->priv->video_zoom_out)
+			gtk_widget_set_sensitive (player->priv->video_zoom_out, FALSE);
+
+		if (player->priv->image_display)
+			gtk_widget_set_sensitive (player->priv->image_display, FALSE);
+	}
+
+	brasero_player_retrieve_metadata (player);
 }
 
 static void
@@ -1202,11 +1212,6 @@ brasero_player_destroy (GtkObject *obj)
 		player->priv->uri = NULL;
 	}
 
-	if (player->priv->set_uri_id) {
-		g_source_remove (player->priv->set_uri_id);
-		player->priv->set_uri_id = 0;
-	}
-
 	if (player->priv->meta_task){
 		brasero_vfs_cancel (player->priv->vfs, player);
 		player->priv->meta_task = 0;
@@ -1241,7 +1246,14 @@ brasero_player_class_init (BraseroPlayerClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_player_finalize;
 	gtk_object_class->destroy = brasero_player_destroy;
-
+	brasero_player_signals [ERROR_SIGNAL] = 
+			g_signal_new ("error",
+				      G_TYPE_FROM_CLASS (klass),
+				      G_SIGNAL_RUN_LAST,
+				      G_STRUCT_OFFSET (BraseroPlayerClass, error),
+				      NULL, NULL,
+				      g_cclosure_marshal_VOID__VOID,
+				      G_TYPE_NONE, 0);
 	brasero_player_signals [READY_SIGNAL] = 
 			g_signal_new ("ready",
 				      G_TYPE_FROM_CLASS (klass),

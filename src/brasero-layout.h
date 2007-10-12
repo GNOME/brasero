@@ -87,7 +87,7 @@ brasero_layout_load (BraseroLayout *layout,
 		     BraseroLayoutType type);
 
 void
-brasero_layout_register_menu (BraseroLayout *layout,
-			      GtkUIManager *manager);
+brasero_layout_register_ui (BraseroLayout *layout,
+			    GtkUIManager *manager);
 
 #endif /* BRASERO_LAYOUT_H */

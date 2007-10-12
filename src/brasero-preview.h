@@ -66,8 +66,7 @@ brasero_preview_add_source (BraseroPreview *preview,
 			    BraseroURIContainer *source);
 
 void
-brasero_preview_set_uri (BraseroPreview *preview,
-			 const gchar *uri);
+brasero_preview_hide (BraseroPreview *preview);
 
 G_END_DECLS
 

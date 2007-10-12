@@ -504,8 +504,8 @@ brasero_project_manager_register_ui (BraseroProjectManager *manager,
 		g_error_free (error);
 	}
 
-   	brasero_layout_register_menu (BRASERO_LAYOUT (manager->priv->layout), ui_manager);
 	brasero_project_register_ui (BRASERO_PROJECT (manager->priv->project), ui_manager);
+   	brasero_layout_register_ui (BRASERO_LAYOUT (manager->priv->layout), ui_manager);
 }
 
 static void
