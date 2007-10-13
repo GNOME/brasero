@@ -1,3 +1,11 @@
+2007-10-13  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix another problem with dummy mode where strings were not updated when burning for real
+
+	* src/brasero-burn-dialog.c:
+	(brasero_burn_dialog_action_changed_cb),
+	(brasero_burn_dialog_dummy_success_cb):
+
 2007-10-12  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix 485477 – Reset and clear icon

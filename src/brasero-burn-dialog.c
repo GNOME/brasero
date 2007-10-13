@@ -957,7 +957,8 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 		      action == BRASERO_BURN_ACTION_LEADOUT ||
 		      action == BRASERO_BURN_ACTION_FIXATING);
 
-	if (dialog->priv->is_writing && !is_writing) {
+	if (action == BRASERO_BURN_ACTION_START_RECORDING
+	|| (dialog->priv->is_writing && !is_writing)) {
 		BraseroMedia media = BRASERO_MEDIUM_NONE;
 
 		brasero_burn_status (burn, &media, NULL, NULL, NULL);
@@ -1018,8 +1019,12 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
 
-	if (answer == GTK_RESPONSE_OK)
+	if (answer == GTK_RESPONSE_OK) {
+		if (id)
+			g_source_remove (id);
+
 		return BRASERO_BURN_OK;
+	}
 
 	if (id)
 		g_source_remove (id);
