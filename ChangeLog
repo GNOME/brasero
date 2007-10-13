@@ -1,5 +1,98 @@
 2007-10-13  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Add the source for the icons (except crop icons)
+	Fix #485475 – Source for icons
+
+	* data/icons/16x16/actions/iso-image-burn.svg:
+	* data/icons/16x16/actions/iso-image-new.svg:
+	* data/icons/16x16/actions/media-optical-audio-new.svg:
+	* data/icons/16x16/actions/media-optical-blank.svg:
+	* data/icons/16x16/actions/media-optical-burn.svg:
+	* data/icons/16x16/actions/media-optical-copy.svg:
+	* data/icons/16x16/actions/media-optical-data-new.svg:
+	* data/icons/16x16/apps/brasero.svg:
+	* data/icons/16x16/status/brasero-disc-00.svg:
+	* data/icons/16x16/status/brasero-disc-05.svg:
+	* data/icons/16x16/status/brasero-disc-10.svg:
+	* data/icons/16x16/status/brasero-disc-100.svg:
+	* data/icons/16x16/status/brasero-disc-15.svg:
+	* data/icons/16x16/status/brasero-disc-20.svg:
+	* data/icons/16x16/status/brasero-disc-25.svg:
+	* data/icons/16x16/status/brasero-disc-30.svg:
+	* data/icons/16x16/status/brasero-disc-35.svg:
+	* data/icons/16x16/status/brasero-disc-40.svg:
+	* data/icons/16x16/status/brasero-disc-45.svg:
+	* data/icons/16x16/status/brasero-disc-50.svg:
+	* data/icons/16x16/status/brasero-disc-55.svg:
+	* data/icons/16x16/status/brasero-disc-60.svg:
+	* data/icons/16x16/status/brasero-disc-65.svg:
+	* data/icons/16x16/status/brasero-disc-70.svg:
+	* data/icons/16x16/status/brasero-disc-75.svg:
+	* data/icons/16x16/status/brasero-disc-80.svg:
+	* data/icons/16x16/status/brasero-disc-85.svg:
+	* data/icons/16x16/status/brasero-disc-90.svg:
+	* data/icons/16x16/status/brasero-disc-95.svg:
+	* data/icons/22x22/actions/iso-image-burn.svg:
+	* data/icons/22x22/actions/iso-image-new.svg:
+	* data/icons/22x22/actions/media-optical-audio-new.svg:
+	* data/icons/22x22/actions/media-optical-blank.svg:
+	* data/icons/22x22/actions/media-optical-burn.svg:
+	* data/icons/22x22/actions/media-optical-copy.svg:
+	* data/icons/22x22/actions/media-optical-data-new.svg:
+	* data/icons/22x22/apps/brasero.svg:
+	* data/icons/22x22/status/brasero-disc-00.svg:
+	* data/icons/22x22/status/brasero-disc-05.svg:
+	* data/icons/22x22/status/brasero-disc-10.svg:
+	* data/icons/22x22/status/brasero-disc-100.svg:
+	* data/icons/22x22/status/brasero-disc-15.svg:
+	* data/icons/22x22/status/brasero-disc-20.svg:
+	* data/icons/22x22/status/brasero-disc-25.svg:
+	* data/icons/22x22/status/brasero-disc-30.svg:
+	* data/icons/22x22/status/brasero-disc-35.svg:
+	* data/icons/22x22/status/brasero-disc-40.svg:
+	* data/icons/22x22/status/brasero-disc-45.svg:
+	* data/icons/22x22/status/brasero-disc-50.svg:
+	* data/icons/22x22/status/brasero-disc-55.svg:
+	* data/icons/22x22/status/brasero-disc-60.svg:
+	* data/icons/22x22/status/brasero-disc-65.svg:
+	* data/icons/22x22/status/brasero-disc-70.svg:
+	* data/icons/22x22/status/brasero-disc-75.svg:
+	* data/icons/22x22/status/brasero-disc-80.svg:
+	* data/icons/22x22/status/brasero-disc-85.svg:
+	* data/icons/22x22/status/brasero-disc-90.svg:
+	* data/icons/22x22/status/brasero-disc-95.svg:
+	* data/icons/32x32/actions/iso-image-burn.svg:
+	* data/icons/32x32/actions/iso-image-new.svg:
+	* data/icons/32x32/actions/media-optical-audio-new.svg:
+	* data/icons/32x32/actions/media-optical-blank.svg:
+	* data/icons/32x32/actions/media-optical-burn.svg:
+	* data/icons/32x32/actions/media-optical-copy.svg:
+	* data/icons/32x32/actions/media-optical-data-new.svg:
+	* data/icons/32x32/apps/brasero.svg:
+	* data/icons/32x32/status/brasero-disc-00.svg:
+	* data/icons/32x32/status/brasero-disc-05.svg:
+	* data/icons/32x32/status/brasero-disc-10.svg:
+	* data/icons/32x32/status/brasero-disc-100.svg:
+	* data/icons/32x32/status/brasero-disc-15.svg:
+	* data/icons/32x32/status/brasero-disc-20.svg:
+	* data/icons/32x32/status/brasero-disc-25.svg:
+	* data/icons/32x32/status/brasero-disc-30.svg:
+	* data/icons/32x32/status/brasero-disc-35.svg:
+	* data/icons/32x32/status/brasero-disc-40.svg:
+	* data/icons/32x32/status/brasero-disc-45.svg:
+	* data/icons/32x32/status/brasero-disc-50.svg:
+	* data/icons/32x32/status/brasero-disc-55.svg:
+	* data/icons/32x32/status/brasero-disc-60.svg:
+	* data/icons/32x32/status/brasero-disc-65.svg:
+	* data/icons/32x32/status/brasero-disc-70.svg:
+	* data/icons/32x32/status/brasero-disc-75.svg:
+	* data/icons/32x32/status/brasero-disc-80.svg:
+	* data/icons/32x32/status/brasero-disc-85.svg:
+	* data/icons/32x32/status/brasero-disc-90.svg:
+	* data/icons/32x32/status/brasero-disc-95.svg:
+
+2007-10-13  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #485936 – after blanking, the dialog should be closed, but instead it stays open and the throbber continues to move
 	Also improved HIG by adding mnemonics, tooltips
 	Now blank discs can be blanked again (added proper flags in plugins)
