@@ -228,14 +228,17 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	media = NCB_MEDIA_GET_STATUS (drive);
 	if (media == BRASERO_MEDIUM_NONE) {
 		brasero_tool_dialog_no_media (self);
+		gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
 		goto end;
 	}
 	else if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		/* error out */
+		gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
 		brasero_tool_dialog_media_error (self);
 		goto end;
 	}
 	else if (media == BRASERO_MEDIUM_BUSY) {
+		gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
 		brasero_tool_dialog_media_busy (self);
 		goto end;
 	}
@@ -259,10 +262,8 @@ end:
 
 	gtk_widget_set_sensitive (self->priv->upper_box, TRUE);
 	gtk_widget_set_sensitive (self->priv->lower_box, FALSE);
-	gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
 
-	brasero_tool_dialog_set_progress (self, -1.0, -1.0, -1, -1, -1);
-	brasero_tool_dialog_set_action (self, BRASERO_BURN_ACTION_NONE, NULL);
+	brasero_burn_progress_reset (BRASERO_BURN_PROGRESS (self->priv->progress));
 }
 
 static void
@@ -465,6 +466,8 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	/* upper part */
 	obj->priv->upper_box = gtk_vbox_new (FALSE, 0);
 	obj->priv->selector = brasero_drive_selection_new ();
+	gtk_widget_set_tooltip_text (obj->priv->selector,
+				     _("Choose the drive that holds the media"));
 
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
 			    brasero_utils_pack_properties (_("<b>Select a recorder:</b>"),

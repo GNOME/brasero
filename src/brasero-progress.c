@@ -445,4 +445,26 @@ brasero_burn_progress_set_action (BraseroBurnProgress *self,
 
 	if (action == BRASERO_BURN_ACTION_BLANKING)
 		brasero_burn_progress_start_blinking (self);
+	else if (action == BRASERO_BURN_ACTION_FINISHED)
+		brasero_burn_progress_stop_blinking (self);
+}
+
+void
+brasero_burn_progress_reset (BraseroBurnProgress *progress)
+{
+	brasero_burn_progress_stop_blinking (progress);
+
+	progress->priv->current = BRASERO_BURN_ACTION_NONE;
+	if (progress->priv->time)
+		gtk_label_set_text (GTK_LABEL (progress->priv->time), NULL);
+	if (progress->priv->speed)
+		gtk_label_set_text (GTK_LABEL (progress->priv->speed), NULL);
+	if (progress->priv->speed_time_info)
+		gtk_label_set_text (GTK_LABEL (progress->priv->speed_time_info), NULL);
+
+	gtk_label_set_text (GTK_LABEL (progress->priv->action), NULL);
+	gtk_label_set_text (GTK_LABEL (progress->priv->bytes_written), NULL);
+
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progress->priv->progress), 0.0);
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->priv->progress), NULL);
 }

@@ -89,49 +89,85 @@ brasero_sum_dialog_stop (BraseroSumDialog *self)
 		brasero_xfer_cancel (self->priv->xfer_ctx);
 }
 
-static void
+static gboolean
 brasero_sum_dialog_message (BraseroSumDialog *self,
 			    const gchar *title,
 			    const gchar *primary_message,
 			    const gchar *secondary_message,
 			    GtkMessageType type)
 {
+	GtkWidget *button;
 	GtkWidget *message;
+	GtkResponseType answer;
+
+	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (self),
+					  1.0,
+					  1.0,
+					  -1,
+					  -1,
+					  -1);
 
 	message = gtk_message_dialog_new (GTK_WINDOW (self),
 					  GTK_DIALOG_MODAL |
 					  GTK_DIALOG_DESTROY_WITH_PARENT,
 					  type,
-					  GTK_BUTTONS_CLOSE,
+					  GTK_BUTTONS_NONE,
 					  primary_message);
 
 	gtk_window_set_title (GTK_WINDOW (message), title);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  secondary_message);
-	gtk_dialog_run (GTK_DIALOG (message));
+
+	button = brasero_utils_make_button (_("Check _Again"),
+					    GTK_STOCK_FIND,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (message),
+				      button,
+				      GTK_RESPONSE_OK);
+
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       GTK_STOCK_CLOSE,
+			       GTK_RESPONSE_CLOSE);
+
+	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
+
+	if (answer == GTK_RESPONSE_OK)
+		return FALSE;
+
+	return TRUE;
 }
 
-static void
+static gboolean
 brasero_sum_dialog_message_error (BraseroSumDialog *self,
 				  const GError *error)
 {
-	brasero_sum_dialog_message (self,
-				    _("File integrity check error"),
-				    _("The file integrity check cannot be performed:"),
-				    error ? error->message:_("unknown error"),
-				    GTK_MESSAGE_ERROR);
+	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
+					BRASERO_BURN_ACTION_NONE,
+					NULL);
+
+	return brasero_sum_dialog_message (self,
+					   _("File integrity check error"),
+					   _("The file integrity check cannot be performed:"),
+					   error ? error->message:_("unknown error"),
+					   GTK_MESSAGE_ERROR);
 }
 
-static void
+static gboolean
 brasero_sum_dialog_success (BraseroSumDialog *self)
 {
-	brasero_sum_dialog_message (self,
-				    _("File integrity check success"),
-				    _("The file integrity was performed successfully:"),
-				    _("there seems to be no corrupted file on the disc."),
-				    GTK_MESSAGE_INFO);
+	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
+					BRASERO_BURN_ACTION_FINISHED,
+					NULL);
+
+	return brasero_sum_dialog_message (self,
+					   _("File integrity check success"),
+					   _("The file integrity was performed successfully:"),
+					   _("there seems to be no corrupted file on the disc."),
+					   GTK_MESSAGE_INFO);
 }
 
 enum {
@@ -139,15 +175,17 @@ enum {
 	BRASERO_SUM_DIALOG_NB_COL
 };
 
-static void
+static gboolean
 brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 				       GSList *wrong_sums)
 {
 	GSList *iter;
-	GtkWidget *scroll;
 	GtkWidget *tree;
+	GtkWidget *scroll;
+	GtkWidget *button;
 	GtkWidget *message;
 	GtkTreeModel *model;
+	GtkResponseType answer;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
@@ -155,12 +193,25 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 						      GTK_DIALOG_MODAL |
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_MESSAGE_ERROR,
-						      GTK_BUTTONS_CLOSE,
+						      GTK_BUTTONS_NONE,
 						      _("<b><big>The following files appear to be corrupted:</big></b>"));
 
 	gtk_window_set_title (GTK_WINDOW (message),  _("File integrity check error"));
 	gtk_window_set_resizable (GTK_WINDOW (message), TRUE);
 	gtk_widget_set_size_request (GTK_WIDGET (message), 440, 300);
+
+	button = brasero_utils_make_button (_("Check _Again"),
+					    GTK_STOCK_FIND,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (message),
+				      button,
+				      GTK_RESPONSE_OK);
+
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       GTK_STOCK_CLOSE,
+			       GTK_RESPONSE_CLOSE);
 
 	/* build a list */
 	model = GTK_TREE_MODEL (gtk_list_store_new (BRASERO_SUM_DIALOG_NB_COL, G_TYPE_STRING));
@@ -202,8 +253,13 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 
 	gtk_widget_show_all (scroll);
 
-	gtk_dialog_run (GTK_DIALOG (message));
+	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
+
+	if (answer == GTK_RESPONSE_OK)
+		return FALSE;
+
+	return TRUE;
 }
 
 static gboolean
@@ -421,17 +477,18 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	BraseroBurnResult result;
 	gchar *file_sum = NULL;
 	GError *error = NULL;
+	gboolean retval;
 	gchar *uri;
 
 	/* get the sum from the file */
     	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (self->priv->md5_chooser));
 	if (!uri) {
-		brasero_sum_dialog_message (self,
-					    _("File integrity check error"),
-					    _("The file integrity check cannot be performed:"),
-					    error ? error->message:_("no md5 file was given."),
-					    GTK_MESSAGE_ERROR);
-		return FALSE;
+		retval = brasero_sum_dialog_message (self,
+						     _("File integrity check error"),
+						     _("The file integrity check cannot be performed:"),
+						     error ? error->message:_("no md5 file was given."),
+						     GTK_MESSAGE_ERROR);
+		return retval;
 	}
 
 	result = brasero_sum_dialog_get_file_checksum (self, uri, &file_sum, &error);
@@ -441,12 +498,12 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 		return FALSE;
 
 	if (result != BRASERO_BURN_OK) {
-		brasero_sum_dialog_message_error (self, error);
+		retval = brasero_sum_dialog_message_error (self, error);
 
 		if (error)
 			g_error_free (error);
 
-		return FALSE;
+		return retval;
 	}
 
 	result = brasero_sum_dialog_get_disc_checksum (self, drive, file_sum, &error);
@@ -458,15 +515,15 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	if (result != BRASERO_BURN_OK) {
 		g_free (file_sum);
 
-		brasero_sum_dialog_message_error (self, error);
+		retval = brasero_sum_dialog_message_error (self, error);
 
 		if (error)
 			g_error_free (error);
-		return FALSE;
+
+		return retval;
 	}
 
-	brasero_sum_dialog_success (self);
-	return TRUE;
+	return brasero_sum_dialog_success (self);
 }
 
 static gboolean
@@ -478,6 +535,7 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 	GError *error = NULL;
 	BraseroTrack *track;
 	BraseroBurn *burn;
+	gboolean retval;
 
 	/* get the checksum */
 	track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
@@ -497,28 +555,26 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 		return FALSE;
 	}
 
-	if (result == BRASERO_BURN_OK) {
-		brasero_sum_dialog_success (self);
-		return TRUE;
-	}
+	if (result == BRASERO_BURN_OK)
+		return brasero_sum_dialog_success (self);
 
 	if (!error || error->code != BRASERO_BURN_ERROR_BAD_CHECKSUM) {
-		brasero_sum_dialog_message_error (self, error);
+		retval = brasero_sum_dialog_message_error (self, error);
 
 		if (error)
 			g_error_free (error);
 
-		return FALSE;
+		return retval;
 	}
 
 	g_error_free (error);
 
 	wrong_sums = brasero_burn_session_get_wrong_checksums (self->priv->session);
-	brasero_sum_dialog_corruption_warning (self, wrong_sums);
+	retval = brasero_sum_dialog_corruption_warning (self, wrong_sums);
 	g_slist_foreach (wrong_sums, (GFunc) g_free, NULL);
 	g_slist_free (wrong_sums);
 
-	return FALSE;
+	return retval;
 }
 
 static gboolean
@@ -526,24 +582,17 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 			     NautilusBurnDrive *drive)
 {
 	BraseroSumDialog *self;
+	gboolean result;
 
 	self = BRASERO_SUM_DIALOG (dialog);
 
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->md5_check)))
-		brasero_sum_dialog_check_disc_sum (self, drive);
+		result = brasero_sum_dialog_check_disc_sum (self, drive);
 	else
-		brasero_sum_dialog_check_md5_file (self, drive);
+		result = brasero_sum_dialog_check_md5_file (self, drive);
 
-	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
-					BRASERO_BURN_ACTION_NONE,
-					NULL);
-	brasero_tool_dialog_set_progress (BRASERO_TOOL_DIALOG (self),
-					  0.0,
-					  0.0,
-					  -1,
-					  -1,
-					  -1);
-	return FALSE;
+	brasero_tool_dialog_set_valid (dialog, TRUE);
+	return result;
 }
 
 static void
@@ -587,7 +636,8 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 
 	box = gtk_vbox_new (FALSE, 6);
 
-	obj->priv->md5_check = gtk_check_button_new_with_label (_("Use a md5 file to check the disc"));
+	obj->priv->md5_check = gtk_check_button_new_with_mnemonic (_("Use a _md5 file to check the disc"));
+	gtk_widget_set_tooltip_text (obj->priv->md5_check, _("Use an external .md5 file that stores the checksum of a disc"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (obj->priv->md5_check), FALSE);
 	g_signal_connect (obj->priv->md5_check,
 			  "toggled",
@@ -615,7 +665,7 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 					  NULL);
 
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
-					_("Check"),
+					_("_Check"),
 					GTK_STOCK_FIND,
 					NULL);
 }

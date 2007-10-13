@@ -1013,7 +1013,8 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_APPENDABLE|
 				      BRASERO_MEDIUM_CLOSED|
 				      BRASERO_MEDIUM_HAS_AUDIO|
-				      BRASERO_MEDIUM_HAS_DATA;
+				      BRASERO_MEDIUM_HAS_DATA|
+				      BRASERO_MEDIUM_BLANK;
 	gchar *prog_name;
 	GSList *output;
 	GSList *input;

@@ -613,9 +613,6 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		error_type = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
 	else if (!(media & BRASERO_MEDIUM_REWRITABLE))
 		error_type = BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE;
-	else if ((brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_FAST_BLANK)
-	     &&  (media & BRASERO_MEDIUM_BLANK))
-		error_type = BRASERO_BURN_ERROR_MEDIA_BLANK;
 	else
 		error_type = BRASERO_BURN_ERROR_NONE;
 
@@ -2238,9 +2235,11 @@ brasero_burn_blank_real (BraseroBurn *burn, GError **error)
 			  burn);
 
 	result = brasero_burn_run_eraser (burn, error);
-
 	g_object_unref (priv->task);
 	priv->task = NULL;
+
+	if (result == BRASERO_BURN_OK)
+		brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
 	return result;
 }

@@ -58,6 +58,9 @@ GType brasero_burn_progress_get_type();
 GtkWidget *brasero_burn_progress_new();
 
 void
+brasero_burn_progress_reset (BraseroBurnProgress *progress);
+
+void
 brasero_burn_progress_set_status (BraseroBurnProgress *progress,
 				  gboolean is_DVD,
 				  gdouble overall_progress,

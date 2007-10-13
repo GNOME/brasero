@@ -140,22 +140,6 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 							    BRASERO_BURN_FLAG_FAST_BLANK,
 							    supported,
 							    compulsory);
-
-	if (result == BRASERO_BURN_NOT_SUPPORTED) {
-		GtkWidget *message;
-
-		/* we don't need / can't blank(ing) so tell the user */
-		message = gtk_message_dialog_new_with_markup (GTK_WINDOW (self),
-							      GTK_DIALOG_MODAL |
-							      GTK_DIALOG_DESTROY_WITH_PARENT,
-							      GTK_MESSAGE_INFO,
-							      GTK_BUTTONS_CLOSE,
-							      "<big><b>This type of disc can't be blanked.</b></big>");
-		gtk_window_set_title (GTK_WINDOW (message), _("Unneeded operation"));
-
-		gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
-	}
 }
 
 static void
@@ -215,7 +199,9 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 
 	/* Tell the user the result of the operation */
 	if (result == BRASERO_BURN_ERR || error) {
+		GtkResponseType answer;
 		GtkWidget *message;
+		GtkWidget *button;
 
 		message =  gtk_message_dialog_new (GTK_WINDOW (self),
 						   GTK_DIALOG_DESTROY_WITH_PARENT|
@@ -225,6 +211,19 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 						   _("Error Blanking:"));
 
 		gtk_window_set_title (GTK_WINDOW (self), _("Blanking finished"));
+
+		button = brasero_utils_make_button (_("Blank _Again"),
+						    NULL,
+						    "media-optical-blank",
+						    GTK_ICON_SIZE_BUTTON);
+		gtk_widget_show (button);
+		gtk_dialog_add_action_widget (GTK_DIALOG (message),
+					      button,
+					      GTK_RESPONSE_OK);
+
+		gtk_dialog_add_button (GTK_DIALOG (message),
+				       GTK_STOCK_CLOSE,
+				       GTK_RESPONSE_CLOSE);
 
 		if (error) {
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
@@ -236,25 +235,51 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 								  _("Unexpected error"));
 
-		gtk_dialog_run (GTK_DIALOG (message));
+		answer = gtk_dialog_run (GTK_DIALOG (message));
 		gtk_widget_destroy (message);
+
+		if (answer == GTK_RESPONSE_OK) {
+			brasero_blank_dialog_device_opts_setup (self);
+			return FALSE;
+		}
 	}
 	else if (result == BRASERO_BURN_OK) {
+		GtkResponseType answer;
 		GtkWidget *message;
+		GtkWidget *button;
 
 		message = gtk_message_dialog_new (GTK_WINDOW (self),
 						  GTK_DIALOG_DESTROY_WITH_PARENT|
 						  GTK_DIALOG_MODAL,
 						  GTK_MESSAGE_INFO,
-						  GTK_BUTTONS_CLOSE,
+						  GTK_BUTTONS_NONE,
 						  _("The disc was successfully blanked:"));
 
 		gtk_window_set_title (GTK_WINDOW (self), _("Blanking finished"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 							  _("the disc is ready for use."));
-		gtk_dialog_run (GTK_DIALOG (message));
+
+		button = brasero_utils_make_button (_("Blank _Again"),
+						    NULL,
+						    "media-optical-blank",
+						    GTK_ICON_SIZE_BUTTON);
+		gtk_widget_show (button);
+		gtk_dialog_add_action_widget (GTK_DIALOG (message),
+					      button,
+					      GTK_RESPONSE_OK);
+
+		gtk_dialog_add_button (GTK_DIALOG (message),
+				       GTK_STOCK_CLOSE,
+				       GTK_RESPONSE_CLOSE);
+
+		answer = gtk_dialog_run (GTK_DIALOG (message));
 		gtk_widget_destroy (message);
+
+		if (answer == GTK_RESPONSE_OK) {
+			brasero_blank_dialog_device_opts_setup (self);
+			return FALSE;
+		}
 	}
 	else if (result == BRASERO_BURN_NOT_SUPPORTED) {
 		g_warning ("operation not supported");
@@ -269,7 +294,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 		g_warning ("job running");
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
 static void
@@ -327,7 +352,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (obj);
 
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
-					_("Blank"),
+					_("_Blank"),
 					NULL,
 					"media-optical-blank");
 
@@ -351,7 +376,8 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					   G_CALLBACK (brasero_blank_dialog_caps_changed),
 					   obj);
 
-	priv->fast = gtk_check_button_new_with_label (_("fast blanking"));
+	priv->fast = gtk_check_button_new_with_mnemonic (_("_fast blanking"));
+	gtk_widget_set_tooltip_text (priv->fast, _("Activate fast blanking by opposition to a longer thorough blanking"));
 	g_signal_connect (priv->fast,
 			  "clicked",
 			  G_CALLBACK (brasero_blank_dialog_fast_toggled),
