@@ -26,4 +26,4 @@ plugin_LTLIBRARIES = libbrasero-transcode.la
 
 libbrasero_transcode_la_SOURCES = burn-transcode.c burn-transcode.h
 libbrasero_transcode_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
-libbrasero_transcode_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+libbrasero_transcode_la_LDFLAGS = -module -avoid-version

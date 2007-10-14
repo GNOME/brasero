@@ -28,4 +28,4 @@ plugin_LTLIBRARIES = libbrasero-local-track.la
 
 libbrasero_local_track_la_SOURCES = burn-local-image.c burn-local-image.h
 libbrasero_local_track_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GNOMEVFS_LIBS)
-libbrasero_local_track_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+libbrasero_local_track_la_LDFLAGS = -module -avoid-version

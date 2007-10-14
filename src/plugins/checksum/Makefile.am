@@ -29,6 +29,6 @@ libbrasero_md5sum_la_SOURCES = burn-md5sum.c	\
 			       burn-md5.c 	\
 			       burn-md5.h
 
-libbrasero_md5sum_la_LDFLAGS = -module -avoid-version $(AM_LDFLAGS)
+libbrasero_md5sum_la_LDFLAGS = -module -avoid-version
 libbrasero_md5sum_la_LIBADD = $(BRASERO_BASE_LIBS)
 

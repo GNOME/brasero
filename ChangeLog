@@ -1,3 +1,17 @@
+2007-10-14  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/dvdcss/Makefile.am:
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/transcode/Makefile.am:
+
+	Remove unneeded AM_LDFLAGS var to fix autotools.
+
 2007-10-13  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Add the source for the icons (except crop icons)
