@@ -1045,7 +1045,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 
 	button = brasero_utils_make_button (_("_Slice"),
 					    NULL,
-					    "stock-tool-crop",
+					    "transform-crop-and-resize",
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
 	gtk_size_group_add_widget (size_group, button);

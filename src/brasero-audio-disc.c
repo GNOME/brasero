@@ -319,7 +319,7 @@ static GtkActionEntry entries[] = {
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
 	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, N_("Add a 2 second pause after the track"),
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
-	{"Split", "stock-tool-crop", N_("_Split Track..."), NULL, N_("Split the selected track"),
+	{"Split", "transform-crop-and-resize", N_("_Split Track..."), NULL, N_("Split the selected track"),
 	 G_CALLBACK (brasero_audio_disc_split_cb)}
 };
 
