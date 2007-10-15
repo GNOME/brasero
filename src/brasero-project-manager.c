@@ -261,12 +261,9 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
 				   chooser,
 				   "Chooser",
-				   _("<big><b>File Browser</b></big>"),
-				   _("<i>Browse the file system</i>"),
-				   _("_File Browser"),
+				   _("Browse the file system"),
 				   _("Display file browser"),
 				   GTK_STOCK_DIRECTORY,
-				   NULL,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
 
 #ifdef BUILD_PREVIEW
@@ -288,12 +285,9 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
 				   search,
 				   "Search",
-				   _("<big><b>Search Files</b></big>"),
-				   _("<i>Search files using keywords</i>"),
-				   _("_Search Files"),
+				   _("Search files using keywords"),
 				   _("Display search"),
 				   GTK_STOCK_FIND,
-				   NULL,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
 
 #ifdef BUILD_PREVIEW
@@ -312,11 +306,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
 				   playlist,
 				   "Playlist",
-				   _("<big><b>Playlists</b></big>"),
-				   _("<i>Display playlists and their contents</i>"),
-				   _("_Playlists"),
+				   _("Display playlists and their contents"),
 				   _("Display playlists"),
-				   NULL,
 				   "audio-x-generic", 
 				   BRASERO_LAYOUT_AUDIO);
 
@@ -812,12 +803,8 @@ brasero_project_manager_empty (BraseroProjectManager *manager)
 
 gboolean
 brasero_project_manager_load_session (BraseroProjectManager *manager,
-				      const gchar *path,
-				      gint position)
+				      const gchar *path)
 {
-    	if (position > 0)
-		gtk_paned_set_position (GTK_PANED (manager->priv->layout), position);
-
     	if (path) {
 		gchar *uri;
 		BraseroProjectType type;
@@ -836,13 +823,9 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
-				      gboolean cancellable,
-				      gint *position)
+				      gboolean cancellable)
 {
     	gboolean result = FALSE;
-
-    	if (position)
-		*position = gtk_paned_get_position (GTK_PANED (manager->priv->layout));
 
     	if (path) {
 		gchar *uri;

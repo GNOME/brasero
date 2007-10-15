@@ -1,3 +1,35 @@
+2007-10-15  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix many bugs related to layout at once by reworking the way it works.
+	- location of project pane can now be chosen and default to right (Gconf key)
+	  (fix #480611 – Change placement of file manager)
+	- fix #480614 – Displaying and hiding file manager resizes window
+	- fix #484157 – Directly use GtkActions to populate toolbar (comment #5)
+	- fix #471668 – saving divider locations of paned layout
+	- partially fix #360899 – GUI enhancements/simplification
+
+	* src/brasero-layout.c: (brasero_layout_pack_preview),
+	(brasero_layout_size_reallocate), (brasero_layout_add_project),
+	(brasero_layout_add_preview),
+	(brasero_layout_set_side_pane_visible),
+	(brasero_layout_item_set_active),
+	(brasero_layout_displayed_item_changed_cb), (brasero_layout_save),
+	(brasero_layout_add_source), (brasero_layout_combo_changed_cb),
+	(brasero_layout_item_set_visible), (brasero_layout_load),
+	(brasero_layout_pane_moved_cb), (brasero_layout_type_changed_cb),
+	(brasero_layout_close_button_clicked_cb),
+	(brasero_layout_empty_toggled_cb), (brasero_layout_register_ui),
+	(brasero_layout_foreach_item_cb), (brasero_layout_destroy),
+	(brasero_layout_finalize), (brasero_layout_class_init),
+	(brasero_layout_init), (brasero_layout_new):
+	* src/brasero-layout.h:
+	* src/brasero-project-manager.c: (brasero_project_manager_init),
+	(brasero_project_manager_load_session),
+	(brasero_project_manager_save_session):
+	* src/brasero-project-manager.h:
+	* src/brasero-session.c: (brasero_session_load),
+	(brasero_session_save):
+
 2007-10-14  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/plugins/cdrdao/Makefile.am:

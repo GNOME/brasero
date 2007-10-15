@@ -75,11 +75,8 @@ void
 brasero_layout_add_source (BraseroLayout *layout,
 			   GtkWidget *child,
 			   const gchar *id,
-			   const gchar *name,
 			   const gchar *subtitle,
-			   const gchar *menu,
 			   const gchar *tooltip,
-			   const gchar *stock_id,
 			   const gchar *icon_name,
 			   BraseroLayoutType types);
 void

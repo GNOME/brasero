@@ -49,10 +49,8 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 	gchar *height_str = NULL;
 	gchar *width_str = NULL;
 	gchar *state_str = NULL;
-	gchar *pane_str = NULL;
 	gchar *version = NULL;
     	gchar *project_path;
-	gint pane_pos = -1;
 	gint height;
 	gint width;
 	gint state = 0;
@@ -125,14 +123,6 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 								   item->xmlChildrenNode,
 								   1);
 		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "pane")) {
-			if (pane_str)
-				goto end;
-
-			pane_str = (char *) xmlNodeListGetString (session,
-								  item->xmlChildrenNode,
-								  1);
-		}
 		else if (item->type == XML_ELEMENT_NODE)
 			goto end;
 
@@ -152,9 +142,6 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 	if (state_str)
 		state = (int) g_strtod (state_str, NULL);
 
-	if (pane_str)
-		pane_pos = (int) g_strtod (pane_str, NULL);
-
 end:
 	if (height_str)
 		g_free (height_str);
@@ -164,9 +151,6 @@ end:
 
 	if (state_str)
 		g_free (state_str);
-
-	if (pane_str)
-		g_free (pane_str);
 
 	if (version)
 		g_free (version);
@@ -189,8 +173,7 @@ end:
 	}
 
     	brasero_project_manager_load_session (BRASERO_PROJECT_MANAGER (app->contents),
-					      project_path,
-					      pane_pos);
+					      project_path);
 
     	if (project_path) {
     		/* remove the project file not to have it next time */
@@ -207,7 +190,6 @@ brasero_session_save (BraseroApp *app,
 		      gboolean cancellable)
 {
 	gint success;
-	gint pane_pos;
 	gboolean cancel;
 	gchar *project_path;
 	gchar *session_path;
@@ -220,8 +202,7 @@ brasero_session_save (BraseroApp *app,
 
     	cancel = brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
 						       project_path,
-						       cancellable,
-						       &pane_pos);
+						       cancellable);
     	g_free (project_path);
 
 	/* see if we should try to cancel shutdown */
@@ -279,14 +260,6 @@ brasero_session_save (BraseroApp *app,
 						   (xmlChar *) "state",
 						   "%i",
 						   app->is_maximised);
-	if (success < 0)
-		goto error;
-
-	/* saves internal pane geometry */
-	success = xmlTextWriterWriteFormatElement (session,
-						   (xmlChar *) "pane",
-						   "%i",
-						   pane_pos);
 	if (success < 0)
 		goto error;
 
