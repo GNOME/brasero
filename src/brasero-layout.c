@@ -135,7 +135,7 @@ brasero_layout_empty_toggled_cb (GtkToggleAction *action,
 
 const GtkToggleActionEntry entries [] = {
 	{ BRASERO_LAYOUT_NONE_ID, BRASERO_LAYOUT_NONE_ICON, N_(BRASERO_LAYOUT_NONE_MENU),
-	  "F7", N_(BRASERO_LAYOUT_NONE_TOOLTIP), G_CALLBACK (brasero_layout_empty_toggled_cb), 0 }
+	  "F7", N_(BRASERO_LAYOUT_NONE_TOOLTIP), G_CALLBACK (brasero_layout_empty_toggled_cb), 1 }
 };
 
 const gchar description [] = "<ui>"
@@ -995,7 +995,7 @@ brasero_layout_empty_toggled_cb (GtkToggleAction *action,
 
 	if (!active)
 		brasero_layout_save (layout, BRASERO_LAYOUT_NONE_ID);
-	else if (layout->priv->active_item);
+	else if (layout->priv->active_item)
 		brasero_layout_save (layout, layout->priv->active_item->id);
 }
 

@@ -138,6 +138,18 @@
 	</locale>
        </schema>
 
+       <schema>
+        <key>/schemas/apps/brasero/display/layout</key>
+	<applyto>/apps/brasero/display/layout</applyto>
+	<owner>brasero</owner>
+	<type>int</type>
+	<default>0</default>
+	<locale name="C">
+	  <short>Layout of UI</short>
+	  <long>This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)</long>
+	</locale>
+       </schema>
+
       <schema>
         <key>/schemas/apps/brasero/display/viewer</key>
 	<applyto>/apps/brasero/display/viewer</applyto>

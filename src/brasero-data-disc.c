@@ -568,13 +568,13 @@ static GObjectClass *parent_class = NULL;
 
 static GtkActionEntry entries [] = {
 	{"ContextualMenu", NULL, N_("Menu")},
-	{"Open", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
+	{"OpenFile", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected files"),
 	 G_CALLBACK (brasero_data_disc_open_activated_cb)},
-	{"Rename", NULL, N_("R_ename..."), NULL, N_("Rename the selected file"),
+	{"RenameData", NULL, N_("R_ename..."), NULL, N_("Rename the selected file"),
 	 G_CALLBACK (brasero_data_disc_rename_activated_cb)},
-	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
+	{"DeleteData", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_data_disc_delete_activated_cb)},
-	{"Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
+	{"PasteData", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_data_disc_paste_activated_cb)},
 	{"NewFolder", "folder-new", N_("New folder"), NULL, N_("Create a new empty folder"),
 	 G_CALLBACK (brasero_data_disc_new_folder_clicked_cb)},
@@ -590,11 +590,11 @@ static GtkToggleActionEntry toggle_entries [] = {
 static const gchar *description = {
 	"<ui>"
 	"<popup action='ContextMenu'>"
-		"<menuitem action='Open'/>"
-		"<menuitem action='Delete'/>"
-		"<menuitem action='Rename'/>"
+		"<menuitem action='OpenFile'/>"
+		"<menuitem action='DeleteData'/>"
+		"<menuitem action='RenameData'/>"
 		"<separator/>"
-		"<menuitem action='Paste'/>"
+		"<menuitem action='PasteData'/>"
 	"</popup>"
 	"<toolbar name='Toolbar'>"
 		"<placeholder name='DiscButtonPlaceholder'>"
@@ -602,6 +602,7 @@ static const gchar *description = {
 			"<toolitem action='NewFolder'/>"
 			"<toolitem action='ImportSession'/>"
 			"<toolitem action='FileFilter'/>"
+			"<separator/>"
 		"</placeholder>"
 	"</toolbar>"
 	"</ui>"
@@ -1032,6 +1033,10 @@ brasero_data_disc_notify_user (BraseroDataDisc *disc,
 			       GtkWidget *focus)
 {
 	BraseroNotification *notification;
+
+	/* if the widget doesn't even exist, no need to display a notification */
+	if (!focus)
+		return;
 
 	/* we delay notifications since they are sometimes generated just before
 	 * a widget is shown and therefore appear in the right corner and not 
@@ -3041,7 +3046,7 @@ brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
 			GtkWidget *widget;
 
 			widget = gtk_ui_manager_get_widget (disc->priv->manager,
-							    "/Toolbar/FileFilter");
+							    "/Toolbar/DiscButtonPlaceholder/FileFilter");
 			brasero_data_disc_notify_user (disc,
 						       _("Some files were filtered:"),
 						       _("click here to see the list."),
@@ -8216,7 +8221,7 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 
 		gtk_action_set_sensitive (action, TRUE);
 		widget = gtk_ui_manager_get_widget (disc->priv->manager,
-						    "/Toolbar/ImportSession");
+						    "/Toolbar/DiscButtonPlaceholder/ImportSession");
 		brasero_data_disc_notify_user (disc,
 					       _("A multisession disc is inserted:"),
 					       _("Click here to import its contents"),
@@ -10991,6 +10996,66 @@ brasero_data_disc_tree_select_function (GtkTreeSelection *selection,
 	return TRUE;
 }
 
+void
+brasero_data_disc_show_menu (int nb_selected,
+			     GtkUIManager *manager,
+			     GdkEventButton *event)
+{
+	GtkWidget *item;
+
+	if (nb_selected == 1) {
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/OpenFile");
+		if (item)
+			gtk_widget_set_sensitive (item, TRUE);
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/RenameData");
+		if (item)
+			gtk_widget_set_sensitive (item, TRUE);
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/DeleteData");
+		if (item)
+			gtk_widget_set_sensitive (item, TRUE);
+	}
+	else if (!nb_selected) {
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/OpenFile");
+		if (item)
+			gtk_widget_set_sensitive (item, FALSE);
+
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/RenameData");
+		if (item)
+			gtk_widget_set_sensitive (item, FALSE);
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/DeleteData");
+		if (item)
+			gtk_widget_set_sensitive (item, FALSE);
+	}
+	else {
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/OpenFile");
+		if (item)
+			gtk_widget_set_sensitive (item, TRUE);
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/RenameData");
+		if (item)
+			gtk_widget_set_sensitive (item, FALSE);
+		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/DeleteData");
+		if (item)
+			gtk_widget_set_sensitive (item, TRUE);
+	}
+
+	item = gtk_ui_manager_get_widget (manager, "/ContextMenu/PasteData");
+	if (item) {
+		if (gtk_clipboard_wait_is_text_available (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD)))
+			gtk_widget_set_sensitive (item, TRUE);
+		else
+			gtk_widget_set_sensitive (item, FALSE);
+	}
+
+	item = gtk_ui_manager_get_widget (manager,"/ContextMenu");
+	gtk_menu_popup (GTK_MENU (item),
+		        NULL,
+			NULL,
+			NULL,
+			NULL,
+			event->button,
+			event->time);
+}
+
 static gboolean
 brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				     GdkEventButton *event,
@@ -11087,9 +11152,9 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 		GtkTreeSelection *selection;
 
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree));
-		brasero_utils_show_menu (gtk_tree_selection_count_selected_rows (selection),
-					 disc->priv->manager,
-					 event);
+		brasero_data_disc_show_menu (gtk_tree_selection_count_selected_rows (selection),
+					     disc->priv->manager,
+					     event);
 	}
 
 	gtk_tree_path_free (treepath);

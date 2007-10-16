@@ -313,9 +313,9 @@ static GtkActionEntry entries[] = {
 	 G_CALLBACK (brasero_audio_disc_open_activated_cb)},
 	{"EditSong", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the track information (start, end, author, ...)"),
 	 G_CALLBACK (brasero_audio_disc_edit_information_cb)},
-	{"Delete", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
+	{"DeleteAudio", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected files from the project"),
 	 G_CALLBACK (brasero_audio_disc_delete_activated_cb)},
-	{"Paste", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
+	{"PasteAudio", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_audio_disc_paste_activated_cb)},
 	{"Pause", "insert-pause", N_("I_nsert a Pause"), NULL, N_("Add a 2 second pause after the track"),
 	 G_CALLBACK (brasero_audio_disc_add_pause_cb)},
@@ -327,9 +327,9 @@ static const gchar *description = {
 	"<ui>"
 	"<popup action='ContextMenu'>"
 		"<menuitem action='OpenSong'/>"
-		"<menuitem action='Delete'/>"
+		"<menuitem action='DeleteAudio'/>"
 		"<separator/>"
-		"<menuitem action='Paste'/>"
+		"<menuitem action='PasteAudio'/>"
 		"<separator/>"
 		"<menuitem action='Pause'/>"
 		"<menuitem action='Split'/>"
@@ -2646,6 +2646,7 @@ static void
 brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 				      BraseroAudioDisc *disc)
 {
+	GtkAction *action_delete;
 	GtkAction *action_pause;
 	GtkAction *action_split;
 	GtkAction *action_edit;
@@ -2659,6 +2660,7 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	if (!disc->priv->disc_group)
 		return;
 
+	action_delete = gtk_action_group_get_action (disc->priv->disc_group, "DeleteAudio");
 	action_open = gtk_action_group_get_action (disc->priv->disc_group, "OpenSong");
 	action_edit = gtk_action_group_get_action (disc->priv->disc_group, "EditSong");
 	action_split = gtk_action_group_get_action (disc->priv->disc_group, "Split");
@@ -2671,6 +2673,11 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	gtk_action_set_sensitive (action_pause, FALSE);
 	gtk_action_set_sensitive (action_edit, FALSE);
 	gtk_action_set_sensitive (action_open, FALSE);
+
+	if (selected)
+		gtk_action_set_sensitive (action_delete, TRUE);
+	else
+		gtk_action_set_sensitive (action_delete, FALSE);
 
 	for (iter = selected; iter; iter = iter->next) {
 		GtkTreeIter row;
@@ -2999,11 +3006,26 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 
 	if (event->button == 3) {
 		GtkTreeSelection *selection;
+		GtkWidget *widget;
 
 		selection = gtk_tree_view_get_selection (tree);
-		brasero_utils_show_menu (gtk_tree_selection_count_selected_rows (selection),
-					 disc->priv->manager,
-					 event);
+
+		widget = gtk_ui_manager_get_widget (disc->priv->manager, "/ContextMenu/PasteAudio");
+		if (widget) {
+			if (gtk_clipboard_wait_is_text_available (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD)))
+				gtk_widget_set_sensitive (widget, TRUE);
+			else
+				gtk_widget_set_sensitive (widget, FALSE);
+		}
+
+		widget = gtk_ui_manager_get_widget (disc->priv->manager,"/ContextMenu");
+		gtk_menu_popup (GTK_MENU (widget),
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				event->button,
+				event->time);
 		return TRUE;
 	}
 	else if (event->button == 1) {

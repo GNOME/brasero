@@ -446,7 +446,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 				      button,
 				      GTK_RESPONSE_CANCEL);
 
-	priv->button = brasero_utils_make_button (_("Burn"),
+	priv->button = brasero_utils_make_button (_("_Burn"),
 						  NULL,
 						  "media-optical-burn",
 						  GTK_ICON_SIZE_LARGE_TOOLBAR);

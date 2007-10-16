@@ -353,10 +353,10 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 					"text", PROP_TEXT,
 					NULL);
 
-	priv->dummy = gtk_check_button_new_with_label (_("Simulate the burning"));
-	priv->burnproof = gtk_check_button_new_with_label (_("Use burnproof (decrease the risk of failures)"));
-	priv->eject = gtk_check_button_new_with_label (_("Eject after burning"));
-	priv->notmp = gtk_check_button_new_with_label (_("Burn the image directly without saving it to disc"));
+	priv->dummy = gtk_check_button_new_with_mnemonic (_("_Simulate the burning"));
+	priv->burnproof = gtk_check_button_new_with_mnemonic (_("Use burn_proof (decrease the risk of failures)"));
+	priv->eject = gtk_check_button_new_with_mnemonic (_("_Eject after burning"));
+	priv->notmp = gtk_check_button_new_with_mnemonic (_("Burn the image directly _without saving it to disc"));
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
 			    brasero_utils_pack_properties (_("<b>Options</b>"),
@@ -374,7 +374,8 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
-	label = gtk_label_new (_("Temporary directory free space:"));
+	label = gtk_label_new_with_mnemonic (_("_Temporary directory free space:"));
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->tmpdir);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 

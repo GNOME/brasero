@@ -579,7 +579,7 @@ brasero_disc_option_dialog_video_widget (BraseroDiscOptionDialog *dialog)
 	if (!(type.type & BRASERO_IMAGE_FS_VIDEO))
 		return FALSE;
 
-	priv->video_toggle = gtk_check_button_new_with_label (_("Create a video DVD"));
+	priv->video_toggle = gtk_check_button_new_with_mnemonic (_("Create a vid_eo DVD"));
 	g_signal_connect (priv->video_toggle,
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_video_toggled),
@@ -601,7 +601,7 @@ brasero_disc_option_dialog_joliet_widget (BraseroDiscOptionDialog *dialog)
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-	priv->joliet_toggle = gtk_check_button_new_with_label (_("Increase compatibility with Windows systems"));
+	priv->joliet_toggle = gtk_check_button_new_with_mnemonic (_("Increase compatibility with _Windows systems"));
 	gtk_widget_set_tooltip_text (priv->joliet_toggle,
 			      _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"));
 
@@ -629,7 +629,7 @@ brasero_disc_option_dialog_multi_widget (BraseroDiscOptionDialog *dialog)
 	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-	priv->multi_toggle = gtk_check_button_new_with_label (_("Leave the disc open to add other files later"));
+	priv->multi_toggle = gtk_check_button_new_with_mnemonic (_("Leave the disc _open to add other files later"));
 	g_signal_connect (priv->multi_toggle,
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
@@ -697,7 +697,7 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 			  6);
 
 	/* multisession options */
-	priv->multi_toggle = gtk_check_button_new_with_label (_("Leave the disc open to add a data session later"));
+	priv->multi_toggle = gtk_check_button_new_with_mnemonic (_("Leave the disc _open to add a data session later"));
 	g_signal_connect (priv->multi_toggle,
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
@@ -804,7 +804,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 				      button,
 				      GTK_RESPONSE_CANCEL);
 
-	priv->button = brasero_utils_make_button (_("Burn"),
+	priv->button = brasero_utils_make_button (_("_Burn"),
 						  NULL,
 						  "media-optical-burn",
 						  GTK_ICON_SIZE_LARGE_TOOLBAR);

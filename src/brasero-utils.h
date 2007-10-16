@@ -105,10 +105,6 @@ void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list);
 
-void
-brasero_utils_show_menu (int nb_selected,
-			 GtkUIManager *manager,
-			 GdkEventButton *event);
 GtkWidget *
 brasero_utils_get_use_info_notebook (void);
 

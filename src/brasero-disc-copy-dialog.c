@@ -108,7 +108,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 				      button, 
 				      GTK_RESPONSE_CANCEL);
 
-	priv->button = brasero_utils_make_button (_("Copy"),
+	priv->button = brasero_utils_make_button (_("_Copy"),
 						  NULL,
 						  "media-optical-burn",
 						    GTK_ICON_SIZE_LARGE_TOOLBAR);

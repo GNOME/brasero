@@ -210,8 +210,9 @@ static const gchar *description = {
 			"<placeholder name='DiscPlaceholder'/>"
 			"<menuitem action='Burn'/>"
 		"</menu>"
-	     "</menubar>"
+	    "</menubar>"
 	    "<toolbar name='Toolbar'>"
+		"<toolitem action='Save'/>"
 		"<placeholder name='DiscButtonPlaceholder'/>"
 		"<separator/>"
 		"<toolitem action='Add'/>"
@@ -980,7 +981,7 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 		}
 	}
 
-	check = gtk_check_button_new_with_label (_("don't show this dialog again"));
+	check = gtk_check_button_new_with_mnemonic (_("don't _show this dialog again"));
 	gtk_container_add (GTK_CONTAINER (alignment), check);
 	gtk_widget_show (check);
 
@@ -1503,11 +1504,14 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 						description,
 						-1,
 						&error)) {
-		BRASERO_BURN_LOG ("building menus/toolbar failed: %s", error->message);
+		g_message ("building menus/toolbar failed: %s", error->message);
 		g_error_free (error);
 	}
 	
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
+	g_object_set (action,
+		      "short-label", _("Save"), /* for toolbar buttons */
+		      NULL);
 	gtk_action_set_sensitive (action, FALSE);
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
 	gtk_action_set_sensitive (action, FALSE);

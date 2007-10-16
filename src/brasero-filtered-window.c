@@ -269,7 +269,7 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 					BRASERO_FILTER_HIDDEN_KEY,
 					NULL);
 
-	button_hidden = gtk_check_button_new_with_label (_("Filter hidden files"));
+	button_hidden = gtk_check_button_new_with_mnemonic (_("Filter _hidden files"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_hidden), active);
 	g_signal_connect (button_hidden,
 			  "toggled",
@@ -289,7 +289,7 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 					BRASERO_FILTER_BROKEN_SYM_KEY,
 					NULL);
 	
-	button_sym = gtk_check_button_new_with_label (_("Filter broken symlinks"));
+	button_sym = gtk_check_button_new_with_mnemonic (_("Filter _broken symlinks"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_sym), active);
 	g_signal_connect (button_sym,
 			  "toggled",
@@ -309,7 +309,7 @@ brasero_filtered_dialog_init (BraseroFilteredDialog *obj)
 					BRASERO_FILTER_NOTIFY_KEY,
 					NULL);
 	
-	button_notify = gtk_check_button_new_with_label (_("Notify when files are filtered"));
+	button_notify = gtk_check_button_new_with_mnemonic (_("_Notify when files are filtered"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_notify), active);
 	g_signal_connect (button_notify,
 			  "toggled",

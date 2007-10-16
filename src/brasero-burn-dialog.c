@@ -1091,7 +1091,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			    FALSE,
 			    0);
 
-	obj->priv->close_check = gtk_check_button_new_with_label (_("Close the application if the burn process is successful"));
+	obj->priv->close_check = gtk_check_button_new_with_mnemonic (_("_Close the application if the burn process is successful"));
 	gtk_box_pack_end (GTK_BOX (obj->priv->progress),
 			  obj->priv->close_check,
 			  FALSE,

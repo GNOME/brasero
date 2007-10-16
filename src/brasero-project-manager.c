@@ -146,6 +146,10 @@ static const char *description = {
 			"</placeholder>"
 		"</menu>"
 	    "</menubar>"
+	    "<toolbar name='Toolbar'>"
+		"<toolitem action='NewChoose'/>"
+		"<toolitem action='Open'/>"
+	    "</toolbar>"
 	"</ui>"
 };
 
@@ -211,6 +215,7 @@ static void
 brasero_project_manager_init (BraseroProjectManager *obj)
 {
 	GtkWidget *type;
+	GtkAction *action;
 	GtkWidget *chooser;
 
 	obj->priv = g_new0 (BraseroProjectManagerPrivate, 1);
@@ -224,6 +229,15 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				      entries,
 				      G_N_ELEMENTS (entries),
 				      obj);
+
+	action = gtk_action_group_get_action (obj->priv->action_group, "NewChoose");
+	g_object_set (action,
+		      "short-label", _("New"), /* for toolbar buttons */
+		      NULL);
+	action = gtk_action_group_get_action (obj->priv->action_group, "Open");
+	g_object_set (action,
+		      "short-label", _("Open"), /* for toolbar buttons */
+		      NULL);
 
 	/* add the project type chooser to the notebook */
 	type = brasero_project_type_chooser_new ();
@@ -491,7 +505,7 @@ brasero_project_manager_register_ui (BraseroProjectManager *manager,
 
 	gtk_ui_manager_insert_action_group (ui_manager, manager->priv->action_group, 0);
 	if (!gtk_ui_manager_add_ui_from_string (ui_manager, description, -1, &error)) {
-		g_message ("building menus failed: %s", error->message);
+		g_message ("building UI failed: %s", error->message);
 		g_error_free (error);
 	}
 
