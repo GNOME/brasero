@@ -412,7 +412,7 @@ brasero_data_disc_row_expanded_cb (GtkTreeView *tree,
 				     BraseroDataDisc *disc);
 
 static void
-brasero_data_disc_import_session_cb (GtkButton *button,
+brasero_data_disc_import_session_cb (GtkToggleAction *action,
 				     BraseroDataDisc *disc);
 static void
 brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
@@ -8082,7 +8082,8 @@ brasero_data_disc_import_session_error (BraseroDataDisc *disc,
 }
 
 static void
-brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
+brasero_data_disc_import_session_cb (GtkToggleAction *action,
+				     BraseroDataDisc *disc)
 {
 	const gchar *device = NULL;
 	BraseroVolFile *volume;
@@ -8093,7 +8094,7 @@ brasero_data_disc_import_session_cb (GtkButton *button, BraseroDataDisc *disc)
 	gint64 block;
 	GList *iter;
 
-	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
+	if (!gtk_toggle_action_get_active (action)) {
 		/* the user asked to remove the imported session if any */
 		brasero_data_disc_remove_imported_session (disc);
 		return;
