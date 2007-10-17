@@ -589,9 +589,11 @@ brasero_layout_save (BraseroLayout *layout,
 	GError *error = NULL;
 
 	/* update gconf value */
-	if (layout->priv->radio_notify)
+	if (layout->priv->radio_notify) {
 		gconf_client_notify_remove (layout->priv->client,
 					    layout->priv->radio_notify);
+		layout->priv->radio_notify = 0;
+	}
 
 	if (layout->priv->ctx_type == BRASERO_LAYOUT_AUDIO) {
 		gconf_client_set_string (layout->priv->client,
@@ -763,9 +765,11 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	GtkTreeIter iter;
 
 	/* remove GCONF notification if any */
-	if (layout->priv->radio_notify)
+	if (layout->priv->radio_notify) {
 		gconf_client_notify_remove (layout->priv->client,
 					    layout->priv->radio_notify);
+		layout->priv->radio_notify = 0;
+	}
 
 	if (layout->priv->preview_pane)
 		brasero_preview_hide (BRASERO_PREVIEW (layout->priv->preview_pane));
