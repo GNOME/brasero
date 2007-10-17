@@ -129,5 +129,14 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 				      BraseroBurnFlag *supported,
 				      BraseroBurnFlag *compulsory);
 
+BraseroBurnResult
+brasero_burn_caps_plugin_can_burn (BraseroBurnCaps *caps,
+				   BraseroPlugin *plugin);
+BraseroBurnResult
+brasero_burn_caps_plugin_can_image (BraseroBurnCaps *caps,
+				    BraseroPlugin *plugin);
+BraseroBurnResult
+brasero_burn_caps_plugin_can_convert (BraseroBurnCaps *caps,
+				      BraseroPlugin *plugin);
 
 #endif /* BURN_CAPS_H */

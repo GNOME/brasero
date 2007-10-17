@@ -1,5 +1,22 @@
 2007-10-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	a fix for #480712 – Brasero Plugins UI
+	plugins are now categorized in the dialog
+	they are also sorted by priority
+
+	* src/brasero-plugin-manager-ui.c:
+	(plugin_manager_ui_view_info_cell_cb),
+	(plugin_manager_ui_view_icon_cell_cb),
+	(plugin_manager_ui_get_category),
+	(plugin_manager_ui_populate_lists), (plugin_manager_ui_set_active),
+	(model_priority_sort_func), (plugin_manager_ui_construct_tree):
+	* src/burn-caps.c: (brasero_burn_caps_plugin_can_burn),
+	(brasero_burn_caps_plugin_can_image),
+	(brasero_burn_caps_plugin_can_convert):
+	* src/burn-caps.h:
+
+2007-10-17  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix another bug introduced by previous patches preventing proper session import
 
 	* src/brasero-data-disc.c: (brasero_data_disc_import_session_cb):

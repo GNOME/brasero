@@ -2835,3 +2835,123 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 		brasero_caps_add_test (caps, type, plugin);
 	}
 }
+
+/** 
+ * This is to find out what are the capacities of a plugin 
+ */
+
+BraseroBurnResult
+brasero_burn_caps_plugin_can_burn (BraseroBurnCaps *self,
+				   BraseroPlugin *plugin)
+{
+	GSList *iter;
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *caps;
+		GSList *links;
+
+		caps = iter->data;
+		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+			continue;
+
+		for (links = caps->links; links; links = links->next) {
+			BraseroCapsLink *link;
+			GSList *plugins;
+
+			link = links->data;
+			if (!link->caps)
+				continue;
+
+			/* see if the plugin is in the link */
+			for (plugins = link->plugins; plugins; plugins = plugins->next) {
+				BraseroPlugin *tmp;
+
+				tmp = plugins->data;
+				if (tmp == plugin)
+					return BRASERO_BURN_OK;
+			}
+		}
+	}
+
+	return BRASERO_BURN_NOT_SUPPORTED;
+}
+
+BraseroBurnResult
+brasero_burn_caps_plugin_can_image (BraseroBurnCaps *self,
+				    BraseroPlugin *plugin)
+{
+	GSList *iter;
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroTrackDataType destination;
+		BraseroCaps *caps;
+		GSList *links;
+
+		caps = iter->data;
+		if (caps->type.type != BRASERO_TRACK_TYPE_IMAGE
+		&&  caps->type.type != BRASERO_TRACK_TYPE_AUDIO)
+			continue;
+
+		destination = caps->type.type;
+		for (links = caps->links; links; links = links->next) {
+			BraseroCapsLink *link;
+			GSList *plugins;
+
+			link = links->data;
+			if (!link->caps
+			||   link->caps->type.type == destination)
+				continue;
+
+			/* see if the plugin is in the link */
+			for (plugins = link->plugins; plugins; plugins = plugins->next) {
+				BraseroPlugin *tmp;
+
+				tmp = plugins->data;
+				if (tmp == plugin)
+					return BRASERO_BURN_OK;
+			}
+		}
+	}
+
+	return BRASERO_BURN_NOT_SUPPORTED;
+}
+
+BraseroBurnResult
+brasero_burn_caps_plugin_can_convert (BraseroBurnCaps *self,
+				      BraseroPlugin *plugin)
+{
+	GSList *iter;
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroTrackDataType destination;
+		BraseroCaps *caps;
+		GSList *links;
+
+		caps = iter->data;
+		if (caps->type.type != BRASERO_TRACK_TYPE_IMAGE
+		&&  caps->type.type != BRASERO_TRACK_TYPE_AUDIO)
+			continue;
+
+		destination = caps->type.type;
+		for (links = caps->links; links; links = links->next) {
+			BraseroCapsLink *link;
+			GSList *plugins;
+
+			link = links->data;
+			if (!link->caps
+			||   link->caps->type.type != destination)
+				continue;
+
+			/* see if the plugin is in the link */
+			for (plugins = link->plugins; plugins; plugins = plugins->next) {
+				BraseroPlugin *tmp;
+
+				tmp = plugins->data;
+				if (tmp == plugin)
+					return BRASERO_BURN_OK;
+			}
+		}
+	}
+
+	return BRASERO_BURN_NOT_SUPPORTED;
+}
