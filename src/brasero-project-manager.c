@@ -786,6 +786,7 @@ void
 brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 {
 	BraseroProjectType type;
+	GtkAction *action;
 
     	gtk_widget_show (manager->priv->layout);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
@@ -793,12 +794,18 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 
 	manager->priv->type = type;
 
-    	if (type == BRASERO_PROJECT_TYPE_INVALID)
+    	if (type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
-	else if (type == BRASERO_PROJECT_TYPE_DATA)
+		return;
+	}
+
+	if (type == BRASERO_PROJECT_TYPE_DATA)
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
 	else
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
+
+	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
+	gtk_action_set_sensitive (action, TRUE);
 }
 
 void
