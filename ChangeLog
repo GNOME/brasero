@@ -1,3 +1,13 @@
+2007-10-18  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Make recent file menu work again with gtk+2.12
+	Known bug (no filtering) fixed by gtk+ 2.12.1
+
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_register_ui):
+	* src/main.c: (brasero_app_recent_open), (brasero_app_add_recent),
+	(brasero_app_create_app), (main):
+
 2007-10-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	a fix for #480712 – Brasero Plugins UI

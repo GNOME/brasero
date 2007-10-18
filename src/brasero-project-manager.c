@@ -141,7 +141,7 @@ static const char *description = {
 			"<placeholder name='ProjectPlaceholder'>"
 			    "<separator/>"
 			    "<menuitem action='Open'/>"
-			    "<menuitem action='Recent'/>"
+			    "<menuitem action='RecentProjects'/>"
 			    "<separator/>"
 			"</placeholder>"
 		"</menu>"
@@ -493,15 +493,7 @@ void
 brasero_project_manager_register_ui (BraseroProjectManager *manager,
 				     GtkUIManager *ui_manager)
 {
-	GtkAction *action;
 	GError *error = NULL;
-
-	action = gtk_action_new ("Recent",
-				 _("_Recent Projects"),
-				 _("Display the projects recently opened"),
-				 NULL);
-	gtk_action_group_add_action (manager->priv->action_group, action);
-	g_object_unref (action);
 
 	gtk_ui_manager_insert_action_group (ui_manager, manager->priv->action_group, 0);
 	if (!gtk_ui_manager_add_ui_from_string (ui_manager, description, -1, &error)) {

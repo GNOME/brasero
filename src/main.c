@@ -312,11 +312,35 @@ static void
 brasero_app_recent_open (GtkRecentChooser *chooser,
 			 BraseroApp *app)
 {
+	gchar *uri;
     	const gchar *mime;
     	GtkRecentInfo *item;
+	GtkRecentManager *manager;
 
-    	item = gtk_recent_chooser_get_current_item (chooser);
-    	mime = gtk_recent_info_get_mime_type (item);
+	/* This is a workaround since following code doesn't work */
+	/*
+    	item = gtk_recent_chooser_get_current_item (GTK_RECENT_CHOOSER (chooser));
+	if (!item)
+		return;
+	*/
+
+	uri = gtk_recent_chooser_get_current_uri (GTK_RECENT_CHOOSER (chooser));
+	if (!uri)
+		return;
+
+	manager = gtk_recent_manager_get_default ();
+	item = gtk_recent_manager_lookup_item (manager, uri, NULL);
+	g_free (uri);
+
+	if (!item)
+		return;
+
+	mime = gtk_recent_info_get_mime_type (item);
+
+	if (!mime) {
+		g_warning ("Unrecognized mime type");
+		return;
+	}
 
 	if (!strcmp (mime, "application/x-brasero")) {
 		BRASERO_PROJECT_OPEN_URI (app,
@@ -331,38 +355,53 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 					  brasero_project_manager_iso,
 					  gtk_recent_info_get_uri (item));
 	}
+	else
+		g_warning ("Unknown type of file can't open");
+
+	gtk_recent_info_unref (item);
 }
 
 static void
-brasero_app_add_recent (BraseroApp *app)
+brasero_app_add_recent (BraseroApp *app,
+			GtkActionGroup *group)
 {
 	GtkRecentManager *recent;
 	GtkRecentFilter *filter;
-	GtkWidget *submenu;
-	GtkWidget *menu;
+	GtkAction *action;
 
-	/* add recent files */
 	recent = gtk_recent_manager_get_default ();
- 	gtk_recent_manager_set_limit (recent, 20);
-
-	submenu = gtk_recent_chooser_menu_new_for_manager (recent);
-	g_signal_connect (submenu,
-                  	  "item_activated",
-			  G_CALLBACK (brasero_app_recent_open),
-			  app);
-
+	action = gtk_recent_action_new_for_manager ("RecentProjects",
+						    _("_Recent Projects"),
+						    _("Display the projects recently opened"),
+						    NULL,
+						    recent);
 	filter = gtk_recent_filter_new ();
+
 	gtk_recent_filter_set_name (filter, _("Brasero projects"));
 	gtk_recent_filter_add_mime_type (filter, "application/x-brasero");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cd-image");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");
 	gtk_recent_filter_add_mime_type (filter, "application/x-toc");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cue");
-	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (submenu), filter);
-	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (submenu), TRUE);
+	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (action), filter);
+	gtk_recent_chooser_set_filter (GTK_RECENT_CHOOSER (action), filter);
 
-	menu = gtk_ui_manager_get_widget (app->manager, "/menubar/ProjectMenu/ProjectPlaceholder/Recent");
- 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu), submenu);    
+	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (action), TRUE);
+
+	gtk_recent_chooser_set_limit (GTK_RECENT_CHOOSER (action), 20);
+
+	gtk_recent_chooser_set_show_tips (GTK_RECENT_CHOOSER (action), TRUE);
+
+	gtk_recent_chooser_set_show_icons (GTK_RECENT_CHOOSER (action), TRUE);
+
+	gtk_recent_chooser_set_sort_type (GTK_RECENT_CHOOSER (action), GTK_RECENT_SORT_MRU);
+
+	gtk_action_group_add_action (group, action);
+	g_object_unref (action);
+	g_signal_connect (action,
+			  "item-activated",
+			  G_CALLBACK (brasero_app_recent_open),
+			  app);
 }
 
 static void
@@ -482,6 +521,8 @@ brasero_app_create_app (void)
 
 	gtk_ui_manager_insert_action_group (app->manager, action_group, 0);
 
+	brasero_app_add_recent (app, action_group);
+
 	if (!gtk_ui_manager_add_ui_from_string (app->manager, description, -1, &error)) {
 		g_message ("building menus failed: %s", error->message);
 		g_error_free (error);
@@ -494,8 +535,6 @@ brasero_app_create_app (void)
 	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");
 	gnome_app_set_menus (GNOME_APP (app->mainwin), GTK_MENU_BAR (menubar));
 
-	brasero_app_add_recent (app);
- 
 	/* add accelerators */
 	accel_group = gtk_ui_manager_get_accel_group (app->manager);
 	gtk_window_add_accel_group (GTK_WINDOW (app->mainwin), accel_group);
@@ -670,7 +709,7 @@ main (int argc, char **argv)
 #endif
 
 	gnome_vfs_init ();
-	gst_init (&argc, &argv);
+	//gst_init (&argc, &argv);
 
 	brasero_burn_set_debug (debug);
 	brasero_burn_library_init ();
