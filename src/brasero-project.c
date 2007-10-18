@@ -1174,6 +1174,11 @@ brasero_project_set_none (BraseroProject *project)
 {
 	GtkAction *action;
 
+	if (project->priv->project) {
+		g_free (project->priv->project);
+		project->priv->project = NULL;
+	}
+
 	if (project->priv->chooser) {
 		gtk_widget_destroy (project->priv->chooser);
 		project->priv->chooser = NULL;
