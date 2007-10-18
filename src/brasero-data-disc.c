@@ -1443,11 +1443,11 @@ brasero_data_disc_decrease_activity_counter (BraseroDataDisc *disc)
 static BraseroDiscResult
 brasero_data_disc_get_status (BraseroDisc *disc)
 {
-	if (BRASERO_DATA_DISC (disc)->priv->activity_counter)
-		return BRASERO_DISC_NOT_READY;
-
 	if (BRASERO_DATA_DISC (disc)->priv->loading)
 		return BRASERO_DISC_LOADING;
+
+	if (BRASERO_DATA_DISC (disc)->priv->activity_counter)
+		return BRASERO_DISC_NOT_READY;
 
 	if (!g_hash_table_size (BRASERO_DATA_DISC (disc)->priv->paths))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;

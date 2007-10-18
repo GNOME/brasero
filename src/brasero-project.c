@@ -1237,8 +1237,12 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 
 	/* the state of the following depends on the existence of an opened project */
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
-	if (project->priv->project)
-		gtk_action_set_sensitive (action, TRUE);
+	if (project->priv->project) {
+		if (project->priv->modified)
+			gtk_action_set_sensitive (action, TRUE);
+		else
+			gtk_action_set_sensitive (action, FALSE);
+	}
 	else
 		gtk_action_set_sensitive (action, FALSE);
 }

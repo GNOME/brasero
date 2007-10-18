@@ -285,6 +285,9 @@ struct _BraseroAudioDiscPrivate {
 
 	gint activity_counter;
 
+	/* only used at start time when loading a project */
+	guint loading;
+
 	guint editing:1;
 	guint dragging:1;
 	guint reject_files:1;
@@ -856,6 +859,9 @@ brasero_audio_disc_get_status (BraseroDisc *disc)
 {
 	GtkTreeModel *model;
 
+	if (BRASERO_AUDIO_DISC (disc)->priv->loading)
+		return BRASERO_DISC_LOADING;
+
 	if (BRASERO_AUDIO_DISC (disc)->priv->activity_counter)
 		return BRASERO_DISC_NOT_READY;
 
@@ -1298,6 +1304,9 @@ brasero_audio_disc_vfs_operation_finished (GObject *object,
 	BraseroAudioDisc *disc = BRASERO_AUDIO_DISC (object);
 
 	brasero_audio_disc_decrease_activity_counter (disc);
+
+	if (disc->priv->loading)
+		disc->priv->loading --;
 }
 
 /*********************** directories exploration *******************************/
@@ -1909,6 +1918,7 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 	if (track->contents.tracks == NULL)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
+	BRASERO_AUDIO_DISC (disc)->priv->loading = g_slist_length (track->contents.tracks);
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
 
