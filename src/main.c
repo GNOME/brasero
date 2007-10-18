@@ -709,7 +709,7 @@ main (int argc, char **argv)
 #endif
 
 	gnome_vfs_init ();
-	//gst_init (&argc, &argv);
+	gst_init (&argc, &argv);
 
 	brasero_burn_set_debug (debug);
 	brasero_burn_library_init ();
