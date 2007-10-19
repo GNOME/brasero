@@ -1,3 +1,29 @@
+2007-10-19  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Adds the possibility to override through gconf plugins priority
+	Made a change to burn-caps: plugin list are no longer sorted for links, modifiers...
+
+	* src/burn-caps.c: (brasero_burn_caps_media_capabilities),
+	(brasero_burn_caps_get_blanking_flags),
+	(brasero_burn_caps_new_blanking_task),
+	(brasero_burn_caps_can_blank),
+	(brasero_burn_caps_new_checksuming_task),
+	(brasero_caps_link_get_record_flags),
+	(brasero_caps_link_get_data_flags), (brasero_caps_link_active),
+	(brasero_caps_link_find_plugin),
+	(brasero_caps_add_processing_plugins_to_task),
+	(brasero_caps_add_test), (brasero_caps_replicate_modifiers_tests),
+	(brasero_caps_create_links), (brasero_plugin_blank_caps),
+	(brasero_plugin_process_caps), (brasero_burn_caps_plugin_can_burn),
+	(brasero_burn_caps_plugin_can_image),
+	(brasero_burn_caps_plugin_can_convert):
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c: (brasero_plugin_get_gconf_priority_key),
+	(brasero_plugin_define), (brasero_plugin_priority_changed),
+	(brasero_plugin_init_real), (brasero_plugin_finalize),
+	(brasero_plugin_set_property), (brasero_plugin_get_property),
+	(brasero_plugin_class_init):
+
 2007-10-18  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Don't ask to save project if it wasn't modified

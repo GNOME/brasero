@@ -381,7 +381,10 @@ brasero_burn_caps_media_capabilities (BraseroBurnCaps *self,
 
 		link = links->data;
 
-		/* this link must have at least one active plugin to be valid */
+		/* this link must have at least one active plugin to be valid
+		 * plugins are not sorted but in this case we don't need them
+		 * to be. we just need one active if another is with a better
+		 * priority all the better. */
 		active = FALSE;
 		for (plugins = link->plugins; plugins; plugins = plugins->next) {
 			BraseroPlugin *plugin;
@@ -403,7 +406,8 @@ brasero_burn_caps_media_capabilities (BraseroBurnCaps *self,
 			continue;
 		}
 
-		/* means it can be written, now we still have to make sure there is an active plugin available. NOTE: if this disc has already some data on it, it even means it can be appended */
+		/* means it can be written. NOTE: if this disc has already some
+		 * data on it, it even means it can be appended */
 		retval |= BRASERO_MEDIUM_WRITABLE;
 	}
 
@@ -475,6 +479,9 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 				continue;
 
 			supported_media = TRUE;
+			/* don't need the plugins to be sorted since we go
+			 * through all the plugin list to get all blanking flags
+			 * available. */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroPlugin *plugin;
 				BraseroBurnFlag supported_plugin;
@@ -534,18 +541,23 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 		for (links = caps->links; links; links = links->next) {
 			GSList *plugins;
 			BraseroCapsLink *link;
+			BraseroPlugin *candidate;
 
 			link = links->data;
 
 			if (link->caps != NULL)
 				continue;
 
+			/* Go through all the plugins and find the best plugin
+			 * for the task. It must :
+			 * - be active
+			 * - have the highest priority
+			 * - accept the flags */
+			candidate = NULL;
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroBurnFlag compulsory;
 				BraseroBurnFlag supported;
 				BraseroPlugin *plugin;
-				BraseroJob *job;
-				GType type;
 
 				plugin = plugins->data;
 
@@ -562,7 +574,18 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 				||  (flags & compulsory) != compulsory)
 					continue;
 
-				type = brasero_plugin_get_gtype (plugin);
+				if (!candidate)
+					candidate = plugin;
+				else if (brasero_plugin_get_priority (plugin) >
+					 brasero_plugin_get_priority (candidate))
+					candidate = plugin;
+			}
+
+			if (candidate) {
+				BraseroJob *job;
+				GType type;
+
+				type = brasero_plugin_get_gtype (candidate);
 				job = BRASERO_JOB (g_object_new (type,
 								 "output", NULL,
 								 NULL));
@@ -630,6 +653,10 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 				continue;
 
 			BRASERO_BURN_LOG ("Searching plugins");
+
+			/* Go through all plugins for the link and stop if we 
+			 * find at least one active plugin that accepts the
+			 * flags. No need for plugins to be sorted */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroBurnFlag compulsory;
 				BraseroBurnFlag supported;
@@ -662,7 +689,6 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 					BraseroBurnSession *session,
 					GError **error)
 {
-	BraseroPlugin *plugin = NULL;
 	BraseroTrackType input;
 	guint checksum_type;
 	BraseroTrack *track;
@@ -699,41 +725,53 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 	checksum_type = brasero_track_get_checksum_type (track);
 
 	for (iter = caps->tests; iter; iter = iter->next) {
+		BraseroPlugin *candidate = NULL;
 		BraseroCapsTest *test;
 		GSList *plugins;
 
 		test = iter->data;
+
+		/* check this caps test supports the right checksum type */
 		if (!(test->type & checksum_type))
 			continue;
 
+		/* Go through all plugins and choose the plugin that:
+		 * - have the highest priority
+		 * - is active */
 		for (plugins = test->plugins; plugins; plugins = plugins->next) {
+			BraseroPlugin *plugin;
+
 			plugin = plugins->data;
-		
-			if (!brasero_plugin_get_active (plugin)) {
-				plugin = NULL;
+			if (!brasero_plugin_get_active (plugin))
 				continue;
-			}
+
+			if (!candidate)
+				candidate = plugin;
+			else if (brasero_plugin_get_priority (plugin) >
+				 brasero_plugin_get_priority (candidate))
+				candidate = plugin;
+		}
+
+		if (candidate) {
+			job = BRASERO_JOB (g_object_new (brasero_plugin_get_gtype (candidate),
+							 "output", NULL,
+							 NULL));
+			g_signal_connect (job,
+					  "error",
+					  G_CALLBACK (brasero_burn_caps_job_error_cb),
+					  caps);
+
+			task = BRASERO_TASK (g_object_new (BRASERO_TYPE_TASK,
+							   "session", session,
+							   "action", BRASERO_TASK_ACTION_CHECKSUM,
+							   NULL));
+			brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
+
+			return task;
 		}
 	}
 
-	if (!plugin)
-		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
-
-	job = BRASERO_JOB (g_object_new (brasero_plugin_get_gtype (plugin),
-					 "output", NULL,
-					 NULL));
-	g_signal_connect (job,
-			  "error",
-			  G_CALLBACK (brasero_burn_caps_job_error_cb),
-			  caps);
-
-	task = BRASERO_TASK (g_object_new (BRASERO_TYPE_TASK,
-					   "session", session,
-					   "action", BRASERO_TASK_ACTION_CHECKSUM,
-					   NULL));
-	brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
-
-	return task;
+	BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 }
 
 /**
@@ -750,6 +788,8 @@ brasero_caps_link_get_record_flags (BraseroCapsLink *link,
 	BraseroBurnFlag compulsory;
 
 	compulsory = BRASERO_BURN_FLAG_ALL;
+
+	/* Go through all plugins to get the supported/... record flags for link */
 	for (iter = link->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
 		BraseroBurnFlag plugin_supported;
@@ -778,6 +818,7 @@ brasero_caps_link_get_data_flags (BraseroCapsLink *link,
 {
 	GSList *iter;
 
+	/* Go through all plugins the get the supported/... data flags for link */
 	for (iter = link->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
 		BraseroBurnFlag plugin_supported;
@@ -800,6 +841,8 @@ brasero_caps_link_active (BraseroCapsLink *link)
 {
 	GSList *iter;
 
+	/* See if link is active by going through all plugins. There must be at
+	 * least one. */
 	for (iter = link->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
 
@@ -946,6 +989,7 @@ brasero_caps_link_find_plugin (BraseroBurnSession *session,
 			       BraseroCapsLink *link)
 {
 	GSList *iter;
+	BraseroPlugin *candidate;
 	BraseroBurnFlag rec_flags;
 	BraseroBurnFlag data_flags;
 
@@ -961,6 +1005,11 @@ brasero_caps_link_find_plugin (BraseroBurnSession *session,
 		    (BRASERO_BURN_FLAG_APPEND|
 		     BRASERO_BURN_FLAG_MERGE);
 
+	/* Go through all plugins for a link and find the best one. It must:
+	 * - be active
+	 * - have the highest priority
+	 * - support the flags */
+	candidate = NULL;
 	for (iter = link->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
 		BraseroBurnFlag supported;
@@ -991,10 +1040,14 @@ brasero_caps_link_find_plugin (BraseroBurnSession *session,
 				continue;
 		}
 
-		return plugin;
+		if (!candidate)
+			candidate = plugin;
+		else if (brasero_plugin_get_priority (plugin) >
+			 brasero_plugin_get_priority (candidate))
+			candidate = plugin;
 	}
 
-	return NULL;
+	return candidate;
 }
 
 static GSList *
@@ -1016,6 +1069,10 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 				    position,
 				    g_slist_length (caps->modifiers));
 
+	/* Go through all plugins and add all possible modifiers. They must:
+	 * - be active
+	 * - accept the position flags
+	 * => no need for modifiers to be sorted in list. */
 	for (iter = caps->modifiers; iter; iter = iter->next) {
 		BraseroPluginProcessFlag flags;
 		BraseroPlugin *plugin;
@@ -1807,13 +1864,6 @@ brasero_burn_caps_sort (gconstpointer a, gconstpointer b)
 }
 
 static gint
-brasero_caps_link_sort_plugins (gconstpointer a, gconstpointer b)
-{
-	return brasero_plugin_get_priority (BRASERO_PLUGIN (a)) -
-	       brasero_plugin_get_priority (BRASERO_PLUGIN (b));
-}
-
-static gint
 brasero_caps_link_sort (gconstpointer a, gconstpointer b)
 {
 	const BraseroCapsLink *link_a = a;
@@ -1906,9 +1956,7 @@ brasero_caps_add_test (BraseroCaps *caps,
 		}
 
 		type &= ~common;
-		test->plugins = g_slist_insert_sorted (test->plugins,
-						       plugin,
-						       brasero_caps_link_sort_plugins);
+		test->plugins = g_slist_prepend (test->plugins, plugin);
 	}
 
 	if (type != BRASERO_CHECKSUM_NONE) {
@@ -1916,7 +1964,7 @@ brasero_caps_add_test (BraseroCaps *caps,
 
 		test = g_new0 (BraseroCapsTest, 1);
 		test->type = type;
-		test->plugins = g_slist_prepend (test->plugins, plugin);
+		test->plugins = g_slist_prepend (NULL, plugin);
 		caps->tests = g_slist_prepend (caps->tests, test);
 	}
 }
@@ -1934,9 +1982,7 @@ brasero_caps_replicate_modifiers_tests (BraseroCaps *dest, BraseroCaps *src)
 		if (g_slist_find (dest->modifiers, plugin))
 			continue;
 
-		dest->modifiers = g_slist_insert_sorted (dest->modifiers,
-							 plugin,
-							 brasero_caps_link_sort_plugins);
+		dest->modifiers = g_slist_prepend (dest->modifiers, plugin);
 	}
 
 	for (iter = src->tests; iter; iter = iter->next) {
@@ -2752,11 +2798,8 @@ brasero_caps_create_links (BraseroCaps *output,
 							       link,
 							       brasero_caps_link_sort);
 		}
-		else {
-			link->plugins = g_slist_insert_sorted (link->plugins,
-							       plugin,
-							       brasero_caps_link_sort_plugins);
-		}
+		else
+			link->plugins = g_slist_prepend (link->plugins, plugin);
 	}
 }
 
@@ -2803,9 +2846,7 @@ brasero_plugin_blank_caps (BraseroPlugin *plugin,
 							     brasero_caps_link_sort);
 		}
 		else
-			link->plugins = g_slist_insert_sorted (link->plugins,
-							       plugin,
-							       brasero_caps_link_sort_plugins);
+			link->plugins = g_slist_prepend (link->plugins, plugin);
 	}
 }
 
@@ -2817,9 +2858,7 @@ brasero_plugin_process_caps (BraseroPlugin *plugin,
 		BraseroCaps *caps;
 
 		caps = caps_list->data;
-		caps->modifiers = g_slist_insert_sorted (caps->modifiers,
-							 plugin,
-							 brasero_caps_link_sort_plugins);
+		caps->modifiers = g_slist_prepend (caps->modifiers, plugin);
 	}
 }
 
@@ -2862,7 +2901,7 @@ brasero_burn_caps_plugin_can_burn (BraseroBurnCaps *self,
 			if (!link->caps)
 				continue;
 
-			/* see if the plugin is in the link */
+			/* see if the plugin is in the link by going through the list */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroPlugin *tmp;
 
@@ -2902,7 +2941,7 @@ brasero_burn_caps_plugin_can_image (BraseroBurnCaps *self,
 			||   link->caps->type.type == destination)
 				continue;
 
-			/* see if the plugin is in the link */
+			/* see if the plugin is in the link by going through the list */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroPlugin *tmp;
 
@@ -2942,7 +2981,7 @@ brasero_burn_caps_plugin_can_convert (BraseroBurnCaps *self,
 			||   link->caps->type.type != destination)
 				continue;
 
-			/* see if the plugin is in the link */
+			/* see if the plugin is in the link by going through the list */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
 				BraseroPlugin *tmp;
 

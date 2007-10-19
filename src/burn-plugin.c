@@ -31,6 +31,8 @@
 #include <glib-object.h>
 #include <gmodule.h>
 
+#include <gconf/gconf-client.h>
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-plugin.h"
@@ -77,6 +79,8 @@ struct _BraseroPluginPrivate
 	gchar *copyright;
 	gchar *website;
 
+	guint notify_priority;
+	guint priority_original;
 	guint priority;
 
 	GSList *flags;
@@ -93,7 +97,8 @@ G_DEFINE_TYPE (BraseroPlugin, brasero_plugin, G_TYPE_TYPE_MODULE);
 enum
 {
 	PROP_0,
-	PROP_PATH
+	PROP_PATH,
+	PROP_PRIORITY
 };
 
 enum
@@ -306,6 +311,26 @@ brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option)
  * Used to set the caps of plugin
  */
 
+static gchar *
+brasero_plugin_get_gconf_priority_key (BraseroPlugin *self)
+{
+	BraseroPluginPrivate *priv;
+	gchar *priority_path;
+	gchar *gconf_name;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+
+	/* make sure the name used has characters usable by GConf */
+	gconf_name = g_strdup (priv->name);
+	g_strdelimit (gconf_name, " +()", '_');
+	priority_path = g_strdup_printf ("%s/%s",
+					 BRASERO_PLUGIN_PRIORITY_KEY,
+					 gconf_name);
+	g_free (gconf_name);
+
+	return priority_path;
+}
+
 void
 brasero_plugin_define (BraseroPlugin *self,
 		       const gchar *name,
@@ -314,6 +339,10 @@ brasero_plugin_define (BraseroPlugin *self,
 		       guint priority)
 {
 	BraseroPluginPrivate *priv;
+	gchar *priority_path;
+	guint priority_gconf;
+	GError *error = NULL;
+	GConfClient *client;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 
@@ -322,7 +351,32 @@ brasero_plugin_define (BraseroPlugin *self,
 	priv->name = g_strdup (name);
 	priv->author = g_strdup (author);
 	priv->description = g_strdup (description);
-	priv->priority = priority;
+	priv->priority_original = priority;
+
+	/* see if we should override the hardcoded priority */
+	client = gconf_client_get_default ();
+	priority_path = brasero_plugin_get_gconf_priority_key (self);
+	priority_gconf = gconf_client_get_int (client,
+					       priority_path,
+					       &error);
+
+	if (!error && priority_gconf > 0)
+		priv->priority = priority_gconf;
+	else
+		priv->priority = priv->priority_original;
+
+	if (error) {
+		BRASERO_BURN_LOG ("Error retrieving plugin %s priority: %s",
+				  priv->name,
+				  error->message);
+		g_error_free (error);
+	}
+
+	g_free (priority_path);
+	g_object_unref (client);
+
+	/* since that's only init, no need to signal priority changes */
+	//g_object_notify (G_OBJECT (self), "priority");
 }
 
 const gchar *
@@ -662,9 +716,40 @@ brasero_plugin_load (GTypeModule *module)
 }
 
 static void
+brasero_plugin_priority_changed (GConfClient *client,
+				 guint cxn,
+				 GConfEntry *entry,
+				 gpointer data)
+{
+	BraseroPluginPrivate *priv;
+	BraseroPlugin *self;
+	GConfValue *value;
+	guint priority;
+
+	self = BRASERO_PLUGIN (data);
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+
+	value = gconf_entry_get_value (entry);
+	if (value->type != GCONF_VALUE_INT)
+		return;
+
+	self = BRASERO_PLUGIN (data);
+	priority = gconf_value_get_int (value);
+
+	if (priority > 0)
+		priv->priority = priority;
+	else
+		priv->priority = priv->priority_original;
+
+	g_object_notify (G_OBJECT (self), "priority");
+}
+
+static void
 brasero_plugin_init_real (BraseroPlugin *object)
 {
 	GModule *handle;
+	GConfClient *client;
+	gchar *priority_path;
 	BraseroPluginPrivate *priv;
 	BraseroPluginRegisterType function;
 
@@ -694,6 +779,21 @@ brasero_plugin_init_real (BraseroPlugin *object)
 
 	BRASERO_BURN_LOG ("Module %s successfully loaded", priv->name);
 	g_module_close (handle);
+
+	/* now see if we need to override the hardcoded priority of the plugin */
+	client = gconf_client_get_default ();
+	priority_path = brasero_plugin_get_gconf_priority_key (object);
+
+	priv->notify_priority = gconf_client_notify_add (client,
+							 priority_path,
+							 brasero_plugin_priority_changed,
+							 object,
+							 NULL,
+							 NULL);
+
+	/* No need to emit notify:: signal here */
+	g_free (priority_path);
+	g_object_unref (client);
 }
 
 static void
@@ -729,6 +829,15 @@ brasero_plugin_finalize (GObject *object)
 	g_slist_foreach (priv->blank_flags, (GFunc) g_free, NULL);
 	g_slist_free (priv->blank_flags);
 
+	if (priv->notify_priority) {
+		GConfClient *client;
+
+		client = gconf_client_get_default ();
+		gconf_client_notify_remove (client, priv->notify_priority);
+		priv->notify_priority = 0;
+		g_object_unref (client);
+	}
+		
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -752,6 +861,8 @@ brasero_plugin_set_property (GObject *object,
 		/* NOTE: this property can only be set once */
 		priv->path = g_strdup (g_value_get_string (value));
 		brasero_plugin_init_real (self);
+		break;
+	case PROP_PRIORITY:
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -777,6 +888,9 @@ brasero_plugin_get_property (GObject *object,
 	{
 	case PROP_PATH:
 		g_value_set_string (value, priv->path);
+		break;
+	case PROP_PRIORITY:
+		g_value_set_int (value, priv->priority);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -816,6 +930,15 @@ brasero_plugin_class_init (BraseroPluginClass *klass)
 	                                                      "Path for the module",
 	                                                      NULL,
 	                                                      G_PARAM_STATIC_NAME|G_PARAM_READABLE|G_PARAM_WRITABLE|G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+	                                 PROP_PRIORITY,
+	                                 g_param_spec_int ("priority",
+							   "Priority",
+							   "Priority of the module",
+							   1,
+							   G_MAXINT,
+							   1,
+							   G_PARAM_STATIC_NAME|G_PARAM_READABLE));
 
 	plugin_signals [LOADED_SIGNAL] =
 		g_signal_new ("loaded",

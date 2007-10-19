@@ -34,6 +34,8 @@
 
 G_BEGIN_DECLS
 
+#define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config"
+
 BraseroPlugin *
 brasero_plugin_new (const gchar *path);
 
