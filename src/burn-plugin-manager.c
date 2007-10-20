@@ -82,7 +82,6 @@ brasero_plugin_manager_get_plugins_list (BraseroPluginManager *self)
 
 	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
 
-	/* filter those with G_TYPE_NONE */
 	for (iter = priv->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
 

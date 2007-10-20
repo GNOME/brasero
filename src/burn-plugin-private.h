@@ -34,8 +34,6 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config"
-
 BraseroPlugin *
 brasero_plugin_new (const gchar *path);
 
@@ -63,8 +61,11 @@ brasero_plugin_get_description (BraseroPlugin *plugin);
 const gchar *
 brasero_plugin_get_icon_name (BraseroPlugin *plugin);
 
+gchar *
+brasero_plugin_get_gconf_priority_key (BraseroPlugin *plugin);
+
 const gchar *
-brasero_plugin_get_error (BraseroPlugin *self);
+brasero_plugin_get_error (BraseroPlugin *plugin);
 
 guint
 brasero_plugin_get_priority (BraseroPlugin *plugin);

@@ -1,3 +1,27 @@
+2007-10-20  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix for #480712 – Brasero Plugins UI
+
+	* src/brasero-plugin-manager-ui.c:
+	(plugin_manager_ui_view_rank_cell_cb),
+	(plugin_manager_ui_view_info_cell_cb), (list_priority_sort_func),
+	(brasero_plugin_manager_ui_save_order),
+	(brasero_plugin_manager_ui_order_changed_cb),
+	(brasero_plugin_manager_ui_update_up_down), (up_button_cb),
+	(down_button_cb), (plugin_manager_ui_populate_lists),
+	(brasero_plugin_manager_ui_combo_changed_cb),
+	(plugin_manager_ui_set_active), (tree_selection_changed_cb),
+	(plugin_manager_ui_construct_tree),
+	(brasero_plugin_manager_ui_init),
+	(brasero_plugin_manager_ui_finalize):
+	* src/brasero-pref.c: (brasero_pref_init):
+	* src/burn-caps.c: (brasero_burn_caps_plugin_can_burn):
+	* src/burn-plugin-manager.c:
+	(brasero_plugin_manager_get_plugins_list):
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c:
+	* src/main.c: (on_prefs_cb):
+
 2007-10-19  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Adds the possibility to override through gconf plugins priority

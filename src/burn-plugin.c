@@ -38,6 +38,8 @@
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"
 
+#define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config"
+
 struct _BraseroPluginFlags {
 	BraseroMedia media;
 	BraseroBurnFlag supported;
@@ -311,7 +313,7 @@ brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option)
  * Used to set the caps of plugin
  */
 
-static gchar *
+gchar *
 brasero_plugin_get_gconf_priority_key (BraseroPlugin *self)
 {
 	BraseroPluginPrivate *priv;

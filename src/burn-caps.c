@@ -2898,8 +2898,6 @@ brasero_burn_caps_plugin_can_burn (BraseroBurnCaps *self,
 			GSList *plugins;
 
 			link = links->data;
-			if (!link->caps)
-				continue;
 
 			/* see if the plugin is in the link by going through the list */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
