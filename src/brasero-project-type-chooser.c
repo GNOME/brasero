@@ -25,6 +25,8 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
@@ -44,6 +46,8 @@
 G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_EVENT_BOX);
 
 typedef enum {
+	PROJECT_CLICKED_SIGNAL,
+	URI_CLICKED_SIGNAL,
 	CHOSEN_SIGNAL,
 	LAST_SIGNAL
 } BraseroProjectTypeChooserSignalType;
@@ -165,13 +169,45 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 }
 
 static void
+brasero_project_type_chooser_uri_clicked_cb (GtkButton *button,
+					     BraseroProjectTypeChooser *self)
+{
+	const gchar *uri;
+
+	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
+	g_signal_emit (self,
+		       brasero_project_type_chooser_signals [URI_CLICKED_SIGNAL],
+		       0,
+		       uri);
+}
+
+static void
+brasero_project_type_chooser_project_clicked_cb (GtkButton *button,
+						 BraseroProjectTypeChooser *self)
+{
+	const gchar *uri;
+
+	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
+	g_signal_emit (self,
+		       brasero_project_type_chooser_signals [PROJECT_CLICKED_SIGNAL],
+		       0,
+		       uri);
+}
+
+static void
 brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 {
+	GtkRecentManager *recent;
+	GtkWidget *project_box;
+	GtkWidget *recent_box;
 	GError *error = NULL;
 	GtkWidget *widget;
 	GtkWidget *table;
 	GtkWidget *label;
-	GtkWidget *box;
+	GtkWidget *vbox;
+	GList *recents;
+	GList *iter;
+	guint num_recent;
 	int nb_rows = 2;
 	int nb_items;
 	int rows;
@@ -186,9 +222,30 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 		error = NULL;
 	}
 
-	gtk_widget_modify_bg (GTK_WIDGET (obj),
+/*	gtk_widget_modify_bg (GTK_WIDGET (obj),
 			      GTK_STATE_NORMAL,
 			      &(GTK_WIDGET (obj)->style->white));
+*/
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (obj), vbox);
+
+	project_box = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (project_box), 12);
+	gtk_widget_show (project_box);
+	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("<span size='x-large'><b>Create a new project:</b></span>"));
+	gtk_widget_show (label);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("<span foreground='grey50'><b><i>Choose from the following options</i></b></span>"));
+	gtk_widget_show (label);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, FALSE, 0);
 
 	/* get the number of rows */
 	nb_items = sizeof (items) / sizeof (ItemDescription);
@@ -198,33 +255,13 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	table = gtk_table_new (rows, nb_rows, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 12);
-	gtk_container_add (GTK_CONTAINER (obj), table);
+	gtk_box_pack_start (GTK_BOX (project_box), table, FALSE, FALSE, 6);
 
 	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 12);
 
-	box = gtk_vbox_new (FALSE, 6);
-	label = gtk_label_new (_("<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></span></u>"));
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (box), label, FALSE, TRUE, 0);
-
-	label = gtk_label_new (_("<span foreground='grey60'><b><i>Choose from the following options</i></b></span>"));
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (box), label, FALSE, TRUE, 0);
-
-	gtk_table_attach (GTK_TABLE (table), 
-			  box,
-			  0, 2,
-			  0, 1,
-			  GTK_FILL,
-			  0,
-			  0,
-			  0);
-			
-	for (i = 2; i < nb_items + 2; i ++) {
-		widget = brasero_project_type_chooser_new_item (obj, items + i - 2);
+	for (i = 0; i < nb_items; i ++) {
+		widget = brasero_project_type_chooser_new_item (obj, items + i);
 		gtk_table_attach (GTK_TABLE (table),
 				  widget,
 				  i % nb_rows,
@@ -237,6 +274,100 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 				  0);
 	}
 	gtk_widget_show_all (table);
+
+	/* The recent files part */
+	recent_box = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (recent_box), 12);
+	gtk_widget_show (recent_box);
+	gtk_box_pack_start (GTK_BOX (vbox), recent_box, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("<span size='x-large'><b>Choose a recently opened project:</b></span>"));
+	gtk_widget_show (label);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 12);
+
+	recent = gtk_recent_manager_get_default ();
+	recents = gtk_recent_manager_get_items (recent);
+
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
+	gtk_widget_show (vbox);
+	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, FALSE, 0);
+
+	num_recent = 0;
+	for (iter = recents; iter && num_recent < 5; iter = iter->next) {
+		GtkRecentInfo *info;
+		const gchar *mime;
+
+		info = iter->data;
+		mime = gtk_recent_info_get_mime_type (info);
+		if (!mime)
+			continue;
+
+		if (!strcmp (mime, "application/x-brasero")
+		||  !strcmp (mime, "application/x-cd-image")
+		||  !strcmp (mime, "application/x-cdrdao-toc")
+		||  !strcmp (mime, "application/x-toc")
+		||  !strcmp (mime, "application/x-cue")) {
+			const gchar *name;
+			GdkPixbuf *pixbuf;
+			GtkWidget *image;
+			const gchar *uri;
+			GtkWidget *hbox;
+			GtkWidget *link;
+			gchar *tooltip;
+
+			hbox = gtk_hbox_new (FALSE, 6);
+			gtk_widget_show (hbox);
+			gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+			tooltip = gtk_recent_info_get_uri_display (info);
+
+			pixbuf = gtk_recent_info_get_icon (info, GTK_ICON_SIZE_BUTTON);
+			image = gtk_image_new_from_pixbuf (pixbuf);
+			g_object_unref (pixbuf);
+
+			gtk_widget_show (image);
+			gtk_widget_set_tooltip_text (image, tooltip);
+
+			name = gtk_recent_info_get_display_name (info);
+			uri = gtk_recent_info_get_uri (info);
+
+			link = gtk_link_button_new_with_label (uri, name);
+			gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
+			gtk_button_set_image (GTK_BUTTON (link), image);
+			if (strcmp (mime, "application/x-brasero"))
+				g_signal_connect (link,
+						  "clicked",
+						  G_CALLBACK (brasero_project_type_chooser_uri_clicked_cb),
+						  obj);
+			else
+				g_signal_connect (link,
+						  "clicked",
+						  G_CALLBACK (brasero_project_type_chooser_project_clicked_cb),
+						  obj);
+
+			gtk_widget_show (link);
+			gtk_widget_set_tooltip_text (link, tooltip);
+			gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, FALSE, 0);
+	
+			g_free (tooltip);
+
+			num_recent ++;
+		}
+	}
+
+	if (!num_recent) {
+		GtkWidget *label;
+
+		label = gtk_label_new (_("No recently used project"));
+		gtk_widget_show (label);
+		gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 0);
+	}
+
+	g_list_foreach (recents, (GFunc) gtk_recent_info_unref, NULL);
+	g_list_free (recents);
 }
 
 /* Cut and Pasted from Gtk+ gtkeventbox.c but modified to display back image */
@@ -310,6 +441,24 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_UINT);
+	brasero_project_type_chooser_signals[URI_CLICKED_SIGNAL] =
+	    g_signal_new ("uri_clicked", G_OBJECT_CLASS_TYPE (object_class),
+			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, uri_clicked),
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__STRING,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_STRING);
+	brasero_project_type_chooser_signals[PROJECT_CLICKED_SIGNAL] =
+	    g_signal_new ("project_clicked", G_OBJECT_CLASS_TYPE (object_class),
+			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, project_clicked),
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__STRING,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_STRING);
 }
 
 GtkWidget *

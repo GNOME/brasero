@@ -203,171 +203,6 @@ brasero_project_manager_get_type ()
 }
 
 static void
-brasero_project_manager_class_init (BraseroProjectManagerClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
-
-	parent_class = g_type_class_peek_parent(klass);
-	object_class->finalize = brasero_project_manager_finalize;
-}
-
-static void
-brasero_project_manager_init (BraseroProjectManager *obj)
-{
-	GtkWidget *type;
-	GtkAction *action;
-	GtkWidget *chooser;
-
-	obj->priv = g_new0 (BraseroProjectManagerPrivate, 1);
-
-	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj), FALSE);
-	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj), FALSE);
-
-	obj->priv->action_group = gtk_action_group_new ("ProjectManagerAction");
-	gtk_action_group_set_translation_domain (obj->priv->action_group, GETTEXT_PACKAGE);
-	gtk_action_group_add_actions (obj->priv->action_group,
-				      entries,
-				      G_N_ELEMENTS (entries),
-				      obj);
-
-	action = gtk_action_group_get_action (obj->priv->action_group, "NewChoose");
-	g_object_set (action,
-		      "short-label", _("New"), /* for toolbar buttons */
-		      NULL);
-	action = gtk_action_group_get_action (obj->priv->action_group, "Open");
-	g_object_set (action,
-		      "short-label", _("Open"), /* for toolbar buttons */
-		      NULL);
-
-	/* add the project type chooser to the notebook */
-	type = brasero_project_type_chooser_new ();
-	gtk_widget_show (type);
-	g_signal_connect (G_OBJECT (type),
-			  "chosen",
-			  G_CALLBACK (brasero_project_manager_type_changed_cb),
-			  obj);
-
-	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj), type, NULL);
-
-	/* add the layout */
-	obj->priv->layout = brasero_layout_new ();
-	gtk_widget_show (obj->priv->layout);
-	gtk_notebook_append_page (GTK_NOTEBOOK (obj), obj->priv->layout, NULL);
-
-	/* create the project for audio and data discs */
-	obj->priv->project = brasero_project_new ();
-
-#ifdef BUILD_PREVIEW
-
-	GtkWidget *preview;
-
-	preview = brasero_preview_new ();
-	gtk_widget_show (preview);
-	brasero_preview_add_source (BRASERO_PREVIEW (preview),
-				    BRASERO_URI_CONTAINER (obj->priv->project));
-
-#endif /* BUILD_PREVIEW */
-
-	chooser = brasero_file_chooser_new ();
-    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, chooser);
-
-	gtk_widget_show_all (chooser);
-	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
-				   chooser,
-				   "Chooser",
-				   _("Browse the file system"),
-				   _("Display file browser"),
-				   GTK_STOCK_DIRECTORY,
-				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
-
-#ifdef BUILD_PREVIEW
-	brasero_preview_add_source (BRASERO_PREVIEW (preview),
-				    BRASERO_URI_CONTAINER (chooser));
-#endif
-
-	brasero_layout_add_project (BRASERO_LAYOUT (obj->priv->layout),
-				    obj->priv->project);
-	gtk_widget_show_all (obj->priv->project);
-
-#ifdef BUILD_SEARCH
-	GtkWidget *search;
-
-	search = brasero_search_new ();
-    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, search);
-
-	gtk_widget_show_all (search);
-	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
-				   search,
-				   "Search",
-				   _("Search files using keywords"),
-				   _("Display search"),
-				   GTK_STOCK_FIND,
-				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
-
-#ifdef BUILD_PREVIEW
-	brasero_preview_add_source (BRASERO_PREVIEW (preview),
-				    BRASERO_URI_CONTAINER (search));
-#endif
-
-#endif /* BUILD_SEARCH */
-
-#ifdef BUILD_PLAYLIST
-	GtkWidget *playlist;
-
-	playlist = brasero_playlist_new ();
-    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, playlist);
-	gtk_widget_show_all (playlist);
-	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
-				   playlist,
-				   "Playlist",
-				   _("Display playlists and their contents"),
-				   _("Display playlists"),
-				   "audio-x-generic", 
-				   BRASERO_LAYOUT_AUDIO);
-
-#ifdef BUILD_PREVIEW
-	brasero_preview_add_source (BRASERO_PREVIEW (preview),
-				    BRASERO_URI_CONTAINER (playlist));
-#endif
-
-#endif /* BUILD_PLAYLIST */
-
-#ifdef BUILD_PREVIEW
-	brasero_layout_add_preview (BRASERO_LAYOUT (obj->priv->layout),
-				    preview);
-#endif
-	
-}
-
-static void
-brasero_project_manager_finalize (GObject *object)
-{
-	BraseroProjectManager *cobj;
-
-	cobj = BRASERO_PROJECT_MANAGER (object);
-
-	if (cobj->priv->vfs) {
-		brasero_vfs_cancel (cobj->priv->vfs, object);
-		g_object_unref (cobj->priv->vfs);
-		cobj->priv->vfs = NULL;
-	}
-
-	g_free (cobj->priv);
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-GtkWidget *
-brasero_project_manager_new ()
-{
-	BraseroProjectManager *obj;
-	
-	obj = BRASERO_PROJECT_MANAGER (g_object_new (BRASERO_TYPE_PROJECT_MANAGER, NULL));
-	
-	return GTK_WIDGET (obj);
-}
-
-static void
 brasero_project_manager_size_preview (BraseroVFS *vfs,
 				      GObject *object,
 				      gint files_num,
@@ -782,6 +617,14 @@ brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri)
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri, TRUE);
 }
 
+static void
+brasero_project_manager_uri_clicked_cb (BraseroProjectTypeChooser *chooser,
+					const gchar *uri,
+					BraseroProjectManager *manager)
+{
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri, TRUE);
+}
+
 void
 brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 {
@@ -806,6 +649,14 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 	gtk_action_set_sensitive (action, TRUE);
+}
+
+static void
+brasero_project_manager_project_clicked_cb (BraseroProjectTypeChooser *chooser,
+					    const gchar *uri,
+					    BraseroProjectManager *manager)
+{
+	brasero_project_manager_open (manager, uri);
 }
 
 void
@@ -854,4 +705,176 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 	}
 
     	return result;
+}
+
+static void
+brasero_project_manager_init (BraseroProjectManager *obj)
+{
+	GtkWidget *type;
+	GtkAction *action;
+	GtkWidget *chooser;
+
+	obj->priv = g_new0 (BraseroProjectManagerPrivate, 1);
+
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj), FALSE);
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj), FALSE);
+
+	obj->priv->action_group = gtk_action_group_new ("ProjectManagerAction");
+	gtk_action_group_set_translation_domain (obj->priv->action_group, GETTEXT_PACKAGE);
+	gtk_action_group_add_actions (obj->priv->action_group,
+				      entries,
+				      G_N_ELEMENTS (entries),
+				      obj);
+
+	action = gtk_action_group_get_action (obj->priv->action_group, "NewChoose");
+	g_object_set (action,
+		      "short-label", _("New"), /* for toolbar buttons */
+		      NULL);
+	action = gtk_action_group_get_action (obj->priv->action_group, "Open");
+	g_object_set (action,
+		      "short-label", _("Open"), /* for toolbar buttons */
+		      NULL);
+
+	/* add the project type chooser to the notebook */
+	type = brasero_project_type_chooser_new ();
+	gtk_widget_show (type);
+	g_signal_connect (type,
+			  "chosen",
+			  G_CALLBACK (brasero_project_manager_type_changed_cb),
+			  obj);
+	g_signal_connect (type,
+			  "uri-clicked",
+			  G_CALLBACK (brasero_project_manager_uri_clicked_cb),
+			  obj);
+	g_signal_connect (type,
+			  "project-clicked",
+			  G_CALLBACK (brasero_project_manager_project_clicked_cb),
+			  obj);
+	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj), type, NULL);
+
+	/* add the layout */
+	obj->priv->layout = brasero_layout_new ();
+	gtk_widget_show (obj->priv->layout);
+	gtk_notebook_append_page (GTK_NOTEBOOK (obj), obj->priv->layout, NULL);
+
+	/* create the project for audio and data discs */
+	obj->priv->project = brasero_project_new ();
+
+#ifdef BUILD_PREVIEW
+
+	GtkWidget *preview;
+
+	preview = brasero_preview_new ();
+	gtk_widget_show (preview);
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (obj->priv->project));
+
+#endif /* BUILD_PREVIEW */
+
+	chooser = brasero_file_chooser_new ();
+    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, chooser);
+
+	gtk_widget_show_all (chooser);
+	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
+				   chooser,
+				   "Chooser",
+				   _("Browse the file system"),
+				   _("Display file browser"),
+				   GTK_STOCK_DIRECTORY,
+				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
+
+#ifdef BUILD_PREVIEW
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (chooser));
+#endif
+
+	brasero_layout_add_project (BRASERO_LAYOUT (obj->priv->layout),
+				    obj->priv->project);
+	gtk_widget_show_all (obj->priv->project);
+
+#ifdef BUILD_SEARCH
+	GtkWidget *search;
+
+	search = brasero_search_new ();
+    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, search);
+
+	gtk_widget_show_all (search);
+	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
+				   search,
+				   "Search",
+				   _("Search files using keywords"),
+				   _("Display search"),
+				   GTK_STOCK_FIND,
+				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
+
+#ifdef BUILD_PREVIEW
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (search));
+#endif
+
+#endif /* BUILD_SEARCH */
+
+#ifdef BUILD_PLAYLIST
+	GtkWidget *playlist;
+
+	playlist = brasero_playlist_new ();
+    	BRASERO_PROJECT_MANAGER_CONNECT_CHANGED (obj, playlist);
+	gtk_widget_show_all (playlist);
+	brasero_layout_add_source (BRASERO_LAYOUT (obj->priv->layout),
+				   playlist,
+				   "Playlist",
+				   _("Display playlists and their contents"),
+				   _("Display playlists"),
+				   "audio-x-generic", 
+				   BRASERO_LAYOUT_AUDIO);
+
+#ifdef BUILD_PREVIEW
+	brasero_preview_add_source (BRASERO_PREVIEW (preview),
+				    BRASERO_URI_CONTAINER (playlist));
+#endif
+
+#endif /* BUILD_PLAYLIST */
+
+#ifdef BUILD_PREVIEW
+	brasero_layout_add_preview (BRASERO_LAYOUT (obj->priv->layout),
+				    preview);
+#endif
+	
+}
+
+static void
+brasero_project_manager_finalize (GObject *object)
+{
+	BraseroProjectManager *cobj;
+
+	cobj = BRASERO_PROJECT_MANAGER (object);
+
+	if (cobj->priv->vfs) {
+		brasero_vfs_cancel (cobj->priv->vfs, object);
+		g_object_unref (cobj->priv->vfs);
+		cobj->priv->vfs = NULL;
+	}
+
+	g_free (cobj->priv);
+
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+brasero_project_manager_class_init (BraseroProjectManagerClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+
+	parent_class = g_type_class_peek_parent(klass);
+	object_class->finalize = brasero_project_manager_finalize;
+}
+
+GtkWidget *
+brasero_project_manager_new ()
+{
+	BraseroProjectManager *obj;
+	
+	obj = BRASERO_PROJECT_MANAGER (g_object_new (BRASERO_TYPE_PROJECT_MANAGER, NULL));
+	
+	return GTK_WIDGET (obj);
 }

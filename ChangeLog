@@ -1,3 +1,21 @@
+2007-10-21  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix for #439912 – Make the start window less flat
+	Fix for #488682 – Always uses white background in project type selecting area and empty area
+
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_uri_clicked_cb),
+	(brasero_project_manager_project_clicked_cb),
+	(brasero_project_manager_init), (brasero_project_manager_finalize),
+	(brasero_project_manager_class_init),
+	(brasero_project_manager_new):
+	* src/brasero-project-type-chooser.c:
+	(brasero_project_type_chooser_uri_clicked_cb),
+	(brasero_project_type_chooser_project_clicked_cb),
+	(brasero_project_type_chooser_init),
+	(brasero_project_type_chooser_class_init):
+	* src/brasero-project-type-chooser.h:
+
 2007-10-20  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Updated POFILES.in with missing 2 files
