@@ -65,6 +65,7 @@ enum
 struct _BraseroPluginManagerUIPrivate
 {
 	GtkWidget	*description;
+	GtkWidget	*label;
 
 	GtkWidget	*tree;
 
@@ -214,6 +215,12 @@ plugin_manager_ui_view_rank_cell_cb (GtkTreeViewColumn *tree_column,
 				     GtkTreeIter       *iter,
 				     gpointer           data)
 {
+	g_object_set (G_OBJECT (cell),
+		      "visible", FALSE,
+		      NULL);
+	return;
+/*
+	May be removed in a near future 
 	BraseroPluginManagerUIPrivate *priv;
 	GtkTreePath *treepath;
 	gint *indices;
@@ -248,6 +255,7 @@ plugin_manager_ui_view_rank_cell_cb (GtkTreeViewColumn *tree_column,
 		      "markup", text,
 		      NULL);
 	g_free (text);
+*/
 }
 
 static void
@@ -295,10 +303,17 @@ plugin_manager_ui_view_icon_cell_cb (GtkTreeViewColumn *tree_column,
 				     GtkTreeIter       *iter,
 				     gpointer           data)
 {
-	BraseroPlugin *plugin;
 	
 	g_return_if_fail (tree_model != NULL);
 	g_return_if_fail (tree_column != NULL);
+
+	g_object_set (G_OBJECT (cell),
+		      "visible", FALSE,
+		      NULL);
+	return;
+/*
+	For the time being don't use it since there is no plugin with icon 
+	BraseroPlugin *plugin;
 
 	gtk_tree_model_get (tree_model, iter, PLUGIN_COLUMN, &plugin, -1);
 
@@ -316,6 +331,7 @@ plugin_manager_ui_view_icon_cell_cb (GtkTreeViewColumn *tree_column,
 		      "sensitive",
 		      brasero_plugin_get_gtype (plugin) != G_TYPE_NONE,
 		      NULL);
+*/
 }
 
 
@@ -715,31 +731,40 @@ brasero_plugin_manager_ui_combo_changed_cb (GtkComboBox *box,
 
 	switch (priv->category) {
 		case BRASERO_PLUGIN_ERROR:
-			gtk_label_set_text (GTK_LABEL (priv->description),
-					    _("The following plugins had errors on loading.\n\n"));
+			gtk_label_set_markup (GTK_LABEL (priv->description),
+					     _("<i>The following plugins had errors on loading.</i>"));
+			gtk_label_set_text (GTK_LABEL (priv->label), "\n\n");
+
 			break;
 
 		case BRASERO_PLUGIN_BURN_ENGINE:
-			gtk_label_set_text (GTK_LABEL (priv->description),
-					    _("The following plugins can burn, blank or format discs (CDs and DVDs).\nThe list is sorted according to the use order.\nMove them up and down if you want to set another order of priority."));
+			gtk_label_set_markup (GTK_LABEL (priv->description),
+					     _("<i>Includes plugins that can burn, blank or format discs (CDs and DVDs).</i>"));
+			gtk_label_set_text (GTK_LABEL (priv->label),
+					    _("The list is sorted according to the use order. Move them up and down if you want to set another order of priority."));
 
 			break;
 
 		case BRASERO_PLUGIN_IMAGE_ENGINE:
-			gtk_label_set_text (GTK_LABEL (priv->description),
-					    _("The following plugins create images suitable to be burnt on discs.\nThe list is sorted according to the use order.\nMove them up and down if you want to set another order of priority."));
+			gtk_label_set_markup (GTK_LABEL (priv->description),
+					     _("<i>Includes plugins that can create images suitable to be burnt on discs.</i>"));
+			gtk_label_set_text (GTK_LABEL (priv->label),
+					    _("The list is sorted according to the use order. Move them up and down if you want to set another order of priority."));
 
 			break;
 
 		case BRASERO_PLUGIN_CONVERT_ENGINE:
-			gtk_label_set_text (GTK_LABEL (priv->description),
-					    _("The following plugins convert image formats into other formats.\nThe list is sorted according to the use order.\nMove them up and down if you want to set another order of priority."));
+			gtk_label_set_markup (GTK_LABEL (priv->description),
+					     _("<i>Includes plugins that can convert image formats into other formats.</i>"));
+			gtk_label_set_text (GTK_LABEL (priv->label),
+					    _("The list is sorted according to the use order. Move them up and down if you want to set another order of priority."));
 
 			break;
 
 		case BRASERO_PLUGIN_MISCELLANEOUS:
-			gtk_label_set_text (GTK_LABEL (priv->description),
-					    _("The following plugins provide additional functionalities.\nThe list is sorted according to the use order.\nMove them up and down if you want to set another order of priority."));
+			gtk_label_set_markup (GTK_LABEL (priv->description),
+					     _("<i>Includes plugins that provide additional functionalities.</i>"));
+			gtk_label_set_text (GTK_LABEL (priv->label), "\n\n");
 			break;
 		default:
 			break;
@@ -1156,7 +1181,7 @@ plugin_manager_ui_construct_tree (BraseroPluginManagerUI *pm)
 	g_object_unref (model);
 
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (priv->tree), TRUE);
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (priv->tree), FALSE);
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (priv->tree), TRUE);
 
 	/* First column */
 	column = gtk_tree_view_column_new ();
@@ -1201,6 +1226,7 @@ plugin_manager_ui_construct_tree (BraseroPluginManagerUI *pm)
 							   "sensitive", AVAILABLE_COLUMN,
 							   NULL);
 
+	gtk_tree_view_column_set_title (column, PLUGIN_MANAGER_UI_ACTIVE_TITLE);
 	gtk_tree_view_column_set_expand (column, FALSE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
 
@@ -1236,6 +1262,7 @@ static void
 brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 {
 	gchar *markup;
+	GtkWidget *table;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *label;
@@ -1249,6 +1276,7 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
 
 	gtk_box_set_spacing (GTK_BOX (pm), 6);
+	gtk_container_set_border_width (GTK_CONTAINER (pm), 12);
 
 	label = gtk_label_new (NULL);
 	markup = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
@@ -1260,7 +1288,26 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	
 	gtk_box_pack_start (GTK_BOX (pm), label, FALSE, TRUE, 0);
 
+	alignment = gtk_alignment_new (0., 0., 1., 1.);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
+	gtk_box_pack_start (GTK_BOX (pm), alignment, TRUE, TRUE, 0);
+
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (alignment), vbox);
+
 	/* Combo to choose categories */
+	table = gtk_table_new (2, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 3);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_widget_show (table);
+	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 6);
+
+	label = gtk_label_new (_("Category:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, 0, 0, 0, 0);
+
 	combo = gtk_combo_box_new_text ();
 	gtk_combo_box_insert_text (GTK_COMBO_BOX (combo),
 				   BRASERO_PLUGIN_BURN_ENGINE,
@@ -1282,26 +1329,24 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 			  "changed",
 			  G_CALLBACK (brasero_plugin_manager_ui_combo_changed_cb),
 			  pm);
+	gtk_table_attach_defaults (GTK_TABLE (table), combo, 1, 2, 0, 1);
 
 	priv->description = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (priv->description), 0.0, 0.5);
 	gtk_widget_show (priv->description);
+	gtk_table_attach_defaults (GTK_TABLE (table), priv->description, 1, 2, 1, 2);
+
+	priv->label = gtk_label_new (NULL);
+	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->label), PANGO_WRAP_WORD);
+	gtk_label_set_line_wrap (GTK_LABEL (priv->label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (priv->label), 0.0, 0.5);
+	gtk_widget_show (priv->label);
+	gtk_box_pack_start (GTK_BOX (vbox), priv->label, FALSE, TRUE, 0);
 
 	/* bottom part: tree, buttons */
-	alignment = gtk_alignment_new (0., 0., 1., 1.);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
-	gtk_box_pack_start (GTK_BOX (pm), alignment, TRUE, TRUE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (alignment), vbox);
-
-	gtk_box_pack_start (GTK_BOX (vbox), combo, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), priv->description, FALSE, FALSE, 6);
-
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, FALSE);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 6);
 
 	viewport = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (viewport),
@@ -1326,25 +1371,25 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	gtk_box_set_spacing (GTK_BOX (vbuttonbox), 8);
 
 
-	priv->up_button = brasero_utils_make_button (_("Move _up"),
+	priv->up_button = brasero_utils_make_button (_("Move _Up"),
 						     NULL,
 						     NULL,
 						     GTK_ICON_SIZE_BUTTON);
 	gtk_container_add (GTK_CONTAINER (vbuttonbox), priv->up_button);
 
-	priv->down_button = brasero_utils_make_button (_("Move _down"),
+	priv->down_button = brasero_utils_make_button (_("Move _Down"),
 						       NULL,
 						       NULL,
 						       GTK_ICON_SIZE_BUTTON);
 	gtk_container_add (GTK_CONTAINER (vbuttonbox), priv->down_button);
 
-	priv->about_button = brasero_utils_make_button (_("_About Plugin"),
+	priv->about_button = brasero_utils_make_button (_("_About"),
 							NULL,
 							GTK_STOCK_ABOUT,
 							GTK_ICON_SIZE_BUTTON);
 	gtk_container_add (GTK_CONTAINER (vbuttonbox), priv->about_button);
 
-	priv->configure_button = brasero_utils_make_button (_("C_onfigure Plugin"),
+	priv->configure_button = brasero_utils_make_button (_("C_onfigure"),
 							    NULL,
 							    GTK_STOCK_PREFERENCES,
 							    GTK_ICON_SIZE_BUTTON);
