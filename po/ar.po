@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-20 06:09+0100\n"
-"PO-Revision-Date: 2007-04-27 23:10+0100\n"
+"POT-Creation-Date: 2007-10-22 23:10+0100\n"
+"PO-Revision-Date: 2007-10-22 23:13+0100\n"
 "Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
@@ -496,6 +496,14 @@ msgstr "افلام فقط"
 msgid "Image files only"
 msgstr "ملفات صور فقط"
 
+#: ../src/brasero-file-chooser.c:257
+msgid "Text files only"
+msgstr "ملفات نص فقط"
+
+#: ../src/brasero-file-chooser.c:262
+msgid "Application files only"
+msgstr "ملفات برامج فقط"
+
 #: ../src/brasero-image-option-dialog.c:110
 msgid "Image burning setup"
 msgstr "اعدادات حرق الصور"
@@ -582,15 +590,18 @@ msgstr "لا شيء"
 msgid "Show the project only"
 msgstr "اعرض المشروع فقط"
 
-#: ../src/brasero-ncb.c:297
+#: ../src/brasero-ncb.c:294
+#, c-format
 msgid "(u)mount command could not be found in the path"
 msgstr "لم يمكن ايجاد امر mount في المسار"
 
-#: ../src/brasero-ncb.c:325
+#: ../src/brasero-ncb.c:329
+#, c-format
 msgid "the drive could not be mounted"
 msgstr "لم يمكن تحميل القرص"
 
-#: ../src/brasero-ncb.c:481
+#: ../src/brasero-ncb.c:488
+#, c-format
 msgid "the disc mount point could not be retrieved."
 msgstr "لم يمكن ايجاد نقطة تحميل المشغل"
 
@@ -886,11 +897,13 @@ msgid "Corrupted files"
 msgstr "ملفّات تالفة"
 
 #: ../src/brasero-sum-dialog.c:420
+#, c-format
 msgid "a temporary file couldn't be created"
 msgstr "تعذّر إنشاء ملف مؤقّت"
 
 #: ../src/brasero-sum-dialog.c:433
 #: ../src/brasero-sum-dialog.c:491
+#, c-format
 msgid "URI is not valid"
 msgstr "URI غير سليم"
 
@@ -1032,93 +1045,113 @@ msgid "the cue file (%s) seems to be invalid"
 msgstr "يبدو أن ملف الملف (%s) غير سليم"
 
 #: ../src/burn-cdrdao.c:480
-#: ../src/burn-growisofs.c:703
+#: ../src/burn-growisofs.c:716
 #: ../src/burn.c:825
-#: ../src/burn.c:1611
-#: ../src/burn.c:1694
-#: ../src/burn.c:1701
+#: ../src/burn.c:1632
+#: ../src/burn.c:1715
+#: ../src/burn.c:1722
+#, c-format
 msgid "the drive seems to be busy"
 msgstr "يبدو ان المشغل مشغول"
 
 #: ../src/burn-cdrdao.c:486
+#, c-format
 msgid "your version of cdrdao doesn't seem to be supported by libbrasero"
 msgstr "يبدو ان اصدار cdrdao المثبت غير مدعوم من libbrasero"
 
 #: ../src/burn-cdrdao.c:492
 #: ../src/burn-cdrecord.c:291
 #: ../src/burn-cdrecord.c:353
+#, c-format
 msgid "You don't seem to have the required permission to use this drive"
 msgstr "يبدو انه ليس لك الصلاحيات الكافية لاستعمال هذا المشغل"
 
 #: ../src/burn-cdrdao.c:1104
-#: ../src/burn-cdrecord.c:1278
+#: ../src/burn-cdrecord.c:1286
+#, c-format
 msgid "the drive cannot rewrite CDs or DVDs"
 msgstr "لا يمكن للمشغل اعادة كتابة اقراص مدمجة او اقراص DVD"
 
 #: ../src/burn-cdrecord.c:297
+#, c-format
 msgid "There doesn't seem to be a disc in the drive"
 msgstr "لا يوجد أي وسيط في المشغل"
 
 #: ../src/burn-cdrecord.c:303
+#, c-format
 msgid "input buffer error"
 msgstr "خطأ مجرى الإدخال"
 
 #: ../src/burn-cdrecord.c:309
+#, c-format
 msgid "The CD has already been recorded"
 msgstr "تمت كتابة القرص مسبقا"
 
 #: ../src/burn-cdrecord.c:315
+#, c-format
 msgid "The CD cannot be blanked"
 msgstr "لا يمكن افراغ القرص"
 
 #: ../src/burn-cdrecord.c:323
-#: ../src/burn-growisofs.c:691
-#: ../src/burn-growisofs.c:697
+#: ../src/burn-growisofs.c:704
+#: ../src/burn-growisofs.c:710
+#, c-format
 msgid "The files selected did not fit on the CD"
 msgstr "الملفات المنتقاة لم توافق مساحة القرص المدمج."
 
 #: ../src/burn-cdrecord.c:329
+#, c-format
 msgid "a write error occured which was likely due to overburning the disc"
 msgstr "حدث خطأ كتابة، يبدو ان السبب الأرجح هو الكتابة الفوقية"
 
 #: ../src/burn-cdrecord.c:335
+#, c-format
 msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr "يجب أن تكون جميع ملفات المقطوعات الصوتية ستيريو و 16-بت صوت رقمي بتردد قيمته 44100Hz"
 
 #: ../src/burn-cdrecord.c:341
+#, c-format
 msgid "The image does not seem to be a proper iso9660 file system"
 msgstr "يبدو ان الصورة ليس لها نظام ملفات iso9660 صحيح"
 
 #: ../src/burn-cdrecord.c:347
+#, c-format
 msgid "The system is too slow to write the CD at this speed. Try a lower speed"
 msgstr "النّظام أبطأ من أن يكتب القرص المدمج بهذه السّرعة. جرّب سرعةً أقل."
 
 #: ../src/burn-cdrecord.c:359
+#, c-format
 msgid "The drive seems to be busy (maybe check you have proper permissions to use it)"
 msgstr "يبدو أن المشغل مشغول (هل تملك الصلاحيات الكافية لاستعماله)"
 
 #: ../src/burn-cdrecord.c:367
+#, c-format
 msgid "The drive seems to be busy (maybe you should reload the media)"
 msgstr "يبدو أن المشغل مشغول (ربما يجب اعادة تحميل الوسيط)"
 
 #: ../src/burn-cdrecord.c:373
+#, c-format
 msgid "the image file cannot be found"
 msgstr "لا يمكن العثور على ملف صورة القرص"
 
 #: ../src/burn-cdrecord.c:380
 #: ../src/burn-cdrecord.c:568
+#, c-format
 msgid "internal error"
 msgstr "خطأ داخلي"
 
 #: ../src/burn-cdrecord.c:386
+#, c-format
 msgid "the cd information could not be written"
 msgstr "لم يمكن كتابة معلومات القرص"
 
 #: ../src/burn-cdrecord.c:392
+#, c-format
 msgid "the disc could not be closed"
 msgstr "لم يمكن غلق القرص"
 
 #: ../src/burn-cdrecord.c:398
+#, c-format
 msgid "the audio tracks are too short or not a multiple of 2352"
 msgstr "المقاطع الصوتية صغيرة جدا او ليست مضاعفا لـ 2352"
 
@@ -1127,22 +1160,25 @@ msgid "Writing cue sheet"
 msgstr "كتابة صفحة cue"
 
 #: ../src/burn-cdrecord.c:548
+#, c-format
 msgid "The media needs to be reloaded before being recorded"
 msgstr "يجب اعادة تحميل الوسيط قبل تسجيلها"
 
-#: ../src/burn-cdrecord.c:765
+#: ../src/burn-cdrecord.c:772
 #, c-format
 msgid "the inf file can't be written : %s"
 msgstr "لا يمكن كتابة ملف inf : %s"
 
-#: ../src/burn-cdrecord.c:798
+#: ../src/burn-cdrecord.c:805
+#, c-format
 msgid "a temporary directory couldn't be created"
 msgstr "لم يمكن انشاء دليل مؤقت"
 
-#: ../src/burn-cdrecord.c:880
-#: ../src/burn-cdrecord.c:891
-#: ../src/burn-growisofs.c:898
-#: ../src/burn-growisofs.c:926
+#: ../src/burn-cdrecord.c:888
+#: ../src/burn-cdrecord.c:899
+#: ../src/burn-growisofs.c:911
+#: ../src/burn-growisofs.c:939
+#, c-format
 msgid "imager doesn't seem to be ready"
 msgstr "المصور لا يبدو جاهزا"
 
@@ -1166,10 +1202,12 @@ msgid "%s can't be removed"
 msgstr "لا يمكن حذف %s"
 
 #: ../src/burn-common.c:335
+#, c-format
 msgid "One file is not a directory or a regular file"
 msgstr "هناك ملف ليس بدليل او ملف عادي"
 
 #: ../src/burn-common.c:359
+#, c-format
 msgid "the file can't be read"
 msgstr "لا يمكن قراءة أالملف"
 
@@ -1200,11 +1238,13 @@ msgstr "لم يمكن انشاء القناة (%s)"
 
 #: ../src/burn-common.c:487
 #: ../src/burn-common.c:506
+#, c-format
 msgid "couldn't set non blocking mode"
 msgstr "لم يمكن تحديد نسق عدم السدّ"
 
 #: ../src/burn-common.c:495
 #: ../src/burn-common.c:514
+#, c-format
 msgid "couldn't get pipe flags"
 msgstr "تعذر الحصول على اعلام الأنبوب"
 
@@ -1230,6 +1270,7 @@ msgid "replace the disc with a recordable CD with a least %i MiB free."
 msgstr "استبدل القرص بقرص قابل للكتابة بمساحة  %i م.ب دنيا فارغة."
 
 #: ../src/burn-dialog.c:199
+#, c-format
 msgid "replace the disc with a recordable CD."
 msgstr "استبدل القرص بقرص قابل للكتابة."
 
@@ -1239,6 +1280,7 @@ msgid "insert a recordable CD with a least %i MiB free."
 msgstr "ادخل قرصا قابلا للكتابة بمساحة  %i م.ب دنيا فارغة."
 
 #: ../src/burn-dialog.c:206
+#, c-format
 msgid "insert a recordable CD."
 msgstr "ادخل قرص CD قابل للكتابة."
 
@@ -1248,6 +1290,7 @@ msgid "replace the disc with a recordable DVD with a least %i MiB free."
 msgstr "استبدل القرص بـ DVD قابل للكتابة بمساحة  %i م.ب دنيا فارغة."
 
 #: ../src/burn-dialog.c:215
+#, c-format
 msgid "replace the disc with a recordable DVD."
 msgstr "استبدل القرص بـ DVD قابل للكتابة."
 
@@ -1257,6 +1300,7 @@ msgid "insert a recordable DVD with a least %i MiB free."
 msgstr "ادخل DVD قابلا للكتابة بمساحة  %i م.ب دنيا فارغة."
 
 #: ../src/burn-dialog.c:222
+#, c-format
 msgid "insert a recordable DVD."
 msgstr "ادخل قرص DVD قابل للكتابة."
 
@@ -1266,6 +1310,7 @@ msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
 msgstr "استبدل القرص بقرص أو DVD قابل للكتابة بمساحة  %i م.ب دنيا فارغة."
 
 #: ../src/burn-dialog.c:230
+#, c-format
 msgid "replace the disc with a recordable CD or DVD."
 msgstr "استبدل القرص بقرص أو DVD قابل للكتابة."
 
@@ -1275,6 +1320,7 @@ msgid "insert a recordable CD or DVD with a least %i MiB free."
 msgstr "ادخل قرصا أو  DVD قابلا للكتابة بمساحة  %i م.ب دنيا فارغة."
 
 #: ../src/burn-dialog.c:237
+#, c-format
 msgid "insert a recordable CD or DVD."
 msgstr "ادخل قرص DVD أو CD قابل للكتابة."
 
@@ -1449,10 +1495,12 @@ msgid "Burning CD"
 msgstr "حرق بيانات"
 
 #: ../src/burn-dialog.c:954
+#, c-format
 msgid "<big><b>Burning audio CD</b></big>"
 msgstr "<big><b>حرق DVD صوتي</b></big>"
 
 #: ../src/burn-dialog.c:963
+#, c-format
 msgid "<big><b>Burning data CD</b></big>"
 msgstr "<big><b>حرق CD بيانات</b></big>"
 
@@ -1601,6 +1649,7 @@ msgstr "تمّ نسخ الـ DVD  بنجاح"
 #: ../src/burn-dialog.c:1940
 #: ../src/burn-dialog.c:1950
 #: ../src/burn-dialog.c:1962
+#, c-format
 msgid "DVD is now ready for use"
 msgstr "قرص DVD قابل للإستعمال الآن"
 
@@ -1611,6 +1660,7 @@ msgstr "تمّ نسخ الـ CD  بنجاح"
 #: ../src/burn-dialog.c:1944
 #: ../src/burn-dialog.c:1954
 #: ../src/burn-dialog.c:1966
+#, c-format
 msgid "CD is now ready for use"
 msgstr "قرص CD قابل للإستعمال الآن"
 
@@ -1643,11 +1693,13 @@ msgid "Image successfully created"
 msgstr "تم إنشاء الصورة بنجاح"
 
 #: ../src/burn-dvd-rw-format.c:240
-#: ../src/burn-growisofs.c:709
+#: ../src/burn-growisofs.c:722
+#, c-format
 msgid "Unhandled error, aborting"
 msgstr "خطأ لا يمكن معالجته، إلغاء"
 
 #: ../src/burn-dvdcss.c:224
+#, c-format
 msgid "encrypted DVD: please, install libdvdcss version 1.2.x"
 msgstr "قرص DVD مشفر: الرجاء تثبيت libdvdcss الإصدار 1.2"
 
@@ -1661,11 +1713,12 @@ msgstr ""
 "الرجاء تثبيت libdvdcss الإصدار 1.2"
 
 #: ../src/burn-dvdcss.c:241
+#, c-format
 msgid "libdvdcss couldn't be loaded properly"
 msgstr "لم يمكن تحميل libdvdcss  بنجاح"
 
 #: ../src/burn-dvdcss.c:482
-#: ../src/burn-libisofs.c:582
+#: ../src/burn-libisofs.c:773
 #, c-format
 msgid "the data couldn't be written to the pipe (%i: %s)"
 msgstr "لم يمكن كتابة البيانات للانبوب (%i: %s)"
@@ -1684,10 +1737,12 @@ msgstr "يجري جلب مفاتيح DVD "
 
 #: ../src/burn-dvdcss.c:591
 #: ../src/burn-dvdcss.c:914
+#, c-format
 msgid "the size of the volume couln't be retrieved"
 msgstr "لم يمكن ابجاد حجم القرص"
 
 #: ../src/burn-dvdcss.c:600
+#, c-format
 msgid "DVD could not be opened"
 msgstr "لم يمكن فتح الـ DVD"
 
@@ -1696,111 +1751,136 @@ msgid "Copying Video DVD"
 msgstr "نسخ فيديو DVD"
 
 #: ../src/burn-dvdcss.c:693
-#: ../src/burn-libisofs.c:689
+#: ../src/burn-libisofs.c:880
 #, c-format
 msgid "the data couldn't be written to the file (%i: %s)"
 msgstr "لم يمكن كتابة البيانات للملف (%i: %s)"
 
-#: ../src/burn-growisofs.c:672
+#: ../src/burn-growisofs.c:685
+#, c-format
 msgid "The disc is already burnt"
 msgstr "القرص مكتوب مسبّقا"
 
-#: ../src/burn-growisofs.c:679
+#: ../src/burn-growisofs.c:692
+#, c-format
 msgid "The recorder could not be accessed"
 msgstr "تعذر الإتصال بالمسجل"
 
-#: ../src/burn-growisofs.c:685
+#: ../src/burn-growisofs.c:698
+#, c-format
 msgid "Not enough space available on the disc"
 msgstr "مساحة غير كافية على القرص"
 
-#: ../src/burn-growisofs.c:715
-#: ../src/burn-mkisofs.c:376
+#: ../src/burn-growisofs.c:728
+#: ../src/burn-mkisofs.c:387
 msgid "Some files have invalid filenames"
 msgstr "بعض الملفات لها أسماء غير سليمة"
 
-#: ../src/burn-growisofs.c:721
-#: ../src/burn-mkisofs.c:319
-#: ../src/burn-mkisofs.c:328
+#: ../src/burn-growisofs.c:734
+#: ../src/burn-mkisofs.c:330
+#: ../src/burn-mkisofs.c:339
 msgid "the image can't be created"
 msgstr "لا يمكن انشاء الصورة"
 
-#: ../src/burn-growisofs.c:906
-#: ../src/burn-growisofs.c:915
+#: ../src/burn-growisofs.c:919
+#: ../src/burn-growisofs.c:928
+#, c-format
 msgid "imager can't create iso9660 images"
 msgstr "المصور لا يمكنه كتابة صور iso9660"
 
-#: ../src/burn-growisofs.c:940
+#: ../src/burn-growisofs.c:953
+#, c-format
 msgid "the file /proc/self/fd/0 is missing"
 msgstr "الملف /proc/self/fd/0 غير موجود"
 
-#: ../src/burn-growisofs.c:968
+#: ../src/burn-growisofs.c:981
+#, c-format
 msgid "the image is not stored locally"
 msgstr "الصورة غير محفوظة محليا"
 
 #: ../src/burn-iso9660.c:140
 #: ../src/burn-iso9660.c:149
+#, c-format
 msgid "it does not appear to be a primary volume descriptor"
 msgstr "لا يبدو انه وصف حجم رئيسي"
 
 #: ../src/burn-iso9660.c:310
+#, c-format
 msgid "invalid directory record"
 msgstr "سجل الدليل غير صحيح"
 
 #: ../src/burn-iso9660.c:326
 #: ../src/burn-iso9660.c:370
+#, c-format
 msgid "file name is too long"
 msgstr "اسم الملف طويل حدا"
 
-#: ../src/burn-libburn-common.c:215
+#: ../src/burn-libburn-common.c:216
+#, c-format
 msgid "the drive couldn't be initialized"
 msgstr "لا يمكن بدأ المشغل"
 
-#: ../src/burn-libburn-common.c:280
+#: ../src/burn-libburn-common.c:281
 #, c-format
 msgid "(%s) libburn tried to say something"
 msgstr "(%s)  اجابة من libburn"
 
-#: ../src/burn-libburn-common.c:429
+#: ../src/burn-libburn-common.c:430
 #, c-format
 msgid "Writing track %02i"
 msgstr "كتابة المقطع %02i"
 
-#: ../src/burn-libburn.c:319
+#: ../src/burn-libburn.c:317
+#, c-format
 msgid "unable to set the source"
 msgstr "لا يمكن تحديد المصدر"
 
-#: ../src/burn-libburn.c:327
+#: ../src/burn-libburn.c:325
+#, c-format
 msgid "unable to add the track to the session"
 msgstr "لا يمكن إضافة هذا المقطع للجلسة"
 
-#: ../src/burn-libburn.c:388
+#: ../src/burn-libburn.c:386
+#, c-format
 msgid "a slave tried to get connected"
 msgstr "اراد مشغل ثانوي الاتصال"
 
-#: ../src/burn-libburn.c:552
+#: ../src/burn-libburn.c:550
+#, c-format
 msgid "unable to connect to imager"
 msgstr "فشل الإتصال بـالمصور"
 
-#: ../src/burn-libburn.c:646
-#: ../src/burn-libburn.c:704
+#: ../src/burn-libburn.c:644
+#: ../src/burn-libburn.c:702
+#, c-format
 msgid "no profile available for the medium"
 msgstr "لا طور متوفر للوسيط"
 
-#: ../src/burn-libburn.c:749
+#: ../src/burn-libburn.c:747
+#, c-format
 msgid "/dev/null can't be opened"
 msgstr "لا يمكن فتح /dev/null"
 
-#: ../src/burn-libburn.c:780
+#: ../src/burn-libburn.c:778
 #, c-format
 msgid "libburn can't burn: %s"
 msgstr "لا يكمنه لـ libburn الكتابة: %s "
 
-#: ../src/burn-libisofs.c:504
+#: ../src/burn-libisofs.c:501
+#: ../src/burn-libisofs.c:544
+#: ../src/burn-libisofs.c:681
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
 msgstr "لم يمكن ايجاد والد في المسار  (%s) "
 
+#: ../src/burn-libisofs.c:518
+#: ../src/burn-libisofs.c:560
+#, c-format
+msgid "unsupported operation (at %s)"
+msgstr "عملية غير ممكنة (عند %s)"
+
 #: ../src/burn-libread-disc.c:290
+#, c-format
 msgid "no disc could be found"
 msgstr "لم يمكن ايجاد القرص"
 
@@ -1881,10 +1961,12 @@ msgstr "قرص بلو راي قابل لإعادة الكتابة"
 
 #: ../src/burn-mkisofs-base.c:294
 #: ../src/burn-mkisofs-base.c:585
+#, c-format
 msgid "the file is not stored locally"
 msgstr "الملف ليس محفوظا محليا"
 
 #: ../src/burn-mkisofs-base.c:397
+#, c-format
 msgid "null graft point"
 msgstr "نقطة تطعيم صفرية"
 
@@ -1900,48 +1982,54 @@ msgid "a temporary file couldn't be created: %s"
 msgstr "تعذّر إنشاء ملف مؤقّت: %s"
 
 #: ../src/burn-mkisofs-base.c:817
+#, c-format
 msgid "The label for the image is too long."
 msgstr "اسم الصورة طويل جدا."
 
-#: ../src/burn-mkisofs.c:313
+#: ../src/burn-mkisofs.c:324
 msgid "the old image couldn't be read"
 msgstr "لم يمكن قراءة الصورة القديمة"
 
-#: ../src/burn-mkisofs.c:334
+#: ../src/burn-mkisofs.c:345
 msgid "this version of mkisofs doesn't seem to be supported"
 msgstr "يبدو ان هذا الاصدار من mkisofs غير مدعوم"
 
-#: ../src/burn-mkisofs.c:382
+#: ../src/burn-mkisofs.c:393
 msgid "Unknown character encoding"
 msgstr "ترميز محارف غير معروف."
 
-#: ../src/burn-mkisofs.c:388
+#: ../src/burn-mkisofs.c:399
 msgid "There is no space left on the device"
 msgstr "لا يوجد مساحة على القرص."
 
-#: ../src/burn-mkisofs.c:395
+#: ../src/burn-mkisofs.c:406
 msgid "The file is too large for a CD"
 msgstr "الملف كبير جدا عن القرص"
 
-#: ../src/burn-mkisofs.c:711
+#: ../src/burn-mkisofs.c:722
+#, c-format
 msgid "failed to get the start point of the track. Make sure the media allow to add files (it is not closed)"
 msgstr "فشل ايجاد نقطة الابتداء للمقطع. تحقق من ان الوسيط يسمح بإضافة ملفات (ليس مغلقا)"
 
 #: ../src/burn-readcd.c:540
+#, c-format
 msgid "the drive is not ready"
 msgstr "المشغل غير جاهز."
 
 #: ../src/burn-readcd.c:546
 #: ../src/burn-readcd.c:552
 #: ../src/burn-readcd.c:558
+#, c-format
 msgid "you don't seem to have the required permissions to access the drive"
 msgstr "يبدو انه ليس لديك الصلاحيات الكافية للنفاذ الى المشغل"
 
-#: ../src/burn-readcd.c:630
+#: ../src/burn-readcd.c:636
+#, c-format
 msgid "raw images cannot be created with DVDs"
 msgstr "لا يمكن انشاء اقراص خام من DVD"
 
 #: ../src/burn-recorder.c:89
+#, c-format
 msgid "the drive cannot write CDs or DVDs"
 msgstr "لا يمكن للمشغل كتابة اقراص CD أو DVD"
 
@@ -1966,6 +2054,7 @@ msgid "Creating checksum for image files"
 msgstr "انشاء امضاء لملفات الصور"
 
 #: ../src/burn-sum.c:517
+#, c-format
 msgid "the image is not local"
 msgstr "الصورة ليست محلية"
 
@@ -1974,14 +2063,17 @@ msgid "Creating image checksum"
 msgstr "انشاء امضاء للصورة"
 
 #: ../src/burn-sum.c:567
+#, c-format
 msgid "there is no disc."
 msgstr "لا وجود لقرص."
 
 #: ../src/burn-sum.c:573
+#, c-format
 msgid "the disc is unsupported."
 msgstr "القرص غير مدعوم"
 
 #: ../src/burn-sum.c:580
+#, c-format
 msgid "the disc is busy."
 msgstr "القرص مشغول."
 
@@ -1994,6 +2086,7 @@ msgid "Converting toc file"
 msgstr "تحويل ملف toc "
 
 #: ../src/burn-toc2cue.c:249
+#, c-format
 msgid "the conversion of the toc file failed"
 msgstr "فشل تحويل ملف toc "
 
@@ -2003,6 +2096,7 @@ msgid "%s is not a directory"
 msgstr "%s ليس دليلا"
 
 #: ../src/burn-transcode.c:706
+#, c-format
 msgid "source can't be created"
 msgstr "لا يمكن انشاء المصدر"
 
@@ -2012,22 +2106,27 @@ msgid "%s already exist (can't overwrite)"
 msgstr "%s موجود مسبقا (لا يمكن التنميق)"
 
 #: ../src/burn-transcode.c:765
+#, c-format
 msgid "sink can't be created"
 msgstr "لا يمكن انشاء sink "
 
 #: ../src/burn-transcode.c:779
+#, c-format
 msgid "audioconvert can't be created"
 msgstr "لا يمكن انشاء audioconvert "
 
 #: ../src/burn-transcode.c:807
+#, c-format
 msgid "audioresample can't be created"
 msgstr "لا يمكن انشاء audioresample "
 
 #: ../src/burn-transcode.c:818
+#, c-format
 msgid "filter can't be created"
 msgstr "لا يمكن انشاء المرشح"
 
 #: ../src/burn-transcode.c:841
+#, c-format
 msgid "decode can't be created"
 msgstr "لا يمكن انشاء مفكك الكود"
 
@@ -2042,6 +2141,7 @@ msgid "a symlink could not be created (%s)"
 msgstr " (%s) تعذّر انشاء وصلة رمزية"
 
 #: ../src/burn-transcode.c:1048
+#, c-format
 msgid "a temporary directory could not be created"
 msgstr "لم يمكن انشاء دليل مؤقت"
 
@@ -2052,6 +2152,7 @@ msgstr "خطأ الحشو (%s)"
 
 #: ../src/burn-transcode.c:1339
 #: ../src/burn-transcode.c:1442
+#, c-format
 msgid "error getting duration"
 msgstr "خطأ عند حساب المدة"
 
@@ -2071,14 +2172,17 @@ msgid "Transcoding \"%s\""
 msgstr "تشفير \"%s\""
 
 #: ../src/burn-volume.c:122
+#, c-format
 msgid "there isn't a valid volume descriptor"
 msgstr "لا يبدو انه وصف حجم رئيسي سليم"
 
 #: ../src/burn.c:525
+#, c-format
 msgid "the drive can't be unlocked"
 msgstr "لا يمكن فتح قفل القرص"
 
 #: ../src/burn.c:534
+#, c-format
 msgid "the disc can't be ejected"
 msgstr "لا يمكن دفع القرص"
 
@@ -2088,12 +2192,13 @@ msgstr "عملية النسخ جارية"
 
 #: ../src/burn.c:662
 #: ../src/burn.c:777
-#: ../src/burn.c:1130
+#: ../src/burn.c:1150
 #, c-format
 msgid "the drive can't be locked (%s)"
 msgstr "لا يمكن قفل القرص (%s)"
 
 #: ../src/burn.c:717
+#, c-format
 msgid "the drive has no rewriting capabilities"
 msgstr "ليس للمشغل القدرة على اعادة الكتابة"
 
@@ -2101,31 +2206,32 @@ msgstr "ليس للمشغل القدرة على اعادة الكتابة"
 msgid "ongoing blanking process"
 msgstr "عملية التفريغ جارية"
 
-#: ../src/burn.c:955
+#: ../src/burn.c:956
+#, c-format
 msgid "the drive has no burning capabilities"
 msgstr "ليس للمشغل القدرة على الكتابة"
 
-#: ../src/burn.c:1126
+#: ../src/burn.c:1146
 #: ../src/project.c:890
 msgid "ongoing burning process"
 msgstr "عملية الكنابة جارية"
 
-#: ../src/burn.c:1493
+#: ../src/burn.c:1513
 #, c-format
 msgid "the size of the volume can't be checked (%s)"
 msgstr "لا يمكن التحقق من الحجم  (%s)"
 
-#: ../src/burn.c:1504
+#: ../src/burn.c:1525
 #, c-format
 msgid "the selected location does not have enough free space to store the disc image (%ld MiB needed)"
 msgstr "الموقع المختار ليس له مساحة فارغة كافية لحفظ صورة القرص (%ld م.ب)"
 
-#: ../src/burn.c:1941
+#: ../src/burn.c:1981
 #, c-format
 msgid "the file %s can't be opened (%s)"
 msgstr "لا يمكن فتح ملف %s (%s)"
 
-#: ../src/burn.c:2303
+#: ../src/burn.c:2343
 #, c-format
 msgid "internal error (code %i)"
 msgstr "خطأ أولي (رمز %i)"
@@ -2234,6 +2340,7 @@ msgid "File restoration failure"
 msgstr "فشل في استرجاع الملفات"
 
 #: ../src/data-disc.c:4791
+#, c-format
 msgid "New folder"
 msgstr "مجلّد جديد"
 
@@ -2254,39 +2361,42 @@ msgstr "لا يمكن استيراد الجلسة"
 msgid "Import session error"
 msgstr "خطأ عند استيراد الجلسة"
 
-#: ../src/data-disc.c:8051
+#. Translators: the following text is the reason why brasero
+#. * failed to load a project: because it is already loading
+#. * another project
+#: ../src/data-disc.c:8054
 msgid "loading project"
 msgstr "تحميل مشروع"
 
-#: ../src/data-disc.c:8056
+#: ../src/data-disc.c:8059
 msgid "there is no selected disc"
 msgstr "لا يوجد اي قرص مختار"
 
-#: ../src/data-disc.c:8069
+#: ../src/data-disc.c:8072
 msgid "there isn't any available session on the disc"
 msgstr "لا يوجد اي جلسة على القرص"
 
-#: ../src/data-disc.c:8088
+#: ../src/data-disc.c:8091
 msgid "unknown volume type"
 msgstr "حجم غير معروف"
 
-#: ../src/data-disc.c:8161
+#: ../src/data-disc.c:8164
 msgid "A multisession disc is inserted:"
 msgstr "تم إدراج قرص متعدد الجلسات"
 
-#: ../src/data-disc.c:8162
+#: ../src/data-disc.c:8165
 msgid "Click here to import its contents"
 msgstr "انقر لاستيراد محتوياته"
 
-#: ../src/data-disc.c:8571
+#: ../src/data-disc.c:8574
 msgid "Project couldn't be loaded:"
 msgstr "لم يمكن تحميل المشروع:"
 
-#: ../src/data-disc.c:8573
+#: ../src/data-disc.c:8576
 msgid "Project loading failure"
 msgstr "فشل تحميل المشروع"
 
-#: ../src/data-disc.c:8576
+#: ../src/data-disc.c:8579
 msgid "A thread couldn't be created"
 msgstr "لم يمكن انشاء خيط"
 
@@ -2334,19 +2444,19 @@ msgstr "تنبيه عند ترشيح ملفات"
 msgid "<b>Filtering options</b>"
 msgstr "<b>خيارات الترشيح</b>"
 
-#: ../src/filtered-window.c:438
+#: ../src/filtered-window.c:437
 msgid "hidden file"
 msgstr "ملف مخفى"
 
-#: ../src/filtered-window.c:439
+#: ../src/filtered-window.c:438
 msgid "unreadable file"
 msgstr "ملف غير القابل للقراءة"
 
-#: ../src/filtered-window.c:440
+#: ../src/filtered-window.c:439
 msgid "broken symlink"
 msgstr "وصلة رمزية مكسورة"
 
-#: ../src/filtered-window.c:441
+#: ../src/filtered-window.c:440
 msgid "recursive symlink"
 msgstr "وصلة رمزية ذاتية"
 
@@ -2434,11 +2544,11 @@ msgstr "خيارات غير متوافقة"
 msgid "only one option can be given at a time."
 msgstr "يمكن اعطاء خيار واحد فقط كل مرة."
 
-#: ../src/main.c:548
+#: ../src/main.c:547
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:556
+#: ../src/main.c:555
 msgid "CD/DVD burning"
 msgstr "كتابة الـCD/DVD"
 
@@ -2499,10 +2609,12 @@ msgid "Display information on blank discs currently inserted"
 msgstr "اعرض معلومات عن الاقراص الفارغة المدخلة حاليا."
 
 #: ../src/metadata.c:427
+#, c-format
 msgid "unknown type of file"
 msgstr "نوع ملف غير معروف"
 
 #: ../src/metadata.c:475
+#, c-format
 msgid "this format is not supported by gstreamer"
 msgstr "هذا النوع غير مدعوم من قبل gstreamer"
 
@@ -2894,11 +3006,13 @@ msgstr "مقاطع بيانات"
 
 #: ../src/recorder-selection.c:566
 #: ../src/recorder-selection.c:602
+#: ../src/recorder-selection.c:618
 #, c-format
 msgid "%s free"
 msgstr "%s فارغ"
 
 #: ../src/recorder-selection.c:572
+#: ../src/recorder-selection.c:625
 msgid "the medium can be recorded"
 msgstr "لا يمكن تسجيل الوسيط"
 
@@ -2915,33 +3029,33 @@ msgstr "يمكن كتابة او الحاق بيانات للوسيط"
 msgid "data can be appended to the medium"
 msgstr "يمكن الحاق بيانات للوسيط"
 
-#: ../src/recorder-selection.c:618
+#: ../src/recorder-selection.c:634
 #, c-format
 msgid "%s of data"
 msgstr "%s من بيانات"
 
-#: ../src/recorder-selection.c:625
+#: ../src/recorder-selection.c:641
 msgid "<i>the medium is not writable</i>"
 msgstr "<i>الوسيط غير قابل للكتابة</i>"
 
-#: ../src/recorder-selection.c:662
+#: ../src/recorder-selection.c:678
 msgid "<i>There is no disc in the drive.</i>"
 msgstr "<i>لا وجود لقرص بالمشغّل.</i>"
 
-#: ../src/recorder-selection.c:665
+#: ../src/recorder-selection.c:681
 msgid "<i>Unknown type of disc.</i>"
 msgstr "<i>نوع قرص مجهول.</i>"
 
-#: ../src/recorder-selection.c:668
+#: ../src/recorder-selection.c:684
 msgid "<i>The disc is busy.</i>"
 msgstr "<i>المشغّل مشغول.</i>"
 
-#: ../src/recorder-selection.c:673
+#: ../src/recorder-selection.c:689
 #, c-format
 msgid "The <b>%s</b> is not writable."
 msgstr "الـ <b>%s</b> غير قابل للكتابة."
 
-#: ../src/recorder-selection.c:685
+#: ../src/recorder-selection.c:701
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -2952,7 +3066,7 @@ msgstr ""
 "هناك فيه صوت و بيانات.\n"
 "يمكن اضافة بيانات أخرى (%s فارغ)."
 
-#: ../src/recorder-selection.c:698
+#: ../src/recorder-selection.c:714
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -2963,7 +3077,7 @@ msgstr ""
 "يحتوي على مقاطع صوت و بيانات.\n"
 "يمكن اضافة جلسة بيانات (%s فارغ)."
 
-#: ../src/recorder-selection.c:710
+#: ../src/recorder-selection.c:726
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -2972,7 +3086,7 @@ msgstr ""
 "الـ <b>%s</b>مستعدّ (%s).\n"
 "هناك مقاطع صوت و بيانات."
 
-#: ../src/recorder-selection.c:727
+#: ../src/recorder-selection.c:743
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -2983,7 +3097,7 @@ msgstr ""
 "هناك فيه صوت.\n"
 "يمكن اضافة بيانات أخرى (%s فارغ)."
 
-#: ../src/recorder-selection.c:740
+#: ../src/recorder-selection.c:756
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -2994,7 +3108,7 @@ msgstr ""
 "يحتوي على مقاطع صوت.\n"
 "يمكن اضافة جلسة بيانات (%s فارغ)."
 
-#: ../src/recorder-selection.c:752
+#: ../src/recorder-selection.c:768
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -3003,7 +3117,7 @@ msgstr ""
 "الـ <b>%s</b>مستعدّ (%s).\n"
 "هناك فيه صوت."
 
-#: ../src/recorder-selection.c:769
+#: ../src/recorder-selection.c:785
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -3014,7 +3128,7 @@ msgstr ""
 "هناك فيه بيانات.\n"
 "يمكن اضافة بيانات أخرى (%s فارغ)."
 
-#: ../src/recorder-selection.c:782
+#: ../src/recorder-selection.c:798
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -3025,7 +3139,7 @@ msgstr ""
 "يحتوي على بيانات.\n"
 "يمكن اضافة بيانات اكثر (%s فارغ)."
 
-#: ../src/recorder-selection.c:794
+#: ../src/recorder-selection.c:810
 #, c-format
 msgid ""
 "The <b>%s</b> is ready (%s).\n"
@@ -3034,7 +3148,7 @@ msgstr ""
 "الـ <b>%s</b>مستعدّ (%s).\n"
 "هناك فيه بيانات."
 
-#: ../src/recorder-selection.c:808
+#: ../src/recorder-selection.c:824
 #, c-format
 msgid ""
 "The <b>%s</b> is ready.\n"
@@ -3045,8 +3159,8 @@ msgstr ""
 "القرص فارغ.\n"
 "(%s فارغ)"
 
-#: ../src/recorder-selection.c:911
-#: ../src/recorder-selection.c:916
+#: ../src/recorder-selection.c:927
+#: ../src/recorder-selection.c:932
 #, c-format
 msgid ""
 "The <b>image</b> will be saved to\n"
@@ -3055,56 +3169,56 @@ msgstr ""
 "سيتم حفظ <b>الصورة</b> في\n"
 "%s"
 
-#: ../src/recorder-selection.c:939
+#: ../src/recorder-selection.c:955
 msgid "<b>There is no available drive.</b>"
 msgstr "<b>لا يوجد مشغل متوفر.</b>"
 
-#: ../src/recorder-selection.c:1083
+#: ../src/recorder-selection.c:1099
 #, c-format
 msgid "Properties of %s"
 msgstr "خاصيات %s"
 
-#: ../src/recorder-selection.c:1108
+#: ../src/recorder-selection.c:1124
 msgid "Max speed"
 msgstr "السرعة القصوى"
 
-#: ../src/recorder-selection.c:1112
+#: ../src/recorder-selection.c:1128
 msgid "DVD"
 msgstr "DVD"
 
-#: ../src/recorder-selection.c:1112
+#: ../src/recorder-selection.c:1128
 msgid "CD"
 msgstr "سي.دي"
 
-#: ../src/recorder-selection.c:1118
+#: ../src/recorder-selection.c:1134
 msgid "<b>Burning speed</b>"
 msgstr "<b>سرعة الكتابة</b>"
 
-#: ../src/recorder-selection.c:1158
+#: ../src/recorder-selection.c:1174
 msgid "Simulate the burning"
 msgstr "تمثيل الكتابة"
 
-#: ../src/recorder-selection.c:1166
+#: ../src/recorder-selection.c:1182
 msgid "Eject after burning"
 msgstr "ادفع بعد اكمال الكتابة"
 
-#: ../src/recorder-selection.c:1174
+#: ../src/recorder-selection.c:1190
 msgid "Use burnproof (decrease the risk of failures)"
 msgstr "استعمل burnproof (لتخفيض امكانية الفشل)"
 
-#: ../src/recorder-selection.c:1182
+#: ../src/recorder-selection.c:1198
 msgid "Burn the image directly without saving it to disc"
 msgstr "اكتب الصورة مباشرة من دون حفظها على القرص"
 
-#: ../src/recorder-selection.c:1193
+#: ../src/recorder-selection.c:1209
 msgid "<b>Options</b>"
 msgstr "<b>الخيارات</b>"
 
-#: ../src/recorder-selection.c:1260
+#: ../src/recorder-selection.c:1276
 msgid "Choose a location for the disc image"
 msgstr "اختر موقع صورة القرص"
 
-#: ../src/recorder-selection.c:1316
+#: ../src/recorder-selection.c:1332
 msgid "Disc image file properties"
 msgstr "خصائص ملف الصورة"
 
@@ -3399,47 +3513,47 @@ msgstr "لا يمكن بدأ العملية %s."
 #. * project, suggesting users how to add and remove items to project.
 #. * You simply have to translate messages in the best form
 #. * for a list of actions.
-#: ../src/utils.c:836
+#: ../src/utils.c:832
 msgid "To add files to this project you can:"
 msgstr "لإضافة ملفات للقرص يمكنك:"
 
-#: ../src/utils.c:837
+#: ../src/utils.c:833
 msgid "click the \"Add\" button to show the selection pane"
 msgstr "نقر زر الإضافة لعرض شريط الإنتقاء"
 
-#: ../src/utils.c:838
+#: ../src/utils.c:834
 msgid "select files in selection pane and click the \"Add\" button"
 msgstr "انتقاء ملفات من شريط الإنتقاء و نقر زر  الإضافة"
 
-#: ../src/utils.c:839
+#: ../src/utils.c:835
 msgid "drag files in this area from the selection pane or from the file manager"
 msgstr "سحب ملفات إلى هذه المنطقة من شريط الإنتقاء أو من مدير الملفات"
 
-#: ../src/utils.c:840
+#: ../src/utils.c:836
 msgid "double click on files in the selection pane"
 msgstr "انقر نقرا مزدوجا في شريط الإنتقاء"
 
-#: ../src/utils.c:842
+#: ../src/utils.c:838
 msgid "copy files (from file manager for example) and paste in this area"
 msgstr "نسخ ملفات (من مدير الملفات مثلا) و لصقها في هذه المنطقة"
 
-#: ../src/utils.c:845
+#: ../src/utils.c:841
 msgid "To remove files from this project you can:"
 msgstr "لحذف ملفات من القرص يمكنك:"
 
-#: ../src/utils.c:846
+#: ../src/utils.c:842
 msgid "click on the \"Remove\" button to remove selected items in this area"
 msgstr "نقر زر الحذف لحذف الملفات المنقاة في هذه المساحة"
 
-#: ../src/utils.c:847
+#: ../src/utils.c:843
 msgid "drag and release items out from this area"
 msgstr "سحب و ترك العناصر خارج هذه المساحة"
 
-#: ../src/utils.c:848
+#: ../src/utils.c:844
 msgid "select items in this area, and choose \"Remove\" from context menu"
 msgstr "انتقاء ملفات في هذه المساحة و اختيار خيار الحذف من القائمة"
 
-#: ../src/utils.c:849
+#: ../src/utils.c:845
 msgid "select items in this area, and press \"Delete\" key"
 msgstr "انتقاء ملفات في هذه المساحة و نقر زر الحذف"
 
