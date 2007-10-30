@@ -1,12 +1,13 @@
 # Finnish messages for brasero 
 # Copyright (C) 2006 Ilkka Tuohela
-# Ilkka Tuohela <hile@iki.fi> 2006.
+# This file is distributed under the same license as the brasero package.
+# Ilkka Tuohela <hile@iki.fi> 2006-2007.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-19 17:18+0300\n"
+"POT-Creation-Date: 2007-10-30 11:24+0300\n"
 "PO-Revision-Date: 2007-06-13 17:48+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -508,6 +509,14 @@ msgstr "Vain elokuvat"
 #: ../src/brasero-file-chooser.c:252
 msgid "Image files only"
 msgstr "Vain kuvatiedostot"
+
+#: ../src/brasero-file-chooser.c:257
+msgid "Text files only"
+msgstr "Vain tekstitiedostot"
+
+#: ../src/brasero-file-chooser.c:262
+msgid "Application files only"
+msgstr "Vain sovellustiedostot"
 
 #: ../src/brasero-image-option-dialog.c:110
 msgid "Image burning setup"
@@ -1021,7 +1030,7 @@ msgid "the cue file (%s) seems to be invalid"
 msgstr "Cue-tiedosto (%s) näyttää olevan viallinen"
 
 #: ../src/burn-cdrdao.c:480 ../src/burn-growisofs.c:716 ../src/burn.c:825
-#: ../src/burn.c:1611 ../src/burn.c:1694 ../src/burn.c:1701
+#: ../src/burn.c:1632 ../src/burn.c:1715 ../src/burn.c:1722
 #, c-format
 msgid "the drive seems to be busy"
 msgstr "asema näyttää olevan käytössä"
@@ -1150,7 +1159,7 @@ msgstr "ift-tiedostoa ei voi kirjoittaa: %s"
 #: ../src/burn-cdrecord.c:805
 #, c-format
 msgid "a temporary directory couldn't be created"
-msgstr "väliaikaishakemistoa ei voitu luoda"
+msgstr "väliaikaiskansiota ei voitu luoda"
 
 #: ../src/burn-cdrecord.c:888 ../src/burn-cdrecord.c:899
 #: ../src/burn-growisofs.c:911 ../src/burn-growisofs.c:939
@@ -1535,7 +1544,7 @@ msgstr "Lähdemedia täytyy ladata uudestaan:"
 #: ../src/burn-dialog.c:1458
 #, c-format
 msgid "please, insert it again in \"%s\"."
-msgstr "laita levy uudestaan asemaan \"%s\""
+msgstr "Laita se uudestaan asemaan \"%s\""
 
 #: ../src/burn-dialog.c:1464
 msgid "The burnt media needs to be reloaded to perform integrity check:"
@@ -1682,7 +1691,7 @@ msgstr ""
 msgid "libdvdcss couldn't be loaded properly"
 msgstr "Kirjastoa libdvdcss ei voitu ladata"
 
-#: ../src/burn-dvdcss.c:482 ../src/burn-libisofs.c:582
+#: ../src/burn-dvdcss.c:482 ../src/burn-libisofs.c:773
 #, c-format
 msgid "the data couldn't be written to the pipe (%i: %s)"
 msgstr "tietoja ei voitu kirjoittaa putkeen (%i: %s)"
@@ -1711,7 +1720,7 @@ msgstr "DVD-levyä ei voitu avata"
 msgid "Copying Video DVD"
 msgstr "Kopioidaan DVD-videolevyä"
 
-#: ../src/burn-dvdcss.c:693 ../src/burn-libisofs.c:689
+#: ../src/burn-dvdcss.c:693 ../src/burn-libisofs.c:880
 #, c-format
 msgid "the data couldn't be written to the file (%i: %s)"
 msgstr "tietoja ei voitu kirjoittaa tiedostoon (%i: %s)"
@@ -1770,60 +1779,66 @@ msgstr "virheellinen kansiotietue"
 msgid "file name is too long"
 msgstr "tiedostonimi on liian pitkä"
 
-#: ../src/burn-libburn-common.c:215
+#: ../src/burn-libburn-common.c:216
 #, c-format
 msgid "the drive couldn't be initialized"
 msgstr "asemaa ei voitu alustaa"
 
-#: ../src/burn-libburn-common.c:280
+#: ../src/burn-libburn-common.c:281
 #, c-format
 msgid "(%s) libburn tried to say something"
 msgstr "(%s) libburn yritti kertoa jotain"
 
-#: ../src/burn-libburn-common.c:429
+#: ../src/burn-libburn-common.c:430
 #, c-format
 msgid "Writing track %02i"
 msgstr "Kirjoitetaan raitaa %02i"
 
-#: ../src/burn-libburn.c:319
+#: ../src/burn-libburn.c:317
 #, c-format
 msgid "unable to set the source"
 msgstr "lähdettä ei voi asettaa"
 
-#: ../src/burn-libburn.c:327
+#: ../src/burn-libburn.c:325
 #, c-format
 msgid "unable to add the track to the session"
 msgstr "raitaa ei voitu lisätä istuntoon"
 
-#: ../src/burn-libburn.c:388
+#: ../src/burn-libburn.c:386
 #, c-format
 msgid "a slave tried to get connected"
 msgstr "orjaprosessi yrittä ottaa yhteyttä"
 
-#: ../src/burn-libburn.c:552
+#: ../src/burn-libburn.c:550
 #, c-format
 msgid "unable to connect to imager"
 msgstr "imager-prosessiin ei saada yhteyttä"
 
-#: ../src/burn-libburn.c:646 ../src/burn-libburn.c:704
+#: ../src/burn-libburn.c:644 ../src/burn-libburn.c:702
 #, c-format
 msgid "no profile available for the medium"
 msgstr "aihiolle ei löydy profiilia"
 
-#: ../src/burn-libburn.c:749
+#: ../src/burn-libburn.c:747
 #, c-format
 msgid "/dev/null can't be opened"
 msgstr "Tiedostoa /dev/null ei voi avata"
 
-#: ../src/burn-libburn.c:780
+#: ../src/burn-libburn.c:778
 #, c-format
 msgid "libburn can't burn: %s"
 msgstr "libburn ei voi polttaa: %s"
 
-#: ../src/burn-libisofs.c:504
+#: ../src/burn-libisofs.c:501 ../src/burn-libisofs.c:544
+#: ../src/burn-libisofs.c:681
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
 msgstr "polun (%s) yläkansiota ei löydy kansiopuusta"
+
+#: ../src/burn-libisofs.c:518 ../src/burn-libisofs.c:560
+#, c-format
+msgid "unsupported operation (at %s)"
+msgstr "toiminto ei ole tuettu (kohdassa %s)"
 
 #: ../src/burn-libread-disc.c:290
 #, c-format
@@ -1833,7 +1848,7 @@ msgstr "levyä ei löytynyt"
 #: ../src/burn-local-image.c:397
 #, c-format
 msgid "Copying \"%s\""
-msgstr "Kopoiodaan \"%s\""
+msgstr "Kopioidaan \"%s\""
 
 #: ../src/burn-md5.c:206 ../src/burn-md5.c:285
 #, c-format
@@ -2009,7 +2024,7 @@ msgstr "Luodaan levykuvan tarkistussummaa"
 #: ../src/burn-sum.c:567
 #, c-format
 msgid "there is no disc."
-msgstr "asemassa ei ole levyä."
+msgstr "levyä ei löytynyt."
 
 #: ../src/burn-sum.c:573
 #, c-format
@@ -2127,13 +2142,13 @@ msgstr "aseman lukitusta ei voi avata"
 #: ../src/burn.c:534
 #, c-format
 msgid "the disc can't be ejected"
-msgstr "asemaa ei voi avata"
+msgstr "levyä ei voi poistaa asemasta"
 
 #: ../src/burn.c:658
 msgid "ongoing copying process"
 msgstr "kopiointi on kesken"
 
-#: ../src/burn.c:662 ../src/burn.c:777 ../src/burn.c:1130
+#: ../src/burn.c:662 ../src/burn.c:777 ../src/burn.c:1150
 #, c-format
 msgid "the drive can't be locked (%s)"
 msgstr "asemaa ei voi lukita (%s)"
@@ -2147,21 +2162,21 @@ msgstr "asema ei osaa uudelleenkirjoittaa levyjä"
 msgid "ongoing blanking process"
 msgstr "tyhjennys on kesken"
 
-#: ../src/burn.c:955
+#: ../src/burn.c:956
 #, c-format
 msgid "the drive has no burning capabilities"
 msgstr "asema ei osaa kirjoittaa levyjä"
 
-#: ../src/burn.c:1126 ../src/project.c:890
+#: ../src/burn.c:1146 ../src/project.c:890
 msgid "ongoing burning process"
 msgstr "kirjoitus on kesken"
 
-#: ../src/burn.c:1493
+#: ../src/burn.c:1513
 #, c-format
 msgid "the size of the volume can't be checked (%s)"
 msgstr "taltion kokoa ei voida tarkistaa (%s)"
 
-#: ../src/burn.c:1504
+#: ../src/burn.c:1525
 #, c-format
 msgid ""
 "the selected location does not have enough free space to store the disc "
@@ -2170,12 +2185,12 @@ msgstr ""
 "valitussa sijainnissa ei ole tarpeeksi vapaati tilaa levykuvan "
 "tallentamiseen (%ld MiB vaaditaan)"
 
-#: ../src/burn.c:1941
+#: ../src/burn.c:1981
 #, c-format
 msgid "the file %s can't be opened (%s)"
 msgstr "tiedostoa %s ei voi avata (%s)"
 
-#: ../src/burn.c:2303
+#: ../src/burn.c:2343
 #, c-format
 msgid "internal error (code %i)"
 msgstr "sisäinen virhe (koodi %i)"
@@ -2294,39 +2309,42 @@ msgstr "Istuntoa ei voitu tuoda:"
 msgid "Import session error"
 msgstr "Virhe tuotaessa istuntoa"
 
-#: ../src/data-disc.c:8051
+#. Translators: the following text is the reason why brasero
+#. * failed to load a project: because it is already loading
+#. * another project
+#: ../src/data-disc.c:8054
 msgid "loading project"
 msgstr "ladataan projektia"
 
-#: ../src/data-disc.c:8056
+#: ../src/data-disc.c:8059
 msgid "there is no selected disc"
 msgstr "levyä ei ole valittu"
 
-#: ../src/data-disc.c:8069
+#: ../src/data-disc.c:8072
 msgid "there isn't any available session on the disc"
 msgstr "levyllä ei ole saatavilla istuntoa"
 
-#: ../src/data-disc.c:8088
+#: ../src/data-disc.c:8091
 msgid "unknown volume type"
 msgstr "tuntematon taltiotyyppi"
 
-#: ../src/data-disc.c:8161
+#: ../src/data-disc.c:8164
 msgid "A multisession disc is inserted:"
 msgstr "Moniistuntolevy laitettiin asemaan:"
 
-#: ../src/data-disc.c:8162
+#: ../src/data-disc.c:8165
 msgid "Click here to import its contents"
 msgstr "Tuo levyn sisältö napsauttamalla tästä"
 
-#: ../src/data-disc.c:8571
+#: ../src/data-disc.c:8574
 msgid "Project couldn't be loaded:"
 msgstr "Projektia ei voitu ladata:"
 
-#: ../src/data-disc.c:8573
+#: ../src/data-disc.c:8576
 msgid "Project loading failure"
 msgstr "Projektin latausvirhe"
 
-#: ../src/data-disc.c:8576
+#: ../src/data-disc.c:8579
 msgid "A thread couldn't be created"
 msgstr "Säiettä ei voitu luoda"
 
@@ -3539,26 +3557,53 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgid "White list of plugins to use"
 #~ msgstr "Sallittujen liitännäisten luettelo"
 
-#~ msgid "there is no track to be burn"
-#~ msgstr "poltettavaa kappaletta ei ole"
+#~ msgid "Number of copies "
+#~ msgstr "Kopioiden lukumäärä"
 
-#~ msgid "there is no drive to burn to"
-#~ msgstr "asemaa, johon polttaa, ei ole"
+#~ msgid "P_lugins"
+#~ msgstr "_Liitännäiset"
 
-#~ msgid "this operation is not supported. Try to activate proper plugins"
-#~ msgstr "tämä toiminto ei ole tuettu. Yritä aktivoida sopiva liitännäinen"
+#~ msgid "Choose plugins for brasero"
+#~ msgstr "Valitse braseron liitännäiset"
 
-#~ msgid "merging data is impossible with this disc"
-#~ msgstr "tietojen yhdistäminen on mahdotonta tällä levyllä"
+#~ msgid "Plugin"
+#~ msgstr "Liitännäinen"
 
-#~ msgid "the disc could not be mounted (max attemps reached)"
-#~ msgstr "levyä ei voitu liittää (liikaa yrityksiä)"
+#~ msgid "Enabled"
+#~ msgstr "Käytössä"
 
-#~ msgid "ongoing checksuming operation"
-#~ msgstr "tarkistussumman laskenta on kesken"
+#~ msgid ""
+#~ "<b>%s</b>\n"
+#~ "%s\n"
+#~ "<i>Error: %s</i>"
+#~ msgstr ""
+#~ "<b>%s</b>\n"
+#~ "%s\n"
+#~ "<i>Virhe: %s</i>"
 
-#~ msgid "only one track at a time can be checked"
-#~ msgstr "vain yksi raita kerrallaan voidaan tarkistaa"
+#~ msgid "_About"
+#~ msgstr "_Tietoja"
+
+#~ msgid "C_onfigure"
+#~ msgstr "_Asetukset"
+
+#~ msgid "A_ctivate"
+#~ msgstr "Ota _käyttöön"
+
+#~ msgid "Ac_tivate All"
+#~ msgstr "Ota k_aikki käyttöön"
+
+#~ msgid "_Deactivate All"
+#~ msgstr "_Poista kaikki käytöstä"
+
+#~ msgid "Active plugins"
+#~ msgstr "Käytössä olevat liitännäiset"
+
+#~ msgid "_About Plugin"
+#~ msgstr "_Tietoja liitännäisestä"
+
+#~ msgid "C_onfigure Plugin"
+#~ msgstr "Liitännäiset _asetukset"
 
 #~ msgid "<big><b>Burning data disc</b></big>"
 #~ msgstr "<big><b>Kirjoitetaan datalevyä</b></big>"
@@ -3569,17 +3614,37 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgid "<big><b>Burning image to disc</b></big>"
 #~ msgstr "<big><b>Kirjoitetaan levykuvaa levylle</b></big>"
 
-#~ msgid "replace the disc with the media to check its integrity"
-#~ msgstr "vaihda asemaan levy, jonka eheyden haluat tarkistaa"
+#~ msgid "A data integrity test is about to begin:"
+#~ msgstr "Tiedon eheystarkastus on alkamassa:"
 
-#~ msgid "insert the media to check its integrity"
-#~ msgstr "laita aihio asemaan tarkistaaksesi sen eheyden"
+#~ msgid "please, insert the disc to check in \"%s\"."
+#~ msgstr "laita tarkistettava levy asemaan \"%s\""
+
+#~ msgid ""
+#~ "A recording was successfully completed.\n"
+#~ "The next recording is about to begin:"
+#~ msgstr ""
+#~ "Tallennus valmistui onnistuneesti.\n"
+#~ "Seuraava tallennus on alkamassa:"
 
 #~ msgid "<i>the medium is not writable with the current set of plugins</i>"
 #~ msgstr "<i>aihio ei ole kirjoitettissa käytössä olevilla liitännäisillä</i>"
 
-#~ msgid "the medium can be recorded (blanking required)"
-#~ msgstr "aihiolle voi tallentaa (vaatii tyhjennyksen)"
+#~ msgid "the medium can be recorded (automatic blanking required)"
+#~ msgstr "aihiolle voi tallentaa (vaatii automaattisen tyhjennyksen)"
+
+#~ msgid ""
+#~ "<b><i>The drive that holds the source media will also be the one used to "
+#~ "record.\n"
+#~ "\n"
+#~ "</i></b><i>A new recordable media will be required once the one currently "
+#~ "loaded has been copied.</i>"
+#~ msgstr ""
+#~ "<b><i>Asema, jossa lähdemedia on, on sama, jota käytetään "
+#~ "tallentamiseen.\n"
+#~ "\n"
+#~ "</i></b><i>Uusi tallennetava aihio vaaditaan, kun ladattu levy on ensin "
+#~ "luettu.</i>"
 
 #~ msgid "<b>Type:</b>"
 #~ msgstr "<b>Tyyppi:</b>"
@@ -3593,6 +3658,9 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgid "<b>Status:</b>"
 #~ msgstr "<b>Tila:</b>"
 
+#~ msgid "unknown"
+#~ msgstr "tuntematon"
+
 #~ msgid "%d x (DVD)"
 #~ msgstr "%d x (DVD)"
 
@@ -3602,8 +3670,70 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgid "%d x (DVD) %d x (CD)"
 #~ msgstr "%d x (DVD) %d x (CD)"
 
+#~ msgid "Directory for temporary files"
+#~ msgstr "Väliaikaistiedostojen kansio"
+
+#~ msgid "Temporary directory free space:"
+#~ msgstr "väliaikaishakemiston vapaa tila:"
+
+#~ msgid "<b>Temporary files</b>"
+#~ msgstr "<b>Väliaikaistiedostot</b>"
+
+#~ msgid "Starting to record"
+#~ msgstr "Aloitetaan tallennusta"
+
+#~ msgid "\"%s\" can't be unlocked"
+#~ msgstr "laitetta \"%s\" ei voi lukita"
+
+#~ msgid "no drive specified as source"
+#~ msgstr "lähdelevyn asemaa ei ole annettu"
+
+#~ msgid "no drive specified"
+#~ msgstr "asemaa ei annettu"
+
+#~ msgid "the disc could not be mounted (max attemps reached)"
+#~ msgstr "levyä ei voitu liittää (liikaa yrityksiä)"
+
+#~ msgid "ongoing checksuming operation"
+#~ msgstr "tarkistussumman laskenta on kesken"
+
+#~ msgid "only one track at a time can be checked"
+#~ msgstr "vain yksi raita kerrallaan voidaan tarkistaa"
+
+#~ msgid "there is no track to be burn"
+#~ msgstr "poltettavaa kappaletta ei ole"
+
+#~ msgid "there is no drive to burn to"
+#~ msgstr "asemaa, johon polttaa, ei ole"
+
+#~ msgid "this operation is not supported. Try to activate proper plugins"
+#~ msgstr "tämä toiminto ei ole tuettu. Yritä aktivoida sopiva liitännäinen"
+
+#~ msgid "merging data is impossible with this disc"
+#~ msgstr "tietojen yhdistäminen on mahdotonta tällä levyllä"
+
+#~ msgid "impossible to find a format for the temporary image"
+#~ msgstr "väliaikaisen levykuvan tyyppiä ei voitu selvittää"
+
+#~ msgid "plugin %s did not want to work. Try to deactivate it"
+#~ msgstr "liitännäinen %s ei suostu toimimaan. Yritä poistaa se käytöstä"
+
 #~ msgid "Insufficient space on media (%lli available for %lli)"
 #~ msgstr "Aihiolla ei ole tarpeeksi tilaa (%lli vapaana kohteelle %lli)"
+
+#~ msgid ""
+#~ "plugin %s did not work properly.\n"
+#~ "Try to deactivate it"
+#~ msgstr ""
+#~ "Liitännäinen %s ei toiminut oikein.\n"
+#~ "Yritä poistaa se käytöstä"
+
+#~ msgid ""
+#~ "plugin %s didn't work properly (it does not support operation).\n"
+#~ "Try to deactivate it"
+#~ msgstr ""
+#~ "Liitännäinen %s ei toiminut oikein (se ei tue toimintoia).\n"
+#~ "Yritä poistaa se käytöstä"
 
 #~ msgid "a plugin did not behave properly"
 #~ msgstr "Liitännäinen toimi väärin"
@@ -3611,11 +3741,20 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgid "process %s ended with an error code (%i)"
 #~ msgstr "prosessi %s päättyi virhekoodiin (%i)"
 
-#~ msgid "cdrdao could not be found in the path"
-#~ msgstr "komentoa cdrdao ei löydy polulta"
+#~ msgid "no path"
+#~ msgstr "ei polkua"
+
+#~ msgid "no output specified"
+#~ msgstr "tulostiedostoa ei annettu"
+
+#~ msgid "size can't be retrieved (%s)"
+#~ msgstr "kokoa ei voitu selvittää (%s)"
 
 #~ msgid "use cdrdao to image and burn CDs"
 #~ msgstr "käytä cdrdaoa levykuvien luontiin ja kirjoittamiseen"
+
+#~ msgid "cdrdao could not be found in the path"
+#~ msgstr "komentoa cdrdao ei löydy polulta"
 
 #~ msgid "toc2cue could not be found in the path"
 #~ msgstr "komentoa toc2cue ei löydy polulta"
@@ -3629,38 +3768,60 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgid "Internal error: bad file descriptor"
 #~ msgstr "Sisäinen virhe: viallinen tiedostokuvaaja"
 
-#~ msgid "genisoimage could not be found in the path"
-#~ msgstr "komentoa genisoimage ei löydy polulta"
-
 #~ msgid "use genisoimage to create images from files"
 #~ msgstr "käytä genisoimagea luomaan levykuvia tiedostoista"
 
-#~ msgid "readom could not be found in the path"
-#~ msgstr "komentoa readom ei löydy polulta"
+#~ msgid "genisoimage could not be found in the path"
+#~ msgstr "komentoa genisoimage ei löydy polulta"
 
 #~ msgid "use readom to image CDs"
 #~ msgstr "tee CD-levykuvia readomilla"
 
+#~ msgid "readom could not be found in the path"
+#~ msgstr "komentoa readom ei löydy polulta"
+
 #~ msgid "the size of the session cannot be retrieved"
 #~ msgstr "istunnon kokoa ei voitu selvittää"
 
-#~ msgid "cdrecord could not be found in the path"
-#~ msgstr "komentoa cdrecord ei löydy polulta"
+#~ msgid "use wodim to burn CDs"
+#~ msgstr "Käytä komentoa wodim CD-levyjen kirjoitukseen"
+
+#~ msgid "wodim could not be found in the path"
+#~ msgstr "komentoa wodim ei löydy polulta"
+
+#~ msgid "enable -immed flag (see wodim manual)"
+#~ msgstr "ota immed-lippu käyttöön (lisätietoja wodimin ohjeesta)"
+
+#~ msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
+#~ msgstr ""
+#~ "pienin mahdollinen aseman puskurin täyttöaste (lisätietoja wodimin "
+#~ "ohjeesta)"
 
 #~ msgid "use cdrecord to burn CDs"
 #~ msgstr "Käytä komentoa cdrecord CD-levyjen kirjoitukseen"
 
+#~ msgid "cdrecord could not be found in the path"
+#~ msgstr "komentoa cdrecord ei löydy polulta"
+
+#~ msgid "enable -immed flag (see cdrecord manual)"
+#~ msgstr "Käytä \"immed\"-lippua (lisätietoja cdrecordin ohjeesta)"
+
+#~ msgid "minimum drive buffer fill ratio (in %)(see cdrecord manual):"
+#~ msgstr ""
+#~ "pienin mahdollinen aseman puskurin täyttöaste (lisätietoja cdrecordin "
+#~ "ohjeesta)"
+
+#~ msgid "use mkisofs to create images from files"
+#~ msgstr "luo levykuvia tiedostoista komennolla mkisofs"
+
 #~ msgid "mkisofs could not be found in the path"
 #~ msgstr "komentoa mkisofs ei löydy polulta"
 
-#~ msgid "use genisoimage/mkisofs to create images from files"
-#~ msgstr "luo levykuvia tiedostoista ohjelmilla genisoimage ja mkisofs"
+#~ msgid "use readcd to image CDs"
+#~ msgstr "luo CD-levykuvia readomilla"
 
 #~ msgid "readcd could not be found in the path"
 #~ msgstr "komentoa readcd ei löydy polulta"
-
-#~ msgid "use readcd to image CDs"
-#~ msgstr "luo CD-levykuvia readomilla"
 
 #~ msgid "data could not be read from the pipe (%i: %s)"
 #~ msgstr "tietoja ei voitu lkuea putkesta (%i: %s)"
@@ -3669,26 +3830,35 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ msgstr ""
 #~ "md5-tarkistussumma mahdollistaa levyn ja tietojen eheyden tarkistuksen"
 
+#~ msgid "don't add a md5sum file to all data projects"
+#~ msgstr "älä lisää md5sum-tiedostoa dataprojekteihin"
+
 #~ msgid "Dvdcss allows to read css encrypted video DVDs"
 #~ msgstr "Dvdcss mahdollistaa salattujen video-DVD-levyjen lukemisen"
-
-#~ msgid "dvd+rw-format could not be found in the path"
-#~ msgstr "komentoa dvd+rw-format ei löydy polulta"
 
 #~ msgid "dvd+rw-format erases and formats DVD+/-RW"
 #~ msgstr "dvd+rw-format tyhjentää ja alustaa DVD+/-RW-levyjä"
 
-#~ msgid "growisofs could not be found in the path"
-#~ msgstr "komentoa growisofs ei löydy polulta"
+#~ msgid "dvd+rw-format could not be found in the path"
+#~ msgstr "komentoa dvd+rw-format ei löydy polulta"
 
 #~ msgid "growisofs burns DVDs"
 #~ msgstr "growisofs kirjoittaa DVD-levyjä"
 
-#~ msgid "the drive address couldn't be retrieved"
-#~ msgstr "aseman osoitetta ei voitu selvittää"
+#~ msgid "growisofs could not be found in the path"
+#~ msgstr "komentoa growisofs ei löydy polulta"
 
 #~ msgid "libburn burns CD(RW), DVD+/-(RW)"
 #~ msgstr "libburn kirjoittaa CD(RW) ja DVD+/-(RW)-levyjä"
+
+#~ msgid "the drive address couldn't be retrieved"
+#~ msgstr "aseman osoitetta ei voitu selvittää"
+
+#~ msgid "non local file %s"
+#~ msgstr "ei-paikallinen tiedosto %s"
+
+#~ msgid "libisofs reported an error while adding directory %s"
+#~ msgstr "libisofs kertoi virheestä lisättäessä kansiota %s"
 
 #~ msgid "libisofs creates disc images from files"
 #~ msgstr "libisofs luo levykuvia tiedostoista"
@@ -3714,6 +3884,12 @@ msgstr "valitse tiedostot tältä alueelta ja napsauta \"Poista\"-painiketta"
 #~ "Transcode converts song files into a format proper to burn them on CDs"
 #~ msgstr ""
 #~ "Transcode muuntaa musiikkitiedostoja CD-levylle poltettavaan muotoon"
+
+#~ msgid "replace the disc with the media to check its integrity"
+#~ msgstr "vaihda asemaan levy, jonka eheyden haluat tarkistaa"
+
+#~ msgid "insert the media to check its integrity"
+#~ msgstr "laita aihio asemaan tarkistaaksesi sen eheyden"
 
 #~ msgid "there are some tracks left"
 #~ msgstr "joitain raitoja on jäljellä"
