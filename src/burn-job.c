@@ -1316,7 +1316,7 @@ brasero_job_get_media (BraseroJob *self, BraseroMedia *media)
 }
 
 BraseroBurnResult
-brasero_job_get_last_session_address (BraseroJob *self, guint64 *address)
+brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
 {
 	BraseroBurnSession *session;
 	NautilusBurnDrive *drive;
@@ -1329,13 +1329,13 @@ brasero_job_get_last_session_address (BraseroJob *self, guint64 *address)
 	priv = BRASERO_JOB_PRIVATE (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
-	*address = NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (drive);
+	NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (drive, NULL, address);
 
 	return BRASERO_BURN_OK;
 }
 
 BraseroBurnResult
-brasero_job_get_next_writable_address (BraseroJob *self, guint64 *address)
+brasero_job_get_next_writable_address (BraseroJob *self, gint64 *address)
 {
 	BraseroBurnSession *session;
 	NautilusBurnDrive *drive;

@@ -64,8 +64,15 @@ NCB_DRIVE_MOUNT (NautilusBurnDrive *drive, GError **error);
 gchar *
 NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive, GError **error);
 
-gint64
-NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive);
+gboolean
+NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive,
+				       gint64 *byte,
+				       gint64 *sector);
+
+gboolean
+NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (NautilusBurnDrive *drive,
+				    gint64 *size,
+				    gint64 *blocks);
 
 gint64
 NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive);

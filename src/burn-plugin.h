@@ -32,6 +32,16 @@
 
 G_BEGIN_DECLS
 
+#define BRASERO_PLUGIN_BURN_FLAG_MASK	(BRASERO_BURN_FLAG_DUMMY|		\
+					 BRASERO_BURN_FLAG_MULTI|		\
+					 BRASERO_BURN_FLAG_DAO|			\
+					 BRASERO_BURN_FLAG_BURNPROOF|		\
+					 BRASERO_BURN_FLAG_OVERBURN|		\
+					 BRASERO_BURN_FLAG_NOGRACE|		\
+					 BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|	\
+					 BRASERO_BURN_FLAG_APPEND)
+
+
 #define BRASERO_TYPE_PLUGIN             (brasero_plugin_get_type ())
 #define BRASERO_PLUGIN(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_PLUGIN, BraseroPlugin))
 #define BRASERO_PLUGIN_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_PLUGIN, BraseroPluginClass))
@@ -60,7 +70,7 @@ GType brasero_plugin_get_type (void) G_GNUC_CONST;
  * These are the functions a plugin must implement
  */
 
-GType	brasero_plugin_register_caps	(BraseroPlugin *plugin, gchar **error);
+GType brasero_plugin_register_caps (BraseroPlugin *plugin, gchar **error);
 
 void
 brasero_plugin_define (BraseroPlugin *plugin,
@@ -68,6 +78,9 @@ brasero_plugin_define (BraseroPlugin *plugin,
 		       const gchar *description,
 		       const gchar *author,
 		       guint priority);
+void
+brasero_plugin_register_group (BraseroPlugin *plugin,
+			       const gchar *name);
 
 typedef enum {
 	BRASERO_PLUGIN_IO_NONE			= 0,

@@ -256,6 +256,7 @@ BraseroBurnResult
 brasero_md5_file (BraseroMD5Ctx *ctx,
 		  const gchar *path,
 		  BraseroMD5 *md5,
+		  gint64 start,
 		  gint64 limit,
 		  GError **error)
 {
@@ -276,6 +277,27 @@ brasero_md5_file (BraseroMD5Ctx *ctx,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the file %s couldn't be read (%s)"),
+			     name,
+			     strerror (errno));
+		g_free (name);
+
+		return BRASERO_BURN_ERR;
+	}
+
+	if (start && fseek (file, start, SEEK_SET)) {
+		gchar *name = NULL;
+
+		fclose (file);
+
+		if (errno == ENOENT)
+			return BRASERO_BURN_RETRY;
+
+		name = g_path_get_basename (path);
+
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the file %s couldn't be seeked (%s)"),
 			     name,
 			     strerror (errno));
 		g_free (name);
@@ -392,6 +414,7 @@ BraseroBurnResult
 brasero_md5_file_to_string (BraseroMD5Ctx *ctx,
 			    const gchar *path,
 			    gchar *string,
+			    gint64 start,
 			    gint64 limit,
 			    GError **error)
 {
@@ -404,6 +427,7 @@ brasero_md5_file_to_string (BraseroMD5Ctx *ctx,
 	result = brasero_md5_file (ctx,
 				   path,
 				   &md5,
+				   start,
 				   limit,
 				   error);
 

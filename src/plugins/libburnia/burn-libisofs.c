@@ -43,6 +43,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-basics.h"
+#include "burn-libburnia.h"
 #include "burn-libisofs.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
@@ -690,6 +691,8 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	g_slist_free (input);
 	g_slist_free (output);
+
+	brasero_plugin_register_group (plugin, _(LIBBURNIA_DESCRIPTION));
 
 	return BRASERO_BURN_OK;
 }

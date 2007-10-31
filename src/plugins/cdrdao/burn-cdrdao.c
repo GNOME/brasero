@@ -41,6 +41,7 @@
 
 #include <nautilus-burn-drive.h>
 
+#include "burn-cdrdao-common.h"
 #include "burn-cdrdao.h"
 #include "burn-basics.h"
 #include "burn-plugin.h"
@@ -563,6 +564,8 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
+	/* cdrdao is used to burn images so it can't APPEND and the disc must
+	 * have been blanked before (it can't overwrite) */
 	brasero_plugin_set_flags (plugin,
 				  media_w,
 				  BRASERO_BURN_FLAG_DAO|
@@ -583,5 +586,6 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
+	brasero_plugin_register_group (plugin, _(CDRDAO_DESCRIPTION));
 	return BRASERO_BURN_OK;
 }

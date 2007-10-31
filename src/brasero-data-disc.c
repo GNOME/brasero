@@ -8116,7 +8116,9 @@ brasero_data_disc_import_session_cb (GtkToggleAction *action,
 	}
 
 	/* get the address for the last track and retrieve the file list */
-	block = NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive);
+	NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive,
+					       NULL,
+					       &block);
 	if (block == -1) {
 		brasero_data_disc_import_session_error (disc, _("there isn't any available session on the disc"));
 		return;
@@ -8186,9 +8188,7 @@ brasero_data_disc_import_session_cb (GtkToggleAction *action,
 	disc->priv->session = volume;
 
 	/* add the size of the session files */
-	brasero_disc_flags_changed (BRASERO_DISC (disc),
-				    BRASERO_BURN_FLAG_APPEND|
-				    BRASERO_BURN_FLAG_MERGE);
+	brasero_disc_flags_changed (BRASERO_DISC (disc), BRASERO_BURN_FLAG_MERGE);
 }
 
 static void
@@ -8215,7 +8215,7 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 
 	multisession = (media_status & BRASERO_MEDIUM_WRITABLE) &&
 		       (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) &&
-		       (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive) != -1);
+		       (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive, NULL, NULL) != -1);
 
 	if (multisession) {
 		GtkWidget *widget;
@@ -8560,11 +8560,13 @@ brasero_data_disc_set_session_param (BraseroDisc *disc,
 	type.type = BRASERO_TRACK_TYPE_DATA;
 	type.subtype.fs_type = fs_type;
 	brasero_burn_session_set_input_type (session, &type);
-	
+
 	if (BRASERO_DATA_DISC (disc)->priv->session) {
-		brasero_burn_session_add_flag (session,
-					       BRASERO_BURN_FLAG_APPEND|
-					       BRASERO_BURN_FLAG_MERGE);
+		/* remove the following flag just in case */
+		brasero_burn_session_remove_flag (session,
+						  BRASERO_BURN_FLAG_FAST_BLANK|
+						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+		brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_MERGE);
 		brasero_burn_session_set_burner (session,
 						 BRASERO_DATA_DISC (disc)->priv->drive);
 	}

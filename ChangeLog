@@ -1,3 +1,131 @@
+2007-10-31  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Big patch (sorry I was away and couldn't commit earlier)
+	This fixes bugs
+	#477769 – Building without libburn
+	#480712 – Brasero Plugins UI
+	#488817 – Plugin problems?
+	#490853 – Brasero refuses to start burning showing a "File not found" error, sometimes (weird)
+	- simplified plugin dialog (only unnecessary functionalities are shown)
+	- added switches to build only a set of plugins (cdrkit, libburnia, cdrtools)
+	- kept all plugins' priority under apps/brasero/config/priority
+	- added group existence to plugins and a gconf key for favourite group
+	   now brasero tries to use plugins from the same group (most probably the favourite one if any)
+	- fix a bug where joliet option was hidden (see # )
+	- fix a bug where CDRW where appended instead of being blanked
+	- temporary fix for use of DAO (should be used only for first session)
+	- improved flags handling in general by removing some hard set rules
+	- fix drive locking when merging
+	
+	Now strings should be frozen hopefully.
+	More to come:
+	- MD5 fixes (through the use of readcd/readom)
+	- improvement in flags handling by plugins (possibility to set concurent flags)
+	
+
+	* configure.in:
+	* data/brasero.schemas.in:
+	* src/brasero-burn-dialog.c: (brasero_burn_dialog_run):
+	* src/brasero-data-disc.c: (brasero_data_disc_import_session_cb),
+	(brasero_data_disc_update_multi_button_state),
+	(brasero_data_disc_set_session_param):
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_check_drive_settings):
+	* src/brasero-disc-copy-dialog.c: (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_update_multi),
+	(brasero_disc_option_dialog_set_joliet),
+	(brasero_disc_option_dialog_set_multi),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_init):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_init):
+	* src/brasero-ncb.c: (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS),
+	(NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE):
+	* src/brasero-ncb.h:
+	* src/brasero-plugin-manager-ui.c:
+	(plugin_manager_ui_populate_lists), (model_name_sort_func),
+	(plugin_manager_ui_construct_tree),
+	(brasero_plugin_manager_ui_init):
+	* src/burn-basics.h:
+	* src/burn-caps.c: (brasero_burn_caps_finalize),
+	(brasero_burn_caps_init),
+	(brasero_burn_caps_register_plugin_group),
+	(brasero_burn_caps_new_blanking_task),
+	(brasero_burn_caps_new_checksuming_task),
+	(brasero_caps_link_check_data_flags),
+	(brasero_caps_link_check_record_flags), (brasero_caps_try_links),
+	(brasero_caps_link_find_plugin), (brasero_burn_caps_new_task),
+	(brasero_caps_try_output), (brasero_caps_try_output_with_blanking),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_get_required_media_type),
+	(brasero_caps_get_flags), (brasero_caps_get_flags_for_disc),
+	(brasero_burn_caps_get_flags):
+	* src/burn-caps.h:
+	* src/burn-job.c: (brasero_job_get_last_session_address),
+	(brasero_job_get_next_writable_address):
+	* src/burn-job.h:
+	* src/burn-medium.c: (brasero_medium_get_last_data_track_address),
+	(brasero_medium_get_last_data_track_space),
+	(brasero_medium_track_volume_size):
+	* src/burn-medium.h:
+	* src/burn-plugin-manager.c:
+	(brasero_plugin_manager_set_plugins_state),
+	(brasero_plugin_manager_plugin_state_changed):
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c: (brasero_plugin_get_active),
+	(brasero_plugin_get_gconf_priority_key), (brasero_plugin_define),
+	(brasero_plugin_register_group), (brasero_plugin_get_group),
+	(brasero_plugin_get_record_flags), (brasero_plugin_get_priority),
+	(brasero_plugin_priority_changed), (brasero_plugin_init_real):
+	* src/burn-plugin.h:
+	* src/burn-session.c:
+	* src/burn.c: (brasero_burn_is_loaded_dest_media_supported),
+	(brasero_burn_lock_dest_media), (brasero_burn_run_imager),
+	(brasero_burn_run_recorder),
+	(brasero_burn_check_session_consistency):
+	* src/plugins/Makefile.am:
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrdao/burn-cdrdao-common.h:
+	* src/plugins/cdrdao/burn-cdrdao.c: (brasero_cdrdao_export_caps):
+	* src/plugins/cdrdao/burn-toc2cue.c: (brasero_toc2cue_export_caps):
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrkit/burn-cdrkit.h:
+	* src/plugins/cdrkit/burn-genisoimage.c:
+	(brasero_genisoimage_set_argv_image),
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrkit/burn-readom.c: (brasero_readom_export_caps):
+	* src/plugins/cdrkit/burn-wodim.c: (brasero_wodim_export_caps):
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	(brasero_cdrecord_export_caps):
+	* src/plugins/cdrtools/burn-cdrtools.h:
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	(brasero_mkisofs_set_argv_image), (brasero_mkisofs_set_argv),
+	(brasero_mkisofs_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c: (brasero_readcd_export_caps):
+	* src/plugins/checksum/burn-md5.c: (brasero_md5_file),
+	(brasero_md5_file_to_string):
+	* src/plugins/checksum/burn-md5.h:
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_start_md5),
+	(brasero_md5sum_image), (brasero_md5sum_disc),
+	(brasero_md5sum_disc_files):
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/growisofs/burn-dvd-rw-format.c:
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs-common.h:
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/libburnia/burn-libburn.c:
+	(brasero_libburn_export_caps):
+	* src/plugins/libburnia/burn-libburnia.h:
+	* src/plugins/libburnia/burn-libisofs.c:
+	(brasero_libisofs_export_caps):
+
 2007-10-21  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Some improvements fixes for plugin dialog

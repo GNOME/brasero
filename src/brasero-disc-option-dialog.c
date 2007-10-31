@@ -284,6 +284,25 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 				     &supported,
 				     &compulsory);
 
+	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		/* clean up the disc and have more space when possible */
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_FAST_BLANK|
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+	}
+	else
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_BURN_FLAG_FAST_BLANK|
+						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+
+	/* use DAO whenever it's possible */
+	if (supported & BRASERO_BURN_FLAG_DAO)
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_DAO);
+	else
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_BURN_FLAG_DAO);
+
 	if (!(supported & BRASERO_BURN_FLAG_MULTI)) {
 		if (GTK_WIDGET_IS_SENSITIVE (priv->multi_toggle))
 			priv->multi_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle));
@@ -364,16 +383,6 @@ brasero_disc_option_dialog_output_changed (BraseroBurnSession *session,
 		brasero_disc_option_dialog_update_label (dialog);
 }
 
-static void
-brasero_disc_option_dialog_disc_set_output (BraseroBurnSession *session,
-					    BraseroDiscOptionDialog *dialog)
-{
-	BraseroDiscOptionDialogPrivate *priv;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-	brasero_drive_selection_lock (BRASERO_DRIVE_SELECTION (priv->selection), TRUE);
-}
-
 /**
  * These functions are used to update the session according to the states
  * of the buttons and entry 
@@ -421,8 +430,7 @@ brasero_disc_option_dialog_set_joliet (BraseroDiscOptionDialog *dialog)
 		return;
 
 	/* NOTE: we don't check for the sensitive property since when
-	 * something is compulsory the button is active but insensitive
-	 */
+	 * something is compulsory the button is active but insensitive */
 	brasero_burn_session_get_input_type (priv->session, &source);
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle)))
 		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_JOLIET;
@@ -448,6 +456,9 @@ brasero_disc_option_dialog_set_multi (BraseroDiscOptionDialog *dialog)
 	}
 
 	brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
+
+	if (!priv->video_toggle)
+		return;
 
 	/* to improve video DVD compatibility we don't allow to leave a disc
 	 * open and have a video DVD created.
@@ -603,7 +614,7 @@ brasero_disc_option_dialog_joliet_widget (BraseroDiscOptionDialog *dialog)
 
 	priv->joliet_toggle = gtk_check_button_new_with_mnemonic (_("Increase compatibility with _Windows systems"));
 	gtk_widget_set_tooltip_text (priv->joliet_toggle,
-			      _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"));
+				     _("Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"));
 
 	/* NOTE: we take for granted that if the source does not require
 	 * to have the joliet extension, it's because it does have some
@@ -720,6 +731,7 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 {
 	BraseroDiscOptionDialogPrivate *priv;
 	BraseroTrackType type;
+	gboolean lock_drive;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
@@ -729,21 +741,18 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 	priv->disc = disc;
 	g_object_ref (disc);
 
-	/* detect if a drive is set by the disc object, if so then lock it */
 	if (priv->output_sig) {
 		g_signal_handler_disconnect (priv->session, priv->output_sig);
 		priv->output_sig = 0;
 	}
-	priv->output_sig = g_signal_connect (priv->session,
-					     "output-changed",
-					     G_CALLBACK (brasero_disc_option_dialog_disc_set_output),
-					     dialog);
-	
+
 	brasero_disc_set_session_param (disc, priv->session);
-	if (priv->output_sig) {
-		g_signal_handler_disconnect (priv->session, priv->output_sig);
-		priv->output_sig = 0;
-	}
+
+	/* see if we should lock the drive */
+	lock_drive = (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_APPEND|
+									BRASERO_BURN_FLAG_MERGE)) != 0;
+	brasero_drive_selection_lock (BRASERO_DRIVE_SELECTION (priv->selection), lock_drive);
+
 	priv->output_sig = g_signal_connect (priv->session,
 					     "output-changed",
 					     G_CALLBACK (brasero_disc_option_dialog_output_changed),
@@ -825,9 +834,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 				       BRASERO_BURN_FLAG_NOGRACE|
 				       BRASERO_BURN_FLAG_BURNPROOF|
 				       BRASERO_BURN_FLAG_CHECK_SIZE|
-				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
-				       BRASERO_BURN_FLAG_FAST_BLANK|
-				       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT);
 
 	/* first box */
 	priv->selection = brasero_dest_selection_new (priv->session);

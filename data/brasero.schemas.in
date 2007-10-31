@@ -16,29 +16,32 @@
       </schema>
 
       <schema>
-        <key>/schemas/apps/brasero/plugins</key>
+        <key>/schemas/apps/brasero/config/engine-group</key>
+	<applyto>/app/brasero/config/engine-group</applyto>
+	<owner>brasero</owner>
+	<type>list</type>
+	<list_type>string</list_type>
+	<default>[]</default>
+	<locale name="C">
+	  <short>Favourite burn engine</short>
+	  <long>
+	    Contains the name of the favourite burn engine suite installed. It will be used if possible.
+	  </long>
+	</locale>
+      </schema>
+
+      <schema>
+        <key>/schemas/apps/brasero/config/plugins</key>
 	<applyto>/apps/brasero/plugins</applyto>
 	<owner>brasero</owner>
 	<type>list</type>
 	<list_type>string</list_type>
 	<default>[]</default>
 	<locale name="C">
-	  <short>White list of plugins to use</short>
+	  <short>White list of additionnal plugins to use</short>
 	  <long>
-	    Contains the list of plugings brasero will use to burn discs. If set to NULL, brasero will load them all.
+	    Contains the list of additionnal plugins brasero will use to burn discs. If set to NULL, brasero will load them all.
 	  </long>
-	</locale>
-      </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/config/activate_checksum</key>
-	<applyto>/apps/brasero/config/activate_checksum</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>false</default>
-	<locale name="C">
-	  <short>Should brasero generate activate the "generate checksum" button</short>
-	  <long>Should brasero generate activate the "generate checksum" button by default. Set to true, brasero will check the option by default.</long>
 	</locale>
       </schema>
 
@@ -63,54 +66,6 @@
 	<locale name="C">
 	  <short>Used in conjunction with -immed flag with cdrecord</short>
 	  <long>Only used in conjunction with -immed flag with cdrecord. See immed_flag.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/config/cdrdao_disabled</key>
-	<applyto>/apps/brasero/config/cdrdao_disabled</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>false</default>
-	<locale name="C">
-	  <short>Enable use of cdrdao</short>
-	  <long>Whether to use cdrdao for burning or not. Set to true to use it.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/config/libburn_burn</key>
-	<applyto>/apps/brasero/config/libburn_burn</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>false</default>
-	<locale name="C">
-	  <short>Use libburn to burn CDs</short>
-	  <long>Whether to use libburn to burn CDs. Set to true to use it.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/config/libburn_iso</key>
-	<applyto>/apps/brasero/config/libburn_iso</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>false</default>
-	<locale name="C">
-	  <short>Use libisofs to generate images</short>
-	  <long>Whether to use libisofs to generate images. Set to true to use it.</long>
-	</locale>
-       </schema>
-
-      <schema>
-        <key>/schemas/apps/brasero/config/libburn_read</key>
-	<applyto>/apps/brasero/config/libburn_read</applyto>
-	<owner>brasero</owner>
-	<type>bool</type>
-	<default>false</default>
-	<locale name="C">
-	  <short>Use libburn to read CDs</short>
-	  <long>Whether to use libburn to read CDs. Set to true to use it.</long>
 	</locale>
        </schema>
 

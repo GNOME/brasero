@@ -150,8 +150,10 @@ brasero_medium_get_tracks (BraseroMedium *medium)
 	return g_slist_copy (priv->tracks);
 }
 
-gint64
-brasero_medium_get_last_data_track_address (BraseroMedium *medium)
+gboolean
+brasero_medium_get_last_data_track_address (BraseroMedium *medium,
+					    gint64 *byte,
+					    gint64 *sector)
 {
 	GSList *iter;
 	BraseroMediumPrivate *priv;
@@ -167,10 +169,56 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium)
 			track = current;
 	}
 
-	if (!track)
-		return -1;
+	if (!track) {
+		if (byte)
+			*byte = -1;
+		if (sector)
+			*sector = -1;
+		return FALSE;
+	}
 
-	return track->start;
+	if (byte)
+		*byte = track->start * priv->block_size;
+
+	if (sector)
+		*sector = track->start;
+
+	return TRUE;
+}
+
+gboolean
+brasero_medium_get_last_data_track_space (BraseroMedium *medium,
+					  gint64 *size,
+					  gint64 *blocks)
+{
+	GSList *iter;
+	BraseroMediumPrivate *priv;
+	BraseroMediumTrack *track = NULL;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroMediumTrack *current;
+
+		current = iter->data;
+		if (current->type & BRASERO_MEDIUM_TRACK_DATA)
+			track = current;
+	}
+
+	if (!track) {
+		if (size)
+			*size = -1;
+		if (blocks)
+			*blocks = -1;
+		return FALSE;
+	}
+
+	if (size)
+		*size = track->blocks_num * priv->block_size;
+	if (blocks)
+		*blocks = track->blocks_num;
+
+	return TRUE;
 }
 
 gint64
@@ -916,6 +964,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 {
 	BraseroMediumPrivate *priv;
 	BraseroBurnResult res;
+	GError *error = NULL;
 	gint64 nb_blocks;
 
 	if (!track)
@@ -935,9 +984,16 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	res = brasero_volume_get_size_fd (fd,
 					  track->start,
 					  &nb_blocks,
-					  NULL);
-	if (!res)
+					  &error);
+	if (!res) {
+		BRASERO_BURN_LOG ("Failed to retrieve the volume size: %s",
+				  error && error->message ? 
+				  error->message:"unknown error");
+
+		if (error)
+			g_error_free (error);
 		return BRASERO_BURN_ERR;
+	}
 
 	track->blocks_num = nb_blocks;
 	return BRASERO_BURN_OK;

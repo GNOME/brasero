@@ -256,6 +256,25 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 				     &supported,
 				     &compulsory);
 
+	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		/* clean up the disc and have more space when possible */
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_FAST_BLANK|
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+	}
+	else
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_BURN_FLAG_FAST_BLANK|
+						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+
+	/* use DAO whenever it's possible */
+	if (supported & BRASERO_BURN_FLAG_DAO)
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_DAO);
+	else
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_BURN_FLAG_DAO);
+
 	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
 					    flags,
 					    supported,
@@ -606,6 +625,25 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
 			brasero_burn_session_add_flag (priv->session, flags);
 		}
+
+		if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+			/* clean up the disc and have more space when possible */
+			brasero_burn_session_add_flag (priv->session,
+						       BRASERO_BURN_FLAG_FAST_BLANK|
+						       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+		}
+		else
+			brasero_burn_session_remove_flag (priv->session,
+							  BRASERO_BURN_FLAG_FAST_BLANK|
+							  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+
+		/* use DAO whenever it's possible */
+		if (supported & BRASERO_BURN_FLAG_DAO)
+			brasero_burn_session_add_flag (priv->session,
+						       BRASERO_BURN_FLAG_DAO);
+		else
+			brasero_burn_session_remove_flag (priv->session,
+							  BRASERO_BURN_FLAG_DAO);
 	}
 
 	nautilus_burn_drive_unref (drive);
@@ -778,6 +816,25 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 	 * properties are reset and the user can access them again */
 	/* save potential changes for the new profile */
 	brasero_dest_selection_save_drive_properties (self);
+
+	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		/* clean up the disc and have more space when possible */
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_FAST_BLANK|
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+	}
+	else
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_BURN_FLAG_FAST_BLANK|
+						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+
+	/* use DAO whenever it's possible */
+	if (supported & BRASERO_BURN_FLAG_DAO)
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_DAO);
+	else
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_BURN_FLAG_DAO);
 
 	if (priv->drive_prop) {
 		/* the dialog may need to be updated */

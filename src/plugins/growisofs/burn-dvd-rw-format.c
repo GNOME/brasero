@@ -43,6 +43,7 @@
 #include "burn-process.h"
 #include "burn-medium.h"
 #include "burn-dvd-rw-format.h"
+#include "burn-growisofs-common.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdRwFormat, brasero_dvd_rw_format, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -193,6 +194,8 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
-	
+
+	brasero_plugin_register_group (plugin, _(GROWISOFS_DESCRIPTION));
+
 	return BRASERO_BURN_OK;
 }

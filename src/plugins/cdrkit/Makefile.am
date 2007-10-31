@@ -23,20 +23,23 @@ AM_CFLAGS = -Wall -g
 #wodim
 wodimdir = $(libdir)/brasero/plugins
 wodim_LTLIBRARIES = libbrasero-wodim.la
-libbrasero_wodim_la_SOURCES = burn-wodim.c burn-wodim.h
+libbrasero_wodim_la_SOURCES = burn-wodim.c burn-wodim.h \
+	burn-cdrkit.h 
 libbrasero_wodim_la_LIBADD = $(BRASERO_BASE_LIBS)
 libbrasero_wodim_la_LDFLAGS = -module -avoid-version
 
 #genisoimage
 genisoimagedir = $(libdir)/brasero/plugins
 genisoimage_LTLIBRARIES = libbrasero-genisoimage.la
-libbrasero_genisoimage_la_SOURCES = burn-genisoimage.c burn-genisoimage.h 
+libbrasero_genisoimage_la_SOURCES = burn-genisoimage.c burn-genisoimage.h \
+	burn-cdrkit.h 
 libbrasero_genisoimage_la_LIBADD = $(BRASERO_BASE_LIBS)
 libbrasero_genisoimage_la_LDFLAGS = -module -avoid-version
 
 #readom
 readomdir = $(libdir)/brasero/plugins
 readom_LTLIBRARIES = libbrasero-readom.la
-libbrasero_readom_la_SOURCES = burn-readom.c burn-readom.h
+libbrasero_readom_la_SOURCES = burn-readom.c burn-readom.h \
+	burn-cdrkit.h 
 libbrasero_readom_la_LIBADD = $(BRASERO_BASE_LIBS)
 libbrasero_readom_la_LDFLAGS = -module -avoid-version

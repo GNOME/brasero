@@ -43,6 +43,7 @@
 #include "burn-process.h"
 #include "brasero-ncb.h"
 #include "burn-growisofs.h"
+#include "burn-growisofs-common.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
 
@@ -693,16 +694,13 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
+	/* For DVD-W and DVD-RW sequential */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
-				  BRASERO_MEDIUM_RESTRICTED|
 				  BRASERO_MEDIUM_SEQUENTIAL|
 				  BRASERO_MEDIUM_WRITABLE|
 				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_BLANK|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_CLOSED|
-				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -713,20 +711,107 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* the exceptions DVD+ R/RW don't support dummy mode */
 	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVDRW_PLUS|
-				  BRASERO_MEDIUM_DVDR_PLUS|
-				  BRASERO_MEDIUM_BLANK|
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_SEQUENTIAL|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* see NOTE for DVD-RW restricted overwrite below */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_REWRITABLE|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_CLOSED|
 				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* DVD+ R/RW don't support dummy mode */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* NOTE: growisofs doesn't support APPEND flag with DVD+RW. DVD+RW and 
+	 * other overwrite media have only one session and therefore you can't
+	 * add another session after (APPEND). Now growisofs is still able to 
+	 * merge more data nevertheless. */
+
+	/* for DVD+RW */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_NONE);
 
@@ -762,6 +847,8 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_FAST_BLANK);
+
+	brasero_plugin_register_group (plugin, _(GROWISOFS_DESCRIPTION));
 
 	return BRASERO_BURN_OK;
 }

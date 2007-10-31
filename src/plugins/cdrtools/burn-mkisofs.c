@@ -45,6 +45,7 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-plugin.h"
+#include "burn-cdrtools.h"
 #include "burn-mkisofs.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroMkisofs, brasero_mkisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
@@ -312,8 +313,8 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	/* FIXME: support preparer publisher options */
 
 	brasero_job_get_flags (BRASERO_JOB (mkisofs), &flags);
-	if (flags & BRASERO_BURN_FLAG_APPEND) {
-		guint64 last_session = 0, next_wr_add = 0;
+	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
+		gint64 last_session = 0, next_wr_add = 0;
 		gchar *startpoint = NULL;
 
 		brasero_job_get_last_session_address (BRASERO_JOB (mkisofs), &last_session);
@@ -378,7 +379,7 @@ brasero_mkisofs_set_argv (BraseroProcess *process,
 	mkisofs = BRASERO_MKISOFS (process);
 	priv = BRASERO_MKISOFS_PRIVATE (process);
 
-	prog_name = g_find_program_in_path ("genisoimage");
+	prog_name = g_find_program_in_path ("mkisofs");
 	if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE))
 		g_ptr_array_add (argv, prog_name);
 	else
@@ -492,6 +493,8 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
+
+	brasero_plugin_register_group (plugin, _(CDRTOOLS_DESCRIPTION));
 
 	return BRASERO_BURN_OK;
 }

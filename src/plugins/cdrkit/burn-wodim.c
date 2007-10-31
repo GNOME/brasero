@@ -49,6 +49,7 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-plugin.h"
+#include "burn-cdrkit.h"
 #include "burn-wodim.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroWodim, brasero_wodim, BRASERO_TYPE_PROCESS, BraseroProcess);
@@ -1059,8 +1060,27 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	brasero_plugin_set_flags (plugin,
-				  media,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_AUDIO|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -1091,5 +1111,6 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_conf_option_bool_add_suboption (immed, minbuf);
 	brasero_plugin_add_conf_option (plugin, immed);
 
+	brasero_plugin_register_group (plugin, _(CDRKIT_DESCRIPTION));
 	return BRASERO_BURN_OK;
 }

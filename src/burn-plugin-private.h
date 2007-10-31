@@ -49,6 +49,9 @@ brasero_plugin_get_name (BraseroPlugin *plugin);
 const gchar *
 brasero_plugin_get_author (BraseroPlugin *plugin);
 
+guint
+brasero_plugin_get_group (BraseroPlugin *plugin);
+
 const gchar *
 brasero_plugin_get_copyright (BraseroPlugin *plugin);
 

@@ -42,6 +42,7 @@
 #include "burn-job.h"
 #include "burn-process.h"
 #include "burn-plugin.h"
+#include "burn-cdrkit.h"
 #include "burn-genisoimage.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroGenisoimage, brasero_genisoimage, BRASERO_TYPE_PROCESS, BraseroProcess);
@@ -315,8 +316,8 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 	/* FIXME: support preparer publisher options */
 
 	brasero_job_get_flags (BRASERO_JOB (genisoimage), &flags);
-	if (flags & BRASERO_BURN_FLAG_APPEND) {
-		guint64 last_session = 0, next_wr_add = 0;
+	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
+		gint64 last_session = 0, next_wr_add = 0;
 		gchar *startpoint = NULL;
 
 		brasero_job_get_last_session_address (BRASERO_JOB (genisoimage), &last_session);
@@ -496,6 +497,8 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
+
+	brasero_plugin_register_group (plugin, _(CDRKIT_DESCRIPTION));
 
 	return BRASERO_BURN_OK;
 }

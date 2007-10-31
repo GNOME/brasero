@@ -36,6 +36,7 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
+#include "burn-caps.h"
 #include "burn-track.h"
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"
@@ -124,6 +125,7 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 	GConfClient *client;
 	GSList *names = NULL;
 	GError *error = NULL;
+	BraseroBurnCaps *caps;
 	BraseroPluginManagerPrivate *priv;
 
 	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
@@ -131,6 +133,7 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 	/* get the list of user requested plugins. while at it we add a watch
 	 * on the key so as to be warned whenever the user changes prefs. */
 	client = gconf_client_get_default ();
+	caps = brasero_burn_caps_get_default ();
 
 	if (priv->notification) {
 		gconf_client_notify_remove (client, priv->notification);
@@ -160,6 +163,14 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 			BraseroPlugin *plugin;
 
 			plugin = iter->data;
+
+			if (brasero_burn_caps_plugin_can_burn (caps, plugin) == BRASERO_BURN_OK
+			||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
+			||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK) {
+				brasero_plugin_set_active (plugin, TRUE);
+				continue;
+			}
+
 			brasero_plugin_set_active (plugin, TRUE);
 		}
 
@@ -171,6 +182,15 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 		BraseroPlugin *plugin;
 
 		plugin = iter->data;
+
+		if (brasero_burn_caps_plugin_can_burn (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK) {
+			brasero_plugin_set_active (plugin, TRUE);
+			BRASERO_BURN_LOG ("Settings plugin %s active",
+					  brasero_plugin_get_name (plugin));
+			continue;
+		}
 
 		/* See if this plugin is in the names list. If not,
 		 * de-activate it. */
@@ -208,6 +228,8 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 
 end:
 
+	g_object_unref (caps);
+
 	BRASERO_BURN_LOG ("Watching GConf plugin key");
 	priv->notification = gconf_client_notify_add (client,
 						      BRASERO_PLUGIN_KEY,
@@ -225,6 +247,7 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 					     BraseroPluginManager *self)
 {
 	BraseroPluginManagerPrivate *priv;
+	BraseroBurnCaps *caps;
 	GError *error = NULL;
 	GConfClient *client;
 	GSList *list = NULL;
@@ -234,6 +257,7 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
 
 	/* build a list of all active plugins */
+	caps = brasero_burn_caps_get_default ();
 	for (iter = priv->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
 		const gchar *name;
@@ -242,10 +266,16 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 		if (!brasero_plugin_get_active (plugin))
 			continue;
 
+		if (brasero_burn_caps_plugin_can_burn (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK)
+			continue;
+
 		name = brasero_plugin_get_name (plugin);
 		if (name)
 			list = g_slist_prepend (list, (gchar *) name);
 	}
+	g_object_unref (caps);
 
 	client = gconf_client_get_default ();
 

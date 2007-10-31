@@ -38,6 +38,7 @@
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"
+#include "burn-cdrdao-common.h"
 #include "burn-toc2cue.h"
  
 BRASERO_PLUGIN_BOILERPLATE (BraseroToc2Cue, brasero_toc2cue, BRASERO_TYPE_PROCESS, BraseroProcess);
@@ -187,6 +188,8 @@ brasero_toc2cue_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
+
+	brasero_plugin_register_group (plugin, _(CDRDAO_DESCRIPTION));
 
 	return BRASERO_BURN_OK;
 }

@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2007 Philippe Rouquier
  *
- * Based on brasero code (brasero/brasero-plugin-manager.c) by: 
+ * Based on gedit code (gedit/gedit-plugin-manager.c) by: 
  * 	- Paolo Maggi <paolo@gnome.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -64,13 +64,8 @@ enum
 
 struct _BraseroPluginManagerUIPrivate
 {
-	GtkWidget	*description;
-	GtkWidget	*label;
-
 	GtkWidget	*tree;
 
-	GtkWidget	*up_button;
-	GtkWidget	*down_button;
 	GtkWidget	*about_button;
 	GtkWidget	*configure_button;
 
@@ -78,20 +73,10 @@ struct _BraseroPluginManagerUIPrivate
 	
 	GtkWidget	*popup_menu;
 
-	BraseroPluginCategory category;
-	gulong order_changed_id;
-	GSList	*plugins;
+	GSList		*plugins;
 };
 
-G_DEFINE_TYPE(BraseroPluginManagerUI, brasero_plugin_manager_ui, GTK_TYPE_VBOX)
-
-enum {
-	TREE_MODEL_ROW,
-};
-static GtkTargetEntry ntables_source [] = {
-	{"GTK_TREE_MODEL_ROW", GTK_TARGET_SAME_WIDGET, TREE_MODEL_ROW},
-};
-static guint nb_targets_source = sizeof (ntables_source) / sizeof (ntables_source[0]);
+G_DEFINE_TYPE (BraseroPluginManagerUI, brasero_plugin_manager_ui, GTK_TYPE_VBOX)
 
 static void plugin_manager_ui_toggle_active (GtkTreeIter *iter, GtkTreeModel *model); 
 static void brasero_plugin_manager_ui_finalize (GObject *object);
@@ -209,56 +194,6 @@ configure_button_cb (GtkWidget          *button,
 }
 
 static void
-plugin_manager_ui_view_rank_cell_cb (GtkTreeViewColumn *tree_column,
-				     GtkCellRenderer   *cell,
-				     GtkTreeModel      *tree_model,
-				     GtkTreeIter       *iter,
-				     gpointer           data)
-{
-	g_object_set (G_OBJECT (cell),
-		      "visible", FALSE,
-		      NULL);
-	return;
-/*
-	May be removed in a near future 
-	BraseroPluginManagerUIPrivate *priv;
-	GtkTreePath *treepath;
-	gint *indices;
-	gchar *text;
-	
-	g_return_if_fail (tree_model != NULL);
-	g_return_if_fail (tree_column != NULL);
-
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (data);
-	if (priv->category == BRASERO_PLUGIN_ERROR
-	||  priv->category == BRASERO_PLUGIN_MISCELLANEOUS) {
-		g_object_set (G_OBJECT (cell),
-			      "markup", NULL,
-			      NULL);
-		return;
-	}
-
-	treepath = gtk_tree_model_get_path (tree_model, iter);
-	if (!treepath)
-		return;
-
-	indices = gtk_tree_path_get_indices (treepath);
-	if (!indices) {
-		gtk_tree_path_free (treepath);
-		return;
-	}
-
-	text = g_markup_printf_escaped ("<b>%i -</b>", indices [0] + 1);
-	gtk_tree_path_free (treepath);
-
-	g_object_set (G_OBJECT (cell),
-		      "markup", text,
-		      NULL);
-	g_free (text);
-*/
-}
-
-static void
 plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 				     GtkCellRenderer   *cell,
 				     GtkTreeModel      *tree_model,
@@ -334,7 +269,6 @@ plugin_manager_ui_view_icon_cell_cb (GtkTreeViewColumn *tree_column,
 */
 }
 
-
 static void
 active_toggled_cb (GtkCellRendererToggle *cell,
 		   gchar                 *path_str,
@@ -400,188 +334,6 @@ row_activated_cb (GtkTreeView       *tree_view,
 	plugin_manager_ui_toggle_active (&iter, model);
 }
 
-static gint 
-list_priority_sort_func (gconstpointer a, gconstpointer b)
-{
-	BraseroPlugin *plugin1 = BRASERO_PLUGIN (a), *plugin2 = BRASERO_PLUGIN (b);
-
-	return brasero_plugin_get_priority (plugin2) - brasero_plugin_get_priority (plugin1);
-}
-
-static void
-brasero_plugin_manager_ui_save_order (BraseroPluginManagerUI *pm)
-{
-	BraseroPluginManagerUIPrivate *priv;
-	GConfClient *client;
-	GtkTreeModel *model;
-	GtkTreeIter row;
-	gint rank;
-
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
-
-	if (priv->category == BRASERO_PLUGIN_ERROR
-	||  priv->category == BRASERO_PLUGIN_MISCELLANEOUS)
-		return;
-
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-
-	/* The safest way to handle this is to enforce priorities for all plugins */
-	if (!gtk_tree_model_get_iter_first (model, &row))
-		return;
-
-	rank = gtk_tree_model_iter_n_children (model, NULL);
-	client = gconf_client_get_default ();
-	do {
-		BraseroPlugin *plugin;
-		gchar *key;
-
-		gtk_tree_model_get (model, &row,
-				    PLUGIN_COLUMN, &plugin,
-				    -1);
-
-		if (!plugin) {
-			g_warning ("No plugin in row");
-			continue;
-		}
-
-		key = brasero_plugin_get_gconf_priority_key (plugin);
-		gconf_client_set_int (client,
-				      key,
-				      rank,
-				      NULL);
-		g_free (key);
-
-		rank --;
-	} while (gtk_tree_model_iter_next (model, &row));
-	
-	g_object_unref (client);
-}
-
-static void
-brasero_plugin_manager_ui_order_changed_cb (GtkTreeModel *model,
-					    GtkTreePath *path,
-					    BraseroPluginManagerUI *pm)
-{
-	brasero_plugin_manager_ui_save_order (pm);
-}
-
-static void
-brasero_plugin_manager_ui_update_up_down (BraseroPluginManagerUI *pm)
-{
-	BraseroPluginManagerUIPrivate *priv;
-	GtkTreeSelection *selection;
-	GtkTreePath *treepath;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
-
-	if (priv->category == BRASERO_PLUGIN_ERROR
-	||  priv->category == BRASERO_PLUGIN_MISCELLANEOUS) {
-		gtk_widget_set_sensitive (priv->up_button, FALSE);
-		gtk_widget_set_sensitive (priv->down_button, FALSE);
-		return;
-	}
-
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter)) {
-		gtk_widget_set_sensitive (priv->up_button, FALSE);
-		gtk_widget_set_sensitive (priv->down_button, FALSE);
-		return;
-	}
-
-	treepath = gtk_tree_model_get_path (model, &iter);
-	gtk_tree_path_next (treepath);
-	if (gtk_tree_model_get_iter (model, &iter, treepath))
-		gtk_widget_set_sensitive (priv->down_button, TRUE);
-	else
-		gtk_widget_set_sensitive (priv->down_button, FALSE);
-
-	gtk_tree_path_free (treepath);
-	if (!gtk_tree_selection_get_selected (selection, NULL, &iter))
-		return;
-
-	treepath = gtk_tree_model_get_path (model, &iter);
-	if (!gtk_tree_path_prev (treepath)) {
-		gtk_widget_set_sensitive (priv->up_button, FALSE);
-		gtk_tree_path_free (treepath);
-		return;
-	}
-
-	if (gtk_tree_model_get_iter (model, &iter, treepath))
-		gtk_widget_set_sensitive (priv->up_button, TRUE);
-	else
-		gtk_widget_set_sensitive (priv->up_button, FALSE);
-
-	gtk_tree_path_free (treepath);
-}
-
-static void
-up_button_cb (GtkWidget *button,
-	      BraseroPluginManagerUI *pm)
-{
-	BraseroPluginManagerUIPrivate *priv;
-	GtkTreeSelection *selection;
-	GtkTreePath *treepath;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	GtkTreeIter prev;
-
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
-
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
-		return;
-
-	treepath = gtk_tree_model_get_path (model, &iter);
-	if (!gtk_tree_path_prev (treepath)) {
-		gtk_tree_path_free (treepath);
-		return;
-	}
-
-	if (!gtk_tree_model_get_iter (model, &prev, treepath)) {
-		gtk_tree_path_free (treepath);
-		return;
-	}
-
-	gtk_tree_path_free (treepath);
-	gtk_list_store_move_before (GTK_LIST_STORE (model), &iter, &prev);
-	brasero_plugin_manager_ui_save_order (pm);
-
-	brasero_plugin_manager_ui_update_up_down (pm);
-}
-
-static void
-down_button_cb (GtkWidget *button,
-		BraseroPluginManagerUI *pm)
-{
-	BraseroPluginManagerUIPrivate *priv;
-	GtkTreeSelection *selection;
-	GtkTreePath *treepath;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	GtkTreeIter next;
-
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
-
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
-	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
-		return;
-
-	treepath = gtk_tree_model_get_path (model, &iter);
-	gtk_tree_path_next (treepath);
-	if (!gtk_tree_model_get_iter (model, &next, treepath)) {
-		gtk_tree_path_free (treepath);
-		return;
-	}
-
-	gtk_tree_path_free (treepath);
-	gtk_list_store_move_after (GTK_LIST_STORE (model), &iter, &next);
-	brasero_plugin_manager_ui_save_order (pm);
-
-	brasero_plugin_manager_ui_update_up_down (pm);
-}
-
 static void
 plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 {
@@ -598,47 +350,15 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 	caps = brasero_burn_caps_get_default ();
 
 	model = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	if (priv->order_changed_id)
-		g_signal_handler_disconnect (model, priv->order_changed_id);
-
-	/* re-sort our private list of plugins in case the user have changed it
-	 * through this dialog. We can't do it in order_changed function since
-	 * the plugins can't have their priority updated through gconf
-	 * notification (it would need us to allow the main loop to run) */
-	priv->plugins = g_slist_sort (priv->plugins, list_priority_sort_func);
 
 	for (; plugins; plugins = plugins->next) {
 		plugin = plugins->data;
 
-		switch (priv->category) {
-		case BRASERO_PLUGIN_ERROR:
-			if (brasero_plugin_get_gtype (plugin) != G_TYPE_NONE)
-				continue;
-			break;
-
-		case BRASERO_PLUGIN_BURN_ENGINE:
-			if (brasero_burn_caps_plugin_can_burn (caps, plugin) != BRASERO_BURN_OK)
-				continue;
-			break;
-
-		case BRASERO_PLUGIN_IMAGE_ENGINE:
-			if (brasero_burn_caps_plugin_can_image (caps, plugin) != BRASERO_BURN_OK)
-				continue;
-			break;
-
-		case BRASERO_PLUGIN_CONVERT_ENGINE:
-			if (brasero_burn_caps_plugin_can_convert (caps, plugin) != BRASERO_BURN_OK)
-				continue;
-			break;
-
-		case BRASERO_PLUGIN_MISCELLANEOUS:
-			if (brasero_burn_caps_plugin_can_burn (caps, plugin) == BRASERO_BURN_OK
-			||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
-			||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK
-			||  brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
-				continue;
-			break;
-		}
+		if (brasero_burn_caps_plugin_can_burn (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK
+		||  brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
+			continue;
 
 		gtk_list_store_append (model, &iter);
 		gtk_list_store_set (model, &iter,
@@ -648,30 +368,6 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 				    -1);
 	}
 	g_object_unref (caps);
-
-	if (priv->category == BRASERO_PLUGIN_ERROR
-	||  priv->category == BRASERO_PLUGIN_MISCELLANEOUS) {
-		gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (priv->tree),
-							0,
-							NULL,
-							0,
-							0);
-		gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW (priv->tree),
-						      NULL,
-						      0,
-						      0);
-	}
-	else {
-		gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (priv->tree),
-							GDK_BUTTON1_MASK,
-							ntables_source,
-							nb_targets_source,
-							GDK_ACTION_MOVE);
-		gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW (priv->tree),
-						      ntables_source,
-						      nb_targets_source,
-						      GDK_ACTION_MOVE);
-	}
 
 	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
 	{
@@ -690,85 +386,11 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 	}
 
 	/* update buttons */
-	plugin = plugin_manager_ui_get_selected_plugin (pm);
-
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->about_button),
 				  plugin != NULL);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->configure_button),
 				  (plugin != NULL) && 
 				   brasero_plugin_get_next_conf_option (plugin, NULL));
-
-	brasero_plugin_manager_ui_update_up_down (pm);
-
-	priv->order_changed_id = g_signal_connect (model,
-						   "row-deleted",
-						   G_CALLBACK (brasero_plugin_manager_ui_order_changed_cb),
-						   pm);
-}
-
-static void
-brasero_plugin_manager_ui_combo_changed_cb (GtkComboBox *box,
-					    BraseroPluginManagerUI *pm)
-{
-	BraseroPluginManagerUIPrivate *priv;
-	GtkTreeModel *model;
-
-	priv = BRASERO_PLUGIN_MANAGER_UI_GET_PRIVATE (pm);
-
-	/* clear the tree and re-populate it */
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-
-	/* disconnect before clearing */
-	if (priv->order_changed_id) {
-		g_signal_handler_disconnect (model, priv->order_changed_id);
-		priv->order_changed_id = 0;
-	}
-
-	gtk_list_store_clear (GTK_LIST_STORE (model));
-
-	priv->category = gtk_combo_box_get_active (box);
-	plugin_manager_ui_populate_lists (pm);
-
-	switch (priv->category) {
-		case BRASERO_PLUGIN_ERROR:
-			gtk_label_set_markup (GTK_LABEL (priv->description),
-					     _("<i>The following plugins had errors on loading.</i>"));
-			gtk_label_set_text (GTK_LABEL (priv->label), "\n\n");
-
-			break;
-
-		case BRASERO_PLUGIN_BURN_ENGINE:
-			gtk_label_set_markup (GTK_LABEL (priv->description),
-					     _("<i>Includes plugins that can burn, blank or format discs (CDs and DVDs).</i>"));
-			gtk_label_set_text (GTK_LABEL (priv->label),
-					    _("The list is sorted according to the use order. Move them up and down if you want to set another order of priority."));
-
-			break;
-
-		case BRASERO_PLUGIN_IMAGE_ENGINE:
-			gtk_label_set_markup (GTK_LABEL (priv->description),
-					     _("<i>Includes plugins that can create images suitable to be burnt on discs.</i>"));
-			gtk_label_set_text (GTK_LABEL (priv->label),
-					    _("The list is sorted according to the use order. Move them up and down if you want to set another order of priority."));
-
-			break;
-
-		case BRASERO_PLUGIN_CONVERT_ENGINE:
-			gtk_label_set_markup (GTK_LABEL (priv->description),
-					     _("<i>Includes plugins that can convert image formats into other formats.</i>"));
-			gtk_label_set_text (GTK_LABEL (priv->label),
-					    _("The list is sorted according to the use order. Move them up and down if you want to set another order of priority."));
-
-			break;
-
-		case BRASERO_PLUGIN_MISCELLANEOUS:
-			gtk_label_set_markup (GTK_LABEL (priv->description),
-					     _("<i>Includes plugins that provide additional functionalities.</i>"));
-			gtk_label_set_text (GTK_LABEL (priv->label), "\n\n");
-			break;
-		default:
-			break;
-	}
 }
 
 static gboolean
@@ -1154,11 +776,19 @@ popup_menu_cb (GtkTreeView        *tree,
 	return TRUE;
 }
 
-static void
-tree_selection_changed_cb (GtkTreeSelection *selection,
-			   BraseroPluginManagerUI *pm)
+static gint 
+model_name_sort_func (GtkTreeModel *model,
+		      GtkTreeIter  *iter1,
+		      GtkTreeIter  *iter2,
+		      gpointer      user_data)
 {
-	brasero_plugin_manager_ui_update_up_down (pm);
+	BraseroPlugin *plugin1, *plugin2;
+	
+	gtk_tree_model_get (model, iter1, PLUGIN_COLUMN, &plugin1, -1);
+	gtk_tree_model_get (model, iter2, PLUGIN_COLUMN, &plugin2, -1);
+
+	return g_utf8_collate (brasero_plugin_get_name (plugin1),
+			       brasero_plugin_get_name (plugin2));
 }
 
 static void
@@ -1188,12 +818,6 @@ plugin_manager_ui_construct_tree (BraseroPluginManagerUI *pm)
 	gtk_tree_view_column_set_title (column, PLUGIN_MANAGER_UI_NAME_TITLE);
 	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_expand (column, TRUE);
-
-	cell = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, cell, FALSE);
-	gtk_tree_view_column_set_cell_data_func (column, cell,
-						 plugin_manager_ui_view_rank_cell_cb,
-						 pm, NULL);
 
 	cell = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start (column, cell, FALSE);
@@ -1230,6 +854,15 @@ plugin_manager_ui_construct_tree (BraseroPluginManagerUI *pm)
 	gtk_tree_view_column_set_expand (column, FALSE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
 
+	/* Sort on the plugin names */
+	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (model),
+	                                         model_name_sort_func,
+        	                                 NULL,
+                	                         NULL);
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
+					      GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID,
+					      GTK_SORT_ASCENDING);
+
 	/* Enable search for our non-string column */
 	gtk_tree_view_set_search_column (GTK_TREE_VIEW (priv->tree),
 					 PLUGIN_COLUMN);
@@ -1262,11 +895,9 @@ static void
 brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 {
 	gchar *markup;
-	GtkWidget *table;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *label;
-	GtkWidget *combo;
 	GtkWidget *alignment;
 	GtkWidget *viewport;
 	GtkWidget *vbuttonbox;
@@ -1296,53 +927,6 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox);
 
-	/* Combo to choose categories */
-	table = gtk_table_new (2, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 3);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
-	gtk_widget_show (table);
-	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 6);
-
-	label = gtk_label_new (_("Category:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, 0, 0, 0, 0);
-
-	combo = gtk_combo_box_new_text ();
-	gtk_combo_box_insert_text (GTK_COMBO_BOX (combo),
-				   BRASERO_PLUGIN_BURN_ENGINE,
-				   _("Burn engines"));
-	gtk_combo_box_insert_text (GTK_COMBO_BOX (combo),
-				   BRASERO_PLUGIN_IMAGE_ENGINE,
-				   _("Imaging engines"));
-	gtk_combo_box_insert_text (GTK_COMBO_BOX (combo),
-				   BRASERO_PLUGIN_CONVERT_ENGINE,
-				   _("Image type conversion engines"));
-	gtk_combo_box_insert_text (GTK_COMBO_BOX (combo),
-				   BRASERO_PLUGIN_MISCELLANEOUS,
-				   _("Miscellaneous engines"));
-	gtk_combo_box_insert_text (GTK_COMBO_BOX (combo),
-				   BRASERO_PLUGIN_ERROR,
-				   _("Engines with errors on loading"));
-	gtk_widget_show (combo);
-	g_signal_connect (combo,
-			  "changed",
-			  G_CALLBACK (brasero_plugin_manager_ui_combo_changed_cb),
-			  pm);
-	gtk_table_attach_defaults (GTK_TABLE (table), combo, 1, 2, 0, 1);
-
-	priv->description = gtk_label_new (NULL);
-	gtk_misc_set_alignment (GTK_MISC (priv->description), 0.0, 0.5);
-	gtk_widget_show (priv->description);
-	gtk_table_attach_defaults (GTK_TABLE (table), priv->description, 1, 2, 1, 2);
-
-	priv->label = gtk_label_new (NULL);
-	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->label), PANGO_WRAP_WORD);
-	gtk_label_set_line_wrap (GTK_LABEL (priv->label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (priv->label), 0.0, 0.5);
-	gtk_widget_show (priv->label);
-	gtk_box_pack_start (GTK_BOX (vbox), priv->label, FALSE, TRUE, 0);
-
 	/* bottom part: tree, buttons */
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1360,28 +944,10 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	priv->tree = gtk_tree_view_new ();
 	gtk_container_add (GTK_CONTAINER (viewport), priv->tree);
 
-	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)),
-			  "changed",
-			  G_CALLBACK (tree_selection_changed_cb),
-			  pm);
-
 	vbuttonbox = gtk_vbutton_box_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), vbuttonbox, FALSE, FALSE, 0);
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (vbuttonbox), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing (GTK_BOX (vbuttonbox), 8);
-
-
-	priv->up_button = brasero_utils_make_button (_("Move _Up"),
-						     NULL,
-						     NULL,
-						     GTK_ICON_SIZE_BUTTON);
-	gtk_container_add (GTK_CONTAINER (vbuttonbox), priv->up_button);
-
-	priv->down_button = brasero_utils_make_button (_("Move _Down"),
-						       NULL,
-						       NULL,
-						       GTK_ICON_SIZE_BUTTON);
-	gtk_container_add (GTK_CONTAINER (vbuttonbox), priv->down_button);
 
 	priv->about_button = brasero_utils_make_button (_("_About"),
 							NULL,
@@ -1398,14 +964,6 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	/* setup a window of a sane size. */
 	gtk_widget_set_size_request (GTK_WIDGET (viewport), 300, 200);
 
-	g_signal_connect (priv->up_button,
-			  "clicked",
-			  G_CALLBACK (up_button_cb),
-			  pm);
-	g_signal_connect (priv->down_button,
-			  "clicked",
-			  G_CALLBACK (down_button_cb),
-			  pm);
 	g_signal_connect (priv->about_button,
 			  "clicked",
 			  G_CALLBACK (about_button_cb),
@@ -1425,11 +983,11 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 		gtk_widget_set_sensitive (priv->about_button, FALSE);
 		gtk_widget_set_sensitive (priv->configure_button, FALSE);		
 	}
-	else
-		priv->plugins = g_slist_sort (priv->plugins, list_priority_sort_func);
-
-	/* sets a default */
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), BRASERO_PLUGIN_BURN_ENGINE);
+	else {
+		plugin_manager_ui_populate_lists (pm);
+		gtk_widget_set_sensitive (priv->about_button, TRUE);
+		gtk_widget_set_sensitive (priv->configure_button, TRUE);
+	}
 }
 
 static void

@@ -1,5 +1,13 @@
-SUBDIRS = cdrkit cdrtools cdrdao transcode dvdcss growisofs checksum local-track
+SUBDIRS = cdrdao transcode dvdcss growisofs checksum local-track
 
-if HAVE_LIBBURN
+if BUILD_LIBBURNIA
 SUBDIRS += libburnia
+endif
+
+if BUILD_CDRKIT
+SUBDIRS += cdrkit
+endif
+
+if BUILD_CDRTOOLS
+SUBDIRS += cdrtools
 endif

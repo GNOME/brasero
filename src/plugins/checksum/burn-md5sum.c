@@ -264,6 +264,7 @@ brasero_md5sum_start_md5 (BraseroMd5sum *self,
 	result = brasero_md5_file_to_string (priv->ctx,
 					     path,
 					     md5_checksum,
+					     0,
 					     -1,
 					     error);
 	if (result != BRASERO_BURN_OK)
@@ -573,6 +574,7 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 	result = brasero_md5_file (priv->ctx,
 				   path,
 				   &priv->md5,
+				   0,
 				   -1,
 				   error);
 	g_free (path);
@@ -585,6 +587,7 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 static BraseroBurnResult
 brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 {
+	gint64 start;
 	const gchar *device;
 	BraseroTrack *track;
 	BraseroBurnResult result;
@@ -596,10 +599,25 @@ brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	drive = brasero_track_get_drive_source (track);
 
-	/* we get the size of the image 
+	/* we get the size of the image. For the same reasons as below, that's 
+	 * not necessarily the whole disc size but rather the last burnt session
+	 * track size.
 	 * NOTE: media was already checked in burn.c */
 	priv->total = 0;
-	result = brasero_track_get_disc_data_size (track, NULL, &priv->total);
+	NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (drive,
+					     &priv->total,
+					     NULL);
+
+	/* we can only check the last session. Otherwise when adding sessions
+	 * we would check the whole media whereas the live checksum generated 
+	 * would only be for the last burnt session */
+	NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (drive,
+					       &start,
+					       NULL);
+	BRASERO_JOB_LOG (self,
+			 "Starting checksuming from %lli (size = %i)",
+			 start,
+			 priv->total);
 
 	device = NCB_DRIVE_GET_DEVICE (drive);
 	brasero_job_set_current_action (BRASERO_JOB (self),
@@ -612,6 +630,7 @@ brasero_md5sum_disc (BraseroMd5sum *self, GError **error)
 	result = brasero_md5_file (priv->ctx,
 				   device,
 				   &priv->md5,
+				   start,
 				   priv->total,
 				   error);
 	brasero_md5_free (priv->ctx);
@@ -785,6 +804,7 @@ brasero_md5sum_disc_files (BraseroMd5sum *self, GError **error)
 		result = brasero_md5_file_to_string (priv->ctx,
 						     filename,
 						     checksum_real,
+						     0,
 						     -1,
 						     error);
 		if (result == BRASERO_BURN_RETRY)

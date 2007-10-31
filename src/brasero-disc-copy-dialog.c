@@ -124,8 +124,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 				       BRASERO_BURN_FLAG_BURNPROOF|
 				       BRASERO_BURN_FLAG_CHECK_SIZE|
 				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
-				       BRASERO_BURN_FLAG_FAST_BLANK|
-				       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+				       BRASERO_BURN_FLAG_FAST_BLANK);
 
 	/* take care of source media */
 	priv->source = brasero_src_selection_new (priv->session);

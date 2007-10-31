@@ -966,7 +966,7 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 }
 
 /**
- * used to modify session flags. Every time we check the consistency of flags
+ * used to modify session flags.
  */
 
 void

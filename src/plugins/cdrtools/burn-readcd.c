@@ -37,6 +37,7 @@
 #include <nautilus-burn-drive.h>
 
 #include "burn-basics.h"
+#include "burn-cdrtools.h"
 #include "burn-readcd.h"
 #include "burn-process.h"
 #include "burn-job.h"
@@ -342,6 +343,8 @@ brasero_readcd_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
+
+	brasero_plugin_register_group (plugin, _(CDRTOOLS_DESCRIPTION));
 
 	return BRASERO_BURN_OK;
 }

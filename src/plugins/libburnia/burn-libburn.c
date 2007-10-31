@@ -44,6 +44,7 @@
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-libburn-common.h"
+#include "burn-libburnia.h"
 #include "burn-libburn.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BRASERO_TYPE_JOB, BraseroJob);
@@ -606,8 +607,27 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 			       15);
 
 	brasero_plugin_set_flags (plugin,
-				  media_cd,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_AUDIO|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -632,13 +652,24 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
-	/* ... and DVDs +-R ... */
+	/* ... and DVDs-R ... */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_DATA|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -649,10 +680,20 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* NOTE: DVD+R don't have a dummy mode */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_DATA|
 				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -663,13 +704,12 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
-	/* ... and finally DVDs +-RW */
+	/* ... and DVDs-RW (sequential) */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_DATA|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -677,6 +717,17 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
 	output = brasero_caps_disc_new (media_dvd_rw);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
@@ -686,6 +737,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_RESTRICTED|
 				  BRASERO_MEDIUM_BLANK,
+				/*  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE| */
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -693,10 +745,12 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
+	/* FIXME: can libburn do like growisofs (overwrite / avoid blanking)? */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
+				/*  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE| */
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_NOGRACE,
@@ -756,5 +810,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
+	brasero_plugin_register_group (plugin, _(LIBBURNIA_DESCRIPTION));
 	return BRASERO_BURN_OK;
 }

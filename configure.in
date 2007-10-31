@@ -105,48 +105,47 @@ dnl ****************check for libburn (optional)**************
 LIBBURN_REQUIRED=0.3.4
 LIBISOFS_REQUIRED=0.2.8
 
-AC_ARG_ENABLE(libburn,
-			[  --enable-libburn		use libburn if available [[default = yes]]],,
-			[enable_libburn="yes"])
+AC_ARG_ENABLE(libburnia,
+			[  --build-libburnia		Build libburnia plugins [[default = yes]]],,
+			[enable_libburnia="yes"])
 
-if test x"$enable_libburn" = "xyes"; then
-	PKG_CHECK_MODULES(LIBBURN, libburn-1 >= $LIBBURN_REQUIRED, build_libburn=yes, build_libburn=no)
+if test x"$enable_libburnia" = "xyes"; then
+	PKG_CHECK_MODULES(LIBBURNIA, libburn-1 >= $LIBBURN_REQUIRED  libisofs-1 >= $LIBISOFS_REQUIRED, build_libburnia=yes, build_libburnia=no)
 else
-	build_libburn="no"
+	build_libburnia="no"
 fi
 
-if test x"$build_libburn" = "xyes"; then
-	AC_SUBST(BRASERO_LIBBURN_CFLAGS)
-	AC_SUBST(BRASERO_LIBBURN_LIBS)
+if test x"$build_libburnia" = "xyes"; then
+	AC_SUBST(BRASERO_LIBBURNIA_CFLAGS)
+	AC_SUBST(BRASERO_LIBBURNIA_LIBS)
 
-	BRASERO_LIBBURN_CFLAGS="$LIBBURN_CFLAGS"
-	BRASERO_LIBBURN_LIBS="$LIBBURN_LIBS"
-	AC_DEFINE(HAVE_LIBBURN, 1, [define if you  want to use with libburn support])
+	BRASERO_LIBBURNIA_CFLAGS="$LIBBURNIA_CFLAGS"
+	BRASERO_LIBBURNIA_LIBS="$LIBBURNIA_LIBS"
+	AC_DEFINE(BUILD_LIBBURNIA, 1, [define if you  want to build libburnia plugins])
 fi
-AM_CONDITIONAL(HAVE_LIBBURN, test x"$build_libburn" = "xyes")
+AM_CONDITIONAL(BUILD_LIBBURNIA, test x"$build_libburnia" = "xyes")
 
-AC_ARG_ENABLE(libisofs,
-			[  --enable-libisofs		use libisofs if available [[default = yes]]],,
-			[enable_libisofs="yes"])
+dnl **************** check for cdrtools **********************
+AC_ARG_ENABLE(cdrtools,
+			[  --build-cdrtools		Build cdrtools plugins [[default = yes]]],,
+			[build_cdrtools="yes"])
 
-if test x"$enable_libisofs" = "xyes"; then
-	PKG_CHECK_MODULES(LIBISOFS,  libisofs-1 >= $LIBISOFS_REQUIRED, build_libisofs=yes, build_libisofs=no)
-else
-	build_libisofs="no"
+if test x"$build_cdrtools" = "xyes"; then
+	AC_DEFINE(BUILD_CDRTOOLS, 1, [define if you  want to build cdrtools plugins])
 fi
+AM_CONDITIONAL(BUILD_CDRTOOLS, test x"$build_cdrtools" = "xyes")
 
-if test x"$build_libisofs" = "xyes"; then
-	AC_SUBST(BRASERO_LIBISOFS_CFLAGS)
-	AC_SUBST(BRASERO_LIBISOFS_LIBS)
+dnl **************** check for cdrkit ************************
+AC_ARG_ENABLE(cdrkit,
+			[  --build-cdrkit		Build cdrkit plugins [[default = yes]]],,
+			[build_cdrkit="yes"])
 
-	BRASERO_LIBISOFS_CFLAGS="$LIBISOFS_CFLAGS"
-	BRASERO_LIBISOFS_LIBS="$LIBISOFS_LIBS"
-	AC_DEFINE(HAVE_LIBISOFS, 1, [define if you  want to use with libisofs support])
+if test x"$build_cdrkit" = "xyes"; then
+	AC_DEFINE(BUILD_CDRKIT, 1, [define if you  want to build cdrkit plugins])
 fi
-AM_CONDITIONAL(HAVE_LIBISOFS, test x"$build_libisofs" = "xyes")
+AM_CONDITIONAL(BUILD_CDRKIT, test x"$build_cdrkit" = "xyes")
 
 dnl ****************check for libnotify (optional)**************
-dnl maybe it will be re-enabled later if I can find a use for it
 LIBNOTIFY_REQUIRED=0.3.0
 
 AC_ARG_ENABLE(libnotify,
@@ -325,8 +324,9 @@ echo "Version: $BRASERO_VERSION
 	Build Preview pane : ${enable_preview}
 	Build libnotify support : ${build_libnotify}
 	Build dbus support : ${build_dbus}
-	Use libburn : ${build_libburn}
-	Use libisofs : ${build_libisofs}
+	Build cdrtools plugins : ${build_cdrtools}
+	Build cdrkit plugins : ${build_cdrkit}
+	Build libburnia plugins : ${build_libburnia}
 "
 echo
 echo

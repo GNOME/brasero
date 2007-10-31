@@ -80,6 +80,7 @@ BraseroBurnResult
 brasero_md5_file (BraseroMD5Ctx *ctx,
 		  const gchar *path,
 		  BraseroMD5 *md5,
+		  gint64 start,
 		  gint64 limit,
 		  GError **error);
 
@@ -87,6 +88,7 @@ BraseroBurnResult
 brasero_md5_file_to_string (BraseroMD5Ctx *ctx,
 			    const gchar *path,
 			    gchar *string,
+			    gint64 start,
 			    gint64 limit,
 			    GError **error);
 

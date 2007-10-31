@@ -1741,16 +1741,6 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		drive = brasero_burn_session_get_burner (session);
 		flags = brasero_burn_session_get_flags (session);
 
-		/* basically we don't use DAO when:
-		 * - we're appending to a CD/DVD
-		 * - starting a multisession DVD-/+ R
-		 * - we're writing to a file */
-		if (!(flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
-		&& (!NCB_MEDIA_IS (drive, BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_WRITABLE)
-		||  !(flags & BRASERO_BURN_FLAG_MULTI))  /* that targets DVD+/-R */
-		&&   NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
-			brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_DAO);
-
 		result = brasero_burn_record (dialog->priv->burn,
 					      session,
 					      &error);

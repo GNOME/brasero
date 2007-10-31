@@ -679,7 +679,7 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 		 * data and/or audio and when we can blank it */
 		if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
 			*must_blank = FALSE;
-		else if (!(flags & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)))
+		else if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)))
 			*must_blank = FALSE;
 		else
 			*must_blank = TRUE;
@@ -802,7 +802,6 @@ again:
 	if (must_blank) {
 		/* There is an error if APPEND was set since this disc is not
 		 * supported without a prior blanking. */
-
 		
 		/* we warn the user is going to lose data even if in the case of
 		 * DVD+/-RW we don't really blank the disc we rather overwrite */
@@ -1287,7 +1286,8 @@ start:
 	}
 
 	if (result != BRASERO_BURN_ERR) {
-		g_propagate_error (error, ret_error);
+		if (error)
+			g_propagate_error (error, ret_error);
 		return result;
 	}
 
@@ -1323,18 +1323,12 @@ start:
 
 		goto start;
 	}
-	else if (error_code == BRASERO_BURN_ERROR_MEDIA_SPACE) {
-		/* clean the error anyway since at worst the user will cancel */
-		g_error_free (ret_error);
-		ret_error = NULL;
-
-		/* the space left on the media is insufficient */
-		result = brasero_burn_reload_dest_media (burn, error_code, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-
-		goto start;
-	}
+	/* (error_code == BRASERO_BURN_ERROR_MEDIA_SPACE) */
+	/* That's an imager (outputs an image to the disc) so that means that here
+	 * the problem comes from the hard drive being too small not from the media
+	 * there is nothing we can do here except fail. We could one day send a 
+	 * signal so that a dialog asking for a new hard drive location is shown
+	 */
 
 	/* not recoverable propagate the error */
 	g_propagate_error (error, ret_error);
@@ -1462,7 +1456,41 @@ start:
 		brasero_burn_session_set_rate (priv->session, rate);
 		goto start;
 	}
-	else if (error_code >= BRASERO_BURN_ERROR_MEDIA_SPACE
+	else if (error_code == BRASERO_BURN_ERROR_MEDIA_SPACE) {
+		/* NOTE: this error can only come from the dest drive */
+
+		/* clean error and indicates this is a recoverable error */
+		g_error_free (ret_error);
+		ret_error = NULL;
+
+		/* the space left on the media is insufficient (that's strange
+		 * since we checked):
+		 * the disc is either not rewritable or is too small anyway then
+		 * we ask for a new media.
+		 * It raises the problem of session merging. Indeed at this
+		 * point an image can have been generated that was specifically
+		 * generated for the inserted media. So if we have MERGE/APPEND
+		 * that should fail.
+		 */
+		if (brasero_burn_session_get_flags (priv->session) &
+		   (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_MEDIA_SPACE,
+				     _("it's not possible to merge to this media because it hasn't got enough space"));
+			return BRASERO_BURN_ERR;
+		}
+
+		/* ask for the destination media reload */
+		result = brasero_burn_reload_dest_media (burn,
+							 error_code,
+							 error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		goto start;
+	}
+	else if (error_code > BRASERO_BURN_ERROR_MEDIA_SPACE
 	     &&  error_code <  BRASERO_BURN_ERROR_CD_NOT_SUPPORTED) {
 		/* NOTE: these errors can only come from the dest drive */
 
@@ -1679,6 +1707,7 @@ static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
 					GError **error)
 {
+	BraseroMedia media;
 	BraseroTrackType type;
 	BraseroBurnFlag flags;
 	BraseroBurnFlag retval;
@@ -1686,6 +1715,8 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+
+	BRASERO_BURN_DEBUG (burn, "Checking session consistency");
 
 	/* make sure there is a session, a burner */
 	brasero_burn_session_get_input_type (priv->session, &type);
@@ -1761,6 +1792,8 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		retval |= compulsory;
 	}
 
+	media = brasero_burn_session_get_dest_media (priv->session);
+
 	/* we check flags consistency 
 	 * NOTE: should we return an error if they are not consistent? */
 	brasero_burn_session_get_input_type (priv->session, &type);
@@ -1784,27 +1817,19 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		}
 	}
 
-	if ((retval & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) != 0
-	&&  (retval & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) != 0) {
-		BRASERO_BURN_DEBUG (burn, "Inconsistent flag: you can't use flag blank_before_write");
-		retval &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-	}
-
-	/* if we want to leave the session open with DVD+/-R we can't use dao */
-	if ((brasero_burn_session_get_dest_media (priv->session) & BRASERO_MEDIUM_DVD)
-	&&  (flags & BRASERO_BURN_FLAG_MULTI)
-	&&  (flags & BRASERO_BURN_FLAG_DAO)) {
-		BRASERO_BURN_DEBUG (burn, "DAO flag can't be used to create multisession DVD+/-R");
-		retval &= ~BRASERO_BURN_FLAG_DAO;
-	}
-
 	if (brasero_burn_session_is_dest_file (priv->session)
 	&& (retval & BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT) == 0) {
 		BRASERO_BURN_DEBUG (burn, "Forgotten flag: you must use flag dont_clean_output");
 		retval |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
 	}
 
+	/* make sure again that everything we added/removed is supported or not
+	 * compulsory */
+	retval &= supported;
+	retval |= compulsory;
+
 	brasero_burn_session_set_flags (priv->session, retval);
+	BRASERO_BURN_DEBUG (burn, "Flags after checking = %i", retval);
 	return BRASERO_BURN_OK;
 }
 

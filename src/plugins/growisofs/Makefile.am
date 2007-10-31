@@ -23,7 +23,8 @@ AM_CFLAGS = -Wall -g
 #growisofs
 growisofsdir = $(libdir)/brasero/plugins
 growisofs_LTLIBRARIES = libbrasero-growisofs.la
-libbrasero_growisofs_la_SOURCES = burn-growisofs.c burn-growisofs.h
+libbrasero_growisofs_la_SOURCES = burn-growisofs.c burn-growisofs.h \
+	burn-growisofs-common.h 
 libbrasero_growisofs_la_LIBADD = $(BRASERO_BASE_LIBS)
 libbrasero_growisofs_la_LDFLAGS = -module -avoid-version
 

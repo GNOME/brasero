@@ -184,6 +184,10 @@ typedef enum {
 
 #define BRASERO_MEDIUM_IS(media, type)	(((media)&(type))==(type))
 
+#define BRASERO_MEDIUM_IS_OVERWRITE(media)			\
+	(BRASERO_MEDIUM_IS ((media), BRASERO_MEDIUM_DVDRW_RESTRICTED) ||	\
+	 BRASERO_MEDIUM_IS ((media), BRASERO_MEDIUM_DVDRW_PLUS))
+
 typedef enum {
 	BRASERO_MEDIUM_TRACK_NONE		= 0,
 	BRASERO_MEDIUM_TRACK_DATA		= 1,
@@ -208,8 +212,15 @@ brasero_medium_get_status (BraseroMedium *medium);
 GSList *
 brasero_medium_get_tracks (BraseroMedium *medium);
 
-gint64
-brasero_medium_get_last_data_track_address (BraseroMedium *medium);
+gboolean
+brasero_medium_get_last_data_track_space (BraseroMedium *medium,
+					  gint64 *size,
+					  gint64 *blocks);
+
+gboolean
+brasero_medium_get_last_data_track_address (BraseroMedium *medium,
+					    gint64 *byte,
+					    gint64 *sector);
 
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium);
