@@ -1,3 +1,75 @@
+2007-11-02  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix most if not all the problems with md5sum.
+	Basically md5sum don't read from dev directly now
+	It uses another plugin (readcd/readom) to do that which implied to let test plugin accept input from other plugins
+	Fixes more specifically
+	#484162 – Brasero is unable to verify the integrity of a 160MB bootable iso image.
+	#485716 – Checksum errors
+	#488799 – Add possibility to change cd label (last comment)
+	and possibly #488194 – md5 plugin causes trouble when simulating
+
+	Also split md5sum plugin in two.
+
+	* src/brasero-ncb.c: (NCB_MEDIA_GET_TRACK_NUM),
+	(NCB_MEDIA_GET_TRACK_ADDRESS), (NCB_MEDIA_GET_TRACK_SPACE):
+	* src/brasero-ncb.h:
+	* src/burn-caps.c: (brasero_caps_unregister_plugin),
+	(brasero_caps_is_compatible_type),
+	(brasero_burn_caps_media_capabilities),
+	(brasero_burn_caps_get_blanking_flags),
+	(brasero_burn_caps_new_blanking_task),
+	(brasero_burn_caps_can_blank), (brasero_caps_link_find_plugin),
+	(brasero_caps_add_processing_plugins_to_task),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_new_checksuming_task),
+	(brasero_burn_caps_get_output),
+	(brasero_burn_caps_get_required_media_type),
+	(brasero_burn_caps_get_flags), (brasero_caps_copy),
+	(brasero_caps_replicate_modifiers), (brasero_caps_replicate_tests),
+	(brasero_caps_copy_deep), (brasero_caps_list_check_io),
+	(brasero_caps_image_new), (brasero_caps_audio_new),
+	(brasero_caps_data_new), (brasero_caps_disc_new),
+	(brasero_caps_find_link_for_input), (brasero_plugin_check_caps):
+	* src/burn-medium.c: (brasero_medium_get_track_num),
+	(brasero_medium_get_track), (brasero_medium_get_track_space),
+	(brasero_medium_get_track_address),
+	(brasero_medium_get_free_space),
+	(brasero_medium_get_page_2A_write_speed_desc),
+	(brasero_medium_get_medium_type), (brasero_medium_track_get_info),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents):
+	* src/burn-medium.h:
+	* src/burn-track.c: (brasero_track_set_drive_track),
+	(brasero_track_get_drive_track):
+	* src/burn-track.h:
+	* src/burn.c: (brasero_burn_check_real),
+	(brasero_burn_record_session), (brasero_burn_check),
+	(brasero_burn_same_src_dest), (brasero_burn_blank_real):
+	* src/plugins/cdrkit/burn-readom.c:
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size):
+	* src/plugins/cdrtools/burn-readcd.c:
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size):
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_start_md5),
+	(brasero_md5sum_file_explore_directory),
+	(brasero_md5sum_file_clean_excluded_table_cb),
+	(brasero_md5sum_file_grafts), (brasero_md5sum_file_get_line_num),
+	(brasero_md5sum_file_disc_files), (brasero_md5sum_file_end),
+	(brasero_md5sum_file_destroy), (brasero_md5sum_file_thread),
+	(brasero_md5sum_file_start), (brasero_md5sum_file_activate),
+	(brasero_md5sum_file_clock_tick), (brasero_md5sum_file_stop),
+	(brasero_md5sum_file_init), (brasero_md5sum_file_finalize),
+	(brasero_md5sum_file_class_init),
+	(brasero_md5sum_file_export_caps):
+	* src/plugins/checksum/burn-md5sum-file.h:
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_live_read),
+	(brasero_md5sum_live), (brasero_md5sum_image_live),
+	(brasero_md5sum_image), (brasero_md5sum_end),
+	(brasero_md5sum_thread), (brasero_md5sum_stop),
+	(brasero_md5sum_finalize), (brasero_md5sum_class_init),
+	(brasero_md5sum_export_caps):
+
 2007-10-31  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Big patch (sorry I was away and couldn't commit earlier)

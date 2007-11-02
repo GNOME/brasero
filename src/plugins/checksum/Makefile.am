@@ -1,4 +1,3 @@
-plugindir = $(libdir)/brasero/plugins
 
 DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
 		     -DGDK_DISABLE_DEPRECATED \
@@ -22,8 +21,8 @@ INCLUDES = \
 
 AM_CFLAGS = -Wall -g
 
-plugin_LTLIBRARIES = libbrasero-md5sum.la
-
+md5sumdir = $(libdir)/brasero/plugins
+md5sum_LTLIBRARIES = libbrasero-md5sum.la
 libbrasero_md5sum_la_SOURCES = burn-md5sum.c	\
 			       burn-md5sum.h	\
 			       burn-md5.c 	\
@@ -32,3 +31,12 @@ libbrasero_md5sum_la_SOURCES = burn-md5sum.c	\
 libbrasero_md5sum_la_LDFLAGS = -module -avoid-version
 libbrasero_md5sum_la_LIBADD = $(BRASERO_BASE_LIBS)
 
+md5sumfiledir = $(libdir)/brasero/plugins
+md5sumfile_LTLIBRARIES = libbrasero-md5sum-file.la
+libbrasero_md5sum_file_la_SOURCES = burn-md5sum-file.c	\
+				    burn-md5sum-file.h	\
+				    burn-md5.c 		\
+				    burn-md5.h
+
+libbrasero_md5sum_file_la_LDFLAGS = -module -avoid-version
+libbrasero_md5sum_file_la_LIBADD = $(BRASERO_BASE_LIBS)

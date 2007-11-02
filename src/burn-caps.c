@@ -52,6 +52,8 @@ G_DEFINE_TYPE (BraseroBurnCaps, brasero_burn_caps, G_TYPE_OBJECT);
 
 struct BraseroBurnCapsPrivate {
 	GSList *caps_list;
+	GSList *tests;
+
 	GHashTable *groups;
 
 	gchar *group_str;
@@ -60,7 +62,6 @@ struct BraseroBurnCapsPrivate {
 
 struct _BraseroCaps {
 	GSList *links;
-	GSList *tests;
 	GSList *modifiers;
 	BraseroTrackType type;
 	BraseroPluginIOFlag flags;
@@ -74,7 +75,7 @@ struct _BraseroCapsLink {
 typedef struct _BraseroCapsLink BraseroCapsLink;
 
 struct _BraseroCapsTest {
-	GSList *plugins;
+	GSList *links;
 	BraseroChecksumType type;
 };
 typedef struct _BraseroCapsTest BraseroCapsTest;
@@ -749,97 +750,6 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
 
-BraseroTask *
-brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
-					BraseroBurnSession *session,
-					GError **error)
-{
-	BraseroTrackType input;
-	guint checksum_type;
-	BraseroTrack *track;
-	BraseroTask *task;
-	BraseroCaps *caps;
-	BraseroJob *job;
-	GSList *tracks;
-	GSList *iter;
-
-	brasero_burn_session_get_input_type (session, &input);
-	BRASERO_BURN_LOG_WITH_TYPE (&input,
-				    BRASERO_PLUGIN_IO_NONE,
-				    "Creating checksuming task with input");
-
-	caps = brasero_caps_find_start_caps (&input);
-	if (!caps)
-		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
-
-	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
-				    BRASERO_PLUGIN_IO_NONE,
-				    "TESTING: found first caps (%i plugins for testing)",
-				    g_slist_length (caps->tests));
-
-	tracks = brasero_burn_session_get_tracks (session);
-	if (g_slist_length (tracks) != 1) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("only one track at a time can be checked"));
-		return NULL;
-	}
-
-	track = tracks->data;
-	checksum_type = brasero_track_get_checksum_type (track);
-
-	for (iter = caps->tests; iter; iter = iter->next) {
-		BraseroPlugin *candidate = NULL;
-		BraseroCapsTest *test;
-		GSList *plugins;
-
-		test = iter->data;
-
-		/* check this caps test supports the right checksum type */
-		if (!(test->type & checksum_type))
-			continue;
-
-		/* Go through all plugins and choose the plugin that:
-		 * - have the highest priority
-		 * - is active */
-		for (plugins = test->plugins; plugins; plugins = plugins->next) {
-			BraseroPlugin *plugin;
-
-			plugin = plugins->data;
-			if (!brasero_plugin_get_active (plugin))
-				continue;
-
-			/* note for checksuming task there is no group possible */
-			if (!candidate)
-				candidate = plugin;
-			else if (brasero_plugin_get_priority (plugin) >
-				 brasero_plugin_get_priority (candidate))
-				candidate = plugin;
-		}
-
-		if (candidate) {
-			job = BRASERO_JOB (g_object_new (brasero_plugin_get_gtype (candidate),
-							 "output", NULL,
-							 NULL));
-			g_signal_connect (job,
-					  "error",
-					  G_CALLBACK (brasero_burn_caps_job_error_cb),
-					  caps);
-
-			task = BRASERO_TASK (g_object_new (BRASERO_TYPE_TASK,
-							   "session", session,
-							   "action", BRASERO_TASK_ACTION_CHECKSUM,
-							   NULL));
-			brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
-
-			return task;
-		}
-	}
-
-	BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
-}
-
 /**
  *
  */
@@ -1408,6 +1318,192 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 	}
 
 	return retval;
+}
+
+BraseroTask *
+brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
+					BraseroBurnSession *session,
+					GError **error)
+{
+	BraseroPlugin *candidate;
+	BraseroCaps *last_caps;
+	BraseroTrackType input;
+	guint checksum_type;
+	BraseroTrack *track;
+	BraseroTask *task;
+	BraseroJob *job;
+	GSList *tracks;
+	GSList *links;
+	GSList *list;
+	GSList *iter;
+
+	brasero_burn_session_get_input_type (session, &input);
+	BRASERO_BURN_LOG_WITH_TYPE (&input,
+				    BRASERO_PLUGIN_IO_NONE,
+				    "Creating checksuming task with input");
+
+	/* first find a checksuming job that can output the type of required
+	 * checksum. Then go through the caps to see if the input type can be
+	 * found. */
+
+	/* some checks */
+	tracks = brasero_burn_session_get_tracks (session);
+	if (g_slist_length (tracks) != 1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("only one track at a time can be checked"));
+		return NULL;
+	}
+
+	/* get the required checksum type */
+	track = tracks->data;
+	checksum_type = brasero_track_get_checksum_type (track);
+
+	links = NULL;
+	for (iter = self->priv->tests; iter; iter = iter->next) {
+		BraseroCapsTest *test;
+
+		test = iter->data;
+		if (!test->links)
+			continue;
+
+		/* check this caps test supports the right checksum type */
+		if (test->type == checksum_type) {
+			links = test->links;
+			break;
+		}
+	}
+
+	if (!links) {
+		/* we failed to find and create a proper task */
+		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
+	}
+
+	list = NULL;
+	last_caps = NULL;
+	for (iter = links; iter; iter = iter->next) {
+		BraseroCapsLink *link;
+		GSList *plugins;
+
+		link = iter->data;
+
+		/* Make sure we have a candidate */
+		candidate = NULL;
+		for (plugins = link->plugins; plugins; plugins = plugins->next) {
+			BraseroPlugin *plugin;
+
+			plugin = plugins->data;
+			if (!brasero_plugin_get_active (plugin))
+				continue;
+
+			/* note for checksuming task there is no group possible */
+			if (!candidate)
+				candidate = plugin;
+			else if (brasero_plugin_get_priority (plugin) >
+				 brasero_plugin_get_priority (candidate))
+				candidate = plugin;
+		}
+
+		if (!candidate)
+			continue;
+
+		/* see if it can handle the input or if it can be linked to 
+		 * another plugin that can */
+		if (brasero_caps_is_compatible_type (link->caps, &input)) {
+			/* this is the right caps */
+			last_caps = link->caps;
+			break;
+		}
+
+		/* the caps itself is not the right one so we try to 
+		 * go through its links to find the right caps. */
+		list = brasero_caps_try_links (link->caps,
+					       BRASERO_BURN_FLAG_NONE,
+					       BRASERO_MEDIUM_NONE,
+					       &input,
+					       BRASERO_PLUGIN_IO_ACCEPT_PIPE);
+		if (list) {
+			last_caps = link->caps;
+			break;
+		}
+	}
+
+	if (!last_caps) {
+		/* no link worked failure */
+		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
+	}
+
+	/* we made it. Create task */
+	task = BRASERO_TASK (g_object_new (BRASERO_TYPE_TASK,
+					   "session", session,
+					   "action", BRASERO_TASK_ACTION_CHECKSUM,
+					   NULL));
+
+	list = g_slist_reverse (list);
+	for (iter = list; iter; iter = iter->next) {
+		GType type;
+		GSList *plugins;
+		BraseroCapsLink *link;
+		BraseroPlugin *candidate_plugin;
+		BraseroTrackType *plugin_output;
+
+		link = iter->data;
+
+		/* determine the plugin output */
+		if (iter->next) {
+			BraseroCapsLink *next_link;
+
+			next_link = iter->next->data;
+			plugin_output = &next_link->caps->type;
+		}
+		else
+			plugin_output = &last_caps->type;
+
+		/* find the best plugin */
+		candidate_plugin = NULL;
+		for (plugins = link->plugins; plugins; plugins = plugins->next) {
+			BraseroPlugin *plugin;
+
+			plugin = plugins->data;
+
+			if (!brasero_plugin_get_active (plugin))
+				continue;
+
+			if (!candidate_plugin)
+				candidate_plugin = plugin;
+			else if (brasero_plugin_get_priority (plugin) >
+				 brasero_plugin_get_priority (candidate_plugin))
+				candidate_plugin = plugin;
+		}
+
+		/* create the object */
+		type = brasero_plugin_get_gtype (candidate_plugin);
+		job = BRASERO_JOB (g_object_new (type,
+						 "output", plugin_output,
+						 NULL));
+		g_signal_connect (job,
+				  "error",
+				  G_CALLBACK (brasero_burn_caps_job_error_cb),
+				  link);
+
+		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
+
+		BRASERO_BURN_LOG ("%s added to task", brasero_plugin_get_name (candidate_plugin));
+	}
+	g_slist_free (list);
+
+	/* Create the candidate */
+	job = BRASERO_JOB (g_object_new (brasero_plugin_get_gtype (candidate),
+					 "output", NULL,
+					 NULL));
+	g_signal_connect (job,
+			  "error",
+			  G_CALLBACK (brasero_burn_caps_job_error_cb),
+			  self);
+	brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
+
+	return task;
 }
 
 static GSList *
@@ -2192,63 +2288,12 @@ brasero_caps_copy (BraseroCaps *caps)
 	retval->flags = caps->flags;
 	memcpy (&retval->type, &caps->type, sizeof (BraseroTrackType));
 	retval->modifiers = g_slist_copy (caps->modifiers);
-	retval->tests = g_slist_copy (caps->tests);
 
 	return retval;
 }
 
 static void
-brasero_caps_add_test (BraseroCaps *caps,
-		       BraseroChecksumType type,
-		       BraseroPlugin *plugin)
-{
-	GSList *tests;
-
-	for (tests = caps->tests; tests; tests = tests->next)  {
-		BraseroCapsTest *test;
-		BraseroChecksumType common;
-
-		test = tests->data;
-
-		common = (test->type & type);
-		if (common == BRASERO_CHECKSUM_NONE)
-			continue;
-
-		if (g_slist_find (test->plugins, plugin)) {
-			type &= ~common;
-			continue;
-		}
-
-		if (common != test->type) {
-			BraseroCapsTest *tmp;
-
-			/* split it in two and keep the common part */
-			test->type &= ~common;
-
-			tmp = g_new0 (BraseroCapsTest, 1);
-			tmp->plugins = g_slist_copy (test->plugins);
-			caps->tests = g_slist_prepend (caps->tests, tmp);
-
-			test = tmp;
-			test->type = common;
-		}
-
-		type &= ~common;
-		test->plugins = g_slist_prepend (test->plugins, plugin);
-	}
-
-	if (type != BRASERO_CHECKSUM_NONE) {
-		BraseroCapsTest *test;
-
-		test = g_new0 (BraseroCapsTest, 1);
-		test->type = type;
-		test->plugins = g_slist_prepend (NULL, plugin);
-		caps->tests = g_slist_prepend (caps->tests, test);
-	}
-}
-
-static void
-brasero_caps_replicate_modifiers_tests (BraseroCaps *dest, BraseroCaps *src)
+brasero_caps_replicate_modifiers (BraseroCaps *dest, BraseroCaps *src)
 {
 	GSList *iter;
 
@@ -2261,19 +2306,6 @@ brasero_caps_replicate_modifiers_tests (BraseroCaps *dest, BraseroCaps *src)
 			continue;
 
 		dest->modifiers = g_slist_prepend (dest->modifiers, plugin);
-	}
-
-	for (iter = src->tests; iter; iter = iter->next) {
-		BraseroCapsTest *test;
-		GSList *plugins;
-
-		test = iter->data;
-		for (plugins = test->plugins; plugins; plugins = plugins->next) {
-			BraseroPlugin *plugin;
-
-			plugin = plugins->data;
-			brasero_caps_add_test (dest, test->type, plugin);
-		}
 	}
 }
 
@@ -2312,6 +2344,36 @@ brasero_caps_replicate_links (BraseroCaps *dest, BraseroCaps *src)
 	}
 }
 
+static void
+brasero_caps_replicate_tests (BraseroCaps *dest, BraseroCaps *src)
+{
+	BraseroBurnCaps *self;
+	GSList *iter;
+
+	self = brasero_burn_caps_get_default ();
+
+	for (iter = self->priv->tests; iter; iter = iter->next) {
+		BraseroCapsTest *test;
+		GSList *links;
+
+		test = iter->data;
+		for (links = test->links; links; links = links->next) {
+			BraseroCapsLink *link;
+
+			link = links->data;
+			if (link->caps == src) {
+				BraseroCapsLink *copy;
+
+				copy = brasero_caps_link_copy (link);
+				copy->caps = dest;
+				test->links = g_slist_insert_sorted (test->links,
+								     copy,
+								     brasero_caps_link_sort);
+			}
+		}
+	}
+}
+
 static BraseroCaps *
 brasero_caps_copy_deep (BraseroCaps *caps)
 {
@@ -2322,6 +2384,7 @@ brasero_caps_copy_deep (BraseroCaps *caps)
 
 	retval = brasero_caps_copy (caps);
 	brasero_caps_replicate_links (retval, caps);
+	brasero_caps_replicate_tests (retval, caps);
 	return retval;
 }
 
@@ -2559,7 +2622,8 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 
 				iter_caps = iter->data;
 				brasero_caps_replicate_links (caps, iter_caps);
-				brasero_caps_replicate_modifiers_tests (caps, iter_caps);
+				brasero_caps_replicate_tests (caps, iter_caps);
+				brasero_caps_replicate_modifiers (caps, iter_caps);
 			}
 		}
 
@@ -2632,7 +2696,8 @@ brasero_caps_data_new (BraseroImageFS fs_type)
 
 				iter_caps = iter->data;
 				brasero_caps_replicate_links (caps, iter_caps);
-				brasero_caps_replicate_modifiers_tests (caps, iter_caps);
+				brasero_caps_replicate_tests (caps, iter_caps);
+				brasero_caps_replicate_modifiers (caps, iter_caps);
 			}
 		}
 
@@ -3005,7 +3070,8 @@ brasero_caps_disc_new (BraseroMedia media)
 
 			iter_caps = iter->data;
 			brasero_caps_replicate_links (caps, iter_caps);
-			brasero_caps_replicate_modifiers_tests (caps, iter_caps);
+			brasero_caps_replicate_tests (caps, iter_caps);
+			brasero_caps_replicate_modifiers (caps, iter_caps);
 		}
 	}
 	
@@ -3145,11 +3211,58 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 			   BraseroChecksumType type,
 			   GSList *caps_list)
 {
+	BraseroCapsTest *test = NULL;
+	BraseroBurnCaps *self;
+	GSList *iter;
+
+	/* Find the the BraseroCapsTest for this type; if none create it */
+	self = brasero_burn_caps_get_default ();
+	for (iter = self->priv->tests; iter; iter = iter->next) {
+		BraseroCapsTest *tmp;
+
+		tmp = iter->data;
+		if (tmp->type == type) {
+			test = tmp;
+			break;
+		}
+	}
+
+	if (!test) {
+		test = g_new0 (BraseroCapsTest, 1);
+		test->type = type;
+		self->priv->tests = g_slist_prepend (self->priv->tests, test);
+	}
+
+	g_object_unref (self);
+
 	for (; caps_list; caps_list = caps_list->next) {
+		GSList *links;
 		BraseroCaps *caps;
+		BraseroCapsLink *link;
 
 		caps = caps_list->data;
-		brasero_caps_add_test (caps, type, plugin);
+
+		/* try to find a link for the above caps, if none create one */
+		link = NULL;
+		for (links = test->links; links; links = links->next) {
+			BraseroCapsLink *tmp;
+
+			tmp = links->data;
+			if (tmp->caps == caps) {
+				link = tmp;
+				break;
+			}
+		}
+
+		if (!link) {
+			link = g_new0 (BraseroCapsLink, 1);
+			link->caps = caps;
+			test->links = g_slist_insert_sorted (test->links,
+							     link,
+							     brasero_caps_link_sort);
+		}
+
+		link->plugins = g_slist_prepend (link->plugins, plugin);
 	}
 }
 

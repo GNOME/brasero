@@ -212,6 +212,9 @@ brasero_track_set_data_file_num (BraseroTrack *track,
 BraseroBurnResult
 brasero_track_set_drive_source (BraseroTrack *track,
 				NautilusBurnDrive *drive);
+BraseroBurnResult
+brasero_track_set_drive_track (BraseroTrack *track,
+			       guint num);
 
 BraseroBurnResult
 brasero_track_set_image_source (BraseroTrack *track,
@@ -237,6 +240,8 @@ brasero_track_get_audio_info (BraseroTrack *track);
 
 NautilusBurnDrive *
 brasero_track_get_drive_source (BraseroTrack *track);
+gint
+brasero_track_get_drive_track (BraseroTrack *track);
 
 GSList *
 brasero_track_get_data_grafts_source (BraseroTrack *track);

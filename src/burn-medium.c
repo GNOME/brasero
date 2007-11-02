@@ -221,6 +221,109 @@ brasero_medium_get_last_data_track_space (BraseroMedium *medium,
 	return TRUE;
 }
 
+guint
+brasero_medium_get_track_num (BraseroMedium *medium)
+{
+	guint retval = 0;
+	GSList *iter;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroMediumTrack *current;
+
+		current = iter->data;
+		if (current->type & BRASERO_MEDIUM_TRACK_LEADOUT)
+			break;
+
+		retval ++;
+	}
+
+	return retval;
+}
+
+static BraseroMediumTrack *
+brasero_medium_get_track (BraseroMedium *medium,
+			  guint num)
+{
+	guint i = 1;
+	GSList *iter;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroMediumTrack *current;
+
+		current = iter->data;
+		if (current->type == BRASERO_MEDIUM_TRACK_LEADOUT)
+			break;
+
+		if (i == num)
+			return current;
+
+		i++;
+	}
+
+	return NULL;
+}
+
+gboolean
+brasero_medium_get_track_space (BraseroMedium *medium,
+				guint num,
+				gint64 *size,
+				gint64 *blocks)
+{
+	BraseroMediumPrivate *priv;
+	BraseroMediumTrack *track;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	track = brasero_medium_get_track (medium, num);
+	if (!track) {
+		if (size)
+			*size = -1;
+		if (blocks)
+			*blocks = -1;
+		return FALSE;
+	}
+
+	if (size)
+		*size = track->blocks_num * priv->block_size;
+	if (blocks)
+		*blocks = track->blocks_num;
+
+	return TRUE;
+}
+
+gboolean
+brasero_medium_get_track_address (BraseroMedium *medium,
+				  guint num,
+				  gint64 *byte,
+				  gint64 *sector)
+{
+	BraseroMediumPrivate *priv;
+	BraseroMediumTrack *track;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	track = brasero_medium_get_track (medium, num);
+	if (!track) {
+		if (byte)
+			*byte = -1;
+		if (sector)
+			*sector = -1;
+		return FALSE;
+	}
+
+	if (byte)
+		*byte = track->start * priv->block_size;
+	if (sector)
+		*sector = track->start;
+
+	return TRUE;	
+}
+
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium)
 {

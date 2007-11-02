@@ -59,6 +59,7 @@ typedef struct {
 typedef struct {
 	BraseroTrack track;
 	NautilusBurnDrive *disc;
+	guint num;
 } BraseroTrackDisc;
 
 typedef struct {
@@ -440,6 +441,21 @@ brasero_track_set_drive_source (BraseroTrack *track, NautilusBurnDrive *drive)
 }
 
 BraseroBurnResult
+brasero_track_set_drive_track (BraseroTrack *track,
+			       guint num)
+{
+	BraseroTrackDisc *disc;
+
+	if (track->type.type != BRASERO_TRACK_TYPE_DISC)
+		return BRASERO_BURN_NOT_SUPPORTED;
+
+	disc = (BraseroTrackDisc *) track;
+	disc->num = num;
+
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
 brasero_track_set_audio_source (BraseroTrack *track,
 				const gchar *uri,
 				BraseroAudioFormat format)
@@ -772,6 +788,19 @@ brasero_track_get_drive_source (BraseroTrack *track)
 	drive = (BraseroTrackDisc *) track;
 
 	return drive->disc;
+}
+
+gint
+brasero_track_get_drive_track (BraseroTrack *track)
+{
+	BraseroTrackDisc *drive;
+
+	if (track->type.type != BRASERO_TRACK_TYPE_DISC)
+		return -1;
+
+	drive = (BraseroTrackDisc *) track;
+
+	return drive->num;
 }
 
 gchar *

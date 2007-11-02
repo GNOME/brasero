@@ -493,6 +493,83 @@ NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (NautilusBurnDrive *drive,
 	return brasero_medium_get_last_data_track_space (medium, size, blocks);
 }
 
+guint
+NCB_MEDIA_GET_TRACK_NUM (NautilusBurnDrive *drive)
+{
+	BraseroMedium *medium;
+
+	if (!drive)
+		return 0;
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium)
+		return 0;
+
+	return brasero_medium_get_track_num (medium);
+}
+
+gboolean
+NCB_MEDIA_GET_TRACK_ADDRESS (NautilusBurnDrive *drive,
+			     guint num,
+			     gint64 *byte,
+			     gint64 *sector)
+{
+	BraseroMedium *medium;
+
+	if (!drive) {
+		if (byte)
+			*byte = -1;
+		if (sector)
+			*sector = -1;
+		return FALSE;
+	}
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium) {
+		if (byte)
+			*byte = -1;
+		if (sector)
+			*sector = -1;
+		return FALSE;
+	}
+
+	return brasero_medium_get_track_address (medium,
+						 num,
+						 byte,
+						 sector);
+}
+
+gboolean
+NCB_MEDIA_GET_TRACK_SPACE (NautilusBurnDrive *drive,
+			   guint num,
+			   gint64 *size,
+			   gint64 *blocks)
+{
+	BraseroMedium *medium;
+
+	if (!drive) {
+		if (size)
+			*size = -1;
+		if (blocks)
+			*blocks = -1;
+		return FALSE;
+	}
+
+	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	if (!medium) {
+		if (size)
+			*size = -1;
+		if (blocks)
+			*blocks = -1;
+		return FALSE;
+	}
+
+	return brasero_medium_get_track_space (medium,
+					       num,
+					       size,
+					       blocks);
+}
+
 gint64
 NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
 {

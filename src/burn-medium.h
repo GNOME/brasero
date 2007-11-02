@@ -221,6 +221,20 @@ gboolean
 brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 					    gint64 *byte,
 					    gint64 *sector);
+guint
+brasero_medium_get_track_num (BraseroMedium *medium);
+
+gboolean
+brasero_medium_get_track_space (BraseroMedium *medium,
+				guint num,
+				gint64 *size,
+				gint64 *blocks);
+
+gboolean
+brasero_medium_get_track_address (BraseroMedium *medium,
+				  guint num,
+				  gint64 *byte,
+				  gint64 *sector);
 
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium);

@@ -120,8 +120,32 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 	BraseroTrack *track;
 
 	brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
-	brasero_track_get_disc_data_size (track, &nb_blocks, NULL);
-	g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
+
+	/* 0 means all disc, -1 problem */
+	if (brasero_track_get_drive_track (track) > 0) {
+		gint64 start, size;
+		NautilusBurnDrive *drive;
+
+		drive = brasero_track_get_drive_source (track);
+		NCB_MEDIA_GET_TRACK_SPACE (drive,
+					   brasero_track_get_drive_track (track),
+					   NULL,
+					   &size);
+		NCB_MEDIA_GET_TRACK_ADDRESS (drive,
+					     brasero_track_get_drive_track (track),
+					     NULL,
+					     &start);
+
+		BRASERO_JOB_LOG (readcd, "reading from sector %lli to %lli", start, start + size);
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%lli-%lli",
+							start,
+							start + size));
+	}
+	else {
+		brasero_track_get_disc_data_size (track, &nb_blocks, NULL);
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=0-%lli", nb_blocks));
+	}
+
 	return BRASERO_BURN_OK;
 }
 
@@ -134,7 +158,19 @@ brasero_readcd_get_size (BraseroReadcd *self,
 	BraseroTrack *track = NULL;
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	brasero_track_get_disc_data_size (track, &blocks, NULL);
+
+	if (brasero_track_get_drive_track (track) > 0) {
+		NautilusBurnDrive *drive;
+
+		drive = brasero_track_get_drive_source (track);
+		NCB_MEDIA_GET_TRACK_SPACE (drive, 
+					   brasero_track_get_drive_track (track),
+					   NULL,
+					   &blocks);
+	}
+	else
+		brasero_track_get_disc_data_size (track, &blocks, NULL);
+
 	brasero_job_get_output_type (BRASERO_JOB (self), &output);
 	if (output.type != BRASERO_TRACK_TYPE_IMAGE)
 		return BRASERO_BURN_ERR;

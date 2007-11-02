@@ -1616,10 +1616,9 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 
 static BraseroBurnResult
 brasero_burn_check_real (BraseroBurn *self,
+			 BraseroTrack *track,
 			 GError **error)
 {
-	GSList *tracks;
-	BraseroTrack *track;
 	BraseroTrackType type;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
@@ -1629,39 +1628,17 @@ brasero_burn_check_real (BraseroBurn *self,
 
 	BRASERO_BURN_LOG ("Starting to check track integrity");
 
-	/* NOTE: no need to check for parameters here;
-	 * that'll be done when asking for a task */
-	tracks = brasero_burn_session_get_tracks (priv->session);
-	if (g_slist_length (tracks) != 1) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("only one track at a time can be checked"));
-		return BRASERO_BURN_ERR;
-	}
-
-	track = tracks->data;
-
 	checksum_type = brasero_track_get_checksum_type (track);
 	brasero_track_get_type (track, &type);
 
 	/* if the input is a DISC, ask/mount/unmount and lock it (as dest) */
-	if (type.type == BRASERO_TRACK_TYPE_DISC) {
-		/* make sure there is a disc. If not, ask one and lock it */
-		result = brasero_burn_lock_checksum_media (self, error);
+	if (type.type == BRASERO_TRACK_TYPE_DISC
+	&&  checksum_type == BRASERO_CHECKSUM_MD5_FILE
+	&& !nautilus_burn_drive_is_mounted (priv->dest)) {
+		result = brasero_burn_mount_media (self, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
-
-		if (checksum_type == BRASERO_CHECKSUM_MD5_FILE
-		&& !nautilus_burn_drive_is_mounted (priv->dest)) {
-			result = brasero_burn_mount_media (self, error);
-			if (result != BRASERO_BURN_OK)
-				return result;
-		}
 	}
-
-	/* re-ask for the input type (it depends on the media) once loaded */
-	brasero_track_get_type (track, &type);
 
 	/* get the task and run it */
 	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
@@ -1971,7 +1948,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 		/* the idea is to push a new track on the stack with
 		 * the current disc burnt and the checksum generated
 		 * during the session recording */
-
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
 		brasero_track_set_checksum (track, type, checksum);
 	}
@@ -1987,7 +1963,21 @@ brasero_burn_record_session (BraseroBurn *burn,
 	brasero_track_set_drive_source (track, brasero_burn_session_get_burner (priv->session));
 	brasero_burn_session_add_track (priv->session, track);
 
-	result = brasero_burn_check_real (burn, error);
+	/* reload media */
+	result = brasero_burn_lock_checksum_media (burn, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	if (type == BRASERO_CHECKSUM_MD5) {
+		guint track_num;
+
+		/* get the last track number */
+		track_num = NCB_MEDIA_GET_TRACK_NUM (brasero_burn_session_get_burner (priv->session));
+		BRASERO_BURN_LOG ("Last written track num == %i", track_num);
+		brasero_track_set_drive_track (track, track_num);
+	}
+
+	result = brasero_burn_check_real (burn, track, error);
 	brasero_burn_session_pop_tracks (priv->session);
 
 	if (result == BRASERO_BURN_CANCEL) {
@@ -2004,6 +1994,9 @@ brasero_burn_check (BraseroBurn *self,
 		    BraseroBurnSession *session,
 		    GError **error)
 {
+	GSList *tracks;
+	BraseroTrack *track;
+	BraseroTrackType type;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
 
@@ -2015,11 +2008,33 @@ brasero_burn_check (BraseroBurn *self,
 	g_object_ref (session);
 	priv->session = session;
 
+	/* NOTE: no need to check for parameters here;
+	 * that'll be done when asking for a task */
+	tracks = brasero_burn_session_get_tracks (priv->session);
+	if (g_slist_length (tracks) != 1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("only one track at a time can be checked"));
+		return BRASERO_BURN_ERR;
+	}
+
+	track = tracks->data;
+	brasero_track_get_type (track, &type);
+
+	/* if the input is a DISC, ask/mount/unmount and lock it (as dest) */
+	if (type.type == BRASERO_TRACK_TYPE_DISC) {
+		/* make sure there is a disc. If not, ask one and lock it */
+		result = brasero_burn_lock_checksum_media (self, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
+
 #ifdef BUILD_DBUS
 	brasero_burn_powermanagement (self, TRUE);
 #endif
 
-	result = brasero_burn_check_real (self, error);
+	result = brasero_burn_check_real (self, track, error);
 
 	brasero_burn_unlock_medias (self);
 
