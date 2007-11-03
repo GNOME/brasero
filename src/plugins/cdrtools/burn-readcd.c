@@ -90,10 +90,12 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 						_("the drive is not ready")));
 	}
 	else if (strstr (line, "Device or resource busy")) {
-		brasero_job_error (BRASERO_JOB (readcd),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("you don't seem to have the required permissions to access the drive")));
+		if (!strstr (line, "retrying in")) {
+			brasero_job_error (BRASERO_JOB (readcd),
+					   g_error_new (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_BUSY_DRIVE,
+							_("you don't seem to have the required permissions to access the drive")));
+		}
 	}
 	else if (strstr (line, "Cannot open SCSI driver.")) {
 		brasero_job_error (BRASERO_JOB (readcd),

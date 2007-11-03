@@ -973,6 +973,13 @@ brasero_burn_lock_checksum_media (BraseroBurn *burn,
 
 again:
 
+	/* if drive is mounted then unmount before checking anything */
+	if (nautilus_burn_drive_is_mounted (priv->dest)) {
+		if (!NCB_DRIVE_UNMOUNT (priv->dest, NULL))
+			g_warning ("Couldn't unmount volume in drive: %s",
+				   NCB_DRIVE_GET_DEVICE (priv->dest));
+	}
+
 	media = NCB_MEDIA_GET_STATUS (priv->dest);
 	error_type = BRASERO_BURN_ERROR_NONE;
 	BRASERO_BURN_LOG_DISC_TYPE (media, "Waiting for media to checksum");
@@ -1656,18 +1663,29 @@ brasero_burn_check_real (BraseroBurn *self,
 				  G_CALLBACK (brasero_burn_action_changed),
 				  self);
 
-		result = brasero_task_run (priv->task, error);
 
-		if (result == BRASERO_BURN_OK) {
+		/* make sure one last time it is not mounted */
+		if (priv->dest
+		&&  nautilus_burn_drive_is_mounted (priv->dest)
+		&& !NCB_DRIVE_UNMOUNT (priv->dest, NULL)) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_BUSY_DRIVE,
+				     _("the drive seems to be busy"));
+			return BRASERO_BURN_ERR;
+		}
+
+		result = brasero_task_run (priv->task, error);
+		g_signal_emit (self,
+			       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
+			       0,
+			       1.0,
+			       1.0,
+			       -1);
+
+		if (result == BRASERO_BURN_OK)
 			brasero_burn_action_changed_real (self,
 							  BRASERO_BURN_ACTION_FINISHED);
-			g_signal_emit (self,
-				       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],
-				       0,
-				       1.0,
-				       1.0,
-				       -1);
-		}
 
 		g_object_unref (priv->task);
 		priv->task = NULL;

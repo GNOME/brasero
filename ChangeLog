@@ -1,5 +1,26 @@
 2007-11-03  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Additional fixes for #484162.
+	First, now we make sure to unmount media before checking and locking.
+	Second, delay for 5 seconds (while readcd/wodim/... retries) our giving up
+
+	* src/burn.c: (brasero_burn_lock_checksum_media),
+	(brasero_burn_unlock_dest_media), (brasero_burn_progress_changed),
+	(brasero_burn_ask_for_joliet), (brasero_burn_run_imager),
+	(brasero_burn_run_recorder), (brasero_burn_run_tasks),
+	(brasero_burn_check_real), (brasero_burn_record_session),
+	(brasero_burn_same_src_dest), (brasero_burn_blank_real):
+	* src/plugins/cdrkit/burn-readom.c: (brasero_readom_read_stderr):
+	* src/plugins/cdrkit/burn-wodim.c: (brasero_wodim_stderr_read),
+	(brasero_wodim_compute), (brasero_wodim_write_inf),
+	(brasero_wodim_set_argv_record):
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	(brasero_cdrecord_stderr_read), (brasero_cdrecord_compute),
+	(brasero_cdrecord_write_inf), (brasero_cdrecord_set_argv_record):
+	* src/plugins/cdrtools/burn-readcd.c: (brasero_readcd_read_stderr):
+
+2007-11-03  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix the problem whereby burn button was greyed when image was selected as output
 
 	* src/brasero-dest-selection.c:

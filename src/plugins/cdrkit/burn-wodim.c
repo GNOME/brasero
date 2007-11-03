@@ -154,10 +154,12 @@ brasero_wodim_stderr_read (BraseroProcess *process, const gchar *line)
 						_("You don't seem to have the required permission to use this drive")));
 	}
 	else if (strstr (line, "Device or resource busy")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("The drive seems to be busy (maybe check you have proper permissions to use it)")));
+		if (!strstr (line, "retrying in")) {
+			brasero_job_error (BRASERO_JOB (process),
+					   g_error_new (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_BUSY_DRIVE,
+							_("The drive seems to be busy (maybe check you have proper permissions to use it)")));
+		}
 	}
 	else if (strstr (line, "Illegal write mode for this drive")) {
 		/* NOTE : when it happened I had to unlock the
