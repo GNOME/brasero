@@ -518,11 +518,12 @@ brasero_layout_item_set_active (BraseroLayout *layout,
 
 		if (tree_item == item) {
 			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (layout->priv->combo), &iter);
+			gtk_widget_show (item->widget);
+			layout->priv->active_item = item;
 			return;
 		}
 	} while (gtk_tree_model_iter_next (model, &iter));
 
-	gtk_widget_show (item->widget);
 }
 
 static void
@@ -822,6 +823,10 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	/* even if we're not showing a side pane go through all items to make 
 	 * sure they have the proper state in case the user wants to activate
 	 * side pane again */
+	if (layout->priv->active_item) {
+		gtk_widget_hide (layout->priv->active_item->widget);
+		layout->priv->active_item = NULL;
+	}
 	layout->priv->ctx_type = type;
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (layout->priv->combo));
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
@@ -855,8 +860,17 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	}
 
 	/* make sure there is a default for the pane */
-	if (!layout->priv->active_item)
-		gtk_combo_box_set_active (GTK_COMBO_BOX (layout->priv->combo), 0);
+	if (!layout->priv->active_item) {
+		if (gtk_tree_model_get_iter_first (model, &iter)) {
+			BraseroLayoutItem *item = NULL;
+			
+			gtk_tree_model_get (model, &iter,
+					    ITEM_COL, &item,
+					    -1);
+			
+			brasero_layout_item_set_active (layout, item);
+		}
+	}
 
 	/* hide or show side pane */
 	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
