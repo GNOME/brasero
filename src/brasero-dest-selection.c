@@ -682,9 +682,14 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 
 	if (output.type == BRASERO_TRACK_TYPE_NONE
 	||  output.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+		/* That means that we've got a problem */
 		brasero_burn_session_set_image_output (priv->session,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL);
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       FALSE);
 		return;
 	}
 
@@ -696,8 +701,11 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 		suffix = suffixes [2];
 	else if (output.subtype.img_format & BRASERO_IMAGE_FORMAT_CDRDAO)
 		suffix = suffixes [3];
-	else
-		return;
+
+	g_signal_emit (self,
+		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+		       0,
+		       TRUE);
 
 	path = g_strdup_printf ("%s/brasero%s",
 				g_get_home_dir (),
@@ -737,6 +745,11 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 	result = brasero_burn_caps_is_output_supported (priv->caps,
 							priv->session,
 							&output);
+
+	g_signal_emit (self,
+		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+		       0,
+		       (result == BRASERO_BURN_OK));
 
 	if (result != BRASERO_BURN_OK) {
 		if (priv->button)
