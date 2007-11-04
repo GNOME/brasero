@@ -1037,6 +1037,7 @@ static GSList *
 brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 					     BraseroTask *task,
 					     BraseroCaps *caps,
+					     BraseroTrackType *io_type,
 					     BraseroPluginProcessFlag position)
 {
 	GSList *retval = NULL;
@@ -1072,7 +1073,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 
 		type = brasero_plugin_get_gtype (plugin);
 		job = BRASERO_JOB (g_object_new (type,
-						 "output", &caps->type,
+						 "output", io_type,
 						 NULL));
 		g_signal_connect (job,
 				  "error",
@@ -1090,8 +1091,8 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 			retval = g_slist_prepend (retval, task);
 		}
 
-		BRASERO_BURN_LOG ("%s (modifier) added to task",
-				  brasero_plugin_get_name (plugin));
+		BRASERO_BURN_LOG ("%s (modifier) added to task", brasero_plugin_get_name (plugin));
+		BRASERO_BURN_LOG_TYPE (io_type, "IO type");
 
 		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
 	}
@@ -1106,6 +1107,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 {
 	BraseroPluginProcessFlag position;
 	BraseroBurnFlag session_flags;
+	BraseroTrackType plugin_input;
 	BraseroTask *blanking = NULL;
 	BraseroPluginIOFlag flags;
 	BraseroTask *task = NULL;
@@ -1222,8 +1224,10 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 	list = g_slist_reverse (list);
 	position = BRASERO_PLUGIN_RUN_FIRST;
 	group_id = self->priv->group_id;
+
+	brasero_burn_session_get_input_type (session, &plugin_input);
 	for (iter = list; iter; iter = iter->next) {
-		BraseroTrackType *plugin_output;
+		BraseroTrackType plugin_output;
 		BraseroCapsLink *link;
 		BraseroPlugin *plugin;
 		BraseroJob *job;
@@ -1244,15 +1248,32 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			BraseroCapsLink *next_link;
 
 			next_link = iter->next->data;
-			plugin_output = &next_link->caps->type;
+			if (next_link == link) {
+				/* That's a processing plugin so the output must
+				 * be the exact same as the input, which is not
+				 * necessarily the caps type referred to by the 
+				 * link if the link is amongst the first. In
+				 * that case that's the session input. */
+				memcpy (&plugin_output,
+					&plugin_input,
+					sizeof (BraseroTrackType));
+			}
+			else {
+				memcpy (&plugin_output,
+					&next_link->caps->type,
+					sizeof (BraseroTrackType));
+			}
 		}
 		else
-			plugin_output = &output;
+			memcpy (&plugin_output,
+				&output,
+				sizeof (BraseroTrackType));
 
 		/* first see if there are track processing plugins */
 		result = brasero_caps_add_processing_plugins_to_task (session,
 								      task,
 								      link->caps,
+								      &plugin_input,
 								      position);
 		retval = g_slist_concat (retval, result);
 
@@ -1260,7 +1281,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		plugin = brasero_caps_link_find_plugin (link,
 							group_id,
 							session,
-							plugin_output,
+							&plugin_output,
 							media);
 
 		/* This is meant to have plugins in the same group id as much as
@@ -1270,7 +1291,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 		type = brasero_plugin_get_gtype (plugin);
 		job = BRASERO_JOB (g_object_new (type,
-						 "output", plugin_output,
+						 "output", &plugin_output,
 						 NULL));
 		g_signal_connect (job,
 				  "error",
@@ -1294,8 +1315,13 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
 
 		BRASERO_BURN_LOG ("%s added to task", brasero_plugin_get_name (plugin));
+		BRASERO_BURN_LOG_TYPE (&plugin_input, "input");
+		BRASERO_BURN_LOG_TYPE (&plugin_output, "output");
 
 		position = BRASERO_PLUGIN_RUN_NEVER;
+
+		/* the output of the plugin will become the input of the next */
+		memcpy (&plugin_input, &plugin_output, sizeof (BraseroTrackType));
 	}
 	g_slist_free (list);
 
@@ -1305,9 +1331,12 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		/* imaging to a file so we never run the processing plugin on
 		 * the fly in this case so as to allow the last plugin to output
 		 * correctly to a file */
+		/* NOTE: if it's not a disc we didn't modified the output
+		 * subtype */
 		result = brasero_caps_add_processing_plugins_to_task (session,
 								      NULL,
 								      last_caps,
+								      &output,
 								      BRASERO_PLUGIN_RUN_LAST);
 		retval = g_slist_concat (retval, result);
 	}

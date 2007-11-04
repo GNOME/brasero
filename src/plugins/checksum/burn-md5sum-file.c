@@ -794,7 +794,7 @@ brasero_md5sum_file_thread (gpointer data)
 
 static BraseroBurnResult
 brasero_md5sum_file_start (BraseroJob *job,
-		      GError **error)
+			   GError **error)
 {
 	BraseroMd5sumFilePrivate *priv;
 	BraseroJobAction action;
@@ -818,7 +818,7 @@ brasero_md5sum_file_start (BraseroJob *job,
 
 static BraseroBurnResult
 brasero_md5sum_file_activate (BraseroJob *job,
-			 GError **error)
+			      GError **error)
 {
 	GSList *grafts;
 	BraseroTrackType output;

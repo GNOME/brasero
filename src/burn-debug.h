@@ -53,6 +53,11 @@ G_BEGIN_DECLS
 						 format,			\
 						 ##__VA_ARGS__);
 
+#define BRASERO_BURN_LOG_TYPE(type_MACRO, format, ...)				\
+		BRASERO_BURN_LOG_WITH_TYPE (type_MACRO,				\
+					    BRASERO_PLUGIN_IO_NONE,		\
+					    format,				\
+					    ##__VA_ARGS__);
 #define BRASERO_BURN_LOG_WITH_TYPE(type_MACRO, flags_MACRO, format, ...)	\
 		BRASERO_BURN_LOG_WITH_FULL_TYPE ((type_MACRO)->type,		\
 						 (type_MACRO)->subtype.media,	\
