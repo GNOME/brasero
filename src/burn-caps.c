@@ -46,7 +46,7 @@
 #include "burn-task.h"
 #include "burn-caps.h"
 
-#define BRASERO_ENGINE_GROUP_KEY	"/app/brasero/config/engine-group"
+#define BRASERO_ENGINE_GROUP_KEY	"/apps/brasero/config/engine-group"
 
 G_DEFINE_TYPE (BraseroBurnCaps, brasero_burn_caps, G_TYPE_OBJECT);
 
