@@ -1,5 +1,12 @@
 2007-11-04  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #487053 – files get accidently selected as 'dragged' in the browser treeview
+	Patch by Carl-Anton Ingmarsson
+
+	* src/eggtreemultidnd.c: (egg_tree_multi_drag_button_press_event):
+
+2007-11-04  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Another attempt at fixing #488194 – md5 plugin causes trouble when simulating
 	Now we make sure processing plugins (like md5sumfile) get the same input/output
 

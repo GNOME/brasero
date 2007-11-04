@@ -366,6 +366,9 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
     }
   
   if (event->type == GDK_2BUTTON_PRESS)
+   	return FALSE;
+  
+  if (event->button == 3)
     return FALSE;
 
   gtk_tree_view_get_path_at_pos (tree_view,
