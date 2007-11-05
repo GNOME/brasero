@@ -1551,9 +1551,19 @@ brasero_project_set_uri (BraseroProject *project,
 {
      	gchar *name;
 	gchar *title;
+	gchar *groups [] = { "brasero", NULL };
 	GtkAction *action;
 	GtkWidget *toplevel;
    	GtkRecentManager *recent;
+	GtkRecentData recent_data = { NULL,
+				      NULL,
+
+				      "application/x-brasero",
+
+				      "brasero",
+				      "brasero -p %u",
+				      groups,
+				      FALSE };
 
 	/* possibly reset the name of the project */
 	if (uri) {
@@ -1567,7 +1577,7 @@ brasero_project_set_uri (BraseroProject *project,
 
     	/* add it to recent manager */
     	recent = gtk_recent_manager_get_default ();
-    	gtk_recent_manager_add_item (recent, uri);
+    	gtk_recent_manager_add_full (recent, uri, &recent_data);
 
 	/* update the name of the main window */
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);

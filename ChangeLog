@@ -1,5 +1,34 @@
 2007-11-05  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #492828 – 'choose a recently opened project' doesn't remember my last project
+
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_set_track),
+	(brasero_image_option_dialog_get_session),
+	(brasero_image_option_dialog_init):
+	* src/brasero-project-type-chooser.c:
+	(brasero_project_type_chooser_sort_recent),
+	(brasero_project_type_chooser_build_recent),
+	(brasero_project_type_chooser_recent_changed_cb),
+	(brasero_project_type_chooser_init):
+	* src/brasero-project.c: (brasero_project_set_uri),
+	(_read_graft_point), (_read_data_track), (_read_audio_track),
+	(_get_tracks), (brasero_project_open_project_xml),
+	(brasero_project_save_project_dialog),
+	(brasero_project_save_project_xml):
+	* src/burn-job.c: (brasero_job_item_activate),
+	(brasero_job_check_output_volume_space),
+	(brasero_job_set_output_file), (brasero_job_finished_session),
+	(brasero_job_start_progress), (brasero_job_set_current_action):
+	* src/burn-session.c:
+	(brasero_burn_session_set_image_output_retval),
+	(brasero_burn_session_push_tracks),
+	(brasero_burn_session_pop_tracks), (brasero_burn_session_finalize):
+	* src/burn-task.c: (brasero_task_set_track_output_size_default),
+	(brasero_task_start):
+
+2007-11-05  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix uninhibit interface call
 
 	* src/burn-dbus.c: (brasero_uninhibit_suspend):

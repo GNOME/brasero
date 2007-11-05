@@ -577,11 +577,11 @@ brasero_burn_session_file_test (BraseroBurnSession *self,
 
 static BraseroBurnResult
 brasero_burn_session_set_image_output_retval (BraseroBurnSession *self,
-					BraseroImageFormat format,
-					gchar **image,
-					gchar **toc,
-					gchar *output,
-					gchar *complement)
+					      BraseroImageFormat format,
+					      gchar **image,
+					      gchar **toc,
+					      gchar *output,
+					      gchar *complement)
 {
 	BraseroBurnSessionPrivate *priv;
 
@@ -773,11 +773,11 @@ brasero_burn_session_set_image_output (BraseroBurnSession *self,
 							       path);
 
 	brasero_burn_session_set_image_output_retval (self,
-						format,
-						&image,
-						&toc,
-						g_strdup (path),
-						complement);
+						      format,
+						      &image,
+						      &toc,
+						      g_strdup (path),
+						      complement);
 
 	result = brasero_burn_session_set_image_output_full (self,
 							     format,

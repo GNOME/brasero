@@ -227,6 +227,7 @@ brasero_job_output_free (BraseroJobOutput *output)
 
 	g_free (output);
 }
+
 static void
 brasero_job_deactivate (BraseroJob *self)
 {

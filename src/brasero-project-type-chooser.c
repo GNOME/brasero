@@ -98,6 +98,7 @@ static ItemDescription items [] = {
 
 struct BraseroProjectTypeChooserPrivate {
 	GdkPixbuf *background;
+	GtkWidget *recent_box;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -194,6 +195,127 @@ brasero_project_type_chooser_project_clicked_cb (GtkButton *button,
 		       uri);
 }
 
+static gint
+brasero_project_type_chooser_sort_recent (gconstpointer a, gconstpointer b)
+{
+	GtkRecentInfo *recent_a = (GtkRecentInfo *) a;
+	GtkRecentInfo *recent_b = (GtkRecentInfo *) b;
+
+	return gtk_recent_info_get_visited (recent_b) -
+	       gtk_recent_info_get_visited (recent_a);
+}
+
+static void
+brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
+					   GtkRecentManager *recent)
+{
+	GList *list = NULL;
+	GList *recents;
+	GList *iter;
+
+	recents = gtk_recent_manager_get_items (recent);
+	for (iter = recents; iter; iter = iter->next) {
+		GtkRecentInfo *info;
+		const gchar *mime;
+
+		info = iter->data;
+		mime = gtk_recent_info_get_mime_type (info);
+		if (!mime)
+			continue;
+
+		/* filter those we want */
+		if (strcmp (mime, "application/x-brasero")
+		&&  strcmp (mime, "application/x-cd-image")
+		&&  strcmp (mime, "application/x-cdrdao-toc")
+		&&  strcmp (mime, "application/x-toc")
+		&&  strcmp (mime, "application/x-cue"))
+			continue;
+
+		/* sort */
+		list = g_list_insert_sorted (list,
+					     info,
+					     brasero_project_type_chooser_sort_recent);
+		if (g_list_length (list) > 5)
+			list = g_list_remove_link (list, g_list_last (list));
+	}
+
+	for (iter = list; iter; iter = iter->next) {
+		GtkRecentInfo *info;
+		const gchar *name;
+		GdkPixbuf *pixbuf;
+		GtkWidget *image;
+		const gchar *uri;
+		GtkWidget *hbox;
+		GtkWidget *link;
+		gchar *tooltip;
+
+		info = iter->data;
+
+		hbox = gtk_hbox_new (FALSE, 6);
+		gtk_widget_show (hbox);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box),
+				    hbox,
+				    FALSE,
+				    FALSE,
+				    0);
+
+		tooltip = gtk_recent_info_get_uri_display (info);
+
+		pixbuf = gtk_recent_info_get_icon (info, GTK_ICON_SIZE_BUTTON);
+		image = gtk_image_new_from_pixbuf (pixbuf);
+		g_object_unref (pixbuf);
+
+		gtk_widget_show (image);
+		gtk_widget_set_tooltip_text (image, tooltip);
+
+		name = gtk_recent_info_get_display_name (info);
+		uri = gtk_recent_info_get_uri (info);
+
+		link = gtk_link_button_new_with_label (uri, name);
+		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
+		gtk_button_set_image (GTK_BUTTON (link), image);
+		if (strcmp (gtk_recent_info_get_mime_type (info), "application/x-brasero"))
+			g_signal_connect (link,
+					  "clicked",
+					  G_CALLBACK (brasero_project_type_chooser_uri_clicked_cb),
+					  self);
+		else
+			g_signal_connect (link,
+					  "clicked",
+					  G_CALLBACK (brasero_project_type_chooser_project_clicked_cb),
+					  self);
+
+		gtk_widget_show (link);
+		gtk_widget_set_tooltip_text (link, tooltip);
+		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, FALSE, 0);
+
+		g_free (tooltip);
+	}
+
+	if (!g_list_length (list)) {
+		GtkWidget *label;
+
+		label = gtk_label_new (_("No recently used project"));
+		gtk_widget_show (label);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 0);
+	}
+
+	g_list_free (list);
+
+	g_list_foreach (recents, (GFunc) gtk_recent_info_unref, NULL);
+	g_list_free (recents);
+}
+
+static void
+brasero_project_type_chooser_recent_changed_cb (GtkRecentManager *recent,
+						BraseroProjectTypeChooser *self)
+{
+	gtk_container_foreach (GTK_CONTAINER (self->priv->recent_box),
+			       (GtkCallback) gtk_widget_destroy,
+			       NULL);
+	brasero_project_type_chooser_build_recent (self, recent);
+}
+
 static void
 brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 {
@@ -205,9 +327,6 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *vbox;
-	GList *recents;
-	GList *iter;
-	guint num_recent;
 	int nb_rows = 2;
 	int nb_items;
 	int rows;
@@ -222,10 +341,6 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 		error = NULL;
 	}
 
-/*	gtk_widget_modify_bg (GTK_WIDGET (obj),
-			      GTK_STATE_NORMAL,
-			      &(GTK_WIDGET (obj)->style->white));
-*/
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (obj), vbox);
@@ -287,87 +402,19 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 12);
 
-	recent = gtk_recent_manager_get_default ();
-	recents = gtk_recent_manager_get_items (recent);
-
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, FALSE, 0);
+	obj->priv->recent_box = vbox;
 
-	num_recent = 0;
-	for (iter = recents; iter && num_recent < 5; iter = iter->next) {
-		GtkRecentInfo *info;
-		const gchar *mime;
+	recent = gtk_recent_manager_get_default ();
+	brasero_project_type_chooser_build_recent (obj, recent);
 
-		info = iter->data;
-		mime = gtk_recent_info_get_mime_type (info);
-		if (!mime)
-			continue;
-
-		if (!strcmp (mime, "application/x-brasero")
-		||  !strcmp (mime, "application/x-cd-image")
-		||  !strcmp (mime, "application/x-cdrdao-toc")
-		||  !strcmp (mime, "application/x-toc")
-		||  !strcmp (mime, "application/x-cue")) {
-			const gchar *name;
-			GdkPixbuf *pixbuf;
-			GtkWidget *image;
-			const gchar *uri;
-			GtkWidget *hbox;
-			GtkWidget *link;
-			gchar *tooltip;
-
-			hbox = gtk_hbox_new (FALSE, 6);
-			gtk_widget_show (hbox);
-			gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
-
-			tooltip = gtk_recent_info_get_uri_display (info);
-
-			pixbuf = gtk_recent_info_get_icon (info, GTK_ICON_SIZE_BUTTON);
-			image = gtk_image_new_from_pixbuf (pixbuf);
-			g_object_unref (pixbuf);
-
-			gtk_widget_show (image);
-			gtk_widget_set_tooltip_text (image, tooltip);
-
-			name = gtk_recent_info_get_display_name (info);
-			uri = gtk_recent_info_get_uri (info);
-
-			link = gtk_link_button_new_with_label (uri, name);
-			gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
-			gtk_button_set_image (GTK_BUTTON (link), image);
-			if (strcmp (mime, "application/x-brasero"))
-				g_signal_connect (link,
-						  "clicked",
-						  G_CALLBACK (brasero_project_type_chooser_uri_clicked_cb),
-						  obj);
-			else
-				g_signal_connect (link,
-						  "clicked",
-						  G_CALLBACK (brasero_project_type_chooser_project_clicked_cb),
-						  obj);
-
-			gtk_widget_show (link);
-			gtk_widget_set_tooltip_text (link, tooltip);
-			gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, FALSE, 0);
-	
-			g_free (tooltip);
-
-			num_recent ++;
-		}
-	}
-
-	if (!num_recent) {
-		GtkWidget *label;
-
-		label = gtk_label_new (_("No recently used project"));
-		gtk_widget_show (label);
-		gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 0);
-	}
-
-	g_list_foreach (recents, (GFunc) gtk_recent_info_unref, NULL);
-	g_list_free (recents);
+	g_signal_connect (recent,
+			  "changed",
+			  G_CALLBACK (brasero_project_type_chooser_recent_changed_cb),
+			  obj);
 }
 
 /* Cut and Pasted from Gtk+ gtkeventbox.c but modified to display back image */

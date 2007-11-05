@@ -76,16 +76,9 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 				       const gchar *image,
 				       const gchar *toc)
 {
-    	GtkRecentManager *recent;
 	BraseroImageOptionDialogPrivate *priv;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
-
-    	/* Add it to recent file manager */
-	if (toc || image) {
-		recent = gtk_recent_manager_get_default ();
-		gtk_recent_manager_add_item (recent, toc ? toc:image);
-	}
 
 	if (!priv->track) {
 		priv->track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
@@ -385,6 +378,23 @@ brasero_image_option_dialog_image_empty (BraseroImageOptionDialog *dialog)
 BraseroBurnSession *
 brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 {
+	gchar *uri = NULL;
+	gchar *groups [] = { "brasero",
+			      NULL };
+	gchar *mimes [] = { "application/x-cd-image",
+			    "application/x-cue",
+			    "application/x-toc",
+			    "application/x-cdrdao-toc" };
+
+	GtkRecentData recent_data = { NULL,
+				      NULL,
+
+				      NULL,
+
+				      "brasero",
+				      "brasero -p %u",
+				      groups,
+				      FALSE };
 	BraseroImageOptionDialogPrivate *priv;
 	BraseroTrackType type;
 	gchar *image;
@@ -404,6 +414,42 @@ brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 	||  type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 		brasero_image_option_dialog_image_info_error (dialog);
 		return NULL;
+	}
+
+	/* Add it to recent file manager */
+	switch (type.subtype.img_format) {
+	case BRASERO_IMAGE_FORMAT_BIN:
+		recent_data.mime_type = mimes [0];
+		uri = brasero_track_get_image_source (priv->track, TRUE);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CUE:
+		recent_data.mime_type = mimes [1];
+		uri = brasero_track_get_toc_source (priv->track, TRUE);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CLONE:
+		recent_data.mime_type = mimes [2];
+		uri = brasero_track_get_toc_source (priv->track, TRUE);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+		recent_data.mime_type = mimes [3];
+		uri = brasero_track_get_toc_source (priv->track, TRUE);
+		break;
+
+	default:
+		break;
+	}
+
+	if (uri) {
+		GtkRecentManager *recent;
+
+		recent = gtk_recent_manager_get_default ();
+		gtk_recent_manager_add_full (recent,
+					     uri,
+					     &recent_data);
+		g_free (uri);
 	}
 
 	g_object_ref (priv->session);

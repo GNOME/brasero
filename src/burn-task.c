@@ -388,6 +388,8 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 	BraseroTrackType input = { 0 };
 	BraseroTrack *track = NULL;
 
+	BRASERO_BURN_LOG ("Trying to set a default output size");
+
 	brasero_task_ctx_get_current_track (BRASERO_TASK_CTX (self), &track);
 	brasero_track_get_type (track, &input);
 	if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
