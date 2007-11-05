@@ -973,13 +973,6 @@ brasero_burn_lock_checksum_media (BraseroBurn *burn,
 
 again:
 
-	/* if drive is mounted then unmount before checking anything */
-	if (nautilus_burn_drive_is_mounted (priv->dest)) {
-		if (!NCB_DRIVE_UNMOUNT (priv->dest, NULL))
-			g_warning ("Couldn't unmount volume in drive: %s",
-				   NCB_DRIVE_GET_DEVICE (priv->dest));
-	}
-
 	media = NCB_MEDIA_GET_STATUS (priv->dest);
 	error_type = BRASERO_BURN_ERROR_NONE;
 	BRASERO_BURN_LOG_DISC_TYPE (media, "Waiting for media to checksum");
@@ -1022,6 +1015,12 @@ again:
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
+
+	/* if drive is mounted then unmount before checking anything */
+	if (nautilus_burn_drive_is_mounted (priv->dest)
+	&& !NCB_DRIVE_UNMOUNT (priv->dest, NULL))
+		g_warning ("Couldn't unmount volume in drive: %s",
+			   NCB_DRIVE_GET_DEVICE (priv->dest));
 
 	priv->dest_locked = 1;
 
@@ -1853,6 +1852,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 			     gboolean erase_allowed,
 			     GError **error)
 {
+	BraseroBurnFlag session_flags;
 	BraseroTrack *track = NULL;
 	BraseroChecksumType type;
 	BraseroBurnPrivate *priv;
@@ -1866,6 +1866,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 	 * created from the same files */
 	brasero_burn_unset_checksums (burn);
 
+	session_flags = BRASERO_BURN_FLAG_NONE;
 	do {
 		/* push the session settings to keep the original session untainted */
 		brasero_burn_session_push_settings (priv->session);
@@ -1886,7 +1887,10 @@ brasero_burn_record_session (BraseroBurn *burn,
 						 erase_allowed,
 						 &ret_error);
 
-		/* restore the session settings */
+		/* restore the session settings. Keep the used flags
+		 * nevertheless to make sure we actually use the flags that were
+		 * set after checking for session consistency. */
+		session_flags = brasero_burn_session_get_flags (priv->session);
 		brasero_burn_session_pop_settings (priv->session);
 	} while (result == BRASERO_BURN_RETRY);
 
@@ -1903,7 +1907,10 @@ brasero_burn_record_session (BraseroBurn *burn,
 	/* recording was successful, so tell it */
 	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
-	if (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_DUMMY) {
+	if (brasero_burn_session_is_dest_file (priv->session))
+		return BRASERO_BURN_OK;
+
+	if (session_flags & BRASERO_BURN_FLAG_DUMMY) {
 		/* if we are in dummy mode and successfully completed then:
 		 * - no need to checksum the media afterward (done later)
 		 * - no eject to have automatic real burning */
@@ -1983,6 +1990,12 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	/* reload media */
 	result = brasero_burn_lock_checksum_media (burn, error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	/* this may be necessary for the drive to settle down and possibly be 
+	 * mounted by gnome-volume-manager (just temporarily) */
+	result = brasero_burn_sleep (burn, 5000);
 	if (result != BRASERO_BURN_OK)
 		return result;
 

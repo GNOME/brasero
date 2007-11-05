@@ -235,6 +235,7 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
+	/* Build dialog */
 	priv->drive_prop = brasero_drive_properties_new ();
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
@@ -242,6 +243,7 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->drive_prop), TRUE);
 	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
 
+	/* get information */
 	drive = brasero_burn_session_get_burner (priv->session);
 	rate = brasero_burn_session_get_rate (priv->session);
 
@@ -255,25 +257,6 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 				     priv->session,
 				     &supported,
 				     &compulsory);
-
-	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		/* clean up the disc and have more space when possible */
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_FAST_BLANK|
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-	}
-	else
-		brasero_burn_session_remove_flag (priv->session,
-						  BRASERO_BURN_FLAG_FAST_BLANK|
-						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-
-	/* use DAO whenever it's possible */
-	if (supported & BRASERO_BURN_FLAG_DAO)
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_DAO);
-	else
-		brasero_burn_session_remove_flag (priv->session,
-						  BRASERO_BURN_FLAG_DAO);
 
 	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
 					    flags,
@@ -543,11 +526,10 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	NautilusBurnDrive *drive;
 	BraseroTrackType input;
 	BraseroBurnFlag flags;
-	GError *error = NULL;
 	GConfClient *client;
+	GConfValue *value;
 	gchar *path;
 	guint64 rate;
-	gint speed;
 	gchar *key;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
@@ -567,32 +549,29 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	client = gconf_client_get_default ();
 
 	key = brasero_dest_selection_get_config_key (input.type, drive, "speed");
-	speed = gconf_client_get_int (client, key, &error);
+	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
-	if (error) {
-		g_error_free (error);
-		error = NULL;
-
+	if (!value)
 		rate = NCB_MEDIA_GET_MAX_WRITE_RATE (drive);
+	else if (NCB_MEDIA_GET_STATUS (drive) & BRASERO_MEDIUM_DVD) {
+		rate = BRASERO_SPEED_TO_RATE_DVD (gconf_value_get_int (value));
+		gconf_value_free (value);
 	}
-	else if (NCB_MEDIA_GET_STATUS (drive) & BRASERO_MEDIUM_DVD)
-		rate = BRASERO_SPEED_TO_RATE_DVD (speed);
-	else
-		rate = BRASERO_SPEED_TO_RATE_CD (speed);
+	else {
+		rate = BRASERO_SPEED_TO_RATE_CD (gconf_value_get_int (value));
+		gconf_value_free (value);
+	}
 
 	brasero_burn_session_set_rate (priv->session, rate);
 
 	/* do the same with the flags */
 	key = brasero_dest_selection_get_config_key (input.type, drive, "flags");
-	flags = gconf_client_get_int (client, key, &error);
+	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
-	if (error) {
+	if (!value) {
 		BraseroTrackType source;
-
-		g_error_free (error);
-		error = NULL;
 
 		/* these are sane defaults */
 		brasero_burn_session_add_flag (priv->session,
@@ -612,6 +591,9 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		BraseroBurnResult result;
 		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+
+		flags = gconf_value_get_int (value);
+		gconf_value_free (value);
 
 		result = brasero_burn_caps_get_flags (priv->caps,
 						      priv->session,
@@ -727,6 +709,8 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self),
 						path);
 	g_free (path);
+
+	brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
 }
 
 static void
@@ -784,6 +768,8 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 						      num > 1 ? formats:BRASERO_IMAGE_FORMAT_NONE,
 						      BRASERO_IMAGE_FORMAT_ANY);
 	}
+
+	brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
 }
 
 static void

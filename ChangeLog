@@ -1,3 +1,23 @@
+2007-11-05  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Some fixes for #490853 – Brasero refuses to start burning showing a "File not found" error, sometimes (weird) (comment #6)
+	Better handling of button being greyed out and also fix problem with creating an image.
+
+	Also try to better lock the drive before doing a checksum
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings):
+	* src/burn.c: (brasero_burn_lock_checksum_media),
+	(brasero_burn_unlock_dest_media), (brasero_burn_progress_changed),
+	(brasero_burn_ask_for_joliet), (brasero_burn_run_imager),
+	(brasero_burn_run_recorder), (brasero_burn_run_tasks),
+	(brasero_burn_check_real), (brasero_burn_record_session),
+	(brasero_burn_same_src_dest), (brasero_burn_blank_real):
+
 2007-11-04  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Small fix for wrong Gconf key
