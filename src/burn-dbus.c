@@ -45,7 +45,6 @@ brasero_uninhibit_suspend (guint cookie)
 
 	res = dbus_g_proxy_call (proxy,
 				 "UnInhibit", &error,
-	    			 G_TYPE_STRING, "Brasero",
 				 G_TYPE_UINT, cookie,
 				 G_TYPE_INVALID,
 				 G_TYPE_INVALID);
