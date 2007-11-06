@@ -1087,7 +1087,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	res = brasero_volume_get_size_fd (fd,
 					  track->start,
 					  &nb_blocks,
-					  &error);
+					  NULL);
 	if (!res) {
 		BRASERO_BURN_LOG ("Failed to retrieve the volume size: %s",
 				  error && error->message ? 
