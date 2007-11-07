@@ -1,5 +1,18 @@
 2007-11-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #493782 messages during data integrity check should be more verbose
+	Fixed progress of checksuming operation and show the proper action string during checksuming.
+
+	* src/brasero-tool-dialog.c:
+	(brasero_tool_dialog_progress_changed):
+	* src/burn-task-ctx.c: (brasero_task_ctx_get_progress):
+	* src/burn.c: (brasero_burn_check_real),
+	(brasero_burn_record_session), (brasero_burn_same_src_dest):
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_image),
+	(brasero_md5sum_end):
+
+2007-11-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix a problem with cue/clone/cdrdao images that couldn't be burnt:
 	Added a small and rought parser for cue and cdrdao to get the paths
 	to their images and retrieve a more precise size.

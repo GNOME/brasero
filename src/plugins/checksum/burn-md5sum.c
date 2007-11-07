@@ -300,18 +300,31 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 	BraseroMd5sumPrivate *priv;
 
 	priv = BRASERO_MD5SUM_PRIVATE (self);
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 
 	/* see if another plugin is sending us data to checksum */
 	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
-		brasero_job_get_session_output_size (BRASERO_JOB (self),
-						     NULL,
-						     &priv->total);
+		NautilusBurnDrive *drive;
+
+		/* we're only able to checksum ISO format at the moment so that
+		 * means we can only handle last session */
+		drive = brasero_track_get_drive_source (track);
+		NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (drive, &priv->total, NULL);
+
+		BRASERO_JOB_LOG (self,
+				 "Starting checksuming (live) (size = %i)",
+				 priv->total);
+
+		brasero_job_set_current_action (BRASERO_JOB (self),
+						BRASERO_BURN_ACTION_CHECKSUM,
+						_("Creating local image checksum"),
+						FALSE);
+		brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 		return brasero_md5sum_live (self, error);
 	}
 
 	/* get all needed information about the image */
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	result = brasero_track_get_image_size (track,
 					       NULL,
 					       NULL,

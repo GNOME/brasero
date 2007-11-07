@@ -160,8 +160,8 @@ brasero_tool_dialog_progress_changed (BraseroBurn *burn,
 				      BraseroToolDialog *self)
 {
 	brasero_tool_dialog_set_progress (self,
-					  progress,
 					  -1.0,
+					  progress,
 					  -1,
 					  -1,
 					  -1);

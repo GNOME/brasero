@@ -800,7 +800,8 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 
 	tracks = brasero_burn_session_get_tracks (priv->session);
 	track_num = g_slist_length (tracks);
-	track_nb = g_slist_index (tracks, priv->current_track);	
+	track_nb = g_slist_index (tracks, priv->current_track);
+
 	if (priv->progress >= 0.0) {
 		if (progress)
 			*progress = (gdouble) (track_nb + priv->progress) / (gdouble) track_num;

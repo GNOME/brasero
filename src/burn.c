@@ -1682,7 +1682,7 @@ brasero_burn_check_real (BraseroBurn *self,
 			       1.0,
 			       -1);
 
-		if (result == BRASERO_BURN_OK)
+		if (result == BRASERO_BURN_OK || result == BRASERO_BURN_CANCEL)
 			brasero_burn_action_changed_real (self,
 							  BRASERO_BURN_ACTION_FINISHED);
 
