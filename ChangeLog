@@ -1,5 +1,16 @@
 2007-11-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #485935 – percent is miscalculated in status icon tooltip
+
+	* src/brasero-burn-dialog.c:
+	(brasero_burn_dialog_progress_changed_real),
+	(brasero_burn_dialog_init), (brasero_burn_dialog_activity_stop),
+	(brasero_burn_dialog_setup_session),
+	(brasero_burn_dialog_save_log), (brasero_burn_dialog_show_log),
+	(brasero_burn_dialog_notify_success), (brasero_burn_dialog_run):
+
+2007-11-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #493782 messages during data integrity check should be more verbose
 	Fixed progress of checksuming operation and show the proper action string during checksuming.
 

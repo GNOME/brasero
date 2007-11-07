@@ -898,7 +898,7 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 					  rate);
 
 	brasero_tray_icon_set_progress (BRASERO_TRAYICON (dialog->priv->tray),
-					overall_progress,
+					task_progress,
 					remaining);
 }
 
