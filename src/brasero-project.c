@@ -177,7 +177,7 @@ static GtkActionEntry entries [] = {
 	 N_("Add files to the project"), G_CALLBACK (brasero_project_add_uris_cb)},
 	{"DeleteProject", GTK_STOCK_REMOVE, N_("_Remove Files"), NULL,
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
-	{"DeleteAll", GTK_STOCK_DELETE, N_("E_mpty Project"), NULL,
+	{"DeleteAll", GTK_STOCK_CLEAR, N_("E_mpty Project"), NULL,
 	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
 	{"Burn", "media-optical-burn", N_("_Burn..."), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
