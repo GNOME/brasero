@@ -217,7 +217,9 @@ brasero_SOURCES = \
 	brasero-time-button.h         \
 	brasero-time-button.c         \
 	brasero-preview.h         \
-	brasero-preview.c         
+	brasero-preview.c         \
+	burn-image-format.c         \
+	burn-image-format.h 
 
 brasero_LDADD = $(BRASERO_LIBS)
 

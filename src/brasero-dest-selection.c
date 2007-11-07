@@ -649,8 +649,8 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 				    ".bin",
 				    NULL };
 	BraseroDestSelectionPrivate *priv;
+	const gchar *suffix = NULL;
 	BraseroTrackType output;
-	const gchar *suffix;
 	gchar *path;
 	gint i = 0;
 

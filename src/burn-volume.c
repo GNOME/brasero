@@ -414,7 +414,7 @@ brasero_volume_file_size (BraseroVolFile *file)
 	gint64 size = 0;
 
 	if (!file->isdir)
-		return BRASERO_BYTES_TO_BLOCKS (file->specific.file.size_bytes, 2048);
+		return BRASERO_SIZE_TO_SECTORS (file->specific.file.size_bytes, 2048);
 
 	for (iter = file->specific.dir.children; iter; iter = iter->next) {
 		file = iter->data;
@@ -422,7 +422,7 @@ brasero_volume_file_size (BraseroVolFile *file)
 		if (file->isdir)
 			size += brasero_volume_file_size (file);
 		else
-			size += BRASERO_BYTES_TO_BLOCKS (file->specific.file.size_bytes, 2048);
+			size += BRASERO_SIZE_TO_SECTORS (file->specific.file.size_bytes, 2048);
 	}
 
 	return size;

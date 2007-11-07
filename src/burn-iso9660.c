@@ -120,7 +120,7 @@ typedef enum {
 	BRASERO_ISO_ERROR
 } BraseroIsoResult;
 
-#define ISO9660_BYTES_TO_BLOCKS(size)			BRASERO_BYTES_TO_BLOCKS ((size), ISO9660_BLOCK_SIZE)
+#define ISO9660_BYTES_TO_BLOCKS(size)			BRASERO_SIZE_TO_SECTORS ((size), ISO9660_BLOCK_SIZE)
 
 static BraseroVolFile *
 brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address);

@@ -36,6 +36,7 @@
 #include "burn-track.h"
 #include "burn-debug.h"
 #include "burn-medium.h"
+#include "burn-image-format.h"
 #include "brasero-ncb.h"
 #include "burn-mkisofs-base.h"
 
@@ -803,6 +804,9 @@ brasero_track_get_drive_track (BraseroTrack *track)
 	return drive->num;
 }
 
+/** FIXME: this function is actually flawed since for cue/toc files it could
+ ** return several data files. Fortunately there is usually only one. */
+
 gchar *
 brasero_track_get_image_source (BraseroTrack *track, gboolean uri)
 {
@@ -812,6 +816,32 @@ brasero_track_get_image_source (BraseroTrack *track, gboolean uri)
 		return NULL;
 
 	image = (BraseroTrackImage *) track;
+
+	if (!image->image) {
+		gchar *complement;
+		gchar *retval;
+
+		if (!image->toc) {
+			BRASERO_BURN_LOG ("Image nor toc were set");
+			return NULL;
+		}
+
+		complement = brasero_image_format_get_complement (track->type.subtype.img_format, 
+								  image->toc);
+		if (!complement) {
+			BRASERO_BURN_LOG ("No complement could be retrieved");
+			return NULL;
+		}
+
+		BRASERO_BURN_LOG ("Complement file retrieved %s", complement);
+		if (uri)
+			retval = brasero_track_get_uri (complement);
+		else
+			retval = brasero_track_get_localpath (complement);
+
+		g_free (complement);
+		return retval;
+	}
 
 	if (uri)
 		return brasero_track_get_uri (image->image);
@@ -829,6 +859,7 @@ brasero_track_get_toc_source (BraseroTrack *track, gboolean uri)
 
 	image = (BraseroTrackImage *) track;
 
+	/* Don't use file complement retrieval here as it's not possible */
 	if (uri)
 		return brasero_track_get_uri (image->toc);
 	else
@@ -931,69 +962,73 @@ brasero_track_get_image_size (BraseroTrack *track,
 			      gint64 *size,
 			      GError **error)
 {
-	struct stat buffer;
-	gchar *image;
-	int res;
+	BraseroTrackImage *image;
+
+	if (track->type.type != BRASERO_TRACK_TYPE_IMAGE)
+		return BRASERO_BURN_ERR;
+
+	image = (BraseroTrackImage *) track;
 
 	/* Convienience function */
-
-	/* a simple stat () will do. That means of course that the image must be
-	 * local. Now if local-track is enabled, it will always run first and we
-	 * don't need that size before it starts. During the GET_SIZE phase of 
-	 * the task it runs for, it can set the output size of the task by using
-	 * gnome-vfs to retrieve it. That means this particular task will know
-	 * the image size once it gets downloaded. local-task will also be able
-	 * to report how much it downloads and therefore the task will be able
-	 * to report its progress. Afterwards, no problem to get the image size
-	 * since it'll be local and stat() will work.
-	 * if local-track is not enabled we can't use non-local images anyway so
-	 * there is no need to have a function set_size */
-	image = brasero_track_get_image_source (track, FALSE);
-	if (!image)
-		return BRASERO_BURN_ERR;
-
-	res = g_lstat (image, &buffer);
-	g_free (image);
-
-	if (res == -1) {
-		g_set_error (error,
-			     BRASERO_BURN_ERR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
-
-		return BRASERO_BURN_ERR;
-	}
-
-	if (size)
-		*size = buffer.st_size;
-
 	if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
+		gchar *path;
+
+		if (!image->image)
+			return BRASERO_BURN_ERR;
+
+		path = brasero_track_get_localpath (image->image);
+		if (!brasero_image_format_get_iso_size (path, blocks, size, error)) {
+			g_free (path);
+			return BRASERO_BURN_ERR;
+		}
+
 		if (block_size)
 			*block_size = 2048;
-		if (blocks)
-			*blocks = (buffer.st_size / 2048) + ((buffer.st_size % 2048) ? 1:0);
 	}
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+		gchar *path;
+
+		if (!image->image)
+			return BRASERO_BURN_ERR;
+
+		path = brasero_track_get_localpath (image->image);
+		if (!brasero_image_format_get_clone_size (path, blocks, size, error)) {
+			g_free (path);
+			return BRASERO_BURN_ERR;
+		}
+
 		if (block_size)
 			*block_size = 2448;
-		if (blocks)
-			*blocks = buffer.st_size / 2448 +
-				 (buffer.st_size % 2448) ? 1:0;
 	}
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+		gchar *path;
+
+		if (!image->toc)
+			return BRASERO_BURN_ERR;
+
+		path = brasero_track_get_localpath (image->toc);
+		if (!brasero_image_format_get_cdrdao_size (path, blocks, size, error)) {
+			g_free (path);
+			return BRASERO_BURN_ERR;
+		}
+
 		if (block_size)
-			*block_size = 2448;
-		if (blocks)
-			*blocks = buffer.st_size / 2448 +
-				 (buffer.st_size % 2448) ? 1:0;
+			*block_size = 2352;
 	}
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
+		gchar *path;
+
+		if (!image->toc)
+			return BRASERO_BURN_ERR;
+
+		path = brasero_track_get_localpath (image->toc);
+		if (!brasero_image_format_get_cue_size (path, blocks, size, error)) {
+			g_free (path);
+			return BRASERO_BURN_ERR;
+		}
+
 		if (block_size)
-			*block_size = 2448;
-		if (blocks)
-			*blocks = buffer.st_size / 2448 +
-				 (buffer.st_size % 2448) ? 1:0;
+			*block_size = 2352;
 	}
 
 	return BRASERO_BURN_OK;

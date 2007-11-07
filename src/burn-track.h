@@ -26,6 +26,7 @@
 
 #include "burn-basics.h"
 #include "burn-medium.h"
+#include "burn-image-format.h"
 
 #ifndef _BURN_TRACK_H
 #define _BURN_TRACK_H
@@ -40,18 +41,6 @@ typedef enum {
 	BRASERO_TRACK_TYPE_IMAGE,
 	BRASERO_TRACK_TYPE_DISC,
 } BraseroTrackDataType;
-
-typedef enum {
-	BRASERO_IMAGE_FORMAT_NONE		= 0,
-	BRASERO_IMAGE_FORMAT_BIN		= 1,
-	BRASERO_IMAGE_FORMAT_CUE		= 1 << 1,
-	BRASERO_IMAGE_FORMAT_CLONE		= 1 << 2,
-	BRASERO_IMAGE_FORMAT_CDRDAO		= 1 << 3,
-	BRASERO_IMAGE_FORMAT_ANY		= BRASERO_IMAGE_FORMAT_BIN|
-						  BRASERO_IMAGE_FORMAT_CUE|
-						  BRASERO_IMAGE_FORMAT_CDRDAO|
-						  BRASERO_IMAGE_FORMAT_CLONE,
-} BraseroImageFormat;
 
 typedef enum {
 	BRASERO_IMAGE_FS_NONE			= 0,
@@ -84,17 +73,6 @@ typedef enum {
 	((end) - (start) > BRASERO_MIN_AUDIO_TRACK_LENGTH) ?			\
 	((end) - (start)) : BRASERO_MIN_AUDIO_TRACK_LENGTH
 
-#define BRASERO_DURATION_TO_BYTES(duration)					\
-	((gint64) (duration) * 75 * 2352 / 1000000000 +				\
-	(((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0))
-#define BRASERO_DURATION_TO_SECTORS(duration)					\
-	((gint64) (duration) * 75 / 1000000000 +				\
-	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
-#define BRASERO_SIZE_TO_SECTORS(size, secsize)					\
-	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
-#define BRASERO_BYTES_TO_DURATION(bytes)					\
-	(((bytes) * 1000000000) / (2352 * 75) + 				\
-	((((bytes) * 1000000000) % (2352 * 75)) ? 1:0))
 
 /**
  *

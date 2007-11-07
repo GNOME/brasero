@@ -1,3 +1,33 @@
+2007-11-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix a problem with cue/clone/cdrdao images that couldn't be burnt:
+	Added a small and rought parser for cue and cdrdao to get the paths
+	to their images and retrieve a more precise size.
+
+	* src/Makefile.am:
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings):
+	* src/burn-basics.h:
+	* src/burn-image-format.c: (brasero_image_format_read_path),
+	(brasero_image_format_get_cue_file_complement),
+	(brasero_image_format_get_toc_file_complement),
+	(brasero_image_format_get_complement),
+	(brasero_image_format_get_MSF_address),
+	(brasero_image_format_get_DATAFILE_info),
+	(brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* src/burn-image-format.h:
+	* src/burn-iso9660.c:
+	* src/burn-track.c: (brasero_track_get_image_source),
+	(brasero_track_get_toc_source), (brasero_track_get_image_size):
+	* src/burn-track.h:
+	* src/burn-volume.c: (brasero_volume_file_size):
+	* src/burn-volume.h:
+
 2007-11-06  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/burn-medium.c: (brasero_medium_track_volume_size):

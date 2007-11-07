@@ -61,7 +61,6 @@ struct _BraseroVolFile {
 };
 
 #define BRASERO_VOLUME_FILE_NAME(file)			((file)->rr_name?(file)->rr_name:(file)->name)
-#define BRASERO_BYTES_TO_BLOCKS(size, block_size)	(((size)%(block_size))?((size)/(block_size))+1:(size)/(block_size))
 
 void
 brasero_volume_file_free (BraseroVolFile *file);
