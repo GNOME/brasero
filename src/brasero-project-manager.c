@@ -117,7 +117,7 @@ static GtkActionEntry entries [] = {
 	 N_("Create a new data project"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
 	{"NewCopy", "media-optical-copy", N_("Copy _Disc..."), NULL,
 	 N_("Copy a disc"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
-	{"NewIso", "media-optical-burn", N_("_Burn Image..."), NULL,
+	{"NewIso", "iso-image-burn", N_("_Burn Image..."), NULL,
 	 N_("Burn an image"), G_CALLBACK (brasero_project_manager_new_iso_prj_cb)},
 
 	{"Open", GTK_STOCK_OPEN, N_("_Open..."), NULL,
