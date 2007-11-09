@@ -220,86 +220,6 @@ brasero_burn_caps_register_plugin_group (BraseroBurnCaps *self,
 	return g_hash_table_size (self->priv->groups) + 1;
 }
 
-static gboolean
-brasero_caps_has_pointing_links (BraseroBurnCaps *self,
-				 BraseroCaps *caps)
-{
-	GSList *iter;
-
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *iter_caps;
-		GSList *links;
-
-		iter_caps = iter->data;
-		if (iter_caps == caps)
-			continue;
-
-		for (links = iter_caps->links; links; links = links->next) {
-			BraseroCapsLink *link;
-
-			link = links->data;
-			if (links->data == caps)
-				return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-void
-brasero_caps_unregister_plugin (BraseroPlugin *plugin)
-{
-	GSList *iter, *next;
-	BraseroBurnCaps *self;
-
-	self = brasero_burn_caps_get_default ();
-
-	/* we search the plugin in all links and remove it from the list */
-	for (iter = self->priv->caps_list; iter; iter = next) {
-		GSList *links;
-		BraseroCaps *caps;
-		GSList *links_next;
-
-		caps = iter->data;
-		next = iter->next;
-
-		caps->modifiers = g_slist_remove (caps->modifiers, plugin);
-		for (links = caps->links; links; links = links_next) {
-			BraseroCapsLink *link;
-
-			link = links->data;
-			links_next = links->next;
-
-			link->plugins = g_slist_remove (link->plugins, plugin);
-			if (link->plugins)
-				continue;
-
-			/* if the plugin was the last one in the link, remove the link */
-			caps->links = g_slist_remove (caps->links, link);
-
-			/* if the caps pointed by the link hasn't got any other link, remove the caps */
-			if (link->caps
-			&& !link->caps->links
-			&& !brasero_caps_has_pointing_links (self, caps)) {
-				self->priv->caps_list = g_slist_remove (self->priv->caps_list, caps);
-				g_free (caps);
-			}
-
-			g_free (link);
-		}
-
-		/* if the caps hasn't got any other link nor modifier remove it */
-		if (caps->links || caps->modifiers)
-			continue;
-
-		if (brasero_caps_has_pointing_links (self, caps))
-			continue;
-
-		self->priv->caps_list = g_slist_remove (self->priv->caps_list, caps);
-		g_free (caps);
-	}
-}
-
 /* that function receives all errors returned by the object and 'learns' from 
  * these errors what are the safest defaults for a particular system. It should 
  * also offer fallbacks if an error occurs through a signal */
@@ -872,89 +792,10 @@ brasero_caps_link_check_record_flags (BraseroCapsLink *link,
 	return TRUE;
 }
 
-static GSList *
-brasero_caps_try_links (BraseroCaps *caps,
-			BraseroBurnFlag session_flags,
-			BraseroMedia media,
-			BraseroTrackType *input,
-			BraseroPluginIOFlag io_flags)
-{
-	GSList *iter;
-
-	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "try_links");
-
-	/* For a link to be followed it must first:
-	 * - link to a caps with correct io flags
-	 * - have at least a plugin accepting the record flags if caps type is
-	 *   a disc (that means that the link is the recording part)
-	 *
-	 * and either:
-	 * - link to a caps equal to the input
-	 * - link to a caps (linking itself to another caps, ...) accepting the
-	 *   input
-	 */
-
-	/* Don't check for the perfect fit first and then follow links; that's
-	 * important since it gives priority to the right plugins. One example:
-	 * growisofs can handle DATA right from the start but has a lower
-	 * priority than libburn. In this case growisofs would be used every 
-	 * time for DATA despite its having a lower priority than libburn if we
-	 * were looking for the best fit first */
-	for (iter = caps->links; iter; iter = iter->next) {
-		BraseroCapsLink *link;
-		gboolean is_type;
-		GSList *results;
-
-		link = iter->data;
-
-		if (!link->caps)
-			continue;
-
-		/* check that the link has some active plugin */
-		if (!brasero_caps_link_active (link))
-			continue;
-
-		/* since this link contains recorders, check that at least one
-		 * of them can handle the record flags */
-		if (caps->type.type == BRASERO_TRACK_TYPE_DISC
-		&& !brasero_caps_link_check_record_flags (link, session_flags, media))
-			continue;
-
-		/* first see if that's the perfect fit:
-		 * - it must have the same caps (type + subtype)
-		 * - it must have the proper IO */
-		if (link->caps->type.type == BRASERO_TRACK_TYPE_DATA
-		&& !brasero_caps_link_check_data_flags (link, session_flags, media))
-			continue;
-
-		is_type = brasero_caps_is_compatible_type (link->caps, input);
-		if ((link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) && is_type)
-			return g_slist_prepend (NULL, link);
-
-		/* we can't go further than a DISC type */
-		if (link->caps->type.type == BRASERO_TRACK_TYPE_DISC)
-			continue;
-
-		if ((link->caps->flags & io_flags) == BRASERO_PLUGIN_IO_NONE)
-			continue;
-
-		/* try to see where the inputs of this caps leads to */
-		results = brasero_caps_try_links (link->caps,
-						  session_flags,
-						  media,
-						  input,
-						  io_flags);
-		if (results)
-			return g_slist_prepend (results, link);
-	}
-
-	return NULL;
-}
-
 static BraseroPlugin *
 brasero_caps_link_find_plugin (BraseroCapsLink *link,
 			       gint group_id,
-			       BraseroBurnSession *session,
+			       BraseroBurnFlag session_flags,
 			       BraseroTrackType *output,
 			       BraseroMedia media)
 {
@@ -963,17 +804,8 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 	BraseroBurnFlag rec_flags;
 	BraseroBurnFlag data_flags;
 
-	rec_flags = brasero_burn_session_get_flags (session) &
-		    (BRASERO_BURN_FLAG_DUMMY|
-		     BRASERO_BURN_FLAG_MULTI|
-		     BRASERO_BURN_FLAG_DAO|
-		     BRASERO_BURN_FLAG_BURNPROOF|
-		     BRASERO_BURN_FLAG_OVERBURN|
-		     BRASERO_BURN_FLAG_NOGRACE);
-
-	data_flags = brasero_burn_session_get_flags (session) &
-		    (BRASERO_BURN_FLAG_APPEND|
-		     BRASERO_BURN_FLAG_MERGE);
+	rec_flags = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
+	data_flags = session_flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE);
 
 	/* Go through all plugins for a link and find the best one. It must:
 	 * - be active
@@ -1031,6 +863,236 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 	}
 
 	return candidate;
+}
+
+typedef struct _BraseroCapsLinkList BraseroCapsLinkList;
+struct _BraseroCapsLinkList {
+	BraseroCapsLinkList *next;
+	BraseroCapsLink *link;
+	BraseroPlugin *plugin;
+};
+
+static BraseroCapsLinkList *
+brasero_caps_link_list_insert (BraseroCapsLinkList *list,
+			       BraseroCapsLinkList *node,
+			       gboolean fits)
+{
+	BraseroCapsLinkList *iter;
+
+	if (!list)
+		return node;
+
+	if (brasero_plugin_get_priority (node->plugin) >
+	    brasero_plugin_get_priority (list->plugin)) {
+		node->next = list;
+		return node;
+	}
+
+	if (brasero_plugin_get_priority (node->plugin) ==
+	    brasero_plugin_get_priority (list->plugin)) {
+		if (fits) {
+			node->next = list;
+			return node;
+		}
+
+		node->next = list->next;
+		list->next = node;
+		return list;
+	}
+
+	if (!list->next) {
+		node->next = NULL;
+		list->next = node;
+		return list;
+	}
+
+	/* Need a node with at least the same priority. Stop if end is reached */
+	iter = list;
+	while (iter->next &&
+	       brasero_plugin_get_priority (node->plugin) <
+	       brasero_plugin_get_priority (iter->next->plugin))
+		iter = iter->next;
+
+	if (brasero_plugin_get_priority (node->plugin) <
+	    brasero_plugin_get_priority (iter->next->plugin)) {
+		/* Put it at the end of the list */
+		node->next = NULL;
+		iter->next->next = node;
+	}
+	else if (brasero_plugin_get_priority (node->plugin) >
+		 brasero_plugin_get_priority (iter->next->plugin)) {
+		/* insert it before iter->next */
+		node->next = iter->next;
+		iter->next = node;
+	}
+	else if (fits) {
+		/* insert it before the link with the same priority */
+		node->next = iter->next;
+		iter->next = node;
+	}
+	else {
+		/* insert it after the link with the same priority */
+		node->next = iter->next->next;
+		iter->next->next = node;
+	}
+	return list;
+}
+
+static GSList *
+brasero_caps_find_best_link (BraseroCaps *caps,
+			     gint group_id,
+			     GSList *used_caps,
+			     BraseroBurnFlag session_flags,
+			     BraseroMedia media,
+			     BraseroTrackType *input,
+			     BraseroPluginIOFlag io_flags)
+{
+	GSList *iter;
+	GSList *results = NULL;
+	BraseroCapsLinkList *node = NULL;
+	BraseroCapsLinkList *list = NULL;
+
+	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "find_best_link");
+
+	/* First, build a list of possible links and sort them out according to
+	 * the priority based on the highest priority among their plugins. In 
+	 * this case, we can't sort links beforehand since according to the
+	 * flags, input, output in the session the plugins will or will not 
+	 * be used. Moreover given the group_id thing the choice of plugin may
+	 * depends. */
+
+	/* This is done to address possible issues namely:
+	 * - growisofs can handle DATA right from the start but has a lower
+	 * priority than libburn. In this case growisofs would be used every 
+	 * time for DATA despite its having a lower priority than libburn if we
+	 * were looking for the best fit first
+	 * - We don't want to follow the long path and have a useless (in this
+	 * case) image converter plugin get included.
+	 * ex: we would have: CDRDAO (input) toc2cue => (CUE) cdrdao => (DISC)
+	 * instead of simply: CDRDAO (input) cdrdao => (DISC) */
+
+	for (iter = caps->links; iter; iter = iter->next) {
+		BraseroPlugin *plugin;
+		BraseroCapsLink *link;
+		gboolean fits;
+
+		link = iter->data;
+
+		/* skip blanking links */
+		if (!link->caps) {
+			BRASERO_BURN_LOG ("Blanking caps");
+			continue;
+		}
+
+		/* the link should not link to an already used caps */
+		if (g_slist_find (used_caps, link->caps)) {
+			BRASERO_BURN_LOG ("Already used caps");
+			continue;
+		}
+
+		/* see if that's a perfect fit;
+		 * - it must have the same caps (type + subtype)
+		 * - it must have the proper IO (file). */
+		fits = (link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) &&
+			brasero_caps_is_compatible_type (link->caps, input);
+
+		if (!fits) {
+			/* if it doesn't fit it must be at least connectable */
+			if ((link->caps->flags & io_flags) == BRASERO_PLUGIN_IO_NONE) {
+				BRASERO_BURN_LOG ("Not connectable");
+				continue;
+			}
+
+			/* we can't go further than a DISC type, no need to keep it */
+			if (link->caps->type.type == BRASERO_TRACK_TYPE_DISC) {
+				BRASERO_BURN_LOG ("Can't go further than DISC caps");
+				continue;
+			}
+		}
+
+		/* See if this link can be used. For a link to be followed it 
+		 * must:
+		 * - have at least an active plugin
+		 * - have at least a plugin accepting the record flags if caps type (output) 
+		 *   is a disc (that means that the link is the recording part) 
+		 * - have at least a plugin accepting the data flags if caps type (input)
+		 *   is DATA. */
+		plugin = brasero_caps_link_find_plugin (link,
+							group_id,
+							session_flags,
+							&caps->type,
+							media);
+		if (!plugin) {
+			BRASERO_BURN_LOG ("No plugin found");
+			continue;
+		}
+
+		BRASERO_BURN_LOG ("Found candidate link");
+
+		/* A plugin could be found which means that link can be used.
+		 * Insert it in the list at the right place.
+		 * The list is sorted according to priorities (starting with the
+		 * highest). If 2 links have the same priority put first the one
+		 * that has the correct input. */
+		node = g_new0 (BraseroCapsLinkList, 1);
+		node->plugin = plugin;
+		node->link = link;
+
+		list = brasero_caps_link_list_insert (list, node, fits);
+	}
+
+	if (!list) {
+		BRASERO_BURN_LOG ("No links found");
+		return NULL;
+	}
+
+	used_caps = g_slist_prepend (used_caps, caps);
+
+	/* Then, go through this list (starting with highest priority links)
+	 * The rule is we prefer the links with the highest priority; if two
+	 * links have the same priority and one of them leads to a caps
+	 * with the correct type then choose this one. */
+	for (node = list; node; node = node->next) {
+		guint search_group_id;
+
+		/* see if that's a perfect fit; if so, then we're good. 
+		 * - it must have the same caps (type + subtype)
+		 * - it must have the proper IO (file) */
+		if ((node->link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
+		&&   brasero_caps_is_compatible_type (node->link->caps, input)) {
+			results = g_slist_prepend (NULL, node->link);
+			break;
+		}
+
+		/* determine the group_id for the search */
+		if (brasero_plugin_get_group (node->plugin) > 0 && group_id <= 0)
+			search_group_id = brasero_plugin_get_group (node->plugin);
+		else
+			search_group_id = group_id;
+
+		/* It's not a perfect fit. First see if a plugin with the same priority don't have the right input. 
+		 * Then see if we can reach the right input by going through all previous nodes */
+		results = brasero_caps_find_best_link (node->link->caps,
+						       search_group_id,
+						       used_caps,
+						       session_flags,
+						       media,
+						       input,
+						       io_flags);
+		if (results) {
+			results = g_slist_prepend (results, node->link);
+			break;
+		}
+	}
+
+	/* clear up */
+	used_caps = g_slist_remove (used_caps, caps);
+	for (node = list; iter; node = list) {
+		list = node->next;
+		g_free (node);
+	}
+
+	return results;
 }
 
 static GSList *
@@ -1153,11 +1215,13 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 				    "Input set =");
 
 	session_flags = brasero_burn_session_get_flags (session);
-	list = brasero_caps_try_links (last_caps,
-				       session_flags,
-				       media,
-				       &input,
-				       flags);
+	list = brasero_caps_find_best_link (last_caps,
+					    self->priv->group_id,
+					    NULL,
+					    session_flags,
+					    media,
+					    &input,
+					    flags);
 	if (!list) {
 		/* we reached this point in two cases:
 		 * - if the disc cannot be handled
@@ -1199,11 +1263,13 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		 * we are actually blanking. Simply the record plugin won't have
 		 * to do it. */
 		session_flags &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-		list = brasero_caps_try_links (last_caps,
-					       session_flags,
-					       media,
-					       &input,
-					       flags);
+		list = brasero_caps_find_best_link (last_caps,
+						    self->priv->group_id,
+						    NULL,
+						    session_flags,
+						    media,
+						    &input,
+						    flags);
 		if (!list)
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
 
@@ -1280,9 +1346,19 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		/* create job from the best plugin in link */
 		plugin = brasero_caps_link_find_plugin (link,
 							group_id,
-							session,
+							session_flags,
 							&plugin_output,
 							media);
+		if (!plugin) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("internal error in plugin system"));
+			g_slist_foreach (retval, (GFunc) g_object_unref, NULL);
+			g_slist_free (retval);
+			g_slist_free (list);
+			return NULL;
+		}
 
 		/* This is meant to have plugins in the same group id as much as
 		 * possible */
@@ -1447,11 +1523,13 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 
 		/* the caps itself is not the right one so we try to 
 		 * go through its links to find the right caps. */
-		list = brasero_caps_try_links (link->caps,
-					       BRASERO_BURN_FLAG_NONE,
-					       BRASERO_MEDIUM_NONE,
-					       &input,
-					       BRASERO_PLUGIN_IO_ACCEPT_PIPE);
+		list = brasero_caps_find_best_link (link->caps,
+						    self->priv->group_id,
+						    NULL,
+						    BRASERO_BURN_FLAG_NONE,
+						    BRASERO_MEDIUM_NONE,
+						    &input,
+						    BRASERO_PLUGIN_IO_ACCEPT_PIPE);
 		if (list) {
 			last_caps = link->caps;
 			break;
@@ -1535,7 +1613,80 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 	return task;
 }
 
-static GSList *
+static gboolean
+brasero_caps_find_link (BraseroCaps *caps,
+			BraseroBurnFlag session_flags,
+			BraseroMedia media,
+			BraseroTrackType *input,
+			BraseroPluginIOFlag io_flags)
+{
+	GSList *iter;
+
+	BRASERO_BURN_LOG_WITH_TYPE (&caps->type, BRASERO_PLUGIN_IO_NONE, "find_link");
+
+	/* Here we only make sure we have at least one link working. For a link
+	 * to be followed it must first:
+	 * - link to a caps with correct io flags
+	 * - have at least a plugin accepting the record flags if caps type is
+	 *   a disc (that means that the link is the recording part)
+	 *
+	 * and either:
+	 * - link to a caps equal to the input
+	 * - link to a caps (linking itself to another caps, ...) accepting the
+	 *   input
+	 */
+
+	for (iter = caps->links; iter; iter = iter->next) {
+		BraseroCapsLink *link;
+		gboolean result;
+
+		link = iter->data;
+
+		if (!link->caps)
+			continue;
+
+		/* check that the link has some active plugin */
+		if (!brasero_caps_link_active (link))
+			continue;
+
+		/* since this link contains recorders, check that at least one
+		 * of them can handle the record flags */
+		if (caps->type.type == BRASERO_TRACK_TYPE_DISC
+		&& !brasero_caps_link_check_record_flags (link, session_flags, media))
+			continue;
+
+		/* first see if that's the perfect fit:
+		 * - it must have the same caps (type + subtype)
+		 * - it must have the proper IO */
+		if (link->caps->type.type == BRASERO_TRACK_TYPE_DATA
+		&& !brasero_caps_link_check_data_flags (link, session_flags, media))
+			continue;
+
+		if ((link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
+		&&   brasero_caps_is_compatible_type (link->caps, input))
+			return TRUE;
+
+		/* we can't go further than a DISC type */
+		if (link->caps->type.type == BRASERO_TRACK_TYPE_DISC)
+			continue;
+
+		if ((link->caps->flags & io_flags) == BRASERO_PLUGIN_IO_NONE)
+			continue;
+
+		/* try to see where the inputs of this caps leads to */
+		result = brasero_caps_find_link (link->caps,
+						 session_flags,
+						 media,
+						 input,
+						 io_flags);
+		if (result)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
 brasero_caps_try_output (BraseroBurnFlag session_flags,
 			 BraseroTrackType *output,
 			 BraseroTrackType *input,
@@ -1549,7 +1700,7 @@ brasero_caps_try_output (BraseroBurnFlag session_flags,
 
 	if (!caps) {
 		BRASERO_BURN_LOG ("No caps available");
-		return NULL;
+		return FALSE;
 	}
 
 	if (caps->type.type == BRASERO_TRACK_TYPE_DISC)
@@ -1557,32 +1708,32 @@ brasero_caps_try_output (BraseroBurnFlag session_flags,
 	else
 		media = BRASERO_MEDIUM_FILE;
 
-	return brasero_caps_try_links (caps,
+	return brasero_caps_find_link (caps,
 				       session_flags,
 				       media,
 				       input,
 				       flags);
 }
 
-static GSList *
+static gboolean
 brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 				       BraseroBurnSession *session,
 				       BraseroTrackType *output,
 				       BraseroTrackType *input,
 				       BraseroPluginIOFlag io_flags)
 {
-	GSList *list;
+	gboolean result;
 	BraseroMedia media;
 	BraseroCaps *last_caps;
 	BraseroBurnFlag session_flags;
 
 	session_flags = brasero_burn_session_get_flags (session);
-	list = brasero_caps_try_output (session_flags,
-					output,
-					input,
-					io_flags);
-	if (list)
-		return list;
+	result = brasero_caps_try_output (session_flags,
+					  output,
+					  input,
+					  io_flags);
+	if (result)
+		return result;
 
 	/* we reached this point in two cases:
 	 * - if the disc cannot be handled
@@ -1595,7 +1746,7 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	 * then write on its own. Basically that works only with
 	 * overwrite formatted discs, DVD+RW, ...) */
 	if (output->type != BRASERO_TRACK_TYPE_DISC)
-		return NULL;
+		return FALSE;
 
 	/* output is a disc try with initial blanking */
 	BRASERO_BURN_LOG ("Support for input/output failed. Trying with initial blanking");
@@ -1605,7 +1756,7 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	 * task to the others as a first step */
 	if (!(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 	||    brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
-		return NULL;
+		return FALSE;
 
 	/* retry with the same disc type but blank this time */
 	media = output->subtype.media;
@@ -1618,18 +1769,17 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 
 	last_caps = brasero_caps_find_start_caps (output);
 	if (!last_caps)
-		return NULL;
+		return FALSE;
 
 	/* if the flag BLANK_BEFORE_WRITE was set then remove it since
 	 * we are actually blanking. Simply the record plugin won't have
 	 * to do it. */
 	session_flags &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-	list = brasero_caps_try_links (last_caps,
+	return brasero_caps_find_link (last_caps,
 				       session_flags,
 				       media,
 				       input,
 				       io_flags);
-	return list;
 }
 
 static void
@@ -1667,7 +1817,7 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 				      BraseroBurnSession *session,
 				      BraseroTrackType *input)
 {
-	GSList *list;
+	gboolean result;
 	BraseroTrackType output;
 
 	BRASERO_BURN_LOG_WITH_TYPE (input,
@@ -1678,19 +1828,18 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 				      session,
 				      &output);
 
-	list = brasero_caps_try_output_with_blanking (self,
-						      session,
-						      &output,
-						      input,
-						      BRASERO_PLUGIN_IO_ACCEPT_FILE);
-	if (!list) {
+	result = brasero_caps_try_output_with_blanking (self,
+							session,
+							&output,
+							input,
+							BRASERO_PLUGIN_IO_ACCEPT_FILE);
+	if (!result) {
 		BRASERO_BURN_LOG_WITH_TYPE (input,
 					    BRASERO_PLUGIN_IO_NONE,
 					    "Input not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	g_slist_free (list);
 	return BRASERO_BURN_OK;
 }
 
@@ -1699,7 +1848,7 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 				       BraseroBurnSession *session,
 				       BraseroTrackType *output)
 {
-	GSList *list;
+	gboolean result;
 	BraseroTrackType input;
 	BraseroPluginIOFlag io_flags;
 
@@ -1717,19 +1866,18 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
 
 	brasero_burn_session_get_input_type (session, &input);
-	list = brasero_caps_try_output_with_blanking (self,
-						      session,
-						      output,
-						      &input,
-						      io_flags);
-	if (!list) {
+	result = brasero_caps_try_output_with_blanking (self,
+							session,
+							output,
+							&input,
+							io_flags);
+	if (!result) {
 		BRASERO_BURN_LOG_WITH_TYPE (output,
 					    BRASERO_PLUGIN_IO_NONE,
 					    "Output not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	g_slist_free (list);
 	return BRASERO_BURN_OK;
 }
 
@@ -1737,8 +1885,8 @@ BraseroMedia
 brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 					   BraseroBurnSession *session)
 {
+	BraseroMedia required_media = BRASERO_MEDIUM_NONE;
 	BraseroBurnFlag session_flags;
-	BraseroMedia required_media;
 	BraseroPluginIOFlag io_flags;
 	BraseroBurnFlag rec_flags;
 	BraseroTrackType input;
@@ -1747,18 +1895,13 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	if (brasero_burn_session_is_dest_file (session))
 		return BRASERO_MEDIUM_FILE;
 
-	rec_flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_DUMMY|
-								BRASERO_BURN_FLAG_MULTI|
-								BRASERO_BURN_FLAG_DAO|
-								BRASERO_BURN_FLAG_BURNPROOF|
-								BRASERO_BURN_FLAG_OVERBURN|
-								BRASERO_BURN_FLAG_NOGRACE);
+	/* we try to determine here what type of medium is allowed to be burnt
+	 * to whether a CD or a DVD. Appendable, blank are not properties being
+	 * determined here. We just want it to be writable in a broad sense. */
+	BRASERO_BURN_LOG ("Determining required media type");
 
-	required_media = BRASERO_MEDIUM_WRITABLE;
-	if (BRASERO_BURN_SESSION_APPEND (session))
-		required_media |= BRASERO_MEDIUM_APPENDABLE;
-	else
-		required_media |= BRASERO_MEDIUM_BLANK;
+	session_flags = brasero_burn_session_get_flags (session);
+	rec_flags = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
 
 	brasero_burn_session_get_input_type (session, &input);
 
@@ -1767,29 +1910,36 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	else
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
 
-	self = brasero_burn_caps_get_default ();
-	session_flags = brasero_burn_session_get_flags (session);
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
-		GSList *list;
+		gboolean result;
 
 		caps = iter->data;
 
 		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
 			continue;
 
-		list = brasero_caps_try_links (caps,
-					       session_flags,
-					       caps->type.subtype.media,
-					       &input,
-					       io_flags);
-		if (!list)
+		result = brasero_caps_find_link (caps,
+						 session_flags,
+						 caps->type.subtype.media,
+						 &input,
+						 io_flags);
+
+		BRASERO_BURN_LOG_DISC_TYPE (caps->type.subtype.media,
+					    "Tested (%s)",
+					    result ? "working":"not working");
+
+		if (!result)
 			continue;
 
 		/* This caps work, add its subtype */
 		required_media |= caps->type.subtype.media;
-		g_slist_free (list);
 	}
+
+	/* filter as we are only interested in these */
+	required_media &= BRASERO_MEDIUM_WRITABLE|
+			  BRASERO_MEDIUM_CD|
+			  BRASERO_MEDIUM_DVD;
 
 	return required_media;
 }
@@ -2266,21 +2416,6 @@ brasero_burn_caps_sort (gconstpointer a, gconstpointer b)
 	return 0;
 }
 
-static gint
-brasero_caps_link_sort (gconstpointer a, gconstpointer b)
-{
-	const BraseroCapsLink *link_a = a;
-	const BraseroCapsLink *link_b = b;
-
-	/* special case for blanking caps links which dont have any caps */
-	if (!link_a->caps)
-		return 1;
-	if (!link_b->caps)
-		return -1;
-
-	return brasero_burn_caps_sort (link_a->caps, link_b->caps);
-}
-
 static BraseroCapsLink *
 brasero_caps_link_copy (BraseroCapsLink *link)
 {
@@ -2302,9 +2437,7 @@ brasero_caps_link_list_duplicate (BraseroCaps *dest, BraseroCaps *src)
 		BraseroCapsLink *link;
 
 		link = iter->data;
-		dest->links = g_slist_insert_sorted (dest->links,
-						     brasero_caps_link_copy (link),
-						     brasero_caps_link_sort);
+		dest->links = g_slist_prepend (dest->links, brasero_caps_link_copy (link));
 	}
 }
 
@@ -2365,9 +2498,7 @@ brasero_caps_replicate_links (BraseroCaps *dest, BraseroCaps *src)
 
 				copy = brasero_caps_link_copy (link);
 				copy->caps = dest;
-				iter_caps->links = g_slist_insert_sorted (iter_caps->links,
-									  copy,
-									  brasero_caps_link_sort);
+				iter_caps->links = g_slist_prepend (iter_caps->links, copy);
 			}
 		}
 	}
@@ -2395,9 +2526,7 @@ brasero_caps_replicate_tests (BraseroCaps *dest, BraseroCaps *src)
 
 				copy = brasero_caps_link_copy (link);
 				copy->caps = dest;
-				test->links = g_slist_insert_sorted (test->links,
-								     copy,
-								     brasero_caps_link_sort);
+				test->links = g_slist_prepend (test->links, copy);
 			}
 		}
 	}
@@ -3167,9 +3296,7 @@ brasero_caps_create_links (BraseroCaps *output,
 			link->caps = input;
 			link->plugins = g_slist_prepend (NULL, plugin);
 
-			output->links = g_slist_insert_sorted (output->links,
-							       link,
-							       brasero_caps_link_sort);
+			output->links = g_slist_prepend (output->links, link);
 		}
 		else
 			link->plugins = g_slist_prepend (link->plugins, plugin);
@@ -3214,9 +3341,7 @@ brasero_plugin_blank_caps (BraseroPlugin *plugin,
 			link->caps = NULL;
 			link->plugins = g_slist_prepend (NULL, plugin);
 
-			caps->links = g_slist_insert_sorted (caps->links,
-							     link,
-							     brasero_caps_link_sort);
+			caps->links = g_slist_prepend (caps->links, link);
 		}
 		else
 			link->plugins = g_slist_prepend (link->plugins, plugin);
@@ -3286,9 +3411,7 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 		if (!link) {
 			link = g_new0 (BraseroCapsLink, 1);
 			link->caps = caps;
-			test->links = g_slist_insert_sorted (test->links,
-							     link,
-							     brasero_caps_link_sort);
+			test->links = g_slist_prepend (test->links, link);
 		}
 
 		link->plugins = g_slist_prepend (link->plugins, plugin);

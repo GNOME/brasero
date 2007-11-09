@@ -1,3 +1,33 @@
+2007-11-09  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Improved the plugin choosing method.
+	That fixes problem with CDRDAO images that were converted to CUE images before being burnt.
+	Fix a problem where the required media asked to the user wasn't correct.
+	Some minor cleanups
+
+	* src/burn-caps.c: (brasero_caps_is_compatible_type),
+	(brasero_burn_caps_media_capabilities),
+	(brasero_burn_caps_get_blanking_flags),
+	(brasero_burn_caps_new_blanking_task),
+	(brasero_burn_caps_can_blank), (brasero_caps_link_find_plugin),
+	(brasero_caps_link_list_insert), (brasero_caps_find_best_link),
+	(brasero_caps_add_processing_plugins_to_task),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_new_checksuming_task), (brasero_caps_find_link),
+	(brasero_caps_try_output), (brasero_caps_try_output_with_blanking),
+	(brasero_burn_caps_get_output),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_get_required_media_type),
+	(brasero_burn_caps_get_flags), (brasero_caps_link_list_duplicate),
+	(brasero_caps_replicate_links), (brasero_caps_replicate_tests),
+	(brasero_caps_list_check_io), (brasero_caps_image_new),
+	(brasero_caps_audio_new), (brasero_caps_data_new),
+	(brasero_caps_disc_new), (brasero_caps_find_link_for_input),
+	(brasero_caps_create_links), (brasero_plugin_blank_caps),
+	(brasero_plugin_check_caps):
+	* src/burn-caps.h:
+
 2007-11-08  Michael Monreal  <mmonreal@svn.gnome.org>
 
 	Fix #494809 - Wrong icon for burning ISO image

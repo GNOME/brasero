@@ -67,9 +67,6 @@ gint
 brasero_burn_caps_register_plugin_group (BraseroBurnCaps *self,
 					 const gchar *name);
 
-void
-brasero_caps_unregister_plugin (BraseroPlugin *plugin);
-
 /**
  *
  */
