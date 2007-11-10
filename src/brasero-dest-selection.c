@@ -1176,10 +1176,10 @@ brasero_dest_selection_set_property (GObject *object,
 		nautilus_burn_drive_unref (drive);
 
 		if (brasero_burn_session_is_dest_file (session))
-			brasero_dest_selection_set_drive_properties (BRASERO_DEST_SELECTION (object));
-		else
 			brasero_dest_selection_set_image_properties (BRASERO_DEST_SELECTION (object));
-			
+		else
+			brasero_dest_selection_set_drive_properties (BRASERO_DEST_SELECTION (object));
+
 		priv->input_sig = g_signal_connect (session,
 						    "input-changed",
 						    G_CALLBACK (brasero_dest_selection_source_changed),
