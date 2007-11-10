@@ -78,10 +78,6 @@ NautilusBurnDrive *
 brasero_drive_selection_get_drive (BraseroDriveSelection *selection);
 
 void
-brasero_drive_selection_get_media (BraseroDriveSelection *selection,
-				   BraseroMedia *media);
-
-void
 brasero_drive_selection_set_image_path (BraseroDriveSelection *selection,
 					const gchar *path);
 

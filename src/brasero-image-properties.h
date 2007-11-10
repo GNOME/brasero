@@ -27,7 +27,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtkfilechooserdialog.h>
 
 #include "burn-track.h"
 
@@ -45,12 +45,12 @@ typedef struct _BraseroImageProperties BraseroImageProperties;
 
 struct _BraseroImagePropertiesClass
 {
-	GtkDialogClass parent_class;
+	GtkFileChooserDialogClass parent_class;
 };
 
 struct _BraseroImageProperties
 {
-	GtkDialog parent_instance;
+	GtkFileChooserDialog parent_instance;
 };
 
 GType brasero_image_properties_get_type (void) G_GNUC_CONST;

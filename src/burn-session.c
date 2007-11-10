@@ -661,10 +661,14 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 		result = brasero_burn_session_file_test (self,
 							 priv->settings->image,
 							 error);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			BRASERO_BURN_LOG ("Problem with image existence");
 			return result;
+		}
 	}
 	else {
+		BRASERO_BURN_LOG ("no output specified");
+
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -676,8 +680,10 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 		result = brasero_burn_session_file_test (self,
 							 priv->settings->toc,
 							 error);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			BRASERO_BURN_LOG ("Problem with toc existence");
 			return result;
+		}
 	}
 
 	if (image)

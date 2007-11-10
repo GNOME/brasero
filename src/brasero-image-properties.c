@@ -38,6 +38,7 @@
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkfilechooser.h>
 #include <gtk/gtkfilechooserwidget.h>
+#include <gtk/gtkfilechooserdialog.h>
 
 #include "burn-basics.h"
 #include "brasero-image-properties.h"
@@ -46,7 +47,6 @@
 typedef struct _BraseroImagePropertiesPrivate BraseroImagePropertiesPrivate;
 struct _BraseroImagePropertiesPrivate
 {
-	GtkWidget *file;
 	GtkWidget *format;
 };
 
@@ -55,7 +55,7 @@ struct _BraseroImagePropertiesPrivate
 
 static GtkDialogClass* parent_class = NULL;
 
-G_DEFINE_TYPE (BraseroImageProperties, brasero_image_properties, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (BraseroImageProperties, brasero_image_properties, GTK_TYPE_FILE_CHOOSER_DIALOG);
 
 BraseroImageFormat
 brasero_image_properties_get_format (BraseroImageProperties *self)
@@ -80,7 +80,7 @@ brasero_image_properties_get_path (BraseroImageProperties *self)
 	BraseroImagePropertiesPrivate *priv;
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
-	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->file));
+	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
 }
 
 void
@@ -94,20 +94,20 @@ brasero_image_properties_set_path (BraseroImageProperties *self,
 	if (path) {
 		gchar *name;
 
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->file), path);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (self), path);
 
 		/* The problem here is that is the file name doesn't exist
 		 * in the folder then it won't be displayed so we check that */
-		name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->file));
+		name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
 		if (!name) {
 			name = g_path_get_basename (path);
-			gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (priv->file), name);
+			gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (self), name);
 		}
 
 	    	g_free (name);
 	}
 	else
-		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file),
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (self),
 						     g_get_home_dir ());
 }
 
@@ -159,23 +159,11 @@ brasero_image_properties_init (BraseroImageProperties *object)
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 	gtk_dialog_add_buttons (GTK_DIALOG (object),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
+				GTK_STOCK_APPLY, GTK_RESPONSE_OK,
 				NULL);
 
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (object)->vbox), 12);
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_BOX (GTK_DIALOG (object)->vbox)), 10);
-
-	/* create file chooser */
-	priv->file = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_SAVE);
-	gtk_widget_show_all (priv->file);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    priv->file,
-			    TRUE,
-			    TRUE,
-			    4);
-
-	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (priv->file), TRUE);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), TRUE);
 }
 
 static void
@@ -198,5 +186,9 @@ brasero_image_properties_class_init (BraseroImagePropertiesClass *klass)
 GtkWidget *
 brasero_image_properties_new ()
 {
-	return GTK_WIDGET (g_object_new (BRASERO_TYPE_IMAGE_PROPERTIES, NULL));
+	return GTK_WIDGET (g_object_new (BRASERO_TYPE_IMAGE_PROPERTIES,
+					 "action", GTK_FILE_CHOOSER_ACTION_SAVE,
+					 "do-overwrite-confirmation", TRUE,
+					 "local-only", TRUE,
+					 NULL));
 }

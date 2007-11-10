@@ -1,3 +1,32 @@
+2007-11-10  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #493810 – CD/DVD copy options
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_check_same_src_dest),
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_image_properties),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_set_property):
+	* src/brasero-disc-copy-dialog.c:
+	(brasero_disc_copy_dialog_set_burn_button_state),
+	(brasero_disc_copy_dialog_valid_media_cb):
+	* src/brasero-drive-selection.h:
+	* src/brasero-image-properties.c:
+	(brasero_image_properties_get_path),
+	(brasero_image_properties_set_path),
+	(brasero_image_properties_init), (brasero_image_properties_new):
+	* src/brasero-image-properties.h:
+	* src/burn-session.c: (brasero_burn_session_get_output),
+	(brasero_burn_session_push_tracks),
+	(brasero_burn_session_pop_tracks), (brasero_burn_session_finalize):
+	* src/plugins/cdrkit/burn-readom.c: (brasero_readom_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c: (brasero_readcd_export_caps):
+
 2007-11-09  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Improved the plugin choosing method.

@@ -44,6 +44,7 @@
 #include "burn-basics.h"
 #include "burn-session.h"
 #include "brasero-utils.h"
+#include "brasero-ncb.h"
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-dest-selection.h"
 #include "brasero-src-selection.h"
@@ -76,20 +77,21 @@ brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self)
 }
 
 static void
-brasero_disc_copy_dialog_valid_media_cb (BraseroDestSelection *selection,
-					 gboolean valid,
-					 BraseroDiscCopyDialog *self)
+brasero_disc_copy_dialog_set_burn_button_state (BraseroDiscCopyDialog *self,
+						gboolean valid)
 {
 	BraseroDiscCopyDialogPrivate *priv;
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
-
-	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
-		gtk_widget_set_sensitive (priv->button, TRUE);
-		return;
-	}
-
 	gtk_widget_set_sensitive (priv->button, valid);
+}
+
+static void
+brasero_disc_copy_dialog_valid_media_cb (BraseroDestSelection *selection,
+					 gboolean valid,
+					 BraseroDiscCopyDialog *self)
+{
+	brasero_disc_copy_dialog_set_burn_button_state (self, valid);
 }
 
 static void

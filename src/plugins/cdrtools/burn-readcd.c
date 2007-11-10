@@ -342,7 +342,7 @@ brasero_readcd_export_caps (BraseroPlugin *plugin, gchar **error)
 	}
 	g_free (prog_name);
 
-	/* that's for clone mode only */
+	/* that's for clone mode only The only one to copy audio */
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					 BRASERO_IMAGE_FORMAT_CLONE);
 
@@ -357,6 +357,7 @@ brasero_readcd_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
+	g_slist_free (input);
 
 	/* that's for regular mode: it accepts the previous type of discs 
 	 * plus the DVDs types as well */
@@ -364,10 +365,8 @@ brasero_readcd_export_caps (BraseroPlugin *plugin, gchar **error)
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					 BRASERO_IMAGE_FORMAT_BIN);
 
-	brasero_plugin_link_caps (plugin, output, input);
-	g_slist_free (input);
-
-	input = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
+				       BRASERO_MEDIUM_DVD|
 				       BRASERO_MEDIUM_PLUS|
 				       BRASERO_MEDIUM_SEQUENTIAL|
 				       BRASERO_MEDIUM_RESTRICTED|

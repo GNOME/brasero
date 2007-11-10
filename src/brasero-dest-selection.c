@@ -220,6 +220,41 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 	g_object_unref (client);
 }
 
+static gboolean
+brasero_dest_selection_check_same_src_dest (BraseroDestSelection *self)
+{
+	BraseroDestSelectionPrivate *priv;
+	NautilusBurnDrive *drive;
+	BraseroMedia media;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	/* if we have the same source and destination as drives then we don't 
+	 * grey out the properties button as otherwise it would always remain
+	 * so. Instead of that we grey it only if there is no medium or if the
+	 * medium is blank. */
+	if (!brasero_burn_session_same_src_dest_drive (priv->session))
+		return FALSE;
+
+	/* grey out button only if the source (and therefore dest drive)
+	 * hasn't got any medium inside */
+	drive = brasero_burn_session_get_src_drive (priv->session);
+	if (!drive)
+		return FALSE;
+
+	media = NCB_MEDIA_GET_STATUS (drive);
+	g_object_unref (drive);
+
+	if (media == BRASERO_MEDIUM_NONE)
+		return FALSE;
+
+	if (media & BRASERO_MEDIUM_BLANK
+	|| (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == 0)
+		return FALSE;
+
+	return TRUE;
+}
+
 static void
 brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 {
@@ -253,10 +288,17 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	nautilus_burn_drive_unref (drive);
 
 	flags = brasero_burn_session_get_flags (priv->session);
-	brasero_burn_caps_get_flags (priv->caps,
-				     priv->session,
-				     &supported,
-				     &compulsory);
+	if (!brasero_dest_selection_check_same_src_dest (self)) {
+		brasero_burn_caps_get_flags (priv->caps,
+					     priv->session,
+					     &supported,
+					     &compulsory);
+	}
+	else {
+		supported = BRASERO_DRIVE_PROPERTIES_FLAGS;
+		supported &= ~BRASERO_BURN_FLAG_NO_TMP_FILES;
+		compulsory = BRASERO_BURN_FLAG_NONE;
+	}
 
 	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
 					    flags,
@@ -477,23 +519,20 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 		priv->default_path = FALSE;
 		brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), image_path);
 	}
-
 	g_free (original_path);
 
 	/* get and check format */
 	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
-	if (format != BRASERO_IMAGE_FORMAT_NONE) {
-		/* see if we are to choose the format ourselves */
-		if (format == BRASERO_IMAGE_FORMAT_ANY) {
-			brasero_dest_selection_get_default_output_format (self,
-									  &output);
-			format = output.subtype.img_format;
-		}
+	
+	/* see if we are to choose the format ourselves */
+	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
+		brasero_dest_selection_get_default_output_format (self, &output);
+		format = output.subtype.img_format;
 	}
 
 	brasero_burn_session_set_image_output (priv->session,
-					 format,
-					 image_path);
+					       format,
+					       image_path);
 
 	gtk_widget_destroy (priv->drive_prop);
 	priv->drive_prop = NULL;
@@ -535,15 +574,30 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
 	brasero_burn_session_get_input_type (priv->session, &input);
-	if (input.type == BRASERO_TRACK_TYPE_NONE)
+	if (input.type == BRASERO_TRACK_TYPE_NONE) {
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       FALSE);
 		return;
+	}
 	
 	drive = brasero_burn_session_get_burner (priv->session);
-	if (!drive)
+	if (!drive) {
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       FALSE);
 		return;
+	}
 
-	if (NCB_MEDIA_GET_STATUS (drive) == BRASERO_MEDIUM_NONE)
+	if (NCB_MEDIA_GET_STATUS (drive) == BRASERO_MEDIUM_NONE) {
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       FALSE);
 		return;
+	}
 
 	/* update/set the rate */
 	client = gconf_client_get_default ();
@@ -572,6 +626,15 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 
 	if (!value) {
 		BraseroTrackType source;
+		BraseroBurnResult result;
+		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+
+		/* here we don't check is the medium is supported ... */
+		result = brasero_burn_caps_get_flags (priv->caps,
+						      priv->session,
+						      &supported,
+						      &compulsory);
 
 		/* these are sane defaults */
 		brasero_burn_session_add_flag (priv->session,
@@ -579,13 +642,33 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 					       BRASERO_BURN_FLAG_BURNPROOF);
 
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
-		brasero_burn_session_get_input_type (priv->session, &source);
-		if (source.type == BRASERO_TRACK_TYPE_DATA
-		||  source.type == BRASERO_TRACK_TYPE_DISC
-		||  source.type == BRASERO_TRACK_TYPE_IMAGE)
-			brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_NO_TMP_FILES);
+
+		if (supported & BRASERO_BURN_FLAG_NO_TMP_FILES) {
+			brasero_burn_session_get_input_type (priv->session, &source);
+			if (source.type == BRASERO_TRACK_TYPE_DATA
+			||  source.type == BRASERO_TRACK_TYPE_DISC
+			||  source.type == BRASERO_TRACK_TYPE_IMAGE)
+				brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_NO_TMP_FILES);
+			else
+				brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_NO_TMP_FILES);
+		}
 		else
 			brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_NO_TMP_FILES);
+
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       (result == BRASERO_BURN_OK));
+	}
+	else if (brasero_dest_selection_check_same_src_dest (self)) {
+		/* special case */
+		flags = gconf_value_get_int (value);
+		brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
+		brasero_burn_session_add_flag (priv->session, flags);
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       TRUE);
 	}
 	else {
 		BraseroBurnResult result;
@@ -606,7 +689,16 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 
 			brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
 			brasero_burn_session_add_flag (priv->session, flags);
+			g_signal_emit (self,
+				       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+				       0,
+				       TRUE);
 		}
+		else
+			g_signal_emit (self,
+				       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+				       0,
+				       FALSE);
 
 		if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
 			/* clean up the disc and have more space when possible */
@@ -655,7 +747,6 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	gint i = 0;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
 	priv->default_format = TRUE;
 	priv->default_path = TRUE;
 
@@ -783,6 +874,21 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 	BraseroBurnFlag flags;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	/* check for a special case */
+	if (brasero_dest_selection_check_same_src_dest (self)) {
+		gtk_widget_set_sensitive (priv->button, TRUE);
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       TRUE);
+
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_DAO|
+					       BRASERO_BURN_FLAG_FAST_BLANK|
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+		return;
+	}
 
 	/* update the flags for the current drive */
 	result = brasero_burn_caps_get_flags (priv->caps,
@@ -1069,6 +1175,11 @@ brasero_dest_selection_set_property (GObject *object,
 		brasero_burn_session_set_burner (session, drive);
 		nautilus_burn_drive_unref (drive);
 
+		if (brasero_burn_session_is_dest_file (session))
+			brasero_dest_selection_set_drive_properties (BRASERO_DEST_SELECTION (object));
+		else
+			brasero_dest_selection_set_image_properties (BRASERO_DEST_SELECTION (object));
+			
 		priv->input_sig = g_signal_connect (session,
 						    "input-changed",
 						    G_CALLBACK (brasero_dest_selection_source_changed),
