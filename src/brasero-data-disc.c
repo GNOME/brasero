@@ -329,6 +329,10 @@ brasero_data_disc_set_session_contents (BraseroDisc *disc,
 static BraseroDiscResult
 brasero_data_disc_get_status (BraseroDisc *disc);
 
+static void
+brasero_data_disc_selection_changed_cb (GtkTreeSelection *selection,
+					BraseroDataDisc *disc);
+
 static gboolean
 brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				     GdkEventButton *event,
@@ -1151,6 +1155,11 @@ brasero_data_disc_init (BraseroDataDisc *obj)
 			  obj);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree));
+	g_signal_connect (selection,
+			  "changed",
+			  G_CALLBACK (brasero_data_disc_selection_changed_cb),
+			  obj);
+
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
 	gtk_tree_selection_set_select_function (selection,
 						brasero_data_disc_tree_select_function,
@@ -1460,6 +1469,42 @@ static void
 brasero_data_disc_selection_changed (BraseroDataDisc *disc, gboolean notempty)
 {
 	brasero_disc_contents_changed (BRASERO_DISC (disc), notempty);
+}
+
+static void
+brasero_data_disc_selection_changed_cb (GtkTreeSelection *selection,
+					BraseroDataDisc *disc)
+{
+	GtkTreeView *treeview;
+	GtkTreeModel *model;
+	GList *selected;
+
+	treeview = gtk_tree_selection_get_tree_view (selection);
+	selected = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	if (disc->priv->selected_path)
+		gtk_tree_path_free (disc->priv->selected_path);
+	
+	disc->priv->selected_path = NULL;
+
+	if (selected) {
+		GtkTreeIter iter;
+		gint type;
+
+		/* we need to make sure that this is not a bogus row */
+		gtk_tree_model_get_iter (model, &iter, selected->data);
+		gtk_tree_model_get (model, &iter,
+				    ROW_TYPE_COL, &type,
+				    -1);
+
+		if (type != ROW_BOGUS && type != ROW_SESSION)
+			disc->priv->selected_path = gtk_tree_path_copy (selected->data);
+
+		g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+		g_list_free (selected);
+	}
+
+	brasero_disc_selection_changed (BRASERO_DISC (disc));
 }
 
 /*************************** GtkTreeView functions *****************************/
@@ -11144,11 +11189,13 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 		disc->priv->press_start_y = event->y;
 
 		if (event->type == GDK_2BUTTON_PRESS) {
-			GList *list;
+			if (treepath) {
+				GList *list;
 
-			list = g_list_prepend (NULL, gtk_tree_path_copy (treepath));
-			brasero_data_disc_open_file (disc, list);
-			g_list_free (list);
+				list = g_list_prepend (NULL, gtk_tree_path_copy (treepath));
+				brasero_data_disc_open_file (disc, list);
+				g_list_free (list);
+			}
 		}
 	}
 	else if (event->button == 3) {

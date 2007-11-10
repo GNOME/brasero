@@ -578,8 +578,7 @@ end:
 		g_object_set (G_OBJECT (project->priv->data), "reject-file", FALSE, NULL);
 	}
 
-	action = gtk_action_group_get_action (project->priv->project_group, "Add");
-	gtk_action_set_sensitive (action, sensitive);
+	brasero_project_set_add_button_state (project);
 
 	/* we need to make sure there is actually something to burn */
 	sensitive = (project->priv->empty == FALSE &&

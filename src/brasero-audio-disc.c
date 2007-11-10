@@ -2667,6 +2667,19 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	GList *selected;
 	GList *iter;
 
+	treeview = gtk_tree_selection_get_tree_view (selection);
+	selected = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	if (disc->priv->selected_path)
+		gtk_tree_path_free (disc->priv->selected_path);
+
+	if (selected)
+		disc->priv->selected_path = gtk_tree_path_copy (selected->data);
+	else
+		disc->priv->selected_path = NULL;
+
+	brasero_disc_selection_changed (BRASERO_DISC (disc));
+
 	if (!disc->priv->disc_group)
 		return;
 
@@ -2675,9 +2688,6 @@ brasero_audio_disc_selection_changed (GtkTreeSelection *selection,
 	action_edit = gtk_action_group_get_action (disc->priv->disc_group, "EditSong");
 	action_split = gtk_action_group_get_action (disc->priv->disc_group, "Split");
 	action_pause = gtk_action_group_get_action (disc->priv->disc_group, "Pause");
-
-	treeview = gtk_tree_selection_get_tree_view (selection);
-	selected = gtk_tree_selection_get_selected_rows (selection, &model);
 
 	gtk_action_set_sensitive (action_split, FALSE);
 	gtk_action_set_sensitive (action_pause, FALSE);
