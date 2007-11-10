@@ -727,7 +727,6 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	monitor = nautilus_burn_get_drive_monitor ();
-g_warning ("STOP\n");
 	brasero_burn_session_set_burner (self, nautilus_burn_drive_monitor_get_drive_for_image (monitor));
 
 	if (priv->settings->format == format
