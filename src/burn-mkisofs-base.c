@@ -41,6 +41,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-track.h"
 #include "burn-mkisofs-base.h"
 
@@ -112,6 +113,9 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 				     const gchar *uri,
 				     GError **error)
 {
+	gint num;
+	gint forbidden;
+	gchar *character;
 	gchar *localpath;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
@@ -125,6 +129,46 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	}
 
 	localpath = gnome_vfs_get_local_path_from_uri (uri);
+
+	/* we need to escape some characters like []\? since in this file we
+	 * can use glob like expressions. */
+	character = localpath;
+	forbidden = 0;
+	num = 0;
+
+	while (character [0]) {
+		if (character [0] == '['
+		||  character [0] == ']'
+		||  character [0] == '?'
+		||  character [0] == '\\')
+			forbidden++;
+
+		num++;
+		character++;
+	}
+
+	if (forbidden) {
+		gchar *tmp;
+		gint i;
+
+		tmp = g_new0 (gchar, num + forbidden + 1);
+		character = tmp;
+
+		for (i = 0; i < num; i++) {
+			if (localpath [i] == '['
+			||  localpath [i] == ']'
+			||  localpath [i] == '?'
+			||  localpath [i] == '\\') {
+				character [i] = '\\';
+				character++;
+			}
+			character [i] = localpath [i];
+		}
+
+		BRASERO_BURN_LOG ("Escaped path %s into %s", localpath, tmp);
+		g_free (localpath);
+		localpath = tmp;
+	}
 
 	/* we just ignore if localpath is NULL:
 	 * - it could be a non local whose graft point couldn't be downloaded */

@@ -170,7 +170,9 @@ struct BraseroDataDiscPrivate {
 	GHashTable *excluded;
 	GHashTable *symlinks;
 	GHashTable *unreadable;
+
 	GHashTable *joliet_non_compliant;
+	GSList *joliet_incompat_uris;
 
 	GHashTable *path_refs;
 	GHashTable *references;
@@ -2523,10 +2525,19 @@ brasero_data_disc_joliet_incompat_get_joliet_compliant_name (BraseroDataDisc *di
 	gint num;
 
 	key = brasero_data_disc_joliet_get_key (path, &name, parent);
-	list = g_hash_table_lookup (disc->priv->joliet_non_compliant,
-				    key);
-	if (g_slist_length (list) < 2)
+	list = g_hash_table_lookup (disc->priv->joliet_non_compliant, key);
+
+	if (!list)
 		return name;
+
+	if (g_slist_length (list) == 1) {
+		gchar *retval;
+
+		/* simply return joliet name truncated to 64 chars */
+		retval = g_strdup_printf ("%.64s", name);
+		g_free (name);
+		return retval;		
+	}
 
 	node = g_slist_find_custom (list, name, (GCompareFunc) strcmp);
 	num = g_slist_index (list, node->data);
@@ -2572,7 +2583,7 @@ brasero_data_disc_joliet_incompat_get_joliet_compliant_path (BraseroDataDisc *di
 		g_string_prepend (retval, G_DIR_SEPARATOR_S);
 		g_free (joliet_name);
 	}
-	g_strdup (parent);
+	g_free (parent);
 	return g_string_free (retval, FALSE);
 }
 
@@ -2589,7 +2600,7 @@ brasero_data_disc_joliet_incompat_add_path (BraseroDataDisc *disc,
 									  g_str_equal,
 									  g_free,
 									  NULL);
-
+	
 	key = brasero_data_disc_joliet_get_key (path, &name, NULL);
 
 	list = g_hash_table_lookup (disc->priv->joliet_non_compliant, key);
@@ -2611,7 +2622,24 @@ brasero_data_disc_joliet_incompat_add_paths (BraseroDataDisc *disc,
 	}
 }
 
+struct _BraseroJolietMakeList {
+	GSList *list;
+	const gchar *path;
+	gint len;
+};
+typedef struct _BraseroJolietMakeList BraseroJolietMakeList;
+
 static void
+brasero_data_disc_joliet_incompat_find_cb (gchar *path,
+					   GSList *list,
+					   BraseroJolietMakeList *callback_data)
+{
+	if (!strncmp (path, callback_data->path, callback_data->len)
+	&&  *(path + callback_data->len) == G_DIR_SEPARATOR)
+		callback_data->list = g_slist_prepend (callback_data->list, path);
+}
+
+static gboolean
 brasero_data_disc_joliet_incompat_free (BraseroDataDisc *disc,
 					const gchar *path)
 {
@@ -2619,26 +2647,78 @@ brasero_data_disc_joliet_incompat_free (BraseroDataDisc *disc,
 	gchar *name;
 	gchar *key;
 
-	if (!disc->priv->joliet_non_compliant)
-		return;
-
+	/* remove the exact path if it is a joliet non compliant file */
 	key = brasero_data_disc_joliet_get_key (path, &name, NULL);
 	list = g_hash_table_lookup (disc->priv->joliet_non_compliant, key);
-	if (!list)
-		return;
+	if (!list) {
+		g_free (key);
+		return FALSE;
+	}
 
 	node = g_slist_find_custom (list, name, (GCompareFunc) strcmp);
 	if (node) {
 		list = g_slist_remove (list, node->data);
 		if (!list) {
+			/* NOTE: we don't free the hash table now if it's empty,
+			 * since this function could have been called by move
+			 * function and in this case a path could probably be
+			 * re-inserted */
 			g_hash_table_remove (disc->priv->joliet_non_compliant, key);
-			if (g_hash_table_size (disc->priv->joliet_non_compliant)) {
-				g_hash_table_destroy (disc->priv->joliet_non_compliant);
-				disc->priv->joliet_non_compliant = NULL;
-			}
 		}
 		else
 			g_hash_table_insert (disc->priv->joliet_non_compliant, key, list);
+	}
+
+	return TRUE;
+}
+
+static void
+brasero_data_disc_joliet_incompat_remove_path (BraseroDataDisc *disc,
+					       const gchar *path)
+{
+	BraseroJolietMakeList callback_data;
+
+	if (!disc->priv->joliet_non_compliant)
+		return;
+
+	/* remove the children of the path if that's a directory */
+	callback_data.list = NULL;
+	callback_data.path = path;
+	callback_data.len = strlen (path);
+
+	g_hash_table_foreach (disc->priv->joliet_non_compliant,
+			      (GHFunc) brasero_data_disc_joliet_incompat_find_cb,
+			      &callback_data);
+
+	if (callback_data.list) {
+		GSList *iter;
+
+		for (iter = callback_data.list; iter; iter = iter->next) {
+			gchar *key;
+			GSList *list;
+
+			key = iter->data;
+
+			list = g_hash_table_lookup (disc->priv->joliet_non_compliant, key);
+			g_slist_foreach (list, (GFunc) g_free, NULL);
+			g_slist_free (list);
+
+			g_hash_table_remove (disc->priv->joliet_non_compliant, key);
+		}
+		g_slist_free (callback_data.list);
+
+		if (!g_hash_table_size (disc->priv->joliet_non_compliant)) {
+			g_hash_table_destroy (disc->priv->joliet_non_compliant);
+			disc->priv->joliet_non_compliant = NULL;
+			return;
+		}
+	}
+
+	/* remove the exact path if it is a joliet non compliant file */
+	if (brasero_data_disc_joliet_incompat_free (disc, path)
+	&& !g_hash_table_size (disc->priv->joliet_non_compliant)) {
+		g_hash_table_destroy (disc->priv->joliet_non_compliant);
+		disc->priv->joliet_non_compliant = NULL;
 	}
 }
 
@@ -2648,16 +2728,147 @@ brasero_data_disc_joliet_incompat_move (BraseroDataDisc *disc,
 					const gchar *new_path)
 {
 	gchar *name;
+	BraseroJolietMakeList callback_data;
 
-	/* remove old path if any */
-	brasero_data_disc_joliet_incompat_free (disc, old_path);
+	if (!disc->priv->joliet_non_compliant)
+		return;
 
-	/* see if the new path should be inserted */
+	/* move the children of the path if that's a directory */
+	callback_data.list = NULL;
+	callback_data.path = old_path;
+	callback_data.len = strlen (old_path);
+
+	g_hash_table_foreach (disc->priv->joliet_non_compliant,
+			      (GHFunc) brasero_data_disc_joliet_incompat_find_cb,
+			      &callback_data);
+
+	if (callback_data.list) {
+		GSList *iter;
+
+		for (iter = callback_data.list; iter; iter = iter->next) {
+			gchar *new_key;
+			gchar *old_key;
+			GSList *list;
+
+			old_key = iter->data;
+
+			/* create new path */
+			new_key = g_strconcat (new_path,
+					       old_key + strlen (old_path),
+					       NULL);
+
+			/* retrieve the data associated with old key */
+			list = g_hash_table_lookup (disc->priv->joliet_non_compliant, old_key);
+
+			/* remove it */
+			g_hash_table_remove (disc->priv->joliet_non_compliant, old_key);
+
+			/* reinsert it with new key */
+			g_hash_table_insert (disc->priv->joliet_non_compliant,
+					     new_key,
+					     list);
+		}
+
+		g_slist_free (callback_data.list);
+	}
+
+	/* move the exact path if that's a joliet non compliant file.
+	 * First, see if that's possible to remove it and then re-insert it */
+	if (!brasero_data_disc_joliet_incompat_free (disc, old_path))
+		return;
+
+	/* see if the new path should be inserted (the name could be changed) */
 	name = g_path_get_basename (new_path);
-	if (strlen (name) > 64)
-		brasero_data_disc_joliet_incompat_add_path (disc, new_path);
+	if (strlen (name) <= 64) {
+		/* no need to re-insert the path so if hash is empty free it */
+		if (!g_hash_table_size (disc->priv->joliet_non_compliant)) {
+			g_hash_table_destroy (disc->priv->joliet_non_compliant);
+			disc->priv->joliet_non_compliant = NULL;
+		}
+		g_free (name);
+	}
+	else {
+		gchar *key;
+		GSList *list;
 
-	g_free (name);
+		key = brasero_data_disc_joliet_get_key (new_path, NULL, NULL);
+
+		list = g_hash_table_lookup (disc->priv->joliet_non_compliant, key);
+		list = g_slist_prepend (list, name);
+		g_hash_table_insert (disc->priv->joliet_non_compliant, key, list);
+	}
+}
+
+static void
+brasero_data_disc_joliet_incompat_restore (BraseroDataDisc *disc,
+					   BraseroFile *file,
+					   const gchar *path)
+{
+	gint len;
+	GSList *iter;
+
+	len = strlen (file->uri);
+	for (iter = disc->priv->joliet_incompat_uris; iter; iter = iter->next) {
+		gchar *unescaped;
+		gchar *newpath;
+		GSList *list;
+		gchar *name;
+		gchar *uri;
+		gchar *key;
+
+		uri = iter->data;
+
+		/* see if that's a child of the directory */
+		if (strncmp (file->uri, uri, len)
+		|| *(uri + len) != G_DIR_SEPARATOR)
+			continue;
+
+		/* add the path */
+		unescaped = gnome_vfs_unescape_string_for_display (uri + len);
+		newpath = g_strconcat (path, unescaped, NULL);
+		g_free (unescaped);
+
+		key = brasero_data_disc_joliet_get_key (newpath, &name, NULL);
+		list = g_hash_table_lookup (disc->priv->joliet_non_compliant, key);
+		list = g_slist_prepend (list, name);
+
+		g_hash_table_insert (disc->priv->joliet_non_compliant, key, list);
+		g_free (newpath);
+	}
+}
+
+static void
+brasero_data_disc_joliet_incompat_restore_children (BraseroDataDisc *disc,
+						    BraseroFile *file,
+						    GSList *paths)
+{
+	GSList *iter;
+
+	for (iter = paths; iter; iter = iter->next) {
+		gchar *path;
+
+		path = iter->data;
+		brasero_data_disc_joliet_incompat_restore (disc, file, path);
+	}
+}
+
+static void
+brasero_data_disc_joliet_incompat_add_uri (BraseroDataDisc *disc,
+					   const gchar *uri)
+{
+	GSList *node;
+
+	if (!uri)
+		return;
+
+	/* add uri to remove it later. That's also useful when the uri is added
+	 * a second time later in the tree (see restore) */
+	node = g_slist_find_custom (disc->priv->joliet_incompat_uris,
+				    uri,
+				    (GCompareFunc) strcmp);
+	if (!node)
+		disc->priv->joliet_incompat_uris = g_slist_prepend (disc->priv->joliet_incompat_uris,
+								    g_strdup (uri));
 }
 
 /**************************************** **************************************/
@@ -2870,6 +3081,14 @@ _foreach_empty_joliet_incompat_cb (const gchar *key,
 static void
 brasero_data_disc_empty_joliet_incompat (BraseroDataDisc *disc)
 {
+	if (disc->priv->joliet_incompat_uris) {
+		g_slist_foreach (disc->priv->joliet_incompat_uris,
+				 (GFunc) g_free,
+				 NULL);
+		g_slist_free (disc->priv->joliet_incompat_uris);
+		disc->priv->joliet_incompat_uris = NULL;
+	}
+
 	if (!disc->priv->joliet_non_compliant)
 		return;
 
@@ -3086,7 +3305,6 @@ brasero_data_disc_unreadable_new (BraseroDataDisc *disc,
 							        NULL);
 
 		/* we can now signal the user that some files were removed */
-		
 		if (filter_notify) {
 			GtkWidget *widget;
 
@@ -3298,8 +3516,14 @@ brasero_data_disc_restore_unreadable (BraseroDataDisc *disc,
 						 g_strdup (uri),
 						 TRUE);
 
-	/* now let's see the tree */
+	/* add it to joliet incompatible list if need be */
 	paths = brasero_data_disc_reference_get_list (disc, references, FALSE);
+	if (strlen (info->name) > 64) {
+		brasero_data_disc_joliet_incompat_add_uri (disc, uri);
+		brasero_data_disc_joliet_incompat_add_paths (disc, paths);
+	}
+
+	/* now let's see the tree */
 	for (; paths; paths = g_slist_remove (paths, path)) {
 		path = paths->data;
 		brasero_data_disc_tree_set_path_from_info (disc, path, NULL, info);
@@ -4642,6 +4866,8 @@ brasero_data_disc_uri_to_paths (BraseroDataDisc *disc,
 	excluding = NULL;
 	parent = g_path_get_dirname (uri);
 	while (parent [1] != '\0') {
+		gchar *unescaped;
+
 		if (disc->priv->excluded) {
 			list = g_hash_table_lookup (disc->priv->excluded, parent);
 			list = g_slist_copy (list);
@@ -4655,10 +4881,12 @@ brasero_data_disc_uri_to_paths (BraseroDataDisc *disc,
 			if (g_slist_find (excluding, graft))
 				continue;
 
+			/* path are always unescaped */
+			unescaped = gnome_vfs_unescape_string_for_display (uri + strlen (parent));
 			path = g_strconcat (graft,
-					    uri + strlen (parent),
+					    unescaped,
 					    NULL);
-
+			g_free (unescaped);
 			paths = g_slist_prepend (paths, path);
 		}
 
@@ -5989,6 +6217,7 @@ brasero_data_disc_symlink_new (BraseroDataDisc *disc,
 		if (!g_slist_find (disc->priv->loading, file)) {
 			brasero_data_disc_restore_excluded_children (disc, file);
 			brasero_data_disc_replace_symlink_children (disc, file, paths);
+			brasero_data_disc_joliet_incompat_restore_children (disc, file, paths);
 		}
 	}
 	else if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
@@ -6167,7 +6396,9 @@ brasero_data_disc_invalid_utf8_new (BraseroDataDisc *disc,
 								     info,
 								     contents->entries);
 
-		/* check if the new path should go into joliet hash */
+		/* check if the new path should go into joliet hash.
+		 * NOTE: since this URI is a graft no need to add it to the
+		 * joliet non compliant uri list */
 		name = g_path_get_basename (path);
 		if (strlen (name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, path);
@@ -6312,6 +6543,7 @@ brasero_data_disc_dir_contents_end (GObject *object,
 			paths = brasero_data_disc_uri_to_paths (disc,
 								current,
 								FALSE);
+			brasero_data_disc_joliet_incompat_add_uri (disc, current);
 			brasero_data_disc_joliet_incompat_add_paths (disc, paths);
 			g_slist_foreach (paths, (GFunc) g_free, NULL);
 			g_slist_free (paths);
@@ -6771,7 +7003,7 @@ brasero_data_disc_path_remove_user (BraseroDataDisc *disc,
 	BraseroFile *file;
 	gchar *uri;
 
-	brasero_data_disc_joliet_incompat_free (disc, path);
+	brasero_data_disc_joliet_incompat_remove_path (disc, path);
 	brasero_data_disc_reference_remove_path (disc, path);
 
 	/* uri can be NULL if uri is an empty directory
@@ -6909,7 +7141,7 @@ brasero_data_disc_replace_file (BraseroDataDisc *disc,
 			    -1);
 
 	if (type == ROW_SESSION) {
-		brasero_data_disc_joliet_incompat_free (disc, path);
+		brasero_data_disc_joliet_incompat_remove_path (disc, path);
 		brasero_data_disc_reference_remove_path (disc, path);
 
 		/* see if it isn't an imported session file, if so simply remove
@@ -7327,6 +7559,9 @@ brasero_data_disc_replace_symlink_children_cb (BraseroVFS *self,
 		brasero_data_disc_replace_symlink_children (disc,
 							    file,
 							    paths);
+		brasero_data_disc_joliet_incompat_restore_children (disc,
+								    file,
+								    paths);
 	}
 	else {
 		if (!g_hash_table_lookup (disc->priv->files, target)) {
@@ -7505,6 +7740,10 @@ brasero_data_disc_new_row_real (BraseroDataDisc *disc,
 		uri = info->symlink_name;
 	}
 
+	/* make sure it is joliet compatible */
+	if (strlen (info->name) > 64)
+		brasero_data_disc_joliet_incompat_add_uri (disc, uri);
+
 	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
 		if (!g_hash_table_lookup (disc->priv->files, uri)) {
 			graft = brasero_data_disc_new_file (disc,
@@ -7526,9 +7765,20 @@ brasero_data_disc_new_row_real (BraseroDataDisc *disc,
 			 * one or various subdirectories could have been removed because excluded */
 			brasero_data_disc_restore_excluded_children (disc, file);
 
-			/* we also replace all its children which are symlinks */
 			paths = g_slist_prepend (NULL, (gchar *) path);
-			brasero_data_disc_replace_symlink_children (disc, file, paths);
+
+			/* replace all its children which are symlinks */
+			brasero_data_disc_replace_symlink_children (disc,
+								    file,
+								    paths);
+
+			/* add to joliet non compliant table all the children 
+			 * which were already in this table but under other
+			 * paths. */
+			brasero_data_disc_joliet_incompat_restore_children (disc,
+									    file,
+									    paths);
+
 			g_slist_free (paths);
 		}
 		else
@@ -7665,8 +7915,7 @@ brasero_data_disc_get_dir_contents_results (BraseroVFS *self,
 	/* check for invalid utf8 characters */
 	utf8_name = brasero_utils_validate_utf8 (info->name);
 
-	/* check joliet compatibility for this path inside the parent
-	 * directory in the selection */
+	/* check no other file has the same name in the directory */
 	success = brasero_data_disc_tree_check_name_validity (disc,
 							      utf8_name ? utf8_name:info->name,
 							      treeparent,
@@ -7852,6 +8101,8 @@ brasero_data_disc_add_uri_real (BraseroDataDisc *disc,
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (BRASERO_DATA_DISC (disc)->priv->notebook), 1);
 
 	reference = brasero_data_disc_reference_new (disc, path);
+
+	/* if info->name is not compatible with joliet it'll be added later */
 	if (strlen (name) > 64)
 		brasero_data_disc_joliet_incompat_add_path (disc, path);
 	g_free (path);
@@ -8079,7 +8330,7 @@ brasero_data_disc_remove_imported_session (BraseroDataDisc *disc)
 		g_free (name);
 
 		/* remove all the grafted chidren */
-		brasero_data_disc_joliet_incompat_free (disc, path);
+		brasero_data_disc_joliet_incompat_remove_path (disc, path);
 		brasero_data_disc_reference_remove_path (disc, path);
 
 		paths = g_slist_append (NULL, (gchar *) path);
@@ -8431,11 +8682,11 @@ _foreach_joliet_non_compliant_cb (gchar *key,
 		gchar *path;
 
 		name = list->data;
+
 		path = g_build_path (G_DIR_SEPARATOR_S,
 				     parent,
 				     name,
 				     NULL);
-
 		if (g_hash_table_lookup (data->disc->priv->paths, path)) {
 			/* this one is already in grafts list */
 			g_free (path);
@@ -8479,6 +8730,18 @@ brasero_data_disc_get_track_real (BraseroDataDisc *disc,
 			g_hash_table_foreach (disc->priv->symlinks,
 					      (GHFunc) _foreach_symlink_make_list_cb,
 					      &callback_data);
+
+		if (joliet_compat) {
+			GSList *iter;
+
+			for (iter = disc->priv->joliet_incompat_uris; iter; iter = iter->next) {
+				gchar *uri;
+
+				uri = iter->data;
+				callback_data.list = g_slist_prepend (callback_data.list, g_strdup (uri));
+			}
+		}
+
 		*unreadable = callback_data.list;
 	}
 
@@ -8716,6 +8979,8 @@ brasero_data_disc_path_create (BraseroDataDisc *disc,
 							      ROW_NOT_EXPLORED,
 							      FALSE);
 
+		/* Here we are creating fake directories: no need to add the uri
+		 * (and there isn't any) to the joliet non compliant list */
 		BRASERO_GET_BASENAME_FOR_DISPLAY (tmp_path, name);
 		if (strlen (name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, tmp_path);
@@ -8819,6 +9084,9 @@ brasero_data_disc_graft_check_result (BraseroDataDisc *disc,
 					     NULL,
 					     parent);
 
+		/* this is a graft and we still need to add its name to the
+		 * joliet non compliant list in case it is added somewhere else
+		 * later. */
 		BRASERO_GET_BASENAME_FOR_DISPLAY (parent, name);
 		if (strlen (name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, parent);
@@ -9212,6 +9480,9 @@ brasero_data_disc_load_graft_result (BraseroVFS *self,
 	if (success == BRASERO_DISC_OK) {
 		gchar *name;
 
+		if (strlen (info->name) > 64)
+			brasero_data_disc_joliet_incompat_add_uri (disc, graft->uri);
+		
 		BRASERO_GET_BASENAME_FOR_DISPLAY (graft->path, name);
 		if (strlen (name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, graft->path);
@@ -9257,7 +9528,6 @@ brasero_data_disc_load_restored_end (GObject *owner,
 
 		if (!graft->uri) {
 			gchar *parent;
-			gchar *name;
 
 			/* these are created directories no need to check results */
 			brasero_data_disc_graft_new (disc,
@@ -9290,11 +9560,7 @@ brasero_data_disc_load_restored_end (GObject *owner,
 										      FALSE);
 			}
 
-			BRASERO_GET_BASENAME_FOR_DISPLAY (graft->path, name);
-			if (strlen (name) > 64)
-				brasero_data_disc_joliet_incompat_add_path (disc, graft->path);
-
-			g_free (name);
+			/* NOTE: joliet is checked in results */
 
 			/* This is for additional checks (see above function) */
 			if (strcmp (parent, G_DIR_SEPARATOR_S))
@@ -11530,7 +11796,7 @@ brasero_data_disc_reference_remove_uri (BraseroDataDisc *disc,
 		gchar *path;
 
 		path = iter->data;
-		brasero_data_disc_joliet_incompat_free (disc, path);
+		brasero_data_disc_joliet_incompat_remove_path (disc, path);
 		brasero_data_disc_reference_remove_path (disc, path);
 	}
 
@@ -11605,7 +11871,7 @@ brasero_data_disc_inotify_create_paths (BraseroDataDisc *disc,
 						 FALSE);
 	}
 	else if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
-	      && !g_hash_table_lookup (disc->priv->files, uri)) {
+	     && !g_hash_table_lookup (disc->priv->files, uri)) {
 		gchar *parent;
 		gint64 sectors;
 	
@@ -11632,9 +11898,10 @@ brasero_data_disc_inotify_create_paths (BraseroDataDisc *disc,
 			continue;
 		}
 
+		/* This is a create event so the file doesn't exist yet in all 
+		 * the tables: check its name. */
 		if (strlen (info->name) > 64)
 			brasero_data_disc_joliet_incompat_add_path (disc, path);
-
 		g_free (path_name);
 
 		brasero_data_disc_tree_new_path (disc,
@@ -11721,6 +11988,10 @@ brasero_data_disc_inotify_create_file_event_cb (BraseroVFS *self,
 		g_free (name);
 		goto cleanup;
 	}
+
+	/* add it to joliet incompatible list if need be */
+	if (strlen (info->name) > 64)
+		brasero_data_disc_joliet_incompat_add_uri (disc, uri);
 
 	brasero_data_disc_inotify_create_paths (disc,
 						name,
@@ -12054,8 +12325,7 @@ brasero_data_disc_inotify_moved_from_event (BraseroDataDisc *disc,
 	data->uri = g_strdup (uri);
 			
 	/* we remember this move for 5s. If 5s later we haven't received
-	 * a corresponding MOVED_TO then we consider the file was
-	 * removed. */
+	 * a corresponding MOVED_TO then we consider the file was removed. */
 	data->id = g_timeout_add (5000,
 				  (GSourceFunc) brasero_data_disc_inotify_moved_timeout_cb,
 				  disc);
