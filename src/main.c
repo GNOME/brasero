@@ -261,7 +261,7 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 			       "name", "Brasero",
 			       "comments", comments,
 			       "version", VERSION,
-			       "copyright", "Copyright © 2006 Philippe Rouquier",
+			       "copyright", "Copyright © 2005-2007 Philippe Rouquier",
 			       "authors", authors,
 			       "documenters", documenters,
 			       "website", "http://www.gnome.org/projects/brasero",
