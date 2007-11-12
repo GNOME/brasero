@@ -1,3 +1,49 @@
+2007-11-12  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #493810 CD/DVD copy options (see last comments)
+
+	In the process found and fixed other bugs:
+	- wrong image caps returned sometimes due to wrong check on io flags
+	- no image types displayed when burning an image
+	- grey out button when copying disc but there is no source
+
+	some cleanups here are there
+	
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_get_default_output_format),
+	(brasero_dest_selection_get_default_output_path),
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_image_properties),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_init):
+	* src/brasero-disc-copy-dialog.c: (brasero_disc_copy_dialog_init):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_set_formats),
+	(brasero_image_option_dialog_format_changed),
+	(brasero_image_option_dialog_file_changed),
+	(brasero_image_option_dialog_output_changed_cb),
+	(brasero_image_option_dialog_valid_media_cb),
+	(brasero_image_option_dialog_init),
+	(brasero_image_option_dialog_finalize):
+	* src/burn-caps.c: (brasero_caps_try_output_with_blanking),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_get_required_media_type),
+	(brasero_caps_get_flags), (brasero_caps_get_flags_for_disc),
+	(brasero_burn_caps_get_flags), (brasero_burn_caps_sort),
+	(brasero_caps_replicate_links), (brasero_caps_replicate_tests),
+	(brasero_caps_list_check_io), (brasero_caps_image_new),
+	(brasero_caps_audio_new), (brasero_caps_data_new),
+	(brasero_caps_disc_new):
+	* src/burn-session.c: (brasero_burn_session_set_image_output_full),
+	(brasero_burn_session_push_tracks),
+	(brasero_burn_session_pop_tracks),
+	(brasero_burn_session_get_src_drive),
+	(brasero_burn_session_finalize):
+
 2007-11-12  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-blank-dialog.c: (brasero_blank_dialog_activate):

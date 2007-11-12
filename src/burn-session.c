@@ -727,7 +727,9 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	monitor = nautilus_burn_get_drive_monitor ();
-	brasero_burn_session_set_burner (self, nautilus_burn_drive_monitor_get_drive_for_image (monitor));
+
+	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
+		brasero_burn_session_set_burner (self, nautilus_burn_drive_monitor_get_drive_for_image (monitor));
 
 	if (priv->settings->format == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
@@ -1224,8 +1226,7 @@ brasero_burn_session_get_src_drive (BraseroBurnSession *self)
 
 	/* to be able to burn to a DVD we must:
 	 * - have only one track
-	 * - not have any audio track 
-	 */
+	 * - not have any audio track */
 
 	if (!priv->tracks)
 		return NULL;

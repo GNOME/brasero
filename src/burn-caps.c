@@ -1749,7 +1749,7 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 		return FALSE;
 
 	/* output is a disc try with initial blanking */
-	BRASERO_BURN_LOG ("Support for input/output failed. Trying with initial blanking");
+	BRASERO_BURN_LOG ("Support for input/output failed.");
 
 	/* apparently nothing can be done to reach our goal. Maybe that
 	 * is because we first have to blank the disc. If so add a blank 
@@ -1757,6 +1757,8 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	if (!(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 	||    brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
 		return FALSE;
+
+	BRASERO_BURN_LOG ("Trying with initial blanking");
 
 	/* retry with the same disc type but blank this time */
 	media = output->subtype.media;
@@ -2566,7 +2568,7 @@ brasero_caps_list_check_io (GSList *list, BraseroPluginIOFlag flags)
 			BraseroCaps *new_caps;
 
 			/* (common == flags) && common != caps->flags
-			 * caps->flags encompasses flags: Split the link in two
+			 * caps->flags encompasses flags: Split the caps in two
 			 * and only keep the interesting part */
 			caps->flags &= ~common;
 
@@ -2612,7 +2614,7 @@ brasero_caps_list_check_io (GSList *list, BraseroPluginIOFlag flags)
 			if (complement != BRASERO_PLUGIN_IO_NONE) {
 				BraseroCaps *new_caps;
 
-				/* common == caps->flags  && common != flags.
+				/* common == caps->flags && common != flags.
 				 * Flags encompasses caps->flags. So we need to
 				 * create a new caps for this type with the
 				 * substraction of flags if the other part isn't
@@ -2635,6 +2637,7 @@ GSList *
 brasero_caps_image_new (BraseroPluginIOFlag flags,
 			BraseroImageFormat format)
 {
+	BraseroImageFormat remaining_format;
 	BraseroBurnCaps *self;
 	GSList *retval = NULL;
 	GSList *iter;
@@ -2646,7 +2649,10 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 
 	self = brasero_burn_caps_get_default ();
 
-	for (iter = self->priv->caps_list; iter && format != BRASERO_IMAGE_FORMAT_NONE; iter = iter->next) {
+	remaining_format = format;
+
+	/* We have to search all caps with or related to the format */
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
 		BraseroImageFormat common;
 		BraseroPluginIOFlag common_io;
@@ -2677,21 +2683,16 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 								       caps,
 								       brasero_burn_caps_sort);
 		}
-		else if (common == format) {
-			/* format == caps->type.subtype.img_format */
-			retval = g_slist_prepend (retval, caps);
-			goto end;
-		}
 
 		retval = g_slist_prepend (retval, caps);
-		format &= ~common;
+		remaining_format &= ~common;
 	}
 
 	/* Now we make sure that all these new or already 
 	 * existing caps have the proper IO Flags */
 	retval = brasero_caps_list_check_io (retval, flags);
 
-	if (format != BRASERO_IMAGE_FORMAT_NONE){
+	if (remaining_format != BRASERO_IMAGE_FORMAT_NONE){
 		BraseroCaps *caps;
 
 		caps = g_new0 (BraseroCaps, 1);
@@ -2704,8 +2705,6 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 							       brasero_burn_caps_sort);
 		retval = g_slist_prepend (retval, caps);
 	}
-
-end:
 
 	return retval;
 }

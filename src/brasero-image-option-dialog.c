@@ -53,7 +53,8 @@ struct _BraseroImageOptionDialogPrivate {
 
 	BraseroBurnCaps *caps;
 
-	guint caps_sig;
+	gulong caps_sig;
+	gulong session_sig;
 
 	BraseroVFS *vfs;
 	BraseroVFSDataID info_type;
@@ -245,20 +246,6 @@ brasero_image_option_dialog_changed (BraseroImageOptionDialog *dialog)
 }
 
 static void
-brasero_image_option_dialog_format_changed (BraseroImageTypeChooser *format,
-					    BraseroImageOptionDialog *dialog)
-{
-	brasero_image_option_dialog_changed (dialog);
-}
-
-static void
-brasero_image_option_dialog_file_changed (GtkFileChooser *chooser,
-					  BraseroImageOptionDialog *dialog)
-{
-	brasero_image_option_dialog_changed (dialog);
-}
-
-static void
 brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 {
 	BraseroImageOptionDialogPrivate *priv;
@@ -270,11 +257,13 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
+	if (!priv->format)
+		return;
+
 	/* get the available image types */
 	output.type = BRASERO_TRACK_TYPE_DISC;
-	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
+	drive = brasero_burn_session_get_burner (priv->session);
 	output.subtype.media = NCB_MEDIA_GET_STATUS (drive);
-	nautilus_burn_drive_unref (drive);
 
 	input.type = BRASERO_TRACK_TYPE_IMAGE;
 	formats = BRASERO_IMAGE_FORMAT_NONE;
@@ -295,8 +284,22 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 }
 
 static void
-brasero_image_option_dialog_media_changed (BraseroDriveSelection *selection,
-					   BraseroImageOptionDialog *dialog)
+brasero_image_option_dialog_format_changed (BraseroImageTypeChooser *format,
+					    BraseroImageOptionDialog *dialog)
+{
+	brasero_image_option_dialog_changed (dialog);
+}
+
+static void
+brasero_image_option_dialog_file_changed (GtkFileChooser *chooser,
+					  BraseroImageOptionDialog *dialog)
+{
+	brasero_image_option_dialog_changed (dialog);
+}
+
+static void
+brasero_image_option_dialog_output_changed_cb (BraseroBurnSession *session,
+					       BraseroImageOptionDialog *dialog)
 {
 	brasero_image_option_dialog_set_formats (dialog);
 }
@@ -464,12 +467,6 @@ brasero_image_option_dialog_valid_media_cb (BraseroDestSelection *selection,
 	BraseroImageOptionDialogPrivate *priv;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (self);
-
-	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
-		gtk_widget_set_sensitive (priv->button, TRUE);
-		return;
-	}
-
 	gtk_widget_set_sensitive (priv->button, valid);
 }
 
@@ -515,13 +512,13 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 				       BRASERO_BURN_FLAG_CHECK_SIZE|
 				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
 				       BRASERO_BURN_FLAG_FAST_BLANK);
+	priv->session_sig = g_signal_connect (priv->session,
+					      "output-changed",
+					      G_CALLBACK (brasero_image_option_dialog_output_changed_cb),
+					      obj);
 
 	/* first box */
 	priv->selection = brasero_dest_selection_new (priv->session);
-	g_signal_connect (priv->selection,
-			  "drive-changed",
-			  G_CALLBACK (brasero_image_option_dialog_media_changed),
-			  obj);
 	g_signal_connect (priv->selection,
 			  "valid-media",
 			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
@@ -577,6 +574,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 
 	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
 						      BRASERO_MEDIUM_WRITABLE);
+	brasero_image_option_dialog_set_formats (obj);
 }
 
 static void
@@ -601,6 +599,11 @@ brasero_image_option_dialog_finalize (GObject *object)
 	if (priv->caps_sig) {
 		g_signal_handler_disconnect (priv->caps, priv->caps_sig);
 		priv->caps_sig = 0;
+	}
+
+	if (priv->session_sig) {
+		g_signal_handler_disconnect (priv->session, priv->session_sig);
+		priv->session_sig = 0;
 	}
 
 	if (priv->session) {

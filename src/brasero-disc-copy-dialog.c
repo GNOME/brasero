@@ -43,6 +43,8 @@
 
 #include "burn-basics.h"
 #include "burn-session.h"
+#include "burn-caps.h"
+#include "burn-medium.h"
 #include "brasero-utils.h"
 #include "brasero-ncb.h"
 #include "brasero-disc-copy-dialog.h"
@@ -97,6 +99,7 @@ brasero_disc_copy_dialog_valid_media_cb (BraseroDestSelection *selection,
 static void
 brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 {
+	gboolean valid;
 	GtkWidget *button;
 	BraseroDiscCopyDialogPrivate *priv;
 
@@ -161,6 +164,30 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
 						      BRASERO_MEDIUM_WRITABLE);
+
+	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
+		BraseroMedia media;
+
+		media = NCB_MEDIA_GET_STATUS (brasero_burn_session_get_src_drive (priv->session));
+
+		if (media == BRASERO_MEDIUM_NONE
+		|| (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == 0)
+			valid = FALSE;
+		else
+			valid = TRUE;
+	}
+	else {
+		BraseroBurnCaps *caps;
+
+		caps = brasero_burn_caps_get_default ();
+		if (brasero_burn_caps_get_flags (caps, priv->session, NULL, NULL) != BRASERO_BURN_OK)
+			valid = FALSE;
+		else
+			valid = TRUE;
+		g_object_unref (caps);
+	}
+
+	brasero_disc_copy_dialog_set_burn_button_state (obj, valid);
 }
 
 static void

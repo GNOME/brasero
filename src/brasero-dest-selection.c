@@ -404,7 +404,8 @@ brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 		output->subtype.img_format = source.subtype.img_format;
 		return;
 	}
-	else if (source.type == BRASERO_TRACK_TYPE_AUDIO)
+
+	if (source.type == BRASERO_TRACK_TYPE_AUDIO)
 		return;
 
 	if (source.type == BRASERO_TRACK_TYPE_DATA
@@ -432,6 +433,48 @@ brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 	}
 
 	return;
+}
+
+static gchar *
+brasero_dest_selection_get_default_output_path (BraseroDestSelection *self,
+						BraseroImageFormat format)
+{
+	const gchar *suffixes [] = {".iso",
+				    ".toc",
+				    ".cue",
+				    ".toc",
+				    NULL };
+	BraseroDestSelectionPrivate *priv;
+	const gchar *suffix = NULL;
+	gchar *path;
+	gint i = 0;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	if (format & BRASERO_IMAGE_FORMAT_BIN)
+		suffix = suffixes [0];
+	else if (format & BRASERO_IMAGE_FORMAT_CLONE)
+		suffix = suffixes [1];
+	else if (format & BRASERO_IMAGE_FORMAT_CUE)
+		suffix = suffixes [2];
+	else if (format & BRASERO_IMAGE_FORMAT_CDRDAO)
+		suffix = suffixes [3];
+
+	path = g_strdup_printf ("%s/brasero%s",
+				g_get_home_dir (),
+				suffix);
+
+	while (g_file_test (path, G_FILE_TEST_EXISTS)) {
+		g_free (path);
+
+		path = g_strdup_printf ("%s/brasero-%i%s",
+					g_get_home_dir (),
+					i,
+					suffix);
+		i ++;
+	};
+
+	return path;
 }
 
 static guint
@@ -523,12 +566,15 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 
 	/* get and check format */
 	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
-	
+
 	/* see if we are to choose the format ourselves */
 	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
 		brasero_dest_selection_get_default_output_format (self, &output);
 		format = output.subtype.img_format;
+		priv->default_format = TRUE;
 	}
+	else
+		priv->default_format = FALSE;
 
 	brasero_burn_session_set_image_output (priv->session,
 					       format,
@@ -563,7 +609,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
 	NautilusBurnDrive *drive;
-	BraseroTrackType input;
+	BraseroTrackType source;
 	BraseroBurnFlag flags;
 	GConfClient *client;
 	GConfValue *value;
@@ -573,15 +619,15 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	brasero_burn_session_get_input_type (priv->session, &input);
-	if (input.type == BRASERO_TRACK_TYPE_NONE) {
+	brasero_burn_session_get_input_type (priv->session, &source);
+	if (source.type == BRASERO_TRACK_TYPE_NONE) {
 		g_signal_emit (self,
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       FALSE);
 		return;
 	}
-	
+
 	drive = brasero_burn_session_get_burner (priv->session);
 	if (!drive) {
 		g_signal_emit (self,
@@ -602,7 +648,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	/* update/set the rate */
 	client = gconf_client_get_default ();
 
-	key = brasero_dest_selection_get_config_key (input.type, drive, "speed");
+	key = brasero_dest_selection_get_config_key (source.type, drive, "speed");
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
@@ -620,12 +666,11 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	brasero_burn_session_set_rate (priv->session, rate);
 
 	/* do the same with the flags */
-	key = brasero_dest_selection_get_config_key (input.type, drive, "flags");
+	key = brasero_dest_selection_get_config_key (source.type, drive, "flags");
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
 	if (!value) {
-		BraseroTrackType source;
 		BraseroBurnResult result;
 		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
@@ -644,7 +689,6 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
 
 		if (supported & BRASERO_BURN_FLAG_NO_TMP_FILES) {
-			brasero_burn_session_get_input_type (priv->session, &source);
 			if (source.type == BRASERO_TRACK_TYPE_DATA
 			||  source.type == BRASERO_TRACK_TYPE_DISC
 			||  source.type == BRASERO_TRACK_TYPE_IMAGE)
@@ -662,6 +706,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	}
 	else if (brasero_dest_selection_check_same_src_dest (self)) {
 		/* special case */
+
 		flags = gconf_value_get_int (value);
 		brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
 		brasero_burn_session_add_flag (priv->session, flags);
@@ -734,17 +779,9 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 static void
 brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 {
-	const gchar *suffixes [] = {".iso",
-				    ".toc",
-				    ".toc",
-				    ".toc",
-				    ".bin",
-				    NULL };
 	BraseroDestSelectionPrivate *priv;
-	const gchar *suffix = NULL;
 	BraseroTrackType output;
 	gchar *path;
-	gint i = 0;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 	priv->default_format = TRUE;
@@ -766,37 +803,16 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 		return;
 	}
 
-	if (output.subtype.img_format & BRASERO_IMAGE_FORMAT_BIN)
-		suffix = suffixes [0];
-	else if (output.subtype.img_format & BRASERO_IMAGE_FORMAT_CLONE)
-		suffix = suffixes [1];
-	else if (output.subtype.img_format & BRASERO_IMAGE_FORMAT_CUE)
-		suffix = suffixes [2];
-	else if (output.subtype.img_format & BRASERO_IMAGE_FORMAT_CDRDAO)
-		suffix = suffixes [3];
-
+	path = brasero_dest_selection_get_default_output_path (self, output.subtype.img_format);
 	g_signal_emit (self,
 		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 		       0,
 		       TRUE);
 
-	path = g_strdup_printf ("%s/brasero%s",
-				g_get_home_dir (),
-				suffix);
-
-	while (g_file_test (path, G_FILE_TEST_EXISTS)) {
-		g_free (path);
-
-		path = g_strdup_printf ("%s/brasero-%i%s",
-					g_get_home_dir (),
-					i,
-					suffix);
-		i ++;
-	};
-
 	brasero_burn_session_set_image_output (priv->session,
 					       output.subtype.img_format,
 					       path);
+
 	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self),
 						path);
 	g_free (path);
@@ -809,42 +825,64 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
 	BraseroBurnResult result;
-	BraseroTrackType output;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	/* make sure the current output format is still possible given the new
-	 * source. If not, find a better one */
-	output.type = BRASERO_TRACK_TYPE_IMAGE;
-	output.subtype.img_format = brasero_burn_session_get_output_format (priv->session);
-	result = brasero_burn_caps_is_output_supported (priv->caps,
-							priv->session,
-							&output);
-
-	g_signal_emit (self,
-		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
-		       0,
-		       (result == BRASERO_BURN_OK));
-
-	if (result != BRASERO_BURN_OK) {
-		if (priv->button)
-			gtk_widget_set_sensitive (priv->button, FALSE);
-		return;
-	}
-
-	if (priv->button)
-		gtk_widget_set_sensitive (priv->button, TRUE);
-
-	if (!priv->default_path) {
-		gchar *path;
+	if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) == BRASERO_BURN_OK) {
 		BraseroTrackType output;
+		BraseroImageFormat format;
 
-		path = brasero_dest_selection_get_output_path (self);
-		brasero_dest_selection_get_default_output_format (self, &output);
-		brasero_burn_session_set_image_output (priv->session,
-						       output.subtype.img_format,
-						       path);
-		g_free (path);
+		output.type = BRASERO_TRACK_TYPE_IMAGE;
+
+		if (!priv->default_format) {
+			output.subtype.img_format = brasero_burn_session_get_output_format (priv->session);
+
+			/* check that the format is still supported. If not then find a good default */
+			result = brasero_burn_caps_is_output_supported (priv->caps,
+									priv->session,
+									&output);
+			if (result != BRASERO_BURN_OK) {
+				priv->default_format = TRUE;
+				brasero_dest_selection_get_default_output_format (self, &output);
+			}
+		}
+		else /* retrieve a possible better default format */
+			brasero_dest_selection_get_default_output_format (self, &output);
+
+		format = output.subtype.img_format;
+
+		if (format != BRASERO_IMAGE_FORMAT_NONE) {
+			gchar *path;
+
+			if (priv->default_path)
+				path = brasero_dest_selection_get_default_output_path (self, format);
+			else
+				path = brasero_dest_selection_get_output_path (self);
+
+			brasero_burn_session_set_image_output (priv->session, format, path);
+			brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), path);
+			g_free (path);
+		}
+
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       (format != BRASERO_IMAGE_FORMAT_NONE));
+
+		if (format == BRASERO_IMAGE_FORMAT_NONE) {
+			if (priv->button)
+				gtk_widget_set_sensitive (priv->button, FALSE);
+
+			if (priv->drive_prop) {
+				gtk_widget_destroy (priv->drive_prop);
+				priv->drive_prop = NULL;
+			}
+
+			return;
+		}
+
+		if (priv->button)
+			gtk_widget_set_sensitive (priv->button, TRUE);
 	}
 	else
 		brasero_dest_selection_set_image_properties (self);
@@ -1109,7 +1147,7 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
 			  object);
 
-	priv->default_path = 1;
+	priv->default_path = TRUE;
 }
 
 static void
