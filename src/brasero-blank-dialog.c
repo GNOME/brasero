@@ -221,10 +221,6 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 					      button,
 					      GTK_RESPONSE_OK);
 
-		gtk_dialog_add_button (GTK_DIALOG (message),
-				       GTK_STOCK_CLOSE,
-				       GTK_RESPONSE_CLOSE);
-
 		if (error) {
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 								  "%s.",
