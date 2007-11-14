@@ -621,8 +621,6 @@ static const gchar *description = {
  * since it will need nb_sectors * 2048. */
 #define GET_SIZE_IN_SECTORS(size) (size % 2048 ? size / 2048 + 1 : size / 2048)
 
-#define BRASERO_NAME_IS_JOLIET_COMPATIBLE(name)	0
-
 GType
 brasero_data_disc_get_type ()
 {
@@ -2486,11 +2484,28 @@ brasero_data_disc_joliet_get_key (const gchar *path,
 	gchar *parent;
 	gchar *name;
 	gchar *key;
+	gchar *dot;
 
-	/* key is equal to the parent path and the 64 first characters of the name */
+	/* key is equal to the parent path and the 64 first characters (always 
+	 * including the extension) of the name */
 	parent = g_path_get_dirname (path);
 	name = g_path_get_basename (path);
-	if (strcmp (parent, G_DIR_SEPARATOR_S))
+	dot = g_utf8_strrchr (name, -1, '.');
+
+	if (dot && strlen (dot) > 1 && strlen (dot) < 5) {
+		if (strcmp (parent, G_DIR_SEPARATOR_S))
+			key = g_strdup_printf ("%s" G_DIR_SEPARATOR_S "%.*s%s",
+					       parent,
+					       64 - strlen (dot),
+					       name,
+					       dot);
+		else
+			key = g_strdup_printf (G_DIR_SEPARATOR_S "%.*s%s",
+					       64 - strlen (dot),
+					       name,
+					       dot);
+	}
+	else if (strcmp (parent, G_DIR_SEPARATOR_S))
 		key = g_strdup_printf ("%s" G_DIR_SEPARATOR_S "%.64s",
 				       parent,
 				       name);
@@ -2521,6 +2536,7 @@ brasero_data_disc_joliet_incompat_get_joliet_compliant_name (BraseroDataDisc *di
 	gchar *retval;
 	gchar *name;
 	gchar *key;
+	gchar *dot;
 	gint width;
 	gint num;
 
@@ -2533,23 +2549,42 @@ brasero_data_disc_joliet_incompat_get_joliet_compliant_name (BraseroDataDisc *di
 	if (g_slist_length (list) == 1) {
 		gchar *retval;
 
-		/* simply return joliet name truncated to 64 chars */
-		retval = g_strdup_printf ("%.64s", name);
+		/* simply return joliet name truncated to 64 chars.
+		 * try to keep the extension. */
+		dot = g_utf8_strrchr (name, -1, '.');
+		if (dot && strlen (dot) < 5 && strlen (dot) > 1 )
+			retval = g_strdup_printf ("%.*s%s",
+						  64 - strlen (dot),
+						  name,
+						  dot);
+	        else
+			retval = g_strdup_printf ("%.64s", name);
+
 		g_free (name);
 		return retval;		
 	}
 
 	node = g_slist_find_custom (list, name, (GCompareFunc) strcmp);
 	num = g_slist_index (list, node->data);
-		
+
 	width = 1;
 	while (num / (width * 10)) width ++;
 	width = 64 - width;
 
-	retval = g_strdup_printf ("%.*s%i",
-				  width,
-				  name,
-				  num);
+	/* try to keep the extension */
+	dot = g_utf8_strrchr (name, -1, '.');
+	if (dot && strlen (dot) < 5 && strlen (dot) > 1 )
+		retval = g_strdup_printf ("%.*s%i%s",
+					  width - strlen (dot),
+					  name,
+					  num,
+					  dot);
+	else
+		retval = g_strdup_printf ("%.*s%i",
+					  width,
+					  name,
+					  num);
+
 	g_free (name);
 	return retval;
 }
