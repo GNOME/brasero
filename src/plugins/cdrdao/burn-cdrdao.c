@@ -413,6 +413,13 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 			return result;
 	}
 
+	/* it's safe to remove them: session/task make sure they don't exist 
+	 * when there is the proper flag whether it be tmp or real output. */ 
+	if (toc)
+		g_remove (toc);
+	if (image)
+		g_remove (image);
+
 	brasero_job_get_action (BRASERO_JOB (cdrdao), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
 		brasero_job_set_current_action (BRASERO_JOB (cdrdao),

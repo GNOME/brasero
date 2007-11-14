@@ -1,5 +1,20 @@
 2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix a problem where cue images did not appear when creating a disc image
+	Make also cue images generation work.
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings):
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	(brasero_cdrdao_set_argv_image):
+	* src/plugins/cdrdao/burn-toc2cue.c: (brasero_toc2cue_read_stderr),
+	(brasero_toc2cue_set_argv), (brasero_toc2cue_post),
+	(brasero_toc2cue_class_init), (brasero_toc2cue_finalize):
+
+2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Some improvements for #493810 CD/DVD copy options (see last comments)
 	now the extension is checked and rewritten is needed to fit the chosen format
 

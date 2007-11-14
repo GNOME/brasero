@@ -995,7 +995,9 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 						path);
 	g_free (path);
 
-	brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
+	brasero_burn_session_remove_flag (priv->session,
+					  BRASERO_BURN_FLAG_DUMMY|
+					  BRASERO_BURN_FLAG_NO_TMP_FILES);
 }
 
 static void
