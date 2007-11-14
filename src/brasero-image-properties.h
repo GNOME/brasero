@@ -60,6 +60,9 @@ GtkWidget *brasero_image_properties_new ();
 gchar *
 brasero_image_properties_get_path (BraseroImageProperties *self);
 
+gboolean
+brasero_image_properties_is_path_edited (BraseroImageProperties *self);
+
 BraseroImageFormat
 brasero_image_properties_get_format (BraseroImageProperties *self);
 

@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
@@ -48,10 +50,18 @@ typedef struct _BraseroImagePropertiesPrivate BraseroImagePropertiesPrivate;
 struct _BraseroImagePropertiesPrivate
 {
 	GtkWidget *format;
+	gchar *original_path;
+
+	guint edited:1;
 };
 
 #define BRASERO_IMAGE_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_IMAGE_PROPERTIES, BraseroImagePropertiesPrivate))
 
+enum {
+	FORMAT_CHANGED_SIGNAL,
+	LAST_SIGNAL
+};
+static guint brasero_image_properties_signals [LAST_SIGNAL] = { 0 };
 
 static GtkDialogClass* parent_class = NULL;
 
@@ -74,6 +84,24 @@ brasero_image_properties_get_format (BraseroImageProperties *self)
 	return format;
 }
 
+gboolean
+brasero_image_properties_is_path_edited (BraseroImageProperties *self)
+{
+	BraseroImagePropertiesPrivate *priv;
+	gchar *chooser_path;
+
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+
+	if (priv->edited)
+		return TRUE;
+
+	chooser_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
+	if (!strcmp (chooser_path, priv->original_path))
+		return FALSE;
+
+	return TRUE;
+}
+
 gchar *
 brasero_image_properties_get_path (BraseroImageProperties *self)
 {
@@ -91,6 +119,19 @@ brasero_image_properties_set_path (BraseroImageProperties *self,
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
+	if (priv->original_path) {
+		if (!priv->edited) {
+			gchar *chooser_path;
+
+			/* check if the path was edited since the last time it was set */
+			chooser_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
+			priv->edited = strcmp (priv->original_path, chooser_path) != 0;
+		}
+		g_free (priv->original_path);
+	}
+
+	priv->original_path = g_strdup (path);
+	
 	if (path) {
 		gchar *name;
 
@@ -98,17 +139,27 @@ brasero_image_properties_set_path (BraseroImageProperties *self,
 
 		/* The problem here is that is the file name doesn't exist
 		 * in the folder then it won't be displayed so we check that */
-		name = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
-		if (!name) {
-			name = g_path_get_basename (path);
-			gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (self), name);
-		}
-
+		name = g_path_get_basename (path);
+		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (self), name);
 	    	g_free (name);
 	}
 	else
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (self),
 						     g_get_home_dir ());
+}
+
+static void
+brasero_image_properties_format_changed_cb (BraseroImageTypeChooser *chooser,
+					    BraseroImageProperties *self)
+{
+	BraseroImagePropertiesPrivate *priv;
+
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
+
+	/* propagate the signal */
+	g_signal_emit (self,
+		       brasero_image_properties_signals [FORMAT_CHANGED_SIGNAL],
+		       0);
 }
 
 void
@@ -138,6 +189,10 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 				    FALSE,
 				    FALSE,
 				    0);
+		g_signal_connect (priv->format,
+				  "changed",
+				  G_CALLBACK (brasero_image_properties_format_changed_cb),
+				  self);
 	}
 
 	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
@@ -169,6 +224,14 @@ brasero_image_properties_init (BraseroImageProperties *object)
 static void
 brasero_image_properties_finalize (GObject *object)
 {
+	BraseroImagePropertiesPrivate *priv;
+
+	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
+	if (priv->original_path) {
+		g_free (priv->original_path);
+		priv->original_path = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -181,6 +244,14 @@ brasero_image_properties_class_init (BraseroImagePropertiesClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroImagePropertiesPrivate));
 
 	object_class->finalize = brasero_image_properties_finalize;
+	brasero_image_properties_signals [FORMAT_CHANGED_SIGNAL] =
+	    g_signal_new ("format_changed",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__VOID,
+			  G_TYPE_NONE, 0, G_TYPE_NONE);
 }
 
 GtkWidget *

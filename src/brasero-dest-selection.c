@@ -40,6 +40,7 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtkbox.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkmessagedialog.h>
 
 #include <nautilus-burn-drive.h>
 
@@ -75,6 +76,7 @@ struct _BraseroDestSelectionPrivate
 
 	guint default_format:1;
 	guint default_path:1;
+	guint default_ext:1;
 };
 
 #define BRASERO_DEST_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DEST_SELECTION, BraseroDestSelectionPrivate))
@@ -472,9 +474,72 @@ brasero_dest_selection_get_default_output_path (BraseroDestSelection *self,
 					i,
 					suffix);
 		i ++;
-	};
+	}
 
 	return path;
+}
+
+static gchar *
+brasero_dest_selection_fix_image_extension (BraseroImageFormat format,
+					    gboolean check_existence,
+					    gchar *path)
+{
+	gchar *dot;
+	guint i = 0;
+	gchar *retval = NULL;
+	const gchar *suffix = NULL;;
+	const gchar *suffixes [] = {".iso",
+				    ".toc",
+				    ".cue",
+				    ".toc",
+				    NULL };
+
+	/* search the last dot to check extension */
+	dot = g_utf8_strrchr (path, -1, '.');
+	if (dot && strlen (dot) < 5 && strlen (dot) > 1) {
+		if (format & BRASERO_IMAGE_FORMAT_BIN
+		&&  strcmp (suffixes [0], dot))
+			*dot = '\0';
+		else if (format & BRASERO_IMAGE_FORMAT_CLONE
+		     &&  strcmp (suffixes [1], dot))
+			*dot = '\0';
+		else if (format & BRASERO_IMAGE_FORMAT_CUE
+		     &&  strcmp (suffixes [2], dot))
+			*dot = '\0';
+		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
+		     &&  strcmp (suffixes [3], dot))
+			*dot = '\0';
+		else
+			return path;
+	}
+
+	/* determine the proper suffix */
+	if (format & BRASERO_IMAGE_FORMAT_BIN)
+		suffix = suffixes [0];
+	else if (format & BRASERO_IMAGE_FORMAT_CLONE)
+		suffix = suffixes [1];
+	else if (format & BRASERO_IMAGE_FORMAT_CUE)
+		suffix = suffixes [2];
+	else if (format & BRASERO_IMAGE_FORMAT_CDRDAO)
+		suffix = suffixes [3];
+	else
+		return path;
+
+	/* make sure the file doesn't exist */
+	retval = g_strdup_printf ("%s%s", path, suffix);
+	if (!check_existence) {
+		g_free (path);
+		return retval;
+	}
+
+	while (g_file_test (retval, G_FILE_TEST_EXISTS)) {
+		g_free (retval);
+		retval = g_strdup_printf ("%s-%i%s", path, i, suffix);
+		i ++;
+	}
+
+	g_free (path);
+	return retval;
 }
 
 static guint
@@ -510,12 +575,105 @@ brasero_dest_selection_get_possible_output_formats (BraseroDestSelection *self,
 }
 
 static void
+brasero_dest_selection_image_format_changed_cb (BraseroImageProperties *dialog,
+						BraseroDestSelection *self)
+{
+	BraseroDestSelectionPrivate *priv;
+	BraseroImageFormat format;
+	gchar *image_path;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	/* make sure the extension is still valid */
+	image_path = brasero_image_properties_get_path (dialog);
+	format = brasero_image_properties_get_format (dialog);
+
+	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
+		BraseroTrackType output;
+
+		brasero_dest_selection_get_default_output_format (self, &output);
+		format = output.subtype.img_format;
+	}
+
+	if (priv->default_path && !brasero_image_properties_is_path_edited (dialog)) {
+		/* not changed: get a new default path */
+		g_free (image_path);
+		image_path = brasero_dest_selection_get_default_output_path (self, format);
+	}
+	else
+		image_path = brasero_dest_selection_fix_image_extension (format, FALSE, image_path);
+
+	brasero_image_properties_set_path (dialog, image_path);
+}
+
+static gboolean
+brasero_dest_selection_image_check_extension (BraseroDestSelection *self,
+					      BraseroImageFormat format,
+					      const gchar *path)
+{
+	gchar *dot;
+	const gchar *suffixes [] = {".iso",
+				    ".toc",
+				    ".cue",
+				    ".toc",
+				    NULL };
+
+	dot = g_utf8_strrchr (path, -1, '.');
+	if (dot) {
+		if (format & BRASERO_IMAGE_FORMAT_BIN
+		&& !strcmp (suffixes [0], dot))
+			return TRUE;
+		else if (format & BRASERO_IMAGE_FORMAT_CLONE
+		     && !strcmp (suffixes [1], dot))
+			return TRUE;
+		else if (format & BRASERO_IMAGE_FORMAT_CUE
+		     && !strcmp (suffixes [2], dot))
+			return TRUE;
+		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
+		     && !strcmp (suffixes [3], dot))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+brasero_dest_selection_image_extension_ask (BraseroDestSelection *self)
+{
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	GtkResponseType answer;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT |
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_YES_NO,
+					 _("Do you really want to keep the current extension for the disc image name?"));
+
+		
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Image Extension"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("If you choose to keep it programs may not be able to recognize the file type properly."));
+
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (answer == GTK_RESPONSE_YES)
+		return TRUE;
+
+	return FALSE;
+}
+
+static void
 brasero_dest_selection_image_properties (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
 	BraseroTrackType output;
+	gulong format_changed;
 	gchar *original_path;
 	GtkWindow *toplevel;
 	gchar *image_path;
@@ -534,6 +692,7 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 	/* set all information namely path and format */
 	original_path = brasero_dest_selection_get_output_path (self);
 	brasero_image_properties_set_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop), original_path);
+	g_free (original_path);
 
 	if (!priv->default_format)
 		format = brasero_burn_session_get_output_format (priv->session);
@@ -545,24 +704,22 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 					      num > 0 ? formats:BRASERO_IMAGE_FORMAT_NONE,
 					      format);
 
+	format_changed = g_signal_connect (priv->drive_prop,
+					   "format-changed",
+					   G_CALLBACK (brasero_dest_selection_image_format_changed_cb),
+					   self);
+
 	/* and here we go ... run the thing */
 	gtk_widget_show (priv->drive_prop);
 	answer = gtk_dialog_run (GTK_DIALOG (priv->drive_prop));
 
+	g_signal_handler_disconnect (priv->drive_prop, format_changed);
+
 	if (answer != GTK_RESPONSE_OK) {
 		gtk_widget_destroy (priv->drive_prop);
 		priv->drive_prop = NULL;
-		g_free (original_path);
 		return;
 	}
-
-	/* see if the user has changed the path */
-	image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
-	if (strcmp (original_path, image_path)) {
-		priv->default_path = FALSE;
-		brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), image_path);
-	}
-	g_free (original_path);
 
 	/* get and check format */
 	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
@@ -576,12 +733,33 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 	else
 		priv->default_format = FALSE;
 
-	brasero_burn_session_set_image_output (priv->session,
-					       format,
-					       image_path);
+	/* see if the user has changed the path */
+	if (brasero_image_properties_is_path_edited (BRASERO_IMAGE_PROPERTIES (priv->drive_prop)))
+		priv->default_path = FALSE;
+
+	if (!priv->default_path) {
+		/* check the extension */
+		image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
+
+		if (!brasero_dest_selection_image_check_extension (self, format, image_path)) {
+			if (!brasero_dest_selection_image_extension_ask (self)) {
+				priv->default_ext = TRUE;
+				image_path = brasero_dest_selection_fix_image_extension (format, TRUE, image_path);
+			}
+			else
+				priv->default_ext = FALSE;
+		}
+	}
+	else
+		image_path = brasero_dest_selection_get_default_output_path (self, format);
 
 	gtk_widget_destroy (priv->drive_prop);
 	priv->drive_prop = NULL;
+
+	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), image_path);
+	brasero_burn_session_set_image_output (priv->session,
+					       format,
+					       image_path);
 	g_free (image_path);
 }
 
@@ -854,10 +1032,15 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 		if (format != BRASERO_IMAGE_FORMAT_NONE) {
 			gchar *path;
 
-			if (priv->default_path)
-				path = brasero_dest_selection_get_default_output_path (self, format);
-			else
+			if (!priv->default_path) {
+				/* check that the extension is ok */
 				path = brasero_dest_selection_get_output_path (self);
+				if (priv->default_ext
+				&&  brasero_dest_selection_image_check_extension (self, format, path))
+					path = brasero_dest_selection_fix_image_extension (format, TRUE, path);
+			}
+			else
+				path = brasero_dest_selection_get_default_output_path (self, format);
 
 			brasero_burn_session_set_image_output (priv->session, format, path);
 			brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), path);
@@ -1147,7 +1330,9 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
 			  object);
 
+	priv->default_ext = TRUE;
 	priv->default_path = TRUE;
+	priv->default_format = TRUE;
 }
 
 static void

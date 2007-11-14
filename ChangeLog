@@ -1,5 +1,34 @@
 2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Some improvements for #493810 CD/DVD copy options (see last comments)
+	now the extension is checked and rewritten is needed to fit the chosen format
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_get_default_output_format),
+	(brasero_dest_selection_get_default_output_path),
+	(brasero_dest_selection_fix_image_extension),
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_image_format_changed_cb),
+	(brasero_dest_selection_image_check_extension),
+	(brasero_dest_selection_image_extension_ask),
+	(brasero_dest_selection_image_properties),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_init):
+	* src/brasero-image-properties.c:
+	(brasero_image_properties_is_path_edited),
+	(brasero_image_properties_set_path),
+	(brasero_image_properties_format_changed_cb),
+	(brasero_image_properties_set_formats),
+	(brasero_image_properties_finalize),
+	(brasero_image_properties_class_init):
+	* src/brasero-image-properties.h:
+
+2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	keep extensions when truncating joliet files
 	Fix last comment of #490853
 
