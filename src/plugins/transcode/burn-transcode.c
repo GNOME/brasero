@@ -350,7 +350,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	}
 
 	/* decode */
-	decode = gst_element_factory_make ("decodebin2", NULL);
+	decode = gst_element_factory_make ("decodebin", NULL);
 	if (decode == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,

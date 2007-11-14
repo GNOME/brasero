@@ -200,9 +200,17 @@ brasero_project_type_chooser_sort_recent (gconstpointer a, gconstpointer b)
 {
 	GtkRecentInfo *recent_a = (GtkRecentInfo *) a;
 	GtkRecentInfo *recent_b = (GtkRecentInfo *) b;
+	time_t timestamp_a;
+	time_t timestamp_b;
 
-	return gtk_recent_info_get_visited (recent_b) -
-	       gtk_recent_info_get_visited (recent_a);
+	/* we get the soonest timestamp */
+	timestamp_a = gtk_recent_info_get_visited (recent_a) > gtk_recent_info_get_modified (recent_a) ?
+		      gtk_recent_info_get_visited (recent_a):
+		      gtk_recent_info_get_modified (recent_a);
+	timestamp_b = gtk_recent_info_get_visited (recent_b) > gtk_recent_info_get_modified (recent_b) ?
+		      gtk_recent_info_get_visited (recent_b):
+		      gtk_recent_info_get_modified (recent_b);
+	return timestamp_b - timestamp_a;
 }
 
 static void

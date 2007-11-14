@@ -1,5 +1,25 @@
 2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Add an image to GtkRecent after it's created
+	Also fix the display of recent that wasn't udpated properly sometimes
+
+	* src/brasero-burn-dialog.c:
+	(brasero_burn_dialog_add_track_to_recent),
+	(brasero_burn_dialog_end_session):
+	* src/brasero-project-type-chooser.c:
+	(brasero_project_type_chooser_sort_recent):
+	* src/plugins/transcode/burn-transcode.c:
+	(brasero_transcode_create_pipeline),
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_search_for_sibling), (brasero_transcode_start),
+	(brasero_transcode_stop), (brasero_transcode_pad_real),
+	(brasero_transcode_pad_idle), (brasero_transcode_pad),
+	(brasero_transcode_pad_file), (brasero_transcode_is_mp3),
+	(brasero_transcode_song_end_reached), (foreach_tag),
+	(brasero_transcode_active_state):
+
+2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix a problem where cue images did not appear when creating a disc image
 	Make also cue images generation work.
 

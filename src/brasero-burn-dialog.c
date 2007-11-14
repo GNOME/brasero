@@ -1673,6 +1673,68 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	g_free (secondary);
 }
 
+static void
+brasero_burn_dialog_add_track_to_recent (BraseroTrack *track)
+{
+	gchar *uri = NULL;
+	BraseroTrackType type;
+	GtkRecentManager *recent;
+	gchar *groups [] = { "brasero", NULL };
+	gchar *mimes [] = { "application/x-cd-image",
+			    "application/x-cue",
+			    "application/x-toc",
+			    "application/x-cdrdao-toc" };
+	GtkRecentData recent_data = { NULL,
+				      NULL,
+
+				      NULL,
+
+				      "brasero",
+				      "brasero -p %u",
+				      groups,
+				      FALSE };
+
+	brasero_track_get_type (track, &type);
+	if (type.type != BRASERO_TRACK_TYPE_IMAGE
+	||  type.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE)
+		return;
+
+	/* Add it to recent file manager */
+	switch (type.subtype.img_format) {
+	case BRASERO_IMAGE_FORMAT_BIN:
+		recent_data.mime_type = mimes [0];
+		uri = brasero_track_get_image_source (track, TRUE);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CUE:
+		recent_data.mime_type = mimes [1];
+		uri = brasero_track_get_toc_source (track, TRUE);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CLONE:
+		recent_data.mime_type = mimes [2];
+		uri = brasero_track_get_toc_source (track, TRUE);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+		recent_data.mime_type = mimes [3];
+		uri = brasero_track_get_toc_source (track, TRUE);
+		break;
+
+	default:
+		break;
+	}
+
+	if (!uri)
+		return;
+
+	recent = gtk_recent_manager_get_default ();
+	gtk_recent_manager_add_full (recent,
+				     uri,
+				     &recent_data);
+	g_free (uri);
+}
+
 static gboolean
 brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 				 BraseroBurnResult result,
@@ -1696,6 +1758,19 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 		brasero_burn_dialog_notify_error (dialog, error);
 	}
 	else {
+		/* see if an image was created. If so, add it to GtkRecent */
+		if (brasero_burn_session_is_dest_file (dialog->priv->session)) {
+			GSList *tracks;
+
+			tracks = brasero_burn_session_get_tracks (dialog->priv->session);
+			for (; tracks; tracks = tracks->next) {
+				BraseroTrack *track;
+
+				track = tracks->data;
+				brasero_burn_dialog_add_track_to_recent (track);
+			}
+		}
+
 		brasero_burn_dialog_notify_success (dialog);
 		close_dialog = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check));
 	}
