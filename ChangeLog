@@ -1,5 +1,12 @@
 2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix a bug for really small track read by cdrdao:
+	cdrdao won't read under a size of 300 sectors which means that the progress was screwed.
+
+	* src/plugins/cdrdao/burn-cdrdao.c: (brasero_cdrdao_set_argv):
+
+2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Add an image to GtkRecent after it's created
 	Also fix the display of recent that wasn't udpated properly sometimes
 

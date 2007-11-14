@@ -470,6 +470,11 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 			gint64 sectors = 0;
 
 			brasero_track_get_disc_data_size (track, &sectors, NULL);
+
+			/* cdrdao won't get a track size under 300 sectors */
+			if (sectors < 300)
+				sectors = 300;
+
 			brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao),
 								       sectors,
 								       sectors * 2352);
