@@ -1,3 +1,11 @@
+2007-11-15  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix a crash with cdrdao toc files parsing
+
+	* src/burn-image-format.c: (brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size):
+
 2007-11-14  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix a bug for really small track read by cdrdao:

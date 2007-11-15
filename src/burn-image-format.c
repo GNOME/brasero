@@ -281,6 +281,7 @@ brasero_image_format_get_FILE_info (const gchar *ptr,
 	struct stat buffer;
 	gint64 start = 0;
 	gchar *path;
+	gchar *tmp;
 	int res;
 
 	/* get the path */
@@ -292,14 +293,13 @@ brasero_image_format_get_FILE_info (const gchar *ptr,
 	while (isspace (*ptr)) ptr++;
 
 	/* skip a possible #.... (offset in bytes) */
-	ptr = g_utf8_strchr (ptr, -1, '#');
-	if (ptr) {
-		ptr ++;
-		while (isdigit (*ptr)) ptr ++;
+	tmp = g_utf8_strchr (ptr, -1, '#');
+	if (tmp) {
+		tmp ++;
+		while (isdigit (*tmp)) tmp ++;
+		while (isspace (*tmp)) tmp++;
+		ptr = tmp;
 	}
-
-	/* skip white spaces */
-	while (isspace (*ptr)) ptr++;
 
 	/* get the start */
 	ptr = brasero_image_format_get_MSF_address (ptr, &start);
