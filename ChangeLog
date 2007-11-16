@@ -1,3 +1,9 @@
+2007-11-16  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Don't set fast metadata option otherwise it gets into the cache with a slightly flawed value for size.
+
+	* src/brasero-vfs.c: (brasero_vfs_get_count):
+
 2007-11-15  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix a crash with cdrdao toc files parsing
