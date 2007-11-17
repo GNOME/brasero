@@ -1,5 +1,18 @@
 2007-11-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix #494925 – Save action insensetive
+
+	* src/brasero-project.c: (brasero_project_contents_changed_cb),
+	(brasero_project_file_chooser_response_cb),
+	(brasero_project_add_uris_cb),
+	(brasero_project_invalid_project_dialog), (_read_graft_point),
+	(_read_data_track), (_read_audio_track), (_get_tracks),
+	(brasero_project_open_project_xml),
+	(brasero_project_save_project_dialog),
+	(brasero_project_save_project_xml):
+
+2007-11-17  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #494915 – Toolbars and Menus
 	Also re-added possibility to hide/show preview.
 
