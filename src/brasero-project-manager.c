@@ -146,10 +146,6 @@ static const char *description = {
 			"</placeholder>"
 		"</menu>"
 	    "</menubar>"
-	    "<toolbar name='Toolbar'>"
-		"<toolitem action='NewChoose'/>"
-		"<toolitem action='Open'/>"
-	    "</toolbar>"
 	"</ui>"
 };
 

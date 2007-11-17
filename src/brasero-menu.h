@@ -55,7 +55,7 @@ static GtkActionEntry entries[] = {
 	{"ProjectMenu", NULL, N_("_Project")},
 	{"ViewMenu", NULL, N_("_View")},
 	{"EditMenu", NULL, N_("_Edit")},
-	{"DiscMenu", NULL, N_("_Disc")},
+	{"ToolMenu", NULL, N_("_Tools")},
 	{"HelpMenu", NULL, N_("_Help")},
 
 	{"Plugins", NULL, N_("P_lugins"), NULL,
@@ -95,7 +95,7 @@ static const gchar *description = {
 	    "<menu action='ViewMenu'>"
 		"<placeholder name='ViewPlaceholder'/>"
 	    "</menu>"
-	    "<menu action='DiscMenu'>"
+	    "<menu action='ToolMenu'>"
 		"<placeholder name='DiscPlaceholder'/>"
 		"<menuitem action='Erase'/>"
 		"<menuitem action='Check'/>"

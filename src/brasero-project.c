@@ -191,6 +191,7 @@ static const gchar *description = {
 			    "<menuitem action='Save'/>"
 			    "<menuitem action='SaveAs'/>"
 			    "<separator/>"
+			"<menuitem action='Burn'/>"
 			"</placeholder>"
 		"</menu>"
 		
@@ -206,17 +207,15 @@ static const gchar *description = {
 		"<menu action='ViewMenu'>"
 		"</menu>"
 
-		"<menu action='DiscMenu'>"
+		"<menu action='ToolMenu'>"
 			"<placeholder name='DiscPlaceholder'/>"
-			"<menuitem action='Burn'/>"
 		"</menu>"
 	    "</menubar>"
 	    "<toolbar name='Toolbar'>"
-		"<toolitem action='Save'/>"
-		"<placeholder name='DiscButtonPlaceholder'/>"
 		"<separator/>"
 		"<toolitem action='Add'/>"
 		"<toolitem action='DeleteProject'/>"
+		"<placeholder name='DiscButtonPlaceholder'/>"
 	     "</toolbar>"
 	"</ui>"
 };

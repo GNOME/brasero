@@ -548,6 +548,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 	if (b_written != size)
 		goto error;
 
+	/* NOTE: -1 here means no pregap */
 	if (!last_track) {
 		/* K3b does this (possibly to remove silence) */
 		string = g_strdup_printf ("Index0=\t\t%"G_GINT64_FORMAT"\n",

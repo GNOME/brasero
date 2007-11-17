@@ -328,6 +328,14 @@ static GtkActionEntry entries[] = {
 
 static const gchar *description = {
 	"<ui>"
+	"<menubar name='menubar' >"
+		"<menu action='EditMenu'>"
+		"<placeholder name='EditPlaceholder'>"
+			"<menuitem action='Pause'/>"
+			"<menuitem action='Split'/>"
+		"</placeholder>"
+		"</menu>"
+	"</menubar>"
 	"<popup action='ContextMenu'>"
 		"<menuitem action='OpenSong'/>"
 		"<menuitem action='DeleteAudio'/>"
@@ -770,11 +778,6 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 static void
 brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 {
-	if (disc->priv->selected_path) {
-		gtk_tree_path_free (disc->priv->selected_path);
-		disc->priv->selected_path = NULL;
-	}
-
 	if (disc->priv->vfs)
 		brasero_vfs_cancel (disc->priv->vfs, G_OBJECT (disc));
 
@@ -806,6 +809,11 @@ brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 
 	disc->priv->activity_counter = 1;
 	brasero_audio_disc_decrease_activity_counter (disc);
+
+	if (disc->priv->selected_path) {
+		gtk_tree_path_free (disc->priv->selected_path);
+		disc->priv->selected_path = NULL;
+	}
 }
 
 static void

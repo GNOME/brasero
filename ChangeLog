@@ -1,3 +1,37 @@
+2007-11-17  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #494915 – Toolbars and Menus
+	Also re-added possibility to hide/show preview.
+
+	* src/brasero-audio-disc.c:
+	* src/brasero-data-disc.c:
+	* src/brasero-layout.c: (brasero_layout_pack_preview),
+	(brasero_layout_size_reallocate), (brasero_layout_add_preview),
+	(brasero_layout_set_side_pane_visible),
+	(brasero_layout_displayed_item_changed_cb), (brasero_layout_save),
+	(brasero_layout_add_source), (brasero_layout_combo_changed_cb),
+	(brasero_layout_item_set_visible), (brasero_layout_load),
+	(brasero_layout_init):
+	* src/brasero-menu.h:
+	* src/brasero-project-manager.c: (brasero_project_manager_burn),
+	(brasero_project_manager_open_cb):
+	* src/brasero-project.c: (brasero_project_overburn_dialog),
+	(_wait_for_ready_state), (brasero_project_check_status),
+	(brasero_project_burn),
+	(brasero_project_check_default_burning_app),
+	(brasero_project_switch), (brasero_project_confirm_switch),
+	(brasero_project_add_uris_cb), (brasero_project_empty_cb),
+	(_read_graft_point), (_read_data_track), (_read_audio_track),
+	(_get_tracks), (brasero_project_open_project_xml),
+	(brasero_project_save_project_xml):
+
+	Add a NOTE:
+	* src/plugins/cdrkit/burn-wodim.c: (brasero_wodim_write_inf),
+	(brasero_wodim_write_infs), (brasero_wodim_set_argv_record):
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	(brasero_cdrecord_write_inf), (brasero_cdrecord_write_infs),
+	(brasero_cdrecord_set_argv_record):
+
 2007-11-16  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Don't set fast metadata option otherwise it gets into the cache with a slightly flawed value for size.
