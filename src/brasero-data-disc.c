@@ -599,6 +599,7 @@ static const gchar *description = {
 		"<menu action='EditMenu'>"
 		"<placeholder name='EditPlaceholder'>"
 			"<menuitem action='NewFolder'/>"
+			"<menuitem action='ImportSession'/>"
 		"</placeholder>"
 		"</menu>"
 		"<menu action='ViewMenu'>"
