@@ -1,5 +1,28 @@
 2007-11-18  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Added the possibility to have exclusive flags in plugin definitions
+
+	* src/burn-caps.c: (brasero_burn_caps_get_blanking_flags),
+	(brasero_burn_caps_new_blanking_task),
+	(brasero_burn_caps_can_blank),
+	(brasero_caps_link_get_record_flags),
+	(brasero_caps_link_get_data_flags),
+	(brasero_caps_link_check_data_flags),
+	(brasero_caps_link_check_record_flags),
+	(brasero_caps_link_find_plugin), (brasero_caps_find_best_link),
+	(brasero_caps_get_flags):
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c: (brasero_plugin_set_flags_real),
+	(brasero_plugin_get_all_flags),
+	(brasero_plugin_check_record_flags),
+	(brasero_plugin_check_image_flags),
+	(brasero_plugin_get_record_flags),
+	(brasero_plugin_get_image_flags),
+	(brasero_plugin_check_blank_flags),
+	(brasero_plugin_get_blank_flags):
+
+2007-11-18  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Don't allow the use of the properties button if there is no valid source media
 	when copying a disc
 

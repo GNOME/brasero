@@ -74,20 +74,37 @@ guint
 brasero_plugin_get_priority (BraseroPlugin *plugin);
 
 gboolean
+brasero_plugin_check_image_flags (BraseroPlugin *plugin,
+				  BraseroMedia media,
+				  BraseroBurnFlag current);
+gboolean
+brasero_plugin_check_blank_flags (BraseroPlugin *plugin,
+				  BraseroMedia media,
+				  BraseroBurnFlag current);
+gboolean
+brasero_plugin_check_record_flags (BraseroPlugin *plugin,
+				   BraseroMedia media,
+				   BraseroBurnFlag current);
+
+gboolean
 brasero_plugin_get_image_flags (BraseroPlugin *plugin,
 			        BraseroMedia media,
+				BraseroBurnFlag current,
 			        BraseroBurnFlag *supported,
 			        BraseroBurnFlag *compulsory);
 gboolean
 brasero_plugin_get_blank_flags (BraseroPlugin *plugin,
 				BraseroMedia media,
+				BraseroBurnFlag current,
 				BraseroBurnFlag *supported,
 				BraseroBurnFlag *compulsory);
 gboolean
 brasero_plugin_get_record_flags (BraseroPlugin *plugin,
 				 BraseroMedia media,
+				 BraseroBurnFlag current,
 				 BraseroBurnFlag *supported,
 				 BraseroBurnFlag *compulsory);
+
 gboolean
 brasero_plugin_get_process_flags (BraseroPlugin *plugin,
 				  BraseroPluginProcessFlag *flags);

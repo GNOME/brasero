@@ -420,6 +420,7 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 	GSList *iter;
 	BraseroMedia media;
 	gboolean supported_media;
+	BraseroBurnFlag session_flags;
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_ALL;
 
@@ -432,6 +433,7 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 	}
 
 	supported_media = FALSE;
+	session_flags = brasero_burn_session_get_flags (session);
 	for (iter = caps->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
 		GSList *links;
@@ -464,6 +466,7 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 				plugin = plugins->data;
 				if (!brasero_plugin_get_blank_flags (plugin,
 								     media,
+								     session_flags,
 								     &supported_plugin,
 								     &compulsory_plugin))
 					continue;
@@ -498,8 +501,7 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 	BraseroTask *task = NULL;
 
 	media = brasero_burn_session_get_dest_media (session);
-	flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_NOGRACE|
-							    BRASERO_BURN_FLAG_FAST_BLANK);
+	flags = brasero_burn_session_get_flags (session);
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
@@ -529,8 +531,6 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 			 * - accept the flags */
 			candidate = NULL;
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
-				BraseroBurnFlag compulsory;
-				BraseroBurnFlag supported;
 				BraseroPlugin *plugin;
 
 				plugin = plugins->data;
@@ -538,14 +538,7 @@ brasero_burn_caps_new_blanking_task (BraseroBurnCaps *self,
 				if (!brasero_plugin_get_active (plugin))
 					continue;
 
-				if (!brasero_plugin_get_blank_flags (plugin,
-								     media,
-								     &supported,
-								     &compulsory))
-					continue;
-
-				if ((flags & supported) != flags
-				||  (flags & compulsory) != compulsory)
+				if (!brasero_plugin_check_blank_flags (plugin, media, flags))
 					continue;
 
 				if (self->priv->group_id > 0 && candidate) {
@@ -609,8 +602,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	flags = brasero_burn_session_get_flags (session) & (BRASERO_BURN_FLAG_NOGRACE|
-							    BRASERO_BURN_FLAG_FAST_BLANK);
+	flags = brasero_burn_session_get_flags (session);
 
 	BRASERO_BURN_LOG_DISC_TYPE (media, "checking blanking caps for");
 
@@ -644,25 +636,14 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 			 * find at least one active plugin that accepts the
 			 * flags. No need for plugins to be sorted */
 			for (plugins = link->plugins; plugins; plugins = plugins->next) {
-				BraseroBurnFlag compulsory;
-				BraseroBurnFlag supported;
 				BraseroPlugin *plugin;
 
 				plugin = plugins->data;
 				if (!brasero_plugin_get_active (plugin))
 					continue;
 
-				if (!brasero_plugin_get_blank_flags (plugin,
-								     media,
-								     &supported,
-								     &compulsory))
-					continue;
-
-				if ((flags & supported) != flags
-				||  (flags & compulsory) != compulsory)
-					continue;
-
-				return BRASERO_BURN_OK;
+				if (brasero_plugin_check_blank_flags (plugin, media, flags))
+					return BRASERO_BURN_OK;
 			}
 		}
 	}
@@ -677,6 +658,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 static void
 brasero_caps_link_get_record_flags (BraseroCapsLink *link,
 				    BraseroMedia media,
+				    BraseroBurnFlag session_flags,
 				    BraseroBurnFlag *supported,
 				    BraseroBurnFlag *compulsory_retval)
 {
@@ -687,6 +669,7 @@ brasero_caps_link_get_record_flags (BraseroCapsLink *link,
 
 	/* Go through all plugins to get the supported/... record flags for link */
 	for (iter = link->plugins; iter; iter = iter->next) {
+		gboolean result;
 		BraseroPlugin *plugin;
 		BraseroBurnFlag plugin_supported;
 		BraseroBurnFlag plugin_compulsory;
@@ -695,10 +678,13 @@ brasero_caps_link_get_record_flags (BraseroCapsLink *link,
 		if (!brasero_plugin_get_active (plugin))
 			continue;
 
-		brasero_plugin_get_record_flags (plugin,
-						 media,
-						 &plugin_supported,
-						 &plugin_compulsory);
+		result = brasero_plugin_get_record_flags (plugin,
+							  media,
+							  session_flags,
+							  &plugin_supported,
+							  &plugin_compulsory);
+		if (!result)
+			continue;
 
 		*supported |= plugin_supported;
 		compulsory &= plugin_compulsory;
@@ -710,12 +696,14 @@ brasero_caps_link_get_record_flags (BraseroCapsLink *link,
 static void
 brasero_caps_link_get_data_flags (BraseroCapsLink *link,
 				  BraseroMedia media,
+				  BraseroBurnFlag session_flags,
 				  BraseroBurnFlag *supported)
 {
 	GSList *iter;
 
 	/* Go through all plugins the get the supported/... data flags for link */
 	for (iter = link->plugins; iter; iter = iter->next) {
+		gboolean result;
 		BraseroPlugin *plugin;
 		BraseroBurnFlag plugin_supported;
 		BraseroBurnFlag plugin_compulsory;
@@ -724,10 +712,11 @@ brasero_caps_link_get_data_flags (BraseroCapsLink *link,
 		if (!brasero_plugin_get_active (plugin))
 			continue;
 
-		brasero_plugin_get_image_flags (plugin,
-					        media,
-					        &plugin_supported,
-					        &plugin_compulsory);
+		result = brasero_plugin_get_image_flags (plugin,
+							 media,
+							 session_flags,
+							 &plugin_supported,
+							 &plugin_compulsory);
 		*supported |= plugin_supported;
 	}
 }
@@ -765,7 +754,7 @@ brasero_caps_link_check_data_flags (BraseroCapsLink *link,
 	if ((flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) == 0)
 		return TRUE;
 
-	brasero_caps_link_get_data_flags (link, media, &supported);
+	brasero_caps_link_get_data_flags (link, media, session_flags, &supported);
 	if ((flags & supported) != flags)
 		return FALSE;
 
@@ -783,7 +772,7 @@ brasero_caps_link_check_record_flags (BraseroCapsLink *link,
 
 	flags = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
 
-	brasero_caps_link_get_record_flags (link, media, &supported, &compulsory);
+	brasero_caps_link_get_record_flags (link, media, session_flags, &supported, &compulsory);
 
 	if ((flags & supported) != flags
 	||  (flags & compulsory) != compulsory)
@@ -801,11 +790,6 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 {
 	GSList *iter;
 	BraseroPlugin *candidate;
-	BraseroBurnFlag rec_flags;
-	BraseroBurnFlag data_flags;
-
-	rec_flags = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
-	data_flags = session_flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE);
 
 	/* Go through all plugins for a link and find the best one. It must:
 	 * - be active
@@ -815,8 +799,6 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 	candidate = NULL;
 	for (iter = link->plugins; iter; iter = iter->next) {
 		BraseroPlugin *plugin;
-		BraseroBurnFlag supported;
-		BraseroBurnFlag compulsory;
 
 		plugin = iter->data;
 
@@ -824,22 +806,22 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 			continue;
 
 		if (output->type == BRASERO_TRACK_TYPE_DISC) {
-			brasero_plugin_get_record_flags (plugin,
-							 media,
-							 &supported,
-							 &compulsory);
-			if ((rec_flags & supported) != rec_flags
-			||  (rec_flags & compulsory) != compulsory)
+			gboolean result;
+
+			result = brasero_plugin_check_record_flags (plugin,
+								    media,
+								    session_flags);
+			if (!result)
 				continue;
 		}
 
 		if (link->caps->type.type == BRASERO_TRACK_TYPE_DATA) {
-			brasero_plugin_get_image_flags (plugin,
-						        media,
-						        &supported,
-						        &compulsory);
-			if ((data_flags & supported) != data_flags
-			||  (data_flags & compulsory) != compulsory)
+			gboolean result;
+
+			result = brasero_plugin_check_image_flags (plugin,
+								   media,
+								   session_flags);
+			if (!result)
 				continue;
 		}
 
@@ -1070,8 +1052,9 @@ brasero_caps_find_best_link (BraseroCaps *caps,
 		else
 			search_group_id = group_id;
 
-		/* It's not a perfect fit. First see if a plugin with the same priority don't have the right input. 
-		 * Then see if we can reach the right input by going through all previous nodes */
+		/* It's not a perfect fit. First see if a plugin with the same
+		 * priority don't have the right input. Then see if we can reach
+		 * the right input by going through all previous nodes */
 		results = brasero_caps_find_best_link (node->link->caps,
 						       search_group_id,
 						       used_caps,
@@ -1982,16 +1965,12 @@ brasero_caps_get_flags (BraseroCaps *caps,
 
 			brasero_caps_link_get_record_flags (link,
 							    caps->type.subtype.media,
+							    session_flags,
 							    &rec_supported,
 							    &rec_compulsory);
 
 			/* see if that link can handle the record flags */
-			tmp = session_flags & (BRASERO_BURN_FLAG_DUMMY|
-					       BRASERO_BURN_FLAG_MULTI|
-					       BRASERO_BURN_FLAG_DAO|
-					       BRASERO_BURN_FLAG_BURNPROOF|
-					       BRASERO_BURN_FLAG_OVERBURN|
-					       BRASERO_BURN_FLAG_NOGRACE);
+			tmp = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
 			if ((tmp & rec_supported) != tmp
 			||  (tmp & rec_compulsory) != rec_compulsory)
 				continue;
@@ -2002,6 +1981,7 @@ brasero_caps_get_flags (BraseroCaps *caps,
 
 			brasero_caps_link_get_data_flags (link,
 							  media,
+							  session_flags,
 						    	  &data_supported);
 
 			/* see if that link can handle the data flags */

@@ -41,10 +41,17 @@
 
 #define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config/priority"
 
-struct _BraseroPluginFlags {
-	BraseroMedia media;
+typedef struct _BraseroPluginFlagPair BraseroPluginFlagPair;
+
+struct _BraseroPluginFlagPair {
+	BraseroPluginFlagPair *next;
 	BraseroBurnFlag supported;
 	BraseroBurnFlag compulsory;
+};
+
+struct _BraseroPluginFlags {
+	BraseroMedia media;
+	BraseroPluginFlagPair *pairs;
 };
 typedef struct _BraseroPluginFlags BraseroPluginFlags;
 
@@ -434,20 +441,22 @@ brasero_plugin_set_flags_real (GSList *flags_list,
 			       BraseroBurnFlag compulsory)
 {
 	BraseroPluginFlags *flags;
+	BraseroPluginFlagPair *pair;
 
 	flags = brasero_plugin_get_flags (flags_list, media);
-	if (flags) {
-		flags->supported = supported;
-		flags->compulsory = compulsory;
-		return flags_list;
-	};
+	if (!flags) {
+		flags = g_new0 (BraseroPluginFlags, 1);
+		flags->media = media;
+		flags_list = g_slist_prepend (flags_list, flags);
+	}
 
-	flags = g_new0 (BraseroPluginFlags, 1);
-	flags->media = media;
-	flags->supported = supported;
-	flags->compulsory = compulsory;
+	pair = g_new0 (BraseroPluginFlagPair, 1);
+	pair->supported = supported;
+	pair->compulsory = compulsory;
 
-	flags_list = g_slist_prepend (flags_list, flags);
+	pair->next = flags->pairs;
+	flags->pairs = pair;
+
 	return flags_list;
 }
 
@@ -466,58 +475,174 @@ brasero_plugin_set_flags (BraseroPlugin *self,
 						     compulsory);
 }
 
-gboolean
-brasero_plugin_get_record_flags (BraseroPlugin *self,
-				 BraseroMedia media,
-				 BraseroBurnFlag *supported,
-				 BraseroBurnFlag *compulsory)
+static gboolean
+brasero_plugin_get_all_flags (GSList *flags_list,
+			      BraseroMedia media,
+			      BraseroBurnFlag current,
+			      BraseroBurnFlag *supported_retval,
+			      BraseroBurnFlag *compulsory_retval)
 {
+	gboolean found;
 	BraseroPluginFlags *flags;
-	BraseroPluginPrivate *priv;
+	BraseroPluginFlagPair *iter;
+	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_ALL;
 
-	priv = BRASERO_PLUGIN_PRIVATE (self);
-	flags = brasero_plugin_get_flags (priv->flags, media);
+	flags = brasero_plugin_get_flags (flags_list, media);
 	if (!flags) {
-		if (supported)
-			*supported = BRASERO_BURN_FLAG_NONE;
-		if (compulsory)
-			*compulsory = BRASERO_BURN_FLAG_NONE;
+		if (supported_retval)
+			*supported_retval = BRASERO_BURN_FLAG_NONE;
+		if (compulsory_retval)
+			*compulsory_retval = BRASERO_BURN_FLAG_NONE;
 		return FALSE;
 	}
 
+	found = FALSE;
+	for (iter = flags ? flags->pairs:NULL; iter; iter = iter->next) {
+		if ((current & iter->supported) != current)
+			continue;
+
+		if ((current & iter->compulsory) != iter->compulsory)
+			continue;
+
+		supported |= iter->supported;
+		compulsory &= iter->compulsory;
+		found = TRUE;
+	}
+
+	if (!found) {
+		if (supported_retval)
+			*supported_retval = BRASERO_BURN_FLAG_NONE;
+		if (compulsory_retval)
+			*compulsory_retval = BRASERO_BURN_FLAG_NONE;
+		return FALSE;
+	}
+
+	if (supported_retval)
+		*supported_retval = supported;
+	if (compulsory_retval)
+		*compulsory_retval = compulsory;
+
+	return TRUE;
+}
+
+gboolean
+brasero_plugin_check_record_flags (BraseroPlugin *self,
+				   BraseroMedia media,
+				   BraseroBurnFlag current)
+{
+	BraseroPluginPrivate *priv;
+	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	current &= BRASERO_PLUGIN_BURN_FLAG_MASK;
+
+	brasero_plugin_get_all_flags (priv->flags,
+				      media,
+				      current,
+				      &supported,
+				      &compulsory);
+
+	supported &= BRASERO_PLUGIN_BURN_FLAG_MASK;
+	compulsory &= BRASERO_PLUGIN_BURN_FLAG_MASK;
+
+	if ((current & supported) == current
+	&&  (current & compulsory) == compulsory)
+		return TRUE;
+
+	return FALSE;
+}
+
+gboolean
+brasero_plugin_check_image_flags (BraseroPlugin *self,
+				  BraseroMedia media,
+				  BraseroBurnFlag current)
+{
+	BraseroPluginPrivate *priv;
+	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	current &= (BRASERO_BURN_FLAG_APPEND|
+		    BRASERO_BURN_FLAG_MERGE);
+
+	brasero_plugin_get_all_flags (priv->flags,
+				      media,
+				      current,
+				      &supported,
+				      &compulsory);
+
+	supported &= (BRASERO_BURN_FLAG_APPEND|
+		      BRASERO_BURN_FLAG_MERGE);
+	compulsory &= (BRASERO_BURN_FLAG_APPEND|
+		       BRASERO_BURN_FLAG_MERGE);
+
+	if ((current & supported) == current
+	&&  (current & compulsory) == compulsory)
+		return TRUE;
+
+	return FALSE;
+}
+
+gboolean
+brasero_plugin_get_record_flags (BraseroPlugin *self,
+				 BraseroMedia media,
+				 BraseroBurnFlag current,
+				 BraseroBurnFlag *supported,
+				 BraseroBurnFlag *compulsory)
+{
+	BraseroPluginPrivate *priv;
+	gboolean result;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	current &= BRASERO_PLUGIN_BURN_FLAG_MASK;
+
+	result = brasero_plugin_get_all_flags (priv->flags,
+					       media,
+					       current,
+					       supported,
+					       compulsory);
+	if (!result)
+		return FALSE;
+
 	if (supported)
-		*supported = flags->supported & BRASERO_PLUGIN_BURN_FLAG_MASK;
+		*supported &= BRASERO_PLUGIN_BURN_FLAG_MASK;
 	if (compulsory)
-		*compulsory = flags->compulsory & BRASERO_PLUGIN_BURN_FLAG_MASK;
+		*compulsory &= BRASERO_PLUGIN_BURN_FLAG_MASK;
+
 	return TRUE;
 }
 
 gboolean
 brasero_plugin_get_image_flags (BraseroPlugin *self,
 				BraseroMedia media,
+				BraseroBurnFlag current,
 				BraseroBurnFlag *supported,
 				BraseroBurnFlag *compulsory)
 {
-	BraseroPluginFlags *flags;
 	BraseroPluginPrivate *priv;
+	gboolean result;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
-	flags = brasero_plugin_get_flags (priv->flags, media);
+	current &= (BRASERO_BURN_FLAG_APPEND|
+		    BRASERO_BURN_FLAG_MERGE);
 
-	if (!flags) {
-		if (supported)
-			*supported = BRASERO_BURN_FLAG_NONE;
-		if (compulsory)
-			*compulsory = BRASERO_BURN_FLAG_NONE;
+	result = brasero_plugin_get_all_flags (priv->flags,
+					       media,
+					       current,
+					       supported,
+					       compulsory);
+	if (!result)
 		return FALSE;
-	}
 
 	if (supported)
-		*supported = flags->supported & (BRASERO_BURN_FLAG_APPEND|
-						 BRASERO_BURN_FLAG_MERGE);
+		*supported &= (BRASERO_BURN_FLAG_APPEND|
+			       BRASERO_BURN_FLAG_MERGE);
 	if (compulsory)
-		*compulsory = flags->compulsory & (BRASERO_BURN_FLAG_APPEND|
-						   BRASERO_BURN_FLAG_MERGE);
+		*compulsory &= (BRASERO_BURN_FLAG_APPEND|
+				BRASERO_BURN_FLAG_MERGE);
+
 	return TRUE;
 }
 
@@ -537,31 +662,65 @@ brasero_plugin_set_blank_flags (BraseroPlugin *self,
 }
 
 gboolean
+brasero_plugin_check_blank_flags (BraseroPlugin *self,
+				  BraseroMedia media,
+				  BraseroBurnFlag current)
+{
+	BraseroPluginPrivate *priv;
+	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+	current &= (BRASERO_BURN_FLAG_NOGRACE|
+		    BRASERO_BURN_FLAG_FAST_BLANK);
+
+	brasero_plugin_get_all_flags (priv->blank_flags,
+				      media,
+				      current,
+				      &supported,
+				      &compulsory);
+
+	supported &= (BRASERO_BURN_FLAG_NOGRACE|
+		      BRASERO_BURN_FLAG_FAST_BLANK);
+	compulsory &= (BRASERO_BURN_FLAG_NOGRACE|
+		       BRASERO_BURN_FLAG_FAST_BLANK);
+
+	if ((current & supported) == current
+	&&  (current & compulsory) == compulsory)
+		return TRUE;
+
+	return FALSE;
+}
+
+gboolean
 brasero_plugin_get_blank_flags (BraseroPlugin *self,
 				BraseroMedia media,
+				BraseroBurnFlag current,
 			        BraseroBurnFlag *supported,
 			        BraseroBurnFlag *compulsory)
 {
-	BraseroPluginFlags *flags;
 	BraseroPluginPrivate *priv;
+	gboolean result;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
-	flags = brasero_plugin_get_flags (priv->blank_flags, media);
+	current &= (BRASERO_BURN_FLAG_NOGRACE|
+		    BRASERO_BURN_FLAG_FAST_BLANK);
 
-	if (!flags) {
-		if (supported)
-			*supported = BRASERO_BURN_FLAG_NONE;
-		if (compulsory)
-			*compulsory = BRASERO_BURN_FLAG_NONE;
+	result = brasero_plugin_get_all_flags (priv->blank_flags,
+					       media,
+					       current,
+					       supported,
+					       compulsory);
+	if (!result)
 		return FALSE;
-	}
 
 	if (supported)
-		*supported = flags->supported & (BRASERO_BURN_FLAG_NOGRACE|
-						 BRASERO_BURN_FLAG_FAST_BLANK);
+		*supported &= (BRASERO_BURN_FLAG_NOGRACE|
+			       BRASERO_BURN_FLAG_FAST_BLANK);
 	if (compulsory)
-		*compulsory = flags->compulsory & (BRASERO_BURN_FLAG_NOGRACE|
-						   BRASERO_BURN_FLAG_FAST_BLANK);
+		*compulsory &= (BRASERO_BURN_FLAG_NOGRACE|
+				BRASERO_BURN_FLAG_FAST_BLANK);
+
 	return TRUE;
 }
 
