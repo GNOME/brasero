@@ -803,6 +803,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       FALSE);
+		gtk_widget_set_sensitive (priv->button, FALSE);
 		return;
 	}
 
@@ -812,6 +813,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       FALSE);
+		gtk_widget_set_sensitive (priv->button, FALSE);
 		return;
 	}
 
@@ -820,6 +822,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       FALSE);
+		gtk_widget_set_sensitive (priv->button, FALSE);
 		return;
 	}
 
@@ -881,6 +884,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       (result == BRASERO_BURN_OK));
+		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 	}
 	else if (brasero_dest_selection_check_same_src_dest (self)) {
 		/* special case */
@@ -892,6 +896,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       TRUE);
+		gtk_widget_set_sensitive (priv->button, TRUE);
 	}
 	else {
 		BraseroBurnResult result;
@@ -916,12 +921,15 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 				       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 				       0,
 				       TRUE);
+			gtk_widget_set_sensitive (priv->button, TRUE);
 		}
-		else
+		else {
 			g_signal_emit (self,
 				       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 				       0,
 				       FALSE);
+			gtk_widget_set_sensitive (priv->button, FALSE);
+		}
 
 		if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
 			/* clean up the disc and have more space when possible */
@@ -978,6 +986,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       FALSE);
+		gtk_widget_set_sensitive (priv->button, FALSE);
 		return;
 	}
 
@@ -986,6 +995,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 		       0,
 		       TRUE);
+	gtk_widget_set_sensitive (priv->button, TRUE);
 
 	brasero_burn_session_set_image_output (priv->session,
 					       output.subtype.img_format,
@@ -1053,6 +1063,7 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       (format != BRASERO_IMAGE_FORMAT_NONE));
+		gtk_widget_set_sensitive (priv->button, (format != BRASERO_IMAGE_FORMAT_NONE));
 
 		if (format == BRASERO_IMAGE_FORMAT_NONE) {
 			if (priv->button)
@@ -1105,6 +1116,7 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       TRUE);
+		gtk_widget_set_sensitive (priv->button, TRUE);
 
 		brasero_burn_session_add_flag (priv->session,
 					       BRASERO_BURN_FLAG_DAO|
@@ -1124,6 +1136,7 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 		       0,
 		       (result == BRASERO_BURN_OK));
+	gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 
 	if (priv->button) {
 		if (result != BRASERO_BURN_OK)

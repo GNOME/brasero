@@ -1,5 +1,16 @@
 2007-11-18  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Don't allow the use of the properties button if there is no valid source media
+	when copying a disc
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings):
+
+2007-11-18  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fixed alignement of text in image option dialog
 
 	* src/brasero-image-option-dialog.c:
