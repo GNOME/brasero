@@ -34,6 +34,7 @@
 
 #include <gtk/gtkbox.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
@@ -182,12 +183,27 @@ brasero_image_properties_set_formats (BraseroImageProperties *self,
 	}	
 
 	if (!priv->format) {
+		GtkWidget *box;
+		GtkWidget *label;
+
+		box = gtk_hbox_new (FALSE, 6);
+		gtk_widget_show (box);
+		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (self)->vbox),
+				  box,
+				  FALSE,
+				  FALSE,
+				  0);
+
+		label = gtk_label_new (_("Image type:"));
+		gtk_widget_show (label);
+		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
 		priv->format = brasero_image_type_chooser_new ();
 		gtk_widget_show (priv->format);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (self)->vbox),
+		gtk_box_pack_start (GTK_BOX (box),
 				    priv->format,
-				    FALSE,
-				    FALSE,
+				    TRUE,
+				    TRUE,
 				    0);
 		g_signal_connect (priv->format,
 				  "changed",

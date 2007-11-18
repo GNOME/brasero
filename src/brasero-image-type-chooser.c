@@ -204,16 +204,11 @@ brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
 static void
 brasero_image_type_chooser_init (BraseroImageTypeChooser *obj)
 {
-	GtkWidget *label;
 	GtkListStore *store;
 	GtkCellRenderer *renderer;
 	BraseroImageTypeChooserPrivate *priv;
 
 	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (obj);
-
-	label = gtk_label_new (_("Image type:\t"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (obj), label, FALSE, FALSE, 0);
 
 	store = gtk_list_store_new (FORMAT_LAST,
 				    G_TYPE_STRING,

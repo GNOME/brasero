@@ -538,13 +538,34 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), FALSE);
 
 	/* Image properties */
-	box1 = gtk_hbox_new (FALSE, 0);
+	box1 = gtk_table_new (2, 2, FALSE);
+	gtk_table_set_col_spacings (GTK_TABLE (box1), 6);
+	gtk_widget_show (box1);
 
-	label = gtk_label_new (_("Path:\t\t"));
-	gtk_box_pack_start (GTK_BOX (box1), label, FALSE, FALSE, 0);
+	label = gtk_label_new (_("Path:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (box1),
+			  label,
+			  0,
+			  1,
+			  0,
+			  1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0,
+			  0);
 
 	priv->file = gtk_file_chooser_button_new (_("Open an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
-	gtk_box_pack_start (GTK_BOX (box1), priv->file, TRUE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (box1),
+			  priv->file,
+			  1,
+			  2,
+			  0,
+			  1,
+			  GTK_EXPAND|GTK_FILL,
+			  GTK_EXPAND|GTK_FILL,
+			  0,
+			  0);
 	g_signal_connect (priv->file,
 			  "selection-changed",
 			  G_CALLBACK (brasero_image_option_dialog_file_changed),
@@ -553,14 +574,37 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
 
+	label = gtk_label_new (_("Image type:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (box1),
+			  label,
+			  0,
+			  1,
+			  1,
+			  2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0,
+			  0);
+
 	priv->format = brasero_image_type_chooser_new ();
+	gtk_table_attach (GTK_TABLE (box1),
+			  priv->format,
+			  1,
+			  2,
+			  1,
+			  2,
+			  GTK_EXPAND|GTK_FILL,
+			  GTK_EXPAND|GTK_FILL,
+			  0,
+			  0);
 	g_signal_connect (priv->format,
 			  "changed",
 			  G_CALLBACK (brasero_image_option_dialog_format_changed),
 			  obj);
 
 	box = brasero_utils_pack_properties (_("<b>Image</b>"),
-					     priv->format,
 					     box1,
 					     NULL);
 
