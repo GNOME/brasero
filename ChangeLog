@@ -1,3 +1,19 @@
+2007-11-18  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	If reading to a BIN image then readcd/readom only read the last track
+	Some possible fixes for multisession button state
+
+	* src/brasero-data-disc.c: (brasero_data_disc_add_ui),
+	(brasero_data_disc_update_multi_button_state),
+	(brasero_data_disc_set_drive):
+	* src/burn-medium.h:
+	* src/plugins/cdrkit/burn-readom.c:
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size),
+	(brasero_readom_set_argv):
+	* src/plugins/cdrtools/burn-readcd.c:
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size),
+	(brasero_readcd_set_argv):
+
 2007-11-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix #494801 – Import session weirdness:

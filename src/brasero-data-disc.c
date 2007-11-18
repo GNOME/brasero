@@ -179,7 +179,6 @@ struct BraseroDataDiscPrivate {
 	GHashTable *restored;
 
 	NautilusBurnDrive *drive;
-	gulong new_media_id;
 
 	GSList *expose;
 	gint expose_id;
@@ -531,6 +530,9 @@ brasero_data_disc_tree_select_function (GtkTreeSelection *selection,
 					GtkTreePath *treepath,
 					gboolean is_selected,
 					gpointer null_data);
+
+static void
+brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc);
 
 static gchar *BRASERO_CREATED_DIR = "created";
 static gchar *BRASERO_IMPORTED_FILE = "imported";
@@ -1125,6 +1127,7 @@ brasero_data_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 	data_disc->priv->manager = manager;
 	g_object_ref (manager);
 
+	brasero_data_disc_update_multi_button_state (data_disc);
 	return merge_id;
 }
 
@@ -8559,7 +8562,7 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 	g_object_unref (caps);
 
 	multisession = (media_status & BRASERO_MEDIUM_WRITABLE) &&
-		       (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) &&
+		       (media & BRASERO_MEDIUM_HAS_DATA) &&
 		       (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (disc->priv->drive, NULL, NULL) != -1);
 
 	if (multisession) {
@@ -8580,55 +8583,20 @@ brasero_data_disc_update_multi_button_state (BraseroDataDisc *disc)
 }
 
 static void
-brasero_data_disc_media_added (NautilusBurnDriveMonitor *monitor,
-			       NautilusBurnDrive *drive,
-			       BraseroDataDisc *disc)
-{
-	if (disc->priv->drive
-	||  nautilus_burn_drive_equal (disc->priv->drive, drive))
-		return;
-
-	brasero_data_disc_update_multi_button_state (disc);
-}
-
-static void
 brasero_data_disc_set_drive (BraseroDisc *disc, NautilusBurnDrive *drive)
 {
 	BraseroDataDisc *data_disc;
-	NautilusBurnDriveMonitor *monitor;
-
-	monitor = nautilus_burn_get_drive_monitor ();
 
 	data_disc = BRASERO_DATA_DISC (disc);
-	if (data_disc->priv->drive) {
-		if (data_disc->priv->new_media_id) {
-			g_signal_handler_disconnect (monitor,
-						     data_disc->priv->new_media_id);
-			data_disc->priv->new_media_id = 0;
-		}
-
+	if (data_disc->priv->drive)
 		nautilus_burn_drive_unref (data_disc->priv->drive);
-		data_disc->priv->drive = drive;
 
-		if (!drive)
-			brasero_data_disc_update_multi_button_state (data_disc);
-	}
-	else if (drive) {
-		data_disc->priv->drive = drive;
-		brasero_data_disc_update_multi_button_state (data_disc);
-	}
-	else
-		data_disc->priv->drive = drive;
+	data_disc->priv->drive = drive;
 
-	if (!drive)
-		return;
+	brasero_data_disc_update_multi_button_state (data_disc);
 
-	nautilus_burn_drive_ref (drive);
-	monitor = nautilus_burn_get_drive_monitor ();
-	data_disc->priv->new_media_id = g_signal_connect (monitor,
-							  "media-added",
-							  G_CALLBACK (brasero_data_disc_media_added),
-							  disc);
+	if (drive)
+		nautilus_burn_drive_ref (drive);
 }
 
 /********************************* export internal tracks *********************/
