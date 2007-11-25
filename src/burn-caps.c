@@ -2293,22 +2293,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		compulsory_flags |= blank_compulsory;
 	}
 
-	/* if it's an appendable disc and we're not going to blank it before
-	 * writing then we can't have dao for next sessions */
-	if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)
-	&& (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) == 0) {
-		supported_flags &= ~BRASERO_BURN_FLAG_DAO;
-		compulsory_flags &= ~BRASERO_BURN_FLAG_DAO;
-	}
-
-	/* if we want to leave the session open with DVD+/-R we can't use dao */
-	if ((media & BRASERO_MEDIUM_DVD)
-	&&  (session_flags & BRASERO_BURN_FLAG_MULTI)
-	&&  (session_flags & BRASERO_BURN_FLAG_DAO)) {
-		supported_flags &= ~BRASERO_BURN_FLAG_DAO;
-		compulsory_flags &= ~BRASERO_BURN_FLAG_DAO;
-	}
-
 	*supported = supported_flags;
 	*compulsory = compulsory_flags;
 

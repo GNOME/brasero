@@ -1,3 +1,14 @@
+2007-11-25  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Use exclusive flags to prevent DAO for multisession DVDs
+	and not hardcoded path in burn-caps.c
+
+	* src/burn-caps.c: (brasero_burn_caps_get_flags):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libburn.c:
+	(brasero_libburn_export_caps):
+
 2007-11-18  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Added the possibility to have exclusive flags in plugin definitions

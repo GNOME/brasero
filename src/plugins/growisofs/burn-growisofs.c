@@ -694,7 +694,23 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
-	/* For DVD-W and DVD-RW sequential */
+	/* For DVD-W and DVD-RW sequential
+	 * NOTE: DAO et MULTI are exclusive. */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_SEQUENTIAL|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
@@ -704,7 +720,6 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_APPEND|
@@ -734,9 +749,9 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_REWRITABLE|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
@@ -766,6 +781,16 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_APPEND|
@@ -793,10 +818,10 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 				  BRASERO_BURN_FLAG_MERGE,

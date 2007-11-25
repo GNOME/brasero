@@ -653,11 +653,22 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 
 	/* ... and DVDs-R ... */
+	/* NOTE: DAO and multi are exclusive */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -683,6 +694,15 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -712,6 +732,16 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
@@ -728,6 +758,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
+
 	output = brasero_caps_disc_new (media_dvd_rw);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
