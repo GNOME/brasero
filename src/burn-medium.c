@@ -844,8 +844,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 	if (result != BRASERO_SCSI_OK) {
 		/* All other commands means an error */
-		g_free (hdr);
-
 		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}

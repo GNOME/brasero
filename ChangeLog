@@ -1,5 +1,12 @@
 2007-11-25  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix crash in #499571 – *** glibc detected *** brasero: double free or corruption (top): 0x08203400 ***
+	but didn't fix get configuration failure
+
+	* src/burn-medium.c: (brasero_medium_get_medium_type):
+
+2007-11-25  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Use exclusive flags to prevent DAO for multisession DVDs
 	and not hardcoded path in burn-caps.c
 
