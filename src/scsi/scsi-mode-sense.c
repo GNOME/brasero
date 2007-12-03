@@ -48,6 +48,7 @@ struct _BraseroModeSenseCDB {
 	uchar reserved0		:3;
 
 	uchar page_code		:8;
+	uchar subpage_code	:8;
 
 	uchar reserved2		[3];
 
@@ -66,6 +67,7 @@ struct _BraseroModeSenseCDB {
 	uchar reserved1		:3;
 
 	uchar page_code		:8;
+	uchar subpage_code	:8;
 
 	uchar reserved2		[3];
 
