@@ -52,6 +52,9 @@ struct _BraseroVolFile {
 
 	struct {
 		GList *children;
+
+		/* FIXME: rr_children isn't needed here apparently it could be 
+		 * replaced by address_block. */
 		GList *rr_children;
 	} dir;
 

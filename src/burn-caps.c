@@ -895,8 +895,13 @@ brasero_caps_link_list_insert (BraseroCapsLinkList *list,
 	       brasero_plugin_get_priority (iter->next->plugin))
 		iter = iter->next;
 
-	if (brasero_plugin_get_priority (node->plugin) <
-	    brasero_plugin_get_priority (iter->next->plugin)) {
+	if (!iter->next) {
+		/* reached the end of the list, put it at the end */
+		iter->next = node;
+		node->next = NULL;
+	}
+	else if (brasero_plugin_get_priority (node->plugin) <
+		 brasero_plugin_get_priority (iter->next->plugin)) {
 		/* Put it at the end of the list */
 		node->next = NULL;
 		iter->next->next = node;

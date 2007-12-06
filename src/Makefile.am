@@ -219,7 +219,7 @@ brasero_SOURCES = \
 	brasero-preview.h         \
 	brasero-preview.c         \
 	burn-image-format.c         \
-	burn-image-format.h 
+	burn-image-format.h         
 
 brasero_LDADD = $(BRASERO_LIBS)
 
