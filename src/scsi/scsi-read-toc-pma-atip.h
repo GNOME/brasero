@@ -207,7 +207,7 @@ struct _BraseroScsiAtipDesc {
 	uchar reserved1			:6;
 
 	uchar bit1			:1;
-	uchar disc_type			:1;
+	uchar erasable			:1;
 	uchar disc_sub_type		:3;
 	uchar A1_valid			:1;
 	uchar A2_valid			:1;

@@ -827,25 +827,46 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 							 &hdr,
 							 &size,
 							 code);
-	if (result == BRASERO_SCSI_INVALID_COMMAND) {
-		g_free (hdr);
+	if (result != BRASERO_SCSI_OK) {
+		BraseroScsiAtipData hdr;
 
 		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
 
-		/* This is probably a MMC1 drive since this command was
+		/* This could be a MMC1 drive since this command was
 		 * introduced in MMC2 and is supported onward. So it
 		 * has to be a CD (R/RW). The rest of the information
 		 * will be provided by read_disc_information. */
-		priv->info = BRASERO_MEDIUM_CD;
 
-		result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+		/* The only thing here left to determine is if that's a WRITABLE
+		 * or a REWRITABLE. To determine that information, we need to
+		 * read TocPmaAtip. It if fails that's a ROM, if it succeeds.
+		 * No need to set error code since we consider that it's a ROM
+		 * if a failure happens. */
+		result = brasero_mmc1_read_atip (fd, &hdr, sizeof (hdr), NULL);
+		if (result != BRASERO_SCSI_OK) {
+			/* CDROM */
+			priv->info = BRASERO_MEDIUM_CDROM;
+			priv->type = types [1];
+			priv->icon = icons [1];
+		}
+		else if (hdr.desc->erasable) {
+			/* CDRW */
+			priv->info = BRASERO_MEDIUM_CDRW;
+			priv->type = types [3];
+			priv->icon = icons [3];
+		}
+		else {
+			/* CDR */
+			priv->info = BRASERO_MEDIUM_CDR;
+			priv->type = types [2];
+			priv->icon = icons [2];
+		}
+
+		/* retrieve the speed */
+		result = brasero_medium_get_page_2A_max_speed (self,
+							       fd,
+							       code);
 		return result;
-	}
-
-	if (result != BRASERO_SCSI_OK) {
-		/* All other commands means an error */
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
-		return BRASERO_BURN_ERR;
 	}
 
 	switch (BRASERO_GET_16 (hdr->current_profile)) {
