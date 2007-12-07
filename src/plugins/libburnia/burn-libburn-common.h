@@ -61,8 +61,8 @@ void
 brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx);
 
 void
-brasero_libburn_common_clock_id (BraseroJob *job,
-				 BraseroLibburnCtx *ctx);
+brasero_libburn_common_status (BraseroJob *job,
+			       BraseroLibburnCtx *ctx);
 
 G_END_DECLS
 

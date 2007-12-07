@@ -476,12 +476,12 @@ brasero_libburn_start (BraseroJob *job,
 	self = BRASERO_LIBBURN (job);
 	priv = BRASERO_LIBBURN_PRIVATE (self);
 
-	priv->ctx = brasero_libburn_common_ctx_new (job, error);
-	if (!priv->ctx)
-		return BRASERO_BURN_ERR;
-
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_RECORD) {
+		priv->ctx = brasero_libburn_common_ctx_new (job, error);
+		if (!priv->ctx)
+			return BRASERO_BURN_ERR;
+
 		result = brasero_libburn_start_record (self, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
@@ -492,6 +492,10 @@ brasero_libburn_start (BraseroJob *job,
 						FALSE);
 	}
 	else if (action == BRASERO_JOB_ACTION_ERASE) {
+		priv->ctx = brasero_libburn_common_ctx_new (job, error);
+		if (!priv->ctx)
+			return BRASERO_BURN_ERR;
+
 		result = brasero_libburn_start_erase (self, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
@@ -503,8 +507,6 @@ brasero_libburn_start (BraseroJob *job,
 	}
 	else
 		BRASERO_JOB_NOT_SUPPORTED (self);
-
-	burn_msgs_set_severities ("ALL", "ALL", "brasero (libburn):");
 
 	return BRASERO_BURN_OK;
 }
@@ -530,6 +532,16 @@ brasero_libburn_stop (BraseroJob *job,
 	return BRASERO_BURN_OK;
 }
 
+static BraseroBurnResult
+brasero_libburn_clock_tick (BraseroJob *job)
+{
+	BraseroLibburnPrivate *priv;
+
+	priv = BRASERO_LIBBURN_PRIVATE (job);
+	brasero_libburn_common_status (job, priv->ctx);
+	return BRASERO_BURN_OK;
+}
+
 static void
 brasero_libburn_class_init (BraseroLibburnClass *klass)
 {
@@ -543,13 +555,13 @@ brasero_libburn_class_init (BraseroLibburnClass *klass)
 
 	job_class->start = brasero_libburn_start;
 	job_class->stop = brasero_libburn_stop;
+	job_class->clock_tick = brasero_libburn_clock_tick;
 }
 
 static void
 brasero_libburn_init (BraseroLibburn *obj)
 {
-	/* that's for debugging */
-	burn_set_verbosity (666);
+
 }
 
 static void

@@ -1,3 +1,18 @@
+2007-12-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix crash #501091 – Proposes DVD-ROM as an option for writing a DVD
+	Updated the whole libburn backend
+
+	* src/plugins/libburnia/burn-libburn-common.c:
+	(brasero_libburn_common_ctx_free),
+	(brasero_libburn_common_ctx_new),
+	(brasero_libburn_common_status_changed),
+	(brasero_libburn_common_status):
+	* src/plugins/libburnia/burn-libburn-common.h:
+	* src/plugins/libburnia/burn-libburn.c: (brasero_libburn_start),
+	(brasero_libburn_clock_tick), (brasero_libburn_class_init),
+	(brasero_libburn_init):
+
 2007-12-06  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix crash in comment #24 bug #357693 – Brasero thinks my disc has not enough space

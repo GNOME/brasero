@@ -41,6 +41,26 @@
 void
 brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 {
+	enum burn_drive_status status;
+
+	/* try to properly cancel the drive */
+	status = burn_drive_get_status (ctx->drive, NULL);
+	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING) {
+		burn_drive_cancel (ctx->drive);
+
+		/* wait for some time for the drive to be idle.*/
+		/* FIXME: we don't want to be stuck here waiting for a state
+		 * that will come we don't know when ...
+		status = burn_drive_get_status (ctx->drive, NULL);
+		while (status != BURN_DRIVE_IDLE)
+			status = burn_drive_get_status (ctx->drive, NULL);
+		*/
+	}
+	else if (status == BURN_DRIVE_GRABBING) {
+		/* This should probably never happen */
+		burn_drive_info_forget (ctx->drive_info, 1);
+	}
+
 	if (ctx->drive_info) {
 		burn_drive_info_free (ctx->drive_info);
 		ctx->drive_info = NULL;
@@ -52,16 +72,46 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 		ctx->disc = NULL;
 	}
 
+	if (ctx->drive) {
+		burn_drive_release (ctx->drive, 0);
+		ctx->drive = NULL;
+	}
+
 	g_free (ctx);
+
+	/* Since the library is not needed any more call burn_finish ().
+	 * NOTE: it itself calls burn_abort (). */
+	burn_finish ();
 }
 
 BraseroLibburnCtx *
-brasero_libburn_common_ctx_new (BraseroJob *job, GError **error)
+brasero_libburn_common_ctx_new (BraseroJob *job,
+				GError **error)
 {
 	gchar libburn_device [BURN_DRIVE_ADR_LEN];
 	BraseroLibburnCtx *ctx = NULL;
 	gchar *device;
 	int res;
+
+	/* initialize the library */
+	if (!burn_initialize ()) {
+		/* FIXME: change the message */
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the drive couldn't be initialized"));
+		return NULL;
+	}
+
+	/* apparently this is needed to properly shutdown a drive on aborting.
+	 * I'm not sure about this one since glib also sets up signal handlers. */
+	//burn_set_signal_handling ("brasero : ", NULL, 0);
+
+	/* We want all types of messages: this might change in the future */
+	burn_msgs_set_severities ("ALL", "ALL", "brasero (libburn):");
+
+	/* that's for debugging */
+	burn_set_verbosity (666);
 
 	/* we just want to scan the drive proposed by NCB drive */
 	brasero_job_get_device (job, &device);
@@ -125,7 +175,7 @@ brasero_libburn_common_process_message (BraseroJob *self)
 	return TRUE;
 }
 
-static void
+static gboolean
 brasero_libburn_common_status_changed (BraseroJob *self,
 				       BraseroLibburnCtx *ctx,
 				       enum burn_drive_status status,
@@ -138,7 +188,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			/* we ignore it if it happens after leadout */
 			if (ctx->status == BURN_DRIVE_WRITING_LEADOUT
 			||  ctx->status == BURN_DRIVE_CLOSING_TRACK)
-				return;
+				return TRUE;
 
 			if (ctx->status == BURN_DRIVE_WRITING_LEADIN
 			||  ctx->status == BURN_DRIVE_WRITING_PREGAP) {
@@ -175,9 +225,20 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 
 		case BURN_DRIVE_IDLE:
 			/* FIXME: that's where a track is returned */
-			brasero_job_finished_session (BRASERO_JOB (self));
+			/* Double check that everything went well */
+			/* FIXME: activate that code next time
+			if (!burn_drive_wrote_well (ctx->drive)) {
+				brasero_job_error (BRASERO_JOB (self),
+						   g_error_new (BRASERO_BURN_ERROR,
+								BRASERO_BURN_ERROR_GENERAL,
+								_("an unknown error occured")));
+			} */
+
 			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
-			break;
+			brasero_job_finished_session (BRASERO_JOB (self));
+
+			/* we must return here since job may not exist any more */
+			return FALSE;
 
 		case BURN_DRIVE_SPAWNING:
 			if (ctx->status == BURN_DRIVE_IDLE)
@@ -193,7 +254,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			break;
 
 		default:
-			return;
+			return FALSE;
 	}
 
 	ctx->status = status;
@@ -201,11 +262,12 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 					action,
 					NULL,
 					FALSE);
+	return TRUE;
 }
 
 void
-brasero_libburn_common_clock_id (BraseroJob *self,
-				 BraseroLibburnCtx *ctx)
+brasero_libburn_common_status (BraseroJob *self,
+			       BraseroLibburnCtx *ctx)
 {
 	enum burn_drive_status status;
 	struct burn_progress progress;
@@ -221,8 +283,16 @@ brasero_libburn_common_clock_id (BraseroJob *self,
 
 	/* FIXME! for some operations that libburn can't perform the drive stays
 	 * idle and we've got no way to tell that kind of use case */
-	if (ctx->status != status)
-		brasero_libburn_common_status_changed (self, ctx, status, &progress);
+	if (ctx->status != status) {
+		gboolean running;
+
+		running = brasero_libburn_common_status_changed (self,
+								 ctx,
+								 status,
+								 &progress);
+		if (!running)
+			return;
+	}
 
 	if (status == BURN_DRIVE_IDLE
 	||  status == BURN_DRIVE_SPAWNING
