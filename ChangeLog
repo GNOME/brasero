@@ -1,5 +1,18 @@
 2007-12-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Additional fix for #499571 – *** glibc detected *** brasero: double free or corruption (top): 0x08203400 ***
+	Read Atip function has various sizes for returned data whether it be MMC1/MMC2 or MMC3 drive which triggered
+	a failure with MMC1/MMC2 drives since they didn't returned the expected data size
+
+	* src/burn-medium.c: (brasero_medium_get_capacity_CD_RW),
+	(brasero_medium_get_medium_type):
+	* src/scsi/scsi-mmc1.h:
+	* src/scsi/scsi-read-toc-pma-atip.c: (brasero_read_toc_pma_atip),
+	(brasero_mmc1_read_atip):
+	* src/scsi/scsi-read-toc-pma-atip.h:
+
+2007-12-07  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix for #499571 – *** glibc detected *** brasero: double free or corruption (top): 0x08203400 ***
 
 	* src/burn-medium.c: (brasero_medium_get_medium_type):

@@ -114,8 +114,10 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
 					       &hdr,
 					       sizeof (BraseroScsiTocPmaAtipHdr),
 					       error);
-	if (res)
+	if (res) {
+		*size = 0;
 		return res;
+	}
 
 	request_size = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
 
@@ -135,6 +137,7 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
 	res = brasero_scsi_command_issue_sync (cdb, buffer, request_size, error);
 	if (res) {
 		g_free (buffer);
+		*size = 0;
 		return res;
 	}
 
@@ -204,20 +207,25 @@ brasero_mmc3_read_cd_text (int fd,
 
 BraseroScsiResult
 brasero_mmc1_read_atip (int fd,
-			BraseroScsiAtipData *data,
-			int size,
+			BraseroScsiAtipData **data,
+			int *size,
 			BraseroScsiErrCode *error)
 {
 	BraseroRdTocPmaAtipCDB *cdb;
 	BraseroScsiResult res;
 
+	/* In here we have to ask how many bytes the drive wants to return first
+	 * indeed there is a difference in the descriptor size between MMC1/MMC2
+	 * and MMC3. */
 	cdb = brasero_scsi_command_new (&info, fd);
 	cdb->format = BRASERO_RD_TAP_ATIP;
 	cdb->msf = 1;				/* specs says it's compulsory */
-	BRASERO_SET_16 (cdb->alloc_len, size);
 
-	memset (data, 0, size);
-	res = brasero_scsi_command_issue_sync (cdb, data, size, error);
+	res = brasero_read_toc_pma_atip (cdb,
+					 sizeof (BraseroScsiTocDesc),
+					(BraseroScsiTocPmaAtipHdr **) data,
+					 size,
+					 error);
 	brasero_scsi_command_free (cdb);
 	return res;
 }

@@ -95,36 +95,37 @@ struct _BraseroScsiPmaDesc {
 };
 
 struct _BraseroScsiAtipDesc {
-	uchar reference_speed		:3;
+	uchar reference_speed		:3;	/* 1 */
 	uchar reserved0			:1;
 	uchar indicative_target_wrt_pwr	:4;
 
-	uchar reserved1			:6;
+	uchar reserved1			:6;	/* 2 */
 	uchar unrestricted_use		:1;
 	uchar bit0			:1;
 
-	uchar A3_valid			:1;
+	uchar A3_valid			:1;	/* 3 */
 	uchar A2_valid			:1;
 	uchar A1_valid			:1;
 	uchar disc_sub_type		:3;
 	uchar erasable			:1;
 	uchar bit1			:1;
 
-	uchar reserved2;
+	uchar reserved2;			/* 4 */
 
 	uchar leadin_mn;
 	uchar leadin_sec;
 	uchar leadin_frame;
-	uchar reserved3;
+	uchar reserved3;			/* 8 */
 
 	/* Additional capacity for high capacity CD-R,
 	 * otherwise last possible leadout */
 	uchar leadout_mn;
 	uchar leadout_sec;
 	uchar leadout_frame;
-	uchar reserved4;
+	uchar reserved4;			/* 12 */
 
-	/* write strategy recording parameters */
+	/* Write strategy recording parameters.
+	 * See MMC1 and MMC2 for a description. */
 	uchar A1_data			[3];
 	uchar reserved5;
 	
@@ -134,6 +135,9 @@ struct _BraseroScsiAtipDesc {
 	uchar A3_data			[3];
 	uchar reserved7;
 
+	/* Be careful here since the following is only true for MMC3. That means
+	 * if we use this size with a MMC1/2 drives it returns an error (invalid
+	 * field). The following value is not really useful anyway. */
 	uchar S4_data			[3];
 	uchar reserved8;
 };

@@ -504,9 +504,10 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 				   int fd,
 				   BraseroScsiErrCode *code)
 {
-	BraseroScsiAtipData atip_data;
+	BraseroScsiAtipData *atip_data = NULL;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
+	int size = 0;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -514,17 +515,27 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 
 	result = brasero_mmc1_read_atip (fd,
 					 &atip_data,
-					 sizeof (atip_data),
+					 &size,
 					 NULL);
 
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("READ ATIP failed");
+		BRASERO_BURN_LOG ("READ ATIP failed (scsi error)");
 		return BRASERO_BURN_ERR;
 	}
 
-	priv->block_num = BRASERO_MSF_TO_LBA (atip_data.desc->leadout_mn,
-					      atip_data.desc->leadout_sec,
-					      atip_data.desc->leadout_frame);
+	/* check the size of the structure: it must be at least 16 bytes long */
+	if (size < 16) {
+		if (size)
+			g_free (atip_data);
+
+		BRASERO_BURN_LOG ("READ ATIP failed (wrong size)");
+		return BRASERO_BURN_ERR;
+	}
+
+	priv->block_num = BRASERO_MSF_TO_LBA (atip_data->desc->leadout_mn,
+					      atip_data->desc->leadout_sec,
+					      atip_data->desc->leadout_frame);
+	g_free (atip_data);
 
 	BRASERO_BURN_LOG ("Format capacity %lli %lli",
 			  priv->block_num,
@@ -828,7 +839,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 							 &size,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
-		BraseroScsiAtipData hdr;
+		BraseroScsiAtipData *data = NULL;
+		int size = 0;
 
 		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
 
@@ -842,24 +854,40 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		 * read TocPmaAtip. It if fails that's a ROM, if it succeeds.
 		 * No need to set error code since we consider that it's a ROM
 		 * if a failure happens. */
-		result = brasero_mmc1_read_atip (fd, &hdr, sizeof (hdr), NULL);
+		result = brasero_mmc1_read_atip (fd,
+						 &data,
+						 &size,
+						 NULL);
 		if (result != BRASERO_SCSI_OK) {
 			/* CDROM */
 			priv->info = BRASERO_MEDIUM_CDROM;
 			priv->type = types [1];
 			priv->icon = icons [1];
 		}
-		else if (hdr.desc->erasable) {
-			/* CDRW */
-			priv->info = BRASERO_MEDIUM_CDRW;
-			priv->type = types [3];
-			priv->icon = icons [3];
-		}
 		else {
-			/* CDR */
-			priv->info = BRASERO_MEDIUM_CDR;
-			priv->type = types [2];
-			priv->icon = icons [2];
+			/* check the size of the structure: it must be at least 8 bytes long */
+			if (size < 8) {
+				if (size)
+					g_free (data);
+
+				BRASERO_BURN_LOG ("READ ATIP failed (wrong size)");
+				return BRASERO_BURN_ERR;
+			}
+
+			if (data->desc->erasable) {
+				/* CDRW */
+				priv->info = BRASERO_MEDIUM_CDRW;
+				priv->type = types [3];
+				priv->icon = icons [3];
+			}
+			else {
+				/* CDR */
+				priv->info = BRASERO_MEDIUM_CDR;
+				priv->type = types [2];
+				priv->icon = icons [2];
+			}
+
+			g_free (data);
 		}
 
 		/* retrieve the speed */
