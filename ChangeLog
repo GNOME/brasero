@@ -1,5 +1,11 @@
 2007-12-08  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Another attempt at fixing #499571 – *** glibc detected *** brasero: double free or corruption (top): 0x08203400 ***
+	
+	* src/brasero-ncb.c: (brasero_ncb_removed_medium_cb), (NCB_INIT):
+
+2007-12-08  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix for md5 checksuming with DVD+RW and such
 	See #499591 – Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work!
 

@@ -740,6 +740,7 @@ brasero_ncb_removed_medium_cb (NautilusBurnDriveMonitor *monitor,
 
 	if (!medium)
 		return;
+
 	g_object_unref (medium);
 }
 
@@ -755,13 +756,8 @@ NCB_INIT (void)
 	for (iter = list; iter; iter = iter->next) {
 		BraseroMedium *medium;
 		NautilusBurnDrive *drive;
-		NautilusBurnMediaType medium_type;
 
 		drive = iter->data;
-		medium_type = nautilus_burn_drive_get_media_type (drive);
-		if (medium_type < NAUTILUS_BURN_MEDIA_TYPE_CD)
-			continue;
-
 		medium = brasero_medium_new (drive);
 		g_object_set_data (G_OBJECT (drive),
 				   BRASERO_MEDIUM_KEY,
