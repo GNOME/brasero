@@ -1,3 +1,14 @@
+2007-12-08  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix for md5 checksuming with DVD+RW and such
+	See #499591 – Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work!
+
+	Also added a debug line in burn-medium.c that indicates the name of the drive we're initializing
+
+	* src/burn-caps.c: (brasero_burn_caps_new_checksuming_task):
+	* src/burn-medium.c: (brasero_medium_init_real):
+	* src/burn.c: (brasero_burn_check_real):
+
 2007-12-07  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Additional fix for #499571 – *** glibc detected *** brasero: double free or corruption (top): 0x08203400 ***

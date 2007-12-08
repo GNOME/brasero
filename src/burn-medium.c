@@ -1448,11 +1448,16 @@ end:
 static void
 brasero_medium_init_real (BraseroMedium *object, int fd)
 {
+	gchar *name;
 	BraseroBurnResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiErrCode code = 0;
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
+
+	name = nautilus_burn_drive_get_name_for_display (priv->drive);
+	BRASERO_BURN_LOG ("Initializing information for medium in %s", name);
+	g_free (name);
 
 	result = brasero_medium_get_medium_type (object, fd, &code);
 	if (result != BRASERO_BURN_OK)

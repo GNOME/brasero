@@ -1418,6 +1418,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 					BraseroBurnSession *session,
 					GError **error)
 {
+	BraseroTrackType track_type;
 	BraseroPlugin *candidate;
 	BraseroCaps *last_caps;
 	BraseroTrackType input;
@@ -1475,11 +1476,22 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 
 	list = NULL;
 	last_caps = NULL;
+	brasero_track_get_type (track, &track_type);
 	for (iter = links; iter; iter = iter->next) {
 		BraseroCapsLink *link;
 		GSList *plugins;
 
 		link = iter->data;
+
+		/* NOTE: that shouldn't happen */
+		if (!link->caps)
+			continue;
+
+		BRASERO_BURN_LOG_TYPE (&link->caps->type, "Trying link");
+
+		/* see if this link leads to the required track type */
+		if (!brasero_track_type_equal (&track_type, &link->caps->type))
+			continue;
 
 		/* Make sure we have a candidate */
 		candidate = NULL;

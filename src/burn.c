@@ -1663,8 +1663,10 @@ brasero_burn_check_real (BraseroBurn *self,
 				  self);
 
 
-		/* make sure one last time it is not mounted */
+		/* make sure one last time it is not mounted IF and only IF the
+		 * checksum type is NOT FILE_MD5 */
 		if (priv->dest
+		&&  checksum_type == BRASERO_CHECKSUM_MD5
 		&&  nautilus_burn_drive_is_mounted (priv->dest)
 		&& !NCB_DRIVE_UNMOUNT (priv->dest, NULL)) {
 			g_set_error (error,
