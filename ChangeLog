@@ -1,5 +1,17 @@
 2007-12-08  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Improved debugging output and maybe fixed a couple of problem from
+	#499591 – Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work!
+
+	* src/burn-caps.c: (brasero_burn_caps_can_blank),
+	(brasero_caps_try_output), (brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_get_flags):
+	* src/burn-debug.c: (brasero_debug_burn_flags_to_string),
+	(brasero_burn_debug_flags_type_message):
+	* src/burn-debug.h:
+
+2007-12-08  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix for notification appearing twice.
 	See #499591 – Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work!
 

@@ -53,6 +53,12 @@ G_BEGIN_DECLS
 						 format,			\
 						 ##__VA_ARGS__);
 
+#define BRASERO_BURN_LOG_FLAGS(flags_MACRO, format, ...)			\
+		brasero_burn_debug_flags_type_message (flags_MACRO,		\
+						       G_STRLOC,		\
+						       format,			\
+						       ##__VA_ARGS__);
+
 #define BRASERO_BURN_LOG_TYPE(type_MACRO, format, ...)				\
 		BRASERO_BURN_LOG_WITH_TYPE (type_MACRO,				\
 					    BRASERO_PLUGIN_IO_NONE,		\
@@ -85,7 +91,11 @@ brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 				       const gchar *location,
 				       const gchar *format,
 				       ...);
-
+void
+brasero_burn_debug_flags_type_message (BraseroBurnFlag flags,
+				       const gchar *location,
+				       const gchar *format,
+				       ...);
 void
 brasero_burn_debug_message (const gchar *location,
 			    const gchar *format,

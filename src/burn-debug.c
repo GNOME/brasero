@@ -97,6 +97,72 @@ brasero_burn_debug_messagev (const gchar *location,
 }
 
 static void
+brasero_debug_burn_flags_to_string (gchar *buffer,
+				    BraseroBurnFlag flags)
+{
+	if (flags & BRASERO_BURN_FLAG_EJECT)
+		strcat (buffer, "eject, ");
+	if (flags & BRASERO_BURN_FLAG_NOGRACE)
+		strcat (buffer, "no grace, ");
+	if (flags & BRASERO_BURN_FLAG_DAO)
+		strcat (buffer, "dao, ");
+	if (flags & BRASERO_BURN_FLAG_OVERBURN)
+		strcat (buffer, "overburn, ");
+	if (flags & BRASERO_BURN_FLAG_BURNPROOF)
+		strcat (buffer, "burnproof, ");
+	if (flags & BRASERO_BURN_FLAG_NO_TMP_FILES)
+		strcat (buffer, "no tmp file, ");
+	if (flags & BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT)
+		strcat (buffer, "clean output, ");
+	if (flags & BRASERO_BURN_FLAG_DONT_OVERWRITE)
+		strcat (buffer, "no overwrite, ");
+	if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
+		strcat (buffer, "blank before, ");
+	if (flags & BRASERO_BURN_FLAG_APPEND)
+		strcat (buffer, "append, ");
+	if (flags & BRASERO_BURN_FLAG_MERGE)
+		strcat (buffer, "merge, ");
+	if (flags & BRASERO_BURN_FLAG_MULTI)
+		strcat (buffer, "multin ");
+	if (flags & BRASERO_BURN_FLAG_DUMMY)
+		strcat (buffer, "dummy, ");
+	if (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
+		strcat (buffer, "check size, ");
+	if (flags & BRASERO_BURN_FLAG_FAST_BLANK)
+		strcat (buffer, "fast blank");	
+}
+
+void
+brasero_burn_debug_flags_type_message (BraseroBurnFlag flags,
+				       const gchar *location,
+				       const gchar *format,
+				       ...)
+{
+	gchar buffer [256];
+	gchar *format_real;
+	va_list arg_list;
+
+	if (!debug)
+		return;
+
+	brasero_debug_burn_flags_to_string (buffer, flags);
+
+	format_real = g_strdup_printf ("At %s: %s %s",
+				       location,
+				       format,
+				       buffer);
+
+	va_start (arg_list, format);
+	g_logv (BRASERO_BURN_LOG_DOMAIN,
+		G_LOG_LEVEL_DEBUG,
+		format_real,
+		arg_list);
+	va_end (arg_list);
+
+	g_free (format_real);
+}
+
+static void
 brasero_debug_medium_info_to_string (gchar *buffer,
 				     BraseroMedia media)
 {

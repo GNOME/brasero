@@ -603,9 +603,6 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 	}
 
 	flags = brasero_burn_session_get_flags (session);
-
-	BRASERO_BURN_LOG_DISC_TYPE (media, "checking blanking caps for");
-
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
 		GSList *links;
@@ -617,9 +614,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 		if ((media & caps->type.subtype.media) != media)
 			continue;
 
-		BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
-					    BRASERO_PLUGIN_IO_NONE,
-					    "Searching links for caps");
+		BRASERO_BURN_LOG_TYPE (&caps->type, "Searching links for caps");
 
 		for (links = caps->links; links; links = links->next) {
 			GSList *plugins;
@@ -642,11 +637,15 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 				if (!brasero_plugin_get_active (plugin))
 					continue;
 
-				if (brasero_plugin_check_blank_flags (plugin, media, flags))
+				if (brasero_plugin_check_blank_flags (plugin, media, flags)) {
+					BRASERO_BURN_LOG_DISC_TYPE (media, "Can blank");
 					return BRASERO_BURN_OK;
+				}
 			}
 		}
 	}
+
+	BRASERO_BURN_LOG_DISC_TYPE (media, "No blanking capabilities for");
 
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
@@ -1697,7 +1696,6 @@ brasero_caps_try_output (BraseroBurnFlag session_flags,
 
 	/* here we search the start caps */
 	caps = brasero_caps_find_start_caps (output);
-
 	if (!caps) {
 		BRASERO_BURN_LOG ("No caps available");
 		return FALSE;
@@ -1784,36 +1782,6 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 				       io_flags);
 }
 
-static void
-brasero_burn_caps_get_output (BraseroBurnCaps *self,
-			      BraseroBurnSession *session,
-			      BraseroTrackType *output)
-{
-	if (!brasero_burn_session_is_dest_file (session)) {
-		BraseroBurnFlag flags;
-
-		output->type = BRASERO_TRACK_TYPE_DISC;
-		output->subtype.media = brasero_burn_session_get_dest_media (session);
-
-		/* that's a special case: if a disc is rewritable but closed we
-		 * may consider it to be blank on condition that we can blank it
-		 * and that the flag blank before is set */
-		flags = brasero_burn_session_get_flags (session);
-		if (BRASERO_MEDIUM_IS (output->subtype.media, BRASERO_MEDIUM_CLOSED|BRASERO_MEDIUM_REWRITABLE)
-		&&  brasero_burn_caps_can_blank (self, session) == BRASERO_BURN_OK
-		&& (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
-			output->subtype.media &= ~(BRASERO_MEDIUM_CLOSED|
-						   BRASERO_MEDIUM_HAS_DATA|
-						   BRASERO_MEDIUM_HAS_AUDIO);
-			output->subtype.media |= BRASERO_MEDIUM_BLANK;
-		}
-	}
-	else {
-		output->type = BRASERO_TRACK_TYPE_IMAGE;
-		output->subtype.img_format = brasero_burn_session_get_output_format (session);
-	}
-}
-
 BraseroBurnResult
 brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 				      BraseroBurnSession *session,
@@ -1821,24 +1789,35 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 {
 	gboolean result;
 	BraseroTrackType output;
+	BraseroPluginIOFlag io_flags;
 
-	BRASERO_BURN_LOG_WITH_TYPE (input,
-				    BRASERO_PLUGIN_IO_NONE,
-				    "Checking support for input");
+	BRASERO_BURN_LOG_TYPE (input, "Checking support for input");
 
-	brasero_burn_caps_get_output (self,
-				      session,
-				      &output);
+	if (!brasero_burn_session_is_dest_file (session)) {
+		output.type = BRASERO_TRACK_TYPE_DISC;
+		output.subtype.media = brasero_burn_session_get_dest_media (session);
+
+		/* NOTE: for the special case where a disc could be rewritten
+		 * and cannot be handled as such but needs prior blanking, we
+		 * handle that situation in previous function.*/
+	}
+	else {
+		output.type = BRASERO_TRACK_TYPE_IMAGE;
+		output.subtype.img_format = brasero_burn_session_get_output_format (session);
+	}
+
+	if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
+		io_flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
+	else
+		io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
 
 	result = brasero_caps_try_output_with_blanking (self,
 							session,
 							&output,
 							input,
-							BRASERO_PLUGIN_IO_ACCEPT_FILE);
+							io_flags);
 	if (!result) {
-		BRASERO_BURN_LOG_WITH_TYPE (input,
-					    BRASERO_PLUGIN_IO_NONE,
-					    "Input not supported");
+		BRASERO_BURN_LOG_TYPE (input, "Input not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -2144,7 +2123,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		*supported = supported_flags;
 		*compulsory = compulsory_flags;
 
-		BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
+		BRASERO_BURN_LOG_FLAGS (supported_flags, "FLAGS: supported");
+		BRASERO_BURN_LOG_FLAGS (compulsory_flags, "FLAGS: compulsory");
 		return BRASERO_BURN_OK;
 	}
 
