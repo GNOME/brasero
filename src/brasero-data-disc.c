@@ -1019,7 +1019,7 @@ brasero_data_disc_notify_user_real (gpointer data)
 	if (disc->priv->notification)
 		return TRUE;
 
-	/* is the widget ready and is the toplevel window active ? */
+	/* is the widget ready and is the toplevel window active */
 	toplevel = gtk_widget_get_toplevel (notification->widget);
 	if (!GTK_WIDGET_REALIZED (notification->widget)
 	||  !gtk_window_has_toplevel_focus (GTK_WINDOW (toplevel)))
@@ -8588,11 +8588,14 @@ brasero_data_disc_set_drive (BraseroDisc *disc, NautilusBurnDrive *drive)
 	BraseroDataDisc *data_disc;
 
 	data_disc = BRASERO_DATA_DISC (disc);
+
+	if (nautilus_burn_drive_equal (data_disc->priv->drive, drive))
+		return;
+
 	if (data_disc->priv->drive)
 		nautilus_burn_drive_unref (data_disc->priv->drive);
 
 	data_disc->priv->drive = drive;
-
 	brasero_data_disc_update_multi_button_state (data_disc);
 
 	if (drive)
