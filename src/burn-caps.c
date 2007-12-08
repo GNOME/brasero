@@ -1486,11 +1486,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 		if (!link->caps)
 			continue;
 
-		BRASERO_BURN_LOG_TYPE (&link->caps->type, "Trying link");
-
-		/* see if this link leads to the required track type */
-		if (!brasero_track_type_equal (&track_type, &link->caps->type))
-			continue;
+		BRASERO_BURN_LOG_TYPE (&link->caps->type, "Trying link to");
 
 		/* Make sure we have a candidate */
 		candidate = NULL;
@@ -1519,6 +1515,10 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 			last_caps = link->caps;
 			break;
 		}
+
+		/* don't go any further if that's a DISC type */
+		if (link->caps->type.type == BRASERO_TRACK_TYPE_DISC)
+			continue;
 
 		/* the caps itself is not the right one so we try to 
 		 * go through its links to find the right caps. */
