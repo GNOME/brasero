@@ -2290,8 +2290,11 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		compulsory_flags |= blank_compulsory;
 	}
 
-	*supported = supported_flags;
-	*compulsory = compulsory_flags;
+	if (supported)
+		*supported = supported_flags;
+
+	if (compulsory)
+		*compulsory = compulsory_flags;
 
 	BRASERO_BURN_LOG ("FLAGS: supported %i %i", supported_flags, compulsory_flags);
 
