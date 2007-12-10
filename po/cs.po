@@ -1,18 +1,11 @@
-# German translation of brasero.
-# Copyright (C) 2006 THE brasero'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the brasero package.
-# Georg Funke <schorsch.funke@freenet.de>, 2006.
-# , fuzzy
-#
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: brasero 0.5.2\n"
+"Project-Id-Version: brasero 0.7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-26 19:10+0200\n"
-"PO-Revision-Date: 2007-04-15 19:57+0100\n"
-"Last-Translator: Zbynek Mrkvicka <zbynek@mrkvicka.eu>\n"
-"Language-Team: Czech <zbynek@mrkvicka.eu>\n"
+"POT-Creation-Date: 2007-09-08 03:48+0100\n"
+"PO-Revision-Date: 2007-12-03 20:26+0100\n"
+"Last-Translator: ZOiD <sp.pok@seznam.cz>\n"
+"Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,867 +13,1636 @@ msgstr ""
 "X-Poedit-Country: CZECH REPUBLIC\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
 
-#: ../src/brasero-ncb.c:240
-msgid "(u)mount command could not be found in the path"
-msgstr "příkaz (u)mount nebyl nalezen"
+#: ../data/brasero.desktop.in.h:1
+msgid "Brasero Disc Burner"
+msgstr "Brasero - Aplikace na vypalování"
 
-#: ../src/brasero-ncb.c:268
-msgid "the drive could not be mounted"
-msgstr "jednotku nelze připojit"
+#: ../data/brasero.desktop.in.h:2
+msgid "Burn Image"
+msgstr "Vypálit obraz"
 
-#: ../src/brasero-ncb.c:424
-msgid "the disc mount point could not be retrieved."
-msgstr "přípojný bod disku nelze nalézt."
-
-#: ../src/burn-md5.c:205
-#: ../src/burn-md5.c:284
-#, c-format
-msgid "the file %s couldn't be read (%s)"
-msgstr "soubor %s nelze číst (%s)"
-
-#: ../src/utils.c:255
-#, c-format
-msgid "%d:%02i hour"
-msgid_plural "%i:%02i hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: ../src/utils.c:286
-msgid "KiB"
-msgstr "KiB"
-
-#: ../src/utils.c:286
-msgid "MiB"
-msgstr "MiB"
-
-#: ../src/utils.c:286
-msgid "GiB"
-msgstr "GiB"
-
-#: ../src/utils.c:784
-msgid "This file can't be opened:"
-msgstr "Tento soubor nelze otevřít:"
-
-#: ../src/utils.c:786
-#: ../src/utils.c:812
-msgid "File error"
-msgstr "Chyba souboru"
-
-#: ../src/utils.c:789
-msgid "there is no application defined for this file."
-msgstr "pro tento soubor není určena aplikace."
-
-#: ../src/utils.c:810
-msgid "File can't be opened:"
-msgstr "Soubor nelze otevřít:"
-
-#: ../src/utils.c:815
-#, c-format
-msgid "application %s can't be started."
-msgstr "nelze spustit aplikaci %s."
-
-#: ../src/utils.c:1062
-msgid ""
-"<span foreground='grey50'><big>To add files to this project you can:\n"
-"</big>copy them (from nautilus for example) and paste them here\n"
-"select them and click on the add button\n"
-"double click on them\n"
-"drag them here\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"<big>To remove files from this project you can:\n"
-"</big>select them, click right and choose \"Remove\" from the menu\n"
-"select them and click on the remove button\n"
-"select them and press \"Delete\" key\n"
-"</span>"
-msgstr ""
-
-#: ../src/menu.h:56
-msgid "_Project"
-msgstr "_Projekt"
-
-#: ../src/menu.h:57
-msgid "_View"
-msgstr "_Zobrazit"
-
-#: ../src/menu.h:58
-msgid "_Edit"
-msgstr "_Upravit"
-
-#: ../src/menu.h:59
-msgid "_Disc"
-msgstr "_Disk"
-
-#: ../src/menu.h:60
-msgid "_Help"
-msgstr "_Nápověda"
-
-#: ../src/menu.h:62
-msgid "_Erase"
-msgstr "_Smazat"
-
-#: ../src/menu.h:63
-msgid "Erase a disc"
-msgstr "Smazat disk"
-
-#: ../src/menu.h:64
-msgid "_Check integrity"
-msgstr "Z_kontrolovat integritu"
-
-#: ../src/menu.h:65
-msgid "Check data integrity of disc"
-msgstr "Zkontrolovat integritu dat na disku"
-
-#: ../src/menu.h:66
-msgid "E_xit"
-msgstr "U_končit"
-
-#: ../src/menu.h:67
-msgid "Exit the program"
-msgstr "Ukončit program"
-
-#: ../src/menu.h:68
-msgid "About"
-msgstr "O _aplikaci"
-
-#: ../src/menu.h:71
-msgid "_Disc Info"
-msgstr "Informace o C_D/DVD"
-
-#: ../src/menu.h:72
-msgid "Display information on blank discs currently inserted"
-msgstr ""
-
-#: ../src/main.c:70
-msgid "Open the specified project"
+#: ../data/brasero.desktop.in.h:3
+msgid "Open project"
 msgstr "Otevřít projekt"
 
-#: ../src/main.c:71
-msgid "PROJECT"
-msgstr "PROJEKT"
+#: ../data/brasero.desktop.in.h:4
+msgid "Write and copy CD / DVD"
+msgstr "Zapsat a kopírovat CD / DVD"
 
-#: ../src/main.c:74
-msgid "Open an audio project adding the URIs given on the command line"
+#: ../data/brasero.schemas.in.h:1
+msgid "Contains the list of additionnal plugins brasero will use to burn discs. If set to NULL, brasero will load them all."
+msgstr "Obsahuje seznam zásuvných modulů, které brasero použije k vypalování disků. Je-li nastaveno na NULL, načte je brasero všechny."
+
+#: ../data/brasero.schemas.in.h:2
+msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
+msgstr "Obsahuje jméno oblíbené instalované soupravy vypalovacího enginu. Bude-li to možné bude použita."
+
+#: ../data/brasero.schemas.in.h:3
+msgid "Default height for image preview."
+msgstr "Výchozí výška pro náhled obrázků."
+
+#: ../data/brasero.schemas.in.h:4
+msgid "Default height for video preview."
+msgstr "Výchozí výška pro náhled videa."
+
+#: ../data/brasero.schemas.in.h:5
+msgid "Default width for image preview."
+msgstr "Výchozí šířka pro náhled obrázků."
+
+#: ../data/brasero.schemas.in.h:6
+msgid "Default width for video preview."
+msgstr "Výchozí šířka pro náhled videa."
+
+#: ../data/brasero.schemas.in.h:7
+msgid "Enable file preview"
+msgstr "Povolit náhledy souborů"
+
+#: ../data/brasero.schemas.in.h:8
+msgid "Enable immed flag with cdrecord"
+msgstr "Povolit přepínač -immed při použití cdrecord"
+
+#: ../data/brasero.schemas.in.h:9
+msgid "Favourite burn engine"
+msgstr "Oblíbený vypalovací engine"
+
+#: ../data/brasero.schemas.in.h:10
+msgid "Height for video preview"
+msgstr "Výška náhledu videa"
+
+#: ../data/brasero.schemas.in.h:11
+msgid "Height of image preview"
+msgstr "výška náhledu obrázku"
+
+#: ../data/brasero.schemas.in.h:12
+msgid "Layout of UI"
+msgstr "Rozložení UI"
+
+#: ../data/brasero.schemas.in.h:13
+msgid "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
+msgstr "Použito jen ve spojení s přepínačem -immed pro cdrecord. Viz immed_flag."
+
+#: ../data/brasero.schemas.in.h:14
+msgid "Pane to display for audio projects"
+msgstr "Panel u hudebních projektů"
+
+#: ../data/brasero.schemas.in.h:15
+msgid "Pane to display for data projects"
+msgstr "Panel u datových projektů"
+
+#: ../data/brasero.schemas.in.h:16
+msgid "Should brasero ask to be set as the default app to burn"
+msgstr "Má se brasero ptát, zda se má nastavit jako výchozí aplikace pro vypalování"
+
+#: ../data/brasero.schemas.in.h:17
+msgid "Should brasero ask to be set as the default app to burn audio or data. Set to true, brasero won't ask."
+msgstr "Má se brasero ptát, zda se má nastavit jako výchozí aplikace pro vypalování hudby nebo dat. Pokud je nastaveno, brasero se ptát nebude."
+
+#: ../data/brasero.schemas.in.h:18
+msgid "Should brasero filter broken symlinks files"
+msgstr "Má brasero filtrovat poškozené symbolické odkazy?"
+
+#: ../data/brasero.schemas.in.h:19
+msgid "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
+msgstr "Má brasero filtrovat poškozené symbolické odkazy? Zapnuto - brasero bude filtrovat poškozené symbolické odkazy."
+
+#: ../data/brasero.schemas.in.h:20
+msgid "Should brasero filter hidden files"
+msgstr "Má brasero filtrovat skryté soubory?"
+
+#: ../data/brasero.schemas.in.h:21
+msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
+msgstr "Má brasero filtrovat skryté soubory? Zapnuto - brasero bude filtrovat skryté soubory."
+
+#: ../data/brasero.schemas.in.h:22
+msgid "Should brasero notify when files are filtered"
+msgstr "Má brasero oznámit filtrování souborů?"
+
+#: ../data/brasero.schemas.in.h:23
+msgid "Should brasero notify when files are filtered. Set to true, brasero will display the notification."
+msgstr "Má brasero oznámit filtrování souborů? Zapnuto - brasero zobrazí oznámení, dojde-li k odfiltrování souborů."
+
+#: ../data/brasero.schemas.in.h:24
+msgid "The pane to display with audio projects. It should be one of the following: Chooser/Search/Playlist/EmptyView."
+msgstr "Panel zobrazující se při tvorbě hudebního projektu. Měl by být jeden z následujících: Chooser/Search/Playlist/EmptyView"
+
+#: ../data/brasero.schemas.in.h:25
+msgid "The pane to display with data projects. It should be one of the following: Chooser/Search/EmptyView."
+msgstr "Panel zobrazující se při zvolení datového projektu. Měl by být jeden z následujících: Chooser/Search/EmptyView."
+
+#: ../data/brasero.schemas.in.h:26
+msgid "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
+msgstr "Tento klíč nastavuje pozici panelu projektu (0 = vpravo, 1 = vlevo, 2 = nahoře, 3 = dole)"
+
+#: ../data/brasero.schemas.in.h:27
+msgid "Used in conjunction with -immed flag with cdrecord"
+msgstr "Použito ve spojení s přepínačem -immed pro cdrecord."
+
+#: ../data/brasero.schemas.in.h:28
+msgid "Whether to display file preview. Set to true to use it."
+msgstr "Zobrazení náhledu souboru. Nastavit na pravda pro zobrazení"
+
+#: ../data/brasero.schemas.in.h:29
+msgid "Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
+msgstr "Použití -immed přepínače s cdrecord. Používat opatrně (nastavení na pravda). Jedná se jen o dočasné řešení pro určité jednotky/konfigurace."
+
+#: ../data/brasero.schemas.in.h:30
+msgid "White list of additionnal plugins to use"
+msgstr "Seznam povolených doplňkových zásuvných modulů"
+
+#: ../data/brasero.schemas.in.h:31
+msgid "Width for video preview"
+msgstr "Šířka náhledu videa"
+
+#: ../data/brasero.schemas.in.h:32
+msgid "width for image preview"
+msgstr "Šířka náhledu obrázku"
+
+#: ../data/brasero.xml.in.h:1
+msgid "Brasero project file"
+msgstr "Soubor projektu brasero"
+
+#: ../data/brasero.xml.in.h:2
+msgid "Cdrdao toc file"
+msgstr "Soubor cdrdao toc"
+
+#: ../src/brasero-dest-selection.c:653
+msgid "Do you really want to keep the current extension for the disc image name?"
+msgstr "Opravdu chcete ponechat stávající příponu pro název obrazu disku?"
+
+#: ../src/brasero-dest-selection.c:656
+msgid "Image Extension"
+msgstr "Přípona obrazu"
+
+#: ../src/brasero-dest-selection.c:658
+msgid "If you choose to keep it programs may not be able to recognize the file type properly."
 msgstr ""
 
-#: ../src/main.c:78
-msgid "Open a data project adding the URIs given on the command line"
-msgstr ""
-
-#: ../src/main.c:82
-#: ../src/brasero-project-manager.c:119
-msgid "Copy a disc"
-msgstr "Kopírovat disk"
-
-#: ../src/main.c:86
-msgid "Uri of an image file to be burnt (autodetected)"
-msgstr ""
-
-#: ../src/main.c:90
-msgid "Force brasero to display the project selection page"
-msgstr ""
-
-#: ../src/main.c:94
-msgid "Open a data project with the contents of nautilus-cd-burner"
-msgstr "Otevřít datový projekt obsahující soubory Tvůrce CD/DVD Nautilu"
-
-#: ../src/main.c:98
-msgid "Display debug statements on stdout"
-msgstr "Zobrazit ladící informace na standardním výstupu"
-
-#: ../src/main.c:203
-msgid "CD/DVD burning application"
-msgstr "Aplikace pro vypalování CD/DVD"
-
-#: ../src/main.c:208
-msgid "translator-credits"
-msgstr "Zbyněk Mrkvička <zbynek@mrkvicka.eu>"
-
-#: ../src/main.c:291
-msgid "Brasero projects"
-msgstr "Projekty Brasero"
-
-#: ../src/main.c:419
-msgid "Incompatible command line options used:"
-msgstr "Byly použity nekompatibilní přepínače na příkazovém řádku:"
-
-#: ../src/main.c:421
-msgid "Incompatible options"
-msgstr "Nekompatibilní přepínače"
-
-#: ../src/main.c:424
-msgid "only one option can be given at a time."
-msgstr "lze zadat pouze jednu možnost."
-
-#: ../src/main.c:509
-msgid "[URI] [URI] ..."
-msgstr ""
-
-#: ../src/main.c:517
-msgid "CD/DVD burning"
-msgstr "Vypalování CD/DVD"
-
-#: ../src/blank-dialog.c:128
-msgid "fast blanking"
-msgstr "rychlé mazání"
-
-#: ../src/blank-dialog.c:130
-msgid "simulation"
-msgstr "simulace"
-
-#: ../src/blank-dialog.c:138
-msgid "Blank"
-msgstr "Smazat"
-
-#: ../src/blank-dialog.c:171
-msgid "Disc blanking"
-msgstr "Mazání disku"
-
-#: ../src/blank-dialog.c:229
-#: ../src/blank-dialog.c:253
-#: ../src/blank-dialog.c:275
-msgid "Unneeded operation"
-msgstr "Nepotřebná operace"
-
-#: ../src/blank-dialog.c:251
-msgid "DVDRW discs don't support simulated blanking."
-msgstr "Disky DVDRW nepodporují simulované vymazání."
-
-#: ../src/blank-dialog.c:256
-msgid "You can nevertheless blank it."
-msgstr "Přesto je můžete vymazat."
-
-#: ../src/blank-dialog.c:272
-msgid ""
-"You can use this type of DVD without prior blanking.\n"
-"NOTE: it doesn't support simulation."
-msgstr ""
-
-#: ../src/blank-dialog.c:278
-msgid "You can nevertheless blank it with the slow option if you want to."
-msgstr ""
-
-#: ../src/blank-dialog.c:308
-#: ../src/burn-dialog.c:2049
-msgid "Do you really want to quit?"
-msgstr "Opravdu chcete skončit?"
-
-#: ../src/blank-dialog.c:310
-#: ../src/burn-dialog.c:2051
-msgid "Confirm"
-msgstr "Potvrdit"
-
-#: ../src/blank-dialog.c:313
-#: ../src/burn-dialog.c:2055
-msgid "Interrupting the process may make disc unusable."
-msgstr "Přerušení průběhu může zapříčinit zničení disku."
-
-#: ../src/blank-dialog.c:318
-#: ../src/burn-dialog.c:482
-#: ../src/burn-dialog.c:533
-#: ../src/burn-dialog.c:2061
-msgid "Continue"
-msgstr "Pokračovat"
-
-#: ../src/blank-dialog.c:450
-msgid "Error Blanking:"
-msgstr "Chyba při mazání:"
-
-#: ../src/blank-dialog.c:452
-#: ../src/blank-dialog.c:477
-msgid "Blanking finished"
-msgstr "Mazání dokončeno"
-
-#: ../src/blank-dialog.c:462
-msgid "Unexpected error"
-msgstr "Neočekávaná chyba"
-
-#: ../src/blank-dialog.c:475
-msgid "The disc was successfully blanked:"
-msgstr "Disk byl úspěšně vymazán:"
-
-#: ../src/blank-dialog.c:480
-msgid "the disc is ready for use."
-msgstr "disk je připraven k použití."
-
-#: ../src/burn-dialog.c:173
-msgid "replace the disc with a rewritable disc holding data."
-msgstr ""
-
-#: ../src/burn-dialog.c:175
-msgid "replace the disc with a disc holding data."
-msgstr ""
-
-#: ../src/burn-dialog.c:179
-msgid "insert a rewritable disc holding data."
-msgstr "vložte do mechaniky přepisovatelný disk obsahující data."
-
-#: ../src/burn-dialog.c:181
-msgid "insert a disc holding data."
-msgstr "vložte disk obsahující data."
-
-#: ../src/burn-dialog.c:196
-#, c-format
-msgid "replace the disc with a recordable CD with a least %i MiB free."
-msgstr ""
-
-#: ../src/burn-dialog.c:199
-msgid "replace the disc with a recordable CD."
-msgstr "nahraďte disk zapisovatelným CD."
-
-#: ../src/burn-dialog.c:203
-#, c-format
-msgid "insert a recordable CD with a least %i MiB free."
-msgstr "vložte zapisovatelné CD s nejméně %i MiB volného místa."
-
-#: ../src/burn-dialog.c:206
-msgid "insert a recordable CD."
-msgstr "vložte zapisovatelné CD."
-
-#: ../src/burn-dialog.c:212
-#, c-format
-msgid "replace the disc with a recordable DVD with a least %i MiB free."
-msgstr "nahraďte disk zapisovatelným DVD s nejméně %i MiB volného místa."
-
-#: ../src/burn-dialog.c:215
-msgid "replace the disc with a recordable DVD."
-msgstr "nahraďte disk zapisovatelným DVD."
-
-#: ../src/burn-dialog.c:219
-#, c-format
-msgid "insert a recordable DVD with a least %i MiB free."
-msgstr "vložte zapisovatelné DVD s nejméně %i MiB volného místa."
-
-#: ../src/burn-dialog.c:222
-msgid "insert a recordable DVD."
-msgstr "vložte zapisovatelné DVD."
-
-#: ../src/burn-dialog.c:227
-#, c-format
-msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
-msgstr "nahraďte disk zapisovatelným CD nebo DVD s nejméně %i MiB volného místa."
-
-#: ../src/burn-dialog.c:230
-msgid "replace the disc with a recordable CD or DVD."
-msgstr "nahraďte disk zapisovatelným CD nebo DVD."
-
-#: ../src/burn-dialog.c:234
-#, c-format
-msgid "insert a recordable CD or DVD with a least %i MiB free."
-msgstr "vložte zapisovatelné CD nebo DVD s nejméně %i MiB volného místa."
-
-#: ../src/burn-dialog.c:237
-msgid "insert a recordable CD or DVD."
-msgstr "vložte zapisovatelné CD nebo DVD."
-
-#: ../src/burn-dialog.c:285
-#, c-format
-msgid "The disc in \"%s\" is busy:"
-msgstr "Disk v \"%s\" je zaneprázdněn:"
-
-#: ../src/burn-dialog.c:287
-msgid "make sure another application is not using it."
-msgstr "ujistěte se, že jednotku nepoužívá zádná další aplikace."
-
-#: ../src/burn-dialog.c:290
-#, c-format
-msgid "There is no disc in \"%s\":"
-msgstr "V \"%s\" není žádný disk:"
-
-#: ../src/burn-dialog.c:295
-#, c-format
-msgid "The disc in \"%s\" is not rewritable:"
-msgstr "Disk v \"%s\" není přepisovatelný:"
-
-#: ../src/burn-dialog.c:300
-#, c-format
-msgid "The disc in \"%s\" is empty:"
-msgstr "Disk v \"%s\" je prázdný:"
-
-#: ../src/burn-dialog.c:305
-#, c-format
-msgid "The disc in \"%s\" is not writable:"
-msgstr "Disk v \"%s\" není zapisovatelný:"
-
-#: ../src/burn-dialog.c:310
-#, c-format
-msgid "The disc in \"%s\" is a DVD:"
-msgstr "Disk v \"%s\" je DVD:"
-
-#: ../src/burn-dialog.c:315
-#, c-format
-msgid "The disc in \"%s\" is a CD:"
-msgstr "Disk v \"%s\" je CD:"
-
-#: ../src/burn-dialog.c:320
-#, c-format
-msgid "The disc in \"%s\" is not big enough:"
-msgstr "Disk v \"%s\" nemá dostatečnou velikost:"
-
-#: ../src/burn-dialog.c:329
-#, c-format
-msgid "The disc in \"%s\" needs to be reloaded:"
-msgstr ""
-
-#: ../src/burn-dialog.c:331
-msgid "eject the disc and reload it."
-msgstr ""
-
-#: ../src/burn-dialog.c:361
-msgid "Waiting for disc insertion"
-msgstr "Čekám na vložení disku"
-
-#: ../src/burn-dialog.c:363
-msgid "Waiting for disc replacement"
-msgstr "Čekám na výměnu disků"
-
-#: ../src/burn-dialog.c:409
-msgid "The disc in the drive holds data:"
-msgstr "Disk v jednotce obsahuje data:"
-
-#: ../src/burn-dialog.c:411
-msgid "Possible loss of data"
-msgstr "Možná ztráta dat"
-
-#: ../src/burn-dialog.c:414
-msgid ""
-"Do you want to erase the current disc?\n"
-"Or replace the current disc with a new disc?"
-msgstr ""
-
-#: ../src/burn-dialog.c:420
-msgid "Replace disc"
-msgstr ""
-
-#: ../src/burn-dialog.c:425
-msgid "Erase disc"
-msgstr "Vymazat disk"
-
-#: ../src/burn-dialog.c:466
-msgid "Recording audio tracks on a rewritable disc is not advised:"
-msgstr "Vytváření audio stop na přepisovatelném disku není doporučeno:"
-
-#: ../src/burn-dialog.c:468
-msgid "Rewritable disc"
-msgstr "Přepisovatelný disk"
-
-#: ../src/burn-dialog.c:471
-msgid ""
-"you might not be able to listen to it with stereos.\n"
-"Do you want to continue anyway?"
-msgstr ""
-
-#: ../src/burn-dialog.c:473
-msgid "Replace the disc"
-msgstr ""
-
-#: ../src/burn-dialog.c:523
-#: ../src/brasero-disc-option-dialog.c:290
-msgid "Some files don't have a suitable name for a Windows-compatible CD:"
-msgstr ""
-
-#: ../src/burn-dialog.c:526
-msgid "Do you want to continue with Windows compatibility disabled?"
-msgstr ""
-
-#: ../src/burn-dialog.c:528
-#: ../src/brasero-disc-option-dialog.c:295
-msgid "Windows compatibility"
-msgstr "Kompatibilita s Windows"
-
-#: ../src/burn-dialog.c:737
-msgid "Close the application if the burn process is successful"
-msgstr "Zavřít aplikaci po úspěšném ukončení průbehu vypalování"
-
-#: ../src/burn-dialog.c:912
-#: ../src/burn-basics.c:57
-msgid "Creating image"
-msgstr "Vytvářím obraz"
-
-#: ../src/burn-dialog.c:922
-#: ../src/burn-dialog.c:926
-msgid "Burning DVD"
-msgstr "Vypaluji DVD"
-
-#: ../src/burn-dialog.c:923
-msgid "<big><b>Burning data DVD</b></big>"
-msgstr "<big><b>Vypaluji datové DVD</b></big>"
-
-#: ../src/burn-dialog.c:927
-msgid "<big><b>Burning image to DVD</b></big>"
-msgstr "<big><b>Vypaluji obraz na DVD</b></big>"
-
-#: ../src/burn-dialog.c:930
-msgid "Copying DVD"
-msgstr "Kopíruji DVD"
-
-#: ../src/burn-dialog.c:931
-msgid "<big><b>Copying data DVD</b></big>"
-msgstr "<big><b>Kopíruji datové DVD</b></big>"
-
-#: ../src/burn-dialog.c:936
-#: ../src/burn-dialog.c:942
-#: ../src/burn-dialog.c:950
-msgid "Burning CD"
-msgstr "Vypaluji CD"
-
-#: ../src/burn-dialog.c:937
-msgid "<big><b>Burning audio CD</b></big>"
-msgstr "<big><b>Vypaluji hudební CD</b></big>"
-
-#: ../src/burn-dialog.c:943
-msgid "<big><b>Burning data CD</b></big>"
-msgstr "<big><b>Vypaluji datové CD</b></big>"
-
-#: ../src/burn-dialog.c:946
-msgid "Copying CD"
-msgstr "Kopíruji CD"
-
-#: ../src/burn-dialog.c:947
-msgid "<big><b>Copying CD</b></big>"
-msgstr "<big><b>Kopíruji CD</b></big>"
-
-#: ../src/burn-dialog.c:951
-msgid "<big><b>Burning image to CD</b></big>"
-msgstr "<big><b>Vypaluji obraz na CD</b></big>"
-
-#: ../src/burn-dialog.c:1132
-#: ../src/burn-dialog.c:1143
-#: ../src/burn-dialog.c:1153
-#: ../src/burn-dialog.c:1197
-msgid "Data integrity check"
-msgstr "Kontrola integrity dat"
-
-#: ../src/burn-dialog.c:1133
-msgid "The file integrity check succeeded:"
-msgstr "Kontrola integrity souborů proběhla úspěšně:"
-
-#: ../src/burn-dialog.c:1134
-#: ../src/brasero-sum-dialog.c:275
-msgid "there seems to be no corrupted file on the disc."
-msgstr "zdá se, že na disku nejsou žádné poškozené soubory."
-
-#: ../src/burn-dialog.c:1144
-msgid "The data integrity check could not be performed:"
-msgstr "Kontrola integrity dat nemohla být provedena:"
-
-#: ../src/burn-dialog.c:1145
-msgid "unknown error."
-msgstr "neznámá chyba."
-
-#: ../src/burn-dialog.c:1154
-msgid "The file integrity check failed:"
-msgstr "Kontrola integrity souborů selhala:"
-
-#: ../src/burn-dialog.c:1155
-msgid "some files may be corrupted on the disc."
-msgstr "některé soubory mohou být poškozeny."
-
-#: ../src/burn-dialog.c:1260
-#, c-format
-msgid "Please insert it in \"%s\"."
-msgstr "Vložte prosím do \"%s\"."
-
-#: ../src/burn-dialog.c:1265
-msgid "The source media needs to be inserted:"
-msgstr "Je nutné vložit zdrojové médium:"
-
-#: ../src/burn-dialog.c:1274
-#, c-format
-msgid "Please insert it again in \"%s\"."
-msgstr "Znovu vložte do \"%s\"."
-
-#: ../src/burn-dialog.c:1279
-msgid "The source media needs to be reloaded:"
-msgstr ""
-
-#: ../src/burn-dialog.c:1357
-#: ../src/brasero-sum-dialog.c:703
-msgid "Checking files integrity"
-msgstr "Kontroluji integritu souborů"
-
-#. display a dialog to the user explaining what we're
-#. * going to do, that is reload the disc before checking
-#: ../src/burn-dialog.c:1423
-#, c-format
-msgid "please, insert it again in \"%s\"."
-msgstr ""
-
-#: ../src/burn-dialog.c:1428
-msgid "The burnt media needs to be reloaded to perform integrity check:"
-msgstr ""
-
-#: ../src/burn-dialog.c:1441
-msgid "<b><big>Performing integrity check</big></b>"
-msgstr "<b><big>Provádím kontrolu integrity</big></b>"
-
-#: ../src/burn-dialog.c:1451
-#: ../src/brasero-sum-dialog.c:749
-msgid "Mounting disc"
-msgstr "Připojuji disk"
-
-#: ../src/burn-dialog.c:1476
-#: ../src/burn-basics.c:69
-msgid "Success"
-msgstr "Úspěch"
-
-#: ../src/burn-dialog.c:1576
-msgid "Save current session"
-msgstr "Uložit aktuální sezeni"
-
-#: ../src/burn-dialog.c:1630
-msgid "Session log"
-msgstr ""
-
-#: ../src/burn-dialog.c:1711
-msgid "An unknown error occured. Check your disc"
-msgstr "Nastala neznámá chyba. Zkontrolujte disk"
-
-#: ../src/burn-dialog.c:1721
-msgid "Error while burning:"
-msgstr "Chyba při vypalování:"
-
-#: ../src/burn-dialog.c:1723
-msgid "Burning error"
-msgstr "Chyba vypalování"
-
-#: ../src/burn-dialog.c:1729
-msgid "Save log"
-msgstr "Uložit log"
-
-#: ../src/burn-dialog.c:1733
-msgid "View log"
-msgstr "Zobrazit log"
-
-#: ../src/burn-dialog.c:1775
-msgid "Check integrity"
-msgstr "Kontrola integrity"
-
-#: ../src/burn-dialog.c:1825
-msgid "Audio CD successfully burnt"
-msgstr "Hudební CD bylo úspěšně vypáleno"
-
-#: ../src/burn-dialog.c:1826
-#: ../src/burn-dialog.c:1866
-#: ../src/burn-dialog.c:1870
-#: ../src/burn-dialog.c:1875
-#, c-format
-msgid "\"%s\" is now ready for use"
-msgstr "\"%s\" je připraveno k použití"
-
-#: ../src/burn-dialog.c:1831
-msgid "DVD successfully copied"
-msgstr "DVD bylo úspěšně zkopírováno"
-
-#: ../src/burn-dialog.c:1832
-#: ../src/burn-dialog.c:1842
-#: ../src/burn-dialog.c:1854
-msgid "DVD is now ready for use"
-msgstr "DVD je připraveno k použití"
-
-#: ../src/burn-dialog.c:1835
-msgid "CD successfully copied"
-msgstr "CD bylo úspěšně zkopírováno"
-
-#: ../src/burn-dialog.c:1836
-#: ../src/burn-dialog.c:1846
-#: ../src/burn-dialog.c:1858
-msgid "CD is now ready for use"
-msgstr "CD je připraveno k použití"
-
-#: ../src/burn-dialog.c:1841
-msgid "Image of DVD successfully created"
-msgstr "Obraz DVD byl úspěšně vytvořen"
-
-#: ../src/burn-dialog.c:1845
-msgid "Image of CD successfully created"
-msgstr "Obraz CD byl úspěšně vytvořen"
-
-#: ../src/burn-dialog.c:1853
-msgid "Image successfully burnt to DVD"
-msgstr "Obraz byl úspěšně vypálen na DVD"
-
-#: ../src/burn-dialog.c:1857
-msgid "Image successfully burnt to CD"
-msgstr "Obraz byl úspěšně vypálen na CD"
-
-#: ../src/burn-dialog.c:1865
-msgid "Data DVD successfully burnt"
-msgstr "Datové DVD bylo úspěšně vypáleno"
-
-#: ../src/burn-dialog.c:1869
-msgid "Data CD successfully burnt"
-msgstr "Datové CD bylo úspěšně vypáleno"
-
-#: ../src/burn-dialog.c:1874
-msgid "Image successfully created"
-msgstr "Obraz byl úspěšně vytvořen"
-
-#: ../src/audio-disc.c:301
-#: ../src/data-disc.c:487
-#: ../src/tray.c:90
+#: ../src/brasero-dest-selection.c:1319
+msgid "Configure some options for the recording"
+msgstr "Nastavit některé možnosti pro vypalování"
+
+#: ../src/brasero-dest-selection.c:1326
+msgid "Choose which drive holds the disc to write to"
+msgstr "Vyberte jednotku, která obsahuje disk pro zápis"
+
+#: ../src/brasero-dest-selection.c:1335
+msgid "Number of copies "
+msgstr "Počet kopií "
+
+#: ../src/brasero-audio-disc.c:314
+#: ../src/brasero-tray.c:90
+#: ../src/brasero-data-disc.c:578
 msgid "Menu"
 msgstr "Menu"
 
-#: ../src/audio-disc.c:302
-#: ../src/data-disc.c:488
-msgid "Open"
-msgstr "Otevřít"
+#: ../src/brasero-audio-disc.c:315
+#: ../src/brasero-data-disc.c:579
+msgid "Open the selected files"
+msgstr "Otevřít označené soubory"
 
-#: ../src/audio-disc.c:304
-msgid "Edit information"
+#: ../src/brasero-audio-disc.c:317
+msgid "_Edit Information..."
 msgstr "Upravit informace"
 
-#: ../src/audio-disc.c:306
-#: ../src/data-disc.c:492
-msgid "Remove"
-msgstr "Odebrat"
+#: ../src/brasero-audio-disc.c:317
+msgid "Edit the track information (start, end, author, ...)"
+msgstr "Upravit informace o skladbě (začátek, konec, autor, ...)"
 
-#: ../src/audio-disc.c:308
-#: ../src/data-disc.c:494
-msgid "Paste"
-msgstr "Vložit"
+#: ../src/brasero-audio-disc.c:319
+#: ../src/brasero-data-disc.c:583
+#: ../src/brasero-project.c:179
+msgid "Remove the selected files from the project"
+msgstr "Odstranit vybrané soubory z projektu"
 
-#: ../src/audio-disc.c:310
-msgid "Add a pause"
-msgstr "Přidat mezeru"
+#: ../src/brasero-audio-disc.c:321
+#: ../src/brasero-data-disc.c:585
+msgid "Add the files stored in the clipboard"
+msgstr "Přidat soubory ze schránky"
 
-#: ../src/audio-disc.c:518
+#: ../src/brasero-audio-disc.c:323
+msgid "I_nsert a Pause"
+msgstr "Vložit pauzu"
+
+#: ../src/brasero-audio-disc.c:323
 msgid "Add a 2 second pause after the track"
-msgstr "Přidat dvouvteřinovou mezeru za stopu"
+msgstr "Přidat dvouvteřinovou pauzu za stopu"
 
-#: ../src/audio-disc.c:634
+#: ../src/brasero-audio-disc.c:325
+msgid "_Split Track..."
+msgstr "Rozdělit _stopu..."
+
+#: ../src/brasero-audio-disc.c:325
+msgid "Split the selected track"
+msgstr "Rozdělit označenou stopu"
+
+#: ../src/brasero-audio-disc.c:536
+msgid "Pause"
+msgstr "Pauza"
+
+#: ../src/brasero-audio-disc.c:542
+msgid "Split"
+msgstr "Rozdělit"
+
+#: ../src/brasero-audio-disc.c:661
 msgid "Title"
 msgstr "Název"
 
-#: ../src/audio-disc.c:660
+#: ../src/brasero-audio-disc.c:687
 msgid "Artist"
 msgstr "Umělec"
 
-#: ../src/audio-disc.c:669
-#: ../src/play-list.c:348
+#: ../src/brasero-audio-disc.c:696
+#: ../src/brasero-playlist.c:337
+#: ../src/brasero-split-dialog.c:1179
 msgid "Length"
 msgstr "Délka"
 
-#: ../src/audio-disc.c:943
+#: ../src/brasero-audio-disc.c:961
 msgid "<i><b>Pause</b></i>"
-msgstr "<i><b>Mezera</b></i>"
+msgstr "<i><b>Pauza</b></i>"
 
-#: ../src/audio-disc.c:1133
+#: ../src/brasero-audio-disc.c:1102
+msgid "The track will be padded at its end:"
+msgstr "Skladba bude na konci prodloužena:"
+
+#: ../src/brasero-audio-disc.c:1104
+msgid "Track length"
+msgstr "Délka stopy"
+
+#: ../src/brasero-audio-disc.c:1106
+msgid "the track is shorter than 6 seconds."
+msgstr "stopa je kratší než 6 sekund."
+
+#: ../src/brasero-audio-disc.c:1236
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr "\"%s\" nelze obsloužit pomocí gstreamer:"
 
-#: ../src/audio-disc.c:1137
+#: ../src/brasero-audio-disc.c:1240
 msgid "Unhandled song"
-msgstr ""
+msgstr "Nezpracovaná skladba"
 
-#: ../src/audio-disc.c:1140
+#: ../src/brasero-audio-disc.c:1243
 msgid "Make sure the appropriate codec is installed."
 msgstr "Ujistěte se, že máte nainstalován příslušný kodek."
 
-#: ../src/audio-disc.c:1264
+#: ../src/brasero-audio-disc.c:1367
 msgid "Directories can't be added to an audio disc:"
 msgstr "Adresáře nelze přidat na hudební CD:"
 
-#: ../src/audio-disc.c:1266
+#: ../src/brasero-audio-disc.c:1369
 msgid "Directory search"
-msgstr ""
+msgstr "Prohledání adresáře"
 
-#: ../src/audio-disc.c:1269
+#: ../src/brasero-audio-disc.c:1372
 msgid "Do you want to search for audio discs inside?"
-msgstr ""
+msgstr "Chcete vyhledat audio soubory uvnitř adresáře?"
 
-#: ../src/audio-disc.c:1273
+#: ../src/brasero-audio-disc.c:1376
 msgid "Search directory"
 msgstr "Prohledat adresář"
 
-#: ../src/audio-disc.c:1340
+#: ../src/brasero-audio-disc.c:1443
 #, c-format
 msgid "File \"%s\" can't be opened."
-msgstr ""
+msgstr "Nelze otevřít soubor \"%s\""
 
-#: ../src/audio-disc.c:1344
-#: ../src/data-disc.c:3064
+#: ../src/brasero-audio-disc.c:1447
+#: ../src/brasero-data-disc.c:3494
 msgid "Unreadable file"
 msgstr "Soubor nelze přečíst"
 
-#: ../src/audio-disc.c:1481
-#: ../src/audio-disc.c:1482
+#: ../src/brasero-audio-disc.c:1587
+#: ../src/brasero-audio-disc.c:1612
 msgid "loading"
-msgstr ""
+msgstr "nahrávám"
 
-#: ../src/audio-disc.c:2902
+#: ../src/brasero-audio-disc.c:2600
+msgid "impossible to split more than one song at a time"
+msgstr "není možné rozdělit více než jednu skladbu najednou"
+
+#: ../src/brasero-audio-disc.c:2602
+#: ../src/brasero-split-dialog.c:603
+msgid "Error"
+msgstr "Chyba"
+
+#: ../src/brasero-audio-disc.c:2605
+msgid "Select one song only please."
+msgstr "Vyberte jen jednu skladbu."
+
+#: ../src/brasero-audio-disc.c:3341
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
-msgstr ""
+msgstr "Soubor \"%s\" byl odstraněn ze systému souborů:"
 
-#: ../src/audio-disc.c:2906
+#: ../src/brasero-audio-disc.c:3345
 msgid "File deletion noticed"
-msgstr ""
+msgstr "Zaznamenáno smazání souboru"
 
-#: ../src/audio-disc.c:2908
+#: ../src/brasero-audio-disc.c:3347
 msgid "it will be removed from the project."
-msgstr ""
+msgstr "bude odstraněn z projektu"
 
-#: ../src/data-disc.c:490
-msgid "Rename"
-msgstr "Přejmenovat"
+#: ../src/brasero-blank-dialog.c:211
+msgid "Error Blanking:"
+msgstr "Chyba při mazání:"
 
-#: ../src/data-disc.c:812
-msgid "Some files were removed from the project. Clik here to see them."
-msgstr "Některé soubory byly odebrány z projektu. Klikněte pro jejich zobrazení."
+#: ../src/brasero-blank-dialog.c:213
+#: ../src/brasero-blank-dialog.c:254
+msgid "Blanking finished"
+msgstr "Mazání dokončeno"
 
-#: ../src/data-disc.c:825
-msgid "Create a new empty folder"
-msgstr "Vytvořit prázdný adresář"
+#: ../src/brasero-blank-dialog.c:215
+#: ../src/brasero-blank-dialog.c:259
+msgid "Blank _Again"
+msgstr "Znovu sm_azat"
 
-#: ../src/data-disc.c:935
-#: ../src/search.c:407
-#: ../src/filtered-window.c:216
+#: ../src/brasero-blank-dialog.c:232
+msgid "Unexpected error"
+msgstr "Neočekávaná chyba"
+
+#: ../src/brasero-blank-dialog.c:252
+msgid "The disc was successfully blanked:"
+msgstr "Disk byl úspěšně smazán:"
+
+#: ../src/brasero-blank-dialog.c:257
+msgid "the disc is ready for use."
+msgstr "disk je připraven k použití."
+
+#: ../src/brasero-blank-dialog.c:351
+msgid "_Blank"
+msgstr "Smazat"
+
+#: ../src/brasero-blank-dialog.c:375
+msgid "_fast blanking"
+msgstr "rychlé mazání"
+
+#: ../src/brasero-blank-dialog.c:376
+msgid "Activate fast blanking by opposition to a longer thorough blanking"
+msgstr "Aktivovat rychlé mazání oproti delšímu pečlivému mazání"
+
+#: ../src/brasero-blank-dialog.c:396
+msgid "Disc blanking"
+msgstr "Mazání disku"
+
+#: ../src/brasero-disc-copy-dialog.c:109
+msgid "CD/DVD copy options"
+msgstr "Možnosti kopírování CD/DVD"
+
+#: ../src/brasero-disc-copy-dialog.c:116
+msgid "_Copy"
+msgstr "_Kopírovat"
+
+#: ../src/brasero-disc-copy-dialog.c:139
+msgid "<b>Select source drive to copy</b>"
+msgstr "<b>Zdrojová jednotka</b>"
+
+#: ../src/brasero-disc-copy-dialog.c:158
+#: ../src/brasero-disc-option-dialog.c:849
+#: ../src/brasero-image-option-dialog.c:527
+msgid "<b>Select a drive to write to</b>"
+msgstr "<b>Cílová jednotka</b>"
+
+#: ../src/brasero-filtered-window.c:179
+msgid "Removed files"
+msgstr "Odstraněné soubory"
+
+#: ../src/brasero-filtered-window.c:199
+msgid "<span weight=\"bold\" size=\"larger\">The following files were removed automatically from the project.</span>"
+msgstr "<span weight=\"bold\" size=\"larger\">Následující soubory byly automaticky odstraněny z projektu</span>"
+
+#: ../src/brasero-filtered-window.c:202
+msgid "Select the files you want to restore:"
+msgstr "Označte soubory, které chcete obnovit:"
+
+#: ../src/brasero-filtered-window.c:236
+#: ../src/brasero-search-beagle.c:420
+#: ../src/brasero-data-disc.c:1242
 msgid "Files"
 msgstr "Soubory"
 
-#: ../src/data-disc.c:946
-msgid "Size"
-msgstr "Velikost"
+#: ../src/brasero-filtered-window.c:245
+msgid "Type"
+msgstr "Typ"
 
-#: ../src/data-disc.c:957
-#: ../src/search.c:426
+#: ../src/brasero-filtered-window.c:272
+msgid "Filter _hidden files"
+msgstr "Filtrovat skryté soubory"
+
+#: ../src/brasero-filtered-window.c:292
+msgid "Filter _broken symlinks"
+msgstr "Filtrovat neplatné symbolické odkazy"
+
+#: ../src/brasero-filtered-window.c:312
+msgid "_Notify when files are filtered"
+msgstr "Oznámit při aktivaci filtru"
+
+#: ../src/brasero-filtered-window.c:328
+msgid "<b>Filtering options</b>"
+msgstr "<b>Možnosti filtrování</b>"
+
+#: ../src/brasero-filtered-window.c:437
+msgid "hidden file"
+msgstr "skrytý soubor"
+
+#: ../src/brasero-filtered-window.c:438
+msgid "unreadable file"
+msgstr "nečitelný soubor"
+
+#: ../src/brasero-filtered-window.c:439
+msgid "broken symlink"
+msgstr "poškozený symbolický odkaz"
+
+#: ../src/brasero-filtered-window.c:440
+msgid "recursive symlink"
+msgstr "rekurzivní symbolický odkaz"
+
+#: ../src/brasero-menu.h:55
+msgid "_Project"
+msgstr "_Projekt"
+
+#: ../src/brasero-menu.h:56
+msgid "_View"
+msgstr "_Zobrazit"
+
+#: ../src/brasero-menu.h:57
+msgid "_Edit"
+msgstr "_Upravit"
+
+#: ../src/brasero-menu.h:58
+msgid "_Tools"
+msgstr "Nás_troje"
+
+#: ../src/brasero-menu.h:59
+msgid "_Help"
+msgstr "_Nápověda"
+
+#: ../src/brasero-menu.h:61
+msgid "P_lugins"
+msgstr "Zásuvné moduly"
+
+#: ../src/brasero-menu.h:62
+msgid "Choose plugins for brasero"
+msgstr "Vybrat zásuvné moduly pro brasero."
+
+#: ../src/brasero-menu.h:64
+msgid "_Erase..."
+msgstr "_Smazat..."
+
+#: ../src/brasero-menu.h:65
+msgid "Erase a disc"
+msgstr "Smazat disk"
+
+#: ../src/brasero-menu.h:67
+msgid "_Check Integrity..."
+msgstr "Z_kontrolovat integritu"
+
+#: ../src/brasero-menu.h:68
+msgid "Check data integrity of disc"
+msgstr "Zkontrolovat integritu dat na disku"
+
+#: ../src/brasero-menu.h:71
+msgid "Exit the program"
+msgstr "Ukončit program"
+
+#: ../src/brasero-menu.h:73
+msgid "About"
+msgstr "O aplikaci"
+
+#: ../src/brasero-menu.h:76
+msgid "_Disc Info"
+msgstr "Informace o C_D/DVD"
+
+#: ../src/brasero-menu.h:77
+msgid "Display information on blank discs currently inserted"
+msgstr "Zobrazit informace o prázdných vloženích discích"
+
+#: ../src/brasero-metadata.c:304
+#, c-format
+msgid "this format is not supported by gstreamer"
+msgstr "tento formát není podporován gstreamerem"
+
+#: ../src/brasero-mime-filter.c:140
+msgid "Show"
+msgstr "Zobrazit"
+
+#: ../src/brasero-mime-filter.c:243
+#, c-format
+msgid "%s only"
+msgstr "jenom %s"
+
+#: ../src/brasero-playlist.c:316
+msgid "Playlists"
+msgstr "Seznamy skladeb"
+
+#: ../src/brasero-playlist.c:327
+msgid "Number of songs"
+msgstr "Počet skladeb"
+
+#: ../src/brasero-playlist.c:347
+msgid "Genre"
+msgstr "Žánr"
+
+#: ../src/brasero-playlist.c:620
+msgid "Select a playlist"
+msgstr "Označte seznam skladeb"
+
+#: ../src/brasero-playlist.c:797
+#, c-format
+msgid "Error parsing playlist \"%s\":"
+msgstr "Chyba analýzy seznamu skladeb \"%s\""
+
+#: ../src/brasero-playlist.c:802
+msgid "an unknown error occured."
+msgstr "nastala neznámá chyba."
+
+#: ../src/brasero-playlist.c:804
+msgid "Playlist loading error"
+msgstr "Chyba načítání seznamu skladeb"
+
+#: ../src/brasero-playlist.c:894
+#: ../src/brasero-data-disc.c:1663
+#: ../src/brasero-data-disc.c:1682
+#: ../src/brasero-drive-info.c:128
+msgid "empty"
+msgstr "prázdný"
+
+#: ../src/brasero-playlist.c:896
+#, c-format
+msgid "%d song"
+msgid_plural "%d songs"
+msgstr[0] "%d skladba"
+msgstr[1] "%d skladby"
+msgstr[2] "%d skladeb"
+
+#: ../src/brasero-playlist.c:936
+msgid "Loading ..."
+msgstr "Nahrávám ..."
+
+#: ../src/brasero-plugin-manager-ui.c:60
+msgid "Plugin"
+msgstr "Zásuvný modul"
+
+#: ../src/brasero-plugin-manager-ui.c:61
+msgid "Enabled"
+msgstr "Povolen"
+
+#: ../src/brasero-plugin-manager-ui.c:141
+#, c-format
+msgid "Copyright %s"
+msgstr "Copyright %s"
+
+#: ../src/brasero-plugin-manager-ui.c:217
+#, c-format
+msgid ""
+"<b>%s</b>\n"
+"%s\n"
+"<i>%s</i>"
+msgstr ""
+"<b>%s</b>\n"
+"%s\n"
+"<i>%s</i>"
+
+#: ../src/brasero-plugin-manager-ui.c:573
+#: ../src/brasero-plugin-manager-ui.c:952
+msgid "_About"
+msgstr "O _aplikaci"
+
+#: ../src/brasero-plugin-manager-ui.c:581
+#: ../src/brasero-plugin-manager-ui.c:958
+msgid "C_onfigure"
+msgstr "Nastavit"
+
+#: ../src/brasero-plugin-manager-ui.c:591
+msgid "A_ctivate"
+msgstr "Aktivovat"
+
+#: ../src/brasero-plugin-manager-ui.c:603
+msgid "Ac_tivate All"
+msgstr "Aktivovat vše"
+
+#: ../src/brasero-plugin-manager-ui.c:608
+msgid "_Deactivate All"
+msgstr "_Deaktivovat vše"
+
+#: ../src/brasero-plugin-manager-ui.c:914
+msgid "Plugins"
+msgstr "Zásuvné moduly"
+
+#: ../src/brasero-progress.c:139
+msgid "Estimated remaining time:"
+msgstr "Odhad zbývajícího času:"
+
+#: ../src/brasero-progress.c:163
+msgid "Estimated drive speed:"
+msgstr "Odhad rychlosti jednotky:"
+
+#: ../src/brasero-progress.c:410
+#, c-format
+msgid "%i MiB of %i MiB"
+msgstr "%i MiB z %i MiB"
+
+#: ../src/brasero-search-entry.c:89
+msgid "Find all available music"
+msgstr "Nalézt dostupnou hudbu"
+
+#: ../src/brasero-search-entry.c:104
+msgid "Find all available videos"
+msgstr "Nalézt dostupná videa"
+
+#: ../src/brasero-search-entry.c:120
+msgid "Find all available pictures"
+msgstr "Nalézt dostupné obrázky"
+
+#: ../src/brasero-search-entry.c:150
+msgid "Find all available documents"
+msgstr "Nalézt dostupné dokumenty"
+
+#: ../src/brasero-search-entry.c:168
+msgid "Find all available spreadsheets"
+msgstr "Nalézt dostupné sešity"
+
+#: ../src/brasero-search-entry.c:184
+msgid "Find all available presentations"
+msgstr "Nalézt dostupné prezentace"
+
+#: ../src/brasero-search-entry.c:193
+msgid "Find all available Pdf / Postscripts"
+msgstr "Nalézt dostupné soubory Postscriptu a PDF"
+
+#: ../src/brasero-search-entry.c:202
+msgid "Text File"
+msgstr "Textový soubor"
+
+#: ../src/brasero-search-entry.c:328
+msgid "<b>Search:\t</b>"
+msgstr "<b>Hledat:\t</b>"
+
+#: ../src/brasero-search-entry.c:389
+msgid "<b>only in\t</b>"
+msgstr "<b>jen v\t</b>"
+
+#: ../src/brasero-search-entry.c:401
+msgid "_text documents"
+msgstr "_textové dokumenty"
+
+#: ../src/brasero-search-entry.c:416
+msgid "_pictures"
+msgstr "_obrázky"
+
+#: ../src/brasero-search-entry.c:431
+msgid "_music"
+msgstr "_hudba"
+
+#: ../src/brasero-search-entry.c:446
+msgid "_video"
+msgstr "_video"
+
+#: ../src/brasero-search-entry.c:463
+msgid "Type your keywords or choose 'All files' from the menu"
+msgstr "Zadejte klíčová slova, nebo zvolte „Všechny soubory“ z menu"
+
+#: ../src/brasero-search-entry.c:465
+msgid "Select if you want to search among image files only"
+msgstr "Označte, chcete-li prohledat jen obrázky"
+
+#: ../src/brasero-search-entry.c:467
+msgid "Select if you want to search among video files only"
+msgstr "Označte, chcete-li prohledat jen videa"
+
+#: ../src/brasero-search-entry.c:469
+msgid "Select if you want to search among audio files only"
+msgstr "Označte, chcete-li prohledat jen audio soubory"
+
+#: ../src/brasero-search-entry.c:471
+msgid "Select if you want to search among your text documents only"
+msgstr "Označte, chcete-li prohledat jen textové dokumenty"
+
+#: ../src/brasero-search-entry.c:473
+msgid "Click to start the search"
+msgstr "Klikněte pro zahájení vyhledávání"
+
+#: ../src/brasero-search-entry.c:740
+#: ../src/brasero-search-entry.c:780
+#: ../src/brasero-search-entry.c:842
+#: ../src/brasero-search-beagle.c:487
+#: ../src/brasero-file-chooser.c:214
+#: ../src/brasero-project.c:1410
+msgid "All files"
+msgstr "Všechny soubory"
+
+#: ../src/brasero-search-beagle.c:341
+msgid "Previous results"
+msgstr "Předchozí výsledky"
+
+#: ../src/brasero-search-beagle.c:354
+#: ../src/brasero-search-beagle.c:787
+msgid "<b>No results</b>"
+msgstr "<b>Žádné výsledky</b>"
+
+#: ../src/brasero-search-beagle.c:359
+msgid "Next results"
+msgstr "Další výsledky"
+
+#: ../src/brasero-search-beagle.c:439
+#: ../src/brasero-data-disc.c:1264
 msgid "Description"
 msgstr "Popis"
 
-#: ../src/data-disc.c:1200
+#: ../src/brasero-search-beagle.c:498
+msgid "Number of results displayed"
+msgstr "Počet zobrazených výsledků"
+
+#: ../src/brasero-search-beagle.c:781
+#, c-format
+msgid "<b>Results %i - %i (out of %i)</b>"
+msgstr "<b>Výsledky %i - %i (z celkových %i)</b>"
+
+#: ../src/brasero-search-beagle.c:1032
+msgid "Error querying beagle:"
+msgstr "Chyba dotazu na beagle:"
+
+#: ../src/brasero-search-beagle.c:1034
+msgid "Search error"
+msgstr "Chyba vyhledávání"
+
+#: ../src/brasero-song-properties.c:154
+msgid "Title:"
+msgstr "Název:"
+
+#: ../src/brasero-song-properties.c:160
+#: ../src/brasero-song-properties.c:168
+#: ../src/brasero-song-properties.c:176
+msgid "This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."
+msgstr "Tyto informace budou zapsány na disk pomocí CD-TEXT technologie. Některé CD přehrávače je přečtou a zobrazí."
+
+#: ../src/brasero-song-properties.c:162
+msgid "Artist:"
+msgstr "Umělec:"
+
+#: ../src/brasero-song-properties.c:170
+msgid "Composer:\t"
+msgstr "Skladatel:\t"
+
+#: ../src/brasero-song-properties.c:189
+msgid "<big><b>Options</b></big>"
+msgstr "<big><b>Možnosti</b></big>"
+
+#: ../src/brasero-song-properties.c:195
+msgid "Song start:\t"
+msgstr "Začátek skladby:\t"
+
+#: ../src/brasero-song-properties.c:201
+msgid "Song end:\t"
+msgstr "Konec skladby:\t"
+
+#: ../src/brasero-song-properties.c:207
+msgid "Pause length:\t"
+msgstr "Délka pauzy:\t"
+
+#: ../src/brasero-song-properties.c:215
+msgid "Gives the length of the pause that should follow the track"
+msgstr "Nastaví délku pauzy za stopou"
+
+#: ../src/brasero-song-properties.c:217
+msgid "Track length:\t"
+msgstr "Délka stopy:\t"
+
+#: ../src/brasero-song-properties.c:244
+msgid "Song information"
+msgstr "Informace o skladbě"
+
+#: ../src/brasero-song-properties.c:293
+#, c-format
+msgid "<b><big>Song information for track %02i</big></b>"
+msgstr "<b><big>Informace o stopě %02i</big></b>"
+
+#: ../src/brasero-tray.c:91
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: ../src/brasero-tray.c:91
+msgid "Cancel ongoing burning"
+msgstr "Přerušit probíhající vypalování"
+
+#: ../src/brasero-tray.c:96
+msgid "Close if successful"
+msgstr "Zavřít při úspěchu"
+
+#: ../src/brasero-tray.c:96
+msgid "Display file chooser"
+msgstr "Zobrazit panel výběru souborů"
+
+#: ../src/brasero-tray.c:98
+msgid "Show dialog"
+msgstr "Zobrazit dialog"
+
+#: ../src/brasero-tray.c:225
+msgid "waiting"
+msgstr "čekám"
+
+#: ../src/brasero-tray.c:263
+#, c-format
+msgid "%s, %02i%% done, %s remaining"
+msgstr "%s, %02i%% hotovo, %s zbývá"
+
+#: ../src/brasero-tray.c:270
+#, c-format
+msgid "%s, %02i%% done"
+msgstr "%s, %02i%% hotovo"
+
+#: ../src/brasero-utils.c:169
+#: ../src/brasero-utils.c:205
+#, c-format
+msgid "%i min"
+msgstr "%i min"
+
+#: ../src/brasero-utils.c:171
+#: ../src/brasero-utils.c:207
+#, c-format
+msgid "%i:%02i min"
+msgstr "%i:%02i min"
+
+#: ../src/brasero-utils.c:198
+#, c-format
+msgid "%d:%02i hour"
+msgid_plural "%i:%02i hours"
+msgstr[0] "%i:%02i hodina"
+msgstr[1] "%i:%02i hodiny"
+msgstr[2] "%i:%02i hodin"
+
+#: ../src/brasero-utils.c:228
+msgid "KiB"
+msgstr "KiB"
+
+#: ../src/brasero-utils.c:228
+msgid "MiB"
+msgstr "MiB"
+
+#: ../src/brasero-utils.c:228
+msgid "GiB"
+msgstr "GiB"
+
+#: ../src/brasero-utils.c:551
+msgid "This file can't be opened:"
+msgstr "Tento soubor nelze otevřít:"
+
+#: ../src/brasero-utils.c:553
+#: ../src/brasero-utils.c:579
+msgid "File error"
+msgstr "Chyba souboru"
+
+#: ../src/brasero-utils.c:556
+msgid "there is no application defined for this file."
+msgstr "pro tento soubor není přiřazena aplikace."
+
+#: ../src/brasero-utils.c:577
+msgid "File can't be opened:"
+msgstr "Soubor nelze otevřít:"
+
+#: ../src/brasero-utils.c:582
+#, c-format
+msgid "application %s can't be started."
+msgstr "nelze spustit aplikaci %s."
+
+#. Translators: this messages will appear as a list of possible
+#. * actions, like:
+#. *   To add/remove files you can:
+#. *      * perform action one
+#. *      * perform action two
+#. * The full message will be showed in the main area of an empty
+#. * project, suggesting users how to add and remove items to project.
+#. * You simply have to translate messages in the best form
+#. * for a list of actions.
+#: ../src/brasero-utils.c:770
+msgid "To add files to this project you can:"
+msgstr "Přidat soubory do tohoto projektu můžete:"
+
+#: ../src/brasero-utils.c:771
+msgid "click the \"Add\" button to show the selection pane"
+msgstr "zobrazením Výběru souborů kliknutím na tlačítko \"Přidat\""
+
+#: ../src/brasero-utils.c:772
+msgid "select files in selection pane and click the \"Add\" button"
+msgstr "označením souborů ve Výběru souborů a kliknutím na tlačítko \"Přidat\""
+
+#: ../src/brasero-utils.c:773
+msgid "drag files in this area from the selection pane or from the file manager"
+msgstr "přetáhnutím souborů z Výběru souborů nebo ze správce souborů"
+
+#: ../src/brasero-utils.c:774
+msgid "double click on files in the selection pane"
+msgstr "dvojitým kliknutím na soubory ve Výběru souborů"
+
+#: ../src/brasero-utils.c:776
+msgid "copy files (from file manager for example) and paste in this area"
+msgstr "zkopírováním souborů do schránky (např. ve správci souborů) a jejich vložením do této oblasti"
+
+#: ../src/brasero-utils.c:779
+msgid "To remove files from this project you can:"
+msgstr "Odstranit soubory z tohoto projektu můžete:"
+
+#: ../src/brasero-utils.c:780
+msgid "click on the \"Remove\" button to remove selected items in this area"
+msgstr "označením souborů v této oblasti a kliknutím na tlačítko \"Odstranit\""
+
+#: ../src/brasero-utils.c:781
+msgid "drag and release items out from this area"
+msgstr "přetáhnutím souborů mimo tuto oblast"
+
+#: ../src/brasero-utils.c:782
+msgid "select items in this area, and choose \"Remove\" from context menu"
+msgstr "označením souborů v této oblasti a zvolením \"Odstranit\" z kontextové nabídky"
+
+#: ../src/brasero-utils.c:783
+msgid "select items in this area, and press \"Delete\" key"
+msgstr "označením souborů v této oblasti a stisknutém klávesy \"Delete\""
+
+#: ../src/brasero-burn-dialog.c:168
+msgid "Brasero - Creating image"
+msgstr "Brasero - Tvorba obrazu"
+
+#: ../src/brasero-burn-dialog.c:173
+#: ../src/brasero-burn-dialog.c:778
+#: ../src/brasero-burn-dialog.c:784
+#, c-format
+msgid "Brasero - Burning DVD (simulation)"
+msgstr "Brasero - Vypalování DVD (simulace)"
+
+#: ../src/brasero-burn-dialog.c:174
+msgid "<big><b>Simulation of data DVD burning</b></big>"
+msgstr "<big><b>Simulace vypalování datového DVD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:177
+msgid "Brasero - Burning DVD"
+msgstr "Brasero - Vypalování DVD"
+
+#: ../src/brasero-burn-dialog.c:178
+msgid "<big><b>Burning data DVD</b></big>"
+msgstr "<big><b>Vypaluji datové DVD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:187
+msgid "Burning DVD (simulation)"
+msgstr "Vypaluji DVD (simulace)"
+
+#: ../src/brasero-burn-dialog.c:188
+msgid "<big><b>Simulation of image to DVD burning</b></big>"
+msgstr "<big><b>Simulace vypalování obrazu DVD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:191
+msgid "Burning DVD"
+msgstr "Vypaluji DVD"
+
+#: ../src/brasero-burn-dialog.c:192
+msgid "<big><b>Burning image to DVD</b></big>"
+msgstr "<big><b>Vypaluji obraz na DVD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:201
+#: ../src/brasero-burn-dialog.c:790
+#, c-format
+msgid "Brasero - Copying DVD (simulation)"
+msgstr "Brasero - Kopírování DVD (simulace)"
+
+#: ../src/brasero-burn-dialog.c:202
+msgid "<big><b>Simulation of data DVD copying</b></big>"
+msgstr "<big><b>Simulace kopírování datového DVD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:205
+msgid "Brasero - Copying DVD"
+msgstr "Brasero - Kopírování DVD"
+
+#: ../src/brasero-burn-dialog.c:206
+msgid "<big><b>Copying data DVD</b></big>"
+msgstr "<big><b>Kopíruji datové DVD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:217
+#: ../src/brasero-burn-dialog.c:231
+#: ../src/brasero-burn-dialog.c:259
+#: ../src/brasero-burn-dialog.c:274
+#: ../src/brasero-burn-dialog.c:798
+#: ../src/brasero-burn-dialog.c:804
+#: ../src/brasero-burn-dialog.c:816
+#: ../src/brasero-burn-dialog.c:823
+#, c-format
+msgid "Brasero - Burning CD (simulation)"
+msgstr "Brasero - Vypalování CD (simulace)"
+
+#: ../src/brasero-burn-dialog.c:218
+#: ../src/brasero-burn-dialog.c:275
+#, c-format
+msgid "<big><b>Simulation of audio CD burning</b></big>"
+msgstr "<big><b>Simulace vypalování hudebního CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:221
+#: ../src/brasero-burn-dialog.c:235
+#: ../src/brasero-burn-dialog.c:263
+#: ../src/brasero-burn-dialog.c:278
+msgid "Brasero - Burning CD"
+msgstr "Brasero - Vypalování CD"
+
+#: ../src/brasero-burn-dialog.c:222
+#: ../src/brasero-burn-dialog.c:279
+#, c-format
+msgid "<big><b>Burning audio CD</b></big>"
+msgstr "<big><b>Vypaluji hudební CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:232
+#, c-format
+msgid "<big><b>Simulation of data CD burning</b></big>"
+msgstr "<big><b>Simulace vypalování datového CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:236
+#, c-format
+msgid "<big><b>Burning data CD</b></big>"
+msgstr "<big><b>Vypaluji datové CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:245
+#: ../src/brasero-burn-dialog.c:810
+#, c-format
+msgid "Brasero - Copying CD (simulation)"
+msgstr "Brasero - Kopírování CD (simulace)"
+
+#: ../src/brasero-burn-dialog.c:246
+msgid "<big><b>Simulation of CD copying</b></big>"
+msgstr "<big><b>Simulace kopírování CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:249
+msgid "Brasero - Copying CD"
+msgstr "Brasero - Kopírování CD"
+
+#: ../src/brasero-burn-dialog.c:250
+msgid "<big><b>Copying CD</b></big>"
+msgstr "<big><b>Kopíruji CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:260
+msgid "<big><b>Simulation of image to CD burning</b></big>"
+msgstr "<big><b>Simulace vypalování obrazu CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:264
+msgid "<big><b>Burning image to CD</b></big>"
+msgstr "<big><b>Vypaluji obraz na CD</b></big>"
+
+#: ../src/brasero-burn-dialog.c:288
+#: ../src/brasero-burn-dialog.c:315
+#: ../src/brasero-burn-dialog.c:829
+#: ../src/brasero-burn-dialog.c:841
+#, c-format
+msgid "Brasero - Burning disc (simulation)"
+msgstr "Brasero - Vypalování disku (simulace)"
+
+#: ../src/brasero-burn-dialog.c:289
+#, c-format
+msgid "<big><b>Simulation of data disc burning</b></big>"
+msgstr "<big><b>Simulace vypalování datového disku</b></big>"
+
+#: ../src/brasero-burn-dialog.c:292
+#: ../src/brasero-burn-dialog.c:319
+msgid "Brasero - Burning disc"
+msgstr "Brasero - Vypalování disku"
+
+#: ../src/brasero-burn-dialog.c:293
+#, c-format
+msgid "<big><b>Burning data disc</b></big>"
+msgstr "<big><b>Vypaluji datový disk</b></big>"
+
+#: ../src/brasero-burn-dialog.c:302
+#: ../src/brasero-burn-dialog.c:835
+#, c-format
+msgid "Brasero - Copying disc (simulation)"
+msgstr "Brasero - Kopírování disku (simulace)"
+
+#: ../src/brasero-burn-dialog.c:303
+msgid "<big><b>Simulation of disc copying</b></big>"
+msgstr "<big><b>Simulace kopírování disku</b></big>"
+
+#: ../src/brasero-burn-dialog.c:306
+msgid "Brasero - Copying disc"
+msgstr "Brasero - Kopírování disku"
+
+#: ../src/brasero-burn-dialog.c:307
+msgid "<big><b>Copying disc</b></big>"
+msgstr "<big><b>Kopíruji disk</b></big>"
+
+#: ../src/brasero-burn-dialog.c:316
+msgid "<big><b>Simulation of image to disc burning</b></big>"
+msgstr "<big><b>Simulace pálení obrazu na disk</b></big>"
+
+#: ../src/brasero-burn-dialog.c:320
+msgid "<big><b>Burning image to disc</b></big>"
+msgstr "<big><b>Vypaluji obraz na disk</b></big>"
+
+#: ../src/brasero-burn-dialog.c:352
+msgid "replace the disc with a rewritable disc holding data."
+msgstr "nahraďte disk přepisovatelným diskem obsahujícím data."
+
+#: ../src/brasero-burn-dialog.c:354
+msgid "replace the disc with a disc holding data."
+msgstr "nahraďte disk diskem obsahujícím data."
+
+#: ../src/brasero-burn-dialog.c:358
+msgid "insert a rewritable disc holding data."
+msgstr "vložte přepisovatelný disk obsahující data."
+
+#: ../src/brasero-burn-dialog.c:360
+msgid "insert a disc holding data."
+msgstr "vložte disk obsahující data."
+
+#: ../src/brasero-burn-dialog.c:375
+#, c-format
+msgid "replace the disc with a recordable CD with a least %i MiB free."
+msgstr "nahraďte disk zapisovatelným CD s nejméně %i MiB volného místa."
+
+#: ../src/brasero-burn-dialog.c:378
+#, c-format
+msgid "replace the disc with a recordable CD."
+msgstr "nahraďte disk zapisovatelným CD."
+
+#: ../src/brasero-burn-dialog.c:382
+#, c-format
+msgid "insert a recordable CD with a least %i MiB free."
+msgstr "vložte zapisovatelné CD s nejméně %i MiB volného místa."
+
+#: ../src/brasero-burn-dialog.c:385
+#, c-format
+msgid "insert a recordable CD."
+msgstr "vložte zapisovatelné CD."
+
+#: ../src/brasero-burn-dialog.c:391
+#, c-format
+msgid "replace the disc with a recordable DVD with a least %i MiB free."
+msgstr "nahraďte disk zapisovatelným DVD s nejméně %i MiB volného místa."
+
+#: ../src/brasero-burn-dialog.c:394
+#, c-format
+msgid "replace the disc with a recordable DVD."
+msgstr "nahraďte disk zapisovatelným DVD."
+
+#: ../src/brasero-burn-dialog.c:398
+#, c-format
+msgid "insert a recordable DVD with a least %i MiB free."
+msgstr "vložte zapisovatelné DVD s nejméně %i MiB volného místa."
+
+#: ../src/brasero-burn-dialog.c:401
+#, c-format
+msgid "insert a recordable DVD."
+msgstr "vložte zapisovatelné DVD."
+
+#: ../src/brasero-burn-dialog.c:406
+#, c-format
+msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
+msgstr "nahraďte disk zapisovatelným CD nebo DVD s nejméně %i MiB volného místa."
+
+#: ../src/brasero-burn-dialog.c:409
+#, c-format
+msgid "replace the disc with a recordable CD or DVD."
+msgstr "nahraďte disk zapisovatelným CD nebo DVD."
+
+#: ../src/brasero-burn-dialog.c:413
+#, c-format
+msgid "insert a recordable CD or DVD with a least %i MiB free."
+msgstr "vložte zapisovatelné CD nebo DVD s nejméně %i MiB volného místa."
+
+#: ../src/brasero-burn-dialog.c:416
+#, c-format
+msgid "insert a recordable CD or DVD."
+msgstr "vložte zapisovatelné CD nebo DVD."
+
+#: ../src/brasero-burn-dialog.c:458
+msgid "A data integrity test is about to begin:"
+msgstr "Test integrity dat začíná:"
+
+#: ../src/brasero-burn-dialog.c:459
+#, c-format
+msgid "please, insert the disc to check in \"%s\"."
+msgstr "prosím, do \"%s\" vložte disk ke kontrole"
+
+#: ../src/brasero-burn-dialog.c:463
+msgid ""
+"A recording was successfully completed.\n"
+"The next recording is about to begin:"
+msgstr ""
+"Vypalování bylo úspěšně dokončeno\n"
+"Další vypalování začíná."
+
+#: ../src/brasero-burn-dialog.c:468
+#, c-format
+msgid "The disc in \"%s\" is busy:"
+msgstr "Disk v \"%s\" je zaneprázdněn:"
+
+#: ../src/brasero-burn-dialog.c:470
+msgid "make sure another application is not using it."
+msgstr "ujistěte se, že jednotku nepoužívá zádná další aplikace."
+
+#: ../src/brasero-burn-dialog.c:473
+#, c-format
+msgid "There is no disc in \"%s\":"
+msgstr "V \"%s\" není žádný disk:"
+
+#: ../src/brasero-burn-dialog.c:478
+#, c-format
+msgid "The disc in \"%s\" is not supported:"
+msgstr "Disk v \"%s\" není podporován:"
+
+#: ../src/brasero-burn-dialog.c:483
+#, c-format
+msgid "The disc in \"%s\" is not rewritable:"
+msgstr "Disk v \"%s\" není přepisovatelný:"
+
+#: ../src/brasero-burn-dialog.c:488
+#, c-format
+msgid "The disc in \"%s\" is empty:"
+msgstr "Disk v \"%s\" je prázdný:"
+
+#: ../src/brasero-burn-dialog.c:493
+#, c-format
+msgid "The disc in \"%s\" is not writable:"
+msgstr "Disk v \"%s\" není zapisovatelný:"
+
+#: ../src/brasero-burn-dialog.c:498
+#, c-format
+msgid "The disc in \"%s\" is a DVD:"
+msgstr "Disk v \"%s\" je DVD:"
+
+#: ../src/brasero-burn-dialog.c:503
+#, c-format
+msgid "The disc in \"%s\" is a CD:"
+msgstr "Disk v \"%s\" je CD:"
+
+#: ../src/brasero-burn-dialog.c:508
+#, c-format
+msgid "The disc in \"%s\" is not big enough:"
+msgstr "Disk v \"%s\" nemá dostatečnou kapacitu:"
+
+#: ../src/brasero-burn-dialog.c:519
+#, c-format
+msgid "The disc in \"%s\" needs to be reloaded:"
+msgstr "Disk v \"%s\" je potřeba znovu načíst:"
+
+#: ../src/brasero-burn-dialog.c:521
+msgid "eject the disc and reload it."
+msgstr "vysuňte disk a znovu jej načtěte."
+
+#: ../src/brasero-burn-dialog.c:553
+msgid "Waiting for disc insertion"
+msgstr "Čekám na vložení disku"
+
+#: ../src/brasero-burn-dialog.c:555
+msgid "Waiting for disc replacement"
+msgstr "Čekám na výměnu disků"
+
+#: ../src/brasero-burn-dialog.c:629
+msgid "Replace disc"
+msgstr "Nahradit disk"
+
+#: ../src/brasero-burn-dialog.c:665
+msgid "Possible loss of data"
+msgstr "Možná ztráta dat"
+
+#: ../src/brasero-burn-dialog.c:666
+msgid "The disc in the drive holds data:"
+msgstr "Disk v jednotce obsahuje data:"
+
+#: ../src/brasero-burn-dialog.c:667
+msgid ""
+"Do you want to erase the current disc?\n"
+"Or replace the current disc with a new disc?"
+msgstr ""
+"Chcete smazat aktuální disk,\n"
+"nebo ho nahradit novým?"
+
+#: ../src/brasero-burn-dialog.c:668
+msgid "Erase disc"
+msgstr "Smazat disk"
+
+#: ../src/brasero-burn-dialog.c:677
+#: ../src/brasero-burn-dialog.c:689
+msgid "Multisession disc"
+msgstr "Disk s multisession"
+
+#: ../src/brasero-burn-dialog.c:678
+msgid "Appending new files to a multisession disc is not advised:"
+msgstr "Přidávání nových souborů na disk s multisession není doporučeno:"
+
+#: ../src/brasero-burn-dialog.c:679
+msgid ""
+"already burnt files will be invisible (though still readable).\n"
+"Do you want to continue anyway?"
+msgstr ""
+"již vypálené soubory nebudou viditelné (nicméně čitelné).\n"
+"Přejete si přesto pokračovat?"
+
+#: ../src/brasero-burn-dialog.c:680
+#: ../src/brasero-burn-dialog.c:692
+#: ../src/brasero-burn-dialog.c:704
+#: ../src/brasero-burn-dialog.c:739
+#: ../src/brasero-burn-dialog.c:1858
+#: ../src/brasero-tool-dialog.c:374
+msgid "Continue"
+msgstr "Pokračovat"
+
+#: ../src/brasero-burn-dialog.c:690
+msgid "Appending audio tracks to a CD is not advised:"
+msgstr "Přidávání audio stop na CD není doporučeno:"
+
+#: ../src/brasero-burn-dialog.c:691
+msgid ""
+"you might not be able to listen to them with stereos and CD-TEXT won't be written.\n"
+"Do you want to continue anyway?"
+msgstr ""
+"CD-TEXT nebude zapsán a je možné, že disk nepůjde přehrát v hudebních CD přehrávačích.\n"
+"Chcete přesto pokračovat?"
+
+#: ../src/brasero-burn-dialog.c:701
+msgid "Rewritable disc"
+msgstr "Přepisovatelný disk"
+
+#: ../src/brasero-burn-dialog.c:702
+msgid "Recording audio tracks on a rewritable disc is not advised:"
+msgstr "Vytváření audio stop na přepisovatelném disku není doporučeno:"
+
+#: ../src/brasero-burn-dialog.c:703
+msgid ""
+"you might not be able to listen to it with stereos.\n"
+"Do you want to continue anyway?"
+msgstr ""
+"je možné, že disk nepůjde přehrát v hudebních CD přehrávačích.\n"
+"Chcete přesto pokračovat?"
+
+#: ../src/brasero-burn-dialog.c:729
+#: ../src/brasero-disc-option-dialog.c:511
+msgid "Some files don't have a suitable name for a Windows-compatible CD:"
+msgstr "Některé soubory nemají název vhodný pro CD kompatibilní s Windows:"
+
+#: ../src/brasero-burn-dialog.c:732
+msgid "Do you want to continue with Windows compatibility disabled?"
+msgstr "Přejete si pokračovat s vypnutou volbou Kompatibilita s Windows?"
+
+#: ../src/brasero-burn-dialog.c:734
+#: ../src/brasero-disc-option-dialog.c:516
+msgid "Windows compatibility"
+msgstr "Kompatibilita s Windows"
+
+#: ../src/brasero-burn-dialog.c:774
+#, c-format
+msgid "Brasero - Creating image (%i%% done)"
+msgstr "Brasero - Tvorba obrazu (%i%% hotovo)"
+
+#: ../src/brasero-burn-dialog.c:780
+#: ../src/brasero-burn-dialog.c:786
+#, c-format
+msgid "Brasero - Burning DVD (%i%% done)"
+msgstr "Brasero - Vypalování DVD (%i%% hotovo)"
+
+#: ../src/brasero-burn-dialog.c:792
+#, c-format
+msgid "Brasero - Copying DVD (%i%% done)"
+msgstr "Brasero - Kopírování DVD (%i%% hotovo)"
+
+#: ../src/brasero-burn-dialog.c:800
+#: ../src/brasero-burn-dialog.c:806
+#: ../src/brasero-burn-dialog.c:818
+#: ../src/brasero-burn-dialog.c:825
+#, c-format
+msgid "Brasero - Burning CD (%i%% done)"
+msgstr "Brasero - Vypalování CD (%i%% hotovo)"
+
+#: ../src/brasero-burn-dialog.c:812
+#, c-format
+msgid "Brasero - Copying CD (%i%% done)"
+msgstr "Brasero - Kopírování CD (%i%% done)"
+
+#: ../src/brasero-burn-dialog.c:831
+#: ../src/brasero-burn-dialog.c:843
+#, c-format
+msgid "Brasero - Burning disc (%i%% done)"
+msgstr "Brasero - Vypalování disku (%i%% done)"
+
+#: ../src/brasero-burn-dialog.c:837
+#, c-format
+msgid "Brasero - Copying disc (%i%% done)"
+msgstr "Brasero - Kopírování disku (%i%% done)"
+
+#: ../src/brasero-burn-dialog.c:1001
+msgid "The simulation was successful."
+msgstr "Simulace byla úspěšná"
+
+#: ../src/brasero-burn-dialog.c:1003
+msgid "Successful simulation"
+msgstr "Úspěšná simulace"
+
+#: ../src/brasero-burn-dialog.c:1006
+msgid "Real disc burning will take place in 10 seconds."
+msgstr "Skutečné vypalování disku započne za 10 sekund."
+
+#: ../src/brasero-burn-dialog.c:1008
+msgid "Burn Now"
+msgstr "Vypálit hned"
+
+#: ../src/brasero-burn-dialog.c:1094
+msgid "_Close the application if the burn process is successful"
+msgstr "Zavřít aplikaci po úspěšném dokončení vypalování"
+
+#: ../src/brasero-burn-dialog.c:1301
+msgid "Save current session"
+msgstr "Uložit aktuální sezení"
+
+#: ../src/brasero-burn-dialog.c:1380
+msgid "Session log"
+msgstr "Protokol sezení"
+
+#: ../src/brasero-burn-dialog.c:1410
+#: ../src/brasero-burn-dialog.c:1433
+#: ../src/brasero-burn-dialog.c:1443
+msgid "Session log error"
+msgstr "Chyba záznamu protokolu sezení"
+
+#: ../src/brasero-burn-dialog.c:1411
+#: ../src/brasero-burn-dialog.c:1434
+#: ../src/brasero-burn-dialog.c:1444
+msgid "The session log cannot be displayed:"
+msgstr "Nelze zobrazit protokol sezení:"
+
+#: ../src/brasero-burn-dialog.c:1412
+msgid "the log file could not be found."
+msgstr "nelze nalézt soubor protokolu sezení"
+
+#: ../src/brasero-burn-dialog.c:1427
+msgid ""
+"This is a excerpt from the session log (the last 10 MiB):\n"
+"\n"
+msgstr ""
+"Toto je výtah z protokolu sezení (posledních 10 MiB):\n"
+"\n"
+
+#: ../src/brasero-burn-dialog.c:1513
+msgid "An unknown error occured. Check your disc"
+msgstr "Nastala neznámá chyba. Zkontrolujte disk"
+
+#: ../src/brasero-burn-dialog.c:1523
+msgid "Error while burning:"
+msgstr "Chyba při vypalování:"
+
+#: ../src/brasero-burn-dialog.c:1525
+msgid "Burning error"
+msgstr "Chyba vypalování"
+
+#: ../src/brasero-burn-dialog.c:1531
+msgid "Save log"
+msgstr "Uložit log"
+
+#: ../src/brasero-burn-dialog.c:1538
+msgid "View log"
+msgstr "Zobrazit log"
+
+#: ../src/brasero-burn-dialog.c:1610
+msgid "Audio CD successfully burnt"
+msgstr "Hudební CD bylo úspěšně vypáleno"
+
+#: ../src/brasero-burn-dialog.c:1611
+#: ../src/brasero-burn-dialog.c:1652
+#: ../src/brasero-burn-dialog.c:1657
+#: ../src/brasero-burn-dialog.c:1663
+#, c-format
+msgid "\"%s\" is now ready for use"
+msgstr "\"%s\" je nyní připraveno k použití"
+
+#: ../src/brasero-burn-dialog.c:1617
+msgid "DVD successfully copied"
+msgstr "DVD bylo úspěšně zkopírováno"
+
+#: ../src/brasero-burn-dialog.c:1618
+#: ../src/brasero-burn-dialog.c:1628
+#: ../src/brasero-burn-dialog.c:1640
+#, c-format
+msgid "DVD is now ready for use"
+msgstr "DVD je nyní připraveno k použití"
+
+#: ../src/brasero-burn-dialog.c:1621
+msgid "CD successfully copied"
+msgstr "CD bylo úspěšně zkopírováno"
+
+#: ../src/brasero-burn-dialog.c:1622
+#: ../src/brasero-burn-dialog.c:1632
+#: ../src/brasero-burn-dialog.c:1644
+#, c-format
+msgid "CD is now ready for use"
+msgstr "CD je nyní připraveno k použití"
+
+#: ../src/brasero-burn-dialog.c:1627
+msgid "Image of DVD successfully created"
+msgstr "Obraz DVD byl úspěšně vytvořen"
+
+#: ../src/brasero-burn-dialog.c:1631
+msgid "Image of CD successfully created"
+msgstr "Obraz CD byl úspěšně vytvořen"
+
+#: ../src/brasero-burn-dialog.c:1639
+msgid "Image successfully burnt to DVD"
+msgstr "Obraz byl úspěšně vypálen na DVD"
+
+#: ../src/brasero-burn-dialog.c:1643
+msgid "Image successfully burnt to CD"
+msgstr "Obraz byl úspěšně vypálen na CD"
+
+#: ../src/brasero-burn-dialog.c:1651
+msgid "Data DVD successfully burnt"
+msgstr "Datové DVD bylo úspěšně vypáleno"
+
+#: ../src/brasero-burn-dialog.c:1656
+msgid "Data CD successfully burnt"
+msgstr "Datové CD bylo úspěšně vypáleno"
+
+#: ../src/brasero-burn-dialog.c:1662
+msgid "Image successfully created"
+msgstr "Obraz byl úspěšně vytvořen"
+
+#: ../src/brasero-burn-dialog.c:1846
+#: ../src/brasero-tool-dialog.c:364
+msgid "Do you really want to quit?"
+msgstr "Opravdu chcete skončit?"
+
+#: ../src/brasero-burn-dialog.c:1848
+#: ../src/brasero-tool-dialog.c:366
+msgid "Confirm"
+msgstr "Potvrdit"
+
+#: ../src/brasero-burn-dialog.c:1852
+#: ../src/brasero-tool-dialog.c:369
+msgid "Interrupting the process may make disc unusable."
+msgstr "Přerušení procesu může zapříčinit znehodnocení disku."
+
+#: ../src/brasero-data-disc.c:581
+msgid "R_ename..."
+msgstr "Přejmenovat..."
+
+#: ../src/brasero-data-disc.c:581
+msgid "Rename the selected file"
+msgstr "Přejmenovat označený soubor"
+
+#: ../src/brasero-data-disc.c:587
+#: ../src/brasero-data-disc.c:5086
+#, c-format
+msgid "New folder"
+msgstr "Nový adresář"
+
+#: ../src/brasero-data-disc.c:587
+msgid "Create a new empty folder"
+msgstr "Vytvořit prázdný adresář"
+
+#: ../src/brasero-data-disc.c:589
+msgid "Removed Files"
+msgstr "Odstraněné soubory"
+
+#: ../src/brasero-data-disc.c:589
+msgid "Display the files filtered from the project"
+msgstr "Zobrazit soubory odfiltrované z projektu"
+
+#: ../src/brasero-data-disc.c:594
+msgid "Import Session"
+msgstr "Importovat sezení"
+
+#: ../src/brasero-data-disc.c:594
+msgid "Import session"
+msgstr "Importovat sezení"
+
+#: ../src/brasero-data-disc.c:1115
+msgid "Import"
+msgstr "Importovat"
+
+#: ../src/brasero-data-disc.c:1120
+msgid "Filtered Files"
+msgstr "Filtrované soubory"
+
+#: ../src/brasero-data-disc.c:1124
+msgid "New Folder"
+msgstr "Nový adresář"
+
+#: ../src/brasero-data-disc.c:1253
+msgid "Size"
+msgstr "Velikost"
+
+#: ../src/brasero-data-disc.c:1542
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr "\"%s\" již v adresáři existuje:"
 
-#: ../src/data-disc.c:1203
+#: ../src/brasero-data-disc.c:1545
 msgid "Already existing file"
 msgstr "Soubor již existuje"
 
-#: ../src/data-disc.c:1206
-msgid "it won't be added."
-msgstr "Nebude proto přidán."
+#: ../src/brasero-data-disc.c:1548
+msgid "Do you want to replace it?"
+msgstr "Opravdu chcete soubor nahradit?"
 
-#: ../src/data-disc.c:1299
-#: ../src/data-disc.c:1315
-#: ../src/play-list.c:879
-msgid "empty"
-msgstr "prázdný"
-
-#: ../src/data-disc.c:1302
+#: ../src/brasero-data-disc.c:1666
 msgid "(empty)"
 msgstr "(prázdný)"
 
-#: ../src/data-disc.c:1317
+#: ../src/brasero-data-disc.c:1684
 msgid "1 item"
 msgstr "1 položka"
 
-#: ../src/data-disc.c:1320
+#: ../src/brasero-data-disc.c:1687
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
@@ -888,369 +1650,769 @@ msgstr[0] "%d položka"
 msgstr[1] "%d položky"
 msgstr[2] "%d položek"
 
-#: ../src/data-disc.c:1673
-#: ../src/data-disc.c:1871
-#: ../src/data-disc.c:1872
-#: ../src/data-disc.c:7702
-#: ../src/data-disc.c:7703
+#: ../src/brasero-data-disc.c:2041
+#: ../src/brasero-data-disc.c:2242
+#: ../src/brasero-data-disc.c:2243
+#: ../src/brasero-data-disc.c:5440
+#: ../src/brasero-data-disc.c:8210
+#: ../src/brasero-data-disc.c:8211
 msgid "(loading ...)"
-msgstr ""
+msgstr "(nahrávám ...)"
 
-#: ../src/data-disc.c:3049
+#: ../src/brasero-data-disc.c:3366
+msgid "Some files were filtered:"
+msgstr "Některé soubory byly odfiltrovány:"
+
+#: ../src/brasero-data-disc.c:3367
+msgid "click here to see the list."
+msgstr "kliknout sem pro zobrazení seznamu"
+
+#: ../src/brasero-data-disc.c:3479
 #, c-format
 msgid "The file \"%s\" is unreadable:"
-msgstr ""
+msgstr "Soubor \"%s\" je nečitelný:"
 
-#: ../src/data-disc.c:3051
+#: ../src/brasero-data-disc.c:3481
 #, c-format
 msgid "The directory \"%s\" is unreadable:"
-msgstr ""
+msgstr "Adresář \"%s\" je nečitelný:"
 
-#: ../src/data-disc.c:3178
+#: ../src/brasero-data-disc.c:3617
 msgid "Some files couldn't be restored."
-msgstr ""
+msgstr "Některé soubory nelze obnovit."
 
-#: ../src/data-disc.c:3180
+#: ../src/brasero-data-disc.c:3619
 msgid "File restoration failure"
-msgstr ""
+msgstr "Chyba při obnově souborů"
 
-#: ../src/data-disc.c:4672
-msgid "New folder"
-msgstr "Nový adresář"
-
-#: ../src/data-disc.c:4682
+#: ../src/brasero-data-disc.c:5096
 #, c-format
 msgid "New folder %i"
 msgstr "Nový adresář %i"
 
-#: ../src/data-disc.c:8106
+#: ../src/brasero-data-disc.c:5449
+msgid "Disc file"
+msgstr "Soubor disku"
+
+#: ../src/brasero-data-disc.c:8417
+msgid "The session couldn't be imported:"
+msgstr "Session nelze importovat:"
+
+#: ../src/brasero-data-disc.c:8419
+msgid "Import session error"
+msgstr "Chyba importu session"
+
+#: ../src/brasero-data-disc.c:8452
+msgid "loading project"
+msgstr "nahrávám projekt"
+
+#: ../src/brasero-data-disc.c:8457
+msgid "there is no selected disc"
+msgstr "není vybrán žádný disk"
+
+#: ../src/brasero-data-disc.c:8471
+msgid "there isn't any available session on the disc"
+msgstr "na disku není k dispozici žádná session"
+
+#: ../src/brasero-data-disc.c:8490
+msgid "unknown volume type"
+msgstr "neznámý typ svazku"
+
+#: ../src/brasero-data-disc.c:8575
+msgid "A multisession disc is inserted:"
+msgstr "Vložen disk s multisession:"
+
+# XXX
+#: ../src/brasero-data-disc.c:8576
+msgid "Click here to import its contents"
+msgstr ""
+
+#: ../src/brasero-data-disc.c:8952
 msgid "Project couldn't be loaded:"
 msgstr "Nelze načíst projekt:"
 
-#: ../src/data-disc.c:8108
+#: ../src/brasero-data-disc.c:8954
 msgid "Project loading failure"
-msgstr "Chyba při načítání projektu"
+msgstr "Chyba načítání projektu"
 
-#: ../src/data-disc.c:8111
+#: ../src/brasero-data-disc.c:8957
 msgid "A thread couldn't be created"
+msgstr "Nelze vytvořit vlákno"
+
+#: ../src/brasero-disc-option-dialog.c:113
+#, c-format
+msgid "Data disc (%s)"
+msgstr "Datový disk (%s)"
+
+#: ../src/brasero-disc-option-dialog.c:116
+#, c-format
+msgid "Audio disc (%s)"
+msgstr "Hudební CD (%s)"
+
+#: ../src/brasero-disc-option-dialog.c:514
+msgid "their names will be changed and truncated to 64 characters."
+msgstr "jejich jména budou změněna a zkrácena na 64 znaků:"
+
+#: ../src/brasero-disc-option-dialog.c:563
+msgid "<b>Label of the disc</b>"
+msgstr "<b>Jmenovka disku</b>"
+
+#: ../src/brasero-disc-option-dialog.c:565
+msgid "<b>Title</b>"
+msgstr "<b>Název</b>"
+
+#: ../src/brasero-disc-option-dialog.c:593
+msgid "Create a vid_eo DVD"
+msgstr "Vytvořit vid_eo DVD"
+
+#: ../src/brasero-disc-option-dialog.c:599
+msgid "Create a video DVD that can be played by all DVD readers"
+msgstr "Vytvořit video DVD, které lze přehrát všemi DVD přehrávači"
+
+#: ../src/brasero-disc-option-dialog.c:615
+msgid "Increase compatibility with _Windows systems"
+msgstr "Zvýšit kompatibilitu se systémy _Windows"
+
+#: ../src/brasero-disc-option-dialog.c:617
+msgid "Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"
+msgstr "Zlepší kompatibilitu se systémy Windows tím, že umožní zobrazení dlouhých názvů souborů (max. 64 znaků)"
+
+#: ../src/brasero-disc-option-dialog.c:643
+msgid "Leave the disc _open to add other files later"
+msgstr "Neuzavírat disk, aby bylo možno později přidat další soubory"
+
+#: ../src/brasero-disc-option-dialog.c:649
+msgid "Allow to add more data to the disc later"
+msgstr "Umožní na disk později přidat data"
+
+#: ../src/brasero-disc-option-dialog.c:684
+#: ../src/brasero-disc-option-dialog.c:719
+msgid "<b>Disc options</b>"
+msgstr "<b>Možnosti disku</b>"
+
+#. multisession options
+#: ../src/brasero-disc-option-dialog.c:711
+msgid "Leave the disc _open to add a data session later"
+msgstr "Neuzavírat disk, aby bylo možno později přidat datovou stopu"
+
+#: ../src/brasero-disc-option-dialog.c:717
+msgid "Allow create what is called an enhanced CD or CD+"
+msgstr "Povolit vytvoření tzv. rozšířených CD nebo CD+"
+
+#: ../src/brasero-disc-option-dialog.c:816
+#: ../src/brasero-image-option-dialog.c:492
+msgid "_Burn"
+msgstr "Vypálit"
+
+#: ../src/brasero-disc-option-dialog.c:913
+msgid "Disc burning setup"
+msgstr "Nastavení vypalování"
+
+#: ../src/brasero-drive-info.c:98
+msgid "<i>no disc</i>"
+msgstr "<i>žádný disk</i>"
+
+#: ../src/brasero-drive-info.c:107
+msgid "<i>unknown type</i>"
+msgstr "<i>neznámý typ</i>"
+
+#: ../src/brasero-drive-info.c:116
+msgid "<i>busy disc</i>"
+msgstr "<i>zaneprázdněný disk</i>"
+
+#: ../src/brasero-drive-info.c:130
+msgid "audio and data tracks"
+msgstr "hudební a datové stopy"
+
+#: ../src/brasero-drive-info.c:132
+msgid "audio tracks"
+msgstr "hudební stopy"
+
+#: ../src/brasero-drive-info.c:134
+msgid "data tracks"
+msgstr "datové stopy"
+
+#: ../src/brasero-drive-info.c:148
+#, c-format
+msgid "%s of data"
+msgstr "%s"
+
+#: ../src/brasero-drive-info.c:159
+msgid "<i>the medium is not writable</i>"
+msgstr "<i>médium není zapisovatelné</i>"
+
+#: ../src/brasero-drive-info.c:165
+msgid "<i>the medium is not writable with the current set of plugins</i>"
+msgstr "<i>médium není zapisovatelné pomocí stávající sady zásuvných modulů</i>"
+
+#: ../src/brasero-drive-info.c:174
+#: ../src/brasero-drive-info.c:189
+#: ../src/brasero-drive-info.c:223
+#, c-format
+msgid "%s free"
+msgstr "%s volno"
+
+#: ../src/brasero-drive-info.c:181
+msgid "the medium can be recorded (automatic blanking required)"
+msgstr "médium nelze nahrát (je potřeba jej automaticky smazat)"
+
+#: ../src/brasero-drive-info.c:195
+msgid "the medium can be recorded"
+msgstr "médium nelze nahrát"
+
+#: ../src/brasero-drive-info.c:205
+#, c-format
+msgid "%s (%s free)"
+msgstr "%s (%s volno)"
+
+#: ../src/brasero-drive-info.c:215
+msgid "data can be written or appended to the medium"
+msgstr "data je možno zapsat nebo přidat na médium"
+
+#: ../src/brasero-drive-info.c:230
+msgid "data can be appended to the medium"
+msgstr "data je možno přidat na médium"
+
+#: ../src/brasero-drive-info.c:247
+#, c-format
+msgid ""
+"The <b>image</b> will be saved to\n"
+"%s"
+msgstr "<b>Obraz</b> bude uložen do %s"
+
+# XXX
+# Ja si myslim, ze je to dobre
+#: ../src/brasero-drive-info.c:348
+msgid ""
+"<b><i>The drive that holds the source media will also be the one used to record.\n"
+"\n"
+"</i></b><i>A new recordable media will be required once the one currently loaded has been copied.</i>"
 msgstr ""
+"<b><i>Zdrojová jednotka bude použita také k vypalování.\n"
+"\n"
+"</i></b><i>Až se se vložené médium zkopíruje, bude potřeba nové přepisovatelné médium.</i>"
 
-#: ../src/project-type-chooser.c:72
-msgid "<big>Audio project</big>"
-msgstr "<big>Hudební projekt</big>"
+#: ../src/brasero-drive-info.c:363
+msgid "<b>Type:</b>"
+msgstr "<b>Druh:</b>"
 
-#: ../src/project-type-chooser.c:73
-msgid "Create a traditional audio CD"
-msgstr "Vytvořit tradiční hudební CD"
+#: ../src/brasero-drive-info.c:372
+msgid "<b>Size:</b>"
+msgstr "<b>Velikost:</b>"
 
-#: ../src/project-type-chooser.c:74
-msgid "Create a traditional audio CD that will be playable on computers and stereos"
-msgstr "Vytvoří tradiční hudební CD, které lze přehrávat v CD přehrávačích a počítači"
+#: ../src/brasero-drive-info.c:382
+msgid "<b>Contents:</b>"
+msgstr "<b>Obsah:</b>"
 
-#: ../src/project-type-chooser.c:77
-msgid "<big>Data project</big>"
-msgstr "<big>Datový projekt</big>"
+#: ../src/brasero-drive-info.c:391
+msgid "<b>Status:</b>"
+msgstr "<b>Stav:</b>"
 
-#: ../src/project-type-chooser.c:78
-msgid "Create a data CD/DVD"
-msgstr "Vytvořit datové CD/DVD"
+#: ../src/brasero-drive-properties.c:165
+#: ../src/brasero-drive-properties.c:172
+msgid "unknown"
+msgstr "neznámý"
 
-#: ../src/project-type-chooser.c:79
-msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
-msgstr "Vytvoří CD/DVD, které obsahuje jakákoli data určená pro čtení v počítači"
+#: ../src/brasero-drive-properties.c:244
+#, c-format
+msgid "%d x (DVD)"
+msgstr "%d x (DVD)"
 
-#: ../src/project-type-chooser.c:82
-msgid "<big>Disc copy</big>"
-msgstr "<big>Kopie disku</big>"
+#: ../src/brasero-drive-properties.c:247
+#, c-format
+msgid "%d x (CD)"
+msgstr "%d x (CD)"
 
-#: ../src/project-type-chooser.c:83
-msgid "Create 1:1 copy of a CD/DVD"
-msgstr "Vytvořit 1:1 kopii CD/DVD"
+#: ../src/brasero-drive-properties.c:250
+#, c-format
+msgid "%d x (DVD) %d x (CD)"
+msgstr "%d x (DVD) %d x (CD)"
 
-#: ../src/project-type-chooser.c:84
-msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"
-msgstr "Vytvoří 1:1 kopii hudebního nebo datového CD/DVD na pevný disk nebo CD/DVD"
+#: ../src/brasero-drive-properties.c:278
+#, c-format
+msgid "Properties of %s"
+msgstr "Vlastnosti %s"
 
-#: ../src/project-type-chooser.c:87
-msgid "<big>Burn image</big>"
-msgstr "<big>Vypálit obraz</big>"
+#: ../src/brasero-drive-properties.c:294
+#, c-format
+msgid "Max speed"
+msgstr "Maximální rychlost"
 
-#: ../src/project-type-chooser.c:88
-#: ../src/project-type-chooser.c:89
-msgid "Burn an existing CD/DVD image to disc"
-msgstr "Vypálit existující CD/DVD obraz na disk"
+#: ../src/brasero-drive-properties.c:346
+msgid "<b>Burning speed</b>"
+msgstr "<b>Rychlost vypalování</b>"
 
-#: ../src/project-type-chooser.c:302
-msgid "<u><span size='xx-large' foreground='grey50'><b>Create a new project:</b></span></u>"
-msgstr "<u><span size='xx-large' foreground='grey50'><b>Vytvořit nový projekt:</b></span></u>"
+#: ../src/brasero-drive-properties.c:356
+msgid "_Simulate the burning"
+msgstr "_Simulovat vypalování"
 
-#: ../src/project-type-chooser.c:307
-msgid "<span foreground='grey60'><b><i>Choose from the following options</i></b></span>"
-msgstr "<span foreground='grey60'><b><i>Vyberte z následujících možností</i></b></span>"
+#: ../src/brasero-drive-properties.c:357
+msgid "Use burn_proof (decrease the risk of failures)"
+msgstr "Použít burn_proof (snižuje riziko selhání)"
 
-#: ../src/project.c:159
-msgid "_Save"
-msgstr "_Uložit"
+#: ../src/brasero-drive-properties.c:358
+msgid "_Eject after burning"
+msgstr "Vysunout po vypál_ení"
 
-#: ../src/project.c:160
-#: ../src/project.c:2074
+#: ../src/brasero-drive-properties.c:359
+msgid "Burn the image directly _without saving it to disc"
+msgstr "Vypálit obraz bez uložení na disk"
+
+#: ../src/brasero-drive-properties.c:362
+msgid "<b>Options</b>"
+msgstr "<b>Možnosti</b>"
+
+#: ../src/brasero-drive-properties.c:371
+msgid "Directory for temporary files"
+msgstr "Adresář pro dočasné soubory"
+
+#: ../src/brasero-drive-properties.c:377
+msgid "_Temporary directory free space:"
+msgstr "Volné místo v dočasném adresáři:"
+
+#: ../src/brasero-drive-properties.c:387
+msgid "<b>Temporary files</b>"
+msgstr "<b>Dočasné soubory</b>"
+
+#: ../src/brasero-drive-selection.c:287
+#: ../src/burn.c:863
+msgid "ongoing burning process"
+msgstr "probíhající vypalování"
+
+#: ../src/brasero-file-chooser.c:221
+#: ../src/brasero-project.c:1415
+msgid "Audio files only"
+msgstr "Pouze hudební soubory"
+
+#: ../src/brasero-file-chooser.c:229
+#: ../src/brasero-project.c:1424
+msgid "Movies only"
+msgstr "Pouze filmy"
+
+#: ../src/brasero-file-chooser.c:235
+#: ../src/brasero-project.c:1430
+msgid "Image files only"
+msgstr "Pouze obrázky"
+
+#: ../src/brasero-image-option-dialog.c:347
+msgid "This image can't be burnt:"
+msgstr "Tento obraz nelze vypálit:"
+
+#: ../src/brasero-image-option-dialog.c:349
+msgid "Invalid image"
+msgstr "Neplatný obraz"
+
+#: ../src/brasero-image-option-dialog.c:352
+msgid "it doesn't appear to be a valid image or a valid cue file."
+msgstr "zdá se, že se nejedná o platný obraz nebo soubor CUE."
+
+#: ../src/brasero-image-option-dialog.c:370
+msgid "There is no specified image:"
+msgstr "Není určen obraz:"
+
+#: ../src/brasero-image-option-dialog.c:372
+msgid "No image"
+msgstr "Žádný obraz"
+
+#: ../src/brasero-image-option-dialog.c:375
+msgid "Please, choose an image and retry."
+msgstr "Zvolte obraz a opakujte akci."
+
+#: ../src/brasero-image-option-dialog.c:545
+msgid "Path:"
+msgstr "Cesta:"
+
+#: ../src/brasero-image-option-dialog.c:558
+msgid "Open an image"
+msgstr "Otevřít obraz"
+
+#: ../src/brasero-image-option-dialog.c:577
+#: ../src/brasero-image-properties.c:197
+msgid "Image type:"
+msgstr "Typ obrazu:"
+
+#: ../src/brasero-image-option-dialog.c:607
+msgid "<b>Image</b>"
+msgstr "<b>Obraz</b>"
+
+#: ../src/brasero-image-option-dialog.c:683
+msgid "Image burning setup"
+msgstr "Nastavení vypalování obrazu"
+
+#: ../src/brasero-image-properties.c:229
+msgid "Disc image file properties"
+msgstr "Vlastnosti obrazu disku"
+
+#: ../src/brasero-image-type-chooser.c:93
+msgid "Let brasero choose (safest)"
+msgstr "Automaticky (nejbezpečnější)"
+
+#: ../src/brasero-image-type-chooser.c:100
+msgid "*.iso image"
+msgstr "*.iso obraz"
+
+#: ../src/brasero-image-type-chooser.c:108
+msgid "*.raw image"
+msgstr "*.raw obraz"
+
+#: ../src/brasero-image-type-chooser.c:116
+msgid "*.cue image"
+msgstr "*.cue obraz"
+
+#: ../src/brasero-image-type-chooser.c:124
+msgid "*.toc image (cdrdao)"
+msgstr "*.toc obraz (cdrdao)"
+
+#: ../src/brasero-layout.c:122
+msgid "Preview"
+msgstr "Náhled"
+
+#: ../src/brasero-layout.c:123
+msgid "P_review"
+msgstr "Náhled"
+
+#: ../src/brasero-layout.c:124
+msgid "Display video, audio and image preview"
+msgstr "Zobrazit náhled video, audio a obrazových souborů"
+
+#: ../src/brasero-layout.c:128
+msgid "_Show side panel"
+msgstr "Zobrazit po_stranní panel"
+
+#: ../src/brasero-layout.c:129
+msgid "Show a side pane along the project"
+msgstr "Zobrazit postranní panel k projektu"
+
+#: ../src/brasero-layout.c:1264
+msgid "Click to close the side pane"
+msgstr "Klikněte pro zavření postranního panelu"
+
+#: ../src/brasero-ncb.c:294
+#, c-format
+msgid "(u)mount command could not be found in the path"
+msgstr "příkaz (u)mount nebyl nalezen"
+
+#: ../src/brasero-ncb.c:329
+#, c-format
+msgid "the drive could not be mounted"
+msgstr "jednotku nelze připojit"
+
+#: ../src/brasero-ncb.c:430
+#, c-format
+msgid "the disc mount point could not be retrieved."
+msgstr "přípojný bod disku není dostupný."
+
+#: ../src/brasero-player.c:272
+#, c-format
+msgid "%s / %s"
+msgstr "%s / %s"
+
+#: ../src/brasero-player.c:397
+msgid "No file"
+msgstr "Žádný soubor"
+
+#: ../src/brasero-player.c:426
+msgid "Start and stop playing"
+msgstr "Zahájit a zastavit přehrávání"
+
+#: ../src/brasero-player.c:786
+#, c-format
+msgid "<span weight=\"bold\">Name:</span>\t %s"
+msgstr "<span weight=\"bold\">Název:</span>\t %s"
+
+#: ../src/brasero-player.c:792
+#, c-format
+msgid "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"
+msgstr "<span weight=\"bold\">Velikost:</span>\t<i><span size=\"smaller\"> %i x %i pixelů</span></i>"
+
+#: ../src/brasero-player.c:815
+#, c-format
+msgid ""
+"<span weight=\"bold\">%s</span>\n"
+"by <span size=\"smaller\"><i>%s</i></span>"
+msgstr ""
+"<span weight=\"bold\">%s</span>\n"
+"od <span size=\"smaller\"><i>%s</i></span>"
+
+#: ../src/brasero-player.c:823
+#: ../src/brasero-player.c:832
+#, c-format
+msgid "<span weight=\"bold\">%s</span>\n"
+msgstr "<span weight=\"bold\">%s</span>\n"
+
+#: ../src/brasero-player.c:1033
+#, c-format
+msgid ""
+"<span weight=\"bold\">Loading information</span>\n"
+"about <span size=\"smaller\"><i>%s</i></span>"
+msgstr ""
+"<span weight=\"bold\">Načítám informace</span>\n"
+"o <span size=\"smaller\"><i>%s</i></span>"
+
+#: ../src/brasero-project.c:173
+#: ../src/brasero-project.c:2394
 msgid "Save current project"
 msgstr "Uložit aktuální projekt"
 
-#: ../src/project.c:161
-msgid "_Save as"
+#: ../src/brasero-project.c:174
+msgid "Save _As..."
 msgstr "Uložit jako"
 
-#: ../src/project.c:162
+#: ../src/brasero-project.c:175
 msgid "Save current project to a different location"
 msgstr "Uložit aktuální projekt do jiného umístění"
 
-#: ../src/project.c:179
-msgid "_Add files"
+#: ../src/brasero-project.c:176
+msgid "_Add Files"
 msgstr "Přid_at soubory"
 
-#: ../src/project.c:180
+#: ../src/brasero-project.c:177
 msgid "Add files to the project"
 msgstr "Přidat soubory do projektu"
 
-#: ../src/project.c:181
-msgid "_Remove files"
-msgstr "Odeb_rat soubory"
+#: ../src/brasero-project.c:178
+msgid "_Remove Files"
+msgstr "Odst_ranit soubory"
 
-#: ../src/project.c:182
-msgid "Remove the selected files from the project"
-msgstr "Odebrat vybrané soubory z projektu"
-
-#: ../src/project.c:183
+#: ../src/brasero-project.c:180
 msgid "E_mpty Project"
 msgstr "Vyprázdnit projekt"
 
-#: ../src/project.c:184
+#: ../src/brasero-project.c:181
 msgid "Delete all files from the project"
-msgstr "Vymazat všechny soubory z projektu"
+msgstr "Smazat všechny soubory z projektu"
 
-#: ../src/project.c:185
-msgid "_Burn"
-msgstr "_Vypálit"
+#: ../src/brasero-project.c:182
+msgid "_Burn..."
+msgstr "_Vypálit..."
 
-#: ../src/project.c:186
+#: ../src/brasero-project.c:183
 msgid "Burn the disc"
 msgstr "Vypálit disk"
 
-#: ../src/project.c:366
-msgid "Add selected files"
-msgstr "Přidat vybrané soubory"
-
-#: ../src/project.c:383
-msgid "Remove files selected in project"
-msgstr "Odebrat vybrané soubory z projektu"
-
 #. burn button set insensitive since there are no files in the selection
-#: ../src/project.c:444
-#: ../src/brasero-disc-option-dialog.c:618
-#: ../src/brasero-image-option-dialog.c:459
-msgid "Burn"
-msgstr "Vypálit"
+#: ../src/brasero-project.c:388
+msgid "Burn..."
+msgstr "Vypálit..."
 
-#: ../src/project.c:453
+#: ../src/brasero-project.c:399
 msgid "Start to burn the contents of the selection"
 msgstr "Spustí vypalování výběru"
 
-#: ../src/project.c:502
+#: ../src/brasero-project.c:489
 msgid "The size of the project is too large for the disc even with the overburn option:"
-msgstr "Velikost projektu přesahuje obsah disku i se zapnutou možností overburn:"
+msgstr "Velikost projektu přesahuje velikost disku i se zapnutou možností overburn:"
 
-#: ../src/project.c:504
-#: ../src/project.c:528
+#: ../src/brasero-project.c:491
+#: ../src/brasero-project.c:515
 msgid "Project size"
 msgstr "Velikost projektu"
 
-#: ../src/project.c:507
+#: ../src/brasero-project.c:494
 msgid "you must delete some files."
-msgstr "musíte vymazat některé soubory."
+msgstr "musíte smazat některé soubory."
 
-#: ../src/project.c:526
+#: ../src/brasero-project.c:513
 msgid "The size of the project is too large for the disc:"
-msgstr "Velikost projektu přesahuje obsah disku:"
+msgstr "Velikost projektu přesahuje velikost disku:"
 
-#: ../src/project.c:531
+#: ../src/brasero-project.c:518
 msgid ""
 "Would you like to activate overburn (otherwise you must delete files) ?\n"
 "NOTE: This option might cause failure."
 msgstr ""
+"Přejete si aktivovat overburn (jinak musíte smazat některé soubory)?\n"
+"POZNÁMKA: Tato volba může způsobit selhání."
 
-#: ../src/project.c:697
+#: ../src/brasero-project.c:724
 msgid "Please wait:"
 msgstr "Čekejte prosím:"
 
-#: ../src/project.c:699
+#: ../src/brasero-project.c:726
 msgid "Please wait"
 msgstr "Čekejte prosím"
 
-#: ../src/project.c:702
+#: ../src/brasero-project.c:729
 msgid "some tasks are not completed yet."
 msgstr "některé úkoly nebyly dosud dokončeny."
 
-#: ../src/project.c:704
+#: ../src/brasero-project.c:731
 msgid "Waiting for ongoing tasks"
-msgstr ""
+msgstr "Čekám na probíhající úlohy"
 
-#: ../src/project.c:750
+#: ../src/brasero-project.c:777
 msgid "No song in the project:"
-msgstr "V projektu není žádná píseň:"
+msgstr "V projektu není žádná skladba:"
 
-#: ../src/project.c:752
-#: ../src/project.c:775
-#: ../src/brasero-project-manager.c:112
+#: ../src/brasero-project.c:779
+#: ../src/brasero-project.c:802
+#: ../src/brasero-project.c:1458
 msgid "Empty project"
 msgstr "Prázdný projekt"
 
-#: ../src/project.c:755
+#: ../src/brasero-project.c:782
 msgid "please add songs to the project."
-msgstr ""
+msgstr "přidejte skladby do projektu."
 
-#: ../src/project.c:773
+#: ../src/brasero-project.c:800
 msgid "Project is empty:"
 msgstr "Projekt je prázdný:"
 
-#: ../src/project.c:778
+#: ../src/brasero-project.c:805
 msgid "please add files to the project."
-msgstr ""
+msgstr "přidejte soubory do projektu."
 
-#: ../src/project.c:945
+#: ../src/brasero-project.c:951
 msgid "Default burning application"
-msgstr "Výchozá aplikace pro vypalování"
+msgstr "Výchozí aplikace pro vypalování"
 
-#: ../src/project.c:976
-msgid "don't show this dialog again"
+#: ../src/brasero-project.c:982
+msgid "don't _show this dialog again"
 msgstr "tento dialog znovu nezobrazovat"
 
-#: ../src/project.c:1032
-msgid "<big><b>Audio project</b></big>"
-msgstr "<big><b>Hudební projekt</b></big>"
-
-#: ../src/project.c:1034
-#: ../src/project.c:1170
-msgid "<i>No track</i>"
-msgstr "<i>Žádná stopa</i>"
-
-#: ../src/project.c:1042
+#: ../src/brasero-project.c:1046
 msgid "Brasero is not the default application to burn audio CDs:"
 msgstr "Brasero není výchozí aplikací pro vypalování hudebních CD:"
 
-#: ../src/project.c:1043
+#: ../src/brasero-project.c:1047
 msgid "Would you like to make brasero the default application to burn audio CDs?"
 msgstr "Chcete nastavit brasero jako výchozí aplikaci pro vypalování hudebních CD?"
 
-#: ../src/project.c:1050
-msgid "<big><b>Data project</b></big>"
-msgstr "<big><b>Datový projekt</b></big>"
-
-#: ../src/project.c:1052
-msgid "<i>Contents of your data project</i>"
-msgstr "<i>Obsah vašeho datového projektu</i>"
-
-#: ../src/project.c:1060
+#: ../src/brasero-project.c:1060
 msgid "Brasero is not the default application to burn data discs:"
 msgstr "Brasero není výchozí aplikací pro vypalování datových disků:"
 
-#: ../src/project.c:1061
+#: ../src/brasero-project.c:1061
 msgid "Would you like to make brasero the default application to burn data discs?"
 msgstr "Chcete nastavit brasero jako výchozí aplikaci pro vypalování datových disků?"
 
-#: ../src/project.c:1172
-#, c-format
-msgid "<i>%d track</i>"
-msgid_plural "<i>%d tracks</i>"
-msgstr[0] "<i>%d stopa</i>"
-msgstr[1] "<i>%d stopy</i>"
-msgstr[2] "<i>%d stop</i>"
+#: ../src/brasero-project.c:1126
+msgid "Do you really want to create a new project and discard the changes to current one?"
+msgstr "Opravdu vytvořit nový projekt a zahodit změny ve stávajícím?"
 
-#: ../src/project.c:1369
+#: ../src/brasero-project.c:1129
+#: ../src/brasero-project.c:2058
+msgid "Unsaved project"
+msgstr "Neuložený projekt"
+
+#: ../src/brasero-project.c:1132
+msgid "If you choose to create a new project, all changes made will be lost."
+msgstr "Jestliže vytvoříte nový projekt, všechny změny budou ztraceny."
+
+#: ../src/brasero-project.c:1134
+msgid "_Discard Changes"
+msgstr "Zaho_dit změny"
+
+#: ../src/brasero-project.c:1147
+msgid "Do you really want to create a new project and discard the current one?"
+msgstr "Opravdu vytvořit nový projekt a zahodit stávající?"
+
+#: ../src/brasero-project.c:1150
+msgid "New project"
+msgstr "_Nový projekt"
+
+# XXX
+# To je taky vpoho
+#: ../src/brasero-project.c:1153
+msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "Jestliže zvolíte vytvoření nového projektu, budou všechny již přidané soubory zahozeny. Nebudou smazány fyzicky, jenom odstraněny z tohoto seznamu."
+
+#: ../src/brasero-project.c:1158
+msgid "_Discard Project"
+msgstr "Zaho_dit projekt"
+
+#: ../src/brasero-project.c:1384
+msgid "Select files"
+msgstr "Označit soubory"
+
+#: ../src/brasero-project.c:1455
+msgid "Do you really want to empty the current project?"
+msgstr "Opravdu chcete vyprázdnit stávající projekt?"
+
+#: ../src/brasero-project.c:1461
+msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "Vyprázdnění projektu odstraní všechny doposud přidané soubory. Všechna práce bude ztracena. Žádný z těchto souborů nebude smazán ze svého umístění, jen zde již nebudou uvedeny."
+
+#: ../src/brasero-project.c:1466
+#: ../src/brasero-project-manager.c:112
+msgid "_Empty Project"
+msgstr "Vyprázdnit projekt"
+
+#: ../src/brasero-project.c:1516
+msgid "Save"
+msgstr "Uložit"
+
+#: ../src/brasero-project.c:1527
+msgid "Add"
+msgstr "Přidat"
+
+#: ../src/brasero-project.c:1532
+msgid "Remove"
+msgstr "Odstranit"
+
+#: ../src/brasero-project.c:1579
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr "Brasero - %s (datový disk)"
 
-#: ../src/project.c:1371
+#: ../src/brasero-project.c:1581
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr "Brasero - %s (hudební CD)"
 
-#: ../src/project.c:1397
+#: ../src/brasero-project.c:1607
 msgid "Error while loading the project:"
 msgstr "Chyba při načítání projektu:"
 
-#: ../src/project.c:1399
+#: ../src/brasero-project.c:1609
 msgid "Project loading error"
-msgstr "Chyba při načítání projektu"
+msgstr "Chyba načítání projektu"
 
-#: ../src/project.c:1642
+#: ../src/brasero-project.c:1887
 msgid "the project could not be opened."
 msgstr "projekt nelze otevřít."
 
-#: ../src/project.c:1651
+#: ../src/brasero-project.c:1896
 msgid "the file is empty."
 msgstr "soubor je prázdný."
 
-#: ../src/project.c:1682
-#: ../src/project.c:1690
+#: ../src/brasero-project.c:1927
+#: ../src/brasero-project.c:1935
 msgid "it doesn't seem to be a valid brasero project."
 msgstr "nezdá se být platným souborem brasero projektu."
 
-#: ../src/project.c:1709
+#: ../src/brasero-project.c:1954
 #: ../src/brasero-project-manager.c:124
 msgid "Open a project"
 msgstr "Otevřít projekt"
 
-#: ../src/project.c:1807
+#: ../src/brasero-project.c:2056
 msgid "Your project has not been saved:"
 msgstr "Váš projekt nebyl uložen:"
 
-#: ../src/project.c:1809
-msgid "Unsaved project"
-msgstr "Neuložený projekt"
-
-#: ../src/project.c:1817
+#: ../src/brasero-project.c:2066
 msgid "Unknown error."
 msgstr "Neznámá chyba."
 
-#: ../src/disc-copy-dialog.c:119
-msgid "CD/DVD copy options"
-msgstr "Možnosti kopírování CD/DVD"
+#: ../src/brasero-project.c:2087
+msgid "Save the changes of current project before closing?"
+msgstr "Uložit změny ve stávajícím projektu před zavřením?"
 
-#: ../src/disc-copy-dialog.c:135
-msgid "<b>Select source drive to copy</b>"
-msgstr "<b>Vyberte zdrojový disk</b>"
+#: ../src/brasero-project.c:2089
+msgid "Modified project"
+msgstr "Upravený projekt"
 
-#: ../src/disc-copy-dialog.c:153
-#: ../src/brasero-disc-option-dialog.c:587
-#: ../src/brasero-image-option-dialog.c:406
-msgid "<b>Select a drive to write to</b>"
-msgstr "<b>Vyberte cílový disk</b>"
+#: ../src/brasero-project.c:2092
+msgid "If you don't save, changes will be permanently lost."
+msgstr "Jestliže neuložíte, změny budou nenávratně ztraceny."
 
-#: ../src/disc-copy-dialog.c:194
-msgid "Copy"
-msgstr "Kopírovat"
-
-#: ../src/brasero-layout.c:106
-#: ../src/brasero-layout.c:107
-msgid "Preview"
-msgstr "Náhled"
-
-#: ../src/brasero-layout.c:108
-msgid "Display video, audio and image preview"
-msgstr "Zobrazit náhled video, audio a obrazových souborů"
-
-#: ../src/brasero-layout.c:112
-msgid "None"
-msgstr "Nic"
-
-#: ../src/brasero-layout.c:113
-msgid "Show the project only"
-msgstr "Zobrazit pouze projekt"
+#: ../src/brasero-project.c:2096
+#: ../src/brasero-project.c:2102
+msgid "_Close without saving"
+msgstr "Zavřít bez ukládání"
 
 #: ../src/brasero-project-manager.c:110
-msgid "New project"
+msgid "_New Project"
 msgstr "_Nový projekt"
 
 #: ../src/brasero-project-manager.c:111
@@ -1259,10 +2421,10 @@ msgstr "Vytvořit nový projekt"
 
 #: ../src/brasero-project-manager.c:113
 msgid "Let you choose your new project"
-msgstr ""
+msgstr "Umožní vám vybrat nový projekt"
 
 #: ../src/brasero-project-manager.c:114
-msgid "New audio project"
+msgid "New _Audio Project"
 msgstr "Nový hudební projekt"
 
 #: ../src/brasero-project-manager.c:115
@@ -1270,7 +2432,7 @@ msgid "Create a new audio project"
 msgstr "Vytvořit nový hudební projekt"
 
 #: ../src/brasero-project-manager.c:116
-msgid "New data project"
+msgid "New _Data Project"
 msgstr "Nový datový projekt"
 
 #: ../src/brasero-project-manager.c:117
@@ -1278,68 +2440,27 @@ msgid "Create a new data project"
 msgstr "Vytvořit nový datový projekt"
 
 #: ../src/brasero-project-manager.c:118
-msgid "Copy disc"
+msgid "Copy _Disc..."
+msgstr "Kopírovat _disk..."
+
+#: ../src/brasero-project-manager.c:119
+#: ../src/main.c:90
+msgid "Copy a disc"
 msgstr "Kopírovat disk"
 
 #: ../src/brasero-project-manager.c:120
+msgid "_Burn Image..."
+msgstr "Vypálit obraz..."
+
 #: ../src/brasero-project-manager.c:121
 msgid "Burn an image"
 msgstr "Vypálit obraz"
 
 #: ../src/brasero-project-manager.c:123
-msgid "_Open"
-msgstr "_Otevřít"
+msgid "_Open..."
+msgstr "_Otevřít..."
 
-#: ../src/brasero-project-manager.c:274
-msgid "<big><b>File Browser</b></big>"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:275
-msgid "<i>Browse the file system</i>"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:276
-msgid "File browser"
-msgstr "Správce souborů"
-
-#: ../src/brasero-project-manager.c:277
-msgid "Display file browser"
-msgstr "Zobrazit správce souborů"
-
-#: ../src/brasero-project-manager.c:302
-msgid "<big><b>Search Files</b></big>"
-msgstr "<big><b>Hledat soubory</b></big>"
-
-#: ../src/brasero-project-manager.c:303
-msgid "<i>Search files using keywords</i>"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:304
-msgid "Search files"
-msgstr "Hledat soubory"
-
-#: ../src/brasero-project-manager.c:305
-msgid "Display search"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:327
-msgid "<big><b>Playlists</b></big>"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:328
-msgid "<i>Display playlists and their contents</i>"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:329
-#: ../src/play-list.c:327
-msgid "Playlists"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:330
-msgid "Display playlists"
-msgstr ""
-
-#: ../src/brasero-project-manager.c:400
+#: ../src/brasero-project-manager.c:226
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
@@ -1347,445 +2468,528 @@ msgstr[0] "%d soubor vybrán (%s)"
 msgstr[1] "%d soubory vybrány (%s)"
 msgstr[2] "%d souborů vybráno (%s)"
 
-#: ../src/brasero-project-manager.c:410
+#: ../src/brasero-project-manager.c:236
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d soubor není podporován (%s)"
+msgstr[1] "%d soubory nejsou podporovány (%s)"
+msgstr[2] "%d souborů není podporováno (%s)"
 
-#: ../src/brasero-project-manager.c:416
+#: ../src/brasero-project-manager.c:242
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d soubor nelze přidat (%s)"
+msgstr[1] "%d soubory nelze přidat (%s)"
+msgstr[2] "%d souborů nelze přidat (%s)"
 
-#: ../src/brasero-project-manager.c:427
+#: ../src/brasero-project-manager.c:253
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Nelze přidat žádný soubor (%i soubor vybrán)"
+msgstr[1] "Nelze přidat žádný soubor (%i soubory vybrány)"
+msgstr[2] "Nelze přidat žádný soubor (%i souborů vybráno)"
 
-#: ../src/brasero-project-manager.c:432
+#: ../src/brasero-project-manager.c:258
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Žádný soubor není podporován (%i soubor vybrán)"
+msgstr[1] "Žádný soubor není podporován (%i soubory vybrány)"
+msgstr[2] "Žádný soubor není podporován (%i souborů vybráno)"
 
-#: ../src/brasero-project-manager.c:438
-#: ../src/brasero-project-manager.c:463
+#: ../src/brasero-project-manager.c:264
+#: ../src/brasero-project-manager.c:290
 msgid "No file selected"
 msgstr "Nebyl vybrán žádný soubor"
 
-#: ../src/brasero-project-manager.c:502
-msgid "Recent projects"
-msgstr "Nedávné projekty"
-
-#: ../src/brasero-project-manager.c:503
-msgid "Display the projects recently opened"
-msgstr "Zobrazit nedávno otevřené projekty"
-
-#: ../src/brasero-project-manager.c:693
+#: ../src/brasero-project-manager.c:484
 msgid "Brasero - New audio disc project"
 msgstr "Brasero - Nový hudební projekt"
 
-#: ../src/brasero-project-manager.c:707
+#: ../src/brasero-project-manager.c:498
 msgid "Brasero - New data disc project"
 msgstr "Brasero - Nový datový projekt"
 
-#: ../src/brasero-project-manager.c:717
+#: ../src/brasero-project-manager.c:508
 msgid "Brasero - New image file"
 msgstr "Brasero - Nový soubor obrazu"
 
-#: ../src/brasero-project-manager.c:728
+#: ../src/brasero-project-manager.c:519
 msgid "Brasero - Copy a disc"
 msgstr "Brasero - Kopírovat disk"
 
-#: ../src/brasero-file-chooser.c:235
-#: ../src/search.c:474
-#: ../src/search-entry.c:761
-#: ../src/search-entry.c:802
-#: ../src/search-entry.c:864
-msgid "All files"
-msgstr "Všechny soubory"
+#: ../src/brasero-project-manager.c:727
+msgid "New"
+msgstr "Nový"
 
-#: ../src/brasero-file-chooser.c:240
-msgid "Audio files only"
-msgstr "Pouze hudební soubory"
+#: ../src/brasero-project-manager.c:731
+msgid "Open"
+msgstr "Otevřít"
 
-#: ../src/brasero-file-chooser.c:246
-msgid "Movies only"
-msgstr "Pouze filmy"
+#: ../src/brasero-project-manager.c:777
+msgid "Browse the file system"
+msgstr "Procházet soubory"
 
-#: ../src/brasero-file-chooser.c:252
-msgid "Image files only"
-msgstr "Pouze obrazy"
+#: ../src/brasero-project-manager.c:778
+msgid "Display file browser"
+msgstr "Zobrazit Výběr souborů"
 
-#: ../src/metadata.c:425
-msgid "unknown type of file"
-msgstr "neznámý typ souboru"
+#: ../src/brasero-project-manager.c:801
+msgid "Search files using keywords"
+msgstr "Vyhledat soubory pomocí klíčových slov"
 
-#: ../src/metadata.c:473
-msgid "this format is not supported by gstreamer"
-msgstr "tento formát není podporován gstreamerem"
+#: ../src/brasero-project-manager.c:802
+msgid "Display search"
+msgstr "Zobrazit vyhledávání"
 
-#: ../src/mime-filter.c:137
-msgid "Show"
-msgstr "Zobrazit"
+#: ../src/brasero-project-manager.c:822
+msgid "Display playlists and their contents"
+msgstr "Zobrazit seznamy skladeb a jejich obsah"
 
-#: ../src/mime-filter.c:240
+#: ../src/brasero-project-manager.c:823
+msgid "Display playlists"
+msgstr "Zobrazit seznamy skladeb"
+
+#: ../src/brasero-project-size.c:239
+msgid "Show the available media to be burnt"
+msgstr "Zobrazit média dostupná k vypálení"
+
+#: ../src/brasero-project-size.c:517
 #, c-format
-msgid "%s only"
-msgstr ""
+msgid "<i>%s</i> is busy"
+msgstr "<i>%s</i> je zaneprázdněna"
 
-#: ../src/play-list.c:338
-msgid "Number of songs"
-msgstr "Počet písní"
-
-#: ../src/play-list.c:358
-msgid "Genre"
-msgstr "Žánr"
-
-#: ../src/play-list.c:672
-msgid "Select a playlist"
-msgstr ""
-
-#: ../src/play-list.c:881
+#: ../src/brasero-project-size.c:528
 #, c-format
-msgid "%d song"
-msgid_plural "%d songs"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgid "<i>%s</i> not properly supported"
+msgstr "<i>%s</i> není řádně podporován"
 
-#: ../src/play-list.c:974
+#: ../src/brasero-project-size.c:539
 #, c-format
-msgid "Error parsing playlist \"%s\":"
-msgstr ""
+msgid "The disc in <i>%s</i> is not supported"
+msgstr "Disk v <i>%s</i> není podporován"
 
-#: ../src/play-list.c:979
-#: ../src/play-list.c:1001
-msgid "an unknown error occured."
-msgstr "nastala neznámá chyba."
-
-#: ../src/play-list.c:981
-msgid "Playlist loading error"
-msgstr ""
-
-#: ../src/play-list.c:1008
-msgid "the playlist is empty."
-msgstr ""
-
-#: ../src/play-list.c:1019
-msgid "Loading ..."
-msgstr ""
-
-#: ../src/player.c:175
-msgid " Preview "
-msgstr "Náhled"
-
-#: ../src/player.c:501
-msgid "No file"
-msgstr "Žádný soubor"
-
-#: ../src/player.c:679
+#: ../src/brasero-project-size.c:570
 #, c-format
-msgid "%s / %s"
-msgstr "%s / %s"
+msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
+msgstr ""
 
-#: ../src/player.c:901
+#: ../src/brasero-project-size.c:575
 #, c-format
-msgid "<span weight=\"bold\">Name:</span>\t %s"
-msgstr "<span weight=\"bold\">Název:</span>\t %s"
+msgid "<b>Oversized</b> (%s / %s)"
+msgstr ""
 
-#: ../src/player.c:907
+#: ../src/brasero-project-size.c:581
 #, c-format
-msgid "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"
-msgstr "<span weight=\"bold\">Velikost:</span>\t<i><span size=\"smaller\"> %i x %i pixelů</span></i>"
+msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
+msgstr "<b>Prázdné</b> (%s / %s v <i>%s</i>)"
 
-#: ../src/player.c:928
+#: ../src/brasero-project-size.c:586
 #, c-format
-msgid ""
-"<span weight=\"bold\">%s</span>\n"
-"by <span size=\"smaller\"><i>%s</i></span>"
-msgstr ""
+msgid "<b>Empty</b> (%s / %s)"
+msgstr "<b>Prázdné</b> (%s / %s)"
 
-#: ../src/player.c:936
-#: ../src/player.c:945
+#: ../src/brasero-project-size.c:1075
 #, c-format
-msgid "<span weight=\"bold\">%s</span>"
-msgstr "<span weight=\"bold\">%s</span>"
+msgid "%s (%s) inserted in %s"
+msgstr "%s (%s) vložen v %s"
 
-#: ../src/recorder-selection.c:478
-msgid "<i>The disc is busy.</i>"
-msgstr "<i>Disk je zaneprázdněn.</i>"
-
-#: ../src/recorder-selection.c:482
-msgid "<i>There is no disc in the drive.</i>"
-msgstr "<i>V mechanice není disk.</i>"
-
-#: ../src/recorder-selection.c:485
-msgid "<i>Unknown type of disc.</i>"
-msgstr "<i>Neznámý typ disku.</i>"
-
-#: ../src/recorder-selection.c:489
+#: ../src/brasero-project-size.c:1080
 #, c-format
-msgid "The <b>%s</b> is not writable."
-msgstr "<b>%s</b> není zapisovatelný."
+msgid "%s (DVD-R Dual Layer)"
+msgstr "%s (dvouvrstvé DVD-R)"
 
-#: ../src/recorder-selection.c:500
+#: ../src/brasero-project-size.c:1083
 #, c-format
-msgid ""
-"The <b>%s</b> is ready.\n"
-"It contains audio tracks.\n"
-"A data session can be added (%s free)."
-msgstr ""
+msgid "%s (DVD-R)"
+msgstr "%s (DVD-R)"
 
-#: ../src/recorder-selection.c:506
+#: ../src/brasero-project-size.c:1086
 #, c-format
-msgid ""
-"The <b>%s</b> is ready.\n"
-"It contains audio tracks."
-msgstr ""
+msgid "%s (CD-R)"
+msgstr "%s (CD-R)"
 
-#: ../src/recorder-selection.c:519
+#: ../src/brasero-project-type-chooser.c:73
+msgid "<big>Audi_o project</big>"
+msgstr "<big>Hudební pr_ojekt</big>"
+
+#: ../src/brasero-project-type-chooser.c:74
+msgid "Create a traditional audio CD"
+msgstr "Vytvořit tradiční hudební CD"
+
+#: ../src/brasero-project-type-chooser.c:75
+msgid "Create a traditional audio CD that will be playable on computers and stereos"
+msgstr "Vytvoří tradiční hudební CD, které lze přehrávat v CD přehrávačích a počítači"
+
+#: ../src/brasero-project-type-chooser.c:78
+msgid "<big>D_ata project</big>"
+msgstr "<big>D_atový projekt</big>"
+
+#: ../src/brasero-project-type-chooser.c:79
+msgid "Create a data CD/DVD"
+msgstr "Vytvořit datové CD/DVD"
+
+#: ../src/brasero-project-type-chooser.c:80
+msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
+msgstr "Vytvoří CD/DVD, které obsahuje jakákoli data určená pro čtení v počítači"
+
+#: ../src/brasero-project-type-chooser.c:83
+msgid "<big>Disc _copy</big>"
+msgstr "<big>Kopie disku</big>"
+
+#: ../src/brasero-project-type-chooser.c:84
+msgid "Create 1:1 copy of a CD/DVD"
+msgstr "Vytvořit 1:1 kopii CD/DVD"
+
+#: ../src/brasero-project-type-chooser.c:85
+msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"
+msgstr "Vytvoří 1:1 kopii hudebního nebo datového CD/DVD na pevný disk nebo CD/DVD"
+
+#: ../src/brasero-project-type-chooser.c:88
+msgid "<big>Burn _image</big>"
+msgstr "<big>Vypál_it obraz</big>"
+
+#: ../src/brasero-project-type-chooser.c:89
+#: ../src/brasero-project-type-chooser.c:90
+msgid "Burn an existing CD/DVD image to disc"
+msgstr "Vypálit existující CD/DVD obraz na disk"
+
+#: ../src/brasero-project-type-chooser.c:306
+msgid "No recently used project"
+msgstr "Žádné nedávné projekty"
+
+#: ../src/brasero-project-type-chooser.c:361
+msgid "<span size='x-large'><b>Create a new project:</b></span>"
+msgstr "<span size='x-large'><b>Vytvořit nový projekt:</b></span>"
+
+#: ../src/brasero-project-type-chooser.c:367
+msgid "<span foreground='grey50'><b><i>Choose from the following options</i></b></span>"
+msgstr "<span foreground='grey50'><b><i>Vyberte z následujících možností</i></b></span>"
+
+#: ../src/brasero-project-type-chooser.c:407
+msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
+msgstr "<span size='x-large'><b>Zvolte nedávno otevřené projekty:</b></span>"
+
+#: ../src/brasero-sum-dialog.c:122
+#: ../src/brasero-sum-dialog.c:203
+msgid "Check _Again"
+msgstr "Znovu zkontrolovat"
+
+#: ../src/brasero-sum-dialog.c:153
+#: ../src/brasero-sum-dialog.c:199
+#: ../src/brasero-sum-dialog.c:487
+msgid "File integrity check error"
+msgstr "Chyba kontroly integrity souborů"
+
+#: ../src/brasero-sum-dialog.c:154
+#: ../src/brasero-sum-dialog.c:488
+msgid "The file integrity check cannot be performed:"
+msgstr "Nelze provést kontrolu integrity souborů:"
+
+#: ../src/brasero-sum-dialog.c:155
+#: ../src/scsi/scsi-error.c:29
+msgid "unknown error"
+msgstr "neznámá chyba"
+
+#: ../src/brasero-sum-dialog.c:167
+msgid "File integrity check success"
+msgstr "Kontrola integrity dat úspěšná"
+
+#: ../src/brasero-sum-dialog.c:168
+msgid "The file integrity was performed successfully:"
+msgstr "Kontrola integrity souborů  proběhla úspěšně"
+
+#: ../src/brasero-sum-dialog.c:169
+msgid "there seems to be no corrupted file on the disc."
+msgstr "zdá se, že na disku nejsou žádné poškozené soubory."
+
+#: ../src/brasero-sum-dialog.c:197
+msgid "<b><big>The following files appear to be corrupted:</big></b>"
+msgstr "<b><big>Následující soubory jsou zřejmě poškozeny:</big></b>"
+
+#: ../src/brasero-sum-dialog.c:238
+msgid "Corrupted files"
+msgstr "Poškozené soubory"
+
+#: ../src/brasero-sum-dialog.c:314
 #, c-format
-msgid ""
-"The <b>%s</b> is ready.\n"
-"It contains data.\n"
-"More data can be added (%s free)."
-msgstr ""
+msgid "a temporary file couldn't be created"
+msgstr "nelze vytvořit dočasný soubor"
 
-#: ../src/recorder-selection.c:525
+#: ../src/brasero-sum-dialog.c:327
+#: ../src/brasero-sum-dialog.c:385
 #, c-format
-msgid ""
-"The <b>%s</b> is ready.\n"
-"It contains data."
-msgstr ""
+msgid "URI is not valid"
+msgstr "Neplatné URI"
 
-#: ../src/recorder-selection.c:532
-#, c-format
-msgid ""
-"The <b>%s</b> is ready.\n"
-"It is empty."
-msgstr ""
+#: ../src/brasero-sum-dialog.c:336
+msgid "Downloading md5 file"
+msgstr "Stahuji md5 soubor"
 
-#: ../src/recorder-selection.c:633
-#: ../src/recorder-selection.c:638
-#, c-format
-msgid ""
-"The <b>image</b> will be saved to\n"
-"%s"
-msgstr ""
+#: ../src/brasero-sum-dialog.c:489
+msgid "no md5 file was given."
+msgstr "nebyl specifikován md5 soubor."
 
-#: ../src/recorder-selection.c:662
-msgid "<b>There is no available drive.</b>"
-msgstr ""
+#: ../src/brasero-sum-dialog.c:639
+msgid "Use a _md5 file to check the disc"
+msgstr "Použít _md5 soubor pro kontrolu disku"
 
-#: ../src/recorder-selection.c:802
-#, c-format
-msgid "Properties of %s"
-msgstr "Vlastnosti %s"
+#: ../src/brasero-sum-dialog.c:640
+msgid "Use an external .md5 file that stores the checksum of a disc"
+msgstr "Použít externí soubor .md5, který obsahuje kontrolní součet disku"
 
-#: ../src/recorder-selection.c:822
-msgid "Max speed"
-msgstr "Maximální rychlost"
+#: ../src/brasero-sum-dialog.c:653
+msgid "Open a md5 file"
+msgstr "Otevřít md5 soubor"
 
-#: ../src/recorder-selection.c:832
-msgid "DVD"
-msgstr "DVD"
+#: ../src/brasero-sum-dialog.c:668
+msgid "_Check"
+msgstr "Zkontrolovat"
 
-#: ../src/recorder-selection.c:832
-msgid "CD"
-msgstr "CD"
+#: ../src/brasero-tool-dialog.c:101
+msgid "Media busy"
+msgstr "Médium zaneprázdněno"
 
-#: ../src/recorder-selection.c:838
-msgid "<b>Burning speed</b>"
-msgstr "<b>Rychlost vypalování</b>"
+#: ../src/brasero-tool-dialog.c:102
+#: ../src/brasero-tool-dialog.c:112
+#: ../src/brasero-tool-dialog.c:122
+msgid "The operation cannot be performed:"
+msgstr "Operaci nelze provést:"
 
-#: ../src/recorder-selection.c:870
-msgid "Simulate the burning"
-msgstr "Simulovat vypalování"
+#: ../src/brasero-tool-dialog.c:103
+msgid "the inserted media is busy."
+msgstr "vložené médium je zaneprázdněno."
 
-#: ../src/recorder-selection.c:878
-msgid "Eject after burning"
-msgstr "Vysunout po vypálení"
+#: ../src/brasero-tool-dialog.c:111
+#: ../src/brasero-tool-dialog.c:121
+msgid "Media error"
+msgstr "Chyba média"
 
-#: ../src/recorder-selection.c:886
-msgid "Use burnproof (decrease the risk of failures)"
-msgstr "Použít burnproof (snižuje riziko chyb na disku)"
+#: ../src/brasero-tool-dialog.c:113
+msgid "the inserted media is not supported."
+msgstr "vložené médium není podporováno."
 
-#: ../src/recorder-selection.c:894
-msgid "Burn the image directly without saving it to disc"
-msgstr ""
+#: ../src/brasero-tool-dialog.c:123
+msgid "the drive is empty."
+msgstr "jednotka je prázdná."
 
-#: ../src/recorder-selection.c:905
-msgid "<b>Options</b>"
-msgstr "<b>Možnosti</b>"
+#: ../src/brasero-tool-dialog.c:289
+msgid "<b>Options:</b>"
+msgstr "<b>Možnosti:</b>"
 
-#: ../src/recorder-selection.c:972
-msgid "Choose a location for the disc image"
-msgstr ""
+#: ../src/brasero-tool-dialog.c:470
+msgid "Choose the drive that holds the media"
+msgstr "Vyberte jednotku, která obsahuje medium"
 
-#: ../src/recorder-selection.c:1028
-msgid "Disc image file properties"
-msgstr ""
+#: ../src/brasero-tool-dialog.c:473
+msgid "<b>Select a recorder:</b>"
+msgstr "<b>Vyberte vypalovačku:</b>"
 
-#: ../src/search.c:334
-msgid "Previous results"
-msgstr "Předchozí výsledky"
+#: ../src/brasero-tool-dialog.c:496
+msgid "<b>Progress:</b>"
+msgstr "<b>Průběh:</b>"
 
-#: ../src/search.c:344
-#: ../src/search.c:775
-msgid "<b>No results</b>"
-msgstr "<b>Žádné výsledky</b>"
-
-#: ../src/search.c:349
-msgid "Next results"
-msgstr ""
-
-#: ../src/search.c:485
-msgid "Number of results displayed"
-msgstr ""
-
-#: ../src/search.c:769
-#, c-format
-msgid "<b>Results %i - %i (out of %i)</b>"
-msgstr ""
-
-#: ../src/search.c:1020
-msgid "Error querying beagle:"
-msgstr ""
-
-#: ../src/search.c:1022
-msgid "Search error"
-msgstr ""
-
-#: ../src/filtered-window.c:170
-msgid "Removed files"
-msgstr ""
-
-#: ../src/filtered-window.c:174
-msgid "<span weight=\"bold\" size=\"larger\">The following files were removed automatically from the project.</span>"
-msgstr ""
-
-#: ../src/filtered-window.c:183
-msgid "Select the files you want to restore:"
-msgstr ""
-
-#: ../src/filtered-window.c:225
-msgid "Type"
-msgstr "Typ"
-
-#: ../src/filtered-window.c:232
-msgid "Status"
-msgstr "Stav"
-
-#: ../src/filtered-window.c:257
-#: ../src/filtered-window.c:488
-msgid "Restore hidden files"
-msgstr ""
-
-#: ../src/filtered-window.c:265
-msgid "Restore broken symlink"
-msgstr ""
-
-#: ../src/filtered-window.c:314
-msgid "hidden file"
-msgstr "skrytý soubor"
-
-#: ../src/filtered-window.c:315
-msgid "unreadable file"
-msgstr ""
-
-#: ../src/filtered-window.c:316
-msgid "broken symlink"
-msgstr "neplatný symlink"
-
-#: ../src/filtered-window.c:317
-msgid "recursive symlink"
-msgstr "rekurzivní symlink"
-
-#: ../src/filtered-window.c:483
-msgid "Exclude hidden files"
-msgstr ""
-
-#: ../src/filtered-window.c:499
-msgid "Exclude broken symlinks"
-msgstr ""
-
-#: ../src/filtered-window.c:504
-msgid "Restore broken symlinks"
-msgstr ""
-
-#: ../src/burn-basics.c:55
+#: ../src/burn-basics.c:61
 msgid "Getting size"
-msgstr ""
+msgstr "Zjišťuji velikost"
 
-#: ../src/burn-basics.c:56
+#: ../src/burn-basics.c:62
+msgid "Creating image"
+msgstr "Vytvářím obraz"
+
+#: ../src/burn-basics.c:63
+msgid "Writing"
+msgstr "Zapisuji"
+
+#: ../src/burn-basics.c:64
+msgid "Blanking"
+msgstr "Mažu"
+
+#: ../src/burn-basics.c:65
 msgid "Creating checksum"
-msgstr ""
+msgstr "Vytvářím kontrolní součet"
 
-#: ../src/burn-basics.c:58
+#: ../src/burn-basics.c:66
 msgid "Copying disc"
 msgstr "Kopíruji disk"
 
-#: ../src/burn-basics.c:59
+#: ../src/burn-basics.c:67
 msgid "Copying file"
 msgstr "Kopíruji soubor"
 
-#: ../src/burn-basics.c:60
+#: ../src/burn-basics.c:68
 msgid "Analysing audio information"
 msgstr "Analyzuji audio informace"
 
-#: ../src/burn-basics.c:61
+#: ../src/burn-basics.c:69
 msgid "Transcoding song"
-msgstr ""
+msgstr "Převádím skladbu"
 
-#: ../src/burn-basics.c:62
+#: ../src/burn-basics.c:70
 msgid "Preparing to write"
-msgstr ""
+msgstr "Připravuji se k zápisu"
 
-#: ../src/burn-basics.c:63
+#: ../src/burn-basics.c:71
 msgid "Writing leadin"
-msgstr ""
+msgstr "Zapisuji lead-in"
 
-#: ../src/burn-basics.c:64
-msgid "Writing"
-msgstr ""
-
-#: ../src/burn-basics.c:65
+#: ../src/burn-basics.c:72
 msgid "Writing CD-TEXT information"
 msgstr "Zapisuji CD-TEXT"
 
-#: ../src/burn-basics.c:66
+#: ../src/burn-basics.c:73
 msgid "Fixating"
-msgstr ""
+msgstr "Uzavírám"
 
-#: ../src/burn-basics.c:67
+#: ../src/burn-basics.c:74
 msgid "Writing leadout"
-msgstr ""
+msgstr "Zapisuji lead-out"
 
-#: ../src/burn-basics.c:68
-msgid "Blanking"
-msgstr ""
+#: ../src/burn-basics.c:75
+msgid "Starting to record"
+msgstr "Připravuji se k zápisu"
+
+#: ../src/burn-basics.c:76
+msgid "Success"
+msgstr "Úspěch"
+
+#: ../src/burn.c:149
+msgid "Burning CD/DVD"
+msgstr "Vypaluji CD/DVD"
+
+#: ../src/burn.c:291
+#: ../src/burn.c:358
+#, c-format
+msgid "\"%s\" can't be unlocked"
+msgstr "\"%s\" nelze odemknout"
+
+#: ../src/burn.c:317
+#: ../src/burn.c:384
+#, c-format
+msgid "the media in %s can't be ejected"
+msgstr "medium v %s nelze vysunout"
+
+#: ../src/burn.c:502
+#, c-format
+msgid "no drive specified as source"
+msgstr "žádná jednotka specifikována jako zdroj"
+
+#: ../src/burn.c:540
+msgid "ongoing copying process"
+msgstr "probíhající kopírování"
+
+#: ../src/burn.c:544
+#: ../src/burn.c:637
+#: ../src/burn.c:867
+#: ../src/burn.c:1014
+#, c-format
+msgid "the drive can't be locked (%s)"
+msgstr "jednotku nelze zamknout (%s)"
+
+#: ../src/burn.c:587
+#: ../src/burn.c:733
+#, c-format
+msgid "no drive specified"
+msgstr "jednotka nespecifikována"
+
+#: ../src/burn.c:595
+#, c-format
+msgid "the drive has no rewriting capabilities"
+msgstr "jednotka neumožňuje přepisování"
+
+#: ../src/burn.c:633
+msgid "ongoing blanking process"
+msgstr "probíhající mazání"
+
+#: ../src/burn.c:743
+#, c-format
+msgid "the drive has no burning capabilities"
+msgstr "tuto jednotku nelze použít pro vypalování"
+
+#: ../src/burn.c:948
+#, c-format
+msgid "the disc could not be mounted (max attemps reached)"
+msgstr "disk nelze připojit (dosaženo maxima pokusů)"
+
+#: ../src/burn.c:1010
+msgid "ongoing checksuming operation"
+msgstr "probíhající tvorba kontrolního součtu"
+
+#: ../src/burn.c:1241
+#: ../src/burn.c:1270
+#: ../src/burn.c:1369
+#: ../src/burn.c:1376
+#: ../src/burn.c:1673
+#: ../src/plugins/cdrdao/burn-cdrdao.c:209
+#: ../src/plugins/growisofs/burn-growisofs.c:197
+#, c-format
+msgid "the drive seems to be busy"
+msgstr "jednotka je zřejmě zaneprázdněná"
+
+#: ../src/burn.c:1486
+#, c-format
+msgid "it's not possible to merge to this media because it hasn't got enough space"
+msgstr "není možné provést spojení na toto médium, protože na něm není dostatek místa"
+
+#: ../src/burn.c:1723
+#, c-format
+msgid "there is no track to be burn"
+msgstr "žádná stopa k vypálení"
+
+#: ../src/burn.c:1737
+#, c-format
+msgid "there is no drive to burn to"
+msgstr "žádná jednotka k vypalování"
+
+#: ../src/burn.c:1756
+#, c-format
+msgid "this operation is not supported. Try to activate proper plugins"
+msgstr "tato operace není podporována. Zkuste aktivovat patřičné zásuvné moduly"
+
+#: ../src/burn.c:1770
+#, c-format
+msgid "merging data is impossible with this disc"
+msgstr "slučování dat není s tímto diskem možné"
+
+#: ../src/burn.c:2049
+#: ../src/burn-caps.c:1443
+#, c-format
+msgid "only one track at a time can be checked"
+msgstr "lze kontrolovat jen jednu stopu naráz"
+
+#: ../src/burn.c:2117
+#, c-format
+msgid "impossible to find a format for the temporary image"
+msgstr "není možné najít formát pro dočasný obraz"
+
+#: ../src/burn.c:2256
+#, c-format
+msgid "internal error (code %i)"
+msgstr "interní chyba (kód %i)"
+
+#: ../src/burn-caps.c:108
+#, c-format
+msgid "this operation is not supported"
+msgstr "tato operace není podporována"
+
+#: ../src/burn-caps.c:1339
+#, c-format
+msgid "internal error in plugin system"
+msgstr "vnitřní chyba v systému zásuvných modulů"
 
 #: ../src/burn-common.c:178
-#: ../src/burn-local-image.c:350
+#: ../src/burn-session.c:913
 #, c-format
 msgid "a temporary file can't be created: %s"
 msgstr "nelze vytvořit dočasný soubor: %s"
 
 #: ../src/burn-common.c:192
 #: ../src/burn-common.c:218
-#: ../src/burn-common.c:386
+#: ../src/burn-common.c:323
+#: ../src/burn-session.c:570
 #, c-format
 msgid "%s already exists"
 msgstr "%s již existuje"
@@ -1796,1143 +3000,1218 @@ msgstr "%s již existuje"
 msgid "%s can't be removed"
 msgstr "%s nelze odstranit"
 
-#: ../src/burn-common.c:335
+#: ../src/burn-common.c:272
+#, c-format
 msgid "One file is not a directory or a regular file"
 msgstr "Jeden ze souborů není adresářem nebo běžným souborem"
 
-#: ../src/burn-common.c:359
+#: ../src/burn-common.c:296
+#, c-format
 msgid "the file can't be read"
 msgstr "soubor nelze přečíst"
 
-#: ../src/burn-common.c:402
+#: ../src/burn-common.c:339
 #, c-format
 msgid "%s can't be removed and is not a directory (%s)"
-msgstr ""
+msgstr "%s nelze odstranit a není adresářem (%s)"
 
-#: ../src/burn-common.c:416
+#: ../src/burn-common.c:353
 #, c-format
 msgid "%s can't be created (%s)"
-msgstr ""
+msgstr "%s nelze vytvořit (%s)"
 
-#: ../src/burn-common.c:432
+#: ../src/burn-common.c:369
 #, c-format
 msgid "directory \"%s\" can't be created (%s)"
 msgstr "adresář \"%s\" nelze vytvořit (%s)"
 
-#: ../src/burn-common.c:455
+#: ../src/burn-common.c:392
+#: ../src/burn-session.c:865
 #, c-format
 msgid "a temporary directory could not be created (%s)"
 msgstr "nelze vytvořit dočasný adresář (%s)"
 
-#: ../src/burn-common.c:476
+#: ../src/burn-iso9660.c:140
+#: ../src/burn-iso9660.c:149
 #, c-format
-msgid "the pipe couldn't be created (%s)"
+msgid "it does not appear to be a primary volume descriptor"
 msgstr ""
 
-#: ../src/burn-common.c:487
-#: ../src/burn-common.c:506
+# XXX
+#: ../src/burn-iso9660.c:310
+#, c-format
+msgid "invalid directory record"
+msgstr "neplatný adresářový záznam"
+
+#: ../src/burn-iso9660.c:326
+#: ../src/burn-iso9660.c:370
+#, c-format
+msgid "file name is too long"
+msgstr "název souboru je příliš dlouhý"
+
+#: ../src/burn-job.c:300
+#, c-format
+msgid "plugin %s did not want to work. Try to deactivate it"
+msgstr "zásuvný modul %s nechce pracovat. Zkuste jej deaktivovat"
+
+#: ../src/burn-job.c:397
+#, c-format
+msgid "Insufficient space on media (%lli available for %lli)"
+msgstr "Nedostatek místa na médiu (%lli dostupné pro %lli)"
+
+#: ../src/burn-job.c:454
+#, c-format
+msgid "the selected location does not have enough free space to store the disc image (%ld MiB needed)"
+msgstr "k uložení obrazu disku je potřeba %ld MiB, na zvoleném svazku není dostatek místa"
+
+#: ../src/burn-job.c:466
+#, c-format
+msgid "the size of the volume can't be checked (%s)"
+msgstr "velikost svazku nelze ověřit (%s)"
+
+#: ../src/burn-job.c:618
+#, c-format
+msgid "the pipe couldn't be created (%s)"
+msgstr "nelze vytvořit rouru (%s)"
+
+#: ../src/burn-job.c:647
+#, c-format
+msgid ""
+"plugin %s did not work properly.\n"
+"Try to deactivate it"
+msgstr ""
+"zásuvný modul %s nepracuje správně.\n"
+"Zkuste jej deaktivovat."
+
+#: ../src/burn-job.c:661
+#, c-format
+msgid ""
+"plugin %s didn't work properly (it does not support operation).\n"
+"Try to deactivate it"
+msgstr ""
+"zásuvný modul %s nepracuje správně (nepodporuje operaci).\n"
+"Zkuste jej deaktivovat."
+
+#: ../src/burn-job.c:838
+#: ../src/burn-job.c:927
+#, c-format
+msgid "a plugin did not behave properly"
+msgstr "zásuvný modul nepracuje správně"
+
+#: ../src/burn-job.c:1025
+#, c-format
 msgid "couldn't set non blocking mode"
 msgstr ""
 
-#: ../src/burn-common.c:495
-#: ../src/burn-common.c:514
+#: ../src/burn-job.c:1033
+#, c-format
 msgid "couldn't get pipe flags"
-msgstr ""
+msgstr "Nelze získat příznaky roury"
 
-#: ../src/burn.c:518
-msgid "the drive can't be unlocked"
-msgstr "jednotku nelze odemknout"
+#: ../src/burn-medium.c:64
+msgid "file"
+msgstr "soubor"
 
-#: ../src/burn.c:527
-msgid "the disc can't be ejected"
-msgstr "disk nelze vysunout"
+#: ../src/burn-medium.c:65
+msgid "CDROM"
+msgstr "CDROM"
 
-#: ../src/burn.c:628
-msgid "ongoing copying process"
-msgstr ""
+#: ../src/burn-medium.c:66
+msgid "CD-R"
+msgstr "CD-R"
 
-#: ../src/burn.c:632
-#: ../src/burn.c:745
-#: ../src/burn.c:1042
+#: ../src/burn-medium.c:67
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: ../src/burn-medium.c:68
+msgid "DVDROM"
+msgstr "DVDROM"
+
+#: ../src/burn-medium.c:69
+msgid "DVD-R"
+msgstr "DVD-R"
+
+#: ../src/burn-medium.c:70
+msgid "DVD-RW"
+msgstr "DVD-RW"
+
+#: ../src/burn-medium.c:71
+msgid "DVD+R"
+msgstr "DVD+R"
+
+#: ../src/burn-medium.c:72
+msgid "DVD+RW"
+msgstr "DVD+RW"
+
+#: ../src/burn-medium.c:73
+msgid "DVD+R dual layer"
+msgstr "dvouvrstvé DVD+R"
+
+#: ../src/burn-medium.c:74
+msgid "DVD+RW dual layer"
+msgstr "dvouvrstvé DVD+RW"
+
+#: ../src/burn-medium.c:75
+msgid "DVD-R dual layer"
+msgstr "dvouvrstvé DVD-R"
+
+#: ../src/burn-medium.c:76
+msgid "DVD-RAM"
+msgstr "DVD-RAM"
+
+#: ../src/burn-medium.c:77
+msgid "blue ray disc"
+msgstr "disk blue ray"
+
+#: ../src/burn-medium.c:78
+msgid "writable blue ray disc"
+msgstr "zapisovatelný disk Blu-ray"
+
+#: ../src/burn-medium.c:79
+msgid "rewritable blue ray disc"
+msgstr "přepisovatelný disk Blu-ray"
+
+#: ../src/burn-mkisofs-base.c:127
+#: ../src/burn-mkisofs-base.c:421
 #, c-format
-msgid "the drive can't be locked (%s)"
-msgstr "jednotku nelze zamknout (%s)"
+msgid "the file is not stored locally"
+msgstr "soubor není uložen lokálně"
 
-#: ../src/burn.c:696
-msgid "the drive has no rewriting capabilities"
-msgstr ""
-
-#: ../src/burn.c:741
-msgid "ongoing blanking process"
-msgstr ""
-
-#: ../src/burn.c:795
-#: ../src/burn.c:1537
-#: ../src/burn.c:1620
-#: ../src/burn.c:1627
-#: ../src/burn-cdrdao.c:480
-#: ../src/burn-growisofs.c:689
-msgid "the drive seems to be busy"
-msgstr "jednotka je zřejmě zaneprázdněná"
-
-#: ../src/burn.c:930
-msgid "the drive has no burning capabilities"
-msgstr "tuto jednotku nelze použít pro vypalování"
-
-#: ../src/burn.c:1038
-msgid "ongoing burning process"
-msgstr ""
-
-#: ../src/burn.c:1418
+#: ../src/burn-mkisofs-base.c:270
 #, c-format
-msgid "the size of the volume can't be checked (%s)"
+msgid "null graft point"
 msgstr ""
 
-#: ../src/burn.c:1429
+#: ../src/burn-process.c:145
 #, c-format
-msgid "the selected location does not have enough free space to store the disc image (%ld MiB needed)"
+msgid "process %s ended with an error code (%i)"
+msgstr "proces %s skončil s chybovým kódem (%i)"
+
+#: ../src/burn-session.c:559
+#, c-format
+msgid "no path"
 msgstr ""
 
-#: ../src/burn.c:1846
+#: ../src/burn-session.c:675
 #, c-format
-msgid "the file %s can't be opened (%s)"
-msgstr "soubor %s nelze otevřít (%s)"
+msgid "no output specified"
+msgstr "nespecifikován výstup"
 
-#: ../src/burn.c:2224
+#: ../src/burn-volume.c:122
 #, c-format
-msgid "internal error (code %i)"
-msgstr "interní chyba (kód %i)"
+msgid "there isn't a valid volume descriptor"
+msgstr "neexistuje platný volume descriptor"
 
-#: ../src/burn-cdrdao.c:358
+#: ../src/main.c:78
+msgid "Open the specified project"
+msgstr "Otevřít projekt"
+
+#: ../src/main.c:79
+msgid "PROJECT"
+msgstr "PROJEKT"
+
+#: ../src/main.c:82
+msgid "Open an audio project adding the URIs given on the command line"
+msgstr "Otevřít hudební projekt a přidat soubory z URI"
+
+#: ../src/main.c:86
+msgid "Open a data project adding the URIs given on the command line"
+msgstr "Otevřít datový projekt a přidat soubory z URI"
+
+#: ../src/main.c:94
+msgid "Uri of an image file to be burnt (autodetected)"
+msgstr "Odkaz na soubor obrazu k vypálení (autodetekován)"
+
+#: ../src/main.c:98
+msgid "Force brasero to display the project selection page"
+msgstr "Vnutí braseru zobrazení stránky s výběrem projektu"
+
+#: ../src/main.c:102
+msgid "Open the blank disc dialog"
+msgstr "Otevře dialog mazání disků"
+
+#: ../src/main.c:106
+msgid "Open a data project with the contents of nautilus-cd-burner"
+msgstr "Otevřít datový projekt obsahující soubory Tvůrce CD/DVD Nautilu"
+
+#: ../src/main.c:110
+msgid "Display debug statements on stdout"
+msgstr "Zobrazit ladicí informace na standardním výstupu"
+
+#: ../src/main.c:228
+msgid "Sorry, no documentation for Brasero."
+msgstr "dokumentace k Braseru není dostupná"
+
+#: ../src/main.c:233
+msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr ""
+
+#: ../src/main.c:238
+msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr ""
+
+#: ../src/main.c:243
+msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+msgstr ""
+
+#: ../src/main.c:252
+msgid "A simple to use CD/DVD burning application for GNOME"
+msgstr "Aplikace na vypalování CD/DVD"
+
+#: ../src/main.c:268
+msgid "Brasero Homepage"
+msgstr "domovská stránka aplikace Brasero"
+
+#. Translators: This is a special message that shouldn't be translated
+#. * literally. It is used in the about box to give credits to
+#. * the translators.
+#. * Thus, you should translate it to your name and email address.
+#. * You should also include other translators who have contributed to
+#. * this translation; in that case, please write each of them on a separate
+#. * line seperated by newlines (\n).
+#.
+#: ../src/main.c:280
+msgid "translator-credits"
+msgstr ""
+"ZOiD <sp.pok@seznam.cz>\n"
+"Gor\n"
+"Zbyněk Mrkvička <zbynek@mrkvicka.eu>\n"
+"\n"
+"chyby, připomínky a návrhy k překladu směřujte přímo na <sp.pok@seznam.cz>"
+
+#: ../src/main.c:376
+msgid "_Recent Projects"
+msgstr "Nedávné p_rojekty"
+
+#: ../src/main.c:377
+msgid "Display the projects recently opened"
+msgstr "Zobrazit nedávno otevřené projekty"
+
+#: ../src/main.c:382
+msgid "Brasero projects"
+msgstr "Projekty Brasero"
+
+#: ../src/main.c:597
+msgid "Incompatible command line options used:"
+msgstr "Byly použity nekompatibilní přepínače na příkazovém řádku:"
+
+#: ../src/main.c:599
+msgid "Incompatible options"
+msgstr "Nekompatibilní přepínače"
+
+#: ../src/main.c:602
+msgid "only one option can be given at a time."
+msgstr "lze zadat pouze jednu možnost."
+
+#: ../src/main.c:689
+msgid "[URI] [URI] ..."
+msgstr "[URI] [URI] ..."
+
+#: ../src/main.c:697
+msgid "CD/DVD burning"
+msgstr "Vypalování CD/DVD"
+
+#: ../src/plugins/cdrdao/burn-cdrdao.c:82
 msgid "Copying audio track"
 msgstr "Kopíruji audio stopu"
 
-#: ../src/burn-cdrdao.c:364
+#: ../src/plugins/cdrdao/burn-cdrdao.c:88
 msgid "Copying data track"
 msgstr "Kopíruji datovou stopu"
 
-#: ../src/burn-cdrdao.c:401
+#: ../src/plugins/cdrdao/burn-cdrdao.c:124
 #, c-format
 msgid "Analysing track %02i"
 msgstr "Analyzuji stopu %02i"
 
-#: ../src/burn-cdrdao.c:450
+#: ../src/plugins/cdrdao/burn-cdrdao.c:177
 #, c-format
 msgid "the cue file (%s) seems to be invalid"
-msgstr ""
+msgstr "zdá se, že soubor CUE (%s) je neplatný"
 
-#: ../src/burn-cdrdao.c:486
+#: ../src/plugins/cdrdao/burn-cdrdao.c:215
+#, c-format
 msgid "your version of cdrdao doesn't seem to be supported by libbrasero"
 msgstr "vaše verze cdrdao není podporována knihovnou libbrasero"
 
-#: ../src/burn-cdrdao.c:492
-#: ../src/burn-cdrecord.c:271
-#: ../src/burn-cdrecord.c:333
+#: ../src/plugins/cdrdao/burn-cdrdao.c:221
+#: ../src/plugins/cdrkit/burn-wodim.c:92
+#: ../src/plugins/cdrkit/burn-wodim.c:154
+#: ../src/plugins/cdrtools/burn-cdrecord.c:92
+#: ../src/plugins/cdrtools/burn-cdrecord.c:154
+#, c-format
 msgid "You don't seem to have the required permission to use this drive"
 msgstr "Zřejmě nemáte dostatečná oprávnění k použití této jednotky"
 
-#: ../src/burn-cdrdao.c:1104
-#: ../src/burn-cdrecord.c:1222
-msgid "the drive cannot rewrite CDs or DVDs"
-msgstr ""
+#: ../src/plugins/cdrdao/burn-cdrdao.c:535
+msgid "use cdrdao to image and burn CDs"
+msgstr "použít cdrdao na tvorbu obrazů a vypalování CD"
 
-#: ../src/burn-cdrecord.c:277
-msgid "There doesn't seem to be a disc in the drive"
-msgstr ""
+#: ../src/plugins/cdrdao/burn-cdrdao.c:543
+msgid "cdrdao could not be found in the path"
+msgstr "nelze nalézt cdrdao v cestě"
 
-#: ../src/burn-cdrecord.c:283
-msgid "input buffer error"
-msgstr ""
+#: ../src/plugins/cdrdao/burn-toc2cue.c:243
+msgid "Converting toc file"
+msgstr "Konvertuji TOC soubor"
 
-#: ../src/burn-cdrecord.c:289
-msgid "The CD has already been recorded"
-msgstr ""
+#: ../src/plugins/cdrdao/burn-toc2cue.c:300
+msgid "toc2cue converts .toc files into .cue files"
+msgstr "toc2cue konvertuje soubory .toc na soubory .cue"
 
-#: ../src/burn-cdrecord.c:295
-msgid "The CD cannot be blanked"
-msgstr "CD nelze smazat"
+#: ../src/plugins/cdrdao/burn-toc2cue.c:308
+msgid "toc2cue could not be found in the path"
+msgstr "nelze nalézt toc2cue v cestě"
 
-#: ../src/burn-cdrecord.c:303
-#: ../src/burn-growisofs.c:669
-#: ../src/burn-growisofs.c:675
-msgid "The files selected did not fit on the CD"
-msgstr ""
+#: ../src/plugins/cdrkit/burn-genisoimage.c:108
+#: ../src/plugins/cdrtools/burn-mkisofs.c:111
+msgid "the old image couldn't be read"
+msgstr "starý obraz nelze přečíst"
 
-#: ../src/burn-cdrecord.c:309
-msgid "a write error occured which was likely due to overburning the disc"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:315
-msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-msgstr "Všechny hudební soubory musí být 16-ti bitové stereo soubory s vzorkováním 44100Hz"
-
-#: ../src/burn-cdrecord.c:321
-msgid "The image does not seem to be a proper iso9660 file system"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:327
-msgid "The system is too slow to write the CD at this speed. Try a lower speed"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:339
-msgid "The drive seems to be busy (maybe check you have proper permissions to use it)"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:347
-msgid "The drive seems to be busy (maybe you should reload the media)"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:353
-msgid "the image file cannot be found"
-msgstr "obraz nelze najít"
-
-#: ../src/burn-cdrecord.c:360
-#: ../src/burn-cdrecord.c:548
-msgid "internal error"
-msgstr "vnitřní chyba"
-
-#: ../src/burn-cdrecord.c:366
-msgid "the cd information could not be written"
-msgstr "nelze zapsat cd informace"
-
-#: ../src/burn-cdrecord.c:372
-msgid "the disc could not be closed"
-msgstr "disk nelze zavřít"
-
-#: ../src/burn-cdrecord.c:378
-msgid "the audio tracks are too short or not a multiple of 2352"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:503
-msgid "Writing cue sheet"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:528
-msgid "The media needs to be reloaded before being recorded"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:739
-#, c-format
-msgid "the inf file can't be written : %s"
-msgstr ""
-
-#: ../src/burn-cdrecord.c:772
-msgid "a temporary directory couldn't be created"
-msgstr "nelze vytvořit dočasný adresář"
-
-#: ../src/burn-cdrecord.c:854
-#: ../src/burn-cdrecord.c:865
-#: ../src/burn-growisofs.c:867
-#: ../src/burn-growisofs.c:887
-msgid "imager doesn't seem to be ready"
-msgstr ""
-
-#: ../src/burn-growisofs.c:650
-msgid "The disc is already burnt"
-msgstr ""
-
-#: ../src/burn-growisofs.c:657
-msgid "The recorder could not be accessed"
-msgstr ""
-
-#: ../src/burn-growisofs.c:663
-msgid "Not enough space available on the disc"
-msgstr "Na disku nezbývá dost volného místa"
-
-#: ../src/burn-growisofs.c:695
-msgid "Unhandled error, aborting"
-msgstr ""
-
-#: ../src/burn-growisofs.c:701
-#: ../src/burn-mkisofs.c:376
-msgid "Some files have invalid filenames"
-msgstr "Některé soubory mají neplatné názvy"
-
-#: ../src/burn-growisofs.c:707
-#: ../src/burn-mkisofs.c:319
-#: ../src/burn-mkisofs.c:328
+#: ../src/plugins/cdrkit/burn-genisoimage.c:114
+#: ../src/plugins/cdrkit/burn-genisoimage.c:123
+#: ../src/plugins/cdrtools/burn-mkisofs.c:117
+#: ../src/plugins/cdrtools/burn-mkisofs.c:126
+#: ../src/plugins/growisofs/burn-growisofs.c:215
 msgid "the image can't be created"
 msgstr "nelze vytvořit obraz"
 
-#: ../src/burn-growisofs.c:876
-msgid "imager can't create iso9660 images"
-msgstr ""
+#: ../src/plugins/cdrkit/burn-genisoimage.c:129
+msgid "this version of genisoimage doesn't seem to be supported"
+msgstr "zdá se, že tato verze genisoimage není podporována"
 
-#: ../src/burn-growisofs.c:901
-msgid "the file /proc/self/fd/0 is missing"
-msgstr "soubor /proc/self/fd/0 chybí"
+#: ../src/plugins/cdrkit/burn-genisoimage.c:171
+#: ../src/plugins/cdrtools/burn-mkisofs.c:174
+#: ../src/plugins/growisofs/burn-growisofs.c:209
+msgid "Some files have invalid filenames"
+msgstr "Některé soubory mají neplatné názvy"
 
-#: ../src/burn-growisofs.c:926
-msgid "the image is not stored locally"
-msgstr ""
-
-#: ../src/burn-iso9660.c:101
-msgid "it does not appear to be a primary volume descriptor"
-msgstr ""
-
-#: ../src/burn-iso9660.c:110
-msgid "it does not appear to be a valid iso9660 image"
-msgstr ""
-
-#: ../src/burn-mkisofs-base.c:294
-#: ../src/burn-mkisofs-base.c:585
-msgid "the file is not stored locally"
-msgstr "soubor není uložen lokálně"
-
-#: ../src/burn-mkisofs-base.c:397
-msgid "null graft point"
-msgstr ""
-
-#: ../src/burn-mkisofs-base.c:547
-#, c-format
-msgid "a temporary directory couldn't be created : %s"
-msgstr "nelze vytvořit dočasný adresář : %s"
-
-#: ../src/burn-mkisofs-base.c:633
-#: ../src/burn-mkisofs-base.c:657
-#, c-format
-msgid "a temporary file couldn't be created: %s"
-msgstr "nelze vytvořit dočasný soubor: %s"
-
-#: ../src/burn-mkisofs-base.c:811
-msgid "The label for the image is too long."
-msgstr "Jmenovka obrazu je příliš dlouhá."
-
-#: ../src/burn-mkisofs.c:313
-msgid "the old image couldn't be read"
-msgstr ""
-
-#: ../src/burn-mkisofs.c:334
-msgid "this version of mkisofs doesn't seem to be supported"
-msgstr ""
-
-#: ../src/burn-mkisofs.c:382
+#: ../src/plugins/cdrkit/burn-genisoimage.c:177
+#: ../src/plugins/cdrtools/burn-mkisofs.c:180
 msgid "Unknown character encoding"
 msgstr "Neznámá znaková sada"
 
-#: ../src/burn-mkisofs.c:388
+#: ../src/plugins/cdrkit/burn-genisoimage.c:183
+#: ../src/plugins/cdrtools/burn-mkisofs.c:186
+msgid "writing to file descriptor failed"
+msgstr ""
+
+# Nepouziva Nero "descriptor=popisovac"?
+#: ../src/plugins/cdrkit/burn-genisoimage.c:189
+msgid "Internal error: bad file descriptor"
+msgstr "Interní chyba: špatný deskriptor souboru"
+
+#: ../src/plugins/cdrkit/burn-genisoimage.c:195
+#: ../src/plugins/cdrtools/burn-mkisofs.c:192
 msgid "There is no space left on the device"
 msgstr "Na zařízení nezbývá volné místo"
 
-#: ../src/burn-mkisofs.c:395
+#: ../src/plugins/cdrkit/burn-genisoimage.c:202
+#: ../src/plugins/cdrtools/burn-mkisofs.c:199
 msgid "The file is too large for a CD"
 msgstr "Soubor je příliš velký pro CD"
 
-#: ../src/burn-mkisofs.c:722
-msgid "failed to get the start point of the track. Make sure the media allow to add files (it is not closed)"
-msgstr ""
-
-#: ../src/progress.c:138
-msgid "Estimated remaining time:"
-msgstr "Odhad zbývajícího času:"
-
-#: ../src/progress.c:162
-msgid "Estimated drive speed:"
-msgstr "Odhad rychlosti jednotky:"
-
-#: ../src/progress.c:392
+#: ../src/plugins/cdrkit/burn-genisoimage.c:329
+#: ../src/plugins/cdrtools/burn-mkisofs.c:326
 #, c-format
-msgid "%i MiB of %i MiB"
-msgstr "%i MiB z %i MiB"
+msgid "failed to get the start point of the track. Make sure the media allow to add files (it is not closed)"
+msgstr "selhání při kontrole začátku stopy. Ujistěte se, že je na disk možno přidávat soubory (že není uzavřeno)"
 
-#: ../src/burn-readcd.c:543
+#: ../src/plugins/cdrkit/burn-genisoimage.c:462
+msgid "use genisoimage to create images from files"
+msgstr "použít genisoimage na tvorbu obrazů ze souborů"
+
+#: ../src/plugins/cdrkit/burn-genisoimage.c:470
+msgid "genisoimage could not be found in the path"
+msgstr "nelze nalézt genisoimage"
+
+#: ../src/plugins/cdrkit/burn-readom.c:90
+#: ../src/plugins/cdrtools/burn-readcd.c:90
+#, c-format
 msgid "the drive is not ready"
 msgstr "jednotka není připravena"
 
-#: ../src/burn-readcd.c:549
-#: ../src/burn-readcd.c:555
-#: ../src/burn-readcd.c:561
+#: ../src/plugins/cdrkit/burn-readom.c:97
+#: ../src/plugins/cdrkit/burn-readom.c:104
+#: ../src/plugins/cdrkit/burn-readom.c:110
+#: ../src/plugins/cdrtools/burn-readcd.c:97
+#: ../src/plugins/cdrtools/burn-readcd.c:104
+#: ../src/plugins/cdrtools/burn-readcd.c:110
+#, c-format
 msgid "you don't seem to have the required permissions to access the drive"
 msgstr "zdá se, že nemáte dostatečná oprávnění pro přístup na disk"
 
-#: ../src/burn-readcd.c:638
+#: ../src/plugins/cdrkit/burn-readom.c:273
+#: ../src/plugins/cdrtools/burn-readcd.c:273
+#, c-format
 msgid "raw images cannot be created with DVDs"
-msgstr ""
+msgstr "obrazy RAW nelze vytvářet z DVD"
 
-#: ../src/burn-recorder.c:89
-msgid "the drive cannot write CDs or DVDs"
-msgstr "tato jednotka neumí zapisovat CD nebo DVD"
+#: ../src/plugins/cdrkit/burn-readom.c:354
+msgid "use readom to image CDs"
+msgstr "použít readom na tvorbu obrazů CD"
 
-#: ../src/search-entry.c:90
-msgid "Find all available music"
-msgstr "Nalézt dostupnou hudbu"
+#: ../src/plugins/cdrkit/burn-readom.c:362
+msgid "readom could not be found in the path"
+msgstr "nelze nalézt readom"
 
-#: ../src/search-entry.c:105
-msgid "Find all available videos"
-msgstr "Nalézt dostupná videa"
-
-#: ../src/search-entry.c:121
-msgid "Find all available pictures"
-msgstr "Nalézt dostupné obrázky"
-
-#: ../src/search-entry.c:151
-msgid "Find all available documents"
-msgstr "Nalézt dostupné dokumenty"
-
-#: ../src/search-entry.c:169
-msgid "Find all available spreadsheets"
-msgstr "Nalézt dostupné sešity"
-
-#: ../src/search-entry.c:185
-msgid "Find all available presentations"
-msgstr "Nalézt dostupné prezentace"
-
-#: ../src/search-entry.c:194
-msgid "Find all available Pdf / Postscripts"
-msgstr "Nalézt dostupné soubory Postscriptu a PDF"
-
-#: ../src/search-entry.c:203
-msgid "Text File"
-msgstr "Textový soubor"
-
-#: ../src/search-entry.c:329
-msgid "<b>Search:\t</b>"
-msgstr "<b>Hledat:\t</b>"
-
-#: ../src/search-entry.c:390
-msgid "<b>only in\t</b>"
-msgstr "<b>jen v\t</b>"
-
-#: ../src/search-entry.c:402
-msgid "_text documents"
-msgstr "_textové dokumenty"
-
-#: ../src/search-entry.c:417
-msgid "_pictures"
-msgstr "_obrázky"
-
-#: ../src/search-entry.c:432
-msgid "_music"
-msgstr "_hudba"
-
-#: ../src/search-entry.c:447
-msgid "_video"
-msgstr "_video"
-
-#: ../src/search-entry.c:468
-msgid "Type your keywords or choose 'All files' from the menu"
-msgstr ""
-
-#: ../src/search-entry.c:472
-msgid "Select if you want to search among image files only"
-msgstr ""
-
-#: ../src/search-entry.c:476
-msgid "Select if you want to search among video files only"
-msgstr ""
-
-#: ../src/search-entry.c:480
-msgid "Select if you want to search among audio files only"
-msgstr ""
-
-#: ../src/search-entry.c:484
-msgid "Select if you want to search among your text documents only"
-msgstr ""
-
-#: ../src/search-entry.c:488
-msgid "Click to start the search"
-msgstr "Klikněte pro zahájení vyhledávání"
-
-#: ../src/song-properties.c:132
-msgid "Title:"
-msgstr "Název:"
-
-#: ../src/song-properties.c:139
-#: ../src/song-properties.c:149
-#: ../src/song-properties.c:159
-msgid "This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."
-msgstr ""
-
-#: ../src/song-properties.c:142
-msgid "Artist:"
-msgstr "Umělec:"
-
-#: ../src/song-properties.c:152
-msgid "Composer:\t"
-msgstr "Skladatel:\t"
-
-#: ../src/song-properties.c:173
-msgid "<big><b>Options</b></big>"
-msgstr "<big><b>Možnosti</b></big>"
-
-#: ../src/song-properties.c:178
-msgid "Pause length:\t"
-msgstr "Délka pauzy:\t"
-
-#: ../src/song-properties.c:184
-msgid "Gives the length of the pause that should follow the track"
-msgstr "Nastaví délku pauzy, která následuje po této stopě"
-
-#: ../src/song-properties.c:193
-msgid "Song information"
-msgstr "Informace o písni"
-
-#: ../src/song-properties.c:256
+#: ../src/plugins/cdrkit/burn-wodim.c:98
+#: ../src/plugins/cdrtools/burn-cdrecord.c:98
 #, c-format
-msgid "<b><big>Song information for track %02i</big></b>"
-msgstr "<b><big>Informace o stopě %02i</big></b>"
+msgid "There doesn't seem to be a disc in the drive"
+msgstr "Zdá se, že v jednotce není disk"
 
-#: ../src/burn-transcode.c:487
+#: ../src/plugins/cdrkit/burn-wodim.c:104
+#: ../src/plugins/cdrtools/burn-cdrecord.c:104
 #, c-format
-msgid "%s is not a directory"
-msgstr "%s není adresář"
+msgid "input buffer error"
+msgstr "chyba vstupního zásobníku"
 
-#: ../src/burn-transcode.c:693
-msgid "source can't be created"
-msgstr "nelze vytvořit zdroj"
-
-#: ../src/burn-transcode.c:723
+#: ../src/plugins/cdrkit/burn-wodim.c:110
+#: ../src/plugins/cdrtools/burn-cdrecord.c:110
 #, c-format
-msgid "%s already exist (can't overwrite)"
-msgstr "%s již existuje (nelze přepsat)"
+msgid "The CD has already been recorded"
+msgstr "CD již bylo vypáleno"
 
-#: ../src/burn-transcode.c:752
-msgid "sink can't be created"
-msgstr ""
-
-#: ../src/burn-transcode.c:766
-msgid "audioconvert can't be created"
-msgstr ""
-
-#: ../src/burn-transcode.c:794
-msgid "audioresample can't be created"
-msgstr ""
-
-#: ../src/burn-transcode.c:805
-msgid "filter can't be created"
-msgstr ""
-
-#: ../src/burn-transcode.c:828
-msgid "decode can't be created"
-msgstr ""
-
-#: ../src/burn-transcode.c:973
+#: ../src/plugins/cdrkit/burn-wodim.c:116
+#: ../src/plugins/cdrtools/burn-cdrecord.c:116
 #, c-format
-msgid "%s already exist"
-msgstr "%s již existuje"
+msgid "The CD cannot be blanked"
+msgstr "CD nelze smazat"
 
-#: ../src/burn-transcode.c:985
+#: ../src/plugins/cdrkit/burn-wodim.c:124
+#: ../src/plugins/cdrtools/burn-cdrecord.c:124
+#: ../src/plugins/growisofs/burn-growisofs.c:185
+#: ../src/plugins/growisofs/burn-growisofs.c:191
 #, c-format
-msgid "a symlink could not be created (%s)"
-msgstr "nelze vytvořit symbolický odkaz (%s)"
+msgid "The files selected did not fit on the CD"
+msgstr "Vybrané soubory se nevejdou na CD"
 
-#: ../src/burn-transcode.c:1035
-msgid "a temporary directory could not be created"
-msgstr "nelze vytvořit dočasný adresář"
-
-#: ../src/burn-transcode.c:1208
+#: ../src/plugins/cdrkit/burn-wodim.c:130
+#: ../src/plugins/cdrtools/burn-cdrecord.c:130
 #, c-format
-msgid "error padding (%s)"
-msgstr ""
+msgid "a write error occured which was likely due to overburning the disc"
+msgstr "nastala chyba zápisum která byla pravděpodobně způsobena volbou overburn"
 
-#: ../src/burn-transcode.c:1327
-#: ../src/burn-transcode.c:1430
-msgid "error getting duration"
-msgstr ""
-
-#: ../src/burn-transcode.c:1398
+#: ../src/plugins/cdrkit/burn-wodim.c:136
+#: ../src/plugins/cdrtools/burn-cdrecord.c:136
 #, c-format
-msgid "error opening file for padding : %s"
-msgstr ""
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr "Všechny hudební soubory musí být 16-bitové stereo soubory s vzorkováním 44100Hz"
 
-#: ../src/burn-transcode.c:1690
+#: ../src/plugins/cdrkit/burn-wodim.c:142
+#: ../src/plugins/cdrtools/burn-cdrecord.c:142
 #, c-format
-msgid "Analysing \"%s\""
-msgstr "Analyzuji \"%s\""
+msgid "The image does not seem to be a proper iso9660 file system"
+msgstr "Zdá se že obraz není platným obrazem iso9660"
 
-#: ../src/burn-transcode.c:1708
+#: ../src/plugins/cdrkit/burn-wodim.c:148
+#: ../src/plugins/cdrtools/burn-cdrecord.c:148
 #, c-format
-msgid "Transcoding \"%s\""
-msgstr ""
+msgid "The system is too slow to write the CD at this speed. Try a lower speed"
+msgstr "Systém je příliš pomalý pro zapisování CD touto rychlostí. Zkuste rychlost snížit."
 
-#: ../src/tray.c:91
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: ../src/tray.c:91
-msgid "Cancel ongoing burning"
-msgstr ""
-
-#: ../src/tray.c:96
-msgid "Close if successfull"
-msgstr ""
-
-#: ../src/tray.c:96
-msgid "Display file chooser"
-msgstr ""
-
-#: ../src/tray.c:98
-msgid "Show dialog"
-msgstr "Zobrazit dialog"
-
-#: ../src/tray.c:233
-msgid "waiting"
-msgstr "warte"
-
-#: ../src/tray.c:271
+#: ../src/plugins/cdrkit/burn-wodim.c:161
+#: ../src/plugins/cdrtools/burn-cdrecord.c:161
 #, c-format
-msgid "%s, %02i%% done, %s remaining"
-msgstr ""
+msgid "The drive seems to be busy (maybe check you have proper permissions to use it)"
+msgstr "Zdá se, že jednotka je zaneprázdněna (možná nemáte správná oprávnění k jejímu použití)"
 
-#: ../src/tray.c:278
+#: ../src/plugins/cdrkit/burn-wodim.c:170
+#: ../src/plugins/cdrtools/burn-cdrecord.c:170
 #, c-format
-msgid "%s, %02i%% done"
-msgstr ""
+msgid "The drive seems to be busy (maybe you should reload the media)"
+msgstr "Zdá se, že jednotka je zaneprázdněna (možná bude potřeba znovu načíst médium)"
 
-#: ../data/brasero.desktop.in.h:1
-msgid "Burn Image"
-msgstr "Vypálit obraz"
-
-#: ../data/brasero.desktop.in.h:2
-msgid "Disc burning application"
-msgstr "Aplikace pro vypalování"
-
-#: ../data/brasero.desktop.in.h:3
-msgid "Open project"
-msgstr "Otevřít projekt"
-
-#: ../data/brasero.desktop.in.h:4
-msgid "Write and copy CD / DVD"
-msgstr "Zapsat a kopírovat CD / DVD"
-
-#: ../data/brasero.xml.in.h:1
-msgid "Brasero project file"
-msgstr "Soubor projektu brasero"
-
-#: ../data/brasero.xml.in.h:2
-msgid "Cdrdao toc file"
-msgstr ""
-
-#: ../src/burn-local-image.c:397
+#: ../src/plugins/cdrkit/burn-wodim.c:176
+#: ../src/plugins/cdrtools/burn-cdrecord.c:176
 #, c-format
-msgid "Copying \"%s\""
-msgstr "Kopíruji \"%s\""
+msgid "the image file cannot be found"
+msgstr "obraz nelze najít"
 
-#: ../data/brasero.schemas.in.h:1
-msgid "Default height for image preview."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:2
-msgid "Default height for video preview."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:3
-msgid "Default width for image preview."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:4
-msgid "Default width for video preview."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:5
-msgid "Enable file preview"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:6
-msgid "Enable immed flag with cdrecord"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:7
-msgid "Enable use of cdrdao"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:8
-msgid "Height for video preview"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:9
-msgid "Height of image preview"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:10
-msgid "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:11
-msgid "Pane to display for audio projects"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:12
-msgid "Pane to display for data projects"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:13
-msgid "Should brasero ask to be set as the default app to burn"
-msgstr "Má se brasero ptát, zda se má nastavit jako výchozí aplikace pro vypalování"
-
-#: ../data/brasero.schemas.in.h:14
-msgid "Should brasero ask to be set as the default app to burn audio or data. Set to true, brasero won't ask."
-msgstr "Má se brasero ptát, zda se má nastavit jako výchozí aplikace pro vypalování hudby nebo dat. Pokud je nastaveno, brasero se ptát nebude."
-
-#: ../data/brasero.schemas.in.h:15
-msgid "Should brasero generate activate the \"generate checksum\" button"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:16
-msgid "Should brasero generate activate the \"generate checksum\" button by default. Set to true, brasero will check the option by default."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:17
-msgid "The pane to display with audio projects. It should be one of the following: Chooser/Search/Playlist/EmptyView."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:18
-msgid "The pane to display with data projects. It should be one of the following: Chooser/Search/EmptyView."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:19
-msgid "Use libburn to burn CDs"
-msgstr "Pro vypalování CD použít libburn"
-
-#: ../data/brasero.schemas.in.h:20
-msgid "Use libburn to read CDs"
-msgstr "Pro čtení CD použít libburn"
-
-#: ../data/brasero.schemas.in.h:21
-msgid "Use libisofs to generate images"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:22
-msgid "Used in conjunction with -immed flag with cdrecord"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:23
-msgid "Whether to display file preview. Set to true to use it."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:24
-msgid "Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:25
-msgid "Whether to use cdrdao for burning or not. Set to true to use it."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:26
-msgid "Whether to use libburn to burn CDs. Set to true to use it."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:27
-msgid "Whether to use libburn to read CDs. Set to true to use it."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:28
-msgid "Whether to use libisofs to generate images. Set to true to use it."
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:29
-msgid "Width for video preview"
-msgstr ""
-
-#: ../data/brasero.schemas.in.h:30
-msgid "width for image preview"
-msgstr ""
-
-#: ../src/brasero-project-size.c:242
-#: ../src/brasero-project-size.c:243
-msgid "Show the available media to be burnt"
-msgstr ""
-
-#: ../src/brasero-project-size.c:497
+#: ../src/plugins/cdrkit/burn-wodim.c:183
+#: ../src/plugins/cdrkit/burn-wodim.c:353
+#: ../src/plugins/cdrtools/burn-cdrecord.c:183
+#: ../src/plugins/cdrtools/burn-cdrecord.c:353
 #, c-format
-msgid "(mounted drive) <i>%s</i>"
-msgstr ""
+msgid "internal error"
+msgstr "vnitřní chyba"
 
-#: ../src/brasero-project-size.c:527
+#: ../src/plugins/cdrkit/burn-wodim.c:189
+#: ../src/plugins/cdrtools/burn-cdrecord.c:189
 #, c-format
-msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
-msgstr ""
+msgid "the cd information could not be written"
+msgstr "nelze zapsat cd informace"
 
-#: ../src/brasero-project-size.c:532
+#: ../src/plugins/cdrkit/burn-wodim.c:195
+#: ../src/plugins/cdrtools/burn-cdrecord.c:195
 #, c-format
-msgid "<b>Oversized</b> (%s / %s)"
-msgstr ""
+msgid "the disc could not be closed"
+msgstr "disk nelze zavřít"
 
-#: ../src/brasero-project-size.c:538
+#: ../src/plugins/cdrkit/burn-wodim.c:201
+#: ../src/plugins/cdrtools/burn-cdrecord.c:201
 #, c-format
-msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
-msgstr "<b>Prázdné</b> (%s / %s v <i>%s</i>)"
+msgid "the audio tracks are too short or not a multiple of 2352"
+msgstr "hudební stopy jsou moc krátké nebo nejsou násobkem 2352"
 
-#: ../src/brasero-project-size.c:543
+#: ../src/plugins/cdrkit/burn-wodim.c:312
+#: ../src/plugins/cdrtools/burn-cdrecord.c:312
+msgid "Writing cue sheet"
+msgstr "Zapisuji cue sheet."
+
+#: ../src/plugins/cdrkit/burn-wodim.c:333
+#: ../src/plugins/cdrtools/burn-cdrecord.c:333
 #, c-format
-msgid "<b>Empty</b> (%s / %s)"
-msgstr "<b>Prázdné</b> (%s / %s)"
+msgid "The media needs to be reloaded before being recorded"
+msgstr "Medium je potřeba před nahráním znovu načíst"
 
-#: ../src/brasero-project-size.c:1015
+#: ../src/plugins/cdrkit/burn-wodim.c:579
+#: ../src/plugins/cdrtools/burn-cdrecord.c:582
 #, c-format
-msgid "%s (%s) inserted in %s"
-msgstr ""
+msgid "the inf file can't be written : %s"
+msgstr "soubor INF nelze zapsat : %s"
 
-#: ../src/brasero-project-size.c:1020
+#: ../src/plugins/cdrkit/burn-wodim.c:679
+#: ../src/plugins/cdrtools/burn-cdrecord.c:682
 #, c-format
-msgid "%s (%s)"
-msgstr ""
+msgid "imager doesn't seem to be ready"
+msgstr "engine tvorby obrazů se zdá být nepřipraven"
 
-#: ../src/brasero-sum-dialog.c:141
-msgid "Use a md5 file to check the disc"
-msgstr "Použijte md5 soubor pro kontrolu disku"
+#: ../src/plugins/cdrkit/burn-wodim.c:691
+#: ../src/plugins/cdrtools/burn-cdrecord.c:694
+#, c-format
+msgid "the size of the session cannot be retrieved"
+msgstr "nelze zjistit velikost session"
 
-#: ../src/brasero-sum-dialog.c:154
-msgid "Open a md5 file"
-msgstr "Otevřít md5 soubor"
+#: ../src/plugins/cdrkit/burn-wodim.c:1029
+msgid "use wodim to burn CDs"
+msgstr "pro vypalování CD použít wodim"
 
-#: ../src/brasero-sum-dialog.c:169
-msgid "Check"
-msgstr "Kontrola"
+#: ../src/plugins/cdrkit/burn-wodim.c:1036
+msgid "wodim could not be found in the path"
+msgstr "nelze nalézt wodim"
 
-#: ../src/brasero-sum-dialog.c:263
-#: ../src/brasero-sum-dialog.c:313
-#: ../src/brasero-sum-dialog.c:606
-msgid "File integrity check error"
-msgstr ""
+#: ../src/plugins/cdrkit/burn-wodim.c:1107
+msgid "enable -immed flag (see wodim manual)"
+msgstr "povolit přepínač -immed (viz manuál k wodim)"
 
-#: ../src/brasero-sum-dialog.c:264
-#: ../src/brasero-sum-dialog.c:607
-msgid "The file integrity check cannot be performed:"
-msgstr ""
+#: ../src/plugins/cdrkit/burn-wodim.c:1110
+msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
+msgstr "minimální zaplnění bufferu v procentech (viz manuál k wodim):"
 
-#: ../src/brasero-sum-dialog.c:265
-msgid "unknown error"
-msgstr "neznámá chyba"
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1029
+msgid "use cdrecord to burn CDs"
+msgstr "Pro vypalování CD použít cdrecord"
 
-#: ../src/brasero-sum-dialog.c:273
-msgid "File integrity check success"
-msgstr ""
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1037
+msgid "cdrecord could not be found in the path"
+msgstr "nelze nalézt cdercord"
 
-#: ../src/brasero-sum-dialog.c:274
-msgid "The file integrity was performed successfully:"
-msgstr ""
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1108
+msgid "enable -immed flag (see cdrecord manual)"
+msgstr "povolit přepínač -immed (viz manuál k cdrecord)"
 
-#: ../src/brasero-sum-dialog.c:283
-msgid "Disc data corrupted"
-msgstr "Data na disku jsou poškozena"
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1111
+msgid "minimum drive buffer fill ratio (in %)(see cdrecord manual):"
+msgstr "minimální zaplnění bufferu v procentech (viz manuál k cdrecord):"
 
-#: ../src/brasero-sum-dialog.c:284
-msgid "The file integrity check showed errors:"
-msgstr ""
+#: ../src/plugins/cdrtools/burn-mkisofs.c:132
+msgid "this version of mkisofs doesn't seem to be supported"
+msgstr "zdá se, že tato verze mkisofs není podporována"
 
-#: ../src/brasero-sum-dialog.c:285
+#: ../src/plugins/cdrtools/burn-mkisofs.c:459
+msgid "use mkisofs to create images from files"
+msgstr "použít mkisofs na vytváření obrazů"
+
+#: ../src/plugins/cdrtools/burn-mkisofs.c:467
+msgid "mkisofs could not be found in the path"
+msgstr "nelze nalézt mkisofs"
+
+#: ../src/plugins/cdrtools/burn-readcd.c:354
+msgid "use readcd to image CDs"
+msgstr "použít readcd na tvorbu obrazů CD"
+
+#: ../src/plugins/cdrtools/burn-readcd.c:362
+msgid "readcd could not be found in the path"
+msgstr "nelze nalézt readcd"
+
+#: ../src/plugins/checksum/burn-md5.c:279
+#: ../src/plugins/checksum/burn-md5.c:371
+#, c-format
+msgid "the file %s couldn't be read (%s)"
+msgstr "soubor %s nelze přečíst (%s)"
+
+#: ../src/plugins/checksum/burn-md5.c:300
+#, c-format
+msgid "the file %s couldn't be seeked (%s)"
+msgstr "soubor %s nelze prohledat (%s)"
+
+#: ../src/plugins/checksum/burn-md5sum.c:102
+#, c-format
+msgid "data could not be read from the pipe (%i: %s)"
+msgstr "nelze přečíst data z roury (%i: %s)"
+
+#: ../src/plugins/checksum/burn-md5sum.c:151
+#: ../src/plugins/dvdcss/burn-dvdcss.c:206
+#: ../src/plugins/libburnia/burn-libisofs.c:136
+#, c-format
+msgid "the data couldn't be written to the pipe (%i: %s)"
+msgstr "nelze zapsat data do roury (%i: %s)"
+
+#: ../src/plugins/checksum/burn-md5sum.c:265
+#, c-format
+msgid "the image is not local"
+msgstr "obraz není uložen lokálně"
+
+#: ../src/plugins/checksum/burn-md5sum.c:275
+msgid "Creating image checksum"
+msgstr "Vytvářím kontrolní součet obrazu"
+
+#: ../src/plugins/checksum/burn-md5sum.c:320
+#: ../src/plugins/checksum/burn-md5sum.c:346
+msgid "Creating local image checksum"
+msgstr "Vytvářím kontrolní součet lokálního obrazu"
+
+#: ../src/plugins/checksum/burn-md5sum.c:510
+#: ../src/plugins/checksum/burn-md5sum-file.c:569
+#: ../src/plugins/checksum/burn-md5sum-file.c:722
+#, c-format
 msgid "some files may be corrupted on the disc"
+msgstr "některé soubory na disku mohou být poškozeny"
+
+#: ../src/plugins/checksum/burn-md5sum.c:708
+msgid "allows to check data integrity on disc after it is burnt"
+msgstr "umožní zkontrolovat integritu dat na disku po jeho vypálení"
+
+#: ../src/plugins/dvdcss/burn-dvdcss.c:119
+#, c-format
+msgid "encrypted DVD: please, install libdvdcss version 1.2.x"
+msgstr "šifrované DVD: nainstalujte prosím libdvdcss verze 1.2.x"
+
+#: ../src/plugins/dvdcss/burn-dvdcss.c:126
+#, c-format
+msgid ""
+"libdvdcss version %s is not supported.\n"
+"Please, install libdvdcss version 1.2.x"
 msgstr ""
+"libdvdcss verze %s není podporována.\n"
+"Nainstalujte prosím libdvdcss verze 1.2.x"
 
-#: ../src/brasero-sum-dialog.c:311
-msgid "<b><big>The following files appear to be corrupted:</big></b>"
-msgstr "<b><big>Následující soubor je zřejmě poškozen:</big></b>"
+#: ../src/plugins/dvdcss/burn-dvdcss.c:136
+#, c-format
+msgid "libdvdcss couldn't be loaded properly"
+msgstr "nelze správně načíst libdvdcss"
 
-#: ../src/brasero-sum-dialog.c:339
-msgid "Corrupted files"
-msgstr "Poškozené soubory"
+#: ../src/plugins/dvdcss/burn-dvdcss.c:257
+#: ../src/plugins/dvdcss/burn-dvdcss.c:348
+#: ../src/plugins/dvdcss/burn-dvdcss.c:408
+#: ../src/plugins/dvdcss/burn-dvdcss.c:428
+#, c-format
+msgid "Error reading video DVD (%s)"
+msgstr "Chyba čtení video DVD (%s)"
 
-#: ../src/brasero-sum-dialog.c:419
-msgid "a temporary file couldn't be created"
-msgstr ""
+#: ../src/plugins/dvdcss/burn-dvdcss.c:299
+msgid "Retrieving DVD keys"
+msgstr "Získávám DVD klíče"
 
-#: ../src/brasero-sum-dialog.c:432
-#: ../src/brasero-sum-dialog.c:490
-msgid "URI is not valid"
-msgstr "Neplatné URI"
+#: ../src/plugins/dvdcss/burn-dvdcss.c:321
+#, c-format
+msgid "the size of the volume couln't be retrieved"
+msgstr "nelze zjistit velikost svazku"
 
-#: ../src/brasero-sum-dialog.c:441
-msgid "Downloading md5 file"
-msgstr "Stahuji md5 soubor"
+#: ../src/plugins/dvdcss/burn-dvdcss.c:330
+#, c-format
+msgid "DVD could not be opened"
+msgstr "DVD nelze otevřít"
 
-#: ../src/brasero-sum-dialog.c:608
-msgid "no md5 file was given."
-msgstr "nebyl specifikován md5 soubor."
+#: ../src/plugins/dvdcss/burn-dvdcss.c:355
+msgid "Copying Video DVD"
+msgstr "Kopíruji video DVD"
 
-#: ../src/brasero-tool-dialog.c:152
-msgid "<b>Select a recorder:</b>"
-msgstr "<b>Vyberte vypalovačku:</b>"
+#: ../src/plugins/dvdcss/burn-dvdcss.c:438
+#: ../src/plugins/libburnia/burn-libisofs.c:229
+#, c-format
+msgid "the data couldn't be written to the file (%i: %s)"
+msgstr "nelze zapsat do do souboru  (%i: %s)"
 
-#: ../src/brasero-tool-dialog.c:175
-msgid "<b>Progress:</b>"
-msgstr "<b>Průběh:</b>"
+#: ../src/plugins/dvdcss/burn-dvdcss.c:602
+msgid "Dvdcss allows to read css encrypted video DVDs"
+msgstr "Dvdcss umožňuje čtení video DVD zašifrovaných css."
 
-#: ../src/brasero-tool-dialog.c:260
-#: ../src/brasero-tool-dialog.c:270
-msgid "Media error"
-msgstr "Chyba média"
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:66
+#: ../src/plugins/growisofs/burn-growisofs.c:203
+#, c-format
+msgid "Unhandled error, aborting"
+msgstr "Nezpracovaná chyba, končím."
 
-#: ../src/brasero-tool-dialog.c:261
-#: ../src/brasero-tool-dialog.c:271
-msgid "The operation cannot be performed:"
-msgstr "Operaci nelze provést:"
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:165
+msgid "dvd+rw-format erases and formats DVD+/-RW"
+msgstr "dvd+rw-fromat maže a formátuje DVD+/-RW"
 
-#: ../src/brasero-tool-dialog.c:262
-msgid "the inserted media is busy."
-msgstr "vložené médium je zaneprázdněno."
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:173
+msgid "dvd+rw-format could not be found in the path"
+msgstr "nelze nalézt dvd+rw-format"
 
-#: ../src/brasero-tool-dialog.c:272
-msgid "the drive is empty."
-msgstr "mechanika je prázdná."
+#: ../src/plugins/growisofs/burn-growisofs.c:166
+#, c-format
+msgid "The disc is already burnt"
+msgstr "Disk je již vypálen"
 
-#: ../src/brasero-tool-dialog.c:289
-msgid "<b>Options:</b>"
-msgstr "<b>Možnosti:</b>"
+#: ../src/plugins/growisofs/burn-growisofs.c:173
+#, c-format
+msgid "The recorder could not be accessed"
+msgstr "K vypalovačce nelze přistoupit"
 
-#: ../src/burn-libburn-common.c:213
+#: ../src/plugins/growisofs/burn-growisofs.c:179
+#, c-format
+msgid "Not enough space available on the disc"
+msgstr "Na disku nezbývá dost volného místa"
+
+#: ../src/plugins/growisofs/burn-growisofs.c:430
+#, c-format
+msgid "the file /proc/self/fd/0 is missing"
+msgstr "soubor /proc/self/fd/0 chybí"
+
+#: ../src/plugins/growisofs/burn-growisofs.c:449
+#, c-format
+msgid "the image is not stored locally"
+msgstr "obraz není uložen lokálně"
+
+#: ../src/plugins/growisofs/burn-growisofs.c:627
+msgid "growisofs burns DVDs"
+msgstr "growisofs vypaluje DVD"
+
+#: ../src/plugins/growisofs/burn-growisofs.c:635
+msgid "growisofs could not be found in the path"
+msgstr "nelze nalézt growisofs"
+
+#: ../src/plugins/libburnia/burn-libburn.c:81
+#, c-format
+msgid "unable to set the source"
+msgstr "není možné nastavit zdroj"
+
+#: ../src/plugins/libburnia/burn-libburn.c:89
+#, c-format
+msgid "unable to add the track to the session"
+msgstr "nelze přidat stopu k session"
+
+#: ../src/plugins/libburnia/burn-libburn.c:320
+#: ../src/plugins/libburnia/burn-libburn.c:378
+#, c-format
+msgid "no profile available for the medium"
+msgstr "pro médium není k dispozici žádný profil"
+
+#: ../src/plugins/libburnia/burn-libburn.c:424
+#, c-format
+msgid "/dev/null can't be opened"
+msgstr "/dev/null nelze otevřít"
+
+#: ../src/plugins/libburnia/burn-libburn.c:457
+#, c-format
+msgid "libburn can't burn: %s"
+msgstr "lubburn neumí vypálit: %s"
+
+#: ../src/plugins/libburnia/burn-libburn.c:605
+msgid "libburn burns CD(RW), DVD+/-(RW)"
+msgstr "libburn vypaluje CD(RW), DVD+/-(RW)"
+
+#: ../src/plugins/libburnia/burn-libburn-common.c:76
+#, c-format
+msgid "the drive address couldn't be retrieved"
+msgstr "nelze zjistit adresu jednotky"
+
+#: ../src/plugins/libburnia/burn-libburn-common.c:87
+#, c-format
 msgid "the drive couldn't be initialized"
-msgstr ""
+msgstr "nelze inicializovat jednotku"
 
-#: ../src/burn-libburn-common.c:267
-msgid "an unknown error occured with libburn"
-msgstr ""
-
-#: ../src/burn-libburn-common.c:273
+#: ../src/plugins/libburnia/burn-libburn-common.c:123
 #, c-format
 msgid "(%s) libburn tried to say something"
-msgstr ""
+msgstr "(%s) libburn se snaží něco oznámit"
 
-#: ../src/burn-libburn-common.c:419
+#: ../src/plugins/libburnia/burn-libburn-common.c:249
 #, c-format
 msgid "Writing track %02i"
 msgstr "Zapisuji stopu %02i"
 
-#: ../src/burn-libburn.c:313
-msgid "unable to set the source"
-msgstr ""
-
-#: ../src/burn-libburn.c:321
-msgid "unable to add the track to the session"
-msgstr ""
-
-#: ../src/burn-libburn.c:378
-msgid "a slave tried to get connected"
-msgstr ""
-
-#: ../src/burn-libburn.c:537
-msgid "unable to connect to imager"
-msgstr ""
-
-#: ../src/burn-libisofs.c:519
+#: ../src/plugins/libburnia/burn-libisofs.c:436
 #, c-format
 msgid "a parent for the path (%s) could not be found in the tree"
-msgstr ""
+msgstr "nadřazenou cestu pro (%s) nelze ve stromu najít"
 
-#: ../src/burn-libisofs.c:596
+#: ../src/plugins/libburnia/burn-libisofs.c:453
 #, c-format
-msgid "the data couldn't be written to the pipe (%i: %s)"
-msgstr ""
+msgid "non local file %s"
+msgstr "nelokální soubor %s"
 
-#: ../src/burn-libisofs.c:701
+#: ../src/plugins/libburnia/burn-libisofs.c:479
 #, c-format
-msgid "the data couldn't be written to the file (%i: %s)"
-msgstr ""
+msgid "libisofs reported an error while adding directory %s"
+msgstr "libisofs ohlásil chybu při přidávání adresáře %s"
 
-#: ../src/burn-libread-disc.c:290
+#: ../src/plugins/libburnia/burn-libisofs.c:495
+#, c-format
+msgid "unsupported type of file (at %s)"
+msgstr "nepodporovaný druh souboru (na %s)"
+
+#: ../src/plugins/libburnia/burn-libisofs.c:680
+msgid "libisofs creates disc images from files"
+msgstr "libisofs vytváří obrazy disků ze souborů"
+
+#: ../src/plugins/libburnia/burn-libread-disc.c:290
+#, c-format
 msgid "no disc could be found"
+msgstr "nenalezen žádný disk"
+
+#: ../src/plugins/local-track/burn-local-image.c:218
+msgid "Copying files md5sum file"
+msgstr "Kopírují soubory kontrolního součtu"
+
+#: ../src/plugins/local-track/burn-local-image.c:329
+#, c-format
+msgid "Copying `%s` locally"
+msgstr "Kopíruji '%s' lokálně"
+
+#: ../src/plugins/local-track/burn-local-image.c:613
+msgid "Copying files locally"
+msgstr "Kopíruji soubory lokálně"
+
+#: ../src/plugins/local-track/burn-local-image.c:679
+msgid "local-track allows to burn files not stored locally"
+msgstr "local-track umožňuje vypalovat soubory, které nejsou uloženy lokálně"
+
+#: ../src/plugins/transcode/burn-transcode.c:251
+#, c-format
+msgid "source can't be created"
+msgstr "nelze vytvořit zdroj"
+
+#: ../src/plugins/transcode/burn-transcode.c:297
+#, c-format
+msgid "sink can't be created"
 msgstr ""
 
-#: ../src/burn-sum.c:261
-#: ../src/burn-sum.c:283
+#: ../src/plugins/transcode/burn-transcode.c:312
+#, c-format
+msgid "audioconvert can't be created"
+msgstr ""
+
+#: ../src/plugins/transcode/burn-transcode.c:324
+#, c-format
+msgid "audioresample can't be created"
+msgstr ""
+
+#: ../src/plugins/transcode/burn-transcode.c:335
+#, c-format
+msgid "filter can't be created"
+msgstr "nelze vytvořit filtr"
+
+#: ../src/plugins/transcode/burn-transcode.c:358
+#, c-format
+msgid "decode can't be created"
+msgstr ""
+
+#: ../src/plugins/transcode/burn-transcode.c:502
+#, c-format
+msgid "a symlink could not be created (%s)"
+msgstr "nelze vytvořit symbolický odkaz (%s)"
+
+#: ../src/plugins/transcode/burn-transcode.c:750
+#, c-format
+msgid "error padding (%s)"
+msgstr "chyba prodlužování (%s)"
+
+#: ../src/plugins/transcode/burn-transcode.c:932
+#, c-format
+msgid "error opening file for padding : %s"
+msgstr "chyba otvírání souboru pro prodloužení: %s"
+
+#: ../src/plugins/transcode/burn-transcode.c:1029
+#, c-format
+msgid "error getting duration"
+msgstr "chyba získání doby trvání"
+
+#: ../src/plugins/transcode/burn-transcode.c:1137
+#, c-format
+msgid "Analysing \"%s\""
+msgstr "Analyzuji \"%s\""
+
+#: ../src/plugins/transcode/burn-transcode.c:1156
+#, c-format
+msgid "Transcoding \"%s\""
+msgstr "Převádím \"%s\""
+
+#: ../src/plugins/transcode/burn-transcode.c:1340
+msgid "Transcode converts song files into a format proper to burn them on CDs"
+msgstr "Transcode konvertuje skladby do formátu vhodného k vypálení na CD."
+
+#: ../src/scsi/scsi-error.c:30
+msgid "size mismatch"
+msgstr "velikost nesouhlasí"
+
+#: ../src/scsi/scsi-error.c:31
+msgid "type mismatch"
+msgstr "typ nesouhlasí"
+
+#: ../src/scsi/scsi-error.c:32
+msgid "bad argument"
+msgstr "špatný argument"
+
+#: ../src/scsi/scsi-error.c:33
+msgid "the device is not ready"
+msgstr "zařízení není připraveno"
+
+#: ../src/scsi/scsi-error.c:34
+msgid "outrange address"
+msgstr ""
+
+#: ../src/scsi/scsi-error.c:35
+msgid "invalid address"
+msgstr "neplatná adresa"
+
+#: ../src/scsi/scsi-error.c:36
+msgid "invalid command"
+msgstr "neplatný příkaz"
+
+#: ../src/scsi/scsi-error.c:37
+msgid "invalid parameter in command"
+msgstr "neplatný parametr v příkazu"
+
+#: ../src/scsi/scsi-error.c:38
+msgid "invalid field in command"
+msgstr "neplatné pole v příkazu"
+
+#: ../src/scsi/scsi-error.c:39
+msgid "the device timed out"
+msgstr "zařízení se nehlásí"
+
+#: ../src/scsi/scsi-error.c:40
+msgid "key not established"
+msgstr ""
+
+#: ../src/brasero-preview.c:158
+msgid " Preview "
+msgstr " Náhled"
+
+#: ../src/brasero-split-dialog.c:175
+msgid "The size of the new track is shorter than 6 seconds and will be padded."
+msgstr "Nová skladba je kratší než 6 sekund a bude prodloužena."
+
+#: ../src/brasero-split-dialog.c:176
+msgid "size error"
+msgstr "chyba velikosti"
+
+#: ../src/brasero-split-dialog.c:178
+msgid "Do you want to split it nevertheless?"
+msgstr "Chcete to přesto rozdělit?"
+
+#: ../src/brasero-split-dialog.c:566
+msgid "The track wasn't split:"
+msgstr "Stopa nebyla rozdělena:"
+
+#: ../src/brasero-split-dialog.c:569
+msgid "no silence could be retrieved."
+msgstr "nelze získat žádné ticho."
+
+#: ../src/brasero-split-dialog.c:571
+msgid "no silence"
+msgstr "žádné ticho"
+
+#: ../src/brasero-split-dialog.c:602
+msgid "An error occured while retrieving silences:"
+msgstr "Při zjišťování ticha nastala chyba:"
+
+#: ../src/brasero-split-dialog.c:675
+msgid "This will remove all previous results."
+msgstr "Toto odstraní všechny předchozí výsledky."
+
+#: ../src/brasero-split-dialog.c:676
+msgid "automatic split"
+msgstr "automatické rozdělení"
+
+#: ../src/brasero-split-dialog.c:678
+msgid "Do you want to carry on with automatic splitting nevertheless?"
+msgstr "Chcete přesto pokračovat s automatickým rozdělením?"
+
+#: ../src/brasero-split-dialog.c:1009
+msgid "Split Track"
+msgstr "Rozdělit stopu"
+
+#: ../src/brasero-split-dialog.c:1028
+msgid "M_ethod:"
+msgstr "M_etoda:"
+
+#: ../src/brasero-split-dialog.c:1034
+msgid "Method to be used to split the track"
+msgstr "Metoda k rozdělení stopy"
+
+#: ../src/brasero-split-dialog.c:1037
+msgid "Split track manually"
+msgstr "Rozdělit stopu manuálně"
+
+#: ../src/brasero-split-dialog.c:1038
+msgid "Split track in parts with a fixed length"
+msgstr "Rozdělit stopu na části o konstantní délce"
+
+#: ../src/brasero-split-dialog.c:1039
+msgid "Split track in a fixed number of parts"
+msgstr "Rozdělit stopu na pevný počet částí"
+
+#: ../src/brasero-split-dialog.c:1040
+msgid "Split track for each silence"
+msgstr "Rozdělit stopu v místech ticha"
+
+#: ../src/brasero-split-dialog.c:1046
+msgid "_Slice"
+msgstr "Rozdělit"
+
+#: ../src/brasero-split-dialog.c:1057
+msgid "Press to add a splitting point"
+msgstr "Zmáčknout pro přidání bodu dělícího bodu"
+
+#. Translators: this goes with the next (= "seconds")
+#: ../src/brasero-split-dialog.c:1074
+msgid "Split this track every"
+msgstr "Rozdělit tuto stopu každých"
+
+#. Translators: this goes with the previous (= "Split track every")
+#: ../src/brasero-split-dialog.c:1083
+msgid "seconds"
+msgstr "sekund"
+
+#. Translators: this goes with the next (= "parts")
+#: ../src/brasero-split-dialog.c:1092
+msgid "Split this track in"
+msgstr "Rozdělit tuto stopu na "
+
+#. Translators: this goes with the previous (= "Split this track in")
+#: ../src/brasero-split-dialog.c:1101
+msgid "parts"
+msgstr "částí"
+
+#: ../src/brasero-split-dialog.c:1110
+msgid "<b>Slicing Method</b>"
+msgstr "<b>Metoda rozdělěníí</b>"
+
+#: ../src/brasero-split-dialog.c:1165
+msgid "Start"
+msgstr "Začátek"
+
+#: ../src/brasero-split-dialog.c:1172
+msgid "End"
+msgstr "Konec"
+
+#: ../src/brasero-split-dialog.c:1195
+msgid "Mer_ge"
+msgstr "Sloučit"
+
+#: ../src/brasero-split-dialog.c:1206
+msgid "Merge a selected slice with the next selected one"
+msgstr "Sloučit označenou část s další označenou"
+
+#: ../src/brasero-split-dialog.c:1209
+msgid "_Remove"
+msgstr "Odst_ranit"
+
+#: ../src/brasero-split-dialog.c:1220
+msgid "Remove the selected slices"
+msgstr "Odstranit označené části"
+
+#: ../src/brasero-split-dialog.c:1223
+msgid "Re_move All"
+msgstr "Odstranit vše"
+
+#: ../src/brasero-split-dialog.c:1234
+msgid "Clear the slices preview"
+msgstr "Smazat náhledy částí"
+
+#: ../src/brasero-split-dialog.c:1244
+msgid "_List of slices that are to be created:"
+msgstr "Seznam částí, které se vytvoří:"
+
+#: ../src/brasero-split-dialog.c:1253
+msgid "<b>Slices Preview</b>"
+msgstr "<b>Náhled částí:</b>"
+
+#: ../src/brasero-time-button.c:278
+msgid "Hours"
+msgstr "Hodiny"
+
+#: ../src/brasero-time-button.c:282
+#: ../src/brasero-time-button.c:291
+#: ../src/brasero-time-button.c:300
+msgid ":"
+msgstr ":"
+
+#: ../src/brasero-time-button.c:287
+msgid "Minutes"
+msgstr "Minuty"
+
+#: ../src/brasero-time-button.c:296
+msgid "Seconds"
+msgstr "Sekundy"
+
+#: ../src/brasero-time-button.c:305
+msgid "Frames (1 second = 75 frames)"
+msgstr "Snímky (1 sekunda = 75 snímků)"
+
+#: ../src/brasero-src-selection.c:89
+msgid "Choose which drive holds the disc to read from"
+msgstr "Vyberte jednotku, která obsahuje zdrojový disk"
+
+#: ../src/plugins/cdrkit/burn-cdrkit.h:32
+msgid "Cdrkit burning suite"
+msgstr "Souprava cdrkit "
+
+#: ../src/plugins/libburnia/burn-libburnia.h:32
+msgid "Libburnia burning suite"
+msgstr "Souprava libburnia"
+
+#: ../src/plugins/growisofs/burn-growisofs-common.h:32
+msgid "Growisofs burning suite"
+msgstr "Souprava growisofs"
+
+#: ../src/plugins/cdrdao/burn-cdrdao-common.h:32
+msgid "Cdrdao burning suite"
+msgstr "Souprava cdrdao"
+
+#: ../src/plugins/cdrtools/burn-cdrtools.h:32
+msgid "Cdrtools burning suite"
+msgstr "souprava cdrtools"
+
+#: ../src/plugins/checksum/burn-md5sum-file.c:108
+#: ../src/plugins/checksum/burn-md5sum-file.c:130
 #, c-format
 msgid "the md5 file couldn't be written to (%s)"
-msgstr ""
+msgstr "soubor MD5 nelze zapsat do (%s)"
 
-#: ../src/burn-sum.c:399
-#, c-format
-msgid "\"%s\" already exists"
-msgstr ""
-
-#: ../src/burn-sum.c:413
+#: ../src/plugins/checksum/burn-md5sum-file.c:255
 #, c-format
 msgid "md5 file couldn't be opened (%s)"
 msgstr "nelze otevřít md5 soubor (%s)"
 
-#: ../src/burn-sum.c:438
+#: ../src/plugins/checksum/burn-md5sum-file.c:284
 msgid "Creating checksum for image files"
 msgstr "Vytvářím kontrolní součet souboru s obrazem"
 
-#: ../src/burn-sum.c:518
-msgid "the image is not local"
-msgstr ""
+#: ../src/plugins/checksum/burn-md5sum-file.c:953
+msgid "allows to check file integrities on a disc"
+msgstr "umožní zkontrolovat integritu souborů na disku"
 
-#: ../src/burn-sum.c:534
-msgid "Creating image checksum"
-msgstr ""
-
-#: ../src/burn-sum.c:569
-msgid "the disc is empty or busy."
-msgstr ""
-
-#: ../src/burn-sum.c:596
-msgid "Creating disc checksum"
-msgstr "Vytváření kontrolního součtu"
-
-#: ../src/brasero-disc-option-dialog.c:116
-msgid "Disc burning setup"
-msgstr "Nastavení vypalování disku"
-
-#. multisession options
-#: ../src/brasero-disc-option-dialog.c:206
-msgid "Append the files to those already on the disc"
-msgstr "Připojit soubory k již zapsaným na disku"
-
-#: ../src/brasero-disc-option-dialog.c:210
-#: ../src/brasero-disc-option-dialog.c:211
-msgid "Add these data to those already on the disc instead of replacing them"
-msgstr ""
-
-#. DVD don't need that
-#: ../src/brasero-disc-option-dialog.c:214
-msgid "Leave the disc open to add other files later"
-msgstr "Neuzavírat disk"
-
-#: ../src/brasero-disc-option-dialog.c:218
-#: ../src/brasero-disc-option-dialog.c:219
-msgid "Allow to add more data to the disc later"
-msgstr ""
-
-#: ../src/brasero-disc-option-dialog.c:221
-#: ../src/brasero-disc-option-dialog.c:399
-msgid "<b>Multisession</b>"
-msgstr "<b>Multisession</b>"
-
-#: ../src/brasero-disc-option-dialog.c:246
-msgid "<b>Label of the disc</b>"
-msgstr "<b>Jmenovka disku</b>"
-
-#: ../src/brasero-disc-option-dialog.c:247
+#: ../src/burn-image-format.c:265
+#: ../src/burn-image-format.c:336
+#: ../src/burn-image-format.c:364
+#: ../src/burn-image-format.c:489
+#: ../src/burn-image-format.c:597
+#: ../src/burn-image-format.c:638
 #, c-format
-msgid "Data disc (%s)"
-msgstr "Datový disk (%s)"
+msgid "size can't be retrieved (%s)"
+msgstr "nelze získat velikost (%s)"
 
-#: ../src/brasero-disc-option-dialog.c:250
-msgid "<b>Title</b>"
-msgstr "<b>Název</b>"
-
-#: ../src/brasero-disc-option-dialog.c:251
+#: ../src/burn-image-format.c:515
 #, c-format
-msgid "Audio disc (%s)"
-msgstr "Hudební CD (%s)"
-
-#: ../src/brasero-disc-option-dialog.c:293
-msgid "their names will be changed and truncated to 64 characters."
-msgstr ""
-
-#. general options
-#: ../src/brasero-disc-option-dialog.c:323
-msgid "Increase compatibility with Windows systems"
-msgstr "Zvýšit kompatibilitu se systémy Windows"
-
-#: ../src/brasero-disc-option-dialog.c:326
-#: ../src/brasero-disc-option-dialog.c:327
-msgid "Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"
-msgstr "Zlepší kompatibilitu se systémy Windows tím, že umožní zobrazení dlouhých názvů souborů (max. 64 znaků)"
-
-#: ../src/brasero-disc-option-dialog.c:340
-msgid "Check data integrity"
-msgstr "Zkontrolovat integritu"
-
-#: ../src/brasero-disc-option-dialog.c:343
-#: ../src/brasero-disc-option-dialog.c:344
-msgid "Allow to check the integrity of files on the disc"
-msgstr "Umožní kontrolu integrity zapsaných dat"
-
-#: ../src/brasero-disc-option-dialog.c:356
-msgid "Create a video DVD"
-msgstr "Vytvořit video DVD"
-
-#: ../src/brasero-disc-option-dialog.c:359
-#: ../src/brasero-disc-option-dialog.c:360
-msgid "Create a video DVD that can be played by all DVD readers"
-msgstr "Vytvořit video DVD, které lze přehrát všemi DVD přehrávači"
-
-#: ../src/brasero-disc-option-dialog.c:363
-msgid "<b>Disc options</b>"
-msgstr "<b>Možnosti disku</b>"
-
-#. multisession options
-#: ../src/brasero-disc-option-dialog.c:392
-msgid "Leave the disc open to add a data session later"
-msgstr ""
-
-#: ../src/brasero-disc-option-dialog.c:396
-#: ../src/brasero-disc-option-dialog.c:397
-msgid "Allow create what is called an enhanced CD or CD+"
-msgstr ""
-
-#: ../src/brasero-disc-option-dialog.c:601
-#: ../src/brasero-disc-option-dialog.c:602
-#: ../src/brasero-image-option-dialog.c:420
-#: ../src/brasero-image-option-dialog.c:421
-msgid "Choose which drive holds the disc to write to"
-msgstr ""
-
-#: ../src/brasero-image-option-dialog.c:110
-msgid "Image burning setup"
-msgstr "Nastavení vypalování obrazu"
-
-#: ../src/brasero-image-option-dialog.c:128
-msgid "This image can't be burnt:"
-msgstr "Tento obraz nelze vypálit:"
-
-#: ../src/brasero-image-option-dialog.c:130
-msgid "Invalid image"
-msgstr "Neplatný obraz"
-
-#: ../src/brasero-image-option-dialog.c:133
-msgid "it doesn't appear to be a valid image or a valid cue file."
-msgstr ""
-
-#: ../src/brasero-image-option-dialog.c:245
-msgid "There is no specified image:"
-msgstr ""
-
-#: ../src/brasero-image-option-dialog.c:247
-msgid "No image"
-msgstr "Žádný obraz"
-
-#: ../src/brasero-image-option-dialog.c:250
-msgid "Please, choose an image and retry."
-msgstr ""
-
-#: ../src/brasero-image-option-dialog.c:427
-msgid "Path:\t\t"
-msgstr "Cesta:\t\t"
-
-#: ../src/brasero-image-option-dialog.c:430
-msgid "Open an image"
-msgstr "Otevřít obraz"
-
-#: ../src/brasero-image-option-dialog.c:439
-msgid "<b>Image</b>"
-msgstr "<b>Obraz</b>"
-
-#: ../src/brasero-image-type-chooser.c:102
-msgid "Image type:\t"
-msgstr "Typ:\t"
-
-#. now we get the targets available and display them
-#: ../src/brasero-image-type-chooser.c:167
-msgid "Let brasero choose (safest)"
-msgstr "Automaticky (nejbezpečnější)"
-
-#: ../src/brasero-image-type-chooser.c:175
-msgid "*.iso (joliet) image"
-msgstr "*.iso (joliet) obraz"
-
-#: ../src/brasero-image-type-chooser.c:177
-msgid "*.iso image"
-msgstr "*.iso obraz"
-
-#: ../src/brasero-image-type-chooser.c:179
-msgid "*.raw image"
-msgstr "*.raw obraz"
-
-#: ../src/brasero-image-type-chooser.c:181
-msgid "*.cue image"
-msgstr "*.cue obraz"
-
-#: ../src/brasero-image-type-chooser.c:183
-msgid "*.toc image (cdrdao)"
-msgstr "*.toc obraz (cdrdao)"
-
-#: ../src/burn-toc2cue.c:217
-msgid "Converting toc file"
-msgstr "Konvertuji TOC soubor"
-
-#: ../src/burn-toc2cue.c:249
-msgid "the conversion of the toc file failed"
-msgstr "konverze TOC souboru selhala"
+msgid "size can't be retrieved for %s: %s"
+msgstr "nelze získat velikost pro %s: %s"
 
