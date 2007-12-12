@@ -466,7 +466,7 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 		return 0;
 
 	max_rate = NCB_MEDIA_GET_MAX_WRITE_RATE (priv->settings->burner);
-	if (priv->settings->rate > 0)
+	if (priv->settings->rate <= 0)
 		return max_rate;
 	else
 		return MIN (max_rate, priv->settings->rate);

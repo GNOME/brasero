@@ -1,5 +1,11 @@
 2007-12-12  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix speed problems (see #502703 – Data Integrity Check Always Fails AND Burning Speed Slow (except dvd which ignored setting).)
+
+	* src/burn-session.c: (brasero_burn_session_get_rate):
+
+2007-12-12  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Possible fix for #357693 – Brasero thinks my disc has not enough space
 	Some errors doesn't always appear to be fatal so defer the messages until
 	the process finishes and use the error if it doesn't return 0.
