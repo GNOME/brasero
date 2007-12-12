@@ -62,6 +62,9 @@ typedef struct _BraseroProcessPrivate BraseroProcessPrivate;
 struct _BraseroProcessPrivate {
 	GPtrArray *argv;
 
+	/* deferred error that will be used if the process doesn't return 0 */
+	GError *error;
+
 	GIOChannel *std_out;
 	GString *out_buffer;
 
@@ -81,6 +84,18 @@ struct _BraseroProcessPrivate {
 
 static GObjectClass *parent_class = NULL;
 
+void
+brasero_process_deferred_error (BraseroProcess *self,
+				GError *error)
+{
+	BraseroProcessPrivate *priv;
+
+	priv = BRASERO_PROCESS_PRIVATE (self);
+	if (priv->error)
+		g_error_free (priv->error);
+
+	priv->error = error;
+}
 
 static BraseroBurnResult
 brasero_process_ask_argv (BraseroJob *job,
@@ -139,13 +154,24 @@ brasero_process_finished (BraseroProcess *self)
 	
 	/* check if an error went undetected */
 	if (priv->return_status) {
-		brasero_job_error (BRASERO_JOB (self),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("process %s ended with an error code (%i)"),
-						G_OBJECT_TYPE_NAME (self),
-						priv->return_status));
+		if (priv->error) {
+			brasero_job_error (BRASERO_JOB (self),
+					   g_error_new (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+							_("process %s ended with an error code (%i)"),
+							G_OBJECT_TYPE_NAME (self),
+							priv->return_status));
+		}
+		else {
+			brasero_job_error (BRASERO_JOB (self), priv->error);
+			priv->error = NULL;
+		}
+
 		return BRASERO_BURN_OK;
+	}
+	else if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
 	}
 
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
@@ -671,6 +697,11 @@ brasero_process_stop (BraseroJob *job,
 		priv->argv = NULL;
 	}
 
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
+
 	return result;
 }
 
@@ -723,6 +754,11 @@ brasero_process_finalize (GObject *object)
 		g_strfreev ((gchar**) priv->argv->pdata);
 		g_ptr_array_free (priv->argv, FALSE);
 		priv->argv = NULL;
+	}
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

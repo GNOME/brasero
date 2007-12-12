@@ -1,3 +1,18 @@
+2007-12-12  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Possible fix for #357693 – Brasero thinks my disc has not enough space
+	Some errors doesn't always appear to be fatal so defer the messages until
+	the process finishes and use the error if it doesn't return 0.
+
+	* data/brasero.desktop.in:
+	* src/burn-process.c: (brasero_process_deferred_error),
+	(brasero_process_finished), (brasero_process_stop),
+	(brasero_process_finalize):
+	* src/burn-process.h:
+	* src/plugins/cdrkit/burn-wodim.c: (brasero_wodim_stderr_read):
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	(brasero_cdrecord_stderr_read):
+
 2007-12-09  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fixed a crash on disc copy (see #499571 comment #14)

@@ -104,10 +104,12 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 						_("input buffer error")));
 	}
 	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE,
-						_("The CD has already been recorded")));
+		/* NOTE: defer the consequence of this error as it is not always
+		 * fatal. So send a warning but don't stop the process. */
+		brasero_process_deferred_error (process,
+						g_error_new (BRASERO_BURN_ERROR,
+							     BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE,
+							     _("The CD has already been recorded")));
 	}
 	else if (strstr (line, "Cannot blank disk, aborting.") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),

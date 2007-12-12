@@ -64,4 +64,12 @@ typedef struct {
 
 GType brasero_process_get_type();
 
+/**
+ * This function allows to set an error that is used if the process doesn't 
+ * return 0.
+ */
+void
+brasero_process_deferred_error (BraseroProcess *process,
+				GError *error);
+
 #endif /* PROCESS_H */
