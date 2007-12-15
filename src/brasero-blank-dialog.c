@@ -118,7 +118,6 @@ brasero_blank_dialog_set_button (BraseroBurnSession *session,
 static void
 brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 {
-	BraseroBurnResult result;
 	BraseroBurnFlag supported;
 	BraseroBurnFlag compulsory;
 	BraseroBlankDialogPrivate *priv;
@@ -126,13 +125,10 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (self);
 
 	/* set the options */
-	result = brasero_burn_caps_get_blanking_flags (priv->caps,
-						       priv->session,
-						       &supported,
-						       &compulsory);
-
-	brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (self),
-				       (brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK));
+	brasero_burn_caps_get_blanking_flags (priv->caps,
+					      priv->session,
+					      &supported,
+					      &compulsory);
 
 	priv->fast_saved = brasero_blank_dialog_set_button (priv->session,
 							    priv->fast_saved,
@@ -140,6 +136,10 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 							    BRASERO_BURN_FLAG_FAST_BLANK,
 							    supported,
 							    compulsory);
+
+	/* This must be done afterwards, once the session flags were updated */
+	brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (self),
+				       (brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK));
 }
 
 static void
@@ -383,8 +383,11 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					  priv->fast,
 					  NULL);
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
 	brasero_blank_dialog_device_opts_setup (obj);
+
+	/* if fast blank is supported check it by default */
+	if (GTK_WIDGET_IS_SENSITIVE (priv->fast))
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->fast), TRUE);
 }
 
 GtkWidget *

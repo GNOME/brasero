@@ -1,5 +1,19 @@
 2007-12-15  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Some fixes for  #499591 Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work
+	That patch should improve blanking 
+
+	* src/brasero-blank-dialog.c:
+	(brasero_blank_dialog_device_opts_setup),
+	(brasero_blank_dialog_init):
+	* src/burn-caps.c: (brasero_burn_caps_get_blanking_flags),
+	(brasero_burn_caps_can_blank):
+	* src/burn-debug.c: (brasero_burn_debug_flags_type_message):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_export_caps):
+
+2007-12-15  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix for #503659 – Top folders not copied to disk: apparently mkisofs needs
 	a '/' at the end of disc path for directories; otherwise only the contents get added.
 	Also improved slightly debugging

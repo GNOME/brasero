@@ -425,10 +425,14 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_ALL;
 
 	media = brasero_burn_session_get_dest_media (session);
-	BRASERO_BURN_LOG_DISC_TYPE (media, "Testing blanking caps for");
+	BRASERO_BURN_LOG_DISC_TYPE (media, "Getting blanking flags for");
 
 	if (media == BRASERO_MEDIUM_NONE) {
 		BRASERO_BURN_LOG ("Blanking not possible: no media");
+		if (supported)
+			*supported = BRASERO_BURN_FLAG_NONE;
+		if (compulsory)
+			*compulsory = BRASERO_BURN_FLAG_NONE;
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -464,6 +468,9 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
 				BraseroBurnFlag compulsory_plugin;
 
 				plugin = plugins->data;
+				if (!brasero_plugin_get_active (plugin))
+					continue;
+
 				if (!brasero_plugin_get_blank_flags (plugin,
 								     media,
 								     session_flags,
@@ -636,7 +643,6 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 				plugin = plugins->data;
 				if (!brasero_plugin_get_active (plugin))
 					continue;
-
 				if (brasero_plugin_check_blank_flags (plugin, media, flags)) {
 					BRASERO_BURN_LOG_DISC_TYPE (media, "Can blank");
 					return BRASERO_BURN_OK;

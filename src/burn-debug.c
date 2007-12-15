@@ -99,7 +99,7 @@ brasero_burn_debug_messagev (const gchar *location,
 static void
 brasero_debug_burn_flags_to_string (gchar *buffer,
 				    BraseroBurnFlag flags)
-{
+{	
 	if (flags & BRASERO_BURN_FLAG_EJECT)
 		strcat (buffer, "eject, ");
 	if (flags & BRASERO_BURN_FLAG_NOGRACE)
@@ -138,7 +138,7 @@ brasero_burn_debug_flags_type_message (BraseroBurnFlag flags,
 				       const gchar *format,
 				       ...)
 {
-	gchar buffer [256];
+	gchar buffer [256] = {0};
 	gchar *format_real;
 	va_list arg_list;
 
