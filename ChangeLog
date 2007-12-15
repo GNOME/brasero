@@ -1,3 +1,15 @@
+2007-12-15  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix for #503659 – Top folders not copied to disk: apparently mkisofs needs
+	a '/' at the end of disc path for directories; otherwise only the contents get added.
+	Also improved slightly debugging
+
+	* src/brasero-data-disc.c: (_foreach_grafts_make_list_cb):
+	* src/burn-mkisofs-base.c: (_build_graft_point),
+	(brasero_mkisofs_base_write_graft):
+	* src/burn-session.c: (brasero_burn_session_start):
+	* src/burn.c: (brasero_burn_check_session_consistency):
+
 2007-12-12  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix speed problems (see #502703 – Data Integrity Check Always Fails AND Burning Speed Slow (except dvd which ignored setting).)

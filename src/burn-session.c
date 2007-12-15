@@ -1422,14 +1422,10 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	output = brasero_burn_session_get_output_format (self);
 	start_message = g_strdup_printf ("Session starting:\n"
-					 "\tflags\t\t\t= %i \n"
-					 "\tmedia type\t= %s\n"
 					 "\tspeed\t\t= %lli\n"
 					 "\ttrack format\t= %i\n"
 					 "\toutput\t\t= %s"
 					 "\tnumber of copies = %i\n",
-					 priv->settings->flags,
-					 NCB_MEDIA_GET_TYPE_STRING (priv->settings->burner),
 					 priv->settings->rate,
 					 output,
 					 priv->settings->image ? priv->settings->image:"none",
@@ -1439,6 +1435,9 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	brasero_burn_session_get_input_type (self, &type);
 	BRASERO_BURN_LOG_TYPE (&type, "Input:\t");
+
+	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t\t=");
+	BRASERO_BURN_LOG_DISC_TYPE (NCB_MEDIA_GET_STATUS (priv->settings->burner), "media type\t=");
 
 	brasero_burn_session_logv (self, start_message, NULL);
 	g_free (start_message);

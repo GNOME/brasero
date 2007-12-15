@@ -230,6 +230,8 @@ _build_graft_point (const gchar *uri, const gchar *discpath) {
 	if (discpath) {
 		gchar *escaped_path;
 
+		/* There is a graft because either it's not at the root of the 
+		 * disc or because its name has changed. */
 		escaped_path = _escape_path (path);
 		g_free (path);
 
@@ -254,14 +256,10 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 				  GError **error)
 {
 	gchar *graft_point;
-	gchar *localpath = NULL;
 	BraseroBurnResult result;
 
-	localpath = gnome_vfs_get_local_path_from_uri (uri);
-
 	/* build up graft and write it */
-	graft_point = _build_graft_point (localpath, disc_path);
-	g_free (localpath);
+	graft_point = _build_graft_point (uri, disc_path);
 
 	if (!graft_point) {
 		g_set_error (error,

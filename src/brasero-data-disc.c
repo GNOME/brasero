@@ -8671,6 +8671,20 @@ _foreach_grafts_make_list_cb (gchar *path,
 	else
 		graft->path = g_strdup (path);
 
+	if (uri
+	&& (g_hash_table_lookup (data->disc->priv->dirs, uri)
+	||  uri == BRASERO_IMPORTED_FILE)) {
+		gchar *tmp;
+
+		/* we need to know if that's a directory or not since if it is
+		 * then mkisofs (but not genisoimage) requires the disc path to
+		 * end with '/'; if there isn't '/' at the end then only the
+		 * directory contents are added. */
+		tmp = graft->path;
+		graft->path = g_strconcat (graft->path, "/", NULL);
+		g_free (tmp);
+	}
+
 	/* no need to check for dummy since we are in the paths hash table */
 	if (uri
 	&&  data->disc->priv->excluded

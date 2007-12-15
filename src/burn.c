@@ -1825,7 +1825,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	retval |= compulsory;
 
 	brasero_burn_session_set_flags (priv->session, retval);
-	BRASERO_BURN_DEBUG (burn, "Flags after checking = %i", retval);
+	BRASERO_BURN_LOG_FLAGS (retval, "Flags after checking =");
 	return BRASERO_BURN_OK;
 }
 
