@@ -9,12 +9,12 @@
 # Jorge González <jorgegonz@svn.gnome.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: brasero.HEAD.es\n"
+"Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-01 13:25+0000\n"
-"PO-Revision-Date: 2007-12-11 20:48+0100\n"
+"POT-Creation-Date: 2007-12-11 20:13+0000\n"
+"PO-Revision-Date: 2007-12-16 13:42+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"Language-Team: Spanish <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -362,7 +362,7 @@ msgstr "cargando"
 
 #: ../src/brasero-audio-disc.c:2600
 msgid "impossible to split more than one song at a time"
-msgstr ""
+msgstr "imposible partir más de una canción al mismo tiempo"
 
 #: ../src/brasero-audio-disc.c:2602 ../src/brasero-split-dialog.c:603
 msgid "Error"
@@ -1710,15 +1710,15 @@ msgstr "Se ha insertado un disco multisesión:"
 msgid "Click here to import its contents"
 msgstr "Pulse aquí para importar su contenido"
 
-#: ../src/brasero-data-disc.c:8952
+#: ../src/brasero-data-disc.c:8955
 msgid "Project couldn't be loaded:"
 msgstr "El proyecto no se puede cargar:"
 
-#: ../src/brasero-data-disc.c:8954
+#: ../src/brasero-data-disc.c:8957
 msgid "Project loading failure"
 msgstr "No se puede cargar el proyecto"
 
-#: ../src/brasero-data-disc.c:8957
+#: ../src/brasero-data-disc.c:8960
 msgid "A thread couldn't be created"
 msgstr "No se puede crear un hilo de ejecución"
 
@@ -2950,7 +2950,7 @@ msgid "ongoing checksuming operation"
 msgstr "proceso de copiado en curso"
 
 #: ../src/burn.c:1241 ../src/burn.c:1270 ../src/burn.c:1369 ../src/burn.c:1376
-#: ../src/burn.c:1673 ../src/plugins/cdrdao/burn-cdrdao.c:209
+#: ../src/burn.c:1675 ../src/plugins/cdrdao/burn-cdrdao.c:209
 #: ../src/plugins/growisofs/burn-growisofs.c:197
 msgid "the drive seems to be busy"
 msgstr "la unidad parece estar ocupada"
@@ -2959,34 +2959,34 @@ msgstr "la unidad parece estar ocupada"
 msgid "it's not possible to merge to this media because it hasn't got enough space"
 msgstr ""
 
-#: ../src/burn.c:1723
+#: ../src/burn.c:1725
 #, fuzzy
 msgid "there is no track to be burn"
 msgstr "no hay ningún disco seleccionado"
 
-#: ../src/burn.c:1737
+#: ../src/burn.c:1739
 #, fuzzy
 msgid "there is no drive to burn to"
 msgstr "no hay disco."
 
-#: ../src/burn.c:1756
+#: ../src/burn.c:1758
 #, fuzzy
 msgid "this operation is not supported. Try to activate proper plugins"
 msgstr "este formato no está soportado por gstreamer"
 
-#: ../src/burn.c:1770
+#: ../src/burn.c:1772
 msgid "merging data is impossible with this disc"
 msgstr ""
 
-#: ../src/burn.c:2049 ../src/burn-caps.c:1443
+#: ../src/burn.c:2051 ../src/burn-caps.c:1448
 msgid "only one track at a time can be checked"
 msgstr ""
 
-#: ../src/burn.c:2117
+#: ../src/burn.c:2119
 msgid "impossible to find a format for the temporary image"
 msgstr ""
 
-#: ../src/burn.c:2256
+#: ../src/burn.c:2258
 #, c-format
 msgid "internal error (code %i)"
 msgstr "error interno (código %i)"
@@ -2996,7 +2996,7 @@ msgstr "error interno (código %i)"
 msgid "this operation is not supported"
 msgstr "el medio insertado no está soportado."
 
-#: ../src/burn-caps.c:1339
+#: ../src/burn-caps.c:1343
 #, fuzzy
 msgid "internal error in plugin system"
 msgstr "error interno"
@@ -3769,9 +3769,8 @@ msgid "dvd+rw-format erases and formats DVD+/-RW"
 msgstr ""
 
 #: ../src/plugins/growisofs/burn-dvd-rw-format.c:173
-#, fuzzy
 msgid "dvd+rw-format could not be found in the path"
-msgstr "no se encontró el comando (u)mount en la ruta"
+msgstr "no se pudo encontrar dvd+rw-format en la ruta"
 
 #: ../src/plugins/growisofs/burn-growisofs.c:166
 msgid "The disc is already burnt"
@@ -3798,9 +3797,8 @@ msgid "growisofs burns DVDs"
 msgstr ""
 
 #: ../src/plugins/growisofs/burn-growisofs.c:635
-#, fuzzy
 msgid "growisofs could not be found in the path"
-msgstr "no se encontró el comando (u)mount en la ruta"
+msgstr "no se pudo encontrar growisofs en la ruta"
 
 #: ../src/plugins/libburnia/burn-libburn.c:81
 msgid "unable to set the source"
@@ -3824,25 +3822,25 @@ msgstr "no se pudo abrir /dev/null"
 msgid "libburn can't burn: %s"
 msgstr "libburn no puede grabar: %s"
 
-#: ../src/plugins/libburnia/burn-libburn.c:605
+#: ../src/plugins/libburnia/burn-libburn.c:617
 msgid "libburn burns CD(RW), DVD+/-(RW)"
-msgstr ""
+msgstr "libburn graba CD(RW), DVD+/-(RW)"
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:76
-#, fuzzy
-msgid "the drive address couldn't be retrieved"
-msgstr "La unidad no se puede inicializar"
-
-#: ../src/plugins/libburnia/burn-libburn-common.c:87
+#: ../src/plugins/libburnia/burn-libburn-common.c:102
+#: ../src/plugins/libburnia/burn-libburn-common.c:137
 msgid "the drive couldn't be initialized"
 msgstr "La unidad no se puede inicializar"
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:123
+#: ../src/plugins/libburnia/burn-libburn-common.c:126
+msgid "the drive address couldn't be retrieved"
+msgstr "no se pudo obtener la dirección de la unidad"
+
+#: ../src/plugins/libburnia/burn-libburn-common.c:173
 #, c-format
 msgid "(%s) libburn tried to say something"
 msgstr "(%s) libburn intenta decir algo"
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:249
+#: ../src/plugins/libburnia/burn-libburn-common.c:319
 #, c-format
 msgid "Writing track %02i"
 msgstr "Escribiendo pista %02i"
@@ -3853,37 +3851,36 @@ msgid "a parent for the path (%s) could not be found in the tree"
 msgstr "no se encuentra en el árbol el antecesor de la ruta (%s)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:453
-#, fuzzy, c-format
+#, c-format
 msgid "non local file %s"
-msgstr "Todos los archivos"
+msgstr "archivo no local %s"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:479
 #, c-format
 msgid "libisofs reported an error while adding directory %s"
-msgstr ""
+msgstr "libisofs informó de un error al añadir el directorio %s"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:495
-#, fuzzy, c-format
+#, c-format
 msgid "unsupported type of file (at %s)"
-msgstr "tipo de archivo desconocido"
+msgstr "tipo de archivo no soportado (en %s)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:680
 msgid "libisofs creates disc images from files"
-msgstr ""
+msgstr "libisofs crea imágenes de discos desde archivos"
 
 #: ../src/plugins/libburnia/burn-libread-disc.c:290
 msgid "no disc could be found"
 msgstr "No se encontró ningún disco"
 
 #: ../src/plugins/local-track/burn-local-image.c:218
-#, fuzzy
 msgid "Copying files md5sum file"
-msgstr "Copiando archivo"
+msgstr "Copiando el archivo de suma MD5 de los archivos"
 
 #: ../src/plugins/local-track/burn-local-image.c:329
-#, fuzzy, c-format
+#, c-format
 msgid "Copying `%s` locally"
-msgstr "Copiando disco"
+msgstr "Copiando  «%s» localmente"
 
 #: ../src/plugins/local-track/burn-local-image.c:613
 msgid "Copying files locally"
@@ -3891,7 +3888,7 @@ msgstr "Copiando archivo localmente"
 
 #: ../src/plugins/local-track/burn-local-image.c:679
 msgid "local-track allows to burn files not stored locally"
-msgstr ""
+msgstr "local-track permite grabar archivos que no están almacenados localmente"
 
 #: ../src/plugins/transcode/burn-transcode.c:251
 msgid "source can't be created"
@@ -3948,7 +3945,7 @@ msgstr "Convirtiendo «%s»"
 
 #: ../src/plugins/transcode/burn-transcode.c:1340
 msgid "Transcode converts song files into a format proper to burn them on CDs"
-msgstr ""
+msgstr "Transcode convierte los archivos de canciones en un formato adecuado para grabarlas en CD"
 
 #: ../src/scsi/scsi-error.c:30
 msgid "size mismatch"
@@ -3996,7 +3993,7 @@ msgstr "clave no establecida"
 
 #: ../src/brasero-preview.c:158
 msgid " Preview "
-msgstr " Previsualizar "
+msgstr " Vista preliminar "
 
 #: ../src/brasero-split-dialog.c:175
 msgid "The size of the new track is shorter than 6 seconds and will be padded."
@@ -4012,7 +4009,7 @@ msgstr "¿Quiere partirla de todas formas?"
 
 #: ../src/brasero-split-dialog.c:566
 msgid "The track wasn't split:"
-msgstr ""
+msgstr "La pista no se partió:"
 
 #: ../src/brasero-split-dialog.c:569
 msgid "no silence could be retrieved."
@@ -4032,67 +4029,67 @@ msgstr "Esto eliminará todos los resultados anteriores."
 
 #: ../src/brasero-split-dialog.c:676
 msgid "automatic split"
-msgstr ""
+msgstr "partición automática"
 
 #: ../src/brasero-split-dialog.c:678
 msgid "Do you want to carry on with automatic splitting nevertheless?"
-msgstr ""
+msgstr "¿Quiere continuar con la partición automática de todas formas?"
 
 #: ../src/brasero-split-dialog.c:1009
 msgid "Split Track"
-msgstr ""
+msgstr "Partir pista"
 
 #: ../src/brasero-split-dialog.c:1028
 msgid "M_ethod:"
-msgstr ""
+msgstr "M_étodo:"
 
 #: ../src/brasero-split-dialog.c:1034
 msgid "Method to be used to split the track"
-msgstr ""
+msgstr "Método que usar para partir la pista"
 
 #: ../src/brasero-split-dialog.c:1037
 msgid "Split track manually"
-msgstr ""
+msgstr "Partir la pista manualmente"
 
 #: ../src/brasero-split-dialog.c:1038
 msgid "Split track in parts with a fixed length"
-msgstr ""
+msgstr "Partir la pista en partes con una longitud fija"
 
 #: ../src/brasero-split-dialog.c:1039
 msgid "Split track in a fixed number of parts"
-msgstr ""
+msgstr "Partir la pista en un número fijo de partes"
 
 #: ../src/brasero-split-dialog.c:1040
 msgid "Split track for each silence"
-msgstr ""
+msgstr "Partir la pista para cada silencio"
 
 #: ../src/brasero-split-dialog.c:1046
 msgid "_Slice"
-msgstr ""
+msgstr "Pa_rtir"
 
 #: ../src/brasero-split-dialog.c:1057
 msgid "Press to add a splitting point"
-msgstr ""
+msgstr "Pulse para añadir un punto para partir"
 
 #. Translators: this goes with the next (= "seconds")
 #: ../src/brasero-split-dialog.c:1074
 msgid "Split this track every"
-msgstr ""
+msgstr "Partir esta pista cada"
 
 #. Translators: this goes with the previous (= "Split track every")
 #: ../src/brasero-split-dialog.c:1083
 msgid "seconds"
-msgstr ""
+msgstr "segundos"
 
 #. Translators: this goes with the next (= "parts")
 #: ../src/brasero-split-dialog.c:1092
 msgid "Split this track in"
-msgstr ""
+msgstr "Partir esta pista en"
 
 #. Translators: this goes with the previous (= "Split this track in")
 #: ../src/brasero-split-dialog.c:1101
 msgid "parts"
-msgstr ""
+msgstr "partes"
 
 #: ../src/brasero-split-dialog.c:1110
 msgid "<b>Slicing Method</b>"
@@ -4100,15 +4097,15 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1165
 msgid "Start"
-msgstr ""
+msgstr "Inicio"
 
 #: ../src/brasero-split-dialog.c:1172
 msgid "End"
-msgstr ""
+msgstr "Fin"
 
 #: ../src/brasero-split-dialog.c:1195
 msgid "Mer_ge"
-msgstr ""
+msgstr "Me_zclar"
 
 #: ../src/brasero-split-dialog.c:1206
 msgid "Merge a selected slice with the next selected one"
@@ -4116,30 +4113,27 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1209
 msgid "_Remove"
-msgstr ""
+msgstr "_Quitar"
 
 #: ../src/brasero-split-dialog.c:1220
-#, fuzzy
 msgid "Remove the selected slices"
-msgstr "Quitar archivos seleccionados del proyecto"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1223
 msgid "Re_move All"
-msgstr ""
+msgstr "Qui_tar todo"
 
 #: ../src/brasero-split-dialog.c:1234
-#, fuzzy
 msgid "Clear the slices preview"
-msgstr "Activar visualización previa"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1244
 msgid "_List of slices that are to be created:"
 msgstr ""
 
 #: ../src/brasero-split-dialog.c:1253
-#, fuzzy
 msgid "<b>Slices Preview</b>"
-msgstr "<b>Seleccione una grabadora:</b>"
+msgstr ""
 
 #: ../src/brasero-time-button.c:278
 msgid "Hours"
@@ -4160,7 +4154,7 @@ msgstr "Segundos"
 
 #: ../src/brasero-time-button.c:305
 msgid "Frames (1 second = 75 frames)"
-msgstr ""
+msgstr "Cuadros (1 segundo = 75 cuadros)"
 
 #: ../src/brasero-src-selection.c:89
 msgid "Choose which drive holds the disc to read from"
@@ -4168,23 +4162,23 @@ msgstr "Seleccione qué unidad contiene el disco del que leer"
 
 #: ../src/plugins/cdrkit/burn-cdrkit.h:32
 msgid "Cdrkit burning suite"
-msgstr ""
+msgstr "Suite de grabación cdrkit"
 
 #: ../src/plugins/libburnia/burn-libburnia.h:32
 msgid "Libburnia burning suite"
-msgstr ""
+msgstr "Suite de grabación libburnia"
 
 #: ../src/plugins/growisofs/burn-growisofs-common.h:32
 msgid "Growisofs burning suite"
-msgstr ""
+msgstr "Suite de grabación growisofs"
 
 #: ../src/plugins/cdrdao/burn-cdrdao-common.h:32
 msgid "Cdrdao burning suite"
-msgstr ""
+msgstr "Suite de grabación cdrdao"
 
 #: ../src/plugins/cdrtools/burn-cdrtools.h:32
 msgid "Cdrtools burning suite"
-msgstr ""
+msgstr "Suite de grabación cdrtools"
 
 #: ../src/plugins/checksum/burn-md5sum-file.c:108
 #: ../src/plugins/checksum/burn-md5sum-file.c:130
