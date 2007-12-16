@@ -110,6 +110,10 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *caps,
 				       BraseroBurnSession *session,
 				       BraseroTrackType *output);
 
+BraseroBurnResult
+brasero_burn_caps_is_session_supported (BraseroBurnCaps *caps,
+					BraseroBurnSession *session);
+
 BraseroMedia
 brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 					   BraseroBurnSession *session);

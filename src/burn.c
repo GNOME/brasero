@@ -1703,11 +1703,10 @@ static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
 					GError **error)
 {
-	BraseroMedia media;
+	BraseroBurnFlag flag;
 	BraseroTrackType type;
 	BraseroBurnFlag flags;
 	BraseroBurnFlag retval;
-	BraseroBurnResult result;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
@@ -1746,21 +1745,27 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			brasero_burn_session_set_num_copies (priv->session, 1);
 	}
 
-	/* make sure all the flags given are supported if not correct them */
-	result = brasero_burn_caps_get_flags (priv->caps,
-					      priv->session,
-					      &supported,
-					      &compulsory);
-	if (result != BRASERO_BURN_OK) {
-		g_set_error (error,
-			    BRASERO_BURN_ERROR,
-			    BRASERO_BURN_ERROR_GENERAL,
-			    _("this operation is not supported. Try to activate proper plugins"));
-		return result;
+	/* save then wipe out flags from session to check them one by one */
+	flags = brasero_burn_session_get_flags (priv->session);
+	brasero_burn_session_remove_flag (priv->session, flags);
+
+	brasero_burn_caps_get_flags (priv->caps,
+				     priv->session,
+				     &supported,
+				     &compulsory);
+
+	for (flag = 1; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
+		/* check each flag before re-adding it */
+		if ((flags & flag) && (supported & flag)) {
+			brasero_burn_session_add_flag (priv->session, flag);
+			brasero_burn_caps_get_flags (priv->caps,
+						     priv->session,
+						     &supported,
+						     &compulsory);
+		}
 	}
 
-	flags = brasero_burn_session_get_flags (priv->session);
-	retval = flags & supported;
+	retval = brasero_burn_session_get_flags (priv->session);
 
 	if ((flags & BRASERO_BURN_FLAG_MERGE)
 	&& !(retval & BRASERO_BURN_FLAG_MERGE)) {
@@ -1774,25 +1779,19 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 	}
 
 	if (retval != flags)
-		BRASERO_BURN_DEBUG (burn,
-				    "Some flags were not supported (%i => %i). Corrected",
-				    flags,
-				    retval);
+		BRASERO_BURN_LOG_FLAGS (flags, "Some flags were not supported. Corrected to ");
 
 	if (retval != (retval | compulsory)) {
 		BRASERO_BURN_DEBUG (burn,
-				    "Some compulsory flags were forgotten (%i => %i). Corrected",
+				    "Some compulsory flags were forgotten. Corrected to ",
 				   (retval & compulsory),
 				    compulsory);
 
-		retval |= compulsory;
+		brasero_burn_session_add_flag (priv->session, compulsory);
 	}
-
-	media = brasero_burn_session_get_dest_media (priv->session);
 
 	/* we check flags consistency 
 	 * NOTE: should we return an error if they are not consistent? */
-	brasero_burn_session_get_input_type (priv->session, &type);
 	if ((type.type != BRASERO_TRACK_TYPE_AUDIO
 	&&   type.type != BRASERO_TRACK_TYPE_DATA
 	&&   type.type != BRASERO_TRACK_TYPE_DISC)
@@ -1819,12 +1818,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		retval |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
 	}
 
-	/* make sure again that everything we added/removed is supported or not
-	 * compulsory */
-	retval &= supported;
-	retval |= compulsory;
-
-	brasero_burn_session_set_flags (priv->session, retval);
+	brasero_burn_session_set_flags (priv->session, flag);
 	BRASERO_BURN_LOG_FLAGS (retval, "Flags after checking =");
 	return BRASERO_BURN_OK;
 }

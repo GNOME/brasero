@@ -325,13 +325,13 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
 				    (GdkEvent*)event);
 	  set_context_data (context, path_list);
 	  gtk_drag_set_icon_default (context);
+
 	}
       else
 	{
 	  path_list_free (path_list);
 	}
     }
-
   return TRUE;
 }
 

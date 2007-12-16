@@ -180,7 +180,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 		BraseroBurnCaps *caps;
 
 		caps = brasero_burn_caps_get_default ();
-		if (brasero_burn_caps_get_flags (caps, priv->session, NULL, NULL) != BRASERO_BURN_OK)
+		if (brasero_burn_caps_is_session_supported (caps, priv->session) != BRASERO_BURN_OK)
 			valid = FALSE;
 		else
 			valid = TRUE;

@@ -119,30 +119,38 @@ typedef enum {
 const gchar *
 brasero_burn_action_to_string (BraseroBurnAction action);
 
+/* These flags are sorted by importance. That's done to solve the problem of
+ * exclusive flags: that way MULTI will always win over any other flag if they
+ * are exclusive. On the other hand DAO will always lose. */
 typedef enum {
 	BRASERO_BURN_FLAG_NONE			= 0,
+
+	/* These flags should always be supported */
 	BRASERO_BURN_FLAG_EJECT			= 1,
 	BRASERO_BURN_FLAG_NOGRACE		= 1 << 1,
+	BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT	= 1 << 2,
+	BRASERO_BURN_FLAG_DONT_OVERWRITE	= 1 << 3,
+	BRASERO_BURN_FLAG_CHECK_SIZE		= 1 << 4,
 
-	BRASERO_BURN_FLAG_DAO			= 1 << 2,
-	BRASERO_BURN_FLAG_OVERBURN		= 1 << 3,
-	BRASERO_BURN_FLAG_BURNPROOF		= 1 << 4,
-	BRASERO_BURN_FLAG_NO_TMP_FILES		= 1 << 5,
+	/* These are of great importance for the result */
+	BRASERO_BURN_FLAG_MERGE			= 1 << 5,
+	BRASERO_BURN_FLAG_MULTI			= 1 << 6,
+	BRASERO_BURN_FLAG_APPEND		= 1 << 7,
 
-	BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT	= 1 << 6,
-	BRASERO_BURN_FLAG_DONT_OVERWRITE	= 1 << 7,
-
-	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE	= 1 << 8,
-	BRASERO_BURN_FLAG_APPEND		= 1 << 9,
-	BRASERO_BURN_FLAG_MERGE			= 1 << 10,
-	BRASERO_BURN_FLAG_MULTI			= 1 << 11,
-
-	BRASERO_BURN_FLAG_DUMMY			= 1 << 12,
+	BRASERO_BURN_FLAG_BURNPROOF		= 1 << 8,
+	BRASERO_BURN_FLAG_NO_TMP_FILES		= 1 << 9,
+	BRASERO_BURN_FLAG_DUMMY			= 1 << 10,
 
 	/* FIXME! this flag is more or less linked to OVERBURN one can't we do 
 	 * a single one */
-	BRASERO_BURN_FLAG_CHECK_SIZE		= 1 << 13,
-	BRASERO_BURN_FLAG_FAST_BLANK		= 1 << 14
+	BRASERO_BURN_FLAG_OVERBURN		= 1 << 11,
+
+	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE	= 1 << 12,
+	BRASERO_BURN_FLAG_FAST_BLANK		= 1 << 13,
+
+	BRASERO_BURN_FLAG_DAO			= 1 << 14,
+
+	BRASERO_BURN_FLAG_LAST
 } BraseroBurnFlag;
 
 #define BRASERO_BURN_FLAG_ALL			0x7FFF

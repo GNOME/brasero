@@ -187,8 +187,9 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 		||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
 		||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK) {
 			brasero_plugin_set_active (plugin, TRUE);
-			BRASERO_BURN_LOG ("Settings plugin %s active",
-					  brasero_plugin_get_name (plugin));
+			BRASERO_BURN_LOG ("Setting plugin %s %s",
+					  brasero_plugin_get_name (plugin),
+					  brasero_plugin_get_active (plugin)? "active":"inactive");
 			continue;
 		}
 
@@ -197,10 +198,6 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 		node = g_slist_find_custom (names,
 					    brasero_plugin_get_name (plugin),
 					    brasero_plugin_strcmp);
-
-		BRASERO_BURN_LOG ("Settings plugin %s %s",
-				  brasero_plugin_get_name (plugin),
-				  node != NULL? "active":"inactive");
 
 		/* we don't want to receive a signal from this plugin if its 
 		 * active state changes */
@@ -221,6 +218,10 @@ brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self)
 						   0,
 						   brasero_plugin_manager_plugin_state_changed,
 						   NULL);
+
+		BRASERO_BURN_LOG ("Setting plugin %s %s",
+				  brasero_plugin_get_name (plugin),
+				  brasero_plugin_get_active (plugin)? "active":"inactive");
 	}
 
 	g_slist_foreach (names, (GFunc) g_free, NULL);

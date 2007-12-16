@@ -126,20 +126,26 @@ void
 brasero_plugin_set_active (BraseroPlugin *self, gboolean active)
 {
 	BraseroPluginPrivate *priv;
+	gboolean was_active;
+	gboolean now_active;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 
-	if (priv->type == G_TYPE_NONE)
-		return;
-
-	if (priv->active == active)
-		return;
-
+	was_active = brasero_plugin_get_active (self);
 	priv->active = active;
+
+	now_active = brasero_plugin_get_active (self);
+	if (was_active == now_active)
+		return;
+
+	BRASERO_BURN_LOG ("Plugin %s is %s",
+			  brasero_plugin_get_name (self),
+			  now_active?"active":"inactive");
+
 	g_signal_emit (self,
 		       plugin_signals [ACTIVATED_SIGNAL],
 		       0,
-		       active);
+		       now_active);
 }
 
 gboolean
@@ -477,6 +483,7 @@ brasero_plugin_set_flags (BraseroPlugin *self,
 
 static gboolean
 brasero_plugin_get_all_flags (GSList *flags_list,
+			      gboolean check_compulsory,
 			      BraseroMedia media,
 			      BraseroBurnFlag current,
 			      BraseroBurnFlag *supported_retval,
@@ -502,7 +509,8 @@ brasero_plugin_get_all_flags (GSList *flags_list,
 		if ((current & iter->supported) != current)
 			continue;
 
-		if ((current & iter->compulsory) != iter->compulsory)
+		if (check_compulsory
+		&& (current & iter->compulsory) != iter->compulsory)
 			continue;
 
 		supported |= iter->supported;
@@ -539,6 +547,7 @@ brasero_plugin_check_record_flags (BraseroPlugin *self,
 	current &= BRASERO_PLUGIN_BURN_FLAG_MASK;
 
 	brasero_plugin_get_all_flags (priv->flags,
+				      TRUE,
 				      media,
 				      current,
 				      &supported,
@@ -568,6 +577,7 @@ brasero_plugin_check_image_flags (BraseroPlugin *self,
 		    BRASERO_BURN_FLAG_MERGE);
 
 	brasero_plugin_get_all_flags (priv->flags,
+				      TRUE,
 				      media,
 				      current,
 				      &supported,
@@ -599,6 +609,7 @@ brasero_plugin_get_record_flags (BraseroPlugin *self,
 	current &= BRASERO_PLUGIN_BURN_FLAG_MASK;
 
 	result = brasero_plugin_get_all_flags (priv->flags,
+					       FALSE,
 					       media,
 					       current,
 					       supported,
@@ -629,6 +640,7 @@ brasero_plugin_get_image_flags (BraseroPlugin *self,
 		    BRASERO_BURN_FLAG_MERGE);
 
 	result = brasero_plugin_get_all_flags (priv->flags,
+					       FALSE,
 					       media,
 					       current,
 					       supported,
@@ -675,6 +687,7 @@ brasero_plugin_check_blank_flags (BraseroPlugin *self,
 		    BRASERO_BURN_FLAG_FAST_BLANK);
 
 	brasero_plugin_get_all_flags (priv->blank_flags,
+				      TRUE,
 				      media,
 				      current,
 				      &supported,
@@ -707,6 +720,7 @@ brasero_plugin_get_blank_flags (BraseroPlugin *self,
 		    BRASERO_BURN_FLAG_FAST_BLANK);
 
 	result = brasero_plugin_get_all_flags (priv->blank_flags,
+					       FALSE,
 					       media,
 					       current,
 					       supported,

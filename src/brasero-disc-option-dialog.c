@@ -265,7 +265,7 @@ turn_off:
 	return TRUE;
 }
 
-static gboolean
+static void
 brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
@@ -275,43 +275,31 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	if (!priv->multi_toggle)
-		return FALSE;
+		return;
 
-	/* see if multi disc option is supported or compulsory. The return
+	/* Wipe out some flags before trying to see if MULTI is supported:
+	 * DAO/BLANK_BEFORE_WRITE don't really get along well with MULTI */
+	brasero_burn_session_remove_flag (priv->session,
+					  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+					  BRASERO_BURN_FLAG_DAO);
+
+	/* see if multi disc option is supported or compulsory. The returned
 	 * value just indicate if the button state can be modified. */
 	brasero_burn_caps_get_flags (priv->caps,
 				     priv->session,
 				     &supported,
 				     &compulsory);
 
-	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		/* clean up the disc and have more space when possible */
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_FAST_BLANK|
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-	}
-	else
-		brasero_burn_session_remove_flag (priv->session,
-						  BRASERO_BURN_FLAG_FAST_BLANK|
-						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-
-	/* use DAO whenever it's possible */
-	if (supported & BRASERO_BURN_FLAG_DAO)
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_DAO);
-	else
-		brasero_burn_session_remove_flag (priv->session,
-						  BRASERO_BURN_FLAG_DAO);
-
 	if (!(supported & BRASERO_BURN_FLAG_MULTI)) {
 		if (GTK_WIDGET_IS_SENSITIVE (priv->multi_toggle))
 			priv->multi_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle));
 
+		/* just in case it was already set */
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
 
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
-		return FALSE;
+		goto end;
 	}
 
 	if (compulsory & BRASERO_BURN_FLAG_MULTI) {
@@ -323,7 +311,7 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), TRUE);
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-		return FALSE;
+		goto end;
 	}
 
 	/* to improve video DVD compatibility we don't allow to leave a disc
@@ -337,12 +325,48 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-		return FALSE;
+		goto end;
 	}
 
 	gtk_widget_set_sensitive (priv->multi_toggle, TRUE);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), priv->multi_saved);
-	return TRUE;
+
+	if (priv->multi_saved)
+		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
+	else
+		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
+
+
+end:
+	/* Try to see if previously wiped out flags can be re-enabled now */
+	brasero_burn_caps_get_flags (priv->caps,
+				     priv->session,
+				     &supported,
+				     &compulsory);
+
+	/* we need to do that to override the flags that may be set in
+	 * brasero-dest-selection.c. The following doesn't like MULTI. */
+	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		/* clean up the disc and have more space when possible */
+		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+		brasero_burn_caps_get_flags (priv->caps,
+					     priv->session,
+					     &supported,
+					     &compulsory);
+
+		if (supported & BRASERO_BURN_FLAG_FAST_BLANK) {
+			brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
+			brasero_burn_caps_get_flags (priv->caps,
+						     priv->session,
+						     &supported,
+						     &compulsory);
+		}
+	}
+
+	/* Likewise DAO and MULTI don't always get along well but use DAO
+	 * whenever it's possible */
+	if (supported & BRASERO_BURN_FLAG_DAO)
+		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DAO);
 }
 
 static void
