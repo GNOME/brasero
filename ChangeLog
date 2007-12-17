@@ -1,3 +1,22 @@
+2007-12-17  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix a bug introduced by earlier patch (no multisession possible)
+	Fix growisofs not seeing joliet flag
+
+	Small changes:
+	- grey out number of copies if disc isn't burnable
+	- improved debugging layout
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_output_changed):
+	* src/burn-debug.c: (brasero_debug_burn_flags_to_string):
+	* src/burn-session.c: (brasero_burn_session_start):
+	* src/burn.c: (brasero_burn_check_session_consistency):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_set_mkisofs_argv):
+
 2007-12-16  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Make brasero go along with bug-buddy

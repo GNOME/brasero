@@ -1392,9 +1392,7 @@ brasero_burn_session_get_log_path (BraseroBurnSession *self)
 gboolean
 brasero_burn_session_start (BraseroBurnSession *self)
 {
-	gchar *start_message;
 	BraseroTrackType type;
-	BraseroImageFormat output;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
@@ -1420,27 +1418,25 @@ brasero_burn_session_start (BraseroBurnSession *self)
 		return FALSE;
 	}
 
-	output = brasero_burn_session_get_output_format (self);
-	start_message = g_strdup_printf ("Session starting:\n"
-					 "\tspeed\t\t= %lli\n"
-					 "\ttrack format\t= %i\n"
-					 "\toutput\t\t= %s"
-					 "\tnumber of copies = %i\n",
-					 priv->settings->rate,
-					 output,
-					 priv->settings->image ? priv->settings->image:"none",
-					 priv->settings->num_copies);
 
-	BRASERO_BURN_LOG (start_message);
+	BRASERO_BURN_LOG ("Session starting:");
 
 	brasero_burn_session_get_input_type (self, &type);
-	BRASERO_BURN_LOG_TYPE (&type, "Input:\t");
+	BRASERO_BURN_LOG_TYPE (&type, "Input\t=");
 
-	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t\t=");
-	BRASERO_BURN_LOG_DISC_TYPE (NCB_MEDIA_GET_STATUS (priv->settings->burner), "media type\t=");
+	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t=");
 
-	brasero_burn_session_logv (self, start_message, NULL);
-	g_free (start_message);
+	if (!brasero_burn_session_is_dest_file (self)) {
+		BRASERO_BURN_LOG_DISC_TYPE (NCB_MEDIA_GET_STATUS (priv->settings->burner), "media type\t=");
+		BRASERO_BURN_LOG ("speed\t= %i", priv->settings->rate);
+		BRASERO_BURN_LOG ("number of copies\t= %i", priv->settings->num_copies);
+	}
+	else {
+		type.type = BRASERO_TRACK_TYPE_IMAGE;
+		type.subtype.img_format = brasero_burn_session_get_output_format (self);
+		BRASERO_BURN_LOG_TYPE (&type, "output format\t=");
+	}
+
 	return TRUE;
 }
 

@@ -123,7 +123,7 @@ brasero_debug_burn_flags_to_string (gchar *buffer,
 	if (flags & BRASERO_BURN_FLAG_MERGE)
 		strcat (buffer, "merge, ");
 	if (flags & BRASERO_BURN_FLAG_MULTI)
-		strcat (buffer, "multin ");
+		strcat (buffer, "multi, ");
 	if (flags & BRASERO_BURN_FLAG_DUMMY)
 		strcat (buffer, "dummy, ");
 	if (flags & BRASERO_BURN_FLAG_CHECK_SIZE)

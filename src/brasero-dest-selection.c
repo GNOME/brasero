@@ -976,6 +976,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       (result == BRASERO_BURN_OK));
 
 		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
+		gtk_widget_set_sensitive (priv->copies_box, (result == BRASERO_BURN_OK));
 	}
 	else if (brasero_dest_selection_check_same_src_dest (self)) {
 		/* Special case: better not check if session is supported. */
@@ -1006,6 +1007,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       0,
 			       TRUE);
 		gtk_widget_set_sensitive (priv->button, TRUE);
+		gtk_widget_set_sensitive (priv->copies_box, TRUE);
 	}
 	else {
 		BraseroBurnResult result;
@@ -1028,6 +1030,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       0,
 			       (result == BRASERO_BURN_OK));
 
+		gtk_widget_set_sensitive (priv->copies_box, (result == BRASERO_BURN_OK));
 		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 	}
 
@@ -1236,14 +1239,10 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 		       0,
 		       (result == BRASERO_BURN_OK));
-	gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
+	if (priv->button)
+		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 
-	if (priv->button) {
-		if (result != BRASERO_BURN_OK)
-			gtk_widget_set_sensitive (priv->button, FALSE);
-		else
-			gtk_widget_set_sensitive (priv->button, TRUE);
-	}
+	gtk_widget_set_sensitive (priv->copies_box, (result == BRASERO_BURN_OK));
 }
 
 static void
@@ -1314,14 +1313,12 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 
 		brasero_dest_selection_set_drive_properties (self);
 
-		gtk_widget_set_sensitive (priv->copies_box, TRUE);
 		gtk_widget_show (priv->copies_box);
 
 		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
 		brasero_burn_session_set_num_copies (priv->session, numcopies);
 	}
 	else {
-		gtk_widget_set_sensitive (priv->copies_box, FALSE);
 		gtk_widget_hide (priv->copies_box);
 		brasero_burn_session_set_num_copies (priv->session, 1);
 

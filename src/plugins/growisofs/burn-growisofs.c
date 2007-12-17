@@ -237,10 +237,10 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
 	brasero_job_get_input_type (BRASERO_JOB (growisofs), &input);
 
-	if (input.type & BRASERO_IMAGE_FS_JOLIET)
+	if (input.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
-	if (input.type & BRASERO_IMAGE_FS_VIDEO)
+	if (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
 
 	priv = BRASERO_GROWISOFS_PRIVATE (growisofs);

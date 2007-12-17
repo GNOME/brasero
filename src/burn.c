@@ -1818,7 +1818,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		retval |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
 	}
 
-	brasero_burn_session_set_flags (priv->session, flag);
+	brasero_burn_session_set_flags (priv->session, retval);
 	BRASERO_BURN_LOG_FLAGS (retval, "Flags after checking =");
 	return BRASERO_BURN_OK;
 }
