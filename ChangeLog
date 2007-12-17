@@ -1,5 +1,19 @@
 2007-12-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Force the use of MULTI flag for DVD+RW (- restricted) 
+	since they always are open for new files.
+	Fix a bug when not compulsory flags were set brasero_burn_caps_get_flags
+	would fail.
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_add_drive_properties_flags):
+	* src/burn-caps.c: (brasero_caps_get_flags),
+	(brasero_burn_caps_get_flags):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_export_caps):
+
+2007-12-17  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix a bug introduced by earlier patch (no multisession possible)
 	Fix growisofs not seeing joliet flag
 

@@ -2041,10 +2041,10 @@ brasero_caps_get_flags (BraseroCaps *caps,
 							    &rec_supported,
 							    &rec_compulsory);
 
-			/* see if that link can handle the record flags */
+			/* see if that link can handle the record flags.
+			 * NOTE: compulsory are not a failure in this case. */
 			tmp = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
-			if ((tmp & rec_supported) != tmp
-			||  (tmp & rec_compulsory) != rec_compulsory)
+			if ((tmp & rec_supported) != tmp)
 				continue;
 		}
 
@@ -2056,7 +2056,8 @@ brasero_caps_get_flags (BraseroCaps *caps,
 							  session_flags,
 						    	  &data_supported);
 
-			/* see if that link can handle the data flags */
+			/* see if that link can handle the data flags. 
+			 * NOTE: compulsory are not a failure in this case. */
 			tmp = session_flags & (BRASERO_BURN_FLAG_APPEND|
 					       BRASERO_BURN_FLAG_MERGE);
 
@@ -2205,6 +2206,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 	}
 
 	session_flags = brasero_burn_session_get_flags (session);
+	BRASERO_BURN_LOG_FLAGS (session_flags, "FLAGS (session):");
+
 	/* sanity check:
 	 * - MERGE and BLANK are not possible together.
 	 *   MERGE wins (always)
@@ -2226,7 +2229,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 						  &input,
 						  &supported_flags,
 						  &compulsory_flags);
-
 	if (result == BRASERO_BURN_OK) {
 		if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
 			gboolean operation;

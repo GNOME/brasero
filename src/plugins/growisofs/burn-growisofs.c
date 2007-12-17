@@ -756,7 +756,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE);
+				  BRASERO_BURN_FLAG_MULTI);
 
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
@@ -772,7 +772,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE);
+				  BRASERO_BURN_FLAG_MULTI);
 
 	/* DVD+ R/RW don't support dummy mode */
 	brasero_plugin_set_flags (plugin,
@@ -825,7 +825,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE);
+				  BRASERO_BURN_FLAG_MULTI);
 
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
@@ -838,7 +838,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE);
+				  BRASERO_BURN_FLAG_MULTI);
 
 	/* blank caps for +/restricted RW*/
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|

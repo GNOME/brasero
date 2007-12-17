@@ -869,7 +869,6 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 					     &supported,
 					     &compulsory);
 	}
-
 	brasero_burn_session_add_flag (priv->session, compulsory);
 
 	if (supported_retval)
