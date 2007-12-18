@@ -1929,7 +1929,6 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	BraseroMedia required_media = BRASERO_MEDIUM_NONE;
 	BraseroBurnFlag session_flags;
 	BraseroPluginIOFlag io_flags;
-	BraseroBurnFlag rec_flags;
 	BraseroTrackType input;
 	GSList *iter;
 
@@ -1939,12 +1938,19 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	/* we try to determine here what type of medium is allowed to be burnt
 	 * to whether a CD or a DVD. Appendable, blank are not properties being
 	 * determined here. We just want it to be writable in a broad sense. */
-	BRASERO_BURN_LOG ("Determining required media type");
-
-	session_flags = brasero_burn_session_get_flags (session);
-	rec_flags = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
-
 	brasero_burn_session_get_input_type (session, &input);
+	BRASERO_BURN_LOG_TYPE (&input, "Determining required media type for input");
+
+	/* NOTE: BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE is a problem here since it
+	 * is only used if needed. Likewise DAO can be a problem. So just in
+	 * case remove them. They are not really useful in this context. What we
+	 * want here is to know which media can be used given the input; only 1
+	 * flag is important here (MERGE) and can have consequences. */
+	session_flags = brasero_burn_session_get_flags (session);
+	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+			   BRASERO_BURN_FLAG_DAO);
+
+	BRASERO_BURN_LOG_FLAGS (session_flags, "and flags");
 
 	if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
