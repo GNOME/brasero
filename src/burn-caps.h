@@ -55,8 +55,6 @@ typedef struct {
 
 typedef struct {
 	GObjectClass parent_class;
-
-	void	(*caps_changed)		(BraseroBurnCaps *caps);
 } BraseroBurnCapsClass;
 
 GType brasero_burn_caps_get_type();

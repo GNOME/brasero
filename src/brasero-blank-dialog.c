@@ -47,6 +47,7 @@
 #include "burn-basics.h"
 #include "burn-session.h"
 #include "burn.h"
+#include "burn-plugin-manager.h"
 #include "brasero-utils.h"
 #include "brasero-tool-dialog.h"
 #include "brasero-blank-dialog.h"
@@ -143,7 +144,7 @@ brasero_blank_dialog_device_opts_setup (BraseroBlankDialog *self)
 }
 
 static void
-brasero_blank_dialog_caps_changed (BraseroBurnCaps *caps,
+brasero_blank_dialog_caps_changed (BraseroPluginManager *manager,
 				   BraseroBlankDialog *dialog)
 {
 	brasero_blank_dialog_device_opts_setup (dialog);
@@ -301,7 +302,10 @@ brasero_blank_dialog_finalize (GObject *object)
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (object);
 
 	if (priv->caps_sig) {
-		g_signal_handler_disconnect (priv->caps, priv->caps_sig);
+		BraseroPluginManager *manager;
+
+		manager = brasero_plugin_manager_get_default ();
+		g_signal_handler_disconnect (manager, priv->caps_sig);
 		priv->caps_sig = 0;
 	}
 
@@ -343,6 +347,7 @@ static void
 brasero_blank_dialog_init (BraseroBlankDialog *obj)
 {
 	BraseroBlankDialogPrivate *priv;
+	BraseroPluginManager *manager;
 	NautilusBurnDrive *drive;
 
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (obj);
@@ -367,7 +372,8 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					     obj);
 
 	priv->caps = brasero_burn_caps_get_default ();
-	priv->caps_sig = g_signal_connect (priv->caps,
+	manager = brasero_plugin_manager_get_default ();
+	priv->caps_sig = g_signal_connect (manager,
 					   "caps-changed",
 					   G_CALLBACK (brasero_blank_dialog_caps_changed),
 					   obj);

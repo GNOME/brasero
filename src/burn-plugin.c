@@ -1001,7 +1001,7 @@ brasero_plugin_init_real (BraseroPlugin *object)
 							 NULL,
 							 NULL);
 
-	/* No need to emit notify:: signal here */
+	/* No need to emit notify:: here */
 	g_free (priority_path);
 	g_object_unref (client);
 }

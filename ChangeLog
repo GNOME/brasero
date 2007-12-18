@@ -1,3 +1,29 @@
+2007-12-18  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Make dialogs (burn/blank/...) reflects any change in the set of active plugins
+
+	* src/brasero-blank-dialog.c: (brasero_blank_dialog_caps_changed),
+	(brasero_blank_dialog_finalize), (brasero_blank_dialog_init):
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_init), (brasero_dest_selection_finalize):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_update_joliet),
+	(brasero_disc_option_dialog_caps_changed),
+	(brasero_disc_option_dialog_output_changed),
+	(brasero_disc_option_dialog_init),
+	(brasero_disc_option_dialog_finalize):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_caps_changed),
+	(brasero_image_option_dialog_init),
+	(brasero_image_option_dialog_finalize):
+	* src/burn-caps.c: (brasero_burn_caps_class_init):
+	* src/burn-caps.h:
+	* src/burn-plugin-manager.c:
+	(brasero_plugin_manager_plugin_state_changed),
+	(brasero_plugin_manager_class_init):
+	* src/burn-plugin.c: (brasero_plugin_init_real):
+
 2007-12-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Force the use of MULTI flag for DVD+RW (- restricted) 

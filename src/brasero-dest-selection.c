@@ -51,6 +51,7 @@
 #include "burn-track.h"
 #include "burn-medium.h"
 #include "burn-session.h"
+#include "burn-plugin-manager.h"
 #include "brasero-ncb.h"
 #include "brasero-drive-selection.h"
 #include "brasero-drive-properties.h"
@@ -1255,7 +1256,7 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 }
 
 static void
-brasero_dest_selection_caps_changed (BraseroBurnCaps *caps,
+brasero_dest_selection_caps_changed (BraseroPluginManager *manager,
 				     BraseroDestSelection *self)
 {
 	NautilusBurnDrive *drive;
@@ -1359,12 +1360,14 @@ static void
 brasero_dest_selection_init (BraseroDestSelection *object)
 {
 	BraseroDestSelectionPrivate *priv;
+	BraseroPluginManager *manager;
 	GtkWidget *label;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
 	priv->caps = brasero_burn_caps_get_default ();
-	priv->caps_sig = g_signal_connect (G_OBJECT (priv->caps),
+	manager = brasero_plugin_manager_get_default ();
+	priv->caps_sig = g_signal_connect (manager,
 					   "caps-changed",
 					   G_CALLBACK (brasero_dest_selection_caps_changed),
 					   object);
@@ -1422,7 +1425,10 @@ brasero_dest_selection_finalize (GObject *object)
 	}
 
 	if (priv->caps_sig) {
-		g_signal_handler_disconnect (priv->caps, priv->caps_sig);
+		BraseroPluginManager *manager;
+
+		manager = brasero_plugin_manager_get_default ();
+		g_signal_handler_disconnect (manager, priv->caps_sig);
 		priv->caps_sig = 0;
 	}
 

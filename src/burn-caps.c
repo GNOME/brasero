@@ -82,13 +82,6 @@ typedef struct _BraseroCapsTest BraseroCapsTest;
 
 #define SUBSTRACT(a, b)		((a) &= ~((b)&(a)))
 
-enum
-{
-	CAPS_CHANGED_SIGNAL,
-	LAST_SIGNAL
-};
-static guint caps_signals [LAST_SIGNAL] = { 0 };
-
 static GObjectClass *parent_class = NULL;
 static BraseroBurnCaps *default_caps = NULL;
 
@@ -152,15 +145,6 @@ brasero_burn_caps_class_init (BraseroBurnCapsClass *klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_burn_caps_finalize;
-
-	caps_signals [CAPS_CHANGED_SIGNAL] =
-		g_signal_new ("caps_changed",
-		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-		              G_STRUCT_OFFSET (BraseroBurnCapsClass, caps_changed),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__OBJECT,
-		              G_TYPE_NONE, 0);
 }
 
 static void

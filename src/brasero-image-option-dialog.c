@@ -39,6 +39,7 @@
 
 #include "brasero-utils.h"
 #include "burn-basics.h"
+#include "burn-plugin-manager.h"
 #include "brasero-image-option-dialog.h"
 #include "brasero-image-type-chooser.h"
 #include "brasero-dest-selection.h"
@@ -305,7 +306,7 @@ brasero_image_option_dialog_output_changed_cb (BraseroBurnSession *session,
 }
 
 static void
-brasero_image_option_dialog_caps_changed (BraseroBurnCaps *caps,
+brasero_image_option_dialog_caps_changed (BraseroPluginManager *manager,
 					  BraseroImageOptionDialog *dialog)
 {
 	brasero_image_option_dialog_set_formats (dialog);
@@ -477,6 +478,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	GtkWidget *button;
 	GtkWidget *options;
 	GtkWidget *box, *box1;
+	BraseroPluginManager *manager;
 	BraseroImageOptionDialogPrivate *priv;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (obj);
@@ -499,7 +501,8 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 				      GTK_RESPONSE_OK);
 
 	priv->caps = brasero_burn_caps_get_default ();
-	priv->caps_sig = g_signal_connect (priv->caps,
+	manager = brasero_plugin_manager_get_default ();
+	priv->caps_sig = g_signal_connect (manager,
 					   "caps-changed",
 					   G_CALLBACK (brasero_image_option_dialog_caps_changed),
 					   obj);
@@ -641,7 +644,10 @@ brasero_image_option_dialog_finalize (GObject *object)
 
 
 	if (priv->caps_sig) {
-		g_signal_handler_disconnect (priv->caps, priv->caps_sig);
+		BraseroPluginManager *manager;
+
+		manager = brasero_plugin_manager_get_default ();
+		g_signal_handler_disconnect (manager, priv->caps_sig);
 		priv->caps_sig = 0;
 	}
 

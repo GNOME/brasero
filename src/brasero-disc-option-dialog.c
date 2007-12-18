@@ -44,6 +44,7 @@
 #include "burn-medium.h"
 #include "burn-session.h"
 #include "burn-caps.h"
+#include "burn-plugin-manager.h"
 #include "brasero-disc-option-dialog.h"
 #include "brasero-dest-selection.h"
 #include "brasero-ncb.h"
@@ -163,7 +164,6 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
 	if (!priv->joliet_toggle)
 		return FALSE;
 
@@ -178,6 +178,8 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 		if (GTK_WIDGET_IS_SENSITIVE (priv->joliet_toggle))
 			return FALSE;
 
+		gtk_widget_set_sensitive (priv->joliet_toggle, TRUE);
+
 		if (!priv->joliet_saved)
 			return FALSE;
 
@@ -185,7 +187,6 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 		brasero_burn_session_set_input_type (priv->session, &source);
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->joliet_toggle), priv->joliet_saved);
-		gtk_widget_set_sensitive (priv->joliet_toggle, TRUE);
 		return TRUE;
 	}
 
@@ -370,16 +371,14 @@ end:
 }
 
 static void
-brasero_disc_option_dialog_caps_changed (BraseroBurnCaps *caps,
+brasero_disc_option_dialog_caps_changed (BraseroPluginManager *manager,
 					 BraseroDiscOptionDialog *dialog)
 {
-	/* update the joliet button */
-	brasero_disc_option_dialog_update_joliet (dialog);
-
 	/* update the multi button:
 	 * NOTE: order is important here multi then video */
 	brasero_disc_option_dialog_update_multi (dialog);
-
+	/* update the joliet button */
+	brasero_disc_option_dialog_update_joliet (dialog);
 	/* update the video button */
 	brasero_disc_option_dialog_update_video (dialog);
 }
@@ -392,13 +391,11 @@ brasero_disc_option_dialog_output_changed (BraseroBurnSession *session,
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-	/* update the joliet button */
-	brasero_disc_option_dialog_update_joliet (dialog);
-
 	/* update the multi button:
 	 * NOTE: order is important here multi then video */
 	brasero_disc_option_dialog_update_multi (dialog);
-
+	/* update the joliet button */
+	brasero_disc_option_dialog_update_joliet (dialog);
 	/* update the video button */
 	brasero_disc_option_dialog_update_video (dialog);
 
@@ -825,6 +822,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 {
 	GtkWidget *button;
 	GtkWidget *options;
+	BraseroPluginManager *manager;
 	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (obj);
@@ -847,7 +845,8 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 				      GTK_RESPONSE_OK);
 
 	priv->caps = brasero_burn_caps_get_default ();
-	priv->caps_sig = g_signal_connect (priv->caps,
+	manager = brasero_plugin_manager_get_default ();
+	priv->caps_sig = g_signal_connect (manager,
 					   "caps-changed",
 					   G_CALLBACK (brasero_disc_option_dialog_caps_changed),
 					   obj);
@@ -890,7 +889,10 @@ brasero_disc_option_dialog_finalize (GObject *object)
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (object);
 
 	if (priv->caps_sig) {
-		g_signal_handler_disconnect (priv->caps, priv->caps_sig);
+		BraseroPluginManager *manager;
+
+		manager = brasero_plugin_manager_get_default ();
+		g_signal_handler_disconnect (manager, priv->caps_sig);
 		priv->caps_sig = 0;
 	}
 

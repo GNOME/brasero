@@ -64,6 +64,13 @@ struct _BraseroPluginManagerPrivate {
 
 G_DEFINE_TYPE (BraseroPluginManager, brasero_plugin_manager, G_TYPE_OBJECT);
 
+enum
+{
+	CAPS_CHANGED_SIGNAL,
+	LAST_SIGNAL
+};
+static guint caps_signals [LAST_SIGNAL] = { 0 };
+
 static void
 brasero_plugin_manager_set_plugins_state (BraseroPluginManager *self);
 
@@ -279,7 +286,6 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 	g_object_unref (caps);
 
 	client = gconf_client_get_default ();
-
 	if (priv->notification) {
 		gconf_client_notify_remove (client, priv->notification);
 		priv->notification = 0;
@@ -301,10 +307,13 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 						      self,
 						      NULL,
 						      NULL);
-	
 	g_object_unref (client);
-
 	g_slist_free (list);
+
+	/* tell the rest of the world */
+	g_signal_emit (self,
+		       caps_signals [CAPS_CHANGED_SIGNAL],
+		       0);
 }
 
 static void
@@ -418,6 +427,15 @@ brasero_plugin_manager_class_init (BraseroPluginManagerClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroPluginManagerPrivate));
 
 	object_class->finalize = brasero_plugin_manager_finalize;
+
+	caps_signals [CAPS_CHANGED_SIGNAL] =
+		g_signal_new ("caps_changed",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 }
 
 BraseroPluginManager *
