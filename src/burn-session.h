@@ -35,6 +35,8 @@
 
 G_BEGIN_DECLS
 
+#define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
+
 #define BRASERO_TYPE_BURN_SESSION         (brasero_burn_session_get_type ())
 #define BRASERO_BURN_SESSION(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSession))
 #define BRASERO_BURN_SESSION_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionClass))
@@ -212,6 +214,10 @@ brasero_burn_session_pop_tracks (BraseroBurnSession *session);
 /**
  * Some convenient functions
  */
+
+gchar *
+brasero_burn_session_get_config_key (BraseroBurnSession *session,
+				     const gchar *property);
 
 gboolean
 brasero_burn_session_same_src_dest_drive (BraseroBurnSession *session);

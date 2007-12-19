@@ -84,6 +84,51 @@ typedef struct _BraseroDiscOptionDialogPrivate BraseroDiscOptionDialogPrivate;
 
 static GtkDialogClass *parent_class = NULL;
 
+static void
+brasero_disc_option_dialog_save_multi_state (BraseroDiscOptionDialog *dialog)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+	GConfClient *client;
+	gboolean multi_on;
+	gchar *key;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	key = brasero_burn_session_get_config_key (priv->session, "multi");
+	multi_on = (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MULTI) != 0;
+
+	client = gconf_client_get_default ();
+	gconf_client_set_int (client, key, multi_on, NULL);
+	g_object_unref (client);
+	g_free (key);
+}
+
+static void
+brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+	GConfClient *client;
+	gboolean multi_on;
+	gchar *key;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	/* That's only provided multi is not compulsory or unsupported */
+
+	key = brasero_burn_session_get_config_key (priv->session, "multi");
+	client = gconf_client_get_default ();
+	multi_on = gconf_client_get_int (client, key, NULL);
+	g_object_unref (client);
+	g_free (key);
+
+	/* NOTE: no need to take care of adding/removing MULTI flag to session,
+	 * the callback for the button will do it on its own. */
+	if (multi_on)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
+}
+
 static gchar *
 brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 {
@@ -292,9 +337,6 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 				     &compulsory);
 
 	if (!(supported & BRASERO_BURN_FLAG_MULTI)) {
-		if (GTK_WIDGET_IS_SENSITIVE (priv->multi_toggle))
-			priv->multi_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle));
-
 		/* just in case it was already set */
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
 
@@ -305,9 +347,6 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 
 	if (compulsory & BRASERO_BURN_FLAG_MULTI) {
 		/* NOTE: in this case video button is updated later see caps_changed and media_changed */
-		if (GTK_WIDGET_IS_SENSITIVE (priv->multi_toggle))
-			priv->multi_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle));
-
 		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), TRUE);
@@ -329,14 +368,9 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 		goto end;
 	}
 
+	/* only load preferences if it is supported and not compulsory */
 	gtk_widget_set_sensitive (priv->multi_toggle, TRUE);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), priv->multi_saved);
-
-	if (priv->multi_saved)
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
-	else
-		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
-
+	brasero_disc_option_dialog_load_multi_state (dialog);
 
 end:
 	/* Try to see if previously wiped out flags can be re-enabled now */
@@ -473,10 +507,12 @@ brasero_disc_option_dialog_set_multi (BraseroDiscOptionDialog *dialog)
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle))) {
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
 		brasero_disc_option_dialog_update_video (dialog);
+		brasero_disc_option_dialog_save_multi_state (dialog);
 		return;
 	}
 
 	brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
+	brasero_disc_option_dialog_save_multi_state (dialog);
 
 	if (!priv->video_toggle)
 		return;

@@ -91,92 +91,16 @@ static BraseroDriveSelectionClass* parent_class = NULL;
 
 G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_DRIVE_SELECTION);
 
-#define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
-
 enum {
 	VALID_MEDIA_SIGNAL,
 	LAST_SIGNAL
 };
 static guint brasero_dest_selection_signals [LAST_SIGNAL] = { 0 };
 
-static gchar *
-brasero_dest_selection_get_config_key (BraseroTrackDataType input,
-				       NautilusBurnDrive *drive,
-				       const gchar *property)
-{
-	BraseroMedia media;
-	gchar *display_name;
-	gchar *disc_type;
-	gchar *key = NULL;
-
-	media = NCB_MEDIA_GET_STATUS (drive);
-
-	/* make sure display_name doesn't contain any forbidden characters */
-	display_name = nautilus_burn_drive_get_name_for_display (drive);
-	g_strdelimit (display_name, " +()", '_');
-
-	disc_type = g_strdup (NCB_MEDIA_GET_TYPE_STRING (drive));
-	if (!disc_type) {
-		g_free (display_name);
-		return NULL;
-	}
-
-	g_strdelimit (disc_type, " +()", '_');
-
-	switch (input) {
-	case BRASERO_TRACK_TYPE_NONE:
-		key = g_strdup_printf ("%s/%s/none_%s/%s",
-				       BRASERO_DRIVE_PROPERTIES_KEY,
-				       display_name,
-				       disc_type,
-				       property);
-		break;
-	case BRASERO_TRACK_TYPE_DISC:
-		key = g_strdup_printf ("%s/%s/disc_%s/%s",
-				       BRASERO_DRIVE_PROPERTIES_KEY,
-				       display_name,
-				       disc_type,
-				       property);
-		break;
-
-	case BRASERO_TRACK_TYPE_DATA:
-		key = g_strdup_printf ("%s/%s/data_%s/%s",
-				       BRASERO_DRIVE_PROPERTIES_KEY,
-				       display_name,
-				       disc_type,
-				       property);
-		break;
-
-	case BRASERO_TRACK_TYPE_IMAGE:
-		key = g_strdup_printf ("%s/%s/image_%s/%s",
-				       BRASERO_DRIVE_PROPERTIES_KEY,
-				       display_name,
-				       disc_type,
-				       property);
-		break;
-
-	case BRASERO_TRACK_TYPE_AUDIO:
-		key = g_strdup_printf ("%s/%s/audio_%s/%s",
-				       BRASERO_DRIVE_PROPERTIES_KEY,
-				       display_name,
-				       disc_type,
-				       property);
-		break;
-	default:
-		break;
-	}
-
-	g_free (display_name);
-	g_free (disc_type);
-	return key;
-}
-
 static void
 brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
-	NautilusBurnDrive *drive;
-	BraseroTrackType input;
 	BraseroBurnFlag flags;
 	GConfClient *client;
 	const gchar *path;
@@ -186,15 +110,6 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	drive = brasero_burn_session_get_burner (priv->session);
-	if (!drive)
-		return;
-
-	if (NCB_MEDIA_GET_STATUS (drive) == BRASERO_MEDIUM_NONE)
-		return;
-
-	brasero_burn_session_get_input_type (priv->session, &input);
-
 	client = gconf_client_get_default ();
 
 	rate = brasero_burn_session_get_rate (priv->session);
@@ -203,11 +118,11 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 	else
 		speed = BRASERO_RATE_TO_SPEED_CD (rate);
 
-	key = brasero_dest_selection_get_config_key (input.type, drive, "speed");
+	key = brasero_burn_session_get_config_key (priv->session, "speed");
 	gconf_client_set_int (client, key, speed, NULL);
 	g_free (key);
 
-	key = brasero_dest_selection_get_config_key (input.type, drive, "flags");
+	key = brasero_burn_session_get_config_key (priv->session, "flags");
 	flags = gconf_client_get_int (client, key, NULL);
 	flags &= ~BRASERO_DRIVE_PROPERTIES_FLAGS;
 	flags |= (brasero_burn_session_get_flags (priv->session) & BRASERO_DRIVE_PROPERTIES_FLAGS);
@@ -925,7 +840,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	/* update/set the rate */
 	client = gconf_client_get_default ();
 
-	key = brasero_dest_selection_get_config_key (source.type, drive, "speed");
+	key = brasero_burn_session_get_config_key (priv->session, "speed");
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
@@ -946,7 +861,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	 * NOTE: every time we add a flag we have to re-ask for supported flags.
 	 * Indeed two flags could be mutually exclusive and then adding both at
 	 * the same would make the session unusable (MULTI and BLANK_BEFORE_WRITE) */
-	key = brasero_dest_selection_get_config_key (source.type, drive, "flags");
+	key = brasero_burn_session_get_config_key (priv->session, "flags");
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 

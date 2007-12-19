@@ -1,3 +1,19 @@
+2007-12-19  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix for #499591 Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work:
+	remember multisession pref (on a media type/project type basis)
+
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_save_drive_properties),
+	(brasero_dest_selection_set_drive_properties):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_save_multi_state),
+	(brasero_disc_option_dialog_load_multi_state),
+	(brasero_disc_option_dialog_update_multi),
+	(brasero_disc_option_dialog_set_multi):
+	* src/burn-session.c: (brasero_burn_session_get_config_key):
+	* src/burn-session.h:
+
 2007-12-18  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix the function responsible for determining which media type can be used.
