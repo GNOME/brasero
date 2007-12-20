@@ -1090,7 +1090,7 @@ brasero_caps_find_best_link (BraseroCaps *caps,
 
 	/* clear up */
 	used_caps = g_slist_remove (used_caps, caps);
-	for (node = list; iter; node = list) {
+	for (node = list; node; node = list) {
 		list = node->next;
 		g_free (node);
 	}

@@ -1,5 +1,21 @@
 2007-12-20  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix a long forgotten bug that was causing trouble: 
+	fds for the drive were not properly closed sometimes (were badly dupped ())
+	that caused the error "Invalid argument" since it seems it confused the drive/driver?
+	That seems to fix the problem with multisession
+	fixed other small memleaks (more to come)
+
+	Also open drive exclusively (might not stay like that, needs testing)
+
+	* src/burn-caps.c: (brasero_caps_find_best_link):
+	* src/burn-medium.c: (brasero_medium_try_open):
+	* src/burn-track.c: (brasero_track_get_image_size):
+	* src/burn-volume.c: (brasero_volume_is_valid_fd),
+	(brasero_volume_get_size_fd):
+
+2007-12-20  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Small update
 
 	* NEWS:

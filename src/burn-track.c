@@ -981,6 +981,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 			g_free (path);
 			return BRASERO_BURN_ERR;
 		}
+		g_free (path);
 
 		if (block_size)
 			*block_size = 2048;
@@ -996,6 +997,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 			g_free (path);
 			return BRASERO_BURN_ERR;
 		}
+		g_free (path);
 
 		if (block_size)
 			*block_size = 2448;
@@ -1011,6 +1013,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 			g_free (path);
 			return BRASERO_BURN_ERR;
 		}
+		g_free (path);
 
 		if (block_size)
 			*block_size = 2352;
@@ -1026,6 +1029,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 			g_free (path);
 			return BRASERO_BURN_ERR;
 		}
+		g_free (path);
 
 		if (block_size)
 			*block_size = 2352;

@@ -1531,7 +1531,7 @@ brasero_medium_try_open (BraseroMedium *self)
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
 	BRASERO_BURN_LOG ("Trying to open device %s", path);
-	fd = open (path, O_RDONLY|O_NONBLOCK);
+	fd = open (path, O_RDONLY|O_EXCL|O_NONBLOCK);
 	if (fd < 0) {
 		if (errno == EAGAIN
 		||  errno == EWOULDBLOCK

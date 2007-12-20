@@ -178,8 +178,10 @@ brasero_volume_is_valid_fd (int fd, GError **error)
 		goto error;
 	}
 
-	file = fdopen (dup (fd), "r");
+	file = fdopen (dup_fd, "r");
 	if (!file) {
+		close (dup_fd);
+
 		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
 		goto error;
 	}
@@ -244,13 +246,18 @@ brasero_volume_get_size_fd (int fd,
 		goto error;
 	}
 
-	file = fdopen (dup (fd), "r");
+	file = fdopen (dup_fd, "r");
 	if (!file) {
+		/* since we dupped the fd close the one */
+		close (dup_fd);
+
 		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
 		goto error;
 	}
 
 	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
+		fclose (file);
+
 		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", block, strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -261,6 +268,8 @@ brasero_volume_get_size_fd (int fd,
 
 	result = brasero_volume_get_primary_from_file (file, buffer, error);
 	fclose (file);
+	if (!result)
+		return FALSE;
 
 	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
 		return FALSE;
