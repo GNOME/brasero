@@ -623,7 +623,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_REWRITABLE|
 				  BRASERO_MEDIUM_WRITABLE|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -640,6 +639,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_HAS_AUDIO|
 				  BRASERO_MEDIUM_HAS_DATA,
 				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -669,7 +669,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -680,7 +679,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -693,6 +691,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_DATA,
 				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -704,7 +703,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -714,7 +712,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -725,6 +722,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_MERGE|
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -741,7 +739,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_DUMMY|
@@ -751,7 +748,6 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -763,6 +759,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_MERGE|
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|

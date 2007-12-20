@@ -1071,7 +1071,6 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_REWRITABLE|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -1079,6 +1078,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
+	/* NOTE: APPEND and MERGE are not really exclusive they can co-exist */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CD|
 				  BRASERO_MEDIUM_WRITABLE|
@@ -1087,6 +1087,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_HAS_AUDIO|
 				  BRASERO_MEDIUM_HAS_DATA,
 				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_MULTI|

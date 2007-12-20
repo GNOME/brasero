@@ -1807,8 +1807,6 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 	BraseroTrackType output;
 	BraseroPluginIOFlag io_flags;
 
-	BRASERO_BURN_LOG_TYPE (input, "Checking support for input");
-
 	if (!brasero_burn_session_is_dest_file (session)) {
 		output.type = BRASERO_TRACK_TYPE_DISC;
 		output.subtype.media = brasero_burn_session_get_dest_media (session);
@@ -1826,6 +1824,10 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
 	else
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
+
+	BRASERO_BURN_LOG_TYPE (input, "Checking support for input");
+	BRASERO_BURN_LOG_TYPE (&output, "and output");
+	BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
 
 	result = brasero_caps_try_output_with_blanking (self,
 							session,
@@ -1849,8 +1851,6 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 	BraseroTrackType input;
 	BraseroPluginIOFlag io_flags;
 
-	BRASERO_BURN_LOG_TYPE (output, "Checking support for output");
-
 	/* Here flags don't matter as we don't record anything.
 	 * Even the IOFlags since that can be checked later with
 	 * brasero_burn_caps_get_flags.
@@ -1861,6 +1861,10 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
 
 	brasero_burn_session_get_input_type (session, &input);
+	BRASERO_BURN_LOG_TYPE (output, "Checking support for output");
+	BRASERO_BURN_LOG_TYPE (&input, "and input");
+	BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
+	
 	result = brasero_caps_try_output_with_blanking (self,
 							session,
 							output,
@@ -1908,6 +1912,7 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 
 	BRASERO_BURN_LOG_TYPE (&output, "Checking support for session output");
 	BRASERO_BURN_LOG_TYPE (&input, "and input");
+	BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
 
 	result = brasero_caps_try_output_with_blanking (self,
 							session,

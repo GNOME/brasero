@@ -729,14 +729,14 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 			  FALSE,
 			  6);
 
+	/* multisession options */
+	brasero_disc_option_dialog_multi_widget (dialog);
+
 	/* general options */
 	brasero_disc_option_dialog_joliet_widget (dialog);
 
 	/* video toggle */
 	brasero_disc_option_dialog_video_widget (dialog);
-
-	/* multisession options */
-	brasero_disc_option_dialog_multi_widget (dialog);
 
 	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
 						 priv->multi_toggle,
@@ -748,7 +748,7 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	gtk_widget_show_all (widget);
 }
 
-void
+static void
 brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 {
 	GtkWidget *widget;
