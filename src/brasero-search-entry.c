@@ -813,7 +813,7 @@ _add_mime_types_to_query (BeagleQuery *query, const MimeTypeGroup *group)
 
 	mime = (gchar **) group->mimetypes;
 	while (*mime) {
-		beagle_query_add_mime_type (query, *mime);
+		beagle_hit_get_mime_type (query);
 		mime ++;
 	}
 }
@@ -824,7 +824,7 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 	BeagleQuery *query;
 
 	query = beagle_query_new ();
-	beagle_query_add_source (query, "Files");
+	beagle_query_add_text (query, "Files");
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->documents))) {
 		_add_mime_types_to_query (query, mime_type_groups + 3);

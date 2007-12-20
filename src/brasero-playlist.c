@@ -500,12 +500,12 @@ brasero_playlist_start_beagle_search (BraseroPlaylist *playlist)
 				  G_CALLBACK (brasero_playlist_beagle_finished_cb),
 				  playlist);
 	
-		beagle_query_add_source (playlist->priv->query, "Files");
+		beagle_query_add_text (playlist->priv->query, "Files");
 	
-		beagle_query_add_mime_type (playlist->priv->query, "audio/x-scpls");
-		beagle_query_add_mime_type (playlist->priv->query, "audio/x-ms-asx");
-		beagle_query_add_mime_type (playlist->priv->query, "audio/x-mp3-playlist");
-		beagle_query_add_mime_type (playlist->priv->query, "audio/x-mpegurl");
+		beagle_query_add_text (playlist->priv->query, "audio/x-scpls");
+		beagle_query_add_text (playlist->priv->query, "audio/x-ms-asx");
+		beagle_query_add_text (playlist->priv->query, "audio/x-mp3-playlist");
+		beagle_query_add_text (playlist->priv->query, "audio/x-mpegurl");
 
 		brasero_playlist_increase_activity_counter (playlist);
 		beagle_client_send_request_async (playlist->priv->client,

@@ -1,3 +1,12 @@
+2007-12-20  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* configure.in:
+	* src/brasero-playlist.c: (brasero_playlist_start_beagle_search):
+	* src/brasero-search-entry.c: (_add_mime_types_to_query),
+	(brasero_search_entry_get_query):
+
+	Add support for libbeagle >= 0.3.x closes bgo #504413.
+
 2007-12-20  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Add debugging output for iso9660 reading.
