@@ -1,12 +1,30 @@
-11-07-2007 : 0.6.90
+20-12-2007 : 0.7.0
 
-New unstable series
+New stable release
 
-- New Plugin System for various burn backends
+Since the development started more than 90 bugs where fixed in this stable series.
 
-Changes since 0.6.0:
+Notable changes since 0.6.0:
 
-- Migrate to GtkTooltip API
-- Brasero now requires Gtk+ at least 2.11.6
+- Migrate to GtkTooltip API.
+- Brasero now requires Gtk+ at least 2.11.6.
+- New Plugin system for burning backends.
+- Inhibit/Uninhibit system with Gnome Power Manager via DBUS.
+- Support for libburn 0.4.0.
+- Support for libbeagle 0.3.x.
+- Split audio tracks.
+- Improved look to get with HIG.
+- Preview widget improved.
+- Better handling md5sum on files.
+- Scsi library bugs fixed.
+- Added an option to choose the number of media to burn.
+
+Homepage: http://www.gnome.org/projects/brasero
+
+Please report bugs to: http://bugzilla.gnome.org/browse.cgi?product=brasero
+
+Mailing List for User and Developer discussion: brasero-list@gnome.org
+
+Svn Repository: http://svn.gnome.org/viewcvs/brasero/
 
 Thanks to all the people who contributed to this release through patches, translation, advices, artwork, bug reports.
