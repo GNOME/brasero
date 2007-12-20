@@ -35,15 +35,12 @@
 #ifndef _BURN_ISO9660_H
 #define _BURN_ISO9660_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #define ISO9660_BLOCK_SIZE 2048
 
 gboolean
-brasero_iso9660_is_primary_descriptor (const char *buffer,
+brasero_iso9660_is_primary_descriptor (const gchar *buffer,
 				       GError **error);
 
 gboolean
@@ -62,9 +59,7 @@ brasero_iso9660_get_contents (FILE *file,
 			      gint64 *nb_blocks,
 			      GError **error);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_ISO9660_H */
 

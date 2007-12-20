@@ -1,3 +1,19 @@
+2007-12-20  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Add debugging output for iso9660 reading.
+	Fix a bug where we weren't reading the directory record till the end.
+
+	* src/burn-iso9660.c: (brasero_iso9660_seek),
+	(brasero_iso9660_next_block), (brasero_iso9660_get_susp),
+	(brasero_iso9660_next_record), (brasero_iso9660_read_file_record),
+	(brasero_iso9660_read_directory_record),
+	(brasero_iso9660_read_directory_records),
+	(brasero_iso9660_get_contents):
+	* src/burn-iso9660.h:
+	* src/burn-volume.c: (brasero_volume_get_primary_from_file),
+	(brasero_volume_get_primary), (brasero_volume_is_valid_fd),
+	(brasero_volume_get_size_fd), (brasero_volume_get_files):
+
 2007-12-19  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix for #499591 Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work:

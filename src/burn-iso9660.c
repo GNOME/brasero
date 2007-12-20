@@ -38,6 +38,7 @@
 #include "burn-susp.h"
 #include "burn-volume.h"
 #include "burn-basics.h"
+#include "burn-debug.h"
 
 struct _BraseroIsoCtx {
 	gint num_blocks;
@@ -191,11 +192,15 @@ brasero_iso9660_seek (BraseroIsoCtx *ctx, gint address)
 	 * by its address member. In a set of directory records the first two 
 	 * records are: '.' (id == 0) and '..' (id == 1). So since we've got
 	 * the address of the set load the block. */
-	if (fseek (ctx->file, address * sizeof (ctx->buffer), SEEK_SET) == -1)
+	if (fseek (ctx->file, address * sizeof (ctx->buffer), SEEK_SET) == -1) {
+		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", address, strerror (errno));
 		goto error;
+	}
 
-	if (fread (ctx->buffer, 1, sizeof (ctx->buffer), ctx->file) != sizeof (ctx->buffer))
+	if (fread (ctx->buffer, 1, sizeof (ctx->buffer), ctx->file) != sizeof (ctx->buffer)) {
+		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
 		goto error;
+	}
 
 	return BRASERO_ISO_OK;
 
@@ -213,8 +218,13 @@ brasero_iso9660_next_block (BraseroIsoCtx *ctx)
 	ctx->offset = 0;
 	ctx->num_blocks ++;
 
-	if (fread (ctx->buffer, 1, sizeof (ctx->buffer), ctx->file) != sizeof (ctx->buffer))
+	if (fread (ctx->buffer, 1, sizeof (ctx->buffer), ctx->file) != sizeof (ctx->buffer)) {
+		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
+		ctx->error = g_error_new (BRASERO_BURN_ERROR,
+					  BRASERO_BURN_ERROR_GENERAL,
+					  strerror (errno));
 		return BRASERO_ISO_ERROR;
+	}
 
 	return BRASERO_ISO_OK;
 }
@@ -247,6 +257,8 @@ brasero_iso9660_get_susp (BraseroIsoCtx *ctx,
 		return NULL;
 
 	susp_block = ((gchar *) record) + start;
+
+	BRASERO_BURN_LOG ("Got susp block");
 	return susp_block;
 }
 
@@ -255,19 +267,28 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 {
 	BraseroIsoDirRec *record;
 
-	if (ctx->offset > sizeof (ctx->buffer))
+	if (ctx->offset > sizeof (ctx->buffer)) {
+		BRASERO_BURN_LOG ("Invalid record size");
 		goto error;
+	}
 
-	if (ctx->offset == sizeof (ctx->buffer))
+	if (ctx->offset == sizeof (ctx->buffer)) {
+		BRASERO_BURN_LOG ("No next record");
 		return BRASERO_ISO_END;
+	}
 
 	/* record_size already checked last time function was called */
 	record = (BraseroIsoDirRec *) (ctx->buffer + ctx->offset);
-	if (!record->record_size)
+	if (!record->record_size) {
+		BRASERO_BURN_LOG ("Last record");
 		return BRASERO_ISO_END;
+	}
 
 	if (record->record_size > (sizeof (ctx->buffer) - ctx->offset)) {
 		gint part_one, part_two;
+
+		/* This is for cross sector boundary records */
+		BRASERO_BURN_LOG ("Cross sector boundary record");
 
 		/* some implementations write across block boundary which is
 		 * "forbidden" by ECMA-119. But linux kernel accepts it, so ...
@@ -289,7 +310,8 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 			ctx->buffer + ctx->offset,
 			part_one);
 		
-		brasero_iso9660_next_block (ctx);
+		if (brasero_iso9660_next_block (ctx) == BRASERO_ISO_ERROR)
+			goto error;
 
 		memcpy (ctx->spare_record + part_one,
 			ctx->buffer,
@@ -305,9 +327,10 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 	return BRASERO_ISO_OK;
 
 error:
-	ctx->error = g_error_new (BRASERO_BURN_ERROR,
-				  BRASERO_BURN_ERROR_GENERAL,
-				  _("invalid directory record"));
+	if (!ctx->error)
+		ctx->error = g_error_new (BRASERO_BURN_ERROR,
+					  BRASERO_BURN_ERROR_GENERAL,
+					  _("invalid directory record"));
 	return BRASERO_ISO_ERROR;
 }
 
@@ -336,16 +359,23 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 	file->specific.file.address_block = brasero_iso9660_get_733_val (record->address);
 
 	/* see if we've got a susp area */
-	if (!ctx->has_susp)
+	if (!ctx->has_susp) {
+		BRASERO_BURN_LOG ("New file %s", file->name);
 		return file;
+	}
+
+	BRASERO_BURN_LOG ("New file %s with a suspend area", file->name);
 
 	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
 	if (!brasero_susp_read (&susp_ctx, susp, susp_len)) {
+		BRASERO_BURN_LOG ("Could not read susp area");
 		brasero_volume_file_free (file);
 		return NULL;
 	}
 
 	if (susp_ctx.rr_name) {
+		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
+
 		file->rr_name = susp_ctx.rr_name;
 		susp_ctx.rr_name = NULL;
 	}
@@ -379,17 +409,25 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 	directory->name = g_new0 (gchar, record->id_size + 1);
 	memcpy (directory->name, record->id, record->id_size);
 
-	if (!ctx->has_susp)
+	if (!ctx->has_susp) {
+		BRASERO_BURN_LOG ("New directory %s", directory->name);
 		return directory;
+	}
+
+	BRASERO_BURN_LOG ("New directory %s with susp area", directory->name);
 
 	/* see if we've got a susp area */
 	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
 	if (!brasero_susp_read (&susp_ctx, susp, susp_len)) {
+		BRASERO_BURN_LOG ("Could not read susp area");
+
 		brasero_volume_file_free (directory);
 		return NULL;
 	}
 
 	if (susp_ctx.rr_name) {
+		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
+
 		directory->rr_name = susp_ctx.rr_name;
 		susp_ctx.rr_name = NULL;
 	}
@@ -410,6 +448,8 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 	BraseroIsoDirRec *record;
 	GSList *directories = NULL;
 	BraseroVolFile *parent = NULL;
+
+	BRASERO_BURN_LOG ("Reading directory record");
 
 	result = brasero_iso9660_seek (ctx, address);
 	if (result != BRASERO_ISO_OK)
@@ -437,13 +477,15 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 	}
 
 	max_record_size = brasero_iso9660_get_733_val (record->file_size);
-	max_block = ISO9660_BYTES_TO_BLOCKS (max_record_size) - 1;
+	max_block = ISO9660_BYTES_TO_BLOCKS (max_record_size);
+	BRASERO_BURN_LOG ("Maximum directory record length %i block (= %i bytes)", max_block, max_record_size);
 
 	/* skip ".." */
 	result = brasero_iso9660_next_record (ctx, &record);
 	if (result != BRASERO_ISO_OK)
 		return NULL;
 
+	BRASERO_BURN_LOG ("Skipped '.' and '..'");
 	parent = g_new0 (BraseroVolFile, 1);
 	parent->isdir = 1;
 
@@ -541,6 +583,8 @@ brasero_iso9660_get_contents (FILE *file,
 	brasero_iso9660_ctx_init (&ctx, file);
 
 	address = brasero_iso9660_get_733_val (root->address);
+
+	BRASERO_BURN_LOG ("Reading root directory record at %lli", address);
 	volfile = brasero_iso9660_read_directory_records (&ctx, address);
 
 	if (ctx.spare_record)

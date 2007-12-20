@@ -36,6 +36,7 @@
 #include "burn-volume.h"
 #include "burn-iso9660.h"
 #include "burn-basics.h"
+#include "burn-debug.h"
 
 struct _BraseroTagDesc {
 	guint16 id;
@@ -91,6 +92,7 @@ brasero_volume_get_primary_from_file (FILE *file,
 
 	/* skip the first 16 blocks */
 	if (fseek (file, SYSTEM_AREA_SECTORS * ISO9660_BLOCK_SIZE, SEEK_CUR) == -1) {
+		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", SYSTEM_AREA_SECTORS, strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -100,6 +102,7 @@ brasero_volume_get_primary_from_file (FILE *file,
 
 	bytes_read = fread (primary_vol, 1, ISO9660_BLOCK_SIZE, file);
 	if (bytes_read != ISO9660_BLOCK_SIZE) {
+		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -136,6 +139,7 @@ brasero_volume_get_primary (const gchar *path,
 
 	file = fopen (path, "r");
 	if (!file) {
+		BRASERO_BURN_LOG ("open () failed (%s)", strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -169,12 +173,16 @@ brasero_volume_is_valid_fd (int fd, GError **error)
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
 	dup_fd = dup (fd);
-	if (dup_fd == -1)
+	if (dup_fd == -1) {
+		BRASERO_BURN_LOG ("dup () failed (%s)", strerror (errno));
 		goto error;
+	}
 
 	file = fdopen (dup (fd), "r");
-	if (!file)
+	if (!file) {
+		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
 		goto error;
+	}
 
 	result = brasero_volume_get_primary_from_file (file, buffer, error);
 	fclose (file);
@@ -231,14 +239,19 @@ brasero_volume_get_size_fd (int fd,
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
 	dup_fd = dup (fd);
-	if (dup_fd == -1)
+	if (dup_fd == -1) {
+		BRASERO_BURN_LOG ("dup () failed (%s)", strerror (errno));
 		goto error;
+	}
 
 	file = fdopen (dup (fd), "r");
-	if (!file)
+	if (!file) {
+		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
 		goto error;
+	}
 
 	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
+		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", block, strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -292,6 +305,7 @@ brasero_volume_get_files (const gchar *path,
 
 	file = fopen (path, "r");
 	if (!file) {
+		BRASERO_BURN_LOG ("fopen () failed (%s)", strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -300,6 +314,7 @@ brasero_volume_get_files (const gchar *path,
 	}
 
 	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
+		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", block, strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
