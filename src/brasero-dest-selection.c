@@ -1253,6 +1253,10 @@ brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
+
+	if (!priv->session)
+		return;
+
 	brasero_burn_session_set_burner (priv->session, drive);
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session))
@@ -1316,6 +1320,8 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  "value-changed",
 			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
 			  object);
+
+	brasero_drive_selection_set_show_all_drives (BRASERO_DRIVE_SELECTION (object), FALSE);
 
 	priv->default_ext = TRUE;
 	priv->default_path = TRUE;
