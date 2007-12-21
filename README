@@ -46,8 +46,7 @@ Notes on plugins for advanced users
 1. configuration
 
 From the UI you can only configure (choose to use or not to use mostly) non essential plugins; that is all those that don't burn, blank, or image.
-If you really want to choose which of the latters you want brasero to use:
-One simple solution is to remove the offending plugin from brasero plugin directory ("install_path"/lib/brasero/plugins/) if you're sure that you won't want to use it.
+If you really want to choose which of the latters you want brasero to use, one simple solution is to remove the offending plugin from brasero plugin directory ("install_path"/lib/brasero/plugins/) if you're sure that you won't want to use it.
 You can also set priorities between plugins. They all have a hardcoded priority that can be overriden through Gconf. Each plugin has a key in "/apps/brasero/config/priority".
 If you set this key to -1 this turns off the plugin.
 If you set this key to 0 this leaves the internal hardcoded priority - the default that basically lets brasero decide what's best.
@@ -63,14 +62,15 @@ As examples, from my experience:
 
 
 Requirements:
+- gtk+ >= 2.12.0
 - gnome 2.14.x (gnome-vfs, nautilus-cd-burner)
 - gstreamer (>=0.10.0)
 - Hal (>= 0.50)
 - libxml2
-- cdrtools or cdrkit (default backend, any recent version)
+- cdrtools or cdrkit
+- growisofs
 - a fairly new kernel (>= 2.6.13 because of inotify) (optional)
 - totem (>= 2.14) (optional)
-- beagle (>= 0.2.5) (optional)
-- GDL (>= 0.6) (optional)
+- beagle (>= 0.3.0) (optional)
 - libburn (>=0.4.0) (optional)
 - libisofs (>=0.2.8) (optional)
