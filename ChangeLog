@@ -1,3 +1,12 @@
+2007-12-21  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix forgotten O_EXCL in second open ()
+	Decided to keep combination of O_EXCL and O_NONBLOCK
+	since that seems to work now on fedora (we don't block anymore)
+
+	* src/burn-medium.c: (brasero_medium_track_get_info),
+	(brasero_medium_retry_open), (brasero_medium_try_open):
+
 2007-12-20  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix a long forgotten bug that was causing trouble: 

@@ -106,6 +106,15 @@ struct _BraseroMediumPrivate
 
 #define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
 
+/**
+ * Try to open the drive exclusively but don't block; if drive can't be opened
+ * exclusively then retry every second until we're shut or the drive state
+ * changes to not busy.
+ */
+
+#define OPEN_FLAGS			O_RDONLY|O_EXCL|O_NONBLOCK
+#define BUSY_RETRY_TIME			1000
+
 enum
 {
 	PROP_0,
@@ -1196,7 +1205,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	 * use the old value.
 	 * That's important for checksuming to have a perfect account of the 
 	 * data size. */
-	if (track->blocks_num == 300) {
+	if (track->blocks_num <= 300) {
 		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
 		brasero_medium_track_volume_size (self, track, fd);
 	}
@@ -1490,7 +1499,7 @@ brasero_medium_retry_open (gpointer object)
 	path = nautilus_burn_drive_get_device (priv->drive);
 
 	BRASERO_BURN_LOG ("Retrying to open device %s", path);
-	fd = open (path, O_RDONLY|O_NONBLOCK);
+	fd = open (path, OPEN_FLAGS);
 	if (fd < 0) {
 		if (errno == EBUSY
 		||  errno == EAGAIN
@@ -1531,7 +1540,7 @@ brasero_medium_try_open (BraseroMedium *self)
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
 	BRASERO_BURN_LOG ("Trying to open device %s", path);
-	fd = open (path, O_RDONLY|O_EXCL|O_NONBLOCK);
+	fd = open (path, OPEN_FLAGS);
 	if (fd < 0) {
 		if (errno == EAGAIN
 		||  errno == EWOULDBLOCK
@@ -1540,7 +1549,7 @@ brasero_medium_try_open (BraseroMedium *self)
 			priv->info = BRASERO_MEDIUM_BUSY;
 			priv->icon = icons [0];
 
-			priv->retry_id = g_timeout_add (1000,
+			priv->retry_id = g_timeout_add (BUSY_RETRY_TIME,
 							brasero_medium_retry_open,
 							self);
 		}
