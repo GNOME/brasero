@@ -110,9 +110,10 @@ struct _BraseroMediumPrivate
  * Try to open the drive exclusively but don't block; if drive can't be opened
  * exclusively then retry every second until we're shut or the drive state
  * changes to not busy.
+ * No exclusive at the moment since when the medium is mounted we can't use excl
  */
 
-#define OPEN_FLAGS			O_RDONLY|O_EXCL|O_NONBLOCK
+#define OPEN_FLAGS			O_RDONLY /*|O_EXCL */|O_NONBLOCK
 #define BUSY_RETRY_TIME			1000
 
 enum
