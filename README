@@ -40,7 +40,11 @@ Others:
 - all disc IO is done asynchronously to prevent the application from blocking
 - Brasero default backend is provided by cdrtools/cdrkit but libburn can be used as an alternative
 
-Note about plugins:
+
+Notes on plugins for advanced users
+
+1. configuration
+
 From the UI you can only configure (choose to use or not to use mostly) non essential plugins; that is all those that don't burn, blank, or image.
 If you really want to choose which of the latters you want brasero to use:
 One simple solution is to remove the offending plugin from brasero plugin directory ("install_path"/lib/brasero/plugins/) if you're sure that you won't want to use it.
@@ -48,6 +52,15 @@ You can also set priorities between plugins. They all have a hardcoded priority 
 If you set this key to -1 this turns off the plugin.
 If you set this key to 0 this leaves the internal hardcoded priority - the default that basically lets brasero decide what's best.
 If you set this key to more than 0 then that priority will become the one of the plugin - the higher, the more it has chance to be picked up.
+
+2. additional note
+
+Some plugins have overlapping functionalities (i.e. libburn/wodim/cdrecord/growisofs, mkisofs/libisofs/genisoimage); but they don't always do the same things or sometimes they don't do it in the same way. Some plugins have a "speciality" where they are the best. That's why it's usually good to have them all around
+As examples, from my experience:
+- growisofs is good at handling DVD+RW and DVD-RW restricted overwrite
+- cdrdao is best for on the fly CD copying
+- libburn returns a progress when it blanks/formats
+
 
 Requirements:
 - gnome 2.14.x (gnome-vfs, nautilus-cd-burner)
