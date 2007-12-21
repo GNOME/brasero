@@ -464,6 +464,10 @@ brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
 	brasero_track_set_checksum (track, BRASERO_CHECKSUM_MD5, checksum);
 	brasero_burn_session_add_track (self->priv->session, track);
 
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroBurnSession refs it. */
+	brasero_track_unref (track);
+
 	burn = brasero_tool_dialog_get_burn (BRASERO_TOOL_DIALOG (self));
 	result = brasero_burn_check (burn, self->priv->session, error);
 
@@ -544,6 +548,10 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 				    BRASERO_CHECKSUM_MD5_FILE,
 				    BRASERO_MD5_FILE);
 	brasero_burn_session_add_track (self->priv->session, track);
+
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroBurnSession refs it. */
+	brasero_track_unref (track);
 
 	burn = brasero_tool_dialog_get_burn (BRASERO_TOOL_DIALOG (self));
 	result = brasero_burn_check (burn, self->priv->session, &error);

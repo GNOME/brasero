@@ -521,6 +521,10 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 
 	brasero_job_add_track (BRASERO_JOB (transcode), dest);
 
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroTaskCtx refs it. */
+	brasero_track_unref (track);
+
 	g_free (path_src);
 	g_free (path_dest);
 
@@ -781,6 +785,11 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	brasero_track_set_audio_info (track, info);
 
 	brasero_job_add_track (BRASERO_JOB (transcode), track);
+
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroTaskCtx refs it. */
+	brasero_track_unref (track);
+
 	brasero_job_finished_track (BRASERO_JOB (transcode));
 }
 

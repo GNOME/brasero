@@ -8950,6 +8950,10 @@ brasero_data_disc_set_session_contents (BraseroDisc *disc,
 	brasero_track_set_data_source (track, grafts, unreadable);
 	brasero_burn_session_add_track (session, track);
 
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroBurnSession refs it. */
+	brasero_track_unref (track);
+
 	return BRASERO_DISC_OK;
 }
 

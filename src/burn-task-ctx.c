@@ -266,7 +266,9 @@ brasero_task_ctx_add_track (BraseroTaskCtx *self,
 	BRASERO_BURN_LOG ("Adding track (type = %i) %s",
 			  brasero_track_get_type (track, NULL),
 			  priv->tracks? "already some tracks":"");
-	
+
+	/* Ref the track and store it for later. */
+	brasero_track_ref (track);
 	priv->tracks = g_slist_prepend (priv->tracks, track);
 	return BRASERO_BURN_OK;
 }
@@ -359,6 +361,11 @@ brasero_task_ctx_finished (BraseroTaskCtx *self)
 
 			track = iter->data;
 			brasero_burn_session_add_track (priv->session, track);
+
+			/* It's good practice to unref the track afterwards as
+			 * we don't need it anymore. BraseroBurnSession refs it.
+			 */
+			brasero_track_unref (track);
 		}
 	
 		g_slist_free (priv->tracks);

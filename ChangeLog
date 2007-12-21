@@ -1,5 +1,43 @@
 2007-12-21  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix memleaks
+
+	* src/brasero-audio-disc.c:
+	(brasero_audio_disc_set_session_contents):
+	* src/brasero-data-disc.c:
+	(brasero_data_disc_set_session_contents):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_finalize):
+	* src/brasero-project-type-chooser.c:
+	(brasero_project_type_chooser_build_recent):
+	* src/brasero-src-selection.c:
+	(brasero_src_selection_drive_changed),
+	(brasero_src_selection_finalize),
+	(brasero_src_selection_set_property):
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_get_disc_checksum),
+	(brasero_sum_dialog_check_disc_sum):
+	* src/brasero-vfs.c: (brasero_vfs_metadata_completed_cb):
+	* src/burn-process.c: (brasero_process_finished):
+	* src/burn-task-ctx.c: (brasero_task_ctx_add_track),
+	(brasero_task_ctx_finished):
+	* src/burn.c: (brasero_burn_record_session),
+	(brasero_burn_same_src_dest):
+	* src/plugins/cdrdao/burn-toc2cue.c: (brasero_toc2cue_read_stderr):
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_end):
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_end):
+	* src/plugins/dvdcss/burn-dvdcss.c:
+	(brasero_dvdcss_thread_finished):
+	* src/plugins/libburnia/burn-libisofs.c:
+	(brasero_libisofs_thread_finished):
+	* src/plugins/local-track/burn-local-image.c:
+	(brasero_local_track_finished):
+	* src/plugins/transcode/burn-transcode.c:
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_push_track):
+
+2007-12-21  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix forgotten O_EXCL in second open ()
 	Decided to keep combination of O_EXCL and O_NONBLOCK
 	since that seems to work now on fedora (we don't block anymore)

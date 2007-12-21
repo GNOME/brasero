@@ -1984,6 +1984,10 @@ brasero_burn_record_session (BraseroBurn *burn,
 	brasero_track_set_drive_source (track, brasero_burn_session_get_burner (priv->session));
 	brasero_burn_session_add_track (priv->session, track);
 
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroBurnSession refs it. */
+	brasero_track_unref (track);
+
 	/* reload media */
 	result = brasero_burn_lock_checksum_media (burn, error);
 	if (result != BRASERO_BURN_OK)
@@ -2155,6 +2159,10 @@ brasero_burn_same_src_dest (BraseroBurn *self,
 	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
 	brasero_track_set_image_source (track, image, toc, format);
 	brasero_burn_session_add_track (priv->session, track);
+
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroBurnSession refs it. */
+	brasero_track_unref (track);
 
 end:
 	g_free (image);

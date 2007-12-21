@@ -960,7 +960,7 @@ brasero_vfs_metadata_completed_cb (BraseroMetadata *metadata,
 			ctx = iter->data;
 			next = iter->next;
 			brasero_vfs_metadata_ctx_completed (ctx, info);
-	}
+		}
 
 		/* NOTE: no need to free item here it is freed once all contexts
 		 * have been removed from its queue by the above function */
@@ -973,11 +973,16 @@ brasero_vfs_metadata_completed_cb (BraseroMetadata *metadata,
 		self->priv->meta_process_id = g_idle_add (brasero_vfs_process_metadata, self);
 
 	/* see if info is already in cache buffer */
-	if (g_queue_find_custom (self->priv->meta_buffer, info->uri, brasero_vfs_metadata_lookup_buffer))
+	if (g_queue_find_custom (self->priv->meta_buffer, info->uri, brasero_vfs_metadata_lookup_buffer)) {
+		/* free the info */
+		brasero_metadata_info_free (info);
 		return;
+	}
 
-	if (!info->has_audio && !info->has_video)
+	if (!info->has_audio && !info->has_video) {
+		brasero_metadata_info_free (info);
 		return;
+	}
 
 	g_queue_push_head (self->priv->meta_buffer, info);
 

@@ -642,7 +642,6 @@ brasero_image_option_dialog_finalize (GObject *object)
 		priv->track = NULL;
 	}
 
-
 	if (priv->caps_sig) {
 		BraseroPluginManager *manager;
 

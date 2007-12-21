@@ -1909,6 +1909,10 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		brasero_track_set_audio_info (track, info);
 		brasero_burn_session_add_track (session, track);
 
+		/* It's good practice to unref the track afterwards as we don't
+		 * need it anymore. BraseroBurnSession refs it. */
+		brasero_track_unref (track);
+
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	return BRASERO_DISC_OK;

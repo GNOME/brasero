@@ -101,6 +101,10 @@ brasero_libisofs_thread_finished (gpointer data)
 						BRASERO_IMAGE_FORMAT_BIN);
 
 		brasero_job_add_track (BRASERO_JOB (self), track);
+
+		/* It's good practice to unref the track afterwards as we don't
+		 * need it anymore. BraseroBurnSession refs it. */
+		brasero_track_unref (track);
 	}
 
 	brasero_job_finished_track (BRASERO_JOB (self));

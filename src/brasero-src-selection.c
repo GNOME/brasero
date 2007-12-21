@@ -62,7 +62,8 @@ brasero_src_selection_drive_changed (BraseroDriveSelection *selection,
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
-	brasero_track_unref (priv->track);
+	if (priv->track)
+		brasero_track_unref (priv->track);
 
 	priv->track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
 	if (drive && NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE)
@@ -101,6 +102,11 @@ brasero_src_selection_finalize (GObject *object)
 		priv->session = NULL;
 	}
 
+	if (priv->track) {
+		brasero_track_unref (priv->track);
+		priv->track = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -122,6 +128,9 @@ brasero_src_selection_set_property (GObject *object,
 
 		priv->session = session;
 		g_object_ref (session);
+
+		if (priv->track)
+			brasero_track_unref (priv->track);
 
 		priv->track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
 		brasero_track_set_drive_source (priv->track, NULL);

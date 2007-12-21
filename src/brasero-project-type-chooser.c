@@ -244,7 +244,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 					     info,
 					     brasero_project_type_chooser_sort_recent);
 		if (g_list_length (list) > 5)
-			list = g_list_remove_link (list, g_list_last (list));
+			list = g_list_delete_link (list, g_list_last (list));
 	}
 
 	for (iter = list; iter; iter = iter->next) {

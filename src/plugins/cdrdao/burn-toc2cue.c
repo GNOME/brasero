@@ -168,12 +168,6 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 		return BRASERO_BURN_OK;
 	}
 
-	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-	brasero_track_set_image_source (track,
-					img_path,
-					toc_path,
-					BRASERO_IMAGE_FORMAT_CUE);
-
 	/* the previous track image path will now be a link pointing to the
 	 * image path of the new track just created */
 	if (g_rename (tmp_img_path, img_path)) {
@@ -192,11 +186,22 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 		return BRASERO_BURN_OK;
 	} /* symlink () could also be used */
 
+	track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
+	brasero_track_set_image_source (track,
+					img_path,
+					toc_path,
+					BRASERO_IMAGE_FORMAT_CUE);
+
 	g_free (tmp_img_path);
 	g_free (img_path);
 	g_free (toc_path);
 
 	brasero_job_add_track (BRASERO_JOB (process), track);
+
+	/* It's good practice to unref the track afterwards as we don't need it
+	 * anymore. BraseroTaskCtx refs it. */
+	brasero_track_unref (track);
+
 	brasero_job_finished_track (BRASERO_JOB (process));
 	return BRASERO_BURN_OK;
 }
