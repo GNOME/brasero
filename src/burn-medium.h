@@ -196,6 +196,7 @@ typedef enum {
 } BraseroMediumTrackType;
 
 struct _BraseroMediumTrack {
+	guint session;
 	BraseroMediumTrackType type;
 	guint64 start;
 	guint64 blocks_num;

@@ -44,6 +44,8 @@ G_BEGIN_DECLS
 
 #define BRASERO_MSF_TO_LBA(minute, second, frame)	(((minute)*60+(second))*75+frame)
 
+#define BRASERO_IS_BCD_VALID(number)	((((uchar)(number) & 0x0f) < 0x09) && (((uchar)(number) & 0xF0) <= 0x90))
+
 /**
  * Used to report errors and have some sort of debug output easily
  */

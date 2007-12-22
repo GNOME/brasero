@@ -1,3 +1,20 @@
+2007-12-22  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #502703 – Data Integrity Check Always Fails AND Burning Speed Slow (except dvd which ignored setting).
+	formatted toc was returning wrong size (2 sec shorter) for multisession disc first tracks
+
+	* src/burn-medium.c: (brasero_medium_set_track_type),
+	(brasero_medium_track_get_info), (brasero_medium_check_BCD_use),
+	(brasero_medium_get_CD_sessions_info),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents):
+	* src/burn-medium.h:
+	* src/scsi/scsi-mmc1.h:
+	* src/scsi/scsi-read-toc-pma-atip.c:
+	(brasero_mmc1_read_toc_formatted), (brasero_mmc1_read_toc_raw),
+	(brasero_mmc3_read_cd_text), (brasero_mmc1_read_atip):
+	* src/scsi/scsi-read-toc-pma-atip.h:
+	* src/scsi/scsi-utils.h:
+
 2007-12-21  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Removed O_EXCL since it created problems with mounted media

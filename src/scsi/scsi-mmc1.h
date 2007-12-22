@@ -46,6 +46,12 @@ brasero_mmc1_read_toc_formatted (int fd,
 				 int *size,
 				 BraseroScsiErrCode *error);
 BraseroScsiResult
+brasero_mmc1_read_toc_raw (int fd,
+			   int session_num,
+			   BraseroScsiRawTocData **data,
+			   int *size,
+			   BraseroScsiErrCode *error);
+BraseroScsiResult
 brasero_mmc1_read_atip (int fd,
 			BraseroScsiAtipData **data,
 			int *size,

@@ -165,10 +165,41 @@ brasero_mmc1_read_toc_formatted (int fd,
 
 	cdb = brasero_scsi_command_new (&info, fd);
 	cdb->format = BRASERO_RD_TAP_FORMATTED_TOC;
+
+	/* first track for which this function will return information */
 	cdb->track_session_num = track_num;
 
 	res = brasero_read_toc_pma_atip (cdb,
 					 sizeof (BraseroScsiTocDesc),
+					(BraseroScsiTocPmaAtipHdr **) data,
+					 size,
+					 error);
+	brasero_scsi_command_free (cdb);
+	return res;
+}
+
+/**
+ * Returns RAW TOC data
+ */
+
+BraseroScsiResult
+brasero_mmc1_read_toc_raw (int fd,
+			   int session_num,
+			   BraseroScsiRawTocData **data,
+			   int *size,
+			   BraseroScsiErrCode *error)
+{
+	BraseroRdTocPmaAtipCDB *cdb;
+	BraseroScsiResult res;
+
+	cdb = brasero_scsi_command_new (&info, fd);
+	cdb->format = BRASERO_RD_TAP_RAW_TOC;
+
+	/* first session for which this function will return information */
+	cdb->track_session_num = session_num;
+
+	res = brasero_read_toc_pma_atip (cdb,
+					 sizeof (BraseroScsiRawTocDesc),
 					(BraseroScsiTocPmaAtipHdr **) data,
 					 size,
 					 error);
@@ -193,7 +224,7 @@ brasero_mmc3_read_cd_text (int fd,
 	cdb->format = BRASERO_RD_TAP_CD_TEXT;
 
 	res = brasero_read_toc_pma_atip (cdb,
-					 sizeof (BraseroScsiTocDesc),
+					 sizeof (BraseroScsiCDTextPackData),
 					(BraseroScsiTocPmaAtipHdr **) data,
 					 size,
 					 error);
@@ -221,6 +252,8 @@ brasero_mmc1_read_atip (int fd,
 	cdb->format = BRASERO_RD_TAP_ATIP;
 	cdb->msf = 1;				/* specs says it's compulsory */
 
+	/* FIXME: sizeof (BraseroScsiTocDesc) is not really good here but that
+	 * avoids the unaligned message */
 	res = brasero_read_toc_pma_atip (cdb,
 					 sizeof (BraseroScsiTocDesc),
 					(BraseroScsiTocPmaAtipHdr **) data,

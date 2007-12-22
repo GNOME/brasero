@@ -264,14 +264,14 @@ typedef struct _BraseroScsiFormattedTocData BraseroScsiFormattedTocData;
 /* multiple toc descriptors may be returned */
 struct _BraseroScsiRawTocData {
 	BraseroScsiTocPmaAtipHdr hdr	[1];
-	BraseroScsiRawTocDesc desc	[1];
+	BraseroScsiRawTocDesc desc	[0];
 };
 typedef struct _BraseroScsiRawTocData BraseroScsiRawTocData;
 
 /* multiple pma descriptors may be returned */
 struct _BraseroScsiPmaData {
 	BraseroScsiTocPmaAtipHdr hdr	[1];
-	BraseroScsiPmaDesc desc		[1];	
+	BraseroScsiPmaDesc desc		[0];	
 };
 typedef struct _BraseroScsiPmaData BraseroScsiPmaData;
 

@@ -1110,12 +1110,36 @@ brasero_medium_get_css_feature (BraseroMedium *self,
  * Functions to get information about disc contents
  */
 
-/**
- * NOTE: for DVD-R multisession we lose 28688 blocks for each session
- * so the capacity is the addition of all session sizes + 28688 for each
- * For all multisession DVD-/+R and CDR-RW the remaining size is given 
- * in the leadout. One exception though with DVD+/-RW.
- */
+static void
+brasero_medium_set_track_type (BraseroMedium *self,
+			       BraseroMediumTrack *track,
+			       guchar control)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (control & BRASERO_SCSI_TRACK_COPY)
+		track->type |= BRASERO_MEDIUM_TRACK_COPY;
+
+	if (!(control & BRASERO_SCSI_TRACK_DATA)) {
+		track->type |= BRASERO_MEDIUM_TRACK_AUDIO;
+		priv->info |= BRASERO_MEDIUM_HAS_AUDIO;
+
+		if (control & BRASERO_SCSI_TRACK_PREEMP)
+			track->type |= BRASERO_MEDIUM_TRACK_PREEMP;
+
+		if (control & BRASERO_SCSI_TRACK_4_CHANNELS)
+			track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
+	}
+	else {
+		track->type |= BRASERO_MEDIUM_TRACK_DATA;
+		priv->info |= BRASERO_MEDIUM_HAS_DATA;
+
+		if (control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
+			track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
+	}
+}
 
 static BraseroBurnResult
 brasero_medium_track_volume_size (BraseroMedium *self,
@@ -1197,6 +1221,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	}
 
 	track->blocks_num = BRASERO_GET_32 (track_info.track_size);
+	track->session = BRASERO_SCSI_SESSION_NUM (track_info);
 
 	/* Now here is a potential bug: we can write tracks (data or not)
 	 * shorter than 300 Kio /2 sec but they will be padded to reach this
@@ -1214,14 +1239,347 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
 
-	BRASERO_BURN_LOG ("Track %i: type = %i start = %llu size = %llu",
+	BRASERO_BURN_LOG ("Track %i (session %i): type = %i start = %llu size = %llu",
 			  track_num,
+			  track->session,
 			  track->type,
 			  track->start,
 			  track->blocks_num);
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * return :
+ *  0 when it's not possible to determine (fallback to formatted toc)
+ * -1 for BCD
+ *  1 for HEX */
+static guint
+brasero_medium_check_BCD_use (BraseroMedium *self,
+			      int fd,
+			      BraseroScsiRawTocDesc *desc,
+			      guint num,
+			      BraseroScsiErrCode *code)
+{
+	guint i;
+	int size;
+	guint leadout = 0;
+	guint track_num = 0;
+	gboolean use_BCD = TRUE;
+	gboolean use_HEX = TRUE;
+	BraseroScsiResult result;
+	BraseroScsiTrackInfo track_info;
+	guint start_BCD, start_LBA, track_start;
+
+	/* first check if all values are valid BCD numbers in the descriptors */
+	for (i = 0; i < num; i++) {
+		if (desc [i].adr == 1 && desc [i].point <= BRASERO_SCSI_Q_SUB_CHANNEL_TRACK_START) {
+			if (!BRASERO_IS_BCD_VALID (desc [i].p_min)
+			||  !BRASERO_IS_BCD_VALID (desc [i].p_sec)
+			||  !BRASERO_IS_BCD_VALID (desc [i].p_frame)) {
+				use_BCD = FALSE;
+				break;
+			}
+		}
+		else if (desc [i].point == BRASERO_SCSI_Q_SUB_CHANNEL_LEADOUT_START) {
+			if (!BRASERO_IS_BCD_VALID (desc [i].p_min)
+			||  !BRASERO_IS_BCD_VALID (desc [i].p_sec)
+			||  !BRASERO_IS_BCD_VALID (desc [i].p_frame)) {
+				use_BCD = FALSE;
+				break;
+			}
+		}
+	}
+
+	/* then check if there are valid Hex values */
+	for (i = 0; i < num; i++) {
+		if (desc [i].adr != 1 || desc [i].point > BRASERO_SCSI_Q_SUB_CHANNEL_TRACK_START)
+			continue;
+
+		if (desc [i].p_min > 99
+		||  desc [i].p_sec > 59
+		||  desc [i].p_frame > 74) {
+			use_HEX = FALSE;
+			break;
+		}
+	}
+
+	if (use_BCD != use_HEX) {
+		if (use_BCD)
+			return -1;
+
+		return 1;
+	}
+
+	/* To check if the drive uses BCD values or HEX values we ask for the 
+	 * track information that contains also the start for the track but in
+	 * HEX values. If values are the same then it works. */
+
+	/* NOTE: there could be another way to do it: get first track, in LBA
+	 * and BCD it must be 150. */
+
+	/* First find the first track and get track start address in BCD */
+	BRASERO_BURN_LOG ("Retrieving track information to determine number format");
+
+	for (i = 0; i < num; i++) {
+		if (desc [i].adr == BRASERO_SCSI_Q_SUB_CHANNEL_LEADIN_MODE5
+		&&  desc [i].point == BRASERO_SCSI_Q_SUB_CHANNEL_MULTI_NEXT_SESSION) {
+			/* store the leadout number just in case */
+			leadout = i;
+			continue;
+		}
+
+		if (desc [i].adr != 1 || desc [i].point > BRASERO_SCSI_Q_SUB_CHANNEL_TRACK_START)
+			continue;
+
+		track_num ++;
+
+		start_BCD = BRASERO_MSF_TO_LBA (BRASERO_GET_BCD (desc [i].p_min),
+						BRASERO_GET_BCD (desc [i].p_sec),
+						BRASERO_GET_BCD (desc [i].p_frame));
+
+		start_LBA = BRASERO_MSF_TO_LBA (desc [i].p_min,
+						desc [i].p_sec,
+						desc [i].p_frame);
+
+		BRASERO_BURN_LOG ("Comparing to track information from READ TRACK INFO for track %i", track_num);
+
+		size = 36;
+		start_LBA -= 150;
+		start_BCD -= 150;
+
+		result = brasero_mmc1_read_track_info (fd,
+						       track_num,
+						       &track_info,
+						       &size,
+						       code);
+
+		if (result != BRASERO_SCSI_OK) {
+			BRASERO_BURN_LOG ("READ TRACK INFO failed");
+			/* Fallback to formatted toc */
+			return 0;
+		}
+
+		track_start = BRASERO_GET_32 (track_info.start_lba);
+		BRASERO_BURN_LOG ("comparing DCB %i and LBA %i to real start address %i",
+				  start_BCD, start_LBA, track_start);
+
+		/* try to find a conclusive match */
+		if (track_start == start_BCD && track_start != start_LBA)
+			return -1;
+
+		if (track_start == start_LBA && track_start != start_BCD)
+			return 1;
+	}
+
+	/* Our last chance, the leadout.
+	 * NOTE: no need to remove 150 sectors here. */
+	start_BCD = BRASERO_MSF_TO_LBA (BRASERO_GET_BCD (desc [leadout].min),
+					BRASERO_GET_BCD (desc [leadout].sec),
+					BRASERO_GET_BCD (desc [leadout].frame));
+
+	start_LBA = BRASERO_MSF_TO_LBA (desc [leadout].min,
+					desc [leadout].sec,
+					desc [leadout].frame);
+
+	BRASERO_BURN_LOG ("Comparing to track information from READ TRACK INFO for leadout");
+
+	size = 36;
+
+	/* leadout number is number of tracks + 1 */
+	result = brasero_mmc1_read_track_info (fd,
+					       track_num + 1,
+					       &track_info,
+					       &size,
+					       code);
+
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("READ TRACK INFO failed for leadout");
+		/* Fallback to formatted toc */
+		return 0;
+	}
+
+	track_start = BRASERO_GET_32 (track_info.start_lba);
+	BRASERO_BURN_LOG ("comparing DCB %i and LBA %i to real start address %i",
+			  start_BCD, start_LBA, track_start);
+
+	/* try to find a conclusive match */
+	if (track_start == start_BCD && track_start != start_LBA)
+		return -1;
+
+	if (track_start == start_LBA && track_start != start_BCD)
+		return 1;
+
+	/* fallback to formatted toc */
+	return 0;
+}
+
+/**
+ * The reason why we use this perhaps more lengthy method is that with
+ * multisession discs, the first track is reported to be two sectors shorter
+ * than it should. As I don't know why and since the following works we use
+ * this one. */
+static BraseroBurnResult
+brasero_medium_get_CD_sessions_info (BraseroMedium *self,
+				     int fd,
+				     BraseroScsiErrCode *code)
+{
+	gint use_bcd;
+	GSList *iter;
+	int num, i, size;
+	gint leadout_start = 0;
+	BraseroScsiResult result;
+	BraseroMediumPrivate *priv;
+	BraseroScsiRawTocDesc *desc;
+	BraseroScsiRawTocData *toc = NULL;
+
+	BRASERO_BURN_LOG ("Reading Raw Toc");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	size = 0;
+	result = brasero_mmc1_read_toc_raw (fd,
+					    0,
+					    &toc,
+					    &size,
+					    code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("READ TOC failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	num = (size - sizeof (BraseroScsiRawTocData)) /
+	       sizeof (BraseroScsiRawTocDesc);
+
+	BRASERO_BURN_LOG ("%i track(s) found", num);
+
+	desc = toc->desc;
+	use_bcd = brasero_medium_check_BCD_use (self, fd, desc, num, code);
+	if (!use_bcd) {
+		g_free (toc);
+
+		BRASERO_BURN_LOG ("Fallback to formatted toc");
+		return BRASERO_BURN_ERR;
+	}
+
+	if (use_bcd > 0)
+		use_bcd = 0;
+
+	if (use_bcd) {
+		BRASERO_BURN_LOG ("Using BCD format");
+	}
+	else {
+		BRASERO_BURN_LOG ("Using HEX format");
+	}
+
+	for (i = 0; i < num; i++, desc ++) {
+		BraseroMediumTrack *track;
+
+		track = NULL;
+		if (desc->adr == 1 && desc->point <= BRASERO_SCSI_Q_SUB_CHANNEL_TRACK_START) {
+			track = g_new0 (BraseroMediumTrack, 1);
+			track->session = desc->session_num;
+
+			brasero_medium_set_track_type (self, track, desc->control);
+			if (use_bcd)
+				track->start = BRASERO_MSF_TO_LBA (BRASERO_GET_BCD (desc->p_min),
+								   BRASERO_GET_BCD (desc->p_sec),
+								   BRASERO_GET_BCD (desc->p_frame));
+			else
+				track->start = BRASERO_MSF_TO_LBA (desc->p_min,
+								   desc->p_sec,
+								   desc->p_frame);
+
+			track->start -= 150;
+
+			/* if there are tracks and the last previously added track is in
+			 * the same session then set the size */
+			if (priv->tracks) {
+				BraseroMediumTrack *last_track;
+
+				last_track = priv->tracks->data;
+				if (last_track->session == track->session)
+					last_track->blocks_num = track->start - last_track->start;
+			}
+
+			priv->tracks = g_slist_prepend (priv->tracks, track);
+		}
+		else if (desc->point == BRASERO_SCSI_Q_SUB_CHANNEL_LEADOUT_START) {
+			/* NOTE: the leadout session is first in the list. So if
+			 * we have tracks in the list set the last session track
+			 * size when we reach a new leadout (and therefore a new
+			 * session). */
+
+			if (priv->tracks) {
+				BraseroMediumTrack *last_track;
+
+				last_track = priv->tracks->data;
+				last_track->blocks_num = leadout_start - last_track->start;
+			}
+
+			if (use_bcd)
+				leadout_start = BRASERO_MSF_TO_LBA (BRASERO_GET_BCD (desc->p_min),
+								    BRASERO_GET_BCD (desc->p_sec),
+								    BRASERO_GET_BCD (desc->p_frame));
+			else
+				leadout_start = BRASERO_MSF_TO_LBA (desc->p_min,
+								    desc->p_sec,
+								    desc->p_frame);
+			leadout_start -= 150;
+		}
+	}
+
+	if (priv->tracks) {
+		BraseroMediumTrack *last_track;
+
+		/* set the last found track size */
+		last_track = priv->tracks->data;
+		last_track->blocks_num = leadout_start - last_track->start;
+	}
+
+	/* Add a leadout */
+	if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
+		BraseroMediumTrack *track;
+
+		/* we shouldn't request info on leadout if the disc is closed */
+		track = g_new0 (BraseroMediumTrack, 1);
+		priv->tracks = g_slist_prepend (priv->tracks, track);
+		track->start = leadout_start;
+		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+
+		brasero_medium_track_get_info (self, track, g_slist_length (priv->tracks), fd, code); 
+	}
+
+	priv->tracks = g_slist_reverse (priv->tracks);
+
+	for (iter = priv->tracks; iter; iter = iter->next) {
+		BraseroMediumTrack *track;
+
+		track = iter->data;
+
+		/* check for tracks less that 300 sectors */
+		if (track->blocks_num <= 300 && track->type != BRASERO_MEDIUM_TRACK_LEADOUT) {
+			BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
+			brasero_medium_track_volume_size (self, track, fd);
+		}
+
+		BRASERO_BURN_LOG ("Track %i: type = %i start = %llu size = %llu",
+				  g_slist_index (priv->tracks, track),
+				  track->type,
+				  track->start,
+				  track->blocks_num);
+	}
+
+	g_free (toc);
+	return BRASERO_BURN_OK;
+}
+
+/**
+ * NOTE: for DVD-R multisession we lose 28688 blocks for each session
+ * so the capacity is the addition of all session sizes + 28688 for each
+ * For all multisession DVD-/+R and CDR-RW the remaining size is given 
+ * in the leadout. One exception though with DVD+/-RW.
+ */
 
 static void
 brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
@@ -1268,7 +1626,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiFormattedTocData *toc = NULL;
 
-	BRASERO_BURN_LOG ("Reading toc");
+	BRASERO_BURN_LOG ("Reading Toc");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc1_read_toc_formatted (fd,
@@ -1323,7 +1681,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 			BraseroBurnResult result;
 
-			/* a special case for these two kinds of media
+			/* a special case for these two kinds of media (DVD+RW)
 			 * which have only one track: the first. */
 			result = brasero_medium_track_volume_size (self, 
 								   track,
@@ -1445,7 +1803,14 @@ brasero_medium_get_contents (BraseroMedium *self,
 		BRASERO_BURN_LOG ("Closed media");
 	}
 
-	result = brasero_medium_get_sessions_info (self, fd, code);
+	if (priv->info & BRASERO_MEDIUM_CD) {
+		result = brasero_medium_get_CD_sessions_info (self, fd, code);
+		if (result != BRASERO_BURN_OK)
+			result = brasero_medium_get_sessions_info (self, fd, code);
+	}
+	else
+		result = brasero_medium_get_sessions_info (self, fd, code);
+
 	if (result != BRASERO_BURN_OK)
 		goto end;
 
