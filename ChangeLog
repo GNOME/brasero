@@ -1,5 +1,19 @@
 2007-12-22  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Another fix for #499591 Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work:
+	See one of the last comments
+
+	* src/burn-plugin.c: (brasero_plugin_get_all_flags),
+	(brasero_plugin_check_record_flags),
+	(brasero_plugin_check_image_flags),
+	(brasero_plugin_get_record_flags),
+	(brasero_plugin_get_image_flags),
+	(brasero_plugin_check_blank_flags),
+	(brasero_plugin_get_blank_flags):
+	* src/burn-plugin.h:
+
+2007-12-22  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #502703 – Data Integrity Check Always Fails AND Burning Speed Slow (except dvd which ignored setting).
 	formatted toc was returning wrong size (2 sec shorter) for multisession disc first tracks
 
