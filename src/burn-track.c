@@ -743,15 +743,28 @@ brasero_track_get_data_grafts_source (BraseroTrack *track)
 }
 
 GSList *
-brasero_track_get_data_excluded_source (BraseroTrack *track)
+brasero_track_get_data_excluded_source (BraseroTrack *track,
+					gboolean copy)
 {
 	BraseroTrackData *data;
+	GSList *retval = NULL;
+	GSList *iter;
 
 	if (track->type.type != BRASERO_TRACK_TYPE_DATA)
 		return NULL;
 
 	data = (BraseroTrackData *) track;
-	return data->excluded;
+	if (!copy)
+		return data->excluded;
+
+	for (iter = data->excluded; iter; iter = iter->next) {
+		gchar *uri;
+
+		uri = iter->data;
+		retval = g_slist_prepend (retval, g_strdup (uri));
+	}
+
+	return retval;
 }
 
 BraseroBurnResult

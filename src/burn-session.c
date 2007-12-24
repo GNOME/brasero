@@ -113,30 +113,22 @@ static GObjectClass *parent_class = NULL;
 static void
 brasero_session_settings_clean (BraseroSessionSetting *settings)
 {
-	if (settings->image) {
+	if (settings->image)
 		g_free (settings->image);
-		settings->image = NULL;
-	}
 
-	if (settings->toc) {
+	if (settings->toc)
 		g_free (settings->toc);
-		settings->toc = NULL;
-	}
 
-	if (settings->tmpdir) {
+	if (settings->tmpdir)
 		g_free (settings->tmpdir);
-		settings->tmpdir = NULL;
-	}
 
-	if (settings->label) {
+	if (settings->label)
 		g_free (settings->label);
-		settings->label = NULL;
-	}
 
-	if (settings->burner) {
+	if (settings->burner)
 		nautilus_burn_drive_unref (settings->burner);
-		settings->burner = NULL;
-	}
+
+	memset (settings, 0, sizeof (BraseroSessionSetting));
 }
 
 void
@@ -271,9 +263,9 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 		brasero_burn_session_start_src_drive_monitoring (self);
 
 		/* if (!brasero_track_type_equal (priv->input, &new_type)) */
-			g_signal_emit (self,
-				       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
-				       0);
+		g_signal_emit (self,
+			       brasero_burn_session_signals [INPUT_CHANGED_SIGNAL],
+			       0);
 
 		return BRASERO_BURN_OK;
 	}
@@ -1619,6 +1611,8 @@ brasero_burn_session_finalize (GObject *object)
 		g_slist_free (priv->wrong_checksums);
 		priv->wrong_checksums = NULL;
 	}
+
+	brasero_session_settings_clean (priv->settings);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

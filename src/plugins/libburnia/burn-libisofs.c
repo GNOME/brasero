@@ -405,13 +405,13 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				 graft->path,
 				 graft->uri);
 
-		size = g_slist_length (brasero_track_get_data_excluded_source (track));
+		size = g_slist_length (brasero_track_get_data_excluded_source (track, FALSE));
 		size += g_slist_length (graft->excluded);
 		excluded_array = g_new0 (gchar *, size + 1);
 		size = 0;
 
 		/* add global exclusions */
-		for (excluded = brasero_track_get_data_excluded_source (track);
+		for (excluded = brasero_track_get_data_excluded_source (track, FALSE);
 		     excluded; excluded = excluded->next) {
 			gchar *uri;
 

@@ -129,6 +129,12 @@ void
 brasero_plugin_blank_caps (BraseroPlugin *plugin,
 			   GSList *caps);
 
+/**
+ * This function is important since not only does it set the flags but it also 
+ * tells brasero which types of media are supported. So even if a plugin doesn't
+ * support any flag, use it to tell brasero which media are supported.
+ * That's only needed if the plugin supports burn/blank operations.
+ */
 void
 brasero_plugin_set_flags (BraseroPlugin *plugin,
 			  BraseroMedia media,

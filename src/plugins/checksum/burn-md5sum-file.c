@@ -263,7 +263,7 @@ brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 
 	/* we fill a hash table with all the files that are excluded globally */
 	excludedH = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	iter = brasero_track_get_data_excluded_source (track);
+	iter = brasero_track_get_data_excluded_source (track, FALSE);
 	for (; iter; iter = iter->next) {
 		gchar *uri;
 		gchar *path;
@@ -661,7 +661,6 @@ brasero_md5sum_file_end (gpointer data)
 		brasero_job_get_current_track (BRASERO_JOB (self), &track);
 		brasero_track_get_type (track, &type);
 		grafts = brasero_track_get_data_grafts_source (track);
-		excluded = brasero_track_get_data_excluded_source (track);
 
 		for (; grafts; grafts = grafts->next) {
 			graft = grafts->data;
@@ -676,9 +675,9 @@ brasero_md5sum_file_end (gpointer data)
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
 		brasero_track_add_data_fs (track, type.subtype.fs_type);
-		brasero_track_set_data_source (track,
-					       new_grafts,
-					       g_slist_copy (excluded));
+
+		excluded = brasero_track_get_data_excluded_source (track, TRUE);
+		brasero_track_set_data_source (track, new_grafts, excluded);
 
 		brasero_track_set_checksum (track,
 					    BRASERO_CHECKSUM_MD5_FILE,

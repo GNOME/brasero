@@ -86,7 +86,7 @@ brasero_genisoimage_read_stdout (BraseroProcess *process, const gchar *line)
 static BraseroBurnResult
 brasero_genisoimage_read_stderr (BraseroProcess *process, const gchar *line)
 {
-	gchar fraction_str [7];
+	gchar fraction_str [7] = { 0, };
 	BraseroGenisoimage *genisoimage;
 	BraseroGenisoimagePrivate *priv;
 
@@ -473,6 +473,7 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 	}
 	g_free (prog_name);
 
+	/* NOTE: we don't include DVDRW+ DVDRW- restricted in here */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CDR|
 				  BRASERO_MEDIUM_CDRW|

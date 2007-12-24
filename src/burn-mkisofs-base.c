@@ -174,7 +174,8 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	 * - it could be a non local whose graft point couldn't be downloaded */
 	if (localpath)
 		result = _write_line (base->excluded_fd, localpath, error);
-	
+
+	g_free (localpath);
 	return result;
 }
 

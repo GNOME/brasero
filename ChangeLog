@@ -1,3 +1,30 @@
+2007-12-24  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix 2 memleaks
+	Fix one potential crash
+	Fix one problem with flags preventing multisession CDRW
+
+	* src/brasero-ncb.c: (NCB_VOLUME_GET_MOUNT_POINT):
+	* src/burn-mkisofs-base.c: (brasero_mkisofs_base_write_excluded):
+	* src/burn-plugin.c: (brasero_plugin_check_image_flags):
+	* src/burn-plugin.h:
+	* src/burn-session.c: (brasero_session_settings_clean),
+	(brasero_burn_session_finalize):
+	* src/burn-track.c: (brasero_track_get_data_excluded_source):
+	* src/burn-track.h:
+	* src/plugins/cdrkit/burn-genisoimage.c:
+	(brasero_genisoimage_read_stderr),
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	(brasero_mkisofs_read_stderr), (brasero_mkisofs_export_caps):
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_grafts), (brasero_md5sum_file_end):
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_end):
+	* src/plugins/libburnia/burn-libisofs.c:
+	(brasero_libisofs_create_volume_thread):
+	* src/plugins/local-track/burn-local-image.c:
+	(brasero_local_track_finished):
+
 2007-12-22  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Another fix for #499591 Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work:

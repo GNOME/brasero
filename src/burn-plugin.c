@@ -568,6 +568,12 @@ brasero_plugin_check_image_flags (BraseroPlugin *self,
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 	current &= BRASERO_PLUGIN_IMAGE_FLAG_MASK;
 
+	/* If there is no flag that's no use checking anything. If there is no
+	 * flag we don't care about the media and therefore it's always possible
+	 * NOTE: that's no the case for other operation like burn/blank. */
+	if (current == BRASERO_BURN_FLAG_NONE)
+		return TRUE;
+
 	return brasero_plugin_get_all_flags (priv->flags,
 					     TRUE,
 					     media,

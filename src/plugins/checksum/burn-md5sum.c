@@ -449,7 +449,6 @@ brasero_md5sum_end (gpointer data)
 		brasero_job_get_current_track (BRASERO_JOB (self), &track);
 		brasero_track_get_type (track, &type);
 		grafts = brasero_track_get_data_grafts_source (track);
-		excluded = brasero_track_get_data_excluded_source (track);
 
 		for (; grafts; grafts = grafts->next) {
 			graft = grafts->data;
@@ -464,15 +463,16 @@ brasero_md5sum_end (gpointer data)
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
 		brasero_track_add_data_fs (track, type.subtype.fs_type);
-		brasero_track_set_data_source (track,
-					       new_grafts,
-					       g_slist_copy (excluded));
+
+		excluded = brasero_track_get_data_excluded_source (track, TRUE);
+		brasero_track_set_data_source (track, new_grafts, excluded);
 
 		brasero_track_set_checksum (track,
 					    BRASERO_CHECKSUM_MD5_FILE,
 					    graft->uri);
 
 		brasero_job_add_track (BRASERO_JOB (self), track);
+
 		/* It's good practice to unref the track afterwards as we don't 
 		 * need it anymore. BraseroTaskCtx refs it. */
 		brasero_track_unref (track);

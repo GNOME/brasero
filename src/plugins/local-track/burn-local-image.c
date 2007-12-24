@@ -272,7 +272,7 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 		}
 
 		/* translate the globally excluded */
-		unreadable = brasero_track_get_data_excluded_source (track);
+		unreadable = brasero_track_get_data_excluded_source (track, FALSE);
 		for (; unreadable; unreadable = unreadable->next)
 			unreadable->data = brasero_local_track_translate_uri (self, unreadable->data);
 	}

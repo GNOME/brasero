@@ -224,7 +224,8 @@ brasero_track_get_drive_track (BraseroTrack *track);
 GSList *
 brasero_track_get_data_grafts_source (BraseroTrack *track);
 GSList *
-brasero_track_get_data_excluded_source (BraseroTrack *track);
+brasero_track_get_data_excluded_source (BraseroTrack *track,
+					gboolean copy);
 
 BraseroBurnResult
 brasero_track_get_data_paths (BraseroTrack *track,

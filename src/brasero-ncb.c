@@ -415,7 +415,6 @@ NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 		if (mount_point)
 			break;
 	}
-	gnome_vfs_drive_volume_list_free (volumes);
 
 	if (!mount_point || strncmp (mount_point, "file://", 7)) {
 		/* mount point won't be usable */
@@ -430,9 +429,17 @@ NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 			     _("the disc mount point could not be retrieved."));
 	}
 	else {
+		gchar *tmp;
+
 		local_path = gnome_vfs_get_local_path_from_uri (mount_point);
+		tmp = local_path;
+		local_path = g_strdup (local_path);
+		g_free (tmp);
+		
 		g_free (mount_point);
 	}
+
+	gnome_vfs_drive_volume_list_free (volumes);
 
 	return local_path;
 }
