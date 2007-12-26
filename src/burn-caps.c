@@ -1717,8 +1717,8 @@ brasero_caps_try_output (BraseroBurnFlag session_flags,
 		return FALSE;
 	}
 
-	if (caps->type.type == BRASERO_TRACK_TYPE_DISC)
-		media = caps->type.subtype.media;
+	if (output->type == BRASERO_TRACK_TYPE_DISC)
+		media = output->subtype.media;
 	else
 		media = BRASERO_MEDIUM_FILE;
 
@@ -1971,9 +1971,10 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
 			continue;
 
+		/* Put BRASERO_MEDIUM_NONE so we can always succeed */
 		result = brasero_caps_find_link (caps,
 						 session_flags,
-						 caps->type.subtype.media,
+						 BRASERO_MEDIUM_NONE,
 						 &input,
 						 io_flags);
 
@@ -2031,7 +2032,7 @@ brasero_caps_get_flags (BraseroCaps *caps,
 			BraseroBurnFlag tmp;
 
 			brasero_caps_link_get_record_flags (link,
-							    caps->type.subtype.media,
+							    media,
 							    session_flags,
 							    &rec_supported,
 							    &rec_compulsory);
@@ -3052,49 +3053,7 @@ brasero_caps_disc_new (BraseroMedia media)
 			goto end;
 		}
 
-		if (common_subtype) {
-			if (BRASERO_MEDIUM_SUBTYPE (caps_media) != common_subtype) {
-				/* common_subtype == media_subtype &&
-				 * common_subtype != caps_subtype
-				 * so caps_subtype encompasses media_subtype: 
-				 * split and keep the part we are interested in
-				 */
-				caps->type.subtype.media &= ~common_subtype;
-
-				/* The order of the caps may have changed now */
-				self->priv->caps_list = g_slist_sort (self->priv->caps_list,
-								      brasero_burn_caps_sort);
-
-				caps = brasero_caps_copy_deep (caps);
-				caps->type.subtype.media &= ~BRASERO_MEDIUM_SUBTYPE (caps_media);
-				caps->type.subtype.media |= common_subtype;
-
-				self->priv->caps_list = g_slist_insert_sorted (self->priv->caps_list,
-									       caps,
-									       brasero_burn_caps_sort);
-
-				media_less = common_subtype;
-			}
-			else if (BRASERO_MEDIUM_SUBTYPE (media) != common_subtype) {
-				BraseroMedia first_half, second_half;
-
-				/* common_subtype != media_subtype &&
-				 * common_subtype == caps_subtype
-				 * so caps_subtype encompasses media_subtype.
-				 * split the media in two and call ourselves for
-				 * each */
-				first_half = (media|common_type) & (~common_subtype);
-
-				retval = g_slist_concat (retval, brasero_caps_disc_new (first_half));
-
-				second_half = (media|common_type) & (~BRASERO_MEDIUM_SUBTYPE (media));
-				second_half |= common_subtype;
-
-				retval = g_slist_concat (retval, brasero_caps_disc_new (second_half));
-				goto end;
-			}
-		}
-
+		common_attr = BRASERO_MEDIUM_ATTR (caps->type.subtype.media & media);
 		if (BRASERO_MEDIUM_ATTR (caps_media) != common_attr) {
 			BraseroCaps *new_caps;
 
@@ -3106,15 +3065,27 @@ brasero_caps_disc_new (BraseroMedia media)
 			new_caps->type.subtype.media &= ~BRASERO_MEDIUM_ATTR (caps_media);
 			new_caps->type.subtype.media |= common_attr;
 
+			if (!(caps->type.subtype.media & BRASERO_MEDIUM_REWRITABLE))
+				caps->type.subtype.media &= ~BRASERO_MEDIUM_RESTRICTED;
+
 			if (!(caps->type.subtype.media & BRASERO_MEDIUM_WRITABLE)
 			&&  !(caps->type.subtype.media & BRASERO_MEDIUM_REWRITABLE)
 			&&   (caps->type.subtype.media & BRASERO_MEDIUM_ROM))
-				caps->type.subtype.media &= ~(BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
+				caps->type.subtype.media &= ~(BRASERO_MEDIUM_APPENDABLE|
+							      BRASERO_MEDIUM_SEQUENTIAL|
+							      BRASERO_MEDIUM_BLANK|
+							      BRASERO_MEDIUM_PLUS);
+
+			if (!(new_caps->type.subtype.media & BRASERO_MEDIUM_REWRITABLE))
+				new_caps->type.subtype.media &= ~BRASERO_MEDIUM_RESTRICTED;
 
 			if (!(new_caps->type.subtype.media & BRASERO_MEDIUM_WRITABLE)
 			&&  !(new_caps->type.subtype.media & BRASERO_MEDIUM_REWRITABLE)
 			&&   (new_caps->type.subtype.media & BRASERO_MEDIUM_ROM))
-				new_caps->type.subtype.media &= ~(BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
+				new_caps->type.subtype.media &= ~(BRASERO_MEDIUM_SEQUENTIAL|
+								  BRASERO_MEDIUM_APPENDABLE|
+								  BRASERO_MEDIUM_BLANK|
+								  BRASERO_MEDIUM_PLUS);
 
 			/* The order of the caps may have changed now */
 			self->priv->caps_list = g_slist_sort (self->priv->caps_list,
@@ -3129,7 +3100,13 @@ brasero_caps_disc_new (BraseroMedia media)
 			if (!(media & BRASERO_MEDIUM_WRITABLE)
 			&&  !(media & BRASERO_MEDIUM_REWRITABLE)
 			&&   (media & BRASERO_MEDIUM_ROM))
-				media_less |= (BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
+				media_less |= (BRASERO_MEDIUM_SEQUENTIAL|
+					       BRASERO_MEDIUM_APPENDABLE|
+					       BRASERO_MEDIUM_BLANK|
+					       BRASERO_MEDIUM_PLUS);
+
+			if (!(media & BRASERO_MEDIUM_REWRITABLE))
+				media_less |= BRASERO_MEDIUM_RESTRICTED;
 		}
 		else if (BRASERO_MEDIUM_ATTR (media) != common_attr) {
 			BraseroMedia first_half, second_half;
@@ -3141,7 +3118,13 @@ brasero_caps_disc_new (BraseroMedia media)
 			if (!(first_half & BRASERO_MEDIUM_WRITABLE)
 			&&  !(first_half & BRASERO_MEDIUM_REWRITABLE)
 			&&   (first_half & BRASERO_MEDIUM_ROM))
-				first_half &= ~(BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
+				first_half &= ~(BRASERO_MEDIUM_SEQUENTIAL|
+						BRASERO_MEDIUM_APPENDABLE|
+						BRASERO_MEDIUM_BLANK|
+						BRASERO_MEDIUM_PLUS);
+
+			if (!(first_half & BRASERO_MEDIUM_REWRITABLE))
+				first_half &= ~BRASERO_MEDIUM_RESTRICTED;
 
 			retval = g_slist_concat (retval, brasero_caps_disc_new (first_half));
 
@@ -3151,12 +3134,91 @@ brasero_caps_disc_new (BraseroMedia media)
 			if (!(second_half & BRASERO_MEDIUM_WRITABLE)
 			&&  !(second_half & BRASERO_MEDIUM_REWRITABLE)
 			&&   (second_half & BRASERO_MEDIUM_ROM))
-				second_half &= ~(BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_BLANK);
+				second_half &= ~(BRASERO_MEDIUM_SEQUENTIAL|
+						 BRASERO_MEDIUM_APPENDABLE|
+						 BRASERO_MEDIUM_BLANK|
+						 BRASERO_MEDIUM_PLUS);
+
+			if (!(second_half & BRASERO_MEDIUM_REWRITABLE))
+				second_half &= ~BRASERO_MEDIUM_RESTRICTED;
 
 			retval = g_slist_concat (retval, brasero_caps_disc_new (second_half));
 			goto end;
 		}
 
+		if (common_type & BRASERO_MEDIUM_DVD) {
+			common_subtype = BRASERO_MEDIUM_SUBTYPE (caps->type.subtype.media & media);
+			if (BRASERO_MEDIUM_SUBTYPE (caps_media) != common_subtype) {
+				BraseroCaps *new_caps;
+	
+				/* common_subtype == media_subtype &&
+				 * common_subtype != caps_subtype
+				 * so caps_subtype encompasses media_subtype: 
+				 * split and keep the part we are interested in
+				 */
+				caps->type.subtype.media &= ~common_subtype;
+
+				new_caps = brasero_caps_copy_deep (caps);
+				new_caps->type.subtype.media &= ~BRASERO_MEDIUM_SUBTYPE (caps_media);
+				new_caps->type.subtype.media |= common_subtype;
+
+				if (!(caps->type.subtype.media & BRASERO_MEDIUM_PLUS)
+				&&  !(caps->type.subtype.media & BRASERO_MEDIUM_SEQUENTIAL)
+				&&   (caps->type.subtype.media & BRASERO_MEDIUM_RESTRICTED))
+					caps->type.subtype.media &= ~(BRASERO_MEDIUM_WRITABLE);
+
+				if (!(new_caps->type.subtype.media & BRASERO_MEDIUM_PLUS)
+				&&  !(new_caps->type.subtype.media & BRASERO_MEDIUM_SEQUENTIAL)
+				&&   (new_caps->type.subtype.media & BRASERO_MEDIUM_RESTRICTED))
+					new_caps->type.subtype.media &= ~(BRASERO_MEDIUM_WRITABLE);
+
+				/* The order of the caps may have changed now */
+				self->priv->caps_list = g_slist_sort (self->priv->caps_list,
+								      brasero_burn_caps_sort);
+
+				self->priv->caps_list = g_slist_insert_sorted (self->priv->caps_list,
+									       new_caps,
+									       brasero_burn_caps_sort);
+
+				caps = new_caps;
+				media_less = common_subtype;
+
+				if (!(media & BRASERO_MEDIUM_PLUS)
+				&&  !(media & BRASERO_MEDIUM_SEQUENTIAL)
+				&&   (media & BRASERO_MEDIUM_RESTRICTED))
+					media_less |= (BRASERO_MEDIUM_WRITABLE);
+			}
+			else if (BRASERO_MEDIUM_SUBTYPE (media) != common_subtype) {
+				BraseroMedia first_half, second_half;
+
+				/* common_subtype != media_subtype &&
+				 * common_subtype == caps_subtype
+				 * so caps_subtype encompasses media_subtype.
+				 * split the media in two and call ourselves for
+				 * each */
+				first_half = (media|common_type) & (~common_subtype);
+
+				if (!(first_half & BRASERO_MEDIUM_PLUS)
+				&&  !(first_half & BRASERO_MEDIUM_SEQUENTIAL)
+				&&   (first_half & BRASERO_MEDIUM_RESTRICTED))
+					first_half &= ~(BRASERO_MEDIUM_WRITABLE);
+
+				retval = g_slist_concat (retval, brasero_caps_disc_new (first_half));
+
+				second_half = (media|common_type) & (~BRASERO_MEDIUM_SUBTYPE (media));
+				second_half |= common_subtype;
+
+				if (!(second_half & BRASERO_MEDIUM_PLUS)
+				&&  !(second_half & BRASERO_MEDIUM_SEQUENTIAL)
+				&&   (second_half & BRASERO_MEDIUM_RESTRICTED))
+					second_half &= ~(BRASERO_MEDIUM_WRITABLE);
+
+				retval = g_slist_concat (retval, brasero_caps_disc_new (second_half));
+				goto end;
+			}
+		}
+
+		common_status = BRASERO_MEDIUM_STATUS (caps->type.subtype.media & media);
 		if (BRASERO_MEDIUM_STATUS (caps_media) != common_status) {
 			BraseroCaps *new_caps;
 

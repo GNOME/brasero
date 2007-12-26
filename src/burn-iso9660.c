@@ -584,7 +584,7 @@ brasero_iso9660_get_contents (FILE *file,
 
 	address = brasero_iso9660_get_733_val (root->address);
 
-	BRASERO_BURN_LOG ("Reading root directory record at %lli", address);
+	BRASERO_BURN_LOG ("Reading root directory record at %i", address);
 	volfile = brasero_iso9660_read_directory_records (&ctx, address);
 
 	if (ctx.spare_record)

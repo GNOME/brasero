@@ -651,6 +651,14 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_SEQUENTIAL|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_BLANK);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+
 	/* and images to DVD RW +/-(restricted) whatever the status */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_PLUS|

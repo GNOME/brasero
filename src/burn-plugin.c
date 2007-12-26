@@ -507,7 +507,7 @@ brasero_plugin_get_all_flags (GSList *flags_list,
 
 	/* Find all sets of flags that support the current flags */
 	found = FALSE;
-	for (iter = flags ? flags->pairs:NULL; iter; iter = iter->next) {
+	for (iter = flags->pairs; iter; iter = iter->next) {
 		BraseroBurnFlag compulsory_masked;
 
 		if ((current & iter->supported) != current)

@@ -316,6 +316,84 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 		       0);
 }
 
+#if 0
+
+/**
+ * This function is only for debugging purpose. It allows to load plugins in a
+ * particular order which is useful since sometimes it triggers some new bugs.
+ */
+
+static void
+brasero_plugin_manager_init (BraseroPluginManager *self)
+{
+	guint i = 0;
+	const gchar *name [] = {"libbrasero-dvdrwformat.so",
+				"libbrasero-growisofs.so",
+				"libbrasero-readom.so",
+				NULL};
+	BraseroPluginManagerPrivate *priv;
+
+	priv = BRASERO_PLUGIN_MANAGER_PRIVATE (self);
+
+	/* open the plugin directory */
+	BRASERO_BURN_LOG ("opening plugin directory %s", BRASERO_PLUGIN_DIRECTORY);
+
+	/* load all plugins from directory */
+	for (i = 0; name [i] != NULL; i++) {
+		BraseroPluginRegisterType function;
+		BraseroPlugin *plugin;
+		GModule *handle;
+		gchar *path;
+
+		/* the name must end with *.so */
+		if (!g_str_has_suffix (name [i], G_MODULE_SUFFIX))
+			continue;
+
+		path = g_module_build_path (BRASERO_PLUGIN_DIRECTORY, name [i]);
+		BRASERO_BURN_LOG ("loading %s", path);
+
+		handle = g_module_open (path, 0);
+		if (!handle) {
+			g_free (path);
+			BRASERO_BURN_LOG ("Module can't be loaded: g_module_open failed");
+			continue;
+		}
+
+		if (!g_module_symbol (handle, "brasero_plugin_register", (gpointer) &function)) {
+			g_free (path);
+			g_module_close (handle);
+			BRASERO_BURN_LOG ("Module can't be loaded: no register function");
+			continue;
+		}
+
+		/* now we can create the plugin */
+		plugin = brasero_plugin_new (path);
+		g_module_close (handle);
+		g_free (path);
+
+		if (!plugin) {
+			BRASERO_BURN_LOG ("Load failure");
+			continue;
+		}
+
+		g_signal_connect (plugin,
+				  "activated",
+				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
+				  self);
+
+		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
+			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",
+					  brasero_plugin_get_error (plugin));
+		}
+
+		priv->plugins = g_slist_prepend (priv->plugins, plugin);
+	}
+
+	brasero_plugin_manager_set_plugins_state (self);
+}
+
+#endif
+
 static void
 brasero_plugin_manager_init (BraseroPluginManager *self)
 {
@@ -347,8 +425,6 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 		/* the name must end with *.so */
 		if (!g_str_has_suffix (name, G_MODULE_SUFFIX))
 			continue;
-
-		BRASERO_BURN_LOG ("found %s", name);
 
 		path = g_module_build_path (BRASERO_PLUGIN_DIRECTORY, name);
 		BRASERO_BURN_LOG ("loading %s", path);

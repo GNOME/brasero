@@ -1,3 +1,17 @@
+2007-12-26  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #499591 – Thanks for fixing some important bugs in 0.6.1, but it still needs a lot of work!
+	See last comment (#31)
+
+	* src/burn-caps.c: (brasero_caps_try_output),
+	(brasero_burn_caps_get_required_media_type),
+	(brasero_caps_get_flags), (brasero_caps_disc_new):
+	* src/burn-iso9660.c: (brasero_iso9660_get_contents):
+	* src/burn-plugin-manager.c: (brasero_plugin_manager_init):
+	* src/burn-plugin.c: (brasero_plugin_get_all_flags):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_export_caps):
+
 2007-12-24  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix 2 memleaks
