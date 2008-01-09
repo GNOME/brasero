@@ -258,10 +258,10 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 			     NULL);
 
 	gtk_show_about_dialog (GTK_WINDOW (app->mainwin),
-			       "name", "Brasero",
+			       "program-name", "Brasero",
 			       "comments", comments,
 			       "version", VERSION,
-			       "copyright", "Copyright © 2005-2007 Philippe Rouquier",
+			       "copyright", "Copyright © 2005-2008 Philippe Rouquier",
 			       "authors", authors,
 			       "documenters", documenters,
 			       "website", "http://www.gnome.org/projects/brasero",
