@@ -20,7 +20,7 @@ INCLUDES = \
 	$(BRASERO_BASE_CFLAGS)				\
 	$(BRASERO_GSTREAMER_CFLAGS)
 
-AM_CFLAGS = -Wall -g
+AM_CFLAGS = -g
 
 plugin_LTLIBRARIES = libbrasero-transcode.la
 

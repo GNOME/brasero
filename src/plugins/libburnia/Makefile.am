@@ -20,7 +20,7 @@ INCLUDES = \
 	$(BRASERO_LIBBURN_CFLAGS)			\
 	$(BRASERO_BASE_CFLAGS)
 
-AM_CFLAGS = -Wall -g
+AM_CFLAGS = -g
 
 #libburn
 libburndir = $(libdir)/brasero/plugins

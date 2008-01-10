@@ -19,7 +19,7 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_BASE_CFLAGS)
 
-AM_CFLAGS = -Wall -g
+AM_CFLAGS = -g
 
 md5sumdir = $(libdir)/brasero/plugins
 md5sum_LTLIBRARIES = libbrasero-md5sum.la
