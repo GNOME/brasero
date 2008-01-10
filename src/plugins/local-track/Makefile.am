@@ -21,7 +21,7 @@ INCLUDES = \
 	$(BRASERO_BASE_CFLAGS) 			\
 	$(BRASERO_GNOMEVFS_CFLAGS)
 
-AM_CFLAGS = -Wall -g
+AM_CFLAGS = -g
 
 #local-track
 plugin_LTLIBRARIES = libbrasero-local-track.la

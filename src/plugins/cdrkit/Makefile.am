@@ -18,7 +18,7 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_BASE_CFLAGS)
 
-AM_CFLAGS = -Wall -g
+AM_CFLAGS = -g
 
 #wodim
 wodimdir = $(libdir)/brasero/plugins

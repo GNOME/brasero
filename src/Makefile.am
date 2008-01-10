@@ -21,7 +21,7 @@ INCLUDES = \
 
 CLEANFILES = $(RECMARSHALFILES)
 
-AM_CFLAGS = -Wall -g
+AM_CFLAGS = -g
 
 EXTRA_DIST = cd-content-marshal.list
 

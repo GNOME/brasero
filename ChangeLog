@@ -1,3 +1,20 @@
+2008-01-10  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	        * src/Makefile.am:
+	        * src/plugins/cdrdao/Makefile.am:
+	        * src/plugins/cdrkit/Makefile.am:
+	        * src/plugins/cdrtools/Makefile.am:
+	        * src/plugins/checksum/Makefile.am:
+	        * src/plugins/dvdcss/Makefile.am:
+	        * src/plugins/growisofs/Makefile.am:
+	        * src/plugins/libburnia/Makefile.am:
+	        * src/plugins/local-track/Makefile.am:
+	        * src/plugins/transcode/Makefile.am:
+
+	        Remove -Wall from Makefiles to fix build in Solaris.
+	        Thanks to Brian Cameron <brian.cameron@sun.com> for the
+	        patch.
+
 2008-01-09  Luis Medinas  <lmedinas@svn.gnome.org>
         
         * src/main.c: (on_about_cb):
