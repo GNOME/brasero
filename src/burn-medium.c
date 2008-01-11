@@ -74,9 +74,9 @@ const gchar *types [] = {	N_("file"),
 				N_("DVD+RW dual layer"),
 				N_("DVD-R dual layer"),
 				N_("DVD-RAM"),
-				N_("blue ray disc"),
-				N_("writable blue ray disc"),
-				N_("rewritable blue ray disc"),
+				N_("Blu-ray disc"),
+				N_("Writable Blu-ray disc"),
+				N_("Rewritable Blu-ray disc"),
 				NULL };
 
 
