@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.brasero_0_7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-30 01:04+0000\n"
-"PO-Revision-Date: 2008-01-01 22:34+0100\n"
+"POT-Creation-Date: 2008-01-11 01:01+0000\n"
+"PO-Revision-Date: 2008-01-12 21:32+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <<gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -182,8 +182,8 @@ msgid ""
 "This key sets where the project pane should be (0 = on the right, 1 = on the "
 "left, 2 = at the top, 3 = at the bottom)"
 msgstr ""
-"Esta clave establece dónde debe estar el panel del proyecto (0 = a la derecha, 1 = a la "
-"izquierda, 2 = arriba, 3 = abajo)"
+"Esta clave establece dónde debe estar el panel del proyecto (0 = a la "
+"derecha, 1 = a la izquierda, 2 = arriba, 3 = abajo)"
 
 #: ../data/brasero.schemas.in.h:27
 msgid "Used in conjunction with -immed flag with cdrecord"
@@ -192,8 +192,8 @@ msgstr "Usado junto a la bandera -immed con cdrecord"
 #: ../data/brasero.schemas.in.h:28
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
-"Si se mostrará la vista previa de archivos. Establezca esta opción a "
-"true para usarlo."
+"Si se mostrará la vista previa de archivos. Establezca esta opción a true "
+"para usarlo."
 
 #: ../data/brasero.schemas.in.h:29
 msgid ""
@@ -237,8 +237,8 @@ msgid ""
 "If you choose to keep it programs may not be able to recognize the file type "
 "properly."
 msgstr ""
-"Si elije mantenerla puede que los programas no sean capaces de reconocer el tipo de archivo "
-"correctamente."
+"Si elije mantenerla puede que los programas no sean capaces de reconocer el "
+"tipo de archivo correctamente."
 
 #: ../src/brasero-dest-selection.c:1295
 msgid "Configure some options for the recording"
@@ -1893,8 +1893,8 @@ msgid ""
 msgstr ""
 "<b><i>La unidad de origen también se usará para grabar.</i></b>\n"
 "\n"
-"<i>Se necesitará un medio grabable una vez que se "
-"haya copiado el disco actualmente cargado</i>"
+"<i>Se necesitará un medio grabable una vez que se haya copiado el disco "
+"actualmente cargado</i>"
 
 #: ../src/brasero-drive-info.c:363
 msgid "<b>Type:</b>"
@@ -2145,7 +2145,9 @@ msgid ""
 "about <span size=\"smaller\"><i>%s</i></span>"
 msgstr ""
 "                      Cargando información</span>\n"
-"sobre <span size=\"smaller\"><i>%s</i></span>                                                       <span weight=\"bold\">"
+"sobre <span size=\"smaller\"><i>%s</i></"
+"span>                                                       <span weight="
+"\"bold\">"
 
 #: ../src/brasero-project.c:173 ../src/brasero-project.c:2394
 msgid "Save current project"
@@ -2319,9 +2321,9 @@ msgid ""
 "discarded. Note that files will not be deleted from their own location, just "
 "no longer listed here."
 msgstr ""
-"Si elije crear un proyecto nuevo se descartarán todos los archivos ya añadidos. "
-"Note que los archivos no se borrarán de sus ubicaciones, simplemente no se "
-"listarán aquí."
+"Si elije crear un proyecto nuevo se descartarán todos los archivos ya "
+"añadidos. Note que los archivos no se borrarán de sus ubicaciones, "
+"simplemente no se listarán aquí."
 
 #: ../src/brasero-project.c:1158
 msgid "_Discard Project"
@@ -2341,9 +2343,9 @@ msgid ""
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
 msgstr ""
-"Vaciar un proyecto eliminará todos los archivos ya añadidos. Se perderá todo el "
-"trabajo. Note que los archivos no se borrarán de sus ubicaciones, simplemente no "
-"se listarán aquí."
+"Vaciar un proyecto eliminará todos los archivos ya añadidos. Se perderá todo "
+"el trabajo. Note que los archivos no se borrarán de sus ubicaciones, "
+"simplemente no se listarán aquí."
 
 #: ../src/brasero-project.c:1466 ../src/brasero-project-manager.c:112
 msgid "_Empty Project"
@@ -2674,7 +2676,10 @@ msgstr "No hay proyectos recientes"
 
 #: ../src/brasero-project-type-chooser.c:361
 msgid "<span size='x-large'><b>Create a new project:</b></span>"
-msgstr "                     <b>Crear un proyecto nuevo:</b></span>                                                             <span size='x-large'>"
+msgstr ""
+"                     <b>Crear un proyecto nuevo:</b></"
+"span>                                                             <span "
+"size='x-large'>"
 
 #: ../src/brasero-project-type-chooser.c:367
 msgid ""
@@ -3124,16 +3129,16 @@ msgid "DVD-RAM"
 msgstr "DVD-RAM"
 
 #: ../src/burn-medium.c:77
-msgid "blue ray disc"
-msgstr "Disco blue ray"
+msgid "Blu-ray disc"
+msgstr "Disco Blu-ray"
 
 #: ../src/burn-medium.c:78
-msgid "writable blue ray disc"
-msgstr "Disco blue ray escribible "
+msgid "Writable Blu-ray disc"
+msgstr "Disco Blu-ray escribible"
 
 #: ../src/burn-medium.c:79
-msgid "rewritable blue ray disc"
-msgstr "Disco blue ray reescribible"
+msgid "Rewritable Blu-ray disc"
+msgstr "Disco Blu-ray reescribible"
 
 #: ../src/burn-mkisofs-base.c:127 ../src/burn-mkisofs-base.c:420
 msgid "the file is not stored locally"
@@ -3565,7 +3570,9 @@ msgstr "activar la bandera -immed (consultar el manual de wodim)"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:1113
 msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
-msgstr "mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de wodim)."
+msgstr ""
+"mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de "
+"wodim)."
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1031
 msgid "use cdrecord to burn CDs"
@@ -3581,7 +3588,9 @@ msgstr "activar la bandera -immed (consultar el manual de cdrecord)"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1114
 msgid "minimum drive buffer fill ratio (in %)(see cdrecord manual):"
-msgstr "mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de cdrecord):"
+msgstr ""
+"mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de "
+"cdrecord):"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:132
 msgid "this version of mkisofs doesn't seem to be supported"
