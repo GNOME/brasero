@@ -1,3 +1,11 @@
+2008-01-15  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_init):
+
+	Added a workaround to use genisoimage if it's available
+	if not will use mkisofs.
+
 2008-01-11  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/burn-medium.c:
