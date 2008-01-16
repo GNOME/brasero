@@ -76,8 +76,9 @@
 #include "eggtreemultidnd.h"
 
 #ifdef BUILD_INOTIFY
-#include "inotify.h"
-#include "inotify-syscalls.h"
+
+#include "sys/inotify.h"
+
 #endif
 
 static void brasero_audio_disc_class_init (BraseroAudioDiscClass *klass);
@@ -3237,7 +3238,7 @@ brasero_audio_disc_start_monitoring (BraseroAudioDisc *disc,
 		gchar *parent;
 		int dev_fd;
 		char *path;
-		__u32 mask;
+		uint32_t mask;
 		int wd;
 
 		/* we want to be able to catch files being renamed in the same

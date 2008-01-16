@@ -1,3 +1,15 @@
+2008-01-16  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/Makefile.am:
+	* src/brasero-audio-disc.c: (brasero_audio_disc_start_monitoring):
+	* src/brasero-data-disc.c:
+	(brasero_data_disc_start_monitoring_real):
+	* src/inotify-syscalls.h:
+	* src/inotify.h:
+
+	Use linux kernel inotify instead of using our own old.
+	Fixes bgo #510022.
+
 2008-01-15  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/plugins/growisofs/burn-growisofs.c:

@@ -58,10 +58,8 @@ brasero_SOURCES = \
 	brasero-disc-copy-dialog.h         \
 	brasero-blank-dialog.c         \
 	brasero-blank-dialog.h         \
-	inotify.h         \
 	brasero-metadata.c         \
 	brasero-metadata.h         \
-	inotify-syscalls.h         \
 	brasero-filtered-window.c         \
 	brasero-filtered-window.h         \
 	brasero-disc.c         \
