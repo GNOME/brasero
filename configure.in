@@ -4,7 +4,7 @@ AC_CONFIG_SRCDIR(src/main.c)
 
 BRASERO_MAJOR_VERSION=0
 BRASERO_MINOR_VERSION=7
-BRASERO_SUB=0
+BRASERO_SUB=1
 BRASERO_VERSION=$BRASERO_MAJOR_VERSION.$BRASERO_MINOR_VERSION.$BRASERO_SUB
 
 AC_SUBST(BRASERO_MAJOR_VERSION)
@@ -106,7 +106,7 @@ LIBBURN_REQUIRED=0.4.0
 LIBISOFS_REQUIRED=0.2.8
 
 AC_ARG_ENABLE(libburnia,
-			[  --build-libburnia		Build libburnia plugins [[default = yes]]],,
+			[  --enable-libburnia		Build libburnia plugins [[default = yes]]],,
 			[enable_libburnia="yes"])
 
 if test x"$enable_libburnia" = "xyes"; then
@@ -127,21 +127,25 @@ AM_CONDITIONAL(BUILD_LIBBURNIA, test x"$build_libburnia" = "xyes")
 
 dnl **************** check for cdrtools **********************
 AC_ARG_ENABLE(cdrtools,
-			[  --build-cdrtools		Build cdrtools plugins [[default = yes]]],,
+			[  --enable-cdrtools		Build cdrtools plugins [[default = yes]]],,
 			[build_cdrtools="yes"])
 
 if test x"$build_cdrtools" = "xyes"; then
 	AC_DEFINE(BUILD_CDRTOOLS, 1, [define if you  want to build cdrtools plugins])
+else
+	build_cdrtools="no"
 fi
 AM_CONDITIONAL(BUILD_CDRTOOLS, test x"$build_cdrtools" = "xyes")
 
 dnl **************** check for cdrkit ************************
 AC_ARG_ENABLE(cdrkit,
-			[  --build-cdrkit		Build cdrkit plugins [[default = yes]]],,
+			[  --enable-cdrkit		Build cdrkit plugins [[default = yes]]],,
 			[build_cdrkit="yes"])
 
 if test x"$build_cdrkit" = "xyes"; then
 	AC_DEFINE(BUILD_CDRKIT, 1, [define if you  want to build cdrkit plugins])
+else
+	build_cdrkit="no"
 fi
 AM_CONDITIONAL(BUILD_CDRKIT, test x"$build_cdrkit" = "xyes")
 
