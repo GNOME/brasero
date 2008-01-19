@@ -190,7 +190,7 @@ fi
 AM_CONDITIONAL(BUILD_SEARCH, test x"$build_search" = "xyes")
 
 dnl ****************check for playlist (optional)**************
-TOTEM_REQUIRED=1.2.0
+TOTEM_REQUIRED=2.20.0
 
 AC_ARG_ENABLE(playlist,
 			[  --enable-playlist		build playlist pane (if totem is available)[[default = yes]]],,
@@ -300,6 +300,7 @@ AC_OUTPUT([
 Makefile
 docs/Makefile
 data/Makefile
+data/brasero.desktop.in
 data/icons/Makefile
 src/plugins/Makefile
 src/plugins/cdrdao/Makefile

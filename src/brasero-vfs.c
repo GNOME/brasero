@@ -1500,11 +1500,10 @@ brasero_vfs_playlist_result (BraseroAsyncTaskManager *manager,
 }
 
 static void
-brasero_vfs_add_playlist_entry_cb (TotemPlParser *parser,
-				   const gchar *uri,
-				   const gchar *title,
-				   const gchar *genre,
-				   BraseroVFSPlaylistData *data)
+brasero_vfs_add_playlist_entry_parsed_cb (TotemPlParser *parser,
+					  const gchar *uri,
+					  GHashTable *metadata,
+					  BraseroVFSPlaylistData *data)
 {
 	data->uris = g_list_prepend (data->uris, g_strdup (uri));
 }
@@ -1536,9 +1535,9 @@ brasero_vfs_playlist_thread (BraseroAsyncTaskManager *manager,
 			  "playlist-end",
 			  G_CALLBACK (brasero_vfs_start_end_playlist_cb),
 			  data);
-	g_signal_connect (G_OBJECT (data->parser),
-			  "entry",
-			  G_CALLBACK (brasero_vfs_add_playlist_entry_cb),
+	g_signal_connect (data->parser,
+			  "entry-parsed",
+			  G_CALLBACK (brasero_vfs_add_playlist_entry_parsed_cb),
 			  data);
 
 	if (g_object_class_find_property (G_OBJECT_GET_CLASS (data->parser), "recurse"))
