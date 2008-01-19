@@ -592,16 +592,20 @@ brasero_growisofs_init (BraseroGrowisofs *obj)
 	BraseroGrowisofsPrivate *priv;
 	gchar *standard_error;
 	gboolean res;
+	gchar *prog_name;
 
 	priv = BRASERO_GROWISOFS_PRIVATE (obj);
 
 	/* this code comes from ncb_mkisofs_supports_utf8 */
-	res = g_spawn_command_line_sync ("mkisofs -input-charset utf8", 
-					 NULL,
-					 &standard_error,
-					 NULL, 
-					 NULL);
-	if (res && !g_strrstr (standard_error, "Unknown charset"))
+	
+	prog_name = g_find_program_in_path ("genisoimage");
+        if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE)) {
+	  	res = g_spawn_command_line_sync ("genisoimage -input-charset utf8", NULL, &standard_error, NULL, NULL);
+	} else {
+                res = g_spawn_command_line_sync ("mkisofs -input-charset utf8", NULL, &standard_error, NULL, NULL);
+	}
+
+       	if (res && !g_strrstr (standard_error, "Unknown charset"))
 		priv->use_utf8 = TRUE;
 	else
 		priv->use_utf8 = FALSE;

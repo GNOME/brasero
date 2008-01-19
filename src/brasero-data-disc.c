@@ -80,8 +80,7 @@
 
 #ifdef BUILD_INOTIFY
 
-#include "inotify.h"
-#include "inotify-syscalls.h"
+#include "sys/inotify.h"
 
 #endif
 
@@ -12908,9 +12907,9 @@ static gboolean
 brasero_data_disc_start_monitoring_real (BraseroDataDisc *disc,
 					 BraseroFile *file)
 {
-	gchar *path;
+	const gchar *path;
 	gint dev_fd;
-	__u32 mask;
+	uint32_t mask;
 
 	path = gnome_vfs_get_local_path_from_uri (file->uri);
 
