@@ -1,3 +1,14 @@
+2008-01-19  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	fix for #510620 – brasero is not able to load a playlist in a Audio project
+	update totem requirements to 2.20.x
+	remove duplicate calls
+
+	* configure.in:
+	* src/brasero-project.c: (brasero_project_check_size):
+	* src/brasero-vfs.c: (brasero_vfs_add_playlist_entry_parsed_cb),
+	(brasero_vfs_playlist_thread):
+
 2008-01-11  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/burn-medium.c:

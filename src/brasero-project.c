@@ -568,13 +568,11 @@ brasero_project_check_size (BraseroProject *project)
 end:
 	if (project->priv->oversized) {
 		sensitive = FALSE;
-		g_object_set (G_OBJECT (project->priv->data), "reject-file", TRUE, NULL);
-		g_object_set (G_OBJECT (project->priv->data), "reject-file", TRUE, NULL);
+		g_object_set (G_OBJECT (project->priv->current), "reject-file", TRUE, NULL);
 	}
 	else {
 		sensitive = TRUE;
-		g_object_set (G_OBJECT (project->priv->data), "reject-file", FALSE, NULL);
-		g_object_set (G_OBJECT (project->priv->data), "reject-file", FALSE, NULL);
+		g_object_set (G_OBJECT (project->priv->current), "reject-file", FALSE, NULL);
 	}
 
 	brasero_project_set_add_button_state (project);
