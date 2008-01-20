@@ -1,5 +1,14 @@
 2008-01-20  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Added support for ISO level 3 in session importing (= support multi extent files)
+
+	* src/burn-iso-field.c: (brasero_iso9660_get_733_val):
+	* src/burn-iso-field.h:
+	* src/burn-iso9660.c: (brasero_iso9660_read_directory_records):
+	* src/burn-volume.h:
+
+2008-01-20  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix #506063 – Brasero fails miserably from burning a file > 4GB
 	We now use iso level 3 and udf when we detect a file > 4GB
 	That means some OS (MacOS X among a couple) may not work

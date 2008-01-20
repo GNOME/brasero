@@ -32,7 +32,7 @@ extern "C"
 {
 #endif
 
-gint32
+guint32
 brasero_iso9660_get_733_val (guchar *buffer);
 
 #ifdef __cplusplus

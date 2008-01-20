@@ -524,6 +524,22 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 				goto error;
 
 			entry->parent = parent;
+
+			/* check that we don't have another file record for the
+			 * same file (usually files > 4G). It always follows
+			 * its sibling */
+			if (parent->specific.dir.children) {
+				BraseroVolFile *last;
+
+				last = parent->specific.dir.children->data;
+				if (!last->isdir && !strcmp (BRASERO_VOLUME_FILE_NAME (last), BRASERO_VOLUME_FILE_NAME (entry))) {
+					last->specific.file.size_bytes += entry->specific.file.size_bytes;
+					ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
+					brasero_volume_file_free (entry);
+					BRASERO_BURN_LOG ("Multi extent file");
+					continue;
+				}
+			}
 			parent->specific.dir.children = g_list_prepend (parent->specific.dir.children, entry);
 			ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
 		}
