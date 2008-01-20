@@ -1,3 +1,35 @@
+2008-01-20  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #506063 – Brasero fails miserably from burning a file > 4GB
+	We now use iso level 3 and udf when we detect a file > 4GB
+	That means some OS (MacOS X among a couple) may not work
+
+	* src/brasero-data-disc.c: (brasero_data_disc_reset_real),
+	(brasero_data_disc_restore_unreadable),
+	(brasero_data_disc_file_free),
+	(brasero_data_disc_remove_children_async_cb),
+	(brasero_data_disc_file_new), (brasero_data_disc_symlink_new),
+	(brasero_data_disc_invalid_utf8_new),
+	(brasero_data_disc_dir_contents_end),
+	(brasero_data_disc_delete_row_cb),
+	(brasero_data_disc_path_remove_user),
+	(brasero_data_disc_restore_excluded_children_cb),
+	(brasero_data_disc_new_file),
+	(brasero_data_disc_set_session_param),
+	(brasero_data_disc_inotify_create_paths),
+	(brasero_data_disc_inotify_modify_file_cb),
+	(brasero_data_disc_start_monitoring_real):
+	* src/burn-debug.c: (brasero_debug_data_fs_to_string):
+	* src/burn-track.h:
+	* src/plugins/cdrkit/burn-genisoimage.c:
+	(brasero_genisoimage_set_argv_image),
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	(brasero_mkisofs_set_argv_image), (brasero_mkisofs_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_set_mkisofs_argv),
+	(brasero_growisofs_export_caps):
+
 
 2008-01-19  Philippe Rouquier  <philippr@svn.gnome.org>
 

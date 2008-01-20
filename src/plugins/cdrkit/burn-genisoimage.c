@@ -228,10 +228,22 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 		BRASERO_JOB_NOT_READY (genisoimage);
 
 	brasero_track_get_type (track, &type);
-	if ((type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET))
+	if (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
-	if ((type.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO))
+	if ((type.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
+	&&  (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)) {
+		g_ptr_array_add (argv, g_strdup ("-iso-level"));
+		g_ptr_array_add (argv, g_strdup ("3"));
+
+		/* NOTE the following is specific to genisoimage */
+		/* g_ptr_array_add (argv, g_strdup ("-allow-limited-size")); */
+	}
+
+	if (type.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
+		g_ptr_array_add (argv, g_strdup ("-udf"));
+
+	if (type.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
 
 	g_ptr_array_add (argv, g_strdup ("-graft-points"));
@@ -488,6 +500,8 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NONE);
 
 	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
+				       BRASERO_IMAGE_FS_UDF|
+				       BRASERO_IMAGE_ISO_FS_LEVEL_3|
 				       BRASERO_IMAGE_FS_JOLIET|
 				       BRASERO_IMAGE_FS_VIDEO);
 
