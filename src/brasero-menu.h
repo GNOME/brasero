@@ -42,6 +42,7 @@ G_BEGIN_DECLS
 #include "brasero-app.h"
 
 void on_prefs_cb (GtkAction *action, BraseroApp *app);
+void on_eject_cb (GtkAction *action, BraseroApp *app);
 void on_erase_cb (GtkAction *action, BraseroApp *app);
 void on_integrity_check_cb (GtkAction *action, BraseroApp *app);
 
@@ -60,6 +61,9 @@ static GtkActionEntry entries[] = {
 
 	{"Plugins", NULL, N_("P_lugins"), NULL,
 	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
+
+	{"Eject", NULL, N_("E_ject"), NULL,
+	 N_("Eject media"), G_CALLBACK (on_eject_cb)},
 
 	{"Erase", "media-optical-blank", N_("_Erase..."), NULL,
 	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
@@ -97,6 +101,7 @@ static const gchar *description = {
 	    "</menu>"
 	    "<menu action='ToolMenu'>"
 		"<placeholder name='DiscPlaceholder'/>"
+		"<menuitem action='Eject'/>"
 		"<menuitem action='Erase'/>"
 		"<menuitem action='Check'/>"
 	    "</menu>"

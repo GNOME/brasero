@@ -1,5 +1,19 @@
 2008-01-21  Luis Medinas  <lmedinas@svn.gnome.org>
 
+	* src/Makefile.am:
+	* src/brasero-eject-dialog.c: (brasero_eject_dialog_drive_changed),
+	(_eject_async), (brasero_eject_dialog_activate),
+	(brasero_eject_dialog_class_init), (brasero_eject_dialog_init),
+	(brasero_eject_dialog_new):
+	* src/brasero-eject-dialog.h:
+	* src/brasero-menu.h:
+	* src/main.c: (on_eject_cb), (brasero_app_add_recent):
+
+	Initial import of the eject dialog tool.
+	Also limit the recent files to 5.
+
+2008-01-21  Luis Medinas  <lmedinas@svn.gnome.org>
+
 	* src/brasero-dest-selection.c:
 	(brasero_dest_selection_set_drive_properties):
 

@@ -59,6 +59,7 @@
 #include "brasero-ncb.h"
 #include "brasero-pref.h"
 #include "burn-debug.h"
+#include "burn.h"
 
 static GConfClient *client;
 gchar *project_uri;
@@ -174,6 +175,23 @@ on_erase_cb (GtkAction *action, BraseroApp *app)
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	gtk_widget_show_all (dialog);
+}
+
+void
+on_eject_cb (GtkAction *action, BraseroApp *app)
+{
+       GtkWidget *dialog;
+       GtkWidget *toplevel;
+  
+       dialog = brasero_eject_dialog_new();
+       toplevel = gtk_widget_get_toplevel (app->mainwin);
+       
+       gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+       gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+       gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+
+       gtk_widget_show_all (dialog);
+       
 }
 
 void
@@ -390,7 +408,7 @@ brasero_app_add_recent (BraseroApp *app,
 
 	gtk_recent_chooser_set_local_only (GTK_RECENT_CHOOSER (action), TRUE);
 
-	gtk_recent_chooser_set_limit (GTK_RECENT_CHOOSER (action), 20);
+	gtk_recent_chooser_set_limit (GTK_RECENT_CHOOSER (action), 5);
 
 	gtk_recent_chooser_set_show_tips (GTK_RECENT_CHOOSER (action), TRUE);
 

@@ -58,6 +58,8 @@ brasero_SOURCES = \
 	brasero-disc-copy-dialog.h         \
 	brasero-blank-dialog.c         \
 	brasero-blank-dialog.h         \
+	brasero-eject-dialog.c		\
+	brasero-eject-dialog.h		\
 	brasero-metadata.c         \
 	brasero-metadata.h         \
 	brasero-filtered-window.c         \
