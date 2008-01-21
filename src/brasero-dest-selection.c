@@ -818,6 +818,19 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		return;
 	}
 
+	if (brasero_burn_session_is_dest_file (priv->session)) {
+		BraseroBurnResult result;
+
+		result = brasero_burn_caps_is_session_supported (priv->caps, priv->session);
+		g_signal_emit (self,
+			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+			       0,
+			       (result == BRASERO_BURN_OK));
+
+		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
+		return;
+	}
+
 	drive = brasero_burn_session_get_burner (priv->session);
 	if (!drive) {
 		g_signal_emit (self,
