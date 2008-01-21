@@ -47,7 +47,7 @@ struct _BraseroVolFile {
 
 	struct {
 		gint address_block;
-		gint size_bytes;
+		guint64 size_bytes;
 	} file;
 
 	struct {

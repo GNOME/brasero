@@ -240,6 +240,17 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	if (input.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET)
 		g_ptr_array_add (argv, g_strdup ("-J"));
 
+	if ((input.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
+	&&  (input.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)) {
+		/* That's the safest option. A few OS don't support that though,
+		 * like MacOSX and freebsd.*/
+		g_ptr_array_add (argv, g_strdup ("-iso-level"));
+		g_ptr_array_add (argv, g_strdup ("3"));
+	}
+
+	if (input.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
+		g_ptr_array_add (argv, g_strdup ("-udf"));
+
 	if (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
 
@@ -688,6 +699,8 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_HAS_DATA);
 	
 	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
+				       BRASERO_IMAGE_FS_UDF|
+				       BRASERO_IMAGE_ISO_FS_LEVEL_3|
 				       BRASERO_IMAGE_FS_JOLIET|
 				       BRASERO_IMAGE_FS_VIDEO);
 

@@ -195,6 +195,8 @@ struct BraseroDataDiscPrivate {
 	GSList *libnotify;
 	guint libnotify_id;
 
+	guint G2_files;
+
 	gint editing:1;
 	gint is_loading:1;
 	gint reject_files:1;
@@ -3244,6 +3246,7 @@ brasero_data_disc_reset_real (BraseroDataDisc *disc)
 
 	brasero_data_disc_clean (disc);
 
+	disc->priv->G2_files = 0;
 	disc->priv->activity_counter = 1;
 	brasero_data_disc_decrease_activity_counter (disc);
 
@@ -3574,6 +3577,11 @@ brasero_data_disc_restore_unreadable (BraseroDataDisc *disc,
 		brasero_data_disc_joliet_incompat_add_paths (disc, paths);
 	}
 
+	/* update by the number of non grafted file */
+	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
+	&&  GET_SIZE_IN_SECTORS (info->size) > 1048576)
+		disc->priv->G2_files += g_slist_length (paths);
+
 	/* now let's see the tree */
 	for (; paths; paths = g_slist_remove (paths, path)) {
 		path = paths->data;
@@ -3799,7 +3807,7 @@ brasero_data_disc_file_free (BraseroDataDisc *disc,
 {
 	if (!brasero_data_disc_is_excluded (disc, file->uri, NULL)) {
 		BraseroFile *parent;
-		char *parent_uri;
+		gchar *parent_uri;
 
 		parent_uri = g_path_get_dirname (file->uri);
 		parent = g_hash_table_lookup (disc->priv->dirs, parent_uri);
@@ -3810,8 +3818,12 @@ brasero_data_disc_file_free (BraseroDataDisc *disc,
 
 		parent->sectors += file->sectors;
 	}
-	else
+	else {
 		brasero_data_disc_size_changed (disc, file->sectors * (-1));
+
+		if (file->sectors > 1048576)
+			disc->priv->G2_files --;
+	}
 
 	brasero_data_disc_file_object_free (disc, file);
 }
@@ -4127,6 +4139,11 @@ brasero_data_disc_remove_children_async_cb (BraseroVFS *self,
 
 	/* we update the parent directory */
 	sectors = GET_SIZE_IN_SECTORS (info->size);
+
+	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
+	&&  GET_SIZE_IN_SECTORS (info->size) > 1048576)
+		disc->priv->G2_files --;
+
 	dir->sectors -= sectors;
 	brasero_data_disc_size_changed (disc, sectors * (-1));
 
@@ -6026,11 +6043,15 @@ brasero_data_disc_file_new (BraseroDataDisc *disc,
 #endif
 		brasero_data_disc_size_changed (disc, sectors);
 	}
-	else if (brasero_data_disc_is_excluded (disc, file->uri, NULL))
+	else if (brasero_data_disc_is_excluded (disc, file->uri, NULL)) {
 		brasero_data_disc_size_changed (disc, sectors);
+	}
 	/* That's mostly when loading a project */
 	else if (!g_slist_find (disc->priv->loading, parent))
 		parent->sectors -= sectors;
+
+	if (sectors > 1048576)
+		disc->priv->G2_files ++;
 
 	/* because of above we only insert it at the end */
 	g_hash_table_insert (disc->priv->files, file->uri, file);
@@ -6281,6 +6302,8 @@ brasero_data_disc_symlink_new (BraseroDataDisc *disc,
 						   info->symlink_name,
 						   GET_SIZE_IN_SECTORS (info->size));
 
+	/* No need to check for 2G files here since we set a graft */
+
 end :
 	
 	uri = entry->uri;
@@ -6476,7 +6499,8 @@ brasero_data_disc_invalid_utf8_new (BraseroDataDisc *disc,
 						    g_strdup (uri),
 						    sectors);
 		}
-	
+
+		/* since we graft here no need to check for 2G files */
 		brasero_data_disc_graft_new (disc, uri, path);
 		grafts = g_slist_prepend (grafts, path);
 
@@ -6585,6 +6609,11 @@ brasero_data_disc_dir_contents_end (GObject *object,
 		     &&   EXPLORE_IS_NOT_STRICTLY_EXCLUDED (disc, current)) {
 			dir_sectors += GET_SIZE_IN_SECTORS (info->size);
 		}
+
+		if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
+		&&  GET_SIZE_IN_SECTORS (info->size) > 1048576
+		&& !g_hash_table_lookup (disc->priv->files, current))
+			disc->priv->G2_files ++;
 
 		if (strlen (info->name) > 64) {
 			GSList *paths;
@@ -6978,6 +7007,10 @@ brasero_data_disc_delete_row_cb (BraseroVFS *self,
 		return;
 	}
 
+	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
+	&&  GET_SIZE_IN_SECTORS (info->size) > 1048576)
+		disc->priv->G2_files --;
+
 	sectors = GET_SIZE_IN_SECTORS (info->size);
 	brasero_data_disc_size_changed (disc, sectors * (-1));
 	parent->sectors -= sectors;
@@ -7087,35 +7120,6 @@ brasero_data_disc_path_remove_user (BraseroDataDisc *disc,
 		/* make an imported session file re-appear if need be */
 		brasero_data_disc_is_session_path_deleted (disc, path);
 		return;
-
-#if 0
-		BraseroVolFile *file;
-
-		/* could be used the day when a library allows full editing 
-		 * of multisession  */
-
-		if (uri != BRASERO_IMPORTED_FILE)
-			return;
-
-		/* get the volfile and add it to the list of excluded session files */
-		file = brasero_volume_file_from_path (path,
-						      disc->priv->session);
-		if (!file)
-			return;
-
-		/* update the size */
-		brasero_data_disc_size_changed (disc, (-1) * brasero_volume_file_size (file));
-
-		/* since it could a file with a graft point, it could already be
-		 * in the list. We check that and and eventually add it if it is
-		 * not in this list */
-		if (!g_slist_find (disc->priv->session_file_excluded, file))
-			disc->priv->session_file_excluded = g_slist_prepend (disc->priv->session_file_excluded,
-									     file);
-
-		return;
-#endif
-
 	}
 
 	if (!disc->priv->remove_user)
@@ -7423,6 +7427,10 @@ brasero_data_disc_restore_excluded_children_cb (BraseroVFS *self,
 		dir = g_hash_table_lookup (disc->priv->dirs, parent);
 		g_free (parent);
 
+		if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
+		&&  GET_SIZE_IN_SECTORS (info->size) > 1048576)
+			disc->priv->G2_files ++;
+
 		dir->sectors += sectors;
 		brasero_data_disc_size_changed (disc, sectors);
 	}
@@ -7700,6 +7708,10 @@ brasero_data_disc_new_file (BraseroDataDisc *disc,
 			parent_uri = g_path_get_dirname (uri);
 			parent = g_hash_table_lookup (disc->priv->dirs, parent_uri);
 			g_free (parent_uri);
+
+			if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY
+			&&  GET_SIZE_IN_SECTORS (info->size) > 1048576)
+				disc->priv->G2_files ++;
 
 			/* no need to check if parent is dummy. It
 			 * is done in brasero_data_disc_is_excluded */
@@ -8894,6 +8906,11 @@ brasero_data_disc_set_session_param (BraseroDisc *disc,
 	fs_type = BRASERO_IMAGE_FS_ISO;
 	if (!BRASERO_DATA_DISC (disc)->priv->joliet_non_compliant)
 		fs_type |= BRASERO_IMAGE_FS_JOLIET;
+
+	/* that's necessary for files > 2Gio. It's supported by all windows,
+	 * linux, only BSD (unsure), and MacOS X don't support it. */
+	if (BRASERO_DATA_DISC (disc)->priv->G2_files)
+		fs_type |= BRASERO_IMAGE_ISO_FS_LEVEL_3 | BRASERO_IMAGE_FS_UDF;
 
 	if (brasero_data_disc_is_video_DVD (BRASERO_DATA_DISC (disc)))
 		fs_type |= BRASERO_IMAGE_FS_VIDEO;
@@ -11916,6 +11933,9 @@ brasero_data_disc_inotify_create_paths (BraseroDataDisc *disc,
 		file = g_hash_table_lookup (disc->priv->dirs, parent);
 		g_free (parent);
 
+		if (GET_SIZE_IN_SECTORS (info->size) > 1048576)
+			disc->priv->G2_files ++;
+
 		sectors = GET_SIZE_IN_SECTORS (info->size);
 		file->sectors += sectors;
 		brasero_data_disc_size_changed (disc, sectors);
@@ -12215,6 +12235,13 @@ brasero_data_disc_inotify_modify_file_cb (BraseroVFS *self,
 
 		sectors = GET_SIZE_IN_SECTORS (info->size);
 		if (sectors != file->sectors) {
+			if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
+				if (GET_SIZE_IN_SECTORS (info->size) > 1048576 && file->sectors <= 1048576)
+					disc->priv->G2_files ++;
+				else if (GET_SIZE_IN_SECTORS (info->size) <= 1048576 && file->sectors > 1048576)
+					disc->priv->G2_files --;
+			}
+
 			brasero_data_disc_size_changed (disc, sectors - file->sectors);
 			file->sectors = sectors;
 		}
@@ -12907,7 +12934,7 @@ static gboolean
 brasero_data_disc_start_monitoring_real (BraseroDataDisc *disc,
 					 BraseroFile *file)
 {
-	const gchar *path;
+	gchar *path;
 	gint dev_fd;
 	uint32_t mask;
 

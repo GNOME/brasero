@@ -26,12 +26,12 @@
 
 #include "burn-iso-field.h"
 
-gint32
+guint32
 brasero_iso9660_get_733_val (guchar *buffer)
 {
-	gint32 *ptr;
+	guint32 *ptr;
 
-	ptr = (gint32*) buffer;
+	ptr = (guint32*) buffer;
 
 	return GINT32_FROM_LE (*ptr);
 }
