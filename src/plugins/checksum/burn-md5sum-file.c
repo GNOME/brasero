@@ -143,11 +143,11 @@ brasero_md5sum_file_start_md5 (BraseroMd5sumFile *self,
 
 static BraseroBurnResult
 brasero_md5sum_file_explore_directory (BraseroMd5sumFile *self,
-				  gint64 file_nb,
-				  const gchar *directory,
-				  const gchar *disc_path,
-				  GHashTable *excludedH,
-				  GError **error)
+				       gint64 file_nb,
+				       const gchar *directory,
+				       const gchar *disc_path,
+				       GHashTable *excludedH,
+				       GError **error)
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroMd5sumFilePrivate *priv;
@@ -178,11 +178,11 @@ brasero_md5sum_file_explore_directory (BraseroMd5sumFile *self,
 		graft_path = g_build_path (G_DIR_SEPARATOR_S, disc_path, name, NULL);
 		if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
 			result = brasero_md5sum_file_explore_directory (self,
-								   file_nb,
-								   path,
-								   graft_path,
-								   excludedH,
-								   error);
+									file_nb,
+									path,
+									graft_path,
+									excludedH,
+									error);
 			g_free (path);
 			g_free (graft_path);
 
@@ -193,9 +193,9 @@ brasero_md5sum_file_explore_directory (BraseroMd5sumFile *self,
 		}
 
 		result = brasero_md5sum_file_start_md5 (self,
-						   path,
-						   graft_path,
-						   error);
+							path,
+							graft_path,
+							error);
 		g_free (graft_path);
 		g_free (path);
 
@@ -218,8 +218,8 @@ brasero_md5sum_file_explore_directory (BraseroMd5sumFile *self,
 
 static gboolean
 brasero_md5sum_file_clean_excluded_table_cb (gpointer key,
-					gpointer data,
-					gpointer user_data)
+					     gpointer data,
+					     gpointer user_data)
 {
 	if (GPOINTER_TO_INT (data) == 1)
 		return TRUE;
@@ -661,6 +661,7 @@ brasero_md5sum_file_end (gpointer data)
 		brasero_job_get_current_track (BRASERO_JOB (self), &track);
 		brasero_track_get_type (track, &type);
 		grafts = brasero_track_get_data_grafts_source (track);
+		excluded = brasero_track_get_data_excluded_source (track, TRUE);
 
 		for (; grafts; grafts = grafts->next) {
 			graft = grafts->data;
@@ -675,8 +676,6 @@ brasero_md5sum_file_end (gpointer data)
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
 		brasero_track_add_data_fs (track, type.subtype.fs_type);
-
-		excluded = brasero_track_get_data_excluded_source (track, TRUE);
 		brasero_track_set_data_source (track, new_grafts, excluded);
 
 		brasero_track_set_checksum (track,

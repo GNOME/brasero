@@ -1,3 +1,10 @@
+2008-01-26  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #508654 – Windows-compatibility doesn't truncate 64+ characters files. brasero-md5sum-file wasn't properly copying the track.
+
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_end):
+
 2008-01-22  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* NEWS:
