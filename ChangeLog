@@ -1,3 +1,13 @@
+2008-01-27  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #502703 – Data Integrity Check Always Fails AND Burning Speed Slow (except dvd which ignored setting).
+	since there is no way to detect runouts added by DAO read the volume size to determine size of the first track for a multisession CD
+
+	* src/burn-medium.c: (brasero_medium_track_get_info),
+	(brasero_medium_get_CD_sessions_info),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents):
+	* src/scsi/scsi-q-subchannel.h:
+
 2008-01-26  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix #508654 – Windows-compatibility doesn't truncate 64+ characters files. brasero-md5sum-file wasn't properly copying the track.

@@ -1185,6 +1185,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_track_get_info (BraseroMedium *self,
+			       gboolean multisession,
 			       BraseroMediumTrack *track,
 			       int track_num,
 			       int fd,
@@ -1223,15 +1224,47 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	track->blocks_num = BRASERO_GET_32 (track_info.track_size);
 	track->session = BRASERO_SCSI_SESSION_NUM (track_info);
 
-	/* Now here is a potential bug: we can write tracks (data or not)
-	 * shorter than 300 Kio /2 sec but they will be padded to reach this
-	 * floor value. That means that is blocks_num is 300 blocks that may
-	 * mean that the data length on the track is actually shorter.
-	 * So we read the volume descriptor. If it works, good otherwise
-	 * use the old value.
-	 * That's important for checksuming to have a perfect account of the 
-	 * data size. */
-	if (track->blocks_num <= 300) {
+	/* NOTE: for multisession CDs only
+	 * if the session was incremental (TAO/packet/...) by opposition to DAO
+	 * and SAO, then 2 blocks (run-out) have been added at the end of user
+	 * track for linking. That's why we have 2 additional sectors when the
+	 * track has been recorded in TAO mode
+	 * See MMC5
+	 * 6.44.3.2 CD-R Fixed Packet, Variable Packet, Track-At-Once
+	 * 6.44.3.2 CD-R Fixed Packet, Variable Packet, Track-At-Once
+	 * Now, strangely track_get_info always removes two blocks, whereas read
+	 * raw toc adds them (always) and this, whatever the mode, the position.
+	 * It means that when we detect a SAO session we have to add 2 blocks to
+	 * all tracks in it. 
+	 * See # for any information:
+	 * if first track is recorded in SAO/DAO then the length will be two sec
+	 * shorter. If not that's fine.
+	 * The other way would be to use read raw toc but then that's the
+	 * opposite that happens and that latter will return two more bytes for
+	 * TAO recorded session.
+	 * So there are 2 workarounds:
+	 * - read the volume size
+	 * - read the 2 last blocks and see if they are run-outs
+	 * here we do solution 1 but only for CDRW, not blank, and for first
+	 * session only since that's the only one that can be recorded in DAO
+	 */
+	if (track->session == 1
+	&&  multisession == TRUE
+	&&  (priv->info & BRASERO_MEDIUM_CD)
+	&& !(priv->info & BRASERO_MEDIUM_ROM)) {
+		BRASERO_BURN_LOG ("Track belongs to first session of multisession CD. Checking for real size");
+		brasero_medium_track_volume_size (self, track, fd);
+	}
+	else if (track->blocks_num <= 300) {
+		/* Now here is a potential bug: we can write tracks (data or
+		 * not) shorter than 300 Kio /2 sec but they will be padded to
+		 * reach this floor value. That means that is blocks_num is 300
+		 * blocks that may mean that the data length on the track is
+		 * actually shorter.
+		 * So we read the volume descriptor. If it works, good otherwise
+		 * use the old value.
+		 * That's important for checksuming to have a perfect account of
+		 * the data size. */
 		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
 		brasero_medium_track_volume_size (self, track, fd);
 	}
@@ -1248,6 +1281,8 @@ brasero_medium_track_get_info (BraseroMedium *self,
 
 	return BRASERO_BURN_OK;
 }
+
+#if 0
 
 /**
  * return :
@@ -1476,6 +1511,7 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 		BraseroMediumTrack *track;
 
 		track = NULL;
+
 		if (desc->adr == 1 && desc->point <= BRASERO_SCSI_Q_SUB_CHANNEL_TRACK_START) {
 			track = g_new0 (BraseroMediumTrack, 1);
 			track->session = desc->session_num;
@@ -1498,8 +1534,12 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 				BraseroMediumTrack *last_track;
 
 				last_track = priv->tracks->data;
-				if (last_track->session == track->session)
+				if (last_track->session == track->session) {
+					/* If this was burnt in track at once
+					 * then that means there is 2 sec gap in
+					 * between all sessions. */
 					last_track->blocks_num = track->start - last_track->start;
+				}
 			}
 
 			priv->tracks = g_slist_prepend (priv->tracks, track);
@@ -1574,6 +1614,8 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
+#endif
+
 /**
  * NOTE: for DVD-R multisession we lose 28688 blocks for each session
  * so the capacity is the addition of all session sizes + 28688 for each
@@ -1621,6 +1663,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				  BraseroScsiErrCode *code)
 {
 	int num, i, size;
+	gboolean multisession;
 	BraseroScsiResult result;
 	BraseroScsiTocDesc *desc;
 	BraseroMediumPrivate *priv;
@@ -1644,6 +1687,9 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	num = (size - sizeof (BraseroScsiFormattedTocData)) /
 	       sizeof (BraseroScsiTocDesc);
 
+	/* remove 1 for leadout */
+	multisession = (priv->info & BRASERO_MEDIUM_APPENDABLE) || (num -1) != 1;
+
 	BRASERO_BURN_LOG ("%i track(s) found", num);
 
 	desc = toc->desc;
@@ -1659,6 +1705,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 		/* we shouldn't request info on a track if the disc is closed */
 		brasero_medium_track_get_info (self,
+					       multisession,
 					       track,
 					       g_slist_length (priv->tracks),
 					       fd,
@@ -1729,6 +1776,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 
 		brasero_medium_track_get_info (self,
+					       FALSE,
 					       track,
 					       g_slist_length (priv->tracks),
 					       fd,
@@ -1786,6 +1834,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 			priv->tracks = g_slist_prepend (priv->tracks, track);
 			
 			brasero_medium_track_get_info (self,
+						       FALSE,
 						       track,
 						       1,
 						       fd,
@@ -1803,16 +1852,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 		BRASERO_BURN_LOG ("Closed media");
 	}
 
-	if (priv->info & BRASERO_MEDIUM_CD) {
-		result = brasero_medium_get_CD_sessions_info (self, fd, code);
-		if (result != BRASERO_BURN_OK)
-			result = brasero_medium_get_sessions_info (self, fd, code);
-	}
-	else
-		result = brasero_medium_get_sessions_info (self, fd, code);
-
-	if (result != BRASERO_BURN_OK)
-		goto end;
+	brasero_medium_get_sessions_info (self, fd, code);
 
 end:
 
