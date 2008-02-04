@@ -646,9 +646,9 @@ brasero_project_get_selected_uri (BraseroURIContainer *container)
 	if (project->priv->is_burning)
 		return NULL;
 
-	if (brasero_disc_get_selected_uri (project->priv->current, &uri))
+	if (brasero_disc_get_selected_uri (project->priv->current, uri))
 		return uri;
-
+	
 	return NULL;
 }
 
