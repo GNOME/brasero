@@ -1,3 +1,26 @@
+2008-02-04  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	better fix for #513742
+	fix for a small problem where key sense data wasn't correct in some cases
+	fix for #502703 – Data Integrity Check Always Fails AND Burning Speed Slow (except dvd which ignored setting).
+	instead of reading volume declared size we correct the size when we detect a track written in SAO mode (and a multisession disc)
+	this means READ CD scsi function was implemented
+
+	* src/Makefile.am:
+	* src/brasero-data-disc.c: (brasero_data_disc_get_selected_uri):
+	* src/brasero-project.c: (brasero_project_get_selected_uri):
+	* src/burn-medium.c: (brasero_medium_track_written_SAO),
+	(brasero_medium_track_get_info), (brasero_medium_set_track_type),
+	(brasero_medium_get_sessions_info):
+	* src/scsi/scsi-error.c:
+	* src/scsi/scsi-error.h:
+	* src/scsi/scsi-mmc1.h:
+	* src/scsi/scsi-opcodes.h:
+	* src/scsi/scsi-read-toc-pma-atip.h:
+	* src/scsi/scsi-sense-data.c: (brasero_sense_data_print),
+	(brasero_sense_data_illegal_request):
+	* src/scsi/scsi-utils.h:
+
 2008-02-04  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* data/brasero.desktop.in.in:

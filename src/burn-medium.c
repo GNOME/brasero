@@ -1110,37 +1110,6 @@ brasero_medium_get_css_feature (BraseroMedium *self,
  * Functions to get information about disc contents
  */
 
-static void
-brasero_medium_set_track_type (BraseroMedium *self,
-			       BraseroMediumTrack *track,
-			       guchar control)
-{
-	BraseroMediumPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-
-	if (control & BRASERO_SCSI_TRACK_COPY)
-		track->type |= BRASERO_MEDIUM_TRACK_COPY;
-
-	if (!(control & BRASERO_SCSI_TRACK_DATA)) {
-		track->type |= BRASERO_MEDIUM_TRACK_AUDIO;
-		priv->info |= BRASERO_MEDIUM_HAS_AUDIO;
-
-		if (control & BRASERO_SCSI_TRACK_PREEMP)
-			track->type |= BRASERO_MEDIUM_TRACK_PREEMP;
-
-		if (control & BRASERO_SCSI_TRACK_4_CHANNELS)
-			track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
-	}
-	else {
-		track->type |= BRASERO_MEDIUM_TRACK_DATA;
-		priv->info |= BRASERO_MEDIUM_HAS_DATA;
-
-		if (control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
-			track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
-	}
-}
-
 static BraseroBurnResult
 brasero_medium_track_volume_size (BraseroMedium *self,
 				  BraseroMediumTrack *track,
@@ -1181,6 +1150,61 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 
 	track->blocks_num = nb_blocks;
 	return BRASERO_BURN_OK;
+}
+
+static gboolean
+brasero_medium_track_written_SAO (int fd,
+				  int track_num,
+				  int track_start)
+{
+	unsigned char buffer [2048];
+	BraseroScsiResult result;
+
+	BRASERO_BURN_LOG ("Checking for TDBs in track pregap.");
+
+	/* The two following sectors are readable */
+	result = brasero_mmc1_read_block (fd,
+					  TRUE,
+					  BRASERO_SCSI_BLOCK_TYPE_ANY,
+					  BRASERO_SCSI_BLOCK_HEADER_NONE,
+					  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
+					  track_start - 1,
+					  1,
+					  buffer,
+					  sizeof (buffer),
+					  NULL);
+
+	if (result == BRASERO_SCSI_OK) {
+		int i;
+
+		if (buffer [0] != 'T' || buffer [1] != 'D' || buffer [2] != 'I') {
+			BRASERO_BURN_LOG ("Track was probably recorded in SAO mode - no TDB.");
+			return TRUE;
+		}
+
+		/* Find the TDU (16 bytes) for the track (there can be for other tracks).
+		 * i must be < 128 = ((2048 - 8 (size TDB)) / 16 (size TDU). */
+		for (i = 0; i < 128; i ++) {
+			if (BRASERO_GET_BCD (buffer [8 + i * 16]) != track_num)
+				break;
+		}
+
+		if (i >= 128) {
+			BRASERO_BURN_LOG ("No appropriate TDU for track");
+			return TRUE;
+		}
+
+		if (buffer [8 + i * 16] == 0x80 || buffer [8 + i * 16] == 0x00) {
+			BRASERO_BURN_LOG ("Track was recorded in TAO mode.");
+			return FALSE;
+		}
+
+		BRASERO_BURN_LOG ("Track was recorded in Packet mode.");
+		return FALSE;
+	}
+
+	BRASERO_BURN_LOG ("No pregap. That track must have been recorded in SAO mode.");
+	return TRUE;
 }
 
 static BraseroBurnResult
@@ -1224,6 +1248,19 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	track->blocks_num = BRASERO_GET_32 (track_info.track_size);
 	track->session = BRASERO_SCSI_SESSION_NUM (track_info);
 
+	if (track->blocks_num <= 300) {
+		/* Now here is a potential bug: we can write tracks (data or
+		 * not) shorter than 300 Kio /2 sec but they will be padded to
+		 * reach this floor value. It means that blocks_num is always
+		 * 300 blocks even if the data length on the track is actually
+		 * shorter.
+		 * So we read the volume descriptor. If it works, good otherwise
+		 * use the old value.
+		 * That's important for checksuming to have a perfect account of
+		 * the data size. */
+		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
+		brasero_medium_track_volume_size (self, track, fd);
+	}
 	/* NOTE: for multisession CDs only
 	 * if the session was incremental (TAO/packet/...) by opposition to DAO
 	 * and SAO, then 2 blocks (run-out) have been added at the end of user
@@ -1231,42 +1268,60 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	 * track has been recorded in TAO mode
 	 * See MMC5
 	 * 6.44.3.2 CD-R Fixed Packet, Variable Packet, Track-At-Once
-	 * 6.44.3.2 CD-R Fixed Packet, Variable Packet, Track-At-Once
 	 * Now, strangely track_get_info always removes two blocks, whereas read
 	 * raw toc adds them (always) and this, whatever the mode, the position.
 	 * It means that when we detect a SAO session we have to add 2 blocks to
 	 * all tracks in it. 
 	 * See # for any information:
 	 * if first track is recorded in SAO/DAO then the length will be two sec
-	 * shorter. If not that's fine.
+	 * shorter. If not, if it was recorded in TAO, that's fine.
 	 * The other way would be to use read raw toc but then that's the
 	 * opposite that happens and that latter will return two more bytes for
 	 * TAO recorded session.
 	 * So there are 2 workarounds:
-	 * - read the volume size
+	 * - read the volume size (can be unreliable)
 	 * - read the 2 last blocks and see if they are run-outs
-	 * here we do solution 1 but only for CDRW, not blank, and for first
-	 * session only since that's the only one that can be recorded in DAO
-	 */
-	if (track->session == 1
-	&&  multisession == TRUE
-	&&  (priv->info & BRASERO_MEDIUM_CD)
-	&& !(priv->info & BRASERO_MEDIUM_ROM)) {
-		BRASERO_BURN_LOG ("Track belongs to first session of multisession CD. Checking for real size");
-		brasero_medium_track_volume_size (self, track, fd);
-	}
-	else if (track->blocks_num <= 300) {
-		/* Now here is a potential bug: we can write tracks (data or
-		 * not) shorter than 300 Kio /2 sec but they will be padded to
-		 * reach this floor value. That means that is blocks_num is 300
-		 * blocks that may mean that the data length on the track is
-		 * actually shorter.
-		 * So we read the volume descriptor. If it works, good otherwise
-		 * use the old value.
-		 * That's important for checksuming to have a perfect account of
-		 * the data size. */
-		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
-		brasero_medium_track_volume_size (self, track, fd);
+	 * here we do solution 2 but only for CDRW, not blank, and for first
+	 * session only since that's the only one that can be recorded in DAO. */
+	else if (track->session == 1
+	     && (track->type & BRASERO_MEDIUM_TRACK_DATA)
+	     &&  multisession
+	     &&  (priv->info & BRASERO_MEDIUM_CD)
+	     && !(priv->info & BRASERO_MEDIUM_ROM)) {
+		BRASERO_BURN_LOG ("Data track belongs to first session of multisession CD. "
+				  "Checking for real size (%i sectors currently).",
+				  track->blocks_num);
+
+		/* we test the pregaps blocks for TDB: these are special blocks
+		 * filling the pregap of a track when it was recorded as TAO or
+		 * as Packet.
+		 * NOTE: in this case we need to skip 7 sectors before since if
+		 * it was recorded incrementally then there is also 4 runins,
+		 * 1 link sector and 2 runouts (at end of pregap). 
+		 * we also make sure that the two blocks we're adding are
+		 * actually readable. */
+		/* Test the last block, the before last and the one before before last */
+		result = brasero_mmc1_read_block (fd,
+						  FALSE,
+						  BRASERO_SCSI_BLOCK_TYPE_ANY,
+						  BRASERO_SCSI_BLOCK_HEADER_NONE,
+						  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
+						  track->blocks_num + track->start,
+						  2,
+						  NULL,
+						  0,
+						  NULL);
+
+		if (result == BRASERO_SCSI_OK) {
+			BRASERO_BURN_LOG ("Following two sectors are readable.");
+
+			if (brasero_medium_track_written_SAO (fd, track_num, track->start)) {
+				track->blocks_num += 2;
+				BRASERO_BURN_LOG ("Correcting track size (now %i)", track->blocks_num);
+			}
+		}
+		else
+			BRASERO_BURN_LOG ("Detected runouts");
 	}
 
 	if (track_info.next_wrt_address_valid)
@@ -1283,6 +1338,37 @@ brasero_medium_track_get_info (BraseroMedium *self,
 }
 
 #if 0
+
+static void
+brasero_medium_set_track_type (BraseroMedium *self,
+			       BraseroMediumTrack *track,
+			       guchar control)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (control & BRASERO_SCSI_TRACK_COPY)
+		track->type |= BRASERO_MEDIUM_TRACK_COPY;
+
+	if (!(control & BRASERO_SCSI_TRACK_DATA)) {
+		track->type |= BRASERO_MEDIUM_TRACK_AUDIO;
+		priv->info |= BRASERO_MEDIUM_HAS_AUDIO;
+
+		if (control & BRASERO_SCSI_TRACK_PREEMP)
+			track->type |= BRASERO_MEDIUM_TRACK_PREEMP;
+
+		if (control & BRASERO_SCSI_TRACK_4_CHANNELS)
+			track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
+	}
+	else {
+		track->type |= BRASERO_MEDIUM_TRACK_DATA;
+		priv->info |= BRASERO_MEDIUM_HAS_DATA;
+
+		if (control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
+			track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
+	}
+}
 
 /**
  * return :
@@ -1704,12 +1790,6 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		track->start = BRASERO_GET_32 (desc->track_start);
 
 		/* we shouldn't request info on a track if the disc is closed */
-		brasero_medium_track_get_info (self,
-					       multisession,
-					       track,
-					       g_slist_length (priv->tracks),
-					       fd,
-					       code);
 
 		if (desc->control & BRASERO_SCSI_TRACK_COPY)
 			track->type |= BRASERO_MEDIUM_TRACK_COPY;
@@ -1724,8 +1804,26 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			if (desc->control & BRASERO_SCSI_TRACK_4_CHANNELS)
 				track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
 		}
-		else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-		     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		else {
+			track->type |= BRASERO_MEDIUM_TRACK_DATA;
+			priv->info |= BRASERO_MEDIUM_HAS_DATA;
+
+			if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
+				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
+		}
+
+		brasero_medium_track_get_info (self,
+					       multisession,
+					       track,
+					       g_slist_length (priv->tracks),
+					       fd,
+					       code);
+
+		if (desc->control & BRASERO_SCSI_TRACK_COPY)
+			track->type |= BRASERO_MEDIUM_TRACK_COPY;
+
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 			BraseroBurnResult result;
 
 			/* a special case for these two kinds of media (DVD+RW)
@@ -1733,29 +1831,15 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			result = brasero_medium_track_volume_size (self, 
 								   track,
 								   fd);
-			if (result == BRASERO_BURN_OK) {
-				track->type |= BRASERO_MEDIUM_TRACK_DATA;
-				priv->info |= BRASERO_MEDIUM_HAS_DATA;
-
-				priv->next_wr_add = 0;
-
-				if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
-					track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
-			}
-			else {
+			if (result != BRASERO_BURN_OK) {
 				priv->tracks = g_slist_remove (priv->tracks, track);
 				g_free (track);
 
 				priv->info |= BRASERO_MEDIUM_BLANK;
 				priv->info &= ~BRASERO_MEDIUM_CLOSED;
 			}
-		}
-		else {
-			track->type |= BRASERO_MEDIUM_TRACK_DATA;
-			priv->info |= BRASERO_MEDIUM_HAS_DATA;
-
-			if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
-				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
+			else
+				priv->next_wr_add = 0;
 		}
 	}
 

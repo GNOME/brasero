@@ -11659,7 +11659,7 @@ static gboolean
 brasero_data_disc_get_selected_uri (BraseroDisc *disc,
 				    gchar **uri)
 {
-	gchar *path;
+	gchar *path= NULL;
 	GtkTreePath *realpath;
 	BraseroDataDisc *data;
 
@@ -11675,6 +11675,11 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc,
 								   data->priv->selected_path);
 	brasero_data_disc_tree_path_to_disc_path (data, realpath, &path);
 	gtk_tree_path_free (realpath);
+
+	if (!path) {
+		*uri = NULL;
+		return TRUE;
+	}
 
 	*uri = brasero_data_disc_path_to_uri (data, path);
 	if (*uri == BRASERO_IMPORTED_FILE) {

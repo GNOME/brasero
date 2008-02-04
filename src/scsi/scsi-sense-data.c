@@ -39,7 +39,7 @@
  * (defined in SCSI Primary command 3 / SPC specs)
  **/
 
-#define SENSE_DATA_KEY(sense)			((sense) ? (sense) [2] & 0xFF : 0x00)			/* Sense code itself */
+#define SENSE_DATA_KEY(sense)			((sense) ? (sense) [2] & 0x0F : 0x00)			/* Sense code itself */
 #define SENSE_DATA_ASC(sense)			((sense) ? (sense) [12] : 0x00)				/* Additional Sense Code */
 #define SENSE_DATA_ASCQ(sense)			((sense) ? (sense) [13] : 0x00)				/* Additional Sense Code Qualifier */
 #define SENSE_DATA_ASC_ASCQ(sense)		((sense) ? (sense) [12] << 8 | (sense) [13] : 0x00)	/* ASC and ASCQ combined */
@@ -60,6 +60,7 @@
 #define ASC_ASCQ_CODE_INSUFFICIENT_TIME_FOR_OPERATION	0x2E00
 #define ASC_ASCQ_CODE_KEY_NOT_ESTABLISHED		0x6F02
 #define ASC_ASCQ_CODE_SCRAMBLED_SECTOR			0x6F03
+#define ASC_ASCQ_CODE_INVALID_TRACK_MODE		0x6400
 
 /**
  * error processing 
@@ -73,7 +74,7 @@ brasero_sense_data_print (uchar *sense_data)
 	if (!sense_data)
 		return;
 
-	printf("Sense key: 0x%02x ", sense_data [0]);
+	printf("Sense buffer: 0x%02x ", sense_data [0]);
 	for (i = 1; i < BRASERO_SENSE_DATA_SIZE; i ++)
 		printf("0x%02x ", sense_data [i]);
 
@@ -136,6 +137,10 @@ brasero_sense_data_illegal_request (uchar *sense_data, BraseroScsiErrCode *err)
 		case ASC_ASCQ_CODE_KEY_NOT_ESTABLISHED:
 		case ASC_ASCQ_CODE_SCRAMBLED_SECTOR:
 			BRASERO_SCSI_SET_ERRCODE (err, BRASERO_SCSI_KEY_NOT_ESTABLISHED);
+			break;
+
+		case ASC_ASCQ_CODE_INVALID_TRACK_MODE:
+			BRASERO_SCSI_SET_ERRCODE (err, BRASERO_SCSI_INVALID_TRACK_MODE);
 			break;
 
 		default:

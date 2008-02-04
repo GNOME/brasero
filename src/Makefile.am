@@ -174,6 +174,8 @@ brasero_SOURCES = \
 	scsi/scsi-dvd-structures.h         \
 	scsi/scsi-read-format-capacities.c         \
 	scsi/scsi-read-format-capacities.h         \
+	scsi/scsi-read-cd.h	\
+	scsi/scsi-read-cd.c	\
 	burn-debug.c         \
 	burn-debug.h         \
 	burn-track.h         \
@@ -217,7 +219,7 @@ brasero_SOURCES = \
 	brasero-preview.h         \
 	brasero-preview.c         \
 	burn-image-format.c         \
-	burn-image-format.h         
+	burn-image-format.h
 
 brasero_LDADD = $(BRASERO_LIBS)
 
