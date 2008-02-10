@@ -353,6 +353,7 @@ brasero_project_focus_changed_cb (GtkContainer *container,
 static void
 brasero_project_init (BraseroProject *obj)
 {
+	GtkSizeGroup *size_group;
 	GtkWidget *alignment;
 	GtkWidget *vbox;
 	GtkWidget *box;
@@ -385,10 +386,12 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->empty = 1;
 	
 	/* burn button set insensitive since there are no files in the selection */
-	obj->priv->burn = brasero_utils_make_button (_("Burn..."),
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
+	obj->priv->burn = brasero_utils_make_button (_("_Burn..."),
 						     NULL,
 						     "media-optical-burn",
 						     GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_widget_show (obj->priv->burn);
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
 	g_signal_connect (obj->priv->burn,
@@ -396,13 +399,17 @@ brasero_project_init (BraseroProject *obj)
 			  G_CALLBACK (brasero_project_burn_clicked_cb),
 			  obj);
 	gtk_widget_set_tooltip_text (obj->priv->burn,
-			      _("Start to burn the contents of the selection"));
+				     _("Start to burn the contents of the selection"));
+	gtk_size_group_add_widget (GTK_SIZE_GROUP (size_group), obj->priv->burn);
+
 	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
+	gtk_widget_show (alignment);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
 	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 
 	/* The two panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
+	gtk_widget_show (obj->priv->audio);
 	g_signal_connect (G_OBJECT (obj->priv->audio),
 			  "contents-changed",
 			  G_CALLBACK (brasero_project_contents_changed_cb),
@@ -417,6 +424,8 @@ brasero_project_init (BraseroProject *obj)
 			  obj);
 
 	obj->priv->data = brasero_data_disc_new ();
+	gtk_widget_show (obj->priv->data);
+	brasero_data_disc_set_right_button_group (BRASERO_DATA_DISC (obj->priv->data), size_group);
 	g_signal_connect (G_OBJECT (obj->priv->data),
 			  "contents-changed",
 			  G_CALLBACK (brasero_project_contents_changed_cb),
@@ -435,6 +444,7 @@ brasero_project_init (BraseroProject *obj)
 			  obj);
 
 	obj->priv->discs = gtk_notebook_new ();
+	gtk_widget_show (obj->priv->discs);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj->priv->discs), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj->priv->discs), FALSE);
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
@@ -447,6 +457,8 @@ brasero_project_init (BraseroProject *obj)
 			    TRUE,
 			    TRUE,
 			    0);
+
+	g_object_unref (size_group);
 }
 
 static void
@@ -646,9 +658,9 @@ brasero_project_get_selected_uri (BraseroURIContainer *container)
 	if (project->priv->is_burning)
 		return NULL;
 
-	if (brasero_disc_get_selected_uri (project->priv->current, uri))
+	if (brasero_disc_get_selected_uri (project->priv->current, &uri))
 		return uri;
-	
+
 	return NULL;
 }
 
@@ -1613,9 +1625,10 @@ brasero_project_invalid_project_dialog (BraseroProject *project,
 	gtk_widget_destroy (dialog);
 }
 
-static BraseroGraftPt *
+static gboolean
 _read_graft_point (xmlDocPtr project,
-		   xmlNodePtr graft)
+		   xmlNodePtr graft,
+		   BraseroDiscTrack *track)
 {
 	BraseroGraftPt *retval;
 
@@ -1654,8 +1667,8 @@ _read_graft_point (xmlDocPtr project,
 			if (!excluded)
 				goto error;
 
-			retval->excluded = g_slist_prepend (retval->excluded,
-							    xmlURIUnescapeString ((char*) excluded, 0, NULL));
+			track->contents.data.excluded = g_slist_prepend (track->contents.data.excluded,
+									 xmlURIUnescapeString ((char*) excluded, 0, NULL));
 			g_free (excluded);
 		}
 		else if (graft->type == XML_ELEMENT_NODE)
@@ -1664,12 +1677,12 @@ _read_graft_point (xmlDocPtr project,
 		graft = graft->next;
 	}
 
-	retval->excluded = g_slist_reverse (retval->excluded);
-	return retval;
+	track->contents.data.grafts = g_slist_prepend (track->contents.data.grafts, retval);
+	return TRUE;
 
 error:
 	brasero_graft_point_free (retval);
-	return NULL;
+	return FALSE;
 }
 
 static BraseroDiscTrack *
@@ -1683,13 +1696,8 @@ _read_data_track (xmlDocPtr project,
 
 	while (item) {
 		if (!xmlStrcmp (item->name, (const xmlChar *) "graft")) {
-			BraseroGraftPt *graft;
-
-			graft = _read_graft_point (project, item->xmlChildrenNode);
-			if (!graft)
+			if (!_read_graft_point (project, item->xmlChildrenNode, track))
 				goto error;
-
-			track->contents.data.grafts = g_slist_prepend (track->contents.data.grafts, graft);
 		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "restored")) {
 			xmlChar *restored;
@@ -1702,17 +1710,31 @@ _read_data_track (xmlDocPtr project,
 
 			track->contents.data.restored = g_slist_prepend (track->contents.data.restored, restored);
 		}
+		else if (!xmlStrcmp (item->name, (const xmlChar *) "excluded")) {
+			xmlChar *excluded;
+
+			excluded = xmlNodeListGetString (project,
+							 item->xmlChildrenNode,
+							 1);
+			if (!excluded)
+				goto error;
+
+			track->contents.data.excluded = g_slist_prepend (track->contents.data.excluded,
+									 xmlURIUnescapeString ((char*) excluded, 0, NULL));
+			g_free (excluded);
+		}
 		else if (item->type == XML_ELEMENT_NODE)
 			goto error;
 
 		item = item->next;
 	}
 
+	track->contents.data.excluded = g_slist_reverse (track->contents.data.excluded);
 	track->contents.data.grafts = g_slist_reverse (track->contents.data.grafts);
-	return (BraseroDiscTrack *) track;
+	return track;
 
-error :
-	brasero_track_free ((BraseroDiscTrack*) track);
+error:
+	brasero_track_free (track);
 	return NULL;
 }
 
@@ -2207,17 +2229,18 @@ _save_data_track_xml (xmlTextWriter *project,
 				return FALSE;
 		}
 
-		for (iter = graft->excluded; iter; iter = iter->next) {
-			xmlChar *escaped;
-
-			escaped = xmlURIEscapeStr ((xmlChar *) iter->data, NULL);
-			success = xmlTextWriterWriteElement (project, (xmlChar *) "excluded", (xmlChar *) escaped);
-			g_free (escaped);
-			if (success < 0)
-				return FALSE;
-		}
-
 		success = xmlTextWriterEndElement (project); /* graft */
+		if (success < 0)
+			return FALSE;
+	}
+
+	/* save excluded uris */
+	for (iter = track->contents.data.excluded; iter; iter = iter->next) {
+		xmlChar *escaped;
+
+		escaped = xmlURIEscapeStr ((xmlChar *) iter->data, NULL);
+		success = xmlTextWriterWriteElement (project, (xmlChar *) "excluded", (xmlChar *) escaped);
+		g_free (escaped);
 		if (success < 0)
 			return FALSE;
 	}

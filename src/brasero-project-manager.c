@@ -786,7 +786,7 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 
 	brasero_layout_add_project (BRASERO_LAYOUT (obj->priv->layout),
 				    obj->priv->project);
-	gtk_widget_show_all (obj->priv->project);
+	gtk_widget_show (obj->priv->project);
 
 #ifdef BUILD_SEARCH
 	GtkWidget *search;

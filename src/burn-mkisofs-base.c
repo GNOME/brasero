@@ -278,74 +278,6 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroBurnResult
-brasero_mkisofs_base_write_excluded_valid_paths (BraseroMkisofsBase *base,
-						 const gchar *uri,
-						 GError **error)
-{
-	gint size;
-	gchar *tmp;
-	gchar *path;
-	gchar *parent;
-	GSList *iter;
-	gchar *excluded;
-	GSList *grafts;
-	gboolean found;
-	BraseroGraftPt *graft;
-	BraseroBurnResult result;
-
-	/* we go straight to its parent so that if the excluded uri
-	 * is a graft point it won't be taken into account (it has 
-	 * already with all other graft points) */
-	parent = g_path_get_dirname (uri);
-	while (parent [1] != '\0') {
-		grafts = g_hash_table_lookup (base->grafts, parent);
-
-		for (; grafts; grafts = grafts->next) {
-			graft = grafts->data;
-
-			/* see if the uri or one of its parent is excluded */
-			found = FALSE;
-			for (iter = graft->excluded; iter; iter = iter->next) {
-				excluded = iter->data;
-				size = strlen (excluded);
-
-				if (!strncmp (excluded, uri, size)
-				&& (*(uri + size) == '\0' ||  *(uri + size) == '/')) {
-					found = TRUE;
-					break;
-				}
-			}
-
-			if (found)
-				continue;
-
-			/* there is at least one path which is not excluded */
-			path = g_strconcat (graft->path,
-					    uri + strlen (graft->uri),
-					    NULL);
-
-			result = brasero_mkisofs_base_write_graft (base,
-								   uri,
-								   path,
-								   error);
-			g_free (path);
-
-			if (result != BRASERO_BURN_OK) {
-				g_free (parent);
-				return result;
-			}
-		}
-
-		tmp = parent;
-		parent = g_path_get_dirname (parent);
-		g_free (tmp);
-	}
-	g_free (parent);
-
-	return BRASERO_BURN_OK;
-}
-
 static gboolean
 _foreach_write_grafts (const gchar *uri,
 		       GSList *grafts,
@@ -441,7 +373,6 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 				     GError **error)
 {
 	gchar *uri;
-	GSList *list;
 	GSList *grafts_excluded;
 	BraseroMkisofsBase base;
 	BraseroBurnResult result;
@@ -503,40 +434,12 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 							 error);
 		if (result != BRASERO_BURN_OK)
 			goto cleanup;
-
-		for (list = graft->excluded; list; list = list->next) {
-			gchar *uri;
-
-			uri = list->data;
-			grafts_excluded = g_slist_prepend (grafts_excluded, uri);
-		}
 	}
 
 	/* write the grafts list */
 	result = brasero_mkisofs_base_write_grafts (&base, error);
 	if (result != BRASERO_BURN_OK)
 		goto cleanup;
-
-	/* now add the excluded and the paths where they still exist */
-	for (; grafts_excluded; grafts_excluded = g_slist_remove (grafts_excluded, uri)) {
-		uri = grafts_excluded->data;
-
-		result = brasero_mkisofs_base_write_excluded (&base,
-							      uri,
-							      error);
-		if (result != BRASERO_BURN_OK)
-			goto cleanup;
-
-		/* One thing is a bit tricky here. If we exclude one file mkisofs considers
-		 * it to be excluded for all paths. So if one file appears multiple times
-		 * and is excluded just once, it will always be excluded that's why we create
-		 * explicit graft points where it is not excluded.*/
-		result = brasero_mkisofs_base_write_excluded_valid_paths (&base,
-									  uri,
-									  error);
-		if (result != BRASERO_BURN_OK)
-			goto cleanup;
-	}
 
 	/* write the global excluded files list */
 	for (; excluded; excluded = excluded->next) {

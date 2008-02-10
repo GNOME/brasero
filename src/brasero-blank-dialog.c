@@ -70,7 +70,7 @@ typedef struct BraseroBlankDialogPrivate BraseroBlankDialogPrivate;
 
 #define BRASERO_BLANK_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BLANK_DIALOG, BraseroBlankDialogPrivate))
 
-static GObjectClass *parent_class = NULL;
+static BraseroToolDialogClass *parent_class = NULL;
 
 static guint
 brasero_blank_dialog_set_button (BraseroBurnSession *session,

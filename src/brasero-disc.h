@@ -45,6 +45,7 @@ G_BEGIN_DECLS
 
 #define BRASERO_DISC_ACTION "DiscAction"
 
+
 typedef enum {
 	BRASERO_DISC_OK = 0,
 	BRASERO_DISC_NOT_IN_TREE,
@@ -83,6 +84,7 @@ typedef struct {
 	union  {
 		struct {
 			GSList *grafts;
+			GSList *excluded;
 			GSList *restored;
 		} data;
 
@@ -203,5 +205,8 @@ brasero_track_free (BraseroDiscTrack *track);
 void
 brasero_disc_set_current_drive (BraseroDisc *disc,
 				NautilusBurnDrive *drive);
+
+GtkWidget *
+brasero_disc_get_use_info_notebook (void);
 
 #endif /* DISC_H */

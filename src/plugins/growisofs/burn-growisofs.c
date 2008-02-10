@@ -261,7 +261,9 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	}
 
 	g_ptr_array_add (argv, g_strdup ("-graft-points"));
-	g_ptr_array_add (argv, g_strdup ("-D"));	// This is dangerous the manual says but apparently it works well
+
+	if (input.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
+		g_ptr_array_add (argv, g_strdup ("-D"));	// This is dangerous the manual says but apparently it works well
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (growisofs),
 					   NULL,

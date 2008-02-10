@@ -64,6 +64,7 @@ struct _BraseroVolFile {
 };
 
 #define BRASERO_VOLUME_FILE_NAME(file)			((file)->rr_name?(file)->rr_name:(file)->name)
+#define BRASERO_VOLUME_FILE_SIZE(file)			((file)->isdir?0:(file)->specific.file.size_bytes)
 
 void
 brasero_volume_file_free (BraseroVolFile *file);

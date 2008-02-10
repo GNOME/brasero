@@ -216,17 +216,6 @@ brasero_md5sum_file_explore_directory (BraseroMd5sumFile *self,
 	return result;
 }
 
-static gboolean
-brasero_md5sum_file_clean_excluded_table_cb (gpointer key,
-					gpointer data,
-					gpointer user_data)
-{
-	if (GPOINTER_TO_INT (data) == 1)
-		return TRUE;
-
-	return FALSE;
-}
-
 static BraseroBurnResult
 brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 {
@@ -296,7 +285,6 @@ brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 	for (; iter; iter = iter->next) {
 		BraseroGraftPt *graft;
 		gchar *graft_path;
-		GSList *excluded;
 		gchar *path;
 		gchar *uri;
 
@@ -308,13 +296,6 @@ brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 		graft = iter->data;
 		if (!graft->uri)
 			continue;
-
-		/* add all excluded in the excluded graft hash */
-		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
-			uri = excluded->data;
-			path = gnome_vfs_get_local_path_from_uri (uri);
-			g_hash_table_insert (excludedH, path, GINT_TO_POINTER (1));
-		}
 
 		/* get the current and futures paths */
 		uri = graft->uri;
@@ -340,12 +321,6 @@ brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 		}
 
 		g_free (path);
-
-		/* clean excluded hash table of all graft point excluded */
-		g_hash_table_foreach_remove (excludedH,
-					     brasero_md5sum_file_clean_excluded_table_cb,
-					     NULL);
-
 		if (result != BRASERO_BURN_OK)
 			break;
 	}

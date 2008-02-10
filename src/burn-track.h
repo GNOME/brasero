@@ -49,11 +49,13 @@ typedef enum {
 	BRASERO_IMAGE_FS_JOLIET			= 1 << 2,
 	BRASERO_IMAGE_FS_VIDEO			= 1 << 3,
 	BRASERO_IMAGE_ISO_FS_LEVEL_3		= 1 << 4,
+	BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY	= 1 << 5,
 	BRASERO_IMAGE_FS_ANY			= BRASERO_IMAGE_FS_ISO|
 						  BRASERO_IMAGE_FS_UDF|
 						  BRASERO_IMAGE_FS_JOLIET|
 						  BRASERO_IMAGE_ISO_FS_LEVEL_3|
-						  BRASERO_IMAGE_FS_VIDEO
+						  BRASERO_IMAGE_FS_VIDEO|
+						  BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY
 } BraseroImageFS;
 
 typedef enum {
@@ -83,9 +85,6 @@ typedef enum {
 struct _BraseroGraftPt {
 	gchar *uri;
 	gchar *path;
-
-	/* list of uris (char *) that are to be excluded for this path only */
-	GSList *excluded;
 };
 typedef struct _BraseroGraftPt BraseroGraftPt;
 

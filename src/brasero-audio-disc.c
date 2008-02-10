@@ -562,7 +562,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	gtk_box_set_spacing (GTK_BOX (obj), 0);
 
 	/* notebook to display information about how to use the tree */
-	obj->priv->notebook = brasero_utils_get_use_info_notebook ();
+	obj->priv->notebook = brasero_disc_get_use_info_notebook ();
 	gtk_box_pack_start (GTK_BOX (obj), obj->priv->notebook, TRUE, TRUE, 0);
 
 	/* Tree */

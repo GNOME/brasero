@@ -62,12 +62,8 @@ brasero_SOURCES = \
 	brasero-eject-dialog.h		\
 	brasero-metadata.c         \
 	brasero-metadata.h         \
-	brasero-filtered-window.c         \
-	brasero-filtered-window.h         \
 	brasero-disc.c         \
 	brasero-disc.h         \
-	brasero-data-disc.c         \
-	brasero-data-disc.h         \
 	brasero-audio-disc.c         \
 	brasero-audio-disc.h         \
 	brasero-project.c         \
@@ -219,7 +215,29 @@ brasero_SOURCES = \
 	brasero-preview.h         \
 	brasero-preview.c         \
 	burn-image-format.c         \
-	burn-image-format.h         
+	burn-image-format.h         \
+	brasero-data-project.c         \
+	brasero-data-project.h         \
+	brasero-data-session.c         \
+	brasero-data-session.h         \
+	brasero-data-tree-model.c         \
+	brasero-data-tree-model.h         \
+	brasero-data-vfs.c         \
+	brasero-data-vfs.h         \
+	brasero-file-monitor.c         \
+	brasero-file-monitor.h         \
+	brasero-file-node.c         \
+	brasero-file-node.h         \
+	brasero-data-disc.h         \
+	brasero-data-disc.c         \
+	brasero-file-filtered.h         \
+	brasero-file-filtered.c         \
+	brasero-filter-option.h         \
+	brasero-filter-option.c         \
+	brasero-disc-message.h         \
+	brasero-disc-message.c         \
+	baobab-cell-renderer-progress.c         \
+	baobab-cell-renderer-progress.h 
 
 brasero_LDADD = $(BRASERO_LIBS)
 

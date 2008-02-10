@@ -72,7 +72,7 @@ struct _BraseroSumDialogPrivate {
 	BraseroXferCtx *xfer_ctx;
 };
 
-static GtkDialogClass *parent_class = NULL;
+static BraseroToolDialogClass *parent_class = NULL;
 
 static void
 brasero_sum_dialog_md5_toggled (GtkToggleButton *button,

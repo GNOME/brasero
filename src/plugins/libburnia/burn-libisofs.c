@@ -351,10 +351,13 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	BraseroLibisofsPrivate *priv;
 	BraseroTrack *track = NULL;
 	struct iso_volume *volume;
+	gchar **excluded_array;
 	GSList *grafts = NULL;
 	gchar *label = NULL;
 	gchar *publisher;
+	GSList *excluded;
 	GSList *iter;
+	guint size;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
@@ -386,14 +389,24 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	grafts = g_slist_copy (grafts);
 	grafts = g_slist_sort (grafts, brasero_libisofs_sort_graft_points);
 
+	/* add global exclusions */
+	size = g_slist_length (brasero_track_get_data_excluded_source (track, FALSE));
+	excluded_array = g_new0 (gchar *, size + 1);
+	size = 0;
+
+	for (excluded = brasero_track_get_data_excluded_source (track, FALSE);
+	     excluded; excluded = excluded->next) {
+		gchar *uri;
+
+		uri = excluded->data;
+		excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
+	}
+
 	for (iter = grafts; iter; iter = iter->next) {
 		struct iso_tree_node_dir *parent;
-		gchar **excluded_array;
 		BraseroGraftPt *graft;
 		gchar *path_parent;
 		gchar *path_name;
-		GSList *excluded;
-		guint size;
 
 		if (priv->cancel)
 			goto end;
@@ -404,28 +417,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				 "Adding graft disc path = %s, URI = %s",
 				 graft->path,
 				 graft->uri);
-
-		size = g_slist_length (brasero_track_get_data_excluded_source (track, FALSE));
-		size += g_slist_length (graft->excluded);
-		excluded_array = g_new0 (gchar *, size + 1);
-		size = 0;
-
-		/* add global exclusions */
-		for (excluded = brasero_track_get_data_excluded_source (track, FALSE);
-		     excluded; excluded = excluded->next) {
-			gchar *uri;
-
-			uri = excluded->data;
-			excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
-		}
-
-		/* now let's take care of the excluded files */
-		for (excluded = graft->excluded; excluded; excluded = excluded->next) {
-			gchar *uri;
-
-			uri = excluded->data;
-			excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
-		}
 
 		/* search for parent node */
 		path_parent = g_path_get_dirname (graft->path);
@@ -439,7 +430,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 						   BRASERO_BURN_ERROR_GENERAL,
 						   _("a parent for the path (%s) could not be found in the tree"),
 						   graft->path);
-			g_free (excluded_array);
 			goto end;
 		}
 
@@ -456,7 +446,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 							   BRASERO_BURN_ERROR_GENERAL,
 							   _("non local file %s"),
 							   G_STRLOC);
-				g_free (excluded_array);
 				g_free (path_name);
 				goto end;
 			}
@@ -483,7 +472,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 								   _("libisofs reported an error while adding directory %s"),
 								   graft->path);
 					g_free (path_name);
-					g_free (excluded_array);
 					goto end;
 				}
 			}
@@ -499,7 +487,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 							   _("unsupported type of file (at %s)"),
 							   G_STRLOC);
 				g_free (path_name);
-				g_free (excluded_array);
 				goto end;
 			}
 
@@ -509,10 +496,12 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			iso_tree_add_dir (parent, path_name);
 
 		g_free (path_name);
-		g_free (excluded_array);
 	}
 
+
 end:
+
+	g_free (excluded_array);
 
 	if (iter)
 		g_slist_free (iter);

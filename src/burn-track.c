@@ -89,10 +89,6 @@ brasero_graft_point_free (BraseroGraftPt *graft)
 		g_free (graft->uri);
 
 	g_free (graft->path);
-
-	g_slist_foreach (graft->excluded, (GFunc) g_free, NULL);
-	g_slist_free (graft->excluded);
-
 	g_free (graft);
 }
 
@@ -100,8 +96,6 @@ BraseroGraftPt *
 brasero_graft_point_copy (BraseroGraftPt *graft)
 {
 	BraseroGraftPt *newgraft;
-	GSList *iter;
-	gchar *uri;
 
 	g_return_val_if_fail (graft != NULL, NULL);
 
@@ -110,13 +104,6 @@ brasero_graft_point_copy (BraseroGraftPt *graft)
 	if (graft->uri)
 		newgraft->uri = g_strdup (graft->uri);
 
-	for (iter = graft->excluded; iter; iter = iter->next) {
-		uri = iter->data;
-		newgraft->excluded = g_slist_prepend (newgraft->excluded,
-						      g_strdup (uri));
-	}
-
-	newgraft->excluded = g_slist_reverse (newgraft->excluded);
 	return newgraft;
 }
 
@@ -238,11 +225,6 @@ brasero_track_clean (BraseroTrack *track)
 				g_free (graft->uri);
 			if (graft->path)
 				g_free (graft->path);
-
-			if (graft->excluded) {
-				g_slist_foreach (graft->excluded, (GFunc) g_free, NULL);
-				g_slist_free (graft->excluded);
-			}
 
 			g_free (graft);
 		}

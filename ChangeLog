@@ -1,3 +1,375 @@
+2008-02-10  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	This a rewrite of the BraseroDataDisc object.
+	The current benefits:
+	- a much more limited footprint in memory for large tree (probably something like 50% =))
+	- an improved maintainability
+
+	Expected benefits (more work needed):
+	- faster and more responsive loading operation
+	- some bugs will be more easily closed in future thanks to greated flexibility
+
+	Some new features:
+	- filtered files are displayed in a separate tree
+	- the proportion that a folder / a file is taking in final image is displayed
+	- a new message box (stolen from gedit) is displayed while loading projects (to be extended)
+
+	Basically this closes a couple of bugs (mostly feature requests):
+	- #438851 – Add a baobab-like gfx size view
+	- #362569 – Unselecting files in data project view
+	- #438854 – Allow listing and vetting of filtered files
+	- #360899 – GUI enhancements/simplification
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/baobab-cell-renderer-progress.c:
+	(baobab_cell_renderer_progress_init),
+	(baobab_cell_renderer_progress_new),
+	(baobab_cell_renderer_progress_get_property),
+	(baobab_cell_renderer_progress_set_property),
+	(baobab_cell_renderer_progress_get_size),
+	(set_color_according_to_perc),
+	(baobab_cell_renderer_progress_render),
+	(baobab_cell_renderer_progress_class_init):
+	* src/baobab-cell-renderer-progress.h:
+	* src/brasero-audio-disc.c: (brasero_audio_disc_init):
+	* src/brasero-blank-dialog.c:
+	* src/brasero-data-disc.c: (brasero_data_disc_notification_free),
+	(brasero_data_disc_notification_closed),
+	(brasero_data_disc_notify_user_real),
+	(brasero_data_disc_notify_user),
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_import_session_cb),
+	(brasero_data_disc_get_parent),
+	(brasero_data_disc_new_folder_clicked_cb),
+	(brasero_data_disc_clipboard_text_cb),
+	(brasero_data_disc_clipboard_targets_cb),
+	(brasero_data_disc_paste_activated_cb),
+	(brasero_data_disc_name_editing_started_cb),
+	(brasero_data_disc_name_editing_canceled_cb),
+	(brasero_data_disc_name_edited_cb),
+	(brasero_data_disc_set_expand_state),
+	(brasero_data_disc_row_collapsed_cb),
+	(brasero_data_disc_row_expanded_cb),
+	(brasero_data_disc_project_loaded_cb),
+	(brasero_data_disc_activity_changed_cb),
+	(brasero_data_disc_filtered_uri_cb),
+	(brasero_data_disc_filter_expanded_cb),
+	(brasero_data_disc_filtered_file_cb),
+	(brasero_data_disc_restored_file_cb),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb),
+	(brasero_data_disc_name_collision_cb),
+	(brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_deep_directory_cb),
+	(brasero_data_disc_size_changed_cb),
+	(brasero_data_disc_session_available_cb),
+	(brasero_data_disc_session_loaded_cb), (brasero_data_disc_clear),
+	(brasero_data_disc_reset), (brasero_data_disc_delete_selected),
+	(brasero_data_disc_add_uri), (brasero_data_disc_get_track),
+	(brasero_data_disc_set_session_param),
+	(brasero_data_disc_set_session_contents),
+	(brasero_data_disc_message_response_cb),
+	(brasero_data_disc_load_track), (brasero_data_disc_get_status),
+	(brasero_data_disc_get_selected_uri),
+	(brasero_data_disc_set_drive), (brasero_data_disc_add_ui),
+	(brasero_data_disc_open_file),
+	(brasero_data_disc_open_activated_cb),
+	(brasero_data_disc_rename_activated),
+	(brasero_data_disc_rename_activated_cb),
+	(brasero_data_disc_delete_activated_cb),
+	(brasero_data_disc_selection_changed_cb),
+	(brasero_data_disc_tree_select_function),
+	(brasero_data_disc_show_menu),
+	(brasero_data_disc_button_pressed_cb),
+	(brasero_data_disc_key_released_cb),
+	(brasero_data_disc_contents_added_cb),
+	(brasero_data_disc_contents_removed_cb),
+	(brasero_data_disc_set_right_button_group),
+	(brasero_data_disc_init), (brasero_data_disc_finalize),
+	(brasero_data_disc_iface_disc_init),
+	(brasero_data_disc_get_property), (brasero_data_disc_set_property),
+	(brasero_data_disc_class_init), (brasero_data_disc_new):
+	* src/brasero-data-disc.h:
+	* src/brasero-data-project.c: (brasero_data_project_file_signal),
+	(brasero_data_project_reference_new),
+	(brasero_data_project_reference_free),
+	(brasero_data_project_reference_get),
+	(brasero_data_project_reference_remove_children_cb),
+	(brasero_data_project_reference_invalidate),
+	(brasero_data_project_joliet_hash),
+	(brasero_data_project_joliet_equal),
+	(brasero_data_project_joliet_set_key),
+	(brasero_data_project_joliet_add_node),
+	(brasero_data_project_joliet_remove_node),
+	(brasero_data_project_joliet_remove_children_node_cb),
+	(brasero_data_project_joliet_remove_children_node),
+	(brasero_data_project_node_to_uri),
+	(brasero_data_project_find_child_node),
+	(brasero_data_project_uri_to_nodes),
+	(brasero_data_project_node_changed),
+	(brasero_data_project_reorder_children),
+	(brasero_data_project_resort_tree),
+	(brasero_data_project_reverse_children),
+	(brasero_data_project_reverse_tree),
+	(brasero_data_project_set_sort_function),
+	(brasero_data_project_uri_has_parent),
+	(brasero_data_project_uri_is_graft_needed),
+	(brasero_data_project_uri_remove_graft),
+	(brasero_data_project_uri_add_graft),
+	(brasero_data_project_uri_ensure_graft),
+	(brasero_data_project_uri_graft_nodes),
+	(brasero_data_project_add_node_and_children),
+	(brasero_data_project_remove_node_children_graft_cb),
+	(brasero_data_project_remove_node_children_graft),
+	(brasero_data_project_monitor_cancel_foreach_cb),
+	(brasero_data_project_node_removed),
+	(brasero_data_project_remove_real),
+	(brasero_data_project_remove_node),
+	(brasero_data_project_destroy_node),
+	(brasero_data_project_move_node_real),
+	(brasero_data_project_move_node),
+	(brasero_data_project_rename_node),
+	(brasero_data_project_add_node_real),
+	(brasero_data_project_restore_uri),
+	(brasero_data_project_exclude_uri),
+	(brasero_data_project_add_imported_session_file),
+	(brasero_data_project_add_empty_directory),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_node_reloaded),
+	(brasero_data_project_add_loading_node),
+	(brasero_data_project_directory_node_loaded),
+	(brasero_data_project_add_node_from_info),
+	(brasero_data_project_set_joliet_compliant_name),
+	(brasero_data_project_node_to_path),
+	(_foreach_grafts_make_list_cb),
+	(brasero_data_project_get_contents),
+	(brasero_data_project_is_joliet_compliant),
+	(brasero_data_project_is_video_project),
+	(brasero_data_project_is_empty),
+	(brasero_data_project_create_path),
+	(brasero_data_project_skip_existing),
+	(brasero_data_project_add_path),
+	(brasero_data_project_add_excluded_uri),
+	(brasero_data_project_load_contents),
+	(brasero_data_project_sum_graft_size_cb),
+	(brasero_data_project_get_size),
+	(brasero_data_project_folder_size_cb),
+	(brasero_data_project_get_folder_size),
+	(brasero_data_project_init), (brasero_data_project_get_root),
+	(brasero_data_project_clear_grafts_cb),
+	(brasero_data_project_clear_joliet_cb),
+	(brasero_data_project_clear), (brasero_data_project_reset),
+	(brasero_data_project_finalize), (brasero_data_project_file_added),
+	(brasero_data_project_file_update_URI),
+	(brasero_data_project_file_update_name),
+	(brasero_data_project_file_graft),
+	(brasero_data_project_file_renamed),
+	(brasero_data_project_file_moved),
+	(brasero_data_project_file_removed),
+	(brasero_data_project_file_modified),
+	(brasero_data_project_class_init):
+	* src/brasero-data-project.h:
+	* src/brasero-data-session.c: (brasero_data_session_remove_last),
+	(brasero_data_session_add_children_files),
+	(brasero_data_session_add_last), (brasero_data_session_set_drive),
+	(brasero_data_session_get_loaded_medium),
+	(brasero_data_session_init), (brasero_data_session_finalize),
+	(brasero_data_session_class_init):
+	* src/brasero-data-session.h:
+	* src/brasero-data-tree-model.c:
+	(brasero_data_tree_model_iter_parent),
+	(brasero_data_tree_model_iter_nth_child),
+	(brasero_data_tree_model_iter_n_children),
+	(brasero_data_tree_model_iter_has_child),
+	(brasero_data_tree_model_iter_children),
+	(brasero_data_tree_model_iter_next),
+	(brasero_data_tree_model_node_shown),
+	(brasero_data_tree_model_node_hidden),
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_node_to_path),
+	(brasero_data_tree_model_get_path),
+	(brasero_data_tree_model_path_to_node),
+	(brasero_data_tree_model_get_iter),
+	(brasero_data_tree_model_get_column_type),
+	(brasero_data_tree_model_get_n_columns),
+	(brasero_data_tree_model_get_flags),
+	(brasero_data_tree_model_multi_row_draggable),
+	(brasero_data_tree_model_multi_drag_data_get),
+	(brasero_data_tree_model_multi_drag_data_delete),
+	(brasero_data_tree_model_drag_data_received),
+	(brasero_data_tree_model_row_drop_possible),
+	(brasero_data_tree_model_drag_data_delete),
+	(brasero_data_tree_model_get_sort_column_id),
+	(brasero_data_tree_model_set_sort_column_id),
+	(brasero_data_tree_model_set_sort_func),
+	(brasero_data_tree_model_set_default_sort_func),
+	(brasero_data_tree_model_has_default_sort_func),
+	(brasero_data_tree_model_clear_children),
+	(brasero_data_tree_model_clear), (brasero_data_tree_model_reset),
+	(brasero_data_tree_model_node_added),
+	(brasero_data_tree_model_node_removed),
+	(brasero_data_tree_model_node_changed),
+	(brasero_data_tree_model_node_reordered),
+	(brasero_data_tree_model_activity_changed),
+	(brasero_data_tree_model_init), (brasero_data_tree_model_finalize),
+	(brasero_data_tree_model_iface_init),
+	(brasero_data_tree_model_multi_drag_source_iface_init),
+	(brasero_data_tree_model_drag_source_iface_init),
+	(brasero_data_tree_model_drag_dest_iface_init),
+	(brasero_data_tree_model_sortable_iface_init),
+	(brasero_data_tree_model_class_init),
+	(brasero_data_tree_model_new):
+	* src/brasero-data-tree-model.h:
+	* src/brasero-data-vfs.c: (brasero_data_vfs_restored_list_cb),
+	(brasero_data_vfs_get_restored), (brasero_data_vfs_add_restored),
+	(brasero_data_vfs_remove_restored), (brasero_data_vfs_is_active),
+	(brasero_data_vfs_is_loading_uri), (brasero_data_vfs_is_readable),
+	(brasero_data_vfs_check_uri_result),
+	(brasero_data_vfs_remove_from_hash),
+	(brasero_data_vfs_directory_load_end),
+	(brasero_data_vfs_directory_load_result),
+	(brasero_data_vfs_load_directory),
+	(brasero_data_vfs_loading_node_end),
+	(brasero_data_vfs_loading_node_result),
+	(brasero_data_vfs_load_node), (brasero_data_vfs_loading_node),
+	(brasero_data_vfs_increase_priority_cb),
+	(brasero_data_vfs_require_higher_priority),
+	(brasero_data_vfs_require_directory_contents),
+	(brasero_data_vfs_require_node_load), (brasero_data_vfs_load_mime),
+	(brasero_data_vfs_node_added), (brasero_data_vfs_empty_loading_cb),
+	(brasero_data_vfs_empty_filtered_cb), (brasero_data_vfs_clear),
+	(brasero_data_vfs_reset), (brasero_data_vfs_init),
+	(brasero_data_vfs_finalize), (brasero_data_vfs_class_init):
+	* src/brasero-data-vfs.h:
+	* src/brasero-disc-message.c:
+	(brasero_disc_message_expander_activated_cb),
+	(brasero_disc_message_add_errors),
+	(brasero_disc_message_remove_errors),
+	(brasero_disc_message_button_clicked_cb),
+	(brasero_disc_message_add_button),
+	(brasero_disc_message_remove_buttons),
+	(brasero_disc_message_update_progress),
+	(brasero_disc_message_set_progress_active),
+	(brasero_disc_message_set_progress),
+	(brasero_disc_message_set_image),
+	(brasero_disc_message_set_primary),
+	(brasero_disc_message_set_secondary),
+	(brasero_disc_message_get_style), (style_set),
+	(brasero_disc_message_init), (brasero_disc_message_finalize),
+	(brasero_disc_message_size_request),
+	(brasero_disc_message_size_allocate),
+	(brasero_disc_message_realize),
+	(brasero_disc_message_expose_event),
+	(brasero_disc_message_class_init), (brasero_disc_message_new):
+	* src/brasero-disc-message.h:
+	* src/brasero-disc.c:
+	(brasero_utils_disc_find_tree_view_in_container),
+	(brasero_utils_disc_find_tree_view),
+	(brasero_utils_disc_hide_use_info_leave_cb),
+	(brasero_utils_disc_hide_use_info_drop_cb),
+	(brasero_utils_disc_hide_use_info_data_received_cb),
+	(brasero_utils_disc_hide_use_info_motion_cb),
+	(brasero_utils_disc_hide_use_info_button_cb),
+	(brasero_disc_get_use_info_notebook), (brasero_track_clear):
+	* src/brasero-disc.h:
+	* src/brasero-eject-dialog.c: (brasero_eject_dialog_activate),
+	(brasero_eject_dialog_new):
+	* src/brasero-file-filtered.c:
+	(brasero_file_filtered_get_label_text),
+	(brasero_file_filtered_update), (brasero_file_filtered_activate),
+	(brasero_file_filtered_add),
+	(brasero_file_filtered_option_pressed_cb),
+	(brasero_file_filtered_restore_pressed_cb),
+	(brasero_file_filtered_selection_changed_cb),
+	(brasero_file_filtered_clear),
+	(brasero_file_filtered_set_right_button_group),
+	(brasero_file_filtered_init), (brasero_file_filtered_finalize),
+	(brasero_file_filtered_class_init), (brasero_file_filtered_new):
+	* src/brasero-file-filtered.h:
+	* src/brasero-file-monitor.c: (brasero_inotify_file_data_free),
+	(brasero_file_monitor_moved_to_event),
+	(brasero_file_monitor_move_timeout_cb),
+	(brasero_file_monitor_moved_from_event),
+	(brasero_file_monitor_directory_event),
+	(brasero_file_monitor_inotify_file_event),
+	(brasero_file_monitor_inotify_monitor_cb),
+	(brasero_file_monitor_start_monitoring_real),
+	(brasero_file_monitor_single_file),
+	(brasero_file_monitor_directory_contents),
+	(brasero_file_monitor_foreach_cancel_file_cb),
+	(brasero_file_monitor_foreach_cancel_directory_cb),
+	(brasero_file_monitor_foreach_cancel),
+	(brasero_file_monitor_foreach_file_reset_cb),
+	(brasero_file_monitor_foreach_directory_reset_cb),
+	(brasero_file_monitor_reset), (brasero_file_monitor_init),
+	(brasero_file_monitor_finalize), (brasero_file_monitor_class_init):
+	* src/brasero-file-monitor.h:
+	* src/brasero-file-node.c: (brasero_file_node_root_new),
+	(brasero_file_node_get_root), (brasero_file_node_get_depth),
+	(brasero_file_node_get_tree_stats),
+	(brasero_file_node_sort_default_cb),
+	(brasero_file_node_sort_name_cb), (brasero_file_node_sort_size_cb),
+	(brasero_file_node_sort_mime_cb), (brasero_file_node_insert),
+	(brasero_file_node_need_resort), (brasero_file_node_sort_children),
+	(brasero_file_node_reverse_children),
+	(brasero_file_node_nth_child), (brasero_file_node_get_n_children),
+	(brasero_file_node_get_pos_as_child),
+	(brasero_file_node_is_ancestor),
+	(brasero_file_node_check_name_existence),
+	(brasero_file_node_check_imported_sibling),
+	(brasero_file_node_validate_utf8_name), (brasero_file_node_graft),
+	(brasero_file_node_ungraft), (brasero_file_node_rename),
+	(brasero_file_node_add), (brasero_file_node_set_from_info),
+	(brasero_file_node_get_uri_name), (brasero_file_node_new_loading),
+	(brasero_file_node_new_from_info),
+	(brasero_file_node_new_imported_session_file),
+	(brasero_file_node_new_empty_folder), (brasero_file_node_unlink),
+	(brasero_file_node_move),
+	(brasero_file_node_destroy_with_children),
+	(brasero_file_node_destroy),
+	(brasero_file_node_save_imported_children),
+	(brasero_file_node_remove):
+	* src/brasero-file-node.h:
+	* src/brasero-filter-option.c:
+	(brasero_file_filtered_filter_hidden_cb),
+	(brasero_file_filtered_filter_broken_sym_cb),
+	(brasero_file_filtered_gconf_notify_cb),
+	(brasero_filter_option_init), (brasero_filter_option_finalize),
+	(brasero_filter_option_class_init), (brasero_filter_option_new):
+	* src/brasero-filter-option.h:
+	* src/brasero-filtered-window.c:
+	* src/brasero-filtered-window.h:
+	* src/brasero-marshal.list:
+	* src/brasero-project-manager.c: (brasero_project_manager_init):
+	* src/brasero-project.c: (brasero_project_init),
+	(brasero_project_get_selected_uri), (_read_graft_point),
+	(_read_data_track), (_save_data_track_xml):
+	* src/brasero-sum-dialog.c:
+	* src/brasero-utils.c: (brasero_utils_clear_strings_cb),
+	(brasero_utils_free), (brasero_utils_register_string),
+	(brasero_utils_unregister_string):
+	* src/brasero-utils.h:
+	* src/burn-mkisofs-base.c: (brasero_mkisofs_base_write_to_files):
+	* src/burn-track.c: (brasero_graft_point_free),
+	(brasero_graft_point_copy), (brasero_track_clean):
+	* src/burn-track.h:
+	* src/burn-volume.h:
+	* src/main.c: (on_eject_cb):
+	* src/plugins/cdrkit/burn-genisoimage.c:
+	(brasero_genisoimage_set_argv_image):
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	(brasero_mkisofs_set_argv_image):
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_grafts):
+	* src/plugins/growisofs/burn-growisofs.c:
+	(brasero_growisofs_set_mkisofs_argv):
+	* src/plugins/libburnia/burn-libisofs.c:
+	(brasero_libisofs_create_volume_thread):
+	* src/plugins/local-track/burn-local-image.c:
+	(brasero_local_track_finished):
+
 2008-02-04  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-project.c: (brasero_project_get_selected_uri):

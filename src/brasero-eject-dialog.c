@@ -96,16 +96,8 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 	 * closed now as ejection is not instantaneous.
 	 * A message box announcing the results of the operation would be a good
 	 * thing as well probably. */
-
-	BraseroMedia media;
-
-	media = NCB_MEDIA_GET_STATUS (brasero_burn_session_get_src_drive (dialog));
-
-
-	if (media == BRASERO_MEDIUM_NONE
-	    || (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == 0) {
-	  	nautilus_burn_drive_unref (drive);
-		nautilus_burn_drive_eject (drive);
+	if (nautilus_burn_drive_door_is_open (drive)) {
+		//gtk_message_dialog_new ();
 	}
 	
 	return BRASERO_BURN_OK;
@@ -132,8 +124,8 @@ brasero_eject_dialog_init (BraseroEjectDialog *obj)
 GtkWidget *
 brasero_eject_dialog_new ()
 {
-	return BRASERO_EJECT_DIALOG (g_object_new (BRASERO_TYPE_EJECT_DIALOG,
-						   "title", ("Eject Disc"),
-						   NULL));
+	return g_object_new (BRASERO_TYPE_EJECT_DIALOG,
+			     "title", ("Eject Disc"),
+			     NULL);
 }
 

@@ -72,6 +72,11 @@ brasero_utils_get_sectors_string (gint64 sectors,
 				  gboolean with_unit,
 				  gboolean round);
 
+gchar *
+brasero_utils_register_string (const gchar *string);
+void
+brasero_utils_unregister_string (const gchar *string);
+
 GdkPixbuf *
 brasero_utils_get_icon_for_mime (const gchar *mime,
 				 gint size);
@@ -104,9 +109,6 @@ brasero_utils_str_hash_64 (gconstpointer v);
 void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list);
-
-GtkWidget *
-brasero_utils_get_use_info_notebook (void);
 
 gchar*
 brasero_utils_validate_utf8 (const gchar *name);

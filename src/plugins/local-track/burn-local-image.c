@@ -262,13 +262,9 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 		grafts = brasero_track_get_data_grafts_source (track);
 		for (; grafts; grafts = grafts->next) {
 			BraseroGraftPt *graft;
-			GSList *excluded;
 
 			graft = grafts->data;
 			graft->uri = brasero_local_track_translate_uri (self, graft->uri);
-
-			for (excluded = graft->excluded; excluded; excluded = excluded->next)
-				excluded->data = brasero_local_track_translate_uri (self, excluded->data);
 		}
 
 		/* translate the globally excluded */
