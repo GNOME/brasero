@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-mmc3.h
+ *            scsi-device.h
  *
- *  Thu Oct 19 14:18:35 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Mon Feb 11 16:55:05 2008
+ *  Copyright  2008  Philippe Rouquier
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*
@@ -21,35 +21,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
+ 
+#ifndef _SCSI_DEVICE_H
+#define _SCSI_DEVICE_H
+
+#include <glib.h>
 
 #include "scsi-error.h"
-#include "scsi-get-performance.h"
-#include "scsi-read-toc-pma-atip.h"
 
-#ifndef _BURN_MMC3_H
-#define _BURN_MMC3_H
+G_BEGIN_DECLS
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+typedef struct _BraseroDeviceHandle BraseroDeviceHandle;
 
-BraseroScsiResult
-brasero_mmc3_read_cd_text (int fd,
-			   BraseroScsiCDTextData **data,
-			   int *size,
-			   BraseroScsiErrCode *error);
+BraseroDeviceHandle *
+brasero_device_handle_open (const gchar *path, BraseroScsiErrCode *error);
 
-BraseroScsiResult
-brasero_mmc3_get_performance_wrt_spd_desc (int fd,
-					   BraseroScsiGetPerfData **data,
-					   int *data_size,
-					   BraseroScsiErrCode *error);
+void
+brasero_device_handle_close (BraseroDeviceHandle *handle);
 
-#ifdef __cplusplus
-}
-#endif
+int
+brasero_device_handle_get_fd (BraseroDeviceHandle *handle);
 
-#endif /* _BURN_MMC3_H */
+G_END_DECLS
+
+#endif /* _SCSI_DEVICE_H */
 
  

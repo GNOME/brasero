@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-sg.h
+ *            burn-spc1.h
  *
- *  Wed Oct 18 14:55:25 2006
- *  Copyright  2006  Rouquier Philippe
- *  <Rouquier Philippe@localhost.localdomain>
+ *  Fri Oct 20 13:18:29 2006
+ *  Copyright  2006  algernon
+ *  <algernon@localhost.localdomain>
  ****************************************************************************/
 
 /*
@@ -22,14 +22,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <string.h>
-#include <unistd.h>
-#include <scsi/sg.h>
+#include <glib.h>
+
+#include "scsi-base.h"
 
 #include "scsi-error.h"
+#include "scsi-mode-pages.h"
 
-#ifndef _BURN_SG_H
-#define _BURN_SG_H
+#ifndef _BURN_SPC1_H
+#define _BURN_SPC1_H
 
 #ifdef __cplusplus
 extern "C"
@@ -37,12 +38,16 @@ extern "C"
 #endif
 
 BraseroScsiResult
-brasero_sg_send_command (int fd, struct sg_io_hdr *command, BraseroScsiErrCode *error);
+brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
+				  BraseroSPCPageType num,
+				  BraseroScsiModeData **data,
+				  int *data_size,
+				  BraseroScsiErrCode *error);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _BURN_SG_H */
+#endif /* _BURN_SPC1_H */
 
  

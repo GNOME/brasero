@@ -139,7 +139,7 @@ brasero_read_disc_structure (BraseroReadDiscStructureCDB *cdb,
 }
 
 BraseroScsiResult
-brasero_mmc2_read_generic_structure (int fd,
+brasero_mmc2_read_generic_structure (BraseroDeviceHandle *handle,
 				     BraseroScsiGenericFormatType type,
 				     BraseroScsiReadDiscStructureHdr **data,
 				     int *size,
@@ -148,7 +148,7 @@ brasero_mmc2_read_generic_structure (int fd,
 	BraseroReadDiscStructureCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = type;
 
 	res = brasero_read_disc_structure (cdb, data, size, error);
@@ -157,7 +157,7 @@ brasero_mmc2_read_generic_structure (int fd,
 }
 
 BraseroScsiResult
-brasero_mmc2_read_dvd_structure (int fd,
+brasero_mmc2_read_dvd_structure (BraseroDeviceHandle *handle,
 				 int address,
 				 BraseroScsiDVDFormatType type,
 				 BraseroScsiReadDiscStructureHdr **data,
@@ -167,7 +167,7 @@ brasero_mmc2_read_dvd_structure (int fd,
 	BraseroReadDiscStructureCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = type;
 	cdb->media_type = BRASERO_MEDIA_DVD_HD_DVD;
 	BRASERO_SET_32 (cdb->address, address);
@@ -178,7 +178,7 @@ brasero_mmc2_read_dvd_structure (int fd,
 }
 
 BraseroScsiResult
-brasero_mmc5_read_bd_structure (int fd,
+brasero_mmc5_read_bd_structure (BraseroDeviceHandle *handle,
 				BraseroScsiBDFormatType type,
 				BraseroScsiReadDiscStructureHdr **data,
 				int *size,
@@ -187,7 +187,7 @@ brasero_mmc5_read_bd_structure (int fd,
 	BraseroReadDiscStructureCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = type;
 	cdb->media_type = BRASERO_MEDIA_BD;
 

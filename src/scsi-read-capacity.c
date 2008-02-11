@@ -76,7 +76,7 @@ BRASERO_SCSI_COMMAND_DEFINE (BraseroReadCapacityCDB,
 			     BRASERO_SCSI_READ);
 
 BraseroScsiResult
-brasero_mmc2_read_capacity (int fd,
+brasero_mmc2_read_capacity (BraseroDeviceHandle *handle,
 			    BraseroScsiReadCapacityData *data,
 			    int size,
 			    BraseroScsiErrCode *error)
@@ -85,7 +85,7 @@ brasero_mmc2_read_capacity (int fd,
 	BraseroScsiResult res;
 
 	/* NOTE: all the fields are ignored by MM drives */
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 
 	memset (data, 0, size);
 	res = brasero_scsi_command_issue_sync (cdb, data, size, error);

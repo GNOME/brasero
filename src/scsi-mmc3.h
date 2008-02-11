@@ -1,9 +1,9 @@
 /***************************************************************************
- *            scsi-base.h
+ *            burn-mmc3.h
  *
- *  Sat Oct 28 10:03:30 2006
- *  Copyright  2006  Rouquier Philippe
- *  <Rouquier Philippe@localhost.localdomain>
+ *  Thu Oct 19 14:18:35 2006
+ *  Copyright  2006  algernon
+ *  <algernon@localhost.localdomain>
  ****************************************************************************/
 
 /*
@@ -22,17 +22,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#ifndef _SCSI_BASE_H
-#define _SCSI_BASE_H
-
 #include <glib.h>
+
+#include "scsi-base.h"
+#include "scsi-error.h"
+#include "scsi-get-performance.h"
+#include "scsi-read-toc-pma-atip.h"
+
+#ifndef _BURN_MMC3_H
+#define _BURN_MMC3_H
 
 G_BEGIN_DECLS
 
-typedef unsigned char uchar;
+BraseroScsiResult
+brasero_mmc3_read_cd_text (BraseroDeviceHandle *handle,
+			   BraseroScsiCDTextData **data,
+			   int *size,
+			   BraseroScsiErrCode *error);
+
+BraseroScsiResult
+brasero_mmc3_get_performance_wrt_spd_desc (BraseroDeviceHandle *handle,
+					   BraseroScsiGetPerfData **data,
+					   int *data_size,
+					   BraseroScsiErrCode *error);
 
 G_END_DECLS
 
-#endif /* _SCSI_BASE_H */
+#endif /* _BURN_MMC3_H */
 
  

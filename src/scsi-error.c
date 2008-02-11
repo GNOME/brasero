@@ -24,7 +24,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "burn-basics.h"
-#include "scsi/scsi-error.h"
+#include "scsi-error.h"
 
 static const gchar *error_string [] = {	N_("unknown error"),
 					N_("size mismatch"),

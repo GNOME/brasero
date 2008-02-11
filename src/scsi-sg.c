@@ -1,7 +1,7 @@
 /***************************************************************************
- *            burn-scsi-command.c
+ *            burn-sg.c
  *
- *  Thu Oct 19 18:04:55 2006
+ *  Wed Oct 18 14:39:28 2006
  *  Copyright  2006  Rouquier Philippe
  *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
@@ -22,6 +22,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -31,48 +35,37 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <scsi/scsi.h>
+
+#include "scsi-command.h"
+#include "burn-debug.h"
+#include "scsi-utils.h"
+#include "scsi-error.h"
+#include "scsi-sense-data.h"
+
+/* Only work for linux when it has the SG interface */
+#if HAVE_SG_IO_HDR_T
+
 #include <scsi/sg.h>
 
-#include "burn-debug.h"
-#include "scsi-error.h"
-#include "scsi-utils.h"
-#include "scsi-base.h"
-#include "scsi-command.h"
-#include "scsi-sense-data.h"
+struct _BraseroDeviceHandle {
+	int fd;
+};
+
+struct _BraseroScsiCmd {
+	uchar cmd [BRASERO_SCSI_CMD_MAX_LEN];
+	BraseroDeviceHandle *handle;
+
+	const BraseroScsiCmdInfo *info;
+};
 
 #define BRASERO_SCSI_CMD_OPCODE_OFF			0
 #define BRASERO_SCSI_CMD_SET_OPCODE(command)		(command->cmd [BRASERO_SCSI_CMD_OPCODE_OFF] = command->info->opcode)
 
-struct _BraseroScsiCmd {
-	uchar cmd [BRASERO_SCSI_CMD_MAX_LEN];
-	int fd;
+#define OPEN_FLAGS			O_RDONLY /*|O_EXCL */|O_NONBLOCK
 
-	const BraseroScsiCmdInfo *info;
-};
-typedef struct _BraseroScsiCmd BraseroScsiCmd;
-
-gpointer
-brasero_scsi_command_new (const BraseroScsiCmdInfo *info, int fd) 
-{
-	BraseroScsiCmd *cmd;
-
-	/* make sure we can set the flags of the descriptor */
-
-	/* allocate the command */
-	cmd = g_new0 (BraseroScsiCmd, 1);
-	cmd->info = info;
-	cmd->fd = fd;
-
-	BRASERO_SCSI_CMD_SET_OPCODE (cmd);
-	return cmd;
-}
-
-BraseroScsiResult
-brasero_scsi_command_free (gpointer cmd)
-{
-	g_free (cmd);
-	return BRASERO_SCSI_OK;
-}
+/**
+ * This is to send a command
+ */
 
 static void
 brasero_sg_command_setup (struct sg_io_hdr *transport,
@@ -123,7 +116,7 @@ brasero_scsi_command_issue_sync (gpointer command,
 
 	/* NOTE on SG_IO: only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
 	 * READ CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
-	res = ioctl (cmd->fd, SG_IO, &transport);
+	res = ioctl (cmd->handle->fd, SG_IO, &transport);
 	if (res) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
 		return BRASERO_SCSI_FAILURE;
@@ -138,50 +131,70 @@ brasero_scsi_command_issue_sync (gpointer command,
 	return BRASERO_SCSI_FAILURE;
 }
 
-BraseroScsiResult
-brasero_scsi_command_issue_immediate (gpointer command,
-				      gpointer buffer,
-				      int size,
-				      BraseroScsiErrCode *error)
+gpointer
+brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
+			  BraseroDeviceHandle *handle) 
 {
-	uchar sense_buffer [BRASERO_SENSE_DATA_SIZE];
-	struct sg_io_hdr transport;
 	BraseroScsiCmd *cmd;
-	int count;
 
-	cmd = command;
-	brasero_sg_command_setup (&transport,
-				  sense_buffer,
-				  cmd,
-				  buffer,
-				  size);
+	/* make sure we can set the flags of the descriptor */
 
-	transport.pack_id = 7;
-	transport.timeout = 2000;
-	do {
-		count = write (cmd->fd, &transport, sizeof (struct sg_io_hdr));
-	} while (count != sizeof (struct sg_io_hdr) && errno == EAGAIN);
+	/* allocate the command */
+	cmd = g_new0 (BraseroScsiCmd, 1);
+	cmd->info = info;
+	cmd->handle = handle;
 
-	if (count != sizeof (struct sg_io_hdr)) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
-		return BRASERO_SCSI_FAILURE;
-	}
-
-	memset (&transport, 0, sizeof (struct sg_io_hdr));
-	do {
-		count = read (cmd->fd, &transport, sizeof (struct sg_io_hdr));
-	} while (count != sizeof (struct sg_io_hdr) && errno == EAGAIN);
-
-	if (count != sizeof (struct sg_io_hdr)) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
-		return BRASERO_SCSI_FAILURE;
-	}
-
-	if ((transport.info & SG_INFO_OK_MASK) == SG_INFO_OK)
-		return BRASERO_SCSI_OK;
-
-	if ((transport.masked_status & CHECK_CONDITION) && transport.sb_len_wr)
-		return brasero_sense_data_process (sense_buffer, error);
-
-	return BRASERO_SCSI_FAILURE;
+	BRASERO_SCSI_CMD_SET_OPCODE (cmd);
+	return cmd;
 }
+
+BraseroScsiResult
+brasero_scsi_command_free (gpointer cmd)
+{
+	g_free (cmd);
+	return BRASERO_SCSI_OK;
+}
+
+/**
+ * This is to open a device
+ */
+
+BraseroDeviceHandle *
+brasero_device_handle_open (const gchar *path,
+			    BraseroScsiErrCode *code)
+{
+	int fd;
+	BraseroDeviceHandle *handle;
+
+	fd = open (path, OPEN_FLAGS);
+	if (fd < 0) {
+		if (errno == EAGAIN
+		||  errno == EWOULDBLOCK
+		||  errno == EBUSY)
+			*code = BRASERO_SCSI_NOT_READY;
+		else
+			*code = BRASERO_SCSI_ERRNO;
+
+		return NULL;
+	}
+
+	handle = g_new (BraseroDeviceHandle, 1);
+	handle->fd = fd;
+
+	return handle;
+}
+
+void
+brasero_device_handle_close (BraseroDeviceHandle *handle)
+{
+	close (handle->fd);
+	g_free (handle);
+}
+
+int
+brasero_device_handle_get_fd (BraseroDeviceHandle *handle)
+{
+	return handle->fd;
+}
+
+#endif /* HAVE_SG_IO_HDR_T */

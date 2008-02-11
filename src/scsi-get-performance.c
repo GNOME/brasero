@@ -172,7 +172,7 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
  */
 
 BraseroScsiResult
-brasero_mmc3_get_performance_wrt_spd_desc (int fd,
+brasero_mmc3_get_performance_wrt_spd_desc (BraseroDeviceHandle *handle,
 					   BraseroScsiGetPerfData **data,
 					   int *size,
 					   BraseroScsiErrCode *error)
@@ -180,7 +180,7 @@ brasero_mmc3_get_performance_wrt_spd_desc (int fd,
 	BraseroGetPerformanceCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->type = BRASERO_GET_PERFORMANCE_WR_SPEED_TYPE;
 
 	res = brasero_get_performance (cdb, sizeof (BraseroScsiWrtSpdDesc), data, size, error);

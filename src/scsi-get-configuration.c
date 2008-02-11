@@ -149,7 +149,7 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 }
 
 BraseroScsiResult
-brasero_mmc2_get_configuration_feature (int fd,
+brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 					BraseroScsiFeatureType type,
 					BraseroScsiGetConfigHdr **data,
 					int *size,
@@ -161,7 +161,7 @@ brasero_mmc2_get_configuration_feature (int fd,
 	g_return_val_if_fail (data != NULL, BRASERO_SCSI_FAILURE);
 	g_return_val_if_fail (size != NULL, BRASERO_SCSI_FAILURE);
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	BRASERO_SET_16 (cdb->feature_num, type);
 	cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ONLY_FEATURE;
 

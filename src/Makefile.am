@@ -9,8 +9,6 @@ DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
 INCLUDES = \
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
-	-I./scsi							\
-	-I./md5								\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           			\
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   			\
@@ -136,42 +134,40 @@ brasero_SOURCES = \
 	burn-iso-field.h         \
 	burn-medium.h         \
 	burn-medium.c         \
-	scsi/scsi-base.h         \
-	scsi/scsi-command.c         \
-	scsi/scsi-command.h         \
-	scsi/scsi-error.h         \
-	scsi/scsi-get-configuration.c         \
-	scsi/scsi-get-configuration.h         \
-	scsi/scsi-mmc1.h         \
-	scsi/scsi-mmc2.h         \
-	scsi/scsi-opcodes.h         \
-	scsi/scsi-read-disc-info.c         \
-	scsi/scsi-read-disc-info.h         \
-	scsi/scsi-read-toc-pma-atip.c         \
-	scsi/scsi-read-toc-pma-atip.h         \
-	scsi/scsi-sense-data.c         \
-	scsi/scsi-sense-data.h         \
-	scsi/scsi-sg.c         \
-	scsi/scsi-sg.h         \
-	scsi/scsi-utils.h         \
-	scsi/scsi-q-subchannel.h         \
-	scsi/scsi-error.c         \
-	scsi/scsi-read-track-information.c         \
-	scsi/scsi-read-track-information.h         \
-	scsi/scsi-get-performance.c         \
-	scsi/scsi-get-performance.h         \
-	scsi/scsi-mmc3.h         \
-	scsi/scsi-mode-pages.h         \
-	scsi/scsi-mode-sense.c         \
-	scsi/scsi-status-page.h         \
-	scsi/scsi-spc1.h         \
-	scsi/scsi-read-capacity.c         \
-	scsi/scsi-read-capacity.h         \
-	scsi/scsi-read-disc-structure.c         \
-	scsi/scsi-read-disc-structure.h         \
-	scsi/scsi-dvd-structures.h         \
-	scsi/scsi-read-format-capacities.c         \
-	scsi/scsi-read-format-capacities.h         \
+	scsi-base.h         \
+	scsi-command.h         \
+	scsi-error.h         \
+	scsi-get-configuration.c         \
+	scsi-get-configuration.h         \
+	scsi-mmc1.h         \
+	scsi-mmc2.h         \
+	scsi-opcodes.h         \
+	scsi-read-disc-info.c         \
+	scsi-read-disc-info.h         \
+	scsi-read-toc-pma-atip.c         \
+	scsi-read-toc-pma-atip.h         \
+	scsi-sense-data.c         \
+	scsi-sense-data.h         \
+	scsi-sg.c         \
+	scsi-utils.h         \
+	scsi-q-subchannel.h         \
+	scsi-error.c         \
+	scsi-read-track-information.c         \
+	scsi-read-track-information.h         \
+	scsi-get-performance.c         \
+	scsi-get-performance.h         \
+	scsi-mmc3.h         \
+	scsi-mode-pages.h         \
+	scsi-mode-sense.c         \
+	scsi-status-page.h         \
+	scsi-spc1.h         \
+	scsi-read-capacity.c         \
+	scsi-read-capacity.h         \
+	scsi-read-disc-structure.c         \
+	scsi-read-disc-structure.h         \
+	scsi-dvd-structures.h         \
+	scsi-read-format-capacities.c         \
+	scsi-read-format-capacities.h         \
 	burn-debug.c         \
 	burn-debug.h         \
 	burn-track.h         \
@@ -237,9 +233,11 @@ brasero_SOURCES = \
 	brasero-disc-message.h         \
 	brasero-disc-message.c         \
 	baobab-cell-renderer-progress.c         \
-	baobab-cell-renderer-progress.h 
+	baobab-cell-renderer-progress.h         \
+	scsi-device.h 
 
-brasero_LDADD = $(BRASERO_LIBS)
+brasero_LDADD =	\
+	$(BRASERO_LIBS)
 
 
 

@@ -39,6 +39,8 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-medium.h"
+
+#include "scsi-device.h"
 #include "scsi-mmc1.h"
 #include "scsi-mmc2.h"
 #include "scsi-mmc3.h"
@@ -113,7 +115,6 @@ struct _BraseroMediumPrivate
  * No exclusive at the moment since when the medium is mounted we can't use excl
  */
 
-#define OPEN_FLAGS			O_RDONLY /*|O_EXCL */|O_NONBLOCK
 #define BUSY_RETRY_TIME			1000
 
 enum
@@ -511,7 +512,7 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 
 static BraseroBurnResult
 brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
-				   int fd,
+				   BraseroDeviceHandle *handle,
 				   BraseroScsiErrCode *code)
 {
 	BraseroScsiAtipData *atip_data = NULL;
@@ -523,7 +524,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 
 	BRASERO_BURN_LOG ("Retrieving capacity from atip");
 
-	result = brasero_mmc1_read_atip (fd,
+	result = brasero_mmc1_read_atip (handle,
 					 &atip_data,
 					 &size,
 					 NULL);
@@ -556,7 +557,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
-				    int fd,
+				    BraseroDeviceHandle *handle,
 				    BraseroScsiErrCode *code)
 {
 	BraseroScsiFormatCapacitiesHdr *hdr = NULL;
@@ -568,7 +569,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	BRASERO_BURN_LOG ("Retrieving format capacity");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc2_read_format_capacities (fd,
+	result = brasero_mmc2_read_format_capacities (handle,
 						      &hdr,
 						      &size,
 						      code);
@@ -626,7 +627,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_capacity_by_type (BraseroMedium *self,
-				     int fd,
+				     BraseroDeviceHandle *handle,
 				     BraseroScsiErrCode *code)
 {
 	BraseroMediumPrivate *priv;
@@ -639,9 +640,9 @@ brasero_medium_get_capacity_by_type (BraseroMedium *self,
 		return BRASERO_BURN_OK;
 
 	if (priv->info & BRASERO_MEDIUM_CD)
-		brasero_medium_get_capacity_CD_RW (self, fd, code);
+		brasero_medium_get_capacity_CD_RW (self, handle, code);
 	else
-		brasero_medium_get_capacity_DVD_RW (self, fd, code);
+		brasero_medium_get_capacity_DVD_RW (self, handle, code);
 
 	return BRASERO_BURN_OK;
 }
@@ -652,7 +653,7 @@ brasero_medium_get_capacity_by_type (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_speed_mmc3 (BraseroMedium *self,
-			       int fd,
+			       BraseroDeviceHandle *handle,
 			       BraseroScsiErrCode *code)
 {
 	int size;
@@ -668,7 +669,7 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	/* NOTE: this only work if there is RT streaming feature with
 	 * wspd bit set to 1. At least an MMC3 drive. */
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc3_get_performance_wrt_spd_desc (fd,
+	result = brasero_mmc3_get_performance_wrt_spd_desc (handle,
 							    &wrt_perf,
 							    &size,
 							    code);
@@ -719,7 +720,7 @@ end:
 
 static BraseroBurnResult
 brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
-					     int fd,
+					     BraseroDeviceHandle *handle,
 					     BraseroScsiErrCode *code)
 {
 	BraseroScsiStatusPage *page_2A = NULL;
@@ -735,7 +736,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	BRASERO_BURN_LOG ("Retrieving speed (2A speeds)");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_spc1_mode_sense_get_page (fd,
+	result = brasero_spc1_mode_sense_get_page (handle,
 						   BRASERO_SPC_PAGE_STATUS,
 						   &data,
 						   &size,
@@ -789,7 +790,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
-				      int fd,
+				      BraseroDeviceHandle *handle,
 				      BraseroScsiErrCode *code)
 {
 	BraseroScsiStatusPage *page_2A = NULL;
@@ -802,7 +803,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	result = brasero_spc1_mode_sense_get_page (fd,
+	result = brasero_spc1_mode_sense_get_page (handle,
 						   BRASERO_SPC_PAGE_STATUS,
 						   &data,
 						   &size,
@@ -832,7 +833,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_medium_type (BraseroMedium *self,
-				int fd,
+				BraseroDeviceHandle *handle,
 				BraseroScsiErrCode *code)
 {
 	BraseroScsiGetConfigHdr *hdr = NULL;
@@ -843,7 +844,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	BRASERO_BURN_LOG ("Retrieving media profile");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc2_get_configuration_feature (fd,
+	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_REAL_TIME_STREAM,
 							 &hdr,
 							 &size,
@@ -864,7 +865,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		 * read TocPmaAtip. It if fails that's a ROM, if it succeeds.
 		 * No need to set error code since we consider that it's a ROM
 		 * if a failure happens. */
-		result = brasero_mmc1_read_atip (fd,
+		result = brasero_mmc1_read_atip (handle,
 						 &data,
 						 &size,
 						 NULL);
@@ -902,7 +903,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 		/* retrieve the speed */
 		result = brasero_medium_get_page_2A_max_speed (self,
-							       fd,
+							       handle,
 							       code);
 		return result;
 	}
@@ -1041,20 +1042,20 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		/* means it's at least an MMC3 drive */
 		stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
 		if (stream->wrt_spd) {
-			result = brasero_medium_get_speed_mmc3 (self, fd, code);
+			result = brasero_medium_get_speed_mmc3 (self, handle, code);
 			if (result == BRASERO_BURN_OK)
 				goto end;
 		}
 
 		if (stream->mp2a) {
-			result = brasero_medium_get_page_2A_write_speed_desc (self, fd, code);
+			result = brasero_medium_get_page_2A_write_speed_desc (self, handle, code);
 			if (result == BRASERO_BURN_OK)
 				goto end;
 		}
 	}
 
 	/* fallback for speeds */
-	result = brasero_medium_get_page_2A_max_speed (self, fd, code);
+	result = brasero_medium_get_page_2A_max_speed (self, handle, code);
 
 end:
 
@@ -1068,7 +1069,7 @@ end:
 
 static BraseroBurnResult
 brasero_medium_get_css_feature (BraseroMedium *self,
-				int fd,
+				BraseroDeviceHandle *handle,
 				BraseroScsiErrCode *code)
 {
 	BraseroScsiGetConfigHdr *hdr = NULL;
@@ -1079,7 +1080,7 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	BRASERO_BURN_LOG ("Testing for Css encrypted media");
-	result = brasero_mmc2_get_configuration_feature (fd,
+	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_DVD_CSS,
 							 &hdr,
 							 &size,
@@ -1144,7 +1145,7 @@ brasero_medium_set_track_type (BraseroMedium *self,
 static BraseroBurnResult
 brasero_medium_track_volume_size (BraseroMedium *self,
 				  BraseroMediumTrack *track,
-				  int fd)
+				  BraseroDeviceHandle *handle)
 {
 	BraseroMediumPrivate *priv;
 	BraseroBurnResult res;
@@ -1165,7 +1166,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	 * So we check if their first and only volume is valid. 
 	 * That's also used when the track size is reported a 300 Kio
 	 * see below */
-	res = brasero_volume_get_size_fd (fd,
+	res = brasero_volume_get_size_fd (brasero_device_handle_get_fd (handle),
 					  track->start,
 					  &nb_blocks,
 					  NULL);
@@ -1187,7 +1188,7 @@ static BraseroBurnResult
 brasero_medium_track_get_info (BraseroMedium *self,
 			       BraseroMediumTrack *track,
 			       int track_num,
-			       int fd,
+			       BraseroDeviceHandle *handle,
 			       BraseroScsiErrCode *code)
 {
 	BraseroScsiTrackInfo track_info;
@@ -1209,7 +1210,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	else
 		size = 36;
 
-	result = brasero_mmc1_read_track_info (fd,
+	result = brasero_mmc1_read_track_info (handle,
 					       track_num,
 					       &track_info,
 					       &size,
@@ -1233,7 +1234,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	 * data size. */
 	if (track->blocks_num <= 300) {
 		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
-		brasero_medium_track_volume_size (self, track, fd);
+		brasero_medium_track_volume_size (self, track, handle);
 	}
 
 	if (track_info.next_wrt_address_valid)
@@ -1256,7 +1257,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
  *  1 for HEX */
 static guint
 brasero_medium_check_BCD_use (BraseroMedium *self,
-			      int fd,
+			      BraseroDeviceHandle *handle,
 			      BraseroScsiRawTocDesc *desc,
 			      guint num,
 			      BraseroScsiErrCode *code)
@@ -1348,7 +1349,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 		start_LBA -= 150;
 		start_BCD -= 150;
 
-		result = brasero_mmc1_read_track_info (fd,
+		result = brasero_mmc1_read_track_info (handle,
 						       track_num,
 						       &track_info,
 						       &size,
@@ -1387,7 +1388,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 	size = 36;
 
 	/* leadout number is number of tracks + 1 */
-	result = brasero_mmc1_read_track_info (fd,
+	result = brasero_mmc1_read_track_info (handle,
 					       track_num + 1,
 					       &track_info,
 					       &size,
@@ -1421,7 +1422,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
  * this one. */
 static BraseroBurnResult
 brasero_medium_get_CD_sessions_info (BraseroMedium *self,
-				     int fd,
+				     BraseroDeviceHandle *handle,
 				     BraseroScsiErrCode *code)
 {
 	gint use_bcd;
@@ -1438,7 +1439,7 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	size = 0;
-	result = brasero_mmc1_read_toc_raw (fd,
+	result = brasero_mmc1_read_toc_raw (handle,
 					    0,
 					    &toc,
 					    &size,
@@ -1454,7 +1455,7 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 	BRASERO_BURN_LOG ("%i track(s) found", num);
 
 	desc = toc->desc;
-	use_bcd = brasero_medium_check_BCD_use (self, fd, desc, num, code);
+	use_bcd = brasero_medium_check_BCD_use (self, handle, desc, num, code);
 	if (!use_bcd) {
 		g_free (toc);
 
@@ -1547,7 +1548,7 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 		track->start = leadout_start;
 		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 
-		brasero_medium_track_get_info (self, track, g_slist_length (priv->tracks), fd, code); 
+		brasero_medium_track_get_info (self, track, g_slist_length (priv->tracks), handle, code); 
 	}
 
 	priv->tracks = g_slist_reverse (priv->tracks);
@@ -1560,7 +1561,7 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 		/* check for tracks less that 300 sectors */
 		if (track->blocks_num <= 300 && track->type != BRASERO_MEDIUM_TRACK_LEADOUT) {
 			BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
-			brasero_medium_track_volume_size (self, track, fd);
+			brasero_medium_track_volume_size (self, track, handle);
 		}
 
 		BRASERO_BURN_LOG ("Track %i: type = %i start = %llu size = %llu",
@@ -1617,7 +1618,7 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_sessions_info (BraseroMedium *self,
-				  int fd,
+				  BraseroDeviceHandle *handle,
 				  BraseroScsiErrCode *code)
 {
 	int num, i, size;
@@ -1629,7 +1630,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	BRASERO_BURN_LOG ("Reading Toc");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc1_read_toc_formatted (fd,
+	result = brasero_mmc1_read_toc_formatted (handle,
 						  0,
 						  &toc,
 						  &size,
@@ -1661,7 +1662,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		brasero_medium_track_get_info (self,
 					       track,
 					       g_slist_length (priv->tracks),
-					       fd,
+					       handle,
 					       code);
 
 		if (desc->control & BRASERO_SCSI_TRACK_COPY)
@@ -1685,7 +1686,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			 * which have only one track: the first. */
 			result = brasero_medium_track_volume_size (self, 
 								   track,
-								   fd);
+								   handle);
 			if (result == BRASERO_BURN_OK) {
 				track->type |= BRASERO_MEDIUM_TRACK_DATA;
 				priv->info |= BRASERO_MEDIUM_HAS_DATA;
@@ -1731,7 +1732,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		brasero_medium_track_get_info (self,
 					       track,
 					       g_slist_length (priv->tracks),
-					       fd,
+					       handle,
 					       code);
 	}
 
@@ -1742,7 +1743,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 static BraseroBurnResult
 brasero_medium_get_contents (BraseroMedium *self,
-			     int fd,
+			     BraseroDeviceHandle *handle,
 			     BraseroScsiErrCode *code)
 {
 	int size;
@@ -1754,7 +1755,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	result = brasero_mmc1_read_disc_information_std (fd,
+	result = brasero_mmc1_read_disc_information_std (handle,
 							 &info,
 							 &size,
 							 code);
@@ -1788,7 +1789,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 			brasero_medium_track_get_info (self,
 						       track,
 						       1,
-						       fd,
+						       handle,
 						       code);
 		}
 		goto end;
@@ -1804,12 +1805,12 @@ brasero_medium_get_contents (BraseroMedium *self,
 	}
 
 	if (priv->info & BRASERO_MEDIUM_CD) {
-		result = brasero_medium_get_CD_sessions_info (self, fd, code);
+		result = brasero_medium_get_CD_sessions_info (self, handle, code);
 		if (result != BRASERO_BURN_OK)
-			result = brasero_medium_get_sessions_info (self, fd, code);
+			result = brasero_medium_get_sessions_info (self, handle, code);
 	}
 	else
-		result = brasero_medium_get_sessions_info (self, fd, code);
+		result = brasero_medium_get_sessions_info (self, handle, code);
 
 	if (result != BRASERO_BURN_OK)
 		goto end;
@@ -1821,7 +1822,8 @@ end:
 }
 
 static void
-brasero_medium_init_real (BraseroMedium *object, int fd)
+brasero_medium_init_real (BraseroMedium *object,
+			  BraseroDeviceHandle *handle)
 {
 	gchar *name;
 	BraseroBurnResult result;
@@ -1834,20 +1836,20 @@ brasero_medium_init_real (BraseroMedium *object, int fd)
 	BRASERO_BURN_LOG ("Initializing information for medium in %s", name);
 	g_free (name);
 
-	result = brasero_medium_get_medium_type (object, fd, &code);
+	result = brasero_medium_get_medium_type (object, handle, &code);
 	if (result != BRASERO_BURN_OK)
 		return;
 
-	brasero_medium_get_capacity_by_type (object, fd, &code);
+	brasero_medium_get_capacity_by_type (object, handle, &code);
 
-	result = brasero_medium_get_contents (object, fd, &code);
+	result = brasero_medium_get_contents (object, handle, &code);
 	if (result != BRASERO_BURN_OK)
 		return;
 
 	/* assume that css feature is only for DVD-ROM which might be wrong but
 	 * some drives wrongly reports that css is enabled for blank DVD+R/W */
 	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_ROM)))
-		brasero_medium_get_css_feature (object, fd, &code);
+		brasero_medium_get_css_feature (object, handle, &code);
 
 	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
 }
@@ -1855,21 +1857,20 @@ brasero_medium_init_real (BraseroMedium *object, int fd)
 static gboolean
 brasero_medium_retry_open (gpointer object)
 {
-	int fd;
 	const gchar *path;
 	BraseroMedium *self;
+	BraseroScsiErrCode code;
 	BraseroMediumPrivate *priv;
+	BraseroDeviceHandle *handle;
 
 	self = BRASERO_MEDIUM (object);
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 	path = nautilus_burn_drive_get_device (priv->drive);
 
 	BRASERO_BURN_LOG ("Retrying to open device %s", path);
-	fd = open (path, OPEN_FLAGS);
-	if (fd < 0) {
-		if (errno == EBUSY
-		||  errno == EAGAIN
-		||  errno == EWOULDBLOCK) {
+	handle = brasero_device_handle_open (path, &code);
+	if (!handle) {
+		if (code == BRASERO_SCSI_NOT_READY) {
 			BRASERO_BURN_LOG ("Device busy");
 			/* we'll retry in a second */
 			return TRUE;
@@ -1887,8 +1888,8 @@ brasero_medium_retry_open (gpointer object)
 
 	priv->retry_id = 0;
 
-	brasero_medium_init_real (self, fd);
-	close (fd);
+	brasero_medium_init_real (self, handle);
+	brasero_device_handle_close (handle);
 
 	return FALSE;
 }
@@ -1896,9 +1897,10 @@ brasero_medium_retry_open (gpointer object)
 static void
 brasero_medium_try_open (BraseroMedium *self)
 {
-	int fd;
 	const gchar *path;
+	BraseroScsiErrCode code;
 	BraseroMediumPrivate *priv;
+	BraseroDeviceHandle *handle;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	path = nautilus_burn_drive_get_device (priv->drive);
@@ -1906,11 +1908,9 @@ brasero_medium_try_open (BraseroMedium *self)
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
 	BRASERO_BURN_LOG ("Trying to open device %s", path);
-	fd = open (path, OPEN_FLAGS);
-	if (fd < 0) {
-		if (errno == EAGAIN
-		||  errno == EWOULDBLOCK
-		||  errno == EBUSY) {
+	handle = brasero_device_handle_open (path, &code);
+	if (!handle) {
+		if (code == BRASERO_SCSI_NOT_READY) {
 			BRASERO_BURN_LOG ("Device busy");
 			priv->info = BRASERO_MEDIUM_BUSY;
 			priv->icon = icons [0];
@@ -1925,8 +1925,8 @@ brasero_medium_try_open (BraseroMedium *self)
 	}
 
 	BRASERO_BURN_LOG ("Open () succeeded");
-	brasero_medium_init_real (self, fd);
-	close (fd);
+	brasero_medium_init_real (self, handle);
+	brasero_device_handle_close (handle);
 }
 
 static void

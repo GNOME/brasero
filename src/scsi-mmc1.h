@@ -22,6 +22,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glib.h>
+
+#include "scsi-base.h"
+#include "scsi-device.h"
 #include "scsi-error.h"
 #include "scsi-read-disc-info.h"
 #include "scsi-read-toc-pma-atip.h"
@@ -34,31 +38,31 @@
 G_BEGIN_DECLS
 
 BraseroScsiResult
-brasero_mmc1_read_disc_information_std (int fd,
+brasero_mmc1_read_disc_information_std (BraseroDeviceHandle *handle,
 					BraseroScsiDiscInfoStd **info_return,
 					int *size,
 					BraseroScsiErrCode *error);
 
 BraseroScsiResult
-brasero_mmc1_read_toc_formatted (int fd,
+brasero_mmc1_read_toc_formatted (BraseroDeviceHandle *handle,
 				 int track_num,
 				 BraseroScsiFormattedTocData **data,
 				 int *size,
 				 BraseroScsiErrCode *error);
 BraseroScsiResult
-brasero_mmc1_read_toc_raw (int fd,
+brasero_mmc1_read_toc_raw (BraseroDeviceHandle *handle,
 			   int session_num,
 			   BraseroScsiRawTocData **data,
 			   int *size,
 			   BraseroScsiErrCode *error);
 BraseroScsiResult
-brasero_mmc1_read_atip (int fd,
+brasero_mmc1_read_atip (BraseroDeviceHandle *handle,
 			BraseroScsiAtipData **data,
 			int *size,
 			BraseroScsiErrCode *error);
 
 BraseroScsiResult
-brasero_mmc1_read_track_info (int fd,
+brasero_mmc1_read_track_info (BraseroDeviceHandle *handle,
 			      int track_num,
 			      BraseroScsiTrackInfo *track_info,
 			      int *size,

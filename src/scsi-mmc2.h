@@ -22,6 +22,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glib.h>
+
+#include "scsi-base.h"
 #include "scsi-error.h"
 #include "scsi-read-capacity.h"
 #include "scsi-get-configuration.h"
@@ -34,27 +37,27 @@
 G_BEGIN_DECLS
 
 BraseroScsiResult
-brasero_mmc2_read_capacity (int fd,
+brasero_mmc2_read_capacity (BraseroDeviceHandle *handle,
 			    BraseroScsiReadCapacityData *data,
 			    int size,
 			    BraseroScsiErrCode *error);
 
 BraseroScsiResult
-brasero_mmc2_get_configuration_feature (int fd,
+brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 					BraseroScsiFeatureType type,
 					BraseroScsiGetConfigHdr **data,
 					int *size,
 					BraseroScsiErrCode *error);
 
 BraseroScsiResult
-brasero_mmc2_read_generic_structure (int fd,
+brasero_mmc2_read_generic_structure (BraseroDeviceHandle *handle,
 				     BraseroScsiGenericFormatType type,
 				     BraseroScsiReadDiscStructureHdr **data,
 				     int *size,
 				     BraseroScsiErrCode *error);
 
 BraseroScsiResult
-brasero_mmc2_read_format_capacities (int fd,
+brasero_mmc2_read_format_capacities (BraseroDeviceHandle *handle,
 				     BraseroScsiFormatCapacitiesHdr **data,
 				     int *size,
 				     BraseroScsiErrCode *error);

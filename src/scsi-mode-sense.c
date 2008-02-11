@@ -89,7 +89,7 @@ BRASERO_SCSI_COMMAND_DEFINE (BraseroModeSenseCDB,
 #define BRASERO_MODE_DATA(data)			((BraseroScsiModeData *) (data))
 
 BraseroScsiResult
-brasero_spc1_mode_sense_get_page (int fd,
+brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 				  BraseroSPCPageType num,
 				  BraseroScsiModeData **data,
 				  int *data_size,
@@ -109,7 +109,7 @@ brasero_spc1_mode_sense_get_page (int fd,
 	}
 
 	/* issue a first command to get the size of the page ... */
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->dbd = 1;
 	cdb->page_code = num;
 	BRASERO_SET_16 (cdb->alloc_len, sizeof (header));

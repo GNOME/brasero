@@ -85,7 +85,7 @@ BRASERO_DISC_INFO_POW_RES	= 0x02,
 
 
 BraseroScsiResult
-brasero_mmc1_read_disc_information_std (int fd,
+brasero_mmc1_read_disc_information_std (BraseroDeviceHandle *handle,
 					BraseroScsiDiscInfoStd **info_return,
 					int *size,
 					BraseroScsiErrCode *error)
@@ -102,7 +102,7 @@ brasero_mmc1_read_disc_information_std (int fd,
 		return BRASERO_SCSI_FAILURE;
 	}
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->data_type = BRASERO_DISC_INFO_STD;
 	BRASERO_SET_16 (cdb->alloc_len, sizeof (BraseroScsiDiscInfoStd));
 
@@ -144,7 +144,7 @@ end:
 }
 
 BraseroScsiResult
-brasero_mmc5_read_disc_information_tracks (int fd,
+brasero_mmc5_read_disc_information_tracks (BraseroDeviceHandle *handle,
 					   BraseroScsiTrackResInfo *info_return,
 					   int size,
 					   BraseroScsiErrCode *error)
@@ -152,7 +152,7 @@ brasero_mmc5_read_disc_information_tracks (int fd,
 	BraseroRdDiscInfoCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->data_type = BRASERO_DISC_INFO_TRACK_RES;
 	BRASERO_SET_16 (cdb->alloc_len, size);
 
@@ -163,7 +163,7 @@ brasero_mmc5_read_disc_information_tracks (int fd,
 }
 
 BraseroScsiResult
-brasero_mmc5_read_disc_information_pows (int fd,
+brasero_mmc5_read_disc_information_pows (BraseroDeviceHandle *handle,
 					 BraseroScsiPOWResInfo *info_return,
 					 int size,
 					 BraseroScsiErrCode *error)
@@ -171,7 +171,7 @@ brasero_mmc5_read_disc_information_pows (int fd,
 	BraseroRdDiscInfoCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->data_type = BRASERO_DISC_INFO_POW_RES;
 	BRASERO_SET_16 (cdb->alloc_len, size);
 

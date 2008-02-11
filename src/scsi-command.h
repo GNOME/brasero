@@ -24,6 +24,7 @@
 
 #include <glib.h>
 
+#include "scsi-device.h"
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"
@@ -31,10 +32,7 @@
 #ifndef _BURN_SCSI_COMMAND_H
 #define _BURN_SCSI_COMMAND_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 /* Most scsi commands are <= 16 (apparently some of the new mmc can be longer) */
 #define BRASERO_SCSI_CMD_MAX_LEN	16
@@ -53,6 +51,8 @@ struct _BraseroScsiCmdInfo {
 };
 typedef struct _BraseroScsiCmdInfo BraseroScsiCmdInfo;
 
+typedef struct _BraseroScsiCmd BraseroScsiCmd;
+
 #define BRASERO_SCSI_COMMAND_DEFINE(cdb, name, fd_flags, direction)		\
 static const BraseroScsiCmdInfo info =						\
 {	/* SCSI commands always end by 1 byte of ctl */				\
@@ -63,7 +63,8 @@ static const BraseroScsiCmdInfo info =						\
 }
 
 gpointer
-brasero_scsi_command_new (const BraseroScsiCmdInfo *info, int fd);
+brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
+			  BraseroDeviceHandle *handle);
 
 BraseroScsiResult
 brasero_scsi_command_free (gpointer command);
@@ -73,14 +74,7 @@ brasero_scsi_command_issue_sync (gpointer command,
 				 gpointer buffer,
 				 int size,
 				 BraseroScsiErrCode *error);
-BraseroScsiResult
-brasero_scsi_command_issue_immediate (gpointer command,
-				      gpointer buffer,
-				      int size,
-				      BraseroScsiErrCode *error);
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_SCSI_COMMAND_H */
 

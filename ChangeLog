@@ -1,3 +1,93 @@
+2008-02-11  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	A few changes to support new OS more easily
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/burn-medium.c: (brasero_medium_get_capacity_CD_RW),
+	(brasero_medium_get_capacity_DVD_RW),
+	(brasero_medium_get_capacity_by_type),
+	(brasero_medium_get_speed_mmc3),
+	(brasero_medium_get_page_2A_write_speed_desc),
+	(brasero_medium_get_page_2A_max_speed),
+	(brasero_medium_get_medium_type), (brasero_medium_get_css_feature),
+	(brasero_medium_track_volume_size),
+	(brasero_medium_track_get_info), (brasero_medium_check_BCD_use),
+	(brasero_medium_get_CD_sessions_info),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents),
+	(brasero_medium_init_real), (brasero_medium_retry_open),
+	(brasero_medium_try_open):
+	* src/scsi-base.h:
+	* src/scsi-command.h:
+	* src/scsi-device.h:
+	* src/scsi-error.c:
+	* src/scsi-get-configuration.c:
+	(brasero_mmc2_get_configuration_feature):
+	* src/scsi-get-performance.c:
+	(brasero_mmc3_get_performance_wrt_spd_desc):
+	* src/scsi-mmc1.h:
+	* src/scsi-mmc2.h:
+	* src/scsi-mmc3.h:
+	* src/scsi-mode-pages.h:
+	* src/scsi-mode-sense.c: (brasero_spc1_mode_sense_get_page):
+	* src/scsi-read-capacity.c: (brasero_mmc2_read_capacity):
+	* src/scsi-read-disc-info.c:
+	(brasero_mmc1_read_disc_information_std),
+	(brasero_mmc5_read_disc_information_tracks),
+	(brasero_mmc5_read_disc_information_pows):
+	* src/scsi-read-disc-structure.c:
+	(brasero_mmc2_read_generic_structure),
+	(brasero_mmc2_read_dvd_structure),
+	(brasero_mmc5_read_bd_structure):
+	* src/scsi-read-format-capacities.c:
+	(brasero_mmc2_read_format_capacities):
+	* src/scsi-read-toc-pma-atip.c: (brasero_mmc1_read_toc_formatted),
+	(brasero_mmc1_read_toc_raw), (brasero_mmc3_read_cd_text),
+	(brasero_mmc1_read_atip):
+	* src/scsi-read-track-information.c:
+	(brasero_mmc1_read_track_info):
+	* src/scsi-sg.c: (brasero_sg_command_setup),
+	(brasero_scsi_command_issue_sync), (brasero_scsi_command_new),
+	(brasero_scsi_command_free), (brasero_device_handle_open),
+	(brasero_device_handle_close), (brasero_device_handle_get_fd):
+	* src/scsi-spc1.h:
+	* src/scsi/scsi-base.h:
+	* src/scsi/scsi-command.c:
+	* src/scsi/scsi-command.h:
+	* src/scsi/scsi-dvd-structures.h:
+	* src/scsi/scsi-error.c:
+	* src/scsi/scsi-error.h:
+	* src/scsi/scsi-get-configuration.c:
+	* src/scsi/scsi-get-configuration.h:
+	* src/scsi/scsi-get-performance.c:
+	* src/scsi/scsi-get-performance.h:
+	* src/scsi/scsi-mmc1.h:
+	* src/scsi/scsi-mmc2.h:
+	* src/scsi/scsi-mmc3.h:
+	* src/scsi/scsi-mode-pages.h:
+	* src/scsi/scsi-mode-sense.c:
+	* src/scsi/scsi-opcodes.h:
+	* src/scsi/scsi-q-subchannel.h:
+	* src/scsi/scsi-read-capacity.c:
+	* src/scsi/scsi-read-capacity.h:
+	* src/scsi/scsi-read-disc-info.c:
+	* src/scsi/scsi-read-disc-info.h:
+	* src/scsi/scsi-read-disc-structure.c:
+	* src/scsi/scsi-read-disc-structure.h:
+	* src/scsi/scsi-read-format-capacities.c:
+	* src/scsi/scsi-read-format-capacities.h:
+	* src/scsi/scsi-read-toc-pma-atip.c:
+	* src/scsi/scsi-read-toc-pma-atip.h:
+	* src/scsi/scsi-read-track-information.c:
+	* src/scsi/scsi-read-track-information.h:
+	* src/scsi/scsi-sense-data.c:
+	* src/scsi/scsi-sense-data.h:
+	* src/scsi/scsi-sg.c:
+	* src/scsi/scsi-sg.h:
+	* src/scsi/scsi-spc1.h:
+	* src/scsi/scsi-status-page.h:
+	* src/scsi/scsi-utils.h:
+
 2008-02-10  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	This a rewrite of the BraseroDataDisc object.

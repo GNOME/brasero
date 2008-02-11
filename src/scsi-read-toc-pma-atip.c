@@ -154,7 +154,7 @@ brasero_read_toc_pma_atip (BraseroRdTocPmaAtipCDB *cdb,
  */
 
 BraseroScsiResult
-brasero_mmc1_read_toc_formatted (int fd,
+brasero_mmc1_read_toc_formatted (BraseroDeviceHandle *handle,
 				 int track_num,
 				 BraseroScsiFormattedTocData **data,
 				 int *size,
@@ -163,7 +163,7 @@ brasero_mmc1_read_toc_formatted (int fd,
 	BraseroRdTocPmaAtipCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = BRASERO_RD_TAP_FORMATTED_TOC;
 
 	/* first track for which this function will return information */
@@ -183,7 +183,7 @@ brasero_mmc1_read_toc_formatted (int fd,
  */
 
 BraseroScsiResult
-brasero_mmc1_read_toc_raw (int fd,
+brasero_mmc1_read_toc_raw (BraseroDeviceHandle *handle,
 			   int session_num,
 			   BraseroScsiRawTocData **data,
 			   int *size,
@@ -192,7 +192,7 @@ brasero_mmc1_read_toc_raw (int fd,
 	BraseroRdTocPmaAtipCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = BRASERO_RD_TAP_RAW_TOC;
 
 	/* first session for which this function will return information */
@@ -212,7 +212,7 @@ brasero_mmc1_read_toc_raw (int fd,
  */
 
 BraseroScsiResult
-brasero_mmc3_read_cd_text (int fd,
+brasero_mmc3_read_cd_text (BraseroDeviceHandle *handle,
 			   BraseroScsiCDTextData **data,
 			   int *size,
 			   BraseroScsiErrCode *error)
@@ -220,7 +220,7 @@ brasero_mmc3_read_cd_text (int fd,
 	BraseroRdTocPmaAtipCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = BRASERO_RD_TAP_CD_TEXT;
 
 	res = brasero_read_toc_pma_atip (cdb,
@@ -237,7 +237,7 @@ brasero_mmc3_read_cd_text (int fd,
  */
 
 BraseroScsiResult
-brasero_mmc1_read_atip (int fd,
+brasero_mmc1_read_atip (BraseroDeviceHandle *handle,
 			BraseroScsiAtipData **data,
 			int *size,
 			BraseroScsiErrCode *error)
@@ -248,7 +248,7 @@ brasero_mmc1_read_atip (int fd,
 	/* In here we have to ask how many bytes the drive wants to return first
 	 * indeed there is a difference in the descriptor size between MMC1/MMC2
 	 * and MMC3. */
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->format = BRASERO_RD_TAP_ATIP;
 	cdb->msf = 1;				/* specs says it's compulsory */
 

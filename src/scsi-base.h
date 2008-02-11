@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-spc1.h
+ *            scsi-base.h
  *
- *  Fri Oct 20 13:18:29 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Sat Oct 28 10:03:30 2006
+ *  Copyright  2006  Rouquier Philippe
+ *  <Rouquier Philippe@localhost.localdomain>
  ****************************************************************************/
 
 /*
@@ -22,28 +22,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include "scsi-error.h"
-#include "scsi-mode-pages.h"
-
-#ifndef _BURN_SPC1_H
-#define _BURN_SPC1_H
-
-#ifdef __cplusplus
-extern "C"
-{
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
 #endif
 
-BraseroScsiResult
-brasero_spc1_mode_sense_get_page (int fd,
-				  BraseroSPCPageType num,
-				  BraseroScsiModeData **data,
-				  int *data_size,
-				  BraseroScsiErrCode *error);
+#include <glib.h>
 
-#ifdef __cplusplus
-}
-#endif
+#ifndef _SCSI_BASE_H
+#define _SCSI_BASE_H
 
-#endif /* _BURN_SPC1_H */
+G_BEGIN_DECLS
+
+typedef unsigned char uchar;
+
+G_END_DECLS
+
+#endif /* _SCSI_BASE_H */
 
  

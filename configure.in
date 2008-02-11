@@ -38,6 +38,17 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
+dnl ***************** SCSI related *****************************
+
+dnl ***************** check for linux sg interface *************
+AC_CHECK_TYPES([sg_io_hdr_t],[has_sg="yes"],[has_sg="no"],
+[#include <sys/types.h>
+ #include <scsi/sg.h>])
+
+if test x"$has_sg" = "xno"; then
+	AC_ERROR([Linux sg interface headers could not be found])
+fi
+
 dnl ***************** LARGE FILE SUPPORT ***********************
 
 AC_SYS_LARGEFILE

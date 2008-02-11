@@ -48,7 +48,7 @@ BRASERO_SCSI_COMMAND_DEFINE (BraseroRdFormatCapacitiesCDB,
 			     BRASERO_SCSI_READ);
 
 BraseroScsiResult
-brasero_mmc2_read_format_capacities (int fd,
+brasero_mmc2_read_format_capacities (BraseroDeviceHandle *handle,
 				     BraseroScsiFormatCapacitiesHdr **data,
 				     int *size,
 				     BraseroScsiErrCode *error)
@@ -64,7 +64,7 @@ brasero_mmc2_read_format_capacities (int fd,
 		return BRASERO_SCSI_FAILURE;
 	}
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	BRASERO_SET_16 (cdb->alloc_len, sizeof (BraseroScsiFormatCapacitiesHdr));
 
 	memset (&hdr, 0, sizeof (BraseroScsiFormatCapacitiesHdr));

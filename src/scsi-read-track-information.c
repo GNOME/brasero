@@ -153,7 +153,7 @@ brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
  */
  
 BraseroScsiResult
-brasero_mmc1_read_track_info (int fd,
+brasero_mmc1_read_track_info (BraseroDeviceHandle *handle,
 			      int track_num,
 			      BraseroScsiTrackInfo *track_info,
 			      int *size,
@@ -162,7 +162,7 @@ brasero_mmc1_read_track_info (int fd,
 	BraseroRdTrackInfoCDB *cdb;
 	BraseroScsiResult res;
 
-	cdb = brasero_scsi_command_new (&info, fd);
+	cdb = brasero_scsi_command_new (&info, handle);
 	cdb->addr_num_type = BRASERO_FIELD_TRACK_NUM;
 	BRASERO_SET_32 (cdb->blk_addr_trk_ses_num, track_num);
 
