@@ -168,6 +168,8 @@ brasero_SOURCES = \
 	scsi-dvd-structures.h         \
 	scsi-read-format-capacities.c         \
 	scsi-read-format-capacities.h         \
+	scsi-read-cd.h	\
+	scsi-read-cd.c	\
 	burn-debug.c         \
 	burn-debug.h         \
 	burn-track.h         \

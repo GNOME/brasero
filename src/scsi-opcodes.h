@@ -52,6 +52,8 @@ extern "C"
 #define BRASERO_READ_SUB_CHANNEL_OPCODE			0x42
 #define BRASERO_READ_MASTER_CUE_OPCODE			0x59
 
+#define BRASERO_READ_CD_OPCODE				0xBE
+
 /**
  *	MMC2
  */

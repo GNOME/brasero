@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 
 #define BRASERO_SET_BCD(data, num)	(uchar)(data)=((((num)/10)<<4)&0xF0)|((num)-(((num)/10)*10))
 #define BRASERO_SET_16(data, num)	(data)[0]=(((num)>>8)&0xFF);(data)[1]=(uchar)((num)&0xFF)
+#define BRASERO_SET_24(data, num)	(data)[0]=(uchar)(((num)>>16)&0xFF);(data)[1]=(uchar)(((num)>>8)&0xFF);(data)[2]=(uchar)((num)&0xFF);
 #define BRASERO_SET_32(data, num)	(data)[0]=(uchar)(((num)>>24)&0xFF);(data)[1]=(uchar)(((num)>>16)&0xFF);(data)[2]=(uchar)(((num)>>8)&0xFF);(data)[3]=(uchar)((num)&0xFF)
 
 #define BRASERO_MSF_TO_LBA(minute, second, frame)	(((minute)*60+(second))*75+frame)

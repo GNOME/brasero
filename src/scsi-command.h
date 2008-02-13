@@ -51,8 +51,6 @@ struct _BraseroScsiCmdInfo {
 };
 typedef struct _BraseroScsiCmdInfo BraseroScsiCmdInfo;
 
-typedef struct _BraseroScsiCmd BraseroScsiCmd;
-
 #define BRASERO_SCSI_COMMAND_DEFINE(cdb, name, fd_flags, direction)		\
 static const BraseroScsiCmdInfo info =						\
 {	/* SCSI commands always end by 1 byte of ctl */				\

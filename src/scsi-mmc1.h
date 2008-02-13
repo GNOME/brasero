@@ -27,6 +27,7 @@
 #include "scsi-base.h"
 #include "scsi-device.h"
 #include "scsi-error.h"
+#include "scsi-read-cd.h"
 #include "scsi-read-disc-info.h"
 #include "scsi-read-toc-pma-atip.h"
 #include "scsi-read-track-information.h"
@@ -67,6 +68,18 @@ brasero_mmc1_read_track_info (BraseroDeviceHandle *handle,
 			      BraseroScsiTrackInfo *track_info,
 			      int *size,
 			      BraseroScsiErrCode *error);
+
+BraseroScsiResult
+brasero_mmc1_read_block (BraseroDeviceHandle *handle,
+			 gboolean user_data,
+			 BraseroScsiBlockType type,
+			 BraseroScsiBlockHeader header,
+			 BraseroScsiBlockSubChannel channel,
+			 int start,
+			 int size,
+			 unsigned char *buffer,
+			 int buffer_len,
+			 BraseroScsiErrCode *error);
 
 G_END_DECLS
 

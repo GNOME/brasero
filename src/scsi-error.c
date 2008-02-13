@@ -38,6 +38,7 @@ static const gchar *error_string [] = {	N_("unknown error"),
 					N_("invalid field in command"),
 					N_("the device timed out"),
 					N_("key not established"),
+					N_("invalid track mode"),
 					NULL	};	/* errno */
 
 const gchar *

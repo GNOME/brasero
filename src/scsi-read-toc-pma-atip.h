@@ -29,10 +29,7 @@
 #ifndef _SCSI_READ_TOC_PMA_ATIP_H
 #define _SCSI_READ_TOC_PMA_ATIP_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
@@ -328,8 +325,6 @@ typedef struct _BraseroScsiCDTextData BraseroScsiCDTextData;
 
 #define BRASERO_SCSI_TRACK_LEADOUT_START	0xAA
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_READ_TOC_PMA_ATIP_H */
