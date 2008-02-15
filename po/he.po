@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-27 09:47+0000\n"
-"PO-Revision-Date: 2008-01-31 19:30+0200\n"
+"POT-Creation-Date: 2008-02-05 21:02+0000\n"
+"PO-Revision-Date: 2008-02-09 17:24+0200\n"
 "Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero Disc Burning"
 msgstr ""
+"‏Brasero - צריבת דיסקים"
 
 #: ../data/brasero.desktop.in.in.h:2
 msgid "Burn Image"
@@ -321,6 +322,7 @@ msgstr "הרצועה קטנה יותר מ-6 שניות."
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr ""
+"‏\"%s\" לא נתמך על ידי gstreamer:"
 
 #: ../src/brasero-audio-disc.c:1241
 msgid "Unhandled song"
@@ -328,7 +330,7 @@ msgstr ""
 
 #: ../src/brasero-audio-disc.c:1244
 msgid "Make sure the appropriate codec is installed."
-msgstr ""
+msgstr "נא לוודא שהמקודדים המתאימים מותקנים."
 
 #: ../src/brasero-audio-disc.c:1368
 msgid "Directories can't be added to an audio disc:"
@@ -469,7 +471,7 @@ msgstr "סוג"
 
 #: ../src/brasero-filtered-window.c:272
 msgid "Filter _hidden files"
-msgstr ""
+msgstr "סנן קבצים _חבויים"
 
 #: ../src/brasero-filtered-window.c:292
 msgid "Filter _broken symlinks"
@@ -996,7 +998,7 @@ msgstr "Brasero - יוצר תמונת תקליטור"
 #: ../src/brasero-burn-dialog.c:173 ../src/brasero-burn-dialog.c:778
 #: ../src/brasero-burn-dialog.c:784
 msgid "Brasero - Burning DVD (simulation)"
-msgstr ""
+msgstr "Brasero - צורב DVD (הדמיה)"
 
 #: ../src/brasero-burn-dialog.c:174
 msgid "<big><b>Simulation of data DVD burning</b></big>"
@@ -1008,7 +1010,7 @@ msgstr "Brasero - צורב DVD"
 
 #: ../src/brasero-burn-dialog.c:178
 msgid "<big><b>Burning data DVD</b></big>"
-msgstr """<big><b>צורב נתונים ל-DVD</b></big>"
+msgstr "<big><b>צורב נתונים ל-DVD</b></big>"
 
 #: ../src/brasero-burn-dialog.c:187
 msgid "Burning DVD (simulation)"
@@ -1141,7 +1143,7 @@ msgstr ""
 
 #: ../src/brasero-burn-dialog.c:354
 msgid "replace the disc with a disc holding data."
-msgstr ""
+msgstr "החלף את הדיסק עם דיסק המכיל נתונים."
 
 #: ../src/brasero-burn-dialog.c:358
 msgid "insert a rewritable disc holding data."
@@ -1223,11 +1225,11 @@ msgstr ""
 #: ../src/brasero-burn-dialog.c:468
 #, c-format
 msgid "The disc in \"%s\" is busy:"
-msgstr ""
+msgstr "הדיסק ב-\"%s\" לא זמין:"
 
 #: ../src/brasero-burn-dialog.c:470
 msgid "make sure another application is not using it."
-msgstr ""
+msgstr "נא לדווקא שיישומים אחרים לא משתמשים בו."
 
 #: ../src/brasero-burn-dialog.c:473
 #, c-format
@@ -1303,6 +1305,8 @@ msgid ""
 "Do you want to erase the current disc?\n"
 "Or replace the current disc with a new disc?"
 msgstr ""
+"למחוק את הדיסק הנוכחי?\n"
+"או להחליף את הדיסק הנוכחי בדיסק חדש?"
 
 #: ../src/brasero-burn-dialog.c:668
 msgid "Erase disc"
@@ -1310,7 +1314,7 @@ msgstr "מחק דיסק"
 
 #: ../src/brasero-burn-dialog.c:677 ../src/brasero-burn-dialog.c:689
 msgid "Multisession disc"
-msgstr ""
+msgstr "תקליטור רב־צריבות"
 
 #: ../src/brasero-burn-dialog.c:678
 msgid "Appending new files to a multisession disc is not advised:"
@@ -1503,7 +1507,7 @@ msgstr "תמונת התקליטור של ה-DVD נוצרה בהצלחה"
 
 #: ../src/brasero-burn-dialog.c:1631
 msgid "Image of CD successfully created"
-msgstr ""
+msgstr "קובץ תמונת תקליטור נוצר בהצלחה"
 
 #: ../src/brasero-burn-dialog.c:1639
 msgid "Image successfully burnt to DVD"
@@ -1543,7 +1547,7 @@ msgstr "שנה שם..."
 
 #: ../src/brasero-data-disc.c:582
 msgid "Rename the selected file"
-msgstr ""
+msgstr "שנה את שם הקובץ המסומן"
 
 #: ../src/brasero-data-disc.c:588 ../src/brasero-data-disc.c:5102
 msgid "New folder"
@@ -1850,6 +1854,9 @@ msgid ""
 "</i></b><i>A new recordable media will be required once the one currently "
 "loaded has been copied.</i>"
 msgstr ""
+"<b><i>הכונן המכיל את מדיית המקור הוא הכונן שישמש גם לצריבה.\n"
+"\n"
+"</i></b><i>מדייה חדשה שניתן לצרוב עליה תידרש לאחר שזו הטעונה כרגע תועתק.</i>"
 
 #: ../src/brasero-drive-info.c:363
 msgid "<b>Type:</b>"
@@ -1990,7 +1997,7 @@ msgstr "<b>תמונת תקליטור</b>"
 
 #: ../src/brasero-image-option-dialog.c:688
 msgid "Image burning setup"
-msgstr ""
+msgstr "אשף צריבת תמונת תקליטור"
 
 #: ../src/brasero-image-properties.c:229
 msgid "Disc image file properties"
@@ -2218,7 +2225,8 @@ msgstr "אל _תציג את החלון הזה שוב"
 
 #: ../src/brasero-project.c:1044
 msgid "Brasero is not the default application to burn audio CDs:"
-msgstr "Brasero אינו יישום ברירת המחדל לצריבת תקליטורי שמע:"
+msgstr ""
+"‏Brasero אינו יישום ברירת המחדל לצריבת תקליטורי שמע:"
 
 #: ../src/brasero-project.c:1045
 msgid ""
@@ -2610,7 +2618,7 @@ msgstr "צרוב תמונת תקליטור CD/DVD קיימת לדיסק"
 
 #: ../src/brasero-project-type-chooser.c:306
 msgid "No recently used project"
-msgstr ""
+msgstr "לא נמצאו פרויקטים שנפתחו לאחרונה"
 
 #: ../src/brasero-project-type-chooser.c:361
 msgid "<span size='x-large'><b>Create a new project:</b></span>"
@@ -2677,7 +2685,7 @@ msgstr "מוריד קובץ md5"
 
 #: ../src/brasero-sum-dialog.c:493
 msgid "no md5 file was given."
-msgstr ""
+msgstr "לא ניתן קובץ md5."
 
 #: ../src/brasero-sum-dialog.c:647
 msgid "Use a _md5 file to check the disc"
@@ -3230,7 +3238,7 @@ msgstr ""
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:88
 msgid "Copying data track"
-msgstr ""
+msgstr "מעתיק רצועת נתונים"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:124
 #, c-format
@@ -3426,7 +3434,7 @@ msgstr ""
 #: ../src/plugins/cdrkit/burn-wodim.c:178
 #: ../src/plugins/cdrtools/burn-cdrecord.c:178
 msgid "the image file cannot be found"
-msgstr ""
+msgstr "קובץ תמונת התקליטור לא נמצא"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:185
 #: ../src/plugins/cdrkit/burn-wodim.c:355
@@ -3865,11 +3873,11 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:176
 msgid "size error"
-msgstr ""
+msgstr "שגיאת גודל"
 
 #: ../src/brasero-split-dialog.c:178
 msgid "Do you want to split it nevertheless?"
-msgstr ""
+msgstr "לפצל אותה בכל זאת?"
 
 #: ../src/brasero-split-dialog.c:566
 msgid "The track wasn't split:"
@@ -3957,7 +3965,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1110
 msgid "<b>Slicing Method</b>"
-msgstr ""
+msgstr "<b>שיטת פיצול</b>"
 
 #: ../src/brasero-split-dialog.c:1165
 msgid "Start"
@@ -3997,7 +4005,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1253
 msgid "<b>Slices Preview</b>"
-msgstr ""
+msgstr "<b>תצוגה מקדימה של הפיצול</b>"
 
 #: ../src/brasero-time-button.c:278
 msgid "Hours"
