@@ -36,7 +36,6 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
-#include "brasero-file-monitor.h"
 #include "brasero-data-project.h"
 #include "brasero-marshal.h"
 
@@ -74,7 +73,17 @@ struct _BraseroDataProjectPrivate
 
 #define BRASERO_DATA_PROJECT_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_PROJECT, BraseroDataProjectPrivate))
 
+#ifdef BUILD_INOTIFY
+
+#include "brasero-file-monitor.h"
 G_DEFINE_TYPE (BraseroDataProject, brasero_data_project, BRASERO_TYPE_FILE_MONITOR);
+
+#else
+
+G_DEFINE_TYPE (BraseroDataProject, brasero_data_project, G_TYPE_OBJECT);
+
+#endif
+
 
 enum {
 	NAME_COLLISION_SIGNAL,
@@ -947,6 +956,8 @@ brasero_data_project_remove_node_children_graft (BraseroDataProject *self,
 				     &callback_data);
 }
 
+#ifdef BUILD_INOTIFY
+
 static gboolean
 brasero_data_project_monitor_cancel_foreach_cb (gpointer data,
 						gpointer callback_data)
@@ -960,6 +971,8 @@ brasero_data_project_monitor_cancel_foreach_cb (gpointer data,
 	return brasero_file_node_is_ancestor (parent, node);
 }
 
+#endif
+
 static void
 brasero_data_project_node_removed (BraseroDataProject *self,
 				   BraseroFileNode *node)
@@ -968,11 +981,13 @@ brasero_data_project_node_removed (BraseroDataProject *self,
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
+#ifdef BUILD_INOTIFY
 	/* remove all monitoring */
 	if (node->is_monitored)
 		brasero_file_monitor_foreach_cancel (BRASERO_FILE_MONITOR (self),
 						     brasero_data_project_monitor_cancel_foreach_cb,
 						     node);
+#endif
 
 	/* invalidate possible references (including for children)*/
 	brasero_data_project_reference_invalidate (self, node);
@@ -1671,6 +1686,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	 * particular if it's a file or a directory, if it's grafted or not
 	 * That's why we can start monitoring it. */
 	if (!node->is_monitored) {
+#ifdef BUILD_INOTIFY
 		if (node->is_grafted)
 			brasero_file_monitor_single_file (BRASERO_FILE_MONITOR (self),
 							  uri,
@@ -1681,6 +1697,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 								 uri,
 								 node);
 		node->is_monitored = TRUE;
+#endif
 	}
 
 	/* signal the changes */
@@ -1904,6 +1921,9 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	 * particular if it's a file or a directory, if it's grafted or not
 	 * That's why we can start monitoring it. */
 	if (!node->is_monitored) {
+
+#ifdef BUILD_INOTIFY
+
 		if (node->is_grafted)
 			brasero_file_monitor_single_file (BRASERO_FILE_MONITOR (self),
 							  uri,
@@ -1914,6 +1934,9 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 								 uri,
 								 node);
 		node->is_monitored = TRUE;
+
+#endif
+
 	}
 
 	return node;
@@ -2779,7 +2802,11 @@ brasero_data_project_clear (BraseroDataProject *self)
 	brasero_file_node_destroy (priv->root);
 	priv->root = NULL;
 
+#ifdef BUILD_INOTIFY
+
 	brasero_file_monitor_reset (BRASERO_FILE_MONITOR (self));
+
+#endif
 }
 
 void
@@ -2830,6 +2857,8 @@ brasero_data_project_finalize (GObject *object)
 /**
  * Callbacks for inotify backend
  */
+
+#ifdef BUILD_INOTIFY
 
 static void
 brasero_data_project_file_added (BraseroFileMonitor *monitor,
@@ -3229,11 +3258,12 @@ brasero_data_project_file_modified (BraseroFileMonitor *monitor,
 	g_free (uri);
 }
 
+#endif
+
 static void
 brasero_data_project_class_init (BraseroDataProjectClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	BraseroFileMonitorClass *monitor_class = BRASERO_FILE_MONITOR_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroDataProjectPrivate));
 
@@ -3290,9 +3320,15 @@ brasero_data_project_class_init (BraseroDataProjectClass *klass)
 			  1,
 			  G_TYPE_INT);
 
+#ifdef BUILD_INOTIFY
+
+	BraseroFileMonitorClass *monitor_class = BRASERO_FILE_MONITOR_CLASS (klass);
+
 	monitor_class->file_added = brasero_data_project_file_added;
 	monitor_class->file_moved = brasero_data_project_file_moved;
 	monitor_class->file_removed = brasero_data_project_file_removed;
 	monitor_class->file_renamed = brasero_data_project_file_renamed;
 	monitor_class->file_modified = brasero_data_project_file_modified;
+
+#endif
 }

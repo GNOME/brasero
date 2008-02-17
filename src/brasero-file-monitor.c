@@ -34,11 +34,7 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
-#ifdef BUILD_INOTIFY
-
 #include <sys/inotify.h>
-
-#endif
 
 #include "brasero-file-monitor.h"
 #include "burn-debug.h"
@@ -100,8 +96,6 @@ brasero_inotify_file_data_free (BraseroInotifyFileData *data)
 	g_free (data->name);
 	g_free (data);
 }
-
-#ifdef BUILD_INOTIFY
 
 static void
 brasero_file_monitor_moved_to_event (BraseroFileMonitor *self,
@@ -601,8 +595,6 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 	g_free (path);
 	return wd;
 }
-
-#endif
 
 /**
  * This is used for top grafted directories in the hierarchies or for

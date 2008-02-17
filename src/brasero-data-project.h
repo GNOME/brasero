@@ -22,6 +22,10 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifndef _BRASERO_DATA_PROJECT_H_
 #define _BRASERO_DATA_PROJECT_H_
 
@@ -29,8 +33,11 @@
 #include <gtk/gtk.h>
 
 #include "brasero-file-node.h"
-#include "brasero-file-monitor.h"
 #include "burn-session.h"
+
+#ifdef BUILD_INOTIFY
+#include "brasero-file-monitor.h"
+#endif
 
 G_BEGIN_DECLS
 
@@ -46,7 +53,11 @@ typedef struct _BraseroDataProject BraseroDataProject;
 
 struct _BraseroDataProjectClass
 {
+#ifdef BUILD_INOTIFY
 	BraseroFileMonitorClass parent_class;
+#else
+	GObjectClass parent_class;
+#endif
 
 	/* virtual functions */
 
@@ -73,7 +84,11 @@ struct _BraseroDataProjectClass
 
 struct _BraseroDataProject
 {
+#ifdef BUILD_INOTIFY
 	BraseroFileMonitor parent_instance;
+#else
+	GObject parent_instance;
+#endif
 };
 
 GType brasero_data_project_get_type (void) G_GNUC_CONST;

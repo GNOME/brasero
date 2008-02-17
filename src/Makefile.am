@@ -222,8 +222,6 @@ brasero_SOURCES = \
 	brasero-data-tree-model.h         \
 	brasero-data-vfs.c         \
 	brasero-data-vfs.h         \
-	brasero-file-monitor.c         \
-	brasero-file-monitor.h         \
 	brasero-file-node.c         \
 	brasero-file-node.h         \
 	brasero-data-disc.h         \
@@ -237,6 +235,10 @@ brasero_SOURCES = \
 	baobab-cell-renderer-progress.c         \
 	baobab-cell-renderer-progress.h         \
 	scsi-device.h 
+
+if BUILD_INOTIFY
+brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
+endif
 
 brasero_LDADD =	\
 	$(BRASERO_LIBS)
