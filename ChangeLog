@@ -1,5 +1,18 @@
 2008-02-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Add FreeBSD support
+	Patch and work by Joe Marcus Clarke <marcus@FreeBSD.org>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/scsi-cam.c: (brasero_scsi_command_issue_sync),
+	(brasero_scsi_command_new), (brasero_scsi_command_free),
+	(brasero_device_handle_open), (brasero_device_handle_close),
+	(brasero_device_handle_get_fd):
+	* src/scsi-sg.c:
+
+2008-02-17  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Fix for compilation without inotify
 
 	* src/Makefile.am:

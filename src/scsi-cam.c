@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-sg.c
+ *            scsi-cam.c
  *
- *  Wed Oct 18 14:39:28 2006
- *  Copyright  2006  Rouquier Philippe
- *  <Rouquier Philippe@localhost.localdomain>
+ *  Saturday February 16, 2008
+ *  Copyright  2008  Joe Marcus Clarke
+ *  <marcus@FreeBSD.org>
  ****************************************************************************/
 
 /*
@@ -11,12 +11,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -35,16 +35,19 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
-#include <scsi/scsi.h>
-#include <scsi/sg.h>
-
 #include "scsi-command.h"
 #include "burn-debug.h"
 #include "scsi-utils.h"
 #include "scsi-error.h"
 #include "scsi-sense-data.h"
 
+/* FreeBSD's SCSI CAM interface */
+
+#include <camlib.h>
+#include <cam/scsi/scsi_message.h>
+
 struct _BraseroDeviceHandle {
+	struct cam_device *cam;
 	int fd;
 };
 
@@ -61,77 +64,63 @@ typedef struct _BraseroScsiCmd BraseroScsiCmd;
 
 #define OPEN_FLAGS			O_RDONLY /*|O_EXCL */|O_NONBLOCK
 
-/**
- * This is to send a command
- */
-
-static void
-brasero_sg_command_setup (struct sg_io_hdr *transport,
-			  uchar *sense_data,
-			  BraseroScsiCmd *cmd,
-			  uchar *buffer,
-			  int size)
-{
-	memset (sense_data, 0, BRASERO_SENSE_DATA_SIZE);
-	memset (transport, 0, sizeof (struct sg_io_hdr));
-	
-	transport->interface_id = 'S';				/* mandatory */
-//	transport->flags = SG_FLAG_LUN_INHIBIT|SG_FLAG_DIRECT_IO;
-	transport->cmdp = cmd->cmd;
-	transport->cmd_len = cmd->info->size;
-	transport->dxferp = buffer;
-	transport->dxfer_len = size;
-
-	/* where to output the scsi sense buffer */
-	transport->sbp = sense_data;
-	transport->mx_sb_len = BRASERO_SENSE_DATA_SIZE;
-
-	if (cmd->info->direction & BRASERO_SCSI_READ)
-		transport->dxfer_direction = SG_DXFER_FROM_DEV;
-	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
-		transport->dxfer_direction = SG_DXFER_TO_DEV;
-}
-
 BraseroScsiResult
 brasero_scsi_command_issue_sync (gpointer command,
 				 gpointer buffer,
 				 int size,
 				 BraseroScsiErrCode *error)
 {
-	uchar sense_buffer [BRASERO_SENSE_DATA_SIZE];
-	struct sg_io_hdr transport;
-	BraseroScsiResult res;
+	int timeout;
 	BraseroScsiCmd *cmd;
+	union ccb cam_ccb;
+	int direction = -1;
 
+	timeout = 10;
+
+	memset (&cam_ccb, 0, sizeof(cam_ccb));
 	cmd = command;
-	brasero_sg_command_setup (&transport,
-				  sense_buffer,
-				  cmd,
-				  buffer,
-				  size);
 
-	/* for the time being only sg driver is supported */
+	cam_ccb.ccb_h.path_id = cmd->handle->cam->path_id;
+	cam_ccb.ccb_h.target_id = cmd->handle->cam->target_id;
+	cam_ccb.ccb_h.target_lun = cmd->handle->cam->target_lun;
 
-	/* NOTE on SG_IO: only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
-	 * READ CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
-	res = ioctl (cmd->handle->fd, SG_IO, &transport);
-	if (res) {
+	if (cmd->info->direction & BRASERO_SCSI_READ)
+		direction = CAM_DIR_IN;
+	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
+		direction = CAM_DIR_OUT;
+
+	g_assert (direction > -1);
+
+	cam_fill_csio(&cam_ccb.csio,
+		      1,
+		      NULL,
+		      direction,
+		      MSG_SIMPLE_Q_TAG,
+		      buffer,
+		      size,
+		      sizeof(cam_ccb.csio.sense_data),
+		      cmd->info->size,
+		      timeout * 1000);
+
+	memcpy (cam_ccb.csio.cdb_io.cdb_bytes, cmd->cmd,
+		BRASERO_SCSI_CMD_MAX_LEN);
+
+	if (cam_send_ccb (cmd->handle->cam, &cam_ccb) == -1) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
 		return BRASERO_SCSI_FAILURE;
 	}
 
-	if ((transport.info & SG_INFO_OK_MASK) == SG_INFO_OK)
-		return BRASERO_SCSI_OK;
+	if ((cam_ccb.ccb_h.status & CAM_STATUS_MASK) != CAM_REQ_CMP) {
+		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
+		return BRASERO_SCSI_FAILURE;
+	}
 
-	if ((transport.masked_status & CHECK_CONDITION) && transport.sb_len_wr)
-		return brasero_sense_data_process (sense_buffer, error);
-
-	return BRASERO_SCSI_FAILURE;
+	return BRASERO_SCSI_OK;
 }
 
 gpointer
 brasero_scsi_command_new (const BraseroScsiCmdInfo *info,
-			  BraseroDeviceHandle *handle) 
+			  BraseroDeviceHandle *handle)
 {
 	BraseroScsiCmd *cmd;
 
@@ -163,21 +152,18 @@ brasero_device_handle_open (const gchar *path,
 {
 	int fd;
 	BraseroDeviceHandle *handle;
+	struct cam_device *cam;
 
+	g_assert (path != NULL);
+
+	/* cam_open_device() fails unless we use O_RDWR */
+	cam = cam_open_device (path, O_RDWR);
 	fd = open (path, OPEN_FLAGS);
-	if (fd < 0) {
-		if (errno == EAGAIN
-		||  errno == EWOULDBLOCK
-		||  errno == EBUSY)
-			*code = BRASERO_SCSI_NOT_READY;
-		else
-			*code = BRASERO_SCSI_ERRNO;
-
-		return NULL;
+	if (cam && fd > -1) {
+		handle = g_new0 (BraseroDeviceHandle, 1);
+		handle->cam = cam;
+		handle->fd = fd;
 	}
-
-	handle = g_new (BraseroDeviceHandle, 1);
-	handle->fd = fd;
 
 	return handle;
 }
@@ -185,13 +171,21 @@ brasero_device_handle_open (const gchar *path,
 void
 brasero_device_handle_close (BraseroDeviceHandle *handle)
 {
+	g_assert (handle != NULL);
+
+	if (handle->cam)
+		cam_close_device (handle->cam);
+
 	close (handle->fd);
+
 	g_free (handle);
 }
 
 int
 brasero_device_handle_get_fd (BraseroDeviceHandle *handle)
 {
+	g_assert (handle != NULL);
+
 	return handle->fd;
 }
 

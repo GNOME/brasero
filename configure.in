@@ -39,15 +39,24 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 
 dnl ***************** SCSI related *****************************
+AC_SUBST(BRASERO_SCSI_LIBS)
+AC_CHECK_HEADERS([camlib.h],[has_cam="yes"],[has_cam="no"])
+
+if test x"$has_cam" = x"yes"; then
+    BRASERO_SCSI_LIBS="-lcam"
+else
 
 dnl ***************** check for linux sg interface *************
 AC_CHECK_TYPES([sg_io_hdr_t],[has_sg="yes"],[has_sg="no"],
 [#include <sys/types.h>
  #include <scsi/sg.h>])
 
-if test x"$has_sg" = "xno"; then
+if test x"$has_sg" = x"no"; then
 	AC_ERROR([Linux sg interface headers could not be found])
 fi
+fi
+AM_CONDITIONAL(HAVE_CAM_LIB_H, test x"$has_cam" = "xyes")
+AM_CONDITIONAL(HAVE_SG_IO_HDR_T, test x"$has_sg" = "xyes")
 
 dnl ***************** LARGE FILE SUPPORT ***********************
 
@@ -111,7 +120,7 @@ PKG_CHECK_MODULES(BRASERO,			\
 AC_SUBST(BRASERO_CFLAGS)
 AC_SUBST(BRASERO_LIBS)
 BRASERO_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_GSTREAMER_CFLAGS $BRASERO_GNOMEVFS_CFLAGS $BRASERO_CFLAGS $CFLAGS"
-BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_BASE_LIBS $BRASERO_GNOMEVFS_LIBS $BRASERO_LIBS $LDFLAGS"
+BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_GSTREAMER_LIBS $BRASERO_GNOMEVFS_LIBS $BRASERO_LIBS $BRASERO_SCSI_LIBS $LDFLAGS"
 
 dnl ****************check for libburn (optional)**************
 LIBBURN_REQUIRED=0.4.0

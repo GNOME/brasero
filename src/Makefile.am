@@ -21,8 +21,6 @@ CLEANFILES = $(RECMARSHALFILES)
 
 AM_CFLAGS = -g
 
-EXTRA_DIST = cd-content-marshal.list
-
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = brasero-marshal.h brasero-marshal.c 
 brasero-marshal.h: brasero-marshal.list
@@ -148,7 +146,6 @@ brasero_SOURCES = \
 	scsi-read-toc-pma-atip.h         \
 	scsi-sense-data.c         \
 	scsi-sense-data.h         \
-	scsi-sg.c         \
 	scsi-utils.h         \
 	scsi-q-subchannel.h         \
 	scsi-error.c         \
@@ -238,6 +235,16 @@ brasero_SOURCES = \
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
+endif
+
+# FreeBSD's SCSI CAM interface
+if HAVE_CAM_LIB_H
+brasero_SOURCES += scsi-cam.c
+endif
+
+# Linux's SCSI CAM interface
+if HAVE_SG_IO_HDR_T
+brasero_SOURCES += scsi-sg.c
 endif
 
 brasero_LDADD =	\
