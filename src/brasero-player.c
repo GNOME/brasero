@@ -50,7 +50,7 @@
 #include "brasero-player-bacon.h"
 #include "brasero-utils.h"
 #include "brasero-metadata.h"
-#include "brasero-vfs.h"
+#include "brasero-io.h"
 #include "burn-debug.h"
 
 G_DEFINE_TYPE (BraseroPlayer, brasero_player, GTK_TYPE_ALIGNMENT);
@@ -86,8 +86,8 @@ struct BraseroPlayerPrivate {
 
 	BraseroPlayerBaconState state;
 
-	BraseroVFS *vfs;
-	BraseroVFSDataID meta_task;
+	BraseroIO *io;
+	BraseroIOJobBase *meta_task;
 
 	gchar *uri;
 	gint64 start;
@@ -745,7 +745,7 @@ brasero_player_image (BraseroPlayer *player)
 
 	/* image */
 	/* FIXME: this does not allow to preview remote files */
-	path = gnome_vfs_get_local_path_from_uri (player->priv->uri);
+	path = g_filename_from_uri (player->priv->uri, NULL, NULL);
 	player->priv->pixbuf = gdk_pixbuf_new_from_file (path, &error);
 
 	if (!player->priv->pixbuf) {
@@ -841,12 +841,10 @@ brasero_player_update_info_real (BraseroPlayer *player,
 }
 
 static void
-brasero_player_metadata_completed (BraseroVFS *vfs,
-				   GObject *obj,
-				   GnomeVFSResult result,
+brasero_player_metadata_completed (GObject *obj,
+				   GError *error,
 				   const gchar *uri,
-				   GnomeVFSFileInfo *info,
-				   BraseroMetadataInfo *metadata,
+				   GFileInfo *info,
 				   gpointer null_data)
 {
 	BraseroPlayer *player = BRASERO_PLAYER (obj);
@@ -860,7 +858,7 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 	if (player->priv->controls)
 		brasero_player_destroy_controls (player);
 
-	if (result != GNOME_VFS_OK) {
+	if (error) {
 		brasero_player_no_multimedia_stream (player);
 		g_signal_emit (player,
 			       brasero_player_signals [ERROR_SIGNAL],
@@ -869,12 +867,12 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 	}
 
 	/* based on the mime type, we try to determine the type of file */
-	if (metadata && metadata->has_video) {
+	if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)) {
 		/* video */
 		brasero_player_create_controls_stream (player, TRUE);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
 
-		if (metadata->is_seekable)
+		if (g_file_info_get_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE))
 			gtk_widget_set_sensitive (player->priv->progress, TRUE);
 		else
 			gtk_widget_set_sensitive (player->priv->progress, FALSE);
@@ -883,18 +881,18 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 		gtk_widget_hide (player->priv->image_display);
 		gtk_widget_show (player->priv->notebook);
 	}
-	else if (metadata && metadata->has_audio) {
+	else if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)) {
 		/* audio */
 		brasero_player_create_controls_stream (player, FALSE);
 		gtk_widget_hide (player->priv->notebook);
 		gtk_range_set_value (GTK_RANGE (player->priv->progress), 0.0);
 
-		if (metadata->is_seekable)
+		if (g_file_info_get_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE))
 			gtk_widget_set_sensitive (player->priv->progress, TRUE);
 		else
 			gtk_widget_set_sensitive (player->priv->progress, FALSE);
 	}
-	else if (info && info->mime_type && !strncmp ("image/", info->mime_type, 6)) {
+	else if (!strncmp ("image/", g_file_info_get_content_type (info), 6)) {
 		brasero_player_image (player);
 		return;
 	}
@@ -907,14 +905,14 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 	}
 
 	if (player->priv->end <= 0)
-		player->priv->end = metadata->len;
+		player->priv->end = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
 
-	player->priv->length = metadata->len;
+	player->priv->length = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
 
 	/* only reached for audio/video */
 	brasero_player_update_info_real (player,
-					 metadata->artist,
-					 metadata->title);
+					 g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST),
+					 g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
 
 	player->priv->state = BACON_STATE_READY;
 	g_signal_emit (player,
@@ -925,26 +923,21 @@ brasero_player_metadata_completed (BraseroVFS *vfs,
 static void
 brasero_player_retrieve_metadata (BraseroPlayer *player)
 {
-	GList *uris;
-
-	if (!player->priv->vfs)
-		player->priv->vfs = brasero_vfs_get_default ();
+	if (!player->priv->io)
+		player->priv->io = brasero_io_get_default ();
 
 	if (!player->priv->meta_task)
-		player->priv->meta_task = brasero_vfs_register_data_type (player->priv->vfs,
-									  G_OBJECT (player),
-									  G_CALLBACK (brasero_player_metadata_completed),
-									  NULL);
+		player->priv->meta_task = brasero_io_register (G_OBJECT (player),
+							       brasero_player_metadata_completed,
+							       NULL,
+							       NULL);
 
-	uris = g_list_prepend (NULL, player->priv->uri);
-	brasero_vfs_get_metadata (player->priv->vfs,
-				  uris,
-				  GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-				  BRASERO_METADATA_FLAG_NONE,
-				  FALSE,
+	brasero_io_get_file_info (player->priv->io,
+				  player->priv->uri,
 				  player->priv->meta_task,
+				  BRASERO_IO_INFO_METADATA|
+				  BRASERO_IO_INFO_MIME,
 				  NULL);
-	g_list_free (uris);
 }
 
 const gchar *
@@ -983,7 +976,6 @@ void
 brasero_player_set_uri (BraseroPlayer *player,
 			const gchar *uri)
 {
-	gchar *song_uri;
 	gchar *name;
 
 	/* avoid reloading everything if it's the same uri */
@@ -1015,8 +1007,9 @@ brasero_player_set_uri (BraseroPlayer *player,
 	player->priv->start = 0;
 	player->priv->end = 0;
 
-	if (player->priv->vfs)
-		brasero_vfs_cancel (player->priv->vfs, player);
+	if (player->priv->io)
+		brasero_io_cancel_by_base (player->priv->io,
+					   player->priv->meta_task);
 
 	/* That stops the pipeline from playing */
 	brasero_player_bacon_set_uri (BRASERO_PLAYER_BACON (player->priv->bacon), NULL);
@@ -1029,12 +1022,15 @@ brasero_player_set_uri (BraseroPlayer *player,
 
 	if (player->priv->controls) {
 		if (player->priv->header) {
+			gchar *song_uri;
+
 			BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 			song_uri = g_markup_printf_escaped (_("<span weight=\"bold\">Loading information</span>\nabout <span size=\"smaller\"><i>%s</i></span>"),
 							  name);
 			g_free (name);
 
 			gtk_label_set_markup (GTK_LABEL (player->priv->header), song_uri);
+			g_free (song_uri);
 		}
 
 		/* grey out the rest of the control while it's loading */
@@ -1213,13 +1209,15 @@ brasero_player_destroy (GtkObject *obj)
 	}
 
 	if (player->priv->meta_task){
-		brasero_vfs_cancel (player->priv->vfs, player);
+		brasero_io_cancel_by_base (player->priv->io,
+					   player->priv->meta_task);
+		g_free (player->priv->meta_task);
 		player->priv->meta_task = 0;
 	}
 
-	if (player->priv->vfs) {
-		g_object_unref (player->priv->vfs);
-		player->priv->vfs = NULL;
+	if (player->priv->io) {
+		g_object_unref (player->priv->io);
+		player->priv->io = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)

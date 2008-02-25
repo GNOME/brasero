@@ -30,6 +30,8 @@
 #define _BRASERO_DATA_PROJECT_H_
 
 #include <glib-object.h>
+#include <gio/gio.h>
+
 #include <gtk/gtk.h>
 
 #include "brasero-file-node.h"
@@ -131,7 +133,7 @@ brasero_data_project_add_loading_node (BraseroDataProject *project,
 BraseroFileNode *
 brasero_data_project_add_node_from_info (BraseroDataProject *project,
 					 const gchar *uri,
-					 GnomeVFSFileInfo *info,
+					 GFileInfo *info,
 					 BraseroFileNode *parent);
 BraseroFileNode *
 brasero_data_project_add_empty_directory (BraseroDataProject *project,
@@ -153,12 +155,12 @@ void
 brasero_data_project_node_loaded (BraseroDataProject *project,
 				  BraseroFileNode *node,
 				  const gchar *uri,
-				  GnomeVFSFileInfo *info);
+				  GFileInfo *info);
 void
 brasero_data_project_node_reloaded (BraseroDataProject *project,
 				    BraseroFileNode *node,
 				    const gchar *uri,
-				    GnomeVFSFileInfo *info);
+				    GFileInfo *info);
 void
 brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 					    BraseroFileNode *parent);

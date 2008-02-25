@@ -39,8 +39,6 @@
 
 #include <gmodule.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-md5.h"
@@ -259,7 +257,7 @@ brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 
 		/* get the path */
 		uri = iter->data;
-		path = gnome_vfs_get_local_path_from_uri (uri);
+		path = g_filename_from_uri (uri, NULL, NULL);
 
 		if (path)
 			g_hash_table_insert (excludedH, path, path);
@@ -299,7 +297,7 @@ brasero_md5sum_file_grafts (BraseroMd5sumFile *self, GError **error)
 
 		/* get the current and futures paths */
 		uri = graft->uri;
-		path = gnome_vfs_get_local_path_from_uri (uri);
+		path = g_filename_from_uri (uri, NULL, NULL);
 		graft_path = graft->path;
 
 		if (g_file_test (path, G_FILE_TEST_IS_DIR))

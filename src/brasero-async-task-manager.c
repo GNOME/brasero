@@ -22,6 +22,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <glib.h>
+#include <gio/gio.h>
+#include <glib-object.h>
+
 #include "brasero-async-task-manager.h"
  
 static void brasero_async_task_manager_class_init (BraseroAsyncTaskManagerClass *klass);
@@ -36,32 +44,22 @@ struct BraseroAsyncTaskManagerPrivate {
 
 	GSList *waiting_tasks;
 	GSList *active_tasks;
-	GSList *results;
 
 	gint num_threads;
 	gint unused_threads;
 
-	gint results_id;
-
-	GHashTable *types;
-	BraseroAsyncTaskTypeID type_num;
-
 	gint cancelled:1;
 };
 
-struct _BraseroAsyncTaskType {
-	BraseroAsyncThread thread;
-	BraseroSyncResult result;
-};
-typedef struct _BraseroAsyncTaskType BraseroAsyncTaskType;
-
 struct _BraseroAsyncTaskCtx {
-	BraseroAsyncTaskType *common;
+	BraseroAsyncPriority priority;
+	const BraseroAsyncTaskType *type;
+	GCancellable *cancel;
 	gpointer data;
 };
 typedef struct _BraseroAsyncTaskCtx BraseroAsyncTaskCtx;
 
-#define MANAGER_MAX_THREAD 1
+#define MANAGER_MAX_THREAD 2
 
 static GObjectClass *parent_class = NULL;
 
@@ -142,24 +140,7 @@ brasero_async_task_manager_finalize (GObject *object)
 	while (cobj->priv->num_threads)
 		g_cond_wait (cobj->priv->thread_finished, cobj->priv->lock);
 
-	if (cobj->priv->results_id) {
-		g_source_remove (cobj->priv->results_id);
-		cobj->priv->results_id = 0;
-	}
-
-	/* remove all the results in case one got added */
-	g_slist_foreach (cobj->priv->results,
-			 (GFunc) g_free,
-			 NULL);
-	g_slist_free (cobj->priv->results);
-	cobj->priv->results = NULL;
-
 	g_mutex_unlock (cobj->priv->lock);
-
-	if (cobj->priv->types) {
-		g_hash_table_destroy (cobj->priv->types);
-		cobj->priv->types = NULL;
-	}
 
 	if (cobj->priv->task_finished) {
 		g_cond_free (cobj->priv->task_finished);
@@ -185,79 +166,57 @@ brasero_async_task_manager_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-BraseroAsyncTaskTypeID
-brasero_async_task_manager_register_type (BraseroAsyncTaskManager *self,
-					  BraseroAsyncThread thread,
-					  BraseroSyncResult result)
+static void
+brasero_async_task_manager_insert_task (BraseroAsyncTaskManager *self,
+					BraseroAsyncTaskCtx *ctx)
 {
-	BraseroAsyncTaskType *type;
+	GSList *iter;
+	GSList *node;
+	BraseroAsyncTaskCtx *tmp;
 
-	g_return_val_if_fail (self != 0, 0);
+	node = g_slist_alloc ();
+	node->data = ctx;
 
-	self->priv->type_num ++;
-	if (self->priv->type_num == G_MAXINT) {
-		self->priv->type_num = 1;
+	if (!self->priv->waiting_tasks) {
+		self->priv->waiting_tasks = node;
+		return;
+	}
 
-		while (g_hash_table_lookup (self->priv->types, GINT_TO_POINTER (self->priv->type_num))) {
-			self->priv->type_num ++;
+	tmp = self->priv->waiting_tasks->data;
 
-			if (self->priv->type_num == G_MAXINT) {
-				g_warning ("ERROR: reached the max number of types\n");
-				return 0;
-			}
+	if (tmp->priority < ctx->priority) {
+		node->next = self->priv->waiting_tasks;
+		self->priv->waiting_tasks = node;
+		return;
+	}
+
+	for (iter = self->priv->waiting_tasks; iter->next; iter = iter->next) {
+		tmp = iter->next->data;
+
+		if (tmp->priority < ctx->priority) {
+			node->next = iter->next;
+			iter->next = node;
+			return;
 		}
 	}
-	
-	type = g_new0 (BraseroAsyncTaskType, 1);
-	type->thread = thread;
-	type->result = result;
 
-	if (!self->priv->types)
-		self->priv->types = g_hash_table_new_full (g_direct_hash,
-							   g_direct_equal,
-							   NULL,
-							   g_free);
-
-	g_hash_table_insert (self->priv->types,
-			     GINT_TO_POINTER (self->priv->type_num),
-			     type);
-
-	return self->priv->type_num;
-}
-
-static gboolean
-brasero_async_task_manager_result (BraseroAsyncTaskManager *self)
-{
-	BraseroAsyncTaskCtx *ctx;
-
-	g_mutex_lock (self->priv->lock);
-
-	if (!self->priv->results) {
-		self->priv->results_id = 0;
-		g_mutex_unlock (self->priv->lock);
-		return FALSE;
-	}
-
-	ctx = self->priv->results->data;
-	self->priv->results = g_slist_remove (self->priv->results, ctx);
-
-	g_mutex_unlock (self->priv->lock);
-
-	ctx->common->result (self, ctx->data);
-	g_free (ctx);
-
-	return TRUE;
+	iter->next = node;
 }
 
 static gpointer
 brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 {
 	gboolean result;
+	GCancellable *cancel;
 	BraseroAsyncTaskCtx *ctx;
+
+	cancel = g_cancellable_new ();
 
 	g_mutex_lock (self->priv->lock);
 
 	while (1) {
+		BraseroAsyncTaskResult res;
+
 		/* say we are unused */
 		self->priv->unused_threads ++;
 	
@@ -290,21 +249,46 @@ brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 	
 		/* get the data from the list */
 		ctx = self->priv->waiting_tasks->data;
+		ctx->cancel = cancel;
+		ctx->priority &= ~BRASERO_ASYNC_RESCHEDULE;
+
 		self->priv->waiting_tasks = g_slist_remove (self->priv->waiting_tasks, ctx);
 		self->priv->active_tasks = g_slist_prepend (self->priv->active_tasks, ctx);
 	
 		g_mutex_unlock (self->priv->lock);
-		ctx->common->thread (self, ctx->data);
+		res = ctx->type->thread (self, cancel, ctx->data);
 		g_mutex_lock (self->priv->lock);
 
 		/* we remove the task from the list and signal it is finished */
 		self->priv->active_tasks = g_slist_remove (self->priv->active_tasks, ctx);
 		g_cond_signal (self->priv->task_finished);
 
-		/* insert the task in the results queue */
-		self->priv->results = g_slist_append (self->priv->results, ctx);
-		if (!self->priv->results_id)
-			self->priv->results_id = g_idle_add ((GSourceFunc) brasero_async_task_manager_result, self);
+		if (g_cancellable_is_cancelled (cancel)) {
+			if (ctx->type->destroy)
+				ctx->type->destroy (self, ctx->data);
+
+			g_free (ctx);
+		}
+		else if (res == BRASERO_ASYNC_TASK_RESCHEDULE) {
+			if (self->priv->waiting_tasks) {
+				BraseroAsyncTaskCtx *next;
+
+				next = self->priv->waiting_tasks->data;
+				if (next->priority > ctx->priority)
+					brasero_async_task_manager_insert_task (self, ctx);
+				else
+					self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
+			}
+			else
+				self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
+		}
+		else {
+			if (ctx->type->destroy)
+				ctx->type->destroy (self, ctx->data);
+			g_free (ctx);
+		}
+
+		g_cancellable_reset (cancel);
 	}
 
 end:
@@ -316,6 +300,8 @@ end:
 	g_cond_signal (self->priv->thread_finished);
 	g_mutex_unlock (self->priv->lock);
 
+	g_object_unref (cancel);
+
 	g_thread_exit (NULL);
 
 	return NULL;
@@ -323,25 +309,26 @@ end:
 
 gboolean
 brasero_async_task_manager_queue (BraseroAsyncTaskManager *self,
-				  BraseroAsyncTaskTypeID type,
+				  BraseroAsyncPriority priority,
+				  const BraseroAsyncTaskType *type,
 				  gpointer data)
 {
 	BraseroAsyncTaskCtx *ctx;
-	BraseroAsyncTaskType *task_type;
 
 	g_return_val_if_fail (self != NULL, FALSE);
-	g_return_val_if_fail (type > 0, FALSE);
-
-	task_type = g_hash_table_lookup (self->priv->types, GINT_TO_POINTER (type));
-	if (!task_type)
-		return FALSE;
 
 	ctx = g_new0 (BraseroAsyncTaskCtx, 1);
+	ctx->priority = priority;
+	ctx->type = type;
 	ctx->data = data;
-	ctx->common = task_type;
 
 	g_mutex_lock (self->priv->lock);
-	self->priv->waiting_tasks = g_slist_append (self->priv->waiting_tasks, ctx);
+	if (priority == BRASERO_ASYNC_IDLE)
+		self->priv->waiting_tasks = g_slist_append (self->priv->waiting_tasks, ctx);
+	else if (priority == BRASERO_ASYNC_NORMAL)
+		brasero_async_task_manager_insert_task (self, ctx);
+	else if (priority == BRASERO_ASYNC_URGENT)
+		self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
 
 	if (self->priv->unused_threads) {
 		/* wake up one thread in the list */
@@ -356,7 +343,6 @@ brasero_async_task_manager_queue (BraseroAsyncTaskManager *self,
 					  self,
 					  FALSE,
 					  &error);
-
 		if (!thread) {
 			g_warning ("Can't start thread : %s\n", error->message);
 			g_error_free (error);
@@ -381,6 +367,29 @@ brasero_async_task_manager_foreach_active (BraseroAsyncTaskManager *self,
 					   BraseroAsyncFindTask func,
 					   gpointer user_data)
 {
+	GSList *iter;
+	BraseroAsyncTaskCtx *ctx;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	g_mutex_lock (self->priv->lock);
+	for (iter = self->priv->active_tasks; iter; iter = iter->next) {
+		ctx = iter->data;
+		if (func (self, ctx->data, user_data))
+			result = TRUE;
+	}
+	g_mutex_unlock (self->priv->lock);
+
+	return result;
+}
+
+gboolean
+brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
+						  BraseroAsyncFindTask func,
+						  gpointer user_data)
+{
 	GSList *iter, *tasks = NULL;
 	BraseroAsyncTaskCtx *ctx;
 
@@ -391,8 +400,10 @@ brasero_async_task_manager_foreach_active (BraseroAsyncTaskManager *self,
 
 	for (iter = self->priv->active_tasks; iter; iter = iter->next) {
 		ctx = iter->data;
-		if (func (self, ctx->data, user_data))
+		if (func (self, ctx->data, user_data)) {
+			g_cancellable_cancel (ctx->cancel);
 			tasks = g_slist_prepend (tasks, ctx);
+		}
 	}
 
 	while (tasks) {
@@ -402,37 +413,20 @@ brasero_async_task_manager_foreach_active (BraseroAsyncTaskManager *self,
 		for (iter = tasks; iter; iter = iter->next) {
 			ctx = iter->data;
 
-			if (g_slist_find (self->priv->active_tasks, ctx) == NULL) {
-				tasks = g_slist_remove (tasks, ctx);
-				break;
-			}
+			if (g_slist_find (self->priv->active_tasks, ctx))
+				continue;
+
+			tasks = g_slist_remove (tasks, ctx);
+
+			/* NOTE: no need to call destroy callback here 
+			 * since it was done in the thread loop. */
+			break;
 		}
 	}
 
 	g_mutex_unlock (self->priv->lock);
+
 	return TRUE;
-}
-
-static GSList *
-brasero_async_task_manager_foreach_remove (BraseroAsyncTaskManager *self,
-					   GSList *list,
-					   BraseroAsyncFindTask func,
-					   gpointer user_data)
-{
-	BraseroAsyncTaskCtx *ctx;
-	GSList *iter, *next;
-
-	for (iter = list; iter; iter = next) {
-		ctx = iter->data;
-		next = iter->next;
-
-		if (func (self, ctx->data, user_data)) {
-			list = g_slist_remove (list, ctx);
-			g_free (ctx);
-		}
-	}
-
-	return list;
 }
 
 gboolean
@@ -440,32 +434,28 @@ brasero_async_task_manager_foreach_unprocessed_remove (BraseroAsyncTaskManager *
 						       BraseroAsyncFindTask func,
 						       gpointer user_data)
 {
+	BraseroAsyncTaskCtx *ctx;
+	GSList *iter, *next;
+
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	g_mutex_lock (self->priv->lock);
-	self->priv->waiting_tasks = brasero_async_task_manager_foreach_remove (self,
-									       self->priv->waiting_tasks,
-									       func,
-									       user_data);
-	g_mutex_unlock (self->priv->lock);
 
-	return TRUE;
-}
+	for (iter = self->priv->waiting_tasks; iter; iter = next) {
+		ctx = iter->data;
+		next = iter->next;
 
-gboolean
-brasero_async_task_manager_foreach_processed_remove (BraseroAsyncTaskManager *self,
-						     BraseroAsyncFindTask func,
-						     gpointer user_data)
-{
-	g_return_val_if_fail (self != NULL, FALSE);
-	g_return_val_if_fail (func != NULL, FALSE);
+		if (func (self, ctx->data, user_data)) {
+			self->priv->waiting_tasks = g_slist_remove (self->priv->waiting_tasks, ctx);
 
-	g_mutex_lock (self->priv->lock);
-	self->priv->results = brasero_async_task_manager_foreach_remove (self,
-									 self->priv->results,
-									 func,
-									 user_data);
+			/* call the destroy callback */
+			if (ctx->type->destroy)
+				ctx->type->destroy (self, ctx->data);
+
+			g_free (ctx);
+		}
+	}
 	g_mutex_unlock (self->priv->lock);
 
 	return TRUE;
@@ -487,6 +477,8 @@ brasero_async_task_manager_find_urgent_task (BraseroAsyncTaskManager *self,
 		ctx = iter->data;
 
 		if (func (self, ctx->data, user_data)) {
+			ctx->priority = BRASERO_ASYNC_URGENT;
+
 			self->priv->waiting_tasks = g_slist_remove (self->priv->waiting_tasks, ctx);
 			self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
 			g_mutex_unlock (self->priv->lock);

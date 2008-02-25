@@ -27,7 +27,7 @@
 
 #include <glib.h>
 
-#include <libgnomevfs/gnome-vfs.h>
+#include <gio/gio.h>
 
 #include "burn-volume.h"
 
@@ -221,7 +221,7 @@ brasero_file_node_new_loading (const gchar *name,
 			       BraseroFileNode *parent,
 			       GCompareFunc sort_func);
 BraseroFileNode *
-brasero_file_node_new_from_info (GnomeVFSFileInfo *info,
+brasero_file_node_new_from_info (GFileInfo *info,
 				 BraseroFileNode *parent,
 				 GCompareFunc sort_func);
 BraseroFileNode *
@@ -242,7 +242,7 @@ brasero_file_node_rename (BraseroFileNode *node,
 			  const gchar *name);
 void
 brasero_file_node_set_from_info (BraseroFileNode *node,
-				 GnomeVFSFileInfo *info);
+				 GFileInfo *info);
 
 void
 brasero_file_node_graft (BraseroFileNode *file_node,

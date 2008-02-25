@@ -38,10 +38,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
-#include <libgnomevfs/gnome-vfs-volume.h>
-#include <libgnomevfs/gnome-vfs-drive.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
+#include <gio/gio.h>
 
 #include <nautilus-burn-drive-monitor.h>
 
@@ -352,42 +349,51 @@ NCB_DRIVE_MOUNT (NautilusBurnDrive *drive,
 	return launch_command (drive, TRUE, error);
 }
 
-static GnomeVFSDrive *
+static GDrive *
 NCB_DRIVE_GET_VFS_DRIVE (NautilusBurnDrive *drive)
 {
-	GnomeVFSVolumeMonitor *monitor;
+	GVolumeMonitor *monitor;
 	GList *drives;
 	GList *iter;
 
-	monitor = gnome_vfs_get_volume_monitor ();
-	drives = gnome_vfs_volume_monitor_get_connected_drives (monitor);
+	monitor = g_volume_monitor_get ();
+	drives = g_volume_monitor_get_connected_drives (monitor);
 	for (iter = drives; iter; iter = iter->next) {
-		GnomeVFSDeviceType device_type;
-		GnomeVFSDrive *vfs_drive;
-		gchar *device_path;
+		GDrive *vfs_drive;
+		GList *vol_iter;
+		GList *volumes;
 
 		vfs_drive = iter->data;
-
-		device_type = gnome_vfs_drive_get_device_type (vfs_drive);
-		if (device_type != GNOME_VFS_DEVICE_TYPE_AUDIO_CD
-		&&  device_type != GNOME_VFS_DEVICE_TYPE_VIDEO_DVD
-		&&  device_type != GNOME_VFS_DEVICE_TYPE_CDROM)
+		if (!g_drive_has_media (vfs_drive))
 			continue;
 
-		device_path = gnome_vfs_drive_get_device_path (vfs_drive);
-		if (!strcmp (device_path, NCB_DRIVE_GET_DEVICE (drive))) {
-			gnome_vfs_drive_ref (vfs_drive);
+		/* FIXME: try to see if we can get the identifier for drive */
+		volumes = g_drive_get_volumes (vfs_drive);
+		for (vol_iter = volumes; vol_iter; vol_iter = vol_iter->next) {
+			GVolume *volume;
+			gchar *device_path;
 
-			g_list_foreach (drives, (GFunc) gnome_vfs_drive_unref, NULL);
-			g_list_free (drives);
+			volume = vol_iter->data;
+			device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+			if (!strcmp (device_path, NCB_DRIVE_GET_DEVICE (drive))) {
+
+				g_object_ref (vfs_drive);
+
+				g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+				g_list_free (volumes);
+
+				g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+				g_list_free (drives);
+
+				g_free (device_path);
+				return vfs_drive;
+			}
 			g_free (device_path);
-			return vfs_drive;
 		}
-
-		g_free (device_path);
+		g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+		g_list_free (volumes);
 	}
-
-	g_list_foreach (drives, (GFunc) gnome_vfs_drive_unref, NULL);
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
 	g_list_free (drives);
 
 	return NULL;
@@ -397,24 +403,38 @@ gchar *
 NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 			    GError **error)
 {
-	GnomeVFSDrive *vfsdrive = NULL;
 	gchar *mount_point = NULL;
 	gchar *local_path = NULL;
+	GDrive *vfsdrive = NULL;
 	GList *iter, *volumes;
 
 	/* get the uri for the mount point */
 	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (drive);
-	volumes = gnome_vfs_drive_get_mounted_volumes (vfsdrive);
-	gnome_vfs_drive_unref (vfsdrive);
+	volumes = g_drive_get_volumes (vfsdrive);
+	g_object_unref (vfsdrive);
 
 	for (iter = volumes; iter; iter = iter->next) {
-		GnomeVFSVolume *volume;
+		GVolume *volume;
+		GMount *mount;
+		GFile *root;
 
 		volume = iter->data;
-		mount_point = gnome_vfs_volume_get_activation_uri (volume);
+
+		mount = g_volume_get_mount (volume);
+		if (!mount)
+			continue;
+
+		root = g_mount_get_root (mount);
+		g_object_unref (mount);
+
+		mount_point = g_file_get_uri (root);
+		g_object_unref (root);
+
 		if (mount_point)
 			break;
 	}
+	g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
+	g_list_free (volumes);
 
 	if (!mount_point || strncmp (mount_point, "file://", 7)) {
 		/* mount point won't be usable */
@@ -431,15 +451,13 @@ NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 	else {
 		gchar *tmp;
 
-		local_path = gnome_vfs_get_local_path_from_uri (mount_point);
+		local_path = g_filename_from_uri (mount_point, NULL, NULL);
 		tmp = local_path;
 		local_path = g_strdup (local_path);
 		g_free (tmp);
 		
 		g_free (mount_point);
 	}
-
-	gnome_vfs_drive_volume_list_free (volumes);
 
 	return local_path;
 }

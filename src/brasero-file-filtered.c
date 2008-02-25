@@ -162,7 +162,7 @@ brasero_file_filtered_add (BraseroFileFiltered *self,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 
-	unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
+	unescaped_uri = g_uri_unescape_string (uri, NULL);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    STOCK_ID_COL, stock_id,
 			    UNESCAPED_URI_COL, unescaped_uri,

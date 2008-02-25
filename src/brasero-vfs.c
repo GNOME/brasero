@@ -31,7 +31,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libgnomevfs/gnome-vfs.h>
+#include <gio/gio.h>
 
 #ifdef BUILD_PLAYLIST
 #include <totem-pl-parser.h>
@@ -135,14 +135,14 @@ typedef struct _BraseroVFSPlaylistData BraseroVFSPlaylistData;
 #endif
 
 struct _BraseroInfoResult  {
-	GnomeVFSFileInfo *info;
-	GnomeVFSResult result;
+	GFileInfo *info;
+	GError *error;
 	gchar *uri;
 };
 typedef struct _BraseroInfoResult BraseroInfoResult;
 
 struct _BraseroMetadataResult {
-	GnomeVFSFileInfo *info;
+	GFileInfo *info;
 	BraseroVFSMetadataTask *item;
 };
 typedef struct _BraseroMetadataResult BraseroMetadataResult;
@@ -313,34 +313,38 @@ brasero_vfs_get_default ()
 static gchar *
 brasero_vfs_check_for_parent_symlink (const gchar *escaped_uri)
 {
-	GnomeVFSFileInfo *info;
-	GnomeVFSURI *parent;
+	GFileInfo *info;
+	GFile *parent;
     	gchar *uri;
 
-    	parent = gnome_vfs_uri_new (escaped_uri);
-  	info = gnome_vfs_file_info_new ();
-    	uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
+    	parent = g_file_new_for_uri (escaped_uri);
+    	uri = g_file_get_uri (parent);
 
-	while (gnome_vfs_uri_has_parent (parent)) {
-	    	GnomeVFSURI *tmp;
-		GnomeVFSResult result;
+	while (g_file_get_parent (parent)) {
+	    	GFile *tmp;
+		GError *error;
 
-		result = gnome_vfs_get_file_info_uri (parent,
-						      info,
-					              GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+		error = NULL;
+		info = g_file_query_info (parent,
+					  ,
+					  G_FILE_QUERY_INFO_NONE,
+					  NULL,
+					  NULL);
 
-		if (result != GNOME_VFS_OK)
+		if (error != GNOME_VFS_OK) {
+			g_error_free (error);
 			/* we shouldn't reached this point but who knows */
 		    	break;
+		}
 
 		/* NOTE: no need to check for broken symlinks since
 		 * we wouldn't have reached this point otherwise */
-		if (GNOME_VFS_FILE_INFO_SYMLINK (info)) {
+		if (g_file_info_get_is_symlink (info)) {
 		    	gchar *parent_uri;
 		    	gchar *new_root;
 			gchar *newuri;
 
-		    	parent_uri = gnome_vfs_uri_to_string (parent, GNOME_VFS_URI_HIDE_NONE);
+		    	parent_uri = g_file_get_uri (parent);
 			new_root = gnome_vfs_make_uri_from_input (info->symlink_name);
 
 			newuri = g_strconcat (new_root,
@@ -361,7 +365,7 @@ brasero_vfs_check_for_parent_symlink (const gchar *escaped_uri)
 		parent = gnome_vfs_uri_get_parent (parent);
 		gnome_vfs_uri_unref (tmp);
 
-		gnome_vfs_file_info_clear (info);
+		g_object_unref (info);
 	}
 	gnome_vfs_file_info_unref (info);
 	gnome_vfs_uri_unref (parent);
@@ -371,7 +375,7 @@ brasero_vfs_check_for_parent_symlink (const gchar *escaped_uri)
 
 static gboolean
 brasero_utils_get_symlink_target (const gchar *escaped_uri,
-				  GnomeVFSFileInfo *info,
+				  GFileInfo *info,
 				  GnomeVFSFileInfoOptions flags)
 {
 	gint size;
@@ -517,8 +521,8 @@ brasero_vfs_info_thread (BraseroAsyncTaskManager *manager,
 	data = BRASERO_CTX_TASK_DATA (ctx);
 	for (iter = data->uris; iter; iter = next) {
 		BraseroInfoResult *result;
-		GnomeVFSFileInfo *info;
-		GnomeVFSURI *vfsuri;
+		GFileInfo *info;
+		GFile *file;
 		gchar *uri;
 
 		if (ctx->cancelled)
@@ -548,19 +552,22 @@ brasero_vfs_info_thread (BraseroAsyncTaskManager *manager,
 
 		result->uri = uri;
 		info = gnome_vfs_file_info_new ();
-		vfsuri = gnome_vfs_uri_new (uri);
-		result->result = gnome_vfs_get_file_info_uri (vfsuri,
-							      info,
-							      data->flags);
-		gnome_vfs_uri_unref (vfsuri);
+		file = g_file_new_for_uri (uri);
+		result->result = g_file_query_info (file,
+						    data->flags,
+						    G_FILE_QUERY_INFO_NONE,
+						    NULL,
+						    &error);
+		g_object_unref (file);
 
-		if (result->result != GNOME_VFS_OK) {
-			result->info = info;
+		if (error) {
+			result->info = NULL;
+			result->error = error;
 			continue;
 		}
 
 		if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
-			gnome_vfs_file_info_clear (info);
+			g_object_unref (info);
 			if (!brasero_utils_get_symlink_target (uri,
 							       info,
 							       data->flags)) {
@@ -679,7 +686,7 @@ brasero_vfs_load_thread (BraseroAsyncTaskManager *manager,
 {
 	BraseroVFSTaskCtx *ctx = callback_data;
 	GnomeVFSDirectoryHandle *handle;
-	GnomeVFSFileInfo *info;
+	GFileInfo *info;
 	BraseroLoadData *data;
 	GnomeVFSResult res;
 
@@ -996,7 +1003,7 @@ static gboolean
 brasero_vfs_metadata_ctx_new (BraseroVFS *self,
 			      BraseroVFSTaskCtx *ctx,
 			      const gchar *uri,
-			      GnomeVFSFileInfo *info)
+			      GFileInfo *info)
 {
 	BraseroVFSMetadataTask *item = NULL;
 	BraseroMetadataResult *result;
@@ -1104,7 +1111,7 @@ brasero_vfs_metadata_result (BraseroVFS *self,
 			     GObject *owner,
 			     GnomeVFSResult result,
 			     const gchar *uri,
-			     GnomeVFSFileInfo *info,
+			     GFileInfo *info,
 			     gpointer user_data)
 {
 	BraseroVFSTaskCtx *ctx = user_data;
@@ -1266,7 +1273,7 @@ brasero_vfs_count_result_audio (BraseroVFS *self,
 			        GObject *owner,
 			        GnomeVFSResult result,
 			        const gchar *uri,
-			        GnomeVFSFileInfo *info,
+			        GFileInfo *info,
 			        BraseroMetadataInfo *metadata,
 			        gpointer user_data)
 {
@@ -1317,7 +1324,7 @@ brasero_vfs_count_result_data (BraseroVFS *self,
 			       GObject *owner,
 			       GnomeVFSResult result,
 			       const gchar *uri,
-			       GnomeVFSFileInfo *info,
+			       GFileInfo *info,
 			       gpointer user_data)
 {
 	BraseroVFSTaskCtx *ctx = user_data;
@@ -1445,7 +1452,7 @@ brasero_vfs_playlist_subtask_result (BraseroVFS *self,
 				     GObject *object,
 				     GnomeVFSResult result,
 				     const gchar *uri,
-				     GnomeVFSFileInfo *info,
+				     GFileInfo *info,
 				     BraseroMetadataInfo *metadata,
 				     gpointer user_data)
 {

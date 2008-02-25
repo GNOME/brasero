@@ -106,8 +106,6 @@ brasero_SOURCES = \
 	brasero-ncb.c         \
 	burn-task.c         \
 	burn-task.h         \
-	brasero-vfs.c         \
-	brasero-vfs.h         \
 	brasero-async-task-manager.c         \
 	brasero-async-task-manager.h         \
 	eggtreemultidnd.c         \
@@ -231,7 +229,9 @@ brasero_SOURCES = \
 	brasero-disc-message.c         \
 	baobab-cell-renderer-progress.c         \
 	baobab-cell-renderer-progress.h         \
-	scsi-device.h 
+	scsi-device.h         \
+	brasero-io.h         \
+	brasero-io.c 
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

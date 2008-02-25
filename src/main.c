@@ -31,16 +31,15 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+
+#include <gio/gio.h>
+
 #include <gtk/gtk.h>
 
 #include <gst/gst.h>
 
 #include <libgnomeui/libgnomeui.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-
-#include <nautilus-burn-recorder.h>
 #include <nautilus-burn-init.h>
 
 #include <gconf/gconf-client.h>
@@ -120,8 +119,11 @@ static const GOptionEntry options [] = {
 
 #define BRASERO_PROJECT_OPEN_URI(app, function, path)	\
 {									\
+	GFile *file;							\
 	gchar *uri;							\
-	uri = gnome_vfs_make_uri_from_input (path);			\
+	file = g_file_new_for_commandline_arg (path);			\
+	uri = g_file_get_uri (file);					\
+	g_object_unref (file);						\
 	function (BRASERO_PROJECT_MANAGER (app->contents), uri);	\
 }
 
@@ -132,7 +134,10 @@ static const GOptionEntry options [] = {
 	/* convert all names into a GSList * */	\
 	for (iter = uris; iter && *iter; iter ++) {				\
 		gchar *uri;							\
-		uri = gnome_vfs_make_uri_from_input (*iter);			\
+		GFile *file;							\
+		file = g_file_new_for_commandline_arg (*iter);			\
+		uri = g_file_get_uri (file);					\
+		g_object_unref (file);						\
 		list = g_slist_prepend (list, uri);				\
 	}									\
 	function (BRASERO_PROJECT_MANAGER (app->contents), list);		\
@@ -650,9 +655,14 @@ brasero_app_parse_options (BraseroApp *app)
 
 		/* in this case we can also add the files */
 		for (iter = files; iter && *iter; iter ++) {
+			GFile *file;
 			gchar *uri;
-			uri = gnome_vfs_make_uri_from_input (*iter);
-			list = g_slist_prepend (list, uri);
+
+			file = g_file_new_for_commandline_arg (*iter);
+			uri = g_file_get_uri (file);
+			g_object_unref (file);
+
+			list = g_slist_prepend (list, file);
 		}
 
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (app->contents), list);
@@ -660,15 +670,23 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else if (files) {
 		const gchar *mime;
-	    	gchar *uri;
+		GFileInfo *info;
+		GFile *file;
 
 	    	if (g_strv_length (files) > 1)
 			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 
 		/* we need to determine what type of file it is */
-	    	uri = gnome_vfs_make_uri_from_input (files [0]);
-		mime = gnome_vfs_get_mime_type (uri);
-	    	g_free (uri);
+		file = g_file_new_for_commandline_arg (files [0]);
+		info = g_file_query_info (file,
+					  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+					  G_FILE_QUERY_INFO_NONE,
+					  NULL,
+					  NULL);
+		g_object_unref (file);
+
+		mime = g_file_info_get_content_type (info);
+	    	g_object_unref (info);
 
 		if (mime) {
 			if (!strcmp (mime, "application/x-brasero")) {
@@ -728,7 +746,6 @@ main (int argc, char **argv)
 	notify_init (PACKAGE);
 #endif
 
-	gnome_vfs_init ();
 	gst_init (&argc, &argv);
 
 	brasero_burn_set_debug (debug);

@@ -29,10 +29,13 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
+
+#include <gio/gio.h>
 
 #include "burn-basics.h"
 #include "burn-debug.h"
@@ -407,13 +410,12 @@ static BraseroBurnResult
 brasero_job_check_output_volume_space (BraseroJob *self,
 				       GError **error)
 {
-	gchar *uri_str;
+	GFile *file;
+	GFileInfo *info;
 	gchar *directory;
-	GnomeVFSURI *uri;
+	guint64 vol_size = 0;
 	gint64 output_size = 0;
 	BraseroJobPrivate *priv;
-	GnomeVFSFileSize vol_size = 0;
-	BraseroBurnResult result = BRASERO_BURN_ERR;
 
 	/* now that the job has a known output we must check that the volume the
 	 * job is writing to has enough space for all output */
@@ -425,21 +427,24 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		return BRASERO_BURN_ERR;
 
 	directory = g_path_get_dirname (priv->output->image);
-
-	uri_str = gnome_vfs_get_uri_from_local_path (directory);
+	file = g_file_new_for_path (directory);
 	g_free (directory);
 
-	uri = gnome_vfs_uri_new (uri_str);
-	g_free (uri_str);
-
-	if (uri == NULL)
+	if (file == NULL)
 		goto error;
 
-	result = gnome_vfs_get_volume_free_space (uri, &vol_size);
-	if (result != GNOME_VFS_OK)
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  error);
+	if (!info)
 		goto error;
 
-	gnome_vfs_uri_unref (uri);
+	g_object_unref (file);
+
+	vol_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+	g_object_unref (info);
 
 	/* get the size of the output this job is supposed to create */
 	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
@@ -460,12 +465,12 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 error:
 
-	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
-		     _("the size of the volume can't be checked (%s)"),
-		     gnome_vfs_result_to_string (result));
-	gnome_vfs_uri_unref (uri);
+	if (error && *error == NULL)
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the size of the volume can't be checked (Unknown error)"));
+	g_object_unref (file);
 	return BRASERO_BURN_ERR;
 }
 

@@ -23,8 +23,7 @@
  */
 
 #include <glib.h>
-
-#include <libgnomevfs/gnome-vfs.h>
+#include <gio/gio.h>
 
 #include "burn-basics.h"
 
@@ -43,8 +42,8 @@ brasero_xfer_free (BraseroXferCtx *ctx);
 
 BraseroBurnResult
 brasero_xfer (BraseroXferCtx *ctx,
-	      GnomeVFSURI *uri,
-	      GnomeVFSURI *dest,
+	      const gchar *src,
+	      const gchar *dest,
 	      GError **error);
 
 BraseroBurnResult

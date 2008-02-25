@@ -35,8 +35,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include <nautilus-burn-drive.h>
 
 #include "brasero-marshal.h"

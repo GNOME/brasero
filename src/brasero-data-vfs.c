@@ -36,7 +36,7 @@
 #include "brasero-data-vfs.h"
 #include "brasero-data-project.h"
 #include "brasero-file-node.h"
-#include "brasero-vfs.h"
+#include "brasero-io.h"
 #include "brasero-utils.h"
 #include "brasero-marshal.h"
 #include "brasero-utils.h"
@@ -57,9 +57,9 @@ struct _BraseroDataVFSPrivate
 	 * the user despite the filtering rules. */
 	GHashTable *filtered;
 
-	BraseroVFS *vfs;
-	BraseroVFSDataID load_uri;
-	BraseroVFSDataID load_contents;
+	BraseroIO *io;
+	BraseroIOJobBase *load_uri;
+	BraseroIOJobBase *load_contents;
 
 	guint filter_hidden:1;
 	guint filter_broken_sym:1;
@@ -174,28 +174,11 @@ brasero_data_vfs_is_loading_uri (BraseroDataVFS *self)
 	return (g_hash_table_size (priv->loading) != 0);
 }
 
-inline static gboolean
-brasero_data_vfs_is_readable (const GnomeVFSFileInfo *info)
-{
-	if (!GNOME_VFS_FILE_INFO_LOCAL (info))
-		return TRUE;
-
-	if (getuid () == info->uid && (info->permissions & GNOME_VFS_PERM_USER_READ))
-		return TRUE;
-	else if (brasero_utils_is_gid_in_groups (info->gid)
-	      && (info->permissions & GNOME_VFS_PERM_GROUP_READ))
-		return TRUE;
-	else if (info->permissions & GNOME_VFS_PERM_OTHER_READ)
-		return TRUE;
-
-	return FALSE;
-}
-
 static gboolean
 brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 				   const gchar *uri,
-				   GnomeVFSResult result,
-				   GnomeVFSFileInfo *info)
+				   GError *error,
+				   GFileInfo *info)
 {
 	BraseroDataVFSPrivate *priv;
 
@@ -205,15 +188,15 @@ brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 	 * that is if it is loading. So check the loading GHashTable to know 
 	 * that. Otherwise this URI comes from directory exploration. */
 
-	if (result != GNOME_VFS_OK) {
-		if (result == GNOME_VFS_ERROR_NOT_FOUND) {
+	if (error) {
+		if (error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_FOUND) {
 			if (g_hash_table_lookup (priv->loading, uri))
 				g_signal_emit (self,
 					       brasero_data_vfs_signals [UNKNOWN_SIGNAL],
 					       0,
 					       uri);
 		}
-		else if (result == GNOME_VFS_ERROR_LOOP) {
+		else if (error->domain == BRASERO_ERROR && error->code == BRASERO_ERROR_SYMLINK_LOOP) {
 			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self),
 							  uri);
 
@@ -231,28 +214,34 @@ brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 				g_signal_emit (self,
 					       brasero_data_vfs_signals [UNREADABLE_SIGNAL],
 					       0,
-					       result,
+					       error,
 					       uri);
 		}
 
 		BRASERO_BURN_LOG ("VFS information retrieval error %s : %s\n",
 				  uri,
-				  gnome_vfs_result_to_string (result));
+				  error->message);
 
 		return FALSE;
 	}
 
-	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS)
-	&&  !brasero_data_vfs_is_readable (info)) {
-		brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self),
-						  uri);
+	if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)
+	&& !g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
+		brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self), uri);
 
-		if (g_hash_table_lookup (priv->loading, uri))
+		if (g_hash_table_lookup (priv->loading, uri)) {
+			GError *error;
+
+			error = g_error_new (BRASERO_ERROR,
+					     BRASERO_ERROR_GENERAL,
+					     _("\"%s\" cannot be read"),
+					     g_file_info_get_name (info));
 			g_signal_emit (self,
 				       brasero_data_vfs_signals [UNREADABLE_SIGNAL],
 				       0,
-				       GNOME_VFS_ERROR_ACCESS_DENIED,
+				       error,
 				       uri);
+		}
 		return FALSE;
 	}
 
@@ -284,8 +273,8 @@ brasero_data_vfs_remove_from_hash (BraseroDataVFS *self,
  */
 static void
 brasero_data_vfs_directory_load_end (GObject *object,
-				     gpointer data,
-				     gboolean cancelled)
+				     gboolean cancelled,
+				     gpointer data)
 {
 	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (object);
 	BraseroDataVFS *self = BRASERO_DATA_VFS (object);
@@ -325,16 +314,103 @@ brasero_data_vfs_directory_load_end (GObject *object,
 }
 
 static gboolean
-brasero_data_vfs_directory_load_result (BraseroVFS *vfs,
-					GObject *owner,
-					GnomeVFSResult result,
+brasero_data_vfs_directory_check_symlink_loop (BraseroDataVFS *self,
+					       BraseroFileNode *parent,
+					       const gchar *uri,
+					       GFileInfo *info)
+{
+	BraseroDataVFSPrivate *priv;
+	const gchar *target_uri;
+	guint target_len;
+	guint uri_len;
+
+	priv = BRASERO_DATA_VFS_PRIVATE (self);
+
+	target_uri = g_file_info_get_symlink_target (info);
+	if (!target_uri)
+		return FALSE;
+
+	/* if target points to a child that's OK */
+	uri_len = strlen (uri);
+	if (!strncmp (target_uri, uri, uri_len)
+	&&   target_uri [uri_len] == G_DIR_SEPARATOR)
+		return FALSE;
+
+	target_len = strlen (target_uri);
+	while (parent && !parent->is_root) {
+		BraseroFileNode *next;
+		gchar *parent_uri;
+		guint parent_len;
+		gchar *next_uri;
+		guint next_len;
+
+		/* if the file is not grafted carry on */
+		if (!parent->is_grafted) {
+			parent = parent->parent;
+			continue;
+		}
+
+		/* if the file is a symlink, carry on since that's why it was
+		 * grafted. It can't have been added by the user since in this
+		 * case we replace the symlink by the target. */
+		if (parent->is_symlink) {
+			parent = parent->parent;
+			continue;
+		}
+
+		parent_uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (self), parent);
+		parent_len = strlen (parent_uri);
+
+		/* see if target is a parent of that file */
+		if (!strncmp (target_uri, parent_uri, target_len)
+		&&   parent_uri [target_len] == G_DIR_SEPARATOR) {
+			g_free (parent_uri);
+			return TRUE;
+		}
+
+		/* see if the graft is also the parent of the target */
+		if (!strncmp (parent_uri, target_uri, parent_len)
+		&&   target_uri [parent_len] == G_DIR_SEPARATOR) {
+			g_free (parent_uri);
+			return TRUE;
+		}
+
+		/* The next graft point must be the natural parent of this one */
+		next = parent->parent;
+		if (!next || next->is_root) {
+			g_free (parent_uri);
+			break;
+		}
+
+		next_uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (self), next);
+		next_len = strlen (next_uri);
+
+		if (!strncmp (next_uri, parent_uri, next_len)
+		&&   parent_uri [next_len] == G_DIR_SEPARATOR) {
+			/* It's not the natural parent. We're done */
+			g_free (parent_uri);
+			break;
+		}
+
+		/* retry with the next parent graft point */
+		g_free (parent_uri);
+		parent = next;
+	}
+
+	return FALSE;
+}
+
+static void
+brasero_data_vfs_directory_load_result (GObject *owner,
+					GError *error,
 					const gchar *uri,
-					GnomeVFSFileInfo *info,
+					GFileInfo *info,
 					gpointer data)
 {
 	BraseroDataVFS *self = BRASERO_DATA_VFS (owner);
 	BraseroDataVFSPrivate *priv;
 	gchar *parent_uri = data;
+	const gchar *name;
 	GSList *nodes;
 	GSList *iter;
 
@@ -342,14 +418,16 @@ brasero_data_vfs_directory_load_result (BraseroVFS *vfs,
 
 	/* check the status of the operation.
 	 * NOTE: no need to remove the nodes. */
-	if (!brasero_data_vfs_check_uri_result (self, uri, result, info))
-		return TRUE;
+	if (!brasero_data_vfs_check_uri_result (self, uri, error, info))
+		return;
 
 	/* Filtering part */
 
+	name = g_file_info_get_name (info);
+
 	/* See if it's a broken symlink */
-	if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK
-	&& !info->symlink_name) {
+	if (g_file_info_get_is_symlink (info)
+	&& !g_file_info_get_symlink_target (info)) {
 		BraseroDataVFSFilterStatus status;
 
 		/* See if this file is already in filtered */
@@ -375,12 +453,12 @@ brasero_data_vfs_directory_load_result (BraseroVFS *vfs,
 					       uri);
 			}
 
-			return TRUE;
+			return;
 		}
 	}
 
 	/* A new hidden file ? */
-	else if (info->name [0] == '.') {
+	else if (name [0] == '.') {
 		BraseroDataVFSFilterStatus status;
 
 		/* See if this file is already in restored */
@@ -406,7 +484,7 @@ brasero_data_vfs_directory_load_result (BraseroVFS *vfs,
 					       uri);
 			}
 
-			return TRUE;
+			return;
 		}
 	}
 
@@ -421,13 +499,23 @@ brasero_data_vfs_directory_load_result (BraseroVFS *vfs,
 		if (!parent)
 			continue;
 
+		if (g_file_info_get_is_symlink (info)) {
+			if (brasero_data_vfs_directory_check_symlink_loop (self, parent, uri, info)) {
+				brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self), uri);
+				if (g_hash_table_lookup (priv->loading, uri))
+					g_signal_emit (self,
+						       brasero_data_vfs_signals [RECURSIVE_SIGNAL],
+						       0,
+						       uri);
+				return;
+			}
+		}
+
 		brasero_data_project_add_node_from_info (BRASERO_DATA_PROJECT (self),
 							 uri,
 							 info,
 							 parent);
 	}
-
-	return TRUE;
 }
 
 static gboolean
@@ -435,12 +523,10 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 				 BraseroFileNode *node,
 				 const gchar *uri)
 {
-	GnomeVFSFileInfoOptions flags;
 	BraseroDataVFSPrivate *priv;
 	gchar *registered;
 	guint reference;
 	GSList *nodes;
-	gboolean res;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
@@ -461,25 +547,17 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 			     g_slist_prepend (NULL, GINT_TO_POINTER (reference)));
 
 	if (!priv->load_contents)
-		priv->load_contents = brasero_vfs_register_data_type (priv->vfs,
-								      G_OBJECT (self),
-								      G_CALLBACK (brasero_data_vfs_directory_load_result),
-								      brasero_data_vfs_directory_load_end);
+		priv->load_contents = brasero_io_register (G_OBJECT (self),
+							   brasero_data_vfs_directory_load_result,
+							   brasero_data_vfs_directory_load_end,
+							   NULL);
 
 	/* no need to require mime types here as these rows won't be visible */
-	flags = GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS;
-	res = brasero_vfs_load_directory (priv->vfs,
-					  uri,
-					  flags,
-					  priv->load_contents,
-					  registered);
-	if (!res) {
-		brasero_data_vfs_remove_from_hash (self, priv->directories, uri);
-		brasero_utils_unregister_string (uri);
-
-		brasero_data_project_remove_node (BRASERO_DATA_PROJECT (self), node);
-		return FALSE;		
-	}
+	brasero_io_load_directory (priv->io,
+				   uri,
+				   priv->load_contents,
+				   BRASERO_IO_INFO_PERM,
+				   registered);
 
 	/* Only emit a signal if state changed. Some widgets need to know if 
 	 * either directories loading or uri loading state has changed to signal
@@ -498,8 +576,8 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
  */
 static void
 brasero_data_vfs_loading_node_end (GObject *object,
-				   gpointer data,
-				   gboolean cancelled)
+				   gboolean cancelled,
+				   gpointer data)
 {
 	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (object);
 	BraseroDataVFS *self = BRASERO_DATA_VFS (object);
@@ -511,8 +589,10 @@ brasero_data_vfs_loading_node_end (GObject *object,
 
 	/* Only emit a signal if state changed. Some widgets need to know if 
 	 * either directories loading or uri loading state has changed to signal
-	 * it even if there were some directories loading. */
-	if (!g_hash_table_size (priv->loading))
+	 * it even if there were some directories loading.
+	 * NOTE: we only cancel when we're stopping. That's why there is no need
+	 * to emit any signal in this case (cancellation). */
+	if (!g_hash_table_size (priv->loading) && !cancelled)
 		g_signal_emit (self,
 			       brasero_data_vfs_signals [ACTIVITY_SIGNAL],
 			       0,
@@ -520,11 +600,10 @@ brasero_data_vfs_loading_node_end (GObject *object,
 }
 
 static void
-brasero_data_vfs_loading_node_result (BraseroVFS *vfs,
-				      GObject *owner,
-				      GnomeVFSResult result,
+brasero_data_vfs_loading_node_result (GObject *owner,
+				      GError *error,
 				      const gchar *uri,
-				      GnomeVFSFileInfo *info,
+				      GFileInfo *info,
 				      gpointer NULL_data)
 {
 	GSList *iter;
@@ -535,7 +614,7 @@ brasero_data_vfs_loading_node_result (BraseroVFS *vfs,
 	nodes = g_hash_table_lookup (priv->loading, uri);
 
 	/* check the status of the operation */
-	if (!brasero_data_vfs_check_uri_result (self, uri, result, info)) {
+	if (!brasero_data_vfs_check_uri_result (self, uri, error, info)) {
 		/* we need to remove the loading node that is waiting */
 		for (iter = nodes; iter; iter = iter->next) {
 			BraseroFileNode *node;
@@ -594,14 +673,13 @@ brasero_data_vfs_loading_node_result (BraseroVFS *vfs,
 
 static gboolean
 brasero_data_vfs_load_node (BraseroDataVFS *self,
-			    GnomeVFSFileInfoOptions flags,
+			    BraseroIOFlags flags,
 			    guint reference,
 			    const gchar *uri)
 {
 	BraseroDataVFSPrivate *priv;
 	gchar *registered;
 	gboolean result;
-	GList *uris;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
@@ -611,19 +689,16 @@ brasero_data_vfs_load_node (BraseroDataVFS *self,
 			     g_slist_prepend (NULL, GINT_TO_POINTER (reference)));
 
 	if (!priv->load_uri)
-		priv->load_uri = brasero_vfs_register_data_type (priv->vfs,
-								 G_OBJECT (self),
-								 G_CALLBACK (brasero_data_vfs_loading_node_result),
-								 brasero_data_vfs_loading_node_end);
+		priv->load_uri = brasero_io_register (G_OBJECT (self),
+						      brasero_data_vfs_loading_node_result,
+						      brasero_data_vfs_loading_node_end,
+						      NULL);
 
-	uris = g_list_prepend (NULL, (gchar *) uri);
-	result = brasero_vfs_get_info (priv->vfs,
-				       uris,
-				       TRUE,
-				       flags,
-				       priv->load_uri,
-				       registered);
-	g_list_free (uris);
+	brasero_io_get_file_info (priv->io,
+				  uri,
+				  priv->load_uri,
+				  flags,
+				  registered);
 
 	/* Only emit a signal if state changed. Some widgets need to know if 
 	 * either directories loading or uri loading state has changed to signal
@@ -653,23 +728,23 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 
 	if (!node->is_reloading) {
 		gchar *name;
-		GnomeVFSURI *vfs_uri;
+		GFile *vfs_uri;
 		gchar *unescaped_name;
 
 		/* g_path_get_basename is not comfortable with uri related
 		 * to the root directory so check that before */
-		vfs_uri = gnome_vfs_uri_new (uri);
-		name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-		gnome_vfs_uri_unref (vfs_uri);
+		vfs_uri = g_file_new_for_uri (uri);
+		name = g_file_get_basename (vfs_uri);
+		g_object_unref (vfs_uri);
 
-		unescaped_name = gnome_vfs_unescape_string_for_display (name);
+		unescaped_name = g_uri_unescape_string (name, NULL);
 		g_free (name);
 		name = unescaped_name;
 
 		if (!name)
 			return TRUE;
 
-		if (!strcmp (name, GNOME_VFS_URI_PATH_STR)) {
+		if (!strcmp (name, G_DIR_SEPARATOR_S)) {
 			g_free (name);
 
 			/* This is a root directory: we don't add it since a
@@ -699,9 +774,9 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 
 	/* loading nodes are almost always visible already so get mime type */
 	return brasero_data_vfs_load_node (self,
-					   GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS|
-					   GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-					   GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
+					   BRASERO_IO_INFO_PERM|
+					   BRASERO_IO_INFO_MIME|
+					   BRASERO_IO_INFO_CHECK_PARENT_SYMLINK,
 					   reference,
 					   uri);
 }
@@ -718,25 +793,23 @@ brasero_data_vfs_increase_priority_cb (gpointer data, gpointer user_data)
 static gboolean
 brasero_data_vfs_require_higher_priority (BraseroDataVFS *self,
 					  BraseroFileNode *node,
-					  BraseroVFS *vfs,
-					  guint type)
+					  BraseroIO *io,
+					  BraseroIOJobBase *type)
 {
 	gchar *registered;
-	gboolean result;
 	gchar *uri;
 
 	uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (self), node);
 	registered = brasero_utils_register_string (uri);
 	g_free (uri);
 
-	result = brasero_vfs_find_urgent (vfs,
-					  type,
-					  brasero_data_vfs_increase_priority_cb,
-					  registered);
+	brasero_io_find_urgent (io,
+				type,
+				brasero_data_vfs_increase_priority_cb,
+				registered);
 
 	brasero_utils_unregister_string (registered);
-
-	return result;
+	return TRUE;
 }
 
 gboolean
@@ -748,7 +821,7 @@ brasero_data_vfs_require_directory_contents (BraseroDataVFS *self,
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 	return brasero_data_vfs_require_higher_priority (self,
 							 node,
-							 priv->vfs,
+							 priv->io,
 							 priv->load_contents);
 }
 
@@ -761,7 +834,7 @@ brasero_data_vfs_require_node_load (BraseroDataVFS *self,
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 	return brasero_data_vfs_require_higher_priority (self,
 							 node,
-							 priv->vfs,
+							 priv->io,
 							 priv->load_uri);
 }
 
@@ -770,7 +843,6 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 			    BraseroFileNode *node)
 {
 	BraseroDataVFSPrivate *priv;
-	gchar *registered;
 	guint reference;
 	gboolean result;
 	GSList *nodes;
@@ -789,6 +861,11 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 	/* make sure the node is not already in the loading table */
 	nodes = g_hash_table_lookup (priv->loading, uri);
 	if (nodes) {
+		gchar *registered;
+
+		registered = brasero_utils_register_string (uri);
+		g_free (uri);
+
 		for (; nodes; nodes = nodes->next) {
 			guint reference;
 			BraseroFileNode *ref_node;
@@ -796,8 +873,13 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 			reference = GPOINTER_TO_INT (nodes->data);
 			ref_node = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
 			if (ref_node == node) {
-				result = TRUE;
-				goto end;
+				/* 1sk for a higher priority */
+				brasero_io_find_urgent (priv->io,
+							priv->load_uri,
+							brasero_data_vfs_increase_priority_cb,
+							registered);
+				brasero_utils_unregister_string (registered);
+				return TRUE;
 			}
 		}
 
@@ -805,28 +887,23 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 		reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
 		nodes = g_slist_prepend (nodes, GINT_TO_POINTER (reference));
 		g_hash_table_insert (priv->loading, (gchar *) uri, nodes);
-		result = TRUE;
-		goto end;
+
+		/* Yet, ask for a higher priority */
+		brasero_io_find_urgent (priv->io,
+					priv->load_uri,
+					brasero_data_vfs_increase_priority_cb,
+					registered);
+		brasero_utils_unregister_string (registered);
+		return TRUE;
 	}
 
 	reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
 	result = brasero_data_vfs_load_node (self,
-					     GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-					     GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
+					     BRASERO_IO_INFO_MIME|
+					     BRASERO_IO_INFO_URGENT,
 					     reference,
 					     uri);
-
-end:
-
-	/* ask for a higher priority */
-	registered = brasero_utils_register_string (uri);
 	g_free (uri);
-
-	brasero_vfs_find_urgent (priv->vfs,
-				 priv->load_uri,
-				 brasero_data_vfs_increase_priority_cb,
-				 registered);
-	brasero_utils_unregister_string (registered);
 
 	return result;
 }
@@ -910,8 +987,16 @@ brasero_data_vfs_clear (BraseroDataVFS *self)
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
 	/* Stop all VFS operations */
-	if (priv->vfs)
-		brasero_vfs_cancel (priv->vfs, self);
+	if (priv->io) {
+		brasero_io_cancel_by_base (priv->io, priv->load_uri);
+		brasero_io_cancel_by_base (priv->io, priv->load_contents);
+
+		g_free (priv->load_uri);
+		priv->load_uri = NULL;
+
+		g_free (priv->load_contents);
+		priv->load_contents = NULL;
+	}
 
 	/* Empty the hash tables */
 	g_hash_table_foreach_remove (priv->loading,
@@ -959,7 +1044,7 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 	priv->filtered = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* get the vfs object */
-	priv->vfs = brasero_vfs_get_default ();
+	priv->io = brasero_io_get_default ();
 }
 
 static void
@@ -985,9 +1070,9 @@ brasero_data_vfs_finalize (GObject *object)
 		priv->filtered = NULL;
 	}
 
-	if (priv->vfs) {
-		g_object_unref (priv->vfs);
-		priv->vfs = NULL;
+	if (priv->io) {
+		g_object_unref (priv->io);
+		priv->io = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_data_vfs_parent_class)->finalize (object);
@@ -1043,7 +1128,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
 			  brasero_marshal_VOID__INT_STRING,
 			  G_TYPE_NONE,
 			  2,
-			  G_TYPE_INT,
+			  G_TYPE_POINTER,
 			  G_TYPE_STRING);
 
 	brasero_data_vfs_signals [RECURSIVE_SIGNAL] = 

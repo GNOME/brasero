@@ -32,8 +32,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include <sys/inotify.h>
 
 #include "brasero-file-monitor.h"
@@ -571,7 +569,7 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 
 	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
 
-	path = gnome_vfs_get_local_path_from_uri (uri);
+	path = g_filename_from_uri (uri, NULL, NULL);
 
 	dev_fd = g_io_channel_unix_get_fd (priv->notify);
 	mask = IN_MODIFY |

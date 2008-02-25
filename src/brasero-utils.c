@@ -38,10 +38,6 @@
 
 #include <libgnomeui/libgnomeui.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-
 #include <nautilus-burn-drive.h>
 
 #include <gst/gst.h>
@@ -498,106 +494,6 @@ brasero_utils_make_button (const gchar *text,
 	return button;
 }
 
-static gboolean
-brasero_utils_empty_dir (const gchar *uri, GnomeVFSFileInfo * info)
-{
-	GnomeVFSDirectoryHandle *handle;
-	gchar *file_uri, *name;
-
-	/* NOTE : we don't follow uris as certain files are linked by content-data */
-	if (gnome_vfs_directory_open
-	    (&handle, uri, GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
-		g_warning ("Can't open directory %s\n", uri);
-		return FALSE;
-	}
-	gnome_vfs_file_info_clear (info);
-	while (gnome_vfs_directory_read_next (handle, info) ==
-	       GNOME_VFS_OK) {
-		if (!strcmp (info->name, "..")
-		    || *info->name == '.')
-			continue;
-
-		name = gnome_vfs_escape_string (info->name);
-		file_uri = g_strconcat (uri, "/", name, NULL);
-		g_free (name);
-
-		if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-			brasero_utils_empty_dir (file_uri, info);
-			g_free (file_uri);
-		} else if (gnome_vfs_unlink (file_uri) != GNOME_VFS_OK)
-			g_warning ("Cannot remove file %s\n", file_uri);
-
-		gnome_vfs_file_info_clear (info);
-	}
-	gnome_vfs_directory_close (handle);
-	if (gnome_vfs_remove_directory (uri) != GNOME_VFS_OK) {
-		g_warning ("Cannot remove directory %s\n", uri);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-gboolean
-brasero_utils_remove (const gchar *uri)
-{
-	GnomeVFSFileInfo *info;
-	gboolean result = TRUE;
-
-	if (!uri)
-		return TRUE;
-
-	info = gnome_vfs_file_info_new ();
-	/* NOTE : we don't follow uris as certain files are simply linked by content-data */
-	gnome_vfs_get_file_info (uri, info, GNOME_VFS_FILE_INFO_DEFAULT);
-
-	if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
-		result = brasero_utils_empty_dir (uri, info);
-	else if (gnome_vfs_unlink (uri) != GNOME_VFS_OK) {
-		g_warning ("Cannot remove file %s\n", uri);
-		result = FALSE;
-	}
-
-	gnome_vfs_file_info_clear (info);
-	gnome_vfs_file_info_unref (info);
-
-	return result;
-}
-
-gchar *
-brasero_utils_escape_string (const gchar *text)
-{
-	gchar *ptr, *result;
-	gint len = 1;
-
-	ptr = (gchar *) text;
-	while (*ptr != '\0') {
-		if (*ptr == '\\' || *ptr == '=')
-			len++;
-
-		len++;
-		ptr++;
-	}
-
-	result = g_new (gchar, len);
-
-	ptr = result;
-	while (*text != '\0') {
-		if (*text == '\\' || *text == '=') {
-			*ptr = '\\';
-			ptr++;
-		}
-
-		*ptr = *text;
-		ptr++;
-		text++;
-	}
-
-	*ptr = '\0';
-
-	return result;
-}
-
 /* Copied from glib-2.8.3 (glib.c) but slightly
  * modified to use only the first 64 bytes */
 gboolean
@@ -631,24 +527,16 @@ void
 brasero_utils_launch_app (GtkWidget *widget,
 			  GSList *list)
 {
-	gchar *uri;
-	gchar *mime;
-	GList *uris;
 	GSList *item;
-	GnomeVFSResult result;
-	GnomeVFSMimeApplication *application;
 
 	for (item = list; item; item = item->next) {
+		GError *error;
+		gchar *uri;
+
+		error = NULL;
 		uri = item->data;
 
-		mime = gnome_vfs_get_mime_type (uri);
-		if (!mime)
-			continue;
-
-		application = gnome_vfs_mime_get_default_application (mime);
-		g_free (mime);
-
-		if (!application) {
+		if (!g_app_info_launch_default_for_uri (uri, NULL, &error)) {
 			GtkWidget *dialog;
 			GtkWidget *toplevel;
 
@@ -663,40 +551,14 @@ brasero_utils_launch_app (GtkWidget *widget,
 			gtk_window_set_title (GTK_WINDOW (dialog), _("File error"));
 
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-								  _("there is no application defined for this file."));
+								  error->message);
 
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
+
+			g_error_free (error);
 			continue;
 		}
-
-		uris = g_list_prepend (NULL, uri);
-		result = gnome_vfs_mime_application_launch (application, uris);
-		g_list_free (uris);
-
-		if (result != GNOME_VFS_OK) {
-			GtkWidget *dialog;
-			GtkWidget *toplevel;
-
-			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
-			dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-							 GTK_DIALOG_DESTROY_WITH_PARENT |
-							 GTK_DIALOG_MODAL,
-							 GTK_MESSAGE_ERROR,
-							 GTK_BUTTONS_CLOSE,
-							 _("File can't be opened:"));
-
-			gtk_window_set_title (GTK_WINDOW (dialog), _("File error"));
-
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-								 _("application %s can't be started."),
-								 application->name);
-
-			gtk_dialog_run (GTK_DIALOG (dialog));
-			gtk_widget_destroy (dialog);
-		}
-
-		gnome_vfs_mime_application_free (application);
 	}
 }
 

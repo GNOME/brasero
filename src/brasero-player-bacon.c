@@ -37,8 +37,6 @@
 
 #include <gconf/gconf-client.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include <gst/gst.h>
 #include <gst/interfaces/xoverlay.h>
 

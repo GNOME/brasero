@@ -35,9 +35,9 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <gmodule.h>
+#include <gio/gio.h>
 
-#include <libgnomevfs/gnome-vfs.h>
+#include <gmodule.h>
 
 #include "burn-basics.h"
 #include "burn-job.h"
@@ -47,11 +47,23 @@
 BRASERO_PLUGIN_BOILERPLATE (BraseroLocalTrack, brasero_local_track, BRASERO_TYPE_JOB, BraseroJob);
 
 struct _BraseroLocalTrackPrivate {
+	GCancellable *cancel;
+	guint64 data_size;
+	guint64 read_bytes;
+
+	gchar checksum [33];
 	gchar *checksum_src;
 	gchar *checksum_dest;
 
 	GHashTable *nonlocals;
-	GnomeVFSAsyncHandle *xfer_handle;
+
+	guint thread_id;
+	GThread *thread;
+
+	GSList *src_list;
+	GSList *dest_list;
+
+	GError *error;
 };
 typedef struct _BraseroLocalTrackPrivate BraseroLocalTrackPrivate;
 
@@ -59,11 +71,248 @@ typedef struct _BraseroLocalTrackPrivate BraseroLocalTrackPrivate;
 
 static GObjectClass *parent_class = NULL;
 
-static gint
-brasero_local_track_xfer_async_cb (GnomeVFSAsyncHandle *handle,
-				   GnomeVFSXferProgressInfo *info,
-				   BraseroLocalTrack *self);
 
+/**
+ * This part is for file transfer.
+ * First we gather some information about the size of data to download then we
+ * actually download it.
+ */
+
+static BraseroBurnResult
+brasero_local_track_get_download_size (BraseroLocalTrack *self,
+				       GFile *src,
+				       GError **error)
+{
+	BraseroLocalTrackPrivate *priv;
+	GFileEnumerator *enumerator;
+	GFileInfo *info;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	enumerator = g_file_enumerate_children (src,
+						G_FILE_ATTRIBUTE_STANDARD_TYPE,
+						G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+						priv->cancel,
+						error);
+	if (!enumerator)
+		return BRASERO_BURN_ERR;
+
+	while ((info = g_file_enumerator_next_file (enumerator, priv->cancel, error))) {
+		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+			GFile *child;
+	
+			child = g_file_get_child (src, g_file_info_get_name (info));
+			brasero_local_track_get_download_size (self, child, error);
+			g_object_unref (child);
+		}
+		else
+			priv->data_size += g_file_info_get_size (info);
+
+		g_object_unref (info);
+	}
+
+	g_file_enumerator_close (enumerator, priv->cancel, NULL);
+	g_object_unref (enumerator);
+
+	return BRASERO_BURN_OK;
+}
+
+static void
+brasero_local_track_progress_cb (goffset current_num_bytes,
+				 goffset total_num_bytes,
+				 gpointer callback_data)
+{
+	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (callback_data);
+	BraseroLocalTrackPrivate *priv;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
+	brasero_job_set_progress (BRASERO_JOB (self),
+				  (gdouble) (priv->read_bytes + current_num_bytes) /
+				  (gdouble)  priv->data_size);
+}
+
+static BraseroBurnResult
+brasero_local_track_file_transfer (BraseroLocalTrack *self,
+				   GFile *src,
+				   GFile *dest,
+				   GError **error)
+{
+	gboolean result;
+	gchar *name, *string;
+	BraseroLocalTrackPrivate *priv;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	name = g_file_get_basename (src);
+	string = g_strdup_printf (_("Copying `%s` locally"), name);
+	g_free (name);
+
+	/* get the source name from the info */
+	brasero_job_set_current_action (BRASERO_JOB (self),
+					BRASERO_BURN_ACTION_FILE_COPY,
+					string,
+					TRUE);
+	g_free (string);
+
+	result = g_file_copy (src,
+			      dest,
+			      G_FILE_COPY_ALL_METADATA,
+			      priv->cancel,
+			      brasero_local_track_progress_cb,
+			      self,
+			      error);
+
+	return result? BRASERO_BURN_OK:BRASERO_BURN_ERR;
+}
+
+static BraseroBurnResult
+brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
+					GFile *src,
+					GFile *dest,
+					GError **error)
+{
+	GFileInfo *info;
+	GFileEnumerator *enumerator;
+	BraseroLocalTrackPrivate *priv;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	enumerator = g_file_enumerate_children (src,
+						G_FILE_ATTRIBUTE_STANDARD_TYPE,
+						G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+						priv->cancel,
+						error);
+	if (!enumerator)
+		return BRASERO_BURN_ERR;
+
+	while ((info = g_file_enumerator_next_file (enumerator, priv->cancel, error))) {
+		BraseroBurnResult result;
+		GFile *dest_child;
+		GFile *src_child;
+
+		if (error) {
+			g_file_enumerator_close (enumerator, priv->cancel, NULL);
+			g_object_unref (enumerator);
+			g_object_unref (info);
+			return BRASERO_BURN_ERR;
+		}
+
+		src_child = g_file_get_child (src, g_file_info_get_name (info));
+		dest_child = g_file_get_child (dest, g_file_info_get_name (info));
+
+		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+			gchar *path;
+
+			path = g_file_get_path (dest_child);
+
+			/* create a directory with the same name and explore it */
+			if (g_mkdir (path, 700)) {
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("a directory couldn't be created (%s)"),
+					     strerror (errno));
+				result = BRASERO_BURN_ERR;
+			}
+			else {
+				result = brasero_local_track_recursive_transfer (self,
+										 src_child,
+										 dest_child,
+										 error);
+			}
+
+			g_free (path);
+		}
+		else {
+			result = brasero_local_track_file_transfer (self,
+								    src_child,
+								    dest_child,
+								    error);
+			priv->read_bytes += g_file_info_get_size (info);
+		}
+
+		g_object_unref (info);
+		g_object_unref (src_child);
+		g_object_unref (dest_child);
+
+		if (result != BRASERO_BURN_OK) {
+			g_file_enumerator_close (enumerator, priv->cancel, NULL);
+			g_object_unref (enumerator);
+			return BRASERO_BURN_ERR;
+
+		}
+	}
+
+	g_file_enumerator_close (enumerator, priv->cancel, NULL);
+	g_object_unref (enumerator);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_local_track_transfer (BraseroLocalTrack *self,
+			      GFile *src,
+			      GFile *dest,
+			      GError **error)
+{
+	GFileInfo *info;
+	BraseroBurnResult result;
+	BraseroLocalTrackPrivate *priv;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	/* Retrieve some information about the file we have to copy */
+	info = g_file_query_info (src,
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE,
+				  G_FILE_QUERY_INFO_NONE, /* follow symlinks */
+				  priv->cancel,
+				  error);
+	if (!info || error)
+		return BRASERO_BURN_ERR;
+
+	/* Retrieve the size of all the data. */
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY)
+		priv->data_size = g_file_info_get_size (info);
+	else
+		brasero_local_track_get_download_size (self, src, error);
+
+	priv->read_bytes = 0;
+
+	/* start the downloading */
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		gchar *dest_path;
+
+		dest_path = g_file_get_path (dest);
+		if (g_mkdir_with_parents (dest_path, 700)) {
+			g_free (dest_path);
+			g_object_unref (info);
+
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("a directory couldn't be created (%s)"),
+				     strerror (errno));
+			return BRASERO_BURN_ERR;
+		}
+
+		g_free (dest_path);
+		result = brasero_local_track_recursive_transfer (self, src, dest, error);
+	}
+	else {
+		result = brasero_local_track_file_transfer (self, src, dest, error);
+		priv->read_bytes += g_file_info_get_size (info);
+	}
+
+	g_object_unref (info);
+
+	return result;
+}
+
+/**
+ * That's for URI translation ...
+ */
 
 static gchar *
 brasero_local_track_translate_uri (BraseroLocalTrack *self,
@@ -126,32 +375,26 @@ brasero_local_track_read_checksum (BraseroLocalTrack *self)
 	gint bytes;
 	FILE *file;
 	gchar *path;
-	gchar checksum [33];
-	BraseroTrack *track;
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
+	memset (priv->checksum, 0, sizeof (priv->checksum));
+
 	/* get the file_checksum from the md5 file */
-	path = gnome_vfs_get_local_path_from_uri (priv->checksum_dest);
+	path = g_filename_from_uri (priv->checksum_dest, NULL, NULL);
 	file = fopen (path, "r");
 	g_free (path);
 
 	if (!file)
 		return BRASERO_BURN_ERR;
 
-	bytes = fread (checksum, 1, sizeof (checksum) - 1, file);
+	bytes = fread (priv->checksum, 1, sizeof (priv->checksum) - 1, file);
 	fclose (file);
 
-	if (bytes != sizeof (checksum) - 1)
+	if (bytes != sizeof (priv->checksum) - 1)
 		return BRASERO_BURN_ERR;
 
-	checksum [sizeof (checksum)] = '\0';
-
-	brasero_job_get_current_track (BRASERO_JOB (self), &track);
-	brasero_track_set_checksum (track,
-				    BRASERO_CHECKSUM_MD5,
-				    checksum);
 	return BRASERO_BURN_OK;
 }
 
@@ -160,16 +403,9 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 {
 	BraseroLocalTrackPrivate *priv;
 	BraseroBurnResult result;
-	GnomeVFSResult res;
-	GnomeVFSURI *dest;
-	GList *dest_list;
-	GnomeVFSURI *src;
-	GList *src_list;
+	GFile *src, *dest;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
-
-	src = gnome_vfs_uri_new (priv->checksum_src);
-	src_list = g_list_prepend (NULL, src);
 
 	/* generate a unique name for dest */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
@@ -179,45 +415,23 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 	if (result != BRASERO_BURN_OK)
 		goto error;
 
-	if (!g_str_has_prefix (priv->checksum_dest, "file://")) {
-		gchar *tmp;
-
-		tmp = priv->checksum_dest;
-		priv->checksum_dest = g_strconcat ("file://", tmp, NULL);
-		g_free (tmp);
-	}
-
-	dest = gnome_vfs_uri_new (priv->checksum_dest);
-	dest_list = g_list_prepend (NULL, dest);
-
-	res = gnome_vfs_async_xfer (&priv->xfer_handle,
-				    src_list,
-				    dest_list,
-				    GNOME_VFS_XFER_DEFAULT|
-				    GNOME_VFS_XFER_USE_UNIQUE_NAMES|
-				    GNOME_VFS_XFER_RECURSIVE,
-				    GNOME_VFS_XFER_ERROR_MODE_ABORT,
-				    GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
-				    GNOME_VFS_PRIORITY_DEFAULT,
-				    (GnomeVFSAsyncXferProgressCallback) brasero_local_track_xfer_async_cb,
-				    self,
-				    NULL, NULL);
-	
-	g_list_foreach (src_list, (GFunc) gnome_vfs_uri_unref, NULL);
-	g_list_foreach (dest_list, (GFunc) gnome_vfs_uri_unref, NULL);
-	g_list_free (src_list);
-	g_list_free (dest_list);
-
-	if (res != GNOME_VFS_OK) {
-		result = BRASERO_BURN_ERR;
-		goto error;
-	}
-
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_FILE_COPY,
 					_("Copying files md5sum file"),
 					TRUE);
-	return BRASERO_BURN_OK;
+
+	src = g_file_new_for_uri (priv->checksum_src);
+	dest = g_file_new_for_uri (priv->checksum_dest);
+
+	result = brasero_local_track_transfer (self,
+					       src,
+					       dest,
+					       NULL);
+
+	g_object_unref (dest);
+	g_object_unref (src);
+
+	return result;
 
 error:
 	/* we give up */
@@ -228,8 +442,8 @@ error:
 	return result;
 }
 
-static BraseroBurnResult
-brasero_local_track_finished (BraseroLocalTrack *self)
+static gboolean
+brasero_local_track_thread_finished (BraseroLocalTrack *self)
 {
 	BraseroTrack *track;
 	BraseroTrackType input;
@@ -237,23 +451,30 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	/* successfully downloaded files */
+	priv->thread_id = 0;
 
-	if (priv->checksum_src
-	&& !priv->checksum_dest
-	&&  brasero_local_track_download_checksum (self) == BRASERO_BURN_OK)
-		return BRASERO_BURN_OK;
+	if (priv->cancel) {
+		g_object_unref (priv->cancel);
+		priv->cancel = NULL;
+		if (g_cancellable_is_cancelled (priv->cancel))
+			return FALSE;
+	}
 
-	if (priv->checksum_dest)
-		brasero_local_track_read_checksum (self);
+	if (priv->error) {
+		GError *error;
+
+		error = priv->error;
+		priv->error = NULL;
+		brasero_job_error (BRASERO_JOB (self), error);
+		return FALSE;
+	}
 
 	/* now we update all the track with the local uris in retval */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	track = brasero_track_copy (track);
 	brasero_track_get_type (track, &input);
 
-	/* FIXME: we'd better make a copy of the tracks instead of modifying
-	 * them */
+	/* make a copy of the tracks instead of modifying them */
 	switch (input.type) {
 	case BRASERO_TRACK_TYPE_DATA: {
 		GSList *grafts;
@@ -300,99 +521,109 @@ brasero_local_track_finished (BraseroLocalTrack *self)
 		BRASERO_JOB_NOT_SUPPORTED (self);
 	}
 
+	if (priv->checksum)
+		brasero_track_set_checksum (track,
+					    BRASERO_CHECKSUM_MD5,
+					    priv->checksum);
+
 	brasero_job_add_track (BRASERO_JOB (self), track);
 
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroTaskCtx refs it. */
 	brasero_track_unref (track);
-
 	brasero_job_finished_track (BRASERO_JOB (self));
-	return BRASERO_BURN_OK;
+	return FALSE;
 }
 
-/* This one is for error reporting */
-static gint
-brasero_local_track_xfer_async_cb (GnomeVFSAsyncHandle *handle,
-				   GnomeVFSXferProgressInfo *info,
-				   BraseroLocalTrack *self)
+static gpointer
+brasero_local_track_thread (gpointer data)
+{
+	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (data);
+	BraseroLocalTrackPrivate *priv;
+	GSList *src, *dest;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+	brasero_job_set_current_action (BRASERO_JOB (self),
+					BRASERO_BURN_ACTION_FILE_COPY,
+					_("Copying files locally"),
+					TRUE);
+
+	for (src = priv->src_list, dest = priv->dest_list;
+	     src && dest;
+	     src = src->next, dest = dest->next) {
+		GFile *src_file;
+		GFile *dest_file;
+		BraseroBurnResult result;
+
+		src_file = src->data;
+		dest_file = dest->data;
+
+		result = brasero_local_track_transfer (self,
+						       src_file,
+						       dest_file,
+						       &priv->error);
+		if (g_cancellable_is_cancelled (priv->cancel))
+			goto end;
+
+		if (result != BRASERO_BURN_OK)
+			goto end;
+	}
+
+	/* successfully downloaded files, get a checksum if we can. */
+	if (priv->checksum_src
+	&& !priv->checksum_dest
+	&&  brasero_local_track_download_checksum (self) == BRASERO_BURN_OK)
+		brasero_local_track_read_checksum (self);
+
+end:
+
+	if (!g_cancellable_is_cancelled (priv->cancel))
+		priv->thread_id = g_idle_add ((GSourceFunc) brasero_local_track_thread_finished, self);
+
+	priv->thread = NULL;
+	g_thread_exit (NULL);
+
+	return NULL;
+}
+
+static BraseroBurnResult
+brasero_local_track_start_thread (BraseroLocalTrack *self,
+				  GError **error)
 {
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	if (!priv->xfer_handle)
-		return FALSE;
+	if (priv->thread)
+		return BRASERO_BURN_RUNNING;
 
-	if (info->source_name) {
-		gchar *name, *string;
+	priv->thread = g_thread_create (brasero_local_track_thread,
+					self,
+					TRUE,
+					error);
+	if (!priv->thread) 
+		return BRASERO_BURN_ERR;
 
-		BRASERO_GET_BASENAME_FOR_DISPLAY (info->source_name, name);
-		string = g_strdup_printf (_("Copying `%s` locally"), name);
-		g_free (name);
-
-		/* get the source name from the info */
-		brasero_job_set_current_action (BRASERO_JOB (self),
-						BRASERO_BURN_ACTION_FILE_COPY,
-						string,
-						TRUE);
-		g_free (string);
-	}
-
-	/* that where we'll treat the errors and decide to retry or not */
-	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
-	brasero_job_set_progress (BRASERO_JOB (self),
-				  (gdouble) info->total_bytes_copied /
-				  (gdouble) info->bytes_total);
-
-	if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
-		brasero_local_track_finished (self);
-		return FALSE;
-	}
-	else if (info->status != GNOME_VFS_XFER_PROGRESS_STATUS_OK) {
-		/* here there is an exception which is if the failure comes
-		 * from the .md5 file that may or may not exist */
-		if (priv->checksum_dest) {
-			g_free (priv->checksum_src);
-			priv->checksum_src = NULL;
-
-			g_free (priv->checksum_dest);
-			priv->checksum_dest = NULL;
-
-			brasero_local_track_finished (self);
-			return FALSE;
-		}
-
-		brasero_job_error (BRASERO_JOB (self),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						gnome_vfs_result_to_string (info->vfs_status)));
-		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-	}
-
-	return TRUE;
+	priv->cancel = g_cancellable_new ();
+	return BRASERO_BURN_OK;
 }
-
-struct _BraseroDownloadableListData {
-	GHashTable *nonlocals;
-	GList *dest_list;
-	GList *src_list;
-	GError **error;
-};
-typedef struct _BraseroDownloadableListData BraseroDownloadableListData;
 
 static gboolean
 _foreach_non_local_cb (const gchar *uri,
 		       const gchar *localuri,
-		       BraseroDownloadableListData *data)
+		       gpointer *data)
 {
-	GnomeVFSURI *vfsuri, *tmpuri;
+	BraseroLocalTrackPrivate *priv;
+	GFile *file, *tmpfile;
 	gchar *parent;
 	gchar *tmp;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (data);
 
 	/* check that is hasn't any parent in the hash */
 	parent = g_path_get_dirname (uri);
 	while (parent [1] != '\0') {
-		localuri = g_hash_table_lookup (data->nonlocals, parent);
+		localuri = g_hash_table_lookup (priv->nonlocals, parent);
 		if (localuri) {
 			g_free (parent);
 			return TRUE;
@@ -404,11 +635,11 @@ _foreach_non_local_cb (const gchar *uri,
 	}
 	g_free (parent);
 
-	vfsuri = gnome_vfs_uri_new (uri);
-	data->src_list = g_list_append (data->src_list, vfsuri);
+	file = g_file_new_for_uri (uri);
+	priv->src_list = g_slist_append (priv->src_list, file);
 
-	tmpuri = gnome_vfs_uri_new (localuri);
-	data->dest_list = g_list_append (data->dest_list, tmpuri);
+	tmpfile = g_file_new_for_uri (localuri);
+	priv->dest_list = g_slist_append (priv->dest_list, tmpfile);
 
 	return FALSE;
 }
@@ -435,31 +666,24 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 							 g_free);
 
 	if (g_str_has_prefix (uri, "burn://")) {
-		GnomeVFSHandle *handle = NULL;
-		GnomeVFSResult res;
+		GFile *file;
+		GFileInfo *info;
 
 		/* this is a special case for burn:// uris */
-		res = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ);
-		if (res != GNOME_VFS_OK || !handle) {
+		file = g_file_new_for_uri (uri);
+		info = g_file_query_info (file, "burn::backing-file", 0, NULL, error);
+		g_object_unref (file);
+
+		if (!info)
+			return BRASERO_BURN_ERR;
+
+		localuri = g_strdup (g_file_info_get_attribute_byte_string (info, "burn::backing-file"));
+		g_object_unref (info);
+		if (!localuri) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     gnome_vfs_result_to_string (res));
-			return BRASERO_BURN_ERR;;
-		}
-
-		res = gnome_vfs_file_control (handle,
-					      "mapping:get_mapping",
-					      &localuri);
-		gnome_vfs_close (handle);
-
-		if (res != GNOME_VFS_OK
-		|| !localuri
-		|| !g_str_has_prefix (localuri, "file://")) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     gnome_vfs_result_to_string (res));
+				     _("impossible to retrieve local file path"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -494,13 +718,11 @@ static BraseroBurnResult
 brasero_local_track_start (BraseroJob *job,
 			   GError **error)
 {
-	BraseroDownloadableListData callback_data;
 	BraseroLocalTrackPrivate *priv;
 	BraseroJobAction action;
 	BraseroLocalTrack *self;
 	BraseroTrackType input;
 	BraseroTrack *track;
-	GnomeVFSResult res;
 	GSList *grafts;
 	gchar *uri;
 
@@ -567,53 +789,18 @@ brasero_local_track_start (BraseroJob *job,
 	/* first we create a list of all the non local files that need to be
 	 * downloaded. To be elligible a file must not have one of his parent
 	 * in the hash. */
-	callback_data.nonlocals = priv->nonlocals;
-	callback_data.dest_list = NULL;
-	callback_data.src_list = NULL;
-
 	g_hash_table_foreach_remove (priv->nonlocals,
 				     (GHRFunc) _foreach_non_local_cb,
-				     &callback_data);
+				     job);
 
 	/* if there are files in list then download them otherwise stop */
-	if (!callback_data.src_list) {
+	if (!priv->src_list) {
 		/* that means there were only burn:// uris in nonlocals */
 		BRASERO_JOB_LOG (self, "no foreign URIs");
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
-	res = gnome_vfs_async_xfer (&priv->xfer_handle,
-				    callback_data.src_list,
-				    callback_data.dest_list,
-				    GNOME_VFS_XFER_DEFAULT|
-				    GNOME_VFS_XFER_USE_UNIQUE_NAMES|
-				    GNOME_VFS_XFER_RECURSIVE,
-				    GNOME_VFS_XFER_ERROR_MODE_ABORT,
-				    GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
-				    GNOME_VFS_PRIORITY_DEFAULT,
-				    (GnomeVFSAsyncXferProgressCallback) brasero_local_track_xfer_async_cb,
-				    self,
-				    NULL, NULL);
-
-	g_list_foreach (callback_data.src_list, (GFunc) gnome_vfs_uri_unref, NULL);
-	g_list_foreach (callback_data.dest_list, (GFunc) gnome_vfs_uri_unref, NULL);
-	g_list_free (callback_data.src_list);
-	g_list_free (callback_data.dest_list);
-
-	if (res != GNOME_VFS_OK) {
-		if (error)
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     gnome_vfs_result_to_string (res));
-		return BRASERO_BURN_ERR;
-	}
-
-	brasero_job_set_current_action (BRASERO_JOB (self),
-					BRASERO_BURN_ACTION_FILE_COPY,
-					_("Copying files locally"),
-					TRUE);
-	return BRASERO_BURN_OK;
+	return brasero_local_track_start_thread (self, error);
 }
 
 static BraseroBurnResult
@@ -622,9 +809,38 @@ brasero_local_track_stop (BraseroJob *job,
 {
 	BraseroLocalTrackPrivate *priv = BRASERO_LOCAL_TRACK_PRIVATE (job);
 
-	if (priv->xfer_handle) {
-		gnome_vfs_async_cancel (priv->xfer_handle);
-		priv->xfer_handle = NULL;
+	if (priv->cancel) {
+		/* signal that we've been cancelled */
+		g_cancellable_cancel (priv->cancel);
+	}
+
+	if (priv->thread)
+		g_thread_join (priv->thread);
+
+	if (priv->cancel) {
+		/* unref it after the thread has stopped */
+		g_object_unref (priv->cancel);
+		priv->cancel = NULL;
+	}
+
+	if (priv->thread_id) {
+		g_source_remove (priv->thread_id);
+		priv->thread_id = 0;
+	}
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
+
+	if (priv->src_list) {
+		g_slist_foreach (priv->src_list, (GFunc) g_object_unref, NULL);
+		g_slist_free (priv->src_list);
+	}
+
+	if (priv->dest_list) {
+		g_slist_foreach (priv->dest_list, (GFunc) g_object_unref, NULL);
+		g_slist_free (priv->dest_list);
 	}
 
 	if (priv->nonlocals) {

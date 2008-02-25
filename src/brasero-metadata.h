@@ -27,6 +27,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include <gst/gst.h>
 
@@ -70,6 +71,9 @@ typedef struct {
 } BraseroMetadataInfo;
 
 void
+brasero_metadata_info_copy (BraseroMetadataInfo *dest,
+			    BraseroMetadataInfo *src);
+void
 brasero_metadata_info_clear (BraseroMetadataInfo *info);
 void
 brasero_metadata_info_free (BraseroMetadataInfo *info);
@@ -93,6 +97,13 @@ BraseroMetadata *brasero_metadata_new (void);
 
 void
 brasero_metadata_cancel (BraseroMetadata *metadata);
+
+gboolean
+brasero_metadata_get_info_wait (BraseroMetadata *self,
+				GCancellable *cancel,
+				const gchar *uri,
+				BraseroMetadataFlag flags,
+				GError **error);
 
 gboolean
 brasero_metadata_get_info_sync (BraseroMetadata *meta,

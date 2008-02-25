@@ -30,6 +30,8 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
+#include <gio/gio.h>
+
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkcombobox.h>
@@ -42,8 +44,6 @@
 #include <gtk/gtkbox.h>
 
 #include <nautilus-burn-drive.h>
-
-#include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-basics.h"
 #include "burn-medium.h"
@@ -135,12 +135,12 @@ void
 brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 				     const gchar *path)
 {
+	GFile *file;
 	gchar *string;
-	gchar *uri_str;
+	GFileInfo *info;
 	gchar *directory;
-	GnomeVFSURI *uri;
-	BraseroBurnResult result;
-	GnomeVFSFileSize vol_size = 0;
+	GError *error = NULL;
+	guint64 vol_size = 0;
 	BraseroDrivePropertiesPrivate *priv;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
@@ -154,26 +154,34 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 
 	/* get the volume free space */
 	directory = g_path_get_dirname (path);
-	uri_str = gnome_vfs_get_uri_from_local_path (directory);
+	file = g_file_new_for_path (directory);
 	g_free (directory);
 
-	uri = gnome_vfs_uri_new (uri_str);
-	g_free (uri_str);
-
-	if (uri == NULL) {
+	if (file == NULL) {
 		BRASERO_BURN_LOG ("impossible to retrieve size for %s", path);
 		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
 		return;
 	}
 
-	result = gnome_vfs_get_volume_free_space (uri, &vol_size);
-	if (result != GNOME_VFS_OK) {
-		BRASERO_BURN_LOG ("impossible to retrieve size for %s", path);
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  &error);
+	g_object_unref (file);
+
+	if (error) {
+		g_object_unref (info);
+
+		BRASERO_BURN_LOG ("impossible to retrieve size for %s (%s)", path, error->message);
+		g_error_free (error);
+
 		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
 		return;
 	}
 
-	gnome_vfs_uri_unref (uri);
+	vol_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+	g_object_unref (info);
 
 	string = brasero_utils_get_size_string (vol_size, TRUE, TRUE);
 	gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), string);

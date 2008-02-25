@@ -141,6 +141,6 @@ brasero_mmc1_read_block (BraseroDeviceHandle *handle,
 					       buffer,
 					       buffer_len,
 					       error);
-
+	brasero_scsi_command_free (cdb);
 	return res;
 }

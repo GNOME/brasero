@@ -58,12 +58,6 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktoolbar.h>
 
-#include <libgnomeui/libgnomeui.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-disc.h"
@@ -71,7 +65,7 @@
 #include "brasero-metadata.h"
 #include "brasero-utils.h"
 #include "brasero-song-properties.h"
-#include "brasero-vfs.h"
+#include "brasero-io.h"
 #include "brasero-split-dialog.h"
 #include "eggtreemultidnd.h"
 
@@ -251,16 +245,12 @@ brasero_audio_disc_cancel_monitoring (BraseroAudioDisc *disc,
 #endif
 
 struct _BraseroAudioDiscPrivate {
-	BraseroVFS *vfs;
-	BraseroVFSDataID attr_changed;
-	BraseroVFSDataID add_dir;
-	BraseroVFSDataID add_uri;
+	BraseroIO *io;
+	BraseroIOJobBase *attr_changed;
+	BraseroIOJobBase *add_dir;
+	BraseroIOJobBase *add_uri;
+	BraseroIOJobBase *add_playlist;
 
-#ifdef BUILD_PLAYLIST
-
-	BraseroVFSDataID add_playlist;
-
-#endif
 
 	GtkWidget *notebook;
 	GtkWidget *tree;
@@ -702,8 +692,8 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 				     column);
 	gtk_tree_view_column_set_resizable (column, FALSE);
 
-
 	scroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scroll);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
 					     GTK_SHADOW_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
@@ -714,6 +704,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	gtk_notebook_append_page (GTK_NOTEBOOK (obj->priv->notebook),
 				  scroll,
 				  NULL);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (obj->priv->notebook), 0);
 
 	/* dnd */
 	gtk_tree_view_enable_model_drag_dest (GTK_TREE_VIEW (obj->priv->tree),
@@ -779,8 +770,12 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 static void
 brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 {
-	if (disc->priv->vfs)
-		brasero_vfs_cancel (disc->priv->vfs, G_OBJECT (disc));
+	if (disc->priv->io) {
+		brasero_io_cancel_by_base (disc->priv->io, disc->priv->attr_changed);
+		brasero_io_cancel_by_base (disc->priv->io, disc->priv->add_dir);
+		brasero_io_cancel_by_base (disc->priv->io, disc->priv->add_uri);
+		brasero_io_cancel_by_base (disc->priv->io, disc->priv->add_playlist);
+	}
 
 #ifdef BUILD_INOTIFY
 
@@ -837,10 +832,22 @@ brasero_audio_disc_finalize (GObject *object)
 
 #endif
 	
-	if (cobj->priv->vfs) {
-		brasero_vfs_cancel (cobj->priv->vfs, G_OBJECT (cobj));
-		g_object_unref (cobj->priv->vfs);
-		cobj->priv->vfs = NULL;
+	if (cobj->priv->io) {
+		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->attr_changed);
+		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->add_dir);
+		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->add_uri);
+		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->add_playlist);
+		g_free (cobj->priv->attr_changed);
+		g_free (cobj->priv->add_dir);
+		g_free (cobj->priv->add_uri);
+		g_free (cobj->priv->add_playlist);
+		cobj->priv->attr_changed = NULL;
+		cobj->priv->add_dir = NULL;
+		cobj->priv->add_uri = NULL;
+		cobj->priv->add_playlist = NULL;
+
+		g_object_unref (cobj->priv->io);
+		cobj->priv->io = NULL;
 	}
 
 	if (cobj->priv->manager) {
@@ -1110,37 +1117,68 @@ brasero_audio_disc_short_track_dialog (BraseroAudioDisc *disc)
 	gtk_widget_destroy (dialog);
 }
 
+static gchar *
+brasero_audio_disc_validate_utf8_name (const gchar *name)
+{
+	gchar *retval, *ptr;
+	const gchar *invalid;
+
+	if (!name)
+		return NULL;
+
+	if (g_utf8_validate (name, -1, &invalid))
+		return g_markup_escape_text (name, -1);
+
+	retval = g_strdup (name);
+	ptr = retval + (invalid - name);
+	*ptr = '_';
+	ptr++;
+
+	while (!g_utf8_validate (ptr, -1, &invalid)) {
+		ptr = (gchar*) invalid;
+		*ptr = '?';
+		ptr ++;
+	}
+
+	ptr = retval;
+	retval = g_markup_escape_text (retval, -1);
+	g_free (ptr);
+
+	return retval;
+}
+
 static gboolean
 brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 					  GtkTreeModel *model,
 					  GtkTreeIter *iter,
-					  const BraseroMetadataInfo *metadata)
+					  GFileInfo *info)
 {
+	const gchar * const *icon_string = NULL;
 	gint64 current_length;
 	GtkTreeIter gap_iter;
-	gchar *icon_string;
+	GIcon *icon;
 	gint64 start;
 	gint64 end;
 
-	icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
-					 NULL, NULL, NULL, metadata->type,
-					 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
+	icon = g_content_type_get_icon (g_file_info_get_content_type (info));
+	if (G_IS_THEMED_ICON (icon))
+		icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
 
-	/* make sure there is a length and it's not be over the real one */
+	/* make sure there is a length and it's not over the real one */
 	gtk_tree_model_get (model, iter,
 			    START_COL, &start,
 			    END_COL, &end,
 			    -1);
 
 	current_length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
-	if (end > metadata->len) {
-		end = metadata->len;
+	if (end > g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN)) {
+		end = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    END_COL, (gint64) end,
 				    -1);
 	}
 	else if (!end) {
-		end = metadata->len;
+		end = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    END_COL, (gint64) end,
 				    -1);
@@ -1192,19 +1230,18 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	}
 
 	gtk_list_store_set (GTK_LIST_STORE (model), iter,
-			    ICON_COL, icon_string,
-			    LENGTH_COL, metadata->len,
-			    ARTIST_COL, metadata->artist,
-			    COMPOSER_COL, metadata->composer,
-			    ISRC_COL, metadata->isrc,
+			    ICON_COL, icon_string?icon_string [0]:NULL,
+			    LENGTH_COL, g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN),
+			    ARTIST_COL, g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST),
+			    COMPOSER_COL, g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER),
+			    ISRC_COL, g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC),
 			    SONG_COL, TRUE,
 			    -1);
-	g_free (icon_string);
 
-	if (metadata->title) {
+	if (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE)) {
 		gchar *name;
 
-		name = g_markup_escape_text (metadata->title, -1);
+		name = brasero_audio_disc_validate_utf8_name (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, name,
 				    -1);
@@ -1257,12 +1294,10 @@ brasero_audio_disc_add_file (BraseroAudioDisc *disc,
 }
 
 static void
-brasero_audio_disc_result (BraseroVFS *vfs,
-			   GObject *obj,
-			   GnomeVFSResult result,
+brasero_audio_disc_result (GObject *obj,
+			   GError *error,
 			   const gchar *uri,
-			   GnomeVFSFileInfo *info,
-			   BraseroMetadataInfo *metadata,
+			   GFileInfo *info,
 			   gpointer null_data)
 {
 	gchar *name;
@@ -1272,24 +1307,26 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 	gchar *escaped_name;
 	BraseroAudioDisc *disc = BRASERO_AUDIO_DISC (obj);
 
-	if (result != GNOME_VFS_OK)
+	if (error)
 		return;
 
 	/* we silently ignore the title and any error */
-	if (!metadata)
+	if (g_file_info_get_attribute_string (info, BRASERO_IO_PLAYLIST_TITLE))
 		return;
 
-	if (!metadata->has_audio)
+	if (!g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO))
 		return;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 
 	escaped_name = g_path_get_basename (uri);
-	name = gnome_vfs_unescape_string_for_display (escaped_name);
+	name = g_uri_unescape_string (escaped_name, NULL);
 	g_free (escaped_name);
 
-	markup = g_markup_escape_text (name, -1);
+	markup = brasero_audio_disc_validate_utf8_name (name);
+	g_free (name);
+
     	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    NAME_COL, markup,
 			    URI_COL, uri,
@@ -1299,7 +1336,7 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 	if (!brasero_audio_disc_set_row_from_metadata (disc,
 						       model,
 						       &iter,
-						       metadata))
+						       info))
 		return;
 
 	brasero_audio_disc_add_file (disc, uri);
@@ -1307,8 +1344,8 @@ brasero_audio_disc_result (BraseroVFS *vfs,
 
 static void
 brasero_audio_disc_vfs_operation_finished (GObject *object,
-					   gpointer null_data,
-					   gboolean cancelled)
+					   gboolean cancelled,
+					   gpointer null_data)
 {
 	BraseroAudioDisc *disc = BRASERO_AUDIO_DISC (object);
 
@@ -1320,35 +1357,30 @@ brasero_audio_disc_vfs_operation_finished (GObject *object,
 
 /*********************** directories exploration *******************************/
 static BraseroDiscResult
-brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc, const gchar *uri)
+brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
+				    const gchar *uri)
 {
-	GList *uris;
 	gboolean result;
 
-	uris = g_list_prepend (NULL, (gchar*) uri);
-
-	if (!disc->priv->vfs)
-		disc->priv->vfs = brasero_vfs_get_default ();
+	if (!disc->priv->io)
+		disc->priv->io = brasero_io_get_default ();
 
 	if (!disc->priv->add_dir)
-		disc->priv->add_dir = brasero_vfs_register_data_type (disc->priv->vfs,
-								      G_OBJECT (disc),
-								      G_CALLBACK (brasero_audio_disc_result),
-								      brasero_audio_disc_vfs_operation_finished);
+		disc->priv->add_dir = brasero_io_register (G_OBJECT (disc),
+							   brasero_audio_disc_result,
+							   brasero_audio_disc_vfs_operation_finished,
+							   NULL);
 
 	brasero_audio_disc_increase_activity_counter (disc);
-	result = brasero_vfs_get_metadata (disc->priv->vfs,
-					   uris,
-					   GNOME_VFS_FILE_INFO_FOLLOW_LINKS |
-					   GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS |
-					   GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
-					   GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
-					   BRASERO_METADATA_FLAG_NONE,
-					   TRUE,
-					   disc->priv->add_dir,
-					   NULL);
-	g_list_free (uris);
 
+	brasero_io_load_directory (disc->priv->io,
+				   uri,
+				   disc->priv->add_dir,
+				   BRASERO_IO_INFO_MIME|
+				   BRASERO_IO_INFO_PERM|
+				   BRASERO_IO_INFO_METADATA|
+				   BRASERO_IO_INFO_RECURSIVE,
+				   NULL);
 	return result;
 }
 
@@ -1395,24 +1427,25 @@ static BraseroDiscResult
 brasero_audio_disc_add_playlist (BraseroAudioDisc *disc,
 				 const gchar *uri)
 {
-	if (!disc->priv->vfs)
-		disc->priv->vfs = brasero_vfs_get_default ();
+	if (!disc->priv->io)
+		disc->priv->io = brasero_io_get_default ();
 
 	if (!disc->priv->add_playlist)
-		disc->priv->add_playlist = brasero_vfs_register_data_type (disc->priv->vfs,
-									   G_OBJECT (disc),
-									   G_CALLBACK (brasero_audio_disc_result),
-									   brasero_audio_disc_vfs_operation_finished);
+		disc->priv->add_playlist = brasero_io_register (G_OBJECT (disc),
+								brasero_audio_disc_result,
+								brasero_audio_disc_vfs_operation_finished,
+								NULL);
 
 	brasero_audio_disc_increase_activity_counter (disc);
-	return brasero_vfs_parse_playlist (disc->priv->vfs,
-					   uri,
-					   GNOME_VFS_FILE_INFO_FOLLOW_LINKS |
-					   GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS |
-					   GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
-					   GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
-					   disc->priv->add_playlist,
-					   NULL);
+	brasero_io_parse_playlist (disc->priv->io,
+				   uri,
+				   disc->priv->add_playlist,
+				   BRASERO_IO_INFO_PERM|
+				   BRASERO_IO_INFO_MIME|
+				   BRASERO_IO_INFO_METADATA,
+				   NULL);
+
+	return BRASERO_DISC_OK;
 }
 
 #endif
@@ -1420,8 +1453,8 @@ brasero_audio_disc_add_playlist (BraseroAudioDisc *disc,
 /**************************** New Row ******************************************/
 static void
 brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
-				      const char *uri,
-				      GnomeVFSResult result)
+				      const gchar *uri,
+				      GError *error)
 {
 	GtkWidget *dialog, *toplevel;
 	gchar *name;
@@ -1430,7 +1463,7 @@ brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
 	if (toplevel == NULL) {
 		g_warning ("Can't open file %s : %s\n",
 			   uri,
-			   gnome_vfs_result_to_string (result));
+			   error->message);
 
 		return;
 	}
@@ -1448,22 +1481,21 @@ brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable file"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  gnome_vfs_result_to_string (result));
+						  error->message);
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 }
 
 static void
-brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
-			       GObject *obj,
-			       GnomeVFSResult result,
+brasero_audio_disc_new_row_cb (GObject *obj,
+			       GError *error,
 			       const gchar *uri,
-			       const GnomeVFSFileInfo *info,
-			       const BraseroMetadataInfo *metadata,
+			       GFileInfo *info,
 			       gpointer user_data)
 {
 	GtkTreeIter iter;
+	const gchar *mime;
 	GtkTreeModel *model;
 	GtkTreeIter gap_iter;
 	GtkTreePath *treepath;
@@ -1479,10 +1511,10 @@ brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
 	gtk_tree_model_get_iter (model, &iter, treepath);
 	gtk_tree_path_free (treepath);
 
-	if (result != GNOME_VFS_OK) {
+	if (error) {
 		brasero_audio_disc_unreadable_dialog (disc,
 						      uri,
-						      result);
+						      error);
 
 		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
 			brasero_audio_disc_add_gap (disc, &gap_iter, 0);
@@ -1491,7 +1523,7 @@ brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
 		return;
 	}
 
-	if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
 		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
 			brasero_audio_disc_add_gap (disc, &gap_iter, 0);
 
@@ -1503,11 +1535,12 @@ brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
 #if BUILD_PLAYLIST
 
 	/* see if it a playlist */
-	if (info->type == GNOME_VFS_FILE_TYPE_REGULAR
-	&&  (!strcmp (info->mime_type, "audio/x-scpls")
-	||   !strcmp (info->mime_type, "audio/x-ms-asx")
-	||   !strcmp (info->mime_type, "audio/x-mp3-playlist")
-	||   !strcmp (info->mime_type, "audio/x-mpegurl"))) {
+	mime = g_file_info_get_content_type (info);
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR
+	&&  (!strcmp (mime, "audio/x-scpls")
+	||   !strcmp (mime, "audio/x-ms-asx")
+	||   !strcmp (mime, "audio/x-mp3-playlist")
+	||   !strcmp (mime, "audio/x-mpegurl"))) {
 		/* This is a supported playlist */
 		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
 			brasero_audio_disc_add_gap (disc, &gap_iter, 0);
@@ -1519,10 +1552,9 @@ brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
 
 #endif
 
-	if (info->type != GNOME_VFS_FILE_TYPE_REGULAR
-	|| !metadata
-	|| !metadata->has_audio
-	||  metadata->has_video) {
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_REGULAR
+	|| !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)
+	||  g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)) {
 		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
 			brasero_audio_disc_add_gap (disc, &gap_iter, 0);
 
@@ -1531,8 +1563,8 @@ brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
 		return;
 	}
 
-	if (GNOME_VFS_FILE_INFO_SYMLINK (info)) {
-		uri = g_strconcat ("file://", info->symlink_name, NULL);
+	if (g_file_info_get_is_symlink (info)) {
+		uri = g_strconcat ("file://", g_file_info_get_symlink_target (info), NULL);
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 				    URI_COL, uri, -1);
 	}
@@ -1540,7 +1572,7 @@ brasero_audio_disc_new_row_cb (BraseroVFS *vfs,
 	if (!brasero_audio_disc_set_row_from_metadata (disc,
 						       model,
 						       &iter,
-						       metadata))
+						       info))
 		return;
 
 	brasero_audio_disc_add_file (disc, uri);
@@ -1559,10 +1591,8 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	GtkTreePath *treepath;
 	GtkTreeModel *store;
 	GtkTreeIter iter;
-	gboolean success;
 	gchar *markup;
 	gchar *name;
-	GList *uris;
 
 	g_return_val_if_fail (uri != NULL, BRASERO_DISC_ERROR_UNKNOWN);
 
@@ -1627,32 +1657,24 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 		gtk_tree_path_free (treepath);
 
 	/* get info async for the file */
-	if (!disc->priv->vfs)
-		disc->priv->vfs = brasero_vfs_get_default ();
+	if (!disc->priv->io)
+		disc->priv->io = brasero_io_get_default ();
 
 	if (!disc->priv->add_uri)
-		disc->priv->add_uri = brasero_vfs_register_data_type (disc->priv->vfs,
-								      G_OBJECT (disc),
-								      G_CALLBACK (brasero_audio_disc_new_row_cb),
-								      brasero_audio_disc_vfs_operation_finished);
+		disc->priv->add_uri = brasero_io_register (G_OBJECT (disc),
+							   brasero_audio_disc_new_row_cb,
+							   brasero_audio_disc_vfs_operation_finished,
+							   NULL);
 	/* FIXME: if cancelled ref won't be destroyed ? 
 	 * no, since the callback is always called even if there is an error */
-	uris = g_list_prepend (NULL, (gchar *) uri);
 	brasero_audio_disc_increase_activity_counter (disc);
-	success = brasero_vfs_get_metadata (disc->priv->vfs,
-					    uris,
-					    GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS |
-					    GNOME_VFS_FILE_INFO_FOLLOW_LINKS|
-					    GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-					    GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
-					    BRASERO_METADATA_FLAG_NONE,
-					    FALSE,
-					    disc->priv->add_uri,
-					    ref);
-	g_list_free (uris);
-
-	if (!success)
-		return BRASERO_DISC_ERROR_THREAD;
+	brasero_io_get_file_info (disc->priv->io,
+				  uri,
+				  disc->priv->add_uri,
+				  BRASERO_IO_INFO_PERM|
+				  BRASERO_IO_INFO_MIME|
+				  BRASERO_IO_INFO_METADATA,
+				  ref);
 
 	return BRASERO_DISC_OK;
 }
@@ -2963,13 +2985,18 @@ brasero_audio_disc_clipboard_text_cb (GtkClipboard *clipboard,
 {
 	gchar **array;
 	gchar **item;
-	gchar *uri;
 
 	array = g_strsplit_set (text, "\n\r", 0);
 	item = array;
 	while (*item) {
 		if (**item != '\0') {
-			uri = gnome_vfs_make_uri_from_input (*item);
+			GFile *file;
+			gchar *uri;
+
+			file = g_file_new_for_commandline_arg (*item);
+			uri = g_file_get_uri (file);
+			g_object_unref (file);
+
 			brasero_audio_disc_add_uri_real (disc,
 							 uri,
 							 -1,
@@ -3269,7 +3296,7 @@ brasero_audio_disc_start_monitoring (BraseroAudioDisc *disc,
 		       IN_MOVE_SELF |
 		       IN_UNMOUNT;
 
-	    	path = gnome_vfs_get_local_path_from_uri (parent);
+	    	path = g_filename_from_uri (parent, NULL, NULL);
 		wd = inotify_add_watch (dev_fd, path, mask);
 		if (wd == -1) {
 			g_warning ("ERROR creating watch for local file %s : %s\n",
@@ -3489,10 +3516,19 @@ brasero_audio_disc_inotify_modify (BraseroAudioDisc *disc,
 {
 	GSList *list, *list_iter;
 	GtkTreeModel *model;
+	GFileInfo *info;
 
 	list = brasero_audio_disc_inotify_find_rows (disc, uri);
 	if (!list)
 		return;
+
+	info = g_file_info_new ();
+	g_file_info_set_attribute_uint64 (info, BRASERO_IO_LEN, metadata->len);
+	g_file_info_set_attribute_string (info, BRASERO_IO_ARTIST, metadata->artist);
+	g_file_info_set_attribute_string (info, BRASERO_IO_TITLE, metadata->title);
+	g_file_info_set_attribute_int32 (info, BRASERO_IO_ISRC, metadata->isrc);
+	g_file_info_set_attribute_string (info, BRASERO_IO_COMPOSER, metadata->composer);
+	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_AUDIO, metadata->has_audio);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	for (list_iter = list; list_iter; list_iter = list_iter->next) {
@@ -3505,8 +3541,10 @@ brasero_audio_disc_inotify_modify (BraseroAudioDisc *disc,
 		brasero_audio_disc_set_row_from_metadata (disc,
 							  model,
 							  &iter,
-							  metadata);
+							  info);
 	}
+
+	g_object_unref (info);
 
 	g_slist_foreach (list, (GFunc) gtk_tree_path_free, NULL);
 	g_slist_free (list);
@@ -3630,27 +3668,18 @@ brasero_audio_disc_inotify_move (BraseroAudioDisc *disc,
 }
 
 static void
-brasero_audio_disc_inotify_attributes_changed_cb (BraseroVFS *vfs,
-						  GObject *obj,
-						  GnomeVFSResult result,
+brasero_audio_disc_inotify_attributes_changed_cb (GObject *obj,
+						  GError *error,
 						  const gchar *uri,
-						  const GnomeVFSFileInfo *info,
+						  GFileInfo *info,
 						  gpointer null_data)
 {
 	gboolean readable;
 	BraseroAudioDisc *disc = BRASERO_AUDIO_DISC (obj);
 
-	if (result != GNOME_VFS_OK)
+	if (error)
 		readable = FALSE;
-	else if (!GNOME_VFS_FILE_INFO_LOCAL (info))
-		readable = TRUE;
-	else if (getuid () == info->uid
-	     && (info->permissions & GNOME_VFS_PERM_USER_READ))
-		readable = TRUE;
-	else if (getgid () == info->gid
-	     && (info->permissions & GNOME_VFS_PERM_GROUP_READ))
-		readable = TRUE;
-	else if (info->permissions & GNOME_VFS_PERM_OTHER_READ)
+	else if (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ))
 		readable = TRUE;
 	else
 		readable = FALSE;
@@ -3663,31 +3692,22 @@ static gboolean
 brasero_audio_disc_inotify_attributes_changed (BraseroAudioDisc *disc,
 					       const gchar *uri)
 {
-	gboolean result;
-	GList *uris;
-
-	if (!disc->priv->vfs)
-		disc->priv->vfs = brasero_vfs_get_default ();
+	if (!disc->priv->io)
+		disc->priv->io = brasero_io_get_default ();
 
 	if (!disc->priv->attr_changed)
-		disc->priv->attr_changed = brasero_vfs_register_data_type (disc->priv->vfs,
-									   G_OBJECT (disc),
-									   G_CALLBACK (brasero_audio_disc_inotify_attributes_changed_cb),
-									   brasero_audio_disc_vfs_operation_finished);
+		disc->priv->attr_changed = brasero_io_register (G_OBJECT (disc),
+								brasero_audio_disc_inotify_attributes_changed_cb,
+								brasero_audio_disc_vfs_operation_finished,
+								NULL);
 
 	brasero_audio_disc_increase_activity_counter (disc);
-
-	uris = g_list_prepend (NULL, (gchar *) uri);
-	result = brasero_vfs_get_info (disc->priv->vfs,
-				       uris,
-				       FALSE,
-				       GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS |
-				       GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-				       disc->priv->attr_changed,
-				       NULL);
-	g_list_free (uris);
-
-	return result;
+	brasero_io_get_file_info (disc->priv->io,
+				  uri,
+				  disc->priv->attr_changed,
+				  BRASERO_IO_INFO_PERM,
+				  NULL);
+	return TRUE;
 }
 
 static gboolean
@@ -3835,6 +3855,7 @@ brasero_audio_disc_inotify_monitor_cb (GIOChannel *channel,
 				continue;
 			}
 
+			/* FIXME: we should remove the row if it hasn't audio */
 			brasero_metadata_set_info (metadata, &info);
 			brasero_audio_disc_inotify_modify (disc,
 							   monitored,

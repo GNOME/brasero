@@ -34,7 +34,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libgnomevfs/gnome-vfs.h>
+#include <gio/gio.h>
 
 #include "brasero-data-project.h"
 #include "brasero-marshal.h"
@@ -537,7 +537,7 @@ brasero_data_project_uri_to_nodes (BraseroDataProject *self,
 	g_free (parent);
 
 	/* unescape URI */
-	path = gnome_vfs_unescape_string_for_display (uri);
+	path = g_uri_unescape_string (uri, NULL);
 	for (iter = graft->nodes; iter; iter = iter->next) {
 		BraseroFileNode *node;
 
@@ -726,7 +726,7 @@ brasero_data_project_uri_is_graft_needed (BraseroDataProject *self,
 	/* get the URI name and parent. NOTE: name is unescaped to fit
 	 * the names of nodes that are meant for display and therefore
 	 * also unescaped. It's not necessary for parent URI. */
-	unescaped = gnome_vfs_unescape_string_for_display (uri);
+	unescaped = g_uri_unescape_string (uri, NULL);
 	name = g_path_get_basename (unescaped);
 	g_free (unescaped);
 
@@ -1584,13 +1584,16 @@ void
 brasero_data_project_node_loaded (BraseroDataProject *self,
 				  BraseroFileNode *node,
 				  const gchar *uri,
-				  GnomeVFSFileInfo *info)
+				  GFileInfo *info)
 {
+	guint64 size;
+	GFileType type;
 	gboolean size_changed;
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
+	type = g_file_info_get_file_type (info);
 	if (node->is_tmp_parent) {
 		priv->loading --;
 		g_signal_emit (self,
@@ -1599,7 +1602,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 			       priv->loading);
 
 		/* we must make sure that this is really a directory */
-		if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		if (type != G_FILE_TYPE_DIRECTORY) {
 			BraseroURINode *graft;
 
 			/* it isn't a directory so it won't be loaded but turned
@@ -1634,7 +1637,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	}
 	else if (priv->loading && node->is_grafted) {
 		priv->loading --;
-		if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		if (type != G_FILE_TYPE_DIRECTORY) {
 			/* no need to load its contents since it's not a folder */
 			priv->loading --;
 		}
@@ -1645,10 +1648,11 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 			       priv->loading);
 	}
 
-	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
-		if (BRASERO_SIZE_TO_SECTORS (info->size, 2048) > BRASERO_FILE_2G_LIMIT
+	size = g_file_info_get_size (info);
+	if (type != G_FILE_TYPE_DIRECTORY) {
+		if (BRASERO_SIZE_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT
 		&&  BRASERO_FILE_NODE_SECTORS (node) < BRASERO_FILE_2G_LIMIT) {
-			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, info->name)) {
+			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, g_file_info_get_name (info))) {
 				brasero_data_project_remove_node (self, node);
 				return;
 			}
@@ -1657,12 +1661,12 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	/* avoid signalling twice for the same directory */
 	else if (!node->is_file
 	     &&  brasero_file_node_get_depth (node) == 6
-	     &&  brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, info->name)) {
+	     &&  brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, g_file_info_get_name (info))) {
 		brasero_data_project_remove_node (self, node);
 		return;
 	}
 
-	size_changed = (BRASERO_SIZE_TO_SECTORS (info->size, 2048) != BRASERO_FILE_NODE_SECTORS (node));
+	size_changed = (BRASERO_SIZE_TO_SECTORS (size, 2048) != BRASERO_FILE_NODE_SECTORS (node));
 	brasero_file_node_set_from_info (node, info);
 
 	/* Check it that needs a graft: this node has not been moved so we don't
@@ -1678,7 +1682,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 		g_free (uri);
 
 		/* NOTE: info has the uri for the target of the symlink */
-		graft = brasero_data_project_uri_ensure_graft (self, info->symlink_name);
+		graft = brasero_data_project_uri_ensure_graft (self, g_file_info_get_symlink_target (info));
 		brasero_file_node_graft (node, graft);
 	}
 
@@ -1713,10 +1717,12 @@ void
 brasero_data_project_node_reloaded (BraseroDataProject *self,
 				    BraseroFileNode *node,
 				    const gchar *uri,
-				    GnomeVFSFileInfo *info)
+				    GFileInfo *info)
 {
 	BraseroDataProjectPrivate *priv;
 	gboolean size_changed;
+	const gchar *name;
+	guint64 size;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
@@ -1725,18 +1731,20 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 	/* the only thing that can have changed here is size. Readability was 
 	 * checked in data-vfs.c. That's why we're only interested in files
 	 * since directories don't have size. */ 
-	if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
 		return;
 
-	if (BRASERO_SIZE_TO_SECTORS (info->size, 2048) > BRASERO_FILE_2G_LIMIT
+	size = g_file_info_get_size (info);
+	name = g_file_info_get_name (info);
+	if (BRASERO_SIZE_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT
 	&&  BRASERO_FILE_NODE_SECTORS (node) < BRASERO_FILE_2G_LIMIT) {
-		if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, info->name)) {
+		if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name)) {
 			brasero_data_project_remove_node (self, node);
 			return;
 		}
 	}
 
-	size_changed = (BRASERO_SIZE_TO_SECTORS (info->size, 2048) == BRASERO_FILE_NODE_SECTORS (node));
+	size_changed = (BRASERO_SIZE_TO_SECTORS (size, 2048) == BRASERO_FILE_NODE_SECTORS (node));
 	if (BRASERO_FILE_NODE_MIME (node) && !size_changed)
 		return;
 
@@ -1831,9 +1839,11 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 BraseroFileNode *
 brasero_data_project_add_node_from_info (BraseroDataProject *self,
 					 const gchar *uri,
-					 GnomeVFSFileInfo *info,
+					 GFileInfo *info,
 					 BraseroFileNode *parent)
 {
+	GFileType type;
+	const gchar *name;
 	BraseroFileNode *node;
 	BraseroURINode *graft;
 	BraseroDataProjectPrivate *priv;
@@ -1875,7 +1885,8 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 		parent = priv->root;
 
 	/* make sure that name doesn't exist */
-	node = brasero_file_node_check_name_existence (parent, info->name);
+	name = g_file_info_get_name (info);
+	node = brasero_file_node_check_name_existence (parent, name);
 	if (node) {
 		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
 			return NULL;
@@ -1887,13 +1898,17 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 		graft = g_hash_table_lookup (priv->grafts, uri);
 	}
 
-	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
-		if (BRASERO_SIZE_TO_SECTORS (info->size, 2048) > BRASERO_FILE_2G_LIMIT)
-			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, info->name))
+	type = g_file_info_get_file_type (info);
+	if (type != G_FILE_TYPE_DIRECTORY) {
+		guint64 size;
+
+		size = g_file_info_get_size (info);
+		if (BRASERO_SIZE_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT)
+			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name))
 				return NULL;
 	}
 	else if (!brasero_file_node_get_depth (parent) == 5) {
-		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, info->name))
+		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name))
 			return NULL;
 	}
 
@@ -1907,12 +1922,15 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 		g_free (symlink_uri);
 
 		/* then we add the node */
-		brasero_data_project_add_node_real (self, node, graft, info->symlink_name);
+		brasero_data_project_add_node_real (self,
+						    node,
+						    graft,
+						    g_file_info_get_symlink_target (info));
 	}
 	else
 		brasero_data_project_add_node_real (self, node, graft, uri);
 
-	if (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY)
+	if (type != G_FILE_TYPE_DIRECTORY)
 		g_signal_emit (self,
 			       brasero_data_project_signals [SIZE_CHANGED_SIGNAL],
 			       0);
@@ -2542,9 +2560,9 @@ brasero_data_project_add_excluded_uri (BraseroDataProject *self,
 		return folders;
 
 	/* Create the paths starting from these nodes */
-	unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
+	unescaped_uri = g_uri_unescape_string (uri, NULL);
 
-	parent_uri = gnome_vfs_unescape_string_for_display (graft->uri);
+	parent_uri = g_uri_unescape_string (graft->uri, NULL);
 	parent_uri_len = strlen (parent_uri);
 	g_free (parent_uri);
 
@@ -2888,7 +2906,7 @@ brasero_data_project_file_added (BraseroFileMonitor *monitor,
 
 	/* get the new URI */
 	parent_uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (monitor), parent);
-	escaped_name = gnome_vfs_escape_path_string (name);
+	escaped_name = g_uri_escape_string (name, NULL, TRUE);
 	uri = g_strconcat (parent_uri, G_DIR_SEPARATOR_S, escaped_name, NULL);
 	g_free (escaped_name);
 	g_free (parent_uri);
@@ -2926,7 +2944,7 @@ brasero_data_project_file_update_URI (BraseroDataProject *self,
 	uri_node = graft->node;
 
 	/* get the new uri */
-	escaped_name = gnome_vfs_escape_path_string (name);
+	escaped_name = g_uri_escape_string (name, NULL, TRUE);
 	uri = g_build_path (G_DIR_SEPARATOR_S, parent_uri, escaped_name, NULL);
 	g_free (escaped_name);
 
@@ -3002,7 +3020,7 @@ brasero_data_project_file_graft (BraseroDataProject *self,
 	parent = g_path_get_dirname (uri);
 	g_free (uri);
 
-	escaped_name = gnome_vfs_escape_path_string (real_name);
+	escaped_name = g_uri_escape_string (real_name, NULL, TRUE);
 	uri = g_strconcat (parent, G_DIR_SEPARATOR_S, escaped_name, NULL);
 	g_free (escaped_name);
 	g_free (parent);

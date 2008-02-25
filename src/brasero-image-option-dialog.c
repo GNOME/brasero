@@ -44,7 +44,7 @@
 #include "brasero-image-type-chooser.h"
 #include "brasero-dest-selection.h"
 #include "brasero-ncb.h"
-#include "brasero-vfs.h"
+#include "brasero-io.h"
  
 G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, GTK_TYPE_DIALOG);
 
@@ -57,8 +57,8 @@ struct _BraseroImageOptionDialogPrivate {
 	gulong caps_sig;
 	gulong session_sig;
 
-	BraseroVFS *vfs;
-	BraseroVFSDataID info_type;
+	BraseroIO *io;
+	BraseroIOJobBase *info_type;
 
 	GtkWidget *selection;
 	GtkWidget *format;
@@ -94,11 +94,10 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 }
 
 static void
-brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
-					   GObject *object,
-					   GnomeVFSResult result,
+brasero_image_option_dialog_image_info_cb (GObject *object,
+					   GError *error,
 					   const gchar *uri,
-					   GnomeVFSFileInfo *info,
+					   GFileInfo *info,
 					   gpointer null_data)
 {
 	BraseroImageOptionDialog *dialog = BRASERO_IMAGE_OPTION_DIALOG (object);
@@ -106,7 +105,7 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
-	if (result != GNOME_VFS_OK) {
+	if (error) {
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL,
@@ -115,12 +114,12 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 	}
 
     	/* Add it to recent file manager */
-	if (!strcmp (info->mime_type, "application/x-toc"))
+	if (!strcmp (g_file_info_get_content_type (info), "application/x-toc"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CLONE,
 						       NULL,
 						       uri);
-	else if (!strcmp (info->mime_type, "application/octet-stream")) {
+	else if (!strcmp (g_file_info_get_content_type (info), "application/octet-stream")) {
 		/* that could be an image, so here is the deal:
 		 * if we can find the type through the extension, fine.
 		 * if not default to CLONE */
@@ -140,17 +139,17 @@ brasero_image_option_dialog_image_info_cb (BraseroVFS *vfs,
 							       uri,
 							       NULL);
 	}
-	else if (!strcmp (info->mime_type, "application/x-cd-image"))
+	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cd-image"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_BIN,
 						       uri,
 						       NULL);
-	else if (!strcmp (info->mime_type, "application/x-cdrdao-toc"))
+	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cdrdao-toc"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CDRDAO,
 						       NULL,
 						       uri);
-	else if (!strcmp (info->mime_type, "application/x-cue"))
+	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cue"))
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CUE,
 						       NULL,
@@ -166,7 +165,6 @@ static void
 brasero_image_option_dialog_get_format (BraseroImageOptionDialog *dialog,
 					gchar *uri)
 {
-	GList *uris;
 	BraseroImageOptionDialogPrivate *priv;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
@@ -179,24 +177,20 @@ brasero_image_option_dialog_get_format (BraseroImageOptionDialog *dialog,
 		return;
 	}
 
-	if (!priv->vfs)
-		priv->vfs = brasero_vfs_get_default ();
+	if (!priv->io)
+		priv->io = brasero_io_get_default ();
 
 	if (!priv->info_type)
-		priv->info_type = brasero_vfs_register_data_type (priv->vfs,
-								  G_OBJECT (dialog),
-								  G_CALLBACK (brasero_image_option_dialog_image_info_cb),
-								  NULL);
+		priv->info_type = brasero_io_register (G_OBJECT (dialog),
+						       brasero_image_option_dialog_image_info_cb,
+						       NULL,
+						       NULL);
 
-	uris = g_list_prepend (NULL, uri);
-	brasero_vfs_get_info (priv->vfs,
-			      uris,
-			      FALSE,
-			      GNOME_VFS_FILE_INFO_GET_MIME_TYPE|
-			      GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE,
-			      priv->info_type,
-			      NULL);
-	g_list_free (uris);
+	brasero_io_get_file_info (priv->io,
+				  uri,
+				  priv->info_type,
+				  BRASERO_IO_INFO_MIME,
+				  NULL);
 }
 
 static void
@@ -631,10 +625,14 @@ brasero_image_option_dialog_finalize (GObject *object)
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (object);
 
-	if (priv->vfs) {
-		brasero_vfs_cancel (priv->vfs, object);
-		g_object_unref (priv->vfs);
-		priv->vfs = NULL;
+	if (priv->io) {
+		brasero_io_cancel_by_base (priv->io, priv->info_type);
+
+		g_free (priv->info_type);
+		priv->info_type = NULL;
+
+		g_object_unref (priv->io);
+		priv->io = NULL;
 	}
 
 	if (priv->track) {

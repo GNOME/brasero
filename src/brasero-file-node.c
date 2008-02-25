@@ -28,6 +28,8 @@
 
 #include <string.h>
 
+#include <gio/gio.h>
+
 #include "burn-basics.h"
 
 #include "brasero-file-node.h"
@@ -576,7 +578,7 @@ brasero_file_node_validate_utf8_name (const gchar *name)
 		return NULL;
 
 	if (g_utf8_validate (name, -1, &invalid))
-		return NULL;
+		return g_markup_escape_text (name, -1);
 
 	retval = g_strdup (name);
 	ptr = retval + (invalid - name);
@@ -588,6 +590,10 @@ brasero_file_node_validate_utf8_name (const gchar *name)
 		*ptr = '?';
 		ptr ++;
 	}
+
+	ptr = retval;
+	retval = g_markup_escape_text (retval, -1);
+	g_free (ptr);
 
 	return retval;
 }
@@ -708,7 +714,7 @@ brasero_file_node_add (BraseroFileNode *parent,
 
 void
 brasero_file_node_set_from_info (BraseroFileNode *node,
-				 GnomeVFSFileInfo *info)
+				 GFileInfo *info)
 {
 	/* NOTE: the name will never be replaced here since that means
 	 * we could replace a previously set name (that triggered the
@@ -719,26 +725,29 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 	 * - the mime type
 	 * - the size (and possibly the one of his parent)
 	 * - the type */
-	node->is_file = (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY);
+	node->is_file = (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY);
 	node->is_fake = FALSE;
 	node->is_loading = FALSE;
 	node->is_imported = FALSE;
 	node->is_reloading = FALSE;
-	node->is_symlink = (GNOME_VFS_FILE_INFO_SYMLINK (info));
+	node->is_symlink = (g_file_info_get_is_symlink (info));
 
 	if (node->is_file) {
 		guint sectors;
 		gint sectors_diff;
 
 		/* register mime type string */
-		if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) {
+		if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)) {
+			const gchar *mime;
+
 			if (BRASERO_FILE_NODE_MIME (node))
 				brasero_utils_unregister_string (BRASERO_FILE_NODE_MIME (node));
 
-			node->union2.mime = brasero_utils_register_string (info->mime_type);
+			mime = g_file_info_get_content_type (info);
+			node->union2.mime = brasero_utils_register_string (mime);
 		}
 
-		sectors = BRASERO_SIZE_TO_SECTORS (info->size, 2048);
+		sectors = BRASERO_SIZE_TO_SECTORS (g_file_info_get_size (info), 2048);
 
 		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT) {
 			BraseroFileTreeStats *stats;
@@ -773,16 +782,16 @@ gchar *
 brasero_file_node_get_uri_name (const gchar *uri)
 {
 	gchar *unescaped_name;
-	GnomeVFSURI *vfs_uri;
+	GFile *vfs_uri;
 	gchar *name;
 
 	/* g_path_get_basename is not comfortable with uri related
 	 * to the root directory so check that before */
-	vfs_uri = gnome_vfs_uri_new (uri);
-	name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
+	vfs_uri = g_file_new_for_uri (uri);
+	name = g_file_get_basename (vfs_uri);
+	g_object_unref (vfs_uri);
 
-	unescaped_name = gnome_vfs_unescape_string_for_display (name);
+	unescaped_name = g_uri_unescape_string (name, NULL);
 	g_free (name);
 
 	/* NOTE: a graft should be added for non utf8 name since we
@@ -814,14 +823,14 @@ brasero_file_node_new_loading (const gchar *name,
 }
 
 BraseroFileNode *
-brasero_file_node_new_from_info (GnomeVFSFileInfo *info,
+brasero_file_node_new_from_info (GFileInfo *info,
 				 BraseroFileNode *parent,
 				 GCompareFunc sort_func)
 {
 	BraseroFileNode *node;
 
 	node = g_new0 (BraseroFileNode, 1);
-	node->union1.name = g_strdup (info->name);
+	node->union1.name = g_strdup (g_file_info_get_name (info));
 
 	brasero_file_node_set_from_info (node, info);
 

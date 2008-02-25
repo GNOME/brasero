@@ -28,6 +28,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <gio/gio.h>
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_ASYNC_TASK_MANAGER         (brasero_async_task_manager_get_type ())
@@ -48,18 +50,41 @@ typedef struct {
 	GObjectClass parent_class;
 } BraseroAsyncTaskManagerClass;
 
-typedef void		(*BraseroAsyncThread)		(BraseroAsyncTaskManager *manager, gpointer user_data);
-typedef void		(*BraseroSyncResult)		(BraseroAsyncTaskManager *manager, gpointer user_data);
-
-typedef gboolean	(*BraseroAsyncFindTask)		(BraseroAsyncTaskManager *manager, gpointer task, gpointer user_data);
-
 GType brasero_async_task_manager_get_type ();
 
-typedef guint BraseroAsyncTaskTypeID;
+typedef enum {
+	BRASERO_ASYNC_TASK_FINISHED		= 0,
+	BRASERO_ASYNC_TASK_RESCHEDULE		= 1
+} BraseroAsyncTaskResult;
+
+typedef BraseroAsyncTaskResult	(*BraseroAsyncThread)		(BraseroAsyncTaskManager *manager,
+								 GCancellable *cancel,
+								 gpointer user_data);
+typedef void			(*BraseroAsyncDestroy)		(BraseroAsyncTaskManager *manager,
+								 gpointer user_data);
+typedef gboolean		(*BraseroAsyncFindTask)		(BraseroAsyncTaskManager *manager,
+								 gpointer task,
+								 gpointer user_data);
+
+struct _BraseroAsyncTaskType {
+	BraseroAsyncThread thread;
+	BraseroAsyncDestroy destroy;
+};
+typedef struct _BraseroAsyncTaskType BraseroAsyncTaskType;
+
+typedef enum {
+	/* used internally when reschedule */
+	BRASERO_ASYNC_RESCHEDULE	= 1,
+
+	BRASERO_ASYNC_IDLE		= 1 << 1,
+	BRASERO_ASYNC_NORMAL		= 1 << 2,
+	BRASERO_ASYNC_URGENT		= 1 << 3
+} BraseroAsyncPriority;
 
 gboolean
 brasero_async_task_manager_queue (BraseroAsyncTaskManager *manager,
-				  BraseroAsyncTaskTypeID type,
+				  BraseroAsyncPriority priority,
+				  const BraseroAsyncTaskType *type,
 				  gpointer data);
 
 gboolean
@@ -67,9 +92,9 @@ brasero_async_task_manager_foreach_active (BraseroAsyncTaskManager *manager,
 					   BraseroAsyncFindTask func,
 					   gpointer user_data);
 gboolean
-brasero_async_task_manager_foreach_processed_remove (BraseroAsyncTaskManager *self,
-						     BraseroAsyncFindTask func,
-						     gpointer user_data);
+brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *manager,
+						  BraseroAsyncFindTask func,
+						  gpointer user_data);
 gboolean
 brasero_async_task_manager_foreach_unprocessed_remove (BraseroAsyncTaskManager *self,
 						       BraseroAsyncFindTask func,
@@ -79,9 +104,5 @@ gboolean
 brasero_async_task_manager_find_urgent_task (BraseroAsyncTaskManager *manager,
 					     BraseroAsyncFindTask func,
 					     gpointer user_data);
-BraseroAsyncTaskTypeID
-brasero_async_task_manager_register_type (BraseroAsyncTaskManager *manager,
-					  BraseroAsyncThread thread,
-					  BraseroSyncResult result);
 
 #endif /* ASYNC_JOB_MANAGER_H */

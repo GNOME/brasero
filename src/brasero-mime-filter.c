@@ -30,6 +30,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
+#include <gio/gio.h>
+
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkfilefilter.h>
 #include <gtk/gtkcombobox.h>
@@ -38,10 +40,6 @@
 #include <gtk/gtkliststore.h>
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtklabel.h>
-
-#include <libgnomeui/libgnomeui.h>
-
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 #include "brasero-mime-filter.h"
 #include "brasero-utils.h"
@@ -233,17 +231,19 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 
 	item = g_hash_table_lookup (filter->priv->table, mime);
 	if (item == NULL) {
+		GIcon *icon;
 		gchar *display;
 		GtkTreeIter row;
-		gchar *icon_string;
 		GtkTreeModel *model;
 		const gchar *description;
+		const gchar * const *icon_string = NULL;
 
-		description = gnome_vfs_mime_get_description (mime);
+		description = g_content_type_get_description (mime);
 		display = g_strdup_printf (_("%s only"), description);
-		icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
-						 NULL, NULL, NULL, mime,
-						 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
+
+		icon = g_content_type_get_icon (mime);
+		if (G_IS_THEMED_ICON (icon))
+			icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
 		
 		/* create the GtkFileFilter */
 		item = gtk_file_filter_new ();
@@ -263,11 +263,10 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 		g_object_ref (item);
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    BRASERO_MIME_FILTER_DISPLAY_COL, display,
-				    BRASERO_MIME_FILTER_ICON_COL, icon_string,
+				    BRASERO_MIME_FILTER_ICON_COL, icon_string?icon_string [0]:NULL,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
 		g_object_ref_sink (GTK_OBJECT (item));
-		g_free (icon_string);
 		g_free (display);
 
 		/* we check that the first entry at least is visible */

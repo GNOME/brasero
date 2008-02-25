@@ -449,6 +449,9 @@ brasero_disc_message_finalize (GObject *object)
 		priv->id = 0;
 	}
 
+	g_object_unref (priv->group);
+	priv->group = NULL;
+
 	G_OBJECT_CLASS (brasero_disc_message_parent_class)->finalize (object);
 }
 

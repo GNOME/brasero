@@ -33,6 +33,8 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include <gio/gio.h>
+
 #include "burn-track.h"
 #include "burn-debug.h"
 #include "burn-medium.h"
@@ -619,6 +621,7 @@ brasero_track_get_localpath (const gchar *uri)
 {
 	gchar *localpath;
 	gchar *realuri;
+	GFile *file;
 
 	if (!uri)
 		return NULL;
@@ -629,8 +632,11 @@ brasero_track_get_localpath (const gchar *uri)
 	if (strncmp (uri, "file://", 7))
 		return NULL;
 
-	realuri = gnome_vfs_make_uri_from_input (uri);
-	localpath = gnome_vfs_get_local_path_from_uri (realuri);
+	file = g_file_new_for_commandline_arg (uri);
+	realuri = g_file_get_uri (file);
+	g_object_unref (file);
+
+	localpath = g_filename_from_uri (realuri, NULL, NULL);
 	g_free (realuri);
 
 	return localpath;
@@ -639,13 +645,20 @@ brasero_track_get_localpath (const gchar *uri)
 static gchar *
 brasero_track_get_uri (const gchar *uri)
 {
+	gchar *uri_return;
+	GFile *file;
+
 	if (!uri)
 		return NULL;
 
 	if (uri [0] != '/')
 		return g_strdup (uri);
-		
-	return gnome_vfs_make_uri_from_input (uri);
+
+	file = g_file_new_for_commandline_arg (uri);
+	uri_return = g_file_get_uri (file);
+	g_object_unref (file);
+
+	return uri_return;
 }
 
 gchar *

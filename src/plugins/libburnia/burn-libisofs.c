@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -39,8 +40,6 @@
 
 #include <libisofs/libisofs.h>
 #include <libburn/libburn.h>
-
-#include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-basics.h"
 #include "burn-libburnia.h"
@@ -399,7 +398,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		gchar *uri;
 
 		uri = excluded->data;
-		excluded_array [size++] = gnome_vfs_get_local_path_from_uri (uri);
+		excluded_array [size++] = g_filename_from_uri (uri, NULL, NULL);
 	}
 
 	for (iter = grafts; iter; iter = iter->next) {
@@ -440,7 +439,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		if (graft->uri) {
 			gchar *local_path;
 
-			local_path = gnome_vfs_get_local_path_from_uri (graft->uri);
+			local_path = g_filename_from_uri (graft->uri, NULL, NULL);
 			if (!local_path){
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,

@@ -39,8 +39,6 @@
 
 #include <nautilus-burn-drive.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include "brasero-drive-info.h"
 #include "burn-medium.h"
 #include "burn-caps.h"
@@ -144,7 +142,7 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 		gint64 data_size;
 
 		NCB_MEDIA_GET_CAPACITY (drive, &data_size, NULL);
-		data_size_string = gnome_vfs_format_file_size_for_display (data_size);
+		data_size_string = g_format_size_for_display (data_size);
 		info = g_strdup_printf (_("%s of data"), data_size_string);
 		g_free (data_size_string);
 	
@@ -170,7 +168,7 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 		gint64 remaining;
 
 		NCB_MEDIA_GET_CAPACITY (drive, &remaining, NULL);
-		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		remaining_string = g_format_size_for_display (remaining);
 		info = g_strdup_printf (_("%s free"), remaining_string);
 		g_free (remaining_string);
 	
@@ -185,7 +183,7 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 		gint64 remaining;
 
 		NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
-		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		remaining_string = g_format_size_for_display (remaining);
 		info = g_strdup_printf (_("%s free"), remaining_string);
 		g_free (remaining_string);
 	
@@ -200,8 +198,8 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 
 		NCB_MEDIA_GET_CAPACITY (drive, &capacity, NULL);
 		NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
-		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
-		capacity_string = gnome_vfs_format_file_size_for_display (capacity);
+		remaining_string = g_format_size_for_display (remaining);
+		capacity_string = g_format_size_for_display (capacity);
 		info = g_strdup_printf (_("%s (%s free)"),
 					capacity_string,
 					remaining_string);
@@ -219,7 +217,7 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 		gint64 remaining;
 
 		NCB_MEDIA_GET_FREE_SPACE (drive, &remaining, NULL);
-		remaining_string = gnome_vfs_format_file_size_for_display (remaining);
+		remaining_string = g_format_size_for_display (remaining);
 		info = g_strdup_printf (_("%s free"), remaining_string);
 		g_free (remaining_string);
 	

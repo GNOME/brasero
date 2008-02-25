@@ -36,6 +36,8 @@
 #include <glib/gutils.h>
 #include <glib-object.h>
 
+#include <gio/gio.h>
+
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkfilefilter.h>
 #include <gtk/gtkselection.h>
@@ -56,10 +58,6 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
-
-#include <libgnomeui/libgnomeui.h>
-
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 #include <beagle/beagle.h>
 

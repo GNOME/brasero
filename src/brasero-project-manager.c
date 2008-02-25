@@ -43,10 +43,6 @@
 #include <gtk/gtkuimanager.h>
 #include <gtk/gtkscrolledwindow.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-
 #include "brasero-utils.h"
 #include "brasero-project.h"
 #include "brasero-layout.h"
@@ -57,7 +53,7 @@
 #include "brasero-burn-dialog.h"
 #include "brasero-project-type-chooser.h"
 #include "brasero-disc-copy-dialog.h"
-#include "brasero-vfs.h"
+#include "brasero-io.h"
 #include "burn-caps.h"
 
 #ifdef BUILD_SEARCH
@@ -150,9 +146,9 @@ static const char *description = {
 };
 
 struct BraseroProjectManagerPrivate {
-	BraseroVFS *vfs;
+	BraseroIO *io;
 	BraseroProjectType type;
-	BraseroVFSDataID size_preview;
+	BraseroIOJobBase *size_preview;
 
 	GtkWidget *project;
 	GtkWidget *layout;
@@ -199,27 +195,25 @@ brasero_project_manager_get_type ()
 }
 
 static void
-brasero_project_manager_size_preview (BraseroVFS *vfs,
-				      GObject *object,
-				      gint files_num,
-				      gint invalid_num,
-				      gint64 files_size,
-				      gpointer user_data)
+brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
+				       guint64 files_size,
+				       gint invalid_num,
+				       gint files_num)
 {
-	BraseroProjectManager *manager = BRASERO_PROJECT_MANAGER (object);
-	gint valid_num = files_num - invalid_num;
-    	gchar *status_string = NULL;
+	gchar *status_string = NULL;
+	gint valid_num;
 
 	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
 			   manager->priv->status_ctx);
 
+	valid_num = files_num - invalid_num;
 	if (!invalid_num && valid_num) {
 		gchar *size_string;
 
 		if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
 			size_string = brasero_utils_get_time_string (files_size, TRUE, FALSE);
 		else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
-			size_string = gnome_vfs_format_file_size_for_display (files_size);
+			size_string = g_format_size_for_display (files_size);
 		else
 			return;
 
@@ -238,7 +232,7 @@ brasero_project_manager_size_preview (BraseroVFS *vfs,
 							 size_string);
 		}
 		else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA) {
-			size_string = gnome_vfs_format_file_size_for_display (files_size);
+			size_string = g_format_size_for_display (files_size);
 			status_string = g_strdup_printf (ngettext ("%d file can be added (%s)", "%d selected files can be added (%s)", valid_num),
 							 valid_num,
 							 size_string);
@@ -269,17 +263,57 @@ brasero_project_manager_size_preview (BraseroVFS *vfs,
 	g_free (status_string);
 }
 
+static void
+brasero_project_manager_size_preview (GObject *object,
+				      GError *error,
+				      const gchar *uri,
+				      GFileInfo *info,
+				      gpointer user_data)
+{
+	BraseroProjectManager *manager = BRASERO_PROJECT_MANAGER (object);
+	guint64 files_size;
+	gint invalid_num;
+	gint files_num;
+
+	invalid_num = g_file_info_get_attribute_uint32 (info, BRASERO_IO_COUNT_INVALID);
+	files_size = g_file_info_get_attribute_uint64 (info, BRASERO_IO_COUNT_SIZE);
+	files_num = g_file_info_get_attribute_uint32 (info, BRASERO_IO_COUNT_NUM);
+	brasero_project_manager_set_statusbar (manager,
+					       files_size,
+					       invalid_num,
+					       files_num);
+}
+
+static void
+brasero_project_manager_size_preview_progress (GObject *object,
+					       BraseroIOJobProgress *progress,
+					       gpointer user_data)
+{
+	BraseroProjectManager *manager = BRASERO_PROJECT_MANAGER (object);
+	guint64 files_size;
+	gint files_num;
+
+	files_size = brasero_io_job_progress_get_total (progress);
+	files_num = brasero_io_job_progress_get_file_processed (progress);
+	brasero_project_manager_set_statusbar (manager,
+					       files_size,
+					       0,
+					       files_num);
+}
+
 void
 brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 					       BraseroProjectManager *manager)
 {
+	BraseroIOFlags flags;
     	gchar **uris, **iter;
-    	GList *list = NULL;
+    	GSList *list = NULL;
 
 	/* if we are in the middle of an unfinished size seek then
 	 * cancel it and re-initialize */
-	if (manager->priv->vfs)
-		brasero_vfs_cancel (manager->priv->vfs, manager);
+	if (manager->priv->io)
+		brasero_io_cancel_by_base (manager->priv->io,
+					   manager->priv->size_preview);
 
 	uris = brasero_uri_container_get_selected_uris (container);
     	if (!uris) {
@@ -291,24 +325,29 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 		return;
 	}
 
-    	for (iter = uris; iter && *iter; iter ++)
-		list = g_list_prepend (list, *iter);
-
-	if (!manager->priv->vfs)
-		manager->priv->vfs = brasero_vfs_get_default ();
+	if (!manager->priv->io)
+		manager->priv->io = brasero_io_get_default ();
 
 	if (!manager->priv->size_preview)
-		manager->priv->size_preview = brasero_vfs_register_data_type (manager->priv->vfs,
-									      G_OBJECT (manager),
-									      G_CALLBACK (brasero_project_manager_size_preview),
-									      NULL);
-	brasero_vfs_get_count (manager->priv->vfs,
-			       list,
-			      (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO),
-			       manager->priv->size_preview,
-			       NULL);
+		manager->priv->size_preview = brasero_io_register (G_OBJECT (manager),
+								   brasero_project_manager_size_preview,
+								   NULL,
+								   brasero_project_manager_size_preview_progress);
+    
+	for (iter = uris; iter && *iter; iter ++)
+		list = g_slist_prepend (list, *iter);
+
+	flags = BRASERO_IO_INFO_RECURSIVE|BRASERO_IO_INFO_IDLE;
+	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
+		flags |= BRASERO_IO_INFO_METADATA;
+
+	brasero_io_get_file_count (manager->priv->io,
+				   list,
+				   manager->priv->size_preview,
+				   flags,
+				   NULL);
 			       
-	g_list_free (list);
+	g_slist_free (list);
 	g_strfreev (uris);
 }
 void
@@ -669,9 +708,8 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
 		gchar *uri;
 		BraseroProjectType type;
 
-		uri = gnome_vfs_make_uri_from_input (path);
-    		type = brasero_project_load_session (BRASERO_PROJECT (manager->priv->project),
-						     uri);
+		uri = g_filename_to_uri (path, NULL, NULL);
+    		type = brasero_project_load_session (BRASERO_PROJECT (manager->priv->project), uri);
 		g_free (uri);
 
 		brasero_project_manager_switch (manager, type, NULL, NULL, FALSE);
@@ -693,7 +731,7 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 		/* if we want to save the current open project, this need a
 		 * modification in BraseroProject to bypass ask_status in case
 	 	 * DataDisc has not finished exploration */
-		uri = gnome_vfs_make_uri_from_input (path);
+		uri = g_filename_to_uri (path, NULL, NULL);
     		result = brasero_project_save_session (BRASERO_PROJECT (manager->priv->project),
 						       uri,
 						       cancellable);
@@ -845,10 +883,14 @@ brasero_project_manager_finalize (GObject *object)
 
 	cobj = BRASERO_PROJECT_MANAGER (object);
 
-	if (cobj->priv->vfs) {
-		brasero_vfs_cancel (cobj->priv->vfs, object);
-		g_object_unref (cobj->priv->vfs);
-		cobj->priv->vfs = NULL;
+	if (cobj->priv->io) {
+		brasero_io_cancel_by_base (cobj->priv->io, cobj->priv->size_preview);
+
+		g_free (cobj->priv->size_preview);
+		cobj->priv->size_preview = NULL;
+
+		g_object_unref (cobj->priv->io);
+		cobj->priv->io = NULL;
 	}
 
 	g_free (cobj->priv);

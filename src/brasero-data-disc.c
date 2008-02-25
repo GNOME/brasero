@@ -501,8 +501,12 @@ brasero_data_disc_clipboard_text_cb (GtkClipboard *clipboard,
 	while (*item) {
 		if (**item != '\0') {
 			gchar *uri;
+			GFile *file;
 
-			uri = gnome_vfs_make_uri_from_input (*item);
+			file = g_file_new_for_commandline_arg (*item);
+			uri = g_file_get_uri (file);
+			g_object_unref (file);
+
 			brasero_data_project_add_loading_node (priv->project,
 							       uri,
 							       parent);
@@ -814,7 +818,7 @@ brasero_data_disc_restored_file_cb (BraseroFileFiltered *filter,
 
 static void
 brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
-				     GnomeVFSResult result,
+				     const GError *error,
 				     const gchar *uri,
 				     BraseroDataDisc *self)
 {
@@ -827,11 +831,8 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 
 	name = brasero_file_node_get_uri_name (uri);
 	if (priv->loading) {
-		gchar *message;
-
-		message = g_strdup_printf (_("\"%s\" cannot be found."), name);
-		priv->load_errors = g_slist_prepend (priv->load_errors, message);
-		g_free (name);
+		priv->load_errors = g_slist_prepend (priv->load_errors,
+						     g_strdup (error->message));
 
 		return;
 	}
@@ -849,7 +850,7 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable file"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  "%s.",
-						  gnome_vfs_result_to_string (result));
+						  error->message);
 
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));

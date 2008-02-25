@@ -37,8 +37,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include <libgnomevfs/gnome-vfs-utils.h>
-
 #include <nautilus-burn-drive.h>
 
 #include "burn-cdrdao-common.h"

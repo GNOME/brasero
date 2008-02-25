@@ -49,7 +49,6 @@
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
 
-#include <libgnomevfs/gnome-vfs.h>
 #include <nautilus-burn-drive.h>
 
 #include "brasero-sum-dialog.h"
@@ -291,14 +290,12 @@ brasero_sum_dialog_progress_poll (gpointer user_data)
 
 static BraseroBurnResult
 brasero_sum_dialog_download (BraseroSumDialog *self,
-			     GnomeVFSURI *vfsuri,
+			     const gchar *src,
 			     gchar **retval,
 			     GError **error)
 {
 	BraseroBurnResult result;
-	GnomeVFSURI *tmpuri;
 	gchar *tmppath;
-	gchar *uri;
 	gint id;
 	int fd;
 
@@ -316,21 +313,6 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 	}
 	close (fd);
 
-	uri = gnome_vfs_get_uri_from_local_path (tmppath);
-	if (!uri) {
-		g_remove (tmppath);
-		g_free (tmppath);
-
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("URI is not valid"));
-		return BRASERO_BURN_ERR;
-	}
-
-	tmpuri = gnome_vfs_uri_new (uri);
-	g_free (uri);
-
 	brasero_tool_dialog_set_action (BRASERO_TOOL_DIALOG (self),
 					BRASERO_BURN_ACTION_FILE_COPY,
 					_("Downloading md5 file"));
@@ -341,11 +323,9 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 
 	self->priv->xfer_ctx = brasero_xfer_new ();
 	result = brasero_xfer (self->priv->xfer_ctx,
-			       vfsuri,
-			       tmpuri,
+			       src,
+			       tmppath,
 			       error);
-
-	gnome_vfs_uri_unref (tmpuri);
 
 	g_source_remove (id);
 	brasero_xfer_free (self->priv->xfer_ctx);
@@ -368,17 +348,18 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 				      GError **error)
 {
 	BraseroBurnResult result;
-	GnomeVFSURI *vfsuri;
 	gchar buffer [33];
+	GFile *file_src;
 	gchar *tmppath;
+	gchar *scheme;
 	gchar *uri;
 	gchar *src;
 	FILE *file;
 	int read;
 
 	/* see if this file needs downloading */
-	uri = gnome_vfs_make_uri_from_input (file_path);
-	if (!uri) {
+	file_src = g_file_new_for_commandline_arg (file_path);
+	if (!file_src) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -387,27 +368,28 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 	}
 
 	tmppath = NULL;
-	vfsuri = gnome_vfs_uri_new (uri);
-	if (!gnome_vfs_uri_is_local (vfsuri)) {
-		g_free (uri);
+	scheme = g_file_get_uri_scheme (file_src);
+	if (strcmp (scheme, "file")) {
+		uri = g_file_get_uri (file_src);
+		g_object_unref (file_src);
 
 		result = brasero_sum_dialog_download (self,
-						      vfsuri,
+						      uri,
 						      &tmppath,
 						      error);
-		gnome_vfs_uri_unref (vfsuri);
-
-		if (result != BRASERO_BURN_CANCEL)
+		if (result != BRASERO_BURN_CANCEL) {
+			g_object_unref (file_src);
+			g_free (scheme);
 			return result;
+		}
 
 		src = tmppath;
 	}
 	else {
-		src = gnome_vfs_get_local_path_from_uri (uri);
-		g_free (uri);
-
-		gnome_vfs_uri_unref (vfsuri);
+		src = g_file_get_path (file_src);
+		g_object_unref (file);
 	}
+	g_free (scheme);
 
 	/* now get the md5 sum from the file */
 	file = fopen (src, "r");

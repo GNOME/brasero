@@ -1,3 +1,160 @@
+2008-02-25  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Fix #510480 – Migrate from GnomeVFS to GIO
+	Removed GnomeVFS dependency. Now brasero uses Gio and requires glib 2.15.5 at least
+	Some memleaks fixed.
+	Fixed crash (division by 0)
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/brasero-async-task-manager.c:
+	(brasero_async_task_manager_finalize),
+	(brasero_async_task_manager_insert_task),
+	(brasero_async_task_manager_thread),
+	(brasero_async_task_manager_queue),
+	(brasero_async_task_manager_foreach_active),
+	(brasero_async_task_manager_foreach_active_remove),
+	(brasero_async_task_manager_foreach_unprocessed_remove),
+	(brasero_async_task_manager_find_urgent_task):
+	* src/brasero-async-task-manager.h:
+	* src/brasero-audio-disc.c: (brasero_audio_disc_init),
+	(brasero_audio_disc_reset_real), (brasero_audio_disc_finalize),
+	(brasero_audio_disc_validate_utf8_name),
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_result),
+	(brasero_audio_disc_vfs_operation_finished),
+	(brasero_audio_disc_visit_dir_async),
+	(brasero_audio_disc_add_playlist),
+	(brasero_audio_disc_unreadable_dialog),
+	(brasero_audio_disc_new_row_cb), (brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_clipboard_text_cb),
+	(brasero_audio_disc_start_monitoring),
+	(brasero_audio_disc_inotify_modify),
+	(brasero_audio_disc_inotify_attributes_changed_cb),
+	(brasero_audio_disc_inotify_attributes_changed),
+	(brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-data-disc.c: (brasero_data_disc_clipboard_text_cb),
+	(brasero_data_disc_unreadable_uri_cb):
+	* src/brasero-data-project.c: (brasero_data_project_uri_to_nodes),
+	(brasero_data_project_uri_is_graft_needed),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_node_reloaded),
+	(brasero_data_project_add_node_from_info),
+	(brasero_data_project_add_excluded_uri),
+	(brasero_data_project_file_added),
+	(brasero_data_project_file_update_URI),
+	(brasero_data_project_file_graft):
+	* src/brasero-data-project.h:
+	* src/brasero-data-tree-model.c:
+	(brasero_data_tree_model_get_value):
+	* src/brasero-data-vfs.c: (brasero_data_vfs_check_uri_result),
+	(brasero_data_vfs_directory_load_end),
+	(brasero_data_vfs_directory_check_symlink_loop),
+	(brasero_data_vfs_directory_load_result),
+	(brasero_data_vfs_load_directory),
+	(brasero_data_vfs_loading_node_end),
+	(brasero_data_vfs_loading_node_result),
+	(brasero_data_vfs_load_node), (brasero_data_vfs_loading_node),
+	(brasero_data_vfs_require_higher_priority),
+	(brasero_data_vfs_require_directory_contents),
+	(brasero_data_vfs_require_node_load), (brasero_data_vfs_load_mime),
+	(brasero_data_vfs_clear), (brasero_data_vfs_init),
+	(brasero_data_vfs_finalize), (brasero_data_vfs_class_init):
+	* src/brasero-disc-message.c: (brasero_disc_message_finalize):
+	* src/brasero-drive-info.c: (brasero_drive_info_update_info):
+	* src/brasero-drive-properties.c:
+	(brasero_drive_properties_set_tmpdir):
+	* src/brasero-file-filtered.c: (brasero_file_filtered_add):
+	* src/brasero-file-monitor.c:
+	(brasero_file_monitor_start_monitoring_real):
+	* src/brasero-file-node.c: (brasero_file_node_validate_utf8_name),
+	(brasero_file_node_set_from_info),
+	(brasero_file_node_get_uri_name),
+	(brasero_file_node_new_from_info):
+	* src/brasero-file-node.h:
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_image_info_cb),
+	(brasero_image_option_dialog_get_format),
+	(brasero_image_option_dialog_finalize):
+	* src/brasero-metadata.c: (brasero_metadata_stop),
+	(brasero_metadata_cancel), (brasero_metadata_completed),
+	(brasero_metadata_process_pending_tag_messages),
+	(brasero_metadata_success), (brasero_metadata_bus_messages),
+	(brasero_metadata_new_decoded_pad_cb),
+	(brasero_metadata_set_new_uri), (brasero_metadata_cancelled_cb),
+	(brasero_metadata_get_info_wait), (brasero_metadata_get_info_sync),
+	(brasero_metadata_info_copy), (brasero_metadata_set_info),
+	(brasero_metadata_init), (brasero_metadata_finalize):
+	* src/brasero-metadata.h:
+	* src/brasero-mime-filter.c: (brasero_mime_filter_add_mime):
+	* src/brasero-ncb.c: (NCB_DRIVE_GET_VFS_DRIVE),
+	(NCB_VOLUME_GET_MOUNT_POINT):
+	* src/brasero-player-bacon.c:
+	* src/brasero-player.c: (brasero_player_image),
+	(brasero_player_metadata_completed),
+	(brasero_player_retrieve_metadata), (brasero_player_set_uri),
+	(brasero_player_destroy):
+	* src/brasero-playlist.c: (brasero_playlist_init),
+	(brasero_playlist_destroy), (brasero_playlist_parse_end),
+	(brasero_playlist_parse_result),
+	(brasero_playlist_add_uri_playlist):
+	* src/brasero-project-manager.c:
+	(brasero_project_manager_set_statusbar),
+	(brasero_project_manager_size_preview),
+	(brasero_project_manager_size_preview_progress),
+	(brasero_project_manager_selected_uris_changed),
+	(brasero_project_manager_load_session),
+	(brasero_project_manager_save_session),
+	(brasero_project_manager_finalize):
+	* src/brasero-project.c: (brasero_project_open_project_xml),
+	(brasero_project_save_project_xml):
+	* src/brasero-search-beagle.c:
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_download),
+	(brasero_sum_dialog_get_file_checksum):
+	* src/brasero-utils.c: (brasero_utils_launch_app):
+	* src/brasero-utils.h:
+	* src/brasero-vfs.c: (brasero_vfs_check_for_parent_symlink),
+	(brasero_utils_get_symlink_target), (brasero_vfs_info_thread),
+	(brasero_vfs_load_thread), (brasero_vfs_metadata_ctx_new),
+	(brasero_vfs_metadata_result), (brasero_vfs_count_result_audio),
+	(brasero_vfs_count_result_data),
+	(brasero_vfs_playlist_subtask_result):
+	* src/brasero-vfs.h:
+	* src/brasero-xfer.c: (brasero_xfer_result_cb),
+	(brasero_xfer_progress_cb), (brasero_xfer), (brasero_xfer_cancel):
+	* src/brasero-xfer.h:
+	* src/burn-basics.c:
+	* src/burn-basics.h:
+	* src/burn-caps.c: (brasero_caps_add_processing_plugins_to_task):
+	* src/burn-job.c: (brasero_job_check_output_volume_space):
+	* src/burn-mkisofs-base.c: (brasero_mkisofs_base_write_excluded),
+	(_build_graft_point):
+	* src/burn-session.c:
+	* src/burn-track.c: (brasero_track_get_localpath),
+	(brasero_track_get_uri):
+	* src/burn-volume.c:
+	* src/burn.c:
+	* src/main.c: (brasero_app_parse_options), (main):
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_grafts):
+	* src/plugins/checksum/burn-md5sum.c:
+	* src/plugins/libburnia/burn-libisofs.c:
+	(brasero_libisofs_create_volume_thread):
+	* src/plugins/local-track/burn-local-image.c:
+	(brasero_local_track_get_download_size),
+	(brasero_local_track_progress_cb),
+	(brasero_local_track_file_transfer),
+	(brasero_local_track_recursive_transfer),
+	(brasero_local_track_transfer),
+	(brasero_local_track_read_checksum),
+	(brasero_local_track_download_checksum),
+	(brasero_local_track_thread_finished),
+	(brasero_local_track_thread), (brasero_local_track_start_thread),
+	(_foreach_non_local_cb), (brasero_local_track_add_if_non_local),
+	(brasero_local_track_start), (brasero_local_track_stop):
+	* src/scsi-read-cd.c: (brasero_mmc1_read_block):
+
 2008-02-17  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Add FreeBSD support

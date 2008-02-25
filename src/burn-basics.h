@@ -27,15 +27,13 @@
 
 #include <glib.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 G_BEGIN_DECLS
 
 #define BRASERO_GET_BASENAME_FOR_DISPLAY(uri, name)				\
 {										\
     	gchar *escaped_basename;						\
 	escaped_basename = g_path_get_basename (uri);				\
-    	name = gnome_vfs_unescape_string_for_display (escaped_basename);	\
+    	name = g_uri_unescape_string (escaped_basename, NULL);			\
 	g_free (escaped_basename);						\
 }
 

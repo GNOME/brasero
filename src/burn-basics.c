@@ -32,8 +32,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-caps.h"

@@ -34,10 +34,6 @@
 #include <gtk/gtktreesortable.h>
 #include <gtk/gtkicontheme.h>
 
-#include <libgnomeui/libgnomeui.h>
-
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-
 #include "burn-basics.h"
 
 #include "brasero-data-tree-model.h"
@@ -483,14 +479,24 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		g_value_init (value, G_TYPE_STRING);
 		if (node->is_loading)
 			g_value_set_string (value, _("(loading ...)"));
-		else if (!node->is_file)
-			g_value_set_string (value, gnome_vfs_mime_get_description ("x-directory/normal"));
+		else if (!node->is_file) {
+			gchar *description;
+
+			description = g_content_type_get_description ("inode/directory");
+			g_value_set_string (value, description);
+			g_free (description);
+		}
 		else if (node->is_imported)
 			g_value_set_string (value, _("Disc file"));
 		else if (!BRASERO_FILE_NODE_MIME (node))
 			g_value_set_string (value, _("(loading ...)"));
-		else
-			g_value_set_string (value, gnome_vfs_mime_get_description (BRASERO_FILE_NODE_MIME (node)));
+		else {
+			gchar *description;
+
+			description = g_content_type_get_description (BRASERO_FILE_NODE_MIME (node));
+			g_value_set_string (value, description);
+			g_free (description);
+		}
 
 		return;
 
@@ -511,15 +517,19 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		else if (node->is_imported) {
 			g_value_set_string (value, "media-cdrom");
 		}
-		else {
-			gchar *icon_string;
+		else if (BRASERO_FILE_NODE_MIME (node)) {
+			const gchar * const *icon_string = NULL;
+			GIcon *icon;
 
-			icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
-							 NULL, NULL, NULL, BRASERO_FILE_NODE_MIME (node),
-							 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
-			g_value_set_string (value, icon_string);
-			g_free (icon_string);
+			/* NOTE: implemented in glib 2.15.6 (not for windows though) */
+			icon = g_content_type_get_icon (BRASERO_FILE_NODE_MIME (node));
+			if (G_IS_THEMED_ICON (icon))
+				icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
+
+			g_value_set_string (value, icon_string?icon_string [0]:NULL);
 		}
+		else
+			g_value_set_string (value, "image-loading");
 
 		return;
 
@@ -579,7 +589,10 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 				node_size = brasero_data_project_get_folder_size (BRASERO_DATA_PROJECT (self), node);
 			else
 				node_size = BRASERO_FILE_NODE_SECTORS (node);
-			g_value_set_int (value, node_size * 100 / size);
+			if (size)
+				g_value_set_int (value, node_size * 100 / size);
+			else
+				g_value_set_int (value, 0);
 		}
 		else
 			g_value_set_int (value, 0);

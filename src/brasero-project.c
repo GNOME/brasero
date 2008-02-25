@@ -49,9 +49,6 @@
 #include <libxml/xmlstring.h>
 #include <libxml/uri.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-
 #include <gconf/gconf-client.h>
 
 #include "burn-debug.h"
@@ -1894,7 +1891,7 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	gboolean retval;
     	gchar *path;
 
-    	path = gnome_vfs_get_local_path_from_uri (uri);
+    	path = g_filename_from_uri (uri, NULL, NULL);
     	if (!path)
 		return FALSE;
 
@@ -2268,7 +2265,7 @@ brasero_project_save_project_xml (BraseroProject *proj,
 	gint success;
     	gchar *path;
 
-    	path = gnome_vfs_get_local_path_from_uri (uri);
+    	path = g_filename_from_uri (uri, NULL, NULL);
     	if (!path)
 		return FALSE;
 

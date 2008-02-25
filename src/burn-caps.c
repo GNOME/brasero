@@ -1143,7 +1143,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 		g_signal_connect (job,
 				  "error",
 				  G_CALLBACK (brasero_burn_caps_job_error_cb),
-				  link);
+				  caps);
 
 		if (!task
 		||  !(caps->flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE)

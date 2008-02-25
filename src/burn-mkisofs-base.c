@@ -32,13 +32,12 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
-
-#include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-basics.h"
 #include "burn-debug.h"
@@ -128,7 +127,7 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 		return BRASERO_BURN_ERR;
 	}
 
-	localpath = gnome_vfs_get_local_path_from_uri (uri);
+	localpath = g_filename_from_uri (uri, NULL, NULL);
 
 	/* we need to escape some characters like []\? since in this file we
 	 * can use glob like expressions. */
@@ -224,7 +223,7 @@ _build_graft_point (const gchar *uri, const gchar *discpath) {
 
 	/* make up the graft point */
 	if (*uri != '/')
-		path = gnome_vfs_get_local_path_from_uri (uri);
+		path = g_filename_from_uri (uri, NULL, NULL);
 	else
 		path = g_strdup (uri);
 

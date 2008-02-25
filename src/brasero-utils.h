@@ -29,8 +29,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include <libgnomevfs/gnome-vfs.h>
-
 #include "burn-basics.h"
 
 #ifndef _UTILS_H
@@ -46,7 +44,8 @@ typedef char *(*BraseroFormatTime) (double time,
 
 typedef enum {
 	BRASERO_ERROR_NONE,
-	BRASERO_ERROR_GENERAL
+	BRASERO_ERROR_GENERAL,
+	BRASERO_ERROR_SYMLINK_LOOP
 } BraseroErrors;
 
 void brasero_utils_init (void);
@@ -93,11 +92,6 @@ brasero_utils_make_button (const gchar *text,
 			   const gchar *stock,
 			   const gchar *theme,
 			   GtkIconSize size);
-
-gboolean
-brasero_utils_remove (const gchar *uri);
-
-gchar *brasero_utils_escape_string (const gchar *text);
 
 gboolean
 brasero_utils_str_equal_64 (gconstpointer v1,

@@ -31,6 +31,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <sys/param.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -38,8 +39,6 @@
 #include <glib/gstdio.h>
 
 #include <gmodule.h>
-
-#include <libgnomevfs/gnome-vfs.h>
 
 #include "burn-plugin.h"
 #include "burn-job.h"
