@@ -1334,7 +1334,9 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
 			  object);
 
-	brasero_drive_selection_set_show_all_drives (BRASERO_DRIVE_SELECTION (object), FALSE);
+	/* only show media on which we can write and which are in a burner */
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (object),
+						BRASERO_MEDIA_TYPE_WRITABLE);
 
 	priv->default_ext = TRUE;
 	priv->default_path = TRUE;

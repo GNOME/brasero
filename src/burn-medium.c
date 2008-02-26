@@ -53,7 +53,7 @@
 #include "burn-volume.h"
 #include "brasero-ncb.h"
 
-const gchar *icons [] = { 	"gnome-dev-removable",
+const gchar *icons [] = { 	"iso-image-new",
 				"gnome-dev-cdrom",
 				"gnome-dev-disc-cdr",
 				"gnome-dev-disc-cdrw",
@@ -2053,6 +2053,18 @@ brasero_medium_try_open (BraseroMedium *self)
 }
 
 static void
+brasero_medium_init_file (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	priv->info = BRASERO_MEDIUM_FILE;
+	priv->type = types [0];
+	priv->icon = icons [0];
+}
+
+static void
 brasero_medium_init (BraseroMedium *object)
 {
 	BraseroMediumPrivate *priv;
@@ -2105,6 +2117,12 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 	case PROP_DRIVE:
 		priv->drive = g_value_get_object (value);
 		nautilus_burn_drive_ref (priv->drive);
+
+		if (nautilus_burn_drive_get_drive_type (priv->drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+			brasero_medium_init_file (BRASERO_MEDIUM (object));
+			break;
+		}
+
 		brasero_medium_try_open (BRASERO_MEDIUM (object));
 		break;
 	default:
@@ -2155,6 +2173,60 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+gboolean
+brasero_medium_can_be_written (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE)
+	&&   (priv->info & BRASERO_MEDIUM_CLOSED))
+		return FALSE;
+
+	return nautilus_burn_drive_can_write (priv->drive);
+}
+
+gboolean
+brasero_medium_can_be_rewritten (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE))
+		return FALSE;
+
+	return nautilus_burn_drive_can_rewrite (priv->drive);
+}
+
+gchar *
+brasero_medium_get_display_name (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+	gchar *label;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	if (priv->info & BRASERO_MEDIUM_FILE)
+		return g_strdup (_("Image file"));
+
+	label = nautilus_burn_drive_get_media_label (priv->drive);
+	if (label && label [0] != '\0')
+		return label;
+
+	return nautilus_burn_drive_get_name_for_display (priv->drive);
+}
+
+NautilusBurnDrive *
+brasero_medium_get_drive (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	g_object_ref (priv->drive);
+	return priv->drive;
+}
+
 GType
 brasero_medium_get_type (void)
 {
@@ -2191,3 +2263,4 @@ brasero_medium_new (NautilusBurnDrive *drive)
 					     "drive", drive,
 					     NULL));
 }
+

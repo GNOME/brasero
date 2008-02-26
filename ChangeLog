@@ -1,3 +1,67 @@
+2008-02-26  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Started to remove ncb.
+	This patch removes any use of nautilus_burn_drive_selection widget and replace by our own
+	It also lays the basis for a medium monitor (which should use GIO in the future).
+
+	* src/Makefile.am:
+	* src/brasero-data-session.c:
+	(brasero_data_session_get_loaded_medium):
+	* src/brasero-dest-selection.c: (brasero_dest_selection_init):
+	* src/brasero-disc-copy-dialog.c: (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_save_multi_state),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_init):
+	* src/brasero-drive-info.c: (brasero_drive_info_set_drive),
+	(brasero_drive_info_finalize):
+	* src/brasero-drive-selection.c:
+	(brasero_drive_selection_drive_changed_cb),
+	(brasero_drive_selection_set_drive),
+	(brasero_drive_selection_get_drive),
+	(brasero_drive_selection_lock),
+	(brasero_drive_selection_set_type_shown),
+	(brasero_drive_selection_init):
+	* src/brasero-drive-selection.h:
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_init):
+	* src/brasero-medium-selection.c:
+	(brasero_medium_selection_changed),
+	(brasero_medium_selection_set_active),
+	(brasero_medium_selection_get_active),
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_medium_removed_cb),
+	(brasero_medium_selection_init),
+	(brasero_medium_selection_finalize),
+	(brasero_medium_selection_class_init),
+	(brasero_medium_selection_new):
+	* src/brasero-medium-selection.h:
+	* src/brasero-ncb.c: (NCB_DRIVE_GET_MEDIUM),
+	(NCB_DRIVE_SET_MEDIUM):
+	* src/brasero-ncb.h:
+	* src/brasero-src-selection.c: (brasero_src_selection_init):
+	* src/brasero-tool-dialog.c: (brasero_tool_dialog_init):
+	* src/burn-basics.c: (brasero_burn_library_init),
+	(brasero_burn_library_get_plugins_list),
+	(brasero_burn_library_shutdown):
+	* src/burn-medium-monitor.c: (brasero_burn_medium_get_file),
+	(brasero_medium_monitor_get_media),
+	(brasero_medium_monitor_inserted_cb),
+	(brasero_medium_monitor_removed_cb), (brasero_medium_monitor_init),
+	(brasero_medium_monitor_finalize),
+	(brasero_medium_monitor_class_init),
+	(brasero_medium_monitor_get_default):
+	* src/burn-medium-monitor.h:
+	* src/burn-medium.c: (brasero_medium_init_file),
+	(brasero_medium_set_property), (brasero_medium_can_be_written),
+	(brasero_medium_can_be_rewritten),
+	(brasero_medium_get_display_name), (brasero_medium_get_drive):
+	* src/burn-medium.h:
+	* src/plugins/cdrdao/burn-toc2cue.c:
+	* src/plugins/dvdcss/burn-dvdcss.c:
+	* src/scsi-read-disc-structure.c:
+
 2008-02-26  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-eject-dialog.c: (brasero_eject_dialog_init):

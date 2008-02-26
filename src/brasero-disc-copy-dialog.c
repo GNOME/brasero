@@ -133,8 +133,11 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	/* take care of source media */
 	priv->source = brasero_src_selection_new (priv->session);
-	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->source), FALSE);
-	brasero_drive_selection_set_show_all_drives (BRASERO_DRIVE_SELECTION (priv->source), TRUE);
+
+	/* only show media with something to be read on them */
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),
+						BRASERO_MEDIA_TYPE_READABLE);
+
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    brasero_utils_pack_properties (_("<b>Select source drive to copy</b>"),
 							   priv->source,
@@ -143,17 +146,17 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			    FALSE,
 			    6);
 
-	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->source),
-						      BRASERO_MEDIUM_HAS_DATA);
-
 	/* destination drive */
 	priv->selection = brasero_dest_selection_new (priv->session);
 	g_signal_connect (priv->selection,
 			  "valid-media",
 			  G_CALLBACK (brasero_disc_copy_dialog_valid_media_cb),
 			  obj);
-	
-	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), TRUE);
+
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+						BRASERO_MEDIA_TYPE_WRITABLE|
+						BRASERO_MEDIA_TYPE_FILE);
+
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
 							   priv->selection,
@@ -162,8 +165,10 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			    FALSE,
 			    6);
 
-	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
-						      BRASERO_MEDIUM_WRITABLE);
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+						BRASERO_MEDIA_TYPE_WRITABLE|
+						BRASERO_MEDIA_TYPE_REWRITABLE|
+						BRASERO_MEDIA_TYPE_READABLE);
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
 		BraseroMedia media;

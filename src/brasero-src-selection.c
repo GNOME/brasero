@@ -88,7 +88,10 @@ brasero_src_selection_init (BraseroSrcSelection *object)
 {
 	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
 					     _("Choose which drive holds the disc to read from"));
-	brasero_drive_selection_set_show_all_drives (BRASERO_DRIVE_SELECTION (object), TRUE);
+
+	/* only show media with something to be read on them */
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (object),
+						BRASERO_MEDIA_TYPE_READABLE);
 }
 
 static void

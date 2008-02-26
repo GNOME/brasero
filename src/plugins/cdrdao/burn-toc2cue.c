@@ -28,6 +28,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>

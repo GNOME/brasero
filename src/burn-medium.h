@@ -254,11 +254,23 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 			      gint64 *size,
 			      gint64 *blocks);
 
+gboolean
+brasero_medium_can_be_rewritten (BraseroMedium *medium);
+
+gboolean
+brasero_medium_can_be_written (BraseroMedium *medium);
+
+gchar *
+brasero_medium_get_display_name (BraseroMedium *medium);
+
 const gchar *
 brasero_medium_get_type_string (BraseroMedium *medium);
 
 const gchar *
 brasero_medium_get_icon (BraseroMedium *medium);
+
+NautilusBurnDrive *
+brasero_medium_get_drive (BraseroMedium *self);
 
 G_END_DECLS
 

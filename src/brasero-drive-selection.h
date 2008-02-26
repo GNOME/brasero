@@ -30,6 +30,7 @@
 
 #include <nautilus-burn-drive.h>
 
+#include "burn-medium-monitor.h"
 #include "burn-medium.h"
 
 G_BEGIN_DECLS
@@ -85,20 +86,12 @@ void
 brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *selection);
 
 void
-brasero_drive_selection_select_default_drive (BraseroDriveSelection *selection,
-					      BraseroMedia type);
-
-void
 brasero_drive_selection_set_button (BraseroDriveSelection *selection,
 				    GtkWidget *button);
 
 void
-brasero_drive_selection_show_file_drive (BraseroDriveSelection *selection,
-					 gboolean show);
-
-void
-brasero_drive_selection_set_show_all_drives (BraseroDriveSelection *selection,
-					     gboolean show);
+brasero_drive_selection_set_type_shown (BraseroDriveSelection *self,
+					BraseroMediaType type);
 
 G_END_DECLS
 

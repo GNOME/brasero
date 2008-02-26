@@ -95,6 +95,9 @@ brasero_disc_option_dialog_save_multi_state (BraseroDiscOptionDialog *dialog)
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	key = brasero_burn_session_get_config_key (priv->session, "multi");
+	if (!key)
+		return;
+
 	multi_on = (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MULTI) != 0;
 
 	client = gconf_client_get_default ();
@@ -820,11 +823,14 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 
 	brasero_burn_session_get_input_type (priv->session, &type);
 	if (type.type == BRASERO_TRACK_TYPE_DATA) {
-		brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), TRUE);
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+						BRASERO_MEDIA_TYPE_WRITABLE|
+						BRASERO_MEDIA_TYPE_FILE);
 		brasero_disc_option_dialog_add_data_options (dialog);
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-		brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), FALSE);
+		brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+							BRASERO_MEDIA_TYPE_WRITABLE);
 		brasero_disc_option_dialog_add_audio_options (dialog);
 	}
 }
@@ -901,9 +907,6 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 			  "valid-media",
 			  G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
 			  obj);
-
-	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
-						      BRASERO_MEDIUM_WRITABLE);
 
 	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
 						 priv->selection,

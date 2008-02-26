@@ -55,6 +55,13 @@ nautilus_burn_drive_get_device (drive)
 		list = g_list_prepend (list, nautilus_burn_drive_monitor_get_drive_for_image (monitor));	\
 }
 
+BraseroMedium *
+NCB_DRIVE_GET_MEDIUM (NautilusBurnDrive *drive);
+
+void
+NCB_DRIVE_SET_MEDIUM (NautilusBurnDrive *drive,
+		      BraseroMedium *medium);
+
 gboolean
 NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive, GError **error);
 

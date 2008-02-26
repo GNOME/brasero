@@ -475,8 +475,9 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 							   NULL),
 			    FALSE, FALSE, 0);
 
-	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (obj->priv->selector),
-						      BRASERO_MEDIUM_REWRITABLE);
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (obj->priv->selector),
+						BRASERO_MEDIA_TYPE_REWRITABLE|
+						BRASERO_MEDIA_TYPE_READABLE);
 
 	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
 

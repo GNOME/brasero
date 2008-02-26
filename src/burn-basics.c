@@ -36,10 +36,12 @@
 #include "burn-debug.h"
 #include "burn-caps.h"
 #include "burn-plugin-manager.h"
+#include "burn-medium-monitor.h"
 #include "burn-plugin-private.h"
 #include "brasero-ncb.h"
 
-static BraseroPluginManager *manager = NULL;
+static BraseroPluginManager *plugin_manager = NULL;
+static BraseroMediumMonitor *medium_manager = NULL;
 
 GQuark
 brasero_burn_quark (void)
@@ -78,13 +80,18 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 BraseroBurnResult
 brasero_burn_library_init (void)
 {
+	/* initialize all device list */
+	
 	nautilus_burn_init ();
-	NCB_INIT ();
 
+	if (!medium_manager)
+		medium_manager = brasero_medium_monitor_get_default ();
+
+	/* initialize plugins */
 	brasero_burn_caps_get_default ();
 
-	if (!manager)
-		manager = brasero_plugin_manager_get_default ();
+	if (!plugin_manager)
+		plugin_manager = brasero_plugin_manager_get_default ();
 
 	brasero_caps_list_dump ();
 	return BRASERO_BURN_OK;
@@ -93,15 +100,19 @@ brasero_burn_library_init (void)
 GSList *
 brasero_burn_library_get_plugins_list (void)
 {
-	manager = brasero_plugin_manager_get_default ();
-	return brasero_plugin_manager_get_plugins_list (manager);
+	plugin_manager = brasero_plugin_manager_get_default ();
+	return brasero_plugin_manager_get_plugins_list (plugin_manager);
 }
 
 void
 brasero_burn_library_shutdown (void)
 {
-	if (manager) {
-		g_object_unref (manager);
-		manager = NULL;
+	if (plugin_manager) {
+		g_object_unref (plugin_manager);
+		plugin_manager = NULL;
+	}
+	if (medium_manager) {
+		g_object_unref (medium_manager);
+		medium_manager = NULL;
 	}
 }

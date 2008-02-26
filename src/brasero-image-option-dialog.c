@@ -532,7 +532,8 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			    FALSE,
 			    6);
 
-	brasero_drive_selection_show_file_drive (BRASERO_DRIVE_SELECTION (priv->selection), FALSE);
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+						BRASERO_MEDIA_TYPE_WRITABLE);
 
 	/* Image properties */
 	box1 = gtk_table_new (2, 2, FALSE);
@@ -612,9 +613,6 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  6);
 
 	gtk_widget_show_all (box);
-
-	brasero_drive_selection_select_default_drive (BRASERO_DRIVE_SELECTION (priv->selection),
-						      BRASERO_MEDIUM_WRITABLE);
 	brasero_image_option_dialog_set_formats (obj);
 }
 

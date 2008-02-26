@@ -231,7 +231,11 @@ brasero_SOURCES = \
 	baobab-cell-renderer-progress.h         \
 	scsi-device.h         \
 	brasero-io.h         \
-	brasero-io.c 
+	brasero-io.c         \
+	brasero-medium-selection.h         \
+	brasero-medium-selection.c         \
+	burn-medium-monitor.c         \
+	burn-medium-monitor.h 
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

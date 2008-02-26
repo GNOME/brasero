@@ -49,9 +49,6 @@ struct _BraseroDriveInfoPrivate
 {
 	NautilusBurnDrive *drive;
 
-	guint added_sig;
-	guint removed_sig;
-
 	GtkWidget *notebook;
 	GtkWidget *image;
 
@@ -262,20 +259,6 @@ brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self)
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
 }
 
-static void
-brasero_drive_info_media_added (NautilusBurnDrive *drive,
-				BraseroDriveInfo *self)
-{
-	brasero_drive_info_update_info (self, drive);
-}
-
-static void
-brasero_drive_info_media_removed (NautilusBurnDrive *drive,
-				  BraseroDriveInfo *self)
-{
-	brasero_drive_info_update_info (self, drive);
-}
-
 void
 brasero_drive_info_set_drive (BraseroDriveInfo *self,
 			      NautilusBurnDrive *drive)
@@ -285,16 +268,6 @@ brasero_drive_info_set_drive (BraseroDriveInfo *self,
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
 
 	if (priv->drive) {
-		if (priv->added_sig) {
-			g_signal_handler_disconnect (priv->drive, priv->added_sig);
-			priv->added_sig = 0;
-		}
-
-		if (priv->removed_sig) {
-			g_signal_handler_disconnect (priv->drive, priv->removed_sig);
-			priv->removed_sig = 0;
-		}
-
 		nautilus_burn_drive_unref (priv->drive);
 		priv->drive = NULL;
 	}
@@ -305,19 +278,6 @@ brasero_drive_info_set_drive (BraseroDriveInfo *self,
 					      GTK_ICON_SIZE_DIALOG);
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 2);
 		return;
-	}
-
-	if (drive) {
-		priv->added_sig = g_signal_connect (drive,
-						    "media-added",
-						    G_CALLBACK (brasero_drive_info_media_added),
-						    self);
-		priv->removed_sig = g_signal_connect (drive,
-						      "media-removed",
-						      G_CALLBACK (brasero_drive_info_media_removed),
-						      self);
-		priv->drive = drive;
-		nautilus_burn_drive_ref (drive);
 	}
 
 	brasero_drive_info_update_info (self, drive);
@@ -413,16 +373,6 @@ brasero_drive_info_finalize (GObject *object)
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (object);
 	if (priv->drive) {
-		if (priv->added_sig) {
-			g_signal_handler_disconnect (priv->drive, priv->added_sig);
-			priv->added_sig = 0;
-		}
-
-		if (priv->removed_sig) {
-			g_signal_handler_disconnect (priv->drive, priv->removed_sig);
-			priv->removed_sig = 0;
-		}
-
 		nautilus_burn_drive_unref (priv->drive);
 		priv->drive = NULL;
 	}

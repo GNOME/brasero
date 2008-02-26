@@ -91,7 +91,7 @@ typedef enum {
 BRASERO_MEDIA_DVD_HD_DVD			= 0x00,
 BRASERO_MEDIA_BD				= 0x01
 	/* reserved */
-} BraseroMediaType;
+} BraseroScsiMediaType;
 
 static BraseroScsiResult
 brasero_read_disc_structure (BraseroReadDiscStructureCDB *cdb,

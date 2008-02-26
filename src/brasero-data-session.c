@@ -247,7 +247,7 @@ brasero_data_session_get_loaded_medium (BraseroDataSession *self)
 	BraseroDataSessionPrivate *priv;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
-	if (!priv->multi_inserted)
+	if (!priv->multi_inserted || !priv->nodes)
 		return NULL;
 
 	return priv->drive;

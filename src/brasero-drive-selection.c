@@ -35,11 +35,10 @@
 #include <gtk/gtkhbox.h>
 
 #include <nautilus-burn-drive.h>
-#include <nautilus-burn-drive-monitor.h>
-#include <nautilus-burn-drive-selection.h>
 
 #include "burn-medium.h"
 #include "brasero-ncb.h"
+#include "brasero-medium-selection.h"
 #include "brasero-drive-selection.h"
 #include "brasero-drive-info.h"
 
@@ -67,13 +66,15 @@ static GtkVBoxClass* parent_class = NULL;
 G_DEFINE_TYPE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_VBOX);
 
 static void
-brasero_drive_selection_drive_changed_cb (NautilusBurnDriveSelection *selector,
-					  NautilusBurnDrive *drive,
+brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 					  BraseroDriveSelection *self)
 {
 	BraseroDriveSelectionPrivate *priv;
+	NautilusBurnDrive *drive;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+
+	drive = brasero_drive_selection_get_drive (self);
 
 	brasero_drive_info_set_drive (BRASERO_DRIVE_INFO (priv->info), drive);
 
@@ -85,7 +86,7 @@ brasero_drive_selection_drive_changed_cb (NautilusBurnDriveSelection *selector,
 		priv->locked_drive = NULL;
 	}
 
-	if (drive == NULL) {
+	if (!drive) {
 	    	gtk_widget_set_sensitive (priv->selection, FALSE);
 		g_signal_emit (self,
 			       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
@@ -106,102 +107,6 @@ brasero_drive_selection_drive_changed_cb (NautilusBurnDriveSelection *selector,
 		       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
 		       0,
 		       drive);
-}
-
-void
-brasero_drive_selection_select_default_drive (BraseroDriveSelection *self,
-					      BraseroMedia type)
-{
-	GList *iter;
-	GList *drives;
-	gboolean image;
-	gboolean recorders;
-	BraseroMedia media;
-	NautilusBurnDrive *drive;
-	NautilusBurnDrive *candidate = NULL;
-	BraseroDriveSelectionPrivate *priv;
-
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-
-	if (priv->locked_drive)
-		return;
-
-	g_object_get (priv->selection,
-		      "show-recorders-only",
-		      &recorders,
-		      NULL);
-	g_object_get (priv->selection,
-		      "file-image",
-		      &image,
-		      NULL);
-
-	NCB_DRIVE_GET_LIST (drives, recorders, image);
-	for (iter = drives; iter; iter = iter->next) {
-		drive = iter->data;
-
-		if (!drive || NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE)
-			continue;
-
-		media = NCB_MEDIA_GET_STATUS (drive);
-		if (type == BRASERO_MEDIUM_WRITABLE && (media & (BRASERO_MEDIUM_APPENDABLE|BRASERO_MEDIUM_REWRITABLE|BRASERO_MEDIUM_BLANK))) {
-			/* the perfect candidate would be blank; if not keep for later and see if no better media comes up */
-			if (media & BRASERO_MEDIUM_BLANK) {
-				nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (priv->selection), drive);
-				goto end;
-			}
-
-			/* a second choice would be rewritable media and if not appendable */
-			if (media & BRASERO_MEDIUM_REWRITABLE) {
-				if (NCB_MEDIA_GET_STATUS (candidate) & BRASERO_MEDIUM_REWRITABLE){
-					gint64 size_candidate;
-					gint64 size;
-
-					NCB_MEDIA_GET_FREE_SPACE (candidate, &size_candidate, NULL);
-					NCB_MEDIA_GET_FREE_SPACE (drive, &size, NULL);
-					if (size_candidate < size)
-						candidate = drive;
-				}
-				else
-					candidate = drive;
-
-			}
-			/* if both are appendable choose the one with the bigger free space */
-			else if (!(NCB_MEDIA_GET_STATUS (candidate) & BRASERO_MEDIUM_REWRITABLE)) {
-				gint64 size_candidate;
-				gint64 size;
-
-				NCB_MEDIA_GET_FREE_SPACE (candidate, &size_candidate, NULL);
-				NCB_MEDIA_GET_FREE_SPACE (drive, &size, NULL);
-				if (size_candidate < size)
-					candidate = drive;
-			}
-		}
-		else if (type == BRASERO_MEDIUM_REWRITABLE && (media & BRASERO_MEDIUM_REWRITABLE)) {
-			/* the perfect candidate would have data; if not keep it for later and see if no better media comes up */
-			if (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO)) {
-				nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (priv->selection), drive);
-				goto end;
-			}
-
-			candidate = drive;
-		}
-		else if (type == BRASERO_MEDIUM_HAS_DATA && (media & (BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_HAS_AUDIO))) {
-			/* the perfect candidate would not be rewritable; if not keep it for later and see if no better media comes up */
-			if (!(media & BRASERO_MEDIUM_REWRITABLE)) {
-				nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (priv->selection), drive);
-				goto end;
-			}
-
-			candidate = drive;
-		}
-	}
-
-	if (candidate)
-		nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (priv->selection), candidate);
-
-end:
-	g_list_foreach (drives, (GFunc) nautilus_burn_drive_unref, NULL);
-	g_list_free (drives);
 }
 
 void
@@ -228,37 +133,30 @@ brasero_drive_selection_set_drive (BraseroDriveSelection *self,
 				   NautilusBurnDrive *drive)
 {
 	BraseroDriveSelectionPrivate *priv;
+	BraseroMedium *medium;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 	if (priv->locked_drive)
 		return;
 
-	nautilus_burn_drive_selection_set_active (NAUTILUS_BURN_DRIVE_SELECTION (priv->selection),
-						  drive);
+	medium = NCB_DRIVE_GET_MEDIUM (drive);
+	brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->selection), medium);
 }
 
 NautilusBurnDrive *
 brasero_drive_selection_get_drive (BraseroDriveSelection *self)
 {
-	GtkTreeIter iter;
-	GtkTreeModel *model;
+	BraseroMedium *medium;
 	NautilusBurnDrive *drive;
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 
-	/* This is a hack to work around the inability of ncb to return the
-	 * current selected drive while we're initting an object derived from it
-	 */
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->selection), &iter))
+	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selection));
+	if (!medium)
 		return NULL;
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->selection));
-	gtk_tree_model_get (model, &iter,
-			    1, &drive,
-			    -1);
-
-	nautilus_burn_drive_ref (drive);
+	drive = brasero_medium_get_drive (medium);
 	return drive;
 }
 
@@ -271,6 +169,7 @@ brasero_drive_selection_lock (BraseroDriveSelection *self,
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 
 	gtk_widget_set_sensitive (priv->selection, (locked != TRUE));
+
 	gtk_widget_queue_draw (priv->selection);
 	if (priv->locked_drive) {
 		nautilus_burn_drive_unlock (priv->locked_drive);
@@ -302,31 +201,13 @@ brasero_drive_selection_set_button (BraseroDriveSelection *self,
 }
 
 void
-brasero_drive_selection_set_show_all_drives (BraseroDriveSelection *self,
-					     gboolean show)
+brasero_drive_selection_set_type_shown (BraseroDriveSelection *self,
+					BraseroMediaType type)
 {
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	g_object_set (G_OBJECT (priv->selection),
-		      "show-recorders-only", (show == FALSE),
-		      NULL);
-
-	/* ncb sets sensitivity on its own so we need to reset it correctly */
-	if (priv->locked_drive)
-		gtk_widget_set_sensitive (priv->selection, FALSE);
-}
-
-void
-brasero_drive_selection_show_file_drive (BraseroDriveSelection *self,
-					 gboolean show)
-{
-	BraseroDriveSelectionPrivate *priv;
-
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	g_object_set (G_OBJECT (priv->selection),
-		      "file-image", show,
-		      NULL);
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
 
 	/* ncb sets sensitivity on its own so we need to reset it correctly */
 	if (priv->locked_drive)
@@ -355,9 +236,9 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 	priv->box = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (object), priv->box, FALSE, FALSE, 0);
 
-	priv->selection = nautilus_burn_drive_selection_new ();
+	priv->selection = brasero_medium_selection_new ();
 	g_signal_connect (priv->selection,
-			  "drive-changed",
+			  "medium-changed",
 			  G_CALLBACK (brasero_drive_selection_drive_changed_cb),
 			  object);
 	gtk_box_pack_start (GTK_BOX (priv->box),
