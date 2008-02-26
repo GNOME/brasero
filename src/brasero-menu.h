@@ -62,7 +62,7 @@ static GtkActionEntry entries[] = {
 	{"Plugins", NULL, N_("P_lugins"), NULL,
 	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
 
-	{"Eject", NULL, N_("E_ject"), NULL,
+	{"Eject", "media-eject", N_("E_ject"), NULL,
 	 N_("Eject media"), G_CALLBACK (on_eject_cb)},
 
 	{"Erase", "media-optical-blank", N_("_Erase..."), NULL,

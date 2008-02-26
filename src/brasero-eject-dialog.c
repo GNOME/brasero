@@ -118,7 +118,7 @@ brasero_eject_dialog_init (BraseroEjectDialog *obj)
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
 					_("_Eject"),
 					NULL,
-					NULL);
+					"media-eject");
 }
 
 GtkWidget *
