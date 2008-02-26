@@ -695,7 +695,9 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 	GSList *iter;
 	GSList *next;
 
-	gchar *name, *mime, *uri, *icon_string;
+	gchar *name, *mime, *uri; 
+        const gchar * const *icon_string = NULL;
+	GIcon *icon;
 	const gchar *description;
 	gint score;
 	gint num;
@@ -738,9 +740,11 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 		}
 
 		description = gnome_vfs_mime_get_description (mime);
-		icon_string = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL,
-						 NULL, NULL, NULL, mime,
-						 GNOME_ICON_LOOKUP_FLAGS_NONE, NULL);
+
+		icon = g_content_type_get_icon (mime);
+		if (G_IS_THEMED_ICON (icon))
+		  icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));; 
+
 		score = (int) (beagle_hit_get_score (hit) * 100);
 
 		gtk_list_store_append (GTK_LIST_STORE (model), &row);
