@@ -116,7 +116,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	priv->button = brasero_utils_make_button (_("_Copy"),
 						  NULL,
 						  "media-optical-burn",
-						    GTK_ICON_SIZE_LARGE_TOOLBAR);
+						    GTK_ICON_SIZE_BUTTON);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
 				      priv->button,
 				      GTK_RESPONSE_OK);

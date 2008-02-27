@@ -880,7 +880,7 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 	priv->button = brasero_utils_make_button (_("_Burn"),
 						  NULL,
 						  "media-optical-burn",
-						  GTK_ICON_SIZE_LARGE_TOOLBAR);
+						  GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (priv->button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
 				      priv->button,

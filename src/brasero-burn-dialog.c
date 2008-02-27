@@ -1008,7 +1008,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	button = brasero_utils_make_button (_("Burn Now"),
 					    NULL,
 					    "media-optical-burn",
-					    GTK_ICON_SIZE_LARGE_TOOLBAR);
+					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message), button, GTK_RESPONSE_OK);
 

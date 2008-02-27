@@ -387,7 +387,7 @@ brasero_project_init (BraseroProject *obj)
 	obj->priv->burn = brasero_utils_make_button (_("_Burn..."),
 						     NULL,
 						     "media-optical-burn",
-						     GTK_ICON_SIZE_LARGE_TOOLBAR);
+						     GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show (obj->priv->burn);
 	gtk_widget_set_sensitive (obj->priv->burn, FALSE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (obj->priv->burn), FALSE);
