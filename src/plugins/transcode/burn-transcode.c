@@ -38,9 +38,8 @@
 
 #include <gst/gst.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
+#include "burn-medium.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-transcode.h"

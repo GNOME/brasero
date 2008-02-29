@@ -38,8 +38,6 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-job.h"
@@ -47,7 +45,7 @@
 #include "burn-dvdcss.h"
 #include "burn-dvdcss-private.h"
 #include "burn-volume.h"
-#include "brasero-ncb.h"
+#include "burn-medium.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -287,9 +285,10 @@ brasero_dvdcss_write_image_thread (gpointer data)
 {
 	guchar buf [DVDCSS_BLOCK_SIZE * BRASERO_DVDCSS_I_BLOCKS];
 	BraseroScrambledSectorRange *range = NULL;
-	NautilusBurnDrive *drive = NULL;
+	BraseroMedium *medium = NULL;
 	BraseroVolFile *files = NULL;
 	dvdcss_handle *handle = NULL;
+	BraseroDrive *drive = NULL;
 	BraseroDvdcssPrivate *priv;
 	gint64 written_sectors = 0;
 	BraseroDvdcss *self = data;
@@ -311,7 +310,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	/* get the contents of the DVD */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	drive = brasero_track_get_drive_source (track);
-	files = brasero_volume_get_files (NCB_DRIVE_GET_DEVICE (drive),
+	files = brasero_volume_get_files (brasero_drive_get_device (drive),
 					  0,
 					  NULL,
 					  NULL,
@@ -320,7 +319,8 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	if (!files)
 		goto end;
 
-	NCB_MEDIA_GET_DATA_SIZE (drive, NULL, &volume_size);
+	medium = brasero_track_get_medium_source (track);
+	brasero_medium_get_data_size (medium, NULL, &volume_size);
 	if (volume_size == -1) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
@@ -329,7 +329,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	}
 
 	/* create a handle/open DVD */
-	handle = dvdcss_open (NCB_DRIVE_GET_DEVICE (drive));
+	handle = dvdcss_open (brasero_drive_get_device (drive));
 	if (!handle) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,

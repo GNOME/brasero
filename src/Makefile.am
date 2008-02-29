@@ -102,8 +102,6 @@ brasero_SOURCES = \
 	brasero-sum-dialog.h         \
 	brasero-tool-dialog.c         \
 	brasero-tool-dialog.h         \
-	brasero-ncb.h         \
-	brasero-ncb.c         \
 	burn-task.c         \
 	burn-task.h         \
 	brasero-async-task-manager.c         \
@@ -235,7 +233,9 @@ brasero_SOURCES = \
 	brasero-medium-selection.h         \
 	brasero-medium-selection.c         \
 	burn-medium-monitor.c         \
-	burn-medium-monitor.h 
+	burn-medium-monitor.h         \
+	burn-drive.h         \
+	burn-drive.c 
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

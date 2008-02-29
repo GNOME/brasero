@@ -621,15 +621,22 @@ static void
 brasero_project_disc_changed_cb (BraseroProjectSize *size,
 				 BraseroProject *project)
 {
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	brasero_project_check_size (project);
 
 	/* get the current device name and set it for the disc project in
 	 * case that is a multisession disc and a data project */
-	drive = brasero_project_size_get_active_drive (size);
+	medium = brasero_project_size_get_active_medium (size);
+	if (!medium) {
+		brasero_disc_set_current_drive (project->priv->current, NULL);
+		return;
+	}
+
+	drive = brasero_medium_get_drive (medium);
 	brasero_disc_set_current_drive (project->priv->current, drive);
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (medium);
 }
 
 /***************************** URIContainer ************************************/
@@ -890,7 +897,7 @@ brasero_project_burn (BraseroProject *project)
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	gtk_widget_hide (toplevel);
-	gtk_widget_show_all (dialog);
+	gtk_widget_show (dialog);
 
 	destroy = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog), session);
 	g_object_unref (session);

@@ -28,8 +28,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-caps.h"
 #include "burn-session.h"

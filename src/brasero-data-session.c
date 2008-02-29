@@ -32,7 +32,7 @@
 #include "burn-basics.h"
 #include "burn-caps.h"
 
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 #include "brasero-data-session.h"
 #include "brasero-data-project.h"
@@ -41,7 +41,7 @@
 typedef struct _BraseroDataSessionPrivate BraseroDataSessionPrivate;
 struct _BraseroDataSessionPrivate
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	GSList *nodes;
 
 	guint multi_inserted:1;
@@ -115,6 +115,7 @@ brasero_data_session_add_last (BraseroDataSession *self,
 {
 	BraseroDataSessionPrivate *priv;
 	BraseroVolFile *volume;
+	BraseroMedium *medium;
 	const gchar *device;
 	gint64 block;
 	GList *iter;
@@ -130,9 +131,10 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	}
 
 	/* get the address for the last track and retrieve the file list */
-	NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (priv->drive,
-					       NULL,
-					       &block);
+	medium = brasero_drive_get_medium (priv->drive);
+	brasero_medium_get_last_data_track_address (medium,
+						    NULL,
+						    &block);
 	if (block == -1) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -141,7 +143,7 @@ brasero_data_session_add_last (BraseroDataSession *self,
 		return FALSE;
 	}
 
-	device = NCB_DRIVE_GET_DEVICE (priv->drive);
+	device = brasero_drive_get_device (priv->drive);
 	volume = brasero_volume_get_files (device,
 					   block,
 					   NULL,
@@ -200,16 +202,17 @@ brasero_data_session_add_last (BraseroDataSession *self,
 
 void
 brasero_data_session_set_drive (BraseroDataSession *self,
-				NautilusBurnDrive *drive)
+				BraseroDrive *drive)
 {
 	BraseroDataSessionPrivate *priv;
 	BraseroMedia media_status;
+	BraseroMedium *medium;
 	BraseroBurnCaps *caps;
 	BraseroMedia media;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
 
-	if (nautilus_burn_drive_equal (priv->drive, drive))
+	if (priv->drive == drive)
 		return;
 
 	/* Remove the old imported session if any */
@@ -217,15 +220,16 @@ brasero_data_session_set_drive (BraseroDataSession *self,
 		brasero_data_session_remove_last (self);
 
 	if (priv->drive)
-		nautilus_burn_drive_unref (priv->drive);
+		g_object_unref (priv->drive);
 	
 	priv->drive = drive;
 
 	if (drive)
-		nautilus_burn_drive_ref (drive);
+		g_object_ref (drive);
 
 	/* Now test for a multisession medium inserted and signal */
-	media = NCB_MEDIA_GET_STATUS (priv->drive);
+	medium = brasero_drive_get_medium (priv->drive);
+	media = brasero_medium_get_status (medium);
 
 	caps = brasero_burn_caps_get_default ();
 	media_status = brasero_burn_caps_media_capabilities (caps, media);
@@ -233,7 +237,7 @@ brasero_data_session_set_drive (BraseroDataSession *self,
 
 	priv->multi_inserted = (media_status & BRASERO_MEDIUM_WRITABLE) &&
 			       (media & BRASERO_MEDIUM_HAS_DATA) &&
-			       (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (priv->drive, NULL, NULL) != -1);
+			       (brasero_medium_get_last_data_track_address (medium, NULL, NULL) != -1);
 
 	g_signal_emit (self,
 		       brasero_data_session_signals [AVAILABLE_SIGNAL],
@@ -241,7 +245,7 @@ brasero_data_session_set_drive (BraseroDataSession *self,
 		       priv->multi_inserted);
 }
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_data_session_get_loaded_medium (BraseroDataSession *self)
 {
 	BraseroDataSessionPrivate *priv;
@@ -264,7 +268,7 @@ brasero_data_session_finalize (GObject *object)
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (object);
 	if (priv->drive) {
-		nautilus_burn_drive_unref (priv->drive);
+		g_object_unref (priv->drive);
 		priv->drive = NULL;
 	}
 

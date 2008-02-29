@@ -37,15 +37,13 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-cdrdao-common.h"
 #include "burn-cdrdao.h"
 #include "burn-basics.h"
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "burn-medium.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BRASERO_TYPE_PROCESS, BraseroProcess);
@@ -282,7 +280,7 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 	brasero_job_get_input_type (BRASERO_JOB (cdrdao), &type);
         if (type.type == BRASERO_TRACK_TYPE_DISC) {
-		NautilusBurnDrive *drive;
+		BraseroDrive *drive;
 		BraseroBurnFlag flags;
 		BraseroTrack *track;
 
@@ -299,7 +297,7 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 		drive = brasero_track_get_drive_source (track);
-		g_ptr_array_add (argv, g_strdup (NCB_DRIVE_GET_DEVICE (drive)));
+		g_ptr_array_add (argv, g_strdup (brasero_drive_get_device (drive)));
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		gchar *cuepath;
@@ -369,7 +367,7 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 {
 	gchar *image = NULL, *toc = NULL;
 	BraseroBurnResult result;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	BraseroJobAction action;
 	BraseroTrackType output;
 	BraseroTrack *track;
@@ -380,7 +378,7 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 
 	brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 	drive = brasero_track_get_drive_source (track);
-	g_ptr_array_add (argv, g_strdup (NCB_DRIVE_GET_DEVICE (drive)));
+	g_ptr_array_add (argv, g_strdup (brasero_drive_get_device (drive)));
 
 	g_ptr_array_add (argv, g_strdup ("--read-raw"));
 

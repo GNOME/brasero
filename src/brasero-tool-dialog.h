@@ -58,9 +58,9 @@ struct _BraseroToolDialogClass {
 	GtkDialogClass parent_class;
 
 	gboolean	(*activate)		(BraseroToolDialog *dialog,
-						 NautilusBurnDrive *drive);
+						 BraseroMedium *medium);
 	void		(*drive_changed)	(BraseroToolDialog *dialog,
-						 NautilusBurnDrive *drive);
+						 BraseroMedium *medium);
 };
 
 GType brasero_tool_dialog_get_type ();
@@ -92,8 +92,8 @@ brasero_tool_dialog_set_action (BraseroToolDialog *self,
 BraseroBurn *
 brasero_tool_dialog_get_burn (BraseroToolDialog *dialog);
 
-NautilusBurnDrive *
-brasero_tool_dialog_get_drive (BraseroToolDialog *dialog);
+BraseroMedium *
+brasero_tool_dialog_get_medium (BraseroToolDialog *dialog);
 
 G_END_DECLS
 

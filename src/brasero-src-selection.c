@@ -28,13 +28,11 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "brasero-src-selection.h"
 #include "brasero-drive-selection.h"
 #include "burn-track.h"
 #include "burn-session.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 typedef struct _BraseroSrcSelectionPrivate BraseroSrcSelectionPrivate;
 struct _BraseroSrcSelectionPrivate
@@ -56,17 +54,20 @@ G_DEFINE_TYPE (BraseroSrcSelection, brasero_src_selection, BRASERO_TYPE_DRIVE_SE
 
 static void
 brasero_src_selection_drive_changed (BraseroDriveSelection *selection,
-				     NautilusBurnDrive *drive)
+				     BraseroDrive *drive)
 {
 	BraseroSrcSelectionPrivate *priv;
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
+	if (!priv->session)
+		return;
+
 	if (priv->track)
 		brasero_track_unref (priv->track);
 
 	priv->track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-	if (drive && NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE)
+	if (drive && brasero_drive_is_fake (drive))
 		brasero_track_set_drive_source (priv->track, NULL);
 	else
 		brasero_track_set_drive_source (priv->track, drive);
@@ -87,7 +88,7 @@ static void
 brasero_src_selection_init (BraseroSrcSelection *object)
 {
 	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
-					     _("Choose which drive holds the disc to read from"));
+					     _("Choose the disc to read from"));
 
 	/* only show media with something to be read on them */
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (object),
@@ -122,7 +123,7 @@ brasero_src_selection_set_property (GObject *object,
 {
 	BraseroSrcSelectionPrivate *priv;
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (object);
 
@@ -136,14 +137,10 @@ brasero_src_selection_set_property (GObject *object,
 		if (priv->track)
 			brasero_track_unref (priv->track);
 
-		priv->track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-		brasero_track_set_drive_source (priv->track, NULL);
-		brasero_burn_session_add_track (priv->session, priv->track);
-
 		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
 		if (drive) {
 			brasero_src_selection_drive_changed (BRASERO_DRIVE_SELECTION (object), drive);
-			nautilus_burn_drive_unref (drive);
+			g_object_unref (drive);
 		}
 
 		break;

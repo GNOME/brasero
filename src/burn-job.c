@@ -46,7 +46,7 @@
 #include "burn-task-ctx.h"
 #include "burn-task-item.h"
 #include "brasero-marshal.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "burn-medium.h"
 
 typedef struct _BraseroJobOutput {
@@ -362,11 +362,12 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 				     GError **error)
 {
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
 	gint64 output_blocks = 0;
 	gint64 media_blocks = 0;
 	BraseroJobPrivate *priv;
 	BraseroBurnFlag flags;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
@@ -376,6 +377,7 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
+	medium = brasero_drive_get_medium (drive);
 	flags = brasero_burn_session_get_flags (session);
 
 	/* FIXME: if we can't recover the size of the medium 
@@ -384,9 +386,9 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 
 	/* see if we are appending or not */
 	if (flags & (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE))
-		NCB_MEDIA_GET_FREE_SPACE (drive, NULL, &media_blocks);
+		brasero_medium_get_free_space (medium, NULL, &media_blocks);
 	else
-		NCB_MEDIA_GET_CAPACITY (drive, NULL, &media_blocks);
+		brasero_medium_get_capacity (medium, NULL, &media_blocks);
 
 	/* this is not really an error, we'll probably ask the 
 	 * user to load a new disc */
@@ -433,11 +435,10 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	if (file == NULL)
 		goto error;
 
-	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
-				  G_FILE_QUERY_INFO_NONE,
-				  NULL,
-				  error);
+	info = g_file_query_filesystem_info (file,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
+					     NULL,
+					     error);
 	if (!info)
 		goto error;
 
@@ -1286,8 +1287,8 @@ BraseroBurnResult
 brasero_job_get_device (BraseroJob *self, gchar **device)
 {
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
 	BraseroJobPrivate *priv;
+	BraseroDrive *drive;
 	const gchar *path;
 
 	BRASERO_JOB_DEBUG (self);
@@ -1298,7 +1299,7 @@ brasero_job_get_device (BraseroJob *self, gchar **device)
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
-	path = NCB_DRIVE_GET_DEVICE (drive);
+	path = brasero_drive_get_device (drive);
 	*device = g_strdup (path);
 
 	return BRASERO_BURN_OK;
@@ -1325,8 +1326,9 @@ BraseroBurnResult
 brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
 {
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
 	BraseroJobPrivate *priv;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	BRASERO_JOB_DEBUG (self);
 
@@ -1335,7 +1337,8 @@ brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
 	priv = BRASERO_JOB_PRIVATE (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
-	NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (drive, NULL, address);
+	medium = brasero_drive_get_medium (drive);
+	brasero_medium_get_last_data_track_address (medium, NULL, address);
 
 	return BRASERO_BURN_OK;
 }
@@ -1344,8 +1347,9 @@ BraseroBurnResult
 brasero_job_get_next_writable_address (BraseroJob *self, gint64 *address)
 {
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
 	BraseroJobPrivate *priv;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	BRASERO_JOB_DEBUG (self);
 
@@ -1354,7 +1358,8 @@ brasero_job_get_next_writable_address (BraseroJob *self, gint64 *address)
 	priv = BRASERO_JOB_PRIVATE (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
-	*address = NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (drive);
+	medium = brasero_drive_get_medium (drive);
+	*address = brasero_medium_get_next_writable_address (medium);
 
 	return BRASERO_BURN_OK;
 }
@@ -1403,8 +1408,9 @@ BraseroBurnResult
 brasero_job_get_max_rate (BraseroJob *self, guint64 *rate)
 {
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
 	BraseroJobPrivate *priv;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	BRASERO_JOB_DEBUG (self);
 
@@ -1414,7 +1420,9 @@ brasero_job_get_max_rate (BraseroJob *self, guint64 *rate)
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
-	*rate = NCB_MEDIA_GET_MAX_WRITE_RATE  (drive);
+	medium = brasero_drive_get_medium (drive);
+
+	*rate = brasero_medium_get_max_write_speed (medium);
 
 	return BRASERO_BURN_OK;
 }
@@ -1423,8 +1431,9 @@ BraseroBurnResult
 brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 {
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
 	BraseroJobPrivate *priv;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 	BraseroMedia media;
 	guint64 rate;
 
@@ -1436,8 +1445,8 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 	session = brasero_task_ctx_get_session (priv->ctx);
 
 	drive = brasero_burn_session_get_burner (session);
-	rate = NCB_MEDIA_GET_MAX_WRITE_RATE  (drive);
-	media = NCB_MEDIA_GET_STATUS (drive);
+	rate = brasero_medium_get_max_write_speed (medium);
+	media = brasero_medium_get_status (medium);
 	if (media & BRASERO_MEDIUM_DVD)
 		*speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (rate);
 	else 

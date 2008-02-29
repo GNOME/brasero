@@ -32,11 +32,9 @@
 
 #include <gtk/gtk.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "brasero-eject-dialog.h"
 #include "brasero-tool-dialog.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "burn-debug.h"
 #include "brasero-utils.h"
 #include "burn.h"
@@ -45,28 +43,28 @@ G_DEFINE_TYPE (BraseroEjectDialog, brasero_eject_dialog, BRASERO_TYPE_TOOL_DIALO
 
 static void
 brasero_eject_dialog_drive_changed (BraseroToolDialog *dialog,
-				    NautilusBurnDrive *drive)
+				    BraseroMedium *medium)
 {
-	brasero_tool_dialog_set_valid (dialog, BRASERO_MEDIUM_VALID (NCB_MEDIA_GET_STATUS (drive)));
+	brasero_tool_dialog_set_valid (dialog, BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));
 }
 
 static gpointer
 _eject_async (gpointer data)
 {
-	NautilusBurnDrive *drive = NAUTILUS_BURN_DRIVE (data);
+	BraseroDrive *drive = BRASERO_DRIVE (data);
 
-	nautilus_burn_drive_eject (drive);
-	nautilus_burn_drive_unref (drive);
+	brasero_drive_eject (drive);
+	g_object_unref (drive);
 
 	return NULL;
 }
 
 static gboolean
 brasero_eject_dialog_activate (BraseroToolDialog *dialog,
-			       NautilusBurnDrive *drive)
+			       BraseroMedium *medium)
 {
 	/* In here we could also remove the lock held by any app (including 
-	 * brasero) through nautilus_burn_drive_unlock. We'd need a warning
+	 * brasero) through brasero_drive_unlock. We'd need a warning
 	 * dialog though which would identify why the lock is held and even
 	 * better which application is holding the lock so the user does know
 	 * if he can take the risk to remove the lock. */
@@ -76,16 +74,19 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 	 * cdrecord/cdrdao seem to be. */
 
 	GError *error = NULL;
+	BraseroDrive *drive;
 
 	BRASERO_BURN_LOG ("Asynchronous ejection");
-	nautilus_burn_drive_ref (drive);
+
+	drive = brasero_medium_get_drive (medium);
+	g_object_ref (drive);
 	g_thread_create (_eject_async, drive, FALSE, &error);
 	if (error) {
 		g_warning ("Could not create thread %s\n", error->message);
 		g_error_free (error);
 
-		nautilus_burn_drive_unref (drive);
-		nautilus_burn_drive_eject (drive);
+		g_object_unref (drive);
+		g_object_ref (drive);
 	}
 
 
@@ -96,7 +97,7 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 	 * closed now as ejection is not instantaneous.
 	 * A message box announcing the results of the operation would be a good
 	 * thing as well probably. */
-	if (nautilus_burn_drive_door_is_open (drive)) {
+	if (brasero_drive_is_door_open (drive)) {
 		//gtk_message_dialog_new ();
 	}
 	

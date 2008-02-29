@@ -31,8 +31,6 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkdialog.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "brasero-disc.h"
 #include "burn-session.h"
 

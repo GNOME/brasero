@@ -41,7 +41,7 @@
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "burn-growisofs.h"
 #include "burn-growisofs-common.h"
 

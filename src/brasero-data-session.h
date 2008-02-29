@@ -27,8 +27,7 @@
 
 #include <glib-object.h>
 
-#include <nautilus-burn-drive.h>
-
+#include "burn-drive.h"
 #include "brasero-data-project.h"
 
 G_BEGIN_DECLS
@@ -58,12 +57,12 @@ GType brasero_data_session_get_type (void) G_GNUC_CONST;
 gboolean
 brasero_data_session_add_last (BraseroDataSession *session,
 			       GError **error);
-NautilusBurnDrive *
+BraseroDrive *
 brasero_data_session_get_loaded_medium (BraseroDataSession *session);
 
 void
 brasero_data_session_set_drive (BraseroDataSession *session,
-				NautilusBurnDrive *drive);
+				BraseroDrive *drive);
 void
 brasero_data_session_remove_last (BraseroDataSession *session);
 

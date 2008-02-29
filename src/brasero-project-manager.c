@@ -391,7 +391,7 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	gtk_widget_hide (toplevel);
-	gtk_widget_show_all (dialog);
+	gtk_widget_show (dialog);
 
 	destroy = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
 					   session);
@@ -460,7 +460,7 @@ brasero_project_manager_burn_disc (BraseroProjectManager *manager)
 	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_widget_show_all (dialog);
+	gtk_widget_show (dialog);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (result != GTK_RESPONSE_OK) {

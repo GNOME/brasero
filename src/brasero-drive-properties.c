@@ -43,12 +43,10 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtkbox.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-medium.h"
 #include "burn-debug.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-utils.h"
 #include "brasero-drive-properties.h"
 
@@ -154,7 +152,7 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 
 	/* get the volume free space */
 	directory = g_path_get_dirname (path);
-	file = g_file_new_for_path (directory);
+	file = g_file_new_for_commandline_arg (directory);
 	g_free (directory);
 
 	if (file == NULL) {
@@ -163,11 +161,10 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 		return;
 	}
 
-	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
-				  G_FILE_QUERY_INFO_NONE,
-				  NULL,
-				  &error);
+	info = g_file_query_filesystem_info (file,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
+					     NULL,
+					     &error);
 	g_object_unref (file);
 
 	if (error) {
@@ -264,10 +261,11 @@ brasero_drive_properties_format_disc_speed (BraseroMedia media,
 
 void
 brasero_drive_properties_set_drive (BraseroDriveProperties *self,
-				    NautilusBurnDrive *drive,
+				    BraseroDrive *drive,
 				    gint64 default_rate)
 {
 	BraseroDrivePropertiesPrivate *priv;
+	BraseroMedium *medium;
 	BraseroMedia media;
 	GtkTreeModel *model;
 	gchar *display_name;
@@ -282,7 +280,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
 
 	/* set the header of the dialog */
-	display_name = nautilus_burn_drive_get_name_for_display (drive);
+	display_name = brasero_drive_get_display_name (drive);
 	header = g_strdup_printf (_("Properties of %s"), display_name);
 	g_free (display_name);
 
@@ -290,8 +288,9 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	g_free (header);
 
 	/* Speed combo */
-	media = NCB_MEDIA_GET_STATUS (drive);
-	max_rate = NCB_MEDIA_GET_MAX_WRITE_RATE (drive);
+	medium = brasero_drive_get_medium (drive);
+	media = brasero_medium_get_status (medium);
+	max_rate = brasero_medium_get_max_write_speed (medium);
 	if (media & BRASERO_MEDIUM_CD)
 		step = CD_RATE;
 	else

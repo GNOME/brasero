@@ -42,13 +42,14 @@
 #include "burn-debug.h"
 #include "burn-track.h"
 #include "burn-medium.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
+#include "burn-medium-monitor.h"
 
 G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 #define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
 
 struct _BraseroSessionSetting {
-	NautilusBurnDrive *burner;
+	BraseroDrive *burner;
 
 	guint num_copies;
 
@@ -95,11 +96,9 @@ struct _BraseroBurnSessionPrivate {
 typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 
 #define BRASERO_BURN_SESSION_WRITE_TO_DISC(priv)	(priv->settings->burner			\
-							&& NCB_DRIVE_GET_TYPE (priv->settings->burner) \
-							!= NAUTILUS_BURN_DRIVE_TYPE_FILE)
+							&& !brasero_drive_is_fake (priv->settings->burner))
 #define BRASERO_BURN_SESSION_WRITE_TO_FILE(priv)	(priv->settings->burner			\
-							&& NCB_DRIVE_GET_TYPE (priv->settings->burner) \
-							== NAUTILUS_BURN_DRIVE_TYPE_FILE)
+							&& brasero_drive_is_fake (priv->settings->burner))
 #define BRASERO_STR_EQUAL(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
 typedef enum {
@@ -127,7 +126,7 @@ brasero_session_settings_clean (BraseroSessionSetting *settings)
 		g_free (settings->label);
 
 	if (settings->burner)
-		nautilus_burn_drive_unref (settings->burner);
+		g_object_unref (settings->burner);
 
 	memset (settings, 0, sizeof (BraseroSessionSetting));
 }
@@ -140,7 +139,7 @@ brasero_session_settings_copy (BraseroSessionSetting *dest,
 
 	memcpy (dest, original, sizeof (BraseroSessionSetting));
 
-	nautilus_burn_drive_ref (dest->burner);
+	g_object_ref (dest->burner);
 	dest->image = g_strdup (original->image);
 	dest->toc = g_strdup (original->toc);
 	dest->label = g_strdup (original->label);
@@ -155,7 +154,8 @@ brasero_session_settings_free (BraseroSessionSetting *settings)
 }
 
 static void
-brasero_burn_session_src_media_added (NautilusBurnDrive *drive,
+brasero_burn_session_src_media_added (BraseroDrive *drive,
+				      BraseroMedium *medium,
 				      BraseroBurnSession *self)
 {
 	g_signal_emit (self,
@@ -164,7 +164,8 @@ brasero_burn_session_src_media_added (NautilusBurnDrive *drive,
 }
 
 static void
-brasero_burn_session_src_media_removed (NautilusBurnDrive *drive,
+brasero_burn_session_src_media_removed (BraseroDrive *drive,
+					BraseroMedium *medium,
 					BraseroBurnSession *self)
 {
 	g_signal_emit (self,
@@ -175,7 +176,7 @@ brasero_burn_session_src_media_removed (NautilusBurnDrive *drive,
 static void
 brasero_burn_session_start_src_drive_monitoring (BraseroBurnSession *self)
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	BraseroBurnSessionPrivate *priv;
 
 	if (brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_DISC)
@@ -187,11 +188,11 @@ brasero_burn_session_start_src_drive_monitoring (BraseroBurnSession *self)
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	priv->src_added_sig = g_signal_connect (drive,
-						"media-added",
+						"medium-added",
 						G_CALLBACK (brasero_burn_session_src_media_added),
 						self);
 	priv->src_removed_sig = g_signal_connect (drive,
-						  "media-removed",
+						  "medium-removed",
 						  G_CALLBACK (brasero_burn_session_src_media_removed),
 						  self);
 }
@@ -199,7 +200,7 @@ brasero_burn_session_start_src_drive_monitoring (BraseroBurnSession *self)
 static void
 brasero_burn_session_stop_src_drive_monitoring (BraseroBurnSession *self)
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	BraseroBurnSessionPrivate *priv;
 
 	if (brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_DISC)
@@ -353,7 +354,8 @@ brasero_burn_session_get_input_type (BraseroBurnSession *self,
  */
 
 static void
-brasero_burn_session_dest_media_added (NautilusBurnDrive *drive,
+brasero_burn_session_dest_media_added (BraseroDrive *drive,
+				       BraseroMedium *medium,
 				       BraseroBurnSession *self)
 {
 	g_signal_emit (self,
@@ -362,7 +364,8 @@ brasero_burn_session_dest_media_added (NautilusBurnDrive *drive,
 }
 
 static void
-brasero_burn_session_dest_media_removed (NautilusBurnDrive *drive,
+brasero_burn_session_dest_media_removed (BraseroDrive *drive,
+					 BraseroMedium *medium,
 					 BraseroBurnSession *self)
 {
 	g_signal_emit (self,
@@ -372,7 +375,7 @@ brasero_burn_session_dest_media_removed (NautilusBurnDrive *drive,
 
 void
 brasero_burn_session_set_burner (BraseroBurnSession *self,
-				 NautilusBurnDrive *drive)
+				 BraseroDrive *drive)
 {
 	BraseroBurnSessionPrivate *priv;
 
@@ -380,7 +383,7 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (nautilus_burn_drive_equal (drive, priv->settings->burner))
+	if (drive == priv->settings->burner)
 		return;
 
 	if (priv->settings->burner) {
@@ -396,19 +399,19 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 			priv->dest_removed_sig = 0;	
 		}
 
-		nautilus_burn_drive_unref (priv->settings->burner);
+		g_object_unref (priv->settings->burner);
 	}
 
 	if (drive) {
 		priv->dest_added_sig = g_signal_connect (drive,
-							 "media-added",
+							 "medium-added",
 							 G_CALLBACK (brasero_burn_session_dest_media_added),
 							 self);
 		priv->dest_removed_sig = g_signal_connect (drive,
-							   "media-removed",
+							   "medium-removed",
 							   G_CALLBACK (brasero_burn_session_dest_media_removed),
 							   self);
-		nautilus_burn_drive_ref (drive);
+		g_object_ref (drive);
 	}
 
 	priv->settings->burner = drive;
@@ -418,7 +421,7 @@ brasero_burn_session_set_burner (BraseroBurnSession *self,
 		       0);
 }
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_burn_session_get_burner (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
@@ -449,6 +452,7 @@ guint64
 brasero_burn_session_get_rate (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
+	BraseroMedium *medium;
 	gint64 max_rate;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), 0);
@@ -458,7 +462,8 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
 		return 0;
 
-	max_rate = NCB_MEDIA_GET_MAX_WRITE_RATE (priv->settings->burner);
+	medium = brasero_drive_get_medium (priv->settings->burner);
+	max_rate = brasero_medium_get_max_write_speed (medium);
 	if (priv->settings->rate <= 0)
 		return max_rate;
 	else
@@ -714,15 +719,20 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 					    const gchar *toc)
 {
 	BraseroBurnSessionPrivate *priv;
-	NautilusBurnDriveMonitor *monitor;
+	BraseroMediumMonitor *monitor;
+	GSList *list;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	monitor = nautilus_burn_get_drive_monitor ();
+	monitor = brasero_medium_monitor_get_default ();
 
+	list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
 	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
-		brasero_burn_session_set_burner (self, nautilus_burn_drive_monitor_get_drive_for_image (monitor));
+		brasero_burn_session_set_burner (self, list->data);
+
+	g_slist_free (list);
+	g_object_unref (monitor);
 
 	if (priv->settings->format == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
@@ -1105,11 +1115,11 @@ brasero_burn_session_pop_settings (BraseroBurnSession *self)
 
 	if (priv->settings->burner) {
 		priv->dest_added_sig = g_signal_connect (priv->settings->burner,
-							 "media-added",
+							 "medium-added",
 							 G_CALLBACK (brasero_burn_session_dest_media_added),
 							 self);
 		priv->dest_removed_sig = g_signal_connect (priv->settings->burner,
-							   "media-removed",
+							   "medium-removed",
 							   G_CALLBACK (brasero_burn_session_dest_media_removed),
 							   self);
 	}
@@ -1197,6 +1207,7 @@ BraseroMedia
 brasero_burn_session_get_dest_media (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
+	BraseroMedium *medium;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_MEDIUM_NONE);
 
@@ -1204,10 +1215,38 @@ brasero_burn_session_get_dest_media (BraseroBurnSession *self)
 	if (BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
 		return BRASERO_MEDIUM_FILE;
 
-	return NCB_MEDIA_GET_STATUS (priv->settings->burner);
+	medium = brasero_drive_get_medium (priv->settings->burner);
+	return brasero_medium_get_status (medium);
 }
 
-NautilusBurnDrive *
+BraseroMedium *
+brasero_burn_session_get_src_medium (BraseroBurnSession *self)
+{
+	BraseroTrack *track;
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	/* to be able to burn to a DVD we must:
+	 * - have only one track
+	 * - not have any audio track */
+
+	if (!priv->tracks)
+		return NULL;
+
+	if (g_slist_length (priv->tracks) != 1)
+		return NULL;
+
+	track = priv->tracks->data;
+	if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_DISC)
+		return NULL;
+
+	return brasero_track_get_medium_source (track);
+}
+
+BraseroDrive *
 brasero_burn_session_get_src_drive (BraseroBurnSession *self)
 {
 	BraseroTrack *track;
@@ -1238,7 +1277,7 @@ gboolean
 brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 {
 	BraseroTrack *track;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), FALSE);
@@ -1264,7 +1303,7 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 	if (!drive)
 		return FALSE;
 
-	return nautilus_burn_drive_equal (priv->settings->burner, drive);
+	return (priv->settings->burner == drive);
 }
 
 
@@ -1420,7 +1459,10 @@ brasero_burn_session_start (BraseroBurnSession *self)
 	BRASERO_BURN_LOG_FLAGS (priv->settings->flags, "flags\t=");
 
 	if (!brasero_burn_session_is_dest_file (self)) {
-		BRASERO_BURN_LOG_DISC_TYPE (NCB_MEDIA_GET_STATUS (priv->settings->burner), "media type\t=");
+		BraseroMedium *medium;
+
+		medium = brasero_drive_get_medium (priv->settings->burner);
+		BRASERO_BURN_LOG_DISC_TYPE (brasero_medium_get_status (medium), "media type\t=");
 		BRASERO_BURN_LOG ("speed\t= %i", priv->settings->rate);
 		BRASERO_BURN_LOG ("number of copies\t= %i", priv->settings->num_copies);
 	}
@@ -1455,7 +1497,8 @@ gchar *
 brasero_burn_session_get_config_key (BraseroBurnSession *self,
 				     const gchar *property)
 {
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 	gchar *display_name;
 	gchar *key = NULL;
 	gchar *disc_type;
@@ -1464,14 +1507,15 @@ brasero_burn_session_get_config_key (BraseroBurnSession *self,
 	if (!drive)
 		return NULL;
 
-	if (NCB_MEDIA_GET_STATUS (drive) == BRASERO_MEDIUM_NONE)
+	medium = brasero_drive_get_medium (drive);
+	if (brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE)
 		return NULL;
 	
 	/* make sure display_name doesn't contain any forbidden characters */
-	display_name = nautilus_burn_drive_get_name_for_display (drive);
+	display_name = brasero_drive_get_display_name (drive);
 	g_strdelimit (display_name, " +()", '_');
 
-	disc_type = g_strdup (NCB_MEDIA_GET_TYPE_STRING (drive));
+	disc_type = g_strdup (brasero_medium_get_type_string (medium));
 	if (!disc_type) {
 		g_free (display_name);
 		return NULL;

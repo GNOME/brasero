@@ -49,8 +49,6 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtksizegroup.h>
 
-#include <nautilus-burn-drive.h>
-
 #ifdef HAVE_LIBNOTIFY
 
 #include <libnotify/notification.h>
@@ -1498,7 +1496,7 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc,
 }
 
 static void
-brasero_data_disc_set_drive (BraseroDisc *disc, NautilusBurnDrive *drive)
+brasero_data_disc_set_drive (BraseroDisc *disc, BraseroDrive *drive)
 {
 	BraseroDataDiscPrivate *priv;
 

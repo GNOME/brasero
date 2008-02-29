@@ -38,8 +38,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-job.h"

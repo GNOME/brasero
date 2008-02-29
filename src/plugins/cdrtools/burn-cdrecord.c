@@ -43,8 +43,6 @@
 
 #include <gconf/gconf-client.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-job.h"
 #include "burn-process.h"

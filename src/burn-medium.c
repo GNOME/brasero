@@ -34,11 +34,10 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-medium.h"
+#include "burn-drive.h"
 
 #include "scsi-device.h"
 #include "scsi-mmc1.h"
@@ -51,7 +50,7 @@
 #include "scsi-q-subchannel.h"
 #include "scsi-dvd-structures.h"
 #include "burn-volume.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 const gchar *icons [] = { 	"iso-image-new",
 				"gnome-dev-cdrom",
@@ -103,7 +102,7 @@ struct _BraseroMediumPrivate
 
 	guint64 next_wr_add;
 	BraseroMedia info;
-	NautilusBurnDrive * drive;
+	BraseroDrive * drive;
 };
 
 #define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
@@ -147,6 +146,9 @@ BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
+
+	if (!medium)
+		return BRASERO_MEDIUM_NONE;
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->info;
@@ -1955,7 +1957,7 @@ brasero_medium_init_real (BraseroMedium *object,
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
-	name = nautilus_burn_drive_get_name_for_display (priv->drive);
+	name = brasero_drive_get_display_name (priv->drive);
 	BRASERO_BURN_LOG ("Initializing information for medium in %s", name);
 	g_free (name);
 
@@ -1988,7 +1990,7 @@ brasero_medium_retry_open (gpointer object)
 
 	self = BRASERO_MEDIUM (object);
 	priv = BRASERO_MEDIUM_PRIVATE (object);
-	path = nautilus_burn_drive_get_device (priv->drive);
+	path = brasero_drive_get_device (priv->drive);
 
 	BRASERO_BURN_LOG ("Retrying to open device %s", path);
 	handle = brasero_device_handle_open (path, &code);
@@ -2026,7 +2028,7 @@ brasero_medium_try_open (BraseroMedium *self)
 	BraseroDeviceHandle *handle;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	path = nautilus_burn_drive_get_device (priv->drive);
+	path = brasero_drive_get_device (priv->drive);
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
@@ -2097,7 +2099,7 @@ brasero_medium_finalize (GObject *object)
 	g_slist_free (priv->tracks);
 	priv->tracks = NULL;
 
-	nautilus_burn_drive_unref (priv->drive);
+	g_object_unref (priv->drive);
 	priv->drive = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -2116,9 +2118,9 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 	{
 	case PROP_DRIVE:
 		priv->drive = g_value_get_object (value);
-		nautilus_burn_drive_ref (priv->drive);
+		g_object_ref (priv->drive);
 
-		if (nautilus_burn_drive_get_drive_type (priv->drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+		if (brasero_drive_is_fake (priv->drive)) {
 			brasero_medium_init_file (BRASERO_MEDIUM (object));
 			break;
 		}
@@ -2143,7 +2145,7 @@ brasero_medium_get_property (GObject *object, guint prop_id, GValue *value, GPar
 	switch (prop_id)
 	{
 	case PROP_DRIVE:
-		nautilus_burn_drive_ref (priv->drive);
+		g_object_ref (priv->drive);
 		g_value_set_object (value, priv->drive);
 		break;
 	default:
@@ -2169,7 +2171,7 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	                                 g_param_spec_object ("drive",
 	                                                      "drive",
 	                                                      "drive in which medium is inserted",
-	                                                      NAUTILUS_BURN_TYPE_DRIVE,
+	                                                      BRASERO_TYPE_DRIVE,
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
@@ -2184,7 +2186,10 @@ brasero_medium_can_be_written (BraseroMedium *self)
 	&&   (priv->info & BRASERO_MEDIUM_CLOSED))
 		return FALSE;
 
-	return nautilus_burn_drive_can_write (priv->drive);
+	if (priv->info & BRASERO_MEDIUM_FILE)
+		return FALSE;
+
+	return brasero_drive_can_write (priv->drive);
 }
 
 gboolean
@@ -2194,30 +2199,125 @@ brasero_medium_can_be_rewritten (BraseroMedium *self)
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE))
+	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE)
+	||   (priv->info & BRASERO_MEDIUM_FILE))
 		return FALSE;
 
-	return nautilus_burn_drive_can_rewrite (priv->drive);
+	return brasero_drive_can_rewrite (priv->drive);
 }
 
 gchar *
-brasero_medium_get_display_name (BraseroMedium *self)
+brasero_medium_get_label (BraseroMedium *self,
+			  gboolean with_markup)
 {
-	BraseroMediumPrivate *priv;
+	const gchar *type;
 	gchar *label;
+	gchar *name;
+
+	BraseroMediumPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	if (priv->info & BRASERO_MEDIUM_FILE)
-		return g_strdup (_("Image file"));
 
-	label = nautilus_burn_drive_get_media_label (priv->drive);
-	if (label && label [0] != '\0')
+	if (priv->info & BRASERO_MEDIUM_FILE) {
+		label = g_strdup (_("File Image"));
+		if (!with_markup)
+			return label;
+
+		name = label;
+		label = g_strdup_printf ("<b>%s</b>", label);
+		g_free (name);
+
 		return label;
+	}
 
-	return nautilus_burn_drive_get_name_for_display (priv->drive);
+	name = brasero_drive_get_volume_label (priv->drive);
+	type = brasero_medium_get_type_string (self);
+
+	if (name && name [0] != '\0') {
+		/* NOTE for translators: the first is the disc type and the
+		 * second the label of the already existing session on this disc. */
+		if (with_markup)
+			label = g_strdup_printf ("<b>Data %s</b>: \"%s\"",
+						 type,
+						 name);
+		else
+			label = g_strdup_printf ("Data %s: \"%s\"",
+						 type,
+						 name);
+
+		g_free (name);
+		return label;
+	}
+
+	g_free (name);
+	name = brasero_drive_get_display_name (priv->drive);
+
+	if (priv->info & BRASERO_MEDIUM_BLANK) {
+		/* NOTE for translators: the first is the disc type and the
+		 * second the name of the drive this disc is in. */
+		if (with_markup)
+			label = g_strdup_printf (_("<b>Blank %s</b> in %s"),
+						 type,
+						 name);
+		else
+			label = g_strdup_printf (_("Blank %s in %s"),
+						 type,
+						 name);
+	}
+	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		/* NOTE for translators: the first is the disc type and the
+		 * second the name of the drive this disc is in. */
+		if (with_markup)
+			label = g_strdup_printf (_("<b>Audio and data %s</b> in %s"),
+						 type,
+						 name);
+		else
+			label = g_strdup_printf (_("Audio and data %s in %s"),
+						 type,
+						 name);
+	}
+	else if (priv->info & BRASERO_MEDIUM_HAS_AUDIO) {
+		/* NOTE for translators: the first is the disc type and the
+		 * second the name of the drive this disc is in. */
+		if (with_markup)
+			label = g_strdup_printf (_("<b>Audio %s</b> in %s"),
+						 type,
+						 name);
+		else
+			label = g_strdup_printf (_("Audio %s in %s"),
+						 type,
+						 name);
+	}
+	else if (priv->info & BRASERO_MEDIUM_HAS_DATA) {
+		/* NOTE for translators: the first is the disc type and the
+		 * second the name of the drive this disc is in. */
+		if (with_markup)
+			label = g_strdup_printf (_("<b>Data %s</b> in %s"),
+						 type,
+						 name);
+		else
+			label = g_strdup_printf (_("Data %s in %s"),
+						 type,
+						 name);
+	}
+	else {
+		/* NOTE for translators: the first is the disc type and the
+		 * second the name of the drive this disc is in. */
+		if (with_markup)
+			label = g_strdup_printf (_("<b>%s</b> in %s"),
+						 type,
+						 name);
+		else
+			label = g_strdup_printf (_("%s in %s"),
+						 type,
+						 name);
+	}
+
+	g_free (name);
+	return label;
 }
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_medium_get_drive (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
@@ -2256,7 +2356,7 @@ brasero_medium_get_type (void)
 }
 
 BraseroMedium *
-brasero_medium_new (NautilusBurnDrive *drive)
+brasero_medium_new (BraseroDrive *drive)
 {
 	g_return_val_if_fail (drive != NULL, NULL);
 	return BRASERO_MEDIUM (g_object_new (BRASERO_TYPE_MEDIUM,

@@ -526,7 +526,8 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			if (G_IS_THEMED_ICON (icon))
 				icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
 
-			g_value_set_string (value, icon_string?icon_string [0]:NULL);
+			g_value_set_string (value, icon_string?icon_string [2]:NULL);
+			g_object_unref (icon);
 		}
 		else
 			g_value_set_string (value, "image-loading");

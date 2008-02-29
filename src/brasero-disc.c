@@ -41,8 +41,6 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmisc.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "brasero-marshal.h"
 #include "brasero-disc.h"
 #include "burn-session.h"
@@ -338,7 +336,8 @@ brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 }
 
 void
-brasero_disc_set_current_drive (BraseroDisc *disc, NautilusBurnDrive *drive)
+brasero_disc_set_current_drive (BraseroDisc *disc,
+				BraseroDrive *drive)
 {
 	BraseroDiscIface *iface;
 

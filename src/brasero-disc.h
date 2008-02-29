@@ -31,8 +31,6 @@
 #include <gtk/gtktoolbar.h>
 #include <gtk/gtkuimanager.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-session.h"
 
@@ -139,7 +137,7 @@ struct _BraseroDiscIface {
 							 GtkUIManager *manager);
 
 	void			(*set_drive)		(BraseroDisc *disc,
-							 NautilusBurnDrive *drive);
+							 BraseroDrive *drive);
 };
 
 GType brasero_disc_get_type ();
@@ -204,7 +202,7 @@ brasero_track_free (BraseroDiscTrack *track);
 
 void
 brasero_disc_set_current_drive (BraseroDisc *disc,
-				NautilusBurnDrive *drive);
+				BraseroDrive *drive);
 
 GtkWidget *
 brasero_disc_get_use_info_notebook (void);

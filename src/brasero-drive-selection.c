@@ -34,10 +34,8 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-medium.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-medium-selection.h"
 #include "brasero-drive-selection.h"
 #include "brasero-drive-info.h"
@@ -50,7 +48,7 @@ struct _BraseroDriveSelectionPrivate
 	GtkWidget *button;
 	GtkWidget *selection;
 
-	NautilusBurnDrive *locked_drive;
+	BraseroDrive *locked_drive;
 };
 
 #define BRASERO_DRIVE_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_SELECTION, BraseroDriveSelectionPrivate))
@@ -70,19 +68,23 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 					  BraseroDriveSelection *self)
 {
 	BraseroDriveSelectionPrivate *priv;
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 
-	drive = brasero_drive_selection_get_drive (self);
+	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selection));
+	if (medium)
+		drive = brasero_medium_get_drive (medium);
+	else
+		drive = NULL;
 
-	brasero_drive_info_set_drive (BRASERO_DRIVE_INFO (priv->info), drive);
+	brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info), medium);
 
-	if (priv->locked_drive
-	&& !nautilus_burn_drive_equal (priv->locked_drive, drive)) {
+	if (priv->locked_drive && priv->locked_drive != drive) {
 	    	gtk_widget_set_sensitive (priv->selection, TRUE);
-		nautilus_burn_drive_unlock (priv->locked_drive);
-		nautilus_burn_drive_unref (priv->locked_drive);
+		brasero_drive_unlock (priv->locked_drive);
+		g_object_unref (priv->locked_drive);
 		priv->locked_drive = NULL;
 	}
 
@@ -95,7 +97,7 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 		return;
 	}
 
-	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
 		g_signal_emit (self,
 			       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
 			       0,
@@ -130,7 +132,7 @@ brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *self)
 
 void
 brasero_drive_selection_set_drive (BraseroDriveSelection *self,
-				   NautilusBurnDrive *drive)
+				   BraseroDrive *drive)
 {
 	BraseroDriveSelectionPrivate *priv;
 	BraseroMedium *medium;
@@ -139,15 +141,25 @@ brasero_drive_selection_set_drive (BraseroDriveSelection *self,
 	if (priv->locked_drive)
 		return;
 
-	medium = NCB_DRIVE_GET_MEDIUM (drive);
+	medium = brasero_drive_get_medium (drive);
 	brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->selection), medium);
 }
 
-NautilusBurnDrive *
+BraseroMedium *
+brasero_drive_selection_get_medium (BraseroDriveSelection *self)
+{
+	BraseroDriveSelectionPrivate *priv;
+
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+
+	return brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selection));
+}
+
+BraseroDrive *
 brasero_drive_selection_get_drive (BraseroDriveSelection *self)
 {
+	BraseroDrive *drive;
 	BraseroMedium *medium;
-	NautilusBurnDrive *drive;
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
@@ -172,17 +184,17 @@ brasero_drive_selection_lock (BraseroDriveSelection *self,
 
 	gtk_widget_queue_draw (priv->selection);
 	if (priv->locked_drive) {
-		nautilus_burn_drive_unlock (priv->locked_drive);
-		nautilus_burn_drive_unref (priv->locked_drive);
+		brasero_drive_unlock (priv->locked_drive);
+		g_object_unref (priv->locked_drive);
 	}
 
 	if (locked) {
-		NautilusBurnDrive *drive;
+		BraseroDrive *drive;
 
 		drive = brasero_drive_selection_get_drive (self);
 		priv->locked_drive = drive;
 		if (priv->locked_drive)
-			nautilus_burn_drive_lock (priv->locked_drive,
+			brasero_drive_lock (priv->locked_drive,
 						  _("ongoing burning process"),
 						  NULL);
 	}
@@ -228,7 +240,6 @@ static void
 brasero_drive_selection_init (BraseroDriveSelection *object)
 {
 	BraseroDriveSelectionPrivate *priv;
-	NautilusBurnDrive *drive;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
 	gtk_box_set_spacing (GTK_BOX (object), 12);
@@ -254,10 +265,6 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 			    FALSE,
 			    0);
 
-	drive = brasero_drive_selection_get_drive (object);
-	brasero_drive_info_set_drive (BRASERO_DRIVE_INFO (priv->info), drive);
-	nautilus_burn_drive_unref (drive);
-
 	gtk_widget_show_all (GTK_WIDGET (object));
 }
 
@@ -269,8 +276,8 @@ brasero_drive_selection_finalize (GObject *object)
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
 
 	if (priv->locked_drive) {
-		nautilus_burn_drive_unlock (priv->locked_drive);
-		nautilus_burn_drive_unref (priv->locked_drive);
+		brasero_drive_unlock (priv->locked_drive);
+		g_object_unref (priv->locked_drive);
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -296,7 +303,7 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
 			  g_cclosure_marshal_VOID__OBJECT,
 			  G_TYPE_NONE,
 			  1,
-			  NAUTILUS_BURN_TYPE_DRIVE);
+			  BRASERO_TYPE_DRIVE);
 }
 
 GtkWidget *

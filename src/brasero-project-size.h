@@ -31,7 +31,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkcontainer.h>
 
-#include <nautilus-burn-drive.h>
+#include "burn-medium.h"
 
 G_BEGIN_DECLS
 
@@ -79,8 +79,8 @@ gboolean
 brasero_project_size_check_status (BraseroProjectSize *self,
 				   gboolean *overburn);
 
-NautilusBurnDrive *
-brasero_project_size_get_active_drive (BraseroProjectSize *self);
+BraseroMedium *
+brasero_project_size_get_active_medium (BraseroProjectSize *self);
 
 G_END_DECLS
 

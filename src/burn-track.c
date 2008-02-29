@@ -39,7 +39,7 @@
 #include "burn-debug.h"
 #include "burn-medium.h"
 #include "burn-image-format.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "burn-mkisofs-base.h"
 
 struct _BraseroTrack {
@@ -61,7 +61,7 @@ typedef struct {
 
 typedef struct {
 	BraseroTrack track;
-	NautilusBurnDrive *disc;
+	BraseroDrive *disc;
 	guint num;
 } BraseroTrackDisc;
 
@@ -238,7 +238,8 @@ brasero_track_clean (BraseroTrack *track)
 	else if (track->type.type == BRASERO_TRACK_TYPE_DISC) {
 		BraseroTrackDisc *drive = (BraseroTrackDisc *) track;
 
-		nautilus_burn_drive_unref (drive->disc);
+		if (drive->disc)
+			g_object_unref (drive->disc);
 	}
 	else if (track->type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroTrackImage *image = (BraseroTrackImage *) track;
@@ -318,7 +319,15 @@ brasero_track_get_type (BraseroTrack *track,
 		BraseroTrackDisc *disc;
 
 		disc = (BraseroTrackDisc *) track;
-		type->subtype.media = NCB_MEDIA_GET_STATUS (disc->disc);
+
+		if (disc->disc) {
+			BraseroMedium *medium;
+
+			medium = brasero_drive_get_medium (disc->disc);
+			type->subtype.media = brasero_medium_get_status (medium);
+		}
+		else
+			type->subtype.media = BRASERO_MEDIUM_NONE;
 	}
 
 	return track->type.type;
@@ -349,7 +358,7 @@ brasero_track_data_copy (BraseroTrackData *track, BraseroTrackData *copy)
 static void
 brasero_track_disc_copy (BraseroTrackDisc *track, BraseroTrackDisc *copy)
 {
-	nautilus_burn_drive_ref (track->disc);
+	g_object_ref (track->disc);
 	copy->disc = track->disc;
 }
 
@@ -407,7 +416,7 @@ brasero_track_copy (BraseroTrack *track)
 }
 
 BraseroBurnResult
-brasero_track_set_drive_source (BraseroTrack *track, NautilusBurnDrive *drive)
+brasero_track_set_drive_source (BraseroTrack *track, BraseroDrive *drive)
 {
 	BraseroTrackDisc *disc;
 
@@ -417,10 +426,12 @@ brasero_track_set_drive_source (BraseroTrack *track, NautilusBurnDrive *drive)
 	disc = (BraseroTrackDisc *) track;
 
 	if (disc->disc)
-		nautilus_burn_drive_unref (disc->disc);
+		g_object_unref (disc->disc);
 
-	nautilus_burn_drive_ref (drive);
 	disc->disc = drive;
+
+	if (drive)
+		g_object_ref (drive);
 
 	return BRASERO_BURN_OK;
 }
@@ -786,7 +797,7 @@ brasero_track_get_data_paths (BraseroTrack *track,
 	return result;
 }
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_track_get_drive_source (BraseroTrack *track)
 {
 	BraseroTrackDisc *drive;
@@ -797,6 +808,19 @@ brasero_track_get_drive_source (BraseroTrack *track)
 	drive = (BraseroTrackDisc *) track;
 
 	return drive->disc;
+}
+
+BraseroMedium *
+brasero_track_get_medium_source (BraseroTrack *track)
+{
+	BraseroTrackDisc *drive;
+
+	if (track->type.type != BRASERO_TRACK_TYPE_DISC)
+		return NULL;
+
+	drive = (BraseroTrackDisc *) track;
+
+	return brasero_drive_get_medium (drive->disc);
 }
 
 gint
@@ -923,13 +947,15 @@ brasero_track_get_disc_capacity (BraseroTrack *track,
 				 gint64 *blocks,
 				 gint64 *size)
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
+	BraseroMedium *medium;
 
 	drive = brasero_track_get_drive_source (track);
 	if (!drive)
 		return BRASERO_BURN_ERR;
 
-	NCB_MEDIA_GET_CAPACITY (drive, size, blocks);
+	medium = brasero_drive_get_medium (drive);
+	brasero_medium_get_capacity (medium, size, blocks);
 	return BRASERO_BURN_OK;
 }
 
@@ -938,13 +964,15 @@ brasero_track_get_disc_data_size (BraseroTrack *track,
 				  gint64 *blocks,
 				  gint64 *size)
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
+	BraseroMedium *medium;
 
 	drive = brasero_track_get_drive_source (track);
 	if (!drive)
 		return BRASERO_BURN_ERR;
 
-	NCB_MEDIA_GET_DATA_SIZE (drive, size, blocks);
+	medium = brasero_drive_get_medium (drive);
+	brasero_medium_get_data_size (medium, size, blocks);
 	return BRASERO_BURN_OK;
 }
 
@@ -953,13 +981,15 @@ brasero_track_get_disc_free_space (BraseroTrack *track,
 				   gint64 *blocks,
 				   gint64 *size)
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
+	BraseroMedium *medium;
 
 	drive = brasero_track_get_drive_source (track);
 	if (!drive)
 		return BRASERO_BURN_ERR;
 
-	NCB_MEDIA_GET_FREE_SPACE (drive, size, blocks);
+	medium = brasero_drive_get_medium (drive);
+	brasero_medium_get_free_space (medium, size, blocks);
 	return BRASERO_BURN_OK;
 }
 

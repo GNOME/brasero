@@ -38,8 +38,6 @@
 
 #include <libgnomeui/libgnomeui.h>
 
-#include <nautilus-burn-drive.h>
-
 #include <gst/gst.h>
 
 #include "brasero-utils.h"

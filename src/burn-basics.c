@@ -38,7 +38,7 @@
 #include "burn-plugin-manager.h"
 #include "burn-medium-monitor.h"
 #include "burn-plugin-private.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 static BraseroPluginManager *plugin_manager = NULL;
 static BraseroMediumMonitor *medium_manager = NULL;
@@ -81,9 +81,6 @@ BraseroBurnResult
 brasero_burn_library_init (void)
 {
 	/* initialize all device list */
-	
-	nautilus_burn_init ();
-
 	if (!medium_manager)
 		medium_manager = brasero_medium_monitor_get_default ();
 

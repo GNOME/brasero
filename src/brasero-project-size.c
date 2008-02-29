@@ -36,14 +36,12 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkcontainer.h>
 
-#include <nautilus-burn-drive.h>
-#include <nautilus-burn-drive-monitor.h>
-
 #include "brasero-project-size.h"
-#include "brasero-ncb.h"
 #include "burn-caps.h"
 #include "burn-volume.h"
 #include "brasero-utils.h"
+#include "burn-medium-monitor.h"
+#include "burn-medium.h"
 
 static void brasero_project_size_class_init (BraseroProjectSizeClass *klass);
 static void brasero_project_size_init (BraseroProjectSize *sp);
@@ -84,13 +82,13 @@ brasero_project_size_forall_children (GtkContainer *container,
 				      GtkCallback callback,
 				      gpointer callback_data);
 
-struct _BraseroDrive {
+struct _BraseroDriveSize {
 	gint64 sectors;
 	gint64 free_space;
 	BraseroMedia media;
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
 };
-typedef struct _BraseroDrive BraseroDrive;
+typedef struct _BraseroDriveSize BraseroDriveSize;
 
 struct _BraseroProjectSizePrivate {
 	GtkWidget *menu;
@@ -107,7 +105,7 @@ struct _BraseroProjectSizePrivate {
 
 	gint64 sectors;
 	GList *drives;
-	BraseroDrive *current;
+	BraseroDriveSize *current;
 
 	guint is_audio_context:1;
 	guint was_chosen:1;
@@ -204,20 +202,20 @@ brasero_project_size_class_init (BraseroProjectSizeClass *klass)
 static void
 brasero_project_size_add_default_medias (BraseroProjectSize *self)
 {
-	const BraseroDrive drives [] =  { {333000, 333000, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK, NULL},
+	const BraseroDriveSize drives [] =  { {333000, 333000, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK, NULL},
 					  {360000, 360000, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK, NULL},
 					  {405000, 405000, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK, NULL},
 					  {450000, 450000, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK, NULL},
 					  {2295104, 2295104, BRASERO_MEDIUM_DVDR|BRASERO_MEDIUM_BLANK, NULL},
 					  {4150390, 4150390, BRASERO_MEDIUM_DVDR_DL|BRASERO_MEDIUM_BLANK, NULL},
 					  { 0 } };
-	const BraseroDrive *iter;
+	const BraseroDriveSize *iter;
 
 	for (iter = drives; iter->sectors; iter ++) {
-		BraseroDrive *drive;
+		BraseroDriveSize *drive;
 
-		drive = g_new0 (BraseroDrive, 1);
-	    	memcpy (drive, iter, sizeof (BraseroDrive));
+		drive = g_new0 (BraseroDriveSize, 1);
+	    	memcpy (drive, iter, sizeof (BraseroDriveSize));
 		self->priv->drives = g_list_prepend (self->priv->drives, drive);
 	}
 }
@@ -302,11 +300,11 @@ brasero_project_size_finalize (GObject *object)
 	}
 
 	for (iter = cobj->priv->drives; iter; iter = iter->next) {
-		BraseroDrive *drive;
+		BraseroDriveSize *drive;
 
 		drive = iter->data;
-		if (drive->drive)
-			nautilus_burn_drive_unref (drive->drive);
+		if (drive->medium)
+			g_object_unref (drive->medium);
 
 		g_free (drive);
 	}
@@ -404,7 +402,7 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 	PangoRectangle extents = { 0 };
 	PangoLayout *layout;
 
-	BraseroDrive *drive;
+	BraseroDriveSize *drive;
 
 	gint max_width, max_height, total;
 	gint interval_size;
@@ -437,8 +435,8 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 	 * rewritable and multisession is off. That also applies to the widget
 	 * to select recorders.	 
 	 */
-	if (drive->drive
-	&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+	if (drive->medium
+	&& (brasero_medium_get_status (drive->medium) & BRASERO_MEDIUM_REWRITABLE)
 	&& !self->priv->multi)
 		total = drive->sectors > self->priv->sectors ? drive->sectors:self->priv->sectors;
 	else
@@ -485,7 +483,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 {
 	gint64 disc_size;
 	gchar *text = NULL;
-	BraseroDrive *drive;
+	BraseroDriveSize *drive;
 	BraseroMedia status;
 	gchar *drive_name = NULL;
 	gchar *disc_sectors_str = NULL;
@@ -495,8 +493,8 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	if (!drive)
 		return NULL;
 
-	status = NCB_MEDIA_GET_STATUS (drive->drive);
-	if (drive->drive
+	status = brasero_medium_get_status (drive->medium);
+	if (drive->medium
 	&& (status & BRASERO_MEDIUM_REWRITABLE)
 	&& !self->priv->multi)
 		disc_size = drive->sectors;
@@ -513,7 +511,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		gchar *name;
 
 		/* this is a busy drive */
-		name = nautilus_burn_drive_get_name_for_display (drive->drive);
+		name = brasero_medium_get_label (drive->medium, FALSE);
 		disc_sectors_str = g_strdup_printf (_("<i>%s</i> is busy"), name);
 		g_free (name);
 
@@ -524,7 +522,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		gchar *name;
 
 		/* this is a drive probably not fully supported by brasero */
-		name = nautilus_burn_drive_get_name_for_display (drive->drive);
+		name = brasero_medium_get_label (drive->medium, FALSE);
 		disc_sectors_str = g_strdup_printf (_("<i>%s</i> not properly supported"), name);
 		g_free (name);
 
@@ -535,7 +533,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		gchar *name;
 
 		/* this is an unsupported medium */
-		name = nautilus_burn_drive_get_name_for_display (drive->drive);
+		name = brasero_medium_get_label (drive->medium, FALSE);
 		disc_sectors_str = g_strdup_printf (_("The disc in <i>%s</i> is not supported"), name);
 		g_free (name);
 
@@ -547,18 +545,18 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 							     TRUE,
 							     TRUE);
 
-	if (drive->drive) {
+	if (drive->medium) {
 		/* we ellipsize to max characters to avoid having
 		 * a too long string with the drive full name. */
-		drive_name = nautilus_burn_drive_get_name_for_display (drive->drive);
-		if (strlen (drive_name) > 19) {
+		drive_name = brasero_medium_get_label (drive->medium, TRUE);
+/*		if (strlen (drive_name) > 19) {
 			gchar *tmp;
 
 			tmp = g_strdup_printf ("%.16s...", drive_name);
 			g_free (drive_name);
 			drive_name = tmp;
 		}
-	}
+*/	}
 
 	selection_size_str = brasero_utils_get_sectors_string (self->priv->sectors,
 							       self->priv->is_audio_context,
@@ -578,17 +576,15 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	}
 	else if (self->priv->sectors == 0) {
 		if (drive_name)
-			text = g_strdup_printf (_("<b>Empty</b> (%s / %s in <i>%s</i>)"),
-						selection_size_str,
+			text = g_strdup_printf (_("<b>Empty</b> (%s free for <i>%s</i>)"),
 						disc_sectors_str,
 						drive_name);
 		else
-			text = g_strdup_printf (_("<b>Empty</b> (%s / %s)"),
-						selection_size_str,
+			text = g_strdup_printf (_("<b>Empty</b> (%s free)"),
 						disc_sectors_str);
 	}
 	else if (drive_name)
-		text = g_strdup_printf ("%s / %s (in <i>%s</i>)",
+		text = g_strdup_printf ("%s / %s (for <i>%s</i>)",
 					selection_size_str,
 					disc_sectors_str,
 					drive_name);
@@ -712,7 +708,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	BraseroProjectSize *self;
 	gdouble fraction = 0.0;
 	gint text_height = 0;
-	BraseroDrive *drive;
+	BraseroDriveSize *drive;
 
 	gint bar_width, bar_height;
 	gchar *markup;
@@ -830,8 +826,8 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	bar_height = widget->allocation.height - text_height;
 
-	if (drive->drive
-	&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+	if (drive->medium
+	&& (brasero_medium_get_status (drive->medium) & BRASERO_MEDIUM_REWRITABLE)
 	&& !self->priv->multi)	
 		disc_size = drive->sectors;
 	else
@@ -971,7 +967,7 @@ static void
 brasero_project_size_disc_changed_cb (GtkMenuItem *item,
 				      BraseroProjectSize *self)
 {
-	BraseroDrive *drive;
+	BraseroDriveSize *drive;
 
 	drive = g_object_get_data (G_OBJECT (item), DRIVE_STRUCT);
 	self->priv->current = drive;
@@ -1032,7 +1028,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 	separator = TRUE;
 	for (iter = self->priv->drives; iter; iter = iter->next) {
-		BraseroDrive *drive;
+		BraseroDriveSize *drive;
 		GtkWidget *image;
 		gchar *size_str;
 		gchar *label;
@@ -1051,16 +1047,16 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		&& (drive->media & BRASERO_MEDIUM_DVD))
 			continue;
 
-		if (!drive->drive && !separator) {
+		if (!drive->medium && !separator) {
 			item = gtk_separator_menu_item_new ();
 			gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 			separator = TRUE;
 		}
-		else if (drive->drive)
+		else if (drive->medium)
 			separator = FALSE;
 
-		if (drive->drive
-		&& (NCB_MEDIA_GET_STATUS (drive->drive) & BRASERO_MEDIUM_REWRITABLE)
+		if (drive->medium
+		&& (brasero_medium_get_status (drive->medium) & BRASERO_MEDIUM_REWRITABLE)
 		&& !self->priv->multi)
 			disc_size = drive->sectors;
 		else
@@ -1071,11 +1067,13 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		else
 			size_str = brasero_utils_get_size_string (disc_size * DATA_SECTOR_SIZE, TRUE, TRUE); 
 
-		if (drive->drive)
-			label = g_strdup_printf (_("%s (%s) inserted in %s"),
-						 size_str,
-						 NCB_MEDIA_GET_TYPE_STRING (drive->drive),
-						 nautilus_burn_drive_get_name_for_display (drive->drive));
+		if (drive->medium) {
+			gchar *name;
+
+			name = brasero_medium_get_label (drive->medium, FALSE);
+			label = g_strdup_printf ("%s %s", size_str, name);
+			g_free (name);
+		}
 		else if (drive->media & BRASERO_MEDIUM_DL)
 			label = g_strdup_printf (_("%s (DVD-R Dual Layer)"),
 						 size_str);
@@ -1112,7 +1110,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 			g_free (label);
 		}
 
-		if (!drive->drive)
+		if (!drive->medium)
 			image = gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_MENU);
 		else if (drive->media & BRASERO_MEDIUM_DVD)
 			image = gtk_image_new_from_icon_name ("gnome-dev-disc-dvdr", GTK_ICON_SIZE_MENU);
@@ -1212,7 +1210,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 		}
 
 		while (iter != node) {
-			BraseroDrive *drive;
+			BraseroDriveSize *drive;
 			BraseroMedia media_status;
 
 			drive = iter->data;
@@ -1255,7 +1253,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 		}
 
 		while (iter != node) {
-			BraseroDrive *drive;
+			BraseroDriveSize *drive;
 			BraseroMedia media_status;
 
 			drive = iter->data;
@@ -1340,12 +1338,12 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 	GList *iter;
 	BraseroBurnCaps *caps;
 	BraseroMedia media_status;
-	BraseroDrive *candidate = NULL;
+	BraseroDriveSize *candidate = NULL;
 
 	caps = brasero_burn_caps_get_default ();
 
 	if (self->priv->current) {
-		BraseroDrive *current;
+		BraseroDriveSize *current;
 
 		/* we check the current drive to see if it is suitable */
 		current = self->priv->current;
@@ -1367,7 +1365,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			/* if we are in an audio context no drive with data */
 			current = NULL;
 		}
-		else if (current->sectors >= self->priv->sectors && current->drive) {
+		else if (current->sectors >= self->priv->sectors && current->medium) {
 			/* The current drive is still a perfect fit keep it */
 			g_object_unref (caps);
 			return;
@@ -1390,7 +1388,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 
 	/* Try to find the first best candidate */
 	for (iter = self->priv->drives; iter; iter = iter->next) {
-		BraseroDrive *drive;
+		BraseroDriveSize *drive;
 
 		drive = iter->data;
 
@@ -1421,18 +1419,18 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			continue;
 
 		if (candidate->sectors < self->priv->sectors) {
-			if (!candidate->drive) {
+			if (!candidate->medium) {
 				candidate = drive;
 
-				if (drive->drive)
+				if (drive->medium)
 					break;
 			}
-			else if (drive->drive) {
+			else if (drive->medium) {
 				candidate = drive;
 				break;
 			}
 		}
-		else if (drive->drive) {
+		else if (drive->medium) {
 			candidate = drive;
 			break;
 		}
@@ -1446,7 +1444,7 @@ void
 brasero_project_size_set_context (BraseroProjectSize *self,
 				  gboolean is_audio)
 {
-	BraseroDrive *current;
+	BraseroDriveSize *current;
 
 	self->priv->sectors = 0;
 	self->priv->is_audio_context = is_audio;
@@ -1464,7 +1462,7 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 	current = self->priv->current;
 	if (!current)
 		brasero_project_size_find_proper_drive (self);
-	else if (!current->drive)
+	else if (!current->medium)
 		brasero_project_size_find_proper_drive (self);
 	else if (is_audio
 	     && (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_APPENDABLE)))
@@ -1491,8 +1489,8 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 	if (!self->priv->current)
 		return FALSE;
 
-	if (self->priv->current->drive
-	&& (NCB_MEDIA_GET_STATUS (self->priv->current->drive) & BRASERO_MEDIUM_REWRITABLE)
+	if (self->priv->current->medium
+	&& (brasero_medium_get_status (self->priv->current->medium) & BRASERO_MEDIUM_REWRITABLE)
 	&& !self->priv->multi)
 		disc_size = self->priv->current->sectors;
 	else
@@ -1538,27 +1536,27 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 
 /********************************* real drives *********************************/
 static void
-brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
-				    NautilusBurnDrive *ndrive,
+brasero_project_size_disc_added_cb (BraseroMediumMonitor *monitor,
+				    BraseroMedium *medium,
 				    BraseroProjectSize *self)
 {
 	GList *iter;
 
 	for (iter = self->priv->drives; iter; iter = iter->next) {
-		BraseroDrive *bdrive;
+		BraseroDriveSize *drive;
 
-		bdrive = iter->data;
-		if (bdrive->drive
-		&&  nautilus_burn_drive_equal (ndrive, bdrive->drive)) {
+		drive = iter->data;
+		if (drive->medium
+		&&  medium == drive->medium) {
 
-			bdrive->media = NCB_MEDIA_GET_STATUS (bdrive->drive);
+			drive->media = brasero_medium_get_status (drive->medium);
 
 			/* If there is an appendable session we just ignore it,
 			 * the size of this session will simply be added to the
 			 * size of the project if the user decides to merge them
 			 */
-			NCB_MEDIA_GET_CAPACITY (ndrive, NULL, &bdrive->sectors);
-			NCB_MEDIA_GET_FREE_SPACE (ndrive, NULL, &bdrive->free_space);
+			brasero_medium_get_capacity (medium, NULL, &drive->sectors);
+			brasero_medium_get_free_space (medium, NULL, &drive->free_space);
 
 			brasero_project_size_find_proper_drive (self);
 			brasero_project_size_disc_changed (self);
@@ -1571,21 +1569,21 @@ brasero_project_size_disc_added_cb (NautilusBurnDriveMonitor *monitor,
 }
 
 static void
-brasero_project_size_disc_removed_cb (NautilusBurnDriveMonitor *monitor,
-				      NautilusBurnDrive *ndrive,
+brasero_project_size_disc_removed_cb (BraseroMediumMonitor *monitor,
+				      BraseroMedium *medium,
 				      BraseroProjectSize *self)
 {
 	GList *iter;
 
 	for (iter = self->priv->drives; iter; iter = iter->next) {
-		BraseroDrive *bdrive;
+		BraseroDriveSize *drive;
 
-		bdrive = iter->data;
-		if (bdrive->drive
-		&&  nautilus_burn_drive_equal (ndrive, bdrive->drive)) {
-			bdrive->media = BRASERO_MEDIUM_NONE;
-			bdrive->sectors = 0;
-			bdrive->free_space = 0;
+		drive = iter->data;
+		if (drive->medium
+		&&  medium == drive->medium) {
+			drive->media = BRASERO_MEDIUM_NONE;
+			drive->sectors = 0;
+			drive->free_space = 0;
 
 			brasero_project_size_find_proper_drive (self);
 			brasero_project_size_disc_changed (self);
@@ -1600,37 +1598,43 @@ brasero_project_size_disc_removed_cb (NautilusBurnDriveMonitor *monitor,
 static void
 brasero_project_size_add_real_medias (BraseroProjectSize *self)
 {
-	GList *iter, *list;
+	GSList *iter, *list;
+	BraseroMediumMonitor *monitor;
 
-	NCB_DRIVE_GET_LIST (list, TRUE, FALSE);
+	monitor = brasero_medium_monitor_get_default ();
+	list = brasero_medium_monitor_get_media (monitor,
+						 BRASERO_MEDIA_TYPE_WRITABLE|
+						 BRASERO_MEDIA_TYPE_REWRITABLE);
+	g_object_unref (monitor);
+
 	for (iter = list; iter; iter = iter->next) {
-		NautilusBurnDriveMonitor *monitor;
-		BraseroDrive *drive;
+		BraseroMediumMonitor *monitor;
+		BraseroDriveSize *drive;
 
-		drive = g_new0 (BraseroDrive, 1);
-		drive->drive = iter->data;
+		drive = g_new0 (BraseroDriveSize, 1);
+		drive->medium = iter->data;
 		self->priv->drives = g_list_prepend (self->priv->drives, drive);
 
 		/* add a callback if media changes */
-		monitor = nautilus_burn_get_drive_monitor ();
+		monitor = brasero_medium_monitor_get_default ();
 		g_signal_connect (monitor,
-				  "media-added",
+				  "medium-added",
 				  G_CALLBACK (brasero_project_size_disc_added_cb),
 				  self);
 		g_signal_connect (monitor,
-				  "media-removed",
+				  "medium-removed",
 				  G_CALLBACK (brasero_project_size_disc_removed_cb),
 				  self);
 
 		/* get all the information about the current media */
-		drive->media = NCB_MEDIA_GET_STATUS (drive->drive);
+		drive->media = brasero_medium_get_status (drive->medium);
 		if (!BRASERO_MEDIUM_VALID (drive->media))
 			continue;
 
-		NCB_MEDIA_GET_CAPACITY (drive->drive, NULL, &drive->sectors);
-		NCB_MEDIA_GET_FREE_SPACE (drive->drive, NULL, &drive->free_space);
+		brasero_medium_get_capacity (drive->medium, NULL, &drive->sectors);
+		brasero_medium_get_free_space (drive->medium, NULL, &drive->free_space);
 	}
-	g_list_free (list);
+	g_slist_free (list);
 
 	brasero_project_size_find_proper_drive (self);
 	brasero_project_size_disc_changed (self);
@@ -1642,18 +1646,18 @@ brasero_project_get_ruler_height (BraseroProjectSize *self)
 	return self->priv->ruler_height;
 }
 
-NautilusBurnDrive *
-brasero_project_size_get_active_drive (BraseroProjectSize *self)
+BraseroMedium *
+brasero_project_size_get_active_medium (BraseroProjectSize *self)
 {
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
 
 	if (!self->priv->current)
 		return NULL;
 
-	if (!self->priv->current->drive)
+	if (!self->priv->current->medium)
 		return NULL;
 
-	drive = self->priv->current->drive;
-	nautilus_burn_drive_ref (drive);
-	return drive;
+	medium = self->priv->current->medium;
+	g_object_ref (medium);
+	return medium;
 }

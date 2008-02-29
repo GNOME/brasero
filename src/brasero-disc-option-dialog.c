@@ -47,7 +47,7 @@
 #include "burn-plugin-manager.h"
 #include "brasero-disc-option-dialog.h"
 #include "brasero-dest-selection.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-disc.h"
 
 G_DEFINE_TYPE (BraseroDiscOptionDialog, brasero_disc_option_dialog, GTK_TYPE_DIALOG);
@@ -137,10 +137,9 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 {
 	time_t t;
 	gchar buffer [128];
+	BraseroDrive *drive;
 	gchar *title_str = NULL;
 	BraseroTrackType source;
-	BraseroMedia media;
-	NautilusBurnDrive *drive;
 	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
@@ -148,15 +147,16 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 	brasero_burn_session_get_input_type (priv->session, &source);
 
 	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
-	media = NCB_MEDIA_GET_STATUS (drive);
 
 	t = time (NULL);
 	strftime (buffer, sizeof (buffer), "%d %b %y", localtime (&t));
 
 	if (source.type == BRASERO_TRACK_TYPE_DATA) {
-		if ((media & BRASERO_MEDIUM_APPENDABLE)
-		&&  !brasero_burn_session_is_dest_file (priv->session))
-			title_str = nautilus_burn_drive_get_media_label (drive);
+		BraseroBurnFlag flags;
+
+		flags = brasero_burn_session_get_flags (priv->session);
+		if (flags & BRASERO_BURN_FLAG_MERGE)
+			title_str = brasero_drive_get_volume_label (drive);
 
 		if (!title_str || title_str [0] == '\0')
 			title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
@@ -164,7 +164,7 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 	else if (source.type == BRASERO_TRACK_TYPE_AUDIO)
 		title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
 
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (drive);
 	return title_str;
 }
 
@@ -908,10 +908,10 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 			  G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
 			  obj);
 
-	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
+	options = brasero_utils_pack_properties (_("<b>Select a disc to write to</b>"),
 						 priv->selection,
 						 NULL);
-	gtk_widget_show_all (options);
+	gtk_widget_show (options);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    options,

@@ -42,8 +42,6 @@
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkcheckbutton.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-session.h"
 #include "burn.h"
@@ -172,17 +170,20 @@ brasero_blank_dialog_fast_toggled (GtkToggleButton *toggle,
 
 static void
 brasero_blank_dialog_drive_changed (BraseroToolDialog *dialog,
-				    NautilusBurnDrive *drive)
+				    BraseroMedium *medium)
 {
 	BraseroBlankDialogPrivate *priv;
+	BraseroDrive *drive;
 
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (dialog);
+
+	drive = brasero_medium_get_drive (medium);
 	brasero_burn_session_set_burner (priv->session, drive);
 }
 
 static gboolean
 brasero_blank_dialog_activate (BraseroToolDialog *dialog,
-			       NautilusBurnDrive *drive)
+			       BraseroMedium *medium)
 {
 	BraseroBlankDialogPrivate *priv;
 	BraseroBlankDialog *self;
@@ -348,7 +349,8 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 {
 	BraseroBlankDialogPrivate *priv;
 	BraseroPluginManager *manager;
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (obj);
 
@@ -357,14 +359,15 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					NULL,
 					"media-optical-blank");
 
-	drive = brasero_tool_dialog_get_drive (BRASERO_TOOL_DIALOG (obj));
+	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
+	drive = brasero_medium_get_drive (medium);
 
 	priv->session = brasero_burn_session_new ();
 	brasero_burn_session_set_flags (priv->session,
 				        BRASERO_BURN_FLAG_EJECT|
 				        BRASERO_BURN_FLAG_NOGRACE);
 	brasero_burn_session_set_burner (priv->session, drive);
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (drive);
 
 	priv->output_sig = g_signal_connect (priv->session,
 					     "output-changed",

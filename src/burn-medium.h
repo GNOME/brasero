@@ -22,18 +22,18 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#ifndef _BURN_MEDIUM_H_
-#define _BURN_MEDIUM_H_
-
 #include <glib-object.h>
 
-#include <nautilus-burn-drive.h>
+#ifndef _BURN_MEDIUM_H_
+#define _BURN_MEDIUM_H_
 
 G_BEGIN_DECLS
 
 /* rates are in Kio/sec */
 #define CD_RATE 153600
 #define DVD_RATE 1385000
+
+typedef struct _BraseroDrive BraseroDrive;
 
 #define BRASERO_SPEED_TO_RATE_CD(speed)		(guint) ((speed) * CD_RATE)
 #define BRASERO_SPEED_TO_RATE_DVD(speed)	(guint) ((speed) * DVD_RATE)
@@ -63,7 +63,7 @@ struct _BraseroMedium
 GType brasero_medium_get_type (void) G_GNUC_CONST;
 
 BraseroMedium *
-brasero_medium_new (NautilusBurnDrive *drive);
+brasero_medium_new (BraseroDrive *drive);
 
 typedef enum {
 	BRASERO_MEDIUM_UNSUPPORTED		= -2,
@@ -260,16 +260,17 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium);
 gboolean
 brasero_medium_can_be_written (BraseroMedium *medium);
 
-gchar *
-brasero_medium_get_display_name (BraseroMedium *medium);
-
 const gchar *
 brasero_medium_get_type_string (BraseroMedium *medium);
 
 const gchar *
 brasero_medium_get_icon (BraseroMedium *medium);
 
-NautilusBurnDrive *
+gchar *
+brasero_medium_get_label (BraseroMedium *medium,
+			  gboolean with_markup);
+
+BraseroDrive *
 brasero_medium_get_drive (BraseroMedium *self);
 
 G_END_DECLS

@@ -46,7 +46,7 @@
 #include "burn-caps.h"
 #include "burn-medium.h"
 #include "brasero-utils.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-dest-selection.h"
 #include "brasero-src-selection.h"
@@ -109,6 +109,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD copy options"));
 
 	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	gtk_widget_show (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
 				      button, 
 				      GTK_RESPONSE_CANCEL);
@@ -117,6 +118,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 						  NULL,
 						  "media-optical-burn",
 						    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (priv->button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
 				      priv->button,
 				      GTK_RESPONSE_OK);
@@ -133,13 +135,8 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	/* take care of source media */
 	priv->source = brasero_src_selection_new (priv->session);
-
-	/* only show media with something to be read on them */
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),
-						BRASERO_MEDIA_TYPE_READABLE);
-
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    brasero_utils_pack_properties (_("<b>Select source drive to copy</b>"),
+			    brasero_utils_pack_properties (_("<b>Select disc to copy</b>"),
 							   priv->source,
 							   NULL),
 			    FALSE,
@@ -153,27 +150,36 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			  G_CALLBACK (brasero_disc_copy_dialog_valid_media_cb),
 			  obj);
 
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
-						BRASERO_MEDIA_TYPE_WRITABLE|
-						BRASERO_MEDIA_TYPE_FILE);
-
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
+			    brasero_utils_pack_properties (_("<b>Select a disc to write to</b>"),
 							   priv->selection,
 							   NULL),
 			    FALSE,
 			    FALSE,
 			    6);
 
+	/* only show media with something to be read on them */
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),
+						BRASERO_MEDIA_TYPE_READABLE);
+
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
 						BRASERO_MEDIA_TYPE_WRITABLE|
 						BRASERO_MEDIA_TYPE_REWRITABLE|
-						BRASERO_MEDIA_TYPE_READABLE);
+						BRASERO_MEDIA_TYPE_FILE);
+
+	BraseroDrive *drive, *src_drive;
+
+	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
+	brasero_burn_session_set_burner (priv->session, drive);
+	g_print ("%p\n", drive);
+
+	src_drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->source));
+	g_print ("%p\n", src_drive);
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
 		BraseroMedia media;
 
-		media = NCB_MEDIA_GET_STATUS (brasero_burn_session_get_src_drive (priv->session));
+		media = brasero_medium_get_status (brasero_burn_session_get_src_medium (priv->session));
 
 		if (media == BRASERO_MEDIUM_NONE
 		|| (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == 0)
@@ -181,11 +187,11 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 		else
 			valid = TRUE;
 	
-	} else if (brasero_burn_session_is_dest_file (priv->session)) {
-
+	}
+	else if (brasero_burn_session_is_dest_file (priv->session)) {
 	  	valid = TRUE;
-
-	} else {
+	}
+	else {
 		BraseroBurnCaps *caps;
 
 		caps = brasero_burn_caps_get_default ();

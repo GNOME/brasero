@@ -40,8 +40,6 @@
 
 #include <libgnomeui/libgnomeui.h>
 
-#include <nautilus-burn-init.h>
-
 #include <gconf/gconf-client.h>
 
 #ifdef HAVE_LIBNOTIFY
@@ -56,7 +54,7 @@
 #include "brasero-eject-dialog.h"
 #include "brasero-session.h"
 #include "brasero-project-manager.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-pref.h"
 #include "burn-debug.h"
 #include "burn.h"
@@ -774,8 +772,6 @@ main (int argc, char **argv)
 	g_object_unref (program);
 	g_free (app);
 	gst_deinit ();
-
-	nautilus_burn_shutdown ();
 
 	g_object_unref (client);
 	client = NULL;

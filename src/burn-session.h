@@ -28,10 +28,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-track.h"
+#include "burn-drive.h"
 
 G_BEGIN_DECLS
 
@@ -115,7 +114,7 @@ brasero_burn_session_set_num_copies (BraseroBurnSession *session,
 guint
 brasero_burn_session_get_num_copies (BraseroBurnSession *session);
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_burn_session_get_burner (BraseroBurnSession *session);
 
 
@@ -125,7 +124,7 @@ brasero_burn_session_get_burner (BraseroBurnSession *session);
 
 void
 brasero_burn_session_set_burner (BraseroBurnSession *session,
-				 NautilusBurnDrive *burner);
+				 BraseroDrive *burner);
 
 BraseroBurnResult
 brasero_burn_session_set_image_output (BraseroBurnSession *session,
@@ -225,8 +224,11 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *session);
 BraseroMedia
 brasero_burn_session_get_dest_media (BraseroBurnSession *session);
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_burn_session_get_src_drive (BraseroBurnSession *session);
+
+BraseroMedium *
+brasero_burn_session_get_src_medium (BraseroBurnSession *session);
 
 gboolean
 brasero_burn_session_is_dest_file (BraseroBurnSession *session);

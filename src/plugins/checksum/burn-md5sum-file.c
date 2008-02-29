@@ -44,7 +44,7 @@
 #include "burn-md5.h"
 #include "burn-md5sum-file.h"
 #include "burn-volume.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroMd5sumFile, brasero_md5sum_file, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -372,7 +372,7 @@ brasero_md5sum_file_disc_files (BraseroMd5sumFile *self, GError **error)
 	const gchar *name;
 	BraseroTrack *track;
 	gboolean has_wrongsums;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	BraseroMd5sumFilePrivate *priv;
 	gchar filename [MAXPATHLEN + 1];
 	BraseroBurnResult result = BRASERO_BURN_OK;
@@ -383,7 +383,7 @@ brasero_md5sum_file_disc_files (BraseroMd5sumFile *self, GError **error)
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	drive = brasero_track_get_drive_source (track);
-	root = NCB_VOLUME_GET_MOUNT_POINT (drive, error);
+	root = brasero_drive_get_mount_point (drive, error);
 	if (!root)
 		return BRASERO_BURN_ERR;
 

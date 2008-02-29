@@ -28,6 +28,8 @@
 #include <glib-object.h>
 #include <gtk/gtkhbox.h>
 
+#include "burn-medium.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_DRIVE_INFO            	(brasero_drive_info_get_type ())
@@ -56,8 +58,8 @@ GtkWidget *
 brasero_drive_info_new ();
 
 void
-brasero_drive_info_set_drive (BraseroDriveInfo *self,
-			      NautilusBurnDrive *drive);
+brasero_drive_info_set_medium (BraseroDriveInfo *self,
+			       BraseroMedium *medium);
 
 void
 brasero_drive_info_set_image_path (BraseroDriveInfo *self,

@@ -1,3 +1,197 @@
+2008-02-29  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Second patch toward ncb removal.
+	Also, some small bug and memleaks fixed
+
+	* src/Makefile.am:
+	* src/brasero-blank-dialog.c: (brasero_blank_dialog_drive_changed),
+	(brasero_blank_dialog_activate), (brasero_blank_dialog_init):
+	* src/brasero-burn-dialog.c:
+	(brasero_burn_dialog_wait_for_insertion),
+	(brasero_burn_dialog_insert_disc_cb), (brasero_burn_dialog_init),
+	(brasero_burn_dialog_notify_success), (brasero_burn_dialog_run):
+	* src/brasero-data-disc.c: (brasero_data_disc_set_drive):
+	* src/brasero-data-session.c: (brasero_data_session_add_last),
+	(brasero_data_session_set_drive), (brasero_data_session_finalize):
+	* src/brasero-data-session.h:
+	* src/brasero-data-tree-model.c:
+	(brasero_data_tree_model_get_value):
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_check_same_src_dest),
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_properties_button_cb),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_output_changed),
+	(brasero_dest_selection_drive_changed),
+	(brasero_dest_selection_init),
+	(brasero_dest_selection_set_property):
+	* src/brasero-disc-copy-dialog.c: (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_get_default_label),
+	(brasero_disc_option_dialog_init):
+	* src/brasero-disc-option-dialog.h:
+	* src/brasero-disc.c: (brasero_disc_set_current_drive):
+	* src/brasero-disc.h:
+	* src/brasero-drive-info.c: (brasero_drive_info_update_info),
+	(brasero_drive_info_set_same_src_dest),
+	(brasero_drive_info_set_medium), (brasero_drive_info_init),
+	(brasero_drive_info_finalize):
+	* src/brasero-drive-info.h:
+	* src/brasero-drive-properties.c:
+	(brasero_drive_properties_set_tmpdir),
+	(brasero_drive_properties_set_drive):
+	* src/brasero-drive-properties.h:
+	* src/brasero-drive-selection.c:
+	(brasero_drive_selection_drive_changed_cb),
+	(brasero_drive_selection_set_drive),
+	(brasero_drive_selection_get_medium),
+	(brasero_drive_selection_get_drive),
+	(brasero_drive_selection_lock), (brasero_drive_selection_init),
+	(brasero_drive_selection_finalize),
+	(brasero_drive_selection_class_init):
+	* src/brasero-drive-selection.h:
+	* src/brasero-eject-dialog.c: (brasero_eject_dialog_drive_changed),
+	(_eject_async), (brasero_eject_dialog_activate):
+	* src/brasero-image-option-dialog.c:
+	(brasero_image_option_dialog_set_formats),
+	(brasero_image_option_dialog_init):
+	* src/brasero-medium-selection.c:
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_init):
+	* src/brasero-ncb.c:
+	* src/brasero-ncb.h:
+	* src/brasero-project-manager.c: (brasero_project_manager_burn),
+	(brasero_project_manager_burn_disc):
+	* src/brasero-project-size.c:
+	(brasero_project_size_add_default_medias),
+	(brasero_project_size_finalize),
+	(brasero_project_size_get_ruler_min_width),
+	(brasero_project_size_get_media_string),
+	(brasero_project_size_expose),
+	(brasero_project_size_disc_changed_cb),
+	(brasero_project_size_build_menu),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_set_context),
+	(brasero_project_size_check_status),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_disc_removed_cb),
+	(brasero_project_size_add_real_medias),
+	(brasero_project_size_get_active_medium):
+	* src/brasero-project-size.h:
+	* src/brasero-project.c: (brasero_project_disc_changed_cb),
+	(brasero_project_burn):
+	* src/brasero-src-selection.c:
+	(brasero_src_selection_drive_changed),
+	(brasero_src_selection_init), (brasero_src_selection_set_property):
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_get_disc_checksum),
+	(brasero_sum_dialog_check_md5_file),
+	(brasero_sum_dialog_check_disc_sum), (brasero_sum_dialog_activate):
+	* src/brasero-tool-dialog.c: (brasero_tool_dialog_run),
+	(brasero_tool_dialog_get_medium),
+	(brasero_tool_dialog_drive_changed_cb):
+	* src/brasero-tool-dialog.h:
+	* src/brasero-utils.c:
+	* src/burn-basics.c: (brasero_burn_library_init):
+	* src/burn-caps.c:
+	* src/burn-caps.h:
+	* src/burn-drive.c: (brasero_drive_eject), (free_command_data),
+	(command_done), (command_timeout), (try_hidden_locations),
+	(create_command), (command_thread_start), (launch_command),
+	(brasero_drive_mount), (brasero_drive_unmount),
+	(brasero_drive_unmount_wait), (brasero_drive_get_gdrive),
+	(brasero_drive_get_mount_point), (brasero_drive_is_mounted),
+	(brasero_drive_is_door_open), (brasero_drive_lock),
+	(brasero_drive_unlock), (brasero_drive_get_display_name),
+	(brasero_drive_get_volume_label), (brasero_drive_get_device),
+	(brasero_drive_get_medium), (brasero_drive_get_nautilus_drive),
+	(brasero_drive_set_medium), (brasero_drive_can_write),
+	(brasero_drive_can_rewrite), (brasero_drive_is_fake),
+	(brasero_drive_init), (brasero_drive_finalize),
+	(brasero_drive_set_property), (brasero_drive_get_property),
+	(brasero_drive_class_init), (brasero_drive_new):
+	* src/burn-drive.h:
+	* src/burn-job.c: (brasero_job_check_output_disc_space),
+	(brasero_job_check_output_volume_space), (brasero_job_get_device),
+	(brasero_job_get_last_session_address),
+	(brasero_job_get_next_writable_address),
+	(brasero_job_get_max_rate), (brasero_job_get_max_speed):
+	* src/burn-medium-monitor.c: (brasero_medium_monitor_get_media),
+	(brasero_medium_monitor_inserted_cb),
+	(brasero_medium_monitor_removed_cb),
+	(brasero_burn_medium_monitor_add_file),
+	(brasero_medium_monitor_init), (brasero_medium_monitor_finalize):
+	* src/burn-medium-monitor.h:
+	* src/burn-medium.c: (brasero_medium_get_status),
+	(brasero_medium_init_real), (brasero_medium_retry_open),
+	(brasero_medium_try_open), (brasero_medium_finalize),
+	(brasero_medium_set_property), (brasero_medium_get_property),
+	(brasero_medium_class_init), (brasero_medium_can_be_written),
+	(brasero_medium_can_be_rewritten), (brasero_medium_get_label),
+	(brasero_medium_new):
+	* src/burn-medium.h:
+	* src/burn-session.c: (brasero_session_settings_clean),
+	(brasero_session_settings_copy),
+	(brasero_burn_session_src_media_added),
+	(brasero_burn_session_src_media_removed),
+	(brasero_burn_session_start_src_drive_monitoring),
+	(brasero_burn_session_stop_src_drive_monitoring),
+	(brasero_burn_session_dest_media_added),
+	(brasero_burn_session_dest_media_removed),
+	(brasero_burn_session_set_burner), (brasero_burn_session_get_rate),
+	(brasero_burn_session_set_image_output_full),
+	(brasero_burn_session_pop_settings),
+	(brasero_burn_session_get_dest_media),
+	(brasero_burn_session_get_src_medium),
+	(brasero_burn_session_same_src_dest_drive),
+	(brasero_burn_session_start),
+	(brasero_burn_session_get_config_key):
+	* src/burn-session.h:
+	* src/burn-track.c: (brasero_track_clean),
+	(brasero_track_get_type), (brasero_track_disc_copy),
+	(brasero_track_set_drive_source),
+	(brasero_track_get_medium_source),
+	(brasero_track_get_disc_capacity),
+	(brasero_track_get_disc_data_size),
+	(brasero_track_get_disc_free_space):
+	* src/burn-track.h:
+	* src/burn.c: (_eject_async), (brasero_burn_eject_async),
+	(brasero_burn_eject_dest_media), (brasero_burn_eject_src_media),
+	(brasero_burn_ask_for_media), (brasero_burn_ask_for_src_media),
+	(brasero_burn_ask_for_dest_media), (brasero_burn_lock_src_media),
+	(brasero_burn_lock_rewritable_media),
+	(brasero_burn_lock_dest_media), (brasero_burn_mount_media),
+	(brasero_burn_lock_checksum_media),
+	(brasero_burn_unlock_src_media), (brasero_burn_unlock_dest_media),
+	(brasero_burn_run_eraser), (brasero_burn_run_imager),
+	(brasero_burn_run_recorder), (brasero_burn_check_real),
+	(brasero_burn_check_session_consistency),
+	(brasero_burn_record_session):
+	* src/burn.h:
+	* src/main.c: (main):
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	(brasero_cdrdao_set_argv_record), (brasero_cdrdao_set_argv_image):
+	* src/plugins/cdrkit/burn-readom.c:
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size),
+	(brasero_readom_set_argv):
+	* src/plugins/cdrkit/burn-wodim.c:
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	* src/plugins/cdrtools/burn-readcd.c:
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size),
+	(brasero_readcd_set_argv):
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_disc_files):
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_image):
+	* src/plugins/dvdcss/burn-dvdcss.c:
+	(brasero_dvdcss_write_image_thread):
+	* src/plugins/growisofs/burn-dvd-rw-format.c:
+	* src/plugins/growisofs/burn-growisofs.c:
+	* src/plugins/transcode/burn-transcode.c:
+
 2008-02-27  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-burn-dialog.c:
@@ -53,7 +247,7 @@
 	* src/brasero-medium-selection.h:
 	* src/brasero-ncb.c: (NCB_DRIVE_GET_MEDIUM),
 	(NCB_DRIVE_SET_MEDIUM):
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/brasero-src-selection.c: (brasero_src_selection_init):
 	* src/brasero-tool-dialog.c: (brasero_tool_dialog_init):
 	* src/burn-basics.c: (brasero_burn_library_init),
@@ -2245,7 +2439,7 @@
 
 	* src/brasero-ncb.c: (NCB_MEDIA_GET_TRACK_NUM),
 	(NCB_MEDIA_GET_TRACK_ADDRESS), (NCB_MEDIA_GET_TRACK_SPACE):
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/burn-caps.c: (brasero_caps_unregister_plugin),
 	(brasero_caps_is_compatible_type),
 	(brasero_burn_caps_media_capabilities),
@@ -2348,7 +2542,7 @@
 	(brasero_image_option_dialog_init):
 	* src/brasero-ncb.c: (NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS),
 	(NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE):
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/brasero-plugin-manager-ui.c:
 	(plugin_manager_ui_populate_lists), (model_name_sort_func),
 	(plugin_manager_ui_construct_tree),
@@ -4840,7 +5034,7 @@
 	* src/brasero-ncb.c: (NCB_MEDIA_GET_FS_TYPE),
 	(NCB_MEDIA_HAS_VALID_FS), (NCB_MEDIA_IS_APPENDABLE),
 	(NCB_DRIVE_MEDIA_GET_TYPE):
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/brasero-project-size.c: (brasero_project_size_build_menu),
 	(brasero_project_size_scroll_event),
 	(brasero_project_size_find_proper_drive),
@@ -4884,7 +5078,7 @@
 	(brasero_image_option_dialog_image_info_cb):
 	* src/brasero-ncb.c: (try_hidden_locations), (create_command),
 	(NCB_MEDIA_HAS_VALID_FS), (NCB_DRIVE_MEDIA_GET_TYPE):
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/brasero-project-size.c: (brasero_project_size_build_menu),
 	(brasero_project_size_scroll_event),
 	(brasero_project_size_find_proper_drive),
@@ -5642,7 +5836,7 @@
 	(NCB_DRIVE_GET_MOUNT_POINT_RESULT), (NCB_DRIVE_GET_VFS_DRIVE),
 	(NCB_VOLUME_GET_MOUNT_POINT_CB), (NCB_VOLUME_GET_MOUNT_POINT),
 	(NCB_DRIVE_GET_MOUNT_POINT), (NCB_DRIVE_GET_MOUNT_POINT_CANCEL):
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/brasero-project-manager.c: (brasero_project_manager_burn),
 	(brasero_project_manager_burn_iso_dialog),
 	(brasero_project_manager_switch):
@@ -6223,7 +6417,7 @@
 2006-09-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	* configure.in:
-	* src/brasero-ncb.h:
+	* src/burn-drive.h:
 	* src/brasero-project-size.c: (brasero_project_size_finalize),
 	(brasero_project_size_add_real_medias):
 	* src/burn-dialog.c: (brasero_burn_dialog_notify_daemon):

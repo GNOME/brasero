@@ -43,7 +43,7 @@
 #include "brasero-image-option-dialog.h"
 #include "brasero-image-type-chooser.h"
 #include "brasero-dest-selection.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-io.h"
  
 G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, GTK_TYPE_DIALOG);
@@ -246,9 +246,10 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 	BraseroImageOptionDialogPrivate *priv;
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
-	NautilusBurnDrive *drive;
 	BraseroTrackType output;
 	BraseroTrackType input;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
@@ -258,7 +259,8 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 	/* get the available image types */
 	output.type = BRASERO_TRACK_TYPE_DISC;
 	drive = brasero_burn_session_get_burner (priv->session);
-	output.subtype.media = NCB_MEDIA_GET_STATUS (drive);
+	medium = brasero_drive_get_medium (drive);
+	output.subtype.media = brasero_medium_get_status (medium);
 
 	input.type = BRASERO_TRACK_TYPE_IMAGE;
 	formats = BRASERO_IMAGE_FORMAT_NONE;
@@ -521,11 +523,11 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
 			  obj);
 
-	options = brasero_utils_pack_properties (_("<b>Select a drive to write to</b>"),
+	options = brasero_utils_pack_properties (_("<b>Select a disc to write to</b>"),
 						 priv->selection,
 						 NULL);
 
-	gtk_widget_show_all (options);
+	gtk_widget_show (options);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    options,
 			    FALSE,

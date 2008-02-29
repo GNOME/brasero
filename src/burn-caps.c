@@ -34,11 +34,9 @@
 
 #include <gconf/gconf-client.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "burn-medium.h"
 #include "burn-session.h"
 #include "burn-plugin.h"

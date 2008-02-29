@@ -61,7 +61,7 @@ GtkWidget *brasero_drive_properties_new ();
 
 void
 brasero_drive_properties_set_drive (BraseroDriveProperties *props,
-				    NautilusBurnDrive *drive,
+				    BraseroDrive *drive,
 				    gint64 rate);
 void
 brasero_drive_properties_set_flags (BraseroDriveProperties *props,

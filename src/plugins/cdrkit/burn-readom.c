@@ -34,8 +34,6 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-cdrkit.h"
 #include "burn-readom.h"
@@ -43,7 +41,7 @@
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-volume.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroReadom, brasero_readom, BRASERO_TYPE_PROCESS, BraseroProcess);
 static GObjectClass *parent_class = NULL;
@@ -128,17 +126,17 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 	/* 0 means all disc, -1 problem */
 	if (brasero_track_get_drive_track (track) > 0) {
 		gint64 start;
-		NautilusBurnDrive *drive;
+		BraseroMedium *medium;
 
-		drive = brasero_track_get_drive_source (track);
-		NCB_MEDIA_GET_TRACK_SPACE (drive,
-					   brasero_track_get_drive_track (track),
-					   NULL,
-					   &nb_blocks);
-		NCB_MEDIA_GET_TRACK_ADDRESS (drive,
-					     brasero_track_get_drive_track (track),
-					     NULL,
-					     &start);
+		medium = brasero_track_get_medium_source (track);
+		brasero_medium_get_track_space (medium,
+						brasero_track_get_drive_track (track),
+						NULL,
+						&nb_blocks);
+		brasero_medium_get_track_address (medium,
+						  brasero_track_get_drive_track (track),
+						  NULL,
+						  &start);
 
 		BRASERO_JOB_LOG (readom,
 				 "reading %i from sector %lli to %lli",
@@ -152,15 +150,15 @@ brasero_readom_argv_set_iso_boundary (BraseroReadom *readom,
 	/* if it's BIN output just read the last track */
 	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 		gint64 start;
-		NautilusBurnDrive *drive;
+		BraseroMedium *medium;
 
-		drive = brasero_track_get_drive_source (track);
-		NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (drive,
-						     NULL,
-						     &nb_blocks);
-		NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (drive,
-						       NULL,
-						       &start);
+		medium = brasero_track_get_medium_source (track);
+		brasero_medium_get_last_data_track_space (medium,
+							  NULL,
+							  &nb_blocks);
+		brasero_medium_get_last_data_track_address (medium,
+							    NULL,
+							    &start);
 		BRASERO_JOB_LOG (readom,
 				 "reading last track from sector %lli to %lli",
 				 start,
@@ -189,21 +187,21 @@ brasero_readom_get_size (BraseroReadom *self,
 	brasero_job_get_output_type (BRASERO_JOB (self), &output);
 
 	if (brasero_track_get_drive_track (track) > 0) {
-		NautilusBurnDrive *drive;
+		BraseroMedium *medium;
 
-		drive = brasero_track_get_drive_source (track);
-		NCB_MEDIA_GET_TRACK_SPACE (drive, 
-					   brasero_track_get_drive_track (track),
-					   NULL,
-					   &blocks);
+		medium = brasero_track_get_medium_source (track);
+		brasero_medium_get_track_space (medium,
+						brasero_track_get_drive_track (track),
+						NULL,
+						&blocks);
 	}
 	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
-		NautilusBurnDrive *drive;
+		BraseroMedium *medium;
 
-		drive = brasero_track_get_drive_source (track);
-		NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (drive,
-						     NULL,
-						     &blocks);
+		medium = brasero_track_get_medium_source (track);
+		brasero_medium_get_last_data_track_space (medium,
+							  NULL,
+							  &blocks);
 	}
 	else
 		brasero_track_get_disc_data_size (track, &blocks, NULL);
@@ -234,10 +232,11 @@ brasero_readom_set_argv (BraseroProcess *process,
 			 GError **error)
 {
 	BraseroBurnResult result = FALSE;
-	NautilusBurnDrive *drive;
 	BraseroJobAction action;
 	BraseroTrackType output;
 	BraseroReadom *readom;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 	BraseroTrack *track;
 	BraseroMedia media;
 	gchar *outfile_arg;
@@ -254,15 +253,16 @@ brasero_readom_set_argv (BraseroProcess *process,
 
 	brasero_job_get_current_track (BRASERO_JOB (readom), &track);
 	drive = brasero_track_get_drive_source (track);
-	if (!NCB_DRIVE_GET_DEVICE (drive))
+	if (!brasero_drive_get_device (drive))
 		return BRASERO_BURN_ERR;
 
-	dev_str = g_strdup_printf ("dev=%s", NCB_DRIVE_GET_DEVICE (drive));
+	dev_str = g_strdup_printf ("dev=%s", brasero_drive_get_device (drive));
 	g_ptr_array_add (argv, dev_str);
 
 	g_ptr_array_add (argv, g_strdup ("-nocorr"));
 
-	media = NCB_MEDIA_GET_STATUS (drive);
+	medium = brasero_drive_get_medium (drive);
+	media = brasero_medium_get_status (medium);
 	brasero_job_get_output_type (BRASERO_JOB (readom), &output);
 
 	if ((media & BRASERO_MEDIUM_DVD)

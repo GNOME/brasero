@@ -40,8 +40,6 @@
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtkmessagedialog.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "brasero-utils.h"
 #include "brasero-progress.h"
 #include "brasero-drive-selection.h"
@@ -49,7 +47,7 @@
 #include "burn-session.h"
 #include "burn.h"
 #include "burn-medium.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 G_DEFINE_TYPE (BraseroToolDialog, brasero_tool_dialog, GTK_TYPE_DIALOG);
 
@@ -206,12 +204,12 @@ static void
 brasero_tool_dialog_run (BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
-	NautilusBurnDrive *drive;
-	BraseroMedia media;
 	gboolean close = FALSE;
+	BraseroMedium *medium;
+	BraseroMedia media;
 	GdkCursor *cursor;
 
-	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector));
+	medium = brasero_drive_selection_get_medium (BRASERO_DRIVE_SELECTION (self->priv->selector));
 
 	/* set up */
 	gtk_widget_set_sensitive (self->priv->upper_box, FALSE);
@@ -225,7 +223,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CANCEL);
 
 	/* check the contents of the drive */
-	media = NCB_MEDIA_GET_STATUS (drive);
+	media = brasero_medium_get_status (medium);
 	if (media == BRASERO_MEDIUM_NONE) {
 		brasero_tool_dialog_no_media (self);
 		gtk_widget_set_sensitive (GTK_WIDGET (self->priv->button), TRUE);
@@ -246,10 +244,10 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	self->priv->running = TRUE;
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->activate)
-		close = klass->activate (self, drive);
+		close = klass->activate (self, medium);
 	self->priv->running = FALSE;
 
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (medium);
 
 	if (close || self->priv->close) {
 		gtk_widget_destroy (GTK_WIDGET (self));
@@ -331,22 +329,22 @@ brasero_tool_dialog_set_valid (BraseroToolDialog *self,
 	gtk_widget_set_sensitive (self->priv->button, valid);
 }
 
-NautilusBurnDrive *
-brasero_tool_dialog_get_drive (BraseroToolDialog *self)
+BraseroMedium *
+brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 {
-	return brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self->priv->selector));
+	return brasero_drive_selection_get_medium (BRASERO_DRIVE_SELECTION (self->priv->selector));
 }
 
 static void
 brasero_tool_dialog_drive_changed_cb (BraseroDriveSelection *selection,
-				      NautilusBurnDrive *drive,
+				      BraseroMedium *medium,
 				      BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->drive_changed)
-		klass->drive_changed (self, drive);
+		klass->drive_changed (self, medium);
 }
 
 static gboolean

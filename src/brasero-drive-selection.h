@@ -28,10 +28,9 @@
 #include <glib-object.h>
 #include <gtk/gtkvbox.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-medium-monitor.h"
 #include "burn-medium.h"
+#include "burn-drive.h"
 
 G_BEGIN_DECLS
 
@@ -50,7 +49,7 @@ struct _BraseroDriveSelectionClass
 	GtkVBoxClass parent_class;
 
 	void	(*drive_changed)	(BraseroDriveSelection *selection,
-					 NautilusBurnDrive *drive);
+					 BraseroDrive *drive);
 };
 
 struct _BraseroDriveSelection
@@ -69,14 +68,17 @@ brasero_drive_selection_lock (BraseroDriveSelection *selection,
 
 void
 brasero_drive_selection_set_drive (BraseroDriveSelection *selection,
-				   NautilusBurnDrive *drive);
+				   BraseroDrive *drive);
 
 void
 brasero_drive_selection_set_tooltip (BraseroDriveSelection *selection,
 				     const gchar *tooltip);
 
-NautilusBurnDrive *
+BraseroDrive *
 brasero_drive_selection_get_drive (BraseroDriveSelection *selection);
+
+BraseroMedium *
+brasero_drive_selection_get_medium (BraseroDriveSelection *selection);
 
 void
 brasero_drive_selection_set_image_path (BraseroDriveSelection *selection,

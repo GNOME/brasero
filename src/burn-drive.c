@@ -1,53 +1,77 @@
-/***************************************************************************
- *            brasero-ncb.c
- *
- *  Sat Sep  9 11:00:42 2006
- *  Copyright  2006  philippe
- *  <philippe@Rouquier Philippe.localdomain>
- ****************************************************************************/
-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * trunk
+ * Copyright (C) Philippe Rouquier 2008 <bonfire-app@wanadoo.fr>
  * 
- * This program is distributed in the hope that it will be useful,
+ * trunk is free software.
+ * 
+ * You may redistribute it and/or modify it under the terms of the
+ * GNU General Public License, as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ * 
+ * trunk is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ * along with trunk.  If not, write to:
+ * 	The Free Software Foundation, Inc.,
+ * 	51 Franklin Street, Fifth Floor
+ * 	Boston, MA  02110-1301, USA.
  */
-
-/* Some of the functions are cut and pasted from nautilus-burn-drive.c.
- * This is done to work around a bug in fedora that is not built with
- * gnome-mount support and therefore can't unmount the volumes mounted
- * by gnome-mount since it uses plain unmount command */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
-#include <string.h>
-#include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <glib.h>
+#include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
 #include <gio/gio.h>
 
 #include <nautilus-burn-drive-monitor.h>
 
-#include "brasero-ncb.h"
 #include "burn-basics.h"
-#include "burn-volume.h"
 #include "burn-medium.h"
+#include "burn-drive.h"
 
-#define BRASERO_MEDIUM_KEY "brasero-medium-key"
+typedef struct _BraseroDrivePrivate BraseroDrivePrivate;
+struct _BraseroDrivePrivate
+{
+	BraseroMedium *medium;
+	NautilusBurnDrive *ndrive;
+};
+
+#define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
+
+enum {
+	MEDIUM_REMOVED,
+	MEDIUM_INSERTED,
+	LAST_SIGNAL
+};
+static gulong drive_signals [LAST_SIGNAL] = {0, };
+
+enum {
+	PROP_NONE	= 0,
+	PROP_DRIVE
+};
+
+G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
+
+gboolean
+brasero_drive_eject (BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+	return nautilus_burn_drive_eject (priv->ndrive);
+}
 
 typedef struct {
 	gboolean    timeout;
@@ -270,15 +294,15 @@ launch_command (NautilusBurnDrive *drive,
 		gboolean mount,
 		GError **error)
 {
-	const gchar *device;
 	GPtrArray *argv;
 	CommandData *data;
 	gboolean command_ok;
+	const gchar *device;
 
 	g_return_val_if_fail (drive != NULL, FALSE);
 
 	/* fetches the device for the drive */
-	device = NCB_DRIVE_GET_DEVICE (drive);
+	device = nautilus_burn_drive_get_device (drive);
 	if (device == NULL)
 		return FALSE;
 
@@ -336,25 +360,44 @@ launch_command (NautilusBurnDrive *drive,
 }
 
 gboolean
-NCB_DRIVE_UNMOUNT (NautilusBurnDrive *drive,
-		   GError **error)
+brasero_drive_mount (BraseroDrive *drive, GError **error)
 {
-	return launch_command (drive, FALSE, error);
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	return launch_command (priv->ndrive, TRUE, error);
 }
 
 gboolean
-NCB_DRIVE_MOUNT (NautilusBurnDrive *drive,
-		 GError **error)
+brasero_drive_unmount (BraseroDrive *drive, GError **error)
 {
-	return launch_command (drive, TRUE, error);
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	return launch_command (priv->ndrive, FALSE, error);
+}
+
+gboolean
+brasero_drive_unmount_wait (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	return nautilus_burn_drive_unmount (priv->ndrive);
 }
 
 static GDrive *
-NCB_DRIVE_GET_VFS_DRIVE (NautilusBurnDrive *drive)
+brasero_drive_get_gdrive (BraseroDrive *drive)
 {
+	BraseroDrivePrivate *priv;
 	GVolumeMonitor *monitor;
 	GList *drives;
 	GList *iter;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	monitor = g_volume_monitor_get ();
 	drives = g_volume_monitor_get_connected_drives (monitor);
@@ -375,7 +418,7 @@ NCB_DRIVE_GET_VFS_DRIVE (NautilusBurnDrive *drive)
 
 			volume = vol_iter->data;
 			device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-			if (!strcmp (device_path, NCB_DRIVE_GET_DEVICE (drive))) {
+			if (!strcmp (device_path, nautilus_burn_drive_get_device (priv->ndrive))) {
 
 				g_object_ref (vfs_drive);
 
@@ -400,8 +443,8 @@ NCB_DRIVE_GET_VFS_DRIVE (NautilusBurnDrive *drive)
 }
 
 gchar *
-NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
-			    GError **error)
+brasero_drive_get_mount_point (BraseroDrive *drive,
+			       GError **error)
 {
 	gchar *mount_point = NULL;
 	gchar *local_path = NULL;
@@ -409,7 +452,7 @@ NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 	GList *iter, *volumes;
 
 	/* get the uri for the mount point */
-	vfsdrive = NCB_DRIVE_GET_VFS_DRIVE (drive);
+	vfsdrive = brasero_drive_get_gdrive (drive);
 	volumes = g_drive_get_volumes (vfsdrive);
 	g_object_unref (vfsdrive);
 
@@ -463,295 +506,267 @@ NCB_VOLUME_GET_MOUNT_POINT (NautilusBurnDrive *drive,
 }
 
 gboolean
-NCB_MEDIA_GET_LAST_DATA_TRACK_ADDRESS (NautilusBurnDrive *drive,
-				       gint64 *byte,
-				       gint64 *sector)
+brasero_drive_is_mounted (BraseroDrive *self)
 {
-	BraseroMedium *medium;
+	BraseroDrivePrivate *priv;
 
-	if (!drive) {
-		if (byte)
-			*byte = -1;
-		if (sector)
-			*sector = -1;
-		return FALSE;
-	}
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium) {
-		if (byte)
-			*byte = -1;
-		if (sector)
-			*sector = -1;
-		return FALSE;
-	}
-
-	return brasero_medium_get_last_data_track_address (medium,
-							   byte,
-							   sector);
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_is_mounted (priv->ndrive);
 }
 
 gboolean
-NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (NautilusBurnDrive *drive,
-				     gint64 *size,
-				     gint64 *blocks)
+brasero_drive_is_door_open (BraseroDrive *self)
 {
-	BraseroMedium *medium;
+	BraseroDrivePrivate *priv;
 
-	if (!drive) {
-		if (size)
-			*size = -1;
-		if (blocks)
-			*blocks = -1;
-		return FALSE;
-	}
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium) {
-		if (size)
-			*size = -1;
-		if (blocks)
-			*blocks = -1;
-		return FALSE;
-	}
-
-	return brasero_medium_get_last_data_track_space (medium, size, blocks);
-}
-
-guint
-NCB_MEDIA_GET_TRACK_NUM (NautilusBurnDrive *drive)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		return 0;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		return 0;
-
-	return brasero_medium_get_track_num (medium);
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_door_is_open (priv->ndrive);	
 }
 
 gboolean
-NCB_MEDIA_GET_TRACK_ADDRESS (NautilusBurnDrive *drive,
-			     guint num,
-			     gint64 *byte,
-			     gint64 *sector)
+brasero_drive_lock (BraseroDrive *self,
+		    const gchar *reason,
+		    gchar **reason_for_failure)
 {
-	BraseroMedium *medium;
+	BraseroDrivePrivate *priv;
 
-	if (!drive) {
-		if (byte)
-			*byte = -1;
-		if (sector)
-			*sector = -1;
-		return FALSE;
-	}
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium) {
-		if (byte)
-			*byte = -1;
-		if (sector)
-			*sector = -1;
-		return FALSE;
-	}
-
-	return brasero_medium_get_track_address (medium,
-						 num,
-						 byte,
-						 sector);
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_lock (priv->ndrive, reason, reason_for_failure);
 }
 
 gboolean
-NCB_MEDIA_GET_TRACK_SPACE (NautilusBurnDrive *drive,
-			   guint num,
-			   gint64 *size,
-			   gint64 *blocks)
+brasero_drive_unlock (BraseroDrive *self)
 {
-	BraseroMedium *medium;
+	BraseroDrivePrivate *priv;
 
-	if (!drive) {
-		if (size)
-			*size = -1;
-		if (blocks)
-			*blocks = -1;
-		return FALSE;
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_unlock (priv->ndrive);
+}
+
+gchar *
+brasero_drive_get_display_name (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_get_name_for_display (priv->ndrive);
+}
+
+gchar *
+brasero_drive_get_volume_label (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+	gchar *label;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	label = nautilus_burn_drive_get_media_label (priv->ndrive);
+	if (label && label [0] == '\0') {
+		g_free (label);
+		return NULL;
 	}
 
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium) {
-		if (size)
-			*size = -1;
-		if (blocks)
-			*blocks = -1;
-		return FALSE;
-	}
-
-	return brasero_medium_get_track_space (medium,
-					       num,
-					       size,
-					       blocks);
-}
-
-gint64
-NCB_MEDIA_GET_NEXT_WRITABLE_ADDRESS (NautilusBurnDrive *drive)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		return -1;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		return -1;
-
-	return brasero_medium_get_next_writable_address (medium);
-}
-
-gint64
-NCB_MEDIA_GET_MAX_WRITE_RATE (NautilusBurnDrive *drive)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		return -1;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		return -1;
-
-	return brasero_medium_get_max_write_speed (medium);
-}
-
-BraseroMedia
-NCB_MEDIA_GET_STATUS (NautilusBurnDrive *drive)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		return BRASERO_MEDIUM_NONE;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		return BRASERO_MEDIUM_NONE;
-
-	return brasero_medium_get_status (medium);
-}
-
-void
-NCB_MEDIA_GET_DATA_SIZE (NautilusBurnDrive *drive,
-			 gint64 *size,
-			 gint64 *blocks)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		goto end;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium) 
-		goto end;
-
-	brasero_medium_get_data_size (medium, size, blocks);
-	return;
-
-end:
-	if (size)
-		*size = -1;
-	if (blocks)
-		*blocks = -1;
-}
-
-void
-NCB_MEDIA_GET_CAPACITY (NautilusBurnDrive *drive,
-			gint64 *size,
-			gint64 *blocks)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		goto end;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		goto end;
-
-	brasero_medium_get_capacity (medium, size, blocks);
-	return;
-
-end:
-	if (size)
-		*size = -1;
-	if (blocks)
-		*blocks = -1;
-}
-
-void
-NCB_MEDIA_GET_FREE_SPACE (NautilusBurnDrive *drive,
-			  gint64 *size,
-			  gint64 *blocks)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		goto end;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		goto end;
-
-	brasero_medium_get_free_space (medium, size, blocks);
-	return;
-
-end:
-	if (size)
-		*size = -1;
-	if (blocks)
-		*blocks = -1;
+	return label;
 }
 
 const gchar *
-NCB_MEDIA_GET_TYPE_STRING (NautilusBurnDrive *drive)
+brasero_drive_get_device (BraseroDrive *self)
 {
-	BraseroMedium *medium;
+	BraseroDrivePrivate *priv;
 
-	if (!drive)
-		return NULL;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		return NULL;
-
-	return brasero_medium_get_type_string (medium);
-}
-
-const gchar *
-NCB_MEDIA_GET_ICON (NautilusBurnDrive *drive)
-{
-	BraseroMedium *medium;
-
-	if (!drive)
-		return NULL;
-
-	medium = g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
-	if (!medium)
-		return NULL;
-
-	return brasero_medium_get_icon (medium);
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_get_device (priv->ndrive);
 }
 
 BraseroMedium *
-NCB_DRIVE_GET_MEDIUM (NautilusBurnDrive *drive)
+brasero_drive_get_medium (BraseroDrive *self)
 {
-	return g_object_get_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY);
+	BraseroDrivePrivate *priv;
+
+	if (!self)
+		return NULL;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return priv->medium;
+}
+
+NautilusBurnDrive *
+brasero_drive_get_nautilus_drive (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	if (!self)
+		return NULL;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return priv->ndrive;
 }
 
 void
-NCB_DRIVE_SET_MEDIUM (NautilusBurnDrive *drive,
-		      BraseroMedium *medium)
+brasero_drive_set_medium (BraseroDrive *self,
+			  BraseroMedium *medium)
 {
-	g_object_set_data (G_OBJECT (drive), BRASERO_MEDIUM_KEY, medium);
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (priv->medium) {
+		g_signal_emit (self,
+			       drive_signals [MEDIUM_REMOVED],
+			       0,
+			       priv->medium);
+
+		g_object_unref (priv->medium);
+		priv->medium = NULL;
+	}
+
+	priv->medium = medium;
+
+	if (medium) {
+		g_object_ref (medium);
+		g_signal_emit (self,
+			       drive_signals [MEDIUM_INSERTED],
+			       0,
+			       priv->medium);
+	}
 }
 
+gboolean
+brasero_drive_can_write (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_can_write (priv->ndrive);
+}
+
+gboolean
+brasero_drive_can_rewrite (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return nautilus_burn_drive_can_rewrite (priv->ndrive);
+}
+
+gboolean
+brasero_drive_is_fake (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return (nautilus_burn_drive_get_drive_type (priv->ndrive) == NAUTILUS_BURN_DRIVE_TYPE_FILE);
+}
+
+static void
+brasero_drive_init (BraseroDrive *object)
+{ }
+
+static void
+brasero_drive_finalize (GObject *object)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	if (priv->ndrive) {
+		g_object_unref (priv->ndrive);
+		priv->ndrive = NULL;
+	}
+
+	if (priv->medium) {
+		g_object_unref (priv->medium);
+		priv->medium = NULL;
+	}
+
+	G_OBJECT_CLASS (brasero_drive_parent_class)->finalize (object);
+}
+
+static void
+brasero_drive_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+	BraseroDrivePrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_DRIVE (object));
+
+	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_DRIVE:
+		priv->ndrive = g_value_get_object (value);
+		g_object_ref (priv->ndrive);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_drive_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+	BraseroDrivePrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_DRIVE (object));
+
+	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_DRIVE:
+		g_object_ref (priv->ndrive);
+		g_value_set_object (value, priv->ndrive);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_drive_class_init (BraseroDriveClass *klass)
+{
+	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+
+	g_type_class_add_private (klass, sizeof (BraseroDrivePrivate));
+
+	object_class->finalize = brasero_drive_finalize;
+	object_class->set_property = brasero_drive_set_property;
+	object_class->get_property = brasero_drive_get_property;
+
+	drive_signals[MEDIUM_INSERTED] =
+		g_signal_new ("medium_added",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__OBJECT,
+		              G_TYPE_NONE, 1,
+		              BRASERO_TYPE_MEDIUM);
+
+	drive_signals[MEDIUM_REMOVED] =
+		g_signal_new ("medium_removed",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__OBJECT,
+		              G_TYPE_NONE, 1,
+		              BRASERO_TYPE_MEDIUM);
+
+	g_object_class_install_property (object_class,
+	                                 PROP_DRIVE,
+	                                 g_param_spec_object ("drive",
+	                                                      "drive",
+	                                                      "drive in which medium is inserted",
+	                                                      NAUTILUS_BURN_TYPE_DRIVE,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+}
+
+BraseroDrive *
+brasero_drive_new (NautilusBurnDrive *drive)
+{
+	return g_object_new (BRASERO_TYPE_DRIVE,
+			     "drive", drive,
+			     NULL);
+}

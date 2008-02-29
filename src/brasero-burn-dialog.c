@@ -45,9 +45,6 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtklabel.h>
 
-#include <nautilus-burn-drive-monitor.h>
-#include <nautilus-burn-drive.h>
-
 #include "brasero-utils.h"
 #include "brasero-disc.h"
 #include "brasero-tray.h"
@@ -57,7 +54,7 @@
 #include "burn-medium.h"
 #include "brasero-drive-selection.h"
 #include "brasero-progress.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 static void brasero_burn_dialog_class_init (BraseroBurnDialogClass *klass);
 static void brasero_burn_dialog_init (BraseroBurnDialog *obj);
@@ -421,7 +418,8 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 }
 
 static void
-brasero_burn_dialog_wait_for_insertion (NautilusBurnDrive *drive,
+brasero_burn_dialog_wait_for_insertion (BraseroDrive *drive,
+					BraseroMedium *medium,
 					GtkDialog *message)
 {
 	/* we might have a dialog waiting for the 
@@ -431,7 +429,7 @@ brasero_burn_dialog_wait_for_insertion (NautilusBurnDrive *drive,
 
 static BraseroBurnResult
 brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
-				    NautilusBurnDrive *drive,
+				    BraseroDrive *drive,
 				    BraseroBurnError error,
 				    BraseroMedia type,
 				    BraseroBurnDialog *dialog)
@@ -441,6 +439,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	gchar *drive_name;
 	GtkWindow *window;
 	GtkWidget *message;
+	BraseroMedium *medium;
 	gboolean hide = FALSE;
 	gchar *main_message = NULL, *secondary_message = NULL;
 
@@ -450,7 +449,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	}
 
 	if (drive)
-		drive_name = nautilus_burn_drive_get_name_for_display (drive);
+		drive_name = brasero_drive_get_display_name (drive);
 	else
 		drive_name = NULL;
 
@@ -556,7 +555,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 	/* connect to signals to be warned when media is inserted */
 	added_id = g_signal_connect_after (drive,
-					   "media-added",
+					   "medium-added",
 					   G_CALLBACK (brasero_burn_dialog_wait_for_insertion),
 					   message);
 
@@ -566,20 +565,22 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	gtk_widget_destroy (message);
 
 	/* see if we should update the infos */
+	medium = brasero_burn_session_get_src_medium (dialog->priv->session);
 	if (dialog->priv->input.type == BRASERO_TRACK_TYPE_DISC) {
-		NautilusBurnDrive *src;
+		BraseroMedium *medium;
+		BraseroDrive *src;
 
 		/* see if the drive is the source */
 		src = brasero_burn_session_get_src_drive (dialog->priv->session);
-		if (nautilus_burn_drive_equal (src, drive))
+		if (drive == src)
 			brasero_burn_dialog_update_info (dialog,
 							 dialog->priv->input.type, 
-							 NCB_MEDIA_GET_STATUS (drive));
+							 brasero_medium_get_status (medium));
 	}
 	else
 		brasero_burn_dialog_update_info (dialog,
 						 dialog->priv->input.type, 
-						 NCB_MEDIA_GET_STATUS (drive));
+						 brasero_medium_get_status (medium));
 
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
@@ -1063,6 +1064,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			  obj);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
+	gtk_widget_show (alignment);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 6, 8, 6, 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    alignment,
@@ -1071,20 +1073,25 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			    0);
 
 	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox);
 
 	box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (box);
 	gtk_box_pack_start (GTK_BOX (vbox), box, TRUE, TRUE, 0);
 
 	obj->priv->header = gtk_label_new (NULL);
+	gtk_widget_show (obj->priv->header);
 	gtk_misc_set_alignment (GTK_MISC (obj->priv->header), 0.0, 0.5);
 	gtk_misc_set_padding (GTK_MISC (obj->priv->header), 0, 18);
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->header, TRUE, TRUE, 0);
 
 	obj->priv->image = gtk_image_new ();
+	gtk_widget_show (obj->priv->image);
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->image, FALSE, FALSE, 0);
 
 	obj->priv->progress = brasero_burn_progress_new ();
+	gtk_widget_show (obj->priv->progress);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    obj->priv->progress,
 			    FALSE,
@@ -1092,6 +1099,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			    0);
 
 	obj->priv->close_check = gtk_check_button_new_with_mnemonic (_("_Close the application if the burn process is successful"));
+	gtk_widget_show (obj->priv->close_check);
 	gtk_box_pack_end (GTK_BOX (obj->priv->progress),
 			  obj->priv->close_check,
 			  FALSE,
@@ -1100,6 +1108,7 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 
 	/* buttons */
 	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	gtk_widget_show (obj->priv->cancel);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
 				      obj->priv->cancel,
 				      GTK_RESPONSE_CANCEL);
@@ -1595,9 +1604,9 @@ static void
 brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 {
 	BraseroMedia media;
+	BraseroDrive *drive;
 	gchar *primary = NULL;
 	gchar *secondary = NULL;
-	NautilusBurnDrive *drive;
 
 	drive = brasero_burn_session_get_burner (dialog->priv->session);
 	if (dialog->priv->input.type != BRASERO_TRACK_TYPE_DISC)
@@ -1612,7 +1621,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 					     brasero_burn_session_get_label (dialog->priv->session));
 		break;
 	case BRASERO_TRACK_TYPE_DISC:
-		if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("DVD successfully copied"));
 				secondary = g_strdup_printf (_("DVD is now ready for use"));
@@ -1634,7 +1643,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		}
 		break;
 	case BRASERO_TRACK_TYPE_IMAGE:
-		if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("Image successfully burnt to DVD"));
 				secondary = g_strdup_printf (_("DVD is now ready for use"));
@@ -1646,7 +1655,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		}
 		break;
 	default:
-		if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+		if (!brasero_drive_is_fake (drive)) {
 			if (media & BRASERO_MEDIUM_DVD) {
 				primary = g_strdup (_("Data DVD successfully burnt"));
 				secondary = g_strdup_printf (_("\"%s\" is now ready for use"),
@@ -1797,10 +1806,10 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	else if (dialog->priv->input.type != BRASERO_TRACK_TYPE_DISC)
 		media = brasero_burn_session_get_dest_media (session);
 	else {
-		NautilusBurnDrive *drive;
+		BraseroMedium *medium;
 
-		drive = brasero_burn_session_get_src_drive (dialog->priv->session);
-		media = NCB_MEDIA_GET_STATUS (drive);
+		medium = brasero_burn_session_get_src_medium (dialog->priv->session);
+		media = brasero_medium_get_status (medium);
 	}
 
 	brasero_burn_dialog_update_info (dialog, dialog->priv->input.type, media);
@@ -1809,17 +1818,10 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	brasero_burn_dialog_activity_start (dialog);
 
 	result = brasero_burn_dialog_setup_session (dialog, &error);
-	if (result == BRASERO_BURN_OK) {
-		NautilusBurnDrive *drive;
-		BraseroBurnFlag flags;
-
-		drive = brasero_burn_session_get_burner (session);
-		flags = brasero_burn_session_get_flags (session);
-
+	if (result == BRASERO_BURN_OK)
 		result = brasero_burn_record (dialog->priv->burn,
 					      session,
 					      &error);
-	}
 
 	close_dialog = brasero_burn_dialog_end_session (dialog,
 							result,

@@ -25,6 +25,7 @@
 #include <glib.h>
 
 #include "burn-basics.h"
+#include "burn-drive.h"
 #include "burn-medium.h"
 #include "burn-image-format.h"
 
@@ -190,7 +191,7 @@ brasero_track_set_data_file_num (BraseroTrack *track,
 
 BraseroBurnResult
 brasero_track_set_drive_source (BraseroTrack *track,
-				NautilusBurnDrive *drive);
+				BraseroDrive *drive);
 BraseroBurnResult
 brasero_track_set_drive_track (BraseroTrack *track,
 			       guint num);
@@ -217,7 +218,9 @@ brasero_track_get_audio_end (BraseroTrack *track);
 BraseroSongInfo *
 brasero_track_get_audio_info (BraseroTrack *track);
 
-NautilusBurnDrive *
+BraseroMedium *
+brasero_track_get_medium_source (BraseroTrack *track);
+BraseroDrive *
 brasero_track_get_drive_source (BraseroTrack *track);
 gint
 brasero_track_get_drive_track (BraseroTrack *track);

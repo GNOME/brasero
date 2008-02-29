@@ -28,9 +28,10 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include <nautilus-burn-init.h>
 #include <nautilus-burn-drive-monitor.h>
 
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 #include "burn-medium.h"
 #include "burn-medium-monitor.h"
@@ -38,8 +39,9 @@
 typedef struct _BraseroMediumMonitorPrivate BraseroMediumMonitorPrivate;
 struct _BraseroMediumMonitorPrivate
 {
-	GSList * media;
-	BraseroMedium *file_medium;
+	GSList *media;
+	GSList *drives;
+
 	NautilusBurnDriveMonitor *monitor;
 };
 
@@ -58,24 +60,6 @@ static guint medium_monitor_signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
 
-static BraseroMedium *
-brasero_burn_medium_get_file (BraseroMediumMonitor *self)
-{
-	BraseroMediumMonitorPrivate *priv;
-
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	if (priv->file_medium) {
-		g_object_ref (priv->file_medium);
-		return priv->file_medium;
-	}
-
-	priv->file_medium = g_object_new (BRASERO_TYPE_MEDIUM,
-					  "drive", nautilus_burn_drive_monitor_get_drive_for_image (priv->monitor),
-					  NULL);
-	g_object_ref (priv->file_medium);
-	return priv->file_medium;
-}
 
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
@@ -92,6 +76,7 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 
 		medium = iter->data;
 		if ((type & BRASERO_MEDIA_TYPE_READABLE)
+		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
 		&&  (brasero_medium_get_status (medium) & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))) {
 			list = g_slist_prepend (list, medium);
 			g_object_ref (medium);
@@ -110,31 +95,55 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 			if (brasero_medium_can_be_rewritten (medium)) {
 				list = g_slist_prepend (list, medium);
 				g_object_ref (medium);
+				continue;
+			}
+		}
+
+		if (type & BRASERO_MEDIA_TYPE_FILE) {
+			if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
+				list = g_slist_prepend (list, medium);
+				g_object_ref (medium);
 			}
 		}
 	}
-
-	if (type & BRASERO_MEDIA_TYPE_FILE)
-		list = g_slist_append (list, brasero_burn_medium_get_file (self));
 
 	return list;
 }
 
 static void
 brasero_medium_monitor_inserted_cb (NautilusBurnDriveMonitor *monitor,
-				    NautilusBurnDrive *drive,
-				    BraseroMedium *self)
+				    NautilusBurnDrive *ndrive,
+				    BraseroMediumMonitor *self)
 {
 	BraseroMediumMonitorPrivate *priv;
+	BraseroDrive *drive = NULL;
 	BraseroMedium *medium;
+	GSList *iter;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
+	/* the drive must have been created first */
+	for (iter = priv->drives; iter; iter = iter->next) {
+		BraseroDrive *tmp;
+
+		tmp = iter->data;
+		if (nautilus_burn_drive_equal (brasero_drive_get_nautilus_drive (tmp), ndrive)) {
+			drive = tmp;
+			break;
+		}
+	}
+
+	if (!drive) {
+		drive = brasero_drive_new (ndrive);
+		priv->drives = g_slist_prepend (priv->drives, drive);
+	}
+
 	medium = brasero_medium_new (drive);
-	NCB_DRIVE_SET_MEDIUM (drive, medium);
 
 	priv->media = g_slist_prepend (priv->media, medium);
 	g_object_ref (medium);
+
+	brasero_drive_set_medium (drive, medium);
 
 	g_signal_emit (self,
 		       medium_monitor_signals [MEDIUM_INSERTED],
@@ -144,27 +153,57 @@ brasero_medium_monitor_inserted_cb (NautilusBurnDriveMonitor *monitor,
 
 static void
 brasero_medium_monitor_removed_cb (NautilusBurnDriveMonitor *monitor,
-				   NautilusBurnDrive *drive,
-				   BraseroMedium *self)
+				   NautilusBurnDrive *ndrive,
+				   BraseroMediumMonitor *self)
+{
+	BraseroMediumMonitorPrivate *priv;
+	GSList *iter;
+
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	for (iter = priv->drives; iter; iter = iter->next) {
+		BraseroDrive *drive;
+
+		drive = iter->data;
+		if (nautilus_burn_drive_equal (brasero_drive_get_nautilus_drive (drive), ndrive)) {
+			BraseroMedium *medium;
+
+			medium = brasero_drive_get_medium (drive);
+			brasero_drive_set_medium (drive, NULL);
+
+			if (!medium)
+				return;
+
+			priv->media = g_slist_remove (priv->media, medium);
+			g_signal_emit (self,
+				       medium_monitor_signals [MEDIUM_REMOVED],
+				       0,
+				       medium);
+
+			g_object_unref (medium);
+
+			break;
+		}
+	}
+}
+
+static void
+brasero_burn_medium_monitor_add_file (BraseroMediumMonitor *self)
 {
 	BraseroMediumMonitorPrivate *priv;
 	BraseroMedium *medium;
+	BraseroDrive *drive;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-	medium = NCB_DRIVE_GET_MEDIUM (drive);
-	NCB_DRIVE_SET_MEDIUM (drive, NULL);
-
-	if (!medium)
-		return;
-
-	priv->media = g_slist_remove (priv->media, medium);
-	g_signal_emit (self,
-		       medium_monitor_signals [MEDIUM_REMOVED],
-		       0,
-		       medium);
-
-	g_object_unref (medium);
+	drive = brasero_drive_new (nautilus_burn_drive_monitor_get_drive_for_image (priv->monitor));
+	priv->drives = g_slist_prepend (priv->drives, drive);
+	g_object_ref (drive);
+	
+	medium = g_object_new (BRASERO_TYPE_MEDIUM,
+			       "drive", drive,
+			       NULL);
+	priv->media = g_slist_prepend (priv->media, medium);
+	g_object_ref (medium);
 }
 
 static void
@@ -175,28 +214,32 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
 
+	nautilus_burn_init ();
 	priv->monitor = nautilus_burn_get_drive_monitor ();
 
 	list = nautilus_burn_drive_monitor_get_drives (priv->monitor);
 	for (iter = list; iter; iter = iter->next) {
+		BraseroDrive *drive;
 		BraseroMedium *medium;
-		NautilusBurnDrive *drive;
+		NautilusBurnDrive *ndrive;
 
-		drive = iter->data;
-		medium = brasero_medium_new (drive);
+		ndrive = iter->data;
 
-		if (nautilus_burn_drive_get_media_type (drive) < NAUTILUS_BURN_MEDIA_TYPE_CD)
+		drive = brasero_drive_new (ndrive);
+		priv->drives = g_slist_prepend (priv->drives, drive);
+		if (nautilus_burn_drive_get_media_type (ndrive) < NAUTILUS_BURN_MEDIA_TYPE_CD)
 			continue;
 
+		medium = brasero_medium_new (drive);
 		if (!medium)
 			continue;
 
+		brasero_drive_set_medium (drive, medium);
 		priv->media = g_slist_prepend (priv->media, medium);
-		g_object_ref (medium);
-
-		NCB_DRIVE_SET_MEDIUM (drive, medium);
 	}
 	g_list_free (list);
+
+	brasero_burn_medium_monitor_add_file (object);
 
 	g_signal_connect (priv->monitor,
 			  "media-added",
@@ -220,16 +263,13 @@ brasero_medium_monitor_finalize (GObject *object)
 		priv->monitor = NULL;
 	}
 
-	if (priv->file_medium) {
-		g_object_unref (priv->file_medium);
-		priv->file_medium = NULL;
-	}
-
 	if (priv->media) {
 		g_slist_foreach (priv->media, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->media);
 		priv->media = NULL;
 	}
+
+	nautilus_burn_shutdown ();
 
 	G_OBJECT_CLASS (brasero_medium_monitor_parent_class)->finalize (object);
 }

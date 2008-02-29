@@ -39,6 +39,7 @@ G_BEGIN_DECLS
 typedef struct _BraseroMediumMonitorClass BraseroMediumMonitorClass;
 typedef struct _BraseroMediumMonitor BraseroMediumMonitor;
 
+
 struct _BraseroMediumMonitorClass
 {
 	GObjectClass parent_class;

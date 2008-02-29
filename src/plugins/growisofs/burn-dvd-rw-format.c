@@ -35,8 +35,6 @@
 
 #include <gmodule.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "burn-basics.h"
 #include "burn-plugin.h"
 #include "burn-job.h"

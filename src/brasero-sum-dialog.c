@@ -49,11 +49,9 @@
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkmessagedialog.h>
 
-#include <nautilus-burn-drive.h>
-
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-xfer.h"
 #include "burn-basics.h"
 #include "burn-debug.h"
@@ -433,7 +431,7 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 
 static BraseroBurnResult
 brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
-				      NautilusBurnDrive *drive,
+				      BraseroDrive *drive,
 				      gchar *checksum,
 				      GError **error)
 {
@@ -458,7 +456,7 @@ brasero_sum_dialog_get_disc_checksum (BraseroSumDialog *self,
 
 static gboolean
 brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
-				   NautilusBurnDrive *drive)
+				   BraseroMedium *medium)
 {
 	BraseroBurnResult result;
 	gchar *file_sum = NULL;
@@ -492,7 +490,10 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 		return retval;
 	}
 
-	result = brasero_sum_dialog_get_disc_checksum (self, drive, file_sum, &error);
+	result = brasero_sum_dialog_get_disc_checksum (self,
+						       brasero_medium_get_drive (medium),
+						       file_sum,
+						       &error);
 	if (result == BRASERO_BURN_CANCEL) {
 		g_free (file_sum);
 		return FALSE;
@@ -514,7 +515,7 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 
 static gboolean
 brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
-				   NautilusBurnDrive *drive)
+				   BraseroDrive *drive)
 {
 	GSList *wrong_sums = NULL;
 	BraseroBurnResult result;
@@ -569,7 +570,7 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 
 static gboolean
 brasero_sum_dialog_activate (BraseroToolDialog *dialog,
-			     NautilusBurnDrive *drive)
+			     BraseroMedium *medium)
 {
 	BraseroSumDialog *self;
 	gboolean result;
@@ -577,9 +578,9 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 	self = BRASERO_SUM_DIALOG (dialog);
 
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->priv->md5_check)))
-		result = brasero_sum_dialog_check_disc_sum (self, drive);
+		result = brasero_sum_dialog_check_disc_sum (self, brasero_medium_get_drive (medium));
 	else
-		result = brasero_sum_dialog_check_md5_file (self, drive);
+		result = brasero_sum_dialog_check_md5_file (self, medium);
 
 	brasero_tool_dialog_set_valid (dialog, TRUE);
 	return result;

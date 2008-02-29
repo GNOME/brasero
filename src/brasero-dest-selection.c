@@ -42,8 +42,6 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmessagedialog.h>
 
-#include <nautilus-burn-drive.h>
-
 #include <gconf/gconf-client.h>
 
 #include "burn-basics.h"
@@ -52,7 +50,7 @@
 #include "burn-medium.h"
 #include "burn-session.h"
 #include "burn-plugin-manager.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 #include "brasero-drive-selection.h"
 #include "brasero-drive-properties.h"
 #include "brasero-image-properties.h"
@@ -142,7 +140,8 @@ static gboolean
 brasero_dest_selection_check_same_src_dest (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
-	NautilusBurnDrive *drive;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 	BraseroMedia media;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
@@ -160,7 +159,8 @@ brasero_dest_selection_check_same_src_dest (BraseroDestSelection *self)
 	if (!drive)
 		return FALSE;
 
-	media = NCB_MEDIA_GET_STATUS (drive);
+	medium = brasero_drive_get_medium (drive);
+	media = brasero_medium_get_status (medium);;
 	g_object_unref (drive);
 
 	if (media == BRASERO_MEDIUM_NONE)
@@ -180,7 +180,7 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	BraseroBurnFlag compulsory = 0;
 	BraseroBurnFlag supported = 0;
 	BraseroBurnFlag flags = 0;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	GtkWidget *toplevel;
 	const gchar *path;
 	gint result;
@@ -203,7 +203,7 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	brasero_drive_properties_set_drive (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
 					    drive,
 					    rate);
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (drive);
 
 	flags = brasero_burn_session_get_flags (priv->session);
 	if (!brasero_dest_selection_check_same_src_dest (self)) {
@@ -231,7 +231,7 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	gtk_widget_show_all (priv->drive_prop);
 	result = gtk_dialog_run (GTK_DIALOG (priv->drive_prop));
 	if (result != GTK_RESPONSE_ACCEPT) {
-		nautilus_burn_drive_unref (drive);
+		g_object_unref (drive);
 		gtk_widget_destroy (priv->drive_prop);
 		priv->drive_prop = NULL;
 		return;
@@ -684,7 +684,7 @@ brasero_dest_selection_properties_button_cb (GtkWidget *button,
 					     BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
@@ -692,7 +692,7 @@ brasero_dest_selection_properties_button_cb (GtkWidget *button,
 	if (!drive)
 		return;
 
-	if (NCB_DRIVE_GET_TYPE (drive) == NAUTILUS_BURN_DRIVE_TYPE_FILE)
+	if (brasero_drive_is_fake (drive))
 		brasero_dest_selection_image_properties (self);
 	else
 		brasero_dest_selection_drive_properties (self);
@@ -797,9 +797,10 @@ static void
 brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
-	NautilusBurnDrive *drive;
 	BraseroTrackType source;
 	BraseroBurnFlag flags;
+	BraseroMedium *medium;
+	BraseroDrive *drive;
 	GConfClient *client;
 	GConfValue *value;
 	gchar *path;
@@ -841,7 +842,8 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		return;
 	}
 
-	if (NCB_MEDIA_GET_STATUS (drive) == BRASERO_MEDIUM_NONE) {
+	medium = brasero_drive_get_medium (drive);
+	if (!medium || brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE) {
 		g_signal_emit (self,
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
@@ -858,8 +860,8 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	g_free (key);
 
 	if (!value)
-		rate = NCB_MEDIA_GET_MAX_WRITE_RATE (drive);
-	else if (NCB_MEDIA_GET_STATUS (drive) & BRASERO_MEDIUM_DVD) {
+		rate = brasero_medium_get_max_write_speed (medium);
+	else if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_DVD) {
 		rate = BRASERO_SPEED_TO_RATE_DVD (gconf_value_get_int (value));
 		gconf_value_free (value);
 	}
@@ -962,7 +964,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 	}
 
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (drive);
 
 	key = g_strdup_printf ("%s/tmpdir", BRASERO_DRIVE_PROPERTIES_KEY);
 	path = gconf_client_get_string (client, key, NULL);
@@ -1110,7 +1112,7 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 
 static void
 brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
-					     NautilusBurnDrive *drive)
+					     BraseroDrive *drive)
 {
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
@@ -1187,7 +1189,7 @@ static void
 brasero_dest_selection_caps_changed (BraseroPluginManager *manager,
 				     BraseroDestSelection *self)
 {
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 	BraseroDestSelectionPrivate *priv;
 
 	/* In this case we are still in the same context (same src, dest) so we
@@ -1202,12 +1204,12 @@ brasero_dest_selection_caps_changed (BraseroPluginManager *manager,
 	if (!drive)
 		return;
 
-	if (NCB_DRIVE_GET_TYPE (drive) != NAUTILUS_BURN_DRIVE_TYPE_FILE)
+	if (!brasero_drive_is_fake (drive))
 		brasero_dest_selection_check_drive_settings (self, drive);
 	else
 		brasero_dest_selection_check_image_settings (self);
 
-	nautilus_burn_drive_unref (drive);
+	g_object_unref (drive);
 }
 
 static void
@@ -1215,8 +1217,8 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 				       BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
-	NautilusBurnDrive *burner;
-	NautilusBurnDrive *drive;
+	BraseroDrive *burner;
+	BraseroDrive *drive;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
@@ -1229,14 +1231,13 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 
 	/* make sure the current displayed drive reflects that */
 	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self));
-	if (drive && burner && !nautilus_burn_drive_equal (burner, drive)) {
+	if (drive && burner && burner != drive)
 		brasero_drive_selection_set_drive (BRASERO_DRIVE_SELECTION (self), drive);
-	}
 
 	if (drive)
-		nautilus_burn_drive_unref (drive);
+		g_object_unref (drive);
 
-	if (NCB_DRIVE_GET_TYPE (burner) != NAUTILUS_BURN_DRIVE_TYPE_FILE) {
+	if (!brasero_drive_is_fake (burner)) {
 		gint numcopies;
 
 		brasero_dest_selection_set_drive_properties (self);
@@ -1261,7 +1262,7 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 
 static void
 brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
-				      NautilusBurnDrive *drive)
+				      BraseroDrive *drive)
 {
 	BraseroDestSelectionPrivate *priv;
 
@@ -1312,7 +1313,7 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  object);
 
 	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
-					     _("Choose which drive holds the disc to write to"));
+					     _("Choose the disc to write to"));
 
 	brasero_drive_selection_set_button (BRASERO_DRIVE_SELECTION (object),
 					    priv->button);
@@ -1389,7 +1390,7 @@ brasero_dest_selection_set_property (GObject *object,
 {
 	BraseroDestSelectionPrivate *priv;
 	BraseroBurnSession *session;
-	NautilusBurnDrive *drive;
+	BraseroDrive *drive;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
 
@@ -1407,9 +1408,11 @@ brasero_dest_selection_set_property (GObject *object,
 
 		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
 		brasero_burn_session_set_burner (session, drive);
-		nautilus_burn_drive_unref (drive);
+		g_object_unref (drive);
 
-		if (brasero_burn_session_is_dest_file (session))
+		if (brasero_burn_session_same_src_dest_drive (priv->session))
+			brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (object));
+		else if (brasero_burn_session_is_dest_file (session))
 			brasero_dest_selection_set_image_properties (BRASERO_DEST_SELECTION (object));
 		else
 			brasero_dest_selection_set_drive_properties (BRASERO_DEST_SELECTION (object));

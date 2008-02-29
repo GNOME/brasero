@@ -45,7 +45,7 @@
 #include "burn-md5.h"
 #include "burn-md5sum.h"
 #include "burn-volume.h"
-#include "brasero-ncb.h"
+#include "burn-drive.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroMd5sum, brasero_md5sum, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -303,12 +303,12 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 
 	/* see if another plugin is sending us data to checksum */
 	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK) {
-		NautilusBurnDrive *drive;
+		BraseroMedium *medium;
 
 		/* we're only able to checksum ISO format at the moment so that
 		 * means we can only handle last session */
-		drive = brasero_track_get_drive_source (track);
-		NCB_MEDIA_GET_LAST_DATA_TRACK_SPACE (drive, &priv->total, NULL);
+		medium = brasero_track_get_medium_source (track);
+		brasero_medium_get_last_data_track_space (medium, &priv->total, NULL);
 
 		BRASERO_JOB_LOG (self,
 				 "Starting checksuming (live) (size = %i)",
