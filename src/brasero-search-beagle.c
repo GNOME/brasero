@@ -696,9 +696,9 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 	GSList *next;
 
 	gchar *name, *mime, *uri; 
-        const gchar * const *icon_string = NULL;
-	GIcon *icon;
+        const gchar *icon_string = NULL;
 	const gchar *description;
+	GIcon *icon;
 	gint score;
 	gint num;
 
@@ -742,8 +742,25 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 		description = gnome_vfs_mime_get_description (mime);
 
 		icon = g_content_type_get_icon (mime);
-		if (G_IS_THEMED_ICON (icon))
-		  icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));; 
+		icon_string = NULL;
+		if (G_IS_THEMED_ICON (icon)) {
+			const gchar * const *names = NULL;
+
+			names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+			if (names) {
+				gint i;
+				GtkIconTheme *theme;
+
+				theme = gtk_icon_theme_get_default ();
+				for (i = 0; names [i]; i++) {
+					if (gtk_icon_theme_has_icon (theme, names [i])) {
+						icon_string = names [i];
+						break;
+					}
+				}
+				g_object_unref (theme);
+			}
+		}
 
 		score = (int) (beagle_hit_get_score (hit) * 100);
 
@@ -758,10 +775,9 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 				    -1);
 
 		/* add the mime type to the filter combo */
-		brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter),
-					      mime);
+		brasero_mime_filter_add_mime (BRASERO_MIME_FILTER (search->priv->filter), mime);
 
-		g_free (icon_string);
+		g_object_unref (icon);
 		g_free (name);
 		g_free (mime);
 		g_free (uri);

@@ -1,5 +1,15 @@
 2008-02-29  Philippe Rouquier  <philippr@svn.gnome.org>
 
+	Fix icon for mime types (work with glib2.15.6)
+
+	* configure.in:
+	* src/brasero-data-tree-model.c:
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_init), (brasero_data_tree_model_finalize):
+	* src/brasero-search-beagle.c: (brasero_search_add_hit_to_tree):
+
+2008-02-29  Philippe Rouquier  <philippr@svn.gnome.org>
+
 	Second patch toward ncb removal.
 	Also, some small bug and memleaks fixed
 

@@ -49,6 +49,8 @@ struct _BraseroDataTreeModelPrivate
 {
 	guint stamp;
 
+	GtkIconTheme *theme;
+
 	GSList *shown;
 
 	gint sort_column;
@@ -518,15 +520,28 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			g_value_set_string (value, "media-cdrom");
 		}
 		else if (BRASERO_FILE_NODE_MIME (node)) {
-			const gchar * const *icon_string = NULL;
+			const gchar *icon_string = NULL;
 			GIcon *icon;
 
 			/* NOTE: implemented in glib 2.15.6 (not for windows though) */
 			icon = g_content_type_get_icon (BRASERO_FILE_NODE_MIME (node));
-			if (G_IS_THEMED_ICON (icon))
-				icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
+			if (G_IS_THEMED_ICON (icon)) {
+				const gchar * const *names = NULL;
 
-			g_value_set_string (value, icon_string?icon_string [2]:NULL);
+				names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+				if (names) {
+					gint i;
+
+					for (i = 0; names [i]; i++) {
+						if (gtk_icon_theme_has_icon (priv->theme, names [i])) {
+							icon_string = names [i];
+							break;
+						}
+					}
+				}
+			}
+
+			g_value_set_string (value, icon_string);
 			g_object_unref (icon);
 		}
 		else
@@ -1441,6 +1456,8 @@ brasero_data_tree_model_init (BraseroDataTreeModel *object)
 	do {
 		priv->stamp = g_random_int ();
 	} while (!priv->stamp);
+
+	priv->theme = gtk_icon_theme_get_default ();
 }
 
 static void
@@ -1449,6 +1466,12 @@ brasero_data_tree_model_finalize (GObject *object)
 	BraseroDataTreeModelPrivate *priv;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (object);
+
+	if (priv->theme) {
+		g_object_unref (priv->theme);
+		priv->theme = NULL;
+	}
+
 	if (priv->shown) {
 		g_slist_free (priv->shown);
 		priv->shown = NULL;
