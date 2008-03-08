@@ -59,6 +59,7 @@ struct _BraseroToolDialogClass {
 
 	gboolean	(*activate)		(BraseroToolDialog *dialog,
 						 BraseroMedium *medium);
+	void		(*cancel)		(BraseroToolDialog *dialog);
 	void		(*drive_changed)	(BraseroToolDialog *dialog,
 						 BraseroMedium *medium);
 };

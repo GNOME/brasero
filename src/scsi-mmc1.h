@@ -31,7 +31,7 @@
 #include "scsi-read-disc-info.h"
 #include "scsi-read-toc-pma-atip.h"
 #include "scsi-read-track-information.h"
-
+#include "scsi-mech-status.h"
 
 #ifndef _BURN_MMC1_H
 #define _BURN_MMC1_H
@@ -80,6 +80,10 @@ brasero_mmc1_read_block (BraseroDeviceHandle *handle,
 			 unsigned char *buffer,
 			 int buffer_len,
 			 BraseroScsiErrCode *error);
+BraseroScsiResult
+brasero_mmc1_mech_status (BraseroDeviceHandle *handle,
+			  BraseroScsiMechStatusHdr *hdr,
+			  BraseroScsiErrCode *error);
 
 G_END_DECLS
 

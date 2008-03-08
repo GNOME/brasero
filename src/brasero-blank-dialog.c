@@ -177,7 +177,11 @@ brasero_blank_dialog_drive_changed (BraseroToolDialog *dialog,
 
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (dialog);
 
-	drive = brasero_medium_get_drive (medium);
+	if (medium)
+		drive = brasero_medium_get_drive (medium);
+	else
+		drive = NULL;
+
 	brasero_burn_session_set_burner (priv->session, drive);
 }
 
@@ -367,7 +371,9 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 				        BRASERO_BURN_FLAG_EJECT|
 				        BRASERO_BURN_FLAG_NOGRACE);
 	brasero_burn_session_set_burner (priv->session, drive);
-	g_object_unref (drive);
+
+	if (medium)
+		g_object_unref (medium);
 
 	priv->output_sig = g_signal_connect (priv->session,
 					     "output-changed",

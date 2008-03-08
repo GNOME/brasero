@@ -62,8 +62,8 @@ struct _BraseroMedium
 
 GType brasero_medium_get_type (void) G_GNUC_CONST;
 
-BraseroMedium *
-brasero_medium_new (BraseroDrive *drive);
+const gchar *
+brasero_medium_get_udi (BraseroMedium *medium);
 
 typedef enum {
 	BRASERO_MEDIUM_UNSUPPORTED		= -2,
@@ -265,10 +265,6 @@ brasero_medium_get_type_string (BraseroMedium *medium);
 
 const gchar *
 brasero_medium_get_icon (BraseroMedium *medium);
-
-gchar *
-brasero_medium_get_label (BraseroMedium *medium,
-			  gboolean with_markup);
 
 BraseroDrive *
 brasero_medium_get_drive (BraseroMedium *self);

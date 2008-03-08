@@ -45,8 +45,6 @@
 typedef struct _BraseroDriveInfoPrivate BraseroDriveInfoPrivate;
 struct _BraseroDriveInfoPrivate
 {
-	BraseroMedium *medium;
-
 	GtkWidget *notebook;
 	GtkWidget *image;
 
@@ -246,11 +244,6 @@ brasero_drive_info_set_medium (BraseroDriveInfo *self,
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
 
-	if (priv->medium) {
-		g_object_ref (priv->medium);
-		priv->medium = NULL;
-	}
-
 	gtk_widget_hide (priv->warning);
 	if (medium && (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)) {
 		gtk_widget_show (priv->image_path);
@@ -351,10 +344,6 @@ brasero_drive_info_finalize (GObject *object)
 	BraseroDriveInfoPrivate *priv;
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (object);
-	if (priv->medium) {
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
-	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

@@ -91,6 +91,8 @@ struct _BraseroMediumPrivate
 	const gchar *type;
 	const gchar *icon;
 
+	gchar *udi;
+
 	gint max_rd;
 	gint max_wrt;
 
@@ -119,7 +121,8 @@ struct _BraseroMediumPrivate
 enum
 {
 	PROP_0,
-	PROP_DRIVE
+	PROP_DRIVE,
+	PROP_UDI
 };
 
 static GObjectClass* parent_class = NULL;
@@ -2084,6 +2087,11 @@ brasero_medium_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
+	if (priv->udi) {
+		g_free (priv->udi);
+		priv->udi = NULL;
+	}
+
 	if (priv->retry_id) {
 		g_source_remove (priv->retry_id);
 		priv->retry_id = 0;
@@ -2099,7 +2107,6 @@ brasero_medium_finalize (GObject *object)
 	g_slist_free (priv->tracks);
 	priv->tracks = NULL;
 
-	g_object_unref (priv->drive);
 	priv->drive = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -2116,9 +2123,14 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 
 	switch (prop_id)
 	{
+	case PROP_UDI:
+		priv->udi = g_strdup (g_value_get_string (value));
+		break;
 	case PROP_DRIVE:
+		/* we don't ref the drive here as it would create a circular
+		 * dependency where the drive would hold a reference on the 
+		 * medium and the medium on the drive */
 		priv->drive = g_value_get_object (value);
-		g_object_ref (priv->drive);
 
 		if (brasero_drive_is_fake (priv->drive)) {
 			brasero_medium_init_file (BRASERO_MEDIUM (object));
@@ -2145,8 +2157,10 @@ brasero_medium_get_property (GObject *object, guint prop_id, GValue *value, GPar
 	switch (prop_id)
 	{
 	case PROP_DRIVE:
-		g_object_ref (priv->drive);
 		g_value_set_object (value, priv->drive);
+		break;
+	case PROP_UDI:
+		g_value_set_string (value, g_strdup (priv->udi));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2173,12 +2187,20 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	                                                      "drive in which medium is inserted",
 	                                                      BRASERO_TYPE_DRIVE,
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (object_class,
+	                                 PROP_UDI,
+	                                 g_param_spec_string ("udi",
+	                                                      "udi",
+	                                                      "HAL udi",
+	                                                      NULL,
+	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 gboolean
 brasero_medium_can_be_written (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
+	BraseroDriveCaps caps;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -2189,13 +2211,42 @@ brasero_medium_can_be_written (BraseroMedium *self)
 	if (priv->info & BRASERO_MEDIUM_FILE)
 		return FALSE;
 
-	return brasero_drive_can_write (priv->drive);
+	caps = brasero_drive_get_caps (priv->drive);
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR))
+		return (caps & BRASERO_DRIVE_CAPS_CDR) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR))
+		return (caps & BRASERO_DRIVE_CAPS_DVDR) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR_PLUS))
+		return (caps & BRASERO_DRIVE_CAPS_DVDR_PLUS) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDRW))
+		return (caps & BRASERO_DRIVE_CAPS_CDRW) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR_PLUS_DL))
+		return (caps & BRASERO_DRIVE_CAPS_DVDR_PLUS_DL) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
+
+	return FALSE;
 }
 
 gboolean
 brasero_medium_can_be_rewritten (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
+	BraseroDriveCaps caps;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -2203,118 +2254,23 @@ brasero_medium_can_be_rewritten (BraseroMedium *self)
 	||   (priv->info & BRASERO_MEDIUM_FILE))
 		return FALSE;
 
-	return brasero_drive_can_rewrite (priv->drive);
-}
+	caps = brasero_drive_get_caps (priv->drive);
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDRW))
+		return (caps & BRASERO_DRIVE_CAPS_CDRW) != 0;
 
-gchar *
-brasero_medium_get_label (BraseroMedium *self,
-			  gboolean with_markup)
-{
-	const gchar *type;
-	gchar *label;
-	gchar *name;
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
 
-	BraseroMediumPrivate *priv;
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW) != 0;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS) != 0;
 
-	if (priv->info & BRASERO_MEDIUM_FILE) {
-		label = g_strdup (_("File Image"));
-		if (!with_markup)
-			return label;
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
 
-		name = label;
-		label = g_strdup_printf ("<b>%s</b>", label);
-		g_free (name);
-
-		return label;
-	}
-
-	name = brasero_drive_get_volume_label (priv->drive);
-	type = brasero_medium_get_type_string (self);
-
-	if (name && name [0] != '\0') {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the label of the already existing session on this disc. */
-		if (with_markup)
-			label = g_strdup_printf ("<b>Data %s</b>: \"%s\"",
-						 type,
-						 name);
-		else
-			label = g_strdup_printf ("Data %s: \"%s\"",
-						 type,
-						 name);
-
-		g_free (name);
-		return label;
-	}
-
-	g_free (name);
-	name = brasero_drive_get_display_name (priv->drive);
-
-	if (priv->info & BRASERO_MEDIUM_BLANK) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
-		if (with_markup)
-			label = g_strdup_printf (_("<b>Blank %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Blank %s in %s"),
-						 type,
-						 name);
-	}
-	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
-		if (with_markup)
-			label = g_strdup_printf (_("<b>Audio and data %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Audio and data %s in %s"),
-						 type,
-						 name);
-	}
-	else if (priv->info & BRASERO_MEDIUM_HAS_AUDIO) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
-		if (with_markup)
-			label = g_strdup_printf (_("<b>Audio %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Audio %s in %s"),
-						 type,
-						 name);
-	}
-	else if (priv->info & BRASERO_MEDIUM_HAS_DATA) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
-		if (with_markup)
-			label = g_strdup_printf (_("<b>Data %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Data %s in %s"),
-						 type,
-						 name);
-	}
-	else {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
-		if (with_markup)
-			label = g_strdup_printf (_("<b>%s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("%s in %s"),
-						 type,
-						 name);
-	}
-
-	g_free (name);
-	return label;
+	return FALSE;
 }
 
 BraseroDrive *
@@ -2322,9 +2278,20 @@ brasero_medium_get_drive (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
 
+	if (!self)
+		return NULL;
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	g_object_ref (priv->drive);
 	return priv->drive;
+}
+
+const gchar *
+brasero_medium_get_udi (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	return priv->udi;
 }
 
 GType
@@ -2354,13 +2321,3 @@ brasero_medium_get_type (void)
 
 	return our_type;
 }
-
-BraseroMedium *
-brasero_medium_new (BraseroDrive *drive)
-{
-	g_return_val_if_fail (drive != NULL, NULL);
-	return BRASERO_MEDIUM (g_object_new (BRASERO_TYPE_MEDIUM,
-					     "drive", drive,
-					     NULL));
-}
-

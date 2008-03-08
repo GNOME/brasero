@@ -287,7 +287,7 @@ brasero_utils_get_time_string_from_size (gint64 size,
 	int minute = 0;
 	gint64 time = 0.0;
 
-	time = NAUTILUS_BURN_DRIVE_SIZE_TO_TIME (size);
+	time = BRASERO_BYTES_TO_DURATION (size);
 	minute = time / 60;
 	if (!round)
 		second = time % 60;

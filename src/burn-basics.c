@@ -108,6 +108,7 @@ brasero_burn_library_shutdown (void)
 		g_object_unref (plugin_manager);
 		plugin_manager = NULL;
 	}
+
 	if (medium_manager) {
 		g_object_unref (medium_manager);
 		medium_manager = NULL;

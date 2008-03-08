@@ -42,6 +42,7 @@
 #include "brasero-utils.h"
 #include "burn-basics.h"
 #include "burn-medium.h"
+#include "burn-volume-obj.h"
 #include "burn-session.h"
 #include "burn-caps.h"
 #include "burn-plugin-manager.h"
@@ -156,7 +157,7 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 
 		flags = brasero_burn_session_get_flags (priv->session);
 		if (flags & BRASERO_BURN_FLAG_MERGE)
-			title_str = brasero_drive_get_volume_label (drive);
+			title_str = brasero_volume_get_display_label (BRASERO_VOLUME (drive), FALSE);
 
 		if (!title_str || title_str [0] == '\0')
 			title_str = g_strdup_printf (_("Data disc (%s)"), buffer);

@@ -74,6 +74,7 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 
 	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (priv->selection));
+
 	if (medium)
 		drive = brasero_medium_get_drive (medium);
 	else
@@ -82,7 +83,6 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 	brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info), medium);
 
 	if (priv->locked_drive && priv->locked_drive != drive) {
-	    	gtk_widget_set_sensitive (priv->selection, TRUE);
 		brasero_drive_unlock (priv->locked_drive);
 		g_object_unref (priv->locked_drive);
 		priv->locked_drive = NULL;
@@ -90,25 +90,39 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 
 	if (!drive) {
 	    	gtk_widget_set_sensitive (priv->selection, FALSE);
+	    	gtk_widget_set_sensitive (priv->info, FALSE);
+
 		g_signal_emit (self,
 			       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
 			       0,
-			       drive);
+			       NULL);
+
+		if (medium)
+			g_object_unref (medium);
 		return;
 	}
+
+	gtk_widget_set_sensitive (priv->info, TRUE);
 
 	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
 		g_signal_emit (self,
 			       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
 			       0,
 			       drive);
+		
+		if (medium)
+			g_object_unref (medium);
 		return;
 	}
 
+	gtk_widget_set_sensitive (priv->selection, (priv->locked_drive == NULL));
 	g_signal_emit (self,
 		       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
 		       0,
 		       drive);
+
+	if (medium)
+		g_object_unref (medium);
 }
 
 void
@@ -169,6 +183,9 @@ brasero_drive_selection_get_drive (BraseroDriveSelection *self)
 		return NULL;
 
 	drive = brasero_medium_get_drive (medium);
+	g_object_unref (medium);
+
+	g_object_ref (drive);
 	return drive;
 }
 
@@ -195,8 +212,8 @@ brasero_drive_selection_lock (BraseroDriveSelection *self,
 		priv->locked_drive = drive;
 		if (priv->locked_drive)
 			brasero_drive_lock (priv->locked_drive,
-						  _("ongoing burning process"),
-						  NULL);
+					    _("ongoing burning process"),
+					    NULL);
 	}
 }
 

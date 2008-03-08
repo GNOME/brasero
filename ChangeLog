@@ -1,3 +1,111 @@
+2008-03-08  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Last patch to remove the last bits of nautilus-burn library
+	Now we rely on HAL for device detection and GIO for all mounting/unmounting/ejection which means you must have gvfs module for HAL installed
+	Some fixes and memleak fixes
+	Removed Application from Categories in desktop file
+
+	* configure.in:
+	* data/brasero.desktop.in.in:
+	* src/Makefile.am:
+	* src/brasero-blank-dialog.c: (brasero_blank_dialog_drive_changed),
+	(brasero_blank_dialog_init):
+	* src/brasero-dest-selection.c:
+	(brasero_dest_selection_check_same_src_dest),
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_output_changed),
+	(brasero_dest_selection_set_property):
+	* src/brasero-disc-copy-dialog.c: (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c:
+	(brasero_disc_option_dialog_get_default_label):
+	* src/brasero-drive-info.c: (brasero_drive_info_set_medium),
+	(brasero_drive_info_finalize):
+	* src/brasero-drive-selection.c:
+	(brasero_drive_selection_drive_changed_cb),
+	(brasero_drive_selection_get_drive):
+	* src/brasero-eject-dialog.c: (brasero_eject_dialog_drive_changed),
+	(brasero_eject_dialog_activate), (brasero_eject_dialog_cancel),
+	(brasero_eject_dialog_class_init), (brasero_eject_dialog_init):
+	* src/brasero-medium-selection.c:
+	(brasero_medium_selection_set_active),
+	(brasero_medium_selection_get_active),
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_medium_removed_cb),
+	(brasero_medium_selection_init),
+	(brasero_medium_selection_finalize):
+	* src/brasero-project-size.c:
+	(brasero_project_size_get_media_string),
+	(brasero_project_size_build_menu),
+	(brasero_project_size_add_real_medias):
+	* src/brasero-sum-dialog.c: (brasero_sum_dialog_drive_changed),
+	(brasero_sum_dialog_class_init), (brasero_sum_dialog_init):
+	* src/brasero-tool-dialog.c: (brasero_tool_dialog_run),
+	(brasero_tool_dialog_drive_changed_cb),
+	(brasero_tool_dialog_cancel), (brasero_tool_dialog_init):
+	* src/brasero-tool-dialog.h:
+	* src/brasero-utils.c: (brasero_utils_get_time_string_from_size):
+	* src/burn-basics.c: (brasero_burn_library_shutdown):
+	* src/burn-drive.c: (brasero_drive_is_fake),
+	(brasero_drive_get_hal_context), (brasero_drive_is_door_open),
+	(brasero_drive_lock), (brasero_drive_unlock),
+	(brasero_drive_get_display_name), (brasero_drive_get_device),
+	(brasero_drive_get_udi), (brasero_drive_get_medium),
+	(brasero_drive_set_medium), (brasero_drive_get_caps),
+	(brasero_drive_finalize), (brasero_drive_init_real),
+	(brasero_drive_set_property), (brasero_drive_get_property),
+	(brasero_drive_class_init), (brasero_drive_new):
+	* src/burn-drive.h:
+	* src/burn-job.c: (brasero_job_get_max_speed):
+	* src/burn-medium-monitor.c:
+	(brasero_medium_monitor_drive_inserted),
+	(brasero_medium_monitor_medium_inserted),
+	(brasero_medium_monitor_inserted_cb),
+	(brasero_medium_monitor_removed_cb),
+	(brasero_medium_monitor_add_file), (brasero_medium_monitor_init),
+	(brasero_medium_monitor_finalize),
+	(brasero_medium_monitor_get_default):
+	* src/burn-medium.c: (brasero_medium_finalize),
+	(brasero_medium_set_property), (brasero_medium_get_property),
+	(brasero_medium_class_init), (brasero_medium_can_be_written),
+	(brasero_medium_can_be_rewritten), (brasero_medium_get_drive),
+	(brasero_medium_get_udi), (brasero_medium_get_type):
+	* src/burn-medium.h:
+	* src/burn-session.c: (brasero_burn_session_set_image_output_full),
+	(brasero_burn_session_get_dest_media):
+	* src/burn-task-ctx.c:
+	* src/burn-volume-obj.c: (brasero_volume_get_gvolume),
+	(brasero_volume_is_mounted), (brasero_volume_get_mount_point),
+	(brasero_volume_wait_for_operation_end),
+	(brasero_volume_operation_end), (brasero_volume_umount_finish),
+	(brasero_volume_umount), (brasero_volume_mount_finish),
+	(brasero_volume_mount), (brasero_volume_eject_finish),
+	(brasero_volume_eject), (brasero_volume_cancel_current_operation),
+	(brasero_volume_get_display_label), (brasero_volume_init),
+	(brasero_volume_finalize), (brasero_volume_class_init),
+	(brasero_volume_new):
+	* src/burn-volume-obj.h:
+	* src/burn.c: (brasero_burn_eject_dest_media),
+	(brasero_burn_eject_src_media), (brasero_burn_lock_src_media),
+	(brasero_burn_lock_rewritable_media),
+	(brasero_burn_lock_dest_media), (brasero_burn_mount_media),
+	(brasero_burn_lock_checksum_media),
+	(brasero_burn_unlock_src_media), (brasero_burn_unlock_dest_media),
+	(brasero_burn_run_eraser), (brasero_burn_run_imager),
+	(brasero_burn_run_recorder), (brasero_burn_check_real),
+	(brasero_burn_class_init):
+	* src/main.c: (on_erase_cb), (on_eject_cb),
+	(on_integrity_check_cb):
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_disc_files):
+	* src/scsi-eject.c: (brasero_mmc1_load_cd):
+	* src/scsi-mech-status.c: (brasero_mmc1_mech_status):
+	* src/scsi-mech-status.h:
+	* src/scsi-mmc1.h:
+	* src/scsi-opcodes.h:
+
 2008-02-29  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Fix icon for mime types (work with glib2.15.6)

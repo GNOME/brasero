@@ -34,6 +34,7 @@
 
 #include "brasero-medium-selection.h"
 #include "burn-medium.h"
+#include "burn-volume-obj.h"
 #include "burn-basics.h"
 
 typedef struct _BraseroMediumSelectionPrivate BraseroMediumSelectionPrivate;
@@ -91,6 +92,7 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 				    -1);
 
 		if (medium == iter_medium) {
+			g_object_unref (iter_medium);
 			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
 			g_signal_emit (self,
 				       medium_selection_signals [MEDIUM_CHANGED],
@@ -98,6 +100,7 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 			break;
 		}
 
+		g_object_unref (iter_medium);
 	} while (gtk_tree_model_iter_next (model, &iter));
 }
 
@@ -115,11 +118,6 @@ brasero_medium_selection_get_active (BraseroMediumSelection *self)
 	gtk_tree_model_get (model, &iter,
 			    MEDIUM_COL, &medium,
 			    -1);
-
-	if (!medium)
-		return NULL;
-
-	g_object_ref (medium);
 	return medium;
 }
 
@@ -146,6 +144,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		/* First filter */
 		do {
+			GSList *node;
 			BraseroMedium *medium;
 
 			gtk_tree_model_get (model, &iter,
@@ -159,15 +158,18 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 				break;
 			}
 
-			if (!g_slist_find (list, medium)) {
+			node = g_slist_find (list, medium);
+			g_object_unref (medium);
+
+			if (!node) {
 				if (gtk_list_store_remove (GTK_LIST_STORE (model), &iter))
 					continue;
 
 				break;
 			}
 
-			list = g_slist_remove (list, medium);
-			g_object_unref (medium);
+			g_object_unref (node->data);
+			list = g_slist_delete_link (list, node);
 		} while (gtk_tree_model_iter_next (model, &iter));
 	}
 
@@ -180,7 +182,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 
 			medium = item->data;
 
-			medium_name = brasero_medium_get_label (medium, TRUE);
+			medium_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), TRUE);
 			medium_icon = brasero_medium_get_icon (medium);
 
 			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
@@ -257,11 +259,13 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 		gtk_tree_model_get (model, &iter,
 				    MEDIUM_COL, &tmp,
 				    -1);
-		if (!medium)
+		if (!tmp)
 			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+		else
+			g_object_unref (tmp);
 	}
 
-	medium_name = brasero_medium_get_label (medium, TRUE);
+	medium_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), TRUE);
 	medium_icon = brasero_medium_get_icon (medium);
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -299,9 +303,12 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 				    -1);
 
 		if (medium == iter_medium) {
+			g_object_unref (iter_medium);
 			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 			break;
 		}
+
+		g_object_unref (iter_medium);
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	if (!gtk_tree_model_get_iter_first (model, &iter)) {
@@ -355,6 +362,7 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 				    G_TYPE_STRING);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (object), GTK_TREE_MODEL (model));
+	g_object_unref (model);
 
 /*	renderer = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (renderer, "follow-state", TRUE, NULL);
@@ -383,8 +391,8 @@ brasero_medium_selection_finalize (GObject *object)
 
 	g_signal_handler_disconnect (monitor, priv->added_sig);
 	g_signal_handler_disconnect (monitor, priv->removed_sig);
-	priv->added_sig = 0;
 	priv->removed_sig = 0;
+	priv->added_sig = 0;
 
 	g_object_unref (monitor);
 

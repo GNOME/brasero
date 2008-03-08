@@ -45,7 +45,7 @@
 #include "burn-task-ctx.h"
 #include "burn-task.h"
 #include "burn-caps.h"
-#include "burn-volume.h"
+#include "burn-volume-obj.h"
 #include "burn-drive.h"
 
 #ifdef BUILD_DBUS
@@ -231,41 +231,12 @@ brasero_burn_sleep (BraseroBurn *burn, gint msec)
 	return BRASERO_BURN_CANCEL;
 }
 
-static gpointer
-_eject_async (gpointer data)
-{
-	BraseroDrive *drive = BRASERO_DRIVE (data);
-
-	brasero_drive_eject (drive);
-	g_object_unref (drive);
-
-	return NULL;
-}
-
-static void
-brasero_burn_eject_async (BraseroDrive *drive)
-{
-	GError *error = NULL;
-
-	BRASERO_BURN_LOG ("Asynchronous ejection");
-	g_object_ref (drive);
-	g_thread_create (_eject_async, drive, FALSE, &error);
-	if (error) {
-		g_warning ("Could not create thread %s\n", error->message);
-		g_error_free (error);
-
-		g_object_unref (drive);
-		brasero_drive_eject (drive);
-	}
-}
-
 static BraseroBurnResult
 brasero_burn_eject_dest_media (BraseroBurn *self,
 			       GError **error)
 {
 	BraseroBurnPrivate *priv;
 	BraseroMedium *medium;
-	guint elapsed = 0;
 
 	priv = BRASERO_BURN_PRIVATE (self);
 
@@ -273,8 +244,9 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 	if (!priv->dest)
 		return BRASERO_BURN_OK;
 
-	if (brasero_drive_is_mounted (priv->dest))
-		brasero_drive_unmount (priv->dest, NULL);
+	medium = brasero_drive_get_medium (priv->dest);
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium)))
+		brasero_volume_umount (BRASERO_VOLUME (medium), FALSE, NULL);
 
 	if (priv->dest_locked) {
 		priv->dest_locked = 0;
@@ -292,19 +264,9 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 		}
 	}
 
-	brasero_burn_eject_async (priv->dest);
-
-	/* sleep here to make sure that we got time to eject */
+	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, NULL);
 	medium = brasero_drive_get_medium (priv->dest);
-	while (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
-		brasero_burn_sleep (self, 500);
-		elapsed += 500;
-
-		if (elapsed > MAX_EJECT_WAIT_TIME)
-			break;
-	}
-
-	if (!medium || brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+	if (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
 		gchar *name;
 
 		name = brasero_drive_get_display_name (priv->dest);
@@ -330,17 +292,17 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 {
 	BraseroBurnPrivate *priv;
 	BraseroMedium *medium;
-	guint elapsed = 0;
 
 	priv = BRASERO_BURN_PRIVATE (self);
 
 	if (!priv->src)
 		return BRASERO_BURN_OK;
 
-	if (brasero_drive_is_mounted (priv->src)) {
+	medium = brasero_drive_get_medium (priv->src);
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		BraseroBurnResult result;
 
-		result = brasero_drive_unmount (priv->src, error);
+		result = brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
@@ -361,19 +323,9 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 		}
 	}
 
-	brasero_burn_eject_async (priv->src);
-
-	/* sleep here to make sure that we got time to eject */
+	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, NULL);
 	medium = brasero_drive_get_medium (priv->src);
-	while (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
-		brasero_burn_sleep (self, 500);
-		elapsed += 500;
-
-		if (elapsed > MAX_EJECT_WAIT_TIME)
-			break;
-	}
-
-	if (brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+	if (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
 		gchar *name;
 
 		name = brasero_drive_get_display_name (priv->src);
@@ -510,15 +462,16 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 
 
 again:
-	if (brasero_drive_is_mounted (priv->src)) {
-		if (!brasero_drive_unmount_wait (priv->src))
+
+	medium = brasero_drive_get_medium (priv->src);
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
+		if (!brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL))
 			g_warning ("Couldn't unmount volume in drive: %s",
 				   brasero_drive_get_device (priv->src));
 	}
 
 	/* NOTE: we used to unmount the media before now we shouldn't need that
 	 * get any information from the drive */
-	medium = brasero_drive_get_medium (priv->src);
 	media = brasero_medium_get_status (medium);
 	if (media == BRASERO_MEDIUM_NONE)
 		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
@@ -595,7 +548,10 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	if (!brasero_drive_can_rewrite (priv->dest)) {
+ again:
+
+	medium = brasero_drive_get_medium (priv->dest);
+	if (!brasero_medium_can_be_rewritten (medium)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -603,15 +559,12 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
- again:
-
-	if (brasero_drive_is_mounted (priv->dest)) {
-		if (!brasero_drive_unmount (priv->dest, NULL))
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
+		if (!brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL))
 			g_warning ("Couldn't unmount volume in drive: %s",
 				   brasero_drive_get_device (priv->dest));
 	}
 
-	medium = brasero_drive_get_medium (priv->dest);
 	media = brasero_medium_get_status (medium);
 	if (media == BRASERO_MEDIUM_NONE)
 		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
@@ -745,29 +698,30 @@ brasero_burn_lock_dest_media (BraseroBurn *burn, GError **error)
 
 	brasero_burn_session_get_input_type (priv->session, &input);
 	flags = brasero_burn_session_get_flags (priv->session);
-	if (!brasero_drive_can_write (priv->dest)) {
+
+	result = BRASERO_BURN_OK;
+
+again:
+
+	medium = brasero_drive_get_medium (priv->dest);
+	if (!brasero_medium_can_be_written (medium)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the drive has no burning capabilities"));
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
-	result = BRASERO_BURN_OK;
-
-again:
 
 	/* if drive is mounted then unmount before checking anything */
-	if (brasero_drive_is_mounted (priv->dest)) {
-		if (!brasero_drive_unmount (priv->dest, NULL))
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
+		if (!brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL))
 			g_warning ("Couldn't unmount volume in drive: %s",
 				   brasero_drive_get_device (priv->dest));
 	}
 
 	berror = BRASERO_BURN_ERROR_NONE;
 
-	medium = brasero_drive_get_medium (priv->dest);
 	media = brasero_medium_get_status (medium);
-
 	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
 					 media,
 					 BRASERO_PLUGIN_IO_NONE,
@@ -941,6 +895,7 @@ brasero_burn_mount_media (BraseroBurn *self,
 			  GError **error)
 {
 	guint retries = 0;
+	BraseroMedium *medium;
 	BraseroBurnPrivate *priv;
 
 	priv = BRASERO_BURN_PRIVATE (self);
@@ -951,7 +906,8 @@ brasero_burn_mount_media (BraseroBurn *self,
 		       0,
 		       BRASERO_BURN_ACTION_CHECKSUM);
 
-	while (!brasero_drive_is_mounted (priv->dest)) {
+	medium = brasero_drive_get_medium (priv->dest);
+	while (!brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		if (retries++ > MAX_MOUNT_ATTEMPS) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
@@ -961,7 +917,7 @@ brasero_burn_mount_media (BraseroBurn *self,
 		}
 
 		/* NOTE: we don't really care about the return value */
-		brasero_drive_mount (priv->dest, error);
+		brasero_volume_mount (BRASERO_VOLUME (medium), FALSE, NULL);
 		priv->mounted_by_us = TRUE;
 
 		brasero_burn_sleep (self, MOUNT_TIMEOUT);
@@ -1030,11 +986,11 @@ again:
 	}
 
 	/* if drive is mounted then unmount before checking anything */
-	if (brasero_drive_is_mounted (priv->dest)
-	&& !brasero_drive_unmount (priv->dest, NULL))
+/*	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))
+	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL))
 		g_warning ("Couldn't unmount volume in drive: %s",
 			   brasero_drive_get_device (priv->dest));
-
+*/
 	priv->dest_locked = 1;
 
 	return BRASERO_BURN_OK;
@@ -1044,6 +1000,7 @@ static BraseroBurnResult
 brasero_burn_unlock_src_media (BraseroBurn *burn)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroMedium *medium;
 
 	if (!priv->src)
 		return BRASERO_BURN_OK;
@@ -1053,8 +1010,9 @@ brasero_burn_unlock_src_media (BraseroBurn *burn)
 		return BRASERO_BURN_OK;
 	}
 
+	medium = brasero_drive_get_medium (priv->src);
 	if (priv->mounted_by_us) {
-		brasero_drive_unmount (priv->src, NULL);
+		brasero_volume_umount (BRASERO_VOLUME (medium), FALSE, NULL);
 		priv->mounted_by_us = 0;
 	}
 
@@ -1062,7 +1020,7 @@ brasero_burn_unlock_src_media (BraseroBurn *burn)
 	brasero_drive_unlock (priv->src);
 
 	if (BRASERO_BURN_SESSION_EJECT (priv->session))
-		brasero_burn_eject_async (priv->src);
+		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, NULL);
 
 	priv->src = NULL;
 	return BRASERO_BURN_OK;
@@ -1072,6 +1030,7 @@ static BraseroBurnResult
 brasero_burn_unlock_dest_media (BraseroBurn *burn)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroMedium *medium;
 
 	if (!priv->dest)
 		return BRASERO_BURN_OK;
@@ -1083,9 +1042,10 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn)
 
 	priv->dest_locked = 0;
 	brasero_drive_unlock (priv->dest);
+	medium = brasero_drive_get_medium (priv->src);
 
 	if (BRASERO_BURN_SESSION_EJECT (priv->session))
-		brasero_burn_eject_async (priv->dest);
+		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, NULL);
 
 	priv->dest = NULL;
 	return BRASERO_BURN_OK;
@@ -1241,13 +1201,15 @@ static BraseroBurnResult
 brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 {
 	BraseroDrive *drive;
+	BraseroMedium *medium;
 	BraseroBurnPrivate *priv;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
 	drive = brasero_burn_session_get_burner (priv->session);
-	if (brasero_drive_is_mounted (drive)
-	&& !brasero_drive_unmount_wait (drive)) {
+	medium = brasero_drive_get_medium (drive);
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))
+	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
@@ -1267,16 +1229,19 @@ brasero_burn_run_imager (BraseroBurn *burn,
 	BraseroBurnError error_code;
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
+	BraseroMedium *medium;
 	BraseroDrive *src;
 
 	src = brasero_burn_session_get_src_drive (priv->session);
 
 start:
 
+	medium = brasero_drive_get_medium (src);
+
 	/* this is just in case */
-	if (src
-	&&  brasero_drive_is_mounted (src)
-	&& !brasero_drive_unmount_wait (src)) {
+	if (medium
+	&&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
+	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
@@ -1363,27 +1328,31 @@ brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 	BraseroDrive *burner;
 	GError *ret_error = NULL;
 	BraseroBurnResult result;
+	BraseroMedium *src_medium;
+	BraseroMedium *burnt_medium;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
 	has_slept = FALSE;
 	src = brasero_burn_session_get_src_drive (priv->session);
+	src_medium = brasero_drive_get_medium (src);
 	burner = brasero_burn_session_get_burner (priv->session);
+	burnt_medium = brasero_drive_get_medium (burner);
 
 start:
 
 	/* this is just in case */
 	if (BRASERO_BURN_SESSION_NO_TMP_FILE (priv->session)
-	&&  src
-	&&  brasero_drive_is_mounted (src)
-	&& !brasero_drive_unmount_wait (src)) {
+	&&  src_medium
+	&&  brasero_volume_is_mounted (BRASERO_VOLUME (src_medium))
+	&& !brasero_volume_umount (BRASERO_VOLUME (src_medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
 			     _("the drive seems to be busy"));
 		return BRASERO_BURN_ERR;
 	}
-	else if (brasero_drive_is_mounted (burner)
-	     && !brasero_drive_unmount_wait (burner)) {
+	else if (brasero_volume_is_mounted (BRASERO_VOLUME (burnt_medium))
+	     && !brasero_volume_umount (BRASERO_VOLUME (burnt_medium), TRUE, NULL)) {
 		ret_error = g_error_new (BRASERO_BURN_ERROR,
 					 BRASERO_BURN_ERROR_BUSY_DRIVE,
 					 _("the drive seems to be busy"));
@@ -1638,6 +1607,7 @@ brasero_burn_check_real (BraseroBurn *self,
 			 BraseroTrack *track,
 			 GError **error)
 {
+	BraseroMedium *medium;
 	BraseroTrackType type;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
@@ -1651,9 +1621,10 @@ brasero_burn_check_real (BraseroBurn *self,
 	brasero_track_get_type (track, &type);
 
 	/* if the input is a DISC, ask/mount/unmount and lock it (as dest) */
+	medium = brasero_drive_get_medium (priv->dest);
 	if (type.type == BRASERO_TRACK_TYPE_DISC
 	&&  checksum_type == BRASERO_CHECKSUM_MD5_FILE
-	&& !brasero_drive_is_mounted (priv->dest)) {
+	&& !brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		result = brasero_burn_mount_media (self, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
@@ -1680,8 +1651,8 @@ brasero_burn_check_real (BraseroBurn *self,
 		 * checksum type is NOT FILE_MD5 */
 		if (priv->dest
 		&&  checksum_type == BRASERO_CHECKSUM_MD5
-		&&  brasero_drive_is_mounted (priv->dest)
-		&& !brasero_drive_unmount_wait (priv->dest)) {
+		&&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
+		&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_BUSY_DRIVE,
@@ -2518,7 +2489,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      brasero_marshal_INT__OBJECT_INT_INT,
 			      G_TYPE_INT, 
 			      3,
-			      NAUTILUS_BURN_TYPE_DRIVE,
+			      BRASERO_TYPE_DRIVE,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
         brasero_burn_signals [PROGRESS_CHANGED_SIGNAL] =

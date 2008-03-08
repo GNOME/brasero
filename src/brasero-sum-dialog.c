@@ -587,6 +587,16 @@ brasero_sum_dialog_activate (BraseroToolDialog *dialog,
 }
 
 static void
+brasero_sum_dialog_drive_changed (BraseroToolDialog *dialog,
+				  BraseroMedium *medium)
+{
+	if (medium)
+		brasero_tool_dialog_set_valid (dialog, BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));
+	else
+		brasero_tool_dialog_set_valid (dialog, FALSE);
+}
+
+static void
 brasero_sum_dialog_finalize (GObject *object)
 {
 	BraseroSumDialog *cobj;
@@ -614,12 +624,14 @@ brasero_sum_dialog_class_init (BraseroSumDialogClass *klass)
 	object_class->finalize = brasero_sum_dialog_finalize;
 
 	tool_dialog_class->activate = brasero_sum_dialog_activate;
+	tool_dialog_class->drive_changed = brasero_sum_dialog_drive_changed;
 }
 
 static void
 brasero_sum_dialog_init (BraseroSumDialog *obj)
 {
 	GtkWidget *box;
+	BraseroMedium *medium;
 
 	obj->priv = g_new0 (BraseroSumDialogPrivate, 1);
 
@@ -659,6 +671,14 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 					_("_Check"),
 					GTK_STOCK_FIND,
 					NULL);
+
+	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
+	if (medium) {
+		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));
+		g_object_unref (medium);
+	}
+	else
+		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), FALSE);
 }
 
 GtkWidget *

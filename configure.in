@@ -74,7 +74,7 @@ GCONF_REQUIRED=2.0.0
 GSTREAMER_REQUIRED=0.10.6
 GSTREAMER_BASE_REQUIRED=0.10.0
 LIBXML2_REQUIRED=2.6.0
-NAUTILUS_BURN_REQUIRED=2.16.0
+HAL_REQUIRED=0.5
 
 dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_GSTREAMER, 		\
@@ -99,7 +99,6 @@ BRASERO_GIO_LIBS="$BRASERO_GIO_LIBS $LDFLAGS"
 
 dnl ** used by brasero and all modules
 PKG_CHECK_MODULES(BRASERO_BASE, 		\
-	libnautilus-burn >= $NAUTILUS_BURN_REQUIRED		\
 	gconf-2.0 >= $GCONF_REQUIRED		\
 	glib-2.0 >= $GLIB_REQUIRED)
 
@@ -111,6 +110,7 @@ BRASERO_BASE_LIBS="$BRASERO_BASE_LIBS $LDFLAGS"
 
 dnl ** used only by brasero app itself ***
 PKG_CHECK_MODULES(BRASERO,			\
+	hal >= $HAL_REQUIRED		\
 	gmodule-2.0 >= $GMODULE_REQUIRED 	\
 	gdk-2.0 >= $GDK_REQUIRED	\
 	gtk+-2.0 >= $GTK_REQUIRED		\

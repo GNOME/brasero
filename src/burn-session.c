@@ -95,10 +95,10 @@ struct _BraseroBurnSessionPrivate {
 };
 typedef struct _BraseroBurnSessionPrivate BraseroBurnSessionPrivate;
 
-#define BRASERO_BURN_SESSION_WRITE_TO_DISC(priv)	(priv->settings->burner			\
-							&& !brasero_drive_is_fake (priv->settings->burner))
-#define BRASERO_BURN_SESSION_WRITE_TO_FILE(priv)	(priv->settings->burner			\
-							&& brasero_drive_is_fake (priv->settings->burner))
+#define BRASERO_BURN_SESSION_WRITE_TO_DISC(priv)	(priv->settings->burner &&			\
+							!brasero_drive_is_fake (priv->settings->burner))
+#define BRASERO_BURN_SESSION_WRITE_TO_FILE(priv)	(priv->settings->burner &&			\
+							 brasero_drive_is_fake (priv->settings->burner))
 #define BRASERO_STR_EQUAL(a, b)	((!(a) && !(b)) || ((a) && (b) && !strcmp ((a), (b))))
 
 typedef enum {
@@ -719,20 +719,21 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 					    const gchar *toc)
 {
 	BraseroBurnSessionPrivate *priv;
-	BraseroMediumMonitor *monitor;
-	GSList *list;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	monitor = brasero_medium_monitor_get_default ();
 
-	list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
-	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
+	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
+		BraseroMediumMonitor *monitor;
+		GSList *list;
+
+		monitor = brasero_medium_monitor_get_default ();
+		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
 		brasero_burn_session_set_burner (self, list->data);
-
-	g_slist_free (list);
-	g_object_unref (monitor);
+		g_object_unref (monitor);
+		g_slist_free (list);
+	}
 
 	if (priv->settings->format == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
@@ -1212,10 +1213,12 @@ brasero_burn_session_get_dest_media (BraseroBurnSession *self)
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_MEDIUM_NONE);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
 	if (BRASERO_BURN_SESSION_WRITE_TO_FILE (priv))
 		return BRASERO_MEDIUM_FILE;
 
 	medium = brasero_drive_get_medium (priv->settings->burner);
+
 	return brasero_medium_get_status (medium);
 }
 

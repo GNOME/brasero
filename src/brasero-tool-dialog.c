@@ -247,10 +247,11 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 		close = klass->activate (self, medium);
 	self->priv->running = FALSE;
 
-	g_object_unref (medium);
-
 	if (close || self->priv->close) {
 		gtk_widget_destroy (GTK_WIDGET (self));
+
+		if (medium)
+			g_object_unref (medium);
 		return;
 	}
 
@@ -262,6 +263,9 @@ end:
 	gtk_widget_set_sensitive (self->priv->lower_box, FALSE);
 
 	brasero_burn_progress_reset (BRASERO_BURN_PROGRESS (self->priv->progress));
+
+	if (medium)
+		g_object_unref (medium);
 }
 
 static void
@@ -337,10 +341,13 @@ brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 
 static void
 brasero_tool_dialog_drive_changed_cb (BraseroDriveSelection *selection,
-				      BraseroMedium *medium,
+				      BraseroDrive *drive,
 				      BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
+	BraseroMedium *medium;
+
+	medium = brasero_drive_get_medium (drive);
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->drive_changed)
@@ -390,6 +397,11 @@ static gboolean
 brasero_tool_dialog_cancel (BraseroToolDialog *self)
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
+	BraseroToolDialogClass *klass;
+
+	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
+	if (klass->cancel)
+		klass->cancel (self);
 
 	if (self->priv->burn)
 		result = brasero_burn_cancel (self->priv->burn, TRUE);
@@ -463,12 +475,14 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	/* upper part */
 	obj->priv->upper_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (GTK_WIDGET (obj->priv->upper_box));
 	obj->priv->selector = brasero_drive_selection_new ();
+	gtk_widget_show (GTK_WIDGET (obj->priv->selector));
 	gtk_widget_set_tooltip_text (obj->priv->selector,
-				     _("Choose the drive that holds the media"));
+				     _("Choose a media"));
 
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
-			    brasero_utils_pack_properties (_("<b>Select a recorder:</b>"),
+			    brasero_utils_pack_properties (_("<b>Select a disc</b>"),
 							   obj->priv->selector,
 							   NULL),
 			    FALSE, FALSE, 0);
@@ -477,14 +491,11 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 						BRASERO_MEDIA_TYPE_REWRITABLE|
 						BRASERO_MEDIA_TYPE_READABLE);
 
-	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
-
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    obj->priv->upper_box,
 			    FALSE,
 			    FALSE,
 			    0);
-	gtk_widget_show_all (GTK_WIDGET (obj->priv->upper_box));
 
 	/* lower part */
 	obj->priv->lower_box = gtk_vbox_new (FALSE, 0);

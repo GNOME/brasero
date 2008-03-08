@@ -161,7 +161,6 @@ brasero_dest_selection_check_same_src_dest (BraseroDestSelection *self)
 
 	medium = brasero_drive_get_medium (drive);
 	media = brasero_medium_get_status (medium);;
-	g_object_unref (drive);
 
 	if (media == BRASERO_MEDIUM_NONE)
 		return FALSE;
@@ -203,7 +202,6 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	brasero_drive_properties_set_drive (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
 					    drive,
 					    rate);
-	g_object_unref (drive);
 
 	flags = brasero_burn_session_get_flags (priv->session);
 	if (!brasero_dest_selection_check_same_src_dest (self)) {
@@ -231,7 +229,6 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 	gtk_widget_show_all (priv->drive_prop);
 	result = gtk_dialog_run (GTK_DIALOG (priv->drive_prop));
 	if (result != GTK_RESPONSE_ACCEPT) {
-		g_object_unref (drive);
 		gtk_widget_destroy (priv->drive_prop);
 		priv->drive_prop = NULL;
 		return;
@@ -839,6 +836,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       0,
 			       FALSE);
 		gtk_widget_set_sensitive (priv->button, FALSE);
+		gtk_widget_set_sensitive (priv->copies_box, FALSE);
 		return;
 	}
 
@@ -849,6 +847,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       0,
 			       FALSE);
 		gtk_widget_set_sensitive (priv->button, FALSE);
+		gtk_widget_set_sensitive (priv->copies_box, FALSE);
 		return;
 	}
 
@@ -920,6 +919,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 
 		/* set new ones */
 		flags = gconf_value_get_int (value);
+		gconf_value_free (value);
 		brasero_burn_session_add_flag (priv->session, flags);
 
 		/* NOTE: of course NO_TMP is not possible; DAO and BLANK_BEFORE
@@ -963,8 +963,6 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		gtk_widget_set_sensitive (priv->copies_box, (result == BRASERO_BURN_OK));
 		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 	}
-
-	g_object_unref (drive);
 
 	key = g_strdup_printf ("%s/tmpdir", BRASERO_DRIVE_PROPERTIES_KEY);
 	path = gconf_client_get_string (client, key, NULL);
@@ -1208,8 +1206,6 @@ brasero_dest_selection_caps_changed (BraseroPluginManager *manager,
 		brasero_dest_selection_check_drive_settings (self, drive);
 	else
 		brasero_dest_selection_check_image_settings (self);
-
-	g_object_unref (drive);
 }
 
 static void
@@ -1236,6 +1232,11 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 
 	if (drive)
 		g_object_unref (drive);
+
+	if (!burner) {
+		brasero_dest_selection_set_drive_properties (self);
+		return;
+	}
 
 	if (!brasero_drive_is_fake (burner)) {
 		gint numcopies;
@@ -1408,7 +1409,9 @@ brasero_dest_selection_set_property (GObject *object,
 
 		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
 		brasero_burn_session_set_burner (session, drive);
-		g_object_unref (drive);
+
+		if (drive)
+			g_object_unref (drive);
 
 		if (brasero_burn_session_same_src_dest_drive (priv->session))
 			brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (object));

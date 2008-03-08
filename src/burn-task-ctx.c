@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <math.h>
+
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>

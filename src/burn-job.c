@@ -1448,9 +1448,9 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 	rate = brasero_medium_get_max_write_speed (medium);
 	media = brasero_medium_get_status (medium);
 	if (media & BRASERO_MEDIUM_DVD)
-		*speed = NAUTILUS_BURN_DRIVE_DVD_SPEED (rate);
+		*speed = BRASERO_RATE_TO_SPEED_DVD (rate);
 	else 
-		*speed = NAUTILUS_BURN_DRIVE_CD_SPEED (rate);
+		*speed = BRASERO_RATE_TO_SPEED_CD (rate);
 
 	return BRASERO_BURN_OK;
 }

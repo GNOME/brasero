@@ -15,7 +15,7 @@
 void 
 brasero_uninhibit_suspend (guint cookie)
 {
-  	DBusGProxy	*proxy;
+	DBusGProxy	*proxy;
 	gboolean	res;
 	GError		*error = NULL;
 	DBusGConnection *conn	= NULL;

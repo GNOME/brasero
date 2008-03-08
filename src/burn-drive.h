@@ -24,14 +24,27 @@
 
 #include <glib-object.h>
 
-#include <nautilus-burn-drive.h>
-
 #ifndef _BURN_DRIVE_H_
 #define _BURN_DRIVE_H_
 
 #include "burn-medium.h"
 
 G_BEGIN_DECLS
+
+typedef enum {
+	BRASERO_DRIVE_CAPS_NONE			= 0,
+	BRASERO_DRIVE_CAPS_CDR			= 1,
+	BRASERO_DRIVE_CAPS_CDRW			= 1 << 1,
+	BRASERO_DRIVE_CAPS_DVDR			= 1 << 2,
+	BRASERO_DRIVE_CAPS_DVDRW		= 1 << 3,
+	BRASERO_DRIVE_CAPS_DVDR_PLUS		= 1 << 4,
+	BRASERO_DRIVE_CAPS_DVDRW_PLUS		= 1 << 5,
+	BRASERO_DRIVE_CAPS_DVDR_PLUS_DL		= 1 << 6,
+	BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL	= 1 << 7,
+	BRASERO_DRIVE_CAPS_DVDRAM		= 1 << 9,
+	BRASERO_DRIVE_CAPS_BDR			= 1 << 8,
+	BRASERO_DRIVE_CAPS_BDRW			= 1 << 9
+} BraseroDriveCaps;
 
 #define BRASERO_TYPE_DRIVE             (brasero_drive_get_type ())
 #define BRASERO_DRIVE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_DRIVE, BraseroDrive))
@@ -55,10 +68,7 @@ struct _BraseroDrive
 GType brasero_drive_get_type (void) G_GNUC_CONST;
 
 BraseroDrive *
-brasero_drive_new (NautilusBurnDrive *drive);
-
-NautilusBurnDrive *
-brasero_drive_get_nautilus_drive (BraseroDrive *drive);
+brasero_drive_new (const gchar *udi);
 
 void
 brasero_drive_set_medium (BraseroDrive *drive,
@@ -67,54 +77,30 @@ brasero_drive_set_medium (BraseroDrive *drive,
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive);
 
+const gchar *
+brasero_drive_get_udi (BraseroDrive *drive);
+
 gboolean
-brasero_drive_is_fake (BraseroDrive *self);
+brasero_drive_is_fake (BraseroDrive *drive);
 
 gchar *
-brasero_drive_get_display_name (BraseroDrive *self);
-
-gchar *
-brasero_drive_get_volume_label (BraseroDrive *self);
+brasero_drive_get_display_name (BraseroDrive *drive);
 
 const gchar *
-brasero_drive_get_device (BraseroDrive *self);
+brasero_drive_get_device (BraseroDrive *drive);
+
+BraseroDriveCaps
+brasero_drive_get_caps (BraseroDrive *drive);
 
 gboolean
-brasero_drive_can_write (BraseroDrive *self);
+brasero_drive_is_door_open (BraseroDrive *drive);
 
 gboolean
-brasero_drive_can_rewrite (BraseroDrive *self);
-
-gboolean
-brasero_drive_eject (BraseroDrive *drive);
-
-gboolean
-brasero_drive_mount (BraseroDrive *drive,
-		     GError **error);
-
-gboolean
-brasero_drive_unmount (BraseroDrive *drive,
-		       GError **error);
-
-gboolean
-brasero_drive_unmount_wait (BraseroDrive *drive);
-
-gboolean
-brasero_drive_is_mounted (BraseroDrive *self);
-
-gboolean
-brasero_drive_is_door_open (BraseroDrive *self);
-
-gchar *
-brasero_drive_get_mount_point (BraseroDrive *drive,
-			       GError **error);
-
-gboolean
-brasero_drive_lock (BraseroDrive *self,
+brasero_drive_lock (BraseroDrive *drive,
 		    const gchar *reason,
 		    gchar **reason_for_failure);
 gboolean
-brasero_drive_unlock (BraseroDrive *self);
+brasero_drive_unlock (BraseroDrive *drive);
 
 G_END_DECLS
 

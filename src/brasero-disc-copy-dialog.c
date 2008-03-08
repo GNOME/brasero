@@ -101,6 +101,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 {
 	gboolean valid;
 	GtkWidget *button;
+	BraseroDrive *drive, *src_drive;
 	BraseroDiscCopyDialogPrivate *priv;
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (obj);
@@ -167,14 +168,10 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 						BRASERO_MEDIA_TYPE_REWRITABLE|
 						BRASERO_MEDIA_TYPE_FILE);
 
-	BraseroDrive *drive, *src_drive;
-
 	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
 	brasero_burn_session_set_burner (priv->session, drive);
-	g_print ("%p\n", drive);
 
 	src_drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->source));
-	g_print ("%p\n", src_drive);
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
 		BraseroMedia media;
@@ -201,6 +198,9 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			valid = TRUE;
 		g_object_unref (caps);
 	}
+
+	g_object_unref (src_drive);
+	g_object_unref (drive);
 
 	brasero_disc_copy_dialog_set_burn_button_state (obj, valid);
 }

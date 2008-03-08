@@ -38,7 +38,7 @@
 
 #include "brasero-project-size.h"
 #include "burn-caps.h"
-#include "burn-volume.h"
+#include "burn-volume-obj.h"
 #include "brasero-utils.h"
 #include "burn-medium-monitor.h"
 #include "burn-medium.h"
@@ -511,7 +511,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		gchar *name;
 
 		/* this is a busy drive */
-		name = brasero_medium_get_label (drive->medium, FALSE);
+		name = brasero_volume_get_display_label (BRASERO_VOLUME (drive->medium), FALSE);
 		disc_sectors_str = g_strdup_printf (_("<i>%s</i> is busy"), name);
 		g_free (name);
 
@@ -522,7 +522,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		gchar *name;
 
 		/* this is a drive probably not fully supported by brasero */
-		name = brasero_medium_get_label (drive->medium, FALSE);
+		name = brasero_volume_get_display_label (BRASERO_VOLUME (drive->medium), FALSE);
 		disc_sectors_str = g_strdup_printf (_("<i>%s</i> not properly supported"), name);
 		g_free (name);
 
@@ -533,7 +533,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 		gchar *name;
 
 		/* this is an unsupported medium */
-		name = brasero_medium_get_label (drive->medium, FALSE);
+		name = brasero_volume_get_display_label (BRASERO_VOLUME (drive->medium), FALSE);
 		disc_sectors_str = g_strdup_printf (_("The disc in <i>%s</i> is not supported"), name);
 		g_free (name);
 
@@ -548,7 +548,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	if (drive->medium) {
 		/* we ellipsize to max characters to avoid having
 		 * a too long string with the drive full name. */
-		drive_name = brasero_medium_get_label (drive->medium, TRUE);
+		drive_name = brasero_volume_get_display_label (BRASERO_VOLUME (drive->medium), TRUE);
 /*		if (strlen (drive_name) > 19) {
 			gchar *tmp;
 
@@ -1070,7 +1070,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		if (drive->medium) {
 			gchar *name;
 
-			name = brasero_medium_get_label (drive->medium, FALSE);
+			name = brasero_volume_get_display_label (BRASERO_VOLUME (drive->medium), FALSE);
 			label = g_strdup_printf ("%s %s", size_str, name);
 			g_free (name);
 		}
@@ -1602,29 +1602,25 @@ brasero_project_size_add_real_medias (BraseroProjectSize *self)
 	BraseroMediumMonitor *monitor;
 
 	monitor = brasero_medium_monitor_get_default ();
+	g_signal_connect (monitor,
+			  "medium-added",
+			  G_CALLBACK (brasero_project_size_disc_added_cb),
+			  self);
+	g_signal_connect (monitor,
+			  "medium-removed",
+			  G_CALLBACK (brasero_project_size_disc_removed_cb),
+			  self);
 	list = brasero_medium_monitor_get_media (monitor,
 						 BRASERO_MEDIA_TYPE_WRITABLE|
 						 BRASERO_MEDIA_TYPE_REWRITABLE);
 	g_object_unref (monitor);
 
 	for (iter = list; iter; iter = iter->next) {
-		BraseroMediumMonitor *monitor;
 		BraseroDriveSize *drive;
 
 		drive = g_new0 (BraseroDriveSize, 1);
 		drive->medium = iter->data;
 		self->priv->drives = g_list_prepend (self->priv->drives, drive);
-
-		/* add a callback if media changes */
-		monitor = brasero_medium_monitor_get_default ();
-		g_signal_connect (monitor,
-				  "medium-added",
-				  G_CALLBACK (brasero_project_size_disc_added_cb),
-				  self);
-		g_signal_connect (monitor,
-				  "medium-removed",
-				  G_CALLBACK (brasero_project_size_disc_removed_cb),
-				  self);
 
 		/* get all the information about the current media */
 		drive->media = brasero_medium_get_status (drive->medium);
