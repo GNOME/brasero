@@ -51,9 +51,10 @@ struct _BraseroLocalTrackPrivate {
 	guint64 data_size;
 	guint64 read_bytes;
 
-	gchar checksum [33];
-	gchar *checksum_src;
-	gchar *checksum_dest;
+	gchar *checksum;
+	gchar *checksum_path;
+	GChecksumType gchecksum_type;
+	BraseroChecksumType checksum_type;
 
 	GHashTable *nonlocals;
 
@@ -64,6 +65,8 @@ struct _BraseroLocalTrackPrivate {
 	GSList *dest_list;
 
 	GError *error;
+
+	guint download_checksum:1;
 };
 typedef struct _BraseroLocalTrackPrivate BraseroLocalTrackPrivate;
 
@@ -375,26 +378,30 @@ brasero_local_track_read_checksum (BraseroLocalTrack *self)
 	gint bytes;
 	FILE *file;
 	gchar *path;
+	gchar buffer [512];
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	memset (priv->checksum, 0, sizeof (priv->checksum));
-
 	/* get the file_checksum from the md5 file */
-	path = g_filename_from_uri (priv->checksum_dest, NULL, NULL);
+	path = g_filename_from_uri (priv->checksum_path, NULL, NULL);
 	file = fopen (path, "r");
 	g_free (path);
 
 	if (!file)
 		return BRASERO_BURN_ERR;
 
-	bytes = fread (priv->checksum, 1, sizeof (priv->checksum) - 1, file);
+	bytes = fread (buffer,
+		       1,
+		       g_checksum_type_get_length (priv->gchecksum_type) - 1,
+		       file);
 	fclose (file);
+	buffer [g_checksum_type_get_length (priv->gchecksum_type)] = '\0';
 
-	if (bytes != sizeof (priv->checksum) - 1)
+	if (bytes != g_checksum_type_get_length (priv->gchecksum_type) - 1)
 		return BRASERO_BURN_ERR;
 
+	priv->checksum = g_strdup (buffer);
 	return BRASERO_BURN_OK;
 }
 
@@ -403,42 +410,95 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 {
 	BraseroLocalTrackPrivate *priv;
 	BraseroBurnResult result;
+	BraseroTrack *track;
+	gchar *checksum_src;
 	GFile *src, *dest;
+	gchar *uri;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	/* generate a unique name for dest */
+	/* generate a unique name for destination */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
 					   NULL,
-					   &priv->checksum_dest,
+					   &priv->checksum_path,
 					   NULL);
 	if (result != BRASERO_BURN_OK)
 		goto error;
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_FILE_COPY,
-					_("Copying files md5sum file"),
+					_("Copying checksum file"),
 					TRUE);
 
-	src = g_file_new_for_uri (priv->checksum_src);
-	dest = g_file_new_for_uri (priv->checksum_dest);
+	/* This is an image. See if there is any checksum sitting in the same
+	 * directory to check our download integrity. Try all types of checksum. */
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
+	uri = brasero_track_get_image_source (track, TRUE);
+	dest = g_file_new_for_uri (priv->checksum_path);
+
+	/* Try with three difference sources */
+	checksum_src = g_strdup_printf ("%s.md5", uri);
+	src = g_file_new_for_uri (checksum_src);
+	g_free (checksum_src);
 
 	result = brasero_local_track_transfer (self,
 					       src,
 					       dest,
 					       NULL);
+	g_object_unref (src);
+
+	if (result == BRASERO_BURN_OK) {
+		priv->gchecksum_type = G_CHECKSUM_MD5;
+		priv->checksum_type = BRASERO_CHECKSUM_MD5;
+		goto end;
+	}
+
+	checksum_src = g_strdup_printf ("%s.sha1", uri);
+	src = g_file_new_for_uri (checksum_src);
+	g_free (checksum_src);
+
+	result = brasero_local_track_transfer (self,
+					       src,
+					       dest,
+					       NULL);
+	g_object_unref (src);
+
+	if (result == BRASERO_BURN_OK) {
+		priv->gchecksum_type = G_CHECKSUM_SHA1;
+		priv->checksum_type = BRASERO_CHECKSUM_SHA1;
+		goto end;
+	}
+
+	checksum_src = g_strdup_printf ("%s.sha256", uri);
+	src = g_file_new_for_uri (checksum_src);
+	g_free (checksum_src);
+
+	result = brasero_local_track_transfer (self,
+					       src,
+					       dest,
+					       NULL);
+	g_object_unref (src);
+
+	if (result != BRASERO_BURN_OK) {
+		g_free (uri);
+		g_object_unref (dest);
+		goto error;
+	}
+
+	priv->gchecksum_type = G_CHECKSUM_SHA256;
+	priv->checksum_type = BRASERO_CHECKSUM_SHA256;
+
+end:
 
 	g_object_unref (dest);
-	g_object_unref (src);
+	g_free (uri);
 
 	return result;
 
 error:
 	/* we give up */
-	g_free (priv->checksum_src);
-	priv->checksum_src = NULL;
-	g_free (priv->checksum_dest);
-	priv->checksum_dest = NULL;
+	g_free (priv->checksum_path);
+	priv->checksum_path = NULL;
 	return result;
 }
 
@@ -521,9 +581,9 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 		BRASERO_JOB_NOT_SUPPORTED (self);
 	}
 
-	if (priv->checksum)
+	if (priv->download_checksum)
 		brasero_track_set_checksum (track,
-					    BRASERO_CHECKSUM_MD5,
+					    priv->checksum_type,
 					    priv->checksum);
 
 	brasero_job_add_track (BRASERO_JOB (self), track);
@@ -570,8 +630,8 @@ brasero_local_track_thread (gpointer data)
 	}
 
 	/* successfully downloaded files, get a checksum if we can. */
-	if (priv->checksum_src
-	&& !priv->checksum_dest
+	if (priv->download_checksum
+	&& !priv->checksum_path
 	&&  brasero_local_track_download_checksum (self) == BRASERO_BURN_OK)
 		brasero_local_track_read_checksum (self);
 
@@ -765,11 +825,9 @@ brasero_local_track_start (BraseroJob *job,
 	case BRASERO_TRACK_TYPE_IMAGE:
 		uri = brasero_track_get_image_source (track, TRUE);
 		brasero_local_track_add_if_non_local (self, uri, error);
-
-		/* This is an image. See if there is any md5 sum sitting in the
-		 * same directory to check our download integrity */
-		priv->checksum_src = g_strdup_printf ("%s.md5", uri);
 		g_free (uri);
+
+		priv->download_checksum = TRUE;
 
 		uri = brasero_track_get_toc_source (track, TRUE);
 		brasero_local_track_add_if_non_local (self, uri, error);
@@ -848,14 +906,14 @@ brasero_local_track_stop (BraseroJob *job,
 		priv->nonlocals = NULL;
 	}
 
-	if (priv->checksum_src) {
-		g_free (priv->checksum_src);
-		priv->checksum_src = NULL;
+	if (priv->checksum_path) {
+		g_free (priv->checksum_path);
+		priv->checksum_path = NULL;
 	}
 
-	if (priv->checksum_dest) {
-		g_free (priv->checksum_dest);
-		priv->checksum_dest = NULL;
+	if (priv->checksum) {
+		g_free (priv->checksum);
+		priv->checksum = NULL;
 	}
 
 	return BRASERO_BURN_OK;

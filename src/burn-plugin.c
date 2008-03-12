@@ -67,6 +67,8 @@ struct _BraseroPluginConfOption {
 		} range;
 
 		GSList *suboptions;
+
+		GSList *choices;
 	} specifics;
 };
 
@@ -190,12 +192,23 @@ brasero_plugin_cleanup_definition (BraseroPlugin *self)
 /**
  * Plugin configure options
  */
+static void
+brasero_plugin_conf_option_choice_pair_free (BraseroPluginChoicePair *pair)
+{
+	g_free (pair->string);
+	g_free (pair);
+}
 
 static void
 brasero_plugin_conf_option_free (BraseroPluginConfOption *option)
 {
 	if (option->type == BRASERO_PLUGIN_OPTION_BOOL)
 		g_slist_free (option->specifics.suboptions);
+
+	if (option->type == BRASERO_PLUGIN_OPTION_CHOICE) {
+		g_slist_foreach (option->specifics.choices, (GFunc) brasero_plugin_conf_option_choice_pair_free, NULL);
+		g_slist_free (option->specifics.choices);
+	}
 
 	g_free (option->key);
 	g_free (option->description);
@@ -303,6 +316,24 @@ brasero_plugin_conf_option_int_set_range (BraseroPluginConfOption *option,
 	return BRASERO_BURN_OK;
 }
 
+BraseroBurnResult
+brasero_plugin_conf_option_choice_add (BraseroPluginConfOption *option,
+				       const gchar *string,
+				       gint value)
+{
+	BraseroPluginChoicePair *pair;
+
+	if (option->type != BRASERO_PLUGIN_OPTION_CHOICE)
+		return BRASERO_BURN_ERR;
+
+	pair = g_new0 (BraseroPluginChoicePair, 1);
+	pair->value = value;
+	pair->string = g_strdup (string);
+	option->specifics.choices = g_slist_append (option->specifics.choices, pair);
+
+	return BRASERO_BURN_OK;
+}
+
 GSList *
 brasero_plugin_conf_option_bool_get_suboptions (BraseroPluginConfOption *option)
 {
@@ -325,6 +356,14 @@ brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option)
 	if (option->type != BRASERO_PLUGIN_OPTION_INT)
 		return -1;
 	return option->specifics.range.min;
+}
+
+GSList *
+brasero_plugin_conf_option_choice_get (BraseroPluginConfOption *option)
+{
+	if (option->type != BRASERO_PLUGIN_OPTION_CHOICE)
+		return NULL;
+	return option->specifics.choices;
 }
 
 /**

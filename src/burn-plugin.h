@@ -170,6 +170,7 @@ typedef enum {
 	BRASERO_PLUGIN_OPTION_BOOL,
 	BRASERO_PLUGIN_OPTION_INT,
 	BRASERO_PLUGIN_OPTION_STRING,
+	BRASERO_PLUGIN_OPTION_CHOICE
 } BraseroPluginConfOptionType;
 
 BraseroPluginConfOption *
@@ -189,6 +190,11 @@ BraseroBurnResult
 brasero_plugin_conf_option_int_set_range (BraseroPluginConfOption *option,
 					  gint min,
 					  gint max);
+
+BraseroBurnResult
+brasero_plugin_conf_option_choice_add (BraseroPluginConfOption *option,
+				       const gchar *string,
+				       gint value);
 
 /**
  * Boiler plate for plugin definition to save the hassle of definition.

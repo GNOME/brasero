@@ -34,6 +34,12 @@
 
 G_BEGIN_DECLS
 
+struct _BraseroPluginChoicePair {
+	gchar *string;
+	guint value;
+};
+typedef struct _BraseroPluginChoicePair BraseroPluginChoicePair;
+
 BraseroPlugin *
 brasero_plugin_new (const gchar *path);
 
@@ -130,6 +136,9 @@ gint
 brasero_plugin_conf_option_int_get_min (BraseroPluginConfOption *option);
 gint
 brasero_plugin_conf_option_int_get_max (BraseroPluginConfOption *option);
+
+GSList *
+brasero_plugin_conf_option_choice_get (BraseroPluginConfOption *option);
 
 G_END_DECLS
 

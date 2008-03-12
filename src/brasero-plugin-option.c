@@ -41,12 +41,24 @@
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkframe.h>
+#include <gtk/gtkcomboboxentry.h>
+#include <gtk/gtktreemodel.h>
+#include <gtk/gtkliststore.h>
+#include <gtk/gtkcellrenderer.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkcelllayout.h>
 
 #include <gconf/gconf-client.h>
 
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"
 #include "brasero-plugin-option.h"
+
+enum {
+	STRING_COL,
+	VALUE_COL,
+	COL_NUM
+};
 
 typedef struct _BraseroPluginOptionPrivate BraseroPluginOptionPrivate;
 struct _BraseroPluginOptionPrivate
@@ -73,7 +85,9 @@ void
 brasero_plugin_option_save_settings (BraseroPluginOption *self)
 {
 	GSList *iter;
+	GtkTreeModel *model;
 	GConfClient *client;
+	GtkTreeIter tree_iter;
 	BraseroPluginOptionPrivate *priv;
 
 	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
@@ -112,6 +126,13 @@ brasero_plugin_option_save_settings (BraseroPluginOption *self)
 			gconf_client_set_string (client, key, value_str, NULL);
 			break;
 
+		case BRASERO_PLUGIN_OPTION_CHOICE:
+			model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget->widget));
+			gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget->widget), &tree_iter);
+			gtk_tree_model_get (model, &tree_iter,
+					    VALUE_COL, &value_int,
+					    -1);
+			gconf_client_set_int (client, key, value_int, NULL);
 		default:
 			break;
 		}
@@ -172,6 +193,7 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 	BraseroPluginOptionPrivate *priv;
 	BraseroPluginOptionWidget *info;
 	GSList *suboptionsw = NULL;
+	GtkListStore *model;
 	GConfClient *client;
 	gboolean value_bool;
 	gchar *value_str;
@@ -181,6 +203,8 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *box;
+	GtkTreeIter iter;
+	GtkCellRenderer *renderer;
 	BraseroPluginConfOptionType type;
 	gchar *description;
 	gchar *key;
@@ -300,6 +324,56 @@ brasero_plugin_option_add_conf_widget (BraseroPluginOption *self,
 		value_str = gconf_client_get_string (client, key, NULL);
 		gtk_entry_set_text (GTK_ENTRY (widget), value_str);
 		g_free (value_str);
+		break;
+
+	case BRASERO_PLUGIN_OPTION_CHOICE:
+		box = gtk_hbox_new (FALSE, 6);
+
+		label = gtk_label_new (description);
+		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
+		model = gtk_list_store_new (COL_NUM,
+					    G_TYPE_STRING,
+					    G_TYPE_INT);
+		widget = gtk_combo_box_new_with_model (GTK_TREE_MODEL (model));
+		g_object_unref (model);
+		gtk_widget_show (widget);
+		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, TRUE, 0);
+
+		renderer = gtk_cell_renderer_text_new ();
+		gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget), renderer, TRUE);
+		gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (widget), renderer,
+						"text", STRING_COL,
+						NULL);
+
+		value_int = gconf_client_get_int (client, key, NULL);
+		suboptions = brasero_plugin_conf_option_choice_get (option);
+		for (; suboptions; suboptions = suboptions->next) {
+			BraseroPluginChoicePair *pair;
+
+			pair = suboptions->data;
+			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    STRING_COL, pair->string,
+					    VALUE_COL, pair->value,
+					    -1);
+
+			if (pair->value == value_int)
+				gtk_combo_box_set_active_iter (GTK_COMBO_BOX (widget), &iter);
+		}
+
+		if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter)) {
+			if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
+				gtk_combo_box_set_active_iter (GTK_COMBO_BOX (widget), &iter);
+		}
+
+		gtk_widget_show_all (box);
+		gtk_box_pack_start (GTK_BOX (hbox),
+				    box,
+				    FALSE,
+				    FALSE,
+				    0);
 		break;
 
 	default:

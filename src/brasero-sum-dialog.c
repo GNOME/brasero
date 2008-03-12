@@ -52,6 +52,8 @@
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
 #include "burn-drive.h"
+#include "burn-medium.h"
+#include "burn-volume-obj.h"
 #include "brasero-xfer.h"
 #include "burn-basics.h"
 #include "burn-debug.h"
@@ -513,10 +515,76 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	return brasero_sum_dialog_success (self);
 }
 
+static BraseroChecksumType
+brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
+					    BraseroDrive *drive,
+					    BraseroTrack *track,
+					    GError **error)
+{
+	BraseroMedium *medium;
+	gboolean retval;
+	gchar *filename;
+	gchar *root;
+
+	medium = brasero_drive_get_medium (drive);
+
+	retval = brasero_volume_mount (BRASERO_VOLUME (medium), TRUE, error);
+	if (!retval)
+		return BRASERO_CHECKSUM_NONE;
+
+	root = brasero_volume_get_mount_point (BRASERO_VOLUME (medium), error);
+	if (!root)
+		return BRASERO_CHECKSUM_NONE;
+
+	filename = g_build_path (G_DIR_SEPARATOR_S, root, BRASERO_MD5_FILE, NULL);
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		g_free (filename);
+
+		brasero_track_set_checksum (track,
+					    BRASERO_CHECKSUM_MD5_FILE,
+					    BRASERO_MD5_FILE);
+
+		return BRASERO_CHECKSUM_MD5_FILE;
+	}
+	g_free (filename);
+
+	filename = g_build_path (G_DIR_SEPARATOR_S, root, BRASERO_SHA1_FILE, NULL);
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		g_free (filename);
+
+		brasero_track_set_checksum (track,
+					    BRASERO_CHECKSUM_SHA1_FILE,
+					    BRASERO_SHA1_FILE);
+
+		return BRASERO_CHECKSUM_SHA1_FILE;
+	}
+	g_free (filename);
+
+	filename = g_build_path (G_DIR_SEPARATOR_S, root, BRASERO_SHA256_FILE, NULL);
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		g_free (filename);
+
+		brasero_track_set_checksum (track,
+					    BRASERO_CHECKSUM_SHA256_FILE,
+					    BRASERO_SHA256_FILE);
+
+		return BRASERO_CHECKSUM_SHA256_FILE;
+	}
+	g_free (filename);
+
+	g_set_error (error,
+		     BRASERO_ERROR,
+		     BRASERO_ERROR_GENERAL,
+		     _("no checksum file could be found on the disc."));
+
+	return BRASERO_CHECKSUM_NONE;
+}
+
 static gboolean
 brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 				   BraseroDrive *drive)
 {
+	BraseroChecksumType checksum_type;
 	GSList *wrong_sums = NULL;
 	BraseroBurnResult result;
 	GError *error = NULL;
@@ -527,9 +595,19 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 	/* get the checksum */
 	track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
 	brasero_track_set_drive_source (track, drive);
-	brasero_track_set_checksum (track,
-				    BRASERO_CHECKSUM_MD5_FILE,
-				    BRASERO_MD5_FILE);
+
+	checksum_type = brasero_sum_dialog_set_track_checksum_type (self,
+								    drive,
+								    track,
+								    &error);
+
+	if (checksum_type == BRASERO_CHECKSUM_NONE) {
+		brasero_sum_dialog_message_error (self, error);
+		brasero_track_unref (track);
+		g_error_free (error);
+		return FALSE;
+	}
+
 	brasero_burn_session_add_track (self->priv->session, track);
 
 	/* It's good practice to unref the track afterwards as we don't need it

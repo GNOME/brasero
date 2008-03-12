@@ -264,9 +264,7 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 		}
 	}
 
-	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, NULL);
-	medium = brasero_drive_get_medium (priv->dest);
-	if (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+	if (!brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, NULL)) {
 		gchar *name;
 
 		name = brasero_drive_get_display_name (priv->dest);
@@ -953,7 +951,6 @@ again:
 							  BRASERO_BURN_WARNING_CHECKSUM,
 							  BRASERO_MEDIUM_NONE,
 							  error);
-
 		if (result != BRASERO_BURN_OK)
 			return result;
 	}
@@ -1042,7 +1039,7 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn)
 
 	priv->dest_locked = 0;
 	brasero_drive_unlock (priv->dest);
-	medium = brasero_drive_get_medium (priv->src);
+	medium = brasero_drive_get_medium (priv->dest);
 
 	if (BRASERO_BURN_SESSION_EJECT (priv->session))
 		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, NULL);
@@ -1623,7 +1620,9 @@ brasero_burn_check_real (BraseroBurn *self,
 	/* if the input is a DISC, ask/mount/unmount and lock it (as dest) */
 	medium = brasero_drive_get_medium (priv->dest);
 	if (type.type == BRASERO_TRACK_TYPE_DISC
-	&&  checksum_type == BRASERO_CHECKSUM_MD5_FILE
+	&& (checksum_type == BRASERO_CHECKSUM_MD5_FILE
+	||  checksum_type == BRASERO_CHECKSUM_SHA1_FILE
+	||  checksum_type == BRASERO_CHECKSUM_SHA256_FILE)
 	&& !brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		result = brasero_burn_mount_media (self, error);
 		if (result != BRASERO_BURN_OK)
@@ -1650,7 +1649,9 @@ brasero_burn_check_real (BraseroBurn *self,
 		/* make sure one last time it is not mounted IF and only IF the
 		 * checksum type is NOT FILE_MD5 */
 		if (priv->dest
-		&&  checksum_type == BRASERO_CHECKSUM_MD5
+		&& (checksum_type == BRASERO_CHECKSUM_MD5
+		||  checksum_type == BRASERO_CHECKSUM_SHA1
+		||  checksum_type == BRASERO_CHECKSUM_SHA256)
 		&&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
 		&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 			g_set_error (error,
@@ -1945,7 +1946,9 @@ brasero_burn_record_session (BraseroBurn *burn,
 
 	priv->dest = NULL;
 
-	if (type == BRASERO_CHECKSUM_MD5) {
+	if (type == BRASERO_CHECKSUM_MD5
+	||  type == BRASERO_CHECKSUM_SHA1
+	||  type == BRASERO_CHECKSUM_SHA256) {
 		const gchar *checksum = NULL;
 
 		checksum = brasero_track_get_checksum (track);
@@ -1959,8 +1962,20 @@ brasero_burn_record_session (BraseroBurn *burn,
 	else if (type == BRASERO_CHECKSUM_MD5_FILE) {
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
 		brasero_track_set_checksum (track,
-					    BRASERO_CHECKSUM_MD5_FILE,
+					    type,
 					    BRASERO_MD5_FILE);
+	}
+	else if (type == BRASERO_CHECKSUM_SHA1_FILE) {
+		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
+		brasero_track_set_checksum (track,
+					    type,
+					    BRASERO_SHA1_FILE);
+	}
+	else if (type == BRASERO_CHECKSUM_SHA256_FILE) {
+		track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
+		brasero_track_set_checksum (track,
+					    type,
+					    BRASERO_SHA256_FILE);
 	}
 
 	brasero_burn_session_push_tracks (priv->session);
@@ -1983,7 +1998,9 @@ brasero_burn_record_session (BraseroBurn *burn,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	if (type == BRASERO_CHECKSUM_MD5) {
+	if (type == BRASERO_CHECKSUM_MD5
+	||  type == BRASERO_CHECKSUM_SHA1
+	||  type == BRASERO_CHECKSUM_SHA256) {
 		guint track_num;
 		BraseroDrive *drive;
 		BraseroMedium *medium;

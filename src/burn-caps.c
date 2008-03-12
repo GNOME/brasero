@@ -1476,7 +1476,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 			continue;
 
 		/* check this caps test supports the right checksum type */
-		if (test->type == checksum_type) {
+		if (test->type & checksum_type) {
 			links = test->links;
 			break;
 		}

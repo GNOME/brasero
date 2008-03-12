@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <sys/param.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -40,9 +41,10 @@
 
 #include <gmodule.h>
 
+#include <gconf/gconf-client.h>
+
 #include "burn-plugin.h"
 #include "burn-job.h"
-#include "burn-md5.h"
 #include "burn-md5sum.h"
 #include "burn-volume.h"
 #include "burn-drive.h"
@@ -50,12 +52,12 @@
 BRASERO_PLUGIN_BOILERPLATE (BraseroMd5sum, brasero_md5sum, BRASERO_TYPE_JOB, BraseroJob);
 
 struct _BraseroMd5sumPrivate {
-	BraseroMD5Ctx *ctx;
-	BraseroMD5 md5;
+	GChecksum *checksum;
+	BraseroChecksumType checksum_type;
 
-	/* the path and fd for the file containing the md5 of files */
-	gchar *sums_path;
+	/* That's for progress reporting */
 	gint64 total;
+	gint64 bytes;
 
 	/* this is for the thread and the end of it */
 	GThread *thread;
@@ -67,14 +69,16 @@ typedef struct _BraseroMd5sumPrivate BraseroMd5sumPrivate;
 
 #define BRASERO_MD5SUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MD5SUM, BraseroMd5sumPrivate))
 
+#define GCONF_KEY_CHECKSUM_TYPE		"/apps/brasero/config/checksum_image"
+
 static BraseroJobClass *parent_class = NULL;
 
 static gint
-brasero_md5sum_live_read (BraseroMd5sum *self,
-			  int fd,
-			  guchar *buffer,
-			  gint bytes,
-			  GError **error)
+brasero_md5sum_read (BraseroMd5sum *self,
+		     int fd,
+		     guchar *buffer,
+		     gint bytes,
+		     GError **error)
 {
 	gint total = 0;
 	gint read_bytes;
@@ -118,11 +122,11 @@ brasero_md5sum_live_read (BraseroMd5sum *self,
 }
 
 static BraseroBurnResult
-brasero_md5sum_live_write (BraseroMd5sum *self,
-			   int fd,
-			   guchar *buffer,
-			   gint bytes,
-			   GError **error)
+brasero_md5sum_write (BraseroMd5sum *self,
+		      int fd,
+		      guchar *buffer,
+		      gint bytes,
+		      GError **error)
 {
 	gint bytes_remaining;
 	gint bytes_written = 0;
@@ -166,12 +170,12 @@ brasero_md5sum_live_write (BraseroMd5sum *self,
 }
 
 static BraseroBurnResult
-brasero_md5sum_live (BraseroMd5sum *self,
-		     GError **error)
+brasero_md5sum_checksum (BraseroMd5sum *self,
+			 GChecksumType checksum_type,
+			 int fd_in,
+			 int fd_out,
+			 GError **error)
 {
-	int fd_in = -1;
-	int fd_out = -1;
-	guint sum_bytes;
 	gint read_bytes;
 	guchar buffer [2048];
 	BraseroBurnResult result;
@@ -179,7 +183,57 @@ brasero_md5sum_live (BraseroMd5sum *self,
 
 	priv = BRASERO_MD5SUM_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "starting md5 generation live");
+	priv->checksum = g_checksum_new (checksum_type);
+	result = BRASERO_BURN_OK;
+	while (1) {
+		read_bytes = brasero_md5sum_read (self,
+						  fd_in,
+						  buffer,
+						  sizeof (buffer),
+						  error);
+		if (read_bytes == -2)
+			return BRASERO_BURN_CANCEL;
+
+		if (read_bytes == -1)
+			return BRASERO_BURN_ERR;
+
+		if (!read_bytes)
+			break;
+
+		/* it can happen when we're just asked to generate a checksum
+		 * that we don't need to output the received data */
+		if (fd_out > 0) {
+			result = brasero_md5sum_write (self,
+						       fd_out,
+						       buffer,
+						       read_bytes, error);
+			if (result != BRASERO_BURN_OK)
+				break;
+		}
+
+		g_checksum_update (priv->checksum,
+				   buffer,
+				   read_bytes);
+
+		priv->bytes += read_bytes;
+	}
+
+	return result;
+}
+
+static BraseroBurnResult
+brasero_md5sum_checksum_fd_input (BraseroMd5sum *self,
+				  GChecksumType checksum_type,
+				  GError **error)
+{
+	int fd_in = -1;
+	int fd_out = -1;
+	BraseroBurnResult result;
+	BraseroMd5sumPrivate *priv;
+
+	priv = BRASERO_MD5SUM_PRIVATE (self);
+
+	BRASERO_JOB_LOG (self, "Starting md5 generation live (size = %i)", priv->total);
 	result = brasero_job_set_nonblocking (BRASERO_JOB (self), error);
 	if (result != BRASERO_BURN_OK)
 		return result;
@@ -187,74 +241,29 @@ brasero_md5sum_live (BraseroMd5sum *self,
 	brasero_job_get_fd_in (BRASERO_JOB (self), &fd_in);
 	brasero_job_get_fd_out (BRASERO_JOB (self), &fd_out);
 
-	priv->ctx = brasero_md5_new ();
-	brasero_md5_init (priv->ctx, &priv->md5);
-
-	result = BRASERO_BURN_OK;
-	while (1) {
-		sum_bytes = 0;
-
-		read_bytes = brasero_md5sum_live_read (self,
-						       fd_in,
-						       buffer,
-						       sizeof (buffer),
-						       error);
-		if (read_bytes == -2) {
-			result = BRASERO_BURN_CANCEL;
-			goto end;
-		}
-
-		if (read_bytes == -1) {
-			result = BRASERO_BURN_ERR;
-			goto end;
-		}
-
-		if (!read_bytes)
-			break;
-
-		/* it can happen when we're just asked to generate a checksum
-		 * that we don't need to output the received data */
-		if (fd_out > 0
-		&&  brasero_md5sum_live_write (self, fd_out, buffer, read_bytes, error) != BRASERO_BURN_OK)
-			goto end;
-
-		sum_bytes = brasero_md5_sum (priv->ctx,
-					     &priv->md5,
-					     buffer,
-					     read_bytes);
-		if (sum_bytes == -1) {
-			result = BRASERO_BURN_CANCEL;
-			goto end;
-		}
-
-		/* this could be a problem, disc recording is more important */
-		if (sum_bytes)
-			break;
-	}
-
-	brasero_md5_end (priv->ctx, &priv->md5, buffer + (read_bytes - sum_bytes), sum_bytes);
-
-end:
-
-	brasero_md5_free (priv->ctx);
-	priv->ctx = NULL;
-
-	return result;
+	return brasero_md5sum_checksum (self, checksum_type, fd_in, fd_out, error);
 }
 
 static BraseroBurnResult
-brasero_md5sum_image_live (BraseroMd5sum *self, GError **error)
+brasero_md5sum_checksum_file_input (BraseroMd5sum *self,
+				    GChecksumType checksum_type,
+				    GError **error)
 {
 	BraseroMd5sumPrivate *priv;
 	BraseroBurnResult result;
 	BraseroTrack *track;
+	int fd_out = -1;
+	int fd_in = -1;
 	gchar *path;
 
 	priv = BRASERO_MD5SUM_PRIVATE (self);
 
-	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
-		return brasero_md5sum_live (self, error);
+	BRASERO_JOB_LOG (self,
+			 "Starting checksuming file %s (size = %i)",
+			 path,
+			 priv->total);
 
+	/* get all information */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	path = brasero_track_get_image_source (track, FALSE);
 	if (!path) {
@@ -265,40 +274,67 @@ brasero_md5sum_image_live (BraseroMd5sum *self, GError **error)
 		return BRASERO_BURN_ERR;
 	}
 
-	result = brasero_track_get_image_size (track, NULL, NULL, &priv->total, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
+	fd_in = open (path, O_RDONLY);
+	if (!fd_in) {
+		gchar *name = NULL;
 
-	brasero_job_set_current_action (BRASERO_JOB (self),
-					BRASERO_BURN_ACTION_CHECKSUM,
-					_("Creating image checksum"),
-					FALSE);
+		if (errno == ENOENT)
+			return BRASERO_BURN_RETRY;
 
-	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
+		name = g_path_get_basename (path);
 
-	priv->ctx = brasero_md5_new ();
-	result = brasero_md5_file (priv->ctx,
-				   path,
-				   &priv->md5,
-				   0,
-				   -1,
-				   error);
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the file %s couldn't be read (%s)"),
+			     name,
+			     strerror (errno));
+		g_free (name);
+		g_free (path);
+
+		return BRASERO_BURN_ERR;
+	}
+
+	/* and here we go */
+	brasero_job_get_fd_out (BRASERO_JOB (self), &fd_out);
+	result = brasero_md5sum_checksum (self, checksum_type, fd_in, fd_out, error);
 	g_free (path);
-	brasero_md5_free (priv->ctx);
-	priv->ctx = NULL;
+	close (fd_in);
 
 	return result;
 }
 
 static BraseroBurnResult
-brasero_md5sum_image (BraseroMd5sum *self, GError **error)
+brasero_md5sum_create_checksum (BraseroMd5sum *self,
+				GError **error)
 {
-	gchar *path;
-	BraseroTrack *track;
 	BraseroBurnResult result;
 	BraseroMd5sumPrivate *priv;
+	BraseroTrack *track = NULL;
+	GChecksumType checksum_type;
 
 	priv = BRASERO_MD5SUM_PRIVATE (self);
+
+	/* get the checksum type */
+	switch (priv->checksum_type) {
+		case BRASERO_CHECKSUM_MD5:
+			checksum_type = G_CHECKSUM_MD5;
+			break;
+		case BRASERO_CHECKSUM_SHA1:
+			checksum_type = G_CHECKSUM_SHA1;
+			break;
+		case BRASERO_CHECKSUM_SHA256:
+			checksum_type = G_CHECKSUM_SHA256;
+			break;
+		default:
+			return BRASERO_BURN_ERR;
+	}
+
+	brasero_job_set_current_action (BRASERO_JOB (self),
+					BRASERO_BURN_ACTION_CHECKSUM,
+					_("Creating image checksum"),
+					FALSE);
+	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 
 	/* see if another plugin is sending us data to checksum */
@@ -308,54 +344,56 @@ brasero_md5sum_image (BraseroMd5sum *self, GError **error)
 		/* we're only able to checksum ISO format at the moment so that
 		 * means we can only handle last session */
 		medium = brasero_track_get_medium_source (track);
-		brasero_medium_get_last_data_track_space (medium, &priv->total, NULL);
+		brasero_medium_get_last_data_track_space (medium,
+							  &priv->total,
+							  NULL);
 
-		BRASERO_JOB_LOG (self,
-				 "Starting checksuming (live) (size = %i)",
-				 priv->total);
+		return brasero_md5sum_checksum_fd_input (self, checksum_type, error);
+	}
+	else {
+		result = brasero_track_get_image_size (track,
+						       NULL,
+						       NULL,
+						       &priv->total,
+						       error);
+		if (result != BRASERO_BURN_OK)
+			return result;
 
-		brasero_job_set_current_action (BRASERO_JOB (self),
-						BRASERO_BURN_ACTION_CHECKSUM,
-						_("Creating local image checksum"),
-						FALSE);
-		brasero_job_start_progress (BRASERO_JOB (self), FALSE);
-
-		return brasero_md5sum_live (self, error);
+		return brasero_md5sum_checksum_file_input (self, checksum_type, error);
 	}
 
-	/* get all needed information about the image */
-	result = brasero_track_get_image_size (track,
-					       NULL,
-					       NULL,
-					       &priv->total,
-					       error);
-	if (result != BRASERO_BURN_OK)
-		return result;
+	return BRASERO_BURN_OK;
+}
 
-	path = brasero_track_get_image_source (track, FALSE);
+static BraseroBurnResult
+brasero_md5sum_image_and_checksum (BraseroMd5sum *self,
+				   GError **error)
+{
+	GConfClient *client;
+	BraseroBurnResult result;
+	GChecksumType checksum_type;
+	BraseroMd5sumPrivate *priv;
 
-	/* simply open the file, read and checksum */
-	BRASERO_JOB_LOG (self,
-			 "Starting checksuming %s (size = %i)",
-			 path,
-			 priv->total);
+	priv = BRASERO_MD5SUM_PRIVATE (self);
+	client = gconf_client_get_default ();
+	priv->checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
+	g_object_unref (client);
 
-	brasero_job_set_current_action (BRASERO_JOB (self),
-					BRASERO_BURN_ACTION_CHECKSUM,
-					_("Creating local image checksum"),
-					FALSE);
-	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
+	if (priv->checksum_type == BRASERO_CHECKSUM_NONE)
+		checksum_type = G_CHECKSUM_MD5;
+	else if (priv->checksum_type & BRASERO_CHECKSUM_MD5)
+		checksum_type = G_CHECKSUM_MD5;
+	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA1)
+		checksum_type = G_CHECKSUM_SHA1;
+	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA256)
+		checksum_type = G_CHECKSUM_SHA256;
+	else
+		checksum_type = G_CHECKSUM_MD5;
 
-	priv->ctx = brasero_md5_new ();
-	result = brasero_md5_file (priv->ctx,
-				   path,
-				   &priv->md5,
-				   0,
-				   priv->total,
-				   error);
-	brasero_md5_free (priv->ctx);
-	priv->ctx = NULL;
-	g_free (path);
+	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
+		result = brasero_md5sum_checksum_fd_input (self, checksum_type, error);
+	else
+		result = brasero_md5sum_checksum_file_input (self, checksum_type, error);
 
 	return result;
 }
@@ -372,12 +410,10 @@ brasero_md5sum_end (gpointer data)
 {
 	BraseroMd5sum *self;
 	BraseroTrack *track;
-	BraseroTrackType input;
-	BraseroJobAction action;
+	const gchar *checksum;
 	BraseroBurnResult result;
 	BraseroMd5sumPrivate *priv;
 	BraseroMd5sumThreadCtx *ctx;
-	gchar checksum [MD5_STRING_LEN + 1];
 
 	ctx = data;
 	self = ctx->sum;
@@ -392,116 +428,36 @@ brasero_md5sum_end (gpointer data)
 		error = ctx->error;
 		ctx->error = NULL;
 
+		g_checksum_free (priv->checksum);
+		priv->checksum = NULL;
+
 		brasero_job_error (BRASERO_JOB (self), error);
 		return FALSE;
 	}
 
-	brasero_job_get_action (BRASERO_JOB (self), &action);
-	if (action == BRASERO_JOB_ACTION_CHECKSUM) {
-		BraseroChecksumType type;
+	/* we were asked to check the sum of the track so get the type
+	 * of the checksum first to see what to do */
+	track = NULL;
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 
-		/* we were asked to check the sum of the track so get the type
-		 * of the checksum first to see what to do */
-		track = NULL;
-		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		type = brasero_track_get_checksum_type (track);
+	/* Set the checksum for the track and at the same time compare it to a
+	 * potential previous one. */
+	checksum = g_checksum_get_string (priv->checksum);
+	BRASERO_JOB_LOG (self,
+			 "setting new checksum (type = %i) %s (%s before)",
+			 priv->checksum_type,
+			 checksum,
+			 brasero_track_get_checksum (track));
+	result = brasero_track_set_checksum (track,
+					     priv->checksum_type,
+					     checksum);
+	g_checksum_free (priv->checksum);
+	priv->checksum = NULL;
 
-		if (type == BRASERO_CHECKSUM_MD5_FILE) {
-			/* in this case all was already set in session */
-			brasero_job_finished_track (BRASERO_JOB (self));
-			return FALSE;
-		}
-
-		/* DISC checking. Set the checksum for the track and at the same
-		 * time compare it to a potential one */
-		brasero_md5_string (&priv->md5, checksum);
-		checksum [MD5_STRING_LEN] = '\0';
-
-		BRASERO_JOB_LOG (self,
-				 "setting new checksum (type = %i) %s (%s before)",
-				 type,
-				 checksum,
-				 brasero_track_get_checksum (track));
-
-		result = brasero_track_set_checksum (track,
-						     BRASERO_CHECKSUM_MD5,
-						     checksum);
-		if (result != BRASERO_BURN_OK)
-			goto error;
-
-		brasero_job_finished_track (BRASERO_JOB (self));
-		return FALSE;
-	}
-
-	/* we were asked to create a checksum. Its type depends on the input */
-	brasero_job_get_input_type (BRASERO_JOB (self), &input);
-
-	/* let's create a new DATA track with the md5 file created */
-	if (input.type == BRASERO_TRACK_TYPE_DATA) {
-		GSList *grafts;
-		GSList *excluded;
-		BraseroGraftPt *graft;
-		BraseroTrackType type;
-		GSList *new_grafts = NULL;
-
-		/* for DATA track we add the file to the track */
-		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		brasero_track_get_type (track, &type);
-		grafts = brasero_track_get_data_grafts_source (track);
-
-		for (; grafts; grafts = grafts->next) {
-			graft = grafts->data;
-			graft = brasero_graft_point_copy (graft);
-			new_grafts = g_slist_prepend (new_grafts, graft);
-		}
-
-		graft = g_new0 (BraseroGraftPt, 1);
-		graft->uri = g_strconcat ("file://", priv->sums_path, NULL);
-		graft->path = g_strdup ("/"BRASERO_CHECKSUM_FILE);
-		new_grafts = g_slist_prepend (new_grafts, graft);
-
-		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
-		brasero_track_add_data_fs (track, type.subtype.fs_type);
-
-		excluded = brasero_track_get_data_excluded_source (track, TRUE);
-		brasero_track_set_data_source (track, new_grafts, excluded);
-
-		brasero_track_set_checksum (track,
-					    BRASERO_CHECKSUM_MD5_FILE,
-					    graft->uri);
-
-		brasero_job_add_track (BRASERO_JOB (self), track);
-
-		/* It's good practice to unref the track afterwards as we don't 
-		 * need it anymore. BraseroTaskCtx refs it. */
-		brasero_track_unref (track);
-
-		brasero_job_finished_track (BRASERO_JOB (self));
-		return FALSE;
-	}
-	else if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
-		track = NULL;
-		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-
-		brasero_md5_string (&priv->md5, checksum);
-		checksum [MD5_STRING_LEN] = '\0';
-
-		BRASERO_JOB_LOG (self,
-				 "setting new checksum %s (%s before)",
-				 checksum,
-				 brasero_track_get_checksum (track));
-
-		result = brasero_track_set_checksum (track,
-						     BRASERO_CHECKSUM_MD5,
-						     checksum);
-		if (result != BRASERO_BURN_OK)
-			goto error;
-
-		brasero_job_finished_track (BRASERO_JOB (self));
-	}
-	else
+	if (result != BRASERO_BURN_OK)
 		goto error;
 
+	brasero_job_finished_track (BRASERO_JOB (self));
 	return FALSE;
 
 error:
@@ -547,13 +503,12 @@ brasero_md5sum_thread (gpointer data)
 	brasero_job_get_action (BRASERO_JOB (self), &action);
 
 	if (action == BRASERO_JOB_ACTION_CHECKSUM) {
-		BraseroChecksumType type;
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		type = brasero_track_get_checksum_type (track);
-		if (type == BRASERO_CHECKSUM_MD5)
-			result = brasero_md5sum_image (self, &error);
+		priv->checksum_type = brasero_track_get_checksum_type (track);
+		if (priv->checksum_type & (BRASERO_CHECKSUM_MD5|BRASERO_CHECKSUM_SHA1|BRASERO_CHECKSUM_SHA256))
+			result = brasero_md5sum_create_checksum (self, &error);
 		else
 			result = BRASERO_BURN_ERR;
 	}
@@ -562,7 +517,7 @@ brasero_md5sum_thread (gpointer data)
 
 		brasero_job_get_input_type (BRASERO_JOB (self), &type);
 		if (type.type == BRASERO_TRACK_TYPE_IMAGE)
-			result = brasero_md5sum_image_live (self, &error);
+			result = brasero_md5sum_image_and_checksum (self, &error);
 		else
 			result = BRASERO_BURN_ERR;
 	}
@@ -613,17 +568,15 @@ brasero_md5sum_clock_tick (BraseroJob *job)
 	BraseroMd5sumPrivate *priv;
 
 	priv = BRASERO_MD5SUM_PRIVATE (job);
-	if (!priv->ctx)
+	if (!priv->checksum)
 		return BRASERO_BURN_OK;
 
-	if (priv->total) {
-		gint64 written = 0;
+	if (!priv->total)
+		return BRASERO_BURN_OK;
 
-		written = brasero_md5_get_written (priv->ctx);
-		brasero_job_set_progress (job,
-					  (gdouble) written /
-					  (gdouble) priv->total);
-	}
+	brasero_job_set_progress (job,
+				  (gdouble) priv->bytes /
+				  (gdouble) priv->total);
 
 	return BRASERO_BURN_OK;
 }
@@ -635,9 +588,6 @@ brasero_md5sum_stop (BraseroJob *job,
 	BraseroMd5sumPrivate *priv;
 
 	priv = BRASERO_MD5SUM_PRIVATE (job);
-
-	if (priv->ctx)
-		brasero_md5_cancel (priv->ctx);
 
 	if (priv->thread) {
 		priv->cancel = 1;
@@ -651,9 +601,9 @@ brasero_md5sum_stop (BraseroJob *job,
 		priv->end_id = 0;
 	}
 
-	if (priv->sums_path) {
-		g_free (priv->sums_path);
-		priv->sums_path = NULL;
+	if (priv->checksum) {
+		g_checksum_free (priv->checksum);
+		priv->checksum = NULL;
 	}
 
 	return BRASERO_BURN_OK;
@@ -682,6 +632,11 @@ brasero_md5sum_finalize (GObject *object)
 		priv->end_id = 0;
 	}
 
+	if (priv->checksum) {
+		g_checksum_free (priv->checksum);
+		priv->checksum = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -705,6 +660,7 @@ static BraseroBurnResult
 brasero_md5sum_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *input;
+	BraseroPluginConfOption *checksum_type;
 
 	brasero_plugin_define (plugin,
 			       "md5sum",
@@ -718,12 +674,29 @@ brasero_md5sum_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					BRASERO_IMAGE_FORMAT_BIN);
 	brasero_plugin_process_caps (plugin, input);
-	brasero_plugin_check_caps (plugin, BRASERO_CHECKSUM_MD5, input);
+	brasero_plugin_check_caps (plugin,
+				   BRASERO_CHECKSUM_MD5|
+				   BRASERO_CHECKSUM_SHA1|
+				   BRASERO_CHECKSUM_SHA256,
+				   input);
 	g_slist_free (input);
 
 	brasero_plugin_set_process_flags (plugin,
 					  BRASERO_PLUGIN_RUN_FIRST|
 					  BRASERO_PLUGIN_RUN_LAST);
+
+	/* add some configure options */
+	checksum_type = brasero_plugin_conf_option_new (GCONF_KEY_CHECKSUM_TYPE,
+							_("Hashing algorithm to be used:"),
+							BRASERO_PLUGIN_OPTION_CHOICE);
+	brasero_plugin_conf_option_choice_add (checksum_type,
+					       _("MD5"), BRASERO_CHECKSUM_MD5);
+	brasero_plugin_conf_option_choice_add (checksum_type,
+					       _("SHA1"), BRASERO_CHECKSUM_SHA1);
+	brasero_plugin_conf_option_choice_add (checksum_type,
+					       _("SHA256"), BRASERO_CHECKSUM_SHA256);
+
+	brasero_plugin_add_conf_option (plugin, checksum_type);
 
 	return BRASERO_BURN_OK;
 }

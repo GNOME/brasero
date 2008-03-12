@@ -1,3 +1,62 @@
+2008-03-12  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	Make all md5 plugin use glib's. That also adds possibility to use SHA1/SHA256 to checksum.
+	Fix #438849 – md5 checksuming is a little weak
+
+	* src/brasero-plugin-option.c:
+	(brasero_plugin_option_save_settings),
+	(brasero_plugin_option_add_conf_widget):
+	* src/brasero-sum-dialog.c:
+	(brasero_sum_dialog_set_track_checksum_type),
+	(brasero_sum_dialog_check_disc_sum):
+	* src/burn-basics.h:
+	* src/burn-caps.c: (brasero_burn_caps_new_checksuming_task):
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c: (brasero_plugin_conf_option_choice_pair_free),
+	(brasero_plugin_conf_option_free),
+	(brasero_plugin_conf_option_choice_add),
+	(brasero_plugin_conf_option_choice_get):
+	* src/burn-plugin.h:
+	* src/burn-track.c: (brasero_track_set_checksum):
+	* src/burn-track.h:
+	* src/burn-volume-obj.c: (brasero_volume_is_mounted),
+	(brasero_volume_umount_finish), (brasero_volume_umount),
+	(brasero_volume_mount_finish), (brasero_volume_mount),
+	(brasero_volume_ejected_cb), (brasero_volume_eject_finish),
+	(brasero_volume_eject):
+	* src/burn.c: (brasero_burn_eject_dest_media),
+	(brasero_burn_lock_checksum_media),
+	(brasero_burn_unlock_dest_media), (brasero_burn_check_real),
+	(brasero_burn_record_session):
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/checksum/burn-md5.c:
+	* src/plugins/checksum/burn-md5.h:
+	* src/plugins/checksum/burn-md5sum-file.c:
+	(brasero_md5sum_file_get_file_checksum),
+	(brasero_md5sum_file_add_file_checksum),
+	(brasero_md5sum_file_explore_directory),
+	(brasero_md5sum_file_create_checksum),
+	(brasero_md5sum_file_check_files), (brasero_md5sum_file_end),
+	(brasero_md5sum_file_thread), (brasero_md5sum_file_activate),
+	(brasero_md5sum_file_clock_tick), (brasero_md5sum_file_stop),
+	(brasero_md5sum_file_export_caps):
+	* src/plugins/checksum/burn-md5sum-file.h:
+	* src/plugins/checksum/burn-md5sum.c: (brasero_md5sum_read),
+	(brasero_md5sum_write), (brasero_md5sum_checksum),
+	(brasero_md5sum_checksum_fd_input),
+	(brasero_md5sum_checksum_file_input),
+	(brasero_md5sum_create_checksum),
+	(brasero_md5sum_image_and_checksum), (brasero_md5sum_end),
+	(brasero_md5sum_thread), (brasero_md5sum_clock_tick),
+	(brasero_md5sum_stop), (brasero_md5sum_finalize),
+	(brasero_md5sum_export_caps):
+	* src/plugins/local-track/burn-local-image.c:
+	(brasero_local_track_read_checksum),
+	(brasero_local_track_download_checksum),
+	(brasero_local_track_thread_finished),
+	(brasero_local_track_thread), (brasero_local_track_start),
+	(brasero_local_track_stop):
+
 2008-03-08  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Last patch to remove the last bits of nautilus-burn library

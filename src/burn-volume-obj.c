@@ -113,6 +113,9 @@ brasero_volume_is_mounted (BraseroVolume *self)
 	GVolume *volume;
 	BraseroVolumePrivate *priv;
 
+	if (!self)
+		return FALSE;
+
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
@@ -217,6 +220,13 @@ brasero_volume_umount_finish (GObject *source,
 					       result,
 					       &priv->error);
 
+	if (priv->error) {
+		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			g_error_free (priv->error);
+			priv->error = NULL;
+		}
+	}
+
 	brasero_volume_operation_end (self);
 
 	if (priv->result)
@@ -234,6 +244,9 @@ brasero_volume_umount (BraseroVolume *self,
 	gboolean result;
 	GVolume *volume;
 	BraseroVolumePrivate *priv;
+
+	if (!self)
+		return TRUE;
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
@@ -281,6 +294,13 @@ brasero_volume_mount_finish (GObject *source,
 					      result,
 					      &priv->error);
 
+	if (priv->error) {
+		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			g_error_free (priv->error);
+			priv->error = NULL;
+		}
+	}
+
 	brasero_volume_operation_end (self);
 
 	if (priv->result)
@@ -294,9 +314,13 @@ brasero_volume_mount (BraseroVolume *self,
 		      gboolean wait,
 		      GError **error)
 {
+	GMount *mount;
 	gboolean result;
 	GVolume *volume;
 	BraseroVolumePrivate *priv;
+
+	if (!self)
+		return FALSE;
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
@@ -304,6 +328,13 @@ brasero_volume_mount (BraseroVolume *self,
 	if (!g_volume_can_mount (volume)) {
 		g_object_unref (volume);
 		return FALSE;
+	}
+
+	mount = g_volume_get_mount (volume);
+	if (mount) {
+		g_object_unref (volume);
+		g_object_unref (mount);
+		return TRUE;
 	}
 
 	if (wait) {
@@ -330,6 +361,14 @@ brasero_volume_mount (BraseroVolume *self,
 }
 
 static void
+brasero_volume_ejected_cb (BraseroDrive *drive,
+			   gpointer callback_data)
+{
+	BraseroVolume *self = BRASERO_VOLUME (callback_data);
+	brasero_volume_operation_end (self);
+}
+
+static void
 brasero_volume_eject_finish (GObject *source,
 			     GAsyncResult *result,
 			     gpointer user_data)
@@ -342,7 +381,16 @@ brasero_volume_eject_finish (GObject *source,
 					     result,
 					     &priv->error);
 
-	brasero_volume_operation_end (self);
+	if (priv->error) {
+		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			g_error_free (priv->error);
+			priv->error = NULL;
+		}
+
+		brasero_volume_operation_end (self);
+	}
+	else if (!priv->result)
+		brasero_volume_operation_end (self);
 }
 
 gboolean
@@ -350,30 +398,46 @@ brasero_volume_eject (BraseroVolume *self,
 		      gboolean wait,
 		      GError **error)
 {
-	GDrive *drive;
+	GDrive *gdrive;
 	gboolean result;
 	GVolume *volume;
 	BraseroVolumePrivate *priv;
 
+	if (!self)
+		return TRUE;
+
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
-	drive = g_volume_get_drive (volume);
+	gdrive = g_volume_get_drive (volume);
 	g_object_unref (volume);
 
-	if (!g_drive_can_eject (drive))
+	if (!g_drive_can_eject (gdrive)) {
+		g_object_unref (gdrive);
 		return FALSE;
+	}
 
 	if (wait) {
-		g_drive_eject (drive,
+		gulong eject_sig;
+		BraseroDrive *drive;
+
+		drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+		eject_sig = g_signal_connect (drive,
+					      "medium-removed",
+					      G_CALLBACK (brasero_volume_ejected_cb),
+					      self);
+
+		g_drive_eject (gdrive,
 			       G_MOUNT_UNMOUNT_NONE,
 			       priv->cancel,
 			       brasero_volume_eject_finish,
 			       self);
 		result = brasero_volume_wait_for_operation_end (self, error);
+
+		g_signal_handler_disconnect (drive, eject_sig);
 	}
 	else {
-		g_drive_eject (drive,
+		g_drive_eject (gdrive,
 			       G_MOUNT_UNMOUNT_NONE,
 			       priv->cancel,
 			       NULL,
@@ -381,6 +445,7 @@ brasero_volume_eject (BraseroVolume *self,
 		result = TRUE;
 	}
 
+	g_object_unref (gdrive);
 	return result;
 }
 
