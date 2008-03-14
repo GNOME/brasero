@@ -60,7 +60,6 @@ src/plugins/cdrkit/burn-wodim.c
 src/plugins/cdrtools/burn-cdrecord.c
 src/plugins/cdrtools/burn-mkisofs.c
 src/plugins/cdrtools/burn-readcd.c
-src/plugins/checksum/burn-md5sum.c
 src/plugins/dvdcss/burn-dvdcss.c
 src/plugins/growisofs/burn-dvd-rw-format.c
 src/plugins/growisofs/burn-growisofs.c
@@ -80,7 +79,6 @@ src/plugins/libburnia/burn-libburnia.h
 src/plugins/growisofs/burn-growisofs-common.h
 src/plugins/cdrdao/burn-cdrdao-common.h
 src/plugins/cdrtools/burn-cdrtools.h
-src/plugins/checksum/burn-md5sum-file.c
 src/burn-image-format.c
 src/brasero-data-session.c
 src/brasero-data-tree-model.c
@@ -96,3 +94,5 @@ src/brasero-io.c
 src/brasero-medium-selection.c
 src/burn-drive.c
 src/burn-volume-obj.c
+src/plugins/checksum/burn-checksum-files.c
+src/plugins/checksum/burn-checksum-image.c
