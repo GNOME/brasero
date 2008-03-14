@@ -89,6 +89,14 @@ brasero_drive_get_display_name (BraseroDrive *drive);
 const gchar *
 brasero_drive_get_device (BraseroDrive *drive);
 
+gboolean
+brasero_drive_get_bus_target_lun (BraseroDrive *drive,
+				  guint *bus,
+				  guint *target,
+				  guint *lun);
+gchar *
+brasero_drive_get_bus_target_lun_string (BraseroDrive *drive);
+
 BraseroDriveCaps
 brasero_drive_get_caps (BraseroDrive *drive);
 

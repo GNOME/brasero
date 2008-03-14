@@ -1,3 +1,23 @@
+2008-03-14  Philippe Rouquier  <philippr@svn.gnome.org>
+
+	New function for improved FreeBSD compatibilty which retrieves bus, target, lun from HAL
+	Use if when compiled with CAM driver.
+
+	* src/burn-drive.c: (brasero_drive_get_bus_target_lun),
+	(brasero_drive_get_bus_target_lun_string),
+	(brasero_drive_finalize), (brasero_drive_init_real):
+	* src/burn-drive.h:
+	* src/burn-job.c: (brasero_job_get_bus_target_lun):
+	* src/burn-job.h:
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	(brasero_cdrdao_set_argv_device), (brasero_cdrdao_set_argv_record),
+	(brasero_cdrdao_set_argv_image):
+	* src/plugins/cdrtools/burn-cdrecord.c:
+	(brasero_cdrecord_stderr_read), (brasero_cdrecord_set_argv):
+	* src/plugins/cdrtools/burn-mkisofs.c:
+	(brasero_mkisofs_set_argv_image):
+	* src/plugins/cdrtools/burn-readcd.c: (brasero_readcd_set_argv):
+
 2008-03-12  Philippe Rouquier  <philippr@svn.gnome.org>
 
 	Make all md5 plugin use glib's. That also adds possibility to use SHA1/SHA256 to checksum.

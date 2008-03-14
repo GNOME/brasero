@@ -39,6 +39,7 @@
 #include "burn-basics.h"
 #include "burn-medium.h"
 #include "burn-drive.h"
+#include "burn-debug.h"
 
 #include "scsi-mmc1.h"
 
@@ -49,6 +50,10 @@ struct _BraseroDrivePrivate
 	BraseroDriveCaps caps;
 	gchar *path;
 	gchar *udi;
+
+	gint bus;
+	gint target;
+	gint lun;
 };
 
 #define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
@@ -69,6 +74,47 @@ enum {
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 
 static LibHalContext *hal_context = NULL;
+
+gboolean
+brasero_drive_get_bus_target_lun (BraseroDrive *self,
+				  guint *bus,
+				  guint *target,
+				  guint *lun)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (!priv->udi)
+		return FALSE;
+
+	if (!bus || !target || !lun)
+		return FALSE;
+
+	if (priv->bus < 0)
+		return FALSE;
+
+	*bus = priv->bus;
+	*target = priv->target;
+	*lun = priv->lun;
+	return TRUE;
+}
+
+gchar *
+brasero_drive_get_bus_target_lun_string (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (!priv->udi)
+		return NULL;
+
+	if (priv->bus < 0)
+		return NULL;
+
+	return g_strdup_printf ("%i,%i,%i", priv->bus, priv->target, priv->lun);
+}
 
 gboolean
 brasero_drive_is_fake (BraseroDrive *self)
@@ -294,7 +340,7 @@ brasero_drive_finalize (GObject *object)
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
 	if (priv->path) {
-		g_free (priv->path);
+		libhal_free_string (priv->path);
 		priv->path = NULL;
 	}
 
@@ -316,6 +362,7 @@ brasero_drive_init_real (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 	LibHalContext *ctx;
+	char *parent;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
@@ -343,6 +390,34 @@ brasero_drive_init_real (BraseroDrive *drive)
 		priv->caps |= BRASERO_DRIVE_CAPS_DVDR_PLUS_DL;
 	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusrwdl", NULL))
 		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL;
+
+	/* Also get its parent to retrieve the bus, host, lun values */
+	parent = libhal_device_get_property_string (ctx, priv->udi, "info.parent", NULL);
+	if (!parent) {
+		priv->bus = -1;
+		priv->lun = -1;
+		priv->target = -1;
+		return;
+	}
+
+	/* Check it is a SCSI interface */
+	if (!libhal_device_property_exists (ctx, parent, "scsi.host", NULL)
+	||  !libhal_device_property_exists (ctx, parent, "scsi.lun", NULL)
+	||  !libhal_device_property_exists (ctx, parent, "scsi.target", NULL)) {
+		g_free (parent);
+
+		priv->bus = -1;
+		priv->lun = -1;
+		priv->target = -1;
+		return;
+	}
+
+	priv->bus = libhal_device_get_property_int (ctx, parent, "scsi.host", NULL);
+	priv->lun = libhal_device_get_property_int (ctx, parent, "scsi.lun", NULL);
+	priv->target = libhal_device_get_property_int (ctx, parent, "scsi.target", NULL);
+
+	BRASERO_BURN_LOG ("Drive %s has bus,target,lun = %i %i %i", priv->path, priv->bus, priv->target, priv->lun);
+	libhal_free_string (parent);
 }
 
 static void

@@ -227,7 +227,14 @@ brasero_cdrdao_set_argv_device (BraseroCdrdao *cdrdao,
 	gchar *device = NULL;
 
 	g_ptr_array_add (argv, g_strdup ("--device"));
+
+#ifdef HAVE_CAM_LIB_H
+	/* FreeBSD like that better */
+	brasero_job_get_bus_target_lun (BRASERO_JOB (cdrdao), &device);
+#else
 	brasero_job_get_device (BRASERO_JOB (cdrdao), &device);
+#endif
+
 	g_ptr_array_add (argv, device);
 }
 
@@ -297,7 +304,14 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 		drive = brasero_track_get_drive_source (track);
+
+#ifdef HAVE_CAM_LIB_H
+	/* FreeBSD like that better */
+		g_ptr_array_add (argv, brasero_drive_get_bus_target_lun_string (drive));
+#else
 		g_ptr_array_add (argv, g_strdup (brasero_drive_get_device (drive)));
+#endif
+
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		gchar *cuepath;
@@ -378,7 +392,13 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 
 	brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 	drive = brasero_track_get_drive_source (track);
+
+#ifdef HAVE_CAM_LIB_H
+	/* FreeBSD like that better */
+	g_ptr_array_add (argv, brasero_drive_get_bus_target_lun_string (drive));
+#else
 	g_ptr_array_add (argv, g_strdup (brasero_drive_get_device (drive)));
+#endif
 
 	g_ptr_array_add (argv, g_strdup ("--read-raw"));
 

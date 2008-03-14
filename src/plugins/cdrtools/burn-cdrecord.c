@@ -147,7 +147,8 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_SLOW_DMA,
 						_("The system is too slow to write the CD at this speed. Try a lower speed")));
 	}
-	else if (strstr (line, "Operation not permitted. Cannot send SCSI cmd via ioctl")) {
+	else if (strstr (line, "Operation not permitted. Cannot send SCSI cmd via ioctl")
+	     ||  strstr (line, "Cannot open or use SCSI driver")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_SCSI_IOCTL,
@@ -897,7 +898,13 @@ brasero_cdrecord_set_argv (BraseroProcess *process,
 	g_ptr_array_add (argv, g_strdup ("cdrecord"));
 	g_ptr_array_add (argv, g_strdup ("-v"));
 
+#ifdef HAVE_CAM_LIB_H
+	/* FreeBSD like that better */
+	brasero_job_get_bus_target_lun (BRASERO_JOB (cdrecord), &device);
+#else
 	brasero_job_get_device (BRASERO_JOB (cdrecord), &device);
+#endif
+
 	dev_str = g_strdup_printf ("dev=%s", device);
 	g_ptr_array_add (argv, dev_str);
 	g_free (device);
