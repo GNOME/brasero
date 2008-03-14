@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
@@ -135,6 +137,60 @@ brasero_file_filtered_activate (GtkExpander *self)
 }
 
 void
+brasero_file_filtered_remove (BraseroFileFiltered *self,
+			      const gchar *uri)
+{
+	BraseroFileFilteredPrivate *priv;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	guint len;
+
+	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
+	len = strlen (uri);
+	while (1) {
+		gchar *iter_uri;
+
+		iter_uri = NULL;
+		gtk_tree_model_get (model, &iter,
+				    UNESCAPED_URI_COL, &iter_uri,
+				    -1);
+
+		if (!iter_uri)
+			continue;
+
+		if (!strcmp (uri, iter_uri)) {
+			g_free (iter_uri);
+			priv->num --;
+			if (!gtk_list_store_remove (GTK_LIST_STORE (model), &iter))
+				break;
+
+			continue;
+		}
+
+		if (!strncmp (uri, iter_uri, len)
+		&&   iter_uri [len] == G_DIR_SEPARATOR) {
+			g_free (iter_uri);
+			priv->num --;
+			if (!gtk_list_store_remove (GTK_LIST_STORE (model), &iter))
+				break;
+
+			continue;
+		}
+
+		g_free (iter_uri);
+		if (!gtk_tree_model_iter_next (model, &iter))
+			break;
+	}
+
+	brasero_file_filtered_update (self);
+}
+
+void
 brasero_file_filtered_add (BraseroFileFiltered *self,
 			   const gchar *uri,
 			   BraseroFilterStatus status)
@@ -169,9 +225,8 @@ brasero_file_filtered_add (BraseroFileFiltered *self,
 			    URI_COL, uri,
 			    TYPE_COL, _(type),
 			    STATUS_COL, status,
-		    ACTIVABLE_COL, (status != BRASERO_FILTER_UNREADABLE && status != BRASERO_FILTER_RECURSIVE_SYM),
+			    ACTIVABLE_COL, (status != BRASERO_FILTER_UNREADABLE && status != BRASERO_FILTER_RECURSIVE_SYM),
 			    -1);
-
 	g_free (unescaped_uri);
 
 	/* update label */

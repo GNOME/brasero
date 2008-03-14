@@ -1010,6 +1010,50 @@ brasero_data_vfs_clear (BraseroDataVFS *self)
 				     self);
 }
 
+static gboolean
+brasero_data_vfs_remove_filtered_uris (gpointer key,
+				       gpointer value,
+				       gpointer callback_data)
+{
+	guint len;
+	gchar *key_uri = key;
+	gchar *uri = callback_data;
+
+	/* always keep restored */
+	if (GPOINTER_TO_INT (value) == BRASERO_DATA_VFS_RESTORED)
+		return FALSE;
+
+	len = strlen (uri);
+	if (!strncmp (uri, key, len)
+	&&   key_uri [len] == G_DIR_SEPARATOR) {
+		brasero_utils_unregister_string (key);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+brasero_data_vfs_uri_removed (BraseroDataProject *project,
+			      const gchar *uri)
+{
+	BraseroDataVFSPrivate *priv;
+
+	priv = BRASERO_DATA_VFS_PRIVATE (project);
+
+	/* That happens when a graft is removed from the tree, that is when this
+	 * graft uri doesn't appear anywhere and when it hasn't got any more 
+	 * parent uri grafted. */
+	g_hash_table_foreach_remove (priv->filtered,
+				     brasero_data_vfs_remove_filtered_uris,
+				     (gpointer) uri);
+	g_signal_emit (project,
+		       brasero_data_vfs_signals [FILTERED_SIGNAL],
+		       0,
+		       BRASERO_FILTER_NONE,
+		       uri);
+}
+
 static void
 brasero_data_vfs_reset (BraseroDataProject *project)
 {
@@ -1090,6 +1134,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
 
 	data_project_class->reset = brasero_data_vfs_reset;
 	data_project_class->node_added = brasero_data_vfs_node_added;
+	data_project_class->uri_removed = brasero_data_vfs_uri_removed;
 
 	/* There is no need to implement the other virtual functions.
 	 * For example, even if we were notified of a node removal it 

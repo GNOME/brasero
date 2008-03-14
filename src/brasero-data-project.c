@@ -784,6 +784,7 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 				       const gchar *uri)
 {
 	BraseroDataProjectPrivate *priv;
+	BraseroDataProjectClass *klass;
 	BraseroURINode *graft = NULL;
 	gchar *key = NULL;
 	GSList *iter;
@@ -807,6 +808,10 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 
 	/* we have to free the key and data ourselves */
 	g_hash_table_remove (priv->grafts, uri);
+
+	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
+	if (klass->uri_removed)
+		klass->uri_removed (self, uri);
 
 	if (key && key != NEW_FOLDER)
 		brasero_utils_unregister_string (key);
@@ -928,6 +933,9 @@ brasero_data_project_remove_node_children_graft_cb (const gchar *key,
 		iter_node = iter->data;
 		next = iter->next;
 
+		if (data->node == iter_node)
+			continue;
+
 		if (brasero_file_node_is_ancestor (data->node, iter_node))
 			graft->nodes = g_slist_remove (graft->nodes, iter_node);
 	}
@@ -1005,7 +1013,6 @@ brasero_data_project_node_removed (BraseroDataProject *self,
 	 * If not, get the URI and all the nodes with the same URI and
 	 * add the list (less this node) to the hash.
 	 * NOTE: imported file case should not be addressed here*/
-
 	if (node->is_grafted) {
 		BraseroGraft *graft;
 		BraseroURINode *uri_node;

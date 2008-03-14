@@ -71,6 +71,11 @@ void
 brasero_file_filtered_add (BraseroFileFiltered *filter,
 			   const gchar *uri,
 			   BraseroFilterStatus status);
+
+void
+brasero_file_filtered_remove (BraseroFileFiltered *filter,
+			      const gchar *uri);
+
 void
 brasero_file_filtered_clear (BraseroFileFiltered *self);
 

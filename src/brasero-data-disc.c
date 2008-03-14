@@ -772,7 +772,10 @@ brasero_data_disc_filtered_uri_cb (BraseroDataVFS *vfs,
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
-	brasero_file_filtered_add (BRASERO_FILE_FILTERED (priv->filter), uri, status);
+	if (status != BRASERO_FILTER_NONE)
+		brasero_file_filtered_add (BRASERO_FILE_FILTERED (priv->filter), uri, status);
+	else
+		brasero_file_filtered_remove (BRASERO_FILE_FILTERED (priv->filter), uri);
 }
 
 static void

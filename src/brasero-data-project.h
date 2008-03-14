@@ -82,6 +82,9 @@ struct _BraseroDataProjectClass
 	void		(*node_reordered)	(BraseroDataProject *project,
 						 BraseroFileNode *parent,
 						 gint *new_order);
+
+	void		(*uri_removed)		(BraseroDataProject *project,
+						 const gchar *uri);
 };
 
 struct _BraseroDataProject

@@ -35,7 +35,9 @@ G_BEGIN_DECLS
 #define BRASERO_FILTER_BROKEN_SYM_KEY		"/apps/brasero/filter/broken_sym"
 
 typedef enum {
-	BRASERO_FILTER_HIDDEN = 1,
+	/* Following means it has been removed */
+	BRASERO_FILTER_NONE			= 0,
+	BRASERO_FILTER_HIDDEN			= 1,
 	BRASERO_FILTER_UNREADABLE,
 	BRASERO_FILTER_BROKEN_SYM,
 	BRASERO_FILTER_RECURSIVE_SYM,
