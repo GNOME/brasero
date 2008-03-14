@@ -45,7 +45,7 @@
 
 #include "burn-plugin.h"
 #include "burn-job.h"
-#include "burn-md5sum.h"
+#include "burn-checksum-image.h"
 #include "burn-volume.h"
 #include "burn-drive.h"
 

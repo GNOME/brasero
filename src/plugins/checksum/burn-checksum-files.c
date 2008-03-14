@@ -43,7 +43,7 @@
 
 #include "burn-plugin.h"
 #include "burn-job.h"
-#include "burn-md5sum-file.h"
+#include "burn-checksum-files.h"
 #include "burn-volume.h"
 #include "burn-drive.h"
 #include "burn-volume-obj.h"

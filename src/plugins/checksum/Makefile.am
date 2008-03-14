@@ -21,18 +21,18 @@ INCLUDES = \
 
 AM_CFLAGS = -g
 
-md5sumdir = $(libdir)/brasero/plugins
-md5sum_LTLIBRARIES = libbrasero-md5sum.la
-libbrasero_md5sum_la_SOURCES = burn-md5sum.c	\
-			       burn-md5sum.h
+checksumdir = $(libdir)/brasero/plugins
+checksum_LTLIBRARIES = libbrasero-checksum.la
+libbrasero_checksum_la_SOURCES = burn-checksum-image.c	\
+				 burn-checksum-image.h
 
-libbrasero_md5sum_la_LDFLAGS = -module -avoid-version
-libbrasero_md5sum_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_checksum_la_LDFLAGS = -module -avoid-version
+libbrasero_checksum_la_LIBADD = $(BRASERO_BASE_LIBS)
 
-md5sumfiledir = $(libdir)/brasero/plugins
-md5sumfile_LTLIBRARIES = libbrasero-md5sum-file.la
-libbrasero_md5sum_file_la_SOURCES = burn-md5sum-file.c	\
-				    burn-md5sum-file.h	
+checksumfiledir = $(libdir)/brasero/plugins
+checksumfile_LTLIBRARIES = libbrasero-checksum-file.la
+libbrasero_checksum_file_la_SOURCES = burn-checksum-files.c	\
+				      burn-checksum-files.h
 
-libbrasero_md5sum_file_la_LDFLAGS = -module -avoid-version
-libbrasero_md5sum_file_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_checksum_file_la_LDFLAGS = -module -avoid-version
+libbrasero_checksum_file_la_LIBADD = $(BRASERO_BASE_LIBS)
