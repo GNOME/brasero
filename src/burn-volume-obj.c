@@ -651,8 +651,5 @@ brasero_volume_new (BraseroDrive *drive,
 			       "udi", udi,
 			       NULL);
 
-	if (volume)
-		brasero_volume_get_gvolume (volume);
-
 	return volume;
 }

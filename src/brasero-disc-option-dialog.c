@@ -62,7 +62,6 @@ struct _BraseroDiscOptionDialogPrivate {
 	guint caps_sig;
 	guint output_sig;
 
-	GtkWidget *video_toggle;
 	GtkWidget *joliet_toggle;
 	GtkWidget *multi_toggle;
 
@@ -118,8 +117,10 @@ brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	/* That's only provided multi is not compulsory or unsupported */
-
 	key = brasero_burn_session_get_config_key (priv->session, "multi");
+	if (!key)
+		return;
+
 	client = gconf_client_get_default ();
 	multi_on = gconf_client_get_int (client, key, NULL);
 	g_object_unref (client);
@@ -146,7 +147,6 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	brasero_burn_session_get_input_type (priv->session, &source);
-
 	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));
 
 	t = time (NULL);
@@ -165,7 +165,9 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 	else if (source.type == BRASERO_TRACK_TYPE_AUDIO)
 		title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
 
-	g_object_unref (drive);
+	if (drive)
+		g_object_unref (drive);
+
 	return title_str;
 }
 
@@ -254,70 +256,10 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 	return TRUE;
 }
 
-static gboolean
-brasero_disc_option_dialog_update_video (BraseroDiscOptionDialog *dialog)
-{
-	BraseroDiscOptionDialogPrivate *priv;
-	BraseroBurnResult result;
-	BraseroTrackType source;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
-	if (!priv->video_toggle)
-		return FALSE;
-
-	/* the library must have the proper support and multi mustn't be on */
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle)))
-		goto turn_off;
-
-	brasero_burn_session_get_input_type (priv->session, &source);
-	source.subtype.fs_type |= BRASERO_IMAGE_FS_VIDEO;
-	result = brasero_burn_caps_is_input_supported (priv->caps,
-						       priv->session,
-						       &source);
-
-	if (result != BRASERO_BURN_OK)
-		goto turn_off;
-
-	if (GTK_WIDGET_IS_SENSITIVE (priv->video_toggle))
-		return FALSE;
-
-	gtk_widget_set_sensitive (priv->video_toggle, TRUE);
-
-	if (!priv->video_saved)
-		return TRUE;
-
-	brasero_burn_session_set_input_type (priv->session, &source);
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->video_toggle), TRUE);
-
-	/* multi and video shouldn't be on at the same time
-	 * NOTE: in this case multi_toggle cannot be on since we checked
-	 * its state earlier on */
-	priv->multi_saved = FALSE;
-	gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-
-	return TRUE;
-
-turn_off:
-
-	if (!GTK_WIDGET_IS_SENSITIVE (priv->video_toggle))
-		return FALSE;
-
-	priv->video_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->video_toggle));
-	if (priv->video_saved) {
-		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_VIDEO;
-		brasero_burn_session_set_input_type (priv->session, &source);
-
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->video_toggle), FALSE);
-	}
-
-	gtk_widget_set_sensitive (priv->video_toggle, FALSE);
-	return TRUE;
-}
-
 static void
 brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 {
+	BraseroTrackType input;
 	BraseroDiscOptionDialogPrivate *priv;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
@@ -326,6 +268,14 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 
 	if (!priv->multi_toggle)
 		return;
+
+	brasero_burn_session_get_input_type (priv->session, &input);
+	if (input.type == BRASERO_TRACK_TYPE_DATA
+	&& (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
+	&& (brasero_burn_session_get_dest_media (priv->session) & BRASERO_MEDIUM_DVD)) {
+		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
+		goto end;
+	}
 
 	/* Wipe out some flags before trying to see if MULTI is supported:
 	 * DAO/BLANK_BEFORE_WRITE don't really get along well with MULTI */
@@ -354,20 +304,6 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), TRUE);
-		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-		goto end;
-	}
-
-	/* to improve video DVD compatibility we don't allow to leave a disc
-	 * open and have a video DVD created */
-	if (priv->video_toggle
-	&&  gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->video_toggle))) {
-		if (GTK_WIDGET_IS_SENSITIVE (priv->multi_toggle))
-			priv->multi_saved = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle));
-
-		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
-
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
 		goto end;
 	}
@@ -417,8 +353,6 @@ brasero_disc_option_dialog_caps_changed (BraseroPluginManager *manager,
 	brasero_disc_option_dialog_update_multi (dialog);
 	/* update the joliet button */
 	brasero_disc_option_dialog_update_joliet (dialog);
-	/* update the video button */
-	brasero_disc_option_dialog_update_video (dialog);
 }
 
 static void
@@ -434,8 +368,6 @@ brasero_disc_option_dialog_output_changed (BraseroBurnSession *session,
 	brasero_disc_option_dialog_update_multi (dialog);
 	/* update the joliet button */
 	brasero_disc_option_dialog_update_joliet (dialog);
-	/* update the video button */
-	brasero_disc_option_dialog_update_video (dialog);
 
 	/* see if we need to update the label */
 	if (!priv->label_modified)
@@ -446,36 +378,6 @@ brasero_disc_option_dialog_output_changed (BraseroBurnSession *session,
  * These functions are used to update the session according to the states
  * of the buttons and entry 
  */
-
-static void
-brasero_disc_option_dialog_set_video (BraseroDiscOptionDialog *dialog)
-{
-	BraseroDiscOptionDialogPrivate *priv;
-	BraseroTrackType source;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
-	if (!priv->video_toggle)
-		return;
-
-	/* NOTE: we don't check for the sensitive property since when
-	 * something is compulsory the button is active but insensitive
-	 */
-	brasero_burn_session_get_input_type (priv->session, &source);
-	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->video_toggle))) {
-		source.subtype.fs_type &= ~BRASERO_IMAGE_FS_VIDEO;
-
-		brasero_disc_option_dialog_update_multi (dialog);
-	}
-	else {
-		source.subtype.fs_type |= BRASERO_IMAGE_FS_VIDEO;
-
-		priv->multi_saved = FALSE;
-		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-	}
-
-	brasero_burn_session_set_input_type (priv->session, &source);
-}
 
 static void
 brasero_disc_option_dialog_set_joliet (BraseroDiscOptionDialog *dialog)
@@ -510,24 +412,12 @@ brasero_disc_option_dialog_set_multi (BraseroDiscOptionDialog *dialog)
 
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle))) {
 		brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
-		brasero_disc_option_dialog_update_video (dialog);
 		brasero_disc_option_dialog_save_multi_state (dialog);
 		return;
 	}
 
 	brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_MULTI);
 	brasero_disc_option_dialog_save_multi_state (dialog);
-
-	if (!priv->video_toggle)
-		return;
-
-	/* to improve video DVD compatibility we don't allow to leave a disc
-	 * open and have a video DVD created.
-	 * NOTE: video and multi buttons are antithetic so if the user pressed
-	 * this one that means that video wasn't active so no need to set video
-	 * to FALSE*/
-	priv->video_saved = FALSE;
-	gtk_widget_set_sensitive (priv->video_toggle, FALSE);
 }
 
 static void
@@ -535,13 +425,6 @@ brasero_disc_option_dialog_multi_toggled (GtkToggleButton *multi_toggle,
 					  BraseroDiscOptionDialog *dialog)
 {
 	brasero_disc_option_dialog_set_multi (dialog);
-}
-
-static void
-brasero_disc_option_dialog_video_toggled (GtkToggleButton *video_toggle,
-					  BraseroDiscOptionDialog *dialog)
-{
-	brasero_disc_option_dialog_set_video (dialog);
 }
 
 static void
@@ -637,35 +520,6 @@ brasero_disc_option_dialog_title_widget (BraseroDiscOptionDialog *dialog)
 }
 
 static gboolean
-brasero_disc_option_dialog_video_widget (BraseroDiscOptionDialog *dialog)
-{
-	BraseroDiscOptionDialogPrivate *priv;
-	BraseroTrackType type;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
-	/* Two conditions to create this widget:
-	 * the track must have the necessary files
-	 * the library must have the proper plugin */
-	brasero_burn_session_get_input_type (priv->session, &type);
-	if (!(type.type & BRASERO_IMAGE_FS_VIDEO))
-		return FALSE;
-
-	priv->video_toggle = gtk_check_button_new_with_mnemonic (_("Create a vid_eo DVD"));
-	g_signal_connect (priv->video_toggle,
-			  "toggled",
-			  G_CALLBACK (brasero_disc_option_dialog_video_toggled),
-			  dialog);
-	gtk_widget_set_tooltip_text (priv->video_toggle,
-			      _("Create a video DVD that can be played by all DVD readers"));
-
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->video_toggle), TRUE);
-	brasero_disc_option_dialog_update_video (dialog);
-
-	return TRUE;
-}
-
-static gboolean
 brasero_disc_option_dialog_joliet_widget (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
@@ -702,6 +556,7 @@ brasero_disc_option_dialog_multi_widget (BraseroDiscOptionDialog *dialog)
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 	priv->multi_toggle = gtk_check_button_new_with_mnemonic (_("Leave the disc _open to add other files later"));
+
 	g_signal_connect (priv->multi_toggle,
 			  "toggled",
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
@@ -718,12 +573,10 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
 	GtkWidget *widget = NULL;
-	BraseroTrackType source;
 	GtkWidget *options;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-	brasero_burn_session_get_input_type (priv->session, &source);
 
 	/* create the options */
 	widget = gtk_vbox_new (FALSE, 0);
@@ -739,13 +592,9 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	/* general options */
 	brasero_disc_option_dialog_joliet_widget (dialog);
 
-	/* video toggle */
-	brasero_disc_option_dialog_video_widget (dialog);
-
 	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
 						 priv->multi_toggle,
 						 priv->joliet_toggle,
-						 priv->video_toggle,
 						 NULL);
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 

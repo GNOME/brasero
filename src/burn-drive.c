@@ -173,6 +173,9 @@ brasero_drive_is_door_open (BraseroDrive *self)
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
+	if (!priv->udi)
+		return FALSE;
+
 	handle = brasero_device_handle_open (priv->path, NULL);
 	if (!handle)
 		return FALSE;
@@ -198,6 +201,9 @@ brasero_drive_lock (BraseroDrive *self,
 	gchar *failure;
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (!priv->udi)
+		return FALSE;
 
 	ctx = brasero_drive_get_hal_context ();
 
@@ -230,6 +236,9 @@ brasero_drive_unlock (BraseroDrive *self)
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
+	if (!priv->udi)
+		return FALSE;
+
 	ctx = brasero_drive_get_hal_context ();
 
 	dbus_error_init (&error);
@@ -250,6 +259,9 @@ brasero_drive_get_display_name (BraseroDrive *self)
 	LibHalContext *ctx;
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (!priv->udi)
+		return g_strdup (_("File Image"));;
 
 	ctx = brasero_drive_get_hal_context ();
 	return libhal_device_get_property_string (ctx,

@@ -1401,11 +1401,6 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 		graft = brasero_data_project_uri_ensure_graft (self, uri);
 		brasero_file_node_graft (node, graft);
 	}
-	else if (node->is_grafted) {
-		/* we were asked to graft this node; do it */
-		graft = brasero_data_project_uri_ensure_graft (self, uri);
-		brasero_file_node_graft (node, graft);
-	}
 	else {
 		gchar *parent_uri;
 
@@ -1430,6 +1425,11 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 			 /* NOTE: for ungrafted nodes the parent graft size is
 			 * updated when setting info on node. */
 			g_free (parent_uri);
+		}
+		else {
+			/* its father is probably an fake empty directory */
+			graft = brasero_data_project_uri_add_graft (self, uri);
+			brasero_file_node_graft (node, graft);
 		}
 	}
 

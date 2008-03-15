@@ -368,6 +368,7 @@ brasero_burn_session_dest_media_removed (BraseroDrive *drive,
 					 BraseroMedium *medium,
 					 BraseroBurnSession *self)
 {
+	
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
 		       0);

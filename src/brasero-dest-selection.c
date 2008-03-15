@@ -117,10 +117,20 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 		speed = BRASERO_RATE_TO_SPEED_CD (rate);
 
 	key = brasero_burn_session_get_config_key (priv->session, "speed");
+	if (!key) {
+		g_object_unref (client);
+		return;
+	}
+
 	gconf_client_set_int (client, key, speed, NULL);
 	g_free (key);
 
 	key = brasero_burn_session_get_config_key (priv->session, "flags");
+	if (!key) {
+		g_object_unref (client);
+		return;
+	}
+
 	flags = gconf_client_get_int (client, key, NULL);
 	flags &= ~BRASERO_DRIVE_PROPERTIES_FLAGS;
 	flags |= (brasero_burn_session_get_flags (priv->session) & BRASERO_DRIVE_PROPERTIES_FLAGS);
@@ -855,6 +865,11 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	client = gconf_client_get_default ();
 
 	key = brasero_burn_session_get_config_key (priv->session, "speed");
+	if (!key) {
+		g_object_unref (client);
+		return;
+	}
+
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
@@ -876,6 +891,11 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	 * Indeed two flags could be mutually exclusive and then adding both at
 	 * the same would make the session unusable (MULTI and BLANK_BEFORE_WRITE) */
 	key = brasero_burn_session_get_config_key (priv->session, "flags");
+	if (!key) {
+		g_object_unref (client);
+		return;
+	}
+
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
@@ -1307,6 +1327,7 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 					   object);
 
 	priv->button = gtk_button_new_from_stock (GTK_STOCK_PROPERTIES);
+	gtk_widget_show (priv->button);
 	gtk_widget_set_tooltip_text (priv->button, _("Configure some options for the recording"));
 	g_signal_connect (G_OBJECT (priv->button),
 			  "clicked",
