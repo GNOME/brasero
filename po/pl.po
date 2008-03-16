@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-13 22:40+0100\n"
-"PO-Revision-Date: 2008-03-13 23:29+0100\n"
+"POT-Creation-Date: 2008-03-16 19:01+0100\n"
+"PO-Revision-Date: 2008-03-15 16:03+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Aviary.pl\n"
 "MIME-Version: 1.0\n"
@@ -1621,7 +1621,7 @@ msgstr "Nowy folder"
 
 #: ../src/brasero-data-disc.c:588
 msgid "Create a new empty folder"
-msgstr "Utwórz nowy pusty folder"
+msgstr "Utworzenie nowego pustego folderu"
 
 #: ../src/brasero-data-disc.c:590
 msgid "Removed Files"
@@ -2357,9 +2357,9 @@ msgid ""
 "discarded. Note that files will not be deleted from their own location, just "
 "no longer listed here."
 msgstr ""
-"Jeśli zostanie wybrane utworzenie nowego projektu, wszystkie pliki dodane "
-"zostaną odrzucone. Pliki nie zostaną usunięte z ich oryginalnej lokalizacji, "
-"po prostu nie będą więcej tutaj pokazane."
+"Jeśli zostanie wybrane utworzenie nowego projektu, wszystkie dodane pliki "
+"zostaną odrzucone. Pliki nie zostaną usunięte z ich pierwotnego położenia, "
+"zwyczajnie nie będą więcej wyświetlane."
 
 #: ../src/brasero-project.c:1156
 msgid "_Discard Project"
@@ -2380,8 +2380,8 @@ msgid ""
 "longer listed here."
 msgstr ""
 "Wyczyszczenie projektu usunie wszystkie wcześniej dodane pliki. Cała praca "
-"będzie stracona. Pliki nie zostaną usunięte z ich oryginalnej lokalizacji, "
-"po prostu nie będą tutaj wyświetlone."
+"zostanie utracona. Pliki nie zostaną usunięte z ich pierwotnego położenia, "
+"zwyczajnie nie będą wyświetlone."
 
 #: ../src/brasero-project.c:1464 ../src/brasero-project-manager.c:112
 msgid "_Empty Project"
@@ -2463,7 +2463,7 @@ msgstr "_Nowy projekt"
 
 #: ../src/brasero-project-manager.c:111
 msgid "Create a new project"
-msgstr "Utwórz nowy projekt"
+msgstr "Utworzenie nowego projektu"
 
 #: ../src/brasero-project-manager.c:113
 msgid "Let you choose your new project"
@@ -2471,11 +2471,11 @@ msgstr "Wybór nowego projektu"
 
 #: ../src/brasero-project-manager.c:114
 msgid "New _Audio Project"
-msgstr "Nowy projekt dźwiękowy"
+msgstr "Nowy projekt dźwięk_owy"
 
 #: ../src/brasero-project-manager.c:115
 msgid "Create a new audio project"
-msgstr "Utwórz nowy projekt dźwiękowy"
+msgstr "Utworzenie nowego projektu dźwiękowego"
 
 #: ../src/brasero-project-manager.c:116
 msgid "New _Data Project"
@@ -2487,15 +2487,15 @@ msgstr "Utwórz nowy projekt z danymi"
 
 #: ../src/brasero-project-manager.c:118
 msgid "Copy _Disc..."
-msgstr "Kopiowanie płyty"
+msgstr "Ko_piowanie płyty..."
 
 #: ../src/brasero-project-manager.c:119 ../src/main.c:90
 msgid "Copy a disc"
-msgstr "Skopiuj płytę"
+msgstr "Skopiowanie płyty"
 
 #: ../src/brasero-project-manager.c:120
 msgid "_Burn Image..."
-msgstr "Nagrywanie obrazu"
+msgstr "_Nagranie obrazu..."
 
 #: ../src/brasero-project-manager.c:121
 msgid "Burn an image"
@@ -2658,7 +2658,7 @@ msgstr "%s (CD-R)"
 
 #: ../src/brasero-project-type-chooser.c:73
 msgid "<big>Audi_o project</big>"
-msgstr "<big>Projekt dźwiękowy</big>"
+msgstr "<big>Pro_jekt dźwiękowy</big>"
 
 #: ../src/brasero-project-type-chooser.c:74
 msgid "Create a traditional audio CD"
@@ -2671,7 +2671,7 @@ msgstr "Utworzenie płyty CD-Audio odtwarzalnej w komputerach i odtwarzaczach"
 
 #: ../src/brasero-project-type-chooser.c:78
 msgid "<big>D_ata project</big>"
-msgstr "<big>Projekt danych</big>"
+msgstr "<big>Projekt _danych</big>"
 
 #: ../src/brasero-project-type-chooser.c:79
 msgid "Create a data CD/DVD"
@@ -2687,11 +2687,11 @@ msgstr ""
 
 #: ../src/brasero-project-type-chooser.c:83
 msgid "<big>Disc _copy</big>"
-msgstr "<big>Kopiowanie płyty</big>"
+msgstr "<big>K_opiowanie płyty</big>"
 
 #: ../src/brasero-project-type-chooser.c:84
 msgid "Create 1:1 copy of a CD/DVD"
-msgstr "Utwórz kopię 1:1 płyty CD/DVD"
+msgstr "Utworzenie kopii 1:1 płyty CD/DVD"
 
 #: ../src/brasero-project-type-chooser.c:85
 msgid ""
@@ -2703,7 +2703,7 @@ msgstr ""
 
 #: ../src/brasero-project-type-chooser.c:88
 msgid "<big>Burn _image</big>"
-msgstr "<big>Nagranie obrazu</big>"
+msgstr "<big>Nagranie o_brazu</big>"
 
 #: ../src/brasero-project-type-chooser.c:89
 #: ../src/brasero-project-type-chooser.c:90
@@ -3939,7 +3939,7 @@ msgstr "Kopiowanie pliku md5sum"
 #: ../src/plugins/local-track/burn-local-image.c:334
 #, c-format
 msgid "Copying `%s` locally"
-msgstr "Kopiowanie `%s` lokalnie"
+msgstr "Kopiowanie \"%s\" lokalnie"
 
 #: ../src/plugins/local-track/burn-local-image.c:618
 msgid "Copying files locally"
