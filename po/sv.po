@@ -7,12 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-25 17:00+0100\n"
-"PO-Revision-Date: 2008-01-25 17:02+0100\n"
+"POT-Creation-Date: 2008-03-16 22:23+0100\n"
+"PO-Revision-Date: 2008-03-16 22:25+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
@@ -190,7 +190,7 @@ msgstr "Konfigurera alternativ för bränningen"
 
 #: ../src/brasero-dest-selection.c:1315
 msgid "Choose which drive holds the disc to write to"
-msgstr "Välj vilken enhet som innehåller skivan som ska skrivas"
+msgstr "Välj vilken enhet som innehåller skivan att skriva till"
 
 #: ../src/brasero-dest-selection.c:1324
 msgid "Number of copies "
@@ -352,12 +352,12 @@ msgstr "den kommer att tas bort från projektet."
 
 #: ../src/brasero-blank-dialog.c:212
 msgid "Error Blanking:"
-msgstr "Fel vid tömning:"
+msgstr "Fel vid radering:"
 
 #: ../src/brasero-blank-dialog.c:214
 #: ../src/brasero-blank-dialog.c:255
 msgid "Blanking finished"
-msgstr "Tömning färdig"
+msgstr "Radering färdig"
 
 #: ../src/brasero-blank-dialog.c:216
 #: ../src/brasero-blank-dialog.c:260
@@ -370,7 +370,7 @@ msgstr "Oväntat fel"
 
 #: ../src/brasero-blank-dialog.c:253
 msgid "The disc was successfully blanked:"
-msgstr "Tömning av skivan lyckades:"
+msgstr "Radering av skivan lyckades:"
 
 #: ../src/brasero-blank-dialog.c:258
 msgid "the disc is ready for use."
@@ -486,7 +486,7 @@ msgstr "_Hjälp"
 
 #: ../src/brasero-menu.h:61
 msgid "P_lugins"
-msgstr "Ins_ticksmoduler"
+msgstr "Inst_icksmoduler"
 
 #: ../src/brasero-menu.h:62
 msgid "Choose plugins for brasero"
@@ -2308,7 +2308,7 @@ msgstr "_Förkasta ändringar"
 
 #: ../src/brasero-project.c:1145
 msgid "Do you really want to create a new project and discard the current one?"
-msgstr "Vill du verkligen skapa ett nytt projekt och förkasta det nuvarande?"
+msgstr "Vill du verkligen skapa ett nytt projekt och förkasta det aktuella?"
 
 #: ../src/brasero-project.c:1148
 msgid "New project"
@@ -2328,7 +2328,7 @@ msgstr "Välj filer"
 
 #: ../src/brasero-project.c:1453
 msgid "Do you really want to empty the current project?"
-msgstr "Vill du verkligen tömma nuvarande projekt?"
+msgstr "Vill du verkligen tömma det aktuella projektet?"
 
 #: ../src/brasero-project.c:1459
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
@@ -2451,7 +2451,7 @@ msgstr "Kopiera en skiva"
 
 #: ../src/brasero-project-manager.c:120
 msgid "_Burn Image..."
-msgstr "B_ränn avbildning..."
+msgstr "Bränn _avbildning..."
 
 #: ../src/brasero-project-manager.c:121
 msgid "Burn an image"
@@ -2802,7 +2802,7 @@ msgstr "Skriver"
 
 #: ../src/burn-basics.c:64
 msgid "Blanking"
-msgstr "Tömmer"
+msgstr "Raderar"
 
 #: ../src/burn-basics.c:65
 msgid "Creating checksum"
@@ -2898,7 +2898,7 @@ msgstr "enheten har inga återskrivningsfärdigheter"
 
 #: ../src/burn.c:633
 msgid "ongoing blanking process"
-msgstr "pågående tömningsprocess"
+msgstr "pågående raderingsprocess"
 
 #: ../src/burn.c:743
 #, c-format
@@ -3466,7 +3466,7 @@ msgstr "Cd-skivan har redan blivit inspelad"
 #: ../src/plugins/cdrtools/burn-cdrecord.c:118
 #, c-format
 msgid "The CD cannot be blanked"
-msgstr "Cd-skivan kan inte tömmas"
+msgstr "Cd-skivan kan inte raderas"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:126
 #: ../src/plugins/cdrtools/burn-cdrecord.c:126
@@ -3664,7 +3664,7 @@ msgstr "Skapar kontrollsumma för lokal avbildning"
 
 #: ../src/plugins/checksum/burn-md5sum.c:514
 #: ../src/plugins/checksum/burn-md5sum-file.c:569
-#: ../src/plugins/checksum/burn-md5sum-file.c:726
+#: ../src/plugins/checksum/burn-md5sum-file.c:725
 #, c-format
 msgid "some files may be corrupted on the disc"
 msgstr "vissa filer kan vara skadade på skivan"
@@ -3857,7 +3857,7 @@ msgstr "ingen skiva kunde hittas"
 
 #: ../src/plugins/local-track/burn-local-image.c:218
 msgid "Copying files md5sum file"
-msgstr "Kopierar filer md5sum-fil"
+msgstr "Kopierar fil med kontrollsumma"
 
 #: ../src/plugins/local-track/burn-local-image.c:334
 #, c-format
@@ -3983,7 +3983,7 @@ msgstr "nyckeln är inte etablerad"
 
 #: ../src/brasero-preview.c:158
 msgid " Preview "
-msgstr " Förhandsgranskning "
+msgstr " Förhandsgranskning"
 
 #: ../src/brasero-split-dialog.c:175
 msgid "The size of the new track is shorter than 6 seconds and will be padded."
@@ -4187,7 +4187,7 @@ msgstr "md5-filen kunde inte öppnas (%s)"
 msgid "Creating checksum for image files"
 msgstr "Skapar kontrollsumma för avbildningsfiler"
 
-#: ../src/plugins/checksum/burn-md5sum-file.c:957
+#: ../src/plugins/checksum/burn-md5sum-file.c:956
 msgid "allows to check file integrities on a disc"
 msgstr "tillåter kontroll av filintegritet på en skiva"
 
@@ -4206,6 +4206,146 @@ msgstr "storlek kan inte läsas av (%s)"
 msgid "size can't be retrieved for %s: %s"
 msgstr "storlek kan inte hämtas för %s: %s"
 
+#~ msgid "E_ject"
+#~ msgstr "Ma_ta ut"
+#~ msgid "Eject media"
+#~ msgstr "Mata ut media"
+#~ msgid "The contents of the project changed since it was saved:"
+#~ msgstr "Innehållet för det här projektet har ändrats sedan det sparades:"
+#~ msgid "Do you want to continue or discard it?"
+#~ msgstr "Vill du fortsätta eller förkasta det?"
+#~ msgid "_Discard"
+#~ msgstr "För_kasta"
+#~ msgid "Press if you want to discard the current modified project"
+#~ msgstr "Välj om du vill förkasta det ändrade projektet"
+#~ msgid "_Continue"
+#~ msgstr "_Fortsätt"
+#~ msgid "Press if you want to continue with the current modified project"
+#~ msgstr "Välj om du vill fortsätta med det ändrade projektet"
+#~ msgid "\"%s\" cannot be added to the selection:"
+#~ msgstr "\"%s\" kan inte läggas till markeringen:"
+#~ msgid "\"%s\" is a recursive symlink."
+#~ msgstr "\"%s\" är en rekursiv symbolisk länk."
+#~ msgid "Recursive symlink"
+#~ msgstr "Rekursiv symbolisk länk"
+#~ msgid "it is a recursive symlink."
+#~ msgstr "är en rekursiv symbolisk länk."
+#~ msgid "\"%s\" cannot be found."
+#~ msgstr "\"%s\" kan inte hittas."
+#~ msgid "File not found"
+#~ msgstr "Filen hittades inte"
+#~ msgid "it doesn't exist at the specified location."
+#~ msgstr "den finns inte på den angivna platsen."
+#~ msgid "_Don't replace"
+#~ msgstr "Ersätt _inte"
+#~ msgid "_Replace"
+#~ msgstr "_Ersätt"
+#~ msgid ""
+#~ "Do you really want to add \"%s\" to the selection and use ISO9660 level 3 "
+#~ "standard to support it?"
+#~ msgstr ""
+#~ "Vill du verkligen lägga till \"%s\" till markeringen och använda "
+#~ "standarden ISO9660 nivå 3 för att ge stöd för den?"
+
+#, fuzzy
+#~ msgid "File over 2 Gio"
+#~ msgstr "Filfel"
+#~ msgid "_Don't add"
+#~ msgstr "Lägg _inte till"
+#~ msgid "_Add"
+#~ msgstr "_Lägg till"
+#~ msgid "Do you really want to add \"%s\" to the selection?"
+#~ msgstr "Vill du verkligen lägga till \"%s\" till markeringen?"
+
+#, fuzzy
+#~ msgid "Deep Directory"
+#~ msgstr "Sök katalog"
+#~ msgid "Please, wait while the project is loading."
+#~ msgstr "Vänta under tiden projektet läses in."
+#~ msgid "_Cancel Loading"
+#~ msgstr "_Avbryt inläsning"
+#~ msgid "Press if you want to cancel current project loading"
+#~ msgstr "Välj om du vill avbryta inläsning av aktuellt projekt"
+#~ msgid "Space"
+#~ msgstr "Utrymme"
+#~ msgid "no checksum file could be found on the disc."
+#~ msgstr "ingen kontrollsummefil kunde hittas på skivan."
+#~ msgid "Choose a media"
+#~ msgstr "Välj ett media"
+#~ msgid "a directory couldn't be created (%s)"
+#~ msgstr "en katalog kunde inte skapas (%s)"
+#~ msgid "impossible to retrieve local file path"
+#~ msgstr "omöjligt att hämta lokal filsökväg"
+#~ msgid "invalid track mode"
+#~ msgstr "ogiltigt spårläge"
+#~ msgid "_Hide errors"
+#~ msgstr "_Dölj fel"
+#~ msgid "_Show errors"
+#~ msgstr "_Visa fel"
+#~ msgid "_Eject"
+#~ msgstr "Mata u_t"
+#~ msgid "Hide the _filtered file list (no file)"
+#~ msgstr "Dölj den _filtrerade fillistan (ingen fil)"
+#~ msgid "Hide the _filtered file list (%d file)"
+#~ msgid_plural "Hide the _filtered file list (%d files)"
+#~ msgstr[0] "Dölj den _filtrerade fillistan (%d fil)"
+#~ msgstr[1] "Dölj den _filtrerade fillistan (%d filer)"
+#~ msgid "Show the _filtered file list (no file)"
+#~ msgstr "Visa den _filtrerade fillistan (ingen fil)"
+#~ msgid "Show the _filtered file list (%d file)"
+#~ msgid_plural "Show the _filtered file list (%d files)"
+#~ msgstr[0] "Visa den _filtrerade fillistan (%d fil)"
+#~ msgstr[1] "Visa den _filtrerade fillistan (%d filer)"
+#~ msgid "Filter Options"
+#~ msgstr "Filteralternativ"
+#~ msgid "_Restore"
+#~ msgstr "Åte_rskapa"
+#~ msgid "Restore the selected files"
+#~ msgstr "Återskapa de markerade filerna"
+#~ msgid "_Options..."
+#~ msgstr "Alter_nativ..."
+#~ msgid "Set the options for file filtering"
+#~ msgstr "Konfigurera alternativ för filtrering av filer"
+#~ msgid "\"%s\" cannot be read"
+#~ msgstr "\"%s\" kan inte läsas"
+#~ msgid "recursive symbolic link"
+#~ msgstr "rekursiv symbolisk länk"
+#~ msgid "the file doesn't appear to be a playlist"
+#~ msgstr "filen verkar inte vara en spellista"
+#~ msgid "No title"
+#~ msgstr "Ingen titel"
+#~ msgid "There is no available medium. Please insert one."
+#~ msgstr "Det finns inget tillgänglig media. Mata in ett media."
+#~ msgid "File Image"
+#~ msgstr "Filavbildning"
+#~ msgid "<b>Blank %s</b> in %s"
+#~ msgstr "<b>Radera %s</b> i %s"
+#~ msgid "Blank %s in %s"
+#~ msgstr "Radera %s i %s"
+#~ msgid "<b>Audio and data %s</b> in %s"
+#~ msgstr "<b>Ljud och data %s</b> i %s"
+#~ msgid "Audio and data %s in %s"
+#~ msgstr "Ljud och data %s i %s"
+#~ msgid "<b>Audio %s</b> in %s"
+#~ msgstr "<b>Ljud %s</b> i %s"
+#~ msgid "Audio %s in %s"
+#~ msgstr "Ljud %s i %s"
+#~ msgid "<b>Data %s</b> in %s"
+#~ msgstr "<b>Data %s</b> in %s"
+#~ msgid "Data %s in %s"
+#~ msgstr "Data %s i %s"
+#~ msgid "<b>%s</b> in %s"
+#~ msgstr "<b>%s</b> i %s"
+#~ msgid "%s in %s"
+#~ msgstr "%s i %s"
+#~ msgid "Hashing algorithm to be used:"
+#~ msgstr "Hashalgoritm att använda:"
+#~ msgid "MD5"
+#~ msgstr "MD5"
+#~ msgid "SHA1"
+#~ msgstr "SHA1"
+#~ msgid "SHA256"
+#~ msgstr "SHA256"
 #~ msgid "this operation is not supported. Try to activate proper plugins"
 #~ msgstr ""
 #~ "den här åtgärden stöds inte. Prova att aktivera lämpliga insticksmoduler"
@@ -4242,8 +4382,6 @@ msgstr "storlek kan inte hämtas för %s: %s"
 #~ msgstr ""
 #~ "Huruvida libisofs ska användas för att generera avbilder. Ställ in till "
 #~ "sant för att använda det."
-#~ msgid "_Disc"
-#~ msgstr "_Skiva"
 #~ msgid "<i>The following plugins had errors on loading.</i>"
 #~ msgstr "<i>Följande insticksmoduler fick problem vid inläsning.</i>"
 #~ msgid ""
@@ -4373,8 +4511,6 @@ msgstr "storlek kan inte hämtas för %s: %s"
 #~ msgstr "okänt fel."
 #~ msgid "The file integrity check failed:"
 #~ msgstr "Filintegritetskontrollen misslyckades:"
-#~ msgid "some files may be corrupted on the disc."
-#~ msgstr "vissa filer kan vara skadade på skivan."
 #~ msgid "Please insert it in \"%s\"."
 #~ msgstr "Mata in den i \"%s\"."
 #~ msgid "The source media needs to be inserted:"
@@ -4503,8 +4639,6 @@ msgstr "storlek kan inte hämtas för %s: %s"
 #~ "<b>%s</b> är redo.\n"
 #~ "Den är tom.\n"
 #~ " (%s ledigt)"
-#~ msgid "<b>There is no available drive.</b>"
-#~ msgstr "<b>Det finns ingen tillgänglig enhet.</b>"
 #~ msgid "Replace the disc"
 #~ msgstr "Ersätt skivan"
 #~ msgid ""
