@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Brasero 0_7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-02 21:23+0200\n"
-"PO-Revision-Date: 2008-03-02 22:15+0200\n"
+"PO-Revision-Date: 2008-03-16 21:15+0200\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -43,12 +43,16 @@ msgid ""
 "Contains the list of additionnal plugins brasero will use to burn discs. If "
 "set to NULL, brasero will load them all."
 msgstr ""
+"Čia yra papildomų įskiepių, kuriuos brasero naudos diskų įrašymui, sąrašas. "
+"Jei nustatyta į NULL, brasero įkels juos visus."
 
 #: ../data/brasero.schemas.in.h:2
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
 msgstr ""
+"Čia yra pageidaujamos diskų įrašymo posistemės pavadinimas. Jeigu tai "
+"įmanoma, bus naudojama ji."
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -175,6 +179,8 @@ msgid ""
 "This key sets where the project pane should be (0 = on the right, 1 = on the "
 "left, 2 = at the top, 3 = at the bottom)"
 msgstr ""
+"Šiame rakte nustatoma, kur turėtų būti projekto polangis (0 = dešinėje, 1 = "
+"kairėje, 2 = viršuje, 3 = apačioje)"
 
 #: ../data/brasero.schemas.in.h:27
 msgid "Used in conjunction with -immed flag with cdrecord"
@@ -190,11 +196,11 @@ msgid ""
 "it's only a workaround for some drives/setups."
 msgstr ""
 "Ar naudoti -immed parametrą su cdrecord. Naudoti atsargiai (teigiama "
-"reikšmė), nes tai tik priemonė kai kurių įrenginių/sąrankų veikimui."
+"reikšmė), nes tai tik priemonė kai kurių įrenginių / sąrankų veikimui."
 
 #: ../data/brasero.schemas.in.h:30
 msgid "White list of additionnal plugins to use"
-msgstr ""
+msgstr "Papildomų naudotinų įskiepių sąrašas"
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Width for video preview"
@@ -227,10 +233,12 @@ msgid ""
 "If you choose to keep it programs may not be able to recognize the file type "
 "properly."
 msgstr ""
+"Jeigu jį pasiliksite, gali būti, kad programos tinkamai neatpažins šio failo "
+"tipo."
 
 #: ../src/brasero-dest-selection.c:1308
 msgid "Configure some options for the recording"
-msgstr ""
+msgstr "Nurodykite įrašymo parinktis"
 
 #: ../src/brasero-dest-selection.c:1315
 msgid "Choose which drive holds the disc to write to"
@@ -1869,7 +1877,7 @@ msgstr "ši laikmena gali būti įrašyta (reikalingas automatinis ištrynimas)"
 
 #: ../src/brasero-drive-info.c:195
 msgid "the medium can be recorded"
-msgstr "laikmena negali būti įrašyta"
+msgstr "ši laikmena gali būti įrašyta"
 
 #: ../src/brasero-drive-info.c:205
 #, c-format
@@ -1901,6 +1909,11 @@ msgid ""
 "</i></b><i>A new recordable media will be required once the one currently "
 "loaded has been copied.</i>"
 msgstr ""
+"<b><i>Įrenginys, kuriame yra šaltinio laikmena, taip pat bus naudojamas ir "
+"įrašymui.\n"
+"\n"
+"</i></b><i>Nukopijavus dabar įdėtą laikmeną, reikės naujos įrašomos "
+"laikmenos.</i>"
 
 #: ../src/brasero-drive-info.c:363
 msgid "<b>Type:</b>"
@@ -2600,9 +2613,9 @@ msgid "<b>Oversized</b> (%s / %s)"
 msgstr "<b>Perpildytas</b> (%s / %s)"
 
 #: ../src/brasero-project-size.c:581
-#, fuzzy, c-format
+#, c-format
 msgid "<b>Empty</b> (%s / %s in <i>%s</i>)"
-msgstr "<b>Tuščias</b> (%s / %s <i>%s</i>)"
+msgstr "<b>Tuščias</b> (%s / %s esantis <i>%s</i>)"
 
 #: ../src/brasero-project-size.c:586
 #, c-format
@@ -3096,16 +3109,18 @@ msgid ""
 "plugin %s didn't work properly (it does not support operation).\n"
 "Try to deactivate it"
 msgstr ""
+"įskiepis %s veikia netinkamai (nepalaiko operacijos).\n"
+"Pabandykite jį išjungti"
 
 #: ../src/burn-job.c:838 ../src/burn-job.c:927
 #, c-format
 msgid "a plugin did not behave properly"
-msgstr ""
+msgstr "įskiepis veikia netinkamai"
 
 #: ../src/burn-job.c:1025
 #, c-format
 msgid "couldn't set non blocking mode"
-msgstr "nepavyko nustatyti neblokuojančio režimo"
+msgstr "nepavyko nustatyti neblokuojančios veiksenos"
 
 #: ../src/burn-job.c:1033
 #, c-format
@@ -3445,7 +3460,7 @@ msgstr ""
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:474
 msgid "use genisoimage to create images from files"
-msgstr ""
+msgstr "naudoti genisoimage atvaizdžių kūrimui iš failų"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:482
 msgid "genisoimage could not be found in the path"
@@ -3475,7 +3490,7 @@ msgstr "raw atvaizdžiai negali būti kuriami su DVD diskais"
 
 #: ../src/plugins/cdrkit/burn-readom.c:354
 msgid "use readom to image CDs"
-msgstr ""
+msgstr "naudoti readom CD atvaizdžių kūrimui"
 
 #: ../src/plugins/cdrkit/burn-readom.c:362
 msgid "readom could not be found in the path"
@@ -3634,6 +3649,7 @@ msgstr "įjungti parametrą -immed (žr. wodim žinyną)"
 #: ../src/plugins/cdrkit/burn-wodim.c:1113
 msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
+"mažiausias galimas įrenginio buferio užpildymo dydis (%) (žr. wodim žinyną):"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1031
 msgid "use cdrecord to burn CDs"
@@ -3650,6 +3666,8 @@ msgstr "įjungti parametrą -immed (žr. cdrecord žinyną)"
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1114
 msgid "minimum drive buffer fill ratio (in %)(see cdrecord manual):"
 msgstr ""
+"mažiausias galimas įrenginio buferio užpildymo dydis (%) (žr. cdrecord "
+"žinyną):"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:132
 msgid "this version of mkisofs doesn't seem to be supported"
@@ -3657,7 +3675,7 @@ msgstr "ši mkisofs versija nepalaikoma"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:468
 msgid "use mkisofs to create images from files"
-msgstr ""
+msgstr "naudoti mksisofs atvaizdžių kūrimui iš failų"
 
 #: ../src/plugins/cdrtools/burn-mkisofs.c:476
 msgid "mkisofs could not be found in the path"
@@ -3665,7 +3683,7 @@ msgstr "komanda mkisofs nerasta kelyje"
 
 #: ../src/plugins/cdrtools/burn-readcd.c:354
 msgid "use readcd to image CDs"
-msgstr ""
+msgstr "naudoti readcd CD atvaizdžių kūrimui"
 
 #: ../src/plugins/cdrtools/burn-readcd.c:362
 msgid "readcd could not be found in the path"
@@ -3678,9 +3696,9 @@ msgid "the file %s couldn't be read (%s)"
 msgstr "failo %s nepavyko perskaityti (%s)"
 
 #: ../src/plugins/checksum/burn-md5.c:300
-#, fuzzy, c-format
+#, c-format
 msgid "the file %s couldn't be seeked (%s)"
-msgstr "failo %s nepavyko perskaityti (%s)"
+msgstr "failo %s nepavyko rasti (%s)"
 
 #: ../src/plugins/checksum/burn-md5sum.c:102
 #, c-format
@@ -4032,7 +4050,7 @@ msgstr " Peržiūra "
 
 #: ../src/brasero-split-dialog.c:175
 msgid "The size of the new track is shorter than 6 seconds and will be padded."
-msgstr ""
+msgstr "Naujo takelio trukmė mažesnė nei 6 sekundės ir bus pailgintas tyla."
 
 #: ../src/brasero-split-dialog.c:176
 msgid "size error"
@@ -4160,15 +4178,15 @@ msgstr "Pašali_nti visus"
 
 #: ../src/brasero-split-dialog.c:1234
 msgid "Clear the slices preview"
-msgstr ""
+msgstr "Išvalyti gabalėlių peržiūrą"
 
 #: ../src/brasero-split-dialog.c:1244
 msgid "_List of slices that are to be created:"
-msgstr ""
+msgstr "_Sukurtinų gabalėlių sąrašas:"
 
 #: ../src/brasero-split-dialog.c:1253
 msgid "<b>Slices Preview</b>"
-msgstr ""
+msgstr "<b>Gabalėlių peržiūra</b>"
 
 #: ../src/brasero-time-button.c:278
 msgid "Hours"
@@ -4181,11 +4199,11 @@ msgstr ":"
 
 #: ../src/brasero-time-button.c:287
 msgid "Minutes"
-msgstr ""
+msgstr "Minutės"
 
 #: ../src/brasero-time-button.c:296
 msgid "Seconds"
-msgstr ""
+msgstr "Sekundės"
 
 #: ../src/brasero-time-button.c:305
 msgid "Frames (1 second = 75 frames)"
