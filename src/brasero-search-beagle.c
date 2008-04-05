@@ -707,16 +707,17 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 
 	num = 0;
 	for (iter = list; iter && num < max; iter = next, num ++) {
-		gchar *unescaped_uri;
+	  	gchar *unescaped_uri;
+		GFile *file;
 
 		hit = iter->data;
 		next = iter->next;
 
-		uri = g_strdup (beagle_hit_get_uri (hit));
+		file = g_strdup (beagle_hit_get_uri (hit));
 
 		/* beagle return badly formed uri not encoded in UTF-8
 		 * locale charset so we check them just in case */
-		unescaped_uri = gnome_vfs_unescape_string_for_display (uri);
+		unescaped_uri = g_file_get_parse_name (file);
 		if (!g_utf8_validate (unescaped_uri, -1, NULL)) {
 			g_free (unescaped_uri);
 			g_free (uri);
@@ -739,7 +740,7 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 			mime = g_strdup ("x-directory/normal");
 		}
 
-		description = gnome_vfs_mime_get_description (mime);
+		description = g_content_type_get_description (mime);
 
 		icon = g_content_type_get_icon (mime);
 		icon_string = NULL;
