@@ -707,17 +707,18 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 
 	num = 0;
 	for (iter = list; iter && num < max; iter = next, num ++) {
-	  	gchar *unescaped_uri;
+	  gchar *unescaped_uri, *uri;
 		GFile *file;
 
 		hit = iter->data;
 		next = iter->next;
 
-		file = g_strdup (beagle_hit_get_uri (hit));
+		uri = g_strdup (beagle_hit_get_uri (hit));
+		file = g_file_new_for_uri (uri);
 
 		/* beagle return badly formed uri not encoded in UTF-8
 		 * locale charset so we check them just in case */
-		unescaped_uri = g_file_get_parse_name (file);
+		unescaped_uri = g_uri_unescape_string (file, NULL);
 		if (!g_utf8_validate (unescaped_uri, -1, NULL)) {
 			g_free (unescaped_uri);
 			g_free (uri);
