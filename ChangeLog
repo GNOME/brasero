@@ -1,5 +1,11 @@
 2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fixed corrupted path on CD
+
+	* src/brasero-data-project.c (brasero_data_project_node_to_path):
+
+2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	remove some uneeded flags from Makefile.am
 	remove burn-commons.c since it isn't built anymore
 	revert change 698 since though it fixes the crash, it creates a huge memory leaks.

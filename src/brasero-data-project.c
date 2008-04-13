@@ -2081,8 +2081,8 @@ brasero_data_project_node_to_path (BraseroDataProject *self,
 		node = iter->data;
 
 		*(path + len) = G_DIR_SEPARATOR;
-
 		len ++;
+
 		if (len > MAXPATHLEN)
 			return NULL;
 
@@ -2104,9 +2104,9 @@ brasero_data_project_node_to_path (BraseroDataProject *self,
 			if (len + 64 > MAXPATHLEN)
 				return NULL;
 
-			len = brasero_data_project_set_joliet_compliant_name (self,
-									      node,
-									      path + len);
+			len += brasero_data_project_set_joliet_compliant_name (self,
+									       node,
+									       path + len);
 		}
 	}
 	g_slist_free (list);
