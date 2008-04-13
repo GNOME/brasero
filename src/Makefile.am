@@ -241,7 +241,17 @@ brasero_SOURCES = \
 	scsi-mech-status.c         \
 	scsi-mech-status.h         \
 	burn-volume-read.h         \
-	burn-volume-read.c
+	burn-volume-read.c         \
+	brasero-jacket-background.c         \
+	brasero-jacket-background.h         \
+	brasero-jacket-buffer.c         \
+	brasero-jacket-buffer.h         \
+	brasero-jacket-edit.c         \
+	brasero-jacket-edit.h         \
+	brasero-jacket-font.c         \
+	brasero-jacket-font.h         \
+	brasero-jacket-view.c         \
+	brasero-jacket-view.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

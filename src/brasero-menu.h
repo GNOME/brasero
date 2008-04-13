@@ -41,6 +41,7 @@ G_BEGIN_DECLS
 #include "brasero-utils.h"
 #include "brasero-app.h"
 
+void on_cover_cb (GtkAction *action, BraseroApp *app);
 void on_prefs_cb (GtkAction *action, BraseroApp *app);
 void on_eject_cb (GtkAction *action, BraseroApp *app);
 void on_erase_cb (GtkAction *action, BraseroApp *app);
@@ -58,6 +59,9 @@ static GtkActionEntry entries[] = {
 	{"EditMenu", NULL, N_("_Edit")},
 	{"ToolMenu", NULL, N_("_Tools")},
 	{"HelpMenu", NULL, N_("_Help")},
+
+	{"Cover", NULL, N_("_Cover editor"), NULL,
+	 N_("Design and print covers for CDs"), G_CALLBACK (on_cover_cb)},
 
 	{"Plugins", NULL, N_("P_lugins"), NULL,
 	 N_("Choose plugins for brasero"), G_CALLBACK (on_prefs_cb)},
@@ -104,6 +108,8 @@ static const gchar *description = {
 		"<menuitem action='Eject'/>"
 		"<menuitem action='Erase'/>"
 		"<menuitem action='Check'/>"
+		"<separator/>"
+		"<menuitem action='Cover'/>"
 	    "</menu>"
 	    "<menu action='HelpMenu'>"
 		"<menuitem action='About'/>"

@@ -1,5 +1,95 @@
 2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Added a CD cover editor
+
+	* src/Makefile.am:
+	* src/brasero-jacket-background.c
+	(brasero_jacket_background_get_color_style),
+	(brasero_jacket_background_get_image_style),
+	(brasero_jacket_background_get_image_path),
+	(brasero_jacket_background_set_color_style),
+	(brasero_jacket_background_get_color),
+	(brasero_jacket_background_set_image_style),
+	(brasero_jacket_background_set_image_path),
+	(brasero_jacket_background_set_color),
+	(brasero_jacket_background_color_type_changed_cb),
+	(brasero_jacket_background_add_filters),
+	(brasero_jacket_background_init),
+	(brasero_jacket_background_finalize),
+	(brasero_jacket_background_class_init),
+	(brasero_jacket_background_new):
+	* src/brasero-jacket-background.h:
+	* src/brasero-jacket-buffer.c (brasero_jacket_buffer_get_text),
+	(brasero_jacket_buffer_add_default_tag),
+	(brasero_jacket_buffer_cursor_position_changed_cb),
+	(brasero_jacket_buffer_insert_text),
+	(brasero_jacket_buffer_show_default_text),
+	(brasero_jacket_buffer_set_default_text),
+	(brasero_jacket_buffer_init), (brasero_jacket_buffer_finalize),
+	(brasero_jacket_buffer_class_init), (brasero_jacket_buffer_new):
+	* src/brasero-jacket-buffer.h:
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_print_page),
+	(brasero_jacket_edit_print_begin),
+	(brasero_jacket_edit_print_pressed_cb),
+	(brasero_jacket_edit_underline_pressed_cb),
+	(brasero_jacket_edit_italic_pressed_cb),
+	(brasero_jacket_edit_bold_pressed_cb),
+	(brasero_jacket_edit_center_pressed_cb),
+	(brasero_jacket_edit_right_pressed_cb),
+	(brasero_jacket_edit_left_pressed_cb),
+	(brasero_jacket_edit_colours_changed_cb),
+	(brasero_jacket_edit_font_changed_cb),
+	(brasero_jacket_edit_update_button_state),
+	(brasero_jacket_edit_tags_changed_cb), (brasero_jacket_edit_init),
+	(brasero_jacket_edit_finalize), (brasero_jacket_edit_class_init),
+	(brasero_jacket_edit_new):
+	* src/brasero-jacket-edit.h:
+	* src/brasero-jacket-font.c
+	(brasero_jacket_font_family_changed_cb),
+	(brasero_jacket_font_size_changed_cb),
+	(brasero_jacket_font_set_name), (brasero_jacket_font_get_name),
+	(brasero_jacket_fill_sizes), (brasero_jacket_fill_families),
+	(brasero_jacket_font_init), (brasero_jacket_font_finalize),
+	(brasero_jacket_font_class_init), (brasero_jacket_font_new):
+	* src/brasero-jacket-font.h:
+	* src/brasero-jacket-view.c (brasero_jacket_view_tag_begins),
+	(brasero_jacket_view_tag_ends),
+	(brasero_jacket_view_set_line_attributes),
+	(brasero_jacket_view_render_side_text),
+	(brasero_jacket_view_render), (brasero_jacket_view_render_body),
+	(brasero_jacket_view_print), (brasero_jacket_view_snapshot),
+	(brasero_jacket_view_cursor_position_changed_cb),
+	(brasero_jacket_view_apply_tag),
+	(brasero_jacket_view_side_buffer_changed),
+	(brasero_jacket_view_focus_in_cb),
+	(brasero_jacket_view_focus_out_cb),
+	(brasero_jacket_view_scrolled_cb),
+	(brasero_jacket_view_change_image_activated_cb),
+	(brasero_jacket_view_populate_popup_cb),
+	(brasero_jacket_view_set_side),
+	(brasero_jacket_view_update_edit_image),
+	(brasero_jacket_view_update_image),
+	(brasero_jacket_view_set_image_style),
+	(brasero_jacket_view_update_color),
+	(brasero_jacket_view_get_image), (brasero_jacket_view_set_image),
+	(brasero_jacket_view_set_color_background),
+	(brasero_jacket_view_set_color_style),
+	(brasero_jacket_view_get_default_attributes),
+	(brasero_jacket_view_get_active_buffer),
+	(brasero_jacket_view_expose), (brasero_jacket_view_realize),
+	(brasero_jacket_view_map), (brasero_jacket_view_unmap),
+	(brasero_jacket_view_size_request),
+	(brasero_jacket_view_size_allocate),
+	(brasero_jacket_view_container_forall),
+	(brasero_jacket_view_container_remove), (brasero_jacket_view_init),
+	(brasero_jacket_view_finalize), (brasero_jacket_view_class_init),
+	(brasero_jacket_view_new):
+	* src/brasero-jacket-view.h:
+	* src/brasero-menu.h:
+	* src/main.c (on_cover_cb):
+
+2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fixed corrupted path on CD
 
 	* src/brasero-data-project.c (brasero_data_project_node_to_path):
