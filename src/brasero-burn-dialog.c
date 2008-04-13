@@ -1588,7 +1588,6 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 		dialog->priv->close_timeout = g_timeout_add (TIMEOUT,
 							     (GSourceFunc) brasero_burn_dialog_success_timeout,
 							     dialog);
-
 	}
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1606,7 +1605,6 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	BraseroMedia media;
 	BraseroDrive *drive;
 	gchar *primary = NULL;
-	gchar *secondary = NULL;
 
 	drive = brasero_burn_session_get_burner (dialog->priv->session);
 	if (dialog->priv->input.type != BRASERO_TRACK_TYPE_DISC)
@@ -1617,61 +1615,38 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	switch (dialog->priv->input.type) {
 	case BRASERO_TRACK_TYPE_AUDIO:
 		primary = g_strdup (_("Audio CD successfully burnt"));
-		secondary = g_strdup_printf (_("\"%s\" is now ready for use"), 
-					     brasero_burn_session_get_label (dialog->priv->session));
 		break;
 	case BRASERO_TRACK_TYPE_DISC:
 		if (!brasero_drive_is_fake (drive)) {
-			if (media & BRASERO_MEDIUM_DVD) {
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("DVD successfully copied"));
-				secondary = g_strdup_printf (_("DVD is now ready for use"));
-			}
-			else {
+			else
 				primary = g_strdup (_("CD successfully copied"));
-				secondary = g_strdup_printf (_("CD is now ready for use"));
-			}
 		}
 		else {
-			if (media & BRASERO_MEDIUM_DVD) {
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("Image of DVD successfully created"));
-				secondary = g_strdup_printf (_("DVD is now ready for use"));
-			}
-			else {
+			else
 				primary = g_strdup (_("Image of CD successfully created"));
-				secondary = g_strdup_printf (_("CD is now ready for use"));
-			}
 		}
 		break;
 	case BRASERO_TRACK_TYPE_IMAGE:
 		if (!brasero_drive_is_fake (drive)) {
-			if (media & BRASERO_MEDIUM_DVD) {
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("Image successfully burnt to DVD"));
-				secondary = g_strdup_printf (_("DVD is now ready for use"));
-			}
-			else {
+			else
 				primary = g_strdup (_("Image successfully burnt to CD"));
-				secondary = g_strdup_printf (_("CD is now ready for use"));
-			}
 		}
 		break;
 	default:
 		if (!brasero_drive_is_fake (drive)) {
-			if (media & BRASERO_MEDIUM_DVD) {
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("Data DVD successfully burnt"));
-				secondary = g_strdup_printf (_("\"%s\" is now ready for use"),
-							     brasero_burn_session_get_label (dialog->priv->session));
-			}
-			else {
+			else
 				primary = g_strdup (_("Data CD successfully burnt"));
-				secondary = g_strdup_printf (_("\"%s\" is now ready for use"),
-							     brasero_burn_session_get_label (dialog->priv->session));
-			}
 		}
-		else {
+		else
 			primary = g_strdup (_("Image successfully created"));
-			secondary = g_strdup_printf (_("\"%s\" is now ready for use"),
-						     brasero_burn_session_get_label (dialog->priv->session));
-		}
 		break;
 	}
 
@@ -1679,7 +1654,6 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	brasero_burn_dialog_success_run (dialog);
 
 	g_free (primary);
-	g_free (secondary);
 }
 
 static void
