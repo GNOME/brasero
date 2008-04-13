@@ -36,6 +36,12 @@ struct _BraseroVolDesc {
 };
 typedef struct _BraseroVolDesc BraseroVolDesc;
 
+struct _BraseroVolFileExtent {
+	guint block;
+	guint size;
+};
+typedef struct _BraseroVolFileExtent BraseroVolFileExtent;
+
 typedef struct _BraseroVolFile BraseroVolFile;
 struct _BraseroVolFile {
 	BraseroVolFile *parent;
@@ -46,7 +52,7 @@ struct _BraseroVolFile {
 	union {
 
 	struct {
-		gint address_block;
+		GSList *extents;
 		guint64 size_bytes;
 	} file;
 
@@ -54,7 +60,7 @@ struct _BraseroVolFile {
 		GList *children;
 
 		/* FIXME: rr_children isn't needed here apparently it could be 
-		 * replaced by address_block. */
+		 * replaced by extents. */
 		GList *rr_children;
 	} dir;
 
@@ -62,12 +68,6 @@ struct _BraseroVolFile {
 
 	guint isdir:1;
 };
-
-#define BRASERO_VOLUME_FILE_NAME(file)			((file)->rr_name?(file)->rr_name:(file)->name)
-#define BRASERO_VOLUME_FILE_SIZE(file)			((file)->isdir?0:(file)->specific.file.size_bytes)
-
-void
-brasero_volume_file_free (BraseroVolFile *file);
 
 gboolean
 brasero_volume_is_valid (const gchar *path,
@@ -93,6 +93,7 @@ gboolean
 brasero_volume_get_label (const gchar *path,
 			  gchar **label,
 			  GError **error);
+
 BraseroVolFile *
 brasero_volume_get_files (const gchar *path,
 			  gint64 block,
@@ -100,6 +101,19 @@ brasero_volume_get_files (const gchar *path,
 			  gint64 *nb_blocks,
 			  gint64 *data_blocks,
 			  GError **error);
+
+BraseroVolFile *
+brasero_volume_get_file (const gchar *medium,
+			 const gchar *path,
+			 gint64 volume_start_block,
+			 GError **error);
+
+
+#define BRASERO_VOLUME_FILE_NAME(file)			((file)->rr_name?(file)->rr_name:(file)->name)
+#define BRASERO_VOLUME_FILE_SIZE(file)			((file)->isdir?0:(file)->specific.file.size_bytes)
+
+void
+brasero_volume_file_free (BraseroVolFile *file);
 
 gchar *
 brasero_volume_file_to_path (BraseroVolFile *file);
@@ -110,6 +124,10 @@ brasero_volume_file_from_path (const gchar *ptr,
 
 gint64
 brasero_volume_file_size (BraseroVolFile *file);
+
+BraseroVolFile *
+brasero_volume_file_merge (BraseroVolFile *file1,
+			   BraseroVolFile *file2);
 
 G_END_DECLS
 

@@ -77,6 +77,12 @@ brasero_volume_file_free (BraseroVolFile *file)
 
 		g_list_free (file->specific.dir.children);
 	}
+	else {
+		g_slist_foreach (file->specific.file.extents,
+				 (GFunc) g_free,
+				 NULL);
+		g_slist_free (file->specific.file.extents);
+	}
 
 	g_free (file->rr_name);
 	g_free (file->name);
@@ -360,6 +366,51 @@ brasero_volume_get_files (const gchar *path,
 	return volroot;
 }
 
+BraseroVolFile *
+brasero_volume_get_file (const gchar *medium,
+			 const gchar *path,
+			 gint64 volume_start_block,
+			 GError **error)
+{
+	gchar buffer [ISO9660_BLOCK_SIZE];
+	BraseroVolFile *volfile;
+	FILE *file;
+
+	file = fopen (medium, "r");
+	if (!file) {
+		BRASERO_BURN_LOG ("fopen () failed (%s)", strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return NULL;
+	}
+
+	if (fseek (file, volume_start_block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
+		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", volume_start_block, strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return NULL;
+	}
+
+	if (!brasero_volume_get_primary_from_file (file, buffer, error)) {
+		fclose (file);
+		return NULL;
+	}
+
+	if (!brasero_iso9660_is_primary_descriptor (buffer, error)) {
+		fclose (file);
+		return NULL;
+	}
+
+	volfile = brasero_iso9660_get_file (file, path, buffer, error);
+	fclose (file);
+
+	return volfile;
+}
+
 gchar *
 brasero_volume_file_to_path (BraseroVolFile *file)
 {
@@ -438,8 +489,17 @@ brasero_volume_file_size (BraseroVolFile *file)
 	GList *iter;
 	gint64 size = 0;
 
-	if (!file->isdir)
-		return BRASERO_SIZE_TO_SECTORS (file->specific.file.size_bytes, 2048);
+	if (!file->isdir) {
+		GSList *extents;
+
+		for (extents = file->specific.file.extents; extents; extents = extents->next) {
+			BraseroVolFileExtent *extent;
+
+			extent = extents->data;
+			size += extent->size;
+		}
+		return BRASERO_SIZE_TO_SECTORS (size, 2048);
+	}
 
 	for (iter = file->specific.dir.children; iter; iter = iter->next) {
 		file = iter->data;
@@ -452,3 +512,18 @@ brasero_volume_file_size (BraseroVolFile *file)
 
 	return size;
 }
+
+BraseroVolFile *
+brasero_volume_file_merge (BraseroVolFile *file1,
+			   BraseroVolFile *file2)
+{
+	file1->specific.file.size_bytes += file2->specific.file.size_bytes;
+	file1->specific.file.extents = g_slist_concat (file1->specific.file.extents,
+							     file2->specific.file.extents);
+
+	file2->specific.file.extents = NULL;
+	brasero_volume_file_free (file2);
+
+	return file1;
+}
+

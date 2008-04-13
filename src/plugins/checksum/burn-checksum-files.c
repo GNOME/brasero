@@ -47,6 +47,7 @@
 #include "burn-volume.h"
 #include "burn-drive.h"
 #include "burn-volume-obj.h"
+#include "burn-volume-read.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumFiles, brasero_checksum_files, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -279,8 +280,182 @@ brasero_checksum_files_explore_directory (BraseroChecksumFiles *self,
 }
 
 static BraseroBurnResult
+brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
+					   BraseroTrack *track,
+					   const gchar *line,
+					   GError **error)
+{
+	guint i;
+	gchar *path;
+	GSList *grafts;
+	gchar *checksum;
+	guint written_bytes;
+	BraseroChecksumFilesPrivate *priv;
+
+	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
+
+	/* first read the checksum string */
+	i = 0;
+	while (!isspace (line [i])) i ++;
+
+	checksum = g_strndup (line, i);
+
+	/* skip white spaces */
+	while (isspace (line [i])) i ++;
+
+	/* get the path string */
+	path = g_strdup (line + i);
+
+	for (grafts = brasero_track_get_data_grafts_source (track); grafts; grafts = grafts->next) {
+		BraseroGraftPt *graft;
+		guint len;
+
+		/* NOTE: graft->path + 1 is because in the checksum files on the 
+		 * disc there is not first "/" so if we want to compare ... */
+		graft = grafts->data;
+		if (!strcmp (graft->path + 1, path))
+			return BRASERO_BURN_OK;
+
+		len = strlen (graft->path + 1);
+		if (!strncmp (graft->path + 1, path, len)
+		&&   path [len] == G_DIR_SEPARATOR)
+			return BRASERO_BURN_OK;
+	}
+
+	/* write the whole line in the new file */
+	written_bytes = fwrite (line, 1, strlen (line), priv->file);
+	if (written_bytes != strlen (line)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return BRASERO_BURN_ERR;
+	}
+
+	if (!fwrite ("\n", 1, 1, priv->file)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
+						  GError **error)
+{
+	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
+	BraseroChecksumFilesPrivate *priv;
+	BraseroVolFileHandle *handle;
+	BraseroBurnResult result;
+	BraseroVolFile *file;
+	BraseroTrack *track;
+	gchar buffer [2048];
+	gint64 start_block;
+	gchar *device;
+
+	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
+
+	/* Now we need to know if we're merging. If so, we need to merge the
+	 * former checksum file with the new ones. */
+	brasero_job_get_flags (BRASERO_JOB (self), &flags);
+	if (!(flags & BRASERO_BURN_FLAG_MERGE))
+		return BRASERO_BURN_OK;
+
+	/* get the former file */
+	result = brasero_job_get_last_session_address (BRASERO_JOB (self), &start_block);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	brasero_job_get_device (BRASERO_JOB (self), &device);
+
+	/* try every file and make sure they are of the same type */
+	/* FIXME: if not we could make a new checksum ... */
+	file = brasero_volume_get_file (device,
+					"/"BRASERO_MD5_FILE,
+					start_block,
+					NULL);
+	if (!file) {
+		file = brasero_volume_get_file (device,
+						"/"BRASERO_SHA1_FILE,
+						start_block,
+						NULL);
+		if (!file) {
+			file = brasero_volume_get_file (device,
+							"/"BRASERO_SHA256_FILE,
+							start_block,
+							NULL);
+			if (!file) {
+				g_free (device);
+				BRASERO_JOB_LOG (self, "no checksum file found");
+				return BRASERO_BURN_OK;
+			}
+			else if (priv->checksum_type != BRASERO_CHECKSUM_SHA256_FILE) {
+				g_free (device);
+				BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
+						 priv->checksum_type,
+						 BRASERO_CHECKSUM_SHA256_FILE);
+				return BRASERO_BURN_OK;
+			}
+		}
+		else if (priv->checksum_type != BRASERO_CHECKSUM_SHA1_FILE) {
+			BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
+					 priv->checksum_type,
+					 BRASERO_CHECKSUM_SHA1_FILE);
+			g_free (device);
+			return BRASERO_BURN_OK;
+		}
+	}
+	else if (priv->checksum_type != BRASERO_CHECKSUM_MD5_FILE) {
+		g_free (device);
+		BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
+				 priv->checksum_type,
+				 BRASERO_CHECKSUM_MD5_FILE);
+		return BRASERO_BURN_OK;
+	}
+
+	BRASERO_JOB_LOG (self, "Found file %s on %s", file, device);
+	handle = brasero_volume_file_open (device, file);
+	g_free (device);
+
+	if (!handle) {
+		BRASERO_JOB_LOG (self, "Failed to open file");
+		return BRASERO_BURN_ERR;
+	}
+
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
+
+	/* Now check the files that have been replaced; to do that check the 
+	 * paths of the new image whenever a read path from former file is a
+	 * child of one of the new paths, then it must not be included. */
+	result = brasero_volume_file_read_line (handle, buffer, sizeof (buffer));
+	while (result == BRASERO_BURN_RETRY) {
+		if (priv->cancel) {
+			brasero_volume_file_close (handle);
+			return BRASERO_BURN_CANCEL;
+		}
+
+		result = brasero_checksum_file_process_former_line (self, track, buffer, error);
+		if (result != BRASERO_BURN_OK) {
+			brasero_volume_file_close (handle);
+			return result;
+		}
+
+		result = brasero_volume_file_read_line (handle, buffer, sizeof (buffer));
+	}
+
+	result = brasero_checksum_file_process_former_line (self, track, buffer, error);
+	brasero_volume_file_close (handle);
+
+	return result;
+}
+
+static BraseroBurnResult
 brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
-				     GError **error)
+					GError **error)
 {
 	GSList *iter;
 	gint64 file_nb;
@@ -431,6 +606,9 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 	}
 
 	g_hash_table_destroy (excludedH);
+
+	if (result == BRASERO_BURN_OK)
+		result = brasero_checksum_files_merge_with_former_session (self, error);
 
 	/* that's finished we close the file */
 	fclose (priv->file);

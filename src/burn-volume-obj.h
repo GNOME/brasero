@@ -58,6 +58,9 @@ brasero_volume_new (BraseroDrive *drive,
 		    const gchar *udi);
 
 gchar *
+brasero_volume_get_name (BraseroVolume *self);
+
+gchar *
 brasero_volume_get_display_label (BraseroVolume *volume,
 				  gboolean with_markup);
 

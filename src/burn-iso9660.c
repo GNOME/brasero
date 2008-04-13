@@ -334,6 +334,53 @@ error:
 	return BRASERO_ISO_ERROR;
 }
 
+static gboolean
+brasero_iso9660_read_record_iso_name (BraseroIsoCtx *ctx,
+				      BraseroIsoDirRec *record,
+				      gchar *iso_name)
+{
+	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
+		ctx->error = g_error_new (BRASERO_BURN_ERROR,
+					  BRASERO_BURN_ERROR_GENERAL,
+					  _("file name is too long"));
+		return FALSE;
+	}
+
+	memcpy (iso_name, record->id, record->id_size);
+	iso_name [record->id_size] = '\0';
+
+	return TRUE;
+}
+
+static gboolean
+brasero_iso9660_read_record_rr_name (BraseroIsoCtx *ctx,
+				     BraseroIsoDirRec *record,
+				     gchar *rr_name)
+{
+	gchar *susp;
+	gint susp_len;
+	BraseroSuspCtx susp_ctx;
+
+	if (!ctx->has_susp)
+		return FALSE;
+
+	BRASERO_BURN_LOG ("Directory with susp area");
+
+	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
+	if (!brasero_susp_read (&susp_ctx, susp, susp_len)) {
+		BRASERO_BURN_LOG ("Could not read susp area");
+		return FALSE;
+	}
+
+	if (susp_ctx.rr_name) {
+		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
+		strcpy (rr_name, susp_ctx.rr_name);
+	}
+
+	brasero_susp_ctx_clean (&susp_ctx);
+	return TRUE;
+}
+
 static BraseroVolFile *
 brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 				  BraseroIsoDirRec *record)
@@ -342,6 +389,7 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 	gint susp_len;
 	BraseroVolFile *file;
 	BraseroSuspCtx susp_ctx;
+	BraseroVolFileExtent *extent;
 
 	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
 		ctx->error = g_error_new (BRASERO_BURN_ERROR,
@@ -356,7 +404,12 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 	memcpy (file->name, record->id, record->id_size);
 
 	file->specific.file.size_bytes = brasero_iso9660_get_733_val (record->file_size);
-	file->specific.file.address_block = brasero_iso9660_get_733_val (record->address);
+
+	/* NOTE a file can be in multiple places */
+	extent = g_new (BraseroVolFileExtent, 1);
+	extent->block = brasero_iso9660_get_733_val (record->address);
+	extent->size = brasero_iso9660_get_733_val (record->file_size);
+	file->specific.file.extents = g_slist_prepend (file->specific.file.extents, extent);
 
 	/* see if we've got a susp area */
 	if (!ctx->has_susp) {
@@ -533,9 +586,9 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 
 				last = parent->specific.dir.children->data;
 				if (!last->isdir && !strcmp (BRASERO_VOLUME_FILE_NAME (last), BRASERO_VOLUME_FILE_NAME (entry))) {
-					last->specific.file.size_bytes += entry->specific.file.size_bytes;
+					/* add size and addresses */
 					ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
-					brasero_volume_file_free (entry);
+					last = brasero_volume_file_merge (last, entry);
 					BRASERO_BURN_LOG ("Multi extent file");
 					continue;
 				}
@@ -613,4 +666,174 @@ brasero_iso9660_get_contents (FILE *file,
 		g_propagate_error (error, ctx.error);
 
 	return volfile;
+}
+
+static BraseroVolFile *
+brasero_iso9660_lookup_directory_record (BraseroIsoCtx *ctx,
+					 const gchar *path,
+					 gint address)
+{
+	guint len;
+	gchar *end;
+	gint max_block;
+	gint max_record_size;
+	BraseroIsoResult result;
+	BraseroIsoDirRec *record;
+	BraseroVolFile *file = NULL;
+
+	BRASERO_BURN_LOG ("Reading directory record");
+
+	result = brasero_iso9660_seek (ctx, address);
+	if (result != BRASERO_ISO_OK)
+		return NULL;
+
+	/* "." */
+	result = brasero_iso9660_next_record (ctx, &record);
+	if (result != BRASERO_ISO_OK)
+		return NULL;
+
+	/* look for "SP" SUSP if it's root directory */
+	if (ctx->is_root) {
+		BraseroSuspCtx susp_ctx;
+		gint susp_len;
+		gchar *susp;
+
+		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
+		brasero_susp_read (&susp_ctx, susp, susp_len);
+
+		ctx->has_susp = susp_ctx.has_SP;
+		ctx->susp_skip = susp_ctx.skip;
+		ctx->is_root = FALSE;
+
+		brasero_susp_ctx_clean (&susp_ctx);
+	}
+
+	max_record_size = brasero_iso9660_get_733_val (record->file_size);
+	max_block = ISO9660_BYTES_TO_BLOCKS (max_record_size);
+	BRASERO_BURN_LOG ("Maximum directory record length %i block (= %i bytes)", max_block, max_record_size);
+
+	/* skip ".." */
+	result = brasero_iso9660_next_record (ctx, &record);
+	if (result != BRASERO_ISO_OK)
+		return NULL;
+
+	BRASERO_BURN_LOG ("Skipped '.' and '..'");
+
+	end = strchr (path, '/');
+	if (!end)
+		/* reached the final file */
+		len = 0;
+	else
+		len = end - path;
+
+	while (1) {
+		BraseroIsoResult result;
+		gchar record_name [256];
+
+		result = brasero_iso9660_next_record (ctx, &record);
+		if (result == BRASERO_ISO_END) {
+			if (ctx->num_blocks >= max_block) {
+				BRASERO_BURN_LOG ("Reached the end of directory record");
+				break;
+			}
+
+			result = brasero_iso9660_next_block (ctx);
+			if (result != BRASERO_ISO_OK) {
+				BRASERO_BURN_LOG ("Failed to load next block");
+				return NULL;
+			}
+
+			continue;
+		}
+		else if (result == BRASERO_ISO_ERROR) {
+			BRASERO_BURN_LOG ("Error retrieving next record");
+			return NULL;
+		}
+
+		if (!record) {
+			BRASERO_BURN_LOG ("No record !!!");
+			break;
+		}
+
+		if (!brasero_iso9660_read_record_rr_name (ctx, record, record_name)
+		&&  !brasero_iso9660_read_record_iso_name (ctx, record, record_name))
+			continue;
+
+		/* if it's a directory, keep the record for later (we don't 
+		 * want to change the reading offset for the moment) */
+		if (!len && !(record->flags & BRASERO_ISO_FILE_DIRECTORY)) {
+			BraseroVolFile *entry;
+
+			/* see if we are looking for a file */
+			if (len)
+				continue;
+
+			/* see if that the record we're looking for */
+			if (strcmp (record_name, path))
+				continue;
+
+			/* carry on with the search in case there are other extents */
+			entry = brasero_iso9660_read_file_record (ctx, record);
+			if (!entry)
+				return NULL;
+
+			if (file) {
+				/* add size and addresses */
+				file = brasero_volume_file_merge (file, entry);
+				BRASERO_BURN_LOG ("Multi extent file");
+			}
+			else
+				file = entry;
+
+			continue;
+		}
+
+		if (len && !strncmp (record_name, path, len)) {
+			gint address;
+
+			/* move path forward */
+			path += len;
+			path ++;
+
+			address = brasero_iso9660_get_733_val (record->address);
+			file = brasero_iso9660_lookup_directory_record (ctx,
+									path,
+									address);
+			break;
+		}
+	}
+
+	return file;
+}
+
+BraseroVolFile *
+brasero_iso9660_get_file (FILE *file,
+			  const gchar *path,
+			  const gchar *block,
+			  GError **error)
+{
+	BraseroIsoPrimary *primary;
+	BraseroIsoDirRec *root;
+	BraseroVolFile *entry;
+	BraseroIsoCtx ctx;
+	gint address;
+
+	primary = (BraseroIsoPrimary *) block;
+	root = primary->root_rec;
+	address = brasero_iso9660_get_733_val (root->address);
+
+	brasero_iso9660_ctx_init (&ctx, file);
+
+	/* now that we have root block address, skip first "/" and go. */
+	path ++;
+	entry = brasero_iso9660_lookup_directory_record (&ctx, path, address);
+
+	/* clean context */
+	if (ctx.spare_record)
+		g_free (ctx.spare_record);
+
+	if (error && ctx.error)
+		g_propagate_error (error, ctx.error);
+
+	return entry;
 }

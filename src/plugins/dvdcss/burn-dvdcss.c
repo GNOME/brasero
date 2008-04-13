@@ -247,20 +247,31 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 		if (!file->isdir) {
 			if (!strncmp (file->name + strlen (file->name) - 6, ".VOB", 4)) {
 				BraseroScrambledSectorRange *range;
+				GSList *extents;
 
 				range = g_new0 (BraseroScrambledSectorRange, 1);
-				range->start = file->specific.file.address_block;
-				range->end = range->start + (file->specific.file.size_bytes / DVDCSS_BLOCK_SIZE);
 
-				g_queue_push_head (map, range);
-
-				if (dvdcss_seek (handle, range->start, DVDCSS_SEEK_KEY) != range->start) {
-					g_set_error (error,
-						     BRASERO_BURN_ERROR,
-						     BRASERO_BURN_ERROR_GENERAL,
-						     _("Error reading video DVD (%s)"),
-						     dvdcss_error (handle));
+				/* take the first address for each extent of the file */
+				if (!file->specific.file.extents)
 					return FALSE;
+
+				for (extents = file->specific.file.extents; extents; extents = extents->next) {
+					BraseroVolFileExtent *extent;
+
+					extent = extents->data;
+					range->start = extent->block;
+					range->end = extent->block + BRASERO_SIZE_TO_SECTORS (extent->size, DVDCSS_BLOCK_SIZE);
+
+					g_queue_push_head (map, range);
+
+					if (dvdcss_seek (handle, range->start, DVDCSS_SEEK_KEY) != range->start) {
+						g_set_error (error,
+							     BRASERO_BURN_ERROR,
+							     BRASERO_BURN_ERROR_GENERAL,
+							     _("Error reading video DVD (%s)"),
+							     dvdcss_error (handle));
+						return FALSE;
+					}
 				}
 			}
 		}

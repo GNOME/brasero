@@ -59,6 +59,12 @@ brasero_iso9660_get_contents (FILE *file,
 			      gint64 *nb_blocks,
 			      GError **error);
 
+BraseroVolFile *
+brasero_iso9660_get_file (FILE *file,
+			  const gchar *path,
+			  const gchar *block,
+			  GError **error);
+
 G_END_DECLS
 
 #endif /* _BURN_ISO9660_H */

@@ -1,3 +1,32 @@
+2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Add new functions to read file disc without mounting it
+	Now the checksum-file plugin will include the previous session file checksums for a multi session CD
+
+	* src/Makefile.am:
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_get_default_label):
+	* src/burn-iso9660.c (brasero_iso9660_read_record_iso_name),
+	(brasero_iso9660_read_record_rr_name),
+	(brasero_iso9660_read_file_record),
+	(brasero_iso9660_read_directory_records),
+	(brasero_iso9660_lookup_directory_record),
+	(brasero_iso9660_get_file):
+	* src/burn-iso9660.h:
+	* src/burn-volume-obj.c (brasero_volume_eject),
+	(brasero_volume_get_name):
+	* src/burn-volume-obj.h:
+	* src/burn-volume.c (brasero_volume_file_free),
+	(brasero_volume_get_file), (brasero_volume_file_size),
+	(brasero_volume_file_merge):
+	* src/burn-volume.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_file_process_former_line),
+	(brasero_checksum_files_merge_with_former_session),
+	(brasero_checksum_files_create_checksum):
+	* src/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_create_scrambled_sectors_map):
+
 2008-04-12  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* configure.in:

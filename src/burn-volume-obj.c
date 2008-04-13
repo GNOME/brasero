@@ -432,7 +432,12 @@ brasero_volume_eject (BraseroVolume *self,
 			       priv->cancel,
 			       brasero_volume_eject_finish,
 			       self);
+
+		g_object_ref (self);
 		result = brasero_volume_wait_for_operation_end (self, error);
+		g_object_unref (self);
+
+		/* NOTE: from this point on self is no longer valid */
 
 		g_signal_handler_disconnect (drive, eject_sig);
 	}
@@ -461,6 +466,29 @@ brasero_volume_cancel_current_operation (BraseroVolume *self)
 	g_cancellable_cancel (priv->cancel);
 	if (priv->loop && g_main_loop_is_running (priv->loop))
 		g_main_loop_quit (priv->loop);
+}
+
+gchar *
+brasero_volume_get_name (BraseroVolume *self)
+{
+	BraseroVolumePrivate *priv;
+	BraseroMedia media;
+	GVolume *volume;
+	gchar *name;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
+	if (media & BRASERO_MEDIUM_FILE) {
+		/* FIXME: here let's read the image label ?*/
+		return NULL;
+	}
+
+	volume = brasero_volume_get_gvolume (self);
+	name = g_volume_get_name (volume);
+	g_object_unref (volume);
+
+	return name;
 }
 
 gchar *

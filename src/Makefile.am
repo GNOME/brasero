@@ -240,7 +240,9 @@ brasero_SOURCES = \
 	burn-volume-obj.h         \
 	scsi-eject.c         \
 	scsi-mech-status.c         \
-	scsi-mech-status.h 
+	scsi-mech-status.h         \
+	burn-volume-read.h         \
+	burn-volume-read.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

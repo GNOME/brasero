@@ -156,8 +156,12 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 		BraseroBurnFlag flags;
 
 		flags = brasero_burn_session_get_flags (priv->session);
-		if (flags & BRASERO_BURN_FLAG_MERGE)
-			title_str = brasero_volume_get_display_label (BRASERO_VOLUME (drive), FALSE);
+		if (flags & BRASERO_BURN_FLAG_MERGE) {
+			BraseroMedium *medium;
+
+			medium = brasero_drive_get_medium (drive);
+			title_str = brasero_volume_get_name (BRASERO_VOLUME (medium));
+		}
 
 		if (!title_str || title_str [0] == '\0')
 			title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
