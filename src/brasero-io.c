@@ -251,7 +251,7 @@ brasero_io_unref_result_callback_data (BraseroIOResultCallbackData *data,
 	if (!data)
 		return;
 
-	data->ref;
+	data->ref --;
 	if (data->ref > 0)
 		return;
 

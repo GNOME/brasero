@@ -1,5 +1,25 @@
 2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	remove some uneeded flags from Makefile.am
+	remove burn-commons.c since it isn't built anymore
+	revert change 698 since though it fixes the crash, it creates a huge memory leaks.
+
+	* src/Makefile.am:
+	* src/brasero-io.c (brasero_io_unref_result_callback_data):
+	* src/burn-common.c:
+	* src/burn-common.h:
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/dvdcss/Makefile.am:
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/transcode/Makefile.am:
+
+2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Add new functions to read file disc without mounting it
 	Now the checksum-file plugin will include the previous session file checksums for a multi session CD
 

@@ -707,7 +707,7 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 
 	num = 0;
 	for (iter = list; iter && num < max; iter = next, num ++) {
-	  gchar *unescaped_uri, *uri;
+		gchar *unescaped_uri, *uri;
 		GFile *file;
 
 		hit = iter->data;
