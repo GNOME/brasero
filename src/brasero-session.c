@@ -72,7 +72,9 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 	width = rect.width / 100 * 85;
 	height = rect.height / 100 * 85;
 
-	session_path = gnome_util_home_file (BRASERO_SESSION_TMP_SESSION_PATH);
+	session_path = g_build_filename (g_get_user_config_dir (),
+					 BRASERO_SESSION_TMP_SESSION_PATH,
+					 NULL);
 	if (!session_path)
 		goto end;
 
@@ -164,8 +166,10 @@ end:
 	if (state)
 		gtk_window_maximize (GTK_WINDOW (app->mainwin));
 
-    	/* now we start the project if any */
-    	project_path = gnome_util_home_file (BRASERO_SESSION_TMP_PROJECT_PATH);
+	/* now we start the project if any */
+	project_path = g_build_filename (g_get_user_config_dir (),
+					 BRASERO_SESSION_TMP_PROJECT_PATH,
+					 NULL);
     	if (!load_project
 	||  !g_file_test (project_path,G_FILE_TEST_EXISTS)) {
     		g_free (project_path);
@@ -196,8 +200,10 @@ brasero_session_save (BraseroApp *app,
 	xmlTextWriter *session;
 
     	if (save_project)
-    		project_path = gnome_util_home_file (BRASERO_SESSION_TMP_PROJECT_PATH);
-    	else
+		project_path = g_build_filename (g_get_user_config_dir (),
+						 BRASERO_SESSION_TMP_PROJECT_PATH,
+						 NULL);
+	else
 		project_path = NULL;
 
     	cancel = brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
@@ -210,7 +216,9 @@ brasero_session_save (BraseroApp *app,
 		return TRUE;
 
 	/* now save the state of the window */
-	session_path = gnome_util_home_file (BRASERO_SESSION_TMP_SESSION_PATH);
+	session_path = g_build_filename (g_get_user_config_dir (),
+					 BRASERO_SESSION_TMP_SESSION_PATH,
+					 NULL);
 	if (!session_path)
 		return FALSE;
 
