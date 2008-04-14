@@ -56,6 +56,15 @@ GType brasero_jacket_edit_get_type (void) G_GNUC_CONST;
 GtkWidget *
 brasero_jacket_edit_new (void);
 
+GtkWidget *
+brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
+				GtkWidget **dialog);
+
+void
+brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
+				      const gchar *label,
+				      GSList *tracks);
+
 G_END_DECLS
 
 #endif /* _BRASERO_JACKET_EDIT_H_ */

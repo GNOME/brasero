@@ -115,6 +115,12 @@ brasero_jacket_view_snapshot (BraseroJacketView *self);
 GtkTextBuffer *
 brasero_jacket_view_get_active_buffer (BraseroJacketView *view);
 
+GtkTextBuffer *
+brasero_jacket_view_get_body_buffer (BraseroJacketView *view);
+
+GtkTextBuffer *
+brasero_jacket_view_get_side_buffer (BraseroJacketView *view);
+
 GtkTextAttributes *
 brasero_jacket_view_get_default_attributes (BraseroJacketView *view);
 

@@ -144,36 +144,6 @@ static const GOptionEntry options [] = {
 	g_slist_free (list);							\
 }
 
-void
-on_cover_cb (GtkAction *action, BraseroApp *app)
-{
-	GtkWidget *window;
-	GtkWidget *toplevel;
-	GtkWidget *contents;
-
-	toplevel = gtk_widget_get_toplevel (app->mainwin);
-	window = gtk_dialog_new_with_buttons (_("Cover editor"),
-					      GTK_WINDOW (toplevel),
-					      GTK_DIALOG_MODAL|
-					      GTK_DIALOG_DESTROY_WITH_PARENT|
-					      GTK_DIALOG_NO_SEPARATOR,
-					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-					      NULL);
-
-        gtk_window_set_default_size (GTK_WINDOW (window), 530, 640);
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
-        g_signal_connect (window,
-			  "response",
-			  G_CALLBACK (gtk_widget_destroy),
-			  NULL);
-
-        contents = brasero_jacket_edit_new ();
-        gtk_widget_show (contents);
-
-        gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), contents, TRUE, TRUE, 0);
-        gtk_widget_show (window);
-}
-
 static gboolean
 on_delete_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 {

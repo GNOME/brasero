@@ -35,6 +35,7 @@
 #include "brasero-disc.h"
 #include "brasero-uri-container.h"
 #include "brasero-project-type-chooser.h"
+#include "brasero-jacket-edit.h"
 
 G_BEGIN_DECLS
 
@@ -92,5 +93,9 @@ brasero_project_save_session (BraseroProject *project,
 void
 brasero_project_register_ui (BraseroProject *project,
 			     GtkUIManager *manager);
+
+void
+brasero_project_set_cover_specifics (BraseroProject *project,
+				     BraseroJacketEdit *cover);
 
 #endif /* PROJECT_H */

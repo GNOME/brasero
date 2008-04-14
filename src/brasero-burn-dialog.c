@@ -49,6 +49,8 @@
 #include "brasero-disc.h"
 #include "brasero-tray.h"
 #include "brasero-burn-dialog.h"
+#include "brasero-jacket-edit.h"
+
 #include "burn-basics.h"
 #include "burn-session.h"
 #include "burn-medium.h"
@@ -1597,6 +1599,21 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 		g_source_remove (dialog->priv->close_timeout);
 		dialog->priv->close_timeout = 0;
 	}
+
+	if (answer == GTK_RESPONSE_CLOSE) {
+		GtkWidget *contents;
+		GtkWidget *window;
+		const gchar *title;
+		GSList *tracks;
+
+		contents = brasero_jacket_edit_dialog_new (GTK_WIDGET (dialog), &window);
+
+		title = brasero_burn_session_get_label (dialog->priv->session);
+		tracks = brasero_burn_session_get_tracks (dialog->priv->session);
+		brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (contents), title, tracks);
+
+		gtk_dialog_run (GTK_DIALOG (window));
+	}
 }
 
 static void
@@ -1651,6 +1668,19 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	}
 
 	brasero_burn_dialog_activity_stop (dialog, primary);
+
+	if (brasero_burn_session_get_input_type (dialog->priv->session, NULL) == BRASERO_TRACK_TYPE_AUDIO) {
+		GtkWidget *button;
+
+		/* since we succeed offer the possibility to create cover if that's an audio disc */
+		button = brasero_utils_make_button (_("Create cover"),
+						    NULL,
+						    NULL,
+						    GTK_ICON_SIZE_BUTTON);
+		gtk_widget_show (button);
+		gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_CLOSE);
+	}
+
 	brasero_burn_dialog_success_run (dialog);
 
 	g_free (primary);

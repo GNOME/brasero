@@ -78,6 +78,8 @@ brasero_project_manager_type_changed_cb (BraseroProjectTypeChooser *chooser,
 					 BraseroProjectManager *manager);
 
 static void
+brasero_project_manager_new_cover_cb (GtkAction *action, BraseroProjectManager *manager);
+static void
 brasero_project_manager_new_empty_prj_cb (GtkAction *action, BraseroProjectManager *manager);
 static void
 brasero_project_manager_new_audio_prj_cb (GtkAction *action, BraseroProjectManager *manager);
@@ -103,7 +105,9 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 /* menus */
 static GtkActionEntry entries [] = {
-	{"New", GTK_STOCK_NEW, N_("_New Project"), NULL,
+	{"Cover", NULL, N_("_Cover editor"), NULL,
+	 N_("Design and print covers for CDs"), G_CALLBACK (brasero_project_manager_new_cover_cb)},
+	 {"New", GTK_STOCK_NEW, N_("_New Project"), NULL,
 	 N_("Create a new project"), NULL },
 	{"NewChoose", GTK_STOCK_NEW, N_("_Empty Project"), NULL,
 	 N_("Let you choose your new project"), G_CALLBACK (brasero_project_manager_new_empty_prj_cb)},
@@ -125,13 +129,12 @@ static const char *description = {
 	    "<menubar name='menubar' >"
 		"<menu action='ProjectMenu'>"
 			"<placeholder name='ProjectPlaceholder'>"
-				"<placeholder name='ViewPlaceholder'/>"
 				"<menu action='New'>"
 					"<menuitem action='NewAudio'/>"
 					"<menuitem action='NewData'/>"
 					"<menuitem action='NewCopy'/>"	
 					"<menuitem action='NewIso'/>"	
-			"</menu>"
+				"</menu>"
 			"</placeholder>"
 
 			"<placeholder name='ProjectPlaceholder'>"
@@ -140,6 +143,17 @@ static const char *description = {
 			    "<menuitem action='RecentProjects'/>"
 			    "<separator/>"
 			"</placeholder>"
+
+		"</menu>"
+
+		"<menu action='ToolMenu'>"
+
+			"<placeholder name='DiscPlaceholder'>"
+			    "<separator/>"
+			    "<menuitem action='Cover'/>"
+			    "<separator/>"
+			"</placeholder>"
+
 		"</menu>"
 	    "</menubar>"
 	"</ui>"
@@ -192,6 +206,21 @@ brasero_project_manager_get_type ()
 	}
 
 	return type;
+}
+
+static void
+brasero_project_manager_new_cover_cb (GtkAction *action,
+				      BraseroProjectManager *manager)
+{
+	GtkWidget *toplevel;
+	GtkWidget *edit;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+	edit = brasero_jacket_edit_dialog_new (toplevel, NULL);
+
+	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
+		brasero_project_set_cover_specifics (BRASERO_PROJECT (manager->priv->project),
+						     BRASERO_JACKET_EDIT (edit));
 }
 
 static void

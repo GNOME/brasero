@@ -1161,6 +1161,29 @@ brasero_jacket_view_get_active_buffer (BraseroJacketView *self)
 	return gtk_text_view_get_buffer (GTK_TEXT_VIEW (current));
 }
 
+GtkTextBuffer *
+brasero_jacket_view_get_body_buffer (BraseroJacketView *self)
+{
+	BraseroJacketViewPrivate *priv;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+
+	return gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->edit));	
+}
+
+GtkTextBuffer *
+brasero_jacket_view_get_side_buffer (BraseroJacketView *self)
+{
+	BraseroJacketViewPrivate *priv;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
+
+	if (!priv->sides)
+		return NULL;
+
+	return gtk_text_view_get_buffer (GTK_TEXT_VIEW (priv->sides));
+}
+
 static gboolean
 brasero_jacket_view_expose (GtkWidget *widget,
 			    GdkEventExpose *event)

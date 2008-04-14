@@ -54,6 +54,7 @@ typedef struct {
 GType brasero_project_manager_get_type ();
 GtkWidget *brasero_project_manager_new ();
 
+
 void
 brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris);
 void

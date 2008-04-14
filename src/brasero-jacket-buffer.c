@@ -113,6 +113,11 @@ brasero_jacket_buffer_insert_text (GtkTextBuffer *buffer,
 	start_offset = gtk_text_iter_get_offset (location);
 	priv->inserting_text = TRUE;
 
+	brasero_jacket_buffer_show_default_text (BRASERO_JACKET_BUFFER (buffer), FALSE);
+
+	/* revalidate iter in case above function caused invalidation */
+	gtk_text_buffer_get_iter_at_offset (buffer, location, start_offset);
+
 	GTK_TEXT_BUFFER_CLASS (brasero_jacket_buffer_parent_class)->insert_text (buffer, location, text, length);
 
 	priv->inserting_text = FALSE;
@@ -156,9 +161,9 @@ brasero_jacket_buffer_show_default_text (BraseroJacketBuffer *self,
 	else if (priv->empty) {
 		gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (self), &start);
 		gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (self), &end);
+		gtk_text_buffer_delete (GTK_TEXT_BUFFER (self), &start, &end);
 		gtk_text_buffer_remove_all_tags (GTK_TEXT_BUFFER (self), &start, &end);
 
-		gtk_text_buffer_set_text (GTK_TEXT_BUFFER (self), "", -1);
 		priv->empty = 0;
 	}
 }

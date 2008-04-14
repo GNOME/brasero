@@ -1,3 +1,29 @@
+2008-04-14  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Integrate the cover editor a bit further by filling it automatically when it is called
+	while an audio project is opened or after a successful burn.
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success):
+	* src/brasero-jacket-buffer.c (brasero_jacket_buffer_insert_text),
+	(brasero_jacket_buffer_show_default_text):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_print_page),
+	(brasero_jacket_edit_set_audio_tracks),
+	(brasero_jacket_edit_dialog_new):
+	* src/brasero-jacket-edit.h:
+	* src/brasero-jacket-view.c (brasero_jacket_view_get_body_buffer),
+	(brasero_jacket_view_get_side_buffer):
+	* src/brasero-jacket-view.h:
+	* src/brasero-menu.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_new_cover_cb):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c (brasero_project_set_cover_specifics),
+	(brasero_project_switch), (brasero_project_set_none),
+	(brasero_project_empty_cb):
+	* src/brasero-project.h:
+	* src/main.c:
+
 2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Removed some unneeded translated strings

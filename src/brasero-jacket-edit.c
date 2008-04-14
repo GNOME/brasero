@@ -35,6 +35,9 @@
 #include "brasero-jacket-buffer.h"
 #include "brasero-jacket-view.h"
 #include "brasero-jacket-font.h"
+#include "brasero-utils.h"
+
+#include "burn-track.h"
 
 typedef struct _BraseroJacketEditPrivate BraseroJacketEditPrivate;
 struct _BraseroJacketEditPrivate
@@ -75,51 +78,10 @@ brasero_jacket_edit_print_page (GtkPrintOperation *operation,
 				BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
-/*	cairo_surface_t *surface;
-	guint height, width;
-	cairo_t *ctx;*/
 	guint y;
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
-/*	ctx = gtk_print_context_get_cairo_context (context); */
-
-	/* front */
-/*	surface = brasero_jacket_view_snapshot (BRASERO_JACKET_VIEW (priv->front),
-						gtk_print_context_get_dpi_x (context));
-
-	width = cairo_image_surface_get_width (surface);
-	height = cairo_image_surface_get_height (surface);
-	cairo_rectangle (ctx,
-			 0, 0,
-			 width, height);
-	cairo_clip (ctx);
-
-	cairo_set_source_surface (ctx, surface, 0, 0);
-	cairo_paint (ctx);
-
-	cairo_surface_destroy (surface);*/
-
-	/* back */
-/*	surface = brasero_jacket_view_snapshot (BRASERO_JACKET_VIEW (priv->back),
-						gtk_print_context_get_dpi_x (context));
-
-	y = height + 20;
-
-	cairo_reset_clip (ctx);
-	width = cairo_image_surface_get_width (surface);
-	height = cairo_image_surface_get_height (surface);
-	cairo_rectangle (ctx,
-			 0, y,
-			 width, height);
-	cairo_clip (ctx);
-
-	cairo_set_source_surface (ctx, surface, 0, y);
-	cairo_paint (ctx);
-
-	cairo_surface_destroy (surface);
-
-	*/
 	y = brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->front), context, 0, 0);
 	brasero_jacket_view_print (BRASERO_JACKET_VIEW (priv->back), context, 0, y + 20);
 }
@@ -705,6 +667,134 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_widget_grab_focus (priv->front);
 }
 
+#define BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT(buffer_MACRO, text_MACRO, tag_MACRO, start_MACRO)	\
+	gtk_text_buffer_insert_with_tags_by_name (buffer_MACRO, start_MACRO, text_MACRO, -1, tag_MACRO, NULL);
+
+void
+brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
+				      const gchar *label,
+				      GSList *tracks)
+{
+	BraseroJacketEditPrivate *priv;
+	GtkTextBuffer *buffer;
+	GtkTextIter start;
+	GSList *iter;
+
+	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+
+	buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->front));
+
+	/* create the tags */
+	gtk_text_buffer_create_tag (buffer,
+				    "Title",
+				    "justification", GTK_JUSTIFY_CENTER,
+				    "weight", PANGO_WEIGHT_BOLD,
+				    "scale", PANGO_SCALE_X_LARGE,
+				    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+				    NULL);
+
+	gtk_text_buffer_get_start_iter (buffer, &start);
+
+	if (label) {
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n\n\n", "Title", &start);
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
+	}
+
+	buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->back));
+
+	/* create the tags */
+	gtk_text_buffer_create_tag (buffer,
+				    "Title",
+				    "justification", GTK_JUSTIFY_CENTER,
+				    "weight", PANGO_WEIGHT_BOLD,
+				    "scale", PANGO_SCALE_LARGE,
+				    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+				    NULL);
+	gtk_text_buffer_create_tag (buffer,
+				    "Subtitle",
+				    "justification", GTK_JUSTIFY_LEFT,
+				    "weight", PANGO_WEIGHT_NORMAL,
+				    NULL);
+	gtk_text_buffer_create_tag (buffer,
+				    "Artist",
+				    "weight", PANGO_WEIGHT_NORMAL,
+				    "justification", GTK_JUSTIFY_LEFT,
+				    "stretch", PANGO_STRETCH_NORMAL,
+				    "style", PANGO_STYLE_ITALIC,
+				    "scale", PANGO_SCALE_SMALL,
+				    NULL);
+
+	gtk_text_buffer_get_start_iter (buffer, &start);
+
+	if (label) {
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n", "Title", &start);
+	}
+
+	for (iter = tracks; iter; iter = iter->next) {
+		gchar *num;
+		gchar *time;
+		BraseroTrack *track;
+		BraseroSongInfo *info;
+
+		track = iter->data;
+		if (brasero_track_get_type (track, NULL) != BRASERO_TRACK_TYPE_AUDIO)
+			continue;
+
+		num = g_strdup_printf ("%i - ", g_slist_index (tracks, track) + 1);
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, num, "Subtitle", &start);
+		g_free (num);
+
+		info = brasero_track_get_audio_info (track);
+
+		if (info->title) {
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->title, "Subtitle", &start);
+		}
+		else {
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("Unknown song"), "Subtitle", &start);
+		}
+
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\t\t", "Subtitle", &start);
+
+		time = brasero_utils_get_time_string (brasero_track_get_audio_end (track) -
+						      brasero_track_get_audio_start (track),
+						      TRUE,
+						      FALSE);
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
+		g_free (time);
+
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
+
+		if (info->artist) {
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by "), "Artist", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->artist, "Artist", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
+		}
+
+		if (info->composer)
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->composer, "Subtitle", &start);
+
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n", "Subtitle", &start);
+	}
+
+	/* side */
+	buffer = brasero_jacket_view_get_side_buffer (BRASERO_JACKET_VIEW (priv->back));
+
+	/* create the tags */
+	gtk_text_buffer_create_tag (buffer,
+				    "Title",
+				    "justification", GTK_JUSTIFY_CENTER,
+				    "weight", PANGO_WEIGHT_BOLD,
+				    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+				    NULL);
+
+	gtk_text_buffer_get_start_iter (buffer, &start);
+
+	if (label) {
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
+	}
+}
+
 static void
 brasero_jacket_edit_finalize (GObject *object)
 {
@@ -726,3 +816,38 @@ brasero_jacket_edit_new (void)
 {
 	return g_object_new (BRASERO_TYPE_JACKET_EDIT, NULL);
 }
+
+GtkWidget *
+brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
+				GtkWidget **dialog)
+{
+	GtkWidget *window;
+	GtkWidget *contents;
+
+	window = gtk_dialog_new_with_buttons (_("Cover editor"),
+					      GTK_WINDOW (toplevel),
+					      GTK_DIALOG_MODAL|
+					      GTK_DIALOG_DESTROY_WITH_PARENT|
+					      GTK_DIALOG_NO_SEPARATOR,
+					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+					      NULL);
+
+	gtk_window_set_default_size (GTK_WINDOW (window), 530, 640);
+	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
+	g_signal_connect (window,
+			  "response",
+			  G_CALLBACK (gtk_widget_destroy),
+			  NULL);
+
+	contents = brasero_jacket_edit_new ();
+	gtk_widget_show (contents);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), contents, TRUE, TRUE, 0);
+	gtk_widget_show (window);
+
+	if (dialog)
+		*dialog = window;
+
+	return contents;
+}
+

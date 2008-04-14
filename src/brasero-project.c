@@ -54,6 +54,7 @@
 #include "burn-debug.h"
 #include "burn-session.h"
 #include "brasero-project.h"
+#include "brasero-jacket-edit.h"
 #include "brasero-project-size.h"
 #include "brasero-project-type-chooser.h"
 #include "brasero-disc.h"
@@ -145,7 +146,6 @@ struct BraseroProjectPrivate {
 	gchar *project;
 	gint64 sectors;
 	BraseroDisc *current;
-	BraseroBurnFlag flags;
 
 	BraseroURIContainer *current_source;
 
@@ -775,6 +775,26 @@ brasero_project_check_status (BraseroProject *project,
 	return brasero_disc_get_status (disc);
 }
 
+/******************************** cover ****************************************/
+
+void
+brasero_project_set_cover_specifics (BraseroProject *self,
+				     BraseroJacketEdit *cover)
+{
+	BraseroBurnSession *session;
+
+	if (!BRASERO_IS_AUDIO_DISC (self->priv->current))
+		return;
+
+	session = brasero_burn_session_new ();
+	brasero_disc_set_session_param (BRASERO_DISC (self->priv->current), session);
+	brasero_disc_set_session_contents (BRASERO_DISC (self->priv->current), session);
+	brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (cover),
+					      brasero_burn_session_get_label (session),
+					      brasero_burn_session_get_tracks (session));
+	g_object_unref (session);
+}
+
 /******************************** burning **************************************/
 static void
 brasero_project_no_song_dialog (BraseroProject *project)
@@ -1029,7 +1049,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	project->priv->empty = 1;
     	project->priv->burnt = 0;
 	project->priv->modified = 0;
-	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display), 0);
 
@@ -1200,7 +1219,6 @@ brasero_project_set_none (BraseroProject *project)
 		brasero_disc_reset (project->priv->current);
 
 	project->priv->current = NULL;
-	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 
 	/* update buttons/menus */
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
@@ -1487,7 +1505,6 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 	}
 
 	brasero_disc_reset (BRASERO_DISC (project->priv->current));
-	project->priv->flags = BRASERO_BURN_FLAG_NONE;
 }
 
 static void
