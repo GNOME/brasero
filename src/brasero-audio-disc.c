@@ -1248,6 +1248,9 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 		g_free (name);
 	}
 
+	if (icon)
+		g_object_unref (icon);
+
 	return TRUE;
 }
 
@@ -1837,11 +1840,15 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 	do {
 		gint64 end;
 		gint64 start;
+		gchar *title;
+		gchar *artist;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
 				    START_COL, &start,
 				    END_COL, &end,
+				    NAME_COL, &title,
+				    ARTIST_COL, &artist,
 				    -1);
 
 		if (!uri) {
@@ -1855,10 +1862,17 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 				song->gap += BRASERO_DURATION_TO_SECTORS (length);
 		}
 		else {
+			BraseroSongInfo *info;
+
 			song = g_new0 (BraseroDiscSong, 1);
 			song->uri = uri;
 			song->start = start > 0 ? start:0;
 			song->end = end > 0 ? end:0;
+
+			info = g_new0 (BraseroSongInfo, 1);
+			info->title = title;
+			info->artist = artist;
+			song->info = info;
 
 			track->contents.tracks = g_slist_append (track->contents.tracks, song);
 		}

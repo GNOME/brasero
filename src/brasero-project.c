@@ -129,6 +129,11 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *center,
 				gint *footer);
 
+typedef enum {
+	BRASERO_PROJECT_SAVE_XML	= 0,
+	BRASERO_PROJECT_SAVE_PLAIN	= 1
+} BraseroProjectSave;
+
 struct BraseroProjectPrivate {
 	GtkWidget *size_display;
 	GtkWidget *discs;
@@ -144,6 +149,7 @@ struct BraseroProjectPrivate {
 	guint merge_id;
 
 	gchar *project;
+
 	gint64 sectors;
 	BraseroDisc *current;
 
@@ -2385,8 +2391,104 @@ error:
 }
 
 static gboolean
+brasero_project_save_audio_project_plain_text (BraseroProject *proj,
+					       const gchar *uri,
+					       BraseroDiscTrack *track,
+					       gboolean use_dialog)
+{
+	GSList *iter;
+	gchar *path;
+	FILE *file;
+
+    	path = g_filename_from_uri (uri, NULL, NULL);
+    	if (!path)
+		return FALSE;
+
+	file = fopen (path, "w+");
+	g_free (path);
+	if (!file) {
+		if (use_dialog)
+			brasero_project_not_saved_dialog (proj);
+
+		return FALSE;
+	}
+
+	for (iter = track->contents.tracks; iter; iter = iter->next) {
+		BraseroDiscSong *song;
+		BraseroSongInfo *info;
+		guint written;
+		gchar *time;
+
+		song = iter->data;
+		info = song->info;
+
+		written = fwrite (info->title, 1, strlen (info->title), file);
+		if (written != strlen (info->title))
+			goto error;
+
+		time = brasero_utils_get_time_string (song->end - song->start, TRUE, FALSE);
+		if (time) {
+			written = fwrite ("\t", 1, 1, file);
+			if (written != 1)
+				goto error;
+
+			written = fwrite (time, 1, strlen (time), file);
+			if (written != strlen (time)) {
+				g_free (time);
+				goto error;
+			}
+			g_free (time);
+		}
+
+		if (info->artist) {
+			gchar *string;
+
+			written = fwrite ("\t", 1, 1, file);
+			if (written != 1)
+				goto error;
+
+			string = g_strdup_printf (_(" by %s"), info->artist);
+			written = fwrite (string, 1, strlen (string), file);
+			if (written != strlen (string)) {
+				g_free (string);
+				goto error;
+			}
+			g_free (string);
+		}
+
+		written = fwrite ("\n(", 1, 2, file);
+		if (written != 2)
+			goto error;
+
+		written = fwrite (song->uri, 1, strlen (song->uri), file);
+		if (written != strlen (song->uri))
+			goto error;
+
+		written = fwrite (")", 1, 1, file);
+		if (written != 1)
+			goto error;
+
+		written = fwrite ("\n\n", 1, 2, file);
+		if (written != 2)
+			goto error;
+	}
+
+	fclose (file);
+	return TRUE;
+	
+error:
+	fclose (file);
+
+    	if (use_dialog)
+		brasero_project_not_saved_dialog (proj);
+
+	return FALSE;
+}
+
+static gboolean
 brasero_project_save_project_real (BraseroProject *project,
-				   const gchar *uri)
+				   const gchar *uri,
+				   BraseroProjectSave save_type)
 {
 	BraseroDiscResult result;
 	BraseroDiscTrack track;
@@ -2412,21 +2514,34 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 	}
 
-    	brasero_project_set_uri (project, uri, track.type);
-	if (!brasero_project_save_project_xml (project,
-					       uri ? uri : project->priv->project,
-					       &track,
-					       TRUE))
-		return FALSE;
+	if (save_type == BRASERO_PROJECT_SAVE_XML) {
+		brasero_project_set_uri (project, uri, track.type);
+		if (!brasero_project_save_project_xml (project,
+						       uri ? uri : project->priv->project,
+						       &track,
+						       TRUE))
+			return FALSE;
 
-	project->priv->modified = 0;
+		project->priv->modified = 0;
+	}
+	else if (save_type == BRASERO_PROJECT_SAVE_PLAIN) {
+		brasero_project_set_uri (project, uri, track.type);
+		if (!brasero_project_save_audio_project_plain_text (project,
+								    uri,
+								    &track,
+								    TRUE))
+			return FALSE;
+	}
+
 	brasero_track_clear (&track);
 	return TRUE;
 }
 
 static gchar *
-brasero_project_save_project_ask_for_path (BraseroProject *project)
+brasero_project_save_project_ask_for_path (BraseroProject *project,
+					   BraseroProjectSave *type)
 {
+	GtkWidget *combo = NULL;
 	GtkWidget *toplevel;
 	GtkWidget *chooser;
 	gchar *uri = NULL;
@@ -2444,9 +2559,26 @@ brasero_project_save_project_ask_for_path (BraseroProject *project)
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
 					     g_get_home_dir ());
 
+	/* if the file chooser is an audio project offer the possibility to save
+	 * in plain text a list of the current displayed songs (only in save as
+	 * mode) */
+	if (type && BRASERO_IS_AUDIO_DISC (project->priv->current)) {
+		combo = gtk_combo_box_new_text ();
+		gtk_widget_show (combo);
+
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as brasero audio project"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a plain text list"));
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+
+		gtk_file_chooser_set_extra_widget (GTK_FILE_CHOOSER (chooser), combo);
+	}
+
 	gtk_widget_show (chooser);
 	answer = gtk_dialog_run (GTK_DIALOG (chooser));
 	if (answer == GTK_RESPONSE_OK) {
+		if (combo)
+			*type = gtk_combo_box_get_active (GTK_COMBO_BOX (combo));
+
 		uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
 		if (*uri == '\0') {
 			g_free (uri);
@@ -2464,11 +2596,10 @@ brasero_project_save_project (BraseroProject *project)
 	gchar *uri = NULL;
 	gboolean result;
 
-	if (!project->priv->project
-	&&  !(uri = brasero_project_save_project_ask_for_path (project)))
+	if (!project->priv->project && !(uri = brasero_project_save_project_ask_for_path (project, NULL)))
 		return FALSE;
 
-	result = brasero_project_save_project_real (project, uri);
+	result = brasero_project_save_project_real (project, uri, BRASERO_PROJECT_SAVE_XML);
 	g_free (uri);
 
 	return result;
@@ -2477,14 +2608,15 @@ brasero_project_save_project (BraseroProject *project)
 gboolean
 brasero_project_save_project_as (BraseroProject *project)
 {
+	BraseroProjectSave type;
 	gboolean result;
 	gchar *uri;
 
-	uri = brasero_project_save_project_ask_for_path (project);
+	uri = brasero_project_save_project_ask_for_path (project, &type);
 	if (!uri)
 		return FALSE;
 
-	result = brasero_project_save_project_real (project, uri);
+	result = brasero_project_save_project_real (project, uri, type);
 	g_free (uri);
 
 	return result;
@@ -2520,7 +2652,7 @@ brasero_project_save_session (BraseroProject *project,
 		if (answer != GTK_RESPONSE_YES)
 			return FALSE;
 
-		brasero_project_save_project_real (project, NULL);
+		brasero_project_save_project_real (project, NULL, BRASERO_PROJECT_SAVE_XML);
 
 		/* return FALSE since this is not a tmp project */
 		return FALSE;

@@ -1,5 +1,26 @@
 2008-04-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Added the possibility to save an audio project to plain text file as a list of songs
+	Some cleaning 
+	Plugged two memleaks specific to trunk branch
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_get_track):
+	* src/brasero-disc.c (brasero_track_clear_song):
+	* src/brasero-disc.h:
+	* src/brasero-project.c
+	(brasero_project_save_audio_project_plain_text),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project_ask_for_path),
+	(brasero_project_save_project), (brasero_project_save_project_as),
+	(brasero_project_save_session):
+	* src/brasero-session.c (brasero_session_get_path):
+	* src/scsi-get-configuration.h:
+	* src/scsi-spc1.h:
+
+2008-04-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	fix #525501 – Brasero displays odd burning speeds (1-3-5-etc) instead of even values (2-4-8-etc)
 
 	display only list of speeds returned by drive (there can be only one sometimes) instead of

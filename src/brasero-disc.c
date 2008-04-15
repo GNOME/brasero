@@ -679,6 +679,10 @@ brasero_track_clear_song (gpointer data)
 	BraseroDiscSong *song;
 
 	song = data;
+
+	if (song->info)
+		brasero_song_info_free (song->info);
+
 	g_free (song->uri);
 	g_free (song);
 }

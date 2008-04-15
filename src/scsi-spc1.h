@@ -32,10 +32,7 @@
 #ifndef _BURN_SPC1_H
 #define _BURN_SPC1_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 BraseroScsiResult
 brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
@@ -44,9 +41,7 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 				  int *data_size,
 				  BraseroScsiErrCode *error);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_SPC1_H */
 

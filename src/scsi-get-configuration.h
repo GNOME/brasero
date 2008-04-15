@@ -22,15 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glib.h>
+
 #include "scsi-base.h"
 
 #ifndef _SCSI_GET_CONFIGURATION_H
 #define _SCSI_GET_CONFIGURATION_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 typedef enum {
 BRASERO_SCSI_PROF_NON_REMOVABLE		= 0x0001,
@@ -1610,9 +1609,7 @@ struct _BraseroScsiGetConfigHdr {
 };
 typedef struct _BraseroScsiGetConfigHdr BraseroScsiGetConfigHdr;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_GET_CONFIGURATION_H */
 

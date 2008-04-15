@@ -73,6 +73,8 @@ struct _BraseroDiscSong {
 	gint64 gap;
 	gint64 start;
 	gint64 end;
+
+	BraseroSongInfo *info;
 };
 typedef struct _BraseroDiscSong BraseroDiscSong;
 

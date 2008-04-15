@@ -47,6 +47,7 @@ static gchar *
 brasero_session_get_path (const gchar *name)
 {
 	gchar *directory;
+	gchar *retval;
 
 	directory = g_build_filename (g_get_user_config_dir (),
 				      "brasero",
@@ -54,7 +55,9 @@ brasero_session_get_path (const gchar *name)
 	if (!g_file_test (directory, G_FILE_TEST_EXISTS))
 		g_mkdir_with_parents (directory, S_IRWXU);
 
-	return g_build_filename (directory, name, NULL);
+	retval = g_build_filename (directory, name, NULL);
+	g_free (directory);
+	return retval;
 }
 
 gboolean
