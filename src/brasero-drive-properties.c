@@ -246,13 +246,13 @@ brasero_drive_properties_format_disc_speed (BraseroMedia media,
 	gchar *text;
 
 	if (media & BRASERO_MEDIUM_DVD)
-		text = g_strdup_printf (_("%d x (DVD)"),
+		text = g_strdup_printf (_("%.1f x (DVD)"),
 					BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_CD)
-		text = g_strdup_printf (_("%d x (CD)"),
+		text = g_strdup_printf (_("%.1f x (CD)"),
 					BRASERO_RATE_TO_SPEED_CD (rate));
 	else
-		text = g_strdup_printf (_("%d x (DVD) %d x (CD)"),
+		text = g_strdup_printf (_("%.1f x (DVD) %.1f x (CD)"),
 					BRASERO_RATE_TO_SPEED_DVD (rate),
 					BRASERO_RATE_TO_SPEED_CD (rate));
 
@@ -270,12 +270,11 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	GtkTreeModel *model;
 	gchar *display_name;
 	GtkTreeIter iter;
-	gint64 max_rate;
-	gchar *header;
-	gint64 rate;
-	gint64 step;
 	gchar *max_text;
+	gint64 *rates;
+	gchar *header;
 	gchar *text;
+	guint i;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
 
@@ -290,12 +289,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	/* Speed combo */
 	medium = brasero_drive_get_medium (drive);
 	media = brasero_medium_get_status (medium);
-	max_rate = brasero_medium_get_max_write_speed (medium);
-	if (media & BRASERO_MEDIUM_CD)
-		step = CD_RATE;
-	else
-		step = DVD_RATE;
-
+	rates = brasero_medium_get_write_speeds (medium);
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->speed));
 
 	max_text = g_strdup_printf (_("Max speed"));
@@ -303,26 +297,42 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    PROP_TEXT, max_text,
-			    PROP_RATE, max_rate,
+			    PROP_RATE, rates [0],
 			    -1);
 	g_free (max_text);
 
-	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->speed), 0);
-
-	for (rate = max_rate - step; rate > step; rate -= step * 2) {
-		GtkTreeIter iter;
-
-		text = brasero_drive_properties_format_disc_speed (media, rate);
+	/* fill model */
+	for (i = 0; rates [i] != 0; i ++) {
+		text = brasero_drive_properties_format_disc_speed (media, rates [i]);
 		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 				    PROP_TEXT, text,
-				    PROP_RATE, rate,
+				    PROP_RATE, brasero_medium_get_max_write_speed (medium),
 				    -1);
 		g_free (text);
+	}
+
+	/* Set active one preferably max speed */
+	gtk_tree_model_get_iter_first (model, &iter);
+	do {
+		gint64 rate;
+
+		gtk_tree_model_get (model, &iter,
+				    PROP_RATE, &rate,
+				    -1);
 
 		/* we do this to round things and get the closest possible speed */
-		if ((rate / step) == (default_rate / step))
+		if ((rate / 1024) == (default_rate / 1024)) {
 			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->speed), &iter);
+			break;
+		}
+
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	/* make sure at least one is active */
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->speed), &iter)) {
+		gtk_tree_model_get_iter_first (model, &iter);
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->speed), &iter);
 	}
 }
 

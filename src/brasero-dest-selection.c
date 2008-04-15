@@ -103,7 +103,6 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 	GConfClient *client;
 	const gchar *path;
 	guint64 rate;
-	guint speed;
 	gchar *key;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
@@ -111,18 +110,13 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 	client = gconf_client_get_default ();
 
 	rate = brasero_burn_session_get_rate (priv->session);
-	if (brasero_burn_session_get_dest_media (priv->session) & BRASERO_MEDIUM_DVD)
-		speed = BRASERO_RATE_TO_SPEED_DVD (rate);
-	else
-		speed = BRASERO_RATE_TO_SPEED_CD (rate);
-
 	key = brasero_burn_session_get_config_key (priv->session, "speed");
 	if (!key) {
 		g_object_unref (client);
 		return;
 	}
 
-	gconf_client_set_int (client, key, speed, NULL);
+	gconf_client_set_int (client, key, rate / 1024, NULL);
 	g_free (key);
 
 	key = brasero_burn_session_get_config_key (priv->session, "flags");
@@ -875,12 +869,8 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 
 	if (!value)
 		rate = brasero_medium_get_max_write_speed (medium);
-	else if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_DVD) {
-		rate = BRASERO_SPEED_TO_RATE_DVD (gconf_value_get_int (value));
-		gconf_value_free (value);
-	}
 	else {
-		rate = BRASERO_SPEED_TO_RATE_CD (gconf_value_get_int (value));
+		rate = gconf_value_get_int (value) * 1024;
 		gconf_value_free (value);
 	}
 

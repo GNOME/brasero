@@ -37,8 +37,8 @@ typedef struct _BraseroDrive BraseroDrive;
 
 #define BRASERO_SPEED_TO_RATE_CD(speed)		(guint) ((speed) * CD_RATE)
 #define BRASERO_SPEED_TO_RATE_DVD(speed)	(guint) ((speed) * DVD_RATE)
-#define BRASERO_RATE_TO_SPEED_CD(rate)		(guint) ((rate) / CD_RATE)
-#define BRASERO_RATE_TO_SPEED_DVD(rate)		(guint) ((rate) / DVD_RATE)
+#define BRASERO_RATE_TO_SPEED_CD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) CD_RATE)
+#define BRASERO_RATE_TO_SPEED_DVD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) DVD_RATE)
 
 #define BRASERO_TYPE_MEDIUM             (brasero_medium_get_type ())
 #define BRASERO_MEDIUM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_MEDIUM, BraseroMedium))
@@ -238,6 +238,9 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium);
 
 gint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium);
+
+gint64 *
+brasero_medium_get_write_speeds (BraseroMedium *medium);
 
 void
 brasero_medium_get_free_space (BraseroMedium *medium,

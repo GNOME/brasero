@@ -358,6 +358,25 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
 	return priv->max_wrt * 1024;
 }
 
+gint64 *
+brasero_medium_get_write_speeds (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+	gint64 *speeds;
+	guint max = 0;
+	guint i;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	while (priv->wr_speeds [max] != 0) max ++;
+
+	speeds = g_new0 (gint64, max + 1);
+	for (i = 0; i < max; i ++)
+		speeds [i] = priv->wr_speeds [i] * 1024;
+
+	return speeds;
+}
+
 /**
  * NOTEs about the following functions:
  * for all closed media (including ROM types) capacity == size of data and 
@@ -1953,6 +1972,7 @@ static void
 brasero_medium_init_real (BraseroMedium *object,
 			  BraseroDeviceHandle *handle)
 {
+	guint i;
 	gchar *name;
 	BraseroBurnResult result;
 	BraseroMediumPrivate *priv;
@@ -1980,6 +2000,24 @@ brasero_medium_init_real (BraseroMedium *object,
 		brasero_medium_get_css_feature (object, handle, &code);
 
 	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
+
+	if (!priv->wr_speeds)
+		return;
+
+	/* sort write speeds */
+	for (i = 0; priv->wr_speeds [i] != 0; i ++) {
+		guint j;
+
+		for (j = 0; priv->wr_speeds [j] != 0; j ++) {
+			if (priv->wr_speeds [i] < priv->wr_speeds [j]) {
+				gint64 tmp;
+
+				tmp = priv->wr_speeds [i];
+				priv->wr_speeds [i] = priv->wr_speeds [j];
+				priv->wr_speeds [j] = tmp;
+			}
+		}
+	}
 }
 
 static gboolean
