@@ -56,9 +56,7 @@ typedef enum {
 typedef struct {
 	GtkEventBoxClass parent_class;
 
-	void	(*project_clicked)	(BraseroProjectTypeChooser *chooser,
-					 const gchar *uri);
-	void	(*uri_clicked)		(BraseroProjectTypeChooser *chooser,
+	void	(*recent_clicked)	(BraseroProjectTypeChooser *chooser,
 					 const gchar *uri);
 	void	(*chosen)		(BraseroProjectTypeChooser *chooser,
 					 BraseroProjectType type);

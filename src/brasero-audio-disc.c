@@ -1498,7 +1498,6 @@ brasero_audio_disc_new_row_cb (GObject *obj,
 			       gpointer user_data)
 {
 	GtkTreeIter iter;
-	const gchar *mime;
 	GtkTreeModel *model;
 	GtkTreeIter gap_iter;
 	GtkTreePath *treepath;
@@ -1536,6 +1535,8 @@ brasero_audio_disc_new_row_cb (GObject *obj,
 	}
 
 #if BUILD_PLAYLIST
+
+	const gchar *mime;
 
 	/* see if it a playlist */
 	mime = g_file_info_get_content_type (info);

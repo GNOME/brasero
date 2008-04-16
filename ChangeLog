@@ -1,3 +1,38 @@
+2008-04-16  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	reviewed by: <delete if not using a buddy>
+
+	* data/brasero.desktop.in.in:
+	* src/brasero-audio-disc.c (brasero_audio_disc_new_row_cb):
+	* src/brasero-io.c (brasero_io_get_file_count_process_file),
+	(brasero_io_load_directory_thread):
+	* src/brasero-project-manager.c
+	(brasero_project_manager_open_project),
+	(brasero_project_manager_open_playlist),
+	(brasero_project_manager_open_by_mime),
+	(brasero_project_manager_open_uri),
+	(brasero_project_manager_open_cb),
+	(brasero_project_manager_recent_clicked_cb),
+	(brasero_project_manager_init):
+	* src/brasero-project-manager.h:
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_recent_clicked_cb),
+	(brasero_project_type_chooser_build_recent),
+	(brasero_project_type_chooser_class_init):
+	* src/brasero-project-type-chooser.h:
+	* src/brasero-project.c (brasero_project_add_to_recents),
+	(brasero_project_set_uri), (brasero_project_open_project),
+	(brasero_project_playlist_entry_parsed),
+	(brasero_project_open_audio_playlist_project),
+	(brasero_project_open_playlist),
+	(brasero_project_save_audio_playlist_entry),
+	(brasero_project_save_audio_project_playlist),
+	(brasero_project_save_project_real),
+	(brasero_project_save_project_ask_for_path):
+	* src/brasero-project.h:
+	* src/main.c (brasero_app_recent_open), (brasero_app_add_recent),
+	(brasero_app_parse_options), (main):
+
 2008-04-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Added the possibility to save an audio project to plain text file as a list of songs

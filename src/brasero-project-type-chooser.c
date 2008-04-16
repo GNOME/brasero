@@ -46,8 +46,7 @@
 G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_EVENT_BOX);
 
 typedef enum {
-	PROJECT_CLICKED_SIGNAL,
-	URI_CLICKED_SIGNAL,
+	RECENT_CLICKED_SIGNAL,
 	CHOSEN_SIGNAL,
 	LAST_SIGNAL
 } BraseroProjectTypeChooserSignalType;
@@ -170,27 +169,14 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 }
 
 static void
-brasero_project_type_chooser_uri_clicked_cb (GtkButton *button,
-					     BraseroProjectTypeChooser *self)
+brasero_project_type_chooser_recent_clicked_cb (GtkButton *button,
+						BraseroProjectTypeChooser *self)
 {
 	const gchar *uri;
 
 	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
 	g_signal_emit (self,
-		       brasero_project_type_chooser_signals [URI_CLICKED_SIGNAL],
-		       0,
-		       uri);
-}
-
-static void
-brasero_project_type_chooser_project_clicked_cb (GtkButton *button,
-						 BraseroProjectTypeChooser *self)
-{
-	const gchar *uri;
-
-	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
-	g_signal_emit (self,
-		       brasero_project_type_chooser_signals [PROJECT_CLICKED_SIGNAL],
+		       brasero_project_type_chooser_signals [RECENT_CLICKED_SIGNAL],
 		       0,
 		       uri);
 }
@@ -236,7 +222,11 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		&&  strcmp (mime, "application/x-cd-image")
 		&&  strcmp (mime, "application/x-cdrdao-toc")
 		&&  strcmp (mime, "application/x-toc")
-		&&  strcmp (mime, "application/x-cue"))
+		&&  strcmp (mime, "application/x-cue")
+		&&  strcmp (mime, "audio/x-scpls")
+		&&  strcmp (mime, "audio/x-ms-asx")
+		&&  strcmp (mime, "audio/x-mp3-playlist")
+		&&  strcmp (mime, "audio/x-mpegurl"))
 			continue;
 
 		/* sort */
@@ -282,16 +272,10 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		link = gtk_link_button_new_with_label (uri, name);
 		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
 		gtk_button_set_image (GTK_BUTTON (link), image);
-		if (strcmp (gtk_recent_info_get_mime_type (info), "application/x-brasero"))
-			g_signal_connect (link,
-					  "clicked",
-					  G_CALLBACK (brasero_project_type_chooser_uri_clicked_cb),
-					  self);
-		else
-			g_signal_connect (link,
-					  "clicked",
-					  G_CALLBACK (brasero_project_type_chooser_project_clicked_cb),
-					  self);
+		g_signal_connect (link,
+				  "clicked",
+				  G_CALLBACK (brasero_project_type_chooser_recent_clicked_cb),
+				  self);
 
 		gtk_widget_show (link);
 		gtk_widget_set_tooltip_text (link, tooltip);
@@ -496,19 +480,10 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_UINT);
-	brasero_project_type_chooser_signals[URI_CLICKED_SIGNAL] =
-	    g_signal_new ("uri_clicked", G_OBJECT_CLASS_TYPE (object_class),
+	brasero_project_type_chooser_signals[RECENT_CLICKED_SIGNAL] =
+	    g_signal_new ("recent_clicked", G_OBJECT_CLASS_TYPE (object_class),
 			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
-			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, uri_clicked),
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__STRING,
-			  G_TYPE_NONE,
-			  1,
-			  G_TYPE_STRING);
-	brasero_project_type_chooser_signals[PROJECT_CLICKED_SIGNAL] =
-	    g_signal_new ("project_clicked", G_OBJECT_CLASS_TYPE (object_class),
-			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
-			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, project_clicked),
+			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, recent_clicked),
 			  NULL, NULL,
 			  g_cclosure_marshal_VOID__STRING,
 			  G_TYPE_NONE,

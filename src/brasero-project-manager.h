@@ -31,6 +31,8 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkuimanager.h>
 
+#include "brasero-project-type-chooser.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_PROJECT_MANAGER         (brasero_project_manager_get_type ())
@@ -54,7 +56,6 @@ typedef struct {
 GType brasero_project_manager_get_type ();
 GtkWidget *brasero_project_manager_new ();
 
-
 void
 brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris);
 void
@@ -63,8 +64,22 @@ void
 brasero_project_manager_copy (BraseroProjectManager *manager);
 void
 brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri);
-void
-brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri);
+
+BraseroProjectType
+brasero_project_manager_open_playlist (BraseroProjectManager *manager, const gchar *uri);
+
+BraseroProjectType
+brasero_project_manager_open_project (BraseroProjectManager *manager, const gchar *uri);
+
+BraseroProjectType
+brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
+				      const gchar *uri,
+				      const gchar *mime);
+
+BraseroProjectType
+brasero_project_manager_open_uri (BraseroProjectManager *manager,
+				  const gchar *uri_arg);
+
 void
 brasero_project_manager_empty (BraseroProjectManager *manager);
 

@@ -6,7 +6,7 @@ Categories=GNOME;AudioVideo;DiscBurning;
 Encoding=UTF-8
 Exec=brasero %U
 Icon=brasero
-MimeType=application/x-cd-image;application/x-cdrdao-toc;application/x-toc;application/x-cue;application/x-brasero;
+MimeType=application/x-cd-image;application/x-cdrdao-toc;application/x-toc;application/x-cue;application/x-brasero;audio/x-scpls;audio/x-ms-asx;audio/x-mp3-playlist;audio/x-mpegurl;
 StartupNotify=true
 Terminal=false
 Type=Application
@@ -29,3 +29,8 @@ MimeType=application/x-brasero;
 Exec=brasero -p %u
 _Name=Open project
 
+[Desktop Action OpenPlaylist]
+Icon=brasero
+MimeType=audio/x-scpls;audio/x-ms-asx;audio/x-mp3-playlist;audio/x-mpegurl;
+Exec=brasero -l %u
+_Name=Open project

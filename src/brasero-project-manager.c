@@ -628,27 +628,6 @@ brasero_project_manager_new_iso_prj_cb (GtkAction *action, BraseroProjectManager
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, NULL, TRUE);
 }
 
-static void
-brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manager)
-{
-	BraseroProjectType type;
-
-	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), NULL);
-	if (type == BRASERO_PROJECT_TYPE_INVALID)
-		return;
-
-	manager->priv->type = type;
-
-	if (type == BRASERO_PROJECT_TYPE_DATA)
-		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
-	else
-		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
-
-	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
-	gtk_action_set_sensitive (action, TRUE);
-}
-
 void
 brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris)
 {
@@ -681,16 +660,9 @@ brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri)
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri, TRUE);
 }
 
-static void
-brasero_project_manager_uri_clicked_cb (BraseroProjectTypeChooser *chooser,
-					const gchar *uri,
-					BraseroProjectManager *manager)
-{
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri, TRUE);
-}
-
-void
-brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
+BraseroProjectType
+brasero_project_manager_open_project (BraseroProjectManager *manager,
+				      const gchar *uri)
 {
 	BraseroProjectType type;
 	GtkAction *action;
@@ -703,7 +675,7 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 
     	if (type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
-		return;
+		return BRASERO_PROJECT_TYPE_INVALID;
 	}
 
 	if (type == BRASERO_PROJECT_TYPE_DATA)
@@ -713,14 +685,136 @@ brasero_project_manager_open (BraseroProjectManager *manager, const gchar *uri)
 
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 	gtk_action_set_sensitive (action, TRUE);
+
+	return type;
+}
+
+#ifdef BUILD_PLAYLIST
+
+BraseroProjectType
+brasero_project_manager_open_playlist (BraseroProjectManager *manager,
+				       const gchar *uri)
+{
+	BraseroProjectType type;
+	GtkAction *action;
+
+    	gtk_widget_show (manager->priv->layout);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
+	type = brasero_project_open_playlist (BRASERO_PROJECT (manager->priv->project), uri);
+	manager->priv->type = type;
+
+    	if (type == BRASERO_PROJECT_TYPE_INVALID) {
+		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
+		return BRASERO_PROJECT_TYPE_INVALID;
+	}
+
+	brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
+	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
+	gtk_action_set_sensitive (action, TRUE);
+
+	return BRASERO_PROJECT_TYPE_AUDIO;
+}
+
+#endif
+
+BraseroProjectType
+brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
+				      const gchar *uri,
+				      const gchar *mime)
+{
+	if (!strcmp (mime, "application/x-brasero"))
+		return brasero_project_manager_open_project (manager, uri);
+
+#ifdef BUILD_PLAYLIST
+
+	else if (!strcmp (mime, "audio/x-scpls")
+	     ||  !strcmp (mime, "audio/x-ms-asx")
+	     ||  !strcmp (mime, "audio/x-mp3-playlist")
+	     ||  !strcmp (mime, "audio/x-mpegurl"))
+		return brasero_project_manager_open_playlist (manager, uri);
+#endif
+
+	else if (!strcmp (mime, "application/x-cd-image")
+	     ||  !strcmp (mime, "application/x-cdrdao-toc")
+	     ||  !strcmp (mime, "application/x-toc")
+	     ||  !strcmp (mime, "application/x-cue")) {
+		brasero_project_manager_iso (manager, uri);
+		return BRASERO_PROJECT_TYPE_ISO;
+	}
+
+	return BRASERO_PROJECT_TYPE_INVALID;
+}
+
+BraseroProjectType
+brasero_project_manager_open_uri (BraseroProjectManager *manager,
+				  const gchar *uri_arg)
+{
+	gchar *uri;
+	GFile *file;
+	GFileInfo *info;
+	const gchar *mime;
+	BraseroProjectType type;
+
+	/* FIXME: make that asynchronous */
+	file = g_file_new_for_commandline_arg (uri_arg);
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  NULL);
+
+	uri = g_file_get_uri (file);
+	mime = g_file_info_get_content_type (info);
+
+	type = brasero_project_manager_open_by_mime (manager, uri, mime);
+
+	g_free (uri);
+	g_object_unref (file);
+	g_object_unref (info);
+
+	return type;
 }
 
 static void
-brasero_project_manager_project_clicked_cb (BraseroProjectTypeChooser *chooser,
-					    const gchar *uri,
-					    BraseroProjectManager *manager)
+brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	brasero_project_manager_open (manager, uri);
+	gchar *uri;
+	gint answer;
+	GtkWidget *chooser;
+	GtkWidget *toplevel;
+	BraseroProjectType type;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+	chooser = gtk_file_chooser_dialog_new (_("Open a project"),
+					      GTK_WINDOW (toplevel),
+					      GTK_FILE_CHOOSER_ACTION_OPEN,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+					      NULL);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
+					     g_get_home_dir ());
+	
+	gtk_widget_show (chooser);
+	answer = gtk_dialog_run (GTK_DIALOG (chooser));
+	if (answer != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
+	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
+	gtk_widget_destroy (chooser);
+
+	type = brasero_project_manager_open_uri (manager, uri);
+	g_free (uri);
+}
+
+static void
+brasero_project_manager_recent_clicked_cb (BraseroProjectTypeChooser *chooser,
+					   const gchar *uri,
+					   BraseroProjectManager *manager)
+{
+	brasero_project_manager_open_uri (manager, uri);
 }
 
 void
@@ -806,12 +900,8 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 			  G_CALLBACK (brasero_project_manager_type_changed_cb),
 			  obj);
 	g_signal_connect (type,
-			  "uri-clicked",
-			  G_CALLBACK (brasero_project_manager_uri_clicked_cb),
-			  obj);
-	g_signal_connect (type,
-			  "project-clicked",
-			  G_CALLBACK (brasero_project_manager_project_clicked_cb),
+			  "recent-clicked",
+			  G_CALLBACK (brasero_project_manager_recent_clicked_cb),
 			  obj);
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj), type, NULL);
 

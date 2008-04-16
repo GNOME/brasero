@@ -77,7 +77,13 @@ brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source);
 
 BraseroProjectType
-brasero_project_open_project (BraseroProject *project, const gchar *uri);
+brasero_project_open_playlist (BraseroProject *project,
+			       const gchar *uri);
+
+BraseroProjectType
+brasero_project_open_project (BraseroProject *project,
+			      const gchar *uri);
+
 gboolean
 brasero_project_save_project (BraseroProject *project);
 gboolean

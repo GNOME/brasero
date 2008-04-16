@@ -32,6 +32,8 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 
+#include <gio/gio.h>
+
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkfilechooser.h>
@@ -50,6 +52,10 @@
 #include <libxml/uri.h>
 
 #include <gconf/gconf-client.h>
+
+#ifdef BUILD_PLAYLIST
+#include <totem-pl-parser.h>
+#endif
 
 #include "burn-debug.h"
 #include "burn-session.h"
@@ -130,8 +136,12 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *footer);
 
 typedef enum {
-	BRASERO_PROJECT_SAVE_XML	= 0,
-	BRASERO_PROJECT_SAVE_PLAIN	= 1
+	BRASERO_PROJECT_SAVE_XML			= 0,
+	BRASERO_PROJECT_SAVE_PLAIN			= 1,
+	BRASERO_PROJECT_SAVE_PLAYLIST_PLS		= 2,
+	BRASERO_PROJECT_SAVE_PLAYLIST_M3U		= 3,
+	BRASERO_PROJECT_SAVE_PLAYLIST_XSPF		= 4,
+	BRASERO_PROJECT_SAVE_PLAYLIST_IRIVER_PLA	= 5
 } BraseroProjectSave;
 
 struct BraseroProjectPrivate {
@@ -1575,6 +1585,31 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 }
 
 /******************************* common to save/open ***************************/
+
+static void
+brasero_project_add_to_recents (BraseroProject *project,
+				const gchar *uri,
+				gboolean is_project)
+{
+   	GtkRecentManager *recent;
+	gchar *groups [] = { "brasero", NULL };
+	gchar *open_playlist = "brasero -l %u";
+	GtkRecentData recent_data = { NULL,
+				      NULL,
+				      "application/x-brasero",
+				      "brasero",
+				      "brasero -p %u",
+				      groups,
+				      FALSE };
+
+    	recent = gtk_recent_manager_get_default ();
+
+	if (is_project)
+		recent_data.app_exec = open_playlist;
+
+    	gtk_recent_manager_add_full (recent, uri, &recent_data);
+}
+
 static void
 brasero_project_set_uri (BraseroProject *project,
 			 const gchar *uri,
@@ -1582,19 +1617,8 @@ brasero_project_set_uri (BraseroProject *project,
 {
      	gchar *name;
 	gchar *title;
-	gchar *groups [] = { "brasero", NULL };
 	GtkAction *action;
 	GtkWidget *toplevel;
-   	GtkRecentManager *recent;
-	GtkRecentData recent_data = { NULL,
-				      NULL,
-
-				      "application/x-brasero",
-
-				      "brasero",
-				      "brasero -p %u",
-				      groups,
-				      FALSE };
 
 	/* possibly reset the name of the project */
 	if (uri) {
@@ -1607,8 +1631,7 @@ brasero_project_set_uri (BraseroProject *project,
 	uri = uri ? uri : project->priv->project;
 
     	/* add it to recent manager */
-    	recent = gtk_recent_manager_get_default ();
-    	gtk_recent_manager_add_full (recent, uri, &recent_data);
+    	brasero_project_add_to_recents (project, uri, TRUE);
 
 	/* update the name of the main window */
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
@@ -1986,48 +2009,17 @@ error:
 
 BraseroProjectType
 brasero_project_open_project (BraseroProject *project,
-			      const gchar *escaped_uri)
+			      const gchar *uri)	/* escaped */
 {
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
-	GtkWidget *toplevel;
-    	gchar *uri;
 
-	if (!escaped_uri) {
-		GtkWidget *chooser;
-		gint answer;
-
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-		chooser = gtk_file_chooser_dialog_new (_("Open a project"),
-						      GTK_WINDOW (toplevel),
-						      GTK_FILE_CHOOSER_ACTION_OPEN,
-						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-						      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
-						      NULL);
-		gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (chooser), TRUE);
-		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (chooser),
-						     g_get_home_dir ());
-	
-		gtk_widget_show (chooser);
-		answer = gtk_dialog_run (GTK_DIALOG (chooser));
-	
-		if (answer == GTK_RESPONSE_OK)
-			uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
-		else
-			uri = NULL;
-	
-		gtk_widget_destroy (chooser);
-	}
-	else
-		uri = g_strdup (escaped_uri);
 
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
- 
-	if (!brasero_project_open_project_xml (project, uri, &track, TRUE)) {
-		g_free (uri);
+
+	if (!brasero_project_open_project_xml (project, uri, &track, TRUE))
 		return BRASERO_PROJECT_TYPE_INVALID;
-	}
 
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
 					  0);
@@ -2041,7 +2033,6 @@ brasero_project_open_project (BraseroProject *project,
 		type = BRASERO_PROJECT_TYPE_DATA;
 	}
 	else {
-	    	g_free (uri);
 		brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
@@ -2052,9 +2043,95 @@ brasero_project_open_project (BraseroProject *project,
 	project->priv->modified = 0;
 
 	brasero_project_set_uri (project, uri, type);
-    	g_free (uri);
 	return type;
 }
+
+#ifdef BUILD_PLAYLIST
+
+static void
+brasero_project_playlist_entry_parsed (TotemPlParser *parser,
+				       const gchar *uri,
+				       GHashTable *metadata,
+				       gpointer user_data)
+{
+	BraseroDiscTrack *track = user_data;
+	BraseroDiscSong *song;
+
+	song = g_new0 (BraseroDiscSong, 1);
+	song->uri = g_strdup (uri);
+
+	/* to know if this info was set or not */
+	song->start = -1;
+	song->end = -1;
+	track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
+}
+
+static gboolean
+brasero_project_open_audio_playlist_project (BraseroProject *proj,
+					     const gchar *uri,
+					     BraseroDiscTrack **track,
+					     gboolean warn_user)
+{
+	TotemPlParser *parser;
+	TotemPlParserResult result;
+	BraseroDiscTrack *new_track;
+
+	new_track = g_new0 (BraseroDiscTrack, 1);
+	new_track->type = BRASERO_DISC_TRACK_AUDIO;
+
+	parser = totem_pl_parser_new ();
+	g_object_set (parser,
+		      "recurse", FALSE,
+		      "disable-unsafe", TRUE,
+		      NULL);
+
+	g_signal_connect (parser,
+			  "entry-parsed",
+			  G_CALLBACK (brasero_project_playlist_entry_parsed),
+			  new_track);
+
+	result = totem_pl_parser_parse (parser, uri, FALSE);
+	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
+		if (warn_user)
+			brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
+
+		brasero_track_free (new_track);
+	}
+	else
+		*track = new_track;
+
+	g_object_unref (parser);
+
+	return (result == TOTEM_PL_PARSER_RESULT_SUCCESS);
+}
+
+BraseroProjectType
+brasero_project_open_playlist (BraseroProject *project,
+			       const gchar *uri) /* escaped */
+{
+	BraseroDiscTrack *track = NULL;
+	BraseroProjectType type;
+
+	if (!uri || *uri =='\0')
+		return BRASERO_PROJECT_TYPE_INVALID;
+
+	if (!brasero_project_open_audio_playlist_project (project, uri, &track, TRUE))
+		return BRASERO_PROJECT_TYPE_INVALID;
+
+	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display), 0);
+	brasero_project_switch (project, TRUE);
+	type = BRASERO_PROJECT_TYPE_AUDIO;
+
+	brasero_disc_load_track (project->priv->current, track);
+	brasero_track_free (track);
+
+	brasero_project_add_to_recents (project, uri, FALSE);
+	project->priv->modified = 0;
+
+	return type;
+}
+
+#endif
 
 BraseroProjectType
 brasero_project_load_session (BraseroProject *project, const gchar *uri)
@@ -2485,6 +2562,100 @@ error:
 	return FALSE;
 }
 
+#ifdef BUILD_PLAYLIST
+
+static void
+brasero_project_save_audio_playlist_entry (GtkTreeModel *model,
+					   GtkTreeIter *iter,
+					   gchar **uri,
+					   gchar **title,
+					   gboolean *custom_title,
+					   gpointer user_data)
+{
+	gtk_tree_model_get (model, iter,
+			    0, uri,
+			    1, title,
+			    2, custom_title,
+			    -1);
+}
+
+static gboolean
+brasero_project_save_audio_project_playlist (BraseroProject *proj,
+					     const gchar *uri,
+					     BraseroProjectSave type,
+					     BraseroDiscTrack *track,
+					     gboolean use_dialog)
+{
+	TotemPlParserType pl_type;
+	TotemPlParser *parser;
+	GtkListStore *model;
+	GtkTreeIter t_iter;
+	gboolean result;
+	GSList *iter;
+	gchar *path;
+
+    	path = g_filename_from_uri (uri, NULL, NULL);
+    	if (!path)
+		return FALSE;
+
+	parser = totem_pl_parser_new ();
+
+	/* create and populate treemodel */
+	model = gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+	for (iter = track->contents.tracks; iter; iter = iter->next) {
+		BraseroDiscSong *song;
+		BraseroSongInfo *info;
+
+		song = iter->data;
+		info = song->info;
+
+		gtk_list_store_append (model, &t_iter);
+		gtk_list_store_set (model, &t_iter,
+				    0, song->uri,
+				    1, info->title,
+				    2, TRUE,
+				    -1);
+	}
+
+	switch (type) {
+		case BRASERO_PROJECT_SAVE_PLAYLIST_M3U:
+			pl_type = TOTEM_PL_PARSER_M3U;
+			break;
+		case BRASERO_PROJECT_SAVE_PLAYLIST_XSPF:
+			pl_type = TOTEM_PL_PARSER_XSPF;
+			break;
+		case BRASERO_PROJECT_SAVE_PLAYLIST_IRIVER_PLA:
+			pl_type = TOTEM_PL_PARSER_IRIVER_PLA;
+			break;
+
+		case BRASERO_PROJECT_SAVE_PLAYLIST_PLS:
+		default:
+			pl_type = TOTEM_PL_PARSER_PLS;
+			break;
+	}
+
+	result = totem_pl_parser_write (parser,
+					GTK_TREE_MODEL (model),
+					brasero_project_save_audio_playlist_entry,
+					path,
+					pl_type,
+					NULL,
+					NULL);
+	if (!result && use_dialog)
+		brasero_project_not_saved_dialog (proj);
+
+	if (result)
+		brasero_project_add_to_recents (proj, uri, FALSE);
+
+	g_object_unref (model);
+	g_object_unref (parser);
+	g_free (path);
+
+	return result;
+}
+
+#endif
+
 static gboolean
 brasero_project_save_project_real (BraseroProject *project,
 				   const gchar *uri,
@@ -2525,13 +2696,25 @@ brasero_project_save_project_real (BraseroProject *project,
 		project->priv->modified = 0;
 	}
 	else if (save_type == BRASERO_PROJECT_SAVE_PLAIN) {
-		brasero_project_set_uri (project, uri, track.type);
 		if (!brasero_project_save_audio_project_plain_text (project,
 								    uri,
 								    &track,
 								    TRUE))
 			return FALSE;
 	}
+
+#ifdef BUILD_PLAYLIST
+
+	else {
+		if (!brasero_project_save_audio_project_playlist (project,
+								  uri,
+								  save_type,
+								  &track,
+								  TRUE))
+			return FALSE;
+	}
+
+#endif
 
 	brasero_track_clear (&track);
 	return TRUE;
@@ -2568,8 +2751,17 @@ brasero_project_save_project_ask_for_path (BraseroProject *project,
 
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as brasero audio project"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a plain text list"));
-		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 
+#ifdef BUILD_PLAYLIST
+
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a PLS playlist"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an M3U playlist"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a XSPF playlist"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as an IRIVER playlist"));
+
+#endif
+
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 		gtk_file_chooser_set_extra_widget (GTK_FILE_CHOOSER (chooser), combo);
 	}
 

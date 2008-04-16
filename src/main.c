@@ -62,6 +62,7 @@
 
 static GConfClient *client;
 gchar *project_uri;
+gchar *playlist_uri;
 gchar *iso_uri;
 gchar **files;
 gchar **audio_project;
@@ -77,6 +78,14 @@ static const GOptionEntry options [] = {
 	{ "project", 'p', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &project_uri,
 	  N_("Open the specified project"),
 	  N_("PROJECT") },
+
+#ifdef BUILD_PLAYLIST
+
+	 { "playlist", 'l', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &playlist_uri,
+	  N_("Open the specified playlist as an audio project"),
+	  N_("PLAYLIST") },
+
+#endif
 
 	{ "audio", 'a', 0, G_OPTION_ARG_NONE, &audio_project,
 	  N_("Open an audio project adding the URIs given on the command line"),
@@ -366,22 +375,7 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 		return;
 	}
 
-	if (!strcmp (mime, "application/x-brasero")) {
-		BRASERO_PROJECT_OPEN_URI (app,
-					  brasero_project_manager_open,
-					  gtk_recent_info_get_uri (item));
-	}
-    	else if (!strcmp (mime, "application/x-cd-image")
-	     ||  !strcmp (mime, "application/x-cdrdao-toc")
-	     ||  !strcmp (mime, "application/x-toc")
-	     ||  !strcmp (mime, "application/x-cue")) {
-    		BRASERO_PROJECT_OPEN_URI (app,
-					  brasero_project_manager_iso,
-					  gtk_recent_info_get_uri (item));
-	}
-	else
-		g_warning ("Unknown type of file can't open");
-
+	brasero_project_manager_open_by_mime (BRASERO_PROJECT_MANAGER (app->contents), uri, mime);
 	gtk_recent_info_unref (item);
 }
 
@@ -407,6 +401,11 @@ brasero_app_add_recent (BraseroApp *app,
 	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");
 	gtk_recent_filter_add_mime_type (filter, "application/x-toc");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cue");
+	gtk_recent_filter_add_mime_type (filter, "audio/x-scpls");
+	gtk_recent_filter_add_mime_type (filter, "audio/x-ms-asx");
+	gtk_recent_filter_add_mime_type (filter, "audio/x-mp3-playlist");
+	gtk_recent_filter_add_mime_type (filter, "audio/x-mpegurl");
+
 	gtk_recent_chooser_add_filter (GTK_RECENT_CHOOSER (action), filter);
 	gtk_recent_chooser_set_filter (GTK_RECENT_CHOOSER (action), filter);
 
@@ -599,6 +598,8 @@ brasero_app_parse_options (BraseroApp *app)
 		nb ++;
 	if (project_uri)
 		nb ++;
+	if (playlist_uri)
+		nb ++;
 	if (audio_project)
 		nb ++;
 	if (data_project)
@@ -635,8 +636,17 @@ brasero_app_parse_options (BraseroApp *app)
 		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, iso_uri);
 	}
 	else if (project_uri) {
-		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open, project_uri);
+		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open_project, project_uri);
 	}
+
+#ifdef BUILD_PLAYLIST
+
+	else if (playlist_uri) {
+		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open_playlist, playlist_uri);
+	}
+
+#endif
+
 	else if (audio_project) {
 		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_audio, files);
 	}
@@ -668,42 +678,13 @@ brasero_app_parse_options (BraseroApp *app)
 		g_slist_free (list);
 	}
 	else if (files) {
-		const gchar *mime;
-		GFileInfo *info;
-		GFile *file;
+		BraseroProjectType type;
 
 	    	if (g_strv_length (files) > 1)
 			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 
-		/* we need to determine what type of file it is */
-		file = g_file_new_for_commandline_arg (files [0]);
-		info = g_file_query_info (file,
-					  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-					  G_FILE_QUERY_INFO_NONE,
-					  NULL,
-					  NULL);
-		g_object_unref (file);
-
-		mime = g_file_info_get_content_type (info);
-	    	g_object_unref (info);
-
-		if (mime) {
-			if (!strcmp (mime, "application/x-brasero")) {
-				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open, files [0]);
-			}
-			else if (!strcmp (mime, "application/x-cue")
-			     ||  !strcmp (mime, "application/x-toc")
-			     ||  !strcmp (mime, "application/x-cdrdao-toc")
-			     ||  !strcmp (mime, "application/x-cd-image")
-			     ||  !strcmp (mime, "application/octet-stream")) {
-				BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, files [0]);
-			}
-			else {
-				/* open it in a data project */
-				BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
-			}
-		}
-		else
+		type = brasero_project_manager_open_uri (BRASERO_PROJECT_MANAGER (app->contents), files [0]);
+		if (type == BRASERO_PROJECT_TYPE_INVALID)
 			BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 	}
 	else {
@@ -765,7 +746,6 @@ main (int argc, char **argv)
 
 	gtk_widget_show (app->mainwin);
 
-	/* debug */
 	gtk_main ();
 
 	brasero_burn_library_shutdown ();

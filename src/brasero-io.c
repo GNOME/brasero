@@ -1042,6 +1042,8 @@ brasero_io_get_file_count_destroy (BraseroAsyncTaskManager *manager,
 	brasero_io_job_free (callback_data);
 }
 
+#ifdef BUILD_PLAYLIST
+
 static gboolean
 brasero_io_get_file_count_process_playlist (BraseroIO *self,
 					    GCancellable *cancel,
@@ -1084,6 +1086,8 @@ brasero_io_get_file_count_process_playlist (BraseroIO *self,
 	return TRUE;
 }
 
+#endif 
+
 static void
 brasero_io_get_file_count_process_file (BraseroIO *self,
 					GCancellable *cancel,
@@ -1106,6 +1110,9 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 
 		if (result)
 			data->total_b += metadata.len;
+
+#ifdef BUILD_PLAYLIST
+
 		/* see if that's a playlist (and if we have recursive on). */
 		else if (data->job.options & BRASERO_IO_INFO_RECURSIVE) {
 			const gchar *mime;
@@ -1122,6 +1129,9 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 
 			data->files_invalid ++;
 		}
+
+#endif
+
 		else
 			data->files_invalid ++;
 
@@ -1351,6 +1361,8 @@ brasero_io_load_directory_destroy (BraseroAsyncTaskManager *manager,
 	brasero_io_job_free (BRASERO_IO_JOB (data));
 }
 
+#ifdef BUILD_PLAYLIST
+
 static gboolean
 brasero_io_load_directory_playlist (BraseroIO *self,
 				    GCancellable *cancel,
@@ -1411,6 +1423,8 @@ brasero_io_load_directory_playlist (BraseroIO *self,
 	brasero_io_playlist_clear (&playlist);
 	return TRUE;
 }
+
+#endif
 
 static BraseroAsyncTaskResult
 brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
@@ -1544,6 +1558,9 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 
 			if (result)
 				brasero_io_set_metadata_attributes (info, &metadata);
+
+#ifdef BUILD_PLAYLIST
+
 			else if (data->job.options & BRASERO_IO_INFO_RECURSIVE) {
 				const gchar *mime;
 
@@ -1559,6 +1576,8 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 									    child_uri,
 									    attributes);
 			}
+
+#endif
 
 			brasero_metadata_info_clear (&metadata);
 		}
