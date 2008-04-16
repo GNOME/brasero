@@ -515,9 +515,9 @@ brasero_player_bacon_set_volume (BraseroPlayerBacon *bacon, gdouble volume)
 	if (!bacon->priv->pipe)
 		return;
 
-	volume = CLAMP (volume, 0.0, 5.0);
+	volume = CLAMP (volume, 0, 100) / 100.0;
 	g_object_set (bacon->priv->pipe,
-		      "volume", volume * 5.0,
+		      "volume", volume * 100,
 		      NULL);
 }
 
