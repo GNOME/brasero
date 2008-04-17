@@ -1,5 +1,13 @@
 2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Attempt at fixing #525371 – brasero crashed with SIGSEGV in g_io_channel_get_buffer_condition()
+
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_recent_changed_cb):
+	* src/burn-process.c (brasero_process_stop):
+
+2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Attempt to avoid crash in #527571 – brasero crashed with SIGSEGV in g_str_hash()
 
 	* src/brasero-data-disc.c

@@ -637,7 +637,7 @@ brasero_process_stop (BraseroJob *job,
 				g_string_set_size (priv->out_buffer, 0);
 
 			klass = BRASERO_PROCESS_GET_CLASS (process);
-			while (g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
+			while (priv->std_out && g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
 				brasero_process_read (process,
 						      priv->std_out,
 						      G_IO_IN,
@@ -675,12 +675,12 @@ brasero_process_stop (BraseroJob *job,
 				g_string_set_size (priv->err_buffer, 0);
 
 			klass = BRASERO_PROCESS_GET_CLASS (process);
-			while (g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
+			while (priv->std_error && g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
 				brasero_process_read (process,
-						     priv->std_error,
-						     G_IO_IN,
-						     BRASERO_CHANNEL_STDERR,
-						     klass->stderr_func);
+						      priv->std_error,
+						      G_IO_IN,
+						      BRASERO_CHANNEL_STDERR,
+						      klass->stderr_func);
 		}
 
 	    	/* NOTE: we already checked if priv->std_out wasn't 

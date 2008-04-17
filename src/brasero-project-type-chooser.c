@@ -318,9 +318,11 @@ static void
 brasero_project_type_chooser_recent_changed_cb (GtkRecentManager *recent,
 						BraseroProjectTypeChooser *self)
 {
-	gtk_container_foreach (GTK_CONTAINER (self->priv->recent_box),
-			       (GtkCallback) gtk_widget_destroy,
-			       NULL);
+	if (self->priv->recent_box)
+		gtk_container_foreach (GTK_CONTAINER (self->priv->recent_box),
+				       (GtkCallback) gtk_widget_destroy,
+				       NULL);
+
 	brasero_project_type_chooser_build_recent (self, recent);
 }
 
