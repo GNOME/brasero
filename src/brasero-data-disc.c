@@ -12143,8 +12143,7 @@ brasero_data_disc_inotify_attributes_event_cb (BraseroVFS *self,
 	BraseroDataDisc *disc = BRASERO_DATA_DISC (owner);
 	BraseroFilterStatus status;
 
-	if (result == GNOME_VFS_OK
-	&&  brasero_data_disc_is_readable (info)) {
+	if (result == GNOME_VFS_OK && brasero_data_disc_is_readable (info)) {
 		if (disc->priv->unreadable
 		&& (status = GPOINTER_TO_INT (g_hash_table_lookup (disc->priv->unreadable, uri)))
 		&&  status == BRASERO_FILTER_UNREADABLE) {
@@ -12160,7 +12159,9 @@ brasero_data_disc_inotify_attributes_event_cb (BraseroVFS *self,
 	}
 
 	/* the file couldn't be a symlink anyway don't check for loop */
-	brasero_data_disc_remove_uri (disc, uri, TRUE);
+	if (uri)
+		brasero_data_disc_remove_uri (disc, uri, TRUE);
+
 	if (result != GNOME_VFS_ERROR_NOT_FOUND)
 		brasero_data_disc_unreadable_new (disc,
 						  g_strdup (uri),

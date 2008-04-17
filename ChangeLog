@@ -1,5 +1,12 @@
 2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Attempt to avoid crash in #527571 – brasero crashed with SIGSEGV in g_str_hash()
+
+	* src/brasero-data-disc.c
+	(brasero_data_disc_inotify_attributes_event_cb):
+
+2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Avoid crashing when video is not supported (#527911 – Brasero crashes when browsing files)
 
 	* src/brasero-metadata.c (brasero_metadata_new_decoded_pad_cb):
