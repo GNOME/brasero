@@ -585,7 +585,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 static void
 brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 				     GstPad *pad,
-				     gboolean arg2,
+				     gboolean is_lastpad, /* deprecated */
 				     BraseroMetadata *self)
 {
 	GstPad *sink;
@@ -599,7 +599,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	res = GST_PAD_LINK_REFUSED;
 	BRASERO_BURN_LOG ("new pad");
 	sink = gst_element_get_pad (priv->first, "sink");
-	if (GST_PAD_IS_LINKED (sink))
+	if (!sink || GST_PAD_IS_LINKED (sink))
 		return;
 
 	/* make sure that this is audio / video */
