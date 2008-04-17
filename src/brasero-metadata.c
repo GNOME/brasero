@@ -545,7 +545,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 
 	BRASERO_BURN_LOG ("new pad");
 	sink = gst_element_get_pad (priv->first, "sink");
-	if (GST_PAD_IS_LINKED (sink))
+	if (!sink || GST_PAD_IS_LINKED (sink))
 		return;
 
 	/* make sure that this is audio / video */
