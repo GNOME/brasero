@@ -1,3 +1,12 @@
+2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a bug were songs with a length inferior to 6 sec didn't have their length updated in the tree
+	(unstable branch specific)
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_add_uri_real):
+
 2008-04-17  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-io.c (brasero_io_unref_result_callback_data):

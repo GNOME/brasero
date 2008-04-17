@@ -1156,34 +1156,42 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	const gchar * const *icon_string = NULL;
 	gint64 current_length;
 	GtkTreeIter gap_iter;
-	GIcon *icon;
+	gchar *size_string;
+	gint64 length;
 	gint64 start;
+	GIcon *icon;
 	gint64 end;
 
 	icon = g_content_type_get_icon (g_file_info_get_content_type (info));
 	if (G_IS_THEMED_ICON (icon))
 		icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
 
-	/* make sure there is a length and it's not over the real one */
 	gtk_tree_model_get (model, iter,
 			    START_COL, &start,
 			    END_COL, &end,
 			    -1);
+	g_print ("%lli %lli\n", start, end);
 
+	/* make sure there is a length and it's not over the real one */
 	current_length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
-	if (end > g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN)) {
-		end = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
+	if (current_length > g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN)) {
+		guint64 len;
+
+		len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
+		end = len - start;
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    END_COL, (gint64) end,
 				    -1);
 	}
-	else if (!end) {
+	/* make sure a length was set if not (and then start is 0) then set it */
+	else if (end <= 0) {
 		end = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    END_COL, (gint64) end,
 				    -1);
 	}
 
+	/* Just in case */
 	if (start > end) {
 		/* problem */
 		start = end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
@@ -1195,6 +1203,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 				    -1);
 	}
 
+	/* check the track size and warn the user just in case */
 	if (brasero_audio_disc_has_gap (disc, iter, &gap_iter)) {
 		gint64 gap;
 
@@ -1206,30 +1215,24 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 		if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_AUDIO_TRACK_LENGTH)
 			brasero_audio_disc_short_track_dialog (disc);
 	}
-	else if (end - start < BRASERO_MIN_AUDIO_TRACK_LENGTH)
+	else if (end - start < BRASERO_MIN_AUDIO_TRACK_LENGTH) {
 		brasero_audio_disc_short_track_dialog (disc);
 
-	if (BRASERO_AUDIO_TRACK_LENGTH (start, end) != current_length) {
-		gchar *size_string;
-		gint64 length;
+	}
 
+	length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
+	if (length != current_length) {
 		/* update global size */
-		length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
-
 		if (current_length > 0)
 			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (current_length);
 
 		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (length);
 		brasero_audio_disc_size_changed (disc);
-
-		size_string = brasero_utils_get_time_string (length, TRUE, FALSE);
-		gtk_list_store_set (GTK_LIST_STORE (model), iter,
-				    SIZE_COL, size_string,
-				    -1);
-		g_free (size_string);
 	}
 
+	size_string = brasero_utils_get_time_string (length, TRUE, FALSE);
 	gtk_list_store_set (GTK_LIST_STORE (model), iter,
+			    SIZE_COL, size_string,
 			    ICON_COL, icon_string?icon_string [0]:NULL,
 			    LENGTH_COL, g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN),
 			    ARTIST_COL, g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST),
@@ -1237,6 +1240,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 			    ISRC_COL, g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC),
 			    SONG_COL, TRUE,
 			    -1);
+	g_free (size_string);
 
 	if (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE)) {
 		gchar *name;
@@ -1625,6 +1629,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	g_free (markup);
 
 	start = start > 0 ? start:0;
+	g_print (" END %lli %lli\n", start, end);
 	if (end > 0 && end > start) {
 		gchar *string;
 		gint64 length;
