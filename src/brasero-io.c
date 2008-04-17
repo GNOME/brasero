@@ -258,7 +258,7 @@ brasero_io_unref_result_callback_data (BraseroIOResultCallbackData *data,
 	if (destroy)
 		destroy (object,
 			 cancelled,
-			 data->callback_data);
+			 data);
 	g_free (data);
 }
 
