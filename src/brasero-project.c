@@ -228,6 +228,7 @@ static const gchar *description = {
 		"<separator/>"
 		"<toolitem action='Add'/>"
 		"<toolitem action='DeleteProject'/>"
+		"<toolitem action='DeleteAll'/>"
 		"<placeholder name='DiscButtonPlaceholder'/>"
 	     "</toolbar>"
 	"</ui>"
