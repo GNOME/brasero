@@ -604,35 +604,25 @@ static void
 brasero_project_size_size_request (GtkWidget *widget,
 				   GtkRequisition *requisition)
 {
-	gint width, height, text_width, ruler_width, ruler_height;
+	gint width, height, ruler_width, ruler_height;
 	PangoRectangle extents = { 0 };
 	BraseroProjectSize *self;
 	GtkRequisition req;
+	gchar *text;
 
 	self = BRASERO_PROJECT_SIZE (widget);
 
-	if (self->priv->text_layout) {
-		gchar *text;
 
-		/* Set markup every time a size change this function is called */
-		text = brasero_project_size_get_media_string (self);
-		pango_layout_set_markup (self->priv->text_layout, text, -1);
-		g_free (text);
-
-		pango_layout_get_pixel_extents (self->priv->text_layout,
-						NULL,
-						&extents);
-		text_width = extents.width + BRASERO_PROJECT_SIZE_SPACE * 2;
-	}
-	else
-		text_width = 0;
+	/* Set markup every time a size change this function is called */
+	text = brasero_project_size_get_media_string (self);
+	pango_layout_set_markup (self->priv->text_layout, text, -1);
+	g_free (text);
 
 	brasero_project_size_get_ruler_min_width (self, &ruler_width, &ruler_height);
 	gtk_widget_size_request (self->priv->button, &req);
 
-	width = MAX (ruler_width, text_width) +
-		self->priv->frame->style->xthickness * 2 +
-		req.width;
+	width = self->priv->frame->style->xthickness * 2 +
+		req.width * 2;
 
 	height = extents.height + self->priv->frame->style->ythickness * 2;
 	height = MAX (height, req.height);
@@ -654,9 +644,6 @@ brasero_project_size_size_allocate (GtkWidget *widget,
 
 	gboolean is_rtl = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
 
-	if (!GTK_WIDGET_REALIZED (widget))
-		return;
-
 	widget->allocation = *allocation;
 	if (GTK_WIDGET_REALIZED (widget) && !GTK_WIDGET_NO_WINDOW (widget)) {
 		gdk_window_move_resize (widget->window,
@@ -673,7 +660,7 @@ brasero_project_size_size_allocate (GtkWidget *widget,
 	/* NOTE: since we've got our own window, we don't need to take into
 	 * account alloc.x and alloc.y */
 	if (is_rtl)
-		alloc.x = allocation->width - req.width;
+		alloc.x = allocation->width - req.width - 1;
 	else
 		alloc.x = - 1;
 
@@ -684,7 +671,7 @@ brasero_project_size_size_allocate (GtkWidget *widget,
 
 	/* allocate the size for the arrow we want to draw on the button */
 	if (is_rtl)
-		alloc.x = alloc.width / 4;
+		alloc.x += alloc.width / 2;
 	else
 		alloc.x = alloc.width / 2;
 
@@ -704,6 +691,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	gint x, y, width, total;
 	gint button_width;
 	gdouble num, i;
+	guint next_possible = 0;
 
 	BraseroProjectSize *self;
 	gdouble fraction = 0.0;
@@ -732,16 +720,15 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 					self->priv->arrow,
 					event);
 
-	if (!is_rtl)
-		button_width = self->priv->button->allocation.width;
-	else
-		button_width = 0;
+	button_width = self->priv->button->allocation.width;
 
 	drive = self->priv->current;
 	if (!drive)
 		return FALSE;
 
-	/* the number of interval needs to be reasonable, not over 8 not under 5 */
+	/* The number of interval needs to be reasonable, not over 8 not under 5
+	 * They should also depend on the available space for the bar. */
+	
 	if (self->priv->is_audio_context)
 		interval_size = AUDIO_INTERVAL_CD;
 	else if (self->priv->current->media & BRASERO_MEDIUM_DVD)
@@ -759,13 +746,21 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	} while (num > MAX_INTERVAL || num < MIN_INTERVAL);
 
 	/* calculate the size of the interval in pixels */
-	bar_width = widget->allocation.width - self->priv->button->allocation.width - self->priv->frame->style->xthickness * 2;
+	bar_width = widget->allocation.width - button_width - self->priv->frame->style->xthickness * 2;
 	interval_width = bar_width / num;
 
 	/* draw the ruler */
 	layout = gtk_widget_create_pango_layout (widget, NULL);
-	for (i = 1.0; i < num; i ++) {
+
+	if (is_rtl)
+		next_possible = widget->allocation.width - button_width - self->priv->frame->style->xthickness;
+	else
+		next_possible = button_width + self->priv->frame->style->xthickness;
+
+	for (i = 1.; i < num; i ++) {
 		gchar *string;
+		guint arrow_x;
+		guint text_x;
 
 		string = brasero_utils_get_sectors_string (i * interval_size,
 							   self->priv->is_audio_context,
@@ -783,12 +778,28 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		y = widget->allocation.height - extents.height;
 
 		if (is_rtl)
-			x = widget->allocation.width - self->priv->frame->style->xthickness - i * interval_width + widget->style->xthickness + ARROW_WIDTH / 2;
+			x = widget->allocation.width - button_width - self->priv->frame->style->xthickness -
+			    i * interval_width;
 		else
-			x = i * interval_width + self->priv->frame->style->xthickness - widget->style->xthickness - extents.width - ARROW_WIDTH / 2;
+			x = button_width + self->priv->frame->style->xthickness + i * interval_width;
 
-		/* add the button width */
-		x += button_width;
+		if (!is_rtl && x <= next_possible)
+			continue;
+
+		if (is_rtl && x >= next_possible)
+			continue;
+
+		if (is_rtl)
+			text_x = x + widget->style->xthickness + ARROW_WIDTH / 2 + 2;
+		else
+			text_x = x - widget->style->xthickness - ARROW_WIDTH / 2 - extents.width - 2;
+
+		if (!is_rtl && text_x <= next_possible)
+			continue;
+
+		if (is_rtl && text_x + extents.width >= next_possible)
+			continue;
+
 		gtk_paint_layout (widget->style,
 				  widget->window,
 				  GTK_STATE_NORMAL,
@@ -796,20 +807,11 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				  &event->area,
 				  widget,
 				  NULL,
-				  x,
+				  text_x,
 				  y,
 				  layout);
-	}
-	g_object_unref (layout);
 
-	for (i = 1.0; i < num; i ++) {
-		if (is_rtl)
-			x = widget->allocation.width - self->priv->frame->style->xthickness - i * interval_width - ARROW_WIDTH / 2;
-		else
-			x = i * interval_width + self->priv->frame->style->xthickness - ARROW_WIDTH / 2;
-
-		x += button_width;
-  		gtk_paint_arrow (widget->style,
+		gtk_paint_arrow (widget->style,
 				 widget->window,
 				 GTK_STATE_NORMAL,
 				 GTK_SHADOW_ETCHED_IN,
@@ -818,11 +820,18 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				 NULL,
 				 GTK_ARROW_UP,
 				 FALSE,
-				 x,
+				 x - widget->style->xthickness - ARROW_WIDTH/ 2,
 				 widget->allocation.height - text_height,
 				 ARROW_WIDTH,
 				 ARROW_HEIGHT);
+
+		/* calculate the next possible location (2 pixels spacing) */
+		if (is_rtl)
+			next_possible = x - ARROW_WIDTH / 2;
+		else
+			next_possible = x + 2 + ARROW_WIDTH / 2;
 	}
+	g_object_unref (layout);
 
 	bar_height = widget->allocation.height - text_height;
 
@@ -833,6 +842,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	else
 		disc_size = drive->free_space;
 
+	/* green part */
 	fraction = ((gdouble) self->priv->sectors / (gdouble) disc_size);
 	if (fraction > 1.0)
 		width = bar_width / fraction * 1.0;
@@ -840,11 +850,10 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		width = fraction * bar_width;
 
 	if (is_rtl)
-		x = widget->allocation.width - width - self->priv->frame->style->xthickness;
+		x = self->priv->frame->style->xthickness + bar_width - width;
 	else
-		x = self->priv->frame->style->xthickness;
+		x = self->priv->frame->style->xthickness + button_width;
 
-	x += button_width;
 	gtk_paint_flat_box (widget->style,
 			    widget->window,
 			    GTK_STATE_INSENSITIVE,
@@ -866,11 +875,10 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 			width2 = bar_width / fraction * (fraction - 1.0);
 
 		if (is_rtl)
-			x = widget->allocation.width - width - width2 - self->priv->frame->style->xthickness;
+			x = widget->allocation.width - width - width2 - self->priv->frame->style->xthickness - button_width;
 		else
-			x = width + self->priv->frame->style->xthickness;
+			x = width + self->priv->frame->style->xthickness + button_width;
 
-		x += button_width;
 		gtk_paint_flat_box (widget->style,
 				    widget->window,
 				    GTK_STATE_ACTIVE,
@@ -885,12 +893,11 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 		if (fraction > 1.03) {
 			if (is_rtl)
-				x = widget->allocation.width - bar_width - self->priv->frame->style->xthickness;
+				x = widget->allocation.width - bar_width - self->priv->frame->style->xthickness - button_width;
 			else
-				x = width + width2 + self->priv->frame->style->xthickness;
+				x = width + width2 + self->priv->frame->style->xthickness + button_width;
 
-		x += button_width;
-		gtk_paint_flat_box (widget->style,
+			gtk_paint_flat_box (widget->style,
 					    widget->window,
 					    GTK_STATE_PRELIGHT,
 					    GTK_SHADOW_NONE,
@@ -904,12 +911,12 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		}
 	}
 	else {
+		/* This is the white part */
 		if (is_rtl)
-			x = width ? widget->allocation.width - bar_width + width - self->priv->frame->style->xthickness:widget->allocation.width - bar_width - self->priv->frame->style->xthickness;
+			x = self->priv->frame->style->xthickness;
 		else
-			x = width ? width:self->priv->frame->style->xthickness;
+			x = width ? width + button_width:self->priv->frame->style->xthickness + button_width;
 
-		x += button_width;
 		gtk_paint_flat_box (widget->style,
 				    widget->window,
 				    GTK_STATE_SELECTED,
@@ -923,7 +930,12 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				    bar_height - self->priv->frame->style->ythickness);
 	}
 
-	alloc.x = button_width;
+	/* Frame around bar */
+	if (is_rtl)
+		alloc.x = 0;
+	else
+		alloc.x = button_width;
+
 	alloc.y = 0;
 	alloc.width = bar_width + self->priv->frame->style->xthickness * 2;
 	alloc.height = bar_height;
@@ -933,8 +945,17 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 					event);
 
 	/* set the text */
+	pango_layout_set_width (self->priv->text_layout, -1);
 	pango_layout_get_pixel_extents (self->priv->text_layout, NULL, &extents);
-	x = (widget->allocation.width - button_width - extents.width) / 2;
+	if (extents.width > bar_width) {
+		pango_layout_set_ellipsize (self->priv->text_layout, PANGO_ELLIPSIZE_END);
+		pango_layout_set_width (self->priv->text_layout, (bar_width - BRASERO_PROJECT_SIZE_SPACE * 2) * PANGO_SCALE);
+	}
+	else
+		pango_layout_set_ellipsize (self->priv->text_layout, PANGO_ELLIPSIZE_NONE);
+
+	pango_layout_get_pixel_extents (self->priv->text_layout, NULL, &extents);
+	x = (bar_width - extents.width) / 2;
 	y = (widget->allocation.height - extents.height - text_height) / 2;
 
 	if (!is_rtl)
@@ -996,10 +1017,7 @@ brasero_project_size_menu_position_cb (GtkMenu *menu,
 	gdk_drawable_get_size (GDK_DRAWABLE (self->window), &width, &height);
 	gtk_widget_set_size_request (GTK_WIDGET (menu), width, -1);
 
-	if (gtk_widget_get_direction (self) == GTK_TEXT_DIR_LTR)
-		*x = sx;
-	else
-		*x = sx - req.width;
+	*x = sx;
 	*y = sy;
 
 	screen = gtk_widget_get_screen (self);

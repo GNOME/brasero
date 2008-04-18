@@ -959,14 +959,14 @@ brasero_layout_type_changed_cb (GConfClient *client,
 	switch (layout_type) {
 		case BRASERO_LAYOUT_TOP:
 		case BRASERO_LAYOUT_LEFT:
-			gtk_paned_pack2 (GTK_PANED (layout->priv->pane), source_pane, FALSE, FALSE);
+			gtk_paned_pack2 (GTK_PANED (layout->priv->pane), source_pane, TRUE, FALSE);
 			gtk_paned_pack1 (GTK_PANED (layout->priv->pane), project_pane, TRUE, FALSE);
 			break;
 
 		case BRASERO_LAYOUT_BOTTOM:
 		case BRASERO_LAYOUT_RIGHT:
 			gtk_paned_pack2 (GTK_PANED (layout->priv->pane), project_pane, TRUE, FALSE);
-			gtk_paned_pack1 (GTK_PANED (layout->priv->pane), source_pane, FALSE, FALSE);
+			gtk_paned_pack1 (GTK_PANED (layout->priv->pane), source_pane, TRUE, FALSE);
 			break;
 
 		default:
@@ -1204,9 +1204,9 @@ brasero_layout_init (BraseroLayout *obj)
 
 	if (obj->priv->layout_type == BRASERO_LAYOUT_TOP
 	||  obj->priv->layout_type == BRASERO_LAYOUT_LEFT)
-		gtk_paned_pack2 (GTK_PANED (obj->priv->pane), alignment, FALSE, FALSE);
+		gtk_paned_pack2 (GTK_PANED (obj->priv->pane), alignment, TRUE, FALSE);
 	else
-		gtk_paned_pack1 (GTK_PANED (obj->priv->pane), alignment, FALSE, FALSE);
+		gtk_paned_pack1 (GTK_PANED (obj->priv->pane), alignment, TRUE, FALSE);
 
 	obj->priv->main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->main_box);

@@ -2112,33 +2112,46 @@ brasero_data_disc_init (BraseroDataDisc *object)
 
 	/* Size column */
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Size"),
-							   renderer,
-							   "text", BRASERO_DATA_TREE_MODEL_SIZE,
-							   NULL);
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "text", BRASERO_DATA_TREE_MODEL_SIZE);
+	gtk_tree_view_column_set_title (column, _("Size"));
+
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
 	gtk_tree_view_column_set_resizable (column, TRUE);
+	gtk_tree_view_column_set_expand (column, FALSE);
 	gtk_tree_view_column_set_sort_column_id (column, BRASERO_DATA_TREE_MODEL_SIZE);
 
 	/* Description */
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Description"),
-							   renderer,
-							   "text", BRASERO_DATA_TREE_MODEL_MIME_DESC,
-							   NULL);
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "text", BRASERO_DATA_TREE_MODEL_MIME_DESC);
+	gtk_tree_view_column_set_title (column, _("Description"));
+
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
+	gtk_tree_view_column_set_resizable (column, TRUE);
+	gtk_tree_view_column_set_expand (column, FALSE);
 	gtk_tree_view_column_set_sort_column_id (column, BRASERO_DATA_TREE_MODEL_MIME_DESC);
 
 	/* Space column */
 	renderer = baobab_cell_renderer_progress_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Space"),
-							   renderer,
-							   "visible", BRASERO_DATA_TREE_MODEL_SHOW_PERCENT,
-							   "perc", BRASERO_DATA_TREE_MODEL_PERCENT,
-							   NULL);
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "visible", BRASERO_DATA_TREE_MODEL_SHOW_PERCENT);
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "perc", BRASERO_DATA_TREE_MODEL_PERCENT);
+	gtk_tree_view_column_set_title (column, _("Space"));
+
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
 	gtk_tree_view_column_set_resizable (column, TRUE);
-
+	gtk_tree_view_column_set_expand (column, FALSE);
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scroll);

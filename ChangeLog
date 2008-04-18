@@ -1,5 +1,19 @@
 2008-04-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix project size widget that fixes
+	#528103 – selecting the disc type not displayed well on RTL Desktop
+	#514103 – GUI Layout Broken
+
+	* src/brasero-data-disc.c (brasero_data_disc_init):
+	* src/brasero-layout.c (brasero_layout_type_changed_cb),
+	(brasero_layout_init):
+	* src/brasero-project-size.c (brasero_project_size_size_request),
+	(brasero_project_size_size_allocate),
+	(brasero_project_size_expose),
+	(brasero_project_size_menu_position_cb):
+
+2008-04-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix a problem where metadata didn't say when it was cancelled leading to unloaded files in audio project
 	Remove some debug statements
 	Revert one patch to fix an unidentified crash
