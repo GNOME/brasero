@@ -1,3 +1,18 @@
+2008-04-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a problem where metadata didn't say when it was cancelled leading to unloaded files in audio project
+	Remove some debug statements
+	Revert one patch to fix an unidentified crash
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_add_uri_real):
+	* src/brasero-io.c (brasero_io_unref_result_callback_data),
+	(brasero_io_push_job), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_count_process_file):
+	* src/brasero-metadata.c (brasero_metadata_completed),
+	(brasero_metadata_bus_messages), (brasero_metadata_get_info_wait):
+
 2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Avoid crashing with unsupported video (#527911 – Brasero crashes when browsing files)

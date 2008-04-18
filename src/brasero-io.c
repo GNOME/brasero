@@ -258,7 +258,7 @@ brasero_io_unref_result_callback_data (BraseroIOResultCallbackData *data,
 	if (destroy)
 		destroy (object,
 			 cancelled,
-			 data);
+			 data->callback_data);
 	g_free (data);
 }
 
@@ -434,7 +434,6 @@ brasero_io_push_job (BraseroIO *self,
 						  BRASERO_ASYNC_NORMAL,
 						  type,
 						  job);
-
 }
 
 /**
@@ -666,6 +665,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 
 			copy = g_new0 (BraseroMetadataInfo, 1);
 			brasero_metadata_set_info (metadata, copy);
+
 			g_queue_push_head (priv->meta_buffer, copy);
 			if (g_queue_get_length (priv->meta_buffer) > MAX_BUFFERED_META) {
 				meta_info = g_queue_pop_tail (priv->meta_buffer);
@@ -1107,7 +1107,6 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 						       info,
 						       BRASERO_METADATA_FLAG_NONE,
 						       &metadata);
-
 		if (result)
 			data->total_b += metadata.len;
 

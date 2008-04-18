@@ -306,7 +306,6 @@ brasero_metadata_completed (BraseroMetadata *self)
 	BraseroMetadataPrivate *priv;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
-
 	if ((!priv->loop || !g_main_loop_is_running (priv->loop)) && !priv->cond) {
 		/* we send a message only if we haven't got a loop (= async mode) */
 		g_object_ref (self);
@@ -514,8 +513,9 @@ brasero_metadata_bus_messages (GstBus *bus,
 		gst_message_parse_error (msg, &error, &debug_string);
 		BRASERO_BURN_LOG (debug_string);
 		g_free (debug_string);
+		if (!priv->error && error)
+			priv->error = error;
 
-		priv->error = error;
 		brasero_metadata_completed (self);
 		break;
 
@@ -843,7 +843,7 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 		return FALSE;
 	}
 
-	return TRUE;
+	return (g_cancellable_is_cancelled (cancel) == FALSE);
 }
 
 gboolean

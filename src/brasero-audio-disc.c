@@ -1170,7 +1170,6 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 			    START_COL, &start,
 			    END_COL, &end,
 			    -1);
-	g_print ("%lli %lli\n", start, end);
 
 	/* make sure there is a length and it's not over the real one */
 	current_length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
@@ -1629,7 +1628,6 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	g_free (markup);
 
 	start = start > 0 ? start:0;
-	g_print (" END %lli %lli\n", start, end);
 	if (end > 0 && end > start) {
 		gchar *string;
 		gint64 length;
