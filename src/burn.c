@@ -246,7 +246,7 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 
 	medium = brasero_drive_get_medium (priv->dest);
 	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium)))
-		brasero_volume_umount (BRASERO_VOLUME (medium), FALSE, NULL);
+		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
 
 	if (priv->dest_locked) {
 		priv->dest_locked = 0;
@@ -1009,7 +1009,7 @@ brasero_burn_unlock_src_media (BraseroBurn *burn)
 
 	medium = brasero_drive_get_medium (priv->src);
 	if (priv->mounted_by_us) {
-		brasero_volume_umount (BRASERO_VOLUME (medium), FALSE, NULL);
+		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
 		priv->mounted_by_us = 0;
 	}
 

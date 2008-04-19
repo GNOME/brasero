@@ -1,3 +1,12 @@
+2008-04-19  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Improvements for volume unmounting/mounting
+	Don't return an error if volume is already unmounted/mounted
+
+	* src/burn-volume-obj.c (brasero_volume_umount_finish),
+	(brasero_volume_mount_finish), (brasero_volume_eject_finish):
+	* src/burn.c (brasero_burn_eject_dest_media):
+
 2008-04-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix project size widget that fixes

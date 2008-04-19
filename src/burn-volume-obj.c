@@ -222,6 +222,13 @@ brasero_volume_umount_finish (GObject *source,
 
 	if (priv->error) {
 		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			/* means we shouldn't display any error message since 
+			 * that was already done */
+			g_error_free (priv->error);
+			priv->error = NULL;
+		}
+		else if (priv->error->code == G_IO_ERROR_NOT_MOUNTED) {
+			/* That can happen sometimes */
 			g_error_free (priv->error);
 			priv->error = NULL;
 		}
@@ -296,6 +303,12 @@ brasero_volume_mount_finish (GObject *source,
 
 	if (priv->error) {
 		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			/* means we shouldn't display any error message since 
+			 * that was already done */
+			g_error_free (priv->error);
+			priv->error = NULL;
+		}
+		else if (priv->error->code == G_IO_ERROR_ALREADY_MOUNTED) {
 			g_error_free (priv->error);
 			priv->error = NULL;
 		}
@@ -383,6 +396,8 @@ brasero_volume_eject_finish (GObject *source,
 
 	if (priv->error) {
 		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			/* means we shouldn't display any error message since 
+			 * that was already done */
 			g_error_free (priv->error);
 			priv->error = NULL;
 		}
