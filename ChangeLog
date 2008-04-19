@@ -1,5 +1,12 @@
 2008-04-19  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix crash when setting the path for an image output when there was none before
+
+	* src/brasero-image-properties.c
+	(brasero_image_properties_is_path_edited):
+
+2008-04-19  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Improvements for volume unmounting/mounting (trunk specific)
 	Don't return an error if volume is already unmounted/mounted
 

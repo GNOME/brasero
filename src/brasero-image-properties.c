@@ -93,6 +93,9 @@ brasero_image_properties_is_path_edited (BraseroImageProperties *self)
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (self);
 
+	if (!priv->original_path)
+		return TRUE;
+
 	if (priv->edited)
 		return TRUE;
 
