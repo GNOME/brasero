@@ -1,5 +1,16 @@
 2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for good this time unmount operation by waiting for GVolumeMonitor signal
+	Fix warning with g_propagate_error
+
+	* src/burn-volume-obj.c (brasero_volume_wait_for_operation_end),
+	(brasero_volume_umounted_cb), (brasero_volume_umount_finish),
+	(brasero_volume_umount), (brasero_volume_mount_finish):
+	* src/burn.c (brasero_burn_run_imager),
+	(brasero_burn_run_recorder):
+
+2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	make sure to grey out the copy button in all proper situations
 
 	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):

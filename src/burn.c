@@ -1267,8 +1267,9 @@ start:
 	}
 
 	if (result != BRASERO_BURN_ERR) {
-		if (error)
+		if (error && ret_error)
 			g_propagate_error (error, ret_error);
+
 		return result;
 	}
 
@@ -1312,7 +1313,9 @@ start:
 	 */
 
 	/* not recoverable propagate the error */
-	g_propagate_error (error, ret_error);
+	if (error && ret_error)
+		g_propagate_error (error, ret_error);
+
 	return BRASERO_BURN_ERR;
 }
 
@@ -1389,7 +1392,9 @@ start:
 		 * if the user wants to carry on with a non joliet disc */
 		result = brasero_burn_ask_for_joliet (burn);
 		if (result != BRASERO_BURN_OK) {
-			g_propagate_error (error, ret_error);
+			if (ret_error)
+				g_propagate_error (error, ret_error);
+
 			return result;
 		}
 
@@ -1494,7 +1499,9 @@ start:
 		goto start;
 	}
 
-	g_propagate_error (error, ret_error);
+	if (ret_error)
+		g_propagate_error (error, ret_error);
+
 	return BRASERO_BURN_ERR;
 }
 

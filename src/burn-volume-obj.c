@@ -173,6 +173,7 @@ brasero_volume_wait_for_operation_end (BraseroVolume *self,
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
+	/* FIXME! that's where we should put a timeout (30 sec ?) */
 	priv->loop = g_main_loop_new (NULL, FALSE);
 	g_main_loop_run (priv->loop);
 
@@ -208,6 +209,34 @@ brasero_volume_operation_end (BraseroVolume *self)
 }
 
 static void
+brasero_volume_umounted_cb (GVolumeMonitor *monitor,
+			    GMount *mount,
+			    BraseroVolume *self)
+{
+	BraseroVolumePrivate *priv;
+	GMount *vol_mount;
+	GVolume *volume;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	volume = brasero_volume_get_gvolume (self);
+	vol_mount = g_volume_get_mount (volume);
+	g_object_unref (volume);
+
+	/* If it's NULL then that means it was unmounted */
+	if (!vol_mount) {
+		brasero_volume_operation_end (self);
+		return;
+	}
+
+	g_object_unref (vol_mount);
+	if (vol_mount != mount)
+		return;
+
+	brasero_volume_operation_end (self);
+}
+
+static void
 brasero_volume_umount_finish (GObject *source,
 			      GAsyncResult *result,
 			      gpointer user_data)
@@ -216,6 +245,10 @@ brasero_volume_umount_finish (GObject *source,
 	BraseroVolumePrivate *priv;
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	if (!priv->loop)
+		return;
+
 	priv->result = g_mount_unmount_finish (G_MOUNT (source),
 					       result,
 					       &priv->error);
@@ -231,10 +264,9 @@ brasero_volume_umount_finish (GObject *source,
 			/* That can happen sometimes */
 			g_error_free (priv->error);
 			priv->error = NULL;
+			priv->result = TRUE;
 		}
 	}
-
-	brasero_volume_operation_end (self);
 
 	if (priv->result)
 		g_signal_emit (self,
@@ -268,12 +300,23 @@ brasero_volume_umount (BraseroVolume *self,
 		return FALSE;
 
 	if (wait) {
+		gulong umount_sig;
+		GVolumeMonitor *monitor;
+
+		monitor = g_volume_monitor_get ();
+		umount_sig = g_signal_connect (monitor,
+					       "mount-removed",
+					       G_CALLBACK (brasero_volume_umounted_cb),
+					       self);
+
 		g_mount_unmount (mount,
 				 G_MOUNT_UNMOUNT_NONE,
 				 priv->cancel,
 				 brasero_volume_umount_finish,
 				 self);
 		result = brasero_volume_wait_for_operation_end (self, error);
+
+		g_signal_handler_disconnect (monitor, umount_sig);
 	}
 	else {
 		g_mount_unmount (mount,
@@ -307,10 +350,12 @@ brasero_volume_mount_finish (GObject *source,
 			 * that was already done */
 			g_error_free (priv->error);
 			priv->error = NULL;
+			priv->result = TRUE;
 		}
 		else if (priv->error->code == G_IO_ERROR_ALREADY_MOUNTED) {
 			g_error_free (priv->error);
 			priv->error = NULL;
+			priv->result = TRUE;
 		}
 	}
 
