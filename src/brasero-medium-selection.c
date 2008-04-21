@@ -211,12 +211,12 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 		return;
 	}
 
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1)
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
+	else
 		g_signal_emit (self,
 			       medium_selection_signals [MEDIUM_CHANGED],
 			       0);
-	}
 }
 
 static void

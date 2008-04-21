@@ -103,18 +103,6 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 	}
 
 	gtk_widget_set_sensitive (priv->info, TRUE);
-
-	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
-		g_signal_emit (self,
-			       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
-			       0,
-			       drive);
-		
-		if (medium)
-			g_object_unref (medium);
-		return;
-	}
-
 	gtk_widget_set_sensitive (priv->selection, (priv->locked_drive == NULL));
 	g_signal_emit (self,
 		       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
