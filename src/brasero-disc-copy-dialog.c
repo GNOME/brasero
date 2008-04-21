@@ -163,9 +163,11 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),
 						BRASERO_MEDIA_TYPE_READABLE);
 
+	/* This is a special case. When we're copying, someone may want to read
+	 * and burn to the same drive so provided that the drive is a burner
+	 * then show its contents. */
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
-						BRASERO_MEDIA_TYPE_WRITABLE|
-						BRASERO_MEDIA_TYPE_REWRITABLE|
+						BRASERO_MEDIA_TYPE_ANY_IN_BURNER|
 						BRASERO_MEDIA_TYPE_FILE);
 
 	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->selection));

@@ -228,10 +228,16 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 	const gchar *medium_icon;
 	gboolean add = FALSE;
 	GtkTreeModel *model;
+	BraseroDrive *drive;
 	gchar *medium_name;
 	GtkTreeIter iter;
 
 	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
+
+	drive = brasero_medium_get_drive (medium);
+	if ((priv->type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
+	&&  (brasero_drive_can_write (drive)))
+		add = TRUE;
 
 	if ((priv->type & BRASERO_MEDIA_TYPE_READABLE)
 	&&  (brasero_medium_get_status (medium) & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)))

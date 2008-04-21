@@ -101,6 +101,9 @@ BraseroDriveCaps
 brasero_drive_get_caps (BraseroDrive *drive);
 
 gboolean
+brasero_drive_can_write (BraseroDrive *drive);
+
+gboolean
 brasero_drive_is_door_open (BraseroDrive *drive);
 
 gboolean

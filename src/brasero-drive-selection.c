@@ -236,9 +236,8 @@ brasero_drive_selection_set_type_shown (BraseroDriveSelection *self,
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
 
-	/* ncb sets sensitivity on its own so we need to reset it correctly */
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
 	if (priv->locked_drive)
 		gtk_widget_set_sensitive (priv->selection, FALSE);
 }

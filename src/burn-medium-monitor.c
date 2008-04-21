@@ -82,8 +82,18 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 
 	for (iter = priv->media; iter; iter = iter->next) {
 		BraseroMedium *medium;
+		BraseroDrive *drive;
 
 		medium = iter->data;
+		drive = brasero_medium_get_drive (medium);
+
+		if ((type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
+		&&  (brasero_drive_can_write (drive))) {
+			list = g_slist_prepend (list, medium);
+			g_object_ref (medium);
+			continue;
+		}
+
 		if ((type & BRASERO_MEDIA_TYPE_READABLE)
 		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
 		&&  (brasero_medium_get_status (medium) & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))) {

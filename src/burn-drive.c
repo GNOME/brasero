@@ -341,6 +341,22 @@ brasero_drive_get_caps (BraseroDrive *self)
 	return priv->caps;
 }
 
+gboolean
+brasero_drive_can_write (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return (priv->caps & (BRASERO_DRIVE_CAPS_CDR|
+			      BRASERO_DRIVE_CAPS_DVDR|
+			      BRASERO_DRIVE_CAPS_DVDR_PLUS|
+			      BRASERO_DRIVE_CAPS_CDRW|
+			      BRASERO_DRIVE_CAPS_DVDRW|
+			      BRASERO_DRIVE_CAPS_DVDRW_PLUS|
+			      BRASERO_DRIVE_CAPS_DVDR_PLUS_DL|
+			      BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL));
+}
+
 static void
 brasero_drive_init (BraseroDrive *object)
 { }

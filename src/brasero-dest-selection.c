@@ -1194,7 +1194,6 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 	if (brasero_burn_session_is_dest_file (priv->session)) {
 		/* check that if a path was set there may be none if there was
 		 * no disc inserted when the dialog was created. */
-
 		if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) != BRASERO_BURN_OK)
 			brasero_dest_selection_set_image_properties (self);
 
@@ -1361,7 +1360,9 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
 			  object);
 
-	/* only show media on which we can write and which are in a burner */
+	/* Only show media on which we can write and which are in a burner.
+	 * There is one exception though, when we're copying media and when the
+	 * burning device is the same as the dest device. */
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (object),
 						BRASERO_MEDIA_TYPE_WRITABLE);
 
