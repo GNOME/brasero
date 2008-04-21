@@ -183,7 +183,6 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			valid = FALSE;
 		else
 			valid = TRUE;
-	
 	}
 	else if (brasero_burn_session_is_dest_file (priv->session)) {
 	  	valid = TRUE;
@@ -199,8 +198,11 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 		g_object_unref (caps);
 	}
 
-	g_object_unref (src_drive);
-	g_object_unref (drive);
+	if (src_drive)
+		g_object_unref (src_drive);
+
+	if (drive)
+		g_object_unref (drive);
 
 	brasero_disc_copy_dialog_set_burn_button_state (obj, valid);
 }

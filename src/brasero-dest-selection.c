@@ -1187,6 +1187,20 @@ static void
 brasero_dest_selection_source_changed (BraseroBurnSession *session,
 				       BraseroDestSelection *self)
 {
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	if (brasero_burn_session_is_dest_file (priv->session)) {
+		/* check that if a path was set there may be none if there was
+		 * no disc inserted when the dialog was created. */
+
+		if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) != BRASERO_BURN_OK)
+			brasero_dest_selection_set_image_properties (self);
+
+		return;
+	}
+
 	/* NOTE: that can't happen if we are going to write to an image since
 	 * that would mean we are changing the image format (something we don't
 	 * do. So it has to be when we write to a drive */

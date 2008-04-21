@@ -1,3 +1,11 @@
+2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Make sure there is always a default path set when we're creating an image
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_source_changed):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+
 2008-04-19  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix crash when setting the path for an image output when there was none before
