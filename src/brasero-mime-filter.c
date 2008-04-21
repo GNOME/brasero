@@ -257,7 +257,6 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 						break;
 					}
 				}
-				g_object_unref (theme);
 			}
 		}
 		
@@ -283,7 +282,7 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
 		g_object_ref_sink (GTK_OBJECT (item));
-		g_object_unref (icon);
+//		g_object_unref (icon);
 		g_free (display);
 
 		/* we check that the first entry at least is visible */

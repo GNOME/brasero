@@ -1467,11 +1467,6 @@ brasero_data_tree_model_finalize (GObject *object)
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (object);
 
-	if (priv->theme) {
-		g_object_unref (priv->theme);
-		priv->theme = NULL;
-	}
-
 	if (priv->shown) {
 		g_slist_free (priv->shown);
 		priv->shown = NULL;

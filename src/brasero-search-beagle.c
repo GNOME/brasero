@@ -760,7 +760,6 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 						break;
 					}
 				}
-				g_object_unref (theme);
 			}
 		}
 

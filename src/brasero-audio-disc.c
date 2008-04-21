@@ -1179,7 +1179,6 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 					break;
 				}
 			}
-			g_object_unref (theme);
 		}
 	}
 
