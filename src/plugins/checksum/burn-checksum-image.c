@@ -75,10 +75,10 @@ static BraseroJobClass *parent_class = NULL;
 
 static gint
 brasero_checksum_image_read (BraseroChecksumImage *self,
-		     int fd,
-		     guchar *buffer,
-		     gint bytes,
-		     GError **error)
+			     int fd,
+			     guchar *buffer,
+			     gint bytes,
+			     GError **error)
 {
 	gint total = 0;
 	gint read_bytes;
@@ -123,10 +123,10 @@ brasero_checksum_image_read (BraseroChecksumImage *self,
 
 static BraseroBurnResult
 brasero_checksum_image_write (BraseroChecksumImage *self,
-		      int fd,
-		      guchar *buffer,
-		      gint bytes,
-		      GError **error)
+			      int fd,
+			      guchar *buffer,
+			      gint bytes,
+			      GError **error)
 {
 	gint bytes_remaining;
 	gint bytes_written = 0;
@@ -171,10 +171,10 @@ brasero_checksum_image_write (BraseroChecksumImage *self,
 
 static BraseroBurnResult
 brasero_checksum_image_checksum (BraseroChecksumImage *self,
-			 GChecksumType checksum_type,
-			 int fd_in,
-			 int fd_out,
-			 GError **error)
+				 GChecksumType checksum_type,
+				 int fd_in,
+				 int fd_out,
+				 GError **error)
 {
 	gint read_bytes;
 	guchar buffer [2048];
@@ -223,8 +223,8 @@ brasero_checksum_image_checksum (BraseroChecksumImage *self,
 
 static BraseroBurnResult
 brasero_checksum_image_checksum_fd_input (BraseroChecksumImage *self,
-				  GChecksumType checksum_type,
-				  GError **error)
+					  GChecksumType checksum_type,
+					  GError **error)
 {
 	int fd_in = -1;
 	int fd_out = -1;
@@ -246,8 +246,8 @@ brasero_checksum_image_checksum_fd_input (BraseroChecksumImage *self,
 
 static BraseroBurnResult
 brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
-				    GChecksumType checksum_type,
-				    GError **error)
+					    GChecksumType checksum_type,
+					    GError **error)
 {
 	BraseroChecksumImagePrivate *priv;
 	BraseroBurnResult result;
@@ -306,7 +306,7 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 
 static BraseroBurnResult
 brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
-				GError **error)
+					GError **error)
 {
 	BraseroBurnResult result;
 	BraseroChecksumImagePrivate *priv;
@@ -389,6 +389,12 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 		checksum_type = G_CHECKSUM_SHA256;
 	else
 		checksum_type = G_CHECKSUM_MD5;
+
+	brasero_job_set_current_action (BRASERO_JOB (self),
+					BRASERO_BURN_ACTION_CHECKSUM,
+					_("Creating image checksum"),
+					FALSE);
+	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
 		result = brasero_checksum_image_checksum_fd_input (self, checksum_type, error);
