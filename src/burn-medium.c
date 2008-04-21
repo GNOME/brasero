@@ -2009,7 +2009,7 @@ brasero_medium_init_real (BraseroMedium *object,
 		guint j;
 
 		for (j = 0; priv->wr_speeds [j] != 0; j ++) {
-			if (priv->wr_speeds [i] < priv->wr_speeds [j]) {
+			if (priv->wr_speeds [i] > priv->wr_speeds [j]) {
 				gint64 tmp;
 
 				tmp = priv->wr_speeds [i];
