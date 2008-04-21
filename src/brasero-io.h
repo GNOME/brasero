@@ -56,6 +56,7 @@ GType brasero_io_get_type (void) G_GNUC_CONST;
 typedef enum {
 	BRASERO_IO_INFO_NONE			= 0,
 	BRASERO_IO_INFO_MIME			= 1,
+	BRASERO_IO_INFO_ICON			= 1,
 	BRASERO_IO_INFO_PERM			= 1 << 1,
 	BRASERO_IO_INFO_METADATA		= 1 << 2,
 	BRASERO_IO_INFO_RECURSIVE		= 1 << 3,

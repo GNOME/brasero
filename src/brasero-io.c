@@ -721,6 +721,8 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 		strcat (attributes, "," G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
 	if (job->options & BRASERO_IO_INFO_MIME)
 		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+	if (job->options & BRASERO_IO_INFO_ICON)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
 
 	file = g_file_new_for_uri (file_uri?file_uri:job->uri);
 	info = g_file_query_info (file,
@@ -1449,6 +1451,9 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 	else if ((data->job.options & BRASERO_IO_INFO_METADATA)
 	     &&  (data->job.options & BRASERO_IO_INFO_RECURSIVE))
 		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+
+	if (data->job.options & BRASERO_IO_INFO_ICON)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
 
 	if (data->children) {
 		file = data->children->data;

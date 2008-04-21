@@ -1,5 +1,17 @@
 2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fixed some warnings and icon retrieving in search pane and audio project
+	Also added possibility to retrieve GIcon through brasero-io (but still unused)
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_row_from_metadata):
+	* src/brasero-io.c (brasero_io_get_file_info_thread),
+	(brasero_io_load_directory_thread):
+	* src/brasero-io.h:
+	* src/brasero-mime-filter.c (brasero_mime_filter_add_mime):
+
+2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix order of rates returned by medium
 
 	* src/burn-medium.c (brasero_medium_init_real):

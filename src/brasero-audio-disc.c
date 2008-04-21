@@ -1153,7 +1153,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 					  GtkTreeIter *iter,
 					  GFileInfo *info)
 {
-	const gchar * const *icon_string = NULL;
+	const gchar *icon_string = NULL;
 	gint64 current_length;
 	GtkTreeIter gap_iter;
 	gchar *size_string;
@@ -1162,9 +1162,26 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	GIcon *icon;
 	gint64 end;
 
+	/* NOTE: implemented in glib 2.15.6 (not for windows though) */
 	icon = g_content_type_get_icon (g_file_info_get_content_type (info));
-	if (G_IS_THEMED_ICON (icon))
-		icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
+	if (G_IS_THEMED_ICON (icon)) {
+		const gchar * const *names = NULL;
+
+		names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+		if (names) {
+			gint i;
+			GtkIconTheme *theme;
+
+			theme = gtk_icon_theme_get_default ();
+			for (i = 0; names [i]; i++) {
+				if (gtk_icon_theme_has_icon (theme, names [i])) {
+					icon_string = names [i];
+					break;
+				}
+			}
+			g_object_unref (theme);
+		}
+	}
 
 	gtk_tree_model_get (model, iter,
 			    START_COL, &start,
@@ -1232,7 +1249,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	size_string = brasero_utils_get_time_string (length, TRUE, FALSE);
 	gtk_list_store_set (GTK_LIST_STORE (model), iter,
 			    SIZE_COL, size_string,
-			    ICON_COL, icon_string?icon_string [0]:NULL,
+			    ICON_COL, icon_string,
 			    LENGTH_COL, g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN),
 			    ARTIST_COL, g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST),
 			    COMPOSER_COL, g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER),

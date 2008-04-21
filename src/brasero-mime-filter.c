@@ -236,14 +236,30 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 		GtkTreeIter row;
 		GtkTreeModel *model;
 		const gchar *description;
-		const gchar * const *icon_string = NULL;
+		const gchar *icon_string = NULL;
 
 		description = g_content_type_get_description (mime);
 		display = g_strdup_printf (_("%s only"), description);
 
 		icon = g_content_type_get_icon (mime);
-		if (G_IS_THEMED_ICON (icon))
-			icon_string = g_themed_icon_get_names (G_THEMED_ICON (icon));
+		if (G_IS_THEMED_ICON (icon)) {
+			const gchar * const *names = NULL;
+
+			names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+			if (names) {
+				gint i;
+				GtkIconTheme *theme;
+
+				theme = gtk_icon_theme_get_default ();
+				for (i = 0; names [i]; i++) {
+					if (gtk_icon_theme_has_icon (theme, names [i])) {
+						icon_string = names [i];
+						break;
+					}
+				}
+				g_object_unref (theme);
+			}
+		}
 		
 		/* create the GtkFileFilter */
 		item = gtk_file_filter_new ();
@@ -263,10 +279,11 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 		g_object_ref (item);
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    BRASERO_MIME_FILTER_DISPLAY_COL, display,
-				    BRASERO_MIME_FILTER_ICON_COL, icon_string?icon_string [0]:NULL,
+				    BRASERO_MIME_FILTER_ICON_COL, icon_string,
 				    BRASERO_MIME_FILTER_FILTER_COL, item,
 				    -1);
 		g_object_ref_sink (GTK_OBJECT (item));
+		g_object_unref (icon);
 		g_free (display);
 
 		/* we check that the first entry at least is visible */
