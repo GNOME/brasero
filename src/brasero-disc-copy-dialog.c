@@ -186,9 +186,6 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 		else
 			valid = TRUE;
 	}
-	else if (brasero_burn_session_is_dest_file (priv->session)) {
-	  	valid = TRUE;
-	}
 	else {
 		BraseroBurnCaps *caps;
 
