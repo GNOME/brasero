@@ -1,5 +1,17 @@
 2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Last patch (hopefully) to fix mimetype icons
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_row_from_metadata):
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value):
+	* src/brasero-mime-filter.c (brasero_mime_filter_add_mime):
+	* src/brasero-search-beagle.c (brasero_search_add_hit_to_tree):
+	* src/brasero-utils.h:
+
+2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Display current action when creating a checksum for an image
 
 	* src/plugins/checksum/burn-checksum-image.c

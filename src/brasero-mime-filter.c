@@ -236,7 +236,7 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 		GtkTreeIter row;
 		GtkTreeModel *model;
 		const gchar *description;
-		const gchar *icon_string = NULL;
+		const gchar *icon_string = BRASERO_DEFAULT_ICON;
 
 		description = g_content_type_get_description (mime);
 		display = g_strdup_printf (_("%s only"), description);

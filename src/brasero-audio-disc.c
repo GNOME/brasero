@@ -1153,7 +1153,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 					  GtkTreeIter *iter,
 					  GFileInfo *info)
 {
-	const gchar *icon_string = NULL;
+	const gchar *icon_string = BRASERO_DEFAULT_ICON;
 	gint64 current_length;
 	GtkTreeIter gap_iter;
 	gchar *size_string;

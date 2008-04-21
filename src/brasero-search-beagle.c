@@ -696,7 +696,7 @@ brasero_search_add_hit_to_tree (BraseroSearch *search,
 	GSList *next;
 
 	gchar *name, *mime, *uri; 
-        const gchar *icon_string = NULL;
+	const gchar *icon_string = BRASERO_DEFAULT_ICON;
 	const gchar *description;
 	GIcon *icon;
 	gint score;

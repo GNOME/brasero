@@ -520,7 +520,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			g_value_set_string (value, "media-cdrom");
 		}
 		else if (BRASERO_FILE_NODE_MIME (node)) {
-			const gchar *icon_string = NULL;
+			const gchar *icon_string = BRASERO_DEFAULT_ICON;
 			GIcon *icon;
 
 			/* NOTE: implemented in glib 2.15.6 (not for windows though) */

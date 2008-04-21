@@ -759,7 +759,6 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	for (i = 1.; i < num; i ++) {
 		gchar *string;
-		guint arrow_x;
 		guint text_x;
 
 		string = brasero_utils_get_sectors_string (i * interval_size,

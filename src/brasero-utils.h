@@ -48,6 +48,8 @@ typedef enum {
 	BRASERO_ERROR_SYMLINK_LOOP
 } BraseroErrors;
 
+#define BRASERO_DEFAULT_ICON		"text-x-preview"
+
 void brasero_utils_init (void);
 
 inline gboolean brasero_utils_is_gid_in_groups (gid_t gid);
