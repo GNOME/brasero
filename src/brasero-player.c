@@ -405,14 +405,27 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 			    0);
 
 	player->priv->size = gtk_label_new (NULL);
-	gtk_label_set_justify (GTK_LABEL (player->priv->size), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (player->priv->size), 1.0, 0.0);
-	gtk_box_pack_start (GTK_BOX (header_box),
-			    player->priv->size,
-			    FALSE,
-			    FALSE,
-			    0);
+	if (GTK_WIDGET (player)->allocation.width > GTK_WIDGET (player)->allocation.height) {
+		gtk_label_set_justify (GTK_LABEL (player->priv->size), GTK_JUSTIFY_RIGHT);
+		gtk_misc_set_alignment (GTK_MISC (player->priv->size), 1.0, 0.0);
 
+		gtk_box_pack_start (GTK_BOX (header_box),
+				    player->priv->size,
+				    FALSE,
+				    FALSE,
+				    0);
+	}
+	else {
+		gtk_label_set_justify (GTK_LABEL (player->priv->size), GTK_JUSTIFY_LEFT);
+		gtk_misc_set_alignment (GTK_MISC (player->priv->size), 0.0, 0.0);
+
+		gtk_box_pack_start (GTK_BOX (player->priv->controls),
+				    player->priv->size,
+				    FALSE,
+				    FALSE,
+				    0);
+	}
+	
 	/* second line : play, progress, volume button */
 	box = gtk_hbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (player->priv->controls),
@@ -440,6 +453,7 @@ brasero_player_create_controls_stream (BraseroPlayer *player,
 	player->priv->progress = gtk_hscale_new_with_range (0, 1, 500000000);
 	gtk_scale_set_digits (GTK_SCALE (player->priv->progress), 0);
 	gtk_scale_set_draw_value (GTK_SCALE (player->priv->progress), FALSE);
+	gtk_widget_set_size_request (player->priv->progress, 80, -1);
 	gtk_range_set_update_policy (GTK_RANGE (player->priv->progress), GTK_UPDATE_CONTINUOUS);
 	gtk_box_pack_start (GTK_BOX (box),
 			  player->priv->progress,
@@ -664,11 +678,18 @@ brasero_player_create_controls_image (BraseroPlayer *player)
 
 	player->priv->controls = gtk_vbox_new (FALSE, 4);
 
-	gtk_box_pack_end (GTK_BOX (player->priv->hbox),
-			  player->priv->controls,
-			  TRUE,
-			  TRUE,
-			  0);
+	if (GTK_WIDGET (player)->allocation.width > GTK_WIDGET (player)->allocation.height)
+		gtk_box_pack_end (GTK_BOX (player->priv->hbox),
+				  player->priv->controls,
+				  TRUE,
+				  TRUE,
+				  0);
+	else
+		gtk_box_pack_end (GTK_BOX (player->priv->vbox),
+				  player->priv->controls,
+				  TRUE,
+				  TRUE,
+				  0);
 
 	player->priv->header = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (player->priv->header), 0.0, 0.5);
@@ -1160,6 +1181,55 @@ brasero_player_get_pos (BraseroPlayer *self)
 }
 
 static void
+brasero_player_size_allocate (GtkWidget *widget,
+			      GtkAllocation *allocation)
+{
+	BraseroPlayer *player;
+	GtkWidget *parent;
+
+	player = BRASERO_PLAYER (widget);
+	if (!player->priv->controls) {
+		GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+		return;
+	}
+
+	if (!player->priv->pixbuf) {
+		GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+		return;
+	}
+
+	parent = gtk_widget_get_parent (player->priv->controls);
+
+	g_object_ref (player->priv->controls);
+
+	if (allocation->width > allocation->height) {
+		if (parent != player->priv->hbox) {
+			gtk_container_remove (GTK_CONTAINER (player->priv->vbox), player->priv->controls);
+			gtk_box_pack_end (GTK_BOX (player->priv->hbox),
+					  player->priv->controls,
+					  TRUE,
+					  TRUE,
+					  0);
+		}
+	}
+	else {
+		if (parent != player->priv->vbox) {
+			gtk_container_remove (GTK_CONTAINER (player->priv->hbox), player->priv->controls);
+			gtk_box_pack_end (GTK_BOX (player->priv->vbox),
+					  player->priv->controls,
+					  TRUE,
+					  TRUE,
+					  0);
+		}
+	}
+
+	g_object_unref (player->priv->controls);
+	gtk_widget_show (player->priv->controls);
+
+	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+}
+
+static void
 brasero_player_destroy (GtkObject *obj)
 {
 	BraseroPlayer *player;
@@ -1240,10 +1310,15 @@ brasero_player_class_init (BraseroPlayerClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	GtkObjectClass *gtk_object_class = GTK_OBJECT_CLASS (klass);
+	GtkWidgetClass *gtk_widget_class = GTK_WIDGET_CLASS (klass);
 
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_player_finalize;
+
 	gtk_object_class->destroy = brasero_player_destroy;
+
+	gtk_widget_class->size_allocate = brasero_player_size_allocate;
+
 	brasero_player_signals [ERROR_SIGNAL] = 
 			g_signal_new ("error",
 				      G_TYPE_FROM_CLASS (klass),

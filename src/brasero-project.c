@@ -59,6 +59,11 @@
 
 #include "burn-debug.h"
 #include "burn-session.h"
+
+#ifdef BUILD_PREVIEW
+#include "brasero-player.h"
+#endif
+
 #include "brasero-project.h"
 #include "brasero-jacket-edit.h"
 #include "brasero-project-size.h"
@@ -242,6 +247,8 @@ static GObjectClass *parent_class = NULL;
 #define KEY_DEFAULT_DATA_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_data_cd_command"
 #define KEY_DEFAULT_AUDIO_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_audio_cd_command"
 #define KEY_ASK_DEFAULT_BURNING_APP		"/apps/brasero/ask_default_app"
+
+#define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/preview"
 
 #define BRASERO_PROJECT_VERSION "0.2"
 
@@ -1419,6 +1426,26 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 }
 
 static void
+brasero_project_preview_ready (BraseroPlayer *player,
+			       GtkFileChooser *chooser)
+{
+	gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
+}
+
+static void
+brasero_project_update_preview (GtkFileChooser *chooser,
+				BraseroPlayer *player)
+{
+	gchar *uri;
+
+	gtk_file_chooser_set_preview_widget_active (chooser, FALSE);
+
+	uri = gtk_file_chooser_get_preview_uri (chooser);
+	brasero_player_set_uri (player, uri);
+	g_free (uri);
+}
+
+static void
 brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 {
 	GtkWidget *toplevel;
@@ -1479,6 +1506,39 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 	gtk_file_filter_set_name (filter, _("Image files only"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
+
+#ifdef BUILD_PREVIEW
+
+	GConfClient *client;
+	GtkWidget *player;
+	gboolean res;
+
+	client = gconf_client_get_default ();
+	res = gconf_client_get_bool (client, BRASERO_KEY_SHOW_PREVIEW, NULL);
+	g_object_unref (client);
+
+	if (!res)
+		return;
+
+	/* if preview is activated add it */
+	player = brasero_player_new ();
+
+	gtk_widget_show (player);
+	gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (project->priv->chooser), FALSE);
+	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (project->priv->chooser), FALSE);
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (project->priv->chooser), player);
+
+	g_signal_connect (project->priv->chooser,
+			  "update-preview",
+			  G_CALLBACK (brasero_project_update_preview),
+			  player);
+
+	g_signal_connect (player,
+			  "ready",
+			  G_CALLBACK (brasero_project_preview_ready),
+			  project->priv->chooser);
+#endif
+
 }
 
 static void
