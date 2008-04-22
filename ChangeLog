@@ -1,5 +1,14 @@
 2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #509013 – Context menu actions for multiple files
+	Added debug for error in Player
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_button_pressed_cb):
+	* src/brasero-data-disc.c (brasero_data_disc_button_pressed_cb):
+	* src/brasero-player-bacon.c (brasero_player_bacon_bus_messages):
+
+2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Add a preview (when enabled) to GtkFileChooserDialog displayed when there isn't any sidebar.
 
 	* src/brasero-player.c (brasero_player_create_controls_stream),

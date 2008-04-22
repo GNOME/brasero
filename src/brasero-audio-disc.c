@@ -3092,17 +3092,27 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 {
 	GtkWidgetClass *widget_class;
 
-	/* we call the default handler for the treeview before everything else
-	 * so it can update itself (paticularly its selection) before we have
-	 * a look at it */
 	widget_class = GTK_WIDGET_GET_CLASS (tree);
-	widget_class->button_press_event (GTK_WIDGET (tree), event);
 
 	if (event->button == 3) {
 		GtkTreeSelection *selection;
+		GtkTreePath *path = NULL;
 		GtkWidget *widget;
 
+		gtk_tree_view_get_path_at_pos (tree,
+					       event->x,
+					       event->y,
+					       &path,
+					       NULL,
+					       NULL,
+					       NULL);
+
 		selection = gtk_tree_view_get_selection (tree);
+		if (!path || !gtk_tree_selection_path_is_selected (selection, path)) {
+			/* Don't update the selection if the right click was on one of
+			 * the already selected rows */
+			widget_class->button_press_event (GTK_WIDGET (tree), event);
+		}
 
 		widget = gtk_ui_manager_get_widget (disc->priv->manager, "/ContextMenu/PasteAudio");
 		if (widget) {
@@ -3125,6 +3135,11 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 	else if (event->button == 1) {
 		gboolean result;
 		GtkTreePath *treepath = NULL;
+
+		/* we call the default handler for the treeview before everything else
+		 * so it can update itself (paticularly its selection) before we have
+		 * a look at it */
+		widget_class->button_press_event (GTK_WIDGET (tree), event);
 
 		result = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (disc->priv->tree),
 							event->x,

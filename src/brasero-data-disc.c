@@ -1796,6 +1796,7 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				     BraseroDataDisc *self)
 {
 	gboolean result;
+	gboolean is_selected = FALSE;
 	BraseroFileNode *node = NULL;
 	GtkTreePath *treepath = NULL;
 	GtkWidgetClass *widget_class;
@@ -1813,7 +1814,14 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 							NULL);
 
 		if (treepath)
-			node = brasero_data_tree_model_path_to_node (BRASERO_DATA_TREE_MODEL (priv->project), treepath);
+			node = brasero_data_tree_model_path_to_node (BRASERO_DATA_TREE_MODEL (priv->project),
+								     treepath);
+
+		if (node) {
+			GtkTreeSelection *selection;
+			selection = gtk_tree_view_get_selection (tree);
+			is_selected = gtk_tree_selection_path_is_selected (selection, treepath);
+		}
 
 		if (!node && treepath) {
 			/* That may be a BOGUS row */
@@ -1829,9 +1837,9 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 	 * NOTE: since the event has been processed here we need to return TRUE
 	 * to avoid having the treeview processing this event a second time. */
 	widget_class = GTK_WIDGET_GET_CLASS (tree);
-	widget_class->button_press_event (GTK_WIDGET (tree), event);
 
 	if (priv->loading) {
+		widget_class->button_press_event (GTK_WIDGET (tree), event);
 		gtk_tree_path_free (treepath);
 		return TRUE;
 	}
@@ -1848,6 +1856,8 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 	}
 
 	if (event->button == 1) {
+		widget_class->button_press_event (GTK_WIDGET (tree), event);
+
 		priv->press_start_x = event->x;
 		priv->press_start_y = event->y;
 
@@ -1871,6 +1881,11 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 	}
 	else if (event->button == 3) {
 		GtkTreeSelection *selection;
+
+		/* Don't update the selection if the right click was on one of
+		 * the already selected rows */
+		if (!is_selected)
+			widget_class->button_press_event (GTK_WIDGET (tree), event);
 
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 		brasero_data_disc_show_menu (gtk_tree_selection_count_selected_rows (selection),

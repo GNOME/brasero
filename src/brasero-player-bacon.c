@@ -543,6 +543,7 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 {
 	BraseroPlayerBaconState value;
 	GstStateChangeReturn result;
+	GError *error = NULL;
 	GstState state;
 
 	switch (GST_MESSAGE_TYPE (msg)) {
@@ -553,6 +554,9 @@ brasero_player_bacon_bus_messages (GstBus *bus,
 		break;
 
 	case GST_MESSAGE_ERROR:
+		gst_message_parse_error (msg, &error, NULL);
+		BRASERO_BURN_LOG ("%s", error->message);
+
 		g_signal_emit (bacon,
 			       brasero_player_bacon_signals [STATE_CHANGED_SIGNAL],
 			       0,
