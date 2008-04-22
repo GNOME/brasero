@@ -1,5 +1,11 @@
 2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Don't error out for clone image types when DAO is set simply ignore it
+
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_set_argv_record):
+
+2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix a crash when changing the disc in case of CD to CD copy using the same drive
 
 	* src/burn.c (brasero_burn_lock_dest_media):

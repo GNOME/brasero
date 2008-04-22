@@ -715,7 +715,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 				g_ptr_array_add (argv, g_strdup ("-"));
 			}
 			else
-				BRASERO_JOB_NOT_SUPPORTED (wodim);;
+				BRASERO_JOB_NOT_SUPPORTED (wodim);
 		}
 		else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 			/* now set the rest of the arguments */
@@ -818,8 +818,10 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			if (!rawpath)
 				BRASERO_JOB_NOT_READY (wodim);
 
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				return BRASERO_BURN_ERR;
+			/* NOTE: we ignore DAO flag on purpose since it isn't
+			 * implemented yet. Don't error out since there is no
+			 * way for us to tell that we don't support this flag
+			 * for this specific input. */
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-raw96r"));
