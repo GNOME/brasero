@@ -1755,6 +1755,8 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 						     &supported,
 						     &compulsory);
 		}
+		else if (flags & flag)
+			BRASERO_BURN_LOG_FLAGS (flag, "Flag set but not supported");
 	}
 
 	retval = brasero_burn_session_get_flags (priv->session);
@@ -2131,7 +2133,7 @@ brasero_burn_same_src_dest (BraseroBurn *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* get a new output. Also ask for both  */
+	/* get a new output. Also ask for both */
 	brasero_burn_session_push_settings (priv->session);
 	result = brasero_burn_session_get_tmp_image (priv->session,
 						     format,

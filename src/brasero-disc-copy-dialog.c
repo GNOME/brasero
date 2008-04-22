@@ -73,7 +73,6 @@ brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self)
 	BraseroDiscCopyDialogPrivate *priv;
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
-
 	g_object_ref (priv->session);
 	return priv->session;
 }

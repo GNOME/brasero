@@ -95,6 +95,8 @@ enum {
 };
 static guint brasero_dest_selection_signals [LAST_SIGNAL] = { 0 };
 
+#define BRASERO_DEST_SAVED_FLAGS	(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
+
 static void
 brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 {
@@ -127,7 +129,7 @@ brasero_dest_selection_save_drive_properties (BraseroDestSelection *self)
 
 	flags = gconf_client_get_int (client, key, NULL);
 	flags &= ~BRASERO_DRIVE_PROPERTIES_FLAGS;
-	flags |= (brasero_burn_session_get_flags (priv->session) & BRASERO_DRIVE_PROPERTIES_FLAGS);
+	flags |= (brasero_burn_session_get_flags (priv->session) & BRASERO_DEST_SAVED_FLAGS);
 	gconf_client_set_int (client, key, flags, NULL);
 	g_free (key);
 
@@ -928,7 +930,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 						  BRASERO_BURN_FLAG_DAO);
 
 		/* set new ones */
-		flags = gconf_value_get_int (value);
+		flags = gconf_value_get_int (value) & BRASERO_DEST_SAVED_FLAGS;
 		gconf_value_free (value);
 		brasero_burn_session_add_flag (priv->session, flags);
 
@@ -955,8 +957,9 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
 		/* set the saved flags (make sure they are supported) */
-		flags = gconf_value_get_int (value);
+		flags = gconf_value_get_int (value) & BRASERO_DEST_SAVED_FLAGS;
 		gconf_value_free (value);
+
 		brasero_dest_selection_add_drive_properties_flags (self,
 								   flags,
 								   &supported,

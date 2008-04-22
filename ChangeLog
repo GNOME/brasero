@@ -1,5 +1,16 @@
 2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Don't save all flags in between sessions but only those that the user can change
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_save_drive_properties),
+	(brasero_dest_selection_set_drive_properties):
+	* src/brasero-disc-copy-dialog.c
+	(brasero_disc_copy_dialog_get_session):
+	* src/burn.c (brasero_burn_check_session_consistency):
+
+2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fixed a crash when copying a medium with same dest and source drive
 
 	* src/burn-session.c (brasero_burn_session_set_image_output_full):
