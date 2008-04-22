@@ -1,5 +1,11 @@
 2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix a crash when changing the disc in case of CD to CD copy using the same drive
+
+	* src/burn.c (brasero_burn_lock_dest_media):
+
+2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Don't save all flags in between sessions but only those that the user can change
 
 	* src/brasero-dest-selection.c

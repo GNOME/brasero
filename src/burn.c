@@ -702,6 +702,12 @@ brasero_burn_lock_dest_media (BraseroBurn *burn, GError **error)
 again:
 
 	medium = brasero_drive_get_medium (priv->dest);
+	if (!medium) {
+		result = BRASERO_BURN_NEED_RELOAD;
+		berror = BRASERO_BURN_ERROR_MEDIA_NONE;
+		goto end;
+	}
+
 	if (!brasero_medium_can_be_written (medium)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
