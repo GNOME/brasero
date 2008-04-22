@@ -1,27 +1,21 @@
 # Chinese (Hong Kong) translation for brasero
-# Copyright (c) 2008 Free Software Foundation, Inc.
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the brasero package.
-# Hialan Liu <hialan.liu@gmail.com>, 2008
-#
-# Launchpad Contributions(2008):
-#   APPLEKID https://launchpad.net/~applekid-tw
-#   missmomo0911 https://launchpad.net/~missmomo0911
-#   poshenghsu https://launchpad.net/~poshenghsu
-#   yenteenyu https://launchpad.net/~yen-teenyu
+# missmomo0911 <missmomo0911@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: brasero\n"
+"Project-Id-Version: brasero 0.7.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-25 19:43+0800\n"
-"PO-Revision-Date: 2008-03-25 19:45+0800\n"
-"Last-Translator: Hialan Liu <hialan.liu@gmail.com>\n"
+"POT-Creation-Date: 2008-04-22 20:08+0800\n"
+"PO-Revision-Date: 2008-04-22 20:12+0800\n"
+"Last-Translator: missmomo0911 <missmomo0911@gmail.com>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2008-03-24 12:48+0000\n"
+"X-Launchpad-Export-Date: 2008-04-19 16:12+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../data/brasero.desktop.in.in.h:1
@@ -37,7 +31,6 @@ msgid "Disc Burning Application"
 msgstr "光碟燒錄程式"
 
 #: ../data/brasero.desktop.in.in.h:4
-#, fuzzy
 msgid "Open project"
 msgstr "開啟專案"
 
@@ -49,13 +42,13 @@ msgstr "複製CD/DVD"
 msgid ""
 "Contains the list of additionnal plugins brasero will use to burn discs. If "
 "set to NULL, brasero will load them all."
-msgstr ""
+msgstr "包含 brasero 用來燒錄光碟用的外掛清單，如設定為 NULL，brasero 將會全部載入。"
 
 #: ../data/brasero.schemas.in.h:2
 msgid ""
 "Contains the name of the favourite burn engine suite installed. It will be "
 "used if possible."
-msgstr ""
+msgstr "包含已安裝的慣用燒錄引擎套件清單，如果可能的話會使用。"
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -79,7 +72,7 @@ msgstr "啟用檔案預覽"
 
 #: ../data/brasero.schemas.in.h:8
 msgid "Enable immed flag with cdrecord"
-msgstr ""
+msgstr "在 cdrecord 中啟用 immed 標記"
 
 #: ../data/brasero.schemas.in.h:9
 msgid "Favourite burn engine"
@@ -91,190 +84,195 @@ msgstr "影像預覽的高度"
 
 #: ../data/brasero.schemas.in.h:11
 msgid "Height of image preview"
-msgstr ""
+msgstr "圖片預覽的高度"
 
 #: ../data/brasero.schemas.in.h:12
 msgid "Layout of UI"
-msgstr ""
+msgstr "使用者介面配置"
 
 #: ../data/brasero.schemas.in.h:13
 msgid ""
 "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-msgstr ""
+msgstr "只和 cdrecord 的 - immed 標記一起使用。參閱 immed_flag 。"
 
 #: ../data/brasero.schemas.in.h:14
 msgid "Pane to display for audio projects"
-msgstr ""
+msgstr "顯示音訊專案的面板"
 
 #: ../data/brasero.schemas.in.h:15
 msgid "Pane to display for data projects"
-msgstr ""
+msgstr "顯示資料專案的面板"
 
 #: ../data/brasero.schemas.in.h:16
 msgid "Should brasero ask to be set as the default app to burn"
-msgstr ""
+msgstr "是否讓 brasero 請求成為預設燒錄程式"
 
 #: ../data/brasero.schemas.in.h:17
 msgid ""
 "Should brasero ask to be set as the default app to burn audio or data. Set "
 "to true, brasero won't ask."
-msgstr ""
+msgstr "是否讓 brasero 請求成為燒錄音訊或資料的預設程式。若設為 true ， brasero 將不再詢問。"
 
 #: ../data/brasero.schemas.in.h:18
+#, fuzzy
 msgid "Should brasero filter broken symlinks files"
-msgstr ""
+msgstr "是否要繞brasero過濾損壞的符號鏈接文件"
 
 #: ../data/brasero.schemas.in.h:19
 msgid ""
 "Should brasero filter broken symlinks. Set to true, brasero will filter "
 "broken symlinks."
-msgstr ""
+msgstr "是否要讓brasero過濾損壞的符號鏈接文件。如此設定，brasero將過濾損壞的符號鏈接文件。"
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
-msgstr ""
+msgstr "brasero 是否過濾隱藏檔案"
 
 #: ../data/brasero.schemas.in.h:21
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
-msgstr ""
+msgstr "是否要讓brasero過濾隱藏檔案。如此設定，brasero將過濾隱藏檔案。"
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
-msgstr ""
+msgstr "當檔案被過濾時，brasero是否通知。"
 
 #: ../data/brasero.schemas.in.h:23
 msgid ""
 "Should brasero notify when files are filtered. Set to true, brasero will "
 "display the notification."
-msgstr ""
+msgstr "當檔案被過濾時， brasero 是否通知。若設為 true ， brasero 將顯示通知。"
 
 #: ../data/brasero.schemas.in.h:24
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "Chooser/Search/Playlist/EmptyView."
 msgstr ""
+"顯示音樂光碟專案的視窗(pane)，應為下列方式之一：\n"
+"Chooser/Search/Playlist/EmptyView。"
 
 #: ../data/brasero.schemas.in.h:25
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "Chooser/Search/EmptyView."
 msgstr ""
+"顯示資料光碟專案的視窗(pane)，應為下列方式之一：\n"
+"Chooser/Search/EmptyView。"
 
 #: ../data/brasero.schemas.in.h:26
 msgid ""
 "This key sets where the project pane should be (0 = on the right, 1 = on the "
 "left, 2 = at the top, 3 = at the bottom)"
-msgstr ""
+msgstr "此鍵會設定專案面板的顯示位置應為(0=在右側，1=在左側，2=在頂部，3=在底部)"
 
 #: ../data/brasero.schemas.in.h:27
 msgid "Used in conjunction with -immed flag with cdrecord"
-msgstr ""
+msgstr "和 cdrecord 的 - immed 標記一起使用"
 
 #: ../data/brasero.schemas.in.h:28
 msgid "Whether to display file preview. Set to true to use it."
-msgstr ""
+msgstr "是否顯示檔案預覽。若設為 true 則啟用。"
 
 #: ../data/brasero.schemas.in.h:29
 msgid ""
 "Whether to use -immed flag with cdrecord. Use with caution (set to true) as "
 "it's only a workaround for some drives/setups."
-msgstr ""
+msgstr "是否使用 cdrecord 的 - immed 標記。小心使用（設為真） ，因為它只是一些驅動器/安裝的工作環境。"
 
 #: ../data/brasero.schemas.in.h:30
 msgid "White list of additionnal plugins to use"
-msgstr ""
+msgstr "額外插件使用的白名單"
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Width for video preview"
-msgstr ""
+msgstr "影像預覽的宽度"
 
 #: ../data/brasero.schemas.in.h:32
 msgid "width for image preview"
-msgstr ""
+msgstr "圖片預覽的宽度"
 
 #: ../data/brasero.xml.in.h:1
 msgid "Brasero project file"
-msgstr ""
+msgstr "Brasero 專案檔案"
 
 #: ../data/brasero.xml.in.h:2
 msgid "Cdrdao toc file"
-msgstr ""
+msgstr "Cdrdao的TOC檔案"
 
-#: ../src/brasero-dest-selection.c:576
+#: ../src/brasero-dest-selection.c:572
 msgid ""
 "Do you really want to keep the current extension for the disc image name?"
-msgstr ""
+msgstr "是否確定要保留目前的光碟影像檔的副檔名。"
 
-#: ../src/brasero-dest-selection.c:579
+#: ../src/brasero-dest-selection.c:575
 msgid "Image Extension"
-msgstr ""
+msgstr "影像檔副檔名"
 
-#: ../src/brasero-dest-selection.c:581
+#: ../src/brasero-dest-selection.c:577
 msgid ""
 "If you choose to keep it programs may not be able to recognize the file type "
 "properly."
-msgstr ""
+msgstr "你如選擇保留，程式可能無法正確的辯識檔案形式性質。"
 
-#: ../src/brasero-dest-selection.c:1331
+#: ../src/brasero-dest-selection.c:1337
 msgid "Configure some options for the recording"
-msgstr ""
+msgstr "設定燒錄的選項"
 
-#: ../src/brasero-dest-selection.c:1338
+#: ../src/brasero-dest-selection.c:1344
 #, fuzzy
 msgid "Choose the disc to write to"
-msgstr "選擇持有媒體的光碟機"
+msgstr "選擇要燒錄碟片的燒錄機"
 
-#: ../src/brasero-dest-selection.c:1347
+#: ../src/brasero-dest-selection.c:1353
 msgid "Number of copies "
-msgstr "複本個數 "
+msgstr "複製數量 "
 
 #: ../src/brasero-audio-disc.c:305 ../src/brasero-tray.c:90
 #: ../src/brasero-data-disc.c:138
 msgid "Menu"
-msgstr "選單"
+msgstr "目錄"
 
 #: ../src/brasero-audio-disc.c:306 ../src/brasero-data-disc.c:139
 msgid "Open the selected files"
-msgstr ""
+msgstr "開啟選擇的檔案"
 
 #: ../src/brasero-audio-disc.c:308
 msgid "_Edit Information..."
-msgstr "編輯資訊(_E)"
+msgstr "編輯資訊...(_E)"
 
 #: ../src/brasero-audio-disc.c:308
 msgid "Edit the track information (start, end, author, ...)"
-msgstr ""
+msgstr "編輯音軌的資訊(開始、結束或作者...)"
 
 #: ../src/brasero-audio-disc.c:310 ../src/brasero-data-disc.c:143
-#: ../src/brasero-project.c:176
+#: ../src/brasero-project.c:192
 msgid "Remove the selected files from the project"
-msgstr ""
+msgstr "從專案中移除選取的檔案"
 
 #: ../src/brasero-audio-disc.c:312 ../src/brasero-data-disc.c:145
 msgid "Add the files stored in the clipboard"
-msgstr ""
+msgstr "增加剪貼簿中的檔案"
 
 #: ../src/brasero-audio-disc.c:314
 msgid "I_nsert a Pause"
-msgstr ""
+msgstr "插入暫停(_n)"
 
 #: ../src/brasero-audio-disc.c:314
 msgid "Add a 2 second pause after the track"
-msgstr ""
+msgstr "在此音軌後增加2秒的間隔"
 
 #: ../src/brasero-audio-disc.c:316
 msgid "_Split Track..."
-msgstr "分割軌道(_S)"
+msgstr "分割音軌...(_S)"
 
 #: ../src/brasero-audio-disc.c:316
 msgid "Split the selected track"
-msgstr ""
+msgstr "分割所選的音軌"
 
 #: ../src/brasero-audio-disc.c:527
 msgid "Pause"
-msgstr ""
+msgstr "暫停"
 
 #: ../src/brasero-audio-disc.c:533
 msgid "Split"
@@ -286,7 +284,7 @@ msgstr "標題"
 
 #: ../src/brasero-audio-disc.c:678
 msgid "Artist"
-msgstr ""
+msgstr "演出者"
 
 #: ../src/brasero-audio-disc.c:687 ../src/brasero-playlist.c:337
 #: ../src/brasero-split-dialog.c:1179
@@ -295,98 +293,98 @@ msgstr "長度"
 
 #: ../src/brasero-audio-disc.c:969
 msgid "<i><b>Pause</b></i>"
-msgstr ""
+msgstr "<i><b>暫停</b></i>"
 
 #: ../src/brasero-audio-disc.c:1110
 msgid "The track will be padded at its end:"
-msgstr ""
+msgstr "音軌將被填塞在其末端："
 
 #: ../src/brasero-audio-disc.c:1112
 msgid "Track length"
-msgstr ""
+msgstr "音軌長度"
 
 #: ../src/brasero-audio-disc.c:1114
 msgid "the track is shorter than 6 seconds."
-msgstr ""
+msgstr "音軌長度少於6秒"
 
-#: ../src/brasero-audio-disc.c:1274
+#: ../src/brasero-audio-disc.c:1296
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
-msgstr ""
+msgstr "\"%s\" 不能藉由 gstreamer 被處理："
 
-#: ../src/brasero-audio-disc.c:1278
+#: ../src/brasero-audio-disc.c:1300
 msgid "Unhandled song"
-msgstr ""
+msgstr "未處理的歌"
 
-#: ../src/brasero-audio-disc.c:1281
+#: ../src/brasero-audio-disc.c:1303
 msgid "Make sure the appropriate codec is installed."
-msgstr ""
+msgstr "請確認已安裝適當的編解碼器。"
 
-#: ../src/brasero-audio-disc.c:1400
+#: ../src/brasero-audio-disc.c:1422
 msgid "Directories can't be added to an audio disc:"
-msgstr ""
+msgstr "音樂光碟中無法加入目錄："
 
-#: ../src/brasero-audio-disc.c:1402
+#: ../src/brasero-audio-disc.c:1424
 msgid "Directory search"
-msgstr "目錄搜尋"
+msgstr "搜尋目錄"
 
-#: ../src/brasero-audio-disc.c:1405
+#: ../src/brasero-audio-disc.c:1427
 msgid "Do you want to search for audio discs inside?"
-msgstr ""
+msgstr "你是否要在此搜尋音樂光碟"
 
-#: ../src/brasero-audio-disc.c:1409
+#: ../src/brasero-audio-disc.c:1431
 msgid "Search directory"
 msgstr "搜尋目錄"
 
-#: ../src/brasero-audio-disc.c:1477
+#: ../src/brasero-audio-disc.c:1499
 #, c-format
 msgid "File \"%s\" can't be opened."
-msgstr "無法開啟「%s」。"
+msgstr "檔案 \"%s\" 無法開啟。"
 
-#: ../src/brasero-audio-disc.c:1481 ../src/brasero-data-disc.c:851
+#: ../src/brasero-audio-disc.c:1503 ../src/brasero-data-disc.c:851
 msgid "Unreadable file"
-msgstr "無法讀取檔案"
+msgstr "無法讀取的檔案"
 
-#: ../src/brasero-audio-disc.c:1618 ../src/brasero-audio-disc.c:1643
+#: ../src/brasero-audio-disc.c:1641 ../src/brasero-audio-disc.c:1666
 msgid "loading"
-msgstr "正在載入"
+msgstr "載入中"
 
-#: ../src/brasero-audio-disc.c:2627
+#: ../src/brasero-audio-disc.c:2661
 msgid "impossible to split more than one song at a time"
-msgstr ""
+msgstr "同時間無法分割超過一首歌曲"
 
-#: ../src/brasero-audio-disc.c:2629 ../src/brasero-split-dialog.c:603
+#: ../src/brasero-audio-disc.c:2663 ../src/brasero-split-dialog.c:603
 msgid "Error"
 msgstr "錯誤"
 
-#: ../src/brasero-audio-disc.c:2632
+#: ../src/brasero-audio-disc.c:2666
 msgid "Select one song only please."
-msgstr ""
+msgstr "請僅選一首歌曲。"
 
-#: ../src/brasero-audio-disc.c:3373
+#: ../src/brasero-audio-disc.c:3407
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
-msgstr ""
+msgstr "檔案 \"%s\" 已從檔案系統中被移除："
 
-#: ../src/brasero-audio-disc.c:3377
+#: ../src/brasero-audio-disc.c:3411
 msgid "File deletion noticed"
-msgstr ""
+msgstr "檔案刪除通知"
 
-#: ../src/brasero-audio-disc.c:3379
+#: ../src/brasero-audio-disc.c:3413
 msgid "it will be removed from the project."
-msgstr "它將從專案中移除。"
+msgstr "將從專案中被移除。"
 
 #: ../src/brasero-blank-dialog.c:217
 msgid "Error Blanking:"
-msgstr ""
+msgstr "抹除錯誤："
 
 #: ../src/brasero-blank-dialog.c:219 ../src/brasero-blank-dialog.c:260
 msgid "Blanking finished"
-msgstr ""
+msgstr "抹除已結束"
 
 #: ../src/brasero-blank-dialog.c:221 ../src/brasero-blank-dialog.c:265
 msgid "Blank _Again"
-msgstr ""
+msgstr "再次抹除(_A)"
 
 #: ../src/brasero-blank-dialog.c:238
 msgid "Unexpected error"
@@ -394,47 +392,47 @@ msgstr "未預期的錯誤"
 
 #: ../src/brasero-blank-dialog.c:258
 msgid "The disc was successfully blanked:"
-msgstr ""
+msgstr "這片光碟已成功抹除："
 
 #: ../src/brasero-blank-dialog.c:263
 msgid "the disc is ready for use."
-msgstr ""
+msgstr "此光碟已可使用。"
 
 #: ../src/brasero-blank-dialog.c:362
 msgid "_Blank"
-msgstr ""
+msgstr "抹除(_B)"
 
 #: ../src/brasero-blank-dialog.c:390
 msgid "_fast blanking"
-msgstr ""
+msgstr "快速抹除( _f)"
 
 #: ../src/brasero-blank-dialog.c:391
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
-msgstr ""
+msgstr "開啟快速清除以避免花費更長的時間"
 
 #: ../src/brasero-blank-dialog.c:414
 msgid "Disc blanking"
-msgstr ""
+msgstr "光碟抹除中"
 
-#: ../src/brasero-disc-copy-dialog.c:110
+#: ../src/brasero-disc-copy-dialog.c:109
 msgid "CD/DVD copy options"
 msgstr "CD/DVD 複製選項"
 
-#: ../src/brasero-disc-copy-dialog.c:118
+#: ../src/brasero-disc-copy-dialog.c:117
 msgid "_Copy"
 msgstr "複製(_C)"
 
-#: ../src/brasero-disc-copy-dialog.c:140
+#: ../src/brasero-disc-copy-dialog.c:139
 #, fuzzy
 msgid "<b>Select disc to copy</b>"
-msgstr "<b>選擇燒錄器：</b>"
+msgstr "<b>選擇來源光碟機以複製</b>"
 
-#: ../src/brasero-disc-copy-dialog.c:155
-#: ../src/brasero-disc-option-dialog.c:761
+#: ../src/brasero-disc-copy-dialog.c:154
+#: ../src/brasero-disc-option-dialog.c:765
 #: ../src/brasero-image-option-dialog.c:526
 #, fuzzy
 msgid "<b>Select a disc to write to</b>"
-msgstr "<b>選擇燒錄器：</b>"
+msgstr "<b>選擇光碟機以寫入</b>"
 
 #: ../src/brasero-menu.h:56
 msgid "_Project"
@@ -454,15 +452,15 @@ msgstr "工具(_T)"
 
 #: ../src/brasero-menu.h:60
 msgid "_Help"
-msgstr "求助(_H)"
+msgstr "幫助(_H)"
 
 #: ../src/brasero-menu.h:62
 msgid "P_lugins"
-msgstr "外掛程式(_L)"
+msgstr "插件(_l)"
 
 #: ../src/brasero-menu.h:63
 msgid "Choose plugins for brasero"
-msgstr "選擇 Brasero 的外掛程式"
+msgstr "為 brasero 選擇插件"
 
 #: ../src/brasero-menu.h:65
 #, fuzzy
@@ -483,15 +481,15 @@ msgstr "抹除光碟"
 
 #: ../src/brasero-menu.h:71
 msgid "_Check Integrity..."
-msgstr ""
+msgstr "檢查完整性...(_C)"
 
 #: ../src/brasero-menu.h:72
 msgid "Check data integrity of disc"
-msgstr ""
+msgstr "檢查磁碟資料完整性"
 
 #: ../src/brasero-menu.h:75
 msgid "Exit the program"
-msgstr "離開程式"
+msgstr "結束此程式"
 
 #: ../src/brasero-menu.h:77
 msgid "About"
@@ -503,12 +501,12 @@ msgstr "光碟資訊(_D)"
 
 #: ../src/brasero-menu.h:81
 msgid "Display information on blank discs currently inserted"
-msgstr ""
+msgstr "顯示目前放入的空白光碟資訊"
 
-#: ../src/brasero-metadata.c:421
+#: ../src/brasero-metadata.c:420
 #, c-format
 msgid "this format is not supported by gstreamer"
-msgstr "此格式未被 gstreamer 支援"
+msgstr "此格式不為gstreamer所支援"
 
 #: ../src/brasero-mime-filter.c:138
 msgid "Show"
@@ -517,7 +515,7 @@ msgstr "顯示"
 #: ../src/brasero-mime-filter.c:242
 #, c-format
 msgid "%s only"
-msgstr ""
+msgstr "僅 %s"
 
 #: ../src/brasero-playlist.c:316
 msgid "Playlists"
@@ -525,51 +523,51 @@ msgstr "播放清單"
 
 #: ../src/brasero-playlist.c:327
 msgid "Number of songs"
-msgstr "歌曲個數"
+msgstr "歌曲的數量"
 
 #: ../src/brasero-playlist.c:347
 msgid "Genre"
-msgstr ""
+msgstr "類型"
 
 #: ../src/brasero-playlist.c:625
 msgid "Select a playlist"
-msgstr "選擇播放清單"
+msgstr "選取播放清單"
 
 #: ../src/brasero-playlist.c:802
 #, c-format
 msgid "Error parsing playlist \"%s\":"
-msgstr ""
+msgstr "分析播放清單\"%s\"出現錯誤:"
 
 #: ../src/brasero-playlist.c:807
 msgid "an unknown error occured."
-msgstr "發生一個未知的錯誤。"
+msgstr "發生不明原因的錯誤。"
 
 #: ../src/brasero-playlist.c:809
 msgid "Playlist loading error"
-msgstr "播放清單載入失敗"
+msgstr "載入播放清單錯誤"
 
 #: ../src/brasero-playlist.c:911 ../src/brasero-data-tree-model.c:417
 #: ../src/brasero-data-tree-model.c:566
 msgid "empty"
-msgstr "空"
+msgstr "空白"
 
 #: ../src/brasero-playlist.c:913
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] "%d 首歌"
+msgstr[0] "%d 首樂曲"
 
 #: ../src/brasero-playlist.c:950
 msgid "Loading ..."
-msgstr "正在載入 ..."
+msgstr "載入中..."
 
 #: ../src/brasero-plugin-manager-ui.c:60
 msgid "Plugin"
-msgstr "外掛程式"
+msgstr "插件"
 
 #: ../src/brasero-plugin-manager-ui.c:61
 msgid "Enabled"
-msgstr "啟用"
+msgstr "已啟用"
 
 #: ../src/brasero-plugin-manager-ui.c:141
 #, c-format
@@ -595,80 +593,80 @@ msgstr "關於(_A)"
 #: ../src/brasero-plugin-manager-ui.c:581
 #: ../src/brasero-plugin-manager-ui.c:958
 msgid "C_onfigure"
-msgstr "設定(_O)"
+msgstr "設定(_o)"
 
 #: ../src/brasero-plugin-manager-ui.c:591
 msgid "A_ctivate"
-msgstr "啟用(_C)"
+msgstr "活動(_C)"
 
 #: ../src/brasero-plugin-manager-ui.c:603
 msgid "Ac_tivate All"
-msgstr "全部啟用(_T)"
+msgstr "全部啟用(_t)"
 
 #: ../src/brasero-plugin-manager-ui.c:608
 msgid "_Deactivate All"
-msgstr "全部停用(_D)"
+msgstr "全部停止使用(_D)"
 
 #: ../src/brasero-plugin-manager-ui.c:914
 msgid "Plugins"
-msgstr "外掛程式"
+msgstr "插件"
 
 #: ../src/brasero-progress.c:139
 msgid "Estimated remaining time:"
-msgstr "估計剩餘時間："
+msgstr "預估剩餘時間："
 
 #: ../src/brasero-progress.c:163
 msgid "Estimated drive speed:"
-msgstr "估計速度："
+msgstr "預估光碟機速度："
 
 #: ../src/brasero-progress.c:410
 #, c-format
 msgid "%i MiB of %i MiB"
-msgstr ""
+msgstr "%i MiB / %i MiB"
 
 #: ../src/brasero-search-entry.c:89
 msgid "Find all available music"
-msgstr "搜尋所有可用的音樂"
+msgstr "找尋所有可用的音樂"
 
 #: ../src/brasero-search-entry.c:104
 msgid "Find all available videos"
-msgstr "搜尋所有可用的影片"
+msgstr "找尋所有有可用的影像"
 
 #: ../src/brasero-search-entry.c:120
 msgid "Find all available pictures"
-msgstr "搜尋所有可用的圖片"
+msgstr "找尋所有可用的圖片"
 
 #: ../src/brasero-search-entry.c:150
 msgid "Find all available documents"
-msgstr "搜尋所有可用的文件"
+msgstr "找尋所有可用的文件"
 
 #: ../src/brasero-search-entry.c:168
 msgid "Find all available spreadsheets"
-msgstr "搜尋所有可用的試算表"
+msgstr "找尋所有可用的試算表"
 
 #: ../src/brasero-search-entry.c:184
 msgid "Find all available presentations"
-msgstr "搜尋所有可用的簡報"
+msgstr "找尋所有可用的簡報"
 
 #: ../src/brasero-search-entry.c:193
 msgid "Find all available Pdf / Postscripts"
-msgstr "搜尋所有可用的 Pdf / Postscripts"
+msgstr "找尋所有可用的Pdf / Postscripts檔"
 
 #: ../src/brasero-search-entry.c:202
 msgid "Text File"
-msgstr "文字檔"
+msgstr "文字檔案"
 
 #: ../src/brasero-search-entry.c:328
 msgid "<b>Search:\t</b>"
-msgstr "<b>搜尋：\t</b>"
+msgstr "<b>尋找：\t</b>"
 
 #: ../src/brasero-search-entry.c:389
 msgid "<b>only in\t</b>"
-msgstr ""
+msgstr "<b>只有在\t</b>"
 
 #: ../src/brasero-search-entry.c:401
 msgid "_text documents"
-msgstr "文字文件(_T)"
+msgstr "純文字文件(_T)"
 
 #: ../src/brasero-search-entry.c:416
 msgid "_pictures"
@@ -684,69 +682,69 @@ msgstr "影片(_V)"
 
 #: ../src/brasero-search-entry.c:463
 msgid "Type your keywords or choose 'All files' from the menu"
-msgstr ""
+msgstr "輸入你的關鍵字或在選單上選取\"所有檔案\"。"
 
 #: ../src/brasero-search-entry.c:465
 msgid "Select if you want to search among image files only"
-msgstr ""
+msgstr "是否只在圖片檔案之中搜尋"
 
 #: ../src/brasero-search-entry.c:467
 msgid "Select if you want to search among video files only"
-msgstr ""
+msgstr "是否只在影片檔案之中搜尋"
 
 #: ../src/brasero-search-entry.c:469
 msgid "Select if you want to search among audio files only"
-msgstr ""
+msgstr "是否只在音樂檔案之中搜尋"
 
 #: ../src/brasero-search-entry.c:471
 msgid "Select if you want to search among your text documents only"
-msgstr ""
+msgstr "是否只在文字檔案之中搜尋"
 
 #: ../src/brasero-search-entry.c:473
 msgid "Click to start the search"
-msgstr ""
+msgstr "點擊以開始搜尋"
 
 #: ../src/brasero-search-entry.c:740 ../src/brasero-search-entry.c:780
 #: ../src/brasero-search-entry.c:842 ../src/brasero-search-beagle.c:485
-#: ../src/brasero-file-chooser.c:214 ../src/brasero-project.c:1424
+#: ../src/brasero-file-chooser.c:214 ../src/brasero-project.c:1459
 msgid "All files"
 msgstr "所有檔案"
 
 #: ../src/brasero-search-beagle.c:339
 msgid "Previous results"
-msgstr "上一個結果"
+msgstr "上一筆結果"
 
-#: ../src/brasero-search-beagle.c:352 ../src/brasero-search-beagle.c:805
+#: ../src/brasero-search-beagle.c:352 ../src/brasero-search-beagle.c:806
 msgid "<b>No results</b>"
-msgstr "<b>沒有結果</b>"
+msgstr "<b>無結果</b>"
 
 #: ../src/brasero-search-beagle.c:357
 msgid "Next results"
-msgstr "下一個結果"
+msgstr "下一筆結果"
 
 #: ../src/brasero-search-beagle.c:418 ../src/brasero-data-disc.c:2106
 #: ../src/brasero-file-filtered.c:396
 msgid "Files"
 msgstr "檔案"
 
-#: ../src/brasero-search-beagle.c:437 ../src/brasero-data-disc.c:2125
+#: ../src/brasero-search-beagle.c:437 ../src/brasero-data-disc.c:2134
 msgid "Description"
 msgstr "描述"
 
 #: ../src/brasero-search-beagle.c:496
 msgid "Number of results displayed"
-msgstr ""
+msgstr "顯示結果的數量"
 
-#: ../src/brasero-search-beagle.c:799
+#: ../src/brasero-search-beagle.c:800
 #, c-format
 msgid "<b>Results %i - %i (out of %i)</b>"
-msgstr ""
+msgstr "<b>结果 %i - %i (超出 %i)</b>"
 
-#: ../src/brasero-search-beagle.c:1050
+#: ../src/brasero-search-beagle.c:1051
 msgid "Error querying beagle:"
-msgstr ""
+msgstr "beagle 查詢錯誤："
 
-#: ../src/brasero-search-beagle.c:1052
+#: ../src/brasero-search-beagle.c:1053
 msgid "Search error"
 msgstr "搜尋錯誤"
 
@@ -759,39 +757,39 @@ msgstr "標題："
 msgid ""
 "This information will be written to the disc using CD-TEXT technology. It "
 "can be read and displayed by some audio CD players."
-msgstr ""
+msgstr "此資訊將以 CD-TEXT 技術寫入 CD 。有些 CD 播放器可以讀取顯示這些資訊。"
 
 #: ../src/brasero-song-properties.c:162
 msgid "Artist:"
-msgstr ""
+msgstr "演出者："
 
 #: ../src/brasero-song-properties.c:170
 msgid "Composer:\t"
-msgstr ""
+msgstr "作曲者：\t"
 
 #: ../src/brasero-song-properties.c:189
 msgid "<big><b>Options</b></big>"
-msgstr "<big><b>選項</b></big>"
+msgstr "<big><b>選項<b></big>"
 
 #: ../src/brasero-song-properties.c:195
 msgid "Song start:\t"
-msgstr ""
+msgstr "歌曲起頭：\t"
 
 #: ../src/brasero-song-properties.c:201
 msgid "Song end:\t"
-msgstr ""
+msgstr "歌曲末端：\t"
 
 #: ../src/brasero-song-properties.c:207
 msgid "Pause length:\t"
-msgstr ""
+msgstr "曲目之間的預留時間：\t"
 
 #: ../src/brasero-song-properties.c:215
 msgid "Gives the length of the pause that should follow the track"
-msgstr ""
+msgstr "設定在音軌之後的間隔空白長度"
 
 #: ../src/brasero-song-properties.c:217
 msgid "Track length:\t"
-msgstr ""
+msgstr "音軌長度：\t"
 
 #: ../src/brasero-song-properties.c:244
 msgid "Song information"
@@ -800,7 +798,7 @@ msgstr "歌曲資訊"
 #: ../src/brasero-song-properties.c:293
 #, c-format
 msgid "<b><big>Song information for track %02i</big></b>"
-msgstr ""
+msgstr "<b><big>音軌 %02i 的歌曲資訊</big></b>"
 
 #: ../src/brasero-tray.c:91
 msgid "Cancel"
@@ -808,43 +806,43 @@ msgstr "取消"
 
 #: ../src/brasero-tray.c:91
 msgid "Cancel ongoing burning"
-msgstr ""
+msgstr "取消正在進行中的燒錄"
 
 #: ../src/brasero-tray.c:96
 msgid "Close if successful"
-msgstr "成功後關閉"
+msgstr "請在完成後關閉"
 
 #: ../src/brasero-tray.c:96
 msgid "Display file chooser"
-msgstr ""
+msgstr "顯示檔案選取器"
 
 #: ../src/brasero-tray.c:98
 msgid "Show dialog"
-msgstr "顯示對話方塊"
+msgstr "顯示對話視窗"
 
 #: ../src/brasero-tray.c:225
 msgid "waiting"
-msgstr ""
+msgstr "等待中"
 
 #: ../src/brasero-tray.c:263
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
-msgstr "%s，%02i%% 已完成，%s 剩餘"
+msgstr "%s, %02i%% 已完成, %s 持續中"
 
 #: ../src/brasero-tray.c:270
 #, c-format
 msgid "%s, %02i%% done"
-msgstr "%s, %02i%% 已完成"
+msgstr "%s，已完成 %02i%%"
 
 #: ../src/brasero-utils.c:273 ../src/brasero-utils.c:309
 #, c-format
 msgid "%i min"
-msgstr "%i 分"
+msgstr "%i 分鐘"
 
 #: ../src/brasero-utils.c:275 ../src/brasero-utils.c:311
 #, c-format
 msgid "%i:%02i min"
-msgstr "%i:%02i 分"
+msgstr "%i:%02i 分鐘"
 
 #: ../src/brasero-utils.c:302
 #, c-format
@@ -866,583 +864,582 @@ msgstr "GiB"
 
 #: ../src/brasero-utils.c:547
 msgid "This file can't be opened:"
-msgstr ""
+msgstr "此檔無法開啟："
 
 #: ../src/brasero-utils.c:549
 msgid "File error"
 msgstr "檔案錯誤"
 
-#: ../src/brasero-burn-dialog.c:165
+#: ../src/brasero-burn-dialog.c:167
 msgid "Brasero - Creating image"
-msgstr "Brasero - 正在建立映像檔"
+msgstr "Brasero - 正在製作影像檔"
 
-#: ../src/brasero-burn-dialog.c:170 ../src/brasero-burn-dialog.c:779
-#: ../src/brasero-burn-dialog.c:785
+#: ../src/brasero-burn-dialog.c:172 ../src/brasero-burn-dialog.c:781
+#: ../src/brasero-burn-dialog.c:787
 #, c-format
 msgid "Brasero - Burning DVD (simulation)"
-msgstr "Brasero - 正在燒錄 DVD (模擬)"
+msgstr "Brasero - 燒錄DVD(模擬)"
 
-#: ../src/brasero-burn-dialog.c:171
+#: ../src/brasero-burn-dialog.c:173
 msgid "<big><b>Simulation of data DVD burning</b></big>"
-msgstr "<big><b>模擬燒錄資料 DVD </b></big>"
+msgstr "<big><b>資料DVD橈錄模擬</b></big>"
 
-#: ../src/brasero-burn-dialog.c:174
+#: ../src/brasero-burn-dialog.c:176
 msgid "Brasero - Burning DVD"
-msgstr "Brasero - 正在燒錄 DVD"
+msgstr "Brasero - 正在燒錄DVD"
 
-#: ../src/brasero-burn-dialog.c:175
+#: ../src/brasero-burn-dialog.c:177
 msgid "<big><b>Burning data DVD</b></big>"
-msgstr "<big><b>燒錄資料 DVD</b></big>"
+msgstr "<big><b>正在橈錄資料DVD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:184
+#: ../src/brasero-burn-dialog.c:186
 msgid "Burning DVD (simulation)"
-msgstr "正在燒錄 DVD (模擬)"
+msgstr "正在燒錄DVD(模擬)"
 
-#: ../src/brasero-burn-dialog.c:185
+#: ../src/brasero-burn-dialog.c:187
 msgid "<big><b>Simulation of image to DVD burning</b></big>"
-msgstr "<big><b>模擬燒錄映像檔至 DVD </b></big>"
+msgstr "<big><b>模擬映像檔燒錄至DVD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:188
+#: ../src/brasero-burn-dialog.c:190
 msgid "Burning DVD"
-msgstr "正在燒錄 DVD"
+msgstr "正在燒錄DVD"
 
-#: ../src/brasero-burn-dialog.c:189
+#: ../src/brasero-burn-dialog.c:191
 msgid "<big><b>Burning image to DVD</b></big>"
-msgstr "<big><b>燒錄映像檔至 DVD</b></big>"
+msgstr "<big><b>正將映像檔燒錄至DVD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:198 ../src/brasero-burn-dialog.c:791
+#: ../src/brasero-burn-dialog.c:200 ../src/brasero-burn-dialog.c:793
 #, c-format
 msgid "Brasero - Copying DVD (simulation)"
-msgstr "Brasero - 正在複製 DVD (模擬)"
+msgstr "Brasero - 複製DVD(模擬)"
 
-#: ../src/brasero-burn-dialog.c:199
+#: ../src/brasero-burn-dialog.c:201
 msgid "<big><b>Simulation of data DVD copying</b></big>"
-msgstr "<big><b>模擬複製資料 DVD </b></big>"
+msgstr "<big><b>模擬複製資料DVD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:202
+#: ../src/brasero-burn-dialog.c:204
 msgid "Brasero - Copying DVD"
-msgstr "Brasero - 正在複製 DVD"
+msgstr "Brasero - 正在複製DVD"
 
-#: ../src/brasero-burn-dialog.c:203
+#: ../src/brasero-burn-dialog.c:205
 msgid "<big><b>Copying data DVD</b></big>"
-msgstr "<big><b>正在複製資料 DVD</b></big>"
+msgstr "<big><b>正在複製資料DVD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:214 ../src/brasero-burn-dialog.c:228
-#: ../src/brasero-burn-dialog.c:256 ../src/brasero-burn-dialog.c:271
-#: ../src/brasero-burn-dialog.c:799 ../src/brasero-burn-dialog.c:805
-#: ../src/brasero-burn-dialog.c:817 ../src/brasero-burn-dialog.c:824
+#: ../src/brasero-burn-dialog.c:216 ../src/brasero-burn-dialog.c:230
+#: ../src/brasero-burn-dialog.c:258 ../src/brasero-burn-dialog.c:273
+#: ../src/brasero-burn-dialog.c:801 ../src/brasero-burn-dialog.c:807
+#: ../src/brasero-burn-dialog.c:819 ../src/brasero-burn-dialog.c:826
 #, c-format
 msgid "Brasero - Burning CD (simulation)"
-msgstr "Brasero - 正在燒錄 CD (模擬)"
+msgstr "Brasero - 正在燒錄CD(模擬)"
 
-#: ../src/brasero-burn-dialog.c:215 ../src/brasero-burn-dialog.c:272
+#: ../src/brasero-burn-dialog.c:217 ../src/brasero-burn-dialog.c:274
 #, c-format
 msgid "<big><b>Simulation of audio CD burning</b></big>"
-msgstr "<big><b>模擬燒錄音樂 CD </b></big>"
+msgstr "<big><b>模擬燒錄音樂CD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:218 ../src/brasero-burn-dialog.c:232
-#: ../src/brasero-burn-dialog.c:260 ../src/brasero-burn-dialog.c:275
+#: ../src/brasero-burn-dialog.c:220 ../src/brasero-burn-dialog.c:234
+#: ../src/brasero-burn-dialog.c:262 ../src/brasero-burn-dialog.c:277
 msgid "Brasero - Burning CD"
-msgstr "Brasero - 正在燒錄 CD"
+msgstr "Brasero - 正在燒錄CD"
 
-#: ../src/brasero-burn-dialog.c:219 ../src/brasero-burn-dialog.c:276
+#: ../src/brasero-burn-dialog.c:221 ../src/brasero-burn-dialog.c:278
 #, c-format
 msgid "<big><b>Burning audio CD</b></big>"
-msgstr "<big><b>正在燒錄音樂 CD</b></big>"
+msgstr "<big><b>燒錄音樂CD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:229
+#: ../src/brasero-burn-dialog.c:231
 #, c-format
 msgid "<big><b>Simulation of data CD burning</b></big>"
-msgstr "<big><b>模擬燒錄資料 CD </b></big>"
+msgstr "<big><b>模擬資料CD燒錄中</b></big>"
 
-#: ../src/brasero-burn-dialog.c:233
+#: ../src/brasero-burn-dialog.c:235
 #, c-format
 msgid "<big><b>Burning data CD</b></big>"
-msgstr "<big><b>正在燒錄資料 CD</b></big>"
+msgstr "<big><b>正在燒錄資料CD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:242 ../src/brasero-burn-dialog.c:811
+#: ../src/brasero-burn-dialog.c:244 ../src/brasero-burn-dialog.c:813
 #, c-format
 msgid "Brasero - Copying CD (simulation)"
-msgstr "Brasero - 正在複製 CD (模擬)"
+msgstr "Brasero - 正在複製CD(模擬)"
 
-#: ../src/brasero-burn-dialog.c:243
+#: ../src/brasero-burn-dialog.c:245
 msgid "<big><b>Simulation of CD copying</b></big>"
-msgstr "<big><b>模擬複製 CD </b></big>"
+msgstr "<big><b>模擬複製CD中</b></big>"
 
-#: ../src/brasero-burn-dialog.c:246
+#: ../src/brasero-burn-dialog.c:248
 msgid "Brasero - Copying CD"
-msgstr "Brasero - 正在複製 CD"
+msgstr "Brasero - 正在複製CD"
 
-#: ../src/brasero-burn-dialog.c:247
+#: ../src/brasero-burn-dialog.c:249
 msgid "<big><b>Copying CD</b></big>"
-msgstr "<big><b>正在複製 CD</b></big>"
+msgstr "<big><b>正在複製CD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:257
+#: ../src/brasero-burn-dialog.c:259
 msgid "<big><b>Simulation of image to CD burning</b></big>"
-msgstr "<big><b>模擬燒錄映像檔至 CD </b></big>"
+msgstr "<big><b>模擬映像檔燒錄至CD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:261
+#: ../src/brasero-burn-dialog.c:263
 msgid "<big><b>Burning image to CD</b></big>"
-msgstr "<big><b>正在燒錄映像檔至 CD</b></big>"
+msgstr "<big><b>將映像檔燒錄至CD</b></big>"
 
-#: ../src/brasero-burn-dialog.c:285 ../src/brasero-burn-dialog.c:312
-#: ../src/brasero-burn-dialog.c:830 ../src/brasero-burn-dialog.c:842
+#: ../src/brasero-burn-dialog.c:287 ../src/brasero-burn-dialog.c:314
+#: ../src/brasero-burn-dialog.c:832 ../src/brasero-burn-dialog.c:844
 #, c-format
 msgid "Brasero - Burning disc (simulation)"
-msgstr "Brasero - 正在燒錄光碟 (模擬)"
+msgstr "Brasero - 正在燒錄光碟(模擬)"
 
-#: ../src/brasero-burn-dialog.c:286
+#: ../src/brasero-burn-dialog.c:288
 #, c-format
 msgid "<big><b>Simulation of data disc burning</b></big>"
 msgstr "<big><b>模擬燒錄資料光碟</b></big>"
 
-#: ../src/brasero-burn-dialog.c:289 ../src/brasero-burn-dialog.c:316
+#: ../src/brasero-burn-dialog.c:291 ../src/brasero-burn-dialog.c:318
 msgid "Brasero - Burning disc"
 msgstr "Brasero - 正在燒錄光碟"
 
-#: ../src/brasero-burn-dialog.c:290
+#: ../src/brasero-burn-dialog.c:292
 #, c-format
 msgid "<big><b>Burning data disc</b></big>"
-msgstr "<big><b>正在燒錄光碟</b></big>"
+msgstr "<big><b>正在燒錄資料光碟</b></big>"
 
-#: ../src/brasero-burn-dialog.c:299 ../src/brasero-burn-dialog.c:836
+#: ../src/brasero-burn-dialog.c:301 ../src/brasero-burn-dialog.c:838
 #, c-format
 msgid "Brasero - Copying disc (simulation)"
-msgstr "Brasero - 正在複製光碟 (模擬)"
+msgstr "Brasero - 正在複製光碟(模擬)"
 
-#: ../src/brasero-burn-dialog.c:300
+#: ../src/brasero-burn-dialog.c:302
 msgid "<big><b>Simulation of disc copying</b></big>"
-msgstr "<big><b>模擬複製光碟</b></big>"
+msgstr "<big><b>複製光碟模擬中</b></big>"
 
-#: ../src/brasero-burn-dialog.c:303
+#: ../src/brasero-burn-dialog.c:305
 msgid "Brasero - Copying disc"
 msgstr "Brasero - 正在複製光碟"
 
-#: ../src/brasero-burn-dialog.c:304
+#: ../src/brasero-burn-dialog.c:306
 msgid "<big><b>Copying disc</b></big>"
 msgstr "<big><b>正在複製光碟</b></big>"
 
-#: ../src/brasero-burn-dialog.c:313
+#: ../src/brasero-burn-dialog.c:315
 msgid "<big><b>Simulation of image to disc burning</b></big>"
-msgstr "<big><b>模擬燒錄光碟映像檔</b></big>"
+msgstr "<big><b>模擬映像檔燒錄至光碟</b></big>"
 
-#: ../src/brasero-burn-dialog.c:317
+#: ../src/brasero-burn-dialog.c:319
 msgid "<big><b>Burning image to disc</b></big>"
-msgstr "<big><b>正在燒錄映像檔至光碟</b></big>"
-
-#: ../src/brasero-burn-dialog.c:349
-msgid "replace the disc with a rewritable disc holding data."
-msgstr ""
+msgstr "<big><b>正在將映像檔燒錄至光碟</b></big>"
 
 #: ../src/brasero-burn-dialog.c:351
-msgid "replace the disc with a disc holding data."
-msgstr ""
+msgid "replace the disc with a rewritable disc holding data."
+msgstr "替換已有資料儲存的可重覆讀寫光碟片。"
 
-#: ../src/brasero-burn-dialog.c:355
-msgid "insert a rewritable disc holding data."
-msgstr ""
+#: ../src/brasero-burn-dialog.c:353
+msgid "replace the disc with a disc holding data."
+msgstr "將目前的光碟片替換為內含有資料的光碟片。"
 
 #: ../src/brasero-burn-dialog.c:357
-msgid "insert a disc holding data."
-msgstr ""
+msgid "insert a rewritable disc holding data."
+msgstr "插入已有資料儲存的可重覆讀寫光碟片。"
 
-#: ../src/brasero-burn-dialog.c:372
+#: ../src/brasero-burn-dialog.c:359
+msgid "insert a disc holding data."
+msgstr "插入已有資料儲存的光碟片。"
+
+#: ../src/brasero-burn-dialog.c:374
 #, c-format
 msgid "replace the disc with a recordable CD with a least %i MiB free."
-msgstr ""
+msgstr "更換至少有 %i MiB可用空間的可燒錄 CD 片。"
 
-#: ../src/brasero-burn-dialog.c:375
+#: ../src/brasero-burn-dialog.c:377
 #, c-format
 msgid "replace the disc with a recordable CD."
-msgstr ""
+msgstr "更換可燒錄的CD片。"
 
-#: ../src/brasero-burn-dialog.c:379
+#: ../src/brasero-burn-dialog.c:381
 #, c-format
 msgid "insert a recordable CD with a least %i MiB free."
-msgstr ""
+msgstr "插入至少有 %i MiB 可用空間的可燒錄CD片。"
 
-#: ../src/brasero-burn-dialog.c:382
+#: ../src/brasero-burn-dialog.c:384
 #, c-format
 msgid "insert a recordable CD."
-msgstr "插入一個可寫入的 CD。"
+msgstr "插入可燒錄的CD片。"
 
-#: ../src/brasero-burn-dialog.c:388
+#: ../src/brasero-burn-dialog.c:390
 #, c-format
 msgid "replace the disc with a recordable DVD with a least %i MiB free."
-msgstr ""
+msgstr "更換至少有 %i MiB 可用空間的可燒錄DVD片。"
 
-#: ../src/brasero-burn-dialog.c:391
+#: ../src/brasero-burn-dialog.c:393
 #, c-format
 msgid "replace the disc with a recordable DVD."
-msgstr ""
+msgstr "更換可燒錄的DVD片。"
 
-#: ../src/brasero-burn-dialog.c:395
+#: ../src/brasero-burn-dialog.c:397
 #, c-format
 msgid "insert a recordable DVD with a least %i MiB free."
-msgstr ""
+msgstr "插入至少有 %i MiB 可用空間的可燒錄DVD片。"
 
-#: ../src/brasero-burn-dialog.c:398
+#: ../src/brasero-burn-dialog.c:400
 #, c-format
 msgid "insert a recordable DVD."
-msgstr "插入一個可寫入的 DVD。"
+msgstr "插入可燒錄的DVD片。"
 
-#: ../src/brasero-burn-dialog.c:403
+#: ../src/brasero-burn-dialog.c:405
 #, c-format
 msgid "replace the disc with a recordable CD or DVD with a least %i MiB free."
-msgstr ""
+msgstr "更換至少有 %i MiB 可用空間的可燒錄 CD 或 DVD 片。"
 
-#: ../src/brasero-burn-dialog.c:406
+#: ../src/brasero-burn-dialog.c:408
 #, c-format
 msgid "replace the disc with a recordable CD or DVD."
-msgstr ""
+msgstr "更換可燒錄的 CD 或 DVD 片。"
 
-#: ../src/brasero-burn-dialog.c:410
+#: ../src/brasero-burn-dialog.c:412
 #, c-format
 msgid "insert a recordable CD or DVD with a least %i MiB free."
-msgstr ""
+msgstr "插入至少有 %i MiB 可用空間的可燒錄 CD 或 DVD 片。"
 
-#: ../src/brasero-burn-dialog.c:413
+#: ../src/brasero-burn-dialog.c:415
 #, c-format
 msgid "insert a recordable CD or DVD."
-msgstr ""
+msgstr "插入可燒錄的 CD 或 DVD 片。"
 
-#: ../src/brasero-burn-dialog.c:457
+#: ../src/brasero-burn-dialog.c:459
 msgid "A data integrity test is about to begin:"
-msgstr ""
+msgstr "資料完整性測試將開始："
 
-#: ../src/brasero-burn-dialog.c:458
+#: ../src/brasero-burn-dialog.c:460
 #, c-format
 msgid "please, insert the disc to check in \"%s\"."
-msgstr ""
+msgstr "請將要核對的光碟放入 \"%s\" 。"
 
-#: ../src/brasero-burn-dialog.c:462
+#: ../src/brasero-burn-dialog.c:464
 msgid ""
 "A recording was successfully completed.\n"
 "The next recording is about to begin:"
 msgstr ""
-
-#: ../src/brasero-burn-dialog.c:467
-#, c-format
-msgid "The disc in \"%s\" is busy:"
-msgstr ""
+"燒錄完成。\n"
+"將開始下一個燒錄作業："
 
 #: ../src/brasero-burn-dialog.c:469
-msgid "make sure another application is not using it."
-msgstr ""
+#, c-format
+msgid "The disc in \"%s\" is busy:"
+msgstr "\"%s\" 裏的光碟片忙碌中："
 
-#: ../src/brasero-burn-dialog.c:472
+#: ../src/brasero-burn-dialog.c:471
+msgid "make sure another application is not using it."
+msgstr "請確認沒有其他的應用程式正使用該設備。"
+
+#: ../src/brasero-burn-dialog.c:474
 #, c-format
 msgid "There is no disc in \"%s\":"
-msgstr ""
+msgstr "\"%s\"  中沒有光碟片："
 
-#: ../src/brasero-burn-dialog.c:477
+#: ../src/brasero-burn-dialog.c:479
 #, c-format
 msgid "The disc in \"%s\" is not supported:"
-msgstr ""
+msgstr "\"%s\" 中的光碟片並未被支援："
 
-#: ../src/brasero-burn-dialog.c:482
+#: ../src/brasero-burn-dialog.c:484
 #, c-format
 msgid "The disc in \"%s\" is not rewritable:"
-msgstr ""
+msgstr "\"%s\" 裏的光碟片不是可重覆讀寫的："
 
-#: ../src/brasero-burn-dialog.c:487
+#: ../src/brasero-burn-dialog.c:489
 #, c-format
 msgid "The disc in \"%s\" is empty:"
-msgstr ""
+msgstr "\"%s\" 裏的光碟片是空白的："
 
-#: ../src/brasero-burn-dialog.c:492
+#: ../src/brasero-burn-dialog.c:494
 #, c-format
 msgid "The disc in \"%s\" is not writable:"
-msgstr ""
+msgstr "\"%s\" 裏的光碟片不是可寫入的："
 
-#: ../src/brasero-burn-dialog.c:497
+#: ../src/brasero-burn-dialog.c:499
 #, c-format
 msgid "The disc in \"%s\" is a DVD:"
-msgstr ""
+msgstr "\"%s\" 裏的光碟片是一張 DVD 片："
 
-#: ../src/brasero-burn-dialog.c:502
+#: ../src/brasero-burn-dialog.c:504
 #, c-format
 msgid "The disc in \"%s\" is a CD:"
-msgstr ""
+msgstr "\"%s\" 裏的光碟片是一張 CD 片："
 
-#: ../src/brasero-burn-dialog.c:507
+#: ../src/brasero-burn-dialog.c:509
 #, c-format
 msgid "The disc in \"%s\" is not big enough:"
-msgstr ""
-
-#: ../src/brasero-burn-dialog.c:518
-#, c-format
-msgid "The disc in \"%s\" needs to be reloaded:"
-msgstr ""
+msgstr "\"%s\" 裏的光碟片容量不夠大："
 
 #: ../src/brasero-burn-dialog.c:520
-msgid "eject the disc and reload it."
-msgstr ""
+#, c-format
+msgid "The disc in \"%s\" needs to be reloaded:"
+msgstr "\"%s\" 裏的光碟片需要重新載入："
 
-#: ../src/brasero-burn-dialog.c:552
-msgid "Waiting for disc insertion"
-msgstr ""
+#: ../src/brasero-burn-dialog.c:522
+msgid "eject the disc and reload it."
+msgstr "退出光碟片並重新插入。"
 
 #: ../src/brasero-burn-dialog.c:554
+msgid "Waiting for disc insertion"
+msgstr "等待光碟片插入"
+
+#: ../src/brasero-burn-dialog.c:556
 msgid "Waiting for disc replacement"
-msgstr ""
+msgstr "等待光碟片更換"
 
-#: ../src/brasero-burn-dialog.c:630
+#: ../src/brasero-burn-dialog.c:632
 msgid "Replace disc"
-msgstr ""
-
-#: ../src/brasero-burn-dialog.c:666
-msgid "Possible loss of data"
-msgstr ""
-
-#: ../src/brasero-burn-dialog.c:667
-msgid "The disc in the drive holds data:"
-msgstr ""
+msgstr "更換光碟片"
 
 #: ../src/brasero-burn-dialog.c:668
+msgid "Possible loss of data"
+msgstr "有可能遺失資料"
+
+#: ../src/brasero-burn-dialog.c:669
+msgid "The disc in the drive holds data:"
+msgstr "此光碟片包含以下資料:"
+
+#: ../src/brasero-burn-dialog.c:670
 msgid ""
 "Do you want to erase the current disc?\n"
 "Or replace the current disc with a new disc?"
 msgstr ""
+"是否抹除目前這張光碟片？\n"
+"或是更換一張新的光碟片？"
 
-#: ../src/brasero-burn-dialog.c:669
+#: ../src/brasero-burn-dialog.c:671
 msgid "Erase disc"
-msgstr "抹除光碟"
+msgstr "抹除光碟片"
 
-#: ../src/brasero-burn-dialog.c:678 ../src/brasero-burn-dialog.c:690
+#: ../src/brasero-burn-dialog.c:680 ../src/brasero-burn-dialog.c:692
 msgid "Multisession disc"
-msgstr ""
+msgstr "多區段資料(Multi-Session)的光碟片"
 
-#: ../src/brasero-burn-dialog.c:679
+#: ../src/brasero-burn-dialog.c:681
 msgid "Appending new files to a multisession disc is not advised:"
-msgstr ""
+msgstr "不建議在多重區段的光碟中加入新的檔案："
 
-#: ../src/brasero-burn-dialog.c:680
+#: ../src/brasero-burn-dialog.c:682
 msgid ""
 "already burnt files will be invisible (though still readable).\n"
 "Do you want to continue anyway?"
 msgstr ""
+"已燒錄的檔案將無法看見(雖然可以讀取)。\n"
+"你確定無論如何要繼續嗎?"
 
-#: ../src/brasero-burn-dialog.c:681 ../src/brasero-burn-dialog.c:693
-#: ../src/brasero-burn-dialog.c:705 ../src/brasero-burn-dialog.c:740
-#: ../src/brasero-burn-dialog.c:1860 ../src/brasero-tool-dialog.c:379
+#: ../src/brasero-burn-dialog.c:683 ../src/brasero-burn-dialog.c:695
+#: ../src/brasero-burn-dialog.c:707 ../src/brasero-burn-dialog.c:742
+#: ../src/brasero-burn-dialog.c:1864 ../src/brasero-tool-dialog.c:379
 msgid "Continue"
 msgstr "繼續"
 
-#: ../src/brasero-burn-dialog.c:691
+#: ../src/brasero-burn-dialog.c:693
 msgid "Appending audio tracks to a CD is not advised:"
-msgstr ""
+msgstr "不建議將音軌加入CD："
 
-#: ../src/brasero-burn-dialog.c:692
+#: ../src/brasero-burn-dialog.c:694
 msgid ""
 "you might not be able to listen to them with stereos and CD-TEXT won't be "
 "written.\n"
 "Do you want to continue anyway?"
 msgstr ""
-
-#: ../src/brasero-burn-dialog.c:702
-msgid "Rewritable disc"
-msgstr "可複寫光碟"
-
-#: ../src/brasero-burn-dialog.c:703
-msgid "Recording audio tracks on a rewritable disc is not advised:"
-msgstr ""
+"你可能無法聽到立體聲且 CD-TEXT 將不會寫入。\n"
+"你確定無論如何要繼續嗎?"
 
 #: ../src/brasero-burn-dialog.c:704
+msgid "Rewritable disc"
+msgstr "可重覆讀寫光碟片"
+
+#: ../src/brasero-burn-dialog.c:705
+msgid "Recording audio tracks on a rewritable disc is not advised:"
+msgstr "不推薦將音樂音軌燒錄到可重覆讀寫的光碟片上："
+
+#: ../src/brasero-burn-dialog.c:706
 msgid ""
 "you might not be able to listen to it with stereos.\n"
 "Do you want to continue anyway?"
 msgstr ""
+"你可能將會無法在音響上播放該光碟。\n"
+"是否無論如何要進行下一步？"
 
-#: ../src/brasero-burn-dialog.c:730 ../src/brasero-disc-option-dialog.c:455
+#: ../src/brasero-burn-dialog.c:732 ../src/brasero-disc-option-dialog.c:459
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
-msgstr ""
+msgstr "對 Windows 兼容的 CD 而言，某些檔名並不適當："
 
-#: ../src/brasero-burn-dialog.c:733
+#: ../src/brasero-burn-dialog.c:735
 msgid "Do you want to continue with Windows compatibility disabled?"
-msgstr ""
+msgstr "是否啟用不考慮 Windows 兼容問題的方式繼續？"
 
-#: ../src/brasero-burn-dialog.c:735 ../src/brasero-disc-option-dialog.c:460
+#: ../src/brasero-burn-dialog.c:737 ../src/brasero-disc-option-dialog.c:464
 msgid "Windows compatibility"
-msgstr ""
+msgstr "Windows 兼容性"
 
-#: ../src/brasero-burn-dialog.c:775
+#: ../src/brasero-burn-dialog.c:777
 #, c-format
 msgid "Brasero - Creating image (%i%% done)"
-msgstr "Brasero - 正在建立映像檔 (%i%% 已完成)"
+msgstr "Brasero - 正在建立影像檔 (已完成 %i%%)"
 
-#: ../src/brasero-burn-dialog.c:781 ../src/brasero-burn-dialog.c:787
+#: ../src/brasero-burn-dialog.c:783 ../src/brasero-burn-dialog.c:789
 #, c-format
 msgid "Brasero - Burning DVD (%i%% done)"
-msgstr "Brasero - 正在燒錄 DVD (%i%% 已完成)"
+msgstr "Brasero - 正在燒錄 DVD (已完成 %i%%)"
 
-#: ../src/brasero-burn-dialog.c:793
+#: ../src/brasero-burn-dialog.c:795
 #, c-format
 msgid "Brasero - Copying DVD (%i%% done)"
-msgstr "Brasero - 正在複製 DVD (%i%% 已完成)"
+msgstr "Brasero - 正在複製 DVD (已完成 %i%%)"
 
-#: ../src/brasero-burn-dialog.c:801 ../src/brasero-burn-dialog.c:807
-#: ../src/brasero-burn-dialog.c:819 ../src/brasero-burn-dialog.c:826
+#: ../src/brasero-burn-dialog.c:803 ../src/brasero-burn-dialog.c:809
+#: ../src/brasero-burn-dialog.c:821 ../src/brasero-burn-dialog.c:828
 #, c-format
 msgid "Brasero - Burning CD (%i%% done)"
-msgstr "Brasero - 正在燒錄 CD (%i%% 已完成)"
+msgstr "Brasero - 正在燒錄 CD (已完成 %i%%)"
 
-#: ../src/brasero-burn-dialog.c:813
+#: ../src/brasero-burn-dialog.c:815
 #, c-format
 msgid "Brasero - Copying CD (%i%% done)"
-msgstr "Brasero - 正在複製 CD (%i%% 已完成)"
+msgstr "Brasero - 正在複製 CD (已完成 %i%%)"
 
-#: ../src/brasero-burn-dialog.c:832 ../src/brasero-burn-dialog.c:844
+#: ../src/brasero-burn-dialog.c:834 ../src/brasero-burn-dialog.c:846
 #, c-format
 msgid "Brasero - Burning disc (%i%% done)"
-msgstr "Brasero - 正在燒錄光碟 (%i%% 已完成)"
+msgstr "Brasero - 正在燒錄光碟片 (已完成 %i%%)"
 
-#: ../src/brasero-burn-dialog.c:838
+#: ../src/brasero-burn-dialog.c:840
 #, c-format
 msgid "Brasero - Copying disc (%i%% done)"
-msgstr "Brasero - 正在複製光碟 (%i%% 已完成)"
-
-#: ../src/brasero-burn-dialog.c:1002
-msgid "The simulation was successful."
-msgstr ""
+msgstr "Brasero - 正在複製光碟片 (已完成 %i%%)"
 
 #: ../src/brasero-burn-dialog.c:1004
-msgid "Successful simulation"
-msgstr ""
+msgid "The simulation was successful."
+msgstr "模擬成功。"
 
-#: ../src/brasero-burn-dialog.c:1007
-msgid "Real disc burning will take place in 10 seconds."
-msgstr ""
+#: ../src/brasero-burn-dialog.c:1006
+msgid "Successful simulation"
+msgstr "模擬成功"
 
 #: ../src/brasero-burn-dialog.c:1009
+msgid "Real disc burning will take place in 10 seconds."
+msgstr "實際燒錄將於10秒內開始。"
+
+#: ../src/brasero-burn-dialog.c:1011
 msgid "Burn Now"
-msgstr "立刻燒錄"
+msgstr "開始燒錄"
 
-#: ../src/brasero-burn-dialog.c:1101
+#: ../src/brasero-burn-dialog.c:1103
 msgid "_Close the application if the burn process is successful"
-msgstr ""
+msgstr "燒錄成功後，關閉本程式(_C)"
 
-#: ../src/brasero-burn-dialog.c:1310
+#: ../src/brasero-burn-dialog.c:1312
 msgid "Save current session"
-msgstr ""
+msgstr "儲存目前的區段"
 
-#: ../src/brasero-burn-dialog.c:1389
+#: ../src/brasero-burn-dialog.c:1391
 msgid "Session log"
-msgstr ""
+msgstr "區段記錄檔"
 
-#: ../src/brasero-burn-dialog.c:1419 ../src/brasero-burn-dialog.c:1442
-#: ../src/brasero-burn-dialog.c:1452
+#: ../src/brasero-burn-dialog.c:1421 ../src/brasero-burn-dialog.c:1444
+#: ../src/brasero-burn-dialog.c:1454
 msgid "Session log error"
-msgstr ""
+msgstr "區段記錄檔錯誤"
 
-#: ../src/brasero-burn-dialog.c:1420 ../src/brasero-burn-dialog.c:1443
-#: ../src/brasero-burn-dialog.c:1453
+#: ../src/brasero-burn-dialog.c:1422 ../src/brasero-burn-dialog.c:1445
+#: ../src/brasero-burn-dialog.c:1455
 msgid "The session log cannot be displayed:"
-msgstr ""
+msgstr "區段記錄檔無法顯示："
 
-#: ../src/brasero-burn-dialog.c:1421
+#: ../src/brasero-burn-dialog.c:1423
 msgid "the log file could not be found."
-msgstr ""
+msgstr "找不到記錄檔。"
 
-#: ../src/brasero-burn-dialog.c:1436
+#: ../src/brasero-burn-dialog.c:1438
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
 msgstr ""
+"這是區段記錄檔的一段節錄 (最後的 10 MiB 部份):\n"
+"\n"
 
-#: ../src/brasero-burn-dialog.c:1522
+#: ../src/brasero-burn-dialog.c:1524
 msgid "An unknown error occured. Check your disc"
-msgstr "發生一個未知的錯誤。檢查你的光碟"
-
-#: ../src/brasero-burn-dialog.c:1532
-msgid "Error while burning:"
-msgstr "燒錄時發生錯誤："
+msgstr "原因不明的錯誤發生。請檢查你的光碟片"
 
 #: ../src/brasero-burn-dialog.c:1534
-msgid "Burning error"
-msgstr "燒錄錯誤"
+msgid "Error while burning:"
+msgstr "燒錄過程中發生錯誤："
 
-#: ../src/brasero-burn-dialog.c:1540
+#: ../src/brasero-burn-dialog.c:1536
+msgid "Burning error"
+msgstr "燒錄異常"
+
+#: ../src/brasero-burn-dialog.c:1542
 msgid "Save log"
 msgstr "儲存紀錄"
 
-#: ../src/brasero-burn-dialog.c:1547
+#: ../src/brasero-burn-dialog.c:1549
 msgid "View log"
-msgstr "檢視紀錄"
+msgstr "檢視記錄"
 
-#: ../src/brasero-burn-dialog.c:1619
+#: ../src/brasero-burn-dialog.c:1634
 msgid "Audio CD successfully burnt"
-msgstr "已成功燒錄音樂 CD"
+msgstr "音楽 CD 燒錄成功"
 
-#: ../src/brasero-burn-dialog.c:1620 ../src/brasero-burn-dialog.c:1661
-#: ../src/brasero-burn-dialog.c:1666 ../src/brasero-burn-dialog.c:1672
-#, c-format
-msgid "\"%s\" is now ready for use"
-msgstr ""
-
-#: ../src/brasero-burn-dialog.c:1626
+#: ../src/brasero-burn-dialog.c:1639
 msgid "DVD successfully copied"
-msgstr "已成功複製 DVD"
+msgstr "DVD 複製成功"
 
-#: ../src/brasero-burn-dialog.c:1627 ../src/brasero-burn-dialog.c:1637
-#: ../src/brasero-burn-dialog.c:1649
-#, c-format
-msgid "DVD is now ready for use"
-msgstr ""
-
-#: ../src/brasero-burn-dialog.c:1630
+#: ../src/brasero-burn-dialog.c:1641
 msgid "CD successfully copied"
-msgstr "已成功複製 CD "
+msgstr "CD 複製成功"
 
-#: ../src/brasero-burn-dialog.c:1631 ../src/brasero-burn-dialog.c:1641
+#: ../src/brasero-burn-dialog.c:1645
+msgid "Image of DVD successfully created"
+msgstr "DVD 的映像檔製作成功"
+
+#: ../src/brasero-burn-dialog.c:1647
+msgid "Image of CD successfully created"
+msgstr "CD 的映像檔製作成功"
+
 #: ../src/brasero-burn-dialog.c:1653
-#, c-format
-msgid "CD is now ready for use"
+msgid "Image successfully burnt to DVD"
+msgstr "映像檔燒錄至 DVD 成功"
+
+#: ../src/brasero-burn-dialog.c:1655
+msgid "Image successfully burnt to CD"
+msgstr "映像檔燒錄至 CD 成功"
+
+#: ../src/brasero-burn-dialog.c:1661
+msgid "Data DVD successfully burnt"
+msgstr "資料 DVD 燒錄成功"
+
+#: ../src/brasero-burn-dialog.c:1663
+msgid "Data CD successfully burnt"
+msgstr "資料 CD 燒錄成功"
+
+#: ../src/brasero-burn-dialog.c:1666
+msgid "Image successfully created"
+msgstr "映像檔製作成功"
+
+#. since we succeed offer the possibility to create cover if that's an audio disc
+#: ../src/brasero-burn-dialog.c:1676
+msgid "Create cover"
 msgstr ""
 
-#: ../src/brasero-burn-dialog.c:1636
-msgid "Image of DVD successfully created"
-msgstr "已成功建立 DVD 映像檔"
-
-#: ../src/brasero-burn-dialog.c:1640
-msgid "Image of CD successfully created"
-msgstr "已成功建立 CD 映像檔"
-
-#: ../src/brasero-burn-dialog.c:1648
-msgid "Image successfully burnt to DVD"
-msgstr "映像檔已成功燒錄至 DVD"
-
-#: ../src/brasero-burn-dialog.c:1652
-msgid "Image successfully burnt to CD"
-msgstr "映像檔已成功燒錄至 CD"
-
-#: ../src/brasero-burn-dialog.c:1660
-msgid "Data DVD successfully burnt"
-msgstr "已成功燒錄資料 DVD "
-
-#: ../src/brasero-burn-dialog.c:1665
-msgid "Data CD successfully burnt"
-msgstr "已成功燒錄資料 CD "
-
-#: ../src/brasero-burn-dialog.c:1671
-msgid "Image successfully created"
-msgstr "映像檔已成功建立"
-
-#: ../src/brasero-burn-dialog.c:1848 ../src/brasero-tool-dialog.c:369
+#: ../src/brasero-burn-dialog.c:1852 ../src/brasero-tool-dialog.c:369
 msgid "Do you really want to quit?"
 msgstr "你確定要離開嗎？"
 
-#: ../src/brasero-burn-dialog.c:1850 ../src/brasero-tool-dialog.c:371
+#: ../src/brasero-burn-dialog.c:1854 ../src/brasero-tool-dialog.c:371
 msgid "Confirm"
-msgstr ""
+msgstr "確認"
 
-#: ../src/brasero-burn-dialog.c:1854 ../src/brasero-tool-dialog.c:374
+#: ../src/brasero-burn-dialog.c:1858 ../src/brasero-tool-dialog.c:374
 msgid "Interrupting the process may make disc unusable."
-msgstr ""
+msgstr "中斷操作可能導致光碟片無法使用。"
 
 #: ../src/brasero-data-disc.c:141
 msgid "R_ename..."
-msgstr "重新命名(_E)..."
+msgstr "重新命名(_e)"
 
 #: ../src/brasero-data-disc.c:141
 msgid "Rename the selected file"
@@ -1455,23 +1452,23 @@ msgstr "新資料夾"
 
 #: ../src/brasero-data-disc.c:147
 msgid "Create a new empty folder"
-msgstr "建立新空白資料夾"
+msgstr "新建一個空資料夾"
 
 #: ../src/brasero-data-disc.c:152
 msgid "Import Session"
-msgstr "匯入階段"
+msgstr "匯入區段"
 
 #: ../src/brasero-data-disc.c:152
 msgid "Import session"
-msgstr "匯入階段"
+msgstr "匯入區段"
 
 #: ../src/brasero-data-disc.c:354
 msgid "The session couldn't be imported:"
-msgstr ""
+msgstr "這個區段不能匯入："
 
 #: ../src/brasero-data-disc.c:356
 msgid "Import session error"
-msgstr ""
+msgstr "匯入區段錯誤"
 
 #: ../src/brasero-data-disc.c:358 ../src/brasero-sum-dialog.c:154
 #: ../src/scsi-error.c:29
@@ -1490,15 +1487,17 @@ msgstr ""
 #: ../src/brasero-data-disc.c:714
 #, fuzzy
 msgid "Do you want to continue or discard it?"
-msgstr "你想要覆蓋嗎？"
+msgstr "你要取代它嗎？"
 
 #: ../src/brasero-data-disc.c:719
+#, fuzzy
 msgid "_Discard"
-msgstr ""
+msgstr "放棄更改 (_D)"
 
 #: ../src/brasero-data-disc.c:720
+#, fuzzy
 msgid "Press if you want to discard the current modified project"
-msgstr ""
+msgstr "你確定要清空這個專案?"
 
 #: ../src/brasero-data-disc.c:723
 #, fuzzy
@@ -1506,65 +1505,69 @@ msgid "_Continue"
 msgstr "繼續"
 
 #: ../src/brasero-data-disc.c:724
+#, fuzzy
 msgid "Press if you want to continue with the current modified project"
-msgstr ""
+msgstr "你確定要清空這個專案?"
 
 #: ../src/brasero-data-disc.c:847 ../src/brasero-data-disc.c:890
 #: ../src/brasero-data-disc.c:933
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" cannot be added to the selection:"
-msgstr ""
+msgstr "\"%s\" 不能藉由 gstreamer 被處理："
 
 #: ../src/brasero-data-disc.c:877
-#, c-format
+#, fuzzy, c-format
 msgid "\"%s\" is a recursive symlink."
-msgstr ""
+msgstr "遞迴的符號連結"
 
 #: ../src/brasero-data-disc.c:894
+#, fuzzy
 msgid "Recursive symlink"
-msgstr ""
+msgstr "遞迴的符號連結"
 
 #: ../src/brasero-data-disc.c:897
+#, fuzzy
 msgid "it is a recursive symlink."
-msgstr ""
+msgstr "遞迴的符號連結"
 
 #: ../src/brasero-data-disc.c:920
 #, fuzzy, c-format
 msgid "\"%s\" cannot be found."
-msgstr "無法開啟「%s」。"
+msgstr "\"%s\" 無法解除鎖定"
 
 #: ../src/brasero-data-disc.c:937
 #, fuzzy
 msgid "File not found"
-msgstr "無法開啟檔案："
+msgstr "檔案無法開啟"
 
 #: ../src/brasero-data-disc.c:940
 msgid "it doesn't exist at the specified location."
 msgstr ""
 
 #: ../src/brasero-data-disc.c:970
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" already exists in the directory:"
-msgstr "「%s」已存在目錄中："
+msgstr "\"%s\" 已存在目錄中："
 
 #: ../src/brasero-data-disc.c:973
 #, fuzzy
 msgid "Already Existing File"
-msgstr "檔案已存在"
+msgstr "已存在的檔案"
 
 #: ../src/brasero-data-disc.c:976
 #, fuzzy
 msgid "do you really want to replace it?"
-msgstr "你想要覆蓋嗎？"
+msgstr "你要取代它嗎？"
 
 #: ../src/brasero-data-disc.c:978
 #, fuzzy
 msgid "_Don't replace"
-msgstr "你想要覆蓋嗎？"
+msgstr "你要取代它嗎？"
 
 #: ../src/brasero-data-disc.c:979
+#, fuzzy
 msgid "_Replace"
-msgstr ""
+msgstr "更換光碟片"
 
 #: ../src/brasero-data-disc.c:1015
 #, c-format
@@ -1596,12 +1599,12 @@ msgstr ""
 #: ../src/brasero-data-disc.c:1026 ../src/brasero-data-disc.c:1074
 #, fuzzy
 msgid "_Add"
-msgstr "加入"
+msgstr "增加"
 
 #: ../src/brasero-data-disc.c:1063
 #, fuzzy, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
-msgstr "你確定要離開嗎？"
+msgstr "你確定要清空這個專案?"
 
 #: ../src/brasero-data-disc.c:1066
 #, fuzzy
@@ -1619,25 +1622,26 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:1112
 msgid "A multisession disc is inserted:"
-msgstr ""
+msgstr "你放入了一片多重區段的光碟"
 
 #: ../src/brasero-data-disc.c:1113
 msgid "Click here to import its contents"
-msgstr ""
+msgstr "點擊這裏以匯入內容"
 
 #: ../src/brasero-data-disc.c:1445
 #, fuzzy
 msgid "Please, wait while the project is loading."
-msgstr "請為專案加入檔案。"
+msgstr "請加入檔案至專案中。"
 
 #: ../src/brasero-data-disc.c:1449
 #, fuzzy
 msgid "_Cancel Loading"
-msgstr "正在載入"
+msgstr "載入中"
 
 #: ../src/brasero-data-disc.c:1450
+#, fuzzy
 msgid "Press if you want to cancel current project loading"
-msgstr ""
+msgstr "你確定要清空這個專案?"
 
 #: ../src/brasero-data-disc.c:1549
 msgid "Import"
@@ -1647,117 +1651,117 @@ msgstr "匯入"
 msgid "New Folder"
 msgstr "新資料夾"
 
-#: ../src/brasero-data-disc.c:2115
+#: ../src/brasero-data-disc.c:2120
 msgid "Size"
 msgstr "大小"
 
-#: ../src/brasero-data-disc.c:2134
+#: ../src/brasero-data-disc.c:2150
 #, fuzzy
 msgid "Space"
 msgstr "儲存"
 
-#: ../src/brasero-disc-option-dialog.c:163
+#: ../src/brasero-disc-option-dialog.c:167
 #, c-format
 msgid "Data disc (%s)"
 msgstr "資料光碟 (%s)"
 
-#: ../src/brasero-disc-option-dialog.c:166
+#: ../src/brasero-disc-option-dialog.c:170
 #, c-format
 msgid "Audio disc (%s)"
 msgstr "音樂光碟 (%s)"
 
-#: ../src/brasero-disc-option-dialog.c:458
+#: ../src/brasero-disc-option-dialog.c:462
 msgid "their names will be changed and truncated to 64 characters."
-msgstr ""
+msgstr "它們的名稱會被改變，截短至 64 字符。"
 
-#: ../src/brasero-disc-option-dialog.c:507
+#: ../src/brasero-disc-option-dialog.c:511
 msgid "<b>Label of the disc</b>"
-msgstr "<b>光碟標籤</b>"
+msgstr "<b>光碟的標籤</b>"
 
-#: ../src/brasero-disc-option-dialog.c:509
+#: ../src/brasero-disc-option-dialog.c:513
 msgid "<b>Title</b>"
 msgstr "<b>標題</b>"
 
-#: ../src/brasero-disc-option-dialog.c:530
+#: ../src/brasero-disc-option-dialog.c:534
 msgid "Increase compatibility with _Windows systems"
-msgstr ""
+msgstr "增加與 Windows 系統的兼容性(_W)"
 
-#: ../src/brasero-disc-option-dialog.c:532
+#: ../src/brasero-disc-option-dialog.c:536
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
-msgstr ""
+msgstr "透過允許顯示長檔案名稱（最大 64 個字符），增大與 Windows 系統的兼容性"
 
-#: ../src/brasero-disc-option-dialog.c:558
+#: ../src/brasero-disc-option-dialog.c:562
 msgid "Leave the disc _open to add other files later"
-msgstr ""
+msgstr "讓光碟離開以便稍候增加其它檔案(_o)"
 
-#: ../src/brasero-disc-option-dialog.c:565
+#: ../src/brasero-disc-option-dialog.c:569
 msgid "Allow to add more data to the disc later"
-msgstr ""
+msgstr "允許稍候增加更多資料到光碟"
 
-#: ../src/brasero-disc-option-dialog.c:595
-#: ../src/brasero-disc-option-dialog.c:629
+#: ../src/brasero-disc-option-dialog.c:599
+#: ../src/brasero-disc-option-dialog.c:633
 msgid "<b>Disc options</b>"
 msgstr "<b>光碟選項</b>"
 
 #. multisession options
-#: ../src/brasero-disc-option-dialog.c:621
+#: ../src/brasero-disc-option-dialog.c:625
 msgid "Leave the disc _open to add a data session later"
 msgstr ""
 
-#: ../src/brasero-disc-option-dialog.c:627
+#: ../src/brasero-disc-option-dialog.c:631
 msgid "Allow create what is called an enhanced CD or CD+"
-msgstr ""
+msgstr "允許建立所謂的增強 CD 或者 CD+"
 
-#: ../src/brasero-disc-option-dialog.c:730
+#: ../src/brasero-disc-option-dialog.c:734
 #: ../src/brasero-image-option-dialog.c:490
 msgid "_Burn"
 msgstr "燒錄(_B)"
 
-#: ../src/brasero-disc-option-dialog.c:828
+#: ../src/brasero-disc-option-dialog.c:832
 msgid "Disc burning setup"
-msgstr ""
+msgstr "光碟燒錄設置"
 
 #: ../src/brasero-drive-info.c:118
 #, c-format
 msgid "%s of data"
-msgstr ""
+msgstr "資料的 %s"
 
 #: ../src/brasero-drive-info.c:129
 msgid "<i>the medium is not writable</i>"
-msgstr ""
+msgstr "<i>媒體不可寫入</i>"
 
 #: ../src/brasero-drive-info.c:135
 msgid "<i>the medium is not writable with the current set of plugins</i>"
-msgstr ""
+msgstr "<i>當前插件的設定下媒體不能被寫入</i>"
 
 #: ../src/brasero-drive-info.c:144 ../src/brasero-drive-info.c:159
 #: ../src/brasero-drive-info.c:193
 #, c-format
 msgid "%s free"
-msgstr ""
+msgstr "%s 自由"
 
 #: ../src/brasero-drive-info.c:151
 msgid "the medium can be recorded (automatic blanking required)"
-msgstr ""
+msgstr "這個媒體不能夠被燒錄(需要自動清空)"
 
 #: ../src/brasero-drive-info.c:165
 msgid "the medium can be recorded"
-msgstr ""
+msgstr "這些光碟可被燒錄"
 
 #: ../src/brasero-drive-info.c:175
 #, c-format
 msgid "%s (%s free)"
-msgstr ""
+msgstr "%s (%s 可用)"
 
 #: ../src/brasero-drive-info.c:185
 msgid "data can be written or appended to the medium"
-msgstr ""
+msgstr "資料不能被寫入或者新增到媒體"
 
 #: ../src/brasero-drive-info.c:200
 msgid "data can be appended to the medium"
-msgstr ""
+msgstr "資料不能被新增到媒體"
 
 #: ../src/brasero-drive-info.c:217
 #, c-format
@@ -1765,6 +1769,8 @@ msgid ""
 "The <b>image</b> will be saved to\n"
 "%s"
 msgstr ""
+"這個<b>映像</b>將被保存到\n"
+"%s"
 
 #: ../src/brasero-drive-info.c:291
 msgid ""
@@ -1774,6 +1780,9 @@ msgid ""
 "</i></b><i>A new recordable media will be required once the one currently "
 "loaded has been copied.</i>"
 msgstr ""
+"<b><i>這個包含來源光碟的驅動也將會被用於燒錄。\n"
+"\n"
+"</i></b><i>一旦當前加載的光碟被複製，將會需要一張新的可記錄光碟</i>"
 
 #: ../src/brasero-drive-info.c:307
 msgid "<b>Size:</b>"
@@ -1788,105 +1797,105 @@ msgid "unknown"
 msgstr "未知"
 
 #: ../src/brasero-drive-properties.c:249
-#, c-format
-msgid "%d x (DVD)"
-msgstr "%d x (DVD)"
+#, fuzzy, c-format
+msgid "%.1f x (DVD)"
+msgstr "%d 倍速 (DVD)"
 
 #: ../src/brasero-drive-properties.c:252
-#, c-format
-msgid "%d x (CD)"
-msgstr "%d x (CD)"
+#, fuzzy, c-format
+msgid "%.1f x (CD)"
+msgstr "%d 倍速 (CD)"
 
 #: ../src/brasero-drive-properties.c:255
-#, c-format
-msgid "%d x (DVD) %d x (CD)"
-msgstr "%d x (DVD) %d x (CD)"
+#, fuzzy, c-format
+msgid "%.1f x (DVD) %.1f x (CD)"
+msgstr "%d 倍速 (DVD) %d 倍速 (CD)"
 
-#: ../src/brasero-drive-properties.c:284
+#: ../src/brasero-drive-properties.c:283
 #, c-format
 msgid "Properties of %s"
-msgstr ""
+msgstr "%s 的屬性"
 
-#: ../src/brasero-drive-properties.c:301
+#: ../src/brasero-drive-properties.c:295
 #, c-format
 msgid "Max speed"
 msgstr "最大速度"
 
-#: ../src/brasero-drive-properties.c:353
+#: ../src/brasero-drive-properties.c:363
 msgid "<b>Burning speed</b>"
 msgstr "<b>燒錄速度</b>"
 
-#: ../src/brasero-drive-properties.c:363
+#: ../src/brasero-drive-properties.c:373
 msgid "_Simulate the burning"
 msgstr "模擬燒錄(_S)"
 
-#: ../src/brasero-drive-properties.c:364
+#: ../src/brasero-drive-properties.c:374
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr ""
+msgstr "使用 burn _proof 技術(降低失敗風險)"
 
-#: ../src/brasero-drive-properties.c:365
+#: ../src/brasero-drive-properties.c:375
 msgid "_Eject after burning"
-msgstr "燒錄後退出(_E)"
+msgstr "燒錄完成後退出光碟(_E)"
 
-#: ../src/brasero-drive-properties.c:366
+#: ../src/brasero-drive-properties.c:376
 msgid "Burn the image directly _without saving it to disc"
-msgstr ""
+msgstr "直接燒錄映像而不保存到光碟(_w)"
 
-#: ../src/brasero-drive-properties.c:369
+#: ../src/brasero-drive-properties.c:379
 msgid "<b>Options</b>"
 msgstr "<b>選項</b>"
 
-#: ../src/brasero-drive-properties.c:378
+#: ../src/brasero-drive-properties.c:388
 msgid "Directory for temporary files"
-msgstr ""
-
-#: ../src/brasero-drive-properties.c:384
-msgid "_Temporary directory free space:"
-msgstr ""
+msgstr "臨時檔案的目錄"
 
 #: ../src/brasero-drive-properties.c:394
+msgid "_Temporary directory free space:"
+msgstr "臨時目錄的空餘空間(_T)："
+
+#: ../src/brasero-drive-properties.c:404
 msgid "<b>Temporary files</b>"
-msgstr ""
+msgstr "<b>暫存檔</b>"
 
-#: ../src/brasero-drive-selection.c:215 ../src/burn.c:826
+#: ../src/brasero-drive-selection.c:203 ../src/burn.c:832
 msgid "ongoing burning process"
-msgstr ""
+msgstr "進行的燒錄過程"
 
-#: ../src/brasero-file-chooser.c:221 ../src/brasero-project.c:1429
+#: ../src/brasero-file-chooser.c:221 ../src/brasero-project.c:1464
 msgid "Audio files only"
-msgstr "只有音樂檔"
+msgstr "只有音樂檔案"
 
-#: ../src/brasero-file-chooser.c:229 ../src/brasero-project.c:1438
+#: ../src/brasero-file-chooser.c:229 ../src/brasero-project.c:1473
 msgid "Movies only"
-msgstr "只有影片"
+msgstr "只有電影"
 
-#: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1444
+#: ../src/brasero-file-chooser.c:235 ../src/brasero-project.c:1479
 msgid "Image files only"
-msgstr "只有映像檔"
+msgstr "只有映像檔案"
 
 #: ../src/brasero-image-option-dialog.c:344
 msgid "This image can't be burnt:"
-msgstr ""
+msgstr "這個映像不能被燒錄："
 
 #: ../src/brasero-image-option-dialog.c:346
 msgid "Invalid image"
-msgstr "無效的映像檔"
+msgstr "無效的映像"
 
 #: ../src/brasero-image-option-dialog.c:349
 msgid "it doesn't appear to be a valid image or a valid cue file."
-msgstr ""
+msgstr "看起來它不是一個有效的映像或有效的 cue 檔。"
 
 #: ../src/brasero-image-option-dialog.c:367
 msgid "There is no specified image:"
-msgstr ""
+msgstr "没有指定的映像："
 
 #: ../src/brasero-image-option-dialog.c:369
 msgid "No image"
-msgstr "沒有映像檔"
+msgstr "没有映像"
 
 #: ../src/brasero-image-option-dialog.c:372
 msgid "Please, choose an image and retry."
-msgstr ""
+msgstr "請選擇一個映像並重試。"
 
 #: ../src/brasero-image-option-dialog.c:545
 msgid "Path:"
@@ -1894,44 +1903,44 @@ msgstr "路徑："
 
 #: ../src/brasero-image-option-dialog.c:558
 msgid "Open an image"
-msgstr "開請映像檔"
+msgstr "打開一個映像"
 
 #: ../src/brasero-image-option-dialog.c:577
-#: ../src/brasero-image-properties.c:197
+#: ../src/brasero-image-properties.c:200
 msgid "Image type:"
-msgstr "映像檔類型："
+msgstr "映像類型:"
 
 #: ../src/brasero-image-option-dialog.c:607
 msgid "<b>Image</b>"
-msgstr "<b>映像檔</b>"
+msgstr "<b>映像</b>"
 
 #: ../src/brasero-image-option-dialog.c:686
 msgid "Image burning setup"
-msgstr ""
+msgstr "映像燒錄設置"
 
-#: ../src/brasero-image-properties.c:229
+#: ../src/brasero-image-properties.c:232
 msgid "Disc image file properties"
-msgstr "光碟映像檔屬性"
+msgstr "光碟映像檔案屬性"
 
 #: ../src/brasero-image-type-chooser.c:93
 msgid "Let brasero choose (safest)"
-msgstr ""
+msgstr "讓 brasero 選擇(最安全)"
 
 #: ../src/brasero-image-type-chooser.c:100
 msgid "*.iso image"
-msgstr "*.iso 映像檔"
+msgstr "*.iso 映像"
 
 #: ../src/brasero-image-type-chooser.c:108
 msgid "*.raw image"
-msgstr "*.raw 映像檔"
+msgstr "*.raw 映像"
 
 #: ../src/brasero-image-type-chooser.c:116
 msgid "*.cue image"
-msgstr "*.cue 映像檔"
+msgstr "*.cue 映像"
 
 #: ../src/brasero-image-type-chooser.c:124
 msgid "*.toc image (cdrdao)"
-msgstr "*.toc 映像檔 (cdrdao)"
+msgstr "*.toc 映像 (cdrdao)"
 
 #: ../src/brasero-layout.c:122
 msgid "Preview"
@@ -1939,23 +1948,23 @@ msgstr "預覽"
 
 #: ../src/brasero-layout.c:123
 msgid "P_review"
-msgstr "預覽(_R)"
+msgstr "預覽(_r)"
 
 #: ../src/brasero-layout.c:124
 msgid "Display video, audio and image preview"
-msgstr ""
+msgstr "顯示影片，音樂和映像預覽"
 
 #: ../src/brasero-layout.c:128
 msgid "_Show side panel"
-msgstr ""
+msgstr "顯示側邊欄(_S)"
 
 #: ../src/brasero-layout.c:129
 msgid "Show a side pane along the project"
-msgstr ""
+msgstr "在這個專案中顯示一個側邊欄"
 
 #: ../src/brasero-layout.c:1264
 msgid "Click to close the side pane"
-msgstr ""
+msgstr "點擊這裏來關閉側邊欄"
 
 #: ../src/brasero-player.c:272
 #, c-format
@@ -1968,19 +1977,19 @@ msgstr "沒有檔案"
 
 #: ../src/brasero-player.c:426
 msgid "Start and stop playing"
-msgstr "開始及停止播放"
+msgstr "開始/停止播放"
 
 #: ../src/brasero-player.c:786
 #, c-format
 msgid "<span weight=\"bold\">Name:</span>\t %s"
-msgstr "<span weight=\"bold\">名稱：</span>\t %s"
+msgstr "<span weight=\"bold\">名稱:</span>\t %s"
 
 #: ../src/brasero-player.c:792
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
 "pixels</span></i>"
-msgstr "<span weight=\"bold\">大小：</span>\t<i><span size=\"smaller\"> %i x %i 像素</span></i>"
+msgstr "<span weight=\"bold\">大小:</span>\t<i><span size=\"smaller\"> %i x %i 像素</span></i>"
 
 #: ../src/brasero-player.c:815
 #, c-format
@@ -1989,7 +1998,7 @@ msgid ""
 "by <span size=\"smaller\"><i>%s</i></span>"
 msgstr ""
 "<span weight=\"bold\">%s</span>\n"
-"由 <span size=\"smaller\"><i>%s</i></span>"
+"by <span size=\"smaller\"><i>%s</i></span>"
 
 #: ../src/brasero-player.c:823 ../src/brasero-player.c:832
 #, c-format
@@ -2002,399 +2011,445 @@ msgid ""
 "<span weight=\"bold\">Loading information</span>\n"
 "about <span size=\"smaller\"><i>%s</i></span>"
 msgstr ""
+"<span weight=\"bold\">資訊載入中</span>\n"
+"關於 <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:170 ../src/brasero-project.c:2419
+#: ../src/brasero-project.c:186 ../src/brasero-project.c:2735
 msgid "Save current project"
-msgstr "儲存當前專案"
+msgstr "儲存目前專案"
 
-#: ../src/brasero-project.c:171
+#: ../src/brasero-project.c:187
 msgid "Save _As..."
-msgstr "另存為(_A)..."
+msgstr "另存新檔(_A)..."
 
-#: ../src/brasero-project.c:172
+#: ../src/brasero-project.c:188
 msgid "Save current project to a different location"
-msgstr "儲存當前專案至不同的位置"
+msgstr "將幕前專案另存至不同位置"
 
-#: ../src/brasero-project.c:173
+#: ../src/brasero-project.c:189
 msgid "_Add Files"
-msgstr "加入檔案(_A)"
+msgstr "新增檔案(_A)"
 
-#: ../src/brasero-project.c:174
+#: ../src/brasero-project.c:190
 msgid "Add files to the project"
-msgstr "加入檔案至專案"
+msgstr "新增檔案至專案"
 
-#: ../src/brasero-project.c:175
+#: ../src/brasero-project.c:191
 msgid "_Remove Files"
 msgstr "移除檔案(_R)"
 
-#: ../src/brasero-project.c:177
+#: ../src/brasero-project.c:193
 msgid "E_mpty Project"
-msgstr "空白專案(_M)"
+msgstr "空白專案(_m)"
 
-#: ../src/brasero-project.c:178
+#: ../src/brasero-project.c:194
 msgid "Delete all files from the project"
-msgstr "從專案刪除檔案"
+msgstr "自專案中刪除所有資料"
 
-#: ../src/brasero-project.c:179 ../src/brasero-project.c:387
+#: ../src/brasero-project.c:195 ../src/brasero-project.c:404
 msgid "_Burn..."
-msgstr "燒錄(_B)..."
+msgstr "燒錄...(_B)"
 
-#: ../src/brasero-project.c:180
+#: ../src/brasero-project.c:196
 msgid "Burn the disc"
 msgstr "燒錄光碟"
 
-#: ../src/brasero-project.c:399
+#: ../src/brasero-project.c:416
 msgid "Start to burn the contents of the selection"
-msgstr ""
+msgstr "開始燒錄已選擇的內容"
 
-#: ../src/brasero-project.c:498
+#: ../src/brasero-project.c:515
 msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option:"
-msgstr ""
+msgstr "專案過大，即使開啟超燒功能還是無法容納："
 
-#: ../src/brasero-project.c:500 ../src/brasero-project.c:524
+#: ../src/brasero-project.c:517 ../src/brasero-project.c:541
 msgid "Project size"
 msgstr "專案大小"
 
-#: ../src/brasero-project.c:503
+#: ../src/brasero-project.c:520
 msgid "you must delete some files."
 msgstr "你必須刪除一些檔案。"
 
-#: ../src/brasero-project.c:522
+#: ../src/brasero-project.c:539
 msgid "The size of the project is too large for the disc:"
-msgstr ""
+msgstr "專案過大，光碟無法容納："
 
-#: ../src/brasero-project.c:527
+#: ../src/brasero-project.c:544
 msgid ""
 "Would you like to activate overburn (otherwise you must delete files) ?\n"
 "NOTE: This option might cause failure."
 msgstr ""
+"你想要開啟超燒功能嗎(否則需要刪除一些檔案)?\n"
+"註：這個選項可能會導致燒錄失敗"
 
-#: ../src/brasero-project.c:738
+#: ../src/brasero-project.c:755
 msgid "Please wait:"
-msgstr "請稍待："
+msgstr "請稍候:"
 
-#: ../src/brasero-project.c:740
+#: ../src/brasero-project.c:757
 msgid "Please wait"
-msgstr "請稍待"
+msgstr "請稍候"
 
-#: ../src/brasero-project.c:743
+#: ../src/brasero-project.c:760
 msgid "some tasks are not completed yet."
-msgstr ""
+msgstr "一些工作還沒完成。"
 
-#: ../src/brasero-project.c:745
+#: ../src/brasero-project.c:762
 msgid "Waiting for ongoing tasks"
-msgstr ""
+msgstr "正在等待進行中的任務"
 
-#: ../src/brasero-project.c:791
+#: ../src/brasero-project.c:828
 msgid "No song in the project:"
-msgstr ""
+msgstr "專案內無歌曲："
 
-#: ../src/brasero-project.c:793 ../src/brasero-project.c:816
-#: ../src/brasero-project.c:1472
+#: ../src/brasero-project.c:830 ../src/brasero-project.c:853
+#: ../src/brasero-project.c:1507
 msgid "Empty project"
 msgstr "空白專案"
 
-#: ../src/brasero-project.c:796
+#: ../src/brasero-project.c:833
 msgid "please add songs to the project."
-msgstr ""
+msgstr "請將歌曲加入專案。"
 
-#: ../src/brasero-project.c:814
+#: ../src/brasero-project.c:851
 msgid "Project is empty:"
-msgstr "專案是空的："
+msgstr "專案是空白的:"
 
-#: ../src/brasero-project.c:819
+#: ../src/brasero-project.c:856
 msgid "please add files to the project."
-msgstr "請為專案加入檔案。"
+msgstr "請加入檔案至專案中。"
 
-#: ../src/brasero-project.c:965
+#: ../src/brasero-project.c:1002
 msgid "Default burning application"
-msgstr "預設燒錄應用程式"
+msgstr "預設燒錄軟件"
 
-#: ../src/brasero-project.c:996
+#: ../src/brasero-project.c:1033
 msgid "don't _show this dialog again"
-msgstr "不再顯示此對話方塊(_S)"
+msgstr "不要再顯示此對話方塊 (_s)"
 
-#: ../src/brasero-project.c:1060
+#: ../src/brasero-project.c:1096
 msgid "Brasero is not the default application to burn audio CDs:"
-msgstr "Brasero 並非燒錄音樂 CD 的預設應用程式："
+msgstr "Brasero 不是預設的音樂 CD 燒錄軟件："
 
-#: ../src/brasero-project.c:1061
+#: ../src/brasero-project.c:1097
 msgid ""
 "Would you like to make brasero the default application to burn audio CDs?"
-msgstr "你要讓 Brasero 作為燒錄音樂 CD 的預設應用程式嗎？"
+msgstr "你想要將Brasero設成預設的音樂 CD 燒錄軟件嗎?"
 
-#: ../src/brasero-project.c:1074
+#: ../src/brasero-project.c:1110
 msgid "Brasero is not the default application to burn data discs:"
-msgstr "Brasero 並非燒錄資料光碟的預設應用程式："
+msgstr "Brasero 不是預設的資料 CD 燒錄軟件："
 
-#: ../src/brasero-project.c:1075
+#: ../src/brasero-project.c:1111
 msgid ""
 "Would you like to make brasero the default application to burn data discs?"
-msgstr "你要讓 Brasero 作為燒錄資料光碟的預設應用程式嗎？"
+msgstr "你想要將 Brasero 設成預設的資料 CD 燒錄軟件嗎?"
 
-#: ../src/brasero-project.c:1140
+#: ../src/brasero-project.c:1176
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
-msgstr "你真的要建立新專案並放棄目前專案的修改嗎？"
+msgstr "你確定想要放棄目前專案並新建一個嗎?"
 
-#: ../src/brasero-project.c:1143 ../src/brasero-project.c:2082
+#: ../src/brasero-project.c:1179 ../src/brasero-project.c:2183
 msgid "Unsaved project"
 msgstr "未儲存的專案"
 
-#: ../src/brasero-project.c:1146
+#: ../src/brasero-project.c:1182
 msgid "If you choose to create a new project, all changes made will be lost."
-msgstr ""
+msgstr "如果你選擇新增一個專案，舊的更改將會消失"
 
-#: ../src/brasero-project.c:1148
+#: ../src/brasero-project.c:1184
 msgid "_Discard Changes"
-msgstr ""
+msgstr "放棄更改 (_D)"
 
-#: ../src/brasero-project.c:1161
+#: ../src/brasero-project.c:1197
 msgid "Do you really want to create a new project and discard the current one?"
-msgstr ""
+msgstr "你確定要新增一個專案並放棄目前的專案嗎?"
 
-#: ../src/brasero-project.c:1164
+#: ../src/brasero-project.c:1200
 msgid "New project"
 msgstr "新專案"
 
-#: ../src/brasero-project.c:1167
+#: ../src/brasero-project.c:1203
 msgid ""
 "If you choose to create a new project, all files already added will be "
 "discarded. Note that files will not be deleted from their own location, just "
 "no longer listed here."
-msgstr ""
+msgstr "如果你選擇建立一個新的專案，所有已增加的檔案都會被放棄。注意：這些文件並不會從他們自己所在位置被刪除，而僅僅是不再在這裏列出。"
 
-#: ../src/brasero-project.c:1172
+#: ../src/brasero-project.c:1208
 msgid "_Discard Project"
-msgstr ""
+msgstr "放棄專案(_D)"
 
-#: ../src/brasero-project.c:1398
+#: ../src/brasero-project.c:1433
 msgid "Select files"
 msgstr "選擇檔案"
 
-#: ../src/brasero-project.c:1469
+#: ../src/brasero-project.c:1504
 msgid "Do you really want to empty the current project?"
-msgstr ""
+msgstr "你確定要清空這個專案?"
 
-#: ../src/brasero-project.c:1475
+#: ../src/brasero-project.c:1510
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
 "longer listed here."
-msgstr ""
+msgstr "清空專案會移除已經增加的所有檔案。所有的工作將會遺失。注意：這些檔案並不會從他們自己所在位置被刪除，而僅僅是不再在這裏列出。"
 
-#: ../src/brasero-project.c:1480 ../src/brasero-project-manager.c:108
+#: ../src/brasero-project.c:1515 ../src/brasero-project-manager.c:112
 msgid "_Empty Project"
 msgstr "空白專案(_E)"
 
-#: ../src/brasero-project.c:1530
+#: ../src/brasero-project.c:1564
 msgid "Save"
 msgstr "儲存"
 
-#: ../src/brasero-project.c:1541
+#: ../src/brasero-project.c:1575
 msgid "Add"
-msgstr "加入"
+msgstr "增加"
 
-#: ../src/brasero-project.c:1546
+#: ../src/brasero-project.c:1580
 msgid "Remove"
 msgstr "移除"
 
-#: ../src/brasero-project.c:1593
+#: ../src/brasero-project.c:1640
 #, c-format
 msgid "Brasero - %s (data disc)"
 msgstr "Brasero - %s (資料光碟)"
 
-#: ../src/brasero-project.c:1595
+#: ../src/brasero-project.c:1642
 #, c-format
 msgid "Brasero - %s (audio disc)"
 msgstr "Brasero - %s (音樂光碟)"
 
-#: ../src/brasero-project.c:1621
+#: ../src/brasero-project.c:1668
 msgid "Error while loading the project:"
 msgstr "載入專案時發生錯誤："
 
-#: ../src/brasero-project.c:1623
+#: ../src/brasero-project.c:1670
 msgid "Project loading error"
-msgstr "專案載入錯誤"
+msgstr "載入專案發生錯誤"
 
-#: ../src/brasero-project.c:1911
+#: ../src/brasero-project.c:1958
 msgid "the project could not be opened."
-msgstr ""
+msgstr "無法開啟專案。"
 
-#: ../src/brasero-project.c:1920
+#: ../src/brasero-project.c:1967
 msgid "the file is empty."
 msgstr "檔案是空的。"
 
-#: ../src/brasero-project.c:1951 ../src/brasero-project.c:1959
+#: ../src/brasero-project.c:1998 ../src/brasero-project.c:2006
+#: ../src/brasero-project.c:2097
 msgid "it doesn't seem to be a valid brasero project."
-msgstr ""
+msgstr "檔案不像是一個正確的 brasero 專案"
 
-#: ../src/brasero-project.c:1978 ../src/brasero-project-manager.c:120
-msgid "Open a project"
-msgstr "開啟專案"
-
-#: ../src/brasero-project.c:2080
+#: ../src/brasero-project.c:2181
 msgid "Your project has not been saved:"
-msgstr ""
+msgstr "你的專案已經儲存:"
 
-#: ../src/brasero-project.c:2090
+#: ../src/brasero-project.c:2191
 msgid "Unknown error."
-msgstr "未知的錯誤。"
+msgstr "不明的錯誤。"
 
-#: ../src/brasero-project.c:2111
+#: ../src/brasero-project.c:2212
 msgid "Save the changes of current project before closing?"
-msgstr ""
+msgstr "關閉前儲存目前專案?"
 
-#: ../src/brasero-project.c:2113
+#: ../src/brasero-project.c:2214
 msgid "Modified project"
-msgstr ""
+msgstr "已編輯過的專案"
 
-#: ../src/brasero-project.c:2116
+#: ../src/brasero-project.c:2217
 msgid "If you don't save, changes will be permanently lost."
-msgstr ""
+msgstr "如果你不儲存，更改將會永久消失。"
 
-#: ../src/brasero-project.c:2120 ../src/brasero-project.c:2126
+#: ../src/brasero-project.c:2221 ../src/brasero-project.c:2227
 msgid "_Close without saving"
-msgstr "關閉但不儲存(_C)"
+msgstr "關閉且不儲存(_C)"
 
-#: ../src/brasero-project-manager.c:106
-msgid "_New Project"
-msgstr "新專案(_N)"
+#: ../src/brasero-project.c:2528
+#, fuzzy, c-format
+msgid " by %s"
+msgstr "%s / %s"
 
-#: ../src/brasero-project-manager.c:107
-msgid "Create a new project"
-msgstr "建立新專案"
+#: ../src/brasero-project.c:2753
+#, fuzzy
+msgid "Save project as brasero audio project"
+msgstr "新增一個音樂光碟專案"
+
+#: ../src/brasero-project.c:2754
+#, fuzzy
+msgid "Save project as a plain text list"
+msgstr "選取播放清單"
+
+#: ../src/brasero-project.c:2758
+#, fuzzy
+msgid "Save project as a PLS playlist"
+msgstr "選取播放清單"
+
+#: ../src/brasero-project.c:2759
+#, fuzzy
+msgid "Save project as an M3U playlist"
+msgstr "選取播放清單"
+
+#: ../src/brasero-project.c:2760
+#, fuzzy
+msgid "Save project as a XSPF playlist"
+msgstr "選取播放清單"
+
+#: ../src/brasero-project.c:2761
+#, fuzzy
+msgid "Save project as an IRIVER playlist"
+msgstr "選取播放清單"
+
+#: ../src/brasero-project-manager.c:108
+msgid "_Cover editor"
+msgstr ""
 
 #: ../src/brasero-project-manager.c:109
-msgid "Let you choose your new project"
+msgid "Design and print covers for CDs"
 msgstr ""
 
 #: ../src/brasero-project-manager.c:110
-msgid "New _Audio Project"
-msgstr "新建音樂專案(_A)"
+msgid "_New Project"
+msgstr "新專案(_N)"
 
 #: ../src/brasero-project-manager.c:111
-msgid "Create a new audio project"
-msgstr "建立新音樂專案"
-
-#: ../src/brasero-project-manager.c:112
-msgid "New _Data Project"
-msgstr "新建資料專案(_D)"
+msgid "Create a new project"
+msgstr "建立新專案"
 
 #: ../src/brasero-project-manager.c:113
-msgid "Create a new data project"
-msgstr "建立新資料專案"
+msgid "Let you choose your new project"
+msgstr "讓你選擇你的新專案"
 
 #: ../src/brasero-project-manager.c:114
+msgid "New _Audio Project"
+msgstr "新的音樂光碟專案(_A)"
+
+#: ../src/brasero-project-manager.c:115
+msgid "Create a new audio project"
+msgstr "新增一個音樂光碟專案"
+
+#: ../src/brasero-project-manager.c:116
+msgid "New _Data Project"
+msgstr "新的資料光碟專案(_D)"
+
+#: ../src/brasero-project-manager.c:117
+msgid "Create a new data project"
+msgstr "新增一個資料光碟專案"
+
+#: ../src/brasero-project-manager.c:118
 msgid "Copy _Disc..."
 msgstr "複製光碟(_D)..."
 
-#: ../src/brasero-project-manager.c:115 ../src/main.c:89
+#: ../src/brasero-project-manager.c:119 ../src/main.c:99
 msgid "Copy a disc"
-msgstr "複製光碟"
+msgstr "複製一片光碟"
 
-#: ../src/brasero-project-manager.c:116
+#: ../src/brasero-project-manager.c:120
 msgid "_Burn Image..."
-msgstr "燒錄映像檔(_B)..."
+msgstr "映像檔燒錄(_B)..."
 
-#: ../src/brasero-project-manager.c:117
+#: ../src/brasero-project-manager.c:121
 msgid "Burn an image"
-msgstr "燒錄映像檔"
+msgstr "將映像檔燒錄至光碟"
 
-#: ../src/brasero-project-manager.c:119
+#: ../src/brasero-project-manager.c:123
 msgid "_Open..."
 msgstr "開啟(_O)..."
 
-#: ../src/brasero-project-manager.c:220
+#: ../src/brasero-project-manager.c:124 ../src/brasero-project-manager.c:788
+msgid "Open a project"
+msgstr "開啟專案"
+
+#: ../src/brasero-project-manager.c:249
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
-msgstr[0] "已選 %d 個檔案 (%s)"
+msgstr[0] "已選取 %d 個檔案 (%s)"
 
-#: ../src/brasero-project-manager.c:230
+#: ../src/brasero-project-manager.c:259
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 個檔案可支援 (%s)"
 
-#: ../src/brasero-project-manager.c:236
+#: ../src/brasero-project-manager.c:265
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
-msgstr[0] "可加入 %d 個檔案 (%s)"
+msgstr[0] "%d 個檔案可加入 (%s)"
 
-#: ../src/brasero-project-manager.c:247
+#: ../src/brasero-project-manager.c:276
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
-msgstr[0] "沒有檔案可加入 (%i 個已選的檔案)"
+msgstr[0] "無檔案可加入 (%i 個選擇的檔案)"
 
-#: ../src/brasero-project-manager.c:252
+#: ../src/brasero-project-manager.c:281
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "無檔案可支援 (%i 個選擇的檔案)"
 
-#: ../src/brasero-project-manager.c:258 ../src/brasero-project-manager.c:324
+#: ../src/brasero-project-manager.c:287 ../src/brasero-project-manager.c:353
 msgid "No file selected"
-msgstr "未選擇檔案"
+msgstr "未選取檔案"
 
-#: ../src/brasero-project-manager.c:523
+#: ../src/brasero-project-manager.c:552
 msgid "Brasero - New audio disc project"
-msgstr "Brasero - 新建音樂光碟專案"
+msgstr "Brasero - 新音樂光碟專案"
 
-#: ../src/brasero-project-manager.c:537
+#: ../src/brasero-project-manager.c:566
 msgid "Brasero - New data disc project"
-msgstr "Brasero - 新建資料光碟專案"
+msgstr "Brasero - 新資料光碟專案"
 
-#: ../src/brasero-project-manager.c:547
+#: ../src/brasero-project-manager.c:576
 msgid "Brasero - New image file"
-msgstr "Brasero - 新建映像檔"
+msgstr "Brasero - 新映像檔專案"
 
-#: ../src/brasero-project-manager.c:558
+#: ../src/brasero-project-manager.c:587
 msgid "Brasero - Copy a disc"
-msgstr "Brasero - 複製光碟"
+msgstr "Brasero - 複製一片光碟"
 
-#: ../src/brasero-project-manager.c:765
+#: ../src/brasero-project-manager.c:888
 msgid "New"
-msgstr "新建"
+msgstr "新增"
 
-#: ../src/brasero-project-manager.c:769
+#: ../src/brasero-project-manager.c:892
 msgid "Open"
-msgstr "開始"
+msgstr "開啟"
 
-#: ../src/brasero-project-manager.c:815
+#: ../src/brasero-project-manager.c:934
 msgid "Browse the file system"
 msgstr "瀏覽檔案系統"
 
-#: ../src/brasero-project-manager.c:816
+#: ../src/brasero-project-manager.c:935
 msgid "Display file browser"
-msgstr "顯示檔瀏覽器"
+msgstr "顯示檔案瀏覽器"
 
-#: ../src/brasero-project-manager.c:839
+#: ../src/brasero-project-manager.c:958
 msgid "Search files using keywords"
-msgstr "使用關鍵字搜尋"
+msgstr "用關鍵字搜尋檔案"
 
-#: ../src/brasero-project-manager.c:840
+#: ../src/brasero-project-manager.c:959
 msgid "Display search"
 msgstr "顯示搜尋"
 
-#: ../src/brasero-project-manager.c:860
+#: ../src/brasero-project-manager.c:979
 msgid "Display playlists and their contents"
-msgstr "顯示播放清單及內容"
+msgstr "顯示撥放清單及其內容"
 
-#: ../src/brasero-project-manager.c:861
+#: ../src/brasero-project-manager.c:980
 msgid "Display playlists"
-msgstr "顯示播放清單"
+msgstr "顯示撥放清單"
 
 #: ../src/brasero-project-size.c:237
 msgid "Show the available media to be burnt"
-msgstr ""
+msgstr "顯示可用的媒體以燒錄"
 
 #: ../src/brasero-project-size.c:515
 #, c-format
@@ -2404,175 +2459,175 @@ msgstr "<i>%s</i> 忙碌中"
 #: ../src/brasero-project-size.c:526
 #, c-format
 msgid "<i>%s</i> not properly supported"
-msgstr ""
+msgstr "<i>%s</i> 無法正確支援"
 
 #: ../src/brasero-project-size.c:537
 #, c-format
 msgid "The disc in <i>%s</i> is not supported"
-msgstr ""
+msgstr "在 <i>%s</i>的光碟片不支援"
 
 #: ../src/brasero-project-size.c:568
 #, c-format
 msgid "<b>Oversized</b> (%s / %s in <i>%s</i>)"
-msgstr ""
+msgstr "<b>容量過大</b> (%s / %s 大小在 <i>%s</i>個檔案內)"
 
 #: ../src/brasero-project-size.c:573
 #, c-format
 msgid "<b>Oversized</b> (%s / %s)"
-msgstr ""
+msgstr "<b>容量過大</b> (%s / %s)"
 
 #: ../src/brasero-project-size.c:579
 #, fuzzy, c-format
 msgid "<b>Empty</b> (%s free for <i>%s</i>)"
-msgstr "<b>空</b> (%s / %s 於 <i>%s</i>)"
+msgstr "<b>空白</b> (%s / %s in <i>%s</i>)"
 
 #: ../src/brasero-project-size.c:583
 #, fuzzy, c-format
 msgid "<b>Empty</b> (%s free)"
-msgstr "<b>空</b> (%s / %s)"
+msgstr "<b>空白</b> (%s / %s)"
 
-#: ../src/brasero-project-size.c:1078
+#: ../src/brasero-project-size.c:1095
 #, c-format
 msgid "%s (DVD-R Dual Layer)"
-msgstr ""
+msgstr "%s (DVD-R 雙層)"
 
-#: ../src/brasero-project-size.c:1081
+#: ../src/brasero-project-size.c:1098
 #, c-format
 msgid "%s (DVD-R)"
 msgstr "%s (DVD-R)"
 
-#: ../src/brasero-project-size.c:1084
+#: ../src/brasero-project-size.c:1101
 #, c-format
 msgid "%s (CD-R)"
 msgstr "%s (CD-R)"
 
-#: ../src/brasero-project-type-chooser.c:73
+#: ../src/brasero-project-type-chooser.c:72
 msgid "<big>Audi_o project</big>"
-msgstr "<big>音樂專案(_O)</big>"
+msgstr "<big>音樂專案(_o)</big>"
+
+#: ../src/brasero-project-type-chooser.c:73
+msgid "Create a traditional audio CD"
+msgstr "製作一個傳統音樂 CD"
 
 #: ../src/brasero-project-type-chooser.c:74
-msgid "Create a traditional audio CD"
-msgstr "建立傳統音樂CD"
-
-#: ../src/brasero-project-type-chooser.c:75
 msgid ""
 "Create a traditional audio CD that will be playable on computers and stereos"
-msgstr "建立可在電腦與音響播放的傳統音樂CD"
+msgstr "製作一個可於一般 CD 播放裝置及電腦撥放的傳統音樂 CD"
+
+#: ../src/brasero-project-type-chooser.c:77
+msgid "<big>D_ata project</big>"
+msgstr "<big>資料專案(_a)</big>"
 
 #: ../src/brasero-project-type-chooser.c:78
-msgid "<big>D_ata project</big>"
-msgstr "<big>資料專案(_A)</big>"
+msgid "Create a data CD/DVD"
+msgstr "製作一個資料 CD/DVD"
 
 #: ../src/brasero-project-type-chooser.c:79
-msgid "Create a data CD/DVD"
-msgstr "建立資料 CD/DVD"
-
-#: ../src/brasero-project-type-chooser.c:80
 msgid ""
 "Create a CD/DVD containing any type of data that can only be read on a "
 "computer"
-msgstr ""
+msgstr "製作一個包含任何類型資料，但只有電腦能讀取的 CD/DVD"
+
+#: ../src/brasero-project-type-chooser.c:82
+msgid "<big>Disc _copy</big>"
+msgstr "<big>複製光碟(_c)</big>"
 
 #: ../src/brasero-project-type-chooser.c:83
-msgid "<big>Disc _copy</big>"
-msgstr "<big>複製光碟(_C)</big>"
+msgid "Create 1:1 copy of a CD/DVD"
+msgstr "建立一個 CD／DVD 的1：1 拷貝"
 
 #: ../src/brasero-project-type-chooser.c:84
-msgid "Create 1:1 copy of a CD/DVD"
-msgstr "建立 1:1 CD/DVD 的複本"
-
-#: ../src/brasero-project-type-chooser.c:85
 msgid ""
 "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on "
 "another CD/DVD"
-msgstr ""
+msgstr "建立一個在你硬碟上或另一張的 CD / DVD 上的一張音樂光碟或資料 CD / DVD 的1:1 拷貝"
+
+#: ../src/brasero-project-type-chooser.c:87
+msgid "<big>Burn _image</big>"
+msgstr "<big>燒錄映像檔(_i)</big>"
 
 #: ../src/brasero-project-type-chooser.c:88
-msgid "<big>Burn _image</big>"
-msgstr "<big>燒錄映像檔(_I)</big>"
-
 #: ../src/brasero-project-type-chooser.c:89
-#: ../src/brasero-project-type-chooser.c:90
 msgid "Burn an existing CD/DVD image to disc"
-msgstr "燒錄現存的 CD/DVD 映像檔至光碟"
+msgstr "燒錄已存在的 CD/DVD 映像檔"
 
-#: ../src/brasero-project-type-chooser.c:306
+#: ../src/brasero-project-type-chooser.c:290
 msgid "No recently used project"
-msgstr "沒有最近使用過的專案"
+msgstr "沒有最近使用的專案"
 
-#: ../src/brasero-project-type-chooser.c:361
+#: ../src/brasero-project-type-chooser.c:345
 msgid "<span size='x-large'><b>Create a new project:</b></span>"
-msgstr "<span size='x-large'><b>建立新專案：</b></span>"
+msgstr "<span size='x-large'><b>建立新的專案：</b></span>"
 
-#: ../src/brasero-project-type-chooser.c:367
+#: ../src/brasero-project-type-chooser.c:351
 msgid ""
 "<span foreground='grey50'><b><i>Choose from the following options</i></b></"
 "span>"
-msgstr "<span foreground='grey50'><b><i>選擇下列選項</i></b></span>"
+msgstr "<span foreground='grey50'><b><i>請從下列選項選擇</i></b></span>"
 
-#: ../src/brasero-project-type-chooser.c:407
+#: ../src/brasero-project-type-chooser.c:391
 msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
-msgstr "<span size='x-large'><b>選擇最近開啟過的專案：</b></span>"
+msgstr "<span size='x-large'><b>由最近使用的專案選擇：</b></span>"
 
 #: ../src/brasero-sum-dialog.c:121 ../src/brasero-sum-dialog.c:202
 msgid "Check _Again"
-msgstr "再次檢查(_A)"
+msgstr "再檢查一次(_A)"
 
 #: ../src/brasero-sum-dialog.c:152 ../src/brasero-sum-dialog.c:198
 #: ../src/brasero-sum-dialog.c:473
 msgid "File integrity check error"
-msgstr ""
+msgstr "檔案完整性檢測錯誤"
 
 #: ../src/brasero-sum-dialog.c:153 ../src/brasero-sum-dialog.c:474
 msgid "The file integrity check cannot be performed:"
-msgstr ""
+msgstr "檔案完整性檢測不能被完成"
 
 #: ../src/brasero-sum-dialog.c:166
 msgid "File integrity check success"
-msgstr ""
+msgstr "檔案完整性檢測成功"
 
 #: ../src/brasero-sum-dialog.c:167
 msgid "The file integrity was performed successfully:"
-msgstr ""
+msgstr "檔案完整性成功地完成："
 
 #: ../src/brasero-sum-dialog.c:168
 msgid "there seems to be no corrupted file on the disc."
-msgstr ""
+msgstr "似乎光碟上無損毀檔案。"
 
 #: ../src/brasero-sum-dialog.c:196
 msgid "<b><big>The following files appear to be corrupted:</big></b>"
-msgstr ""
+msgstr "<b><big>以下檔案似乎已損毀：</big></b>"
 
 #: ../src/brasero-sum-dialog.c:237
 msgid "Corrupted files"
-msgstr ""
+msgstr "損毀檔案"
 
 #: ../src/brasero-sum-dialog.c:311
 #, c-format
 msgid "a temporary file couldn't be created"
-msgstr ""
+msgstr "無法建立一個暫存檔案"
 
 #: ../src/brasero-sum-dialog.c:318
 msgid "Downloading md5 file"
-msgstr "正在下載 MD5 檔"
+msgstr "正在下載 md5 檔案"
 
 #: ../src/brasero-sum-dialog.c:366
 #, c-format
 msgid "URI is not valid"
-msgstr "URI 無效"
+msgstr "網址不正確"
 
 #: ../src/brasero-sum-dialog.c:475
 msgid "no md5 file was given."
-msgstr ""
+msgstr "沒有指定 md5 檔案"
 
 #: ../src/brasero-sum-dialog.c:578
-#, c-format
+#, fuzzy, c-format
 msgid "no checksum file could be found on the disc."
-msgstr ""
+msgstr "找不到記錄檔。"
 
 #: ../src/brasero-sum-dialog.c:720
 msgid "Use a _md5 file to check the disc"
-msgstr ""
+msgstr "使用 md5 檔案檢查光碟(_m)"
 
 #: ../src/brasero-sum-dialog.c:721
 msgid "Use an external .md5 file that stores the checksum of a disc"
@@ -2580,7 +2635,7 @@ msgstr ""
 
 #: ../src/brasero-sum-dialog.c:734
 msgid "Open a md5 file"
-msgstr "開啟 MD5 檔案"
+msgstr "打開一個 md5 檔案"
 
 #: ../src/brasero-sum-dialog.c:749
 msgid "_Check"
@@ -2588,16 +2643,16 @@ msgstr "檢查(_C)"
 
 #: ../src/brasero-tool-dialog.c:99
 msgid "Media busy"
-msgstr "媒體忙碌中"
+msgstr "媒體忙碌"
 
 #: ../src/brasero-tool-dialog.c:100 ../src/brasero-tool-dialog.c:110
 #: ../src/brasero-tool-dialog.c:120
 msgid "The operation cannot be performed:"
-msgstr ""
+msgstr "無法執行此動作："
 
 #: ../src/brasero-tool-dialog.c:101
 msgid "the inserted media is busy."
-msgstr ""
+msgstr "插入的媒體忙碌中。"
 
 #: ../src/brasero-tool-dialog.c:109 ../src/brasero-tool-dialog.c:119
 msgid "Media error"
@@ -2605,11 +2660,11 @@ msgstr "媒體錯誤"
 
 #: ../src/brasero-tool-dialog.c:111
 msgid "the inserted media is not supported."
-msgstr ""
+msgstr "放入的媒體光碟不支援。"
 
 #: ../src/brasero-tool-dialog.c:121
 msgid "the drive is empty."
-msgstr ""
+msgstr "光碟機無碟片"
 
 #: ../src/brasero-tool-dialog.c:291
 msgid "<b>Options:</b>"
@@ -2626,168 +2681,167 @@ msgstr "<b>選擇燒錄器：</b>"
 
 #: ../src/brasero-tool-dialog.c:506
 msgid "<b>Progress:</b>"
-msgstr ""
+msgstr "<b>進度：</b>"
 
 #: ../src/burn-basics.c:61
 msgid "Getting size"
-msgstr "正在取得大小"
+msgstr "偵測大小"
 
 #: ../src/burn-basics.c:62
 msgid "Creating image"
-msgstr "正在建立映像檔"
+msgstr "建立映像"
 
 #: ../src/burn-basics.c:63
 msgid "Writing"
-msgstr ""
+msgstr "正在寫入"
 
 #: ../src/burn-basics.c:64
 msgid "Blanking"
-msgstr ""
+msgstr "抹除"
 
 #: ../src/burn-basics.c:65
 msgid "Creating checksum"
-msgstr "正在建立檢查碼"
+msgstr "檢查建立中"
 
 #: ../src/burn-basics.c:66
 msgid "Copying disc"
-msgstr "正在複製光碟"
+msgstr "複製光碟"
 
 #: ../src/burn-basics.c:67
 msgid "Copying file"
-msgstr "正在複製檔案"
+msgstr "複製檔案"
 
 #: ../src/burn-basics.c:68
 msgid "Analysing audio information"
-msgstr ""
+msgstr "分析音樂資訊"
 
 #: ../src/burn-basics.c:69
 msgid "Transcoding song"
-msgstr ""
+msgstr "音效轉碼中"
 
 #: ../src/burn-basics.c:70
 msgid "Preparing to write"
-msgstr "正在準備寫入"
+msgstr "準備寫入"
 
 #: ../src/burn-basics.c:71
 msgid "Writing leadin"
-msgstr ""
+msgstr "寫入導入資訊中"
 
 #: ../src/burn-basics.c:72
 msgid "Writing CD-TEXT information"
-msgstr "正在寫入 CD-文字資訊"
+msgstr "寫入 CD-TEXT 資訊中"
 
 #: ../src/burn-basics.c:73
 msgid "Fixating"
-msgstr ""
+msgstr "結束燒錄中"
 
 #: ../src/burn-basics.c:74
 msgid "Writing leadout"
-msgstr ""
+msgstr "寫入導出中"
 
 #: ../src/burn-basics.c:75
 msgid "Starting to record"
-msgstr ""
+msgstr "開始燒錄中"
 
 #: ../src/burn-basics.c:76
 msgid "Success"
 msgstr "成功"
 
 #: ../src/burn.c:145
-#, fuzzy
 msgid "Burning CD/DVD"
 msgstr "燒錄 CD/DVD"
 
 #: ../src/burn.c:260 ../src/burn.c:317
 #, c-format
 msgid "\"%s\" can't be unlocked"
-msgstr ""
+msgstr "\"%s\" 無法解除鎖定"
 
 #: ../src/burn.c:275 ../src/burn.c:334
 #, c-format
 msgid "the media in %s can't be ejected"
-msgstr ""
+msgstr "在 %s 裏的光碟無法退出"
 
 #: ../src/burn.c:457
 #, c-format
 msgid "no drive specified as source"
-msgstr ""
+msgstr "沒有指定來源光碟機"
 
 #: ../src/burn.c:497
 msgid "ongoing copying process"
-msgstr ""
+msgstr "複製進行中"
 
-#: ../src/burn.c:501 ../src/burn.c:596 ../src/burn.c:830 ../src/burn.c:980
+#: ../src/burn.c:501 ../src/burn.c:596 ../src/burn.c:836 ../src/burn.c:986
 #, c-format
 msgid "the drive can't be locked (%s)"
-msgstr ""
+msgstr "裝置無法鎖定 (%s)"
 
 #: ../src/burn.c:545 ../src/burn.c:693
 #, c-format
 msgid "no drive specified"
-msgstr ""
+msgstr "尚未指定裝置"
 
 #: ../src/burn.c:556
 #, c-format
 msgid "the drive has no rewriting capabilities"
-msgstr ""
+msgstr "此裝置沒有複寫功能"
 
 #: ../src/burn.c:592
 msgid "ongoing blanking process"
-msgstr ""
+msgstr "正在清空"
 
-#: ../src/burn.c:709
+#: ../src/burn.c:715
 #, c-format
 msgid "the drive has no burning capabilities"
-msgstr ""
+msgstr "裝置不支援燒錄功能"
 
-#: ../src/burn.c:913
+#: ../src/burn.c:919
 #, c-format
 msgid "the disc could not be mounted (max attemps reached)"
-msgstr ""
+msgstr "無法載入光碟片(已達到最大嘗試次數)"
 
-#: ../src/burn.c:976
+#: ../src/burn.c:982
 msgid "ongoing checksuming operation"
-msgstr ""
+msgstr "檢查操作進行中"
 
-#: ../src/burn.c:1213 ../src/burn.c:1245 ../src/burn.c:1348 ../src/burn.c:1355
-#: ../src/burn.c:1660 ../src/plugins/cdrdao/burn-cdrdao.c:205
+#: ../src/burn.c:1219 ../src/burn.c:1251 ../src/burn.c:1357 ../src/burn.c:1364
+#: ../src/burn.c:1673 ../src/plugins/cdrdao/burn-cdrdao.c:205
 #: ../src/plugins/growisofs/burn-growisofs.c:197
 #, c-format
 msgid "the drive seems to be busy"
-msgstr ""
+msgstr "裝置似乎忙碌中"
 
-#: ../src/burn.c:1465
+#: ../src/burn.c:1476
 #, c-format
 msgid ""
 "it's not possible to merge to this media because it hasn't got enough space"
-msgstr ""
+msgstr "不可能合併到這個媒體，因為它沒有足夠多的空間"
 
-#: ../src/burn.c:1709
+#: ../src/burn.c:1722
 #, c-format
 msgid "there is no track to be burn"
-msgstr ""
+msgstr "没有要燒錄的音軌"
 
-#: ../src/burn.c:1723
+#: ../src/burn.c:1736
 #, c-format
 msgid "there is no drive to burn to"
-msgstr ""
+msgstr "没有要燒錄的裝置"
 
-#: ../src/burn.c:1762
+#: ../src/burn.c:1777
 #, c-format
 msgid "merging data is impossible with this disc"
-msgstr ""
+msgstr "不可能在光碟上合併資料"
 
-#: ../src/burn.c:2055 ../src/burn-caps.c:1462
+#: ../src/burn.c:2070 ../src/burn-caps.c:1462
 #, c-format
 msgid "only one track at a time can be checked"
 msgstr ""
 
-#: ../src/burn.c:2123
+#: ../src/burn.c:2138
 #, c-format
 msgid "impossible to find a format for the temporary image"
 msgstr ""
 
-#: ../src/burn.c:2266
+#: ../src/burn.c:2281
 #, c-format
 msgid "internal error (code %i)"
 msgstr ""
@@ -2802,52 +2856,6 @@ msgstr ""
 msgid "internal error in plugin system"
 msgstr ""
 
-#: ../src/burn-common.c:178 ../src/burn-session.c:918
-#, c-format
-msgid "a temporary file can't be created: %s"
-msgstr ""
-
-#: ../src/burn-common.c:192 ../src/burn-common.c:218 ../src/burn-common.c:323
-#: ../src/burn-session.c:569
-#, c-format
-msgid "%s already exists"
-msgstr "%s 已存在"
-
-#: ../src/burn-common.c:201 ../src/burn-common.c:227
-#, c-format
-msgid "%s can't be removed"
-msgstr ""
-
-#: ../src/burn-common.c:272
-#, c-format
-msgid "One file is not a directory or a regular file"
-msgstr ""
-
-#: ../src/burn-common.c:296
-#, c-format
-msgid "the file can't be read"
-msgstr ""
-
-#: ../src/burn-common.c:339
-#, c-format
-msgid "%s can't be removed and is not a directory (%s)"
-msgstr ""
-
-#: ../src/burn-common.c:353
-#, c-format
-msgid "%s can't be created (%s)"
-msgstr ""
-
-#: ../src/burn-common.c:369
-#, c-format
-msgid "directory \"%s\" can't be created (%s)"
-msgstr ""
-
-#: ../src/burn-common.c:392 ../src/burn-session.c:870
-#, c-format
-msgid "a temporary directory could not be created (%s)"
-msgstr ""
-
 #: ../src/burn-iso9660.c:141 ../src/burn-iso9660.c:150
 #, c-format
 msgid "it does not appear to be a primary volume descriptor"
@@ -2856,29 +2864,30 @@ msgstr ""
 #: ../src/burn-iso9660.c:333
 #, c-format
 msgid "invalid directory record"
-msgstr ""
+msgstr "無效的資料夾記錄"
 
-#: ../src/burn-iso9660.c:349 ../src/burn-iso9660.c:400
+#: ../src/burn-iso9660.c:345 ../src/burn-iso9660.c:397
+#: ../src/burn-iso9660.c:453
 #, c-format
 msgid "file name is too long"
-msgstr "檔案名稱太長"
+msgstr "檔案名稱過長"
 
 #: ../src/burn-job.c:303
 #, c-format
 msgid "plugin %s did not want to work. Try to deactivate it"
-msgstr ""
+msgstr "插件 %s 無法運作。請停用試試看"
 
 #: ../src/burn-job.c:402
 #, c-format
 msgid "Insufficient space on media (%lli available for %lli)"
-msgstr ""
+msgstr "無足夠空間( %lli / %lli 可用)"
 
 #: ../src/burn-job.c:460
 #, c-format
 msgid ""
 "the selected location does not have enough free space to store the disc "
 "image (%ld MiB needed)"
-msgstr ""
+msgstr "選擇的檔案位址沒有足夠空間儲存映像檔 (需要%ld MiB )"
 
 #: ../src/burn-job.c:473
 #, c-format
@@ -2896,6 +2905,8 @@ msgid ""
 "plugin %s did not work properly.\n"
 "Try to deactivate it"
 msgstr ""
+"插件 %s 沒有正常作用。\n"
+"請嘗試停用"
 
 #: ../src/burn-job.c:667
 #, c-format
@@ -2925,7 +2936,7 @@ msgstr "檔案"
 
 #: ../src/burn-medium.c:66
 msgid "CDROM"
-msgstr "CDROM"
+msgstr "光碟"
 
 #: ../src/burn-medium.c:67
 msgid "CD-R"
@@ -2957,15 +2968,15 @@ msgstr "DVD+RW"
 
 #: ../src/burn-medium.c:74
 msgid "DVD+R dual layer"
-msgstr ""
+msgstr "雙層 DVD+R"
 
 #: ../src/burn-medium.c:75
 msgid "DVD+RW dual layer"
-msgstr ""
+msgstr "雙層 DVD+RW"
 
 #: ../src/burn-medium.c:76
 msgid "DVD-R dual layer"
-msgstr ""
+msgstr "雙層 DVD-R"
 
 #: ../src/burn-medium.c:77
 msgid "DVD-RAM"
@@ -2977,16 +2988,16 @@ msgstr "藍光光碟"
 
 #: ../src/burn-medium.c:79
 msgid "Writable Blu-ray disc"
-msgstr "可寫入藍光光碟"
+msgstr "可寫藍光光碟"
 
 #: ../src/burn-medium.c:80
 msgid "Rewritable Blu-ray disc"
-msgstr "可重複寫入藍光光碟"
+msgstr "可複寫的藍光片"
 
 #: ../src/burn-mkisofs-base.c:126 ../src/burn-mkisofs-base.c:351
 #, c-format
 msgid "the file is not stored locally"
-msgstr ""
+msgstr "此檔案並非儲存在本機"
 
 #: ../src/burn-mkisofs-base.c:268
 #, c-format
@@ -2996,64 +3007,88 @@ msgstr ""
 #: ../src/burn-process.c:161
 #, c-format
 msgid "process %s ended with an error code (%i)"
-msgstr ""
+msgstr "程序 %s 不正常結束，錯誤碼： (%i)"
 
 #: ../src/burn-session.c:558
 #, c-format
 msgid "no path"
+msgstr "沒有路徑"
+
+#: ../src/burn-session.c:569
+#, c-format
+msgid "%s already exists"
 msgstr ""
 
 #: ../src/burn-session.c:674
 #, c-format
 msgid "no output specified"
+msgstr "未指定輸出"
+
+#: ../src/burn-session.c:872
+#, c-format
+msgid "a temporary directory could not be created (%s)"
+msgstr "無法建立暫存目錄 (%s)"
+
+#: ../src/burn-session.c:920
+#, c-format
+msgid "a temporary file can't be created: %s"
 msgstr ""
 
-#: ../src/burn-volume.c:126
+#: ../src/burn-volume.c:132
 #, c-format
 msgid "there isn't a valid volume descriptor"
 msgstr ""
 
-#: ../src/main.c:77
+#: ../src/main.c:79
 msgid "Open the specified project"
-msgstr ""
+msgstr "開啟指定專案"
 
-#: ../src/main.c:78
+#: ../src/main.c:80
 msgid "PROJECT"
 msgstr "專案"
 
-#: ../src/main.c:81
+#: ../src/main.c:85
+#, fuzzy
+msgid "Open the specified playlist as an audio project"
+msgstr "開啟指定專案"
+
+#: ../src/main.c:86
+msgid "PLAYLIST"
+msgstr ""
+
+#: ../src/main.c:91
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr ""
 
-#: ../src/main.c:85
+#: ../src/main.c:95
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
 
-#: ../src/main.c:93
+#: ../src/main.c:103
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr ""
 
-#: ../src/main.c:97
+#: ../src/main.c:107
 msgid "Force brasero to display the project selection page"
 msgstr ""
 
-#: ../src/main.c:101
+#: ../src/main.c:111
 msgid "Open the blank disc dialog"
 msgstr ""
 
-#: ../src/main.c:105
+#: ../src/main.c:115
 msgid "Open a data project with the contents of nautilus-cd-burner"
 msgstr ""
 
-#: ../src/main.c:109
+#: ../src/main.c:119
 msgid "Display debug statements on stdout"
 msgstr ""
 
-#: ../src/main.c:249
+#: ../src/main.c:259
 msgid "Sorry, no documentation for Brasero."
 msgstr ""
 
-#: ../src/main.c:254
+#: ../src/main.c:264
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -3061,7 +3096,7 @@ msgid ""
 "version."
 msgstr ""
 
-#: ../src/main.c:259
+#: ../src/main.c:269
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -3069,20 +3104,20 @@ msgid ""
 "details."
 msgstr ""
 
-#: ../src/main.c:264
+#: ../src/main.c:274
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
 "Street, Fifth Floor, Boston, MA 02110-1301, USA"
 msgstr ""
 
-#: ../src/main.c:273
+#: ../src/main.c:283
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr ""
 
-#: ../src/main.c:289
+#: ../src/main.c:299
 msgid "Brasero Homepage"
-msgstr "Brasero 首頁"
+msgstr ""
 
 #. Translators: This is a special message that shouldn't be translated
 #. * literally. It is used in the about box to give credits to
@@ -3092,60 +3127,58 @@ msgstr "Brasero 首頁"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/main.c:301
+#: ../src/main.c:311
 msgid "translator-credits"
 msgstr ""
-"如對翻譯有任何意見，請送一封電子郵件給\n"
-"以下地址，GNOME 翻譯隊伍會盡快回覆你：\n"
-"community@linuxhall.org\n"
-"\n"
-"Hialan Liu <hialan.liu@gmail.com>, 2008\n"
-"\n"
 "Launchpad Contributions:\n"
 "  APPLEKID https://launchpad.net/~applekid-tw\n"
+"  Chao-Hsiung Liao https://launchpad.net/~j-h-liau\n"
+"  John Hsu https://launchpad.net/~johnny77221\n"
+"  XXVi https://launchpad.net/~ch-xxvi\n"
+"  ericlu https://launchpad.net/~ctlu999\n"
 "  missmomo0911 https://launchpad.net/~missmomo0911\n"
 "  poshenghsu https://launchpad.net/~poshenghsu\n"
 "  yenteenyu https://launchpad.net/~yen-teenyu"
 
-#: ../src/main.c:397
+#: ../src/main.c:392
 msgid "_Recent Projects"
-msgstr "最近的專案(_R)"
+msgstr ""
 
-#: ../src/main.c:398
+#: ../src/main.c:393
 msgid "Display the projects recently opened"
 msgstr ""
 
-#: ../src/main.c:403
+#: ../src/main.c:398
 msgid "Brasero projects"
-msgstr "Brasero 專案"
-
-#: ../src/main.c:618
-msgid "Incompatible command line options used:"
 msgstr ""
 
 #: ../src/main.c:620
+msgid "Incompatible command line options used:"
+msgstr ""
+
+#: ../src/main.c:622
 msgid "Incompatible options"
 msgstr ""
 
-#: ../src/main.c:623
+#: ../src/main.c:625
 msgid "only one option can be given at a time."
 msgstr ""
 
-#: ../src/main.c:723
+#: ../src/main.c:705
 msgid "[URI] [URI] ..."
-msgstr "[URI] [URI] ..."
+msgstr ""
 
-#: ../src/main.c:731
+#: ../src/main.c:713
 msgid "CD/DVD burning"
-msgstr "CD/DVD 燒錄"
+msgstr ""
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:78
 msgid "Copying audio track"
-msgstr "正在複製音軌"
+msgstr ""
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:84
 msgid "Copying data track"
-msgstr "正在複製資料軌"
+msgstr ""
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:120
 #, c-format
@@ -3181,7 +3214,7 @@ msgstr ""
 
 #: ../src/plugins/cdrdao/burn-toc2cue.c:249
 msgid "Converting toc file"
-msgstr "轉換 toc 檔案"
+msgstr ""
 
 #: ../src/plugins/cdrdao/burn-toc2cue.c:306
 msgid "toc2cue converts .toc files into .cue files"
@@ -3258,7 +3291,7 @@ msgstr ""
 #: ../src/plugins/cdrtools/burn-readcd.c:88
 #, c-format
 msgid "the drive is not ready"
-msgstr "光碟機未就緒"
+msgstr ""
 
 #: ../src/plugins/cdrkit/burn-readom.c:95
 #: ../src/plugins/cdrkit/burn-readom.c:102
@@ -3294,7 +3327,7 @@ msgstr ""
 #: ../src/plugins/cdrtools/burn-cdrecord.c:102
 #, c-format
 msgid "input buffer error"
-msgstr "輸入緩衝區錯誤"
+msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:110
 #: ../src/plugins/cdrtools/burn-cdrecord.c:110
@@ -3492,39 +3525,39 @@ msgstr ""
 msgid "the data couldn't be written to the pipe (%i: %s)"
 msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:261
-#: ../src/plugins/dvdcss/burn-dvdcss.c:354
-#: ../src/plugins/dvdcss/burn-dvdcss.c:414
-#: ../src/plugins/dvdcss/burn-dvdcss.c:434
+#: ../src/plugins/dvdcss/burn-dvdcss.c:271
+#: ../src/plugins/dvdcss/burn-dvdcss.c:365
+#: ../src/plugins/dvdcss/burn-dvdcss.c:425
+#: ../src/plugins/dvdcss/burn-dvdcss.c:445
 #, c-format
 msgid "Error reading video DVD (%s)"
-msgstr "讀取影片 DVD 錯誤(%s)"
+msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:304
+#: ../src/plugins/dvdcss/burn-dvdcss.c:315
 msgid "Retrieving DVD keys"
 msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:327
+#: ../src/plugins/dvdcss/burn-dvdcss.c:338
 #, c-format
 msgid "the size of the volume couln't be retrieved"
 msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:336
+#: ../src/plugins/dvdcss/burn-dvdcss.c:347
 #, c-format
 msgid "DVD could not be opened"
-msgstr "無法開啟 DVD"
+msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:361
+#: ../src/plugins/dvdcss/burn-dvdcss.c:372
 msgid "Copying Video DVD"
-msgstr "正在複製影片 DVD"
+msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:444
+#: ../src/plugins/dvdcss/burn-dvdcss.c:455
 #: ../src/plugins/libburnia/burn-libisofs.c:232
 #, c-format
 msgid "the data couldn't be written to the file (%i: %s)"
 msgstr ""
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:608
+#: ../src/plugins/dvdcss/burn-dvdcss.c:619
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr ""
 
@@ -3594,7 +3627,7 @@ msgstr ""
 #: ../src/plugins/libburnia/burn-libburn.c:424
 #, c-format
 msgid "/dev/null can't be opened"
-msgstr "無法開啟 /dev/null "
+msgstr ""
 
 #: ../src/plugins/libburnia/burn-libburn.c:457
 #, c-format
@@ -3624,7 +3657,7 @@ msgstr ""
 #: ../src/plugins/libburnia/burn-libburn-common.c:319
 #, c-format
 msgid "Writing track %02i"
-msgstr "正在寫入軌道 %02i"
+msgstr ""
 
 #: ../src/plugins/libburnia/burn-libisofs.c:430
 #, c-format
@@ -3661,15 +3694,15 @@ msgid "Copying `%s` locally"
 msgstr ""
 
 #: ../src/plugins/local-track/burn-local-image.c:218
-#: ../src/plugins/local-track/burn-local-image.c:298 ../src/brasero-io.c:1839
-#, c-format
+#: ../src/plugins/local-track/burn-local-image.c:298 ../src/brasero-io.c:1862
+#, fuzzy, c-format
 msgid "a directory couldn't be created (%s)"
-msgstr ""
+msgstr "無法建立暫存目錄 (%s)"
 
 #: ../src/plugins/local-track/burn-local-image.c:430
 #, fuzzy
 msgid "Copying checksum file"
-msgstr "正在複製檔案"
+msgstr "複製檔案"
 
 #: ../src/plugins/local-track/burn-local-image.c:608
 msgid "Copying files locally"
@@ -3793,12 +3826,13 @@ msgid "key not established"
 msgstr ""
 
 #: ../src/scsi-error.c:41
+#, fuzzy
 msgid "invalid track mode"
-msgstr ""
+msgstr "無效的資料夾記錄"
 
 #: ../src/brasero-preview.c:158
 msgid " Preview "
-msgstr "預覽"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:175
 msgid "The size of the new track is shorter than 6 seconds and will be padded."
@@ -3806,7 +3840,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:176
 msgid "size error"
-msgstr "大小錯誤"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:178
 msgid "Do you want to split it nevertheless?"
@@ -3834,7 +3868,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:676
 msgid "automatic split"
-msgstr "自動分割"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:678
 msgid "Do you want to carry on with automatic splitting nevertheless?"
@@ -3842,27 +3876,27 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1009
 msgid "Split Track"
-msgstr "分割軌道"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1028
 msgid "M_ethod:"
-msgstr "方法(_E)："
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1034
 msgid "Method to be used to split the track"
-msgstr "要用來分割軌道的方式"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1037
 msgid "Split track manually"
-msgstr "手動分割軌道"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1038
 msgid "Split track in parts with a fixed length"
-msgstr "使用固定的長度分割軌道"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1039
 msgid "Split track in a fixed number of parts"
-msgstr "將軌道分割為指定個數"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1040
 msgid "Split track for each silence"
@@ -3879,22 +3913,22 @@ msgstr ""
 #. Translators: this goes with the next (= "seconds")
 #: ../src/brasero-split-dialog.c:1074
 msgid "Split this track every"
-msgstr "分割此軌道每"
+msgstr ""
 
 #. Translators: this goes with the previous (= "Split track every")
 #: ../src/brasero-split-dialog.c:1083
 msgid "seconds"
-msgstr "秒"
+msgstr ""
 
 #. Translators: this goes with the next (= "parts")
 #: ../src/brasero-split-dialog.c:1092
 msgid "Split this track in"
-msgstr "將此軌道分割為"
+msgstr ""
 
 #. Translators: this goes with the previous (= "Split this track in")
 #: ../src/brasero-split-dialog.c:1101
 msgid "parts"
-msgstr "部份"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1110
 msgid "<b>Slicing Method</b>"
@@ -3902,15 +3936,15 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1165
 msgid "Start"
-msgstr "開始"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1172
 msgid "End"
-msgstr "結束"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1195
 msgid "Mer_ge"
-msgstr "合併(_G)"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1206
 msgid "Merge a selected slice with the next selected one"
@@ -3918,7 +3952,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1209
 msgid "_Remove"
-msgstr "移除(_R)"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1220
 msgid "Remove the selected slices"
@@ -3926,7 +3960,7 @@ msgstr ""
 
 #: ../src/brasero-split-dialog.c:1223
 msgid "Re_move All"
-msgstr "移除全部(_M)"
+msgstr ""
 
 #: ../src/brasero-split-dialog.c:1234
 msgid "Clear the slices preview"
@@ -3942,20 +3976,20 @@ msgstr ""
 
 #: ../src/brasero-time-button.c:278
 msgid "Hours"
-msgstr "小時"
+msgstr ""
 
 #: ../src/brasero-time-button.c:282 ../src/brasero-time-button.c:291
 #: ../src/brasero-time-button.c:300
 msgid ":"
-msgstr ":"
+msgstr ""
 
 #: ../src/brasero-time-button.c:287
 msgid "Minutes"
-msgstr "分"
+msgstr ""
 
 #: ../src/brasero-time-button.c:296
 msgid "Seconds"
-msgstr "秒"
+msgstr ""
 
 #: ../src/brasero-time-button.c:305
 msgid "Frames (1 second = 75 frames)"
@@ -3964,7 +3998,7 @@ msgstr ""
 #: ../src/brasero-src-selection.c:91
 #, fuzzy
 msgid "Choose the disc to read from"
-msgstr "選擇持有媒體的光碟機"
+msgstr "選擇要燒錄碟片的燒錄機"
 
 #: ../src/plugins/cdrkit/burn-cdrkit.h:32
 msgid "Cdrkit burning suite"
@@ -4001,22 +4035,22 @@ msgstr ""
 #: ../src/brasero-data-session.c:129 ../src/brasero-data-session.c:142
 #, c-format
 msgid "there isn't any available session on the disc"
-msgstr ""
+msgstr "在光碟上沒有任何可用的區段"
 
 #: ../src/brasero-data-session.c:163
 #, c-format
 msgid "unknown volume type"
-msgstr ""
+msgstr "未知的容量類型"
 
 #: ../src/brasero-data-tree-model.c:415 ../src/brasero-data-tree-model.c:483
 #: ../src/brasero-data-tree-model.c:494 ../src/brasero-data-tree-model.c:555
 #: ../src/brasero-data-tree-model.c:560
 msgid "(loading ...)"
-msgstr "(正在載入 ...)"
+msgstr "(載入中...)"
 
 #: ../src/brasero-data-tree-model.c:492
 msgid "Disc file"
-msgstr ""
+msgstr "光碟檔案"
 
 #: ../src/brasero-data-tree-model.c:568
 msgid "1 item"
@@ -4049,48 +4083,48 @@ msgstr "搜尋錯誤"
 #. * for a list of actions.
 #: ../src/brasero-disc.c:632
 msgid "To add files to this project you can:"
-msgstr "要為此專案加入檔案，你可以："
+msgstr "要增加此專案的檔案，你可以："
 
 #: ../src/brasero-disc.c:633
 msgid "click the \"Add\" button to show the selection pane"
-msgstr "點「加入」按鈕以顯示選取窗格"
+msgstr "點擊 \"增加\" 鈕以顯示選取器面板"
 
 #: ../src/brasero-disc.c:634
 msgid "select files in selection pane and click the \"Add\" button"
-msgstr "從選取窗格中選取檔案並點「加入」按鈕"
+msgstr "在選取器面板中選取檔案並按 \"增加\" 鈕。"
 
 #: ../src/brasero-disc.c:635
 msgid ""
 "drag files in this area from the selection pane or from the file manager"
-msgstr "從選取窗格或檔案管理員中拖曳檔案至此區域"
+msgstr "從選取器面板或是檔案瀏覽器中將檔案拖入此區。"
 
 #: ../src/brasero-disc.c:636
 msgid "double click on files in the selection pane"
-msgstr "連按兩下選取窗格中的檔案"
+msgstr "連按兩下在選取器面板中的檔案"
 
 #: ../src/brasero-disc.c:638
 msgid "copy files (from file manager for example) and paste in this area"
-msgstr "複製檔案 (例如從檔案管理員) 並在此區域貼上"
+msgstr "複製檔案(例如在檔案瀏覽器中)且貼在此區"
 
 #: ../src/brasero-disc.c:641
 msgid "To remove files from this project you can:"
-msgstr "要從專案中移除檔案，你可以："
+msgstr "要移除專案中的檔案，你可以："
 
 #: ../src/brasero-disc.c:642
 msgid "click on the \"Remove\" button to remove selected items in this area"
-msgstr "點選「移除」按鈕以移除此區域中選擇的檔案"
+msgstr "點擊 \"移除\" 鈕來移除此區選取的項目"
 
 #: ../src/brasero-disc.c:643
 msgid "drag and release items out from this area"
-msgstr "從此區域拖出項目並釋放"
+msgstr "從此區中拖放出檔案"
 
 #: ../src/brasero-disc.c:644
 msgid "select items in this area, and choose \"Remove\" from context menu"
-msgstr "選擇此區域的項目，並點快顯功能表中的「移除」"
+msgstr "在此區選取項目，且在關聯選單中選擇\"移除\""
 
 #: ../src/brasero-disc.c:645
 msgid "select items in this area, and press \"Delete\" key"
-msgstr "選擇此區域的項目，並按下「Delete」鍵"
+msgstr "在此區選取項目，並按\"Delete\"鍵"
 
 #: ../src/brasero-eject-dialog.c:131
 #, fuzzy
@@ -4119,38 +4153,38 @@ msgstr[0] ""
 
 #: ../src/brasero-file-filtered.c:198
 msgid "hidden file"
-msgstr "隱藏檔"
+msgstr "隱藏檔案"
 
 #: ../src/brasero-file-filtered.c:199
 msgid "unreadable file"
-msgstr ""
+msgstr "無法讀取的檔案"
 
 #: ../src/brasero-file-filtered.c:200
 msgid "broken symlink"
-msgstr ""
+msgstr "損壞的符號連結"
 
 #: ../src/brasero-file-filtered.c:201
 msgid "recursive symlink"
-msgstr ""
+msgstr "遞迴的符號連結"
 
 #: ../src/brasero-file-filtered.c:246
+#, fuzzy
 msgid "Filter Options"
-msgstr ""
+msgstr "<b>過濾選項</b>"
 
 #: ../src/brasero-file-filtered.c:355
 #, fuzzy
 msgid ""
 "Select the files you want to restore and click on the \"Restore\" button"
-msgstr "從選取窗格中選取檔案並點「加入」按鈕"
+msgstr "選取你要回復的檔案："
 
 #: ../src/brasero-file-filtered.c:405
 msgid "Type"
 msgstr "類型"
 
 #: ../src/brasero-file-filtered.c:431
-#, fuzzy
 msgid "_Restore"
-msgstr "移除(_R)"
+msgstr ""
 
 #: ../src/brasero-file-filtered.c:440
 #, fuzzy
@@ -4163,46 +4197,48 @@ msgid "_Options..."
 msgstr "開啟(_O)..."
 
 #: ../src/brasero-file-filtered.c:450
+#, fuzzy
 msgid "Set the options for file filtering"
-msgstr ""
+msgstr "設定燒錄的選項"
 
 #: ../src/brasero-filter-option.c:115
 msgid "Filter _hidden files"
-msgstr ""
+msgstr "過濾隱藏檔案(_h)"
 
 #: ../src/brasero-filter-option.c:137
 msgid "Filter _broken symlinks"
-msgstr ""
+msgstr "過濾損壞的 symlinks(_B)"
 
 #: ../src/brasero-filter-option.c:155
 msgid "<b>Filtering options</b>"
-msgstr ""
+msgstr "<b>過濾選項</b>"
 
 #: ../src/brasero-data-vfs.c:237
 #, fuzzy, c-format
 msgid "\"%s\" cannot be read"
-msgstr "無法開啟「%s」。"
+msgstr "\"%s\" 無法解除鎖定"
 
-#: ../src/brasero-io.c:751 ../src/brasero-io.c:1498
-#, c-format
+#: ../src/brasero-io.c:753 ../src/brasero-io.c:1516
+#, fuzzy, c-format
 msgid "recursive symbolic link"
-msgstr ""
+msgstr "遞迴的符號連結"
 
-#: ../src/brasero-io.c:917
+#: ../src/brasero-io.c:919
 #, c-format
 msgid "the file doesn't appear to be a playlist"
 msgstr ""
 
-#: ../src/brasero-io.c:954
+#: ../src/brasero-io.c:956
 #, fuzzy
 msgid "No title"
 msgstr "沒有檔案"
 
-#: ../src/brasero-medium-selection.c:204 ../src/brasero-medium-selection.c:318
+#: ../src/brasero-medium-selection.c:204 ../src/brasero-medium-selection.c:324
+#, fuzzy
 msgid "There is no available medium. Please insert one."
-msgstr ""
+msgstr "在光碟上沒有任何可用的區段"
 
-#: ../src/burn-drive.c:264 ../src/burn-volume-obj.c:482
+#: ../src/burn-drive.c:264 ../src/burn-volume-obj.c:570
 #, fuzzy
 msgid "File Image"
 msgstr "燒錄影像檔"
@@ -4210,107 +4246,107 @@ msgstr "燒錄影像檔"
 #: ../src/burn-volume-obj.c:158
 #, c-format
 msgid "the disc mount point could not be retrieved."
-msgstr ""
+msgstr "光碟的掛載點不能被檢索。"
 
-#: ../src/burn-volume-obj.c:523
+#: ../src/burn-volume-obj.c:611
 #, c-format
 msgid "<b>Blank %s</b> in %s"
 msgstr ""
 
-#: ../src/burn-volume-obj.c:527
-#, c-format
+#: ../src/burn-volume-obj.c:615
+#, fuzzy, c-format
 msgid "Blank %s in %s"
-msgstr ""
+msgstr "抹除"
 
-#: ../src/burn-volume-obj.c:535
+#: ../src/burn-volume-obj.c:623
 #, c-format
 msgid "<b>Audio and data %s</b> in %s"
 msgstr ""
 
-#: ../src/burn-volume-obj.c:539
+#: ../src/burn-volume-obj.c:627
 #, fuzzy, c-format
 msgid "Audio and data %s in %s"
-msgstr "音軌與資料軌"
+msgstr "音樂和資料軌道"
 
-#: ../src/burn-volume-obj.c:547
+#: ../src/burn-volume-obj.c:635
 #, c-format
 msgid "<b>Audio %s</b> in %s"
 msgstr ""
 
-#: ../src/burn-volume-obj.c:551
+#: ../src/burn-volume-obj.c:639
 #, fuzzy, c-format
 msgid "Audio %s in %s"
 msgstr "音樂光碟 (%s)"
 
-#: ../src/burn-volume-obj.c:559
+#: ../src/burn-volume-obj.c:647
 #, c-format
 msgid "<b>Data %s</b> in %s"
 msgstr ""
 
-#: ../src/burn-volume-obj.c:563
+#: ../src/burn-volume-obj.c:651
 #, fuzzy, c-format
 msgid "Data %s in %s"
 msgstr "資料光碟 (%s)"
 
-#: ../src/burn-volume-obj.c:571
+#: ../src/burn-volume-obj.c:659
 #, fuzzy, c-format
 msgid "<b>%s</b> in %s"
 msgstr "<i>%s</i> 忙碌中"
 
-#: ../src/burn-volume-obj.c:575
+#: ../src/burn-volume-obj.c:663
 #, fuzzy, c-format
 msgid "%s in %s"
 msgstr "%s / %s"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:106
+#: ../src/plugins/checksum/burn-checksum-files.c:107
 #: ../src/plugins/checksum/burn-checksum-image.c:289
 #, c-format
 msgid "the file %s couldn't be read (%s)"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:167
-#: ../src/plugins/checksum/burn-checksum-files.c:189
+#: ../src/plugins/checksum/burn-checksum-files.c:168
+#: ../src/plugins/checksum/burn-checksum-files.c:190
 #, c-format
 msgid "the md5 file couldn't be written to (%s)"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:349
+#: ../src/plugins/checksum/burn-checksum-files.c:524
 #, c-format
 msgid "md5 file couldn't be opened (%s)"
+msgstr "md5 檔案不能被開啟 (%s)"
+
+#: ../src/plugins/checksum/burn-checksum-files.c:551
+msgid "Creating checksum for image files"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:376
-msgid "Creating checksum for image files"
-msgstr "正在為映像檔中的檔案建立檢查碼"
-
-#: ../src/plugins/checksum/burn-checksum-files.c:663
-#: ../src/plugins/checksum/burn-checksum-files.c:779
-#: ../src/plugins/checksum/burn-checksum-image.c:469
+#: ../src/plugins/checksum/burn-checksum-files.c:841
+#: ../src/plugins/checksum/burn-checksum-files.c:957
+#: ../src/plugins/checksum/burn-checksum-image.c:475
 #, c-format
 msgid "some files may be corrupted on the disc"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1011
+#: ../src/plugins/checksum/burn-checksum-files.c:1189
 msgid "allows to check file integrities on a disc"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1048
-#: ../src/plugins/checksum/burn-checksum-image.c:690
+#: ../src/plugins/checksum/burn-checksum-files.c:1226
+#: ../src/plugins/checksum/burn-checksum-image.c:696
 msgid "Hashing algorithm to be used:"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1051
-#: ../src/plugins/checksum/burn-checksum-image.c:693
+#: ../src/plugins/checksum/burn-checksum-files.c:1229
+#: ../src/plugins/checksum/burn-checksum-image.c:699
 msgid "MD5"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1053
-#: ../src/plugins/checksum/burn-checksum-image.c:695
+#: ../src/plugins/checksum/burn-checksum-files.c:1231
+#: ../src/plugins/checksum/burn-checksum-image.c:701
 msgid "SHA1"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1055
-#: ../src/plugins/checksum/burn-checksum-image.c:697
+#: ../src/plugins/checksum/burn-checksum-files.c:1233
+#: ../src/plugins/checksum/burn-checksum-image.c:703
 msgid "SHA256"
 msgstr ""
 
@@ -4325,48 +4361,213 @@ msgid "the image is not local"
 msgstr ""
 
 #: ../src/plugins/checksum/burn-checksum-image.c:335
+#: ../src/plugins/checksum/burn-checksum-image.c:395
 msgid "Creating image checksum"
-msgstr "正在建立映像檔的檢查碼"
+msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-image.c:667
+#: ../src/plugins/checksum/burn-checksum-image.c:673
 msgid "allows to check data integrity on disc after it is burnt"
 msgstr ""
 
+#: ../src/brasero-jacket-background.c:160
+#, fuzzy
+msgid "Images"
+msgstr "燒錄影像檔"
+
+#: ../src/brasero-jacket-background.c:182
+#, fuzzy
+msgid "<b>_Image</b>"
+msgstr "<b>映像</b>"
+
+#: ../src/brasero-jacket-background.c:205
+#, fuzzy
+msgid "Image path:"
+msgstr "映像類型:"
+
+#: ../src/brasero-jacket-background.c:210
+#, fuzzy
+msgid "Choose an image"
+msgstr "打開一個映像"
+
+#: ../src/brasero-jacket-background.c:218
+#, fuzzy
+msgid "Image style:"
+msgstr "映像類型:"
+
+#: ../src/brasero-jacket-background.c:226
+#, fuzzy
+msgid "Centered"
+msgstr "類型"
+
+#: ../src/brasero-jacket-background.c:227
+#, fuzzy
+msgid "Tiled"
+msgstr "標題"
+
+#: ../src/brasero-jacket-background.c:228
+#, fuzzy
+msgid "Scaled"
+msgstr "已啟用"
+
+#: ../src/brasero-jacket-background.c:232
+#, fuzzy
+msgid "<b>_Color</b>"
+msgstr "<b>只有在\t</b>"
+
+#: ../src/brasero-jacket-background.c:258
+msgid "Solid color"
+msgstr ""
+
+#: ../src/brasero-jacket-background.c:259
+msgid "Horizontal gradient"
+msgstr ""
+
+#: ../src/brasero-jacket-background.c:260
+msgid "Vertical gradient"
+msgstr ""
+
+#: ../src/brasero-jacket-background.c:302
+msgid "Background properties"
+msgstr ""
+
+#: ../src/brasero-jacket-view.c:720
+msgid "Set bac_kground properties"
+msgstr ""
+
+#: ../src/brasero-jacket-view.c:761
+msgid "SIDES"
+msgstr ""
+
+#: ../src/brasero-jacket-view.c:777
+msgid "BACK COVER"
+msgstr ""
+
+#: ../src/brasero-jacket-view.c:794
+msgid "FRONT COVER"
+msgstr ""
+
+#: ../src/brasero-jacket-view.c:1083
+#, fuzzy
+msgid "The image couldn't be loaded:"
+msgstr "專案不能載入："
+
+#: ../src/brasero-jacket-edit.c:754
+#, fuzzy
+msgid "Unknown song"
+msgstr "不明的錯誤。"
+
+#: ../src/brasero-jacket-edit.c:769
+msgid "by "
+msgstr ""
+
+#: ../src/brasero-jacket-edit.c:827
+msgid "Cover editor"
+msgstr ""
+
+#~ msgid "Removed files"
+#~ msgstr "已移除的檔案"
+
+#~ msgid ""
+#~ "<span weight=\"bold\" size=\"larger\">The following files were removed "
+#~ "automatically from the project.</span>"
+#~ msgstr ""
+#~ "<span weight=\"bold\" size=\"larger\">下列檔案已自動從專案中移除。</span>"
+
+#~ msgid "_Notify when files are filtered"
+#~ msgstr "當檔案被過濾時通知(_N)"
+
+#~ msgid "there is no application defined for this file."
+#~ msgstr "此檔並無定義應用程式。"
+
 #~ msgid "application %s can't be started."
-#~ msgstr "無法啟動應用程式 %s。"
+#~ msgstr "程式 %s 無法啟動。"
+
+#~ msgid "\"%s\" is now ready for use"
+#~ msgstr "\"%s\" 已準備就緒"
+
+#~ msgid "DVD is now ready for use"
+#~ msgstr "DVD 準備就緒"
+
+#~ msgid "CD is now ready for use"
+#~ msgstr "CD 準備就緒"
+
+#~ msgid "Removed Files"
+#~ msgstr "移除檔案"
+
+#~ msgid "Display the files filtered from the project"
+#~ msgstr "從專案顯示檔案過濾器"
+
+#~ msgid "Filtered Files"
+#~ msgstr "過濾檔案"
 
 #~ msgid "(empty)"
-#~ msgstr "(空)"
+#~ msgstr "(空白)"
+
+#~ msgid "Some files were filtered:"
+#~ msgstr "某些檔案已過濾："
+
+#~ msgid "click here to see the list."
+#~ msgstr "點擊這裡觀看清單。"
+
+#~ msgid "The file \"%s\" is unreadable:"
+#~ msgstr "檔案 \"%s\" 無法讀取："
+
+#~ msgid "The directory \"%s\" is unreadable:"
+#~ msgstr "目錄 \"%s\" 無法讀取："
+
+#~ msgid "Some files couldn't be restored."
+#~ msgstr "無法恢復某些檔案。"
+
+#~ msgid "File restoration failure"
+#~ msgstr "檔案恢復失敗"
 
 #~ msgid "loading project"
-#~ msgstr "正在載入專案"
+#~ msgstr "專案載入中"
 
 #~ msgid "there is no selected disc"
-#~ msgstr "沒有選擇光碟"
+#~ msgstr "沒有選擇的光碟"
 
 #~ msgid "Project loading failure"
 #~ msgstr "專案載入失敗"
 
 #~ msgid "Create a vid_eo DVD"
-#~ msgstr "建立視訊 DVD (_E)"
+#~ msgstr "製作影片 DVD (_e)"
+
+#~ msgid "Create a video DVD that can be played by all DVD readers"
+#~ msgstr "建立一個可被所有 DVD 播放器播放的 DVD"
 
 #~ msgid "<i>no disc</i>"
-#~ msgstr "<i>沒有光碟</i>"
+#~ msgstr "<i>無光碟片</i>"
 
 #~ msgid "<i>unknown type</i>"
-#~ msgstr "<i>未知的類別</i>"
+#~ msgstr "<i>未知類型</i>"
+
+#~ msgid "<i>busy disc</i>"
+#~ msgstr "<i>光碟機忙碌中</i>"
 
 #~ msgid "audio tracks"
-#~ msgstr "音軌"
+#~ msgstr "聲音軌"
 
 #~ msgid "data tracks"
-#~ msgstr "資料軌"
+#~ msgstr "資料軌道"
 
 #~ msgid "<b>Type:</b>"
 #~ msgstr "<b>類型：</b>"
 
 #~ msgid "<b>Contents:</b>"
-#~ msgstr "<b>內容：</b>"
+#~ msgstr "<b>内容：</b>"
+
+#~ msgid "(u)mount command could not be found in the path"
+#~ msgstr "掛（卸）載命令不能在路徑中找到"
+
+#~ msgid "the drive could not be mounted"
+#~ msgstr "驅動不能被加載"
 
 #~ msgid "Burn..."
 #~ msgstr "燒錄..."
+
+#~ msgid "%s (%s) inserted in %s"
+#~ msgstr "%s (%s) 已插入於%s"
+
+#~ msgid "Choose the drive that holds the media"
+#~ msgstr "選擇有放入光碟的光碟機"
