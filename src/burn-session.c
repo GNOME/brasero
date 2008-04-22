@@ -727,11 +727,13 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 
 	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
 		BraseroMediumMonitor *monitor;
+		BraseroDrive *drive;
 		GSList *list;
 
 		monitor = brasero_medium_monitor_get_default ();
 		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
-		brasero_burn_session_set_burner (self, list->data);
+		drive = brasero_medium_get_drive (list->data);
+		brasero_burn_session_set_burner (self, drive);
 		g_object_unref (monitor);
 		g_slist_free (list);
 	}
