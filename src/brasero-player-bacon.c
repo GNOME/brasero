@@ -636,9 +636,6 @@ brasero_player_bacon_set_pos (BraseroPlayerBacon *bacon,
 				    &format,
 				    &duration);
 
-	if ((gint64) pos > duration || pos > bacon->priv->end)
-		return FALSE;
-
 	return gst_element_seek (bacon->priv->pipe,
 				 1.0,
 				 GST_FORMAT_TIME,
