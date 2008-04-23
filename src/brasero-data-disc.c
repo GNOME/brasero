@@ -2058,7 +2058,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	/* Tree */
 	priv->tree = gtk_tree_view_new_with_model (model);
 	g_object_unref (G_OBJECT (model));
-	gtk_tree_view_set_enable_tree_lines (GTK_TREE_VIEW (priv->tree), TRUE);
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (priv->tree), TRUE);
 
 	/* This must be before connecting to button press event */
