@@ -1861,13 +1861,21 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"),
+	button = brasero_utils_make_button (_("Continue burning"),
 					    GTK_STOCK_OK,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);
+
+	button = brasero_utils_make_button (_("Cancel burning"),
+					    GTK_STOCK_CANCEL,
+					    NULL,
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show_all (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (message),
+				      button, GTK_RESPONSE_CANCEL);
 
 	result = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
