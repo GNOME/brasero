@@ -1,5 +1,17 @@
 2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #513461 – Preview disabled calls a video window
+	(backportable)
+
+	* src/brasero-layout.c (brasero_layout_preview_changed_cb),
+	(brasero_layout_add_preview), (brasero_layout_load):
+	* src/brasero-preview.c
+	(brasero_preview_source_selection_changed_cb),
+	(brasero_preview_set_enabled):
+	* src/brasero-preview.h:
+
+2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #520986 – Background in 'new project' is white regardless of the desktop theme
 	(needs backporting)
 

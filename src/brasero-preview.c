@@ -51,6 +51,8 @@ struct _BraseroPreviewPrivate
 	gchar *uri;
 	gint64 start;
 	gint64 end;
+
+	guint is_enabled:1;
 };
 
 #define BRASERO_PREVIEW_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PREVIEW, BraseroPreviewPrivate))
@@ -83,6 +85,10 @@ brasero_preview_source_selection_changed_cb (BraseroURIContainer *source,
 	gchar *uri;
 
 	priv = BRASERO_PREVIEW_PRIVATE (self);
+
+	/* make sure that we're supposed to activate preview */
+	if (!priv->is_enabled)
+		return;
 
 	/* Should we always hide ? */
 	uri = brasero_uri_container_get_selected_uri (source);
@@ -126,6 +132,16 @@ brasero_preview_hide (BraseroPreview *self)
 
 	priv = BRASERO_PREVIEW_PRIVATE (self);
 	gtk_widget_hide (priv->frame);
+}
+
+void
+brasero_preview_set_enabled (BraseroPreview *self,
+			     gboolean preview)
+{
+	BraseroPreviewPrivate *priv;
+
+	priv = BRASERO_PREVIEW_PRIVATE (self);
+	priv->is_enabled = preview;
 }
 
 static void

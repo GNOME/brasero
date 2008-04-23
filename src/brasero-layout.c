@@ -156,7 +156,6 @@ const gchar description [] = "<ui>"
 
 
 #define BRASERO_KEY_DISPLAY_DIR		"/apps/brasero/display/"
-#define BRASERO_KEY_SHOW_PREVIEW	BRASERO_KEY_DISPLAY_DIR "preview"
 #define BRASERO_KEY_LAYOUT_AUDIO	BRASERO_KEY_DISPLAY_DIR "audio_pane"
 #define BRASERO_KEY_LAYOUT_DATA		BRASERO_KEY_DISPLAY_DIR "data_pane"
 
@@ -369,10 +368,14 @@ brasero_layout_preview_changed_cb (GConfClient *client,
 					      BRASERO_LAYOUT_PREVIEW_ID);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), active);
 
- 	if (active)
+	if (active) {
+		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), TRUE);
 		gtk_widget_show (layout->priv->preview_pane);
-	else
+	}
+	else {
+		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), FALSE);
 		gtk_widget_hide (layout->priv->preview_pane);
+	}
 }
 
 void
@@ -418,10 +421,14 @@ brasero_layout_add_preview (BraseroLayout *layout,
 	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_PREVIEW_ID);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), active);
 
-	if (active)
+	if (active) {
+		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), TRUE);
 		gtk_widget_show (layout->priv->preview_pane);
-	else
+	}
+	else {
+		brasero_preview_set_enabled (BRASERO_PREVIEW (layout->priv->preview_pane), FALSE);
 		gtk_widget_hide (layout->priv->preview_pane);
+	}
 
 	if (!layout->priv->preview_notify)
 		layout->priv->preview_notify = gconf_client_notify_add (layout->priv->client,
@@ -430,6 +437,7 @@ brasero_layout_add_preview (BraseroLayout *layout,
 									layout,
 									NULL,
 									&error);
+
 	if (error) {
 		g_warning ("Could set notify for GConf key %s.\n", error->message);
 		g_error_free (error);
@@ -828,6 +836,7 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 		gtk_widget_hide (layout->priv->active_item->widget);
 		layout->priv->active_item = NULL;
 	}
+
 	layout->priv->ctx_type = type;
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (layout->priv->combo));
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));

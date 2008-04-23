@@ -38,6 +38,8 @@
 
 G_BEGIN_DECLS
 
+#define BRASERO_KEY_SHOW_PREVIEW	"/apps/brasero/display/preview"
+
 #define BRASERO_TYPE_PREVIEW             (brasero_preview_get_type ())
 #define BRASERO_PREVIEW(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_PREVIEW, BraseroPreview))
 #define BRASERO_PREVIEW_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_PREVIEW, BraseroPreviewClass))
@@ -67,6 +69,10 @@ brasero_preview_add_source (BraseroPreview *preview,
 
 void
 brasero_preview_hide (BraseroPreview *preview);
+
+void
+brasero_preview_set_enabled (BraseroPreview *self,
+			     gboolean preview);
 
 G_END_DECLS
 
