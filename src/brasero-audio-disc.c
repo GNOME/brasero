@@ -1306,6 +1306,47 @@ brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 	gtk_widget_destroy (dialog);
 }
 
+static gboolean
+brasero_audio_disc_video_file_dialog (BraseroAudioDisc *disc,
+				      const gchar *uri)
+{
+	GtkWidget *dialog, *toplevel;
+	GtkResponseType answer;
+	gchar *name;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
+	if (toplevel == NULL) {
+		g_warning ("Video file \"%s\".\n", uri);
+		return FALSE;
+	}
+
+    	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT|
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_QUESTION,
+					 GTK_BUTTONS_NONE,
+					 _("Do you want to add a \"%s\" which is a video file?"),
+					 name);
+	g_free (name);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Video file"));
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("This file is a video and therefore only the audio part can be written to the disc."));
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Ignore video"),
+			       GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Add video"),
+			       GTK_RESPONSE_OK);
+
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	return (answer == GTK_RESPONSE_OK);
+}
 static void
 brasero_audio_disc_add_file (BraseroAudioDisc *disc,
 			     const gchar *uri)
@@ -1337,6 +1378,10 @@ brasero_audio_disc_result (GObject *obj,
 		return;
 
 	if (!g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO))
+		return;
+
+	if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)
+	&& !brasero_audio_disc_video_file_dialog (disc, uri))
 		return;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
@@ -1576,13 +1621,21 @@ brasero_audio_disc_new_row_cb (GObject *obj,
 #endif
 
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_REGULAR
-	|| !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)
-	||  g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)) {
+	|| !g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)) {
 		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
 			brasero_audio_disc_add_gap (disc, &gap_iter, 0);
 
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 		brasero_audio_disc_file_type_error_dialog (disc, uri);
+		return;
+	}
+
+	if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)
+	&& !brasero_audio_disc_video_file_dialog (disc, uri)) {
+		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
+			brasero_audio_disc_add_gap (disc, &gap_iter, 0);
+
+		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 		return;
 	}
 
