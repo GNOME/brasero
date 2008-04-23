@@ -565,6 +565,40 @@ brasero_utils_disc_hide_use_info_button_cb (GtkWidget *widget,
 	return result;
 }
 
+static void
+brasero_utils_disc_style_changed_cb (GtkWidget *widget,
+				     GtkStyle *previous,
+				     GtkWidget *event_box)
+{
+	/* The widget (a treeview here) needs to be realized to get proper style */
+	gtk_widget_realize (widget);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &widget->style->base[GTK_STATE_NORMAL]);
+}
+
+static void
+brasero_utils_disc_realized_cb (GtkWidget *event_box,
+				GtkNotebook *notebook)
+{
+	GtkWidget *widget;
+
+	widget = brasero_utils_disc_find_tree_view (notebook);
+
+	if (!widget || !GTK_IS_TREE_VIEW (widget))
+		return;
+
+	/* The widget (a treeview here) needs to be realized to get proper style */
+	gtk_widget_realize (widget);
+	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &widget->style->base[GTK_STATE_NORMAL]);
+
+	g_signal_handlers_disconnect_by_func (widget,
+					      brasero_utils_disc_style_changed_cb,
+					      event_box);
+	g_signal_connect (widget,
+			  "style-set",
+			  G_CALLBACK (brasero_utils_disc_style_changed_cb),
+			  event_box);
+}
+
 GtkWidget *
 brasero_disc_get_use_info_notebook (void)
 {
@@ -586,9 +620,10 @@ brasero_disc_get_use_info_notebook (void)
 				  frame,
 				  NULL);
 
+	/* Now this event box must be 'transparent' to have the same background 
+	 * color as a treeview */
 	event_box = gtk_event_box_new ();
 	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), TRUE);
-	gtk_widget_modify_bg (event_box, GTK_STATE_NORMAL, &event_box->style->white);
 	gtk_drag_dest_set (event_box, 
 			   GTK_DEST_DEFAULT_MOTION,
 			   ntables_cd,
@@ -667,6 +702,11 @@ brasero_disc_get_use_info_notebook (void)
 	g_free (message_add);
 	g_free (message_remove_header);
 	g_free (message_remove);
+
+	g_signal_connect (event_box,
+			  "realize",
+			  G_CALLBACK (brasero_utils_disc_realized_cb),
+			  notebook);
 
 	gtk_widget_show_all (notebook);
 	return notebook;
