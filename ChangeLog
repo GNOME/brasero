@@ -1,6 +1,7 @@
 2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fixes #512694 – can't set tmp dir and can't burn image if size > available on /tmp
+	(should be backported)
 
 	* src/burn-job.c (brasero_job_set_output_file):
 	* src/plugins/checksum/burn-checksum-files.c
