@@ -1500,6 +1500,7 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 	gtk_file_filter_set_name (filter, _("Movies only"));
 	gtk_file_filter_add_mime_type (filter, "video/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
+	gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (project->priv->chooser), filter);
 
 	filter = gtk_file_filter_new ();
