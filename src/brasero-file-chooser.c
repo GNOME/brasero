@@ -229,6 +229,7 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	gtk_file_filter_set_name (filter, _("Movies only"));
 	gtk_file_filter_add_mime_type (filter, "video/*");
 	gtk_file_filter_add_mime_type (filter, "application/ogg");
+	gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
 
 	filter = gtk_file_filter_new ();
