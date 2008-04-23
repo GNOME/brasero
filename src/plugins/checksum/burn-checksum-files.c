@@ -1035,8 +1035,11 @@ brasero_checksum_files_start (BraseroJob *job,
 	BraseroJobAction action;
 
 	brasero_job_get_action (job, &action);
-	if (action == BRASERO_JOB_ACTION_SIZE)
-		return BRASERO_BURN_NOT_SUPPORTED;
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		/* say we won't write to disc */
+		brasero_job_set_output_size_for_current_track (job, 0, 0);
+		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	/* we start a thread for the exploration of the graft points */
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (job);

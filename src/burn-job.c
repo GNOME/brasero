@@ -534,6 +534,7 @@ brasero_job_set_output_file (BraseroJob *self,
 	priv->output->toc = toc;
 
 	flags = brasero_burn_session_get_flags (session);
+
 	if (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
 		return brasero_job_check_output_volume_space (self, error);
 

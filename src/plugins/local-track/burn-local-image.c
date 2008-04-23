@@ -789,11 +789,13 @@ brasero_local_track_start (BraseroJob *job,
 	self = BRASERO_LOCAL_TRACK (job);
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	brasero_job_get_action (job, &action);
-
 	/* skip that part */
-	if (action == BRASERO_JOB_ACTION_SIZE)
+	brasero_job_get_action (job, &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		/* say we won't write to disc */
+		brasero_job_set_output_size_for_current_track (job, 0, 0);
 		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	if (action != BRASERO_JOB_ACTION_IMAGE)
 		return BRASERO_BURN_NOT_SUPPORTED;

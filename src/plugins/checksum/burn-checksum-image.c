@@ -233,7 +233,7 @@ brasero_checksum_image_checksum_fd_input (BraseroChecksumImage *self,
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "Starting md5 generation live (size = %i)", priv->total);
+	BRASERO_JOB_LOG (self, "Starting checksum generation live (size = %i)", priv->total);
 	result = brasero_job_set_nonblocking (BRASERO_JOB (self), error);
 	if (result != BRASERO_BURN_OK)
 		return result;
@@ -367,7 +367,7 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 
 static BraseroBurnResult
 brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
-				   GError **error)
+					   GError **error)
 {
 	GConfClient *client;
 	BraseroBurnResult result;
@@ -396,10 +396,22 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 					FALSE);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
-	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
-		result = brasero_checksum_image_checksum_fd_input (self, checksum_type, error);
-	else
+	if (brasero_job_get_fd_in (BRASERO_JOB (self), NULL) != BRASERO_BURN_OK) {
+		BraseroTrack *track;
+
+		brasero_job_get_current_track (BRASERO_JOB (self), &track);
+		result = brasero_track_get_image_size (track,
+						       NULL,
+						       NULL,
+						       &priv->total,
+						       error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+
 		result = brasero_checksum_image_checksum_file_input (self, checksum_type, error);
+	}
+	else
+		result = brasero_checksum_image_checksum_fd_input (self, checksum_type, error);
 
 	return result;
 }
@@ -552,8 +564,11 @@ brasero_checksum_image_start (BraseroJob *job,
 	BraseroJobAction action;
 
 	brasero_job_get_action (job, &action);
-	if (action == BRASERO_JOB_ACTION_SIZE)
-		return BRASERO_BURN_NOT_SUPPORTED;
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		/* say we won't write to disc */
+		brasero_job_set_output_size_for_current_track (job, 0, 0);
+		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	/* we start a thread for the exploration of the graft points */
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
@@ -561,7 +576,6 @@ brasero_checksum_image_start (BraseroJob *job,
 					BRASERO_CHECKSUM_IMAGE (job),
 					TRUE,
 					error);
-
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;
 
