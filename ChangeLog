@@ -1,6 +1,16 @@
 2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
 
-	Fix for #518583 – Incorretcly adding .bin to wav filename listed in toc
+	Fix #509013 – Context menu actions for multiple files for good
+	Also in audio project deselect when there is a click in empty area
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_selection_function),
+	(brasero_audio_disc_init), (brasero_audio_disc_button_pressed_cb):
+	* src/brasero-data-disc.c (brasero_data_disc_tree_select_function),
+	(brasero_data_disc_button_pressed_cb):
+
+2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #518583 – Incorrectly adding .bin to wav filename listed in toc
 	we were using URIs instead of paths
 	(backportable)
 

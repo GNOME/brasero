@@ -22,7 +22,6 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -1727,6 +1726,7 @@ brasero_data_disc_tree_select_function (GtkTreeSelection *selection,
 		node->is_selected = FALSE;
 	else
 		node->is_selected = TRUE;
+
 	return TRUE;
 }
 
@@ -1796,11 +1796,11 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 				     BraseroDataDisc *self)
 {
 	gboolean result;
-	gboolean is_selected = FALSE;
 	BraseroFileNode *node = NULL;
 	GtkTreePath *treepath = NULL;
 	GtkWidgetClass *widget_class;
 	BraseroDataDiscPrivate *priv;
+	gboolean keep_selection = FALSE;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
@@ -1820,7 +1820,7 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 		if (node) {
 			GtkTreeSelection *selection;
 			selection = gtk_tree_view_get_selection (tree);
-			is_selected = gtk_tree_selection_path_is_selected (selection, treepath);
+			keep_selection = gtk_tree_selection_path_is_selected (selection, treepath);
 		}
 
 		if (!node && treepath) {
@@ -1884,8 +1884,18 @@ brasero_data_disc_button_pressed_cb (GtkTreeView *tree,
 
 		/* Don't update the selection if the right click was on one of
 		 * the already selected rows */
-		if (!is_selected)
+		if (!keep_selection) {
 			widget_class->button_press_event (GTK_WIDGET (tree), event);
+
+			if (!node) {
+				GtkTreeSelection *selection;
+
+				/* This is to deselect any row when selecting a row that cannot
+				 * be selected or in an empty part */
+				selection = gtk_tree_view_get_selection (tree);
+				gtk_tree_selection_unselect_all (selection);
+			}
+		}
 
 		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 		brasero_data_disc_show_menu (gtk_tree_selection_count_selected_rows (selection),

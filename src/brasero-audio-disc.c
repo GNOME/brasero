@@ -298,6 +298,7 @@ enum {
 	ISRC_COL,
 	BACKGROUND_COL,
 	SONG_COL,
+	EDITABLE_COL,
 	NB_COL
 };
 
@@ -540,9 +541,37 @@ brasero_audio_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 	return merge_id;
 }
 
+static gboolean
+brasero_audio_disc_selection_function (GtkTreeSelection *selection,
+				       GtkTreeModel *model,
+				       GtkTreePath *treepath,
+				       gboolean is_selected,
+				       gpointer NULL_data)
+{
+	GtkTreeIter iter;
+	gboolean is_song = FALSE;
+
+	gtk_tree_model_get_iter (model, &iter, treepath);
+	gtk_tree_model_get (model, &iter,
+			    SONG_COL, &is_song,
+			    -1);
+	if (!is_song) {
+		if (is_selected)
+			return TRUE;
+
+		return FALSE;
+	}
+
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			    EDITABLE_COL, (is_selected == FALSE),
+			    -1);
+	return TRUE;
+}
+
 static void
 brasero_audio_disc_init (BraseroAudioDisc *obj)
 {
+	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkTreeModel *model;
@@ -577,8 +606,9 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 			  G_CALLBACK (brasero_audio_disc_key_released_cb),
 			  obj);
 
-	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree)),
-				     GTK_SELECTION_MULTIPLE);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (obj->priv->tree));
+	gtk_tree_selection_set_mode (selection,GTK_SELECTION_MULTIPLE);
+	gtk_tree_selection_set_select_function (selection, brasero_audio_disc_selection_function, NULL, NULL);
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (obj->priv->tree), TRUE);
 
 	model = (GtkTreeModel*) gtk_list_store_new (NB_COL,
@@ -594,6 +624,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 						    G_TYPE_STRING,
 						    G_TYPE_INT,
 						    G_TYPE_STRING,
+						    G_TYPE_BOOLEAN,
 						    G_TYPE_BOOLEAN);
 
 	g_signal_connect (G_OBJECT (model),
@@ -648,7 +679,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "background", BACKGROUND_COL);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "editable", SONG_COL);
+					    "editable", EDITABLE_COL);
 	gtk_tree_view_column_set_title (column, _("Title"));
 	g_object_set (G_OBJECT (column),
 		      "expand", TRUE,
@@ -3165,6 +3196,16 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 			/* Don't update the selection if the right click was on one of
 			 * the already selected rows */
 			widget_class->button_press_event (GTK_WIDGET (tree), event);
+
+			if (!path) {
+				GtkTreeSelection *selection;
+
+				/* This is to deselect any row when selecting a 
+				 * row that cannot be selected or in an empty
+				 * part */
+				selection = gtk_tree_view_get_selection (tree);
+				gtk_tree_selection_unselect_all (selection);
+			}
 		}
 
 		widget = gtk_ui_manager_get_widget (disc->priv->manager, "/ContextMenu/PasteAudio");
@@ -3189,11 +3230,6 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 		gboolean result;
 		GtkTreePath *treepath = NULL;
 
-		/* we call the default handler for the treeview before everything else
-		 * so it can update itself (paticularly its selection) before we have
-		 * a look at it */
-		widget_class->button_press_event (GTK_WIDGET (tree), event);
-
 		result = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (disc->priv->tree),
 							event->x,
 							event->y,
@@ -3201,6 +3237,21 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 							NULL,
 							NULL,
 							NULL);
+		/* we call the default handler for the treeview before everything else
+		 * so it can update itself (paticularly its selection) before we have
+		 * a look at it */
+		widget_class->button_press_event (GTK_WIDGET (tree), event);
+		
+		if (!treepath) {
+			GtkTreeSelection *selection;
+
+			/* This is to deselect any row when selecting a 
+			 * row that cannot be selected or in an empty
+			 * part */
+			selection = gtk_tree_view_get_selection (tree);
+			gtk_tree_selection_unselect_all (selection);
+		}
+	
 		if (!result || !treepath)
 			return FALSE;
 
