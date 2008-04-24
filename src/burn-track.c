@@ -852,14 +852,17 @@ brasero_track_get_image_source (BraseroTrack *track, gboolean uri)
 	if (!image->image) {
 		gchar *complement;
 		gchar *retval;
+		gchar *toc;
 
 		if (!image->toc) {
 			BRASERO_BURN_LOG ("Image nor toc were set");
 			return NULL;
 		}
 
-		complement = brasero_image_format_get_complement (track->type.subtype.img_format, 
-								  image->toc);
+		toc = brasero_track_get_localpath (image->toc);
+		complement = brasero_image_format_get_complement (track->type.subtype.img_format, toc);
+		g_free (toc);
+
 		if (!complement) {
 			BRASERO_BURN_LOG ("No complement could be retrieved");
 			return NULL;

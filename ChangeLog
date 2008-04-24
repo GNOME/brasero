@@ -1,3 +1,11 @@
+2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #518583 – Incorretcly adding .bin to wav filename listed in toc
+	we were using URIs instead of paths
+	(backportable)
+
+	* src/burn-track.c (brasero_track_get_image_source):
+
 2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix #518505 – Cancel dialog buttons' wording is confusing
