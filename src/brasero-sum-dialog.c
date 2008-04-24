@@ -769,11 +769,3 @@ brasero_sum_dialog_new ()
 	
 	return GTK_WIDGET (obj);
 }
-
-		TRANSLATION STATISTICS
-		Total messages: 0
-
-	Translation status given in percentage.
-+----------------------------------------------------------------------------+
-|  Po file  |            Language  | Translated |   Fuzzy   |   Untranslated |
-+----------------------------------------------------------------------------+
