@@ -422,8 +422,9 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 	gtk_widget_hide (toplevel);
 	gtk_widget_show (dialog);
 
-	destroy = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
-					   session);
+	brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
+				 session,
+				 &destroy);
 
 	gtk_widget_destroy (dialog);
 

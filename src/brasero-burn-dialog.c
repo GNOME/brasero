@@ -729,10 +729,10 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
-					  _("Some files don't have a suitable name for a Windows-compatible CD:"));
+					  _("Do you want to continue with Windows compatibility disabled?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Do you want to continue with Windows compatibility disabled?"));
+						  _("Some files don't have a suitable name for a Windows-compatible CD:"));
 
 	gtk_window_set_title (GTK_WINDOW (message), _("Windows compatibility"));
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
@@ -1793,7 +1793,8 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 
 gboolean
 brasero_burn_dialog_run (BraseroBurnDialog *dialog,
-			 BraseroBurnSession *session)
+			 BraseroBurnSession *session,
+			 gboolean *destroy)
 {
 	BraseroMedia media;
 	GError *error = NULL;
@@ -1834,7 +1835,10 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	g_object_unref (dialog->priv->session);
 	dialog->priv->session = NULL;
 
-	return close_dialog;
+	if (destroy)
+		*destroy = close_dialog;
+
+	return (result == BRASERO_BURN_OK);
 }
 
 static gboolean

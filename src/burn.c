@@ -719,8 +719,8 @@ again:
 	/* if drive is mounted then unmount before checking anything */
 	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		if (!brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL))
-			g_warning ("Couldn't unmount volume in drive: %s",
-				   brasero_drive_get_device (priv->dest));
+			BRASERO_BURN_LOG ("Couldn't unmount volume in drive: %s",
+					  brasero_drive_get_device (priv->dest));
 	}
 
 	berror = BRASERO_BURN_ERROR_NONE;
@@ -1357,12 +1357,14 @@ start:
 			     _("the drive seems to be busy"));
 		return BRASERO_BURN_ERR;
 	}
-	else if (brasero_volume_is_mounted (BRASERO_VOLUME (burnt_medium))
-	     && !brasero_volume_umount (BRASERO_VOLUME (burnt_medium), TRUE, NULL)) {
-		ret_error = g_error_new (BRASERO_BURN_ERROR,
-					 BRASERO_BURN_ERROR_BUSY_DRIVE,
-					 _("the drive seems to be busy"));
-		result = BRASERO_BURN_ERR;
+
+	if (brasero_volume_is_mounted (BRASERO_VOLUME (burnt_medium))
+	&& !brasero_volume_umount (BRASERO_VOLUME (burnt_medium), TRUE, NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_BUSY_DRIVE,
+			     _("the drive seems to be busy"));
+		return BRASERO_BURN_ERR;
 	}
 
 	/* actual running of task */
@@ -1551,7 +1553,7 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 		/* see what type of task it is. It could be a blank/erase one */
 		action = brasero_task_ctx_get_action (BRASERO_TASK_CTX (priv->task));
 		if (action == BRASERO_TASK_ACTION_ERASE) {
-			/* this is to avoid a potential problem when running a 
+			/* This is to avoid a potential problem when running a 
 			 * dummy session first. When running dummy session the 
 			 * media gets erased if need be. Since it is not
 			 * reloaded afterwards, for brasero it has still got 

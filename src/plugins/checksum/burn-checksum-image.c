@@ -258,11 +258,6 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self,
-			 "Starting checksuming file %s (size = %i)",
-			 path,
-			 priv->total);
-
 	/* get all information */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	path = brasero_track_get_image_source (track, FALSE);
@@ -273,6 +268,11 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 			     _("the image is not local"));
 		return BRASERO_BURN_ERR;
 	}
+
+	BRASERO_JOB_LOG (self,
+			 "Starting checksuming file %s (size = %i)",
+			 path,
+			 priv->total);
 
 	fd_in = open (path, O_RDONLY);
 	if (!fd_in) {
@@ -565,7 +565,13 @@ brasero_checksum_image_start (BraseroJob *job,
 
 	brasero_job_get_action (job, &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
-		/* say we won't write to disc */
+		/* say we won't write to disc if we're just checksuming "live" */
+		if (brasero_job_get_fd_in (job, NULL) == BRASERO_BURN_OK)
+			return BRASERO_BURN_NOT_SUPPORTED;
+
+		/* otherwise return an output of 0 since we're not actually 
+		 * writing anything to the disc. That will prevent a disc space
+		 * failure. */
 		brasero_job_set_output_size_for_current_track (job, 0, 0);
 		return BRASERO_BURN_NOT_RUNNING;
 	}

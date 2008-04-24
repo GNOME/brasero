@@ -246,7 +246,8 @@ static GObjectClass *parent_class = NULL;
 
 #define KEY_DEFAULT_DATA_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_data_cd_command"
 #define KEY_DEFAULT_AUDIO_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_audio_cd_command"
-#define KEY_ASK_DEFAULT_BURNING_APP		"/apps/brasero/ask_default_app"
+#define KEY_ASK_DEFAULT_BURNING_AUDIO		"/apps/brasero/ask_default_audio"
+#define KEY_ASK_DEFAULT_BURNING_DATA		"/apps/brasero/ask_default_data"
 
 #define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/preview"
 
@@ -542,14 +543,21 @@ brasero_project_overburn_dialog (BraseroProject *project)
 					 GTK_DIALOG_DESTROY_WITH_PARENT|
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_YES_NO,
-					 _("The size of the project is too large for the disc:"));
+					 GTK_BUTTONS_NONE,
+					 _("Would you like to activate overburn?"));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Project size"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Would you like to activate overburn (otherwise you must delete files) ?"
+						  _("The size of the project is too large for the disc and you must delete files otherwise."
 						    "\nNOTE: This option might cause failure."));
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Don't use overburn"),
+			       GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("Use _overburn"),
+			       GTK_RESPONSE_YES);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -866,6 +874,86 @@ brasero_project_no_file_dialog (BraseroProject *project)
 	gtk_widget_destroy (message);
 }
 
+static void
+brasero_project_check_default_burning_app (BraseroProject *project,
+					   const gchar *primary,
+					   const gchar *key,
+					   const gchar *key_ask,
+					   const gchar *default_command)
+{
+	GtkResponseType response;
+	GConfClient *client;
+	GtkWidget *toplevel;
+	GtkWidget *message;
+	gchar *command;
+	gboolean ask;
+	gchar *text;
+
+	client = gconf_client_get_default ();
+	command = gconf_client_get_string (client,
+					   key,
+					   NULL);
+
+	if (command && g_str_has_prefix (command, "brasero")) {
+		g_object_unref (client);
+		g_free (command);
+		return;
+	}
+
+	ask = gconf_client_get_bool (client,
+				     key_ask,
+				     NULL);
+	if (ask) {
+		g_object_unref (client);
+		g_free (command);
+		return;
+	}
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					  GTK_DIALOG_MODAL|
+					  GTK_DIALOG_DESTROY_WITH_PARENT,
+					  GTK_MESSAGE_WARNING,
+					  GTK_BUTTONS_NONE,
+					  primary);
+
+	gtk_window_set_title (GTK_WINDOW (message), _("Default burning application"));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+						  _("This is a first time running dialog that won't be shown again. If you change your mind, you can change your choice later in the Removable Drives and Media Preferences wether or not you chose brasero."));
+
+	/* NOTE for translators the %s is the old application name */
+	if (command)
+		text = g_strdup_printf (_("_Keep Using \"%s\""), command);
+	else
+		text = g_strdup (GTK_STOCK_CANCEL);
+
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       text,
+			       GTK_RESPONSE_CANCEL);
+	g_free (text);
+	g_free (command);
+
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       _("_Use Brasero next time"),
+			       GTK_RESPONSE_YES);
+
+	response = gtk_dialog_run (GTK_DIALOG (message));
+	gconf_client_set_bool (client,
+			       key_ask,
+			       TRUE,
+			       NULL);
+
+	gtk_widget_destroy (message);
+
+	if (response == GTK_RESPONSE_YES)
+		gconf_client_set_string (client,
+					 key,
+					 default_command,
+					 NULL);
+
+	g_object_unref (client);
+}
+
 void
 brasero_project_burn (BraseroProject *project)
 {
@@ -875,6 +963,7 @@ brasero_project_burn (BraseroProject *project)
 	GtkWidget *dialog;
 	gboolean overburn;
 	gboolean destroy;
+	gboolean success;
 
 	overburn = FALSE;
 	result = brasero_project_size_check_status (BRASERO_PROJECT_SIZE (project->priv->size_display),
@@ -943,10 +1032,27 @@ brasero_project_burn (BraseroProject *project)
 	gtk_widget_hide (toplevel);
 	gtk_widget_show (dialog);
 
-	destroy = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog), session);
+	success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
+					   session,
+					   &destroy);
 	g_object_unref (session);
 
-    	project->priv->burnt = 1;
+    	project->priv->burnt = success;
+
+	if (success) {
+		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
+			brasero_project_check_default_burning_app (project,
+								   _("Would you like to use Brasero in the future to burn audio discs?"),
+								   KEY_DEFAULT_AUDIO_BURNING_APP,
+								   KEY_ASK_DEFAULT_BURNING_AUDIO,
+								   "brasero -a");
+		else
+			brasero_project_check_default_burning_app (project,
+								   _("Would you like to use Brasero in the future to burn data discs?"),
+								   KEY_DEFAULT_DATA_BURNING_APP,
+								   KEY_ASK_DEFAULT_BURNING_DATA,
+								   "brasero -d");
+	}
 
 end:
 
@@ -960,105 +1066,6 @@ end:
 }
 
 /********************************     ******************************************/
-static void
-brasero_project_check_default_burning_app (BraseroProject *project,
-					   const gchar *primary,
-					   const gchar *secondary,
-					   const gchar *key,
-					   const gchar *default_command)
-{
-	GtkResponseType response;
-	GConfClient *client;
-	GtkWidget *alignment;
-	GtkWidget *toplevel;
-	GtkWidget *message;
-	GtkWidget *check;
-	gchar *command;
-	gboolean ask;
-	GList *children;
-	GList *iter;
-
-	client = gconf_client_get_default ();
-	command = gconf_client_get_string (client,
-					   key,
-					   NULL);
-
-	if (command && g_str_has_prefix (command, "brasero")) {
-		g_object_unref (client);
-		g_free (command);
-		return;
-	}
-	g_free (command);
-
-	ask = gconf_client_get_bool (client,
-				     KEY_ASK_DEFAULT_BURNING_APP,
-				     NULL);
-	if (ask) {
-		g_object_unref (client);
-		return;
-	}
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					  GTK_DIALOG_MODAL|
-					  GTK_DIALOG_DESTROY_WITH_PARENT,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_YES_NO,
-					  primary);
-
-	gtk_window_set_title (GTK_WINDOW (message), _("Default burning application"));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  secondary);
-
-	alignment = gtk_alignment_new (0.0, 0.0, 0, 0);
-	gtk_widget_show (alignment);
-
-	children = gtk_container_get_children (GTK_CONTAINER (GTK_DIALOG (message)->vbox));
-	for (iter = children; iter; iter = iter->next) {
-		GtkWidget *child;
-
-		child = children->data;
-		if (GTK_IS_HBOX (child)) {
-			g_list_free (children);
-			children = gtk_container_get_children (GTK_CONTAINER (child));
-			for (iter = children; iter; iter = iter->next) {
-				child = iter->data;
-				if (GTK_IS_VBOX (child)) {
-					gtk_box_pack_end (GTK_BOX (child),
-							  alignment,
-							  FALSE,
-							  FALSE,
-							  0);
-					break;
-				}
-			}
-			g_list_free (children);
-			break;
-		}
-	}
-
-	check = gtk_check_button_new_with_mnemonic (_("don't _show this dialog again"));
-	gtk_container_add (GTK_CONTAINER (alignment), check);
-	gtk_widget_show (check);
-
-	response = gtk_dialog_run (GTK_DIALOG (message));
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check)))
-		gconf_client_set_bool (client,
-				       KEY_ASK_DEFAULT_BURNING_APP,
-				       TRUE,
-				       NULL);
-
-	gtk_widget_destroy (message);
-
-	if (response == GTK_RESPONSE_YES)
-		gconf_client_set_string (client,
-					 key,
-					 default_command,
-					 NULL);
-
-	g_object_unref (client);
-}
-
 static void
 brasero_project_switch (BraseroProject *project, gboolean audio)
 {
@@ -1098,12 +1105,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
-
-		brasero_project_check_default_burning_app (project,
-							   _("Brasero is not the default application to burn audio CDs:"),
-							   _("Would you like to make brasero the default application to burn audio CDs?"),
-							   KEY_DEFAULT_AUDIO_BURNING_APP,
-							   "brasero -a");
 	}
 	else {
 		project->priv->current = BRASERO_DISC (project->priv->data);
@@ -1112,12 +1113,6 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
-
-		brasero_project_check_default_burning_app (project,
-							   _("Brasero is not the default application to burn data discs:"),
-							   _("Would you like to make brasero the default application to burn data discs?"),
-							   KEY_DEFAULT_DATA_BURNING_APP,
-							   "brasero -d");
 	}
 
 	/* update the menus */

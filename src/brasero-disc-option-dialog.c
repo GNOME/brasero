@@ -442,28 +442,46 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-	brasero_disc_option_dialog_set_joliet (dialog);
 	if (!GTK_WIDGET_VISIBLE (dialog)) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
 
-	if (priv->joliet_warning)
+	if (priv->joliet_warning) {
+		brasero_disc_option_dialog_set_joliet (dialog);
 		return;
+	}
+
+	priv->joliet_warning = TRUE;
 
 	message = gtk_message_dialog_new (GTK_WINDOW (dialog),
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_INFO,
-					  GTK_BUTTONS_CLOSE,
-					  _("Some files don't have a suitable name for a Windows-compatible CD:"));
+					  GTK_BUTTONS_NONE,
+					  _("Should files be renamed to be windows-compatible?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("their names will be changed and truncated to 64 characters."));
+						  _("Some files don't have a suitable name for a Windows-compatible CD. Those names will be changed and truncated to 64 characters."));
 
 	gtk_window_set_title (GTK_WINDOW (message), _("Windows compatibility"));
+
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       _("_Don't rename"),
+			       GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (message),
+			       _("_Rename"),
+			       GTK_RESPONSE_YES);
+
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
+
+	if (answer != GTK_RESPONSE_YES)
+		gtk_toggle_button_set_active (toggle, FALSE);
+	else
+		brasero_disc_option_dialog_set_joliet (dialog);
+
+	priv->joliet_warning = FALSE;
 }
 
 static void

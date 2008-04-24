@@ -1,3 +1,34 @@
+2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #505981 – Default application dialog asks for yes/no
+	Also starts to fix #521368 – HIG alert windows
+
+	Fix problem introduced by an earlier patch where track size was set to 0 by imagechecksum
+
+	* data/brasero.schemas.in:
+	* src/brasero-burn-dialog.c
+	(brasero_burn_dialog_disable_joliet_cb), (brasero_burn_dialog_run):
+	* src/brasero-burn-dialog.h:
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_image_extension_ask):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_joliet_toggled_cb):
+	* src/brasero-project-manager.c (brasero_project_manager_burn):
+	* src/brasero-project.c (brasero_project_overburn_dialog),
+	(brasero_project_check_default_burning_app),
+	(brasero_project_burn), (brasero_project_switch):
+	* src/brasero-split-dialog.c (brasero_split_dialog_size_error),
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_new):
+	* src/burn-job.c (brasero_job_check_output_disc_space):
+	* src/burn-volume-obj.c (brasero_volume_is_mounted),
+	(brasero_volume_umount):
+	* src/burn.c (brasero_burn_lock_dest_media),
+	(brasero_burn_run_recorder), (brasero_burn_run_tasks):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_checksum_file_input),
+	(brasero_checksum_image_start):
+
 2008-04-24  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-sum-dialog.c (brasero_sum_dialog_new):

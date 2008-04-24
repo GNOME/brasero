@@ -57,6 +57,7 @@ GtkWidget *brasero_burn_dialog_new (void);
 
 gboolean
 brasero_burn_dialog_run (BraseroBurnDialog *dialog,
-			 BraseroBurnSession *session);
+			 BraseroBurnSession *session,
+			 gboolean *destroy);
 
 #endif				/* BURN_DIALOG_H */

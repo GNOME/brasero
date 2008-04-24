@@ -119,6 +119,12 @@ brasero_volume_is_mounted (BraseroVolume *self)
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!g_volume_can_mount (volume)) {
+		/* if it can't be mounted then it's unmounted ... */
+		g_object_unref (volume);
+		return FALSE;
+	}
+
 	mount = g_volume_get_mount (volume);
 	g_object_unref (volume);
 	if (!mount)
@@ -290,6 +296,12 @@ brasero_volume_umount (BraseroVolume *self,
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!g_volume_can_mount (volume)) {
+		/* if it can't be mounted then it's unmounted ... */
+		g_object_unref (volume);
+		return TRUE;
+	}
+
 	mount = g_volume_get_mount (volume);
 	g_object_unref (volume);
 

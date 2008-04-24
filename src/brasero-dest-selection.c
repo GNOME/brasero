@@ -568,13 +568,20 @@ brasero_dest_selection_image_extension_ask (BraseroDestSelection *self)
 					 GTK_DIALOG_DESTROY_WITH_PARENT |
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_YES_NO,
+					 GTK_BUTTONS_NONE,
 					 _("Do you really want to keep the current extension for the disc image name?"));
 
 		
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Image Extension"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("If you choose to keep it programs may not be able to recognize the file type properly."));
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("_Don't change extension"),
+			       GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       _("Change _extension"),
+			       GTK_RESPONSE_YES);
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
