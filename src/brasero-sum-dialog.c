@@ -387,7 +387,7 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 	}
 	else {
 		src = g_file_get_path (file_src);
-		g_object_unref (file);
+		g_object_unref (file_src);
 	}
 	g_free (scheme);
 
@@ -769,3 +769,11 @@ brasero_sum_dialog_new ()
 	
 	return GTK_WIDGET (obj);
 }
+
+		TRANSLATION STATISTICS
+		Total messages: 0
+
+	Translation status given in percentage.
++----------------------------------------------------------------------------+
+|  Po file  |            Language  | Translated |   Fuzzy   |   Untranslated |
++----------------------------------------------------------------------------+

@@ -987,7 +987,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		priv->icon = icons [7];
 		break;
 
-	/* WARNING: these types are recognized, no more */
 	case BRASERO_SCSI_PROF_DVD_R_PLUS_DL:
 		priv->info = BRASERO_MEDIUM_DVDR_PLUS_DL;
 		priv->type = types [9];
@@ -1012,12 +1011,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		priv->icon = icons [5];
 		break;
 
-	case BRASERO_SCSI_PROF_DVD_RAM:
-		priv->info = BRASERO_MEDIUM_DVD_RAM;
-		priv->type = types [12];
-		priv->icon = icons [8];
-		break;
-
+	/* WARNING: these types are recognized, no more */
 	case BRASERO_SCSI_PROF_BD_ROM:
 		priv->info = BRASERO_MEDIUM_BD_ROM;
 		priv->type = types [13];
@@ -1042,6 +1036,12 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		priv->icon = icons [6];
 		break;
 
+	case BRASERO_SCSI_PROF_DVD_RAM:
+		priv->info = BRASERO_MEDIUM_DVD_RAM;
+		priv->type = types [12];
+		priv->icon = icons [8];
+		break;
+	
 	case BRASERO_SCSI_PROF_NON_REMOVABLE:
 	case BRASERO_SCSI_PROF_REMOVABLE:
 	case BRASERO_SCSI_PROF_MO_ERASABLE:

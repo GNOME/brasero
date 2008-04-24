@@ -1,5 +1,12 @@
 2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #529428 – brasero crashed when checking integrity with md5sum
+
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_get_file_checksum):
+	* src/burn-medium.c (brasero_medium_get_medium_type):
+
+2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #509013 – Context menu actions for multiple files for good
 	Also in audio project deselect when there is a click in empty area
 
