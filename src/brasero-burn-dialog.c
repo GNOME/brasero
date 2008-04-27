@@ -666,8 +666,8 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 {
 	return brasero_burn_dialog_loss_warnings_cb (dialog,
 						     _("Possible loss of data"),
-						     _("The disc in the drive holds data:"),
-						     _("Do you want to erase the current disc?\nOr replace the current disc with a new disc?"),
+						     _("Do you really want to erase the current disc?"),
+						     _("The disc in the drive holds data."),
 						     _("Erase disc"),
 						     "media-optical-blank");
 }

@@ -520,12 +520,12 @@ brasero_project_error_size_dialog (BraseroProject *project)
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_ERROR,
 					 GTK_BUTTONS_CLOSE,
-					 _("The size of the project is too large for the disc even with the overburn option:"));
+					 _("Please, delete some files from the project."));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Project size"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("you must delete some files."));
+						  _("The size of the project is too large for the disc even with the overburn option."));
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -840,12 +840,12 @@ brasero_project_no_song_dialog (BraseroProject *project)
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_CLOSE,
-					  _("No song in the project:"));
+					  _("Please add songs to the project."));
 
 	gtk_window_set_title (GTK_WINDOW (message), _("Empty project"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("please add songs to the project."));
+						  _("The project is empty."));
 
 	gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
@@ -863,12 +863,12 @@ brasero_project_no_file_dialog (BraseroProject *project)
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_CLOSE,
-					  _("Project is empty:"));
+					  _("Please add files to the project."));
 
 	gtk_window_set_title (GTK_WINDOW (message), _("Empty project"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("please add files to the project."));
+						  _("The project is empty."));
 
 	gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);

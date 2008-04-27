@@ -1495,12 +1495,12 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
 					 GTK_BUTTONS_NONE,
-					 _("Directories can't be added to an audio disc:"));
+					 _("Do you want to search for audio discs inside the directory?"));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory search"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Do you want to search for audio discs inside?"));
+						  _("Directories can't be added to an audio disc:"));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -2742,12 +2742,12 @@ brasero_audio_disc_split (BraseroAudioDisc *disc)
 						  GTK_DIALOG_MODAL,
 						  GTK_MESSAGE_ERROR,
 						  GTK_BUTTONS_CLOSE,
-						  _("impossible to split more than one song at a time"));
+						  _("Select one song only please."));
 
 		gtk_window_set_title (GTK_WINDOW (message), _("Error"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  _("Select one song only please."));
+							  _("Impossible to split more than one song at a time"));
 
 		gtk_dialog_run (GTK_DIALOG (message));
 		gtk_widget_destroy (message);

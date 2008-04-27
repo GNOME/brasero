@@ -1,6 +1,17 @@
 2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #521368 – HIG alert windows
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir),
+	(brasero_audio_disc_split):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_data_loss_cb):
+	* src/brasero-project.c (brasero_project_error_size_dialog),
+	(brasero_project_no_song_dialog), (brasero_project_no_file_dialog):
+
+2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #520578 – Check Integrity menu entry still present even with plugins disabled
+	(backportable)
 
 	* src/burn-caps.c (brasero_burn_caps_can_checksum):
 	* src/burn-caps.h:
