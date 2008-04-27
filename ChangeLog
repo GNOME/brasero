@@ -1,3 +1,11 @@
+2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #520784 – Brasero does not recognize .bin in the same directory when .cue is selected
+
+	* src/burn-image-format.c
+	(brasero_image_format_get_cue_file_complement),
+	(brasero_image_format_get_toc_file_complement):
+
 2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix #505981 – Default application dialog asks for yes/no

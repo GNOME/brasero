@@ -111,6 +111,22 @@ brasero_image_format_get_cue_file_complement (const gchar *path)
 		}
 	}
 	fclose (file);
+
+	/* check if the path is relative, if so then add the root path */
+	if (complement && !g_path_is_absolute (complement)) {
+		gchar *directory;
+		gchar *tmp;
+
+		directory = g_path_get_dirname (path);
+
+		tmp = complement;
+		complement = g_build_path (G_DIR_SEPARATOR_S,
+					   directory,
+					   complement,
+					   NULL);
+		g_free (tmp);
+	}
+
 	return complement;
 }
 
@@ -151,8 +167,23 @@ brasero_image_format_get_toc_file_complement (const gchar *path)
 				break;
 		}
 	}
-
 	fclose (file);
+
+	/* check if the path is relative, if so then add the root path */
+	if (complement && !g_path_is_absolute (complement)) {
+		gchar *directory;
+		gchar *tmp;
+
+		directory = g_path_get_dirname (path);
+
+		tmp = complement;
+		complement = g_build_path (G_DIR_SEPARATOR_S,
+					   directory,
+					   complement,
+					   NULL);
+		g_free (tmp);
+	}
+
 	return complement;
 }
 
