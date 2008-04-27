@@ -3631,3 +3631,28 @@ brasero_burn_caps_plugin_can_convert (BraseroBurnCaps *self,
 
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
+
+gboolean
+brasero_burn_caps_can_checksum (BraseroBurnCaps *self)
+{
+	GSList *iter;
+
+	if (self->priv->tests == NULL)
+		return FALSE;
+
+	for (iter = self->priv->tests; iter; iter = iter->next) {
+		BraseroCapsTest *tmp;
+		GSList *links;
+
+		tmp = iter->data;
+		for (links = tmp->links; links; links = links->next) {
+			BraseroCapsLink *link;
+
+			link = links->data;
+			if (brasero_caps_link_active (link))
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}

@@ -59,6 +59,8 @@
 #include "brasero-pref.h"
 #include "burn-debug.h"
 #include "burn.h"
+#include "burn-caps.h"
+#include "burn-plugin-manager.h"
 
 static GConfClient *client;
 gchar *project_uri;
@@ -490,14 +492,34 @@ brasero_disconnect_ui_manager_proxy_cb (GtkUIManager *manager,
 					      app);
 }
 
+static void
+brasero_caps_changed_cb (BraseroPluginManager *manager,
+			 BraseroApp *app)
+{
+	BraseroBurnCaps *caps;
+	GtkWidget *widget;
+
+	caps = brasero_burn_caps_get_default ();
+	widget = gtk_ui_manager_get_widget (app->manager, "/menubar/ToolMenu/Check");
+
+	if (!brasero_burn_caps_can_checksum (caps))
+		gtk_widget_set_sensitive (widget, FALSE);
+	else
+		gtk_widget_set_sensitive (widget, TRUE);
+
+	g_object_unref (caps);
+}
+
 static BraseroApp *
 brasero_app_create_app (void)
 {
 	BraseroApp *app;
 	GtkWidget *menubar;
 	GError *error = NULL;
+	BraseroBurnCaps *caps;
 	GtkAccelGroup *accel_group;
 	GtkActionGroup *action_group;
+	BraseroPluginManager *plugin_manager;
 
 	/* New window */
 	app = g_new0 (BraseroApp, 1);
@@ -557,6 +579,22 @@ brasero_app_create_app (void)
 	gtk_ui_manager_ensure_update (app->manager);
 	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");
 	gnome_app_set_menus (GNOME_APP (app->mainwin), GTK_MENU_BAR (menubar));
+
+	/* check if we can use checksums (we need plugins enabled) */
+	caps = brasero_burn_caps_get_default ();
+	if (!brasero_burn_caps_can_checksum (caps)) {
+		GtkWidget *widget;
+
+		widget = gtk_ui_manager_get_widget (app->manager, "/menubar/ToolMenu/Check");
+		gtk_widget_set_sensitive (widget, FALSE);
+	}
+	g_object_unref (caps);
+
+	plugin_manager = brasero_plugin_manager_get_default ();
+	g_signal_connect (plugin_manager,
+			  "caps-changed",
+			  G_CALLBACK (brasero_caps_changed_cb),
+			  app);
 
 	/* add accelerators */
 	accel_group = gtk_ui_manager_get_accel_group (app->manager);

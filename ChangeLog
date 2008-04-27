@@ -1,6 +1,15 @@
 2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #520578 – Check Integrity menu entry still present even with plugins disabled
+
+	* src/burn-caps.c (brasero_burn_caps_can_checksum):
+	* src/burn-caps.h:
+	* src/main.c (brasero_caps_changed_cb), (brasero_app_create_app):
+
+2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #520784 – Brasero does not recognize .bin in the same directory when .cue is selected
+	(backportable)
 
 	* src/burn-image-format.c
 	(brasero_image_format_get_cue_file_complement),

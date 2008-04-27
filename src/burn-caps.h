@@ -60,7 +60,7 @@ GType brasero_burn_caps_get_type();
 BraseroBurnCaps *brasero_burn_caps_get_default ();
 
 gint
-brasero_burn_caps_register_plugin_group (BraseroBurnCaps *self,
+brasero_burn_caps_register_plugin_group (BraseroBurnCaps *caps,
 					 const gchar *name);
 
 /**
@@ -68,8 +68,11 @@ brasero_burn_caps_register_plugin_group (BraseroBurnCaps *self,
  */
 
 BraseroMedia
-brasero_burn_caps_media_capabilities (BraseroBurnCaps *self,
+brasero_burn_caps_media_capabilities (BraseroBurnCaps *caps,
 				      BraseroMedia media);
+
+gboolean
+brasero_burn_caps_can_checksum (BraseroBurnCaps *caps);
 
 /**
  * Returns a GSList * of BraseroTask * for a given session
