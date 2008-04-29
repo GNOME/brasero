@@ -1,3 +1,33 @@
+2008-04-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #529780 – Can't edit multiple CD-Text entries at once.
+	Also added code for file renaming (to be extented to data project)
+
+	* src/Makefile.am:
+	* src/brasero-audio-disc.c (brasero_audio_disc_selection_function),
+	(brasero_audio_disc_rename_songs),
+	(brasero_audio_disc_edit_song_properties):
+	* src/brasero-multi-song-props.c
+	(brasero_multi_song_props_set_rename_callback),
+	(brasero_multi_song_props_get_properties),
+	(brasero_multi_song_props_gap_output_cb),
+	(brasero_multi_song_props_gap_input_cb),
+	(brasero_multi_song_props_entry_focus_out),
+	(brasero_multi_song_props_entry_focus_in),
+	(brasero_multi_song_props_init),
+	(brasero_multi_song_props_finalize),
+	(brasero_multi_song_props_class_init),
+	(brasero_multi_song_props_new):
+	* src/brasero-multi-song-props.h:
+	* src/brasero-rename.c (brasero_rename_insert_string),
+	(brasero_rename_delete_string), (brasero_rename_substitute_string),
+	(brasero_rename_number_string), (brasero_rename_do),
+	(brasero_rename_type_changed), (brasero_rename_init),
+	(brasero_rename_finalize), (brasero_rename_class_init),
+	(brasero_rename_new):
+	* src/brasero-rename.h:
+	* src/brasero-song-properties.c (brasero_song_props_init):
+
 2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix for #521368 – HIG alert windows

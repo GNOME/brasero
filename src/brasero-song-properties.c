@@ -181,6 +181,8 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->isrc, 1, 2, 3, 4);
 
+	gtk_widget_show_all (frame);
+
 	/* second part of the dialog */
 	table = gtk_table_new (2, 4, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
@@ -220,6 +222,8 @@ brasero_song_props_init (BraseroSongProps *obj)
 	obj->priv->length = gtk_label_new (NULL);
 	gtk_misc_set_alignment (GTK_MISC (obj->priv->length), 0.0, 0.5);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->length, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 0, 0);
+
+	gtk_widget_show_all (frame);
 
 	/* monitor since there must be 4 sec at least for a track */
 	g_signal_connect (obj->priv->end,

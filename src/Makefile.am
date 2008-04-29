@@ -251,7 +251,11 @@ brasero_SOURCES = \
 	brasero-jacket-font.c         \
 	brasero-jacket-font.h         \
 	brasero-jacket-view.c         \
-	brasero-jacket-view.h
+	brasero-jacket-view.h         \
+	brasero-multi-song-props.h         \
+	brasero-multi-song-props.c         \
+	brasero-rename.h         \
+	brasero-rename.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
