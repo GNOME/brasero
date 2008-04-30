@@ -188,7 +188,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 
-	frame = brasero_utils_pack_properties (_("<big><b>Options</b></big>"),
+	frame = brasero_utils_pack_properties (_("<b>Options</b>"),
 					       table,
 					       NULL);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
@@ -294,7 +294,7 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 	gchar *string;
 	gdouble secs;
 
-	string = g_strdup_printf (_("<b><big>Song information for track %02i</big></b>"), track_num);
+	string = g_strdup_printf (_("<b>Song information for track %02i</b>"), track_num);
 	gtk_label_set_markup (GTK_LABEL (self->priv->label), string);
 	g_free (string);
 

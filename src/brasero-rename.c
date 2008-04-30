@@ -48,6 +48,8 @@ struct _BraseroRenamePrivate
 	GtkWidget *number_left_entry;
 	GtkWidget *number_right_entry;
 	guint number;
+
+	guint show_default:1;
 };
 
 #define BRASERO_RENAME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_RENAME, BraseroRenamePrivate))
@@ -56,6 +58,37 @@ struct _BraseroRenamePrivate
 
 G_DEFINE_TYPE (BraseroRename, brasero_rename, GTK_TYPE_VBOX);
 
+void
+brasero_rename_set_show_keep_default (BraseroRename *self,
+				      gboolean show)
+{
+	BraseroRenamePrivate *priv;
+
+	priv = BRASERO_RENAME_PRIVATE (self);
+
+	if (!show) {
+		if (!priv->show_default)
+			return;
+
+		gtk_combo_box_remove_text (GTK_COMBO_BOX (priv->combo), 0);
+
+		/* make sure there is one item active */
+		if (gtk_combo_box_get_active (GTK_COMBO_BOX (priv->combo)) == -1) {
+			gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
+			gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
+			gtk_widget_show (priv->notebook);
+		}
+	}
+	else {
+		if (priv->show_default)
+			return;
+
+		gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->combo),
+					     _("<keep current values>"));
+	}
+
+	priv->show_default = show;
+}
 
 static gchar *
 brasero_rename_insert_string (BraseroRename *self,
@@ -186,7 +219,7 @@ redo:
 			continue;
 		}
 
-		result = callback (model, &iter, name, new_name);
+		result = callback (model, &iter, treepath, name, new_name);
 
 		if (!result) {
 			if (mode == 3)
@@ -216,7 +249,7 @@ brasero_rename_type_changed (GtkComboBox *combo,
 
 	gtk_widget_show (priv->notebook);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook),
-				       gtk_combo_box_get_active (combo) - 1);
+				       gtk_combo_box_get_active (combo) - priv->show_default);
 }
 
 static void
@@ -232,7 +265,7 @@ brasero_rename_init (BraseroRename *object)
 
 	priv->notebook = gtk_notebook_new ();
 	gtk_widget_show (priv->notebook);
-	gtk_box_pack_end (GTK_BOX (object), priv->notebook, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (object), priv->notebook, FALSE, FALSE, 4);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
 
@@ -240,10 +273,11 @@ brasero_rename_init (BraseroRename *object)
 	gtk_widget_show (priv->combo);
 	gtk_box_pack_start (GTK_BOX (object), priv->combo, FALSE, FALSE, 0);
 
+	priv->show_default = 1;
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("<keep current values>"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Insert a string"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Delete a string"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Substitute a string"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Insert text"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Delete text"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Substitute text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Number files according to a pattern"));
 
 	g_signal_connect (priv->combo,

@@ -2919,6 +2919,7 @@ brasero_audio_disc_open_file (BraseroAudioDisc *disc)
 static gboolean
 brasero_audio_disc_rename_songs (GtkTreeModel *model,
 				 GtkTreeIter *iter,
+				 GtkTreePath *treepath,
 				 const gchar *old_name,
 				 const gchar *new_name)
 {

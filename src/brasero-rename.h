@@ -28,6 +28,7 @@ G_BEGIN_DECLS
 
 typedef gboolean (*BraseroRenameCallback)	(GtkTreeModel *model,
 						 GtkTreeIter *iter,
+						 GtkTreePath *treepath,
 						 const gchar *old_name,
 						 const gchar *new_name);
 
@@ -61,6 +62,10 @@ brasero_rename_do (BraseroRename *self,
 		   GtkTreeSelection *selection,
 		   guint column_num,
 		   BraseroRenameCallback callback);
+
+void
+brasero_rename_set_show_keep_default (BraseroRename *self,
+				      gboolean show);
 
 G_END_DECLS
 

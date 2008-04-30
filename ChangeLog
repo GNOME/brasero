@@ -1,3 +1,22 @@
+2008-04-30  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Adds mass file renaming to data project
+	Fix #497846 – Allow modify filenames of files that will be recorded following a pattern
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_rename_songs):
+	* src/brasero-data-disc.c (brasero_data_disc_mass_rename_cb),
+	(brasero_data_disc_rename_activated),
+	(brasero_data_disc_show_menu):
+	* src/brasero-multi-song-props.c (brasero_multi_song_props_init):
+	* src/brasero-project.c
+	(brasero_project_check_default_burning_app):
+	* src/brasero-rename.c (brasero_rename_set_show_keep_default),
+	(brasero_rename_do), (brasero_rename_type_changed),
+	(brasero_rename_init):
+	* src/brasero-rename.h:
+	* src/brasero-song-properties.c (brasero_song_props_init),
+	(brasero_song_props_set_properties):
+
 2008-04-29  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix for #529780 – Can't edit multiple CD-Text entries at once.

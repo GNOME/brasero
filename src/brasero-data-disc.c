@@ -68,6 +68,7 @@
 #include "brasero-disc.h"
 #include "brasero-utils.h"
 #include "brasero-disc-message.h"
+#include "brasero-rename.h"
 
 #include "burn-debug.h"
 #include "burn-basics.h"
@@ -1617,6 +1618,21 @@ brasero_data_disc_open_activated_cb (GtkAction *action,
 	g_list_free (list);
 }
 
+static gboolean
+brasero_data_disc_mass_rename_cb (GtkTreeModel *model,
+				  GtkTreeIter *iter,
+				  GtkTreePath *treepath,
+				  const gchar *old_name,
+				  const gchar *new_name)
+{
+	BraseroFileNode *node;
+
+	node = brasero_data_tree_model_path_to_node (BRASERO_DATA_TREE_MODEL (model), treepath);
+	return brasero_data_project_rename_node (BRASERO_DATA_PROJECT (model),
+						 node,
+						 new_name);
+}
+
 static void
 brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 {
@@ -1631,15 +1647,16 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 
 	list = gtk_tree_selection_get_selected_rows (selection, NULL);
-	for (; list; list = g_list_remove (list, treepath)) {
+	if (g_list_length (list) == 1) {
 		BraseroFileNode *node;
 
 		treepath = list->data;
+		g_list_free (list);
 
 		node = brasero_data_tree_model_path_to_node (BRASERO_DATA_TREE_MODEL (priv->project), treepath);
 		if (!node || node->is_imported) {
 			gtk_tree_path_free (treepath);
-			continue;
+			return;
 		}
 
 		column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->tree), 0);
@@ -1654,6 +1671,43 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 						  NULL,
 						  TRUE);
 		gtk_tree_path_free (treepath);
+	}
+	else {
+		GtkWidget *frame;
+		GtkWidget *dialog;
+		GtkWidget *rename;
+		GtkResponseType answer;
+
+		dialog = gtk_dialog_new_with_buttons (_("File renaming"),
+						      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (disc))),
+						      GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						      _("_Don't rename"), GTK_RESPONSE_CANCEL,
+						      _("_Rename"), GTK_RESPONSE_APPLY,
+						      NULL);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+		rename = brasero_rename_new ();
+		brasero_rename_set_show_keep_default (BRASERO_RENAME (rename), FALSE);
+		gtk_widget_show (rename);
+
+		frame = brasero_utils_pack_properties (_("<b>Renaming mode</b>"), rename, NULL);
+		gtk_widget_show (frame);
+
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), frame, TRUE, TRUE, 0);
+		gtk_widget_show (dialog);
+
+		answer = gtk_dialog_run (GTK_DIALOG (dialog));
+		if (answer != GTK_RESPONSE_APPLY) {
+			gtk_widget_destroy (dialog);
+			return;
+		}
+
+		brasero_rename_do (BRASERO_RENAME (rename),
+				   gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)),
+				   BRASERO_DATA_TREE_MODEL_NAME,
+				   brasero_data_disc_mass_rename_cb);
+
+		gtk_widget_destroy (dialog);
 	}
 }
 
@@ -1766,7 +1820,7 @@ brasero_data_disc_show_menu (int nb_selected,
 			gtk_widget_set_sensitive (item, TRUE);
 		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/RenameData");
 		if (item)
-			gtk_widget_set_sensitive (item, FALSE);
+			gtk_widget_set_sensitive (item, TRUE);
 		item = gtk_ui_manager_get_widget (manager, "/ContextMenu/DeleteData");
 		if (item)
 			gtk_widget_set_sensitive (item, TRUE);

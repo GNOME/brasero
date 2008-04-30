@@ -42,7 +42,6 @@ struct _BraseroMultiSongPropsPrivate
 	GtkWidget *artist;
 	GtkWidget *composer;
 	GtkWidget *isrc;
-	GtkWidget *label;
 	GtkWidget *gap;
 };
 
@@ -186,12 +185,12 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (object)->vbox), 0);
 	gtk_window_set_default_size (GTK_WINDOW (object), 400, 200);
 
-	table = gtk_table_new (4, 2, FALSE);
-	gtk_widget_show (table);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	priv->title = brasero_rename_new ();
+	gtk_widget_show (priv->title);
+	gtk_widget_set_tooltip_text (priv->title,
+				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
 
-	frame = brasero_utils_pack_properties (_("<b><big>Song information for all tracks</big></b>"), table, NULL);
+	frame = brasero_utils_pack_properties (_("<b>Song titles</b>"), priv->title, NULL);
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
@@ -200,22 +199,19 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 						FALSE,
 						0);
 
-	priv->label = gtk_frame_get_label_widget (GTK_FRAME (frame));
-	gtk_widget_show (priv->label);
-	gtk_label_set_single_line_mode (GTK_LABEL (priv->label), FALSE);
-	gtk_label_set_use_markup (GTK_LABEL (priv->label), TRUE);
-	gtk_label_set_line_wrap (GTK_LABEL (priv->label), TRUE);
+	table = gtk_table_new (3, 2, FALSE);
+	gtk_widget_show (table);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 
-	label = gtk_label_new (_("Title:"));
-	gtk_widget_show (label);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-
-	priv->title = brasero_rename_new ();
-	gtk_widget_show (priv->title);
-	gtk_table_attach_defaults (GTK_TABLE (table), priv->title, 1, 2, 0, 1);
-	gtk_widget_set_tooltip_text (priv->title,
-				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
+	frame = brasero_utils_pack_properties (_("<b>Additional song information</b>"), table, NULL);
+	gtk_widget_show (frame);
+	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
+						frame,
+						FALSE,
+						FALSE,
+						0);
 
 	label = gtk_label_new (_("Artist:"));
 	gtk_widget_show (label);
@@ -283,7 +279,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
-	frame = brasero_utils_pack_properties (_("<big><b>Options</b></big>"), box, NULL);
+	frame = brasero_utils_pack_properties (_("<b>Options</b>"), box, NULL);
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), frame, FALSE, FALSE, 0);
