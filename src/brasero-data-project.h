@@ -63,7 +63,12 @@ struct _BraseroDataProjectClass
 
 	/* virtual functions */
 
-	void		(*reset)		(BraseroDataProject *project);
+	/**
+	 * num_nodes is the number of nodes that were at the root of the 
+	 * project.
+	 */
+	void		(*reset)		(BraseroDataProject *project,
+						 guint num_nodes);
 
 	/* NOTE: node_added is also called when there is a moved node;
 	 * in this case a node_removed is first called and then the
@@ -75,8 +80,15 @@ struct _BraseroDataProjectClass
 	gboolean	(*node_added)		(BraseroDataProject *project,
 						 BraseroFileNode *node,
 						 const gchar *uri);
+
+	/* This is more an unparent signal. It shouldn't be assumed that the
+	 * node was destroyed or not destroyed. Like the above function, it is
+	 * also called when a node is moved. */
 	void		(*node_removed)		(BraseroDataProject *project,
+						 BraseroFileNode *former_parent,
+						 guint former_position,
 						 BraseroFileNode *node);
+
 	void		(*node_changed)		(BraseroDataProject *project,
 						 BraseroFileNode *node);
 	void		(*node_reordered)	(BraseroDataProject *project,
@@ -165,7 +177,7 @@ brasero_data_project_node_reloaded (BraseroDataProject *project,
 				    const gchar *uri,
 				    GFileInfo *info);
 void
-brasero_data_project_directory_node_loaded (BraseroDataProject *self,
+brasero_data_project_directory_node_loaded (BraseroDataProject *project,
 					    BraseroFileNode *parent);
 
 gboolean
@@ -203,9 +215,10 @@ brasero_data_project_node_to_uri (BraseroDataProject *project,
 				  BraseroFileNode *node);
 
 void
-brasero_data_project_set_sort_function (BraseroDataProject *self,
+brasero_data_project_set_sort_function (BraseroDataProject *project,
 					GtkSortType sort_type,
 					GCompareFunc sort_func);
+
 G_END_DECLS
 
 #endif /* _BRASERO_DATA_PROJECT_H_ */

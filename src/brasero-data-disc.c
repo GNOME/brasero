@@ -2009,7 +2009,7 @@ brasero_data_disc_contents_removed_cb (GtkTreeModel *model,
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
 	root = brasero_data_project_get_root (priv->project);
-	brasero_disc_contents_changed (BRASERO_DISC (self), (BRASERO_FILE_NODE_CHILDREN (root) != NULL));
+	brasero_disc_contents_changed (BRASERO_DISC (self), (root && BRASERO_FILE_NODE_CHILDREN (root) != NULL));
 }
 
 /**

@@ -531,6 +531,11 @@ brasero_file_node_check_imported_sibling (BraseroFileNode *node)
 
 	parent = node->parent;
 
+	/* That could happen if a node is moved to a location where another node
+	 * (to be removed) has the same name and is a parent of this node */
+	if (!parent)
+		return NULL;
+
 	/* See if among the imported children of the parent one of them
 	 * has the same name as the node being removed. If so, restore
 	 * it with all its imported children (provided that's a
@@ -878,7 +883,7 @@ brasero_file_node_new_empty_folder (const gchar *name,
 	return node;
 }
 
-static void
+void
 brasero_file_node_unlink (BraseroFileNode *node)
 {
 	BraseroFileNode *iter;
@@ -888,6 +893,20 @@ brasero_file_node_unlink (BraseroFileNode *node)
 		return;
 
 	iter = BRASERO_FILE_NODE_CHILDREN (node->parent);
+
+	/* handle the size change for previous parent */
+	if (!node->is_grafted && !node->is_imported) {
+		BraseroFileNode *parent;
+
+		/* handle the size change if it wasn't grafted */
+		for (parent = node->parent; parent && !parent->is_root; parent = parent->parent) {
+			parent->union3.sectors -= BRASERO_FILE_NODE_SECTORS (node);
+			if (parent->is_grafted)
+				break;
+		}
+	}
+
+	node->is_deep = FALSE;
 
 	if (iter == node) {
 		node->parent->union2.children = node->next;
@@ -929,37 +948,36 @@ brasero_file_node_unlink (BraseroFileNode *node)
 			return;
 		}
 	}
-
-	/* don't handle size change for parents */
 }
 
 void
-brasero_file_node_move (BraseroFileNode *node,
-			BraseroFileNode *parent,
-			GCompareFunc sort_func)
+brasero_file_node_move_from (BraseroFileNode *node,
+			     BraseroFileTreeStats *stats)
 {
-	BraseroFileTreeStats *stats;
 	gboolean was_deep;
-	guint depth;
 
 	/* NOTE: for the time being no backend supports moving imported files */
 	if (node->is_imported)
 		return;
 
 	was_deep = (brasero_file_node_get_depth (node) > 6);
+	if (was_deep)
+		stats->num_deep --;
 
-	/* handle the size change for previous parent */
-	if (!node->is_grafted) {
-		BraseroFileNode *parent;
-
-		/* handle the size change if it wasn't grafted */
-		for (parent = node->parent; parent && !parent->is_root; parent = parent->parent) {
-			parent->union3.sectors -= BRASERO_FILE_NODE_SECTORS (node);
-			if (parent->is_grafted)
-				break;
-		}
-	}
 	brasero_file_node_unlink (node);
+}
+
+void
+brasero_file_node_move_to (BraseroFileNode *node,
+			   BraseroFileNode *parent,
+			   GCompareFunc sort_func)
+{
+	BraseroFileTreeStats *stats;
+	guint depth;
+
+	/* NOTE: for the time being no backend supports moving imported files */
+	if (node->is_imported)
+		return;
 
 	/* reinsert it now at the new location */
 	parent->union2.children = brasero_file_node_insert (BRASERO_FILE_NODE_CHILDREN (parent),
@@ -982,11 +1000,7 @@ brasero_file_node_move (BraseroFileNode *node,
 	/* NOTE: here stats about the tree can change if the parent has a depth
 	 * > 6 and if previous didn't. Other stats remains unmodified. */
 	stats = brasero_file_node_get_tree_stats (parent, &depth);
-	if (was_deep && depth <= 6) {
-		stats->num_deep --;
-		node->is_deep = FALSE;
-	}
-	else if (!was_deep && depth > 6) {
+	if (!depth > 6) {
 		stats->num_deep ++;
 		node->is_deep = TRUE;
 	}
@@ -1055,41 +1069,34 @@ brasero_file_node_destroy_with_children (BraseroFileNode *node,
 		brasero_utils_unregister_string (BRASERO_FILE_NODE_MIME (node));
 
 	if (node->is_root)
-		g_free (stats);
+		g_free (BRASERO_FILE_NODE_STATS (node));
 
 	g_free (node);
 }
 
 /**
- * returns the number of files destroyed
+ * Destroy a node and its children updating the tree stats.
+ * If it isn't unlinked yet, it does it.
  */
 void
-brasero_file_node_destroy (BraseroFileNode *node)
+brasero_file_node_destroy (BraseroFileNode *node,
+			   BraseroFileTreeStats *stats)
 {
-	BraseroFileTreeStats *stats;
-
-	if (!node->is_grafted) {
-		BraseroFileNode *parent;
-
-		/* handle the size change if it wasn't grafted */
-		for (parent = node->parent; parent && !parent->is_root; parent = parent->parent) {
-			parent->union3.sectors -= BRASERO_FILE_NODE_SECTORS (node);
-			if (parent->is_grafted)
-				break;
-		}
-	}
-
-	/* try to get the statistics structure */
-	stats = brasero_file_node_get_tree_stats (node, NULL);
-
-	/* remove from the parent children list */
+	/* remove from the parent children list or more probably from the 
+	 * import list. */
 	if (node->parent)
 		brasero_file_node_unlink (node);
 
-	/* traverse the whole tree and free children */
+	/* traverse the whole tree and free children updating tree stats */
 	brasero_file_node_destroy_with_children (node, stats);
 }
 
+/**
+ * Pre-remove function that unparent a node (before a possible destruction).
+ * If node is imported, it saves it in its parent, destroys all child nodes
+ * that are not imported and restore children that were imported.
+ * NOTE: tree stats are only updated if the node is imported.
+ */
 
 static void
 brasero_file_node_save_imported_children (BraseroFileNode *node,
@@ -1123,26 +1130,24 @@ brasero_file_node_save_imported_children (BraseroFileNode *node,
 }
 
 void
-brasero_file_node_remove (BraseroFileNode *node,
-			  GCompareFunc sort_func)
+brasero_file_node_save_imported (BraseroFileNode *node,
+				 BraseroFileNode *parent,
+				 GCompareFunc sort_func)
 {
 	BraseroFileTreeStats *stats;
-	BraseroFileNode *parent;
 	BraseroImport *import;
 
-	/* if it isn't imported just destroy it */
+	/* if it isn't imported return */
 	if (!node->is_imported)
-		return brasero_file_node_destroy (node);
+		return;
 
 	/* Remove all the children that are not imported. Also restore
 	 * all children that were replaced so as to restore the original
 	 * order of files. */
 
-	parent = node->parent;
-
-	/* that shouldn't happen */
+	/* that shouldn't happen since root itself is considered imported */
 	if (!parent || !parent->is_imported)
-		return brasero_file_node_destroy (node);
+		return;
 
 	/* save the node in its parent import structure */
 	import = BRASERO_FILE_NODE_IMPORT (parent);
@@ -1161,6 +1166,9 @@ brasero_file_node_remove (BraseroFileNode *node,
 	import->replaced = node;
 	node->parent = parent;
 
-	/* Explore children and remove not imported ones and restore */
-	return brasero_file_node_save_imported_children (node, stats, sort_func);
+	/* Explore children and remove not imported ones and restore.
+	 * Update the tree stats at the same time.
+	 * NOTE: here the tree stats are only used for the grafted children that
+	 * are not imported in the tree. */
+	brasero_file_node_save_imported_children (node, stats, sort_func);
 }

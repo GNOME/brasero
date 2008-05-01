@@ -251,16 +251,24 @@ void
 brasero_file_node_ungraft (BraseroFileNode *node);
 
 void
-brasero_file_node_move (BraseroFileNode *node,
-			BraseroFileNode *parent,
-			GCompareFunc sort_func);
+brasero_file_node_move_from (BraseroFileNode *node,
+			     BraseroFileTreeStats *stats);
+void
+brasero_file_node_move_to (BraseroFileNode *node,
+			   BraseroFileNode *parent,
+			   GCompareFunc sort_func);
 
 void
-brasero_file_node_destroy (BraseroFileNode *node);
+brasero_file_node_unlink (BraseroFileNode *node);
 
 void
-brasero_file_node_remove (BraseroFileNode *node,
-			  GCompareFunc sort_func);
+brasero_file_node_destroy (BraseroFileNode *node,
+			   BraseroFileTreeStats *stats);
+
+void
+brasero_file_node_save_imported (BraseroFileNode *node,
+				 BraseroFileNode *parent,
+				 GCompareFunc sort_func);
 
 gchar *
 brasero_file_node_get_uri_name (const gchar *uri);

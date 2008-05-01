@@ -679,7 +679,6 @@ brasero_data_vfs_load_node (BraseroDataVFS *self,
 {
 	BraseroDataVFSPrivate *priv;
 	gchar *registered;
-	gboolean result;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
@@ -709,7 +708,7 @@ brasero_data_vfs_load_node (BraseroDataVFS *self,
 			       0,
 			       TRUE);
 
-	return result;
+	return TRUE;
 }
 
 static gboolean
@@ -1055,13 +1054,14 @@ brasero_data_vfs_uri_removed (BraseroDataProject *project,
 }
 
 static void
-brasero_data_vfs_reset (BraseroDataProject *project)
+brasero_data_vfs_reset (BraseroDataProject *project,
+			guint num_nodes)
 {
 	brasero_data_vfs_clear (BRASERO_DATA_VFS (project));
 
 	/* chain up this function except if we invalidated the node */
 	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_vfs_parent_class)->reset)
-		BRASERO_DATA_PROJECT_CLASS (brasero_data_vfs_parent_class)->reset (project);
+		BRASERO_DATA_PROJECT_CLASS (brasero_data_vfs_parent_class)->reset (project, num_nodes);
 }
 
 static void

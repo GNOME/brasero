@@ -1129,28 +1129,11 @@ brasero_data_tree_model_has_default_sort_func (GtkTreeSortable *sortable)
 }
 
 static void
-brasero_data_tree_model_clear_children (BraseroDataTreeModel *self,
-					BraseroFileNode *parent)
+brasero_data_tree_model_clear (BraseroDataTreeModel *self, 
+			       guint num_nodes)
 {
-	BraseroFileNode *node;
+	guint i;
 	GtkTreePath *treepath;
-
-	node = BRASERO_FILE_NODE_CHILDREN (parent);
-	if (!node)
-		return;
-
-	treepath = brasero_data_tree_model_node_to_path (self, node);
-
-	for (; node; node = node->next)
-		gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), treepath);
-
-	gtk_tree_path_free (treepath);
-}
-
-static void
-brasero_data_tree_model_clear (BraseroDataTreeModel *self)
-{
-	BraseroFileNode *root;
 	BraseroDataTreeModelPrivate *priv;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (self);
@@ -1159,18 +1142,23 @@ brasero_data_tree_model_clear (BraseroDataTreeModel *self)
 		priv->shown = NULL;
 	}
 
-	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (self));
-	brasero_data_tree_model_clear_children (self, root);
+	/* NOTE: no need to move to the next row since previous one was deleted */
+	treepath = gtk_tree_path_new_first ();
+	for (i = 0; i < num_nodes; i ++)
+		gtk_tree_model_row_deleted (GTK_TREE_MODEL (self), treepath);
+
+	gtk_tree_path_free (treepath);
 }
 
 static void
-brasero_data_tree_model_reset (BraseroDataProject *project)
+brasero_data_tree_model_reset (BraseroDataProject *project,
+			       guint num_nodes)
 {
-	brasero_data_tree_model_clear (BRASERO_DATA_TREE_MODEL (project));
+	brasero_data_tree_model_clear (BRASERO_DATA_TREE_MODEL (project), num_nodes);
 
 	/* chain up this function except if we invalidated the node */
 	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset)
-		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset (project);
+		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset (project, num_nodes);
 }
 
 static gboolean
@@ -1270,37 +1258,46 @@ end:
 
 static void
 brasero_data_tree_model_node_removed (BraseroDataProject *project,
+				      BraseroFileNode *former_parent,
+				      guint former_position,
 				      BraseroFileNode *node)
 {
 	BraseroDataTreeModelPrivate *priv;
-	BraseroFileNode *parent;
+	GSList *iter, *next;
 	GtkTreePath *path;
 
 	/* see if we really need to tell the treeview we changed */
 	if (!node->is_visible
-	&&   node->parent
-	&&  !node->parent->is_root
-	&&  !node->parent->is_visible)
+	&&   former_parent
+	&&  !former_parent->is_root
+	&&  !former_parent->is_visible)
 		goto end;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (project);
 
-	/* remove it from the shown list */
+	/* remove it from the shown list and all its children as well */
 	priv->shown = g_slist_remove (priv->shown, node);
+	for (iter = priv->shown; iter; iter = next) {
+		BraseroFileNode *tmp;
+
+		tmp = iter->data;
+		next = iter->next;
+		if (brasero_file_node_is_ancestor (node, tmp))
+			priv->shown = g_slist_remove (priv->shown, tmp);
+	}
 
 	/* See if the parent of this node still has children. If not we need to
 	 * add a bogus row. If it hasn't got children then it only remains our
 	 * node in the list.
 	 * NOTE: parent has to be a directory. */
-	parent = node->parent;
-	if (!parent->is_root && BRASERO_FILE_NODE_CHILDREN (parent) == node && !node->next) {
+	if (!former_parent->is_root && !BRASERO_FILE_NODE_CHILDREN (former_parent)) {
 		GtkTreeIter iter;
 
 		iter.stamp = priv->stamp;
-		iter.user_data = parent;
+		iter.user_data = former_parent;
 		iter.user_data2 = GINT_TO_POINTER (BRASERO_ROW_BOGUS);
 
-		path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), parent);
+		path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), former_parent);
 		gtk_tree_path_append_index (path, 1);
 
 		gtk_tree_model_row_inserted (GTK_TREE_MODEL (project), path, &iter);
@@ -1309,14 +1306,19 @@ brasero_data_tree_model_node_removed (BraseroDataProject *project,
 
 	/* remove the node. Do it after adding a possible BOGUS row.
 	 * NOTE since BOGUS row has been added move row. */
-	path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), node);
+	path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), former_parent);
+	gtk_tree_path_append_index (path, former_position);
+
 	gtk_tree_model_row_deleted (GTK_TREE_MODEL (project), path);
 	gtk_tree_path_free (path);
 
 end:
 	/* chain up this function */
 	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->node_removed)
-		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->node_removed (project, node);
+		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->node_removed (project,
+												 former_parent,
+												 former_position,
+												 node);
 }
 
 static void

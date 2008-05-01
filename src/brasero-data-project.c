@@ -288,6 +288,8 @@ brasero_data_project_joliet_set_key (BraseroJolietKey *key,
 		sprintf (key->name,
 			 "%.64s",
 			 BRASERO_FILE_NODE_NAME (node));
+
+	key->parent = node->parent;
 }
 
 static void
@@ -297,6 +299,9 @@ brasero_data_project_joliet_add_node (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroJolietKey key;
 	GSList *list;
+
+	if (!node->parent)
+		return;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
@@ -333,6 +338,9 @@ brasero_data_project_joliet_remove_node (BraseroDataProject *self,
 	gpointer hash_key;
 	gboolean success;
 	gpointer list;
+
+	if (!node->parent)
+		return FALSE;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
@@ -372,7 +380,7 @@ brasero_data_project_joliet_remove_children_node_cb (gpointer data_key,
 	BraseroJolietKey *key = data_key;
 	GSList *nodes = data;
 
-	if (brasero_file_node_is_ancestor (parent, key->parent)) {
+	if (brasero_file_node_is_ancestor (parent, key->parent) || parent == key->parent) {
 		g_slist_free (nodes);
 		return TRUE;
 	}
@@ -736,11 +744,17 @@ brasero_data_project_uri_is_graft_needed (BraseroDataProject *self,
 		gchar *parent_uri;
 
 		node = iter->data;
-		if (node->parent == priv->root)
+		if (node->parent == priv->root) {
+			g_free (parent);
+			g_free (name);
 			return TRUE;
+		}
 
-		if (node->parent->is_fake)
+		if (node->parent->is_fake) {
+			g_free (parent);
+			g_free (name);
 			return TRUE;
+		}
 
 		/* make sure the node has the right name. */
 		if (strcmp (BRASERO_FILE_NODE_NAME (node), name)) {
@@ -1066,17 +1080,35 @@ brasero_data_project_remove_real (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 	BraseroDataProjectClass *klass;
+	BraseroFileNode *former_parent;
+	guint former_position;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	brasero_data_project_node_removed (self, node);
 
-	/* unlink the node and signal the removal */
+	/* save parent, unparent it, signal the removal */
+	former_parent = node->parent;
+	former_position = brasero_file_node_get_pos_as_child (node);
+
+	brasero_file_node_unlink (node);
+
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 	if (klass->node_removed)
-		klass->node_removed (self, node);
+		klass->node_removed (self, former_parent, former_position, node);
 
-	brasero_file_node_remove (node, priv->sort_func);
+	/* save imported nodes in their parent structure or destroy it */
+	if (!node->is_imported) {
+		BraseroFileTreeStats *stats;
+
+		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+		brasero_file_node_destroy (node, stats);
+	}
+	else
+		brasero_file_node_save_imported (node,
+						 former_parent,
+						 priv->sort_func);
+
 	g_signal_emit (self,
 		       brasero_data_project_signals [SIZE_CHANGED_SIGNAL],
 		       0);
@@ -1151,17 +1183,26 @@ brasero_data_project_destroy_node (BraseroDataProject *self,
 {
 	BraseroDataProjectPrivate *priv;
 	BraseroDataProjectClass *klass;
+	BraseroFileNode *former_parent;
+	BraseroFileTreeStats *stats;
+	guint former_position;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	brasero_data_project_node_removed (self, node);
 
 	/* unlink the node and signal the removal */
+	former_parent = node->parent;
+	former_position = brasero_file_node_get_pos_as_child (node);
+
+	brasero_file_node_unlink (node);
+
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 	if (klass->node_removed)
-		klass->node_removed (self, node);
+		klass->node_removed (self, former_parent, former_position, node);
 
-	brasero_file_node_destroy (node);
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	brasero_file_node_destroy (node, stats);
 
 	g_signal_emit (self,
 		       brasero_data_project_signals [SIZE_CHANGED_SIGNAL],
@@ -1172,41 +1213,19 @@ brasero_data_project_destroy_node (BraseroDataProject *self,
 	 * used to remove imported nodes. */
 }
 
-static void
-brasero_data_project_move_node_real (BraseroDataProject *self,
-				     BraseroFileNode *node,
-				     BraseroFileNode *parent)
-{
-	BraseroDataProjectPrivate *priv;
-	BraseroDataProjectClass *klass;
-
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
-	/* really reparent it; signal:
-	 * - old location removal
-	 * - new location addition */
-	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
-	if (klass->node_removed)
-		klass->node_removed (self, node);
-
-	brasero_file_node_move (node, parent, priv->sort_func);
-
-	if (klass->node_added)
-		klass->node_added (self, node, NULL);
-
-	/* Check joliet name compatibility; this must be done after move as it
-	 * depends on the parent. */
-	if (strlen (BRASERO_FILE_NODE_NAME (node)) > 64)
-		brasero_data_project_joliet_add_node (self, node);
-}
-
 gboolean
 brasero_data_project_move_node (BraseroDataProject *self,
 				BraseroFileNode *node,
 				BraseroFileNode *parent)
 {
+	BraseroFileNode *imported_sibling;
+	BraseroFileNode *target_sibling;
 	BraseroDataProjectPrivate *priv;
-	BraseroFileNode *sibling;
+	BraseroDataProjectClass *klass;
+	BraseroFileNode *former_parent;
+	BraseroFileTreeStats *stats;
+	guint former_position;
+	gboolean check_graft;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
@@ -1230,22 +1249,21 @@ brasero_data_project_move_node (BraseroDataProject *self,
 
 	/* One case could make us fail: if there is the same name in
 	 * the directory: in that case return FALSE; check now. */
-	sibling = brasero_file_node_check_name_existence (parent, BRASERO_FILE_NODE_NAME (node));
-	if (sibling) {
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
-			return FALSE;
-
-		/* The node existed and the user wants the existing to 
-		 * be replaced, so we delete that node (since the new
-		 * one would have the old one's children otherwise). */
-		brasero_data_project_remove_real (self, sibling);
-	}
+	target_sibling = brasero_file_node_check_name_existence (parent, BRASERO_FILE_NODE_NAME (node));
+	if (target_sibling
+	&&  brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
+		return FALSE;
 
 	/* If node was in the joliet incompatible table, remove it */
 	brasero_data_project_joliet_remove_node (self, node);
 
-	/* see if it replaced an imported file */
-	sibling = brasero_file_node_check_imported_sibling (node);
+	/* check if this file was hiding an imported file. One exception is if
+	 * there is a sibling in the target directory which is the parent of our
+	 * node. */
+	if (!target_sibling || !brasero_file_node_is_ancestor (target_sibling, node))
+		imported_sibling = brasero_file_node_check_imported_sibling (node);
+	else
+		imported_sibling = NULL;
 
 	if (!node->is_grafted) {
 		gchar *uri;
@@ -1253,14 +1271,43 @@ brasero_data_project_move_node (BraseroDataProject *self,
 		/* Get the URI and all the nodes with the same URI and 
 		 * add the list to the hash => add a graft.
 		 * See note underneath: if it wasn't grafted before the
-		 * move it has to be a graft now. */
+		 * move it should probably be a graft now.
+		 * NOTE: we need to do it now before it gets unparented. */
 		uri = brasero_data_project_node_to_uri (self, node);
 		brasero_data_project_uri_graft_nodes (self, uri);
 		g_free (uri);
 
-		brasero_data_project_move_node_real (self, node, parent);
+		check_graft = FALSE;
 	}
-	else {
+	else
+		check_graft = TRUE;
+
+	/* really reparent it; signal:
+	 * - old location removal
+	 * - new location addition */
+
+	/* unparent node now in case its target sibling is a parent */
+	former_parent = node->parent;
+	former_position = brasero_file_node_get_pos_as_child (node);
+	brasero_file_node_move_from (node, stats);
+
+	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
+	if (former_parent && klass->node_removed)
+		klass->node_removed (self, former_parent, former_position, node);
+
+	if (target_sibling) {
+		/* The node existed and the user wants the existing to 
+		 * be replaced, so we delete that node (since the new
+		 * one would have the old one's children otherwise). */
+		brasero_data_project_remove_real (self, target_sibling);
+	}
+
+	brasero_file_node_move_to (node, parent, priv->sort_func);
+
+	if (klass->node_added)
+		klass->node_added (self, node, NULL);
+
+	if (check_graft) {
 		BraseroGraft *graft;
 		BraseroURINode *uri_node;
 
@@ -1268,18 +1315,22 @@ brasero_data_project_move_node (BraseroDataProject *self,
 		uri_node = graft->node;
 
 		/* check if still need a graft point after the location change. */
-		brasero_data_project_move_node_real (self, node, parent);
 		if (!brasero_data_project_uri_is_graft_needed (self, uri_node->uri))
 			brasero_data_project_uri_remove_graft (self, uri_node->uri);
 	}
 
-	if (sibling) {
+	/* Check joliet name compatibility; this must be done after move as it
+	 * depends on the parent. */
+	if (strlen (BRASERO_FILE_NODE_NAME (node)) > 64)
+		brasero_data_project_joliet_add_node (self, node);
+
+	if (imported_sibling) {
 		BraseroDataProjectClass *klass;
 
 		klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
-		brasero_file_node_add (sibling->parent, sibling, priv->sort_func);
+		brasero_file_node_add (imported_sibling->parent, imported_sibling, priv->sort_func);
 		if (klass->node_added)
-			brasero_data_project_add_node_and_children (self, sibling, klass->node_added);
+			brasero_data_project_add_node_and_children (self, imported_sibling, klass->node_added);
 	}
 
 	/* NOTE: if it has come back to its original location on the 
@@ -2824,7 +2875,8 @@ brasero_data_project_clear (BraseroDataProject *self)
 	g_hash_table_destroy (priv->reference);
 	priv->reference = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	brasero_file_node_destroy (priv->root);
+	/* no need to give a stats since we're destroying it */
+	brasero_file_node_destroy (priv->root, NULL);
 	priv->root = NULL;
 
 #ifdef BUILD_INOTIFY
@@ -2839,15 +2891,17 @@ brasero_data_project_reset (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
 	BraseroDataProjectClass *klass;
+	guint num_nodes;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	/* Do it now */
+	num_nodes = brasero_file_node_get_n_children (priv->root);
+	brasero_data_project_clear (self);
+
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 	if (klass->reset)
-		klass->reset (self);
-
-	brasero_data_project_clear (self);
+		klass->reset (self, num_nodes);
 
 	priv->loading = 0;
 	priv->root = brasero_file_node_root_new ();
@@ -3149,7 +3203,10 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		g_free (parent_uri);
 	}
 	else {
+		guint former_position;
 		BraseroFileNode *sibling;
+		BraseroFileTreeStats *stats;
+		BraseroFileNode *former_parent;
 		BraseroDataProjectClass *klass;
 		BraseroDataProjectPrivate *priv;
 
@@ -3180,10 +3237,16 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		sibling = brasero_file_node_check_imported_sibling (node);
 
 		/* move it */
-		if (klass->node_removed)
-			klass->node_removed (BRASERO_DATA_PROJECT (monitor), node);
+		former_parent = node->parent;
+		former_position = brasero_file_node_get_pos_as_child (node);
 
-		brasero_file_node_move (node, parent, priv->sort_func);
+		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+		brasero_file_node_move_from (node, stats);
+		if (klass->node_removed)
+			klass->node_removed (BRASERO_DATA_PROJECT (monitor),
+					     former_parent,
+					     former_position,
+					     node);
 
 		if (name_dest && strcmp (name_dest, name_src)) {
 			/* the name has been changed so update it */
@@ -3194,6 +3257,8 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		 * node information have been setup. */
 		if (strlen (name_dest) > 64)
 			brasero_data_project_joliet_add_node (BRASERO_DATA_PROJECT (monitor), node);
+
+		brasero_file_node_move_to (node, parent, priv->sort_func);
 
 		if (klass->node_added)
 			klass->node_added (BRASERO_DATA_PROJECT (monitor), node, NULL);

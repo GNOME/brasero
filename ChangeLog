@@ -1,3 +1,34 @@
+2008-05-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #
+	Also fixes two crashes:
+	- when moving a node so that it replaces a parent node with the same name
+	- crashes after suppressing some files
+
+	* src/brasero-data-disc.c (brasero_data_disc_contents_removed_cb):
+	* src/brasero-data-project.c (brasero_data_project_joliet_set_key),
+	(brasero_data_project_joliet_add_node),
+	(brasero_data_project_joliet_remove_node),
+	(brasero_data_project_joliet_remove_children_node_cb),
+	(brasero_data_project_uri_is_graft_needed),
+	(brasero_data_project_remove_real),
+	(brasero_data_project_destroy_node),
+	(brasero_data_project_move_node), (brasero_data_project_clear),
+	(brasero_data_project_reset), (brasero_data_project_file_moved):
+	* src/brasero-data-project.h:
+	* src/brasero-data-tree-model.c (brasero_data_tree_model_clear),
+	(brasero_data_tree_model_reset),
+	(brasero_data_tree_model_node_removed):
+	* src/brasero-data-vfs.c (brasero_data_vfs_load_node),
+	(brasero_data_vfs_reset):
+	* src/brasero-file-node.c
+	(brasero_file_node_check_imported_sibling),
+	(brasero_file_node_unlink), (brasero_file_node_move_from),
+	(brasero_file_node_move_to),
+	(brasero_file_node_destroy_with_children),
+	(brasero_file_node_destroy), (brasero_file_node_save_imported):
+	* src/brasero-file-node.h:
+
 2008-05-01  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* configure.in:
