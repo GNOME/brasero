@@ -317,6 +317,56 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 	g_free (license);
 }
 
+void
+on_help_cb (GtkAction *action, BraseroApp *app)
+{
+    	GError *error = NULL;
+	char *command;
+	const char *lang;
+	char *uri = NULL;
+	GdkScreen *gscreen;
+	int i;
+    
+	const char * const * langs = g_get_language_names ();
+    
+	for (i = 0; langs[i]; i++) {
+		lang = langs[i];
+        	if (strchr (lang, '.')) {
+            		continue;
+        	}
+        
+        uri = g_build_filename(PACKAGE_DATA_DIR,
+                               "/gnome/help/brasero/",
+                               lang,
+                               "/brasero.xml",
+                               NULL);
+        
+        if (g_file_test (uri, G_FILE_TEST_EXISTS)) {
+            break;
+        	}
+    	}
+    
+	command = g_strconcat ("gnome-open ghelp://", uri, NULL);
+	gscreen = gdk_screen_get_default();
+	gdk_spawn_command_line_on_screen (gscreen, command, &error);
+    	if (error) {
+        	GtkWidget *d;
+        
+        	d = gtk_message_dialog_new(NULL,
+                           GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                           GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+                           error->message);
+        gtk_dialog_run(GTK_DIALOG(d));
+        gtk_widget_destroy(d);
+        g_error_free(error);
+        error = NULL;
+    }
+    
+	g_free (command);
+	g_free (uri);
+
+}
+
 static gboolean
 on_window_state_changed_cb (GtkWidget *widget,
 			    GdkEventWindowState *event,

@@ -37,6 +37,26 @@ dnl ** reminder: the following set CFLAGS to -O2 -g if empty
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${ac_default_prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR.])
+  else
+    AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR.])
+  fi
+  elif test "x${datadir}" = 'x${datarootdir}'; then
+  if test "x${datarootdir}" = 'x${prefix}/share'; then
+  	if test "x${prefix}" = "xNONE"; then
+ 	AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${ac_default_prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR.])
+ 	else
+ 	AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${prefix}/share/${PACKAGE}", [Define the PACKAGE_DATA_DIR.])
+ 	fi
+  else
+ 	AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${datarootdir}/${PACKAGE}", [Define the PACKAGE_DATA_DIR.])
+ 	fi
+  else
+	AC_DEFINE_UNQUOTED([PACKAGE_DATA_DIR], "${datadir}/${PACKAGE}", [Define the PACKAGE_DATA_DIR.])
+fi
 
 dnl ***************** SCSI related *****************************
 AC_SUBST(BRASERO_SCSI_LIBS)
@@ -75,6 +95,7 @@ GSTREAMER_REQUIRED=0.10.6
 GSTREAMER_BASE_REQUIRED=0.10.0
 LIBXML2_REQUIRED=2.6.0
 HAL_REQUIRED=0.5
+GNOME_DOC_INIT
 
 dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_GSTREAMER, 		\
@@ -324,6 +345,7 @@ docs/Makefile
 data/Makefile
 data/brasero.desktop.in
 data/icons/Makefile
+help/Makefile
 src/plugins/Makefile
 src/plugins/cdrdao/Makefile
 src/plugins/cdrkit/Makefile

@@ -51,6 +51,7 @@ void on_exit_cb (GtkAction *action, BraseroApp *app);
 void on_burn_cb (GtkAction *action, BraseroApp *app);
 void on_disc_info_cb (GtkAction *action, BraseroApp *app);
 void on_about_cb (GtkAction *action, BraseroApp *app);
+void on_help_cb (GtkAction *action, BraseroApp *app);
 
 static GtkActionEntry entries[] = {
 	{"ProjectMenu", NULL, N_("_Project")},
@@ -73,6 +74,9 @@ static GtkActionEntry entries[] = {
 
 	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
 	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
+	
+	{"Contents", GTK_STOCK_HELP, NULL, NULL, N_("Contents"),
+	 G_CALLBACK (on_help_cb)}, 
 
 	{"About", GTK_STOCK_ABOUT, NULL, NULL, N_("About"),
 	 G_CALLBACK (on_about_cb)},
