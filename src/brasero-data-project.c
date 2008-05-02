@@ -68,6 +68,8 @@ struct _BraseroDataProjectPrivate
 	GHashTable *joliet;
 
 	guint ref_count;
+
+	/* This is a counter for the number of files to be loaded */
 	guint loading;
 };
 
@@ -1491,7 +1493,7 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 	/* Signal that something has changed in the tree */
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 	if (klass->node_added)
-		klass->node_added (self, node, uri);
+		klass->node_added (self, node, uri != NEW_FOLDER? uri:NULL);
 }
 
 void
@@ -1650,22 +1652,15 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
 	type = g_file_info_get_file_type (info);
 	if (node->is_tmp_parent) {
-		priv->loading --;
-		g_signal_emit (self,
-			       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
-			       0,
-			       priv->loading);
-
 		/* we must make sure that this is really a directory */
 		if (type != G_FILE_TYPE_DIRECTORY) {
 			BraseroURINode *graft;
 
 			/* it isn't a directory so it won't be loaded but turned
 			 * into a fake one. Decrement the number of loading */
-			priv->loading --;
+			priv->loading -= 2;
 			g_signal_emit (self,
 				       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
 				       0,
@@ -1690,6 +1685,12 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 			/* since that URI wasn't a folder no contents loading */
 			return;
 		}
+
+		priv->loading --;
+		g_signal_emit (self,
+			       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
+			       0,
+			       priv->loading);
 
 		/* That's indeed a directory. It's going to be loaded. */
 	}
@@ -1881,7 +1882,7 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
+g_warning ("DIRECTORY %s\n", BRASERO_FILE_NODE_NAME (parent));
 	/* Mostly useful at project load time. */
 	if (priv->loading) {
 		if (parent->is_grafted || parent->is_tmp_parent) {
@@ -2550,7 +2551,6 @@ brasero_data_project_add_path (BraseroDataProject *self,
 						    graft,
 						    uri);
 	}
-
 	return folders;
 }
 

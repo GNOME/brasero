@@ -703,7 +703,7 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 						   (gdouble) (priv->loading - loading) / (gdouble) priv->loading);
 		return;
 	}
-
+g_warning ("REACHED\n");
 	priv->loading = 0;
 	if (priv->load_errors) {
 		brasero_disc_message_remove_buttons (BRASERO_DISC_MESSAGE (priv->message));

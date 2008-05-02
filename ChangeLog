@@ -1,6 +1,18 @@
+2008-05-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Don't pass on pseudo URI for new fake folders to vfs object
+	Allows to load project where there is such a directory.
+
+	* src/brasero-data-disc.c (brasero_data_disc_project_loaded_cb):
+	* src/brasero-data-project.c (brasero_data_project_add_node_real),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_directory_node_loaded),
+	(brasero_data_project_add_path):
+	* src/brasero-data-vfs.c (brasero_data_vfs_load_directory):
+
 2008-05-01  Philippe Rouquier  <algernon@localhost.localdomain>
 
-	Fix #
+	Fix #530521 – Disable Empty project button if no files are in project
 	Also fixes two crashes:
 	- when moving a node so that it replaces a parent node with the same name
 	- crashes after suppressing some files

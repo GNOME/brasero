@@ -529,7 +529,7 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 	GSList *nodes;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
-
+g_warning ("REA %s\n", uri);
 	/* Start exploration of directory*/
 	reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
 
