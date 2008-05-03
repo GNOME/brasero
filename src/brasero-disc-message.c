@@ -73,6 +73,8 @@ struct _BraseroDiscMessagePrivate
 	GtkWidget *button_box;
 	GtkWidget *text_box;
 
+	guint context;
+
 	guint id;
 
 	guint changing_style:1;
@@ -98,6 +100,26 @@ enum {
 	TEXT_COL,
 	NUM_COL
 };
+
+
+void
+brasero_disc_message_set_context (BraseroDiscMessage *self,
+				  guint context_id)
+{
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	priv->context = context_id;
+}
+
+guint
+brasero_disc_message_get_context (BraseroDiscMessage *self)
+{
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+	return priv->context;
+}
 
 static void
 brasero_disc_message_expander_activated_cb (GtkExpander *expander,

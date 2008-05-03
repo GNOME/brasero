@@ -476,7 +476,20 @@ brasero_io_check_for_parent_symlink (const gchar *escaped_uri,
 
 		    	parent_uri = g_file_get_uri (parent);
 			target_path = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET);
-			new_root = g_filename_to_uri (target_path, NULL, NULL);
+
+			/* check if this is not a relative path */
+			 if (!g_path_is_absolute (target_path)) {
+				gchar *tmp;
+
+				tmp = g_path_get_dirname (parent_uri);
+				new_root = g_build_path (G_DIR_SEPARATOR_S,
+							 tmp,
+							 target_path,
+							 NULL);
+				g_free (tmp);
+			}
+			else
+				new_root = g_filename_to_uri (target_path, NULL, NULL);
 
 			newuri = g_strconcat (new_root,
 					      uri + strlen (parent_uri),
@@ -730,7 +743,6 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
 				  cancel,
 				  &error);
-
 	if (error) {
 		brasero_io_return_result (BRASERO_IO (manager),
 					  job->base,

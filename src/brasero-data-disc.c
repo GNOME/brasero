@@ -703,7 +703,7 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 						   (gdouble) (priv->loading - loading) / (gdouble) priv->loading);
 		return;
 	}
-g_warning ("REACHED\n");
+
 	priv->loading = 0;
 	if (priv->load_errors) {
 		brasero_disc_message_remove_buttons (BRASERO_DISC_MESSAGE (priv->message));
@@ -2038,7 +2038,7 @@ brasero_data_disc_init (BraseroDataDisc *object)
 
 	priv = BRASERO_DATA_DISC_PRIVATE (object);
 
-	gtk_box_set_spacing (GTK_BOX (object), 12);
+	gtk_box_set_spacing (GTK_BOX (object), 0);
 
 	/* message area */
 	priv->message = brasero_disc_message_new ();

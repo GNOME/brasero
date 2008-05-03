@@ -90,6 +90,13 @@ brasero_disc_message_add_errors (BraseroDiscMessage *message,
 void
 brasero_disc_message_remove_errors (BraseroDiscMessage *message);
 
+void
+brasero_disc_message_set_context (BraseroDiscMessage *message,
+				  guint context_id);
+
+guint
+brasero_disc_message_get_context (BraseroDiscMessage *message);
+
 G_END_DECLS
 
 #endif /* _BRASERO_DISC_MESSAGE_H_ */

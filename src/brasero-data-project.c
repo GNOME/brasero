@@ -1676,8 +1676,8 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 
 			/* exclude the URI we're replacing */
 			brasero_data_project_exclude_uri (self, uri);
-
 			brasero_file_node_ungraft (node);
+
 			graft = brasero_data_project_uri_ensure_graft (self, NEW_FOLDER);
 			brasero_file_node_graft (node, graft);
 			brasero_data_project_node_changed (self, node);
@@ -1737,6 +1737,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 
 		/* first we exclude the symlink, then we graft its target. */
 		uri = brasero_data_project_node_to_uri (self, node);
+		brasero_file_node_ungraft (node);
 		brasero_data_project_exclude_uri (self, uri);
 		g_free (uri);
 
@@ -1821,6 +1822,7 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 			       brasero_data_project_signals [SIZE_CHANGED_SIGNAL],
 			       0);
 }
+
 BraseroFileNode *
 brasero_data_project_add_loading_node (BraseroDataProject *self,
 				       const gchar *uri,
@@ -1882,7 +1884,7 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-g_warning ("DIRECTORY %s\n", BRASERO_FILE_NODE_NAME (parent));
+
 	/* Mostly useful at project load time. */
 	if (priv->loading) {
 		if (parent->is_grafted || parent->is_tmp_parent) {
@@ -2475,9 +2477,9 @@ brasero_data_project_add_path (BraseroDataProject *self,
 
 	/* create the missing parents if needed */
 	parent = brasero_data_project_create_path (self,
-						    parent,
-						    &path,
-						    &folders);
+						   parent,
+						   &path,
+						   &folders);
 
 	/* Now that we ensured that the parent path exists add the final node */
 
@@ -2494,7 +2496,6 @@ brasero_data_project_add_path (BraseroDataProject *self,
 		 * There is already a graft since it is a fake so remove it from
 		 * previous graft and add the new one (it needs to be grafted). */
 		node->is_tmp_parent = FALSE;
-
 		brasero_file_node_graft (node, graft);
 		folders = g_slist_remove (folders, node);
 
@@ -2528,6 +2529,7 @@ brasero_data_project_add_path (BraseroDataProject *self,
 		}
 	}
 	else if (node) {
+		g_warning ("Already existing node");
 		/* error: the path exists twice. That shouldn't happen */
 		return folders;
 	}
@@ -2551,6 +2553,7 @@ brasero_data_project_add_path (BraseroDataProject *self,
 						    graft,
 						    uri);
 	}
+
 	return folders;
 }
 
@@ -2678,7 +2681,6 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 								 uri,
 								 folders);
 	}
-
 
 	/* Now load the temporary folders that were created */
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);

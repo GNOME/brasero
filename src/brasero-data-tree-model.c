@@ -629,6 +629,30 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 	return;
 }
 
+/**
+ * This is a function mainly used at project load time. In this context there
+ * can be nodes that have been added to the data project tree but not added 
+ * through the model. Don't count those nodes.
+ */
+static guint
+brasero_data_tree_model_node_index (BraseroFileNode *node)
+{
+	BraseroFileNode *parent;
+	BraseroFileNode *peers;
+	guint pos = 0;
+
+	parent = node->parent;
+	for (peers = BRASERO_FILE_NODE_CHILDREN (parent); peers; peers = peers->next) {
+		if (peers == node)
+			break;
+		if (!peers->is_visible)
+			continue;
+		pos ++;
+	}
+
+	return pos;
+}
+
 GtkTreePath *
 brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
 				      BraseroFileNode *node)
@@ -642,7 +666,7 @@ brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
 	for (; node->parent && !node->is_root; node = node->parent) {
 		guint nth;
 
-		nth = brasero_file_node_get_pos_as_child (node);
+		nth = brasero_data_tree_model_node_index (node);
 		gtk_tree_path_prepend_index (path, nth);
 	}
 
@@ -670,7 +694,7 @@ brasero_data_tree_model_get_path (GtkTreeModel *model,
 	for (; node->parent && BRASERO_FILE_NODE_NAME (node); node = node->parent) {
 		guint nth;
 
-		nth = brasero_file_node_get_pos_as_child (node);
+		nth = brasero_data_tree_model_node_index (node);
 		gtk_tree_path_prepend_index (path, nth);
 	}
 
@@ -1160,7 +1184,7 @@ brasero_data_tree_model_reset (BraseroDataProject *project,
 	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset)
 		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset (project, num_nodes);
 }
-
+guint tintin = 1;
 static gboolean
 brasero_data_tree_model_node_added (BraseroDataProject *project,
 				    BraseroFileNode *node,
@@ -1195,6 +1219,7 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 	}
 
 	/* Add the row itself */
+	
 	gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
 				     path,
 				     &iter);
@@ -1407,6 +1432,7 @@ brasero_data_tree_model_node_reordered (BraseroDataProject *project,
 					       treepath,
 					       NULL,
 					       new_order);
+
 	gtk_tree_path_free (treepath);
 
 end:

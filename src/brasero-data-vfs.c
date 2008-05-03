@@ -529,7 +529,7 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 	GSList *nodes;
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
-g_warning ("REA %s\n", uri);
+
 	/* Start exploration of directory*/
 	reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
 
@@ -604,15 +604,15 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 				      GError *error,
 				      const gchar *uri,
 				      GFileInfo *info,
-				      gpointer NULL_data)
+				      gpointer callback_data)
 {
 	GSList *iter;
 	GSList *nodes;
+	gchar *registered = callback_data;
 	BraseroDataVFS *self = BRASERO_DATA_VFS (owner);
 	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
 
-	nodes = g_hash_table_lookup (priv->loading, uri);
-
+	nodes = g_hash_table_lookup (priv->loading, registered);
 	/* check the status of the operation */
 	if (!brasero_data_vfs_check_uri_result (self, uri, error, info)) {
 		/* we need to remove the loading node that is waiting */
@@ -628,9 +628,9 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		return;
 	}
 
-	/* NOTE: we don't check for a broken symlink here since the
-	 * user chose to add it. So even if it were we would have to 
-	 * add it. The same for hidden files. */
+	/* NOTE: we don't check for a broken symlink here since the  user chose
+	 * to add it. So even if it were we would have to add it. The same for
+	 * hidden files. */
 	for (iter = nodes; iter; iter = iter->next) {
 		guint reference;
 		BraseroFileNode *node;
@@ -640,6 +640,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		/* check if the node still exists */
 		node = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
 		brasero_data_project_reference_free (BRASERO_DATA_PROJECT (self), reference);
+
 		if (!node)
 			continue;
 
@@ -653,6 +654,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		/* NOTE: check is loading here on purpose. Otherwise directories
 		 * that replace a temp parent wouldn't load since they are also
 		 * reloading. */
+
 		if (!node->is_loading) {
 			brasero_data_project_node_reloaded (BRASERO_DATA_PROJECT (self), node, uri, info);
 			continue;
@@ -932,7 +934,7 @@ brasero_data_vfs_node_added (BraseroDataProject *project,
 		if (brasero_data_vfs_loading_node (self, node, uri))
 			goto chain;
 
-		return FALSE;
+		goto chain;
 	}
 
 	/* NOTE: a symlink pointing to a directory will return TRUE. */

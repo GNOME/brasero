@@ -1,3 +1,39 @@
+2008-05-03  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #439916 – Popups are user-unfriendly
+	Fixes for data project:
+	- fix some problems at load time where GtkTreePaths weren't right if a created node had not been added
+	- use registered URI in callbacks for g_hash_lookup instead of returned ones (they may be different)
+
+	Fixes for Gio:
+	- handle relative paths with symlinks
+
+	* src/brasero-data-disc.c (brasero_data_disc_project_loaded_cb),
+	(brasero_data_disc_init):
+	* src/brasero-data-project.c (brasero_data_project_node_loaded),
+	(brasero_data_project_directory_node_loaded),
+	(brasero_data_project_add_path),
+	(brasero_data_project_load_contents):
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_node_index),
+	(brasero_data_tree_model_node_to_path),
+	(brasero_data_tree_model_get_path),
+	(brasero_data_tree_model_node_added),
+	(brasero_data_tree_model_node_reordered):
+	* src/brasero-data-vfs.c (brasero_data_vfs_load_directory),
+	(brasero_data_vfs_loading_node_result),
+	(brasero_data_vfs_node_added):
+	* src/brasero-disc-message.c (brasero_disc_message_set_context),
+	(brasero_disc_message_get_context):
+	* src/brasero-disc-message.h:
+	* src/brasero-io.c (brasero_io_check_for_parent_symlink),
+	(brasero_io_get_file_info_thread):
+	* src/brasero-project.c (brasero_project_init),
+	(brasero_project_message_remove_all),
+	(brasero_project_message_remove), (brasero_project_message),
+	(brasero_project_error_size_dialog), (brasero_project_check_size),
+	(brasero_project_switch):
+
 2008-05-02  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Don't pass on pseudo URI for new fake folders to vfs object
