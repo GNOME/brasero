@@ -1,5 +1,14 @@
 2008-05-03  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #526533 – Brasero displays a "frightening" warning in disc to disc copy.
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb):
+	* src/burn-basics.h:
+	* src/burn.c (brasero_burn_ask_for_dest_media),
+	(brasero_burn_record):
+
+2008-05-03  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix for #439916 – Popups are user-unfriendly
 	Fixes for data project:
 	- fix some problems at load time where GtkTreePaths weren't right if a created node had not been added

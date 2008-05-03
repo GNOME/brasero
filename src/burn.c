@@ -421,7 +421,7 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 	BraseroMedium *medium;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
-	medium = brasero_drive_get_medium (priv->src);
+	medium = brasero_drive_get_medium (priv->dest);
 	media = brasero_medium_get_status (medium);
 	if (media != BRASERO_MEDIUM_NONE) {
 		BraseroBurnResult result;
@@ -429,6 +429,17 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 		result = brasero_burn_eject_dest_media (burn, error);
 		if (result != BRASERO_BURN_OK)
 			return result;
+	}
+
+	if (!priv->dest) {
+		priv->dest = brasero_burn_session_get_burner (priv->session);
+		if (!priv->dest) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("no drive specified"));
+			return BRASERO_BURN_ERR;
+		}
 	}
 
 	return brasero_burn_ask_for_media (burn,
@@ -2224,11 +2235,18 @@ brasero_burn_record (BraseroBurn *burn,
 		result = brasero_burn_same_src_dest (burn, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;
-	}
 
-	/* do some drive locking quite early to make sure we have a media
-	 * in the drive so that we'll have all the necessary information */
-	if (!brasero_burn_session_is_dest_file (session)) {
+		/* lock the dest drive do it this way for the message */
+		result = brasero_burn_reload_dest_media (burn,
+							 BRASERO_BURN_WARNING_INSERT_AFTER_COPY,
+							 error);
+		if (result != BRASERO_BURN_OK)
+			goto end;
+	}
+	else if (!brasero_burn_session_is_dest_file (session)) {
+		/* do some drive locking quite early to make sure we have a
+		 * media in the drive so that we'll have all the necessary
+		 * information */
 		result = brasero_burn_lock_dest_media (burn, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;

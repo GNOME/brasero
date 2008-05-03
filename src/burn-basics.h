@@ -80,7 +80,8 @@ typedef enum {
 
 	/* these are not necessarily error */
 	BRASERO_BURN_WARNING_NEXT_COPY,
-	BRASERO_BURN_WARNING_CHECKSUM
+	BRASERO_BURN_WARNING_CHECKSUM,
+	BRASERO_BURN_WARNING_INSERT_AFTER_COPY
 } BraseroBurnError;
 
 typedef enum {

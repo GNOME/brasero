@@ -455,7 +455,11 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	else
 		drive_name = NULL;
 
-	if (error == BRASERO_BURN_WARNING_CHECKSUM) {
+	if (error == BRASERO_BURN_WARNING_INSERT_AFTER_COPY) {
+		main_message = g_strdup (_("An image of the disc has been created on your hard drive. Burning is about to begin:"));
+		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+	}
+	else if (error == BRASERO_BURN_WARNING_CHECKSUM) {
 		main_message = g_strdup (_("A data integrity test is about to begin:"));
 		secondary_message = g_strdup_printf (_("please, insert the disc to check in \"%s\"."),
 						     drive_name);
