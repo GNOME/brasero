@@ -71,6 +71,10 @@ typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
 
 static GtkDialogClass *parent_class = NULL;
 
+static const gchar *mimes [] = { "application/x-cd-image",
+				 "application/x-cue",
+				 "application/x-toc",
+				 "application/x-cdrdao-toc" };
 
 static void
 brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
@@ -381,16 +385,9 @@ brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 	gchar *uri = NULL;
 	gchar *groups [] = { "brasero",
 			      NULL };
-	gchar *mimes [] = { "application/x-cd-image",
-			    "application/x-cue",
-			    "application/x-toc",
-			    "application/x-cdrdao-toc" };
-
 	GtkRecentData recent_data = { NULL,
 				      NULL,
-
 				      NULL,
-
 				      "brasero",
 				      "brasero -p %u",
 				      groups,
@@ -419,22 +416,22 @@ brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 	/* Add it to recent file manager */
 	switch (type.subtype.img_format) {
 	case BRASERO_IMAGE_FORMAT_BIN:
-		recent_data.mime_type = mimes [0];
+		recent_data.mime_type = (gchar *) mimes [0];
 		uri = brasero_track_get_image_source (priv->track, TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CUE:
-		recent_data.mime_type = mimes [1];
+		recent_data.mime_type = (gchar *) mimes [1];
 		uri = brasero_track_get_toc_source (priv->track, TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CLONE:
-		recent_data.mime_type = mimes [2];
+		recent_data.mime_type = (gchar *) mimes [2];
 		uri = brasero_track_get_toc_source (priv->track, TRUE);
 		break;
 
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		recent_data.mime_type = mimes [3];
+		recent_data.mime_type = (gchar *) mimes [3];
 		uri = brasero_track_get_toc_source (priv->track, TRUE);
 		break;
 
@@ -474,6 +471,7 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 	GtkWidget *button;
 	GtkWidget *options;
 	GtkWidget *box, *box1;
+	GtkFileFilter *filter;
 	BraseroPluginManager *manager;
 	BraseroImageOptionDialogPrivate *priv;
 
@@ -556,6 +554,22 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  0);
 
 	priv->file = gtk_file_chooser_button_new (_("Open an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("All files"));
+	gtk_file_filter_add_pattern (filter, "*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->file), filter);
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, _("Image files only"));
+	gtk_file_filter_add_mime_type (filter, mimes [0]);
+	gtk_file_filter_add_mime_type (filter, mimes [1]);
+	gtk_file_filter_add_mime_type (filter, mimes [2]);
+	gtk_file_filter_add_mime_type (filter, mimes [3]);
+	gtk_file_filter_add_mime_type (filter, "image/*");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->file), filter);
+	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (priv->file), filter);
+
 	gtk_table_attach (GTK_TABLE (box1),
 			  priv->file,
 			  1,
