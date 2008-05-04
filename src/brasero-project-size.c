@@ -621,13 +621,12 @@ brasero_project_size_size_request (GtkWidget *widget,
 	brasero_project_size_get_ruler_min_width (self, &ruler_width, &ruler_height);
 	gtk_widget_size_request (self->priv->button, &req);
 
-	width = self->priv->frame->style->xthickness * 2 +
-		req.width * 2;
+	width = self->priv->frame->style->xthickness * 2 + req.width * 2;
 
 	height = extents.height + self->priv->frame->style->ythickness * 2;
 	height = MAX (height, req.height);
 	height += ruler_height;
-	
+
 	requisition->height = height > BRASERO_PROJECT_SIZE_HEIGHT ? height:BRASERO_PROJECT_SIZE_HEIGHT;
 	requisition->width = width;
 
@@ -666,7 +665,7 @@ brasero_project_size_size_allocate (GtkWidget *widget,
 
 	alloc.y = - 1;
 	alloc.width = MAX (1, req.width + self->priv->frame->style->xthickness * 2 - 2);
-	alloc.height = MAX (req.height + self->priv->frame->style->xthickness * 2 - 2, allocation->height - self->priv->ruler_height);
+	alloc.height = MAX (req.height - 2, allocation->height - self->priv->ruler_height);
 	gtk_widget_size_allocate (self->priv->button, &alloc);
 
 	/* allocate the size for the arrow we want to draw on the button */
@@ -832,7 +831,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	}
 	g_object_unref (layout);
 
-	bar_height = widget->allocation.height - text_height;
+	bar_height = widget->allocation.height - text_height - 2;
 
 	if (drive->medium
 	&& (brasero_medium_get_status (drive->medium) & BRASERO_MEDIUM_REWRITABLE)
@@ -863,7 +862,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 			    x,
 			    self->priv->frame->style->ythickness,
 			    width,
-			    bar_height - self->priv->frame->style->ythickness);
+			    bar_height - self->priv->frame->style->ythickness * 2);
 
 	if (fraction > 1.0) {
 		gint width2;
@@ -888,7 +887,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				    x,
 				    self->priv->frame->style->ythickness,
 				    width2,
-				    bar_height - self->priv->frame->style->ythickness);
+				    bar_height - self->priv->frame->style->ythickness * 2);
 
 		if (fraction > 1.03) {
 			if (is_rtl)
@@ -906,7 +905,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 					    x,
 					    self->priv->frame->style->ythickness,
 					    bar_width - width - width2,
-					    bar_height - self->priv->frame->style->ythickness);
+					    bar_height - self->priv->frame->style->ythickness * 2);
 		}
 	}
 	else {
@@ -926,7 +925,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				    x,
 				    self->priv->frame->style->ythickness,
 				    bar_width - width + self->priv->frame->style->xthickness,
-				    bar_height - self->priv->frame->style->ythickness);
+				    bar_height - self->priv->frame->style->ythickness * 2);
 	}
 
 	/* Frame around bar */

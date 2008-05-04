@@ -1,5 +1,14 @@
 2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #519110 – Variable size of bottom widgets
+
+	* src/brasero-project-size.c (brasero_project_size_size_request),
+	(brasero_project_size_size_allocate),
+	(brasero_project_size_expose):
+	* src/burn-job.c:
+
+2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Add multi selection through mouse in dialog that pops up after clicking on add without side pane
 
 	* src/brasero-file-chooser.c (brasero_file_chooser_customize):

@@ -82,10 +82,10 @@ struct BraseroJobPrivate {
 	BraseroJob *linked;
 };
 
-#define BRASERO_JOB_DEBUG(job)	brasero_job_log_message (job, G_STRLOC,	\
-				"%s called %s", 			\
-				G_OBJECT_TYPE_NAME (job),		\
-				G_STRFUNC);
+#define BRASERO_JOB_DEBUG(job_MACRO)	brasero_job_log_message (job_MACRO, G_STRLOC,	\
+					"%s called %s", 			\
+					G_OBJECT_TYPE_NAME (job_MACRO),		\
+					G_STRFUNC);
 
 #define BRASERO_JOB_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JOB, BraseroJobPrivate))
 
