@@ -321,11 +321,8 @@ brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
 	brasero_image_option_dialog_set_formats (dialog);
-
-	if (uri) {
+	if (uri)
 		gtk_file_chooser_set_uri (GTK_FILE_CHOOSER (priv->file), uri);
-		brasero_image_option_dialog_changed (dialog);
-	}
 	else
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,

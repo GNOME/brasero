@@ -259,6 +259,7 @@ brasero_image_format_get_MSF_address (const gchar *ptr,
 
 static gboolean
 brasero_image_format_get_DATAFILE_info (const gchar *ptr,
+					const gchar *parent,
 					gint64 *size,
 					GError **error)
 {
@@ -266,7 +267,8 @@ brasero_image_format_get_DATAFILE_info (const gchar *ptr,
 	gchar *path;
 	int res;
 
-	/* get the path */
+	/* get the path. NOTE: no need to check if it's relative since that's
+	 * just to skip it. */
 	ptr = brasero_image_format_read_path (ptr, &path);
 	if (!ptr)
 		return FALSE;
@@ -284,6 +286,18 @@ brasero_image_format_get_DATAFILE_info (const gchar *ptr,
 	return TRUE;
 
 stat_end:
+
+	/* check if the path is relative, if so then add the root path */
+	if (path && !g_path_is_absolute (path)) {
+		gchar *tmp;
+
+		tmp = path;
+		path = g_build_path (G_DIR_SEPARATOR_S,
+				     parent,
+				     path,
+				     NULL);
+		g_free (tmp);
+	}
 
 	/* if size is skipped then g_lstat () the file */
 	res = g_lstat (path, &buffer);
@@ -306,6 +320,7 @@ stat_end:
 
 static gboolean
 brasero_image_format_get_FILE_info (const gchar *ptr,
+				    const gchar *parent,
 				    gint64 *size,
 				    GError **error)
 {
@@ -315,7 +330,7 @@ brasero_image_format_get_FILE_info (const gchar *ptr,
 	gchar *tmp;
 	int res;
 
-	/* get the path */
+	/* get the path and skip it */
 	ptr = brasero_image_format_read_path (ptr, &path);
 	if (!ptr)
 		return FALSE;
@@ -356,6 +371,18 @@ brasero_image_format_get_FILE_info (const gchar *ptr,
 
 stat_end:
 
+	/* check if the path is relative, if so then add the root path */
+	if (path && !g_path_is_absolute (path)) {
+		gchar *tmp;
+
+		tmp = path;
+		path = g_build_path (G_DIR_SEPARATOR_S,
+				     parent,
+				     path,
+				     NULL);
+		g_free (tmp);
+	}
+
 	/* if size is skipped then g_lstat () the file */
 	res = g_lstat (path, &buffer);
 	g_free (path);
@@ -382,6 +409,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 				      GError **error)
 {
 	FILE *file;
+	gchar *parent;
 	gint64 cue_size = 0;
 	gchar buffer [MAXPATHLEN * 2];
 
@@ -397,6 +425,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 		return FALSE;
 	}
 
+	parent = g_path_get_dirname (path);
 	while (fgets (buffer, sizeof (buffer), file)) {
 		gchar *ptr;
 
@@ -405,7 +434,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 			gint64 size;
 
 			ptr += 8;
-			if (!brasero_image_format_get_DATAFILE_info (ptr, &size, error))
+			if (!brasero_image_format_get_DATAFILE_info (ptr, parent, &size, error))
 				continue;
 
 			cue_size += size;
@@ -419,7 +448,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 			ptr += 4;
 			/* first number is the position, the second the size,
 			 * number after '#' is the offset (in bytes). */
-			if (!brasero_image_format_get_FILE_info (ptr, &size, error))
+			if (!brasero_image_format_get_FILE_info (ptr, parent, &size, error))
 				continue;
 
 			cue_size += size;
@@ -433,7 +462,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 			ptr += 4;
 			/* first number is the position, the second the size,
 			 * number after '#' is the offset (in bytes). */
-			if (!brasero_image_format_get_FILE_info (ptr, &size, error))
+			if (!brasero_image_format_get_FILE_info (ptr, parent, &size, error))
 				continue;
 
 			cue_size += size;
@@ -482,6 +511,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 			cue_size += size;
 		}
 	}
+	g_free (parent);
 
 	fclose (file);
 
@@ -537,6 +567,21 @@ brasero_image_format_get_cue_size (gchar *path,
 			ptr = brasero_image_format_read_path (ptr, &file_path);
 			if (!ptr)
 				return FALSE;
+
+			/* check if the path is relative, if so then add the root path */
+			if (file_path && !g_path_is_absolute (file_path)) {
+				gchar *directory;
+				gchar *tmp;
+
+				directory = g_path_get_dirname (path);
+
+				tmp = file_path;
+				file_path = g_build_path (G_DIR_SEPARATOR_S,
+							  directory,
+							  file_path,
+							  NULL);
+				g_free (tmp);
+			}
 
 			res = g_lstat (file_path, &buffer);
 			if (res == -1) {

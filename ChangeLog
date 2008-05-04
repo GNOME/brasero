@@ -1,5 +1,16 @@
 2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #530815 – Unable to burn bin/cue
+
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_set_image_uri):
+	* src/burn-image-format.c (brasero_image_format_get_DATAFILE_info),
+	(brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size):
+
+2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #530397 – Filechooser dialog for images burning should only show images files
 
 	* src/brasero-image-option-dialog.c
