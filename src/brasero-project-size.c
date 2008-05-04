@@ -627,7 +627,7 @@ brasero_project_size_size_request (GtkWidget *widget,
 	height = MAX (height, req.height);
 	height += ruler_height;
 
-	requisition->height = height > BRASERO_PROJECT_SIZE_HEIGHT ? height:BRASERO_PROJECT_SIZE_HEIGHT;
+	requisition->height = height;
 	requisition->width = width;
 
 	self->priv->ruler_height = ruler_height;
@@ -862,7 +862,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 			    x,
 			    self->priv->frame->style->ythickness,
 			    width,
-			    bar_height - self->priv->frame->style->ythickness * 2);
+			    bar_height - self->priv->frame->style->ythickness);
 
 	if (fraction > 1.0) {
 		gint width2;
@@ -905,7 +905,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 					    x,
 					    self->priv->frame->style->ythickness,
 					    bar_width - width - width2,
-					    bar_height - self->priv->frame->style->ythickness * 2);
+					    bar_height - self->priv->frame->style->ythickness);
 		}
 	}
 	else {
@@ -925,7 +925,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 				    x,
 				    self->priv->frame->style->ythickness,
 				    bar_width - width + self->priv->frame->style->xthickness,
-				    bar_height - self->priv->frame->style->ythickness * 2);
+				    bar_height - self->priv->frame->style->ythickness);
 	}
 
 	/* Frame around bar */
