@@ -54,4 +54,8 @@ typedef struct {
 GType brasero_file_chooser_get_type ();
 GtkWidget *brasero_file_chooser_new ();
 
+void
+brasero_file_chooser_customize (GtkWidget *widget,
+				gpointer null_data);
+
 #endif /* BRASERO_FILE_CHOOSER_H */

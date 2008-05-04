@@ -42,6 +42,8 @@
 #include <gtk/gtkpaned.h>
 #include <gtk/gtkhpaned.h>
 #include <gtk/gtkfilechooserwidget.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtktreeselection.h>
 
 #include "eggtreemultidnd.h"
 
@@ -127,7 +129,7 @@ brasero_file_chooser_class_init (BraseroFileChooserClass *klass)
 	object_class->finalize = brasero_file_chooser_finalize;
 }
 
-static void
+void
 brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 {
 	/* we explore everything until we reach a treeview (there are two) */
@@ -142,9 +144,9 @@ brasero_file_chooser_customize (GtkWidget *widget, gpointer null_data)
 		found = gtk_target_list_find (list, target, &num);
 		/* FIXME: should we unref them ? apparently not according to 
 		 * the warning messages we get if we do */
-//		gtk_target_list_unref (list);
 
-		if (found) {
+		if (found
+		&&  gtk_tree_selection_get_mode (gtk_tree_view_get_selection (GTK_TREE_VIEW (widget))) == GTK_SELECTION_MULTIPLE) {
 			gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (widget), TRUE);
 			egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (widget));
 		}
