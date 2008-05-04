@@ -1,5 +1,16 @@
 2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #531273 – Edit information dialog for music CDs looses start point info
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_slices):
+	* src/brasero-song-properties.c (brasero_song_props_update_length),
+	(brasero_song_props_end_changed_cb),
+	(brasero_song_props_start_changed_cb),
+	(brasero_song_props_set_properties):
+	* src/brasero-time-button.c (brasero_time_button_set_max):
+
+2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #530815 – Unable to burn bin/cue
 
 	* src/brasero-image-option-dialog.c

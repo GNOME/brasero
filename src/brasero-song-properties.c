@@ -63,8 +63,7 @@ struct BraseroSongPropsPrivate {
 static GObjectClass *parent_class = NULL;
 
 static void
-brasero_song_props_end_changed_cb (BraseroTimeButton *button,
-				   BraseroSongProps *self)
+brasero_song_props_update_length (BraseroSongProps *self)
 {
 	gchar *length_str;
 	gint64 start;
@@ -74,11 +73,6 @@ brasero_song_props_end_changed_cb (BraseroTimeButton *button,
 	end = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->end));
 	start = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->start));
 	gap = gtk_spin_button_get_value (GTK_SPIN_BUTTON (self->priv->gap)) * GST_SECOND;
-
-	brasero_time_button_set_value (BRASERO_TIME_BUTTON (self->priv->start),
-				       start);
-	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->start),
-				     end - 1);
 
 	length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end + gap), TRUE, FALSE);
 	gtk_label_set_markup (GTK_LABEL (self->priv->length), length_str);
@@ -86,21 +80,21 @@ brasero_song_props_end_changed_cb (BraseroTimeButton *button,
 }
 
 static void
+brasero_song_props_end_changed_cb (BraseroTimeButton *button,
+				   BraseroSongProps *self)
+{
+	gint64 end;
+
+	end = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->end));
+	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->start), end - 1);
+	brasero_song_props_update_length (self);
+}
+
+static void
 brasero_song_props_start_changed_cb (BraseroTimeButton *button,
 				     BraseroSongProps *self)
 {
-	gchar *length_str;
-	gint64 start;
-	gint64 end;
-	gint64 gap;
-
-	end = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->end));
-	start = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->start));
-	gap = gtk_spin_button_get_value (GTK_SPIN_BUTTON (self->priv->gap)) * GST_SECOND;
-
-	length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end + gap), TRUE, FALSE);
-	gtk_label_set_markup (GTK_LABEL (self->priv->length), length_str);
-	g_free (length_str);
+	brasero_song_props_update_length (self);
 }
 
 static void
@@ -315,8 +309,17 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 
 	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->start), end - 1);
 	brasero_time_button_set_value (BRASERO_TIME_BUTTON (self->priv->start), start);
+
+	g_signal_handlers_block_by_func (self->priv->end,
+					 brasero_song_props_end_changed_cb,
+					 self);
 	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->end), length);
 	brasero_time_button_set_value (BRASERO_TIME_BUTTON (self->priv->end), end);
+	g_signal_handlers_unblock_by_func (self->priv->end,
+					   brasero_song_props_end_changed_cb,
+					   self);
+
+	brasero_song_props_update_length (self);
 }
 
 static void

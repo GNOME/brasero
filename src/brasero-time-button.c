@@ -199,7 +199,6 @@ brasero_time_button_set_max (BraseroTimeButton *self,
 		gtk_widget_set_sensitive (priv->hrs, FALSE);
 
 	gtk_spin_button_set_range (GTK_SPIN_BUTTON (priv->min), 0.0, priv->max_min);
-
 	if (priv->max_min) {
 		gtk_widget_set_sensitive (priv->min, TRUE);
 		gtk_widget_set_sensitive (priv->sec, TRUE);

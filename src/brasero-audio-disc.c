@@ -2695,6 +2695,7 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 				    SIZE_COL, string,
 				    LENGTH_COL, length,
 				    -1);
+
 		g_free (string);
 	}
 
