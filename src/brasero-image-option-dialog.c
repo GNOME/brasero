@@ -37,6 +37,8 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkbutton.h>
 
+#include <gconf/gconf-client.h>
+
 #include "brasero-utils.h"
 #include "burn-basics.h"
 #include "burn-plugin-manager.h"
@@ -45,7 +47,8 @@
 #include "brasero-dest-selection.h"
 #include "burn-drive.h"
 #include "brasero-io.h"
- 
+
+#define BRASERO_KEY_ISO_DIRECTORY		"/apps/brasero/display/iso_folder"
 G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, GTK_TYPE_DIALOG);
 
 struct _BraseroImageOptionDialogPrivate {
@@ -461,12 +464,33 @@ brasero_image_option_dialog_valid_media_cb (BraseroDestSelection *selection,
 	gtk_widget_set_sensitive (priv->button, valid);
 }
 
+static void	
+brasero_image_option_dialog_file_chooser_destroy (GtkWidget *file,
+						  BraseroImageOptionDialog *self)
+{
+	BraseroImageOptionDialogPrivate *priv;
+	GConfClient *client;
+	gchar *uri;
+
+	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (self);
+
+	uri = gtk_file_chooser_get_current_folder_uri (GTK_FILE_CHOOSER (priv->file));
+	if (uri) {
+		client = gconf_client_get_default ();
+		gconf_client_set_string (client, BRASERO_KEY_ISO_DIRECTORY, uri, NULL);
+		g_object_unref (client);
+		g_free (uri);
+	}
+}
+
 static void
 brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 {
+	gchar *uri;
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *options;
+	GConfClient *client;
 	GtkWidget *box, *box1;
 	GtkFileFilter *filter;
 	BraseroPluginManager *manager;
@@ -551,6 +575,24 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  0);
 
 	priv->file = gtk_file_chooser_button_new (_("Open an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
+
+	client = gconf_client_get_default ();
+	uri = gconf_client_get_string (client, BRASERO_KEY_ISO_DIRECTORY, NULL);
+	g_object_unref (client);
+	if (uri) {
+		if (!gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), uri))
+			gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
+
+		g_free (uri);
+	}
+	else
+		gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
+
+	g_signal_connect (priv->file,
+			  "destroy",
+			  G_CALLBACK (brasero_image_option_dialog_file_chooser_destroy),
+			  obj);
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("All files"));
@@ -581,9 +623,6 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  "selection-changed",
 			  G_CALLBACK (brasero_image_option_dialog_file_changed),
 			  obj);
-
-	gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
 
 	label = gtk_label_new (_("Image type:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
