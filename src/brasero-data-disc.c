@@ -1545,6 +1545,7 @@ brasero_data_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 	}
 
 	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
+	gtk_action_set_sensitive (action, FALSE);
 	g_object_set (action,
 		      "short-label", _("Import"), /* for toolbar buttons */
 		      NULL);
