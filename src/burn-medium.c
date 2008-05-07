@@ -585,9 +585,11 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 				    BraseroScsiErrCode *code)
 {
 	BraseroScsiFormatCapacitiesHdr *hdr = NULL;
+	BraseroScsiFormattableCapacityDesc *desc;
 	BraseroScsiMaxCapacityDesc *current;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
+	gint i, max;
 	gint size;
 
 	BRASERO_BURN_LOG ("Retrieving format capacity");
@@ -607,38 +609,28 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	current = hdr->max_caps;
 
 	/* see if the media is already formatted */
-	if (current->type != BRASERO_SCSI_DESC_FORMATTED) {
-		int i, max;
-		BraseroScsiFormattableCapacityDesc *desc;
+	max = (hdr->len - 
+	      sizeof (BraseroScsiMaxCapacityDesc)) /
+	      sizeof (BraseroScsiFormattableCapacityDesc);
 
-		max = (hdr->len - 
-		      sizeof (BraseroScsiMaxCapacityDesc)) /
-		      sizeof (BraseroScsiFormattableCapacityDesc);
-
-		desc = hdr->desc;
-		for (i = 0; i < max; i ++, desc ++) {
-			/* search for the correct descriptor */
-			if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)) {
-				if (desc->format_type == BRASERO_SCSI_DVDRW_PLUS) {
-					priv->block_num = BRASERO_GET_32 (desc->blocks_num);
-					priv->block_size = BRASERO_GET_24 (desc->type_param);
-
-					/* that can happen */
-					if (!priv->block_size)
-						priv->block_size = 2048;
-					break;
-				}
-			}
-			else if (desc->format_type == BRASERO_SCSI_BLOCK_SIZE_DEFAULT_AND_DB) {
+	desc = hdr->desc;
+	for (i = 0; i < max; i ++, desc ++) {
+		/* search for the correct descriptor */
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)) {
+			if (desc->format_type == BRASERO_SCSI_DVDRW_PLUS) {
 				priv->block_num = BRASERO_GET_32 (desc->blocks_num);
 				priv->block_size = BRASERO_GET_24 (desc->type_param);
+
+				/* that can happen */
+				if (!priv->block_size)
+					priv->block_size = 2048;
 				break;
 			}
 		}
-	}
-	else {
-		priv->block_num = BRASERO_GET_32 (current->blocks_num);
-		priv->block_size = BRASERO_GET_24 (current->block_size);
+		else if (desc->format_type == BRASERO_SCSI_MAX_PACKET_SIZE_FORMAT) {
+			priv->block_num = BRASERO_GET_32 (desc->blocks_num);
+			break;
+		}
 	}
 
 	BRASERO_BURN_LOG ("Format capacity %lli %lli",
@@ -658,6 +650,7 @@ brasero_medium_get_capacity_by_type (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
+	/* For DVDs that's always that block size */
 	priv->block_size = 2048;
 
 	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE))

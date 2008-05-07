@@ -1,5 +1,14 @@
 2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix DVD-RW sequential capacity retrieval
+
+	* src/burn-medium.c (brasero_medium_get_capacity_DVD_RW),
+	(brasero_medium_get_capacity_by_type):
+	* src/burn-medium.h:
+	* src/scsi-read-capacity.h:
+
+2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Make sure the import session is disabled when we start
 
 	* src/brasero-data-disc.c (brasero_data_disc_add_ui):

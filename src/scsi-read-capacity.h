@@ -22,15 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glib.h>
+
 #include "scsi-base.h"
 
 #ifndef _SCSI_READ_CAPACITY_H
 #define _SCSI_READ_CAPACITY_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 /* NOTE: lba is dependent on the media type and block size is always 2048 */
 struct _BraseroScsiReadCapacityData {
@@ -39,9 +38,7 @@ struct _BraseroScsiReadCapacityData {
 };
 typedef struct _BraseroScsiReadCapacityData BraseroScsiReadCapacityData;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_READ_CAPACITY_H */
 

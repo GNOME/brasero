@@ -30,6 +30,7 @@
 G_BEGIN_DECLS
 
 /* rates are in Kio/sec */
+/* FIXME: rate for audio CD are different 172 K/s */
 #define CD_RATE 153600
 #define DVD_RATE 1385000
 
