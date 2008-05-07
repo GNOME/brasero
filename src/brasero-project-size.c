@@ -1556,28 +1556,23 @@ brasero_project_size_disc_added_cb (BraseroMediumMonitor *monitor,
 				    BraseroMedium *medium,
 				    BraseroProjectSize *self)
 {
-	GList *iter;
+	BraseroDriveSize *drive;
 
-	for (iter = self->priv->drives; iter; iter = iter->next) {
-		BraseroDriveSize *drive;
+	/* first add it to the list */
+	drive = g_new0 (BraseroDriveSize, 1);
+	drive->medium = medium;
+	self->priv->drives = g_list_prepend (self->priv->drives, drive);
 
-		drive = iter->data;
-		if (drive->medium
-		&&  medium == drive->medium) {
+	drive->media = brasero_medium_get_status (medium);
 
-			drive->media = brasero_medium_get_status (drive->medium);
+	/* If there is an appendable session we just ignore it, the size of this
+	 * session will simply be added to the size of the project if the user
+	 * decides to merge them */
+	brasero_medium_get_capacity (medium, NULL, &drive->sectors);
+	brasero_medium_get_free_space (medium, NULL, &drive->free_space);
 
-			/* If there is an appendable session we just ignore it,
-			 * the size of this session will simply be added to the
-			 * size of the project if the user decides to merge them
-			 */
-			brasero_medium_get_capacity (medium, NULL, &drive->sectors);
-			brasero_medium_get_free_space (medium, NULL, &drive->free_space);
-
-			brasero_project_size_find_proper_drive (self);
-			brasero_project_size_disc_changed (self);
-		}
-	}
+	brasero_project_size_find_proper_drive (self);
+	brasero_project_size_disc_changed (self);
 
 	/* we need to rebuild the menu is any */
 	if (self->priv->menu)
