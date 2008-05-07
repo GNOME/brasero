@@ -861,13 +861,25 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 static BraseroBurnResult
 brasero_wodim_set_argv_blank (BraseroWodim *wodim, GPtrArray *argv)
 {
-	gchar *blank_str;
+	BraseroBurnResult result;
 	BraseroBurnFlag flags;
+	BraseroMedia media;
 
 	brasero_job_get_flags (BRASERO_JOB (wodim), &flags);
-	blank_str = g_strdup_printf ("blank=%s",
-				    (flags & BRASERO_BURN_FLAG_FAST_BLANK) ? "fast" : "all");
-	g_ptr_array_add (argv, blank_str);
+
+	result = brasero_job_get_media (BRASERO_JOB (wodim), &media);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)) {
+		gchar *blank_str;
+
+		blank_str = g_strdup_printf ("blank=%s",
+					    (flags & BRASERO_BURN_FLAG_FAST_BLANK) ? "fast" : "all");
+		g_ptr_array_add (argv, blank_str);
+	}
+	else
+		g_ptr_array_add (argv, g_strdup ("-format"));
 
 	brasero_job_set_current_action (BRASERO_JOB (wodim),
 					BRASERO_BURN_ACTION_BLANKING,
@@ -1014,6 +1026,16 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				   BRASERO_MEDIUM_APPENDABLE|
 				   BRASERO_MEDIUM_HAS_AUDIO|
 				   BRASERO_MEDIUM_HAS_DATA;
+
+	/* tests failed with DVD-RW in restricted overwrite mode */
+	const BraseroMedia dvd_media = BRASERO_MEDIUM_DVD|
+				       BRASERO_MEDIUM_PLUS|
+				       BRASERO_MEDIUM_SEQUENTIAL|
+				       BRASERO_MEDIUM_WRITABLE|
+				       BRASERO_MEDIUM_REWRITABLE|
+				       BRASERO_MEDIUM_BLANK|
+				       BRASERO_MEDIUM_APPENDABLE|
+				       BRASERO_MEDIUM_HAS_DATA;
 	const BraseroMedia media_rw = BRASERO_MEDIUM_CD|
 				      BRASERO_MEDIUM_REWRITABLE|
 				      BRASERO_MEDIUM_APPENDABLE|
@@ -1021,7 +1043,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_HAS_AUDIO|
 				      BRASERO_MEDIUM_HAS_DATA|
 				      BRASERO_MEDIUM_BLANK;
-	gchar *prog_name;
+	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
@@ -1032,20 +1054,22 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "Philippe Rouquier",
 			       1);
 
-	/* First see if this plugin can be used, i.e. if wodim is in da path */
-	prog_name = g_find_program_in_path ("wodim");
-	if (!prog_name) {
-		*error = g_strdup (_("wodim could not be found in the path"));
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("wodim", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* for recording */
-	output = brasero_caps_disc_new (media);
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
 
+	/* wodim can burn all DVDs when it's ISOs */
+	output = brasero_caps_disc_new (dvd_media);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+
+	output = brasero_caps_disc_new (media);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (input);
 
@@ -1064,6 +1088,104 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
+	/* For DVD-W and DVD-RW sequential
+	 * NOTE: DAO et MULTI are exclusive. */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_SEQUENTIAL|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_SEQUENTIAL|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_SEQUENTIAL|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* DVD+ R/RW don't support dummy mode 
+	 * NOTE: don't mix dao and multisession */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* for DVD+RW */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* Flags for CD (RW)s */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CD|
 				  BRASERO_MEDIUM_WRITABLE|
@@ -1094,7 +1216,49 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* for blanking */
+	/* blanking/formatting caps and flags for +/sequential RW
+	 * NOTE: restricted overwrite DVD-RW can't be formatted.
+	 * moreover DVD+RW are formatted while DVD-RW sequential are blanked.
+	  * NOTE: blanking DVD-RW doesn't work */
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_PLUS|
+//					BRASERO_MEDIUM_SEQUENTIAL|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK);
+	brasero_plugin_blank_caps (plugin, output);
+	g_slist_free (output);
+
+	/* This media can be blanked fast or full like any CDRW.
+	 * From the tests, it appears that the way wodim formats the DVDRW makes
+	 * it unable to support multisession. dvd+rw-format is needed to format
+	 * it correctly after a fast blanking. 
+	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_SEQUENTIAL|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_CLOSED,
+					BRASERO_BURN_FLAG_FAST_BLANK|
+					BRASERO_BURN_FLAG_NOGRACE,
+					BRASERO_BURN_FLAG_NONE);
+	*/
+
+	/* again DVD+RW don't support dummy */
+	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_DVDRW_PLUS|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_CLOSED,
+					BRASERO_BURN_FLAG_NOGRACE,
+					BRASERO_BURN_FLAG_NONE);
+
+	/* for blanking (CDRWs) */
 	output = brasero_caps_disc_new (media_rw);
 	brasero_plugin_blank_caps (plugin, output);
 	g_slist_free (output);
