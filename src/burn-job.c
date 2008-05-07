@@ -770,8 +770,10 @@ brasero_job_item_stop (BraseroTaskItem *item,
 
 	brasero_job_disconnect (self, error);
 
-	g_object_unref (priv->ctx);
-	priv->ctx = NULL;
+	if (priv->ctx) {
+		g_object_unref (priv->ctx);
+		priv->ctx = NULL;
+	}
 
 	return BRASERO_BURN_OK;
 }

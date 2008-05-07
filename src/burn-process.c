@@ -40,6 +40,8 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
+#include <gio/gio.h>
+
 #include "burn-basics.h"
 #include "burn-process.h"
 #include "burn-job.h"
@@ -83,6 +85,67 @@ struct _BraseroProcessPrivate {
 #define BRASERO_PROCESS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROCESS, BraseroProcessPrivate))
 
 static GObjectClass *parent_class = NULL;
+
+/* This is a helper function for plugins at load time */
+gboolean
+brasero_process_check_path (const gchar *name,
+			    gchar **error)
+{
+	gchar *prog_path;
+
+	/* First see if this plugin can be used, i.e. if cdrecord is in
+	 * the path */
+	prog_path = g_find_program_in_path (name);
+	if (!prog_path) {
+		*error = g_strdup_printf (_("%s could not be found in the path"), name);
+		return BRASERO_BURN_ERR;
+	}
+
+	/* make sure that's not a symlink pointing to something with another
+	 * name like wodim. */
+	if (g_file_test (prog_path, G_FILE_TEST_IS_SYMLINK)) {
+		GFile *file;
+		GFileInfo *info;
+		gchar *prog_name;
+		const gchar *target;
+
+		file = g_file_new_for_path (prog_path);
+		g_free (prog_path);
+
+		if (!file) {
+			*error = g_strdup_printf (_("wrong path"));
+			return BRASERO_BURN_ERR;
+		}
+
+		info = g_file_query_info (file,
+					  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+					  G_FILE_QUERY_INFO_NONE,
+					  NULL,
+					  NULL);
+		g_object_unref (file);
+
+		if (!info) {
+			*error = g_strdup_printf (_("impossible to retrieve information"));
+			return BRASERO_BURN_ERR;
+		}
+
+		target = g_file_info_get_symlink_target (info);
+		prog_name = g_path_get_basename (target);
+		g_object_unref (info);
+
+		if (!prog_name || strcmp (prog_name, name)) {
+			g_free (prog_name);
+			*error = g_strdup_printf (_("%s is a symlink pointing to another program. Use the target program instead."), name);
+			return BRASERO_BURN_ERR;
+		}
+
+		g_free (prog_name);
+	}
+	else
+		g_free (prog_path);
+
+	return BRASERO_BURN_OK;
+}
 
 void
 brasero_process_deferred_error (BraseroProcess *self,
@@ -637,7 +700,7 @@ brasero_process_stop (BraseroJob *job,
 				g_string_set_size (priv->out_buffer, 0);
 
 			klass = BRASERO_PROCESS_GET_CLASS (process);
-			while (g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
+			while (priv->std_out && g_io_channel_get_buffer_condition (priv->std_out) == G_IO_IN)
 				brasero_process_read (process,
 						      priv->std_out,
 						      G_IO_IN,
@@ -675,7 +738,7 @@ brasero_process_stop (BraseroJob *job,
 				g_string_set_size (priv->err_buffer, 0);
 
 			klass = BRASERO_PROCESS_GET_CLASS (process);
-			while (g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
+			while (priv->std_error && g_io_channel_get_buffer_condition (priv->std_error) == G_IO_IN)
 				brasero_process_read (process,
 						     priv->std_error,
 						     G_IO_IN,
