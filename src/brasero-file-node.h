@@ -242,6 +242,7 @@ brasero_file_node_rename (BraseroFileNode *node,
 			  const gchar *name);
 void
 brasero_file_node_set_from_info (BraseroFileNode *node,
+				 BraseroFileTreeStats *stats,
 				 GFileInfo *info);
 
 void

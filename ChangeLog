@@ -1,6 +1,17 @@
 2008-05-08  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #531831 – crash when adding a directory with a file bigger than 2Gb
+
+	* src/brasero-data-project.c (brasero_data_project_node_loaded),
+	(brasero_data_project_node_reloaded):
+	* src/brasero-file-node.c (brasero_file_node_set_from_info),
+	(brasero_file_node_new_from_info):
+	* src/brasero-file-node.h:
+
+2008-05-08  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix crash introduced by recent changes
+	Unfortunately committed trash as well.
 
 	* src/brasero-data-project.c (brasero_data_project_remove_real):
 	* src/brasero-file-node.c (brasero_file_node_save_imported):

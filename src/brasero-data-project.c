@@ -1648,6 +1648,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	guint64 size;
 	GFileType type;
 	gboolean size_changed;
+	BraseroFileTreeStats *stats;
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
@@ -1725,7 +1726,8 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	}
 
 	size_changed = (BRASERO_SIZE_TO_SECTORS (size, 2048) != BRASERO_FILE_NODE_SECTORS (node));
-	brasero_file_node_set_from_info (node, info);
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	brasero_file_node_set_from_info (node, stats, info);
 
 	/* Check it that needs a graft: this node has not been moved so we don't
 	 * need to check these cases yet it could turn out that it was a symlink
@@ -1779,6 +1781,7 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 				    GFileInfo *info)
 {
 	BraseroDataProjectPrivate *priv;
+	BraseroFileTreeStats *stats;
 	gboolean size_changed;
 	const gchar *name;
 	guint64 size;
@@ -1807,7 +1810,8 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 	if (BRASERO_FILE_NODE_MIME (node) && !size_changed)
 		return;
 
-	brasero_file_node_set_from_info (node, info);
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	brasero_file_node_set_from_info (node, stats, info);
 
 	/* no need to check for graft since it wasn't renamed, it wasn't moved
 	 * its type hasn't changed (and therefore it can't be a symlink. For 

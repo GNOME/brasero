@@ -719,6 +719,7 @@ brasero_file_node_add (BraseroFileNode *parent,
 
 void
 brasero_file_node_set_from_info (BraseroFileNode *node,
+				 BraseroFileTreeStats *stats,
 				 GFileInfo *info)
 {
 	/* NOTE: the name will never be replaced here since that means
@@ -754,18 +755,10 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 
 		sectors = BRASERO_SIZE_TO_SECTORS (g_file_info_get_size (info), 2048);
 
-		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT) {
-			BraseroFileTreeStats *stats;
-
-			stats = brasero_file_node_get_tree_stats (node, NULL);
+		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT)
 			stats->num_2Gio ++;
-		}
-		else if (sectors <= BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) > BRASERO_FILE_2G_LIMIT) {
-			BraseroFileTreeStats *stats;
-
-			stats = brasero_file_node_get_tree_stats (node, NULL);
+		else if (sectors <= BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) > BRASERO_FILE_2G_LIMIT)
 			stats->num_2Gio --;
-		}
 
 		/* The node isn't grafted and it's a file. So we must propagate
 		 * its size up to the parent graft node. */
@@ -833,11 +826,13 @@ brasero_file_node_new_from_info (GFileInfo *info,
 				 GCompareFunc sort_func)
 {
 	BraseroFileNode *node;
+	BraseroFileTreeStats *stats;
 
 	node = g_new0 (BraseroFileNode, 1);
 	node->union1.name = g_strdup (g_file_info_get_name (info));
 
-	brasero_file_node_set_from_info (node, info);
+	stats = brasero_file_node_get_tree_stats (parent, NULL);
+	brasero_file_node_set_from_info (node, stats, info);
 
 	/* This must be done after above function */
 	brasero_file_node_add (parent, node, sort_func);
