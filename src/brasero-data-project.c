@@ -1083,6 +1083,7 @@ brasero_data_project_remove_real (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 	BraseroDataProjectClass *klass;
 	BraseroFileNode *former_parent;
+	BraseroFileTreeStats *stats;
 	guint former_position;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
@@ -1100,14 +1101,12 @@ brasero_data_project_remove_real (BraseroDataProject *self,
 		klass->node_removed (self, former_parent, former_position, node);
 
 	/* save imported nodes in their parent structure or destroy it */
-	if (!node->is_imported) {
-		BraseroFileTreeStats *stats;
-
-		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	if (!node->is_imported)
 		brasero_file_node_destroy (node, stats);
-	}
 	else
 		brasero_file_node_save_imported (node,
+						 stats,
 						 former_parent,
 						 priv->sort_func);
 

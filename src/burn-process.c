@@ -541,9 +541,30 @@ brasero_process_setup_channel (BraseroProcess *process,
 			       GIOFunc function)
 {
 	GIOChannel *channel;
+	const gchar *term;
+	gint len = 0;
 
 	fcntl (pipe, F_SETFL, O_NONBLOCK);
 	channel = g_io_channel_unix_new (pipe);
+
+	term = g_io_channel_get_line_term (channel, &len);
+	if (term) {
+		gchar *tmp;
+
+		tmp = g_strdup_printf ("\b%s", term);
+g_print ("In here\n");
+		len ++;
+		g_io_channel_set_line_term (channel, tmp, len);
+		g_free (tmp);
+	}
+	else {
+		gchar *tmp;
+g_print ("KKKLKD\n");
+		tmp = g_strdup ("\n\r\b\0");
+		g_io_channel_set_line_term (channel, tmp, 4);
+		g_free (tmp);
+	}
+
 	g_io_channel_set_flags (channel,
 				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,
 				NULL);

@@ -267,6 +267,7 @@ brasero_file_node_destroy (BraseroFileNode *node,
 
 void
 brasero_file_node_save_imported (BraseroFileNode *node,
+				 BraseroFileTreeStats *stats,
 				 BraseroFileNode *parent,
 				 GCompareFunc sort_func);
 

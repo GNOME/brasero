@@ -1131,10 +1131,10 @@ brasero_file_node_save_imported_children (BraseroFileNode *node,
 
 void
 brasero_file_node_save_imported (BraseroFileNode *node,
+				 BraseroFileTreeStats *stats,
 				 BraseroFileNode *parent,
 				 GCompareFunc sort_func)
 {
-	BraseroFileTreeStats *stats;
 	BraseroImport *import;
 
 	/* if it isn't imported return */
@@ -1157,8 +1157,6 @@ brasero_file_node_save_imported (BraseroFileNode *node,
 		parent->union1.import = import;
 		parent->has_import = TRUE;
 	}
-
-	stats = brasero_file_node_get_tree_stats (node, NULL);
 
 	/* unlink it and add it to the list */
 	brasero_file_node_unlink (node);

@@ -22,13 +22,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
+#include <glib.h>
+
 #ifndef _SCSI_CMD_OPCODES_H
 #define _SCSI_CMD_OPCODES_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 /**
  *	SPC1
@@ -70,9 +69,7 @@ extern "C"
 
 #define BRASERO_READ_DISC_STRUCTURE_OPCODE		0xAD
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_CMD-OPCODES_H */
 
