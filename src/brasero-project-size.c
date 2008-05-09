@@ -303,9 +303,6 @@ brasero_project_size_finalize (GObject *object)
 		BraseroDriveSize *drive;
 
 		drive = iter->data;
-		if (drive->medium)
-			g_object_unref (drive->medium);
-
 		g_free (drive);
 	}
 	g_list_free (cobj->priv->drives);
@@ -1585,21 +1582,21 @@ brasero_project_size_disc_removed_cb (BraseroMediumMonitor *monitor,
 				      BraseroProjectSize *self)
 {
 	GList *iter;
+	GList *next;
 
-	for (iter = self->priv->drives; iter; iter = iter->next) {
+	for (iter = self->priv->drives; iter; iter = next) {
 		BraseroDriveSize *drive;
 
 		drive = iter->data;
-		if (drive->medium
-		&&  medium == drive->medium) {
-			drive->media = BRASERO_MEDIUM_NONE;
-			drive->sectors = 0;
-			drive->free_space = 0;
-
-			brasero_project_size_find_proper_drive (self);
-			brasero_project_size_disc_changed (self);
+		next = iter->next;
+		if (medium == drive->medium) {
+			self->priv->drives = g_list_remove (self->priv->drives, drive);
+			g_free (drive);
 		}
 	}
+
+	brasero_project_size_find_proper_drive (self);
+	brasero_project_size_disc_changed (self);
 
 	/* we need to rebuild the menu is any */
 	if (self->priv->menu)

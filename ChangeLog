@@ -1,3 +1,20 @@
+2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix progress when blanking (for the backends that return progress)
+	Fix progress for dvd+rw-format
+	Fix some warnings
+
+	* src/brasero-project-size.c (brasero_project_size_finalize),
+	(brasero_project_size_disc_removed_cb):
+	* src/burn-job.c (brasero_job_set_progress):
+	* src/burn-process.c (brasero_process_read),
+	(brasero_process_setup_channel):
+	* src/burn-task-ctx.c (brasero_task_ctx_get_progress):
+	* src/burn.c (brasero_burn_wait_for_dest_insertion),
+	(brasero_burn_mount_media), (brasero_burn_run_tasks):
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_read_stderr):
+
 2008-05-08  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix #531831 – crash when adding a directory with a file bigger than 2Gb

@@ -50,6 +50,7 @@ static GObjectClass *parent_class = NULL;
 static BraseroBurnResult
 brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const gchar *line)
 {
+	int perc_1 = 0, perc_2 = 0;
 	float percent;
 
 	if (strstr (line, "unable to proceed with format")
@@ -65,14 +66,17 @@ brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const gchar *line)
 		return BRASERO_BURN_OK;
 	}
 
-	if ((sscanf (line, "* blanking %f%%,", &percent) == 1)
-	||  (sscanf (line, "* formatting %f%%,", &percent) == 1)
-	||  (sscanf (line, "* relocating lead-out %f%%,", &percent) == 1))
+	if ((sscanf (line, "* blanking %d.%1d%%,", &perc_1, &perc_2) == 2)
+	||  (sscanf (line, "* formatting %d.%1d%%,", &perc_1, &perc_2) == 2)
+	||  (sscanf (line, "* relocating lead-out %d.%1d%%,", &perc_1, &perc_2) == 2))
 		brasero_job_set_dangerous (BRASERO_JOB (process), TRUE);
+	else 
+		sscanf (line, "%d.%1d%%", &perc_1, &perc_2);
 
-	if (percent >= 1.0) {
-		brasero_job_set_written_session (BRASERO_JOB (process), percent);
-		brasero_job_set_progress (BRASERO_JOB (process), 1.0);
+	percent = (float) perc_1 / 100.0 + (float) perc_2 / 1000.0;
+	if (percent) {
+		brasero_job_start_progress (BRASERO_JOB (process), FALSE);
+		brasero_job_set_progress (BRASERO_JOB (process), percent);
 	}
 
 	return BRASERO_BURN_OK;

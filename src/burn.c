@@ -128,8 +128,11 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 #define BRASERO_BURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN, BraseroBurnPrivate))
 
 #define MAX_EJECT_WAIT_TIME	20000
-#define MAX_MOUNT_ATTEMPS	10
+#define MAX_MOUNT_ATTEMPTS	10
 #define MOUNT_TIMEOUT		500
+
+#define MAX_LOAD_ATTEMPTS	20
+#define LOAD_TIMEOUT		500
 
 static GObjectClass *parent_class = NULL;
 
@@ -229,6 +232,67 @@ brasero_burn_sleep (BraseroBurn *burn, gint msec)
 
 	/* if sleep_loop = NULL => We've been cancelled */
 	return BRASERO_BURN_CANCEL;
+}
+
+static BraseroBurnResult
+brasero_burn_wait_for_dest_insertion (BraseroBurn *burn,
+				      GError **error)
+{
+	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	BraseroMedium *medium;
+	guint attempt = 0;
+	gchar *failure;
+
+	BRASERO_BURN_LOG ("Waiting for destination disc");
+	if (!priv->dest)
+		return BRASERO_BURN_OK;
+
+	/* we need to release our lock */
+	if (priv->dest_locked) {
+		priv->dest_locked = 0;
+		if (!brasero_drive_unlock (priv->dest)) {
+			gchar *name;
+
+			name = brasero_drive_get_display_name (priv->dest);
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("\"%s\" can't be unlocked"),
+				     name);
+			g_free (name);
+			return BRASERO_BURN_ERR;
+		}
+	}
+
+	medium = brasero_drive_get_medium (priv->dest);
+	while (brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE) {
+		brasero_burn_sleep (burn, LOAD_TIMEOUT);
+		
+		attempt ++;
+		if (attempt > MAX_LOAD_ATTEMPTS) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("the disc could not be reloaded (max attemps reached)"));
+			return BRASERO_BURN_ERR;
+		}
+
+		medium = brasero_drive_get_medium (priv->dest);
+	}
+
+	/* Re-add the lock */
+	if (!priv->dest_locked
+	&&  !brasero_drive_lock (priv->dest, _("ongoing burning process"), &failure)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the drive can't be locked (%s)"),
+			     failure);
+		return BRASERO_BURN_ERR;
+	}
+	priv->dest_locked = 1;
+
+	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
@@ -923,7 +987,7 @@ brasero_burn_mount_media (BraseroBurn *self,
 
 	medium = brasero_drive_get_medium (priv->dest);
 	while (!brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
-		if (retries++ > MAX_MOUNT_ATTEMPS) {
+		if (retries++ > MAX_MOUNT_ATTEMPTS) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -1580,6 +1644,14 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			g_object_unref (priv->task);
 			priv->task = NULL;
 			priv->tasks_done ++;
+
+			/* Now it can happen (like with dvd+rw-format) that for
+			 * the whole OS, the disc doesn't exist during the 
+			 * formatting. Wait for the disc to reappear */
+			result = brasero_burn_wait_for_dest_insertion (burn, error);
+			if (result != BRASERO_BURN_OK)
+				break;
+
 			continue;
 		}
 

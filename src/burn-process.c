@@ -349,9 +349,9 @@ brasero_process_read (BraseroProcess *process,
 
 		if (status == G_IO_STATUS_AGAIN) {
 			gchar character;
-			/* line is NULL since there wasn't any character ending the line and so it wasn't
-			 * read at all.
-			 * some processes (like cdrecord/cdrdao) produce an extra character sometimes */
+			/* there wasn't any character ending the line.
+			 * some processes (like cdrecord/cdrdao) produce an
+			 * extra character sometimes */
 			status = g_io_channel_read_chars (channel,
 							  &character,
 							  1,
@@ -362,15 +362,16 @@ brasero_process_read (BraseroProcess *process,
 				g_string_append_c (buffer, character);
 
 				switch (character) {
+				case '\b':
 				case '\n':
 				case '\r':
-				case '\xe2':
+				case '\xe2': /* Unicode paragraph separator */
 				case '\0':
 					BRASERO_JOB_LOG (process,
 							 debug_prefixes [channel_type],
 							 buffer->str);
 
-					if (readfunc)
+					if (readfunc && buffer->str [0] != '\0')
 						result = readfunc (process, buffer->str);
 
 					/* a subclass could have stopped or errored out.
@@ -405,7 +406,7 @@ brasero_process_read (BraseroProcess *process,
 					 debug_prefixes [channel_type],
 					 buffer->str);
 
-			if (readfunc)
+			if (readfunc && buffer->str [0] != '\0')
 				result = readfunc (process, buffer->str);
 
 			/* a subclass could have stopped or errored out.
@@ -541,29 +542,13 @@ brasero_process_setup_channel (BraseroProcess *process,
 			       GIOFunc function)
 {
 	GIOChannel *channel;
-	const gchar *term;
-	gint len = 0;
 
 	fcntl (pipe, F_SETFL, O_NONBLOCK);
 	channel = g_io_channel_unix_new (pipe);
 
-	term = g_io_channel_get_line_term (channel, &len);
-	if (term) {
-		gchar *tmp;
-
-		tmp = g_strdup_printf ("\b%s", term);
-g_print ("In here\n");
-		len ++;
-		g_io_channel_set_line_term (channel, tmp, len);
-		g_free (tmp);
-	}
-	else {
-		gchar *tmp;
-g_print ("KKKLKD\n");
-		tmp = g_strdup ("\n\r\b\0");
-		g_io_channel_set_line_term (channel, tmp, 4);
-		g_free (tmp);
-	}
+	/* It'd be good if we were allowed to add some to the default line
+	 * separator */
+//	g_io_channel_set_line_term (channel, "\b", -1);
 
 	g_io_channel_set_flags (channel,
 				g_io_channel_get_flags (channel) | G_IO_FLAG_NONBLOCK,

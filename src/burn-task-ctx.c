@@ -803,13 +803,21 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 	gdouble track_num = 0;
 	gdouble track_nb = 0;
 	gint64 total = -1;
-	GSList *tracks;
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	tracks = brasero_burn_session_get_tracks (priv->session);
-	track_num = g_slist_length (tracks);
-	track_nb = g_slist_index (tracks, priv->current_track);
+	/* The following can happen when we're blanking since there's no track */
+	if (priv->action == BRASERO_TASK_ACTION_ERASE) {
+		track_num = 1.0;
+		track_nb = 0.0;
+	}
+	else {
+		GSList *tracks;
+
+		tracks = brasero_burn_session_get_tracks (priv->session);
+		track_num = g_slist_length (tracks);
+		track_nb = g_slist_index (tracks, priv->current_track);
+	}
 
 	if (priv->progress >= 0.0) {
 		if (progress)
