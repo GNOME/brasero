@@ -1089,8 +1089,12 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	/* For DVD-W and DVD-RW sequential
-	 * NOTE: DAO et MULTI are exclusive. */
-	brasero_plugin_set_flags (plugin,
+	 * NOTE: given the performed tests it seems that wodim should not be 
+	 * used to start a multisession DVD-RW or even continue one.
+	 * I didn't try with DVD-W since I didn't want to waste one for nothing.
+	 */
+
+/*	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
 				  BRASERO_MEDIUM_WRITABLE|
@@ -1098,10 +1102,10 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
+*/
 
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
@@ -1116,7 +1120,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	brasero_plugin_set_flags (plugin,
+/*	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
 				  BRASERO_MEDIUM_WRITABLE|
@@ -1130,7 +1134,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE);
+				  BRASERO_BURN_FLAG_NONE); */
 
 	/* DVD+ R/RW don't support dummy mode 
 	 * NOTE: don't mix dao and multisession */
