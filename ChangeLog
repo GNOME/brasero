@@ -1,5 +1,21 @@
 2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fixed another bug with project-size medium insertion/removal
+
+	* src/brasero-project-size.c (brasero_project_size_finalize),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_disc_removed_cb):
+
+2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a crash on medium removal/addition
+
+	* src/brasero-project-size.c (brasero_project_size_finalize),
+	(brasero_project_size_disc_added_cb),
+	(brasero_project_size_disc_removed_cb):
+
+2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix crash when a file don't replace an imported one (when the user refuses to)
 
 	* src/brasero-data-session.c (brasero_data_session_add_last):

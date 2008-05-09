@@ -303,6 +303,7 @@ brasero_project_size_finalize (GObject *object)
 		BraseroDriveSize *drive;
 
 		drive = iter->data;
+		g_object_unref (drive->medium);
 		g_free (drive);
 	}
 	g_list_free (cobj->priv->drives);
@@ -1558,6 +1559,8 @@ brasero_project_size_disc_added_cb (BraseroMediumMonitor *monitor,
 	/* first add it to the list */
 	drive = g_new0 (BraseroDriveSize, 1);
 	drive->medium = medium;
+	g_object_ref (medium);
+
 	self->priv->drives = g_list_prepend (self->priv->drives, drive);
 
 	drive->media = brasero_medium_get_status (medium);
@@ -1590,7 +1593,11 @@ brasero_project_size_disc_removed_cb (BraseroMediumMonitor *monitor,
 		drive = iter->data;
 		next = iter->next;
 		if (medium == drive->medium) {
+			if (self->priv->current == drive)
+				self->priv->current = NULL;
+
 			self->priv->drives = g_list_remove (self->priv->drives, drive);
+			g_object_unref (drive->medium);
 			g_free (drive);
 		}
 	}
