@@ -174,15 +174,15 @@ brasero_data_session_add_last (BraseroDataSession *self,
 								       file,
 								       NULL);
 
+		if (!node)
+			continue;
+
 		if (!node->is_file)
 			brasero_data_session_add_children_files (self,
 								 node,
 								 file->specific.dir.children);
 
 		priv->nodes = g_slist_prepend (priv->nodes, node);
-
-		/* FIXME: it could be good to check if a directory with the 
-		 * same filename doesn't exist and "merge" them */
 	}
 
 	/* put this here in case we have to replace one file at the root
