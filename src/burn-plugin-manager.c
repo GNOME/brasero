@@ -290,11 +290,23 @@ brasero_plugin_manager_plugin_state_changed (BraseroPlugin *plugin,
 		gconf_client_notify_remove (client, priv->notification);
 		priv->notification = 0;
 	}
-	res = gconf_client_set_list (client,
-	    			     BRASERO_PLUGIN_KEY,
-				     GCONF_VALUE_STRING,
-				     list,
-				     &error);
+
+	if (list)
+		res = gconf_client_set_list (client,
+					     BRASERO_PLUGIN_KEY,
+					     GCONF_VALUE_STRING,
+					     list,
+					     &error);
+	else {
+		gchar *none = "none";
+
+		list = g_slist_prepend (list, none);
+		res = gconf_client_set_list (client,
+					     BRASERO_PLUGIN_KEY,
+					     GCONF_VALUE_STRING,
+					     list,
+					     &error);
+	}
 
 	if (!res)
 		BRASERO_BURN_LOG ("Error saving list of active plugins: %s",

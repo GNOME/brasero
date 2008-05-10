@@ -1,5 +1,13 @@
 2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #532391 – brasero does not save user settings
+	and possibly #530231 – Brasero is not remembering plugin settings
+
+	* src/burn-plugin-manager.c
+	(brasero_plugin_manager_plugin_state_changed):
+
+2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #513910 – broken DVD DL support
 	Added Dual Layer support
 
