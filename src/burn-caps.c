@@ -2946,8 +2946,7 @@ brasero_caps_disc_new_status (GSList *retval,
 	if ((type & BRASERO_MEDIUM_BLANK)
 	&& !(media & BRASERO_MEDIUM_ROM)) {
 		/* if media is blank there is no other possible property */
-		if (!(media & BRASERO_MEDIUM_ROM))
-			retval = brasero_caps_disc_lookup_or_create (retval, media | BRASERO_MEDIUM_BLANK);
+		retval = brasero_caps_disc_lookup_or_create (retval, media|BRASERO_MEDIUM_BLANK);
 	}
 
 	if (type & BRASERO_MEDIUM_CLOSED) {
@@ -2957,22 +2956,24 @@ brasero_caps_disc_new_status (GSList *retval,
 								     BRASERO_MEDIUM_CLOSED|
 								     (type & BRASERO_MEDIUM_HAS_DATA)|
 								     (type & BRASERO_MEDIUM_PROTECTED));
-		else if (media & BRASERO_MEDIUM_HAS_AUDIO)
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_CLOSED|
-								     BRASERO_MEDIUM_HAS_AUDIO);
-		else if (media & BRASERO_MEDIUM_HAS_DATA)
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_CLOSED|
-								     BRASERO_MEDIUM_HAS_DATA);
-		else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_CLOSED|
-								     BRASERO_MEDIUM_HAS_DATA|
-								     BRASERO_MEDIUM_HAS_AUDIO);
+		else {
+			if (type & BRASERO_MEDIUM_HAS_AUDIO)
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_CLOSED|
+									     BRASERO_MEDIUM_HAS_AUDIO);
+			if (type & BRASERO_MEDIUM_HAS_DATA)
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_CLOSED|
+									     BRASERO_MEDIUM_HAS_DATA);
+			if (BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_CLOSED|
+									     BRASERO_MEDIUM_HAS_DATA|
+									     BRASERO_MEDIUM_HAS_AUDIO);
+		}
 	}
 
 	if ((type & BRASERO_MEDIUM_APPENDABLE)
@@ -2985,22 +2986,24 @@ brasero_caps_disc_new_status (GSList *retval,
 								     media|
 								     BRASERO_MEDIUM_APPENDABLE|
 								     BRASERO_MEDIUM_HAS_DATA);
-		else if (media & BRASERO_MEDIUM_HAS_AUDIO)
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_APPENDABLE|
-								     BRASERO_MEDIUM_HAS_AUDIO);
-		else if (media & BRASERO_MEDIUM_HAS_DATA)
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_APPENDABLE|
-								     BRASERO_MEDIUM_HAS_DATA);
-		else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_HAS_DATA|
-								     BRASERO_MEDIUM_APPENDABLE|
-								     BRASERO_MEDIUM_HAS_AUDIO);
+		else {
+			if (type & BRASERO_MEDIUM_HAS_AUDIO)
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_APPENDABLE|
+									     BRASERO_MEDIUM_HAS_AUDIO);
+			if (type & BRASERO_MEDIUM_HAS_DATA)
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_APPENDABLE|
+									     BRASERO_MEDIUM_HAS_DATA);
+			if (BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_HAS_DATA|
+									     BRASERO_MEDIUM_APPENDABLE|
+									     BRASERO_MEDIUM_HAS_AUDIO);
+		}
 	}
 
 	return retval;
