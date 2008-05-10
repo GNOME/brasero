@@ -303,7 +303,10 @@ brasero_project_size_finalize (GObject *object)
 		BraseroDriveSize *drive;
 
 		drive = iter->data;
-		g_object_unref (drive->medium);
+
+		if (drive->medium)
+			g_object_unref (drive->medium);
+
 		g_free (drive);
 	}
 	g_list_free (cobj->priv->drives);

@@ -1022,7 +1022,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 	const BraseroMedia dvd_media = BRASERO_MEDIUM_DVD|
 				       BRASERO_MEDIUM_PLUS|
 				       BRASERO_MEDIUM_SEQUENTIAL|
-				       BRASERO_MEDIUM_RESTRICTED|
+//				       BRASERO_MEDIUM_RESTRICTED|
 				       BRASERO_MEDIUM_WRITABLE|
 				       BRASERO_MEDIUM_REWRITABLE|
 				       BRASERO_MEDIUM_BLANK|
@@ -1036,7 +1036,6 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_HAS_DATA|
 				      BRASERO_MEDIUM_BLANK;
 	BraseroBurnResult result;
-	gchar *prog_name;
 	GSList *output;
 	GSList *input;
 
@@ -1057,7 +1056,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
 
-	/* wodim can burn all DVDs when it's ISOs */
+	/* cdrecord can burn all DVDs (except restricted)when it's ISOs */
 	output = brasero_caps_disc_new (dvd_media);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
@@ -1083,7 +1082,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* For DVD-W and DVD-RW sequential
 	 * NOTE: DAO et MULTI are exclusive. */
-	brasero_plugin_set_flags (plugin,
+/*	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
 				  BRASERO_MEDIUM_WRITABLE|
@@ -1095,7 +1094,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
-
+*/
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
@@ -1108,7 +1107,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
-
+/*
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
@@ -1124,9 +1123,9 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_NONE);
-
+*/
 	/* see NOTE for DVD-RW restricted overwrite below */
-	brasero_plugin_set_flags (plugin,
+/*	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_RESTRICTED|
 				  BRASERO_MEDIUM_REWRITABLE|
@@ -1169,7 +1168,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE|
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_MULTI);
-
+*/
 	/* DVD+ R/RW don't support dummy mode 
 	 * NOTE: don't mix dao and multisession */
 	brasero_plugin_set_flags (plugin,
@@ -1181,7 +1180,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	brasero_plugin_set_flags (plugin,
+/*	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_BURNPROOF|
@@ -1189,7 +1188,8 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
-
+*/
+/*
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_APPENDABLE|
@@ -1201,7 +1201,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_NONE);
-
+*/
 	/* for DVD+RW */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
@@ -1254,7 +1254,58 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* for blanking */
+	/* blanking/formatting caps and flags for +/sequential RW
+	 * NOTE: restricted overwrite DVD-RW can't be formatted.
+	 * moreover DVD+RW are formatted while DVD-RW sequential are blanked.
+	  * NOTE: blanking DVD-RW doesn't work */
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_PLUS|
+//					BRASERO_MEDIUM_SEQUENTIAL|
+//					BRASERO_MEDIUM_RESTRICTED|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK);
+	brasero_plugin_blank_caps (plugin, output);
+	g_slist_free (output);
+
+	/* This media can be blanked fast or full like any CDRW. */
+/*	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_SEQUENTIAL|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_CLOSED,
+//					BRASERO_BURN_FLAG_FAST_BLANK|
+					BRASERO_BURN_FLAG_NOGRACE,
+					BRASERO_BURN_FLAG_NONE);
+*/
+	/* For DVD-RW restricted overwrite */
+/*	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_RESTRICTED|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_CLOSED,
+					BRASERO_BURN_FLAG_NOGRACE,
+					BRASERO_BURN_FLAG_NONE);
+*/
+	/* again DVD+RW don't support dummy */
+	brasero_plugin_set_blank_flags (plugin,
+					BRASERO_MEDIUM_DVDRW_PLUS|
+					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_CLOSED,
+					BRASERO_BURN_FLAG_NOGRACE,
+					BRASERO_BURN_FLAG_NONE);
+
+	/* for blanking (CDRWs) */
 	output = brasero_caps_disc_new (media_rw);
 	brasero_plugin_blank_caps (plugin, output);
 	g_slist_free (output);

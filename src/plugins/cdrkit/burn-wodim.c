@@ -1138,7 +1138,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* DVD+ R/RW don't support dummy mode 
 	 * NOTE: don't mix dao and multisession */
-	brasero_plugin_set_flags (plugin,
+/*	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
@@ -1146,7 +1146,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
-
+*/
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
@@ -1156,6 +1156,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
+/*
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_APPENDABLE|
@@ -1167,7 +1168,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_NONE);
-
+*/
 	/* for DVD+RW */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
