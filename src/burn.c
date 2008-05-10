@@ -741,7 +741,7 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 
 		return BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE;
 	}
-	else if (unsupported & BRASERO_MEDIUM_DVD)
+	else if (unsupported & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 		return BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED;
 
 	return BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
@@ -951,9 +951,8 @@ brasero_burn_reload_dest_media (BraseroBurn *burn,
 again:
 
 	/* eject and ask the user to reload a disc */
-	required_media = brasero_burn_caps_get_required_media_type (priv->caps,
-								    priv->session);
-	required_media &= (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_CD|BRASERO_MEDIUM_DVD);
+	required_media = brasero_burn_caps_get_required_media_type (priv->caps, priv->session);
+	required_media &= (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_CD|BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL);
 
 	result = brasero_burn_ask_for_dest_media (burn,
 						  error_code,

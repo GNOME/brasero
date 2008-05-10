@@ -635,6 +635,7 @@ brasero_dvdcss_export_caps (BraseroPlugin *plugin, gchar **error)
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					 BRASERO_IMAGE_FORMAT_BIN);
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
+				       BRASERO_MEDIUM_DVD_DL|
 				       BRASERO_MEDIUM_ROM|
 				       BRASERO_MEDIUM_CLOSED|
 				       BRASERO_MEDIUM_HAS_DATA|

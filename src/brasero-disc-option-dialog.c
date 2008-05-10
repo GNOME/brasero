@@ -276,7 +276,7 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 	brasero_burn_session_get_input_type (priv->session, &input);
 	if (input.type == BRASERO_TRACK_TYPE_DATA
 	&& (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
-	&& (brasero_burn_session_get_dest_media (priv->session) & BRASERO_MEDIUM_DVD)) {
+	&& (brasero_burn_session_get_dest_media (priv->session) & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
 		goto end;
 	}

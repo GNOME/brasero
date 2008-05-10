@@ -419,7 +419,7 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 	/* the number of interval needs to be reasonable, not over 8 not under 5 */
 	if (self->priv->is_audio_context)
 		interval_size = AUDIO_INTERVAL_CD;
-	else if (self->priv->current->media & BRASERO_MEDIUM_DVD)
+	else if (self->priv->current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 		interval_size = DATA_INTERVAL_DVD;
 	else
 		interval_size = DATA_INTERVAL_CD;
@@ -731,7 +731,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	
 	if (self->priv->is_audio_context)
 		interval_size = AUDIO_INTERVAL_CD;
-	else if (self->priv->current->media & BRASERO_MEDIUM_DVD)
+	else if (self->priv->current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 		interval_size = DATA_INTERVAL_DVD;
 	else
 		interval_size = DATA_INTERVAL_CD;
@@ -1061,7 +1061,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 			continue;
 
 		if (self->priv->is_audio_context
-		&& (drive->media & BRASERO_MEDIUM_DVD))
+		&& (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
 			continue;
 
 		if (!drive->medium && !separator) {
@@ -1091,7 +1091,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 			label = g_strdup_printf ("%s %s", size_str, name);
 			g_free (name);
 		}
-		else if (drive->media & BRASERO_MEDIUM_DL)
+		else if (drive->media & BRASERO_MEDIUM_DVD_DL)
 			label = g_strdup_printf (_("%s (DVD-R Dual Layer)"),
 						 size_str);
 		else if (drive->media & BRASERO_MEDIUM_DVD)
@@ -1129,7 +1129,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 		if (!drive->medium)
 			image = gtk_image_new_from_icon_name ("drive-optical", GTK_ICON_SIZE_MENU);
-		else if (drive->media & BRASERO_MEDIUM_DVD)
+		else if (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 			image = gtk_image_new_from_icon_name ("gnome-dev-disc-dvdr", GTK_ICON_SIZE_MENU);
 		else
 			image = gtk_image_new_from_icon_name ("gnome-dev-disc-cdr", GTK_ICON_SIZE_MENU);
@@ -1238,7 +1238,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 				iter = g_list_next (iter);
 			/* in an audio context only CDs are valid */
 			else if (self->priv->is_audio_context
-			     && (drive->media & BRASERO_MEDIUM_DVD))
+			     && (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
 				iter = g_list_next (iter);
 			/* we want a drive supported by the library */
 			else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
@@ -1281,7 +1281,7 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 				iter = g_list_previous (iter);
 			/* in an audio context only CDs are valid */
 			else if (self->priv->is_audio_context
-			     && (drive->media & BRASERO_MEDIUM_DVD))
+			     && (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
 				iter = g_list_previous (iter);
 			/* we want a drive supported by the library */
 			else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
@@ -1367,7 +1367,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		media_status = brasero_burn_caps_media_capabilities (caps, current->media);
 
 		if (self->priv->is_audio_context
-		&& (current->media & BRASERO_MEDIUM_DVD)) {
+		&& (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
 			current = NULL;
 		}
 		else if (!BRASERO_MEDIUM_VALID (current->media)) {
@@ -1411,7 +1411,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 
 		/* No DVD if context is audio */
 		if (self->priv->is_audio_context
-		&& (drive->media & BRASERO_MEDIUM_DVD))
+		&& (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
 			continue;
 
 		if (!BRASERO_MEDIUM_VALID (drive->media))
@@ -1482,7 +1482,7 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 	else if (!current->medium)
 		brasero_project_size_find_proper_drive (self);
 	else if (is_audio
-	     && (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_APPENDABLE)))
+	     && (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_APPENDABLE)))
 		brasero_project_size_find_proper_drive (self);
 
 	brasero_project_size_disc_changed (self);

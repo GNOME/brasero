@@ -493,6 +493,7 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_CDRW|
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_DVDRW|
+				  BRASERO_MEDIUM_DVD_DL|
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_AUDIO|

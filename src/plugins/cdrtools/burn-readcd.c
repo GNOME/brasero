@@ -399,6 +399,7 @@ brasero_readcd_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
 				       BRASERO_MEDIUM_DVD|
+				       BRASERO_MEDIUM_DVD_DL|
 				       BRASERO_MEDIUM_PLUS|
 				       BRASERO_MEDIUM_SEQUENTIAL|
 				       BRASERO_MEDIUM_RESTRICTED|

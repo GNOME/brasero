@@ -1,5 +1,52 @@
 2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #513910 – broken DVD DL support
+	Added Dual Layer support
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_get_media_type_string),
+	(brasero_burn_dialog_progress_changed_real),
+	(brasero_burn_dialog_notify_success):
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_get_default_output_format):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_update_multi):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_format_disc_speed):
+	* src/brasero-project-size.c
+	(brasero_project_size_get_ruler_min_width),
+	(brasero_project_size_expose), (brasero_project_size_build_menu),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_set_context):
+	* src/burn-caps.c (brasero_burn_caps_get_required_media_type),
+	(brasero_burn_caps_sort), (brasero_caps_disc_lookup_or_create),
+	(brasero_caps_disc_new_status), (brasero_caps_disc_new_attribute),
+	(brasero_caps_disc_new_subtype), (brasero_caps_disc_new):
+	* src/burn-debug.c (brasero_debug_medium_info_to_string):
+	* src/burn-job.c (brasero_job_get_speed),
+	(brasero_job_get_max_speed):
+	* src/burn-medium.c (brasero_medium_get_medium_type),
+	(brasero_medium_track_get_info):
+	* src/burn-medium.h:
+	* src/burn.c (brasero_burn_is_loaded_dest_media_supported),
+	(brasero_burn_reload_dest_media):
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_export_caps):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_export_caps):
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_export_caps):
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+
+2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix warnings
 	Updated cdrecord capabilities (DVDs but no multisession and no blanking capabilities)
 

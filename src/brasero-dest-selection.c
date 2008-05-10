@@ -330,7 +330,7 @@ brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 		return;
 
 	if (source.type == BRASERO_TRACK_TYPE_DATA
-	||  source.subtype.media & BRASERO_MEDIUM_DVD) {
+	||  source.subtype.media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)) {
 		output->subtype.img_format = BRASERO_IMAGE_FORMAT_BIN;
 		result = brasero_burn_caps_is_output_supported (priv->caps,
 								priv->session,

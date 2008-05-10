@@ -245,7 +245,7 @@ brasero_drive_properties_format_disc_speed (BraseroMedia media,
 {
 	gchar *text;
 
-	if (media & BRASERO_MEDIUM_DVD)
+	if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 		text = g_strdup_printf (_("%.1f x (DVD)"),
 					BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_CD)

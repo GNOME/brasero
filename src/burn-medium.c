@@ -1012,7 +1012,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		break;
 
 	case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
-		priv->info = BRASERO_MEDIUM_BDR;
+		priv->info = BRASERO_MEDIUM_BDR_SRM;
 		priv->type = types [14];
 		priv->icon = icons [5];
 		break;
@@ -1245,7 +1245,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	/* at this point we know the type of the disc that's why we set the 
 	 * size according to this type. That may help to avoid outrange address
 	 * errors. */
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DL|BRASERO_MEDIUM_WRITABLE))
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_WRITABLE))
 		size = 48;
 	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_WRITABLE))
 		size = 40;

@@ -181,6 +181,9 @@ brasero_debug_medium_info_to_string (gchar *buffer,
 	if (media & BRASERO_MEDIUM_BD)
 		strcat (buffer, "BD ");
 
+	if (media & BRASERO_MEDIUM_DVD_DL)
+		strcat (buffer, "DL ");
+
 	/* DVD subtypes */
 	if (media & BRASERO_MEDIUM_PLUS)
 		strcat (buffer, "+ ");
@@ -191,8 +194,8 @@ brasero_debug_medium_info_to_string (gchar *buffer,
 	if (media & BRASERO_MEDIUM_RESTRICTED)
 		strcat (buffer, "- (restricted) ");
 
-	if (media & BRASERO_MEDIUM_DL)
-		strcat (buffer, "DL ");
+	if (media & BRASERO_MEDIUM_JUMP)
+		strcat (buffer, "- (jump) ");
 
 	/* discs attributes */
 	if (media & BRASERO_MEDIUM_REWRITABLE)
