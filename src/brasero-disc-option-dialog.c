@@ -135,6 +135,25 @@ brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
 }
 
 static gchar *
+brasero_disc_option_dialog_truncate_label (const gchar *label)
+{
+	const gchar *delim;
+	gchar *next_char;
+
+	/* find last possible character. We can't just do a tmp + 32 
+	 * since we don't know if we are at the start of a character */
+	delim = label;
+	while ((next_char = g_utf8_find_next_char (delim, NULL))) {
+		if (next_char - label > 32)
+			break;
+
+		delim = next_char;
+	}
+
+	return g_strndup (label, delim - label);
+}
+
+static gchar *
 brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 {
 	time_t t;
@@ -163,28 +182,43 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 			title_str = brasero_volume_get_name (BRASERO_VOLUME (medium));
 		}
 
-		if (!title_str || title_str [0] == '\0')
+		if (!title_str || title_str [0] == '\0') {
+			/* NOTE to translators: the final string must not be over
+			 * 32 _bytes_ otherwise it gets truncated. */
 			title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
+
+			if (strlen (title_str) > 32) {
+				g_free (title_str);
+				strftime (buffer, sizeof (buffer), "%F", localtime (&t));
+				title_str = g_strdup_printf ("Data disc %s", buffer);
+			}
+		}
 	}
-	else if (source.type == BRASERO_TRACK_TYPE_AUDIO)
+	else if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
+		/* NOTE to translators: the final string must not be over
+		 * 32 _bytes_ */
 		title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
+
+		if (strlen (title_str) > 32) {
+			g_free (title_str);
+			strftime (buffer, sizeof (buffer), "%F", localtime (&t));
+			title_str = g_strdup_printf ("Audio disc %s", buffer);
+		}
+	}
 
 	if (drive)
 		g_object_unref (drive);
 
+	if (strlen (title_str) > 32) {
+		gchar *tmp;
+
+		tmp = brasero_disc_option_dialog_truncate_label (title_str);
+		g_free (title_str);
+
+		title_str = tmp;
+	}
+
 	return title_str;
-}
-
-static void
-brasero_disc_option_dialog_set_label (BraseroDiscOptionDialog *dialog)
-{
-	const gchar *label;
-	BraseroDiscOptionDialogPrivate *priv;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
-	label = gtk_entry_get_text (GTK_ENTRY (priv->label));
-	brasero_burn_session_set_label (priv->session, label);
 }
 
 static gboolean
@@ -202,7 +236,7 @@ brasero_disc_option_dialog_update_label (BraseroDiscOptionDialog *dialog)
 	gtk_entry_set_text (GTK_ENTRY (priv->label), label);
 	g_free (label);
 
-	brasero_disc_option_dialog_set_label (dialog);
+	brasero_burn_session_set_label (priv->session, label);
 	return TRUE;
 }
 
@@ -380,7 +414,7 @@ brasero_disc_option_dialog_output_changed (BraseroBurnSession *session,
 
 /**
  * These functions are used to update the session according to the states
- * of the buttons and entry 
+ * of the buttons and entry
  */
 
 static void
@@ -485,14 +519,86 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 }
 
 static void
+brasero_disc_option_label_insert_text (GtkEditable *editable,
+				       const gchar *text,
+				       gint length,
+				       gint *position,
+				       gpointer data)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+	const gchar *label;
+	gchar *new_text;
+	gint new_length;
+	gchar *current;
+	gint max_len;
+	gchar *prev;
+	gchar *next;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (data);	
+
+	/* check if this new text will fit in 32 _bytes_ long buffer */
+	label = gtk_entry_get_text (GTK_ENTRY (priv->label));
+	max_len = 32 - strlen (label) - length;
+	if (max_len >= 0)
+		return;
+
+	gdk_beep ();
+
+	/* get the last character '\0' of the text to be inserted */
+	new_length = length;
+	new_text = g_strdup (text);
+	current = g_utf8_offset_to_pointer (new_text, g_utf8_strlen (new_text, -1));
+
+	/* don't just remove one character in case there was many more
+	 * that were inserted at the same time through DND, paste, ... */
+	prev = g_utf8_find_prev_char (new_text, current);
+	if (!prev) {
+		/* no more characters so no insertion */
+		g_signal_stop_emission_by_name (editable, "insert_text"); 
+		g_free (new_text);
+		return;
+	}
+
+	do {
+		next = current;
+		current = prev;
+
+		prev = g_utf8_find_prev_char (new_text, current);
+		if (!prev) {
+			/* no more characters so no insertion */
+			g_signal_stop_emission_by_name (editable, "insert_text"); 
+			g_free (new_text);
+			return;
+		}
+
+		new_length -= next - current;
+		max_len += next - current;
+	} while (max_len < 0 && new_length > 0);
+
+	*current = '\0';
+	g_signal_handlers_block_by_func (editable,
+					 (gpointer) brasero_disc_option_label_insert_text,
+					 data);
+	gtk_editable_insert_text (editable, new_text, new_length, position);
+	g_signal_handlers_unblock_by_func (editable,
+					   (gpointer) brasero_disc_option_label_insert_text,
+					   data);
+
+	g_signal_stop_emission_by_name (editable, "insert_text");
+	g_free (new_text);
+}
+
+static void
 brasero_disc_option_label_changed (GtkEditable *editable,
 				   BraseroDiscOptionDialog *dialog)
 {
+	const gchar *label;
 	BraseroDiscOptionDialogPrivate *priv;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-	brasero_disc_option_dialog_set_label (dialog);
+	label = gtk_entry_get_text (GTK_ENTRY (priv->label));
+	brasero_burn_session_set_label (priv->session, label);
 	priv->label_modified = 1;
 }
 
@@ -507,12 +613,14 @@ brasero_disc_option_dialog_title_widget (BraseroDiscOptionDialog *dialog)
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-	if (!priv->label) {
+	if (!priv->label)
 		priv->label = gtk_entry_new ();
-		gtk_entry_set_max_length (GTK_ENTRY (priv->label), 32);
-	}
 
 	priv->label_modified = 0;
+	g_signal_connect (priv->label,
+			  "insert_text",
+			  G_CALLBACK (brasero_disc_option_label_insert_text),
+			  dialog);
 	g_signal_connect (priv->label,
 			  "changed",
 			  G_CALLBACK (brasero_disc_option_label_changed),
@@ -522,7 +630,7 @@ brasero_disc_option_dialog_title_widget (BraseroDiscOptionDialog *dialog)
 	gtk_entry_set_text (GTK_ENTRY (priv->label), title_str);
 	g_free (title_str);
 
-	brasero_disc_option_dialog_set_label (dialog);
+	brasero_burn_session_set_label (priv->session, label);
 
 	brasero_burn_session_get_input_type (priv->session, &type);
 	if (type.type == BRASERO_TRACK_TYPE_DATA)
@@ -845,10 +953,10 @@ GtkWidget *
 brasero_disc_option_dialog_new ()
 {
 	BraseroDiscOptionDialog *obj;
-	
+
 	obj = BRASERO_DISC_OPTION_DIALOG (g_object_new (BRASERO_TYPE_DISC_OPTION_DIALOG,
 							"title", _("Disc burning setup"),
 							NULL));
-	
+
 	return GTK_WIDGET (obj);
 }

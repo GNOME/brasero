@@ -1,3 +1,17 @@
+2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #532072 – brasero is not able to generate iso image when long localized label is used
+	Initial patch by Gregory Petrosyan modified afterwards
+
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_truncate_label),
+	(brasero_disc_option_dialog_get_default_label),
+	(brasero_disc_option_dialog_update_label),
+	(brasero_disc_option_label_insert_text),
+	(brasero_disc_option_label_changed),
+	(brasero_disc_option_dialog_title_widget):
+	* src/burn-session.c (brasero_burn_session_set_label):
+
 2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fixed a bug introduced by DL change

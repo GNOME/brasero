@@ -1049,8 +1049,27 @@ brasero_burn_session_set_label (BraseroBurnSession *self,
 
 	priv->settings->label = NULL;
 
-	if (label)
-		priv->settings->label = g_strdup (label);
+	if (label) {
+		if (strlen (label) > 32) {
+			const gchar *delim;
+			gchar *next_char;
+
+			/* find last possible character. We can't just do a tmp 
+			 * + 32 since we don't know if we are at the start of a
+			 * character */
+			delim = label;
+			while ((next_char = g_utf8_find_next_char (delim, NULL))) {
+				if (next_char - label > 32)
+					break;
+
+				delim = next_char;
+			}
+
+			priv->settings->label = g_strndup (label, delim - label);
+		}
+		else
+			priv->settings->label = g_strdup (label);
+	}
 }
 
 const gchar *
