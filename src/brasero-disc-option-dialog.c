@@ -606,8 +606,8 @@ static void
 brasero_disc_option_dialog_title_widget (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
-	BraseroTrackType type;
 	gchar *title_str = NULL;
+	BraseroTrackType type;
 	gchar *label = NULL;
 	GtkWidget *widget;
 
@@ -630,7 +630,7 @@ brasero_disc_option_dialog_title_widget (BraseroDiscOptionDialog *dialog)
 	gtk_entry_set_text (GTK_ENTRY (priv->label), title_str);
 	g_free (title_str);
 
-	brasero_burn_session_set_label (priv->session, label);
+	brasero_burn_session_set_label (priv->session, title_str);
 
 	brasero_burn_session_get_input_type (priv->session, &type);
 	if (type.type == BRASERO_TRACK_TYPE_DATA)
