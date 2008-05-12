@@ -175,7 +175,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	brasero_job_get_fd_out (BRASERO_JOB (self), &fd);
 
 	BRASERO_JOB_LOG (self, "writing to pipe");
-	while (priv->libburn_src->read (priv->libburn_src, buf, sector_size) == sector_size) {
+	while (priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size) == sector_size) {
 		if (priv->cancel)
 			break;
 
@@ -222,7 +222,7 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
-	while (priv->libburn_src->read (priv->libburn_src, buf, sector_size) == sector_size) {
+	while (priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size) == sector_size) {
 		if (priv->cancel)
 			break;
 
@@ -279,6 +279,17 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
+
+	if (iso_init () < 0) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("Libisofs can't be initialized."));
+		return BRASERO_BURN_ERR;
+	}
+
+	/* This is a crash */
+	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
 
 	priv->thread = g_thread_create (brasero_libisofs_thread_started,
 					self,
@@ -349,14 +360,12 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	BraseroLibisofs *self = BRASERO_LIBISOFS (data);
 	BraseroLibisofsPrivate *priv;
 	BraseroTrack *track = NULL;
-	struct iso_volume *volume;
-	gchar **excluded_array;
 	GSList *grafts = NULL;
 	gchar *label = NULL;
 	gchar *publisher;
 	GSList *excluded;
+	IsoImage *image;
 	GSList *iter;
-	guint size;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
@@ -368,15 +377,26 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	BRASERO_JOB_LOG (self, "creating volume");
 
 	/* create volume */
+	brasero_job_get_data_label (BRASERO_JOB (self), &label);
+	if (!iso_image_new (label, &image)) {
+		priv->error = g_error_new (BRASERO_BURN_ERROR,
+					   BRASERO_BURN_ERROR_GENERAL,
+					   _("Volume could not be created."));
+		g_free (label);
+		goto end;
+	}
+
 	publisher = g_strdup_printf ("Brasero-%i.%i.%i",
 				     BRASERO_MAJOR_VERSION,
 				     BRASERO_MINOR_VERSION,
 				     BRASERO_SUB);
 
-	brasero_job_get_data_label (BRASERO_JOB (self), &label);
-	volume = iso_volume_new (label,
-				 publisher,
-				 g_get_real_name ());
+	if (label)
+		iso_image_set_volume_id (image, label);
+
+	iso_image_set_publisher_id (image, publisher);
+	iso_image_set_data_preparer_id (image, g_get_real_name ());
+
 	g_free (publisher);
 	g_free (label);
 
@@ -389,23 +409,20 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	grafts = g_slist_sort (grafts, brasero_libisofs_sort_graft_points);
 
 	/* add global exclusions */
-	size = g_slist_length (brasero_track_get_data_excluded_source (track, FALSE));
-	excluded_array = g_new0 (gchar *, size + 1);
-	size = 0;
-
 	for (excluded = brasero_track_get_data_excluded_source (track, FALSE);
 	     excluded; excluded = excluded->next) {
 		gchar *uri;
 
 		uri = excluded->data;
-		excluded_array [size++] = g_filename_from_uri (uri, NULL, NULL);
+		iso_tree_add_exclude (image, g_filename_from_uri (uri, NULL, NULL));
 	}
 
 	for (iter = grafts; iter; iter = iter->next) {
-		struct iso_tree_node_dir *parent;
 		BraseroGraftPt *graft;
+		gboolean is_directory;
 		gchar *path_parent;
 		gchar *path_name;
+		IsoNode *parent;
 
 		if (priv->cancel)
 			goto end;
@@ -417,14 +434,36 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				 graft->path,
 				 graft->uri);
 
-		/* search for parent node */
-		path_parent = g_path_get_dirname (graft->path);
-		parent = (struct iso_tree_node_dir *) iso_tree_volume_path_to_node (volume, path_parent);
+		/* search for parent node.
+		 * NOTE: because of mkisofs/genisoimage, we add a "/" at the end
+		 * directories. So make sure there isn't one when getting the 
+		 * parent path or g_path_get_dirname () will return the same
+		 * exact name */
+		if (g_str_has_suffix (graft->path, G_DIR_SEPARATOR_S)) {
+			gchar *tmp;
+
+			/* remove trailing "/" */
+			tmp = g_strdup (graft->path);
+			tmp [strlen (tmp) - 1] = '\0';
+			path_parent = g_path_get_dirname (tmp);
+			path_name = g_path_get_basename (tmp);
+			g_free (tmp);
+
+			is_directory = TRUE;
+		}
+		else {
+			path_parent = g_path_get_dirname (graft->path);
+			path_name = g_path_get_basename (graft->path);
+			is_directory = FALSE;
+		}
+
+		iso_tree_path_to_node (image, path_parent, &parent);
 		g_free (path_parent);
 
 		if (!parent) {
 			/* an error has occured, possibly libisofs hasn't been
 			 * able to find a parent for this node */
+			g_free (path_name);
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
 						   _("a parent for the path (%s) could not be found in the tree"),
@@ -433,7 +472,6 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		}
 
 		BRASERO_JOB_LOG (self, "Found parent");
-		path_name = g_path_get_basename (graft->path);
 
 		/* add the file/directory to the volume */
 		if (graft->uri) {
@@ -449,50 +487,59 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				goto end;
 			}
 
-			if  (g_file_test (local_path, G_FILE_TEST_IS_DIR)) {
-				struct iso_tree_radd_dir_behavior behavior;
+			if  (is_directory) {
+				int result;
+				IsoDir *directory;
 
-				/* first add directory node ... */
-				parent = (struct iso_tree_node_dir *) iso_tree_add_dir (parent, path_name);
-
-				/* ... then its contents */
-				behavior.stop_on_error = 1;
-				behavior.excludes = excluded_array;
-
-				iso_tree_radd_dir (parent,
-						   local_path,
-						   &behavior);
-
-				if (behavior.error) {
-					/* an error has occured, possibly libisofs hasn't been
-					 * able to find a parent for this node */
+				/* add directory node */
+				result = iso_tree_add_new_dir (ISO_DIR (parent), path_name, &directory);
+				if (result < 0) {
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
-								   _("libisofs reported an error while adding directory %s"),
-								   graft->path);
+								   _("libisofs reported an error while adding directory %s (%x)"),
+								   graft->path,
+								   result);
+					g_free (path_name);
+					goto end;
+				}
+
+				/* add contents */
+				result = iso_tree_add_dir_rec (image, directory, local_path);
+				if (result < 0) {
+					priv->error = g_error_new (BRASERO_BURN_ERROR,
+								   BRASERO_BURN_ERROR_GENERAL,
+								   _("libisofs reported an error while adding contents to directory %s (%x)"),
+								   graft->path,
+								   result);
 					g_free (path_name);
 					goto end;
 				}
 			}
-			else if (g_file_test (local_path, G_FILE_TEST_IS_REGULAR)) {
-				struct iso_tree_node *node;
-
-				node = iso_tree_add_file (parent, local_path);
-				iso_tree_node_set_name (node, path_name);
-			}
 			else {
-				priv->error = g_error_new (BRASERO_BURN_ERROR,
-							   BRASERO_BURN_ERROR_GENERAL,
-							   _("unsupported type of file (at %s)"),
-							   G_STRLOC);
-				g_free (path_name);
-				goto end;
+				IsoNode *node;
+
+				if (iso_tree_add_node (image, ISO_DIR (parent), local_path, &node) < 0) {
+					priv->error = g_error_new (BRASERO_BURN_ERROR,
+								   BRASERO_BURN_ERROR_GENERAL,
+								   _("libisofs reported an error while adding file %s"),
+								   graft->path);
+					g_free (path_name);
+					goto end;
+				}
+				iso_node_set_name (node, path_name);
 			}
 
 			g_free (local_path);
 		}
-		else
-			iso_tree_add_dir (parent, path_name);
+		else if (iso_tree_add_new_dir (ISO_DIR (parent), path_name, NULL) < 0) {
+			priv->error = g_error_new (BRASERO_BURN_ERROR,
+						   BRASERO_BURN_ERROR_GENERAL,
+						   _("libisofs reported an error while creating directory %s"),
+						   graft->path);
+			g_free (path_name);
+			goto end;
+
+		}
 
 		g_free (path_name);
 	}
@@ -500,32 +547,39 @@ brasero_libisofs_create_volume_thread (gpointer data)
 
 end:
 
-	g_free (excluded_array);
-
-	if (iter)
-		g_slist_free (iter);
+	if (grafts)
+		g_slist_free (grafts);
 
 	if (!priv->error && !priv->cancel) {
 		gint64 size;
 		BraseroTrackType type;
-		struct iso_volset *volset;
-		struct ecma119_source_opts opts;
+		IsoWriteOpts *opts = NULL;
 
 		brasero_track_get_type (track, &type);
-		volset = iso_volset_new (volume, "VOLSETID");
+		iso_write_opts_new (&opts, 0);
 
-		memset (&opts, 0, sizeof (struct ecma119_source_opts));
-		opts.level = 2;
-		opts.relaxed_constraints = ECMA119_NO_DIR_REALOCATION;
-		opts.flags = ((type.subtype.img_format & BRASERO_IMAGE_FS_JOLIET) ? ECMA119_JOLIET : 0);
-		opts.flags |= ECMA119_ROCKRIDGE;
+		if ((type.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
+		&&  (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3))
+			iso_write_opts_set_iso_level (opts, 3);
+		else
+			iso_write_opts_set_iso_level (opts, 2);
 
-		priv->libburn_src = iso_source_new_ecma119 (volset, &opts);
+		iso_write_opts_set_rockridge (opts, 1);
 
-		size = priv->libburn_src->get_size (priv->libburn_src);
-		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
-							       BRASERO_SIZE_TO_SECTORS (size, 2048),
-							       size);
+		if (type.subtype.img_format & BRASERO_IMAGE_FS_JOLIET)
+			iso_write_opts_set_joliet (opts, 1);
+
+		if (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
+			iso_write_opts_set_allow_deep_paths (opts, 1);
+
+		if (iso_image_create_burn_source (image, opts, &priv->libburn_src) >= 0) {
+			size = priv->libburn_src->get_size (priv->libburn_src);
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+								       BRASERO_SIZE_TO_SECTORS (size, 2048),
+								       size);
+		}
+		iso_image_unref (image);
+		iso_write_opts_free (opts);
 	}
 
 	if (!priv->cancel)
@@ -545,6 +599,17 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
+
+	if (iso_init () < 0) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("Libisofs can't be initialized."));
+		return BRASERO_BURN_ERR;
+	}
+
+	/* This is a crash */
+	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
 
 	priv->thread = g_thread_create (brasero_libisofs_create_volume_thread,
 					self,
@@ -589,6 +654,7 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 	BraseroLibisofsPrivate *priv;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
+
 	if (priv->thread) {
 		priv->cancel = 1;
 		g_thread_join (priv->thread);
@@ -604,6 +670,8 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 		g_error_free (priv->error);
 		priv->error = NULL;
 	}
+
+	iso_finish ();
 }
 
 static BraseroBurnResult

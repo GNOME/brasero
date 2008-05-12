@@ -1,5 +1,18 @@
 2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #519339 – [libburnia] Doesn't build with libisofs 0.6.2 and wrong pkg-config filename for libburn
+	Update to new libisofs API (require 0.6.4)
+
+	* configure.in:
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_write_image_to_fd_thread),
+	(brasero_libisofs_write_image_to_file_thread),
+	(brasero_libisofs_create_image),
+	(brasero_libisofs_create_volume_thread),
+	(brasero_libisofs_create_volume), (brasero_libisofs_stop_real):
+
+2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix bug introduce in previous patch (label for session not set)
 
 	* src/brasero-disc-option-dialog.c
