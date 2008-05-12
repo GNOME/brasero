@@ -153,7 +153,7 @@ AC_ARG_ENABLE(libburnia,
 			[enable_libburnia="yes"])
 
 if test x"$enable_libburnia" = "xyes"; then
-	PKG_CHECK_MODULES(LIBBURNIA, libburn-5 >= $LIBBURN_REQUIRED  libisofs-1 >= $LIBISOFS_REQUIRED, build_libburnia=yes, build_libburnia=no)
+	PKG_CHECK_MODULES(LIBBURNIA, libburn-1 >= $LIBBURN_REQUIRED  libisofs-1 >= $LIBISOFS_REQUIRED, build_libburnia=yes, build_libburnia=no)
 else
 	build_libburnia="no"
 fi
