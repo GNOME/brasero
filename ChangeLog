@@ -1,3 +1,112 @@
+2008-05-17  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Lots of bug fixes and patches delayed due to the closing of SVN
+
+	Added multisession/grow images capabilites to libisofs/libburn
+
+	Many improvements to libburn backend
+
+	Fix a problem when retrieving size for multisession images with mkisofs/genisoimage
+	
+	Added message infrastructure to project and removed libnotify deps
+	Now multisession message is displayed like project loading and too little free space
+
+	Make DBus dependency compulsory
+	
+	No medium reload before checksum now
+	One known bug is with tracks with less than 300 sectors.
+	That needs further work (reading disc tree structure through read_cd)
+
+	Remove close if successful burning option from burn dialog
+
+	Fix session label potential crash
+
+	Fix libdvdcss plugin appearing in plugin dialog
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/brasero-async-task-manager.c
+	(brasero_async_task_manager_foreach_active_remove):
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_ui):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_init),
+	(brasero_burn_dialog_finalize), (brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_end_session),
+	(brasero_burn_dialog_tray_show_dialog_cb):
+	* src/brasero-data-disc.c (brasero_data_disc_import_session),
+	(brasero_data_disc_import_session_cb),
+	(brasero_data_disc_project_loaded_cb),
+	(brasero_disc_disc_session_import_response_cb),
+	(brasero_data_disc_session_available_cb),
+	(brasero_data_disc_clear), (brasero_data_disc_reset),
+	(brasero_data_disc_message_response_cb),
+	(brasero_data_disc_load_track), (brasero_data_disc_add_ui),
+	(brasero_data_disc_init), (brasero_data_disc_finalize):
+	* src/brasero-disc-message.c (brasero_disc_message_timeout),
+	(brasero_disc_message_set_timeout),
+	(brasero_disc_message_button_clicked_cb),
+	(brasero_disc_message_add_button),
+	(brasero_disc_message_add_close_button), (style_set),
+	(brasero_disc_message_init), (brasero_disc_message_finalize),
+	(brasero_disc_message_realize):
+	* src/brasero-disc-message.h:
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_title_widget):
+	* src/brasero-disc.c (brasero_disc_add_ui):
+	* src/brasero-disc.h:
+	* src/brasero-notify.c (brasero_notify_remove_all_messages),
+	(brasero_notify_get_message_by_context_id),
+	(brasero_notify_message_remove), (brasero_notify_message_add),
+	(brasero_notify_button_add), (brasero_notify_init),
+	(brasero_notify_finalize), (brasero_notify_class_init),
+	(brasero_notify_new):
+	* src/brasero-notify.h:
+	* src/brasero-project.c (brasero_project_init),
+	(brasero_project_error_size_dialog), (brasero_project_check_size),
+	(brasero_project_switch):
+	* src/brasero-tray.c:
+	* src/burn-caps.c (brasero_caps_disc_new_attribute),
+	(brasero_caps_disc_new_subtype):
+	* src/burn-dbus.c (brasero_inhibit_suspend):
+	* src/burn-dbus.h:
+	* src/burn-medium.c (brasero_medium_get_next_writable_address),
+	(brasero_medium_track_get_info), (brasero_medium_reload_info):
+	* src/burn-medium.h:
+	* src/burn.c (brasero_burn_record_session), (brasero_burn_check),
+	(brasero_burn_record), (brasero_burn_blank):
+	* src/main.c (main):
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image),
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image), (brasero_mkisofs_export_caps):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_checksum_fd_input):
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_ctx_free),
+	(brasero_libburn_common_ctx_new),
+	(brasero_libburn_common_status_changed),
+	(brasero_libburn_common_status):
+	* src/plugins/libburnia/burn-libburn-common.h:
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_src_free_data), (brasero_libburn_src_get_size),
+	(brasero_libburn_src_set_size), (brasero_libburn_src_read_xt),
+	(brasero_libburn_create_fd_source), (brasero_libburn_add_fd_track),
+	(brasero_libburn_add_file_track),
+	(brasero_libburn_setup_session_fd),
+	(brasero_libburn_setup_session_file),
+	(brasero_libburn_start_record), (brasero_libburn_start_erase),
+	(brasero_libburn_stop), (brasero_libburn_clock_tick),
+	(brasero_libburn_finalize), (brasero_libburn_export_caps):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_image), (brasero_libisofs_import_read),
+	(brasero_libisofs_import_open), (brasero_libisofs_import_close),
+	(brasero_libisofs_import_free),
+	(brasero_libisofs_import_last_session),
+	(brasero_libisofs_create_volume_thread),
+	(brasero_libisofs_create_volume), (brasero_libisofs_stop_real),
+	(brasero_libisofs_clean_output), (brasero_libisofs_export_caps):
+
 2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix #519339 – [libburnia] Doesn't build with libisofs 0.6.2 and wrong pkg-config filename for libburn

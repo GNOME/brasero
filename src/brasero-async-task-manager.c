@@ -406,12 +406,15 @@ brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
 		}
 	}
 
-	while (tasks) {
+	while (tasks && self->priv->active_tasks) {
+		GSList *next;
+
 		/* Now we wait for all these active tasks to be finished */
 		g_cond_wait (self->priv->task_finished, self->priv->lock);
 
-		for (iter = tasks; iter; iter = iter->next) {
+		for (iter = tasks; iter; iter = next) {
 			ctx = iter->data;
+			next = iter->next;
 
 			if (g_slist_find (self->priv->active_tasks, ctx))
 				continue;
@@ -420,7 +423,6 @@ brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
 
 			/* NOTE: no need to call destroy callback here 
 			 * since it was done in the thread loop. */
-			break;
 		}
 	}
 

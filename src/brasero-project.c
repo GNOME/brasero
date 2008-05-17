@@ -78,6 +78,7 @@
 #include "brasero-layout-object.h"
 #include "brasero-disc-message.h"
 #include "brasero-file-chooser.h"
+#include "brasero-notify.h"
 
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);
@@ -257,13 +258,6 @@ static GObjectClass *parent_class = NULL;
 
 #define BRASERO_PROJECT_VERSION "0.2"
 
-typedef enum {
-	BRASERO_PROJECT_MESSAGE_NONE 		= 0,
-	BRASERO_PROJECT_MESSAGE_SIZE 		= 1,
-	BRASERO_PROJECT_MESSAGE_PROJECT		= 2,
-	BRASERO_PROJECT_MESSAGE_STATUS		= 3
-} BraseroProjectMessageType;
-
 GType
 brasero_project_get_type ()
 {
@@ -398,7 +392,7 @@ brasero_project_init (BraseroProject *obj)
 			  G_CALLBACK (brasero_project_focus_changed_cb),
 			  NULL);
 
-	obj->priv->message = gtk_vbox_new (FALSE, 12);
+	obj->priv->message = brasero_notify_new ();
 	gtk_box_pack_start (GTK_BOX (obj), obj->priv->message, FALSE, TRUE, 0);
 	gtk_widget_show (obj->priv->message);
 
@@ -524,69 +518,17 @@ brasero_project_new ()
 
 /********************************** size ***************************************/
 static void
-brasero_project_message_remove_all (BraseroProject *project)
-{
-	GList *children;
-	GList *iter;
-
-	children = gtk_container_get_children (GTK_CONTAINER (project->priv->message));
-	for (iter = children; iter; iter = iter->next) {
-		GtkWidget *widget;
-
-		widget = iter->data;
-		gtk_widget_destroy (widget);
-	}
-	g_list_free (children);
-}
-
-static void
-brasero_project_message_remove (BraseroProject *project,
-				guint context_id)
-{
-	GList *children;
-	GList *iter;
-
-	children = gtk_container_get_children (GTK_CONTAINER (project->priv->message));
-	for (iter = children; iter; iter = iter->next) {
-		GtkWidget *widget;
-
-		widget = iter->data;
-		if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
-			gtk_widget_destroy (widget);
-			break;
-		}
-	}
-	g_list_free (children);
-}
-
-static GtkWidget *
-brasero_project_message (BraseroProject *project,
-			 const gchar *primary,
-			 const gchar *secondary,
-			 guint context_id)
+brasero_project_error_size_dialog (BraseroProject *project)
 {
 	GtkWidget *message;
 
-	brasero_project_message_remove (project, context_id);
-
-	message = brasero_disc_message_new ();
-	brasero_disc_message_set_context (BRASERO_DISC_MESSAGE (message), context_id);
-	brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message), primary);
-	brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message), secondary);
-	gtk_widget_show (message);
-	gtk_box_pack_start (GTK_BOX (project->priv->message), message, FALSE, TRUE, 0);
-
-	return message;
-}
-
-
-static void
-brasero_project_error_size_dialog (BraseroProject *project)
-{
-	brasero_project_message (project,
-				 _("Please, delete some files from the project."),
-				 _("The size of the project is too large for the disc even with the overburn option."),
-				 BRASERO_PROJECT_MESSAGE_SIZE);
+	message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
+					      _("Please, delete some files from the project."),
+					      _("The size of the project is too large for the disc even with the overburn option."),
+					      -1,
+					      BRASERO_NOTIFY_CONTEXT_SIZE);
+	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_WARNING);
+	brasero_disc_message_add_close_button (BRASERO_DISC_MESSAGE (message));
 }
 
 static gboolean
@@ -638,7 +580,7 @@ brasero_project_check_size (BraseroProject *project)
 						    &overburn);
 
 	if (result) {
-		brasero_project_message_remove (project, BRASERO_PROJECT_MESSAGE_SIZE);
+		brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 		project->priv->oversized = 0;
 		goto end;
 	}
@@ -653,7 +595,7 @@ brasero_project_check_size (BraseroProject *project)
 	}
 
 	if (overburn) {
-		brasero_project_message_remove (project, BRASERO_PROJECT_MESSAGE_SIZE);
+		brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 		project->priv->oversized = 0;
 		goto end;
 	}
@@ -1161,7 +1103,8 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	if (audio) {
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
-							       project->priv->manager);
+							       project->priv->manager,
+							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
@@ -1169,13 +1112,14 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 	else {
 		project->priv->current = BRASERO_DISC (project->priv->data);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
-							       project->priv->manager);
+							       project->priv->manager,
+							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
 	}
 
-	brasero_project_message_remove_all (project);
+	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 
 	/* update the menus */
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");

@@ -60,10 +60,9 @@ brasero_tray_icon_activate_cb (BraseroTrayIcon *tray,
 
 static void
 brasero_tray_icon_cancel_cb (GtkAction *action, BraseroTrayIcon *tray);
+
 static void
 brasero_tray_icon_show_cb (GtkAction *action, BraseroTrayIcon *tray);
-static void
-brasero_tray_icon_close_toggled_cb (GtkToggleAction *action, BraseroTrayIcon *tray);
 
 struct BraseroTrayIconPrivate {
 	BraseroBurnAction action;
@@ -93,8 +92,6 @@ static GtkActionEntry entries[] = {
 };
 
 static GtkToggleActionEntry toggle_entries[] = {
-	{"Close", NULL, N_("Close if successful"), NULL, N_("Display file chooser"),
-	 G_CALLBACK (brasero_tray_icon_close_toggled_cb), FALSE},
 	{"Show", NULL, N_("Show dialog"), NULL, N_("Show dialog"),
 	 G_CALLBACK (brasero_tray_icon_show_cb), TRUE,},
 };
@@ -104,8 +101,6 @@ static const char *description = {
 	"<popup action='ContextMenu'>"
 		"<menuitem action='Cancel'/>"
 		"<menuitem action='Show'/>"
-		"<separator/>"
-		"<menuitem action='Close'/>"
 	"</popup>"
 	"</ui>"
 };
@@ -396,20 +391,6 @@ static void
 brasero_tray_icon_show_cb (GtkAction *action, BraseroTrayIcon *tray)
 {
 	brasero_tray_icon_change_show_dialog_state (tray);
-}
-
-static void
-brasero_tray_icon_close_toggled_cb (GtkToggleAction *action,
-				    BraseroTrayIcon *tray)
-{
-	gboolean active;
-
-	active = gtk_toggle_action_get_active (action);
-
-	g_signal_emit (tray,
-		       brasero_tray_icon_signals [CLOSE_AFTER_SIGNAL],
-		       0,
-		       active);
 }
 
 void

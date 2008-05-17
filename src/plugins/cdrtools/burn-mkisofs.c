@@ -287,19 +287,6 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	g_ptr_array_add (argv, g_strdup ("-exclude-list"));
 	g_ptr_array_add (argv, excluded_path);
 
-	brasero_job_get_action (BRASERO_JOB (mkisofs), &action);
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		g_ptr_array_add (argv, g_strdup ("-quiet"));
-		g_ptr_array_add (argv, g_strdup ("-print-size"));
-
-		brasero_job_set_current_action (BRASERO_JOB (mkisofs),
-						BRASERO_BURN_ACTION_GETTING_SIZE,
-						NULL,
-						FALSE);
-		brasero_job_start_progress (BRASERO_JOB (mkisofs), FALSE);
-		return BRASERO_BURN_OK;
-	}
-
 	brasero_job_get_data_label (BRASERO_JOB (mkisofs), &label);
 	if (label) {
 		g_ptr_array_add (argv, g_strdup ("-V"));
@@ -357,6 +344,19 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 
 			g_ptr_array_add (argv, device);
 		}
+	}
+
+	brasero_job_get_action (BRASERO_JOB (mkisofs), &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		g_ptr_array_add (argv, g_strdup ("-quiet"));
+		g_ptr_array_add (argv, g_strdup ("-print-size"));
+
+		brasero_job_set_current_action (BRASERO_JOB (mkisofs),
+						BRASERO_BURN_ACTION_GETTING_SIZE,
+						NULL,
+						FALSE);
+		brasero_job_start_progress (BRASERO_JOB (mkisofs), FALSE);
+		return BRASERO_BURN_OK;
 	}
 
 	if (brasero_job_get_fd_out (BRASERO_JOB (mkisofs), NULL) != BRASERO_BURN_OK) {
@@ -491,6 +491,7 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_RESTRICTED|
 				  BRASERO_MEDIUM_DVD_DL|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_AUDIO|

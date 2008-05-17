@@ -2,8 +2,6 @@
 #  include <config.h>
 #endif
 
-#ifdef BUILD_DBUS
-
 #include <glib.h>
 #include <dbus/dbus-glib.h>
 #include "burn-dbus.h"
@@ -106,5 +104,3 @@ brasero_inhibit_suspend (const char *reason)
 
 	return cookie;
 }
-
-#endif

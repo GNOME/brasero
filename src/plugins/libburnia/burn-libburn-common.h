@@ -60,7 +60,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 void
 brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx);
 
-void
+BraseroBurnResult
 brasero_libburn_common_status (BraseroJob *job,
 			       BraseroLibburnCtx *ctx);
 

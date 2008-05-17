@@ -3033,11 +3033,7 @@ brasero_caps_disc_new_attribute (GSList *retval,
 						       media|BRASERO_MEDIUM_WRITABLE,
 						       type);
 
-	if ((type & BRASERO_MEDIUM_ROM)
-	&& !(media & BRASERO_MEDIUM_RESTRICTED)
-	&& !(media & BRASERO_MEDIUM_SEQUENTIAL)
-	&& !(media & BRASERO_MEDIUM_PLUS)
-	&& !(media & BRASERO_MEDIUM_JUMP))
+	if (type & BRASERO_MEDIUM_ROM)
 		retval = brasero_caps_disc_new_status (retval,
 						       media|BRASERO_MEDIUM_ROM,
 						       type);
@@ -3080,6 +3076,10 @@ brasero_caps_disc_new_subtype (GSList *retval,
 			retval = brasero_caps_disc_new_attribute (retval,
 								  media|BRASERO_MEDIUM_PLUS,
 								  type);
+		if (type & BRASERO_MEDIUM_ROM)
+			retval = brasero_caps_disc_new_status (retval,
+							       media|BRASERO_MEDIUM_ROM,
+							       type);
 	}
 
 	if (media & BRASERO_MEDIUM_DVD_DL) {
@@ -3097,6 +3097,11 @@ brasero_caps_disc_new_subtype (GSList *retval,
 			retval = brasero_caps_disc_new_attribute (retval,
 								  media|BRASERO_MEDIUM_PLUS,
 								  type);
+
+		if (type & BRASERO_MEDIUM_ROM)
+			retval = brasero_caps_disc_new_status (retval,
+							       media|BRASERO_MEDIUM_ROM,
+							       type);
 	}
 
 	return retval;

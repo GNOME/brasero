@@ -95,6 +95,8 @@ GSTREAMER_REQUIRED=0.10.6
 GSTREAMER_BASE_REQUIRED=0.10.0
 LIBXML2_REQUIRED=2.6.0
 HAL_REQUIRED=0.5
+DBUS_REQUIRED=0.7.2
+
 GNOME_DOC_INIT
 
 dnl ** used by brasero and one plugin
@@ -137,7 +139,8 @@ PKG_CHECK_MODULES(BRASERO,			\
 	gtk+-2.0 >= $GTK_REQUIRED		\
 	libgnome-2.0 >= $LIBGNOME_REQUIRED	\
 	libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED	\
-	libxml-2.0 >= $LIBXML2_REQUIRED)
+	libxml-2.0 >= $LIBXML2_REQUIRED	\
+	dbus-glib-1 >= $DBUS_REQUIRED)
 
 AC_SUBST(BRASERO_CFLAGS)
 AC_SUBST(BRASERO_LIBS)
@@ -193,24 +196,25 @@ fi
 AM_CONDITIONAL(BUILD_CDRKIT, test x"$build_cdrkit" = "xyes")
 
 dnl ****************check for libnotify (optional)**************
-LIBNOTIFY_REQUIRED=0.3.0
+dnl disable because not used any more
+dnl LIBNOTIFY_REQUIRED=0.3.0
 
-AC_ARG_ENABLE(libnotify,
-			[  --enable-libnotify		use libnotify if available [[default = yes]]],,
-			[enable_libnotify="yes"])
+dnl AC_ARG_ENABLE(libnotify,
+dnl			[  --enable-libnotify		use libnotify if available [[default = yes]]],,
+dnl			[enable_libnotify="yes"])
 
-if test x"$enable_libnotify" = "xyes"; then
-	PKG_CHECK_MODULES(LIBNOTIFY, libnotify >= $LIBNOTIFY_REQUIRED, build_libnotify=yes, build_libnotify=no)
-else
-	build_libnotify="no"
-fi
+dnl if test x"$enable_libnotify" = "xyes"; then
+dnl	PKG_CHECK_MODULES(LIBNOTIFY, libnotify >= $LIBNOTIFY_REQUIRED, build_libnotify=yes, build_libnotify=no)
+dnl else
+dnl	build_libnotify="no"
+dnl fi
 
-if test x"$build_libnotify" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBNOTIFY_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $LIBNOTIFY_LIBS"
-	AC_DEFINE(HAVE_LIBNOTIFY, 1, [define if you  want to use with libnotify support])
-fi
-AM_CONDITIONAL(HAVE_LIBNOTIFY, test x"$build_libnotify" = "xyes")
+dnl if test x"$build_libnotify" = "xyes"; then
+dnl	BRASERO_CFLAGS="$BRASERO_CFLAGS $LIBNOTIFY_CFLAGS"
+dnl	BRASERO_LIBS="$BRASERO_LIBS $LIBNOTIFY_LIBS"
+dnl	AC_DEFINE(HAVE_LIBNOTIFY, 1, [define if you  want to use with libnotify support])
+dnl fi
+dnl AM_CONDITIONAL(HAVE_LIBNOTIFY, test x"$build_libnotify" = "xyes")
 
 dnl ****************check for search (optional)**************
 BEAGLE_REQUIRED=0.3.0
@@ -251,27 +255,6 @@ if test x"$build_totem" = "xyes"; then
 	AC_DEFINE(BUILD_PLAYLIST, 1, [define if you  want to build playlist pane])
 fi
 AM_CONDITIONAL(BUILD_PLAYLIST, test x"$build_totem" = "xyes")
-
-dnl ****************check for dbus (optional)**************
-DBUS_REQUIRED=0.7.2
-
-AC_ARG_ENABLE(dbus,
-			[  --enable-dbus		build dbus (if Gnome Power Manager is available)[[default = yes]]],,
-			[enable_dbus="yes"])
-
-if test x"$enable_dbus" = "xyes"; then
-	PKG_CHECK_MODULES(DBUS, dbus-glib-1 >= $DBUS_REQUIRED, build_dbus=yes, build_dbus=no)
-else
-	build_dbus="no"
-fi
-
-if test x"$build_dbus" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $DBUS_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $DBUS_LIBS"
-	AC_DEFINE(BUILD_DBUS, 1, [define if you want to build dbus])
-fi
-AM_CONDITIONAL(BUILD_PLAYLIST, test x"$build_dbus" = "xyes")
-
 
 dnl ****************check for preview (optional)**************
 GSTREAMER_MODULE_REQUIRED=0.10.0
@@ -365,14 +348,14 @@ echo
 echo "$PACKAGE configuration summary:"
 echo "----------------------------------"
 
+dnl 	Build libnotify support : ${build_libnotify}
+
 echo "Version: $BRASERO_VERSION
 	Update caches: ${enable_caches}
 	Build inotify: ${enable_inotify}
 	Build search pane : ${build_beagle}
 	Build playlist pane : ${build_totem}
 	Build Preview pane : ${enable_preview}
-	Build libnotify support : ${build_libnotify}
-	Build dbus support : ${build_dbus}
 	Build cdrtools plugins : ${build_cdrtools}
 	Build cdrkit plugins : ${build_cdrkit}
 	Build libburnia plugins : ${build_libburnia}

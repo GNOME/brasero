@@ -255,7 +255,9 @@ brasero_SOURCES = \
 	brasero-multi-song-props.h         \
 	brasero-multi-song-props.c         \
 	brasero-rename.h         \
-	brasero-rename.c
+	brasero-rename.c         \
+	brasero-notify.c         \
+	brasero-notify.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

@@ -47,10 +47,7 @@
 #include "burn-caps.h"
 #include "burn-volume-obj.h"
 #include "burn-drive.h"
-
-#ifdef BUILD_DBUS
-  #include "burn-dbus.h"
-#endif
+#include "burn-dbus.h"
 
 G_DEFINE_TYPE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);
 
@@ -68,9 +65,7 @@ struct _BraseroBurnPrivate {
 	BraseroDrive *src;
 	BraseroDrive *dest;
 
-#ifdef BUILD_DBUS
 	gint appcookie;
-#endif
 
 	guint src_locked:1;
 	guint dest_locked:1;
@@ -136,8 +131,6 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
 static GObjectClass *parent_class = NULL;
 
-#ifdef BUILD_DBUS
-
 static void
 brasero_burn_powermanagement (BraseroBurn *self,
 			      gboolean wake)
@@ -149,8 +142,6 @@ brasero_burn_powermanagement (BraseroBurn *self,
 	else
 		brasero_uninhibit_suspend (priv->appcookie); 
 }
-
-#endif
 
 BraseroBurn *
 brasero_burn_new ()
@@ -1938,6 +1929,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 	BraseroBurnPrivate *priv;
 	BraseroBurnResult result;
 	GError *ret_error = NULL;
+	BraseroMedium *medium;
 	GSList *tracks;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
@@ -2039,11 +2031,12 @@ brasero_burn_record_session (BraseroBurn *burn,
 	 * unlock/eject step. A better way would be to have a system call to 
 	 * force a re-load. */
 
-	result = brasero_burn_eject_dest_media (burn, error);
+/*	result = brasero_burn_eject_dest_media (burn, error);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
 	priv->dest = NULL;
+*/
 
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
@@ -2087,15 +2080,18 @@ brasero_burn_record_session (BraseroBurn *burn,
 	brasero_track_unref (track);
 
 	/* reload media */
-	result = brasero_burn_lock_checksum_media (burn, error);
+/*	result = brasero_burn_lock_checksum_media (burn, error);
 	if (result != BRASERO_BURN_OK)
 		return result;
-
-	/* this may be necessary for the drive to settle down and possibly be 
-	 * mounted by gnome-volume-manager (just temporarily) */
+*/
+	/* this may be necessary for the drive to settle down */
+	/* and possibly be mounted by gnome-volume-manager (just temporarily) */
 	result = brasero_burn_sleep (burn, 5000);
 	if (result != BRASERO_BURN_OK)
 		return result;
+
+	medium = brasero_drive_get_medium (priv->dest);
+	brasero_medium_reload_info (medium);
 
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
@@ -2166,18 +2162,13 @@ brasero_burn_check (BraseroBurn *self,
 			return result;
 	}
 
-#ifdef BUILD_DBUS
 	brasero_burn_powermanagement (self, TRUE);
-#endif
 
 	result = brasero_burn_check_real (self, track, error);
 
 	brasero_burn_unlock_medias (self);
 
-
-#ifdef BUILD_DBUS
 	brasero_burn_powermanagement (self, FALSE);
-#endif
 
 	/* no need to check the result of the comparison, it's set in session */
 	priv->session = NULL;
@@ -2294,9 +2285,7 @@ brasero_burn_record (BraseroBurn *burn,
 	g_object_ref (session);
 	priv->session = session;
 
-#ifdef BUILD_DBUS
 	brasero_burn_powermanagement (burn, TRUE);
-#endif
 
 	/* say to the whole world we started */
 	brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_PREPARING);
@@ -2387,9 +2376,7 @@ end:
 	else
 		BRASERO_BURN_DEBUG (burn, "Session successfully finished");
 
-#ifdef BUILD_DBUS
 	brasero_burn_powermanagement (burn, FALSE);
-#endif
 
 	/* release session */
 	g_object_unref (priv->session);
@@ -2448,9 +2435,7 @@ brasero_burn_blank (BraseroBurn *burn,
 	g_object_ref (session);
 	priv->session = session;
 
-#ifdef BUILD_DBUS
 	brasero_burn_powermanagement (burn, TRUE);
-#endif
 
 	/* we wait for the insertion of a media and lock it */
 	result = brasero_burn_lock_rewritable_media (burn, error);
@@ -2489,9 +2474,7 @@ end:
 		brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
 
 
-#ifdef BUILD_DBUS
 	brasero_burn_powermanagement (burn, FALSE);
-#endif
 
 	/* release session */
 	g_object_unref (priv->session);

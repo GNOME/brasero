@@ -42,10 +42,6 @@
 
 #include <gconf/gconf-client.h>
 
-#ifdef HAVE_LIBNOTIFY
-#include <libnotify/notify.h>
-#endif
-
 #include "brasero-app.h"
 #include "brasero-menu.h"
 #include "brasero-jacket-edit.h"
@@ -809,10 +805,6 @@ main (int argc, char **argv)
 
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
-
-#ifdef HAVE_LIBNOTIFY
-	notify_init (PACKAGE);
-#endif
 
 	gst_init (&argc, &argv);
 

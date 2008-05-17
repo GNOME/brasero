@@ -31,6 +31,8 @@
 
 #include <gdk/gdkkeysyms.h>
 
+#include <gtk/gtkstock.h>
+#include <gtk/gtkalignment.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkbin.h>
 #include <gtk/gtkhbox.h>
@@ -70,12 +72,14 @@ struct _BraseroDiscMessagePrivate
 
 	GtkWidget *image;
 
+	GtkWidget *main_box;
 	GtkWidget *button_box;
 	GtkWidget *text_box;
 
 	guint context;
 
 	guint id;
+	guint timeout;
 
 	guint changing_style:1;
 };
@@ -101,6 +105,41 @@ enum {
 	NUM_COL
 };
 
+static gboolean
+brasero_disc_message_timeout (gpointer data)
+{
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (data);
+	priv->timeout = 0;
+
+	g_signal_emit (data,
+		       disc_message_signals [RESPONSE],
+		       0,
+		       GTK_RESPONSE_DELETE_EVENT);
+
+	gtk_widget_destroy (GTK_WIDGET (data));
+	return FALSE;
+}
+
+void
+brasero_disc_message_set_timeout (BraseroDiscMessage *self,
+				  guint mseconds)
+{
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+
+	if (priv->timeout) {
+		g_source_remove (priv->timeout);
+		priv->timeout = 0;
+	}
+
+	if (mseconds > 0)
+		priv->timeout = g_timeout_add (mseconds,
+					       brasero_disc_message_timeout,
+					       self);
+}
 
 void
 brasero_disc_message_set_context (BraseroDiscMessage *self,
@@ -214,10 +253,13 @@ brasero_disc_message_button_clicked_cb (GtkButton *button,
 		       disc_message_signals [RESPONSE],
 		       0, 
 		       GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button), RESPONSE_TYPE)));
+
+	gtk_widget_destroy (GTK_WIDGET (self));
 }
 
 void
 brasero_disc_message_add_button (BraseroDiscMessage *self,
+				 GtkSizeGroup *group,
 				 const gchar *text,
 				 const gchar *tooltip,
 				 GtkResponseType response)
@@ -228,6 +270,7 @@ brasero_disc_message_add_button (BraseroDiscMessage *self,
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
 
 	button = gtk_button_new_with_mnemonic (text);
+	gtk_size_group_add_widget (group, button);
 	gtk_size_group_add_widget (priv->group, button);
 	gtk_widget_set_tooltip_text (button, tooltip);
 	gtk_widget_show (button);
@@ -240,6 +283,45 @@ brasero_disc_message_add_button (BraseroDiscMessage *self,
 
 	gtk_box_pack_start (GTK_BOX (priv->button_box),
 			    button,
+			    FALSE,
+			    TRUE,
+			    0);
+	gtk_widget_queue_draw (GTK_WIDGET (self));
+}
+
+void
+brasero_disc_message_add_close_button (BraseroDiscMessage *self)
+{
+	GtkWidget *button;
+	GtkWidget *alignment;
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+
+	button = gtk_button_new ();
+	gtk_size_group_add_widget (priv->group, button);
+
+	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
+	gtk_widget_show (alignment);
+	gtk_container_add (GTK_CONTAINER (alignment), button);
+
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_image (GTK_BUTTON (button),
+			      gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_BUTTON));
+
+	gtk_widget_set_tooltip_text (button, _("Close this notification window"));
+	gtk_widget_show (button);
+	g_signal_connect (button,
+			  "clicked",
+			  G_CALLBACK (brasero_disc_message_button_clicked_cb),
+			  self);
+
+	g_object_set_data (G_OBJECT (button),
+			   RESPONSE_TYPE,
+			   GINT_TO_POINTER (GTK_RESPONSE_CLOSE));
+
+	gtk_box_pack_start (GTK_BOX (priv->main_box),
+			    alignment,
 			    FALSE,
 			    TRUE,
 			    0);
@@ -376,28 +458,13 @@ brasero_disc_message_set_secondary (BraseroDiscMessage *self,
 /**
  * Two following functions are Cut and Pasted from gedit-message-area.c
  */
-static GtkStyle *
-brasero_disc_message_get_style (void)
-{
-	GtkWidget *window;
-	GtkStyle *style;
-
-	/* This is a hack needed to use the tooltip background color */
-	window = gtk_window_new (GTK_WINDOW_POPUP);
-	gtk_widget_set_name (window, "gtk-tooltip");
-	gtk_widget_ensure_style (window);
-	style = gtk_widget_get_style (window);
-	g_object_ref (style);
-	gtk_widget_destroy (window);
-	return style;
-}
-
 static void
 style_set (GtkWidget        *widget,
 	   GtkStyle         *prev_style,
 	   BraseroDiscMessage *self)
 {
 	BraseroDiscMessagePrivate *priv;
+	GtkWidget *window;
 	GtkStyle *style;
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
@@ -405,13 +472,18 @@ style_set (GtkWidget        *widget,
 	if (priv->changing_style)
 		return;
 
-	style = brasero_disc_message_get_style ();
+	window = gtk_window_new (GTK_WINDOW_POPUP);
+	gtk_widget_set_name (window, "gtk-tooltip");
+	gtk_widget_ensure_style (window);
+	style = gtk_widget_get_style (window);
 
 	priv->changing_style = TRUE;
 	gtk_widget_set_style (GTK_WIDGET (self), style);
 	priv->changing_style = FALSE;
 
-	g_object_unref (style);
+	gtk_widget_destroy (window);
+
+//	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
 
 	gtk_widget_queue_draw (GTK_WIDGET (self));
 }
@@ -426,6 +498,7 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	GTK_WIDGET_UNSET_FLAGS (GTK_WIDGET (object), GTK_NO_WINDOW);
 
 	main_box = gtk_hbox_new (FALSE, 12);
+	priv->main_box = main_box;
 	gtk_widget_show (main_box);
 	gtk_container_set_border_width (GTK_CONTAINER (main_box), 8);
 	gtk_container_add (GTK_CONTAINER (object), main_box);
@@ -469,6 +542,11 @@ brasero_disc_message_finalize (GObject *object)
 	if (priv->id) {
 		g_source_remove (priv->id);
 		priv->id = 0;
+	}
+
+	if (priv->timeout) {
+		g_source_remove (priv->timeout);
+		priv->timeout = 0;
 	}
 
 	g_object_unref (priv->group);
@@ -527,7 +605,6 @@ brasero_disc_message_realize (GtkWidget *widget)
 {
 	GdkWindowAttr attributes;
 	gint attributes_mask;
-	GtkStyle *style;
 
 	attributes.window_type = GDK_WINDOW_CHILD;
 	attributes.x = widget->allocation.x;
@@ -546,12 +623,8 @@ brasero_disc_message_realize (GtkWidget *widget)
 					 attributes_mask);
 	gdk_window_set_user_data (widget->window, widget);
 
-	style = brasero_disc_message_get_style ();
-	widget->style = gtk_style_attach (style, widget->window);
-	g_object_unref (style);
+	widget->style = gtk_style_attach (widget->style, widget->window);
     
-	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 }
 

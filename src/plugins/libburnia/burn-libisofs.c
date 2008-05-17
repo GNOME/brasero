@@ -46,11 +46,15 @@
 #include "burn-libisofs.h"
 #include "burn-job.h"
 #include "burn-plugin.h"
+#include "burn-libburn-common.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibisofs, brasero_libisofs, BRASERO_TYPE_JOB, BraseroJob);
 
 struct _BraseroLibisofsPrivate {
 	struct burn_source *libburn_src;
+
+	/* that's for multisession */
+	BraseroLibburnCtx *ctx;
 
 	GError *error;
 	GThread *thread;
@@ -288,7 +292,6 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* This is a crash */
 	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
 
 	priv->thread = g_thread_create (brasero_libisofs_thread_started,
@@ -354,17 +357,137 @@ brasero_libisofs_sort_graft_points (gconstpointer a, gconstpointer b)
 	return len_a - len_b;
 }
 
+static int 
+brasero_libisofs_import_read (IsoDataSource *src, uint32_t lba, uint8_t *buffer)
+{
+	struct burn_drive *d;
+	off_t data_count;
+	gint result;
+
+	d = (struct burn_drive*)src->data;
+
+	result = burn_read_data(d,
+				(off_t) lba * (off_t) 2048,
+				(char*)buffer, 
+				2048,
+				&data_count,
+				0);
+	if (result < 0 )
+		return -1; /* error */
+
+	return 1;
+}
+
+static int
+brasero_libisofs_import_open (IsoDataSource *src)
+{
+	return 1;
+}
+
+static int
+brasero_libisofs_import_close (IsoDataSource *src)
+{
+	return 1;
+}
+    
+static void 
+brasero_libisofs_import_free (IsoDataSource *src)
+{ }
+
+static BraseroBurnResult
+brasero_libisofs_import_last_session (BraseroLibisofs *self,
+				      IsoImage *image,
+				      IsoWriteOpts *wopts,
+				      GError **error)
+{
+	int result;
+	IsoReadOpts *opts;
+	BraseroMedia media;
+	IsoDataSource *src;
+	gint64 start_block;
+	gint64 session_block;
+	BraseroLibisofsPrivate *priv;
+
+	priv = BRASERO_LIBISOFS_PRIVATE (self);
+
+	priv->ctx = brasero_libburn_common_ctx_new (BRASERO_JOB (self), error);
+	if (!priv->ctx)
+		return BRASERO_BURN_ERR;
+
+	src = g_new0 (IsoDataSource, 1);
+	src->version = 0;
+	src->refcount = 1;
+	src->read_block = brasero_libisofs_import_read;
+	src->open = brasero_libisofs_import_open;
+	src->close = brasero_libisofs_import_close;
+	src->free_data = brasero_libisofs_import_free;
+	src->data = priv->ctx->drive;
+
+	result = iso_read_opts_new (&opts, 0);
+	if (result < 0) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("No read options could be created."));
+		return BRASERO_BURN_ERR;
+	}
+
+	brasero_job_get_last_session_address (BRASERO_JOB (self), &session_block);
+	iso_read_opts_set_start_block (opts, session_block);
+
+	/* import image */
+	result = iso_image_import (image, src, opts, NULL);
+	iso_data_source_unref (src);
+	iso_read_opts_free (opts);
+
+	/* release the drive */
+	if (priv->ctx) {
+		/* This may not be a good idea ...*/
+		brasero_libburn_common_ctx_free (priv->ctx);
+		priv->ctx = NULL;
+	}
+
+	if (result < 0) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("Image import failed."));	
+		return BRASERO_BURN_ERR;
+	}
+
+	/* check is this is a DVD+RW */
+	brasero_job_get_next_writable_address (BRASERO_JOB (self), &start_block);
+
+	brasero_job_get_media (BRASERO_JOB (self), &media);
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+		/* This is specific to overwrite media; the start address is the
+		 * size of all the previous data written */
+		BRASERO_JOB_LOG (self, "Growing image (start %i)", start_block);
+	}
+
+	/* set the start block for the multisession image */
+	iso_write_opts_set_ms_block (wopts, start_block);
+	iso_write_opts_set_appendable (wopts, 1);
+
+	iso_tree_set_replace_mode (image, ISO_REPLACE_ALWAYS);
+	return BRASERO_BURN_OK;
+}
+
 static gpointer
 brasero_libisofs_create_volume_thread (gpointer data)
 {
 	BraseroLibisofs *self = BRASERO_LIBISOFS (data);
 	BraseroLibisofsPrivate *priv;
 	BraseroTrack *track = NULL;
+	IsoWriteOpts *opts = NULL;
+	IsoImage *image = NULL;
+	BraseroBurnFlag flags;
 	GSList *grafts = NULL;
 	gchar *label = NULL;
 	gchar *publisher;
 	GSList *excluded;
-	IsoImage *image;
 	GSList *iter;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
@@ -400,6 +523,27 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	g_free (publisher);
 	g_free (label);
 
+	iso_write_opts_new (&opts, 2);
+
+	brasero_job_get_flags (BRASERO_JOB (self), &flags);
+	if (flags & BRASERO_BURN_FLAG_MERGE) {
+		BraseroBurnResult result;
+
+		result = brasero_libisofs_import_last_session (self,
+							       image,
+							       opts,
+							       &priv->error);
+		if (result != BRASERO_BURN_OK)
+			goto end;
+	}
+	else if (flags & BRASERO_BURN_FLAG_APPEND) {
+		gint64 start_block;
+
+		brasero_job_get_next_writable_address (BRASERO_JOB (self), &start_block);
+		iso_write_opts_set_ms_block (opts, start_block);
+	}
+
+
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 	/* copy the list as we're going to reorder it */
@@ -411,10 +555,12 @@ brasero_libisofs_create_volume_thread (gpointer data)
 	/* add global exclusions */
 	for (excluded = brasero_track_get_data_excluded_source (track, FALSE);
 	     excluded; excluded = excluded->next) {
-		gchar *uri;
+		gchar *uri, *local;
 
 		uri = excluded->data;
-		iso_tree_add_exclude (image, g_filename_from_uri (uri, NULL, NULL));
+		local = g_filename_from_uri (uri, NULL, NULL);
+		iso_tree_add_exclude (image, local);
+		g_free (local);
 	}
 
 	for (iter = grafts; iter; iter = iter->next) {
@@ -553,10 +699,8 @@ end:
 	if (!priv->error && !priv->cancel) {
 		gint64 size;
 		BraseroTrackType type;
-		IsoWriteOpts *opts = NULL;
 
 		brasero_track_get_type (track, &type);
-		iso_write_opts_new (&opts, 0);
 
 		if ((type.subtype.fs_type & BRASERO_IMAGE_FS_ISO)
 		&&  (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3))
@@ -565,12 +709,8 @@ end:
 			iso_write_opts_set_iso_level (opts, 2);
 
 		iso_write_opts_set_rockridge (opts, 1);
-
-		if (type.subtype.img_format & BRASERO_IMAGE_FS_JOLIET)
-			iso_write_opts_set_joliet (opts, 1);
-
-		if (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
-			iso_write_opts_set_allow_deep_paths (opts, 1);
+		iso_write_opts_set_joliet (opts, (type.subtype.img_format & BRASERO_IMAGE_FS_JOLIET) != 0);
+		iso_write_opts_set_allow_deep_paths (opts, (type.subtype.fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY) != 0);
 
 		if (iso_image_create_burn_source (image, opts, &priv->libburn_src) >= 0) {
 			size = priv->libburn_src->get_size (priv->libburn_src);
@@ -578,9 +718,13 @@ end:
 								       BRASERO_SIZE_TO_SECTORS (size, 2048),
 								       size);
 		}
-		iso_image_unref (image);
-		iso_write_opts_free (opts);
 	}
+
+	if (opts)
+		iso_write_opts_free (opts);
+
+	if (image)
+		iso_image_unref (image);
 
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_libisofs_create_volume_thread_finished, self);
@@ -608,9 +752,7 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 		return BRASERO_BURN_ERR;
 	}
 
-	/* This is a crash */
 	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
-
 	priv->thread = g_thread_create (brasero_libisofs_create_volume_thread,
 					self,
 					TRUE,
@@ -655,6 +797,18 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
+	/* NOTE: this can only happen when we're preparing the volumes for a
+	 * multi session disc. At this point we're only running to get the size
+	 * of the future volume and we can't race with libburn plugin that isn't
+	 * operating at this stage. */
+	if (priv->ctx) {
+		brasero_libburn_common_ctx_free (priv->ctx);
+		priv->ctx = NULL;
+	}
+
+	if (priv->libburn_src)
+		priv->libburn_src->cancel (priv->libburn_src);
+
 	if (priv->thread) {
 		priv->cancel = 1;
 		g_thread_join (priv->thread);
@@ -670,8 +824,6 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 		g_error_free (priv->error);
 		priv->error = NULL;
 	}
-
-	iso_finish ();
 }
 
 static BraseroBurnResult
@@ -714,6 +866,13 @@ brasero_libisofs_clean_output (BraseroLibisofs *self)
 		burn_source_free (priv->libburn_src);
 		priv->libburn_src = NULL;
 	}
+
+	/* Since the library is not needed any more call burn_finish ().
+	 * NOTE: it itself calls burn_abort (). */
+	burn_finish ();
+
+	/* close libisofs library */
+	iso_finish ();
 }
 
 static void
@@ -740,6 +899,30 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("libisofs creates disc images from files"),
 			       "Philippe Rouquier",
 			       0);
+
+	/* NOTE: we don't include DVDRW+ DVDRW- restricted in here */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CDR|
+				  BRASERO_MEDIUM_CDRW|
+				  BRASERO_MEDIUM_DVDR|
+				  BRASERO_MEDIUM_DVDRW|
+				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_AUDIO|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_NONE);
 
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,

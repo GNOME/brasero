@@ -78,24 +78,17 @@ static void
 brasero_burn_dialog_tray_show_dialog_cb (BraseroTrayIcon *tray,
 					 gboolean show,
 					 GtkWidget *dialog);
-static void
-brasero_burn_dialog_tray_close_after_cb (BraseroTrayIcon *tray,
-					 gboolean close,
-					 BraseroBurnDialog *dialog);
 
 struct BraseroBurnDialogPrivate {
 	BraseroBurn *burn;
 	BraseroTrackType input;
 	BraseroBurnSession *session;
 
-	GtkWidget *close_check;
 	GtkWidget *progress;
 	GtkWidget *header;
 	GtkWidget *cancel;
 	GtkWidget *image;
 	BraseroTrayIcon *tray;
-
-	gint close_timeout;
 
 	guint is_writing:1;
 };
@@ -1064,10 +1057,6 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			  "show-dialog",
 			  G_CALLBACK (brasero_burn_dialog_tray_show_dialog_cb),
 			  obj);
-	g_signal_connect (obj->priv->tray,
-			  "close-after",
-			  G_CALLBACK (brasero_burn_dialog_tray_close_after_cb),
-			  obj);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 1.0, 1.0);
 	gtk_widget_show (alignment);
@@ -1103,14 +1092,6 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 			    FALSE,
 			    FALSE,
 			    0);
-
-	obj->priv->close_check = gtk_check_button_new_with_mnemonic (_("_Close the application if the burn process is successful"));
-	gtk_widget_show (obj->priv->close_check);
-	gtk_box_pack_end (GTK_BOX (obj->priv->progress),
-			  obj->priv->close_check,
-			  FALSE,
-			  FALSE,
-			  0);
 
 	/* buttons */
 	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
@@ -1152,11 +1133,6 @@ brasero_burn_dialog_finalize (GObject * object)
 	if (cobj->priv->tray) {
 		g_object_unref (cobj->priv->tray);
 		cobj->priv->tray = NULL;
-	}
-
-	if (cobj->priv->close_timeout) {
-		g_source_remove (cobj->priv->close_timeout);
-		cobj->priv->close_timeout = 0;
 	}
 
 	if (cobj->priv->session) {
@@ -1576,34 +1552,12 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 	gtk_widget_destroy (message);
 }
 
-static gboolean
-brasero_burn_dialog_success_timeout (BraseroBurnDialog *dialog)
-{
-	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-	dialog->priv->close_timeout = 0;
-
-	return FALSE;
-}
-
 static void
 brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 {
 	gint answer;
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check))) {
-		dialog->priv->close_timeout = g_timeout_add (TIMEOUT,
-							     (GSourceFunc) brasero_burn_dialog_success_timeout,
-							     dialog);
-	}
-
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	/* remove the timeout if need be */
-	if (dialog->priv->close_timeout) {
-		g_source_remove (dialog->priv->close_timeout);
-		dialog->priv->close_timeout = 0;
-	}
-
 	if (answer == GTK_RESPONSE_CLOSE) {
 		GtkWidget *contents;
 		GtkWidget *window;
@@ -1757,8 +1711,6 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 				 BraseroBurnResult result,
 				 GError *error)
 {
-	gboolean close_dialog;
-
 	if (dialog->priv->burn) {
 		g_object_unref (dialog->priv->burn);
 		dialog->priv->burn = NULL;
@@ -1768,10 +1720,8 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 
 	if (result == BRASERO_BURN_CANCEL) {
 		/* nothing to do */
-		close_dialog = FALSE;
 	}
 	else if (error || result != BRASERO_BURN_OK) {
-		close_dialog = FALSE;
 		brasero_burn_dialog_notify_error (dialog, error);
 	}
 	else {
@@ -1789,10 +1739,9 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 		}
 
 		brasero_burn_dialog_notify_success (dialog);
-		close_dialog = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check));
 	}
 
-	return close_dialog;
+	return FALSE;
 }
 
 gboolean
@@ -1957,12 +1906,4 @@ brasero_burn_dialog_tray_show_dialog_cb (BraseroTrayIcon *tray,
 		gtk_widget_show (dialog);
 	else
 		gtk_widget_hide (dialog);
-}
-
-static void
-brasero_burn_dialog_tray_close_after_cb (BraseroTrayIcon *tray,
-					 gboolean close,
-					 BraseroBurnDialog *dialog)
-{
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->priv->close_check), close);
 }

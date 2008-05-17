@@ -48,13 +48,6 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtksizegroup.h>
 
-#ifdef HAVE_LIBNOTIFY
-
-#include <libnotify/notification.h>
-
-#endif
-
-
 #include "eggtreemultidnd.h"
 #include "baobab-cell-renderer-progress.h"
 
@@ -69,6 +62,7 @@
 #include "brasero-utils.h"
 #include "brasero-disc-message.h"
 #include "brasero-rename.h"
+#include "brasero-notify.h"
 
 #include "burn-debug.h"
 #include "burn-basics.h"
@@ -83,6 +77,7 @@ struct _BraseroDataDiscPrivate
 	GtkWidget *filter;
 	BraseroDataProject *project;
 	GtkWidget *notebook;
+
 	GtkWidget *message;
 
 	GtkUIManager *manager;
@@ -93,18 +88,9 @@ struct _BraseroDataDiscPrivate
 
 	BraseroFileNode *selected;
 
-#ifdef HAVE_LIBNOTIFY
-
-	NotifyNotification *notification;
-
-#endif
-
 	GSList *load_errors;
 
 	guint loading;
-
-	GSList *libnotify;
-	guint libnotify_id;
 
 	guint editing:1;
 	guint reject_files:1;
@@ -212,129 +198,6 @@ G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 					        brasero_data_disc_iface_disc_init));
 
 /**
- * Notifications
- */
-
-struct _BraseroNotification {
-	gchar *primary;
-	gchar *secondary;
-	GtkWidget *widget;
-};
-typedef struct _BraseroNotification BraseroNotification;
-
-static void
-brasero_data_disc_notification_free (BraseroNotification *notification)
-{
-	g_free (notification->primary);
-	g_free (notification->secondary);
-	g_object_unref (notification->widget);
-	g_free (notification);
-}
-
-#ifdef HAVE_LIBNOTIFY
-
-static void
-brasero_data_disc_notification_closed (NotifyNotification *notification,
-				       BraseroDataDisc *disc)
-{
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-
-	g_object_unref (notification);
-	priv->notification = NULL;
-}
-
-#endif
-
-static gboolean
-brasero_data_disc_notify_user_real (gpointer data)
-{
-	BraseroNotification *notification;
-	BraseroDataDiscPrivate *priv;
-	BraseroDataDisc *disc;
-
-	disc = data;
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-
-	if (!priv->libnotify) {
-		priv->libnotify_id = 0;
-		return FALSE;
-	}
-
-	notification = priv->libnotify->data;
-
-#ifdef HAVE_LIBNOTIFY
-
-	GtkWidget *toplevel;
-
-	/* see if we should notify the user. What we want to avoid is to have
-	 * two notifications at the same time */
-	NotifyNotification *notify;
-
-	/* see if the previous notification has finished to be displayed */
-	if (priv->notification)
-		return TRUE;
-
-	/* is the widget ready and is the toplevel window active */
-	toplevel = gtk_widget_get_toplevel (notification->widget);
-	if (!GTK_WIDGET_REALIZED (notification->widget)
-	||  !gtk_window_has_toplevel_focus (GTK_WINDOW (toplevel)))
-		return TRUE;
-
-	/* Good to go */
-	notify = notify_notification_new (notification->primary,
-					  notification->secondary,
-					  NULL,
-					  notification->widget);
-	notify_notification_set_timeout (notify, 5000);
-	g_signal_connect (notify,
-			  "closed",
-			  G_CALLBACK (brasero_data_disc_notification_closed),
-			  disc);
-	notify_notification_show (notify, NULL);
-	priv->notification = notify;
-
-#endif
-
-	priv->libnotify = g_slist_remove (priv->libnotify, notification);
-	brasero_data_disc_notification_free (notification);
-
-	return TRUE;
-}
-
-static void
-brasero_data_disc_notify_user (BraseroDataDisc *disc,
-			       const gchar *primary_message,
-			       const gchar *secondary_message,
-			       GtkWidget *focus)
-{
-	BraseroNotification *notification;
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-
-	/* if the widget doesn't even exist, no need to display a notification */
-	if (!focus)
-		return;
-
-	/* we delay notifications since they are sometimes generated just before
-	 * a widget is shown and therefore appear in the right corner and not 
-	 * focused on the widget */
-	notification = g_new0 (BraseroNotification, 1);
-	notification->primary = g_strdup (primary_message);
-	notification->secondary = g_strdup (secondary_message);
-	notification->widget = focus;
-	g_object_ref (focus);
-
-	priv->libnotify = g_slist_prepend (priv->libnotify, notification);
-	if (!priv->libnotify_id)
-		priv->libnotify_id = g_timeout_add (500,
-						    brasero_data_disc_notify_user_real,
-						    disc);
-}
-
-/**
  * Actions callbacks
  */
 
@@ -362,25 +225,49 @@ brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 	gtk_widget_destroy (dialog);
 }
 
+static gboolean
+brasero_data_disc_import_session (BraseroDataDisc *disc,
+				  gboolean import)
+{
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
+	if (import) {
+		GError *error = NULL;
+
+		if (!brasero_data_session_add_last (BRASERO_DATA_SESSION (priv->project), &error)) {
+			brasero_data_disc_import_failure_dialog (disc, error);
+			return FALSE;
+		}
+
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
+		return TRUE;
+	}
+
+	brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->project));
+	return FALSE;
+}
+
 static void
 brasero_data_disc_import_session_cb (GtkToggleAction *action,
 				     BraseroDataDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
+	gboolean res;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-	if (gtk_toggle_action_get_active (action)) {
-		GError *error = NULL;
 
-		if (!brasero_data_session_add_last (BRASERO_DATA_SESSION (priv->project), &error)) {
-			gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
-			brasero_data_disc_import_failure_dialog (disc, error);
-		}
-		else
-			gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+
+	res = brasero_data_disc_import_session (disc, gtk_toggle_action_get_active (action));
+
+	/* make sure the button reflects the current state */
+	if (gtk_toggle_action_get_active (action) != res) {
+		g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, disc);
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), res);
+		g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, disc);
 	}
-	else
-		brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->project));
 }
 
 static BraseroFileNode *
@@ -694,37 +581,44 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 				     BraseroDataDisc *self)
 {
 	BraseroDataDiscPrivate *priv;
+	GtkWidget *message;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
+	message = brasero_notify_get_message_by_context_id (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
+	if (!message)
+		return;
+
 	if (loading > 0) {
 		/* we're not done yet update progress. */
-		brasero_disc_message_set_progress (BRASERO_DISC_MESSAGE (priv->message),
+		brasero_disc_message_set_progress (BRASERO_DISC_MESSAGE (message),
 						   (gdouble) (priv->loading - loading) / (gdouble) priv->loading);
 		return;
 	}
 
 	priv->loading = 0;
 	if (priv->load_errors) {
-		brasero_disc_message_remove_buttons (BRASERO_DISC_MESSAGE (priv->message));
+		brasero_disc_message_remove_buttons (BRASERO_DISC_MESSAGE (message));
 
-		brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (priv->message),
+		brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message),
 						  _("The contents of the project changed since it was saved:"));
-		brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (priv->message),
+		brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message),
 						    _("Do you want to continue or discard it?"));
 
-		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (priv->message),GTK_STOCK_DIALOG_WARNING);
-		brasero_disc_message_set_progress_active (BRASERO_DISC_MESSAGE (priv->message), FALSE);
-		brasero_disc_message_add_button (BRASERO_DISC_MESSAGE (priv->message),
-						 _("_Discard"),
-						 _("Press if you want to discard the current modified project"),
-						 GTK_RESPONSE_CANCEL);
-		brasero_disc_message_add_button (BRASERO_DISC_MESSAGE (priv->message),
-						 _("_Continue"),
-						 _("Press if you want to continue with the current modified project"),
-						 GTK_RESPONSE_OK);
+		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),GTK_STOCK_DIALOG_WARNING);
+		brasero_disc_message_set_progress_active (BRASERO_DISC_MESSAGE (message), FALSE);
+		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+					   BRASERO_DISC_MESSAGE (message),
+					   _("_Discard"),
+					   _("Press if you want to discard the current modified project"),
+					   GTK_RESPONSE_CANCEL);
+		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+					   BRASERO_DISC_MESSAGE (message),
+					   _("_Continue"),
+					   _("Press if you want to continue with the current modified project"),
+					   GTK_RESPONSE_OK);
 
-		brasero_disc_message_add_errors (BRASERO_DISC_MESSAGE (priv->message),
+		brasero_disc_message_add_errors (BRASERO_DISC_MESSAGE (message),
 						 priv->load_errors);
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
 		g_slist_free (priv->load_errors);
@@ -734,7 +628,7 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->filter), TRUE);
 
-		gtk_widget_hide (priv->message);
+		gtk_widget_destroy (message);
 	}
 
 	priv->loading = FALSE;
@@ -1092,6 +986,28 @@ brasero_data_disc_size_changed_cb (BraseroDataProject *project,
 }
 
 static void
+brasero_disc_disc_session_import_response_cb (GtkButton *button,
+					      GtkResponseType response,
+					      BraseroDataDisc *self)
+{
+	gboolean res;
+	GtkAction *action;
+	BraseroDataDiscPrivate *priv;
+
+	if (response != GTK_RESPONSE_OK)
+		return;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	res = brasero_data_disc_import_session (self, TRUE);
+
+	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
+
+	g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, self);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), res);
+	g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, self);
+}
+
+static void
 brasero_data_disc_session_available_cb (BraseroDataSession *session,
 					gboolean multisession,
 					BraseroDataDisc *self)
@@ -1103,17 +1019,29 @@ brasero_data_disc_session_available_cb (BraseroDataSession *session,
 	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
 
 	if (multisession) {
-		GtkWidget *widget;
+		GtkWidget *message;
 
 		gtk_action_set_sensitive (action, TRUE);
-		widget = gtk_ui_manager_get_widget (priv->manager,
-						    "/Toolbar/DiscButtonPlaceholder/ImportSession");
-		brasero_data_disc_notify_user (self,
-					       _("A multisession disc is inserted:"),
-					       _("Click here to import its contents"),
-					       widget);
+		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+						      _("A multisession disc is inserted:"),
+						      _("Do you want to import its contents?"),
+						      10000,
+						      BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+
+		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_INFO);
+
+		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+					   BRASERO_DISC_MESSAGE (message),
+					   _("_Import Session"),
+					   _("Click here to import its contents"),
+					   GTK_RESPONSE_OK);
+		g_signal_connect (BRASERO_DISC_MESSAGE (message),
+				  "response",
+				  G_CALLBACK (brasero_disc_disc_session_import_response_cb),
+				  self);
 	}
 	else {
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 		gtk_action_set_sensitive (action, FALSE);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 	}
@@ -1152,6 +1080,9 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
 
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+
 	brasero_data_project_reset (priv->project);
 	brasero_file_filtered_clear (BRASERO_FILE_FILTERED (priv->filter));
 	brasero_disc_size_changed (disc, 0);
@@ -1161,8 +1092,16 @@ static void
 brasero_data_disc_reset (BraseroDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
+	GtkAction *action;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
+	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, disc);
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
+		g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, disc);
+	}
 
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
@@ -1177,19 +1116,6 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	priv->deep_directory = FALSE;
 
 	brasero_file_filtered_clear (BRASERO_FILE_FILTERED (priv->filter));
-
-	if (priv->libnotify) {
-		g_slist_foreach (priv->libnotify,
-				 (GFunc) brasero_data_disc_notification_free,
-				 NULL);
-		g_slist_free (priv->libnotify);
-		priv->libnotify = NULL;
-	}
-
-	if (priv->libnotify_id) {
-		g_source_remove (priv->libnotify_id);
-		priv->libnotify_id = 0;
-	}
 
 	brasero_disc_size_changed (disc, 0);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
@@ -1403,7 +1329,6 @@ brasero_data_disc_message_response_cb (BraseroDiscMessage *message,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	gtk_widget_hide (priv->message);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
 	gtk_widget_set_sensitive (GTK_WIDGET (priv->filter), TRUE);
 
@@ -1419,11 +1344,12 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 			      BraseroDiscTrack *track)
 {
 	BraseroDataDiscPrivate *priv;
+	GtkWidget *message;
 	GSList *iter;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
-	/* First add the restored files */
+	/* Firstadd the restored files */
 	for (iter = track->contents.data.restored; iter; iter = iter->next) {
 		gchar *uri;
 
@@ -1442,15 +1368,21 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 		return BRASERO_DISC_OK;
 	}
 
-	brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (priv->message), _("Please, wait while the project is loading."));
-	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (priv->message),GTK_STOCK_DIALOG_INFO);
-	brasero_disc_message_set_progress (BRASERO_DISC_MESSAGE (priv->message), 0.0);
-	brasero_disc_message_add_button (BRASERO_DISC_MESSAGE (priv->message),
-					 _("_Cancel Loading"),
-					 _("Press if you want to cancel current project loading"),
-					 GTK_RESPONSE_CANCEL);
-	gtk_widget_show (priv->message);
-	g_signal_connect (priv->message,
+	message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+					      _("Please, wait while the project is loading."),
+					      NULL,
+					      -1,
+					      BRASERO_NOTIFY_CONTEXT_LOADING);
+
+	brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),GTK_STOCK_DIALOG_INFO);
+	brasero_disc_message_set_progress (BRASERO_DISC_MESSAGE (message), 0.0);
+
+	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+				   BRASERO_DISC_MESSAGE (message),
+				   _("_Cancel Loading"),
+				   _("Press if you want to cancel current project loading"),
+				   GTK_RESPONSE_CANCEL);
+	g_signal_connect (message,
 			  "response",
 			  G_CALLBACK (brasero_data_disc_message_response_cb),
 			  disc);
@@ -1509,7 +1441,9 @@ brasero_data_disc_set_drive (BraseroDisc *disc, BraseroDrive *drive)
 }
 
 static guint
-brasero_data_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
+brasero_data_disc_add_ui (BraseroDisc *disc,
+			  GtkUIManager *manager,
+			  GtkWidget *message)
 {
 	BraseroDataDiscPrivate *priv;
 	GError *error = NULL;
@@ -1517,6 +1451,14 @@ brasero_data_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 	guint merge_id;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
+	if (priv->message) {
+		g_object_unref (priv->message);
+		priv->message = NULL;
+	}
+
+	priv->message = message;
+	g_object_ref (message);
 
 	if (!priv->disc_group) {
 		priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION);
@@ -2041,10 +1983,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 
 	gtk_box_set_spacing (GTK_BOX (object), 0);
 
-	/* message area */
-	priv->message = brasero_disc_message_new ();
-	gtk_box_pack_start (GTK_BOX (object), priv->message, FALSE, TRUE, 0);
-
 	/* the information displayed about how to use this tree */
 	priv->notebook = brasero_disc_get_use_info_notebook ();
 	gtk_widget_show (priv->notebook);
@@ -2291,23 +2229,15 @@ brasero_data_disc_finalize (GObject *object)
 
 	priv = BRASERO_DATA_DISC_PRIVATE (object);
 
+	if (priv->message) {
+		g_object_unref (priv->message);
+		priv->message = NULL;
+	}
+
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
 		g_slist_free (priv->load_errors);
 		priv->load_errors = NULL;
-	}
-
-	if (priv->libnotify) {
-		g_slist_foreach (priv->libnotify,
-				 (GFunc) brasero_data_disc_notification_free,
-				 NULL);
-		g_slist_free (priv->libnotify);
-		priv->libnotify = NULL;
-	}
-
-	if (priv->libnotify_id) {
-		g_source_remove (priv->libnotify_id);
-		priv->libnotify_id = 0;
 	}
 
 	G_OBJECT_CLASS (brasero_data_disc_parent_class)->finalize (object);

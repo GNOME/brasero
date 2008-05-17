@@ -86,7 +86,7 @@ struct _BraseroMediumPrivate
 {
 	gint retry_id;
 
-	GSList * tracks;
+	GSList *tracks;
 
 	const gchar *type;
 	const gchar *icon;
@@ -104,7 +104,7 @@ struct _BraseroMediumPrivate
 
 	guint64 next_wr_add;
 	BraseroMedia info;
-	BraseroDrive * drive;
+	BraseroDrive *drive;
 };
 
 #define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
@@ -346,6 +346,24 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
 	BraseroMediumPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	/* There is one exception to this with closed DVD+RW/DVD-RW restricted */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+		BraseroMediumTrack *first;
+
+		/* These are always writable so give the next address after the 
+		 * last volume. */
+		if (!priv->tracks)
+			return 0;
+
+		first = priv->tracks->data;
+
+		/* round to the nearest 16th block */
+		return (((first->start + first->blocks_num) + 15) / 16) * 16;
+	}
+
 	return priv->next_wr_add;
 }
 
@@ -1341,6 +1359,13 @@ brasero_medium_track_get_info (BraseroMedium *self,
 		else
 			BRASERO_BURN_LOG ("Detected runouts");
 	}
+	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL)
+	     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		BRASERO_BURN_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size");
+		brasero_medium_track_volume_size (self, track, handle);
+	}
+
 
 	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
@@ -2086,6 +2111,40 @@ brasero_medium_try_open (BraseroMedium *self)
 	BRASERO_BURN_LOG ("Open () succeeded");
 	brasero_medium_init_real (self, handle);
 	brasero_device_handle_close (handle);
+}
+
+void
+brasero_medium_reload_info (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	priv->max_rd = 0;
+	priv->max_wrt = 0;
+	priv->block_num = 0;
+	priv->block_size = 0;
+	priv->next_wr_add = -1;
+	priv->type = NULL;
+	priv->icon = NULL;
+	priv->info = BRASERO_MEDIUM_NONE;
+
+	if (priv->retry_id) {
+		g_source_remove (priv->retry_id);
+		priv->retry_id = 0;
+	}
+
+	g_free (priv->rd_speeds);
+	priv->rd_speeds = NULL;
+
+	g_free (priv->wr_speeds);
+	priv->wr_speeds = NULL;
+
+	g_slist_foreach (priv->tracks, (GFunc) g_free, NULL);
+	g_slist_free (priv->tracks);
+	priv->tracks = NULL;
+
+	brasero_medium_try_open (self);
 }
 
 static void

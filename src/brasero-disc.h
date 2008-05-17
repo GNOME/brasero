@@ -136,7 +136,8 @@ struct _BraseroDiscIface {
 	void			(*reset)		(BraseroDisc *disc);
 
 	guint			(*add_ui)		(BraseroDisc *disc,
-							 GtkUIManager *manager);
+							 GtkUIManager *manager,
+							 GtkWidget *message);
 
 	void			(*set_drive)		(BraseroDisc *disc,
 							 BraseroDrive *drive);
@@ -145,7 +146,9 @@ struct _BraseroDiscIface {
 GType brasero_disc_get_type ();
 
 guint
-brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager);
+brasero_disc_add_ui (BraseroDisc *disc,
+		     GtkUIManager *manager,
+		     GtkWidget *message);
 
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);

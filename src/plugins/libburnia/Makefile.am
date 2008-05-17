@@ -31,7 +31,8 @@ libbrasero_libburn_la_LDFLAGS = -module -avoid-version
 #libisofs (apparently libisofs needs one libburn function)
 libisofsdir = $(libdir)/brasero/plugins
 libisofs_LTLIBRARIES = libbrasero-libisofs.la
-libbrasero_libisofs_la_SOURCES = burn-libisofs.c burn-libisofs.h \
+libbrasero_libisofs_la_SOURCES = burn-libisofs.c burn-libisofs.h	\
+	burn-libburn-common.c burn-libburn-common.h			\
 	burn-libburnia.h 
 libbrasero_libisofs_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_LIBBURNIA_LIBS)
 libbrasero_libisofs_la_LDFLAGS = -module -avoid-version

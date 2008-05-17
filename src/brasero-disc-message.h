@@ -78,9 +78,13 @@ brasero_disc_message_set_progress (BraseroDiscMessage *self,
 				   gdouble progress);
 void
 brasero_disc_message_add_button (BraseroDiscMessage *message,
+				 GtkSizeGroup *group,
 				 const gchar *text,
 				 const gchar *tooltip,
 				 GtkResponseType type);
+void
+brasero_disc_message_add_close_button (BraseroDiscMessage *message);
+
 void
 brasero_disc_message_remove_buttons (BraseroDiscMessage *message);
 
@@ -89,6 +93,10 @@ brasero_disc_message_add_errors (BraseroDiscMessage *message,
 				 GSList *errors);
 void
 brasero_disc_message_remove_errors (BraseroDiscMessage *message);
+
+void
+brasero_disc_message_set_timeout (BraseroDiscMessage *message,
+				  guint mseconds);
 
 void
 brasero_disc_message_set_context (BraseroDiscMessage *message,

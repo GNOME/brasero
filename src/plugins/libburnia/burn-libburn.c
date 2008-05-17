@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -42,6 +43,7 @@
 
 #include "burn-basics.h"
 #include "burn-job.h"
+#include "burn-debug.h"
 #include "burn-plugin.h"
 #include "burn-libburn-common.h"
 #include "burn-libburnia.h"
@@ -49,8 +51,14 @@
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BRASERO_TYPE_JOB, BraseroJob);
 
+#define BRASERO_PVD_SIZE	32 * 2048
+
 struct _BraseroLibburnPrivate {
 	BraseroLibburnCtx *ctx;
+
+	/* This buffer is used to capture Primary Volume Descriptor for
+	 * for overwrite media so as to "grow" the latter. */
+	unsigned char *pvd;
 };
 typedef struct _BraseroLibburnPrivate BraseroLibburnPrivate;
 
@@ -66,6 +74,143 @@ BRASERO_SCSI_PROF_DVD_RW_PLUS		= 0x001A,
 } BraseroScsiProfile;
 
 static GObjectClass *parent_class = NULL;
+
+struct _BraseroLibburnSrcData {
+	int fd;
+	off_t size;
+
+	/* That's for the primary volume descriptor used for overwrite media */
+	int pvd_size;						/* in blocks */
+	unsigned char *pvd;
+
+	int read_pvd:1;
+};
+typedef struct _BraseroLibburnSrcData BraseroLibburnSrcData;
+
+static void
+brasero_libburn_src_free_data (struct burn_source *src)
+{
+	BraseroLibburnSrcData *data;
+
+	data = src->data;
+	close (data->fd);
+	g_free (data);
+}
+
+static off_t
+brasero_libburn_src_get_size (struct burn_source *src)
+{
+	BraseroLibburnSrcData *data;
+
+	data = src->data;
+	return data->size;
+}
+
+static int
+brasero_libburn_src_set_size (struct burn_source *src,
+			      off_t size)
+{
+	BraseroLibburnSrcData *data;
+
+	data = src->data;
+	data->size = size;
+	return 1;
+}
+
+/**
+ * This is a copy from burn-volume.c
+ */
+
+struct _BraseroVolDesc {
+	guchar type;
+	gchar id			[5];
+	guchar version;
+};
+typedef struct _BraseroVolDesc BraseroVolDesc;
+
+static int
+brasero_libburn_src_read_xt (struct burn_source *src,
+			     unsigned char *buffer,
+			     int size)
+{
+	int total;
+	BraseroLibburnSrcData *data;
+
+	data = src->data;
+
+	total = 0;
+	while (total < size) {
+		int bytes;
+
+		bytes = read (data->fd, buffer + total, size - total);
+		if (bytes < 0)
+			return -1;
+
+		if (!bytes)
+			break;
+
+		total += bytes;
+	}
+
+	/* copy the primary volume descriptor if a buffer is provided */
+	if (data->pvd
+	&& !data->read_pvd
+	&&  data->pvd_size < BRASERO_PVD_SIZE) {
+		unsigned char *current_pvd;
+		int i;
+
+		current_pvd = data->pvd + data->pvd_size;
+
+		/* read volume descriptors until we reach the end of the
+		 * buffer or find a volume descriptor set end. */
+		for (i = 0; (i << 11) < size && data->pvd_size + (i << 11) < BRASERO_PVD_SIZE; i ++) {
+			BraseroVolDesc *desc;
+
+			/* No need to check the first 16 blocks */
+			if ((data->pvd_size >> 11) + i < 16)
+				continue;
+
+			desc = (BraseroVolDesc *) (buffer + sizeof (BraseroVolDesc) * i);
+			if (desc->type == 255) {
+				data->read_pvd = 1;
+				BRASERO_BURN_LOG ("found volume descriptor set end");
+				break;
+			}
+		}
+
+		memcpy (current_pvd, buffer, i << 11);
+		data->pvd_size += i << 11;
+	}
+
+	return total;
+}
+
+static struct burn_source *
+brasero_libburn_create_fd_source (int fd,
+				  int size,
+				  unsigned char *pvd)
+{
+	struct burn_source *src;
+	BraseroLibburnSrcData *data;
+
+	data = g_new0 (BraseroLibburnSrcData, 1);
+	data->fd = fd;
+	data->size = size;
+	data->pvd = pvd;
+
+	/* FIXME: this could be wrapped into a fifo source to get a smoother
+	 * data delivery. But that means another thread ... */
+	src = g_new0 (struct burn_source, 1);
+	src->version = 1;
+	src->refcount = 1;
+	src->read_xt = brasero_libburn_src_read_xt;
+	src->get_size = brasero_libburn_src_get_size;
+	src->set_size = brasero_libburn_src_set_size;
+	src->free_data = brasero_libburn_src_free_data;
+	src->data = data;
+
+	return src;
+}
 
 static BraseroBurnResult
 brasero_libburn_add_track (struct burn_session *session,
@@ -98,6 +243,7 @@ brasero_libburn_add_fd_track (struct burn_session *session,
 			      int fd,
 			      gint mode,
 			      gint64 size,
+			      unsigned char *pvd,
 			      GError **error)
 {
 	struct burn_source *src;
@@ -107,13 +253,35 @@ brasero_libburn_add_fd_track (struct burn_session *session,
 	track = burn_track_create ();
 	burn_track_define_data (track, 0, 0, 0, mode);
 
-	src = burn_fd_source_new (fd, -1, size);
+	src = brasero_libburn_create_fd_source (fd, size, pvd);
 	result = brasero_libburn_add_track (session, track, src, mode, error);
 
 	burn_source_free (src);
 	burn_track_free (track);
 
 	return result;
+}
+
+static BraseroBurnResult
+brasero_libburn_add_file_track (struct burn_session *session,
+				const gchar *path,
+				gint mode,
+				off_t size,
+				unsigned char *pvd,
+				GError **error)
+{
+	int fd;
+
+	fd = open (path, O_RDONLY);
+	if (fd == -1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return BRASERO_BURN_ERR;
+	}
+
+	return brasero_libburn_add_fd_track (session, fd, mode, size, pvd, error);
 }
 
 static BraseroBurnResult
@@ -124,7 +292,10 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 	int fd;
 	gint64 size;
 	BraseroTrackType type;
+	BraseroLibburnPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
+
+	priv = BRASERO_LIBBURN_PRIVATE (self);
 
 	brasero_job_get_fd_in (BRASERO_JOB (self), &fd);
 
@@ -147,6 +318,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 							       fd,
 							       mode,
 							       size,
+							       priv->pvd,
 							       error);
 			break;
 		}
@@ -169,6 +341,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 								       dup (fd),
 								       BURN_AUDIO,
 								       size,
+								       priv->pvd,
 								       error);
 				if (result != BRASERO_BURN_OK)
 					return result;
@@ -184,38 +357,15 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 }
 
 static BraseroBurnResult
-brasero_libburn_add_file_track (struct burn_session *session,
-				const gchar *path,
-				gint mode,
-				off_t size,
-				GError **error)
-{
-	struct burn_source *src;
-	struct burn_track *track;
-	BraseroBurnResult result;
-
-	track = burn_track_create ();
-	burn_track_define_data (track, 0, 0, 0, mode);
-
-	src = burn_file_source_new (path, NULL);
-	result = brasero_libburn_add_track (session, track, src, mode, error);
-
-	if (size > 0)
-		burn_track_set_default_size (track, size);
-
-	burn_source_free (src);
-	burn_track_free (track);
-
-	return result;
-}
-
-static BraseroBurnResult
 brasero_libburn_setup_session_file (BraseroLibburn *self, 
 				    struct burn_session *session,
 				    GError **error)
 {
+	BraseroLibburnPrivate *priv;
 	BraseroBurnResult result;
 	GSList *tracks = NULL;
+
+	priv = BRASERO_LIBBURN_PRIVATE (self);
 
 	/* create the track(s) */
 	result = BRASERO_BURN_OK;
@@ -234,6 +384,7 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 								 audiopath,
 								 BURN_AUDIO,
 								 -1,
+								 priv->pvd,
 								 error);
 			if (result != BRASERO_BURN_OK)
 				break;
@@ -260,6 +411,7 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 								 imagepath,
 								 mode,
 								 -1,
+								 priv->pvd,
 								 error);
 		}
 		else
@@ -304,22 +456,25 @@ static BraseroBurnResult
 brasero_libburn_start_record (BraseroLibburn *self,
 			      GError **error)
 {
-	int profile;
 	guint64 rate;
-	char prof_name [80];
+	BraseroMedia media;
 	BraseroBurnFlag flags;
 	BraseroBurnResult result;
 	BraseroLibburnPrivate *priv;
 	struct burn_write_opts *opts;
 
 	priv = BRASERO_LIBBURN_PRIVATE (self);
-	if (burn_disc_get_profile (priv->ctx->drive, &profile, prof_name) < 0) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no profile available for the medium"));
-		return BRASERO_BURN_ERR;
-	}
+
+	/* if appending a DVD+-RW get PVD */
+	brasero_job_get_flags (BRASERO_JOB (self), &flags);
+	brasero_job_get_media (BRASERO_JOB (self), &media);
+
+	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)
+	&& (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL))
+	&& (media & BRASERO_MEDIUM_HAS_DATA))
+		priv->pvd = g_new0 (unsigned char, BRASERO_PVD_SIZE);
 
 	result = brasero_libburn_create_disc (self, &priv->ctx->disc, error);
 	if (result != BRASERO_BURN_OK)
@@ -332,17 +487,28 @@ brasero_libburn_start_record (BraseroLibburn *self,
 	opts = burn_write_opts_new (priv->ctx->drive);
 	burn_write_opts_set_perform_opc (opts, 0);
 
-	brasero_job_get_flags (BRASERO_JOB (self), &flags);
-	if (profile != BRASERO_SCSI_PROF_DVD_RW_RESTRICTED
-	&&  profile != BRASERO_SCSI_PROF_DVD_RW_PLUS
-	&& (flags & BRASERO_BURN_FLAG_DAO))
+	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)
+	&&  (flags & BRASERO_BURN_FLAG_DAO))
 		burn_write_opts_set_write_type (opts,
 						BURN_WRITE_SAO,
 						BURN_BLOCK_SAO);
-	else
+	else {
 		burn_write_opts_set_write_type (opts,
 						BURN_WRITE_TAO,
 						BURN_BLOCK_MODE1);
+
+		/* we also set the start block to write from if MERGE is set */
+		if (flags & BRASERO_BURN_FLAG_MERGE) {
+			gint64 address = 0;
+
+			brasero_job_get_next_writable_address (BRASERO_JOB (self), &address);
+
+			BRASERO_JOB_LOG (self, "Starting to write at block = %lli and byte %lli", address, address * 2048);
+			burn_write_opts_set_start_byte (opts, address * 2048);
+		}
+	}
 
 	burn_write_opts_set_underrun_proof (opts, (flags & BRASERO_BURN_FLAG_BURNPROOF) != 0);
 	burn_write_opts_set_multi (opts, (flags & BRASERO_BURN_FLAG_MULTI) != 0);
@@ -436,6 +602,7 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 					       fd,
 					       BURN_MODE1,
 					       65536,		/* 32 blocks */
+					       priv->pvd,
 					       error);
 	close (fd);
 
@@ -526,6 +693,11 @@ brasero_libburn_stop (BraseroJob *job,
 		priv->ctx = NULL;
 	}
 
+	if (priv->pvd) {
+		g_free (priv->pvd);
+		priv->pvd = NULL;
+	}
+
 	if (BRASERO_JOB_CLASS (parent_class)->stop)
 		BRASERO_JOB_CLASS (parent_class)->stop (job, error);
 
@@ -536,9 +708,56 @@ static BraseroBurnResult
 brasero_libburn_clock_tick (BraseroJob *job)
 {
 	BraseroLibburnPrivate *priv;
+	BraseroBurnResult result;
+	int ret;
 
 	priv = BRASERO_LIBBURN_PRIVATE (job);
-	brasero_libburn_common_status (job, priv->ctx);
+	result = brasero_libburn_common_status (job, priv->ctx);
+
+	if (result != BRASERO_BURN_OK)
+		return BRASERO_BURN_OK;
+
+	/* Double check that everything went well */
+	if (!burn_drive_wrote_well (priv->ctx->drive)) {
+		brasero_job_error (job,
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("an unknown error occured")));
+	}
+
+	/* That's finished */
+	if (!priv->pvd) {
+		brasero_job_set_dangerous (job, FALSE);
+		brasero_job_finished_session (job);
+		return BRASERO_BURN_OK;
+	}
+
+	/* In case we append data to a DVD+RW or DVD-RW
+	 * (restricted overwrite) medium , we're not
+	 * done since we need to overwrite the primary
+	 * volume descriptor at sector 0.
+	 * NOTE: This is a synchronous call but given the size of the buffer
+	 * that shouldn't block.
+	 * NOTE 2: in source we read the volume descriptors until we reached
+	 * either the end of the buffer or the volume descriptor set end. That's
+	 * kind of useless since for a DVD 16 blocks are written at a time. */
+	BRASERO_JOB_LOG (job, "Starting to overwrite primary volume descriptor");
+	ret = burn_random_access_write (priv->ctx->drive,
+					0,
+					(char*)priv->pvd,
+					BRASERO_PVD_SIZE,
+					0);
+	if (ret != 1) {
+		brasero_job_error (job,
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("an unknown error occured")));
+		return BRASERO_BURN_OK;
+	}
+
+	brasero_job_set_dangerous (job, FALSE);
+	brasero_job_finished_session (job);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -578,6 +797,10 @@ brasero_libburn_finalize (GObject *object)
 		priv->ctx = NULL;
 	}
 
+	/* Since the library is not needed any more call burn_finish ().
+	 * NOTE: it itself calls burn_abort (). */
+	burn_finish ();
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -605,10 +828,14 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 					  BRASERO_MEDIUM_HAS_DATA|
 					  BRASERO_MEDIUM_BLANK;
 	const BraseroMedia media_dvd_rw_plus = BRASERO_MEDIUM_DVD|
+					       BRASERO_MEDIUM_DVD_DL|
 					       BRASERO_MEDIUM_PLUS|
 					       BRASERO_MEDIUM_RESTRICTED|
 					       BRASERO_MEDIUM_REWRITABLE|
-					       BRASERO_MEDIUM_BLANK;
+					       BRASERO_MEDIUM_BLANK|
+					       BRASERO_MEDIUM_APPENDABLE|
+					       BRASERO_MEDIUM_CLOSED|
+					       BRASERO_MEDIUM_HAS_DATA;
 	GSList *output;
 	GSList *input;
 
@@ -772,34 +999,94 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
-	/* NOTE: libburn can't append anything to DVDRW+ and restricted
-	 * moreover DVD+ R/RW don't have a dummy mode. */
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVDRW_RESTRICTED|
-				  BRASERO_MEDIUM_BLANK,
-				/*  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE| */
-				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_DUMMY|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
-	/* FIXME: can libburn do like growisofs (overwrite / avoid blanking)? */
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVDRW_PLUS|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
-				/*  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE| */
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
+	/* for DVD+/- restricted */
 	output = brasero_caps_disc_new (media_dvd_rw_plus);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);
+
+	/* for DVD-RW restricted overwrite */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE,
+				  BRASERO_BURN_FLAG_MULTI);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE,
+				  BRASERO_BURN_FLAG_MULTI);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVD|
+				  BRASERO_MEDIUM_RESTRICTED|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_MULTI);
+
+	/* for DVD+RW */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_MULTI);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE,
+				  BRASERO_BURN_FLAG_MULTI);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_DVDRW_PLUS|
+				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_CLOSED|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_NOGRACE|
+				  BRASERO_BURN_FLAG_MERGE,
+				  BRASERO_BURN_FLAG_MULTI);
 
 	/* add blank caps */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_CD|

@@ -118,7 +118,9 @@ static void
 brasero_audio_disc_reset (BraseroDisc *disc);
 
 static guint
-brasero_audio_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager);
+brasero_audio_disc_add_ui (BraseroDisc *disc,
+			   GtkUIManager *manager,
+			   GtkWidget *message);
 
 static gboolean
 brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
@@ -493,7 +495,9 @@ brasero_audio_disc_set_property (GObject * object,
 }
 
 static guint
-brasero_audio_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
+brasero_audio_disc_add_ui (BraseroDisc *disc,
+			   GtkUIManager *manager,
+			   GtkWidget *message)
 {
 	BraseroAudioDisc *audio_disc;
 	GError *error = NULL;

@@ -295,19 +295,6 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 	g_ptr_array_add (argv, g_strdup ("-exclude-list"));
 	g_ptr_array_add (argv, excluded_path);
 
-	brasero_job_get_action (BRASERO_JOB (genisoimage), &action);
-	if (action == BRASERO_JOB_ACTION_SIZE) {
-		g_ptr_array_add (argv, g_strdup ("-quiet"));
-		g_ptr_array_add (argv, g_strdup ("-print-size"));
-
-		brasero_job_set_current_action (BRASERO_JOB (genisoimage),
-						BRASERO_BURN_ACTION_GETTING_SIZE,
-						NULL,
-						FALSE);
-		brasero_job_start_progress (BRASERO_JOB (genisoimage), FALSE);
-		return BRASERO_BURN_OK;
-	}
-
 	brasero_job_get_data_label (BRASERO_JOB (genisoimage), &label);
 	if (label) {
 		g_ptr_array_add (argv, g_strdup ("-V"));
@@ -359,6 +346,19 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 			brasero_job_get_device (BRASERO_JOB (genisoimage), &device);
 			g_ptr_array_add (argv, device);
 		}
+	}
+
+	brasero_job_get_action (BRASERO_JOB (genisoimage), &action);
+	if (action == BRASERO_JOB_ACTION_SIZE) {
+		g_ptr_array_add (argv, g_strdup ("-quiet"));
+		g_ptr_array_add (argv, g_strdup ("-print-size"));
+
+		brasero_job_set_current_action (BRASERO_JOB (genisoimage),
+						BRASERO_BURN_ACTION_GETTING_SIZE,
+						NULL,
+						FALSE);
+		brasero_job_start_progress (BRASERO_JOB (genisoimage), FALSE);
+		return BRASERO_BURN_OK;
 	}
 
 	if (brasero_job_get_fd_out (BRASERO_JOB (genisoimage), NULL) != BRASERO_BURN_OK) {
@@ -495,6 +495,7 @@ brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_DVD_DL|
 				  BRASERO_MEDIUM_DVDR_PLUS|
+				  BRASERO_MEDIUM_RESTRICTED|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_AUDIO|
 				  BRASERO_MEDIUM_HAS_DATA,

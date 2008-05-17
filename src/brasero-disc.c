@@ -318,7 +318,7 @@ brasero_disc_get_boundaries (BraseroDisc *disc,
 }
 
 guint
-brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
+brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager, GtkWidget *message)
 {
 	BraseroDiscIface *iface;
 
@@ -330,7 +330,7 @@ brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager)
 
 	iface = BRASERO_DISC_GET_IFACE (disc);
 	if (iface->add_ui)
-		return (* iface->add_ui) (disc, manager);
+		return (* iface->add_ui) (disc, manager, message);
 
 	return 0;
 }

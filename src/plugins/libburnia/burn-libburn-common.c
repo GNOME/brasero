@@ -78,10 +78,6 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 	}
 
 	g_free (ctx);
-
-	/* Since the library is not needed any more call burn_finish ().
-	 * NOTE: it itself calls burn_abort (). */
-	burn_finish ();
 }
 
 BraseroLibburnCtx *
@@ -113,7 +109,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 	/* that's for debugging */
 	burn_set_verbosity (666);
 
-	/* we just want to scan the drive proposed by NCB drive */
+	/* we just want to scan the drive proposed by drive */
 	brasero_job_get_device (job, &device);
 
 	res = burn_drive_convert_fs_adr (device, libburn_device);
@@ -187,7 +183,8 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 		case BURN_DRIVE_WRITING:
 			/* we ignore it if it happens after leadout */
 			if (ctx->status == BURN_DRIVE_WRITING_LEADOUT
-			||  ctx->status == BURN_DRIVE_CLOSING_TRACK)
+			||  ctx->status == BURN_DRIVE_CLOSING_TRACK
+			||  ctx->status == BURN_DRIVE_CLOSING_SESSION)
 				return TRUE;
 
 			if (ctx->status == BURN_DRIVE_WRITING_LEADIN
@@ -210,6 +207,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 
 		case BURN_DRIVE_WRITING_LEADOUT: 	/* DAO */
 		case BURN_DRIVE_CLOSING_TRACK:		/* TAO */
+		case BURN_DRIVE_CLOSING_SESSION:	/* Multisession end */
 			ctx->sectors += ctx->track_sectors;
 			ctx->track_sectors = progress->sectors;
 
@@ -224,20 +222,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			break;
 
 		case BURN_DRIVE_IDLE:
-			/* FIXME: that's where a track is returned */
-			/* Double check that everything went well */
-			/* FIXME: activate that code next time
-			if (!burn_drive_wrote_well (ctx->drive)) {
-				brasero_job_error (BRASERO_JOB (self),
-						   g_error_new (BRASERO_BURN_ERROR,
-								BRASERO_BURN_ERROR_GENERAL,
-								_("an unknown error occured")));
-			} */
-
-			brasero_job_set_dangerous (BRASERO_JOB (self), FALSE);
-			brasero_job_finished_session (BRASERO_JOB (self));
-
-			/* we must return here since job may not exist any more */
+			/* That's the end of activity */
 			return FALSE;
 
 		case BURN_DRIVE_SPAWNING:
@@ -254,7 +239,8 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 			break;
 
 		default:
-			return FALSE;
+			BRASERO_JOB_LOG (self, "Unknown drive state (%i)", status);
+			return TRUE;
 	}
 
 	ctx->status = status;
@@ -265,7 +251,7 @@ brasero_libburn_common_status_changed (BraseroJob *self,
 	return TRUE;
 }
 
-void
+BraseroBurnResult
 brasero_libburn_common_status (BraseroJob *self,
 			       BraseroLibburnCtx *ctx)
 {
@@ -274,10 +260,10 @@ brasero_libburn_common_status (BraseroJob *self,
 
 	/* see if there is any pending message */
 	if (!brasero_libburn_common_process_message (self))
-		return;
+		return BRASERO_BURN_ERR;
 
 	if (!ctx->drive)
-		return;
+		return BRASERO_BURN_ERR;
 
 	status = burn_drive_get_status (ctx->drive, &progress);
 
@@ -291,7 +277,7 @@ brasero_libburn_common_status (BraseroJob *self,
 								 status,
 								 &progress);
 		if (!running)
-			return;
+			return BRASERO_BURN_OK;
 	}
 
 	if (status == BURN_DRIVE_IDLE
@@ -302,11 +288,15 @@ brasero_libburn_common_status (BraseroJob *self,
 
 		ctx->track_num = progress.track;
 		ctx->track_sectors = progress.sectors;
-		return;
+		return BRASERO_BURN_RETRY;
 	}
 
-	if (status != BURN_DRIVE_ERASING
-	&&  status != BURN_DRIVE_FORMATTING) {
+	if (status == BURN_DRIVE_CLOSING_SESSION
+	||  status == BURN_DRIVE_WRITING_LEADOUT) {
+		brasero_job_set_progress (self, 1.0);
+	}
+	else if (status != BURN_DRIVE_ERASING
+	     &&  status != BURN_DRIVE_FORMATTING) {
 		gint64 cur_sector;
 
 		if (ctx->track_num != progress.track) {
@@ -338,4 +328,5 @@ brasero_libburn_common_status (BraseroJob *self,
 	}
 
 	brasero_job_start_progress (self, FALSE);
+	return BRASERO_BURN_RETRY;
 }
