@@ -354,6 +354,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	BraseroVolFile *file;
 	BraseroTrack *track;
 	gchar buffer [2048];
+	BraseroVolSrc *vol;
 	gint64 start_block;
 	gchar *device;
 
@@ -370,31 +371,34 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	brasero_job_get_device (BRASERO_JOB (self), &device);
-
 	/* try every file and make sure they are of the same type */
 	/* FIXME: if not we could make a new checksum ... */
-	file = brasero_volume_get_file (device,
+	brasero_job_get_device (BRASERO_JOB (self), &device);
+	vol = brasero_volume_source_open_file (device, error);
+	file = brasero_volume_get_file (vol,
 					"/"BRASERO_MD5_FILE,
 					start_block,
 					NULL);
+
 	if (!file) {
-		file = brasero_volume_get_file (device,
+		file = brasero_volume_get_file (vol,
 						"/"BRASERO_SHA1_FILE,
 						start_block,
 						NULL);
 		if (!file) {
-			file = brasero_volume_get_file (device,
+			file = brasero_volume_get_file (vol,
 							"/"BRASERO_SHA256_FILE,
 							start_block,
 							NULL);
 			if (!file) {
 				g_free (device);
+				brasero_volume_source_close (vol);
 				BRASERO_JOB_LOG (self, "no checksum file found");
 				return BRASERO_BURN_OK;
 			}
 			else if (priv->checksum_type != BRASERO_CHECKSUM_SHA256_FILE) {
 				g_free (device);
+				brasero_volume_source_close (vol);
 				BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
 						 priv->checksum_type,
 						 BRASERO_CHECKSUM_SHA256_FILE);
@@ -405,12 +409,14 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 			BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
 					 priv->checksum_type,
 					 BRASERO_CHECKSUM_SHA1_FILE);
+			brasero_volume_source_close (vol);
 			g_free (device);
 			return BRASERO_BURN_OK;
 		}
 	}
 	else if (priv->checksum_type != BRASERO_CHECKSUM_MD5_FILE) {
 		g_free (device);
+		brasero_volume_source_close (vol);
 		BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
 				 priv->checksum_type,
 				 BRASERO_CHECKSUM_MD5_FILE);
@@ -419,6 +425,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 
 	BRASERO_JOB_LOG (self, "Found file %s on %s", file, device);
 	handle = brasero_volume_file_open (device, file);
+	brasero_volume_source_close (vol);
 	g_free (device);
 
 	if (!handle) {

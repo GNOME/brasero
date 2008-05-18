@@ -45,7 +45,7 @@ struct _BraseroIsoCtx {
 
 	gchar buffer [ISO9660_BLOCK_SIZE];
 	gint offset;
-	FILE *file;
+	BraseroVolSrc *vol;
 
 	gchar *spare_record;
 
@@ -192,24 +192,14 @@ brasero_iso9660_seek (BraseroIsoCtx *ctx, gint address)
 	 * by its address member. In a set of directory records the first two 
 	 * records are: '.' (id == 0) and '..' (id == 1). So since we've got
 	 * the address of the set load the block. */
-	if (fseek (ctx->file, address * sizeof (ctx->buffer), SEEK_SET) == -1) {
-		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", address, strerror (errno));
-		goto error;
-	}
+	if (!BRASERO_VOL_SRC_SEEK (ctx->vol, address, SEEK_SET, &(ctx->error)))
+		return BRASERO_ISO_ERROR;
 
-	if (fread (ctx->buffer, 1, sizeof (ctx->buffer), ctx->file) != sizeof (ctx->buffer)) {
-		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
-		goto error;
-	}
+	if (!BRASERO_VOL_SRC_READ (ctx->vol, ctx->buffer, 1, &(ctx->error)))
+		return BRASERO_ISO_ERROR;
+
 
 	return BRASERO_ISO_OK;
-
-error:
-
-	ctx->error = g_error_new (BRASERO_BURN_ERROR,
-				  BRASERO_BURN_ERROR_GENERAL,
-				  strerror (errno));
-	return BRASERO_ISO_ERROR;
 }
 
 static BraseroIsoResult
@@ -218,13 +208,8 @@ brasero_iso9660_next_block (BraseroIsoCtx *ctx)
 	ctx->offset = 0;
 	ctx->num_blocks ++;
 
-	if (fread (ctx->buffer, 1, sizeof (ctx->buffer), ctx->file) != sizeof (ctx->buffer)) {
-		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  strerror (errno));
+	if (!BRASERO_VOL_SRC_READ (ctx->vol, ctx->buffer, 1, &(ctx->error)))
 		return BRASERO_ISO_ERROR;
-	}
 
 	return BRASERO_ISO_OK;
 }
@@ -625,17 +610,17 @@ error:
 }
 
 static void
-brasero_iso9660_ctx_init (BraseroIsoCtx *ctx, FILE *file)
+brasero_iso9660_ctx_init (BraseroIsoCtx *ctx, BraseroVolSrc *vol)
 {
 	memset (ctx, 0, sizeof (BraseroIsoCtx));
 
 	ctx->is_root = TRUE;
-	ctx->file = file;
+	ctx->vol = vol;
 	ctx->offset = 0;
 }
 
 BraseroVolFile *
-brasero_iso9660_get_contents (FILE *file,
+brasero_iso9660_get_contents (BraseroVolSrc *vol,
 			      const gchar *block,
 			      gint64 *data_blocks,
 			      GError **error)
@@ -649,7 +634,7 @@ brasero_iso9660_get_contents (FILE *file,
 	primary = (BraseroIsoPrimary *) block;
 	root = primary->root_rec;
 
-	brasero_iso9660_ctx_init (&ctx, file);
+	brasero_iso9660_ctx_init (&ctx, vol);
 
 	address = brasero_iso9660_get_733_val (root->address);
 
@@ -807,7 +792,7 @@ brasero_iso9660_lookup_directory_record (BraseroIsoCtx *ctx,
 }
 
 BraseroVolFile *
-brasero_iso9660_get_file (FILE *file,
+brasero_iso9660_get_file (BraseroVolSrc *vol,
 			  const gchar *path,
 			  const gchar *block,
 			  GError **error)
@@ -822,7 +807,7 @@ brasero_iso9660_get_file (FILE *file,
 	root = primary->root_rec;
 	address = brasero_iso9660_get_733_val (root->address);
 
-	brasero_iso9660_ctx_init (&ctx, file);
+	brasero_iso9660_ctx_init (&ctx, vol);
 
 	/* now that we have root block address, skip first "/" and go. */
 	path ++;

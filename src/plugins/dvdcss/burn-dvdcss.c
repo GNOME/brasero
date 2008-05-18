@@ -306,6 +306,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	BraseroTrack *track = NULL;
 	guint64 remaining_sectors;
 	FILE *output_fd = NULL;
+	BraseroVolSrc *vol;
 	gint64 volume_size;
 	GQueue *map = NULL;
 
@@ -321,12 +322,15 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	/* get the contents of the DVD */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	drive = brasero_track_get_drive_source (track);
-	files = brasero_volume_get_files (brasero_drive_get_device (drive),
+
+	vol = brasero_volume_source_open_file (brasero_drive_get_device (drive), &priv->error);
+	files = brasero_volume_get_files (vol,
 					  0,
 					  NULL,
 					  NULL,
 					  NULL,
 					  &priv->error);
+	brasero_volume_source_close (vol);
 	if (!files)
 		goto end;
 

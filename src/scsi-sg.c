@@ -189,9 +189,3 @@ brasero_device_handle_close (BraseroDeviceHandle *handle)
 	g_free (handle);
 }
 
-int
-brasero_device_handle_get_fd (BraseroDeviceHandle *handle)
-{
-	return handle->fd;
-}
-

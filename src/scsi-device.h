@@ -39,9 +39,6 @@ brasero_device_handle_open (const gchar *path, BraseroScsiErrCode *error);
 void
 brasero_device_handle_close (BraseroDeviceHandle *handle);
 
-int
-brasero_device_handle_get_fd (BraseroDeviceHandle *handle);
-
 G_END_DECLS
 
 #endif /* _SCSI_DEVICE_H */

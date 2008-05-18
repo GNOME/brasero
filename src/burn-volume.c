@@ -34,6 +34,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "burn-volume-source.h"
 #include "burn-volume.h"
 #include "burn-iso9660.h"
 #include "burn-basics.h"
@@ -90,42 +91,28 @@ brasero_volume_file_free (BraseroVolFile *file)
 }
 
 static gboolean
-brasero_volume_get_primary_from_file (FILE *file,
+brasero_volume_get_primary_from_file (BraseroVolSrc *vol,
 				      gchar *primary_vol,
 				      GError **error)
 {
-	BraseroVolDesc *vol;
-	int bytes_read;
+	BraseroVolDesc *desc;
 
 	/* skip the first 16 blocks */
-	if (fseek (file, SYSTEM_AREA_SECTORS * ISO9660_BLOCK_SIZE, SEEK_CUR) == -1) {
-		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", SYSTEM_AREA_SECTORS, strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+	if (!BRASERO_VOL_SRC_SEEK (vol, SYSTEM_AREA_SECTORS, SEEK_CUR, error))
 		return FALSE;
-	}
 
-	bytes_read = fread (primary_vol, 1, ISO9660_BLOCK_SIZE, file);
-	if (bytes_read != ISO9660_BLOCK_SIZE) {
-		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+	if (!BRASERO_VOL_SRC_READ (vol, primary_vol, 1, error))
 		return FALSE;
-	}
 
 	/* make a few checks to ensure this is an ECMA volume */
-	vol = (BraseroVolDesc *) primary_vol;
-	if (memcmp (vol->id, "CD001", 5)
-	&&  memcmp (vol->id, "BEA01", 5)
-	&&  memcmp (vol->id, "BOOT2", 5)
-	&&  memcmp (vol->id, "CDW02", 5)
-	&&  memcmp (vol->id, "NSR02", 5)	/* usually UDF */
-	&&  memcmp (vol->id, "NSR03", 5)	/* usually UDF */
-	&&  memcmp (vol->id, "TEA01", 5)) {
+	desc = (BraseroVolDesc *) primary_vol;
+	if (memcmp (desc->id, "CD001", 5)
+	&&  memcmp (desc->id, "BEA01", 5)
+	&&  memcmp (desc->id, "BOOT2", 5)
+	&&  memcmp (desc->id, "CDW02", 5)
+	&&  memcmp (desc->id, "NSR02", 5)	/* usually UDF */
+	&&  memcmp (desc->id, "NSR03", 5)	/* usually UDF */
+	&&  memcmp (desc->id, "TEA01", 5)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -136,145 +123,27 @@ brasero_volume_get_primary_from_file (FILE *file,
 	return TRUE;
 }
 
-static gboolean
-brasero_volume_get_primary (const gchar *path,
-			    gchar *primary_vol,
-			    GError **error)
-{
-	FILE *file;
-	gboolean result;
-
-	file = fopen (path, "r");
-	if (!file) {
-		BRASERO_BURN_LOG ("open () failed (%s)", strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		return FALSE;
-	}
-
-	result = brasero_volume_get_primary_from_file (file, primary_vol, error);
-	fclose (file);
-
-	return result;
-}
-
 gboolean
-brasero_volume_is_valid (const gchar *path, GError **error)
+brasero_volume_is_valid_fd (BraseroVolSrc *vol, GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
-
-	return TRUE;	
+	return brasero_volume_get_primary_from_file (vol, buffer, error);
 }
 
 gboolean
-brasero_volume_is_valid_fd (int fd, GError **error)
+brasero_volume_get_size (BraseroVolSrc *vol,
+			 gint64 block,
+			 gint64 *nb_blocks,
+			 GError **error)
 {
-	int dup_fd;
-	FILE *file;
 	gboolean result;
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	dup_fd = dup (fd);
-	if (dup_fd == -1) {
-		BRASERO_BURN_LOG ("dup () failed (%s)", strerror (errno));
-		goto error;
-	}
-
-	file = fdopen (dup_fd, "r");
-	if (!file) {
-		close (dup_fd);
-
-		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
-		goto error;
-	}
-
-	result = brasero_volume_get_primary_from_file (file, buffer, error);
-	fclose (file);
-
-	return TRUE;
-
-error:
-	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
-		     strerror (errno));
-	return FALSE;
-}
-
-gboolean
-brasero_volume_is_iso9660 (const gchar *path, GError **error)
-{
-	gchar buffer [ISO9660_BLOCK_SIZE];
-
-	if (!brasero_volume_get_primary (path, buffer, error))
+	if (!BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error))
 		return FALSE;
 
-	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
-		return FALSE;
-
-	return TRUE;
-}
-
-gboolean
-brasero_volume_get_label (const gchar *path,
-			  gchar **label,
-			  GError **error)
-{
-	gchar buffer [ISO9660_BLOCK_SIZE];
-
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
-
-	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
-		return FALSE;
-
-	return brasero_iso9660_get_label (buffer, label, error);
-}
-
-gboolean
-brasero_volume_get_size_fd (int fd,
-			    gint64 block,
-			    gint64 *nb_blocks,
-			    GError **error)
-{
-	int dup_fd;
-	FILE *file;
-	gboolean result;
-	gchar buffer [ISO9660_BLOCK_SIZE];
-
-	dup_fd = dup (fd);
-	if (dup_fd == -1) {
-		BRASERO_BURN_LOG ("dup () failed (%s)", strerror (errno));
-		goto error;
-	}
-
-	file = fdopen (dup_fd, "r");
-	if (!file) {
-		/* since we dupped the fd close the one */
-		close (dup_fd);
-
-		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
-		goto error;
-	}
-
-	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
-		fclose (file);
-
-		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", block, strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		return FALSE;
-	}
-
-	result = brasero_volume_get_primary_from_file (file, buffer, error);
-	fclose (file);
+	result = brasero_volume_get_primary_from_file (vol, buffer, error);
 	if (!result)
 		return FALSE;
 
@@ -282,33 +151,10 @@ brasero_volume_get_size_fd (int fd,
 		return FALSE;
 
 	return brasero_iso9660_get_size (buffer, nb_blocks, error);
-
-error:
-	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
-		     strerror (errno));
-	return FALSE;
-}
-
-gboolean
-brasero_volume_get_size (const gchar *path,
-			 gint64 *nb_blocks,
-			 GError **error)
-{
-	gchar buffer [ISO9660_BLOCK_SIZE];
-
-	if (!brasero_volume_get_primary (path, buffer, error))
-		return FALSE;
-
-	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
-		return FALSE;
-
-	return brasero_iso9660_get_size (buffer, nb_blocks, error);
 }
 
 BraseroVolFile *
-brasero_volume_get_files (const gchar *path,
+brasero_volume_get_files (BraseroVolSrc *vol,
 			  gint64 block,
 			  gchar **label,
 			  gint64 *nb_blocks,
@@ -316,99 +162,45 @@ brasero_volume_get_files (const gchar *path,
 			  GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
-	BraseroVolFile *volroot;
-	FILE *file;
 
-	file = fopen (path, "r");
-	if (!file) {
-		BRASERO_BURN_LOG ("fopen () failed (%s)", strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
-		return NULL;
-	}
+	if (!BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error))
+		return FALSE;
 
-	if (fseek (file, block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
-		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", block, strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+	if (!brasero_volume_get_primary_from_file (vol, buffer, error))
 		return NULL;
-	}
 
-	if (!brasero_volume_get_primary_from_file (file, buffer, error)) {
-		fclose (file);
+	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
 		return NULL;
-	}
-
-	if (!brasero_iso9660_is_primary_descriptor (buffer, error)) {
-		fclose (file);
-		return NULL;
-	}
 
 	if (label
-	&& !brasero_iso9660_get_label (buffer, label, error)) {
-		fclose (file);
+	&& !brasero_iso9660_get_label (buffer, label, error))
 		return NULL;
-	}
 
 	if (nb_blocks
-	&& !brasero_iso9660_get_size (buffer, nb_blocks, error)) {
-		fclose (file);
+	&& !brasero_iso9660_get_size (buffer, nb_blocks, error))
 		return NULL;
-	}
 
-	volroot = brasero_iso9660_get_contents (file, buffer, data_blocks, error);
-	fclose (file);
-
-	return volroot;
+	return brasero_iso9660_get_contents (vol, buffer, data_blocks, error);
 }
 
 BraseroVolFile *
-brasero_volume_get_file (const gchar *medium,
+brasero_volume_get_file (BraseroVolSrc *vol,
 			 const gchar *path,
 			 gint64 volume_start_block,
 			 GError **error)
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
-	BraseroVolFile *volfile;
-	FILE *file;
 
-	file = fopen (medium, "r");
-	if (!file) {
-		BRASERO_BURN_LOG ("fopen () failed (%s)", strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+	if (!BRASERO_VOL_SRC_SEEK (vol, volume_start_block, SEEK_SET, error))
 		return NULL;
-	}
 
-	if (fseek (file, volume_start_block * ISO9660_BLOCK_SIZE, SEEK_SET) == -1) {
-		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", volume_start_block, strerror (errno));
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+	if (!brasero_volume_get_primary_from_file (vol, buffer, error))
 		return NULL;
-	}
 
-	if (!brasero_volume_get_primary_from_file (file, buffer, error)) {
-		fclose (file);
+	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
 		return NULL;
-	}
 
-	if (!brasero_iso9660_is_primary_descriptor (buffer, error)) {
-		fclose (file);
-		return NULL;
-	}
-
-	volfile = brasero_iso9660_get_file (file, path, buffer, error);
-	fclose (file);
-
-	return volfile;
+	return brasero_iso9660_get_file (vol, path, buffer, error);
 }
 
 gchar *

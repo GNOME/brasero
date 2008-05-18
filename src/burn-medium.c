@@ -1154,6 +1154,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroBurnResult res;
 	GError *error = NULL;
+	BraseroVolSrc *vol;
 	gint64 nb_blocks;
 
 	if (!track)
@@ -1170,10 +1171,12 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	 * So we check if their first and only volume is valid. 
 	 * That's also used when the track size is reported a 300 Kio
 	 * see below */
-	res = brasero_volume_get_size_fd (brasero_device_handle_get_fd (handle),
-					  track->start,
-					  &nb_blocks,
-					  NULL);
+	vol = brasero_volume_source_open_device_handle (handle, NULL);
+	res = brasero_volume_get_size (vol,
+				       track->start,
+				       &nb_blocks,
+				       NULL);
+	brasero_volume_source_close (vol);
 	if (!res) {
 		BRASERO_BURN_LOG ("Failed to retrieve the volume size: %s",
 				  error && error->message ? 

@@ -31,6 +31,7 @@
 #include <glib.h>
 
 #include "burn-volume.h"
+#include "burn-volume-source.h"
 
 #ifndef _BURN_ISO9660_H
 #define _BURN_ISO9660_H
@@ -54,13 +55,13 @@ brasero_iso9660_get_label (const gchar *block,
 			   GError **error);
 
 BraseroVolFile *
-brasero_iso9660_get_contents (FILE *file,
+brasero_iso9660_get_contents (BraseroVolSrc *src,
 			      const gchar *block,
 			      gint64 *nb_blocks,
 			      GError **error);
 
 BraseroVolFile *
-brasero_iso9660_get_file (FILE *file,
+brasero_iso9660_get_file (BraseroVolSrc *src,
 			  const gchar *path,
 			  const gchar *block,
 			  GError **error);

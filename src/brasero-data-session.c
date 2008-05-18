@@ -117,6 +117,7 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	BraseroVolFile *volume;
 	BraseroMedium *medium;
 	const gchar *device;
+	BraseroVolSrc *vol;
 	gint64 block;
 	GList *iter;
 
@@ -144,12 +145,14 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	}
 
 	device = brasero_drive_get_device (priv->drive);
-	volume = brasero_volume_get_files (device,
+	vol = brasero_volume_source_open_file (device, error);
+	volume = brasero_volume_get_files (vol,
 					   block,
 					   NULL,
 					   NULL,
 					   NULL,
 					   error);
+	brasero_volume_source_close (vol);
 	if (*error) {
 		if (volume)
 			brasero_volume_file_free (volume);

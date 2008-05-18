@@ -29,6 +29,8 @@
 
 G_BEGIN_DECLS
 
+#include "burn-volume-source.h"
+
 struct _BraseroVolDesc {
 	guchar type;
 	gchar id			[5];
@@ -70,32 +72,17 @@ struct _BraseroVolFile {
 };
 
 gboolean
-brasero_volume_is_valid (const gchar *path,
+brasero_volume_is_valid (BraseroVolSrc *src,
 			 GError **error);
-gboolean
-brasero_volume_is_valid_fd (int fd, GError **error);
 
 gboolean
-brasero_volume_is_iso9660 (const gchar *path,
-			   GError **error);
-
-gboolean
-brasero_volume_get_size (const gchar *path,
+brasero_volume_get_size (BraseroVolSrc *src,
+			 gint64 block,
 			 gint64 *nb_blocks,
 			 GError **error);
-gboolean
-brasero_volume_get_size_fd (int fd,
-			    gint64 block,
-			    gint64 *nb_blocks,
-			    GError **error);
-
-gboolean
-brasero_volume_get_label (const gchar *path,
-			  gchar **label,
-			  GError **error);
 
 BraseroVolFile *
-brasero_volume_get_files (const gchar *path,
+brasero_volume_get_files (BraseroVolSrc *src,
 			  gint64 block,
 			  gchar **label,
 			  gint64 *nb_blocks,
@@ -103,7 +90,7 @@ brasero_volume_get_files (const gchar *path,
 			  GError **error);
 
 BraseroVolFile *
-brasero_volume_get_file (const gchar *medium,
+brasero_volume_get_file (BraseroVolSrc *src,
 			 const gchar *path,
 			 gint64 volume_start_block,
 			 GError **error);

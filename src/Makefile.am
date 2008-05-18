@@ -257,7 +257,9 @@ brasero_SOURCES = \
 	brasero-rename.h         \
 	brasero-rename.c         \
 	brasero-notify.c         \
-	brasero-notify.h
+	brasero-notify.h         \
+	burn-volume-source.c         \
+	burn-volume-source.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

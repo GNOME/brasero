@@ -1,3 +1,36 @@
+2008-05-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Final fix #504838 – don't eject disc between after burning, when you want to check the md5sum
+
+	* src/Makefile.am:
+	* src/brasero-data-session.c (brasero_data_session_add_last):
+	* src/burn-iso9660.c (brasero_iso9660_seek),
+	(brasero_iso9660_next_block), (brasero_iso9660_ctx_init),
+	(brasero_iso9660_get_contents), (brasero_iso9660_get_file):
+	* src/burn-iso9660.h:
+	* src/burn-medium.c (brasero_medium_track_volume_size):
+	* src/burn-volume-source.c
+	(brasero_volume_source_seek_device_handle),
+	(brasero_volume_source_seek_fd), (brasero_volume_source_read_fd),
+	(brasero_volume_source_read_device_handle),
+	(brasero_volume_source_close), (brasero_volume_source_open_file),
+	(brasero_volume_source_open_fd),
+	(brasero_volume_source_open_device_handle):
+	* src/burn-volume-source.h:
+	* src/burn-volume.c (brasero_volume_get_primary_from_file),
+	(brasero_volume_is_valid_fd), (brasero_volume_get_size),
+	(brasero_volume_get_files), (brasero_volume_get_file):
+	* src/burn-volume.h:
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session):
+	* src/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_write_image_thread):
+	* src/scsi-cam.c:
+	* src/scsi-device.h:
+	* src/scsi-sg.c:
+
 2008-05-17  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Lots of bug fixes and patches delayed due to the closing of SVN
