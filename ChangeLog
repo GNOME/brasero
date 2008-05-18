@@ -1,5 +1,15 @@
 2008-05-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #533148 – crash when adding files (only x86_64?)
+	patch by Eric Piel_gnome
+
+	* src/brasero-data-project.c
+	(brasero_data_project_uri_remove_graft):
+	* src/brasero-utils.c (brasero_utils_register_string),
+	(brasero_utils_unregister_string):
+
+2008-05-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Final fix #504838 – don't eject disc between after burning, when you want to check the md5sum
 
 	* src/Makefile.am:

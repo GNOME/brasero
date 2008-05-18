@@ -810,8 +810,8 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 
 	g_hash_table_lookup_extended (priv->grafts,
 				      uri,
-				      (gpointer) &key,
-				      (gpointer) &graft);
+				      (gpointer *) &key,
+				      (gpointer *) &graft);
 
 	/* Put the nodes in ungrafted state */
 	for (iter = graft->nodes; iter; iter = next) {

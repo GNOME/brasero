@@ -146,7 +146,7 @@ gchar *
 brasero_utils_register_string (const gchar *string)
 {
 	gboolean success;
-	gpointer key;
+	gpointer key, reftmp;
 	guint ref;
 
 	if (!string) {
@@ -164,7 +164,7 @@ brasero_utils_register_string (const gchar *string)
 		success = g_hash_table_lookup_extended (stringsH,
 							string,
 							&key,
-							(gpointer) &ref);
+							&reftmp);
 
 	if (!success) {
 		key = g_strdup (string);
@@ -175,7 +175,7 @@ brasero_utils_register_string (const gchar *string)
 		return key;
 	}
 
-	ref ++;
+	ref = GPOINTER_TO_INT(reftmp) + 1;
 	g_hash_table_insert (stringsH,
 			     key,
 			     GINT_TO_POINTER (ref));
@@ -188,7 +188,7 @@ void
 brasero_utils_unregister_string (const gchar *string)
 {
 	gboolean success;
-	gpointer key;
+	gpointer key, reftmp;
 	guint ref;
 
 	if (!string) {
@@ -206,13 +206,13 @@ brasero_utils_unregister_string (const gchar *string)
 	success = g_hash_table_lookup_extended (stringsH,
 						string,
 						&key,
-						(gpointer) &ref);
+						&reftmp);
 	if (!success) {
 		G_UNLOCK (strings_mutex);
 		return;
 	}
 
-	ref --;
+	ref = GPOINTER_TO_INT(reftmp) - 1;
 
 	if (ref > 0)
 		g_hash_table_insert (stringsH, key, GINT_TO_POINTER (ref));
