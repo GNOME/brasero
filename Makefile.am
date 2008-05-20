@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in.
-SUBDIRS = src po data docs
+SUBDIRS = src po data docs help
 
 braserodocdir = ${prefix}/docs/brasero
 
@@ -10,14 +10,20 @@ EXTRA_DIST = 			\
 	MAINTAINERS		\
 	NEWS			\
 	README			\
-	acinclude.m4
+	acinclude.m4		\
+	gnome-doc-utils.make	\
+	m4
 
 noinst_PROGRAMS =
+
+DIST_CHECK_CONFIGRE_FLAGS =
+	--disable-scrollkeeper
 
 DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
-	intltool-update
+	intltool-update \
+	gnome-doc-utils.make
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
