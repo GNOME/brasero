@@ -103,7 +103,7 @@ brasero_volume_source_read_device_handle (BraseroVolSrc *src,
 					  BRASERO_SCSI_BLOCK_TYPE_ANY,
 					  BRASERO_SCSI_BLOCK_HEADER_NONE,
 					  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
-					  src->position,
+					  src->position ++,
 					  blocks,
 					  (unsigned char *) buffer,
 					  blocks * ISO9660_BLOCK_SIZE,
@@ -122,6 +122,10 @@ brasero_volume_source_read_device_handle (BraseroVolSrc *src,
 void
 brasero_volume_source_close (BraseroVolSrc *src)
 {
+	src->ref --;
+	if (src->ref > 0)
+		return;
+
 	if (src->seek == brasero_volume_source_seek_fd)
 		fclose (src->data);
 
@@ -146,6 +150,7 @@ brasero_volume_source_open_file (const gchar *path,
 	}
 
 	src = g_new0 (BraseroVolSrc, 1);
+	src->ref = 1;
 	src->data = file;
 	src->seek = brasero_volume_source_seek_fd;
 	src->read = brasero_volume_source_read_fd;
@@ -183,6 +188,7 @@ brasero_volume_source_open_fd (int fd,
 	}
 
 	src = g_new0 (BraseroVolSrc, 1);
+	src->ref = 1;
 	src->data = file;
 	src->seek = brasero_volume_source_seek_fd;
 	src->read = brasero_volume_source_read_fd;
@@ -196,8 +202,35 @@ brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 	BraseroVolSrc *src;
 
 	src = g_new0 (BraseroVolSrc, 1);
+	src->ref = 1;
 	src->data = handle;
 	src->seek = brasero_volume_source_seek_device_handle;
 	src->read = brasero_volume_source_read_device_handle;
 	return src;
 }
+
+BraseroVolSrc *
+brasero_volume_source_open_device_path (const gchar *path,
+					GError **error)
+{
+	BraseroScsiErrCode err;
+	BraseroDeviceHandle *handle;
+
+	handle = brasero_device_handle_open (path, &err);
+	if (!handle) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     brasero_scsi_strerror (err));
+		return NULL;
+	}
+
+	return brasero_volume_source_open_device_handle (handle, error);
+}
+
+void
+brasero_volume_source_ref (BraseroVolSrc *vol)
+{
+	vol->ref ++;
+}
+

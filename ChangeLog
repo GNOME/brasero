@@ -1,3 +1,21 @@
+2008-05-20  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Use BraseroVolSrc for functions in brasero-volume-read
+
+	* src/burn-volume-read.c (brasero_volume_file_close),
+	(brasero_volume_file_open), (brasero_volume_file_check_state):
+	* src/burn-volume-read.h:
+	* src/burn-volume-source.c
+	(brasero_volume_source_read_device_handle),
+	(brasero_volume_source_close), (brasero_volume_source_open_file),
+	(brasero_volume_source_open_fd),
+	(brasero_volume_source_open_device_handle),
+	(brasero_volume_source_open_device_path),
+	(brasero_volume_source_ref):
+	* src/burn-volume-source.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session):
+
 2008-05-20  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* configure.in:

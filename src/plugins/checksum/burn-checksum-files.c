@@ -424,7 +424,11 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	}
 
 	BRASERO_JOB_LOG (self, "Found file %s on %s", file, device);
-	handle = brasero_volume_file_open (device, file);
+	brasero_volume_source_open_device_path (device, error);
+	if (!vol)
+		return BRASERO_BURN_ERR;
+
+	handle = brasero_volume_file_open (vol, file);
 	brasero_volume_source_close (vol);
 	g_free (device);
 

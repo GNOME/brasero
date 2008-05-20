@@ -28,13 +28,14 @@
 #include <glib.h>
 
 #include "burn-basics.h"
+#include "burn-volume-source.h"
 
 G_BEGIN_DECLS
 
 typedef struct _BraseroVolFileHandle BraseroVolFileHandle;
 
 BraseroVolFileHandle *
-brasero_volume_file_open (const gchar *path,
+brasero_volume_file_open (BraseroVolSrc *src,
 			  BraseroVolFile *file);
 
 void

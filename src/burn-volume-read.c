@@ -41,7 +41,7 @@ struct _BraseroVolFileHandle {
 	/* size in bytes for the current extent */
 	guint extent_size;
 
-	BraseroDeviceHandle *device;
+	BraseroVolSrc *src;
 	GSList *extents_backward;
 	GSList *extents_forward;
 	guint position;
@@ -50,31 +50,26 @@ struct _BraseroVolFileHandle {
 void
 brasero_volume_file_close (BraseroVolFileHandle *handle)
 {
-	brasero_device_handle_close (handle->device);
 	g_slist_free (handle->extents_forward);
 	g_slist_free (handle->extents_backward);
 	g_free (handle);
 }
 
 BraseroVolFileHandle *
-brasero_volume_file_open (const gchar *path,
+brasero_volume_file_open (BraseroVolSrc *src,
 			  BraseroVolFile *file)
 {
 	BraseroVolFileHandle *handle;
 	BraseroVolFileExtent *extent;
-	BraseroScsiErrCode error;
-	BraseroScsiResult result;
+	gboolean result;
 	GSList *node;
 
 	if (file->isdir)
 		return NULL;
 
 	handle = g_new0 (BraseroVolFileHandle, 1);
-	handle->device = brasero_device_handle_open (path, &error);
-	if (!handle->device) {
-		g_free (handle);
-		return NULL;
-	}
+	handle->src = src;
+	brasero_volume_source_ref (src);
 
 	handle->extents_forward = g_slist_copy (file->specific.file.extents);
 
@@ -90,18 +85,14 @@ brasero_volume_file_open (const gchar *path,
 	handle->extent_last = BRASERO_SIZE_TO_SECTORS (extent->size, 2048) + extent->block;
 
 	/* start loading first block */
-	result = brasero_mmc1_read_block (handle->device,
-					  TRUE,
-					  BRASERO_SCSI_BLOCK_TYPE_ANY,
-					  BRASERO_SCSI_BLOCK_HEADER_NONE,
-					  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
-					  handle->position,
-					  1,
-					  handle->buffer,
-					  sizeof (handle->buffer),
-					  &error);
+	result = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
+	if (!result) {
+		brasero_volume_file_close (handle);
+		return NULL;
+	}
 
-	if (result != BRASERO_SCSI_OK) {
+	result = BRASERO_VOL_SRC_READ (handle->src, (gchar *) handle->buffer, 1, NULL);
+	if (!result) {
 		brasero_volume_file_close (handle);
 		return NULL;
 	}
@@ -120,7 +111,7 @@ brasero_volume_file_open (const gchar *path,
 BraseroBurnResult
 brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 {
-	BraseroBurnResult result;
+	gboolean result;
 
 	/* check if we need to load a new block */
 	if (handle->offset < handle->buffer_max)
@@ -149,17 +140,7 @@ brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 		handle->extent_last = BRASERO_SIZE_TO_SECTORS (extent->size, 2048) + extent->block;
 	}
 
-	result = brasero_mmc1_read_block (handle->device,
-					  TRUE,
-					  BRASERO_SCSI_BLOCK_TYPE_ANY,
-					  BRASERO_SCSI_BLOCK_HEADER_NONE,
-					  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
-					  handle->position,
-					  1,
-					  handle->buffer,
-					  sizeof (handle->buffer),
-					  NULL);
-
+	result = BRASERO_VOL_SRC_READ (handle->src, (char *) handle->buffer, 1, NULL);
 	if (result != BRASERO_SCSI_OK)
 		return BRASERO_BURN_ERR;
 

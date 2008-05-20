@@ -46,6 +46,7 @@ struct _BraseroVolSrc {
 	BraseroVolSrcSeekFunc seek;
 	guint64 position;
 	gpointer data;
+	guint ref;
 };
 
 #define BRASERO_VOL_SRC_SEEK(vol_MACRO, block_MACRO, whence_MACRO, error_MACRO)	\
@@ -54,15 +55,23 @@ struct _BraseroVolSrc {
 #define BRASERO_VOL_SRC_READ(vol_MACRO, buffer_MACRO, num_MACRO, error_MACRO)	\
 	vol_MACRO->read (vol_MACRO, buffer_MACRO, num_MACRO, error_MACRO)
 
+
 BraseroVolSrc *
 brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 					  GError **error);
+BraseroVolSrc *
+brasero_volume_source_open_device_path (const gchar *path,
+					GError **error);
+
 BraseroVolSrc *
 brasero_volume_source_open_file (const gchar *path,
 				 GError **error);
 BraseroVolSrc *
 brasero_volume_source_open_fd (int fd,
 			       GError **error);
+
+void
+brasero_volume_source_ref (BraseroVolSrc *vol);
 
 void
 brasero_volume_source_close (BraseroVolSrc *src);
