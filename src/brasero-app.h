@@ -29,10 +29,7 @@
 
 #include <gtk/gtkuimanager.h>
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 struct _BraseroApp {
 	GtkWidget *mainwin;
@@ -49,9 +46,7 @@ struct _BraseroApp {
 };
 typedef struct _BraseroApp BraseroApp;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BRASERO_APP_H */
 
