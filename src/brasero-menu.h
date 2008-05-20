@@ -111,7 +111,7 @@ static const gchar *description = {
 	    "</menu>"
 	    "<menu action='HelpMenu'>"
 		"<menuitem action='Contents'/>"
-		"<separator/">
+		"<separator/>"
 		"<menuitem action='About'/>"
 	    "</menu>"
 	    "</menubar>"
