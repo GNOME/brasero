@@ -454,8 +454,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	}
 	else if (error == BRASERO_BURN_WARNING_CHECKSUM) {
 		main_message = g_strdup (_("A data integrity test is about to begin:"));
-		secondary_message = g_strdup_printf (_("please, insert the disc to check in \"%s\"."),
-						     drive_name);
+		secondary_message = g_strdup (_("Please, re-insert the disc in the CD/DVD burner."));
 	}
 	else if (error == BRASERO_BURN_WARNING_NEXT_COPY) {
 		main_message = g_strdup (_("A recording was successfully completed."
