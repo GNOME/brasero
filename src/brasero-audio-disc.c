@@ -1477,6 +1477,7 @@ brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 				   BRASERO_IO_INFO_MIME|
 				   BRASERO_IO_INFO_PERM|
 				   BRASERO_IO_INFO_METADATA|
+				   BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				   BRASERO_IO_INFO_RECURSIVE,
 				   NULL);
 	return result;
@@ -1540,7 +1541,8 @@ brasero_audio_disc_add_playlist (BraseroAudioDisc *disc,
 				   disc->priv->add_playlist,
 				   BRASERO_IO_INFO_PERM|
 				   BRASERO_IO_INFO_MIME|
-				   BRASERO_IO_INFO_METADATA,
+				   BRASERO_IO_INFO_METADATA|
+				   BRASERO_IO_INFO_METADATA_MISSING_CODEC,
 				   NULL);
 
 	return BRASERO_DISC_OK;
@@ -1780,7 +1782,8 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 				  disc->priv->add_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
-				  BRASERO_IO_INFO_METADATA,
+				  BRASERO_IO_INFO_METADATA|
+				  BRASERO_IO_INFO_METADATA_MISSING_CODEC,
 				  ref);
 
 	return BRASERO_DISC_OK;

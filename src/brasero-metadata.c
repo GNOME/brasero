@@ -34,6 +34,8 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
+#include <gst/pbutils/install-plugins.h>
+#include <gst/pbutils/missing-plugins.h>
 #include <gst/tag/tag.h>
 
 #include "brasero-metadata.h"
@@ -65,6 +67,10 @@ struct BraseroMetadataPrivate {
 	BraseroMetadataFlag flags;
 	BraseroMetadataInfo *info;
 
+	/* This is for automatic missing plugin install */
+	GSList *missing_plugins;
+	GSList *downloads;
+
 	GMutex *mutex;
 	GCond *cond;
 
@@ -93,6 +99,17 @@ static guint brasero_metadata_signals [LAST_SIGNAL] = { 0 };
 	((flags) & BRASERO_METADATA_FLAG_FAST))
 
 static GObjectClass *parent_class = NULL;
+
+static GSList *downloading = NULL;
+static GSList *downloaded = NULL;
+
+struct _BraseroMetadataGstDownload {
+	gchar *detail;
+
+	/* These are all metadata objects waiting */
+	GSList *objects;
+};
+typedef struct _BraseroMetadataGstDownload BraseroMetadataGstDownload;
 
 void
 brasero_metadata_info_clear (BraseroMetadataInfo *info)
@@ -157,6 +174,27 @@ brasero_metadata_stop (BraseroMetadata *self)
 	if (priv->watch) {
 		g_source_remove (priv->watch);
 		priv->watch = 0;
+	}
+
+	/* That's automatic missing plugin installation */
+	if (priv->missing_plugins) {
+		g_slist_foreach (priv->missing_plugins, (GFunc) gst_mini_object_unref, NULL);
+		g_slist_free (priv->missing_plugins);
+		priv->missing_plugins = NULL;
+	}
+
+	if (priv->downloads) {
+		GSList *iter;
+
+		for (iter = priv->downloads; iter; iter = iter->next) {
+			BraseroMetadataGstDownload *download;
+
+			download = iter->data;
+			download->objects = g_slist_remove (download->objects, self);
+		}
+
+		g_slist_free (priv->downloads);
+		priv->downloads = NULL;
 	}
 
 	/* stop the pipeline */
@@ -442,6 +480,246 @@ brasero_metadata_success (BraseroMetadata *self)
 	return brasero_metadata_completed (self);
 }
 
+static void
+brasero_metadata_install_plugins_add_downloaded (GSList *downloads)
+{
+	GSList *iter;
+
+	for (iter = downloads; iter; iter = iter->next) {
+		BraseroMetadataGstDownload *download;
+
+		download = iter->data;
+		downloaded = g_slist_prepend (downloaded, download->detail);
+		download->detail = NULL;
+	}
+}
+
+static void
+brasero_metadata_install_plugins_free_data (GSList *downloads)
+{
+	GSList *iter;
+
+	for (iter = downloads; iter; iter = iter->next) {
+		BraseroMetadataGstDownload *download;
+		GSList *meta;
+
+		download = iter->data;
+		if (download->detail)
+			g_free (download->detail);
+
+		for (meta = download->objects; meta; meta = meta->next) {
+			BraseroMetadataPrivate *priv;
+
+			priv = BRASERO_METADATA_PRIVATE (meta->data);
+			priv->downloads = g_slist_remove (priv->downloads, download);
+		}
+
+		downloading = g_slist_remove (downloading, download);
+
+		g_slist_free (download->objects);
+
+		g_free (download);
+	}
+
+	g_slist_free (downloads);
+}
+
+static void
+brasero_metadata_install_plugins_success (BraseroMetadataGstDownload *download)
+{
+	GSList *iter;
+
+	for (iter = download->objects; iter; iter = iter->next) {
+		BraseroMetadataPrivate *priv;
+
+		priv = BRASERO_METADATA_PRIVATE (iter->data);
+
+		/* free previously saved error message */
+		g_error_free (priv->error);
+		priv->error = NULL;
+
+		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
+		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_PLAYING);
+	}
+}
+
+static void
+brasero_metadata_install_plugins_abort (BraseroMetadataGstDownload *download)
+{
+	GSList *iter;
+
+	for (iter = download->objects; iter; iter = iter->next) {
+		BraseroMetadataPrivate *priv;
+
+		priv = BRASERO_METADATA_PRIVATE (iter->data);
+
+		g_error_free (priv->error);
+		priv->error = NULL;
+		brasero_metadata_completed (BRASERO_METADATA (iter->data));
+	}
+}
+
+static void
+brasero_metadata_install_plugins_completed (BraseroMetadataGstDownload *download)
+{
+	GSList *iter;
+
+	for (iter = download->objects; iter; iter = iter->next)
+		brasero_metadata_completed (BRASERO_METADATA (iter->data));
+}
+
+static void
+brasero_metadata_install_plugins_result (GstInstallPluginsReturn res,
+					 gpointer data)
+{
+	GSList *downloads = data;
+	GSList *iter;
+
+	switch (res) {
+	case GST_INSTALL_PLUGINS_PARTIAL_SUCCESS:
+	case GST_INSTALL_PLUGINS_SUCCESS:
+		brasero_metadata_install_plugins_add_downloaded (downloads);
+
+		/* force gst to update plugin list */
+		gst_update_registry ();
+
+		/* restart metadata search */
+		for (iter = downloads; iter; iter = iter->next) {
+			BraseroMetadataGstDownload *download;
+
+			download = iter->data;
+			brasero_metadata_install_plugins_success (download);
+		}
+		break;
+
+	case GST_INSTALL_PLUGINS_NOT_FOUND:
+		brasero_metadata_install_plugins_add_downloaded (downloads);
+
+		/* stop everything */
+		for (iter = downloads; iter; iter = iter->next)
+			brasero_metadata_install_plugins_completed (iter->data);
+		break;
+
+	case GST_INSTALL_PLUGINS_USER_ABORT:
+		brasero_metadata_install_plugins_add_downloaded (downloads);
+
+		/* free previously saved error message */
+		for (iter = downloads; iter; iter = iter->next) {
+			BraseroMetadataGstDownload *download;
+
+			download = iter->data;
+			brasero_metadata_install_plugins_abort (download);
+		}
+		break;
+
+	case GST_INSTALL_PLUGINS_ERROR:
+	case GST_INSTALL_PLUGINS_CRASHED:
+	default:
+		for (iter = downloads; iter; iter = iter->next)
+			brasero_metadata_install_plugins_completed (iter->data);
+
+		break;
+	}
+
+	brasero_metadata_install_plugins_free_data (downloads);
+}
+
+BraseroMetadataGstDownload *
+brasero_metadata_is_downloading (const gchar *detail)
+{
+	GSList *iter;
+
+	for (iter = downloading; iter; iter = iter->next) {
+		BraseroMetadataGstDownload *download;
+
+		download = iter->data;
+		if (!strcmp (download->detail, detail))
+			return download;
+	}
+	return NULL;
+}
+
+static gboolean
+brasero_metadata_install_missing_plugins (BraseroMetadata *self)
+{
+	GstInstallPluginsContext *context;
+	GstInstallPluginsReturn status;
+	BraseroMetadataPrivate *priv;
+	GSList *downloads = NULL;
+	GPtrArray *details;
+	GSList *iter;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Starting to download missing plugins");
+
+	details = g_ptr_array_new ();
+	for (iter = priv->missing_plugins; iter; iter = iter->next) {
+		gchar *detail;
+		BraseroMetadataGstDownload *download;
+
+		/* Check if this plugin:
+		 * - has already been downloaded (whether it was successful or not)
+		 * - is being downloaded
+		 * If so don't do anything.
+		 */
+		detail = gst_missing_plugin_message_get_installer_detail (iter->data);
+		download = brasero_metadata_is_downloading (detail);
+		if (download) {
+			download->objects = g_slist_prepend (download->objects, self);
+			priv->downloads = g_slist_prepend (priv->downloads, download);
+			g_free (detail);
+			continue;
+		}
+
+		if (g_slist_find_custom (downloaded, detail, (GCompareFunc) strcmp)) {
+			g_free (detail);
+			continue;
+		}
+
+		download = g_new0 (BraseroMetadataGstDownload, 1);
+		download->detail = detail;
+		download->objects = g_slist_prepend (download->objects, self);
+		priv->downloads = g_slist_prepend (priv->downloads, download);
+
+		downloads = g_slist_prepend (downloads, download);
+		downloading = g_slist_prepend (downloading, download);
+
+		g_ptr_array_add (details, detail);
+	}
+
+	if (!details->len) {
+		/* either these plugins were downloaded or are being downloaded */
+		g_ptr_array_free (details, TRUE);
+		if (!priv->downloads)
+			return FALSE;
+
+		return TRUE;
+	}
+
+	g_ptr_array_add (details, NULL);
+
+	/* FIXME: we'd need the main window here to set it modal */
+
+	context = gst_install_plugins_context_new ();
+	status = gst_install_plugins_async ((gchar **) details->pdata,
+					    context,
+					    brasero_metadata_install_plugins_result,
+					    downloads);
+
+	gst_install_plugins_context_free (context);
+	g_ptr_array_free (details, FALSE);
+
+	BRASERO_BURN_LOG ("Download status %i", status);
+
+	if (status != GST_INSTALL_PLUGINS_STARTED_OK) {
+		brasero_metadata_install_plugins_free_data (downloads);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static gboolean
 brasero_metadata_bus_messages (GstBus *bus,
 			       GstMessage *msg,
@@ -458,8 +736,12 @@ brasero_metadata_bus_messages (GstBus *bus,
 
 	switch (GST_MESSAGE_TYPE (msg)) {
 	case GST_MESSAGE_ELEMENT:
-		if (!strcmp (gst_structure_get_name (msg->structure), "level")
-		&&   gst_structure_has_field (msg->structure, "peak")) {
+		/* here we just want to check if that's a missing codec */
+		if ((priv->flags & BRASERO_METADATA_FLAG_MISSING)
+		&&   gst_is_missing_plugin_message (msg))
+			priv->missing_plugins = g_slist_prepend (priv->missing_plugins, gst_message_ref (msg));
+		else if (!strcmp (gst_structure_get_name (msg->structure), "level")
+		     &&   gst_structure_has_field (msg->structure, "peak")) {
 			const GValue *value;
 			const GValue *list;
 			gdouble peak;
@@ -510,13 +792,21 @@ brasero_metadata_bus_messages (GstBus *bus,
 		break;
 
 	case GST_MESSAGE_ERROR:
+		/* save the error message */
 		gst_message_parse_error (msg, &error, &debug_string);
 		BRASERO_BURN_LOG (debug_string);
 		g_free (debug_string);
 		if (!priv->error && error)
 			priv->error = error;
 
-		brasero_metadata_completed (self);
+		/* See if we have missing plugins */
+		if (priv->missing_plugins) {
+			if (!brasero_metadata_install_missing_plugins (self))
+				brasero_metadata_completed (self);
+		}
+		else
+			brasero_metadata_completed (self);
+
 		break;
 
 	case GST_MESSAGE_EOS:

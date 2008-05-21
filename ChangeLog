@@ -1,3 +1,32 @@
+2008-05-21  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Adds automatic gstreamer plugin installation for audio (à la totem)
+	NOTE: since I have fedora 8 I have just been able to test the case where nothing happens
+	I have to upgrade
+
+	* configure.in:
+	* src/brasero-audio-disc.c (brasero_audio_disc_visit_dir_async),
+	(brasero_audio_disc_add_playlist),
+	(brasero_audio_disc_add_uri_real):
+	* src/brasero-io.c (brasero_io_get_file_info_thread),
+	(brasero_io_get_file_count_process_playlist),
+	(brasero_io_get_file_count_process_file),
+	(brasero_io_load_directory_playlist),
+	(brasero_io_load_directory_thread):
+	* src/brasero-io.h:
+	* src/brasero-metadata.c (brasero_metadata_stop),
+	(brasero_metadata_install_plugins_add_downloaded),
+	(brasero_metadata_install_plugins_free_data),
+	(brasero_metadata_install_plugins_success),
+	(brasero_metadata_install_plugins_abort),
+	(brasero_metadata_install_plugins_completed),
+	(brasero_metadata_install_plugins_result),
+	(brasero_metadata_is_downloading),
+	(brasero_metadata_install_missing_plugins),
+	(brasero_metadata_bus_messages):
+	* src/brasero-metadata.h:
+	* src/main.c (main):
+
 2008-05-20  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	fixed help file path

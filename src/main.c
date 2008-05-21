@@ -37,6 +37,7 @@
 #include <gtk/gtk.h>
 
 #include <gst/gst.h>
+#include <gst/pbutils/pbutils.h>
 
 #include <libgnome/gnome-help.h>
 #include <libgnomeui/libgnomeui.h>
@@ -781,6 +782,9 @@ main (int argc, char **argv)
 		g_thread_init (NULL);
 
 	gst_init (&argc, &argv);
+
+	/* This is for missing codec automatic install */
+	gst_pb_utils_init ();
 
 	brasero_burn_set_debug (debug);
 	brasero_burn_library_init ();
