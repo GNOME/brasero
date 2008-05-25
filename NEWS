@@ -1,25 +1,32 @@
-20-12-2007 : 0.7.0
+?-05-2008 : 0.7.90
 
-New stable release
+Highlights:
 
-Since the development started more than 90 bugs where fixed in this stable series.
+- normalization plugin
+- cover editor
+- support for DL DVDs
+- automatic GStreamer plugin installation for distros that support it
+- new help documentation (by Milo Casagrande)
+- no more medium ejection before disc integrity checks
+- new notification system
+- updated most backends to their full capabilities
+- updated libburn/libisofs plugins to use latest releases
+- mass file renaming/multiple audio track information edition
+- fixes to comply with HIG
+- some GUI improvements
+- rewriting of Data project tree (now displays proportion of space used in final image for a file or a directory)
+- support for FreeBSD
 
-Notable changes since 0.6.0:
++ lots of bugfixes since 0.7.1
 
-- Migrate to GtkTooltip API.
-- Brasero now requires Gtk+ at least 2.11.6.
-- New Plugin system for burning backends.
-- Inhibit/Uninhibit system with Gnome Power Manager via DBUS.
-- Support for libburn 0.4.0.
-- Support for libbeagle 0.3.x.
-- Split audio tracks.
-- Improved look to get with HIG.
-- Preview widget improved.
-- Better handling md5sum on files.
-- Scsi library bugs fixed (and also pre-MMC2 drives supported).
-- Added an option to choose the number of media to burn.
-- Added configuration option for temporary files
-- Added button to configure audio levels in preview
+Removed dependencies
+Libnotify, nautilus-cd-burner
+
+New compulsory dependencies:
+HAL, DBus, GIO
+
+Bugfixes will continue for one month until 0.8.0 release
+so please test it, we need your help.
 
 Homepage: http://www.gnome.org/projects/brasero
 
