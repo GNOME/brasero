@@ -256,7 +256,9 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 	};
 
 	const gchar *documenters[] = {
-		N_("Sorry, no documentation for Brasero."),
+		N_("Phil Bull <philbull@gmail.com>"
+		   "Milo Casagrande <milo_casagrande@yahoo.it>"
+		   "Andrew Stabeno <stabeno@gmail.com>"),
 		NULL
 	};
 
