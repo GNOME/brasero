@@ -552,6 +552,20 @@ static BraseroBurnResult
 brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *input;
+	GstElement *element;
+
+	/* Let's see if we've got the plugins we need */
+	element = gst_element_factory_make ("rgvolume", NULL);
+	if (!element)
+		return BRASERO_BURN_ERR;
+
+	gst_object_unref (element);
+
+	element = gst_element_factory_make ("rganalysis", NULL);
+	if (!element)
+		return BRASERO_BURN_ERR;
+
+	gst_object_unref (element);
 
 	brasero_plugin_define (plugin,
 			       "normalize",
