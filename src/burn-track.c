@@ -47,6 +47,8 @@ struct _BraseroTrack {
 
 	int ref;
 
+	GHashTable *tags;
+
 	gchar *checksum;
 	BraseroChecksumType checksum_type;
 };
@@ -208,6 +210,11 @@ static void
 brasero_track_clean (BraseroTrack *track)
 {
 	g_return_if_fail (track != NULL);
+
+	if (track->tags) {
+		g_hash_table_destroy (track->tags);
+		track->tags = NULL;
+	}
 
 	if (track->type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		BraseroTrackAudio *audio = (BraseroTrackAudio *) track;
@@ -1115,3 +1122,50 @@ brasero_track_get_audio_length (BraseroTrack *track,
 
 	return BRASERO_BURN_OK;
 }
+
+/**
+ * Can be used to set arbitrary data
+ */
+static void
+brasero_track_tag_value_free (gpointer user_data)
+{
+	GValue *value = user_data;
+
+	g_value_reset (value);
+	g_free (value);
+}
+
+BraseroBurnResult
+brasero_track_tag_add (BraseroTrack *track,
+		       const gchar *tag,
+		       GValue *value)
+{
+	if (!track->tags)
+		track->tags = g_hash_table_new_full (g_str_hash,
+						     g_str_equal,
+						     g_free,
+						     brasero_track_tag_value_free);
+	g_hash_table_insert (track->tags, g_strdup (tag), value);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_track_tag_lookup (BraseroTrack *track,
+			  const gchar *tag,
+			  GValue **value)
+{
+	gpointer data;
+
+	if (!track->tags)
+		return BRASERO_BURN_ERR;
+
+	data = g_hash_table_lookup (track->tags, tag);
+	if (!data)
+		return BRASERO_BURN_ERR;
+
+	if (value)
+		*value = data;
+
+	return BRASERO_BURN_OK;
+}
+

@@ -791,6 +791,47 @@ brasero_job_iface_init_task_item (BraseroTaskItemIFace *iface)
 	iface->clock_tick = brasero_job_item_clock_tick;
 }
 
+BraseroBurnResult
+brasero_job_tag_lookup (BraseroJob *self,
+			const gchar *tag,
+			GValue **value)
+{
+	BraseroJobPrivate *priv;
+	BraseroBurnSession *session;
+
+	BRASERO_JOB_DEBUG (self);
+
+	priv = BRASERO_JOB_PRIVATE (self);
+
+	session = brasero_task_ctx_get_session (priv->ctx);
+	return brasero_burn_session_tag_lookup (session,
+						tag,
+						value);
+}
+
+BraseroBurnResult
+brasero_job_tag_add (BraseroJob *self,
+		     const gchar *tag,
+		     GValue *value)
+{
+	BraseroJobPrivate *priv;
+	BraseroBurnSession *session;
+
+	BRASERO_JOB_DEBUG (self);
+
+	priv = BRASERO_JOB_PRIVATE (self);
+
+	if (!brasero_job_is_last_active (self))
+		return BRASERO_BURN_ERR;
+
+	session = brasero_task_ctx_get_session (priv->ctx);
+	brasero_burn_session_tag_add (session,
+				      tag,
+				      value);
+
+	return BRASERO_BURN_OK;
+}
+
 /**
  * Means a job successfully completed its task.
  * track can be NULL, depending on whether or not the job created a track.

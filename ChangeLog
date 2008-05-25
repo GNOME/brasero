@@ -1,3 +1,41 @@
+2008-05-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Add normalization for audio:
+	- one new plugin
+	- modified transcode to comply with replaygain tags
+
+	Added possibility to add arbitrary GValues to session and tracks for plugins
+
+	* src/burn-job.c (brasero_job_tag_lookup), (brasero_job_tag_add):
+	* src/burn-job.h:
+	* src/burn-session.c (brasero_burn_session_tag_value_free),
+	(brasero_burn_session_tag_add), (brasero_burn_session_tag_lookup),
+	(brasero_burn_session_finalize):
+	* src/burn-session.h:
+	* src/burn-task-ctx.c (brasero_task_ctx_get_session):
+	* src/burn-track.c (brasero_track_clean),
+	(brasero_track_tag_value_free), (brasero_track_tag_add),
+	(brasero_track_tag_lookup):
+	* src/burn-track.h:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_set_next_track),
+	(brasero_normalize_stop_pipeline), (brasero_normalize_stop),
+	(foreach_tag), (brasero_normalize_song_end_reached),
+	(brasero_normalize_bus_messages),
+	(brasero_normalize_new_decoded_pad_cb),
+	(brasero_normalize_build_pipeline), (brasero_normalize_start),
+	(brasero_normalize_activate), (brasero_normalize_clock_tick),
+	(brasero_normalize_init), (brasero_normalize_finalize),
+	(brasero_normalize_class_init), (brasero_normalize_export_caps):
+	* src/plugins/transcode/burn-normalize.h:
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_send_volume_event),
+	(brasero_transcode_create_volume),
+	(brasero_transcode_create_pipeline),
+	(brasero_transcode_stop_pipeline),
+	(brasero_transcode_new_decoded_pad_cb):
+
 2008-05-21  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Adds automatic gstreamer plugin installation for audio (à la totem)

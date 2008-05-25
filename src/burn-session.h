@@ -95,7 +95,15 @@ void
 brasero_burn_session_set_label (BraseroBurnSession *session,
 				const gchar *label);
 
+BraseroBurnResult
+brasero_burn_session_tag_lookup (BraseroBurnSession *session,
+				 const gchar *tag,
+				 GValue **value);
 
+BraseroBurnResult
+brasero_burn_session_tag_add (BraseroBurnSession *session,
+			      const gchar *tag,
+			      GValue *value);
 /**
  * 
  */

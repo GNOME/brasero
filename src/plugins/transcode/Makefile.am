@@ -1,5 +1,3 @@
-plugindir = $(libdir)/brasero/plugins
-
 DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED
 
 INCLUDES = \
@@ -17,8 +15,16 @@ INCLUDES = \
 
 AM_CFLAGS = -g
 
-plugin_LTLIBRARIES = libbrasero-transcode.la
+transcodedir = $(libdir)/brasero/plugins
+transcode_LTLIBRARIES = libbrasero-transcode.la
 
-libbrasero_transcode_la_SOURCES = burn-transcode.c burn-transcode.h
+libbrasero_transcode_la_SOURCES = burn-transcode.c burn-transcode.h burn-normalize.h
 libbrasero_transcode_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
 libbrasero_transcode_la_LDFLAGS = -module -avoid-version
+
+normalizedir = $(libdir)/brasero/plugins
+normalize_LTLIBRARIES = libbrasero-normalize.la
+
+libbrasero_normalize_la_SOURCES = burn-normalize.c burn-normalize.h
+libbrasero_normalize_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
+libbrasero_normalize_la_LDFLAGS = -module -avoid-version

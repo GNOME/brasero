@@ -205,6 +205,20 @@ brasero_job_get_tmp_dir (BraseroJob *job,
 			 GError **error);
 
 /**
+ * Each tag can be retrieved by any job
+ */
+
+BraseroBurnResult
+brasero_job_tag_lookup (BraseroJob *job,
+			const gchar *tag,
+			GValue **value);
+
+BraseroBurnResult
+brasero_job_tag_add (BraseroJob *job,
+		     const gchar *tag,
+		     GValue *value);
+
+/**
  * Used to give job results and tell when a job has finished
  */
 

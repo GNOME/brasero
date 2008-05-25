@@ -43,6 +43,7 @@
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-transcode.h"
+#include "burn-normalize.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroTranscode, brasero_transcode, BRASERO_TYPE_JOB, BraseroJob);
 
@@ -52,14 +53,17 @@ static gboolean brasero_transcode_bus_messages (GstBus *bus,
 static void brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 						  GstPad *pad,
 						  gboolean arg2,
-						  GstElement *convert);
+						  BraseroTranscode *transcode);
 
 struct BraseroTranscodePrivate {
 	GstElement *pipeline;
 	GstElement *convert;
-	GstElement *decode;
 	GstElement *source;
+	GstElement *decode;
 	GstElement *sink;
+
+	/* element to link decode to */
+	GstElement *link;
 
 	gint pad_size;
 	gint pad_fd;
@@ -191,8 +195,68 @@ brasero_transcode_set_boundaries (BraseroTranscode *transcode)
 	return BRASERO_BURN_OK;
 }
 
+static void
+brasero_transcode_send_volume_event (BraseroTranscode *transcode)
+{
+	BraseroTranscodePrivate *priv;
+	gdouble track_peak = 0.0;
+	gdouble track_gain = 0.0;
+	GstTagList *tag_list;
+	BraseroTrack *track;
+	GstEvent *event;
+	GValue *value;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
+
+	BRASERO_JOB_LOG (transcode, "Sending audio levels tags");
+	if (brasero_track_tag_lookup (track, BRASERO_TRACK_PEAK_VALUE, &value) == BRASERO_BURN_OK)
+		track_peak = g_value_get_double (value);
+
+	if (brasero_track_tag_lookup (track, BRASERO_TRACK_GAIN_VALUE, &value) == BRASERO_BURN_OK)
+		track_gain = g_value_get_double (value);
+
+	/* it's possible we fail */
+	tag_list = gst_tag_list_new ();
+	gst_tag_list_add (tag_list, GST_TAG_MERGE_REPLACE,
+			  GST_TAG_TRACK_GAIN, track_gain,
+			  GST_TAG_TRACK_PEAK, track_peak,
+			  NULL);
+
+	/* NOTE: that event is goind downstream */
+	event = gst_event_new_tag (tag_list);
+	if (!gst_element_send_event (priv->convert, event))
+		BRASERO_JOB_LOG (transcode, "Couldn't send tags to rgvolume");
+
+	BRASERO_JOB_LOG (transcode, "Set %lf %lf", track_gain, track_peak);
+}
+
+static GstElement *
+brasero_transcode_create_volume (BraseroTranscode *transcode,
+				 BraseroTrack *track)
+{
+	GstElement *volume = NULL;
+
+	/* see if we need a volume object */
+	if (brasero_track_tag_lookup (track, BRASERO_TRACK_PEAK_VALUE, NULL) == BRASERO_BURN_OK
+	||  brasero_track_tag_lookup (track, BRASERO_TRACK_GAIN_VALUE, NULL) == BRASERO_BURN_OK) {
+		BRASERO_JOB_LOG (transcode, "Found audio levels tags");
+		volume = gst_element_factory_make ("rgvolume", NULL);
+		g_object_set (volume,
+			      "album-mode", FALSE,
+			      NULL);
+
+		if (!volume)
+			BRASERO_JOB_LOG (transcode, "rgvolume object couldn't be created");
+	}
+
+	return volume;
+}
+
 static gboolean
-brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
+brasero_transcode_create_pipeline (BraseroTranscode *transcode,
+				   GError **error)
 {
 	gchar *uri;
 	GstPad *sinkpad;
@@ -204,6 +268,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	GstElement *sink = NULL;
 	BraseroJobAction action;
 	GstElement *filter = NULL;
+	GstElement *volume = NULL;
 	GstElement *convert = NULL;
 	BraseroTrack *track = NULL;
 	GstElement *resample = NULL;
@@ -219,14 +284,14 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 	if (priv->pipeline) {
 		gst_element_set_state (priv->pipeline, GST_STATE_NULL);
 		gst_object_unref (G_OBJECT (priv->pipeline));
-		priv->pipeline = NULL;
+		priv->link = NULL;
 		priv->sink = NULL;
 		priv->source = NULL;
 		priv->convert = NULL;
 		priv->pipeline = NULL;
 	}
 
-	/* create three types of pipeline according to the needs:
+	/* create three types of pipeline according to the needs: (possibly adding grvolume)
 	 * - filesrc ! decodebin ! audioconvert ! fakesink (find size)
 	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw-int,rate=44100,width=16,depth=16,endianness=4321,signed ! filesink
 	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw-int,rate=44100,width=16,depth=16,endianness=4321,signed ! fdsink
@@ -263,6 +328,8 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 		break;
 
 	case BRASERO_JOB_ACTION_IMAGE:
+		volume = brasero_transcode_create_volume (transcode, track);
+
 		if (brasero_job_get_fd_out (BRASERO_JOB (transcode), NULL) != BRASERO_BURN_OK) {
 			gchar *output;
 
@@ -362,24 +429,37 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode, GError **error)
 
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
 		gst_element_link_many (source, decode, NULL);
+		priv->link = resample;
 		g_signal_connect (G_OBJECT (decode),
 				  "new-decoded-pad",
 				  G_CALLBACK (brasero_transcode_new_decoded_pad_cb),
-				  resample);
-		gst_element_link_many (resample,
-				       convert,
-				       filter,
-				       sink,
-				       NULL);
+				  transcode);
+
+		if (volume) {
+			gst_bin_add (GST_BIN (pipeline), volume);
+			gst_element_link_many (resample,
+					       convert,
+					       volume,
+					       filter,
+					       sink,
+					       NULL);
+		}
+		else
+			gst_element_link_many (resample,
+					       convert,
+					       filter,
+					       sink,
+					       NULL);
 	}
 	else {
 		gst_element_link (source, decode);
 		gst_element_link (convert, sink);
 
+		priv->link = convert;
 		g_signal_connect (G_OBJECT (decode),
 				  "new-decoded-pad",
 				  G_CALLBACK (brasero_transcode_new_decoded_pad_cb),
-				  convert);
+				  transcode);
 	}
 
 	priv->sink = sink;
@@ -686,7 +766,8 @@ brasero_transcode_stop_pipeline (BraseroTranscode *transcode)
 
 	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
 	gst_object_unref (GST_OBJECT (priv->pipeline));
-	priv->pipeline = NULL;
+
+	priv->link = NULL;
 	priv->sink = NULL;
 	priv->source = NULL;
 	priv->convert = NULL;
@@ -1262,13 +1343,16 @@ static void
 brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				      GstPad *pad,
 				      gboolean arg2,
-				      GstElement *convert)
+				      BraseroTranscode *transcode)
 {
 	GstPad *sink;
 	GstCaps *caps;
 	GstStructure *structure;
+	BraseroTranscodePrivate *priv;
 
-	sink = gst_element_get_pad (convert, "sink");
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	sink = gst_element_get_pad (priv->link, "sink");
 	if (GST_PAD_IS_LINKED (sink))
 		return;
 
@@ -1276,6 +1360,9 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 	caps = gst_pad_get_caps (pad);
 	if (!caps)
 		return;
+
+	/* before linking pads (before any data reach grvolume), send tags */
+	brasero_transcode_send_volume_event (transcode);
 
 	structure = gst_caps_get_structure (caps, 0);
 	if (structure

@@ -85,6 +85,8 @@ struct _BraseroBurnSessionPrivate {
 
 	BraseroTrackType input;
 
+	GHashTable *tags;
+
 	guint src_added_sig;
 	guint src_removed_sig;
 	guint dest_added_sig;
@@ -1083,6 +1085,59 @@ brasero_burn_session_get_label (BraseroBurnSession *self)
 	return priv->settings->label;
 }
 
+static void
+brasero_burn_session_tag_value_free (gpointer user_data)
+{
+	GValue *value = user_data;
+
+	g_value_reset (value);
+	g_free (value);
+}
+
+BraseroBurnResult
+brasero_burn_session_tag_add (BraseroBurnSession *self,
+			      const gchar *tag,
+			      GValue *value)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if (!priv->tags)
+		priv->tags = g_hash_table_new_full (g_str_hash,
+						    g_str_equal,
+						    g_free,
+						    brasero_burn_session_tag_value_free);
+	g_hash_table_insert (priv->tags, g_strdup (tag), value);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
+brasero_burn_session_tag_lookup (BraseroBurnSession *self,
+				 const gchar *tag,
+				 GValue **value)
+{
+	BraseroBurnSessionPrivate *priv;
+	gpointer data;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if (!value)
+		return BRASERO_BURN_ERR;
+
+	if (!priv->tags)
+		return BRASERO_BURN_ERR;
+
+	data = g_hash_table_lookup (priv->tags, tag);
+	if (!data)
+		return BRASERO_BURN_ERR;
+
+	*value = data;
+	return BRASERO_BURN_OK;
+}
+
 /**
  * Used to save and restore settings/sources
  */
@@ -1614,6 +1669,11 @@ brasero_burn_session_finalize (GObject *object)
 	GSList *iter;
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (object);
+
+	if (priv->tags) {
+		g_hash_table_destroy (priv->tags);
+		priv->tags = NULL;
+	}
 
 	if (priv->dest_added_sig) {
 		g_signal_handler_disconnect (priv->settings->burner,

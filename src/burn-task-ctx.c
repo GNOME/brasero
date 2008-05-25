@@ -201,6 +201,8 @@ brasero_task_ctx_get_session (BraseroTaskCtx *self)
 {
 	BraseroTaskCtxPrivate *priv;
 
+	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), NULL);
+
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 	if (!priv->session)
 		return NULL;

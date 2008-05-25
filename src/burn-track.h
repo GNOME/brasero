@@ -292,6 +292,20 @@ BraseroBurnResult
 brasero_track_get_data_file_num (BraseroTrack *track,
 				 gint64 *num_files);
 
+/**
+ *
+ */
+
+BraseroBurnResult
+brasero_track_tag_add (BraseroTrack *track,
+		       const gchar *tag,
+		       GValue *value);
+
+BraseroBurnResult
+brasero_track_tag_lookup (BraseroTrack *track,
+			  const gchar *tag,
+			  GValue **value);
+
 G_END_DECLS
 
 #endif /* _BURN_TRACK_H */
