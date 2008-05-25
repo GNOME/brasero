@@ -254,7 +254,7 @@ static GObjectClass *parent_class = NULL;
 #define KEY_ASK_DEFAULT_BURNING_AUDIO		"/apps/brasero/ask_default_audio"
 #define KEY_ASK_DEFAULT_BURNING_DATA		"/apps/brasero/ask_default_data"
 
-#define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/preview"
+#define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/viewer"
 
 #define BRASERO_PROJECT_VERSION "0.2"
 

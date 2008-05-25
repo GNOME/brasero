@@ -38,7 +38,7 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_KEY_SHOW_PREVIEW	"/apps/brasero/display/preview"
+#define BRASERO_KEY_SHOW_PREVIEW	"/apps/brasero/display/viewer"
 
 #define BRASERO_TYPE_PREVIEW             (brasero_preview_get_type ())
 #define BRASERO_PREVIEW(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_PREVIEW, BraseroPreview))
