@@ -1794,7 +1794,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("there is no track to be burn"));
+			     _("there is no track to be burnt"));
 		return BRASERO_BURN_ERR;
 	}
 
