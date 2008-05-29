@@ -1813,11 +1813,7 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 						  (message),
 						  _("Interrupting the process may make disc unusable."));
 
-	gtk_dialog_add_buttons (GTK_DIALOG (message),
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				NULL);
-
-	button = brasero_utils_make_button (_("Continue burning"),
+	button = brasero_utils_make_button (("C_ontinue burning"),
 					    GTK_STOCK_OK,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
