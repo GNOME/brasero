@@ -2,7 +2,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "0.7.0">
+  <!ENTITY appversion "0.8.0">
   <!ENTITY manrevision "2.0">
   <!ENTITY date "February 2008">
   <!ENTITY app "<application>Brasero</application>">
@@ -16,7 +16,7 @@
   Template version: 2.0 beta
   Template last modified Apr 11, 2002
 -->
-
+<?db.chunk.max_depth 2?>
 <article id="index" lang="en">
 <!-- please do not change the id; for translations, change lang to -->
 <!-- appropriate code -->
@@ -136,49 +136,66 @@
 <!-- ============= Introduction ============================== -->
   <sect1 id="brasero-introduction" status="review"> 
     <title>Introduction</title>
-    <para>&app; is an application made for burning CD-R/Ws and DVD-R/Ws.  
-    It is designed to be easy to use, while providing all the tools necessary for burning.
+    <para>
+      &app; is an application for burning CD-R/Ws and DVD-R/Ws,
+      designed to be easy to use, while providing all the tools
+      necessary for burning.
     </para>
-    <para>The following are the main features of Brasero:</para>
+    <para>With &app; you can:</para>
     <itemizedlist>
-	   <listitem><para>Burns data to CD-R/Ws and DVD-R/Ws</para></listitem>
-	   <listitem><para>Burns audio CDs from digital audio files (such as ogg, flac and mp3)</para></listitem>
-	   <listitem><para>Copies CDs and DVDs</para></listitem>
-	   <listitem><para>Creates image files and burns from existing image files</para></listitem>
-	   <listitem><para>Erases CD-R/Ws and DVD-R/Ws</para></listitem>
-	   <listitem><para>Checks the integrity of disks and disk images</para></listitem>
+	   <listitem><para>Burn data to CD-R/Ws and DVD-R/Ws</para></listitem>
+	   <listitem><para>Burn audio CDs from digital audio files (such as ogg, flac and mp3)</para></listitem>
+	   <listitem><para>Copy CDs and DVDs</para></listitem>
+	   <listitem><para>Create image files and burns from existing image files</para></listitem>
+	   <listitem><para>Erase CD-R/Ws and DVD-R/Ws</para></listitem>
+	   <listitem><para>Check the integrity of disks and disk images</para></listitem>
     </itemizedlist>
   </sect1>
   
  <!-- ============= Getting Started ========================= -->
   <sect1 id="brasero-gettingstarted" status="review"> 
     <title>Getting Started</title>
+    <sect2 id="brasero-starting">
+      <title>Starting &appname;</title>
     <para>You can start &app; in the following ways:</para>
-    <variablelist>
-      <varlistentry>
-	<term><guimenu>Applications</guimenu> menu</term>
-	<listitem>
+      <para>
+	<variablelist>
+	  <varlistentry>
+	    <term><guimenu>Applications</guimenu> menu</term>
+	    <listitem>
+	      <para>
+		Choose <menuchoice><guisubmenu>Sound &amp; Video</guisubmenu>
+		  <guimenuitem>Brasero Disc Burning</guimenuitem></menuchoice>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Command line</term>
+	    <listitem>
+	      <para>
+		Type <command>brasero</command> and then press <keycap>Return</keycap>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </para>
+      <para>
+	<note>
 	  <para>
-	    Choose <menuchoice><guisubmenu>Sound &amp; Video</guisubmenu>
-	    <guimenuitem>Brasero Disc Burning</guimenuitem></menuchoice>.
+	    If &app; is set as your default disc burning application, 
+	    it will automatically start when you insert a blank CD-R/W or
+	    DVD-R/W in your drive.
 	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>Command line</term>
-	<listitem>
-	  <para>
-	    Type <command>brasero</command> and then press <keycap>Return</keycap>.
-	  </para>
-	</listitem>
-      </varlistentry>
-    </variablelist>
-    <note><para>If &app; is set as your default disc burning application, 
-    it will automatically start when you insert a blank CD-R/W or DVD-R/W in your drive.</para></note>
-    <para>When &app; is started you will see the following window:</para>
+	</note>
+      </para>
+    </sect2>
+
+    <sect2 id="brasero-start-window">
+      <title>When You Start &appname;</title>
+    <para>When you start &app; the following window will be shown.</para>
     
     <!-- ==== Figure ==== -->
-    <figure id="brasero-main"> 
+    <figure id="brasero-FIG-main"> 
       <title>Brasero Main Window</title> 
       <screenshot> 
 	<mediaobject> 
@@ -197,49 +214,77 @@
 
     <para>This window is the starting point for all of your projects.  You can click on the project
     type you wish to start from here.  If you have created other projects with 
-    &app;, you will be able to select them from the section 
-    titled <guilabel>Choose a recently opened project</guilabel> (see
-    <xref linkend="brasero-open-recent-project" /> for more information).</para>
+    &app;, you will be able to select them from the <guilabel>Choose a
+    recently opened project</guilabel> (see
+    <xref linkend="brasero-open-recent-project" /> for more
+    information).</para>
+    </sect2>
   </sect1>
   <!-- ============= New Project ========================= -->
   <sect1 id="brasero-new-project" status="review">
     <title>Creating a New Project</title>
-    <para>The following section explains the four types of project that you can create with 
-    &app;.</para>
+    <para>
+      The following section explains the four types of project that
+    you can create with &app;.
+    </para>
     
     <!-- ==== subsection: Audio project ===== -->
     <sect2 id="brasero-new-project-audio">
       <title>Audio Project</title>
-      <para>This section explains how to create an audio CD.  This project takes selected
-	audio files, converts them to a raw audio format and burns them to a CD which standard CD
-	players can play.
+      <para>
+	This section explains how to create an audio CD. This project
+	takes selected audio files, converts them to a raw audio
+	format and burns them to a CD which standard CD players can play.
       </para>
       <para>
-	To burn an audio CD:
+	To burn an audio CD proceed as follow:
 	<orderedlist>
 	  <listitem>
-	    <para>Insert a blank CD-R into your drive.</para>
+	    <para>
+	      Insert a blank CD-R into your drive.
+	    </para>
 	  </listitem>
 	  <listitem>
-	    <para>Click <guibutton>Audio project</guibutton> in the main window or click 
+	    <para>
+	      Click on <guibutton>Audio project</guibutton> in the
+	      main window or choose 
 	    <menuchoice>
-	    	<guimenuitem>Project</guimenuitem>
-	    	<guimenuitem>New Project</guimenuitem>
+	    	<guimenu>Project</guimenu>
+	    	<guisubmenu>New Project</guisubmenu>
 	    	<guimenuitem>New Audio Project</guimenuitem>
 	    </menuchoice>.
 	    </para>
 	  </listitem>
 	  <listitem>
-	    <para>In the pane to the left of the window, select <guilabel>Browse the file system
-	    </guilabel> from the drop-down list at the top and browse to the music files you want to 
-	      add to you project.</para>
-	    <para>You can also select the <guilabel>Search files using keywords</guilabel> 
-	     option to search for music files, or the <guilabel>Display playlists and their contents
-	     </guilabel> option to select music from playlists on your computer.</para>
+	    <para>
+	      In the pane on the left of the window, select
+	    <guilabel>Browse the file system
+	    </guilabel> from the drop-down list at the top and browse
+	    to the music files you want to add to your project.
+	    </para>
+	    <para>
+	      You can also select the <guilabel>Search files using
+	     keywords</guilabel> option to search for music files or
+	     the <guilabel>Display playlists and their contents
+	     </guilabel> option to select music from playlists on your
+	     computer.
+	    </para>
 	  </listitem>
 	  <listitem>
-	    <para>Select the files you want by double-clicking on them, or by selecting them and 
-	      clicking the <guibutton>Add</guibutton> button at the top left of the toolbar.</para>
+	    <para>
+	      Select the files you want by double-clicking on them or
+	      by selecting them and clicking the
+	      <guibutton>Add</guibutton> button at the top left of the
+	      toolbar.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      It is possible now to <link
+	      linkend="brasero-audio-pause">insert a pause</link>
+	      after each of the tracks or <link
+	      linkend="brasero-audio-split">to split</link> the tracks.
+	    </para>
 	  </listitem>
 	  <listitem>
 	    <para>
@@ -256,44 +301,166 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      Click <guibutton>Burn</guibutton> to start the burning process.
+	      Click on <guibutton>Burn</guibutton> to start the burning process.
 	    </para>
 	  </listitem>
 	</orderedlist>
       </para>
       <para>
 	<note>
-	  <para>When adding files, refer to the status bar at the bottom of the window to 
-	  see how much space you are using on your CD.  You may have to adjust the 
-	  size of your CD to let &app; know what its actual capacity is.  To do this, click 
-	  on the button next to the status bar and select the size of your CD as quoted 
-	  on the disc or its packaging.</para>
+	  <para>
+	    When adding files, refer to the status bar at the bottom
+	    of the window to see how much space you are using on your
+	    CD. You may have to adjust the size of your CD to let
+	    &app; know what its actual capacity is. To do this, click
+	    on the button next to the status bar and select the size
+	    of your CD as quoted on the disc or its packaging.
+	  </para>
 	</note>
 	<tip>
-	  <para>To save the project for later use, click on <menuchoice><guimenu>Project</guimenu>
-	      <guimenuitem>Save</guimenuitem></menuchoice></para>
+	  <para>
+	    To save the project for later use, choose
+	    <menuchoice>
+	      <guimenu>Project</guimenu>
+	      <guimenuitem>Save</guimenuitem>
+	    </menuchoice>
+	  </para>
 	</tip>
       </para>
       
+      <sect3 id="brasero-audio-pause">
+	<title>Inserting a Pause</title>
+	<para>
+	  After you have added a track, you can insert a 2 seconds
+	  pause after it. To insert a pause, proceed as follow:
+	  <orderedlist>
+	    <listitem>
+	      <para>
+		Select the track after which you want to add the
+		pause.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		Click on <guibutton>Pause</guibutton> on the toolbar
+		or choose <menuchoice>
+		  <guimenu>Edit</guimenu>
+		  <guimenuitem>Insert a Pause</guimenuitem>
+		</menuchoice>.
+	      </para>
+	    </listitem>
+	  </orderedlist>
+	</para>
+      </sect3>
+      <sect3 id="brasero-audio-split">
+	<title>Splitting a Track</title>
+	<para>
+	  It is possibile to divide a track in multiple parts. To split
+	  a track proceed as follow:
+	  <orderedlist>
+	    <listitem>
+	      <para>
+		Select the track you want to divide and click on
+		<guibutton>Split</guibutton> in the toolbar or choose <menuchoice>
+		  <guimenu>Edit</guimenu>
+		  <guimenuitem>Split Track...</guimenuitem>
+		</menuchoice>. The <guilabel>Split Track</guilabel>
+		dialog will be shown.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		From the <guilabel>Method</guilabel> drop-down list
+		select the splitting method. The possible values are:
+		<variablelist>
+		  <varlistentry>
+		    <term><guilabel>Split track manually</guilabel></term>
+		    <listitem>
+		      <para>
+			Select this to select the time on the track
+			where you wish to split it. A sliding bar is
+			provided along with an audio preview.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		  <varlistentry>
+		    <term><guilabel>Split tracks in parts with a fixed
+		    length</guilabel></term>
+		    <listitem>
+		      <para>
+			Select this to split the track into
+			fixed-length parts with a duration that you
+			specify.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		  <varlistentry>
+		    <term>
+		      <guilabel>Split track in fixed number of
+		      parts</guilabel>
+		    </term>
+		    <listitem>
+		      <para>
+			Select this to decide the number of parts that
+			you want your trak to be split into. You can use the
+			provided spin box to select the number of parts.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		  <varlistentry>
+		    <term>
+		      <guilabel>Split track for each
+		      silence</guilabel>
+		    </term>
+		    <listitem>
+		      <para>
+			Selcet this to split the track where a silence
+			is present.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		</variablelist>
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		To split the track, click on
+		<guibutton>Slice</guibutton>. The slices will be
+		listed in the <guilabel>Slices Preview</guilabel> table.
+	      </para>
+	    </listitem>
+	  </orderedlist>
+	</para>
+	<para>
+	  Once you have splitted the track, it is possibile to remove
+	  or merge the slices listed in the <guilabel>Slices
+	  Preview</guilabel> table using the buttons on the right.
+	</para>
+	<para>
+	  Once you are done with all the modifications, click
+	  <guibutton>OK</guibutton>.
+	</para>
+      </sect3>
       <sect3 id="brasero-audio-project-options">
 	<title>Audio Project Options</title>
 	<para>
 	  Before starting the burning process, it is possible to
 	  modify some of the burning options.
 	</para>
-
 	<para>
 	  <variablelist>
 	    <varlistentry>
-	      <term>Section <guilabel>Select a drive to write
-	      to</guilabel>:</term>
+	      <term>
+		Section <guilabel>Select a drive to write to</guilabel>:
+	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
 		    <para>
 		      Click <guibutton>Properties</guibutton> to open
 		      the properties dialog for the burning device. See <xref
-			linkend="brasero-burning-device-properties"/> for more information.
+			linkend="brasero-burning-device-properties"/>
+		      for more information.
 		    </para>
 		  </listitem>
 		  <listitem>
@@ -343,54 +510,12 @@
 		</itemizedlist>
 	      </listitem>
 	    </varlistentry>
-            <varlistentry>
-	      <term>Section <guilabel>Track Options</guilabel>:</term>
-	      <listitem>
-		<itemizedlist>
-		 <listitem>
-		   <para>
-			<guilabel>Pause</guilabel>: After you have inserted your audio tracks.  
-			    Highlight a track and click on the <guibutton>Pause</guibutton> button.  
-			    This will add a 2 second pause after that track.
-		   </para>
-		 </listitem>
-		 <listitem>
-		  <para><guilabel>Split</guilabel>: Select a track and click on the 
-			  <guibutton>Split</guibutton> button.  A window will pop up to 
-			  let you choose where you want to split the track.  In the 
-			  <guilabel>Method</guilabel> drop down list are 4 options:</para>
-			  <itemizedlist>
-			    <listitem>
-			      <para><guilabel>Split track manually</guilabel>: This allows you to select
-			      the time on the track where you wish to split it.  A sliding
-			      bar is provided along with an audio preview, so you can pinpoint where you 
-			      would like to split the track.</para>
-			    </listitem>
-			    <listitem>
-			      <para><guilabel>Split track in parts with a fixed length</guilabel>: This
-			      allows you to split the track into fixed-length parts which have a duration that 
-			      you specify.</para>
-                            </listitem>
-			    <listitem>
-			      <para><guilabel>Split track in fixed number of parts</guilabel>: This 
-			      allows you to select the number of parts that you want your track to be broken 
-			      up into.</para>
-                            </listitem>
-			    <listitem>
-			      <para><guilabel>Split track for each silence</guilabel>: This will search
-			      the track for silences and split the track where it finds them.</para>
-                            </listitem>
-		       </itemizedlist>
-			<para>Once you have split the tracks you can remove or merge the splits using the
-			buttons on the right.  Click <guibutton>OK</guibutton> when finished.</para>
-		  </listitem>
-		</itemizedlist>
-	      </listitem>
-	    </varlistentry>
 	  </variablelist>
 	</para>
       </sect3>
+
     </sect2>
+
     <!-- ===== subsection: Data project ====== -->
     <sect2 id="brasero-new-project-data">
       <title>Data Project</title>
@@ -401,27 +526,35 @@
 	    <para>Insert a blank CD-R/W or DVD-R/W into your drive.</para>
 	  </listitem>
 	  <listitem>
-	    <para>Click <guibutton>Data project</guibutton> in the main window or click 
+	    <para>Click <guibutton>Data project</guibutton> in the
+	    main window or choose 
 	    <menuchoice>
-	    	<guimenuitem>Project</guimenuitem>
-	    	<guimenuitem>New Project</guimenuitem>
+	    	<guimenu>Project</guimenu>
+	    	<guisubmenu>New Project</guisubmenu>
 	    	<guimenuitem>New Data Project</guimenuitem>
 	    </menuchoice>.
 	    </para>
 	  </listitem>
 	  <listitem>
-	    <para>Use the pane to the left of the window to find the files you want to 
-	      add to the project. Select <guilabel>Browse the file system</guilabel> from 
-	      the drop-down list at the top to browse for files, or select <guilabel>Search 
-	      files using keywords</guilabel> to search for them.</para>
-	  </listitem>
-	  <listitem>
-	    <para>Select the files you want by double-clicking on them, or highlighting them 
-	      and clicking the <guibutton>Add</guibutton> button at the top left of the toolbar.</para>
+	    <para>
+	      Use the pane on the left of the window to find the files you want to 
+	      add to the project. Select <guilabel>Browse the file
+	      system</guilabel> from the drop-down list at the top to
+	      browse for files or <guilabel>Search 
+	      files using keywords</guilabel> to search for them.
+	    </para>
 	  </listitem>
 	  <listitem>
 	    <para>
-	      When all the files have been added, click
+	      Select the files you want by double-clicking on them
+	      or highlighting them and clicking
+	      <guibutton>Add</guibutton> at the top left of the
+	      toolbar.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      When all the files have been added, click on
 	      <guibutton>Burn</guibutton>. 
 	    </para>
 	  </listitem>
@@ -434,7 +567,7 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      Click <guibutton>Burn</guibutton> to start the burning process.
+	      Click on <guibutton>Burn</guibutton> to start the burning process.
 	    </para>
 	  </listitem>
 	</orderedlist>
@@ -457,7 +590,8 @@
 		    <para>
 		      Click <guibutton>Properties</guibutton> to open
 		      the properties dialog for the burning device. See <xref
-			linkend="brasero-burning-device-properties"/> for more information.
+			linkend="brasero-burning-device-properties"/>
+		      for more information.
 		    </para>
 		  </listitem>
 		  <listitem>
@@ -486,14 +620,18 @@
 	      </listitem>
 	    </varlistentry>
 	    <varlistentry>
-	      <term>Section <guilabel>Disc options</guilabel>:</term>
+	      <term>
+		Section <guilabel>Disc options</guilabel>:
+	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
 		    <variablelist>
 		      <varlistentry>
-			<term><guilabel>Increase compatibility with
-			Windows systems</guilabel></term>
+			<term>
+			  <guilabel>Increase compatibility with
+			Windows systems</guilabel>
+			</term>
 			<listitem>
 			  <para>
 			    Select this option if you intend the disc to be used on 
@@ -512,9 +650,11 @@
 			other files later</guilabel></term>
 			<listitem>
 			  <para>
-			    Select this option to create a <emphasis>multisession
-			    </emphasis> disc, so that it will be possible to add files 
-			    to the disc at a later date (without erasing it, if it is rewritable).
+			    Select this option to create a
+			    <emphasis>multisession</emphasis> disc, so
+			    that it will be possible to add files to
+			    the disc at a later date (without erasing
+			    it, if it is rewritable).
 			  </para>
 			</listitem>
 		      </varlistentry>
@@ -526,23 +666,24 @@
 	  </variablelist>
 	</para>
       </sect3>
-
     </sect2>
+
     <!-- ====== subsection: Copy Disc ======= -->
     <sect2 id="brasero-new-project-copy">
       <title>Disc Copy</title>
       <para>
 	This project lets you take an existing disc and copy it to a
-	blank disc or image file. To copy a disc:
+	blank disc or image file. To copy a disc, proceed as follow:
 	<orderedlist>
 	  <listitem>
 	    <para>Insert the CD or DVD you wish to copy into your drive.</para>
 	  </listitem>
 	  <listitem>
-	    <para>Click <guibutton>Disc copy</guibutton> in the main window or click 
+	    <para>Click <guibutton>Disc copy</guibutton> in the main
+	    window or choose 
 	    <menuchoice>
-	    	<guimenuitem>Project</guimenuitem>
-	    	<guimenuitem>New Project</guimenuitem>
+	    	<guimenu>Project</guimenu>
+	    	<guisubmenu>New Project</guisubmenu>
 	    	<guimenuitem>Copy Disc</guimenuitem>
 	    </menuchoice>.
 	    </para>
@@ -556,7 +697,7 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      Click <guibutton>Copy</guibutton> to start the copying
+	      Click on <guibutton>Copy</guibutton> to start the copying
 	      process.
 	    </para>
 	  </listitem>
@@ -593,11 +734,11 @@
 		<itemizedlist>
 		  <listitem>
 		    <para>
-		      From the drop-down menu, select the drive to
+		      From the drop-down list, select the drive to
 		      write the disc copy to.
 		    </para>
 		    <para>
-		      From this drop-down menu, select <guilabel>File
+		      From this drop-down list, select <guilabel>File
 		      image</guilabel> to create
 		      a disc image, such as an ISO image.
 		    </para>
@@ -606,7 +747,8 @@
 		    <para>
 		      Click <guibutton>Properties</guibutton> to open
 		      the properties dialog for the burning device. See <xref
-			linkend="brasero-burning-device-properties"/> for more information.
+			linkend="brasero-burning-device-properties"/>
+		      for more information.
 		    </para>
 		  </listitem>
 		  <listitem>
@@ -623,9 +765,13 @@
 	</para>
 	<para>
 	  <note>
-	    <para>If you have more that one drive on you system, you can use one drive as 
-	      the source drive and the other as the destination drive.  If you do not, you will be 
-	      prompted to remove the CD or DVD you are copying and insert your blank media.</para>
+	    <para>
+	      If you have more that one drive on you system, you can
+	      use one drive as the source drive and the other as the
+	      destination drive. If you do not, you will be prompted
+	      to remove the CD or DVD you are copying and insert your
+	      blank media.
+	    </para>
 	  </note>
 	</para>
       </sect3>
@@ -672,10 +818,11 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      Click <guibutton>Burn image</guibutton> in the main window or click 
+	      Click on <guibutton>Burn image</guibutton> in the main
+	      window or choose 
 	    <menuchoice>
-	    	<guimenuitem>Project</guimenuitem>
-	    	<guimenuitem>New Project</guimenuitem>
+	    	<guimenu>Project</guimenu>
+	    	<guisubmenu>New Project</guisubmenu>
 	    	<guimenuitem>Burn Image</guimenuitem>
 	    </menuchoice>.
 	    </para>
@@ -689,7 +836,7 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      Click <guibutton>Burn</guibutton> to start the burning
+	      Click on <guibutton>Burn</guibutton> to start the burning
 	      process.
 	    </para>
 	  </listitem>
@@ -711,9 +858,11 @@
 		<itemizedlist>
 		  <listitem>
 		    <para>
-		      Click <guibutton>Properties</guibutton> to open
-		      the properties dialog for the burning device. See <xref
-			linkend="brasero-burning-device-properties"/> for more information.
+		      Click on <guibutton>Properties</guibutton> to
+			open the properties dialog for the burning
+			device. See <xref
+			linkend="brasero-burning-device-properties"/>
+			for more information.
 		    </para>
 		  </listitem>
 		  <listitem>
@@ -754,7 +903,7 @@
 			<term><guilabel>Image type</guilabel></term>
 			<listitem>
 			  <para>
-			    From the drop-down menu, select the type
+			    From the drop-down list, select the type
 			    of image to burn. If unsure, select 
 			    <guilabel>Let brasero choose (safest)</guilabel>.
 			  </para>
@@ -782,7 +931,7 @@
 	    <term>Section <guilabel>Burning speed</guilabel>:</term>
 	    <listitem>
 	      <para>
-		From the drop-down menu, select the burning speed. For
+		From the drop-down list, select the burning speed. For
 		the best value, check the CD/DVD case.
 	      </para>
 	      <warning>
@@ -801,8 +950,10 @@
 		<listitem>
 		  <variablelist>
 		    <varlistentry>
-		      <term><guilabel>Burn the image directly without saving
-		    it to disc</guilabel></term>
+		      <term>
+			<guilabel>Burn the image directly without saving
+		    it to disc</guilabel>
+		      </term>
 		      <listitem>
 			<para>
 			  Select this option if you want to burn the
@@ -873,7 +1024,7 @@
 	    <term>Section <guilabel>Temporary files</guilabel>:</term>
 	    <listitem>
 	      <para>
-		From the drop-down menu, select the directory to use
+		From the drop-down list, select the directory to use
 		for storing the temporary files created for the burning
 		process.
 	      </para>
@@ -885,6 +1036,77 @@
 	  </varlistentry>
 	</variablelist>
       </para>
+      <sect3 id="brasero-burn-no-disc">
+	<title>Burning Properties with No Disc</title>
+	<para>
+	  If you start the burning process without a CD or DVD in the
+	  burning device, &app; will create a image file on the hard
+	  disk that you can lately burn. 
+	</para>
+	<para>
+	  <variablelist>
+	    <varlistentry>
+	      <term>
+		Section <guilabel>Select a disc to write to</guilabel>:
+	      </term>
+	      <listitem>
+		<para>
+		  From this drop-down list you can only select
+		  <guilabel>File image</guilabel>.
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>
+		Section <guilabel>Label of the disc</guilabel>:
+	      </term>
+	      <listitem>
+		<para>
+		  Type the name you want to give to the disc once
+		  burned.
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>
+		Section <guilabel>Disc options</guilabel>:
+	      </term>
+	      <listitem>
+		<itemizedlist>
+		  <listitem>
+		    <variablelist>
+		      <varlistentry>
+			<term>
+			  <guilabel>Increase the compatibility with
+			    Windows systems</guilabel>
+			</term>
+			<listitem>
+			  <para>
+			    Select this option if you intend the disc to be used on 
+			    computers running Windows. Files on the disc will be 
+			    checked to ensure that their filenames do not contain 
+			    characters which are invalid on Windows.
+			  </para>
+			</listitem>
+		      </varlistentry>
+		    </variablelist>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
+	</para>
+	<para>
+	  Click on <guibutton>Properties</guibutton> to open the
+	  <guilabel>Disc image file properties</guilabel> dialog. In
+	  the <guilabel>Name</guilabel> text box, type the name of the
+	  image file, from the <guilabel>Image type</guilabel>
+	  drop-down list select the type of image to use.
+	</para>
+	<para>
+	  Once done, click <guibutton>Apply</guibutton>.
+	</para>
+      </sect3>
     </sect2>
     
   </sect1>
@@ -892,7 +1114,8 @@
   <sect1 id="brasero-open-recent-project">
     <title>Opening a Saved Project</title>
     <para>
-      If you have recently saved a project, you can open it again in one of the following ways: 
+      If you have recently saved a project, you can open it again in
+      one of the following ways: 
       <itemizedlist>
 	<listitem>
 	  <para>
@@ -912,9 +1135,9 @@
       </itemizedlist>
     </para>
     <para>To open a project which does not appear in 
-    <guilabel>Recent Projects</guilabel>, click 
+    <guilabel>Recent Projects</guilabel>, choose 
     <menuchoice>
-    	<guimenuitem>Project</guimenuitem>
+    	<guimenu>Project</guimenu>
     	<guimenuitem>Open</guimenuitem>
     </menuchoice> and select the project file.
     </para>
@@ -977,7 +1200,7 @@
 	</listitem>
 	<listitem>
 	  <para>
-	    From the drop-down list named <guilabel>Select a
+	    From the drop-down list <guilabel>Select a
 	    recorder</guilabel>, select the drive that holds the disc 
 	    you want to erase.
 	  </para>
@@ -991,8 +1214,8 @@
 	</listitem>
 	<listitem>
 	  <para>
-	    Press the <guibutton>Blank</guibutton> button to start
-	    erasing the CD or DVD.
+	    Click on <guibutton>Blank</guibutton> to start erasing the
+	    CD or DVD.
 	  </para>
 	</listitem>
       </orderedlist>
@@ -1006,9 +1229,9 @@
     <sect2 id="brasero-fast-blanking">
       <title>What is fast blanking?</title>
       <para>
-	Fast blanking is a way of quickly erasing a disc. This method is much
-	faster than fully erasing the disc, and is sufficient to allow the disc to be 
-	written to again.
+	Fast blanking is a way of quickly erasing a disc. This method
+	is much faster than fully erasing the disc and is sufficient
+	to allow the disc to be written to again.
       </para>
       <para>
 	The full erasing procedure is slower but is more secure, as it
@@ -1096,6 +1319,73 @@
     </para>
   </sect1>
 
+  <sect1 id="brasero-cover-editor">
+    <title>Cover Editor</title>
+    <para>
+      &app; has a cover editor for creating covers for your CDs or
+      DVDs. To open the cover editor, choose <menuchoice>
+	<guimenu>Tools</guimenu>
+	<guimenuitem>Cover Editor</guimenuitem>
+      </menuchoice>.
+    </para>
+    <para>
+      The cover editor lets you select the font, the alignment and the
+      coloros for all the texts and the background properties of front
+      and the back cover.
+    </para>
+    <para>
+      To set the properties of the covers, right-click on one of the
+      covers and choose <guimenuitem>Set background
+	properties</guimenuitem> to open the <guilabel>Background
+      properties</guilabel> dialog.
+    </para>
+    <para>
+      It is possibile to fill the background with an image or with a
+      color or gradient.
+    </para>
+    <para>
+      To set an image as the background:
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    From the <guilabel>Image path</guilabel> drop-down list
+      select the image from you hard disk.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Fromt the <guilabel>Image style</guilabel> drop-down list
+	    select how you want the image to be positioned.
+	  </para>
+	</listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      To fill the background with a color or gradient:
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    From the <guilabel>Color</guilabel> drop-down list select
+	    the kind of fill you want to use for the background.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    Use the button on the right to open the <guilabel>Pick a
+	    Color</guilabel> dialog to select the color.
+	  </para>
+	</listitem>
+      </itemizedlist>
+      <note>
+	<para>
+	  If you select a gradinet, there will be two buttons for
+	  the color chooser. The one on the left is the starting point of
+	  the gradient, the one on the right the end point.
+	</para>
+      </note>
+    </para>
+  </sect1>
+
   <sect1 id="brasero-plugins">
     <title>Plugins</title>
     <para>
@@ -1103,7 +1393,7 @@
       are several plugins you can choose from.
     </para>
     <para>
-      To view available plugins, press 
+      To view the available plugins, choose 
       <menuchoice>
 	<guimenu>Edit</guimenu>
 	<guimenuitem>Plugins</guimenuitem>
@@ -1111,7 +1401,7 @@
       The plugins that you can use are:
     </para>
     <para>
-      <table frame="all">
+      <table frame="all" id="brasero-TBL-plugin">
 	<title>Plugins</title>
 	<tgroup cols="2" align="left" colsep="1" rowsep="1">
 	  <thead>
@@ -1122,13 +1412,13 @@
 	  </thead>
 	  <tbody>
 	    <row>
-	      <entry><guilabel>local-track</guilabel></entry>
+	      <entry><guilabel>File checksum</guilabel></entry>
 	      <entry>
-		Enables &app; to burn files which are not stored locally.
+		Enables &app; to check the integrity of files.
 	      </entry>
 	    </row>
 	    <row>
-	      <entry><guilabel>md5sum</guilabel></entry>
+	      <entry><guilabel>Image checksum</guilabel></entry>
 	      <entry>
 		Enables &app; to perform integrity checks 
 		on discs after they have been burnt. Also enables
@@ -1137,10 +1427,15 @@
 	      </entry>
 	    </row>
 	    <row>
-	      <entry><guilabel>md5sum-file</guilabel></entry>
+	      <entry><guilabel>local-track</guilabel></entry>
 	      <entry>
-		Enables &app; to perform integrity checks 
-		on discs by using a file containing the MD5 sum.
+		Enables &app; to burn files which are not stored locally.
+	      </entry>
+	    </row>
+	    <row>
+	      <entry><guilabel>normalize</guilabel></entry>
+	      <entry>
+		Enables &app; to set consisten sound leveles between tracks.
 	      </entry>
 	    </row>
 	  </tbody>
@@ -1148,8 +1443,46 @@
       </table>
     </para>
     <para>
-      To enable or disable a plugin, click on the check box next to it.
+      To enable or disable a plugin, select the check box next to it.
     </para>
+    <para>
+      With the <guilabel>File checksum</guilabel> and <guilabel>Image
+      checksum</guilabel> plugins you can choose which algorithm to
+      use:
+      <orderedlist>
+	<listitem>
+	  <para>
+	    Select one of the two plugins and click on
+	    <guibutton>Configure</guibutton>.
+	  </para>
+	</listitem>
+	<listitem>
+	  <para>
+	    From the <guilabel>Hashing algorithm to be used</guilabel>
+	    drop-down list select the algorithm you want to use. The
+	    possibile values are:
+	    <itemizedlist>
+	      <listitem>
+		<para>
+		  MD5
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  SHA1
+		</para>
+	      </listitem>
+	      <listitem>
+		<para>
+		  SHA256
+		</para>
+	      </listitem>
+	    </itemizedlist>
+	  </para>
+	</listitem>
+      </orderedlist>
+    </para>
+
     <para>
       <note>
 	<para>
@@ -1161,4 +1494,5 @@
       </note>
     </para>
   </sect1>
+
 </article>
