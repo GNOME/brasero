@@ -145,7 +145,7 @@ GtkWidget *
 brasero_eject_dialog_new ()
 {
 	return g_object_new (BRASERO_TYPE_EJECT_DIALOG,
-			     "title", (_("Eject Disc"_)),
+			     "title", (_("Eject Disc")),
 			     NULL);
 }
 
