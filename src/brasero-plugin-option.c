@@ -406,7 +406,7 @@ brasero_plugin_option_set_plugin (BraseroPluginOption *self,
 
 	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
 
-	string = g_strdup_printf ("<b>Options for plugin %s</b>", brasero_plugin_get_name (plugin));
+	string = g_strdup_printf (_("<b>Options for plugin %s</b>"), brasero_plugin_get_name (plugin));
 	gtk_label_set_markup (GTK_LABEL (priv->title), string);
 	g_free (string);
 
