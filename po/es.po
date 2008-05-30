@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-28 09:59+0000\n"
-"PO-Revision-Date: 2008-05-29 21:00+0200\n"
+"POT-Creation-Date: 2008-05-29 19:01+0000\n"
+"PO-Revision-Date: 2008-05-31 01:07+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -353,9 +353,9 @@ msgid "Make sure the appropriate codec is installed."
 msgstr "Asegúrese que está instalado el códec apropiado."
 
 #: ../src/brasero-audio-disc.c:1360
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to add a \"%s\" which is a video file?"
-msgstr "¿Está seguro de que quiere añadir «%s» a la selección?"
+msgstr "¿Quiere añadir «%s» que es un archivo de vídeo?"
 
 #: ../src/brasero-audio-disc.c:1364
 msgid "Video file"
@@ -365,7 +365,7 @@ msgstr "Archivo de vídeo"
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
-msgstr ""
+msgstr "Este es un archivo de vídeo y por ello sólo se puede escribir la parte de sonido al disco."
 
 #: ../src/brasero-audio-disc.c:1370
 msgid "_Ignore video"
@@ -376,9 +376,8 @@ msgid "_Add video"
 msgstr "_Añadir vídeo"
 
 #: ../src/brasero-audio-disc.c:1499
-#, fuzzy
 msgid "Do you want to search for audio discs inside the directory?"
-msgstr "¿Desea buscar discos de audio adentro?"
+msgstr "¿Quiere buscar discos de sonido dentro del directorio?"
 
 #: ../src/brasero-audio-disc.c:1501
 msgid "Directory search"
@@ -414,9 +413,8 @@ msgid "Error"
 msgstr "Error"
 
 #: ../src/brasero-audio-disc.c:2754
-#, fuzzy
 msgid "Impossible to split more than one song at a time"
-msgstr "imposible partir más de una canción al mismo tiempo"
+msgstr "Imposible partir más de una canción al mismo tiempo"
 
 #: ../src/brasero-audio-disc.c:3644
 #, c-format
@@ -674,6 +672,11 @@ msgstr "_Desactivar todos"
 msgid "Plugins"
 msgstr "Complementos"
 
+#: ../src/brasero-plugin-option.c:409
+#, c-format
+msgid "<b>Options for plugin %s</b>"
+msgstr "<b>Opciones para el complemento %s</b>"
+
 #: ../src/brasero-progress.c:139
 msgid "Estimated remaining time:"
 msgstr "Tiempo restante estimado:"
@@ -864,9 +867,9 @@ msgid "Song information"
 msgstr "Información de la canción"
 
 #: ../src/brasero-song-properties.c:291
-#, fuzzy, c-format
+#, c-format
 msgid "<b>Song information for track %02i</b>"
-msgstr "<b><big>Información de la canción para la pista %02i</big></b>"
+msgstr "<b>Información de la canción para la pista %02i</b>"
 
 #: ../src/brasero-tray.c:90
 msgid "Cancel"
@@ -1170,15 +1173,16 @@ msgid ""
 "An image of the disc has been created on your hard drive. Burning is about "
 "to begin:"
 msgstr ""
+"Se ha creado una imagen del disco en su disco duro. La grabación está apunto "
+"de comenzar:"
 
 #: ../src/brasero-burn-dialog.c:456
 msgid "A data integrity test is about to begin:"
 msgstr "Se va a iniciar una comprobación de integridad de los datos:"
 
 #: ../src/brasero-burn-dialog.c:457
-#, fuzzy
 msgid "Please, re-insert the disc in the CD/DVD burner."
-msgstr "inserte el disco para comprobar «%s»."
+msgstr "Reinserte el disco en el grabador de CD/DVD."
 
 #: ../src/brasero-burn-dialog.c:460
 msgid ""
@@ -1488,7 +1492,7 @@ msgstr "Imagen creada correctamente"
 #. since we succeed offer the possibility to create cover if that's an audio disc
 #: ../src/brasero-burn-dialog.c:1633
 msgid "Create cover"
-msgstr ""
+msgstr "Crear carátula"
 
 #: ../src/brasero-burn-dialog.c:1808 ../src/brasero-tool-dialog.c:369
 msgid "Do you really want to quit?"
@@ -1502,15 +1506,9 @@ msgstr "Confirmar"
 msgid "Interrupting the process may make disc unusable."
 msgstr "Interrumpir el proceso puede inutilizar el disco."
 
-#: ../src/brasero-burn-dialog.c:1820
-#, fuzzy
-msgid "Continue burning"
-msgstr "Cancelar la grabación en curso"
-
-#: ../src/brasero-burn-dialog.c:1828
-#, fuzzy
+#: ../src/brasero-burn-dialog.c:1824
 msgid "Cancel burning"
-msgstr "Cancelar la grabación en curso"
+msgstr "Cancelar la grabación"
 
 #: ../src/brasero-data-disc.c:127
 msgid "R_ename..."
@@ -1699,14 +1697,12 @@ msgid "A multisession disc is inserted:"
 msgstr "Se ha insertado un disco multisesión:"
 
 #: ../src/brasero-data-disc.c:1027
-#, fuzzy
 msgid "Do you want to import its contents?"
-msgstr "¿Quiere partirla de todas formas?"
+msgstr "¿Quiere importar sus contenidos?"
 
 #: ../src/brasero-data-disc.c:1035
-#, fuzzy
 msgid "_Import Session"
-msgstr "Importar sesión"
+msgstr "_Importar sesión"
 
 #: ../src/brasero-data-disc.c:1036
 msgid "Click here to import its contents"
@@ -1738,19 +1734,16 @@ msgid "File renaming"
 msgstr "Filtrar enlaces simbólicos ro_tos"
 
 #: ../src/brasero-data-disc.c:1627 ../src/brasero-disc-option-dialog.c:504
-#, fuzzy
 msgid "_Don't rename"
-msgstr "_No reemplazar"
+msgstr "_No renombrar"
 
 #: ../src/brasero-data-disc.c:1628 ../src/brasero-disc-option-dialog.c:507
-#, fuzzy
 msgid "_Rename"
-msgstr "_Quitar"
+msgstr "_Renombrar"
 
 #: ../src/brasero-data-disc.c:1636
-#, fuzzy
 msgid "<b>Renaming mode</b>"
-msgstr "<b>Velocidad de grabación</b>"
+msgstr ""
 
 #: ../src/brasero-data-disc.c:2137
 msgid "Size"
@@ -1916,19 +1909,19 @@ msgid "unknown"
 msgstr "desconocido"
 
 #: ../src/brasero-drive-properties.c:249
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (DVD)"
-msgstr "%d x (DVD)"
+msgstr "%.1f x (DVD)"
 
 #: ../src/brasero-drive-properties.c:252
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (CD)"
-msgstr "%d x (CD)"
+msgstr "%.1f x (CD)"
 
 #: ../src/brasero-drive-properties.c:255
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f x (DVD) %.1f x (CD)"
-msgstr "%d x (DVD) %d x (CD)"
+msgstr "%.1f x (DVD) %.1f x (CD)"
 
 #: ../src/brasero-drive-properties.c:283
 #, c-format
@@ -2177,9 +2170,8 @@ msgid "Start to burn the contents of the selection"
 msgstr "Iniciar la grabación del contenido de la selección"
 
 #: ../src/brasero-project.c:526
-#, fuzzy
 msgid "Please, delete some files from the project."
-msgstr "Borrar todos los archivos del proyecto"
+msgstr "Borre algunos archivos del proyecto."
 
 #: ../src/brasero-project.c:527
 #, fuzzy
@@ -2451,11 +2443,11 @@ msgstr "Seleccione una lista de reproducción"
 
 #: ../src/brasero-project-manager.c:108
 msgid "_Cover editor"
-msgstr ""
+msgstr "Editor de _carátulas"
 
 #: ../src/brasero-project-manager.c:109
 msgid "Design and print covers for CDs"
-msgstr ""
+msgstr "Diseñar e imprimir carátulas para CD"
 
 #: ../src/brasero-project-manager.c:110
 msgid "_New Project"
@@ -3238,7 +3230,7 @@ msgstr "Abrir el proyecto especificado"
 
 #: ../src/main.c:86
 msgid "PLAYLIST"
-msgstr ""
+msgstr "LISTA DE REPRODUCCIÓN"
 
 #: ../src/main.c:91
 msgid "Open an audio project adding the URIs given on the command line"
@@ -3951,40 +3943,53 @@ msgstr "imposible obtener la ruta del archivo local"
 msgid "local-track allows to burn files not stored locally"
 msgstr "local-track permite grabar archivos que no están almacenados localmente"
 
-#: ../src/plugins/transcode/burn-transcode.c:315
 #: ../src/plugins/transcode/burn-normalize.c:97
+#: ../src/plugins/transcode/burn-transcode.c:315
 #, c-format
 msgid "source can't be created"
 msgstr "no se puede crear el origen"
 
-#: ../src/plugins/transcode/burn-transcode.c:363
-#: ../src/plugins/transcode/burn-normalize.c:402
+#: ../src/plugins/transcode/burn-normalize.c:356
+#: ../src/plugins/transcode/burn-transcode.c:424
 #, c-format
-msgid "sink can't be created"
-msgstr "no se puede crear el sumidero"
+msgid "decode can't be created"
+msgstr "no se puede crear la decodificación"
 
-#: ../src/plugins/transcode/burn-transcode.c:378
 #: ../src/plugins/transcode/burn-normalize.c:368
+#: ../src/plugins/transcode/burn-transcode.c:378
 #, c-format
 msgid "audioconvert can't be created"
 msgstr "no se puede crear la conversión de audio"
 
-#: ../src/plugins/transcode/burn-transcode.c:390
 #: ../src/plugins/transcode/burn-normalize.c:379
+#: ../src/plugins/transcode/burn-transcode.c:390
 #, c-format
 msgid "audioresample can't be created"
 msgstr "no se puede crear el remuestreo de audio"
+
+#: ../src/plugins/transcode/burn-normalize.c:390
+#, fuzzy, c-format
+msgid "rganalysis can't be created"
+msgstr "no se puede crear el sumidero"
+
+#: ../src/plugins/transcode/burn-normalize.c:402
+#: ../src/plugins/transcode/burn-transcode.c:363
+#, c-format
+msgid "sink can't be created"
+msgstr "no se puede crear el sumidero"
+
+#: ../src/plugins/transcode/burn-normalize.c:467
+msgid "Normalizing tracks"
+msgstr "Normalizando pistas"
+
+#: ../src/plugins/transcode/burn-normalize.c:572
+msgid "Normalize allows to set consistent sound levels between tracks"
+msgstr ""
 
 #: ../src/plugins/transcode/burn-transcode.c:401
 #, c-format
 msgid "filter can't be created"
 msgstr "no se puede crear el filtro"
-
-#: ../src/plugins/transcode/burn-transcode.c:424
-#: ../src/plugins/transcode/burn-normalize.c:356
-#, c-format
-msgid "decode can't be created"
-msgstr "no se puede crear la decodificación"
 
 #: ../src/plugins/transcode/burn-transcode.c:581
 #, c-format
@@ -4021,19 +4026,6 @@ msgid "Transcode converts song files into a format proper to burn them on CDs"
 msgstr ""
 "Transcode convierte los archivos de canciones en un formato adecuado para "
 "grabarlas en CD"
-
-#: ../src/plugins/transcode/burn-normalize.c:390
-#, fuzzy, c-format
-msgid "rganalysis can't be created"
-msgstr "no se puede crear el sumidero"
-
-#: ../src/plugins/transcode/burn-normalize.c:467
-msgid "Normalizing tracks"
-msgstr "Normalizando pistas"
-
-#: ../src/plugins/transcode/burn-normalize.c:572
-msgid "Normalize allows to set consistent sound levels between tracks"
-msgstr ""
 
 #: ../src/scsi-error.c:30
 msgid "size mismatch"
@@ -4404,6 +4396,11 @@ msgstr "seleccionar los elementos en este área y pulsar la tecla «Supr»"
 #: ../src/brasero-eject-dialog.c:131
 msgid "_Eject"
 msgstr "_Expulsar"
+
+#: ../src/brasero-eject-dialog.c:148
+#, fuzzy
+msgid "Eject Disc"
+msgstr "Expulsar el soporte"
 
 #: ../src/brasero-file-filtered.c:100
 msgid "Hide the _filtered file list (no file)"
