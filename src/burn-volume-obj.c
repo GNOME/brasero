@@ -600,14 +600,14 @@ brasero_volume_get_display_label (BraseroVolume *self,
 	g_object_unref (volume);
 
 	if (name && name [0] != '\0') {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the label of the already existing session on this disc. */
 		if (with_markup)
-			label = g_strdup_printf ("<b>Data %s</b>: \"%s\"",
+			/* NOTE for translators: the first %s is the disc type and the
+			 * second %s the label of the already existing session on this disc. */
+			label = g_strdup_printf (_("<b>Data %s</b>: \"%s\""),
 						 type,
 						 name);
 		else
-			label = g_strdup_printf ("Data %s: \"%s\"",
+			label = g_strdup_printf (_("Data %s: \"%s\""),
 						 type,
 						 name);
 
@@ -620,9 +620,9 @@ brasero_volume_get_display_label (BraseroVolume *self,
 	name = brasero_drive_get_display_name (drive);
 
 	if (media & BRASERO_MEDIUM_BLANK) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
 		if (with_markup)
+			/* NOTE for translators: the first %s is the disc type and the
+			 * second %s the name of the drive this disc is in. */
 			label = g_strdup_printf (_("<b>Blank %s</b> in %s"),
 						 type,
 						 name);
@@ -632,9 +632,9 @@ brasero_volume_get_display_label (BraseroVolume *self,
 						 name);
 	}
 	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
 		if (with_markup)
+			/* NOTE for translators: the first %s is the disc type and the
+			 * second %s the name of the drive this disc is in. */
 			label = g_strdup_printf (_("<b>Audio and data %s</b> in %s"),
 						 type,
 						 name);
@@ -644,9 +644,9 @@ brasero_volume_get_display_label (BraseroVolume *self,
 						 name);
 	}
 	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
 		if (with_markup)
+			/* NOTE for translators: the first %s is the disc type and the
+			 * second %s the name of the drive this disc is in. */
 			label = g_strdup_printf (_("<b>Audio %s</b> in %s"),
 						 type,
 						 name);
@@ -656,9 +656,9 @@ brasero_volume_get_display_label (BraseroVolume *self,
 						 name);
 	}
 	else if (media & BRASERO_MEDIUM_HAS_DATA) {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
 		if (with_markup)
+			/* NOTE for translators: the first %s is the disc type and the
+		 	* second %s the name of the drive this disc is in. */
 			label = g_strdup_printf (_("<b>Data %s</b> in %s"),
 						 type,
 						 name);
@@ -668,9 +668,9 @@ brasero_volume_get_display_label (BraseroVolume *self,
 						 name);
 	}
 	else {
-		/* NOTE for translators: the first is the disc type and the
-		 * second the name of the drive this disc is in. */
 		if (with_markup)
+			/* NOTE for translators: the first %s is the disc type and the
+		 	* second %s the name of the drive this disc is in. */
 			label = g_strdup_printf (_("<b>%s</b> in %s"),
 						 type,
 						 name);
