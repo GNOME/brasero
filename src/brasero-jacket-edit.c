@@ -832,7 +832,7 @@ brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
 					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					      NULL);
 
-	gtk_window_set_default_size (GTK_WINDOW (window), 530, 640);
+	gtk_window_set_default_size (GTK_WINDOW (window), 680, 640);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
 	g_signal_connect (window,
 			  "response",
