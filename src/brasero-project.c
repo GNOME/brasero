@@ -2280,13 +2280,13 @@ brasero_project_save_project_dialog (BraseroProject *project,
 
 	if (show_cancel)
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-					_("_Cl_ose without saving"), GTK_RESPONSE_NO,
+					_("Cl_ose without saving"), GTK_RESPONSE_NO,
 					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					GTK_STOCK_SAVE, GTK_RESPONSE_YES,
 					NULL);
 	else
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-					_("_Cl_ose without saving"), GTK_RESPONSE_NO,
+					_("Cl_ose without saving"), GTK_RESPONSE_NO,
 					GTK_STOCK_SAVE, GTK_RESPONSE_YES,
 					NULL);
 
