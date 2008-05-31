@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-29 19:01+0000\n"
-"PO-Revision-Date: 2008-05-31 01:07+0200\n"
+"POT-Creation-Date: 2008-05-30 23:09+0000\n"
+"PO-Revision-Date: 2008-05-31 14:06+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -365,7 +365,9 @@ msgstr "Archivo de vídeo"
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
-msgstr "Este es un archivo de vídeo y por ello sólo se puede escribir la parte de sonido al disco."
+msgstr ""
+"Este es un archivo de vídeo y por ello sólo se puede escribir la parte de "
+"sonido al disco."
 
 #: ../src/brasero-audio-disc.c:1370
 msgid "_Ignore video"
@@ -781,7 +783,7 @@ msgstr "Todos los archivos"
 msgid "Previous results"
 msgstr "Resultados anteriores"
 
-#: ../src/brasero-search-beagle.c:352 ../src/brasero-search-beagle.c:806
+#: ../src/brasero-search-beagle.c:352 ../src/brasero-search-beagle.c:807
 msgid "<b>No results</b>"
 msgstr "<b>Sin resultados</b>"
 
@@ -802,16 +804,16 @@ msgstr "Descripción"
 msgid "Number of results displayed"
 msgstr "Número de resultados mostrados"
 
-#: ../src/brasero-search-beagle.c:800
+#: ../src/brasero-search-beagle.c:801
 #, c-format
 msgid "<b>Results %i - %i (out of %i)</b>"
 msgstr "<b>Resultados %i - %i (de %i)</b>"
 
-#: ../src/brasero-search-beagle.c:1051
+#: ../src/brasero-search-beagle.c:1052
 msgid "Error querying beagle:"
 msgstr "Error al consultar beagle:"
 
-#: ../src/brasero-search-beagle.c:1053
+#: ../src/brasero-search-beagle.c:1054
 msgid "Search error"
 msgstr "Error de búsqueda"
 
@@ -1267,14 +1269,12 @@ msgid "Possible loss of data"
 msgstr "Posible pérdida de datos"
 
 #: ../src/brasero-burn-dialog.c:665
-#, fuzzy
 msgid "Do you really want to erase the current disc?"
-msgstr "¿Está seguro de que quiere vaciar el proyecto actual?"
+msgstr "¿Está seguro de que quiere borrar el disco actual?"
 
 #: ../src/brasero-burn-dialog.c:666
-#, fuzzy
 msgid "The disc in the drive holds data."
-msgstr "El disco en la unidad contiene datos:"
+msgstr "El disco en la unidad contiene datos."
 
 #: ../src/brasero-burn-dialog.c:667
 msgid "Erase disc"
@@ -1286,7 +1286,7 @@ msgstr "Disco multisesión"
 
 #: ../src/brasero-burn-dialog.c:677
 msgid "Appending new files to a multisession disc is not advised:"
-msgstr "No se recomienda añadir nuevos archivos a un disco multisesión"
+msgstr "No se recomienda añadir nuevos archivos a un disco multisesión:"
 
 #: ../src/brasero-burn-dialog.c:678
 msgid ""
@@ -1419,7 +1419,7 @@ msgstr "No se puede mostrar el registro de sesión:"
 
 #: ../src/brasero-burn-dialog.c:1402
 msgid "the log file could not be found."
-msgstr "no se puede mostrar el archivo de registro"
+msgstr "no se puede mostrar el archivo de registro."
 
 #: ../src/brasero-burn-dialog.c:1417
 msgid ""
@@ -1729,9 +1729,8 @@ msgid "New Folder"
 msgstr "Carpeta nueva"
 
 #: ../src/brasero-data-disc.c:1624
-#, fuzzy
 msgid "File renaming"
-msgstr "Filtrar enlaces simbólicos ro_tos"
+msgstr "Renombramiento de archivos"
 
 #: ../src/brasero-data-disc.c:1627 ../src/brasero-disc-option-dialog.c:504
 msgid "_Don't rename"
@@ -1743,7 +1742,7 @@ msgstr "_Renombrar"
 
 #: ../src/brasero-data-disc.c:1636
 msgid "<b>Renaming mode</b>"
-msgstr ""
+msgstr "<b>Modo de renombramiento</b>"
 
 #: ../src/brasero-data-disc.c:2137
 msgid "Size"
@@ -1768,11 +1767,8 @@ msgid "Audio disc (%s)"
 msgstr "Disco de audio (%s)"
 
 #: ../src/brasero-disc-option-dialog.c:496
-#, fuzzy
 msgid "Should files be renamed to be windows-compatible?"
-msgstr ""
-"Algunos archivos no tienen un nombre apropiado para un CD compatible con "
-"Windows:"
+msgstr "¿Se deberían renombrar los archivos para ser compatibles con Windows?"
 
 #: ../src/brasero-disc-option-dialog.c:499
 #, fuzzy
@@ -2184,7 +2180,7 @@ msgstr ""
 
 #: ../src/brasero-project.c:547
 msgid "Would you like to activate overburn?"
-msgstr ""
+msgstr "¿Quiere activar el «overburn»?"
 
 #: ../src/brasero-project.c:549
 msgid "Project size"
@@ -2202,11 +2198,11 @@ msgstr ""
 
 #: ../src/brasero-project.c:556
 msgid "_Don't use overburn"
-msgstr ""
+msgstr "_No usar «overburn»"
 
 #: ../src/brasero-project.c:559
 msgid "Use _overburn"
-msgstr ""
+msgstr "Usar «_overburn»"
 
 #: ../src/brasero-project.c:772
 msgid "Please wait:"
@@ -2225,7 +2221,6 @@ msgid "Waiting for ongoing tasks"
 msgstr "Esperando tareas en curso"
 
 #: ../src/brasero-project.c:845
-#, fuzzy
 msgid "Please add songs to the project."
 msgstr "Añada canciones al proyecto."
 
@@ -2235,12 +2230,10 @@ msgid "Empty project"
 msgstr "Proyecto vacío"
 
 #: ../src/brasero-project.c:850 ../src/brasero-project.c:873
-#, fuzzy
 msgid "The project is empty."
-msgstr "El proyecto está vacío:"
+msgstr "El proyecto está vacío."
 
 #: ../src/brasero-project.c:868
-#, fuzzy
 msgid "Please add files to the project."
 msgstr "Añada archivos al proyecto."
 
@@ -2256,19 +2249,17 @@ msgid ""
 msgstr ""
 
 #: ../src/brasero-project.c:928
-#, fuzzy, c-format
+#, c-format
 msgid "_Keep Using \"%s\""
-msgstr "Analizando «%s»"
+msgstr "_Seguir usando «%s»"
 
 #: ../src/brasero-project.c:939
-#, fuzzy
 msgid "_Use Brasero next time"
-msgstr "Archivo de proyecto Brasero"
+msgstr "_Usar Brasero la próxima vez"
 
 #: ../src/brasero-project.c:1047
-#, fuzzy
 msgid "Would you like to use Brasero in the future to burn audio discs?"
-msgstr "¿Desea que Brasero sea la aplicación predeterminada para grabar CD de audio?"
+msgstr "¿Desea usar Brasero en el futuro para grabar CD de sonido?"
 
 #: ../src/brasero-project.c:1053
 #, fuzzy
@@ -2670,7 +2661,7 @@ msgid ""
 "computer"
 msgstr ""
 "Crear un CD/DVD que contenga cualquier tipo de datos que sólo se puedan leer "
-"en un equipo informático."
+"en un equipo informático"
 
 #: ../src/brasero-project-type-chooser.c:82
 msgid "<big>Disc _copy</big>"
@@ -3260,12 +3251,6 @@ msgstr "Abrir un proyecto de datos con el contenido del grabador de CD de Nautil
 msgid "Display debug statements on stdout"
 msgstr "Mostrar estadísticas de depuración en la salida estándar"
 
-#: ../src/main.c:259
-msgid ""
-"Phil Bull <philbull@gmail.com>Milo Casagrande <milo_casagrande@yahoo."
-"it>Andrew Stabeno <stabeno@gmail.com>"
-msgstr ""
-
 #: ../src/main.c:266
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
@@ -3605,7 +3590,7 @@ msgstr "No se pudo grabar la información del CD"
 #: ../src/plugins/cdrtools/burn-cdrecord.c:196
 #, c-format
 msgid "the disc could not be closed"
-msgstr "No se pudo cerrar el disco."
+msgstr "No se pudo cerrar el disco"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:201
 #: ../src/plugins/cdrtools/burn-cdrecord.c:202
@@ -3654,7 +3639,7 @@ msgstr "activar la bandera -immed (consultar el manual de wodim)"
 msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de "
-"wodim)."
+"wodim):"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1045
 msgid "use cdrecord to burn CDs"
@@ -3869,7 +3854,7 @@ msgstr "No se puede crear un archivo temporal"
 #: ../src/plugins/libburnia/burn-libisofs.c:454
 #, c-format
 msgid "Image import failed."
-msgstr "Falló la importación de la imagen"
+msgstr "Falló la importación de la imagen."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:507
 #, fuzzy, c-format
