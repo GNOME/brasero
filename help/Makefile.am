@@ -14,4 +14,4 @@ DOC_INCLUDES =
 DOC_FIGURES = figures/brasero_main.png 
 
 # List of translations
-DOC_LINGUAS = 
+DOC_LINGUAS = es
