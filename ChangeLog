@@ -1,5 +1,15 @@
 2008-05-31  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #535575 – Many g_strdup_printf instead of g_strdup
+	patch by Claude Paroz
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_get_media_type_string),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_cancel_dialog):
+
+2008-05-31  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #535558 – Strings not marked for translation
 	patch by Claude Paroz
 
