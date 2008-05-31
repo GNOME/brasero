@@ -579,7 +579,10 @@ brasero_volume_get_display_label (BraseroVolume *self,
 
 	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
 	if (media & BRASERO_MEDIUM_FILE) {
-		label = g_strdup (_("File Image"));
+		/* Translators: This is a fake drive, a file, and means that
+		 * when we're writing, we're writing to a file and create an
+		 * image on the hard drive. */
+		label = g_strdup (_("Image File"));
 		if (!with_markup)
 			return label;
 

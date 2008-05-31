@@ -260,8 +260,11 @@ brasero_drive_get_display_name (BraseroDrive *self)
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
+	/* Translators: This is a fake drive, a file, and means that when we're
+	 * writing, we're writing to a file and create an image on the hard 
+	 * drive. */
 	if (!priv->udi)
-		return g_strdup (_("File Image"));;
+		return g_strdup (_("Image File"));;
 
 	ctx = brasero_drive_get_hal_context ();
 	return libhal_device_get_property_string (ctx,
