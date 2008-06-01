@@ -75,7 +75,7 @@ static GtkActionEntry entries[] = {
 	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
 	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
 	
-	{"Contents", GTK_STOCK_HELP, N_("_Contents"), NULL, N_("Contents"),
+	{"Contents", GTK_STOCK_HELP, N_("_Contents"), "F1", N_("Contents"),
 	 G_CALLBACK (on_help_cb)}, 
 
 	{"About", GTK_STOCK_ABOUT, NULL, NULL, N_("About"),
