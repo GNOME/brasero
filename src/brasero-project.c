@@ -923,8 +923,8 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("This is a first time running dialog that won't be shown again. If you change your mind, you can change your choice later in the Removable Drives and Media Preferences whether or not you chose brasero."));
 
-	/* NOTE for translators the %s is the old application name */
 	if (command)
+		/* NOTE for translators the %s is the old application name */
 		text = g_strdup_printf (_("_Keep Using \"%s\""), command);
 	else
 		text = g_strdup (GTK_STOCK_CANCEL);
