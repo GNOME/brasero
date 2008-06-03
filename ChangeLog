@@ -1,3 +1,10 @@
+2008-06-03  Luis Medinas  <lmedinas@svn.gnome.org>
+
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	
+	Fix segfault caused by a removed project. Added a message dialog
+	to warn the user about this problem. Fixes bgo #532495. 
+
 2008-06-01  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-menu.h:

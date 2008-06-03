@@ -750,9 +750,12 @@ BraseroProjectType
 brasero_project_manager_open_uri (BraseroProjectManager *manager,
 				  const gchar *uri_arg)
 {
+  	GtkWidget *dialog;
+	GtkWidget *window;
 	gchar *uri;
 	GFile *file;
 	GFileInfo *info;
+	GCancellable *cancellable;
 	const gchar *mime;
 	BraseroProjectType type;
 
@@ -767,7 +770,19 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	uri = g_file_get_uri (file);
 	mime = g_file_info_get_content_type (info);
 
-	type = brasero_project_manager_open_by_mime (manager, uri, mime);
+	if (g_file_query_exists (file, NULL)) {
+	  	type = brasero_project_manager_open_by_mime (manager, uri, mime);
+        } 
+	else {
+	  	dialog = gtk_message_dialog_new (GTK_WINDOW (window),
+					   	GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+					   	GTK_MESSAGE_ERROR,
+					   	GTK_BUTTONS_CLOSE,
+					   	"Error loading project");
+	  	gtk_message_dialog_format_secondary_text (dialog, _("The project '%s' does not exist."), uri);
+	  	gtk_dialog_run (GTK_DIALOG (dialog));
+	  	gtk_widget_destroy (dialog);
+	}
 
 	g_free (uri);
 	g_object_unref (file);
