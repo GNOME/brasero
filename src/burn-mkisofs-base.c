@@ -46,11 +46,14 @@
 
 struct _BraseroMkisofsBase {
 	const gchar *emptydir;
+	const gchar *videodir;
 
 	gint grafts_fd;
 	gint excluded_fd;
 
 	GHashTable *grafts;
+
+	guint found_video_ts:1;
 };
 typedef struct _BraseroMkisofsBase BraseroMkisofsBase;
 
@@ -271,7 +274,7 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 
 	result = _write_line (base->grafts_fd, graft_point, error);
 	g_free (graft_point);
-	if(result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK)
 		return result;
 
 	return BRASERO_BURN_OK;
@@ -298,7 +301,7 @@ _foreach_write_grafts (const gchar *uri,
 	return FALSE;
 }
 
-static gboolean
+static BraseroBurnResult
 brasero_mkisofs_base_write_grafts (BraseroMkisofsBase *base,
 				   GError **error)
 {
@@ -336,6 +339,54 @@ brasero_mkisofs_base_empty_directory (BraseroMkisofsBase *base,
 }
 
 static BraseroBurnResult
+brasero_mkisofs_base_process_video_graft (BraseroMkisofsBase *base,
+					  BraseroGraftPt *graft,
+					  GError **error)
+{
+	gchar *link_path;
+	gchar *path;
+	int res;
+
+	path = g_filename_from_uri (graft->uri, NULL, NULL);
+	if (g_str_has_suffix (path, G_DIR_SEPARATOR_S)) {
+		gchar *tmp;
+
+		tmp = g_strndup (path, strlen (path) - strlen (G_DIR_SEPARATOR_S));
+		g_free (path);
+		path = tmp;
+	}
+
+	link_path = g_build_path (G_DIR_SEPARATOR_S,
+				  base->videodir,
+				  graft->path,
+				  NULL);
+
+	if (g_str_has_suffix (link_path, G_DIR_SEPARATOR_S)) {
+		gchar *tmp;
+
+		tmp = g_strndup (link_path, strlen (link_path) - strlen (G_DIR_SEPARATOR_S));
+		g_free (link_path);
+		link_path = tmp;
+	}
+
+	BRASERO_BURN_LOG ("Linking %s to %s", link_path, path);
+	res = symlink (path, link_path);
+
+	g_free (path);
+	g_free (link_path);
+
+	if (res) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     strerror (errno));
+		return BRASERO_BURN_ERR;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 				BraseroGraftPt *graft,
 				GError **error)
@@ -352,7 +403,38 @@ brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* make up the graft point */
+	/* This is a special case for VIDEO images. Given the tests I performed,
+	 * the option --dvd-video requires the parent directory of VIDEO_TS and
+	 * AUDIO_TS to be passed. If each of these two directories are passed
+	 * as an option it will fail.
+	 * One workaround is to create a fake directory for VIDEO_TS and
+	 * AUDIO_TS and add hardlinks inside pointing to these two directories.
+	 * As this parent directory is a temporary directory it must have been
+	 * passed by the calling plugins. */
+	if (base->videodir) {
+		BraseroBurnResult res;
+
+		/* try with "VIDEO_TS", "VIDEO_TS/", "VIDEO_TS/" and "/VIDEO_TS/"
+		 * to make sure we don't miss one */
+		if (!strcmp (graft->path , "VIDEO_TS")
+		||  !strcmp (graft->path , "/VIDEO_TS")
+		||  !strcmp (graft->path , "VIDEO_TS/")
+		||  !strcmp (graft->path , "/VIDEO_TS/")) {
+			res = brasero_mkisofs_base_process_video_graft (base, graft, error);
+			if (res != BRASERO_BURN_OK)
+				return res;
+
+			base->found_video_ts = TRUE;
+			return BRASERO_BURN_OK;
+		}
+		else if (!strcmp (graft->path , "AUDIO_TS")
+		     ||  !strcmp (graft->path , "/AUDIO_TS")
+		     ||  !strcmp (graft->path , "AUDIO_TS/")
+		     ||  !strcmp (graft->path , "/AUDIO_TS/"))
+			return brasero_mkisofs_base_process_video_graft (base, graft, error);
+	}
+
+	/* add the graft point */
 	list = g_hash_table_lookup (base->grafts, graft->uri);
 	if (list)
 		g_hash_table_steal (base->grafts, graft->uri);
@@ -367,6 +449,7 @@ BraseroBurnResult
 brasero_mkisofs_base_write_to_files (GSList *grafts,
 				     GSList *excluded,
 				     const gchar *emptydir,
+				     const gchar *videodir,
 				     const gchar *grafts_path,
 				     const gchar *excluded_path,
 				     GError **error)
@@ -399,6 +482,7 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 	}
 
 	base.emptydir = emptydir;
+	base.videodir = videodir;
 
 	base.grafts = g_hash_table_new_full (g_str_hash,
 					     g_str_equal,
@@ -408,8 +492,8 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 	/* we analyse the graft points:
 	 * first add graft points and excluded. At the same time create a hash 
 	 * table in which key = uri and value = graft points, a list of all
-	 * the uris that have been excluded and a hash for non local files.
-	 * once finished, for each excluded use the hash to see if there are not
+	 * the uris that have been excluded.
+	 * Once finished, for each excluded use the hash to see if there are not
 	 * other paths at which the excluded uri must appear. If so, create an
 	 * explicit graft point. */
 	grafts_excluded = NULL;
@@ -417,6 +501,8 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 		BraseroGraftPt *graft;
 
 		graft = grafts->data;
+
+		BRASERO_BURN_LOG ("New graft %s %s", graft->uri, graft->path);
 
 		if (!graft->uri) {
 			result = brasero_mkisofs_base_empty_directory (&base,
@@ -433,6 +519,15 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 							 error);
 		if (result != BRASERO_BURN_OK)
 			goto cleanup;
+	}
+
+	/* simple check */
+	if (base.videodir && !base.found_video_ts) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("VIDEO_TS directory is missing or invalid"));
+		return BRASERO_BURN_ERR;
 	}
 
 	/* write the grafts list */

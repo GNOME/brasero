@@ -1662,6 +1662,64 @@ brasero_burn_session_track_list_free (GSList *list)
 	g_slist_free (list);
 }
 
+/**
+ * Utility to clean tmp files
+ */
+
+static gboolean
+brasero_burn_session_clean (const gchar *path);
+
+static gboolean
+brasero_burn_session_clean_directory (const gchar *path)
+{
+	GDir *dir;
+	const gchar *name;
+
+	dir = g_dir_open (path, 0, NULL);
+	if (!dir)
+		return FALSE;
+
+	while ((name = g_dir_read_name (dir))) {
+		gchar *tmp;
+
+		tmp = g_build_filename (G_DIR_SEPARATOR_S,
+					path,
+					name,
+					NULL);
+
+		if (!brasero_burn_session_clean (tmp)) {
+			g_dir_close (dir);
+			g_free (tmp);
+			return FALSE;
+		}
+
+		g_free (tmp);
+	}
+
+	g_dir_close (dir);
+	return TRUE;
+}
+
+static gboolean
+brasero_burn_session_clean (const gchar *path)
+{
+	gboolean result = TRUE;
+
+	if (!path)
+		return TRUE;
+
+	if (g_file_test (path, G_FILE_TEST_IS_DIR))
+		brasero_burn_session_clean_directory (path);
+
+	/* NOTE : we don't follow uris as certain files are simply linked by content-data */
+	if (g_remove (path)) {
+		BRASERO_BURN_LOG ("Cannot remove file %s", path);
+		result = FALSE;
+	}
+
+	return result;
+}
+
 static void
 brasero_burn_session_finalize (GObject *object)
 {
@@ -1720,7 +1778,7 @@ brasero_burn_session_finalize (GObject *object)
 
 		tmpfile = iter->data;
 
-		g_remove (tmpfile);
+		brasero_burn_session_clean (tmpfile);
 		g_free (tmpfile);
 	}
 	g_slist_free (priv->tmpfiles);

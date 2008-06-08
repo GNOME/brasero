@@ -785,6 +785,7 @@ brasero_track_get_data_paths (BraseroTrack *track,
 			      const gchar *grafts_path,
 			      const gchar *excluded_path,
 			      const gchar *emptydir,
+			      const gchar *videodir,
 			      GError **error)
 {
 	BraseroBurnResult result;
@@ -797,6 +798,7 @@ brasero_track_get_data_paths (BraseroTrack *track,
 	result = brasero_mkisofs_base_write_to_files (data->grafts,
 						      data->excluded,
 						      emptydir,
+						      videodir,
 						      grafts_path,
 						      excluded_path,
 						      error);

@@ -37,6 +37,7 @@ BraseroBurnResult
 brasero_mkisofs_base_write_to_files (GSList *grafts,
 				     GSList *excluded,
 				     const gchar *emptydir,
+				     const gchar *videodir,
 				     const gchar *grafts_path,
 				     const gchar *excluded_path,
 				     GError **error);

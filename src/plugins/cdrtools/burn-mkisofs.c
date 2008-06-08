@@ -209,6 +209,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	BraseroTrack *track;
 	BraseroTrackType type;
 	BraseroBurnFlag flags;
+	gchar *videodir = NULL;
 	gchar *emptydir = NULL;
 	BraseroJobAction action;
 	BraseroBurnResult result;
@@ -235,8 +236,15 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 	if (type.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
 		g_ptr_array_add (argv, g_strdup ("-udf"));
 
-	if (type.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
+	if (type.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO) {
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
+
+		result = brasero_job_get_tmp_dir (BRASERO_JOB (mkisofs),
+						  &videodir,
+						  error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
 
 	g_ptr_array_add (argv, g_strdup ("-graft-points"));
 
@@ -247,8 +255,10 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 					   NULL,
 					   &grafts_path,
 					   error);
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		g_free (videodir);
 		return result;
+	}
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (mkisofs),
 					   NULL,
@@ -256,6 +266,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 					   error);
 	if (result != BRASERO_BURN_OK) {
 		g_free (grafts_path);
+		g_free (videodir);
 		return result;
 	}
 
@@ -263,6 +274,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 					  &emptydir,
 					  error);
 	if (result != BRASERO_BURN_OK) {
+		g_free (videodir);
 		g_free (grafts_path);
 		g_free (excluded_path);
 		return result;
@@ -272,10 +284,12 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 					       grafts_path,
 					       excluded_path,
 					       emptydir,
+					       videodir,
 					       error);
 	g_free (emptydir);
 
 	if (result != BRASERO_BURN_OK) {
+		g_free (videodir);
 		g_free (grafts_path);
 		g_free (excluded_path);
 		return result;
@@ -316,6 +330,7 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		brasero_job_get_last_session_address (BRASERO_JOB (mkisofs), &last_session);
 		brasero_job_get_next_writable_address (BRASERO_JOB (mkisofs), &next_wr_add);
 		if (last_session == -1 || next_wr_add == -1) {
+			g_free (videodir);
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -356,6 +371,12 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 						NULL,
 						FALSE);
 		brasero_job_start_progress (BRASERO_JOB (mkisofs), FALSE);
+
+		if (videodir) {
+			g_ptr_array_add (argv, g_strdup ("-f"));
+			g_ptr_array_add (argv, videodir);
+		}
+
 		return BRASERO_BURN_OK;
 	}
 
@@ -365,11 +386,18 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 		result = brasero_job_get_image_output (BRASERO_JOB (mkisofs),
 						      &output,
 						       NULL);
-		if (result != BRASERO_BURN_OK)
+		if (result != BRASERO_BURN_OK) {
+			g_free (videodir);
 			return result;
+		}
 
 		g_ptr_array_add (argv, g_strdup ("-o"));
 		g_ptr_array_add (argv, output);
+	}
+
+	if (videodir) {
+		g_ptr_array_add (argv, g_strdup ("-f"));
+		g_ptr_array_add (argv, videodir);
 	}
 
 	brasero_job_set_current_action (BRASERO_JOB (mkisofs),

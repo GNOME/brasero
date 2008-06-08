@@ -231,6 +231,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	BraseroBurnResult result;
 	BraseroTrackType input;
 	gchar *emptydir = NULL;
+	gchar *videodir = NULL;
 
 	g_ptr_array_add (argv, g_strdup ("-r"));
 
@@ -251,8 +252,15 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	if (input.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
 		g_ptr_array_add (argv, g_strdup ("-udf"));
 
-	if (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
+	if (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO) {
 		g_ptr_array_add (argv, g_strdup ("-dvd-video"));
+
+		result = brasero_job_get_tmp_dir (BRASERO_JOB (growisofs),
+						  &videodir,
+						  error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
 
 	priv = BRASERO_GROWISOFS_PRIVATE (growisofs);
 	if (priv->use_utf8) {
@@ -269,8 +277,10 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 					   NULL,
 					   &grafts_path,
 					   error);
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		g_free (videodir);
 		return result;
+	}
 
 	result = brasero_job_get_tmp_file (BRASERO_JOB (growisofs),
 					   NULL,
@@ -278,6 +288,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 					   error);
 	if (result != BRASERO_BURN_OK) {
 		g_free (grafts_path);
+		g_free (videodir);
 		return result;
 	}
 
@@ -285,6 +296,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 					  &emptydir,
 					  error);
 	if (result != BRASERO_BURN_OK) {
+		g_free (videodir);
 		g_free (grafts_path);
 		g_free (excluded_path);
 		return result;
@@ -294,10 +306,12 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 					       grafts_path,
 					       excluded_path,
 					       emptydir,
+					       videodir,
 					       error);
 	g_free (emptydir);
 
 	if (result != BRASERO_BURN_OK) {
+		g_free (videodir);
 		g_free (grafts_path);
 		g_free (excluded_path);
 		return result;
@@ -339,6 +353,11 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	else {
 		/* we don't specify -q as there wouldn't be anything */
 		g_ptr_array_add (argv, g_strdup ("-print-size"));
+	}
+
+	if (videodir) {
+		g_ptr_array_add (argv, g_strdup ("-f"));
+		g_ptr_array_add (argv, videodir);
 	}
 
 	return BRASERO_BURN_OK;

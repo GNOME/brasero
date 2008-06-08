@@ -1,3 +1,26 @@
+2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #493495 – Growisofs stops while burning Video-DVD
+
+	* src/brasero-data-project.c
+	(brasero_data_project_is_video_project):
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_graft),
+	(brasero_mkisofs_base_process_video_graft),
+	(brasero_mkisofs_base_add_graft),
+	(brasero_mkisofs_base_write_to_files):
+	* src/burn-mkisofs-base.h:
+	* src/burn-session.c (brasero_burn_session_clean_directory),
+	(brasero_burn_session_clean), (brasero_burn_session_finalize):
+	* src/burn-track.c (brasero_track_get_data_paths):
+	* src/burn-track.h:
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_set_mkisofs_argv):
+
 2008-06-03  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-project-manager.c (brasero_project_manager_open_uri):

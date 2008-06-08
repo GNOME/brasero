@@ -239,6 +239,7 @@ brasero_track_get_data_paths (BraseroTrack *track,
 			      const gchar *grafts_path,
 			      const gchar *excluded_path,
 			      const gchar *emptydir,
+			      const gchar *videodir,
 			      GError **error);
 
 gchar *

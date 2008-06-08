@@ -2300,9 +2300,9 @@ brasero_data_project_is_video_project (BraseroDataProject *self)
 
 		if (!strcmp (name, "VIDEO_TS")) {
 			BraseroFileNode *child;
-			gboolean has_ifo, has_vob, has_bup;
+			gboolean has_ifo, has_bup;
 
-			has_ifo = has_vob = has_bup = FALSE;
+			has_ifo = has_bup = FALSE;
 			child = BRASERO_FILE_NODE_CHILDREN (iter);
 
 			for (; child; child = child->next) {
@@ -2312,13 +2312,11 @@ brasero_data_project_is_video_project (BraseroDataProject *self)
 
 				if (!strcmp (name, "VIDEO_TS.IFO"))
 					has_ifo = TRUE;
-				else if (!strcmp (name, "VIDEO_TS.VOB"))
-					has_vob = TRUE;
 				else if (!strcmp (name, "VIDEO_TS.BUP"))
 					has_bup = TRUE;
 			}
 
-			if (!has_ifo || !has_vob || !has_bup)
+			if (!has_ifo || !has_bup)
 				return FALSE;
 
 			has_video = TRUE;

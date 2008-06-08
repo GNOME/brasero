@@ -755,7 +755,6 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	gchar *uri;
 	GFile *file;
 	GFileInfo *info;
-	GCancellable *cancellable;
 	const gchar *mime;
 	BraseroProjectType type;
 
@@ -779,7 +778,9 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 					   	GTK_MESSAGE_ERROR,
 					   	GTK_BUTTONS_CLOSE,
 					   	"Error loading project");
-	  	gtk_message_dialog_format_secondary_text (dialog, _("The project '%s' does not exist."), uri);
+	  	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("The project '%s' does not exist."),
+							  uri);
 	  	gtk_dialog_run (GTK_DIALOG (dialog));
 	  	gtk_widget_destroy (dialog);
 	}
