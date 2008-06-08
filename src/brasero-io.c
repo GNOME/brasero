@@ -614,6 +614,9 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_VIDEO, metadata->has_video);
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE, metadata->is_seekable);
 
+	if (metadata->snapshot)
+		g_file_info_set_attribute_object (info, BRASERO_IO_SNAPSHOT, G_OBJECT (metadata->snapshot));
+
 	/* FIXME: what about silences */
 }
 
@@ -647,8 +650,24 @@ brasero_io_get_metadata_info (BraseroIO *self,
 				    uri,
 				    brasero_io_metadata_lookup_buffer);
 	if (node) {
-		brasero_metadata_info_copy (meta_info, node->data);
-		return TRUE;
+		if (flags & BRASERO_METADATA_FLAG_SNAPHOT) {
+			BraseroMetadataInfo *saved;
+
+			saved = node->data;
+			if (saved->snapshot) {
+				brasero_metadata_info_copy (meta_info, node->data);
+				return TRUE;
+			}
+
+			/* remove it from the queue since we can't keep the same
+			 * URI twice */
+			g_queue_remove (priv->meta_buffer, saved);
+			brasero_metadata_info_free (saved);
+		}
+		else {
+			brasero_metadata_info_copy (meta_info, node->data);
+			return TRUE;
+		}
 	}
 
 	/* grab an available metadata (NOTE: there should always be at least one
@@ -793,7 +812,8 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 						       cancel,
 						       file_uri?file_uri:job->uri,
 						       info,
-						       (job->options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+						       ((job->options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((job->options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
 						       &metadata);
 
 		if (result)
@@ -1085,6 +1105,7 @@ brasero_io_get_file_count_process_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0) |
 						       BRASERO_METADATA_FLAG_FAST,
 						       &metadata);
 
@@ -1120,7 +1141,8 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 						       cancel,
 						       child_uri,
 						       info,
-						       (data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
 						       &metadata);
 		if (result)
 			data->total_b += metadata.len;
@@ -1415,6 +1437,7 @@ brasero_io_load_directory_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0) |
 						       BRASERO_METADATA_FLAG_FAST,
 						       &metadata);
 
@@ -1571,7 +1594,8 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 							       cancel,
 							       child_uri,
 							       info,
-							       (data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+							       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+							       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
 							       &metadata);
 
 			if (result)

@@ -180,6 +180,12 @@ brasero_burn_library_get_plugins_list (void);
 void
 brasero_burn_library_shutdown (void);
 
+/**
+ * Some defined and usable tags for a session
+ */
+
+#define BRASERO_AUDIO_VIDEO_OUTPUT_FORMAT	"audio-video-format"
+
 G_END_DECLS
 
 #endif /* _BURN_BASICS_H */

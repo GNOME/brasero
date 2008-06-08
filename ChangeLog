@@ -1,5 +1,109 @@
 2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Proof of concept:
+	- this was only tested on a single video but may work with multiple videos
+	- options in the burn option dialogs do nothing (yet)
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_get_default_label),
+	(brasero_disc_option_dialog_add_video_options),
+	(brasero_disc_option_dialog_set_disc):
+	* src/brasero-file-chooser.c (brasero_file_chooser_init),
+	(brasero_file_chooser_set_context):
+	* src/brasero-io.c (brasero_io_set_metadata_attributes),
+	(brasero_io_get_metadata_info), (brasero_io_get_file_info_thread),
+	(brasero_io_get_file_count_process_playlist),
+	(brasero_io_get_file_count_process_file),
+	(brasero_io_load_directory_playlist),
+	(brasero_io_load_directory_thread):
+	* src/brasero-io.h:
+	* src/brasero-layout.c (brasero_layout_displayed_item_changed_cb),
+	(brasero_layout_save), (brasero_layout_load):
+	* src/brasero-layout.h:
+	* src/brasero-metadata.c (brasero_metadata_info_clear),
+	(brasero_metadata_completed), (brasero_metadata_thumbnail),
+	(brasero_metadata_success), (brasero_metadata_bus_messages),
+	(brasero_metadata_create_audio_pipeline),
+	(brasero_metadata_create_video_pipeline),
+	(brasero_metadata_new_decoded_pad_cb),
+	(brasero_metadata_create_pipeline), (brasero_metadata_set_new_uri),
+	(brasero_metadata_get_info_wait), (brasero_metadata_get_info_sync),
+	(brasero_metadata_get_info_async), (brasero_metadata_info_copy),
+	(brasero_metadata_destroy_pipeline):
+	* src/brasero-metadata.h:
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_new_video_prj_cb),
+	(brasero_project_manager_video), (brasero_project_manager_init):
+	* src/brasero-project-manager.h:
+	* src/brasero-project-type-chooser.c:
+	* src/brasero-project-type-chooser.h:
+	* src/brasero-project.c (brasero_project_init),
+	(brasero_project_switch), (brasero_project_set_audio),
+	(brasero_project_set_data), (brasero_project_set_video):
+	* src/brasero-project.h:
+	* src/brasero-video-disc.c
+	(brasero_video_disc_increase_activity_counter),
+	(brasero_video_disc_decrease_activity_counter),
+	(brasero_video_disc_io_operation_finished),
+	(brasero_video_disc_unreadable_dialog),
+	(brasero_video_disc_file_not_video_dialog),
+	(brasero_video_disc_new_row_cb), (brasero_video_disc_add_uri_real),
+	(brasero_video_disc_add_uri), (brasero_video_disc_delete_selected),
+	(brasero_video_disc_get_selected_uri),
+	(brasero_video_disc_selection_changed_cb),
+	(brasero_video_disc_add_ui), (brasero_video_disc_row_deleted_cb),
+	(brasero_video_disc_row_inserted_cb),
+	(brasero_video_disc_row_changed_cb), (brasero_video_disc_init),
+	(brasero_video_disc_reset_real), (brasero_video_disc_clear),
+	(brasero_video_disc_reset), (brasero_video_disc_finalize),
+	(brasero_video_disc_get_property),
+	(brasero_video_disc_set_property), (brasero_video_disc_get_status),
+	(brasero_video_disc_set_session_param),
+	(brasero_video_disc_set_session_contents),
+	(brasero_video_disc_iface_disc_init),
+	(brasero_video_disc_class_init), (brasero_video_disc_new):
+	* src/brasero-video-disc.h:
+	* src/burn-basics.h:
+	* src/burn-caps.c (brasero_caps_get_flags),
+	(brasero_burn_caps_plugin_can_image):
+	* src/burn-debug.c (brasero_debug_audio_format_to_string):
+	* src/burn-job.c (brasero_job_item_start),
+	(brasero_job_set_progress):
+	* src/burn-process.c (brasero_process_finished):
+	* src/burn-track.h:
+	* src/plugins/Makefile.am:
+	* src/plugins/cdrdao/burn-toc2cue.c (brasero_toc2cue_post):
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_add_track), (brasero_dvd_author_read_stdout),
+	(brasero_dvd_author_read_stderr),
+	(brasero_dvd_author_generate_xml_file),
+	(brasero_dvd_author_set_argv), (brasero_dvd_author_post),
+	(brasero_dvd_author_init), (brasero_dvd_author_finalize),
+	(brasero_dvd_author_class_init), (brasero_dvd_author_export_caps):
+	* src/plugins/dvdauthor/burn-dvdauthor.h:
+	* src/plugins/gstreamer/Makefile.am:
+	* src/plugins/gstreamer/burn-vob.c (brasero_vob_stop_pipeline),
+	(brasero_vob_stop), (brasero_vob_finished),
+	(brasero_vob_bus_messages), (brasero_vob_new_decoded_pad_cb),
+	(brasero_vob_link_audio), (brasero_vob_build_audio_pcm),
+	(brasero_vob_build_audio_mp2), (brasero_vob_build_audio_ac3),
+	(brasero_vob_build_audio_bins), (brasero_vob_build_video_bin),
+	(brasero_vob_build_pipeline), (brasero_vob_start),
+	(brasero_vob_clock_tick), (brasero_vob_init),
+	(brasero_vob_finalize), (brasero_vob_class_init),
+	(brasero_vob_export_caps):
+	* src/plugins/gstreamer/burn-vob.h:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/transcode/burn-normalize.c:
+	* src/plugins/transcode/burn-normalize.h:
+	* src/plugins/transcode/burn-transcode.c:
+	* src/plugins/transcode/burn-transcode.h:
+
+2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #493495 – Growisofs stops while burning Video-DVD
 
 	* src/brasero-data-project.c
@@ -70,7 +174,6 @@
 
 	* src/burn-drive.c (brasero_drive_get_display_name):
 	* src/burn-volume-obj.c (brasero_volume_get_display_label):
-
 
 2008-05-31  Luis Medinas  <lmedinas@svn.gnome.org>
 

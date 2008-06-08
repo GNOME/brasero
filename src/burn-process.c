@@ -285,11 +285,13 @@ brasero_process_finished (BraseroProcess *self)
 		g_free (uri);
 	}
 
-	brasero_job_add_track (BRASERO_JOB (self), track);
+	if (track) {
+		brasero_job_add_track (BRASERO_JOB (self), track);
 
-	/* It's good practice to unref the track afterwards as we don't need it
-	 * anymore. BraseroTaskCtx refs it. */
-	brasero_track_unref (track);
+		/* It's good practice to unref the track afterwards as we don't
+		 * need it anymore. BraseroTaskCtx refs it. */
+		brasero_track_unref (track);
+	}
 
 	klass->post (BRASERO_JOB (self));
 	return BRASERO_BURN_OK;

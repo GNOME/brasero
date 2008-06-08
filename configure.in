@@ -125,6 +125,16 @@ AC_SUBST(BRASERO_GIO_LIBS)
 BRASERO_GIO_CFLAGS="$BRASERO_GIO_CFLAGS $CFLAGS"
 BRASERO_GIO_LIBS="$BRASERO_GIO_LIBS $LDFLAGS"
 
+dnl ** used by brasero and one plugin
+PKG_CHECK_MODULES(BRASERO_LIBXML, 	\
+	libxml-2.0 >= $LIBXML2_REQUIRED)
+
+AC_SUBST(BRASERO_LIBXML_CFLAGS)
+AC_SUBST(BRASERO_LIBXML_LIBS)
+
+BRASERO_LIBXML_CFLAGS="$BRASERO_LIBXML_CFLAGS $CFLAGS"
+BRASERO_LIBXML_LIBS="$BRASERO_LIBXML_LIBS $LDFLAGS"
+
 dnl ** used by brasero and all modules
 PKG_CHECK_MODULES(BRASERO_BASE, 		\
 	gconf-2.0 >= $GCONF_REQUIRED		\
@@ -144,7 +154,6 @@ PKG_CHECK_MODULES(BRASERO,			\
 	gtk+-2.0 >= $GTK_REQUIRED		\
 	libgnome-2.0 >= $LIBGNOME_REQUIRED	\
 	libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED	\
-	libxml-2.0 >= $LIBXML2_REQUIRED	\
 	dbus-glib-1 >= $DBUS_REQUIRED)
 
 AC_SUBST(BRASERO_CFLAGS)
@@ -340,8 +349,9 @@ src/plugins/cdrkit/Makefile
 src/plugins/cdrtools/Makefile
 src/plugins/growisofs/Makefile
 src/plugins/libburnia/Makefile
-src/plugins/transcode/Makefile
+src/plugins/gstreamer/Makefile
 src/plugins/dvdcss/Makefile
+src/plugins/dvdauthor/Makefile
 src/plugins/checksum/Makefile
 src/plugins/local-track/Makefile
 po/Makefile.in

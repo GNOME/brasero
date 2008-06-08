@@ -158,6 +158,7 @@ const gchar description [] = "<ui>"
 #define BRASERO_KEY_DISPLAY_DIR		"/apps/brasero/display/"
 #define BRASERO_KEY_LAYOUT_AUDIO	BRASERO_KEY_DISPLAY_DIR "audio_pane"
 #define BRASERO_KEY_LAYOUT_DATA		BRASERO_KEY_DISPLAY_DIR "data_pane"
+#define BRASERO_KEY_LAYOUT_VIDEO	BRASERO_KEY_DISPLAY_DIR "video_pane"
 
 static void
 brasero_layout_pack_preview (BraseroLayout *layout)
@@ -560,6 +561,10 @@ brasero_layout_displayed_item_changed_cb (GConfClient *client,
 	&&  layout->priv->ctx_type == BRASERO_LAYOUT_DATA)
 		return;
 
+	if (!strcmp (entry->key, BRASERO_KEY_LAYOUT_VIDEO)
+	&&  layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO)
+		return;
+
 	value = gconf_entry_get_value (entry);
 	if (value->type != GCONF_VALUE_STRING)
 		return;
@@ -638,6 +643,25 @@ brasero_layout_save (BraseroLayout *layout,
 
 		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
 								      BRASERO_KEY_LAYOUT_DATA,
+								      brasero_layout_displayed_item_changed_cb,
+								      layout,
+								      NULL,
+								      &error);
+	}
+	else if (layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO) {
+		gconf_client_set_string (layout->priv->client,
+					 BRASERO_KEY_LAYOUT_VIDEO,
+					 id,
+					 &error);
+
+		if (error) {
+			g_warning ("Can't set GConf key %s. \n", error->message);
+			g_error_free (error);
+			error = NULL;
+		}
+
+		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
+								      BRASERO_KEY_LAYOUT_VIDEO,
 								      brasero_layout_displayed_item_changed_cb,
 								      layout,
 								      NULL,
@@ -800,6 +824,10 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 		layout_id = gconf_client_get_string (layout->priv->client,
 						     BRASERO_KEY_LAYOUT_DATA,
 						     &error);
+	else if (type == BRASERO_LAYOUT_VIDEO)
+		layout_id = gconf_client_get_string (layout->priv->client,
+						     BRASERO_KEY_LAYOUT_VIDEO,
+						     &error);
 
 	if (error) {
 		g_warning ("Can't access GConf key %s. This is probably harmless (first launch of brasero).\n", error->message);
@@ -818,6 +846,13 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	else if (type == BRASERO_LAYOUT_DATA)
 		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
 								      BRASERO_KEY_LAYOUT_DATA,
+								      brasero_layout_displayed_item_changed_cb,
+								      layout,
+								      NULL,
+								      &error);
+	else if (type == BRASERO_LAYOUT_VIDEO)
+		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
+								      BRASERO_KEY_LAYOUT_VIDEO,
 								      brasero_layout_displayed_item_changed_cb,
 								      layout,
 								      NULL,

@@ -265,10 +265,22 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 		strcat (buffer, "RAW ");
 
 	if (format & BRASERO_AUDIO_FORMAT_UNDEFINED)
-		strcat (buffer, "UNDEFINED ");
+		strcat (buffer, "AUDIO UNDEFINED ");
 
 	if (format & BRASERO_AUDIO_FORMAT_4_CHANNEL)
 		strcat (buffer, "4 CHANNELS ");
+
+	if (format & BRASERO_AUDIO_FORMAT_MP2)
+		strcat (buffer, "MP2 ");
+
+	if (format & BRASERO_AUDIO_FORMAT_AC3)
+		strcat (buffer, "AC3 ");
+
+	if (format & BRASERO_VIDEO_FORMAT_UNDEFINED)
+		strcat (buffer, "VIDEO UNDEFINED ");
+
+	if (format & BRASERO_VIDEO_FORMAT_MPEG2)
+		strcat (buffer, "MPEG2 ");
 }
 
 void

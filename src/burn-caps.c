@@ -2089,7 +2089,6 @@ brasero_caps_get_flags (BraseroCaps *caps,
 						   flags,
 						   supported,
 						   compulsory);
-
 		if (io_flags == BRASERO_PLUGIN_IO_NONE)
 			continue;
 
@@ -3365,7 +3364,8 @@ brasero_burn_caps_plugin_can_image (BraseroBurnCaps *self,
 
 		caps = iter->data;
 		if (caps->type.type != BRASERO_TRACK_TYPE_IMAGE
-		&&  caps->type.type != BRASERO_TRACK_TYPE_AUDIO)
+		&&  caps->type.type != BRASERO_TRACK_TYPE_AUDIO
+		&&  caps->type.type != BRASERO_TRACK_TYPE_DATA)
 			continue;
 
 		destination = caps->type.type;

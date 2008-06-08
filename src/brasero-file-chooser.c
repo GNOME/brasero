@@ -68,6 +68,7 @@ struct BraseroFileChooserPrivate {
 
 	GtkFileFilter *filter_any;
 	GtkFileFilter *filter_audio;
+	GtkFileFilter *filter_video;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -234,6 +235,8 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	gtk_file_filter_add_mime_type (filter, "application/x-flash-video");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
 
+	obj->priv->filter_video = filter;
+
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Image files only"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
@@ -373,6 +376,9 @@ brasero_file_chooser_set_context (BraseroLayoutObject *object,
 	if (type == BRASERO_LAYOUT_AUDIO)
 		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
 					     self->priv->filter_audio);
+	else if (type == BRASERO_LAYOUT_VIDEO)
+		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
+					     self->priv->filter_video);
 	else
 		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (self->priv->chooser),
 					     self->priv->filter_any);

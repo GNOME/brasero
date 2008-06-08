@@ -263,7 +263,7 @@ brasero_toc2cue_post (BraseroJob *job)
 		priv->output = NULL;
 	}
 
-	return BRASERO_BURN_OK;
+	return brasero_job_finished_session (job);
 }
 
 static void

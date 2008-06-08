@@ -1,4 +1,4 @@
-SUBDIRS = cdrdao transcode dvdcss growisofs checksum local-track
+SUBDIRS = cdrdao gstreamer dvdcss growisofs checksum local-track dvdauthor
 
 if BUILD_LIBBURNIA
 SUBDIRS += libburnia

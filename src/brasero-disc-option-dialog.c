@@ -195,9 +195,14 @@ brasero_disc_option_dialog_get_default_label (BraseroDiscOptionDialog *dialog)
 		}
 	}
 	else if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
-		/* NOTE to translators: the final string must not be over
-		 * 32 _bytes_ */
-		title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
+		if (source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_MPEG2))
+			/* NOTE to translators: the final string must not be over
+			 * 32 _bytes_ */
+			title_str = g_strdup_printf (_("Video disc (%s)"), buffer);
+		else
+			/* NOTE to translators: the final string must not be over
+			 * 32 _bytes_ */
+			title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
 
 		if (strlen (title_str) > 32) {
 			g_free (title_str);
@@ -753,7 +758,7 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
 			  dialog);
 	gtk_widget_set_tooltip_text (priv->multi_toggle,
-			      _("Allow create what is called an enhanced CD or CD+"));
+				     _("Allow create what is called an enhanced CD or CD+"));
 
 	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
 						 priv->multi_toggle,
@@ -761,6 +766,58 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
 	brasero_disc_option_dialog_update_multi (dialog);
+	gtk_widget_show_all (widget);
+}
+
+static void
+brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
+{
+	GtkWidget *button1;
+	GtkWidget *button2;
+	GtkWidget *button3;
+	GtkWidget *widget;
+	GtkWidget *options;
+	BraseroDiscOptionDialogPrivate *priv;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	widget = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			  widget,
+			  TRUE,
+			  FALSE,
+			  6);
+
+	button1 = gtk_radio_button_new_with_mnemonic (NULL, _("_NTSC"));
+	gtk_widget_set_tooltip_text (button1, _("Format used mostly on the North American Continent"));
+	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("_PAL/SECAM"));
+	gtk_widget_set_tooltip_text (button2, _("Format used mostly in Europe"));
+	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("Native _format"));
+	options = brasero_utils_pack_properties (_("<b>Video format</b>"),
+						 button1,
+						 button2,
+						 button3,
+						 NULL);
+	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
+
+	button1 = gtk_radio_button_new_with_mnemonic (NULL, _("_4:3"));
+	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("_16:9"));
+	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("Native aspect _ratio"));
+	options = brasero_utils_pack_properties (_("<b>Aspect ratio</b>"),
+						 button1,
+						 button2,
+						 button3,
+						 NULL);
+	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
+
+	button1 = gtk_check_button_new_with_mnemonic (_("_AC3"));
+	button2 = gtk_check_button_new_with_mnemonic (_("_MP2"));
+	options = brasero_utils_pack_properties (_("<b>Audio formats</b>"),
+						 button1,
+						 button2,
+						 NULL);
+	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
+
 	gtk_widget_show_all (widget);
 }
 
@@ -808,9 +865,17 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 		brasero_disc_option_dialog_add_data_options (dialog);
 	}
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-		brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
-							BRASERO_MEDIA_TYPE_WRITABLE);
-		brasero_disc_option_dialog_add_audio_options (dialog);
+		if (type.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_MPEG2)) {
+			brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+								BRASERO_MEDIA_TYPE_WRITABLE|
+								BRASERO_MEDIA_TYPE_FILE);
+			brasero_disc_option_dialog_add_video_options (dialog);
+		}
+		else {
+			brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
+								BRASERO_MEDIA_TYPE_WRITABLE);
+			brasero_disc_option_dialog_add_audio_options (dialog);
+		}
 	}
 }
 
