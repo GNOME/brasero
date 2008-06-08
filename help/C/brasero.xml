@@ -451,13 +451,13 @@
 	  <variablelist>
 	    <varlistentry>
 	      <term>
-		Section <guilabel>Select a drive to write to</guilabel>:
+		Section <guilabel>Select a disc to write to</guilabel>:
 	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
 		    <para>
-		      Click <guibutton>Properties</guibutton> to open
+		      Click on <guibutton>Properties</guibutton> to open
 		      the properties dialog for the burning device. See <xref
 			linkend="brasero-burning-device-properties"/>
 		      for more information.
@@ -500,7 +500,8 @@
 			  <para>
 			    Select this option to create a
 			    <emphasis>multisession</emphasis> disc, so
-			    that it will be possible to add files to the disc at a later 
+			    that it will be possible to add files to
+			    the disc at a later 
 			    date (without erasing it, if it is rewritable).
 			  </para>
 			</listitem>
@@ -582,13 +583,14 @@
 	<para>
 	  <variablelist>
 	    <varlistentry>
-	      <term>Section <guilabel>Select a drive to write
-	      to</guilabel>:</term>
+	      <term>
+		Section <guilabel>Select a disc to write to</guilabel>:
+	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
 		    <para>
-		      Click <guibutton>Properties</guibutton> to open
+		      Click on <guibutton>Properties</guibutton> to open
 		      the properties dialog for the burning device. See <xref
 			linkend="brasero-burning-device-properties"/>
 		      for more information.
@@ -713,29 +715,31 @@
 	<para>
 	  <variablelist>
 	    <varlistentry>
-	      <term>Section <guilabel>Select source drive to
-	      copy</guilabel>:</term>
+	      <term>
+		Section <guilabel>Select disc to copy</guilabel>:
+	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
 		    <para>
-		      From the drop-down list, select the drive that
-		      holds the disc you want to copy. Information about 
-		      the disc in that drive will be shown below.
+		      From the drop-down list, select the disc that
+		      you want to copy. Informations about the disc
+		      will be shown below.
 		    </para>
 		  </listitem>
 		</itemizedlist>
 	      </listitem>
 	    </varlistentry>
 	    <varlistentry>
-	      <term>Section <guilabel>Select a drive to write
-	      to</guilabel>:</term>
+	      <term>
+		Section <guilabel>Select a disc to write to</guilabel>:
+	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
 		    <para>
-		      From the drop-down list, select the drive to
-		      write the disc copy to.
+		      From the drop-down list, select the disc to
+		      write to.
 		    </para>
 		    <para>
 		      From this drop-down list, select <guilabel>File
@@ -745,7 +749,7 @@
 		  </listitem>
 		  <listitem>
 		    <para>
-		      Click <guibutton>Properties</guibutton> to open
+		      Click on <guibutton>Properties</guibutton> to open
 		      the properties dialog for the burning device. See <xref
 			linkend="brasero-burning-device-properties"/>
 		      for more information.
@@ -766,10 +770,10 @@
 	<para>
 	  <note>
 	    <para>
-	      If you have more that one drive on you system, you can
+	      If you have more that one drive on your system, you can
 	      use one drive as the source drive and the other as the
 	      destination drive. If you do not, you will be prompted
-	      to remove the CD or DVD you are copying and insert your
+	      to remove the CD or DVD you are copying and insert a
 	      blank media.
 	    </para>
 	  </note>
@@ -852,8 +856,9 @@
 	<para>
 	  <variablelist>
 	    <varlistentry>
-	      <term>Section <guilabel>Select a drive to write
-	      to</guilabel>:</term>
+	      <term>
+		Section <guilabel>Select a disc to write to</guilabel>:
+	      </term>
 	      <listitem>
 		<itemizedlist>
 		  <listitem>
@@ -971,14 +976,16 @@
 		      of failure)</guilabel></term>
 		      <listitem>
 			<para>
-			  Select this option to prevent the buffer
-			  underrun effect (or buffer underflow). This is when
-			  the computer is not fast enough to deliver data to 
+			  Select this option to prevent the <emphasis>buffer
+			    underrun</emphasis> effect (or
+			    <emphasis>buffer underflow</emphasis>). This is when
+			  the computer is not fast enough delivering data to 
 			  the burning device at the selected burning speed.
 			</para>
 			<warning>
 			  <para>
-			    If a buffer underrun takes place, the
+			    If a <emphasis>buffer underrun</emphasis>
+			    takes place, the
 			    burned disc could be unreadable.
 			  </para>
 			</warning>
@@ -1077,7 +1084,7 @@
 		    <variablelist>
 		      <varlistentry>
 			<term>
-			  <guilabel>Increase the compatibility with
+			  <guilabel>Increase compatibility with
 			    Windows systems</guilabel>
 			</term>
 			<listitem>
@@ -1201,8 +1208,7 @@
 	<listitem>
 	  <para>
 	    From the drop-down list <guilabel>Select a
-	    recorder</guilabel>, select the drive that holds the disc 
-	    you want to erase.
+	    disc</guilabel>, select the disc you want to erase.
 	  </para>
 	</listitem>
 	<listitem>
@@ -1252,7 +1258,7 @@
       The integrity check is done using the <quote>MD5 digest</quote> 
       algorithm, which creates a <quote>fingerprint</quote> of the 
       data on the media. Each time you burn a CD or DVD, and the 
-      <emphasis role="strong">md5sum</emphasis> plugin is 
+      <emphasis role="strong">Image checksum</emphasis> plugin is 
       enabled (see <xref linkend="brasero-plugins" /> for more 
       information), &app; adds a MD5 file to the disc in order
       to perform integrity checks at a later date.
@@ -1330,7 +1336,7 @@
     </para>
     <para>
       The cover editor lets you select the font, the alignment and the
-      coloros for all the texts and the background properties of front
+      colors for all the texts and the background properties of front
       and the back cover.
     </para>
     <para>
@@ -1348,8 +1354,8 @@
       <itemizedlist>
 	<listitem>
 	  <para>
-	    From the <guilabel>Image path</guilabel> drop-down list
-      select the image from you hard disk.
+	    From <guilabel>Image path</guilabel> select the image from
+	    you hard disk.
 	  </para>
 	</listitem>
 	<listitem>
