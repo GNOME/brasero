@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-03 02:50+0000\n"
-"PO-Revision-Date: 2008-06-07 15:22+0200\n"
+"POT-Creation-Date: 2008-06-08 16:08+0000\n"
+"PO-Revision-Date: 2008-06-08 20:41+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2159,8 +2159,8 @@ msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option."
 msgstr ""
-"El tamaño del proyecto es demasiado grande para el disco, aún con la "
-"opción overburn activada."
+"El tamaño del proyecto es demasiado grande para el disco, aún con la opción "
+"overburn activada."
 
 #: ../src/brasero-project.c:547
 msgid "Would you like to activate overburn?"
@@ -2231,9 +2231,9 @@ msgid ""
 "your mind, you can change your choice later in the Removable Drives and "
 "Media Preferences whether or not you chose brasero."
 msgstr ""
-"Este es un diálogo de primera ejecución que no se mostrará de nuevo. Si cambia "
-"de idea, puede cambiar su elección posteriormente en las Preferencias de unidades "
-"y soportes extraíbles."
+"Este es un diálogo de primera ejecución que no se mostrará de nuevo. Si "
+"cambia de idea, puede cambiar su elección posteriormente en las Preferencias "
+"de unidades y soportes extraíbles."
 
 #. NOTE for translators the %s is the old application name
 #: ../src/brasero-project.c:928
@@ -2467,7 +2467,7 @@ msgstr "Grabar una imagen"
 msgid "_Open..."
 msgstr "_Abrir…"
 
-#: ../src/brasero-project-manager.c:124 ../src/brasero-project-manager.c:804
+#: ../src/brasero-project-manager.c:124 ../src/brasero-project-manager.c:805
 msgid "Open a project"
 msgstr "Abrir un proyecto"
 
@@ -2531,35 +2531,35 @@ msgstr "Brasero: Copiar un disco"
 msgid "The project '%s' does not exist."
 msgstr "El proyecto «%s» no existe."
 
-#: ../src/brasero-project-manager.c:904
+#: ../src/brasero-project-manager.c:905
 msgid "New"
 msgstr "Nuevo"
 
-#: ../src/brasero-project-manager.c:908
+#: ../src/brasero-project-manager.c:909
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/brasero-project-manager.c:950
+#: ../src/brasero-project-manager.c:951
 msgid "Browse the file system"
 msgstr "Examinar el sistema de archivos"
 
-#: ../src/brasero-project-manager.c:951
+#: ../src/brasero-project-manager.c:952
 msgid "Display file browser"
 msgstr "Mostrar examinador de archivos"
 
-#: ../src/brasero-project-manager.c:974
+#: ../src/brasero-project-manager.c:975
 msgid "Search files using keywords"
 msgstr "Buscar archivos usando palabras clave"
 
-#: ../src/brasero-project-manager.c:975
+#: ../src/brasero-project-manager.c:976
 msgid "Display search"
 msgstr "Mostrar búsqueda"
 
-#: ../src/brasero-project-manager.c:995
+#: ../src/brasero-project-manager.c:996
 msgid "Display playlists and their contents"
 msgstr "Mostrar listas de reproducción y su contenido"
 
-#: ../src/brasero-project-manager.c:996
+#: ../src/brasero-project-manager.c:997
 msgid "Display playlists"
 msgstr "Mostrar listas de reproducción"
 
@@ -3125,15 +3125,20 @@ msgstr "Disco Blu-ray escribible"
 msgid "Rewritable Blu-ray disc"
 msgstr "Disco Blu-ray reescribible"
 
-#: ../src/burn-mkisofs-base.c:126 ../src/burn-mkisofs-base.c:351
+#: ../src/burn-mkisofs-base.c:129 ../src/burn-mkisofs-base.c:402
 #, c-format
 msgid "the file is not stored locally"
 msgstr "El archivo no está almacenado localmente"
 
-#: ../src/burn-mkisofs-base.c:268
+#: ../src/burn-mkisofs-base.c:271
 #, c-format
 msgid "null graft point"
 msgstr "Punto graft nulo"
+
+#: ../src/burn-mkisofs-base.c:529
+#, c-format
+msgid "VIDEO_TS directory is missing or invalid"
+msgstr "Falta el directorio VIDEO_TS o no es válido"
 
 #: ../src/burn-process.c:100
 #, c-format
@@ -3153,7 +3158,9 @@ msgstr "imposible obtener la información"
 #: ../src/burn-process.c:138
 #, c-format
 msgid "%s is a symlink pointing to another program. Use the target program instead."
-msgstr "%s es un enlace simbólico apuntando a otro programa. Use el programa de objetivos en su lugar."
+msgstr ""
+"%s es un enlace simbólico apuntando a otro programa. Use el programa de "
+"objetivos en su lugar."
 
 #: ../src/burn-process.c:224
 #, c-format
@@ -3423,8 +3430,8 @@ msgstr "No queda espacio en el dispositivo"
 msgid "The file is too large for a CD"
 msgstr "El archivo es demasiado grande para un CD"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:330
-#: ../src/plugins/cdrtools/burn-mkisofs.c:322
+#: ../src/plugins/cdrkit/burn-genisoimage.c:345
+#: ../src/plugins/cdrtools/burn-mkisofs.c:337
 #, c-format
 msgid ""
 "failed to get the start point of the track. Make sure the media allow to add "
@@ -3433,11 +3440,11 @@ msgstr ""
 "fallo al obtener el punto de inicio de la pista. Asegúrese que el medio "
 "permite añadir archivos (no está cerrado)"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:476
+#: ../src/plugins/cdrkit/burn-genisoimage.c:504
 msgid "use genisoimage to create images from files"
 msgstr "usar genisoimage para crear imágenes de los archivos"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:484
+#: ../src/plugins/cdrkit/burn-genisoimage.c:512
 msgid "genisoimage could not be found in the path"
 msgstr "no se puede encontrar genisoimage en la ruta"
 
@@ -3642,11 +3649,11 @@ msgstr ""
 msgid "this version of mkisofs doesn't seem to be supported"
 msgstr "esta versión de mkisofs no está soportada"
 
-#: ../src/plugins/cdrtools/burn-mkisofs.c:474
+#: ../src/plugins/cdrtools/burn-mkisofs.c:502
 msgid "use mkisofs to create images from files"
 msgstr "usar mkisofs para crear imágenes de los archivos"
 
-#: ../src/plugins/cdrtools/burn-mkisofs.c:482
+#: ../src/plugins/cdrtools/burn-mkisofs.c:510
 msgid "mkisofs could not be found in the path"
 msgstr "no se pudo encontrar mkisofs en la ruta"
 
@@ -3749,21 +3756,21 @@ msgstr "No se puede acceder a la grabadora"
 msgid "Not enough space available on the disc"
 msgstr "No hay suficiente espacio disponible en el disco"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:443
+#: ../src/plugins/growisofs/burn-growisofs.c:462
 #, c-format
 msgid "the file /proc/self/fd/0 is missing"
 msgstr "No se encuentra el archivo /proc/self/fd/0"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:462
+#: ../src/plugins/growisofs/burn-growisofs.c:481
 #, c-format
 msgid "the image is not stored locally"
 msgstr "La imagen no está almacenada localmente"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:644
+#: ../src/plugins/growisofs/burn-growisofs.c:663
 msgid "growisofs burns DVDs"
 msgstr "growisofs graba DVD"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:652
+#: ../src/plugins/growisofs/burn-growisofs.c:671
 msgid "growisofs could not be found in the path"
 msgstr "no se pudo encontrar growisofs en la ruta"
 
@@ -3952,7 +3959,9 @@ msgstr "Normalizando pistas"
 
 #: ../src/plugins/transcode/burn-normalize.c:572
 msgid "Normalize allows to set consistent sound levels between tracks"
-msgstr "Normalizar permite establecer unos niveles de sonido consistentes entre las pistas"
+msgstr ""
+"Normalizar permite establecer unos niveles de sonido consistentes entre las "
+"pistas"
 
 #: ../src/plugins/transcode/burn-transcode.c:401
 #, c-format
@@ -4059,7 +4068,9 @@ msgstr "error de tamaño"
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
-msgstr "Si parte la pista, el tamaño de la pista nueva será inferior a 6 segundos y se rellenará."
+msgstr ""
+"Si parte la pista, el tamaño de la pista nueva será inferior a 6 segundos y "
+"se rellenará."
 
 #: ../src/brasero-split-dialog.c:182 ../src/brasero-split-dialog.c:690
 msgid "_Don't split"
