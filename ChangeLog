@@ -1,3 +1,13 @@
+2008-06-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #532495 – crash when removing/moving a file that has been added to brasero
+
+	* src/brasero-data-project.c (brasero_data_project_file_removed):
+	* src/brasero-file-monitor.c (brasero_file_monitor_moved_to_event),
+	(brasero_file_monitor_move_timeout_cb),
+	(brasero_file_monitor_moved_from_event),
+	(brasero_file_monitor_directory_event):
+
 2008-06-11  Luis Medinas  <lmedinas@svn.gnome.org>
 
 	* src/brasero-jacket-view.c

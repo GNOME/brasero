@@ -3310,7 +3310,7 @@ brasero_data_project_file_removed (BraseroFileMonitor *monitor,
 	g_free (uri);
 
 	/* check if we can remove it (no more nodes) */
-	if (uri_node->nodes)
+	if (!uri_node || uri_node->nodes)
 		return;
 
 	g_hash_table_remove (priv->grafts, uri_node->uri);
