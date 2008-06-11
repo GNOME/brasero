@@ -1095,6 +1095,22 @@ brasero_burn_session_tag_value_free (gpointer user_data)
 }
 
 BraseroBurnResult
+brasero_burn_session_tag_remove (BraseroBurnSession *self,
+				 const gchar *tag)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+	if (!priv->tags)
+		return BRASERO_BURN_ERR;
+
+	g_hash_table_remove (priv->tags, tag);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
 brasero_burn_session_tag_add (BraseroBurnSession *self,
 			      const gchar *tag,
 			      GValue *value)

@@ -262,7 +262,7 @@ brasero_SOURCES = \
 	burn-volume-source.c         \
 	burn-volume-source.h         \
 	brasero-video-disc.c         \
-	brasero-video-disc.h
+	brasero-video-disc.h         
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

@@ -104,6 +104,11 @@ BraseroBurnResult
 brasero_burn_session_tag_add (BraseroBurnSession *session,
 			      const gchar *tag,
 			      GValue *value);
+
+BraseroBurnResult
+brasero_burn_session_tag_remove (BraseroBurnSession *session,
+				 const gchar *tag);
+
 /**
  * 
  */

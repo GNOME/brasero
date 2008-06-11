@@ -770,12 +770,172 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 }
 
 static void
+brasero_disc_option_dialog_AC3 (GtkToggleButton *button,
+				BraseroDiscOptionDialog *dialog)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+	BraseroAudioFormat format;
+	GValue *value = NULL;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	brasero_burn_session_tag_lookup (priv->session,
+					 BRASERO_AUDIO_VIDEO_OUTPUT_FORMAT,
+					 &value);
+
+	if (value)
+		format = g_value_get_int (value);
+	else
+		format = BRASERO_AUDIO_FORMAT_NONE;
+
+	if (gtk_toggle_button_get_active (button))
+		format |= BRASERO_AUDIO_FORMAT_AC3;
+	else
+		format &= ~BRASERO_AUDIO_FORMAT_AC3;
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, format);
+	brasero_burn_session_tag_add (priv->session,
+				      BRASERO_AUDIO_VIDEO_OUTPUT_FORMAT,
+				      value);
+}
+
+static void
+brasero_disc_option_dialog_MP2 (GtkToggleButton *button,
+				BraseroDiscOptionDialog *dialog)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+	BraseroAudioFormat format;
+	GValue *value = NULL;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	brasero_burn_session_tag_lookup (priv->session,
+					 BRASERO_AUDIO_VIDEO_OUTPUT_FORMAT,
+					 &value);
+
+	if (value)
+		format = g_value_get_int (value);
+	else
+		format = BRASERO_AUDIO_FORMAT_NONE;
+
+	if (gtk_toggle_button_get_active (button))
+		format |= BRASERO_AUDIO_FORMAT_MP2;
+	else
+		format &= ~BRASERO_AUDIO_FORMAT_MP2;
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, format);
+	brasero_burn_session_tag_add (priv->session,
+				      BRASERO_AUDIO_VIDEO_OUTPUT_FORMAT,
+				      value);
+}
+
+static void
+brasero_disc_option_dialog_set_tag (BraseroDiscOptionDialog *dialog,
+				    const gchar *tag,
+				    gint contents)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+	GValue *value;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, contents);
+	brasero_burn_session_tag_add (priv->session,
+				      tag,
+				      value);
+}
+
+static void
+brasero_disc_option_dialog_NTSC (GtkToggleButton *button,
+				 BraseroDiscOptionDialog *dialog)
+{
+	if (!gtk_toggle_button_get_active (button))
+		return;
+
+	brasero_disc_option_dialog_set_tag (dialog,
+					    BRASERO_VIDEO_OUTPUT_FRAMERATE,
+					    BRASERO_VIDEO_FRAMERATE_NTSC);
+}
+
+static void
+brasero_disc_option_dialog_PAL_SECAM (GtkToggleButton *button,
+				      BraseroDiscOptionDialog *dialog)
+{
+	if (!gtk_toggle_button_get_active (button))
+		return;
+
+	brasero_disc_option_dialog_set_tag (dialog,
+					    BRASERO_VIDEO_OUTPUT_FRAMERATE,
+					    BRASERO_VIDEO_FRAMERATE_PAL_SECAM);
+}
+
+static void
+brasero_disc_option_dialog_native_framerate (GtkToggleButton *button,
+					     BraseroDiscOptionDialog *dialog)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+
+	if (!gtk_toggle_button_get_active (button))
+		return;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+	brasero_burn_session_tag_remove (priv->session,
+					 BRASERO_VIDEO_OUTPUT_FRAMERATE);
+}
+
+static void
+brasero_disc_option_dialog_16_9 (GtkToggleButton *button,
+				 BraseroDiscOptionDialog *dialog)
+{
+	if (!gtk_toggle_button_get_active (button))
+		return;
+
+	brasero_disc_option_dialog_set_tag (dialog,
+					    BRASERO_VIDEO_OUTPUT_ASPECT,
+					    BRASERO_VIDEO_ASPECT_16_9);
+}
+
+static void
+brasero_disc_option_dialog_4_3 (GtkToggleButton *button,
+				BraseroDiscOptionDialog *dialog)
+{
+	if (!gtk_toggle_button_get_active (button))
+		return;
+
+	brasero_disc_option_dialog_set_tag (dialog,
+					    BRASERO_VIDEO_OUTPUT_ASPECT,
+					    BRASERO_VIDEO_ASPECT_4_3);
+}
+
+static void
+brasero_disc_option_dialog_native_aspect (GtkToggleButton *button,
+					     BraseroDiscOptionDialog *dialog)
+{
+	BraseroDiscOptionDialogPrivate *priv;
+
+	if (!gtk_toggle_button_get_active (button))
+		return;
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+	brasero_burn_session_tag_remove (priv->session,
+					 BRASERO_VIDEO_OUTPUT_ASPECT);
+}
+
+static void
 brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 {
+	GtkWidget *label;
+	GtkWidget *table;
+	GtkWidget *widget;
 	GtkWidget *button1;
 	GtkWidget *button2;
 	GtkWidget *button3;
-	GtkWidget *widget;
 	GtkWidget *options;
 	BraseroDiscOptionDialogPrivate *priv;
 
@@ -788,34 +948,138 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 			  FALSE,
 			  6);
 
-	button1 = gtk_radio_button_new_with_mnemonic (NULL, _("_NTSC"));
+
+	table = gtk_table_new (2, 4, FALSE);
+	gtk_widget_show (table);
+
+	label = gtk_label_new (_("Video format:"));
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (table),
+			  label,
+			  0, 1,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	button1 = gtk_radio_button_new_with_mnemonic (NULL,
+						      _("_NTSC"));
 	gtk_widget_set_tooltip_text (button1, _("Format used mostly on the North American Continent"));
-	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("_PAL/SECAM"));
+	g_signal_connect (button1,
+			  "toggled",
+			  G_CALLBACK (brasero_disc_option_dialog_NTSC),
+			  dialog);
+	gtk_table_attach (GTK_TABLE (table),
+			  button1,
+			  3, 4,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1),
+								  _("_PAL/SECAM"));
 	gtk_widget_set_tooltip_text (button2, _("Format used mostly in Europe"));
-	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("Native _format"));
-	options = brasero_utils_pack_properties (_("<b>Video format</b>"),
-						 button1,
-						 button2,
-						 button3,
+	g_signal_connect (button2,
+			  "toggled",
+			  G_CALLBACK (brasero_disc_option_dialog_PAL_SECAM),
+			  dialog);
+	gtk_table_attach (GTK_TABLE (table),
+			  button2,
+			  2, 3,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1),
+								  _("Native _format"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button3), TRUE);
+	g_signal_connect (button3,
+			  "toggled",
+			  G_CALLBACK (brasero_disc_option_dialog_native_framerate),
+			  dialog);
+	gtk_table_attach (GTK_TABLE (table),
+			  button3,
+			  1, 2,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	label = gtk_label_new (_("Aspect ratio:"));
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (table),
+			  label,
+			  0, 1,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	button1 = gtk_radio_button_new_with_mnemonic (NULL,
+						      _("_4:3"));
+	g_signal_connect (button1,
+			  "toggled",
+			  G_CALLBACK (brasero_disc_option_dialog_4_3),
+			  dialog);
+	gtk_table_attach (GTK_TABLE (table),
+			  button1,
+			  3, 4,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1),
+								  _("_16:9"));
+	g_signal_connect (button2,
+			  "toggled",
+			  G_CALLBACK (brasero_disc_option_dialog_16_9),
+			  dialog);
+	gtk_table_attach (GTK_TABLE (table),
+			  button2,
+			  2, 3,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1),
+								  _("Native aspect _ratio"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button3), TRUE);
+	g_signal_connect (button3,
+			  "toggled",
+			  G_CALLBACK (brasero_disc_option_dialog_native_aspect),
+			  dialog);
+	gtk_table_attach (GTK_TABLE (table),
+			  button3,
+			  1, 2,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
+	options = brasero_utils_pack_properties (_("<b>Video Options</b>"),
+						 table,
 						 NULL);
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
-	button1 = gtk_radio_button_new_with_mnemonic (NULL, _("_4:3"));
-	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("_16:9"));
-	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1), _("Native aspect _ratio"));
-	options = brasero_utils_pack_properties (_("<b>Aspect ratio</b>"),
+	button1 = gtk_check_button_new_with_mnemonic (_("Add _AC3 audio stream"));
+	button2 = gtk_check_button_new_with_mnemonic (_("Add _MP2 audio stream"));
+	options = brasero_utils_pack_properties (_("<b>Audio Options</b>"),
 						 button1,
 						 button2,
-						 button3,
 						 NULL);
-	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
+	g_signal_connect (button1,
+			  "clicked",
+			  G_CALLBACK (brasero_disc_option_dialog_AC3),
+			  dialog);
+	g_signal_connect (button2,
+			  "clicked",
+			  G_CALLBACK (brasero_disc_option_dialog_MP2),
+			  dialog);
 
-	button1 = gtk_check_button_new_with_mnemonic (_("_AC3"));
-	button2 = gtk_check_button_new_with_mnemonic (_("_MP2"));
-	options = brasero_utils_pack_properties (_("<b>Audio formats</b>"),
-						 button1,
-						 button2,
-						 NULL);
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (widget);

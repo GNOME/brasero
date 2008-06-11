@@ -486,13 +486,17 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 			     GstElement *muxer,
 			     GError **error)
 {
+	GValue *value;
 	GstPad *srcpad;
 	GstPad *sinkpad;
 	GstElement *queue;
+	GstElement *filter;
 	GstElement *encode;
 	GstPadLinkReturn res;
+	GstElement *framerate;
 	GstElement *colorspace;
 	BraseroVobPrivate *priv;
+	BraseroBurnResult result;
 
 	priv = BRASERO_VOB_PRIVATE (vob);
 
@@ -511,6 +515,60 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		      "max-size-time", (gint64) 0,
 		      NULL);
 
+	framerate = gst_element_factory_make ("videorate", NULL);
+	if (framerate == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("framerate can't be created"));
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), framerate);
+	g_object_set (framerate,
+		      "silent", TRUE,
+		      NULL);
+
+	/* create a filter */
+	filter = gst_element_factory_make ("capsfilter", NULL);
+	if (filter == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("filter can't be created"));
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), filter);
+
+	value = NULL;
+	result = brasero_job_tag_lookup (BRASERO_JOB (vob),
+					 BRASERO_VIDEO_OUTPUT_FRAMERATE,
+					 &value);
+
+/*	if (result == BRASERO_BURN_OK && value) {
+		gint rate;
+		GstCaps *filtercaps;
+		GValue fraction = { 0 };
+
+		rate = g_value_get_int (value);
+		g_value_init (&fraction, GST_TYPE_FRACTION);
+
+		if (rate == BRASERO_VIDEO_FRAMERATE_NTSC)
+			gst_value_set_fraction (&fraction, 30, 1.001);
+		else if (rate == BRASERO_VIDEO_FRAMERATE_PAL_SECAM)
+			gst_value_set_fraction (&fraction, 25, 1);
+
+		filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+								   "framerate", G_TYPE_VALUE, &fraction,
+								   NULL),
+						gst_structure_new ("video/x-raw-rgb",
+								   "framerate", G_TYPE_VALUE, &fraction,
+								   NULL),
+						NULL);
+		g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
+		gst_caps_unref (filtercaps);
+	}
+*/
+
 	colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
 	if (colorspace == NULL) {
 		g_set_error (error,
@@ -521,17 +579,37 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), colorspace);
 
-	encode = gst_element_factory_make ("ffenc_mpeg2video", NULL);
+	encode = gst_element_factory_make ("mpeg2enc", NULL);
 	if (encode == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("ffenc_mpeg2video can't be created"));
+			     _("mpeg2enc can't be created"));
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
 
-	gst_element_link_many (queue, colorspace, encode, NULL);
+	value = NULL;
+	result = brasero_job_tag_lookup (BRASERO_JOB (vob),
+					 BRASERO_VIDEO_OUTPUT_ASPECT,
+					 &value);
+	if (result == BRASERO_BURN_OK && value) {
+		gint aspect;
+
+		aspect = g_value_get_int (value);
+		if (aspect == BRASERO_VIDEO_ASPECT_4_3) {
+			g_object_set (encode,
+				      "aspect", 2,
+				      NULL);
+		}
+		else if (aspect == BRASERO_VIDEO_ASPECT_16_9) {
+			g_object_set (encode,
+				      "aspect", 3,
+				      NULL);	
+		}
+	}
+
+	gst_element_link_many (queue, framerate, colorspace, filter, encode, NULL);
 
 	srcpad = gst_element_get_static_pad (encode, "src");
 	sinkpad = gst_element_get_request_pad (muxer, "video_%d");

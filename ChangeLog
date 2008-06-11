@@ -1,3 +1,23 @@
+2008-06-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added support for options (reorganized visually) MP2, AC3, aspect ratio
+	There's still a problem with framerate (video format)
+
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_AC3), (brasero_disc_option_dialog_MP2),
+	(brasero_disc_option_dialog_set_tag),
+	(brasero_disc_option_dialog_NTSC),
+	(brasero_disc_option_dialog_PAL_SECAM),
+	(brasero_disc_option_dialog_native_framerate),
+	(brasero_disc_option_dialog_16_9),
+	(brasero_disc_option_dialog_4_3),
+	(brasero_disc_option_dialog_native_aspect),
+	(brasero_disc_option_dialog_add_video_options):
+	* src/burn-basics.h:
+	* src/burn-session.c (brasero_burn_session_tag_remove):
+	* src/burn-session.h:
+	* src/plugins/gstreamer/burn-vob.c (brasero_vob_build_video_bin):
+
 2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Proof of concept:
