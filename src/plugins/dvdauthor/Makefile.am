@@ -18,7 +18,7 @@ AM_CFLAGS = -g
 dvdauthordir = $(libdir)/brasero/plugins
 dvdauthor_LTLIBRARIES = libbrasero-dvdauthor.la
 
-libbrasero_dvdauthor_la_SOURCES = burn-dvdauthor.c burn-dvdauthor.h burn-normalize.h
+libbrasero_dvdauthor_la_SOURCES = burn-dvdauthor.c burn-dvdauthor.h
 libbrasero_dvdauthor_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_LIBXML_LIBS)
 libbrasero_dvdauthor_la_LDFLAGS = -module -avoid-version
 

@@ -489,6 +489,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	GValue *value;
 	GstPad *srcpad;
 	GstPad *sinkpad;
+	GstElement *scale;
 	GstElement *queue;
 	GstElement *filter;
 	GstElement *encode;
@@ -515,6 +516,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		      "max-size-time", (gint64) 0,
 		      NULL);
 
+	/* framerate and video type control */
 	framerate = gst_element_factory_make ("videorate", NULL);
 	if (framerate == NULL) {
 		g_set_error (error,
@@ -528,6 +530,17 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		      "silent", TRUE,
 		      NULL);
 
+	/* size scaling */
+	scale = gst_element_factory_make ("videoscale", NULL);
+	if (scale == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("scale can't be created"));
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), scale);
+
 	/* create a filter */
 	filter = gst_element_factory_make ("capsfilter", NULL);
 	if (filter == NULL) {
@@ -538,36 +551,6 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), filter);
-
-	value = NULL;
-	result = brasero_job_tag_lookup (BRASERO_JOB (vob),
-					 BRASERO_VIDEO_OUTPUT_FRAMERATE,
-					 &value);
-
-/*	if (result == BRASERO_BURN_OK && value) {
-		gint rate;
-		GstCaps *filtercaps;
-		GValue fraction = { 0 };
-
-		rate = g_value_get_int (value);
-		g_value_init (&fraction, GST_TYPE_FRACTION);
-
-		if (rate == BRASERO_VIDEO_FRAMERATE_NTSC)
-			gst_value_set_fraction (&fraction, 30, 1.001);
-		else if (rate == BRASERO_VIDEO_FRAMERATE_PAL_SECAM)
-			gst_value_set_fraction (&fraction, 25, 1);
-
-		filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
-								   "framerate", G_TYPE_VALUE, &fraction,
-								   NULL),
-						gst_structure_new ("video/x-raw-rgb",
-								   "framerate", G_TYPE_VALUE, &fraction,
-								   NULL),
-						NULL);
-		g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
-		gst_caps_unref (filtercaps);
-	}
-*/
 
 	colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
 	if (colorspace == NULL) {
@@ -589,6 +572,63 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
 
+	g_object_set (encode,
+		      "format", 8,
+		      NULL);
+
+	/* settings */
+	value = NULL;
+	result = brasero_job_tag_lookup (BRASERO_JOB (vob),
+					 BRASERO_VIDEO_OUTPUT_FRAMERATE,
+					 &value);
+
+	if (result == BRASERO_BURN_OK && value) {
+		gint rate;
+		GstCaps *filtercaps = NULL;
+
+		rate = g_value_get_int (value);
+
+		if (rate == BRASERO_VIDEO_FRAMERATE_NTSC) {
+			g_object_set (encode,
+				      "norm", 110,
+				      "framerate", 4,
+				      NULL);
+			filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+									   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+									   "width", G_TYPE_INT, 720,
+									   "height", G_TYPE_INT, 480,
+									   NULL),
+							gst_structure_new ("video/x-raw-rgb",
+									   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+									   "width", G_TYPE_INT, 720,
+									   "height", G_TYPE_INT, 480,
+									   NULL),
+							NULL);
+		}
+		else if (rate == BRASERO_VIDEO_FRAMERATE_PAL_SECAM) {
+			g_object_set (encode,
+				      "norm", 112,
+				      "framerate", 3,
+				      NULL);
+			filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+									   "framerate", GST_TYPE_FRACTION, 25, 1,
+									   "width", G_TYPE_INT, 720,
+									   "height", G_TYPE_INT, 576,
+									   NULL),
+							gst_structure_new ("video/x-raw-rgb",
+									   "framerate", GST_TYPE_FRACTION, 25, 1,
+									   "width", G_TYPE_INT, 720,
+									   "height", G_TYPE_INT, 576,
+									   NULL),
+							NULL);
+		}
+
+		if (filtercaps) {
+			g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
+			gst_caps_unref (filtercaps);
+		}
+	}
+
 	value = NULL;
 	result = brasero_job_tag_lookup (BRASERO_JOB (vob),
 					 BRASERO_VIDEO_OUTPUT_ASPECT,
@@ -609,7 +649,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		}
 	}
 
-	gst_element_link_many (queue, framerate, colorspace, filter, encode, NULL);
+	gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, NULL);
 
 	srcpad = gst_element_get_static_pad (encode, "src");
 	sinkpad = gst_element_get_request_pad (muxer, "video_%d");
