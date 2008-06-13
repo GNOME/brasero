@@ -624,9 +624,13 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	current = hdr->max_caps;
-
 	/* see if the media is already formatted */
+	current = hdr->max_caps;
+	if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
+		BRASERO_BURN_LOG ("Unformatted media");
+		priv->info |= BRASERO_MEDIUM_UNFORMATTED;
+	}
+
 	max = (hdr->len - 
 	      sizeof (BraseroScsiMaxCapacityDesc)) /
 	      sizeof (BraseroScsiFormattableCapacityDesc);
@@ -642,6 +646,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 				/* that can happen */
 				if (!priv->block_size)
 					priv->block_size = 2048;
+
 				break;
 			}
 		}

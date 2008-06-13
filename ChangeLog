@@ -1,5 +1,27 @@
 2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #470234 – Doesn't format fresh dvd+rw before burning
+
+	* src/burn-caps.c (brasero_burn_caps_new_task),
+	(brasero_caps_try_output_with_blanking),
+	(brasero_burn_caps_get_flags), (brasero_caps_disc_new_status):
+	* src/burn-debug.c (brasero_debug_medium_info_to_string):
+	* src/burn-medium.c (brasero_medium_get_capacity_DVD_RW):
+	* src/burn-medium.h:
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_stdout_read),
+	(brasero_wodim_export_caps):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_stdout_read), (brasero_cdrecord_export_caps):
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_export_caps):
+	* src/scsi-read-format-capacities.h:
+
+2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Bumped gstreamer requirements to 0.10.15
 
 	* configure.in:

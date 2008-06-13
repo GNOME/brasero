@@ -692,6 +692,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_SEQUENTIAL|
 					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_BLANK);
 
 	brasero_plugin_link_caps (plugin, output, input);
@@ -703,6 +704,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_BLANK|
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_APPENDABLE|
@@ -720,6 +722,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_JUMP|
 					BRASERO_MEDIUM_WRITABLE|
 					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_BLANK|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA);
@@ -755,6 +758,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_JUMP|
 				  BRASERO_MEDIUM_WRITABLE|
 				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_UNFORMATTED|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
@@ -770,6 +774,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_JUMP|
 				  BRASERO_MEDIUM_WRITABLE|
 				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_UNFORMATTED|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
@@ -801,6 +806,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_RESTRICTED|
 				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_UNFORMATTED|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_MULTI|
@@ -884,6 +890,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_UNFORMATTED|
 				  BRASERO_MEDIUM_BLANK,
 				  BRASERO_BURN_FLAG_MULTI|
 				  BRASERO_BURN_FLAG_DAO|
@@ -927,6 +934,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_BLANK);
 	brasero_plugin_blank_caps (plugin, output);
 	g_slist_free (output);
@@ -938,6 +946,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_CLOSED,
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
@@ -950,6 +959,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_BLANK|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_CLOSED,
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,

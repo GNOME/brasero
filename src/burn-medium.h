@@ -107,9 +107,12 @@ typedef enum {
 	BRASERO_MEDIUM_CLOSED			= 1 << 18,
 	BRASERO_MEDIUM_APPENDABLE		= 1 << 19,
 
-	BRASERO_MEDIUM_PROTECTED		= 1 << 20,
-	BRASERO_MEDIUM_HAS_DATA			= 1 << 21,
-	BRASERO_MEDIUM_HAS_AUDIO		= 1 << 22,
+	/* Only used for DVD+RW, DVD-RW restricted */
+	BRASERO_MEDIUM_UNFORMATTED		= 1 << 20,
+
+	BRASERO_MEDIUM_PROTECTED		= 1 << 21,
+	BRASERO_MEDIUM_HAS_DATA			= 1 << 22,
+	BRASERO_MEDIUM_HAS_AUDIO		= 1 << 23,
 } BraseroMedia;
 
 #define BRASERO_MEDIUM_CDROM		(BRASERO_MEDIUM_CD|		\
@@ -174,7 +177,7 @@ typedef enum {
 #define BRASERO_MEDIUM_ATTR(media)	((media) & 0x1C000)
 #define BRASERO_MEDIUM_STATUS(media)	((media) & 0xE0000)
 #define BRASERO_MEDIUM_SUBTYPE(media)	((media) & 0x1FC0)
-#define BRASERO_MEDIUM_INFO(media)	((media) & 0x700000)
+#define BRASERO_MEDIUM_INFO(media)	((media) & 0xFE0000)
 
 #define BRASERO_MEDIUM_IS(media, type)	(((media)&(type))==(type))
 

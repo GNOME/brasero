@@ -225,6 +225,9 @@ brasero_debug_medium_info_to_string (gchar *buffer,
 
 	if (media & BRASERO_MEDIUM_HAS_AUDIO)
 		strcat (buffer, "with audio ");
+
+	if (media & BRASERO_MEDIUM_UNFORMATTED)
+		strcat (buffer, "Unformatted ");
 }
 
 static void

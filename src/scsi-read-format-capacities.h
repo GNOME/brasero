@@ -29,10 +29,7 @@
 #ifndef _SCSI_READ_FORMAT_CAPACITIES_H
 #define _SCSI_READ_FORMAT_CAPACITIES_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 typedef enum {
 BRASERO_SCSI_DESC_UNFORMATTED		= 0x01,
@@ -115,9 +112,7 @@ struct _BraseroScsiFormatCapacitiesHdr {
 };
 typedef struct _BraseroScsiFormatCapacitiesHdr BraseroScsiFormatCapacitiesHdr;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_READ_FORMAT_CAPACITIES_H */
 
