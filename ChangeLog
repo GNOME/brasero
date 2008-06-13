@@ -1,5 +1,13 @@
 2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Changed priorities between burning plugins.
+	Make sure wodim is only used as a last resort.
+
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+
+2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #470234 – Doesn't format fresh dvd+rw before burning
 
 	* src/burn-caps.c (brasero_burn_caps_new_task),

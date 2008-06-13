@@ -662,7 +662,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "growisofs",
 			       _("growisofs burns DVDs"),
 			       "Philippe Rouquier",
-			       0);
+			       7);
 
 	/* First see if this plugin can be used, i.e. if growisofs is in
 	 * the path */
