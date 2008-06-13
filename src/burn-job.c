@@ -453,6 +453,9 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	/* it's fine here to check size in bytes */
 	if (output_size > vol_size) {
+		/* FIXME: This string should mention that the location is on the
+		 * hard drive and not the medium itself to prevent any confusion
+		 * as seen in #533149 */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
