@@ -644,14 +644,18 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 				 GTK_TREE_MODEL (model));
 	g_object_unref (model);
 
+	/* Track num column */
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Track"), renderer,
+							   "text", TRACK_NUM_COL,
+							   NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (obj->priv->tree), column);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+
+	/* Other columns */
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_min_width (column, 200);
-
-	renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start (column, renderer, FALSE);
-	gtk_tree_view_column_add_attribute (column, renderer,
-					    "markup", TRACK_NUM_COL);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
@@ -694,8 +698,8 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set_data (G_OBJECT (renderer), COL_KEY, GINT_TO_POINTER (ARTIST_COL));
 	g_object_set (G_OBJECT (renderer),
-/*		      "editable", TRUE, disable this for the time being it doesn't play well with DND and double click */
-		      /*"mode", GTK_CELL_RENDERER_MODE_EDITABLE,*/
+		      /* "editable", TRUE, disable this for the time being it doesn't play well with DND and double click */
+		      /* "mode", GTK_CELL_RENDERER_MODE_EDITABLE,*/
 		      "ellipsize-set", TRUE,
 		      "ellipsize", PANGO_ELLIPSIZE_END,
 		      NULL);
@@ -1050,7 +1054,7 @@ brasero_audio_disc_re_index_track_num (BraseroAudioDisc *disc,
 			continue;
 
 		num ++;
-		text = g_strdup_printf ("<b><i>%02i -</i></b>", num);
+		text = g_strdup_printf ("%02i", num);
 
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 				    TRACK_NUM_COL, text,
