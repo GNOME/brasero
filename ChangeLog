@@ -1,3 +1,18 @@
+2008-06-14  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/brasero-project-manager.c (brasero_project_manager_init):
+	* src/brasero-project.c (brasero_project_no_song_dialog),
+	(brasero_project_no_file_dialog),
+	(brasero_project_check_default_burning_app),
+	(brasero_project_confirm_switch), (brasero_project_add_uris_cb),
+	(brasero_project_empty_cb), (brasero_project_open_project_xml),
+	(brasero_project_open_audio_playlist_project),
+	(brasero_project_not_saved_dialog),
+	(brasero_project_save_project_dialog),
+	(brasero_project_save_project_ask_for_path):
+
+	Add uppercase words to window titles. Fix bgo #538299.
+
 2008-06-14  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix #534880 – Audio project track column

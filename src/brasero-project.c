@@ -844,7 +844,7 @@ brasero_project_no_song_dialog (BraseroProject *project)
 					  GTK_BUTTONS_CLOSE,
 					  _("Please add songs to the project."));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Empty project"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Empty Project"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("The project is empty."));
@@ -867,7 +867,7 @@ brasero_project_no_file_dialog (BraseroProject *project)
 					  GTK_BUTTONS_CLOSE,
 					  _("Please add files to the project."));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Empty project"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Empty Project"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("The project is empty."));
@@ -919,7 +919,7 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 					  GTK_BUTTONS_NONE,
 					  primary);
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Default burning application"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Default Burning Application"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("This is a first time running dialog that won't be shown again. If you change your mind, you can change your choice later in the Removable Drives and Media Preferences whether or not you chose brasero."));
 
@@ -1184,7 +1184,7 @@ brasero_project_confirm_switch (BraseroProject *project)
 						 _("Do you really want to create a new project and discard the changes to current one?"));
 
 		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved project"));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved Project"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("If you choose to create a new project, all changes made will be lost."));
@@ -1205,7 +1205,7 @@ brasero_project_confirm_switch (BraseroProject *project)
 						 _("Do you really want to create a new project and discard the current one?"));
 
 		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("New project"));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("New Project"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("If you choose to create a new project, "
@@ -1458,7 +1458,7 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 	}
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	project->priv->chooser = gtk_file_chooser_dialog_new (_("Select files"),
+	project->priv->chooser = gtk_file_chooser_dialog_new (_("Select Files"),
 							      GTK_WINDOW (toplevel),
 							      GTK_FILE_CHOOSER_ACTION_OPEN,
 							      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -1566,7 +1566,7 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 						 _("Do you really want to empty the current project?"));
 
 		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Empty project"));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Empty Project"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("Emptying a project will remove all files already added. "
@@ -2057,7 +2057,7 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	xmlFreeDoc (project);
 
 	if (!retval && warn_user)
-		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
+		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid Brasero project."));
 
 	return retval;
 
@@ -2065,7 +2065,7 @@ error:
 
 	xmlFreeDoc (project);
     	if (warn_user)
-		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
+		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid Brasero project."));
 
 	return FALSE;
 }
@@ -2156,7 +2156,7 @@ brasero_project_open_audio_playlist_project (BraseroProject *proj,
 	result = totem_pl_parser_parse (parser, uri, FALSE);
 	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
 		if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid brasero project."));
+			brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid Brasero project."));
 
 		brasero_track_free (new_track);
 	}
@@ -2242,7 +2242,7 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 					 GTK_BUTTONS_CLOSE,
 					 _("Your project has not been saved:"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved project"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved Project"));
 
 	error = xmlGetLastError ();
 	if (error)
@@ -2273,7 +2273,7 @@ brasero_project_save_project_dialog (BraseroProject *project,
 					 GTK_BUTTONS_NONE,
 					 _("Save the changes of current project before closing?"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Modified project"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Modified Project"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("If you don't save, changes will be permanently lost."));
@@ -2812,7 +2812,7 @@ brasero_project_save_project_ask_for_path (BraseroProject *project,
 		combo = gtk_combo_box_new_text ();
 		gtk_widget_show (combo);
 
-		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as brasero audio project"));
+		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as Brasero audio project"));
 		gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Save project as a plain text list"));
 
 #ifdef BUILD_PLAYLIST
