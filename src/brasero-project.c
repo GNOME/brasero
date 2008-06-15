@@ -1462,7 +1462,7 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 							      GTK_WINDOW (toplevel),
 							      GTK_FILE_CHOOSER_ACTION_OPEN,
 							      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-							      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+							      GTK_STOCK_ADD, GTK_RESPONSE_OK,
 							      NULL);
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
