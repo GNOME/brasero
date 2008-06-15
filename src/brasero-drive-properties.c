@@ -307,7 +307,7 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 				    PROP_TEXT, text,
-				    PROP_RATE, brasero_medium_get_max_write_speed (medium),
+				    PROP_RATE, rates [i],
 				    -1);
 		g_free (text);
 	}
