@@ -1300,6 +1300,7 @@ brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 					     g_get_home_dir ());
 	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (chooser),
 					   "brasero-session.log");
+	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (chooser), TRUE);
 
 	gtk_widget_show (chooser);
 	answer = gtk_dialog_run (GTK_DIALOG (chooser));
