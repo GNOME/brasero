@@ -1057,7 +1057,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "wodim",
 			       _("use wodim to burn CDs"),
 			       "Philippe Rouquier",
-			       1);
+			       0);
 
 	/* First see if this plugin can be used */
 	result = brasero_process_check_path ("wodim", error);

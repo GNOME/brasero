@@ -1050,7 +1050,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "cdrecord",
 			       _("use cdrecord to burn CDs"),
 			       "Philippe Rouquier",
-			       0);
+			       1);
 
 	/* First see if this plugin can be used */
 	result = brasero_process_check_path ("cdrecord", error);
