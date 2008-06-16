@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-16 08:05+0200\n"
-"PO-Revision-Date: 2008-06-16 08:08+0100\n"
+"POT-Creation-Date: 2008-06-16 22:39+0200\n"
+"PO-Revision-Date: 2008-06-16 22:48+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -1623,6 +1623,9 @@ msgid ""
 "ISO9660 level 3 standard is supported by most of the operating systems including linux and all versions of Windows ©. Therefore the burnt medium can be read by these operating systems.\n"
 "A known exception is MacOS X that can't read images created with ISO9660 level 3 standard."
 msgstr ""
+"Storleken på filen är över 2 Gio. Detta stöds inte av ISO9660-standarden i dess första och andra versioner (de mest använda).\n"
+"Standarden ISO9660 nivå 3 stöds av de flesta operativsystem inklusive Linux och alla versioner av Windows©. Därför kan det brända mediumet läsas av dessa operativsystem.\n"
+"Ett känt undantag är MacOS X som inte kan läsa avbildningar skapade med standarden ISO9660 nivå 3."
 
 #: ../src/brasero-data-disc.c:919
 #: ../src/brasero-data-disc.c:967
@@ -2124,9 +2127,8 @@ msgid "Start to burn the contents of the selection"
 msgstr "Påbörja bränningen av innehållet"
 
 #: ../src/brasero-project.c:526
-#, fuzzy
 msgid "Please, delete some files from the project."
-msgstr "Ta bort alla filer från projektet"
+msgstr "Ta bort några filer från projektet."
 
 #: ../src/brasero-project.c:527
 #, fuzzy
@@ -2194,7 +2196,6 @@ msgid "Please add files to the project."
 msgstr "Lägg till filer till projektet."
 
 #: ../src/brasero-project.c:922
-#, fuzzy
 msgid "Default Burning Application"
 msgstr "Standardbränningsprogram"
 
@@ -2213,14 +2214,12 @@ msgid "_Use Brasero next time"
 msgstr "_Använd Brasero nästa gång"
 
 #: ../src/brasero-project.c:1047
-#, fuzzy
 msgid "Would you like to use Brasero in the future to burn audio discs?"
-msgstr "Vill du göra brasero till standardprogrammet för att bränna ljudskivor?"
+msgstr "Vill du göra Brasero till standardprogrammet för att bränna ljudskivor?"
 
 #: ../src/brasero-project.c:1053
-#, fuzzy
 msgid "Would you like to use Brasero in the future to burn data discs?"
-msgstr "Vill du göra brasero till standardprogrammet för att bränna dataskivor?"
+msgstr "Vill du göra Brasero till standardprogrammet för att bränna dataskivor?"
 
 #: ../src/brasero-project.c:1184
 msgid "Do you really want to create a new project and discard the changes to current one?"
@@ -2313,9 +2312,8 @@ msgstr "filen är tom."
 #: ../src/brasero-project.c:2060
 #: ../src/brasero-project.c:2068
 #: ../src/brasero-project.c:2159
-#, fuzzy
 msgid "it doesn't seem to be a valid Brasero project."
-msgstr "det verkar inte vara ett giltigt brasero-projekt."
+msgstr "det verkar inte vara ett giltigt Brasero-projekt."
 
 #: ../src/brasero-project.c:2243
 msgid "Your project has not been saved:"
@@ -2348,9 +2346,8 @@ msgid " by %s"
 msgstr " av %s"
 
 #: ../src/brasero-project.c:2815
-#, fuzzy
 msgid "Save project as Brasero audio project"
-msgstr "Skapa ett nytt ljudprojekt"
+msgstr "Spara projektet som ett Brasero-ljudprojekt"
 
 #: ../src/brasero-project.c:2816
 msgid "Save project as a plain text list"
@@ -2374,11 +2371,11 @@ msgstr "Spara projekt som en IRIVER-spellista"
 
 #: ../src/brasero-project-manager.c:108
 msgid "_Cover Editor"
-msgstr ""
+msgstr "_Omslagsredigerare"
 
 #: ../src/brasero-project-manager.c:109
 msgid "Design and print covers for CDs"
-msgstr ""
+msgstr "Designa och skriv ut omslag för skivor"
 
 #: ../src/brasero-project-manager.c:110
 msgid "_New Project"
@@ -2491,9 +2488,9 @@ msgid "Brasero - Copy a disc"
 msgstr "Brasero - Kopiera en skiva"
 
 #: ../src/brasero-project-manager.c:782
-#, fuzzy, c-format
+#, c-format
 msgid "The project '%s' does not exist."
-msgstr "Projektet är tomt."
+msgstr "Projektet \"%s\" finns inte."
 
 #: ../src/brasero-project-manager.c:905
 msgid "New"
@@ -2508,7 +2505,6 @@ msgid "Browse the file system"
 msgstr "Bläddra i filsystemet"
 
 #: ../src/brasero-project-manager.c:952
-#, fuzzy
 msgid "Display File Browser"
 msgstr "Visa filbläddrare"
 
@@ -2517,7 +2513,6 @@ msgid "Search files using keywords"
 msgstr "Sök filer efter nyckelord"
 
 #: ../src/brasero-project-manager.c:976
-#, fuzzy
 msgid "Display Search"
 msgstr "Visa sökning"
 
@@ -2526,7 +2521,6 @@ msgid "Display playlists and their contents"
 msgstr "Visa spellistor och deras innehåll"
 
 #: ../src/brasero-project-manager.c:997
-#, fuzzy
 msgid "Display Playlists"
 msgstr "Visa spellistor"
 
@@ -2839,9 +2833,9 @@ msgid "\"%s\" can't be unlocked"
 msgstr "\"%s\" kan inte låsas upp"
 
 #: ../src/burn.c:267
-#, fuzzy, c-format
+#, c-format
 msgid "the disc could not be reloaded (max attemps reached)"
-msgstr "skivan kunde inte monteras (maximalt antal försök nåddes)"
+msgstr "skivan kunde inte läsas om (maximalt antal försök nåddes)"
 
 #: ../src/burn.c:280
 #: ../src/burn.c:567
@@ -3129,7 +3123,7 @@ msgstr "omöjligt att hämta information"
 #: ../src/burn-process.c:138
 #, c-format
 msgid "%s is a symlink pointing to another program. Use the target program instead."
-msgstr ""
+msgstr "%s är en symbolisk länk som pekar på ett annat program. Använd målprogrammet istället."
 
 #: ../src/burn-process.c:224
 #, c-format
@@ -3175,9 +3169,8 @@ msgid "PROJECT"
 msgstr "PROJEKT"
 
 #: ../src/main.c:85
-#, fuzzy
 msgid "Open the specified playlist as an audio project"
-msgstr "Öppna angivet projekt"
+msgstr "Öppna angiven spellista som ett ljudprojekt"
 
 #: ../src/main.c:86
 msgid "PLAYLIST"
@@ -3564,9 +3557,8 @@ msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "minimal fyllnadsförhållande för enhetsbuffert (i %) (se manual för wodim):"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:308
-#, fuzzy
 msgid "Formatting media"
-msgstr "Skapar avbildning"
+msgstr "Formaterar media"
 
 #: ../src/plugins/cdrtools/burn-cdrecord.c:1051
 msgid "use cdrecord to burn CDs"
@@ -3772,19 +3764,19 @@ msgid "Libisofs can't be initialized."
 msgstr "Libisofs kan inte initieras."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:431
-#, fuzzy, c-format
+#, c-format
 msgid "No read options could be created."
-msgstr "En tråd kunde inte skapas"
+msgstr "Inga läsalternativ kunde skapas."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:454
 #, c-format
 msgid "Image import failed."
-msgstr ""
+msgstr "Avbildningsimport misslyckades."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:507
-#, fuzzy, c-format
+#, c-format
 msgid "Volume could not be created."
-msgstr "En tråd kunde inte skapas"
+msgstr "Volymen kunde inte skapas."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:615
 #, c-format
@@ -3797,24 +3789,24 @@ msgid "non local file %s"
 msgstr "icke-lokala filen %s"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:645
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs reported an error while adding directory %s (%x)"
-msgstr "libisofs rapporterade ett fel när katalogen %s lades till"
+msgstr "libisofs rapporterade ett fel när katalogen %s lades till (%x)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:657
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs reported an error while adding contents to directory %s (%x)"
-msgstr "libisofs rapporterade ett fel när katalogen %s lades till"
+msgstr "libisofs rapporterade ett fel när innehåll lades till i katalogen %s (%x)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:670
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs reported an error while adding file %s"
-msgstr "libisofs rapporterade ett fel när katalogen %s lades till"
+msgstr "libisofs rapporterade ett fel när filen %s lades till"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:683
-#, fuzzy, c-format
+#, c-format
 msgid "libisofs reported an error while creating directory %s"
-msgstr "libisofs rapporterade ett fel när katalogen %s lades till"
+msgstr "libisofs rapporterade ett fel när katalogen %s skapades"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:899
 msgid "libisofs creates disc images from files"
@@ -4029,9 +4021,8 @@ msgid "An error occured while retrieving silences:"
 msgstr "Ett fel inträffade vid avläsning av tystnad:"
 
 #: ../src/brasero-split-dialog.c:683
-#, fuzzy
 msgid "Do you really want to carry on with automatic splitting?"
-msgstr "Vill du fortsätta med automatiskt delning oavsett?"
+msgstr "Vill du verkligen fortsätta med automatisk delning?"
 
 #: ../src/brasero-split-dialog.c:685
 msgid "automatic split"
@@ -4248,7 +4239,7 @@ msgstr "_Visa fel"
 
 #: ../src/brasero-disc-message.c:312
 msgid "Close this notification window"
-msgstr ""
+msgstr "Stäng notifieringsfönstret"
 
 #. Translators: this messages will appear as a list of possible
 #. * actions, like:
@@ -4624,7 +4615,7 @@ msgstr "Bakgrundsegenskaper"
 
 #: ../src/brasero-jacket-view.c:720
 msgid "Set bac_kground properties"
-msgstr ""
+msgstr "Ställ in ba_kgrundsegenskaper"
 
 #: ../src/brasero-jacket-view.c:761
 msgid "SIDES"
@@ -4632,11 +4623,11 @@ msgstr "SIDOR"
 
 #: ../src/brasero-jacket-view.c:777
 msgid "BACK COVER"
-msgstr ""
+msgstr "BAKSIDA"
 
 #: ../src/brasero-jacket-view.c:794
 msgid "FRONT COVER"
-msgstr ""
+msgstr "FRAMSIDA"
 
 #: ../src/brasero-jacket-view.c:1083
 msgid "The image couldn't be loaded:"
@@ -4652,7 +4643,7 @@ msgstr "av "
 
 #: ../src/brasero-jacket-edit.c:827
 msgid "Cover editor"
-msgstr ""
+msgstr "Omslagsredigerare"
 
 #: ../src/brasero-multi-song-props.c:83
 #: ../src/brasero-multi-song-props.c:91
@@ -4696,7 +4687,7 @@ msgstr "Ersätt text"
 
 #: ../src/brasero-rename.c:281
 msgid "Number files according to a pattern"
-msgstr ""
+msgstr "Antal filer enligt ett mönster"
 
 #: ../src/brasero-rename.c:295
 msgid "Insert"
@@ -4728,7 +4719,7 @@ msgstr "Byt namn till"
 
 #: ../src/brasero-rename.c:363
 msgid "{number}"
-msgstr ""
+msgstr "{antal}"
 
 #~ msgid "Empty project"
 #~ msgstr "Töm projekt"
