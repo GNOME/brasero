@@ -824,7 +824,7 @@ brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
 	GtkWidget *window;
 	GtkWidget *contents;
 
-	window = gtk_dialog_new_with_buttons (_("Cover editor"),
+	window = gtk_dialog_new_with_buttons (_("Cover Editor"),
 					      GTK_WINDOW (toplevel),
 					      GTK_DIALOG_MODAL|
 					      GTK_DIALOG_DESTROY_WITH_PARENT|

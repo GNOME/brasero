@@ -679,7 +679,7 @@ brasero_app_parse_options (BraseroApp *app)
 						  GTK_BUTTONS_CLOSE,
 						  _("Incompatible command line options used:"));
 
-		gtk_window_set_title (GTK_WINDOW (message), _("Incompatible options"));
+		gtk_window_set_title (GTK_WINDOW (message), _("Incompatible Options"));
 		
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 							  _("only one option can be given at a time."));

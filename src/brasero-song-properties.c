@@ -239,7 +239,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 				GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
 				NULL);
 
-	gtk_window_set_title (GTK_WINDOW (obj), _("Song information"));
+	gtk_window_set_title (GTK_WINDOW (obj), _("Song Information"));
 }
 
 void

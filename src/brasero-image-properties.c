@@ -229,7 +229,7 @@ brasero_image_properties_init (BraseroImageProperties *object)
 
 	priv = BRASERO_IMAGE_PROPERTIES_PRIVATE (object);
 
-	gtk_window_set_title (GTK_WINDOW (object), _("Disc image file properties"));
+	gtk_window_set_title (GTK_WINDOW (object), _("Image File Properties"));
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 	gtk_dialog_add_buttons (GTK_DIALOG (object),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

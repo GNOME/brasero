@@ -347,7 +347,7 @@ brasero_image_option_dialog_image_info_error (BraseroImageOptionDialog *dialog)
 					  GTK_BUTTONS_CLOSE,
 					  _("This image can't be burnt:"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Invalid image"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Invalid Image"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("it doesn't appear to be a valid image or a valid cue file."));
@@ -370,7 +370,7 @@ brasero_image_option_dialog_image_empty (BraseroImageOptionDialog *dialog)
 					  GTK_BUTTONS_CLOSE,
 					  _("There is no specified image:"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("No image"));
+	gtk_window_set_title (GTK_WINDOW (message), _("No Image"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Please, choose an image and retry."));
@@ -733,7 +733,7 @@ brasero_image_option_dialog_new ()
 	BraseroImageOptionDialog *obj;
 	
 	obj = BRASERO_IMAGE_OPTION_DIALOG (g_object_new (BRASERO_TYPE_IMAGE_OPTION_DIALOG,
-							"title", _("Image burning setup"),
+							"title", _("Image Burning Setup"),
 							NULL));
 	
 	return GTK_WIDGET (obj);

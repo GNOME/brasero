@@ -1,3 +1,66 @@
+2008-06-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538299 – Window titles
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_video_file_dialog),
+	(brasero_audio_disc_add_dir),
+	(brasero_audio_disc_unreadable_dialog),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate),
+	(brasero_blank_dialog_new):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_previous_session_loss_cb),
+	(brasero_burn_dialog_audio_to_appendable_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_save_log), (brasero_burn_dialog_show_log),
+	(brasero_burn_dialog_notify_error):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb), (brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_rename_activated):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_joliet_toggled_cb),
+	(brasero_disc_option_dialog_new):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_error),
+	(brasero_image_option_dialog_image_empty),
+	(brasero_image_option_dialog_new):
+	* src/brasero-image-properties.c (brasero_image_properties_init):
+	* src/brasero-jacket-background.c (brasero_jacket_background_new):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_dialog_new):
+	* src/brasero-multi-song-props.c (brasero_multi_song_props_init):
+	* src/brasero-playlist.c (brasero_playlist_add_cb),
+	(brasero_playlist_dialog_error):
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_open_cb):
+	* src/brasero-project.c (brasero_project_overburn_dialog),
+	(brasero_project_check_status), (brasero_project_set_uri),
+	(brasero_project_invalid_project_dialog),
+	(brasero_project_save_project_ask_for_path):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-song-properties.c (brasero_song_props_init):
+	* src/brasero-split-dialog.c (brasero_split_dialog_size_error),
+	(brasero_split_dialog_no_silence_message),
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message_error),
+	(brasero_sum_dialog_success),
+	(brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_check_md5_file), (brasero_sum_dialog_new):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy), (brasero_tool_dialog_no_media):
+	* src/brasero-utils.c (brasero_utils_launch_app):
+	* src/main.c (brasero_app_parse_options):
+
 2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix #538414 – burn speed problems

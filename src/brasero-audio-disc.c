@@ -1144,7 +1144,7 @@ brasero_audio_disc_short_track_dialog (BraseroAudioDisc *disc)
 					 GTK_BUTTONS_CLOSE,
 					 _("The track will be padded at its end:"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Track length"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Track Length"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("the track is shorter than 6 seconds."));
 
@@ -1332,7 +1332,7 @@ brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unhandled song"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Unhandled Song"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("Make sure the appropriate codec is installed."));
@@ -1365,7 +1365,7 @@ brasero_audio_disc_video_file_dialog (BraseroAudioDisc *disc,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Video file"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Video File"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("This file is a video and therefore only the audio part can be written to the disc."));
@@ -1502,7 +1502,7 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 					 GTK_BUTTONS_NONE,
 					 _("Do you want to search for audio discs inside the directory?"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory search"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory Search"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("Directories can't be added to an audio disc:"));
@@ -1582,7 +1582,7 @@ brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable file"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable File"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  error->message);
@@ -3649,7 +3649,7 @@ brasero_audio_disc_inotify_removal_warning (BraseroAudioDisc *disc,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("File deletion noticed"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("File Deletion"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("it will be removed from the project."));
 

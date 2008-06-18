@@ -312,7 +312,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 				GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
 				NULL);
 
-	gtk_window_set_title (GTK_WINDOW (object), _("Song information"));
+	gtk_window_set_title (GTK_WINDOW (object), _("Song Information"));
 }
 
 static void

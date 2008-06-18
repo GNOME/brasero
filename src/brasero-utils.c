@@ -546,7 +546,7 @@ brasero_utils_launch_app (GtkWidget *widget,
 							 GTK_BUTTONS_CLOSE,
 							 _("This file can't be opened:"));
 
-			gtk_window_set_title (GTK_WINDOW (dialog), _("File error"));
+			gtk_window_set_title (GTK_WINDOW (dialog), _("File Error"));
 
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 								  error->message);

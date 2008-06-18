@@ -216,7 +216,7 @@ brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 					 GTK_BUTTONS_CLOSE,
 					 _("The session couldn't be imported:"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Import session error"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Session Import Error"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  error?error->message:_("unknown error"));
 
@@ -742,7 +742,7 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable file"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable File"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  "%s.",
 						  error->message);
@@ -785,7 +785,7 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Recursive symlink"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Recursive Symlink"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("it is a recursive symlink."));
@@ -828,7 +828,7 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("File not found"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("File Not Found"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("it doesn't exist at the specified location."));
@@ -909,7 +909,7 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 					 _("Do you really want to add \"%s\" to the selection and use ISO9660 level 3 standard to support it?"),
 					 name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("File over 2 Gio"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("File Over 2 Gio"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The size of the file is over 2 Gio. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones)."
@@ -1621,7 +1621,7 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 		GtkWidget *rename;
 		GtkResponseType answer;
 
-		dialog = gtk_dialog_new_with_buttons (_("File renaming"),
+		dialog = gtk_dialog_new_with_buttons (_("File Renaming"),
 						      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (disc))),
 						      GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 						      _("_Don't rename"), GTK_RESPONSE_CANCEL,

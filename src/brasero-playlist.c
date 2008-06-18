@@ -622,7 +622,7 @@ brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
 	if (!GTK_WIDGET_TOPLEVEL (toplevel))
 		return;
 
-	dialog = gtk_file_chooser_dialog_new (_("Select a playlist"),
+	dialog = gtk_file_chooser_dialog_new (_("Select Playlist"),
 					      GTK_WINDOW (toplevel),
 					      GTK_FILE_CHOOSER_ACTION_OPEN,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -806,7 +806,7 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("an unknown error occured."));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Playlist loading error"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Playlist Loading Error"));
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);

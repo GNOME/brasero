@@ -299,7 +299,7 @@ GtkWidget *
 brasero_jacket_background_new (void)
 {
 	return g_object_new (BRASERO_TYPE_JACKET_BACKGROUND,
-			     "title", _("Background properties"),
+			     "title", _("Background Properties"),
 			     NULL);
 }
 

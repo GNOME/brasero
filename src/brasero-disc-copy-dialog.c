@@ -106,7 +106,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (obj);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD copy options"));
+	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD Copy Options"));
 
 	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 	gtk_widget_show (button);
