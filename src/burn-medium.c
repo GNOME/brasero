@@ -624,9 +624,13 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	current = hdr->max_caps;
-
 	/* see if the media is already formatted */
+	current = hdr->max_caps;
+	if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
+		BRASERO_BURN_LOG ("Unformatted media");
+		priv->info |= BRASERO_MEDIUM_UNFORMATTED;
+	}
+
 	max = (hdr->len - 
 	      sizeof (BraseroScsiMaxCapacityDesc)) /
 	      sizeof (BraseroScsiFormattableCapacityDesc);
@@ -642,6 +646,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 				/* that can happen */
 				if (!priv->block_size)
 					priv->block_size = 2048;
+
 				break;
 			}
 		}
@@ -1881,7 +1886,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				g_free (track);
 
 				priv->info |= BRASERO_MEDIUM_BLANK;
-				priv->info &= ~BRASERO_MEDIUM_CLOSED;
+				priv->info &= ~(BRASERO_MEDIUM_CLOSED|
+						BRASERO_MEDIUM_HAS_DATA);
 			}
 			else
 				priv->next_wr_add = 0;
@@ -1892,8 +1898,17 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	priv->tracks = g_slist_reverse (priv->tracks);
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-		brasero_medium_add_DVD_plus_RW_leadout (self, BRASERO_GET_32 (desc->track_start));
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		gint32 start;
+
+		/* It starts where the other one finishes */
+		if (priv->tracks)
+			start = BRASERO_GET_32 (desc->track_start);
+		else
+			start = 0;
+
+		brasero_medium_add_DVD_plus_RW_leadout (self, start);
+	}
 	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
 		BraseroMediumTrack *track;
 
