@@ -1886,7 +1886,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				g_free (track);
 
 				priv->info |= BRASERO_MEDIUM_BLANK;
-				priv->info &= ~BRASERO_MEDIUM_CLOSED;
+				priv->info &= ~BRASERO_MEDIUM_CLOSED|
+					       BRASERO_MEDIUM_HAS_DATA;
 			}
 			else
 				priv->next_wr_add = 0;
@@ -1897,8 +1898,17 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	priv->tracks = g_slist_reverse (priv->tracks);
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-		brasero_medium_add_DVD_plus_RW_leadout (self, BRASERO_GET_32 (desc->track_start));
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		gint32 start;
+
+		/* It starts where the other one finishes */
+		if (priv->tracks)
+			start = BRASERO_GET_32 (desc->track_start);
+		else
+			start = 0;
+
+		brasero_medium_add_DVD_plus_RW_leadout (self, start);
+	}
 	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
 		BraseroMediumTrack *track;
 
