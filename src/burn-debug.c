@@ -225,6 +225,9 @@ brasero_debug_medium_info_to_string (gchar *buffer,
 
 	if (media & BRASERO_MEDIUM_HAS_AUDIO)
 		strcat (buffer, "with audio ");
+
+	if (media & BRASERO_MEDIUM_UNFORMATTED)
+		strcat (buffer, "Unformatted ");
 }
 
 static void
@@ -276,11 +279,20 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 	if (format & BRASERO_AUDIO_FORMAT_AC3)
 		strcat (buffer, "AC3 ");
 
+	if (format & BRASERO_AUDIO_FORMAT_44100)
+		strcat (buffer, "44100 ");
+
+	if (format & BRASERO_AUDIO_FORMAT_48000)
+		strcat (buffer, "48000 ");
+
 	if (format & BRASERO_VIDEO_FORMAT_UNDEFINED)
 		strcat (buffer, "VIDEO UNDEFINED ");
 
-	if (format & BRASERO_VIDEO_FORMAT_MPEG2)
-		strcat (buffer, "MPEG2 ");
+	if (format & BRASERO_VIDEO_FORMAT_VCD)
+		strcat (buffer, "VCD ");
+
+	if (format & BRASERO_VIDEO_FORMAT_VCD)
+		strcat (buffer, "Video DVD ");
 }
 
 void

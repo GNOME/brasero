@@ -107,7 +107,7 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 /* menus */
 static GtkActionEntry entries [] = {
-	{"Cover", NULL, N_("_Cover editor"), NULL,
+	{"Cover", NULL, N_("_Cover Editor"), NULL,
 	 N_("Design and print covers for CDs"), G_CALLBACK (brasero_project_manager_new_cover_cb)},
 	 {"New", GTK_STOCK_NEW, N_("_New Project"), NULL,
 	 N_("Create a new project"), NULL },
@@ -985,7 +985,7 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   chooser,
 				   "Chooser",
 				   _("Browse the file system"),
-				   _("Display file browser"),
+				   _("Display File Browser"),
 				   GTK_STOCK_DIRECTORY,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
 
@@ -1009,7 +1009,7 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   search,
 				   "Search",
 				   _("Search files using keywords"),
-				   _("Display search"),
+				   _("Display Search"),
 				   GTK_STOCK_FIND,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
 
@@ -1030,7 +1030,7 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   playlist,
 				   "Playlist",
 				   _("Display playlists and their contents"),
-				   _("Display playlists"),
+				   _("Display Playlists"),
 				   "audio-x-generic", 
 				   BRASERO_LAYOUT_AUDIO);
 

@@ -585,7 +585,10 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 	}
 
 	dest = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-	brasero_track_set_audio_source (dest, path_dest, BRASERO_AUDIO_FORMAT_RAW);
+	brasero_track_set_audio_source (dest,
+					path_dest,
+					BRASERO_AUDIO_FORMAT_RAW|
+					BRASERO_AUDIO_FORMAT_44100);
 
 	/* NOTE: there is no gap and start = 0 since these tracks are the result
 	 * of the transformation of previous ones */
@@ -860,7 +863,10 @@ brasero_transcode_push_track (BraseroTranscode *transcode)
 	brasero_job_get_output_type (BRASERO_JOB (transcode), &type);
 	track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
 
-	brasero_track_set_audio_source (track, output, BRASERO_AUDIO_FORMAT_RAW);
+	brasero_track_set_audio_source (track,
+					output,
+					BRASERO_AUDIO_FORMAT_RAW|
+					BRASERO_AUDIO_FORMAT_44100);
 	brasero_track_set_audio_boundaries (track, 0, length, 0);
 	brasero_track_set_audio_info (track, info);
 
@@ -1438,7 +1444,8 @@ brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
-					 BRASERO_AUDIO_FORMAT_RAW);
+					 BRASERO_AUDIO_FORMAT_RAW|
+					 BRASERO_AUDIO_FORMAT_44100);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED);

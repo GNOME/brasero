@@ -605,6 +605,7 @@ brasero_plugin_check_image_flags (BraseroPlugin *self,
 	BraseroPluginPrivate *priv;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
+
 	current &= BRASERO_PLUGIN_IMAGE_FLAG_MASK;
 
 	/* If there is no flag that's no use checking anything. If there is no
@@ -620,6 +621,21 @@ brasero_plugin_check_image_flags (BraseroPlugin *self,
 					     current,
 					     NULL,
 					     NULL);
+}
+
+gboolean
+brasero_plugin_check_media_restrictions (BraseroPlugin *self,
+					 BraseroMedia media)
+{
+	BraseroPluginPrivate *priv;
+
+	priv = BRASERO_PLUGIN_PRIVATE (self);
+
+	/* no restrictions */
+	if (!priv->flags)
+		return TRUE;
+
+	return (brasero_plugin_get_flags (priv->flags, media) != NULL);
 }
 
 gboolean

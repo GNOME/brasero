@@ -297,6 +297,11 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 
 		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	}
+	else if (sscanf (line, "Formating in progress: %d.%d %% done", &mb_written, &mb_total) == 2) {
+		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
+		brasero_job_set_progress (BRASERO_JOB (wodim),
+					  (gdouble) ((gdouble) mb_written + ((gdouble) mb_total) / 10.0));
+	}
 	else if (sscanf (line, "Track %*d: %*s %d MB ", &mb_total) == 1) {
 /*		if (mb_total > 0)
 			priv->tracks_total_bytes += mb_total * 1048576;
@@ -1052,7 +1057,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "wodim",
 			       _("use wodim to burn CDs"),
 			       "Philippe Rouquier",
-			       1);
+			       0);
 
 	/* First see if this plugin can be used */
 	result = brasero_process_check_path ("wodim", error);
@@ -1082,7 +1087,8 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
-					BRASERO_AUDIO_FORMAT_RAW);
+					BRASERO_AUDIO_FORMAT_RAW|
+					BRASERO_AUDIO_FORMAT_44100);
 
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
@@ -1093,20 +1099,6 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	 * used to start a multisession DVD-RW or even continue one.
 	 * I didn't try with DVD-W since I didn't want to waste one for nothing.
 	 */
-
-/*	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVD|
-				  BRASERO_MEDIUM_SEQUENTIAL|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_DUMMY|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-*/
-
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
@@ -1120,33 +1112,6 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-/*	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVD|
-				  BRASERO_MEDIUM_SEQUENTIAL|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_DATA,
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
-				  BRASERO_BURN_FLAG_DUMMY|
-				  BRASERO_BURN_FLAG_NOGRACE|
-				  BRASERO_BURN_FLAG_APPEND|
-				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE); */
-
-	/* DVD+ R/RW don't support dummy mode 
-	 * NOTE: don't mix dao and multisession */
-/*	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVDR_PLUS|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-*/
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
@@ -1156,20 +1121,8 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-/*
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVDR_PLUS|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_DATA,
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
-				  BRASERO_BURN_FLAG_NOGRACE|
-				  BRASERO_BURN_FLAG_APPEND|
-				  BRASERO_BURN_FLAG_MERGE,
-				  BRASERO_BURN_FLAG_NONE);
-*/
-	/* for DVD+RW */
+	/* for DVD+RW 
+	 * NOTE: we don't accept unformatted media here */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_BLANK,
@@ -1224,40 +1177,24 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* blanking/formatting caps and flags for +/sequential RW
 	 * NOTE: restricted overwrite DVD-RW can't be formatted.
 	 * moreover DVD+RW are formatted while DVD-RW sequential are blanked.
-	  * NOTE: blanking DVD-RW doesn't work */
+	 * NOTE: blanking DVD-RW doesn't work */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_PLUS|
-//					BRASERO_MEDIUM_SEQUENTIAL|
 					BRASERO_MEDIUM_REWRITABLE|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_BLANK);
 	brasero_plugin_blank_caps (plugin, output);
 	g_slist_free (output);
-
-	/* This media can be blanked fast or full like any CDRW.
-	 * From the tests, it appears that the way wodim formats the DVDRW makes
-	 * it unable to support multisession. dvd+rw-format is needed to format
-	 * it correctly after a fast blanking. 
-	brasero_plugin_set_blank_flags (plugin,
-					BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_SEQUENTIAL|
-					BRASERO_MEDIUM_REWRITABLE|
-					BRASERO_MEDIUM_APPENDABLE|
-					BRASERO_MEDIUM_HAS_DATA|
-					BRASERO_MEDIUM_BLANK|
-					BRASERO_MEDIUM_CLOSED,
-					BRASERO_BURN_FLAG_FAST_BLANK|
-					BRASERO_BURN_FLAG_NOGRACE,
-					BRASERO_BURN_FLAG_NONE);
-	*/
 
 	/* again DVD+RW don't support dummy */
 	brasero_plugin_set_blank_flags (plugin,
 					BRASERO_MEDIUM_DVDRW_PLUS|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA|
+					BRASERO_MEDIUM_UNFORMATTED|
 					BRASERO_MEDIUM_BLANK|
 					BRASERO_MEDIUM_CLOSED,
 					BRASERO_BURN_FLAG_NOGRACE,

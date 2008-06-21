@@ -794,6 +794,29 @@ brasero_caps_link_check_record_flags (BraseroCapsLink *link,
 	return FALSE;
 }
 
+static gboolean
+brasero_caps_link_check_media_restrictions (BraseroCapsLink *link,
+					    BraseroMedia media)
+{
+	GSList *iter;
+
+	/* Go through all plugins: at least one must support record flags */
+	for (iter = link->plugins; iter; iter = iter->next) {
+		gboolean result;
+		BraseroPlugin *plugin;
+
+		plugin = iter->data;
+		if (!brasero_plugin_get_active (plugin))
+			continue;
+
+		result = brasero_plugin_check_media_restrictions (plugin, media);
+		if (result)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 static BraseroPlugin *
 brasero_caps_link_find_plugin (BraseroCapsLink *link,
 			       gint group_id,
@@ -837,6 +860,8 @@ brasero_caps_link_find_plugin (BraseroCapsLink *link,
 			if (!result)
 				continue;
 		}
+		else if (!brasero_plugin_check_media_restrictions (plugin, media))
+			continue;
 
 		if (group_id > 0 && candidate) {
 			/* the candidate must be in the favourite group as much as possible */
@@ -1250,6 +1275,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		/* retry with the same disc type but blank this time */
 		media &= ~(BRASERO_MEDIUM_CLOSED|
 			   BRASERO_MEDIUM_APPENDABLE|
+	   		   BRASERO_MEDIUM_UNFORMATTED|
 			   BRASERO_MEDIUM_HAS_DATA|
 			   BRASERO_MEDIUM_HAS_AUDIO);
 		media |= BRASERO_MEDIUM_BLANK;
@@ -1671,8 +1697,11 @@ brasero_caps_find_link (BraseroCaps *caps,
 		/* first see if that's the perfect fit:
 		 * - it must have the same caps (type + subtype)
 		 * - it must have the proper IO */
-		if (link->caps->type.type == BRASERO_TRACK_TYPE_DATA
-		&& !brasero_caps_link_check_data_flags (link, session_flags, media))
+		if (link->caps->type.type == BRASERO_TRACK_TYPE_DATA) {
+			if (!brasero_caps_link_check_data_flags (link, session_flags, media))
+				continue;
+		}
+		else if (!brasero_caps_link_check_media_restrictions (link, media))
 			continue;
 
 		if ((link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
@@ -1776,6 +1805,7 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	media = output->subtype.media;
 	media &= ~(BRASERO_MEDIUM_CLOSED|
 		   BRASERO_MEDIUM_APPENDABLE|
+		   BRASERO_MEDIUM_UNFORMATTED|
 		   BRASERO_MEDIUM_HAS_DATA|
 		   BRASERO_MEDIUM_HAS_AUDIO);
 	media |= BRASERO_MEDIUM_BLANK;
@@ -2059,6 +2089,8 @@ brasero_caps_get_flags (BraseroCaps *caps,
 			if ((tmp & data_supported) != tmp)
 				continue;
 		}
+		else if (!brasero_caps_link_check_media_restrictions (link, media))
+			continue;
 
 		/* see if that's the perfect fit */
 		if ((link->caps->flags & BRASERO_PLUGIN_IO_ACCEPT_FILE)
@@ -2311,7 +2343,7 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		 * then write on its own. Basically that works only with
 		 * overwrite formatted discs, DVD+RW, ...) */
 
-		if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))) {
+		if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_UNFORMATTED))) {
 			/* media must have data/audio */
 			return BRASERO_BURN_NOT_SUPPORTED;
 		}
@@ -2327,11 +2359,12 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		supported_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 		compulsory_flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 
-		/* pretends it is blank and see if it would work. If it works
-		 * then that means that the BLANK_BEFORE_WRITE flag is
-		 * compulsory. */
+		/* pretends it is blank and formatted to see if it would work.
+		 * If it works then that means that the BLANK_BEFORE_WRITE flag
+		 * is compulsory. */
 		media &= ~(BRASERO_MEDIUM_CLOSED|
 			   BRASERO_MEDIUM_APPENDABLE|
+			   BRASERO_MEDIUM_UNFORMATTED|
 			   BRASERO_MEDIUM_HAS_DATA|
 			   BRASERO_MEDIUM_HAS_AUDIO);
 		media |= BRASERO_MEDIUM_BLANK;
@@ -2766,6 +2799,8 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		BraseroCaps *caps;
 		BraseroAudioFormat common;
 		BraseroPluginIOFlag common_io;
+		BraseroAudioFormat common_audio;
+		BraseroAudioFormat common_video;
 
 		caps = iter->data;
 
@@ -2783,10 +2818,20 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 			continue;
 		}
 
-		/* search caps strictly encompassed or encompassing our format */
-		common = caps->type.subtype.audio_format & format;
-		if (common == BRASERO_AUDIO_FORMAT_NONE)
+		/* Search caps strictly encompassed or encompassing our format
+		 * NOTE: make sure that if there is a VIDEO stream in one of
+		 * them, the other does have a VIDEO stream too. */
+		common_audio = BRASERO_AUDIO_CAPS_AUDIO (caps->type.subtype.audio_format) & 
+			       BRASERO_AUDIO_CAPS_AUDIO (format);
+		if (common_audio == BRASERO_AUDIO_FORMAT_NONE)
 			continue;
+
+		common_video = BRASERO_AUDIO_CAPS_VIDEO (caps->type.subtype.audio_format) & 
+			       BRASERO_AUDIO_CAPS_VIDEO (format);
+		if (common_video == BRASERO_AUDIO_FORMAT_NONE)
+			continue;
+
+		common = common_audio|common_video;
 
 		/* encompassed caps just add it to retval */
 		if (caps->type.subtype.audio_format == common)
@@ -2945,7 +2990,19 @@ brasero_caps_disc_new_status (GSList *retval,
 	if ((type & BRASERO_MEDIUM_BLANK)
 	&& !(media & BRASERO_MEDIUM_ROM)) {
 		/* if media is blank there is no other possible property */
-		retval = brasero_caps_disc_lookup_or_create (retval, media|BRASERO_MEDIUM_BLANK);
+		if (BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_PLUS)
+		||  BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+		||  BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+			/* This is only for above types */
+			retval = brasero_caps_disc_lookup_or_create (retval,
+								     media|
+								     BRASERO_MEDIUM_BLANK|
+								     (type & BRASERO_MEDIUM_UNFORMATTED));
+		}
+		else
+			retval = brasero_caps_disc_lookup_or_create (retval,
+								     media|
+								     BRASERO_MEDIUM_BLANK);
 	}
 
 	if (type & BRASERO_MEDIUM_CLOSED) {

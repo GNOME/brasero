@@ -50,6 +50,9 @@ struct _BraseroVobPrivate
 	GstElement *video;
 
 	BraseroAudioFormat format;
+
+	guint svcd:1;
+	guint is_video_dvd:1;
 };
 
 #define BRASERO_VOB_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VOB, BraseroVobPrivate))
@@ -87,19 +90,20 @@ static void
 brasero_vob_finished (BraseroVob *vob)
 {
 	BraseroVobPrivate *priv;
+	BraseroTrackType type;
 	gchar *output = NULL;
 	BraseroTrack *track;
 
 	priv = BRASERO_VOB_PRIVATE (vob);
 
+	memset (&type, 0, sizeof (BraseroTrackType));
+	brasero_job_get_output_type (BRASERO_JOB (vob), &type);
 	brasero_job_get_audio_output (BRASERO_JOB (vob), &output);
 
 	track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
 	brasero_track_set_audio_source (track,
 					output,
-					priv->format|
-					BRASERO_AUDIO_FORMAT_RAW|
-					BRASERO_VIDEO_FORMAT_MPEG2);
+					type.subtype.audio_format);
 
 	brasero_job_add_track (BRASERO_JOB (vob), track);
 	brasero_track_unref (track);
@@ -289,6 +293,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 			     GError **error)
 {
 	GstElement *queue;
+	GstElement *queue1;
 	GstElement *encode;
 	GstElement *convert;
 	GstElement *resample;
@@ -344,9 +349,60 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
 
-	gst_element_link_many (queue, convert, resample, encode, NULL);
-	brasero_vob_link_audio (vob, queue, encode, tee, muxer);
+	/* another queue */
+	queue1 = gst_element_factory_make ("queue", NULL);
+	if (queue1 == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("queue1 element can't be created"));
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+	g_object_set (queue1,
+		      "max-size-bytes", 0,
+		      "max-size-buffers", 0,
+		      "max-size-time", (gint64) 0,
+		      NULL);
 
+	if (!priv->is_video_dvd) {
+		GstElement *filter;
+		GstCaps *filtercaps;
+
+		/* This is for (S)VCD which need to have audio at 44100 khz */
+
+		/* create a filter */
+		filter = gst_element_factory_make ("capsfilter", NULL);
+		if (filter == NULL) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("filter can't be created"));
+			goto error;
+		}
+		gst_bin_add (GST_BIN (priv->pipeline), filter);
+
+		BRASERO_JOB_LOG (vob, "Setting rate to 44100");
+
+		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
+								   "channels", G_TYPE_INT, 2,
+								   "width", G_TYPE_INT, 16,
+								   "depth", G_TYPE_INT, 16,
+								   "endianness", G_TYPE_INT, 1234,
+								   "rate", G_TYPE_INT, 44100,
+								   "signed", G_TYPE_BOOLEAN, TRUE,
+								   NULL),
+						NULL);
+
+		g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
+		gst_caps_unref (filtercaps);
+
+		gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL);
+	}
+	else
+		gst_element_link_many (queue, convert, resample, encode, queue1, NULL);
+
+	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 	return TRUE;
 
 error:
@@ -448,32 +504,42 @@ brasero_vob_build_audio_bins (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), tee);
 
-	/* PCM : always */
-	if (!brasero_vob_build_audio_pcm (vob, tee, muxer, error))
+	if (priv->is_video_dvd) {
+		/* Get output format */
+		value = NULL;
+		brasero_job_tag_lookup (BRASERO_JOB (vob),
+					BRASERO_DVD_AUDIO_STREAMS,
+					&value);
+
+		if (value)
+			priv->format = g_value_get_int (value);
+
+		if (priv->format == BRASERO_AUDIO_FORMAT_NONE)
+			priv->format = BRASERO_AUDIO_FORMAT_RAW;
+
+		if (priv->format & BRASERO_AUDIO_FORMAT_RAW) {
+			/* PCM : on demand */
+			BRASERO_JOB_LOG (vob, "Adding PCM audio stream");
+			if (!brasero_vob_build_audio_pcm (vob, tee, muxer, error))
+				goto error;
+		}
+
+		if (priv->format & BRASERO_AUDIO_FORMAT_AC3) {
+			/* AC3 : on demand */
+			BRASERO_JOB_LOG (vob, "Adding AC3 audio stream");
+			if (!brasero_vob_build_audio_ac3 (vob, tee, muxer, error))
+				goto error;
+		}
+
+		if (priv->format & BRASERO_AUDIO_FORMAT_MP2) {
+			/* MP2 : on demand */
+			BRASERO_JOB_LOG (vob, "Adding MP2 audio stream");
+			if (!brasero_vob_build_audio_mp2 (vob, tee, muxer, error))
+				goto error;
+		}
+	}
+	else if (!brasero_vob_build_audio_mp2 (vob, tee, muxer, error))
 		goto error;
-
-	/* Get output format */
-	value = NULL;
-	brasero_job_tag_lookup (BRASERO_JOB (vob),
-				BRASERO_AUDIO_VIDEO_OUTPUT_FORMAT,
-				&value);
-
-	if (value)
-		priv->format = g_value_get_int (value);
-	else
-		priv->format = BRASERO_AUDIO_FORMAT_NONE;
-
-	if (priv->format & BRASERO_AUDIO_FORMAT_AC3) {
-		/* AC3 : on demand */
-		if (!brasero_vob_build_audio_ac3 (vob, tee, muxer, error))
-			goto error;
-	}
-
-	if (priv->format & BRASERO_AUDIO_FORMAT_MP2) {
-		/* MP2 : on demand */
-		if (!brasero_vob_build_audio_mp2 (vob, tee, muxer, error))
-			goto error;
-	}
 
 	return tee;
 
@@ -572,9 +638,20 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
 
-	g_object_set (encode,
-		      "format", 8,
-		      NULL);
+	if (priv->is_video_dvd)
+		g_object_set (encode,
+			      "format", 8,
+			      NULL);
+	/* NOTE: there is another option to improve compatibility with vcdimager
+	 * but that would mean be sure that it's the next. */
+	else if (priv->svcd)
+		g_object_set (encode,
+			      "format", 4,
+			      NULL);
+	else
+		g_object_set (encode,
+			      "format", 1,
+			      NULL);
 
 	/* settings */
 	value = NULL;
@@ -593,34 +670,86 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 				      "norm", 110,
 				      "framerate", 4,
 				      NULL);
-			filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
-									   "framerate", GST_TYPE_FRACTION, 30000, 1001,
-									   "width", G_TYPE_INT, 720,
-									   "height", G_TYPE_INT, 480,
-									   NULL),
-							gst_structure_new ("video/x-raw-rgb",
-									   "framerate", GST_TYPE_FRACTION, 30000, 1001,
-									   "width", G_TYPE_INT, 720,
-									   "height", G_TYPE_INT, 480,
-									   NULL),
-							NULL);
+
+			if (priv->is_video_dvd)
+				filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+										   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+										   "width", G_TYPE_INT, 720,
+										   "height", G_TYPE_INT, 480,
+										   NULL),
+								gst_structure_new ("video/x-raw-rgb",
+										   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+										   "width", G_TYPE_INT, 720,
+										   "height", G_TYPE_INT, 480,
+										   NULL),
+								NULL);
+			else if (priv->svcd)
+				filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+										   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+										   "width", G_TYPE_INT, 480,
+										   "height", G_TYPE_INT, 480,
+										   NULL),
+								gst_structure_new ("video/x-raw-rgb",
+										   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+										   "width", G_TYPE_INT, 480,
+										   "height", G_TYPE_INT, 480,
+										   NULL),
+								NULL);
+			else
+				filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+										   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+										   "width", G_TYPE_INT, 352,
+										   "height", G_TYPE_INT, 240,
+										   NULL),
+								gst_structure_new ("video/x-raw-rgb",
+										   "framerate", GST_TYPE_FRACTION, 30000, 1001,
+										   "width", G_TYPE_INT, 352,
+										   "height", G_TYPE_INT, 240,
+										   NULL),
+								NULL);
 		}
 		else if (rate == BRASERO_VIDEO_FRAMERATE_PAL_SECAM) {
 			g_object_set (encode,
 				      "norm", 112,
 				      "framerate", 3,
 				      NULL);
-			filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
-									   "framerate", GST_TYPE_FRACTION, 25, 1,
-									   "width", G_TYPE_INT, 720,
-									   "height", G_TYPE_INT, 576,
-									   NULL),
-							gst_structure_new ("video/x-raw-rgb",
-									   "framerate", GST_TYPE_FRACTION, 25, 1,
-									   "width", G_TYPE_INT, 720,
-									   "height", G_TYPE_INT, 576,
-									   NULL),
-							NULL);
+
+			if (priv->is_video_dvd)
+				filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+										   "framerate", GST_TYPE_FRACTION, 25, 1,
+										   "width", G_TYPE_INT, 720,
+										   "height", G_TYPE_INT, 576,
+										   NULL),
+								gst_structure_new ("video/x-raw-rgb",
+										   "framerate", GST_TYPE_FRACTION, 25, 1,
+										   "width", G_TYPE_INT, 720,
+										   "height", G_TYPE_INT, 576,
+										   NULL),
+								NULL);
+			else if (priv->svcd)
+				filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+										   "framerate", GST_TYPE_FRACTION, 25, 1,
+										   "width", G_TYPE_INT, 480,
+										   "height", G_TYPE_INT, 576,
+										   NULL),
+								gst_structure_new ("video/x-raw-rgb",
+										   "framerate", GST_TYPE_FRACTION, 25, 1,
+										   "width", G_TYPE_INT, 480,
+										   "height", G_TYPE_INT, 576,
+										   NULL),
+								NULL);
+			else
+				filtercaps = gst_caps_new_full (gst_structure_new ("video/x-raw-yuv",
+										   "framerate", GST_TYPE_FRACTION, 25, 1,
+										   "width", G_TYPE_INT, 352,
+										   "height", G_TYPE_INT, 288,
+										   NULL),
+								gst_structure_new ("video/x-raw-rgb",
+										   "framerate", GST_TYPE_FRACTION, 25, 1,
+										   "width", G_TYPE_INT, 352,
+										   "height", G_TYPE_INT, 288,
+										   NULL),
+								NULL);
 		}
 
 		if (filtercaps) {
@@ -721,13 +850,23 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("ffmux_mpeg can't be created"));
+			     _("mplex can't be created"));
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), muxer);
-	g_object_set (muxer,
-		      "format", 8,
-		      NULL);
+
+	if (priv->is_video_dvd)
+		g_object_set (muxer,
+			      "format", 8,
+			      NULL);
+	else if (priv->svcd)
+		g_object_set (muxer,
+			      "format", 4,
+			      NULL);
+	else
+		g_object_set (muxer,
+			      "format", 1,
+			      NULL);
 
 	/* create sink */
 	output = NULL;
@@ -789,7 +928,7 @@ brasero_vob_start (BraseroJob *job,
 {
 	BraseroVobPrivate *priv;
 	BraseroJobAction action;
-	BraseroTrack *track;
+	BraseroTrackType output;
 
 	brasero_job_get_action (job, &action);
 	if (action != BRASERO_JOB_ACTION_IMAGE)
@@ -797,10 +936,26 @@ brasero_vob_start (BraseroJob *job,
 
 	priv = BRASERO_VOB_PRIVATE (job);
 
-	/* get tracks */
-	brasero_job_get_current_track (job, &track);
-	if (!track)
-		return BRASERO_BURN_ERR;
+	/* get destination medium type */
+	memset (&output, 0, sizeof (BraseroTrackType));
+	brasero_job_get_output_type (job, &output);
+	if (output.subtype.audio_format & BRASERO_VIDEO_FORMAT_VCD) {
+		GValue *value = NULL;
+
+		priv->is_video_dvd = FALSE;
+		brasero_job_tag_lookup (job,
+					BRASERO_VCD_TYPE,
+					&value);
+		if (value)
+			priv->svcd = (g_value_get_int (value) == BRASERO_SVCD);
+	}
+	else
+		priv->is_video_dvd = TRUE;
+
+	BRASERO_JOB_LOG (job,
+			 "Got output type (is DVD %i, is SVCD %i",
+			 priv->is_video_dvd,
+			 priv->svcd);
 
 	if (!brasero_vob_build_pipeline (BRASERO_VOB (job), error))
 		return BRASERO_BURN_ERR;
@@ -908,11 +1063,19 @@ brasero_vob_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_AUDIO_FORMAT_UNDEFINED|
 					BRASERO_VIDEO_FORMAT_UNDEFINED);
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					 BRASERO_AUDIO_FORMAT_MP2|
+					 BRASERO_AUDIO_FORMAT_44100|
+					 BRASERO_VIDEO_FORMAT_VCD);
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+
+	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					 BRASERO_AUDIO_FORMAT_AC3|
 					 BRASERO_AUDIO_FORMAT_MP2|
 					 BRASERO_AUDIO_FORMAT_RAW|
-					 BRASERO_VIDEO_FORMAT_MPEG2);
-
+					 BRASERO_AUDIO_FORMAT_44100|
+					 BRASERO_AUDIO_FORMAT_48000|
+					 BRASERO_VIDEO_FORMAT_VIDEO_DVD);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 	g_slist_free (input);

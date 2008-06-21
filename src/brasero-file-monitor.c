@@ -109,6 +109,8 @@ brasero_file_monitor_moved_to_event (BraseroFileMonitor *self,
 	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
 	klass = BRASERO_FILE_MONITOR_GET_CLASS (self);
 
+	BRASERO_BURN_LOG ("File Monitoring (move to for %s)", name);
+
 	if (!cookie) {
 		if (klass->file_added)
 			klass->file_added (self, callback_data, name);
@@ -181,6 +183,8 @@ brasero_file_monitor_move_timeout_cb (BraseroFileMonitor *self)
 	data = priv->moved_list->data;
 	priv->moved_list = g_slist_remove (priv->moved_list, data);
 
+	BRASERO_BURN_LOG ("File Monitoring (move timeout for %s)", data->name);
+
 	if (klass->file_removed)
 		klass->file_removed (self,
 				     data->type,
@@ -204,6 +208,8 @@ brasero_file_monitor_moved_from_event (BraseroFileMonitor *self,
 	BraseroFileMonitorPrivate *priv;
 
 	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("File Monitoring (moved from event for %s)", name);
 
 	if (!cookie) {
 		BraseroFileMonitorClass *klass;
@@ -250,20 +256,25 @@ brasero_file_monitor_directory_event (BraseroFileMonitor *self,
 	 * This is done to avoid treating events twice.
 	 * IN_DELETE_SELF or IN_MOVE_SELF are therefore not possible here. */
 	if (event->mask & IN_ATTRIB) {
+		BRASERO_BURN_LOG ("File Monitoring (attributes changed for %s)", name);
 		if (klass->file_modified)
 			klass->file_modified (self, callback_data, name);
 	}
 	else if (event->mask & IN_MODIFY) {
+		BRASERO_BURN_LOG ("File Monitoring (modified for %s)", name);
 		if (klass->file_modified)
 			klass->file_modified (self, callback_data, name);
 	}
 	else if (event->mask & IN_MOVED_FROM) {
+		BRASERO_BURN_LOG ("File Monitoring (moved from for %s)", name);
 		brasero_file_monitor_moved_from_event (self, type, callback_data, name, event->cookie);
 	}
 	else if (event->mask & IN_MOVED_TO) {
+		BRASERO_BURN_LOG ("File Monitoring (moved to for %s)", name);
 		brasero_file_monitor_moved_to_event (self, callback_data, name, event->cookie);
 	}
 	else if (event->mask & (IN_DELETE|IN_UNMOUNT)) {
+		BRASERO_BURN_LOG ("File Monitoring (delete/unmount for %s)", name);
 		if (klass->file_removed)
 			klass->file_removed (self,
 					     type,
@@ -271,6 +282,7 @@ brasero_file_monitor_directory_event (BraseroFileMonitor *self,
 					     name);
 	}
 	else if (event->mask & IN_CREATE) {
+		BRASERO_BURN_LOG ("File Monitoring (create for %s)", name);
 		if (klass->file_added)
 			klass->file_added (self, callback_data, name);
 	}

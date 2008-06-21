@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-03 02:50+0000\n"
-"PO-Revision-Date: 2008-06-07 15:22+0200\n"
+"POT-Creation-Date: 2008-06-14 13:59+0000\n"
+"PO-Revision-Date: 2008-06-15 13:23+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -310,58 +310,62 @@ msgstr "Pausar"
 msgid "Split"
 msgstr "Partir"
 
-#: ../src/brasero-audio-disc.c:683
+#: ../src/brasero-audio-disc.c:649
+msgid "Track"
+msgstr "Pista"
+
+#: ../src/brasero-audio-disc.c:687
 msgid "Title"
 msgstr "Título"
 
-#: ../src/brasero-audio-disc.c:709
+#: ../src/brasero-audio-disc.c:713
 msgid "Artist"
 msgstr "Artista"
 
-#: ../src/brasero-audio-disc.c:718 ../src/brasero-playlist.c:337
+#: ../src/brasero-audio-disc.c:722 ../src/brasero-playlist.c:337
 #: ../src/brasero-split-dialog.c:1195
 msgid "Length"
 msgstr "Duración"
 
-#: ../src/brasero-audio-disc.c:1000
+#: ../src/brasero-audio-disc.c:1004
 msgid "<i><b>Pause</b></i>"
 msgstr "<i><b>Pausa</b></i>"
 
-#: ../src/brasero-audio-disc.c:1141
+#: ../src/brasero-audio-disc.c:1145
 msgid "The track will be padded at its end:"
 msgstr "La pista se rellenará al final:"
 
-#: ../src/brasero-audio-disc.c:1143
+#: ../src/brasero-audio-disc.c:1147
 msgid "Track length"
 msgstr "Longitud de la pista"
 
-#: ../src/brasero-audio-disc.c:1145
+#: ../src/brasero-audio-disc.c:1149
 msgid "the track is shorter than 6 seconds."
 msgstr "la pista es más corta de 6 segundos."
 
-#: ../src/brasero-audio-disc.c:1327
+#: ../src/brasero-audio-disc.c:1331
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr "«%s» no puede ser manejado por gstreamer:"
 
-#: ../src/brasero-audio-disc.c:1331
+#: ../src/brasero-audio-disc.c:1335
 msgid "Unhandled song"
 msgstr "Canción no manejada"
 
-#: ../src/brasero-audio-disc.c:1334
+#: ../src/brasero-audio-disc.c:1338
 msgid "Make sure the appropriate codec is installed."
 msgstr "Asegúrese que está instalado el códec apropiado."
 
-#: ../src/brasero-audio-disc.c:1360
+#: ../src/brasero-audio-disc.c:1364
 #, c-format
 msgid "Do you want to add a \"%s\" which is a video file?"
 msgstr "¿Quiere añadir «%s» que es un archivo de vídeo?"
 
-#: ../src/brasero-audio-disc.c:1364
+#: ../src/brasero-audio-disc.c:1368
 msgid "Video file"
 msgstr "Archivo de vídeo"
 
-#: ../src/brasero-audio-disc.c:1367
+#: ../src/brasero-audio-disc.c:1371
 msgid ""
 "This file is a video and therefore only the audio part can be written to the "
 "disc."
@@ -369,65 +373,65 @@ msgstr ""
 "Este es un archivo de vídeo y por ello sólo se puede escribir la parte de "
 "sonido al disco."
 
-#: ../src/brasero-audio-disc.c:1370
+#: ../src/brasero-audio-disc.c:1374
 msgid "_Ignore video"
 msgstr "_Ignorar vídeos"
 
-#: ../src/brasero-audio-disc.c:1373
+#: ../src/brasero-audio-disc.c:1377
 msgid "_Add video"
 msgstr "_Añadir vídeo"
 
-#: ../src/brasero-audio-disc.c:1499
+#: ../src/brasero-audio-disc.c:1503
 msgid "Do you want to search for audio discs inside the directory?"
 msgstr "¿Quiere buscar discos de sonido dentro del directorio?"
 
-#: ../src/brasero-audio-disc.c:1501
+#: ../src/brasero-audio-disc.c:1505
 msgid "Directory search"
 msgstr "Búsqueda en directorio"
 
-#: ../src/brasero-audio-disc.c:1504
+#: ../src/brasero-audio-disc.c:1508
 msgid "Directories can't be added to an audio disc:"
 msgstr "No se pueden añadir directorios a un disco de audio:"
 
-#: ../src/brasero-audio-disc.c:1508
+#: ../src/brasero-audio-disc.c:1512
 msgid "Search directory"
 msgstr "Directorio de búsqueda"
 
-#: ../src/brasero-audio-disc.c:1577
+#: ../src/brasero-audio-disc.c:1581
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr "No se puede abrir archivo «%s»."
 
-#: ../src/brasero-audio-disc.c:1581 ../src/brasero-data-disc.c:745
+#: ../src/brasero-audio-disc.c:1585 ../src/brasero-data-disc.c:745
 msgid "Unreadable file"
 msgstr "Archivo ilegible"
 
-#: ../src/brasero-audio-disc.c:1727 ../src/brasero-audio-disc.c:1752
+#: ../src/brasero-audio-disc.c:1731 ../src/brasero-audio-disc.c:1756
 msgid "loading"
 msgstr "cargando"
 
-#: ../src/brasero-audio-disc.c:2749
+#: ../src/brasero-audio-disc.c:2753
 msgid "Select one song only please."
 msgstr "Seleccione sólo una canción."
 
-#: ../src/brasero-audio-disc.c:2751 ../src/brasero-split-dialog.c:611
+#: ../src/brasero-audio-disc.c:2755 ../src/brasero-split-dialog.c:611
 msgid "Error"
 msgstr "Error"
 
-#: ../src/brasero-audio-disc.c:2754
+#: ../src/brasero-audio-disc.c:2758
 msgid "Impossible to split more than one song at a time"
 msgstr "Imposible partir más de una canción al mismo tiempo"
 
-#: ../src/brasero-audio-disc.c:3644
+#: ../src/brasero-audio-disc.c:3648
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr "El archivo «%s» fue eliminado del sistema de archivos:"
 
-#: ../src/brasero-audio-disc.c:3648
+#: ../src/brasero-audio-disc.c:3652
 msgid "File deletion noticed"
 msgstr "Se detectó el borrado de un archivo"
 
-#: ../src/brasero-audio-disc.c:3650
+#: ../src/brasero-audio-disc.c:3654
 msgid "it will be removed from the project."
 msgstr "Se eliminará del proyecto."
 
@@ -2159,8 +2163,8 @@ msgid ""
 "The size of the project is too large for the disc even with the overburn "
 "option."
 msgstr ""
-"El tamaño del proyecto es demasiado grande para el disco, aún con la "
-"opción overburn activada."
+"El tamaño del proyecto es demasiado grande para el disco, aún con la opción "
+"overburn activada."
 
 #: ../src/brasero-project.c:547
 msgid "Would you like to activate overburn?"
@@ -2231,9 +2235,9 @@ msgid ""
 "your mind, you can change your choice later in the Removable Drives and "
 "Media Preferences whether or not you chose brasero."
 msgstr ""
-"Este es un diálogo de primera ejecución que no se mostrará de nuevo. Si cambia "
-"de idea, puede cambiar su elección posteriormente en las Preferencias de unidades "
-"y soportes extraíbles."
+"Este es un diálogo de primera ejecución que no se mostrará de nuevo. Si "
+"cambia de idea, puede cambiar su elección posteriormente en las Preferencias "
+"de unidades y soportes extraíbles."
 
 #. NOTE for translators the %s is the old application name
 #: ../src/brasero-project.c:928
@@ -2467,7 +2471,7 @@ msgstr "Grabar una imagen"
 msgid "_Open..."
 msgstr "_Abrir…"
 
-#: ../src/brasero-project-manager.c:124 ../src/brasero-project-manager.c:804
+#: ../src/brasero-project-manager.c:124 ../src/brasero-project-manager.c:805
 msgid "Open a project"
 msgstr "Abrir un proyecto"
 
@@ -2531,35 +2535,35 @@ msgstr "Brasero: Copiar un disco"
 msgid "The project '%s' does not exist."
 msgstr "El proyecto «%s» no existe."
 
-#: ../src/brasero-project-manager.c:904
+#: ../src/brasero-project-manager.c:905
 msgid "New"
 msgstr "Nuevo"
 
-#: ../src/brasero-project-manager.c:908
+#: ../src/brasero-project-manager.c:909
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/brasero-project-manager.c:950
+#: ../src/brasero-project-manager.c:951
 msgid "Browse the file system"
 msgstr "Examinar el sistema de archivos"
 
-#: ../src/brasero-project-manager.c:951
+#: ../src/brasero-project-manager.c:952
 msgid "Display file browser"
 msgstr "Mostrar examinador de archivos"
 
-#: ../src/brasero-project-manager.c:974
+#: ../src/brasero-project-manager.c:975
 msgid "Search files using keywords"
 msgstr "Buscar archivos usando palabras clave"
 
-#: ../src/brasero-project-manager.c:975
+#: ../src/brasero-project-manager.c:976
 msgid "Display search"
 msgstr "Mostrar búsqueda"
 
-#: ../src/brasero-project-manager.c:995
+#: ../src/brasero-project-manager.c:996
 msgid "Display playlists and their contents"
 msgstr "Mostrar listas de reproducción y su contenido"
 
-#: ../src/brasero-project-manager.c:996
+#: ../src/brasero-project-manager.c:997
 msgid "Display playlists"
 msgstr "Mostrar listas de reproducción"
 
@@ -2958,7 +2962,7 @@ msgstr "no hay una unidad en la que grabar"
 msgid "merging data is impossible with this disc"
 msgstr "no se pueden mezclar los datos con este disco"
 
-#: ../src/burn.c:2150 ../src/burn-caps.c:1462
+#: ../src/burn.c:2150 ../src/burn-caps.c:1463
 #, c-format
 msgid "only one track at a time can be checked"
 msgstr "sólo se puede verificar una pista cada vez"
@@ -2978,7 +2982,7 @@ msgstr "error interno (código %i)"
 msgid "this operation is not supported"
 msgstr "esta operación no está soportada"
 
-#: ../src/burn-caps.c:1357
+#: ../src/burn-caps.c:1358
 #, c-format
 msgid "internal error in plugin system"
 msgstr "error interno en el sistema de complementos"
@@ -3009,7 +3013,7 @@ msgstr "el complemento %s no quiso funcionar. Intente desactivarlo"
 msgid "Insufficient space on media (%lli available for %lli)"
 msgstr "Espacio insuficiente en el medio (%lli disponible para %lli)"
 
-#: ../src/burn-job.c:459
+#: ../src/burn-job.c:462
 #, c-format
 msgid ""
 "the selected location does not have enough free space to store the disc "
@@ -3018,17 +3022,17 @@ msgstr ""
 "la ubicación seleccionada no tiene suficiente espacio para almacenar la "
 "imagen de disco (se necesitan %ld MiB)"
 
-#: ../src/burn-job.c:472
+#: ../src/burn-job.c:475
 #, c-format
 msgid "the size of the volume can't be checked (Unknown error)"
 msgstr "no se puede verificar el tamaño del volumen (error desconocido)"
 
-#: ../src/burn-job.c:624
+#: ../src/burn-job.c:627
 #, c-format
 msgid "the pipe couldn't be created (%s)"
 msgstr "no se puede crear el conducto (%s)"
 
-#: ../src/burn-job.c:653
+#: ../src/burn-job.c:656
 #, c-format
 msgid ""
 "plugin %s did not work properly.\n"
@@ -3037,7 +3041,7 @@ msgstr ""
 "el complemento %s no funcionó correctamente.\n"
 "Intente desactivarlo"
 
-#: ../src/burn-job.c:667
+#: ../src/burn-job.c:670
 #, c-format
 msgid ""
 "plugin %s didn't work properly (it does not support operation).\n"
@@ -3046,17 +3050,17 @@ msgstr ""
 "el complemento %s no funcionó correctamente (no soporta la operación).\n"
 "Intente desactivarlo"
 
-#: ../src/burn-job.c:887 ../src/burn-job.c:976
+#: ../src/burn-job.c:890 ../src/burn-job.c:979
 #, c-format
 msgid "a plugin did not behave properly"
 msgstr "un complemento no se comportó de la manera adecuada"
 
-#: ../src/burn-job.c:1074
+#: ../src/burn-job.c:1077
 #, c-format
 msgid "couldn't set non blocking mode"
 msgstr "no se puede establecer el modo no bloqueante"
 
-#: ../src/burn-job.c:1082
+#: ../src/burn-job.c:1085
 #, c-format
 msgid "couldn't get pipe flags"
 msgstr "no se pueden obtener banderas para el conducto"
@@ -3125,15 +3129,20 @@ msgstr "Disco Blu-ray escribible"
 msgid "Rewritable Blu-ray disc"
 msgstr "Disco Blu-ray reescribible"
 
-#: ../src/burn-mkisofs-base.c:126 ../src/burn-mkisofs-base.c:351
+#: ../src/burn-mkisofs-base.c:129 ../src/burn-mkisofs-base.c:402
 #, c-format
 msgid "the file is not stored locally"
 msgstr "El archivo no está almacenado localmente"
 
-#: ../src/burn-mkisofs-base.c:268
+#: ../src/burn-mkisofs-base.c:271
 #, c-format
 msgid "null graft point"
 msgstr "Punto graft nulo"
+
+#: ../src/burn-mkisofs-base.c:529
+#, c-format
+msgid "VIDEO_TS directory is missing or invalid"
+msgstr "Falta el directorio VIDEO_TS o no es válido"
 
 #: ../src/burn-process.c:100
 #, c-format
@@ -3153,7 +3162,9 @@ msgstr "imposible obtener la información"
 #: ../src/burn-process.c:138
 #, c-format
 msgid "%s is a symlink pointing to another program. Use the target program instead."
-msgstr "%s es un enlace simbólico apuntando a otro programa. Use el programa de objetivos en su lugar."
+msgstr ""
+"%s es un enlace simbólico apuntando a otro programa. Use el programa de "
+"objetivos en su lugar."
 
 #: ../src/burn-process.c:224
 #, c-format
@@ -3423,8 +3434,8 @@ msgstr "No queda espacio en el dispositivo"
 msgid "The file is too large for a CD"
 msgstr "El archivo es demasiado grande para un CD"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:330
-#: ../src/plugins/cdrtools/burn-mkisofs.c:322
+#: ../src/plugins/cdrkit/burn-genisoimage.c:345
+#: ../src/plugins/cdrtools/burn-mkisofs.c:337
 #, c-format
 msgid ""
 "failed to get the start point of the track. Make sure the media allow to add "
@@ -3433,11 +3444,11 @@ msgstr ""
 "fallo al obtener el punto de inicio de la pista. Asegúrese que el medio "
 "permite añadir archivos (no está cerrado)"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:476
+#: ../src/plugins/cdrkit/burn-genisoimage.c:504
 msgid "use genisoimage to create images from files"
 msgstr "usar genisoimage para crear imágenes de los archivos"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:484
+#: ../src/plugins/cdrkit/burn-genisoimage.c:512
 msgid "genisoimage could not be found in the path"
 msgstr "no se puede encontrar genisoimage en la ruta"
 
@@ -3556,9 +3567,9 @@ msgid "the image file cannot be found"
 msgstr "No se encuentra el archivo de imagen"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:183
-#: ../src/plugins/cdrkit/burn-wodim.c:353
+#: ../src/plugins/cdrkit/burn-wodim.c:358
 #: ../src/plugins/cdrtools/burn-cdrecord.c:184
-#: ../src/plugins/cdrtools/burn-cdrecord.c:354
+#: ../src/plugins/cdrtools/burn-cdrecord.c:360
 #, c-format
 msgid "internal error"
 msgstr "error interno"
@@ -3581,58 +3592,62 @@ msgstr "No se pudo cerrar el disco"
 msgid "the audio tracks are too short or not a multiple of 2352"
 msgstr "Las pistas de audio son demasiado cortas o no son múltiplos de 2352"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:312
-#: ../src/plugins/cdrtools/burn-cdrecord.c:313
+#: ../src/plugins/cdrkit/burn-wodim.c:317
+#: ../src/plugins/cdrtools/burn-cdrecord.c:319
 msgid "Writing cue sheet"
 msgstr "Grabando hoja cue"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:333
-#: ../src/plugins/cdrtools/burn-cdrecord.c:334
+#: ../src/plugins/cdrkit/burn-wodim.c:338
+#: ../src/plugins/cdrtools/burn-cdrecord.c:340
 #, c-format
 msgid "The media needs to be reloaded before being recorded"
 msgstr "Necesita recargar el medio antes de su grabación"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:579
-#: ../src/plugins/cdrtools/burn-cdrecord.c:583
+#: ../src/plugins/cdrkit/burn-wodim.c:584
+#: ../src/plugins/cdrtools/burn-cdrecord.c:589
 #, c-format
 msgid "the inf file can't be written : %s"
 msgstr "No se puede grabar el archivo inf : %s"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:679
-#: ../src/plugins/cdrtools/burn-cdrecord.c:683
+#: ../src/plugins/cdrkit/burn-wodim.c:684
+#: ../src/plugins/cdrtools/burn-cdrecord.c:689
 #, c-format
 msgid "imager doesn't seem to be ready"
 msgstr "El creador de imágenes no parece estar listo"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:691
-#: ../src/plugins/cdrtools/burn-cdrecord.c:695
+#: ../src/plugins/cdrkit/burn-wodim.c:696
+#: ../src/plugins/cdrtools/burn-cdrecord.c:701
 #, c-format
 msgid "the size of the session cannot be retrieved"
 msgstr "no se puede obtener el tamaño de la sesión"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1053
+#: ../src/plugins/cdrkit/burn-wodim.c:1058
 msgid "use wodim to burn CDs"
 msgstr "usar wodim para grabar CD"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1279
+#: ../src/plugins/cdrkit/burn-wodim.c:1215
 msgid "enable -immed flag (see wodim manual)"
 msgstr "activar la bandera -immed (consultar el manual de wodim)"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1282
+#: ../src/plugins/cdrkit/burn-wodim.c:1218
 msgid "minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr ""
 "mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de "
 "wodim):"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1045
+#: ../src/plugins/cdrtools/burn-cdrecord.c:308
+msgid "Formatting media"
+msgstr "Formateando el soporte"
+
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1051
 msgid "use cdrecord to burn CDs"
 msgstr "usar cdrecord para grabar CD"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1332
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1216
 msgid "enable -immed flag (see cdrecord manual)"
 msgstr "activar la bandera -immed (consultar el manual de cdrecord)"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1335
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1219
 msgid "minimum drive buffer fill ratio (in %)(see cdrecord manual):"
 msgstr ""
 "mínima tasa de llenado del búfer de la unidad (en %) (consulte el manual de "
@@ -3642,11 +3657,11 @@ msgstr ""
 msgid "this version of mkisofs doesn't seem to be supported"
 msgstr "esta versión de mkisofs no está soportada"
 
-#: ../src/plugins/cdrtools/burn-mkisofs.c:474
+#: ../src/plugins/cdrtools/burn-mkisofs.c:502
 msgid "use mkisofs to create images from files"
 msgstr "usar mkisofs para crear imágenes de los archivos"
 
-#: ../src/plugins/cdrtools/burn-mkisofs.c:482
+#: ../src/plugins/cdrtools/burn-mkisofs.c:510
 msgid "mkisofs could not be found in the path"
 msgstr "no se pudo encontrar mkisofs en la ruta"
 
@@ -3726,11 +3741,11 @@ msgstr "Dvdcss permite leer DVD de vídeo cifrados con css"
 msgid "Unhandled error, aborting"
 msgstr "Error no manejado, abortando"
 
-#: ../src/plugins/growisofs/burn-dvd-rw-format.c:168
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:169
 msgid "dvd+rw-format erases and formats DVD+/-RW"
 msgstr "dvd+rw-format borra y formatea DVD+/-RW"
 
-#: ../src/plugins/growisofs/burn-dvd-rw-format.c:176
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:177
 msgid "dvd+rw-format could not be found in the path"
 msgstr "no se pudo encontrar dvd+rw-format en la ruta"
 
@@ -3749,21 +3764,21 @@ msgstr "No se puede acceder a la grabadora"
 msgid "Not enough space available on the disc"
 msgstr "No hay suficiente espacio disponible en el disco"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:443
+#: ../src/plugins/growisofs/burn-growisofs.c:462
 #, c-format
 msgid "the file /proc/self/fd/0 is missing"
 msgstr "No se encuentra el archivo /proc/self/fd/0"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:462
+#: ../src/plugins/growisofs/burn-growisofs.c:481
 #, c-format
 msgid "the image is not stored locally"
 msgstr "La imagen no está almacenada localmente"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:644
+#: ../src/plugins/growisofs/burn-growisofs.c:663
 msgid "growisofs burns DVDs"
 msgstr "growisofs graba DVD"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:652
+#: ../src/plugins/growisofs/burn-growisofs.c:671
 msgid "growisofs could not be found in the path"
 msgstr "no se pudo encontrar growisofs en la ruta"
 
@@ -3798,7 +3813,7 @@ msgstr "libburn no puede grabar: %s"
 msgid "an unknown error occured"
 msgstr "ocurrió un error desconocido"
 
-#: ../src/plugins/libburnia/burn-libburn.c:844
+#: ../src/plugins/libburnia/burn-libburn.c:845
 msgid "libburn burns CD(RW), DVD+/-(RW)"
 msgstr "libburn graba CD(RW), DVD+/-(RW)"
 
@@ -3952,7 +3967,9 @@ msgstr "Normalizando pistas"
 
 #: ../src/plugins/transcode/burn-normalize.c:572
 msgid "Normalize allows to set consistent sound levels between tracks"
-msgstr "Normalizar permite establecer unos niveles de sonido consistentes entre las pistas"
+msgstr ""
+"Normalizar permite establecer unos niveles de sonido consistentes entre las "
+"pistas"
 
 #: ../src/plugins/transcode/burn-transcode.c:401
 #, c-format
@@ -4059,7 +4076,9 @@ msgstr "error de tamaño"
 msgid ""
 "If you split the track, the size of the new track will be shorter than 6 "
 "seconds and will be padded."
-msgstr "Si parte la pista, el tamaño de la pista nueva será inferior a 6 segundos y se rellenará."
+msgstr ""
+"Si parte la pista, el tamaño de la pista nueva será inferior a 6 segundos y "
+"se rellenará."
 
 #: ../src/brasero-split-dialog.c:182 ../src/brasero-split-dialog.c:690
 msgid "_Don't split"
