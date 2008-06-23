@@ -1011,7 +1011,7 @@ brasero_transcode_pad_file (BraseroTranscode *transcode, GError **error)
 
 	output = NULL;
 	brasero_job_get_audio_output (BRASERO_JOB (transcode), &output);
-	fd = open (output, O_WRONLY | O_CREAT | O_APPEND);
+	fd = open (output, O_WRONLY | O_CREAT | O_APPEND, S_IRWXU | S_IRWXG | S_IROTH);
 	g_free (output);
 
 	if (fd == -1) {
