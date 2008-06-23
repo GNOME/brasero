@@ -6,11 +6,9 @@ braserodocdir = ${prefix}/docs/brasero
 
 EXTRA_DIST = 			\
 	AUTHORS			\
-	HACKING			\
 	MAINTAINERS		\
 	NEWS			\
 	README			\
-	acinclude.m4		\
 	gnome-doc-utils.make	\
 	m4
 
