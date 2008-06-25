@@ -1500,7 +1500,7 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
 					 GTK_BUTTONS_NONE,
-					 _("Do you want to search for audio discs inside the directory?"));
+					 _("Do you want to search for audio files inside the directory?"));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory Search"));
 
