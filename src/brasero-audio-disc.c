@@ -1505,7 +1505,7 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory Search"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Directories can't be added to an audio disc:"));
+						  _("Directories can't be added to an audio disc."));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
