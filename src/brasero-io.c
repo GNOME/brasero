@@ -1634,7 +1634,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		g_object_unref (child);
 	}
 
-	if (data->job.callback_data->ref < 2) {
+	if (data->job.callback_data && data->job.callback_data->ref < 2) {
 		/* No result was returned so we need to return a dummy one to 
 		 * clean the callback_data in the main loop. */
 		brasero_io_return_result (BRASERO_IO (manager),

@@ -1,3 +1,106 @@
+2008-06-27  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Modify the display widget for video project and split it between view and model
+	Added features to this widget:
+	- rename (not very useful ATM)
+	- directory search for video files
+	- DND
+	- projects support
+
+	* src/Makefile.am:
+	* src/brasero-disc.h:
+	* src/brasero-io.c (brasero_io_load_directory_thread):
+	* src/brasero-marshal.list:
+	* src/brasero-project.c (brasero_project_set_uri),
+	(_read_audio_track), (_get_tracks), (brasero_project_open_project),
+	(brasero_project_load_session), (brasero_project_save_project_xml):
+	* src/brasero-video-disc.c
+	(brasero_video_disc_name_editing_started_cb),
+	(brasero_video_disc_name_editing_canceled_cb),
+	(brasero_video_disc_name_edited_cb),
+	(brasero_video_disc_vfs_activity_changed),
+	(brasero_video_disc_directory_dialog),
+	(brasero_video_disc_unreadable_uri_dialog),
+	(brasero_video_disc_not_video_dialog),
+	(brasero_video_disc_add_uri_real),
+	(brasero_video_disc_delete_selected),
+	(brasero_video_disc_get_selected_uri),
+	(brasero_video_disc_selection_function),
+	(brasero_video_disc_row_deleted_cb),
+	(brasero_video_disc_row_inserted_cb),
+	(brasero_video_disc_row_changed_cb),
+	(brasero_video_disc_size_changed_cb), (brasero_video_disc_init),
+	(brasero_video_disc_reset_real), (brasero_video_disc_clear),
+	(brasero_video_disc_reset), (brasero_video_disc_finalize),
+	(brasero_video_disc_get_status),
+	(brasero_video_disc_set_session_param),
+	(brasero_video_disc_set_session_contents),
+	(brasero_video_disc_get_track), (brasero_video_disc_load_track),
+	(brasero_video_disc_iface_disc_init):
+	* src/brasero-video-project.c (brasero_video_project_file_signal),
+	(brasero_video_project_reference_new),
+	(brasero_video_project_reference_free),
+	(brasero_video_project_reference_get),
+	(brasero_video_project_reference_remove_children_cb),
+	(brasero_video_project_reference_invalidate),
+	(brasero_video_project_rename), (brasero_video_project_move),
+	(brasero_video_file_free),
+	(brasero_video_project_foreach_monitor_cancel_cb),
+	(brasero_video_project_remove_file), (brasero_video_project_reset),
+	(brasero_video_project_add_video_file),
+	(brasero_video_project_set_file_information),
+	(brasero_video_project_vfs_operation_finished),
+	(brasero_video_project_add_directory_contents_result),
+	(brasero_video_project_add_directory_contents),
+	(brasero_video_project_result_cb), (brasero_video_project_add_uri),
+	(brasero_video_project_get_size),
+	(brasero_video_project_get_file_num),
+	(brasero_video_project_get_nth_item),
+	(brasero_video_project_get_item_index),
+	(brasero_video_project_get_status),
+	(brasero_video_project_get_contents), (brasero_video_project_init),
+	(brasero_video_project_finalize),
+	(brasero_video_project_file_renamed),
+	(brasero_video_project_file_moved),
+	(brasero_video_project_file_removed),
+	(brasero_video_project_file_modified),
+	(brasero_video_project_class_init):
+	* src/brasero-video-project.h:
+	* src/brasero-video-tree-model.c
+	(brasero_video_tree_model_iter_parent),
+	(brasero_video_tree_model_iter_nth_child),
+	(brasero_video_tree_model_iter_n_children),
+	(brasero_video_tree_model_iter_has_child),
+	(brasero_video_tree_model_iter_children),
+	(brasero_video_tree_model_get_value),
+	(brasero_video_tree_model_file_to_path),
+	(brasero_video_tree_model_get_path),
+	(brasero_video_tree_model_path_to_file),
+	(brasero_video_tree_model_get_iter),
+	(brasero_video_tree_model_iter_next),
+	(brasero_video_tree_model_get_column_type),
+	(brasero_video_tree_model_get_n_columns),
+	(brasero_video_tree_model_get_flags),
+	(brasero_video_tree_model_multi_row_draggable),
+	(brasero_video_tree_model_multi_drag_data_get),
+	(brasero_video_tree_model_multi_drag_data_delete),
+	(brasero_video_tree_model_drag_data_received),
+	(brasero_video_tree_model_row_drop_possible),
+	(brasero_video_tree_model_drag_data_delete),
+	(brasero_video_tree_model_clear), (brasero_video_tree_model_reset),
+	(brasero_video_tree_model_file_added),
+	(brasero_video_tree_model_file_removed),
+	(brasero_video_tree_model_file_changed),
+	(brasero_video_tree_model_init),
+	(brasero_video_tree_model_finalize),
+	(brasero_video_tree_model_iface_init),
+	(brasero_video_tree_model_multi_drag_source_iface_init),
+	(brasero_video_tree_model_drag_source_iface_init),
+	(brasero_video_tree_model_drag_dest_iface_init),
+	(brasero_video_tree_model_class_init),
+	(brasero_video_tree_model_new):
+	* src/brasero-video-tree-model.h:
+
 2008-06-21  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Added (S)VCD types through a new plugin for vcdimager =)

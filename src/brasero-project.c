@@ -1742,9 +1742,11 @@ brasero_project_set_uri (BraseroProject *project,
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	if (type == BRASERO_PROJECT_TYPE_DATA)
 		title = g_strdup_printf (_("Brasero - %s (data disc)"), name);
-	else
+	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
 		title = g_strdup_printf (_("Brasero - %s (audio disc)"), name);
-    	g_free (name);
+	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
+		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
+	g_free (name);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	gtk_window_set_title (GTK_WINDOW (toplevel), title);
@@ -1901,8 +1903,6 @@ _read_audio_track (xmlDocPtr project,
 	BraseroDiscSong *song;
 
 	track = g_new0 (BraseroDiscTrack, 1);
-	track->type = BRASERO_DISC_TRACK_AUDIO;
-
 	song = NULL;
 
 	while (uris) {
@@ -2006,6 +2006,8 @@ _get_tracks (xmlDocPtr project,
 						      track_node->xmlChildrenNode);
 			if (!newtrack)
 				goto error;
+
+			newtrack->type = BRASERO_DISC_TRACK_AUDIO;
 		}
 		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "data")) {
 			if (newtrack)
@@ -2016,6 +2018,18 @@ _get_tracks (xmlDocPtr project,
 
 			if (!newtrack)
 				goto error;
+		}
+		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "video")) {
+			if (newtrack)
+				goto error;
+
+			newtrack = _read_audio_track (project,
+						      track_node->xmlChildrenNode);
+
+			if (!newtrack)
+				goto error;
+
+			newtrack->type = BRASERO_DISC_TRACK_VIDEO;
 		}
 		else if (track_node->type == XML_ELEMENT_NODE)
 			goto error;
@@ -2129,18 +2143,18 @@ brasero_project_open_project (BraseroProject *project,
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
 					  0);
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
-		brasero_project_switch (project, TRUE);
+	if (track->type == BRASERO_DISC_TRACK_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	}
-	else if (track->type == BRASERO_DISC_TRACK_DATA) {
-		brasero_project_switch (project, FALSE);
+	else if (track->type == BRASERO_DISC_TRACK_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	}
+	else if (track->type == BRASERO_DISC_TRACK_VIDEO)
+		type = BRASERO_PROJECT_TYPE_VIDEO;
 	else {
 		brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
+
+	brasero_project_switch (project, type);
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2247,18 +2261,18 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
-		brasero_project_switch (project, TRUE);
+	if (track->type == BRASERO_DISC_TRACK_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	}
-	else if (track->type == BRASERO_DISC_TRACK_DATA) {
-		brasero_project_switch (project, FALSE);
+	else if (track->type == BRASERO_DISC_TRACK_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	}
+	else if (track->type == BRASERO_DISC_TRACK_VIDEO)
+		type = BRASERO_PROJECT_TYPE_VIDEO;
 	else {
 	    	brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
+
+	brasero_project_switch (project, type);
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2542,7 +2556,20 @@ brasero_project_save_project_xml (BraseroProject *proj,
 		if (success < 0)
 			goto error;
 	}
-	else 
+	else  if (track->type == BRASERO_DISC_TRACK_VIDEO) {
+		success = xmlTextWriterStartElement (project, (xmlChar *) "video");
+		if (success < 0)
+			goto error;
+
+		retval = _save_audio_track_xml (project, track);
+		if (!retval)
+			goto error;
+
+		success = xmlTextWriterEndElement (project); /* audio */
+		if (success < 0)
+			goto error;
+	}
+	else
 		retval = FALSE;
 
 	success = xmlTextWriterEndElement (project); /* track */

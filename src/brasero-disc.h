@@ -63,8 +63,9 @@ typedef enum {
 } BraseroDiscResult;
 
 typedef enum {
-	BRASERO_DISC_TRACK_NONE,
+	BRASERO_DISC_TRACK_NONE = 0,
 	BRASERO_DISC_TRACK_AUDIO,
+	BRASERO_DISC_TRACK_VIDEO,
 	BRASERO_DISC_TRACK_DATA,
 } BraseroDiscTrackType;
 
