@@ -1,5 +1,14 @@
 2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Possible fix for
+	#538953 – crash in Brasero Disc Burning: I was trying to copy a C...
+	and 
+	#531084 – Brasero crashes in strlen () when debug mode is on
+
+	* src/burn-job.c (brasero_job_log_message):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fixed copyrights headers (brasero name was actually 'trunk')
 
 	* src/brasero-data-disc.c:
