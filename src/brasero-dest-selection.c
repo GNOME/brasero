@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2007 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
  *
  * brasero is free software.
  *
