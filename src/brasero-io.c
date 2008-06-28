@@ -886,9 +886,13 @@ brasero_io_add_playlist_entry_parsed_cb (TotemPlParser *parser,
 
 static void
 brasero_io_start_end_playlist_cb (TotemPlParser *parser,
-				  const gchar *title,
+				  const gchar *uri,
+				  GHashTable *metadata,
 				  BraseroIOPlaylist *data)
 {
+	const gchar *title;
+
+	title = g_hash_table_lookup (metadata, TOTEM_PL_PARSER_FIELD_TITLE);
 	if (!title)
 		return;
 
@@ -906,11 +910,11 @@ brasero_io_parse_playlist_get_uris (const gchar *uri,
 
 	parser = totem_pl_parser_new ();
 	g_signal_connect (parser,
-			  "playlist-start",
+			  "playlist-started",
 			  G_CALLBACK (brasero_io_start_end_playlist_cb),
 			  playlist);
 	g_signal_connect (parser,
-			  "playlist-end",
+			  "playlist-ended",
 			  G_CALLBACK (brasero_io_start_end_playlist_cb),
 			  playlist);
 	g_signal_connect (parser,
@@ -956,7 +960,6 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 					  NULL,
 					  error,
 					  job->callback_data);
-
 		return BRASERO_ASYNC_TASK_FINISHED;
 	}
 
@@ -965,7 +968,17 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 
 	/* that's finished; Send the title */
 	info = g_file_info_new ();
-	g_file_info_set_attribute_string (info, BRASERO_IO_PLAYLIST_TITLE, data.title ? data.title:_("No title"));
+	g_file_info_set_attribute_boolean (info,
+					   BRASERO_IO_IS_PLAYLIST,
+					   TRUE);
+	g_file_info_set_attribute_uint32 (info,
+					  BRASERO_IO_PLAYLIST_ENTRIES_NUM,
+					  g_slist_length (data.uris));
+	if (data.title)
+		g_file_info_set_attribute_string (info,
+						  BRASERO_IO_PLAYLIST_TITLE,
+						  data.title);
+
 	brasero_io_return_result (BRASERO_IO (manager),
 				  job->base,
 				  job->uri,

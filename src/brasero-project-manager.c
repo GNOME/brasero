@@ -345,7 +345,7 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 					   manager->priv->size_preview);
 
 	uris = brasero_uri_container_get_selected_uris (container);
-    	if (!uris) {
+	if (!uris) {
 		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
 				   manager->priv->status_ctx);
 		gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),

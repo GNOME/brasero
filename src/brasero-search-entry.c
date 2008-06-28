@@ -47,12 +47,15 @@
 #include <gtk/gtkcombobox.h>
 #include <gtk/gtkcomboboxentry.h>
 #include <gtk/gtkentry.h>
-#include <gconf/gconf-client.h>
 #include <gtk/gtkcellrenderer.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkcelllayout.h>
 #include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkdialog.h>
+
+#include <beagle/beagle.h>
+
+#include <gconf/gconf-client.h>
 
 #include "brasero-search-entry.h"
 #include "brasero-layout.h"
@@ -77,134 +80,6 @@ struct BraseroSearchEntryPrivate {
 	GtkWidget *music;
 	GtkWidget *video;
 
-};
-
-/* cut and pasted from nautilus */
-struct _MimeTypeGroup{
-	gchar *name;
-	gchar *mimetypes[30];
-};
-typedef struct _MimeTypeGroup MimeTypeGroup;
-const static MimeTypeGroup mime_type_groups [] = {
-	{ N_("Find all available music"),
-	  { "application/ogg",
-	    "audio/ac3",
-	    "audio/basic",
-	    "audio/midi",
-	    "audio/x-flac",
-	    "audio/mp4",
-	    "audio/mpeg",
-	    "audio/x-vorbis+ogg", /* beagle stores ogg-vorbis files under this mime type */
-	    "audio/x-mpeg",
-	    "audio/x-ms-asx",
-	    "audio/x-pn-realaudio",
-	    NULL
-	  }
-	},
-	{ N_("Find all available videos"),
-	  { "video/mp4",
-	    "video/3gpp",
-	    "video/mpeg",
-	    "video/quicktime",
-	    "video/vivo",
-	    "video/x-avi",
-	    "video/x-mng",
-	    "video/x-ms-asf",
-	    "video/x-ms-wmv",
-	    "video/x-msvideo",
-	    "video/x-nsv",
-	    "video/x-real-video",
-	    NULL
-	  }
-	},
-	{ N_("Find all available pictures"),
-	  { "application/vnd.oasis.opendocument.image",
-	    "application/x-krita",
-	    "image/bmp",
-	    "image/cgm",
-	    "image/gif",
-	    "image/jpeg",
-	    "image/jpeg2000",
-	    "image/png",
-	    "image/svg+xml",
-	    "image/tiff",
-	    "image/x-compressed-xcf",
-	    "image/x-pcx",
-	    "image/x-photo-cd",
-	    "image/x-psd",
-	    "image/x-tga",
-	    "image/x-xcf",
-	    "application/illustrator",
-	    "application/vnd.corel-draw",
-	    "application/vnd.stardivision.draw",
-	    "application/vnd.oasis.opendocument.graphics",
-	    "application/x-dia-diagram",
-	    "application/x-karbon",
-	    "application/x-killustrator",
-	    "application/x-kivio",
-	    "application/x-kontour",
-	    "application/x-wpg",
-	    NULL
-	  }
-	},
-	{ N_("Find all available documents"),
-	  { "application/rtf",
-	    "application/msword",
-	    "application/vnd.sun.xml.writer",
-	    "application/vnd.sun.xml.writer.global",
-	    "application/vnd.sun.xml.writer.template",
-	    "application/vnd.oasis.opendocument.text",
-	    "application/vnd.oasis.opendocument.text-template",
-	    "application/x-abiword",
-	    "application/x-applix-word",
-	    "application/x-mswrite",
-	    "application/docbook+xml",
-	    "application/x-kword",
-	    "application/x-kword-crypt",
-	    "application/x-lyx",
-	    NULL
-	  }
-	},
-	{ N_("Find all available spreadsheets"),
-	  { "application/vnd.lotus-1-2-3",
-	    "application/vnd.ms-excel",
-	    "application/vnd.stardivision.calc",
-	    "application/vnd.sun.xml.calc",
-	    "application/vnd.oasis.opendocument.spreadsheet",
-	    "application/x-applix-spreadsheet",
-	    "application/x-gnumeric",
-	    "application/x-kspread",
-	    "application/x-kspread-crypt",
-	    "application/x-quattropro",
-	    "application/x-sc",
-	    "application/x-siag",
-	    NULL
-	  }
-	},
-	{ N_("Find all available presentations"),
-	  { "application/vnd.ms-powerpoint",
-	    "application/vnd.sun.xml.impress",
-	    "application/vnd.oasis.opendocument.presentation",
-	    "application/x-magicpoint",
-	    "application/x-kpresenter",
-	    NULL
-	  }
-	},
-	{ N_("Find all available Pdf / Postscripts"),
-	  { "application/pdf",
-	    "application/postscript",
-	    "application/x-dvi",
-	    "image/x-eps",
-	    NULL
-	  }
-	},
-	{NULL},
-	{ N_("Text File"),
-	  { "text/plain",
-	    NULL
-	  }
-	},
-	{ NULL }
 };
 
 enum {
@@ -806,41 +681,74 @@ brasero_search_entry_add_current_keyword_to_history (BraseroSearchEntry *entry)
 	brasero_search_entry_set_history (entry);
 }
 
-static void
-_add_mime_types_to_query (BeagleQuery *query, const MimeTypeGroup *group)
-{
-	gchar **mime;
-
-	mime = (gchar **) group->mimetypes;
-	while (*mime) {
-		beagle_hit_get_mime_type (query);
-		mime ++;
-	}
-}
-
 BeagleQuery *
 brasero_search_entry_get_query (BraseroSearchEntry *entry)
 {
 	BeagleQuery *query;
+	BeagleQueryPartOr *or_part;
+	BeagleQueryPartHuman *text;
 
+	/* Not sure about all this */
 	query = beagle_query_new ();
-	beagle_query_add_text (query, "Files");
 
+	if (strcmp (entry->priv->keywords, _("All files"))) {
+		BeagleQueryPartHuman *text;
+
+		text = beagle_query_part_human_new ();
+		beagle_query_part_human_set_string (text, entry->priv->keywords);
+		beagle_query_part_set_logic (BEAGLE_QUERY_PART (text),
+					     BEAGLE_QUERY_PART_LOGIC_REQUIRED);
+
+		beagle_query_add_part (query, BEAGLE_QUERY_PART (text));
+	}
+
+	text = beagle_query_part_human_new ();
+	beagle_query_part_human_set_string (text, "type:File");
+	beagle_query_add_part (query, BEAGLE_QUERY_PART (text));
+
+	or_part = beagle_query_part_or_new ();
+	
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->documents))) {
-		_add_mime_types_to_query (query, mime_type_groups + 3);
-	}
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->pictures))) {
-		_add_mime_types_to_query (query, mime_type_groups + 2);
-	}
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->music))) {
-		_add_mime_types_to_query (query, mime_type_groups);
-	}
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->video))) {
-		_add_mime_types_to_query (query, mime_type_groups + 1);
+		BeagleQueryPartProperty *filetype;
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:FileType");
+		beagle_query_part_property_set_value (filetype, "document");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
 	}
 
-	if (strcmp (entry->priv->keywords, _("All files")))
-		beagle_query_add_text (query, entry->priv->keywords);
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->pictures))) {
+		BeagleQueryPartProperty *filetype;
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:FileType");
+		beagle_query_part_property_set_value (filetype, "image");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+	}
+
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->music))) {
+		BeagleQueryPartProperty *filetype;
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:FileType");
+		beagle_query_part_property_set_value (filetype, "audio");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+	}
+
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->video))) {
+		BeagleQueryPartProperty *filetype;
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:FileType");
+		beagle_query_part_property_set_value (filetype, "video");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+	}
+
+	beagle_query_add_part (query, BEAGLE_QUERY_PART (or_part));
 
 	return query;
 }

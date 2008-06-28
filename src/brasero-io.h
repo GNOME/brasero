@@ -76,6 +76,8 @@ typedef enum {
 #define BRASERO_IO_XFER_DESTINATION	"xfer::destination"
 
 #define BRASERO_IO_PLAYLIST_TITLE	"playlist::title"
+#define BRASERO_IO_IS_PLAYLIST		"playlist::is_playlist"
+#define BRASERO_IO_PLAYLIST_ENTRIES_NUM	"playlist::entries_num"
 
 #define BRASERO_IO_COUNT_NUM		"count::num"
 #define BRASERO_IO_COUNT_SIZE		"count::size"

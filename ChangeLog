@@ -1,3 +1,19 @@
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed some problems for beagle search
+	Fixed some problems with playlist pane
+	Stop size preview (in statusbar) to carry on when we change a pane
+
+	* src/brasero-io.c (brasero_io_start_end_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+	* src/brasero-layout.c (brasero_layout_combo_changed_cb):
+	* src/brasero-playlist.c (brasero_playlist_start_beagle_search),
+	(brasero_playlist_parse_result),
+	(brasero_playlist_add_uri_playlist):
+	* src/brasero-search-entry.c (brasero_search_entry_get_query):
+
 2008-06-26  Luis Medinas  <lmedinas@gnome.org>
 
 	* src/burn-dbus.c:

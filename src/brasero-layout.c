@@ -720,12 +720,13 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 	source = brasero_layout_item_get_object (item);
 	if (!BRASERO_IS_URI_CONTAINER (source)) {
 		BRASERO_BURN_LOG ("Item is not an URI container");
-		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
-					    NULL);
+		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
 	}
-	else
+	else {
+		brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (source));
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 					    BRASERO_URI_CONTAINER (source));
+	}
 
 	brasero_layout_save (layout, item->id);
 }
