@@ -1,5 +1,27 @@
 2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Some cleanups
+	Fix a problem when copying a disc with the same source and destination
+	where dialog allowed to copy even if the source disc couldn't be read
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_source_changed),
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_output_changed):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/burn-caps.c
+	(brasero_burn_caps_is_session_supported_same_src_dest),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_get_required_media_type):
+	* src/burn-medium.c (brasero_medium_get_icon):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fixed some problems for beagle search
 	Fixed some problems with playlist pane
 	Stop size preview (in statusbar) to carry on when we change a pane

@@ -141,6 +141,9 @@ brasero_medium_get_icon (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
+	if (!medium)
+		return NULL;
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->icon;
 }
