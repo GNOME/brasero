@@ -1,5 +1,15 @@
 2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #540673 – m3u playlist import problem
+	keep the correct order of entries in a playlist
+
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Bumped totem-pl-parser requirements
 
 	* configure.in:

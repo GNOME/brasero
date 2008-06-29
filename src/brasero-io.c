@@ -698,21 +698,93 @@ brasero_io_get_metadata_info (BraseroIO *self,
  * Used to get information about files
  */
 
-static BraseroAsyncTaskResult
-brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
-				 GCancellable *cancel,
-				 gpointer callback_data)
+static GFileInfo *
+brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
+				      GCancellable *cancel,
+				      const gchar *uri,
+				      BraseroIOFlags options,
+				      GError **error)
 {
 	gchar attributes [256] = {G_FILE_ATTRIBUTE_STANDARD_NAME ","
 				  G_FILE_ATTRIBUTE_STANDARD_SIZE ","
 				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
 				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET ","
 				  G_FILE_ATTRIBUTE_STANDARD_TYPE};
+	GFileInfo *info;
+	GFile *file;
+
+	if (g_cancellable_is_cancelled (cancel))
+		return BRASERO_ASYNC_TASK_FINISHED;
+	
+	if (options & BRASERO_IO_INFO_PERM)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+	if (options & BRASERO_IO_INFO_MIME)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+	if (options & BRASERO_IO_INFO_ICON)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
+
+	file = g_file_new_for_uri (uri);
+	info = g_file_query_info (file,
+				  attributes,
+				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+				  cancel,
+				  error);
+	if (!info) {
+		g_object_unref (file);
+		return NULL;
+	}
+
+	if (g_file_info_get_is_symlink (info)) {
+		GFile *parent;
+
+		parent = g_file_get_parent (file);
+		if (!brasero_io_check_symlink_target (parent, info, uri)) {
+			g_set_error (error,
+				     BRASERO_ERROR,
+				     BRASERO_ERROR_SYMLINK_LOOP,
+				     _("recursive symbolic link"));
+
+			g_object_unref (info);
+			g_object_unref (file);
+			g_object_unref (parent);
+			return NULL;
+		}
+		g_object_unref (parent);
+	}
+	g_object_unref (file);
+
+	/* see if we are supposed to get metadata for this file (provided it's
+	 * an audio file of course). */
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY
+	&&  options & BRASERO_IO_INFO_METADATA) {
+		BraseroMetadataInfo metadata = { NULL };
+		gboolean result;
+
+		result = brasero_io_get_metadata_info (BRASERO_IO (manager),
+						       cancel,
+						       uri,
+						       info,
+						       (options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+						       &metadata);
+
+		if (result)
+			brasero_io_set_metadata_attributes (info, &metadata);
+
+		brasero_metadata_info_clear (&metadata);
+	}
+
+	return info;
+}
+
+static BraseroAsyncTaskResult
+brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
+				 GCancellable *cancel,
+				 gpointer callback_data)
+{
 	BraseroIOJob *job = callback_data;
 	gchar *file_uri = NULL;
 	GError *error = NULL;
 	GFileInfo *info;
-	GFile *file;
 
 	if (job->options & BRASERO_IO_INFO_CHECK_PARENT_SYMLINK) {
 		/* If we want to make sure a directory is not added twice we have to make sure
@@ -729,86 +801,19 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 		g_free (file_uri);
 		return BRASERO_ASYNC_TASK_FINISHED;
 	}
-	
-	if (job->options & BRASERO_IO_INFO_PERM)
-		strcat (attributes, "," G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
-	if (job->options & BRASERO_IO_INFO_MIME)
-		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
-	if (job->options & BRASERO_IO_INFO_ICON)
-		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
 
-	file = g_file_new_for_uri (file_uri?file_uri:job->uri);
-	info = g_file_query_info (file,
-				  attributes,
-				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
-				  cancel,
-				  &error);
-	if (error) {
-		brasero_io_return_result (BRASERO_IO (manager),
-					  job->base,
-					  file_uri?file_uri:job->uri,
-					  NULL,
-					  error,
-					  job->callback_data);
-		g_free (file_uri);
-		g_object_unref (file);
-		return BRASERO_ASYNC_TASK_FINISHED;
-	}
-
-	if (g_file_info_get_is_symlink (info)) {
-		GFile *parent;
-
-		parent = g_file_get_parent (file);
-		if (!brasero_io_check_symlink_target (parent, info, file_uri?file_uri:job->uri)) {
-			error = g_error_new (BRASERO_ERROR,
-					     BRASERO_ERROR_SYMLINK_LOOP,
-					     _("recursive symbolic link"));
-
-			/* since we checked for the existence of the file
-			 * an error means a looping symbolic link */
-			brasero_io_return_result (BRASERO_IO (manager),
-						  job->base,
-						  file_uri?file_uri:job->uri,
-						  NULL,
-						  error,
-						  job->callback_data);
-			g_free (file_uri);
-			g_object_unref (info);
-			g_object_unref (file);
-			g_object_unref (parent);
-			return BRASERO_ASYNC_TASK_FINISHED;
-		}
-		g_object_unref (parent);
-	}
-	g_object_unref (file);
-
-	/* see if we are supposed to get metadata for this file (provided it's
-	 * an audio file of course). */
-	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY
-	&&  job->options & BRASERO_IO_INFO_METADATA) {
-		BraseroMetadataInfo metadata = { NULL };
-		gboolean result;
-
-		result = brasero_io_get_metadata_info (BRASERO_IO (manager),
-						       cancel,
-						       file_uri?file_uri:job->uri,
-						       info,
-						       (job->options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
-						       &metadata);
-
-		if (result)
-			brasero_io_set_metadata_attributes (info, &metadata);
-
-		brasero_metadata_info_clear (&metadata);
-	}
+	info = brasero_io_get_file_info_thread_real (manager,
+						     cancel,
+						     file_uri?file_uri:job->uri,
+						     job->options,
+						     &error);
 
 	brasero_io_return_result (BRASERO_IO (manager),
 				  job->base,
 				  file_uri?file_uri:job->uri,
-				  info,
 				  NULL,
+				  error,
 				  job->callback_data);
-	g_free (file_uri);
 
 	return BRASERO_ASYNC_TASK_FINISHED;
 }
@@ -986,16 +991,32 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 				  NULL,
 				  job->callback_data);
 
-	/* Now get information about each file in the list */
+	/* Now get information about each file in the list. 
+	 * Reverse order of list to get a correct order for entries. */
+	data.uris = g_slist_reverse (data.uris);
 	for (iter = data.uris; iter; iter = iter->next) {
 		gchar *child;
+		GFileInfo *child_info;
 
 		child = iter->data;
-		brasero_io_new_file_info_job (BRASERO_IO (manager),
-					      child,
-					      job->base,
-					      job->options,
-					      job->callback_data);
+		if (g_cancellable_is_cancelled (cancel))
+			break;
+
+		child_info = brasero_io_get_file_info_thread_real (manager,
+								   cancel,
+								   child,
+								   job->options,
+								   NULL);
+
+		if (!child_info)
+			continue;
+
+		brasero_io_return_result (BRASERO_IO (manager),
+					  job->base,
+					  child,
+					  child_info,
+					  NULL,
+					  job->callback_data);
 	}
 
 	brasero_io_playlist_clear (&data);
