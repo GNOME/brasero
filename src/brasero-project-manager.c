@@ -350,7 +350,7 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 					   manager->priv->size_preview);
 
 	uris = brasero_uri_container_get_selected_uris (container);
-    	if (!uris) {
+	if (!uris) {
 		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
 				   manager->priv->status_ctx);
 		gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
@@ -556,7 +556,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		}
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New audio disc project"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Audio Disc Project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
@@ -570,7 +570,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		}
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New data disc project"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Data Disc Project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_VIDEO);
@@ -594,7 +594,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		gtk_action_set_sensitive (action, FALSE);
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New image file"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Image File"));
 		brasero_project_manager_burn_iso_dialog (manager, uri);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_COPY) {
@@ -605,7 +605,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		gtk_action_set_sensitive (action, FALSE);
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Copy a disc"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Disc Copy"));
 
 		brasero_project_manager_burn_disc (manager);
 	}
@@ -838,7 +838,7 @@ brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manag
 	BraseroProjectType type;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-	chooser = gtk_file_chooser_dialog_new (_("Open a project"),
+	chooser = gtk_file_chooser_dialog_new (_("Open Project"),
 					      GTK_WINDOW (toplevel),
 					      GTK_FILE_CHOOSER_ACTION_OPEN,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

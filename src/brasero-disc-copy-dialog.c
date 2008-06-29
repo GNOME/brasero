@@ -106,7 +106,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (obj);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD copy options"));
+	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD Copy Options"));
 
 	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 	gtk_widget_show (button);
@@ -175,15 +175,24 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	src_drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (priv->source));
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session)) {
-		BraseroMedia media;
+		BraseroTrackType source;
 
-		media = brasero_medium_get_status (brasero_burn_session_get_src_medium (priv->session));
+		memset (&source, 0, sizeof (BraseroTrackType));
+		brasero_burn_session_get_input_type (priv->session, &source);
 
-		if (media == BRASERO_MEDIUM_NONE
-		|| (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == 0)
+		if (source.subtype.media == BRASERO_MEDIUM_NONE
+		|| (source.subtype.media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == 0)
 			valid = FALSE;
-		else
-			valid = TRUE;
+		else {
+			BraseroBurnResult result;
+			BraseroBurnCaps *caps;
+
+			caps = brasero_burn_caps_get_default ();
+			result = brasero_burn_caps_is_session_supported (caps, priv->session);
+			g_object_unref (caps);
+
+			valid = (result == BRASERO_BURN_OK);
+		}
 	}
 	else {
 		BraseroBurnCaps *caps;

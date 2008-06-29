@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2007 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
  * 
  * brasero is free software.
  * 
@@ -1172,7 +1172,7 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
 			  G_SIGNAL_RUN_FIRST,
 			  0,
 			  NULL, NULL,
-			  brasero_marshal_VOID__INT_STRING,
+			  brasero_marshal_VOID__POINTER_STRING,
 			  G_TYPE_NONE,
 			  2,
 			  G_TYPE_POINTER,

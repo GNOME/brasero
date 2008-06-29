@@ -82,10 +82,16 @@ struct BraseroJobPrivate {
 	BraseroJob *linked;
 };
 
-#define BRASERO_JOB_DEBUG(job_MACRO)	brasero_job_log_message (job_MACRO, G_STRLOC,	\
-					"%s called %s", 			\
-					G_OBJECT_TYPE_NAME (job_MACRO),		\
-					G_STRFUNC);
+#define BRASERO_JOB_DEBUG(job_MACRO)						\
+{										\
+	const gchar *class_name_MACRO = NULL;					\
+	if (BRASERO_IS_JOB (job_MACRO))						\
+		class_name_MACRO = G_OBJECT_TYPE_NAME (job_MACRO);		\
+	brasero_job_log_message (job_MACRO, G_STRLOC,				\
+				 "%s called %s", 				\
+				 class_name_MACRO,				\
+				 G_STRFUNC);					\
+}
 
 #define BRASERO_JOB_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JOB, BraseroJobPrivate))
 
@@ -1821,6 +1827,9 @@ brasero_job_log_message (BraseroJob *self,
 
 	va_start (arg_list, format);
 	brasero_burn_session_logv (session, format, arg_list);
+	va_end (arg_list);
+
+	va_start (arg_list, format);
 	brasero_burn_debug_messagev (location, format, arg_list);
 	va_end (arg_list);
 }

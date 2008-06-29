@@ -96,7 +96,7 @@ static void
 brasero_tool_dialog_media_error (BraseroToolDialog *self)
 {
 	brasero_tool_dialog_message (self,
-				     _("Media busy"),
+				     _("Media Busy"),
 				     _("The operation cannot be performed:"),
 				     _("the inserted media is busy."),
 				     GTK_MESSAGE_ERROR);
@@ -106,7 +106,7 @@ static void
 brasero_tool_dialog_media_busy (BraseroToolDialog *self)
 {
 	brasero_tool_dialog_message (self,
-				     _("Media error"),
+				     _("Media Error"),
 				     _("The operation cannot be performed:"),
 				     _("the inserted media is not supported."),
 				     GTK_MESSAGE_ERROR);
@@ -116,7 +116,7 @@ static void
 brasero_tool_dialog_no_media (BraseroToolDialog *self)
 {
 	brasero_tool_dialog_message (self,
-				     _("Media error"),
+				     _("Media Error"),
 				     _("The operation cannot be performed:"),
 				     _("the drive is empty."),
 				     GTK_MESSAGE_ERROR);

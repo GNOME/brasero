@@ -1,6 +1,6 @@
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2007 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
  * 
  * brasero is free software.
  * 

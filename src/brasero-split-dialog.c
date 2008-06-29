@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2007 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
  * 
  * brasero is free software.
  * 
@@ -174,7 +174,7 @@ brasero_split_dialog_size_error (BraseroSplitDialog *self)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to split the track?"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("size error"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Size Error"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."));
 
@@ -576,7 +576,7 @@ brasero_split_dialog_no_silence_message (BraseroSplitDialog *self)
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("no silence could be retrieved."));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("no silence"));
+	gtk_window_set_title (GTK_WINDOW (message), _("No Silence"));
 	gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
 }
@@ -682,7 +682,7 @@ brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to carry on with automatic splitting?"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("automatic split"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Automatic Split"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("This will remove all previous results."));
 

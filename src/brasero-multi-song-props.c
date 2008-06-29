@@ -1,14 +1,14 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * trunk
+ * brasero
  * Copyright (C) Philippe Rouquier 2008 <bonfire-app@wanadoo.fr>
  * 
- * trunk is free software: you can redistribute it and/or modify it
+ * brasero is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * trunk is distributed in the hope that it will be useful, but
+ * brasero is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -312,7 +312,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 				GTK_STOCK_APPLY, GTK_RESPONSE_ACCEPT,
 				NULL);
 
-	gtk_window_set_title (GTK_WINDOW (object), _("Song information"));
+	gtk_window_set_title (GTK_WINDOW (object), _("Song Information"));
 }
 
 static void

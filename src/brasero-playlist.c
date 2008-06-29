@@ -492,6 +492,9 @@ brasero_playlist_start_beagle_search (BraseroPlaylist *playlist)
 	playlist->priv->client = beagle_client_new (NULL);
 	if(playlist->priv->client) {
 		GError *error = NULL;
+		BeagleQueryPartOr *or_part;
+		BeagleQueryPartHuman *type;
+		BeagleQueryPartProperty *filetype;
 
 		playlist->priv->query = beagle_query_new ();
 
@@ -505,12 +508,37 @@ brasero_playlist_start_beagle_search (BraseroPlaylist *playlist)
 				  G_CALLBACK (brasero_playlist_beagle_finished_cb),
 				  playlist);
 	
-		beagle_query_add_text (playlist->priv->query, "Files");
-	
-		beagle_query_add_text (playlist->priv->query, "audio/x-scpls");
-		beagle_query_add_text (playlist->priv->query, "audio/x-ms-asx");
-		beagle_query_add_text (playlist->priv->query, "audio/x-mp3-playlist");
-		beagle_query_add_text (playlist->priv->query, "audio/x-mpegurl");
+		type = beagle_query_part_human_new ();
+		beagle_query_part_human_set_string (type, "type:File");
+		beagle_query_add_part (playlist->priv->query, BEAGLE_QUERY_PART (type));
+
+		or_part = beagle_query_part_or_new ();
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:MimeType");
+		beagle_query_part_property_set_value (filetype, "audio/x-ms-asx");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:MimeType");
+		beagle_query_part_property_set_value (filetype, "audio/x-mpegurl");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:MimeType");
+		beagle_query_part_property_set_value (filetype, "audio/x-scpls");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+
+		filetype = beagle_query_part_property_new ();
+		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
+		beagle_query_part_property_set_key (filetype, "beagle:FileType");
+		beagle_query_part_property_set_value (filetype, "audio/x-mp3-playlist");
+		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
+
+		beagle_query_add_part (playlist->priv->query, BEAGLE_QUERY_PART (or_part));
 
 		brasero_playlist_increase_activity_counter (playlist);
 		beagle_client_send_request_async (playlist->priv->client,
@@ -622,7 +650,7 @@ brasero_playlist_add_cb (GtkButton *button, BraseroPlaylist *playlist)
 	if (!GTK_WIDGET_TOPLEVEL (toplevel))
 		return;
 
-	dialog = gtk_file_chooser_dialog_new (_("Select a playlist"),
+	dialog = gtk_file_chooser_dialog_new (_("Select Playlist"),
 					      GTK_WINDOW (toplevel),
 					      GTK_FILE_CHOOSER_ACTION_OPEN,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -806,7 +834,7 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("an unknown error occured."));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Playlist loading error"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Playlist Loading Error"));
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
@@ -834,13 +862,11 @@ brasero_playlist_parse_result (GObject *object,
 			       gpointer callback_data)
 {
 	gint num;
-	gboolean has_audio;
 	gint64 total_length;
 	GtkTreeModel *model;
 	GtkTreePath *treepath;
 	GtkTreeIter parent, row;
 	gchar *len_string, *num_string;
-	const gchar *playlist_title = NULL;
 	BraseroPlaylistParseData *data = callback_data;
 	BraseroPlaylist *playlist = BRASERO_PLAYLIST (object);
 
@@ -849,8 +875,9 @@ brasero_playlist_parse_result (GObject *object,
 	gtk_tree_model_get_iter (model, &parent, treepath);
 	gtk_tree_path_free (treepath);
 
-	playlist_title = g_file_info_get_attribute_string (info, BRASERO_IO_PLAYLIST_TITLE);
-	if (playlist_title) {
+	if (info && g_file_info_get_attribute_boolean (info, BRASERO_IO_IS_PLAYLIST)) {
+		const gchar *playlist_title = NULL;
+
 		/* The first entry returned is always the playlist as a whole:
 		 * if it was successfully parsed uri is the title if any. If not
 		 * it's simply the URI */
@@ -861,10 +888,14 @@ brasero_playlist_parse_result (GObject *object,
 				brasero_playlist_dialog_error (playlist, uri);
 
 			gtk_list_store_remove (GTK_LIST_STORE (model), &parent);
+			data->title = 1;
+			return;
 		}
-		else if (uri)
+
+		playlist_title = g_file_info_get_attribute_string (info, BRASERO_IO_PLAYLIST_TITLE);
+		if (playlist_title)
 			gtk_tree_store_set (GTK_TREE_STORE (model), &parent,
-					    BRASERO_PLAYLIST_DISPLAY_COL, uri,
+					    BRASERO_PLAYLIST_DISPLAY_COL, playlist_title,
 					    -1);
 
 		data->title = 1;
@@ -872,8 +903,7 @@ brasero_playlist_parse_result (GObject *object,
 	}
 
     	/* See if the song can be added */
-	has_audio = g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO);
-	if (!error && has_audio) {
+	if (!error && info && g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_AUDIO)) {
 		gchar *name;
 		guint64 len;
 		const gchar *title;
@@ -978,7 +1008,8 @@ brasero_playlist_add_uri_playlist (BraseroPlaylist *playlist,
 				   uri,
 				   playlist->priv->parse_type,
 				   BRASERO_IO_INFO_PERM|
-				   BRASERO_IO_INFO_MIME,
+				   BRASERO_IO_INFO_MIME|
+				   BRASERO_IO_INFO_METADATA,
 				   data);
 	brasero_playlist_increase_activity_counter (playlist);
 }

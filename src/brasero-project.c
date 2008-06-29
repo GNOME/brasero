@@ -566,7 +566,7 @@ brasero_project_overburn_dialog (BraseroProject *project)
 					 GTK_BUTTONS_NONE,
 					 _("Would you like to activate overburn?"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Project size"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Size"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The size of the project is too large for the disc and you must delete files otherwise."
@@ -791,12 +791,12 @@ brasero_project_check_status (BraseroProject *project,
 					 GTK_BUTTONS_CLOSE,
 					 _("Please wait:"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Please wait"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Please Wait"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("some tasks are not completed yet."));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Waiting for ongoing tasks"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Ongoing Tasks"));
 
 	progress = gtk_progress_bar_new ();
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress), " ");
@@ -1504,7 +1504,7 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 							      GTK_WINDOW (toplevel),
 							      GTK_FILE_CHOOSER_ACTION_OPEN,
 							      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-							      GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+							      GTK_STOCK_ADD, GTK_RESPONSE_OK,
 							      NULL);
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
@@ -1741,9 +1741,9 @@ brasero_project_set_uri (BraseroProject *project,
 	/* update the name of the main window */
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	if (type == BRASERO_PROJECT_TYPE_DATA)
-		title = g_strdup_printf (_("Brasero - %s (data disc)"), name);
+		title = g_strdup_printf (_("Brasero - %s (Data Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
-		title = g_strdup_printf (_("Brasero - %s (audio disc)"), name);
+		title = g_strdup_printf (_("Brasero - %s (Audio Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
 		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
 	g_free (name);
@@ -1773,7 +1773,7 @@ brasero_project_invalid_project_dialog (BraseroProject *project,
 					 GTK_BUTTONS_CLOSE,
 					 _("Error while loading the project:"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Project loading error"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Loading Error"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  reason);
@@ -2863,7 +2863,7 @@ brasero_project_save_project_ask_for_path (BraseroProject *project,
 	gint answer;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	chooser = gtk_file_chooser_dialog_new (_("Save current project"),
+	chooser = gtk_file_chooser_dialog_new (_("Save Current Project"),
 					       GTK_WINDOW (toplevel),
 					       GTK_FILE_CHOOSER_ACTION_SAVE,
 					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

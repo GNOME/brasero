@@ -1906,6 +1906,83 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 	return BRASERO_BURN_OK;
 }
 
+static BraseroBurnResult
+brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
+						      BraseroBurnSession *session)
+{
+	GSList *iter;
+	BraseroTrackType input;
+	BraseroTrackType output;
+	BraseroImageFormat format;
+	BraseroBurnFlag session_flags;
+
+	BRASERO_BURN_LOG ("Checking disc copy support with same source and destination");
+
+	/* To determine if a CD/DVD can be copied using the same source/dest,
+	 * we first determine if can be imaged and then if this image can be 
+	 * burnt to whatever medium type. */
+	memset (&input, 0, sizeof (BraseroTrackType));
+	brasero_burn_session_get_input_type (session, &input);
+	BRASERO_BURN_LOG_TYPE (&input, "input");
+
+	/* NOTE: BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE is a problem here since it
+	 * is only used if needed. Likewise DAO can be a problem. So just in
+	 * case remove them. They are not really useful in this context. What we
+	 * want here is to know whether a medium can be used given the input;
+	 * only 1 flag is important here (MERGE) and can have consequences. */
+	session_flags = brasero_burn_session_get_flags (session);
+	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|BRASERO_BURN_FLAG_DAO);
+
+	BRASERO_BURN_LOG_FLAGS (session_flags, "flags");
+
+	/* Find one available output format */
+	format = BRASERO_IMAGE_FORMAT_CDRDAO;
+	output.type = BRASERO_TRACK_TYPE_IMAGE;
+
+	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
+		BraseroBurnResult result;
+
+		output.subtype.img_format = format;
+
+		BRASERO_BURN_LOG_TYPE (&output, "Testing temporary image format");
+		result = brasero_caps_try_output_with_blanking (self,
+								session,
+								&output,
+								&input,
+								BRASERO_PLUGIN_IO_ACCEPT_FILE);
+		if (result != BRASERO_BURN_OK)
+			continue;
+
+		/* This format can be used to create an image. Check if can be
+		 * burnt now. Just find at least one medium. */
+		for (iter = self->priv->caps_list; iter; iter = iter->next) {
+			BraseroCaps *caps;
+			gboolean result;
+
+			caps = iter->data;
+
+			if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+				continue;
+
+			/* Put BRASERO_MEDIUM_NONE so we can always succeed */
+			result = brasero_caps_find_link (caps,
+							 session_flags,
+							 BRASERO_MEDIUM_NONE,
+							 &input,
+							 BRASERO_PLUGIN_IO_ACCEPT_FILE);
+
+			BRASERO_BURN_LOG_DISC_TYPE (caps->type.subtype.media,
+						    "Tested medium (%s)",
+						    result ? "working":"not working");
+
+			if (result)
+				return BRASERO_BURN_OK;
+		}
+	}
+
+	return BRASERO_BURN_NOT_SUPPORTED;
+}
+
 BraseroBurnResult
 brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 					BraseroBurnSession *session)
@@ -1914,6 +1991,10 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 	BraseroTrackType input;
 	BraseroTrackType output;
 	BraseroPluginIOFlag io_flags;
+
+	/* Special case */
+	if (brasero_burn_session_same_src_dest_drive (session))
+		return brasero_burn_caps_is_session_supported_same_src_dest (self, session);
 
 	/* Here flags don't matter as we don't record anything.
 	 * Even the IOFlags since that can be checked later with
@@ -1980,8 +2061,7 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	 * want here is to know which media can be used given the input; only 1
 	 * flag is important here (MERGE) and can have consequences. */
 	session_flags = brasero_burn_session_get_flags (session);
-	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-			   BRASERO_BURN_FLAG_DAO);
+	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|BRASERO_BURN_FLAG_DAO);
 
 	BRASERO_BURN_LOG_FLAGS (session_flags, "and flags");
 

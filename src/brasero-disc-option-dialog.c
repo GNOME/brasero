@@ -558,7 +558,7 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Some files don't have a suitable name for a Windows-compatible CD. Those names will be changed and truncated to 64 characters."));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Windows compatibility"));
+	gtk_window_set_title (GTK_WINDOW (message), _("Windows Compatibility"));
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
 			       _("_Don't rename"),
@@ -1417,7 +1417,7 @@ brasero_disc_option_dialog_new ()
 	BraseroDiscOptionDialog *obj;
 
 	obj = BRASERO_DISC_OPTION_DIALOG (g_object_new (BRASERO_TYPE_DISC_OPTION_DIALOG,
-							"title", _("Disc burning setup"),
+							"title", _("Disc Burning Setup"),
 							NULL));
 
 	return GTK_WIDGET (obj);

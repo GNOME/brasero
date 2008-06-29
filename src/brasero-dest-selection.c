@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2007 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
  *
  * brasero is free software.
  *
@@ -494,7 +494,7 @@ brasero_dest_selection_get_possible_output_formats (BraseroDestSelection *self,
 	output.type = BRASERO_TRACK_TYPE_IMAGE;
 
 	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		gboolean result;
+		BraseroBurnResult result;
 
 		output.subtype.img_format = format;
 		result = brasero_burn_caps_is_output_supported (priv->caps,
@@ -823,14 +823,15 @@ static void
 brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
+	BraseroBurnResult is_valid;
 	BraseroTrackType source;
 	BraseroBurnFlag flags;
 	BraseroMedium *medium;
 	BraseroDrive *drive;
 	GConfClient *client;
 	GConfValue *value;
-	gchar *path;
 	guint64 rate;
+	gchar *path;
 	gchar *key;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
@@ -842,6 +843,7 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			       0,
 			       FALSE);
 		gtk_widget_set_sensitive (priv->button, FALSE);
+		gtk_widget_set_sensitive (priv->copies_box, FALSE);
 		return;
 	}
 
@@ -914,8 +916,35 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
-	if (!value) {
-		BraseroBurnResult result;
+	if (brasero_dest_selection_check_same_src_dest (self)) {
+		/* Special case */
+
+		/* wipe out previous flags */
+		brasero_burn_session_remove_flag (priv->session,
+						  BRASERO_DRIVE_PROPERTIES_FLAGS);
+
+		/* set new ones */
+		if (value) {
+			flags = gconf_value_get_int (value) & BRASERO_DEST_SAVED_FLAGS;
+			gconf_value_free (value);
+		}
+		else
+			flags = BRASERO_BURN_FLAG_EJECT|
+				BRASERO_BURN_FLAG_BURNPROOF;
+
+		brasero_burn_session_add_flag (priv->session, flags);
+
+		/* NOTE: of course NO_TMP is not possible; DAO and BLANK_BEFORE
+		 * could be yet. The problem here is that we cannot test all
+		 * this since we don't know yet what the disc type is going to 
+		 * be. So we set DAO and BLANK_BEFORE_WRITE just in case.
+		 * Hopefully burn.c will be able to handle that later. */
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+					       BRASERO_BURN_FLAG_FAST_BLANK|
+					       BRASERO_BURN_FLAG_DAO);
+	}
+	else if (!value) {
 		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
@@ -931,51 +960,8 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 								   flags,
 								   &supported,
 								   &compulsory);
-
-		/* Now that we updated the session flags see if everything works */
-		result = brasero_burn_caps_is_session_supported (priv->caps, priv->session);
-		g_signal_emit (self,
-			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
-			       0,
-			       (result == BRASERO_BURN_OK));
-
-		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
-		gtk_widget_set_sensitive (priv->copies_box, (result == BRASERO_BURN_OK));
-	}
-	else if (brasero_dest_selection_check_same_src_dest (self)) {
-		/* Special case: better not check if session is supported. */
-
-		/* wipe out previous flags */
-		brasero_burn_session_remove_flag (priv->session,
-						  BRASERO_DRIVE_PROPERTIES_FLAGS|
-						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-						  BRASERO_BURN_FLAG_FAST_BLANK|
-						  BRASERO_BURN_FLAG_DAO);
-
-		/* set new ones */
-		flags = gconf_value_get_int (value) & BRASERO_DEST_SAVED_FLAGS;
-		gconf_value_free (value);
-		brasero_burn_session_add_flag (priv->session, flags);
-
-		/* NOTE: of course NO_TMP is not possible; DAO and BLANK_BEFORE
-		 * could be yet. The problem here is that we cannot test all
-		 * this since we don't know yet what the disc type is going to 
-		 * be. So we set DAO and BLANK_BEFORE_WRITE just in case.
-		 * Hopefully burn.c will be able to handle that later. */
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-					       BRASERO_BURN_FLAG_FAST_BLANK|
-					       BRASERO_BURN_FLAG_DAO);
-
-		g_signal_emit (self,
-			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
-			       0,
-			       TRUE);
-		gtk_widget_set_sensitive (priv->button, TRUE);
-		gtk_widget_set_sensitive (priv->copies_box, TRUE);
 	}
 	else {
-		BraseroBurnResult result;
 		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
@@ -987,18 +973,17 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 								   flags,
 								   &supported,
 								   &compulsory);
-
-		/* Now that we updated the session flags see if everything works
-		 * if not, unset all flags and retry. */
-		result = brasero_burn_caps_is_session_supported (priv->caps, priv->session);
-		g_signal_emit (self,
-			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
-			       0,
-			       (result == BRASERO_BURN_OK));
-
-		gtk_widget_set_sensitive (priv->copies_box, (result == BRASERO_BURN_OK));
-		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 	}
+
+	/* Now that we updated the session flags see if everything works */
+	is_valid = brasero_burn_caps_is_session_supported (priv->caps, priv->session);
+	g_signal_emit (self,
+		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+		       0,
+		       (is_valid == BRASERO_BURN_OK));
+
+	gtk_widget_set_sensitive (priv->copies_box, (is_valid == BRASERO_BURN_OK));
+	gtk_widget_set_sensitive (priv->button, (is_valid == BRASERO_BURN_OK));
 
 	key = g_strdup_printf ("%s/tmpdir", BRASERO_DRIVE_PROPERTIES_KEY);
 	path = gconf_client_get_string (client, key, NULL);
@@ -1026,6 +1011,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	if (output.type == BRASERO_TRACK_TYPE_NONE
 	||  output.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 		/* That means that we've got a problem */
+		/* FIXME: we need to display a message nevertheless */
 		brasero_burn_session_set_image_output (priv->session,
 						       BRASERO_IMAGE_FORMAT_NONE,
 						       NULL);
@@ -1033,6 +1019,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       FALSE);
+
 		gtk_widget_set_sensitive (priv->button, FALSE);
 		return;
 	}
@@ -1066,12 +1053,15 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
 	if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) == BRASERO_BURN_OK) {
+		gchar *path;
 		BraseroTrackType output;
 		BraseroImageFormat format;
 
+		/* we already have an output check its validity */
 		output.type = BRASERO_TRACK_TYPE_IMAGE;
 
 		if (!priv->default_format) {
+			/* The user set a format */
 			output.subtype.img_format = brasero_burn_session_get_output_format (priv->session);
 
 			/* check that the format is still supported. If not then find a good default */
@@ -1087,35 +1077,17 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 			brasero_dest_selection_get_default_output_format (self, &output);
 
 		format = output.subtype.img_format;
-
-		if (format != BRASERO_IMAGE_FORMAT_NONE) {
-			gchar *path;
-
-			if (!priv->default_path) {
-				/* check that the extension is ok */
-				path = brasero_dest_selection_get_output_path (self);
-				if (priv->default_ext
-				&&  brasero_dest_selection_image_check_extension (self, format, path))
-					path = brasero_dest_selection_fix_image_extension (format, TRUE, path);
-			}
-			else
-				path = brasero_dest_selection_get_default_output_path (self, format);
-
-			brasero_burn_session_set_image_output (priv->session, format, path);
-			brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), path);
-			g_free (path);
-		}
-
 		g_signal_emit (self,
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,
 			       (format != BRASERO_IMAGE_FORMAT_NONE));
-		gtk_widget_set_sensitive (priv->button, (format != BRASERO_IMAGE_FORMAT_NONE));
+
+		if (priv->button)
+			gtk_widget_set_sensitive (priv->button, (format != BRASERO_IMAGE_FORMAT_NONE));
 
 		if (format == BRASERO_IMAGE_FORMAT_NONE) {
-			if (priv->button)
-				gtk_widget_set_sensitive (priv->button, FALSE);
-
+			/* FIXME: we've got a problem and it's not possible,
+			 * display a message to say so */
 			if (priv->drive_prop) {
 				gtk_widget_destroy (priv->drive_prop);
 				priv->drive_prop = NULL;
@@ -1124,8 +1096,19 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 			return;
 		}
 
-		if (priv->button)
-			gtk_widget_set_sensitive (priv->button, TRUE);
+		if (!priv->default_path) {
+			/* check that the extension is ok if not update it */
+			path = brasero_dest_selection_get_output_path (self);
+			if (priv->default_ext
+			&&  brasero_dest_selection_image_check_extension (self, format, path))
+				path = brasero_dest_selection_fix_image_extension (format, TRUE, path);
+		}
+		else
+			path = brasero_dest_selection_get_default_output_path (self, format);
+
+		brasero_burn_session_set_image_output (priv->session, format, path);
+		brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), path);
+		g_free (path);
 	}
 	else
 		brasero_dest_selection_set_image_properties (self);
@@ -1145,8 +1128,7 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 }
 
 static void
-brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
-					     BraseroDrive *drive)
+brasero_dest_selection_check_drive_settings (BraseroDestSelection *self)
 {
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
@@ -1156,35 +1138,30 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	/* check for a special case */
+	/* Update the flags and save them */
 	if (brasero_dest_selection_check_same_src_dest (self)) {
-		gtk_widget_set_sensitive (priv->button, TRUE);
-		g_signal_emit (self,
-			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
-			       0,
-			       TRUE);
-		gtk_widget_set_sensitive (priv->button, TRUE);
-
-		/* These are always set in any case */
+		/* These are always set in any case and there is no way to check
+		 * the current flags */
 		brasero_burn_session_add_flag (priv->session,
 					       BRASERO_BURN_FLAG_DAO|
 					       BRASERO_BURN_FLAG_FAST_BLANK|
 					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-		return;
 	}
+	else {
+		/* Try to properly update the flags for the current drive */
+		flags = brasero_burn_session_get_flags (priv->session);
 
-	/* Try to properly update the flags for the current drive */
-	flags = brasero_burn_session_get_flags (priv->session);
-
-	/* check each flag before re-adding it */
-	brasero_dest_selection_add_drive_properties_flags (self,
-							   flags,
-							   &supported,
-							   &compulsory);
+		/* check each flag before re-adding it */
+		brasero_dest_selection_add_drive_properties_flags (self,
+								   flags,
+								   &supported,
+								   &compulsory);
+	}
 
 	/* NOTE: we save even if result != BRASERO_BURN_OK. That way if a flag
 	 * is no longer supported after the removal of a plugin then the 
 	 * properties are reset and the user can access them again */
+
 	/* save potential changes for the new profile */
 	brasero_dest_selection_save_drive_properties (self);
 
@@ -1203,6 +1180,7 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self,
 		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 		       0,
 		       (result == BRASERO_BURN_OK));
+
 	if (priv->button)
 		gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 
@@ -1228,7 +1206,7 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 
 	/* NOTE: that can't happen if we are going to write to an image since
 	 * that would mean we are changing the image format (something we don't
-	 * do. So it has to be when we write to a drive */
+	 * do). So it has to be when we write to a drive */
 	brasero_dest_selection_set_drive_properties (self);
 }
 
@@ -1236,7 +1214,6 @@ static void
 brasero_dest_selection_caps_changed (BraseroPluginManager *manager,
 				     BraseroDestSelection *self)
 {
-	BraseroDrive *drive;
 	BraseroDestSelectionPrivate *priv;
 
 	/* In this case we are still in the same context (same src, dest) so we
@@ -1247,14 +1224,10 @@ brasero_dest_selection_caps_changed (BraseroPluginManager *manager,
 	/* The caps of the library / the source have changed so we must check:
 	 * if it's an image that the output type is still possible
 	 * if it's a drive that all flags are still supported and that the media is too */
-	drive = brasero_burn_session_get_burner (priv->session);
-	if (!drive)
-		return;
-
-	if (!brasero_drive_is_fake (drive))
-		brasero_dest_selection_check_drive_settings (self, drive);
-	else
+	if (brasero_burn_session_is_dest_file (priv->session))
 		brasero_dest_selection_check_image_settings (self);
+	else
+		brasero_dest_selection_check_drive_settings (self);
 }
 
 static void
@@ -1267,17 +1240,17 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	burner = brasero_burn_session_get_burner (priv->session);
-	if (priv->drive_prop) {
-		/* cancel the drive properties dialog as it's not the same drive */
-		gtk_dialog_response (GTK_DIALOG (priv->drive_prop),
-				     GTK_RESPONSE_CANCEL);
-	}
-
 	/* make sure the current displayed drive reflects that */
+	burner = brasero_burn_session_get_burner (priv->session);
 	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self));
-	if (drive && burner && burner != drive)
+	if (burner != drive) {
 		brasero_drive_selection_set_drive (BRASERO_DRIVE_SELECTION (self), drive);
+
+		if (priv->drive_prop) {
+			/* cancel the drive properties dialog as it's not the same drive */
+			gtk_dialog_response (GTK_DIALOG (priv->drive_prop), GTK_RESPONSE_CANCEL);
+		}
+	}
 
 	if (drive)
 		g_object_unref (drive);
@@ -1292,10 +1265,9 @@ brasero_dest_selection_output_changed (BraseroBurnSession *session,
 
 		brasero_dest_selection_set_drive_properties (self);
 
-		gtk_widget_show (priv->copies_box);
-
 		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
 		brasero_burn_session_set_num_copies (priv->session, numcopies);
+		gtk_widget_show (priv->copies_box);
 	}
 	else {
 		gtk_widget_hide (priv->copies_box);

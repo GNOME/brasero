@@ -825,8 +825,10 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			if (!rawpath)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				return BRASERO_BURN_ERR;
+			/* NOTE: we ignore DAO flag on purpose since it isn't
+			 * implemented yet. Don't error out since there is no
+			 * way for us to tell that we don't support this flag
+			 * for this specific input. */
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-raw96r"));
