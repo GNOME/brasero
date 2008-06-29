@@ -811,7 +811,7 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 	brasero_io_return_result (BRASERO_IO (manager),
 				  job->base,
 				  file_uri?file_uri:job->uri,
-				  NULL,
+				  info,
 				  error,
 				  job->callback_data);
 
