@@ -1,5 +1,14 @@
 2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #539959 Crash when right clicking in plugin window 
+
+	* src/brasero-plugin-manager-ui.c
+	(plugin_manager_ui_populate_lists), (create_tree_popup_menu),
+	(show_tree_popup_menu), (brasero_plugin_manager_ui_init):
+	* src/burn.c (brasero_burn_log):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
 
 	* src/plugins/cdrtools/burn-cdrecord.c

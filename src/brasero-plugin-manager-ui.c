@@ -369,6 +369,7 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 	}
 	g_object_unref (caps);
 
+	plugin = NULL;
 	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (model), &iter))
 	{
 		GtkTreeSelection *selection;
@@ -568,6 +569,9 @@ create_tree_popup_menu (BraseroPluginManagerUI *pm)
 
 	plugin = plugin_manager_ui_get_selected_plugin (pm);
 
+	if (!plugin)
+		return NULL;
+
 	menu = gtk_menu_new ();
 
 	item = gtk_image_menu_item_new_with_mnemonic (_("_About"));
@@ -714,6 +718,8 @@ show_tree_popup_menu (GtkTreeView        *tree,
 		gtk_widget_destroy (priv->popup_menu);
 
 	priv->popup_menu = create_tree_popup_menu (pm);
+	if (!priv->popup_menu)
+		return;
 	
 	gtk_menu_attach_to_widget (GTK_MENU (priv->popup_menu),
 				   GTK_WIDGET (pm),
@@ -983,11 +989,8 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 		gtk_widget_set_sensitive (priv->about_button, FALSE);
 		gtk_widget_set_sensitive (priv->configure_button, FALSE);		
 	}
-	else {
+	else
 		plugin_manager_ui_populate_lists (pm);
-		gtk_widget_set_sensitive (priv->about_button, TRUE);
-		gtk_widget_set_sensitive (priv->configure_button, TRUE);
-	}
 }
 
 static void

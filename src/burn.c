@@ -162,9 +162,7 @@ brasero_burn_log (BraseroBurn *burn,
 	va_list arg_list;
 
 	va_start (arg_list, format);
-
 	brasero_burn_session_logv (priv->session, format, arg_list);
-
 	va_end (arg_list);
 }
 
