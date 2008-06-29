@@ -1,5 +1,12 @@
 2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
+
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_set_argv_record):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #540673 – m3u playlist import problem
 	keep the correct order of entries in a playlist
 
