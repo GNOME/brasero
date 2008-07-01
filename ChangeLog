@@ -1,5 +1,12 @@
 2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix an issue with data projects and renaming that displayed
+	the old name and not the new one of an already existing file
+
+	* src/brasero-data-project.c (brasero_data_project_rename_node):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #540931 – Fails to burn an iso to DVD+RW in 0.7.90
 
 	* src/burn-caps.c (brasero_caps_get_flags),

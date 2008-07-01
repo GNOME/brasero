@@ -1358,7 +1358,7 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 	 * simply not possible to rename. */
 	sibling = brasero_file_node_check_name_existence (node->parent, name);
 	if (sibling) {
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
+		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, name))
 			return FALSE;
 
 		if (sibling != node)
