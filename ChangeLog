@@ -1,5 +1,19 @@
 2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #540993 – Brasero displays (and uses) incorrect track durations
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_reset_real),
+	(brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_inotify_modify_result),
+	(brasero_audio_disc_inotify_move),
+	(brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-io.c (brasero_io_metadata_lookup_buffer),
+	(brasero_io_metadata_cached_free), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real), (brasero_io_finalize):
+	* src/brasero-metadata.h:
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Another fix for #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
 
 	* src/plugins/cdrkit/burn-readom.c (brasero_readom_set_argv):

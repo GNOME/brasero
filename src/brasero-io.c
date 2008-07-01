@@ -41,6 +41,7 @@
 #endif
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "brasero-utils.h"
 
 #include "brasero-io.h"
@@ -579,13 +580,26 @@ struct _BraserIOMetadataTask {
 };
 typedef struct _BraseroIOMetadataTask BraseroIOMetadataTask;
 
+struct _BraseroIOMetadataCached {
+	guint64 last_modified;
+	BraseroMetadataInfo *info;
+};
+typedef struct _BraseroIOMetadataCached BraseroIOMetadataCached;
+
 static gint
 brasero_io_metadata_lookup_buffer (gconstpointer a, gconstpointer b)
 {
-	const BraseroMetadataInfo *metadata = a;
+	const BraseroIOMetadataCached *cached = a;
 	const gchar *uri = b;
 
-	return strcmp (uri, metadata->uri);
+	return strcmp (uri, cached->info->uri);
+}
+
+static void
+brasero_io_metadata_cached_free (BraseroIOMetadataCached *cached)
+{
+	brasero_metadata_info_free (cached->info);
+	g_free (cached);
 }
 
 static void
@@ -642,13 +656,23 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	||  !strcmp (mime, "application/octet-stream")))
 		return FALSE;
 
-	/* seek in the buffer if we have already explored these metadata */
+	/* Seek in the buffer if we have already explored these metadata. Check 
+	 * the info last modified time in case a result should be updated. */
 	node = g_queue_find_custom (priv->meta_buffer,
 				    uri,
 				    brasero_io_metadata_lookup_buffer);
 	if (node) {
-		brasero_metadata_info_copy (meta_info, node->data);
-		return TRUE;
+		guint64 last_modified;
+		BraseroIOMetadataCached *cached;
+
+		cached = node->data;
+		last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
+		if (last_modified == cached->last_modified) {
+			brasero_metadata_info_copy (meta_info, cached->info);
+			return TRUE;
+		}
+
+		BRASERO_BURN_LOG ("Updating cache information for %s", uri);
 	}
 
 	/* grab an available metadata (NOTE: there should always be at least one
@@ -674,15 +698,18 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	if (result) {
 		/* see if we should add it to the buffer */
 		if (meta_info->has_audio || meta_info->has_video) {
-			BraseroMetadataInfo *copy;
+			BraseroIOMetadataCached *cached;
 
-			copy = g_new0 (BraseroMetadataInfo, 1);
-			brasero_metadata_set_info (metadata, copy);
+			cached = g_new0 (BraseroIOMetadataCached, 1);
+			cached->last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 
-			g_queue_push_head (priv->meta_buffer, copy);
+			cached->info = g_new0 (BraseroMetadataInfo, 1);
+			brasero_metadata_set_info (metadata, cached->info);
+
+			g_queue_push_head (priv->meta_buffer, cached);
 			if (g_queue_get_length (priv->meta_buffer) > MAX_BUFFERED_META) {
-				meta_info = g_queue_pop_tail (priv->meta_buffer);
-				brasero_metadata_info_free (meta_info);
+				cached = g_queue_pop_tail (priv->meta_buffer);
+				brasero_io_metadata_cached_free (cached);
 			}
 		}
 	}
@@ -722,6 +749,11 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
 	if (options & BRASERO_IO_INFO_ICON)
 		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
+
+	/* if retrieving metadata we need this one to check if a possible result
+	 * in cache should be updated or used */
+	if (options & BRASERO_IO_INFO_METADATA)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_SIZE);
 
 	file = g_file_new_for_uri (uri);
 	info = g_file_query_info (file,
@@ -2276,10 +2308,10 @@ brasero_io_finalize (GObject *object)
 	priv->metadatas = NULL;
 
 	if (priv->meta_buffer) {
-		BraseroMetadataInfo *metadata;
+		BraseroIOMetadataCached *cached;
 
-		while ((metadata = g_queue_pop_head (priv->meta_buffer)) != NULL)
-			brasero_metadata_info_free (metadata);
+		while ((cached = g_queue_pop_head (priv->meta_buffer)) != NULL)
+			brasero_io_metadata_cached_free (cached);
 
 		g_queue_free (priv->meta_buffer);
 		priv->meta_buffer = NULL;
