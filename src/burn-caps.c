@@ -2121,6 +2121,7 @@ brasero_caps_get_flags (BraseroCaps *caps,
 			/* see if that link can handle the record flags.
 			 * NOTE: compulsory are not a failure in this case. */
 			tmp = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
+			g_print ("MAAKKS  %i %i\n", tmp, rec_supported);
 			if ((tmp & rec_supported) != tmp)
 				continue;
 		}
@@ -3033,6 +3034,9 @@ brasero_caps_disc_new_status (GSList *retval,
 		||  BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_RESTRICTED)
 		||  BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
 			/* This is only for above types */
+			retval = brasero_caps_disc_lookup_or_create (retval,
+								     media|
+								     BRASERO_MEDIUM_BLANK);
 			retval = brasero_caps_disc_lookup_or_create (retval,
 								     media|
 								     BRASERO_MEDIUM_BLANK|

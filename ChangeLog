@@ -1,5 +1,16 @@
 2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #540931 – Fails to burn an iso to DVD+RW in 0.7.90
+
+	* src/burn-caps.c (brasero_caps_get_flags),
+	(brasero_caps_disc_new_status):
+	* src/burn-medium.c (brasero_medium_track_volume_size),
+	(brasero_medium_get_sessions_info):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #540993 – Brasero displays (and uses) incorrect track durations
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_reset_real),

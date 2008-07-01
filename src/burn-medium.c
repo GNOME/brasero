@@ -1185,6 +1185,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 				       &nb_blocks,
 				       NULL);
 	brasero_volume_source_close (vol);
+
 	if (!res) {
 		BRASERO_BURN_LOG ("Failed to retrieve the volume size: %s",
 				  error && error->message ? 
@@ -1889,8 +1890,10 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				g_free (track);
 
 				priv->info |= BRASERO_MEDIUM_BLANK;
-				priv->info &= ~BRASERO_MEDIUM_CLOSED|
-					       BRASERO_MEDIUM_HAS_DATA;
+				priv->info &= ~(BRASERO_MEDIUM_CLOSED|
+					        BRASERO_MEDIUM_HAS_DATA);
+
+				BRASERO_BURN_LOG ("Empty first session.");
 			}
 			else
 				priv->next_wr_add = 0;
