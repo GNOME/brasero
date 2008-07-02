@@ -1,5 +1,12 @@
 2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #506338 – Import Session fails on DVD+R that contains multiple sessions
+	use fseeko instead of fseek that can't break the 2Gio barrier
+
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd):
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	some small fixes
 
 	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
