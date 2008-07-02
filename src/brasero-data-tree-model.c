@@ -460,21 +460,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 
 	case BRASERO_DATA_TREE_MODEL_NAME:
 		g_value_init (value, G_TYPE_STRING);
-
-		/* we may have to set some markup on it */
-		if (node->is_imported) {
-			gchar *markup;
-
-			/* italics and small difference in colour */
-			markup = g_strdup_printf ("<span foreground='grey50'>%s</span>",
-						  BRASERO_FILE_NODE_NAME (node));
-
-			g_value_set_string (value, markup);
-			g_free (markup);
-		}
-		else
-			g_value_set_string (value, BRASERO_FILE_NODE_NAME (node));
-
+		g_value_set_string (value, BRASERO_FILE_NODE_NAME (node));
 		return;
 
 	case BRASERO_DATA_TREE_MODEL_MIME_DESC:
@@ -619,6 +605,13 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		g_value_init (value, PANGO_TYPE_STYLE);
 		if (node->is_imported)
 			g_value_set_enum (value, PANGO_STYLE_ITALIC);
+
+		return;
+
+	case BRASERO_DATA_TREE_MODEL_COLOR:
+		g_value_init (value, G_TYPE_STRING);
+		if (node->is_imported)
+			g_value_set_string (value, "grey50");
 
 		return;
 
@@ -810,6 +803,9 @@ brasero_data_tree_model_get_column_type (GtkTreeModel *model,
 
 	case BRASERO_DATA_TREE_MODEL_STYLE:
 		return PANGO_TYPE_STYLE;
+
+	case BRASERO_DATA_TREE_MODEL_COLOR:
+		return G_TYPE_STRING;
 
 	case BRASERO_DATA_TREE_MODEL_EDITABLE:
 		return G_TYPE_BOOLEAN;

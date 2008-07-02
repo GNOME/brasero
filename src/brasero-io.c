@@ -1586,6 +1586,9 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		}
 
 		child = g_file_get_child (file, name);
+		if (!child)
+			continue;
+
 		child_uri = g_file_get_uri (child);
 
 		/* special case for symlinks */

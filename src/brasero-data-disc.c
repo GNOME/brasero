@@ -2108,9 +2108,11 @@ brasero_data_disc_init (BraseroDataDisc *object)
 
 	gtk_tree_view_column_pack_end (column, renderer, TRUE);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "markup", BRASERO_DATA_TREE_MODEL_NAME);
+					    "text", BRASERO_DATA_TREE_MODEL_NAME);
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "style", BRASERO_DATA_TREE_MODEL_STYLE);
+	gtk_tree_view_column_add_attribute (column, renderer,
+					    "foreground", BRASERO_DATA_TREE_MODEL_COLOR);
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "editable", BRASERO_DATA_TREE_MODEL_EDITABLE);
 

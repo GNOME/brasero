@@ -422,7 +422,6 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 		return;
 
 	/* Filtering part */
-
 	name = g_file_info_get_name (info);
 
 	/* See if it's a broken symlink */

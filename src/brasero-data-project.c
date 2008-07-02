@@ -414,9 +414,9 @@ brasero_data_project_node_to_uri (BraseroDataProject *self,
 				  BraseroFileNode *node)
 {
 	BraseroDataProjectPrivate *priv;
+	GSList *list = NULL;
 	gchar *retval;
 	guint uri_len;
-	GSList *list;
 	GSList *iter;
 	gchar *ptr;
 	guint len;
@@ -433,20 +433,26 @@ brasero_data_project_node_to_uri (BraseroDataProject *self,
 	uri_len = 0;
 	list = NULL;
 	for (; node; node = node->parent) {
+		gchar *escaped_name;
+
 		if (node->is_grafted)
 			break;
 
 		if (node == priv->root)
 			break;
 
-		list = g_slist_prepend (list, node);
-
 		/* the + 1 is for the separator */
-		uri_len += strlen (BRASERO_FILE_NODE_NAME (node)) + 1;
+		escaped_name = g_uri_escape_string (BRASERO_FILE_NODE_NAME (node), NULL, TRUE);
+		uri_len += strlen (escaped_name) + 1;
+		list = g_slist_prepend (list, escaped_name);
 	}
 
-	if (!node || node->is_root)
+	/* The node here is the first grafted parent */
+	if (!node || node->is_root) {
+		g_slist_foreach (list, (GFunc) g_free, NULL);
+		g_slist_free (list);
 		return NULL;
+	}
 
 	/* NOTE: directories URIs shouldn't have a separator at end */
 	len = strlen (BRASERO_FILE_NODE_GRAFT (node)->node->uri);
@@ -458,19 +464,21 @@ brasero_data_project_node_to_uri (BraseroDataProject *self,
 	ptr = retval + len;
 
 	for (iter = list; iter; iter = iter->next) {
-		node = iter->data;
+		gchar *escaped_name;
+
+		escaped_name = iter->data;
 
 		ptr [0] = G_DIR_SEPARATOR;
 		ptr ++;
 
-		len = strlen (BRASERO_FILE_NODE_NAME (node));
-		memcpy (ptr, BRASERO_FILE_NODE_NAME (node), len);
+		len = strlen (escaped_name);
+		memcpy (ptr, escaped_name, len);
 		ptr += len;
 	}
+	g_slist_foreach (list, (GFunc) g_free, NULL);
 	g_slist_free (list);
 
 	ptr [0] = '\0';
-
 	return retval;
 }
 			  

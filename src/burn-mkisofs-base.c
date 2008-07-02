@@ -131,6 +131,14 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	}
 
 	localpath = g_filename_from_uri (uri, NULL, NULL);
+	if (localpath) {
+		/* FIXME! change this */
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the file is not stored locally"));
+		return BRASERO_BURN_ERR;
+	}
 
 	/* we need to escape some characters like []\? since in this file we
 	 * can use glob like expressions. */
