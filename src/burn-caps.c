@@ -2121,7 +2121,6 @@ brasero_caps_get_flags (BraseroCaps *caps,
 			/* see if that link can handle the record flags.
 			 * NOTE: compulsory are not a failure in this case. */
 			tmp = session_flags & BRASERO_PLUGIN_BURN_FLAG_MASK;
-			g_print ("MAAKKS  %i %i\n", tmp, rec_supported);
 			if ((tmp & rec_supported) != tmp)
 				continue;
 		}

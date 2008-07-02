@@ -468,8 +468,7 @@ brasero_data_disc_paste_activated_cb (GtkAction *action,
 
 	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
 	gtk_clipboard_request_targets (clipboard,
-				       (GtkClipboardTargetsReceivedFunc)
-				       brasero_data_disc_clipboard_targets_cb,
+				       (GtkClipboardTargetsReceivedFunc) brasero_data_disc_clipboard_targets_cb,
 				       data);
 }
 
