@@ -875,6 +875,28 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 }
 
 static BraseroBurnResult
+brasero_medium_check_old_drive (BraseroMedium *self)
+{
+	gchar *model;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	model = brasero_drive_get_display_name (priv->drive);
+	if (!model)
+		return BRASERO_BURN_ERR;
+
+	if (!strcmp (model, "TEAC R55S")) {
+		g_free (model);
+		priv->max_rd = BRASERO_SPEED_TO_RATE_CD (12);
+		priv->max_wrt = BRASERO_SPEED_TO_RATE_CD (4);
+		return BRASERO_BURN_OK;
+	}
+
+	return BRASERO_BURN_ERR;
+}
+
+static BraseroBurnResult
 brasero_medium_get_medium_type (BraseroMedium *self,
 				BraseroDeviceHandle *handle,
 				BraseroScsiErrCode *code)
@@ -948,6 +970,10 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		result = brasero_medium_get_page_2A_max_speed (self,
 							       handle,
 							       code);
+
+		if (result != BRASERO_BURN_OK)
+			result = brasero_medium_check_old_drive (self);
+
 		return result;
 	}
 

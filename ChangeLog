@@ -1,6 +1,14 @@
 2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #535835 – TEAC R55S - can't burn CD-R
+
+	* src/burn-medium.c (brasero_medium_check_old_drive),
+	(brasero_medium_get_medium_type):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #506398 – toc image type not autodetected correctly
+	Also give a name for the volume when gvolume is still not available.
 
 	* src/brasero-image-option-dialog.c
 	(brasero_image_option_dialog_image_info_cb):
