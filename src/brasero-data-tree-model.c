@@ -1122,25 +1122,6 @@ brasero_data_tree_model_set_sort_column_id (GtkTreeSortable *sortable,
 	gtk_tree_sortable_sort_column_changed (sortable);
 }
 
-static void
-brasero_data_tree_model_set_sort_func (GtkTreeSortable *sortable,
-				       gint column,
-				       GtkTreeIterCompareFunc sort_func,
-				       gpointer data,
-				       GtkDestroyNotify destroy)
-{
-	
-}
-
-static void
-brasero_data_tree_model_set_default_sort_func (GtkTreeSortable *sortable,
-					       GtkTreeIterCompareFunc sort_func,
-					       gpointer data,
-					       GtkDestroyNotify destroy)
-{
-	
-}
-
 static gboolean
 brasero_data_tree_model_has_default_sort_func (GtkTreeSortable *sortable)
 {
@@ -1583,10 +1564,8 @@ brasero_data_tree_model_sortable_iface_init (gpointer g_iface, gpointer data)
 
 	initialized = TRUE;
 
-	iface->set_sort_func = brasero_data_tree_model_set_sort_func;
 	iface->get_sort_column_id = brasero_data_tree_model_get_sort_column_id;
 	iface->set_sort_column_id = brasero_data_tree_model_set_sort_column_id;
-	iface->set_default_sort_func = brasero_data_tree_model_set_default_sort_func;
 	iface->has_default_sort_func = brasero_data_tree_model_has_default_sort_func;
 }
 
