@@ -645,6 +645,79 @@ brasero_image_format_get_cue_size (gchar *path,
 	return TRUE;
 }
 
+BraseroImageFormat
+brasero_image_format_identify_cuesheet (const gchar *path)
+{
+	FILE *file;
+	BraseroImageFormat format;
+	gchar buffer [MAXPATHLEN * 2];
+
+	if (!path)
+		return BRASERO_IMAGE_FORMAT_NONE;
+
+	/* NOTE: the problem here is that cdrdao files can have references to 
+	 * multiple files. Which is great but not for us ... */
+	file = fopen (path, "r");
+	if (!file)
+		return BRASERO_IMAGE_FORMAT_NONE;
+
+	format = BRASERO_IMAGE_FORMAT_NONE;
+	while (fgets (buffer, sizeof (buffer), file)) {
+		/* Keywords for cdrdao cuesheets */
+		if (strstr (buffer, "CD_ROM_XA")
+		||  strstr (buffer, "CD_ROM")
+		||  strstr (buffer, "CD_DA")
+		||  strstr (buffer, "CD_TEXT")) {
+			format = BRASERO_IMAGE_FORMAT_CDRDAO;
+			break;
+		}
+		else if (strstr (buffer, "TRACK")) {
+			/* NOTE: there is also "AUDIO" but it's common to both */
+
+			/* CDRDAO */
+			if (strstr (buffer, "MODE1")
+			||  strstr (buffer, "MODE1_RAW")
+			||  strstr (buffer, "MODE2_FORM1")
+			||  strstr (buffer, "MODE2_FORM2")
+			||  strstr (buffer, "MODE_2_RAW")
+			||  strstr (buffer, "MODE2_FORM_MIX")
+			||  strstr (buffer, "MODE2")) {
+				format = BRASERO_IMAGE_FORMAT_CDRDAO;
+				break;
+			}
+
+			/* .CUE file */
+			else if (strstr (buffer, "CDG")
+			     ||  strstr (buffer, "MODE1/2048")
+			     ||  strstr (buffer, "MODE1/2352")
+			     ||  strstr (buffer, "MODE2/2336")
+			     ||  strstr (buffer, "MODE2/2352")
+			     ||  strstr (buffer, "CDI/2336")
+			     ||  strstr (buffer, "CDI/2352")) {
+				format = BRASERO_IMAGE_FORMAT_CUE;
+				break;
+			}
+		}
+		else if (strstr (buffer, "FILE")) {
+			if (strstr (buffer, "MOTOROLA")
+			||  strstr (buffer, "BINARY")
+			||  strstr (buffer, "AIFF")
+			||  strstr (buffer, "WAVE")
+			||  strstr (buffer, "MP3")) {
+				format = BRASERO_IMAGE_FORMAT_CUE;
+				break;
+			}
+		}
+	}
+	fclose (file);
+
+	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_IMAGE,
+					 format,
+					 BRASERO_BURN_FLAG_NONE,
+					 "Detected");
+	return format;
+}
+
 gboolean
 brasero_image_format_get_iso_size (gchar *path,
 				   gint64 *blocks,

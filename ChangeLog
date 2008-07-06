@@ -1,3 +1,18 @@
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #506398 – toc image type not autodetected correctly
+
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_cb):
+	* src/burn-image-format.c (brasero_image_format_identify_cuesheet):
+	* src/burn-image-format.h:
+	* src/burn-track.c (brasero_track_get_image_size):
+	* src/burn-volume-obj.c (brasero_volume_get_gvolume),
+	(brasero_volume_is_mounted), (brasero_volume_get_mount_point),
+	(brasero_volume_umount), (brasero_volume_mount),
+	(brasero_volume_eject), (brasero_volume_get_name),
+	(brasero_volume_get_display_label):
+
 2008-07-03  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Updated NEWS file
