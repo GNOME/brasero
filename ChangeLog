@@ -1,5 +1,21 @@
 2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Check drive capabilities (Burn proof, just link only ATM)
+	fix name of model in previous patch
+
+	* src/burn-caps.c (brasero_burn_caps_flags_check_for_drive),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_flags_update_for_drive),
+	(brasero_burn_caps_get_flags):
+	* src/burn-drive.c (brasero_drive_has_safe_burn):
+	* src/burn-drive.h:
+	* src/burn-medium.c (brasero_medium_check_old_drive):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix for #535835 – TEAC R55S - can't burn CD-R
 
 	* src/burn-medium.c (brasero_medium_check_old_drive),

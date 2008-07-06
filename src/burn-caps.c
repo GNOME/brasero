@@ -90,6 +90,13 @@ static BraseroBurnCaps *default_caps = NULL;
 	return NULL;								\
 }
 
+#define BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES(session)			\
+{										\
+	brasero_burn_session_log (session, "Unsupported type of task operation"); \
+	BRASERO_BURN_LOG ("Unsupported type of task operation");		\
+	return BRASERO_BURN_NOT_SUPPORTED;					\
+}
+
 #define BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR(session, error)		\
 {										\
 	if (error)								\
@@ -1163,6 +1170,24 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 	return retval;
 }
 
+static gboolean
+brasero_burn_caps_flags_check_for_drive (BraseroBurnSession *session)
+{
+	BraseroDrive *drive;
+	BraseroBurnFlag flags;
+
+	drive = brasero_burn_session_get_burner (session);
+	if (!drive)
+		return TRUE;
+
+	flags = brasero_burn_session_get_flags (session);
+	if (!brasero_drive_has_safe_burn (drive)
+	&&  !(flags & BRASERO_BURN_FLAG_BURNPROOF))
+		return FALSE;
+
+	return TRUE;
+}
+
 GSList *
 brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			    BraseroBurnSession *session,
@@ -1216,6 +1241,9 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 				    "Input set =");
 
 	session_flags = brasero_burn_session_get_flags (session);
+	if (!brasero_burn_caps_flags_check_for_drive (session))
+		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (session);
+
 	list = brasero_caps_find_best_link (last_caps,
 					    self->priv->group_id,
 					    NULL,
@@ -1807,6 +1835,9 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 	BraseroTrackType output;
 	BraseroPluginIOFlag io_flags;
 
+	if (!brasero_burn_caps_flags_check_for_drive (session))
+		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
+
 	if (!brasero_burn_session_is_dest_file (session)) {
 		output.type = BRASERO_TRACK_TYPE_DISC;
 		output.subtype.media = brasero_burn_session_get_dest_media (session);
@@ -1850,6 +1881,9 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 	gboolean result;
 	BraseroTrackType input;
 	BraseroPluginIOFlag io_flags;
+
+	if (!brasero_burn_caps_flags_check_for_drive (session))
+		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
 
 	/* Here flags don't matter as we don't record anything.
 	 * Even the IOFlags since that can be checked later with
@@ -1967,6 +2001,9 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 	/* Special case */
 	if (brasero_burn_session_same_src_dest_drive (session))
 		return brasero_burn_caps_is_session_supported_same_src_dest (self, session);
+
+	if (!brasero_burn_caps_flags_check_for_drive (session))
+		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
 
 	/* Here flags don't matter as we don't record anything.
 	 * Even the IOFlags since that can be checked later with
@@ -2183,6 +2220,22 @@ brasero_caps_get_flags (BraseroCaps *caps,
 	return retval;
 }
 
+static BraseroBurnFlag
+brasero_burn_caps_flags_update_for_drive (BraseroBurnFlag flags,
+					  BraseroBurnSession *session)
+{
+	BraseroDrive *drive;
+
+	drive = brasero_burn_session_get_burner (session);
+	if (!drive)
+		return flags;
+
+	if (!brasero_drive_has_safe_burn (drive))
+		flags &= ~BRASERO_BURN_FLAG_BURNPROOF;
+
+	return flags;
+}
+
 static BraseroBurnResult
 brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
 				 BraseroMedia media,
@@ -2284,6 +2337,11 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 
 	session_flags = brasero_burn_session_get_flags (session);
 	BRASERO_BURN_LOG_FLAGS (session_flags, "FLAGS (session):");
+
+	if (!brasero_burn_caps_flags_check_for_drive (session)) {
+		BRASERO_BURN_LOG ("Session flags not supported");
+		return BRASERO_BURN_ERR;
+	}
 
 	/* sanity check:
 	 * - MERGE and BLANK are not possible together.
@@ -2445,6 +2503,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		supported_flags |= blank_supported;
 		compulsory_flags |= blank_compulsory;
 	}
+
+	supported_flags = brasero_burn_caps_flags_update_for_drive (supported_flags, session);
 
 	if (supported)
 		*supported = supported_flags;

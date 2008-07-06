@@ -886,7 +886,7 @@ brasero_medium_check_old_drive (BraseroMedium *self)
 	if (!model)
 		return BRASERO_BURN_ERR;
 
-	if (!strcmp (model, "TEAC R55S")) {
+	if (!strcmp (model, "CD-R55S")) {
 		g_free (model);
 		priv->max_rd = BRASERO_SPEED_TO_RATE_CD (12);
 		priv->max_wrt = BRASERO_SPEED_TO_RATE_CD (4);

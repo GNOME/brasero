@@ -360,6 +360,15 @@ brasero_drive_can_write (BraseroDrive *self)
 			      BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL));
 }
 
+gboolean
+brasero_drive_has_safe_burn (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return TRUE;
+}
+
 static void
 brasero_drive_init (BraseroDrive *object)
 { }
