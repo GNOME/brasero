@@ -875,7 +875,64 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 }
 
 static BraseroBurnResult
-brasero_medium_check_old_drive (BraseroMedium *self)
+brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
+					BraseroDeviceHandle *handle,
+					BraseroScsiErrCode *code)
+{
+	int size;
+	BraseroScsiResult result;
+	BraseroMediumPrivate *priv;
+	BraseroScsiDiscInfoStd *info = NULL;
+
+	BRASERO_BURN_LOG ("Retrieving media status for old drive");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	result = brasero_mmc1_read_disc_information_std (handle,
+							 &info,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (info);
+	
+		BRASERO_BURN_LOG ("READ DISC INFORMATION failed for old drive");
+		return BRASERO_BURN_ERR;
+	}
+
+	/* Try to identify the type: can only be CDROM CDR CDRW.
+	 * NOTE: since there is no way to distinguish a CDROM and a closed CDR 
+	 * if the disc is closed we set it as CDROM (except if it's RW). */
+	if (info->erasable)
+		priv->info = BRASERO_MEDIUM_CDRW;
+	else if (info->status == BRASERO_SCSI_DISC_FINALIZED)
+		priv->info = BRASERO_MEDIUM_CDROM;
+	else
+		priv->info = BRASERO_MEDIUM_CDR;
+
+	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
+		priv->info |= BRASERO_MEDIUM_BLANK;
+		priv->block_size = 2048;
+		priv->next_wr_add = 0;
+		BRASERO_BURN_LOG ("Empty media (old drive)");
+	}
+	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
+		priv->info |= BRASERO_MEDIUM_APPENDABLE;
+		priv->block_size = 2048;
+		priv->next_wr_add = 0;
+		BRASERO_BURN_LOG ("Appendable media (old drive)");
+	}
+	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
+		priv->info |= BRASERO_MEDIUM_CLOSED;
+		BRASERO_BURN_LOG ("Closed media (old drive)");
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_check_old_drive (BraseroMedium *self,
+				BraseroDeviceHandle *handle,
+				BraseroScsiErrCode *code)
 {
 	gchar *model;
 	BraseroMediumPrivate *priv;
@@ -890,8 +947,12 @@ brasero_medium_check_old_drive (BraseroMedium *self)
 		g_free (model);
 		priv->max_rd = BRASERO_SPEED_TO_RATE_CD (12);
 		priv->max_wrt = BRASERO_SPEED_TO_RATE_CD (4);
-		return BRASERO_BURN_OK;
+		return brasero_medium_old_drive_get_disc_info (self,
+							       handle,
+							       code);
 	}
+
+	BRASERO_BURN_LOG ("Not an old drive model");
 
 	return BRASERO_BURN_ERR;
 }
@@ -924,6 +985,18 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		 * introduced in MMC2 and is supported onward. So it
 		 * has to be a CD (R/RW). The rest of the information
 		 * will be provided by read_disc_information. */
+
+		/* retrieve the speed */
+		result = brasero_medium_get_page_2A_max_speed (self,
+							       handle,
+							       code);
+
+		/* If this fails it means that this drive is probably older than
+		 * MMC1 spec or does not conform to it. Try our last chance. */
+		if (result != BRASERO_BURN_OK)
+			return brasero_medium_check_old_drive (self,
+							       handle,
+							       code);
 
 		/* The only thing here left to determine is if that's a WRITABLE
 		 * or a REWRITABLE. To determine that information, we need to
@@ -965,14 +1038,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 
 			g_free (data);
 		}
-
-		/* retrieve the speed */
-		result = brasero_medium_get_page_2A_max_speed (self,
-							       handle,
-							       code);
-
-		if (result != BRASERO_BURN_OK)
-			result = brasero_medium_check_old_drive (self);
 
 		return result;
 	}
