@@ -33,6 +33,7 @@
 #include <gio/gio.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-volume-obj.h"
 
 typedef struct _BraseroVolumePrivate BraseroVolumePrivate;
@@ -87,7 +88,6 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 
 		tmp = iter->data;
 		device_path = g_volume_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-
 		if (!strcmp (device_path, volume_path)) {
 			volume = tmp;
 			g_free (device_path);
@@ -101,7 +101,7 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 	g_list_free (volumes);
 
 	if (!volume)
-		g_warning ("No volume found for medium");
+		BRASERO_BURN_LOG ("No volume found for medium");
 
 	return volume;
 }
@@ -119,6 +119,9 @@ brasero_volume_is_mounted (BraseroVolume *self)
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return FALSE;
+
 	if (!g_volume_can_mount (volume)) {
 		/* if it can't be mounted then it's unmounted ... */
 		g_object_unref (volume);
@@ -147,6 +150,8 @@ brasero_volume_get_mount_point (BraseroVolume *self,
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return NULL;
 
 	/* get the uri for the mount point */
 	mount = g_volume_get_mount (volume);
@@ -296,6 +301,9 @@ brasero_volume_umount (BraseroVolume *self,
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return TRUE;
+
 	if (!g_volume_can_mount (volume)) {
 		/* if it can't be mounted then it's unmounted ... */
 		g_object_unref (volume);
@@ -395,6 +403,9 @@ brasero_volume_mount (BraseroVolume *self,
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return FALSE;
+
 	if (!g_volume_can_mount (volume)) {
 		g_object_unref (volume);
 		return FALSE;
@@ -481,6 +492,9 @@ brasero_volume_eject (BraseroVolume *self,
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return FALSE;
+
 	gdrive = g_volume_get_drive (volume);
 	g_object_unref (volume);
 
@@ -557,6 +571,9 @@ brasero_volume_get_name (BraseroVolume *self)
 	}
 
 	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return NULL;
+
 	name = g_volume_get_name (volume);
 	g_object_unref (volume);
 
@@ -595,26 +612,31 @@ brasero_volume_get_display_label (BraseroVolume *self,
 
 	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
 
+	name = NULL;
 	volume = brasero_volume_get_gvolume (self);
-	name = g_volume_get_name (volume);
-	g_object_unref (volume);
+	if (volume) {
+		name = g_volume_get_name (volume);
+		g_object_unref (volume);
 
-	if (name && name [0] != '\0') {
-		if (with_markup)
-			/* NOTE for translators: the first %s is the disc type and the
-			 * second %s the label of the already existing session on this disc. */
-			label = g_strdup_printf (_("<b>Data %s</b>: \"%s\""),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Data %s: \"%s\""),
-						 type,
-						 name);
+		if (name && name [0] != '\0') {
+			if (with_markup)
+				/* NOTE for translators: the first %s is the disc type and the
+				 * second %s the label of the already existing session on this disc. */
+				label = g_strdup_printf (_("<b>Data %s</b>: \"%s\""),
+							 type,
+							 name);
+			else
+				label = g_strdup_printf (_("Data %s: \"%s\""),
+							 type,
+							 name);
 
-		g_free (name);
-		return label;
+			g_free (name);
+			return label;
+		}
+
+		if (name)
+			g_free (name);
 	}
-	g_free (name);
 
 	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
 	name = brasero_drive_get_display_name (drive);

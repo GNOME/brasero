@@ -1021,7 +1021,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 
 	image = (BraseroTrackImage *) track;
 
-	/* Convienience function */
+	/* Convenience function */
 	if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 		gchar *path;
 

@@ -56,8 +56,12 @@ brasero_volume_source_seek_fd (BraseroVolSrc *src,
 			       int whence,
 			       GError **error)
 {
-	if (fseek (src->data, block * ISO9660_BLOCK_SIZE, whence) == -1) {
-		BRASERO_BURN_LOG ("fseek () failed at block %lli (%s)", block, strerror (errno));
+	
+	if (fseeko (src->data, (guint64) (block * ISO9660_BLOCK_SIZE), whence) == -1) {
+		BRASERO_BURN_LOG ("fseeko () failed at block %i (= %lli bytes) (%s)",
+				  block,
+				  (guint64) (block * ISO9660_BLOCK_SIZE),
+				  strerror (errno));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,

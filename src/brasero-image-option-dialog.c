@@ -152,15 +152,24 @@ brasero_image_option_dialog_image_info_cb (GObject *object,
 						       uri,
 						       NULL);
 	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cdrdao-toc"))
+		/* This image type is installed by brasero */
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CDRDAO,
 						       NULL,
 						       uri);
-	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cue"))
+	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cue")) {
+		BraseroImageFormat format;
+		gchar *path;
+
+		path = g_filename_from_uri (uri, NULL, NULL);
+		format = brasero_image_format_identify_cuesheet (path);
+		g_free (path);
+
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_CUE,
 						       NULL,
 						       uri);
+	}
 	else
 		brasero_image_option_dialog_set_track (dialog,
 						       BRASERO_IMAGE_FORMAT_NONE,

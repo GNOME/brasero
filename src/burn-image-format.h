@@ -43,6 +43,9 @@ typedef enum {
 						  BRASERO_IMAGE_FORMAT_CLONE,
 } BraseroImageFormat;
 
+BraseroImageFormat
+brasero_image_format_identify_cuesheet (const gchar *path);
+
 gchar *
 brasero_image_format_get_complement (BraseroImageFormat format,
 				     const gchar *path);

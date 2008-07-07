@@ -119,6 +119,7 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	gint forbidden;
 	gchar *character;
 	gchar *localpath;
+	gchar *unescaped_uri;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	/* make sure uri is local: otherwise error out */
@@ -130,7 +131,9 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 		return BRASERO_BURN_ERR;
 	}
 
-	localpath = g_filename_from_uri (uri, NULL, NULL);
+	unescaped_uri = g_uri_unescape_string (uri, NULL);
+	localpath = g_filename_from_uri (unescaped_uri, NULL, NULL);
+	g_free (unescaped_uri);
 
 	/* we need to escape some characters like []\? since in this file we
 	 * can use glob like expressions. */

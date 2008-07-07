@@ -574,6 +574,7 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 					    const gchar *uri)
 {
 	BraseroFileMonitorPrivate *priv;
+	gchar *unescaped_uri;
 	gchar *path;
 	gint dev_fd;
 	uint32_t mask;
@@ -581,7 +582,9 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 
 	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
 
-	path = g_filename_from_uri (uri, NULL, NULL);
+	unescaped_uri = g_uri_unescape_string (uri, NULL);
+	path = g_filename_from_uri (unescaped_uri, NULL, NULL);
+	g_free (unescaped_uri);
 
 	dev_fd = g_io_channel_unix_get_fd (priv->notify);
 	mask = IN_MODIFY |
@@ -670,6 +673,7 @@ brasero_file_monitor_directory_contents (BraseroFileMonitor *self,
 	 * parent directory. We give them the same handle as their parent
 	 * directory to find it more easily and mark it as being watched */
 	wd = brasero_file_monitor_start_monitoring_real (self, uri);
+
 	if (!wd)
 		return FALSE;
 

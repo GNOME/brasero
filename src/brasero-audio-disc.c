@@ -265,6 +265,8 @@ struct _BraseroAudioDiscPrivate {
 
 #ifdef BUILD_INOTIFY
 
+	BraseroIOJobBase *reload_uri;
+
 	int notify_id;
 	GIOChannel *notify;
 	GHashTable *monitored;
@@ -833,6 +835,9 @@ brasero_audio_disc_reset_real (BraseroAudioDisc *disc)
 		g_hash_table_destroy (disc->priv->monitored);
 		disc->priv->monitored = NULL;
 	}
+
+	if (disc->priv->reload_uri && disc->priv->io)
+		brasero_io_cancel_by_base (disc->priv->io, disc->priv->reload_uri);
 
 #endif
 
@@ -1786,6 +1791,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 				  disc->priv->add_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
+				  BRASERO_IO_INFO_URGENT|
 				  BRASERO_IO_INFO_METADATA|
 				  BRASERO_IO_INFO_METADATA_MISSING_CODEC,
 				  ref);
@@ -3785,25 +3791,19 @@ brasero_audio_disc_inotify_remove (BraseroAudioDisc *disc,
 }
 
 static void
-brasero_audio_disc_inotify_modify (BraseroAudioDisc *disc,
-				   const gchar *uri,
-				   BraseroMetadataInfo *metadata)
+brasero_audio_disc_inotify_modify_result (GObject *object,
+					  GError *error,
+					  const gchar *uri,
+					  GFileInfo *info,
+					  gpointer callback_data)
 {
+	BraseroAudioDisc *disc = BRASERO_AUDIO_DISC (object);
 	GSList *list, *list_iter;
 	GtkTreeModel *model;
-	GFileInfo *info;
 
 	list = brasero_audio_disc_inotify_find_rows (disc, uri);
 	if (!list)
 		return;
-
-	info = g_file_info_new ();
-	g_file_info_set_attribute_uint64 (info, BRASERO_IO_LEN, metadata->len);
-	g_file_info_set_attribute_string (info, BRASERO_IO_ARTIST, metadata->artist);
-	g_file_info_set_attribute_string (info, BRASERO_IO_TITLE, metadata->title);
-	g_file_info_set_attribute_int32 (info, BRASERO_IO_ISRC, metadata->isrc);
-	g_file_info_set_attribute_string (info, BRASERO_IO_COMPOSER, metadata->composer);
-	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_AUDIO, metadata->has_audio);
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	for (list_iter = list; list_iter; list_iter = list_iter->next) {
@@ -3813,14 +3813,14 @@ brasero_audio_disc_inotify_modify (BraseroAudioDisc *disc,
 		treepath = list_iter->data;
 		gtk_tree_model_get_iter (model, &iter, treepath);
 
-		brasero_audio_disc_set_row_from_metadata (disc,
-							  model,
-							  &iter,
-							  info);
+		if (error)
+			brasero_audio_disc_remove (disc, treepath);
+		else
+			brasero_audio_disc_set_row_from_metadata (disc,
+								  model,
+								  &iter,
+								  info);
 	}
-
-	g_object_unref (info);
-
 	g_slist_foreach (list, (GFunc) gtk_tree_path_free, NULL);
 	g_slist_free (list);
 }
@@ -3876,57 +3876,40 @@ brasero_audio_disc_inotify_move (BraseroAudioDisc *disc,
 			data = iter->data;
 			if (data->cookie == event->cookie)
 				break;
+
+			data = NULL;
 		}
 
 		if (data) {
-			GSList *paths, *list_iter;
-			GtkTreeModel *model;
-			gchar *old_name;
-			gchar *new_name;
+			GSList *paths;
 
 			/* we've got one match:
 			 * - remove from the list
 			 * - remove the timeout
 			 * - change all the uris with the new one */
-			disc->priv->moved_list = g_slist_remove (disc->priv->moved_list,
-								 data);
-
+			disc->priv->moved_list = g_slist_remove (disc->priv->moved_list, data);
 			paths = brasero_audio_disc_inotify_find_rows (disc, data->uri);
-			model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 
-			old_name = g_path_get_basename (data->uri);
-			new_name = g_path_get_basename (uri);
+			/* we are only interested if the destination is in our tree
+			 * then that means the file was modified */
+			if (!disc->priv->io)
+				disc->priv->io = brasero_io_get_default ();
 
-			for (list_iter = paths; list_iter; list_iter = list_iter->next) {
-				GtkTreePath *treepath;
-				GtkTreeIter iter;
-				gchar *name;
+			if (!disc->priv->reload_uri)
+				disc->priv->reload_uri = brasero_io_register (G_OBJECT (disc),
+									      brasero_audio_disc_inotify_modify_result,
+									      NULL,
+									      NULL);
 
-				treepath = list_iter->data;
-				gtk_tree_model_get_iter (model, &iter, treepath);
-				gtk_tree_model_get (model, &iter,
-						    NAME_COL, &name,
-						    -1);
-
-				/* see if the user changed the name or if it is
-				 * displaying song name metadata. Basically if 
-				 * the name is the same as the old one we change
-				 * it to the new one. */
-				if (!strcmp (name, old_name)) {
-					gchar *markup;
-
-					markup = g_markup_escape_text (new_name, -1);
-					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-							    NAME_COL, markup,
-							    -1);
-					g_free (markup);
-				}
-				g_free (name);
-
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-						    URI_COL, uri,
-						    -1);
-			}
+			brasero_io_get_file_info (disc->priv->io,
+						  uri,
+						  disc->priv->reload_uri,
+						  BRASERO_IO_INFO_PERM|
+						  BRASERO_IO_INFO_MIME|
+						  BRASERO_IO_INFO_URGENT|
+						  BRASERO_IO_INFO_METADATA|
+						  BRASERO_IO_INFO_METADATA_MISSING_CODEC,
+						  NULL);
 
 			/* clean up the mess */
 			g_slist_foreach (paths, (GFunc) gtk_tree_path_free, NULL);
@@ -3935,9 +3918,6 @@ brasero_audio_disc_inotify_move (BraseroAudioDisc *disc,
 			g_source_remove (data->id);
 			g_free (data->uri);
 			g_free (data);
-
-			g_free (old_name);
-			g_free (new_name);
 		}
 	}
 }
@@ -4077,7 +4057,11 @@ brasero_audio_disc_inotify_monitor_cb (GIOChannel *channel,
 		}
 
 		if (dir->uri && name) {
+			gchar *escaped_name;
+
+			escaped_name = g_uri_escape_string (name, NULL, TRUE);
 			monitored = g_strconcat (dir->uri, "/", name, NULL);
+			g_free (escaped_name);
 			g_free (name);
 		}
 		else
@@ -4110,33 +4094,25 @@ brasero_audio_disc_inotify_monitor_cb (GIOChannel *channel,
 			brasero_audio_disc_inotify_attributes_changed (disc, monitored);
 		}
 		else if (event.mask & IN_MODIFY
-		      &&  brasero_audio_disc_inotify_is_in_selection (disc, monitored)) {
-			BraseroMetadata *metadata;
-			BraseroMetadataInfo info;
-			GError *error = NULL;
+		     &&  brasero_audio_disc_inotify_is_in_selection (disc, monitored)) {
+			if (!disc->priv->io)
+				disc->priv->io = brasero_io_get_default ();
 
-			/* a file was modified */
-			metadata = brasero_metadata_new ();
+			if (!disc->priv->reload_uri)
+				disc->priv->reload_uri = brasero_io_register (G_OBJECT (disc),
+									      brasero_audio_disc_inotify_modify_result,
+									      NULL,
+									      NULL);
 
-			if (!metadata
-			||  !brasero_metadata_get_info_sync (metadata, monitored, BRASERO_METADATA_FLAG_NONE, &error)) {
-				if (error) {
-					g_warning ("ERROR : %s\n", error->message);
-					g_error_free (error);
-					g_object_unref (metadata);
-				}
-
-				brasero_audio_disc_inotify_remove (disc, monitored);
-				continue;
-			}
-
-			/* FIXME: we should remove the row if it hasn't audio */
-			brasero_metadata_set_info (metadata, &info);
-			brasero_audio_disc_inotify_modify (disc,
-							   monitored,
-							   &info);
-			brasero_metadata_info_clear (&info);
-			g_object_unref (metadata);
+			brasero_io_get_file_info (disc->priv->io,
+						  monitored,
+						  disc->priv->reload_uri,
+						  BRASERO_IO_INFO_PERM|
+						  BRASERO_IO_INFO_MIME|
+						  BRASERO_IO_INFO_URGENT|
+						  BRASERO_IO_INFO_METADATA|
+						  BRASERO_IO_INFO_METADATA_MISSING_CODEC,
+						  NULL);
 		}
 
 		if (monitored) {

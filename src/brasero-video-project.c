@@ -798,6 +798,7 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 				  priv->load_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
+				  BRASERO_IO_INFO_URGENT|
 				  BRASERO_IO_INFO_METADATA|
 				  BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				  BRASERO_IO_INFO_METADATA_SNAPSHOT,
@@ -983,20 +984,6 @@ brasero_video_project_file_renamed (BraseroFileMonitor *monitor,
 }
 
 static void
-brasero_video_project_file_moved (BraseroFileMonitor *monitor,
-				  BraseroFileMonitorType type,
-				  gpointer callback_src,
-				  const gchar *name_src,
-				  gpointer callback_dest,
-				  const gchar *name_dest)
-{
-	/* This is a file removed since we won't monitor all folders to get its
-	 * new path */
-	brasero_video_project_remove_file (BRASERO_VIDEO_PROJECT (monitor),
-					   callback_src);
-}
-
-static void
 brasero_video_project_file_removed (BraseroFileMonitor *monitor,
 				    BraseroFileMonitorType type,
 				    gpointer callback_data,
@@ -1031,10 +1018,26 @@ brasero_video_project_file_modified (BraseroFileMonitor *monitor,
 				  priv->load_uri,
 				  BRASERO_IO_INFO_PERM|
 				  BRASERO_IO_INFO_MIME|
+				  BRASERO_IO_INFO_URGENT|
 				  BRASERO_IO_INFO_METADATA|
 				  BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				  BRASERO_IO_INFO_METADATA_SNAPSHOT,
 				  GINT_TO_POINTER (ref));
+}
+
+static void
+brasero_video_project_file_moved (BraseroFileMonitor *monitor,
+				  BraseroFileMonitorType type,
+				  gpointer callback_src,
+				  const gchar *name_src,
+				  gpointer callback_dest,
+				  const gchar *name_dest)
+{
+	/* This is a file removed since we won't monitor all folders to get its
+	 * new path */
+	/* FIXME: what about files moved to one of the URI in the list ? */
+	brasero_video_project_remove_file (BRASERO_VIDEO_PROJECT (monitor),
+					   callback_src);
 }
 
 #endif

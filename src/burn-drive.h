@@ -104,6 +104,9 @@ gboolean
 brasero_drive_can_write (BraseroDrive *drive);
 
 gboolean
+brasero_drive_has_safe_burn (BraseroDrive *drive);
+
+gboolean
 brasero_drive_is_door_open (BraseroDrive *drive);
 
 gboolean

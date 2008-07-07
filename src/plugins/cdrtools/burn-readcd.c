@@ -289,8 +289,14 @@ brasero_readcd_set_argv (BraseroProcess *process,
 		 * because it is raw96 (2352+96) otherwise it is 2048  */
 		g_ptr_array_add (argv, g_strdup ("-clone"));
 	}
-	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN)
+	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 		g_ptr_array_add (argv, g_strdup ("-noerror"));
+
+		/* don't do it for clone since we need the entire disc */
+		result = brasero_readcd_argv_set_iso_boundary (readcd, argv, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
+	}
 	else
 		BRASERO_JOB_NOT_SUPPORTED (readcd);
 
@@ -300,10 +306,6 @@ brasero_readcd_set_argv (BraseroProcess *process,
 		if (output.subtype.img_format != BRASERO_IMAGE_FORMAT_CLONE
 		&&  output.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN)
 			BRASERO_JOB_NOT_SUPPORTED (readcd);
-
-		result = brasero_readcd_argv_set_iso_boundary (readcd, argv, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
 
 		result = brasero_job_get_image_output (BRASERO_JOB (readcd),
 						       &image,
@@ -316,10 +318,6 @@ brasero_readcd_set_argv (BraseroProcess *process,
 		g_free (image);
 	}
 	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
-		result = brasero_readcd_argv_set_iso_boundary (readcd, argv, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-
 		outfile_arg = g_strdup ("-f=-");
 		g_ptr_array_add (argv, outfile_arg);
 	}

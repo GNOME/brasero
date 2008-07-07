@@ -1064,7 +1064,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
 
-	/* cdrecord can burn all DVDs (except restricted)when it's ISOs */
+	/* cdrecord can burn all DVDs (except restricted) when it's ISOs */
 	output = brasero_caps_disc_new (dvd_media);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
