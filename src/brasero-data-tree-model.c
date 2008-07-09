@@ -105,7 +105,7 @@ brasero_data_tree_model_iter_parent (GtkTreeModel *model,
 	g_return_val_if_fail (child->user_data != NULL, FALSE);
 
 	node = child->user_data;
-	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
+	if (child->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		/* This is a bogus row intended for empty directories
 		 * user_data has the parent empty directory. */
 		iter->user_data2 = GINT_TO_POINTER (BRASERO_ROW_REGULAR);
@@ -141,7 +141,7 @@ brasero_data_tree_model_iter_nth_child (GtkTreeModel *model,
 		g_return_val_if_fail (priv->stamp == parent->stamp, FALSE);
 		g_return_val_if_fail (parent->user_data != NULL, FALSE);
 
-		if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
+		if (parent->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 			/* This is a bogus row intended for empty directories,
 			 * it hasn't got children. */
 			return FALSE;
@@ -238,7 +238,6 @@ brasero_data_tree_model_iter_children (GtkTreeModel *model,
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (model);
 
-	/* make sure that iter comes from us */
 	if (!parent) {
 		BraseroFileNode *root;
 
@@ -253,6 +252,7 @@ brasero_data_tree_model_iter_children (GtkTreeModel *model,
 		return TRUE;
 	}
 
+	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == parent->stamp, FALSE);
 	g_return_val_if_fail (parent->user_data != NULL, FALSE);
 
@@ -305,7 +305,6 @@ brasero_data_tree_model_iter_next (GtkTreeModel *model,
 
 	node = iter->user_data;
 	iter->user_data = node->next;
-
 	if (!node->next)
 		return FALSE;
 
@@ -457,6 +456,11 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		case BRASERO_DATA_TREE_MODEL_EDITABLE:
 			g_value_init (value, G_TYPE_BOOLEAN);
 			g_value_set_boolean (value, FALSE);
+			return;
+	
+		case BRASERO_DATA_TREE_MODEL_COLOR:
+			g_value_init (value, G_TYPE_STRING);
+			g_value_set_string (value, NULL);
 			return;
 
 		default:
@@ -697,13 +701,7 @@ brasero_data_tree_model_get_path (GtkTreeModel *model,
 	node = iter->user_data;
 
 	/* NOTE: there is only one single node without a name: root */
-	path = gtk_tree_path_new ();
-	for (; node->parent && BRASERO_FILE_NODE_NAME (node); node = node->parent) {
-		guint nth;
-
-		nth = brasero_data_tree_model_node_index (node);
-		gtk_tree_path_prepend_index (path, nth);
-	}
+	path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (model), node);
 
 	/* Add index 0 for empty bogus row */
 	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS))
@@ -736,7 +734,6 @@ brasero_data_tree_model_path_to_node (BraseroDataTreeModel *self,
 		if (!node)
 			return NULL;
 	}
-
 	return node;
 }
 
@@ -1175,7 +1172,7 @@ brasero_data_tree_model_reset (BraseroDataProject *project,
 	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset)
 		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset (project, num_nodes);
 }
-guint tintin = 1;
+
 static gboolean
 brasero_data_tree_model_node_added (BraseroDataProject *project,
 				    BraseroFileNode *node,
@@ -1210,7 +1207,6 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 	}
 
 	/* Add the row itself */
-	
 	gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
 				     path,
 				     &iter);
@@ -1238,23 +1234,11 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 
 	/* Now see if this is a directory which is empty and needs a BOGUS */
 	if (!node->is_file && !node->is_loading) {
-		/* NOTE: No need to check for the number of children ... */
-
 		/* emit child-toggled. Thanks to bogus rows we only need to emit
 		 * this signal once since a directory will always have a child
 		 * in the tree */
 		path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), node);
 		gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (project), path, &iter);
-
-		/* add the row */
-		iter.stamp = priv->stamp;
-		iter.user_data = node;
-		iter.user_data2 = GINT_TO_POINTER (BRASERO_ROW_BOGUS);
-
-		gtk_tree_path_append_index (path, 0);
-		gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
-					     path,
-					     &iter);
 		gtk_tree_path_free (path);
 	}
 

@@ -1,5 +1,20 @@
 2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix warnings in data projects
+	Fix previous changes (problem with bogus rows)
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_iter_parent),
+	(brasero_data_tree_model_iter_nth_child),
+	(brasero_data_tree_model_iter_children),
+	(brasero_data_tree_model_iter_next),
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_get_path),
+	(brasero_data_tree_model_path_to_node),
+	(brasero_data_tree_model_node_added):
+
+2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix crash for #508502 – Can't add files from FAT32 partitions
 	and improve use of GINT_TO_POINTER ()
 
