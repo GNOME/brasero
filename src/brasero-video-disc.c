@@ -26,16 +26,21 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include <gdk/gdkkeysyms.h>
+
 #include <gtk/gtk.h>
 
 #include "eggtreemultidnd.h"
 
+#include "burn-debug.h"
 #include "brasero-disc.h"
 #include "brasero-io.h"
 #include "brasero-utils.h"
 #include "brasero-video-disc.h"
 #include "brasero-video-project.h"
 #include "brasero-video-tree-model.h"
+#include "brasero-multi-song-props.h"
+#include "brasero-song-properties.h"
 
 typedef struct _BraseroVideoDiscPrivate BraseroVideoDiscPrivate;
 struct _BraseroVideoDiscPrivate
@@ -66,6 +71,61 @@ G_DEFINE_TYPE_WITH_CODE (BraseroVideoDisc,
 enum {
 	PROP_NONE,
 	PROP_REJECT_FILE,
+};
+
+static void
+brasero_video_disc_edit_information_cb (GtkAction *action,
+					BraseroVideoDisc *disc);
+static void
+brasero_video_disc_open_activated_cb (GtkAction *action,
+				      BraseroVideoDisc *disc);
+static void
+brasero_video_disc_delete_activated_cb (GtkAction *action,
+					BraseroVideoDisc *disc);
+static void
+brasero_video_disc_paste_activated_cb (GtkAction *action,
+				       BraseroVideoDisc *disc);
+
+static GtkActionEntry entries[] = {
+	{"ContextualMenu", NULL, N_("Menu")},
+	{"OpenVideo", GTK_STOCK_OPEN, NULL, NULL, N_("Open the selected video"),
+	 G_CALLBACK (brasero_video_disc_open_activated_cb)},
+	{"EditVideo", GTK_STOCK_PROPERTIES, N_("_Edit Information..."), NULL, N_("Edit the video information (start, end, author, ...)"),
+	 G_CALLBACK (brasero_video_disc_edit_information_cb)},
+	{"DeleteVideo", GTK_STOCK_REMOVE, NULL, NULL, N_("Remove the selected videos from the project"),
+	 G_CALLBACK (brasero_video_disc_delete_activated_cb)},
+	{"PasteVideo", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
+	 G_CALLBACK (brasero_video_disc_paste_activated_cb)},
+/*	{"Split", "transform-crop-and-resize", N_("_Split Track..."), NULL, N_("Split the selected track"),
+	 G_CALLBACK (brasero_video_disc_split_cb)} */
+};
+
+static const gchar *description = {
+	"<ui>"
+	"<menubar name='menubar' >"
+		"<menu action='EditMenu'>"
+/*		"<placeholder name='EditPlaceholder'>"
+			"<menuitem action='Split'/>"
+		"</placeholder>"
+*/		"</menu>"
+	"</menubar>"
+	"<popup action='ContextMenu'>"
+		"<menuitem action='OpenVideo'/>"
+		"<menuitem action='DeleteVideo'/>"
+		"<separator/>"
+		"<menuitem action='PasteVideo'/>"
+/*		"<separator/>"
+		"<menuitem action='Split'/>"
+*/		"<separator/>"
+		"<menuitem action='EditVideo'/>"
+	"</popup>"
+/*	"<toolbar name='Toolbar'>"
+		"<placeholder name='DiscButtonPlaceholder'>"
+			"<separator/>"
+			"<toolitem action='Split'/>"
+		"</placeholder>"
+	"</toolbar>"
+*/	"</ui>"
 };
 
 enum {
@@ -431,14 +491,433 @@ brasero_video_disc_selection_function (GtkTreeSelection *selection,
 	return TRUE;
 }
 
+
+/**
+ * Callback for menu
+ */
+
+static gboolean
+brasero_video_disc_rename_songs (GtkTreeModel *model,
+				 GtkTreeIter *iter,
+				 GtkTreePath *treepath,
+				 const gchar *old_name,
+				 const gchar *new_name)
+{
+	BraseroVideoFile *file;
+
+	file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+	if (!file)
+		return FALSE;
+
+	if (file->name)
+		g_free (file->name);
+
+	file->name = g_strdup (new_name);
+	return TRUE;
+}
+
+static void
+brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
+					      GList *list)
+{
+	GList *item;
+	gint isrc;
+	GList *copy;
+	GtkWidget *props;
+	GtkWidget *toplevel;
+	GtkTreeModel *model;
+	gchar *artist = NULL;
+	gchar *composer = NULL;
+	GtkResponseType result;
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	if (!g_list_length (list))
+		return;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	props = brasero_multi_song_props_new ();
+	brasero_multi_song_props_set_show_gap (BRASERO_MULTI_SONG_PROPS (props), FALSE);
+
+	gtk_window_set_transient_for (GTK_WINDOW (props),
+				      GTK_WINDOW (toplevel));
+	gtk_window_set_modal (GTK_WINDOW (props), TRUE);
+	gtk_window_set_position (GTK_WINDOW (props),
+				 GTK_WIN_POS_CENTER_ON_PARENT);
+
+	gtk_widget_show (GTK_WIDGET (props));
+	result = gtk_dialog_run (GTK_DIALOG (props));
+	gtk_widget_hide (GTK_WIDGET (props));
+	if (result != GTK_RESPONSE_ACCEPT)
+		goto end;
+
+	brasero_multi_song_props_set_rename_callback (BRASERO_MULTI_SONG_PROPS (props),
+						      gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree)),
+						      BRASERO_VIDEO_TREE_MODEL_NAME,
+						      brasero_video_disc_rename_songs);
+
+	brasero_multi_song_props_get_properties (BRASERO_MULTI_SONG_PROPS (props),
+						 &artist,
+						 &composer,
+						 &isrc,
+						 NULL);
+
+	/* start by the end in case we add silences since then the next
+	 * treepaths will be wrong */
+	copy = g_list_copy (list);
+	copy = g_list_reverse (copy);
+
+	for (item = copy; item; item = item->next) {
+		GtkTreePath *treepath;
+		BraseroVideoFile *file;
+
+		treepath = item->data;
+		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		if (!file)
+			continue;
+
+		if (artist) {
+			g_free (file->info->artist);
+			file->info->artist = g_strdup (artist);
+		}
+
+		if (composer) {
+			g_free (file->info->composer);
+			file->info->composer = g_strdup (composer);
+		}
+
+		if (isrc > 0)
+			file->info->isrc = isrc;
+	}
+
+	g_list_free (copy);
+	g_free (artist);
+	g_free (composer);
+end:
+
+	gtk_widget_destroy (props);
+}
+
+static void
+brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
+					      BraseroVideoFile *file)
+{
+	gint64 end;
+	gint64 start;
+	GtkWidget *props;
+	GtkWidget *toplevel;
+	GtkTreeModel *model;
+	GtkResponseType result;
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+
+	props = brasero_song_props_new ();
+	brasero_song_props_set_properties (BRASERO_SONG_PROPS (props),
+					   -1,
+					   file->info->artist,
+					   file->info->title,
+					   file->info->composer,
+					   file->info->isrc,
+					   file->end - file->start,
+					   file->start,
+					   file->end,
+					   -1);
+
+	gtk_window_set_transient_for (GTK_WINDOW (props),
+				      GTK_WINDOW (toplevel));
+	gtk_window_set_modal (GTK_WINDOW (props), TRUE);
+	gtk_window_set_position (GTK_WINDOW (props),
+				 GTK_WIN_POS_CENTER_ON_PARENT);
+
+	gtk_widget_show (GTK_WIDGET (props));
+	result = gtk_dialog_run (GTK_DIALOG (props));
+	gtk_widget_hide (GTK_WIDGET (props));
+	if (result != GTK_RESPONSE_ACCEPT)
+		goto end;
+
+	brasero_song_info_free (file->info);
+	file->info = g_new0 (BraseroSongInfo, 1);
+
+	brasero_song_props_get_properties (BRASERO_SONG_PROPS (props),
+					   &file->info->artist,
+					   &file->info->title,
+					   &file->info->composer,
+					   &file->info->isrc,
+					   &start,
+					   &end,
+					   NULL);
+
+	brasero_video_project_resize_file (BRASERO_VIDEO_PROJECT (model), file, start, end);
+
+end:
+
+	gtk_widget_destroy (props);
+}
+static void
+brasero_video_disc_edit_information_cb (GtkAction *action,
+					BraseroVideoDisc *self)
+{
+	GList *list;
+	GtkTreeModel *model;
+	GtkTreeSelection *selection;
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
+	list = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	if (!list)
+		return;
+
+	if (g_list_length (list) == 1) {
+		BraseroVideoFile *file;
+		GtkTreePath *treepath;
+
+		treepath = list->data;
+
+		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		if (file)
+			brasero_video_disc_edit_song_properties_file (self, file);
+	}
+	else
+		brasero_video_disc_edit_song_properties_list (self, list);
+
+	g_list_foreach (list, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (list);
+}
+
+static void
+brasero_video_disc_open_file (BraseroVideoDisc *self)
+{
+	GList *item, *list;
+	GSList *uris = NULL;
+	GtkTreeModel *model;
+	GtkTreePath *treepath;
+	GtkTreeSelection *selection;
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
+	list = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	for (item = list; item; item = item->next) {
+		BraseroVideoFile *file;
+
+		treepath = item->data;
+		file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+		gtk_tree_path_free (treepath);
+
+		if (!file)
+			continue;
+
+		if (file->uri)
+			uris = g_slist_prepend (uris, file->uri);
+	}
+	g_list_free (list);
+
+	brasero_utils_launch_app (GTK_WIDGET (self), uris);
+	g_slist_free (uris);
+}
+
+static void
+brasero_video_disc_open_activated_cb (GtkAction *action,
+				      BraseroVideoDisc *self)
+{
+	brasero_video_disc_open_file (self);
+}
+
+static void
+brasero_video_disc_clipboard_text_cb (GtkClipboard *clipboard,
+				      const gchar *text,
+				      BraseroVideoDisc *self)
+{
+	gchar **array;
+	gchar **item;
+
+	array = g_strsplit_set (text, "\n\r", 0);
+	item = array;
+	while (*item) {
+		if (**item != '\0') {
+			GFile *file;
+			gchar *uri;
+
+			file = g_file_new_for_commandline_arg (*item);
+			uri = g_file_get_uri (file);
+			g_object_unref (file);
+
+			brasero_video_disc_add_uri_real (self,
+							 uri,
+							 -1,
+							 -1,
+							 -1,
+							 NULL);
+			g_free (uri);
+		}
+
+		item++;
+	}
+}
+
+static void
+brasero_video_disc_clipboard_targets_cb (GtkClipboard *clipboard,
+					 GdkAtom *atoms,
+					 gint n_atoms,
+					 BraseroVideoDisc *self)
+{
+	GdkAtom *iter;
+	gchar *target;
+
+	iter = atoms;
+	while (n_atoms) {
+		target = gdk_atom_name (*iter);
+
+		if (!strcmp (target, "x-special/gnome-copied-files")
+		||  !strcmp (target, "UTF8_STRING")) {
+			gtk_clipboard_request_text (clipboard,
+						    (GtkClipboardTextReceivedFunc) brasero_video_disc_clipboard_text_cb,
+						    self);
+			g_free (target);
+			return;
+		}
+
+		g_free (target);
+		iter++;
+		n_atoms--;
+	}
+}
+
+static void
+brasero_video_disc_paste_activated_cb (GtkAction *action,
+				       BraseroVideoDisc *self)
+{
+	GtkClipboard *clipboard;
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_request_targets (clipboard,
+				       (GtkClipboardTargetsReceivedFunc) brasero_video_disc_clipboard_targets_cb,
+				       self);
+}
+
+static void
+brasero_video_disc_delete_activated_cb (GtkAction *action,
+					BraseroVideoDisc *self)
+{
+	brasero_video_disc_delete_selected (BRASERO_DISC (self));
+}
+
+static gboolean
+brasero_video_disc_button_pressed_cb (GtkTreeView *tree,
+				      GdkEventButton *event,
+				      BraseroVideoDisc *self)
+{
+	GtkWidgetClass *widget_class;
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	widget_class = GTK_WIDGET_GET_CLASS (tree);
+
+	if (event->button == 3) {
+		GtkTreeSelection *selection;
+		GtkTreePath *path = NULL;
+		GtkWidget *widget;
+
+		gtk_tree_view_get_path_at_pos (tree,
+					       event->x,
+					       event->y,
+					       &path,
+					       NULL,
+					       NULL,
+					       NULL);
+
+		selection = gtk_tree_view_get_selection (tree);
+
+		/* Don't update the selection if the right click was on one of
+		 * the already selected rows */
+		if (!path || !gtk_tree_selection_path_is_selected (selection, path))
+			widget_class->button_press_event (GTK_WIDGET (tree), event);
+
+		widget = gtk_ui_manager_get_widget (priv->manager, "/ContextMenu/PasteAudio");
+		if (widget) {
+			if (gtk_clipboard_wait_is_text_available (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD)))
+				gtk_widget_set_sensitive (widget, TRUE);
+			else
+				gtk_widget_set_sensitive (widget, FALSE);
+		}
+
+		widget = gtk_ui_manager_get_widget (priv->manager,"/ContextMenu");
+		gtk_menu_popup (GTK_MENU (widget),
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				event->button,
+				event->time);
+		return TRUE;
+	}
+	else if (event->button == 1) {
+		gboolean result;
+		GtkTreePath *treepath = NULL;
+
+		result = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (tree),
+							event->x,
+							event->y,
+							&treepath,
+							NULL,
+							NULL,
+							NULL);
+
+		/* we call the default handler for the treeview before everything else
+		 * so it can update itself (paticularly its selection) before we have
+		 * a look at it */
+		widget_class->button_press_event (GTK_WIDGET (tree), event);
+		
+		if (!treepath) {
+			GtkTreeSelection *selection;
+
+			/* This is to deselect any row when selecting a 
+			 * row that cannot be selected or in an empty
+			 * part */
+			selection = gtk_tree_view_get_selection (tree);
+			gtk_tree_selection_unselect_all (selection);
+			return FALSE;
+		}
+	
+		if (!result)
+			return FALSE;
+
+		brasero_disc_selection_changed (BRASERO_DISC (self));
+		if (event->type == GDK_2BUTTON_PRESS) {
+			BraseroVideoFile *file;
+			GtkTreeModel *model;
+
+			model = gtk_tree_view_get_model (GTK_TREE_VIEW (tree));
+			file = brasero_video_tree_model_path_to_file (BRASERO_VIDEO_TREE_MODEL (model), treepath);
+			if (file)
+				brasero_video_disc_edit_song_properties_file (self, file);
+		}
+	}
+
+	return TRUE;
+}
+
 static guint
 brasero_video_disc_add_ui (BraseroDisc *disc,
 			   GtkUIManager *manager,
 			   GtkWidget *message)
 {
 	BraseroVideoDiscPrivate *priv;
-//	GError *error = NULL;
-//	GtkAction *action;
+	GError *error = NULL;
 	guint merge_id;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
@@ -454,20 +933,20 @@ brasero_video_disc_add_ui (BraseroDisc *disc,
 	if (!priv->disc_group) {
 		priv->disc_group = gtk_action_group_new (BRASERO_DISC_ACTION);
 		gtk_action_group_set_translation_domain (priv->disc_group, GETTEXT_PACKAGE);
-/*		gtk_action_group_add_actions (priv->disc_group,
+		gtk_action_group_add_actions (priv->disc_group,
 					      entries,
 					      G_N_ELEMENTS (entries),
 					      disc);
-		gtk_action_group_add_toggle_actions (priv->disc_group,
+/*		gtk_action_group_add_toggle_actions (priv->disc_group,
 						     toggle_entries,
 						     G_N_ELEMENTS (toggle_entries),
-						     disc);
+						     disc);	*/
 		gtk_ui_manager_insert_action_group (manager,
 						    priv->disc_group,
 						    0);
-*/	}
+	}
 
-/*	merge_id = gtk_ui_manager_add_ui_from_string (manager,
+	merge_id = gtk_ui_manager_add_ui_from_string (manager,
 						      description,
 						      -1,
 						      &error);
@@ -477,16 +956,64 @@ brasero_video_disc_add_ui (BraseroDisc *disc,
 		return 0;
 	}
 
-	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
-	gtk_action_set_sensitive (action, FALSE);
-	g_object_set (action,
-		      "short-label", _("Import"),
-		      NULL);
-*/
-
 	priv->manager = manager;
 	g_object_ref (manager);
 	return merge_id;
+}
+
+static void
+brasero_video_disc_rename_activated (BraseroVideoDisc *self)
+{
+	BraseroVideoDiscPrivate *priv;
+	GtkTreeSelection *selection;
+	GtkTreeViewColumn *column;
+	GtkTreePath *treepath;
+	GtkTreeModel *model;
+	GList *list;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
+	list = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	for (; list; list = g_list_remove (list, treepath)) {
+		treepath = list->data;
+
+		gtk_widget_grab_focus (priv->tree);
+		column = gtk_tree_view_get_column (GTK_TREE_VIEW (priv->tree), 0);
+		gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (priv->tree),
+					      treepath,
+					      NULL,
+					      TRUE,
+					      0.5,
+					      0.5);
+		gtk_tree_view_set_cursor (GTK_TREE_VIEW (priv->tree),
+					  treepath,
+					  column,
+					  TRUE);
+
+		gtk_tree_path_free (treepath);
+	}
+}
+
+static gboolean
+brasero_video_disc_key_released_cb (GtkTreeView *tree,
+				    GdkEventKey *event,
+				    BraseroVideoDisc *self)
+{
+	BraseroVideoDiscPrivate *priv;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
+	if (priv->editing)
+		return FALSE;
+
+	if (event->keyval == GDK_KP_Delete || event->keyval == GDK_Delete) {
+		brasero_video_disc_delete_selected (BRASERO_DISC (self));
+	}
+	else if (event->keyval == GDK_F2)
+		brasero_video_disc_rename_activated (self);
+
+	return FALSE;
 }
 
 static void
@@ -604,6 +1131,15 @@ brasero_video_disc_init (BraseroVideoDisc *object)
 	egg_tree_multi_drag_add_drag_support (GTK_TREE_VIEW (priv->tree));
 	g_object_unref (G_OBJECT (model));
 	gtk_widget_show (priv->tree);
+
+	g_signal_connect (priv->tree,
+			  "button-press-event",
+			  G_CALLBACK (brasero_video_disc_button_pressed_cb),
+			  object);
+	g_signal_connect (priv->tree,
+			  "key-release-event",
+			  G_CALLBACK (brasero_video_disc_key_released_cb),
+			  object);
 
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (priv->tree), TRUE);
 	gtk_tree_view_set_rubber_banding (GTK_TREE_VIEW (priv->tree), TRUE);

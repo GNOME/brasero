@@ -715,9 +715,7 @@ brasero_video_project_result_cb (GObject *obj,
 	/* update size */
 	g_signal_emit (self,
 		       brasero_video_project_signals [SIZE_CHANGED_SIGNAL],
-		       0,
-		       error,
-		       uri);
+		       0);
 }
 
 BraseroVideoFile *
@@ -810,6 +808,30 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 		       (priv->loading > 0));
 
 	return file;
+}
+
+void
+brasero_video_project_resize_file (BraseroVideoProject *self,
+				   BraseroVideoFile *file,
+				   gint64 start,
+				   gint64 end)
+{
+	BraseroVideoProjectPrivate *priv;
+	BraseroVideoProjectClass *klass;
+
+	priv = BRASERO_VIDEO_PROJECT_PRIVATE (self);
+
+	file->start = start;
+	file->end = end;
+
+	klass = BRASERO_VIDEO_PROJECT_GET_CLASS (self);
+	if (klass->node_changed)
+		klass->node_changed (self, file);
+
+	/* update size */
+	g_signal_emit (self,
+		       brasero_video_project_signals [SIZE_CHANGED_SIGNAL],
+		       0);
 }
 
 guint64

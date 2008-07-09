@@ -57,7 +57,9 @@ struct BraseroSongPropsPrivate {
 	GtkWidget *length;
 	GtkWidget *start;
 	GtkWidget *end;
+
 	GtkWidget *gap;
+	GtkWidget *gap_label;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -201,6 +203,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_attach (GTK_TABLE (table), obj->priv->end, 1, 2, 1, 2, 0, 0, 0, 0);
 
 	label = gtk_label_new (_("Pause length:\t"));
+	obj->priv->gap_label = label;
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->gap = gtk_spin_button_new_with_range (0.0, 100.0, 1.0);
 	alignment = gtk_alignment_new (0.0, 0.5, 0.0, 0.0);
@@ -242,6 +245,21 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_window_set_title (GTK_WINDOW (obj), _("Song Information"));
 }
 
+static gchar *
+brasero_song_props_get_entry_value (GtkEntry *entry)
+{
+	const gchar *text;
+
+	text = gtk_entry_get_text (entry);
+	if (!text)
+		return NULL;
+
+	if (text [0] == '\0')
+		return NULL;
+
+	return g_strdup (text);
+}
+
 void
 brasero_song_props_get_properties (BraseroSongProps *self,
 				   gchar **artist,
@@ -253,16 +271,20 @@ brasero_song_props_get_properties (BraseroSongProps *self,
 				   gint64 *gap)
 {
 	if (artist)
-		*artist = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->priv->artist)));
+		*artist = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->artist));
 	if (title)
-		*title = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->priv->title)));
+		*title = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->title));
 	if (composer)
-		*composer = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->priv->composer)));
+		*composer = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->composer));
+
 	if (isrc) {
 		const gchar *string;
 
-		string = gtk_entry_get_text (GTK_ENTRY (self->priv->isrc));
-		*isrc = (gint) g_strtod (string, NULL);
+		string = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->isrc));
+		if (string)
+			*isrc = (gint) g_strtod (string, NULL);
+		else
+			*isrc = 0;
 	}
 
 	if (start)
@@ -288,9 +310,19 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 	gchar *string;
 	gdouble secs;
 
-	string = g_strdup_printf (_("<b>Song information for track %02i</b>"), track_num);
-	gtk_label_set_markup (GTK_LABEL (self->priv->label), string);
-	g_free (string);
+	if (track_num >= 0) {
+		string = g_strdup_printf (_("<b>Song information for track %02i</b>"), track_num);
+		gtk_label_set_markup (GTK_LABEL (self->priv->label), string);
+		g_free (string);
+	}
+	else {
+		brasero_time_button_set_show_frames (BRASERO_TIME_BUTTON (self->priv->start), FALSE);
+		brasero_time_button_set_show_frames (BRASERO_TIME_BUTTON (self->priv->end), FALSE);
+
+		gtk_widget_hide (self->priv->gap_label);
+		gtk_widget_hide (self->priv->label);
+		gtk_widget_hide (self->priv->gap);
+	}
 
 	if (artist)
 		gtk_entry_set_text (GTK_ENTRY (self->priv->artist), artist);
@@ -304,8 +336,14 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 		g_free (string);
 	}
 
-	secs = gap / GST_SECOND;
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (self->priv->gap), secs);
+	if (gap > 0) {
+		secs = gap / GST_SECOND;
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (self->priv->gap), secs);
+	}
+	else {
+		gtk_widget_hide (self->priv->gap);
+		gtk_widget_hide (self->priv->gap_label);
+	}
 
 	brasero_time_button_set_max (BRASERO_TIME_BUTTON (self->priv->start), end - 1);
 	brasero_time_button_set_value (BRASERO_TIME_BUTTON (self->priv->start), start);

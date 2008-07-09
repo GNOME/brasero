@@ -152,6 +152,12 @@ brasero_video_project_add_uri (BraseroVideoProject *project,
 			       gint64 start,
 			       gint64 end);
 
+void
+brasero_video_project_resize_file (BraseroVideoProject *project,
+				   BraseroVideoFile *file,
+				   gint64 start,
+				   gint64 end);
+
 BraseroDiscResult
 brasero_video_project_get_status (BraseroVideoProject *project);
 
