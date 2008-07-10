@@ -341,7 +341,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 								       dup (fd),
 								       BURN_AUDIO,
 								       size,
-								       priv->pvd,
+								       NULL,
 								       error);
 				if (result != BRASERO_BURN_OK)
 					return result;
@@ -378,13 +378,17 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 		brasero_track_get_type (track, &type);
 		if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 			gchar *audiopath;
+			gint64 size;
 
 			audiopath = brasero_track_get_audio_source (track, FALSE);
+			brasero_track_get_audio_length (track, &size);
+			size = BRASERO_DURATION_TO_BYTES (size);
+
 			result = brasero_libburn_add_file_track (session,
 								 audiopath,
 								 BURN_AUDIO,
-								 -1,
-								 priv->pvd,
+								 size,
+								 NULL,
 								 error);
 			if (result != BRASERO_BURN_OK)
 				break;

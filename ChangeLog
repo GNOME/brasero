@@ -1,5 +1,13 @@
 2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix problem when burning audio (NOT on the fly) with libburn
+
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_setup_session_fd),
+	(brasero_libburn_setup_session_file):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix for #538872 – Brasero crashes with libburn backend
 	Fix a crash when libburn runs into an error
 	Improved error reporting
