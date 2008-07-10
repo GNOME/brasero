@@ -110,8 +110,6 @@ brasero_scsi_command_issue_sync (gpointer command,
 				  buffer,
 				  size);
 
-	/* for the time being only sg driver is supported */
-
 	/* NOTE on SG_IO: only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
 	 * READ CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
 	res = ioctl (cmd->handle->fd, SG_IO, &transport);
