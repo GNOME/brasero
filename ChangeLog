@@ -1,5 +1,13 @@
 2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #542139 – Brasero can't find a proper cd/dvd drive on Solaris
+	Patch by Lin Ma
+
+	* src/burn-drive.c (brasero_drive_get_display_name),
+	(brasero_drive_init_real):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix for #542136 – Brasero on OpenSolaris
 	Patch by Lin Ma
 

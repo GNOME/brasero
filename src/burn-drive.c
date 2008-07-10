@@ -43,6 +43,14 @@
 
 #include "scsi-mmc1.h"
 
+#if defined(HAVE_STRUCT_USCSI_CMD)
+#define DEVICE_MODEL	"info.product"
+#define BLOCK_DEVICE	"block.solaris.raw_device"
+#else
+#define DEVICE_MODEL	"storage.model"
+#define BLOCK_DEVICE	"block.device"
+#endif
+
 typedef struct _BraseroDrivePrivate BraseroDrivePrivate;
 struct _BraseroDrivePrivate
 {
@@ -269,7 +277,7 @@ brasero_drive_get_display_name (BraseroDrive *self)
 	ctx = brasero_drive_get_hal_context ();
 	return libhal_device_get_property_string (ctx,
 						  priv->udi,
-						  "storage.model",
+	  					  DEVICE_MODEL,
 						  NULL);
 }
 
@@ -408,7 +416,7 @@ brasero_drive_init_real (BraseroDrive *drive)
 
 	ctx = brasero_drive_get_hal_context ();
 
-	priv->path = libhal_device_get_property_string (ctx, priv->udi, "block.device", NULL);
+	priv->path = libhal_device_get_property_string (ctx, priv->udi, BLOCK_DEVICE, NULL);
 	if (priv->path [0] == '\0') {
 		g_free (priv->path);
 		priv->path = NULL;
