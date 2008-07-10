@@ -1804,7 +1804,8 @@ brasero_job_set_dangerous (BraseroJob *self, gboolean value)
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	brasero_task_ctx_set_dangerous (priv->ctx, value);
+	if (priv->ctx)
+		brasero_task_ctx_set_dangerous (priv->ctx, value);
 }
 
 /**

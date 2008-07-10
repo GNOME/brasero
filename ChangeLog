@@ -1,5 +1,17 @@
 2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #538872 – Brasero crashes with libburn backend
+	Fix a crash when libburn runs into an error
+	Improved error reporting
+
+	* src/burn-job.c (brasero_job_set_dangerous):
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_process_message):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_clock_tick):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix for #535835 – TEAC R55S - can't burn CD-R
 	Now that the medium is identified, try to get its contents.
 

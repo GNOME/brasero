@@ -723,6 +723,7 @@ brasero_libburn_clock_tick (BraseroJob *job)
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
 						_("an unknown error occured")));
+		return BRASERO_BURN_OK;
 	}
 
 	/* That's finished */
