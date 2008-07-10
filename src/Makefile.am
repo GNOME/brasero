@@ -275,6 +275,11 @@ if HAVE_SG_IO_HDR_T
 brasero_SOURCES += scsi-sg.c
 endif
 
+# Solaris's USCSI interface
+if HAVE_USCSI_H
+brasero_SOURCES += scsi-uscsi.c
+endif
+
 brasero_LDADD =	\
 	$(BRASERO_LIBS)
 
