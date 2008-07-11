@@ -1,5 +1,14 @@
 2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix a problem with joliet incompatible names 
+
+	* src/brasero-data-project.c
+	(brasero_data_project_set_joliet_compliant_name),
+	(_foreach_joliet_incompatible_make_list_cb),
+	(brasero_data_project_get_contents):
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fixed a problem with file names being wrongly modified
 
 	* src/brasero-file-node.c (brasero_file_node_validate_utf8_name),
