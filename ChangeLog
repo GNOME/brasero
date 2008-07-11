@@ -1,5 +1,12 @@
 2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fixed a problem with file names being wrongly modified
+
+	* src/brasero-file-node.c (brasero_file_node_validate_utf8_name),
+	(brasero_file_node_get_uri_name):
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Improved libburn debugging
 
 	* src/plugins/libburnia/burn-libburn-common.c
