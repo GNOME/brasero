@@ -107,12 +107,12 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 {
 	int perc_1, perc_2;
 
-	if (sscanf (line, " %2d.%1d%% done, estimate finish", &perc_1, &perc_2) == 2) {
+	if (sscanf (line, " %2d.%2d%% done, estimate finish", &perc_1, &perc_2) == 2) {
 		gdouble fraction;
 		BraseroBurnAction action;
 
 		fraction = (gdouble) ((gdouble) perc_1 +
-			   ((gdouble) perc_2 / (gdouble) 10.0)) /
+			   ((gdouble) perc_2 / (gdouble) 100.0)) /
 			   (gdouble) 100.0;
 
 		brasero_job_set_progress (BRASERO_JOB (process), fraction);
@@ -120,8 +120,10 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_get_current_action (BRASERO_JOB (process), &action);
 		if (action == BRASERO_BURN_ACTION_BLANKING
 		&&  fraction >= 0.01) {
-			/* we nullified 1% (more than 65536) that's enough. A 
-			 * signal SIGTERM will be sent. */
+			/* we nullified 1% of the medium (more than 65536)
+			 * that's enough to make the filesystem unusable and
+			 * looking blank. A signal SIGTERM will be sent to stop
+			 * us. */
 			brasero_job_finished_session (BRASERO_JOB (process));
 			return BRASERO_BURN_OK;
 		}

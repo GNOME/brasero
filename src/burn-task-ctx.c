@@ -60,12 +60,14 @@ struct _BraseroTaskCtxPrivate
 	/* keep track of time */
 	GTimer *timer;
 	gint64 first_written;
+	gdouble first_progress;
 
 	/* used for immediate rate */
-	gint64 current_written;
 	gdouble current_elapsed;
-	gint64 last_written;
 	gdouble last_elapsed;
+
+	gint64 last_written;
+	gdouble last_progress;
 
 	/* used for remaining time */
 	GSList *times;
@@ -167,10 +169,11 @@ brasero_task_ctx_reset (BraseroTaskCtx *self)
 	priv->track_bytes = -1;
 	priv->session_bytes = -1;
 	priv->written_changed = 0;
-	priv->current_written = 0;
+
 	priv->current_elapsed = 0;
 	priv->last_written = 0;
 	priv->last_elapsed = 0;
+	priv->last_progress = 0;
 
 	if (priv->times) {
 		g_slist_free (priv->times);
@@ -299,6 +302,7 @@ brasero_task_ctx_set_next_track (BraseroTaskCtx *self)
 
 	priv->session_bytes += priv->track_bytes;
 	priv->track_bytes = 0;
+	priv->last_written = 0;
 
 	if (priv->current_track)
 		brasero_track_unref (priv->current_track);
@@ -413,10 +417,12 @@ brasero_task_ctx_start_progress (BraseroTaskCtx *self,
 	if (!priv->timer) {
 		priv->timer = g_timer_new ();
 		priv->first_written = priv->session_bytes + priv->track_bytes;
+		priv->first_progress = priv->progress;
 	}
 	else if (force) {
 		g_timer_start (priv->timer);
 		priv->first_written = priv->session_bytes + priv->track_bytes;
+		priv->first_progress = priv->progress;
 	}
 
 	return BRASERO_BURN_OK;
@@ -563,22 +569,23 @@ brasero_task_ctx_set_written_track (BraseroTaskCtx *self,
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
-	priv->track_bytes = written;
 	priv->written_changed = 1;
 
-	if (priv->use_average_rate)
+	if (priv->use_average_rate) {
+		priv->track_bytes = written;
 		return BRASERO_BURN_OK;
+	}
 
 	if (priv->timer)
 		elapsed = g_timer_elapsed (priv->timer, NULL);
 
 	if ((elapsed - priv->last_elapsed) > 0.5) {
-		priv->last_written = priv->current_written;
+		priv->last_written = priv->track_bytes;
 		priv->last_elapsed = priv->current_elapsed;
-		priv->current_written = written;
 		priv->current_elapsed = elapsed;
 	}
 
+	priv->track_bytes = written;
 	return BRASERO_BURN_OK;
 }
 
@@ -601,14 +608,36 @@ brasero_task_ctx_set_progress (BraseroTaskCtx *self,
 			       gdouble progress)
 {
 	BraseroTaskCtxPrivate *priv;
+	gdouble elapsed;
 
 	g_return_val_if_fail (BRASERO_IS_TASK_CTX (self), BRASERO_BURN_ERR);
 
 	priv = BRASERO_TASK_CTX_PRIVATE (self);
 
 	priv->progress_changed = 1;
-	priv->progress = progress;
 
+	if (priv->use_average_rate) {
+		priv->progress = progress;
+		return BRASERO_BURN_OK;
+	}
+
+	/* here we prefer to use track written bytes instead of progress.
+	 * NOTE: usually plugins will return only one information. */
+	if (priv->last_written) {
+		priv->progress = progress;
+		return BRASERO_BURN_OK;
+	}
+
+	if (priv->timer)
+		elapsed = g_timer_elapsed (priv->timer, NULL);
+
+	if ((elapsed - priv->last_elapsed) > 0.5) {
+		priv->last_progress = priv->progress;
+		priv->last_elapsed = priv->current_elapsed;
+		priv->current_elapsed = elapsed;
+	}
+
+	priv->progress = progress;
 	return BRASERO_BURN_OK;
 }
 
@@ -678,7 +707,7 @@ brasero_task_ctx_get_rate (BraseroTaskCtx *self,
 	if (priv->current_action != BRASERO_BURN_ACTION_RECORDING
 	&&  priv->current_action != BRASERO_BURN_ACTION_DRIVE_COPY) {
 		*rate = -1;
-		return BRASERO_BURN_OK;
+		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
 	if (priv->rate) {
@@ -689,18 +718,30 @@ brasero_task_ctx_get_rate (BraseroTaskCtx *self,
 	if (priv->use_average_rate) {
 		gdouble elapsed;
 
-		if ((priv->session_bytes + priv->track_bytes) <= 0 || !priv->timer)
+		if (!priv->timer)
 			return BRASERO_BURN_NOT_READY;
 
 		elapsed = g_timer_elapsed (priv->timer, NULL);
-		*rate = (gdouble) ((priv->session_bytes + priv->track_bytes) - priv->first_written) / elapsed;
+
+		if ((priv->session_bytes + priv->track_bytes) > 0)
+			*rate = (gdouble) ((priv->session_bytes + priv->track_bytes) - priv->first_written) / elapsed;
+		else if (priv->progress > 0.0)
+			*rate = (gdouble) (priv->progress - priv->first_progress) * priv->size / elapsed;
+		else
+			return BRASERO_BURN_NOT_READY;
 	}
 	else {
-		if (!priv->last_written)
+		if (priv->last_written > 0) {			
+			*rate = (gdouble) (priv->track_bytes - priv->last_written) /
+				(gdouble) (priv->current_elapsed - priv->last_elapsed);
+		}
+		else if (priv->last_progress > 0.0) {
+			*rate = (gdouble)  priv->size *
+				(gdouble) (priv->progress - priv->last_progress) /
+				(gdouble) (priv->current_elapsed - priv->last_elapsed);
+		}
+		else
 			return BRASERO_BURN_NOT_READY;
-			
-		*rate = (gdouble) (priv->current_written - priv->last_written) /
-			(gdouble) (priv->current_elapsed - priv->last_elapsed);
 	}
 
 	return BRASERO_BURN_OK;
@@ -891,6 +932,7 @@ brasero_task_ctx_stop_progress (BraseroTaskCtx *self)
 		priv->timer = NULL;
 	}
 	priv->first_written = 0;
+	priv->first_progress = 0.0;
 
 	g_mutex_lock (priv->lock);
 

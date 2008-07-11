@@ -1,3 +1,17 @@
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #529418 – Speed is not displayed
+
+	* src/burn-job.c (brasero_job_set_progress):
+	* src/burn-task-ctx.c (brasero_task_ctx_reset),
+	(brasero_task_ctx_set_next_track),
+	(brasero_task_ctx_start_progress),
+	(brasero_task_ctx_set_written_track),
+	(brasero_task_ctx_set_progress), (brasero_task_ctx_get_rate),
+	(brasero_task_ctx_stop_progress):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_read_stderr):
+
 2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix problem when burning audio (NOT on the fly) with libburn
