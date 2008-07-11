@@ -99,15 +99,8 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 		return NULL;
 	}
 
-	/* apparently this is needed to properly shutdown a drive on aborting.
-	 * I'm not sure about this one since glib also sets up signal handlers. */
-	//burn_set_signal_handling ("brasero : ", NULL, 0);
-
-	/* We want all types of messages: this might change in the future */
-	burn_msgs_set_severities ("ALL", "ALL", "brasero (libburn):");
-
-	/* that's for debugging */
-	burn_set_verbosity (666);
+	/* We want all types of messages but not them printed */
+	burn_msgs_set_severities ("ALL", "NEVER", "");
 
 	/* we just want to scan the drive proposed by drive */
 	brasero_job_get_device (job, &device);
@@ -148,14 +141,23 @@ brasero_libburn_common_process_message (BraseroJob *self)
 	char err_sev [80];
 	char err_txt [BURN_MSGS_MESSAGE_LEN] = {0};
 
-	/* Get all the FATAL messages, indicating an error */
-	ret = burn_msgs_obtain ("FATAL",
+	/* Get all messages, indicating an error */
+	memset (err_txt, 0, sizeof (err_txt));
+	ret = burn_msgs_obtain ("ALL",
 				&err_code,
 				err_txt,
 				&err_errno,
 				err_sev);
 	if (ret == 0)
+		return TRUE;
+
+	if (strcmp ("FATAL", err_sev)
+	&&  strcmp ("ABORT", err_sev)) {
+		/* libburn didn't reported any FATAL message but maybe it did
+		 * report some debugging output */
+		BRASERO_JOB_LOG (self, err_txt);
 	        return TRUE;
+	}
 
 	BRASERO_JOB_LOG (self, "Libburn reported an error %s", err_txt);
 	error = g_error_new (BRASERO_BURN_ERROR,
