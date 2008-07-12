@@ -1661,8 +1661,10 @@ brasero_job_set_progress (BraseroJob *self,
 	if (priv->next)
 		return BRASERO_BURN_ERR;
 
-	if (progress < 0.0 || progress > 1.0)
+	if (progress < 0.0 || progress > 1.0) {
+		BRASERO_JOB_LOG (self, "Tried to set an insane progress value (%lf)", progress);
 		return BRASERO_BURN_ERR;
+	}
 
 	return brasero_task_ctx_set_progress (priv->ctx, progress);
 }
@@ -1802,7 +1804,8 @@ brasero_job_set_dangerous (BraseroJob *self, gboolean value)
 	BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
-	brasero_task_ctx_set_dangerous (priv->ctx, value);
+	if (priv->ctx)
+		brasero_task_ctx_set_dangerous (priv->ctx, value);
 }
 
 /**

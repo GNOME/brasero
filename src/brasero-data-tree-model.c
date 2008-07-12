@@ -105,7 +105,7 @@ brasero_data_tree_model_iter_parent (GtkTreeModel *model,
 	g_return_val_if_fail (child->user_data != NULL, FALSE);
 
 	node = child->user_data;
-	if (GPOINTER_TO_INT (child->user_data2) == BRASERO_ROW_BOGUS) {
+	if (child->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		/* This is a bogus row intended for empty directories
 		 * user_data has the parent empty directory. */
 		iter->user_data2 = GINT_TO_POINTER (BRASERO_ROW_REGULAR);
@@ -141,7 +141,7 @@ brasero_data_tree_model_iter_nth_child (GtkTreeModel *model,
 		g_return_val_if_fail (priv->stamp == parent->stamp, FALSE);
 		g_return_val_if_fail (parent->user_data != NULL, FALSE);
 
-		if (GPOINTER_TO_INT (parent->user_data2) == BRASERO_ROW_BOGUS) {
+		if (parent->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 			/* This is a bogus row intended for empty directories,
 			 * it hasn't got children. */
 			return FALSE;
@@ -180,7 +180,7 @@ brasero_data_tree_model_iter_n_children (GtkTreeModel *model,
 	g_return_val_if_fail (priv->stamp == iter->stamp, 0);
 	g_return_val_if_fail (iter->user_data != NULL, 0);
 
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS)
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS))
 		return 0;
 
 	node = iter->user_data;
@@ -207,7 +207,7 @@ brasero_data_tree_model_iter_has_child (GtkTreeModel *model,
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
 	g_return_val_if_fail (iter->user_data != NULL, FALSE);
 
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS) {
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		/* This is a bogus row intended for empty directories
 		 * it hasn't got children */
 		return FALSE;
@@ -238,11 +238,25 @@ brasero_data_tree_model_iter_children (GtkTreeModel *model,
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (model);
 
+	if (!parent) {
+		BraseroFileNode *root;
+
+		/* This is for the top directory */
+		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
+		if (!BRASERO_FILE_NODE_CHILDREN (root))
+			return FALSE;
+
+		iter->stamp = priv->stamp;
+		iter->user_data = BRASERO_FILE_NODE_CHILDREN (root);
+		iter->user_data2 = GINT_TO_POINTER (BRASERO_ROW_REGULAR);
+		return TRUE;
+	}
+
 	/* make sure that iter comes from us */
 	g_return_val_if_fail (priv->stamp == parent->stamp, FALSE);
 	g_return_val_if_fail (parent->user_data != NULL, FALSE);
 
-	if (GPOINTER_TO_INT (parent->user_data2) == BRASERO_ROW_BOGUS) {
+	if (parent->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		iter->user_data = NULL;
 		return FALSE;
 	}
@@ -281,7 +295,7 @@ brasero_data_tree_model_iter_next (GtkTreeModel *model,
 	g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
 	g_return_val_if_fail (iter->user_data != NULL, FALSE);
 
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS) {
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		/* This is a bogus row intended for empty directories
 		 * user_data has the parent empty directory. It hasn't
 		 * got any peer.*/
@@ -291,7 +305,6 @@ brasero_data_tree_model_iter_next (GtkTreeModel *model,
 
 	node = iter->user_data;
 	iter->user_data = node->next;
-
 	if (!node->next)
 		return FALSE;
 
@@ -311,7 +324,7 @@ brasero_data_tree_model_node_shown (GtkTreeModel *model,
 	/* Check if that's a BOGUS row. In this case that means the parent was
 	 * expanded. Therefore ask vfs to increase its priority if it's loading
 	 * its contents. */
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS) {
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		/* NOTE: this has to be a directory */
 		/* NOTE: there is no need to check for is_loading case here
 		 * since before showing its BOGUS row the tree will have shown
@@ -368,7 +381,7 @@ brasero_data_tree_model_node_hidden (GtkTreeModel *model,
 
 	/* if it's a BOGUS row stop here since they are not added to shown list.
 	 * In the same way returns if it is a file. */
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS)
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS))
 		return;
 
 	node = iter->user_data;
@@ -407,7 +420,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 
 	node = iter->user_data;
 
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS) {
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS)) {
 		switch (column) {
 		case BRASERO_DATA_TREE_MODEL_NAME:
 			g_value_init (value, G_TYPE_STRING);
@@ -443,6 +456,11 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		case BRASERO_DATA_TREE_MODEL_EDITABLE:
 			g_value_init (value, G_TYPE_BOOLEAN);
 			g_value_set_boolean (value, FALSE);
+			return;
+	
+		case BRASERO_DATA_TREE_MODEL_COLOR:
+			g_value_init (value, G_TYPE_STRING);
+			g_value_set_string (value, NULL);
 			return;
 
 		default:
@@ -683,16 +701,10 @@ brasero_data_tree_model_get_path (GtkTreeModel *model,
 	node = iter->user_data;
 
 	/* NOTE: there is only one single node without a name: root */
-	path = gtk_tree_path_new ();
-	for (; node->parent && BRASERO_FILE_NODE_NAME (node); node = node->parent) {
-		guint nth;
-
-		nth = brasero_data_tree_model_node_index (node);
-		gtk_tree_path_prepend_index (path, nth);
-	}
+	path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (model), node);
 
 	/* Add index 0 for empty bogus row */
-	if (GPOINTER_TO_INT (iter->user_data2) == BRASERO_ROW_BOGUS)
+	if (iter->user_data2 == GINT_TO_POINTER (BRASERO_ROW_BOGUS))
 		gtk_tree_path_append_index (path, 0);
 
 	return path;
@@ -722,7 +734,6 @@ brasero_data_tree_model_path_to_node (BraseroDataTreeModel *self,
 		if (!node)
 			return NULL;
 	}
-
 	return node;
 }
 
@@ -1161,7 +1172,7 @@ brasero_data_tree_model_reset (BraseroDataProject *project,
 	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset)
 		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset (project, num_nodes);
 }
-guint tintin = 1;
+
 static gboolean
 brasero_data_tree_model_node_added (BraseroDataProject *project,
 				    BraseroFileNode *node,
@@ -1196,7 +1207,6 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 	}
 
 	/* Add the row itself */
-	
 	gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
 				     path,
 				     &iter);
@@ -1224,23 +1234,11 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 
 	/* Now see if this is a directory which is empty and needs a BOGUS */
 	if (!node->is_file && !node->is_loading) {
-		/* NOTE: No need to check for the number of children ... */
-
 		/* emit child-toggled. Thanks to bogus rows we only need to emit
 		 * this signal once since a directory will always have a child
 		 * in the tree */
 		path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), node);
 		gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (project), path, &iter);
-
-		/* add the row */
-		iter.stamp = priv->stamp;
-		iter.user_data = node;
-		iter.user_data2 = GINT_TO_POINTER (BRASERO_ROW_BOGUS);
-
-		gtk_tree_path_append_index (path, 0);
-		gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
-					     path,
-					     &iter);
 		gtk_tree_path_free (path);
 	}
 

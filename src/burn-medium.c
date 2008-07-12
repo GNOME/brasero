@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2007 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2007-2008 <bonfire-app@wanadoo.fr>
  * 
  * brasero is free software.
  * 
@@ -140,6 +140,9 @@ const gchar *
 brasero_medium_get_icon (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
+
+	if (!medium)
+		return NULL;
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->icon;
@@ -871,282 +874,6 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
-static BraseroBurnResult
-brasero_medium_get_medium_type (BraseroMedium *self,
-				BraseroDeviceHandle *handle,
-				BraseroScsiErrCode *code)
-{
-	BraseroScsiGetConfigHdr *hdr = NULL;
-	BraseroMediumPrivate *priv;
-	BraseroScsiResult result;
-	int size;
-
-	BRASERO_BURN_LOG ("Retrieving media profile");
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc2_get_configuration_feature (handle,
-							 BRASERO_SCSI_FEAT_REAL_TIME_STREAM,
-							 &hdr,
-							 &size,
-							 code);
-	if (result != BRASERO_SCSI_OK) {
-		BraseroScsiAtipData *data = NULL;
-		int size = 0;
-
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
-
-		/* This could be a MMC1 drive since this command was
-		 * introduced in MMC2 and is supported onward. So it
-		 * has to be a CD (R/RW). The rest of the information
-		 * will be provided by read_disc_information. */
-
-		/* The only thing here left to determine is if that's a WRITABLE
-		 * or a REWRITABLE. To determine that information, we need to
-		 * read TocPmaAtip. It if fails that's a ROM, if it succeeds.
-		 * No need to set error code since we consider that it's a ROM
-		 * if a failure happens. */
-		result = brasero_mmc1_read_atip (handle,
-						 &data,
-						 &size,
-						 NULL);
-		if (result != BRASERO_SCSI_OK) {
-			/* CDROM */
-			priv->info = BRASERO_MEDIUM_CDROM;
-			priv->type = types [1];
-			priv->icon = icons [1];
-		}
-		else {
-			/* check the size of the structure: it must be at least 8 bytes long */
-			if (size < 8) {
-				if (size)
-					g_free (data);
-
-				BRASERO_BURN_LOG ("READ ATIP failed (wrong size)");
-				return BRASERO_BURN_ERR;
-			}
-
-			if (data->desc->erasable) {
-				/* CDRW */
-				priv->info = BRASERO_MEDIUM_CDRW;
-				priv->type = types [3];
-				priv->icon = icons [3];
-			}
-			else {
-				/* CDR */
-				priv->info = BRASERO_MEDIUM_CDR;
-				priv->type = types [2];
-				priv->icon = icons [2];
-			}
-
-			g_free (data);
-		}
-
-		/* retrieve the speed */
-		result = brasero_medium_get_page_2A_max_speed (self,
-							       handle,
-							       code);
-		return result;
-	}
-
-	switch (BRASERO_GET_16 (hdr->current_profile)) {
-	case BRASERO_SCSI_PROF_CDROM:
-		priv->info = BRASERO_MEDIUM_CDROM;
-		priv->type = types [1];
-		priv->icon = icons [1];
-		break;
-
-	case BRASERO_SCSI_PROF_CDR:
-		priv->info = BRASERO_MEDIUM_CDR;
-		priv->type = types [2];
-		priv->icon = icons [2];
-		break;
-
-	case BRASERO_SCSI_PROF_CDRW:
-		priv->info = BRASERO_MEDIUM_CDRW;
-		priv->type = types [3];
-		priv->icon = icons [3];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_ROM:
-		priv->info = BRASERO_MEDIUM_DVD_ROM;
-		priv->type = types [4];
-		priv->icon = icons [4];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_R:
-		priv->info = BRASERO_MEDIUM_DVDR;
-		priv->type = types [5];
-		priv->icon = icons [5];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_RW_RESTRICTED:
-		priv->info = BRASERO_MEDIUM_DVDRW_RESTRICTED;
-		priv->type = types [6];
-		priv->icon = icons [6];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_RW_SEQUENTIAL:
-		priv->info = BRASERO_MEDIUM_DVDRW;
-		priv->type = types [6];
-		priv->icon = icons [6];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_R_PLUS:
-		priv->info = BRASERO_MEDIUM_DVDR_PLUS;
-		priv->type = types [7];
-		priv->icon = icons [7];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_RW_PLUS:
-		priv->info = BRASERO_MEDIUM_DVDRW_PLUS;
-		priv->type = types [8];
-		priv->icon = icons [7];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_R_PLUS_DL:
-		priv->info = BRASERO_MEDIUM_DVDR_PLUS_DL;
-		priv->type = types [9];
-		priv->icon = icons [7];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_RW_PLUS_DL:
-		priv->info = BRASERO_MEDIUM_DVDRW_PLUS_DL;
-		priv->type = types [10];
-		priv->icon = icons [7];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_R_DL_SEQUENTIAL:
-		priv->info = BRASERO_MEDIUM_DVDR_DL;
-		priv->type = types [11];
-		priv->icon = icons [5];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_R_DL_JUMP:
-		priv->info = BRASERO_MEDIUM_DVDR_JUMP_DL;
-		priv->type = types [11];
-		priv->icon = icons [5];
-		break;
-
-	/* WARNING: these types are recognized, no more */
-	case BRASERO_SCSI_PROF_BD_ROM:
-		priv->info = BRASERO_MEDIUM_BD_ROM;
-		priv->type = types [13];
-		priv->icon = icons [4];
-		break;
-
-	case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
-		priv->info = BRASERO_MEDIUM_BDR_SRM;
-		priv->type = types [14];
-		priv->icon = icons [5];
-		break;
-
-	case BRASERO_SCSI_PROF_BR_R_RANDOM:
-		priv->info = BRASERO_MEDIUM_BDR_RANDOM;
-		priv->type = types [14];
-		priv->icon = icons [5];
-		break;
-
-	case BRASERO_SCSI_PROF_BD_RW:
-		priv->info = BRASERO_MEDIUM_BDRW;
-		priv->type = types [15];
-		priv->icon = icons [6];
-		break;
-
-	case BRASERO_SCSI_PROF_DVD_RAM:
-		priv->info = BRASERO_MEDIUM_DVD_RAM;
-		priv->type = types [12];
-		priv->icon = icons [8];
-		break;
-	
-	case BRASERO_SCSI_PROF_NON_REMOVABLE:
-	case BRASERO_SCSI_PROF_REMOVABLE:
-	case BRASERO_SCSI_PROF_MO_ERASABLE:
-	case BRASERO_SCSI_PROF_MO_WRITE_ONCE:
-	case BRASERO_SCSI_PROF_MO_ADVANCED_STORAGE:
-	case BRASERO_SCSI_PROF_DDCD_ROM:
-	case BRASERO_SCSI_PROF_DDCD_R:
-	case BRASERO_SCSI_PROF_DDCD_RW:
-	case BRASERO_SCSI_PROF_HD_DVD_ROM:
-	case BRASERO_SCSI_PROF_HD_DVD_R:
-	case BRASERO_SCSI_PROF_HD_DVD_RAM:
-		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
-		priv->icon = icons [0];
-		g_free (hdr);
-		return BRASERO_BURN_NOT_SUPPORTED;
-	}
-
-	/* try all SCSI functions to get write/read speeds in order */
-	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
-		BraseroScsiRTStreamDesc *stream;
-
-		/* means it's at least an MMC3 drive */
-		stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
-		if (stream->wrt_spd) {
-			result = brasero_medium_get_speed_mmc3 (self, handle, code);
-			if (result == BRASERO_BURN_OK)
-				goto end;
-		}
-
-		if (stream->mp2a) {
-			result = brasero_medium_get_page_2A_write_speed_desc (self, handle, code);
-			if (result == BRASERO_BURN_OK)
-				goto end;
-		}
-	}
-
-	/* fallback for speeds */
-	result = brasero_medium_get_page_2A_max_speed (self, handle, code);
-
-end:
-
-	g_free (hdr);
-
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
-brasero_medium_get_css_feature (BraseroMedium *self,
-				BraseroDeviceHandle *handle,
-				BraseroScsiErrCode *code)
-{
-	BraseroScsiGetConfigHdr *hdr = NULL;
-	BraseroMediumPrivate *priv;
-	BraseroScsiResult result;
-	int size;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-
-	BRASERO_BURN_LOG ("Testing for Css encrypted media");
-	result = brasero_mmc2_get_configuration_feature (handle,
-							 BRASERO_SCSI_FEAT_DVD_CSS,
-							 &hdr,
-							 &size,
-							 code);
-	if (result != BRASERO_SCSI_OK) {
-		g_free (hdr);
-
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
-		return BRASERO_BURN_ERR;
-	}
-
-	if (hdr->desc->add_len < sizeof (BraseroScsiDVDCssDesc)) {
-		g_free (hdr);
-		return BRASERO_BURN_OK;
-	}
-
-	/* here we just need to see if this feature is current or not */
-	if (hdr->desc->current) {
-		priv->info |= BRASERO_MEDIUM_PROTECTED;
-		BRASERO_BURN_LOG ("media is Css protected");
-	}
-
-	g_free (hdr);
-	return BRASERO_BURN_OK;
-}
-
 /**
  * Functions to get information about disc contents
  */
@@ -1182,6 +909,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 				       &nb_blocks,
 				       NULL);
 	brasero_volume_source_close (vol);
+
 	if (!res) {
 		BRASERO_BURN_LOG ("Failed to retrieve the volume size: %s",
 				  error && error->message ? 
@@ -1388,7 +1116,264 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * NOTE: for DVD-R multisession we lose 28688 blocks for each session
+ * so the capacity is the addition of all session sizes + 28688 for each
+ * For all multisession DVD-/+R and CDR-RW the remaining size is given 
+ * in the leadout. One exception though with DVD+/-RW.
+ */
+
+static void
+brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
+					gint32 start)
+{
+	BraseroMediumTrack *leadout;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	leadout = g_new0 (BraseroMediumTrack, 1);
+	priv->tracks = g_slist_append (priv->tracks, leadout);
+
+	leadout->start = start;
+	leadout->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+
+	/* we fabricate the leadout here. We don't really need one in 
+	 * fact since it is always at the last sector whatever the
+	 * amount of data written. So we need in fact to read the file
+	 * system and get the last sector from it. Hopefully it won't be
+	 * buggy */
+	priv->next_wr_add = 0;
+
+	leadout->blocks_num = priv->block_num;
+	if (g_slist_length (priv->tracks) > 1) {
+		BraseroMediumTrack *track;
+
+		track = priv->tracks->data;
+		leadout->blocks_num -= ((track->blocks_num > 300) ? track->blocks_num : 300);
+	}
+	BRASERO_BURN_LOG ("Adding fabricated leadout start = %llu length = %llu",
+			  leadout->start,
+			  leadout->blocks_num);
+}
+
+static BraseroBurnResult
+brasero_medium_get_sessions_info (BraseroMedium *self,
+				  BraseroDeviceHandle *handle,
+				  BraseroScsiErrCode *code)
+{
+	int num, i, size;
+	gboolean multisession;
+	BraseroScsiResult result;
+	BraseroScsiTocDesc *desc;
+	BraseroMediumPrivate *priv;
+	BraseroScsiFormattedTocData *toc = NULL;
+
+	BRASERO_BURN_LOG ("Reading Toc");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	result = brasero_mmc1_read_toc_formatted (handle,
+						  0,
+						  &toc,
+						  &size,
+						  code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (toc);
+
+		BRASERO_BURN_LOG ("READ TOC failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	num = (size - sizeof (BraseroScsiFormattedTocData)) /
+	       sizeof (BraseroScsiTocDesc);
+
+	/* remove 1 for leadout */
+	multisession = (priv->info & BRASERO_MEDIUM_APPENDABLE) || (num -1) != 1;
+
+	BRASERO_BURN_LOG ("%i track(s) found", num);
+
+	desc = toc->desc;
+	for (i = 0; i < num; i ++, desc ++) {
+		BraseroMediumTrack *track;
+
+		if (desc->track_num == BRASERO_SCSI_TRACK_LEADOUT_START)
+			break;
+
+		track = g_new0 (BraseroMediumTrack, 1);
+		priv->tracks = g_slist_prepend (priv->tracks, track);
+		track->start = BRASERO_GET_32 (desc->track_start);
+
+		/* we shouldn't request info on a track if the disc is closed */
+		if (desc->control & BRASERO_SCSI_TRACK_COPY)
+			track->type |= BRASERO_MEDIUM_TRACK_COPY;
+
+		if (!(desc->control & BRASERO_SCSI_TRACK_DATA)) {
+			track->type |= BRASERO_MEDIUM_TRACK_AUDIO;
+			priv->info |= BRASERO_MEDIUM_HAS_AUDIO;
+
+			if (desc->control & BRASERO_SCSI_TRACK_PREEMP)
+				track->type |= BRASERO_MEDIUM_TRACK_PREEMP;
+
+			if (desc->control & BRASERO_SCSI_TRACK_4_CHANNELS)
+				track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
+		}
+		else {
+			track->type |= BRASERO_MEDIUM_TRACK_DATA;
+			priv->info |= BRASERO_MEDIUM_HAS_DATA;
+
+			if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
+				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
+		}
+
+		brasero_medium_track_get_info (self,
+					       multisession,
+					       track,
+					       g_slist_length (priv->tracks),
+					       handle,
+					       code);
+
+		if (desc->control & BRASERO_SCSI_TRACK_COPY)
+			track->type |= BRASERO_MEDIUM_TRACK_COPY;
+
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+			BraseroBurnResult result;
+
+			/* a special case for these two kinds of media (DVD+RW)
+			 * which have only one track: the first. */
+			result = brasero_medium_track_volume_size (self, 
+								   track,
+								   handle);
+			if (result != BRASERO_BURN_OK) {
+				priv->tracks = g_slist_remove (priv->tracks, track);
+				g_free (track);
+
+				priv->info |= BRASERO_MEDIUM_BLANK;
+				priv->info &= ~(BRASERO_MEDIUM_CLOSED|
+					        BRASERO_MEDIUM_HAS_DATA);
+
+				BRASERO_BURN_LOG ("Empty first session.");
+			}
+			else
+				priv->next_wr_add = 0;
+		}
+	}
+
+	/* put the tracks in the right order */
+	priv->tracks = g_slist_reverse (priv->tracks);
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		gint32 start;
+
+		/* It starts where the other one finishes */
+		if (priv->tracks)
+			start = BRASERO_GET_32 (desc->track_start);
+		else
+			start = 0;
+
+		brasero_medium_add_DVD_plus_RW_leadout (self, start);
+	}
+	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
+		BraseroMediumTrack *track;
+
+		/* we shouldn't request info on leadout if the disc is closed
+		 * (except for DVD+/- (restricted) RW (see above) */
+		track = g_new0 (BraseroMediumTrack, 1);
+		priv->tracks = g_slist_append (priv->tracks, track);
+		track->start = BRASERO_GET_32 (desc->track_start);
+		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+
+		brasero_medium_track_get_info (self,
+					       FALSE,
+					       track,
+					       g_slist_length (priv->tracks),
+					       handle,
+					       code);
+	}
+
+	g_free (toc);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_get_contents (BraseroMedium *self,
+			     BraseroDeviceHandle *handle,
+			     BraseroScsiErrCode *code)
+{
+	int size;
+	BraseroScsiResult result;
+	BraseroMediumPrivate *priv;
+	BraseroScsiDiscInfoStd *info = NULL;
+
+	BRASERO_BURN_LOG ("Retrieving media status");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	result = brasero_mmc1_read_disc_information_std (handle,
+							 &info,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (info);
+	
+		BRASERO_BURN_LOG ("READ DISC INFORMATION failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	if (info->erasable)
+		priv->info |= BRASERO_MEDIUM_REWRITABLE;
+
+	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
+		BraseroMediumTrack *track;
+
+		BRASERO_BURN_LOG ("Empty media");
+
+		priv->info |= BRASERO_MEDIUM_BLANK;
+		priv->block_size = 2048;
+
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+			brasero_medium_add_DVD_plus_RW_leadout (self, 0);
+		else {
+			track = g_new0 (BraseroMediumTrack, 1);
+			track->start = 0;
+			track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+			priv->tracks = g_slist_prepend (priv->tracks, track);
+			
+			brasero_medium_track_get_info (self,
+						       FALSE,
+						       track,
+						       1,
+						       handle,
+						       code);
+		}
+		goto end;
+	}
+
+	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
+		priv->info |= BRASERO_MEDIUM_APPENDABLE;
+		BRASERO_BURN_LOG ("Appendable media");
+	}
+	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
+		priv->info |= BRASERO_MEDIUM_CLOSED;
+		BRASERO_BURN_LOG ("Closed media");
+	}
+
+	result = brasero_medium_get_sessions_info (self, handle, code);
+
+end:
+
+	g_free (info);
+	return result;
+}
+
 #if 0
+
+/**
+ * These are special routines for old CD-R(W) drives that don't conform to MMC
+ */
 
 static void
 brasero_medium_set_track_type (BraseroMedium *self,
@@ -1520,6 +1505,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 		start_LBA -= 150;
 		start_BCD -= 150;
 
+/*
 		result = brasero_mmc1_read_track_info (handle,
 						       track_num,
 						       &track_info,
@@ -1528,10 +1514,10 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 
 		if (result != BRASERO_SCSI_OK) {
 			BRASERO_BURN_LOG ("READ TRACK INFO failed");
-			/* Fallback to formatted toc */
-			return 0;
+*/			/* Fallback to formatted toc */
+/*			return 0;
 		}
-
+*/
 		track_start = BRASERO_GET_32 (track_info.start_lba);
 		BRASERO_BURN_LOG ("comparing DCB %i and LBA %i to real start address %i",
 				  start_BCD, start_LBA, track_start);
@@ -1753,196 +1739,17 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 
 #endif
 
-/**
- * NOTE: for DVD-R multisession we lose 28688 blocks for each session
- * so the capacity is the addition of all session sizes + 28688 for each
- * For all multisession DVD-/+R and CDR-RW the remaining size is given 
- * in the leadout. One exception though with DVD+/-RW.
- */
-
-static void
-brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
-					gint32 start)
-{
-	BraseroMediumTrack *leadout;
-	BraseroMediumPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-
-	leadout = g_new0 (BraseroMediumTrack, 1);
-	priv->tracks = g_slist_append (priv->tracks, leadout);
-
-	leadout->start = start;
-	leadout->type = BRASERO_MEDIUM_TRACK_LEADOUT;
-
-	/* we fabricate the leadout here. We don't really need one in 
-	 * fact since it is always at the last sector whatever the
-	 * amount of data written. So we need in fact to read the file
-	 * system and get the last sector from it. Hopefully it won't be
-	 * buggy */
-	priv->next_wr_add = 0;
-
-	leadout->blocks_num = priv->block_num;
-	if (g_slist_length (priv->tracks) > 1) {
-		BraseroMediumTrack *track;
-
-		track = priv->tracks->data;
-		leadout->blocks_num -= ((track->blocks_num > 300) ? track->blocks_num : 300);
-	}
-	BRASERO_BURN_LOG ("Adding fabricated leadout start = %llu length = %llu",
-			  leadout->start,
-			  leadout->blocks_num);
-}
-
 static BraseroBurnResult
-brasero_medium_get_sessions_info (BraseroMedium *self,
-				  BraseroDeviceHandle *handle,
-				  BraseroScsiErrCode *code)
-{
-	int num, i, size;
-	gboolean multisession;
-	BraseroScsiResult result;
-	BraseroScsiTocDesc *desc;
-	BraseroMediumPrivate *priv;
-	BraseroScsiFormattedTocData *toc = NULL;
-
-	BRASERO_BURN_LOG ("Reading Toc");
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc1_read_toc_formatted (handle,
-						  0,
-						  &toc,
-						  &size,
-						  code);
-	if (result != BRASERO_SCSI_OK) {
-		g_free (toc);
-
-		BRASERO_BURN_LOG ("READ TOC failed");
-		return BRASERO_BURN_ERR;
-	}
-
-	num = (size - sizeof (BraseroScsiFormattedTocData)) /
-	       sizeof (BraseroScsiTocDesc);
-
-	/* remove 1 for leadout */
-	multisession = (priv->info & BRASERO_MEDIUM_APPENDABLE) || (num -1) != 1;
-
-	BRASERO_BURN_LOG ("%i track(s) found", num);
-
-	desc = toc->desc;
-	for (i = 0; i < num; i ++, desc ++) {
-		BraseroMediumTrack *track;
-
-		if (desc->track_num == BRASERO_SCSI_TRACK_LEADOUT_START)
-			break;
-
-		track = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_prepend (priv->tracks, track);
-		track->start = BRASERO_GET_32 (desc->track_start);
-
-		/* we shouldn't request info on a track if the disc is closed */
-		if (desc->control & BRASERO_SCSI_TRACK_COPY)
-			track->type |= BRASERO_MEDIUM_TRACK_COPY;
-
-		if (!(desc->control & BRASERO_SCSI_TRACK_DATA)) {
-			track->type |= BRASERO_MEDIUM_TRACK_AUDIO;
-			priv->info |= BRASERO_MEDIUM_HAS_AUDIO;
-
-			if (desc->control & BRASERO_SCSI_TRACK_PREEMP)
-				track->type |= BRASERO_MEDIUM_TRACK_PREEMP;
-
-			if (desc->control & BRASERO_SCSI_TRACK_4_CHANNELS)
-				track->type |= BRASERO_MEDIUM_TRACK_4_CHANNELS;
-		}
-		else {
-			track->type |= BRASERO_MEDIUM_TRACK_DATA;
-			priv->info |= BRASERO_MEDIUM_HAS_DATA;
-
-			if (desc->control & BRASERO_SCSI_TRACK_DATA_INCREMENTAL)
-				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
-		}
-
-		brasero_medium_track_get_info (self,
-					       multisession,
-					       track,
-					       g_slist_length (priv->tracks),
-					       handle,
-					       code);
-
-		if (desc->control & BRASERO_SCSI_TRACK_COPY)
-			track->type |= BRASERO_MEDIUM_TRACK_COPY;
-
-		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-			BraseroBurnResult result;
-
-			/* a special case for these two kinds of media (DVD+RW)
-			 * which have only one track: the first. */
-			result = brasero_medium_track_volume_size (self, 
-								   track,
-								   handle);
-			if (result != BRASERO_BURN_OK) {
-				priv->tracks = g_slist_remove (priv->tracks, track);
-				g_free (track);
-
-				priv->info |= BRASERO_MEDIUM_BLANK;
-				priv->info &= ~(BRASERO_MEDIUM_CLOSED|
-						BRASERO_MEDIUM_HAS_DATA);
-			}
-			else
-				priv->next_wr_add = 0;
-		}
-	}
-
-	/* put the tracks in the right order */
-	priv->tracks = g_slist_reverse (priv->tracks);
-
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-		gint32 start;
-
-		/* It starts where the other one finishes */
-		if (priv->tracks)
-			start = BRASERO_GET_32 (desc->track_start);
-		else
-			start = 0;
-
-		brasero_medium_add_DVD_plus_RW_leadout (self, start);
-	}
-	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
-		BraseroMediumTrack *track;
-
-		/* we shouldn't request info on leadout if the disc is closed
-		 * (except for DVD+/- (restricted) RW (see above) */
-		track = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_append (priv->tracks, track);
-		track->start = BRASERO_GET_32 (desc->track_start);
-		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
-
-		brasero_medium_track_get_info (self,
-					       FALSE,
-					       track,
-					       g_slist_length (priv->tracks),
-					       handle,
-					       code);
-	}
-
-	g_free (toc);
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
-brasero_medium_get_contents (BraseroMedium *self,
-			     BraseroDeviceHandle *handle,
-			     BraseroScsiErrCode *code)
+brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
+					BraseroDeviceHandle *handle,
+					BraseroScsiErrCode *code)
 {
 	int size;
 	BraseroScsiResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiDiscInfoStd *info = NULL;
 
-	BRASERO_BURN_LOG ("Retrieving media status");
+	BRASERO_BURN_LOG ("Retrieving media status for old drive");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -1953,55 +1760,356 @@ brasero_medium_get_contents (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (info);
 	
-		BRASERO_BURN_LOG ("READ DISC INFORMATION failed");
+		BRASERO_BURN_LOG ("READ DISC INFORMATION failed for old drive");
 		return BRASERO_BURN_ERR;
 	}
 
+	/* Try to identify the type: can only be CDROM CDR CDRW.
+	 * NOTE: since there is no way to distinguish a CDROM and a closed CDR 
+	 * if the disc is closed we set it as CDROM (except if it's RW). */
 	if (info->erasable)
-		priv->info |= BRASERO_MEDIUM_REWRITABLE;
+		priv->info = BRASERO_MEDIUM_CDRW;
+	else if (info->status == BRASERO_SCSI_DISC_FINALIZED)
+		priv->info = BRASERO_MEDIUM_CDROM;
+	else
+		priv->info = BRASERO_MEDIUM_CDR;
 
 	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
-		BraseroMediumTrack *track;
-
-		BRASERO_BURN_LOG ("Empty media");
-
 		priv->info |= BRASERO_MEDIUM_BLANK;
 		priv->block_size = 2048;
-
-		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-			brasero_medium_add_DVD_plus_RW_leadout (self, 0);
-		else {
-			track = g_new0 (BraseroMediumTrack, 1);
-			track->start = 0;
-			track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
-			priv->tracks = g_slist_prepend (priv->tracks, track);
-			
-			brasero_medium_track_get_info (self,
-						       FALSE,
-						       track,
-						       1,
-						       handle,
-						       code);
-		}
-		goto end;
+		priv->next_wr_add = 0;
+		BRASERO_BURN_LOG ("Empty media (old drive)");
 	}
-
-	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
+	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
-		BRASERO_BURN_LOG ("Appendable media");
+		priv->block_size = 2048;
+		priv->next_wr_add = 0;
+		BRASERO_BURN_LOG ("Appendable media (old drive)");
 	}
 	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
 		priv->info |= BRASERO_MEDIUM_CLOSED;
-		BRASERO_BURN_LOG ("Closed media");
+		BRASERO_BURN_LOG ("Closed media (old drive)");
 	}
 
+	/* get the contents */
 	result = brasero_medium_get_sessions_info (self, handle, code);
+	return result;
+}
+
+static BraseroBurnResult
+brasero_medium_check_old_drive (BraseroMedium *self,
+				BraseroDeviceHandle *handle,
+				BraseroScsiErrCode *code)
+{
+	gchar *model;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	model = brasero_drive_get_display_name (priv->drive);
+	if (!model)
+		return BRASERO_BURN_ERR;
+
+	if (!strcmp (model, "CD-R55S")) {
+		g_free (model);
+		priv->max_rd = BRASERO_SPEED_TO_RATE_CD (12);
+		priv->max_wrt = BRASERO_SPEED_TO_RATE_CD (4);
+		return brasero_medium_old_drive_get_disc_info (self,
+							       handle,
+							       code);
+	}
+
+	BRASERO_BURN_LOG ("Not an old drive model");
+
+	return BRASERO_BURN_ERR;
+}
+
+/**
+ * Some identification functions
+ */
+
+static BraseroBurnResult
+brasero_medium_get_medium_type (BraseroMedium *self,
+				BraseroDeviceHandle *handle,
+				BraseroScsiErrCode *code)
+{
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	BRASERO_BURN_LOG ("Retrieving media profile");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_REAL_TIME_STREAM,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		BraseroScsiAtipData *data = NULL;
+		int size = 0;
+
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+
+		/* This could be a MMC1 drive since this command was
+		 * introduced in MMC2 and is supported onward. So it
+		 * has to be a CD (R/RW). The rest of the information
+		 * will be provided by read_disc_information. */
+
+		/* retrieve the speed */
+		result = brasero_medium_get_page_2A_max_speed (self,
+							       handle,
+							       code);
+
+		/* If this fails it means that this drive is probably older than
+		 * MMC1 spec or does not conform to it. Try our last chance. */
+		if (result != BRASERO_BURN_OK)
+			return brasero_medium_check_old_drive (self,
+							       handle,
+							       code);
+
+		/* The only thing here left to determine is if that's a WRITABLE
+		 * or a REWRITABLE. To determine that information, we need to
+		 * read TocPmaAtip. It if fails that's a ROM, if it succeeds.
+		 * No need to set error code since we consider that it's a ROM
+		 * if a failure happens. */
+		result = brasero_mmc1_read_atip (handle,
+						 &data,
+						 &size,
+						 NULL);
+		if (result != BRASERO_SCSI_OK) {
+			/* CDROM */
+			priv->info = BRASERO_MEDIUM_CDROM;
+			priv->type = types [1];
+			priv->icon = icons [1];
+		}
+		else {
+			/* check the size of the structure: it must be at least 8 bytes long */
+			if (size < 8) {
+				if (size)
+					g_free (data);
+
+				BRASERO_BURN_LOG ("READ ATIP failed (wrong size)");
+				return BRASERO_BURN_ERR;
+			}
+
+			if (data->desc->erasable) {
+				/* CDRW */
+				priv->info = BRASERO_MEDIUM_CDRW;
+				priv->type = types [3];
+				priv->icon = icons [3];
+			}
+			else {
+				/* CDR */
+				priv->info = BRASERO_MEDIUM_CDR;
+				priv->type = types [2];
+				priv->icon = icons [2];
+			}
+
+			g_free (data);
+		}
+
+		return result;
+	}
+
+	switch (BRASERO_GET_16 (hdr->current_profile)) {
+	case BRASERO_SCSI_PROF_CDROM:
+		priv->info = BRASERO_MEDIUM_CDROM;
+		priv->type = types [1];
+		priv->icon = icons [1];
+		break;
+
+	case BRASERO_SCSI_PROF_CDR:
+		priv->info = BRASERO_MEDIUM_CDR;
+		priv->type = types [2];
+		priv->icon = icons [2];
+		break;
+
+	case BRASERO_SCSI_PROF_CDRW:
+		priv->info = BRASERO_MEDIUM_CDRW;
+		priv->type = types [3];
+		priv->icon = icons [3];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_ROM:
+		priv->info = BRASERO_MEDIUM_DVD_ROM;
+		priv->type = types [4];
+		priv->icon = icons [4];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_R:
+		priv->info = BRASERO_MEDIUM_DVDR;
+		priv->type = types [5];
+		priv->icon = icons [5];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_RW_RESTRICTED:
+		priv->info = BRASERO_MEDIUM_DVDRW_RESTRICTED;
+		priv->type = types [6];
+		priv->icon = icons [6];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_RW_SEQUENTIAL:
+		priv->info = BRASERO_MEDIUM_DVDRW;
+		priv->type = types [6];
+		priv->icon = icons [6];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_R_PLUS:
+		priv->info = BRASERO_MEDIUM_DVDR_PLUS;
+		priv->type = types [7];
+		priv->icon = icons [7];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_RW_PLUS:
+		priv->info = BRASERO_MEDIUM_DVDRW_PLUS;
+		priv->type = types [8];
+		priv->icon = icons [7];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_R_PLUS_DL:
+		priv->info = BRASERO_MEDIUM_DVDR_PLUS_DL;
+		priv->type = types [9];
+		priv->icon = icons [7];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_RW_PLUS_DL:
+		priv->info = BRASERO_MEDIUM_DVDRW_PLUS_DL;
+		priv->type = types [10];
+		priv->icon = icons [7];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_R_DL_SEQUENTIAL:
+		priv->info = BRASERO_MEDIUM_DVDR_DL;
+		priv->type = types [11];
+		priv->icon = icons [5];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_R_DL_JUMP:
+		priv->info = BRASERO_MEDIUM_DVDR_JUMP_DL;
+		priv->type = types [11];
+		priv->icon = icons [5];
+		break;
+
+	/* WARNING: these types are recognized, no more */
+	case BRASERO_SCSI_PROF_BD_ROM:
+		priv->info = BRASERO_MEDIUM_BD_ROM;
+		priv->type = types [13];
+		priv->icon = icons [4];
+		break;
+
+	case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
+		priv->info = BRASERO_MEDIUM_BDR_SRM;
+		priv->type = types [14];
+		priv->icon = icons [5];
+		break;
+
+	case BRASERO_SCSI_PROF_BR_R_RANDOM:
+		priv->info = BRASERO_MEDIUM_BDR_RANDOM;
+		priv->type = types [14];
+		priv->icon = icons [5];
+		break;
+
+	case BRASERO_SCSI_PROF_BD_RW:
+		priv->info = BRASERO_MEDIUM_BDRW;
+		priv->type = types [15];
+		priv->icon = icons [6];
+		break;
+
+	case BRASERO_SCSI_PROF_DVD_RAM:
+		priv->info = BRASERO_MEDIUM_DVD_RAM;
+		priv->type = types [12];
+		priv->icon = icons [8];
+		break;
+	
+	case BRASERO_SCSI_PROF_NON_REMOVABLE:
+	case BRASERO_SCSI_PROF_REMOVABLE:
+	case BRASERO_SCSI_PROF_MO_ERASABLE:
+	case BRASERO_SCSI_PROF_MO_WRITE_ONCE:
+	case BRASERO_SCSI_PROF_MO_ADVANCED_STORAGE:
+	case BRASERO_SCSI_PROF_DDCD_ROM:
+	case BRASERO_SCSI_PROF_DDCD_R:
+	case BRASERO_SCSI_PROF_DDCD_RW:
+	case BRASERO_SCSI_PROF_HD_DVD_ROM:
+	case BRASERO_SCSI_PROF_HD_DVD_R:
+	case BRASERO_SCSI_PROF_HD_DVD_RAM:
+		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
+		priv->icon = icons [0];
+		g_free (hdr);
+		return BRASERO_BURN_NOT_SUPPORTED;
+	}
+
+	/* try all SCSI functions to get write/read speeds in order */
+	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
+		BraseroScsiRTStreamDesc *stream;
+
+		/* means it's at least an MMC3 drive */
+		stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
+		if (stream->wrt_spd) {
+			result = brasero_medium_get_speed_mmc3 (self, handle, code);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+		}
+
+		if (stream->mp2a) {
+			result = brasero_medium_get_page_2A_write_speed_desc (self, handle, code);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+		}
+	}
+
+	/* fallback for speeds */
+	result = brasero_medium_get_page_2A_max_speed (self, handle, code);
 
 end:
 
-	g_free (info);
-	return result;
+	g_free (hdr);
+
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_get_css_feature (BraseroMedium *self,
+				BraseroDeviceHandle *handle,
+				BraseroScsiErrCode *code)
+{
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Testing for Css encrypted media");
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_DVD_CSS,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (hdr);
+
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	if (hdr->desc->add_len < sizeof (BraseroScsiDVDCssDesc)) {
+		g_free (hdr);
+		return BRASERO_BURN_OK;
+	}
+
+	/* here we just need to see if this feature is current or not */
+	if (hdr->desc->current) {
+		priv->info |= BRASERO_MEDIUM_PROTECTED;
+		BRASERO_BURN_LOG ("media is Css protected");
+	}
+
+	g_free (hdr);
+	return BRASERO_BURN_OK;
 }
 
 static void

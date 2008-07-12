@@ -1,22 +1,22 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
- * trunk
+ * brasero
  * Copyright (C) Philippe Rouquier 2008 <bonfire-app@wanadoo.fr>
  * 
- * trunk is free software.
+ * brasero is free software.
  * 
  * You may redistribute it and/or modify it under the terms of the
  * GNU General Public License, as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option)
  * any later version.
  * 
- * trunk is distributed in the hope that it will be useful,
+ * brasero is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with trunk.  If not, write to:
+ * along with brasero.  If not, write to:
  * 	The Free Software Foundation, Inc.,
  * 	51 Franklin Street, Fifth Floor
  * 	Boston, MA  02110-1301, USA.
@@ -41,6 +41,7 @@
 #endif
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "brasero-utils.h"
 
 #include "brasero-io.h"
@@ -579,13 +580,26 @@ struct _BraserIOMetadataTask {
 };
 typedef struct _BraseroIOMetadataTask BraseroIOMetadataTask;
 
+struct _BraseroIOMetadataCached {
+	guint64 last_modified;
+	BraseroMetadataInfo *info;
+};
+typedef struct _BraseroIOMetadataCached BraseroIOMetadataCached;
+
 static gint
 brasero_io_metadata_lookup_buffer (gconstpointer a, gconstpointer b)
 {
-	const BraseroMetadataInfo *metadata = a;
+	const BraseroIOMetadataCached *cached = a;
 	const gchar *uri = b;
 
-	return strcmp (uri, metadata->uri);
+	return strcmp (uri, cached->info->uri);
+}
+
+static void
+brasero_io_metadata_cached_free (BraseroIOMetadataCached *cached)
+{
+	brasero_metadata_info_free (cached->info);
+	g_free (cached);
 }
 
 static void
@@ -645,29 +659,37 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	||  !strcmp (mime, "application/octet-stream")))
 		return FALSE;
 
-	/* seek in the buffer if we have already explored these metadata */
+	/* Seek in the buffer if we have already explored these metadata. Check 
+	 * the info last modified time in case a result should be updated. */
 	node = g_queue_find_custom (priv->meta_buffer,
 				    uri,
 				    brasero_io_metadata_lookup_buffer);
 	if (node) {
-		if (flags & BRASERO_METADATA_FLAG_SNAPHOT) {
-			BraseroMetadataInfo *saved;
+		guint64 last_modified;
+		BraseroIOMetadataCached *cached;
 
-			saved = node->data;
-			if (saved->snapshot) {
-				brasero_metadata_info_copy (meta_info, node->data);
+		cached = node->data;
+		last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
+		if (last_modified == cached->last_modified) {
+			if (flags & BRASERO_METADATA_FLAG_SNAPHOT) {
+				/* If there isn't any snapshot retry */
+				if (cached->info->snapshot) {
+					brasero_metadata_info_copy (meta_info, cached->info);
+					return TRUE;
+				}
+			}
+			else {
+				brasero_metadata_info_copy (meta_info, cached->info);
 				return TRUE;
 			}
+		}
 
-			/* remove it from the queue since we can't keep the same
-			 * URI twice */
-			g_queue_remove (priv->meta_buffer, saved);
-			brasero_metadata_info_free (saved);
-		}
-		else {
-			brasero_metadata_info_copy (meta_info, node->data);
-			return TRUE;
-		}
+		/* remove it from the queue since we can't keep the same
+		 * URI twice */
+		brasero_metadata_info_free (node->data);
+		g_queue_remove (priv->meta_buffer, node->data);
+
+		BRASERO_BURN_LOG ("Updating cache information for %s", uri);
 	}
 
 	/* grab an available metadata (NOTE: there should always be at least one
@@ -693,15 +715,18 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	if (result) {
 		/* see if we should add it to the buffer */
 		if (meta_info->has_audio || meta_info->has_video) {
-			BraseroMetadataInfo *copy;
+			BraseroIOMetadataCached *cached;
 
-			copy = g_new0 (BraseroMetadataInfo, 1);
-			brasero_metadata_set_info (metadata, copy);
+			cached = g_new0 (BraseroIOMetadataCached, 1);
+			cached->last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 
-			g_queue_push_head (priv->meta_buffer, copy);
+			cached->info = g_new0 (BraseroMetadataInfo, 1);
+			brasero_metadata_set_info (metadata, cached->info);
+
+			g_queue_push_head (priv->meta_buffer, cached);
 			if (g_queue_get_length (priv->meta_buffer) > MAX_BUFFERED_META) {
-				meta_info = g_queue_pop_tail (priv->meta_buffer);
-				brasero_metadata_info_free (meta_info);
+				cached = g_queue_pop_tail (priv->meta_buffer);
+				brasero_io_metadata_cached_free (cached);
 			}
 		}
 	}
@@ -717,21 +742,99 @@ brasero_io_get_metadata_info (BraseroIO *self,
  * Used to get information about files
  */
 
-static BraseroAsyncTaskResult
-brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
-				 GCancellable *cancel,
-				 gpointer callback_data)
+static GFileInfo *
+brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
+				      GCancellable *cancel,
+				      const gchar *uri,
+				      BraseroIOFlags options,
+				      GError **error)
 {
 	gchar attributes [256] = {G_FILE_ATTRIBUTE_STANDARD_NAME ","
 				  G_FILE_ATTRIBUTE_STANDARD_SIZE ","
 				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
 				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET ","
 				  G_FILE_ATTRIBUTE_STANDARD_TYPE};
+	GFileInfo *info;
+	GFile *file;
+
+	if (g_cancellable_is_cancelled (cancel))
+		return BRASERO_ASYNC_TASK_FINISHED;
+	
+	if (options & BRASERO_IO_INFO_PERM)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
+	if (options & BRASERO_IO_INFO_MIME)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+	if (options & BRASERO_IO_INFO_ICON)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
+
+	/* if retrieving metadata we need this one to check if a possible result
+	 * in cache should be updated or used */
+	if (options & BRASERO_IO_INFO_METADATA)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_SIZE);
+
+	file = g_file_new_for_uri (uri);
+	info = g_file_query_info (file,
+				  attributes,
+				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+				  cancel,
+				  error);
+	if (!info) {
+		g_object_unref (file);
+		return NULL;
+	}
+
+	if (g_file_info_get_is_symlink (info)) {
+		GFile *parent;
+
+		parent = g_file_get_parent (file);
+		if (!brasero_io_check_symlink_target (parent, info, uri)) {
+			g_set_error (error,
+				     BRASERO_ERROR,
+				     BRASERO_ERROR_SYMLINK_LOOP,
+				     _("recursive symbolic link"));
+
+			g_object_unref (info);
+			g_object_unref (file);
+			g_object_unref (parent);
+			return NULL;
+		}
+		g_object_unref (parent);
+	}
+	g_object_unref (file);
+
+	/* see if we are supposed to get metadata for this file (provided it's
+	 * an audio file of course). */
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY
+	&&  options & BRASERO_IO_INFO_METADATA) {
+		BraseroMetadataInfo metadata = { NULL };
+		gboolean result;
+
+		result = brasero_io_get_metadata_info (BRASERO_IO (manager),
+						       cancel,
+						       uri,
+						       info,
+						       ((options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
+						       &metadata);
+
+		if (result)
+			brasero_io_set_metadata_attributes (info, &metadata);
+
+		brasero_metadata_info_clear (&metadata);
+	}
+
+	return info;
+}
+
+static BraseroAsyncTaskResult
+brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
+				 GCancellable *cancel,
+				 gpointer callback_data)
+{
 	BraseroIOJob *job = callback_data;
 	gchar *file_uri = NULL;
 	GError *error = NULL;
 	GFileInfo *info;
-	GFile *file;
 
 	if (job->options & BRASERO_IO_INFO_CHECK_PARENT_SYMLINK) {
 		/* If we want to make sure a directory is not added twice we have to make sure
@@ -748,87 +851,19 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 		g_free (file_uri);
 		return BRASERO_ASYNC_TASK_FINISHED;
 	}
-	
-	if (job->options & BRASERO_IO_INFO_PERM)
-		strcat (attributes, "," G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
-	if (job->options & BRASERO_IO_INFO_MIME)
-		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
-	if (job->options & BRASERO_IO_INFO_ICON)
-		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
 
-	file = g_file_new_for_uri (file_uri?file_uri:job->uri);
-	info = g_file_query_info (file,
-				  attributes,
-				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
-				  cancel,
-				  &error);
-	if (error) {
-		brasero_io_return_result (BRASERO_IO (manager),
-					  job->base,
-					  file_uri?file_uri:job->uri,
-					  NULL,
-					  error,
-					  job->callback_data);
-		g_free (file_uri);
-		g_object_unref (file);
-		return BRASERO_ASYNC_TASK_FINISHED;
-	}
-
-	if (g_file_info_get_is_symlink (info)) {
-		GFile *parent;
-
-		parent = g_file_get_parent (file);
-		if (!brasero_io_check_symlink_target (parent, info, file_uri?file_uri:job->uri)) {
-			error = g_error_new (BRASERO_ERROR,
-					     BRASERO_ERROR_SYMLINK_LOOP,
-					     _("recursive symbolic link"));
-
-			/* since we checked for the existence of the file
-			 * an error means a looping symbolic link */
-			brasero_io_return_result (BRASERO_IO (manager),
-						  job->base,
-						  file_uri?file_uri:job->uri,
-						  NULL,
-						  error,
-						  job->callback_data);
-			g_free (file_uri);
-			g_object_unref (info);
-			g_object_unref (file);
-			g_object_unref (parent);
-			return BRASERO_ASYNC_TASK_FINISHED;
-		}
-		g_object_unref (parent);
-	}
-	g_object_unref (file);
-
-	/* see if we are supposed to get metadata for this file (provided it's
-	 * an audio file of course). */
-	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY
-	&&  job->options & BRASERO_IO_INFO_METADATA) {
-		BraseroMetadataInfo metadata = { NULL };
-		gboolean result;
-
-		result = brasero_io_get_metadata_info (BRASERO_IO (manager),
-						       cancel,
-						       file_uri?file_uri:job->uri,
-						       info,
-						       ((job->options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((job->options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
-						       &metadata);
-
-		if (result)
-			brasero_io_set_metadata_attributes (info, &metadata);
-
-		brasero_metadata_info_clear (&metadata);
-	}
+	info = brasero_io_get_file_info_thread_real (manager,
+						     cancel,
+						     file_uri?file_uri:job->uri,
+						     job->options,
+						     &error);
 
 	brasero_io_return_result (BRASERO_IO (manager),
 				  job->base,
 				  file_uri?file_uri:job->uri,
 				  info,
-				  NULL,
+				  error,
 				  job->callback_data);
-	g_free (file_uri);
 
 	return BRASERO_ASYNC_TASK_FINISHED;
 }
@@ -906,9 +941,13 @@ brasero_io_add_playlist_entry_parsed_cb (TotemPlParser *parser,
 
 static void
 brasero_io_start_end_playlist_cb (TotemPlParser *parser,
-				  const gchar *title,
+				  const gchar *uri,
+				  GHashTable *metadata,
 				  BraseroIOPlaylist *data)
 {
+	const gchar *title;
+
+	title = g_hash_table_lookup (metadata, TOTEM_PL_PARSER_FIELD_TITLE);
 	if (!title)
 		return;
 
@@ -926,11 +965,11 @@ brasero_io_parse_playlist_get_uris (const gchar *uri,
 
 	parser = totem_pl_parser_new ();
 	g_signal_connect (parser,
-			  "playlist-start",
+			  "playlist-started",
 			  G_CALLBACK (brasero_io_start_end_playlist_cb),
 			  playlist);
 	g_signal_connect (parser,
-			  "playlist-end",
+			  "playlist-ended",
 			  G_CALLBACK (brasero_io_start_end_playlist_cb),
 			  playlist);
 	g_signal_connect (parser,
@@ -976,7 +1015,6 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 					  NULL,
 					  error,
 					  job->callback_data);
-
 		return BRASERO_ASYNC_TASK_FINISHED;
 	}
 
@@ -985,7 +1023,17 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 
 	/* that's finished; Send the title */
 	info = g_file_info_new ();
-	g_file_info_set_attribute_string (info, BRASERO_IO_PLAYLIST_TITLE, data.title ? data.title:_("No title"));
+	g_file_info_set_attribute_boolean (info,
+					   BRASERO_IO_IS_PLAYLIST,
+					   TRUE);
+	g_file_info_set_attribute_uint32 (info,
+					  BRASERO_IO_PLAYLIST_ENTRIES_NUM,
+					  g_slist_length (data.uris));
+	if (data.title)
+		g_file_info_set_attribute_string (info,
+						  BRASERO_IO_PLAYLIST_TITLE,
+						  data.title);
+
 	brasero_io_return_result (BRASERO_IO (manager),
 				  job->base,
 				  job->uri,
@@ -993,16 +1041,32 @@ brasero_io_parse_playlist_thread (BraseroAsyncTaskManager *manager,
 				  NULL,
 				  job->callback_data);
 
-	/* Now get information about each file in the list */
+	/* Now get information about each file in the list. 
+	 * Reverse order of list to get a correct order for entries. */
+	data.uris = g_slist_reverse (data.uris);
 	for (iter = data.uris; iter; iter = iter->next) {
 		gchar *child;
+		GFileInfo *child_info;
 
 		child = iter->data;
-		brasero_io_new_file_info_job (BRASERO_IO (manager),
-					      child,
-					      job->base,
-					      job->options,
-					      job->callback_data);
+		if (g_cancellable_is_cancelled (cancel))
+			break;
+
+		child_info = brasero_io_get_file_info_thread_real (manager,
+								   cancel,
+								   child,
+								   job->options,
+								   NULL);
+
+		if (!child_info)
+			continue;
+
+		brasero_io_return_result (BRASERO_IO (manager),
+					  job->base,
+					  child,
+					  child_info,
+					  NULL,
+					  job->callback_data);
 	}
 
 	brasero_io_playlist_clear (&data);
@@ -1543,6 +1607,9 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		}
 
 		child = g_file_get_child (file, name);
+		if (!child)
+			continue;
+
 		child_uri = g_file_get_uri (child);
 
 		/* special case for symlinks */
@@ -2266,10 +2333,10 @@ brasero_io_finalize (GObject *object)
 	priv->metadatas = NULL;
 
 	if (priv->meta_buffer) {
-		BraseroMetadataInfo *metadata;
+		BraseroIOMetadataCached *cached;
 
-		while ((metadata = g_queue_pop_head (priv->meta_buffer)) != NULL)
-			brasero_metadata_info_free (metadata);
+		while ((cached = g_queue_pop_head (priv->meta_buffer)) != NULL)
+			brasero_io_metadata_cached_free (cached);
 
 		g_queue_free (priv->meta_buffer);
 		priv->meta_buffer = NULL;

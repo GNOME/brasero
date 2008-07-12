@@ -1,9 +1,9 @@
 /***************************************************************************
- *            burn-sg.c
+ *            scsi-uscsi.c
  *
- *  Wed Oct 18 14:39:28 2006
- *  Copyright  2006  Rouquier Philippe
- *  <Rouquier Philippe@localhost.localdomain>
+ *  Wed Oct 18 14:39:28 2008
+ *  Copyright  2008  Lin Ma
+ *  <lin.ma@sun.com>
  ****************************************************************************/
 
 /*
@@ -33,10 +33,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
-#include <sys/ioctl.h>
 
-#include <scsi/scsi.h>
-#include <scsi/sg.h>
+#include <sys/scsi/scsi.h>
+#include <sys/scsi/impl/uscsi.h>
 
 #include "scsi-command.h"
 #include "burn-debug.h"
@@ -64,34 +63,6 @@ typedef struct _BraseroScsiCmd BraseroScsiCmd;
 /**
  * This is to send a command
  */
-
-static void
-brasero_sg_command_setup (struct sg_io_hdr *transport,
-			  uchar *sense_data,
-			  BraseroScsiCmd *cmd,
-			  uchar *buffer,
-			  int size)
-{
-	memset (sense_data, 0, BRASERO_SENSE_DATA_SIZE);
-	memset (transport, 0, sizeof (struct sg_io_hdr));
-	
-	transport->interface_id = 'S';				/* mandatory */
-//	transport->flags = SG_FLAG_LUN_INHIBIT|SG_FLAG_DIRECT_IO;
-	transport->cmdp = cmd->cmd;
-	transport->cmd_len = cmd->info->size;
-	transport->dxferp = buffer;
-	transport->dxfer_len = size;
-
-	/* where to output the scsi sense buffer */
-	transport->sbp = sense_data;
-	transport->mx_sb_len = BRASERO_SENSE_DATA_SIZE;
-
-	if (cmd->info->direction & BRASERO_SCSI_READ)
-		transport->dxfer_direction = SG_DXFER_FROM_DEV;
-	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
-		transport->dxfer_direction = SG_DXFER_TO_DEV;
-}
-
 BraseroScsiResult
 brasero_scsi_command_issue_sync (gpointer command,
 				 gpointer buffer,
@@ -99,29 +70,47 @@ brasero_scsi_command_issue_sync (gpointer command,
 				 BraseroScsiErrCode *error)
 {
 	uchar sense_buffer [BRASERO_SENSE_DATA_SIZE];
-	struct sg_io_hdr transport;
+	struct uscsi_cmd transport;
 	BraseroScsiResult res;
 	BraseroScsiCmd *cmd;
+	short timeout = 10;
+
+	memset (&sense_buffer, 0, BRASERO_SENSE_DATA_SIZE);
+	memset (&transport, 0, sizeof (struct uscsi_cmd));
 
 	cmd = command;
-	brasero_sg_command_setup (&transport,
-				  sense_buffer,
-				  cmd,
-				  buffer,
-				  size);
 
-	/* NOTE on SG_IO: only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
+	if (cmd->info->direction & BRASERO_SCSI_READ)
+		transport.uscsi_flags = USCSI_READ;
+	else if (cmd->info->direction & BRASERO_SCSI_WRITE)
+		transport.uscsi_flags = USCSI_WRITE;
+
+	transport.uscsi_cdb = (caddr_t) cmd->cmd;
+	g_debug("cmd: %s\n", transport.uscsi_cdb);
+	transport.uscsi_cdblen = (uchar_t) cmd->info->size;
+	transport.uscsi_bufaddr = (caddr_t) buffer;
+	transport.uscsi_buflen = (size_t) size;
+	transport.uscsi_timeout = timeout;
+
+	/* where to output the scsi sense buffer */
+	transport.uscsi_flags |= USCSI_RQENABLE;
+	transport.uscsi_rqbuf = sense_buffer;
+	transport.uscsi_rqlen = BRASERO_SENSE_DATA_SIZE;
+
+	/* NOTE only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
 	 * READ CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
-	res = ioctl (cmd->handle->fd, SG_IO, &transport);
+	res = ioctl (cmd->handle->fd, USCSICMD, &transport);
 	if (res) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
+		g_debug("ioctl ERR: %s\n", g_strerror(errno));
 		return BRASERO_SCSI_FAILURE;
 	}
 
-	if ((transport.info & SG_INFO_OK_MASK) == SG_INFO_OK)
+	if ((transport.uscsi_status & STATUS_MASK) == STATUS_GOOD)
 		return BRASERO_SCSI_OK;
 
-	if ((transport.masked_status & CHECK_CONDITION) && transport.sb_len_wr)
+	if ((transport.uscsi_rqstatus & STATUS_MASK == STATUS_CHECK)
+	    && transport.uscsi_rqlen)
 		return brasero_sense_data_process (sense_buffer, error);
 
 	return BRASERO_SCSI_FAILURE;
@@ -161,6 +150,8 @@ brasero_device_handle_open (const gchar *path,
 {
 	int fd;
 	BraseroDeviceHandle *handle;
+	const gchar *blockdisk = "/dev/dsk/";
+	gchar *rawdisk = NULL;
 
 	fd = open (path, OPEN_FLAGS);
 	if (fd < 0) {
@@ -171,6 +162,7 @@ brasero_device_handle_open (const gchar *path,
 		else
 			*code = BRASERO_SCSI_ERRNO;
 
+		g_debug("open ERR: %s\n", g_strerror(errno));
 		return NULL;
 	}
 

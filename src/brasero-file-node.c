@@ -583,7 +583,7 @@ brasero_file_node_validate_utf8_name (const gchar *name)
 		return NULL;
 
 	if (g_utf8_validate (name, -1, &invalid))
-		return g_markup_escape_text (name, -1);
+		return NULL;
 
 	retval = g_strdup (name);
 	ptr = retval + (invalid - name);
@@ -595,10 +595,6 @@ brasero_file_node_validate_utf8_name (const gchar *name)
 		*ptr = '?';
 		ptr ++;
 	}
-
-	ptr = retval;
-	retval = g_markup_escape_text (retval, -1);
-	g_free (ptr);
 
 	return retval;
 }
@@ -800,7 +796,6 @@ brasero_file_node_get_uri_name (const gchar *uri)
 		g_free (unescaped_name);
 		return name;
 	}
-
 	return unescaped_name;
 }
 

@@ -2115,7 +2115,6 @@ brasero_data_project_set_joliet_compliant_name (BraseroDataProject *self,
 				  width,
 				  name,
 				  num);
-
 	return retval;
 }
 
@@ -2230,6 +2229,47 @@ _foreach_grafts_make_list_cb (const gchar *uri,
 	}
 }
 
+static void
+_foreach_joliet_incompatible_make_list_cb (BraseroJolietKey *key,
+					   GSList *nodes,
+					   MakeTrackData *data)
+{
+	GSList *iter;
+
+	/* now exclude all nodes and graft them with a joliet compatible name */
+	for (iter = nodes; iter; iter = iter->next) {
+		BraseroFileNode *node;
+		BraseroGraftPt *graft;
+
+		node = iter->data;
+
+		/* skip grafted nodes (they were already processed). */
+		if (node->is_grafted)
+			continue;
+
+		graft = g_new0 (BraseroGraftPt, 1);
+		graft->path = brasero_data_project_node_to_path (data->project, node, TRUE);
+		if (!node->is_file && data->append_slash) {
+			gchar *tmp;
+
+			/* we need to know if that's a directory or not since if
+			 * it is then mkisofs (but not genisoimage) requires the
+			 * disc path to end with '/'; if there isn't '/' at the 
+			 * end then only the directory contents are added. */
+			tmp = graft->path;
+			graft->path = g_strconcat (graft->path, "/", NULL);
+			g_free (tmp);
+		}
+
+		/* NOTE: here it's not possible to get a created folder here 
+		 * since it would be grafted */
+		graft->uri = brasero_data_project_node_to_uri (data->project, node);
+		data->grafts = g_slist_prepend (data->grafts, graft);
+
+		data->excluded = g_slist_prepend (data->excluded, g_strdup (graft->uri));
+	}
+}
+
 gboolean
 brasero_data_project_get_contents (BraseroDataProject *self,
 				   GSList **grafts,
@@ -2254,6 +2294,14 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 	g_hash_table_foreach (priv->grafts,
 			      (GHFunc) _foreach_grafts_make_list_cb,
 			      &callback_data);
+
+	if (joliet_compat) {
+		/* we have to make sure that even the files that are not grafted
+		 * have joliet compatible names. */
+		g_hash_table_foreach (priv->joliet,
+				      (GHFunc) _foreach_joliet_incompatible_make_list_cb,
+				      &callback_data);
+	}
 
 	if (grafts)
 		*grafts = callback_data.grafts;

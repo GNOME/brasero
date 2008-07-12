@@ -1,3 +1,56 @@
+<<<<<<< .courant
+2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added a menu to the tree.
+	Fixed a problem with cached metadata when fixes from trunk were ported.
+
+	* src/brasero-io.c (brasero_io_metadata_lookup_buffer),
+	(brasero_io_metadata_cached_free), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_start_end_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread),
+	(brasero_io_load_directory_thread), (brasero_io_finalize):
+	* src/brasero-metadata.h:
+	* src/brasero-multi-song-props.c
+	(brasero_multi_song_props_set_show_gap),
+	(brasero_multi_song_props_init):
+	* src/brasero-multi-song-props.h:
+	* src/brasero-song-properties.c (brasero_song_props_init),
+	(brasero_song_props_get_entry_value),
+	(brasero_song_props_get_properties),
+	(brasero_song_props_set_properties):
+	* src/brasero-time-button.c (brasero_time_button_set_show_frames):
+	* src/brasero-time-button.h:
+	* src/brasero-video-disc.c (brasero_video_disc_rename_songs),
+	(brasero_video_disc_edit_song_properties_list),
+	(brasero_video_disc_edit_song_properties_file),
+	(brasero_video_disc_edit_information_cb),
+	(brasero_video_disc_open_file),
+	(brasero_video_disc_open_activated_cb),
+	(brasero_video_disc_clipboard_text_cb),
+	(brasero_video_disc_clipboard_targets_cb),
+	(brasero_video_disc_paste_activated_cb),
+	(brasero_video_disc_delete_activated_cb),
+	(brasero_video_disc_button_pressed_cb),
+	(brasero_video_disc_add_ui), (brasero_video_disc_rename_activated),
+	(brasero_video_disc_key_released_cb), (brasero_video_disc_init):
+	* src/brasero-video-project.c (brasero_video_project_result_cb),
+	(brasero_video_project_resize_file):
+	* src/brasero-video-project.h:
+	* src/burn-caps.c (brasero_burn_caps_flags_check_for_drive),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_flags_update_for_drive),
+	(brasero_burn_caps_get_flags), (brasero_caps_disc_new_status):
+	* src/burn-medium.c (brasero_medium_get_icon),
+	(brasero_medium_check_old_drive), (brasero_medium_get_medium_type),
+	(brasero_medium_track_volume_size),
+	(brasero_medium_get_sessions_info):
+
 2008-06-27  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Modify the display widget for video project and split it between view and model
@@ -222,6 +275,1170 @@
 	* src/burn-session.h:
 	* src/plugins/gstreamer/burn-vob.c (brasero_vob_build_video_bin):
 
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #539959 Crash when right clicking in plugin window 
+
+	* src/brasero-plugin-manager-ui.c
+	(plugin_manager_ui_populate_lists), (create_tree_popup_menu),
+	(show_tree_popup_menu), (brasero_plugin_manager_ui_init):
+	* src/burn.c (brasero_burn_log):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
+
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_set_argv_record):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540673 – m3u playlist import problem
+	keep the correct order of entries in a playlist
+
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Bumped totem-pl-parser requirements
+
+	* configure.in:
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Possible fix for
+	#538953 – crash in Brasero Disc Burning: I was trying to copy a C...
+	and 
+	#531084 – Brasero crashes in strlen () when debug mode is on
+
+	* src/burn-job.c (brasero_job_log_message):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed copyright headers (brasero name was actually 'trunk')
+
+	* src/brasero-data-disc.c:
+	* src/brasero-data-disc.h:
+	* src/brasero-data-project.c:
+	* src/brasero-data-project.h:
+	* src/brasero-data-session.c:
+	* src/brasero-data-session.h:
+	* src/brasero-data-tree-model.c:
+	* src/brasero-data-tree-model.h:
+	* src/brasero-data-vfs.c:
+	* src/brasero-data-vfs.h:
+	* src/brasero-dest-selection.c:
+	* src/brasero-dest-selection.h:
+	* src/brasero-disc-message.c:
+	* src/brasero-disc-message.h:
+	* src/brasero-drive-info.c:
+	* src/brasero-drive-info.h:
+	* src/brasero-drive-properties.c:
+	* src/brasero-drive-properties.h:
+	* src/brasero-drive-selection.c:
+	* src/brasero-drive-selection.h:
+	* src/brasero-file-monitor.c:
+	* src/brasero-file-monitor.h:
+	* src/brasero-filter-option.c:
+	* src/brasero-filter-option.h:
+	* src/brasero-image-properties.c:
+	* src/brasero-image-properties.h:
+	* src/brasero-io.c:
+	* src/brasero-io.h:
+	* src/brasero-multi-song-props.c:
+	* src/brasero-plugin-option.c:
+	* src/brasero-plugin-option.h:
+	* src/brasero-pref.c:
+	* src/brasero-pref.h:
+	* src/brasero-preview.c:
+	* src/brasero-preview.h:
+	* src/brasero-split-dialog.c:
+	* src/brasero-split-dialog.h:
+	* src/brasero-src-selection.c:
+	* src/brasero-src-selection.h:
+	* src/brasero-time-button.c:
+	* src/brasero-time-button.h:
+	* src/burn-drive.c:
+	* src/burn-drive.h:
+	* src/burn-medium-monitor.c:
+	* src/burn-medium.c:
+	* src/burn-medium.h:
+	* src/burn-plugin-manager.c:
+	* src/burn-plugin-manager.h:
+	* src/burn-plugin.c:
+	* src/burn-plugin.h:
+	* src/burn-task-ctx.c:
+	* src/burn-task-ctx.h:
+	* src/burn-task-item.c:
+	* src/burn-task-item.h:
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Some cleanups
+	Fix a problem when copying a disc with the same source and destination
+	where dialog allowed to copy even if the source disc couldn't be read
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_source_changed),
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_output_changed):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/burn-caps.c
+	(brasero_burn_caps_is_session_supported_same_src_dest),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_get_required_media_type):
+	* src/burn-medium.c (brasero_medium_get_icon):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed some problems for beagle search
+	Fixed some problems with playlist pane
+	Stop size preview (in statusbar) to carry on when we change a pane
+
+	* src/brasero-io.c (brasero_io_start_end_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+	* src/brasero-layout.c (brasero_layout_combo_changed_cb):
+	* src/brasero-playlist.c (brasero_playlist_start_beagle_search),
+	(brasero_playlist_parse_result),
+	(brasero_playlist_add_uri_playlist):
+	* src/brasero-search-entry.c (brasero_search_entry_get_query):
+
+2008-06-26  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/burn-dbus.c:
+	* src/burn-dbus.h:
+
+	Add copyrights.
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Another string fix
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a string
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix signal marshalling definition
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_class_init):
+
+2008-06-23  Luis Medinas  <lmedinas@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+
+	Remove unneeded files from EXTRA_DIST on Makefile.am.
+	Bump version to 0.7.91.
+
+2008-06-23  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_pad_file):
+	
+	Add the current arguments to open().
+	Closes bgo #539386.
+
+2008-06-20  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a problem with freshly formatted DVD+RW
+
+	* src/burn-medium.c (brasero_medium_get_sessions_info):
+
+2008-06-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538299 – Window titles
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_video_file_dialog),
+	(brasero_audio_disc_add_dir),
+	(brasero_audio_disc_unreadable_dialog),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate),
+	(brasero_blank_dialog_new):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_previous_session_loss_cb),
+	(brasero_burn_dialog_audio_to_appendable_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_save_log), (brasero_burn_dialog_show_log),
+	(brasero_burn_dialog_notify_error):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb), (brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_rename_activated):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_joliet_toggled_cb),
+	(brasero_disc_option_dialog_new):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_error),
+	(brasero_image_option_dialog_image_empty),
+	(brasero_image_option_dialog_new):
+	* src/brasero-image-properties.c (brasero_image_properties_init):
+	* src/brasero-jacket-background.c (brasero_jacket_background_new):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_dialog_new):
+	* src/brasero-multi-song-props.c (brasero_multi_song_props_init):
+	* src/brasero-playlist.c (brasero_playlist_add_cb),
+	(brasero_playlist_dialog_error):
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_open_cb):
+	* src/brasero-project.c (brasero_project_overburn_dialog),
+	(brasero_project_check_status), (brasero_project_set_uri),
+	(brasero_project_invalid_project_dialog),
+	(brasero_project_save_project_ask_for_path):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-song-properties.c (brasero_song_props_init):
+	* src/brasero-split-dialog.c (brasero_split_dialog_size_error),
+	(brasero_split_dialog_no_silence_message),
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message_error),
+	(brasero_sum_dialog_success),
+	(brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_check_md5_file), (brasero_sum_dialog_new):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy), (brasero_tool_dialog_no_media):
+	* src/brasero-utils.c (brasero_utils_launch_app):
+	* src/main.c (brasero_app_parse_options):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #541635 – Build failure againts gtk+ trunk
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_sortable_iface_init):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Check drive capabilities (Burn proof, just link only ATM)
+	fix name of model in previous patch
+
+	* src/burn-caps.c (brasero_burn_caps_flags_check_for_drive),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_flags_update_for_drive),
+	(brasero_burn_caps_get_flags):
+	* src/burn-drive.c (brasero_drive_has_safe_burn):
+	* src/burn-drive.h:
+	* src/burn-medium.c (brasero_medium_check_old_drive):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #535835 – TEAC R55S - can't burn CD-R
+
+	* src/burn-medium.c (brasero_medium_check_old_drive),
+	(brasero_medium_get_medium_type):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #506398 – toc image type not autodetected correctly
+	Also give a name for the volume when gvolume is still not available.
+
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_cb):
+	* src/burn-image-format.c (brasero_image_format_identify_cuesheet):
+	* src/burn-image-format.h:
+	* src/burn-track.c (brasero_track_get_image_size):
+	* src/burn-volume-obj.c (brasero_volume_get_gvolume),
+	(brasero_volume_is_mounted), (brasero_volume_get_mount_point),
+	(brasero_volume_umount), (brasero_volume_mount),
+	(brasero_volume_eject), (brasero_volume_get_name),
+	(brasero_volume_get_display_label):
+
+2008-07-03  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Updated NEWS file
+
+	* NEWS:
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #506338 – Import Session fails on DVD+R that contains multiple sessions
+	use fseeko instead of fseek that can't break the 2Gio barrier
+
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd):
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	some small fixes
+
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix problems with exotic names in data projects
+
+	* src/brasero-data-disc.c (brasero_data_disc_init):
+	* src/brasero-data-project.c (brasero_data_project_node_to_uri):
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_get_column_type):
+	* src/brasero-data-tree-model.h:
+	* src/brasero-data-vfs.c (brasero_data_vfs_directory_load_result):
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_start_monitoring_real),
+	(brasero_file_monitor_directory_contents):
+	* src/brasero-io.c (brasero_io_load_directory_thread):
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix an issue with data projects and renaming that displayed
+	the old name and not the new one of an already existing file
+
+	* src/brasero-data-project.c (brasero_data_project_rename_node):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540931 – Fails to burn an iso to DVD+RW in 0.7.90
+
+	* src/burn-caps.c (brasero_caps_get_flags),
+	(brasero_caps_disc_new_status):
+	* src/burn-medium.c (brasero_medium_track_volume_size),
+	(brasero_medium_get_sessions_info):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540993 – Brasero displays (and uses) incorrect track durations
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_reset_real),
+	(brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_inotify_modify_result),
+	(brasero_audio_disc_inotify_move),
+	(brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-io.c (brasero_io_metadata_lookup_buffer),
+	(brasero_io_metadata_cached_free), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real), (brasero_io_finalize):
+	* src/brasero-metadata.h:
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Another fix for #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
+
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_set_argv):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_set_argv):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #539959 Crash when right clicking in plugin window 
+
+	* src/brasero-plugin-manager-ui.c
+	(plugin_manager_ui_populate_lists), (create_tree_popup_menu),
+	(show_tree_popup_menu), (brasero_plugin_manager_ui_init):
+	* src/burn.c (brasero_burn_log):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
+
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_set_argv_record):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540673 – m3u playlist import problem
+	keep the correct order of entries in a playlist
+
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Bumped totem-pl-parser requirements
+
+	* configure.in:
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Possible fix for
+	#538953 – crash in Brasero Disc Burning: I was trying to copy a C...
+	and 
+	#531084 – Brasero crashes in strlen () when debug mode is on
+
+	* src/burn-job.c (brasero_job_log_message):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed copyright headers (brasero name was actually 'trunk')
+
+	* src/brasero-data-disc.c:
+	* src/brasero-data-disc.h:
+	* src/brasero-data-project.c:
+	* src/brasero-data-project.h:
+	* src/brasero-data-session.c:
+	* src/brasero-data-session.h:
+	* src/brasero-data-tree-model.c:
+	* src/brasero-data-tree-model.h:
+	* src/brasero-data-vfs.c:
+	* src/brasero-data-vfs.h:
+	* src/brasero-dest-selection.c:
+	* src/brasero-dest-selection.h:
+	* src/brasero-disc-message.c:
+	* src/brasero-disc-message.h:
+	* src/brasero-drive-info.c:
+	* src/brasero-drive-info.h:
+	* src/brasero-drive-properties.c:
+	* src/brasero-drive-properties.h:
+	* src/brasero-drive-selection.c:
+	* src/brasero-drive-selection.h:
+	* src/brasero-file-monitor.c:
+	* src/brasero-file-monitor.h:
+	* src/brasero-filter-option.c:
+	* src/brasero-filter-option.h:
+	* src/brasero-image-properties.c:
+	* src/brasero-image-properties.h:
+	* src/brasero-io.c:
+	* src/brasero-io.h:
+	* src/brasero-multi-song-props.c:
+	* src/brasero-plugin-option.c:
+	* src/brasero-plugin-option.h:
+	* src/brasero-pref.c:
+	* src/brasero-pref.h:
+	* src/brasero-preview.c:
+	* src/brasero-preview.h:
+	* src/brasero-split-dialog.c:
+	* src/brasero-split-dialog.h:
+	* src/brasero-src-selection.c:
+	* src/brasero-src-selection.h:
+	* src/brasero-time-button.c:
+	* src/brasero-time-button.h:
+	* src/burn-drive.c:
+	* src/burn-drive.h:
+	* src/burn-medium-monitor.c:
+	* src/burn-medium.c:
+	* src/burn-medium.h:
+	* src/burn-plugin-manager.c:
+	* src/burn-plugin-manager.h:
+	* src/burn-plugin.c:
+	* src/burn-plugin.h:
+	* src/burn-task-ctx.c:
+	* src/burn-task-ctx.h:
+	* src/burn-task-item.c:
+	* src/burn-task-item.h:
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Some cleanups
+	Fix a problem when copying a disc with the same source and destination
+	where dialog allowed to copy even if the source disc couldn't be read
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_source_changed),
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_output_changed):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/burn-caps.c
+	(brasero_burn_caps_is_session_supported_same_src_dest),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_get_required_media_type):
+	* src/burn-medium.c (brasero_medium_get_icon):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed some problems for beagle search
+	Fixed some problems with playlist pane
+	Stop size preview (in statusbar) to carry on when we change a pane
+
+	* src/brasero-io.c (brasero_io_start_end_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+	* src/brasero-layout.c (brasero_layout_combo_changed_cb):
+	* src/brasero-playlist.c (brasero_playlist_start_beagle_search),
+	(brasero_playlist_parse_result),
+	(brasero_playlist_add_uri_playlist):
+	* src/brasero-search-entry.c (brasero_search_entry_get_query):
+
+2008-06-26  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/burn-dbus.c:
+	* src/burn-dbus.h:
+
+	Add copyrights.
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Another string fix
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a string
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix signal marshalling definition
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_class_init):
+
+2008-06-23  Luis Medinas  <lmedinas@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+
+	Remove unneeded files from EXTRA_DIST on Makefile.am.
+	Bump version to 0.7.91.
+
+2008-06-23  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_pad_file):
+	
+	Add the current arguments to open().
+	Closes bgo #539386.
+
+2008-06-20  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a problem with freshly formatted DVD+RW
+
+	* src/burn-medium.c (brasero_medium_get_sessions_info):
+
+2008-06-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538299 – Window titles
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_video_file_dialog),
+	(brasero_audio_disc_add_dir),
+	(brasero_audio_disc_unreadable_dialog),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate),
+	(brasero_blank_dialog_new):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_previous_session_loss_cb),
+	(brasero_burn_dialog_audio_to_appendable_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_save_log), (brasero_burn_dialog_show_log),
+	(brasero_burn_dialog_notify_error):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb), (brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_rename_activated):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_joliet_toggled_cb),
+	(brasero_disc_option_dialog_new):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_error),
+	(brasero_image_option_dialog_image_empty),
+	(brasero_image_option_dialog_new):
+	* src/brasero-image-properties.c (brasero_image_properties_init):
+	* src/brasero-jacket-background.c (brasero_jacket_background_new):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_dialog_new):
+	* src/brasero-multi-song-props.c (brasero_multi_song_props_init):
+	* src/brasero-playlist.c (brasero_playlist_add_cb),
+	(brasero_playlist_dialog_error):
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_open_cb):
+	* src/brasero-project.c (brasero_project_overburn_dialog),
+	(brasero_project_check_status), (brasero_project_set_uri),
+	(brasero_project_invalid_project_dialog),
+	(brasero_project_save_project_ask_for_path):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-song-properties.c (brasero_song_props_init):
+	* src/brasero-split-dialog.c (brasero_split_dialog_size_error),
+	(brasero_split_dialog_no_silence_message),
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message_error),
+	(brasero_sum_dialog_success),
+	(brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_check_md5_file), (brasero_sum_dialog_new):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy), (brasero_tool_dialog_no_media):
+	* src/brasero-utils.c (brasero_utils_launch_app):
+	* src/main.c (brasero_app_parse_options):
+
+>>>>>>> .fusion-droit.r955
+=======
+2008-07-12  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Also exclude files with joliet incompatible names
+
+	* src/brasero-data-project.c
+	(_foreach_joliet_incompatible_make_list_cb):
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #542545 – Make brasero.desktop follow freedesktop
+
+	* data/brasero.desktop.in.in:
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a problem with joliet incompatible names 
+
+	* src/brasero-data-project.c
+	(brasero_data_project_set_joliet_compliant_name),
+	(_foreach_joliet_incompatible_make_list_cb),
+	(brasero_data_project_get_contents):
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed a problem with file names being wrongly modified
+
+	* src/brasero-file-node.c (brasero_file_node_validate_utf8_name),
+	(brasero_file_node_get_uri_name):
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Improved libburn debugging
+
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_ctx_new),
+	(brasero_libburn_common_process_message):
+
+2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #529418 – Speed is not displayed
+
+	* src/burn-job.c (brasero_job_set_progress):
+	* src/burn-task-ctx.c (brasero_task_ctx_reset),
+	(brasero_task_ctx_set_next_track),
+	(brasero_task_ctx_start_progress),
+	(brasero_task_ctx_set_written_track),
+	(brasero_task_ctx_set_progress), (brasero_task_ctx_get_rate),
+	(brasero_task_ctx_stop_progress):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_read_stderr):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix problem when burning audio (NOT on the fly) with libburn
+
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_setup_session_fd),
+	(brasero_libburn_setup_session_file):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #538872 – Brasero crashes with libburn backend
+	Fix a crash when libburn runs into an error
+	Improved error reporting
+
+	* src/burn-job.c (brasero_job_set_dangerous):
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_process_message):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_clock_tick):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #535835 – TEAC R55S - can't burn CD-R
+	Now that the medium is identified, try to get its contents.
+
+	* src/burn-medium.c (brasero_medium_get_page_2A_max_speed),
+	(brasero_medium_track_get_info),
+	(brasero_medium_add_DVD_plus_RW_leadout),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents),
+	(brasero_medium_check_BCD_use),
+	(brasero_medium_old_drive_get_disc_info),
+	(brasero_medium_check_old_drive), (brasero_medium_get_medium_type),
+	(brasero_medium_get_css_feature):
+	* src/scsi-sg.c (brasero_scsi_command_issue_sync):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #542139 – Brasero can't find a proper cd/dvd drive on Solaris
+	Patch by Lin Ma
+
+	* src/burn-drive.c (brasero_drive_get_display_name),
+	(brasero_drive_init_real):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #542136 – Brasero on OpenSolaris
+	Patch by Lin Ma
+
+	* src/scsi-uscsi.c (brasero_scsi_command_issue_sync),
+	(brasero_scsi_command_new), (brasero_scsi_command_free),
+	(brasero_device_handle_open), (brasero_device_handle_close):
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #542136 – Brasero on OpenSolaris
+	Patch by Lin Ma
+
+	* src/Makefile.am:
+
+2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #542136 – Brasero on OpenSolaris
+	Patch by Lin Ma
+
+	* configure.in:
+
+2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix warnings in data projects
+	Fix previous changes (problem with bogus rows)
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_iter_parent),
+	(brasero_data_tree_model_iter_nth_child),
+	(brasero_data_tree_model_iter_children),
+	(brasero_data_tree_model_iter_next),
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_get_path),
+	(brasero_data_tree_model_path_to_node),
+	(brasero_data_tree_model_node_added):
+
+2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix crash for #508502 – Can't add files from FAT32 partitions
+	and improve use of GINT_TO_POINTER ()
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_iter_parent),
+	(brasero_data_tree_model_iter_nth_child),
+	(brasero_data_tree_model_iter_n_children),
+	(brasero_data_tree_model_iter_has_child),
+	(brasero_data_tree_model_iter_children),
+	(brasero_data_tree_model_iter_next),
+	(brasero_data_tree_model_node_shown),
+	(brasero_data_tree_model_node_hidden),
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_get_path):
+
+2008-07-07  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #535835 – TEAC R55S - can't burn CD-R
+
+	* src/burn-medium.c (brasero_medium_old_drive_get_disc_info),
+	(brasero_medium_check_old_drive), (brasero_medium_get_medium_type):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #541635 – Build failure againts gtk+ trunk
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_sortable_iface_init):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Check drive capabilities (Burn proof, just link only ATM)
+	fix name of model in previous patch
+
+	* src/burn-caps.c (brasero_burn_caps_flags_check_for_drive),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_flags_update_for_drive),
+	(brasero_burn_caps_get_flags):
+	* src/burn-drive.c (brasero_drive_has_safe_burn):
+	* src/burn-drive.h:
+	* src/burn-medium.c (brasero_medium_check_old_drive):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix for #535835 – TEAC R55S - can't burn CD-R
+
+	* src/burn-medium.c (brasero_medium_check_old_drive),
+	(brasero_medium_get_medium_type):
+
+2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #506398 – toc image type not autodetected correctly
+	Also give a name for the volume when gvolume is still not available.
+
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_cb):
+	* src/burn-image-format.c (brasero_image_format_identify_cuesheet):
+	* src/burn-image-format.h:
+	* src/burn-track.c (brasero_track_get_image_size):
+	* src/burn-volume-obj.c (brasero_volume_get_gvolume),
+	(brasero_volume_is_mounted), (brasero_volume_get_mount_point),
+	(brasero_volume_umount), (brasero_volume_mount),
+	(brasero_volume_eject), (brasero_volume_get_name),
+	(brasero_volume_get_display_label):
+
+2008-07-03  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Updated NEWS file
+
+	* NEWS:
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #506338 – Import Session fails on DVD+R that contains multiple sessions
+	use fseeko instead of fseek that can't break the 2Gio barrier
+
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd):
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	some small fixes
+
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
+
+2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix problems with exotic names in data projects
+
+	* src/brasero-data-disc.c (brasero_data_disc_init):
+	* src/brasero-data-project.c (brasero_data_project_node_to_uri):
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value),
+	(brasero_data_tree_model_get_column_type):
+	* src/brasero-data-tree-model.h:
+	* src/brasero-data-vfs.c (brasero_data_vfs_directory_load_result):
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_start_monitoring_real),
+	(brasero_file_monitor_directory_contents):
+	* src/brasero-io.c (brasero_io_load_directory_thread):
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix an issue with data projects and renaming that displayed
+	the old name and not the new one of an already existing file
+
+	* src/brasero-data-project.c (brasero_data_project_rename_node):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540931 – Fails to burn an iso to DVD+RW in 0.7.90
+
+	* src/burn-caps.c (brasero_caps_get_flags),
+	(brasero_caps_disc_new_status):
+	* src/burn-medium.c (brasero_medium_track_volume_size),
+	(brasero_medium_get_sessions_info):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540993 – Brasero displays (and uses) incorrect track durations
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_reset_real),
+	(brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_inotify_modify_result),
+	(brasero_audio_disc_inotify_move),
+	(brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-io.c (brasero_io_metadata_lookup_buffer),
+	(brasero_io_metadata_cached_free), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real), (brasero_io_finalize):
+	* src/brasero-metadata.h:
+
+2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Another fix for #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
+
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_set_argv):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_set_argv):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #539959 Crash when right clicking in plugin window 
+
+	* src/brasero-plugin-manager-ui.c
+	(plugin_manager_ui_populate_lists), (create_tree_popup_menu),
+	(show_tree_popup_menu), (brasero_plugin_manager_ui_init):
+	* src/burn.c (brasero_burn_log):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
+
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_set_argv_record):
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #540673 – m3u playlist import problem
+	keep the correct order of entries in a playlist
+
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+
+2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Bumped totem-pl-parser requirements
+
+	* configure.in:
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Possible fix for
+	#538953 – crash in Brasero Disc Burning: I was trying to copy a C...
+	and 
+	#531084 – Brasero crashes in strlen () when debug mode is on
+
+	* src/burn-job.c (brasero_job_log_message):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed copyright headers (brasero name was actually 'trunk')
+
+	* src/brasero-data-disc.c:
+	* src/brasero-data-disc.h:
+	* src/brasero-data-project.c:
+	* src/brasero-data-project.h:
+	* src/brasero-data-session.c:
+	* src/brasero-data-session.h:
+	* src/brasero-data-tree-model.c:
+	* src/brasero-data-tree-model.h:
+	* src/brasero-data-vfs.c:
+	* src/brasero-data-vfs.h:
+	* src/brasero-dest-selection.c:
+	* src/brasero-dest-selection.h:
+	* src/brasero-disc-message.c:
+	* src/brasero-disc-message.h:
+	* src/brasero-drive-info.c:
+	* src/brasero-drive-info.h:
+	* src/brasero-drive-properties.c:
+	* src/brasero-drive-properties.h:
+	* src/brasero-drive-selection.c:
+	* src/brasero-drive-selection.h:
+	* src/brasero-file-monitor.c:
+	* src/brasero-file-monitor.h:
+	* src/brasero-filter-option.c:
+	* src/brasero-filter-option.h:
+	* src/brasero-image-properties.c:
+	* src/brasero-image-properties.h:
+	* src/brasero-io.c:
+	* src/brasero-io.h:
+	* src/brasero-multi-song-props.c:
+	* src/brasero-plugin-option.c:
+	* src/brasero-plugin-option.h:
+	* src/brasero-pref.c:
+	* src/brasero-pref.h:
+	* src/brasero-preview.c:
+	* src/brasero-preview.h:
+	* src/brasero-split-dialog.c:
+	* src/brasero-split-dialog.h:
+	* src/brasero-src-selection.c:
+	* src/brasero-src-selection.h:
+	* src/brasero-time-button.c:
+	* src/brasero-time-button.h:
+	* src/burn-drive.c:
+	* src/burn-drive.h:
+	* src/burn-medium-monitor.c:
+	* src/burn-medium.c:
+	* src/burn-medium.h:
+	* src/burn-plugin-manager.c:
+	* src/burn-plugin-manager.h:
+	* src/burn-plugin.c:
+	* src/burn-plugin.h:
+	* src/burn-task-ctx.c:
+	* src/burn-task-ctx.h:
+	* src/burn-task-item.c:
+	* src/burn-task-item.h:
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Some cleanups
+	Fix a problem when copying a disc with the same source and destination
+	where dialog allowed to copy even if the source disc couldn't be read
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_get_possible_output_formats),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_check_drive_settings),
+	(brasero_dest_selection_source_changed),
+	(brasero_dest_selection_caps_changed),
+	(brasero_dest_selection_output_changed):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/burn-caps.c
+	(brasero_burn_caps_is_session_supported_same_src_dest),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_get_required_media_type):
+	* src/burn-medium.c (brasero_medium_get_icon):
+
+2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixed some problems for beagle search
+	Fixed some problems with playlist pane
+	Stop size preview (in statusbar) to carry on when we change a pane
+
+	* src/brasero-io.c (brasero_io_start_end_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread):
+	* src/brasero-io.h:
+	* src/brasero-layout.c (brasero_layout_combo_changed_cb):
+	* src/brasero-playlist.c (brasero_playlist_start_beagle_search),
+	(brasero_playlist_parse_result),
+	(brasero_playlist_add_uri_playlist):
+	* src/brasero-search-entry.c (brasero_search_entry_get_query):
+
+2008-06-26  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/burn-dbus.c:
+	* src/burn-dbus.h:
+
+	Add copyrights.
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Another string fix
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a string
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
+
+2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix signal marshalling definition
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_class_init):
+
+2008-06-23  Luis Medinas  <lmedinas@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+
+	Remove unneeded files from EXTRA_DIST on Makefile.am.
+	Bump version to 0.7.91.
+
+2008-06-23  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_pad_file):
+	
+	Add the current arguments to open().
+	Closes bgo #539386.
+
+2008-06-20  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix a problem with freshly formatted DVD+RW
+
+	* src/burn-medium.c (brasero_medium_get_sessions_info):
+
+2008-06-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538299 – Window titles
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_video_file_dialog),
+	(brasero_audio_disc_add_dir),
+	(brasero_audio_disc_unreadable_dialog),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate),
+	(brasero_blank_dialog_new):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_previous_session_loss_cb),
+	(brasero_burn_dialog_audio_to_appendable_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_update_title_writing_progress),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_save_log), (brasero_burn_dialog_show_log),
+	(brasero_burn_dialog_notify_error):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb), (brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_rename_activated):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_joliet_toggled_cb),
+	(brasero_disc_option_dialog_new):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_image_info_error),
+	(brasero_image_option_dialog_image_empty),
+	(brasero_image_option_dialog_new):
+	* src/brasero-image-properties.c (brasero_image_properties_init):
+	* src/brasero-jacket-background.c (brasero_jacket_background_new):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_dialog_new):
+	* src/brasero-multi-song-props.c (brasero_multi_song_props_init):
+	* src/brasero-playlist.c (brasero_playlist_add_cb),
+	(brasero_playlist_dialog_error):
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_open_cb):
+	* src/brasero-project.c (brasero_project_overburn_dialog),
+	(brasero_project_check_status), (brasero_project_set_uri),
+	(brasero_project_invalid_project_dialog),
+	(brasero_project_save_project_ask_for_path):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-song-properties.c (brasero_song_props_init):
+	* src/brasero-split-dialog.c (brasero_split_dialog_size_error),
+	(brasero_split_dialog_no_silence_message),
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message_error),
+	(brasero_sum_dialog_success),
+	(brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_check_md5_file), (brasero_sum_dialog_new):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy), (brasero_tool_dialog_no_media):
+	* src/brasero-utils.c (brasero_utils_launch_app):
+	* src/main.c (brasero_app_parse_options):
+
+>>>>>>> .fusion-droit.r977
+2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538414 – burn speed problems
+
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_drive):
+
+2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538346 – Does not ask to overwrite existing log file
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_save_log):
+
+2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #538300 – Use add icon and label for add files dialog
+
+	* src/brasero-project.c (brasero_project_add_uris_cb):
+
 2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Changed some more plugin priorities
@@ -317,7 +1534,6 @@
 
 	More Fixes for the help manual from Milo Casagrande.
 
->>>>>>> .fusion-droit.r892
 2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Proof of concept:

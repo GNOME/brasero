@@ -71,9 +71,9 @@ typedef struct {
 
 	GdkPixbuf *snapshot;
 
-	gboolean is_seekable;
-	gboolean has_audio;
-	gboolean has_video;
+	guint is_seekable:1;
+	guint has_audio:1;
+	guint has_video:1;
 } BraseroMetadataInfo;
 
 void

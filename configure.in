@@ -37,7 +37,6 @@ AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 dnl ** reminder: the following set CFLAGS to -O2 -g if empty
 AC_PROG_CC
-AM_PROG_CC_STDC
 AC_HEADER_STDC
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datadir}" = 'x${prefix}/share'; then
@@ -64,21 +63,29 @@ dnl ***************** SCSI related *****************************
 AC_SUBST(BRASERO_SCSI_LIBS)
 AC_CHECK_HEADERS([camlib.h],[has_cam="yes"],[has_cam="no"])
 
-if test x"$has_cam" = x"yes"; then
-    BRASERO_SCSI_LIBS="-lcam"
-else
-
 dnl ***************** check for linux sg interface *************
 AC_CHECK_TYPES([sg_io_hdr_t],[has_sg="yes"],[has_sg="no"],
 [#include <sys/types.h>
  #include <scsi/sg.h>])
 
-if test x"$has_sg" = x"no"; then
-	AC_ERROR([Linux sg interface headers could not be found])
+dnl ***************** check for solaris uscsi interface ********
+AC_CHECK_TYPES([struct uscsi_cmd],[has_uscsi="yes"],[has_uscsi="no"],
+[#include <sys/types.h>
+ #include <sys/scsi/impl/uscsi.h>])
+
+if test x"$has_cam" = x"yes"; then
+    BRASERO_SCSI_LIBS="-lcam"
+elif test x"$has_sg" = x"yes"; then
+	:
+elif test x"$has_uscsi" = x"yes"; then
+	:
+else
+	AC_ERROR([Support Linux SG, FreeBSD CAM, Solaris USCSI. No supported SCSI interface headers could not be found.])
 fi
-fi
+
 AM_CONDITIONAL(HAVE_CAM_LIB_H, test x"$has_cam" = "xyes")
 AM_CONDITIONAL(HAVE_SG_IO_HDR_T, test x"$has_sg" = "xyes")
+AM_CONDITIONAL(HAVE_USCSI_H, test x"$has_uscsi" = "xyes")
 
 dnl ***************** LARGE FILE SUPPORT ***********************
 
