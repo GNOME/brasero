@@ -2265,6 +2265,8 @@ _foreach_joliet_incompatible_make_list_cb (BraseroJolietKey *key,
 		 * since it would be grafted */
 		graft->uri = brasero_data_project_node_to_uri (data->project, node);
 		data->grafts = g_slist_prepend (data->grafts, graft);
+
+		data->excluded = g_slist_prepend (data->excluded, g_strdup (graft->uri));
 	}
 }
 
