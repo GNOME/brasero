@@ -546,11 +546,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 	g_free (main_message);
 
-	if (error == BRASERO_BURN_ERROR_MEDIA_NONE)
-		gtk_window_set_title (GTK_WINDOW (message), _("Disc Insertion"));
-	else
-		gtk_window_set_title (GTK_WINDOW (message), _("Disc Replacement"));
-
 	/* connect to signals to be warned when media is inserted */
 	added_id = g_signal_connect_after (drive,
 					   "medium-added",
