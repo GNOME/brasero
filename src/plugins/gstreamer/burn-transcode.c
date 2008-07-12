@@ -243,11 +243,11 @@ brasero_transcode_create_volume (BraseroTranscode *transcode,
 	||  brasero_track_tag_lookup (track, BRASERO_TRACK_GAIN_VALUE, NULL) == BRASERO_BURN_OK) {
 		BRASERO_JOB_LOG (transcode, "Found audio levels tags");
 		volume = gst_element_factory_make ("rgvolume", NULL);
-		g_object_set (volume,
-			      "album-mode", FALSE,
-			      NULL);
-
-		if (!volume)
+		if (volume)
+			g_object_set (volume,
+				      "album-mode", FALSE,
+				      NULL);
+		else
 			BRASERO_JOB_LOG (transcode, "rgvolume object couldn't be created");
 	}
 
