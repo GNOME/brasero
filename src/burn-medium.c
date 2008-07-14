@@ -873,7 +873,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	g_free (data);
 	return BRASERO_BURN_OK;
 }
-
+ 
 /**
  * Functions to get information about disc contents
  */
