@@ -91,6 +91,9 @@ gboolean
 brasero_plugin_check_record_flags (BraseroPlugin *plugin,
 				   BraseroMedia media,
 				   BraseroBurnFlag current);
+gboolean
+brasero_plugin_check_media_restrictions (BraseroPlugin *plugin,
+					 BraseroMedia media);
 
 gboolean
 brasero_plugin_get_image_flags (BraseroPlugin *plugin,

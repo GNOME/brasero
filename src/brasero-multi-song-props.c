@@ -42,6 +42,8 @@ struct _BraseroMultiSongPropsPrivate
 	GtkWidget *artist;
 	GtkWidget *composer;
 	GtkWidget *isrc;
+
+	GtkWidget *gap_box;
 	GtkWidget *gap;
 };
 
@@ -169,6 +171,18 @@ brasero_multi_song_props_entry_focus_in (GtkEntry *entry,
 
 	return FALSE;
 }
+void
+brasero_multi_song_props_set_show_gap (BraseroMultiSongProps *self,
+				       gboolean show)
+{
+	BraseroMultiSongPropsPrivate *priv;
+
+	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (self);
+	if (show)
+		gtk_widget_show (priv->gap_box);
+	else
+		gtk_widget_hide (priv->gap_box);
+}
 
 static void
 brasero_multi_song_props_init (BraseroMultiSongProps *object)
@@ -280,6 +294,8 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_widget_show (box);
 
 	frame = brasero_utils_pack_properties (_("<b>Options</b>"), box, NULL);
+	priv->gap_box = frame;
+
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), frame, FALSE, FALSE, 0);

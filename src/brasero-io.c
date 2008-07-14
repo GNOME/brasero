@@ -628,6 +628,9 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_HAS_VIDEO, metadata->has_video);
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE, metadata->is_seekable);
 
+	if (metadata->snapshot)
+		g_file_info_set_attribute_object (info, BRASERO_IO_SNAPSHOT, G_OBJECT (metadata->snapshot));
+
 	/* FIXME: what about silences */
 }
 
@@ -668,9 +671,23 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		cached = node->data;
 		last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 		if (last_modified == cached->last_modified) {
-			brasero_metadata_info_copy (meta_info, cached->info);
-			return TRUE;
+			if (flags & BRASERO_METADATA_FLAG_SNAPHOT) {
+				/* If there isn't any snapshot retry */
+				if (cached->info->snapshot) {
+					brasero_metadata_info_copy (meta_info, cached->info);
+					return TRUE;
+				}
+			}
+			else {
+				brasero_metadata_info_copy (meta_info, cached->info);
+				return TRUE;
+			}
 		}
+
+		/* remove it from the queue since we can't keep the same
+		 * URI twice */
+		brasero_metadata_info_free (node->data);
+		g_queue_remove (priv->meta_buffer, node->data);
 
 		BRASERO_BURN_LOG ("Updating cache information for %s", uri);
 	}
@@ -796,7 +813,8 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 						       cancel,
 						       uri,
 						       info,
-						       (options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+						       ((options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
 						       &metadata);
 
 		if (result)
@@ -1151,6 +1169,7 @@ brasero_io_get_file_count_process_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0) |
 						       BRASERO_METADATA_FLAG_FAST,
 						       &metadata);
 
@@ -1186,7 +1205,8 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 						       cancel,
 						       child_uri,
 						       info,
-						       (data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
 						       &metadata);
 		if (result)
 			data->total_b += metadata.len;
@@ -1481,6 +1501,7 @@ brasero_io_load_directory_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0) |
 						       BRASERO_METADATA_FLAG_FAST,
 						       &metadata);
 
@@ -1640,7 +1661,8 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 							       cancel,
 							       child_uri,
 							       info,
-							       (data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0,
+							       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
+							       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
 							       &metadata);
 
 			if (result)
@@ -1679,7 +1701,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		g_object_unref (child);
 	}
 
-	if (data->job.callback_data->ref < 2) {
+	if (data->job.callback_data && data->job.callback_data->ref < 2) {
 		/* No result was returned so we need to return a dummy one to 
 		 * clean the callback_data in the main loop. */
 		brasero_io_return_result (BRASERO_IO (manager),

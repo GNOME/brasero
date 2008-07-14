@@ -70,6 +70,8 @@ brasero_project_set_audio (BraseroProject *project, GSList *uris);
 void
 brasero_project_set_data (BraseroProject *project, GSList *uris);
 void
+brasero_project_set_video (BraseroProject *project, GSList *uris);
+void
 brasero_project_set_none (BraseroProject *project);
 
 void

@@ -71,6 +71,7 @@
 #include "brasero-disc.h"
 #include "brasero-data-disc.h"
 #include "brasero-audio-disc.h"
+#include "brasero-video-disc.h"
 #include "brasero-disc-option-dialog.h"
 #include "brasero-burn-dialog.h"
 #include "brasero-utils.h"
@@ -157,6 +158,7 @@ struct BraseroProjectPrivate {
 	GtkWidget *discs;
 	GtkWidget *audio;
 	GtkWidget *data;
+	GtkWidget *video;
 
 	GtkWidget *message;
 
@@ -438,7 +440,7 @@ brasero_project_init (BraseroProject *obj)
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->burn);
 	gtk_box_pack_end (GTK_BOX (box), alignment, FALSE, FALSE, 0);
 
-	/* The two panes to put into the notebook */
+	/* The three panes to put into the notebook */
 	obj->priv->audio = brasero_audio_disc_new ();
 	gtk_widget_show (obj->priv->audio);
 	g_signal_connect (G_OBJECT (obj->priv->audio),
@@ -474,10 +476,28 @@ brasero_project_init (BraseroProject *obj)
 			  G_CALLBACK (brasero_project_selection_changed_cb),
 			  obj);
 
+	obj->priv->video = brasero_video_disc_new ();
+	gtk_widget_show (obj->priv->video);
+	g_signal_connect (G_OBJECT (obj->priv->video),
+			  "contents-changed",
+			  G_CALLBACK (brasero_project_contents_changed_cb),
+			  obj);
+	g_signal_connect (G_OBJECT (obj->priv->video),
+			  "size-changed",
+			  G_CALLBACK (brasero_project_size_changed_cb),
+			  obj);
+	g_signal_connect (G_OBJECT (obj->priv->video),
+			  "selection-changed",
+			  G_CALLBACK (brasero_project_selection_changed_cb),
+			  obj);
+
 	obj->priv->discs = gtk_notebook_new ();
 	gtk_widget_show (obj->priv->discs);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (obj->priv->discs), FALSE);
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (obj->priv->discs), FALSE);
+
+	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
+				   obj->priv->video, NULL);
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
 				   obj->priv->data, NULL);
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj->priv->discs),
@@ -1069,7 +1089,7 @@ end:
 
 /********************************     ******************************************/
 static void
-brasero_project_switch (BraseroProject *project, gboolean audio)
+brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
 	GConfClient *client;
@@ -1100,7 +1120,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 		gtk_ui_manager_remove_ui (project->priv->manager,
 					  project->priv->merge_id);
 
-	if (audio) {
+	if (type == BRASERO_PROJECT_TYPE_AUDIO) {
 		project->priv->current = BRASERO_DISC (project->priv->audio);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1109,7 +1129,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
 	}
-	else {
+	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		project->priv->current = BRASERO_DISC (project->priv->data);
 		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
 							       project->priv->manager,
@@ -1117,6 +1137,15 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
 		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
+	}
+	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
+		project->priv->current = BRASERO_DISC (project->priv->video);
+		project->priv->merge_id = brasero_disc_add_ui (project->priv->current,
+							       project->priv->manager,
+							       project->priv->message);
+
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 2);
+		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
 	}
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -1140,7 +1169,7 @@ brasero_project_switch (BraseroProject *project, gboolean audio)
 void
 brasero_project_set_audio (BraseroProject *project, GSList *uris)
 {
-	brasero_project_switch (project, TRUE);
+	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
 
 	for (; uris; uris = uris->next) {
 		gchar *uri;
@@ -1153,7 +1182,20 @@ brasero_project_set_audio (BraseroProject *project, GSList *uris)
 void
 brasero_project_set_data (BraseroProject *project, GSList *uris)
 {
-	brasero_project_switch (project, FALSE);
+	brasero_project_switch (project, BRASERO_PROJECT_TYPE_DATA);
+
+	for (; uris; uris = uris->next) {
+		gchar *uri;
+
+	    	uri = uris->data;
+		brasero_disc_add_uri (project->priv->current, uri);
+	}
+}
+
+void
+brasero_project_set_video (BraseroProject *project, GSList *uris)
+{
+	brasero_project_switch (project, BRASERO_PROJECT_TYPE_VIDEO);
 
 	for (; uris; uris = uris->next) {
 		gchar *uri;
@@ -1700,9 +1742,11 @@ brasero_project_set_uri (BraseroProject *project,
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	if (type == BRASERO_PROJECT_TYPE_DATA)
 		title = g_strdup_printf (_("Brasero - %s (Data Disc)"), name);
-	else
+	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
 		title = g_strdup_printf (_("Brasero - %s (Audio Disc)"), name);
-    	g_free (name);
+	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
+		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
+	g_free (name);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	gtk_window_set_title (GTK_WINDOW (toplevel), title);
@@ -1859,8 +1903,6 @@ _read_audio_track (xmlDocPtr project,
 	BraseroDiscSong *song;
 
 	track = g_new0 (BraseroDiscTrack, 1);
-	track->type = BRASERO_DISC_TRACK_AUDIO;
-
 	song = NULL;
 
 	while (uris) {
@@ -1964,6 +2006,8 @@ _get_tracks (xmlDocPtr project,
 						      track_node->xmlChildrenNode);
 			if (!newtrack)
 				goto error;
+
+			newtrack->type = BRASERO_DISC_TRACK_AUDIO;
 		}
 		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "data")) {
 			if (newtrack)
@@ -1974,6 +2018,18 @@ _get_tracks (xmlDocPtr project,
 
 			if (!newtrack)
 				goto error;
+		}
+		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "video")) {
+			if (newtrack)
+				goto error;
+
+			newtrack = _read_audio_track (project,
+						      track_node->xmlChildrenNode);
+
+			if (!newtrack)
+				goto error;
+
+			newtrack->type = BRASERO_DISC_TRACK_VIDEO;
 		}
 		else if (track_node->type == XML_ELEMENT_NODE)
 			goto error;
@@ -2087,18 +2143,18 @@ brasero_project_open_project (BraseroProject *project,
 	brasero_project_size_set_sectors (BRASERO_PROJECT_SIZE (project->priv->size_display),
 					  0);
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
-		brasero_project_switch (project, TRUE);
+	if (track->type == BRASERO_DISC_TRACK_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	}
-	else if (track->type == BRASERO_DISC_TRACK_DATA) {
-		brasero_project_switch (project, FALSE);
+	else if (track->type == BRASERO_DISC_TRACK_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	}
+	else if (track->type == BRASERO_DISC_TRACK_VIDEO)
+		type = BRASERO_PROJECT_TYPE_VIDEO;
 	else {
 		brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
+
+	brasero_project_switch (project, type);
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2205,18 +2261,18 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
-		brasero_project_switch (project, TRUE);
+	if (track->type == BRASERO_DISC_TRACK_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	}
-	else if (track->type == BRASERO_DISC_TRACK_DATA) {
-		brasero_project_switch (project, FALSE);
+	else if (track->type == BRASERO_DISC_TRACK_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	}
+	else if (track->type == BRASERO_DISC_TRACK_VIDEO)
+		type = BRASERO_PROJECT_TYPE_VIDEO;
 	else {
 	    	brasero_track_free (track);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
+
+	brasero_project_switch (project, type);
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2500,7 +2556,20 @@ brasero_project_save_project_xml (BraseroProject *proj,
 		if (success < 0)
 			goto error;
 	}
-	else 
+	else  if (track->type == BRASERO_DISC_TRACK_VIDEO) {
+		success = xmlTextWriterStartElement (project, (xmlChar *) "video");
+		if (success < 0)
+			goto error;
+
+		retval = _save_audio_track_xml (project, track);
+		if (!retval)
+			goto error;
+
+		success = xmlTextWriterEndElement (project); /* audio */
+		if (success < 0)
+			goto error;
+	}
+	else
 		retval = FALSE;
 
 	success = xmlTextWriterEndElement (project); /* track */

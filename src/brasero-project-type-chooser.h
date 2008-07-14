@@ -31,6 +31,7 @@
 #include <gtk/gtkeventbox.h>
 
 G_BEGIN_DECLS
+
 #define BRASERO_TYPE_PROJECT_TYPE_CHOOSER         (brasero_project_type_chooser_get_type ())
 #define BRASERO_PROJECT_TYPE_CHOOSER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), BRASERO_TYPE_PROJECT_TYPE_CHOOSER, BraseroProjectTypeChooser))
 #define BRASERO_PROJECT_TYPE_CHOOSER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k),BRASERO_TYPE_PROJECT_TYPE_CHOOSER, BraseroProjectTypeChooserClass))
@@ -51,6 +52,7 @@ typedef enum {
 	BRASERO_PROJECT_TYPE_ISO,
 	BRASERO_PROJECT_TYPE_AUDIO,
 	BRASERO_PROJECT_TYPE_DATA,
+	BRASERO_PROJECT_TYPE_VIDEO
 } BraseroProjectType;
 
 typedef struct {

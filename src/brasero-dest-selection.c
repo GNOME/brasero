@@ -326,8 +326,24 @@ brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 		return;
 	}
 
-	if (source.type == BRASERO_TRACK_TYPE_AUDIO)
+	if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
+		/* If that's AUDIO only without VIDEO then return */
+		if (!(source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
+			return;
+
+		/* Otherwise try all possible image types */
+		output->subtype.img_format = BRASERO_IMAGE_FORMAT_CDRDAO;
+		for (; output->subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
+		       output->subtype.img_format >>= 1) {
+		
+			result = brasero_burn_caps_is_output_supported (priv->caps,
+									priv->session,
+									output);
+			if (result == BRASERO_BURN_OK)
+				return;
+		}
 		return;
+	}
 
 	if (source.type == BRASERO_TRACK_TYPE_DATA
 	||  source.subtype.media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)) {

@@ -162,6 +162,20 @@ brasero_time_button_frame_changed (GtkSpinButton *button,
 }
 
 void
+brasero_time_button_set_show_frames (BraseroTimeButton *self,
+				     gboolean show)
+{
+	BraseroTimeButtonPrivate *priv;
+
+	priv = BRASERO_TIME_BUTTON_PRIVATE (self);
+
+	if (show)
+		gtk_widget_show (priv->frame);
+	else
+		gtk_widget_hide (priv->frame);
+}
+
+void
 brasero_time_button_set_max (BraseroTimeButton *self,
 			     gint64 max)
 {

@@ -29,6 +29,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include <gdk/gdkpixbuf.h>
+
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
@@ -37,7 +39,8 @@ typedef enum {
 	BRASERO_METADATA_FLAG_NONE			= 0,
 	BRASERO_METADATA_FLAG_FAST			= 1,
 	BRASERO_METADATA_FLAG_SILENCES			= 1 << 1,
-	BRASERO_METADATA_FLAG_MISSING			= 1 << 2
+	BRASERO_METADATA_FLAG_MISSING			= 1 << 2,
+	BRASERO_METADATA_FLAG_SNAPHOT			= 1 << 3
 } BraseroMetadataFlag;
 
 #define BRASERO_TYPE_METADATA         (brasero_metadata_get_type ())
@@ -65,6 +68,8 @@ typedef struct {
 	guint64 len;
 
 	GSList *silences;
+
+	GdkPixbuf *snapshot;
 
 	guint is_seekable:1;
 	guint has_audio:1;

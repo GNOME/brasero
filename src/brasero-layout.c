@@ -138,17 +138,29 @@ const GtkToggleActionEntry entries [] = {
 	  "F7", N_(BRASERO_LAYOUT_NONE_TOOLTIP), G_CALLBACK (brasero_layout_empty_toggled_cb), 1 }
 };
 
-const gchar description [] = "<ui>"
-				"<menubar name='menubar' >"
-				"<menu action='ViewMenu'>"
-				"<placeholder name='ViewPlaceholder'>"
+const GtkRadioActionEntry radio_entries [] = {
+	{ "HView", NULL, N_("_Horizontal Layout"),
+	  NULL, N_("Set an horizontal layout"), 0 },
+
+	{ "VView", NULL, N_("_Vertical Layout"),
+	  NULL, N_("Set a vertical layout"), 1 },
+};
+
+const gchar description [] =
+	"<ui>"
+	"<menubar name='menubar' >"
+		"<menu action='ViewMenu'>"
+			"<placeholder name='ViewPlaceholder'>"
 				"<menuitem action='"BRASERO_LAYOUT_NONE_ID"'/>"
 				"<menuitem action='"BRASERO_LAYOUT_PREVIEW_ID"'/>"
 				"<separator/>"
-				"</placeholder>"
-				"</menu>"
-				"</menubar>"
-			     "</ui>";
+				"<menuitem action='VView'/>"
+				"<menuitem action='HView'/>"
+				"<separator/>"
+			"</placeholder>"
+		"</menu>"
+	"</menubar>"
+	"</ui>";
 
 /* GCONF keys */
 #define BRASERO_KEY_DISPLAY_LAYOUT	"/apps/brasero/display/layout"
@@ -158,6 +170,7 @@ const gchar description [] = "<ui>"
 #define BRASERO_KEY_DISPLAY_DIR		"/apps/brasero/display/"
 #define BRASERO_KEY_LAYOUT_AUDIO	BRASERO_KEY_DISPLAY_DIR "audio_pane"
 #define BRASERO_KEY_LAYOUT_DATA		BRASERO_KEY_DISPLAY_DIR "data_pane"
+#define BRASERO_KEY_LAYOUT_VIDEO	BRASERO_KEY_DISPLAY_DIR "video_pane"
 
 static void
 brasero_layout_pack_preview (BraseroLayout *layout)
@@ -560,6 +573,10 @@ brasero_layout_displayed_item_changed_cb (GConfClient *client,
 	&&  layout->priv->ctx_type == BRASERO_LAYOUT_DATA)
 		return;
 
+	if (!strcmp (entry->key, BRASERO_KEY_LAYOUT_VIDEO)
+	&&  layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO)
+		return;
+
 	value = gconf_entry_get_value (entry);
 	if (value->type != GCONF_VALUE_STRING)
 		return;
@@ -638,6 +655,25 @@ brasero_layout_save (BraseroLayout *layout,
 
 		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
 								      BRASERO_KEY_LAYOUT_DATA,
+								      brasero_layout_displayed_item_changed_cb,
+								      layout,
+								      NULL,
+								      &error);
+	}
+	else if (layout->priv->ctx_type == BRASERO_LAYOUT_VIDEO) {
+		gconf_client_set_string (layout->priv->client,
+					 BRASERO_KEY_LAYOUT_VIDEO,
+					 id,
+					 &error);
+
+		if (error) {
+			g_warning ("Can't set GConf key %s. \n", error->message);
+			g_error_free (error);
+			error = NULL;
+		}
+
+		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
+								      BRASERO_KEY_LAYOUT_VIDEO,
 								      brasero_layout_displayed_item_changed_cb,
 								      layout,
 								      NULL,
@@ -801,6 +837,10 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 		layout_id = gconf_client_get_string (layout->priv->client,
 						     BRASERO_KEY_LAYOUT_DATA,
 						     &error);
+	else if (type == BRASERO_LAYOUT_VIDEO)
+		layout_id = gconf_client_get_string (layout->priv->client,
+						     BRASERO_KEY_LAYOUT_VIDEO,
+						     &error);
 
 	if (error) {
 		g_warning ("Can't access GConf key %s. This is probably harmless (first launch of brasero).\n", error->message);
@@ -819,6 +859,13 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	else if (type == BRASERO_LAYOUT_DATA)
 		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
 								      BRASERO_KEY_LAYOUT_DATA,
+								      brasero_layout_displayed_item_changed_cb,
+								      layout,
+								      NULL,
+								      &error);
+	else if (type == BRASERO_LAYOUT_VIDEO)
+		layout->priv->radio_notify = gconf_client_notify_add (layout->priv->client,
+								      BRASERO_KEY_LAYOUT_VIDEO,
 								      brasero_layout_displayed_item_changed_cb,
 								      layout,
 								      NULL,
@@ -903,47 +950,39 @@ brasero_layout_pane_moved_cb (GtkWidget *paned,
 }
 
 static void
-brasero_layout_type_changed_cb (GConfClient *client,
-				guint cxn,
-				GConfEntry *entry,
-				gpointer data)
+brasero_layout_change_type (BraseroLayout *layout,
+			    BraseroLayoutType layout_type)
 {
-	GConfValue *value;
-	GtkWidget *source_pane;
-	GtkWidget *project_pane;
-	BraseroLayoutType layout_type;
-	BraseroLayout *layout = BRASERO_LAYOUT (data);
+	GtkWidget *source_pane = NULL;
+	GtkWidget *project_pane = NULL;
 
-	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_INT)
-		return;
+	if (layout->priv->pane) {
+		g_object_ref (layout->priv->preview_pane);
+		if (layout->priv->layout_type == BRASERO_LAYOUT_BOTTOM)
+			gtk_container_remove (GTK_CONTAINER (layout->priv->project), layout->priv->preview_pane);
+		else
+			gtk_container_remove (GTK_CONTAINER (layout->priv->main_box), layout->priv->preview_pane);
 
-	g_object_ref (layout->priv->preview_pane);
-	if (layout->priv->layout_type == BRASERO_LAYOUT_BOTTOM)
-		gtk_container_remove (GTK_CONTAINER (layout->priv->project), layout->priv->preview_pane);
-	else
-		gtk_container_remove (GTK_CONTAINER (layout->priv->main_box), layout->priv->preview_pane);
+		if (layout->priv->layout_type == BRASERO_LAYOUT_TOP
+		||  layout->priv->layout_type == BRASERO_LAYOUT_LEFT) {
+			project_pane = gtk_paned_get_child1 (GTK_PANED (layout->priv->pane));
+			source_pane = gtk_paned_get_child2 (GTK_PANED (layout->priv->pane));
+		}
+		else {
+			source_pane = gtk_paned_get_child1 (GTK_PANED (layout->priv->pane));
+			project_pane = gtk_paned_get_child2 (GTK_PANED (layout->priv->pane));
+		}
 
-	if (layout->priv->layout_type == BRASERO_LAYOUT_TOP
-	||  layout->priv->layout_type == BRASERO_LAYOUT_LEFT) {
-		project_pane = gtk_paned_get_child1 (GTK_PANED (layout->priv->pane));
-		source_pane = gtk_paned_get_child2 (GTK_PANED (layout->priv->pane));
+		g_object_ref (source_pane);
+		gtk_container_remove (GTK_CONTAINER (layout->priv->pane), source_pane);
+
+		g_object_ref (project_pane);
+		gtk_container_remove (GTK_CONTAINER (layout->priv->pane), project_pane);
+
+		gtk_widget_destroy (layout->priv->pane);
+		layout->priv->pane = NULL;
 	}
-	else {
-		source_pane = gtk_paned_get_child1 (GTK_PANED (layout->priv->pane));
-		project_pane = gtk_paned_get_child2 (GTK_PANED (layout->priv->pane));
-	}
 
-	g_object_ref (source_pane);
-	gtk_container_remove (GTK_CONTAINER (layout->priv->pane), source_pane);
-
-	g_object_ref (project_pane);
-	gtk_container_remove (GTK_CONTAINER (layout->priv->pane), project_pane);
-
-	gtk_widget_destroy (layout->priv->pane);
-	layout->priv->pane = NULL;
-
-	layout_type = gconf_value_get_int (value);
 	if (layout_type > BRASERO_LAYOUT_BOTTOM
 	||  layout_type < BRASERO_LAYOUT_RIGHT)
 		layout_type = BRASERO_LAYOUT_RIGHT;
@@ -966,36 +1005,120 @@ brasero_layout_type_changed_cb (GConfClient *client,
 	gtk_widget_show (layout->priv->pane);
 	gtk_box_pack_end (GTK_BOX (layout), layout->priv->pane, TRUE, TRUE, 0);
 
-	switch (layout_type) {
-		case BRASERO_LAYOUT_TOP:
-		case BRASERO_LAYOUT_LEFT:
-			gtk_paned_pack2 (GTK_PANED (layout->priv->pane), source_pane, TRUE, FALSE);
-			gtk_paned_pack1 (GTK_PANED (layout->priv->pane), project_pane, TRUE, FALSE);
-			break;
-
-		case BRASERO_LAYOUT_BOTTOM:
-		case BRASERO_LAYOUT_RIGHT:
-			gtk_paned_pack2 (GTK_PANED (layout->priv->pane), project_pane, TRUE, FALSE);
-			gtk_paned_pack1 (GTK_PANED (layout->priv->pane), source_pane, TRUE, FALSE);
-			break;
-
-		default:
-			break;
-	}
-
 	g_signal_connect (layout->priv->pane,
 			  "notify::position",
 			  G_CALLBACK (brasero_layout_pane_moved_cb),
 			  layout);
 
 	layout->priv->layout_type = layout_type;
-	g_object_unref (project_pane);
-	g_object_unref (source_pane);
 
-	brasero_layout_pack_preview (layout);
-	g_object_unref (layout->priv->preview_pane);
+	if (source_pane && project_pane) {
+		switch (layout_type) {
+			case BRASERO_LAYOUT_TOP:
+			case BRASERO_LAYOUT_LEFT:
+				gtk_paned_pack2 (GTK_PANED (layout->priv->pane), source_pane, TRUE, FALSE);
+				gtk_paned_pack1 (GTK_PANED (layout->priv->pane), project_pane, TRUE, FALSE);
+				break;
+
+			case BRASERO_LAYOUT_BOTTOM:
+			case BRASERO_LAYOUT_RIGHT:
+				gtk_paned_pack1 (GTK_PANED (layout->priv->pane), source_pane, TRUE, FALSE);
+				gtk_paned_pack2 (GTK_PANED (layout->priv->pane), project_pane, TRUE, FALSE);
+				break;
+
+			default:
+				break;
+		}
+
+		g_object_unref (project_pane);
+		g_object_unref (source_pane);
+	}
+
+	if (layout->priv->preview_pane) {
+		brasero_layout_pack_preview (layout);
+		g_object_unref (layout->priv->preview_pane);
+	}
 
 	brasero_layout_size_reallocate (layout);
+}
+
+static void
+brasero_layout_HV_radio_button_toggled_cb (GtkRadioAction *radio,
+					   GtkRadioAction *current,
+					   BraseroLayout *layout);
+
+static void
+brasero_layout_type_changed_cb (GConfClient *client,
+				guint cxn,
+				GConfEntry *entry,
+				gpointer data)
+{
+	GSList *iter;
+	GSList *radios;
+	GtkAction *action;
+	GConfValue *value;
+	BraseroLayoutType layout_type;
+	BraseroLayout *layout = BRASERO_LAYOUT (data);
+
+	value = gconf_entry_get_value (entry);
+	if (value->type != GCONF_VALUE_INT)
+		return;
+
+	layout_type = gconf_value_get_int (value);
+	brasero_layout_change_type (layout, layout_type);
+
+	/* make sure our radio actions reflect the change */
+	action = gtk_action_group_get_action (layout->priv->action_group, "HView");
+
+	radios = gtk_radio_action_get_group (GTK_RADIO_ACTION (action));
+	for (iter = radios; iter; iter = iter->next)
+		g_signal_handlers_block_by_func (iter->data,
+						 brasero_layout_HV_radio_button_toggled_cb,
+						 layout);
+
+	gtk_radio_action_set_current_value (GTK_RADIO_ACTION (action),
+					    GTK_IS_VPANED (layout->priv->pane));
+
+	for (iter = radios; iter; iter = iter->next)
+		g_signal_handlers_unblock_by_func (iter->data,
+						   brasero_layout_HV_radio_button_toggled_cb,
+						   layout);
+
+	g_slist_free (radios);
+}
+
+static void
+brasero_layout_HV_radio_button_toggled_cb (GtkRadioAction *radio,
+					   GtkRadioAction *current,
+					   BraseroLayout *layout)
+{
+	guint layout_type;
+
+	if (gtk_radio_action_get_current_value (current))
+		layout_type = BRASERO_LAYOUT_BOTTOM;
+	else
+		layout_type = BRASERO_LAYOUT_RIGHT;
+
+	brasero_layout_change_type (layout, layout_type);
+
+	/* update the GConf key */
+	gconf_client_notify_remove (layout->priv->client,
+				    layout->priv->layout_notify);
+	layout->priv->layout_notify = 0;
+
+	gconf_client_set_int (layout->priv->client,
+			      BRASERO_KEY_DISPLAY_LAYOUT,
+			      layout_type,
+			      NULL);
+
+	/* This is to avoid a notification for change */
+	gconf_client_clear_cache (layout->priv->client);
+	layout->priv->layout_notify = gconf_client_notify_add (layout->priv->client,
+							       BRASERO_KEY_DISPLAY_LAYOUT,
+							       brasero_layout_type_changed_cb,
+							       layout,
+							       NULL,
+							       NULL);
 }
 
 static void
@@ -1183,6 +1306,14 @@ brasero_layout_init (BraseroLayout *obj)
 
 	gtk_widget_show (obj->priv->pane);
 	gtk_box_pack_end (GTK_BOX (obj), obj->priv->pane, TRUE, TRUE, 0);
+
+	/* reflect that layout in the menus */
+	gtk_action_group_add_radio_actions (obj->priv->action_group,
+					    radio_entries,
+					    sizeof (radio_entries) / sizeof (GtkRadioActionEntry),
+					    GTK_IS_VPANED (obj->priv->pane),
+					    G_CALLBACK (brasero_layout_HV_radio_button_toggled_cb),
+					    obj);
 
 	/* remember the position */
 	position = gconf_client_get_int (obj->priv->client,

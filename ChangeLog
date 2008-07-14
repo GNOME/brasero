@@ -1,3 +1,384 @@
+2008-07-12  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added possibility to change the layout
+
+	* src/brasero-layout.c (brasero_layout_change_type),
+	(brasero_layout_type_changed_cb),
+	(brasero_layout_HV_radio_button_toggled_cb), (brasero_layout_init):
+
+2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added a menu to the tree.
+	Fixed a problem with cached metadata when fixes from trunk were ported.
+
+	* src/brasero-io.c (brasero_io_metadata_lookup_buffer),
+	(brasero_io_metadata_cached_free), (brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_start_end_playlist_cb),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_parse_playlist_thread),
+	(brasero_io_load_directory_thread), (brasero_io_finalize):
+	* src/brasero-metadata.h:
+	* src/brasero-multi-song-props.c
+	(brasero_multi_song_props_set_show_gap),
+	(brasero_multi_song_props_init):
+	* src/brasero-multi-song-props.h:
+	* src/brasero-song-properties.c (brasero_song_props_init),
+	(brasero_song_props_get_entry_value),
+	(brasero_song_props_get_properties),
+	(brasero_song_props_set_properties):
+	* src/brasero-time-button.c (brasero_time_button_set_show_frames):
+	* src/brasero-time-button.h:
+	* src/brasero-video-disc.c (brasero_video_disc_rename_songs),
+	(brasero_video_disc_edit_song_properties_list),
+	(brasero_video_disc_edit_song_properties_file),
+	(brasero_video_disc_edit_information_cb),
+	(brasero_video_disc_open_file),
+	(brasero_video_disc_open_activated_cb),
+	(brasero_video_disc_clipboard_text_cb),
+	(brasero_video_disc_clipboard_targets_cb),
+	(brasero_video_disc_paste_activated_cb),
+	(brasero_video_disc_delete_activated_cb),
+	(brasero_video_disc_button_pressed_cb),
+	(brasero_video_disc_add_ui), (brasero_video_disc_rename_activated),
+	(brasero_video_disc_key_released_cb), (brasero_video_disc_init):
+	* src/brasero-video-project.c (brasero_video_project_result_cb),
+	(brasero_video_project_resize_file):
+	* src/brasero-video-project.h:
+	* src/burn-caps.c (brasero_burn_caps_flags_check_for_drive),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_flags_update_for_drive),
+	(brasero_burn_caps_get_flags), (brasero_caps_disc_new_status):
+	* src/burn-medium.c (brasero_medium_get_icon),
+	(brasero_medium_check_old_drive), (brasero_medium_get_medium_type),
+	(brasero_medium_track_volume_size),
+	(brasero_medium_get_sessions_info):
+
+2008-06-27  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Modify the display widget for video project and split it between view and model
+	Added features to this widget:
+	- rename (not very useful ATM)
+	- directory search for video files
+	- DND
+	- projects support
+
+	* src/Makefile.am:
+	* src/brasero-disc.h:
+	* src/brasero-io.c (brasero_io_load_directory_thread):
+	* src/brasero-marshal.list:
+	* src/brasero-project.c (brasero_project_set_uri),
+	(_read_audio_track), (_get_tracks), (brasero_project_open_project),
+	(brasero_project_load_session), (brasero_project_save_project_xml):
+	* src/brasero-video-disc.c
+	(brasero_video_disc_name_editing_started_cb),
+	(brasero_video_disc_name_editing_canceled_cb),
+	(brasero_video_disc_name_edited_cb),
+	(brasero_video_disc_vfs_activity_changed),
+	(brasero_video_disc_directory_dialog),
+	(brasero_video_disc_unreadable_uri_dialog),
+	(brasero_video_disc_not_video_dialog),
+	(brasero_video_disc_add_uri_real),
+	(brasero_video_disc_delete_selected),
+	(brasero_video_disc_get_selected_uri),
+	(brasero_video_disc_selection_function),
+	(brasero_video_disc_row_deleted_cb),
+	(brasero_video_disc_row_inserted_cb),
+	(brasero_video_disc_row_changed_cb),
+	(brasero_video_disc_size_changed_cb), (brasero_video_disc_init),
+	(brasero_video_disc_reset_real), (brasero_video_disc_clear),
+	(brasero_video_disc_reset), (brasero_video_disc_finalize),
+	(brasero_video_disc_get_status),
+	(brasero_video_disc_set_session_param),
+	(brasero_video_disc_set_session_contents),
+	(brasero_video_disc_get_track), (brasero_video_disc_load_track),
+	(brasero_video_disc_iface_disc_init):
+	* src/brasero-video-project.c (brasero_video_project_file_signal),
+	(brasero_video_project_reference_new),
+	(brasero_video_project_reference_free),
+	(brasero_video_project_reference_get),
+	(brasero_video_project_reference_remove_children_cb),
+	(brasero_video_project_reference_invalidate),
+	(brasero_video_project_rename), (brasero_video_project_move),
+	(brasero_video_file_free),
+	(brasero_video_project_foreach_monitor_cancel_cb),
+	(brasero_video_project_remove_file), (brasero_video_project_reset),
+	(brasero_video_project_add_video_file),
+	(brasero_video_project_set_file_information),
+	(brasero_video_project_vfs_operation_finished),
+	(brasero_video_project_add_directory_contents_result),
+	(brasero_video_project_add_directory_contents),
+	(brasero_video_project_result_cb), (brasero_video_project_add_uri),
+	(brasero_video_project_get_size),
+	(brasero_video_project_get_file_num),
+	(brasero_video_project_get_nth_item),
+	(brasero_video_project_get_item_index),
+	(brasero_video_project_get_status),
+	(brasero_video_project_get_contents), (brasero_video_project_init),
+	(brasero_video_project_finalize),
+	(brasero_video_project_file_renamed),
+	(brasero_video_project_file_moved),
+	(brasero_video_project_file_removed),
+	(brasero_video_project_file_modified),
+	(brasero_video_project_class_init):
+	* src/brasero-video-project.h:
+	* src/brasero-video-tree-model.c
+	(brasero_video_tree_model_iter_parent),
+	(brasero_video_tree_model_iter_nth_child),
+	(brasero_video_tree_model_iter_n_children),
+	(brasero_video_tree_model_iter_has_child),
+	(brasero_video_tree_model_iter_children),
+	(brasero_video_tree_model_get_value),
+	(brasero_video_tree_model_file_to_path),
+	(brasero_video_tree_model_get_path),
+	(brasero_video_tree_model_path_to_file),
+	(brasero_video_tree_model_get_iter),
+	(brasero_video_tree_model_iter_next),
+	(brasero_video_tree_model_get_column_type),
+	(brasero_video_tree_model_get_n_columns),
+	(brasero_video_tree_model_get_flags),
+	(brasero_video_tree_model_multi_row_draggable),
+	(brasero_video_tree_model_multi_drag_data_get),
+	(brasero_video_tree_model_multi_drag_data_delete),
+	(brasero_video_tree_model_drag_data_received),
+	(brasero_video_tree_model_row_drop_possible),
+	(brasero_video_tree_model_drag_data_delete),
+	(brasero_video_tree_model_clear), (brasero_video_tree_model_reset),
+	(brasero_video_tree_model_file_added),
+	(brasero_video_tree_model_file_removed),
+	(brasero_video_tree_model_file_changed),
+	(brasero_video_tree_model_init),
+	(brasero_video_tree_model_finalize),
+	(brasero_video_tree_model_iface_init),
+	(brasero_video_tree_model_multi_drag_source_iface_init),
+	(brasero_video_tree_model_drag_source_iface_init),
+	(brasero_video_tree_model_drag_dest_iface_init),
+	(brasero_video_tree_model_class_init),
+	(brasero_video_tree_model_new):
+	* src/brasero-video-tree-model.h:
+
+2008-06-21  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added (S)VCD types through a new plugin for vcdimager =)
+	(NOTE: latter plugin doesn't support progress yet)
+	Also ported some changes from trunk.
+
+	* configure.in:
+	* help/C/brasero.xml:
+	* help/es/es.po:
+	* src/brasero-audio-disc.c (brasero_audio_disc_init),
+	(brasero_audio_disc_re_index_track_num):
+	* src/brasero-data-project.c (brasero_data_project_file_removed):
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_get_default_output_format):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_get_default_label),
+	(brasero_disc_option_dialog_update_video),
+	(brasero_disc_option_dialog_output_changed),
+	(brasero_disc_option_dialog_AC3), (brasero_disc_option_dialog_MP2),
+	(brasero_disc_option_dialog_SVCD),
+	(brasero_disc_option_dialog_VCD),
+	(brasero_disc_option_dialog_add_video_options),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_valid_media_cb):
+	* src/brasero-file-monitor.c (brasero_file_monitor_moved_to_event),
+	(brasero_file_monitor_move_timeout_cb),
+	(brasero_file_monitor_moved_from_event),
+	(brasero_file_monitor_directory_event):
+	* src/brasero-jacket-view.c
+	(brasero_jacket_view_update_edit_image):
+	* src/brasero-project-manager.c (brasero_project_manager_init):
+	* src/brasero-project.c (brasero_project_no_song_dialog),
+	(brasero_project_no_file_dialog),
+	(brasero_project_check_default_burning_app),
+	(brasero_project_confirm_switch), (brasero_project_add_uris_cb),
+	(brasero_project_empty_cb), (brasero_project_open_project_xml),
+	(brasero_project_open_audio_playlist_project),
+	(brasero_project_not_saved_dialog),
+	(brasero_project_save_project_dialog),
+	(brasero_project_save_project_ask_for_path):
+	* src/burn-basics.h:
+	* src/burn-caps.c (brasero_caps_link_check_media_restrictions),
+	(brasero_caps_link_find_plugin), (brasero_burn_caps_new_task),
+	(brasero_caps_find_link), (brasero_caps_try_output_with_blanking),
+	(brasero_caps_get_flags), (brasero_burn_caps_get_flags),
+	(brasero_caps_audio_new), (brasero_caps_disc_new_status):
+	* src/burn-debug.c (brasero_debug_medium_info_to_string),
+	(brasero_debug_audio_format_to_string):
+	* src/burn-job.c (brasero_job_check_output_volume_space):
+	* src/burn-medium.h:
+	* src/burn-plugin-private.h:
+	* src/burn-plugin.c (brasero_plugin_check_image_flags),
+	(brasero_plugin_check_media_restrictions):
+	* src/burn-track.h:
+	* src/plugins/Makefile.am:
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_stdout_read),
+	(brasero_wodim_export_caps):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_stdout_read), (brasero_cdrecord_export_caps):
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_export_caps):
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+	* src/plugins/gstreamer/burn-transcode.c
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_push_track), (brasero_transcode_export_caps):
+	* src/plugins/gstreamer/burn-vob.c (brasero_vob_finished),
+	(brasero_vob_build_audio_mp2), (brasero_vob_build_audio_bins),
+	(brasero_vob_build_video_bin), (brasero_vob_build_pipeline),
+	(brasero_vob_start), (brasero_vob_export_caps):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+	* src/plugins/vcdimager/Makefile.am:
+	* src/plugins/vcdimager/burn-vcdimager.c
+	(brasero_vcd_imager_read_stdout), (brasero_vcd_imager_read_stderr),
+	(brasero_vcd_imager_generate_xml_file),
+	(brasero_vcd_imager_set_argv), (brasero_vcd_imager_post),
+	(brasero_vcd_imager_init), (brasero_vcd_imager_finalize),
+	(brasero_vcd_imager_class_init), (brasero_vcd_imager_export_caps):
+	* src/plugins/vcdimager/burn-vcdimager.h:
+	* src/scsi-read-format-capacities.h:
+
+2008-06-12  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added support for framerate and size
+
+	* configure.in:
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/gstreamer/burn-vob.c (brasero_vob_build_video_bin):
+
+2008-06-11  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Added support for options (reorganized visually) MP2, AC3, aspect ratio
+	There's still a problem with framerate (video format)
+
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_AC3), (brasero_disc_option_dialog_MP2),
+	(brasero_disc_option_dialog_set_tag),
+	(brasero_disc_option_dialog_NTSC),
+	(brasero_disc_option_dialog_PAL_SECAM),
+	(brasero_disc_option_dialog_native_framerate),
+	(brasero_disc_option_dialog_16_9),
+	(brasero_disc_option_dialog_4_3),
+	(brasero_disc_option_dialog_native_aspect),
+	(brasero_disc_option_dialog_add_video_options):
+	* src/burn-basics.h:
+	* src/burn-session.c (brasero_burn_session_tag_remove):
+	* src/burn-session.h:
+	* src/plugins/gstreamer/burn-vob.c (brasero_vob_build_video_bin):
+
+2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Proof of concept:
+	- this was only tested on a single video but may work with multiple videos
+	- options in the burn option dialogs do nothing (yet)
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_get_default_label),
+	(brasero_disc_option_dialog_add_video_options),
+	(brasero_disc_option_dialog_set_disc):
+	* src/brasero-file-chooser.c (brasero_file_chooser_init),
+	(brasero_file_chooser_set_context):
+	* src/brasero-io.c (brasero_io_set_metadata_attributes),
+	(brasero_io_get_metadata_info), (brasero_io_get_file_info_thread),
+	(brasero_io_get_file_count_process_playlist),
+	(brasero_io_get_file_count_process_file),
+	(brasero_io_load_directory_playlist),
+	(brasero_io_load_directory_thread):
+	* src/brasero-io.h:
+	* src/brasero-layout.c (brasero_layout_displayed_item_changed_cb),
+	(brasero_layout_save), (brasero_layout_load):
+	* src/brasero-layout.h:
+	* src/brasero-metadata.c (brasero_metadata_info_clear),
+	(brasero_metadata_completed), (brasero_metadata_thumbnail),
+	(brasero_metadata_success), (brasero_metadata_bus_messages),
+	(brasero_metadata_create_audio_pipeline),
+	(brasero_metadata_create_video_pipeline),
+	(brasero_metadata_new_decoded_pad_cb),
+	(brasero_metadata_create_pipeline), (brasero_metadata_set_new_uri),
+	(brasero_metadata_get_info_wait), (brasero_metadata_get_info_sync),
+	(brasero_metadata_get_info_async), (brasero_metadata_info_copy),
+	(brasero_metadata_destroy_pipeline):
+	* src/brasero-metadata.h:
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_new_video_prj_cb),
+	(brasero_project_manager_video), (brasero_project_manager_init):
+	* src/brasero-project-manager.h:
+	* src/brasero-project-type-chooser.c:
+	* src/brasero-project-type-chooser.h:
+	* src/brasero-project.c (brasero_project_init),
+	(brasero_project_switch), (brasero_project_set_audio),
+	(brasero_project_set_data), (brasero_project_set_video):
+	* src/brasero-project.h:
+	* src/brasero-video-disc.c
+	(brasero_video_disc_increase_activity_counter),
+	(brasero_video_disc_decrease_activity_counter),
+	(brasero_video_disc_io_operation_finished),
+	(brasero_video_disc_unreadable_dialog),
+	(brasero_video_disc_file_not_video_dialog),
+	(brasero_video_disc_new_row_cb), (brasero_video_disc_add_uri_real),
+	(brasero_video_disc_add_uri), (brasero_video_disc_delete_selected),
+	(brasero_video_disc_get_selected_uri),
+	(brasero_video_disc_selection_changed_cb),
+	(brasero_video_disc_add_ui), (brasero_video_disc_row_deleted_cb),
+	(brasero_video_disc_row_inserted_cb),
+	(brasero_video_disc_row_changed_cb), (brasero_video_disc_init),
+	(brasero_video_disc_reset_real), (brasero_video_disc_clear),
+	(brasero_video_disc_reset), (brasero_video_disc_finalize),
+	(brasero_video_disc_get_property),
+	(brasero_video_disc_set_property), (brasero_video_disc_get_status),
+	(brasero_video_disc_set_session_param),
+	(brasero_video_disc_set_session_contents),
+	(brasero_video_disc_iface_disc_init),
+	(brasero_video_disc_class_init), (brasero_video_disc_new):
+	* src/brasero-video-disc.h:
+	* src/burn-basics.h:
+	* src/burn-caps.c (brasero_caps_get_flags),
+	(brasero_burn_caps_plugin_can_image):
+	* src/burn-debug.c (brasero_debug_audio_format_to_string):
+	* src/burn-job.c (brasero_job_item_start),
+	(brasero_job_set_progress):
+	* src/burn-process.c (brasero_process_finished):
+	* src/burn-track.h:
+	* src/plugins/Makefile.am:
+	* src/plugins/cdrdao/burn-toc2cue.c (brasero_toc2cue_post):
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_add_track), (brasero_dvd_author_read_stdout),
+	(brasero_dvd_author_read_stderr),
+	(brasero_dvd_author_generate_xml_file),
+	(brasero_dvd_author_set_argv), (brasero_dvd_author_post),
+	(brasero_dvd_author_init), (brasero_dvd_author_finalize),
+	(brasero_dvd_author_class_init), (brasero_dvd_author_export_caps):
+	* src/plugins/dvdauthor/burn-dvdauthor.h:
+	* src/plugins/gstreamer/Makefile.am:
+	* src/plugins/gstreamer/burn-vob.c (brasero_vob_stop_pipeline),
+	(brasero_vob_stop), (brasero_vob_finished),
+	(brasero_vob_bus_messages), (brasero_vob_new_decoded_pad_cb),
+	(brasero_vob_link_audio), (brasero_vob_build_audio_pcm),
+	(brasero_vob_build_audio_mp2), (brasero_vob_build_audio_ac3),
+	(brasero_vob_build_audio_bins), (brasero_vob_build_video_bin),
+	(brasero_vob_build_pipeline), (brasero_vob_start),
+	(brasero_vob_clock_tick), (brasero_vob_init),
+	(brasero_vob_finalize), (brasero_vob_class_init),
+	(brasero_vob_export_caps):
+	* src/plugins/gstreamer/burn-vob.h:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/transcode/burn-normalize.c:
+	* src/plugins/transcode/burn-normalize.h:
+	* src/plugins/transcode/burn-transcode.c:
+	* src/plugins/transcode/burn-transcode.h:
+
 2008-07-13  Luis Medinas  <metalgod@gnome.org>
 
 	* NEWS:

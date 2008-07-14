@@ -56,7 +56,11 @@ GtkWidget *
 brasero_multi_song_props_new (void);
 
 void
-brasero_multi_song_props_set_rename_callback (BraseroMultiSongProps *self,
+brasero_multi_song_props_set_show_gap (BraseroMultiSongProps *props,
+				       gboolean show);
+
+void
+brasero_multi_song_props_set_rename_callback (BraseroMultiSongProps *props,
 					      GtkTreeSelection *selection,
 					      gint column_num,
 					      BraseroRenameCallback callback);

@@ -617,8 +617,7 @@ brasero_job_item_start (BraseroTaskItem *item,
 		}
 	}
 	else
-		BRASERO_JOB_LOG (self, "linked to %s",
-				 G_OBJECT_TYPE_NAME (priv->linked));
+		BRASERO_JOB_LOG (self, "linked to %s", G_OBJECT_TYPE_NAME (priv->linked));
 
 	if (!brasero_job_is_first_active (self)) {
 		int fd [2];
@@ -1657,8 +1656,7 @@ brasero_job_set_progress (BraseroJob *self,
 {
 	BraseroJobPrivate *priv;
 
-	BRASERO_JOB_DEBUG (self);
-
+	BRASERO_JOB_LOG (self, "Called brasero_job_set_progress (%lf)", progress);
 	priv = BRASERO_JOB_PRIVATE (self);
 	if (priv->next)
 		return BRASERO_BURN_ERR;

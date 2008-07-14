@@ -59,9 +59,10 @@ typedef enum {
 	BRASERO_IO_INFO_ICON			= 1,
 	BRASERO_IO_INFO_PERM			= 1 << 1,
 	BRASERO_IO_INFO_METADATA		= 1 << 2,
-	BRASERO_IO_INFO_RECURSIVE		= 1 << 3,
-	BRASERO_IO_INFO_CHECK_PARENT_SYMLINK	= 1 << 4,
-	BRASERO_IO_INFO_METADATA_MISSING_CODEC	= 1 << 5,
+	BRASERO_IO_INFO_METADATA_SNAPSHOT		= 1 << 3,
+	BRASERO_IO_INFO_RECURSIVE		= 1 << 4,
+	BRASERO_IO_INFO_CHECK_PARENT_SYMLINK	= 1 << 5,
+	BRASERO_IO_INFO_METADATA_MISSING_CODEC	= 1 << 6,
 
 	BRASERO_IO_INFO_URGENT			= 1 << 9,
 	BRASERO_IO_INFO_IDLE			= 1 << 10
@@ -83,11 +84,12 @@ typedef enum {
 #define BRASERO_IO_COUNT_SIZE		"count::size"
 #define BRASERO_IO_COUNT_INVALID	"count::invalid"
 
+#define BRASERO_IO_SNAPSHOT		"metadata::snapshot"
+
 #define BRASERO_IO_LEN			"metadata::length"
 #define BRASERO_IO_ISRC			"metadata::isrc"
 #define BRASERO_IO_TITLE		"metadata::title"
 #define BRASERO_IO_ARTIST		"metadata::artist"
-#define BRASERO_IO_ALBUM		"metadata::album"
 #define BRASERO_IO_ALBUM		"metadata::album"
 #define BRASERO_IO_GENRE		"metadata::genre"
 #define BRASERO_IO_COMPOSER		"metadata::composer"

@@ -883,7 +883,8 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* audio support for CDs only */
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
-					BRASERO_AUDIO_FORMAT_RAW);
+					BRASERO_AUDIO_FORMAT_RAW|
+					BRASERO_AUDIO_FORMAT_44100);
 	
 	output = brasero_caps_disc_new (media_cd);
 	brasero_plugin_link_caps (plugin, output, input);

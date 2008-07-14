@@ -155,7 +155,7 @@ typedef enum {
 	BRASERO_BURN_FLAG_LAST
 } BraseroBurnFlag;
 
-#define BRASERO_BURN_FLAG_ALL			0x7FFF
+#define BRASERO_BURN_FLAG_ALL			0xFFFF
 
 #define BRASERO_PLUGIN_KEY		"/apps/brasero/config/plugins"
 
@@ -179,6 +179,47 @@ brasero_burn_library_get_plugins_list (void);
 
 void
 brasero_burn_library_shutdown (void);
+
+/**
+ * Some defined and usable tags for a session
+ */
+
+/**
+ * Define the audio streams for a DVD
+ */
+#define BRASERO_DVD_AUDIO_STREAMS		"DVD-audio-format"
+
+/**
+ * Define the format: whether VCD or SVCD
+ */
+enum {
+	BRASERO_VCD_NONE,
+	BRASERO_VCD_V1,
+	BRASERO_VCD_V2,
+	BRASERO_SVCD
+};
+#define BRASERO_VCD_TYPE			"VCD-format"
+
+/**
+ * This is the video format that should be used.
+ */
+enum {
+	BRASERO_VIDEO_FRAMERATE_NATIVE,
+	BRASERO_VIDEO_FRAMERATE_NTSC,
+	BRASERO_VIDEO_FRAMERATE_PAL_SECAM
+};
+#define BRASERO_VIDEO_OUTPUT_FRAMERATE		"video-framerate"
+
+/**
+ * Aspect ratio
+ */
+enum {
+	BRASERO_VIDEO_ASPECT_NATIVE,
+	BRASERO_VIDEO_ASPECT_4_3,
+	BRASERO_VIDEO_ASPECT_16_9
+};
+#define BRASERO_VIDEO_OUTPUT_ASPECT		"video-aspect"
+
 
 G_END_DECLS
 

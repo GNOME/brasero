@@ -86,6 +86,8 @@ brasero_project_manager_new_audio_prj_cb (GtkAction *action, BraseroProjectManag
 static void
 brasero_project_manager_new_data_prj_cb (GtkAction *action, BraseroProjectManager *manager);
 static void
+brasero_project_manager_new_video_prj_cb (GtkAction *action, BraseroProjectManager *manager);
+static void
 brasero_project_manager_new_copy_prj_cb (GtkAction *action, BraseroProjectManager *manager);
 static void
 brasero_project_manager_new_iso_prj_cb (GtkAction *action, BraseroProjectManager *manager);
@@ -115,6 +117,8 @@ static GtkActionEntry entries [] = {
 	 N_("Create a new audio project"), G_CALLBACK (brasero_project_manager_new_audio_prj_cb)},
 	{"NewData", "media-optical-data-new", N_("New _Data Project"), NULL,
 	 N_("Create a new data project"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
+	{"NewVideo", "media-optical-video-new", N_("New _Video Project"), NULL,
+	 N_("Create a new video project"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
 	{"NewCopy", "media-optical-copy", N_("Copy _Disc..."), NULL,
 	 N_("Copy a disc"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
 	{"NewIso", "iso-image-burn", N_("_Burn Image..."), NULL,
@@ -132,6 +136,7 @@ static const char *description = {
 				"<menu action='New'>"
 					"<menuitem action='NewAudio'/>"
 					"<menuitem action='NewData'/>"
+					"<menuitem action='NewVideo'/>"
 					"<menuitem action='NewCopy'/>"	
 					"<menuitem action='NewIso'/>"	
 				"</menu>"
@@ -516,7 +521,8 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	GtkAction *action;
 
 	if ((manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
-	||   manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
+	||   manager->priv->type == BRASERO_PROJECT_TYPE_DATA
+	||   manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO)
 	&&  !brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
 		return;
 
@@ -565,6 +571,20 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Data Disc Project"));
+	}
+	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
+		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_VIDEO);
+
+		gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
+		gtk_action_set_sensitive (action, TRUE);
+
+		if (reset) {
+			/* tell the BraseroProject object that we want a data selection */
+			brasero_project_set_video (BRASERO_PROJECT (manager->priv->project), uris);
+		}
+
+		if (toplevel)
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Video disc project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_ISO) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);
@@ -618,6 +638,12 @@ brasero_project_manager_new_data_prj_cb (GtkAction *action, BraseroProjectManage
 }
 
 static void
+brasero_project_manager_new_video_prj_cb (GtkAction *action, BraseroProjectManager *manager)
+{
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_VIDEO, NULL, NULL, TRUE);
+}
+
+static void
 brasero_project_manager_new_copy_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL, TRUE);
@@ -644,6 +670,16 @@ brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris)
 {
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_DATA,
+					uris,
+					NULL,
+					TRUE);
+}
+
+void
+brasero_project_manager_video (BraseroProjectManager *manager, GSList *uris)
+{
+	brasero_project_manager_switch (manager,
+					BRASERO_PROJECT_TYPE_VIDEO,
 					uris,
 					NULL,
 					TRUE);
@@ -951,7 +987,7 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   _("Browse the file system"),
 				   _("Display File Browser"),
 				   GTK_STOCK_DIRECTORY,
-				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
+				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
 
 #ifdef BUILD_PREVIEW
 	brasero_preview_add_source (BRASERO_PREVIEW (preview),
@@ -975,7 +1011,7 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   _("Search files using keywords"),
 				   _("Display Search"),
 				   GTK_STOCK_FIND,
-				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA);
+				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
 
 #ifdef BUILD_PREVIEW
 	brasero_preview_add_source (BRASERO_PREVIEW (preview),

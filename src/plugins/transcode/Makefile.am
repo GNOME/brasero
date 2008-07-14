@@ -28,3 +28,10 @@ normalize_LTLIBRARIES = libbrasero-normalize.la
 libbrasero_normalize_la_SOURCES = burn-normalize.c burn-normalize.h
 libbrasero_normalize_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
 libbrasero_normalize_la_LDFLAGS = -module -avoid-version
+
+vobdir = $(libdir)/brasero/plugins
+vob_LTLIBRARIES = libbrasero-vob.la
+
+libbrasero_vob_la_SOURCES = burn-vob.c burn-vob.h
+libbrasero_vob_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
+libbrasero_vob_la_LDFLAGS = -module -avoid-version

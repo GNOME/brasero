@@ -50,6 +50,7 @@ typedef enum {
 	BRASERO_LAYOUT_NONE		= 0,
 	BRASERO_LAYOUT_AUDIO		= 1,
 	BRASERO_LAYOUT_DATA		= 1 << 1,
+	BRASERO_LAYOUT_VIDEO		= 1 << 2
 } BraseroLayoutType;
 
 typedef struct {

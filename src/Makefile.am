@@ -14,7 +14,8 @@ INCLUDES = \
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    		\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         		\
 	$(DISABLE_DEPRECATED)						\
-	$(BRASERO_CFLAGS)
+	$(BRASERO_CFLAGS)						\
+	$(BRASERO_LIBXML_CFLAGS)
 
 CLEANFILES = $(RECMARSHALFILES)
 
@@ -259,7 +260,13 @@ brasero_SOURCES = \
 	brasero-notify.c         \
 	brasero-notify.h         \
 	burn-volume-source.c         \
-	burn-volume-source.h
+	burn-volume-source.h         \
+	brasero-video-disc.c         \
+	brasero-video-disc.h         \
+	brasero-video-project.h         \
+	brasero-video-project.c         \
+	brasero-video-tree-model.c         \
+	brasero-video-tree-model.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
@@ -281,7 +288,7 @@ brasero_SOURCES += scsi-uscsi.c
 endif
 
 brasero_LDADD =	\
-	$(BRASERO_LIBS)
+	$(BRASERO_LIBS) $(BRASERO_LIBXML_LIBS)
 
 
 

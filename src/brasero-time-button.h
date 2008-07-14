@@ -59,14 +59,19 @@ GtkWidget *
 brasero_time_button_new (void);
 
 gint64
-brasero_time_button_get_value (BraseroTimeButton *self);
+brasero_time_button_get_value (BraseroTimeButton *time);
 
 void
-brasero_time_button_set_value (BraseroTimeButton *self,
+brasero_time_button_set_value (BraseroTimeButton *time,
 			       gint64 value);
 void
-brasero_time_button_set_max (BraseroTimeButton *self,
+brasero_time_button_set_max (BraseroTimeButton *time,
 			     gint64 max);
+
+void
+brasero_time_button_set_show_frames (BraseroTimeButton *time,
+				     gboolean show);
+
 G_END_DECLS
 
 #endif /* _BRASERO_TIME_BUTTON_H_ */

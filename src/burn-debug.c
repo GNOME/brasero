@@ -268,10 +268,31 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 		strcat (buffer, "RAW ");
 
 	if (format & BRASERO_AUDIO_FORMAT_UNDEFINED)
-		strcat (buffer, "UNDEFINED ");
+		strcat (buffer, "AUDIO UNDEFINED ");
 
 	if (format & BRASERO_AUDIO_FORMAT_4_CHANNEL)
 		strcat (buffer, "4 CHANNELS ");
+
+	if (format & BRASERO_AUDIO_FORMAT_MP2)
+		strcat (buffer, "MP2 ");
+
+	if (format & BRASERO_AUDIO_FORMAT_AC3)
+		strcat (buffer, "AC3 ");
+
+	if (format & BRASERO_AUDIO_FORMAT_44100)
+		strcat (buffer, "44100 ");
+
+	if (format & BRASERO_AUDIO_FORMAT_48000)
+		strcat (buffer, "48000 ");
+
+	if (format & BRASERO_VIDEO_FORMAT_UNDEFINED)
+		strcat (buffer, "VIDEO UNDEFINED ");
+
+	if (format & BRASERO_VIDEO_FORMAT_VCD)
+		strcat (buffer, "VCD ");
+
+	if (format & BRASERO_VIDEO_FORMAT_VCD)
+		strcat (buffer, "Video DVD ");
 }
 
 void
