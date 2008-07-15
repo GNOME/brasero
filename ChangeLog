@@ -1,3 +1,13 @@
+2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fix #542835 – Using Split-Track two times on same audiofile refuses Brasero from burning the data because of oversize
+	Also fix some other quirks with audio project size calculation
+
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_add_slices),
+	(brasero_audio_disc_edit_song_properties):
+
 2008-07-12  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Added possibility to change the layout

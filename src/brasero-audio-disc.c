@@ -1228,7 +1228,11 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 			    -1);
 
 	/* make sure there is a length and it's not over the real one */
-	current_length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
+	if (start >= 0 && end > 0)
+		current_length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
+	else
+		current_length = 0;
+
 	if (current_length > g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN)) {
 		guint64 len;
 
@@ -1272,7 +1276,6 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 	}
 	else if (end - start < BRASERO_MIN_AUDIO_TRACK_LENGTH) {
 		brasero_audio_disc_short_track_dialog (disc);
-
 	}
 
 	length = BRASERO_AUDIO_TRACK_LENGTH (start, end);
@@ -2660,12 +2663,16 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 	gint64 length;
 	GSList *iter;
 
+	gint64 start;
+	gint64 end;
+
 	gchar *uri;
 	gchar *isrc;
 	gchar *name;
 	gchar *artist;
 	gchar *composer;
 	gchar *icon_string;
+
 	if (!slices)
 		return;
 
@@ -2673,14 +2680,6 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 	slice = slices->data;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-
-	string = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
-	gtk_list_store_set (GTK_LIST_STORE (model), parent,
-			    START_COL, slice->start,
-			    END_COL, slice->end,
-			    SIZE_COL, string,
-			    -1);
-	g_free (string);
 
 	gtk_tree_model_get (model, parent,
 			    NAME_COL, &name,
@@ -2690,8 +2689,20 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 			    ISRC_COL, &isrc,
 			    URI_COL, &uri,
 			    LENGTH_COL, &length,
+			    START_COL, &start,
+			    END_COL, &end,
 			    -1);
-			    
+	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+
+	string = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
+	gtk_list_store_set (GTK_LIST_STORE (model), parent,
+			    START_COL, slice->start,
+			    END_COL, slice->end,
+			    SIZE_COL, string,
+			    -1);
+	g_free (string);
+	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end));
+
 	for (iter = slices->next; iter; iter = iter->next) {
 		slice = iter->data;
 
@@ -2712,8 +2723,9 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 				    SIZE_COL, string,
 				    LENGTH_COL, length,
 				    -1);
-
 		g_free (string);
+
+		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end));
 	}
 
 	g_free (icon_string);
@@ -2721,6 +2733,8 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 	g_free (artist);
 	g_free (name);
 	g_free (uri);
+
+	brasero_disc_size_changed (BRASERO_DISC (disc), disc->priv->sectors);
 }
 
 static void
@@ -2951,6 +2965,8 @@ static void
 brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 					 GList *list)
 {
+	gint64 end;
+	gint64 start;
 	GList *item;
 	gint song_num;
 	gint track_num;
@@ -2989,9 +3005,7 @@ brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 
 	if (song_num == 1) {
 		gint isrc;
-		gint64 end;
 		gint64 gap;
-		gint64 start;
 		gint64 length;
 		gboolean is_song;
 		gboolean success;
@@ -3077,9 +3091,7 @@ brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 
 	if (treepath) {
 		gint isrc;
-		gint64 end;
 		gint64 gap;
-		gint64 start;
 		gchar *title;
 		gchar *markup;
 		gchar *artist;
@@ -3096,9 +3108,6 @@ brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 						   &start,
 						   &end,
 						   &gap);
-
-		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
-		brasero_audio_disc_size_changed (disc);
 
 		markup = g_markup_escape_text (title, -1);
 		length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end), TRUE, FALSE);
@@ -3121,6 +3130,9 @@ brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 
 		if (gap)
 			brasero_audio_disc_add_gap (disc, &iter, gap);
+
+		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+		brasero_audio_disc_size_changed (disc);
 
 		g_free (title);
 		g_free (artist);
