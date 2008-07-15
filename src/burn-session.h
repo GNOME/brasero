@@ -140,11 +140,6 @@ brasero_burn_session_set_burner (BraseroBurnSession *session,
 				 BraseroDrive *burner);
 
 BraseroBurnResult
-brasero_burn_session_set_image_output (BraseroBurnSession *session,
-				       BraseroImageFormat format,
-				       const gchar *path);
-
-BraseroBurnResult
 brasero_burn_session_set_image_output_full (BraseroBurnSession *session,
 					    BraseroImageFormat format,
 					    const gchar *image,

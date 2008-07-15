@@ -1048,9 +1048,10 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	||  output.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 		/* That means that we've got a problem */
 		/* FIXME: we need to display a message nevertheless */
-		brasero_burn_session_set_image_output (priv->session,
-						       BRASERO_IMAGE_FORMAT_NONE,
-						       NULL);
+		brasero_burn_session_set_image_output_full (priv->session,
+							    BRASERO_IMAGE_FORMAT_NONE,
+							    NULL,
+							    NULL);
 		g_signal_emit (self,
 			       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
 			       0,

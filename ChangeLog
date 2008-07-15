@@ -1,5 +1,15 @@
 2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #542767 – toc file leak when copying 1:1 audio cd with one drive
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_set_image_properties):
+	* src/burn-session.c (brasero_burn_session_get_image_complement),
+	(brasero_burn_session_get_tmp_image):
+	* src/burn-session.h:
+
+2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Various fixes for when a disc is copied to an image file
 	Fix #543016 – Crash in the disc copy target selection dialog
 
