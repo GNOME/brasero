@@ -100,6 +100,12 @@ brasero_image_properties_is_path_edited (BraseroImageProperties *self)
 		return TRUE;
 
 	chooser_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
+	if (!chooser_path && priv->original_path)
+		return TRUE;
+
+	if (!priv->original_path && chooser_path)
+		return TRUE;
+
 	if (!strcmp (chooser_path, priv->original_path))
 		return FALSE;
 
@@ -129,7 +135,12 @@ brasero_image_properties_set_path (BraseroImageProperties *self,
 
 			/* check if the path was edited since the last time it was set */
 			chooser_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (self));
-			priv->edited = strcmp (priv->original_path, chooser_path) != 0;
+			priv->edited = 	(!chooser_path && priv->original_path) ||
+				        (!priv->original_path && chooser_path) ||
+					 strcmp (priv->original_path, chooser_path) != 0;
+
+			if (chooser_path)
+				g_free (chooser_path);
 		}
 		g_free (priv->original_path);
 	}

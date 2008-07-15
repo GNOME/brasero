@@ -1,5 +1,21 @@
 2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Various fixes for when a disc is copied to an image file
+	Fix #543016 – Crash in the disc copy target selection dialog
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_set_output_path),
+	(brasero_dest_selection_image_format_changed_cb),
+	(brasero_dest_selection_image_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings):
+	* src/brasero-image-properties.c
+	(brasero_image_properties_is_path_edited),
+	(brasero_image_properties_set_path):
+	* src/burn-session.c (brasero_burn_session_get_output):
+
+2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #542836 – Bug in Split menu after removing rest of audio data and trying to add it again
 
 	* src/brasero-split-dialog.c (brasero_split_dialog_cut):

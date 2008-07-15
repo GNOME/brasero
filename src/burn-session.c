@@ -657,40 +657,69 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* output paths were set so test them and returns them if OK */
-	if (priv->settings->image) {
-		result = brasero_burn_session_file_test (self,
-							 priv->settings->image,
-							 error);
-		if (result != BRASERO_BURN_OK) {
-			BRASERO_BURN_LOG ("Problem with image existence");
-			return result;
+	if (image) {
+		/* output paths were set so test them and returns them if OK */
+		if (priv->settings->image) {
+			result = brasero_burn_session_file_test (self,
+								 priv->settings->image,
+								 error);
+			if (result != BRASERO_BURN_OK) {
+				BRASERO_BURN_LOG ("Problem with image existence");
+				return result;
+			}
+
+			*image = g_strdup (priv->settings->image);
+		}
+		else if (priv->settings->toc) {
+			gchar *complement;
+
+			/* get the cuesheet complement */
+			complement = brasero_image_format_get_complement (priv->settings->format,
+									  priv->settings->toc);
+			if (!complement) {
+				BRASERO_BURN_LOG ("no output specified");
+
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("no output specified"));
+				return BRASERO_BURN_ERR;
+			}
+
+			result = brasero_burn_session_file_test (self,
+								 complement,
+								 error);
+			if (result != BRASERO_BURN_OK) {
+				BRASERO_BURN_LOG ("Problem with image existence");
+				return result;
+			}
+
+			*image = complement;
+		}
+		else {
+			BRASERO_BURN_LOG ("no output specified");
+
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("no output specified"));
+			return BRASERO_BURN_ERR;
 		}
 	}
-	else {
-		BRASERO_BURN_LOG ("no output specified");
 
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no output specified"));
-		return BRASERO_BURN_ERR;
-	}
-
-	if (priv->settings->toc) {
-		result = brasero_burn_session_file_test (self,
-							 priv->settings->toc,
-							 error);
-		if (result != BRASERO_BURN_OK) {
-			BRASERO_BURN_LOG ("Problem with toc existence");
-			return result;
+	if (toc) {
+		if (priv->settings->toc) {
+			result = brasero_burn_session_file_test (self,
+								 priv->settings->toc,
+								 error);
+			if (result != BRASERO_BURN_OK) {
+				BRASERO_BURN_LOG ("Problem with toc existence");
+				return result;
+			}
 		}
-	}
 
-	if (image)
-		*image = g_strdup (priv->settings->image);
-	if (toc)
 		*toc = g_strdup (priv->settings->toc);
+	}
 
 	return BRASERO_BURN_OK;
 }

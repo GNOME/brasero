@@ -303,6 +303,37 @@ brasero_dest_selection_get_output_path (BraseroDestSelection *self)
 }
 
 static void
+brasero_dest_selection_set_output_path (BraseroDestSelection *self,
+					BraseroImageFormat format,
+					const gchar *path)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	switch (format) {
+	case BRASERO_IMAGE_FORMAT_BIN:
+		brasero_burn_session_set_image_output_full (priv->session,
+							    format,
+							    path,
+							    NULL);
+		break;
+
+	case BRASERO_IMAGE_FORMAT_CDRDAO:
+	case BRASERO_IMAGE_FORMAT_CLONE:
+	case BRASERO_IMAGE_FORMAT_CUE:
+		brasero_burn_session_set_image_output_full (priv->session,
+							    format,
+							    NULL,
+							    path);
+		break;
+
+	default:
+		break;
+	}
+}
+
+static void
 brasero_dest_selection_get_default_output_format (BraseroDestSelection *self,
 						  BraseroTrackType *output)
 {
@@ -521,6 +552,9 @@ brasero_dest_selection_image_format_changed_cb (BraseroImageProperties *dialog,
 
 	/* make sure the extension is still valid */
 	image_path = brasero_image_properties_get_path (dialog);
+	if (!image_path)
+		return;
+
 	format = brasero_image_properties_get_format (dialog);
 
 	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
@@ -535,8 +569,10 @@ brasero_dest_selection_image_format_changed_cb (BraseroImageProperties *dialog,
 		g_free (image_path);
 		image_path = brasero_dest_selection_get_default_output_path (self, format);
 	}
-	else
+	else if (image_path)
 		image_path = brasero_dest_selection_fix_image_extension (format, FALSE, image_path);
+	else
+		image_path = brasero_dest_selection_get_default_output_path (self, format);
 
 	brasero_image_properties_set_path (dialog, image_path);
 }
@@ -684,7 +720,7 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 		image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
 
 		if (!brasero_dest_selection_image_check_extension (self, format, image_path)) {
-			if (!brasero_dest_selection_image_extension_ask (self)) {
+			if (brasero_dest_selection_image_extension_ask (self)) {
 				priv->default_ext = TRUE;
 				image_path = brasero_dest_selection_fix_image_extension (format, TRUE, image_path);
 			}
@@ -699,9 +735,9 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 	priv->drive_prop = NULL;
 
 	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), image_path);
-	brasero_burn_session_set_image_output (priv->session,
-					       format,
-					       image_path);
+	brasero_dest_selection_set_output_path (self,
+						format,
+						image_path);
 	g_free (image_path);
 }
 
@@ -1030,11 +1066,9 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 		       0,
 		       TRUE);
 	gtk_widget_set_sensitive (priv->button, TRUE);
-
-	brasero_burn_session_set_image_output (priv->session,
-					       output.subtype.img_format,
-					       path);
-
+	brasero_dest_selection_set_output_path (self,
+						output.subtype.img_format,
+						path);
 	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self),
 						path);
 	g_free (path);
@@ -1106,7 +1140,9 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 		else
 			path = brasero_dest_selection_get_default_output_path (self, format);
 
-		brasero_burn_session_set_image_output (priv->session, format, path);
+		brasero_dest_selection_set_output_path (self,
+							format,
+							path);
 		brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), path);
 		g_free (path);
 	}
