@@ -200,7 +200,9 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 			  gboolean warn)
 {
 	BraseroSplitDialogPrivate *priv;
+	BraseroAudioSlice slice = {0,0};
 	GtkTreeModel *model;
+	GtkTreeIter child;
 	GtkTreeIter iter;
 	gchar *length_str;
 	gchar *start_str;
@@ -274,8 +276,8 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		return TRUE;
 	}
 
+	/* Try to find an already created slice encompassing the position */
 	do {
-		GtkTreeIter child;
 		gint64 start;
 		gint64 end;
 
@@ -299,8 +301,51 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 
+		/* Found one */
+		slice.start = start;
+		slice.end = end;
+		break;
+
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	/* see if we found a slice, if not create a new one starting at pos
+	 * until the end of the song */
+
+	if (slice.start == 0 && slice.end == 0) {
+		slice.start = pos;
+
+		/* check if we need to stop this slice at the end of the song
+		 * or at the start of the next slice. */
+		if (gtk_tree_model_get_iter_first (model, &iter)) {
+			do {
+				gint64 start;
+				gint64 end;
+
+				gtk_tree_model_get (model, &iter,
+						    START_COL, &start,
+						    END_COL, &end,
+						    -1);
+
+				if (pos >= start)
+					continue;
+
+				/* Found one */
+				slice.end = start - 1;
+			} while (gtk_tree_model_iter_next (model, &iter));
+		}
+
+		if (!slice.end)
+			slice.end = priv->end;
+
+		/* check the size of the new slice */
+		if (warn
+		&& (slice.end - slice.start) < BRASERO_MIN_AUDIO_TRACK_LENGTH
+		&& !brasero_split_dialog_size_error (self))
+			return FALSE;
+	}
+	else {
 		/* we are in the middle of an existing slice */
-		length_str = brasero_utils_get_time_string (pos - start, TRUE, FALSE);
+		length_str = brasero_utils_get_time_string (pos - slice.start, TRUE, FALSE);
 		end_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
 
 		gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
@@ -308,36 +353,37 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 								&iter);
 
 		gtk_list_store_set (priv->model, &child,
-				    END_COL, (gint64)  pos,
-				    LENGTH_COL, (gint64) (pos - start),
+				    END_COL, (gint64) pos,
+				    LENGTH_COL, (gint64) (pos - slice.start),
 				    END_STR_COL, end_str,
 				    LENGTH_STR_COL, length_str,
 				    -1);
 		g_free (length_str);
 		g_free (end_str);
 
-		gtk_list_store_append (priv->model, &child);
-
+		/* move the position by one */
 		pos ++;
-		length_str = brasero_utils_get_time_string (end - pos, TRUE, FALSE);
-		start_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (end, TRUE, FALSE);
+	}
 
-		gtk_list_store_set (priv->model, &child,
-				    START_COL, pos,
-				    END_COL, end,
-				    LENGTH_COL, (gint64) (end - pos),
-				    START_STR_COL, start_str,
-				    END_STR_COL, end_str,
-				    LENGTH_STR_COL, length_str,
-				    -1);
+	/* create a new one */
+	gtk_list_store_append (priv->model, &child);
 
-		g_free (length_str);
-		g_free (start_str);
-		g_free (end_str);
-		break;
+	length_str = brasero_utils_get_time_string (slice.end - pos, TRUE, FALSE);
+	start_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
+	end_str = brasero_utils_get_time_string (slice.end, TRUE, FALSE);
 
-	} while (gtk_tree_model_iter_next (model, &iter));
+	gtk_list_store_set (priv->model, &child,
+			    START_COL, pos,
+			    END_COL, slice.end,
+			    LENGTH_COL, (gint64) (slice.end - pos),
+			    START_STR_COL, start_str,
+			    END_STR_COL, end_str,
+			    LENGTH_STR_COL, length_str,
+			    -1);
+
+	g_free (length_str);
+	g_free (start_str);
+	g_free (end_str);
 
 	return TRUE;
 }

@@ -1,5 +1,11 @@
 2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix #542836 – Bug in Split menu after removing rest of audio data and trying to add it again
+
+	* src/brasero-split-dialog.c (brasero_split_dialog_cut):
+
+2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #542835 – Using Split-Track two times on same audiofile refuses Brasero from burning the data because of oversize
 	Also fix some other quirks with audio project size calculation
 
