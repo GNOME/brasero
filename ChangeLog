@@ -1,5 +1,11 @@
 2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #535835 – TEAC R55S - can't burn CD-R
+
+	* src/burn-medium.c (brasero_medium_old_drive_get_disc_info):
+
+2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Silence a warning when ejecting and no gdrive is available
 
 	* src/burn-volume-obj.c (brasero_volume_eject_gvolume),

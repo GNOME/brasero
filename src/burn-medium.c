@@ -1369,8 +1369,6 @@ end:
 	return result;
 }
 
-#if 0
-
 /**
  * These are special routines for old CD-R(W) drives that don't conform to MMC
  */
@@ -1737,8 +1735,6 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
-#endif
-
 static BraseroBurnResult
 brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
 					BraseroDeviceHandle *handle,
@@ -1792,7 +1788,7 @@ brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
 	}
 
 	/* get the contents */
-	result = brasero_medium_get_sessions_info (self, handle, code);
+	result = brasero_medium_get_CD_sessions_info (self, handle, code);
 	return result;
 }
 
