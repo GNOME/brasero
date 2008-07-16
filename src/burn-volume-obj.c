@@ -482,6 +482,56 @@ brasero_volume_eject_finish (GObject *source,
 }
 
 gboolean
+brasero_volume_eject_gvolume (BraseroVolume *self,
+			      gboolean wait,
+			      GVolume *volume,
+			      GError **error)
+{
+	BraseroVolumePrivate *priv;
+	gboolean result;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	if (!g_volume_can_eject (volume))
+		return FALSE;
+
+	if (wait) {
+		gulong eject_sig;
+		BraseroDrive *drive;
+
+		drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+		eject_sig = g_signal_connect (drive,
+					      "medium-removed",
+					      G_CALLBACK (brasero_volume_ejected_cb),
+					      self);
+
+		g_volume_eject (volume,
+				G_MOUNT_UNMOUNT_NONE,
+				priv->cancel,
+				brasero_volume_eject_finish,
+				self);
+
+		g_object_ref (self);
+		result = brasero_volume_wait_for_operation_end (self, error);
+		g_object_unref (self);
+
+		/* NOTE: from this point on self is no longer valid */
+
+		g_signal_handler_disconnect (drive, eject_sig);
+	}
+	else {
+		g_volume_eject (volume,
+				G_MOUNT_UNMOUNT_NONE,
+				priv->cancel,
+				NULL,
+				self);
+		result = TRUE;
+	}
+
+	return result;
+}
+
+gboolean
 brasero_volume_eject (BraseroVolume *self,
 		      gboolean wait,
 		      GError **error)
@@ -501,12 +551,17 @@ brasero_volume_eject (BraseroVolume *self,
 		return FALSE;
 
 	gdrive = g_volume_get_drive (volume);
-	g_object_unref (volume);
+	if (!gdrive) {
+		result = brasero_volume_eject_gvolume (self, wait, volume, error);
+		g_object_unref (volume);
+		return result;
+	}
 
-	if ((!gdrive || !g_drive_can_eject (gdrive))
-	&&   !g_volume_can_eject (volume)) {
+	if (!g_drive_can_eject (gdrive)) {
+		result = brasero_volume_eject_gvolume (self, wait, volume, error);
+		g_object_unref (volume);
 		g_object_unref (gdrive);
-		return FALSE;
+		return result;
 	}
 
 	if (wait) {
@@ -519,18 +574,11 @@ brasero_volume_eject (BraseroVolume *self,
 					      G_CALLBACK (brasero_volume_ejected_cb),
 					      self);
 
-		if (g_drive_can_eject (gdrive))
-			g_drive_eject (gdrive,
-				       G_MOUNT_UNMOUNT_NONE,
-				       priv->cancel,
-				       brasero_volume_eject_finish,
-				       self);
-		else
-			g_volume_eject (volume,
-					G_MOUNT_UNMOUNT_NONE,
-					priv->cancel,
-					brasero_volume_eject_finish,
-					self);
+		g_drive_eject (gdrive,
+			       G_MOUNT_UNMOUNT_NONE,
+			       priv->cancel,
+			       brasero_volume_eject_finish,
+			       self);
 
 		g_object_ref (self);
 		result = brasero_volume_wait_for_operation_end (self, error);
@@ -541,24 +589,15 @@ brasero_volume_eject (BraseroVolume *self,
 		g_signal_handler_disconnect (drive, eject_sig);
 	}
 	else {
-		if (g_drive_can_eject (gdrive))
-			g_drive_eject (gdrive,
-				       G_MOUNT_UNMOUNT_NONE,
-				       priv->cancel,
-				       NULL,
-				       self);
-		else
-			g_volume_eject (volume,
-					G_MOUNT_UNMOUNT_NONE,
-					priv->cancel,
-					NULL,
-					self);
+		g_drive_eject (gdrive,
+			       G_MOUNT_UNMOUNT_NONE,
+			       priv->cancel,
+			       NULL,
+			       self);
 		result = TRUE;
 	}
 
-	if (gdrive)
-		g_object_unref (gdrive);
-
+	g_object_unref (gdrive);
 	return result;
 }
 
