@@ -1080,7 +1080,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 			disc_size = drive->free_space;
 
 		if (self->priv->is_audio_context)
-			size_str = brasero_utils_get_time_string_from_size (disc_size * DATA_SECTOR_SIZE, TRUE, TRUE);
+			size_str = brasero_utils_get_time_string_from_size (disc_size * AUDIO_SECTOR_SIZE, TRUE, TRUE);
 		else
 			size_str = brasero_utils_get_size_string (disc_size * DATA_SECTOR_SIZE, TRUE, TRUE); 
 
