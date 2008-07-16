@@ -877,7 +877,10 @@ again:
 		/* NOTE: no need to error out here since the only thing
 		 * we are interested in is if it is AUDIO or not or if
 		 * the disc we are copying has audio tracks only or not */
-		if (input.type == BRASERO_TRACK_TYPE_AUDIO) {
+		if (input.type == BRASERO_TRACK_TYPE_AUDIO
+		&& !(input.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|
+						   BRASERO_VIDEO_FORMAT_VCD|
+						   BRASERO_VIDEO_FORMAT_VIDEO_DVD))) {
 			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL, BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
