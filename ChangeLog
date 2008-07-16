@@ -1,3 +1,11 @@
+2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Removed unused function as it is making build fail with sun compiler
+	See #542136 comment 9
+
+	* src/brasero-utils.c (brasero_utils_free), (brasero_utils_init):
+	* src/brasero-utils.h:
+
 2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Try to improve things to fix #509895 – CD is not ejected after burn

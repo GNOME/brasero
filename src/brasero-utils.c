@@ -45,9 +45,6 @@
 
 #define BRASERO_ERROR brasero_error_quark()
 
-static gid_t *groups = NULL;
-G_LOCK_DEFINE (groups_mutex);
-
 static GHashTable *stringsH = NULL;
 G_LOCK_DEFINE (strings_mutex);
 
@@ -63,13 +60,6 @@ brasero_utils_clear_strings_cb (gchar *string,
 static void
 brasero_utils_free (void)
 {
-	if (groups) {
-		G_LOCK (groups_mutex);
-		g_free (groups);
-		groups = NULL;
-		G_UNLOCK (groups_mutex);
-	}
-
 	if (stringsH) {
 		G_LOCK (strings_mutex);
 		g_hash_table_foreach_remove (stringsH,
@@ -102,40 +92,7 @@ brasero_utils_init (void)
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
 					   BRASERO_DATADIR "/icons");
 
-	/* load gids of the user */
-	if (groups == NULL) {
-		gint nb;
-
-		nb = getgroups (0, NULL);
-		G_LOCK (groups_mutex);
-		groups = g_new0 (gid_t, nb + 1);
-		nb = getgroups (nb, groups);
-		G_UNLOCK (groups_mutex);
-	}
-
 	g_atexit (brasero_utils_free);
-}
-
-inline gboolean
-brasero_utils_is_gid_in_groups (gid_t gid)
-{
-	gid_t *group;
-
-	G_LOCK (groups_mutex);
-	if (!groups) {
-		G_UNLOCK (groups_mutex);
-		return FALSE;
-	}
-
-	for (group = groups; group && *group; group ++) {
-		if (*group == gid) {
-			G_UNLOCK (groups_mutex);
-			return TRUE;
-		}
-	}
-
-	G_UNLOCK (groups_mutex);
-	return FALSE;
 }
 
 /**

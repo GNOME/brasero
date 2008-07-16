@@ -52,8 +52,6 @@ typedef enum {
 
 void brasero_utils_init (void);
 
-inline gboolean brasero_utils_is_gid_in_groups (gid_t gid);
-
 GQuark brasero_error_quark (void);
 
 gchar *brasero_utils_get_time_string (gint64 time,
