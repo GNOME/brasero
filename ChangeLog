@@ -1,5 +1,13 @@
 2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix for #542718 – Creating large ISO fails due to filesystem restrictions
+	We check the filesystem type to make sure there are no limitations on the file size
+	Do the same with values returned by getrlimit ()
+
+	* src/burn-job.c (brasero_job_check_output_volume_space):
+
+2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Removed unused function as it is making build fail with sun compiler
 	See #542136 comment 9
 

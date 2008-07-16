@@ -30,6 +30,8 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -420,16 +422,20 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	GFile *file;
 	GFileInfo *info;
 	gchar *directory;
+	struct rlimit limit;
 	guint64 vol_size = 0;
 	gint64 output_size = 0;
 	BraseroJobPrivate *priv;
+	const gchar *filesystem;
 
 	/* now that the job has a known output we must check that the volume the
 	 * job is writing to has enough space for all output */
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	/* get the size of the volume first */
+	/* get the size and filesystem type for the volume first.
+	 * NOTE: since any plugin must output anything LOCALLY, we can then use
+	 * all libc API. */
 	if (!priv->output)
 		return BRASERO_BURN_ERR;
 
@@ -441,13 +447,34 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		goto error;
 
 	info = g_file_query_filesystem_info (file,
-					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
+					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
 					     NULL,
 					     error);
 	if (!info)
 		goto error;
 
 	g_object_unref (file);
+
+	/* Now check the filesystem type: the problem here is that some
+	 * filesystems have a maximum file size limit of 4 Gio and more than
+	 * often we need a temporary file size of 4 Gio or more. */
+	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+	BRASERO_BURN_LOG ("%s filesystem detected", filesystem);
+
+	if (filesystem && !strcmp (filesystem, "msdos")) {
+		/* FIXME: This string should mention that the location is on the
+		 * hard drive and not the medium itself to prevent any confusion
+		 * as seen in #533149 */
+		/* FIXME: change this string to something more appropriate when
+		 * we're not in string freeze. */
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_DISK_SPACE,
+			     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
+			     (unsigned long) output_size / 1048576);
+		return BRASERO_BURN_ERR;
+	}
 
 	vol_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 	g_object_unref (info);
@@ -462,6 +489,27 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		/* FIXME: This string should mention that the location is on the
 		 * hard drive and not the medium itself to prevent any confusion
 		 * as seen in #533149 */
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_DISK_SPACE,
+			     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
+			     (unsigned long) output_size / 1048576);
+		return BRASERO_BURN_ERR;
+	}
+
+	/* Last but not least, use getrlimit () to check that we are allowed to
+	 * write a file of such length and that quotas won't get in our way */
+	if (getrlimit (RLIMIT_FSIZE, &limit)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_DISK_SPACE,
+			     strerror (errno));
+		return BRASERO_BURN_ERR;
+	}
+
+	if (limit.rlim_cur < output_size) {
+		BRASERO_BURN_LOG ("User not allowed to write such a large file");
+
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
