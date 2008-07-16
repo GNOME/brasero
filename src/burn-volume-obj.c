@@ -458,9 +458,14 @@ brasero_volume_eject_finish (GObject *source,
 	BraseroVolumePrivate *priv;
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
-	priv->result = g_drive_eject_finish (G_DRIVE (source),
-					     result,
-					     &priv->error);
+	if (G_IS_DRIVE (source))
+		priv->result = g_drive_eject_finish (G_DRIVE (source),
+						     result,
+						     &priv->error);
+	else
+		priv->result = g_volume_eject_finish (G_VOLUME (source),
+						      result,
+						      &priv->error);
 
 	if (priv->error) {
 		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
@@ -498,7 +503,8 @@ brasero_volume_eject (BraseroVolume *self,
 	gdrive = g_volume_get_drive (volume);
 	g_object_unref (volume);
 
-	if (!g_drive_can_eject (gdrive)) {
+	if ((!gdrive || !g_drive_can_eject (gdrive))
+	&&   !g_volume_can_eject (volume)) {
 		g_object_unref (gdrive);
 		return FALSE;
 	}
@@ -513,11 +519,18 @@ brasero_volume_eject (BraseroVolume *self,
 					      G_CALLBACK (brasero_volume_ejected_cb),
 					      self);
 
-		g_drive_eject (gdrive,
-			       G_MOUNT_UNMOUNT_NONE,
-			       priv->cancel,
-			       brasero_volume_eject_finish,
-			       self);
+		if (g_drive_can_eject (gdrive))
+			g_drive_eject (gdrive,
+				       G_MOUNT_UNMOUNT_NONE,
+				       priv->cancel,
+				       brasero_volume_eject_finish,
+				       self);
+		else
+			g_volume_eject (volume,
+					G_MOUNT_UNMOUNT_NONE,
+					priv->cancel,
+					brasero_volume_eject_finish,
+					self);
 
 		g_object_ref (self);
 		result = brasero_volume_wait_for_operation_end (self, error);
@@ -528,15 +541,24 @@ brasero_volume_eject (BraseroVolume *self,
 		g_signal_handler_disconnect (drive, eject_sig);
 	}
 	else {
-		g_drive_eject (gdrive,
-			       G_MOUNT_UNMOUNT_NONE,
-			       priv->cancel,
-			       NULL,
-			       self);
+		if (g_drive_can_eject (gdrive))
+			g_drive_eject (gdrive,
+				       G_MOUNT_UNMOUNT_NONE,
+				       priv->cancel,
+				       NULL,
+				       self);
+		else
+			g_volume_eject (volume,
+					G_MOUNT_UNMOUNT_NONE,
+					priv->cancel,
+					NULL,
+					self);
 		result = TRUE;
 	}
 
-	g_object_unref (gdrive);
+	if (gdrive)
+		g_object_unref (gdrive);
+
 	return result;
 }
 

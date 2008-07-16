@@ -1,5 +1,17 @@
 2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Try to improve things to fix #509895 – CD is not ejected after burn
+
+	* src/burn-volume-obj.c (brasero_volume_eject_finish),
+	(brasero_volume_eject):
+	* src/burn.c (brasero_burn_eject_src_media),
+	(brasero_burn_unlock_src_media), (brasero_burn_unlock_dest_media),
+	(brasero_burn_unlock_medias), (brasero_burn_check),
+	(brasero_burn_same_src_dest), (brasero_burn_record),
+	(brasero_burn_blank):
+
+2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix for #542767 – toc file leak when copying 1:1 audio cd with one drive
 
 	* src/brasero-dest-selection.c

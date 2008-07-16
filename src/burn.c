@@ -374,18 +374,19 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 		}
 	}
 
-	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, NULL);
+	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, error);
 	medium = brasero_drive_get_medium (priv->src);
 	if (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
 		gchar *name;
 
 		name = brasero_drive_get_display_name (priv->src);
 
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the media in %s can't be ejected"),
-			     name);
+		if (error && !(*error))
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("the media in %s can't be ejected"),
+				     name);
 
 		g_free (name);
 
@@ -1063,7 +1064,8 @@ again:
 }
 
 static BraseroBurnResult
-brasero_burn_unlock_src_media (BraseroBurn *burn)
+brasero_burn_unlock_src_media (BraseroBurn *burn,
+			       GError **error)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 	BraseroMedium *medium;
@@ -1078,7 +1080,7 @@ brasero_burn_unlock_src_media (BraseroBurn *burn)
 
 	medium = brasero_drive_get_medium (priv->src);
 	if (priv->mounted_by_us) {
-		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL);
+		brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, error);
 		priv->mounted_by_us = 0;
 	}
 
@@ -1086,14 +1088,15 @@ brasero_burn_unlock_src_media (BraseroBurn *burn)
 	brasero_drive_unlock (priv->src);
 
 	if (BRASERO_BURN_SESSION_EJECT (priv->session))
-		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, NULL);
+		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error);
 
 	priv->src = NULL;
 	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_burn_unlock_dest_media (BraseroBurn *burn)
+brasero_burn_unlock_dest_media (BraseroBurn *burn,
+				GError **error)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 	BraseroMedium *medium;
@@ -1111,17 +1114,18 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn)
 	medium = brasero_drive_get_medium (priv->dest);
 
 	if (BRASERO_BURN_SESSION_EJECT (priv->session))
-		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, NULL);
+		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error);
 
 	priv->dest = NULL;
 	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_burn_unlock_medias (BraseroBurn *burn)
+brasero_burn_unlock_medias (BraseroBurn *burn,
+			    GError **error)
 {
-	brasero_burn_unlock_dest_media (burn);
-	brasero_burn_unlock_src_media (burn);
+	brasero_burn_unlock_dest_media (burn, error);
+	brasero_burn_unlock_src_media (burn, error);
 
 	return BRASERO_BURN_OK;
 }
@@ -2164,13 +2168,16 @@ brasero_burn_check (BraseroBurn *self,
 
 	result = brasero_burn_check_real (self, track, error);
 
-	brasero_burn_unlock_medias (self);
-
 	brasero_burn_powermanagement (self, FALSE);
 
 	/* no need to check the result of the comparison, it's set in session */
 	priv->session = NULL;
 	g_object_unref (session);
+
+	if (result == BRASERO_BURN_OK)
+		result = brasero_burn_unlock_medias (self, error);
+	else
+		brasero_burn_unlock_medias (self, NULL);
 
 	return result;
 }
@@ -2241,7 +2248,7 @@ brasero_burn_same_src_dest (BraseroBurn *self,
 	/* run */
 	result = brasero_burn_record_session (self, TRUE, error);
 	if (result != BRASERO_BURN_OK) {
-		brasero_burn_unlock_src_media (self);
+		brasero_burn_unlock_src_media (self, NULL);
 		goto end;
 	}
 
@@ -2336,7 +2343,7 @@ brasero_burn_record (BraseroBurn *burn,
 
 			/* see if we still need it to be locked */
 			if (brasero_burn_session_get_input_type (session, NULL) != BRASERO_TRACK_TYPE_DISC)
-				brasero_burn_unlock_src_media (burn);
+				brasero_burn_unlock_src_media (burn, NULL);
 
 			result = brasero_burn_record_session (burn, TRUE, error);
 			if (result != BRASERO_BURN_OK)
@@ -2346,7 +2353,10 @@ brasero_burn_record (BraseroBurn *burn,
 
 end:
 
-	brasero_burn_unlock_medias (burn);
+	if (result == BRASERO_BURN_OK)
+		result = brasero_burn_unlock_medias (burn, error);
+	else
+		brasero_burn_unlock_medias (burn, NULL);
 
 	if (error && (*error) == NULL
 	&& (result == BRASERO_BURN_NOT_READY
@@ -2466,11 +2476,13 @@ end:
 	if (ret_error)
 		g_propagate_error (error, ret_error);
 
-	brasero_burn_unlock_medias (burn);
+	if (result == BRASERO_BURN_OK && !ret_error)
+		result = brasero_burn_unlock_medias (burn, error);
+	else
+		brasero_burn_unlock_medias (burn, NULL);
 
 	if (result == BRASERO_BURN_OK)
 		brasero_burn_action_changed_real (burn, BRASERO_BURN_ACTION_FINISHED);
-
 
 	brasero_burn_powermanagement (burn, FALSE);
 
