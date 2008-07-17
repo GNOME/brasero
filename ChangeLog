@@ -1,5 +1,26 @@
 2008-07-17  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Fix video project drive choice
+	Also fix a problem with size display
+
+	* src/brasero-project-size.c
+	(brasero_project_size_get_ruler_min_width),
+	(brasero_project_size_get_media_string),
+	(brasero_project_size_expose),
+	(brasero_project_size_is_valid_drive),
+	(brasero_project_size_build_menu),
+	(brasero_project_size_scroll_event),
+	(brasero_project_size_find_proper_drive),
+	(brasero_project_size_set_context):
+	* src/brasero-project-size.h:
+	* src/brasero-project.c (brasero_project_switch):
+	* src/brasero-utils.c (brasero_utils_get_time_string),
+	(brasero_utils_get_time_string_from_size):
+	* src/brasero-utils.h:
+	* src/burn-basics.h:
+
+2008-07-17  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Fix #539390 – brasero ftbfs with gnome-doc-utils.make needed by Makefile.in
 	(also in previous change)
 

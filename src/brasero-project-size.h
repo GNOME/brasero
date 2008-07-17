@@ -33,6 +33,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkcontainer.h>
 
+#include "brasero-project-type-chooser.h"
 #include "burn-medium.h"
 
 G_BEGIN_DECLS
@@ -75,7 +76,7 @@ brasero_project_size_set_multisession (BraseroProjectSize *self,
 
 void
 brasero_project_size_set_context (BraseroProjectSize *self,
-				  gboolean is_audio);
+				  BraseroProjectType type);
 
 gboolean
 brasero_project_size_check_status (BraseroProjectSize *self,

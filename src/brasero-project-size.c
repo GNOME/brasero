@@ -38,6 +38,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkcontainer.h>
 
+#include "brasero-project-type-chooser.h"
 #include "brasero-project-size.h"
 #include "burn-caps.h"
 #include "burn-volume-obj.h"
@@ -109,7 +110,8 @@ struct _BraseroProjectSizePrivate {
 	GList *drives;
 	BraseroDriveSize *current;
 
-	guint is_audio_context:1;
+	BraseroProjectType context;
+
 	guint was_chosen:1;
 	guint is_loaded:1;
 	guint multi:1;
@@ -419,7 +421,7 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 	}
 
 	/* the number of interval needs to be reasonable, not over 8 not under 5 */
-	if (self->priv->is_audio_context)
+	if (self->priv->context != BRASERO_PROJECT_TYPE_DATA)
 		interval_size = AUDIO_INTERVAL_CD;
 	else if (self->priv->current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 		interval_size = DATA_INTERVAL_DVD;
@@ -461,7 +463,7 @@ brasero_project_size_get_ruler_min_width (BraseroProjectSize *self,
 		gchar *markup, *string;
 
 		string = brasero_utils_get_sectors_string (i * interval_size,
-							   self->priv->is_audio_context,
+							   (self->priv->context != BRASERO_PROJECT_TYPE_DATA),
 							   TRUE,
 							   TRUE);
 
@@ -544,7 +546,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 	}
 
 	disc_sectors_str = brasero_utils_get_sectors_string (disc_size,
-							     self->priv->is_audio_context,
+							     (self->priv->context != BRASERO_PROJECT_TYPE_DATA),
 							     TRUE,
 							     TRUE);
 
@@ -562,7 +564,7 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 */	}
 
 	selection_size_str = brasero_utils_get_sectors_string (self->priv->sectors,
-							       self->priv->is_audio_context,
+							       (self->priv->context != BRASERO_PROJECT_TYPE_DATA),
 							       TRUE,
 							       FALSE);
 
@@ -731,7 +733,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 	/* The number of interval needs to be reasonable, not over 8 not under 5
 	 * They should also depend on the available space for the bar. */
 	
-	if (self->priv->is_audio_context)
+	if (self->priv->context != BRASERO_PROJECT_TYPE_DATA)
 		interval_size = AUDIO_INTERVAL_CD;
 	else if (self->priv->current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
 		interval_size = DATA_INTERVAL_DVD;
@@ -764,7 +766,7 @@ brasero_project_size_expose (GtkWidget *widget, GdkEventExpose *event)
 		guint text_x;
 
 		string = brasero_utils_get_sectors_string (i * interval_size,
-							   self->priv->is_audio_context,
+							   (self->priv->context != BRASERO_PROJECT_TYPE_DATA),
 							   TRUE,
 							   TRUE);
 
@@ -1034,6 +1036,39 @@ brasero_project_size_menu_position_cb (GtkMenu *menu,
 	*push_in = FALSE;
 }
 
+static gboolean
+brasero_project_size_is_valid_drive (BraseroProjectSize *self,
+				     BraseroDriveSize *current)
+{
+	BraseroBurnCaps *caps;
+	gboolean result = TRUE;
+	BraseroMedia media_status;
+
+	if (!current)
+		return FALSE;
+
+	caps = brasero_burn_caps_get_default ();
+	media_status = brasero_burn_caps_media_capabilities (caps, current->media);
+	
+	if (!BRASERO_MEDIUM_VALID (current->media))
+		result = FALSE;
+	/* Library must support it */
+	else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
+		result = FALSE;
+	/* No media with data for audio/video context, that can't be erased */
+	else if (self->priv->context != BRASERO_PROJECT_TYPE_DATA
+	     && (current->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+	     && !(media_status & BRASERO_MEDIUM_REWRITABLE))
+		result = FALSE;
+	/* No DVDs in an audio context */
+	else if (self->priv->context == BRASERO_PROJECT_TYPE_AUDIO
+	     && (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_APPENDABLE)))
+		result = FALSE;
+
+	g_object_unref (caps);
+	return result;
+}
+
 static GtkWidget *
 brasero_project_size_build_menu (BraseroProjectSize *self)
 {
@@ -1054,16 +1089,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 
 		drive = iter->data;
 
-		if (!BRASERO_MEDIUM_VALID (drive->media))
-			continue;
-
-	    	if (!(drive->media & (BRASERO_MEDIUM_BLANK|BRASERO_MEDIUM_REWRITABLE))
-		&& (!(drive->media & BRASERO_MEDIUM_APPENDABLE)
-		||   self->priv->is_audio_context))
-			continue;
-
-		if (self->priv->is_audio_context
-		&& (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
+		if (!brasero_project_size_is_valid_drive (self, drive))
 			continue;
 
 		if (!drive->medium && !separator) {
@@ -1081,7 +1107,7 @@ brasero_project_size_build_menu (BraseroProjectSize *self)
 		else
 			disc_size = drive->free_space;
 
-		if (self->priv->is_audio_context)
+		if (self->priv->context != BRASERO_PROJECT_TYPE_DATA)
 			size_str = brasero_utils_get_time_string_from_size (disc_size * AUDIO_SECTOR_SIZE, TRUE, TRUE);
 		else
 			size_str = brasero_utils_get_size_string (disc_size * DATA_SECTOR_SIZE, TRUE, TRUE); 
@@ -1213,51 +1239,32 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 				   GdkEventScroll *event)
 {
 	BraseroProjectSize *self;
-	BraseroBurnCaps *caps;
 
 	self = BRASERO_PROJECT_SIZE (widget);
-	caps = brasero_burn_caps_get_default ();
 
 	if (event->direction == GDK_SCROLL_DOWN) {
 		GList *node, *iter;
 
 		node = g_list_find (self->priv->drives, self->priv->current);
 		iter = g_list_next (node);
-		if (!iter) {
-			g_object_unref (caps);
+		if (!iter)
 			return TRUE;
-		}
 
 		while (iter != node) {
 			BraseroDriveSize *drive;
-			BraseroMedia media_status;
 
 			drive = iter->data;
-			media_status = brasero_burn_caps_media_capabilities (caps, drive->media);
 
 			/* must be a valid media */
-			if (!BRASERO_MEDIUM_VALID (drive->media))
-				iter = g_list_next (iter);
-			/* in an audio context only CDs are valid */
-			else if (self->priv->is_audio_context
-			     && (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
-				iter = g_list_next (iter);
-			/* we want a drive supported by the library */
-			else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
-				iter = g_list_next (iter);
-			/* if we are in an audio context no drive with data */
-			else if (self->priv->is_audio_context
-			     &&  drive->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+			if (!brasero_project_size_is_valid_drive (self, drive))
 				iter = g_list_next (iter);
 			else {
 				self->priv->current = drive;
 				break;
 			}
 
-			if (!iter) {
-				g_object_unref (caps);
+			if (!iter)
 				return TRUE;
-			}
 		}
 		brasero_project_size_disc_changed (self);
 	}
@@ -1266,46 +1273,28 @@ brasero_project_size_scroll_event (GtkWidget *widget,
 
 		node = g_list_find (self->priv->drives, self->priv->current);
 		iter = g_list_previous (node);
-		if (!iter) {
-			g_object_unref (caps);
+		if (!iter)
 			return TRUE;
-		}
 
 		while (iter != node) {
 			BraseroDriveSize *drive;
-			BraseroMedia media_status;
 
 			drive = iter->data;
-			media_status = brasero_burn_caps_media_capabilities (caps, drive->media);
 
 			/* must be a valid media */
-			if (!BRASERO_MEDIUM_VALID (drive->media))
-				iter = g_list_previous (iter);
-			/* in an audio context only CDs are valid */
-			else if (self->priv->is_audio_context
-			     && (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
-				iter = g_list_previous (iter);
-			/* we want a drive supported by the library */
-			else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
-				iter = g_list_previous (iter);
-			/* if we are in an audio context no drive with data */
-			else if (self->priv->is_audio_context
-			     &&  drive->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+			if (!brasero_project_size_is_valid_drive (self, drive))
 				iter = g_list_previous (iter);
 			else {
 				self->priv->current = drive;
 				break;
 			}
 
-			if (!iter) {
-				g_object_unref (caps);
+			if (!iter)
 				return TRUE;
-			}
 		}
 		brasero_project_size_disc_changed (self);
 	}
 
-	g_object_unref (caps);
 	return FALSE;
 }
 
@@ -1355,38 +1344,18 @@ static void
 brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 {
 	GList *iter;
-	BraseroBurnCaps *caps;
-	BraseroMedia media_status;
 	BraseroDriveSize *candidate = NULL;
-
-	caps = brasero_burn_caps_get_default ();
 
 	if (self->priv->current) {
 		BraseroDriveSize *current;
 
 		/* we check the current drive to see if it is suitable */
 		current = self->priv->current;
-		media_status = brasero_burn_caps_media_capabilities (caps, current->media);
 
-		if (self->priv->is_audio_context
-		&& (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
+		if (!brasero_project_size_is_valid_drive (self, current))
 			current = NULL;
-		}
-		else if (!BRASERO_MEDIUM_VALID (current->media)) {
-			current = NULL;
-		}
-		else if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE))) {
-			/* we want a drive supported by the library */
-			current = NULL;
-		}
-	    	else if (self->priv->is_audio_context
-		     &&  current->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-			/* if we are in an audio context no drive with data */
-			current = NULL;
-		}
 		else if (current->sectors >= self->priv->sectors && current->medium) {
 			/* The current drive is still a perfect fit keep it */
-			g_object_unref (caps);
 			return;
 		}
 		else if (self->priv->multi) {
@@ -1398,7 +1367,6 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 			 * - we don't change the current drive if it is real
 			 * unless another real drive comes up with a size
 			 * fitting the size of the selection. */
-			g_object_unref (caps);
 			return;
 		}
 		else /* see if there is better */
@@ -1411,22 +1379,7 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 
 		drive = iter->data;
 
-		/* No DVD if context is audio */
-		if (self->priv->is_audio_context
-		&& (drive->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)))
-			continue;
-
-		if (!BRASERO_MEDIUM_VALID (drive->media))
-			continue;
-
-		/* we want a drive supported by the library */
-		media_status = brasero_burn_caps_media_capabilities (caps, drive->media);
-		if (!(media_status & (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_REWRITABLE)))
-			continue;
-
-		/* if we are in an audio context no drive with data */
-	    	if (self->priv->is_audio_context
-		&&  drive->media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+		if (!brasero_project_size_is_valid_drive (self, drive))
 			continue;
 
 		/* we must have at least one candidate */
@@ -1455,18 +1408,17 @@ brasero_project_size_find_proper_drive (BraseroProjectSize *self)
 		}
 	}
 
-	g_object_unref (caps);
 	self->priv->current = candidate;
 }
 
 void
 brasero_project_size_set_context (BraseroProjectSize *self,
-				  gboolean is_audio)
+				  BraseroProjectType type)
 {
 	BraseroDriveSize *current;
 
 	self->priv->sectors = 0;
-	self->priv->is_audio_context = is_audio;
+	self->priv->context = type;
 
 	if (!self->priv->is_loaded) {
 		brasero_project_size_add_real_medias (self);
@@ -1479,12 +1431,12 @@ brasero_project_size_set_context (BraseroProjectSize *self,
 	 *   appendable disc or the disc is a DVD
 	 * No need to find a better one for DVD+RW */
 	current = self->priv->current;
+
 	if (!current)
 		brasero_project_size_find_proper_drive (self);
 	else if (!current->medium)
 		brasero_project_size_find_proper_drive (self);
-	else if (is_audio
-	     && (current->media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_APPENDABLE)))
+	else if (!brasero_project_size_is_valid_drive (self, current))
 		brasero_project_size_find_proper_drive (self);
 
 	brasero_project_size_disc_changed (self);

@@ -1129,7 +1129,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 0);
-		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
+		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), BRASERO_PROJECT_TYPE_AUDIO);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_DATA) {
 		project->priv->current = BRASERO_DISC (project->priv->data);
@@ -1138,7 +1138,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 1);
-		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), FALSE);
+		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), BRASERO_PROJECT_TYPE_DATA);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO) {
 		project->priv->current = BRASERO_DISC (project->priv->video);
@@ -1147,7 +1147,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 							       project->priv->message);
 
 		gtk_notebook_set_current_page (GTK_NOTEBOOK (project->priv->discs), 2);
-		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), TRUE);
+		brasero_project_size_set_context (BRASERO_PROJECT_SIZE (project->priv->size_display), BRASERO_PROJECT_TYPE_VIDEO);
 	}
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (project->priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);

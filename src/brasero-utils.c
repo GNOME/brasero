@@ -184,13 +184,13 @@ brasero_utils_unregister_string (const gchar *string)
 }
 
 gchar *
-brasero_utils_get_time_string (gint64 time,
+brasero_utils_get_time_string (guint64 time,
 			       gboolean with_unit,
 			       gboolean round)
 {
-	int second, minute, hour;
+	gint64 second, minute, hour;
 
-	time = time / 1000000000;
+	time /= 1000000000;
 	hour = time / 3600;
 	time = time % 3600;
 	minute = time / 60;
@@ -207,34 +207,34 @@ brasero_utils_get_time_string (gint64 time,
 	if (hour) {
 		if (with_unit) {
 			if (hour && minute && second)
-				return g_strdup_printf ("%i h %02i min %02i",
+				return g_strdup_printf ("%lli h %02lli min %02lli",
 							 hour,
 							 minute,
 							 second);
 			else if (hour && minute)
-				return g_strdup_printf ("%i h %02i",
+				return g_strdup_printf ("%lli h %02lli",
 							 hour,
 							 minute);
 			else
-				return g_strdup_printf ("%i h",hour);
+				return g_strdup_printf ("%lli h",hour);
 		}
 		else if (hour && minute && second)
-			return g_strdup_printf ("%i:%02i:%02i",
+			return g_strdup_printf ("%lli:%02lli:%02lli",
 						 hour,
 						 minute,
 						 second);
 		else if (hour && minute)
-			return g_strdup_printf ("%i:%02i", hour, minute);
+			return g_strdup_printf ("%lli:%02lli", hour, minute);
 	}
 
 	if (with_unit) {
 		if (!second)
-			return g_strdup_printf (_("%i min"), minute);
+			return g_strdup_printf (_("%lli min"), minute);
 		else
-			return g_strdup_printf (_("%i:%02i min"), minute, second);
+			return g_strdup_printf (_("%lli:%02lli min"), minute, second);
 	}
 	else
-		return g_strdup_printf ("%i:%02i", minute, second);
+		return g_strdup_printf ("%lli:%02lli", minute, second);
 }
 
 gchar *
@@ -242,37 +242,10 @@ brasero_utils_get_time_string_from_size (gint64 size,
 					 gboolean with_unit,
 					 gboolean round)
 {
-	int second = 0;
-	int minute = 0;
-	gint64 time = 0.0;
+	guint64 time = 0;
 
 	time = BRASERO_BYTES_TO_DURATION (size);
-	time /= 1000000000;
-
-	minute = time / 60;
-	if (!round)
-		second = time % 60;
-
-	if (minute > 120) {
-		int hour;
-
-		hour = minute / 60;
-		minute = minute % 60;
-
-		if (with_unit == TRUE)
-			return g_strdup_printf (ngettext ("%d:%02i hour", "%i:%02i hours", hour), hour, minute);
-		else
-			return g_strdup_printf ("%i:%02i:%02i", hour,
-						minute, second);
-	}
-	else if (with_unit == TRUE) {
-		if (!second)
-			return g_strdup_printf (_("%i min"), minute);
-		else
-			return g_strdup_printf (_("%i:%02i min"), minute, second);
-	}
-	else
-		return g_strdup_printf ("%i:%02i", minute, second);
+	return brasero_utils_get_time_string (time, with_unit, round);
 }
 
 enum {

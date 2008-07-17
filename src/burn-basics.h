@@ -170,8 +170,8 @@ typedef enum {
 #define BRASERO_SIZE_TO_SECTORS(size, secsize)					\
 	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
 #define BRASERO_BYTES_TO_DURATION(bytes)					\
-	(((bytes) * 1000000000) / (2352 * 75) + 				\
-	((((bytes) * 1000000000) % (2352 * 75)) ? 1:0))
+	(guint64) ((guint64) ((guint64) (bytes) * 1000000000) / (guint64) (2352 * 75) + 				\
+	(guint64) (((guint64) ((guint64) (bytes) * 1000000000) % (guint64) (2352 * 75)) ? 1:0))
 
 BraseroBurnResult
 brasero_burn_library_init (void);
