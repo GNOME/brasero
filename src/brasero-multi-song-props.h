@@ -1,9 +1,9 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-oTK_TYPE_DIALOGffset: 8; tab-width: 8 -*- */
 /*
  * brasero
- * Copyright (C) Philippe Rouquier 2008 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2005-2008 <bonfire-app@wanadoo.fr>
  * 
- * brasero is free software: you can redistribute it and/or modify itTK_TYPE_DIALOG
+ * brasero is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.

@@ -7,19 +7,21 @@
  ***************************************************************************/
 
 /*
- *  This program is free software; you can redistribute it and/or modify
+ *  TBrasero is free software; you can redistribute itand/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  TBrasero is distributed in the hope that it will be useful
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Library General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *  along with this program; if not, write to t:
+ * 	The Free Software Foundation, Inc.,
+ * 	51 Franklin Street, Fifth Floor
+ * 	Boston, MA  02110-1301, USA.30, Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -74,7 +76,7 @@ brasero_dvdcss_library_init (GError **error)
 	if (css_ready)
 		return TRUE;
 
-	/* load libdvdcss library and see the version (min is 1.2.0) */
+	/* load libdvdcss library and see the version (mine is 1.2.0) */
 	module = g_module_open ("libdvdcss.so", G_MODULE_BIND_LOCAL);
 	if (!module)
 		goto error_doesnt_exist;
@@ -83,7 +85,7 @@ brasero_dvdcss_library_init (GError **error)
 		goto error_version;
 
 	dvdcss_interface_2 = address;
-	BRASERO_BURN_LOG ("libdvdcss version %c.%c.%c\n",
+	BRASERO_BURN_LOG ("libdvdcss version %d.%d.%d\n",
 			  (guchar) dvdcss_interface_2 [0],
 			  (guchar) dvdcss_interface_2 [1],
 			  (guchar) dvdcss_interface_2 [2]);

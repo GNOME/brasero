@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * burn-dvdauthor.c
- * Copyright (C) Philippe Rouquier 2008 <bonfire-app@wanadoo.fr>
+ * Copyright (C) Philippe Rouquier 2005-2008 <bonfire-app@wanadoo.fr>
  * 
  * burn-dvdauthor.c is free software.
  * 
