@@ -20,7 +20,7 @@ DIST_CHECK_CONFIGRE_FLAGS =
 DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
-	intltool-update \
+	intltool-update		\
 	gtk-doc.make
 
 # Copy all the spec files. Of cource, only one is actually used.
