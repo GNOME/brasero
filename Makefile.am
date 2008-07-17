@@ -21,7 +21,7 @@ DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
 	intltool-update \
-	gnome-doc-utils.make
+	gtk-doc.make
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
