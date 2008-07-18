@@ -1,5 +1,15 @@
 2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Try to workaround an error (invalid track mode) when reading
+	with READ CD by autodetecting data mode
+
+	* src/burn-volume-source.c
+	(brasero_volume_source_read_device_handle):
+	* src/burn-volume-source.h:
+	* src/scsi-read-cd.c (brasero_mmc1_read_block):
+
+2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Another minor fix and cleanup for medium code.
 
 	* src/burn-medium.c (brasero_medium_add_DVD_plus_RW_leadout),

@@ -119,7 +119,7 @@ brasero_mmc1_read_block (BraseroDeviceHandle *handle,
 	/* no sync field included */
 	cdb->sync = 0;
 
-	/* no filtering */
+	/* sector type */
 	cdb->sec_type = type;
 
 	/* header ?*/

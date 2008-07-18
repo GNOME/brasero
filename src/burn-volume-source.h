@@ -46,6 +46,7 @@ struct _BraseroVolSrc {
 	BraseroVolSrcSeekFunc seek;
 	guint64 position;
 	gpointer data;
+	guint data_mode;
 	guint ref;
 };
 
