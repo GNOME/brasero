@@ -752,6 +752,10 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 					GTK_STOCK_FIND,
 					NULL);
 
+	/* only media with data, no blank medium */
+	brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
+						   BRASERO_MEDIA_TYPE_READABLE);
+
 	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
 	if (medium) {
 		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));

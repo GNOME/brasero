@@ -134,6 +134,10 @@ brasero_eject_dialog_init (BraseroEjectDialog *obj)
 					NULL,
 					"media-eject");
 
+	/* all kinds of media */
+	brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
+						   BRASERO_MEDIA_TYPE_ALL_BUT_FILE);
+
 	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
 	if (medium) {
 		brasero_tool_dialog_set_valid (BRASERO_TOOL_DIALOG (obj), BRASERO_MEDIUM_VALID (brasero_medium_get_status (medium)));

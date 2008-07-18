@@ -1,5 +1,25 @@
 2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
+	Improved previous patch by Lin Ma so that dialogs derived from
+	BRASERO_TYPE_TOOL_DIALOG can choose the type of media they
+	want to display.
+	That way:
+	- check dialog only shows readable media (with data that can be read, whether ROM, +, R, RW, ....)
+	- eject dialog show all media inserted
+	- blank dialog shows all rewritable media
+
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_drive_changed),
+	(brasero_blank_dialog_init):
+	* src/brasero-eject-dialog.c (brasero_eject_dialog_init):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_init):
+	* src/brasero-tool-dialog.c
+	(brasero_tool_dialog_set_medium_type_shown):
+	* src/brasero-tool-dialog.h:
+	* src/burn-medium-monitor.c (brasero_medium_monitor_get_media):
+	* src/burn-medium-monitor.h:
+
+2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
 	Small cleanup
 
 	* src/brasero-multi-dnd.h:

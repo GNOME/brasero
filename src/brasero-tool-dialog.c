@@ -335,6 +335,14 @@ brasero_tool_dialog_set_valid (BraseroToolDialog *self,
 	gtk_widget_set_sensitive (self->priv->button, valid);
 }
 
+void
+brasero_tool_dialog_set_medium_type_shown (BraseroToolDialog *self,
+					   BraseroMediaType media_type)
+{
+	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (self->priv->selector),
+						media_type);
+}
+
 BraseroMedium *
 brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 {

@@ -37,6 +37,7 @@
 #include "burn.h"
 #include "burn-medium.h"
 #include "burn-session.h"
+#include "burn-medium-monitor.h"
 
 G_BEGIN_DECLS
 
@@ -79,16 +80,18 @@ brasero_tool_dialog_set_button (BraseroToolDialog *dialog,
 void
 brasero_tool_dialog_set_valid (BraseroToolDialog *dialog,
 			       gboolean valid);
-
 void
-brasero_tool_dialog_set_progress (BraseroToolDialog *self,
+brasero_tool_dialog_set_medium_type_shown (BraseroToolDialog *dialog,
+					   BraseroMediaType media_type);
+void
+brasero_tool_dialog_set_progress (BraseroToolDialog *dialog,
 				  gdouble overall_progress,
 				  gdouble task_progress,
 				  glong remaining,
 				  gint size_mb,
 				  gint written_mb);
 void
-brasero_tool_dialog_set_action (BraseroToolDialog *self,
+brasero_tool_dialog_set_action (BraseroToolDialog *dialog,
 				BraseroBurnAction action,
 				const gchar *string);
 

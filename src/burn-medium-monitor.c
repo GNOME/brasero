@@ -92,6 +92,13 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 		medium = iter->data;
 		drive = brasero_medium_get_drive (medium);
 
+		if ((type & BRASERO_MEDIA_TYPE_ALL_BUT_FILE)
+		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)) {
+			list = g_slist_prepend (list, medium);
+			g_object_ref (medium);
+			continue;
+		}
+
 		if ((type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
 		&&  (brasero_drive_can_write (drive))) {
 			list = g_slist_prepend (list, medium);

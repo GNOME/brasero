@@ -184,7 +184,10 @@ brasero_blank_dialog_drive_changed (BraseroToolDialog *dialog,
 	else
 		drive = NULL;
 
-	brasero_burn_session_set_burner (priv->session, drive);
+	/* it can happen that the drive changed while initializing and that
+	 * session hasn't been created yet. */
+	if (priv->session)
+		brasero_burn_session_set_burner (priv->session, drive);
 }
 
 static gboolean
@@ -364,6 +367,10 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					_("_Blank"),
 					NULL,
 					"media-optical-blank");
+
+	/* only media that can be rewritten with or without data */
+	brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
+						   BRASERO_MEDIA_TYPE_REWRITABLE);
 
 	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
 	drive = brasero_medium_get_drive (medium);
