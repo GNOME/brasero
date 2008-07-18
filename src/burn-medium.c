@@ -1117,18 +1117,33 @@ brasero_medium_track_get_info (BraseroMedium *self,
  */
 
 static void
-brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
-					gint32 start)
+brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self)
 {
 	BraseroMediumTrack *leadout;
 	BraseroMediumPrivate *priv;
+	gint64 blocks_num;
+	gint32 start;
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* determine the start */
+	if (priv->tracks) {
+		BraseroMediumTrack *track;
+
+		track = priv->tracks->data;
+		start = track->start + track->blocks_num;
+		blocks_num = priv->block_num - ((track->blocks_num > 300) ? track->blocks_num : 300);
+	}
+	else {
+		start = 0;
+		blocks_num = priv->block_num;
+	}
 
 	leadout = g_new0 (BraseroMediumTrack, 1);
 	priv->tracks = g_slist_append (priv->tracks, leadout);
 
 	leadout->start = start;
+	leadout->blocks_num = blocks_num;
 	leadout->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 
 	/* we fabricate the leadout here. We don't really need one in 
@@ -1138,13 +1153,6 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self,
 	 * buggy */
 	priv->next_wr_add = 0;
 
-	leadout->blocks_num = priv->block_num;
-	if (g_slist_length (priv->tracks) > 1) {
-		BraseroMediumTrack *track;
-
-		track = priv->tracks->data;
-		leadout->blocks_num -= ((track->blocks_num > 300) ? track->blocks_num : 300);
-	}
 	BRASERO_BURN_LOG ("Adding fabricated leadout start = %llu length = %llu",
 			  leadout->start,
 			  leadout->blocks_num);
@@ -1241,8 +1249,14 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 
 				BRASERO_BURN_LOG ("Empty first session.");
 			}
-			else
+			else {
 				priv->next_wr_add = 0;
+				BRASERO_BURN_LOG ("Track 1 (session %i): type = %i start = %llu size = %llu",
+						  track->session,
+						  track->type,
+						  track->start,
+						  track->blocks_num);
+			}
 
 			/* NOTE: the next track should be the leadout */
 			continue;
@@ -1260,17 +1274,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	priv->tracks = g_slist_reverse (priv->tracks);
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-		gint32 start;
-
-		/* It starts where the other one finishes */
-		if (priv->tracks)
-			start = BRASERO_GET_32 (desc->track_start);
-		else
-			start = 0;
-
-		brasero_medium_add_DVD_plus_RW_leadout (self, start);
-	}
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		brasero_medium_add_DVD_plus_RW_leadout (self);
 	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
 		BraseroMediumTrack *track;
 
@@ -1332,7 +1337,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 
 		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
 		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
-			brasero_medium_add_DVD_plus_RW_leadout (self, 0);
+			brasero_medium_add_DVD_plus_RW_leadout (self);
 		else {
 			track = g_new0 (BraseroMediumTrack, 1);
 			track->start = 0;
@@ -2212,6 +2217,7 @@ brasero_medium_try_open (BraseroMedium *self)
 	 * but we re-try to open it every second */
 	BRASERO_BURN_LOG ("Trying to open device %s", path);
 	handle = brasero_device_handle_open (path, &code);
+
 	if (!handle) {
 		if (code == BRASERO_SCSI_NOT_READY) {
 			BRASERO_BURN_LOG ("Device busy");
