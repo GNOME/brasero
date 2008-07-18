@@ -899,13 +899,13 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	 * still add data (with growisofs). It is nevertheless on the 
 	 * condition that the fs is valid.
 	 * So we check if their first and only volume is valid. 
-	 * That's also used when the track size is reported a 300 Kio
+	 * That's also used when the track size is reported 300 Kio
 	 * see below */
 	vol = brasero_volume_source_open_device_handle (handle, NULL);
 	res = brasero_volume_get_size (vol,
 				       track->start,
 				       &nb_blocks,
-				       NULL);
+				       &error);
 	brasero_volume_source_close (vol);
 
 	if (!res) {
@@ -1093,13 +1093,8 @@ brasero_medium_track_get_info (BraseroMedium *self,
 		else
 			BRASERO_BURN_LOG ("Detected runouts");
 	}
-	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL)
-	     ||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
-		BRASERO_BURN_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size");
-		brasero_medium_track_volume_size (self, track, handle);
-	}
 
+	/* NOTE: DVD+RW, DVD-RW (restricted overwrite) never reach this function */
 
 	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
@@ -1223,22 +1218,16 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
 		}
 
-		brasero_medium_track_get_info (self,
-					       multisession,
-					       track,
-					       g_slist_length (priv->tracks),
-					       handle,
-					       code);
-
-		if (desc->control & BRASERO_SCSI_TRACK_COPY)
-			track->type |= BRASERO_MEDIUM_TRACK_COPY;
-
 		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
 		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 			BraseroBurnResult result;
 
 			/* a special case for these two kinds of media (DVD+RW)
-			 * which have only one track: the first. */
+			 * which have only one track: the first. Since it's not
+			 * possible to know the amount of data that were really
+			 * written in this session, read the filesystem. */
+			BRASERO_BURN_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size");
+			track->session = 1;
 			result = brasero_medium_track_volume_size (self, 
 								   track,
 								   handle);
@@ -1254,7 +1243,17 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			}
 			else
 				priv->next_wr_add = 0;
+
+			/* NOTE: the next track should be the leadout */
+			continue;
 		}
+
+		brasero_medium_track_get_info (self,
+					       multisession,
+					       track,
+					       g_slist_length (priv->tracks),
+					       handle,
+					       code);
 	}
 
 	/* put the tracks in the right order */
