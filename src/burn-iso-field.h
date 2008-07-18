@@ -27,17 +27,12 @@
 #ifndef _BURN_ISO_FIELD_H
 #define _BURN_ISO_FIELD_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 guint32
 brasero_iso9660_get_733_val (guchar *buffer);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_ISO_FIELD_H */
 

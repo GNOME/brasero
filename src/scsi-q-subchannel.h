@@ -25,10 +25,7 @@
 #ifndef _SCSI_Q_SUBCHANNEL_H
 #define _SCSI_Q_SUBCHANNEL_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 /**
  * This is for the program area (1, 2, 3) and the leadout (1, 2)
@@ -185,9 +182,7 @@ BRASERO_SCSI_TRACK_COPY				= 0x02,
 
 } BraseroScsiTrackMode;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_Q_SUBCHANNEL_H */
 

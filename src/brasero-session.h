@@ -32,10 +32,7 @@
 
 #include "brasero-app.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #define BRASERO_SESSION_TMP_PROJECT_PATH	"brasero-tmp-project"
 #define BRASERO_SESSION_TMP_SESSION_PATH	"brasero.session"
@@ -51,8 +48,6 @@ brasero_session_save (BraseroApp *app,
 gboolean
 brasero_session_load (BraseroApp *app, gboolean load_project);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BRASERO-SESSION_H */

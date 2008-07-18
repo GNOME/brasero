@@ -27,10 +27,7 @@
 #ifndef _SCSI_READ_DISC_STRUCTURE_H
 #define _SCSI_READ_DISC_STRUCTURE_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 typedef enum {
 	/* structures specific to DVD and HD-DVD */
@@ -108,9 +105,7 @@ struct _BraseroScsiReadDiscStructureHdr {
 };
 typedef struct _BraseroScsiReadDiscStructureHdr BraseroScsiReadDiscStructureHdr;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_READ_DISC_STRUCTURE_H */
 

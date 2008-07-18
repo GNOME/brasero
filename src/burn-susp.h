@@ -27,10 +27,7 @@
 #ifndef _BURN_SUSP_H
 #define _BURN_SUSP_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 struct _BraseroSuspCtx {
 	gchar *rr_name;
@@ -52,9 +49,7 @@ brasero_susp_ctx_clean (BraseroSuspCtx *ctx);
 gboolean
 brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, gint max);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_SUSP_H */
 

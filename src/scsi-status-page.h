@@ -27,10 +27,7 @@
 #ifndef _BURN_STATUS_PAGE_H
 #define _BURN_STATUS_PAGE_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 /**
  * Status page
@@ -236,9 +233,7 @@ struct _BraseroScsiStatusPage {
 
 typedef struct _BraseroScsiStatusPage BraseroScsiStatusPage;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_STATUS_PAGE_H */
 

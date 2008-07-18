@@ -28,19 +28,14 @@
 #ifndef _BURN_SENSE_DATA_H
 #define _BURN_SENSE_DATA_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #define BRASERO_SENSE_DATA_SIZE		19
 
 BraseroScsiResult
 brasero_sense_data_process (uchar *sense_data, BraseroScsiErrCode *err);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _BURN_SENSE_DATA_H */
 

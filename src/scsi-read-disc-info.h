@@ -29,10 +29,7 @@
 #ifndef _SCSI_READ_DISC_INFO_H
 #define _SCSI_READ_DISC_INFO_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 typedef enum {
 BRASERO_SCSI_SESSION_EMPTY		= 0x00,
@@ -220,9 +217,7 @@ typedef struct _BraseroScsiDiscInfoStd BraseroScsiDiscInfoStd;
 typedef struct _BraseroScsiTrackResInfo BraseroScsiTrackResInfo;
 typedef struct _BraseroScsiPOWResInfo BraseroScsiPOWResInfo;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_READ_DISC_INFO_H */
 

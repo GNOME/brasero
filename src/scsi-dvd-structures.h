@@ -29,10 +29,7 @@
 #ifndef _SCSI_DVD_STRUCTURES_H
 #define _SCSI_DVD_STRUCTURES_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 typedef enum {
 BRASERO_SCSI_NONE				= 0x00,
@@ -314,9 +311,7 @@ typedef struct _BraseroScsiDVDCopyright BraseroScsiDVDCopyright;
 /* typedef struct _BraseroScsiBurstCuttingArea BraseroScsiBurnCuttingArea; */
 typedef struct _BraseroScsiManufacturingInfo BraseroScsiManufacturingInfo;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_DVD_STRUCTURES_H */
 

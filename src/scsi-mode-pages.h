@@ -29,10 +29,7 @@
 #ifndef _SCSI_MODE_PAGES_H
 #define _SCSI_MODE_PAGES_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+G_BEGIN_DECLS
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
 
@@ -82,9 +79,7 @@ typedef enum {
 	BRASERO_SPC_PAGE_STATUS		= 0x2a,
 } BraseroSPCPageType;
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _SCSI_MODE-PAGES_H */
 

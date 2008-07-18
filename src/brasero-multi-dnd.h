@@ -25,17 +25,15 @@
 #ifndef _MULTI_DND_H
 #define _MULTI_DND_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#include <glib.h>
+
+
+G_BEGIN_DECLS
 
 void
 brasero_enable_multi_DND (void);
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 
 #endif /* _MULTI_DND_H */
 
