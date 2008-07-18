@@ -43,6 +43,12 @@
 #include "burn-volume-obj.h"
 #include "burn-medium-monitor.h"
 
+#if defined(HAVE_STRUCT_USCSI_CMD)
+#define BLOCK_DEVICE	"block.solaris.raw_device"
+#else
+#define BLOCK_DEVICE	"block.device"
+#endif
+
 typedef struct _BraseroMediumMonitorPrivate BraseroMediumMonitorPrivate;
 struct _BraseroMediumMonitorPrivate
 {
@@ -156,7 +162,7 @@ brasero_medium_monitor_medium_inserted (LibHalContext *ctx,
 
 	drive_path = libhal_device_get_property_string (ctx,
 							udi,
-							"block.device",
+							BLOCK_DEVICE,
 							NULL);
 	if (!drive_path)
 		return;

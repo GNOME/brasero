@@ -1,3 +1,36 @@
+2008-07-17  Lin Ma  <Lin.Ma@Sun.COM>
+ 
+ 	* src/brasero-tool-dialog.c: (brasero_tool_dialog_init):
+ 	brasero_drive_selection_set_type_shown doesn't include
+ 	BRASERO_MEDIA_TYPE_WRITABLE, so CD/DVD-R mediums will not be shown on
+ 	the dialog.
+ 	
+ 	* src/burn-drive.c, src/burn-drive.h: (brasero_drive_get_block_device),
+ 	(brasero_drive_finalize), (brasero_drive_init_real):
+ 	* src/burn-volume-obj.c: (brasero_volume_get_gvolume):
+ 	It's a tricky for Solaris because block/raw devices have different
+ 	device nodes. We actually raw device by default but
+ 	brasero_volume_get_gvolume returns block device so I have to hack it.
+ 
+ 	* src/burn-job.c: (brasero_job_set_output_file):
+ 	* src/burn-session.c: (brasero_burn_session_get_config_key):
+ 	* src/burn-track.c: (brasero_track_get_checksum):
+ 	Sun libc printf currently doesn't support NULL string.
+ 	
+ 	* src/burn-medium-monitor.c:
+ 	(brasero_medium_monitor_medium_inserted):
+ 	Block/raw device related fix.
+ 	
+ 	* src/burn-plugin-manager.c: (brasero_plugin_manager_init):
+ 	If fail to load a plugin, we should ignore it.
+ 	
+ 	* src/plugins/transcode/burn-normalize.c:
+ 	(brasero_normalize_export_caps):
+ 	Detail errors should be better here for OS do not have all the plugins.
+ 	
+ 	* src/scsi-dvd-structures.h:
+ 	Sun compiler doesn't support empty structures.
+
 2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Try to workaround an error (invalid track mode) when reading

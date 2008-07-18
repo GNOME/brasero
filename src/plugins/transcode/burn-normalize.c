@@ -556,14 +556,18 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* Let's see if we've got the plugins we need */
 	element = gst_element_factory_make ("rgvolume", NULL);
-	if (!element)
+	if (!element) {
+		*error = g_strdup (_("GST plugin \"rgvolume\" could not be found"));
 		return BRASERO_BURN_ERR;
+	}
 
 	gst_object_unref (element);
 
 	element = gst_element_factory_make ("rganalysis", NULL);
-	if (!element)
+	if (!element) {
+		*error = g_strdup (_("GST plugin \"rganalysis\" could not be found"));
 		return BRASERO_BURN_ERR;
+	}
 
 	gst_object_unref (element);
 

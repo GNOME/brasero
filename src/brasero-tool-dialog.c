@@ -491,6 +491,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (obj->priv->selector),
 						BRASERO_MEDIA_TYPE_REWRITABLE|
+						BRASERO_MEDIA_TYPE_WRITABLE|
 						BRASERO_MEDIA_TYPE_READABLE);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),

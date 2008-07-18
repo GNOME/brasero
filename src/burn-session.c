@@ -1613,6 +1613,9 @@ brasero_burn_session_get_config_key (BraseroBurnSession *self,
 
 	g_strdelimit (disc_type, " +()", '_');
 
+	display_name = display_name ? display_name : "";
+	disc_type = disc_type ? disc_type : "";
+
 	switch (brasero_burn_session_get_input_type (self, NULL)) {
 	case BRASERO_TRACK_TYPE_NONE:
 		key = g_strdup_printf ("%s/%s/none_%s/%s",

@@ -288,19 +288,22 @@ struct _BraseroScsiDVDCopyright {
 	uchar reserved				[2];
 };
 /* variable length 12 to 188 bytes for DVD, max is 76 for HD DVD */
+/*
 struct _BraseroScsiBurstCuttingArea {
 	uchar burst_cutting_area		[0];
 };
+*/
 
 struct _BraseroScsiManufacturingInfo {
 	uchar data				[2048];
 };
 
 /* variable length */
+/*
 struct _BraseroScsiCopyrightDataSection {
 	uchar data				[0];
 };
-
+*/
 
 typedef struct _BraseroScsiLayerFormatList BraseroScsiLayerFormatList;
 typedef struct _BraseroScsiDiscWrtProtection BraseroScsiDiscWrtProtection;
@@ -308,7 +311,7 @@ typedef struct _BraseroScsiDiscStructureEntry BraseroScsiDiscStructureEntry;
 typedef struct _BraseroScsiPhysicalFormat BraseroScsiPhysicalFormat;
 typedef struct _BraseroScsiCopyrightManagement BraseroScsiCopyrightManagement;
 typedef struct _BraseroScsiDVDCopyright BraseroScsiDVDCopyright;
-typedef struct _BraseroScsiBurstCuttingArea BraseroScsiBurnCuttingArea;
+/* typedef struct _BraseroScsiBurstCuttingArea BraseroScsiBurnCuttingArea; */
 typedef struct _BraseroScsiManufacturingInfo BraseroScsiManufacturingInfo;
 
 #ifdef __cplusplus

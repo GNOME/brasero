@@ -72,7 +72,12 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
 	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	volume_path = brasero_drive_get_block_device (drive);
+#else
 	volume_path = brasero_drive_get_device (drive);
+#endif
 
 	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
 	monitor = g_volume_monitor_get ();
@@ -85,6 +90,7 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 
 		tmp = iter->data;
 		device_path = g_volume_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		BRASERO_BURN_LOG ("Found volume %s", device_path);
 		if (!strcmp (device_path, volume_path)) {
 			volume = tmp;
 			g_free (device_path);

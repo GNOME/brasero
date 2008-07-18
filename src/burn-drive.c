@@ -55,6 +55,7 @@ struct _BraseroDrivePrivate
 	BraseroMedium *medium;
 	BraseroDriveCaps caps;
 	gchar *path;
+	gchar *block_path;
 	gchar *udi;
 
 	gint bus;
@@ -289,6 +290,15 @@ brasero_drive_get_device (BraseroDrive *self)
 }
 
 const gchar *
+brasero_drive_get_block_device (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return priv->block_path;
+}
+
+const gchar *
 brasero_drive_get_udi (BraseroDrive *self)
 {
 	BraseroDrivePrivate *priv;
@@ -390,6 +400,11 @@ brasero_drive_finalize (GObject *object)
 		priv->path = NULL;
 	}
 
+	if (priv->block_path) {
+		libhal_free_string (priv->block_path);
+		priv->block_path = NULL;
+	}
+
 	if (priv->udi) {
 		g_free (priv->udi);
 		priv->udi = NULL;
@@ -418,6 +433,12 @@ brasero_drive_init_real (BraseroDrive *drive)
 	if (priv->path [0] == '\0') {
 		g_free (priv->path);
 		priv->path = NULL;
+	}
+
+	priv->block_path = libhal_device_get_property_string (ctx, priv->udi, "block.device", NULL);
+	if (priv->block_path [0] == '\0') {
+		g_free (priv->block_path);
+		priv->block_path = NULL;
 	}
 
 	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.cdr", NULL))

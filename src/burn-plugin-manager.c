@@ -471,8 +471,11 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
 			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",
 					  brasero_plugin_get_error (plugin));
+			g_object_unref (plugin);
+			continue;
 		}
 
+		g_assert(brasero_plugin_get_name(plugin));
 		priv->plugins = g_slist_prepend (priv->plugins, plugin);
 	}
 	g_dir_close (directory);

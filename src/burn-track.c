@@ -943,7 +943,7 @@ brasero_track_set_checksum (BraseroTrack *track,
 const gchar *
 brasero_track_get_checksum (BraseroTrack *track)
 {
-	return track->checksum;
+	return track->checksum ? track->checksum : "";
 }
 
 BraseroChecksumType
