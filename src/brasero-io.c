@@ -682,10 +682,9 @@ brasero_io_get_metadata_info (BraseroIO *self,
 			}
 		}
 
-		/* remove it from the queue since we can't keep the same
-		 * URI twice */
-		brasero_metadata_info_free (node->data);
-		g_queue_remove (priv->meta_buffer, node->data);
+		/* remove it from the queue => no same URI twice */
+		g_queue_remove (priv->meta_buffer, cached);
+		brasero_io_metadata_cached_free (cached);
 
 		BRASERO_BURN_LOG ("Updating cache information for %s", uri);
 	}

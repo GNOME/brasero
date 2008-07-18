@@ -313,7 +313,7 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 		return ;
 	}
 
-    	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					 GTK_DIALOG_DESTROY_WITH_PARENT|
 					 GTK_DIALOG_MODAL,

@@ -1,3 +1,14 @@
+2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Fixes for video projects:
+	- crash fixed (#543505 – crash in Brasero svn trunk r1010 when adding a .ogg file to a video project.)
+	- wrong values for signals
+
+	* src/brasero-io.c (brasero_io_get_metadata_info):
+	* src/brasero-video-project.c
+	(brasero_video_project_add_directory_contents_result),
+	(brasero_video_project_result_cb):
+
 2008-07-17  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Fix video project drive choice

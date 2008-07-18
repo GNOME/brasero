@@ -594,9 +594,7 @@ brasero_video_project_add_directory_contents_result (GObject *obj,
 	/* update size */
 	g_signal_emit (BRASERO_VIDEO_PROJECT (obj),
 		       brasero_video_project_signals [SIZE_CHANGED_SIGNAL],
-		       0,
-		       error,
-		       uri);
+		       0);
 }
 
 static void
@@ -676,8 +674,8 @@ brasero_video_project_result_cb (GObject *obj,
 
 		/* Ask the user */
 		result = brasero_video_project_file_signal (self,
-							   DIRECTORY_URI_SIGNAL,
-							   uri);
+							    DIRECTORY_URI_SIGNAL,
+							    uri);
 
 		/* NOTE: we need to pass a sibling here even if that the file
 		 * that's going to be deleted just after. */
@@ -696,7 +694,6 @@ brasero_video_project_result_cb (GObject *obj,
 		g_signal_emit (self,
 			       brasero_video_project_signals [NOT_VIDEO_SIGNAL],
 			       0,
-			       error,
 			       uri);
 
 		brasero_video_project_remove_file (self, file);
