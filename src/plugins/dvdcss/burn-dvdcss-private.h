@@ -41,7 +41,7 @@ typedef gpointer dvdcss_handle;
 #define DVDCSS_SEEK_MPEG	(1 << 0)
 #define DVDCSS_SEEK_KEY		(1 << 1)
 
-#define DVDCSS_BLOCK_SIZE	2048
+#define DVDCSS_BLOCK_SIZE	2048ULL
 
 static dvdcss_handle *
 (*dvdcss_open)	(const gchar *device) = NULL;

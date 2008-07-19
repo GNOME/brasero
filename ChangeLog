@@ -1,3 +1,28 @@
+2008-07-19  Philippe Rouquier  <algernon@localhost.localdomain>
+
+	Improve and fix #542718 – Creating large ISO fails due to filesystem restrictions
+	Also fix variable overflow in mkisofs, genisoimage, cdrdao when they reported
+	size of output
+
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_tmpdir_info),
+	(brasero_drive_properties_tmpdir_changed_cb),
+	(brasero_drive_properties_set_tmpdir),
+	(brasero_drive_properties_init),
+	(brasero_drive_properties_finalize):
+	* src/burn-job.c (brasero_job_check_output_volume_space):
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_read_stderr_image), (brasero_cdrdao_set_argv):
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_read_isosize):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_get_size):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_read_isosize):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_get_size):
+	* src/plugins/dvdcss/burn-dvdcss-private.h:
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_read_stderr):
+
 2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
 
 	Improved previous patch by Lin Ma so that dialogs derived from

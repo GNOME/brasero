@@ -61,6 +61,10 @@ struct _BraseroDrivePropertiesPrivate
 
 	GtkWidget *tmpdir;
 	GtkWidget *tmpdir_size;
+
+	gchar *previous_path;
+
+	guint check_filesystem:1;
 };
 
 #define BRASERO_DRIVE_PROPERTIES_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_PROPERTIES, BraseroDrivePropertiesPrivate))
@@ -129,14 +133,14 @@ brasero_drive_properties_get_tmpdir (BraseroDriveProperties *self)
 	return gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (priv->tmpdir));
 }
 
-void
-brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
-				     const gchar *path)
+static gboolean
+brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
+					  const gchar *path,
+					  gboolean warn)
 {
 	GFile *file;
 	gchar *string;
 	GFileInfo *info;
-	gchar *directory;
 	GError *error = NULL;
 	guint64 vol_size = 0;
 	const gchar *filesystem;
@@ -144,23 +148,17 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
 
-	if (!path)
-		path = g_get_tmp_dir ();
-
 	/* get the volume free space */
-	directory = g_path_get_dirname (path);
-	file = g_file_new_for_commandline_arg (directory);
-	g_free (directory);
-
-	if (file == NULL) {
+	file = g_file_new_for_commandline_arg (path);
+	if (!file) {
 		BRASERO_BURN_LOG ("impossible to retrieve size for %s", path);
 		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir), path);
-		return;
+		return FALSE;
 	}
 
 	info = g_file_query_filesystem_info (file,
-					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ",",
+					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
+					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
 					     NULL,
 					     &error);
 	g_object_unref (file);
@@ -172,7 +170,7 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 		g_error_free (error);
 
 		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
-		return;
+		return FALSE;
 	}
 
 	/* NOTE/FIXME: also check, probably best at start or in a special dialog
@@ -183,7 +181,9 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 	 * filesystems have a maximum file size limit of 4 Gio and more than
 	 * often we need a temporary file size of 4 Gio or more. */
 	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-	if (filesystem && !strcmp (filesystem, "msdos")) {
+	if (priv->check_filesystem
+	&&  filesystem
+	&& !strcmp (filesystem, "msdos")) {
 		gint answer;
 		GtkWidget *dialog;
 		GtkWidget *toplevel;
@@ -211,11 +211,11 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 
 		if (answer != GTK_RESPONSE_OK) {
 			g_object_unref (info);
-			return;
+			return FALSE;
 		}
-	}
 
-	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir), path);
+		priv->check_filesystem = 1;
+	}
 
 	vol_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 	g_object_unref (info);
@@ -223,6 +223,72 @@ brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
 	string = brasero_utils_get_size_string (vol_size, TRUE, TRUE);
 	gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), string);
 	g_free (string);
+
+	return TRUE;
+}
+
+static void
+brasero_drive_properties_tmpdir_changed_cb (GtkFileChooser *chooser,
+					    BraseroDriveProperties *self)
+{
+	gchar *path;
+	gboolean result;
+	BraseroDrivePropertiesPrivate *priv;
+
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+
+	priv->check_filesystem = 1;
+	path = gtk_file_chooser_get_filename (chooser);
+	result = brasero_drive_properties_set_tmpdir_info (self, path, TRUE);
+	g_free (path);
+
+	if (result) {
+		if (priv->previous_path)
+			g_free (priv->previous_path);
+
+		priv->previous_path = gtk_file_chooser_get_filename (chooser);
+		return;
+	}
+
+	g_signal_handlers_block_by_func (chooser,
+					 brasero_drive_properties_tmpdir_changed_cb,
+					 self);
+	if (priv->previous_path)
+		gtk_file_chooser_set_filename (chooser, priv->previous_path);
+	else
+		gtk_file_chooser_set_filename (chooser, g_get_tmp_dir ());
+
+	g_signal_handlers_unblock_by_func (chooser,
+					   brasero_drive_properties_tmpdir_changed_cb,
+					   self);
+}
+
+void
+brasero_drive_properties_set_tmpdir (BraseroDriveProperties *self,
+				     const gchar *path)
+{
+	BraseroDrivePropertiesPrivate *priv;
+
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+
+	if (!path)
+		path = g_get_tmp_dir ();
+
+	priv->check_filesystem = 0;
+	brasero_drive_properties_set_tmpdir_info (self, path, FALSE);
+
+	g_signal_handlers_block_by_func (GTK_FILE_CHOOSER (priv->tmpdir),
+					 brasero_drive_properties_tmpdir_changed_cb,
+					 self);
+	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir), path);
+	g_signal_handlers_unblock_by_func (GTK_FILE_CHOOSER (priv->tmpdir),
+					   brasero_drive_properties_tmpdir_changed_cb,
+					   self);
+
+	if (priv->previous_path)
+		g_free (priv->previous_path);
+
+	priv->previous_path = g_strdup (path);
 }
 
 static void
@@ -451,12 +517,26 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir),
 				       g_get_tmp_dir ());
 
+	g_signal_connect (priv->tmpdir,
+			  "file-set",
+			  G_CALLBACK (brasero_drive_properties_tmpdir_changed_cb),
+			  object);
+
 	gtk_widget_show_all (GTK_DIALOG (object)->vbox);
 }
 
 static void
 brasero_drive_properties_finalize (GObject *object)
 {
+	BraseroDrivePropertiesPrivate *priv;
+
+	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
+
+	if (priv->previous_path) {
+		g_free (priv->previous_path);
+		priv->previous_path = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

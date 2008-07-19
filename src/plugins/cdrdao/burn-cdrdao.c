@@ -70,7 +70,7 @@ brasero_cdrdao_read_stderr_image (BraseroCdrdao *cdrdao, const gchar *line)
 		brasero_job_get_action (BRASERO_JOB (cdrdao), &action);
 		if (action == BRASERO_JOB_ACTION_SIZE) {
 			/* get the number of sectors. As we added -raw sector = 2352 bytes */
-			brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao), s1, s1 * 2352);
+			brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao), s1, (gint64) s1 * 2352ULL);
 			brasero_job_finished_session (BRASERO_JOB (cdrdao));
 		}
 	}
@@ -495,7 +495,7 @@ brasero_cdrdao_set_argv (BraseroProcess *process,
 
 			brasero_job_set_output_size_for_current_track (BRASERO_JOB (cdrdao),
 								       sectors,
-								       sectors * 2352);
+								       sectors * 2352ULL);
 		}
 		else
 			return BRASERO_BURN_NOT_SUPPORTED;

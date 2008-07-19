@@ -214,12 +214,12 @@ brasero_readcd_get_size (BraseroReadcd *self,
 	if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
 							       blocks,
-							       blocks * 2048);
+							       blocks * 2048ULL);
 	}
 	else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
 		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
 							       blocks,
-							       blocks * 2448);
+							       blocks * 2448ULL);
 	}
 	else
 		return BRASERO_BURN_NOT_SUPPORTED;

@@ -458,13 +458,17 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	g_object_unref (file);
 
+	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
+
 	/* Now check the filesystem type: the problem here is that some
 	 * filesystems have a maximum file size limit of 4 Gio and more than
 	 * often we need a temporary file size of 4 Gio or more. */
 	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 	BRASERO_BURN_LOG ("%s filesystem detected", filesystem);
 
-	if (filesystem && !strcmp (filesystem, "msdos")) {
+	if (output_size >= 2147483648ULL
+	&&  filesystem
+	&& !strcmp (filesystem, "msdos")) {
 		/* FIXME: This string should mention that the location is on the
 		 * hard drive and not the medium itself to prevent any confusion
 		 * as seen in #533149 */
@@ -473,8 +477,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
-			     (unsigned long) output_size / 1048576);
+			     _("The filesystem you chose to store the temporary image on cannot hold files with a size over 2 Gio."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -482,8 +485,6 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	g_object_unref (info);
 
 	/* get the size of the output this job is supposed to create */
-	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
-
 	BRASERO_BURN_LOG ("Volume size %lli, output size %lli", vol_size, output_size);
 
 	/* it's fine here to check size in bytes */

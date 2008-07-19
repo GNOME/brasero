@@ -60,7 +60,7 @@ static GObjectClass *parent_class = NULL;
 static BraseroBurnResult
 brasero_genisoimage_read_isosize (BraseroProcess *process, const gchar *line)
 {
-	gint sectors;
+	gint64 sectors;
 
 	sectors = strtoll (line, NULL, 10);
 	if (!sectors)
@@ -69,7 +69,7 @@ brasero_genisoimage_read_isosize (BraseroProcess *process, const gchar *line)
 	/* genisoimage reports blocks of 2048 bytes */
 	brasero_job_set_output_size_for_current_track (BRASERO_JOB (process),
 						       sectors,
-						       sectors * 2048);
+						       (gint64) sectors * 2048ULL);
 	return BRASERO_BURN_OK;
 }
 
