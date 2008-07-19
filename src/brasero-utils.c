@@ -38,8 +38,6 @@
 
 #include <gtk/gtk.h>
 
-#include <libgnomeui/libgnomeui.h>
-
 #include <gst/gst.h>
 
 #include "brasero-utils.h"

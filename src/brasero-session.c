@@ -29,7 +29,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-client.h>
 
 #include <libxml/xmlerror.h>
