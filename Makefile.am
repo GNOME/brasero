@@ -1,5 +1,9 @@
 ## Process this file with automake to produce Makefile.in.
-SUBDIRS = src po data docs help
+SUBDIRS = src po data docs
+
+if BUILD_GNOME2
+SUBDIRS += help
+endif
 
 braserodocdir = ${prefix}/docs/brasero
 

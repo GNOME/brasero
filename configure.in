@@ -91,14 +91,12 @@ dnl ***************** LARGE FILE SUPPORT ***********************
 
 AC_SYS_LARGEFILE
 
-dnl ********** GNOME2 ******************************
+dnl ********** Required libraries **********************
 GLIB_REQUIRED=2.15.6
 GMODULE_REQUIRED=2.6.0
 GIO_REQUIRED=2.15.5
 GDK_REQUIRED=2.6.0
 GTK_REQUIRED=2.11.6
-LIBGNOME_REQUIRED=2.10.0
-LIBGNOMEUI_REQUIRED=2.10.0
 GCONF_REQUIRED=2.0.0
 GSTREAMER_REQUIRED=0.10.15
 GSTREAMER_BASE_REQUIRED=0.10.0
@@ -159,14 +157,35 @@ PKG_CHECK_MODULES(BRASERO,			\
 	gmodule-2.0 >= $GMODULE_REQUIRED 	\
 	gdk-2.0 >= $GDK_REQUIRED	\
 	gtk+-2.0 >= $GTK_REQUIRED		\
-	libgnome-2.0 >= $LIBGNOME_REQUIRED	\
-	libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED	\
 	dbus-glib-1 >= $DBUS_REQUIRED)
 
 AC_SUBST(BRASERO_CFLAGS)
 AC_SUBST(BRASERO_LIBS)
 BRASERO_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_GSTREAMER_CFLAGS $BRASERO_GIO_CFLAGS $BRASERO_CFLAGS $CFLAGS"
 BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_GSTREAMER_LIBS $BRASERO_GIO_LIBS $BRASERO_LIBS $BRASERO_SCSI_LIBS $LDFLAGS"
+
+dnl ********** GNOME2 ******************************
+LIBGNOME_REQUIRED=2.10.0
+LIBGNOMEUI_REQUIRED=2.10.0
+
+AC_ARG_ENABLE(gnome2,
+			[  --enable-gnome2		Build with GNOME2 (improved integration with GNOME2, help system, session management support) [[default = yes]]],,
+			[enable_gnome2="yes"])
+
+if test x"$enable_gnome2" = "xyes"; then
+	PKG_CHECK_MODULES(GNOME2, libgnome-2.0 >= $LIBGNOME_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED, build_gnome2=yes, build_gnome2=no)
+else
+	build_gnome2="no"
+fi
+
+if test x"$build_gnome2" = "xyes"; then
+	BRASERO_CFLAGS="$BRASERO_CFLAGS $GNOME2_CFLAGS"
+	BRASERO_LIBS="$BRASERO_LIBS $GNOME2_LIBS"
+
+	AC_DEFINE(BUILD_GNOME2, 1, [define if you  want to build with tight GNOME2 integration])
+fi
+
+AM_CONDITIONAL(BUILD_GNOME2, test x"$build_gnome2" = "xyes")
 
 dnl ****************check for libburn (optional)**************
 LIBBURN_REQUIRED=0.4.0
@@ -375,6 +394,7 @@ dnl 	Build libnotify support : ${build_libnotify}
 
 echo "Version: $BRASERO_VERSION
 	Update caches: ${enable_caches}
+	Build with GNOME2 : ${build_gnome2}
 	Build inotify: ${enable_inotify}
 	Build search pane : ${build_beagle}
 	Build playlist pane : ${build_totem}

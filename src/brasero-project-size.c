@@ -617,11 +617,12 @@ brasero_project_size_size_request (GtkWidget *widget,
 
 	self = BRASERO_PROJECT_SIZE (widget);
 
-
 	/* Set markup every time a size change this function is called */
 	text = brasero_project_size_get_media_string (self);
-	pango_layout_set_markup (self->priv->text_layout, text, -1);
-	g_free (text);
+	if (text) {
+		pango_layout_set_markup (self->priv->text_layout, text, -1);
+		g_free (text);
+	}
 
 	brasero_project_size_get_ruler_min_width (self, &ruler_width, &ruler_height);
 	gtk_widget_size_request (self->priv->button, &req);

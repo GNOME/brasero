@@ -24,12 +24,16 @@
  *  <brasero-app@wanadoo.fr>
  ****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <string.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libgnomeui/gnome-client.h>
+#include <gtk/gtk.h>
 
 #include <libxml/xmlerror.h>
 #include <libxml/xmlwriter.h>
@@ -39,8 +43,6 @@
 #include "brasero-app.h"
 #include "brasero-session.h"
 #include "brasero-project-manager.h"
-
-static GnomeClient *client = NULL;
 
 #define SESSION_VERSION "0.1"
 
@@ -300,6 +302,16 @@ error:
 	return FALSE;
 }
 
+#ifdef BUILD_GNOME2
+
+/**
+ * This code is for session management
+ */
+
+#include <libgnomeui/gnome-client.h>
+
+static GnomeClient *client = NULL;
+
 static void
 brasero_session_die_cb (GnomeClient *client_loc,
 			BraseroApp *app)
@@ -366,3 +378,5 @@ brasero_session_disconnect (BraseroApp *app)
 
 	client = NULL;
 }
+
+#endif

@@ -23,12 +23,11 @@
  *  <brasero-app@wanadoo.fr>
  ****************************************************************************/
 
-#include <string.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+#include <string.h>
 #include <locale.h>
 
 #include <glib.h>
@@ -41,8 +40,12 @@
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
+#ifdef BUILD_GNOME2
+
 #include <libgnome/gnome-help.h>
 #include <libgnomeui/libgnomeui.h>
+
+#endif
 
 #include <gconf/gconf-client.h>
 
@@ -319,11 +322,13 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 	g_free (license);
 }
 
+#ifdef BUILD_GNOME2
+
 void
 on_help_cb (GtkAction *action, BraseroApp *app)
 {
-    	GError *error = NULL;
-    
+	GError *error = NULL;
+
  	gnome_help_display ("brasero.xml",
 			     NULL,
 			     &error);
@@ -340,6 +345,8 @@ on_help_cb (GtkAction *action, BraseroApp *app)
 		error = NULL;
 	}
 }
+
+#endif
 
 static gboolean
 on_window_state_changed_cb (GtkWidget *widget,
@@ -539,6 +546,7 @@ brasero_app_create_app (void)
 {
 	BraseroApp *app;
 	GtkWidget *menubar;
+	GtkWidget *contents;
 	GError *error = NULL;
 	BraseroBurnCaps *caps;
 	GtkAccelGroup *accel_group;
@@ -547,7 +555,9 @@ brasero_app_create_app (void)
 
 	/* New window */
 	app = g_new0 (BraseroApp, 1);
-	app->mainwin = gnome_app_new ("Brasero", NULL);
+	app->mainwin = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+	g_set_application_name (_("Brasero Disc Burning"));
 
 	gtk_window_set_default_icon_name ("brasero");
 	gtk_window_set_icon_name (GTK_WINDOW (app->mainwin), "brasero");
@@ -557,18 +567,11 @@ brasero_app_create_app (void)
 	g_signal_connect (G_OBJECT (app->mainwin), "destroy",
 			  G_CALLBACK (on_destroy_cb), app);
 
-	/* status bar to display the size of selected files */
-	app->statusbar = gtk_statusbar_new ();
-	app->tooltip_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (app->statusbar), "tooltip_info");
-	gnome_app_set_statusbar (GNOME_APP (app->mainwin), app->statusbar);
+	/* contents */
+	contents = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (contents);
 
-	/* window contents */
-	app->contents = brasero_project_manager_new ();
-	gtk_widget_show (app->contents);
-
-	gnome_app_set_contents (GNOME_APP (app->mainwin), app->contents);
-    	brasero_project_manager_set_status (BRASERO_PROJECT_MANAGER (app->contents),
-					    app->statusbar);
+	gtk_container_add (GTK_CONTAINER (app->mainwin), contents);
 
 	/* menu and toolbar */
 	app->manager = gtk_ui_manager_new ();
@@ -597,12 +600,28 @@ brasero_app_create_app (void)
 		g_error_free (error);
 	}
 
+	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");
+	gtk_box_pack_start (GTK_BOX (contents), menubar, FALSE, FALSE, 0);
+
+	/* window contents */
+	app->contents = brasero_project_manager_new ();
+	gtk_widget_show (app->contents);
+
+	gtk_box_pack_start (GTK_BOX (contents), app->contents, TRUE, TRUE, 0);
+
+	/* status bar to display the size of selected files */
+	app->statusbar = gtk_statusbar_new ();
+	gtk_widget_show (app->statusbar);
+	app->tooltip_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (app->statusbar), "tooltip_info");
+	gtk_box_pack_end (GTK_BOX (contents), app->statusbar, FALSE, FALSE, 0);
+
+	/* Update everything */
+	brasero_project_manager_set_status (BRASERO_PROJECT_MANAGER (app->contents),
+					    app->statusbar);
 	brasero_project_manager_register_ui (BRASERO_PROJECT_MANAGER (app->contents),
 					     app->manager);
 
 	gtk_ui_manager_ensure_update (app->manager);
-	menubar = gtk_ui_manager_get_widget (app->manager, "/menubar");
-	gnome_app_set_menus (GNOME_APP (app->mainwin), GTK_MENU_BAR (menubar));
 
 	/* check if we can use checksums (we need plugins enabled) */
 	caps = brasero_burn_caps_get_default ();
@@ -627,7 +646,11 @@ brasero_app_create_app (void)
 	/* set up the window geometry */
 	gtk_window_set_position (GTK_WINDOW (app->mainwin), GTK_WIN_POS_CENTER);
 
+#ifdef BUILD_GNOME2
+
 	brasero_session_connect (app);
+
+#endif
 
 	g_signal_connect (app->mainwin,
 			  "window-state-event",
@@ -760,21 +783,18 @@ brasero_app_parse_options (BraseroApp *app)
 int
 main (int argc, char **argv)
 {
-	BraseroApp *app;
+
+#ifdef BUILD_GNOME2
 	GnomeProgram *program;
+#endif
+
+	BraseroApp *app;
 	GOptionContext *context;
 
 	context = g_option_context_new (_("[URI] [URI] ..."));
 	g_option_context_add_main_entries (context,
 					   options,
 					   GETTEXT_PACKAGE);
-
-	program = gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
-				      argc, argv,
-				      GNOME_PARAM_GOPTION_CONTEXT, context,
-				      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
-				      GNOME_PARAM_HUMAN_READABLE_NAME, _("CD/DVD burning"),
-				      NULL);
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -784,6 +804,27 @@ main (int argc, char **argv)
 
 	if (!g_thread_supported ())
 		g_thread_init (NULL);
+
+	g_type_init ();
+
+#ifdef BUILD_GNOME2
+
+	program = gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
+				      argc, argv,
+				      GNOME_PARAM_GOPTION_CONTEXT, context,
+				      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
+				      GNOME_PARAM_HUMAN_READABLE_NAME, _("CD/DVD burning"),
+				      NULL);
+
+#else
+
+	g_option_context_add_group (context, gtk_get_option_group (TRUE));
+	if (g_option_context_parse (context, &argc, &argv, NULL) == FALSE) {
+		g_print (_("Please type %s --help to see all available options\n"), argv [0]);
+		exit (1);
+	}
+
+#endif
 
 	gst_init (&argc, &argv);
 
@@ -811,8 +852,14 @@ main (int argc, char **argv)
 	gtk_main ();
 
 	brasero_burn_library_shutdown ();
+
+#ifdef BUILD_GNOME2
+
 	brasero_session_disconnect (app);
 	g_object_unref (program);
+
+#endif
+
 	g_free (app);
 	gst_deinit ();
 

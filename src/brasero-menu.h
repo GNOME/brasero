@@ -53,13 +53,17 @@ void on_exit_cb (GtkAction *action, BraseroApp *app);
 void on_burn_cb (GtkAction *action, BraseroApp *app);
 void on_disc_info_cb (GtkAction *action, BraseroApp *app);
 void on_about_cb (GtkAction *action, BraseroApp *app);
-void on_help_cb (GtkAction *action, BraseroApp *app);
+
+#ifdef BUILD_GNOME2
+	void on_help_cb (GtkAction *action, BraseroApp *app);
+#endif
 
 static GtkActionEntry entries[] = {
 	{"ProjectMenu", NULL, N_("_Project")},
 	{"ViewMenu", NULL, N_("_View")},
 	{"EditMenu", NULL, N_("_Edit")},
 	{"ToolMenu", NULL, N_("_Tools")},
+
 	{"HelpMenu", NULL, N_("_Help")},
 
 	{"Plugins", NULL, N_("P_lugins"), NULL,
@@ -76,9 +80,13 @@ static GtkActionEntry entries[] = {
 
 	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
 	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
+
+#ifdef BUILD_GNOME2
 	
 	{"Contents", GTK_STOCK_HELP, N_("_Contents"), "F1", N_("Contents"),
 	 G_CALLBACK (on_help_cb)}, 
+
+#endif
 
 	{"About", GTK_STOCK_ABOUT, NULL, NULL, N_("About"),
 	 G_CALLBACK (on_about_cb)},
@@ -112,8 +120,11 @@ static const gchar *description = {
 		"<menuitem action='Check'/>"
 	    "</menu>"
 	    "<menu action='HelpMenu'>"
+
+#ifdef BUILD_GNOME2
 		"<menuitem action='Contents'/>"
 		"<separator/>"
+#endif
 		"<menuitem action='About'/>"
 	    "</menu>"
 	    "</menubar>"
