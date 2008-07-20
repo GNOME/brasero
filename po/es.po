@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-19 18:30+0000\n"
-"PO-Revision-Date: 2008-07-20 14:27+0200\n"
+"POT-Creation-Date: 2008-07-20 14:13+0000\n"
+"PO-Revision-Date: 2008-07-20 16:54+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../data/brasero.desktop.in.in.h:1
+#: ../data/brasero.desktop.in.in.h:1 ../src/main.c:560
 msgid "Brasero Disc Burning"
 msgstr "Grabador de discos Brasero"
 
@@ -495,79 +495,79 @@ msgstr "<b>Seleccione el disco para copiar</b>"
 msgid "<b>Select a disc to write to</b>"
 msgstr "<b>Seleccione un disco en el que grabar</b>"
 
-#: ../src/brasero-menu.h:59
+#: ../src/brasero-menu.h:62
 msgid "_Project"
 msgstr "_Proyecto"
 
-#: ../src/brasero-menu.h:60
+#: ../src/brasero-menu.h:63
 msgid "_View"
 msgstr "_Ver"
 
-#: ../src/brasero-menu.h:61
+#: ../src/brasero-menu.h:64
 msgid "_Edit"
 msgstr "_Editar"
 
-#: ../src/brasero-menu.h:62
+#: ../src/brasero-menu.h:65
 msgid "_Tools"
 msgstr "_Herramientas"
 
-#: ../src/brasero-menu.h:63
+#: ../src/brasero-menu.h:67
 msgid "_Help"
 msgstr "Ay_uda"
 
-#: ../src/brasero-menu.h:65
+#: ../src/brasero-menu.h:69
 msgid "P_lugins"
 msgstr "C_omplementos"
 
-#: ../src/brasero-menu.h:66
+#: ../src/brasero-menu.h:70
 msgid "Choose plugins for brasero"
 msgstr "Elija complementos para Brasero"
 
-#: ../src/brasero-menu.h:68
+#: ../src/brasero-menu.h:72
 msgid "E_ject"
 msgstr "E_xpulsar"
 
-#: ../src/brasero-menu.h:69
+#: ../src/brasero-menu.h:73
 msgid "Eject media"
 msgstr "Expulsar el soporte"
 
-#: ../src/brasero-menu.h:71
+#: ../src/brasero-menu.h:75
 msgid "_Erase..."
 msgstr "_Borrar…"
 
-#: ../src/brasero-menu.h:72
+#: ../src/brasero-menu.h:76
 msgid "Erase a disc"
 msgstr "Borrar un disco"
 
-#: ../src/brasero-menu.h:74
+#: ../src/brasero-menu.h:78
 msgid "_Check Integrity..."
 msgstr "_Comprobar integridad…"
 
-#: ../src/brasero-menu.h:75
+#: ../src/brasero-menu.h:79
 msgid "Check data integrity of disc"
 msgstr "Verifica la integridad de datos del disco"
 
-#: ../src/brasero-menu.h:78
+#: ../src/brasero-menu.h:82
 msgid "Exit the program"
 msgstr "Sale del programa"
 
-#: ../src/brasero-menu.h:80
+#: ../src/brasero-menu.h:86
 msgid "_Contents"
 msgstr "_Índice"
 
-#: ../src/brasero-menu.h:80
+#: ../src/brasero-menu.h:86
 msgid "Contents"
 msgstr "Índice"
 
-#: ../src/brasero-menu.h:83
+#: ../src/brasero-menu.h:91
 msgid "About"
 msgstr "Acerca de"
 
-#: ../src/brasero-menu.h:86
+#: ../src/brasero-menu.h:94
 msgid "_Disc Info"
 msgstr "_Información del disco"
 
-#: ../src/brasero-menu.h:87
+#: ../src/brasero-menu.h:95
 msgid "Display information on blank discs currently inserted"
 msgstr "Muestra información sobre los discos vírgenes insertados actualmente"
 
@@ -873,33 +873,33 @@ msgstr "%s, %02i%% terminado, %s restantes"
 msgid "%s, %02i%% done"
 msgstr "%s, %02i%% terminado"
 
-#: ../src/brasero-utils.c:232
+#: ../src/brasero-utils.c:230
 #, c-format
 msgid "%lli min"
 msgstr "%lli min"
 
-#: ../src/brasero-utils.c:234
+#: ../src/brasero-utils.c:232
 #, c-format
 msgid "%lli:%02lli min"
 msgstr "%lli:%02lli min"
 
-#: ../src/brasero-utils.c:266
+#: ../src/brasero-utils.c:264
 msgid "KiB"
 msgstr "KiB"
 
-#: ../src/brasero-utils.c:266
+#: ../src/brasero-utils.c:264
 msgid "MiB"
 msgstr "MiB"
 
-#: ../src/brasero-utils.c:266
+#: ../src/brasero-utils.c:264
 msgid "GiB"
 msgstr "GiB"
 
-#: ../src/brasero-utils.c:481
+#: ../src/brasero-utils.c:479
 msgid "This file can't be opened:"
 msgstr "Este archivo no se puede abrir:"
 
-#: ../src/brasero-utils.c:483
+#: ../src/brasero-utils.c:481
 msgid "File Error"
 msgstr "Error en el archivo"
 
@@ -2546,7 +2546,7 @@ msgstr "Crear un proyecto de vídeo nuevo"
 msgid "Copy _Disc..."
 msgstr "Copiar _disco…"
 
-#: ../src/brasero-project-manager.c:125 ../src/main.c:101
+#: ../src/brasero-project-manager.c:125 ../src/main.c:104
 msgid "Copy a disc"
 msgstr "Copiar un disco"
 
@@ -2705,17 +2705,17 @@ msgstr "<b>Vacío</b> (%s libre para <i>%s</i>)"
 msgid "<b>Empty</b> (%s free)"
 msgstr "<b>Vacío</b> (%s libre)"
 
-#: ../src/brasero-project-size.c:1123
+#: ../src/brasero-project-size.c:1124
 #, c-format
 msgid "%s (DVD-R Dual Layer)"
 msgstr "%s (DVD-R doble capa)"
 
-#: ../src/brasero-project-size.c:1126
+#: ../src/brasero-project-size.c:1127
 #, c-format
 msgid "%s (DVD-R)"
 msgstr "%s (DVD-R)"
 
-#: ../src/brasero-project-size.c:1129
+#: ../src/brasero-project-size.c:1130
 #, c-format
 msgid "%s (CD-R)"
 msgstr "%s (CD-R)"
@@ -3130,8 +3130,8 @@ msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 Gio."
 msgstr ""
-"El sistema de archivos que ha elegido para almacenar la imagen temporal no puede mantener "
-"archivos de tamaño mayor a 2 Gio."
+"El sistema de archivos que ha elegido para almacenar la imagen temporal no "
+"puede mantener archivos de tamaño mayor a 2 Gio."
 
 #: ../src/burn-job.c:498 ../src/burn-job.c:519
 #, c-format
@@ -3139,8 +3139,8 @@ msgid ""
 "the selected location does not have enough free space to store the disc "
 "image (%ld MiB needed)"
 msgstr ""
-"la lugar seleccionada no tiene suficiente espacio para almacenar la "
-"imagen de disco (se necesitan %ld MiB)"
+"la lugar seleccionada no tiene suficiente espacio para almacenar la imagen "
+"de disco (se necesitan %ld MiB)"
 
 #: ../src/burn-job.c:532
 #, c-format
@@ -3321,51 +3321,51 @@ msgstr "no se puede crear un archivo temporal: %s"
 msgid "there isn't a valid volume descriptor"
 msgstr "no hay un descriptor de volumen válido"
 
-#: ../src/main.c:81
+#: ../src/main.c:84
 msgid "Open the specified project"
 msgstr "Abrir el proyecto especificado"
 
-#: ../src/main.c:82
+#: ../src/main.c:85
 msgid "PROJECT"
 msgstr "PROYECTO"
 
-#: ../src/main.c:87
+#: ../src/main.c:90
 msgid "Open the specified playlist as an audio project"
 msgstr "Abrir la lista de reproducción especificada como un proyecto de sonido"
 
-#: ../src/main.c:88
+#: ../src/main.c:91
 msgid "PLAYLIST"
 msgstr "LISTA DE REPRODUCCIÓN"
 
-#: ../src/main.c:93
+#: ../src/main.c:96
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr "Abre un proyecto de sonido añadiendo los URI dados en la línea de comandos"
 
-#: ../src/main.c:97
+#: ../src/main.c:100
 msgid "Open a data project adding the URIs given on the command line"
 msgstr "Abre un proyecto de datos añadiendo los URI dados en la línea de comandos"
 
-#: ../src/main.c:105
+#: ../src/main.c:108
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr "URI del archivo de imagen para grabar (autodetectado)"
 
-#: ../src/main.c:109
+#: ../src/main.c:112
 msgid "Force brasero to display the project selection page"
 msgstr "Obligar a Brasero a mostrar la página de selección de proyectos"
 
-#: ../src/main.c:113
+#: ../src/main.c:116
 msgid "Open the blank disc dialog"
 msgstr "Abrir el diálogo de borrar disco"
 
-#: ../src/main.c:117
+#: ../src/main.c:120
 msgid "Open a data project with the contents of nautilus-cd-burner"
 msgstr "Abrir un proyecto de datos con el contenido del grabador de CD de Nautilus"
 
-#: ../src/main.c:121
+#: ../src/main.c:124
 msgid "Display debug statements on stdout"
 msgstr "Mostrar estadísticas de depuración en la salida estándar"
 
-#: ../src/main.c:268
+#: ../src/main.c:271
 msgid ""
 "Brasero is free software; you can redistribute it and/or modify it under the "
 "terms of the GNU General Public License as published by the Free Software "
@@ -3377,7 +3377,7 @@ msgstr ""
 "Software Foundation; ya sea en la versión 2 de la Licencia, o (a su opción) "
 "cualquier versión posterior."
 
-#: ../src/main.c:273
+#: ../src/main.c:276
 msgid ""
 "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
 "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
@@ -3389,7 +3389,7 @@ msgstr ""
 "PARA UN PROPÓSITO DETERMINADO. Vea la Licencia Pública General de GNU para "
 "más detalles."
 
-#: ../src/main.c:278
+#: ../src/main.c:281
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
@@ -3399,11 +3399,11 @@ msgstr ""
 "con Brasero; si no es así, escriba a la Free Software Foundation, Inc, 51 "
 "Franklin Street, Fifth Floor, Boston, MA 02110-1301, EE. UU."
 
-#: ../src/main.c:287
+#: ../src/main.c:290
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Una aplicación de grabación de CD/DVD fácil de usar para GNOME"
 
-#: ../src/main.c:303
+#: ../src/main.c:306
 msgid "Brasero Homepage"
 msgstr "Página web de Brasero"
 
@@ -3415,7 +3415,7 @@ msgstr "Página web de Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/main.c:315
+#: ../src/main.c:318
 msgid "translator-credits"
 msgstr ""
 "Jorge González <jorgegonz@svn.gnome.org>\n"
@@ -3423,37 +3423,42 @@ msgstr ""
 "Sergio Rivadero <sergiorivadero@argentina.com>\n"
 "Rafael Bermúdez <rafaelbermudez@gmail.com>"
 
-#: ../src/main.c:418
+#: ../src/main.c:425
 msgid "_Recent Projects"
 msgstr "Proyectos _recientes"
 
-#: ../src/main.c:419
+#: ../src/main.c:426
 msgid "Display the projects recently opened"
 msgstr "Mostrar los proyectos abiertos recientemente"
 
-#: ../src/main.c:424
+#: ../src/main.c:431
 msgid "Brasero projects"
 msgstr "Proyectos Brasero"
 
-#: ../src/main.c:682
+#: ../src/main.c:705
 msgid "Incompatible command line options used:"
 msgstr "Opciones de línea de comandos incompatibles:"
 
-#: ../src/main.c:684
+#: ../src/main.c:707
 msgid "Incompatible Options"
 msgstr "Opciones incompatibles"
 
-#: ../src/main.c:687
+#: ../src/main.c:710
 msgid "only one option can be given at a time."
 msgstr "solamente se puede especificar una opción por vez."
 
-#: ../src/main.c:767
+#: ../src/main.c:794
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:776
+#: ../src/main.c:816
 msgid "CD/DVD burning"
 msgstr "Grabación de CD/DVD"
+
+#: ../src/main.c:823
+#, c-format
+msgid "Please type %s --help to see all available options\n"
+msgstr "Escriba «%s» --help para ver todas las opciones disponibles\n"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:80
 msgid "Copying audio track"
@@ -4968,7 +4973,9 @@ msgstr "Creando disposición de archivo"
 
 #: ../src/plugins/dvdauthor/burn-dvdauthor.c:355
 msgid "use dvdauthor to convert a set of files to burn to Video DVDs"
-msgstr "use dvdauthor para convertir un conjunto de archivos para grabar en DVD de vídeo"
+msgstr ""
+"use dvdauthor para convertir un conjunto de archivos para grabar en DVD de "
+"vídeo"
 
 #: ../src/plugins/transcode/burn-vob.c:247
 #: ../src/plugins/transcode/burn-vob.c:310
@@ -5029,7 +5036,9 @@ msgstr "Convirtiendo el archivo de vídeo a MPEG2"
 
 #: ../src/plugins/transcode/burn-vob.c:1058
 msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
-msgstr "Vob permite transcodificar cualquier archivo de vídeo a un formato adecuado para DVD de vídeo"
+msgstr ""
+"Vob permite transcodificar cualquier archivo de vídeo a un formato adecuado "
+"para DVD de vídeo"
 
 #: ../src/plugins/vcdimager/burn-vcdimager.c:440
 msgid "use vcdimager to convert a set of files to burn to SVCDs"
