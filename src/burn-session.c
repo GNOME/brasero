@@ -372,7 +372,6 @@ brasero_burn_session_dest_media_removed (BraseroDrive *drive,
 					 BraseroMedium *medium,
 					 BraseroBurnSession *self)
 {
-	
 	g_signal_emit (self,
 		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
 		       0);
@@ -1448,10 +1447,7 @@ brasero_burn_session_logv (BraseroBurnSession *self,
 	if (!priv->session)
 		return;
 
-	if (arg_list)
-		message = g_strdup_vprintf (format, arg_list);
-	else
-		message = g_strdup (format);
+	message = g_strdup_vprintf (format, arg_list);
 
 	/* we also need to validate the messages to be in UTF-8 */
 	if (!g_utf8_validate (message, -1, (const gchar**) &offending))
