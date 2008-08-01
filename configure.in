@@ -111,7 +111,7 @@ dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_GSTREAMER, 		\
 	gstreamer-0.10 >= $GSTREAMER_REQUIRED \
 	gstreamer-plugins-base-0.10 >= $GSTREAMER_BASE_REQUIRED)
-echo $CFLAGS
+
 BRASERO_GSTREAMER_LIBS="$BRASERO_GSTREAMER_LIBS -lgstpbutils-0.10"
 
 AC_SUBST(BRASERO_GSTREAMER_CFLAGS)
