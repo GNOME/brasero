@@ -108,6 +108,7 @@ brasero_xfer (BraseroXferCtx *ctx,
 	/* download */
 	bzero (ctx, sizeof (BraseroXferCtx));
 
+	io = brasero_io_get_default ();
 	brasero_io_xfer (io, src_uri, dest_path, ctx->base, BRASERO_IO_INFO_NONE, ctx);
 
 	ctx->loop = g_main_loop_new (NULL, FALSE);
