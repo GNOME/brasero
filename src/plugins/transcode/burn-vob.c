@@ -344,7 +344,6 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     /* xgettext:no-c-format */
 			     _("ffenc_mp2 can't be created"));
 		goto error;
 	}
@@ -468,7 +467,6 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     /* xgettext:no-c-format */
 			     _("ffenc_ac3 can't be created"));
 		goto error;
 	}
