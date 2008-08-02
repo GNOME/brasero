@@ -1857,9 +1857,12 @@ brasero_audio_disc_remove (BraseroAudioDisc *disc,
 			    LENGTH_COL, &length,
 			    -1);
 
-	if (uri)
-		sectors = BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
-	else /* gap */
+	sectors = 0;
+	if (uri) {
+		if (end - start > 0)
+			sectors = BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	}
+	else if (length) /* gap */
 		sectors = BRASERO_DURATION_TO_SECTORS (length);
 
 	if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter)) {
