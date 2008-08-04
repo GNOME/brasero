@@ -562,7 +562,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	/* see if we should update the infos */
 	medium = brasero_burn_session_get_src_medium (dialog->priv->session);
 	if (dialog->priv->input.type == BRASERO_TRACK_TYPE_DISC) {
-		BraseroMedium *medium;
 		BraseroDrive *src;
 
 		/* see if the drive is the source */
