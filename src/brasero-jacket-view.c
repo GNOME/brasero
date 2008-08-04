@@ -1023,7 +1023,7 @@ brasero_jacket_view_update_color (BraseroJacketView *self)
 							       0.0,
 							       width,
 							       0.0);
-		else if (priv->color_style == BRASERO_JACKET_COLOR_VGRADIENT)
+		else /* if (priv->color_style == BRASERO_JACKET_COLOR_VGRADIENT) */
 			pattern = cairo_pattern_create_linear (0.0,
 							       0.0,
 							       0.0,

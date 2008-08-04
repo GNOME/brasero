@@ -211,6 +211,7 @@ redo:
 			new_name = brasero_rename_number_string (self, name);
 			break;
 		default:
+			new_name = NULL;
 			break;
 		}
 
@@ -230,6 +231,7 @@ redo:
 		}
 		g_free (name);
 	}
+
 	g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
 	g_list_free (selected);
 	return TRUE;
