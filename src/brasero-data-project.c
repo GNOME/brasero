@@ -1296,6 +1296,7 @@ brasero_data_project_move_node (BraseroDataProject *self,
 	/* unparent node now in case its target sibling is a parent */
 	former_parent = node->parent;
 	former_position = brasero_file_node_get_pos_as_child (node);
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
 	brasero_file_node_move_from (node, stats);
 
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
