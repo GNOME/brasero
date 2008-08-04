@@ -1472,8 +1472,6 @@ static BraseroDiscResult
 brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 				    const gchar *uri)
 {
-	gboolean result;
-
 	if (!disc->priv->io)
 		disc->priv->io = brasero_io_get_default ();
 
@@ -1494,7 +1492,7 @@ brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 				   BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				   BRASERO_IO_INFO_RECURSIVE,
 				   NULL);
-	return result;
+	return BRASERO_DISC_OK;
 }
 
 static gboolean

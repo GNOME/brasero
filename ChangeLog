@@ -1,6 +1,13 @@
 2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Fixed a couple of harmless warnings
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_visit_dir_async):
+	* src/brasero-project.c (brasero_project_set_uri):
+
+2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fixed a warning that could have lead to a crash
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb):
 	* src/brasero-marshal.list:

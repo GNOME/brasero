@@ -1748,6 +1748,9 @@ brasero_project_set_uri (BraseroProject *project,
 		title = g_strdup_printf (_("Brasero - %s (Audio Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
 		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
+	else
+		title = NULL;
+
 	g_free (name);
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
