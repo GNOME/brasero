@@ -27,9 +27,14 @@
 
 G_BEGIN_DECLS
 
-/* rates are in Kio/sec */
-/* FIXME: rate for audio CD are different 172 K/s */
-#define CD_RATE 153600
+/* Data Transfer Speeds: rates are in KiB/sec */
+/* NOTE: rates for audio and data transfer speeds are different:
+ * - Data : 150 KiB/sec
+ * - Audio : 172.3 KiB/sec
+ * Source Wikipedia.com =)
+ * Apparently most drives return rates that should be used with Audio factor
+ */
+#define CD_RATE 176435
 #define DVD_RATE 1385000
 
 typedef struct _BraseroDrive BraseroDrive;
