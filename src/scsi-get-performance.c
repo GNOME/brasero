@@ -94,38 +94,23 @@ BRASERO_SCSI_COMMAND_DEFINE (BraseroGetPerformanceCDB,
 #define BRASERO_GET_PERFORMANCE_DBI_TYPE		0x04
 #define BRASERO_GET_PERFORMANCE_DBI_CACHE_TYPE		0x05
 
-
-static BraseroScsiResult
-brasero_get_performance (BraseroGetPerformanceCDB *cdb,
-			 gint sizeof_descriptors,
-			 BraseroScsiGetPerfData **data,
-			 int *data_size,
-			 BraseroScsiErrCode *error)
+static BraseroScsiGetPerfData *
+brasero_get_performance_get_buffer (BraseroGetPerformanceCDB *cdb,
+				    gint sizeof_descriptors,
+				    BraseroScsiGetPerfHdr *hdr,
+				    BraseroScsiErrCode *error)
 {
 	BraseroScsiGetPerfData *buffer;
-	BraseroScsiGetPerfHdr hdr;
 	BraseroScsiResult res;
 	int request_size;
-	int buffer_size;
 	int desc_num;
 
-	if (!data || !data_size) {
-		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
-		return BRASERO_SCSI_FAILURE;
-	}
-
-	/* Issue the command once to get the size ... */
-	memset (&hdr, 0, sizeof (hdr));
-	BRASERO_SET_16 (cdb->max_desc, 0);
-	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
-	if (res)
-		return res;
+	/* ... check the request size ... */
+	request_size = BRASERO_GET_32 (hdr->len) +
+		       G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
+		       sizeof (hdr->len);
 
 	/* ... check the request size ... */
-	request_size = BRASERO_GET_32 (hdr.len) +
-		       G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
-		       sizeof (hdr.len);
-
 	if (request_size > 2048) {
 		BRASERO_BURN_LOG ("Oversized data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
@@ -139,7 +124,7 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		request_size = 2048;
 	}
 
-	desc_num = (request_size - sizeof (hdr)) / sizeof_descriptors;
+	desc_num = (request_size - sizeof (BraseroScsiGetPerfHdr)) / sizeof_descriptors;
 
 	/* ... allocate a buffer and re-issue the command */
 	buffer = (BraseroScsiGetPerfData *) g_new0 (uchar, request_size);
@@ -148,19 +133,82 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 	res = brasero_scsi_command_issue_sync (cdb, buffer, request_size, error);
 	if (res) {
 		g_free (buffer);
-		return res;
+		return NULL;
 	}
+
+	return buffer;
+}
+
+static BraseroScsiResult
+brasero_get_performance (BraseroGetPerformanceCDB *cdb,
+			 gint sizeof_descriptors,
+			 BraseroScsiGetPerfData **data,
+			 int *data_size,
+			 BraseroScsiErrCode *error)
+{
+	BraseroScsiGetPerfData *buffer;
+	BraseroScsiGetPerfHdr hdr;
+	BraseroScsiResult res;
+	int request_size;
+	int buffer_size;
+
+	if (!data || !data_size) {
+		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_BAD_ARGUMENT);
+		return BRASERO_SCSI_FAILURE;
+	}
+
+	/* Issue the command once to get the size ... */
+	memset (&hdr, 0, sizeof (hdr));
+	BRASERO_SET_16 (cdb->max_desc, 0);
+	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
+	if (res)
+		return res;
+
+	/* ... get the request size ... */
+	request_size = BRASERO_GET_32 (hdr.len) +
+		       G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
+		       sizeof (hdr.len);
+
+	/* ... get the answer itself. */
+	buffer = brasero_get_performance_get_buffer (cdb,
+						     sizeof_descriptors,
+						     &hdr,
+						     error);
+	if (!buffer)
+		return BRASERO_SCSI_FAILURE;
 
 	/* make sure the response has the requested size */
 	buffer_size = BRASERO_GET_32 (buffer->hdr.len) +
 		      G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
 		      sizeof (buffer->hdr.len);
 
-	if (request_size != buffer_size)
-		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+	if (request_size < buffer_size) {
+		BraseroScsiGetPerfHdr *tmp_hdr;
+
+		/* Strangely some drives returns a buffer size that is bigger
+		 * than the one they returned on the first time. So redo whole
+		 * operation again but this time with the new size we got */
+		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i\n"
+				  "Re-issuing the command with received size",
 				  request_size,
 				  buffer_size);
 
+		tmp_hdr = &buffer->hdr;
+		request_size = buffer_size;
+		buffer = brasero_get_performance_get_buffer (cdb,
+							     sizeof_descriptors,
+							     tmp_hdr,
+							     error);
+		buffer_size = BRASERO_GET_32 (buffer->hdr.len) +
+			      G_STRUCT_OFFSET (BraseroScsiGetPerfHdr, len) +
+			      sizeof (buffer->hdr.len);
+		
+		g_free (tmp_hdr);
+	}
+	else if (request_size > buffer_size)
+		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+				  request_size,
+				  buffer_size);
 	*data = buffer;
 	*data_size = MIN (buffer_size, request_size);
 

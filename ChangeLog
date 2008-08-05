@@ -1,5 +1,16 @@
 2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	If sizes mismatch in get_performance and if the size of the buffer 
+	received is bigger than the one we requested, re-issue the command so
+	as to get the full buffer. That way we don't miss rates with buggy
+	firmwares.
+	Fix for #537871 – Burn speed selection does not work
+
+	* src/scsi-get-performance.c (brasero_get_performance_get_buffer),
+	(brasero_get_performance):
+
+2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Use audio rate to compute speeds instead of data rate
 	Fix for #537871 – Burn speed selection does not work
 
