@@ -1627,7 +1627,7 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 			return;
 	}
 
-	brasero_disc_reset (BRASERO_DISC (project->priv->current));
+	brasero_disc_clear (BRASERO_DISC (project->priv->current));
 }
 
 static void
