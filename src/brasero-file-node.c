@@ -690,7 +690,6 @@ brasero_file_node_add (BraseroFileNode *parent,
 
 	node->parent = parent;
 	if (!node->is_imported) {
-		BraseroFileTreeStats *stats;
 		guint depth = 0;
 
 		if (!node->is_grafted) {
@@ -700,12 +699,6 @@ brasero_file_node_add (BraseroFileNode *parent,
 				if (parent->is_grafted)
 					break;
 			}
-		}
-
-		stats = brasero_file_node_get_tree_stats (parent, &depth);
-		if (node->is_file) {
-			/* only count files */
-			stats->children ++;
 		}
 
 		if (depth > 6)
@@ -722,6 +715,15 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 	 * we could replace a previously set name (that triggered the
 	 * creation of a graft). If someone wants to set a new name,
 	 * then rename_node is the function. */
+
+	/* update the stats since a file could have been added to the tree but
+	 * at this point we didn't know what it was (a file or a directory).
+	 * Only do this if it wasn't a file before. */
+	if (!node->is_file
+	&& (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY)) {
+		/* only count files */
+		stats->children ++;
+	}
 
 	/* update :
 	 * - the mime type

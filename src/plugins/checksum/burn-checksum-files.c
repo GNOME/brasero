@@ -825,7 +825,9 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 			break;
 
 		file_num++;
-		brasero_job_set_progress (BRASERO_JOB (self), (gdouble) file_num / (gdouble) file_nb);
+		brasero_job_set_progress (BRASERO_JOB (self),
+					  (gdouble) file_num /
+					  (gdouble) file_nb);
 		BRASERO_JOB_LOG (self,
 				 "comparing checksums for file %s : %s (from md5 file) / %s (current)",
 				 filename, checksum_file, checksum_real);

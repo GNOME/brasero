@@ -1,5 +1,15 @@
 2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a problem with data-project not setting the correct number of files
+
+	* src/brasero-data-disc.c (brasero_data_disc_set_session_contents):
+	* src/brasero-file-node.c (brasero_file_node_add),
+	(brasero_file_node_set_from_info):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_check_files):
+
+2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some comments fixed
 
 	* src/burn-medium.c (brasero_medium_track_volume_size),

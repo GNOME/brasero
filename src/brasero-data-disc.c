@@ -1292,7 +1292,8 @@ brasero_data_disc_set_session_contents (BraseroDisc *self,
 	/* Set the number of files in the tree */
 	root = brasero_data_project_get_root (priv->project);
 	stats = BRASERO_FILE_NODE_STATS (root);
-	brasero_track_set_data_file_num (track, stats->children);
+	if (stats)
+		brasero_track_set_data_file_num (track, stats->children);
 
 	joliet_compat = (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET);
 	brasero_track_add_data_fs (track, type.subtype.fs_type);
