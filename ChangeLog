@@ -1,5 +1,13 @@
 2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some comments fixed
+
+	* src/burn-medium.c (brasero_medium_track_volume_size),
+	(brasero_medium_track_get_info),
+	(brasero_medium_get_sessions_info):
+
+2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	If sizes mismatch in get_performance and if the size of the buffer 
 	received is bigger than the one we requested, re-issue the command so
 	as to get the full buffer. That way we don't miss rates with buggy

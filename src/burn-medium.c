@@ -899,7 +899,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	 * still add data (with growisofs). It is nevertheless on the 
 	 * condition that the fs is valid.
 	 * So we check if their first and only volume is valid. 
-	 * That's also used when the track size is reported 300 Kio
+	 * That's also used when the track size is reported 300 KiB
 	 * see below */
 	vol = brasero_volume_source_open_device_handle (handle, NULL);
 	res = brasero_volume_get_size (vol,
@@ -1020,7 +1020,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 
 	if (track->blocks_num <= 300) {
 		/* Now here is a potential bug: we can write tracks (data or
-		 * not) shorter than 300 Kio /2 sec but they will be padded to
+		 * not) shorter than 300 KiB /2 sec but they will be padded to
 		 * reach this floor value. It means that blocks_num is always
 		 * 300 blocks even if the data length on the track is actually
 		 * shorter.
@@ -1230,7 +1230,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 			BraseroBurnResult result;
 
-			/* a special case for these two kinds of media (DVD+RW)
+			/* A special case for these two kinds of media (DVD+RW)
 			 * which have only one track: the first. Since it's not
 			 * possible to know the amount of data that were really
 			 * written in this session, read the filesystem. */
