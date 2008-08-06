@@ -1097,18 +1097,72 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	}
 
 	/* NOTE: DVD+RW, DVD-RW (restricted overwrite) never reach this function */
-
-	if (track_info.next_wrt_address_valid) {
-		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
-		BRASERO_BURN_LOG ("Next Writable Address is %d", priv->next_wr_add);
-	}
-
 	BRASERO_BURN_LOG ("Track %i (session %i): type = %i start = %llu size = %llu",
 			  track_num,
 			  track->session,
 			  track->type,
 			  track->start,
 			  track->blocks_num);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_track_get_nwa (BraseroMedium *self,
+			      BraseroDeviceHandle *handle,
+			      BraseroScsiErrCode *code)
+{
+	BraseroScsiTrackInfo track_info;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	gint track_num;
+	int size;
+
+	BRASERO_BURN_LOG ("Retrieving NWA");
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		BRASERO_BURN_LOG ("Overwritable medium  => skipping");
+		return BRASERO_BURN_OK;
+	}
+
+	/* at this point we know the type of the disc that's why we set the 
+	 * size according to this type. That may help to avoid outrange address
+	 * errors. */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_WRITABLE))
+		size = 48;
+	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_WRITABLE))
+		size = 40;
+	else
+		size = 36;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR)
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDRW)
+	/* The following includes DL */
+	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR_PLUS)) 
+		track_num = 0xFF;
+	else
+		track_num = g_slist_length (priv->tracks);
+
+	result = brasero_mmc1_read_track_info (handle,
+					       track_num,
+					       &track_info,
+					       &size,
+					       code);
+
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("READ TRACK INFO failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	if (track_info.next_wrt_address_valid) {
+		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
+		BRASERO_BURN_LOG ("Next Writable Address is %d", priv->next_wr_add);
+	}
+	else
+		BRASERO_BURN_LOG ("No Next Writable Address");
 
 	return BRASERO_BURN_OK;
 }
@@ -1296,6 +1350,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 					       g_slist_length (priv->tracks),
 					       handle,
 					       code);
+
+		brasero_medium_track_get_nwa (self, handle, code);
 	}
 
 	g_free (toc);

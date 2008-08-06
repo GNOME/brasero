@@ -1,5 +1,12 @@
 2008-08-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to fix #543377 – No multisession
+
+	* src/burn-medium.c (brasero_medium_track_get_info),
+	(brasero_medium_track_get_nwa), (brasero_medium_get_sessions_info):
+
+2008-08-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Use the right fact correcting the confusion between KB and KiB
 	(rates returned by drives are in KB _NOT_ in Kib)
 
