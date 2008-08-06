@@ -1,3 +1,12 @@
+2008-08-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Use the right fact correcting the confusion between KB and KiB
+	(rates returned by drives are in KB _NOT_ in Kib)
+
+	* src/burn-medium.c (brasero_medium_get_write_speeds),
+	(brasero_medium_track_get_info):
+	* src/burn-medium.h:
+
 2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix a problem with data-project not setting the correct number of files

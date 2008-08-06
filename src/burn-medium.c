@@ -374,7 +374,7 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
 	BraseroMediumPrivate *priv;
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
-	return priv->max_wrt * 1024;
+	return priv->max_wrt * 1000;
 }
 
 gint64 *
@@ -390,8 +390,10 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 	while (priv->wr_speeds [max] != 0) max ++;
 
 	speeds = g_new0 (gint64, max + 1);
+
+	/* NOTE: about the following, it's not KiB here but KB */
 	for (i = 0; i < max; i ++)
-		speeds [i] = priv->wr_speeds [i] * 1024;
+		speeds [i] = priv->wr_speeds [i] * 1000;
 
 	return speeds;
 }
@@ -1096,8 +1098,10 @@ brasero_medium_track_get_info (BraseroMedium *self,
 
 	/* NOTE: DVD+RW, DVD-RW (restricted overwrite) never reach this function */
 
-	if (track_info.next_wrt_address_valid)
+	if (track_info.next_wrt_address_valid) {
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
+		BRASERO_BURN_LOG ("Next Writable Address is %d", priv->next_wr_add);
+	}
 
 	BRASERO_BURN_LOG ("Track %i (session %i): type = %i start = %llu size = %llu",
 			  track_num,

@@ -34,7 +34,7 @@ G_BEGIN_DECLS
  * Source Wikipedia.com =)
  * Apparently most drives return rates that should be used with Audio factor
  */
-#define CD_RATE 176435
+#define CD_RATE 176400
 #define DVD_RATE 1385000
 
 typedef struct _BraseroDrive BraseroDrive;
