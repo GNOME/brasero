@@ -41,6 +41,12 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 				  int *data_size,
 				  BraseroScsiErrCode *error);
 
+BraseroScsiResult
+brasero_spc1_mode_select (BraseroDeviceHandle *handle,
+			  BraseroScsiModeData *data,
+			  int size,
+			  BraseroScsiErrCode *error);
+
 G_END_DECLS
 
 #endif /* _BURN_SPC1_H */

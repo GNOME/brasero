@@ -45,18 +45,15 @@ typedef enum {
 struct _BraseroScsiCmdInfo {
 	int size;
 	uchar opcode;
-
-	int o_flags;
 	BraseroScsiDirection direction;
 };
 typedef struct _BraseroScsiCmdInfo BraseroScsiCmdInfo;
 
-#define BRASERO_SCSI_COMMAND_DEFINE(cdb, name, fd_flags, direction)		\
+#define BRASERO_SCSI_COMMAND_DEFINE(cdb, name, direction)			\
 static const BraseroScsiCmdInfo info =						\
 {	/* SCSI commands always end by 1 byte of ctl */				\
 	G_STRUCT_OFFSET (cdb, ctl) + 1, 					\
 	BRASERO_##name##_OPCODE,						\
-	fd_flags,								\
 	direction								\
 }
 

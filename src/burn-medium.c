@@ -45,6 +45,7 @@
 #include "scsi-utils.h"
 #include "scsi-mode-pages.h"
 #include "scsi-status-page.h"
+#include "scsi-write-page.h"
 #include "scsi-q-subchannel.h"
 #include "scsi-dvd-structures.h"
 #include "burn-volume.h"
@@ -1112,7 +1113,9 @@ brasero_medium_track_get_nwa (BraseroMedium *self,
 			      BraseroDeviceHandle *handle,
 			      BraseroScsiErrCode *code)
 {
+	BraseroScsiModeData *data = NULL;
 	BraseroScsiTrackInfo track_info;
+	BraseroScsiWritePage *wrt_page;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
 	gint track_num;
@@ -1126,6 +1129,32 @@ brasero_medium_track_get_nwa (BraseroMedium *self,
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 		BRASERO_BURN_LOG ("Overwritable medium  => skipping");
 		return BRASERO_BURN_OK;
+	}
+
+	/* make sure the current write mode is TAO. Otherwise the drive will
+	 * return the first sector of the pregap instead of the first user
+	 * accessible sector. */
+	result = brasero_spc1_mode_sense_get_page (handle,
+						   BRASERO_SPC_PAGE_WRITE,
+						   &data,
+						   &size,
+						   code);
+	if (result != BRASERO_SCSI_OK) {
+		g_free (data);
+
+		BRASERO_BURN_LOG ("MODE SENSE failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	wrt_page = (BraseroScsiWritePage *) &data->page;
+	wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
+
+	result = brasero_spc1_mode_select (handle, data, size, code);
+	g_free (data);
+
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("MODE SELECT failed");
+		return BRASERO_BURN_ERR;
 	}
 
 	/* at this point we know the type of the disc that's why we set the 

@@ -1,3 +1,35 @@
+2008-08-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #543377 – No multisession
+	we have to make sure the drive has TAO mode set (so we set it) before
+	retrieving NWA
+
+	Also:
+	- changes flags to open devices (no opened in RW mode)
+	- remove one useless member in commands definition
+
+	* src/Makefile.am:
+	* src/burn-medium.c (brasero_medium_track_get_nwa):
+	* src/scsi-cam.c:
+	* src/scsi-command.h:
+	* src/scsi-eject.c:
+	* src/scsi-get-configuration.c:
+	* src/scsi-get-performance.c:
+	* src/scsi-mech-status.c:
+	* src/scsi-mode-pages.h:
+	* src/scsi-mode-sense.c:
+	* src/scsi-opcodes.h:
+	* src/scsi-read-capacity.c:
+	* src/scsi-read-cd.c:
+	* src/scsi-read-disc-info.c:
+	* src/scsi-read-disc-structure.c:
+	* src/scsi-read-format-capacities.c:
+	* src/scsi-read-toc-pma-atip.c:
+	* src/scsi-read-track-information.c:
+	* src/scsi-sg.c:
+	* src/scsi-spc1.h:
+	* src/scsi-uscsi.c:
+
 2008-08-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Try to fix #543377 – No multisession

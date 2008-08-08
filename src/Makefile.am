@@ -266,7 +266,10 @@ brasero_SOURCES = \
 	brasero-video-project.h         \
 	brasero-video-project.c         \
 	brasero-video-tree-model.c         \
-	brasero-video-tree-model.h
+	brasero-video-tree-model.h         \
+	scsi-write-page.h         \
+	scsi-mode-select.h         \
+	scsi-mode-select.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

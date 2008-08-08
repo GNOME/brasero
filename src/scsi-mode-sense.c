@@ -22,7 +22,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <fcntl.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <glib.h>
 
@@ -75,15 +77,12 @@ struct _BraseroModeSenseCDB {
 	uchar ctl;
 };
 
-#define BRASERO_MODE_DATA_SET_BYTE_ORDER(data)	data
-
 #endif
 
 typedef struct _BraseroModeSenseCDB BraseroModeSenseCDB;
 
 BRASERO_SCSI_COMMAND_DEFINE (BraseroModeSenseCDB,
 			     MODE_SENSE,
-			     O_RDONLY,
 			     BRASERO_SCSI_READ);
 
 #define BRASERO_MODE_DATA(data)			((BraseroScsiModeData *) (data))

@@ -76,6 +76,7 @@ typedef struct _BraseroScsiModeData BraseroScsiModeData;
 
 typedef enum {
 	BRASERO_SPC_PAGE_NULL		= 0x00,
+	BRASERO_SPC_PAGE_WRITE		= 0x05,
 	BRASERO_SPC_PAGE_STATUS		= 0x2a,
 } BraseroSPCPageType;
 

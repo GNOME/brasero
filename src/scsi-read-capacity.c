@@ -22,7 +22,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <fcntl.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <glib.h>
 
@@ -72,7 +74,6 @@ typedef struct _BraseroReadCapacityCDB BraseroReadCapacityCDB;
 
 BRASERO_SCSI_COMMAND_DEFINE (BraseroReadCapacityCDB,
 			     READ_CAPACITY,
-			     O_RDONLY,
 			     BRASERO_SCSI_READ);
 
 BraseroScsiResult
