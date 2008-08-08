@@ -3,7 +3,7 @@
  *
  *  Fri Oct 27 08:16:39 2006
  *  Copyright  2006  Rouquier Philippe
- *  <Rouquier Philippe@localhost.localdomain>
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

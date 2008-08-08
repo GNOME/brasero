@@ -1,5 +1,55 @@
 2008-08-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed e-mail address and some copyright names
+
+	* src/brasero-multi-dnd.c:
+	* src/brasero-multi-dnd.h:
+	* src/burn-debug.c:
+	* src/burn-debug.h:
+	* src/burn-iso-field.c:
+	* src/burn-iso-field.h:
+	* src/burn-iso9660.h:
+	* src/burn-plugin-private.h:
+	* src/burn-susp.c:
+	* src/burn-susp.h:
+	* src/burn-track.c:
+	* src/burn-track.h:
+	* src/plugins/dvdcss/burn-dvdcss-private.h:
+	* src/scsi-base.h:
+	* src/scsi-command.h:
+	* src/scsi-dvd-structures.h:
+	* src/scsi-error.h:
+	* src/scsi-get-configuration.c:
+	* src/scsi-get-configuration.h:
+	* src/scsi-get-performance.c:
+	* src/scsi-get-performance.h:
+	* src/scsi-mmc1.h:
+	* src/scsi-mmc2.h:
+	* src/scsi-mmc3.h:
+	* src/scsi-mode-pages.h:
+	* src/scsi-mode-sense.c:
+	* src/scsi-opcodes.h:
+	* src/scsi-q-subchannel.h:
+	* src/scsi-read-capacity.c:
+	* src/scsi-read-capacity.h:
+	* src/scsi-read-disc-info.h:
+	* src/scsi-read-disc-structure.c:
+	* src/scsi-read-disc-structure.h:
+	* src/scsi-read-format-capacities.c:
+	* src/scsi-read-format-capacities.h:
+	* src/scsi-read-toc-pma-atip.c:
+	* src/scsi-read-toc-pma-atip.h:
+	* src/scsi-read-track-information.c:
+	* src/scsi-read-track-information.h:
+	* src/scsi-sense-data.c:
+	* src/scsi-sense-data.h:
+	* src/scsi-sg.c:
+	* src/scsi-spc1.h:
+	* src/scsi-status-page.h:
+	* src/scsi-utils.h:
+
+2008-08-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
 	Fix #543377 – No multisession
 	we have to make sure the drive has TAO mode set (so we set it) before
 	retrieving NWA
@@ -30,14 +80,14 @@
 	* src/scsi-spc1.h:
 	* src/scsi-uscsi.c:
 
-2008-08-06  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Try to fix #543377 – No multisession
 
 	* src/burn-medium.c (brasero_medium_track_get_info),
 	(brasero_medium_track_get_nwa), (brasero_medium_get_sessions_info):
 
-2008-08-06  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Use the right fact correcting the confusion between KB and KiB
 	(rates returned by drives are in KB _NOT_ in Kib)
@@ -46,7 +96,7 @@
 	(brasero_medium_track_get_info):
 	* src/burn-medium.h:
 
-2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a problem with data-project not setting the correct number of files
 
@@ -56,7 +106,7 @@
 	* src/plugins/checksum/burn-checksum-files.c
 	(brasero_checksum_files_check_files):
 
-2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Some comments fixed
 
@@ -64,7 +114,7 @@
 	(brasero_medium_track_get_info),
 	(brasero_medium_get_sessions_info):
 
-2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	If sizes mismatch in get_performance and if the size of the buffer 
 	received is bigger than the one we requested, re-issue the command so
@@ -75,106 +125,106 @@
 	* src/scsi-get-performance.c (brasero_get_performance_get_buffer),
 	(brasero_get_performance):
 
-2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Use audio rate to compute speeds instead of data rate
 	Fix for #537871 – Burn speed selection does not work
 
 	* src/burn-medium.h:
 
-2008-08-05  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Use brasero_disc_clear () instead of brasero_disc_reset () when the user wants
 	to empty a project
 
 	* src/brasero-project.c (brasero_project_empty_cb):
 
-2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Other harmless warnings fixed
 
 	* src/brasero-jacket-view.c (brasero_jacket_view_update_color):
 	* src/brasero-rename.c (brasero_rename_do):
 
-2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a warning that could have led to a crash
 
 	* src/brasero-data-project.c (brasero_data_project_move_node):
 
-2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Some more harmless warnings fix
 
 	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
 	* src/burn-task-ctx.c (brasero_task_ctx_set_progress):
 
-2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed a warning that could have led to a crash
 
 	* src/burn-job.c (brasero_job_get_max_speed):
 
-2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed a couple of harmless warnings
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_visit_dir_async):
 	* src/brasero-project.c (brasero_project_set_uri):
 
-2008-08-04  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed a warning that could have led to a crash
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb):
 	* src/brasero-marshal.list:
 
-2008-08-03  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Removed dead files
 
 	* src/bonfire-marshal.c:
 	* src/bonfire-marshal.h:
 
-2008-08-02  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix problem with drive selection showing closed/ROM media
 
 	* src/burn-medium-monitor.c (brasero_medium_monitor_get_media):
 
-2008-08-02  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix problem with audio project size when removing audio track that is loading
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_remove):
 
-2008-08-01  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #545138 – brasero 0.8 ftbfs on alpha
 
 	* src/burn-session.c (brasero_burn_session_dest_media_removed),
 	(brasero_burn_session_logv):
 
-2008-08-01  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Remove some unnecessary echo in configure
 
 	* configure.in:
 
-2008-08-01  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a potential crash with uninitialized data
 
 	* src/brasero-xfer.c (brasero_xfer):
 
-2008-08-01  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Reverted previous patch
 
 	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_mp2),
 	(brasero_vob_build_audio_ac3):
 
-2008-08-01  Philippe Rouquier  <ykw@localhost.localdomain>
+2008-08-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Applied patch by Claude Paroz:
 	#545835 – Add no-c-format to strings in burn-vob.c
@@ -182,7 +232,7 @@
 	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_mp2),
 	(brasero_vob_build_audio_ac3):
 
-2008-07-20  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Make if possible to build brasero without libgnome/libgnomeui
 
@@ -193,14 +243,14 @@
 	* src/brasero-session.c:
 	* src/main.c (brasero_app_create_app), (main):
 
-2008-07-19  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Removed two unused libgnomeui headers
 
 	* src/brasero-session.c:
 	* src/brasero-utils.c:
 
-2008-07-19  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Improve and fix #542718 – Creating large ISO fails due to filesystem restrictions
 	Also fix variable overflow in mkisofs, genisoimage, cdrdao when they reported
@@ -225,7 +275,7 @@
 	* src/plugins/growisofs/burn-growisofs.c
 	(brasero_growisofs_read_stderr):
 
-2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Improved previous patch by Lin Ma so that dialogs derived from
 	BRASERO_TYPE_TOOL_DIALOG can choose the type of media they
@@ -245,7 +295,7 @@
 	* src/burn-medium-monitor.c (brasero_medium_monitor_get_media):
 	* src/burn-medium-monitor.h:
 
-2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Small cleanup
 
@@ -294,7 +344,7 @@
  	* src/scsi-dvd-structures.h:
  	Sun compiler doesn't support empty structures.
 
-2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Try to workaround an error (invalid track mode) when reading
 	with READ CD by autodetecting data mode
@@ -304,7 +354,7 @@
 	* src/burn-volume-source.h:
 	* src/scsi-read-cd.c (brasero_mmc1_read_block):
 
-2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another minor fix and cleanup for medium code.
 
@@ -312,7 +362,7 @@
 	(brasero_medium_get_sessions_info), (brasero_medium_get_contents),
 	(brasero_medium_try_open):
 
-2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Small cleanup for medium code:
 	Don't read the filesystem size twice for DVD+RW media
@@ -321,7 +371,7 @@
 	(brasero_medium_track_get_info),
 	(brasero_medium_get_sessions_info):
 
-2008-07-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixes for video projects:
 	- crash fixed (#543505 – crash in Brasero svn trunk r1010 when adding a .ogg file to a video project.)
@@ -332,7 +382,7 @@
 	(brasero_video_project_add_directory_contents_result),
 	(brasero_video_project_result_cb):
 
-2008-07-17  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix video project drive choice
 	Also fix a problem with size display
@@ -353,12 +403,12 @@
 	* src/brasero-utils.h:
 	* src/burn-basics.h:
 
-2008-07-17  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #539390 – brasero ftbfs with gnome-doc-utils.make needed by Makefile.in
 	(also in previous change)
 
-2008-07-17  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed all licence _layout_ to fix
 	#539218 – Brasero have some missing copyright headers
@@ -647,40 +697,40 @@
 	* src/scsi-uscsi.c:
 	* src/scsi-utils.h:
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix sizes display in drive menu (project size widget)
 
 	* src/brasero-project-size.c (brasero_project_size_build_menu):
 	* src/brasero-utils.c (brasero_utils_get_time_string_from_size):
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Removed a warning dialog for video projects
 
 	* src/burn.c (brasero_burn_lock_dest_media):
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #535835 – TEAC R55S - can't burn CD-R
 
 	* src/burn-medium.c (brasero_medium_old_drive_get_disc_info):
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Silence a warning when ejecting and no gdrive is available
 
 	* src/burn-volume-obj.c (brasero_volume_eject_gvolume),
 	(brasero_volume_eject):
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Improved previous change with a dialog that warns the user when he chooses a fat filesystem
 
 	* src/brasero-drive-properties.c
 	(brasero_drive_properties_set_tmpdir):
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #542718 – Creating large ISO fails due to filesystem restrictions
 	We check the filesystem type to make sure there are no limitations on the file size
@@ -688,7 +738,7 @@
 
 	* src/burn-job.c (brasero_job_check_output_volume_space):
 
-2008-07-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Removed unused function as it is making build fail with sun compiler
 	See #542136 comment 9
@@ -696,7 +746,7 @@
 	* src/brasero-utils.c (brasero_utils_free), (brasero_utils_init):
 	* src/brasero-utils.h:
 
-2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Try to improve things to fix #509895 – CD is not ejected after burn
 
@@ -708,7 +758,7 @@
 	(brasero_burn_same_src_dest), (brasero_burn_record),
 	(brasero_burn_blank):
 
-2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #542767 – toc file leak when copying 1:1 audio cd with one drive
 
@@ -718,7 +768,7 @@
 	(brasero_burn_session_get_tmp_image):
 	* src/burn-session.h:
 
-2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Various fixes for when a disc is copied to an image file
 	Fix #543016 – Crash in the disc copy target selection dialog
@@ -734,13 +784,13 @@
 	(brasero_image_properties_set_path):
 	* src/burn-session.c (brasero_burn_session_get_output):
 
-2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #542836 – Bug in Split menu after removing rest of audio data and trying to add it again
 
 	* src/brasero-split-dialog.c (brasero_split_dialog_cut):
 
-2008-07-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #542835 – Using Split-Track two times on same audiofile refuses Brasero from burning the data because of oversize
 	Also fix some other quirks with audio project size calculation
@@ -750,7 +800,7 @@
 	(brasero_audio_disc_add_slices),
 	(brasero_audio_disc_edit_song_properties):
 
-2008-07-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added possibility to change the layout
 
@@ -758,7 +808,7 @@
 	(brasero_layout_type_changed_cb),
 	(brasero_layout_HV_radio_button_toggled_cb), (brasero_layout_init):
 
-2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added a menu to the tree.
 	Fixed a problem with cached metadata when fixes from trunk were ported.
@@ -810,7 +860,7 @@
 	(brasero_medium_track_volume_size),
 	(brasero_medium_get_sessions_info):
 
-2008-06-27  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Modify the display widget for video project and split it between view and model
 	Added features to this widget:
@@ -913,7 +963,7 @@
 	(brasero_video_tree_model_new):
 	* src/brasero-video-tree-model.h:
 
-2008-06-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added (S)VCD types through a new plugin for vcdimager =)
 	(NOTE: latter plugin doesn't support progress yet)
@@ -999,7 +1049,7 @@
 	* src/plugins/vcdimager/burn-vcdimager.h:
 	* src/scsi-read-format-capacities.h:
 
-2008-06-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added support for framerate and size
 
@@ -1007,7 +1057,7 @@
 	* src/plugins/dvdauthor/Makefile.am:
 	* src/plugins/gstreamer/burn-vob.c (brasero_vob_build_video_bin):
 
-2008-06-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added support for options (reorganized visually) MP2, AC3, aspect ratio
 	There's still a problem with framerate (video format)
@@ -1027,7 +1077,7 @@
 	* src/burn-session.h:
 	* src/plugins/gstreamer/burn-vob.c (brasero_vob_build_video_bin):
 
-2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Proof of concept:
 	- this was only tested on a single video but may work with multiple videos
@@ -1137,7 +1187,7 @@
 
 	Update NEWS file for 0.8.0 release.
 
-2008-07-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Updated version to 0.8.0
 
@@ -1149,20 +1199,20 @@
 
 	Remove titles from warning window dialogs. Fix for bgo #542103. 
 
-2008-07-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Also exclude files with joliet incompatible names
 
 	* src/brasero-data-project.c
 	(_foreach_joliet_incompatible_make_list_cb):
 
-2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #542545 – Make brasero.desktop follow freedesktop
 
 	* data/brasero.desktop.in.in:
 
-2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a problem with joliet incompatible names 
 
@@ -1171,14 +1221,14 @@
 	(_foreach_joliet_incompatible_make_list_cb),
 	(brasero_data_project_get_contents):
 
-2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed a problem with file names being wrongly modified
 
 	* src/brasero-file-node.c (brasero_file_node_validate_utf8_name),
 	(brasero_file_node_get_uri_name):
 
-2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Improved libburn debugging
 
@@ -1186,7 +1236,7 @@
 	(brasero_libburn_common_ctx_new),
 	(brasero_libburn_common_process_message):
 
-2008-07-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #529418 – Speed is not displayed
 
@@ -1200,7 +1250,7 @@
 	* src/plugins/growisofs/burn-growisofs.c
 	(brasero_growisofs_read_stderr):
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix problem when burning audio (NOT on the fly) with libburn
 
@@ -1208,7 +1258,7 @@
 	(brasero_libburn_setup_session_fd),
 	(brasero_libburn_setup_session_file):
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #538872 – Brasero crashes with libburn backend
 	Fix a crash when libburn runs into an error
@@ -1220,7 +1270,7 @@
 	* src/plugins/libburnia/burn-libburn.c
 	(brasero_libburn_clock_tick):
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #535835 – TEAC R55S - can't burn CD-R
 	Now that the medium is identified, try to get its contents.
@@ -1235,7 +1285,7 @@
 	(brasero_medium_get_css_feature):
 	* src/scsi-sg.c (brasero_scsi_command_issue_sync):
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #542139 – Brasero can't find a proper cd/dvd drive on Solaris
 	Patch by Lin Ma
@@ -1243,7 +1293,7 @@
 	* src/burn-drive.c (brasero_drive_get_display_name),
 	(brasero_drive_init_real):
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #542136 – Brasero on OpenSolaris
 	Patch by Lin Ma
@@ -1252,21 +1302,21 @@
 	(brasero_scsi_command_new), (brasero_scsi_command_free),
 	(brasero_device_handle_open), (brasero_device_handle_close):
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #542136 – Brasero on OpenSolaris
 	Patch by Lin Ma
 
 	* src/Makefile.am:
 
-2008-07-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #542136 – Brasero on OpenSolaris
 	Patch by Lin Ma
 
 	* configure.in:
 
-2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix warnings in data projects
 	Fix previous changes (problem with bogus rows)
@@ -1281,7 +1331,7 @@
 	(brasero_data_tree_model_path_to_node),
 	(brasero_data_tree_model_node_added):
 
-2008-07-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix crash for #508502 – Can't add files from FAT32 partitions
 	and improve use of GINT_TO_POINTER ()
@@ -1298,21 +1348,21 @@
 	(brasero_data_tree_model_get_value),
 	(brasero_data_tree_model_get_path):
 
-2008-07-07  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #535835 – TEAC R55S - can't burn CD-R
 
 	* src/burn-medium.c (brasero_medium_old_drive_get_disc_info),
 	(brasero_medium_check_old_drive), (brasero_medium_get_medium_type):
 
-2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #541635 – Build failure againts gtk+ trunk
 
 	* src/brasero-data-tree-model.c
 	(brasero_data_tree_model_sortable_iface_init):
 
-2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Check drive capabilities (Burn proof, just link only ATM)
 	fix name of model in previous patch
@@ -1328,14 +1378,14 @@
 	* src/burn-drive.h:
 	* src/burn-medium.c (brasero_medium_check_old_drive):
 
-2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #535835 – TEAC R55S - can't burn CD-R
 
 	* src/burn-medium.c (brasero_medium_check_old_drive),
 	(brasero_medium_get_medium_type):
 
-2008-07-06  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-06  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #506398 – toc image type not autodetected correctly
 	Also give a name for the volume when gvolume is still not available.
@@ -1351,26 +1401,26 @@
 	(brasero_volume_eject), (brasero_volume_get_name),
 	(brasero_volume_get_display_label):
 
-2008-07-03  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Updated NEWS file
 
 	* NEWS:
 
-2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #506338 – Import Session fails on DVD+R that contains multiple sessions
 	use fseeko instead of fseek that can't break the 2Gio barrier
 
 	* src/burn-volume-source.c (brasero_volume_source_seek_fd):
 
-2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	some small fixes
 
 	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
 
-2008-07-02  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix problems with exotic names in data projects
 
@@ -1387,14 +1437,14 @@
 	* src/brasero-io.c (brasero_io_load_directory_thread):
 	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
 
-2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix an issue with data projects and renaming that displayed
 	the old name and not the new one of an already existing file
 
 	* src/brasero-data-project.c (brasero_data_project_rename_node):
 
-2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #540931 – Fails to burn an iso to DVD+RW in 0.7.90
 
@@ -1405,7 +1455,7 @@
 	* src/plugins/cdrtools/burn-cdrecord.c
 	(brasero_cdrecord_export_caps):
 
-2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #540993 – Brasero displays (and uses) incorrect track durations
 
@@ -1419,14 +1469,14 @@
 	(brasero_io_get_file_info_thread_real), (brasero_io_finalize):
 	* src/brasero-metadata.h:
 
-2008-07-01  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-07-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another fix for #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
 
 	* src/plugins/cdrkit/burn-readom.c (brasero_readom_set_argv):
 	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_set_argv):
 
-2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #539959 Crash when right clicking in plugin window 
 
@@ -1435,14 +1485,14 @@
 	(show_tree_popup_menu), (brasero_plugin_manager_ui_init):
 	* src/burn.c (brasero_burn_log):
 
-2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #527383 – Disc Copy (Create 1:1 copy of CD) doesn't work at all
 
 	* src/plugins/cdrtools/burn-cdrecord.c
 	(brasero_cdrecord_set_argv_record):
 
-2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #540673 – m3u playlist import problem
 	keep the correct order of entries in a playlist
@@ -1452,13 +1502,13 @@
 	(brasero_io_parse_playlist_thread):
 	* src/brasero-io.h:
 
-2008-06-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Bumped totem-pl-parser requirements
 
 	* configure.in:
 
-2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Possible fix for
 	#538953 – crash in Brasero Disc Burning: I was trying to copy a C...
@@ -1467,7 +1517,7 @@
 
 	* src/burn-job.c (brasero_job_log_message):
 
-2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed copyright headers (brasero name was actually 'trunk')
 
@@ -1526,7 +1576,7 @@
 	* src/burn-task-item.c:
 	* src/burn-task-item.h:
 
-2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Some cleanups
 	Fix a problem when copying a disc with the same source and destination
@@ -1548,7 +1598,7 @@
 	(brasero_burn_caps_get_required_media_type):
 	* src/burn-medium.c (brasero_medium_get_icon):
 
-2008-06-28  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed some problems for beagle search
 	Fixed some problems with playlist pane
@@ -1571,19 +1621,19 @@
 
 	Add copyrights.
 
-2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another string fix
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
 
-2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a string
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_add_dir):
 
-2008-06-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix signal marshalling definition
 
@@ -1605,13 +1655,13 @@
 	Add the current arguments to open().
 	Closes bgo #539386.
 
-2008-06-20  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a problem with freshly formatted DVD+RW
 
 	* src/burn-medium.c (brasero_medium_get_sessions_info):
 
-2008-06-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #538299 – Window titles
 
@@ -1674,26 +1724,26 @@
 	* src/brasero-utils.c (brasero_utils_launch_app):
 	* src/main.c (brasero_app_parse_options):
 
-2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #538414 – burn speed problems
 
 	* src/brasero-drive-properties.c
 	(brasero_drive_properties_set_drive):
 
-2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #538346 – Does not ask to overwrite existing log file
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_save_log):
 
-2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #538300 – Use add icon and label for add files dialog
 
 	* src/brasero-project.c (brasero_project_add_uris_cb):
 
-2008-06-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Changed some more plugin priorities
 
@@ -1716,14 +1766,14 @@
 
 	Add uppercase words to window titles. Fix bgo #538299.
 
-2008-06-14  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-14  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #534880 – Audio project track column
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_init),
 	(brasero_audio_disc_re_index_track_num):
 
-2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Changed priorities between burning plugins.
 	Make sure wodim is only used as a last resort.
@@ -1731,7 +1781,7 @@
 	* src/plugins/growisofs/burn-growisofs.c
 	(brasero_growisofs_export_caps):
 
-2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #470234 – Doesn't format fresh dvd+rw before burning
 
@@ -1753,13 +1803,13 @@
 	(brasero_libburn_export_caps):
 	* src/scsi-read-format-capacities.h:
 
-2008-06-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Bumped gstreamer requirements to 0.10.15
 
 	* configure.in:
 
-2008-06-11  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-11  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #532495 – crash when removing/moving a file that has been added to brasero
 
@@ -1788,7 +1838,7 @@
 
 	More Fixes for the help manual from Milo Casagrande.
 
-2008-06-08  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-06-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #493495 – Growisofs stops while burning Video-DVD
 
@@ -1831,13 +1881,13 @@
 	* src/brasero-project.c:
 	(brasero_project_check_default_burning_app):
 
-2008-05-31  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-31  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another fix for #535141 – hotkey ambiguity in GUI frontend
 
 	* src/brasero-project.c (brasero_project_save_project_dialog):
 
-2008-05-31  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-31  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #535575 – Many g_strdup_printf instead of g_strdup
 	patch by Claude Paroz
@@ -1847,14 +1897,14 @@
 	(brasero_burn_dialog_update_title_writing_progress),
 	(brasero_burn_dialog_cancel_dialog):
 
-2008-05-31  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-31  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #535558 – Strings not marked for translation
 	patch by Claude Paroz
 
 	* src/burn-volume-obj.c (brasero_volume_get_display_label):
 
-2008-05-31  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-31  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #535551 Translator comment needed
 
@@ -1881,13 +1931,13 @@
 	Mark documenters to non translation. 
 	Fixes bgo #535585 patch from Claude Paroz <claude@2xlibre.net>.
 
-2008-05-30  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-30  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	silenced a warning
 
 	* src/brasero-search-beagle.c (brasero_search_add_hit_to_tree):
 
-2008-05-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	small fix for beagle pane
 
@@ -1916,7 +1966,7 @@
 	pause and plugins. 
 	Patch from Milo Casagrande <milo_casagrande@yahoo.it>.
 
-2008-05-28  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-28  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #535167 – translation issues
 
@@ -1928,27 +1978,27 @@
 
 	Add documentation authors to about dialog.
 
-2008-05-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Small fix for preview using the wrong GConf key
 
 	* src/brasero-preview.h:
 	* src/brasero-project.c:
 
-2008-05-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	updated
 
 	* NEWS:
 
-2008-05-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Additional checks at plugin init to see if it can properly work
 
 	* src/plugins/transcode/burn-normalize.c
 	(brasero_normalize_export_caps):
 
-2008-05-25  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-25  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Add normalization for audio:
 	- one new plugin
@@ -1986,7 +2036,7 @@
 	(brasero_transcode_stop_pipeline),
 	(brasero_transcode_new_decoded_pad_cb):
 
-2008-05-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Adds automatic gstreamer plugin installation for audio (à la totem)
 	NOTE: since I have fedora 8 I have just been able to test the case where nothing happens
@@ -2015,14 +2065,14 @@
 	* src/brasero-metadata.h:
 	* src/main.c (main):
 
-2008-05-20  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	fixed help file path
 
 	* src/brasero-app.h:
 	* src/main.c (on_help_cb), (main):
 
-2008-05-20  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Use BraseroVolSrc for functions in brasero-volume-read
 
@@ -2047,13 +2097,13 @@
 
 	Fix help path. Display Contents instead of Help to follow HIG.
 
-2008-05-20  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #Bug 531546 – Bad phrasing regarding md5 checking after burn is complete
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb):
 
-2008-05-20  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixes for help system:
 	- added entry in help menu
@@ -2064,7 +2114,7 @@
 	* help/brasero.omf.in:
 	* src/brasero-menu.h:
 
-2008-05-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #533148 – crash when adding files (only x86_64?)
 	patch by Eric Piel_gnome
@@ -2074,7 +2124,7 @@
 	* src/brasero-utils.c (brasero_utils_register_string),
 	(brasero_utils_unregister_string):
 
-2008-05-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Final fix #504838 – don't eject disc between after burning, when you want to check the md5sum
 
@@ -2107,7 +2157,7 @@
 	* src/scsi-device.h:
 	* src/scsi-sg.c:
 
-2008-05-17  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Lots of bug fixes and patches delayed due to the closing of SVN
 
@@ -2216,13 +2266,13 @@
 	(brasero_libisofs_create_volume), (brasero_libisofs_stop_real),
 	(brasero_libisofs_clean_output), (brasero_libisofs_export_caps):
 
-2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #519339 – [libburnia] Doesn't build with libisofs 0.6.2 and wrong pkg-config filename for libburn
 
 	* configure.in:
 
-2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #519339 – [libburnia] Doesn't build with libisofs 0.6.2 and wrong pkg-config filename for libburn
 	Update to new libisofs API (require 0.6.4)
@@ -2235,14 +2285,14 @@
 	(brasero_libisofs_create_volume_thread),
 	(brasero_libisofs_create_volume), (brasero_libisofs_stop_real):
 
-2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix bug introduce in previous patch (label for session not set)
 
 	* src/brasero-disc-option-dialog.c
 	(brasero_disc_option_dialog_title_widget):
 
-2008-05-12  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-12  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #532072 – brasero is not able to generate iso image when long localized label is used
 	Initial patch by Gregory Petrosyan modified afterwards
@@ -2256,13 +2306,13 @@
 	(brasero_disc_option_dialog_title_widget):
 	* src/burn-session.c (brasero_burn_session_set_label):
 
-2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed a bug introduced by DL change
 
 	* src/burn-caps.c (brasero_caps_disc_new_status):
 
-2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #532391 – brasero does not save user settings
 	and possibly #530231 – Brasero is not remembering plugin settings
@@ -2270,7 +2320,7 @@
 	* src/burn-plugin-manager.c
 	(brasero_plugin_manager_plugin_state_changed):
 
-2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #513910 – broken DVD DL support
 	Added Dual Layer support
@@ -2317,7 +2367,7 @@
 	* src/plugins/growisofs/burn-growisofs.c
 	(brasero_growisofs_export_caps):
 
-2008-05-10  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-10  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix warnings
 	Updated cdrecord capabilities (DVDs but no multisession and no blanking capabilities)
@@ -2327,7 +2377,7 @@
 	* src/plugins/cdrtools/burn-cdrecord.c
 	(brasero_cdrecord_export_caps):
 
-2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed another bug with project-size medium insertion/removal
 
@@ -2335,7 +2385,7 @@
 	(brasero_project_size_disc_added_cb),
 	(brasero_project_size_disc_removed_cb):
 
-2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a crash on medium removal/addition
 
@@ -2343,19 +2393,19 @@
 	(brasero_project_size_disc_added_cb),
 	(brasero_project_size_disc_removed_cb):
 
-2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix crash when a file don't replace an imported one (when the user refuses to)
 
 	* src/brasero-data-session.c (brasero_data_session_add_last):
 
-2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Update wodim plugin and remove all multisession caps for DVD-(R)W
 
 	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_export_caps):
 
-2008-05-09  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-09  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix progress when blanking (for the backends that return progress)
 	Fix progress for dvd+rw-format
@@ -2372,7 +2422,7 @@
 	* src/plugins/growisofs/burn-dvd-rw-format.c
 	(brasero_dvd_rw_format_read_stderr):
 
-2008-05-08  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #531831 – crash when adding a directory with a file bigger than 2Gb
 
@@ -2382,7 +2432,7 @@
 	(brasero_file_node_new_from_info):
 	* src/brasero-file-node.h:
 
-2008-05-08  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-08  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix crash introduced by recent changes
 	Unfortunately committed trash as well.
@@ -2391,14 +2441,14 @@
 	* src/brasero-file-node.c (brasero_file_node_save_imported):
 	* src/brasero-file-node.h:
 
-2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Updated wodim capabilities (now plugin can burn DVD+-RW, format DVD+RW, blank DVD-RW sequential)
 
 	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_set_argv_blank),
 	(brasero_wodim_export_caps):
 
-2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	A few fixed to avoid crash and warnings
 	Added a helper function for plugins.
@@ -2408,13 +2458,13 @@
 	(brasero_process_stop):
 	* src/burn-process.h:
 
-2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Notice disc insertion
 
 	* src/brasero-project-size.c (brasero_project_size_disc_added_cb):
 
-2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix DVD-RW sequential capacity retrieval
 
@@ -2423,13 +2473,13 @@
 	* src/burn-medium.h:
 	* src/scsi-read-capacity.h:
 
-2008-05-07  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-07  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Make sure the import session is disabled when we start
 
 	* src/brasero-data-disc.c (brasero_data_disc_add_ui):
 
-2008-05-05  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-05  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #507800 – Default loading image to burn from last location
 
@@ -2437,14 +2487,14 @@
 	(brasero_image_option_dialog_file_chooser_destroy),
 	(brasero_image_option_dialog_init):
 
-2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another fix for #519110 – Variable size of bottom widgets
 
 	* src/brasero-project-size.c (brasero_project_size_size_request),
 	(brasero_project_size_expose):
 
-2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #519110 – Variable size of bottom widgets
 
@@ -2453,7 +2503,7 @@
 	(brasero_project_size_expose):
 	* src/burn-job.c:
 
-2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Add multi selection through mouse in dialog that pops up after clicking on add without side pane
 
@@ -2461,7 +2511,7 @@
 	* src/brasero-file-chooser.h:
 	* src/brasero-project.c (brasero_project_add_uris_cb):
 
-2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #531273 – Edit information dialog for music CDs looses start point info
 
@@ -2472,7 +2522,7 @@
 	(brasero_song_props_set_properties):
 	* src/brasero-time-button.c (brasero_time_button_set_max):
 
-2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #530815 – Unable to burn bin/cue
 
@@ -2483,7 +2533,7 @@
 	(brasero_image_format_get_cdrdao_size),
 	(brasero_image_format_get_cue_size):
 
-2008-05-04  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-04  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #530397 – Filechooser dialog for images burning should only show images files
 
@@ -2491,7 +2541,7 @@
 	(brasero_image_option_dialog_get_session),
 	(brasero_image_option_dialog_init):
 
-2008-05-03  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #526533 – Brasero displays a "frightening" warning in disc to disc copy.
 
@@ -2500,7 +2550,7 @@
 	* src/burn.c (brasero_burn_ask_for_dest_media),
 	(brasero_burn_record):
 
-2008-05-03  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-03  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #439916 – Popups are user-unfriendly
 	Fixes for data project:
@@ -2536,7 +2586,7 @@
 	(brasero_project_error_size_dialog), (brasero_project_check_size),
 	(brasero_project_switch):
 
-2008-05-02  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-02  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Don't pass on pseudo URI for new fake folders to vfs object
 	Allows to load project where there is such a directory.
@@ -2548,7 +2598,7 @@
 	(brasero_data_project_add_path):
 	* src/brasero-data-vfs.c (brasero_data_vfs_load_directory):
 
-2008-05-01  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-05-01  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #530521 – Disable Empty project button if no files are in project
 	Also fixes two crashes:
@@ -2593,7 +2643,7 @@
 	Added help docs to the tree imported from ubuntu-doc team bzr tree.
 	Thanks to Milo Casagrande and Phil Bull for the docs you rock!
 
-2008-04-30  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-30  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Adds mass file renaming to data project
 	Fix #497846 – Allow modify filenames of files that will be recorded following a pattern
@@ -2612,7 +2662,7 @@
 	* src/brasero-song-properties.c (brasero_song_props_init),
 	(brasero_song_props_set_properties):
 
-2008-04-29  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-29  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #529780 – Can't edit multiple CD-Text entries at once.
 	Also added code for file renaming (to be extented to data project)
@@ -2642,7 +2692,7 @@
 	* src/brasero-rename.h:
 	* src/brasero-song-properties.c (brasero_song_props_init):
 
-2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #521368 – HIG alert windows
 
@@ -2652,7 +2702,7 @@
 	* src/brasero-project.c (brasero_project_error_size_dialog),
 	(brasero_project_no_song_dialog), (brasero_project_no_file_dialog):
 
-2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #520578 – Check Integrity menu entry still present even with plugins disabled
 	(backportable)
@@ -2661,7 +2711,7 @@
 	* src/burn-caps.h:
 	* src/main.c (brasero_caps_changed_cb), (brasero_app_create_app):
 
-2008-04-27  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-27  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #520784 – Brasero does not recognize .bin in the same directory when .cue is selected
 	(backportable)
@@ -2670,7 +2720,7 @@
 	(brasero_image_format_get_cue_file_complement),
 	(brasero_image_format_get_toc_file_complement):
 
-2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-24  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #505981 – Default application dialog asks for yes/no
 	Also starts to fix #521368 – HIG alert windows
@@ -2707,14 +2757,14 @@
 	
 	Fix previous commit.
 
-2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-24  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #529428 – brasero crashed when checking integrity with md5sum
 
 	* src/brasero-sum-dialog.c (brasero_sum_dialog_get_file_checksum):
 	* src/burn-medium.c (brasero_medium_get_medium_type):
 
-2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-24  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #509013 – Context menu actions for multiple files for good
 	Also in audio project deselect when there is a click in empty area
@@ -2724,7 +2774,7 @@
 	* src/brasero-data-disc.c (brasero_data_disc_tree_select_function),
 	(brasero_data_disc_button_pressed_cb):
 
-2008-04-24  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-24  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #518583 – Incorrectly adding .bin to wav filename listed in toc
 	we were using URIs instead of paths
@@ -2732,19 +2782,19 @@
 
 	* src/burn-track.c (brasero_track_get_image_source):
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #518505 – Cancel dialog buttons' wording is confusing
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_cancel_dialog):
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Add flash videos when filtering with videos
 
 	* src/brasero-project.c (brasero_project_add_uris_cb):
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #504291 – No warning message before converting video to audio data
 
@@ -2752,7 +2802,7 @@
 	(brasero_audio_disc_result), (brasero_audio_disc_new_row_cb):
 	(backportable)
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #513461 – Preview disabled calls a video window
 	(backportable)
@@ -2764,7 +2814,7 @@
 	(brasero_preview_set_enabled):
 	* src/brasero-preview.h:
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #520986 – Background in 'new project' is white regardless of the desktop theme
 	(needs backporting)
@@ -2773,7 +2823,7 @@
 	(brasero_utils_disc_realized_cb),
 	(brasero_disc_get_use_info_notebook):
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #515739 – Directory tree display
 	Match nautilus display
@@ -2781,7 +2831,7 @@
 
 	* src/brasero-data-disc.c (brasero_data_disc_init):
 
-2008-04-23  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-23  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixes #512694 – can't set tmp dir and can't burn image if size > available on /tmp
 	(should be backported)
@@ -2802,7 +2852,7 @@
 
 	Fixed seek on preview mode see bgo #529475.
 
-2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #509013 – Context menu actions for multiple files
 	Added debug for error in Player
@@ -2811,7 +2861,7 @@
 	* src/brasero-data-disc.c (brasero_data_disc_button_pressed_cb):
 	* src/brasero-player-bacon.c (brasero_player_bacon_bus_messages):
 
-2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Add a preview (when enabled) to GtkFileChooserDialog displayed when there isn't any sidebar.
 
@@ -2821,19 +2871,19 @@
 	* src/brasero-project.c (brasero_project_preview_ready),
 	(brasero_project_update_preview), (brasero_project_add_uris_cb):
 
-2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Don't error out for clone image types when DAO is set simply ignore it
 
 	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_set_argv_record):
 
-2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a crash when changing the disc in case of CD to CD copy using the same drive
 
 	* src/burn.c (brasero_burn_lock_dest_media):
 
-2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Don't save all flags in between sessions but only those that the user can change
 
@@ -2844,13 +2894,13 @@
 	(brasero_disc_copy_dialog_get_session):
 	* src/burn.c (brasero_burn_check_session_consistency):
 
-2008-04-22  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed a crash when copying a medium with same dest and source drive
 
 	* src/burn-session.c (brasero_burn_session_set_image_output_full):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Last patch (hopefully) to fix mimetype icons
 
@@ -2862,14 +2912,14 @@
 	* src/brasero-search-beagle.c (brasero_search_add_hit_to_tree):
 	* src/brasero-utils.h:
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Display current action when creating a checksum for an image
 
 	* src/plugins/checksum/burn-checksum-image.c
 	(brasero_checksum_image_image_and_checksum):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for good this time unmount operation by waiting for GVolumeMonitor signal
 	Fix warning with g_propagate_error
@@ -2880,13 +2930,13 @@
 	* src/burn.c (brasero_burn_run_imager),
 	(brasero_burn_run_recorder):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	make sure to grey out the copy button in all proper situations
 
 	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix wrong unreffing of gtkicontheme
 
@@ -2896,7 +2946,7 @@
 	* src/brasero-mime-filter.c (brasero_mime_filter_add_mime):
 	* src/brasero-search-beagle.c (brasero_search_add_hit_to_tree):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed some warnings and icon retrieving in search pane and audio project
 	Also added possibility to retrieve GIcon through brasero-io (but still unused)
@@ -2908,13 +2958,13 @@
 	* src/brasero-io.h:
 	* src/brasero-mime-filter.c (brasero_mime_filter_add_mime):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix order of rates returned by medium
 
 	* src/burn-medium.c (brasero_medium_init_real):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Another fix for the same problem as before
 
@@ -2923,7 +2973,7 @@
 	* src/brasero-medium-selection.c
 	(brasero_medium_selection_show_type):
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Copy disc dialog:
 	Fixed appearance of destination medium (there was only file type before)
@@ -2942,7 +2992,7 @@
 	* src/burn-medium-monitor.c (brasero_medium_monitor_get_media):
 	* src/burn-medium-monitor.h:
 
-2008-04-21  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-21  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Make sure there is always a default path set when we're creating an image
 
@@ -2950,14 +3000,14 @@
 	(brasero_dest_selection_source_changed):
 	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
 
-2008-04-19  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix crash when setting the path for an image output when there was none before
 
 	* src/brasero-image-properties.c
 	(brasero_image_properties_is_path_edited):
 
-2008-04-19  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-19  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Improvements for volume unmounting/mounting (trunk specific)
 	Don't return an error if volume is already unmounted/mounted
@@ -2966,7 +3016,7 @@
 	(brasero_volume_mount_finish), (brasero_volume_eject_finish):
 	* src/burn.c (brasero_burn_eject_dest_media):
 
-2008-04-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix project size widget that fixes
 	#528103 – selecting the disc type not displayed well on RTL Desktop
@@ -2980,7 +3030,7 @@
 	(brasero_project_size_expose),
 	(brasero_project_size_menu_position_cb):
 
-2008-04-18  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-18  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a problem where metadata didn't say when it was cancelled leading to unloaded files in audio project
 	Remove some debug statements
@@ -2995,13 +3045,13 @@
 	* src/brasero-metadata.c (brasero_metadata_completed),
 	(brasero_metadata_bus_messages), (brasero_metadata_get_info_wait):
 
-2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Avoid crashing with unsupported video (#527911 – Brasero crashes when browsing files)
 
 	* src/brasero-metadata.c (brasero_metadata_new_decoded_pad_cb):
 
-2008-04-17  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a bug were songs with a length inferior to 6 sec didn't have their length updated in the tree
 	(unstable branch specific)
@@ -3028,7 +3078,7 @@
 
 	Fix volume level to match other Gnome apps.
 
-2008-04-16  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix #516687 – Handle audio playlists
 	Added possibility to save audio project as a playlist and open playlists as audio projects
@@ -3065,7 +3115,7 @@
 	* src/main.c (brasero_app_recent_open), (brasero_app_add_recent),
 	(brasero_app_parse_options), (main):
 
-2008-04-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added the possibility to save an audio project to plain text file as a list of songs
 	Some cleaning 
@@ -3086,7 +3136,7 @@
 	* src/scsi-get-configuration.h:
 	* src/scsi-spc1.h:
 
-2008-04-15  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-15  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	fix #525501 – Brasero displays odd burning speeds (1-3-5-etc) instead of even values (2-4-8-etc)
 
@@ -3103,21 +3153,21 @@
 	(brasero_medium_init_real):
 	* src/burn-medium.h:
 
-2008-04-14  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-14  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	improvements over last change (put all files in a directory)
 
 	* src/brasero-session.c (brasero_session_get_path),
 	(brasero_session_load), (brasero_session_save):
 
-2008-04-14  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-14  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #520398 – Brasero doesn't match FreeDesktop directories specs
 
 	* src/brasero-session.c (brasero_session_load),
 	(brasero_session_save):
 
-2008-04-14  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-14  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Integrate the cover editor a bit further by filling it automatically when it is called
 	while an audio project is opened or after a successful burn.
@@ -3143,14 +3193,14 @@
 	* src/brasero-project.h:
 	* src/main.c:
 
-2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Removed some unneeded translated strings
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_success_run),
 	(brasero_burn_dialog_notify_success):
 
-2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added a CD cover editor
 
@@ -3240,13 +3290,13 @@
 	* src/brasero-menu.h:
 	* src/main.c (on_cover_cb):
 
-2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fixed corrupted path on CD
 
 	* src/brasero-data-project.c (brasero_data_project_node_to_path):
 
-2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	remove some uneeded flags from Makefile.am
 	remove burn-commons.c since it isn't built anymore
@@ -3266,7 +3316,7 @@
 	* src/plugins/local-track/Makefile.am:
 	* src/plugins/transcode/Makefile.am:
 
-2008-04-13  Philippe Rouquier  <algernon@localhost.localdomain>
+2008-04-13  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Add new functions to read file disc without mounting it
 	Now the checksum-file plugin will include the previous session file checksums for a multi session CD

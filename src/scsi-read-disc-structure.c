@@ -2,8 +2,8 @@
  *            scsi-read-disc-structure.c
  *
  *  Sat Oct 28 16:15:40 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

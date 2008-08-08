@@ -2,8 +2,8 @@
  *            burn-spc1.h
  *
  *  Fri Oct 20 13:18:29 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

@@ -2,8 +2,8 @@
  *            scsi-read-capacity.c
  *
  *  Sat Oct 28 12:01:52 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

@@ -2,8 +2,8 @@
  *            burn-get-performance.c
  *
  *  Thu Oct 19 16:35:28 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

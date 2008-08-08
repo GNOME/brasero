@@ -2,8 +2,8 @@
  *            scsi-mode-pages.h
  *
  *  Sat Oct 21 19:11:53 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

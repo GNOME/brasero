@@ -2,8 +2,8 @@
  *            burn-mode-sense.c
  *
  *  Thu Oct 19 19:40:03 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

@@ -2,8 +2,8 @@
  *            burn-track.c
  *
  *  Thu Dec  7 09:50:38 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

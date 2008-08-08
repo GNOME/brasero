@@ -2,8 +2,8 @@
  *            burn-mmc3.h
  *
  *  Thu Oct 19 14:18:35 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

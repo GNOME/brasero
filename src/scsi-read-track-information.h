@@ -2,8 +2,8 @@
  *            scsi-read-track-information.h
  *
  *  Fri Oct 27 07:17:16 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

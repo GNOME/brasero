@@ -2,8 +2,8 @@
  *            scsi-dvd-structures.h
  *
  *  Sun Oct 29 11:54:23 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

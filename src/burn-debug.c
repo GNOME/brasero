@@ -2,8 +2,8 @@
  *            burn-debug.c
  *
  *  Sat Apr 14 10:53:08 2007
- *  Copyright  2007  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2007  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

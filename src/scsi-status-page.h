@@ -2,8 +2,8 @@
  *            burn-status-page.h
  *
  *  Fri Oct 20 11:20:04 2006
- *  Copyright  2006  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2006  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

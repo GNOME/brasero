@@ -2,8 +2,8 @@
  *            burn-plugin-private.h
  *
  *  Mon Feb 12 10:40:55 2007
- *  Copyright  2007  algernon
- *  <algernon@localhost.localdomain>
+ *  Copyright  2007  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*
