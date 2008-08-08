@@ -1,3 +1,32 @@
+??-08-2008
+
+New features:
+- new video project: drag and drop (a) video(s) and brasero will create a vcd or a video dvd (new requirements, not dependencies, dvdauthor, vcdimager, gst-plugin-bad)
+- brasero can be built without libgnome/libgnomeui (there is a switch when building)
+- layout can now be vertical or horizontal
+
+Bug fixed:
+
+#543377 – No multisession
+#537871 – Burn speed selection does not work
+#545138 – brasero 0.8 ftbfs on alpha
+#545835 – Add no-c-format to strings in burn-vob.c
+#542718 – Creating large ISO fails due to filesystem restrictions
+#543505 – crash in Brasero svn trunk r1010 when adding a .ogg file to a video project
+#509895 – CD is not ejected after burn
+#542767 – toc file leak when copying 1:1 audio cd with one drive
+#543016 – Crash in the disc copy target selection dialog
+#542836 – Bug in Split menu after removing rest of audio data and trying to add it again
+#542835 – Using Split-Track two times on same audiofile refuses Brasero from burning the data because of oversize
+
+and some other bug fixes
+
+New requirements (yet optional) to make video project work:
+vcdimager, dvdauthor, gst-plugin-bad
+
+Lots of updated translations (Thanks to all translators).
+
+
 13-07-2008 : 0.8.0
 
 Bug fixed:
