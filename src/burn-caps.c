@@ -3115,7 +3115,7 @@ brasero_caps_disc_lookup_or_create (GSList *retval,
 	caps->flags = BRASERO_PLUGIN_IO_ACCEPT_FILE;
 	caps->type.type = BRASERO_TRACK_TYPE_DISC;
 	caps->type.subtype.media = media;
-	
+
 	BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
 				    caps->flags,
 				    "Created");
@@ -3132,17 +3132,18 @@ brasero_caps_disc_new_status (GSList *retval,
 	if ((type & BRASERO_MEDIUM_BLANK)
 	&& !(media & BRASERO_MEDIUM_ROM)) {
 		/* if media is blank there is no other possible property */
-		if (BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_PLUS)
-		||  BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-		||  BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+		if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
 			/* This is only for above types */
 			retval = brasero_caps_disc_lookup_or_create (retval,
 								     media|
 								     BRASERO_MEDIUM_BLANK);
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_BLANK|
-								     (type & BRASERO_MEDIUM_UNFORMATTED));
+			if (type & BRASERO_MEDIUM_UNFORMATTED)
+				retval = brasero_caps_disc_lookup_or_create (retval,
+									     media|
+									     BRASERO_MEDIUM_BLANK|
+									     BRASERO_MEDIUM_UNFORMATTED);
 		}
 		else
 			retval = brasero_caps_disc_lookup_or_create (retval,
