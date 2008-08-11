@@ -386,6 +386,23 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 	g_slist_free (list);
 	g_strfreev (uris);
 }
+
+void
+brasero_project_manager_sidepane_changed (BraseroLayout *layout,
+					  gboolean visible,
+					  BraseroProjectManager *manager)
+{
+	if (!visible) {
+		/* If sidepane is disabled, remove any text about selection */
+		if (manager->priv->io)
+			brasero_io_cancel_by_base (manager->priv->io,
+						   manager->priv->size_preview);
+
+		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
+				   manager->priv->status_ctx);
+	}
+}
+
 void
 brasero_project_manager_set_status (BraseroProjectManager *manager,
 				    GtkWidget *status)
@@ -967,6 +984,11 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	obj->priv->layout = brasero_layout_new ();
 	gtk_widget_show (obj->priv->layout);
 	gtk_notebook_append_page (GTK_NOTEBOOK (obj), obj->priv->layout, NULL);
+
+	g_signal_connect (obj->priv->layout,
+			  "sidepane",
+			  G_CALLBACK (brasero_project_manager_sidepane_changed),
+			  obj);
 
 	/* create the project for audio and data discs */
 	obj->priv->project = brasero_project_new ();

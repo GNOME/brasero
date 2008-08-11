@@ -174,6 +174,14 @@ const gchar description [] =
 #define BRASERO_KEY_LAYOUT_DATA		BRASERO_KEY_DISPLAY_DIR "data_pane"
 #define BRASERO_KEY_LAYOUT_VIDEO	BRASERO_KEY_DISPLAY_DIR "video_pane"
 
+/* signals */
+typedef enum {
+	SIDEPANE_SIGNAL,
+	LAST_SIGNAL
+} BraseroLayoutSignalType;
+
+static guint brasero_layout_signals [LAST_SIGNAL] = { 0 };
+
 static void
 brasero_layout_pack_preview (BraseroLayout *layout)
 {
@@ -514,12 +522,19 @@ brasero_layout_set_side_pane_visible (BraseroLayout *layout,
 			brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 						    NULL);
 		}
-		else
+		else {
 			brasero_project_set_source (BRASERO_PROJECT (layout->priv->project),
 						    BRASERO_URI_CONTAINER (source));
+			brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (source));
+		}
 
 		gtk_widget_show (layout->priv->main_box->parent);
 	}
+
+	g_signal_emit (layout,
+		       brasero_layout_signals [SIDEPANE_SIGNAL],
+		       0,
+		       visible);
 }
 
 static void
@@ -1250,6 +1265,16 @@ brasero_layout_class_init (BraseroLayoutClass *klass)
 	gtk_widget_class->show = brasero_layout_show;
 
 	gtk_object_class->destroy = brasero_layout_destroy;
+
+	brasero_layout_signals[SIDEPANE_SIGNAL] =
+	    g_signal_new ("sidepane", G_OBJECT_CLASS_TYPE (object_class),
+			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+			  0,
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__BOOLEAN,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_BOOLEAN);
 }
 
 static void
