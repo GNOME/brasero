@@ -61,13 +61,13 @@ typedef struct _BraseroImport BraseroImport;
  * NOTE: The root object keeps some statistics about its tree like
  * - number of children (files+directories)
  * - number of deep directories
- * - number of files over 2 Gio
+ * - number of files over 2 GiB
  */
 
 struct _BraseroFileTreeStats {
 	guint children;
 	guint num_deep;
-	guint num_2Gio;
+	guint num_2GiB;
 };
 typedef struct _BraseroFileTreeStats BraseroFileTreeStats;
 
@@ -99,9 +99,9 @@ struct _BraseroFileNode {
 	/* NOTE: overflow for sectors will probably not be hit
 	 * before a few years given that we store the size in
 	 * sectors of 2048. For the time being DVD are usually
-	 * 4.3 Gio. To overflow the following member (provided
+	 * 4.3 GiB. To overflow the following member (provided
 	 * we are on a 32 architecture) they would have to be
-	 * over 8192 Gio. I think it's reasonable to think we
+	 * over 8192 GiB. I think it's reasonable to think we
 	 * have time. And even then, by this time most of the 
 	 * computers will have switched to 64 architecture (in
 	 * 2099) and I'll be dead anyway as well as optical
@@ -129,7 +129,7 @@ struct _BraseroFileNode {
 	guint is_exploring:1;
 
 	/* that's for some special nodes (usually counted in statistics) */
-	guint is_2Gio:1;
+	guint is_2GiB:1;
 	guint is_deep:1;
 
 	/* This is for nodes created at project load time. This means

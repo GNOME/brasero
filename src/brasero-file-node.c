@@ -754,9 +754,9 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 		sectors = BRASERO_SIZE_TO_SECTORS (g_file_info_get_size (info), 2048);
 
 		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT)
-			stats->num_2Gio ++;
+			stats->num_2GiB ++;
 		else if (sectors <= BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) > BRASERO_FILE_2G_LIMIT)
-			stats->num_2Gio --;
+			stats->num_2GiB --;
 
 		/* The node isn't grafted and it's a file. So we must propagate
 		 * its size up to the parent graft node. */
@@ -1015,9 +1015,9 @@ brasero_file_node_destroy_with_children (BraseroFileNode *node,
 
 	/* update all statistics on tree if any */
 	if (stats) {
-		/* check if that's a 2 Gio file */
-		if (node->is_2Gio)
-			stats->num_2Gio --;
+		/* check if that's a 2 GiB file */
+		if (node->is_2GiB)
+			stats->num_2GiB --;
 
 		/* check if that's a deep directory file */
 		if (node->is_deep)

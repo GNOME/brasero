@@ -178,8 +178,8 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	 * get in out way. Think getrlimit (). */
 
 	/* check the filesystem type: the problem here is that some
-	 * filesystems have a maximum file size limit of 4 Gio and more than
-	 * often we need a temporary file size of 4 Gio or more. */
+	 * filesystems have a maximum file size limit of 4 GiB and more than
+	 * often we need a temporary file size of 4 GiB or more. */
 	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 	if (priv->check_filesystem
 	&&  filesystem
@@ -197,7 +197,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 						 _("Do you really want to choose this location?"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("The filesystem on this volume doesn't support large files (size over 2 Gio)."
+							  _("The filesystem on this volume doesn't support large files (size over 2 GiB)."
 							    "\nThis can be a problem when writing DVDs or large images."));
 
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
