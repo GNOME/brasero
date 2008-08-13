@@ -466,6 +466,8 @@ brasero_disc_message_set_secondary (BraseroDiscMessage *self,
 
 	if (!priv->secondary) {
 		priv->secondary = gtk_label_new (NULL);
+		gtk_label_set_line_wrap_mode (GTK_LABEL (priv->secondary), GTK_WRAP_WORD);
+		gtk_label_set_line_wrap (GTK_LABEL (priv->secondary), TRUE);
 		gtk_misc_set_alignment (GTK_MISC (priv->secondary), 0.0, 0.5);
 		gtk_box_pack_start (GTK_BOX (priv->text_box), priv->secondary, FALSE, TRUE, 0);
 	}
@@ -543,6 +545,8 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	gtk_box_pack_start (GTK_BOX (main_box), priv->text_box, TRUE, TRUE, 0);
 
 	priv->primary = gtk_label_new (NULL);
+	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->primary), GTK_WRAP_WORD);
+	gtk_label_set_line_wrap (GTK_LABEL (priv->primary), TRUE);
 	gtk_size_group_add_widget (priv->group, priv->primary);
 	gtk_misc_set_alignment (GTK_MISC (priv->primary), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, FALSE, TRUE, 0);
