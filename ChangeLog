@@ -1,5 +1,15 @@
 2008-08-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixes for #547114 – "Gio" is French regionalism and should be replaced with "GiB" or "GB"
+
+	* src/brasero-data-disc.c
+	* src/brasero-drive-properties.c
+	* src/brasero-file-node.c
+	* src/brasero-file-node.h
+	* src/burn-job.c
+
+2008-08-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make sure we obey immediatly the filtering option changes in data projects.
 
 	* src/brasero-data-vfs.c (brasero_data_vfs_filter_hidden_changed),
