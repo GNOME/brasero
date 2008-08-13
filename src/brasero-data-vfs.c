@@ -1064,6 +1064,42 @@ brasero_data_vfs_reset (BraseroDataProject *project,
 }
 
 static void
+brasero_data_vfs_filter_hidden_changed (GConfClient *client,
+					guint cxn,
+					GConfEntry *entry,
+					gpointer data)
+{
+	BraseroDataVFSPrivate *priv;
+	GConfValue *value;
+
+	priv = BRASERO_DATA_VFS_PRIVATE (data);
+
+	value = gconf_entry_get_value (entry);
+	if (value->type != GCONF_VALUE_BOOL)
+		return;
+
+	priv->filter_hidden = gconf_value_get_bool (value);
+}
+
+static void
+brasero_data_vfs_filter_broken_sym_changed (GConfClient *client,
+					    guint cxn,
+					    GConfEntry *entry,
+					    gpointer data)
+{
+	BraseroDataVFSPrivate *priv;
+	GConfValue *value;
+
+	priv = BRASERO_DATA_VFS_PRIVATE (data);
+
+	value = gconf_entry_get_value (entry);
+	if (value->type != GCONF_VALUE_BOOL)
+		return;
+
+	priv->filter_broken_sym = gconf_value_get_bool (value);
+}
+
+static void
 brasero_data_vfs_init (BraseroDataVFS *object)
 {
 	GConfClient *client;
@@ -1079,6 +1115,18 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 	priv->filter_broken_sym = gconf_client_get_bool (client,
 							 BRASERO_FILTER_BROKEN_SYM_KEY,
 							 NULL);
+	gconf_client_notify_add (client,
+				 BRASERO_FILTER_HIDDEN_KEY,
+				 brasero_data_vfs_filter_hidden_changed,
+				 object,
+				 NULL,
+				 NULL);
+	gconf_client_notify_add (client,
+				 BRASERO_FILTER_BROKEN_SYM_KEY,
+				 brasero_data_vfs_filter_broken_sym_changed,
+				 object,
+				 NULL,
+				 NULL);
 	g_object_unref (client);
 
 	/* create the hash tables */
