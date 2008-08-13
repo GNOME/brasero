@@ -1,5 +1,14 @@
 2008-08-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #547444 – Big files burnig warnig/error message
+
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_set_mkisofs_argv), (brasero_growisofs_init):
+
+2008-08-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixes for #547114 – "Gio" is French regionalism and should be replaced with "GiB" or "GB"
 
 	* src/brasero-data-disc.c

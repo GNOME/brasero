@@ -239,8 +239,9 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 		g_ptr_array_add (argv, g_strdup ("-iso-level"));
 		g_ptr_array_add (argv, g_strdup ("3"));
 
-		/* NOTE the following is specific to genisoimage */
-		/* g_ptr_array_add (argv, g_strdup ("-allow-limited-size")); */
+		/* NOTE: the following is specific to genisoimage
+		 * It allows to burn files over 4 GiB */
+		g_ptr_array_add (argv, g_strdup ("-allow-limited-size"));
 	}
 
 	if (type.subtype.fs_type & BRASERO_IMAGE_FS_UDF)

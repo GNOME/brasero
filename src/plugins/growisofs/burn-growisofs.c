@@ -51,8 +51,8 @@
 BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BRASERO_TYPE_PROCESS, BraseroProcess);
 
 struct BraseroGrowisofsPrivate {
-	gint64 sectors_num;
 	guint use_utf8:1;
+	guint use_genisoimage:1;
 };
 typedef struct BraseroGrowisofsPrivate BraseroGrowisofsPrivate;
 
@@ -238,6 +238,15 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	gchar *emptydir = NULL;
 	gchar *videodir = NULL;
 
+	priv = BRASERO_GROWISOFS_PRIVATE (growisofs);
+
+	if (priv->use_genisoimage) {
+		BRASERO_JOB_LOG (growisofs, "Using genisoimage");
+	}
+	else {
+		BRASERO_JOB_LOG (growisofs, "Using mkisofs");
+	}
+
 	g_ptr_array_add (argv, g_strdup ("-r"));
 
 	brasero_job_get_current_track (BRASERO_JOB (growisofs), &track);
@@ -252,6 +261,13 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 		 * like MacOSX and freebsd.*/
 		g_ptr_array_add (argv, g_strdup ("-iso-level"));
 		g_ptr_array_add (argv, g_strdup ("3"));
+
+		/* NOTE: the following is specific to genisoimage
+		 * It allows to burn files over 4 GiB.
+		 * The only problem here is which are we using? mkisofs or
+		 * genisoimage? That's what we determined first. */
+		if (priv->use_genisoimage)
+			g_ptr_array_add (argv, g_strdup ("-allow-limited-size"));
 	}
 
 	if (input.subtype.fs_type & BRASERO_IMAGE_FS_UDF)
@@ -267,7 +283,6 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 			return result;
 	}
 
-	priv = BRASERO_GROWISOFS_PRIVATE (growisofs);
 	if (priv->use_utf8) {
 		g_ptr_array_add (argv, g_strdup ("-input-charset"));
 		g_ptr_array_add (argv, g_strdup ("utf8"));
@@ -627,22 +642,53 @@ static void
 brasero_growisofs_init (BraseroGrowisofs *obj)
 {
 	BraseroGrowisofsPrivate *priv;
-	gchar *standard_error;
-	gboolean res;
+	gchar *standard_error = NULL;
 	gchar *prog_name;
+	gboolean res;
 
 	priv = BRASERO_GROWISOFS_PRIVATE (obj);
 
-	/* this code comes from ncb_mkisofs_supports_utf8 */
-	
-	prog_name = g_find_program_in_path ("genisoimage");
-        if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE)) {
-	  	res = g_spawn_command_line_sync ("genisoimage -input-charset utf8", NULL, &standard_error, NULL, NULL);
-	} else {
-                res = g_spawn_command_line_sync ("mkisofs -input-charset utf8", NULL, &standard_error, NULL, NULL);
-	}
+	/* this code (remotely) comes from ncb_mkisofs_supports_utf8 */
+	/* Added a way to detect whether we'll use mkisofs or genisoimage */
 
-       	if (res && !g_strrstr (standard_error, "Unknown charset"))
+	prog_name = g_find_program_in_path ("mkisofs");
+        if (prog_name && g_file_test (prog_name, G_FILE_TEST_IS_EXECUTABLE)) {
+		gchar *standard_output = NULL;
+
+		res = g_spawn_command_line_sync ("mkisofs -version",
+						 &standard_output,
+						 NULL,
+						 NULL,
+						 NULL);
+		if (res) {
+			/* Really make sure it is mkisofs and not a symlink */
+			if (standard_output && strstr (standard_output, "genisoimage"))
+				priv->use_genisoimage = TRUE;
+
+			if (standard_output)
+				g_free (standard_output);
+		}
+		else
+			priv->use_genisoimage = TRUE;
+	}
+	else
+		priv->use_genisoimage = TRUE;
+
+	/* Don't use BRASERO_JOB_LOG () here!! */
+	if (priv->use_genisoimage)
+		res = g_spawn_command_line_sync ("genisoimage -input-charset utf8",
+						 NULL,
+						 &standard_error,
+						 NULL,
+						 NULL);
+	else
+	  	res = g_spawn_command_line_sync ("mkisofs -input-charset utf8",
+						 NULL,
+						 &standard_error,
+						 NULL,
+						 NULL);
+
+	if (res && !g_strrstr (standard_error, "Unknown charset"))
 		priv->use_utf8 = TRUE;
 	else
 		priv->use_utf8 = FALSE;
