@@ -60,6 +60,9 @@ GtkWidget *
 brasero_disc_message_new (void);
 
 void
+brasero_disc_message_destroy (BraseroDiscMessage *message);
+
+void
 brasero_disc_message_set_primary (BraseroDiscMessage *message,
 				  const gchar *text);
 void

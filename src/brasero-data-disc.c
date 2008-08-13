@@ -1077,12 +1077,15 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
 
+ 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 
 	brasero_data_project_reset (priv->project);
 	brasero_file_filtered_clear (BRASERO_FILE_FILTERED (priv->filter));
 	brasero_disc_size_changed (disc, 0);
+
+	gdk_window_set_cursor (GTK_WIDGET (disc)->window, NULL);
 }
 
 static void
@@ -1113,8 +1116,9 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	priv->deep_directory = FALSE;
 
 	brasero_file_filtered_clear (BRASERO_FILE_FILTERED (priv->filter));
-
 	brasero_disc_size_changed (disc, 0);
+
+	gdk_window_set_cursor (GTK_WIDGET (disc)->window, NULL);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
 }
 
@@ -1333,8 +1337,8 @@ brasero_data_disc_message_response_cb (BraseroDiscMessage *message,
 	if (response != GTK_RESPONSE_CANCEL)
 		return;
 
-	brasero_data_disc_reset (BRASERO_DISC (self));
 	priv->loading = FALSE;
+	brasero_data_disc_clear (BRASERO_DISC (self));
 }
 
 static BraseroDiscResult

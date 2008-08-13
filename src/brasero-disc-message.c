@@ -80,6 +80,7 @@ struct _BraseroDiscMessagePrivate
 	guint timeout;
 
 	guint changing_style:1;
+	guint prevent_destruction:1;
 };
 
 #define BRASERO_DISC_MESSAGE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DISC_MESSAGE, BraseroDiscMessagePrivate))
@@ -87,7 +88,6 @@ struct _BraseroDiscMessagePrivate
 enum
 {
 	RESPONSE,
-
 	LAST_SIGNAL
 };
 
@@ -111,10 +111,12 @@ brasero_disc_message_timeout (gpointer data)
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (data);
 	priv->timeout = 0;
 
+	priv->prevent_destruction = TRUE;
 	g_signal_emit (data,
 		       disc_message_signals [RESPONSE],
 		       0,
 		       GTK_RESPONSE_DELETE_EVENT);
+	priv->prevent_destruction = FALSE;
 
 	gtk_widget_destroy (GTK_WIDGET (data));
 	return FALSE;
@@ -247,10 +249,29 @@ static void
 brasero_disc_message_button_clicked_cb (GtkButton *button,
 					BraseroDiscMessage *self)
 {
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+
+	priv->prevent_destruction = TRUE;
 	g_signal_emit (self,
 		       disc_message_signals [RESPONSE],
-		       0, 
+		       0,
 		       GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button), RESPONSE_TYPE)));
+	priv->prevent_destruction = FALSE;
+
+	gtk_widget_destroy (GTK_WIDGET (self));
+}
+
+void
+brasero_disc_message_destroy (BraseroDiscMessage *self)
+{
+	BraseroDiscMessagePrivate *priv;
+
+	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
+
+	if (priv->prevent_destruction)
+		return;
 
 	gtk_widget_destroy (GTK_WIDGET (self));
 }

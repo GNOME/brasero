@@ -1,5 +1,18 @@
 2008-08-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improved messaging and reset cursor when cancelling project loading
+
+	* src/brasero-data-disc.c (brasero_data_disc_clear),
+	(brasero_data_disc_reset), (brasero_data_disc_message_response_cb):
+	* src/brasero-disc-message.c (brasero_disc_message_timeout),
+	(brasero_disc_message_button_clicked_cb),
+	(brasero_disc_message_destroy):
+	* src/brasero-disc-message.h:
+	* src/brasero-notify.c (brasero_notify_remove_all_messages),
+	(brasero_notify_message_remove):
+
+2008-08-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #547444 – Big files burnig warnig/error message
 
 	* src/plugins/cdrkit/burn-genisoimage.c

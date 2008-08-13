@@ -53,7 +53,7 @@ brasero_notify_remove_all_messages (BraseroNotify *self)
 		GtkWidget *widget;
 
 		widget = iter->data;
-		gtk_widget_destroy (widget);
+		brasero_disc_message_destroy (BRASERO_DISC_MESSAGE (widget));
 	}
 	g_list_free (children);
 
@@ -105,7 +105,7 @@ brasero_notify_message_remove (BraseroNotify *self,
 
 		widget = iter->data;
 		if (brasero_disc_message_get_context (BRASERO_DISC_MESSAGE (widget)) == context_id) {
-			gtk_widget_destroy (widget);
+			brasero_disc_message_destroy (BRASERO_DISC_MESSAGE (widget));
 			break;
 		}
 	}
