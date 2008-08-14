@@ -152,11 +152,24 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		brasero_job_set_dangerous (BRASERO_JOB (cdrdao), TRUE);
 	}
 	else {
-		gchar *cuepath, *name;
-		BraseroTrack *track;
+		gchar *name = NULL;
+		gchar *cuepath = NULL;
+		BraseroTrack *track = NULL;
+		BraseroJobAction action;
+
+		/* Try to catch error could not find cue file */
+
+		/* Track could be NULL here if we're simply blanking a medium */
+		brasero_job_get_action (BRASERO_JOB (cdrdao), &action);
+		if (action == BRASERO_JOB_ACTION_ERASE)
+			return TRUE;
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
+		if (!track)
+			return FALSE;
+
 		cuepath = brasero_track_get_toc_source (track, FALSE);
+
 		if (!cuepath)
 			return FALSE;
 

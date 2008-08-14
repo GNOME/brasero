@@ -1,5 +1,13 @@
 2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #547616 – brasero crashed with SIGSEGV in brasero_track_get_toc_source()
+	Any message received during erasing caused crashes with cdrdao
+
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_read_stderr_record):
+
+2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Attempt at fixing #547742 – brasero crashed with SIGSEGV in brasero_medium_get_write_speeds()
 	New string to tell users speed retrieval didn't work.
 
