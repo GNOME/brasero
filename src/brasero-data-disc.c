@@ -903,15 +903,15 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
 					 GTK_BUTTONS_NONE,
-					 _("Do you really want to add \"%s\" to the selection and use ISO9660 level 3 standard to support it?"),
+					 _("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"),
 					 name);
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("File Over 2 GiB"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones)."
-						    "\nISO9660 level 3 standard is supported by most of the operating systems including linux and all versions of Windows ©. Therefore the burnt medium can be read by these operating systems."
-						    "\nA known exception is MacOS X that can't read images created with ISO9660 level 3 standard."));
+						    "\nIt is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©."
+						    "\nA known exception is MacOS X that can't read images created with version 3 of ISO9660 standard."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Don't add"), GTK_RESPONSE_NO);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add"), GTK_RESPONSE_YES);
