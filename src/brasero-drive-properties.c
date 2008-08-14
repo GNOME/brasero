@@ -483,7 +483,8 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 					"text", PROP_TEXT,
 					NULL);
 
-	priv->dummy = gtk_check_button_new_with_mnemonic (_("_Simulate the burning"));
+	priv->dummy = gtk_check_button_new_with_mnemonic (_("_Simulate and actually burn"));
+	gtk_widget_set_tooltip_text (priv->dummy, _("Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"));
 	priv->burnproof = gtk_check_button_new_with_mnemonic (_("Use burn_proof (decrease the risk of failures)"));
 	priv->eject = gtk_check_button_new_with_mnemonic (_("_Eject after burning"));
 	priv->notmp = gtk_check_button_new_with_mnemonic (_("Burn the image directly _without saving it to disc"));
