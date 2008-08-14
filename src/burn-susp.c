@@ -130,6 +130,10 @@ brasero_susp_NM (BraseroSusp *susp,
 	return TRUE;
 }
 
+/**
+ * All these entries are defined in rrip standards.
+ * They are mainly used for directory/file relocation.
+ */
 static gboolean
 brasero_susp_CL (BraseroSusp *susp,
 		 BraseroSuspCtx *ctx)
@@ -142,6 +146,18 @@ brasero_susp_CL (BraseroSusp *susp,
 	address = brasero_iso9660_get_733_val (cl->location);
 	ctx->rr_children = g_slist_prepend (ctx->rr_children,
 					    GINT_TO_POINTER (address));
+	return TRUE;
+}
+
+static gboolean
+brasero_susp_RE (BraseroSusp *susp,
+		 BraseroSuspCtx *ctx)
+{
+	/* Nothing to see here really this is just an indication.
+	 * Check consistency though BP3 = "4" and BP4 = "1" */
+	if (susp->len != 4 || susp->version != 1)
+		return FALSE;
+
 	return TRUE;
 }
 
@@ -194,8 +210,10 @@ brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, gint max)
 			result = brasero_susp_CL (susp, ctx);
 		else if (!memcmp (susp->signature, "PL", 2))
 			result = brasero_susp_PL (susp, ctx);
+
+		/* This is to indicate that the entry has been relocated */
 		else if (!memcmp (susp->signature, "RE", 2))
-			result = brasero_susp_CL (susp, ctx);
+			result = brasero_susp_RE (susp, ctx);
 
 		if (!result)
 			goto error;
