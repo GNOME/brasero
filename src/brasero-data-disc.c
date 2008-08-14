@@ -598,9 +598,9 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 		brasero_disc_message_remove_buttons (BRASERO_DISC_MESSAGE (message));
 
 		brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message),
-						  _("The contents of the project changed since it was saved:"));
+						  _("The contents of the project changed since it was saved."));
 		brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message),
-						    _("Do you want to continue or discard it?"));
+						    _("Do you want to continue or discard the old project layout?"));
 
 		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),GTK_STOCK_DIALOG_WARNING);
 		brasero_disc_message_set_progress_active (BRASERO_DISC_MESSAGE (message), FALSE);

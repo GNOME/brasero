@@ -165,9 +165,9 @@ brasero_disc_message_expander_activated_cb (GtkExpander *expander,
 					    BraseroDiscMessage *self)
 {
 	if (!gtk_expander_get_expanded (expander))
-		gtk_expander_set_label (expander, _("_Hide errors"));
+		gtk_expander_set_label (expander, _("_Hide changes"));
 	else
-		gtk_expander_set_label (expander, _("_Show errors"));
+		gtk_expander_set_label (expander, _("_Show changes"));
 }
 
 void

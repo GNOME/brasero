@@ -1,5 +1,14 @@
 2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #543737 – Project change notification
+	as proposed by Michael Montreal
+
+	* src/brasero-data-disc.c (brasero_data_disc_project_loaded_cb):
+	* src/brasero-disc-message.c
+	(brasero_disc_message_expander_activated_cb):
+
+2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some fixes for medium integrity checking
 	- don't eject at the end
 	- fix a warning
