@@ -390,9 +390,9 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		gfloat speed;
 
 		if (rate >= 0 && is_DVD)
-			speed = (gfloat) ((gdouble) rate / (gdouble) DVD_RATE);
+			speed = (gfloat) BRASERO_RATE_TO_SPEED_DVD (rate);
 		else
-			speed = (gfloat) ((gdouble) rate / (gdouble) CD_RATE);
+			speed = (gfloat) BRASERO_RATE_TO_SPEED_CD (rate);
 
 		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f x)", rate / 1024, speed);
 		gtk_label_set_text (GTK_LABEL (self->priv->speed), text);
