@@ -388,6 +388,9 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
+	if (!priv->wr_speeds)
+		return NULL;
+
 	while (priv->wr_speeds [max] != 0) max ++;
 
 	speeds = g_new0 (gint64, max + 1);

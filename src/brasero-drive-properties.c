@@ -376,7 +376,6 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	GtkTreeModel *model;
 	gchar *display_name;
 	GtkTreeIter iter;
-	gchar *max_text;
 	gint64 *rates;
 	gchar *header;
 	gchar *text;
@@ -398,14 +397,22 @@ brasero_drive_properties_set_drive (BraseroDriveProperties *self,
 	rates = brasero_medium_get_write_speeds (medium);
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->speed));
 
-	max_text = g_strdup_printf (_("Max speed"));
+	if (!rates) {
+		gtk_widget_set_sensitive (priv->speed, FALSE);
+		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    PROP_TEXT, _("Impossible to retrieve speeds"),
+				    PROP_RATE, 1764, /* Speed 1 */
+				    -1);
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (priv->speed), &iter);
+		return;
+	}
 
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-			    PROP_TEXT, max_text,
+			    PROP_TEXT, _("Max speed"),
 			    PROP_RATE, rates [0],
 			    -1);
-	g_free (max_text);
 
 	/* fill model */
 	for (i = 0; rates [i] != 0; i ++) {

@@ -1,3 +1,12 @@
+2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Attempt at fixing #547742 – brasero crashed with SIGSEGV in brasero_medium_get_write_speeds()
+	New string to tell users speed retrieval didn't work.
+
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_drive):
+	* src/burn-medium.c (brasero_medium_get_write_speeds):
+
 2008-08-13  Gintautas Miliauskas  <gintas@akl.lt>
 
 	* lt.po: Updated Lithuanian translation.
