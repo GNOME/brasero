@@ -686,8 +686,8 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	if (!root)
 		return BRASERO_BURN_ERR;
 
-	memcpy (filename, root, sizeof (filename));
 	root_len = strlen (root);
+	memcpy (filename, root, root_len);
 	filename [root_len ++ ] = '/';
 
 	name = brasero_track_get_checksum (track);
@@ -716,6 +716,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	}
 
 	file_num = 0;
+	brasero_job_set_current_action (BRASERO_JOB (self),
+				        BRASERO_BURN_ACTION_CHECKSUM,
+					_("Checking file integrity"),
+					TRUE);
+	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 	/* Get the checksum type */
 	switch (checksum_type) {

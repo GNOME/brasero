@@ -2029,22 +2029,6 @@ brasero_burn_record_session (BraseroBurn *burn,
 	if (type == BRASERO_CHECKSUM_NONE)
 		return BRASERO_BURN_OK;
 
-	/* unlock dest drive that's necessary if we want to check burnt medias
-	 * it seems that the kernel caches its contents and can't/don't update
-	 * its caches after a blanking/recording. */
-	/* NOTE: that work if the disc had not been mounted before. That's the 
-	 * mount that triggers the caches. So maybe if the disc was blank (and
-	 * therefore couldn't have been previously mounted) we could skip that
-	 * unlock/eject step. A better way would be to have a system call to 
-	 * force a re-load. */
-
-/*	result = brasero_burn_eject_dest_media (burn, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-
-	priv->dest = NULL;
-*/
-
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
 	||  type == BRASERO_CHECKSUM_SHA256) {
@@ -2086,13 +2070,8 @@ brasero_burn_record_session (BraseroBurn *burn,
 	 * anymore. BraseroBurnSession refs it. */
 	brasero_track_unref (track);
 
-	/* reload media */
-/*	result = brasero_burn_lock_checksum_media (burn, error);
-	if (result != BRASERO_BURN_OK)
-		return result;
-*/
-	/* this may be necessary for the drive to settle down */
-	/* and possibly be mounted by gnome-volume-manager (just temporarily) */
+	/* this may be necessary for the drive to settle down
+	 * and possibly be mounted by gnome-volume-manager (just temporarily) */
 	result = brasero_burn_sleep (burn, 5000);
 	if (result != BRASERO_BURN_OK)
 		return result;
@@ -2175,14 +2154,16 @@ brasero_burn_check (BraseroBurn *self,
 
 	brasero_burn_powermanagement (self, FALSE);
 
-	/* no need to check the result of the comparison, it's set in session */
-	priv->session = NULL;
-	g_object_unref (session);
-
 	if (result == BRASERO_BURN_OK)
 		result = brasero_burn_unlock_medias (self, error);
 	else
 		brasero_burn_unlock_medias (self, NULL);
+
+	/* no need to check the result of the comparison, it's set in session */
+
+	/* NOTE: unref session only AFTER drives are unlocked */
+	priv->session = NULL;
+	g_object_unref (session);
 
 	return result;
 }

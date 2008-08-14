@@ -610,6 +610,9 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 		return FALSE;
 	}
 
+	/* no eject at the end (it's default) */
+	brasero_burn_session_remove_flag (self->priv->session, BRASERO_BURN_FLAG_EJECT);
+
 	brasero_burn_session_add_track (self->priv->session, track);
 
 	/* It's good practice to unref the track afterwards as we don't need it

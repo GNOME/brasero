@@ -1,5 +1,19 @@
 2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some fixes for medium integrity checking
+	- don't eject at the end
+	- fix a warning
+	- cleanup burn.c of commented out lines
+	- fix progress not displayed
+	- fix a string copy
+
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_check_disc_sum):
+	* src/burn.c (brasero_burn_record_session), (brasero_burn_check):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_check_files):
+
+2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix part of #546968 – Some buttons of the gui is not working
 	Make all recent menu/main window buttons work
 
