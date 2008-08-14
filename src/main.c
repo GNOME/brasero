@@ -396,20 +396,21 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 
 	manager = gtk_recent_manager_get_default ();
 	item = gtk_recent_manager_lookup_item (manager, uri, NULL);
-	g_free (uri);
-
-	if (!item)
+	if (!item) {
+		g_free (uri);
 		return;
+	}
 
 	mime = gtk_recent_info_get_mime_type (item);
-
 	if (!mime) {
+		g_free (uri);
 		g_warning ("Unrecognized mime type");
 		return;
 	}
 
 	brasero_project_manager_open_by_mime (BRASERO_PROJECT_MANAGER (app->contents), uri, mime);
 	gtk_recent_info_unref (item);
+	g_free (uri);
 }
 
 static void

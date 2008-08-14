@@ -1,5 +1,17 @@
 2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix part of #546968 – Some buttons of the gui is not working
+	Make all recent menu/main window buttons work
+
+	* src/brasero-project-manager.c
+	(brasero_project_manager_open_project),
+	(brasero_project_manager_open_by_mime),
+	(brasero_project_manager_open_uri):
+	* src/brasero-project.c (brasero_project_open_project):
+	* src/main.c (brasero_app_recent_open):
+
+2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	small cleanup
 
 	* src/brasero-progress.c (brasero_burn_progress_set_status):

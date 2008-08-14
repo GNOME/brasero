@@ -2138,7 +2138,6 @@ brasero_project_open_project (BraseroProject *project,
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
 
-
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
 

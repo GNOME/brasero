@@ -723,12 +723,11 @@ brasero_project_manager_open_project (BraseroProjectManager *manager,
 	BraseroProjectType type;
 	GtkAction *action;
 
-    	gtk_widget_show (manager->priv->layout);
+	gtk_widget_show (manager->priv->layout);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
 	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri);
 
 	manager->priv->type = type;
-
     	if (type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 		return BRASERO_PROJECT_TYPE_INVALID;
@@ -778,7 +777,10 @@ brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
 				      const gchar *uri,
 				      const gchar *mime)
 {
-	if (!strcmp (mime, "application/x-brasero"))
+	/* When our files/description of x-brasero mime type is not properly 
+	 * installed, it's returned as application/xml, so check that too. */
+	if (!strcmp (mime, "application/x-brasero")
+	||  !strcmp (mime, "application/xml"))
 		return brasero_project_manager_open_project (manager, uri);
 
 #ifdef BUILD_PLAYLIST
@@ -805,12 +807,11 @@ BraseroProjectType
 brasero_project_manager_open_uri (BraseroProjectManager *manager,
 				  const gchar *uri_arg)
 {
-  	GtkWidget *dialog;
-	GtkWidget *window;
 	gchar *uri;
 	GFile *file;
 	GFileInfo *info;
-	const gchar *mime;
+	GtkWidget *dialog;
+	GtkWidget *window;
 	BraseroProjectType type;
 
 	/* FIXME: make that asynchronous */
@@ -822,9 +823,10 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 				  NULL);
 
 	uri = g_file_get_uri (file);
-	mime = g_file_info_get_content_type (info);
-
 	if (g_file_query_exists (file, NULL)) {
+		const gchar *mime;
+
+		mime = g_file_info_get_content_type (info);
 	  	type = brasero_project_manager_open_by_mime (manager, uri, mime);
         } 
 	else {
