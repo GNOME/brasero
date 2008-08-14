@@ -60,7 +60,6 @@ brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const gchar *line)
 	||  strstr (line, "media is not blank")
 	||  strstr (line, "media is already formatted")
 	||  strstr (line, "you have the option to re-run")) {
-		/* FIXME: this error needs a better message */
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,

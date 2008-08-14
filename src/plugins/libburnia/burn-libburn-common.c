@@ -93,11 +93,10 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 
 	/* initialize the library */
 	if (!burn_initialize ()) {
-		/* FIXME: change the message */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive couldn't be initialized"));
+			     _("Libburn library couldn't be initialized"));
 		return NULL;
 	}
 

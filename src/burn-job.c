@@ -469,11 +469,6 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	if (output_size >= 2147483648ULL
 	&&  filesystem
 	&& !strcmp (filesystem, "msdos")) {
-		/* FIXME: This string should mention that the location is on the
-		 * hard drive and not the medium itself to prevent any confusion
-		 * as seen in #533149 */
-		/* FIXME: change this string to something more appropriate when
-		 * we're not in string freeze. */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
@@ -489,13 +484,10 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	/* it's fine here to check size in bytes */
 	if (output_size > vol_size) {
-		/* FIXME: This string should mention that the location is on the
-		 * hard drive and not the medium itself to prevent any confusion
-		 * as seen in #533149 */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
+			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"),
 			     (unsigned long) output_size / 1048576);
 		return BRASERO_BURN_ERR;
 	}
