@@ -52,6 +52,7 @@ brasero_volume_file_close (BraseroVolFileHandle *handle)
 {
 	g_slist_free (handle->extents_forward);
 	g_slist_free (handle->extents_backward);
+	brasero_volume_source_close (handle->src);
 	g_free (handle);
 }
 
@@ -62,6 +63,7 @@ brasero_volume_file_open (BraseroVolSrc *src,
 	BraseroVolFileHandle *handle;
 	BraseroVolFileExtent *extent;
 	gboolean result;
+	gint res_seek;
 	GSList *node;
 
 	if (file->isdir)
@@ -85,8 +87,8 @@ brasero_volume_file_open (BraseroVolSrc *src,
 	handle->extent_last = BRASERO_SIZE_TO_SECTORS (extent->size, 2048) + extent->block;
 
 	/* start loading first block */
-	result = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
-	if (!result) {
+	res_seek = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
+	if (res_seek == -1) {
 		brasero_volume_file_close (handle);
 		return NULL;
 	}

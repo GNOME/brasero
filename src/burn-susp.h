@@ -33,8 +33,15 @@ struct _BraseroSuspCtx {
 	gchar *rr_name;
 
 	gboolean has_SP;
+	gboolean has_RE;
+	gboolean has_RockRidge;
 
-	GSList *rr_children;
+	gint32 CL_address;
+
+	guint32 CE_address;
+	guint32 CE_offset;
+	guint32 CE_len;
+
 	gint rr_parent;
 
 	guchar skip;

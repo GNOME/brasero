@@ -1,3 +1,38 @@
+2008-08-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	reviewed by: <delete if not using a buddy>
+
+	* src/brasero-data-session.c
+	(brasero_data_session_add_children_files):
+	* src/brasero-io.c (brasero_io_get_file_info_thread):
+	* src/burn-iso-field.c (brasero_iso9660_get_733_val):
+	* src/burn-iso9660.c (brasero_iso9660_seek),
+	(brasero_iso9660_read_susp), (brasero_iso9660_read_file_record),
+	(brasero_iso9660_read_directory_record),
+	(brasero_iso9660_read_directory_records),
+	(brasero_iso9660_lookup_directory_record_RR),
+	(brasero_iso9660_lookup_directory_record_ISO),
+	(brasero_iso9660_lookup_directory_records),
+	(brasero_iso9660_get_file):
+	* src/burn-plugin.c (brasero_plugin_finalize):
+	* src/burn-susp.c (brasero_susp_CE), (brasero_susp_ER),
+	(brasero_susp_CL), (brasero_susp_RE), (brasero_susp_PL),
+	(brasero_susp_read):
+	* src/burn-susp.h:
+	* src/burn-volume-read.c (brasero_volume_file_close),
+	(brasero_volume_file_open):
+	* src/burn-volume-source.c
+	(brasero_volume_source_seek_device_handle),
+	(brasero_volume_source_seek_fd):
+	* src/burn-volume-source.h:
+	* src/burn-volume.c (brasero_volume_get_primary_from_file),
+	(brasero_volume_get_size), (brasero_volume_get_files),
+	(brasero_volume_get_file):
+	* src/burn-volume.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_file_process_former_line),
+	(brasero_checksum_files_merge_with_former_session):
+
 2008-08-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fixed a susp (RR) entry incorrectly read

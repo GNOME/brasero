@@ -37,7 +37,7 @@ typedef gboolean (*BraseroVolSrcReadFunc)	(BraseroVolSrc *src,
 						 gchar *buffer,
 						 guint size,
 						 GError **error);
-typedef gboolean (*BraseroVolSrcSeekFunc)	(BraseroVolSrc *src,
+typedef gint64	 (*BraseroVolSrcSeekFunc)	(BraseroVolSrc *src,
 						 guint block,
 						 gint whence,
 						 GError **error);

@@ -58,6 +58,7 @@ struct _BraseroIsoCtx {
 
 	guint is_root:1;
 	guint has_susp:1;
+	guint has_RR:1;
 };
 typedef struct _BraseroIsoCtx BraseroIsoCtx;
 
@@ -128,6 +129,11 @@ typedef enum {
 static BraseroVolFile *
 brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address);
 
+static BraseroVolFile *
+brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
+					  const gchar *path,
+					  gint address);
+
 gboolean
 brasero_iso9660_is_primary_descriptor (const char *buffer,
 				       GError **error)
@@ -194,12 +200,11 @@ brasero_iso9660_seek (BraseroIsoCtx *ctx, gint address)
 	 * by its address member. In a set of directory records the first two 
 	 * records are: '.' (id == 0) and '..' (id == 1). So since we've got
 	 * the address of the set load the block. */
-	if (!BRASERO_VOL_SRC_SEEK (ctx->vol, address, SEEK_SET, &(ctx->error)))
+	if (BRASERO_VOL_SRC_SEEK (ctx->vol, address, SEEK_SET, &(ctx->error)) == -1)
 		return BRASERO_ISO_ERROR;
 
 	if (!BRASERO_VOL_SRC_READ (ctx->vol, ctx->buffer, 1, &(ctx->error)))
 		return BRASERO_ISO_ERROR;
-
 
 	return BRASERO_ISO_OK;
 }
@@ -214,6 +219,72 @@ brasero_iso9660_next_block (BraseroIsoCtx *ctx)
 		return BRASERO_ISO_ERROR;
 
 	return BRASERO_ISO_OK;
+}
+
+static gboolean
+brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
+			   BraseroSuspCtx *susp_ctx,
+			   gchar *susp,
+			   gint susp_len)
+{
+	gboolean result = TRUE;
+	guint64 current_position = -1;
+
+	memset (susp_ctx, 0, sizeof (BraseroSuspCtx));
+	if (!brasero_susp_read (susp_ctx, susp, susp_len)) {
+		BRASERO_BURN_LOG ("Could not read susp area");
+		return FALSE;
+	}
+
+	while (susp_ctx->CE_address) {
+		gchar CE_block [ISO9660_BLOCK_SIZE];
+		gint64 seek_res;
+		guint32 offset;
+		guint32 len;
+
+		BRASERO_BURN_LOG ("Continuation Area");
+
+		/* we need to move to another block */
+		seek_res = BRASERO_VOL_SRC_SEEK (ctx->vol, susp_ctx->CE_address, SEEK_SET, NULL);
+		if (seek_res == -1) {
+			BRASERO_BURN_LOG ("Could not seek to continuation area");
+			result = FALSE;
+			break;
+		}
+
+		if (current_position == -1)
+			current_position = seek_res;
+
+		if (!BRASERO_VOL_SRC_READ (ctx->vol, CE_block, 1, NULL)) {
+			BRASERO_BURN_LOG ("Could not get continuation area");
+			result = FALSE;
+			break;
+		}
+
+		offset = susp_ctx->CE_offset;
+		len = susp_ctx->CE_len;
+
+		/* reset information about the CE area */
+		memset (&susp_ctx->CE_address, 0, sizeof (susp_ctx->CE_address));
+		memset (&susp_ctx->CE_offset, 0, sizeof (susp_ctx->CE_offset));
+		memset (&susp_ctx->CE_len, 0, sizeof (susp_ctx->CE_len));
+
+		/* read all information contained in the CE area */
+		if (!brasero_susp_read (susp_ctx, CE_block + offset, len)) {
+			BRASERO_BURN_LOG ("Could not read continuation area");
+			result = FALSE;
+			break;
+		}
+	}
+
+	/* reset the reading address properly */
+	if (current_position != -1
+	&&  BRASERO_VOL_SRC_SEEK (ctx->vol, current_position, SEEK_SET, NULL) == -1) {
+		BRASERO_BURN_LOG ("Could not rewind to previous position");
+		result = FALSE;
+	}
+
+	return result;
 }
 
 static gchar *
@@ -321,61 +392,12 @@ error:
 	return BRASERO_ISO_ERROR;
 }
 
-static gboolean
-brasero_iso9660_read_record_iso_name (BraseroIsoCtx *ctx,
-				      BraseroIsoDirRec *record,
-				      gchar *iso_name)
-{
-	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  _("file name is too long"));
-		return FALSE;
-	}
-
-	memcpy (iso_name, record->id, record->id_size);
-	iso_name [record->id_size] = '\0';
-
-	return TRUE;
-}
-
-static gboolean
-brasero_iso9660_read_record_rr_name (BraseroIsoCtx *ctx,
-				     BraseroIsoDirRec *record,
-				     gchar *rr_name)
-{
-	gchar *susp;
-	gint susp_len;
-	BraseroSuspCtx susp_ctx;
-
-	if (!ctx->has_susp)
-		return FALSE;
-
-	BRASERO_BURN_LOG ("Directory with susp area");
-
-	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
-	if (!brasero_susp_read (&susp_ctx, susp, susp_len)) {
-		BRASERO_BURN_LOG ("Could not read susp area");
-		return FALSE;
-	}
-
-	if (susp_ctx.rr_name) {
-		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
-		strcpy (rr_name, susp_ctx.rr_name);
-	}
-
-	brasero_susp_ctx_clean (&susp_ctx);
-	return TRUE;
-}
-
 static BraseroVolFile *
 brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
-				  BraseroIsoDirRec *record)
+				  BraseroIsoDirRec *record,
+				  BraseroSuspCtx *susp_ctx)
 {
-	gchar *susp;
-	gint susp_len;
 	BraseroVolFile *file;
-	BraseroSuspCtx susp_ctx;
 	BraseroVolFileExtent *extent;
 
 	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
@@ -392,35 +414,26 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 
 	file->specific.file.size_bytes = brasero_iso9660_get_733_val (record->file_size);
 
-	/* NOTE a file can be in multiple places */
+	/* NOTE: a file can be in multiple places */
 	extent = g_new (BraseroVolFileExtent, 1);
 	extent->block = brasero_iso9660_get_733_val (record->address);
 	extent->size = brasero_iso9660_get_733_val (record->file_size);
 	file->specific.file.extents = g_slist_prepend (file->specific.file.extents, extent);
 
 	/* see if we've got a susp area */
-	if (!ctx->has_susp) {
+	if (!susp_ctx) {
 		BRASERO_BURN_LOG ("New file %s", file->name);
 		return file;
 	}
 
 	BRASERO_BURN_LOG ("New file %s with a suspend area", file->name);
 
-	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
-	if (!brasero_susp_read (&susp_ctx, susp, susp_len)) {
-		BRASERO_BURN_LOG ("Could not read susp area");
-		brasero_volume_file_free (file);
-		return NULL;
+	if (susp_ctx->rr_name) {
+		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx->rr_name);
+		file->rr_name = susp_ctx->rr_name;
+		susp_ctx->rr_name = NULL;
 	}
 
-	if (susp_ctx.rr_name) {
-		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
-
-		file->rr_name = susp_ctx.rr_name;
-		susp_ctx.rr_name = NULL;
-	}
-
-	brasero_susp_ctx_clean (&susp_ctx);
 	return file;
 }
 
@@ -441,39 +454,59 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 		return NULL;
 	}
 
-	address = brasero_iso9660_get_733_val (record->address);
+	if (ctx->has_susp && ctx->has_RR) {
+		/* See if we've got a susp area. Do it now to see if it has a CL
+		 * entry. The rest will be checked later after reading contents.
+		 */
+		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
+		if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
+			BRASERO_BURN_LOG ("Could not read susp area");
+			return NULL;
+		}
+
+		/* look for a "CL" SUSP entry in case the directory was relocated */
+		if (susp_ctx.CL_address) {
+			BRASERO_BURN_LOG ("Entry has a CL entry");
+			address = susp_ctx.CL_address;
+		}
+		else
+			address = brasero_iso9660_get_733_val (record->address);
+	}
+	else
+		address = brasero_iso9660_get_733_val (record->address);
+
 	directory = brasero_iso9660_read_directory_records (ctx, address);
-	if (!directory)
+	if (!directory) {
+		if (ctx->has_susp && ctx->has_RR)
+			brasero_susp_ctx_clean (&susp_ctx);
+
 		return NULL;
+	}
 
 	directory->name = g_new0 (gchar, record->id_size + 1);
 	memcpy (directory->name, record->id, record->id_size);
 
-	if (!ctx->has_susp) {
+	if (!ctx->has_susp || !ctx->has_RR) {
 		BRASERO_BURN_LOG ("New directory %s", directory->name);
 		return directory;
 	}
 
 	BRASERO_BURN_LOG ("New directory %s with susp area", directory->name);
 
-	/* see if we've got a susp area */
-	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
-	if (!brasero_susp_read (&susp_ctx, susp, susp_len)) {
-		BRASERO_BURN_LOG ("Could not read susp area");
-
-		brasero_volume_file_free (directory);
-		return NULL;
+	/* if this directory has a "RE" susp entry then drop it; it's not at the
+	 * right place in the Rock Ridge file hierarchy. */
+	if (susp_ctx.has_RE) {
+		BRASERO_BURN_LOG ("Rock Ridge relocated directory. Skipping entry.");
+		directory->relocated = TRUE;
 	}
 
 	if (susp_ctx.rr_name) {
 		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
-
 		directory->rr_name = susp_ctx.rr_name;
 		susp_ctx.rr_name = NULL;
 	}
 
 	brasero_susp_ctx_clean (&susp_ctx);
-
 	return directory;
 }
 
@@ -507,11 +540,18 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 		gchar *susp;
 
 		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
-		brasero_susp_read (&susp_ctx, susp, susp_len);
+		brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len);
 
 		ctx->has_susp = susp_ctx.has_SP;
+		ctx->has_RR = susp_ctx.has_RockRidge;
 		ctx->susp_skip = susp_ctx.skip;
 		ctx->is_root = FALSE;
+
+		if (ctx->has_susp)
+			BRASERO_BURN_LOG ("File system supports system use sharing protocol");
+
+		if (ctx->has_RR)
+			BRASERO_BURN_LOG ("File system has Rock Ridge extension");
 
 		brasero_susp_ctx_clean (&susp_ctx);
 	}
@@ -557,35 +597,73 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 			copy = g_new0 (gchar, record->record_size);
 			memcpy (copy, record, record->record_size);
 			directories = g_slist_prepend (directories, copy);
+			continue;
 		}
-		else {
-			entry = brasero_iso9660_read_file_record (ctx, record);
-			if (!entry)
+
+		if (ctx->has_RR) {
+			BraseroSuspCtx susp_ctx = { NULL, };
+			gint susp_len = 0;
+			gchar *susp;
+
+			/* See if we've got a susp area. Do it now to see if it
+			 * has a CL entry. The rest will be checked later after
+			 * reading contents. Otherwise we wouldn't be able to 
+			 * get deep directories that are flagged as files.
+			 */
+			susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
+			if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
+				BRASERO_BURN_LOG ("Could not read susp area");
 				goto error;
-
-			entry->parent = parent;
-
-			/* check that we don't have another file record for the
-			 * same file (usually files > 4G). It always follows
-			 * its sibling */
-			if (parent->specific.dir.children) {
-				BraseroVolFile *last;
-
-				last = parent->specific.dir.children->data;
-				if (!last->isdir && !strcmp (BRASERO_VOLUME_FILE_NAME (last), BRASERO_VOLUME_FILE_NAME (entry))) {
-					/* add size and addresses */
-					ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
-					last = brasero_volume_file_merge (last, entry);
-					BRASERO_BURN_LOG ("Multi extent file");
-					continue;
-				}
 			}
-			parent->specific.dir.children = g_list_prepend (parent->specific.dir.children, entry);
-			ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
+
+			/* look for a "CL" SUSP entry in case the directory was
+			 * relocated. If it has, it's a directory and keep it
+			 * for later. */
+			if (susp_ctx.CL_address) {
+				gpointer copy;
+
+				BRASERO_BURN_LOG ("Entry has a CL entry, keeping for later");
+				copy = g_new0 (gchar, record->record_size);
+				memcpy (copy, record, record->record_size);
+				directories = g_slist_prepend (directories, copy);
+
+				brasero_susp_ctx_clean (&susp_ctx);
+				memset (&susp_ctx, 0, sizeof (BraseroSuspCtx));
+				continue;
+			}
+
+			entry = brasero_iso9660_read_file_record (ctx, record, &susp_ctx);
+			brasero_susp_ctx_clean (&susp_ctx);
 		}
+		else
+			entry = brasero_iso9660_read_file_record (ctx, record, NULL);
+
+		if (!entry)
+			goto error;
+
+		entry->parent = parent;
+
+		/* check that we don't have another file record for the
+		 * same file (usually files > 4G). It always follows
+		 * its sibling */
+		if (parent->specific.dir.children) {
+			BraseroVolFile *last;
+
+			last = parent->specific.dir.children->data;
+			if (!last->isdir && !strcmp (BRASERO_VOLUME_FILE_NAME (last), BRASERO_VOLUME_FILE_NAME (entry))) {
+				/* add size and addresses */
+				ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
+				last = brasero_volume_file_merge (last, entry);
+				BRASERO_BURN_LOG ("Multi extent file");
+				continue;
+			}
+		}
+
+		parent->specific.dir.children = g_list_prepend (parent->specific.dir.children, entry);
+		ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
 	}
 
-	/* takes care of the directories: we accumulate them not to change the
+	/* Takes care of the directories: we accumulate them not to change the
 	 * offset of file descriptor FILE */
 	for (iter = directories; iter; iter = iter->next) {
 		record = iter->data;
@@ -593,6 +671,11 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 		entry = brasero_iso9660_read_directory_record (ctx, record);
 		if (!entry)
 			goto error;
+
+		if (entry->relocated) {
+			brasero_volume_file_free (entry);
+			continue;
+		}
 
 		entry->parent = parent;
 		parent->specific.dir.children = g_list_prepend (parent->specific.dir.children, entry);
@@ -656,7 +739,101 @@ brasero_iso9660_get_contents (BraseroVolSrc *vol,
 }
 
 static BraseroVolFile *
-brasero_iso9660_lookup_directory_record (BraseroIsoCtx *ctx,
+brasero_iso9660_lookup_directory_record_RR (BraseroIsoCtx *ctx,
+					    const gchar *path,
+					    guint len,
+					    BraseroIsoDirRec *record)
+{
+	BraseroVolFile *entry = NULL;
+	BraseroSuspCtx susp_ctx;
+	gchar record_name [256];
+	gint susp_len = 0;
+	gchar *susp;
+
+	/* See if we've got a susp area. Do it now to see if it
+	 * has a CL entry and rr_name. */
+	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
+	if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
+		BRASERO_BURN_LOG ("Could not read susp area");
+		return NULL;
+	}
+
+	/* set name */
+	if (!susp_ctx.rr_name) {
+		memcpy (record_name, record->id, record->id_size);
+		record_name [record->id_size] = '\0';
+	}
+	else
+		strcpy (record_name, susp_ctx.rr_name);
+
+	if (!(record->flags & BRASERO_ISO_FILE_DIRECTORY)) {
+		if (len) {
+			/* Look for a "CL" SUSP entry in case it was
+			 * relocated. If it has, it's a directory. */
+			if (susp_ctx.CL_address && !strncmp (record_name, path, len)) {
+				/* move path forward */
+				path += len;
+				path ++;
+
+				entry = brasero_iso9660_lookup_directory_records (ctx,
+										  path,
+										  susp_ctx.CL_address);
+			}
+		}
+		else if (!strcmp (record_name, path))
+			entry = brasero_iso9660_read_file_record (ctx,
+								  record,
+								  &susp_ctx);
+	}
+	else if (len && !strncmp (record_name, path, len)) {
+		gint address;
+
+		/* move path forward */
+		path += len;
+		path ++;
+
+		address = brasero_iso9660_get_733_val (record->address);
+		entry = brasero_iso9660_lookup_directory_records (ctx,
+								  path,
+								  address);
+	}
+
+	brasero_susp_ctx_clean (&susp_ctx);
+	return entry;
+}
+
+static BraseroVolFile *
+brasero_iso9660_lookup_directory_record_ISO (BraseroIsoCtx *ctx,
+					     const gchar *path,
+					     guint len,
+					     BraseroIsoDirRec *record)
+{
+	BraseroVolFile *entry = NULL;
+
+	if (!(record->flags & BRASERO_ISO_FILE_DIRECTORY)) {
+		if (!len && !strncmp (record->id, path, record->id_size))
+			entry = brasero_iso9660_read_file_record (ctx,
+								  record,
+								  NULL);
+	}
+	else if (len && !strncmp (record->id, path, record->id_size)) {
+		gint address;
+
+		/* move path forward */
+		path += len;
+		path ++;
+
+		address = brasero_iso9660_get_733_val (record->address);
+		entry = brasero_iso9660_lookup_directory_records (ctx,
+								  path,
+								  address);
+	}
+
+	return entry;
+}
+
+static BraseroVolFile *
+brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 					 const gchar *path,
 					 gint address)
 {
@@ -679,20 +856,28 @@ brasero_iso9660_lookup_directory_record (BraseroIsoCtx *ctx,
 	if (result != BRASERO_ISO_OK)
 		return NULL;
 
-	/* look for "SP" SUSP if it's root directory */
+	/* Look for "SP" SUSP if it's root directory. Also look for "ER" which
+	 * should tell us whether Rock Ridge could be used. */
 	if (ctx->is_root) {
 		BraseroSuspCtx susp_ctx;
 		gint susp_len;
 		gchar *susp;
 
 		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
-		brasero_susp_read (&susp_ctx, susp, susp_len);
+		brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len);
 
 		ctx->has_susp = susp_ctx.has_SP;
+		ctx->has_RR = susp_ctx.has_RockRidge;
 		ctx->susp_skip = susp_ctx.skip;
 		ctx->is_root = FALSE;
 
 		brasero_susp_ctx_clean (&susp_ctx);
+
+		if (ctx->has_susp)
+			BRASERO_BURN_LOG ("File system supports system use sharing protocol");
+
+		if (ctx->has_RR)
+			BRASERO_BURN_LOG ("File system has Rock Ridge extension");
 	}
 
 	max_record_size = brasero_iso9660_get_733_val (record->file_size);
@@ -715,7 +900,7 @@ brasero_iso9660_lookup_directory_record (BraseroIsoCtx *ctx,
 
 	while (1) {
 		BraseroIsoResult result;
-		gchar record_name [256];
+		BraseroVolFile *entry;
 
 		result = brasero_iso9660_next_record (ctx, &record);
 		if (result == BRASERO_ISO_END) {
@@ -742,52 +927,29 @@ brasero_iso9660_lookup_directory_record (BraseroIsoCtx *ctx,
 			break;
 		}
 
-		if (!brasero_iso9660_read_record_rr_name (ctx, record, record_name)
-		&&  !brasero_iso9660_read_record_iso_name (ctx, record, record_name))
+		if (ctx->has_RR)
+			entry = brasero_iso9660_lookup_directory_record_RR (ctx,
+									    path,
+									    len,
+									    record);
+		else
+			entry = brasero_iso9660_lookup_directory_record_ISO (ctx,
+									     path,
+									     len,
+									     record);
+
+		if (!entry)
 			continue;
 
-		/* if it's a directory, keep the record for later (we don't 
-		 * want to change the reading offset for the moment) */
-		if (!len && !(record->flags & BRASERO_ISO_FILE_DIRECTORY)) {
-			BraseroVolFile *entry;
-
-			/* see if we are looking for a file */
-			if (len)
-				continue;
-
-			/* see if that the record we're looking for */
-			if (strcmp (record_name, path))
-				continue;
-
-			/* carry on with the search in case there are other extents */
-			entry = brasero_iso9660_read_file_record (ctx, record);
-			if (!entry)
-				return NULL;
-
-			if (file) {
-				/* add size and addresses */
-				file = brasero_volume_file_merge (file, entry);
-				BRASERO_BURN_LOG ("Multi extent file");
-			}
-			else
-				file = entry;
-
-			continue;
+		if (file) {
+			/* add size and addresses */
+			file = brasero_volume_file_merge (file, entry);
+			BRASERO_BURN_LOG ("Multi extent file");
 		}
+		else
+			file = entry;
 
-		if (len && !strncmp (record_name, path, len)) {
-			gint address;
-
-			/* move path forward */
-			path += len;
-			path ++;
-
-			address = brasero_iso9660_get_733_val (record->address);
-			file = brasero_iso9660_lookup_directory_record (ctx,
-									path,
-									address);
-			break;
-		}
+		/* carry on in case that's a multi extent file */
 	}
 
 	return file;
@@ -813,7 +975,7 @@ brasero_iso9660_get_file (BraseroVolSrc *vol,
 
 	/* now that we have root block address, skip first "/" and go. */
 	path ++;
-	entry = brasero_iso9660_lookup_directory_record (&ctx, path, address);
+	entry = brasero_iso9660_lookup_directory_records (&ctx, path, address);
 
 	/* clean context */
 	if (ctx.spare_record)

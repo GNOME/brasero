@@ -290,17 +290,14 @@ brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
 	guint i;
 	gchar *path;
 	GSList *grafts;
-	gchar *checksum;
 	guint written_bytes;
 	BraseroChecksumFilesPrivate *priv;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
 
-	/* first read the checksum string */
+	/* first skip the checksum string */
 	i = 0;
 	while (!isspace (line [i])) i ++;
-
-	checksum = g_strndup (line, i);
 
 	/* skip white spaces */
 	while (isspace (line [i])) i ++;
@@ -315,14 +312,20 @@ brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
 		/* NOTE: graft->path + 1 is because in the checksum files on the 
 		 * disc there is not first "/" so if we want to compare ... */
 		graft = grafts->data;
-		if (!strcmp (graft->path + 1, path))
+		if (!strcmp (graft->path + 1, path)) {
+			g_free (path);
 			return BRASERO_BURN_OK;
+		}
 
 		len = strlen (graft->path + 1);
 		if (!strncmp (graft->path + 1, path, len)
-		&&   path [len] == G_DIR_SEPARATOR)
+		&&   path [len] == G_DIR_SEPARATOR) {
+			g_free (path);
 			return BRASERO_BURN_OK;
+		}
 	}
+
+	g_free (path);
 
 	/* write the whole line in the new file */
 	written_bytes = fwrite (line, 1, strlen (line), priv->file);
@@ -377,6 +380,8 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	/* FIXME: if not we could make a new checksum ... */
 	brasero_job_get_device (BRASERO_JOB (self), &device);
 	vol = brasero_volume_source_open_file (device, error);
+	g_free (device);
+
 	file = brasero_volume_get_file (vol,
 					"/"BRASERO_MD5_FILE,
 					start_block,
@@ -393,13 +398,11 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 							start_block,
 							NULL);
 			if (!file) {
-				g_free (device);
 				brasero_volume_source_close (vol);
 				BRASERO_JOB_LOG (self, "no checksum file found");
 				return BRASERO_BURN_OK;
 			}
 			else if (priv->checksum_type != BRASERO_CHECKSUM_SHA256_FILE) {
-				g_free (device);
 				brasero_volume_source_close (vol);
 				BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
 						 priv->checksum_type,
@@ -412,12 +415,10 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 					 priv->checksum_type,
 					 BRASERO_CHECKSUM_SHA1_FILE);
 			brasero_volume_source_close (vol);
-			g_free (device);
 			return BRASERO_BURN_OK;
 		}
 	}
 	else if (priv->checksum_type != BRASERO_CHECKSUM_MD5_FILE) {
-		g_free (device);
 		brasero_volume_source_close (vol);
 		BRASERO_JOB_LOG (self, "checksum type mismatch (%i against %i)",
 				 priv->checksum_type,
@@ -425,17 +426,13 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 		return BRASERO_BURN_OK;
 	}
 
-	BRASERO_JOB_LOG (self, "Found file %s on %s", file, device);
-	brasero_volume_source_open_device_path (device, error);
-	if (!vol)
-		return BRASERO_BURN_ERR;
-
+	BRASERO_JOB_LOG (self, "Found file %s", file);
 	handle = brasero_volume_file_open (vol, file);
 	brasero_volume_source_close (vol);
-	g_free (device);
 
 	if (!handle) {
 		BRASERO_JOB_LOG (self, "Failed to open file");
+		brasero_volume_file_free (file);
 		return BRASERO_BURN_ERR;
 	}
 
@@ -448,12 +445,17 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	while (result == BRASERO_BURN_RETRY) {
 		if (priv->cancel) {
 			brasero_volume_file_close (handle);
+			brasero_volume_file_free (file);
 			return BRASERO_BURN_CANCEL;
 		}
 
-		result = brasero_checksum_file_process_former_line (self, track, buffer, error);
+		result = brasero_checksum_file_process_former_line (self,
+								    track,
+								    buffer,
+								    error);
 		if (result != BRASERO_BURN_OK) {
 			brasero_volume_file_close (handle);
+			brasero_volume_file_free (file);
 			return result;
 		}
 
@@ -462,6 +464,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 
 	result = brasero_checksum_file_process_former_line (self, track, buffer, error);
 	brasero_volume_file_close (handle);
+	brasero_volume_file_free (file);
 
 	return result;
 }

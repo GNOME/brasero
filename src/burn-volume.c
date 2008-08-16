@@ -100,7 +100,7 @@ brasero_volume_get_primary_from_file (BraseroVolSrc *vol,
 	BraseroVolDesc *desc;
 
 	/* skip the first 16 blocks */
-	if (!BRASERO_VOL_SRC_SEEK (vol, SYSTEM_AREA_SECTORS, SEEK_CUR, error))
+	if (BRASERO_VOL_SRC_SEEK (vol, SYSTEM_AREA_SECTORS, SEEK_CUR, error) == -1)
 		return FALSE;
 
 	if (!BRASERO_VOL_SRC_READ (vol, primary_vol, 1, error))
@@ -142,7 +142,7 @@ brasero_volume_get_size (BraseroVolSrc *vol,
 	gboolean result;
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	if (!BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error))
+	if (BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error) == -1)
 		return FALSE;
 
 	result = brasero_volume_get_primary_from_file (vol, buffer, error);
@@ -165,7 +165,7 @@ brasero_volume_get_files (BraseroVolSrc *vol,
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	if (!BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error))
+	if (BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error) == -1)
 		return FALSE;
 
 	if (!brasero_volume_get_primary_from_file (vol, buffer, error))
@@ -193,7 +193,7 @@ brasero_volume_get_file (BraseroVolSrc *vol,
 {
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	if (!BRASERO_VOL_SRC_SEEK (vol, volume_start_block, SEEK_SET, error))
+	if (BRASERO_VOL_SRC_SEEK (vol, volume_start_block, SEEK_SET, error) == -1)
 		return NULL;
 
 	if (!brasero_volume_get_primary_from_file (vol, buffer, error))

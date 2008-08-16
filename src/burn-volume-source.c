@@ -36,27 +36,33 @@
 
 #include "scsi-mmc1.h"
 
-static gboolean
+static gint64
 brasero_volume_source_seek_device_handle (BraseroVolSrc *src,
 					  guint block,
 					  gint whence,
 					  GError **error)
 {
+	gint64 oldpos;
+
+	oldpos = src->position;
+
 	if (whence == SEEK_CUR)
 		src->position += block;
 	else if (whence == SEEK_SET)
 		src->position = block;
 
-	return TRUE;
+	return oldpos;
 }
 
-static gboolean
+static gint64
 brasero_volume_source_seek_fd (BraseroVolSrc *src,
 			       guint block,
 			       int whence,
 			       GError **error)
 {
-	
+	gint64 oldpos;
+
+	oldpos = ftello (src->data);
 	if (fseeko (src->data, (guint64) (block * ISO9660_BLOCK_SIZE), whence) == -1) {
 		BRASERO_BURN_LOG ("fseeko () failed at block %i (= %lli bytes) (%s)",
 				  block,
@@ -66,10 +72,10 @@ brasero_volume_source_seek_fd (BraseroVolSrc *src,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     strerror (errno));
-		return FALSE;
+		return -1;
 	}
 
-	return TRUE;
+	return oldpos / ISO9660_BLOCK_SIZE;
 }
 
 static gboolean

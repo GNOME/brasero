@@ -33,5 +33,5 @@ brasero_iso9660_get_733_val (guchar *buffer)
 
 	ptr = (guint32*) buffer;
 
-	return GINT32_FROM_LE (*ptr);
+	return GUINT32_FROM_LE (*ptr);
 }

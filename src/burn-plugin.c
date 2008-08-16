@@ -1072,7 +1072,12 @@ brasero_plugin_finalize (GObject *object)
 		priv->notify_priority = 0;
 		g_object_unref (client);
 	}
-		
+
+	if (priv->error) {
+		g_free (priv->error);
+		priv->error = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

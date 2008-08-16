@@ -100,7 +100,10 @@ brasero_data_session_add_children_files (BraseroDataSession *self,
 								       child,
 								       parent);
 
-		if (!node->is_file)
+		/* There is little chance that a NULL node will be returned and
+		 * logically that shouldn't be the case. But who knows bugs
+		 * happen, let's try not to crash. ;) */
+		if (node && !node->is_file)
 			brasero_data_session_add_children_files (self,
 								 node,
 								 child->specific.dir.children);

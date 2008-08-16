@@ -44,6 +44,24 @@ struct _BraseroSuspSP {
 };
 typedef struct _BraseroSuspSP BraseroSuspSP;
 
+struct _BraseroSuspER {
+	BraseroSusp susp	[1];
+	gchar id_len;
+	gchar desc_len;
+	gchar src_len;
+	gchar extension_version;
+	gchar id [0];
+};
+typedef struct _BraseroSuspER BraseroSuspER;
+
+struct _BraseroSuspCE {
+	BraseroSusp susp	[1];
+	guchar block		[8];
+	guchar offset		[8];
+	guchar len		[8];
+};
+typedef struct _BraseroSuspCE BraseroSuspCE;
+
 struct _BraseroRockNM {
 	BraseroSusp susp	[1];
 	gchar flags;
@@ -95,6 +113,44 @@ brasero_susp_SP (BraseroSusp *susp,
 }
 
 static gboolean
+brasero_susp_CE (BraseroSusp *susp,
+		 BraseroSuspCtx *ctx)
+{
+	BraseroSuspCE *ce;
+
+	ce = (BraseroSuspCE *) susp;
+
+	ctx->CE_address = brasero_iso9660_get_733_val (ce->block);
+	ctx->CE_offset = brasero_iso9660_get_733_val (ce->offset);
+	ctx->CE_len = brasero_iso9660_get_733_val (ce->len);
+
+	return TRUE;
+}
+
+static gboolean
+brasero_susp_ER (BraseroSusp *susp,
+		 BraseroSuspCtx *ctx)
+{
+	BraseroSuspER *er;
+
+	er = (BraseroSuspER *) susp;
+
+	/* Make sure the extention is Rock Ridge */
+	if (susp->version != 1)
+		return FALSE;
+
+	if (er->id_len != 10)
+		return TRUE;
+
+	if (!strncmp (er->id, "IEEE_P1282", 10))
+		ctx->has_RockRidge = TRUE;
+	else if (!strncmp (er->id, "RRIP_1991A", 10))
+		ctx->has_RockRidge = TRUE;
+
+	return TRUE;
+}
+
+static gboolean
 brasero_susp_NM (BraseroSusp *susp,
 		 BraseroSuspCtx *ctx)
 {
@@ -139,13 +195,11 @@ brasero_susp_CL (BraseroSusp *susp,
 		 BraseroSuspCtx *ctx)
 {
 	BraseroRockCL *cl;
-	gint address;
 
 	/* Child Link */
 	cl = (BraseroRockCL *) susp;
-	address = brasero_iso9660_get_733_val (cl->location);
-	ctx->rr_children = g_slist_prepend (ctx->rr_children,
-					    GINT_TO_POINTER (address));
+	ctx->CL_address = brasero_iso9660_get_733_val (cl->location);
+
 	return TRUE;
 }
 
@@ -158,6 +212,7 @@ brasero_susp_RE (BraseroSusp *susp,
 	if (susp->len != 4 || susp->version != 1)
 		return FALSE;
 
+	ctx->has_RE = TRUE;
 	return TRUE;
 }
 
@@ -170,7 +225,8 @@ brasero_susp_PL (BraseroSusp *susp,
 	if (ctx->rr_parent)
 		return FALSE;
 
-	/* Parent Link */
+	/* That's to store original parent address of this node before it got
+	 * relocated. */
 	pl = (BraseroRockPL *) susp;
 	ctx->rr_parent = brasero_iso9660_get_733_val (pl->location);
 	return TRUE;
@@ -181,8 +237,6 @@ brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, gint max)
 {
 	BraseroSusp *susp;
 	gint offset;
-
-	memset (ctx, 0, sizeof (BraseroSuspCtx));
 
 	if (max <= 0)
 		return TRUE;
@@ -204,7 +258,13 @@ brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, gint max)
 		result = TRUE;
 		if (!memcmp (susp->signature, "SP", 2))
 			result = brasero_susp_SP (susp, ctx);
-		if (!memcmp (susp->signature, "NM", 2))
+		/* Continuation area */
+		else if (!memcmp (susp->signature, "CE", 2))
+			result = brasero_susp_CE (susp, ctx);
+		/* This is to indicate that we're using Rock Ridge */
+		else if (!memcmp (susp->signature, "ER", 2))
+			result = brasero_susp_ER (susp, ctx);
+		else if (!memcmp (susp->signature, "NM", 2))
 			result = brasero_susp_NM (susp, ctx);
 		else if (!memcmp (susp->signature, "CL", 2))
 			result = brasero_susp_CL (susp, ctx);

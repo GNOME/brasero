@@ -62,15 +62,14 @@ struct _BraseroVolFile {
 
 	struct {
 		GList *children;
-
-		/* FIXME: rr_children isn't needed here apparently it could be 
-		 * replaced by extents. */
-		GList *rr_children;
 	} dir;
 
 	} specific;
 
 	guint isdir:1;
+
+	/* mainly used internally */
+	guint relocated:1;
 };
 
 gboolean

@@ -862,6 +862,7 @@ brasero_io_get_file_info_thread (BraseroAsyncTaskManager *manager,
 				  error,
 				  job->callback_data);
 
+	g_free (file_uri);
 	return BRASERO_ASYNC_TASK_FINISHED;
 }
 
