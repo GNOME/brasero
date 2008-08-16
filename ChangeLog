@@ -1,5 +1,14 @@
 2008-08-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix potential crash in brasero-data-session
+	Fix problem with import session button not being off after clearing project
+
+	* src/brasero-data-disc.c (brasero_data_disc_reset):
+	* src/brasero-data-disc.c (brasero_data_disc_clear):
+	* src/brasero-data-session.c (brasero_data_disc_clear):
+
+2008-08-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Huge fix for multisession import in case there are relocated directories
 	NOTE: there is a bug in genisoimage that doesn't generate unique RR names
 	for relocated directories under rr_moved/

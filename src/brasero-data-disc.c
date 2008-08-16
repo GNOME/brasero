@@ -1103,11 +1103,8 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
 	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
-		g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, disc);
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
-		g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, disc);
-	}
 
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
