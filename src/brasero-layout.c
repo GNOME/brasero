@@ -140,12 +140,13 @@ const GtkToggleActionEntry entries [] = {
 	  "F7", N_(BRASERO_LAYOUT_NONE_TOOLTIP), G_CALLBACK (brasero_layout_empty_toggled_cb), 1 }
 };
 
+/** see #547687 **/
 const GtkRadioActionEntry radio_entries [] = {
 	{ "HView", NULL, N_("_Horizontal Layout"),
-	  NULL, N_("Set an horizontal layout"), 0 },
+	  NULL, N_("Set an horizontal layout"), 1 },
 
 	{ "VView", NULL, N_("_Vertical Layout"),
-	  NULL, N_("Set a vertical layout"), 1 },
+	  NULL, N_("Set a vertical layout"), 0 },
 };
 
 const gchar description [] =
