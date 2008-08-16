@@ -125,7 +125,7 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 #define BRASERO_BURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN, BraseroBurnPrivate))
 
 #define MAX_EJECT_WAIT_TIME	20000
-#define MAX_MOUNT_ATTEMPTS	10
+#define MAX_MOUNT_ATTEMPTS	20
 #define MOUNT_TIMEOUT		500
 
 #define MAX_LOAD_ATTEMPTS	20
