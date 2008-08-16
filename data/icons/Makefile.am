@@ -25,6 +25,7 @@ private_icons = \
 	hicolor_actions_16x16_media-optical-burn.png \
 	hicolor_actions_16x16_media-optical-copy.png \
 	hicolor_actions_16x16_media-optical-data-new.png \
+    hicolor_actions_16x16_media-optical-video-new.png \
 	hicolor_actions_16x16_transform-crop-and-resize.png \
 	hicolor_actions_22x22_insert-pause.png \
 	hicolor_actions_22x22_iso-image-burn.png \
@@ -34,6 +35,7 @@ private_icons = \
 	hicolor_actions_22x22_media-optical-burn.png \
 	hicolor_actions_22x22_media-optical-copy.png \
 	hicolor_actions_22x22_media-optical-data-new.png \
+    hicolor_actions_22x22_media-optical-video-new.png \
 	hicolor_actions_22x22_transform-crop-and-resize.png \
 	hicolor_actions_24x24_insert-pause.png \
 	hicolor_actions_24x24_iso-image-burn.png \
@@ -43,6 +45,7 @@ private_icons = \
 	hicolor_actions_24x24_media-optical-burn.png \
 	hicolor_actions_24x24_media-optical-copy.png \
 	hicolor_actions_24x24_media-optical-data-new.png \
+    hicolor_actions_24x24_media-optical-video-new.png \
 	hicolor_actions_24x24_transform-crop-and-resize.png \
 	hicolor_actions_32x32_insert-pause.png \
 	hicolor_actions_32x32_iso-image-burn.png \
@@ -52,6 +55,8 @@ private_icons = \
 	hicolor_actions_32x32_media-optical-burn.png \
 	hicolor_actions_32x32_media-optical-copy.png \
 	hicolor_actions_32x32_media-optical-data-new.png \
+    hicolor_actions_32x32_media-optical-video-new.png \
+    hicolor_actions_48x48_media-optical-video-new.png \
 	hicolor_actions_scalable_insert-pause.svg \
 	hicolor_actions_scalable_iso-image-burn.svg \
 	hicolor_actions_scalable_iso-image-new.svg \
