@@ -1063,10 +1063,16 @@ static void
 brasero_data_disc_clear (BraseroDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
+	GtkAction *action;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
 	if (priv->loading)
 		return;
+
+	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
+		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);

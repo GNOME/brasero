@@ -177,7 +177,6 @@ brasero_data_session_add_last (BraseroDataSession *self,
 		node = brasero_data_project_add_imported_session_file (BRASERO_DATA_PROJECT (self),
 								       file,
 								       NULL);
-
 		if (!node)
 			continue;
 

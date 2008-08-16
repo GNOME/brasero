@@ -1,6 +1,13 @@
 2008-08-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Huge fix for multisession import in case there are relocated directories
+	NOTE: there is a bug in genisoimage that doesn't generate unique RR names
+	for relocated directories under rr_moved/
+	Fixed memleaks in:
+	brasero-io
+	burn-plugin
+	burn-volume-read
+	burn-checksum-files
 
 	* src/brasero-data-session.c
 	(brasero_data_session_add_children_files):
