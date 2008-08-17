@@ -175,14 +175,99 @@ brasero_metadata_info_free (BraseroMetadataInfo *info)
 }
 
 static void
+brasero_metadata_destroy_pipeline (BraseroMetadata *self)
+{
+	GstState state;
+	GstStateChangeReturn change;
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->started = 0;
+
+	if (!priv->pipeline)
+		return;
+
+	change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
+					GST_STATE_NULL);
+
+	change = gst_element_get_state (priv->pipeline,
+					&state,
+					NULL,
+					GST_MSECOND);
+
+	/* better wait for the state change to be completed */
+	while (change == GST_STATE_CHANGE_ASYNC && state != GST_STATE_NULL) {
+		GstState pending;
+
+		change = gst_element_get_state (priv->pipeline,
+						&state,
+						&pending,
+						GST_MSECOND);
+		BRASERO_BURN_LOG ("Get state (current = %i pending = %i) returned %i",
+				  state, pending, change);
+	}
+
+	if (change == GST_STATE_CHANGE_FAILURE)
+		g_warning ("State change failure\n");
+
+	if (priv->audio) {
+		gst_bin_remove (GST_BIN (priv->pipeline), priv->audio);
+		priv->audio = NULL;
+	}
+
+	if (priv->video) {
+		gst_bin_remove (GST_BIN (priv->pipeline), priv->video);
+		priv->snapshot = NULL;
+		priv->video = NULL;
+	}
+
+	gst_object_unref (GST_OBJECT (priv->pipeline));
+	priv->pipeline = NULL;
+
+	if (priv->level) {
+		gst_object_unref (GST_OBJECT (priv->level));
+		priv->level = NULL;
+	}
+
+	if (priv->sink) {
+		gst_object_unref (GST_OBJECT (priv->sink));
+		priv->sink = NULL;
+	}
+
+	if (priv->convert) {
+		gst_object_unref (GST_OBJECT (priv->convert));
+		priv->convert = NULL;
+	}
+}
+
+static void
 brasero_metadata_stop (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
+	BRASERO_BURN_LOG ("Retrieval ended for %s %p",
+  			  priv->info ? priv->info->uri:"Unknown",
+			  self);
+
+	/* Destroy the pipeline as it has become unusable. */
 	if (priv->pipeline)
+		brasero_metadata_destroy_pipeline (self);
+/*	else if (priv->pipeline)
+	{	
+		GstState state = GST_STATE_NULL;
+
 		gst_element_set_state (priv->pipeline, GST_STATE_NULL);
+		gst_element_get_state (priv->pipeline, &state, NULL, GST_MSECOND);
+		while (state != GST_STATE_NULL)
+			gst_element_get_state (priv->pipeline,
+					       &state,
+					       NULL,
+					       GST_MSECOND);
+	}
+*/
 
 	if (priv->progress_id) {
 		g_source_remove (priv->progress_id);
@@ -220,7 +305,9 @@ brasero_metadata_stop (BraseroMetadata *self)
 
 	/* that's for sync_wait */
 	g_mutex_lock (priv->mutex);
-	g_cond_signal (priv->cond);
+
+	/* use broadcast here as there could be more than one thread waiting */
+	g_cond_broadcast (priv->cond);
 	g_mutex_unlock (priv->mutex);
 
 	/* stop loop */
@@ -235,8 +322,11 @@ brasero_metadata_cancel (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
+	BRASERO_BURN_LOG ("Metadata retrieval cancelled for %s %p",
+			  priv->info ? priv->info->uri:"Unknown",
+			  self);
+	
 	brasero_metadata_stop (self);
-
 	if (priv->error) {
 		g_error_free (priv->error);
 		priv->error = NULL;
@@ -1192,7 +1282,12 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("New retrieval for %s", uri);
+	BRASERO_BURN_LOG ("New retrieval for %s %p", uri, self);
+
+	if (priv->error) {
+		g_error_free (priv->error);
+		priv->error = NULL;
+	}
 
 	brasero_metadata_info_free (priv->info);
 	priv->info = NULL;
@@ -1279,6 +1374,7 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 				BraseroMetadataFlag flags,
 				GError **error)
 {
+	GstStateChangeReturn state_change;
 	BraseroMetadataPrivate *priv;
 	gulong cancel_signal = 0;
 
@@ -1297,16 +1393,10 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 
 	g_mutex_lock (priv->mutex);
 
-	cancel_signal = g_signal_connect (cancel,
-					  "cancelled",
-					  G_CALLBACK (brasero_metadata_cancelled_cb),
-					  self);
-
 	/* Now wait ... but check a last time otherwise we wouldn't get the
 	 * any notice of cancellation if it had been cancelled before we 
 	 * connected to the signal */
 	if (g_cancellable_is_cancelled (cancel)) {
-		g_signal_handler_disconnect (cancel, cancel_signal);
 		g_mutex_unlock (priv->mutex);
 
 		brasero_metadata_stop (self);
@@ -1316,12 +1406,29 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 		return FALSE;
 	}
 
+	cancel_signal = g_signal_connect (cancel,
+					  "cancelled",
+					  G_CALLBACK (brasero_metadata_cancelled_cb),
+					  self);
+
 	priv->started = 1;
-	gst_element_set_state (GST_ELEMENT (priv->pipeline), BRASERO_METADATA_INITIAL_STATE);
-	g_cond_wait (priv->cond, priv->mutex);
-	g_mutex_unlock (priv->mutex);
+	state_change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
+					      BRASERO_METADATA_INITIAL_STATE);
+
+	if (state_change != GST_STATE_CHANGE_FAILURE) {
+		/* no need to wait for a condition if it failed */
+		g_cond_wait (priv->cond, priv->mutex);
+		g_mutex_unlock (priv->mutex);
+	}
+	else {
+		g_mutex_unlock (priv->mutex);
+		brasero_metadata_stop (self);
+	}
 
 	g_signal_handler_disconnect (cancel, cancel_signal);
+
+	if (priv->pipeline)
+		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
 
 	if (priv->error) {
 		if (error) {
@@ -1337,7 +1444,8 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 		return FALSE;
 	}
 
-	return (g_cancellable_is_cancelled (cancel) == FALSE);
+	return (g_cancellable_is_cancelled (cancel) == FALSE) &&
+	       (state_change != GST_STATE_CHANGE_FAILURE);
 }
 
 gboolean
@@ -1500,79 +1608,6 @@ brasero_metadata_init (BraseroMetadata *obj)
 
 	priv->cond = g_cond_new ();
 	priv->mutex = g_mutex_new ();
-}
-
-static void
-brasero_metadata_destroy_pipeline (BraseroMetadata *self)
-{
-	GstStateChangeReturn change;
-	BraseroMetadataPrivate *priv;
-
-	priv = BRASERO_METADATA_PRIVATE (self);
-
-	priv->started = 0;
-
-	if (!priv->pipeline)
-		return;
-
-	/* better to wait for the state change to be completed */
-	change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
-					GST_STATE_READY);
-
-	while (change == GST_STATE_CHANGE_ASYNC) {
-		GstState state;
-		GstState pending;
-
-		change = gst_element_get_state (priv->pipeline,
-						&state,
-						&pending,
-						GST_MSECOND);
-	};
-	
-	change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
-					GST_STATE_NULL);
-
-	while (change == GST_STATE_CHANGE_ASYNC) {
-		GstState state;
-		GstState pending;
-
-		change = gst_element_get_state (priv->pipeline,
-						&state,
-						&pending,
-						GST_MSECOND);
-	}
-
-	if (change == GST_STATE_CHANGE_FAILURE)
-		g_warning ("State change failure\n");
-
-	if (priv->audio) {
-		gst_bin_remove (GST_BIN (priv->pipeline), priv->audio);
-		priv->audio = NULL;
-	}
-
-	if (priv->video) {
-		gst_bin_remove (GST_BIN (priv->pipeline), priv->video);
-		priv->snapshot = NULL;
-		priv->video = NULL;
-	}
-
-	gst_object_unref (GST_OBJECT (priv->pipeline));
-	priv->pipeline = NULL;
-
-	if (priv->level) {
-		gst_object_unref (GST_OBJECT (priv->level));
-		priv->level = NULL;
-	}
-
-	if (priv->sink) {
-		gst_object_unref (GST_OBJECT (priv->sink));
-		priv->sink = NULL;
-	}
-
-	if (priv->convert) {
-		gst_object_unref (GST_OBJECT (priv->convert));
-		priv->convert = NULL;
-	}
 }
 
 static void
