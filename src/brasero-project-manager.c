@@ -345,8 +345,8 @@ brasero_project_manager_selected_uris_preview (gpointer data)
 {
 	BraseroProjectManager *manager = BRASERO_PROJECT_MANAGER (data);
 	BraseroIOFlags flags;
-    	GSList *list = NULL;
-    	gchar **iter;
+	GSList *list = NULL;
+	gchar **iter;
 
 	if (!manager->priv->io)
 		manager->priv->io = brasero_io_get_default ();
@@ -371,9 +371,6 @@ brasero_project_manager_selected_uris_preview (gpointer data)
 				   NULL);
 			       
 	g_slist_free (list);
-	g_strfreev (manager->priv->selected);
-	manager->priv->selected = NULL;
-
 	manager->priv->preview_id = 0;
 	return FALSE;
 }
@@ -382,6 +379,49 @@ void
 brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 					       BraseroProjectManager *manager)
 {
+	gchar **uris;
+
+	/* Before cancelling everything, check that the size really changed
+	 * like in the case of double clicking or if the user selected one
+	 * file and double clicked on it afterwards.
+	 * NOTE: the following expects each URI to be unique. */
+	uris = brasero_uri_container_get_selected_uris (container);
+	if (uris) {
+		gchar **iter;
+		guint num = 0;
+		gboolean found = FALSE;
+
+		for (iter = manager->priv->selected; iter && *iter; iter ++) {
+			gchar **uri;
+
+			found = FALSE;
+			for (uri = uris; uri && *uri; uri ++) {
+				if (!strcmp (*uri, *iter)) {
+					found = TRUE;
+					break;
+				}
+			}
+
+			if (!found)
+				break;
+
+			num ++;
+		}
+
+		if (found) {
+			guint num_new = 0;
+
+			for (iter = uris; iter && *iter; iter ++)
+				num_new ++;
+
+			if (num_new == num) {
+				/* same uris no need to update anything. */
+				g_strfreev (uris);
+				return;
+			}
+		}
+	}
+
 	/* if we are in the middle of an unfinished size seek then
 	 * cancel it and re-initialize */
 	if (manager->priv->io)
@@ -398,7 +438,7 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 		manager->priv->preview_id = 0;
 	}
 
-	manager->priv->selected = brasero_uri_container_get_selected_uris (container);
+	manager->priv->selected = uris;
 	if (!manager->priv->selected) {
 		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
 				   manager->priv->status_ctx);
