@@ -66,7 +66,6 @@ struct BraseroMetadataPrivate {
 
 	GstElement *snapshot;
 
-	GMainLoop *loop;
 	GError *error;
 	guint watch;
 
@@ -309,10 +308,6 @@ brasero_metadata_stop (BraseroMetadata *self)
 	/* use broadcast here as there could be more than one thread waiting */
 	g_cond_broadcast (priv->cond);
 	g_mutex_unlock (priv->mutex);
-
-	/* stop loop */
-	if (priv->loop && g_main_loop_is_running (priv->loop))
-		g_main_loop_quit (priv->loop);
 }
 
 void
@@ -339,15 +334,14 @@ brasero_metadata_completed (BraseroMetadata *self)
 	BraseroMetadataPrivate *priv;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
-	if ((!priv->loop || !g_main_loop_is_running (priv->loop)) && !priv->cond) {
-		/* we send a message only if we haven't got a loop (= async mode) */
-		g_object_ref (self);
-		g_signal_emit (G_OBJECT (self),
-			       brasero_metadata_signals [COMPLETED_SIGNAL],
-			       0,
-			       priv->error);
-		g_object_unref (self);
-	}
+
+	/* we send a message only if we haven't got a loop (= async mode) */
+	g_object_ref (self);
+	g_signal_emit (G_OBJECT (self),
+		       brasero_metadata_signals [COMPLETED_SIGNAL],
+		       0,
+		       priv->error);
+	g_object_unref (self);
 
 	brasero_metadata_stop (self);
 	return TRUE;
@@ -1449,54 +1443,6 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 }
 
 gboolean
-brasero_metadata_get_info_sync (BraseroMetadata *self,
-				const gchar *uri,
-				BraseroMetadataFlag flags,
-				GError **error)
-{
-	BraseroMetadataPrivate *priv;
-
-	priv = BRASERO_METADATA_PRIVATE (self);
-
-	priv->flags = flags;
-
-	if (!brasero_metadata_set_new_uri (self, uri)) {
-		g_propagate_error (error, priv->error);
-		priv->error = NULL;
-
-		brasero_metadata_info_free (priv->info);
-		priv->info = NULL;
-
-		return FALSE;
-	}
-
-	priv->started = 1;
-	gst_element_set_state (GST_ELEMENT (priv->pipeline), BRASERO_METADATA_INITIAL_STATE);
-
-	/* run the loop until it's finished */
-	priv->loop = g_main_loop_new (NULL, FALSE);
-	g_main_loop_run (priv->loop);
-	g_main_loop_unref (priv->loop);
-	priv->loop = NULL;
-
-	if (priv->error) {
-		if (error) {
-			g_propagate_error (error, priv->error);
-			priv->error = NULL;
-		} 
-		else {
-			BRASERO_BURN_LOG ("ERROR getting metadata : %s\n", priv->error->message);
-			g_error_free (priv->error);
-			priv->error = NULL;
-		}
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-gboolean
 brasero_metadata_get_info_async (BraseroMetadata *self,
 				 const gchar *uri,
 				 BraseroMetadataFlag flags)
@@ -1637,14 +1583,6 @@ brasero_metadata_finalize (GObject *object)
 	if (priv->watch) {
 		g_source_remove (priv->watch);
 		priv->watch = 0;
-	}
-
-	if (priv->loop) {
-		if (g_main_loop_is_running (priv->loop))
-			g_main_loop_quit (priv->loop);
-
-		g_main_loop_unref (priv->loop);
-		priv->loop = NULL;
 	}
 
 	if (priv->info) {

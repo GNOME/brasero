@@ -175,6 +175,9 @@ struct BraseroProjectManagerPrivate {
 	GtkWidget *layout;
 	GtkWidget *status;
 
+	gchar **selected;
+	guint preview_id;
+
 	guint status_ctx;
 
 	GtkActionGroup *action_group;
@@ -337,29 +340,13 @@ brasero_project_manager_size_preview_progress (GObject *object,
 					       files_num);
 }
 
-void
-brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
-					       BraseroProjectManager *manager)
+static gboolean
+brasero_project_manager_selected_uris_preview (gpointer data)
 {
+	BraseroProjectManager *manager = BRASERO_PROJECT_MANAGER (data);
 	BraseroIOFlags flags;
-    	gchar **uris, **iter;
     	GSList *list = NULL;
-
-	/* if we are in the middle of an unfinished size seek then
-	 * cancel it and re-initialize */
-	if (manager->priv->io)
-		brasero_io_cancel_by_base (manager->priv->io,
-					   manager->priv->size_preview);
-
-	uris = brasero_uri_container_get_selected_uris (container);
-	if (!uris) {
-		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
-				   manager->priv->status_ctx);
-		gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
-				    manager->priv->status_ctx,
-				    _("No file selected"));
-		return;
-	}
+    	gchar **iter;
 
 	if (!manager->priv->io)
 		manager->priv->io = brasero_io_get_default ();
@@ -370,7 +357,7 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 								   NULL,
 								   brasero_project_manager_size_preview_progress);
     
-	for (iter = uris; iter && *iter; iter ++)
+	for (iter = manager->priv->selected; iter && *iter; iter ++)
 		list = g_slist_prepend (list, *iter);
 
 	flags = BRASERO_IO_INFO_RECURSIVE|BRASERO_IO_INFO_IDLE;
@@ -384,7 +371,46 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 				   NULL);
 			       
 	g_slist_free (list);
-	g_strfreev (uris);
+	g_strfreev (manager->priv->selected);
+	manager->priv->selected = NULL;
+
+	manager->priv->preview_id = 0;
+	return FALSE;
+}
+
+void
+brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
+					       BraseroProjectManager *manager)
+{
+	/* if we are in the middle of an unfinished size seek then
+	 * cancel it and re-initialize */
+	if (manager->priv->io)
+		brasero_io_cancel_by_base (manager->priv->io,
+					   manager->priv->size_preview);
+
+	if (manager->priv->selected) {
+		g_strfreev (manager->priv->selected);
+		manager->priv->selected = NULL;
+	}
+
+	if (manager->priv->preview_id) {
+		g_source_remove (manager->priv->preview_id);
+		manager->priv->preview_id = 0;
+	}
+
+	manager->priv->selected = brasero_uri_container_get_selected_uris (container);
+	if (!manager->priv->selected) {
+		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
+				   manager->priv->status_ctx);
+		gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
+				    manager->priv->status_ctx,
+				    _("No file selected"));
+		return;
+	}
+
+	manager->priv->preview_id = g_timeout_add (500,
+						   brasero_project_manager_selected_uris_preview,
+						   manager);
 }
 
 void
@@ -400,6 +426,16 @@ brasero_project_manager_sidepane_changed (BraseroLayout *layout,
 
 		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
 				   manager->priv->status_ctx);
+
+		if (manager->priv->selected) {
+			g_strfreev (manager->priv->selected);
+			manager->priv->selected = NULL;
+		}
+
+		if (manager->priv->preview_id) {
+			g_source_remove (manager->priv->preview_id);
+			manager->priv->preview_id = 0;
+		}
 	}
 }
 
@@ -1092,6 +1128,16 @@ brasero_project_manager_finalize (GObject *object)
 
 		g_object_unref (cobj->priv->io);
 		cobj->priv->io = NULL;
+	}
+
+	if (cobj->priv->preview_id) {
+		g_source_remove (cobj->priv->preview_id);
+		cobj->priv->preview_id = 0;
+	}
+
+	if (cobj->priv->selected) {
+		g_strfreev (cobj->priv->selected);
+		cobj->priv->selected = NULL;
 	}
 
 	g_free (cobj->priv);
