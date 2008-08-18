@@ -1448,6 +1448,7 @@ brasero_metadata_get_info_async (BraseroMetadata *self,
 				 BraseroMetadataFlag flags)
 {
 	BraseroMetadataPrivate *priv;
+	GstStateChangeReturn state_change;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
@@ -1468,10 +1469,11 @@ brasero_metadata_get_info_async (BraseroMetadata *self,
 		return FALSE;
 	}
 
-	priv->started = 1;
-	gst_element_set_state (GST_ELEMENT (priv->pipeline), BRASERO_METADATA_INITIAL_STATE);
+	state_change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
+					      BRASERO_METADATA_INITIAL_STATE);
 
-	return TRUE;
+	priv->started = (state_change != GST_STATE_CHANGE_FAILURE);
+	return priv->started;
 }
 
 void
