@@ -646,6 +646,9 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	gboolean result;
 	GList *node;
 
+	if (g_cancellable_is_cancelled (cancel))
+		return FALSE;
+
 	priv = BRASERO_IO_PRIVATE (self);
 
 	mime = g_file_info_get_content_type (info);
@@ -656,6 +659,8 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	||  !strcmp (mime, "application/x-cd-image")
 	||  !strcmp (mime, "application/octet-stream")))
 		return FALSE;
+
+	g_mutex_lock (priv->lock);
 
 	/* Seek in the buffer if we have already explored these metadata. Check 
 	 * the info last modified time in case a result should be updated. */
@@ -673,11 +678,13 @@ brasero_io_get_metadata_info (BraseroIO *self,
 				/* If there isn't any snapshot retry */
 				if (cached->info->snapshot) {
 					brasero_metadata_info_copy (meta_info, cached->info);
+					g_mutex_unlock (priv->lock);
 					return TRUE;
 				}
 			}
 			else {
 				brasero_metadata_info_copy (meta_info, cached->info);
+				g_mutex_unlock (priv->lock);
 				return TRUE;
 			}
 		}
@@ -692,15 +699,24 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	/* grab an available metadata (NOTE: there should always be at least one
 	 * since we run 2 threads at max and have two metadatas available) */
 	do {
-		g_mutex_lock (priv->lock);
+
+		if (g_cancellable_is_cancelled (cancel)) {
+			g_mutex_unlock (priv->lock);
+			return FALSE;
+		}
+
 		if (priv->metadatas) {
 			metadata = priv->metadatas->data;
 			priv->metadatas = g_slist_remove (priv->metadatas, metadata);
 		}
-		g_mutex_unlock (priv->lock);
 
+		g_mutex_unlock (priv->lock);
 		g_usleep (250);
+		g_mutex_lock (priv->lock);
+
 	} while (!metadata);
+
+	g_mutex_unlock (priv->lock);
 
 	result = brasero_metadata_get_info_wait (metadata,
 						 cancel,
@@ -708,6 +724,8 @@ brasero_io_get_metadata_info (BraseroIO *self,
 						 flags,
 						 NULL);
 	brasero_metadata_set_info (metadata, meta_info);
+
+	g_mutex_lock (priv->lock);
 
 	if (result) {
 		/* see if we should add it to the buffer */
@@ -728,8 +746,8 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		}
 	}
 
-	g_mutex_lock (priv->lock);
 	priv->metadatas = g_slist_prepend (priv->metadatas, metadata);
+
 	g_mutex_unlock (priv->lock);
 
 	return result;
@@ -1273,6 +1291,11 @@ brasero_io_get_file_count_process_directory (BraseroIO *self,
 
 	while ((info = g_file_enumerator_next_file (enumerator, cancel, &error)) || error) {
 		GFile *child;
+
+		if (g_cancellable_is_cancelled (cancel)) {
+			g_object_unref (info);
+			break;
+		}
 
 		data->files_num ++;
 
