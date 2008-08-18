@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD.pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-14 22:14+0200\n"
-"PO-Revision-Date: 2008-08-14 22:21+0100\n"
+"POT-Creation-Date: 2008-08-18 20:12+0200\n"
+"PO-Revision-Date: 2008-08-18 20:13+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -539,7 +539,7 @@ msgstr "_Informacje o płycie"
 msgid "Display information on blank discs currently inserted"
 msgstr "Wyświetla informacje na temat bieżących pustych płyt"
 
-#: ../src/brasero-metadata.c:514
+#: ../src/brasero-metadata.c:598
 #, c-format
 msgid "this format is not supported by gstreamer"
 msgstr "ten format nie jest obsługiwany przez gstreamer"
@@ -740,14 +740,14 @@ msgid "Next results"
 msgstr "Następne wyniki"
 
 #: ../src/brasero-search-beagle.c:420
-#: ../src/brasero-data-disc.c:2127
+#: ../src/brasero-data-disc.c:2130
 #: ../src/brasero-file-filtered.c:394
 msgid "Files"
 msgstr "Pliki"
 
 # jm: określa czy to folder, czy plik word, etc
 #: ../src/brasero-search-beagle.c:439
-#: ../src/brasero-data-disc.c:2155
+#: ../src/brasero-data-disc.c:2158
 msgid "Description"
 msgstr "Typ"
 
@@ -1649,50 +1649,50 @@ msgstr "_Importuj sesję"
 msgid "Click here to import its contents"
 msgstr "Należy nacisnąć tutaj, aby zaimportować jej zawartość:"
 
-#: ../src/brasero-data-disc.c:1374
+#: ../src/brasero-data-disc.c:1377
 msgid "Please, wait while the project is loading."
 msgstr "Proszę poczekać na wczytanie projektu."
 
-#: ../src/brasero-data-disc.c:1384
+#: ../src/brasero-data-disc.c:1387
 msgid "_Cancel Loading"
 msgstr "_Przerwij wczytywanie"
 
-#: ../src/brasero-data-disc.c:1385
+#: ../src/brasero-data-disc.c:1388
 msgid "Press if you want to cancel current project loading"
 msgstr "Naciśnięcie przerwie wczytywanie projektu"
 
-#: ../src/brasero-data-disc.c:1494
+#: ../src/brasero-data-disc.c:1497
 msgid "Import"
 msgstr "Importuj"
 
-#: ../src/brasero-data-disc.c:1499
+#: ../src/brasero-data-disc.c:1502
 msgid "New Folder"
 msgstr "Nowy katalog"
 
-#: ../src/brasero-data-disc.c:1626
+#: ../src/brasero-data-disc.c:1629
 msgid "File Renaming"
 msgstr "Zmiana nazwy pliku"
 
-#: ../src/brasero-data-disc.c:1629
+#: ../src/brasero-data-disc.c:1632
 #: ../src/brasero-disc-option-dialog.c:566
 msgid "_Don't rename"
 msgstr "_Nie zmieniaj nazwy"
 
-#: ../src/brasero-data-disc.c:1630
+#: ../src/brasero-data-disc.c:1633
 #: ../src/brasero-disc-option-dialog.c:569
 msgid "_Rename"
 msgstr "_Zmień nazwę"
 
-#: ../src/brasero-data-disc.c:1638
+#: ../src/brasero-data-disc.c:1641
 msgid "<b>Renaming mode</b>"
 msgstr "<b>Tryb zmieniania nazw</b>"
 
-#: ../src/brasero-data-disc.c:2141
+#: ../src/brasero-data-disc.c:2144
 #: ../src/brasero-video-disc.c:1194
 msgid "Size"
 msgstr "Rozmiar"
 
-#: ../src/brasero-data-disc.c:2171
+#: ../src/brasero-data-disc.c:2174
 msgid "Space"
 msgstr "Rozmiar"
 
@@ -1916,7 +1916,7 @@ msgstr "nieznany"
 
 #: ../src/brasero-drive-properties.c:197
 msgid "Do you really want to choose this location?"
-msgstr "Na pewno wybrać te położenie?"
+msgstr "Na pewno wybrać to położenie?"
 
 #: ../src/brasero-drive-properties.c:200
 msgid ""
@@ -2109,23 +2109,23 @@ msgstr "Panel bo_czny"
 msgid "Show a side pane along the project"
 msgstr "Wyświetla panel boczny obok projektu"
 
-#: ../src/brasero-layout.c:144
+#: ../src/brasero-layout.c:145
 msgid "_Horizontal Layout"
 msgstr "Układ po_ziomy"
 
-#: ../src/brasero-layout.c:145
+#: ../src/brasero-layout.c:146
 msgid "Set an horizontal layout"
 msgstr "Ustawia układ poziomy"
 
-#: ../src/brasero-layout.c:147
+#: ../src/brasero-layout.c:148
 msgid "_Vertical Layout"
 msgstr "Układ pi_onowy"
 
-#: ../src/brasero-layout.c:148
+#: ../src/brasero-layout.c:149
 msgid "Set a vertical layout"
 msgstr "Ustawia układ pionowy"
 
-#: ../src/brasero-layout.c:1432
+#: ../src/brasero-layout.c:1433
 msgid "Click to close the side pane"
 msgstr "Należy nacisnąć, aby zamknąć panel boczny"
 
@@ -2542,7 +2542,7 @@ msgstr "_Otwórz..."
 msgid "Open a project"
 msgstr "Otwiera projekt"
 
-#: ../src/brasero-project-manager.c:256
+#: ../src/brasero-project-manager.c:259
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
@@ -2550,7 +2550,7 @@ msgstr[0] "%d zaznaczony plik (%s)"
 msgstr[1] "%d zaznaczone pliki (%s)"
 msgstr[2] "%d zaznaczonych plików (%s)"
 
-#: ../src/brasero-project-manager.c:266
+#: ../src/brasero-project-manager.c:269
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
@@ -2558,7 +2558,7 @@ msgstr[0] "%d obsługiwany plik (%s)"
 msgstr[1] "%d obsługiwane pliki (%s)"
 msgstr[2] "%d obsługiwanych plików (%s)"
 
-#: ../src/brasero-project-manager.c:272
+#: ../src/brasero-project-manager.c:275
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
@@ -2566,7 +2566,7 @@ msgstr[0] "%d plik może zostać dodany (%s)"
 msgstr[1] "%d zaznaczone pliki mogą zostać dodane (%s)"
 msgstr[2] "%d zaznaczonych plików może zostać dodanych (%s)"
 
-#: ../src/brasero-project-manager.c:283
+#: ../src/brasero-project-manager.c:286
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
@@ -2574,7 +2574,7 @@ msgstr[0] "Żaden plik nie może zostać dodany (%i zaznaczony plik)"
 msgstr[1] "Żaden plik nie może zostać dodany (%i zaznaczone pliki)"
 msgstr[2] "Żaden plik nie może zostać dodany (%i zaznaczonych plików)"
 
-#: ../src/brasero-project-manager.c:288
+#: ../src/brasero-project-manager.c:291
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
@@ -2582,69 +2582,69 @@ msgstr[0] "Żaden plik nie jest obsługiwany (%i zaznaczony plik)"
 msgstr[1] "Żaden plik nie jest obsługiwany (%i zaznaczone pliki)"
 msgstr[2] "Żaden plik nie jest obsługiwany (%i zaznaczonych plików)"
 
-#: ../src/brasero-project-manager.c:294
-#: ../src/brasero-project-manager.c:360
+#: ../src/brasero-project-manager.c:297
+#: ../src/brasero-project-manager.c:407
 msgid "No file selected"
 msgstr "Żaden plik nie został wybrany"
 
-#: ../src/brasero-project-manager.c:578
+#: ../src/brasero-project-manager.c:614
 msgid "Brasero - New Audio Disc Project"
 msgstr "Brasero - Nowy projekt dźwiękowy"
 
-#: ../src/brasero-project-manager.c:592
+#: ../src/brasero-project-manager.c:628
 msgid "Brasero - New Data Disc Project"
 msgstr "Brasero - Nowy projekt danych"
 
-#: ../src/brasero-project-manager.c:606
+#: ../src/brasero-project-manager.c:642
 msgid "Brasero - New Video disc project"
 msgstr "Brasero - Nowy projekt wideo"
 
-#: ../src/brasero-project-manager.c:616
+#: ../src/brasero-project-manager.c:652
 msgid "Brasero - New Image File"
 msgstr "Brasero - Nowy plik obrazu"
 
-#: ../src/brasero-project-manager.c:627
+#: ../src/brasero-project-manager.c:663
 msgid "Brasero - Disc Copy"
 msgstr "Brasero - Kopiowanie płyty"
 
-#: ../src/brasero-project-manager.c:840
+#: ../src/brasero-project-manager.c:876
 #, c-format
 msgid "The project '%s' does not exist."
 msgstr "Projekt \"%s\" nie istnieje."
 
-#: ../src/brasero-project-manager.c:865
+#: ../src/brasero-project-manager.c:901
 msgid "Open Project"
 msgstr "Otwiera projekt"
 
-#: ../src/brasero-project-manager.c:965
+#: ../src/brasero-project-manager.c:1001
 msgid "New"
 msgstr "Nowy"
 
-#: ../src/brasero-project-manager.c:969
+#: ../src/brasero-project-manager.c:1005
 msgid "Open"
 msgstr "Otwórz"
 
-#: ../src/brasero-project-manager.c:1016
+#: ../src/brasero-project-manager.c:1052
 msgid "Browse the file system"
 msgstr "Przeglądanie systemu plików"
 
-#: ../src/brasero-project-manager.c:1017
+#: ../src/brasero-project-manager.c:1053
 msgid "Display File Browser"
 msgstr "Wyświetla przeglądarkę plików"
 
-#: ../src/brasero-project-manager.c:1040
+#: ../src/brasero-project-manager.c:1076
 msgid "Search files using keywords"
 msgstr "Wyszukiwanie plików używając słów kluczowych"
 
-#: ../src/brasero-project-manager.c:1041
+#: ../src/brasero-project-manager.c:1077
 msgid "Display Search"
 msgstr "Wyświetlanie wyszukiwania"
 
-#: ../src/brasero-project-manager.c:1061
+#: ../src/brasero-project-manager.c:1097
 msgid "Display playlists and their contents"
 msgstr "Wyświetlanie list odtwarzania i ich zawartości"
 
-#: ../src/brasero-project-manager.c:1062
+#: ../src/brasero-project-manager.c:1098
 msgid "Display Playlists"
 msgstr "Wyświetlanie listy odtwarzania"
 
@@ -3084,20 +3084,19 @@ msgstr "operacja nie jest obsługiwana"
 msgid "internal error in plugin system"
 msgstr "wewnętrzny błąd wtyczek"
 
-#: ../src/burn-iso9660.c:143
-#: ../src/burn-iso9660.c:152
+#: ../src/burn-iso9660.c:149
+#: ../src/burn-iso9660.c:158
 #, c-format
 msgid "it does not appear to be a primary volume descriptor"
 msgstr "to nie wygląda na główny deskryptor woluminu"
 
-#: ../src/burn-iso9660.c:320
+#: ../src/burn-iso9660.c:391
 #, c-format
 msgid "invalid directory record"
 msgstr "nieprawidłowy zapis katalogu"
 
-#: ../src/burn-iso9660.c:332
-#: ../src/burn-iso9660.c:384
-#: ../src/burn-iso9660.c:440
+#: ../src/burn-iso9660.c:406
+#: ../src/burn-iso9660.c:453
 #, c-format
 msgid "file name is too long"
 msgstr "nazwa pliku jest zbyt długa"
@@ -3973,7 +3972,7 @@ msgstr "Kopiowanie lokalne \"%s\""
 
 #: ../src/plugins/local-track/burn-local-image.c:220
 #: ../src/plugins/local-track/burn-local-image.c:300
-#: ../src/brasero-io.c:1964
+#: ../src/brasero-io.c:1988
 #, c-format
 msgid "a directory couldn't be created (%s)"
 msgstr "katalog nie może zostać utworzony (%s)"
@@ -4363,13 +4362,13 @@ msgstr "nie można ustalić rozmiaru (%s)"
 msgid "size can't be retrieved for %s: %s"
 msgstr "nie można ustalić rozmiaru dla %s:%s"
 
-#: ../src/brasero-data-session.c:128
-#: ../src/brasero-data-session.c:141
+#: ../src/brasero-data-session.c:131
+#: ../src/brasero-data-session.c:144
 #, c-format
 msgid "there isn't any available session on the disc"
 msgstr "brak dostępnej sesji na płycie"
 
-#: ../src/brasero-data-session.c:164
+#: ../src/brasero-data-session.c:167
 #, c-format
 msgid "unknown volume type"
 msgstr "nieznany rodzaj woluminu"
@@ -4560,13 +4559,13 @@ msgstr "<b>Opcje filtrowania</b>"
 msgid "\"%s\" cannot be read"
 msgstr "Nie można odczytać \"%s\""
 
-#: ../src/brasero-io.c:791
-#: ../src/brasero-io.c:1617
+#: ../src/brasero-io.c:809
+#: ../src/brasero-io.c:1641
 #, c-format
 msgid "recursive symbolic link"
 msgstr "rekursywne dowiązanie symboliczne"
 
-#: ../src/brasero-io.c:987
+#: ../src/brasero-io.c:1006
 #, c-format
 msgid "the file doesn't appear to be a playlist"
 msgstr "to nie wygląda na listę odtwarzania"
@@ -4673,48 +4672,48 @@ msgstr "plik %s nie mógł zostać odczytany (%s)"
 msgid "the md5 file couldn't be written to (%s)"
 msgstr "plik md5 nie może zostać zapisany na (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:537
+#: ../src/plugins/checksum/burn-checksum-files.c:540
 #, c-format
 msgid "md5 file couldn't be opened (%s)"
 msgstr "Plik md5 nie mógł zostać otwarty (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:564
+#: ../src/plugins/checksum/burn-checksum-files.c:567
 msgid "Creating checksum for image files"
 msgstr "Tworzenie sum kontrolnych dla plików obrazów"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:721
+#: ../src/plugins/checksum/burn-checksum-files.c:724
 msgid "Checking file integrity"
 msgstr "Sprawdzanie spójności plików"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:861
-#: ../src/plugins/checksum/burn-checksum-files.c:977
+#: ../src/plugins/checksum/burn-checksum-files.c:864
+#: ../src/plugins/checksum/burn-checksum-files.c:980
 #: ../src/plugins/checksum/burn-checksum-image.c:489
 #, c-format
 msgid "some files may be corrupted on the disc"
 msgstr "Niektóre pliki na płycie mogą być uszkodzone"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1212
+#: ../src/plugins/checksum/burn-checksum-files.c:1215
 msgid "allows to check file integrities on a disc"
 msgstr ""
 "Pozwala na sprawdzanie spójności danych \n"
 "na płycie"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1250
+#: ../src/plugins/checksum/burn-checksum-files.c:1253
 #: ../src/plugins/checksum/burn-checksum-image.c:718
 msgid "Hashing algorithm to be used:"
 msgstr "Wybór algorytmu do hashowania:"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1253
+#: ../src/plugins/checksum/burn-checksum-files.c:1256
 #: ../src/plugins/checksum/burn-checksum-image.c:721
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1255
+#: ../src/plugins/checksum/burn-checksum-files.c:1258
 #: ../src/plugins/checksum/burn-checksum-image.c:723
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1257
+#: ../src/plugins/checksum/burn-checksum-files.c:1260
 #: ../src/plugins/checksum/burn-checksum-image.c:725
 msgid "SHA256"
 msgstr "SHA256"
