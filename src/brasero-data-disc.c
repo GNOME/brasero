@@ -1118,6 +1118,10 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
 
+ 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_SIZE);
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_LOADING);
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+
 	brasero_file_filtered_clear (BRASERO_FILE_FILTERED (priv->filter));
 	brasero_disc_size_changed (disc, 0);
 
