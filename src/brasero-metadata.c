@@ -83,6 +83,9 @@ struct BraseroMetadataPrivate {
 	GMutex *mutex;
 	GCond *cond;
 
+	/* Used by threads */
+	GMutex *lock;
+
 	guint started:1;
 	guint moved_forward:1;
 	guint prev_level_mes:1;
@@ -1477,6 +1480,51 @@ brasero_metadata_get_info_async (BraseroMetadata *self,
 }
 
 void
+brasero_metadata_lock (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+	g_mutex_lock (priv->lock);
+}
+
+void
+brasero_metadata_unlock (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+	g_mutex_unlock (priv->lock);
+}
+
+gboolean
+brasero_metadata_try_lock (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+	return g_mutex_trylock (priv->lock);
+}
+
+const gchar *
+brasero_metadata_get_uri (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+	return priv->info?priv->info->uri:NULL;
+}
+
+BraseroMetadataFlag
+brasero_metadata_get_flags (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+	return priv->flags;
+}
+
+void
 brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 			    BraseroMetadataInfo *src)
 {
@@ -1556,6 +1604,7 @@ brasero_metadata_init (BraseroMetadata *obj)
 
 	priv->cond = g_cond_new ();
 	priv->mutex = g_mutex_new ();
+	priv->lock = g_mutex_new ();
 }
 
 static void
@@ -1600,6 +1649,11 @@ brasero_metadata_finalize (GObject *object)
 	if (priv->cond) {
 		g_cond_free (priv->cond);
 		priv->cond = NULL;
+	}
+
+	if (priv->lock) {
+		g_mutex_free (priv->lock);
+		priv->lock = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

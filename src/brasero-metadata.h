@@ -107,25 +107,33 @@ void
 brasero_metadata_cancel (BraseroMetadata *metadata);
 
 gboolean
-brasero_metadata_get_info_wait (BraseroMetadata *self,
+brasero_metadata_get_info_wait (BraseroMetadata *metadata,
 				GCancellable *cancel,
 				const gchar *uri,
 				BraseroMetadataFlag flags,
 				GError **error);
 
 gboolean
-brasero_metadata_get_info_sync (BraseroMetadata *meta,
-				const gchar *uri,
-				BraseroMetadataFlag flags,
-				GError **error);
-
-gboolean
-brasero_metadata_get_info_async (BraseroMetadata *meta,
+brasero_metadata_get_info_async (BraseroMetadata *metadata,
 				 const gchar *uri,
 				 BraseroMetadataFlag flags);
+void
+brasero_metadata_lock (BraseroMetadata *metadata);
+
+void
+brasero_metadata_unlock (BraseroMetadata *metadata);
 
 gboolean
-brasero_metadata_set_info (BraseroMetadata *meta,
+brasero_metadata_try_lock (BraseroMetadata *metadata);
+
+const gchar *
+brasero_metadata_get_uri (BraseroMetadata *metadata);
+
+BraseroMetadataFlag
+brasero_metadata_get_flags (BraseroMetadata *metadata);
+
+gboolean
+brasero_metadata_set_info (BraseroMetadata *metadata,
 			   BraseroMetadataInfo *info);
 
 #endif				/* METADATA_H */

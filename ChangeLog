@@ -1,5 +1,18 @@
 2008-08-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	If there are 2 or more requests at the same time to retrieve metadata
+	for the same URI with the same flags, then just use one metadata object
+	search for all of them
+
+	* src/brasero-io.c (brasero_io_get_metadata_info):
+	* src/brasero-metadata.c (brasero_metadata_lock),
+	(brasero_metadata_unlock), (brasero_metadata_try_lock),
+	(brasero_metadata_get_uri), (brasero_metadata_get_flags),
+	(brasero_metadata_init), (brasero_metadata_finalize):
+	* src/brasero-metadata.h:
+
+2008-08-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Small warning
 
 	* src/brasero-player.c (brasero_player_set_length):

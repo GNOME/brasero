@@ -57,6 +57,7 @@ struct _BraseroIOPrivate
 
 	/* used for metadata */
 	GSList *metadatas;
+	GSList *metadata_running;
 
 	/* used to "buffer" some results returned by metadata.
 	 * It takes time to return metadata and it's not unusual
@@ -644,6 +645,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	BraseroIOPrivate *priv;
 	const gchar *mime;
 	gboolean result;
+	GSList *iter;
 	GList *node;
 
 	if (g_cancellable_is_cancelled (cancel))
@@ -662,6 +664,38 @@ brasero_io_get_metadata_info (BraseroIO *self,
 
 	g_mutex_lock (priv->lock);
 
+	/* First see if a metadata is running with the same uri and the same
+	 * flags as us. In this case, acquire the lock and wait for the lock
+	 * to become available which will mean that it has finished
+	 * NOTE: since we will hold the lock another thread waiting to get 
+	 * an available metadata won't be able to have this one. */
+	for (iter = priv->metadata_running; iter; iter = iter->next) {
+		const gchar *metadata_uri;
+		BraseroMetadata *metadata_iter;
+		BraseroMetadataFlag metadata_flags;
+
+		metadata_iter = iter->data;
+		metadata_uri = brasero_metadata_get_uri (metadata_iter);
+		metadata_flags = brasero_metadata_get_flags (metadata_iter);
+
+		if (((flags & metadata_flags) == flags)
+		&&  !strcmp (uri, metadata_uri)) {
+			/* Found one: release the IO lock to let other threads
+			 * do what they need to do then lock the metadata lock
+			 * Let the thread that got the lock first move it back
+			 * to waiting queue */
+			BRASERO_BURN_LOG ("Already ongoing search for %s", uri);
+
+			metadata = metadata_iter;
+
+			g_mutex_unlock (priv->lock);
+			brasero_metadata_lock (metadata);
+			result = brasero_metadata_set_info (metadata, meta_info);
+			brasero_metadata_unlock (metadata);
+
+			return result;
+		}
+	}
 	/* Seek in the buffer if we have already explored these metadata. Check 
 	 * the info last modified time in case a result should be updated. */
 	node = g_queue_find_custom (priv->meta_buffer,
@@ -705,9 +739,16 @@ brasero_io_get_metadata_info (BraseroIO *self,
 			return FALSE;
 		}
 
-		if (priv->metadatas) {
-			metadata = priv->metadatas->data;
-			priv->metadatas = g_slist_remove (priv->metadatas, metadata);
+		for (iter = priv->metadatas; iter; iter = iter->next) {
+			BraseroMetadata *metadata_iter;
+
+			metadata_iter = iter->data;
+			if (brasero_metadata_try_lock (metadata_iter)) {
+				metadata = priv->metadatas->data;
+				priv->metadatas = g_slist_remove (priv->metadatas, metadata);
+				priv->metadata_running = g_slist_prepend (priv->metadata_running, metadata);
+				break;
+			}
 		}
 
 		g_mutex_unlock (priv->lock);
@@ -726,6 +767,11 @@ brasero_io_get_metadata_info (BraseroIO *self,
 	brasero_metadata_set_info (metadata, meta_info);
 
 	g_mutex_lock (priv->lock);
+
+	/* release the lock on the metadata in case another thread is waiting 
+	 * for this search result. That way that thread will be able to wake
+	 * up. */
+	brasero_metadata_unlock (metadata);
 
 	if (result) {
 		/* see if we should add it to the buffer */
@@ -746,6 +792,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		}
 	}
 
+	priv->metadata_running = g_slist_remove (priv->metadata_running, metadata);
 	priv->metadatas = g_slist_prepend (priv->metadatas, metadata);
 
 	g_mutex_unlock (priv->lock);
