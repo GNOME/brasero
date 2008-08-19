@@ -298,7 +298,7 @@ brasero_player_range_value_changed (GtkRange *range,
 static void
 brasero_player_set_length (BraseroPlayer *player)
 {
-	if (player->priv->progress)
+	if (player->priv->progress && player->priv->end - player->priv->start != 0)
 		gtk_range_set_range (GTK_RANGE (player->priv->progress),
 				     0.0,
 				     (gdouble) player->priv->end - player->priv->start);
