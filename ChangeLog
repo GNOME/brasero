@@ -1,5 +1,12 @@
 2008-08-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix large memleak in metadata retrieval
+
+	* src/brasero-metadata.c (brasero_metadata_create_audio_pipeline),
+	(brasero_metadata_create_pipeline):
+
+2008-08-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	If there are 2 or more requests at the same time to retrieve metadata
 	for the same URI with the same flags, then just use one metadata object
 	search for all of them

@@ -1053,6 +1053,11 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 	/* set up the pipeline according to flags */
 	if (priv->flags & BRASERO_METADATA_FLAG_SILENCES) {
 		priv->prev_level_mes = 0;
+
+		/* Add a reference to these objects as we want to keep them
+		 * around after the bin they've been added to is destroyed
+		 * NOTE: now we destroy the pipeline every time which means
+		 * that it doesn't really matter. */
 		gst_object_ref (priv->convert);
 		gst_object_ref (priv->level);
 		gst_object_ref (priv->sink);
@@ -1243,7 +1248,6 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 					   "Can't create audioconvert");
 		return FALSE;
 	}
-	gst_object_ref (priv->convert);
 
 	priv->level = gst_element_factory_make ("level", NULL);
 	if (!priv->level) {
@@ -1252,7 +1256,6 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 					   "Can't create level");
 		return FALSE;
 	}
-	gst_object_ref (priv->level);
 	g_object_set (priv->level,
 		      "message", TRUE,
 		      "interval", (guint64) BRASERO_METADATA_SILENCE_INTERVAL,
@@ -1265,7 +1268,6 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 					   "Can't create fake sink");
 		return FALSE;
 	}
-	gst_object_ref (priv->sink);
 
 	return TRUE;
 }
