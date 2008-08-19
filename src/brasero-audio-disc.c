@@ -1483,6 +1483,7 @@ brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 
 	brasero_audio_disc_increase_activity_counter (disc);
 
+	/* we have to pass a dummy value here otherwise finished is never called */
 	brasero_io_load_directory (disc->priv->io,
 				   uri,
 				   disc->priv->add_dir,
@@ -1491,7 +1492,7 @@ brasero_audio_disc_visit_dir_async (BraseroAudioDisc *disc,
 				   BRASERO_IO_INFO_METADATA|
 				   BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				   BRASERO_IO_INFO_RECURSIVE,
-				   NULL);
+				   disc);
 	return BRASERO_DISC_OK;
 }
 
