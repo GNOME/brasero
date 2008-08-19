@@ -1503,16 +1503,11 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 		return;
 	}
 
-	/* Just for the record, file chooser creation uses all GtkResponseType
-	 * that are already defined for internal use like GTK_RESPONSE_OK,
-	 * *_APPLY and so on (usually to open directories, not add them). So we
-	 * have to define on custom here. */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	project->priv->chooser = gtk_file_chooser_dialog_new (_("Select Files"),
 							      GTK_WINDOW (toplevel),
 							      GTK_FILE_CHOOSER_ACTION_OPEN,
 							      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-							      GTK_STOCK_ADD, BRASERO_RESPONSE_ADD,
 							      NULL);
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (project->priv->chooser), TRUE);
@@ -1522,10 +1517,14 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 
 	/* This is to work around a bug in GTK+ which doesn't want to add "Add"
 	 * button or anything that is not "Open" or "Cancel" buttons */
-/*	gtk_dialog_add_button (GTK_DIALOG (project->priv->chooser),
+	/* Just for the record, file chooser creation uses all GtkResponseType
+	 * that are already defined for internal use like GTK_RESPONSE_OK,
+	 * *_APPLY and so on (usually to open directories, not add them). So we
+	 * have to define on custom here. */
+	gtk_dialog_add_button (GTK_DIALOG (project->priv->chooser),
 			       GTK_STOCK_ADD,
-			       666);
-*/
+			       BRASERO_RESPONSE_ADD);
+
 	g_signal_connect (project->priv->chooser,
 			  "file-activated",
 			  G_CALLBACK (brasero_project_file_chooser_activated_cb),
