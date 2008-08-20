@@ -1236,12 +1236,11 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 		if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) != BRASERO_BURN_OK)
 			brasero_dest_selection_set_image_properties (self);
 
-		return;
+		/* carry on with the next function that'll check if we have a
+		 * valid source medium and put the burn button in the right 
+		 * state */
 	}
 
-	/* NOTE: that can't happen if we are going to write to an image since
-	 * that would mean we are changing the image format (something we don't
-	 * do). So it has to be when we write to a drive */
 	brasero_dest_selection_set_drive_properties (self);
 }
 
