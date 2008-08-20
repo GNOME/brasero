@@ -104,6 +104,7 @@ static const GOptionEntry options [] = {
 	  N_("Copy a disc"),
 	  NULL },
 
+	/* FIXME: last argument should be defined */
 	{ "image", 'i', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &iso_uri,
 	 N_("Uri of an image file to be burnt (autodetected)"),
           NULL },
