@@ -1,6 +1,16 @@
 2008-08-20  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix for #538978 – copy CD/DVD button disabled in Brasero
+	plus some debugging changes
+
+	* src/burn-caps.c (brasero_caps_image_new),
+	(brasero_caps_audio_new), (brasero_caps_data_new),
+	(brasero_caps_create_links):
+	* src/burn-plugin-manager.c (brasero_plugin_manager_init):
+
+2008-08-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for #538978 – copy CD/DVD button disabled in Brasero
 	Comment #17 (original bug report)
 
 	* src/brasero-dest-selection.c

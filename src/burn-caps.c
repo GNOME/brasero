@@ -2856,7 +2856,7 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_IMAGE,
 					 format,
 					 flags,
-					 "Creating new caps");
+					 "New caps required");
 
 	self = brasero_burn_caps_get_default ();
 
@@ -2903,18 +2903,20 @@ brasero_caps_image_new (BraseroPluginIOFlag flags,
 	 * existing caps have the proper IO Flags */
 	retval = brasero_caps_list_check_io (retval, flags);
 
-	if (remaining_format != BRASERO_IMAGE_FORMAT_NONE){
+	if (remaining_format != BRASERO_IMAGE_FORMAT_NONE) {
 		BraseroCaps *caps;
 
 		caps = g_new0 (BraseroCaps, 1);
 		caps->flags = flags;
-		caps->type.subtype.img_format = format;
+		caps->type.subtype.img_format = remaining_format;
 		caps->type.type = BRASERO_TRACK_TYPE_IMAGE;
 
 		self->priv->caps_list = g_slist_insert_sorted (self->priv->caps_list,
 							       caps,
 							       brasero_burn_caps_sort);
 		retval = g_slist_prepend (retval, caps);
+
+		BRASERO_BURN_LOG_TYPE (&caps->type, "Created new caps");
 	}
 
 	return retval;
@@ -2933,7 +2935,7 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_AUDIO,
 					 format,
 					 flags,
-					 "Creating new caps");
+					 "New caps required");
 
 	self = brasero_burn_caps_get_default ();
 
@@ -3011,6 +3013,8 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 							       caps,
 							       brasero_burn_caps_sort);
 		retval = g_slist_prepend (retval, caps);
+
+		BRASERO_BURN_LOG_TYPE (&caps->type, "Created new caps");
 	}
 
 	g_slist_free (encompassing);
@@ -3029,7 +3033,7 @@ brasero_caps_data_new (BraseroImageFS fs_type)
 	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DATA,
 					 fs_type,
 					 BRASERO_PLUGIN_IO_NONE,
-					 "Creating new caps");
+					 "New caps required");
 	self = brasero_burn_caps_get_default ();
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
@@ -3388,6 +3392,15 @@ brasero_caps_create_links (BraseroCaps *output,
 			BRASERO_BURN_LOG ("Recursive link");
 
 		link = brasero_caps_find_link_for_input (output, input);
+
+#if 0
+
+		/* Mainly for extra debugging */
+		BRASERO_BURN_LOG_TYPE (&output->type, "Linking");
+		BRASERO_BURN_LOG_TYPE (&input->type, "to");
+		BRASERO_BURN_LOG ("with %s", brasero_plugin_get_name (plugin));
+
+#endif
 
 		if (!link) {
 			link = g_new0 (BraseroCapsLink, 1);

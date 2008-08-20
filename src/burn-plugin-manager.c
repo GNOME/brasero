@@ -337,9 +337,28 @@ static void
 brasero_plugin_manager_init (BraseroPluginManager *self)
 {
 	guint i = 0;
-	const gchar *name [] = {"libbrasero-dvdrwformat.so",
-				"libbrasero-growisofs.so",
+	const gchar *name [] = {
+				"libbrasero-transcode.so",
+				"libbrasero-checksum.so",
+				"libbrasero-dvdcss.so",
+				"libbrasero-checksum-file.so",
+				"libbrasero-local-track.so",
+				"libbrasero-toc2cue.so",
+				"libbrasero-wodim.so",
 				"libbrasero-readom.so",
+				"libbrasero-dvdrwformat.so",
+				"libbrasero-genisoimage.so",
+				"libbrasero-mkisofs.so",
+				//"libbrasero-normalize.so",
+				"libbrasero-cdrdao.so",
+				//"libbrasero-readcd.so",
+				//"libbrasero-cdrecord.so",
+				"libbrasero-growisofs.so",
+				//"libbrasero-libburn.so",
+				//"libbrasero-libisofs.so",
+				//"libbrasero-vcdimager.so",
+				//"libbrasero-dvdauthor.so",
+				//"libbrasero-vob.so"
 				NULL};
 	BraseroPluginManagerPrivate *priv;
 
