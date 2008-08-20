@@ -777,7 +777,7 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 gchar *
 brasero_file_node_get_uri_name (const gchar *uri)
 {
-	gchar *unescaped_name;
+	gchar *utf8_name;
 	GFile *vfs_uri;
 	gchar *name;
 
@@ -787,18 +787,18 @@ brasero_file_node_get_uri_name (const gchar *uri)
 	name = g_file_get_basename (vfs_uri);
 	g_object_unref (vfs_uri);
 
-	unescaped_name = g_uri_unescape_string (name, NULL);
-	g_free (name);
+	/* NOTE and reminder names are already unescaped; the following is not
+	 * needed: unescaped_name = g_uri_unescape_string (name, NULL); */
 
 	/* NOTE: a graft should be added for non utf8 name since we
 	 * modify them; in fact we use this function only in the next
 	 * one which creates only grafted nodes. */
-	name = brasero_file_node_validate_utf8_name (unescaped_name);
-	if (name) {
-		g_free (unescaped_name);
-		return name;
+	utf8_name = brasero_file_node_validate_utf8_name (name);
+	if (utf8_name) {
+		g_free (name);
+		return utf8_name;
 	}
-	return unescaped_name;
+	return name;
 }
 
 BraseroFileNode *

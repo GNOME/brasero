@@ -727,7 +727,6 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 	if (!node->is_reloading) {
 		gchar *name;
 		GFile *vfs_uri;
-		gchar *unescaped_name;
 
 		/* g_path_get_basename is not comfortable with uri related
 		 * to the root directory so check that before */
@@ -735,9 +734,10 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 		name = g_file_get_basename (vfs_uri);
 		g_object_unref (vfs_uri);
 
-		unescaped_name = g_uri_unescape_string (name, NULL);
-		g_free (name);
-		name = unescaped_name;
+
+		/* NOTE and reminder names are already unescaped; the following
+		 * is not needed: unescaped_name = g_uri_unescape_string (name,
+		 * NULL); */
 
 		if (!name)
 			return TRUE;
