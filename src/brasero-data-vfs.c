@@ -619,7 +619,10 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 
 			reference = GPOINTER_TO_INT (iter->data);
 			node = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
-			brasero_data_project_remove_node (BRASERO_DATA_PROJECT (self), node);
+
+			/* the node could have been removed in the mean time */
+			if (node)
+				brasero_data_project_remove_node (BRASERO_DATA_PROJECT (self), node);
 		}
 
 		return;
