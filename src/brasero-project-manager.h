@@ -33,6 +33,7 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkuimanager.h>
 
+#include "burn-medium.h"
 #include "brasero-project-type-chooser.h"
 
 G_BEGIN_DECLS
@@ -65,7 +66,8 @@ brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris);
 void
 brasero_project_manager_video (BraseroProjectManager *manager, GSList *uris);
 void
-brasero_project_manager_copy (BraseroProjectManager *manager);
+brasero_project_manager_copy (BraseroProjectManager *manager,
+			      const gchar *device);
 void
 brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri);
 

@@ -64,7 +64,7 @@ void
 brasero_drive_selection_lock (BraseroDriveSelection *selection,
 			      gboolean locked);
 
-void
+gboolean
 brasero_drive_selection_set_drive (BraseroDriveSelection *selection,
 				   BraseroDrive *drive);
 
@@ -83,7 +83,8 @@ brasero_drive_selection_set_image_path (BraseroDriveSelection *selection,
 					const gchar *path);
 
 void
-brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *selection);
+brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *selection,
+					   gboolean same_src_dest);
 
 void
 brasero_drive_selection_set_button (BraseroDriveSelection *selection,

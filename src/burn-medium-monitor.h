@@ -25,6 +25,8 @@
 
 #include <glib-object.h>
 
+#include "burn-drive.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_MEDIUM_MONITOR             (brasero_medium_monitor_get_type ())
@@ -67,6 +69,10 @@ typedef enum {
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 				  BraseroMediaType type);
+
+BraseroDrive *
+brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
+				  const gchar *device);
 
 G_END_DECLS
 

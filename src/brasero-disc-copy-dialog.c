@@ -79,6 +79,16 @@ brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self)
 	return priv->session;
 }
 
+gboolean
+brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
+				    BraseroDrive *drive)
+{
+	BraseroDiscCopyDialogPrivate *priv;
+
+	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
+	return brasero_drive_selection_set_drive (BRASERO_DRIVE_SELECTION (priv->source), drive);
+}
+
 static void
 brasero_disc_copy_dialog_set_burn_button_state (BraseroDiscCopyDialog *self,
 						gboolean valid)

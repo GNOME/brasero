@@ -59,7 +59,7 @@ GtkWidget* brasero_medium_selection_new (void);
 BraseroMedium *
 brasero_medium_selection_get_active (BraseroMediumSelection *self);
 
-void
+gboolean
 brasero_medium_selection_set_active (BraseroMediumSelection *self,
 				     BraseroMedium *medium);
 

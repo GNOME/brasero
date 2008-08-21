@@ -33,6 +33,7 @@
 #include <gtk/gtkdialog.h>
 
 #include "burn-session.h"
+#include "burn-drive.h"
 
 G_BEGIN_DECLS
 
@@ -58,6 +59,10 @@ brasero_disc_copy_dialog_new ();
 
 BraseroBurnSession *
 brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self);
+
+gboolean
+brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
+				    BraseroDrive *drive);
 
 G_END_DECLS
 

@@ -716,8 +716,18 @@ brasero_app_parse_options (BraseroApp *app)
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (app->contents));
 	}
 	else if (copy_project) {
+		gchar *device = NULL;
+
+		/* make sure there is only one file in the remaining list for
+		 * specifying the source device. It could be extended to let
+		 * the user specify the destination device as well */
+		if (files
+		&&  files [0] != NULL
+		&&  files [1] == NULL)
+			device = files [0];
+		
 		/* this can't combine with any other options */
-		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (app->contents));
+		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (app->contents), device);
 	}
 	else if (iso_uri) {
 		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, iso_uri);

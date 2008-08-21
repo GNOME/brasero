@@ -71,16 +71,17 @@ brasero_medium_selection_changed (GtkComboBox *box)
 			       0);
 }
 
-void
+gboolean
 brasero_medium_selection_set_active (BraseroMediumSelection *self,
 				     BraseroMedium *medium)
 {
+	gboolean result = FALSE;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
-		return;
+		return FALSE;
 
 	do {
 		BraseroMedium *iter_medium;
@@ -95,11 +96,14 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 			g_signal_emit (self,
 				       medium_selection_signals [MEDIUM_CHANGED],
 				       0);
+			result = TRUE;
 			break;
 		}
 
 		g_object_unref (iter_medium);
 	} while (gtk_tree_model_iter_next (model, &iter));
+
+	return result;
 }
 
 BraseroMedium *

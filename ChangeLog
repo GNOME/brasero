@@ -1,3 +1,42 @@
+2008-08-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for 548137 – Duplicate disc autorun action
+
+	* configure.in:
+	* data/Makefile.am:
+	* data/brasero-copy-medium.desktop.in.in:
+	* data/brasero-open-image.desktop.in.in:
+	* data/brasero-open-playlist.desktop.in.in:
+	* data/brasero-open-project.desktop.in.in:
+	* data/brasero.desktop.in.in:
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_source_changed),
+	(brasero_dest_selection_drive_changed),
+	(brasero_dest_selection_set_property):
+	* src/brasero-disc-copy-dialog.c
+	(brasero_disc_copy_dialog_set_drive):
+	* src/brasero-disc-copy-dialog.h:
+	* src/brasero-drive-info.c (brasero_drive_info_set_same_src_dest):
+	* src/brasero-drive-info.h:
+	* src/brasero-drive-selection.c
+	(brasero_drive_selection_drive_changed),
+	(brasero_drive_selection_drive_changed_cb),
+	(brasero_drive_selection_set_same_src_dest),
+	(brasero_drive_selection_set_drive):
+	* src/brasero-drive-selection.h:
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_set_active):
+	* src/brasero-medium-selection.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_copy_disc),
+	(brasero_project_manager_switch), (brasero_project_manager_copy):
+	* src/brasero-project-manager.h:
+	* src/brasero-src-selection.c
+	(brasero_src_selection_drive_changed):
+	* src/burn-medium-monitor.c (brasero_medium_monitor_get_drive):
+	* src/burn-medium-monitor.h:
+	* src/main.c (brasero_app_parse_options):
+
 2008-08-20  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix for #538978 – copy CD/DVD button disabled in Brasero

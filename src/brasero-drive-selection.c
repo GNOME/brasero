@@ -62,8 +62,7 @@ static GtkVBoxClass* parent_class = NULL;
 G_DEFINE_TYPE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_VBOX);
 
 static void
-brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
-					  BraseroDriveSelection *self)
+brasero_drive_selection_drive_changed (BraseroDriveSelection *self)
 {
 	BraseroDriveSelectionPrivate *priv;
 	BraseroMedium *medium;
@@ -111,6 +110,13 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 		g_object_unref (medium);
 }
 
+static void
+brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
+					  BraseroDriveSelection *self)
+{
+	brasero_drive_selection_drive_changed (self);
+}
+
 void
 brasero_drive_selection_set_image_path (BraseroDriveSelection *self,
 					const gchar *path)
@@ -122,15 +128,17 @@ brasero_drive_selection_set_image_path (BraseroDriveSelection *self,
 }
 
 void
-brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *self)
+brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *self,
+					   gboolean value)
 {
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info));
+	brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
+					      value);
 }
 
-void
+gboolean
 brasero_drive_selection_set_drive (BraseroDriveSelection *self,
 				   BraseroDrive *drive)
 {
@@ -139,10 +147,15 @@ brasero_drive_selection_set_drive (BraseroDriveSelection *self,
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 	if (priv->locked_drive)
-		return;
+		return FALSE;
 
 	medium = brasero_drive_get_medium (drive);
-	brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->selection), medium);
+	if (brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->selection), medium)) {
+		brasero_drive_selection_drive_changed (self);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 BraseroMedium *

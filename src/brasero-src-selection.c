@@ -57,7 +57,6 @@ brasero_src_selection_drive_changed (BraseroDriveSelection *selection,
 	BraseroSrcSelectionPrivate *priv;
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
-
 	if (!priv->session)
 		return;
 

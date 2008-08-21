@@ -57,6 +57,7 @@
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-io.h"
 #include "burn-caps.h"
+#include "burn-medium-monitor.h"
 
 #ifdef BUILD_SEARCH
 #include "brasero-search-beagle.h"
@@ -577,7 +578,8 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 }
 
 static void
-brasero_project_manager_burn_disc (BraseroProjectManager *manager)
+brasero_project_manager_copy_disc (BraseroProjectManager *manager,
+				   const gchar *device)
 {
 	BraseroBurnSession *session;
 	GtkResponseType result;
@@ -591,6 +593,19 @@ brasero_project_manager_burn_disc (BraseroProjectManager *manager)
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_widget_show (dialog);
+
+	/* if a device is specified then get the corresponding medium */
+	if (device) {
+		BraseroDrive *drive;
+		BraseroMediumMonitor *monitor;
+
+		monitor = brasero_medium_monitor_get_default ();
+		drive = brasero_medium_monitor_get_drive (monitor, device);
+		g_object_unref (monitor);
+
+		brasero_disc_copy_dialog_set_drive (BRASERO_DISC_COPY_DIALOG (dialog), drive);
+		g_object_unref (drive);
+	}
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (result != GTK_RESPONSE_OK) {
@@ -702,7 +717,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Disc Copy"));
 
-		brasero_project_manager_burn_disc (manager);
+		brasero_project_manager_copy_disc (manager, uri);
 	}
 }
 
@@ -781,9 +796,10 @@ brasero_project_manager_video (BraseroProjectManager *manager, GSList *uris)
 }
 
 void
-brasero_project_manager_copy (BraseroProjectManager *manager)
+brasero_project_manager_copy (BraseroProjectManager *manager,
+			      const gchar *device)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL, TRUE);
+	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, device, TRUE);
 }
 
 void

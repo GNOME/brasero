@@ -1230,6 +1230,9 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
+	brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (self),
+						   brasero_burn_session_same_src_dest_drive (priv->session));
+
 	if (brasero_burn_session_is_dest_file (priv->session)) {
 		/* check that if a path was set there may be none if there was
 		 * no disc inserted when the dialog was created. */
@@ -1330,7 +1333,7 @@ brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
 	brasero_burn_session_set_burner (priv->session, drive);
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session))
-		brasero_drive_selection_set_same_src_dest (selection);
+		brasero_drive_selection_set_same_src_dest (selection, TRUE);
 }
 
 static void
@@ -1471,9 +1474,10 @@ brasero_dest_selection_set_property (GObject *object,
 		if (drive)
 			g_object_unref (drive);
 
-		if (brasero_burn_session_same_src_dest_drive (priv->session))
-			brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (object));
-		else if (brasero_burn_session_is_dest_file (session))
+		brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (object),
+							   brasero_burn_session_same_src_dest_drive (priv->session));
+
+		if (brasero_burn_session_is_dest_file (session))
 			brasero_dest_selection_set_image_properties (BRASERO_DEST_SELECTION (object));
 		else
 			brasero_dest_selection_set_drive_properties (BRASERO_DEST_SELECTION (object));

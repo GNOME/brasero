@@ -55,15 +55,16 @@ GtkWidget *
 brasero_drive_info_new ();
 
 void
-brasero_drive_info_set_medium (BraseroDriveInfo *self,
+brasero_drive_info_set_medium (BraseroDriveInfo *info,
 			       BraseroMedium *medium);
 
 void
-brasero_drive_info_set_image_path (BraseroDriveInfo *self,
+brasero_drive_info_set_image_path (BraseroDriveInfo *info,
 				   const gchar *path);
 
 void
-brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self);
+brasero_drive_info_set_same_src_dest (BraseroDriveInfo *info,
+				      gboolean same_src_dest);
 
 G_END_DECLS
 

@@ -221,17 +221,25 @@ brasero_drive_info_set_image_path (BraseroDriveInfo *self,
 }
 
 void
-brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self)
+brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self,
+				      gboolean value)
 {
 	BraseroDriveInfoPrivate *priv;
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
 
-	/* This is to handle a special case when copying a media using same 
-	 * drive as source and destination */
-	gtk_widget_show (priv->warning);
-	gtk_widget_hide (priv->image_path);
-	gtk_widget_hide (priv->table);
+	if (value) {
+		/* This is to handle a special case when copying a media using
+		 * same drive as source and destination */
+		gtk_widget_show (priv->warning);
+		gtk_widget_hide (priv->image_path);
+		gtk_widget_hide (priv->table);
+	}
+	else {
+		gtk_widget_hide (priv->warning);
+		gtk_widget_show (priv->image_path);
+		gtk_widget_show (priv->table);
+	}
 }
 
 void

@@ -74,6 +74,31 @@ static guint medium_monitor_signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
 
+BraseroDrive *
+brasero_medium_monitor_get_drive (BraseroMediumMonitor *self,
+				  const gchar *device)
+{
+	GSList *iter;
+	BraseroMediumMonitorPrivate *priv;
+
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	for (iter = priv->media; iter; iter = iter->next) {
+		BraseroDrive *drive;
+		BraseroMedium *medium;
+		const gchar *drive_device;
+
+		medium = iter->data;
+		drive = brasero_medium_get_drive (medium);
+
+		drive_device = brasero_drive_get_device (drive);
+		if (drive_device && !strcmp (drive_device, device)) {
+			g_object_ref (drive);
+			return drive;
+		}
+	}
+
+	return NULL;
+}
 
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
