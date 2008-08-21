@@ -108,6 +108,7 @@ brasero_volume_source_read_device_handle (BraseroVolSrc *src,
 	BraseroScsiResult result;
 	BraseroScsiErrCode code;
 
+	BRASERO_BURN_LOG ("Reading with track mode %i", src->data_mode);
 	result = brasero_mmc1_read_block (src->data,
 					  TRUE,
 					  src->data_mode,
@@ -123,17 +124,21 @@ brasero_volume_source_read_device_handle (BraseroVolSrc *src,
 
 	/* Give it a last chance if the code is BRASERO_SCSI_INVALID_TRACK_MODE */
 	if (code == BRASERO_SCSI_INVALID_TRACK_MODE) {
-		BRASERO_BURN_LOG ("Wrong track mode autodetecting mode for block %i", src->position);
+		/* reset position */
+		src->position --;
+		BRASERO_BURN_LOG ("Wrong track mode autodetecting mode for block %i",
+				  src->position);
 
 		for (src->data_mode = BRASERO_SCSI_BLOCK_TYPE_CDDA;
 		     src->data_mode <= BRASERO_SCSI_BLOCK_TYPE_MODE2_FORM2;
 		     src->data_mode ++) {
+			BRASERO_BURN_LOG ("Re-trying with track mode %i", src->data_mode);
 			result = brasero_mmc1_read_block (src->data,
 							  TRUE,
 							  src->data_mode,
 							  BRASERO_SCSI_BLOCK_HEADER_NONE,
 							  BRASERO_SCSI_BLOCK_NO_SUBCHANNEL,
-							  src->position ++,
+							  src->position,
 							  blocks,
 							  (unsigned char *) buffer,
 							  blocks * ISO9660_BLOCK_SIZE,
@@ -142,7 +147,8 @@ brasero_volume_source_read_device_handle (BraseroVolSrc *src,
 			if (result == BRASERO_SCSI_OK)
 				return TRUE;
 
-			if (result != BRASERO_SCSI_INVALID_TRACK_MODE) {
+			if (code != BRASERO_SCSI_INVALID_TRACK_MODE) {
+				BRASERO_BURN_LOG ("Failed with error code %i", code);
 				src->data_mode = BRASERO_SCSI_BLOCK_TYPE_ANY;
 				break;
 			}
