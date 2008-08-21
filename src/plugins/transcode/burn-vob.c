@@ -965,6 +965,8 @@ brasero_vob_start (BraseroJob *job,
 					BRASERO_BURN_ACTION_ANALYSING,
 					_("Converting video file to MPEG2"),
 					FALSE);
+	brasero_job_start_progress (job, FALSE);
+
 	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
 
 	return BRASERO_BURN_OK;
