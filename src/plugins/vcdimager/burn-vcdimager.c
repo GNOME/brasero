@@ -46,6 +46,8 @@ BRASERO_PLUGIN_BOILERPLATE (BraseroVcdImager, brasero_vcd_imager, BRASERO_TYPE_P
 typedef struct _BraseroVcdImagerPrivate BraseroVcdImagerPrivate;
 struct _BraseroVcdImagerPrivate
 {
+	guint num_tracks;
+
 	guint svcd:1;
 };
 
@@ -57,6 +59,38 @@ static BraseroBurnResult
 brasero_vcd_imager_read_stdout (BraseroProcess *process,
 				const gchar *line)
 {
+	gint percent = 0;
+	guint track_num = 0;
+	BraseroVcdImagerPrivate *priv;
+
+	priv = BRASERO_VCD_IMAGER_PRIVATE (process);
+
+	if (sscanf (line, "#scan[track-%d]: %*d/%*d (%d)", &track_num, &percent) == 2) {
+		brasero_job_start_progress (BRASERO_JOB (process), FALSE);
+		brasero_job_set_progress (BRASERO_JOB (process),
+					  (gdouble) ((gdouble) percent) /
+					  100.0 /
+					  (gdouble) (priv->num_tracks + 1) +
+					  (gdouble) (track_num) /
+					  (gdouble) (priv->num_tracks + 1));
+	}
+	else if (sscanf (line, "#write[%*d/%*d]: %*d/%*d (%d)", &percent) == 1) {
+		gdouble progress;
+
+		/* NOTE: percent can be over 100% ???? */
+		brasero_job_start_progress (BRASERO_JOB (process), FALSE);
+		progress = (gdouble) ((gdouble) percent) /
+			   100.0 /
+			   (gdouble) (priv->num_tracks + 1) +
+			   (gdouble) (priv->num_tracks) /
+			   (gdouble) (priv->num_tracks + 1);
+
+		if (progress > 1.0)
+			progress = 1.0;
+
+		brasero_job_set_progress (BRASERO_JOB (process), progress);
+	}
+
 	return BRASERO_BURN_OK;
 }
 
@@ -64,9 +98,6 @@ static BraseroBurnResult
 brasero_vcd_imager_read_stderr (BraseroProcess *process,
 				const gchar *line)
 {
-	if (!strstr (line, ""))
-		return BRASERO_BURN_OK;
-
 	return BRASERO_BURN_OK;
 }
 
@@ -211,6 +242,7 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 
 	/* get all tracks */
 	brasero_job_get_tracks (BRASERO_JOB (process), &tracks);
+	priv->num_tracks = g_slist_length (tracks);
 	for (i = 0, iter = tracks; iter; iter = iter->next, i++) {
 		BraseroTrack *track;
 		gchar *video;
