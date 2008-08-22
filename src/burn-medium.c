@@ -52,14 +52,14 @@
 #include "burn-drive.h"
 
 const gchar *icons [] = { 	"iso-image-new",
-				"gnome-dev-cdrom",
-				"gnome-dev-disc-cdr",
-				"gnome-dev-disc-cdrw",
-				"gnome-dev-disc-dvdrom",
-				"gnome-dev-disc-dvdr",
-				"gnome-dev-disc-dvdrw",
-				"gnome-dev-disc-dvdr-plus",
-				"gnome-dev-disc-dvdram",
+				"media-optical-cd",
+				"media-optical-cd",
+				"media-optical-cd",
+				"media-optical-dvd",
+				"media-optical-dvd",
+				"media-optical-dvd",
+				"media-optical-dvd",
+				"media-optical-dvd",
 				NULL };
 const gchar *types [] = {	N_("file"),
 				N_("CDROM"),
