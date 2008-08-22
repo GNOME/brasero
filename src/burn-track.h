@@ -145,6 +145,12 @@ struct _BraseroTrackType {
 };
 typedef struct _BraseroTrackType BraseroTrackType;
 
+#define BRASERO_TRACK_TYPE_HAS_VIDEO(type_MACRO)				\
+	(((type_MACRO)->type == BRASERO_TRACK_TYPE_AUDIO) &&			\
+	 ((type_MACRO)->subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|	\
+						BRASERO_VIDEO_FORMAT_VCD|	\
+						BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
+
 gboolean
 brasero_track_type_equal (const BraseroTrackType *type_A,
 			  const BraseroTrackType *type_B);
