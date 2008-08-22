@@ -124,8 +124,13 @@ static BraseroBurnResult
 brasero_dvd_author_read_stderr (BraseroProcess *process,
 				const gchar *line)
 {
-	if (!strstr (line, ""))
-		return BRASERO_BURN_OK;
+	gint percent = 0;
+
+	if (sscanf (line, "STAT: fixing VOBU at %*s (%*d/%*d, %d%%)", &percent) == 1) {
+		brasero_job_start_progress (BRASERO_JOB (process), FALSE);
+		brasero_job_set_progress (BRASERO_JOB (process),
+					  (gdouble) ((gdouble) percent) / 100.0);
+	}
 
 	return BRASERO_BURN_OK;
 }
