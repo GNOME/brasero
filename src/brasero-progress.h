@@ -71,6 +71,12 @@ brasero_burn_progress_set_status (BraseroBurnProgress *progress,
 				  gint mb_isosize,
 				  gint mb_written,
 				  gint64 rate);
+void
+brasero_burn_progress_display_session_info (BraseroBurnProgress *progress,
+					    glong time,
+					    gint64 rate,
+					    gboolean is_DVD,
+					    gint mb_written);
 
 void
 brasero_burn_progress_set_action (BraseroBurnProgress *progress,

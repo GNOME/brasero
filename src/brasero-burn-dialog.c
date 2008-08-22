@@ -54,6 +54,7 @@
 #include "brasero-jacket-edit.h"
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-session.h"
 #include "burn-medium.h"
 #include "brasero-drive-selection.h"
@@ -92,7 +93,13 @@ struct BraseroBurnDialogPrivate {
 	GtkWidget *image;
 	BraseroTrayIcon *tray;
 
+	/* for our final statistics */
+	GTimer *total_time;
+	gint64 total_size;
+	GSList *rates;
+
 	guint is_writing:1;
+	guint is_creating_image:1;
 };
 
 #define TIMEOUT	10000
@@ -487,6 +494,8 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		hide = TRUE;
 	}
 
+	g_timer_stop (dialog->priv->total_time);
+
 	if (drive)
 		drive_name = brasero_drive_get_display_name (drive);
 	else
@@ -621,6 +630,8 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
 
+	g_timer_start (dialog->priv->total_time);
+
 	if (result != GTK_RESPONSE_OK)
 		return BRASERO_BURN_CANCEL;
 
@@ -645,6 +656,8 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
+
+	g_timer_stop (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
 
 	window = GTK_WINDOW (dialog);
 	message = gtk_message_dialog_new (window,
@@ -684,6 +697,8 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
+
+	g_timer_start (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
 
 	if (result == GTK_RESPONSE_ACCEPT)
 		return BRASERO_BURN_NEED_RELOAD;
@@ -757,6 +772,8 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 		hide = TRUE;
 	}
 
+	g_timer_stop (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
+
 	window = GTK_WINDOW (dialog);
 	message = gtk_message_dialog_new (window,
 					  GTK_DIALOG_DESTROY_WITH_PARENT|
@@ -786,6 +803,8 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
+
+	g_timer_start (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
 
 	if (result != GTK_RESPONSE_OK)
 		return BRASERO_BURN_CANCEL;
@@ -905,6 +924,10 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 	brasero_tray_icon_set_progress (BRASERO_TRAYICON (dialog->priv->tray),
 					task_progress,
 					remaining);
+
+	if (rate > 0 && dialog->priv->is_writing)
+		dialog->priv->rates = g_slist_prepend (dialog->priv->rates,
+						       GINT_TO_POINTER ((gint) rate));
 }
 
 static void
@@ -933,6 +956,8 @@ brasero_burn_dialog_progress_changed_cb (BraseroBurn *burn,
 						   task_progress,
 						   remaining,
 						   media);
+	if ((dialog->priv->is_writing || dialog->priv->is_creating_image) && isosize > 0)
+		dialog->priv->total_size = isosize;
 }
 
 static void
@@ -972,6 +997,7 @@ brasero_burn_dialog_action_changed_cb (BraseroBurn *burn,
 						 media);
 	}
 
+	dialog->priv->is_creating_image = (action == BRASERO_BURN_ACTION_CREATING_IMAGE);
 	dialog->priv->is_writing = is_writing;
 
 	brasero_burn_get_action_string (dialog->priv->burn, action, &string);
@@ -995,7 +1021,15 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	GtkWidget *message;
 	GtkWindow *window;
 	GtkWidget *button;
+	gboolean hide;
 	gint id;
+
+	if (!GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_show (GTK_WIDGET (dialog));
+		hide = TRUE;
+	}
+
+	g_timer_stop (dialog->priv->total_time);
 
 	window = GTK_WINDOW (dialog);
 	message = gtk_message_dialog_new (window,
@@ -1023,6 +1057,11 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
+
+	if (hide)
+		gtk_widget_hide (GTK_WIDGET (dialog));
+
+	g_timer_start (dialog->priv->total_time);
 
 	if (answer == GTK_RESPONSE_OK) {
 		if (id)
@@ -1143,6 +1182,16 @@ brasero_burn_dialog_finalize (GObject * object)
 	if (cobj->priv->session) {
 		g_object_unref (cobj->priv->session);
 		cobj->priv->session = NULL;
+	}
+
+	if (cobj->priv->total_time) {
+		g_timer_destroy (cobj->priv->total_time);
+		cobj->priv->total_time = NULL;
+	}
+
+	if (cobj->priv->rates) {
+		g_slist_free (cobj->priv->rates);
+		cobj->priv->rates = NULL;
 	}
 
 	g_free (cobj->priv);
@@ -1283,6 +1332,13 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 
 	brasero_tray_icon_set_action (BRASERO_TRAYICON (dialog->priv->tray),
 				      BRASERO_BURN_ACTION_NONE);
+
+	if (dialog->priv->total_time)
+		g_timer_destroy (dialog->priv->total_time);
+
+	dialog->priv->total_time = g_timer_new ();
+	g_timer_start (dialog->priv->total_time);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -1583,6 +1639,8 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 static void
 brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 {
+	gint64 rate;
+	GSList *iter;
 	BraseroMedia media;
 	BraseroDrive *drive;
 	gchar *primary = NULL;
@@ -1632,6 +1690,25 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	}
 
 	brasero_burn_dialog_activity_stop (dialog, primary);
+
+	/* show total required time and average speed */
+	rate = 0;
+	if (dialog->priv->rates) {
+		int num = 0;
+
+		for (iter = dialog->priv->rates; iter; iter = iter->data) {
+			rate += GPOINTER_TO_INT (iter->data);
+			num ++;
+		}
+		rate /= num;
+	}
+
+	brasero_burn_progress_display_session_info (BRASERO_BURN_PROGRESS (dialog->priv->progress),
+						    g_timer_elapsed (dialog->priv->total_time, NULL),
+						    rate,
+						    (media & BRASERO_MEDIUM_DVD),
+						    dialog->priv->total_size);
+
 
 	if (brasero_burn_session_get_input_type (dialog->priv->session, NULL) == BRASERO_TRACK_TYPE_AUDIO) {
 		GtkWidget *button;
@@ -1717,10 +1794,8 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 				 BraseroBurnResult result,
 				 GError *error)
 {
-	if (dialog->priv->burn) {
-		g_object_unref (dialog->priv->burn);
-		dialog->priv->burn = NULL;
-	}
+	if (dialog->priv->total_time)
+		g_timer_stop (dialog->priv->total_time);
 
 	brasero_burn_session_stop (dialog->priv->session);
 
@@ -1745,6 +1820,21 @@ brasero_burn_dialog_end_session (BraseroBurnDialog *dialog,
 		}
 
 		brasero_burn_dialog_notify_success (dialog);
+	}
+
+	if (dialog->priv->burn) {
+		g_object_unref (dialog->priv->burn);
+		dialog->priv->burn = NULL;
+	}
+
+	if (dialog->priv->rates) {
+		g_slist_free (dialog->priv->rates);
+		dialog->priv->rates = NULL;
+	}
+
+	if (dialog->priv->total_time) {
+		g_timer_destroy (dialog->priv->total_time);
+		dialog->priv->total_time = NULL;
 	}
 
 	return FALSE;

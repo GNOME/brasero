@@ -1,11 +1,27 @@
 2008-08-22  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Fix #548556 – Nagging about checking newly burned CDs
 
-	* src/brasero-burn-dialog.c (brasero_burn_dialog_notify_success):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_loss_warnings_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_progress_changed_real),
+	(brasero_burn_dialog_progress_changed_cb),
+	(brasero_burn_dialog_action_changed_cb),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_finalize),
+	(brasero_burn_dialog_setup_session),
+	(brasero_burn_dialog_notify_success),
+	(brasero_burn_dialog_end_session):
 	* src/brasero-progress.c
 	(brasero_burn_progress_display_session_info):
 	* src/brasero-progress.h:
+	* src/burn.c (brasero_burn_status):
+
+2008-08-22  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Add progress report to dvdauthor plugin
+
 	* src/plugins/dvdauthor/burn-dvdauthor.c
 	(brasero_dvd_author_read_stderr):
 

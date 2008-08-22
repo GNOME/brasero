@@ -1213,14 +1213,20 @@ brasero_burn_status (BraseroBurn *burn,
 	g_return_val_if_fail (BRASERO_BURN (burn), BRASERO_BURN_ERR);
 	
 	priv = BRASERO_BURN_PRIVATE (burn);
-	if (!priv->task || !brasero_task_is_running (priv->task))
+
+	if (!priv->task)
+		return BRASERO_BURN_NOT_READY;
+
+	if (isosize)
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
+							  NULL,
+							  isosize);
+
+	if (!brasero_task_is_running (priv->task))
 		return BRASERO_BURN_NOT_READY;
 
 	if (rate)
 		brasero_task_ctx_get_rate (BRASERO_TASK_CTX (priv->task), rate);
-
-	if (isosize)
-		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task), NULL, isosize);
 
 	if (written)
 		brasero_task_ctx_get_written (BRASERO_TASK_CTX (priv->task), written);

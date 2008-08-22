@@ -189,6 +189,108 @@ brasero_burn_progress_create_info (BraseroBurnProgress *obj)
 	gtk_widget_show_all (table);
 }
 
+void
+brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
+					    glong time,
+					    gint64 rate,
+					    gboolean is_DVD,
+					    gint written)
+{
+	GtkWidget *label;
+	GtkWidget *table;
+	int hrs, mn, sec;
+	gdouble speed;
+	gchar *text;
+
+	if (obj->priv->speed_time_info)
+		gtk_widget_destroy (obj->priv->speed_time_info);
+
+	table = gtk_table_new (2, 2, FALSE);
+	obj->priv->speed_time_info = table;
+	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
+
+	label = gtk_label_new (_("Total time:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
+	gtk_table_attach (GTK_TABLE (table), label,
+			  0,
+			  1,
+			  0,
+			  1, 
+			  GTK_EXPAND|GTK_FILL,
+			  GTK_EXPAND|GTK_FILL,
+			  0,
+			  0);
+
+	hrs = time / 3600;
+	time = ((int) time) % 3600;
+	mn = time / 60;
+	sec = ((int) time) % 60;
+
+	text = g_strdup_printf ("%02i:%02i:%02i", hrs, mn, sec);
+	obj->priv->time = gtk_label_new (text);
+	g_free (text);
+
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->time), 1.0, 1.0);
+	gtk_table_attach (GTK_TABLE (table), obj->priv->time,
+			  1,
+			  2,
+			  0,
+			  1, 
+			  GTK_FILL,
+			  GTK_FILL,
+			  0,
+			  0);
+	if (rate > 0) {
+		label = gtk_label_new (_("Average drive speed:"));
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
+		gtk_table_attach (GTK_TABLE (table), label,
+				  0,
+				  1,
+				  1,
+				  2, 
+				  GTK_EXPAND|GTK_FILL,
+				  GTK_EXPAND|GTK_FILL,
+				  0,
+				  0);
+
+		if (is_DVD)
+			speed = (gfloat) BRASERO_RATE_TO_SPEED_DVD (rate);
+		else
+			speed = (gfloat) BRASERO_RATE_TO_SPEED_CD (rate);
+
+		text = g_strdup_printf ("%"G_GINT64_FORMAT" KiB/s (%.1f x)", rate / 1024, speed);
+		obj->priv->speed = gtk_label_new (text);
+		g_free (text);
+
+		gtk_misc_set_alignment (GTK_MISC (obj->priv->speed), 1.0, 0.0);
+		gtk_table_attach (GTK_TABLE (table), obj->priv->speed,
+				  1,
+				  2,
+				  1,
+				  2, 
+				  GTK_FILL,
+				  GTK_FILL,
+				  0,
+				  0);
+	}
+
+	gtk_box_pack_start (GTK_BOX (obj), table, TRUE, TRUE, 20);
+	gtk_widget_show_all (table);
+
+	if (written > 1024 * 1024)
+		text = g_strdup_printf (_("%i MiB"), written / 1024 / 1024);
+	else if (written > 1024)
+		text = g_strdup_printf (_("%i kiB"), written / 1024);
+	else if (written > 0)
+		text = g_strdup_printf (_("%i bytes"), written);
+	else
+		return;
+
+	gtk_label_set_text (GTK_LABEL (obj->priv->bytes_written), text);
+	gtk_widget_show (obj->priv->bytes_written);
+	g_free (text);
+}
+
 static void
 brasero_burn_progress_set_property (GObject *object,
 				    guint property_id,
