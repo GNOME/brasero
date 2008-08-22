@@ -281,7 +281,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_box_set_spacing (GTK_BOX (object), 12);
 
 	priv->image = gtk_image_new ();
-	gtk_box_pack_start (GTK_BOX (object), priv->image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (object), priv->image, FALSE, FALSE, 0);
 	gtk_widget_show (priv->image);
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
