@@ -234,11 +234,13 @@ brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self,
 		gtk_widget_show (priv->warning);
 		gtk_widget_hide (priv->image_path);
 		gtk_widget_hide (priv->table);
+		gtk_widget_hide (priv->image);
 	}
 	else {
 		gtk_widget_hide (priv->warning);
 		gtk_widget_show (priv->image_path);
 		gtk_widget_show (priv->table);
+		gtk_widget_show (priv->image);
 	}
 }
 
@@ -250,7 +252,9 @@ brasero_drive_info_set_medium (BraseroDriveInfo *self,
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
 
+	gtk_widget_show (priv->image);
 	gtk_widget_hide (priv->warning);
+
 	if (medium && (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)) {
 		gtk_widget_show (priv->image_path);
 		gtk_widget_hide (priv->warning);
