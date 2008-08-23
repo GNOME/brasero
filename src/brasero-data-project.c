@@ -440,7 +440,7 @@ brasero_data_project_node_to_uri (BraseroDataProject *self,
 			break;
 
 		/* the + 1 is for the separator */
-		escaped_name = g_uri_escape_string (BRASERO_FILE_NODE_NAME (node), NULL, TRUE);
+		escaped_name = g_uri_escape_string (BRASERO_FILE_NODE_NAME (node), G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
 		uri_len += strlen (escaped_name) + 1;
 		list = g_slist_prepend (list, escaped_name);
 	}
@@ -3025,7 +3025,7 @@ brasero_data_project_file_added (BraseroFileMonitor *monitor,
 
 	/* get the new URI */
 	parent_uri = brasero_data_project_node_to_uri (BRASERO_DATA_PROJECT (monitor), parent);
-	escaped_name = g_uri_escape_string (name, NULL, TRUE);
+	escaped_name = g_uri_escape_string (name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
 	uri = g_strconcat (parent_uri, G_DIR_SEPARATOR_S, escaped_name, NULL);
 	g_free (escaped_name);
 	g_free (parent_uri);
@@ -3063,7 +3063,7 @@ brasero_data_project_file_update_URI (BraseroDataProject *self,
 	uri_node = graft->node;
 
 	/* get the new uri */
-	escaped_name = g_uri_escape_string (name, NULL, TRUE);
+	escaped_name = g_uri_escape_string (name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
 	uri = g_build_path (G_DIR_SEPARATOR_S, parent_uri, escaped_name, NULL);
 	g_free (escaped_name);
 
@@ -3139,7 +3139,7 @@ brasero_data_project_file_graft (BraseroDataProject *self,
 	parent = g_path_get_dirname (uri);
 	g_free (uri);
 
-	escaped_name = g_uri_escape_string (real_name, NULL, TRUE);
+	escaped_name = g_uri_escape_string (real_name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
 	uri = g_strconcat (parent, G_DIR_SEPARATOR_S, escaped_name, NULL);
 	g_free (escaped_name);
 	g_free (parent);

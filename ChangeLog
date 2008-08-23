@@ -1,5 +1,17 @@
 2008-08-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make brasero handles uris better by avoiding some escaping
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-data-project.c (brasero_data_project_node_to_uri),
+	(brasero_data_project_file_added),
+	(brasero_data_project_file_update_URI),
+	(brasero_data_project_file_graft):
+	* src/brasero-project.c (_read_graft_point), (_read_audio_track),
+	(_save_audio_track_xml), (_save_data_track_xml):
+
+2008-08-23  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a bug where some symlinks pointing to files were detected as looping
 
 	* src/brasero-data-vfs.c

@@ -1816,7 +1816,7 @@ _read_graft_point (xmlDocPtr project,
 			uri = xmlNodeListGetString (project,
 						    graft->xmlChildrenNode,
 						    1);
-			retval->uri = xmlURIUnescapeString ((char*) uri, 0, NULL);
+			retval->uri = g_uri_unescape_string ((char *)uri, NULL);
 			g_free (uri);
 			if (!retval->uri)
 				goto error;
@@ -1932,7 +1932,7 @@ _read_audio_track (xmlDocPtr project,
 				goto error;
 
 			song = g_new0 (BraseroDiscSong, 1);
-			song->uri = xmlURIUnescapeString ((gchar*) uri, 0, NULL);
+			song->uri = g_uri_unescape_string ((char *) uri, NULL);
 
 			/* to know if this info was set or not */
 			song->start = -1;
@@ -2390,7 +2390,7 @@ _save_audio_track_xml (xmlTextWriter *project,
 		gchar *end;
 
 		song = iter->data;
-		escaped = xmlURIEscapeStr ((xmlChar *) song->uri, NULL);
+		escaped = (unsigned char *) g_uri_escape_string (song->uri, NULL, FALSE);
 		success = xmlTextWriterWriteElement (project,
 						    (xmlChar *) "uri",
 						     escaped);
@@ -2460,7 +2460,7 @@ _save_data_track_xml (xmlTextWriter *project,
 		if (graft->uri) {
 			xmlChar *escaped;
 
-			escaped = xmlURIEscapeStr ((xmlChar *) graft->uri, NULL);
+			escaped = (unsigned char *) g_uri_escape_string (graft->uri, NULL, FALSE);
 			success = xmlTextWriterWriteElement (project, (xmlChar *) "uri", escaped);
 			g_free (escaped);
 			if (success < 0)
