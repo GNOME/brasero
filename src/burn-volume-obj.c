@@ -90,6 +90,9 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 
 		tmp = iter->data;
 		device_path = g_volume_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (!device_path)
+			continue;
+
 		BRASERO_BURN_LOG ("Found volume %s", device_path);
 		if (!strcmp (device_path, volume_path)) {
 			volume = tmp;
