@@ -1,5 +1,12 @@
 2008-08-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a bug where some symlinks pointing to files were detected as looping
+
+	* src/brasero-data-vfs.c
+	(brasero_data_vfs_directory_check_symlink_loop):
+
+2008-08-23  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #548985 – crash in Brasero Disc Burning:
 
 	* src/burn-volume-obj.c (brasero_volume_get_gvolume):

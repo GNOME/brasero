@@ -324,6 +324,10 @@ brasero_data_vfs_directory_check_symlink_loop (BraseroDataVFS *self,
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
+	/* Of course for a loop to exist, it must be a directory */
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY)
+		return FALSE;
+
 	target_uri = g_file_info_get_symlink_target (info);
 	if (!target_uri)
 		return FALSE;
