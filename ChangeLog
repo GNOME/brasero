@@ -1,5 +1,15 @@
 2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #548640 – HIdden Files filter is extremely slow
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_directory_load_result):
+	* src/brasero-file-filtered.c (brasero_file_filtered_update),
+	(brasero_file_filtered_add_real), (brasero_file_filtered_add_loop),
+	(brasero_file_filtered_add), (brasero_file_filtered_clear),
+	(brasero_file_filtered_finalize):
+
+2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix problem with URI handling in data project triggering various bugs
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_inotify_monitor_cb):

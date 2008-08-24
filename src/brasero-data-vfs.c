@@ -473,9 +473,7 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 
 		/* See if we are supposed to keep them */
 		if (status != BRASERO_DATA_VFS_RESTORED && priv->filter_hidden) {
-			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self),
-							  uri);
-
+			brasero_data_project_exclude_uri (BRASERO_DATA_PROJECT (self), uri);
 			if (status == BRASERO_DATA_VFS_NONE) {
 				/* Advertise only once this filtered URI */
 				g_signal_emit (self,

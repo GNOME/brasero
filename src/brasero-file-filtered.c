@@ -68,6 +68,14 @@ struct _BraseroFileFilteredPrivate
 	GtkWidget *tree;
 	GtkWidget *restore;
 	GtkWidget *options;
+
+	GSList *broken;
+	GSList *hidden;
+	GSList *recursive;
+	GSList *unreadable;
+
+	guint idle_id;
+
 	guint num;
 };
 
@@ -121,7 +129,8 @@ brasero_file_filtered_update (BraseroFileFiltered *self)
 
 	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
 
-	markup = brasero_file_filtered_get_label_text (priv->num, gtk_expander_get_expanded (GTK_EXPANDER (self)));
+	markup = brasero_file_filtered_get_label_text (priv->num,
+						       gtk_expander_get_expanded (GTK_EXPANDER (self)));
 	widget = gtk_expander_get_label_widget (GTK_EXPANDER (self));
 	gtk_label_set_markup_with_mnemonic (GTK_LABEL (widget), markup);
 	g_free (markup);
@@ -188,10 +197,10 @@ brasero_file_filtered_remove (BraseroFileFiltered *self,
 	brasero_file_filtered_update (self);
 }
 
-void
-brasero_file_filtered_add (BraseroFileFiltered *self,
-			   const gchar *uri,
-			   BraseroFilterStatus status)
+static void
+brasero_file_filtered_add_real (BraseroFileFiltered *self,
+				const gchar *uri,
+				BraseroFilterStatus status)
 {
 	gchar *labels [] = { N_("hidden file"),
 			     N_("unreadable file"),
@@ -216,7 +225,6 @@ brasero_file_filtered_add (BraseroFileFiltered *self,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 
-	unescaped_uri = g_uri_unescape_string (uri, NULL);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    STOCK_ID_COL, stock_id,
 			    UNESCAPED_URI_COL, unescaped_uri,
@@ -225,11 +233,113 @@ brasero_file_filtered_add (BraseroFileFiltered *self,
 			    STATUS_COL, status,
 			    ACTIVABLE_COL, (status != BRASERO_FILTER_UNREADABLE && status != BRASERO_FILTER_RECURSIVE_SYM),
 			    -1);
-	g_free (unescaped_uri);
+
+	priv->num ++;
+}
+
+static gboolean
+brasero_file_filtered_add_loop (gpointer data)
+{
+	GSList *iter;
+	BraseroFileFilteredPrivate *priv;
+	BraseroFileFiltered *self = BRASERO_FILE_FILTERED (data);
+
+	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+
+	for (iter = priv->hidden; iter; iter = iter->next) {
+		gchar *unescaped_uri;
+
+		unescaped_uri = iter->data;
+		brasero_file_filtered_add_real (self,
+						unescaped_uri,
+						BRASERO_FILTER_HIDDEN);
+		g_free (unescaped_uri);
+	}
+	g_slist_free (priv->hidden);
+	priv->hidden = NULL;
+
+	for (iter = priv->broken; iter; iter = iter->next) {
+		gchar *unescaped_uri;
+
+		unescaped_uri = iter->data;
+		brasero_file_filtered_add_real (self,
+						unescaped_uri,
+						BRASERO_FILTER_BROKEN_SYM);
+		g_free (unescaped_uri);
+	}
+	g_slist_free (priv->broken);
+	priv->broken = NULL;
+
+	for (iter = priv->recursive; iter; iter = iter->next) {
+		gchar *unescaped_uri;
+
+		unescaped_uri = iter->data;
+		brasero_file_filtered_add_real (self,
+						unescaped_uri,
+						BRASERO_FILTER_RECURSIVE_SYM);
+		g_free (unescaped_uri);
+	}
+	g_slist_free (priv->recursive);
+	priv->recursive = NULL;
+
+	for (iter = priv->unreadable; iter; iter = iter->next) {
+		gchar *unescaped_uri;
+
+		unescaped_uri = iter->data;
+		brasero_file_filtered_add_real (self,
+						unescaped_uri,
+						BRASERO_FILTER_UNREADABLE);
+		g_free (unescaped_uri);
+	}
+	g_slist_free (priv->unreadable);
+	priv->unreadable = NULL;
 
 	/* update label */
-	priv->num ++;
 	brasero_file_filtered_update (self);
+
+	priv->idle_id = 0;
+	return FALSE;
+}
+
+void
+brasero_file_filtered_add (BraseroFileFiltered *self,
+			   const gchar *uri,
+			   BraseroFilterStatus status)
+{
+	BraseroFileFilteredPrivate *priv;
+
+	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+
+	/* The idea here is to delay the introduction of each file in the tree
+	 * and the label update so as not slow down brasero too much */
+	switch (status) {
+	case BRASERO_FILTER_HIDDEN:
+		priv->hidden = g_slist_prepend (priv->hidden,
+						g_uri_unescape_string (uri, NULL));
+		break;
+
+	case BRASERO_FILTER_BROKEN_SYM:
+		priv->broken = g_slist_prepend (priv->broken,
+						g_uri_unescape_string (uri, NULL));
+		break;
+	case BRASERO_FILTER_RECURSIVE_SYM:
+		priv->recursive = g_slist_prepend (priv->recursive,
+						   g_uri_unescape_string (uri, NULL));
+		break;
+	case BRASERO_FILTER_UNREADABLE:
+		priv->unreadable = g_slist_prepend (priv->unreadable,
+						    g_uri_unescape_string (uri, NULL));
+		break;
+	case BRASERO_FILTER_NONE:
+	case BRASERO_FILTER_UNKNOWN:
+		default:
+		break;
+	}
+
+	if (!priv->idle_id)
+		priv->idle_id = g_timeout_add (1000,
+					       brasero_file_filtered_add_loop,
+					       self);
 }
 
 static void
@@ -315,6 +425,35 @@ brasero_file_filtered_clear (BraseroFileFiltered *self)
 	GtkTreeModel *model;
 
 	priv = BRASERO_FILE_FILTERED_PRIVATE (self);
+
+	if (priv->idle_id) {
+		g_source_remove (priv->idle_id);
+		priv->idle_id = 0;
+	}
+
+	if (priv->hidden) {
+		g_slist_foreach (priv->hidden, (GFunc) g_free, NULL);
+		g_slist_free (priv->hidden);
+		priv->hidden = NULL;
+	}
+
+	if (priv->broken) {
+		g_slist_foreach (priv->broken, (GFunc) g_free, NULL);
+		g_slist_free (priv->broken);
+		priv->broken = NULL;
+	}
+
+	if (priv->recursive) {
+		g_slist_foreach (priv->recursive, (GFunc) g_free, NULL);
+		g_slist_free (priv->recursive);
+		priv->recursive = NULL;
+	}
+
+	if (priv->unreadable) {
+		g_slist_foreach (priv->unreadable, (GFunc) g_free, NULL);
+		g_slist_free (priv->unreadable);
+		priv->unreadable = NULL;
+	}
 
 	priv->num = 0;
 
@@ -457,6 +596,39 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 static void
 brasero_file_filtered_finalize (GObject *object)
 {
+	BraseroFileFilteredPrivate *priv;
+
+	priv = BRASERO_FILE_FILTERED_PRIVATE (object);
+
+	if (priv->idle_id) {
+		g_source_remove (priv->idle_id);
+		priv->idle_id = 0;
+	}
+
+	if (priv->hidden) {
+		g_slist_foreach (priv->hidden, (GFunc) g_free, NULL);
+		g_slist_free (priv->hidden);
+		priv->hidden = NULL;
+	}
+
+	if (priv->broken) {
+		g_slist_foreach (priv->broken, (GFunc) g_free, NULL);
+		g_slist_free (priv->broken);
+		priv->broken = NULL;
+	}
+
+	if (priv->recursive) {
+		g_slist_foreach (priv->recursive, (GFunc) g_free, NULL);
+		g_slist_free (priv->recursive);
+		priv->recursive = NULL;
+	}
+
+	if (priv->unreadable) {
+		g_slist_foreach (priv->unreadable, (GFunc) g_free, NULL);
+		g_slist_free (priv->unreadable);
+		priv->unreadable = NULL;
+	}
+
 	G_OBJECT_CLASS (brasero_file_filtered_parent_class)->finalize (object);
 }
 
