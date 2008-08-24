@@ -55,7 +55,6 @@
 enum  {
 	STOCK_ID_COL,
 	UNESCAPED_URI_COL,
-	URI_COL,
 	TYPE_COL,
 	STATUS_COL,
 	ACTIVABLE_COL,
@@ -199,7 +198,7 @@ brasero_file_filtered_remove (BraseroFileFiltered *self,
 
 static void
 brasero_file_filtered_add_real (BraseroFileFiltered *self,
-				const gchar *uri,
+				const gchar *unescaped_uri,
 				BraseroFilterStatus status)
 {
 	gchar *labels [] = { N_("hidden file"),
@@ -209,7 +208,6 @@ brasero_file_filtered_add_real (BraseroFileFiltered *self,
 			     NULL };
 	BraseroFileFilteredPrivate *priv;
 	const gchar *stock_id;
-	gchar *unescaped_uri;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gchar *type;
@@ -228,7 +226,6 @@ brasero_file_filtered_add_real (BraseroFileFiltered *self,
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    STOCK_ID_COL, stock_id,
 			    UNESCAPED_URI_COL, unescaped_uri,
-			    URI_COL, uri,
 			    TYPE_COL, _(type),
 			    STATUS_COL, status,
 			    ACTIVABLE_COL, (status != BRASERO_FILTER_UNREADABLE && status != BRASERO_FILTER_RECURSIVE_SYM),
@@ -385,6 +382,7 @@ brasero_file_filtered_restore_pressed_cb (GtkButton *button,
 	for (iter = selected; iter; iter = iter->next) {
 		GtkTreePath *treepath;
 		GtkTreeIter treeiter;
+		gchar *escaped_uri;
 		gchar *uri;
 
 		treepath = iter->data;
@@ -392,9 +390,18 @@ brasero_file_filtered_restore_pressed_cb (GtkButton *button,
 		gtk_tree_path_free (treepath);
 
 		gtk_tree_model_get (model, &treeiter,
-				    URI_COL, &uri, 
+				    UNESCAPED_URI_COL, &uri, 
 				    -1);
-		g_signal_emit (self, file_filtered_signals [RESTORED_SIGNAL], 0, uri);
+
+		escaped_uri = g_uri_escape_string (uri,
+						   G_URI_RESERVED_CHARS_ALLOWED_IN_PATH,
+						   FALSE);
+		g_signal_emit (self,
+			       file_filtered_signals [RESTORED_SIGNAL],
+			       0,
+			       escaped_uri);
+		g_free (escaped_uri);
+
 		gtk_list_store_remove (GTK_LIST_STORE (model), &treeiter);
 		priv->num --;
 	}
@@ -502,7 +509,6 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 				    G_TYPE_STRING,
 				    G_TYPE_STRING,
 				    G_TYPE_STRING,
-				    G_TYPE_STRING,
 				    G_TYPE_INT,
 				    G_TYPE_BOOLEAN);
 
@@ -529,10 +535,10 @@ brasero_file_filtered_init (BraseroFileFiltered *object)
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_end (column, renderer, TRUE);
 	gtk_tree_view_column_add_attribute (column, renderer,
-					    "text", URI_COL);
+					    "text", UNESCAPED_URI_COL);
 	gtk_tree_view_column_set_title (column, _("Files"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->tree), column);
-	gtk_tree_view_column_set_sort_column_id (column, URI_COL);
+	gtk_tree_view_column_set_sort_column_id (column, UNESCAPED_URI_COL);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 	gtk_tree_view_column_set_resizable (column, TRUE);
 	gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_FIXED);
