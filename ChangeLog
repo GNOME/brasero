@@ -1,5 +1,23 @@
 2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #549211 – Wrong use of word Delete
+	Again fixed some strings
+
+	* data/brasero.schemas.in:
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb):
+	* src/brasero-data-session.c (brasero_data_session_add_last):
+	* src/brasero-project.c (brasero_project_error_size_dialog),
+	(brasero_project_overburn_dialog),
+	(brasero_project_check_default_burning_app):
+
+2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Use media direct access
+
+	* src/brasero-data-session.c (brasero_data_session_add_last):
+
+2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Implemented READ (10) function and use it when possible
 
 	* src/Makefile.am:

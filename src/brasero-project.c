@@ -205,7 +205,7 @@ static GtkActionEntry entries [] = {
 	{"DeleteProject", GTK_STOCK_REMOVE, N_("_Remove Files"), NULL,
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
 	{"DeleteAll", GTK_STOCK_CLEAR, N_("E_mpty Project"), NULL,
-	 N_("Delete all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
+	 N_("Remove all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
 	{"Burn", "media-optical-burn", N_("_Burn..."), NULL,
 	 N_("Burn the disc"), G_CALLBACK (brasero_project_burn_cb)},
 };
@@ -547,7 +547,7 @@ brasero_project_error_size_dialog (BraseroProject *project)
 	GtkWidget *message;
 
 	message = brasero_notify_message_add (BRASERO_NOTIFY (project->priv->message),
-					      _("Please, delete some files from the project."),
+					      _("Please, remove some files from the project."),
 					      _("The size of the project is too large for the disc even with the overburn option."),
 					      -1,
 					      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -573,7 +573,7 @@ brasero_project_overburn_dialog (BraseroProject *project)
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Size"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("The size of the project is too large for the disc and you must delete files otherwise."
+						  _("The size of the project is too large for the disc and you must remove files otherwise."
 						    "\nNOTE: This option might cause failure."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
@@ -949,7 +949,7 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 
 	if (command)
 		/* NOTE for translators the %s is the old application name */
-		text = g_strdup_printf (_("_Keep Using \"%s\""), command);
+		text = g_strdup_printf (_("_Keep using \"%s\""), command);
 	else
 		text = g_strdup (GTK_STOCK_CANCEL);
 

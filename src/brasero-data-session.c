@@ -146,7 +146,7 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	}
 
 	device = brasero_drive_get_device (priv->drive);
-	vol = brasero_volume_source_open_file (device, error);
+	vol = brasero_volume_source_open_device_path (device, error);
 	volume = brasero_volume_get_files (vol,
 					   block,
 					   NULL,

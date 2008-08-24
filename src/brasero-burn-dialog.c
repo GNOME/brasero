@@ -512,7 +512,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 	}
 	else if (error == BRASERO_BURN_WARNING_NEXT_COPY) {
 		secondary_message = g_strdup (_("A recording was successfully completed."
-						"\nThe next recording will begin as soon as a recordable medium is inserted"));
+						"\nThe next recording will begin as soon as a recordable medium is inserted."));
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
