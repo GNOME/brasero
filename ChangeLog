@@ -1,5 +1,14 @@
 2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #542103 – Disc copy "Disc Replacement" dialog
+	Also improved some strings to be more GUI compliant along the same pattern as above
+
+	* src/brasero-burn-dialog.c
+	(brasero_burn_dialog_get_media_type_string),
+	(brasero_burn_dialog_insert_disc_cb):
+
+2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #548640 – HIdden Files filter is extremely slow
 
 	* src/brasero-data-vfs.c (brasero_data_vfs_directory_load_result):

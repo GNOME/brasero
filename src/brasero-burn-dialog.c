@@ -392,15 +392,15 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 	if (type & BRASERO_MEDIUM_HAS_DATA) {
 		if (!insert) {
 			if (type & BRASERO_MEDIUM_REWRITABLE)
-				message = g_strdup (_("replace the disc with a rewritable disc holding data."));
+				message = g_strdup (_("Please, replace the disc with a rewritable disc holding data."));
 			else
-				message = g_strdup (_("replace the disc with a disc holding data."));
+				message = g_strdup (_("Please, replace the disc with a disc holding data."));
 		}
 		else {
 			if (type & BRASERO_MEDIUM_REWRITABLE)
-				message = g_strdup (_("insert a rewritable disc holding data."));
+				message = g_strdup (_("Please, insert a rewritable disc holding data."));
 			else
-				message = g_strdup (_("insert a disc holding data."));
+				message = g_strdup (_("Please, insert a disc holding data."));
 		}
 	}
 	else if (type & BRASERO_MEDIUM_WRITABLE) {
@@ -415,48 +415,48 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		if ((type & BRASERO_MEDIUM_CD) && !(type & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
 			if (!insert) {
 				if (isosize)
-					message = g_strdup_printf (_("replace the disc with a recordable CD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, replace the disc with a recordable CD with a least %i MiB free."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("replace the disc with a recordable CD."));
+					message = g_strdup (_("Please, replace the disc with a recordable CD."));
 			}
 			else {
 				if (isosize)
-					message = g_strdup_printf (_("insert a recordable CD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, insert a recordable CD with a least %i MiB free."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("insert a recordable CD."));
+					message = g_strdup (_("Please, insert a recordable CD."));
 			}
 		}
 		else if (!(type & BRASERO_MEDIUM_CD) && (type & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
 			if (!insert) {
 				if (isosize)
-					message = g_strdup_printf (_("replace the disc with a recordable DVD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, replace the disc with a recordable DVD with a least %i MiB free."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("replace the disc with a recordable DVD."));
+					message = g_strdup (_("Please, replace the disc with a recordable DVD."));
 			}
 			else {
 				if (isosize)
-					message = g_strdup_printf (_("insert a recordable DVD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, insert a recordable DVD with a least %i MiB free."), 
 								   (int) (isosize / 1048576));
 				else
-					message = g_strdup (_("insert a recordable DVD."));
+					message = g_strdup (_("Please, insert a recordable DVD."));
 			}
 		}
 		else if (!insert) {
 			if (isosize)
-				message = g_strdup_printf (_("replace the disc with a recordable CD or DVD with a least %i MiB free."), 
+				message = g_strdup_printf (_("Please, replace the disc with a recordable CD or DVD with a least %i MiB free."), 
 							   (int) (isosize / 1048576));
 			else
-				message = g_strdup (_("replace the disc with a recordable CD or DVD."));
+				message = g_strdup (_("Please, replace the disc with a recordable CD or DVD."));
 		}
 		else {
 			if (isosize)
-				message = g_strdup_printf (_("insert a recordable CD or DVD with a least %i MiB free."), 
+				message = g_strdup_printf (_("Please, insert a recordable CD or DVD with a least %i MiB free."), 
 							   (int) (isosize / 1048576));
 			else
-				message = g_strdup (_("insert a recordable CD or DVD."));
+				message = g_strdup (_("Please, insert a recordable CD or DVD."));
 		}
 	}
 
@@ -502,62 +502,54 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		drive_name = NULL;
 
 	if (error == BRASERO_BURN_WARNING_INSERT_AFTER_COPY) {
-		main_message = g_strdup (_("An image of the disc has been created on your hard drive. Burning is about to begin:"));
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup (_("An image of the disc has been created on your hard drive."
+						"\nBurning will begin as soon as a recordable medium is inserted."));
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_WARNING_CHECKSUM) {
-		main_message = g_strdup (_("A data integrity test is about to begin:"));
-		secondary_message = g_strdup (_("Please, re-insert the disc in the CD/DVD burner."));
+		secondary_message = g_strdup (_("A data integrity test will begin as soon as the medium is inserted."));
+		main_message = g_strdup (_("Please, re-insert the disc in the CD/DVD burner."));
 	}
 	else if (error == BRASERO_BURN_WARNING_NEXT_COPY) {
-		main_message = g_strdup (_("A recording was successfully completed."
-					   "\nThe next recording is about to begin:"));
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
+		secondary_message = g_strdup (_("A recording was successfully completed."
+						"\nThe next recording will begin as soon as a recordable medium is inserted"));
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is busy:"),
-						drive_name);
+		main_message = g_strdup_printf (_("The disc in \"%s\" is busy."), drive_name);
 		secondary_message = g_strdup (_("make sure another application is not using it."));
 	} 
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NONE) {
-		main_message = g_strdup_printf (_("There is no disc in \"%s\":"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
+		secondary_message = g_strdup_printf (_("There is no disc in \"%s\"."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is not supported:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not supported."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is not rewritable:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not rewritable."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_BLANK) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is empty:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is empty."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is not writable:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not writable."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is a DVD:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is a DVD."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_CD_NOT_SUPPORTED) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is a CD:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is a CD."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_SPACE) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is not big enough:"),
-						drive_name);
-		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not big enough."), drive_name);
+		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_NONE) {
 		secondary_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
@@ -566,9 +558,8 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		secondary_message = NULL;
 	}
 	else if (error == BRASERO_BURN_ERROR_RELOAD_MEDIA) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" needs to be reloaded:"),
-						drive_name);
-		secondary_message = g_strdup (_("eject the disc and reload it."));
+		secondary_message = g_strdup_printf (_("The disc in \"%s\" needs to be reloaded."), drive_name);
+		main_message = g_strdup (_("Please, eject the disc and reload it."));
 	}
 
 	g_free (drive_name);
