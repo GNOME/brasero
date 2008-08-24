@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-  <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "0.8.0">
-  <!ENTITY manrevision "2.0">
-  <!ENTITY date "February 2008">
-  <!ENTITY app "<application>Brasero</application>">
-  <!ENTITY appname "Brasero">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" 
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+<!ENTITY legal SYSTEM "legal.xml">
+<!ENTITY appversion "0.8.1">
+<!ENTITY manrevision "2.1">
+<!ENTITY date "August 2008">
+<!ENTITY app "<application>Brasero</application>">
+<!ENTITY appname "Brasero">
+<!ENTITY svcd "http://en.wikipedia.org/wiki/SVCD">
+<!ENTITY vcd "http://en.wikipedia.org/wiki/Video_CD">
 ]>
 
 <!-- 
@@ -56,7 +58,7 @@
 		<surname>Casagrande</surname> 
 		<affiliation> 
 	  		<orgname>Ubuntu Documentation Project</orgname> 
-	  		<address> <email>milo_casagrande@yahoo.it</email> </address> 
+	  		<address> <email>milo@ubuntu.com</email> </address> 
 		</affiliation> 
       </author> 
       <author> 
@@ -93,24 +95,35 @@
 
     <revhistory>
       <revision> 
-		<revnumber>Brasero Manual V&manrevision;</revnumber> 
-		<date>&date;</date> 
-		<revdescription> 
-	  		<para role="author">Milo Casagrande
-	    	<email>milo_casagrande@yahoo.it</email>
-	  		</para>
-	  		<para role="author">Andrew Stabeno
-	    	<email>stabeno@gmail.com</email>
-	  		</para>
-	  		<para role="author">Phil Bull
-	    	<email>philbull@gmail.com</email>
-	  		</para>
-	  		<para role="publisher">Ubuntu Documentation Project</para>
-		</revdescription> 
+	<revnumber>Brasero Manual V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Milo Casagrande
+	    <email>milo@ubuntu.com</email>
+	  </para>
+	  <para role="publisher">Ubuntu Documentation Project</para>
+	</revdescription> 
+      </revision>
+      <revision> 
+	<revnumber>Brasero Manual V2.0</revnumber> 
+	<date>Febrary 2008</date> 
+	<revdescription> 
+	  <para role="author">Milo Casagrande
+	    <email>milo@ubuntu.com</email>
+	  </para>
+	  <para role="author">Andrew Stabeno
+	    <email>stabeno@gmail.com</email>
+	  </para>
+	  <para role="author">Phil Bull
+	    <email>philbull@gmail.com</email>
+	  </para>
+	  <para role="publisher">Ubuntu Documentation Project</para>
+	</revdescription> 
       </revision> 
     </revhistory> 
 
-    <releaseinfo>This manual describes version &appversion; of Brasero.
+    <releaseinfo>
+      This manual describes version &appversion; of Brasero.
     </releaseinfo> 
     <legalnotice> 
       <title>Feedback</title> 
@@ -143,12 +156,42 @@
     </para>
     <para>With &app; you can:</para>
     <itemizedlist>
-	   <listitem><para>Burn data to CD-R/Ws and DVD-R/Ws</para></listitem>
-	   <listitem><para>Burn audio CDs from digital audio files (such as ogg, flac and mp3)</para></listitem>
-	   <listitem><para>Copy CDs and DVDs</para></listitem>
-	   <listitem><para>Create image files and burns from existing image files</para></listitem>
-	   <listitem><para>Erase CD-R/Ws and DVD-R/Ws</para></listitem>
-	   <listitem><para>Check the integrity of disks and disk images</para></listitem>
+      <listitem>
+	<para>
+	  Burn data to CD-R/Ws and DVD-R/Ws
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Burn audio CDs from digital audio files (such as ogg, flac
+	  and mp3)
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Copy CDs and DVDs
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Create video DVD or SVCD
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Create image files and burns from existing image files
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Erase CD-R/Ws and DVD-R/Ws
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Check the integrity of disks and disk images
+	</para>
+      </listitem>
     </itemizedlist>
   </sect1>
   
@@ -203,8 +246,9 @@
 	    <imagedata fileref="figures/brasero_main.png" format="PNG"/> 
 	  </imageobject>
 	  <textobject> 
-	    <phrase>The Brasero main window. Shows the menu bar and the four types of project 
-	      to choose from.
+	    <phrase>
+		The Brasero main window. Shows the menu bar and the
+		five types of project to choose from.
 	    </phrase> 
 	  </textobject> 
 	</mediaobject> 
@@ -212,20 +256,24 @@
     </figure>
     <!-- ==== End of Figure ==== -->
 
-    <para>This window is the starting point for all of your projects.  You can click on the project
-    type you wish to start from here.  If you have created other projects with 
-    &app;, you will be able to select them from the <guilabel>Choose a
-    recently opened project</guilabel> (see
-    <xref linkend="brasero-open-recent-project" /> for more
-    information).</para>
+    <para>
+	This window is the starting point for all of your projects.
+	You can click on the project type you wish to start from here.
+	If you have created other projects with &app;, you will be
+	able to select them from the <guilabel>Choose a recently
+	opened project</guilabel> (see <xref
+	linkend="brasero-open-recent-project" /> for more
+	information).
+      </para>
     </sect2>
   </sect1>
+
   <!-- ============= New Project ========================= -->
   <sect1 id="brasero-new-project" status="review">
     <title>Creating a New Project</title>
     <para>
-      The following section explains the four types of project that
-    you can create with &app;.
+      The following section explains the five types of project that
+      you can create with &app;.
     </para>
     
     <!-- ==== subsection: Audio project ===== -->
@@ -269,6 +317,16 @@
 	     </guilabel> option to select music from playlists on your
 	     computer.
 	    </para>
+	    <para>
+	      <tip>
+		<para>
+		  If you don't see the pane on the left, choose <menuchoice>
+		    <guimenu>View</guimenu>
+		    <guimenuitem>Show side panel</guimenuitem>
+		  </menuchoice> or press <keycap>F7</keycap>.
+		</para>
+	      </tip>
+	    </para>
 	  </listitem>
 	  <listitem>
 	    <para>
@@ -311,10 +369,10 @@
 	  <para>
 	    When adding files, refer to the status bar at the bottom
 	    of the window to see how much space you are using on your
-	    CD. You may have to adjust the size of your CD to let
+	    CD/DVD. You may have to adjust the size of your CD/DVD to let
 	    &app; know what its actual capacity is. To do this, click
 	    on the button next to the status bar and select the size
-	    of your CD as quoted on the disc or its packaging.
+	    of your CD/DVD as quoted on the disc or its packaging.
 	  </para>
 	</note>
 	<tip>
@@ -323,7 +381,7 @@
 	    <menuchoice>
 	      <guimenu>Project</guimenu>
 	      <guimenuitem>Save</guimenuitem>
-	    </menuchoice>
+	    </menuchoice>.
 	  </para>
 	</tip>
       </para>
@@ -352,6 +410,7 @@
 	  </orderedlist>
 	</para>
       </sect3>
+
       <sect3 id="brasero-audio-split">
 	<title>Splitting a Track</title>
 	<para>
@@ -441,6 +500,7 @@
 	  <guibutton>OK</guibutton>.
 	</para>
       </sect3>
+
       <sect3 id="brasero-audio-project-options">
 	<title>Audio Project Options</title>
 	<para>
@@ -544,6 +604,16 @@
 	      browse for files or <guilabel>Search 
 	      files using keywords</guilabel> to search for them.
 	    </para>
+	    <para>
+	      <tip>
+		<para>
+		  If you don't see the pane on the left, choose <menuchoice>
+		    <guimenu>View</guimenu>
+		    <guimenuitem>Show side panel</guimenuitem>
+		  </menuchoice> or press <keycap>F7</keycap>.
+		</para>
+	      </tip>
+	    </para>
 	  </listitem>
 	  <listitem>
 	    <para>
@@ -572,6 +642,28 @@
 	    </para>
 	  </listitem>
 	</orderedlist>
+      </para>
+
+      <para>
+	<note>
+	  <para>
+	    When adding files, refer to the status bar at the bottom
+	    of the window to see how much space you are using on your
+	    CD/DVD. You may have to adjust the size of your CD/DVD to let
+	    &app; know what its actual capacity is. To do this, click
+	    on the button next to the status bar and select the size
+	    of your CD/DVD as quoted on the disc or its packaging.
+	  </para>
+	</note>
+	<tip>
+	  <para>
+	    To save the project for later use, choose
+	    <menuchoice>
+	      <guimenu>Project</guimenu>
+	      <guimenuitem>Save</guimenuitem>
+	    </menuchoice>.
+	  </para>
+	</tip>
       </para>
 
       <sect3 id="brasero-data-project-options">
@@ -670,6 +762,264 @@
       </sect3>
     </sect2>
 
+    <!-- ====== subsection: Video project ====== -->
+    <sect2 id="brasero-new-project-video">
+      <title>Video project</title>
+      <para>
+	This project lets you take video files (files with extension
+	like <filename class="extension">.mpg</filename>, <filename
+	class="extension">.mpeg</filename> or <filename
+	class="extension">.avi</filename> to name a few) and
+	burn them to disc to create video <acronym>DVD</acronym>s,
+	<acronym>SVCD</acronym>s or <acronym>VCD</acronym>s that you can
+	watch with normal DVD/CD players.
+      </para>
+      <para>
+	<note>
+	  <para>
+	    In order to use all the potential of the video project, you
+	    need to install all GStreamer's plugins,
+	    <application>ffmpeg</application>,
+	    <application>vcdimager</application> and
+	    <application>dvdauthor</application>. See your operating
+	    system documentation for more information on how to
+	    install all these applications.
+	  </para>
+	</note>
+      </para>
+      <para>
+	To create a video project, proceed as follow:
+	<orderedlist>
+	  <listitem>
+	    <para>
+	      Insert a blank CD or DVD into your drive.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      Click on <guibutton>Video project</guibutton> in the main
+	      window or choose <menuchoice>
+		<guimenu>Project</guimenu>
+		<guisubmenu>New project</guisubmenu>
+		<guimenuitem>New video project</guimenuitem>
+	      </menuchoice>.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      From the pane on the left of the window, browse the
+	      file system searching for video files.
+	    </para>
+	    <para>
+	      Select the files you want by double-clicking on them or
+	      by selecting them and clicking the
+	      <guibutton>Add</guibutton> button at the top left of the
+	      toolbar.
+	    </para>
+	    <para>
+	      <tip>
+		<para>
+		  If you don't see the pane on the left, choose <menuchoice>
+		    <guimenu>View</guimenu>
+		    <guimenuitem>Show side panel</guimenuitem>
+		  </menuchoice> or press <keycap>F7</keycap>.
+		</para>
+	      </tip>
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      When all the files have been added, click on
+	      <guibutton>Burn</guibutton>.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      The <guilabel>Disc burning setup</guilabel> dialog will be
+	      shown; make any desired modifications (see <xref
+		linkend="brasero-video-project-options"/>).
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      Click on <guibutton>Burn</guibutton> to start the
+	      burning process.
+	    </para>
+	  </listitem>
+	</orderedlist>
+      </para>
+
+      <para>
+	<note>
+	  <para>
+	    When adding files, refer to the status bar at the bottom
+	    of the window to see how much space you are using on your
+	    CD/DVD. You may have to adjust the size of your CD/DVD to let
+	    &app; know what its actual capacity is. To do this, click
+	    on the button next to the status bar and select the size
+	    of your CD/DVD as quoted on the disc or its packaging.
+	  </para>
+	</note>
+	<tip>
+	  <para>
+	    To save the project for later use, choose
+	    <menuchoice>
+	      <guimenu>Project</guimenu>
+	      <guimenuitem>Save</guimenuitem>
+	    </menuchoice>.
+	  </para>
+	</tip>
+      </para>
+
+      <sect3 id="brasero-video-project-options">
+	<title>Video Project Options</title>
+	<para>
+	  Before starting the burning process, it is possible to
+	  modify some of the burning options.
+	</para>
+	<para>
+	  <variablelist>
+	    <varlistentry>
+	      <term>
+	      Section <guilabel>Select a disc to write to</guilabel>:
+	      </term>
+	      <listitem>
+		<itemizedlist>
+		  <listitem>
+		    <para>
+		      Click on <guibutton>Properties</guibutton> to open
+		      the properties dialog for the burning device. See <xref
+			linkend="brasero-burning-device-properties"/>
+		      for more information.
+		    </para>
+		  </listitem>
+		  <listitem>
+		    <para>
+		      From the <guilabel>Number of copies</guilabel>
+		      spin box select the number of copies of the disc you want to
+		      burn.
+		    </para>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>Section <guilabel>Title</guilabel>:</term>
+	      <listitem>
+		<itemizedlist>
+		  <listitem>
+		    <para>
+		      In the text box, enter the title you want to
+		      give to the disc. This title will be shown as the name
+		      of the disc.
+		    </para>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>
+		Section <guilabel>Video Option</guilabel>:
+	      </term>
+	      <listitem>
+		<itemizedlist>
+		  <listitem>
+		    <para>
+		      From <guilabel>Video formats</guilabel> select
+		      the format of the video that will be burned. You
+		      can choose from:
+		      <itemizedlist>
+			<listitem>
+			  <para>
+			    <guilabel>Native format</guilabel>: the
+			    original format of the video file.
+			  </para>
+			</listitem>
+			<listitem>
+			  <para>
+			    <guilabel>PAL/SECAM</guilabel>: format
+			    mainly used in European televisions.
+			  </para>
+			</listitem>
+			<listitem>
+			  <para>
+			    <guilabel>NTSC</guilabel>: format mainly
+			    used in Americans, Canadians and Japanese televisions.
+			  </para>
+			</listitem>
+		      </itemizedlist>
+		    </para>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>
+		Section <guilabel>Audio Options</guilabel>:
+	      </term>
+	      <listitem>
+		<itemizedlist>
+		  <listitem>
+		    <para>
+		      Choose <guilabel>Add MP2 audio stream</guilabel>
+		      to add a <emphasis>MPEG-1 Audio
+		      Layer 2</emphasis> stream to the disc.
+		    </para>
+		  </listitem>
+		  <listitem>
+		    <para>
+		      Choose <guilabel>Add AC3 audio stream</guilabel>
+		      to add an <emphasis>AC-3 Dolby Digital</emphasis>
+		      stream to the disc.
+		    </para>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>
+		Section <guilabel>VCD type</guilabel>:
+	      </term>
+	      <listitem>
+		<itemizedlist>
+		  <listitem>
+		    <para>
+		      Choose <guilabel>Create a SVCD</guilabel> to
+		      create a <emphasis>Super Video CD</emphasis>.
+		    </para>
+		  </listitem>
+		  <listitem>
+		    <para>
+		      Choose <guilabel>Create a VCD</guilabel> to
+		      create a <emphasis>Video CD</emphasis>.
+		    </para>
+		  </listitem>
+		</itemizedlist>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
+	</para>
+
+	<para>
+	  <note>
+	    <para>
+	      One of the main difference between a
+	      <acronym>SVCD</acronym> and a <acronym>VCD</acronym> is
+	      that the former uses the <acronym>MPEG-2</acronym>
+	      video codec while the latter
+	      <acronym>MPEG-1</acronym>. For more information, see the
+	      Wikipedia pages for <ulink type="http"
+		url="&svcd;">SVCD</ulink>
+	      and <ulink type="http"
+	      url="&vcd;">VCD</ulink>.
+	    </para>
+	  </note>
+	</para>
+	  
+      </sect3>
+
+    </sect2>
+
     <!-- ====== subsection: Copy Disc ======= -->
     <sect2 id="brasero-new-project-copy">
       <title>Disc Copy</title>
@@ -678,10 +1028,13 @@
 	blank disc or image file. To copy a disc, proceed as follow:
 	<orderedlist>
 	  <listitem>
-	    <para>Insert the CD or DVD you wish to copy into your drive.</para>
+	    <para>
+	      Insert the CD or DVD you wish to copy into your drive.
+	    </para>
 	  </listitem>
 	  <listitem>
-	    <para>Click <guibutton>Disc copy</guibutton> in the main
+	    <para>
+	      Click on <guibutton>Disc copy</guibutton> in the main
 	    window or choose 
 	    <menuchoice>
 	    	<guimenu>Project</guimenu>
@@ -1343,7 +1696,7 @@
       To set the properties of the covers, right-click on one of the
       covers and choose <guimenuitem>Set background
 	properties</guimenuitem> to open the <guilabel>Background
-      properties</guilabel> dialog.
+      Properties</guilabel> dialog.
     </para>
     <para>
       It is possibile to fill the background with an image or with a
