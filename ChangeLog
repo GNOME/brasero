@@ -1,3 +1,14 @@
+2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix problem with URI handling in data project triggering various bugs
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_inotify_monitor_cb):
+	* src/brasero-data-project.c (brasero_data_project_node_to_uri),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_file_added),
+	(brasero_data_project_file_update_URI),
+	(brasero_data_project_file_graft):
+
 2008-08-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make brasero handles uris better by avoiding some escaping

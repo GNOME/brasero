@@ -4075,7 +4075,9 @@ brasero_audio_disc_inotify_monitor_cb (GIOChannel *channel,
 		if (dir->uri && name) {
 			gchar *escaped_name;
 
-			escaped_name = g_uri_escape_string (name, G_URI_RESERVED_CHARS_ALLOWED_IN_PATH, TRUE);
+			escaped_name = g_uri_escape_string (name,
+							    G_URI_RESERVED_CHARS_ALLOWED_IN_PATH,
+							    FALSE);
 			monitored = g_strconcat (dir->uri, "/", name, NULL);
 			g_free (escaped_name);
 			g_free (name);
