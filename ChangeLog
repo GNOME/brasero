@@ -1,5 +1,17 @@
 2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Implemented READ (10) function and use it when possible
+
+	* src/Makefile.am:
+	* src/burn-volume-source.c (brasero_volume_source_read_fd),
+	(brasero_volume_source_readcd_device_handle),
+	(brasero_volume_source_read10_device_handle),
+	(brasero_volume_source_open_device_handle):
+	* src/scsi-opcodes.h:
+	* src/scsi-read10.c (brasero_sbc_read10_block):
+
+2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix bug in medium reading
 
 	* src/burn-volume-source.c
