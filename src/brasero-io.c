@@ -492,7 +492,7 @@ brasero_io_check_for_parent_symlink (const gchar *escaped_uri,
 				new_root = g_filename_to_uri (target_path, NULL, NULL);
 
 			newuri = g_strconcat (new_root,
-					      uri + strlen (parent_uri),
+					      uri + strlen (parent_uri) + 1 /* for the separator*/,
 					      NULL);
 
 		    	g_free (uri);
