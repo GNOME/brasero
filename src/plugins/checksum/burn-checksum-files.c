@@ -945,14 +945,13 @@ brasero_checksum_files_end (gpointer data)
 			graft->path = g_strdup ("/"BRASERO_MD5_FILE);
 			break;
 		}
+
 		new_grafts = g_slist_prepend (new_grafts, graft);
+		excluded = brasero_track_get_data_excluded_source (track, TRUE);
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_DATA);
 		brasero_track_add_data_fs (track, type.subtype.fs_type);
-
-		excluded = brasero_track_get_data_excluded_source (track, TRUE);
 		brasero_track_set_data_source (track, new_grafts, excluded);
-
 		brasero_track_set_checksum (track,
 					    priv->checksum_type,
 					    graft->uri);
