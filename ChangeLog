@@ -1,5 +1,15 @@
 2008-08-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix symlink handling
+	Fix #546787 – Problem with burning symlinked files
+
+	* src/brasero-data-project.c
+	(brasero_data_project_graft_is_needed),
+	(brasero_data_project_update_uri),
+	(brasero_data_project_node_loaded):
+
+2008-08-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix URI creation
 
 	* src/brasero-io.c (brasero_io_check_for_parent_symlink):

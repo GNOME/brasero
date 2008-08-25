@@ -847,6 +847,29 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 	}
 }
 
+static gboolean
+brasero_data_project_graft_is_needed (BraseroDataProject *self,
+				      BraseroGraft *graft)
+{
+	BraseroURINode *uri_node;
+
+	uri_node = graft->node;
+	if (uri_node->nodes)
+		return TRUE;
+
+	/* there aren't any node grafted for this URI. See if we should keep the
+	 * URI in the hash; if so, the URI must have parents in the hash */
+	if (brasero_data_project_uri_has_parent (self, uri_node->uri)) {
+		/* here that means that this URI is nowhere in the tree but has
+		 * parent URIs which are grafted. So keep it in the hash to
+		 * signal that URI is not in the tree. */
+		return TRUE;
+	}
+
+	brasero_data_project_uri_remove_graft (self, uri_node->uri);
+	return FALSE;
+}
+
 static BraseroURINode *
 brasero_data_project_uri_add_graft (BraseroDataProject *self,
 				    const gchar *uri)
@@ -1648,6 +1671,55 @@ brasero_data_project_add_empty_directory (BraseroDataProject *self,
 	return node;
 }
 
+static void
+brasero_data_project_update_uri (BraseroDataProject *self,
+				 BraseroFileNode *node,
+				 const gchar *uri)
+{
+	gchar *parent_uri;
+	BraseroGraft *graft;
+	BraseroURINode *uri_node;
+
+	graft = BRASERO_FILE_NODE_GRAFT (node);
+	if (!strcmp (graft->node->uri, uri)) {
+		/* Nothing needs update */
+		return;
+	}
+
+
+	/* different URIS; make sure the node still needs a graft:
+	 * - if so, update it
+	 * - if not, remove it*/
+	parent_uri = brasero_data_project_node_to_uri (self, node->parent);
+	if (parent_uri) {
+		guint parent_len;
+
+		parent_len = strlen (parent_uri);
+
+		if (strncmp (parent_uri, uri, parent_len)
+		&&  uri [parent_len] != G_DIR_SEPARATOR) {
+			/* The node hasn't been put under its rightful parent
+			 * from the original file system. That means we must add
+			 * a graft or update the current one. */
+			uri_node = brasero_data_project_uri_add_graft (self, uri);
+			brasero_file_node_graft (node, uri_node);
+		}
+		else {
+			/* rightful parent: ungraft it */
+			brasero_file_node_ungraft (node);
+		}
+
+		g_free (parent_uri);
+	}
+	else {
+		uri_node = brasero_data_project_uri_add_graft (self, uri);
+		brasero_file_node_graft (node, uri_node);
+	}
+
+	/* the node was ungrafted, check if the old graft is still needed */
+	brasero_data_project_graft_is_needed (self, graft);
+}
+
 void
 brasero_data_project_node_loaded (BraseroDataProject *self,
 				  BraseroFileNode *node,
@@ -1714,6 +1786,19 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 			       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
 			       0,
 			       priv->loading);
+	}
+
+	/* If the node is not grafted because it was put under its original 
+	 * parent on the file system it comes from, then its parent URI can't
+	 * have changed (the parent it was put under had already its URI cleaned
+	 * of any symlink). Its URI may be different though if it's a symlink
+	 * but that case is treated somewhere else. */
+	if (node->is_grafted) {
+		/* The URI of the node could be different from the one we gave
+		 * earlier as brasero-io looks for parent symlinks and replace
+		 * them with their target. So since it's a graft, we need to 
+		 * update the graft URI just to make sure. */
+		brasero_data_project_update_uri (self, node, uri);
 	}
 
 	size = g_file_info_get_size (info);
