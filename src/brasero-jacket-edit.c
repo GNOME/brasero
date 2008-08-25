@@ -54,6 +54,8 @@ struct _BraseroJacketEditPrivate
 	GtkWidget *underline;
 	GtkWidget *italic;
 	GtkWidget *bold;
+
+	GtkWidget *background;
 };
 
 #define BRASERO_JACKET_EDIT_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_JACKET_EDIT, BraseroJacketEditPrivate))
@@ -383,6 +385,17 @@ brasero_jacket_edit_font_changed_cb (BraseroJacketFont *button,
 }
 
 static void
+brasero_jacket_edit_configure_background_pressed_cb (GtkToolButton *button,
+						     BraseroJacketEdit *self)
+{
+	BraseroJacketEditPrivate *priv;
+
+	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
+	if (priv->current_view)
+		brasero_jacket_view_configure_background (BRASERO_JACKET_VIEW (priv->current_view));
+}
+
+static void
 brasero_jacket_edit_update_button_state (BraseroJacketEdit *self)
 {
 	gint pos;
@@ -394,10 +407,14 @@ brasero_jacket_edit_update_button_state (BraseroJacketEdit *self)
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
-	if (priv->current_view)
+	if (priv->current_view) {
 		buffer = brasero_jacket_view_get_active_buffer (BRASERO_JACKET_VIEW (priv->current_view));
-	else
+		gtk_widget_set_sensitive (priv->background, TRUE);
+	}
+	else {
 		buffer = NULL;
+		gtk_widget_set_sensitive (priv->background, FALSE);
+	}
 
 	if (!buffer)
 		return;
@@ -527,6 +544,16 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 			  G_CALLBACK (brasero_jacket_edit_print_pressed_cb),
 			  object);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
+
+	item = GTK_WIDGET (gtk_tool_button_new_from_stock (GTK_STOCK_SELECT_COLOR));
+	gtk_widget_show (item);
+	gtk_widget_set_sensitive (item, FALSE);
+	g_signal_connect (item,
+			  "clicked",
+			  G_CALLBACK (brasero_jacket_edit_configure_background_pressed_cb),
+			  object);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
+	priv->background = item;
 
 	item = GTK_WIDGET (gtk_radio_tool_button_new_from_stock (NULL, GTK_STOCK_JUSTIFY_RIGHT));
 	gtk_widget_show (item);

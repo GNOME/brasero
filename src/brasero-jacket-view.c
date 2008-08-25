@@ -664,9 +664,8 @@ brasero_jacket_view_scrolled_cb (GtkAdjustment *adj,
 	gtk_adjustment_set_value (adj, 0.0);
 }
 
-static void
-brasero_jacket_view_change_image_activated_cb (GtkMenuItem *item,
-					       BraseroJacketView *self)
+void
+brasero_jacket_view_configure_background (BraseroJacketView *self)
 {
 	BraseroJacketImageStyle image_style;
 	BraseroJacketColorStyle color_style;
@@ -702,6 +701,13 @@ brasero_jacket_view_change_image_activated_cb (GtkMenuItem *item,
 	brasero_jacket_view_set_color_style (self, color_style);
 
 	gtk_widget_destroy (dialog);
+}
+
+static void
+brasero_jacket_view_change_image_activated_cb (GtkMenuItem *item,
+					       BraseroJacketView *self)
+{
+	brasero_jacket_view_configure_background (self);
 }
 
 static void

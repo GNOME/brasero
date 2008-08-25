@@ -1,3 +1,18 @@
+2008-08-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Added a button to set background image/color to the toolbar in the
+	cover editor
+
+	* src/brasero-jacket-background.c (brasero_jacket_background_init):
+	* src/brasero-jacket-edit.c
+	(brasero_jacket_edit_configure_background_pressed_cb),
+	(brasero_jacket_edit_update_button_state),
+	(brasero_jacket_edit_init):
+	* src/brasero-jacket-view.c
+	(brasero_jacket_view_configure_background),
+	(brasero_jacket_view_change_image_activated_cb):
+	* src/brasero-jacket-view.h:
+
 2008-08-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #549211 – Wrong use of word Delete

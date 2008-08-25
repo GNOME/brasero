@@ -101,6 +101,9 @@ const gchar *
 brasero_jacket_view_set_image (BraseroJacketView *view,
 			       const gchar *path);
 
+void
+brasero_jacket_view_configure_background (BraseroJacketView *view);
+
 guint
 brasero_jacket_view_print (BraseroJacketView *view,
 			   GtkPrintContext *context,

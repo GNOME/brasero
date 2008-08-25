@@ -179,6 +179,50 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), vbox, TRUE, TRUE, 0);
 
+	label = gtk_label_new_with_mnemonic (_("<b>_Color</b>"));
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
+
+	label = gtk_label_new ("\t");
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
+
+	vbox2 = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 12);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
+
+	combo = gtk_combo_box_new_text ();
+	priv->color_style = combo;
+	gtk_widget_show (combo);
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Solid color"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Horizontal gradient"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Vertical gradient"));
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+	gtk_box_pack_start (GTK_BOX (hbox2), combo, FALSE, TRUE, 0);
+	g_signal_connect (combo,
+			  "changed",
+			  G_CALLBACK (brasero_jacket_background_color_type_changed_cb),
+			  object);
+
+	priv->color = gtk_color_button_new ();
+	gtk_widget_show (priv->color);
+	gtk_box_pack_start (GTK_BOX (hbox2), priv->color, FALSE, TRUE, 0);
+
+	priv->color2 = gtk_color_button_new ();
+	gtk_box_pack_start (GTK_BOX (hbox2), priv->color2, FALSE, TRUE, 0);
+
+
 	label = gtk_label_new_with_mnemonic (_("<b>_Image</b>"));
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -228,49 +272,6 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Scaled"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox2), combo, FALSE, TRUE, 0);
-
-	label = gtk_label_new_with_mnemonic (_("<b>_Color</b>"));
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
-
-	label = gtk_label_new ("\t");
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
-
-	vbox2 = gtk_vbox_new (FALSE, 6);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, TRUE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 12);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
-
-	combo = gtk_combo_box_new_text ();
-	priv->color_style = combo;
-	gtk_widget_show (combo);
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Solid color"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Horizontal gradient"));
-	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Vertical gradient"));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
-	gtk_box_pack_start (GTK_BOX (hbox2), combo, FALSE, TRUE, 0);
-	g_signal_connect (combo,
-			  "changed",
-			  G_CALLBACK (brasero_jacket_background_color_type_changed_cb),
-			  object);
-
-	priv->color = gtk_color_button_new ();
-	gtk_widget_show (priv->color);
-	gtk_box_pack_start (GTK_BOX (hbox2), priv->color, FALSE, TRUE, 0);
-
-	priv->color2 = gtk_color_button_new ();
-	gtk_box_pack_start (GTK_BOX (hbox2), priv->color2, FALSE, TRUE, 0);
 
 	gtk_dialog_add_button (GTK_DIALOG (object), 
 			       GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
