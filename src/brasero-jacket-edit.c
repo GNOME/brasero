@@ -537,12 +537,17 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_widget_show (toolbar);
 	gtk_box_pack_start (GTK_BOX (object), toolbar, FALSE, TRUE, 0);
 
+	/* Items */
 	item = GTK_WIDGET (gtk_tool_button_new_from_stock (GTK_STOCK_PRINT));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "clicked",
 			  G_CALLBACK (brasero_jacket_edit_print_pressed_cb),
 			  object);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
+
+	item = GTK_WIDGET (gtk_separator_tool_item_new ());
+	gtk_widget_show (item);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
 	item = GTK_WIDGET (gtk_tool_button_new_from_stock (GTK_STOCK_SELECT_COLOR));
@@ -554,6 +559,10 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 			  object);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 	priv->background = item;
+
+	item = GTK_WIDGET (gtk_separator_tool_item_new ());
+	gtk_widget_show (item);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
 	item = GTK_WIDGET (gtk_radio_tool_button_new_from_stock (NULL, GTK_STOCK_JUSTIFY_RIGHT));
 	gtk_widget_show (item);
@@ -582,6 +591,10 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 	priv->left = item;
 
+	item = GTK_WIDGET (gtk_separator_tool_item_new ());
+	gtk_widget_show (item);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
+
 	item = GTK_WIDGET (gtk_toggle_tool_button_new_from_stock (GTK_STOCK_UNDERLINE));
 	gtk_widget_show (item);
 	g_signal_connect (item,
@@ -608,6 +621,10 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 			  object);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 	priv->bold = item;
+
+	item = GTK_WIDGET (gtk_separator_tool_item_new ());
+	gtk_widget_show (item);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
 	priv->fonts = brasero_jacket_font_new ();
 	gtk_widget_show (priv->fonts);
