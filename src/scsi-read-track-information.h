@@ -73,11 +73,11 @@ struct _BraseroScsiTrackInfo {
 	uchar track_num_high;
 	uchar session_num_high;
 
-	uchar reserved2			[2];
+	uchar reserved2			[2];		/* 36 bytes MMC1 */
 
-	uchar rd_compat_lba		[4];
+	uchar rd_compat_lba		[4];		/* 40 bytes */
 	uchar next_layer_jmp		[4];
-	uchar last_layer_jmp		[4];
+	uchar last_layer_jmp		[4];		/* 48 bytes */
 };
 
 #else

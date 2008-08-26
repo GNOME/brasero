@@ -1,5 +1,16 @@
 2008-08-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #547742 – brasero crashed with SIGSEGV in brasero_medium_get_write_speeds()
+	When resorting to page 2A we didn't add the max write speed to the list
+	which was then empty
+
+	* src/burn-medium.c (brasero_medium_get_page_2A_max_speed),
+	(brasero_medium_get_sessions_info):
+	* src/scsi-read-track-information.c (brasero_read_track_info):
+	* src/scsi-read-track-information.h:
+
+2008-08-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed some strings according to #549368 – string typos
 
 	* src/brasero-burn-dialog.c

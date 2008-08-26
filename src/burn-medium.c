@@ -874,6 +874,12 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
 	priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
 
+	/* also add it to the speed descriptors */
+	priv->wr_speeds = g_new0 (gint, 2);
+	priv->wr_speeds [0] = BRASERO_GET_16 (page_2A->wr_max_speed);
+	priv->rd_speeds = g_new0 (gint, 2);
+	priv->rd_speeds [0] = BRASERO_GET_16 (page_2A->rd_max_speed);
+
 	g_free (data);
 	return BRASERO_BURN_OK;
 }
@@ -1279,7 +1285,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	       sizeof (BraseroScsiTocDesc);
 
 	/* remove 1 for leadout */
-	multisession = (priv->info & BRASERO_MEDIUM_APPENDABLE) || (num -1) != 1;
+	multisession = (priv->info & BRASERO_MEDIUM_APPENDABLE) && (num -1) != 1;
 
 	BRASERO_BURN_LOG ("%i track(s) found", num);
 
@@ -1287,8 +1293,10 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	for (i = 0; i < num; i ++, desc ++) {
 		BraseroMediumTrack *track;
 
-		if (desc->track_num == BRASERO_SCSI_TRACK_LEADOUT_START)
+		if (desc->track_num == BRASERO_SCSI_TRACK_LEADOUT_START) {
+			BRASERO_BURN_LOG ("Leadout reached %d", BRASERO_GET_32 (desc->track_start));
 			break;
+		}
 
 		track = g_new0 (BraseroMediumTrack, 1);
 		priv->tracks = g_slist_prepend (priv->tracks, track);
