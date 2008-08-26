@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-08-25 18:51+0000\n"
-"PO-Revision-Date: 2008-08-26 00:46+0200\n"
+"POT-Creation-Date: 2008-08-26 07:38+0000\n"
+"PO-Revision-Date: 2008-08-26 20:56+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,14 +23,26 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../data/brasero.desktop.in.in.h:1 ../src/main.c:562
+#: ../data/brasero-copy-medium.desktop.in.in.h:1
+#: ../data/brasero-open-image.desktop.in.in.h:1
+#: ../data/brasero-open-playlist.desktop.in.in.h:1
+#: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Brasero Disc Burning"
 msgstr "Grabador de discos Brasero"
 
 #: ../data/brasero.desktop.in.in.h:2
+#: ../data/brasero-copy-medium.desktop.in.in.h:2
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
 msgid "Disc Burning Application"
 msgstr "Aplicación de grabación de discos"
 
 #: ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-copy-medium.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:3
+#: ../data/brasero-open-playlist.desktop.in.in.h:3
+#: ../data/brasero-open-project.desktop.in.in.h:3
 msgid "Write and copy CD / DVD"
 msgstr "Escribir y copiar CD/DVD"
 
@@ -638,17 +650,6 @@ msgstr "Activado"
 msgid "Copyright %s"
 msgstr "Copyright %s"
 
-#: ../src/brasero-plugin-manager-ui.c:218
-#, c-format
-msgid ""
-"<b>%s</b>\n"
-"%s\n"
-"<i>%s</i>"
-msgstr ""
-"<b>%s</b>\n"
-"%s\n"
-"<i>%s</i>"
-
 #: ../src/brasero-plugin-manager-ui.c:578
 #: ../src/brasero-plugin-manager-ui.c:959
 msgid "_About"
@@ -1121,8 +1122,11 @@ msgstr "Introduzca un disco que contenga datos."
 
 #: ../src/brasero-burn-dialog.c:418
 #, c-format
-msgid "Please, replace the disc with a recordable CD with a least %i MiB free."
-msgstr "Reemplace el disco por un CD grabable con al menos %i MiB libres."
+msgid ""
+"Please, replace the disc with a recordable CD with at least %i MiB of free "
+"space."
+msgstr ""
+"Reemplace el disco por un CD grabable con al menos %i MiB de espacio libres."
 
 #: ../src/brasero-burn-dialog.c:421
 msgid "Please, replace the disc with a recordable CD."
@@ -1130,8 +1134,8 @@ msgstr "Reemplace el disco por un CD grabable."
 
 #: ../src/brasero-burn-dialog.c:425
 #, c-format
-msgid "Please, insert a recordable CD with a least %i MiB free."
-msgstr "Introduzca un CD grabable con al menos %i MiB libres."
+msgid "Please, insert a recordable CD with at least %i MiB of free space."
+msgstr "Introduzca un CD grabable con al menos %i MiB de espacio libres."
 
 #: ../src/brasero-burn-dialog.c:428
 msgid "Please, insert a recordable CD."
@@ -1140,8 +1144,10 @@ msgstr "Introduzca un CD grabable."
 #: ../src/brasero-burn-dialog.c:434
 #, c-format
 msgid ""
-"Please, replace the disc with a recordable DVD with a least %i MiB free."
-msgstr "Reemplace el disco por un DVD grabable con al menos %i MiB libres."
+"Please, replace the disc with a recordable DVD with at least %i MiB of free "
+"space."
+msgstr ""
+"Reemplace el disco por un DVD grabable con al menos %i MiB de espacio libres."
 
 #: ../src/brasero-burn-dialog.c:437
 msgid "Please, replace the disc with a recordable DVD."
@@ -1149,8 +1155,8 @@ msgstr "Reemplace el disco por un DVD grabable."
 
 #: ../src/brasero-burn-dialog.c:441
 #, c-format
-msgid "Please, insert a recordable DVD with a least %i MiB free."
-msgstr "Introduzca un DVD grabable con al menos %i MiB libres."
+msgid "Please, insert a recordable DVD with at least %i MiB of free space."
+msgstr "Introduzca un DVD grabable con al menos %i MiB de espacio libres."
 
 #: ../src/brasero-burn-dialog.c:444
 msgid "Please, insert a recordable DVD."
@@ -1159,10 +1165,11 @@ msgstr "Introduzca un DVD regrabable."
 #: ../src/brasero-burn-dialog.c:449
 #, c-format
 msgid ""
-"Please, replace the disc with a recordable CD or DVD with a least %i MiB "
-"free."
+"Please, replace the disc with a recordable CD or DVD with at least %i MiB of "
+"free space."
 msgstr ""
-"Reemplace el disco por un CD o DVD grabable con al menos %i MiB libres."
+"Reemplace el disco por un CD o DVD grabable con al menos %i MiB de espacio "
+"libres."
 
 #: ../src/brasero-burn-dialog.c:452
 msgid "Please, replace the disc with a recordable CD or DVD."
@@ -1170,8 +1177,9 @@ msgstr "Reemplace el disco por un CD o DVD grabable."
 
 #: ../src/brasero-burn-dialog.c:456
 #, c-format
-msgid "Please, insert a recordable CD or DVD with a least %i MiB free."
-msgstr "Introduzca un CD o DVD grabable con al menos %i MiB libres."
+msgid ""
+"Please, insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Introduzca un CD o DVD grabable con al menos %i MiB de espacio libres."
 
 #: ../src/brasero-burn-dialog.c:459
 msgid "Please, insert a recordable CD or DVD."
@@ -2201,25 +2209,29 @@ msgstr "Establecer una disposición vertical"
 msgid "Click to close the side pane"
 msgstr "Pulse para cerrar el panel lateral"
 
-#: ../src/brasero-player.c:274
+#. *
+#. * Translators: this is the position being played in the stream. The
+#. * first %s is the position and the second %s is the whole length of
+#. * the stream. I chose to make that translatable in case some languages
+#. * don't allow the "/"
+#: ../src/brasero-player.c:279
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-player.c:399
+#: ../src/brasero-player.c:404
 msgid "No file"
 msgstr "Sin archivo"
 
-#: ../src/brasero-player.c:441
+#: ../src/brasero-player.c:446
 msgid "Start and stop playing"
 msgstr "Comenzar y parar la reproducción"
 
-#: ../src/brasero-player.c:809
-#, c-format
-msgid "<span weight=\"bold\">Name:</span>\t %s"
-msgstr "<span weight=\"bold\">Nombre:</span>\t %s"
-
 #: ../src/brasero-player.c:815
+msgid "Name:"
+msgstr "Nombre:"
+
+#: ../src/brasero-player.c:822
 #, c-format
 msgid ""
 "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
@@ -2228,7 +2240,7 @@ msgstr ""
 "<span weight=\"bold\">Tamaño:</span>\t<i><span size=\"smaller\"> %i x %i "
 "píxeles</span></i>"
 
-#: ../src/brasero-player.c:838
+#: ../src/brasero-player.c:845
 #, c-format
 msgid ""
 "<span weight=\"bold\">%s</span>\n"
@@ -2237,12 +2249,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "por <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-player.c:846 ../src/brasero-player.c:855
-#, c-format
-msgid "<span weight=\"bold\">%s</span>\n"
-msgstr "<span weight=\"bold\">%s</span>\n"
-
-#: ../src/brasero-player.c:1051
+#: ../src/brasero-player.c:1056
 #, c-format
 msgid ""
 "<span weight=\"bold\">Loading information</span>\n"
@@ -5152,6 +5159,21 @@ msgstr ""
 msgid "use vcdimager to convert a set of files to burn to SVCDs"
 msgstr ""
 "use vcdimager para convertir un conjunto de archivos para grabar en SVCD"
+
+#~ msgid ""
+#~ "<b>%s</b>\n"
+#~ "%s\n"
+#~ "<i>%s</i>"
+#~ msgstr ""
+#~ "<b>%s</b>\n"
+#~ "%s\n"
+#~ "<i>%s</i>"
+
+#~ msgid "<span weight=\"bold\">Name:</span>\t %s"
+#~ msgstr "<span weight=\"bold\">Nombre:</span>\t %s"
+
+#~ msgid "<span weight=\"bold\">%s</span>\n"
+#~ msgstr "<span weight=\"bold\">%s</span>\n"
 
 #~ msgid "Burn Image"
 #~ msgstr "Grabar una imagen"
