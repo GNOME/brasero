@@ -353,9 +353,10 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 
 		tmp = g_hash_table_lookup (priv->nonlocals, parent);
 		if (tmp) {
-			newuri = g_strconcat (tmp,
-					      uri + strlen (parent) + 1,
-					      NULL);
+			newuri = g_build_path (G_DIR_SEPARATOR_S,
+					       tmp,
+					       uri + strlen (parent),
+					       NULL);
 			g_free (parent);
 			g_free (uri);
 			return newuri;
