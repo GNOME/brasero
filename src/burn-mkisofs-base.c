@@ -543,7 +543,6 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 	/* write the global excluded files list */
 	for (; excluded; excluded = excluded->next) {
 		uri = excluded->data;
-
 		result = brasero_mkisofs_base_write_excluded (&base,
 							      uri,
 							      error);

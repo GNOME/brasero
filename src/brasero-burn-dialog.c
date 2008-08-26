@@ -415,14 +415,14 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		if ((type & BRASERO_MEDIUM_CD) && !(type & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
 			if (!insert) {
 				if (isosize)
-					message = g_strdup_printf (_("Please, replace the disc with a recordable CD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, replace the disc with a recordable CD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
 					message = g_strdup (_("Please, replace the disc with a recordable CD."));
 			}
 			else {
 				if (isosize)
-					message = g_strdup_printf (_("Please, insert a recordable CD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, insert a recordable CD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
 					message = g_strdup (_("Please, insert a recordable CD."));
@@ -431,14 +431,14 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		else if (!(type & BRASERO_MEDIUM_CD) && (type & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
 			if (!insert) {
 				if (isosize)
-					message = g_strdup_printf (_("Please, replace the disc with a recordable DVD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, replace the disc with a recordable DVD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
 					message = g_strdup (_("Please, replace the disc with a recordable DVD."));
 			}
 			else {
 				if (isosize)
-					message = g_strdup_printf (_("Please, insert a recordable DVD with a least %i MiB free."), 
+					message = g_strdup_printf (_("Please, insert a recordable DVD with at least %i MiB of free space."), 
 								   (int) (isosize / 1048576));
 				else
 					message = g_strdup (_("Please, insert a recordable DVD."));
@@ -446,14 +446,14 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 		}
 		else if (!insert) {
 			if (isosize)
-				message = g_strdup_printf (_("Please, replace the disc with a recordable CD or DVD with a least %i MiB free."), 
+				message = g_strdup_printf (_("Please, replace the disc with a recordable CD or DVD with at least %i MiB of free space."), 
 							   (int) (isosize / 1048576));
 			else
 				message = g_strdup (_("Please, replace the disc with a recordable CD or DVD."));
 		}
 		else {
 			if (isosize)
-				message = g_strdup_printf (_("Please, insert a recordable CD or DVD with a least %i MiB free."), 
+				message = g_strdup_printf (_("Please, insert a recordable CD or DVD with at least %i MiB of free space."), 
 							   (int) (isosize / 1048576));
 			else
 				message = g_strdup (_("Please, insert a recordable CD or DVD."));

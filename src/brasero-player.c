@@ -271,6 +271,11 @@ brasero_player_update_position (BraseroPlayer *player)
 	value = gtk_range_get_value (GTK_RANGE (player->priv->progress));
 	pos_string = brasero_utils_get_time_string (value, FALSE, FALSE);
 
+	/**
+	 * Translators: this is the position being played in the stream. The 
+	 * first %s is the position and the second %s is the whole length of
+	 * the stream. I chose to make that translatable in case some languages
+	 * don't allow the "/" */
 	result = g_strdup_printf (_("%s / %s"), pos_string, len_string);
 	g_free (len_string);
 	g_free (pos_string);
@@ -806,7 +811,9 @@ brasero_player_image (BraseroPlayer *player)
 	BRASERO_GET_BASENAME_FOR_DISPLAY (path, name);
 	g_free (path);
 
-	string = g_strdup_printf (_("<span weight=\"bold\">Name:</span>\t %s"), name);
+	string = g_strdup_printf ("<span weight=\"bold\">%s</span>\t %s",
+				  _("Name:"),
+				  name);
 	g_free (name);
 
 	gtk_label_set_markup (GTK_LABEL (player->priv->header), string);
@@ -843,8 +850,7 @@ brasero_player_update_info_real (BraseroPlayer *player,
 
 	}
 	else if (title) {
-		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>\n"),
-						  title);
+		header = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>\n", title);
 		gtk_label_set_ellipsize (GTK_LABEL (player->priv->header),
 					 PANGO_ELLIPSIZE_END);
 	}
@@ -852,8 +858,7 @@ brasero_player_update_info_real (BraseroPlayer *player,
 		gchar *name;
 
 	    	BRASERO_GET_BASENAME_FOR_DISPLAY (player->priv->uri, name);
-		header = g_markup_printf_escaped (_("<span weight=\"bold\">%s</span>\n"),
-						  name);
+		header = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>\n", name);
 		g_free (name);
 		gtk_label_set_ellipsize (GTK_LABEL (player->priv->header),
 					 PANGO_ELLIPSIZE_END);

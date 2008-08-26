@@ -1686,7 +1686,6 @@ brasero_data_project_update_uri (BraseroDataProject *self,
 		return;
 	}
 
-
 	/* different URIS; make sure the node still needs a graft:
 	 * - if so, update it
 	 * - if not, remove it*/

@@ -215,7 +215,7 @@ plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 		return;
 
 	if (brasero_plugin_get_error (plugin))
-		text = g_markup_printf_escaped (_("<b>%s</b>\n%s\n<i>%s</i>"),
+		text = g_markup_printf_escaped ("<b>%s</b>\n%s\n<i>%s</i>",
 						brasero_plugin_get_name (plugin),
 						brasero_plugin_get_description (plugin),
 						brasero_plugin_get_error (plugin));
