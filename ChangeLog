@@ -1,5 +1,11 @@
 2008-08-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #546787 – Problem with burning symlinked files
+
+	* src/brasero-io.c (brasero_io_check_for_parent_symlink):
+
+2008-08-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #549299 – brasero crashed with SIGSEGV in brasero_jacket_buffer_add_default_tag()
 
 	* src/brasero-jacket-edit.c (brasero_jacket_edit_font_changed_cb):

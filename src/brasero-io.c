@@ -447,10 +447,14 @@ brasero_io_check_for_parent_symlink (const gchar *escaped_uri,
 				     GCancellable *cancel)
 {
 	GFile *parent;
+	GFile *file;
     	gchar *uri;
 
-	parent = g_file_new_for_uri (escaped_uri);
-    	uri = g_file_get_uri (parent);
+	/* don't check if the node itself is a symlink since that'll be done */
+	file = g_file_new_for_uri (escaped_uri);
+    	uri = g_file_get_uri (file);
+	parent = g_file_get_parent (file);
+	g_object_unref (file);
 
 	while (parent) {
 	    	GFile *tmp;
@@ -491,10 +495,10 @@ brasero_io_check_for_parent_symlink (const gchar *escaped_uri,
 			else
 				new_root = g_filename_to_uri (target_path, NULL, NULL);
 
-			newuri = g_strconcat (new_root,
-					      uri + strlen (parent_uri) + 1 /* for the separator*/,
-					      NULL);
-
+			newuri = g_build_path (G_DIR_SEPARATOR_S,
+					       new_root,
+					       uri + strlen (parent_uri),
+					       NULL);
 		    	g_free (uri);
 		    	uri = newuri;	
 
