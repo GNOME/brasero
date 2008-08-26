@@ -1,5 +1,11 @@
 2008-08-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #549299 – brasero crashed with SIGSEGV in brasero_jacket_buffer_add_default_tag()
+
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_font_changed_cb):
+
+2008-08-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #547742 – brasero crashed with SIGSEGV in brasero_medium_get_write_speeds()
 	When resorting to page 2A we didn't add the max write speed to the list
 	which was then empty

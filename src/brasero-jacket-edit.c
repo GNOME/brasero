@@ -365,13 +365,15 @@ brasero_jacket_edit_font_changed_cb (BraseroJacketFont *button,
 	if (!priv->current_view)
 		return;
 
+	buffer = brasero_jacket_view_get_active_buffer (BRASERO_JACKET_VIEW (priv->current_view));
+	if (!buffer)
+		return;
+
 	font_name = brasero_jacket_font_get_name (button);
 	if (!font_name)
 		return;
 
 	desc = pango_font_description_from_string (font_name);
-
-	buffer = brasero_jacket_view_get_active_buffer (BRASERO_JACKET_VIEW (priv->current_view));
 	tag = gtk_text_buffer_create_tag (buffer, NULL,
 					  "font-desc", desc,
 					  NULL);
