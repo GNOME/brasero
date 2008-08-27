@@ -97,6 +97,9 @@ brasero_src_info_update (BraseroSrcInfo *self)
 				      GTK_ICON_SIZE_DIALOG);
 
 	if (media & BRASERO_MEDIUM_BLANK) {
+		/* NOTE for translators: when the disc is blank that's its size
+		 * ... 0. I set as translatable as maybe some languages don't 
+		 * use 0 for 0. */
 		gtk_label_set_text (GTK_LABEL (priv->capacity), _("0"));
 //		gtk_label_set_text (GTK_LABEL (priv->status), _("blank medium"));
 		return;
