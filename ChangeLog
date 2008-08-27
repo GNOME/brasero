@@ -1,5 +1,13 @@
 2008-08-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed a rare race condition which could result in some callback_data
+	not being destroyed
+
+	* src/brasero-io.c (brasero_io_job_free), (brasero_io_set_job),
+	(brasero_io_load_directory_thread):
+
+2008-08-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	When cut and pasting on the information page of data projects, make
 	the project tree appear
 
