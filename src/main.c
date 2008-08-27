@@ -49,6 +49,7 @@
 
 #include "brasero-project-manager.h"
 #include "brasero-multi-dnd.h"
+#include "brasero-session.h"
 #include "brasero-utils.h"
 #include "brasero-app.h"
 #include "burn-debug.h"
@@ -141,7 +142,7 @@ static const GOptionEntry options [] = {
 		g_object_unref (file);						\
 		list = g_slist_prepend (list, uri);				\
 	}									\
-	function (BRASERO_PROJECT_MANAGER (app->contents), list);		\
+	function (BRASERO_PROJECT_MANAGER (manager_MACRO), list);		\
 	g_slist_foreach (list, (GFunc) g_free, NULL);				\
 	g_slist_free (list);							\
 }
@@ -235,7 +236,7 @@ brasero_app_parse_options (BraseroApp *app)
 		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
 	}
 	else if (disc_blank) {
-		on_erase_cb (NULL, app);
+		brasero_app_blank (app);
 	}
 	else if (open_ncb) {
 		GSList *list = NULL;
@@ -339,7 +340,7 @@ main (int argc, char **argv)
 
 	gtk_widget_realize (app);
 
-	brasero_app_parse_options (app);
+	brasero_app_parse_options (BRASERO_APP (app));
 
 	gtk_widget_show (app);
 

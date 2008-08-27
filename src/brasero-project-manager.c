@@ -476,13 +476,18 @@ brasero_project_manager_sidepane_changed (BraseroLayout *layout,
 					  BraseroProjectManager *manager)
 {
 	if (!visible) {
+		GtkWidget *toplevel;
+ 		GtkWidget *status;
+ 
 		/* If sidepane is disabled, remove any text about selection */
 		if (manager->priv->io)
 			brasero_io_cancel_by_base (manager->priv->io,
 						   manager->priv->size_preview);
 
-		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
-				   manager->priv->status_ctx);
+ 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+ 		status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+
+ 		gtk_statusbar_pop (GTK_STATUSBAR (status), manager->priv->status_ctx);
 
 		if (manager->priv->selected) {
 			g_strfreev (manager->priv->selected);

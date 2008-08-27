@@ -328,7 +328,7 @@ brasero_session_die_cb (GnomeClient *client_loc,
 			BraseroApp *app)
 {
 	brasero_session_save (app, FALSE, FALSE);
-	gtk_widget_destroy (app->mainwin);
+	gtk_widget_destroy (GTK_WIDGET (app));
 }
 
 static gboolean
@@ -349,7 +349,7 @@ brasero_session_save_yourself_cb (GnomeClient *client_loc,
 					argc,
 					argv);
 
-    	gtk_widget_destroy (app->mainwin);
+    	gtk_widget_destroy (GTK_WIDGET (app));
 	return TRUE; /* successs */
 }
 
