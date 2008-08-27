@@ -589,12 +589,19 @@ brasero_project_size_get_media_string (BraseroProjectSize *self)
 						disc_sectors_str);
 	}
 	else if (drive_name)
-		text = g_strdup_printf ("%s / %s (for <i>%s</i>)",
+		/* To translators:
+		 * - %s is the size of the project
+		 * - %s is the size available (on disc)
+		 * - %s is the name of the drive */
+		text = g_strdup_printf (_("%s / %s (for <i>%s</i>)"),
 					selection_size_str,
 					disc_sectors_str,
 					drive_name);
 	else
-		text = g_strdup_printf ("%s / %s",
+		/* To translators:
+		 * - %s is the size of the project
+		 * - %s is the size available (on disc) */
+		text = g_strdup_printf (_("%s / %s"),
 					selection_size_str,
 					disc_sectors_str);
 
