@@ -3135,9 +3135,14 @@ brasero_caps_disc_new_status (GSList *retval,
 {
 	if ((type & BRASERO_MEDIUM_BLANK)
 	&& !(media & BRASERO_MEDIUM_ROM)) {
-		/* if media is blank there is no other possible property */
+		/* If media is blank there is no other possible property.
+		 * BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+		 * condition is checked but in fact it's never valid since
+		 * such a medium cannot exist if it hasn't been formatted before
+		 * which is in contradiction with the fact is unformatted. */
 		if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
 		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW)
 		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
 			/* This is only for above types */
 			retval = brasero_caps_disc_lookup_or_create (retval,
