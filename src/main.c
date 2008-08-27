@@ -47,8 +47,6 @@
 
 #endif
 
-#include <gconf/gconf-client.h>
-
 #include "brasero-app.h"
 #include "brasero-menu.h"
 #include "brasero-jacket-edit.h"
@@ -65,7 +63,6 @@
 #include "burn-caps.h"
 #include "burn-plugin-manager.h"
 
-static GConfClient *client;
 gchar *project_uri;
 gchar *playlist_uri;
 gchar *iso_uri;
@@ -846,8 +843,6 @@ main (int argc, char **argv)
 	brasero_burn_set_debug (debug);
 	brasero_burn_library_init ();
 
-	client = gconf_client_get_default ();
-
 	brasero_enable_multi_DND ();
 	brasero_utils_init ();
 	
@@ -874,9 +869,6 @@ main (int argc, char **argv)
 
 	g_free (app);
 	gst_deinit ();
-
-	g_object_unref (client);
-	client = NULL;
 
 	return 0;
 }
