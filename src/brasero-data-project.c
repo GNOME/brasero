@@ -1944,7 +1944,9 @@ brasero_data_project_add_loading_node (BraseroDataProject *self,
 	/* make sure that name doesn't exist */
 	node = brasero_file_node_check_name_existence (parent, name);
 	if (node) {
-		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node))) {
+		if (brasero_data_project_file_signal (self,
+						      NAME_COLLISION_SIGNAL,
+						      BRASERO_FILE_NODE_NAME (node))) {
 			g_free (name);
 			return NULL;
 		}

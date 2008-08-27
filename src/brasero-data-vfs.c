@@ -184,7 +184,12 @@ brasero_data_vfs_check_uri_result (BraseroDataVFS *self,
 
 	/* Only signal errors if the node was specifically added by the user
 	 * that is if it is loading. So check the loading GHashTable to know 
-	 * that. Otherwise this URI comes from directory exploration. */
+	 * that. Otherwise this URI comes from directory exploration.
+	 * The problem is the URI returned by brasero-io could be different
+	 * from the one set in the loading hash if there are parent symlinks.
+	 * That's one of the readon why we passed the orignal URI as a
+	 * registered string in the callback. Of course that's not true when
+	 * we're loading directory contents. */
 
 	if (error) {
 		if (error->domain == G_IO_ERROR && error->code == G_IO_ERROR_NOT_FOUND) {
@@ -612,8 +617,9 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
 
 	nodes = g_hash_table_lookup (priv->loading, registered);
+
 	/* check the status of the operation */
-	if (!brasero_data_vfs_check_uri_result (self, uri, error, info)) {
+	if (!brasero_data_vfs_check_uri_result (self, registered, error, info)) {
 		/* we need to remove the loading node that is waiting */
 		for (iter = nodes; iter; iter = iter->next) {
 			BraseroFileNode *node;
@@ -658,12 +664,18 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		 * reloading. */
 
 		if (!node->is_loading) {
-			brasero_data_project_node_reloaded (BRASERO_DATA_PROJECT (self), node, uri, info);
+			brasero_data_project_node_reloaded (BRASERO_DATA_PROJECT (self),
+							    node,
+							    uri,
+							    info);
 			continue;
 		}
 
 		/* update node */
-		brasero_data_project_node_loaded (BRASERO_DATA_PROJECT (self), node, uri, info);
+		brasero_data_project_node_loaded (BRASERO_DATA_PROJECT (self),
+						  node,
+						  uri,
+						  info);
 
 		/* See what type of file it is. If that's a directory then 
 		 * explore it right away */
@@ -725,7 +737,7 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 	GSList *nodes;
 
 	/* NOTE: this function receives URIs only from utf8 origins (not from
-	 * gnome-vfs for example) so we can assume that this is safe */
+	 * GIO for example) so we can assume that this is safe */
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
