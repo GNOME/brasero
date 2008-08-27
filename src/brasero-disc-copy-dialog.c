@@ -153,7 +153,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 							   NULL),
 			    FALSE,
 			    FALSE,
-			    6);
+			    0);
 
 	/* destination drive */
 	priv->selection = brasero_dest_selection_new (priv->session);
@@ -168,7 +168,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 							   NULL),
 			    FALSE,
 			    FALSE,
-			    6);
+			    0);
 
 	/* only show media with something to be read on them */
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),

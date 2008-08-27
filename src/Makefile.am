@@ -270,7 +270,9 @@ brasero_SOURCES = \
 	scsi-read10.c         \
 	scsi-sbc.h		\
 	brasero-app.c		\
-	brasero-app.h
+	brasero-app.h           \
+	brasero-src-info.c           \
+	brasero-src-info.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

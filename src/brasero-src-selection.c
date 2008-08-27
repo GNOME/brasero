@@ -27,6 +27,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "brasero-src-selection.h"
+#include "brasero-src-info.h"
 #include "brasero-drive-selection.h"
 #include "burn-track.h"
 #include "burn-session.h"
@@ -37,6 +38,8 @@ struct _BraseroSrcSelectionPrivate
 {
 	BraseroBurnSession *session;
 	BraseroTrack *track;
+
+	GtkWidget *info;
 };
 
 #define BRASERO_SRC_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SRC_SELECTION, BraseroSrcSelectionPrivate))
@@ -57,6 +60,10 @@ brasero_src_selection_drive_changed (BraseroDriveSelection *selection,
 	BraseroSrcSelectionPrivate *priv;
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
+
+	brasero_src_info_set_medium (BRASERO_SRC_INFO (priv->info),
+ 				     brasero_drive_get_medium (drive));
+
 	if (!priv->session)
 		return;
 
@@ -70,6 +77,11 @@ brasero_src_selection_drive_changed (BraseroDriveSelection *selection,
 		brasero_track_set_drive_source (priv->track, drive);
 
 	brasero_burn_session_add_track (priv->session, priv->track);
+
+	if (!drive)
+	    	gtk_widget_set_sensitive (priv->info, FALSE);
+	else
+		gtk_widget_set_sensitive (priv->info, TRUE);
 }
 
 GtkWidget *
@@ -84,6 +96,18 @@ brasero_src_selection_new (BraseroBurnSession *session)
 static void
 brasero_src_selection_init (BraseroSrcSelection *object)
 {
+	BraseroSrcSelectionPrivate *priv;
+
+	priv = BRASERO_SRC_SELECTION_PRIVATE (object);
+
+	priv->info = brasero_src_info_new ();
+	gtk_widget_show (priv->info);
+	gtk_box_pack_start (GTK_BOX (object),
+			    priv->info,
+			    FALSE,
+			    FALSE,
+			    0);
+
 	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
 					     _("Choose the disc to read from"));
 

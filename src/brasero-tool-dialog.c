@@ -43,6 +43,7 @@
 #include <gtk/gtkmessagedialog.h>
 
 #include "brasero-utils.h"
+#include "brasero-drive-info.h"
 #include "brasero-progress.h"
 #include "brasero-drive-selection.h"
 #include "brasero-tool-dialog.h"
@@ -61,6 +62,7 @@ struct _BraseroToolDialogPrivate {
 	GtkWidget *button;
 	GtkWidget *options;
 	GtkWidget *cancel;
+	GtkWidget *info;
 
 	BraseroBurn *burn;
 
@@ -359,6 +361,8 @@ brasero_tool_dialog_drive_changed_cb (BraseroDriveSelection *selection,
 
 	medium = brasero_drive_get_medium (drive);
 
+	brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (self->priv->info), medium);
+
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->drive_changed)
 		klass->drive_changed (self, medium);
@@ -487,13 +491,18 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	/* upper part */
 	obj->priv->upper_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (GTK_WIDGET (obj->priv->upper_box));
+
 	obj->priv->selector = brasero_drive_selection_new ();
 	gtk_widget_show (GTK_WIDGET (obj->priv->selector));
 	gtk_widget_set_tooltip_text (obj->priv->selector,
 				     _("Choose a media"));
 
+	obj->priv->info = brasero_drive_info_new ();
+	gtk_widget_show (GTK_WIDGET (obj->priv->info));
+
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
 			    brasero_utils_pack_properties (_("<b>Select a disc</b>"),
+							   obj->priv->info,
 							   obj->priv->selector,
 							   NULL),
 			    FALSE, FALSE, 0);

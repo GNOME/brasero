@@ -42,7 +42,6 @@ typedef struct _BraseroDriveSelectionPrivate BraseroDriveSelectionPrivate;
 struct _BraseroDriveSelectionPrivate
 {
 	GtkWidget *box;
-	GtkWidget *info;
 	GtkWidget *button;
 	GtkWidget *selection;
 
@@ -77,8 +76,6 @@ brasero_drive_selection_drive_changed (BraseroDriveSelection *self)
 	else
 		drive = NULL;
 
-	brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info), medium);
-
 	if (priv->locked_drive && priv->locked_drive != drive) {
 		brasero_drive_unlock (priv->locked_drive);
 		g_object_unref (priv->locked_drive);
@@ -87,7 +84,6 @@ brasero_drive_selection_drive_changed (BraseroDriveSelection *self)
 
 	if (!drive) {
 	    	gtk_widget_set_sensitive (priv->selection, FALSE);
-	    	gtk_widget_set_sensitive (priv->info, FALSE);
 
 		g_signal_emit (self,
 			       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
@@ -99,7 +95,6 @@ brasero_drive_selection_drive_changed (BraseroDriveSelection *self)
 		return;
 	}
 
-	gtk_widget_set_sensitive (priv->info, TRUE);
 	gtk_widget_set_sensitive (priv->selection, (priv->locked_drive == NULL));
 	g_signal_emit (self,
 		       brasero_drive_selection_signals [DRIVE_CHANGED_SIGNAL],
@@ -115,27 +110,6 @@ brasero_drive_selection_drive_changed_cb (BraseroMediumSelection *selector,
 					  BraseroDriveSelection *self)
 {
 	brasero_drive_selection_drive_changed (self);
-}
-
-void
-brasero_drive_selection_set_image_path (BraseroDriveSelection *self,
-					const gchar *path)
-{
-	BraseroDriveSelectionPrivate *priv;
-
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), path);
-}
-
-void
-brasero_drive_selection_set_same_src_dest (BraseroDriveSelection *self,
-					   gboolean value)
-{
-	BraseroDriveSelectionPrivate *priv;
-
-	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
-					      value);
 }
 
 gboolean
@@ -269,13 +243,6 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 			  object);
 	gtk_box_pack_start (GTK_BOX (priv->box),
 			    priv->selection,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	priv->info = brasero_drive_info_new ();
-	gtk_box_pack_start (GTK_BOX (object),
-			    priv->info,
 			    FALSE,
 			    FALSE,
 			    0);

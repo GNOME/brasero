@@ -1,5 +1,37 @@
 2008-08-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Split drive info and create a new info object more specific for source
+	drive.
+
+	* src/Makefile.am:
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_image_properties),
+	(brasero_dest_selection_set_image_properties),
+	(brasero_dest_selection_check_image_settings),
+	(brasero_dest_selection_source_changed),
+	(brasero_dest_selection_drive_changed),
+	(brasero_dest_selection_init),
+	(brasero_dest_selection_set_property):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-drive-selection.c
+	(brasero_drive_selection_drive_changed),
+	(brasero_drive_selection_init):
+	* src/brasero-drive-selection.h:
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_medium_removed_cb):
+	* src/brasero-src-info.c (brasero_src_info_update),
+	(brasero_src_info_set_medium), (brasero_src_info_init),
+	(brasero_src_info_finalize), (brasero_src_info_class_init),
+	(brasero_src_info_new):
+	* src/brasero-src-info.h:
+	* src/brasero-src-selection.c
+	(brasero_src_selection_drive_changed),
+	(brasero_src_selection_init):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_drive_changed_cb),
+	(brasero_tool_dialog_init):
+
+2008-08-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for previous changes
 
 	* src/brasero-project-manager.c

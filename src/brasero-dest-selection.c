@@ -51,6 +51,7 @@
 #include "burn-drive.h"
 #include "brasero-drive-selection.h"
 #include "brasero-drive-properties.h"
+#include "brasero-drive-info.h"
 #include "brasero-image-properties.h"
 #include "brasero-dest-selection.h"
 
@@ -60,6 +61,8 @@ struct _BraseroDestSelectionPrivate
 {
 	BraseroBurnCaps *caps;
 	BraseroBurnSession *session;
+
+	GtkWidget *info;
 
 	GtkWidget *drive_prop;
 	GtkWidget *button;
@@ -732,7 +735,7 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 	gtk_widget_destroy (priv->drive_prop);
 	priv->drive_prop = NULL;
 
-	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), image_path);
+	brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), image_path);
 	brasero_dest_selection_set_output_path (self,
 						format,
 						image_path);
@@ -1068,8 +1071,7 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	brasero_dest_selection_set_output_path (self,
 						output.subtype.img_format,
 						path);
-	brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self),
-						path);
+	brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), path);
 	g_free (path);
 
 	brasero_burn_session_remove_flag (priv->session,
@@ -1142,7 +1144,7 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 		brasero_dest_selection_set_output_path (self,
 							format,
 							path);
-		brasero_drive_selection_set_image_path (BRASERO_DRIVE_SELECTION (self), path);
+		brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), path);
 		g_free (path);
 	}
 	else
@@ -1230,8 +1232,8 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (self),
-						   brasero_burn_session_same_src_dest_drive (priv->session));
+	brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
+					      brasero_burn_session_same_src_dest_drive (priv->session));
 
 	if (brasero_burn_session_is_dest_file (priv->session)) {
 		/* check that if a path was set there may be none if there was
@@ -1327,13 +1329,17 @@ brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
 
+	brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info),
+ 				       brasero_drive_get_medium (drive));
+ 
+ 
 	if (!priv->session)
 		return;
 
 	brasero_burn_session_set_burner (priv->session, drive);
 
 	if (brasero_burn_session_same_src_dest_drive (priv->session))
-		brasero_drive_selection_set_same_src_dest (selection, TRUE);
+ 		brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info), TRUE);
 }
 
 static void
@@ -1356,6 +1362,14 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 	GtkWidget *label;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+
+	priv->info = brasero_drive_info_new ();
+	gtk_widget_show (priv->info);
+	gtk_box_pack_start (GTK_BOX (object),
+			    priv->info,
+			    FALSE,
+			    FALSE,
+			    0);
 
 	priv->caps = brasero_burn_caps_get_default ();
 	manager = brasero_plugin_manager_get_default ();
@@ -1474,8 +1488,8 @@ brasero_dest_selection_set_property (GObject *object,
 		if (drive)
 			g_object_unref (drive);
 
-		brasero_drive_selection_set_same_src_dest (BRASERO_DRIVE_SELECTION (object),
-							   brasero_burn_session_same_src_dest_drive (priv->session));
+ 		brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
+						      brasero_burn_session_same_src_dest_drive (priv->session));
 
 		if (brasero_burn_session_is_dest_file (session))
 			brasero_dest_selection_set_image_properties (BRASERO_DEST_SELECTION (object));

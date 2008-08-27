@@ -316,7 +316,10 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 			break;
 		}
 
-		g_object_unref (iter_medium);
+		/* Could be NULL if a message "there is no medium ..." is on */
+		if (iter_medium)
+			g_object_unref (iter_medium);
+
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	if (!gtk_tree_model_get_iter_first (model, &iter)) {
