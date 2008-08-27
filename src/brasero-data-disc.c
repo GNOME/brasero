@@ -460,6 +460,8 @@ brasero_data_disc_paste_activated_cb (GtkAction *action,
 	data = g_new0 (BraseroClipData, 1);
 	data->disc = disc;
 
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 1);
+
 	parent = brasero_data_disc_get_parent (disc);
 	if (parent)
 		data->reference = brasero_data_project_reference_new (priv->project, parent);
