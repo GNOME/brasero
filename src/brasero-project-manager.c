@@ -45,6 +45,7 @@
 #include <gtk/gtkuimanager.h>
 #include <gtk/gtkscrolledwindow.h>
 
+#include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-project.h"
 #include "brasero-layout.h"
@@ -174,7 +175,6 @@ struct BraseroProjectManagerPrivate {
 
 	GtkWidget *project;
 	GtkWidget *layout;
-	GtkWidget *status;
 
 	gchar **selected;
 	guint preview_id;
@@ -241,10 +241,18 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 				       gint files_num)
 {
 	gchar *status_string = NULL;
+	GtkWidget *toplevel;
+	GtkWidget *status;
 	gint valid_num;
 
-	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
-			   manager->priv->status_ctx);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+	status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+
+	if (!manager->priv->status_ctx)
+		manager->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
+									  "size_info");
+
+	gtk_statusbar_pop (GTK_STATUSBAR (status), manager->priv->status_ctx);
 
 	valid_num = files_num - invalid_num;
 	if (!invalid_num && valid_num) {
@@ -297,8 +305,7 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 	else
 		status_string = g_strdup (_("No file selected"));
 
-	gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
-			    manager->priv->status_ctx,
+	gtk_statusbar_push (GTK_STATUSBAR (status), manager->priv->status_ctx,
 			    status_string);
 	g_free (status_string);
 }
@@ -441,11 +448,20 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 	manager->priv->selected = uris;
 	if (!manager->priv->selected) {
-		gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
-				   manager->priv->status_ctx);
-		gtk_statusbar_push (GTK_STATUSBAR (manager->priv->status),
-				    manager->priv->status_ctx,
-				    _("No file selected"));
+		GtkWidget *toplevel;
+ 		GtkWidget *status;
+ 
+ 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+ 		status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+ 
+ 		if (!manager->priv->status_ctx)
+ 			manager->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
+ 										  "size_info");
+ 
+ 		gtk_statusbar_pop (GTK_STATUSBAR (status), manager->priv->status_ctx);
+ 		gtk_statusbar_push (GTK_STATUSBAR (status),
+  				    manager->priv->status_ctx,
+  				    _("No file selected"));
 		return;
 	}
 
@@ -478,15 +494,6 @@ brasero_project_manager_sidepane_changed (BraseroLayout *layout,
 			manager->priv->preview_id = 0;
 		}
 	}
-}
-
-void
-brasero_project_manager_set_status (BraseroProjectManager *manager,
-				    GtkWidget *status)
-{
-	manager->priv->status = status;
-	manager->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
-								  "size_info");
 }
 
 void
@@ -636,10 +643,15 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	&&  !brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
 		return;
 
-	gtk_statusbar_pop (GTK_STATUSBAR (manager->priv->status),
-			   manager->priv->status_ctx);
-
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+
+	if (manager->priv->status_ctx) {
+		GtkWidget *status;
+
+		status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+		gtk_statusbar_pop (GTK_STATUSBAR (status), manager->priv->status_ctx);
+	}
+
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 
 	manager->priv->type = type;

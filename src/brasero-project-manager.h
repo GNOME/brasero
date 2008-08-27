@@ -104,9 +104,6 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
 void
 brasero_project_manager_register_ui (BraseroProjectManager *manager,
 				     GtkUIManager *ui_manager);
-void
-brasero_project_manager_set_status (BraseroProjectManager *manager,
-				    GtkWidget *status);
 
 G_END_DECLS
 

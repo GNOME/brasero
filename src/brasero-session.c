@@ -71,6 +71,7 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 	gchar *state_str = NULL;
 	gchar *version = NULL;
     	gchar *project_path;
+	GtkWidget *manager;
 	gint height;
 	gint width;
 	gint state = 0;
@@ -85,9 +86,9 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 
 	/* Make sure that on first run the window has a default size of at least
 	 * 85% of the screen (hardware not GTK+) */
-	screen = gtk_window_get_screen (GTK_WINDOW (app->mainwin));
+	screen = gtk_window_get_screen (GTK_WINDOW (app));
 	monitor = gdk_screen_get_monitor_at_window (screen, 
-						    GTK_WIDGET (app->mainwin)->window);
+						    GTK_WIDGET (app)->window);
 	gdk_screen_get_monitor_geometry (screen, monitor, &rect);
 	width = rect.width / 100 * 85;
 	height = rect.height / 100 * 85;
@@ -177,12 +178,12 @@ end:
 
 	xmlFreeDoc (session);
 
-	gtk_window_resize (GTK_WINDOW (app->mainwin),
+	gtk_window_resize (GTK_WINDOW (app),
 			   width,
 			   height);
 
 	if (state)
-		gtk_window_maximize (GTK_WINDOW (app->mainwin));
+		gtk_window_maximize (GTK_WINDOW (app));
 
 	/* now we start the project if any */
 	project_path = brasero_session_get_path (BRASERO_SESSION_TMP_PROJECT_PATH);
@@ -192,8 +193,8 @@ end:
 		project_path = NULL;
 	}
 
-    	brasero_project_manager_load_session (BRASERO_PROJECT_MANAGER (app->contents),
-					      project_path);
+	manager = brasero_app_get_project_manager (app);
+    	brasero_project_manager_load_session (BRASERO_PROJECT_MANAGER (manager), project_path);
 
     	if (project_path) {
     		/* remove the project file not to have it next time */
@@ -209,8 +210,12 @@ brasero_session_save (BraseroApp *app,
 		      gboolean save_project,
 		      gboolean cancellable)
 {
+	gint width;
+	gint height;
 	gint success;
 	gboolean cancel;
+	GtkWidget *manager;
+	gboolean maximised;
 	gchar *project_path;
 	gchar *session_path;
 	xmlTextWriter *session;
@@ -220,7 +225,8 @@ brasero_session_save (BraseroApp *app,
 	else
 		project_path = NULL;
 
-    	cancel = brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (app->contents),
+	manager = brasero_app_get_project_manager (app);
+    	cancel = brasero_project_manager_save_session (BRASERO_PROJECT_MANAGER (manager),
 						       project_path,
 						       cancellable);
     	g_free (project_path);
@@ -262,24 +268,29 @@ brasero_session_save (BraseroApp *app,
 	if (success < 0)
 		goto error;
 
+	brasero_app_get_geometry (app,
+				  &width,
+				  &height,
+				  &maximised);
+
 	success = xmlTextWriterWriteFormatElement (session,
 						   (xmlChar *) "width",
 						   "%i",
-						   app->width);
+						   width);
 	if (success < 0)
 		goto error;
 
 	success = xmlTextWriterWriteFormatElement (session,
 						   (xmlChar *) "height",
 						   "%i",
-						   app->height);
+						   height);
 	if (success < 0)
 		goto error;
 
 	success = xmlTextWriterWriteFormatElement (session,
 						   (xmlChar *) "state",
 						   "%i",
-						   app->is_maximised);
+						   maximised);
 	if (success < 0)
 		goto error;
 

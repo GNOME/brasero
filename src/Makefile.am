@@ -47,7 +47,6 @@ brasero_SOURCES = \
 	brasero-playlist.h         \
 	brasero-player.c         \
 	brasero-player.h         \
-	brasero-menu.h         \
 	brasero-burn-dialog.c         \
 	brasero-burn-dialog.h         \
 	brasero-disc-copy-dialog.c         \
@@ -86,7 +85,6 @@ brasero_SOURCES = \
 	burn-caps.h         \
 	brasero-session.c         \
 	brasero-session.h         \
-	brasero-app.h         \
 	brasero-uri-container.c         \
 	brasero-uri-container.h         \
 	brasero-project-manager.c         \
@@ -270,7 +268,9 @@ brasero_SOURCES = \
 	scsi-write-page.h         \
 	scsi-mode-select.c         \
 	scsi-read10.c         \
-	scsi-sbc.h
+	scsi-sbc.h		\
+	brasero-app.c		\
+	brasero-app.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
@@ -293,99 +293,4 @@ endif
 
 brasero_LDADD =	\
 	$(BRASERO_LIBS) $(BRASERO_LIBXML_LIBS)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
