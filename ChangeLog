@@ -1,5 +1,12 @@
 2008-08-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #549726 – The symbol of the term kibibyte is 'KiB' not 'kiB'
+
+	* src/brasero-progress.c
+	(brasero_burn_progress_display_session_info):
+
+2008-08-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #549570 – Can't burn audio CD when saving to disk first
 
 	* src/burn-caps.c (brasero_caps_is_compatible_type):

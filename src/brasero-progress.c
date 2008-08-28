@@ -280,7 +280,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 	if (written > 1024 * 1024)
 		text = g_strdup_printf (_("%i MiB"), written / 1024 / 1024);
 	else if (written > 1024)
-		text = g_strdup_printf (_("%i kiB"), written / 1024);
+		text = g_strdup_printf (_("%i KiB"), written / 1024);
 	else if (written > 0)
 		text = g_strdup_printf (_("%i bytes"), written);
 	else
