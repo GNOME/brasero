@@ -1992,14 +1992,14 @@ brasero_data_disc_init (BraseroDataDisc *object)
 
 	priv = BRASERO_DATA_DISC_PRIVATE (object);
 
-	gtk_box_set_spacing (GTK_BOX (object), 0);
+	gtk_box_set_spacing (GTK_BOX (object), 8);
 
 	/* the information displayed about how to use this tree */
 	priv->notebook = brasero_disc_get_use_info_notebook ();
 	gtk_widget_show (priv->notebook);
 	gtk_box_pack_start (GTK_BOX (object), priv->notebook, TRUE, TRUE, 0);
 
-	mainbox = gtk_vbox_new (FALSE, 12);
+	mainbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (mainbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), mainbox, NULL);
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
@@ -2223,7 +2223,7 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  G_CALLBACK (brasero_data_disc_filter_expanded_cb),
 			  object);
 	gtk_widget_show (priv->filter);
-	gtk_box_pack_end (GTK_BOX (mainbox), priv->filter, FALSE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (object), priv->filter, FALSE, TRUE, 0);
 
 	g_signal_connect (priv->filter,
 			  "filtered",
