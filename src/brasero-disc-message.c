@@ -284,13 +284,19 @@ brasero_disc_message_add_button (BraseroDiscMessage *self,
 				 GtkResponseType response)
 {
 	GtkWidget *button;
+	PangoLayout *layout;
 	BraseroDiscMessagePrivate *priv;
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
 
 	button = gtk_button_new_with_mnemonic (text);
-	gtk_size_group_add_widget (group, button);
-	gtk_size_group_add_widget (priv->group, button);
+
+	/* only add buttons to group if the text is not wrapped. Otherwise
+	 * buttons would be too big. */
+	layout = gtk_label_get_layout (priv->primary);
+	if (!pango_layout_is_wrapped (layout))
+		gtk_size_group_add_widget (priv->group, button);
+
 	gtk_widget_set_tooltip_text (button, tooltip);
 	gtk_widget_show (button);
 	g_signal_connect (button,
@@ -312,13 +318,19 @@ void
 brasero_disc_message_add_close_button (BraseroDiscMessage *self)
 {
 	GtkWidget *button;
+	PangoLayout *layout;
 	GtkWidget *alignment;
 	BraseroDiscMessagePrivate *priv;
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
 
 	button = gtk_button_new ();
-	gtk_size_group_add_widget (priv->group, button);
+
+	/* only add buttons to group if the text is not wrapped. Otherwise
+	 * buttons would be too big. */
+	layout = gtk_label_get_layout (priv->primary);
+	if (pango_layout_is_wrapped (layout))
+		gtk_size_group_add_widget (priv->group, button);
 
 	alignment = gtk_alignment_new (1.0, 0.0, 0.0, 0.0);
 	gtk_widget_show (alignment);
@@ -549,11 +561,15 @@ brasero_disc_message_init (BraseroDiscMessage *object)
 	gtk_label_set_line_wrap (GTK_LABEL (priv->primary), TRUE);
 	gtk_size_group_add_widget (priv->group, priv->primary);
 	gtk_misc_set_alignment (GTK_MISC (priv->primary), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, FALSE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (priv->text_box), priv->primary, TRUE, TRUE, 0);
 
 	priv->button_box = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (priv->button_box);
-	gtk_box_pack_start (GTK_BOX (main_box), priv->button_box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box),
+			    priv->button_box,
+			    FALSE,
+			    FALSE,
+			    0);
 }
 
 static void
