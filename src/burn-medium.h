@@ -274,6 +274,9 @@ brasero_medium_get_icon (BraseroMedium *medium);
 BraseroDrive *
 brasero_medium_get_drive (BraseroMedium *self);
 
+const gchar *
+brasero_medium_get_id (BraseroMedium *self);
+
 G_END_DECLS
 
 #endif /* _BURN_MEDIUM_H_ */

@@ -92,6 +92,8 @@ struct _BraseroMediumPrivate
 
 	gchar *udi;
 
+	gchar *id;
+
 	gint max_rd;
 	gint max_wrt;
 
@@ -1399,6 +1401,34 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
+static void
+brasero_medium_get_DVD_id (BraseroMedium *self,
+			   BraseroDeviceHandle *handle,
+			   BraseroScsiErrCode *code)
+{
+	gint size = 0;
+	BraseroScsiResult result;
+	BraseroMediumPrivate *priv;
+	BraseroScsiReadDiscStructureHdr *hdr = NULL;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* This should be only possible for DVD-R(W) and not with all drives */
+	result = brasero_mmc2_read_generic_structure (handle,
+						      BRASERO_SCSI_FORMAT_LESS_MEDIA_ID_DVD,
+						      &hdr,
+						      &size,
+						      code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("Retrieval of DVD id failed");
+		return;
+	}
+
+	BRASERO_BURN_LOG ("DVD id %d", BRASERO_GET_16 (hdr->data + 2));
+	priv->id = g_strdup_printf ("%d", BRASERO_GET_16 (hdr->data + 2));
+	g_free (hdr);
+}
+
 static BraseroBurnResult
 brasero_medium_get_contents (BraseroMedium *self,
 			     BraseroDeviceHandle *handle,
@@ -1423,6 +1453,14 @@ brasero_medium_get_contents (BraseroMedium *self,
 		BRASERO_BURN_LOG ("READ DISC INFORMATION failed");
 		return BRASERO_BURN_ERR;
 	}
+
+	if (info->disc_id_valid) {
+		/* Try to get the disc identification if possible (CDs only) */
+		BRASERO_BURN_LOG ("Disc id %i", BRASERO_GET_32 (info->disc_id));
+		priv->id = g_strdup_printf ("%d", BRASERO_GET_32 (info->disc_id));
+	}
+	else
+		brasero_medium_get_DVD_id (self, handle, code);
 
 	if (info->erasable)
 		priv->info |= BRASERO_MEDIUM_REWRITABLE;
@@ -2359,6 +2397,11 @@ brasero_medium_reload_info (BraseroMedium *self)
 		priv->retry_id = 0;
 	}
 
+	if (priv->id) {
+		g_free (priv->id);
+		priv->id = NULL;
+	}
+
 	g_free (priv->rd_speeds);
 	priv->rd_speeds = NULL;
 
@@ -2410,6 +2453,11 @@ brasero_medium_finalize (GObject *object)
 	if (priv->retry_id) {
 		g_source_remove (priv->retry_id);
 		priv->retry_id = 0;
+	}
+
+	if (priv->id) {
+		g_free (priv->id);
+		priv->id = NULL;
 	}
 
 	g_free (priv->rd_speeds);
@@ -2607,6 +2655,15 @@ brasero_medium_get_udi (BraseroMedium *self)
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	return priv->udi;
+}
+
+const gchar *
+brasero_medium_get_id (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	return priv->id;
 }
 
 GType

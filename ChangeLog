@@ -1,5 +1,17 @@
 2008-08-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to get a valid unique ID for media (only working for CDs and DVD-)
+
+	* src/burn-medium.c (brasero_medium_get_DVD_id),
+	(brasero_medium_get_contents), (brasero_medium_reload_info),
+	(brasero_medium_finalize), (brasero_medium_get_id):
+	* src/burn-medium.h:
+	* src/scsi-read-disc-structure.c
+	(brasero_mmc2_read_generic_structure):
+	* src/scsi-read-disc-structure.h:
+
+2008-08-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #549492 – crash after creating new project
 
 	* src/brasero-data-tree-model.c (brasero_data_tree_model_get_iter):

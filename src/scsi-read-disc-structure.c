@@ -42,7 +42,7 @@ struct _BraseroReadDiscStructureCDB {
 	uchar media_type		:4;
 	uchar reserved0			:4;
 
-	/* for formats 0x83, */
+	/* for formats 0x83 */
 	uchar address			[4];
 	uchar layer_num;
 
@@ -152,7 +152,7 @@ brasero_mmc2_read_generic_structure (BraseroDeviceHandle *handle,
 	cdb->format = type;
 
 	res = brasero_read_disc_structure (cdb, data, size, error);
-	res = brasero_scsi_command_free (cdb);
+	brasero_scsi_command_free (cdb);
 	return res;
 }
 
