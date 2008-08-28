@@ -753,6 +753,10 @@ brasero_data_tree_model_get_iter (GtkTreeModel *model,
 	depth = gtk_tree_path_get_depth (path);
 
 	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
+	/* NOTE: if we're in reset, then root won't exist anymore */
+	if (!root)
+		return FALSE;
+		
 	node = brasero_file_node_nth_child (root, indices [0]);
 	if (!node)
 		return FALSE;
