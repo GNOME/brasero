@@ -473,7 +473,9 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 		return;
 	}
 
-	brasero_project_manager_open_by_mime (BRASERO_PROJECT_MANAGER (priv->contents), uri, mime);
+	brasero_project_manager_open_by_mime (BRASERO_PROJECT_MANAGER (priv->projects),
+					      uri,
+					      mime);
 	gtk_recent_info_unref (item);
 	g_free (uri);
 }
