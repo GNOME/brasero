@@ -190,6 +190,9 @@ brasero_volume_source_read10_device_handle (BraseroVolSrc *src,
 		return TRUE;
 	}
 
+	BRASERO_BURN_LOG ("READ10 failed %s at %i",
+			  brasero_scsi_strerror (code),
+			  src->position);
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
