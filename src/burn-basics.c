@@ -82,6 +82,11 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 BraseroBurnResult
 brasero_burn_library_init (void)
 {
+	BRASERO_BURN_LOG ("Initializing Brasero-%i.%i.%i",
+			  BRASERO_MAJOR_VERSION,
+			  BRASERO_MINOR_VERSION,
+			  BRASERO_SUB);
+
 	/* initialize all device list */
 	if (!medium_manager)
 		medium_manager = brasero_medium_monitor_get_default ();
