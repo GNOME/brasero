@@ -116,8 +116,13 @@ brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
 		datasize = BRASERO_GET_16 (hdr.len) + sizeof (hdr.len);
 
 		if (datasize > *size) {
-			BRASERO_BURN_LOG ("Oversized data received (%i) setting to %i", datasize, *size);
-			datasize = *size;
+			/* it must not be over sizeof (BraseroScsiTrackInfo) */
+			if (datasize > sizeof (BraseroScsiTrackInfo)) {
+				BRASERO_BURN_LOG ("Oversized data received (%i) setting to %i", datasize, *size);
+				datasize = *size;
+			}
+			else
+				*size = datasize;
 		}
 		else if (*size < datasize) {
 			BRASERO_BURN_LOG ("Oversized data required (%i) setting to %i", *size, datasize);

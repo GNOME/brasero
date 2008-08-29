@@ -103,7 +103,9 @@ struct _BraseroMediumPrivate
 	gint64 block_num;
 	gint64 block_size;
 
+	guint first_open_track;
 	guint64 next_wr_add;
+
 	BraseroMedia info;
 	BraseroDrive *drive;
 };
@@ -1121,9 +1123,10 @@ brasero_medium_track_get_info (BraseroMedium *self,
 }
 
 static BraseroBurnResult
-brasero_medium_track_get_nwa (BraseroMedium *self,
-			      BraseroDeviceHandle *handle,
-			      BraseroScsiErrCode *code)
+brasero_medium_track_set_leadout (BraseroMedium *self,
+				  BraseroDeviceHandle *handle,
+				  BraseroMediumTrack *leadout,
+				  BraseroScsiErrCode *code)
 {
 	BraseroScsiModeData *data = NULL;
 	BraseroScsiTrackInfo track_info;
@@ -1133,7 +1136,7 @@ brasero_medium_track_get_nwa (BraseroMedium *self,
 	gint track_num;
 	int size;
 
-	BRASERO_BURN_LOG ("Retrieving NWA");
+	BRASERO_BURN_LOG ("Retrieving NWA and leadout information");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -1184,8 +1187,12 @@ brasero_medium_track_get_nwa (BraseroMedium *self,
 	/* The following includes DL */
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDR_PLUS)) 
 		track_num = 0xFF;
-	else
-		track_num = g_slist_length (priv->tracks);
+	else if (priv->first_open_track >= 0)
+		track_num = priv->first_open_track;
+	else {
+		BRASERO_BURN_LOG ("There aren't any open session set");
+		return BRASERO_BURN_ERR;
+	}
 
 	result = brasero_mmc1_read_track_info (handle,
 					       track_num,
@@ -1198,12 +1205,20 @@ brasero_medium_track_get_nwa (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (track_info.next_wrt_address_valid) {
+	BRASERO_BURN_LOG ("Next Writable Address is %d", BRASERO_GET_32 (track_info.next_wrt_address));
+	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
-		BRASERO_BURN_LOG ("Next Writable Address is %d", priv->next_wr_add);
-	}
 	else
-		BRASERO_BURN_LOG ("No Next Writable Address");
+		BRASERO_BURN_LOG ("Next Writable Address is not valid");
+
+	/* Set free space */
+	BRASERO_BURN_LOG ("Free blocks %d", BRASERO_GET_32 (track_info.free_blocks));
+	leadout->blocks_num = BRASERO_GET_32 (track_info.free_blocks);
+
+	if (!leadout->blocks_num) {
+		leadout->blocks_num = BRASERO_GET_32 (track_info.track_size);
+		BRASERO_BURN_LOG ("Using track size %d", leadout->blocks_num);
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -1290,6 +1305,10 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	/* remove 1 for leadout */
 	multisession = !(priv->info & BRASERO_MEDIUM_BLANK) && num > 0;
 
+	/* NOTE: in the case of DVD- there are always only 3 sessions if they
+	 * are open: all first concatenated sessions, the last session, and the
+	 * leadout. */
+	
 	BRASERO_BURN_LOG ("%i track(s) found", num);
 
 	desc = toc->desc;
@@ -1297,7 +1316,8 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		BraseroMediumTrack *track;
 
 		if (desc->track_num == BRASERO_SCSI_TRACK_LEADOUT_START) {
-			BRASERO_BURN_LOG ("Leadout reached %d", BRASERO_GET_32 (desc->track_start));
+			BRASERO_BURN_LOG ("Leadout reached %d",
+					  BRASERO_GET_32 (desc->track_start));
 			break;
 		}
 
@@ -1379,23 +1399,22 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
 		brasero_medium_add_DVD_plus_RW_leadout (self);
 	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
-		BraseroMediumTrack *track;
+		BraseroMediumTrack *leadout;
 
 		/* we shouldn't request info on leadout if the disc is closed
 		 * (except for DVD+/- (restricted) RW (see above) */
-		track = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_append (priv->tracks, track);
-		track->start = BRASERO_GET_32 (desc->track_start);
-		track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+		leadout = g_new0 (BraseroMediumTrack, 1);
+		priv->tracks = g_slist_append (priv->tracks, leadout);
+		leadout->start = BRASERO_GET_32 (desc->track_start);
+		leadout->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 
-		brasero_medium_track_get_info (self,
-					       FALSE,
-					       track,
-					       g_slist_length (priv->tracks),
-					       handle,
-					       code);
-
-		brasero_medium_track_get_nwa (self, handle, code);
+		brasero_medium_track_set_leadout (self,
+						  handle,
+						  leadout,
+						  code);
+		BRASERO_BURN_LOG ("Leadout: start = %llu size = %llu",
+				  leadout->start,
+				  leadout->blocks_num);
 	}
 
 	g_free (toc);
@@ -1467,6 +1486,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 	if (info->erasable)
 		priv->info |= BRASERO_MEDIUM_REWRITABLE;
 
+	priv->first_open_track = -1;
+
 	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
 		BraseroMediumTrack *track;
 
@@ -1497,6 +1518,9 @@ brasero_medium_get_contents (BraseroMedium *self,
 	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
 		BRASERO_BURN_LOG ("Appendable media");
+
+		priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
+		BRASERO_BURN_LOG ("First track in last open session %i", priv->first_open_track);
 	}
 	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
 		priv->info |= BRASERO_MEDIUM_CLOSED;

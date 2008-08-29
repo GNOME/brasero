@@ -1,5 +1,13 @@
 2008-08-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to fix #544416 – Burning on open-sesion DVD gives over-burn warning
+
+	* src/burn-medium.c (brasero_medium_track_set_leadout),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_contents):
+	* src/scsi-read-track-information.c (brasero_read_track_info):
+
+2008-08-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Again small mistake
 
 	* src/burn-medium.c (brasero_medium_get_sessions_info):
