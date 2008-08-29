@@ -929,6 +929,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 
 		if (error)
 			g_error_free (error);
+
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1334,8 +1335,9 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			 * which have only one track: the first. Since it's not
 			 * possible to know the amount of data that were really
 			 * written in this session, read the filesystem. */
-			BRASERO_BURN_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size");
+			BRASERO_BURN_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size (start = %i)", track->start);
 			track->session = 1;
+			track->start = 0;
 			result = brasero_medium_track_volume_size (self, 
 								   track,
 								   handle);

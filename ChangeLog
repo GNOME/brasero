@@ -1,5 +1,14 @@
 2008-08-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improved debugging to catch some bug
+
+	* src/burn-medium.c (brasero_medium_track_volume_size),
+	(brasero_medium_get_sessions_info):
+	* src/burn-volume.c (brasero_volume_get_primary_from_file),
+	(brasero_volume_get_size):
+
+2008-08-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a crash introduced by recent changes
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_notify_success):

@@ -119,18 +119,11 @@ brasero_volume_get_primary_from_file (BraseroVolSrc *vol,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("there isn't a valid volume descriptor"));
+		BRASERO_BURN_LOG ("Wrong volume descriptor, got %.5s", desc->id);
 		return FALSE;
 	}
 
 	return TRUE;
-}
-
-gboolean
-brasero_volume_is_valid_fd (BraseroVolSrc *vol, GError **error)
-{
-	gchar buffer [ISO9660_BLOCK_SIZE];
-
-	return brasero_volume_get_primary_from_file (vol, buffer, error);
 }
 
 gboolean
@@ -142,7 +135,7 @@ brasero_volume_get_size (BraseroVolSrc *vol,
 	gboolean result;
 	gchar buffer [ISO9660_BLOCK_SIZE];
 
-	if (BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error) == -1)
+	if (block && BRASERO_VOL_SRC_SEEK (vol, block, SEEK_SET, error) == -1)
 		return FALSE;
 
 	result = brasero_volume_get_primary_from_file (vol, buffer, error);
