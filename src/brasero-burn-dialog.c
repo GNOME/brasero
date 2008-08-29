@@ -1631,7 +1631,6 @@ static void
 brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 {
 	gint64 rate;
-	GSList *iter;
 	BraseroMedia media;
 	BraseroDrive *drive;
 	gchar *primary = NULL;
@@ -1686,8 +1685,9 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	rate = 0;
 	if (dialog->priv->rates) {
 		int num = 0;
+		GSList *iter;
 
-		for (iter = dialog->priv->rates; iter; iter = iter->data) {
+		for (iter = dialog->priv->rates; iter; iter = iter->next) {
 			rate += GPOINTER_TO_INT (iter->data);
 			num ++;
 		}
