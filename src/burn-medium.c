@@ -1288,7 +1288,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	       sizeof (BraseroScsiTocDesc);
 
 	/* remove 1 for leadout */
-	multisession = (priv->info & BRASERO_MEDIUM_APPENDABLE) || (num -1) != 1;
+	multisession = !(priv->info & BRASERO_MEDIUM_BLANK) && num > 0;
 
 	BRASERO_BURN_LOG ("%i track(s) found", num);
 
