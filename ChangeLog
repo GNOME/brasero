@@ -1,3 +1,10 @@
+2008-08-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	revert fix for rare race condition as it created another one even worse
+
+	* src/brasero-io.c (brasero_io_job_free), (brasero_io_set_job),
+	(brasero_io_load_directory_thread):
+
 2008-08-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Try to fix #544416 – Burning on open-sesion DVD gives over-burn warning

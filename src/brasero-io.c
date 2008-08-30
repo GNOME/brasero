@@ -288,6 +288,9 @@ brasero_io_job_free (BraseroIOJob *job)
 	 * return a dummy result to destroy the callback_data if the directory
 	 * is empty. */
 
+	if (job->callback_data)
+		job->callback_data->ref --;
+
 	g_free (job->uri);
 	g_free (job);
 }
@@ -411,6 +414,9 @@ brasero_io_set_job (BraseroIOJob *job,
 	job->uri = g_strdup (uri);
 	job->options = options;
 	job->callback_data = callback_data;
+
+	if (callback_data)
+		job->callback_data->ref ++;
 }
 
 static void
@@ -1772,7 +1778,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		g_object_unref (child);
 	}
 
-	if (data->job.callback_data && data->job.callback_data->ref < 1) {
+	if (data->job.callback_data && data->job.callback_data->ref < 2) {
 		/* No result was returned so we need to return a dummy one to 
 		 * clean the callback_data in the main loop. */
 		brasero_io_return_result (BRASERO_IO (manager),
