@@ -1480,7 +1480,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 		BRASERO_BURN_LOG ("Disc id %i", BRASERO_GET_32 (info->disc_id));
 		priv->id = g_strdup_printf ("%d", BRASERO_GET_32 (info->disc_id));
 	}
-	else
+	else if (!(priv->info & BRASERO_MEDIUM_CD))
 		brasero_medium_get_DVD_id (self, handle, code);
 
 	if (info->erasable)
