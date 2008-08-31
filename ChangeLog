@@ -1,11 +1,11 @@
 2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Fix problems with CLONE image when choosing the toc file.
+	Now brasero can properly retrieve the image file from the toc file and
+	vice versa.
 
 	* src/burn-image-format.c (brasero_image_format_get_complement):
 	* src/burn-session.c (brasero_burn_session_get_image_complement):
-	* src/burn-task.c (brasero_task_set_track_output_size_default):
-	* src/burn-track.c (brasero_track_get_image_size):
 
 2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
