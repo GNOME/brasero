@@ -1,5 +1,17 @@
 2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a problem with disc copy using same src and dest driven (brasero not
+	accepting blank disc for destination).
+	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITING was on by default which would of
+	course be unsupported by a BLANK medium. So we are more lenient now with
+	this flag
+
+	* src/burn-caps.c (brasero_burn_caps_new_task),
+	(brasero_caps_try_output_with_blanking),
+	(brasero_burn_caps_get_flags):
+
+2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Avoid crashing when reloading a media that isn't supported in copy
 
 	* src/burn.c (brasero_burn_lock_dest_media),

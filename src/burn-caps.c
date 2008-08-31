@@ -1280,6 +1280,11 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 	if (!brasero_burn_caps_flags_check_for_drive (session))
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (session);
 
+	/* Here remove BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE since we'll handle
+	 * any possible need for blanking just afterwards if it doesn't work */
+	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+			   BRASERO_BURN_FLAG_FAST_BLANK);
+
 	list = brasero_caps_find_best_link (last_caps,
 					    self->priv->group_id,
 					    NULL,
@@ -1307,6 +1312,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		/* apparently nothing can be done to reach our goal. Maybe that
 		 * is because we first have to blank the disc. If so add a blank 
 		 * task to the others as a first step */
+		session_flags = brasero_burn_session_get_flags (session);
 		if (!(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 		||    brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
 			BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_ERROR (session, error);
@@ -1808,12 +1814,20 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	BraseroBurnFlag session_flags;
 
 	session_flags = brasero_burn_session_get_flags (session);
+
+	/* The case with prior blanking is checked later so no need for the next
+	 * 2 flags */
+	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+			   BRASERO_BURN_FLAG_FAST_BLANK);
+
 	result = brasero_caps_try_output (session_flags,
 					  output,
 					  input,
 					  io_flags);
 	if (result)
 		return result;
+
+	session_flags = brasero_burn_session_get_flags (session);
 
 	/* we reached this point in two cases:
 	 * - if the disc cannot be handled
@@ -2399,11 +2413,18 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 	supported_flags |= BRASERO_BURN_FLAG_EJECT;
 	media = brasero_burn_session_get_dest_media (session);
 
+	/* Here remove the BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE since that case
+	 * will be handled later in case of failure */
+	session_flags &= ~(BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+			   BRASERO_BURN_FLAG_FAST_BLANK);
+
 	result = brasero_caps_get_flags_for_disc (session_flags,
 						  media,
 						  &input,
 						  &supported_flags,
 						  &compulsory_flags);
+	session_flags = brasero_burn_session_get_flags (session);
+
 	if (result == BRASERO_BURN_OK) {
 		if (media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
 			gboolean operation;
@@ -2492,12 +2513,15 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		 * then write on its own. Basically that works only with
 		 * overwrite formatted discs, DVD+RW, ...) */
 
-		if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA|BRASERO_MEDIUM_UNFORMATTED))) {
+		if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|
+			       BRASERO_MEDIUM_HAS_DATA|
+			       BRASERO_MEDIUM_UNFORMATTED))) {
 			/* media must have data/audio */
 			return BRASERO_BURN_NOT_SUPPORTED;
 		}
 
-		if (session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
+		if (session_flags & (BRASERO_BURN_FLAG_MERGE|
+				     BRASERO_BURN_FLAG_APPEND)) {
 			/* There is nothing we can do here */
 			return BRASERO_BURN_NOT_SUPPORTED;
 		}
