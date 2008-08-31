@@ -265,32 +265,31 @@ brasero_async_task_manager_thread (BraseroAsyncTaskManager *self)
 		self->priv->active_tasks = g_slist_remove (self->priv->active_tasks, ctx);
 		g_cond_signal (self->priv->task_finished);
 
-		if (g_cancellable_is_cancelled (cancel)) {
-			if (ctx->type->destroy)
-				ctx->type->destroy (self, ctx->data);
+		/* NOTE: when threads are cancelled then they are destroyed in
+		 * the function that cancelled them to destroy callback_data in
+		 * the active main loop */
+		if (!g_cancellable_is_cancelled (cancel)) {
+			if (res == BRASERO_ASYNC_TASK_RESCHEDULE) {
+				if (self->priv->waiting_tasks) {
+					BraseroAsyncTaskCtx *next;
 
-			g_free (ctx);
-		}
-		else if (res == BRASERO_ASYNC_TASK_RESCHEDULE) {
-			if (self->priv->waiting_tasks) {
-				BraseroAsyncTaskCtx *next;
-
-				next = self->priv->waiting_tasks->data;
-				if (next->priority > ctx->priority)
-					brasero_async_task_manager_insert_task (self, ctx);
+					next = self->priv->waiting_tasks->data;
+					if (next->priority > ctx->priority)
+						brasero_async_task_manager_insert_task (self, ctx);
+					else
+						self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
+				}
 				else
 					self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
 			}
-			else
-				self->priv->waiting_tasks = g_slist_prepend (self->priv->waiting_tasks, ctx);
+			else {
+				if (ctx->type->destroy)
+					ctx->type->destroy (self, FALSE, ctx->data);
+				g_free (ctx);
+			}
 		}
-		else {
-			if (ctx->type->destroy)
-				ctx->type->destroy (self, ctx->data);
-			g_free (ctx);
-		}
-
-		g_cancellable_reset (cancel);
+		else
+			g_cancellable_reset (cancel);
 	}
 
 end:
@@ -423,8 +422,11 @@ brasero_async_task_manager_foreach_active_remove (BraseroAsyncTaskManager *self,
 
 			tasks = g_slist_remove (tasks, ctx);
 
-			/* NOTE: no need to call destroy callback here 
-			 * since it was done in the thread loop. */
+			/* destroy it */
+			if (ctx->type->destroy)
+				ctx->type->destroy (self, TRUE, ctx->data);
+
+			g_free (ctx);
 		}
 	}
 
@@ -455,7 +457,7 @@ brasero_async_task_manager_foreach_unprocessed_remove (BraseroAsyncTaskManager *
 
 			/* call the destroy callback */
 			if (ctx->type->destroy)
-				ctx->type->destroy (self, ctx->data);
+				ctx->type->destroy (self, TRUE, ctx->data);
 
 			g_free (ctx);
 		}

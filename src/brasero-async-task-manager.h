@@ -63,6 +63,7 @@ typedef BraseroAsyncTaskResult	(*BraseroAsyncThread)		(BraseroAsyncTaskManager *
 								 GCancellable *cancel,
 								 gpointer user_data);
 typedef void			(*BraseroAsyncDestroy)		(BraseroAsyncTaskManager *manager,
+								 gboolean cancelled,
 								 gpointer user_data);
 typedef gboolean		(*BraseroAsyncFindTask)		(BraseroAsyncTaskManager *manager,
 								 gpointer task,

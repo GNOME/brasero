@@ -77,7 +77,7 @@ struct _BraseroIOPrivate
 
 struct _BraseroIOResultCallbackData {
 	gpointer callback_data;
-	guint ref;
+	gint ref;
 };
 typedef struct _BraseroIOResultCallbackData BraseroIOResultCallbackData;
 
@@ -251,8 +251,8 @@ brasero_io_unref_result_callback_data (BraseroIOResultCallbackData *data,
 	if (!data)
 		return;
 
-	data->ref --;
-	if (data->ref > 0)
+	/* see atomically if we are the last to hold a lock */
+	if (!g_atomic_int_dec_and_test (&data->ref))
 		return;
 
 	if (destroy)
@@ -275,41 +275,6 @@ brasero_io_job_result_free (BraseroIOJobResult *result)
 		g_free (result->uri);
 
 	g_free (result);
-}
-
-static void
-brasero_io_job_free (BraseroIOJob *job)
-{
-	/* NOTE: the callback_data member is never destroyed here since it would
-	 * be destroyed in a thread different from the main loop.
-	 * Either it's destroyed in the thread that called brasero_io_cancel ()
-	 * or after all results are returned (and therefore in main loop).
-	 * As a special case, some jobs like read directory contents have to
-	 * return a dummy result to destroy the callback_data if the directory
-	 * is empty. */
-
-	if (job->callback_data)
-		job->callback_data->ref --;
-
-	g_free (job->uri);
-	g_free (job);
-}
-
-static void
-brasero_io_job_destroy (BraseroAsyncTaskManager *self,
-			gpointer callback_data)
-{
-	BraseroIOJob *job = callback_data;
-
-	/* If a job is destroyed we don't call the destroy callback since it
-	 * otherwise it would be called in a different thread. All object that
-	 * cancel io ops are doing it either in destroy () and therefore handle
-	 * all destruction for callback_data or if they don't they usually don't
-	 * pass any callback data anyway. */
-	/* NOTE: usually threads are cancelled from the main thread/loop and
-	 * block until the active task is removed which means that if we called
-	 * the destroy () then the destruction would be done in the main loop */
-	brasero_io_job_free (job);
 }
 
 /**
@@ -392,8 +357,8 @@ brasero_io_return_result (BraseroIO *self,
 	result->uri = g_strdup (uri);
 
 	if (callback_data) {
+		g_atomic_int_inc (&callback_data->ref);
 		result->callback_data = callback_data;
-		callback_data->ref ++;
 	}
 
 	brasero_io_queue_result (self, result);
@@ -416,7 +381,7 @@ brasero_io_set_job (BraseroIOJob *job,
 	job->callback_data = callback_data;
 
 	if (callback_data)
-		job->callback_data->ref ++;
+		g_atomic_int_inc (&job->callback_data->ref);
 }
 
 static void
@@ -439,6 +404,72 @@ brasero_io_push_job (BraseroIO *self,
 						  BRASERO_ASYNC_NORMAL,
 						  type,
 						  job);
+}
+
+/**
+ * Job destruction
+ */
+
+static void
+brasero_io_job_free (BraseroIO *self,
+		     gboolean cancelled,
+		     BraseroIOJob *job)
+{
+	/* NOTE: the callback_data member is never destroyed here since it would
+	 * be destroyed in a thread different from the main loop.
+	 * Either it's destroyed in the thread that called brasero_io_cancel ()
+	 * or after all results are returned (and therefore in main loop).
+	 * As a special case, some jobs like read directory contents have to
+	 * return a dummy result to destroy the callback_data if the directory
+	 * is empty.
+	 * If the job happens to be the last to carry a reference then destroy
+	 * it but do it in the main loop by sending a dummy result. */
+
+	/* NOTE2: that's also used for directory loading when there aren't any
+	 * result to notify the caller that the operation has finished but that
+	 * there weren't any result to report. */
+	if (job->callback_data) {
+		/* see atomically if we are the last to hold a lock:
+		 * If so, and if cancelled is TRUE destroy it now since we are
+		 * always cancelled (and destroyed in the main loop). Otherwise
+		 * add a dummy result to destroy callback_data. */
+		if (g_atomic_int_dec_and_test (&job->callback_data->ref)) {
+			if (cancelled) {
+				job->base->destroy (job->base->object,
+						    TRUE,
+						    job->callback_data);
+				g_free (job->callback_data);
+			}
+			else
+				brasero_io_return_result (self,
+							  job->base,
+							  NULL,
+							  NULL,
+							  NULL,
+							  job->callback_data);
+		}
+	}
+
+	g_free (job->uri);
+	g_free (job);
+}
+
+static void
+brasero_io_job_destroy (BraseroAsyncTaskManager *manager,
+			gboolean cancelled,
+			gpointer callback_data)
+{
+	BraseroIOJob *job = callback_data;
+
+	/* If a job is destroyed we don't call the destroy callback since it
+	 * otherwise it would be called in a different thread. All object that
+	 * cancel io ops are doing it either in destroy () and therefore handle
+	 * all destruction for callback_data or if they don't they usually don't
+	 * pass any callback data anyway. */
+	/* NOTE: usually threads are cancelled from the main thread/loop and
+	 * block until the active task is removed which means that if we called
+	 * the destroy () then the destruction would be done in the main loop */
+	brasero_io_job_free (BRASERO_IO (manager), cancelled, job);
 }
 
 /**
@@ -1197,6 +1228,7 @@ typedef struct _BraseroIOCountData BraseroIOCountData;
 
 static void
 brasero_io_get_file_count_destroy (BraseroAsyncTaskManager *manager,
+				   gboolean cancelled,
 				   gpointer callback_data)
 {
 	BraseroIOCountData *data = callback_data;
@@ -1209,7 +1241,7 @@ brasero_io_get_file_count_destroy (BraseroAsyncTaskManager *manager,
 
 	brasero_io_job_progress_report_stop (BRASERO_IO (manager), callback_data);
 
-	brasero_io_job_free (callback_data);
+	brasero_io_job_free (BRASERO_IO (manager), cancelled, callback_data);
 }
 
 #ifdef BUILD_PLAYLIST
@@ -1528,6 +1560,7 @@ typedef struct _BraseroIOContentsData BraseroIOContentsData;
 
 static void
 brasero_io_load_directory_destroy (BraseroAsyncTaskManager *manager,
+				   gboolean cancelled,
 				   gpointer callback_data)
 {
 	BraseroIOContentsData *data = callback_data;
@@ -1535,7 +1568,7 @@ brasero_io_load_directory_destroy (BraseroAsyncTaskManager *manager,
 	g_slist_foreach (data->children, (GFunc) g_object_unref, NULL);
 	g_slist_free (data->children);
 
-	brasero_io_job_free (BRASERO_IO_JOB (data));
+	brasero_io_job_free (BRASERO_IO (manager), cancelled, BRASERO_IO_JOB (data));
 }
 
 #ifdef BUILD_PLAYLIST
@@ -1778,17 +1811,6 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 		g_object_unref (child);
 	}
 
-	if (data->job.callback_data && data->job.callback_data->ref < 2) {
-		/* No result was returned so we need to return a dummy one to 
-		 * clean the callback_data in the main loop. */
-		brasero_io_return_result (BRASERO_IO (manager),
-					  data->job.base,
-					  NULL,
-					  NULL,
-					  NULL,
-					  data->job.callback_data);
-	}
-
 	g_file_enumerator_close (enumerator, NULL, NULL);
 	g_object_unref (enumerator);
 	g_object_unref (file);
@@ -1868,6 +1890,7 @@ brasero_io_xfer_pair_free (BraseroIOXferPair *pair)
 
 static void
 brasero_io_xfer_destroy (BraseroAsyncTaskManager *manager,
+			 gboolean cancelled,
 			 gpointer callback_data)
 {
 	BraseroIOXferData *data = callback_data;
@@ -1879,7 +1902,7 @@ brasero_io_xfer_destroy (BraseroAsyncTaskManager *manager,
 	g_mutex_free (data->current_lock);
 
 	/* no need to stop progress report as the following function will do it */
-	brasero_io_get_file_count_destroy (manager, callback_data);
+	brasero_io_get_file_count_destroy (manager, cancelled, callback_data);
 }
 
 static void
@@ -2384,8 +2407,7 @@ brasero_io_free_async_queue (BraseroAsyncTaskManager *manager,
 				    TRUE,
 				    job->callback_data);
 
-	brasero_io_job_free (job);
-
+	brasero_io_job_free (BRASERO_IO (manager), TRUE, job);
 	return TRUE;
 }
 

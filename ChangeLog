@@ -1,3 +1,20 @@
+2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix race condition in brasero-io
+
+	* src/brasero-async-task-manager.c
+	(brasero_async_task_manager_thread),
+	(brasero_async_task_manager_foreach_active_remove),
+	(brasero_async_task_manager_foreach_unprocessed_remove):
+	* src/brasero-async-task-manager.h:
+	* src/brasero-io.c (brasero_io_unref_result_callback_data),
+	(brasero_io_return_result), (brasero_io_set_job),
+	(brasero_io_job_free), (brasero_io_job_destroy),
+	(brasero_io_get_file_count_destroy),
+	(brasero_io_load_directory_destroy),
+	(brasero_io_load_directory_thread), (brasero_io_xfer_destroy),
+	(brasero_io_free_async_queue):
+
 2008-08-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	revert fix for rare race condition as it created another one even worse
