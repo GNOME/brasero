@@ -926,7 +926,7 @@ end:
 			goto again;
 	}
 
-	if (result != BRASERO_BURN_OK) {
+	if (result != BRASERO_BURN_OK && priv->dest_locked) {
 		priv->dest_locked = 0;
 		brasero_drive_unlock (priv->dest);
 	}
@@ -947,7 +947,10 @@ again:
 
 	/* eject and ask the user to reload a disc */
 	required_media = brasero_burn_caps_get_required_media_type (priv->caps, priv->session);
-	required_media &= (BRASERO_MEDIUM_WRITABLE|BRASERO_MEDIUM_CD|BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL);
+	required_media &= (BRASERO_MEDIUM_WRITABLE|
+			   BRASERO_MEDIUM_CD|
+			   BRASERO_MEDIUM_DVD|
+			   BRASERO_MEDIUM_DVD_DL);
 
 	result = brasero_burn_ask_for_dest_media (burn,
 						  error_code,

@@ -1,5 +1,12 @@
 2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Avoid crashing when reloading a media that isn't supported in copy
+
+	* src/burn.c (brasero_burn_lock_dest_media),
+	(brasero_burn_reload_dest_media):
+
+2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix race condition in brasero-io
 
 	* src/brasero-async-task-manager.c
