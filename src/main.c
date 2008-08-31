@@ -142,6 +142,8 @@ static const GOptionEntry options [] = {
 		g_object_unref (file);						\
 		list = g_slist_prepend (list, uri);				\
 	}									\
+	/* reverse to keep the order of files */				\
+	list = g_slist_reverse (list);						\
 	function (BRASERO_PROJECT_MANAGER (manager_MACRO), list);		\
 	g_slist_foreach (list, (GFunc) g_free, NULL);				\
 	g_slist_free (list);							\
@@ -215,25 +217,25 @@ brasero_app_parse_options (BraseroApp *app)
 		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device);
 	}
 	else if (iso_uri) {
-		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_iso, iso_uri);
+		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_iso, iso_uri);
 	}
 	else if (project_uri) {
-		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open_project, project_uri);
+		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_project, project_uri);
 	}
 
 #ifdef BUILD_PLAYLIST
 
 	else if (playlist_uri) {
-		BRASERO_PROJECT_OPEN_URI (app, brasero_project_manager_open_playlist, playlist_uri);
+		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
 	}
 
 #endif
 
 	else if (audio_project) {
-		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_audio, files);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
 	}
 	else if (data_project) {
-		BRASERO_PROJECT_OPEN_LIST (app, brasero_project_manager_data, files);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
 	}
 	else if (disc_blank) {
 		brasero_app_blank (app);
@@ -256,6 +258,8 @@ brasero_app_parse_options (BraseroApp *app)
 			list = g_slist_prepend (list, file);
 		}
 
+		/* reverse to keep the order of files */
+		list = g_slist_reverse (list);
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
 		g_slist_free (list);
 	}

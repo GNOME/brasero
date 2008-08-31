@@ -1,5 +1,15 @@
 2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed two problems:
+	- brasero was using the wrong order when loading file list passed on the
+	  command line
+	- brasero crashed when passed arguments on the command line (the problem 
+	  was introduced by recent changes)
+
+	* src/main.c (brasero_app_parse_options):
+
+2008-08-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix problems with CLONE image when choosing the toc file.
 	Now brasero can properly retrieve the image file from the toc file and
 	vice versa.
