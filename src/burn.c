@@ -709,6 +709,7 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 			*must_blank = FALSE;
 		else
 			*must_blank = TRUE;
+
 		return BRASERO_BURN_ERROR_NONE;
 	}
 
@@ -796,7 +797,7 @@ again:
 	BRASERO_BURN_LOG_WITH_FULL_TYPE (BRASERO_TRACK_TYPE_DISC,
 					 media,
 					 BRASERO_PLUGIN_IO_NONE,
-					 "Waiting for dest drive");
+					 "Media inserted is");
 
 	if (priv->dest_locked) {
 		/* NOTE: after a blanking, for nautilus_burn the CD/DVD is still
@@ -828,9 +829,8 @@ again:
 	berror = brasero_burn_is_loaded_dest_media_supported (burn,
 							      media,
 							      &must_blank);
-
 	if (berror != BRASERO_BURN_ERROR_NONE) {
-		BRASERO_BURN_LOG ("the media is not supported");
+		BRASERO_BURN_LOG ("Inserted media is not supported");
 		result = BRASERO_BURN_NEED_RELOAD;
 		goto end;
 	}
@@ -2318,7 +2318,8 @@ brasero_burn_record (BraseroBurn *burn,
 			goto end;
 	}
 
-	/* burn the session a first time whatever the number of copies required except if dummy session */
+	/* burn the session a first time whatever the number of copies required 
+	 * except if dummy session */
 	result = brasero_burn_record_session (burn, TRUE, error);
 	if (result == BRASERO_BURN_OK) {
 		gint num_copies;
