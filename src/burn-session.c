@@ -515,14 +515,8 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (format == BRASERO_IMAGE_FORMAT_CLONE) {
-		if (g_str_has_suffix (path, ".raw"))
-			retval = g_strdup_printf ("%.*stoc",
-						  strlen (path) - 3,
-						  path);
-		else
+	if (format == BRASERO_IMAGE_FORMAT_CLONE)
 			retval = g_strdup_printf ("%s.toc", path);
-	}
 	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 		if (g_str_has_suffix (path, ".bin"))
 			retval = g_strdup_printf ("%.*scue",

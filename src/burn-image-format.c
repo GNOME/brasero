@@ -196,13 +196,10 @@ brasero_image_format_get_complement (BraseroImageFormat format,
 	gchar *retval = NULL;
 
 	if (format == BRASERO_IMAGE_FORMAT_CLONE) {
-		/* These are set rules no need to parse */
+		/* These are set rules no need to parse:
+		 * the toc file has to end with .toc suffix */
 		if (g_str_has_suffix (path, ".toc"))
-			retval = g_strdup_printf ("%.*sraw",
-						  strlen (path) - 3,
-						  path);
-		else
-			retval = g_strdup_printf ("%s.raw", path);
+			retval = g_strndup (path, strlen (path) - 4);
 	}
 	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 		/* need to parse */

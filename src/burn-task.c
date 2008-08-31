@@ -408,7 +408,6 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 			return result;
 
 		BRASERO_BURN_LOG ("Got a default image track length %lli", sectors);
-
 		brasero_task_ctx_set_output_size_for_current_track (BRASERO_TASK_CTX (self),
 								    sectors,
 								    size);

@@ -1041,10 +1041,10 @@ brasero_track_get_image_size (BraseroTrack *track,
 	else if (track->type.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
 		gchar *path;
 
-		if (!image->image)
+		path = brasero_track_get_image_source (track, FALSE);
+		if (!path)
 			return BRASERO_BURN_ERR;
 
-		path = brasero_track_get_localpath (image->image);
 		if (!brasero_image_format_get_clone_size (path, blocks, size, error)) {
 			g_free (path);
 			return BRASERO_BURN_ERR;
