@@ -1133,8 +1133,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_HAS_DATA,
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_NOGRACE|
-				  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE,
+				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
 	/* Flags for CD (RW)s */
