@@ -137,9 +137,14 @@ brasero_image_option_dialog_image_info_cb (GObject *object,
 							       format,
 							       NULL,
 							       uri);
-		else
+		else if (g_str_has_suffix (path, ".toc"))
 			brasero_image_option_dialog_set_track (dialog,
 							       BRASERO_IMAGE_FORMAT_CLONE,
+							       NULL,
+							       uri);
+		else
+			brasero_image_option_dialog_set_track (dialog,
+							       BRASERO_IMAGE_FORMAT_NONE,
 							       NULL,
 							       uri);
 	}
