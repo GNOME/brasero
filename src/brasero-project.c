@@ -943,7 +943,6 @@ brasero_project_check_default_burning_app (BraseroProject *project,
 					  GTK_BUTTONS_NONE,
 					  primary);
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Default Burning Application"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("This is a first time running dialog that won't be shown again. If you change your mind, you can change your choice later in the Removable Drives and Media Preferences whether or not you chose brasero."));
 
