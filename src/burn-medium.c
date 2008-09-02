@@ -1220,6 +1220,10 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		BRASERO_BURN_LOG ("Using track size %d", leadout->blocks_num);
 	}
 
+	BRASERO_BURN_LOG ("Leadout: start = %llu size = %llu",
+			  leadout->start,
+			  leadout->blocks_num);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -1404,17 +1408,14 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 		/* we shouldn't request info on leadout if the disc is closed
 		 * (except for DVD+/- (restricted) RW (see above) */
 		leadout = g_new0 (BraseroMediumTrack, 1);
-		priv->tracks = g_slist_append (priv->tracks, leadout);
 		leadout->start = BRASERO_GET_32 (desc->track_start);
 		leadout->type = BRASERO_MEDIUM_TRACK_LEADOUT;
+		priv->tracks = g_slist_append (priv->tracks, leadout);
 
 		brasero_medium_track_set_leadout (self,
 						  handle,
 						  leadout,
 						  code);
-		BRASERO_BURN_LOG ("Leadout: start = %llu size = %llu",
-				  leadout->start,
-				  leadout->blocks_num);
 	}
 
 	g_free (toc);
@@ -1496,6 +1497,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 		priv->info |= BRASERO_MEDIUM_BLANK;
 		priv->block_size = 2048;
 
+		priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
+
 		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
 		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
 			brasero_medium_add_DVD_plus_RW_leadout (self);
@@ -1505,13 +1508,12 @@ brasero_medium_get_contents (BraseroMedium *self,
 			track->type = BRASERO_MEDIUM_TRACK_LEADOUT;
 			priv->tracks = g_slist_prepend (priv->tracks, track);
 			
-			brasero_medium_track_get_info (self,
-						       FALSE,
-						       track,
-						       1,
-						       handle,
-						       code);
+			brasero_medium_track_set_leadout (self,
+							  handle,
+							  track,
+							  code);
 		}
+
 		goto end;
 	}
 
