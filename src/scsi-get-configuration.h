@@ -1053,7 +1053,7 @@ struct _BraseroScsiDVDRWlessWrtDesc {
 	uchar reserved2		:1;
 	uchar buf		:1;
 	uchar reserved1		:2;
-	uchar rdl		:1;
+	uchar dual_layer_r	:1;
 	uchar dummy		:1;
 	uchar rw_DVD		:1;
 	uchar reserved0		:1;
