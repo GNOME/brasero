@@ -247,6 +247,21 @@ brasero_burn_session_free_tracks (BraseroBurnSession *self)
 		       0);
 }
 
+void
+brasero_burn_session_clear_current_track (BraseroBurnSession *self)
+{
+	BraseroBurnSessionPrivate *priv;
+
+	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	brasero_burn_session_stop_src_drive_monitoring (self);
+	g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);
+	g_slist_free (priv->tracks);
+	priv->tracks = NULL;
+}
+
 BraseroBurnResult
 brasero_burn_session_add_track (BraseroBurnSession *self,
 				BraseroTrack *new_track)
@@ -279,7 +294,8 @@ brasero_burn_session_add_track (BraseroBurnSession *self,
 	brasero_burn_session_stop_src_drive_monitoring (self);
 
 	/* if there is already a track, then we replace it on condition that it
-	 * has the same type */
+	 * has the same type and it's not AUDIO (only one allowed to have many)
+	 */
 	if (brasero_track_get_type (new_track, NULL) != BRASERO_TRACK_TYPE_AUDIO
 	||  brasero_burn_session_get_input_type (self, NULL) != BRASERO_TRACK_TYPE_AUDIO) {
 		g_slist_foreach (priv->tracks, (GFunc) brasero_track_unref, NULL);

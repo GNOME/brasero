@@ -91,15 +91,19 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
 
-	if (!priv->track) {
-		priv->track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
-		brasero_burn_session_add_track (priv->session, priv->track);
+	/* add a track every time to send a signal */
+	if (priv->track) {
+		brasero_burn_session_clear_current_track (priv->session);
+		brasero_track_unref (priv->track);
 	}
 
+	/* set image type before adding so that signal has the right type */
+	priv->track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
 	brasero_track_set_image_source (priv->track,
 					image,
 					toc,
 					format);
+	brasero_burn_session_add_track (priv->session, priv->track);
 }
 
 static void

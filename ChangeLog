@@ -1,5 +1,15 @@
 2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Reload flags when image format changes or is detected
+
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_set_track):
+	* src/burn-session.c (brasero_burn_session_clear_current_track),
+	(brasero_burn_session_add_track):
+	* src/burn-session.h:
+
+2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Added checks for simulation/burnfree to see if the drive supports them
 
 	* src/burn-caps.c (brasero_burn_caps_can_blank),
