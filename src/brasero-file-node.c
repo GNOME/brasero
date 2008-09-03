@@ -651,7 +651,7 @@ brasero_file_node_ungraft (BraseroFileNode *node)
 	/* Remove it from the URINode list of grafts */
 	graft->node->nodes = g_slist_remove (graft->node->nodes, node);
 
-	/* The name must be exactly the one of the URI*/
+	/* The name must be exactly the one of the URI */
 	node->is_grafted = FALSE;
 	node->union1.name = graft->name;
 
@@ -1006,7 +1006,7 @@ brasero_file_node_destroy_with_children (BraseroFileNode *node,
 	BraseroFileNode *next;
 	BraseroImport *import;
 	BraseroGraft *graft;
-
+g_print ("DEESTROYING %s %i\n", BRASERO_FILE_NODE_NAME (node), node->is_grafted);
 	/* destroy all children recursively */
 	for (child = BRASERO_FILE_NODE_CHILDREN (node); child; child = next) {
 		next = child->next;

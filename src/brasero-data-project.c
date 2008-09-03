@@ -841,7 +841,7 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 		brasero_utils_unregister_string (key);
 
 	if (graft) {
-		/* NOTE: no need to free graft->uri since that's key */
+		/* NOTE: no need to free graft->uri since that's the key */
 		g_slist_free (graft->nodes);
 		g_free (graft);
 	}
@@ -984,7 +984,7 @@ brasero_data_project_remove_node_children_graft_cb (const gchar *key,
 			continue;
 
 		if (brasero_file_node_is_ancestor (data->node, iter_node))
-			graft->nodes = g_slist_remove (graft->nodes, iter_node);
+			brasero_file_node_ungraft (iter_node);
 	}
 
 	if (graft->nodes)
@@ -1074,24 +1074,18 @@ brasero_data_project_node_removed (BraseroDataProject *self,
 		graft = BRASERO_FILE_NODE_GRAFT (node);
 		uri_node = graft->node;
 
-		if (g_slist_length (uri_node->nodes) == 1) {
+		/* NOTE: after this function the graft is invalid */
+		brasero_file_node_ungraft (node);
+
+		if (!uri_node->nodes) {
 			/* that's the last node grafted for this URI.
 			 * There are no more nodes for this URI after.
 			 * See if we should keep the URI in the hash;
 			 * if so, the URI must have parents in the hash
 			 */
-			if (brasero_data_project_uri_has_parent (self, uri_node->uri)) {
-				/* here that means that this URI is 
-				 * nowhere in the tree but has parent
-				 * URIs which are grafted. */
-				g_slist_free (uri_node->nodes);
-				uri_node->nodes = NULL;
-			}
-			else
+			if (!brasero_data_project_uri_has_parent (self, uri_node->uri))
 				brasero_data_project_uri_remove_graft (self, uri_node->uri);
 		}
-		else
-			uri_node->nodes = g_slist_remove (uri_node->nodes, node);
 	}
 	else if (!node->is_imported) {
 		gchar *uri;
@@ -1607,6 +1601,38 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 
 	node = brasero_file_node_check_name_existence (parent, BRASERO_VOLUME_FILE_NAME (file));
 	if (node) {
+		/* The node exists but it may be that we've loaded the project
+		 * before. Then the necessary directories to hold the grafted
+		 * files will have been created as fake directories. We need to
+		 * replace those whenever we run into one but not lose their 
+		 * children. */
+		if (node->is_fake && node->is_tmp_parent) {
+			BraseroGraft *graft;
+			BraseroURINode *uri_node;
+
+			graft = BRASERO_FILE_NODE_GRAFT (node);
+			uri_node = graft->node;
+
+			/* NOTE after this function graft is invalid */
+			brasero_file_node_ungraft (node);
+
+			/* see if uri_node is still needed */
+			if (!uri_node->nodes
+			&&  !brasero_data_project_uri_has_parent (self, uri_node->uri))
+				brasero_data_project_uri_remove_graft (self, uri_node->uri);
+
+			node->is_fake = FALSE;
+			node->is_imported = TRUE;
+			node->is_tmp_parent = FALSE;
+
+			/* Something has changed, tell the tree */
+			klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
+			if (klass->node_changed)
+				klass->node_changed (self, node);
+
+			return node;
+		}
+
 		if (brasero_data_project_file_signal (self, NAME_COLLISION_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
 			return NULL;
 
@@ -2839,6 +2865,28 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 		/* get the URI for this node. There should be one now that all
 		 * graft nodes are in the tree. */
 		uri = brasero_data_project_node_to_uri (self, tmp);
+		if (!uri) {
+			/* This node has been grafted under a node that was
+			 * imported or was itself an imported node. Since there
+			 * is no imported nodes any more, then it has to become
+			 * fake.
+			 * NOTE: it has to be a directory */
+			tmp->is_fake = TRUE;
+			tmp->is_loading = FALSE;
+			tmp->is_reloading = FALSE;
+			//tmp->is_tmp_parent = FALSE;
+
+			graft = brasero_data_project_uri_ensure_graft (self, NEW_FOLDER);
+			brasero_file_node_graft (tmp, graft);
+
+			priv->loading -= 2;
+
+			/* Signal that something has changed in the tree */
+			if (klass->node_added)
+				klass->node_added (self, tmp, uri);
+
+			continue;
+		}
 
 		/* graft it ? */
 		graft = brasero_data_project_uri_ensure_graft (self, uri);

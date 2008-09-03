@@ -1,3 +1,18 @@
+2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix problems in last comment of #543377 No multisession:
+	Don't crash any more
+	Ability to import a disc after the project was loaded
+
+	* src/brasero-data-project.c
+	(brasero_data_project_uri_remove_graft),
+	(brasero_data_project_remove_node_children_graft_cb),
+	(brasero_data_project_node_removed),
+	(brasero_data_project_add_imported_session_file),
+	(brasero_data_project_load_contents):
+	* src/brasero-file-node.c (brasero_file_node_ungraft),
+	(brasero_file_node_destroy_with_children):
+
 2008-09-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix blank discs size retrieval
