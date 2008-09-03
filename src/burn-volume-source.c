@@ -315,25 +315,6 @@ brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 	return src;
 }
 
-BraseroVolSrc *
-brasero_volume_source_open_device_path (const gchar *path,
-					GError **error)
-{
-	BraseroScsiErrCode err;
-	BraseroDeviceHandle *handle;
-
-	handle = brasero_device_handle_open (path, &err);
-	if (!handle) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     brasero_scsi_strerror (err));
-		return NULL;
-	}
-
-	return brasero_volume_source_open_device_handle (handle, error);
-}
-
 void
 brasero_volume_source_ref (BraseroVolSrc *vol)
 {

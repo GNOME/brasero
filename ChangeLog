@@ -1,5 +1,15 @@
 2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed a memleak when importing sessions in data projects
+
+	* src/brasero-data-session.c (brasero_data_session_add_last):
+	* src/brasero-file-node.c
+	(brasero_file_node_destroy_with_children):
+	* src/burn-volume-source.c:
+	* src/burn-volume-source.h:
+
+2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix problems in last comment of #543377 No multisession:
 	Don't crash any more
 	Ability to import a disc after the project was loaded

@@ -61,10 +61,6 @@ BraseroVolSrc *
 brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 					  GError **error);
 BraseroVolSrc *
-brasero_volume_source_open_device_path (const gchar *path,
-					GError **error);
-
-BraseroVolSrc *
 brasero_volume_source_open_file (const gchar *path,
 				 GError **error);
 BraseroVolSrc *

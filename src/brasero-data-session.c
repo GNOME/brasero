@@ -30,6 +30,8 @@
 #include "burn-basics.h"
 #include "burn-caps.h"
 
+#include "scsi-device.h"
+
 #include "burn-drive.h"
 
 #include "brasero-data-session.h"
@@ -115,7 +117,9 @@ brasero_data_session_add_last (BraseroDataSession *self,
 			       GError **error)
 {
 	BraseroDataSessionPrivate *priv;
+	BraseroDeviceHandle *handle;
 	BraseroVolFile *volume;
+	BraseroScsiErrCode err;
 	BraseroMedium *medium;
 	const gchar *device;
 	BraseroVolSrc *vol;
@@ -146,13 +150,23 @@ brasero_data_session_add_last (BraseroDataSession *self,
 	}
 
 	device = brasero_drive_get_device (priv->drive);
-	vol = brasero_volume_source_open_device_path (device, error);
+	handle = brasero_device_handle_open (device, &err);
+	if (!handle) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     brasero_scsi_strerror (err));
+		return FALSE;
+	}
+
+	vol = brasero_volume_source_open_device_handle (handle, error);
 	volume = brasero_volume_get_files (vol,
 					   block,
 					   NULL,
 					   NULL,
 					   NULL,
 					   error);
+	brasero_device_handle_close (handle);
 	brasero_volume_source_close (vol);
 	if (*error) {
 		if (volume)
