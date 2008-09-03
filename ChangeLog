@@ -1,5 +1,12 @@
 2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed a crash when the operation was cancelled while it is in wait loop
+
+	* src/burn.c (brasero_burn_wakeup), (brasero_burn_sleep),
+	(brasero_burn_cancel), (brasero_burn_finalize):
+
+2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed a memleak when importing sessions in data projects
 
 	* src/brasero-data-session.c (brasero_data_session_add_last):

@@ -27,6 +27,8 @@ G_BEGIN_DECLS
 
 /**
  * Write Parameters Page
+ * This mode page is useful for CD-R, CD-RW (not MRW formatted), DVD-R, and
+ * DVD-RW media. Not for DVD+R(W)/DVD-RAM.
  */
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN

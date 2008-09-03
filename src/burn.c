@@ -59,6 +59,7 @@ struct _BraseroBurnPrivate {
 	BraseroBurnSession *session;
 
 	GMainLoop *sleep_loop;
+	guint timeout_id;
 
 	guint tasks_done;
 	guint task_nb;
@@ -200,6 +201,7 @@ brasero_burn_wakeup (BraseroBurn *burn)
 	if (priv->sleep_loop)
 		g_main_loop_quit (priv->sleep_loop);
 
+	priv->timeout_id = 0;
 	return FALSE;
 }
 
@@ -207,16 +209,24 @@ static BraseroBurnResult
 brasero_burn_sleep (BraseroBurn *burn, gint msec)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
+	GMainLoop *loop;
 
 	priv->sleep_loop = g_main_loop_new (NULL, FALSE);
-	g_timeout_add (msec,
-		       (GSourceFunc) brasero_burn_wakeup,
-		       burn);
+	priv->timeout_id = g_timeout_add (msec,
+					  (GSourceFunc) brasero_burn_wakeup,
+					  burn);
 
-	g_main_loop_run (priv->sleep_loop);
+	/* Keep a reference to the loop in case we are cancelled to destroy it */
+	loop = priv->sleep_loop;
+	g_main_loop_run (loop);
 
+	if (priv->timeout_id) {
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id = 0;
+	}
+
+	g_main_loop_unref (loop);
 	if (priv->sleep_loop) {
-		g_main_loop_unref (priv->sleep_loop);
 		priv->sleep_loop = NULL;
 		return BRASERO_BURN_OK;
 	}
@@ -2499,6 +2509,11 @@ brasero_burn_cancel (BraseroBurn *burn, gboolean protect)
 
 	priv = BRASERO_BURN_PRIVATE (burn);
 
+	if (priv->timeout_id) {
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id = 0;
+	}
+
 	if (priv->sleep_loop) {
 		g_main_loop_quit (priv->sleep_loop);
 		priv->sleep_loop = NULL;
@@ -2514,6 +2529,11 @@ static void
 brasero_burn_finalize (GObject *object)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (object);
+
+	if (priv->timeout_id) {
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id = 0;
+	}
 
 	if (priv->sleep_loop) {
 		g_main_loop_quit (priv->sleep_loop);
