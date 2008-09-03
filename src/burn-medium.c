@@ -2409,6 +2409,8 @@ brasero_medium_reload_info (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
 
+	g_return_if_fail (BRASERO_IS_MEDIUM (self));
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	priv->max_rd = 0;

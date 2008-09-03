@@ -1,5 +1,11 @@
 2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #550475 – brasero crashed with SIGSEGV in brasero_medium_reload_info()
+
+	* src/burn-medium.c (brasero_medium_reload_info):
+
+2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed a crash when the operation was cancelled while it is in wait loop
 
 	* src/burn.c (brasero_burn_wakeup), (brasero_burn_sleep),
