@@ -22,6 +22,8 @@
 
 #include <glib-object.h>
 
+#include "burn-basics.h"
+
 #ifndef _BURN_MEDIUM_H_
 #define _BURN_MEDIUM_H_
 
@@ -202,11 +204,20 @@ struct _BraseroMediumTrack {
 	guint64 blocks_num;
 };
 typedef struct _BraseroMediumTrack BraseroMediumTrack;
+
 void
 brasero_medium_reload_info (BraseroMedium *self);
 
 BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium);
+
+gboolean
+brasero_medium_support_flags (BraseroMedium *medium,
+			      BraseroBurnFlag flags);
+
+BraseroBurnFlag
+brasero_medium_supported_flags (BraseroMedium *self,
+				BraseroBurnFlag flags);
 
 GSList *
 brasero_medium_get_tracks (BraseroMedium *medium);

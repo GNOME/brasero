@@ -1,5 +1,24 @@
 2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Added checks for simulation/burnfree to see if the drive supports them
+
+	* src/burn-caps.c (brasero_burn_caps_can_blank),
+	(brasero_burn_caps_flags_check_for_drive),
+	(brasero_burn_caps_new_task),
+	(brasero_burn_caps_flags_update_for_drive):
+	* src/burn-drive.c:
+	* src/burn-drive.h:
+	* src/burn-medium.c (brasero_medium_supported_flags),
+	(brasero_medium_support_flags),
+	(brasero_medium_test_simulate_CD_SAO),
+	(brasero_medium_test_simulate_CD_TAO),
+	(brasero_medium_test_simulate_DVDRW),
+	(brasero_medium_test_simulate_2A), (brasero_medium_init_caps),
+	(brasero_medium_init_real):
+	* src/burn-medium.h:
+
+2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #550475 – brasero crashed with SIGSEGV in brasero_medium_reload_info()
 
 	* src/burn-medium.c (brasero_medium_reload_info):

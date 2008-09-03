@@ -643,6 +643,7 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *self,
 				plugin = plugins->data;
 				if (!brasero_plugin_get_active (plugin))
 					continue;
+
 				if (brasero_plugin_check_blank_flags (plugin, media, flags)) {
 					BRASERO_BURN_LOG_DISC_TYPE (media, "Can blank");
 					return BRASERO_BURN_OK;
@@ -1210,18 +1211,19 @@ static gboolean
 brasero_burn_caps_flags_check_for_drive (BraseroBurnSession *session)
 {
 	BraseroDrive *drive;
+	BraseroMedium *medium;
 	BraseroBurnFlag flags;
 
 	drive = brasero_burn_session_get_burner (session);
 	if (!drive)
 		return TRUE;
 
-	flags = brasero_burn_session_get_flags (session);
-	if (!brasero_drive_has_safe_burn (drive)
-	&&  !(flags & BRASERO_BURN_FLAG_BURNPROOF))
-		return FALSE;
+	medium = brasero_drive_get_medium (drive);
+	if (!medium)
+		return TRUE;
 
-	return TRUE;
+	flags = brasero_burn_session_get_flags (session);
+	return brasero_medium_support_flags (medium, flags);
 }
 
 GSList *
@@ -1276,9 +1278,10 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 				    BRASERO_PLUGIN_IO_NONE,
 				    "Input set =");
 
-	session_flags = brasero_burn_session_get_flags (session);
 	if (!brasero_burn_caps_flags_check_for_drive (session))
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (session);
+
+	session_flags = brasero_burn_session_get_flags (session);
 
 	/* Here remove BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE since we'll handle
 	 * any possible need for blanking just afterwards if it doesn't work */
@@ -1965,6 +1968,11 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 	return BRASERO_BURN_OK;
 }
 
+/**
+ * This is only to be used in case one wants to copy using the same drive.
+ * It determines the possible middle image type.
+ */
+
 static BraseroBurnResult
 brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 						      BraseroBurnSession *session)
@@ -2279,15 +2287,17 @@ brasero_burn_caps_flags_update_for_drive (BraseroBurnFlag flags,
 					  BraseroBurnSession *session)
 {
 	BraseroDrive *drive;
+	BraseroMedium *medium;
 
 	drive = brasero_burn_session_get_burner (session);
 	if (!drive)
 		return flags;
 
-	if (!brasero_drive_has_safe_burn (drive))
-		flags &= ~BRASERO_BURN_FLAG_BURNPROOF;
+	medium = brasero_drive_get_medium (drive);
+	if (!medium)
+		return TRUE;
 
-	return flags;
+	return brasero_medium_supported_flags (medium, flags);
 }
 
 static BraseroBurnResult

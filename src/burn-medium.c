@@ -79,6 +79,11 @@ const gchar *types [] = {	N_("file"),
 				N_("Rewritable Blu-ray disc"),
 				NULL };
 
+typedef enum {
+	BRASERO_MEDIUM_CAP_INVALID	= 0,
+	BRASERO_MEDIUM_CAP_TRUE		= 1,
+	BRASERO_MEDIUM_CAP_FALSE		= 2
+} BraseroMediumCapState;
 
 typedef struct _BraseroMediumPrivate BraseroMediumPrivate;
 struct _BraseroMediumPrivate
@@ -108,6 +113,11 @@ struct _BraseroMediumPrivate
 
 	BraseroMedia info;
 	BraseroDrive *drive;
+
+	/* Do we really need both? */
+	guint dummy_sao:2;
+	guint dummy_tao:2;
+	guint burnfree:2;
 };
 
 #define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
@@ -161,6 +171,69 @@ brasero_medium_get_status (BraseroMedium *medium)
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->info;
+}
+
+BraseroBurnFlag
+brasero_medium_supported_flags (BraseroMedium *self,
+				BraseroBurnFlag flags)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* This is always FALSE */
+	if (priv->info & BRASERO_MEDIUM_PLUS)
+		flags &= ~BRASERO_BURN_FLAG_DUMMY;
+	/* Simulation is only possible according to write modes. This mode is
+	 * mostly used by cdrecord/wodim for CLONE images. */
+	else if (priv->info & BRASERO_MEDIUM_DVD) {
+		if (priv->dummy_sao != BRASERO_MEDIUM_CAP_TRUE)
+			flags &= ~BRASERO_BURN_FLAG_DUMMY;
+	}
+	else if (flags & BRASERO_BURN_FLAG_DAO) {
+		if (priv->dummy_sao != BRASERO_MEDIUM_CAP_TRUE)
+			flags &= ~BRASERO_BURN_FLAG_DUMMY;
+	}
+	else if (priv->dummy_tao != BRASERO_MEDIUM_CAP_TRUE)
+		flags &= ~BRASERO_BURN_FLAG_DUMMY;
+
+	if (!priv->burnfree)
+		flags &= ~BRASERO_BURN_FLAG_BURNPROOF;
+
+	return flags;
+}
+
+gboolean
+brasero_medium_support_flags (BraseroMedium *self,
+			      BraseroBurnFlag flags)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		/* This is always FALSE */
+		if (priv->info & BRASERO_MEDIUM_PLUS)
+			return FALSE;
+
+		if (priv->info & BRASERO_MEDIUM_DVD) {
+			if (priv->dummy_sao != BRASERO_MEDIUM_CAP_TRUE)
+				return FALSE;
+		}
+		else if (flags & BRASERO_BURN_FLAG_DAO) {
+			if (priv->dummy_sao != BRASERO_MEDIUM_CAP_TRUE)
+				return FALSE;
+		}
+		else if (priv->dummy_tao != BRASERO_MEDIUM_CAP_TRUE)
+			return FALSE;
+	}
+
+	if (flags & BRASERO_BURN_FLAG_BURNPROOF) {
+		if (!priv->burnfree)
+			return FALSE;
+	}
+
+	return TRUE;
 }
 
 GSList *
@@ -557,6 +630,201 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 		brasero_medium_get_data_size (medium, size, blocks);
 	else
 		brasero_medium_get_free_space (medium, size, blocks);
+}
+
+/**
+ * Test presence of simulate burning
+ */
+
+static BraseroBurnResult
+brasero_medium_test_simulate_CD_SAO (BraseroMedium *self,
+				     BraseroDeviceHandle *handle,
+				     BraseroScsiErrCode *code)
+{
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroScsiCDTAODesc *tao_desc;
+	BraseroScsiFeatureDesc *desc;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* Try TAO and then SAO if it isn't persistent */
+	BRASERO_BURN_LOG ("Checking simulate (CD TAO)");
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_WRT_TAO,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	desc = hdr->desc;
+	if (!desc->current)
+		BRASERO_BURN_LOG ("Feature is not current");
+
+	tao_desc = (BraseroScsiCDTAODesc *) desc->data;
+	priv->dummy_tao = tao_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	priv->burnfree = tao_desc->buf ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	g_free (hdr);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_test_simulate_CD_TAO (BraseroMedium *self,
+				     BraseroDeviceHandle *handle,
+				     BraseroScsiErrCode *code)
+{
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroScsiCDSAODesc *sao_desc;
+	BraseroScsiFeatureDesc *desc;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Checking simulate (CD SAO)");
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_WRT_SAO_RAW,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	desc = hdr->desc;
+	if (!desc->current)
+		BRASERO_BURN_LOG ("Feature is not current");
+
+	sao_desc = (BraseroScsiCDSAODesc *) desc->data;
+	priv->dummy_sao = sao_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	priv->burnfree = sao_desc->buf ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	g_free (hdr);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
+				    BraseroDeviceHandle *handle,
+				    BraseroScsiErrCode *code)
+{
+	BraseroScsiDVDRWlessWrtDesc *less_wrt_desc;
+	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroScsiFeatureDesc *desc;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* Only DVD-R(W) support simulation */
+	BRASERO_BURN_LOG ("Checking simulate (DVD-R/W)");
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_WRT_DVD_LESS,
+							 &hdr,
+							 &size,
+							 code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	desc = hdr->desc;
+	if (!desc->current)
+		BRASERO_BURN_LOG ("Feature is not current");
+
+	less_wrt_desc = (BraseroScsiDVDRWlessWrtDesc *) desc->data;
+	priv->dummy_sao = less_wrt_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	priv->dummy_tao = less_wrt_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	priv->burnfree = less_wrt_desc->buf ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	g_free (hdr);
+	return BRASERO_BURN_OK;
+}
+
+/**
+ * This is a last resort when the initialization has failed.
+ */
+
+static void
+brasero_medium_test_simulate_2A (BraseroMedium *self,
+				 BraseroDeviceHandle *handle,
+				 BraseroScsiErrCode *code)
+{
+	BraseroScsiStatusPage *page_2A = NULL;
+	BraseroScsiModeData *data = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size = 0;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	result = brasero_spc1_mode_sense_get_page (handle,
+						   BRASERO_SPC_PAGE_STATUS,
+						   &data,
+						   &size,
+						   code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("MODE SENSE failed");
+		return;
+	}
+
+	/* NOTE: this bit is only valid:
+	 * - for CDs when mode write is TAO or SAO
+	 * - for DVDs when mode write is incremental or SAO
+	 */
+
+	page_2A = (BraseroScsiStatusPage *) &data->page;
+	priv->dummy_sao = page_2A->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	priv->dummy_tao = page_2A->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	priv->burnfree = page_2A->buffer ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
+	g_free (data);
+}
+
+static void
+brasero_medium_init_caps (BraseroMedium *self,
+			  BraseroDeviceHandle *handle,
+			  BraseroScsiErrCode *code)
+{
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult res;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	/* These special media don't support/need burnfree and simulation */
+	if (priv->info & BRASERO_MEDIUM_PLUS)
+		return;
+
+	if (priv->info & BRASERO_MEDIUM_CD) {
+		/* we have to do both */
+		res = brasero_medium_test_simulate_CD_SAO (self, handle, code);
+		if (res == BRASERO_SCSI_OK)
+			brasero_medium_test_simulate_CD_TAO (self, handle, code);
+	}
+	else
+		res = brasero_medium_test_simulate_DVDRW (self, handle, code);
+
+	BRASERO_BURN_LOG ("Tested simulation %d %d, burnfree %d",
+			  priv->dummy_tao,
+			  priv->dummy_sao,
+			  priv->burnfree);
+
+	if (res == BRASERO_SCSI_OK)
+		return;
+
+	/* it didn't work out as expected use fallback */
+	BRASERO_BURN_LOG ("Using fallback 2A page for testing simulation and burnfree");
+	brasero_medium_test_simulate_2A (self, handle, code);
+
+	BRASERO_BURN_LOG ("Re-tested simulation %d %d, burnfree %d",
+			  priv->dummy_tao,
+			  priv->dummy_sao,
+			  priv->burnfree);
 }
 
 /**
@@ -2306,6 +2574,8 @@ brasero_medium_init_real (BraseroMedium *object,
 	 * some drives wrongly reports that css is enabled for blank DVD+R/W */
 	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_ROM)))
 		brasero_medium_get_css_feature (object, handle, &code);
+
+	brasero_medium_init_caps (object, handle, &code);
 
 	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
 
