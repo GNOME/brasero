@@ -1,3 +1,10 @@
+2008-09-04  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	(Sometimes huge) speed gain when loading files by returning many at a
+	time when they are pending
+
+	* src/brasero-io.c (brasero_io_return_result_idle):
+
 2008-09-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Reload flags when image format changes or is detected

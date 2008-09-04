@@ -288,36 +288,41 @@ brasero_io_return_result_idle (gpointer callback_data)
 	BraseroIOResultCallbackData *data;
 	BraseroIOJobResult *result;
 	BraseroIOPrivate *priv;
+	int i;
 
 	priv = BRASERO_IO_PRIVATE (self);
 
-	g_mutex_lock (priv->lock);
+	/* Return several results at a time that can be a huge speed gain.
+	 * What should be the value that provides speed and responsiveness. */
+	for (i = 0; i < 25; i ++) {
+		g_mutex_lock (priv->lock);
 
-	if (!priv->results) {
-		priv->results_id = 0;
+		if (!priv->results) {
+			priv->results_id = 0;
+			g_mutex_unlock (priv->lock);
+			return FALSE;
+		}
+
+		result = priv->results->data;
+		priv->results = g_slist_remove (priv->results, result);
+
 		g_mutex_unlock (priv->lock);
-		return FALSE;
+
+		data = result->callback_data;
+		if (result->uri || result->info || result->error)
+			result->base->callback (result->base->object,
+						result->error,
+						result->uri,
+						result->info,
+						data? data->callback_data:NULL);
+
+		/* Else this is just to call destroy () for callback data */
+		brasero_io_unref_result_callback_data (data,
+						       result->base->object,
+						       result->base->destroy,
+						       FALSE);
+		brasero_io_job_result_free (result);
 	}
-
-	result = priv->results->data;
-	priv->results = g_slist_remove (priv->results, result);
-
-	g_mutex_unlock (priv->lock);
-
-	data = result->callback_data;
-	if (result->uri || result->info || result->error)
-		result->base->callback (result->base->object,
-					result->error,
-					result->uri,
-					result->info,
-					data? data->callback_data:NULL);
-
-	/* Else this is just to call destroy () for callback data */
-	brasero_io_unref_result_callback_data (data,
-					       result->base->object,
-					       result->base->destroy,
-					       FALSE);
-	brasero_io_job_result_free (result);
 	return TRUE;
 }
 
