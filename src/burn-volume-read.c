@@ -143,7 +143,7 @@ brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 	}
 
 	result = BRASERO_VOL_SRC_READ (handle->src, (char *) handle->buffer, 1, NULL);
-	if (result != BRASERO_SCSI_OK)
+	if (!result)
 		return BRASERO_BURN_ERR;
 
 	handle->offset = 0;

@@ -43,6 +43,7 @@
 
 #include <gconf/gconf-client.h>
 
+#include "scsi-device.h"
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-checksum-files.h"
@@ -354,6 +355,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 {
 	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
 	BraseroChecksumFilesPrivate *priv;
+	BraseroDeviceHandle *dev_handle;
 	BraseroVolFileHandle *handle;
 	BraseroBurnResult result;
 	BraseroVolFile *file;
@@ -377,11 +379,11 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 		return result;
 
 	/* try every file and make sure they are of the same type */
-	/* FIXME: if not we could make a new checksum ... */
 	brasero_job_get_device (BRASERO_JOB (self), &device);
-	vol = brasero_volume_source_open_file (device, error);
+	dev_handle = brasero_device_handle_open (device, NULL);
 	g_free (device);
 
+	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 	file = brasero_volume_get_file (vol,
 					"/"BRASERO_MD5_FILE,
 					start_block,
@@ -432,6 +434,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 
 	if (!handle) {
 		BRASERO_JOB_LOG (self, "Failed to open file");
+		brasero_device_handle_close (dev_handle);
 		brasero_volume_file_free (file);
 		return BRASERO_BURN_ERR;
 	}
@@ -446,9 +449,10 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 		if (priv->cancel) {
 			brasero_volume_file_close (handle);
 			brasero_volume_file_free (file);
+			brasero_device_handle_close (dev_handle);
 			return BRASERO_BURN_CANCEL;
 		}
-
+g_print ("BUFFER %s\n", buffer);
 		result = brasero_checksum_file_process_former_line (self,
 								    track,
 								    buffer,
@@ -456,6 +460,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 		if (result != BRASERO_BURN_OK) {
 			brasero_volume_file_close (handle);
 			brasero_volume_file_free (file);
+			brasero_device_handle_close (dev_handle);
 			return result;
 		}
 
@@ -465,6 +470,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 	result = brasero_checksum_file_process_former_line (self, track, buffer, error);
 	brasero_volume_file_close (handle);
 	brasero_volume_file_free (file);
+	brasero_device_handle_close (dev_handle);
 
 	return result;
 }

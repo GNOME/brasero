@@ -1,5 +1,14 @@
 2008-09-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a problem with reading file contents
+	Make plugin read straight from the drive the checksum file when merging
+
+	* src/burn-volume-read.c (brasero_volume_file_check_state):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session):
+
+2008-09-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some cleanups, improvements and bug fixes
 	Rework the plugin flags system a bit
 	Fix a problem with CDRW (and probably DVDRW) which add data appended
