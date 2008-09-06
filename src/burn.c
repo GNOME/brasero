@@ -751,7 +751,9 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
-brasero_burn_lock_dest_media (BraseroBurn *burn, GError **error)
+brasero_burn_lock_dest_media (BraseroBurn *burn,
+			      BraseroBurnError *ret_error,
+			      GError **error)
 {
 	gchar *failure;
 	BraseroMedia media;
@@ -776,8 +778,6 @@ brasero_burn_lock_dest_media (BraseroBurn *burn, GError **error)
 	flags = brasero_burn_session_get_flags (priv->session);
 
 	result = BRASERO_BURN_OK;
-
-again:
 
 	medium = brasero_drive_get_medium (priv->dest);
 	if (!medium) {
@@ -898,8 +898,6 @@ again:
 				goto end;
 		}
 
-		/* FIXME: if NO_TMP_FILE is not set then the warning won't get
-		 * emitted */
 		if (input.type == BRASERO_TRACK_TYPE_DISC
 		&& (input.subtype.media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) == BRASERO_MEDIUM_HAS_AUDIO) {
 			result = brasero_burn_emit_signal (burn, WARN_REWRITABLE_SIGNAL, BRASERO_BURN_CANCEL);
@@ -922,24 +920,13 @@ again:
 
 end:
 
-	if (result == BRASERO_BURN_NEED_RELOAD) {
-		BraseroMedia required_media;
-
-		required_media = brasero_burn_caps_get_required_media_type (priv->caps,
-									    priv->session);
-
-		result = brasero_burn_ask_for_dest_media (burn,
-							  berror,
-							  required_media,
-							  error);
-		if (result == BRASERO_BURN_OK)
-			goto again;
-	}
-
 	if (result != BRASERO_BURN_OK && priv->dest_locked) {
 		priv->dest_locked = 0;
 		brasero_drive_unlock (priv->dest);
 	}
+
+	if (result == BRASERO_BURN_ERROR_RELOAD_MEDIA && ret_error)
+		*ret_error = berror;
 
 	return result;
 }
@@ -962,6 +949,9 @@ again:
 			   BRASERO_MEDIUM_DVD|
 			   BRASERO_MEDIUM_DVD_DL);
 
+	if (required_media == BRASERO_MEDIUM_NONE)
+		required_media = BRASERO_MEDIUM_WRITABLE;
+
 	result = brasero_burn_ask_for_dest_media (burn,
 						  error_code,
 						  required_media,
@@ -969,7 +959,9 @@ again:
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	result = brasero_burn_lock_dest_media (burn, error);
+	result = brasero_burn_lock_dest_media (burn,
+					       &error_code,
+					       error);
 	if (result == BRASERO_BURN_NEED_RELOAD)
 		goto again;
 
@@ -1802,17 +1794,19 @@ static BraseroBurnResult
 brasero_burn_check_session_consistency (BraseroBurn *burn,
 					GError **error)
 {
+	BraseroMedia media;
 	BraseroBurnFlag flag;
 	BraseroTrackType type;
 	BraseroBurnFlag flags;
 	BraseroBurnFlag retval;
+	BraseroBurnResult result;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
 	BRASERO_BURN_DEBUG (burn, "Checking session consistency");
 
-	/* make sure there is a session, a burner */
+	/* make sure there is a track in the session. */
 	brasero_burn_session_get_input_type (priv->session, &type);
 	if (type.type == BRASERO_TRACK_TYPE_NONE
 	|| !brasero_burn_session_get_tracks (priv->session)) {
@@ -1824,7 +1818,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		return BRASERO_BURN_ERR;
 	}
 
-	/* make sure there is a drive set as burner */
+	/* make sure there is a drive set as burner. */
 	if (!brasero_burn_session_is_dest_file (priv->session)) {
 		BraseroDrive *burner;
 
@@ -1844,79 +1838,69 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			brasero_burn_session_set_num_copies (priv->session, 1);
 	}
 
+	media = brasero_burn_session_get_dest_media (priv->session);
+
 	/* save then wipe out flags from session to check them one by one */
 	flags = brasero_burn_session_get_flags (priv->session);
 	brasero_burn_session_remove_flag (priv->session, flags);
 
-	brasero_burn_caps_get_flags (priv->caps,
-				     priv->session,
-				     &supported,
-				     &compulsory);
+	result = brasero_burn_caps_get_flags (priv->caps,
+					      priv->session,
+					      &supported,
+					      &compulsory);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	for (flag = 1; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
-		/* check each flag before re-adding it */
-		if ((flags & flag) && (supported & flag)) {
+		/* see if this flag was originally set */
+		if (!(flags & flag))
+			continue;
+
+		/* Check each flag before re-adding it. Emit warnings to user
+		 * to know if he wants to carry on for some flags when they are
+		 * not supported; namely DUMMY. Other flags trigger an error.
+		 * No need for BURNPROOF since that usually means it is just the
+		 * media type that doesn't need it. */
+		if (supported & flag) {
 			brasero_burn_session_add_flag (priv->session, flag);
 			brasero_burn_caps_get_flags (priv->caps,
 						     priv->session,
 						     &supported,
 						     &compulsory);
 		}
-		else if (flags & flag)
-			BRASERO_BURN_LOG_FLAGS (flag, "Flag set but not supported");
+		else {
+			BRASERO_BURN_LOG_FLAGS (flag, "Flag set but not supported:");
+
+			if (flag & BRASERO_BURN_FLAG_DUMMY) {
+				/* This is simply a warning that it's not possible */
+
+			}
+			else if (flag & BRASERO_BURN_FLAG_MERGE) {
+				/* we pay attention to one flag in particular
+				 * (MERGE) if it was set then it must be
+				 * supported. Otherwise error out. */
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("merging data is impossible with this disc"));
+				return BRASERO_BURN_ERR;
+			}
+			else if ((flag & BRASERO_BURN_FLAG_BURNPROOF)
+			     && !(BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+			     ||   BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))) {
+				 /* Warn the user BURNPROOF won't be possible */
+
+			}
+		}
 	}
 
 	retval = brasero_burn_session_get_flags (priv->session);
-
-	if ((flags & BRASERO_BURN_FLAG_MERGE)
-	&& !(retval & BRASERO_BURN_FLAG_MERGE)) {
-		/* we pay attention to one flag in particular (MERGE) if it was
-		 * set then it must be supported. Otherwise error out. */
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("merging data is impossible with this disc"));
-		return BRASERO_BURN_ERR;
-	}
-
 	if (retval != flags)
-		BRASERO_BURN_LOG_FLAGS (flags, "Some flags were not supported. Corrected to ");
+		BRASERO_BURN_LOG_FLAGS (retval, "Some flags were not supported. Corrected to");
 
 	if (retval != (retval | compulsory)) {
-		BRASERO_BURN_DEBUG (burn,
-				    "Some compulsory flags were forgotten. Corrected to ",
-				   (retval & compulsory),
-				    compulsory);
-
-		brasero_burn_session_add_flag (priv->session, compulsory);
-	}
-
-	/* we check flags consistency 
-	 * NOTE: should we return an error if they are not consistent? */
-	if ((type.type != BRASERO_TRACK_TYPE_AUDIO
-	&&   type.type != BRASERO_TRACK_TYPE_DATA
-	&&   type.type != BRASERO_TRACK_TYPE_DISC)
-	||   brasero_burn_session_is_dest_file (priv->session)) {
-		if (retval & BRASERO_BURN_FLAG_MERGE) {
-			BRASERO_BURN_DEBUG (burn, "Inconsistent flag: you can't use flag merge");
-			retval &= ~BRASERO_BURN_FLAG_MERGE;
-		}
-			
-		if (retval & BRASERO_BURN_FLAG_APPEND) {
-			BRASERO_BURN_DEBUG (burn, "Inconsistent flags: you can't use flag append");
-			retval &= ~BRASERO_BURN_FLAG_APPEND;
-		}
-
-		if (retval & BRASERO_BURN_FLAG_NO_TMP_FILES) {
-			BRASERO_BURN_DEBUG (burn, "Inconsistent flag: you can't use flag on_the_fly");
-			retval &= ~BRASERO_BURN_FLAG_NO_TMP_FILES;
-		}
-	}
-
-	if (brasero_burn_session_is_dest_file (priv->session)
-	&& (retval & BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT) == 0) {
-		BRASERO_BURN_DEBUG (burn, "Forgotten flag: you must use flag dont_clean_output");
-		retval |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
+		retval |= compulsory;
+		BRASERO_BURN_LOG_FLAGS (retval, "Some compulsory flags were forgotten. Corrected to");
 	}
 
 	brasero_burn_session_set_flags (priv->session, retval);
@@ -2188,8 +2172,8 @@ brasero_burn_check (BraseroBurn *self,
 }
 
 static BraseroBurnResult
-brasero_burn_same_src_dest (BraseroBurn *self,
-			    GError **error)
+brasero_burn_same_src_dest_image (BraseroBurn *self,
+				  GError **error)
 {
 	gchar *toc = NULL;
 	gchar *image = NULL;
@@ -2279,6 +2263,78 @@ end:
 	return result;
 }
 
+static BraseroBurnResult
+brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
+					  GError **error)
+{
+	BraseroBurnError berror;
+	BraseroBurnPrivate *priv;
+	BraseroBurnResult result;
+	BraseroMedia required_media;
+	BraseroBurnFlag session_flags;
+
+	priv = BRASERO_BURN_PRIVATE (burn);
+	/* Now there is the problem of flags... This really is a special
+	 * case. we need to try to adjust the flags to the media type
+	 * just after a new one is detected. For example there could be
+	 * BURNPROOF/DUMMY whereas they are not supported for DVD+RW. So
+	 * we need to be lenient. */
+
+	/* Eject and ask the user to reload a disc */
+	required_media = brasero_burn_caps_get_required_media_type (priv->caps,
+								    priv->session);
+	required_media &= (BRASERO_MEDIUM_WRITABLE|
+			   BRASERO_MEDIUM_CD|
+			   BRASERO_MEDIUM_DVD|
+			   BRASERO_MEDIUM_DVD_DL);
+
+	/* There is sometimes no way to determine which type of media is
+	 * required since some flags (that will be adjusted afterwards)
+	 * prevent to reach some media type like BURNPROOF and DVD+RW. */
+	if (required_media == BRASERO_MEDIUM_NONE)
+		required_media = BRASERO_MEDIUM_WRITABLE;
+
+	/* save the flags in case we modify them */
+	session_flags = brasero_burn_session_get_flags (priv->session);
+	berror = BRASERO_BURN_WARNING_INSERT_AFTER_COPY;
+
+again:
+
+	result = brasero_burn_ask_for_dest_media (burn,
+						  berror,
+						  required_media,
+						  error);
+	if (result != BRASERO_BURN_OK)
+		return result;
+
+	/* update the flags now before locking it since in lock function
+	 * we check the adequacy of the medium inserted. */
+	result = brasero_burn_check_session_consistency (burn, error);
+	if (result == BRASERO_BURN_CANCEL)
+		return result;
+
+	if (result != BRASERO_BURN_OK) {
+		/* Tell the user his/her disc is not supported and reload */
+		berror = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		brasero_burn_session_set_flags (priv->session, session_flags);
+		goto again;
+	}
+
+	/* One thing could make us fail now that flags and media type are
+	 * supported: the size. */
+	result = brasero_burn_lock_dest_media (burn, &berror, error);
+	if (result == BRASERO_BURN_CANCEL)
+		return result;
+
+	if (result != BRASERO_BURN_OK) {
+		/* Tell the user his/her disc is not supported and reload */
+		brasero_burn_session_set_flags (priv->session, session_flags);
+		goto again;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
 BraseroBurnResult 
 brasero_burn_record (BraseroBurn *burn,
 		     BraseroBurnSession *session,
@@ -2302,22 +2358,39 @@ brasero_burn_record (BraseroBurn *burn,
 
 	if (brasero_burn_session_same_src_dest_drive (session)) {
 		/* This is a special case */
-		result = brasero_burn_same_src_dest (burn, error);
+		result = brasero_burn_same_src_dest_image (burn, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;
 
-		/* lock the dest drive do it this way for the message */
-		result = brasero_burn_reload_dest_media (burn,
-							 BRASERO_BURN_WARNING_INSERT_AFTER_COPY,
-							 error);
+		result = brasero_burn_same_src_dest_reload_medium (burn, error);
 		if (result != BRASERO_BURN_OK)
 			goto end;
 	}
 	else if (!brasero_burn_session_is_dest_file (session)) {
+		BraseroBurnError berror;
+
 		/* do some drive locking quite early to make sure we have a
 		 * media in the drive so that we'll have all the necessary
 		 * information */
-		result = brasero_burn_lock_dest_media (burn, error);
+		result = brasero_burn_lock_dest_media (burn, &berror, error);
+		while (result == BRASERO_BURN_NEED_RELOAD) {
+			BraseroMedia required_media;
+
+			required_media = brasero_burn_caps_get_required_media_type (priv->caps,
+										    priv->session);
+			if (required_media == BRASERO_MEDIUM_NONE)
+				required_media = BRASERO_MEDIUM_WRITABLE;
+
+			result = brasero_burn_ask_for_dest_media (burn,
+								  berror,
+								  required_media,
+								  error);
+			if (result == BRASERO_BURN_OK)
+				goto end;
+
+			result = brasero_burn_lock_dest_media (burn, &berror, error);
+		}
+
 		if (result != BRASERO_BURN_OK)
 			goto end;
 	}

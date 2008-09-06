@@ -1035,6 +1035,7 @@ static void
 brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
+	BraseroBurnResult result;
 	BraseroTrackType output;
 	gchar *path;
 
@@ -1077,6 +1078,13 @@ brasero_dest_selection_set_image_properties (BraseroDestSelection *self)
 	brasero_burn_session_remove_flag (priv->session,
 					  BRASERO_BURN_FLAG_DUMMY|
 					  BRASERO_BURN_FLAG_NO_TMP_FILES);
+
+	result = brasero_burn_caps_is_session_supported (priv->caps, priv->session);
+	g_signal_emit (self,
+		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+		       0,
+		       (result == BRASERO_BURN_OK));
+	gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 }
 
 static void
@@ -1162,6 +1170,13 @@ brasero_dest_selection_check_image_settings (BraseroDestSelection *self)
 	}
 
 	brasero_burn_session_remove_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
+
+	result = brasero_burn_caps_is_session_supported (priv->caps, priv->session);
+	g_signal_emit (self,
+		       brasero_dest_selection_signals [VALID_MEDIA_SIGNAL],
+		       0,
+		       (result == BRASERO_BURN_OK));
+	gtk_widget_set_sensitive (priv->button, (result == BRASERO_BURN_OK));
 }
 
 static void
@@ -1240,10 +1255,10 @@ brasero_dest_selection_source_changed (BraseroBurnSession *session,
 		 * no disc inserted when the dialog was created. */
 		if (brasero_burn_session_get_output (priv->session, NULL, NULL, NULL) != BRASERO_BURN_OK)
 			brasero_dest_selection_set_image_properties (self);
+		else
+			brasero_dest_selection_check_image_settings (self);
 
-		/* carry on with the next function that'll check if we have a
-		 * valid source medium and put the burn button in the right 
-		 * state */
+		return;
 	}
 
 	brasero_dest_selection_set_drive_properties (self);

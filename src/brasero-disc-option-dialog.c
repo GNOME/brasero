@@ -1241,9 +1241,8 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 
 	brasero_disc_set_session_param (disc, priv->session);
 
-	/* see if we should lock the drive */
-	lock_drive = (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_APPEND|
-									BRASERO_BURN_FLAG_MERGE)) != 0;
+	/* see if we should lock the drive only with MERGE */
+	lock_drive = (brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MERGE) != 0;
 	brasero_drive_selection_lock (BRASERO_DRIVE_SELECTION (priv->selection), lock_drive);
 
 	priv->output_sig = g_signal_connect (priv->session,

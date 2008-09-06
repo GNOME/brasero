@@ -1091,6 +1091,69 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
+	/* Blank CD(R)W : don't use standard flags cdrecord fails consistently
+	 * to write a first track of a multisession disc with DAO mode. */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_DAO|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* This is a CDR with data data can be merged or at least appended */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_AUDIO|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_APPEND);
+
+	/* It is a CDRW we want the CD to be either blanked before or appended
+	 * that's why we set MERGE as compulsory. That way if the CD is not
+	 * MERGED we force the blank before writing to avoid appending sessions
+	 * endlessly until there is no free space. */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_APPENDABLE|
+				  BRASERO_MEDIUM_HAS_AUDIO|
+				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
+				  BRASERO_BURN_FLAG_MERGE|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_MULTI|
+				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_MERGE);
+
+	/* DVD-RW cdrecord capabilites are limited to blank media.
+	 * It should not start a multisession disc. */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
@@ -1104,8 +1167,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* DVD+ R/RW don't support dummy mode 
-	 * NOTE: don't mix dao and multisession */
+	/* DVD+W cdrecord capabilities are limited to blank media */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
@@ -1115,13 +1177,11 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* for DVD+RW */
+	/* for DVD+RW cdrecord capabilities are limited no MERGE */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_UNFORMATTED|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
@@ -1131,57 +1191,14 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_CLOSED|
 				  BRASERO_MEDIUM_HAS_DATA,
-				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
-	/* Flags for CD (RW)s */
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_CD|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
-				  BRASERO_BURN_FLAG_DUMMY|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_CD|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_DUMMY|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
-	/* NOTE: APPEND and MERGE are not really exclusive they can co-exist */
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_CD|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_AUDIO|
-				  BRASERO_MEDIUM_HAS_DATA,
-				  BRASERO_BURN_FLAG_APPEND|
-				  BRASERO_BURN_FLAG_MERGE|
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
-				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
 	/* blanking/formatting caps and flags for +/sequential RW
 	 * NOTE: restricted overwrite DVD-RW can't be formatted.
 	 * moreover DVD+RW are formatted while DVD-RW sequential are blanked.
-	  * NOTE: blanking DVD-RW doesn't work */
+	 * NOTE: blanking DVD-RW doesn't work */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_REWRITABLE|

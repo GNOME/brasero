@@ -1071,7 +1071,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
 
-	/* wodim can burn all DVDs when it's ISOs */
+	/* wodim can burn all DVDs (except DVD-RW restricted) when it's ISOs */
 	output = brasero_caps_disc_new (dvd_media);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
@@ -1096,11 +1096,13 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
+	/* Flags for CD (RW)s */
+	BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS (plugin);
+	BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS (plugin);
+
 	/* For DVD-W and DVD-RW sequential
 	 * NOTE: given the performed tests it seems that wodim should not be 
-	 * used to start a multisession DVD-RW or even continue one.
-	 * I didn't try with DVD-W since I didn't want to waste one for nothing.
-	 */
+	 * used to start a multisession DVD-RW or even continue one. */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVD|
 				  BRASERO_MEDIUM_SEQUENTIAL|
@@ -1114,6 +1116,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
+	/* For DVD+W limited capabilites to blank media */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDR_PLUS|
 				  BRASERO_MEDIUM_BLANK,
@@ -1123,13 +1126,11 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* for DVD+RW 
-	 * NOTE: we don't accept unformatted media here */
+	/* for DVD+RW: limited capabilities there are no MULTI possible
+	 * NOTE: no UNFORMATTED here since wodim doesn't format them before*/
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
@@ -1139,39 +1140,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_CLOSED|
 				  BRASERO_MEDIUM_HAS_DATA,
-				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
-	/* Flags for CD (RW)s */
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_CD|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_BLANK,
-				  BRASERO_BURN_FLAG_DAO|
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
-				  BRASERO_BURN_FLAG_DUMMY|
-				  BRASERO_BURN_FLAG_NOGRACE,
-				  BRASERO_BURN_FLAG_NONE);
-
-	/* NOTE: APPEND and MERGE are not really exclusive they can co-exist */
-	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_CD|
-				  BRASERO_MEDIUM_WRITABLE|
-				  BRASERO_MEDIUM_REWRITABLE|
-				  BRASERO_MEDIUM_APPENDABLE|
-				  BRASERO_MEDIUM_HAS_AUDIO|
-				  BRASERO_MEDIUM_HAS_DATA,
-				  BRASERO_BURN_FLAG_APPEND|
-				  BRASERO_BURN_FLAG_MERGE|
-				  BRASERO_BURN_FLAG_BURNPROOF|
-				  BRASERO_BURN_FLAG_OVERBURN|
-				  BRASERO_BURN_FLAG_MULTI|
-				  BRASERO_BURN_FLAG_DUMMY|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 

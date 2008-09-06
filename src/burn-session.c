@@ -252,7 +252,7 @@ brasero_burn_session_clear_current_track (BraseroBurnSession *self)
 {
 	BraseroBurnSessionPrivate *priv;
 
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
+	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
