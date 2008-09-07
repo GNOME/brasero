@@ -1,3 +1,19 @@
+2008-09-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix some problems with our reading ISO images
+	That fixes problems mentioned in #543377 – No multisession
+
+	* src/burn-iso9660.c (brasero_iso9660_read_susp),
+	(brasero_iso9660_get_susp),
+	(brasero_iso9660_read_directory_record),
+	(brasero_iso9660_read_directory_records),
+	(brasero_iso9660_lookup_directory_record_RR),
+	(brasero_iso9660_lookup_directory_records):
+	* src/burn-susp.c (brasero_susp_ER), (brasero_susp_read):
+	* src/burn-susp.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session):
+
 2008-09-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix a problem with reading file contents

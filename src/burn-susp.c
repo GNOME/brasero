@@ -31,7 +31,7 @@
 
 struct _BraseroSusp {
 	gchar signature		[2];
-	gchar len;
+	guchar len;
 	gchar version;
 	gchar data		[0];
 };
@@ -139,6 +139,11 @@ brasero_susp_ER (BraseroSusp *susp,
 	if (susp->version != 1)
 		return FALSE;
 
+	if (er->id_len == 9 && !strncmp (er->id, "IEEE_1282", 9)) {
+		ctx->has_RockRidge = TRUE;
+		return TRUE;
+	}
+
 	if (er->id_len != 10)
 		return TRUE;
 
@@ -233,7 +238,7 @@ brasero_susp_PL (BraseroSusp *susp,
 }
 
 gboolean
-brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, gint max)
+brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, guint max)
 {
 	BraseroSusp *susp;
 	gint offset;

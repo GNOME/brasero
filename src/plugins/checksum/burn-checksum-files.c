@@ -452,7 +452,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 			brasero_device_handle_close (dev_handle);
 			return BRASERO_BURN_CANCEL;
 		}
-g_print ("BUFFER %s\n", buffer);
+
 		result = brasero_checksum_file_process_former_line (self,
 								    track,
 								    buffer,

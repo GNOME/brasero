@@ -262,7 +262,7 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 		}
 
 		offset = susp_ctx->CE_offset;
-		len = susp_ctx->CE_len;
+		len = MIN (susp_ctx->CE_len, sizeof (CE_block) - offset);
 
 		/* reset information about the CE area */
 		memset (&susp_ctx->CE_address, 0, sizeof (susp_ctx->CE_address));
@@ -290,7 +290,7 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 static gchar *
 brasero_iso9660_get_susp (BraseroIsoCtx *ctx,
 			  BraseroIsoDirRec *record,
-			  gint *susp_len)
+			  guint *susp_len)
 {
 	gchar *susp_block;
 	gint start;
@@ -304,15 +304,17 @@ brasero_iso9660_get_susp (BraseroIsoCtx *ctx,
 	if (ctx->susp_skip)
 		start += ctx->susp_skip;
 
+	/* we don't want to go beyond end of buffer */
+	if (start >= record->record_size)
+		return NULL;
+
 	len = record->record_size - start;
-	if (len < 0)
+
+	if (len <= 0)
 		return NULL;
 
 	if (susp_len)
 		*susp_len = len;
-
-	if (len <= 0)
-		return NULL;
 
 	susp_block = ((gchar *) record) + start;
 
@@ -443,7 +445,7 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 {
 	gchar *susp;
 	gint address;
-	gint susp_len;
+	guint susp_len = 0;
 	BraseroSuspCtx susp_ctx;
 	BraseroVolFile *directory;
 
@@ -536,7 +538,7 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 	/* look for "SP" SUSP if it's root directory */
 	if (ctx->is_root) {
 		BraseroSuspCtx susp_ctx;
-		gint susp_len;
+		guint susp_len = 0;
 		gchar *susp;
 
 		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
@@ -602,14 +604,13 @@ brasero_iso9660_read_directory_records (BraseroIsoCtx *ctx, gint address)
 
 		if (ctx->has_RR) {
 			BraseroSuspCtx susp_ctx = { NULL, };
-			gint susp_len = 0;
+			guint susp_len = 0;
 			gchar *susp;
 
 			/* See if we've got a susp area. Do it now to see if it
 			 * has a CL entry. The rest will be checked later after
 			 * reading contents. Otherwise we wouldn't be able to 
-			 * get deep directories that are flagged as files.
-			 */
+			 * get deep directories that are flagged as files. */
 			susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
 			if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
 				BRASERO_BURN_LOG ("Could not read susp area");
@@ -747,7 +748,7 @@ brasero_iso9660_lookup_directory_record_RR (BraseroIsoCtx *ctx,
 	BraseroVolFile *entry = NULL;
 	BraseroSuspCtx susp_ctx;
 	gchar record_name [256];
-	gint susp_len = 0;
+	guint susp_len = 0;
 	gchar *susp;
 
 	/* See if we've got a susp area. Do it now to see if it
@@ -860,7 +861,7 @@ brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 	 * should tell us whether Rock Ridge could be used. */
 	if (ctx->is_root) {
 		BraseroSuspCtx susp_ctx;
-		gint susp_len;
+		guint susp_len = 0;
 		gchar *susp;
 
 		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);

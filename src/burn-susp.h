@@ -54,7 +54,7 @@ void
 brasero_susp_ctx_clean (BraseroSuspCtx *ctx);
 
 gboolean
-brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, gint max);
+brasero_susp_read (BraseroSuspCtx *ctx, gchar *buffer, guint max);
 
 G_END_DECLS
 
