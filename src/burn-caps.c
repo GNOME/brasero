@@ -2240,7 +2240,7 @@ brasero_caps_get_flags (BraseroCaps *caps,
 				retval |= BRASERO_PLUGIN_IO_ACCEPT_PIPE;
 			else
 				retval |= caps->flags;
-		
+
 			(*compulsory) &= rec_compulsory;
 			(*supported) |= data_supported|rec_supported;
 			continue;
@@ -2455,8 +2455,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 			   BRASERO_MEDIUM_HAS_DATA|
 			   BRASERO_MEDIUM_HAS_AUDIO);
 		media |= BRASERO_MEDIUM_BLANK;
-		session_flags &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-
 		result = brasero_caps_get_flags_for_disc (session_flags,
 							  media,
 							  &input,

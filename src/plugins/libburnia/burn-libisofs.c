@@ -902,7 +902,6 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "Philippe Rouquier",
 			       0);
 
-	/* NOTE: we don't include DVDRW+ DVDRW- restricted in here */
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CDR|
 				  BRASERO_MEDIUM_CDRW|
@@ -923,6 +922,7 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_CLOSED|
 				  BRASERO_MEDIUM_HAS_DATA,
+				  BRASERO_BURN_FLAG_APPEND|
 				  BRASERO_BURN_FLAG_MERGE,
 				  BRASERO_BURN_FLAG_NONE);
 

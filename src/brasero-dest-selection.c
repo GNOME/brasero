@@ -767,78 +767,44 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 						   BraseroBurnFlag *supported_retval,
 						   BraseroBurnFlag *compulsory_retval)
 {
+	BraseroBurnFlag flag;
 	BraseroDestSelectionPrivate *priv;
 	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	/* wipe out previous flags */
-	brasero_burn_session_remove_flag (priv->session,
-					  BRASERO_DRIVE_PROPERTIES_FLAGS|
-					  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-					  BRASERO_BURN_FLAG_FAST_BLANK|
-					  BRASERO_BURN_FLAG_DAO);
+	/* add flags then wipe out flags from session to check them one by one */
+	flags |= brasero_burn_session_get_flags (priv->session);
+	brasero_burn_session_remove_flag (priv->session, flags);
 
-	/* check each flag before re-adding it */
 	brasero_burn_caps_get_flags (priv->caps,
 				     priv->session,
 				     &supported,
 				     &compulsory);
 
-	if ((flags & BRASERO_BURN_FLAG_EJECT)
-	&&  (supported & BRASERO_BURN_FLAG_EJECT)) {
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_EJECT);
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-	}
+	for (flag = 1; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
+		/* see if this flag was originally set */
+		if (!(flags & flag))
+			continue;
 
-	if ((flags & BRASERO_BURN_FLAG_BURNPROOF)
-	&&  (supported & BRASERO_BURN_FLAG_BURNPROOF)) {
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_BURNPROOF);
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-	}
+		if (compulsory)
+			brasero_burn_session_add_flag (priv->session, compulsory);
 
-	if ((flags & BRASERO_BURN_FLAG_NO_TMP_FILES)
-	&&  (supported & BRASERO_BURN_FLAG_NO_TMP_FILES)) {
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_NO_TMP_FILES);
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-	}
-
-	if ((flags & BRASERO_BURN_FLAG_DUMMY)
-	&&  (supported & BRASERO_BURN_FLAG_DUMMY)) {
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DUMMY);
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-	}
-
-	/* check additional flags */
-	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		/* clean up the disc and have more space when possible */
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-
-		if (supported & BRASERO_BURN_FLAG_FAST_BLANK) {
-			brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_FAST_BLANK);
+		if (supported & flag) {
+			brasero_burn_session_add_flag (priv->session, flag);
+			supported = BRASERO_BURN_FLAG_NONE;
+			compulsory = BRASERO_BURN_FLAG_NONE;
 			brasero_burn_caps_get_flags (priv->caps,
 						     priv->session,
 						     &supported,
 						     &compulsory);
 		}
 	}
+
+	flags = brasero_burn_session_get_flags (priv->session);
+	if (flags != (flags | compulsory))
+		brasero_burn_session_add_flag (priv->session, compulsory);
 
 	/* use DAO whenever it's possible */
 	if (supported & BRASERO_BURN_FLAG_DAO) {
@@ -848,7 +814,6 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 					     &supported,
 					     &compulsory);
 	}
-	brasero_burn_session_add_flag (priv->session, compulsory);
 
 	if (supported_retval)
 		*supported_retval = supported;
