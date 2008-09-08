@@ -1,5 +1,14 @@
 2008-09-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix problem with this two plugins that didn't support DVD+RW/DVD-RW (rest)
+
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_export_caps):
+
+2008-09-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Improved libburn cancellation
 
 	* src/plugins/libburnia/burn-libburn-common.c
