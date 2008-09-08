@@ -120,13 +120,39 @@ brasero_readcd_argv_set_iso_boundary (BraseroReadcd *readcd,
 {
 	gint64 nb_blocks;
 	BraseroTrack *track;
+	GValue *value = NULL;
 	BraseroTrackType output;
 
 	brasero_job_get_current_track (BRASERO_JOB (readcd), &track);
 	brasero_job_get_output_type (BRASERO_JOB (readcd), &output);
 
+	brasero_track_tag_lookup (track,
+				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+				  &value);
+	if (value) {
+		guint64 start, end;
+
+		/* we were given an address to start */
+		start = g_value_get_uint64 (value);
+
+		/* get the length now */
+		value = NULL;
+		brasero_track_tag_lookup (track,
+					  BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+					  &value);
+
+		end = g_value_get_uint64 (value);
+
+		BRASERO_JOB_LOG (readcd,
+				 "reading from sector %lli to %lli",
+				 start,
+				 end);
+		g_ptr_array_add (argv, g_strdup_printf ("-sectors=%lli-%lli",
+							start,
+							end));
+	}
 	/* 0 means all disc, -1 problem */
-	if (brasero_track_get_drive_track (track) > 0) {
+	else if (brasero_track_get_drive_track (track) > 0) {
 		gint64 start;
 		BraseroMedium *medium;
 
@@ -182,13 +208,32 @@ brasero_readcd_get_size (BraseroReadcd *self,
 			 GError **error)
 {
 	gint64 blocks;
+	GValue *value = NULL;
 	BraseroTrackType output;
 	BraseroTrack *track = NULL;
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	brasero_job_get_output_type (BRASERO_JOB (self), &output);
 
-	if (brasero_track_get_drive_track (track) > 0) {
+	brasero_track_tag_lookup (track,
+				  BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+				  &value);
+	if (value) {
+		guint64 start, end;
+
+		/* we were given an address to start */
+		start = g_value_get_uint64 (value);
+
+		/* get the length now */
+		value = NULL;
+		brasero_track_tag_lookup (track,
+					  BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+					  &value);
+
+		end = g_value_get_uint64 (value);
+		blocks = end - start;
+	}
+	else if (brasero_track_get_drive_track (track) > 0) {
 		BraseroMedium *medium;
 
 		medium = brasero_track_get_medium_source (track);

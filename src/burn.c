@@ -70,6 +70,9 @@ struct _BraseroBurnPrivate {
 
 	gint appcookie;
 
+	guint64 session_start;
+	guint64 session_end;
+
 	guint src_locked:1;
 	guint dest_locked:1;
 
@@ -1184,7 +1187,40 @@ brasero_burn_action_changed (BraseroTask *task,
 			     BraseroBurnAction action,
 			     BraseroBurn *burn)
 {
+	BraseroBurnPrivate *priv;
+	BraseroMedia media;
+
 	brasero_burn_action_changed_real (burn, action);
+
+	if (action != BRASERO_BURN_ACTION_START_RECORDING)
+		return;
+
+	priv = BRASERO_BURN_PRIVATE (burn);
+
+	media = brasero_burn_session_get_dest_media (priv->session);
+	if ((BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	||   BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))) {
+		BraseroBurnFlag flags;
+		BraseroMedium *medium;
+		BraseroDrive *drive;
+		gint64 len = 0;
+
+		drive = brasero_burn_session_get_burner (priv->session);
+		medium = brasero_drive_get_medium (drive);
+		flags = brasero_burn_session_get_flags (priv->session);
+
+		/* we need to save some parameters for later checksuming */
+		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
+							  &len,
+							  NULL);
+
+		if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+			priv->session_start = brasero_medium_get_next_writable_address (medium);
+		else
+			priv->session_start = 0;
+
+		priv->session_end = priv->session_start + len;
+	}
 }
 
 void
@@ -2085,17 +2121,47 @@ brasero_burn_record_session (BraseroBurn *burn,
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
 	||  type == BRASERO_CHECKSUM_SHA256) {
-		guint track_num;
+		BraseroMedia media;
 		BraseroDrive *drive;
 		BraseroMedium *medium;
 
-		/* get the last track number */
+		/* get the last written track address in case of DVD+RW/DVD-RW
+		 * restricted overwrite since there is no such thing as track
+		 * number for these drives. */
 		drive = brasero_burn_session_get_burner (priv->session);
 		medium = brasero_drive_get_medium (drive);
-		track_num = brasero_medium_get_track_num (medium);
+		media = brasero_medium_get_status (medium);
 
-		BRASERO_BURN_LOG ("Last written track num == %i", track_num);
-		brasero_track_set_drive_track (track, track_num);
+		if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+		&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+			guint track_num;
+
+			track_num = brasero_medium_get_track_num (medium);
+
+			BRASERO_BURN_LOG ("Last written track num == %i", track_num);
+			brasero_track_set_drive_track (track, track_num);
+		}
+		else {
+			GValue *value;
+
+			value = g_new0 (GValue, 1);
+			g_value_init (value, G_TYPE_UINT64);
+
+			BRASERO_BURN_LOG ("Start of last written track address == %lli", priv->session_start);
+			g_value_set_uint64 (value, priv->session_start);
+			brasero_track_tag_add (track,
+					       BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG,
+					       value);
+
+			value = g_new0 (GValue, 1);
+			g_value_init (value, G_TYPE_UINT64);
+
+			BRASERO_BURN_LOG ("End of last written track address == %lli", priv->session_end);
+			g_value_set_uint64 (value, priv->session_end);
+			brasero_track_tag_add (track,
+					       BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG,
+					       value);
+		}
 	}
 
 	result = brasero_burn_check_real (burn, track, error);

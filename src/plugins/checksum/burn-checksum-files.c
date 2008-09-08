@@ -952,6 +952,11 @@ brasero_checksum_files_end (gpointer data)
 			break;
 		}
 
+		BRASERO_JOB_LOG (self,
+				 "Adding graft for checksum file %s %s",
+				 graft->path,
+				 graft->uri);
+
 		new_grafts = g_slist_prepend (new_grafts, graft);
 		excluded = brasero_track_get_data_excluded_source (track, TRUE);
 

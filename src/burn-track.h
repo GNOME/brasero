@@ -323,6 +323,13 @@ brasero_track_tag_lookup (BraseroTrack *track,
 			  const gchar *tag,
 			  GValue **value);
 
+/*
+ * Commonly used Tags
+ */
+
+#define BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG	"track::medium::address::start"
+#define BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG	"track::medium::address::end"
+
 G_END_DECLS
 
 #endif /* _BURN_TRACK_H */

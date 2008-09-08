@@ -1,3 +1,18 @@
+2008-09-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix checksums for DVD+RW with which we didn't start at the right address
+	in multisession
+
+	* src/burn-track.h:
+	* src/burn.c (brasero_burn_action_changed),
+	(brasero_burn_record_session):
+	* src/plugins/cdrkit/burn-readom.c
+	(brasero_readom_argv_set_iso_boundary), (brasero_readom_get_size):
+	* src/plugins/cdrtools/burn-readcd.c
+	(brasero_readcd_argv_set_iso_boundary), (brasero_readcd_get_size):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_end):
+
 2008-09-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix some problems with our reading ISO images
