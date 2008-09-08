@@ -1,5 +1,16 @@
 2008-09-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improved libburn cancellation
+
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_ctx_free_real),
+	(brasero_libburn_common_ctx_wait_for_idle_drive),
+	(brasero_libburn_common_ctx_free):
+	* src/plugins/libburnia/burn-libburn.c (brasero_libburn_finalize),
+	(brasero_libburn_export_caps):
+
+2008-09-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix checksums for DVD+RW with which we didn't start at the right address
 	in multisession
 

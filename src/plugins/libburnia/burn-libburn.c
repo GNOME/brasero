@@ -53,7 +53,7 @@
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BRASERO_TYPE_JOB, BraseroJob);
 
-#define BRASERO_PVD_SIZE	32 * 2048
+#define BRASERO_PVD_SIZE	32L * 2048L
 
 struct _BraseroLibburnPrivate {
 	BraseroLibburnCtx *ctx;
@@ -804,10 +804,6 @@ brasero_libburn_finalize (GObject *object)
 		priv->ctx = NULL;
 	}
 
-	/* Since the library is not needed any more call burn_finish ().
-	 * NOTE: it itself calls burn_abort (). */
-	burn_finish ();
-
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -883,14 +879,14 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 	BRASERO_PLUGIN_ADD_STANDARD_DVDR_PLUS_FLAGS (plugin);
 	BRASERO_PLUGIN_ADD_STANDARD_DVDR_FLAGS (plugin);
 
-	/* ... and DVDs-RW (sequential) */
+	/* ... and DVD-RW (sequential) */
 	output = brasero_caps_disc_new (media_dvd_rw);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_FLAGS (plugin);
 
-	/* for DVD+/- restricted */
+	/* for DVD+/-RW restricted */
 	output = brasero_caps_disc_new (media_dvd_rw_plus);
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);

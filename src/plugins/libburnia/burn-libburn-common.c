@@ -35,34 +35,15 @@
 #include <glib/gi18n-lib.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-job.h"
 #include "burn-libburn-common.h"
 
 #include <libburn/libburn.h>
 
-void
-brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
+static void
+brasero_libburn_common_ctx_free_real (BraseroLibburnCtx *ctx)
 {
-	enum burn_drive_status status;
-
-	/* try to properly cancel the drive */
-	status = burn_drive_get_status (ctx->drive, NULL);
-	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING) {
-		burn_drive_cancel (ctx->drive);
-
-		/* wait for some time for the drive to be idle.*/
-		/* FIXME: we don't want to be stuck here waiting for a state
-		 * that will come we don't know when ...
-		status = burn_drive_get_status (ctx->drive, NULL);
-		while (status != BURN_DRIVE_IDLE)
-			status = burn_drive_get_status (ctx->drive, NULL);
-		*/
-	}
-	else if (status == BURN_DRIVE_GRABBING) {
-		/* This should probably never happen */
-		burn_drive_info_forget (ctx->drive_info, 1);
-	}
-
 	if (ctx->drive_info) {
 		burn_drive_info_free (ctx->drive_info);
 		ctx->drive_info = NULL;
@@ -80,6 +61,59 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 	}
 
 	g_free (ctx);
+
+	/* Since the library is not needed any more call burn_finish ().
+	 * NOTE: it itself calls burn_abort (). */
+	burn_finish ();
+}
+
+static gboolean
+brasero_libburn_common_ctx_wait_for_idle_drive (gpointer data)
+{
+	BraseroLibburnCtx *ctx = data;
+	enum burn_drive_status status;
+
+	/* try to properly cancel the drive */
+	status = burn_drive_get_status (ctx->drive, NULL);
+	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING)
+		burn_drive_cancel (ctx->drive);
+	if (status == BURN_DRIVE_GRABBING)
+		/* This should probably never happen */
+		burn_drive_info_forget (ctx->drive_info, 1);
+
+	if (status != BURN_DRIVE_IDLE) {
+		BRASERO_BURN_LOG ("Drive not idle yet");
+		return TRUE;
+	}
+
+	brasero_libburn_common_ctx_free_real (ctx);
+	return FALSE;
+}
+
+void
+brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
+{
+	enum burn_drive_status status;
+
+	/* try to properly cancel the drive */
+	status = burn_drive_get_status (ctx->drive, NULL);
+	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING)
+		burn_drive_cancel (ctx->drive);
+
+	if (status == BURN_DRIVE_GRABBING)
+		/* This should probably never happen */
+		burn_drive_info_forget (ctx->drive_info, 1);
+	
+	if (status != BURN_DRIVE_IDLE) {
+		/* otherwise wait for the drive to calm down */
+		BRASERO_BURN_LOG ("Drive not idle yet");
+		g_timeout_add (200,
+			       brasero_libburn_common_ctx_wait_for_idle_drive,
+			       ctx);
+		return;
+	}
+
+	brasero_libburn_common_ctx_free_real (ctx);
 }
 
 BraseroLibburnCtx *
