@@ -95,6 +95,8 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 {
 	enum burn_drive_status status;
 
+	BRASERO_BURN_LOG ("Stopping Drive");
+
 	/* try to properly cancel the drive */
 	status = burn_drive_get_status (ctx->drive, NULL);
 	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING)

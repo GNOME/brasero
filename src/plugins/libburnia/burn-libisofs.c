@@ -180,7 +180,7 @@ brasero_libisofs_write_image_to_fd_thread (BraseroLibisofs *self)
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 	brasero_job_get_fd_out (BRASERO_JOB (self), &fd);
 
-	BRASERO_JOB_LOG (self, "writing to pipe");
+	BRASERO_JOB_LOG (self, "Writing to pipe");
 	while (priv->libburn_src->read_xt (priv->libburn_src, buf, sector_size) == sector_size) {
 		if (priv->cancel)
 			break;
@@ -624,6 +624,7 @@ brasero_libisofs_create_volume_thread (gpointer data)
 		/* add the file/directory to the volume */
 		if (graft->uri) {
 			gchar *local_path;
+			IsoDirIter *sibling;
 
 			local_path = g_filename_from_uri (graft->uri, NULL, NULL);
 			if (!local_path){
@@ -635,6 +636,30 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				goto end;
 			}
 
+			/* see if the node exists with the same name among the 
+			 * children of the parent directory. If there is a
+			 * sibling destroy it. */
+			sibling = NULL;
+			iso_dir_find_children (ISO_DIR (parent),
+					       iso_new_find_conditions_name (path_name),
+					       &sibling);
+			if (sibling) {
+				IsoNode *node;
+
+				BRASERO_JOB_LOG (self,
+						 "Looking for sibling for %s",
+						 path_name);
+
+				while (iso_dir_iter_next (sibling, &node) == 1) {
+					BRASERO_JOB_LOG (self,
+							 "Found sibling for %s: removing %x",
+							 path_name,
+							 iso_dir_iter_remove (sibling));
+				}
+
+				iso_dir_iter_free (sibling);
+			}
+
 			if  (is_directory) {
 				int result;
 				IsoDir *directory;
@@ -642,6 +667,10 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				/* add directory node */
 				result = iso_tree_add_new_dir (ISO_DIR (parent), path_name, &directory);
 				if (result < 0) {
+					BRASERO_JOB_LOG (self,
+							 "ERROR %s %x",
+							 path_name,
+							 result);
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
 								   _("libisofs reported an error while adding directory %s (%x)"),
@@ -654,6 +683,10 @@ brasero_libisofs_create_volume_thread (gpointer data)
 				/* add contents */
 				result = iso_tree_add_dir_rec (image, directory, local_path);
 				if (result < 0) {
+					BRASERO_JOB_LOG (self,
+							 "ERROR %s %x",
+							 path_name,
+							 result);
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
 								   _("libisofs reported an error while adding contents to directory %s (%x)"),
@@ -665,8 +698,17 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			}
 			else {
 				IsoNode *node;
+				int err;
 
-				if (iso_tree_add_node (image, ISO_DIR (parent), local_path, &node) < 0) {
+				err = iso_tree_add_node (image,
+							 ISO_DIR (parent),
+							 local_path,
+							 &node);
+				if (err < 0) {
+					BRASERO_JOB_LOG (self,
+							 "ERROR %s %x",
+							 path_name,
+							 err);
 					priv->error = g_error_new (BRASERO_BURN_ERROR,
 								   BRASERO_BURN_ERROR_GENERAL,
 								   _("libisofs reported an error while adding file %s"),
@@ -674,7 +716,23 @@ brasero_libisofs_create_volume_thread (gpointer data)
 					g_free (path_name);
 					goto end;
 				}
-				iso_node_set_name (node, path_name);
+
+				if (iso_node_get_name (node)
+				&&  strcmp (iso_node_get_name (node), path_name)) {
+					err = iso_node_set_name (node, path_name);
+					if (err < 0) {
+						BRASERO_JOB_LOG (self,
+								 "ERROR %s %x",
+								 path_name,
+								 err);
+						priv->error = g_error_new (BRASERO_BURN_ERROR,
+									   BRASERO_BURN_ERROR_GENERAL,
+									   _("libisofs reported an error while adding file %s"),
+									   graft->path);
+						g_free (path_name);
+						goto end;
+					}
+				}
 			}
 
 			g_free (local_path);
@@ -808,10 +866,10 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 		priv->ctx = NULL;
 	}
 
-	if (priv->libburn_src)
-		priv->libburn_src->cancel (priv->libburn_src);
-
 	if (priv->thread) {
+		if (priv->libburn_src)
+			priv->libburn_src->cancel (priv->libburn_src);
+
 		priv->cancel = 1;
 		g_thread_join (priv->thread);
 		priv->cancel = 0;
@@ -864,14 +922,11 @@ brasero_libisofs_clean_output (BraseroLibisofs *self)
 	BraseroLibisofsPrivate *priv;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
+
 	if (priv->libburn_src) {
 		burn_source_free (priv->libburn_src);
 		priv->libburn_src = NULL;
 	}
-
-	/* Since the library is not needed any more call burn_finish ().
-	 * NOTE: it itself calls burn_abort (). */
-	burn_finish ();
 
 	/* close libisofs library */
 	iso_finish ();
