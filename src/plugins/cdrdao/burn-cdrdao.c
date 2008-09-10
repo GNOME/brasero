@@ -608,9 +608,12 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	/* cdrdao is used to burn images so it can't APPEND and the disc must
-	 * have been blanked before (it can't overwrite) */
+	 * have been blanked before (it can't overwrite)
+	 * NOTE: BRASERO_MEDIUM_FILE is needed here because of restriction API
+	 * when we output an image. */
 	brasero_plugin_set_flags (plugin,
-				  media_w,
+				  media_w|
+				  BRASERO_MEDIUM_FILE,
 				  BRASERO_BURN_FLAG_DAO|
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
