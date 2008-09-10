@@ -2331,6 +2331,14 @@ brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
+	/* RAW write mode should (must) only be used in this case */
+	if ((supported_flags & BRASERO_BURN_FLAG_RAW)
+	&&   input->type == BRASERO_TRACK_TYPE_IMAGE
+	&&   input->subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE)
+		compulsory_flags |= BRASERO_BURN_FLAG_RAW;
+	else
+		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
+
 	if (io_flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE) {
 		supported_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 

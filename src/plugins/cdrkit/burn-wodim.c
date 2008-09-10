@@ -671,6 +671,17 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 	if (flags & BRASERO_BURN_FLAG_MULTI)
 		g_ptr_array_add (argv, g_strdup ("-multi"));
 
+	/* NOTE: This write mode is necessary for all CLONE images burning */
+	if (flags & BRASERO_BURN_FLAG_RAW)
+		g_ptr_array_add (argv, g_strdup ("-raw96r"));
+
+	/* NOTE1: DAO can't be used if we're appending to a disc */
+	/* NOTE2: CD-text cannot be written in tao mode (which is the default)
+	 * NOTE3: when we don't want wodim to use stdin then we give the audio
+	 * file on the command line. Otherwise we use the .inf */
+	if (flags & BRASERO_BURN_FLAG_DAO)
+		g_ptr_array_add (argv, g_strdup ("-dao"));
+
 	brasero_job_get_input_type (BRASERO_JOB (wodim), &type);
 	if (brasero_job_get_fd_in (BRASERO_JOB (wodim), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
@@ -712,11 +723,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
 
-				/* DAO can't be used if we're appending to a 
-				 * disc with audio track(s) on it */
-				if (flags & BRASERO_BURN_FLAG_DAO)
-					g_ptr_array_add (argv, g_strdup ("-dao"));
-
 				g_ptr_array_add (argv, g_strdup ("-data"));
 				g_ptr_array_add (argv, g_strdup ("-nopad"));
 				g_ptr_array_add (argv, g_strdup ("-"));
@@ -725,10 +731,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 				BRASERO_JOB_NOT_SUPPORTED (wodim);
 		}
 		else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-			/* now set the rest of the arguments */
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
-
 			/* NOTE: when we don't want wodim to use stdin then we
 			 * give the audio file on the command line. Otherwise we
 			 * use the .inf */
@@ -749,12 +751,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		BraseroBurnResult result;
 		GSList *tracks;
-
-		/* CD-text cannot be written in tao mode (which is the default)
-		 * NOTE: when we don't want wodim to use stdin then we give the
-		 * audio file on the command line. Otherwise we use the .inf */
-		if (flags & BRASERO_BURN_FLAG_DAO)
-			g_ptr_array_add (argv, g_strdup ("-dao"));
 
 		g_ptr_array_add (argv, g_strdup ("fs=16m"));
 		g_ptr_array_add (argv, g_strdup ("-audio"));
@@ -795,9 +791,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			if (!image_path)
 				BRASERO_JOB_NOT_READY (wodim);
 
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
-
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
 			g_ptr_array_add (argv, g_strdup ("-nopad"));
@@ -809,9 +802,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			isopath = brasero_track_get_image_source (track, FALSE);
 			if (!isopath)
 				BRASERO_JOB_NOT_READY (wodim);
-
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
@@ -825,13 +815,7 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			if (!rawpath)
 				BRASERO_JOB_NOT_READY (wodim);
 
-			/* NOTE: we ignore DAO flag on purpose since it isn't
-			 * implemented yet. Don't error out since there is no
-			 * way for us to tell that we don't support this flag
-			 * for this specific input. */
-
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
-			g_ptr_array_add (argv, g_strdup ("-raw96r"));
 			g_ptr_array_add (argv, g_strdup ("-clone"));
 			g_ptr_array_add (argv, rawpath);
 		}
@@ -842,9 +826,6 @@ brasero_wodim_set_argv_record (BraseroWodim *wodim,
 			cuepath = brasero_track_get_toc_source (track, FALSE);
 			if (!cuepath)
 				BRASERO_JOB_NOT_READY (wodim);
-
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 
@@ -1076,14 +1057,8 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
+	/* All CD-R(W) */
 	output = brasero_caps_disc_new (media);
-	brasero_plugin_link_caps (plugin, output, input);
-	g_slist_free (input);
-
-	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
-					BRASERO_IMAGE_FORMAT_CUE|
-					BRASERO_IMAGE_FORMAT_CLONE);
-
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (input);
 
@@ -1096,9 +1071,36 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
+	/* for CLONE and CUE type images, we only want blank CD-R(W) */
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
+					BRASERO_MEDIUM_WRITABLE|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_BLANK);
+
+	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_IMAGE_FORMAT_CUE|
+					BRASERO_IMAGE_FORMAT_CLONE);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+	g_slist_free (input);
+
 	/* Flags for CD (RW)s */
 	BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS (plugin);
 	BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS (plugin);
+
+	/* Apart from DAO it also supports RAW mode to burn CLONE images. This
+	 * is a special mode for which there isn't any DUMMY burn possible */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_RAW|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
 
 	/* For DVD-W and DVD-RW sequential
 	 * NOTE: given the performed tests it seems that wodim should not be 
@@ -1126,7 +1128,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
-	/* for DVD+RW: limited capabilities there are no MULTI possible
+	/* For DVD+RW: limited capabilities there are no MULTI possible
 	 * NOTE: no UNFORMATTED here since wodim doesn't format them before*/
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_DVDRW_PLUS|

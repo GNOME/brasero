@@ -152,7 +152,9 @@ typedef enum {
 	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE	= 1 << 12,
 	BRASERO_BURN_FLAG_FAST_BLANK		= 1 << 13,
 
+	/* NOTE: these two are contradictory */
 	BRASERO_BURN_FLAG_DAO			= 1 << 14,
+	BRASERO_BURN_FLAG_RAW			= 1 << 15,
 
 	BRASERO_BURN_FLAG_LAST
 } BraseroBurnFlag;

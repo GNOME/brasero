@@ -106,6 +106,8 @@ brasero_debug_burn_flags_to_string (gchar *buffer,
 		strcat (buffer, "no grace, ");
 	if (flags & BRASERO_BURN_FLAG_DAO)
 		strcat (buffer, "dao, ");
+	if (flags & BRASERO_BURN_FLAG_RAW)
+		strcat (buffer, "raw, ");
 	if (flags & BRASERO_BURN_FLAG_OVERBURN)
 		strcat (buffer, "overburn, ");
 	if (flags & BRASERO_BURN_FLAG_BURNPROOF)

@@ -676,6 +676,17 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 	if (flags & BRASERO_BURN_FLAG_MULTI)
 		g_ptr_array_add (argv, g_strdup ("-multi"));
 
+	/* NOTE: This write mode is necessary for all CLONE images burning */
+	if (flags & BRASERO_BURN_FLAG_RAW)
+		g_ptr_array_add (argv, g_strdup ("-raw96r"));
+
+	/* NOTE1: DAO can't be used if we're appending to a disc */
+	/* NOTE2: CD-text cannot be written in tao mode (which is the default)
+	 * NOTE3: when we don't want wodim to use stdin then we give the audio
+	 * file on the command line. Otherwise we use the .inf */
+	if (flags & BRASERO_BURN_FLAG_DAO)
+		g_ptr_array_add (argv, g_strdup ("-dao"));
+
 	brasero_job_get_input_type (BRASERO_JOB (cdrecord), &type);
 	if (brasero_job_get_fd_in (BRASERO_JOB (cdrecord), NULL) == BRASERO_BURN_OK) {
 		BraseroBurnResult result;
@@ -716,12 +727,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
 				g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
-
-				/* DAO can't be used if we're appending to a 
-				 * disc with audio track(s) on it */
-				if (flags & BRASERO_BURN_FLAG_DAO)
-					g_ptr_array_add (argv, g_strdup ("-dao"));
-
 				g_ptr_array_add (argv, g_strdup ("-data"));
 				g_ptr_array_add (argv, g_strdup ("-nopad"));
 				g_ptr_array_add (argv, g_strdup ("-"));
@@ -730,10 +735,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 				BRASERO_JOB_NOT_SUPPORTED (cdrecord);;
 		}
 		else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
-			/* now set the rest of the arguments */
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
-
 			g_ptr_array_add (argv, g_strdup ("-swab"));
 			g_ptr_array_add (argv, g_strdup ("-audio"));
 			g_ptr_array_add (argv, g_strdup ("-useinfo"));
@@ -751,12 +752,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		BraseroBurnResult result;
 		GSList *tracks;
-
-		/* CD-text cannot be written in tao mode (which is the default)
-		 * NOTE: when we don't want wodim to use stdin then we give the
-		 * audio file on the command line. Otherwise we use the .inf */
-		if (flags & BRASERO_BURN_FLAG_DAO)
-			g_ptr_array_add (argv, g_strdup ("-dao"));
 
 		g_ptr_array_add (argv, g_strdup ("fs=16m"));
 		g_ptr_array_add (argv, g_strdup ("-audio"));
@@ -797,9 +792,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			if (!image_path)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
-
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
 			g_ptr_array_add (argv, g_strdup ("-nopad"));
@@ -811,9 +803,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			isopath = brasero_track_get_image_source (track, FALSE);
 			if (!isopath)
 				BRASERO_JOB_NOT_READY (cdrecord);
-
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 			g_ptr_array_add (argv, g_strdup ("-data"));
@@ -827,13 +816,7 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			if (!rawpath)
 				BRASERO_JOB_NOT_READY (cdrecord);
 
-			/* NOTE: we ignore DAO flag on purpose since it isn't
-			 * implemented yet. Don't error out since there is no
-			 * way for us to tell that we don't support this flag
-			 * for this specific input. */
-
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
-			g_ptr_array_add (argv, g_strdup ("-raw96r"));
 			g_ptr_array_add (argv, g_strdup ("-clone"));
 			g_ptr_array_add (argv, rawpath);
 		}
@@ -844,9 +827,6 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 			cuepath = brasero_track_get_toc_source (track, FALSE);
 			if (!cuepath)
 				BRASERO_JOB_NOT_READY (cdrecord);
-
-			if (flags & BRASERO_BURN_FLAG_DAO)
-				g_ptr_array_add (argv, g_strdup ("-dao"));
 
 			g_ptr_array_add (argv, g_strdup ("fs=16m"));
 
@@ -1071,14 +1051,8 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
+	/* All CD-R(W) */
 	output = brasero_caps_disc_new (media);
-	brasero_plugin_link_caps (plugin, output, input);
-	g_slist_free (input);
-
-	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
-					BRASERO_IMAGE_FORMAT_CUE|
-					BRASERO_IMAGE_FORMAT_CLONE);
-
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (input);
 
@@ -1086,6 +1060,20 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_RAW|
 					BRASERO_AUDIO_FORMAT_44100);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+	g_slist_free (input);
+
+	/* for CLONE and CUE type images, we only want blank CD-R(W) */
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_CD|
+					BRASERO_MEDIUM_WRITABLE|
+					BRASERO_MEDIUM_REWRITABLE|
+					BRASERO_MEDIUM_BLANK);
+
+	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_IMAGE_FORMAT_CUE|
+					BRASERO_IMAGE_FORMAT_CLONE);
 
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
@@ -1114,6 +1102,19 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_BURNPROOF|
 				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_DUMMY|
+				  BRASERO_BURN_FLAG_NOGRACE,
+				  BRASERO_BURN_FLAG_NONE);
+
+	/* Apart from DAO it also supports RAW mode to burn CLONE images. This
+	 * is a special mode for which there isn't any DUMMY burn possible */
+	brasero_plugin_set_flags (plugin,
+				  BRASERO_MEDIUM_CD|
+				  BRASERO_MEDIUM_WRITABLE|
+				  BRASERO_MEDIUM_REWRITABLE|
+				  BRASERO_MEDIUM_BLANK,
+				  BRASERO_BURN_FLAG_RAW|
+				  BRASERO_BURN_FLAG_BURNPROOF|
+				  BRASERO_BURN_FLAG_OVERBURN|
 				  BRASERO_BURN_FLAG_NOGRACE,
 				  BRASERO_BURN_FLAG_NONE);
 
