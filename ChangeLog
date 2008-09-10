@@ -1,5 +1,23 @@
 2008-09-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improved flag management when copying a medium
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_add_drive_properties_flags),
+	(brasero_dest_selection_set_drive_properties),
+	(brasero_dest_selection_check_drive_settings):
+	* src/burn-caps.c (brasero_burn_caps_get_blanking_flags_real),
+	(brasero_burn_caps_get_blanking_flags),
+	(brasero_burn_caps_can_blank_real), (brasero_burn_caps_can_blank),
+	(brasero_caps_link_check_media_restrictions),
+	(brasero_burn_caps_is_session_supported_same_src_dest),
+	(brasero_burn_caps_get_flags_for_medium),
+	(brasero_burn_caps_get_flags_same_src_dest),
+	(brasero_burn_caps_get_flags):
+
+2008-09-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Allow cdrdao to output images of media again
 
 	* src/plugins/cdrdao/burn-cdrdao.c (brasero_cdrdao_export_caps):

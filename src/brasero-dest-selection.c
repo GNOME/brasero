@@ -211,17 +211,10 @@ brasero_dest_selection_drive_properties (BraseroDestSelection *self)
 					    rate);
 
 	flags = brasero_burn_session_get_flags (priv->session);
-	if (!brasero_dest_selection_check_same_src_dest (self)) {
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
-	}
-	else {
-		supported = BRASERO_DRIVE_PROPERTIES_FLAGS;
-		supported &= ~BRASERO_BURN_FLAG_NO_TMP_FILES;
-		compulsory = BRASERO_BURN_FLAG_NONE;
-	}
+	brasero_burn_caps_get_flags (priv->caps,
+				     priv->session,
+				     &supported,
+				     &compulsory);
 
 	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
 					    flags,
@@ -788,6 +781,11 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 		if (!(flags & flag))
 			continue;
 
+		/* Don't set write modes now in this case */
+		if (brasero_burn_session_same_src_dest_drive (priv->session)
+		&& (flag & (BRASERO_BURN_FLAG_DAO|BRASERO_BURN_FLAG_RAW)))
+			continue;
+
 		if (compulsory)
 			brasero_burn_session_add_flag (priv->session, compulsory);
 
@@ -806,13 +804,16 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 	if (flags != (flags | compulsory))
 		brasero_burn_session_add_flag (priv->session, compulsory);
 
-	/* use DAO whenever it's possible */
-	if (supported & BRASERO_BURN_FLAG_DAO) {
-		brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DAO);
-		brasero_burn_caps_get_flags (priv->caps,
-					     priv->session,
-					     &supported,
-					     &compulsory);
+	/* When copying with same drive don't set write mode, it'll be set later */
+	if (!brasero_burn_session_same_src_dest_drive (priv->session)) {
+		/* use DAO whenever it's possible */
+		if (supported & BRASERO_BURN_FLAG_DAO) {
+			brasero_burn_session_add_flag (priv->session, BRASERO_BURN_FLAG_DAO);
+			brasero_burn_caps_get_flags (priv->caps,
+						     priv->session,
+						     &supported,
+						     &compulsory);
+		}
 	}
 
 	if (supported_retval)
@@ -919,6 +920,9 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 	g_free (key);
 
 	if (brasero_dest_selection_check_same_src_dest (self)) {
+		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
+		BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
+
 		/* Special case */
 
 		/* wipe out previous flags */
@@ -934,17 +938,18 @@ brasero_dest_selection_set_drive_properties (BraseroDestSelection *self)
 			flags = BRASERO_BURN_FLAG_EJECT|
 				BRASERO_BURN_FLAG_BURNPROOF;
 
-		brasero_burn_session_add_flag (priv->session, flags);
+		brasero_dest_selection_add_drive_properties_flags (self,
+								   flags|
+								   BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+								   BRASERO_BURN_FLAG_FAST_BLANK,
+								   &supported,
+								   &compulsory);
 
 		/* NOTE: of course NO_TMP is not possible; DAO and BLANK_BEFORE
 		 * could be yet. The problem here is that we cannot test all
 		 * this since we don't know yet what the disc type is going to 
 		 * be. So we set DAO and BLANK_BEFORE_WRITE just in case.
 		 * Hopefully burn.c will be able to handle that later. */
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-					       BRASERO_BURN_FLAG_FAST_BLANK|
-					       BRASERO_BURN_FLAG_DAO);
 	}
 	else if (!value) {
 		BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
@@ -1159,10 +1164,11 @@ brasero_dest_selection_check_drive_settings (BraseroDestSelection *self)
 	if (brasero_dest_selection_check_same_src_dest (self)) {
 		/* These are always set in any case and there is no way to check
 		 * the current flags */
-		brasero_burn_session_add_flag (priv->session,
-					       BRASERO_BURN_FLAG_DAO|
-					       BRASERO_BURN_FLAG_FAST_BLANK|
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+		brasero_dest_selection_add_drive_properties_flags (self,
+								   BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+								   BRASERO_BURN_FLAG_FAST_BLANK,
+								   &supported,
+								   &compulsory);
 	}
 	else {
 		/* Try to properly update the flags for the current drive */
