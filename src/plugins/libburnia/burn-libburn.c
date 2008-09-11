@@ -189,7 +189,7 @@ brasero_libburn_src_read_xt (struct burn_source *src,
 
 static struct burn_source *
 brasero_libburn_create_fd_source (int fd,
-				  int size,
+				  gint64 size,
 				  unsigned char *pvd)
 {
 	struct burn_source *src;
@@ -292,7 +292,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			          GError **error)
 {
 	int fd;
-	gint64 size;
+	gint64 size = 0;
 	BraseroTrackType type;
 	BraseroLibburnPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
@@ -308,6 +308,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 		{
 			gint mode;
 
+			/* FIXME: implement other IMAGE types */
 			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN)
 				mode = BURN_MODE1;
 			else
@@ -316,6 +317,7 @@ brasero_libburn_setup_session_fd (BraseroLibburn *self,
 			brasero_job_get_session_output_size (BRASERO_JOB (self),
 							     NULL,
 							     &size);
+
 			result = brasero_libburn_add_fd_track (session,
 							       fd,
 							       mode,

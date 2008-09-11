@@ -1,3 +1,14 @@
+2008-09-11  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #551678 – Writing on-the-fly stops at ~390MB instead of full size
+	and possibly #544665 – Brasero burns 139MiB into the dvd when the project has 4GB
+
+	Used an int instead of an int64 in libburn
+
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_create_fd_source),
+	(brasero_libburn_setup_session_fd):
+
 2008-09-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Improved flag management when copying a medium
