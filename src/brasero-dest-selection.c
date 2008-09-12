@@ -786,9 +786,6 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 		&& (flag & (BRASERO_BURN_FLAG_DAO|BRASERO_BURN_FLAG_RAW)))
 			continue;
 
-		if (compulsory)
-			brasero_burn_session_add_flag (priv->session, compulsory);
-
 		if (supported & flag) {
 			brasero_burn_session_add_flag (priv->session, flag);
 			supported = BRASERO_BURN_FLAG_NONE;
@@ -800,9 +797,12 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 		}
 	}
 
-	flags = brasero_burn_session_get_flags (priv->session);
-	if (flags != (flags | compulsory))
-		brasero_burn_session_add_flag (priv->session, compulsory);
+	/* Always set this flag whenever possible */
+	if (supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		brasero_burn_session_add_flag (priv->session,
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
+					       BRASERO_BURN_FLAG_FAST_BLANK);
+	}
 
 	/* When copying with same drive don't set write mode, it'll be set later */
 	if (!brasero_burn_session_same_src_dest_drive (priv->session)) {

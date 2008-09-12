@@ -1,3 +1,13 @@
+2008-09-12  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix behaviour where instead of blanking rewritable medium when adding
+	new data, brasero was automatically merging the new data
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_add_drive_properties_flags):
+	* src/burn-caps.c (brasero_burn_caps_get_flags_for_medium),
+	(brasero_burn_caps_get_flags):
+
 2008-09-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #551678 – Writing on-the-fly stops at ~390MB instead of full size

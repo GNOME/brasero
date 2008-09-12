@@ -2485,6 +2485,9 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 							   &blank_compulsory);
 		(*supported_flags) |= blank_supported;
 		(*compulsory_flags) |= blank_compulsory;
+
+		/* If BLANK flag is supported then MERGE/APPEND can't be compulsory */
+		(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
 	}
 
 	return BRASERO_BURN_OK;
@@ -2683,12 +2686,15 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 	
 	/* Let's get flags for recording */
 	media = brasero_burn_session_get_dest_media (session);
-	brasero_burn_caps_get_flags_for_medium (self,
-						media,
-						session_flags,
-						&input,
-						&supported_flags,
-						&compulsory_flags);
+	result = brasero_burn_caps_get_flags_for_medium (self,
+							 media,
+							 session_flags,
+							 &input,
+							 &supported_flags,
+							 &compulsory_flags);
+
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	supported_flags = brasero_burn_caps_flags_update_for_drive (supported_flags,
 								    session);
