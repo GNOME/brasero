@@ -1,5 +1,12 @@
 2008-09-12  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	warn when reaching a directory depth of 6 while exploring a directory graft
+
+	* src/brasero-data-project.c
+	(brasero_data_project_add_node_from_info):
+
+2008-09-12  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix behaviour where instead of blanking rewritable medium when adding
 	new data, brasero was automatically merging the new data
 

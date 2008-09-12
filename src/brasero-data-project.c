@@ -2091,7 +2091,7 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name))
 				return NULL;
 	}
-	else if (!brasero_file_node_get_depth (parent) == 5) {
+	else if (brasero_file_node_get_depth (parent) == 5) {
 		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name))
 			return NULL;
 	}
