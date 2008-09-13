@@ -1,3 +1,45 @@
+09-2008 brasero 0.8.2
+
+The focus has been bug fixing and as a result there aren't any new feature this
+time but a huge number of bugs fixed and performance wins in some areas; namely:
+
+#551678 – Writing on-the-fly stops at ~390MB instead of full size
+#544665 – Brasero burns 139MiB into the dvd when the project has 4GB
+#543377 – No multisession
+#550475 – brasero crashed with SIGSEGV in brasero_medium_reload_info()
+#544416 – Burning on open-sesion DVD gives over-burn warning
+#549726 – The symbol of the term kibibyte is 'KiB' not 'kiB'
+#549570 – Can't burn audio CD when saving to disk first
+#549492 – crash after creating new project
+#548547 – Can't burn/erase unformatted DVD-RW
+#546787 – Problem with burning symlinked files
+#549299 – brasero crashed with SIGSEGV in brasero_jacket_buffer_add_default_tag()
+#547742 – brasero crashed with SIGSEGV in brasero_medium_get_write_speeds()
+#549368 – string typos
+#549211 – Wrong use of word Delete
+#542103 – Disc copy "Disc Replacement" dialog
+#548640 – HIdden Files filter is extremely slow
+#548985 – crash in Brasero Disc Burning
+#548556 – Nagging about checking newly burned CDs
+#548137 – Duplicate disc autorun action
+#538978 – copy CD/DVD button disabled in Brasero
+#548538 – Crash when adding files
+#548543 – Crash when loading project
+#548098 – Add dialog missing add button
+#546968 – Some buttons of the gui is not working
+#547112 – Vertical and Horizontal layout options reversed
+#547687 – Icons for video-cd-new action
+#547751 – Explanation about limitations of the ISO9660 standard aren't straight
+#543737 – Project change notification
+#547616 – brasero crashed with SIGSEGV in brasero_track_get_toc_source()
+#547444 – Big files burnig warnig/error message
+#543715 – Burn image not possible
+
+And many other bugs that were fixed before they were reported in bugzilla.
+
+Thanks to all the people who contributed to this release through patches, translations, advices, artwork, bug reports.
+
+
 ??-08-2008
 
 New features:
