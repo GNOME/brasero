@@ -267,7 +267,7 @@ brasero_caps_list_dump (void)
 	}
 }
 
-gboolean
+static gboolean
 brasero_caps_is_compatible_type (const BraseroCaps *caps,
 				 const BraseroTrackType *type)
 {
@@ -289,6 +289,9 @@ brasero_caps_is_compatible_type (const BraseroCaps *caps,
 		break;
 	
 	case BRASERO_TRACK_TYPE_IMAGE:
+		if (type->subtype.img_format == BRASERO_IMAGE_FORMAT_NONE)
+			return FALSE;
+
 		if ((caps->type.subtype.img_format & type->subtype.img_format) != type->subtype.img_format)
 			return FALSE;
 		break;
@@ -1739,6 +1742,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 static gboolean
 brasero_caps_find_link (BraseroCaps *caps,
 			BraseroBurnFlag session_flags,
+			gboolean use_flags,
 			BraseroMedia media,
 			BraseroTrackType *input,
 			BraseroPluginIOFlag io_flags)
@@ -1774,7 +1778,8 @@ brasero_caps_find_link (BraseroCaps *caps,
 
 		/* since this link contains recorders, check that at least one
 		 * of them can handle the record flags */
-		if (caps->type.type == BRASERO_TRACK_TYPE_DISC
+		if (use_flags
+		&&  caps->type.type == BRASERO_TRACK_TYPE_DISC
 		&& !brasero_caps_link_check_record_flags (link, session_flags, media))
 			continue;
 
@@ -1782,7 +1787,8 @@ brasero_caps_find_link (BraseroCaps *caps,
 		 * - it must have the same caps (type + subtype)
 		 * - it must have the proper IO */
 		if (link->caps->type.type == BRASERO_TRACK_TYPE_DATA) {
-			if (!brasero_caps_link_check_data_flags (link, session_flags, media))
+			if (use_flags
+			&& !brasero_caps_link_check_data_flags (link, session_flags, media))
 				continue;
 		}
 		else if (!brasero_caps_link_check_media_restrictions (link, media))
@@ -1802,6 +1808,7 @@ brasero_caps_find_link (BraseroCaps *caps,
 		/* try to see where the inputs of this caps leads to */
 		result = brasero_caps_find_link (link->caps,
 						 session_flags,
+						 use_flags,
 						 media,
 						 input,
 						 io_flags);
@@ -1814,6 +1821,7 @@ brasero_caps_find_link (BraseroCaps *caps,
 
 static gboolean
 brasero_caps_try_output (BraseroBurnFlag session_flags,
+			 gboolean use_flags,
 			 BraseroTrackType *output,
 			 BraseroTrackType *input,
 			 BraseroPluginIOFlag flags)
@@ -1835,6 +1843,7 @@ brasero_caps_try_output (BraseroBurnFlag session_flags,
 
 	return brasero_caps_find_link (caps,
 				       session_flags,
+				       use_flags,
 				       media,
 				       input,
 				       flags);
@@ -1845,15 +1854,19 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 				       BraseroBurnSession *session,
 				       BraseroTrackType *output,
 				       BraseroTrackType *input,
-				       BraseroPluginIOFlag io_flags)
+				       BraseroPluginIOFlag io_flags,
+				       gboolean use_flags)
 {
 	gboolean result;
 	BraseroMedia media;
 	BraseroCaps *last_caps;
-	BraseroBurnFlag session_flags;
+	BraseroBurnFlag session_flags = BRASERO_BURN_FLAG_NONE;
 
-	session_flags = brasero_burn_session_get_flags (session);
+	if (use_flags)
+		session_flags = brasero_burn_session_get_flags (session);
+
 	result = brasero_caps_try_output (session_flags,
+					  use_flags,
 					  output,
 					  input,
 					  io_flags);
@@ -1879,8 +1892,8 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	/* apparently nothing can be done to reach our goal. Maybe that
 	 * is because we first have to blank the disc. If so add a blank 
 	 * task to the others as a first step */
-	if (!(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-	||    brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
+	if ((use_flags && !(session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE))
+	||   brasero_burn_caps_can_blank (self, session) != BRASERO_BURN_OK)
 		return FALSE;
 
 	BRASERO_BURN_LOG ("Trying with initial blanking");
@@ -1899,12 +1912,9 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 	if (!last_caps)
 		return FALSE;
 
-	/* if the flag BLANK_BEFORE_WRITE was set then remove it since
-	 * we are actually blanking. Simply the record plugin won't have
-	 * to do it. */
-	session_flags &= ~BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 	return brasero_caps_find_link (last_caps,
 				       session_flags,
+				       use_flags,
 				       media,
 				       input,
 				       io_flags);
@@ -1913,13 +1923,14 @@ brasero_caps_try_output_with_blanking (BraseroBurnCaps *self,
 BraseroBurnResult
 brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 				      BraseroBurnSession *session,
-				      BraseroTrackType *input)
+				      BraseroTrackType *input,
+				      gboolean use_flags)
 {
 	gboolean result;
 	BraseroTrackType output;
 	BraseroPluginIOFlag io_flags;
 
-	if (!brasero_burn_caps_flags_check_for_drive (session))
+	if (use_flags && !brasero_burn_caps_flags_check_for_drive (session))
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
 
 	if (!brasero_burn_session_is_dest_file (session)) {
@@ -1942,13 +1953,16 @@ brasero_burn_caps_is_input_supported (BraseroBurnCaps *self,
 
 	BRASERO_BURN_LOG_TYPE (input, "Checking support for input");
 	BRASERO_BURN_LOG_TYPE (&output, "and output");
-	BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
+
+	if (use_flags)
+		BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
 
 	result = brasero_caps_try_output_with_blanking (self,
 							session,
 							&output,
 							input,
-							io_flags);
+							io_flags,
+							use_flags);
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (input, "Input not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -1973,10 +1987,8 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 	 * The only thing we could do would be to check some known forbidden 
 	 * flags for some media provided the output type is DISC. */
 
-	/* Here flags don't matter as we don't record anything.
-	 * Even the IOFlags since that can be checked later with
-	 * brasero_burn_caps_get_flags.
-	 */
+	/* Here flags don't matter as we don't record anything. Even the IOFlags
+	 * since that can be checked later with brasero_burn_caps_get_flags. */
 	if (BRASERO_BURN_SESSION_NO_TMP_FILE (session))
 		io_flags = BRASERO_PLUGIN_IO_ACCEPT_PIPE;
 	else
@@ -1991,7 +2003,8 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 							session,
 							output,
 							&input,
-							io_flags);
+							io_flags,
+							TRUE);
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (output, "Output not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -2047,7 +2060,8 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 								   session,
 								   &output,
 								   &input,
-								   BRASERO_PLUGIN_IO_ACCEPT_FILE);
+								   BRASERO_PLUGIN_IO_ACCEPT_FILE,
+								   TRUE);
 		if (!supported)
 			continue;
 
@@ -2063,6 +2077,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 				continue;
 
 			result = brasero_caps_find_link (caps,
+							 TRUE,
 							 session_flags,
 							 caps->type.subtype.media,
 							 &input,
@@ -2127,7 +2142,8 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 							session,
 							&output,
 							&input,
-							io_flags);
+							io_flags,
+							TRUE);
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (&output, "Output not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;
@@ -2182,6 +2198,7 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 		/* Put BRASERO_MEDIUM_NONE so we can always succeed */
 		result = brasero_caps_find_link (caps,
 						 session_flags,
+						 TRUE,
 						 BRASERO_MEDIUM_NONE,
 						 &input,
 						 io_flags);
@@ -2374,16 +2391,18 @@ brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
 	/* RAW write mode should (must) only be used in this case */
 	if ((supported_flags & BRASERO_BURN_FLAG_RAW)
 	&&   input->type == BRASERO_TRACK_TYPE_IMAGE
-	&&   input->subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE)
+	&&   input->subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE) {
+		supported_flags &= ~BRASERO_BURN_FLAG_DAO;
+		compulsory_flags &= ~BRASERO_BURN_FLAG_DAO;
 		compulsory_flags |= BRASERO_BURN_FLAG_RAW;
+	}
 	else
 		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 
 	if (io_flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE) {
 		supported_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 
-		if ((session_flags & BRASERO_BURN_FLAG_NO_TMP_FILES)
-		&&  (io_flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) == 0)
+		if ((io_flags & BRASERO_PLUGIN_IO_ACCEPT_FILE) == 0)
 			compulsory_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 	}
 
@@ -2490,6 +2509,10 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 		(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
 	}
 
+	/* FIXME! we should restart the whole process if
+	 * ((session_flags & compulsory_flags) != compulsory_flags) since that
+	 * means that some supported files could be excluded but were not */
+
 	return BRASERO_BURN_OK;
 }
 
@@ -2548,7 +2571,8 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 									  session,
 									  &output,
 									  &input,
-									  BRASERO_PLUGIN_IO_ACCEPT_FILE);
+									  BRASERO_PLUGIN_IO_ACCEPT_FILE,
+									  TRUE);
 		if (!format_supported) {
 			BRASERO_BURN_LOG_TYPE (&output, "Format not supported");
 			continue;

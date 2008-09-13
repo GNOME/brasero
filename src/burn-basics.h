@@ -124,7 +124,7 @@ const gchar *
 brasero_burn_action_to_string (BraseroBurnAction action);
 
 /* These flags are sorted by importance. That's done to solve the problem of
- * exclusive flags: that way MULTI will always win over any other flag if they
+ * exclusive flags: that way MERGE will always win over any other flag if they
  * are exclusive. On the other hand DAO will always lose. */
 typedef enum {
 	BRASERO_BURN_FLAG_NONE			= 0,
@@ -152,7 +152,7 @@ typedef enum {
 	BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE	= 1 << 12,
 	BRASERO_BURN_FLAG_FAST_BLANK		= 1 << 13,
 
-	/* NOTE: these two are contradictory */
+	/* NOTE: these two are contradictory? */
 	BRASERO_BURN_FLAG_DAO			= 1 << 14,
 	BRASERO_BURN_FLAG_RAW			= 1 << 15,
 

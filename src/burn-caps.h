@@ -104,7 +104,8 @@ brasero_burn_caps_can_blank (BraseroBurnCaps *caps,
 BraseroBurnResult
 brasero_burn_caps_is_input_supported (BraseroBurnCaps *caps,
 				      BraseroBurnSession *session,
-				      BraseroTrackType *input);
+				      BraseroTrackType *input,
+				      gboolean use_flags);
 
 BraseroBurnResult
 brasero_burn_caps_is_output_supported (BraseroBurnCaps *caps,

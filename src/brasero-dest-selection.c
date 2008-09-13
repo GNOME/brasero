@@ -786,6 +786,17 @@ brasero_dest_selection_add_drive_properties_flags (BraseroDestSelection *self,
 		&& (flag & (BRASERO_BURN_FLAG_DAO|BRASERO_BURN_FLAG_RAW)))
 			continue;
 
+		if (compulsory
+		&& (compulsory & brasero_burn_session_get_flags (priv->session)) != compulsory) {
+			brasero_burn_session_add_flag (priv->session, compulsory);
+			supported = BRASERO_BURN_FLAG_NONE;
+			compulsory = BRASERO_BURN_FLAG_NONE;
+			brasero_burn_caps_get_flags (priv->caps,
+						     priv->session,
+						     &supported,
+						     &compulsory);
+		}
+
 		if (supported & flag) {
 			brasero_burn_session_add_flag (priv->session, flag);
 			supported = BRASERO_BURN_FLAG_NONE;

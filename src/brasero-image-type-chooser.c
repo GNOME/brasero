@@ -66,7 +66,9 @@ struct _BraseroImageTypeChooserPrivate {
 	GtkWidget *combo;
 
 	BraseroBurnCaps *caps;
-	BraseroImageFormat *formats;
+	BraseroImageFormat format;
+
+	guint updating:1;
 };
 
 static GtkHBoxClass *parent_class = NULL;
@@ -77,17 +79,15 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 {
 	GtkTreeIter iter;
 	GtkTreeModel *store;
-	BraseroImageFormat format;
 	BraseroImageTypeChooserPrivate *priv;
 
 	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
 
+	priv->updating = TRUE;
+
 	/* clean */
 	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
 	gtk_list_store_clear (GTK_LIST_STORE (store));
-
-	/* save the current format to restore it later */
-	brasero_image_type_chooser_get_format (self, &format);
 
 	/* now we get the targets available and display them */
 	gtk_list_store_prepend (GTK_LIST_STORE (store), &iter);
@@ -128,7 +128,13 @@ brasero_image_type_chooser_set_formats (BraseroImageTypeChooser *self,
 				    -1);
 	}
 
-	brasero_image_type_chooser_set_format (self, format);
+	priv->updating = FALSE;
+
+	/* Make sure the selected format is still supported */
+	if (priv->format & formats)
+		brasero_image_type_chooser_set_format (self, priv->format);
+	else
+		brasero_image_type_chooser_set_format (self, BRASERO_IMAGE_FORMAT_NONE);
 }
 
 void
@@ -176,28 +182,38 @@ void
 brasero_image_type_chooser_get_format (BraseroImageTypeChooser *self,
 				       BraseroImageFormat *format)
 {
-	GtkTreeIter iter;
-	GtkTreeModel *store;
 	BraseroImageTypeChooserPrivate *priv;
 
 	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
-
-	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
-
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter)) {
-		*format = BRASERO_IMAGE_FORMAT_NONE;
-		return;
-	}
-
-	gtk_tree_model_get (store, &iter,
-			    FORMAT_TYPE, format,
-			    -1);
+	*format = priv->format;
 }
 
 static void
 brasero_image_type_chooser_changed_cb (GtkComboBox *combo,
 				       BraseroImageTypeChooser *self)
 {
+	GtkTreeIter iter;
+	GtkTreeModel *store;
+	BraseroImageFormat current;
+	BraseroImageTypeChooserPrivate *priv;
+
+	priv = BRASERO_IMAGE_TYPE_CHOOSER_PRIVATE (self);
+
+	if (priv->updating)
+		return;
+
+	store = gtk_combo_box_get_model (GTK_COMBO_BOX (priv->combo));
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (priv->combo), &iter))
+		gtk_tree_model_get (store, &iter,
+				    FORMAT_TYPE, &current,
+				    -1);
+	else
+		current = BRASERO_IMAGE_FORMAT_NONE;
+
+	if (current == priv->format)
+		return;
+
+	priv->format = current;
 	g_signal_emit (self,
 		       brasero_image_type_chooser_signals [CHANGED_SIGNAL],
 		       0);
@@ -244,11 +260,6 @@ brasero_image_type_chooser_finalize (GObject *object)
 	if (priv->caps) {
 		g_object_unref (priv->caps);
 		priv->caps = NULL;
-	}
-
-	if (priv->formats) {
-		g_free (priv->formats);
-		priv->formats = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

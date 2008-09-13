@@ -1,3 +1,42 @@
+2008-09-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Some more cleanups and work on flags management
+	Fix a problem with burn button being available for clicking when no
+	image is set as source in burn image dialog
+	Fix a problem with dummy still available with CLONE images
+
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_add_drive_properties_flags):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_update_joliet):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_set_track),
+	(brasero_image_option_dialog_changed),
+	(brasero_image_option_dialog_format_changed),
+	(brasero_image_option_dialog_file_changed),
+	(brasero_image_option_dialog_set_formats),
+	(brasero_image_option_dialog_valid_media_cb),
+	(brasero_image_option_dialog_init),
+	(brasero_image_option_dialog_finalize):
+	* src/brasero-image-type-chooser.c
+	(brasero_image_type_chooser_set_formats),
+	(brasero_image_type_chooser_get_format),
+	(brasero_image_type_chooser_changed_cb),
+	(brasero_image_type_chooser_finalize):
+	* src/burn-basics.h:
+	* src/burn-caps.c (brasero_caps_is_compatible_type),
+	(brasero_caps_find_link), (brasero_caps_try_output),
+	(brasero_caps_try_output_with_blanking),
+	(brasero_burn_caps_is_input_supported),
+	(brasero_burn_caps_is_output_supported),
+	(brasero_burn_caps_is_session_supported_same_src_dest),
+	(brasero_burn_caps_is_session_supported),
+	(brasero_burn_caps_get_required_media_type),
+	(brasero_caps_get_flags_for_disc),
+	(brasero_burn_caps_get_flags_for_medium),
+	(brasero_burn_caps_get_flags_same_src_dest):
+	* src/burn-caps.h:
+
 2008-09-12  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	warn when reaching a directory depth of 6 while exploring a directory graft

@@ -268,13 +268,14 @@ brasero_disc_option_dialog_update_joliet (BraseroDiscOptionDialog *dialog)
 	if (!priv->joliet_toggle)
 		return FALSE;
 
-	/* what we want to check is Joliet support */
+	/* what we want to check Joliet support */
 	brasero_burn_session_get_input_type (priv->session, &source);
 
 	source.subtype.fs_type |= BRASERO_IMAGE_FS_JOLIET;
 	result = brasero_burn_caps_is_input_supported (priv->caps,
 						       priv->session,
-						       &source);
+						       &source,
+						       FALSE);
 	if (result == BRASERO_BURN_OK) {
 		if (GTK_WIDGET_IS_SENSITIVE (priv->joliet_toggle))
 			return FALSE;
