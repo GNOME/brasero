@@ -112,6 +112,60 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 	return volume;
 }
 
+static GDrive *
+brasero_volume_get_gdrive (BraseroVolume *self)
+{
+	const gchar *volume_path = NULL;
+	BraseroVolumePrivate *priv;
+	GVolumeMonitor *monitor;
+	GDrive *gdrive = NULL;
+	BraseroDrive *drive;
+	GList *drives;
+	GList *iter;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	volume_path = brasero_drive_get_block_device (drive);
+#else
+	volume_path = brasero_drive_get_device (drive);
+#endif
+
+	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
+	monitor = g_volume_monitor_get ();
+	drives = g_volume_monitor_get_connected_drives (monitor);
+	g_object_unref (monitor);
+
+	for (iter = drives; iter; iter = iter->next) {
+		gchar *device_path;
+		GDrive *tmp;
+
+		tmp = iter->data;
+		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (!device_path)
+			continue;
+
+		BRASERO_BURN_LOG ("Found drive %s", device_path);
+		if (!strcmp (device_path, volume_path)) {
+			gdrive = tmp;
+			g_free (device_path);
+			g_object_ref (gdrive);
+			break;
+		}
+
+		g_free (device_path);
+	}
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+	g_list_free (drives);
+
+	if (!drive)
+		BRASERO_BURN_LOG ("No drive found for medium");
+
+	return gdrive;
+}
+
 gboolean
 brasero_volume_is_mounted (BraseroVolume *self)
 {
@@ -544,7 +598,6 @@ brasero_volume_eject (BraseroVolume *self,
 {
 	GDrive *gdrive;
 	gboolean result;
-	GVolume *volume;
 	BraseroVolumePrivate *priv;
 
 	if (!self)
@@ -552,18 +605,24 @@ brasero_volume_eject (BraseroVolume *self,
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
-	volume = brasero_volume_get_gvolume (self);
-	if (!volume)
-		return FALSE;
-
-	gdrive = g_volume_get_drive (volume);
+	gdrive = brasero_volume_get_gdrive (self);
 	if (!gdrive) {
+		GVolume *volume;
+
+		/* last resort */
+		volume = brasero_volume_get_gvolume (self);
+
 		result = brasero_volume_eject_gvolume (self, wait, volume, error);
 		g_object_unref (volume);
 		return result;
 	}
 
 	if (!g_drive_can_eject (gdrive)) {
+		GVolume *volume;
+
+		/* last resort */
+		volume = brasero_volume_get_gvolume (self);
+
 		result = brasero_volume_eject_gvolume (self, wait, volume, error);
 		g_object_unref (volume);
 		g_object_unref (gdrive);
