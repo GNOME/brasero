@@ -2572,7 +2572,7 @@ brasero_burn_caps_get_flags_same_src_dest (BraseroBurnCaps *self,
 									  &output,
 									  &input,
 									  BRASERO_PLUGIN_IO_ACCEPT_FILE,
-									  TRUE);
+									  FALSE);
 		if (!format_supported) {
 			BRASERO_BURN_LOG_TYPE (&output, "Format not supported");
 			continue;
@@ -2677,6 +2677,8 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		/* These flags are of course never possible */
 		supported_flags &= ~(BRASERO_BURN_FLAG_NO_TMP_FILES|
 				     BRASERO_BURN_FLAG_MERGE);
+		compulsory_flags &= ~(BRASERO_BURN_FLAG_NO_TMP_FILES|
+				      BRASERO_BURN_FLAG_MERGE);
 
 		if (result == BRASERO_BURN_OK) {
 			BRASERO_BURN_LOG_FLAGS (supported_flags, "FLAGS: supported");
