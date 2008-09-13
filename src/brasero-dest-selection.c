@@ -1488,10 +1488,13 @@ brasero_dest_selection_set_property (GObject *object,
  		brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
 						      brasero_burn_session_same_src_dest_drive (priv->session));
 
-		if (brasero_burn_session_is_dest_file (session))
+		/* NOTE: there is no need for the following as we don't know the
+		 * track type yet. Better wait for the track to be set */
+		/* if (brasero_burn_session_is_dest_file (session))
 			brasero_dest_selection_set_image_properties (BRASERO_DEST_SELECTION (object));
 		else
 			brasero_dest_selection_set_drive_properties (BRASERO_DEST_SELECTION (object));
+		*/
 
 		priv->input_sig = g_signal_connect (session,
 						    "input-changed",
