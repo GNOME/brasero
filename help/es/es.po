@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.HEAD.es(3)\n"
 "POT-Creation-Date: 2008-09-01 15:38+0000\n"
-"PO-Revision-Date: 2008-09-14 20:11+0200\n"
+"PO-Revision-Date: 2008-09-14 20:55+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1096,12 +1096,18 @@ msgid ""
 "<menuchoice><guimenu>Project</guimenu><guisubmenu>New Project</"
 "guisubmenu><guimenuitem>Burn Image</guimenuitem></menuchoice>."
 msgstr ""
+"Pulse <guibutton>Grabar imagen</guibutton> en la ventana principal o elija "
+"<menuchoice><guimenu>Proyecto</guimenu><guisubmenu>Proyecto nuevo</"
+"guisubmenu><guimenuitem>Grabar una imagen</guimenuitem></menuchoice>."
 
 #: C/brasero.xml:1188(para)
 msgid ""
 "The <guilabel>Image burning setup</guilabel> dialog will be shown; make the "
 "desired modifications (see <xref linkend=\"brasero-burn-image-options\"/>)."
 msgstr ""
+"Se mostrará el diálogo <guilabel>Opciones de grabado de imagen</guilabel>; "
+"haga las modificaciones que quiera (consulte la <xref linkend=\"brasero-burn-"
+"image-options\"/>)."
 
 #: C/brasero.xml:1168(para)
 msgid "To start this project, proceed as follows: <placeholder-1/>"
@@ -1109,13 +1115,15 @@ msgstr "Para iniciar este proyecto proceda como sigue: <placeholder-1/>"
 
 #: C/brasero.xml:1204(title)
 msgid "Burn Image Options"
-msgstr ""
+msgstr "Opciones de grabado de imágenes"
 
 #: C/brasero.xml:1205(para)
 msgid ""
 "Before starting the image burning process, it is possible to modify some of "
 "the burning options."
 msgstr ""
+"Antes de iniciar el proceso de grabación es posible modificar algunas de las "
+"opciones de grabación."
 
 #: C/brasero.xml:1237(term)
 msgid "Section <guilabel>Image</guilabel>:"
@@ -1130,6 +1138,9 @@ msgid ""
 "Click on the button next to <guilabel>Path</guilabel> to open the "
 "<guilabel>Open an image</guilabel> dialog and select the image file to burn."
 msgstr ""
+"Pulse el botón junto a <guilabel>Ruta</guilabel> para abrir el diálogo "
+"<guilabel>Abrir una imagen</guilabel> y seleccionar la imagen de archivo que "
+"grabar."
 
 #: C/brasero.xml:1261(guilabel)
 msgid "Image type"
@@ -1140,6 +1151,9 @@ msgid ""
 "From the drop-down list, select the type of image to burn. If unsure, select "
 "<guilabel>Let brasero choose (safest)</guilabel>."
 msgstr ""
+"De la lista desplegable seleccione el tipo de imagen que grabar. Si no está "
+"seguro seleccione <guilabel>Permitir que brasero elija (modo seguro)</"
+"guilabel>."
 
 #: C/brasero.xml:1281(title)
 msgid "Burning Device Properties"
@@ -1150,40 +1164,49 @@ msgid ""
 "Before starting the burning process, it is possible to change some of the "
 "properties for the burning device that will be used."
 msgstr ""
+"Antes de comenzar el proceso de grabación es posible cambiar algunas de las "
+"propiedades del dispositivo grabador que se usará."
 
 #: C/brasero.xml:1289(term)
 msgid "Section <guilabel>Burning speed</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Velocidad de grabación</guilabel>:"
 
 #: C/brasero.xml:1291(para)
 msgid ""
 "From the drop-down list, select the burning speed. For the best value, check "
 "the CD/DVD case."
 msgstr ""
+"De la lista desplegable seleccione la velocidad de grabación. Para el mejor "
+"valor seleccione la opción CD/DVD."
 
 #: C/brasero.xml:1296(para)
 msgid ""
 "Burning a disc with a higher speed than supported could create an unreadable "
 "disc. Use lower burning speeds to reduce the chance of this happening."
 msgstr ""
+"Grabar un disco a una velocidad mayor de la soportada puede crear un disco "
+"no legible. Use velocidades de grabación menores para reducir la posibilidad "
+"de que esto ocurra."
 
 #: C/brasero.xml:1305(term)
 msgid "Section <guilabel>Options</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Opciones</guilabel>:"
 
 #: C/brasero.xml:1312(guilabel)
 msgid "Burn the image directly without saving it to disc"
-msgstr ""
+msgstr "Grabar la imagen directamente sin guardarla en el disco"
 
 #: C/brasero.xml:1316(para)
 msgid ""
 "Select this option if you want to burn the image directly onto the media, "
 "without saving it to the hard disk and without creating an image file."
 msgstr ""
+"Seleccione esta opción si quiere grabar la imagen directamente en el soporte "
+"sin guardarla en el disco duro y sin crear un archivo imagen."
 
 #: C/brasero.xml:1328(guilabel)
 msgid "Use burnproof (decrease the risk of failure)"
-msgstr ""
+msgstr "Usar burn_proof (reduce el riesgo de fallos)"
 
 #: C/brasero.xml:1331(para)
 msgid ""
@@ -1192,16 +1215,22 @@ msgid ""
 "is not fast enough delivering data to the burning device at the selected "
 "burning speed."
 msgstr ""
+"Seleccione esta opción para prevenir el efecto <emphasis>búfer underrun</"
+"emphasis> (o <emphasis>falta de datos en el búfer</emphasis>). Esto es "
+"cuando el equipo no es suficientemente rápido proporcionando datos al "
+"dispositivo grabador a la velocidad seleccionada."
 
 #: C/brasero.xml:1339(para)
 msgid ""
 "If a <emphasis>buffer underrun</emphasis> takes place, the burned disc could "
 "be unreadable."
 msgstr ""
+"Si ocurre un <emphasis>búfer underrun</emphasis> el disco grabado puede no "
+"ser legible."
 
 #: C/brasero.xml:1352(guilabel)
 msgid "Simulate the burning"
-msgstr ""
+msgstr "Simular la grabación"
 
 #: C/brasero.xml:1355(para)
 msgid ""
@@ -1209,16 +1238,21 @@ msgid ""
 "performed. This is useful for testing, if you are having problems burning "
 "discs."
 msgstr ""
+"Seleccione esta opción para simular el proceso de grabación; no se realiza "
+"ninguna grabación. Esto es útil para comprobaciones si está teniendo "
+"problemas grabando discos."
 
 #: C/brasero.xml:1368(guilabel)
 msgid "Eject after burning"
-msgstr ""
+msgstr "Expulsar después de grabar"
 
 #: C/brasero.xml:1371(para)
 msgid ""
 "Select this option to eject the media in the burning device once the burning "
 "process has completed."
 msgstr ""
+"Seleccione esta opción para expulsar el soporte en el dispositivo grabador "
+"una vez que haya terminado el proceso de grabación."
 
 #: C/brasero.xml:1384(term)
 msgid "Section <guilabel>Temporary files</guilabel>:"
