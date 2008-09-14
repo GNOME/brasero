@@ -68,6 +68,7 @@ struct _BraseroDataVFSPrivate
 enum {
 	UNREADABLE_SIGNAL,
 	RECURSIVE_SIGNAL,
+	IMAGE_SIGNAL,
 	FILTERED_SIGNAL,
 	ACTIVITY_SIGNAL,
 	UNKNOWN_SIGNAL,
@@ -603,6 +604,41 @@ brasero_data_vfs_loading_node_end (GObject *object,
 			       g_hash_table_size (priv->directories));
 }
 
+static BraseroBurnResult
+brasero_data_vfs_emit_image_signal (BraseroDataVFS *self,
+				    const gchar *uri)
+{
+	GValue instance_and_params [2];
+	GValue return_value;
+	GValue *params;
+
+	/* object which signalled */
+	instance_and_params->g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (self));
+	g_value_set_instance (instance_and_params, self);
+
+	/* arguments of signal (name) */
+	params = instance_and_params + 1;
+	params->g_type = 0;
+	g_value_init (params, G_TYPE_STRING);
+	g_value_set_string (params, uri);
+
+	/* default to FALSE */
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (instance_and_params,
+			brasero_data_vfs_signals [IMAGE_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (params);
+
+	return g_value_get_int (&return_value);
+}
+
 static void
 brasero_data_vfs_loading_node_result (GObject *owner,
 				      GError *error,
@@ -612,6 +648,8 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 {
 	GSList *iter;
 	GSList *nodes;
+	BraseroFileNode *root;
+	BraseroFileTreeStats *stats;
 	gchar *registered = callback_data;
 	BraseroDataVFS *self = BRASERO_DATA_VFS (owner);
 	BraseroDataVFSPrivate *priv = BRASERO_DATA_VFS_PRIVATE (self);
@@ -634,6 +672,38 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		}
 
 		return;
+	}
+
+	/* It can happen that the user made a mistake out of ignorance or for
+	 * whatever other reason and dropped an image he wanted to burn.
+	 * So if our file is the only one in the project and if that's an image
+	 * check it is an image. If so, ask him if that's he really want to do. */
+	root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (self));
+	stats = BRASERO_FILE_NODE_STATS (root);
+
+	if (stats && !stats->children
+	&& (!strcmp (g_file_info_get_content_type (info), "application/x-toc")
+	||  !strcmp (g_file_info_get_content_type (info), "application/x-cdrdao-toc")
+	||  !strcmp (g_file_info_get_content_type (info), "application/x-cue")
+	||  !strcmp (g_file_info_get_content_type (info), "application/x-cd-image"))) {
+		BraseroBurnResult result;
+
+		result = brasero_data_vfs_emit_image_signal (self, uri);
+		if (result == BRASERO_BURN_CANCEL) {
+			for (iter = nodes; iter; iter = iter->next) {
+				BraseroFileNode *node;
+				guint reference;
+
+				reference = GPOINTER_TO_INT (iter->data);
+				node = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
+
+				/* the node could have been removed in the mean time */
+				if (node)
+					brasero_data_project_remove_node (BRASERO_DATA_PROJECT (self), node);
+			}
+
+			return;
+		}
 	}
 
 	/* NOTE: we don't check for a broken symlink here since the  user chose
@@ -1215,6 +1285,17 @@ brasero_data_vfs_class_init (BraseroDataVFSClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_BOOLEAN);
+
+	brasero_data_vfs_signals [IMAGE_SIGNAL] = 
+	    g_signal_new ("image_uri",
+			  G_TYPE_FROM_CLASS (klass),
+			  G_SIGNAL_RUN_LAST|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL, NULL,
+			  brasero_marshal_INT__STRING,
+			  G_TYPE_INT,
+			  1,
+			  G_TYPE_STRING);
 
 	brasero_data_vfs_signals [FILTERED_SIGNAL] = 
 	    g_signal_new ("filtered_uri",

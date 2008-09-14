@@ -62,6 +62,9 @@
 #include "brasero-rename.h"
 #include "brasero-notify.h"
 
+#include "brasero-app.h"
+#include "brasero-project-manager.h"
+
 #include "burn-debug.h"
 #include "burn-basics.h"
 #include "burn-track.h"
@@ -669,6 +672,97 @@ brasero_data_disc_filtered_uri_cb (BraseroDataVFS *vfs,
 		brasero_file_filtered_add (BRASERO_FILE_FILTERED (priv->filter), uri, status);
 	else
 		brasero_file_filtered_remove (BRASERO_FILE_FILTERED (priv->filter), uri);
+}
+
+struct _BraseroDataDiscProjectSwitch {
+	gchar *uri;
+	BraseroDataDisc *disc;
+};
+typedef struct _BraseroDataDiscProjectSwitch BraseroDataDiscProjectSwitch;
+
+static gboolean
+brasero_data_disc_switch_to_image (gpointer data)
+{
+	GtkWidget *manager;
+	GtkWidget *toplevel;
+	BraseroDataDiscPrivate *priv;
+	BraseroDataDiscProjectSwitch *callback_data = data;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (callback_data->disc);
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (callback_data->disc));
+	if (!BRASERO_IS_APP (toplevel))
+		return BRASERO_BURN_OK;
+
+	/* Clean up everything to avoid warning dialog */
+	brasero_data_project_reset (priv->project);
+
+	/* Tell project manager to switch */
+	manager = brasero_app_get_project_manager (BRASERO_APP (toplevel));
+	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager), callback_data->uri);
+
+	return FALSE;
+}
+
+static BraseroBurnResult
+brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
+				const gchar *uri,
+				BraseroDataDisc *self)
+{
+	gint answer;
+	gchar *name;
+	GtkWidget *button;
+	GtkWidget *dialog;
+	GtkWidget *toplevel;
+	BraseroDataDiscPrivate *priv;
+	BraseroDataDiscProjectSwitch *callback_data;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	if (priv->loading)
+		return BRASERO_BURN_OK;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	if (!BRASERO_IS_APP (toplevel))
+		return BRASERO_BURN_OK;
+
+	name = brasero_file_node_get_uri_name (uri);
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT |
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_QUESTION,
+					 GTK_BUTTONS_NONE,
+					 _("Do you want to burn \"%s\" to a disc or add it in to the data project?"),
+					 name);
+	g_free (name);
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."));
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add to project"), GTK_RESPONSE_NO);
+
+	button = brasero_utils_make_button (_("_Burn..."),
+					    NULL,
+					    "media-optical-burn",
+					    GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (button);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
+				      button,
+				      GTK_RESPONSE_YES);
+
+	gtk_widget_show_all (dialog);
+	answer = gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	if (answer != GTK_RESPONSE_YES)
+		return BRASERO_BURN_OK;
+
+	callback_data = g_new (BraseroDataDiscProjectSwitch, 1);
+	callback_data->disc = self;
+	callback_data->uri = g_strdup (uri);
+	g_idle_add (brasero_data_disc_switch_to_image, callback_data);
+
+	return BRASERO_BURN_CANCEL;
 }
 
 static void
@@ -2047,6 +2141,10 @@ brasero_data_disc_init (BraseroDataDisc *object)
 	g_signal_connect (priv->project,
 			  "filtered-uri",
 			  G_CALLBACK (brasero_data_disc_filtered_uri_cb),
+			  object);
+	g_signal_connect (priv->project,
+			  "image-uri",
+			  G_CALLBACK (brasero_data_disc_image_uri_cb),
 			  object);
 	g_signal_connect (priv->project,
 			  "unreadable-uri",

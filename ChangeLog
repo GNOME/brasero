@@ -1,5 +1,17 @@
 2008-09-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Ask the user if he wants to burn an image when one is added to a data project
+	Fix #547731 – warn idiot users ...
+
+	* src/brasero-data-disc.c (brasero_data_disc_switch_to_image),
+	(brasero_data_disc_image_uri_cb), (brasero_data_disc_init):
+	* src/brasero-data-vfs.c (brasero_data_vfs_emit_image_signal),
+	(brasero_data_vfs_loading_node_result),
+	(brasero_data_vfs_class_init):
+	* src/brasero-marshal.list:
+
+2008-09-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Changed some names to fix #549580 – Minor Name/Comment improvements
 
 	* data/brasero-copy-medium.desktop.in.in:
