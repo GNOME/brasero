@@ -457,6 +457,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	GtkTreeModel *model;
 	GtkWidget *label;
 	GtkWidget *box;
+	gchar *string;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (object);
 
@@ -472,10 +473,12 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 						    G_TYPE_INT64));
 
 	priv->speed = gtk_combo_box_new_with_model (model);
+	string = g_strdup_printf ("<b>%s</b>", _("Burning speed"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
 			    brasero_utils_pack_properties (_("<b>Burning speed</b>"),
 							   priv->speed, NULL),
 			    FALSE, FALSE, 0);
+	g_free (string);
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (priv->speed), renderer, TRUE);
@@ -489,8 +492,9 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	priv->eject = gtk_check_button_new_with_mnemonic (_("_Eject after burning"));
 	priv->notmp = gtk_check_button_new_with_mnemonic (_("Burn the image directly _without saving it to disc"));
 
+	string = g_strdup_printf ("<b>%s</b>", _("Options"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    brasero_utils_pack_properties (_("<b>Options</b>"),
+			    brasero_utils_pack_properties (string,
 							   priv->eject,
 							   priv->dummy,
 							   priv->burnproof,
@@ -498,6 +502,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 							   NULL),
 			    FALSE,
 			    FALSE, 0);
+	g_free (string);
 
 	priv->tmpdir = gtk_file_chooser_button_new (_("Directory for temporary files"),
 						    GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
@@ -514,13 +519,15 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	gtk_widget_show (priv->tmpdir_size);
 	gtk_box_pack_start (GTK_BOX (box), priv->tmpdir_size, FALSE, FALSE, 0);
 
+	string = g_strdup_printf ("<b>%s</b>", _("Temporary files"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    brasero_utils_pack_properties (_("<b>Temporary files</b>"),
+			    brasero_utils_pack_properties (string,
 							   box,
 							   priv->tmpdir,
 							   NULL),
 			    FALSE,
 			    FALSE, 0);
+	g_free (string);
 
 	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (priv->tmpdir),
 				       g_get_tmp_dir ());

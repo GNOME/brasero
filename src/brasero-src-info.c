@@ -172,7 +172,7 @@ brasero_src_info_init (BraseroSrcInfo *object)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	label = gtk_label_new (_("<b>Size:</b>"));
+	label = gtk_label_new (_("Size:"));
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -185,7 +185,7 @@ brasero_src_info_init (BraseroSrcInfo *object)
 	gtk_table_attach (GTK_TABLE (table), priv->capacity, 1, 2, 0, 1,
 			  GTK_FILL|GTK_EXPAND, GTK_FILL|GTK_EXPAND, 0, 0);
 
-/*	label = gtk_label_new (_("<b>Status:</b>"));
+/*	label = gtk_label_new (_("Status:"));
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);

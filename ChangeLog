@@ -1,3 +1,39 @@
+2008-09-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix problem reported in #549368 – string typos
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_gap):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info):
+	* src/brasero-data-disc.c (brasero_data_disc_rename_activated):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_title_widget),
+	(brasero_disc_option_dialog_add_data_options),
+	(brasero_disc_option_dialog_add_audio_options),
+	(brasero_disc_option_dialog_add_video_options),
+	(brasero_disc_option_dialog_init):
+	* src/brasero-drive-info.c (brasero_drive_info_update_info),
+	(brasero_drive_info_set_image_path), (brasero_drive_info_init):
+	* src/brasero-drive-properties.c (brasero_drive_properties_init):
+	* src/brasero-filter-option.c (brasero_filter_option_init):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_init):
+	* src/brasero-jacket-background.c (brasero_jacket_background_init):
+	* src/brasero-multi-song-props.c (brasero_multi_song_props_init):
+	* src/brasero-plugin-option.c (brasero_plugin_option_set_plugin):
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_init):
+	* src/brasero-search-beagle.c (brasero_search_init),
+	(brasero_search_update_header):
+	* src/brasero-search-entry.c (brasero_search_entry_init):
+	* src/brasero-song-properties.c (brasero_song_props_init),
+	(brasero_song_props_set_properties):
+	* src/brasero-split-dialog.c (brasero_split_dialog_init):
+	* src/brasero-src-info.c (brasero_src_info_init):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_corruption_warning):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_pack_options),
+	(brasero_tool_dialog_init):
+
 2008-09-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Improve ejection

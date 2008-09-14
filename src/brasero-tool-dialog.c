@@ -283,6 +283,7 @@ void
 brasero_tool_dialog_pack_options (BraseroToolDialog *self,
 				  ...)
 {
+	gchar *title;
 	va_list vlist;
 	GtkWidget *child;
 	GSList *list = NULL;
@@ -292,7 +293,10 @@ brasero_tool_dialog_pack_options (BraseroToolDialog *self,
 		list = g_slist_prepend (list, child);
 	va_end (vlist);
 
-	self->priv->options = brasero_utils_pack_properties_list (_("<b>Options:</b>"), list);
+	title = g_strdup_printf ("<b>%s</b>", _("Options"));
+	self->priv->options = brasero_utils_pack_properties_list (title, list);
+	g_free (title);
+
 	g_slist_free (list);
 
 	gtk_widget_show_all (self->priv->options);
@@ -483,6 +487,7 @@ static void
 brasero_tool_dialog_init (BraseroToolDialog *obj)
 {
 	GtkWidget *title;
+	gchar *title_str;
 
 	obj->priv = g_new0 (BraseroToolDialogPrivate, 1);
 	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 300);
@@ -500,12 +505,14 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	obj->priv->info = brasero_drive_info_new ();
 	gtk_widget_show (GTK_WIDGET (obj->priv->info));
 
+	title_str = g_strdup_printf ("<b>%s</b>", _("Select a disc"));
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
-			    brasero_utils_pack_properties (_("<b>Select a disc</b>"),
+			    brasero_utils_pack_properties (title_str,
 							   obj->priv->info,
 							   obj->priv->selector,
 							   NULL),
 			    FALSE, FALSE, 0);
+	g_free (title_str);
 
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (obj->priv->selector),
 						BRASERO_MEDIA_TYPE_REWRITABLE|
@@ -524,7 +531,10 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	gtk_widget_set_sensitive (obj->priv->lower_box, FALSE);
 	gtk_widget_show (obj->priv->lower_box);
 
-	title = gtk_label_new (_("<b>Progress:</b>"));
+	title_str = g_strdup_printf ("<b>%s</b>", _("Progress"));
+	title = gtk_label_new (title_str);
+	g_free (title_str);
+
 	gtk_label_set_use_markup (GTK_LABEL (title), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (title), 0.0, 0.5);
 	gtk_misc_set_padding(GTK_MISC (title), 0, 6);

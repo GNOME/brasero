@@ -327,6 +327,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	GtkWidget *label;
 	GtkWidget *vbox;
 	int nb_rows = 2;
+	gchar *string;
 	int nb_items;
 	int rows;
 	int i;
@@ -349,13 +350,19 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (project_box);
 	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("<span size='x-large'><b>Create a new project:</b></span>"));
+	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Create a new project:"));
+	label = gtk_label_new (string);
+	g_free (string);
+
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("<span foreground='grey50'><b><i>Choose from the following options</i></b></span>"));
+	string = g_strdup_printf ("<span foreground='grey50'><b><i>%s</i></b></span>", _("Choose from the following options"));
+	label = gtk_label_new (string);
+	g_free (string);
+
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -395,7 +402,10 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (recent_box);
 	gtk_box_pack_start (GTK_BOX (vbox), recent_box, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("<span size='x-large'><b>Choose a recently opened project:</b></span>"));
+	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Choose a recently opened project:"));
+	label = gtk_label_new (string);
+	g_free (string);
+
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);

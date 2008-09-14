@@ -1051,6 +1051,7 @@ brasero_split_dialog_row_deleted_cb (GtkTreeModel *model,
 static void
 brasero_split_dialog_init (BraseroSplitDialog *object)
 {
+	gchar *title;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *vbox2;
@@ -1166,14 +1167,16 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_widget_show (priv->silence_label);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), priv->silence_label, NULL);
 
+	title = g_strdup_printf ("<b>%s</b>", _("Slicing Method"));
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Slicing Method</b>"),
+			    brasero_utils_pack_properties (title,
 							   priv->notebook,
 							   hbox,
 							   NULL),
 			    FALSE,
 			    FALSE,
 			    0);
+	g_free (title);
 
 	/* slices preview */
 	hbox = gtk_hbox_new (FALSE, 6);
@@ -1309,13 +1312,15 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	gtk_box_pack_start (GTK_BOX (vbox2), label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, TRUE, TRUE, 0);
 
+	title = g_strdup_printf ("<b>%s</b>", _("Slices Preview"));
 	gtk_box_pack_start (GTK_BOX (vbox),
-			    brasero_utils_pack_properties (_("<b>Slices Preview</b>"),
+			    brasero_utils_pack_properties (title,
 							   vbox2,
 							   NULL),
 			    TRUE,
 			    TRUE,
 			    0);
+	g_free (title);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
 }

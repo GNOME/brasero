@@ -512,6 +512,7 @@ static void
 brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 {
 	gchar *uri;
+	gchar *string;
 	GtkWidget *label;
 	GtkWidget *button;
 	GtkWidget *options;
@@ -557,9 +558,11 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
 			  obj);
 
-	options = brasero_utils_pack_properties (_("<b>Select a disc to write to</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
+	options = brasero_utils_pack_properties (string,
 						 priv->selection,
 						 NULL);
+	g_free (string);
 
 	gtk_widget_show (options);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
@@ -669,9 +672,11 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  G_CALLBACK (brasero_image_option_dialog_format_changed),
 			  obj);
 
-	box = brasero_utils_pack_properties (_("<b>Image</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Image"));
+	box = brasero_utils_pack_properties (string,
 					     box1,
 					     NULL);
+	g_free (string);
 
 	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			  box,

@@ -1003,16 +1003,20 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 			disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (length);
 		}
 		else {
+			gchar *string;
+
 			gtk_list_store_insert_after (GTK_LIST_STORE (model),
 						     &gap_iter,
 						     iter);
 
+			string = g_strdup_printf ("<i><b>%s</b></i>", _("Pause"));
 			gtk_list_store_set (GTK_LIST_STORE (model), &gap_iter,
-					    NAME_COL, _("<i><b>Pause</b></i>"),
+					    NAME_COL, string,
 					    SONG_COL, FALSE,
 					    //BACKGROUND_COL, "green yellow",
 					    ICON_COL, GTK_STOCK_MEDIA_PAUSE,
 					    -1);
+			g_free (string);
 		}
 
 		size = brasero_utils_get_time_string (gap, TRUE, FALSE);

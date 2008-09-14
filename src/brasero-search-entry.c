@@ -187,6 +187,7 @@ brasero_search_entry_separator_func (GtkTreeModel *model,
 static void
 brasero_search_entry_init (BraseroSearchEntry *obj)
 {
+	gchar *string;
 	GtkWidget *box;
 	GtkWidget *table;
 	GtkWidget *label;
@@ -202,7 +203,11 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("<b>Search:\t</b>"));
+	/* Translators: This string is followed later by "only in\t" */
+	string = g_strdup_printf ("<b>%s</b>", _("Search:\t"));
+	label = gtk_label_new (string);
+	g_free (string);
+
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 
@@ -263,7 +268,11 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 
 	gtk_box_pack_end (GTK_BOX (obj), table, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("<b>only in\t</b>"));
+	/* Translators: This is the end of the previous sentence  "Search:\t" */
+	string = g_strdup_printf ("<b>%s</b>", _("only in\t"));
+	label = gtk_label_new (string);
+	g_free (string);
+
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_table_attach (GTK_TABLE (table),

@@ -696,9 +696,9 @@ brasero_disc_option_dialog_title_widget (BraseroDiscOptionDialog *dialog)
 
 	brasero_burn_session_get_input_type (priv->session, &type);
 	if (type.type == BRASERO_TRACK_TYPE_DATA)
-		label = g_strdup (_("<b>Label of the disc</b>"));
+		label = g_strdup_printf ("<b>%s</b>", _("Label of the disc"));
 	else if (type.type == BRASERO_TRACK_TYPE_AUDIO)
-		label = g_strdup (_("<b>Title</b>"));
+		label = g_strdup_printf ("<b>%s</b>", _("Title"));
 
 	widget = brasero_utils_pack_properties (label, priv->label, NULL);
 	g_free (label);
@@ -766,6 +766,7 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	BraseroDiscOptionDialogPrivate *priv;
 	GtkWidget *widget = NULL;
 	GtkWidget *options;
+	gchar *string;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
@@ -784,10 +785,13 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	/* general options */
 	brasero_disc_option_dialog_joliet_widget (dialog);
 
-	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Disc options"));
+	options = brasero_utils_pack_properties (string,
 						 priv->multi_toggle,
 						 priv->joliet_toggle,
 						 NULL);
+	g_free (string);
+
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (widget);
@@ -796,6 +800,7 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 static void
 brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 {
+	gchar *string;
 	GtkWidget *widget;
 	GtkWidget *options;
 	BraseroDiscOptionDialogPrivate *priv;
@@ -818,9 +823,12 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 	gtk_widget_set_tooltip_text (priv->multi_toggle,
 				     _("Allow create what is called an enhanced CD or CD+"));
 
-	options = brasero_utils_pack_properties (_("<b>Disc options</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Disc options"));
+	options = brasero_utils_pack_properties (string,
 						 priv->multi_toggle,
 						 NULL);
+	g_free (string);
+
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
 	brasero_disc_option_dialog_update_multi (dialog);
@@ -1012,6 +1020,7 @@ brasero_disc_option_dialog_native_aspect (GtkToggleButton *button,
 static void
 brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 {
+	gchar *string;
 	GtkWidget *label;
 	GtkWidget *table;
 	GtkWidget *widget;
@@ -1189,18 +1198,25 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 			  G_CALLBACK (brasero_disc_option_dialog_VCD),
 			  dialog);
 
-	options = brasero_utils_pack_properties (_("<b>Video Options</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Video Options"));
+	options = brasero_utils_pack_properties (string,
 						 table,
 						 NULL);
+	g_free (string);
+
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
 	/* Audio options for DVDs */
 	button1 = gtk_check_button_new_with_mnemonic (_("Add _AC3 audio stream"));
 	button2 = gtk_check_button_new_with_mnemonic (_("Add _MP2 audio stream"));
-	options = brasero_utils_pack_properties (_("<b>Audio Options</b>"),
+
+	string = g_strdup_printf ("<b>%s</b>", _("Audio Options"));
+	options = brasero_utils_pack_properties (string,
 						 button1,
 						 button2,
 						 NULL);
+	g_free (string);
+
 	g_signal_connect (button1,
 			  "clicked",
 			  G_CALLBACK (brasero_disc_option_dialog_AC3),
@@ -1306,6 +1322,7 @@ brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *dialog)
 static void
 brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 {
+	gchar *string;
 	GtkWidget *button;
 	GtkWidget *options;
 	BraseroPluginManager *manager;
@@ -1352,9 +1369,11 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 			  G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
 			  obj);
 
-	options = brasero_utils_pack_properties (_("<b>Select a disc to write to</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
+	options = brasero_utils_pack_properties (string,
 						 priv->selection,
 						 NULL);
+	g_free (string);
 	gtk_widget_show (options);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),

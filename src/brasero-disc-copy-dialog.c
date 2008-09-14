@@ -111,6 +111,7 @@ static void
 brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 {
 	gboolean valid;
+	gchar *title_str;
 	GtkWidget *button;
 	BraseroDrive *drive, *src_drive;
 	BraseroDiscCopyDialogPrivate *priv;
@@ -147,13 +148,15 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 
 	/* take care of source media */
 	priv->source = brasero_src_selection_new (priv->session);
+	title_str = g_strdup_printf ("<b>%s</b>", _("Select disc to copy"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    brasero_utils_pack_properties (_("<b>Select disc to copy</b>"),
+			    brasero_utils_pack_properties (title_str,
 							   priv->source,
 							   NULL),
 			    FALSE,
 			    FALSE,
 			    0);
+	g_free (title_str);
 
 	/* destination drive */
 	priv->selection = brasero_dest_selection_new (priv->session);
@@ -162,13 +165,15 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			  G_CALLBACK (brasero_disc_copy_dialog_valid_media_cb),
 			  obj);
 
+	title_str = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    brasero_utils_pack_properties (_("<b>Select a disc to write to</b>"),
+			    brasero_utils_pack_properties (title_str,
 							   priv->selection,
 							   NULL),
 			    FALSE,
 			    FALSE,
 			    0);
+	g_free (title_str);
 
 	/* only show media with something to be read on them */
 	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),

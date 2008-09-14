@@ -181,6 +181,7 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 				       GSList *wrong_sums)
 {
 	GSList *iter;
+	gchar *string;
 	GtkWidget *tree;
 	GtkWidget *scroll;
 	GtkWidget *button;
@@ -190,12 +191,14 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
+	string = g_strdup_printf ("<b><big>%s</big></b>", _("The following files appear to be corrupted:"));
 	message = gtk_message_dialog_new_with_markup (GTK_WINDOW (self),
 						      GTK_DIALOG_MODAL |
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_MESSAGE_ERROR,
 						      GTK_BUTTONS_NONE,
-						      _("<b><big>The following files appear to be corrupted:</big></b>"));
+						      string);
+	g_free (string);
 
 	gtk_window_set_title (GTK_WINDOW (message),  _("File Integrity Check Error"));
 	gtk_window_set_resizable (GTK_WINDOW (message), TRUE);

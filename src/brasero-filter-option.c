@@ -95,6 +95,7 @@ brasero_file_filtered_gconf_notify_cb (GConfClient *client,
 static void
 brasero_filter_option_init (BraseroFilterOption *object)
 {
+	gchar *string;
 	gboolean active;
 	GtkWidget *frame;
 	GError *error = NULL;
@@ -131,7 +132,7 @@ brasero_filter_option_init (BraseroFilterOption *object)
 	active = gconf_client_get_bool (priv->client,
 					BRASERO_FILTER_BROKEN_SYM_KEY,
 					NULL);
-	
+
 	button_sym = gtk_check_button_new_with_mnemonic (_("Filter _broken symlinks"));
 	gtk_widget_show (button_sym);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_sym), active);
@@ -150,10 +151,13 @@ brasero_filter_option_init (BraseroFilterOption *object)
 		error = NULL;
 	}
 
-	frame = brasero_utils_pack_properties (_("<b>Filtering options</b>"),
+	string = g_strdup_printf ("<b>%s</b>", _("Filtering options"));
+	frame = brasero_utils_pack_properties (string,
 					       button_sym,
 					       button_hidden,
 					       NULL);
+	g_free (string);
+
 	gtk_box_pack_start (GTK_BOX (object),
 			    frame,
 			    FALSE,

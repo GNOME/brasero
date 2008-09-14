@@ -122,15 +122,21 @@ brasero_drive_info_update_info (BraseroDriveInfo *self,
 
 		if ((media & BRASERO_MEDIUM_CLOSED)
 		&& !(media & BRASERO_MEDIUM_REWRITABLE)) {
+			gchar *string;
+
 			/* the media is closed anyway */
-			gtk_label_set_markup (GTK_LABEL (priv->status),
-					      _("<i>the medium is not writable</i>"));
+			string = g_strdup_printf ("<i>%s</i>", _("the medium is not writable"));
+			gtk_label_set_markup (GTK_LABEL (priv->status), string);
+			g_free (string);
 		}
 		else {
+			gchar *string;
+
 			/* maybe with some more plugins it would work since the 
 			 * medium is apparently not closed and/or rewritable */
-			gtk_label_set_markup (GTK_LABEL (priv->status),
-					      _("<i>the medium is not writable with the current set of plugins</i>"));
+			string = g_strdup_printf ("<i>%s</i>", _("the medium is not writable with the current set of plugins"));
+			gtk_label_set_markup (GTK_LABEL (priv->status), string);
+			g_free (string);
 		}
 	}
 	else if (media_status == BRASERO_MEDIUM_REWRITABLE) {
@@ -212,7 +218,7 @@ brasero_drive_info_set_image_path (BraseroDriveInfo *self,
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
 
-	info = g_strdup_printf (_("The <b>image</b> will be saved to\n%s"), path ? path:"");
+	info = g_strdup_printf (_("The image will be saved to\n%s"), path ? path:"");
 	gtk_label_set_markup (GTK_LABEL (priv->image_path), info);
 	g_free (info);
 
@@ -275,6 +281,7 @@ brasero_drive_info_set_medium (BraseroDriveInfo *self,
 static void
 brasero_drive_info_init (BraseroDriveInfo *object)
 {
+	gchar *string;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *alignment;
@@ -298,8 +305,13 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (priv->notebook), FALSE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (priv->notebook), FALSE);
 
-	label = gtk_label_new (_("<b><i>The drive that holds the source media will also be the one used to record.\n\n</i></b>"
-				 "<i>A new recordable media will be required once the one currently loaded has been copied.</i>"));
+	string = g_strdup_printf ("<b><i>%s</i></b><i>%s</i>",
+				  _("The drive that holds the source media will also be the one used to record.\n"),
+				  _("A new recordable media will be required once the one currently loaded has been copied."));
+
+	label = gtk_label_new (string);
+	g_free (string);
+
 	priv->warning = label;
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD);
@@ -314,7 +326,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	label = gtk_label_new (_("<b>Size:</b>"));
+	label = gtk_label_new (_("Size:"));
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
@@ -327,7 +339,7 @@ brasero_drive_info_init (BraseroDriveInfo *object)
 	gtk_table_attach (GTK_TABLE (table), priv->capacity, 1, 2, 0, 1,
 			  GTK_FILL|GTK_EXPAND, GTK_FILL, 0, 0);
 
-	label = gtk_label_new (_("<b>Status:</b>"));
+	label = gtk_label_new (_("Status:"));
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);

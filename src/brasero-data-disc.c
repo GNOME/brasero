@@ -1627,6 +1627,7 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 		gtk_tree_path_free (treepath);
 	}
 	else {
+		gchar *string;
 		GtkWidget *frame;
 		GtkWidget *dialog;
 		GtkWidget *rename;
@@ -1644,7 +1645,10 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 		brasero_rename_set_show_keep_default (BRASERO_RENAME (rename), FALSE);
 		gtk_widget_show (rename);
 
-		frame = brasero_utils_pack_properties (_("<b>Renaming mode</b>"), rename, NULL);
+		string = g_strdup_printf ("<b>%s</b>", _("Renaming mode"));
+		frame = brasero_utils_pack_properties (string, rename, NULL);
+		g_free (string);
+
 		gtk_widget_show (frame);
 
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), frame, TRUE, TRUE, 0);

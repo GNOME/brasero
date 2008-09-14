@@ -187,6 +187,7 @@ brasero_multi_song_props_set_show_gap (BraseroMultiSongProps *self,
 static void
 brasero_multi_song_props_init (BraseroMultiSongProps *object)
 {
+	gchar *title;
 	GtkWidget *box;
 	GtkWidget *label;
 	GtkWidget *table;
@@ -204,7 +205,10 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_widget_set_tooltip_text (priv->title,
 				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
 
-	frame = brasero_utils_pack_properties (_("<b>Song titles</b>"), priv->title, NULL);
+	title = g_strdup_printf ("<b>%s</b>", _("Song titles"));
+	frame = brasero_utils_pack_properties (title, priv->title, NULL);
+	g_free (title);
+
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
@@ -218,7 +222,10 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 
-	frame = brasero_utils_pack_properties (_("<b>Additional song information</b>"), table, NULL);
+	title = g_strdup_printf ("<b>%s</b>", _("Additional song information"));
+	frame = brasero_utils_pack_properties (title, table, NULL);
+	g_free (title);
+
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
@@ -293,7 +300,9 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (box);
 
-	frame = brasero_utils_pack_properties (_("<b>Options</b>"), box, NULL);
+	title = g_strdup_printf ("<b>%s</b>", _("Options"));
+	frame = brasero_utils_pack_properties (title, box, NULL);
+	g_free (title);
 	priv->gap_box = frame;
 
 	gtk_widget_show (frame);

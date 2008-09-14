@@ -301,6 +301,7 @@ brasero_search_column_clicked (GtkTreeViewColumn *column,
 static void
 brasero_search_init (BraseroSearch *obj)
 {
+	gchar *string;
 	GtkWidget *box;
 	GtkWidget *box1;
 	GtkWidget *label;
@@ -351,7 +352,10 @@ brasero_search_init (BraseroSearch *obj)
 	gtk_box_pack_start (GTK_BOX (box), button, FALSE, TRUE, 0);
 	obj->priv->left = button;
 
-	label = gtk_label_new (_("<b>No results</b>"));
+	string = g_strdup_printf ("<b>%s</b>", _("No results"));
+	label = gtk_label_new (string);
+	g_free (string);
+
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
 	obj->priv->results_label = label;
@@ -797,16 +801,19 @@ brasero_search_update_header (BraseroSearch *search)
 
 	if (search->priv->hits_num) {
 		gint last;
+		gchar *tmp;
 
 		last = search->priv->first_hit + search->priv->max_results;
 		last = last <= search->priv->hits_num ? last : search->priv->hits_num;
-		string = g_strdup_printf (_("<b>Results %i - %i (out of %i)</b>"),
-					  search->priv->first_hit + 1,
-					  last,
-					  search->priv->hits_num);
+		tmp = g_strdup_printf (_("Results %i - %i (out of %i)"),
+				       search->priv->first_hit + 1,
+				       last,
+				       search->priv->hits_num);
+		string = g_strdup_printf ("<b>%s</b>", tmp);
+		g_free (tmp);
 	}
 	else
-		string = g_strdup (_("<b>No results</b>"));
+		string = g_strdup_printf ("<b>%s</b>", _("No results"));
 
 	gtk_label_set_markup (GTK_LABEL (search->priv->results_label), string);
 	g_free (string);

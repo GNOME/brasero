@@ -171,6 +171,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	GtkWidget *vbox2;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
+	gchar *string;
 
 	priv = BRASERO_JACKET_BACKGROUND_PRIVATE (object);
 
@@ -179,7 +180,10 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), vbox, TRUE, TRUE, 0);
 
-	label = gtk_label_new_with_mnemonic (_("<b>_Color</b>"));
+	string = g_strdup_printf ("<b>%s</b", _("_Color"));
+	label = gtk_label_new_with_mnemonic (string);
+	g_free (string);
+
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_widget_show (label);
@@ -222,8 +226,10 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	priv->color2 = gtk_color_button_new ();
 	gtk_box_pack_start (GTK_BOX (hbox2), priv->color2, FALSE, TRUE, 0);
 
+	string = g_strdup_printf ("<b>%s</b>", _("_Image"));
+	label = gtk_label_new_with_mnemonic (string);
+	g_free (string);
 
-	label = gtk_label_new_with_mnemonic (_("<b>_Image</b>"));
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);

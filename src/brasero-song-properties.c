@@ -122,6 +122,7 @@ brasero_song_props_gap_changed_cb (GtkSpinButton *button,
 static void
 brasero_song_props_init (BraseroSongProps *obj)
 {
+	gchar *title_str;
 	GtkWidget *label;
 	GtkWidget *table;
 	GtkWidget *frame;
@@ -186,9 +187,12 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
 
-	frame = brasero_utils_pack_properties (_("<b>Options</b>"),
+	title_str = g_strdup_printf ("<b>%s</b>", "Options");
+	frame = brasero_utils_pack_properties (title_str,
 					       table,
 					       NULL);
+	g_free (title_str);
+
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox), frame, FALSE, FALSE, 0);
 
@@ -313,7 +317,12 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 	gdouble secs;
 
 	if (track_num >= 0) {
-		string = g_strdup_printf (_("<b>Song information for track %02i</b>"), track_num);
+		gchar *tmp;
+
+		tmp = g_strdup_printf (_("Song information for track %02i"), track_num);
+		string = g_strdup_printf ("<b>%s</b>", tmp);
+		g_free (tmp);
+
 		gtk_label_set_markup (GTK_LABEL (self->priv->label), string);
 		g_free (string);
 	}
