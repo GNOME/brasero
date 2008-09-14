@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-14 13:02+0000\n"
-"PO-Revision-Date: 2008-09-14 19:34+0200\n"
+"POT-Creation-Date: 2008-09-14 18:04+0000\n"
+"PO-Revision-Date: 2008-09-14 20:09+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -435,11 +435,11 @@ msgid "Number of copies "
 msgstr "Número de copias "
 
 #: ../src/brasero-audio-disc.c:313 ../src/brasero-tray.c:91
-#: ../src/brasero-data-disc.c:122 ../src/brasero-video-disc.c:90
+#: ../src/brasero-data-disc.c:125 ../src/brasero-video-disc.c:90
 msgid "Menu"
 msgstr "Menú"
 
-#: ../src/brasero-audio-disc.c:314 ../src/brasero-data-disc.c:123
+#: ../src/brasero-audio-disc.c:314 ../src/brasero-data-disc.c:126
 msgid "Open the selected files"
 msgstr "Añadir los archivos seleccionados"
 
@@ -451,12 +451,12 @@ msgstr "_Editar información…"
 msgid "Edit the track information (start, end, author, ...)"
 msgstr "Editar la información de las pista (inicio, final, autor, …)"
 
-#: ../src/brasero-audio-disc.c:318 ../src/brasero-data-disc.c:127
+#: ../src/brasero-audio-disc.c:318 ../src/brasero-data-disc.c:130
 #: ../src/brasero-project.c:206
 msgid "Remove the selected files from the project"
 msgstr "Quitar los archivos seleccionados del proyecto"
 
-#: ../src/brasero-audio-disc.c:320 ../src/brasero-data-disc.c:129
+#: ../src/brasero-audio-disc.c:320 ../src/brasero-data-disc.c:132
 #: ../src/brasero-video-disc.c:97
 msgid "Add the files stored in the clipboard"
 msgstr "Añadir los archivos almacenados en el portapapeles"
@@ -574,7 +574,7 @@ msgstr "Directorio de búsqueda"
 msgid "File \"%s\" can't be opened."
 msgstr "No se puede abrir archivo «%s»."
 
-#: ../src/brasero-audio-disc.c:1598 ../src/brasero-data-disc.c:744
+#: ../src/brasero-audio-disc.c:1598 ../src/brasero-data-disc.c:838
 msgid "Unreadable File"
 msgstr "Archivo ilegible"
 
@@ -874,12 +874,12 @@ msgstr "No hay resultados"
 msgid "Next results"
 msgstr "Resultados siguientes"
 
-#: ../src/brasero-search-beagle.c:424 ../src/brasero-data-disc.c:2140
+#: ../src/brasero-search-beagle.c:424 ../src/brasero-data-disc.c:2238
 #: ../src/brasero-file-filtered.c:539
 msgid "Files"
 msgstr "Archivos"
 
-#: ../src/brasero-search-beagle.c:443 ../src/brasero-data-disc.c:2168
+#: ../src/brasero-search-beagle.c:443 ../src/brasero-data-disc.c:2266
 msgid "Description"
 msgstr "Descripción"
 
@@ -1607,127 +1607,149 @@ msgstr "Interrumpir el proceso puede inutilizar el disco."
 msgid "_Cancel burning"
 msgstr "_Cancelar la grabación"
 
-#: ../src/brasero-data-disc.c:125
+#: ../src/brasero-data-disc.c:128
 msgid "R_ename..."
 msgstr "R_enombrar…"
 
-#: ../src/brasero-data-disc.c:125
+#: ../src/brasero-data-disc.c:128
 msgid "Rename the selected file"
 msgstr "Renombrar el archivo seleccionado"
 
-#: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:325
+#: ../src/brasero-data-disc.c:134 ../src/brasero-data-disc.c:328
 #, c-format
 msgid "New folder"
 msgstr "Carpeta nueva"
 
-#: ../src/brasero-data-disc.c:131
+#: ../src/brasero-data-disc.c:134
 msgid "Create a new empty folder"
 msgstr "Crear una carpeta nueva"
 
-#: ../src/brasero-data-disc.c:136
+#: ../src/brasero-data-disc.c:139
 msgid "Import Session"
 msgstr "Importar sesión"
 
-#: ../src/brasero-data-disc.c:136
+#: ../src/brasero-data-disc.c:139
 msgid "Import session"
 msgstr "Importar sesión"
 
-#: ../src/brasero-data-disc.c:215
+#: ../src/brasero-data-disc.c:218
 msgid "The session couldn't be imported:"
 msgstr "La sesión no se pudo importar:"
 
-#: ../src/brasero-data-disc.c:217
+#: ../src/brasero-data-disc.c:220
 msgid "Session Import Error"
 msgstr "Error de importación de sesión"
 
-#: ../src/brasero-data-disc.c:219 ../src/brasero-sum-dialog.c:156
+#: ../src/brasero-data-disc.c:222 ../src/brasero-sum-dialog.c:156
 #: ../src/scsi-error.c:32
 msgid "unknown error"
 msgstr "error desconocido"
 
-#: ../src/brasero-data-disc.c:332
+#: ../src/brasero-data-disc.c:335
 #, c-format
 msgid "New folder %i"
 msgstr "Carpeta nueva %i"
 
-#: ../src/brasero-data-disc.c:603
+#: ../src/brasero-data-disc.c:606
 msgid "The contents of the project changed since it was saved."
 msgstr "El contenido del proyecto ha cambiado desde que se guardó."
 
-#: ../src/brasero-data-disc.c:605
+#: ../src/brasero-data-disc.c:608
 msgid "Do you want to continue or discard the old project layout?"
 msgstr "¿Quiere continuar o descartar el proyecto anterior?"
 
-#: ../src/brasero-data-disc.c:611
+#: ../src/brasero-data-disc.c:614
 msgid "_Discard"
 msgstr "_Descartar"
 
-#: ../src/brasero-data-disc.c:612
+#: ../src/brasero-data-disc.c:615
 msgid "Press if you want to discard the current modified project"
 msgstr "Pulse si quiere descartar el proyecto actualmente modificado"
 
-#: ../src/brasero-data-disc.c:616
+#: ../src/brasero-data-disc.c:619
 msgid "_Continue"
 msgstr "_Continuar"
 
-#: ../src/brasero-data-disc.c:617
+#: ../src/brasero-data-disc.c:620
 msgid "Press if you want to continue with the current modified project"
 msgstr "Pulse si quiere continuar con el proyecto actual modificado"
 
-#: ../src/brasero-data-disc.c:740 ../src/brasero-data-disc.c:783
-#: ../src/brasero-data-disc.c:826
+#: ../src/brasero-data-disc.c:735
+#, c-format
+msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+msgstr "¿Quiere grabar «%s» a un disco o añadirlo en un proyecto de datos?"
+
+#: ../src/brasero-data-disc.c:740
+msgid ""
+"This file is the image of a disc and can therefore be burnt to disc without "
+"having to add it to a data project first."
+msgstr ""
+"Este archivo es la imagen de un disco y por ello se puede grabar al disco "
+"sin tener que añadirlo a un proyecto de datos primero."
+
+#: ../src/brasero-data-disc.c:742
+msgid "_Add to project"
+msgstr "_Añadir al proyecto"
+
+#: ../src/brasero-data-disc.c:744 ../src/brasero-project.c:209
+#: ../src/brasero-project.c:427
+msgid "_Burn..."
+msgstr "_Grabar…"
+
+#: ../src/brasero-data-disc.c:834 ../src/brasero-data-disc.c:877
+#: ../src/brasero-data-disc.c:920
 #, c-format
 msgid "\"%s\" cannot be added to the selection:"
 msgstr "No se puede añadir «%s» a la selección:"
 
-#: ../src/brasero-data-disc.c:770
+#: ../src/brasero-data-disc.c:864
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "«%s» es un enlace simbólico recursivo."
 
-#: ../src/brasero-data-disc.c:787
+#: ../src/brasero-data-disc.c:881
 msgid "Recursive Symlink"
 msgstr "Enlace simbólico recursivo"
 
-#: ../src/brasero-data-disc.c:790
+#: ../src/brasero-data-disc.c:884
 msgid "it is a recursive symlink."
 msgstr "es un enlace simbólico recursivo."
 
-#: ../src/brasero-data-disc.c:813
+#: ../src/brasero-data-disc.c:907
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "no se puede encontrar «%s»."
 
-#: ../src/brasero-data-disc.c:830
+#: ../src/brasero-data-disc.c:924
 msgid "File Not Found"
 msgstr "Archivo no encontrado"
 
-#: ../src/brasero-data-disc.c:833
+#: ../src/brasero-data-disc.c:927
 msgid "it doesn't exist at the specified location."
 msgstr "no existe en la lugar especificada."
 
-#: ../src/brasero-data-disc.c:863
+#: ../src/brasero-data-disc.c:957
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr "«%s» ya existe en el directorio:"
 
-#: ../src/brasero-data-disc.c:866
+#: ../src/brasero-data-disc.c:960
 msgid "Already Existing File"
 msgstr "Archivo ya existente"
 
-#: ../src/brasero-data-disc.c:869
+#: ../src/brasero-data-disc.c:963
 msgid "do you really want to replace it?"
 msgstr "¿realmente quiere reemplazarlo?"
 
-#: ../src/brasero-data-disc.c:871
+#: ../src/brasero-data-disc.c:965
 msgid "_Don't replace"
 msgstr "_No reemplazar"
 
-#: ../src/brasero-data-disc.c:872
+#: ../src/brasero-data-disc.c:966
 msgid "_Replace"
 msgstr "_Reemplazar"
 
-#: ../src/brasero-data-disc.c:908
+#: ../src/brasero-data-disc.c:1002
 #, c-format
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
@@ -1736,11 +1758,11 @@ msgstr ""
 "¿Realmente quiere añadir «%s» a la selección y usar la versión 3 del estándar "
 "ISO9660 para soportarlo?"
 
-#: ../src/brasero-data-disc.c:911
+#: ../src/brasero-data-disc.c:1005
 msgid "File Over 2 GiB"
 msgstr "El archivo es más grande de 2 GiB"
 
-#: ../src/brasero-data-disc.c:914
+#: ../src/brasero-data-disc.c:1008
 msgid ""
 "The size of the file is over 2 GiB. This isn't supported by ISO9660 standard "
 "in his first and second versions (the most widespread ones).\n"
@@ -1758,24 +1780,24 @@ msgstr ""
 "Una excepción es MacOS X que no puede leer imágenes creadas con la versión 3 "
 "del estándar ISO9660."
 
-#: ../src/brasero-data-disc.c:918 ../src/brasero-data-disc.c:966
+#: ../src/brasero-data-disc.c:1012 ../src/brasero-data-disc.c:1060
 msgid "_Don't add"
 msgstr "_No añadir"
 
-#: ../src/brasero-data-disc.c:919 ../src/brasero-data-disc.c:967
+#: ../src/brasero-data-disc.c:1013 ../src/brasero-data-disc.c:1061
 msgid "_Add"
 msgstr "_Añadir"
 
-#: ../src/brasero-data-disc.c:956
+#: ../src/brasero-data-disc.c:1050
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "¿Está seguro de que quiere añadir «%s» a la selección?"
 
-#: ../src/brasero-data-disc.c:959
+#: ../src/brasero-data-disc.c:1053
 msgid "Deep Directory"
 msgstr "Profundidad de directorios"
 
-#: ../src/brasero-data-disc.c:962
+#: ../src/brasero-data-disc.c:1056
 msgid ""
 "The children of this directory will have 6 parent directories. This is a "
 "violation of the ISO9660 standard which only allows 6.\n"
@@ -1789,63 +1811,63 @@ msgstr ""
 "el soporte no se podrá leer en todos los sistemas operativos.\n"
 "NOTA: se sabe que tal jerarquía de archivos funciona en GNU/Linux."
 
-#: ../src/brasero-data-disc.c:1025
+#: ../src/brasero-data-disc.c:1119
 msgid "A multisession disc is inserted:"
 msgstr "Se ha insertado un disco multisesión:"
 
-#: ../src/brasero-data-disc.c:1026
+#: ../src/brasero-data-disc.c:1120
 msgid "Do you want to import its contents?"
 msgstr "¿Quiere importar sus contenidos?"
 
-#: ../src/brasero-data-disc.c:1034
+#: ../src/brasero-data-disc.c:1128
 msgid "_Import Session"
 msgstr "_Importar sesión"
 
-#: ../src/brasero-data-disc.c:1035
+#: ../src/brasero-data-disc.c:1129
 msgid "Click here to import its contents"
 msgstr "Pulse aquí para importar su contenido"
 
-#: ../src/brasero-data-disc.c:1383
+#: ../src/brasero-data-disc.c:1477
 msgid "Please, wait while the project is loading."
 msgstr "Espere mientras se está cargando el proyecto."
 
-#: ../src/brasero-data-disc.c:1393
+#: ../src/brasero-data-disc.c:1487
 msgid "_Cancel Loading"
 msgstr "_Cancelar la carga"
 
-#: ../src/brasero-data-disc.c:1394
+#: ../src/brasero-data-disc.c:1488
 msgid "Press if you want to cancel current project loading"
 msgstr "Pulse si quiere cancelar la carga del proyecto actual"
 
-#: ../src/brasero-data-disc.c:1503
+#: ../src/brasero-data-disc.c:1597
 msgid "Import"
 msgstr "Importar"
 
-#: ../src/brasero-data-disc.c:1508
+#: ../src/brasero-data-disc.c:1602
 msgid "New Folder"
 msgstr "Carpeta nueva"
 
-#: ../src/brasero-data-disc.c:1636
+#: ../src/brasero-data-disc.c:1730
 msgid "File Renaming"
 msgstr "Renombramiento de archivos"
 
-#: ../src/brasero-data-disc.c:1639 ../src/brasero-disc-option-dialog.c:567
+#: ../src/brasero-data-disc.c:1733 ../src/brasero-disc-option-dialog.c:567
 msgid "_Don't rename"
 msgstr "_No renombrar"
 
-#: ../src/brasero-data-disc.c:1640 ../src/brasero-disc-option-dialog.c:570
+#: ../src/brasero-data-disc.c:1734 ../src/brasero-disc-option-dialog.c:570
 msgid "_Rename"
 msgstr "_Renombrar"
 
-#: ../src/brasero-data-disc.c:1648
+#: ../src/brasero-data-disc.c:1742
 msgid "Renaming mode"
 msgstr "Modo de renombramiento"
 
-#: ../src/brasero-data-disc.c:2154 ../src/brasero-video-disc.c:1194
+#: ../src/brasero-data-disc.c:2252 ../src/brasero-video-disc.c:1194
 msgid "Size"
 msgstr "Tamaño"
 
-#: ../src/brasero-data-disc.c:2184
+#: ../src/brasero-data-disc.c:2282
 msgid "Space"
 msgstr "Espacio"
 
@@ -2381,10 +2403,6 @@ msgstr "_Vaciar proyecto"
 #: ../src/brasero-project.c:208
 msgid "Remove all files from the project"
 msgstr "Borrar todos los archivos del proyecto"
-
-#: ../src/brasero-project.c:209 ../src/brasero-project.c:427
-msgid "_Burn..."
-msgstr "_Grabar…"
 
 #: ../src/brasero-project.c:210
 msgid "Burn the disc"
@@ -4722,7 +4740,7 @@ msgstr "Filtrar enlaces simbólicos ro_tos"
 msgid "Filtering options"
 msgstr "Opciones de filtrado"
 
-#: ../src/brasero-data-vfs.c:240
+#: ../src/brasero-data-vfs.c:241
 #, c-format
 msgid "\"%s\" cannot be read"
 msgstr "No se puede leer «%s»"
