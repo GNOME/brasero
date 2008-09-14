@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: help.HEAD.es(3)\n"
 "POT-Creation-Date: 2008-09-01 15:38+0000\n"
-"PO-Revision-Date: 2008-09-14 14:24+0200\n"
+"PO-Revision-Date: 2008-09-14 20:11+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -681,24 +681,28 @@ msgid ""
 "From the <guilabel>Number of copies</guilabel> spin box, select the number "
 "of copies of the disc you want to burn."
 msgstr ""
+"Desde la casilla incremental <guilabel>Número de copias</guilabel> "
+"seleccione el número de copias que quiere grabar del disco."
 
 #: C/brasero.xml:537(term) C/brasero.xml:907(term)
 msgid "Section <guilabel>Title</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Título</guilabel>:"
 
 #: C/brasero.xml:541(para) C/brasero.xml:911(para)
 msgid ""
 "In the text box, enter the title you want to give to the disc. This title "
 "will be shown as the name of the disc."
 msgstr ""
+"En la caja de texto introduzca el título que quiere darle al disco. Este "
+"título se mostrará como el nombre del disco."
 
 #: C/brasero.xml:551(term) C/brasero.xml:717(term) C/brasero.xml:1431(term)
 msgid "Section <guilabel>Disc options</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Opciones del disco</guilabel>:"
 
 #: C/brasero.xml:557(guilabel)
 msgid "Leave the disc open to add a data session later"
-msgstr ""
+msgstr "Deje el disco abierto para añadir una sesión de datos posterior"
 
 #: C/brasero.xml:560(para) C/brasero.xml:746(para)
 msgid ""
@@ -706,6 +710,9 @@ msgid ""
 "that it will be possible to add files to the disc at a later date (without "
 "erasing it, if it is rewritable)."
 msgstr ""
+"Seleccione esta opción para crear un disco <emphasis>multisesión</emphasis> "
+"de tal forma que se puedan añadir archivos al disco en una fecha posterior "
+"(sin borrarlo, si es regrabable)."
 
 #: C/brasero.xml:582(title)
 msgid "Data Project"
@@ -732,17 +739,26 @@ msgid ""
 "drop-down list at the top to browse for files or <guilabel>Search files "
 "using keywords</guilabel> to search for them."
 msgstr ""
+"Use el panel de la izquierda de la ventana para buscar los archivos que "
+"quiere añadir al proyecto. Seleccione <guilabel>Examinar el sistema de "
+"archivos</guilabel> de la lista desplegable en la parte superior para "
+"examinar archivos o <guilabel>Buscar archivos usando palabras clave</"
+"guilabel> para buscarlos."
 
 #: C/brasero.xml:627(para) C/brasero.xml:831(para)
 msgid ""
 "When all the files have been added, click on <guibutton>Burn</guibutton>."
 msgstr ""
+"Cuando haya añadido todos los archivos pulse <guibutton>Grabar</guibutton>."
 
 #: C/brasero.xml:633(para)
 msgid ""
 "The <guilabel>Disc burning setup</guilabel> dialog will be shown; make any "
 "desired modifications (see <xref linkend=\"brasero-data-project-options\"/>)."
 msgstr ""
+"Se mostrará el diálogo <guilabel>Opciones de grabado</guilabel>; haga "
+"cualquier modificación que quiera (consulte <xref linkend=\"brasero-data-"
+"project-options\"/>)."
 
 #: C/brasero.xml:583(para)
 msgid "To burn a data CD, proceed as follows: <placeholder-1/>"
@@ -750,27 +766,31 @@ msgstr "Para grabar un CD de datos proceda como sigue: <placeholder-1/>"
 
 #: C/brasero.xml:670(title)
 msgid "Data Project Options"
-msgstr ""
+msgstr "Opciones de un proyecto de datos"
 
 #: C/brasero.xml:692(para) C/brasero.xml:897(para) C/brasero.xml:1227(para)
 msgid ""
 "From the <guilabel>Number of copies</guilabel> spin box select the number of "
 "copies of the disc you want to burn."
 msgstr ""
+"Desde la casilla incremental <guilabel>Número de copias</guilabel> "
+"seleccione el número de copias que quiere grabar del disco."
 
 #: C/brasero.xml:702(term) C/brasero.xml:1420(term)
 msgid "Section <guilabel>Label of the disc</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Etiqueta del disco</guilabel>:"
 
 #: C/brasero.xml:707(para)
 msgid ""
 "In the text box, enter a label to identify the disc. This label will be "
 "shown as the name of the disc."
 msgstr ""
+"En la caja de texto introduzca una etiqueta para identificar el disco. Esta "
+"etiqueta se mostrará como el nombre del disco."
 
 #: C/brasero.xml:726(guilabel) C/brasero.xml:1440(guilabel)
 msgid "Increase compatibility with Windows systems"
-msgstr ""
+msgstr "Aumentar la compatibilidad con sistemas Windows"
 
 #: C/brasero.xml:730(para) C/brasero.xml:1444(para)
 msgid ""
@@ -778,10 +798,13 @@ msgid ""
 "Windows. Files on the disc will be checked to ensure that their filenames do "
 "not contain characters which are invalid on Windows."
 msgstr ""
+"Seleccione esta opción si pretende usar el disco en equipos que corran "
+"Windows. Se comprobarán los archivos del disco para asegurar que sus nombres "
+"de archivo no contienen caracteres no válidos para Windows."
 
 #: C/brasero.xml:743(guilabel)
 msgid "Leave the disc open to add other files later"
-msgstr ""
+msgstr "Dejar el disco abierto para añadir otros archivos después"
 
 #: C/brasero.xml:767(title)
 msgid "Video project"
@@ -796,6 +819,12 @@ msgid ""
 "<acronym>SVCD</acronym>s or <acronym>VCD</acronym>s that you can watch with "
 "normal DVD/CD players."
 msgstr ""
+"Este proyecto le permite tomar archivos de vídeo (archivos con extensiones "
+"<filename class=\"extension\">.mpg</filename>, <filename class=\"extension"
+"\">.mpeg</filename> o <filename class=\"extension\">.avi</filename> por "
+"nombrar algunas) y grabarlos en un disco para crear <acronym>DVD</acronym> "
+"de vídeo, <acronym>SVCD</acronym> o <acronym>VCD</acronym> que pueda "
+"reproducir con sus reproductores de DVD/CD normales."
 
 #: C/brasero.xml:779(para)
 msgid ""
@@ -805,6 +834,11 @@ msgid ""
 "application>. See your operating system documentation for more information "
 "on how to install all these applications."
 msgstr ""
+"Para poder usar todo el potencial del proyecto de vídeo deberá instalar "
+"todos los complementos de GStreamer, <application>ffmpeg</application>, "
+"<application>vcdimager</application> y <application>dvdauthor</application>. "
+"Consulte la documentación de su sistema operativo para obtener más "
+"información acerca de cómo instalar todas estas aplicaciones."
 
 #: C/brasero.xml:794(para)
 msgid "Insert a blank CD or DVD into your drive."
@@ -825,6 +859,8 @@ msgid ""
 "From the pane on the left of the window, browse the file system searching "
 "for video files."
 msgstr ""
+"Desde el panel a la izquierda de la ventana examine el sistema de archivos "
+"buscando archivos de vídeo."
 
 #: C/brasero.xml:837(para)
 msgid ""
@@ -846,45 +882,57 @@ msgstr "Opciones de los proyectos de vídeo"
 
 #: C/brasero.xml:921(term)
 msgid "Section <guilabel>Video Option</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Opciones de vídeo</guilabel>:"
 
 #: C/brasero.xml:933(para)
 msgid ""
 "<guilabel>Native format</guilabel>: the original format of the video file."
 msgstr ""
+"<guilabel>Formato nativo</guilabel>: el formato original del archivo de "
+"vídeo."
 
 #: C/brasero.xml:939(para)
 msgid ""
 "<guilabel>PAL/SECAM</guilabel>: format mainly used in European televisions."
 msgstr ""
+"<guilabel>PAL/SECAM</guilabel>: formato usado sobre todo por las "
+"televisiones europeas."
 
 #: C/brasero.xml:945(para)
 msgid ""
 "<guilabel>NTSC</guilabel>: format mainly used in Americans, Canadians and "
 "Japanese televisions."
 msgstr ""
+"<guilabel>NTSC</guilabel>: formato usado sobre todo por las televisiones "
+"estadounidenses, canadienses y japonesas."
 
 #: C/brasero.xml:927(para)
 msgid ""
 "From <guilabel>Video formats</guilabel> select the format of the video that "
 "will be burned. You can choose from: <placeholder-1/>"
 msgstr ""
+"En <guilabel>Formato de vídeo</guilabel> seleccione el formato del vídeo que "
+"se grabará. Puede elegir entre: <placeholder-1/>"
 
 #: C/brasero.xml:957(term)
 msgid "Section <guilabel>Audio Options</guilabel>:"
-msgstr ""
+msgstr "Sección <guilabel>Opciones de sonido</guilabel>:"
 
 #: C/brasero.xml:963(para)
 msgid ""
 "Choose <guilabel>Add MP2 audio stream</guilabel> to add a <emphasis>MPEG-1 "
 "Audio Layer 2</emphasis> stream to the disc."
 msgstr ""
+"Elija <guilabel>Añadir un flujo de sonido MP2</guilabel> para añadir un "
+"flujo <emphasis>MPEG-1 Audio Layer 2</emphasis> al disco."
 
 #: C/brasero.xml:970(para)
 msgid ""
 "Choose <guilabel>Add AC3 audio stream</guilabel> to add an <emphasis>AC-3 "
 "Dolby Digital</emphasis> stream to the disc."
 msgstr ""
+"Elija <guilabel>Añadir un flujo de sonido AC3</guilabel> para añadir un "
+"flujo <emphasis>AC-3 Dolby Digital</emphasis> al disco."
 
 #: C/brasero.xml:980(term)
 msgid "Section <guilabel>VCD type</guilabel>:"
@@ -915,6 +963,13 @@ msgid ""
 "en.wikipedia.org/wiki/SVCD\">SVCD</ulink> and <ulink type=\"http\" url="
 "\"http://en.wikipedia.org/wiki/Video_CD\">VCD</ulink>."
 msgstr ""
+"Una de las principales diferencias entre un <acronym>SVCD</acronym> y un "
+"<acronym>VCD</acronym> es que el primero usa el códec de vídeo <acronym>MPEG-"
+"2</acronym> mientras que el segundo usa <acronym>MPEG-1</acronym>. Para "
+"obtener más información consulte las páginas de la wikipedia para <ulink "
+"type=\"http\" url=\"http://es.wikipedia.org/wiki/Super_Video_CD\">SVCD</"
+"ulink> y <ulink type=\"http\" url=\"http://es.wikipedia.org/wiki/Video_CD"
+"\">VCD</ulink>."
 
 #: C/brasero.xml:1025(title)
 msgid "Disc Copy"
@@ -940,10 +995,14 @@ msgid ""
 "desired modifications (see <xref linkend=\"brasero-disc-copy-options\"/> for "
 "more information)."
 msgstr ""
+"Se mostrará el diálogo <guilabel>Opciones de copia de CD/DVD</guilabel>; "
+"haga las modificaciones que quiera (consulte la <xref linkend=\"brasero-disc-"
+"copy-options\"/> para obtener más información)."
 
 #: C/brasero.xml:1054(para)
 msgid "Click on <guibutton>Copy</guibutton> to start the copying process."
 msgstr ""
+"Pulse <guibutton>Copiar</guibutton> para iniciar el proceso de copiado."
 
 #: C/brasero.xml:1026(para)
 msgid ""
@@ -963,6 +1022,8 @@ msgid ""
 "Before starting the copying process, it is possible to modify some of the "
 "copying and burning options."
 msgstr ""
+"Antes de comenzar el proceso de copiado es posible modificar algunas de las "
+"opciones de copia y grabado."
 
 #: C/brasero.xml:1071(term)
 msgid "Section <guilabel>Select disc to copy</guilabel>:"
@@ -973,16 +1034,20 @@ msgid ""
 "From the drop-down list, select the disc that you want to copy. Informations "
 "about the disc will be shown below."
 msgstr ""
+"Desde la lista desplegable seleccione el disco que quiere copiar. Debajo se "
+"mostrará información acerca del disco."
 
 #: C/brasero.xml:1093(para)
 msgid "From the drop-down list, select the disc to write to."
-msgstr ""
+msgstr "Desde la lista desplegable seleccione el disco en el que grabar."
 
 #: C/brasero.xml:1097(para)
 msgid ""
 "From this drop-down list, select <guilabel>File image</guilabel> to create a "
 "disc image, such as an ISO image."
 msgstr ""
+"Desde la lista desplegable seleccione <guilabel>Archivo imagen</guilabel> "
+"para crear un disco imagen, tal como una imagen ISO."
 
 #: C/brasero.xml:1125(para)
 msgid ""
@@ -990,6 +1055,10 @@ msgid ""
 "source drive and the other as the destination drive. If you do not, you will "
 "be prompted to remove the CD or DVD you are copying and insert a blank media."
 msgstr ""
+"Si tiene más de una unidad en su sistema puede usar una unidad como la "
+"unidad de origen y la otra como la unidad de destino. De lo contrario se le "
+"preguntará para que quite el CD o DVD que está copiando e inserte un soporte "
+"virgen."
 
 #: C/brasero.xml:1139(title)
 msgid "Burn Image"
@@ -1017,6 +1086,9 @@ msgid ""
 "W. <application>Brasero</application> supports the following types of image "
 "file: <placeholder-1/>"
 msgstr ""
+"Este proyecto toma un archivo imagen existente y lo graba a un CD-R/W o DVD-"
+"R/W. <application>Brasero</application> soporta los siguientes tipos de "
+"imagen de archivo ¡: <placeholder-1/>"
 
 #: C/brasero.xml:1177(para)
 msgid ""
@@ -1536,7 +1608,7 @@ msgstr ""
 
 #: C/brasero.xml:1789(guilabel)
 msgid "local-track"
-msgstr ""
+msgstr "pista-local"
 
 #: C/brasero.xml:1790(entry)
 msgid "Enables <placeholder-1/> to burn files which are not stored locally."
@@ -1584,12 +1656,18 @@ msgid ""
 "select the algorithm you want to use. The possibile values are: <placeholder-"
 "1/>"
 msgstr ""
+"Desde la lista desplegable <guilabel>Algoritmo de «hash» que usar</guilabel> "
+"seleccione el algoritmo que quiera usar. Los valores posibles son: "
+"<placeholder-1/>"
 
 #: C/brasero.xml:1807(para)
 msgid ""
 "With the <guilabel>File checksum</guilabel> and <guilabel>Image checksum</"
 "guilabel> plugins you can choose which algorithm to use: <placeholder-1/>"
 msgstr ""
+"Con los complementos <guilabel>Suma de comprobación de archivo</guilabel> y "
+"<guilabel>Suma de comprobación de imagen</guilabel> puede elegir qué "
+"algoritmo usar: <placeholder-1/>"
 
 #: C/brasero.xml:1847(para)
 msgid ""
@@ -1597,6 +1675,9 @@ msgid ""
 "install further applications on your system. See your operating system "
 "documentation for more information."
 msgstr ""
+"Para poder usar algunos de los complementos aquí listados es posible que "
+"deba instalar aplicaciones adicionales en su sistema. Consulte la "
+"documentación de su sistema operativo para obtener más información."
 
 #. Put one translator per line, in the form of NAME <EMAIL>, YEAR1, YEAR2.
 #: C/brasero.xml:0(None)
