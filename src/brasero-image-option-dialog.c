@@ -44,6 +44,7 @@
 #include "brasero-utils.h"
 #include "burn-basics.h"
 #include "burn-plugin-manager.h"
+#include "brasero-session-cfg.h"
 #include "brasero-image-option-dialog.h"
 #include "brasero-image-type-chooser.h"
 #include "brasero-dest-selection.h"
@@ -477,7 +478,7 @@ brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 }
 
 static void
-brasero_image_option_dialog_valid_media_cb (BraseroDestSelection *selection,
+brasero_image_option_dialog_valid_media_cb (BraseroBurnSession *session,
 					    gboolean valid,
 					    BraseroImageOptionDialog *self)
 {
@@ -542,7 +543,12 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 
 	priv->caps = brasero_burn_caps_get_default ();
 
-	priv->session = brasero_burn_session_new ();
+	priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
+	g_signal_connect (priv->session,
+			  "is-valid",
+			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
+			  obj);
+	
 	brasero_burn_session_add_flag (priv->session,
 				       BRASERO_BURN_FLAG_EJECT|
 				       BRASERO_BURN_FLAG_NOGRACE|
@@ -553,10 +559,6 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 
 	/* first box */
 	priv->selection = brasero_dest_selection_new (priv->session);
-	g_signal_connect (priv->selection,
-			  "valid-media",
-			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
-			  obj);
 
 	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
 	options = brasero_utils_pack_properties (string,

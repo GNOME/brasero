@@ -2223,6 +2223,75 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	return required_media;
 }
 
+BraseroImageFormat
+brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
+					     BraseroBurnSession *session)
+{
+	BraseroTrackType source;
+	BraseroTrackType output;
+	BraseroBurnResult result;
+
+	if (!brasero_burn_session_is_dest_file (session))
+		return BRASERO_IMAGE_FORMAT_NONE;
+
+	brasero_burn_session_get_input_type (session, &source);
+	if (source.type == BRASERO_TRACK_TYPE_NONE)
+		return BRASERO_IMAGE_FORMAT_NONE;
+
+	if (source.type == BRASERO_TRACK_TYPE_IMAGE)
+		return source.subtype.img_format;
+
+	output.type = BRASERO_TRACK_TYPE_IMAGE;
+	output.subtype.img_format = BRASERO_IMAGE_FORMAT_NONE;
+
+	if (source.type == BRASERO_TRACK_TYPE_AUDIO) {
+		/* If that's AUDIO only without VIDEO then return */
+		if (!(source.subtype.audio_format & (BRASERO_VIDEO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_VCD|BRASERO_VIDEO_FORMAT_VIDEO_DVD)))
+			return BRASERO_IMAGE_FORMAT_NONE;
+
+		/* Otherwise try all possible image types */
+		output.subtype.img_format = BRASERO_IMAGE_FORMAT_CDRDAO;
+		for (; output.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
+		       output.subtype.img_format >>= 1) {
+		
+			result = brasero_burn_caps_is_output_supported (self,
+									session,
+									&output);
+			if (result == BRASERO_BURN_OK)
+				return output.subtype.img_format;
+		}
+
+		return BRASERO_IMAGE_FORMAT_NONE;
+	}
+
+	if (source.type == BRASERO_TRACK_TYPE_DATA
+	|| (source.type == BRASERO_TRACK_TYPE_DISC
+	&&  source.subtype.media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
+		output.subtype.img_format = BRASERO_IMAGE_FORMAT_BIN;
+		result = brasero_burn_caps_is_output_supported (self,
+								session,
+								&output);
+		if (result != BRASERO_BURN_OK)
+			return BRASERO_IMAGE_FORMAT_NONE;
+
+		return BRASERO_IMAGE_FORMAT_BIN;
+	}
+
+	/* for the input which are CDs there are lots of possible formats */
+	output.subtype.img_format = BRASERO_IMAGE_FORMAT_CDRDAO;
+	for (; output.subtype.img_format != BRASERO_IMAGE_FORMAT_NONE;
+	       output.subtype.img_format >>= 1) {
+	
+		result = brasero_burn_caps_is_output_supported (self,
+								session,
+								&output);
+		if (result == BRASERO_BURN_OK)
+			return output.subtype.img_format;
+	}
+
+	return BRASERO_IMAGE_FORMAT_NONE;
+}
+
 static BraseroPluginIOFlag
 brasero_caps_get_flags (BraseroCaps *caps,
 			BraseroBurnFlag session_flags,

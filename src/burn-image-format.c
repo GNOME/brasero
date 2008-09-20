@@ -796,3 +796,101 @@ brasero_image_format_get_clone_size (gchar *path,
 
 	return TRUE;
 }
+
+gchar *
+brasero_image_format_get_default_path (BraseroImageFormat format)
+{
+	const gchar *suffixes [] = {".iso",
+				    ".toc",
+				    ".cue",
+				    ".toc",
+				    NULL };
+	const gchar *suffix = NULL;
+	gchar *path;
+	gint i = 0;
+
+	if (format & BRASERO_IMAGE_FORMAT_BIN)
+		suffix = suffixes [0];
+	else if (format & BRASERO_IMAGE_FORMAT_CLONE)
+		suffix = suffixes [1];
+	else if (format & BRASERO_IMAGE_FORMAT_CUE)
+		suffix = suffixes [2];
+	else if (format & BRASERO_IMAGE_FORMAT_CDRDAO)
+		suffix = suffixes [3];
+
+	path = g_strdup_printf ("%s/brasero%s",
+				g_get_home_dir (),
+				suffix);
+
+	while (g_file_test (path, G_FILE_TEST_EXISTS)) {
+		g_free (path);
+
+		path = g_strdup_printf ("%s/brasero-%i%s",
+					g_get_home_dir (),
+					i,
+					suffix);
+		i ++;
+	}
+
+	return path;
+}
+
+gchar *
+brasero_image_format_fix_path_extension (BraseroImageFormat format,
+					 gboolean check_existence,
+					 gchar *path)
+{
+	gchar *dot;
+	guint i = 0;
+	gchar *retval = NULL;
+	const gchar *suffix = NULL;;
+	const gchar *suffixes [] = {".iso",
+				    ".toc",
+				    ".cue",
+				    ".toc",
+				    NULL };
+
+	/* search the last dot to check extension */
+	dot = g_utf8_strrchr (path, -1, '.');
+	if (dot && strlen (dot) < 5 && strlen (dot) > 1) {
+		if (format & BRASERO_IMAGE_FORMAT_BIN
+		&&  strcmp (suffixes [0], dot))
+			*dot = '\0';
+		else if (format & BRASERO_IMAGE_FORMAT_CLONE
+		     &&  strcmp (suffixes [1], dot))
+			*dot = '\0';
+		else if (format & BRASERO_IMAGE_FORMAT_CUE
+		     &&  strcmp (suffixes [2], dot))
+			*dot = '\0';
+		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
+		     &&  strcmp (suffixes [3], dot))
+			*dot = '\0';
+		else
+			return g_strdup (path);
+	}
+
+	/* determine the proper suffix */
+	if (format & BRASERO_IMAGE_FORMAT_BIN)
+		suffix = suffixes [0];
+	else if (format & BRASERO_IMAGE_FORMAT_CLONE)
+		suffix = suffixes [1];
+	else if (format & BRASERO_IMAGE_FORMAT_CUE)
+		suffix = suffixes [2];
+	else if (format & BRASERO_IMAGE_FORMAT_CDRDAO)
+		suffix = suffixes [3];
+	else
+		return g_strdup (path);
+
+	/* make sure the file doesn't exist */
+	retval = g_strdup_printf ("%s%s", path, suffix);
+	if (!check_existence)
+		return retval;
+
+	while (g_file_test (retval, G_FILE_TEST_EXISTS)) {
+		g_free (retval);
+		retval = g_strdup_printf ("%s-%i%s", path, i, suffix);
+		i ++;
+	}
+
+	return retval;
+}

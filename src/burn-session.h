@@ -61,9 +61,8 @@ struct _BraseroBurnSessionClass {
 	 * it's better to have one global signal and dialogs asking for
 	 * the session properties they are interested in.
 	 */
-	void	(*input_changed)		(BraseroBurnSession *session);
-
-	void	(*output_changed)		(BraseroBurnSession *session);
+	void			(*input_changed)	(BraseroBurnSession *session);
+	void			(*output_changed)	(BraseroBurnSession *session);
 };
 
 GType brasero_burn_session_get_type ();

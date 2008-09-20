@@ -652,11 +652,12 @@ brasero_burn_session_set_image_output_retval (BraseroBurnSession *self,
 
 BraseroBurnResult
 brasero_burn_session_get_output (BraseroBurnSession *self,
-				 gchar **image,
-				 gchar **toc,
+				 gchar **image_ret,
+				 gchar **toc_ret,
 				 GError **error)
 {
-	BraseroBurnResult result;
+	gchar *toc = NULL;
+	gchar *image = NULL;
 	BraseroBurnSessionPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), BRASERO_BURN_ERR);
@@ -668,25 +669,36 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (image) {
+	image = g_strdup (priv->settings->image);
+	toc = g_strdup (priv->settings->toc);
+
+	if (!image && !toc)
+		return BRASERO_BURN_ERR;
+
+	if (image_ret) {
+		BraseroBurnResult result;
+
 		/* output paths were set so test them and returns them if OK */
-		if (priv->settings->image) {
+		if (image) {
 			result = brasero_burn_session_file_test (self,
-								 priv->settings->image,
+								 image,
 								 error);
 			if (result != BRASERO_BURN_OK) {
 				BRASERO_BURN_LOG ("Problem with image existence");
+				g_free (image);
+				g_free (toc);
 				return result;
 			}
 
-			*image = g_strdup (priv->settings->image);
+			*image_ret = image;
 		}
-		else if (priv->settings->toc) {
+		else if (toc) {
 			gchar *complement;
+			BraseroImageFormat format;
 
 			/* get the cuesheet complement */
-			complement = brasero_image_format_get_complement (priv->settings->format,
-									  priv->settings->toc);
+			format = brasero_burn_session_get_output_format (self);
+			complement = brasero_image_format_get_complement (format, toc);
 			if (!complement) {
 				BRASERO_BURN_LOG ("no output specified");
 
@@ -694,6 +706,8 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
 					     _("no output specified"));
+
+				g_free (toc);
 				return BRASERO_BURN_ERR;
 			}
 
@@ -702,10 +716,12 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 								 error);
 			if (result != BRASERO_BURN_OK) {
 				BRASERO_BURN_LOG ("Problem with image existence");
+				g_free (complement);
+				g_free (toc);
 				return result;
 			}
 
-			*image = complement;
+			*image_ret = complement;
 		}
 		else {
 			BRASERO_BURN_LOG ("no output specified");
@@ -717,11 +733,15 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 			return BRASERO_BURN_ERR;
 		}
 	}
+	else
+		g_free (image);
 
-	if (toc) {
-		if (priv->settings->toc) {
+	if (toc_ret) {
+		if (toc) {
+			BraseroBurnResult result;
+
 			result = brasero_burn_session_file_test (self,
-								 priv->settings->toc,
+								 toc,
 								 error);
 			if (result != BRASERO_BURN_OK) {
 				BRASERO_BURN_LOG ("Problem with toc existence");
@@ -729,8 +749,10 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 			}
 		}
 
-		*toc = g_strdup (priv->settings->toc);
+		*toc_ret = toc;
 	}
+	else
+		g_free (toc);
 
 	return BRASERO_BURN_OK;
 }
@@ -767,23 +789,24 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
-	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
-		BraseroMediumMonitor *monitor;
-		BraseroDrive *drive;
-		GSList *list;
-
-		monitor = brasero_medium_monitor_get_default ();
-		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
-		drive = brasero_medium_get_drive (list->data);
-		brasero_burn_session_set_burner (self, drive);
-		g_object_unref (monitor);
-		g_slist_free (list);
-	}
-
 	if (priv->settings->format == format
 	&&  BRASERO_STR_EQUAL (image, priv->settings->image)
-	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc))
+	&&  BRASERO_STR_EQUAL (toc, priv->settings->toc)) {
+		if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
+			BraseroMediumMonitor *monitor;
+			BraseroDrive *drive;
+			GSList *list;
+
+			monitor = brasero_medium_monitor_get_default ();
+			list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
+			drive = brasero_medium_get_drive (list->data);
+			brasero_burn_session_set_burner (self, drive);
+			g_object_unref (monitor);
+			g_slist_free (list);
+		}
+
 		return BRASERO_BURN_OK;
+	}
 
 	if (priv->settings->image)
 		g_free (priv->settings->image);
@@ -803,9 +826,23 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 
 	priv->settings->format = format;
 
-	g_signal_emit (self,
-		       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
-		       0);
+	if (!BRASERO_BURN_SESSION_WRITE_TO_FILE (priv)) {
+		BraseroMediumMonitor *monitor;
+		BraseroDrive *drive;
+		GSList *list;
+
+		monitor = brasero_medium_monitor_get_default ();
+		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
+		drive = brasero_medium_get_drive (list->data);
+		brasero_burn_session_set_burner (self, drive);
+		g_object_unref (monitor);
+		g_slist_free (list);
+	}
+	else
+		g_signal_emit (self,
+			       brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL],
+			       0);
+
 	return BRASERO_BURN_OK;
 }
 
@@ -1842,7 +1879,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("output_changed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_LAST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  G_SIGNAL_RUN_FIRST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, output_changed),
 			  NULL,
 			  NULL,
@@ -1853,7 +1890,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [INPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("input_changed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_LAST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  G_SIGNAL_RUN_FIRST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, input_changed),
 			  NULL,
 			  NULL,

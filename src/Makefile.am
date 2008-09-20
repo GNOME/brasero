@@ -272,7 +272,9 @@ brasero_SOURCES = \
 	brasero-app.c		\
 	brasero-app.h           \
 	brasero-src-info.c           \
-	brasero-src-info.h
+	brasero-src-info.h           \
+	brasero-session-cfg.h           \
+	brasero-session-cfg.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

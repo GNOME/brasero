@@ -71,7 +71,7 @@ brasero_src_selection_drive_changed (BraseroDriveSelection *selection,
 		brasero_track_unref (priv->track);
 
 	priv->track = brasero_track_new (BRASERO_TRACK_TYPE_DISC);
-	if (drive && brasero_drive_is_fake (drive))
+	if (!drive || brasero_drive_is_fake (drive))
 		brasero_track_set_drive_source (priv->track, NULL);
 	else
 		brasero_track_set_drive_source (priv->track, drive);

@@ -41,8 +41,8 @@
 
 #include <gconf/gconf-client.h>
 
-#include "brasero-utils.h"
 #include "burn-basics.h"
+#include "burn-drive.h"
 #include "burn-medium.h"
 #include "burn-volume-obj.h"
 #include "burn-session.h"
@@ -50,8 +50,9 @@
 #include "burn-plugin-manager.h"
 #include "brasero-disc-option-dialog.h"
 #include "brasero-dest-selection.h"
-#include "burn-drive.h"
+#include "brasero-session-cfg.h"
 #include "brasero-disc.h"
+#include "brasero-utils.h"
 
 G_DEFINE_TYPE (BraseroDiscOptionDialog, brasero_disc_option_dialog, GTK_TYPE_DIALOG);
 
@@ -1354,7 +1355,11 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 					   G_CALLBACK (brasero_disc_option_dialog_caps_changed),
 					   obj);
 
-	priv->session = brasero_burn_session_new ();
+	priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
+	g_signal_connect (priv->session,
+			  "is-valid",
+			  G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
+			  obj);
 	brasero_burn_session_add_flag (priv->session,
 				       BRASERO_BURN_FLAG_EJECT|
 				       BRASERO_BURN_FLAG_NOGRACE|
@@ -1364,10 +1369,6 @@ brasero_disc_option_dialog_init (BraseroDiscOptionDialog *obj)
 
 	/* first box */
 	priv->selection = brasero_dest_selection_new (priv->session);
-	g_signal_connect (priv->selection,
-			  "valid-media",
-			  G_CALLBACK (brasero_disc_option_dialog_valid_media_cb),
-			  obj);
 
 	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
 	options = brasero_utils_pack_properties (string,

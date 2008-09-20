@@ -67,6 +67,7 @@
 #endif
 
 #include "brasero-project.h"
+#include "brasero-session-cfg.h"
 #include "brasero-jacket-edit.h"
 #include "brasero-project-size.h"
 #include "brasero-project-type-chooser.h"
@@ -844,7 +845,7 @@ brasero_project_set_cover_specifics (BraseroProject *self,
 	if (!BRASERO_IS_AUDIO_DISC (self->priv->current))
 		return;
 
-	session = brasero_burn_session_new ();
+	session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
 	brasero_disc_set_session_param (BRASERO_DISC (self->priv->current), session);
 	brasero_disc_set_session_contents (BRASERO_DISC (self->priv->current), session);
 	brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (cover),

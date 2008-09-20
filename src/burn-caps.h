@@ -119,6 +119,9 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *caps,
 BraseroMedia
 brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 					   BraseroBurnSession *session);
+BraseroImageFormat
+brasero_burn_caps_get_default_output_format (BraseroBurnCaps *caps,
+					     BraseroBurnSession *session);
 
 /**
  * Test the supported or compulsory flags for a given session

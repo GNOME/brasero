@@ -1,3 +1,54 @@
+2008-09-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Some cleanups to get ready for further changes
+	Probably fix some minor bugs with image paths handling
+
+	* src/Makefile.am:
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_drive_properties),
+	(brasero_dest_selection_image_format_changed_cb),
+	(brasero_dest_selection_image_properties),
+	(brasero_dest_selection_update_image_output),
+	(brasero_dest_selection_valid_session),
+	(brasero_dest_selection_drive_changed),
+	(brasero_dest_selection_init), (brasero_dest_selection_finalize),
+	(brasero_dest_selection_set_property),
+	(brasero_dest_selection_class_init):
+	* src/brasero-disc-copy-dialog.c
+	(brasero_disc_copy_dialog_valid_media_cb),
+	(brasero_disc_copy_dialog_init):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_init):
+	* src/brasero-drive-info.c (brasero_drive_info_set_image_path),
+	(brasero_drive_info_set_same_src_dest),
+	(brasero_drive_info_set_medium):
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_valid_media_cb),
+	(brasero_image_option_dialog_init):
+	* src/brasero-project.c (brasero_project_set_cover_specifics):
+	* src/brasero-session-cfg.c
+	(brasero_session_cfg_save_drive_properties),
+	(brasero_session_cfg_add_drive_properties_flags),
+	(brasero_session_cfg_set_drive_properties),
+	(brasero_session_cfg_check_drive_settings),
+	(brasero_session_cfg_update), (brasero_session_cfg_input_changed),
+	(brasero_session_cfg_output_changed), (brasero_session_cfg_check),
+	(brasero_session_cfg_caps_changed), (brasero_session_cfg_init),
+	(brasero_session_cfg_finalize), (brasero_session_cfg_class_init),
+	(brasero_session_cfg_new):
+	* src/brasero-session-cfg.h:
+	* src/brasero-src-selection.c
+	(brasero_src_selection_drive_changed):
+	* src/burn-caps.c (brasero_burn_caps_get_default_output_format):
+	* src/burn-caps.h:
+	* src/burn-image-format.c (brasero_image_format_get_default_path),
+	(brasero_image_format_fix_path_extension):
+	* src/burn-image-format.h:
+	* src/burn-session.c (brasero_burn_session_get_output),
+	(brasero_burn_session_set_image_output_full),
+	(brasero_burn_session_class_init):
+	* src/burn-session.h:
+
 2008-09-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Ask the user if he wants to burn an image when one is added to a data project

@@ -218,9 +218,18 @@ brasero_drive_info_set_image_path (BraseroDriveInfo *self,
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
 
+	gtk_widget_show (priv->image);
+	gtk_widget_show (priv->image_path);
+	gtk_widget_hide (priv->warning);
+	gtk_widget_hide (priv->table);
+
 	info = g_strdup_printf (_("The image will be saved to\n%s"), path ? path:"");
 	gtk_label_set_markup (GTK_LABEL (priv->image_path), info);
 	g_free (info);
+
+	gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
+				      "iso-image-new",
+				      GTK_ICON_SIZE_DIALOG);
 
 	/* NOTE: we could extend this by checking if the image actually exists and if so
 	 * retrieving some information about it like size .... */
@@ -233,7 +242,6 @@ brasero_drive_info_set_same_src_dest (BraseroDriveInfo *self,
 	BraseroDriveInfoPrivate *priv;
 
 	priv = BRASERO_DRIVE_INFO_PRIVATE (self);
-
 	if (value) {
 		/* This is to handle a special case when copying a media using
 		 * same drive as source and destination */
@@ -263,7 +271,6 @@ brasero_drive_info_set_medium (BraseroDriveInfo *self,
 
 	if (medium && (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)) {
 		gtk_widget_show (priv->image_path);
-		gtk_widget_hide (priv->warning);
 		gtk_widget_hide (priv->table);
 
 		gtk_image_set_from_icon_name (GTK_IMAGE (priv->image),
@@ -274,7 +281,6 @@ brasero_drive_info_set_medium (BraseroDriveInfo *self,
 
 	brasero_drive_info_update_info (self, medium);
 	gtk_widget_show (priv->table);
-	gtk_widget_hide (priv->warning);
 	gtk_widget_hide (priv->image_path);
 }
 

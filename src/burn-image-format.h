@@ -47,6 +47,13 @@ BraseroImageFormat
 brasero_image_format_identify_cuesheet (const gchar *path);
 
 gchar *
+brasero_image_format_get_default_path (BraseroImageFormat format);
+
+gchar *
+brasero_image_format_fix_path_extension (BraseroImageFormat format,
+					 gboolean check_existence,
+					 gchar *path);
+gchar *
 brasero_image_format_get_complement (BraseroImageFormat format,
 				     const gchar *path);
 
