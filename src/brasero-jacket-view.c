@@ -613,9 +613,15 @@ brasero_jacket_view_focus_in_cb (GtkWidget *view,
 				 GdkEventFocus *event,
 				 BraseroJacketView *self)
 {
+	GtkTextView *text_view = GTK_TEXT_VIEW (view);
 	GtkTextBuffer *buffer;
 
-	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+	if (text_view->editable) {
+		text_view->need_im_reset = TRUE;
+		gtk_im_context_focus_in (text_view->im_context);
+	}
+
+	buffer = gtk_text_view_get_buffer (text_view);
 	brasero_jacket_buffer_show_default_text (BRASERO_JACKET_BUFFER (buffer), FALSE);
 
 	g_signal_emit (self,
@@ -628,9 +634,15 @@ brasero_jacket_view_focus_out_cb (GtkWidget *view,
 				  GdkEventFocus *event,
 				  BraseroJacketView *self)
 {
+	GtkTextView *text_view = GTK_TEXT_VIEW (view);
 	GtkTextBuffer *buffer;
 
-	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+	if (text_view->editable) {
+		text_view->need_im_reset = TRUE;
+		gtk_im_context_focus_out (text_view->im_context);
+	}
+
+	buffer = gtk_text_view_get_buffer (text_view);
 	brasero_jacket_buffer_show_default_text (BRASERO_JACKET_BUFFER (buffer), TRUE);
 
 	g_signal_emit (self,
