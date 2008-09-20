@@ -550,12 +550,9 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  obj);
 	
 	brasero_burn_session_add_flag (priv->session,
-				       BRASERO_BURN_FLAG_EJECT|
 				       BRASERO_BURN_FLAG_NOGRACE|
-				       BRASERO_BURN_FLAG_BURNPROOF|
 				       BRASERO_BURN_FLAG_CHECK_SIZE|
-				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
-				       BRASERO_BURN_FLAG_FAST_BLANK);
+				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT);
 
 	/* first box */
 	priv->selection = brasero_dest_selection_new (priv->session);

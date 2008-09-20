@@ -91,21 +91,14 @@ brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
 }
 
 static void
-brasero_disc_copy_dialog_set_burn_button_state (BraseroDiscCopyDialog *self,
-						gboolean valid)
+brasero_disc_copy_dialog_valid_media_cb (BraseroBurnSession *session,
+					 gboolean valid,
+					 BraseroDiscCopyDialog *self)
 {
 	BraseroDiscCopyDialogPrivate *priv;
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
 	gtk_widget_set_sensitive (priv->button, valid);
-}
-
-static void
-brasero_disc_copy_dialog_valid_media_cb (BraseroBurnSession *session,
-					 gboolean valid,
-					 BraseroDiscCopyDialog *self)
-{
-	brasero_disc_copy_dialog_set_burn_button_state (self, valid);
 }
 
 static void
@@ -143,12 +136,9 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 			  obj);
 
 	brasero_burn_session_add_flag (priv->session,
-				       BRASERO_BURN_FLAG_EJECT|
 				       BRASERO_BURN_FLAG_NOGRACE|
-				       BRASERO_BURN_FLAG_BURNPROOF|
 				       BRASERO_BURN_FLAG_CHECK_SIZE|
-				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
-				       BRASERO_BURN_FLAG_FAST_BLANK);
+				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT);
 
 	/* take care of source media */
 	priv->source = brasero_src_selection_new (priv->session);
