@@ -1,24 +1,23 @@
 # Serbian translation of brasero
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2006, 2007.
-# 
+#
 # This file is distributed under the same license as the gnome-power-manager package.
-# 
+#
 # Милош Поповић <gpopac@gmail.com>
 # Игор Милетић igor.miletic@rogers.com
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-11 23:42+0200\n"
-"PO-Revision-Date: 2008-04-23 14:55+0000\n"
-"Last-Translator: Милош Поповић <gpopac@gmail.com>\n"
+"POT-Creation-Date: 2008-09-23 17:34+0200\n"
+"PO-Revision-Date: 2008-09-23 17:35+0100\n"
+"Last-Translator: Горан Ракић <grakic@devbase.net>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/brasero-src-info.c:72
 msgid "no medium"
@@ -39,9 +38,10 @@ msgstr "диск је заузет"
 msgid "0"
 msgstr "0"
 
-#: ../src/brasero-src-info.c:175 ../src/brasero-drive-info.c:317
-msgid "<b>Size:</b>"
-msgstr "<b>Величина:</b>"
+#: ../src/brasero-src-info.c:175
+#: ../src/brasero-drive-info.c:335
+msgid "Size:"
+msgstr "Величина:"
 
 #: ../src/brasero-app.c:92
 msgid "_Project"
@@ -120,36 +120,16 @@ msgid "Display information on blank discs currently inserted"
 msgstr "Прикажи податке о убаченом празном диску"
 
 #: ../src/brasero-app.c:324
-msgid ""
-"Brasero is free software; you can redistribute it and/or modify it under the "
-"terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
-msgstr ""
-"Брасеро је слободан програм; можете га копирати и/или мењати у складу са ГНУ-"
-"овом општом јавном лиценцом објављеном од стране фондације слободног "
-"софтвера у верзији 2 или неким од наредних."
+msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Брасеро је слободан програм; можете га копирати и/или мењати у складу са ГНУ-овом општом јавном лиценцом објављеном од стране фондације слободног софтвера у верзији 2 или неким од наредних."
 
 #: ../src/brasero-app.c:329
-msgid ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
-msgstr ""
-"Брасеро се расподељује у нади да ће бити од користи, али БЕЗ ИКАКВИХ "
-"ГАРАНЦИЈА; чак и без подразумеване гаранције КОРИСНОСТИ или ПРИЛАГОЂЕНОСТИ "
-"ОДРЕЂЕНОЈ НАМЕНИ.  Видите ГНУ Општу Јавну Лиценцу за више детаља."
+msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr "Брасеро се расподељује у нади да ће бити од користи, али БЕЗ ИКАКВИХ ГАРАНЦИЈА; чак и без подразумеване гаранције КОРИСНОСТИ или ПРИЛАГОЂЕНОСТИ ОДРЕЂЕНОЈ НАМЕНИ.  Видите ГНУ Општу Јавну Лиценцу за више детаља."
 
 #: ../src/brasero-app.c:334
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301, USA"
-msgstr ""
-"Требали сте да примите примерак ГНУ Опште Јавне Лиценце уз Наутилус; ако "
-"нисте, пишите Задужбини за Слободни Софтвер (Free Software Foundation, "
-"Inc.), 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr "Требали сте да примите примерак ГНУ Опште Јавне Лиценце уз Наутилус; ако нисте, пишите Задужбини за Слободни Софтвер (Free Software Foundation, Inc.), 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
 #: ../src/brasero-app.c:343
 msgid "A simple to use CD/DVD burning application for GNOME"
@@ -185,46 +165,35 @@ msgstr "Приказује недавно отваране пројекте"
 msgid "Brasero projects"
 msgstr "Брсеро пројекти"
 
-#: ../src/brasero-app.c:636 ../data/brasero.desktop.in.in.h:1
-#: ../data/brasero-copy-medium.desktop.in.in.h:1
-#: ../data/brasero-open-image.desktop.in.in.h:1
-#: ../data/brasero-open-playlist.desktop.in.in.h:1
-#: ../data/brasero-open-project.desktop.in.in.h:1
+#: ../src/brasero-app.c:636
 msgid "Brasero Disc Burning"
 msgstr "Брасеро писач дискова"
 
+#: ../data/brasero.desktop.in.in.h:1
+#: ../data/brasero-open-image.desktop.in.in.h:1
+#: ../data/brasero-open-playlist.desktop.in.in.h:1
+#: ../data/brasero-open-project.desktop.in.in.h:1
+msgid "Brasero Disc Burner"
+msgstr "Брасеро писач дискова"
+
 #: ../data/brasero.desktop.in.in.h:2
-#: ../data/brasero-copy-medium.desktop.in.in.h:2
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burning Application"
-msgstr "Програм за уписивање дискова"
+msgid "Create and copy CDs and DVDs"
+msgstr "Прави и умножава ЦД и ДВД дискове"
 
 #: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-copy-medium.desktop.in.in.h:3
 #: ../data/brasero-open-image.desktop.in.in.h:3
 #: ../data/brasero-open-playlist.desktop.in.in.h:3
 #: ../data/brasero-open-project.desktop.in.in.h:3
-msgid "Write and copy CD / DVD"
-msgstr "Прави и умножава ЦД и ДВД дискове"
+msgid "Disc Burner"
+msgstr "Писач дискова"
 
 #: ../data/brasero.schemas.in.h:1
-#, fuzzy
-msgid ""
-"Contains the list of additional plugins brasero will use to burn discs. If "
-"set to NULL, brasero will load them all."
-msgstr ""
-"Садржи листу осталих додатака које ће брасеро користити за уписивање "
-"дискова. Уколико ниједан није одабран, брасеро ће учитати све њих."
+msgid "Contains the list of additional plugins brasero will use to burn discs. If set to NULL, brasero will load them all."
+msgstr "Садржи листу осталих додатака које ће брасеро користити за уписивање дискова. Уколико ниједан није одабран, брасеро ће учитати све њих."
 
 #: ../data/brasero.schemas.in.h:2
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"Садржи име омиљеног инсталираног програма за упис дискова. Биће коришћен "
-"уколико је могуће."
+msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
+msgstr "Садржи име омиљеног инсталираног програма за упис дискова. Биће коришћен уколико је могуће."
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -267,8 +236,7 @@ msgid "Layout of UI"
 msgstr "Распоред елемената сучеља"
 
 #: ../data/brasero.schemas.in.h:13
-msgid ""
-"Only used in conjunction with -immed flag with cdrecord. See immed_flag."
+msgid "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
 msgstr "Користи се уз -immed заставицу са cdrecord-ом. Погледајте immed_flag."
 
 #: ../data/brasero.schemas.in.h:14
@@ -284,75 +252,44 @@ msgid "Should brasero ask to be set as the default app to burn"
 msgstr "Да ли да брасеро пита да се постави као подразумевани програма за упис"
 
 #: ../data/brasero.schemas.in.h:17
-msgid ""
-"Should brasero ask to be set as the default app to burn audio or data. Set "
-"to true, brasero won't ask."
-msgstr ""
-"Да ли да брасеро пита да се постави као подразумевани програм за упис "
-"звучних или пројеката са подацима. Поставите на „Тачно“ и брасеро неће "
-"питати."
+msgid "Should brasero ask to be set as the default app to burn audio or data. Set to true, brasero won't ask."
+msgstr "Да ли да брасеро пита да се постави као подразумевани програм за упис звучних или пројеката са подацима. Поставите на „Тачно“ и брасеро неће питати."
 
 #: ../data/brasero.schemas.in.h:18
 msgid "Should brasero filter broken symlinks files"
 msgstr "Да ли да брасеро занемари непостојеће везе"
 
 #: ../data/brasero.schemas.in.h:19
-msgid ""
-"Should brasero filter broken symlinks. Set to true, brasero will filter "
-"broken symlinks."
-msgstr ""
-"Да ли да брасеро занемари непостојеће везе. Поставите на „Тачно“ и брасеро "
-"ће занемарити непостојеће везе."
+msgid "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
+msgstr "Да ли да брасеро занемари непостојеће везе. Поставите на „Тачно“ и брасеро ће занемарити непостојеће везе."
 
 #: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
 msgstr "Да ли да брасеро занемари скривене датотеке"
 
 #: ../data/brasero.schemas.in.h:21
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr ""
-"Да ли да брасеро занемари скривене датотеке Поставите на „Тачно“ и брасеро "
-"ће занемарити скривене датотеке."
+msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
+msgstr "Да ли да брасеро занемари скривене датотеке Поставите на „Тачно“ и брасеро ће занемарити скривене датотеке."
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
 msgstr "Да ли да брасеро упозори када су датотеке занемарене"
 
 #: ../data/brasero.schemas.in.h:23
-msgid ""
-"Should brasero notify when files are filtered. Set to true, brasero will "
-"display the notification."
-msgstr ""
-"Да ли да брасеро упозори када су датотеке занемарене. Поставите на „Тачно“ "
-"ако желите да се обавештење прикаже."
+msgid "Should brasero notify when files are filtered. Set to true, brasero will display the notification."
+msgstr "Да ли да брасеро упозори када су датотеке занемарене. Поставите на „Тачно“ ако желите да се обавештење прикаже."
 
 #: ../data/brasero.schemas.in.h:24
-msgid ""
-"The pane to display with audio projects. It should be one of the following: "
-"Chooser/Search/Playlist/EmptyView."
-msgstr ""
-"Површ за приказивање при звучним пројектима. Могуће вредности су "
-"„Chooser“ (изборник), „Search“ (претрага), „Playlist“ (листа нумера), "
-"„EmptyView“ (празан приказ)."
+msgid "The pane to display with audio projects. It should be one of the following: Chooser/Search/Playlist/EmptyView."
+msgstr "Површ за приказивање при звучним пројектима. Могуће вредности су „Chooser“ (изборник), „Search“ (претрага), „Playlist“ (листа нумера), „EmptyView“ (празан приказ)."
 
 #: ../data/brasero.schemas.in.h:25
-msgid ""
-"The pane to display with data projects. It should be one of the following: "
-"Chooser/Search/EmptyView."
-msgstr ""
-"Површ за приказивање при пројектима са подацима. Могуће вредности су "
-"„Chooser“ (изборник), „Search“ (претрага), „Playlist“ (листа нумера), "
-"„EmptyView“ (празан приказ)."
+msgid "The pane to display with data projects. It should be one of the following: Chooser/Search/EmptyView."
+msgstr "Површ за приказивање при пројектима са подацима. Могуће вредности су „Chooser“ (изборник), „Search“ (претрага), „Playlist“ (листа нумера), „EmptyView“ (празан приказ)."
 
 #: ../data/brasero.schemas.in.h:26
-msgid ""
-"This key sets where the project pane should be (0 = on the right, 1 = on the "
-"left, 2 = at the top, 3 = at the bottom)"
-msgstr ""
-"Овај кључ одређује где површ за пројекат треба да буде (0 = десно, 1 = лево, "
-"2 = на врху, 3 = на дну"
+msgid "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
+msgstr "Овај кључ одређује где површ за пројекат треба да буде (0 = десно, 1 = лево, 2 = на врху, 3 = на дну"
 
 #: ../data/brasero.schemas.in.h:27
 msgid "Used in conjunction with -immed flag with cdrecord"
@@ -363,16 +300,10 @@ msgid "Whether to display file preview. Set to true to use it."
 msgstr "Дали да се прикажем преглед датотека. Постави на „Тачно“ за приказ."
 
 #: ../data/brasero.schemas.in.h:29
-msgid ""
-"Whether to use -immed flag with cdrecord. Use with caution (set to true) as "
-"it's only a workaround for some drives/setups."
-msgstr ""
-"Дали користим -immed заставицу са cdrecord-ом. Будите пажљиви (изабери "
-"„Тачно“) пошто је то једини начин да се заобиђу проблеми за поједине "
-"управљачке програме/поставке."
+msgid "Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
+msgstr "Дали користим -immed заставицу са cdrecord-ом. Будите пажљиви (изабери „Тачно“) пошто је то једини начин да се заобиђу проблеми за поједине управљачке програме/поставке."
 
 #: ../data/brasero.schemas.in.h:30
-#, fuzzy
 msgid "White list of additional plugins to use"
 msgstr "Листа осталих додатака за коришћење"
 
@@ -392,54 +323,52 @@ msgstr "Датотека брасеро пројекта"
 msgid "Cdrdao toc file"
 msgstr "Cdrdao toc датотека"
 
-#: ../src/brasero-dest-selection.c:618
-msgid ""
-"Do you really want to keep the current extension for the disc image name?"
-msgstr ""
-"Да ли заиста желите да задржите тренутну екстензију уз име одраза диска?"
+#: ../src/brasero-dest-selection.c:353
+msgid "Do you really want to keep the current extension for the disc image name?"
+msgstr "Да ли заиста желите да задржите тренутну екстензију уз име одраза диска?"
 
-#: ../src/brasero-dest-selection.c:621
+#: ../src/brasero-dest-selection.c:356
 msgid "Image Extension"
 msgstr "Екстензија одраза"
 
-#: ../src/brasero-dest-selection.c:623
-msgid ""
-"If you choose to keep it programs may not be able to recognize the file type "
-"properly."
-msgstr ""
-"Уколико одаберете да их задржите, ови програми можда неће моћи да исправно "
-"препознају тип датотеке."
+#: ../src/brasero-dest-selection.c:358
+msgid "If you choose to keep it programs may not be able to recognize the file type properly."
+msgstr "Уколико одаберете да их задржите, ови програми можда неће моћи да исправно препознају тип датотеке."
 
-#: ../src/brasero-dest-selection.c:626
+#: ../src/brasero-dest-selection.c:361
 msgid "_Don't change extension"
 msgstr "_Не мењај екстензију"
 
-#: ../src/brasero-dest-selection.c:629
+#: ../src/brasero-dest-selection.c:364
 msgid "Change _extension"
 msgstr "_Промени екстензију"
 
-#: ../src/brasero-dest-selection.c:1369
+#: ../src/brasero-dest-selection.c:690
 msgid "Configure some options for the recording"
 msgstr "Подшеава неке од могућности за упис"
 
-#: ../src/brasero-dest-selection.c:1376
+#: ../src/brasero-dest-selection.c:697
 msgid "Choose the disc to write to"
 msgstr "Диск на који се уписују подаци"
 
-#: ../src/brasero-dest-selection.c:1385
+#: ../src/brasero-dest-selection.c:706
 msgid "Number of copies "
 msgstr "Број копија "
 
-#: ../src/brasero-audio-disc.c:313 ../src/brasero-tray.c:91
-#: ../src/brasero-data-disc.c:122 ../src/brasero-video-disc.c:90
+#: ../src/brasero-audio-disc.c:313
+#: ../src/brasero-tray.c:91
+#: ../src/brasero-data-disc.c:125
+#: ../src/brasero-video-disc.c:90
 msgid "Menu"
 msgstr "Мени"
 
-#: ../src/brasero-audio-disc.c:314 ../src/brasero-data-disc.c:123
+#: ../src/brasero-audio-disc.c:314
+#: ../src/brasero-data-disc.c:126
 msgid "Open the selected files"
 msgstr "Отвори изабране датотеке"
 
-#: ../src/brasero-audio-disc.c:316 ../src/brasero-video-disc.c:93
+#: ../src/brasero-audio-disc.c:316
+#: ../src/brasero-video-disc.c:93
 msgid "_Edit Information..."
 msgstr "_Уреди податке..."
 
@@ -447,12 +376,14 @@ msgstr "_Уреди податке..."
 msgid "Edit the track information (start, end, author, ...)"
 msgstr "Уреди податке о нумери (почетак,крај, аутор,...)"
 
-#: ../src/brasero-audio-disc.c:318 ../src/brasero-data-disc.c:127
-#: ../src/brasero-project.c:206
+#: ../src/brasero-audio-disc.c:318
+#: ../src/brasero-data-disc.c:130
+#: ../src/brasero-project.c:207
 msgid "Remove the selected files from the project"
 msgstr "Уклања изабране датотеке из пројекта"
 
-#: ../src/brasero-audio-disc.c:320 ../src/brasero-data-disc.c:129
+#: ../src/brasero-audio-disc.c:320
+#: ../src/brasero-data-disc.c:132
 #: ../src/brasero-video-disc.c:97
 msgid "Add the files stored in the clipboard"
 msgstr "Додај датотеке сачуване у списку исечака"
@@ -474,6 +405,7 @@ msgid "Split the selected track"
 msgstr "Подели изабрану нумеру"
 
 #: ../src/brasero-audio-disc.c:537
+#: ../src/brasero-audio-disc.c:1012
 msgid "Pause"
 msgstr "Пауза"
 
@@ -485,7 +417,9 @@ msgstr "Подели"
 msgid "Track"
 msgstr "Нумера"
 
-#: ../src/brasero-audio-disc.c:691 ../src/brasero-video-disc.c:1176
+#: ../src/brasero-audio-disc.c:691
+#: ../src/brasero-disc-option-dialog.c:702
+#: ../src/brasero-video-disc.c:1176
 msgid "Title"
 msgstr "Наслов"
 
@@ -493,115 +427,116 @@ msgstr "Наслов"
 msgid "Artist"
 msgstr "Извођач"
 
-#: ../src/brasero-audio-disc.c:726 ../src/brasero-playlist.c:339
-#: ../src/brasero-split-dialog.c:1239
+#: ../src/brasero-audio-disc.c:726
+#: ../src/brasero-playlist.c:339
+#: ../src/brasero-split-dialog.c:1242
 msgid "Length"
 msgstr "Дужина"
 
-#: ../src/brasero-audio-disc.c:1011
-msgid "<i><b>Pause</b></i>"
-msgstr "<i><b>Пауза</b></i>"
-
-#: ../src/brasero-audio-disc.c:1152
+#: ../src/brasero-audio-disc.c:1156
 msgid "The track will be padded at its end:"
 msgstr "Нумера ће бити уметнута на крају:"
 
-#: ../src/brasero-audio-disc.c:1154
+#: ../src/brasero-audio-disc.c:1158
 msgid "Track Length"
 msgstr "Дужина нумере"
 
-#: ../src/brasero-audio-disc.c:1156
+#: ../src/brasero-audio-disc.c:1160
 msgid "the track is shorter than 6 seconds."
 msgstr "нумера је краћа од 6 секунди."
 
-#: ../src/brasero-audio-disc.c:1341
+#: ../src/brasero-audio-disc.c:1345
 #, c-format
 msgid "\"%s\" can't be handled by gstreamer:"
 msgstr "gstreamer не може да отвори „%s“:"
 
-#: ../src/brasero-audio-disc.c:1345
+#: ../src/brasero-audio-disc.c:1349
 msgid "Unhandled Song"
 msgstr "Непозната врста нумере"
 
-#: ../src/brasero-audio-disc.c:1348
+#: ../src/brasero-audio-disc.c:1352
 msgid "Make sure the appropriate codec is installed."
 msgstr "Уверите се да је потребан кодек инсталиран."
 
-#: ../src/brasero-audio-disc.c:1374
+#: ../src/brasero-audio-disc.c:1378
 #, c-format
 msgid "Do you want to add a \"%s\" which is a video file?"
 msgstr "Да ли заиста да додате видео датотеку „%s“?"
 
-#: ../src/brasero-audio-disc.c:1378
+#: ../src/brasero-audio-disc.c:1382
 msgid "Video File"
 msgstr "Видео датотека"
 
-#: ../src/brasero-audio-disc.c:1381
-msgid ""
-"This file is a video and therefore only the audio part can be written to the "
-"disc."
+#: ../src/brasero-audio-disc.c:1385
+msgid "This file is a video and therefore only the audio part can be written to the disc."
 msgstr "Ово је видео датотека, па ће само њен звучни део бити уписан на диск."
 
-#: ../src/brasero-audio-disc.c:1384
+#: ../src/brasero-audio-disc.c:1388
 msgid "_Ignore video"
 msgstr "_Занемари видео"
 
-#: ../src/brasero-audio-disc.c:1387
+#: ../src/brasero-audio-disc.c:1391
 msgid "_Add video"
 msgstr "_Додај видео"
 
-#: ../src/brasero-audio-disc.c:1512
+#: ../src/brasero-audio-disc.c:1516
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "Да ли желите да тражите звучне датотеке унутар директоријума?"
 
-#: ../src/brasero-audio-disc.c:1514 ../src/brasero-video-disc.c:246
+#: ../src/brasero-audio-disc.c:1518
+#: ../src/brasero-video-disc.c:246
 msgid "Directory Search"
 msgstr "Претрага директоријума"
 
-#: ../src/brasero-audio-disc.c:1517
+#: ../src/brasero-audio-disc.c:1521
 msgid "Directories can't be added to an audio disc."
 msgstr "Не можете да додате директоријуме на звучни диск."
 
-#: ../src/brasero-audio-disc.c:1521 ../src/brasero-video-disc.c:253
+#: ../src/brasero-audio-disc.c:1525
+#: ../src/brasero-video-disc.c:253
 msgid "Search directory"
 msgstr "Претражи директоријум"
 
-#: ../src/brasero-audio-disc.c:1590 ../src/brasero-video-disc.c:289
+#: ../src/brasero-audio-disc.c:1594
+#: ../src/brasero-video-disc.c:289
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr "Датотека „%s“ не може бити отворена."
 
-#: ../src/brasero-audio-disc.c:1594 ../src/brasero-data-disc.c:744
+#: ../src/brasero-audio-disc.c:1598
+#: ../src/brasero-data-disc.c:838
 msgid "Unreadable File"
 msgstr "Нечитљива датотека"
 
-#: ../src/brasero-audio-disc.c:1740 ../src/brasero-audio-disc.c:1765
+#: ../src/brasero-audio-disc.c:1744
+#: ../src/brasero-audio-disc.c:1769
 #: ../src/brasero-video-tree-model.c:198
 msgid "loading"
 msgstr "учитавање"
 
-#: ../src/brasero-audio-disc.c:2777
+#: ../src/brasero-audio-disc.c:2781
 msgid "Select one song only please."
 msgstr "Изаберите само једну нумеру."
 
-#: ../src/brasero-audio-disc.c:2779 ../src/brasero-split-dialog.c:655
+#: ../src/brasero-audio-disc.c:2783
+#: ../src/brasero-split-dialog.c:655
 msgid "Error"
 msgstr "Грешка"
 
-#: ../src/brasero-audio-disc.c:2782
+#: ../src/brasero-audio-disc.c:2786
 msgid "Impossible to split more than one song at a time"
 msgstr "Не могу да поделим више нумера одједном"
 
-#: ../src/brasero-audio-disc.c:3670
+#: ../src/brasero-audio-disc.c:3674
 #, c-format
 msgid "File \"%s\" was removed from the file system:"
 msgstr "Датотека „%s“ је била уклоњена са система:"
 
-#: ../src/brasero-audio-disc.c:3674
+#: ../src/brasero-audio-disc.c:3678
 msgid "File Deletion"
 msgstr "Брисање датотеке"
 
-#: ../src/brasero-audio-disc.c:3676
+#: ../src/brasero-audio-disc.c:3680
 msgid "it will be removed from the project."
 msgstr "биће уклоњено из пројекта."
 
@@ -609,11 +544,13 @@ msgstr "биће уклоњено из пројекта."
 msgid "Error Blanking:"
 msgstr "Грешка при брисању:"
 
-#: ../src/brasero-blank-dialog.c:224 ../src/brasero-blank-dialog.c:265
+#: ../src/brasero-blank-dialog.c:224
+#: ../src/brasero-blank-dialog.c:265
 msgid "Blanking Finished"
 msgstr "Брисање завршено"
 
-#: ../src/brasero-blank-dialog.c:226 ../src/brasero-blank-dialog.c:270
+#: ../src/brasero-blank-dialog.c:226
+#: ../src/brasero-blank-dialog.c:270
 msgid "Blank _Again"
 msgstr "Обричи _поново"
 
@@ -645,23 +582,23 @@ msgstr "Укључује брзо брисање насупрот спорије
 msgid "Disc Blanking"
 msgstr "Брисање диска"
 
-#: ../src/brasero-disc-copy-dialog.c:121
+#: ../src/brasero-disc-copy-dialog.c:114
 msgid "CD/DVD Copy Options"
 msgstr "Поставке за умножавање ЦД/ДВД-а"
 
-#: ../src/brasero-disc-copy-dialog.c:129
+#: ../src/brasero-disc-copy-dialog.c:122
 msgid "_Copy"
 msgstr "_Умножи"
 
-#: ../src/brasero-disc-copy-dialog.c:151
-msgid "<b>Select disc to copy</b>"
-msgstr "<b>Изаберите диск за умножавање</b>"
+#: ../src/brasero-disc-copy-dialog.c:145
+msgid "Select disc to copy"
+msgstr "Изаберите диск за умножавање"
 
-#: ../src/brasero-disc-copy-dialog.c:166
-#: ../src/brasero-disc-option-dialog.c:1354
-#: ../src/brasero-image-option-dialog.c:561
-msgid "<b>Select a disc to write to</b>"
-msgstr "<b>Изаберите диск за уписивање</b>"
+#: ../src/brasero-disc-copy-dialog.c:158
+#: ../src/brasero-disc-option-dialog.c:1371
+#: ../src/brasero-image-option-dialog.c:560
+msgid "Select a disc to write to"
+msgstr "Изаберите диск за уписивање"
 
 #: ../src/brasero-metadata.c:601
 #, c-format
@@ -706,7 +643,8 @@ msgstr "дошло је до непознате грешке."
 msgid "Playlist Loading Error"
 msgstr "Грешка при учитавању листе нумера"
 
-#: ../src/brasero-playlist.c:943 ../src/brasero-data-tree-model.c:428
+#: ../src/brasero-playlist.c:943
+#: ../src/brasero-data-tree-model.c:428
 #: ../src/brasero-data-tree-model.c:568
 msgid "empty"
 msgstr "празно"
@@ -762,10 +700,10 @@ msgstr "_Деактивирај све"
 msgid "Plugins"
 msgstr "Додаци"
 
-#: ../src/brasero-plugin-option.c:407
+#: ../src/brasero-plugin-option.c:408
 #, c-format
-msgid "<b>Options for plugin %s</b>"
-msgstr "<b>Могућности за додатак %s</b>"
+msgid "Options for plugin %s"
+msgstr "Могућности додатка %s"
 
 #: ../src/brasero-progress.c:141
 msgid "Estimated remaining time:"
@@ -803,154 +741,161 @@ msgstr "%i бајта"
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB од %i MiB"
 
-#: ../src/brasero-search-entry.c:205
-msgid "<b>Search:\t</b>"
-msgstr "<b>Претрага:\t</b>"
+#. Translators: This string is followed later by "only in\t"
+#: ../src/brasero-search-entry.c:207
+msgid "Search:\t"
+msgstr "Претрага:\t"
 
-#: ../src/brasero-search-entry.c:266
-msgid "<b>only in\t</b>"
-msgstr "<b>само у\t</b>"
+#. Translators: This is the end of the previous sentence  "Search:\t"
+#: ../src/brasero-search-entry.c:272
+msgid "only in\t"
+msgstr "само у\t"
 
-#: ../src/brasero-search-entry.c:278
+#: ../src/brasero-search-entry.c:287
 msgid "_text documents"
 msgstr "_текстуални документи"
 
-#: ../src/brasero-search-entry.c:293
+#: ../src/brasero-search-entry.c:302
 msgid "_pictures"
 msgstr "_слике"
 
-#: ../src/brasero-search-entry.c:308
+#: ../src/brasero-search-entry.c:317
 msgid "_music"
 msgstr "_музика"
 
-#: ../src/brasero-search-entry.c:323
+#: ../src/brasero-search-entry.c:332
 msgid "_video"
 msgstr "_видео"
 
-#: ../src/brasero-search-entry.c:340
+#: ../src/brasero-search-entry.c:349
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Откуцајте кључне речи или одаберите „Све датотеке“ из менија"
 
-#: ../src/brasero-search-entry.c:342
+#: ../src/brasero-search-entry.c:351
 msgid "Select if you want to search among image files only"
 msgstr "Изабери ако желиш да претражујеш само датотеке са сликама"
 
-#: ../src/brasero-search-entry.c:344
+#: ../src/brasero-search-entry.c:353
 msgid "Select if you want to search among video files only"
 msgstr "Изабери ако желиш да претражујеш само видео датотеке"
 
-#: ../src/brasero-search-entry.c:346
+#: ../src/brasero-search-entry.c:355
 msgid "Select if you want to search among audio files only"
 msgstr "Изабери ако желиш да претражујеш само музичке датотеке"
 
-#: ../src/brasero-search-entry.c:348
+#: ../src/brasero-search-entry.c:357
 msgid "Select if you want to search among your text documents only"
 msgstr "Изабери ако желиш да претражујеш само текстуалне датотеке"
 
-#: ../src/brasero-search-entry.c:350
+#: ../src/brasero-search-entry.c:359
 msgid "Click to start the search"
 msgstr "Кликни за почетак претраге"
 
-#: ../src/brasero-search-entry.c:617 ../src/brasero-search-entry.c:657
-#: ../src/brasero-search-entry.c:696 ../src/brasero-search-beagle.c:487
-#: ../src/brasero-file-chooser.c:219 ../src/brasero-image-option-dialog.c:614
-#: ../src/brasero-project.c:1541
+#: ../src/brasero-search-entry.c:626
+#: ../src/brasero-search-entry.c:666
+#: ../src/brasero-search-entry.c:705
+#: ../src/brasero-search-beagle.c:491
+#: ../src/brasero-file-chooser.c:219
+#: ../src/brasero-image-option-dialog.c:615
+#: ../src/brasero-project.c:1542
 msgid "All files"
 msgstr "Све датотеке"
 
-#: ../src/brasero-search-beagle.c:341
+#: ../src/brasero-search-beagle.c:342
 msgid "Previous results"
 msgstr "Претходни резултати"
 
-#: ../src/brasero-search-beagle.c:354 ../src/brasero-search-beagle.c:809
-msgid "<b>No results</b>"
-msgstr "<b>Нема резултата</b>"
+#: ../src/brasero-search-beagle.c:355
+#: ../src/brasero-search-beagle.c:816
+msgid "No results"
+msgstr "Нема резултата"
 
-#: ../src/brasero-search-beagle.c:359
+#: ../src/brasero-search-beagle.c:363
 msgid "Next results"
 msgstr "Следећи резултат"
 
-#: ../src/brasero-search-beagle.c:420 ../src/brasero-data-disc.c:2136
+#: ../src/brasero-search-beagle.c:424
+#: ../src/brasero-data-disc.c:2238
 #: ../src/brasero-file-filtered.c:539
 msgid "Files"
 msgstr "Датотеке"
 
-#: ../src/brasero-search-beagle.c:439 ../src/brasero-data-disc.c:2164
+#: ../src/brasero-search-beagle.c:443
+#: ../src/brasero-data-disc.c:2266
 msgid "Description"
 msgstr "Опис"
 
-#: ../src/brasero-search-beagle.c:498
+#: ../src/brasero-search-beagle.c:502
 msgid "Number of results displayed"
 msgstr "Број приказаних резултата"
 
-#: ../src/brasero-search-beagle.c:803
+#: ../src/brasero-search-beagle.c:808
 #, c-format
-msgid "<b>Results %i - %i (out of %i)</b>"
-msgstr "<b>Резултати %i - %i (од %i)</b>"
+msgid "Results %i - %i (out of %i)"
+msgstr "Резултати %i - %i (од %i)"
 
-#: ../src/brasero-search-beagle.c:1054
+#: ../src/brasero-search-beagle.c:1061
 msgid "Error querying beagle:"
 msgstr "Грешка при повезивању за псом њушкалом:"
 
-#: ../src/brasero-search-beagle.c:1056
+#: ../src/brasero-search-beagle.c:1063
 msgid "Search Error"
 msgstr "Грешка при тражењу"
 
-#: ../src/brasero-song-properties.c:152
+#: ../src/brasero-song-properties.c:153
 msgid "Title:"
 msgstr "Наслов:"
 
-#: ../src/brasero-song-properties.c:158 ../src/brasero-song-properties.c:166
-#: ../src/brasero-song-properties.c:174 ../src/brasero-multi-song-props.c:205
-#: ../src/brasero-multi-song-props.c:240 ../src/brasero-multi-song-props.c:261
-msgid ""
-"This information will be written to the disc using CD-TEXT technology. It "
-"can be read and displayed by some audio CD players."
-msgstr ""
-"Информације ће бити уписане на диск користећи ЦД-ТЕКСТ технологију. Она може "
-"бити приказана од стране неких ЦД плејера."
+#: ../src/brasero-song-properties.c:159
+#: ../src/brasero-song-properties.c:167
+#: ../src/brasero-song-properties.c:175
+#: ../src/brasero-multi-song-props.c:206
+#: ../src/brasero-multi-song-props.c:247
+#: ../src/brasero-multi-song-props.c:268
+msgid "This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."
+msgstr "Информације ће бити уписане на диск користећи ЦД-ТЕКСТ технологију. Она може бити приказана од стране неких ЦД плејера."
 
-#: ../src/brasero-song-properties.c:160 ../src/brasero-multi-song-props.c:230
+#: ../src/brasero-song-properties.c:161
+#: ../src/brasero-multi-song-props.c:237
 msgid "Artist:"
 msgstr "Извођач:"
 
-#: ../src/brasero-song-properties.c:168 ../src/brasero-multi-song-props.c:251
+#: ../src/brasero-song-properties.c:169
+#: ../src/brasero-multi-song-props.c:258
 msgid "Composer:\t"
 msgstr "Композитор:\t"
 
-#: ../src/brasero-song-properties.c:189 ../src/brasero-drive-properties.c:493
-#: ../src/brasero-multi-song-props.c:296
-msgid "<b>Options</b>"
-msgstr "<b>Поставке</b>"
-
-#: ../src/brasero-song-properties.c:195
+#: ../src/brasero-song-properties.c:199
 msgid "Song start:\t"
 msgstr "Почетак нумере:\t"
 
-#: ../src/brasero-song-properties.c:201
+#: ../src/brasero-song-properties.c:205
 msgid "Song end:\t"
 msgstr "Крај нумере:\t"
 
-#: ../src/brasero-song-properties.c:207 ../src/brasero-multi-song-props.c:303
+#: ../src/brasero-song-properties.c:211
+#: ../src/brasero-multi-song-props.c:312
 msgid "Pause length:\t"
 msgstr "Дужина паузе:\t"
 
-#: ../src/brasero-song-properties.c:216 ../src/brasero-multi-song-props.c:314
+#: ../src/brasero-song-properties.c:220
+#: ../src/brasero-multi-song-props.c:323
 msgid "Gives the length of the pause that should follow the track"
 msgstr "Одређује трајање паузе након нумере"
 
-#: ../src/brasero-song-properties.c:218
+#: ../src/brasero-song-properties.c:222
 msgid "Track length:\t"
 msgstr "Дужина нумере:\t"
 
-#: ../src/brasero-song-properties.c:247 ../src/brasero-multi-song-props.c:331
+#: ../src/brasero-song-properties.c:251
+#: ../src/brasero-multi-song-props.c:340
 msgid "Song Information"
 msgstr "Подаци о нумери"
 
-#: ../src/brasero-song-properties.c:316
+#: ../src/brasero-song-properties.c:322
 #, c-format
-msgid "<b>Song information for track %02i</b>"
-msgstr "<b>Подаци о нумери за %02i</b>"
+msgid "Song information for track %02i"
+msgstr "Подаци о нумери %02i"
 
 #: ../src/brasero-tray.c:92
 msgid "Cancel"
@@ -1009,286 +954,279 @@ msgid "File Error"
 msgstr "Грешка над датотеком"
 
 #: ../src/brasero-burn-dialog.c:168
-msgid "<big><b>Creating image</b></big>"
-msgstr "<big><b>Правим слику</b></big>"
+#: ../src/burn-basics.c:64
+msgid "Creating image"
+msgstr "Прављење одраза"
 
 #: ../src/brasero-burn-dialog.c:169
 msgid "Brasero - Creating Image"
 msgstr "Брасеро - Прављење одраза"
 
-#: ../src/brasero-burn-dialog.c:174 ../src/brasero-burn-dialog.c:188
+#: ../src/brasero-burn-dialog.c:174
+#: ../src/brasero-burn-dialog.c:188
 #: ../src/brasero-burn-dialog.c:831
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "Брасеро - Упис ДВД-а (симулација)"
 
 #: ../src/brasero-burn-dialog.c:175
-msgid "<big><b>Simulation of video DVD burning</b></big>"
-msgstr "<big><b>Симулација уписа видеа на ДВД</b></big>"
+msgid "Simulation of video DVD burning"
+msgstr "Симулација уписа видеа на ДВД"
 
-#: ../src/brasero-burn-dialog.c:178 ../src/brasero-burn-dialog.c:192
+#: ../src/brasero-burn-dialog.c:178
+#: ../src/brasero-burn-dialog.c:192
 msgid "Brasero - Burning DVD"
 msgstr "Брасеро - Упис ДВД-а"
 
 #: ../src/brasero-burn-dialog.c:179
-msgid "<big><b>Burning video DVD</b></big>"
-msgstr "<big><b>Упис видеа на ДВД</b></big>"
+msgid "Burning video DVD"
+msgstr "Уписујем видео ДВД"
 
 #: ../src/brasero-burn-dialog.c:189
-msgid "<big><b>Simulation of data DVD burning</b></big>"
-msgstr "<big><b>Симулација уписа података на ДВД</b></big>"
+msgid "Simulation of data DVD burning"
+msgstr "Симулација уписа података на ДВД"
 
 #: ../src/brasero-burn-dialog.c:193
-msgid "<big><b>Burning data DVD</b></big>"
-msgstr "<big><b>Упис података на ДВД</b></big>"
+msgid "Burning data DVD"
+msgstr "Уписујем податаке на ДВД"
 
 #: ../src/brasero-burn-dialog.c:202
 msgid "Burning DVD (Simulation)"
-msgstr "Упис ДВД-а (симулација)"
+msgstr "Уписујем ДВД (симулација)"
 
 #: ../src/brasero-burn-dialog.c:203
-msgid "<big><b>Simulation of image to DVD burning</b></big>"
-msgstr "<big><b>Симулација уписа одраза на ДВД</b></big>"
+msgid "Simulation of image to DVD burning"
+msgstr "Симулација уписа одраза на ДВД"
 
 #: ../src/brasero-burn-dialog.c:206
 msgid "Burning DVD"
-msgstr "Упис ДВД-а"
+msgstr "Уписујем ДВД"
 
 #: ../src/brasero-burn-dialog.c:207
-msgid "<big><b>Burning image to DVD</b></big>"
-msgstr "<big><b>Упис одраза на ДВД</b></big>"
+msgid "Burning image to DVD"
+msgstr "Уписујем одраза на ДВД"
 
-#: ../src/brasero-burn-dialog.c:216 ../src/brasero-burn-dialog.c:825
+#: ../src/brasero-burn-dialog.c:216
+#: ../src/brasero-burn-dialog.c:825
 msgid "Brasero - Copying DVD (Simulation)"
 msgstr "Брасеро - Умножавање ДВД-а (симулација)"
 
 #: ../src/brasero-burn-dialog.c:217
-msgid "<big><b>Simulation of data DVD copying</b></big>"
-msgstr "<big><b>Симулација умножавања ДВД-а са подацима</b></big>"
+msgid "Simulation of data DVD copying"
+msgstr "Симулација умножавања ДВД-а"
 
 #: ../src/brasero-burn-dialog.c:220
 msgid "Brasero - Copying DVD"
 msgstr "Брасеро - Умножавање ДВД-а"
 
 #: ../src/brasero-burn-dialog.c:221
-msgid "<big><b>Copying data DVD</b></big>"
-msgstr "<big><b>Умножавање ДВД-а са подацима</b></big>"
+msgid "Copying data DVD"
+msgstr "Умножавам ДВД са подацима"
 
-#: ../src/brasero-burn-dialog.c:232 ../src/brasero-burn-dialog.c:246
-#: ../src/brasero-burn-dialog.c:260 ../src/brasero-burn-dialog.c:288
+#: ../src/brasero-burn-dialog.c:232
+#: ../src/brasero-burn-dialog.c:246
+#: ../src/brasero-burn-dialog.c:260
+#: ../src/brasero-burn-dialog.c:288
 #: ../src/brasero-burn-dialog.c:317
 msgid "Brasero - Burning CD (Simulation)"
 msgstr "Брасеро - Упис ЦД-а (симулација)"
 
 #: ../src/brasero-burn-dialog.c:233
-#, fuzzy
-msgid "<big><b>Simulation of (S)VCD burning</b></big>"
-msgstr "<big><b>Симулација уписа података на ЦД</b></big>"
+msgid "Simulation of (S)VCD burning"
+msgstr "Симулација уписа (С)ВЦД диска"
 
-#: ../src/brasero-burn-dialog.c:236 ../src/brasero-burn-dialog.c:250
-#: ../src/brasero-burn-dialog.c:264 ../src/brasero-burn-dialog.c:292
+#: ../src/brasero-burn-dialog.c:236
+#: ../src/brasero-burn-dialog.c:250
+#: ../src/brasero-burn-dialog.c:264
+#: ../src/brasero-burn-dialog.c:292
 #: ../src/brasero-burn-dialog.c:321
 msgid "Brasero - Burning CD"
 msgstr "Брасеро - Упис ЦД-а"
 
 #: ../src/brasero-burn-dialog.c:237
-#, fuzzy
-msgid "<big><b>Burning (S)VCD</b></big>"
-msgstr "<big><b>Упис података на ЦД</b></big>"
+msgid "Burning (S)VCD"
+msgstr "Уписујем (С)ВЦД"
 
-#: ../src/brasero-burn-dialog.c:247 ../src/brasero-burn-dialog.c:318
-msgid "<big><b>Simulation of audio CD burning</b></big>"
-msgstr "<big><b>Симулација уписа звучног диска</b></big>"
+#: ../src/brasero-burn-dialog.c:247
+#: ../src/brasero-burn-dialog.c:318
+msgid "Simulation of audio CD burning"
+msgstr "Симулација уписа звучног диска"
 
-#: ../src/brasero-burn-dialog.c:251 ../src/brasero-burn-dialog.c:322
-msgid "<big><b>Burning audio CD</b></big>"
-msgstr "<big><b>Упис звучног диска</b></big>"
+#: ../src/brasero-burn-dialog.c:251
+#: ../src/brasero-burn-dialog.c:322
+msgid "Burning audio CD"
+msgstr "Уписујем звучни диск"
 
 #: ../src/brasero-burn-dialog.c:261
-msgid "<big><b>Simulation of data CD burning</b></big>"
-msgstr "<big><b>Симулација уписа података на ЦД</b></big>"
+msgid "Simulation of data CD burning"
+msgstr "Симулација уписа података на ЦД"
 
 #: ../src/brasero-burn-dialog.c:265
-msgid "<big><b>Burning data CD</b></big>"
-msgstr "<big><b>Упис података на ЦД</b></big>"
+msgid "Burning data CD"
+msgstr "Уписујем податаке на ЦД"
 
-#: ../src/brasero-burn-dialog.c:274 ../src/brasero-burn-dialog.c:839
+#: ../src/brasero-burn-dialog.c:274
+#: ../src/brasero-burn-dialog.c:839
 msgid "Brasero - Copying CD (Simulation)"
 msgstr "Брасеро - Умножавање ЦД-а (симулација)"
 
 #: ../src/brasero-burn-dialog.c:275
-msgid "<big><b>Simulation of CD copying</b></big>"
-msgstr "<big><b>Симулација умножавања ЦД-а</b></big>"
+msgid "Simulation of CD copying"
+msgstr "Симулација умножавања ЦД-а"
 
 #: ../src/brasero-burn-dialog.c:278
 msgid "Brasero - Copying CD"
 msgstr "Брасеро - Умножавање ЦД-а"
 
 #: ../src/brasero-burn-dialog.c:279
-msgid "<big><b>Copying CD</b></big>"
-msgstr "<big><b>Умножавање ЦД-а</b></big>"
+msgid "Copying CD"
+msgstr "Умножавам ЦД"
 
 #: ../src/brasero-burn-dialog.c:289
-msgid "<big><b>Simulation of image to CD burning</b></big>"
-msgstr "<big><b>Симулација уписа одраза на ЦД</b></big>"
+msgid "Simulation of image to CD burning"
+msgstr "Симулација уписа одраза на ЦД"
 
 #: ../src/brasero-burn-dialog.c:293
-msgid "<big><b>Burning image to CD</b></big>"
-msgstr "<big><b>Упис одраза на ЦД</b></big>"
+msgid "Burning image to CD"
+msgstr "Уписујем одраз на ЦД"
 
 #: ../src/brasero-burn-dialog.c:303
 msgid "Brasero - Burning disc (Simulation)"
 msgstr "Брасеро - Упис диска (симулација)"
 
 #: ../src/brasero-burn-dialog.c:304
-msgid "<big><b>Simulation of video disc burning</b></big>"
-msgstr "<big><b>Симулација уписа видеа на диск</b></big>"
+msgid "Simulation of video disc burning"
+msgstr "Симулација уписа видеа на диск"
 
 #: ../src/brasero-burn-dialog.c:307
 msgid "Brasero - Burning disc"
 msgstr "Брасеро - Упис диска"
 
 #: ../src/brasero-burn-dialog.c:308
-msgid "<big><b>Burning video disc</b></big>"
-msgstr "<big><b>Упис видео диска</b></big>"
+msgid "Burning video disc"
+msgstr "Уписујем видео на диск"
 
-#: ../src/brasero-burn-dialog.c:331 ../src/brasero-burn-dialog.c:358
+#: ../src/brasero-burn-dialog.c:331
+#: ../src/brasero-burn-dialog.c:358
 #: ../src/brasero-burn-dialog.c:858
 msgid "Brasero - Burning Disc (Simulation)"
 msgstr "Брасеро - Упис диска (симулација)"
 
 #: ../src/brasero-burn-dialog.c:332
-msgid "<big><b>Simulation of data disc burning</b></big>"
-msgstr "<big><b>Уписе података на диск</b></big>"
+msgid "Simulation of data disc burning"
+msgstr "Симулација уписа података на диск"
 
-#: ../src/brasero-burn-dialog.c:335 ../src/brasero-burn-dialog.c:362
+#: ../src/brasero-burn-dialog.c:335
+#: ../src/brasero-burn-dialog.c:362
 msgid "Brasero - Burning Disc"
 msgstr "Брасеро - Упис диска"
 
 #: ../src/brasero-burn-dialog.c:336
-msgid "<big><b>Burning data disc</b></big>"
-msgstr "<big><b>Упис података на диск</b></big>"
+msgid "Burning data disc"
+msgstr "Уписујем податке на диск"
 
-#: ../src/brasero-burn-dialog.c:345 ../src/brasero-burn-dialog.c:852
+#: ../src/brasero-burn-dialog.c:345
+#: ../src/brasero-burn-dialog.c:852
 msgid "Brasero - Copying Disc (Simulation)"
 msgstr "Брасеро - Умножавање диска (симулација)"
 
 #: ../src/brasero-burn-dialog.c:346
-msgid "<big><b>Simulation of disc copying</b></big>"
-msgstr "<big><b>Симулација умножавања диска</b></big>"
+msgid "Simulation of disc copying"
+msgstr "Симулација умножавања диска"
 
 #: ../src/brasero-burn-dialog.c:349
 msgid "Brasero - Copying Disc"
 msgstr "Брасеро - Умножавање диска"
 
 #: ../src/brasero-burn-dialog.c:350
-msgid "<big><b>Copying disc</b></big>"
-msgstr "<big><b>Умножавање диска</b></big>"
+#: ../src/burn-basics.c:68
+msgid "Copying disc"
+msgstr "Умножавам диск"
 
 #: ../src/brasero-burn-dialog.c:359
-msgid "<big><b>Simulation of image to disc burning</b></big>"
-msgstr "<big><b>Симулација уписивања одраза на диск</b></big>"
+msgid "Simulation of image to disc burning"
+msgstr "Симулација уписивања одраза на диск"
 
 #: ../src/brasero-burn-dialog.c:363
-msgid "<big><b>Burning image to disc</b></big>"
-msgstr "<big><b>Уписивање одраза на диск</b></big>"
+msgid "Burning image to disc"
+msgstr "Уписујем одраз на диск"
 
 #: ../src/brasero-burn-dialog.c:395
-#, fuzzy
 msgid "Please, replace the disc with a rewritable disc holding data."
-msgstr "замените диск преписивим диском који садржи податке."
+msgstr "Замените диск преписивим диском који садржи податке."
 
 #: ../src/brasero-burn-dialog.c:397
-#, fuzzy
 msgid "Please, replace the disc with a disc holding data."
-msgstr "замените диск диском који садржи податке."
+msgstr "Замените диск оним који већ садржи податке."
 
 #: ../src/brasero-burn-dialog.c:401
-#, fuzzy
 msgid "Please, insert a rewritable disc holding data."
-msgstr "убаците преписиви диск који садржи податке."
+msgstr "Убаците преписиви диск који садржи податке."
 
 #: ../src/brasero-burn-dialog.c:403
-#, fuzzy
 msgid "Please, insert a disc holding data."
-msgstr "убаците диск који садржи податке."
+msgstr "Убаците диск који садржи податке."
 
 #: ../src/brasero-burn-dialog.c:418
-#, fuzzy, c-format
-msgid ""
-"Please, replace the disc with a recordable CD with at least %i MiB of free "
-"space."
-msgstr "замените диск уписивим ЦД-ом са најмање %i MiB слободног простора."
+#, c-format
+msgid "Please, replace the disc with a recordable CD with at least %i MiB of free space."
+msgstr "Замените диск уписивим ЦД—ом са најмање %i MiB слободног простора."
 
 #: ../src/brasero-burn-dialog.c:421
-#, fuzzy
 msgid "Please, replace the disc with a recordable CD."
-msgstr "замените диск уписивим ЦД-ом."
+msgstr "Замените тренутни ЦД уписивим."
 
 #: ../src/brasero-burn-dialog.c:425
-#, fuzzy, c-format
+#, c-format
 msgid "Please, insert a recordable CD with at least %i MiB of free space."
-msgstr "убаците уписив ЦД са најмање %i MiB слободног простора."
+msgstr "Убаците уписив ЦД са најмање %i MiB слободног простора."
 
 #: ../src/brasero-burn-dialog.c:428
-#, fuzzy
 msgid "Please, insert a recordable CD."
-msgstr "убаците уписив ЦД."
+msgstr "Убаците уписив ЦД."
 
 #: ../src/brasero-burn-dialog.c:434
-#, fuzzy, c-format
-msgid ""
-"Please, replace the disc with a recordable DVD with at least %i MiB of free "
-"space."
-msgstr "замените диск са уписивим ДВД-ем са најмање %i MiB слободног простора."
+#, c-format
+msgid "Please, replace the disc with a recordable DVD with at least %i MiB of free space."
+msgstr "Замените диск са уписивим ДВД—ем са најмање %i MiB слободног простора."
 
 #: ../src/brasero-burn-dialog.c:437
-#, fuzzy
 msgid "Please, replace the disc with a recordable DVD."
-msgstr "замените диск за уписивим ДВД-ем."
+msgstr "Замените диск за уписивим ДВД—ем."
 
 #: ../src/brasero-burn-dialog.c:441
-#, fuzzy, c-format
+#, c-format
 msgid "Please, insert a recordable DVD with at least %i MiB of free space."
-msgstr "убаците уписив ДВД са најмање %i MiB слободног простора."
+msgstr "Убаците уписив ДВД са најмање %i MiB слободног простора."
 
 #: ../src/brasero-burn-dialog.c:444
-#, fuzzy
 msgid "Please, insert a recordable DVD."
-msgstr "убаците уписив ДВД."
+msgstr "Убаците уписив ДВД."
 
 #: ../src/brasero-burn-dialog.c:449
-#, fuzzy, c-format
-msgid ""
-"Please, replace the disc with a recordable CD or DVD with at least %i MiB of "
-"free space."
-msgstr ""
-"замените диск са уписивим ЦД-ом или ДВД-ем са најмање %i MiB слободног "
-"простора."
+#, c-format
+msgid "Please, replace the disc with a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Замените диск са уписивим ЦД—ом или ДВД—ем са најмање %i MiB слободног простора."
 
 #: ../src/brasero-burn-dialog.c:452
-#, fuzzy
 msgid "Please, replace the disc with a recordable CD or DVD."
-msgstr "замените диск са уписивим ЦД-ом или ДВД-ем."
+msgstr "Замените диск са уписивим ЦД—ом или ДВД—ем."
 
 #: ../src/brasero-burn-dialog.c:456
-#, fuzzy, c-format
-msgid ""
-"Please, insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr "убаците уписив ЦД или ДВД са најмање %i MiB слободног простора."
+#, c-format
+msgid "Please, insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Убаците уписив ЦД или ДВД са најмање %i MiB слободног простора."
 
 #: ../src/brasero-burn-dialog.c:459
-#, fuzzy
 msgid "Please, insert a recordable CD or DVD."
-msgstr "убаците уписив ЦД или ДВД диск."
+msgstr "Убаците уписив ЦД или ДВД диск."
 
 #: ../src/brasero-burn-dialog.c:505
-#, fuzzy
 msgid ""
 "An image of the disc has been created on your hard drive.\n"
 "Burning will begin as soon as a recordable medium is inserted."
 msgstr ""
-"Одраз диска из уређаја је направљен на тврдом диску. Упис само што није "
-"почео:"
+"Направљен је одраз медијума на локалном тврдом диску.\n"
+"Упис ће започети када убаците празан диск."
 
 #: ../src/brasero-burn-dialog.c:510
 msgid "A data integrity test will begin as soon as the medium is inserted."
@@ -1299,72 +1237,70 @@ msgid "Please, re-insert the disc in the CD/DVD burner."
 msgstr "Поново убаците диск у ЦД/ДВД уређај."
 
 #: ../src/brasero-burn-dialog.c:514
-#, fuzzy
 msgid ""
 "A recording was successfully completed.\n"
 "The next recording will begin as soon as a recordable medium is inserted."
 msgstr ""
 "Упис је успешно завршен.\n"
-"Следећи упис ће почети:"
+"Следећи упис ће започети чим убаците празан диск."
 
 #: ../src/brasero-burn-dialog.c:519
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is busy."
-msgstr "Диск у „%s“ је заузет:"
+msgstr "Диск у „%s“ је заузет."
 
 #: ../src/brasero-burn-dialog.c:520
 msgid "make sure another application is not using it."
 msgstr "проверите да га ни један други програм не користи."
 
 #: ../src/brasero-burn-dialog.c:523
-#, fuzzy, c-format
+#, c-format
 msgid "There is no disc in \"%s\"."
-msgstr "Нема диска у „%s“:"
+msgstr "Нема диска у „%s“."
 
 #: ../src/brasero-burn-dialog.c:527
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not supported."
-msgstr "Диск у „%s“ није подржан:"
+msgstr "Диск у „%s“ није подржан."
 
 #: ../src/brasero-burn-dialog.c:531
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not rewritable."
-msgstr "Диск у „%s“ није преписив:"
+msgstr "Диск у „%s“ није преписив."
 
 #: ../src/brasero-burn-dialog.c:535
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is empty."
-msgstr "Диск у „%s“ је празан:"
+msgstr "Диск у „%s“ је празан."
 
 #: ../src/brasero-burn-dialog.c:539
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not writable."
-msgstr "Диск у „%s“ није уписив:"
+msgstr "Диск у „%s“ није уписив."
 
 #: ../src/brasero-burn-dialog.c:543
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is a DVD."
-msgstr "Диск у „%s“ је ДВД:"
+msgstr "Диск у „%s“ је ДВД."
 
 #: ../src/brasero-burn-dialog.c:547
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is a CD."
-msgstr "Диск у „%s“ је ЦД:"
+msgstr "Диск у „%s“ је ЦД."
 
 #: ../src/brasero-burn-dialog.c:551
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" is not big enough."
-msgstr "Диск у „%s“ није довољно велик:"
+msgstr "Диск у „%s“ није довољно велик."
 
 #: ../src/brasero-burn-dialog.c:561
-#, fuzzy, c-format
+#, c-format
 msgid "The disc in \"%s\" needs to be reloaded."
-msgstr "Диск у „%s“ мора бити поново учитан:"
+msgstr "Диск у „%s“ мора бити поново учитан."
 
 #: ../src/brasero-burn-dialog.c:562
-#, fuzzy
 msgid "Please, eject the disc and reload it."
-msgstr "избаците диск и поново га вратите."
+msgstr "Избаците диск и поново га учитајте."
 
 #: ../src/brasero-burn-dialog.c:670
 msgid "Replace disc"
@@ -1386,7 +1322,8 @@ msgstr "Убачени диск садржи податке."
 msgid "Erase disc"
 msgstr "Обриши диск"
 
-#: ../src/brasero-burn-dialog.c:720 ../src/brasero-burn-dialog.c:732
+#: ../src/brasero-burn-dialog.c:720
+#: ../src/brasero-burn-dialog.c:732
 msgid "Multisession Disc"
 msgstr "Диска са више сесија"
 
@@ -1402,9 +1339,11 @@ msgstr ""
 "већ уписане датотеке ће бити невидљиве (иако и даље читљиве).\n"
 "Да ли, свеједно, желите да наставите?"
 
-#: ../src/brasero-burn-dialog.c:723 ../src/brasero-burn-dialog.c:735
-#: ../src/brasero-burn-dialog.c:747 ../src/brasero-burn-dialog.c:784
-#: ../src/brasero-tool-dialog.c:393
+#: ../src/brasero-burn-dialog.c:723
+#: ../src/brasero-burn-dialog.c:735
+#: ../src/brasero-burn-dialog.c:747
+#: ../src/brasero-burn-dialog.c:784
+#: ../src/brasero-tool-dialog.c:397
 msgid "Continue"
 msgstr "Настави"
 
@@ -1414,12 +1353,10 @@ msgstr "Додавање нумера на диск није препоручљ�
 
 #: ../src/brasero-burn-dialog.c:734
 msgid ""
-"you might not be able to listen to them with stereos and CD-TEXT won't be "
-"written.\n"
+"you might not be able to listen to them with stereos and CD-TEXT won't be written.\n"
 "Do you want to continue anyway?"
 msgstr ""
-"могуће је да нећете моћи да га слушате на музичким стубовима и ЦД-ТЕКСТ неће "
-"бити уписан.\n"
+"могуће је да нећете моћи да га слушате на музичким стубовима и ЦД-ТЕКСТ неће бити уписан.\n"
 "Да ли, свеједно, желите да наставите?"
 
 #: ../src/brasero-burn-dialog.c:744
@@ -1444,11 +1381,10 @@ msgstr "Да наставим без сагласности са Windows-ом?"
 
 #: ../src/brasero-burn-dialog.c:777
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
-msgstr ""
-"Неке датотеке немају одговарајуће називе како би диск био сагласан са "
-"Windows-ом:"
+msgstr "Неке датотеке немају одговарајуће називе како би диск био сагласан са Windows-ом:"
 
-#: ../src/brasero-burn-dialog.c:779 ../src/brasero-disc-option-dialog.c:563
+#: ../src/brasero-burn-dialog.c:779
+#: ../src/brasero-disc-option-dialog.c:565
 msgid "Windows Compatibility"
 msgstr "Сагласност са Windows-ом"
 
@@ -1515,12 +1451,14 @@ msgstr "Сачувај тренутну сесију"
 msgid "Session Log"
 msgstr "Дневник сесије"
 
-#: ../src/brasero-burn-dialog.c:1454 ../src/brasero-burn-dialog.c:1477
+#: ../src/brasero-burn-dialog.c:1454
+#: ../src/brasero-burn-dialog.c:1477
 #: ../src/brasero-burn-dialog.c:1487
 msgid "Session Log Error"
 msgstr "Грешка у дневнику сесије"
 
-#: ../src/brasero-burn-dialog.c:1455 ../src/brasero-burn-dialog.c:1478
+#: ../src/brasero-burn-dialog.c:1455
+#: ../src/brasero-burn-dialog.c:1478
 #: ../src/brasero-burn-dialog.c:1488
 msgid "The session log cannot be displayed:"
 msgstr "Дневник сесије не може бити приказан:"
@@ -1602,15 +1540,18 @@ msgstr "Одраз успешно направљен"
 msgid "Create cover"
 msgstr "Направи омот"
 
-#: ../src/brasero-burn-dialog.c:1896 ../src/brasero-tool-dialog.c:383
+#: ../src/brasero-burn-dialog.c:1896
+#: ../src/brasero-tool-dialog.c:387
 msgid "Do you really want to quit?"
 msgstr "Да ли заиста желите да изађете?"
 
-#: ../src/brasero-burn-dialog.c:1898 ../src/brasero-tool-dialog.c:385
+#: ../src/brasero-burn-dialog.c:1898
+#: ../src/brasero-tool-dialog.c:389
 msgid "Confirm"
 msgstr "Потврди"
 
-#: ../src/brasero-burn-dialog.c:1902 ../src/brasero-tool-dialog.c:388
+#: ../src/brasero-burn-dialog.c:1902
+#: ../src/brasero-tool-dialog.c:392
 msgid "Interrupting the process may make disc unusable."
 msgstr "Прекидање овог процеса може учинити диск нечитљивим."
 
@@ -1618,402 +1559,398 @@ msgstr "Прекидање овог процеса може учинити ди�
 msgid "_Cancel burning"
 msgstr "_Откажи упис"
 
-#: ../src/brasero-data-disc.c:125
+#: ../src/brasero-data-disc.c:128
 msgid "R_ename..."
 msgstr "П_реименуј..."
 
-#: ../src/brasero-data-disc.c:125
+#: ../src/brasero-data-disc.c:128
 msgid "Rename the selected file"
 msgstr "Уклања изабране датотеке"
 
-#: ../src/brasero-data-disc.c:131 ../src/brasero-data-disc.c:325
+#: ../src/brasero-data-disc.c:134
+#: ../src/brasero-data-disc.c:328
 #, c-format
 msgid "New folder"
 msgstr "Нова фасцикла"
 
-#: ../src/brasero-data-disc.c:131
+#: ../src/brasero-data-disc.c:134
 msgid "Create a new empty folder"
 msgstr "Прави нову празну фасциклу"
 
-#: ../src/brasero-data-disc.c:136
+#: ../src/brasero-data-disc.c:139
 msgid "Import Session"
 msgstr "Увези сесију"
 
-#: ../src/brasero-data-disc.c:136
+#: ../src/brasero-data-disc.c:139
 msgid "Import session"
 msgstr "Увози сесију"
 
-#: ../src/brasero-data-disc.c:215
+#: ../src/brasero-data-disc.c:218
 msgid "The session couldn't be imported:"
 msgstr "Није могуће учитати сесију:"
 
-#: ../src/brasero-data-disc.c:217
+#: ../src/brasero-data-disc.c:220
 msgid "Session Import Error"
 msgstr "Грешка при увозу сесије"
 
-#: ../src/brasero-data-disc.c:219 ../src/brasero-sum-dialog.c:156
+#: ../src/brasero-data-disc.c:222
+#: ../src/brasero-sum-dialog.c:156
 #: ../src/scsi-error.c:32
 msgid "unknown error"
 msgstr "непозната грешка"
 
-#: ../src/brasero-data-disc.c:332
+#: ../src/brasero-data-disc.c:335
 #, c-format
 msgid "New folder %i"
 msgstr "Нова фасцикла %i"
 
-#: ../src/brasero-data-disc.c:603
-#, fuzzy
+#: ../src/brasero-data-disc.c:606
 msgid "The contents of the project changed since it was saved."
-msgstr "Садржај пројекта је промењен од последњег чувања:"
+msgstr "Садржај пројекта је промењен од последњег чувања."
 
-#: ../src/brasero-data-disc.c:605
-#, fuzzy
+#: ../src/brasero-data-disc.c:608
 msgid "Do you want to continue or discard the old project layout?"
-msgstr "Да ли желите да наставите или да га занемарите?"
+msgstr "Да вратим или да занемарим стари распоред пројекта?"
 
-#: ../src/brasero-data-disc.c:611
+#: ../src/brasero-data-disc.c:614
 msgid "_Discard"
 msgstr "_Занемари"
 
-#: ../src/brasero-data-disc.c:612
+#: ../src/brasero-data-disc.c:615
 msgid "Press if you want to discard the current modified project"
 msgstr "Да ли заиста желите да занемарите тренутни пројекат?"
 
-#: ../src/brasero-data-disc.c:616
+#: ../src/brasero-data-disc.c:619
 msgid "_Continue"
 msgstr "_Настави"
 
-#: ../src/brasero-data-disc.c:617
+#: ../src/brasero-data-disc.c:620
 msgid "Press if you want to continue with the current modified project"
 msgstr "Притисните уколико желите да наставите занемарени пројекат"
 
-#: ../src/brasero-data-disc.c:740 ../src/brasero-data-disc.c:783
-#: ../src/brasero-data-disc.c:826
+#: ../src/brasero-data-disc.c:735
+#, c-format
+msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
+msgstr "Да ли желите да упишете „%s“ на диск или да додате у пројекат са подацима?"
+
+#: ../src/brasero-data-disc.c:740
+msgid "This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."
+msgstr "Ова датотека је одраз диска, тако да је можете уписати на нови диск без њеног додавања у пројекат са подацима."
+
+#: ../src/brasero-data-disc.c:742
+msgid "_Add to project"
+msgstr "_Додај у пројекат"
+
+#: ../src/brasero-data-disc.c:744
+#: ../src/brasero-project.c:210
+#: ../src/brasero-project.c:428
+msgid "_Burn..."
+msgstr "Упи_ши..."
+
+#: ../src/brasero-data-disc.c:834
+#: ../src/brasero-data-disc.c:877
+#: ../src/brasero-data-disc.c:920
 #, c-format
 msgid "\"%s\" cannot be added to the selection:"
 msgstr "Не могу да додам„%s“ у избор:"
 
-#: ../src/brasero-data-disc.c:770
+#: ../src/brasero-data-disc.c:864
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "„%s“ је рекурзивна симболичка веза."
 
-#: ../src/brasero-data-disc.c:787
+#: ../src/brasero-data-disc.c:881
 msgid "Recursive Symlink"
 msgstr "Рекурзивна симболичка везе"
 
-#: ../src/brasero-data-disc.c:790
+#: ../src/brasero-data-disc.c:884
 msgid "it is a recursive symlink."
 msgstr "то је рекурзивна симболичка веза."
 
-#: ../src/brasero-data-disc.c:813
+#: ../src/brasero-data-disc.c:907
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "Не могу да нађем „%s“."
 
-#: ../src/brasero-data-disc.c:830
+#: ../src/brasero-data-disc.c:924
 msgid "File Not Found"
 msgstr "Није нађена датотека"
 
-#: ../src/brasero-data-disc.c:833
+#: ../src/brasero-data-disc.c:927
 msgid "it doesn't exist at the specified location."
 msgstr "не постоји на изабраном месту."
 
-#: ../src/brasero-data-disc.c:863
+#: ../src/brasero-data-disc.c:957
 #, c-format
 msgid "\"%s\" already exists in the directory:"
 msgstr "„%s“ већ постоји у директоријуму:"
 
-#: ../src/brasero-data-disc.c:866
+#: ../src/brasero-data-disc.c:960
 msgid "Already Existing File"
 msgstr "Већ постојећа датотека"
 
-#: ../src/brasero-data-disc.c:869
+#: ../src/brasero-data-disc.c:963
 msgid "do you really want to replace it?"
 msgstr "да ли желите да је замените?"
 
-#: ../src/brasero-data-disc.c:871
+#: ../src/brasero-data-disc.c:965
 msgid "_Don't replace"
 msgstr "_Не мењај"
 
-#: ../src/brasero-data-disc.c:872
+#: ../src/brasero-data-disc.c:966
 msgid "_Replace"
 msgstr "_Замени"
 
-#: ../src/brasero-data-disc.c:908
-#, fuzzy, c-format
-msgid ""
-"Do you really want to add \"%s\" to the selection and use the third version "
-"of ISO9660 standard to support it?"
-msgstr ""
-"Да ли заиста желите да додате „%s“ у избор користећи трећи нови ISO9660 "
-"стандарда како би је подржали?"
+#: ../src/brasero-data-disc.c:1002
+#, c-format
+msgid "Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"
+msgstr "Да ли заиста желите да додате „%s“ у избор користећи треће издање ISO9660 стандарда како би је подржали?"
 
-#: ../src/brasero-data-disc.c:911
-#, fuzzy
+#: ../src/brasero-data-disc.c:1005
 msgid "File Over 2 GiB"
-msgstr "Датотека је већа од 2 Gio"
+msgstr "Датотека је већа од 2 GiB"
 
-#: ../src/brasero-data-disc.c:914
-#, fuzzy
+#: ../src/brasero-data-disc.c:1008
 msgid ""
-"The size of the file is over 2 GiB. This isn't supported by ISO9660 standard "
-"in his first and second versions (the most widespread ones).\n"
-"It is recommended to use the third version of ISO9660 standard which is "
-"supported by most of the operating systems including Linux and all versions "
-"of Windows ©.\n"
-"A known exception is MacOS X that can't read images created with version 3 "
-"of ISO9660 standard."
+"The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones).\n"
+"It is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©.\n"
+"A known exception is MacOS X that can't read images created with version 3 of ISO9660 standard."
 msgstr ""
-"Величина датотеке прелази 2 Gio. Ово није подржано првим и другим "
-"(најкоришћенијим) издањем ISO9660 стандарда.\n"
-"Трећи нови ISO9660 стандарда је подржан од стране већине оперативних "
-"система, укључујући Линукс и сва Windows © издања, па ћете моћи да очитате "
-"уписане дискове на њима.\n"
-"Изузетак је MacOS X који не може да очита треће издање ISO9660 стандарда."
+"Величина датотеке прелази 2 GiB. Ово није подржано првим и другим (најкоришћенијим) издањима ISO9660 стандарда.\n"
+"Можете користити трећe издање ISO9660 стандарда који је подржан од стране већине оперативних система, укључујући Линукс и сва Windows © издања.\n"
+"Изузетак је MacOS X који не чита треће исдање овог стандарда."
 
-#: ../src/brasero-data-disc.c:918 ../src/brasero-data-disc.c:966
+#: ../src/brasero-data-disc.c:1012
+#: ../src/brasero-data-disc.c:1060
 msgid "_Don't add"
 msgstr "_Не додај"
 
-#: ../src/brasero-data-disc.c:919 ../src/brasero-data-disc.c:967
+#: ../src/brasero-data-disc.c:1013
+#: ../src/brasero-data-disc.c:1061
 msgid "_Add"
 msgstr "_Додај"
 
-#: ../src/brasero-data-disc.c:956
+#: ../src/brasero-data-disc.c:1050
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "Да ли заиста желите да додате „%s“ у избор?"
 
-#: ../src/brasero-data-disc.c:959
+#: ../src/brasero-data-disc.c:1053
 msgid "Deep Directory"
 msgstr "Дубока фасцикла"
 
-#: ../src/brasero-data-disc.c:962
+#: ../src/brasero-data-disc.c:1056
 msgid ""
-"The children of this directory will have 6 parent directories. This is a "
-"violation of the ISO9660 standard which only allows 6.\n"
-"Brasero can create an image of such a file hierarchy and burn it; but the "
-"media may not be readable on all operating systems.\n"
+"The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6.\n"
+"Brasero can create an image of such a file hierarchy and burn it; but the media may not be readable on all operating systems.\n"
 "NOTE: such a file hierarchy is known to work on linux."
 msgstr ""
-"Поддиректоријуми овог директоријума ће имати 6 родитељска директоријума. Ово "
-"је кршење ISO9660 стандарда који дозвољава само 6.\n"
-"Брасеро може да направи одраз са такве структуре и да га упише на диск, али "
-"он можда неће бити читљив на свим оперативним системима.\n"
+"Поддиректоријуми овог директоријума ће имати 6 родитељска директоријума. Ово је кршење ISO9660 стандарда који дозвољава само 6.\n"
+"Брасеро може да направи одраз са такве структуре и да га упише на диск, али он можда неће бити читљив на свим оперативним системима.\n"
 "Примедба: оваква структура датотека ради на Линуксу."
 
-#: ../src/brasero-data-disc.c:1025
+#: ../src/brasero-data-disc.c:1119
 msgid "A multisession disc is inserted:"
 msgstr "Диск са више сесија је убачен:"
 
-#: ../src/brasero-data-disc.c:1026
+#: ../src/brasero-data-disc.c:1120
 msgid "Do you want to import its contents?"
 msgstr "Да ли желите да увезете његов садржај?"
 
-#: ../src/brasero-data-disc.c:1034
+#: ../src/brasero-data-disc.c:1128
 msgid "_Import Session"
 msgstr "У_вези сесију"
 
-#: ../src/brasero-data-disc.c:1035
+#: ../src/brasero-data-disc.c:1129
 msgid "Click here to import its contents"
 msgstr "Кликните овде да увезете његов садржај"
 
-#: ../src/brasero-data-disc.c:1383
+#: ../src/brasero-data-disc.c:1477
 msgid "Please, wait while the project is loading."
 msgstr "Сачекајте док се пројекат учита."
 
-#: ../src/brasero-data-disc.c:1393
+#: ../src/brasero-data-disc.c:1487
 msgid "_Cancel Loading"
 msgstr "_Прекини учитавање"
 
-#: ../src/brasero-data-disc.c:1394
+#: ../src/brasero-data-disc.c:1488
 msgid "Press if you want to cancel current project loading"
 msgstr "Да ли заиста желите да прекинете учитавање пројекта?"
 
-#: ../src/brasero-data-disc.c:1503
+#: ../src/brasero-data-disc.c:1597
 msgid "Import"
 msgstr "Увези"
 
-#: ../src/brasero-data-disc.c:1508
+#: ../src/brasero-data-disc.c:1602
 msgid "New Folder"
 msgstr "Нова фасцикла"
 
-#: ../src/brasero-data-disc.c:1635
+#: ../src/brasero-data-disc.c:1730
 msgid "File Renaming"
 msgstr "Преименовање датотека"
 
-#: ../src/brasero-data-disc.c:1638 ../src/brasero-disc-option-dialog.c:566
+#: ../src/brasero-data-disc.c:1733
+#: ../src/brasero-disc-option-dialog.c:568
 msgid "_Don't rename"
 msgstr "_Не мењај назив"
 
-#: ../src/brasero-data-disc.c:1639 ../src/brasero-disc-option-dialog.c:569
+#: ../src/brasero-data-disc.c:1734
+#: ../src/brasero-disc-option-dialog.c:571
 msgid "_Rename"
 msgstr "_Преименуј"
 
-#: ../src/brasero-data-disc.c:1647
-msgid "<b>Renaming mode</b>"
-msgstr "<b>Режим преименовања</b>"
+#: ../src/brasero-data-disc.c:1742
+msgid "Renaming mode"
+msgstr "Режим преименовања"
 
-#: ../src/brasero-data-disc.c:2150 ../src/brasero-video-disc.c:1194
+#: ../src/brasero-data-disc.c:2252
+#: ../src/brasero-video-disc.c:1194
 msgid "Size"
 msgstr "Величина"
 
-#: ../src/brasero-data-disc.c:2180
+#: ../src/brasero-data-disc.c:2282
 msgid "Space"
 msgstr "Место"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
-#: ../src/brasero-disc-option-dialog.c:195
+#: ../src/brasero-disc-option-dialog.c:196
 #, c-format
 msgid "Data disc (%s)"
 msgstr "Диск (%s)"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_
-#: ../src/brasero-disc-option-dialog.c:208
+#: ../src/brasero-disc-option-dialog.c:209
 #, c-format
 msgid "Video disc (%s)"
 msgstr "Видео диск (%s)"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_
-#: ../src/brasero-disc-option-dialog.c:212
+#: ../src/brasero-disc-option-dialog.c:213
 #, c-format
 msgid "Audio disc (%s)"
 msgstr "Звучни диск (%s)"
 
-#: ../src/brasero-disc-option-dialog.c:558
+#: ../src/brasero-disc-option-dialog.c:560
 msgid "Should files be renamed to be windows-compatible?"
 msgstr "Да ли да преименујем датотеке како би диск био сагласан са Windows-ом."
 
-#: ../src/brasero-disc-option-dialog.c:561
-msgid ""
-"Some files don't have a suitable name for a Windows-compatible CD. Those "
-"names will be changed and truncated to 64 characters."
-msgstr ""
-"Неке датотеке немају одговарајућа имена како би диск био сагласан са Windows-"
-"ом. Та имена ће бити промењена и скраћена на 64 знака."
-
-#: ../src/brasero-disc-option-dialog.c:698
-msgid "<b>Label of the disc</b>"
-msgstr "<b>Наслов диска</b>"
+#: ../src/brasero-disc-option-dialog.c:563
+msgid "Some files don't have a suitable name for a Windows-compatible CD. Those names will be changed and truncated to 64 characters."
+msgstr "Неке датотеке немају одговарајућа имена како би диск био сагласан са Windows-ом. Та имена ће бити промењена и скраћена на 64 знака."
 
 #: ../src/brasero-disc-option-dialog.c:700
-msgid "<b>Title</b>"
-msgstr "<b>Наслов</b>"
+msgid "Label of the disc"
+msgstr "Наслов диска"
 
-#: ../src/brasero-disc-option-dialog.c:721
+#: ../src/brasero-disc-option-dialog.c:723
 msgid "Increase compatibility with _Windows systems"
 msgstr "_Повећај компатибилност са Windows системима"
 
-#: ../src/brasero-disc-option-dialog.c:723
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-"Повећава сагласност уписаног диска са Windows системима тако што омогућава "
-"приказ дугих имена датотека (до 64 знака)"
+#: ../src/brasero-disc-option-dialog.c:725
+msgid "Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"
+msgstr "Повећава сагласност уписаног диска са Windows системима тако што омогућава приказ дугих имена датотека (до 64 знака)"
 
-#: ../src/brasero-disc-option-dialog.c:749
+#: ../src/brasero-disc-option-dialog.c:751
 msgid "Leave the disc _open to add other files later"
 msgstr "О_стави диск отворен за касније додавање датотека"
 
-#: ../src/brasero-disc-option-dialog.c:756
+#: ../src/brasero-disc-option-dialog.c:758
 msgid "Allow to add more data to the disc later"
 msgstr "Дозвољава касније додавање података на диск"
 
-#: ../src/brasero-disc-option-dialog.c:786
-#: ../src/brasero-disc-option-dialog.c:820
-msgid "<b>Disc options</b>"
-msgstr "<b>Поставке диска</b>"
+#: ../src/brasero-disc-option-dialog.c:789
+#: ../src/brasero-disc-option-dialog.c:827
+msgid "Disc options"
+msgstr "Поставке диска"
 
 #. multisession options
-#: ../src/brasero-disc-option-dialog.c:812
+#: ../src/brasero-disc-option-dialog.c:819
 msgid "Leave the disc _open to add a data session later"
 msgstr "Остави диск отворен за касније додавање _сесија"
 
-#: ../src/brasero-disc-option-dialog.c:818
+#: ../src/brasero-disc-option-dialog.c:825
 msgid "Allow create what is called an enhanced CD or CD+"
 msgstr "Дозволи прављење напредног ЦД-а (ЦД+)"
 
-#: ../src/brasero-disc-option-dialog.c:1037
+#: ../src/brasero-disc-option-dialog.c:1048
 msgid "Video format:"
 msgstr "Врста видеа:"
 
-#: ../src/brasero-disc-option-dialog.c:1049
+#: ../src/brasero-disc-option-dialog.c:1060
 msgid "_NTSC"
 msgstr "_NTSC"
 
-#: ../src/brasero-disc-option-dialog.c:1050
+#: ../src/brasero-disc-option-dialog.c:1061
 msgid "Format used mostly on the North American Continent"
 msgstr "Формат који се највише користи у Северној Америци"
 
-#: ../src/brasero-disc-option-dialog.c:1064
+#: ../src/brasero-disc-option-dialog.c:1075
 msgid "_PAL/SECAM"
 msgstr "_PAL/SECAM"
 
-#: ../src/brasero-disc-option-dialog.c:1065
+#: ../src/brasero-disc-option-dialog.c:1076
 msgid "Format used mostly in Europe"
 msgstr "Формат који се највише користи у Европи"
 
-#: ../src/brasero-disc-option-dialog.c:1079
+#: ../src/brasero-disc-option-dialog.c:1090
 msgid "Native _format"
 msgstr "Изворни _формат"
 
-#: ../src/brasero-disc-option-dialog.c:1093
+#: ../src/brasero-disc-option-dialog.c:1104
 msgid "Aspect ratio:"
 msgstr "Размера:"
 
-#: ../src/brasero-disc-option-dialog.c:1105
+#: ../src/brasero-disc-option-dialog.c:1116
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../src/brasero-disc-option-dialog.c:1119
+#: ../src/brasero-disc-option-dialog.c:1130
 msgid "_16:9"
 msgstr "_16:9"
 
-#: ../src/brasero-disc-option-dialog.c:1133
+#: ../src/brasero-disc-option-dialog.c:1144
 msgid "Native aspect _ratio"
 msgstr "Изворна _размера"
 
 #. Video options for (S)VCD
-#: ../src/brasero-disc-option-dialog.c:1148
+#: ../src/brasero-disc-option-dialog.c:1159
 msgid "VCD type:"
-msgstr "Врста VCD-a:"
+msgstr "ВЦД врста:"
 
-#: ../src/brasero-disc-option-dialog.c:1161
+#: ../src/brasero-disc-option-dialog.c:1172
 msgid "Create a SVCD"
-msgstr "Направи SVCD"
+msgstr "Направи СВЦД"
 
-#: ../src/brasero-disc-option-dialog.c:1176
+#: ../src/brasero-disc-option-dialog.c:1187
 msgid "Create a VCD"
-msgstr "Направи VCD"
+msgstr "Направи ВЦД"
 
-#: ../src/brasero-disc-option-dialog.c:1191
-msgid "<b>Video Options</b>"
-msgstr "<b>Поставке видеа</b>"
+#: ../src/brasero-disc-option-dialog.c:1202
+msgid "Video Options"
+msgstr "Поставке видеа"
 
 #. Audio options for DVDs
-#: ../src/brasero-disc-option-dialog.c:1197
+#: ../src/brasero-disc-option-dialog.c:1211
 msgid "Add _AC3 audio stream"
 msgstr "Додај AC_3 звучни ток"
 
-#: ../src/brasero-disc-option-dialog.c:1198
+#: ../src/brasero-disc-option-dialog.c:1212
 msgid "Add _MP2 audio stream"
 msgstr "Додај MP_2 звучни ток"
 
-#: ../src/brasero-disc-option-dialog.c:1199
-msgid "<b>Audio Options</b>"
-msgstr "<b>Поставке звука</b>"
+#: ../src/brasero-disc-option-dialog.c:1214
+msgid "Audio Options"
+msgstr "Поставке звука"
 
-#: ../src/brasero-disc-option-dialog.c:1323
-#: ../src/brasero-image-option-dialog.c:525
+#: ../src/brasero-disc-option-dialog.c:1342
+#: ../src/brasero-image-option-dialog.c:535
 msgid "_Burn"
 msgstr "_Упиши"
 
-#: ../src/brasero-disc-option-dialog.c:1421
+#: ../src/brasero-disc-option-dialog.c:1440
 msgid "Disc Burning Setup"
 msgstr "Поставке уписа на диск"
 
@@ -2022,68 +1959,68 @@ msgstr "Поставке уписа на диск"
 msgid "%s of data"
 msgstr "%s података"
 
-#: ../src/brasero-drive-info.c:127
-msgid "<i>the medium is not writable</i>"
-msgstr "<i>Диск није уписив:</i>"
+#. the media is closed anyway
+#: ../src/brasero-drive-info.c:128
+msgid "the medium is not writable"
+msgstr "диск није уписив"
 
-#: ../src/brasero-drive-info.c:133
-msgid "<i>the medium is not writable with the current set of plugins</i>"
-msgstr "<i>диск није уписив са тренутно активним додацима</i>"
+#. maybe with some more plugins it would work since the
+#. * medium is apparently not closed and/or rewritable
+#: ../src/brasero-drive-info.c:137
+msgid "the medium is not writable with the current set of plugins"
+msgstr "диск није уписив текућим додацима"
 
-#: ../src/brasero-drive-info.c:142 ../src/brasero-drive-info.c:157
-#: ../src/brasero-drive-info.c:191
+#: ../src/brasero-drive-info.c:148
+#: ../src/brasero-drive-info.c:163
+#: ../src/brasero-drive-info.c:197
 #, c-format
 msgid "%s free"
 msgstr "%s слободно"
 
-#: ../src/brasero-drive-info.c:149
+#: ../src/brasero-drive-info.c:155
 msgid "the medium can be recorded (automatic blanking required)"
-msgstr "диск је уписив (потребно аутоматско брисање)"
+msgstr "диск је уписив (потребно је брисање)"
 
-#: ../src/brasero-drive-info.c:163
+#: ../src/brasero-drive-info.c:169
 msgid "the medium can be recorded"
 msgstr "диск је уписив"
 
-#: ../src/brasero-drive-info.c:173
+#: ../src/brasero-drive-info.c:179
 #, c-format
 msgid "%s (%s free)"
 msgstr "%s (%s слободно)"
 
-#: ../src/brasero-drive-info.c:183
+#: ../src/brasero-drive-info.c:189
 msgid "data can be written or appended to the medium"
 msgstr "подаци могу бити уписани или додати на диск"
 
-#: ../src/brasero-drive-info.c:198
+#: ../src/brasero-drive-info.c:204
 msgid "data can be appended to the medium"
 msgstr "подаци могу бити додати на диск"
 
-#: ../src/brasero-drive-info.c:215
+#: ../src/brasero-drive-info.c:226
 #, c-format
 msgid ""
-"The <b>image</b> will be saved to\n"
+"The image will be saved to\n"
 "%s"
 msgstr ""
-"<b>Одраз</b> ће бити сачуван у\n"
+"Одраз ће бити сачуван у\n"
 "%s"
 
-#: ../src/brasero-drive-info.c:301
-msgid ""
-"<b><i>The drive that holds the source media will also be the one used to "
-"record.\n"
-"\n"
-"</i></b><i>A new recordable media will be required once the one currently "
-"loaded has been copied.</i>"
-msgstr ""
-"<b><i>Уређај који садржи иаворни диск ће бити употребљен и за упис диска.\n"
-"\n"
-"</i></b><i>Нови уписив диск ће бити потребан када се заврши читање изворниг "
-"диска.</i>"
+#: ../src/brasero-drive-info.c:315
+msgid "The drive that holds the source media will also be the one used to record.\n"
+msgstr "Уређај са изворним диском се такође користи и за упис новог диска.\n"
 
-#: ../src/brasero-drive-info.c:330
-msgid "<b>Status:</b>"
-msgstr "<b>Статус:</b>"
+#: ../src/brasero-drive-info.c:316
+msgid "A new recordable media will be required once the one currently loaded has been copied."
+msgstr "Након умножавања тренутног диска потребно је да убаците празан диск."
 
-#: ../src/brasero-drive-properties.c:155 ../src/brasero-drive-properties.c:172
+#: ../src/brasero-drive-info.c:348
+msgid "Status:"
+msgstr "Стање:"
+
+#: ../src/brasero-drive-properties.c:155
+#: ../src/brasero-drive-properties.c:172
 msgid "unknown"
 msgstr "непознато"
 
@@ -2092,14 +2029,12 @@ msgid "Do you really want to choose this location?"
 msgstr "Да ли заиста желите да изаберете ово место?"
 
 #: ../src/brasero-drive-properties.c:200
-#, fuzzy
 msgid ""
-"The filesystem on this volume doesn't support large files (size over 2 "
-"GiB).\n"
+"The filesystem on this volume doesn't support large files (size over 2 GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
-"Систем датотека на овом диску не подржава велике датотеке (преко 2 Gio).\n"
-"Ово може да буде проблем при упису ДВД-а или великих одраза."
+"Систем датотека на овом диску не подржава велике датотеке (преко 2 GiB).\n"
+"Ово може да буде проблем при упису на ДВД или стварању великих одраза."
 
 #: ../src/brasero-drive-properties.c:204
 msgid "_Keep current location"
@@ -2130,114 +2065,123 @@ msgid "Properties of %s"
 msgstr "Поставке %s"
 
 #: ../src/brasero-drive-properties.c:404
-#, fuzzy
 msgid "Impossible to retrieve speeds"
-msgstr "не могу да очитам податке"
+msgstr "Не могу да утврдим брзине"
 
 #: ../src/brasero-drive-properties.c:413
 msgid "Max speed"
 msgstr "Највећа брзина"
 
 #: ../src/brasero-drive-properties.c:476
+msgid "Burning speed"
+msgstr "Брзина уписа"
+
+#: ../src/brasero-drive-properties.c:478
 msgid "<b>Burning speed</b>"
 msgstr "<b>Брзина уписа</b>"
 
-#: ../src/brasero-drive-properties.c:486
-#, fuzzy
+#: ../src/brasero-drive-properties.c:489
 msgid "_Simulate before burning"
-msgstr "_Симулирај упис"
+msgstr "_Симулирај пре уписа"
 
-#: ../src/brasero-drive-properties.c:487
-msgid ""
-"Brasero will simulate the burning and if it is successful, go on with actual "
-"burning after 10 seconds"
-msgstr ""
-"Брасеро ће симулирати упис и, уколико симулација успе, наставиће са стварним "
-"уписом након 10 секунди"
+#: ../src/brasero-drive-properties.c:490
+msgid "Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"
+msgstr "Брасеро ће симулирати упис и, уколико симулација успе, наставиће са стварним уписом након 10 секунди"
 
-#: ../src/brasero-drive-properties.c:488
+#: ../src/brasero-drive-properties.c:491
 msgid "Use burn_proof (decrease the risk of failures)"
 msgstr "Користи burnproof (смањи _ризик од неуспеха)"
 
-#: ../src/brasero-drive-properties.c:489
+#: ../src/brasero-drive-properties.c:492
 msgid "_Eject after burning"
 msgstr "Из_баци након уписа"
 
-#: ../src/brasero-drive-properties.c:490
+#: ../src/brasero-drive-properties.c:493
 msgid "Burn the image directly _without saving it to disc"
 msgstr "Уписуј одраз директно без претходног уписа на _тврди диск"
 
-#: ../src/brasero-drive-properties.c:502
+#: ../src/brasero-drive-properties.c:495
+#: ../src/brasero-tool-dialog.c:296
+#: ../src/brasero-multi-song-props.c:303
+msgid "Options"
+msgstr "Могућности"
+
+#: ../src/brasero-drive-properties.c:507
 msgid "Directory for temporary files"
 msgstr "Директоријум за привремене датотеке"
 
-#: ../src/brasero-drive-properties.c:508
+#: ../src/brasero-drive-properties.c:513
 msgid "_Temporary directory free space:"
 msgstr "С_лободан простор у привременом директоријуму:"
 
-#: ../src/brasero-drive-properties.c:518
-msgid "<b>Temporary files</b>"
-msgstr "<b>Привремене датотеке</b>"
+#: ../src/brasero-drive-properties.c:522
+msgid "Temporary files"
+msgstr "Привремене датотеке"
 
-#: ../src/brasero-drive-selection.c:188 ../src/burn.c:289 ../src/burn.c:913
+#: ../src/brasero-drive-selection.c:188
+#: ../src/burn.c:289
+#: ../src/burn.c:913
 msgid "ongoing burning process"
 msgstr "процес уписа у току"
 
-#: ../src/brasero-file-chooser.c:226 ../src/brasero-project.c:1546
+#: ../src/brasero-file-chooser.c:226
+#: ../src/brasero-project.c:1547
 msgid "Audio files only"
 msgstr "Само звучне датотеке"
 
-#: ../src/brasero-file-chooser.c:234 ../src/brasero-project.c:1555
+#: ../src/brasero-file-chooser.c:234
+#: ../src/brasero-project.c:1556
 msgid "Movies only"
 msgstr "Само видео датотеке"
 
-#: ../src/brasero-file-chooser.c:243 ../src/brasero-image-option-dialog.c:619
-#: ../src/brasero-project.c:1562
+#: ../src/brasero-file-chooser.c:243
+#: ../src/brasero-image-option-dialog.c:620
+#: ../src/brasero-project.c:1563
 msgid "Image files only"
 msgstr "Само датотеке са сликама"
 
-#: ../src/brasero-image-option-dialog.c:364
+#: ../src/brasero-image-option-dialog.c:372
 msgid "This image can't be burnt:"
 msgstr "Не могу да упишем овај одраз:"
 
-#: ../src/brasero-image-option-dialog.c:366
+#: ../src/brasero-image-option-dialog.c:374
 msgid "Invalid Image"
 msgstr "Неисправан одраз"
 
-#: ../src/brasero-image-option-dialog.c:369
+#: ../src/brasero-image-option-dialog.c:377
 msgid "it doesn't appear to be a valid image or a valid cue file."
 msgstr "изгледа да нема исправног одраза или cue датотеке."
 
-#: ../src/brasero-image-option-dialog.c:387
+#: ../src/brasero-image-option-dialog.c:395
 msgid "There is no specified image:"
 msgstr "Није пронађен одабрани одраз:"
 
-#: ../src/brasero-image-option-dialog.c:389
+#: ../src/brasero-image-option-dialog.c:397
 msgid "No Image"
 msgstr "Нема одраза"
 
-#: ../src/brasero-image-option-dialog.c:392
+#: ../src/brasero-image-option-dialog.c:400
 msgid "Please, choose an image and retry."
 msgstr "Одаберите одраз и покушајте поново."
 
-#: ../src/brasero-image-option-dialog.c:580
+#: ../src/brasero-image-option-dialog.c:581
 msgid "Path:"
 msgstr "Путања:"
 
-#: ../src/brasero-image-option-dialog.c:593
+#: ../src/brasero-image-option-dialog.c:594
 msgid "Open an image"
 msgstr "Отвори одраз"
 
-#: ../src/brasero-image-option-dialog.c:643
+#: ../src/brasero-image-option-dialog.c:644
 #: ../src/brasero-image-properties.c:209
 msgid "Image type:"
 msgstr "Врста одраза:"
 
-#: ../src/brasero-image-option-dialog.c:673
-msgid "<b>Image</b>"
-msgstr "<b>Одраз</b>"
+#: ../src/brasero-image-option-dialog.c:674
+msgid "Image"
+msgstr "Слика"
 
-#: ../src/brasero-image-option-dialog.c:752
+#: ../src/brasero-image-option-dialog.c:742
 msgid "Image Burning Setup"
 msgstr "Подешавања за упис одраза"
 
@@ -2313,7 +2257,8 @@ msgstr "Кликни за сакривање бочне површи"
 #. To translators:
 #. * - %s is the size of the project
 #. * - %s is the size available (on disc)
-#: ../src/brasero-player.c:279 ../src/brasero-project-size.c:604
+#: ../src/brasero-player.c:279
+#: ../src/brasero-project-size.c:604
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2332,12 +2277,8 @@ msgstr "Назив:"
 
 #: ../src/brasero-player.c:822
 #, c-format
-msgid ""
-"<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
-"pixels</span></i>"
-msgstr ""
-"<span weight=\"bold\">Величина:</span>\t<i><span size=\"smaller\"> %i x %i "
-"пиксела</span></i>"
+msgid "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"
+msgstr "<span weight=\"bold\">Величина:</span>\t<i><span size=\"smaller\"> %i x %i пиксела</span></i>"
 
 #: ../src/brasero-player.c:845
 #, c-format
@@ -2357,319 +2298,290 @@ msgstr ""
 "<span weight=\"bold\">Учитавам податке</span>\n"
 "о <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:201
 msgid "Save current project"
 msgstr "Чува текући пројекат"
 
-#: ../src/brasero-project.c:201
+#: ../src/brasero-project.c:202
 msgid "Save _As..."
 msgstr "Сачувај _као..."
 
-#: ../src/brasero-project.c:202
+#: ../src/brasero-project.c:203
 msgid "Save current project to a different location"
 msgstr "Чува текући пројекат на друго место"
 
-#: ../src/brasero-project.c:203
+#: ../src/brasero-project.c:204
 msgid "_Add Files"
 msgstr "_Додај датотеке"
 
-#: ../src/brasero-project.c:204
+#: ../src/brasero-project.c:205
 msgid "Add files to the project"
 msgstr "Додаје датотеке у пројекат"
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:206
 msgid "_Remove Files"
 msgstr "_Уклони датотеке"
 
-#: ../src/brasero-project.c:207
+#: ../src/brasero-project.c:208
 msgid "E_mpty Project"
 msgstr "_Испразни пројекат"
 
-#: ../src/brasero-project.c:208
-#, fuzzy
+#: ../src/brasero-project.c:209
 msgid "Remove all files from the project"
 msgstr "Уклања све датотеке из пројекта"
 
-#: ../src/brasero-project.c:209 ../src/brasero-project.c:427
-msgid "_Burn..."
-msgstr "Упи_ши..."
-
-#: ../src/brasero-project.c:210
+#: ../src/brasero-project.c:211
 msgid "Burn the disc"
-msgstr "Уписује податке на диск"
+msgstr "Упиши диск"
 
-#: ../src/brasero-project.c:439
+#: ../src/brasero-project.c:440
 msgid "Start to burn the contents of the selection"
 msgstr "Започиње упис изабраног садржаја"
 
-#: ../src/brasero-project.c:550
-#, fuzzy
+#: ../src/brasero-project.c:551
 msgid "Please, remove some files from the project."
 msgstr "Уклоните неке датотеке из пројекта."
 
-#: ../src/brasero-project.c:551
-msgid ""
-"The size of the project is too large for the disc even with the overburn "
-"option."
-msgstr ""
-"Пројекат је превелик да би се сместио на диск чак и уз могућност прекорачења "
-"величине."
+#: ../src/brasero-project.c:552
+msgid "The size of the project is too large for the disc even with the overburn option."
+msgstr "Пројекат је превелик да би се сместио на диск чак и уз могућност прекорачења величине."
 
-#: ../src/brasero-project.c:571
+#: ../src/brasero-project.c:572
 msgid "Would you like to activate overburn?"
 msgstr "Да ли да укључим прекорачење величине?"
 
-#: ../src/brasero-project.c:573
+#: ../src/brasero-project.c:574
 msgid "Project Size"
 msgstr "Величина пројекта"
 
-#: ../src/brasero-project.c:576
-#, fuzzy
+# Или је глупа конструкција или сам ја глуп?
+#: ../src/brasero-project.c:577
 msgid ""
-"The size of the project is too large for the disc and you must remove files "
-"otherwise.\n"
+"The size of the project is too large for the disc and you must remove files otherwise.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Пројекат је превелик да би се сместио на диск и потребно је да уклоните неке "
-"датотеке.\n"
-"УПОЗОРЕЊЕ: Ова опција може изазвати неуспешан упис."
+"Величина пројекта не стаје на диск, па је неопходно да уклоните неке датотеке.\n"
+"ПРИМЕДБА: Ова опција може изазвати неуспешан упис."
 
-#: ../src/brasero-project.c:580
+#: ../src/brasero-project.c:581
 msgid "_Don't use overburn"
 msgstr "_Не користи прекорачење величине"
 
-#: ../src/brasero-project.c:583
+#: ../src/brasero-project.c:584
 msgid "Use _overburn"
 msgstr "_Користи прекорачење брзине"
 
-#: ../src/brasero-project.c:796
+#: ../src/brasero-project.c:797
 msgid "Please wait:"
 msgstr "Сачекајте:"
 
-#: ../src/brasero-project.c:798
+#: ../src/brasero-project.c:799
 msgid "Please Wait"
 msgstr "Сачекајте"
 
-#: ../src/brasero-project.c:801
+#: ../src/brasero-project.c:802
 msgid "some tasks are not completed yet."
 msgstr "неки задаци још увек нису завршени."
 
-#: ../src/brasero-project.c:803
+#: ../src/brasero-project.c:804
 msgid "Ongoing Tasks"
 msgstr "Текући задаци"
 
-#: ../src/brasero-project.c:869
+#: ../src/brasero-project.c:870
 msgid "Please add songs to the project."
 msgstr "Додајте нумере у пројекат."
 
-#: ../src/brasero-project.c:871 ../src/brasero-project.c:894
-#: ../src/brasero-project.c:1623
+#: ../src/brasero-project.c:872
+#: ../src/brasero-project.c:895
+#: ../src/brasero-project.c:1624
 msgid "Empty Project"
 msgstr "Празан пројекат"
 
-#: ../src/brasero-project.c:874 ../src/brasero-project.c:897
+#: ../src/brasero-project.c:875
+#: ../src/brasero-project.c:898
 msgid "The project is empty."
 msgstr "Пројекат је празан."
 
-#: ../src/brasero-project.c:892
+#: ../src/brasero-project.c:893
 msgid "Please add files to the project."
 msgstr "Додајте датотеке у пројекат."
 
-#: ../src/brasero-project.c:947
-msgid ""
-"This is a first time running dialog that won't be shown again. If you change "
-"your mind, you can change your choice later in the Removable Drives and "
-"Media Preferences whether or not you chose brasero."
-msgstr ""
-"Текуће прозорче више неће бити приказано. Уколико се предомислите, можете "
-"променити ово у поставкама „Измењиви дискови и медији“."
+#: ../src/brasero-project.c:948
+msgid "This is a first time running dialog that won't be shown again. If you change your mind, you can change your choice later in the Removable Drives and Media Preferences whether or not you chose brasero."
+msgstr "Текуће прозорче више неће бити приказано. Уколико се предомислите, можете променити ово у поставкама „Измењиви дискови и медији“."
 
 #. NOTE for translators the %s is the old application name
-#: ../src/brasero-project.c:951
-#, fuzzy, c-format
+#: ../src/brasero-project.c:952
+#, c-format
 msgid "_Keep using \"%s\""
 msgstr "_Настави да користиш „%s“"
 
-#: ../src/brasero-project.c:962
+#: ../src/brasero-project.c:963
 msgid "_Use Brasero next time"
 msgstr "Користи _Брасеро следећи пут"
 
-#: ../src/brasero-project.c:1070
+#: ../src/brasero-project.c:1071
 msgid "Would you like to use Brasero in the future to burn audio discs?"
 msgstr "Да ли да Брасеро буде подразумеван програм за упис звучних дискова?"
 
-#: ../src/brasero-project.c:1076
+#: ../src/brasero-project.c:1077
 msgid "Would you like to use Brasero in the future to burn data discs?"
-msgstr ""
-"Да ли да Брасеро буде подразумевани програм за упис дискова са подацима?"
+msgstr "Да ли да Брасеро буде подразумевани програм за упис дискова са подацима?"
 
-#: ../src/brasero-project.c:1229
-msgid ""
-"Do you really want to create a new project and discard the changes to "
-"current one?"
-msgstr ""
-"Да ли заиста желите да направите нови пројекат и занемарите измене у "
-"тренутном?"
+#: ../src/brasero-project.c:1230
+msgid "Do you really want to create a new project and discard the changes to current one?"
+msgstr "Да ли заиста желите да направите нови пројекат и занемарите измене у тренутном?"
 
-#: ../src/brasero-project.c:1232 ../src/brasero-project.c:2315
+#: ../src/brasero-project.c:1233
+#: ../src/brasero-project.c:2316
 msgid "Unsaved Project"
 msgstr "Несачуван пројекат"
 
-#: ../src/brasero-project.c:1235
+#: ../src/brasero-project.c:1236
 msgid "If you choose to create a new project, all changes made will be lost."
-msgstr ""
-"Иколико изаберете прављење новог пројекта, све измене ће бити изгубљене."
+msgstr "Иколико изаберете прављење новог пројекта, све измене ће бити изгубљене."
 
-#: ../src/brasero-project.c:1237
+#: ../src/brasero-project.c:1238
 msgid "_Discard Changes"
 msgstr "_Занемари измене"
 
-#: ../src/brasero-project.c:1250
+#: ../src/brasero-project.c:1251
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Да ли заиста желите да направите нови пројекат и занемарите тренутни?"
 
-#: ../src/brasero-project.c:1253
+#: ../src/brasero-project.c:1254
 msgid "New Project"
 msgstr "Нови пројекат"
 
-#: ../src/brasero-project.c:1256
-msgid ""
-"If you choose to create a new project, all files already added will be "
-"discarded. Note that files will not be deleted from their own location, just "
-"no longer listed here."
-msgstr ""
-"Уколико изаберете да направите нови пројекат, све већ додате датотеке ће "
-"бити занемарене. Датотеке неће бити уклоњене из њихових путања, само више "
-"неће бити приказане овде."
+#: ../src/brasero-project.c:1257
+msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "Уколико изаберете да направите нови пројекат, све већ додате датотеке ће бити занемарене. Датотеке неће бити уклоњене из њихових путања, само више неће бити приказане овде."
 
-#: ../src/brasero-project.c:1261
+#: ../src/brasero-project.c:1262
 msgid "_Discard Project"
 msgstr "_Занемари пројекат"
 
-#: ../src/brasero-project.c:1506
+#: ../src/brasero-project.c:1507
 msgid "Select Files"
 msgstr "Изабери датотеке"
 
-#: ../src/brasero-project.c:1620
+#: ../src/brasero-project.c:1621
 msgid "Do you really want to empty the current project?"
 msgstr "Да ли заиста желите да испразните тренутни пројекат?"
 
-#: ../src/brasero-project.c:1626
-msgid ""
-"Emptying a project will remove all files already added. All the work will be "
-"lost. Note that files will not be deleted from their own location, just no "
-"longer listed here."
-msgstr ""
-"Пражњење пројекта ће уклонити датотеке које су већ додате. Сав посао ће бити "
-"изгубљен. Датотеке неће бити уклоњене из њихових путања, само више неће бити "
-"приказане овде."
+#: ../src/brasero-project.c:1627
+msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "Пражњење пројекта ће уклонити датотеке које су већ додате. Сав посао ће бити изгубљен. Датотеке неће бити уклоњене из њихових путања, само више неће бити приказане овде."
 
-#: ../src/brasero-project.c:1631 ../src/brasero-project-manager.c:118
+#: ../src/brasero-project.c:1632
+#: ../src/brasero-project-manager.c:118
 msgid "_Empty Project"
 msgstr "Испра_зни пројекат"
 
-#: ../src/brasero-project.c:1680
+#: ../src/brasero-project.c:1681
 msgid "Save"
 msgstr "Сачувај"
 
-#: ../src/brasero-project.c:1691
+#: ../src/brasero-project.c:1692
 msgid "Add"
 msgstr "Додај"
 
-#: ../src/brasero-project.c:1696
+#: ../src/brasero-project.c:1697
 msgid "Remove"
 msgstr "Уклони"
 
-#: ../src/brasero-project.c:1756
+#: ../src/brasero-project.c:1757
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Брасеро - %s (диск са подацима)"
 
-#: ../src/brasero-project.c:1758
+#: ../src/brasero-project.c:1759
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Брасеро - %s (звучни диск)"
 
-#: ../src/brasero-project.c:1760
+#: ../src/brasero-project.c:1761
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Брасеро - %s (видео диск)"
 
-#: ../src/brasero-project.c:1789
+#: ../src/brasero-project.c:1790
 msgid "Error while loading the project:"
 msgstr "Грешка током учитавања пројекта:"
 
-#: ../src/brasero-project.c:1791
+#: ../src/brasero-project.c:1792
 msgid "Project Loading Error"
 msgstr "Грешка при учитавању пројекта"
 
-#: ../src/brasero-project.c:2091
+#: ../src/brasero-project.c:2092
 msgid "the project could not be opened."
 msgstr "пројекат не може бити отворен."
 
-#: ../src/brasero-project.c:2100
+#: ../src/brasero-project.c:2101
 msgid "the file is empty."
 msgstr "датотека је празна."
 
-#: ../src/brasero-project.c:2131 ../src/brasero-project.c:2139
-#: ../src/brasero-project.c:2229
+#: ../src/brasero-project.c:2132
+#: ../src/brasero-project.c:2140
+#: ../src/brasero-project.c:2230
 msgid "it doesn't seem to be a valid Brasero project."
 msgstr "не изгледа као исправан Брасеров пројекат."
 
-#: ../src/brasero-project.c:2313
+#: ../src/brasero-project.c:2314
 msgid "Your project has not been saved:"
 msgstr "Пројекат није сачуван:"
 
-#: ../src/brasero-project.c:2323
+#: ../src/brasero-project.c:2324
 msgid "Unknown error."
 msgstr "Непозната грешка."
 
-#: ../src/brasero-project.c:2344
+#: ../src/brasero-project.c:2345
 msgid "Save the changes of current project before closing?"
 msgstr "Сачувај тренутни пројекат на друго место"
 
-#: ../src/brasero-project.c:2346
+#: ../src/brasero-project.c:2347
 msgid "Modified Project"
 msgstr "Измењени пројекат"
 
-#: ../src/brasero-project.c:2349
+#: ../src/brasero-project.c:2350
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Уколико не сачувате измене ће бити трајно изгубљене."
 
-#: ../src/brasero-project.c:2353 ../src/brasero-project.c:2359
+#: ../src/brasero-project.c:2354
+#: ../src/brasero-project.c:2360
 msgid "Cl_ose without saving"
 msgstr "_Затвори без чувања"
 
-#: ../src/brasero-project.c:2673
+#: ../src/brasero-project.c:2674
 #, c-format
 msgid " by %s"
 msgstr " од %s"
 
-#: ../src/brasero-project.c:2880
+#: ../src/brasero-project.c:2881
 msgid "Save Current Project"
 msgstr "Сачувај текући пројекат"
 
-#: ../src/brasero-project.c:2898
+#: ../src/brasero-project.c:2899
 msgid "Save project as Brasero audio project"
 msgstr "Сачувај као Брасеров звучни пројекат"
 
-#: ../src/brasero-project.c:2899
+#: ../src/brasero-project.c:2900
 msgid "Save project as a plain text list"
 msgstr "Сачувај пројекат у текстуалну датотеку"
 
-#: ../src/brasero-project.c:2903
+#: ../src/brasero-project.c:2904
 msgid "Save project as a PLS playlist"
 msgstr "Сачувај пројекат као PLS листу нумера"
 
-#: ../src/brasero-project.c:2904
+#: ../src/brasero-project.c:2905
 msgid "Save project as an M3U playlist"
 msgstr "Сачувај пројекат као M3U листу нумера"
 
-#: ../src/brasero-project.c:2905
+#: ../src/brasero-project.c:2906
 msgid "Save project as a XSPF playlist"
 msgstr "Сачувај пројекат као XSPF листу нумера"
 
-#: ../src/brasero-project.c:2906
+#: ../src/brasero-project.c:2907
 msgid "Save project as an IRIVER playlist"
 msgstr "Сачувај пројекат као IRIVER листу нумера"
 
@@ -2721,7 +2633,8 @@ msgstr "Започиње нови видео пројекат"
 msgid "Copy _Disc..."
 msgstr "_Умножи диск..."
 
-#: ../src/brasero-project-manager.c:127 ../src/main.c:92
+#: ../src/brasero-project-manager.c:127
+#: ../src/main.c:92
 msgid "Copy a disc"
 msgstr "Умножава диск"
 
@@ -2781,7 +2694,8 @@ msgstr[0] "Датотека није подржана (%i изабрана да�
 msgstr[1] "Датотеке нису подржане (%i изабране датотеке)"
 msgstr[2] "Датотеке нису подржане (%i изабраних датотека)"
 
-#: ../src/brasero-project-manager.c:306 ../src/brasero-project-manager.c:464
+#: ../src/brasero-project-manager.c:306
+#: ../src/brasero-project-manager.c:464
 msgid "No file selected"
 msgstr "Датотека није изабрана"
 
@@ -2918,10 +2832,8 @@ msgid "Create a traditional audio CD"
 msgstr "Направи традиционални звучни диск"
 
 #: ../src/brasero-project-type-chooser.c:76
-msgid ""
-"Create a traditional audio CD that will be playable on computers and stereos"
-msgstr ""
-"Прави традиционални звучни диск који ће бити читљив на стубовима и рачунарима"
+msgid "Create a traditional audio CD that will be playable on computers and stereos"
+msgstr "Прави традиционални звучни диск који ће бити читљив на стубовима и рачунарима"
 
 #: ../src/brasero-project-type-chooser.c:79
 msgid "<big>D_ata project</big>"
@@ -2932,12 +2844,8 @@ msgid "Create a data CD/DVD"
 msgstr "Направи ЦД/ДВД са подацима"
 
 #: ../src/brasero-project-type-chooser.c:81
-msgid ""
-"Create a CD/DVD containing any type of data that can only be read on a "
-"computer"
-msgstr ""
-"Прави ЦД/ДВД са било каквим подацима који могу бити читљиви једино на "
-"рачунару"
+msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
+msgstr "Прави ЦД/ДВД са било каквим подацима који могу бити читљиви једино на рачунару"
 
 #: ../src/brasero-project-type-chooser.c:84
 msgid "<big>_Video project</big>"
@@ -2945,11 +2853,11 @@ msgstr "<big>_Видео пројекат</big>"
 
 #: ../src/brasero-project-type-chooser.c:85
 msgid "Create a video DVD or a SVCD"
-msgstr "Прави видео ДВД или SVCD"
+msgstr "Прави видео ДВД или СВЦД"
 
 #: ../src/brasero-project-type-chooser.c:86
 msgid "Create a video DVD or a SVCD that are readable on TV readers"
-msgstr "Направи видео ДВД или SVCD читљив у свим ТВ уређајима"
+msgstr "Направи видео ДВД или СВЦД читљив у свим ТВ уређајима"
 
 #: ../src/brasero-project-type-chooser.c:89
 msgid "<big>Disc _copy</big>"
@@ -2960,12 +2868,8 @@ msgid "Create 1:1 copy of a CD/DVD"
 msgstr "Направи 1:1 умножак диска"
 
 #: ../src/brasero-project-type-chooser.c:91
-msgid ""
-"Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on "
-"another CD/DVD"
-msgstr ""
-"Прави 1:1 умножак звучног или диска са подацима на другом диску или одраз на "
-"хард диску."
+msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"
+msgstr "Прави 1:1 умножак звучног или диска са подацима на другом диску или одраз на хард диску."
 
 #: ../src/brasero-project-type-chooser.c:94
 msgid "<big>Burn _image</big>"
@@ -2980,31 +2884,31 @@ msgstr "Упиши постојећи ЦД/ДВД одраз на диск"
 msgid "No recently used project"
 msgstr "Нема скорашњих пројеката"
 
-#: ../src/brasero-project-type-chooser.c:352
-msgid "<span size='x-large'><b>Create a new project:</b></span>"
-msgstr "<span size='x-large'><b>Направи нови пројекат:</b></span>"
+#: ../src/brasero-project-type-chooser.c:353
+msgid "Create a new project:"
+msgstr "Направи нови пројекат:"
 
-#: ../src/brasero-project-type-chooser.c:358
-msgid ""
-"<span foreground='grey50'><b><i>Choose from the following options</i></b></"
-"span>"
-msgstr ""
-"<span foreground='grey50'><b><i>Одаберите из приложених ставки</i></b></span>"
+#: ../src/brasero-project-type-chooser.c:362
+msgid "Choose from the following options"
+msgstr "Изаберите из понуђених могућности"
 
-#: ../src/brasero-project-type-chooser.c:398
-msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
-msgstr "<span size='x-large'><b>Изабери скорашњи пројекат:</b></span>"
+#: ../src/brasero-project-type-chooser.c:405
+msgid "Choose a recently opened project:"
+msgstr "Изаберите скорашњи пројекат:"
 
-#: ../src/brasero-sum-dialog.c:123 ../src/brasero-sum-dialog.c:204
+#: ../src/brasero-sum-dialog.c:123
+#: ../src/brasero-sum-dialog.c:207
 msgid "Check _Again"
 msgstr "Провери _поново"
 
-#: ../src/brasero-sum-dialog.c:154 ../src/brasero-sum-dialog.c:200
-#: ../src/brasero-sum-dialog.c:475
+#: ../src/brasero-sum-dialog.c:154
+#: ../src/brasero-sum-dialog.c:203
+#: ../src/brasero-sum-dialog.c:478
 msgid "File Integrity Check Error"
 msgstr "Грешка при провери исправности датотеке"
 
-#: ../src/brasero-sum-dialog.c:155 ../src/brasero-sum-dialog.c:476
+#: ../src/brasero-sum-dialog.c:155
+#: ../src/brasero-sum-dialog.c:479
 msgid "The file integrity check cannot be performed:"
 msgstr "Није могуће извршити проверу исправности датотеке:"
 
@@ -3020,50 +2924,50 @@ msgstr "Провера исправности датотеке успешно о
 msgid "there seems to be no corrupted file on the disc."
 msgstr "изгледа да нема оштећених датотека на диску."
 
-#: ../src/brasero-sum-dialog.c:198
-msgid "<b><big>The following files appear to be corrupted:</big></b>"
-msgstr "<b><big>Следеће датотеке изгледају оштећене:</big></b>"
+#: ../src/brasero-sum-dialog.c:194
+msgid "The following files appear to be corrupted:"
+msgstr "Следеће датотеке изгледају оштећене:"
 
-#: ../src/brasero-sum-dialog.c:239
+#: ../src/brasero-sum-dialog.c:242
 msgid "Corrupted files"
 msgstr "Оштећене датотеке"
 
-#: ../src/brasero-sum-dialog.c:313
+#: ../src/brasero-sum-dialog.c:316
 #, c-format
 msgid "a temporary file couldn't be created"
 msgstr "не могу да направим привремену датотеку"
 
-#: ../src/brasero-sum-dialog.c:320
+#: ../src/brasero-sum-dialog.c:323
 msgid "Downloading md5 file"
 msgstr "Скидам md5 датотеку"
 
-#: ../src/brasero-sum-dialog.c:368
+#: ../src/brasero-sum-dialog.c:371
 #, c-format
 msgid "URI is not valid"
 msgstr "путања није исправна"
 
-#: ../src/brasero-sum-dialog.c:477
+#: ../src/brasero-sum-dialog.c:480
 msgid "no md5 file was given."
 msgstr "md5 датотека није дата."
 
-#: ../src/brasero-sum-dialog.c:580
+#: ../src/brasero-sum-dialog.c:583
 #, c-format
 msgid "no checksum file could be found on the disc."
 msgstr "не постоји датотека за проверу на диску."
 
-#: ../src/brasero-sum-dialog.c:725
+#: ../src/brasero-sum-dialog.c:728
 msgid "Use a _md5 file to check the disc"
 msgstr "Користи .md5 _датотеку за проверу диска"
 
-#: ../src/brasero-sum-dialog.c:726
+#: ../src/brasero-sum-dialog.c:729
 msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr "Користи спољну .md5 датотеку која садржи суму за проверу диска"
 
-#: ../src/brasero-sum-dialog.c:739
+#: ../src/brasero-sum-dialog.c:742
 msgid "Open a md5 file"
 msgstr "Отвори md5 датотеку"
 
-#: ../src/brasero-sum-dialog.c:754
+#: ../src/brasero-sum-dialog.c:757
 msgid "_Check"
 msgstr "_Провери"
 
@@ -3071,7 +2975,8 @@ msgstr "_Провери"
 msgid "Media Busy"
 msgstr "Диск је заузет"
 
-#: ../src/brasero-tool-dialog.c:104 ../src/brasero-tool-dialog.c:114
+#: ../src/brasero-tool-dialog.c:104
+#: ../src/brasero-tool-dialog.c:114
 #: ../src/brasero-tool-dialog.c:124
 msgid "The operation cannot be performed:"
 msgstr "Не може бити обављена операција:"
@@ -3080,7 +2985,8 @@ msgstr "Не може бити обављена операција:"
 msgid "the inserted media is busy."
 msgstr "учитан диск је заузет."
 
-#: ../src/brasero-tool-dialog.c:113 ../src/brasero-tool-dialog.c:123
+#: ../src/brasero-tool-dialog.c:113
+#: ../src/brasero-tool-dialog.c:123
 msgid "Media Error"
 msgstr "Грешка са диском"
 
@@ -3092,81 +2998,69 @@ msgstr "учитан диск није подржан."
 msgid "the drive is empty."
 msgstr "уређај је празан."
 
-#: ../src/brasero-tool-dialog.c:295
-msgid "<b>Options:</b>"
-msgstr "<b>Поставке:</b>"
-
-#: ../src/brasero-tool-dialog.c:498
+#: ../src/brasero-tool-dialog.c:503
 msgid "Choose a media"
 msgstr "Изаберите медијум"
 
-#: ../src/brasero-tool-dialog.c:504
-msgid "<b>Select a disc</b>"
-msgstr "<b>Изаберите диск</b>"
+#: ../src/brasero-tool-dialog.c:508
+msgid "Select a disc"
+msgstr "Изаберите диск"
 
-#: ../src/brasero-tool-dialog.c:527
-msgid "<b>Progress:</b>"
-msgstr "<b>Напредак:</b>"
+#: ../src/brasero-tool-dialog.c:534
+msgid "Progress"
+msgstr "Напредак"
 
 #: ../src/burn-basics.c:63
 msgid "Getting size"
-msgstr "Добијање величине"
-
-#: ../src/burn-basics.c:64
-msgid "Creating image"
-msgstr "Прављење одраза"
+msgstr "Добијам величину"
 
 #: ../src/burn-basics.c:65
 msgid "Writing"
-msgstr "Уписивање"
+msgstr "Уписујем"
 
 #: ../src/burn-basics.c:66
 msgid "Blanking"
-msgstr "Брисање"
+msgstr "Бришем"
 
 #: ../src/burn-basics.c:67
 msgid "Creating checksum"
-msgstr "Прављење суме за проверу"
-
-#: ../src/burn-basics.c:68
-msgid "Copying disc"
-msgstr "Умножавање диска"
+msgstr "Правим суму за проверу"
 
 #: ../src/burn-basics.c:69
 msgid "Copying file"
-msgstr "Умножавање датотеке"
+msgstr "Умножавам датотеку"
 
 #: ../src/burn-basics.c:70
 msgid "Analysing audio information"
-msgstr "Анализа звучних информација"
+msgstr "Анализирам звучние податке"
 
 #: ../src/burn-basics.c:71
 msgid "Transcoding song"
-msgstr "Транскодирање песме"
+msgstr "Прекодирам песме"
 
 #: ../src/burn-basics.c:72
 msgid "Preparing to write"
-msgstr "Припрема за писање"
+msgstr "Припремам се за успис"
 
 #: ../src/burn-basics.c:73
 msgid "Writing leadin"
-msgstr "Уписивање улаза"
+msgstr "Уписујем улаза"
 
 #: ../src/burn-basics.c:74
 msgid "Writing CD-TEXT information"
-msgstr "Записивање ЦД-ТЕКСТ информација"
+msgstr "Уписујем ЦД-ТЕКСТ податке"
 
 #: ../src/burn-basics.c:75
 msgid "Fixating"
-msgstr "Закључавање"
+msgstr "Завршавам"
 
 #: ../src/burn-basics.c:76
 msgid "Writing leadout"
-msgstr "Уписивање излаза"
+msgstr "Уписујем излаз"
 
 #: ../src/burn-basics.c:77
 msgid "Starting to record"
-msgstr "Почињем снимање"
+msgstr "Започињем снимање"
 
 #: ../src/burn-basics.c:78
 msgid "Success"
@@ -3174,9 +3068,11 @@ msgstr "Успешно"
 
 #: ../src/burn.c:147
 msgid "Burning CD/DVD"
-msgstr "Уписивање ЦД-а/ДВД-а"
+msgstr "Уписујем ЦД/ДВД"
 
-#: ../src/burn.c:264 ../src/burn.c:328 ../src/burn.c:385
+#: ../src/burn.c:264
+#: ../src/burn.c:328
+#: ../src/burn.c:385
 #, c-format
 msgid "\"%s\" can't be unlocked"
 msgstr "не могу да откључам „%s“"
@@ -3186,18 +3082,24 @@ msgstr "не могу да откључам „%s“"
 msgid "the disc could not be reloaded (max attemps reached)"
 msgstr "не могу да поново учитам диск (досегнут највећи број покушаја)"
 
-#: ../src/burn.c:293 ../src/burn.c:581 ../src/burn.c:676 ../src/burn.c:917
+#: ../src/burn.c:293
+#: ../src/burn.c:581
+#: ../src/burn.c:676
+#: ../src/burn.c:917
 #: ../src/burn.c:1063
 #, c-format
 msgid "the drive can't be locked (%s)"
 msgstr "не могу да закључам уређај (%s)"
 
-#: ../src/burn.c:343 ../src/burn.c:403
+#: ../src/burn.c:343
+#: ../src/burn.c:403
 #, c-format
 msgid "the media in %s can't be ejected"
 msgstr "не могу да избацим диск из %s"
 
-#: ../src/burn.c:509 ../src/burn.c:625 ../src/burn.c:776
+#: ../src/burn.c:509
+#: ../src/burn.c:625
+#: ../src/burn.c:776
 #, c-format
 msgid "no drive specified"
 msgstr "није одабран уређај"
@@ -3234,8 +3136,12 @@ msgstr "диск није могуће монтирати (досегнут на
 msgid "ongoing checksuming operation"
 msgstr "процес провере у току"
 
-#: ../src/burn.c:1338 ../src/burn.c:1370 ../src/burn.c:1476 ../src/burn.c:1485
-#: ../src/burn.c:1802 ../src/plugins/cdrdao/burn-cdrdao.c:220
+#: ../src/burn.c:1338
+#: ../src/burn.c:1370
+#: ../src/burn.c:1476
+#: ../src/burn.c:1485
+#: ../src/burn.c:1802
+#: ../src/plugins/cdrdao/burn-cdrdao.c:220
 #: ../src/plugins/growisofs/burn-growisofs.c:202
 #, c-format
 msgid "the drive seems to be busy"
@@ -3243,8 +3149,7 @@ msgstr "изгледа да је уређај заузет"
 
 #: ../src/burn.c:1597
 #, c-format
-msgid ""
-"it's not possible to merge to this media because it hasn't got enough space"
+msgid "it's not possible to merge to this media because it hasn't got enough space"
 msgstr "није могуће спојити ове медијуме јер немају довољно места"
 
 #: ../src/burn.c:1853
@@ -3262,7 +3167,8 @@ msgstr "нема уређаја за упис"
 msgid "merging data is impossible with this disc"
 msgstr "не можете додати податке на овом диску"
 
-#: ../src/burn.c:2205 ../src/burn-caps.c:1572
+#: ../src/burn.c:2205
+#: ../src/burn-caps.c:1575
 #, c-format
 msgid "only one track at a time can be checked"
 msgstr "можете проверити само по једну стазу"
@@ -3282,12 +3188,13 @@ msgstr "унутарња грешка (код %i)"
 msgid "this operation is not supported"
 msgstr "ова радња није подржанa."
 
-#: ../src/burn-caps.c:1467
+#: ../src/burn-caps.c:1470
 #, c-format
 msgid "internal error in plugin system"
 msgstr "унутарња грешка у систему додатака"
 
-#: ../src/burn-iso9660.c:149 ../src/burn-iso9660.c:158
+#: ../src/burn-iso9660.c:149
+#: ../src/burn-iso9660.c:158
 #, c-format
 msgid "it does not appear to be a primary volume descriptor"
 msgstr "не изгледа као главни описник диска"
@@ -3297,7 +3204,8 @@ msgstr "не изгледа као главни описник диска"
 msgid "invalid directory record"
 msgstr "неважећи запис директоријума"
 
-#: ../src/burn-iso9660.c:408 ../src/burn-iso9660.c:455
+#: ../src/burn-iso9660.c:408
+#: ../src/burn-iso9660.c:455
 #, c-format
 msgid "file name is too long"
 msgstr "име датотеке предугачко"
@@ -3313,31 +3221,19 @@ msgid "Insufficient space on media (%lli available for %lli)"
 msgstr "Недовољно места на диску (%lli доступно за %lli)"
 
 #: ../src/burn-job.c:475
-#, fuzzy, c-format
-msgid ""
-"The filesystem you chose to store the temporary image on cannot hold files "
-"with a size over 2 GiB."
-msgstr ""
-"Изабрани систем датотека за чување привремених одраза не подржава датотеке "
-"веће од 2 Gio."
+#, c-format
+msgid "The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB."
+msgstr "Изабрани систем датотека за чување привремених одраза не подржава датотеке веће од 2 GiB."
 
 #: ../src/burn-job.c:490
-#, fuzzy, c-format
-msgid ""
-"The location you chose to store the temporary image on does not have enough "
-"free space for the disc image (%ld MiB needed)"
-msgstr ""
-"Изабрана путања нема довољно слободног простора за снимање одраза(потребно %"
-"ld MiB)"
+#, c-format
+msgid "The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"
+msgstr "Изабрана путања за складиште нема довољно слободног простора за смештање одраза (потребно је %ld MiB)"
 
 #: ../src/burn-job.c:511
 #, c-format
-msgid ""
-"the selected location does not have enough free space to store the disc "
-"image (%ld MiB needed)"
-msgstr ""
-"Изабрана путања нема довољно слободног простора за снимање одраза(потребно %"
-"ld MiB)"
+msgid "the selected location does not have enough free space to store the disc image (%ld MiB needed)"
+msgstr "Изабрана путања нема довољно слободног простора за снимање одраза (потребно је %ld MiB)"
 
 #: ../src/burn-job.c:524
 #, c-format
@@ -3367,7 +3263,8 @@ msgstr ""
 "додатак %s не ради како треба (не подржава ову радњу).\n"
 "Покушајте да га искључите"
 
-#: ../src/burn-job.c:938 ../src/burn-job.c:1027
+#: ../src/burn-job.c:938
+#: ../src/burn-job.c:1027
 #, c-format
 msgid "a plugin did not behave properly"
 msgstr "додатак се се не понаша како треба"
@@ -3446,7 +3343,8 @@ msgstr "Уписив Блу реј диск"
 msgid "Rewritable Blu-ray disc"
 msgstr "Преписив Блу реј диск"
 
-#: ../src/burn-mkisofs-base.c:132 ../src/burn-mkisofs-base.c:407
+#: ../src/burn-mkisofs-base.c:132
+#: ../src/burn-mkisofs-base.c:407
 #, c-format
 msgid "the file is not stored locally"
 msgstr "датотека није ускладиштена локално"
@@ -3478,11 +3376,8 @@ msgstr "не могу да очитам податке"
 
 #: ../src/burn-process.c:140
 #, c-format
-msgid ""
-"%s is a symlink pointing to another program. Use the target program instead."
-msgstr ""
-"%s је веза које показује на други програм. Уместо тога, користите циљни "
-"програм."
+msgid "%s is a symlink pointing to another program. Use the target program instead."
+msgstr "%s је веза које показује на други програм. Уместо тога, користите циљни програм."
 
 #: ../src/burn-process.c:226
 #, c-format
@@ -3499,17 +3394,18 @@ msgstr "нема путање"
 msgid "%s already exists"
 msgstr "%s већ постоји"
 
-#: ../src/burn-session.c:696 ../src/burn-session.c:716
+#: ../src/burn-session.c:708
+#: ../src/burn-session.c:732
 #, c-format
 msgid "no output specified"
 msgstr "није одабран излаз"
 
-#: ../src/burn-session.c:877
+#: ../src/burn-session.c:914
 #, c-format
 msgid "a temporary directory could not be created (%s)"
 msgstr "не могу да направим привремени директоријум (%s)"
 
-#: ../src/burn-session.c:925
+#: ../src/burn-session.c:962
 #, c-format
 msgid "a temporary file can't be created: %s"
 msgstr "не могу да направим привремену датотеку: %s"
@@ -3690,12 +3586,8 @@ msgstr "Датотека је превелика за ЦД"
 #: ../src/plugins/cdrkit/burn-genisoimage.c:348
 #: ../src/plugins/cdrtools/burn-mkisofs.c:339
 #, c-format
-msgid ""
-"failed to get the start point of the track. Make sure the media allow to add "
-"files (it is not closed)"
-msgstr ""
-"нисам нашао почетак стазе. Проверите да ли диск дозвољава додавање датотека "
-"(да није затворен)"
+msgid "failed to get the start point of the track. Make sure the media allow to add files (it is not closed)"
+msgstr "нисам нашао почетак стазе. Проверите да ли диск дозвољава додавање датотека (да није затворен)"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:507
 msgid "use genisoimage to create images from files"
@@ -3776,8 +3668,7 @@ msgstr "јавила се грешка, вероватно због опције
 #: ../src/plugins/cdrkit/burn-wodim.c:138
 #: ../src/plugins/cdrtools/burn-cdrecord.c:138
 #, c-format
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr "Све звучне датотеке морају да буду стерео, 16-битне, са 44100 Hz"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:144
@@ -3790,19 +3681,13 @@ msgstr "Одраз не изгледа као исправан iso9660 сист�
 #: ../src/plugins/cdrtools/burn-cdrecord.c:150
 #, c-format
 msgid "The system is too slow to write the CD at this speed. Try a lower speed"
-msgstr ""
-"Систем је сувише спор за уписивање ЦД-а овом брином. Пробајте да смањите "
-"брзину"
+msgstr "Систем је сувише спор за уписивање ЦД-а овом брином. Пробајте да смањите брзину"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:163
 #: ../src/plugins/cdrtools/burn-cdrecord.c:164
 #, c-format
-msgid ""
-"The drive seems to be busy (maybe check you have proper permissions to use "
-"it)"
-msgstr ""
-"Уређај је изгледа заузет (проверите да ли имате одговарајуће дозволе за "
-"његово коришћење)"
+msgid "The drive seems to be busy (maybe check you have proper permissions to use it)"
+msgstr "Уређај је изгледа заузет (проверите да ли имате одговарајуће дозволе за његово коришћење)"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:172
 #: ../src/plugins/cdrtools/burn-cdrecord.c:173
@@ -4064,9 +3949,9 @@ msgid "libburn burns CD(RW), DVD+/-(RW)"
 msgstr "libburn уписује ЦД и ДВД+/- дискове"
 
 #: ../src/plugins/libburnia/burn-libburn-common.c:135
-#, fuzzy, c-format
+#, c-format
 msgid "Libburn library couldn't be initialized"
-msgstr "диск се није могао иницијализовати"
+msgstr "Не могу да покренем libburn"
 
 #: ../src/plugins/libburnia/burn-libburn-common.c:152
 #, c-format
@@ -4122,8 +4007,7 @@ msgstr "libisofs је пријавио грешку при додавању ди
 #: ../src/plugins/libburnia/burn-libisofs.c:692
 #, c-format
 msgid "libisofs reported an error while adding contents to directory %s (%x)"
-msgstr ""
-"libisofs је пријавио грешку при додавању садржаја у директоријум %s (%x)"
+msgstr "libisofs је пријавио грешку при додавању садржаја у директоријум %s (%x)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:714
 #: ../src/plugins/libburnia/burn-libisofs.c:730
@@ -4151,7 +4035,8 @@ msgid "Copying `%s` locally"
 msgstr "Локално умножавање „%s“"
 
 #: ../src/plugins/local-track/burn-local-image.c:220
-#: ../src/plugins/local-track/burn-local-image.c:300 ../src/brasero-io.c:2072
+#: ../src/plugins/local-track/burn-local-image.c:300
+#: ../src/brasero-io.c:2072
 #, c-format
 msgid "a directory couldn't be created (%s)"
 msgstr "не могу да направим директоријум (%s)"
@@ -4335,17 +4220,16 @@ msgid "Size Error"
 msgstr "грешка у величини"
 
 #: ../src/brasero-split-dialog.c:177
-msgid ""
-"If you split the track, the size of the new track will be shorter than 6 "
-"seconds and will be padded."
-msgstr ""
-"Уколико поделите нумеру, дужина нове нумере ће бити краћа од 6 секунди."
+msgid "If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."
+msgstr "Уколико поделите нумеру, дужина нове нумере ће бити краћа од 6 секунди."
 
-#: ../src/brasero-split-dialog.c:180 ../src/brasero-split-dialog.c:734
+#: ../src/brasero-split-dialog.c:180
+#: ../src/brasero-split-dialog.c:734
 msgid "_Don't split"
 msgstr "_Не дели"
 
-#: ../src/brasero-split-dialog.c:183 ../src/brasero-split-dialog.c:737
+#: ../src/brasero-split-dialog.c:183
+#: ../src/brasero-split-dialog.c:737
 msgid "_Split"
 msgstr "По_дели"
 
@@ -4377,111 +4261,112 @@ msgstr "Сам подели"
 msgid "This will remove all previous results."
 msgstr "Ово ће уклонити све претходне резултате."
 
-#: ../src/brasero-split-dialog.c:1069
+#: ../src/brasero-split-dialog.c:1070
 msgid "Split Track"
 msgstr "Подели стазу"
 
-#: ../src/brasero-split-dialog.c:1088
+#: ../src/brasero-split-dialog.c:1089
 msgid "M_ethod:"
 msgstr "_Начин:"
 
-#: ../src/brasero-split-dialog.c:1094
+#: ../src/brasero-split-dialog.c:1095
 msgid "Method to be used to split the track"
 msgstr "Начин за поделу стазе"
 
-#: ../src/brasero-split-dialog.c:1097
+#: ../src/brasero-split-dialog.c:1098
 msgid "Split track manually"
 msgstr "Ручно подели стазу"
 
-#: ../src/brasero-split-dialog.c:1098
+#: ../src/brasero-split-dialog.c:1099
 msgid "Split track in parts with a fixed length"
 msgstr "Подели стазу на делове исте дужине"
 
-#: ../src/brasero-split-dialog.c:1099
+#: ../src/brasero-split-dialog.c:1100
 msgid "Split track in a fixed number of parts"
 msgstr "Подели стазу на исти број делова"
 
-#: ../src/brasero-split-dialog.c:1100
+#: ../src/brasero-split-dialog.c:1101
 msgid "Split track for each silence"
 msgstr "Подели стазу за стаку тишину"
 
-#: ../src/brasero-split-dialog.c:1106
+#: ../src/brasero-split-dialog.c:1107
 msgid "_Slice"
 msgstr "_Део"
 
-#: ../src/brasero-split-dialog.c:1117
+#: ../src/brasero-split-dialog.c:1118
 msgid "Press to add a splitting point"
 msgstr "Притисни да додаш тачку поделе"
 
 #. Translators: this goes with the next (= "seconds")
-#: ../src/brasero-split-dialog.c:1134
+#: ../src/brasero-split-dialog.c:1135
 msgid "Split this track every"
 msgstr "Подели сву стазу сваких"
 
 #. Translators: this goes with the previous (= "Split track every")
-#: ../src/brasero-split-dialog.c:1143
+#: ../src/brasero-split-dialog.c:1144
 msgid "seconds"
 msgstr "секунди"
 
 #. Translators: this goes with the next (= "parts")
-#: ../src/brasero-split-dialog.c:1152
+#: ../src/brasero-split-dialog.c:1153
 msgid "Split this track in"
 msgstr "Подели ову стазу у"
 
 #. Translators: this goes with the previous (= "Split this track in")
-#: ../src/brasero-split-dialog.c:1161
+#: ../src/brasero-split-dialog.c:1162
 msgid "parts"
 msgstr "делова"
 
 #: ../src/brasero-split-dialog.c:1170
-msgid "<b>Slicing Method</b>"
-msgstr "<b>Начин деобе</b>"
+msgid "Slicing Method"
+msgstr "Начин деобе"
 
-#: ../src/brasero-split-dialog.c:1225
+#: ../src/brasero-split-dialog.c:1228
 msgid "Start"
 msgstr "Почетак"
 
-#: ../src/brasero-split-dialog.c:1232
+#: ../src/brasero-split-dialog.c:1235
 msgid "End"
 msgstr "Крај"
 
-#: ../src/brasero-split-dialog.c:1255
+#: ../src/brasero-split-dialog.c:1258
 msgid "Mer_ge"
 msgstr "_Споји"
 
-#: ../src/brasero-split-dialog.c:1266
+#: ../src/brasero-split-dialog.c:1269
 msgid "Merge a selected slice with the next selected one"
 msgstr "Споји изабрани део са наредним"
 
-#: ../src/brasero-split-dialog.c:1269
+#: ../src/brasero-split-dialog.c:1272
 msgid "_Remove"
 msgstr "_Уклони"
 
-#: ../src/brasero-split-dialog.c:1280
+#: ../src/brasero-split-dialog.c:1283
 msgid "Remove the selected slices"
 msgstr "Уклони изабране делове"
 
-#: ../src/brasero-split-dialog.c:1283
+#: ../src/brasero-split-dialog.c:1286
 msgid "Re_move All"
 msgstr "У_клони све"
 
-#: ../src/brasero-split-dialog.c:1294
+#: ../src/brasero-split-dialog.c:1297
 msgid "Clear the slices preview"
 msgstr "Очисти преглед делова"
 
-#: ../src/brasero-split-dialog.c:1304
+#: ../src/brasero-split-dialog.c:1307
 msgid "_List of slices that are to be created:"
 msgstr "_Списак делова за прављење:"
 
-#: ../src/brasero-split-dialog.c:1313
-msgid "<b>Slices Preview</b>"
-msgstr "<b>Преглед делова:</b>"
+#: ../src/brasero-split-dialog.c:1315
+msgid "Slices Preview"
+msgstr "Преглед делова"
 
 #: ../src/brasero-time-button.c:289
 msgid "Hours"
 msgstr "Сати"
 
-#: ../src/brasero-time-button.c:293 ../src/brasero-time-button.c:302
+#: ../src/brasero-time-button.c:293
+#: ../src/brasero-time-button.c:302
 #: ../src/brasero-time-button.c:311
 msgid ":"
 msgstr ":"
@@ -4522,9 +4407,12 @@ msgstr "Cdrdao пакет за упис"
 msgid "Cdrtools burning suite"
 msgstr "Cdrtools пакет за упис"
 
-#: ../src/burn-image-format.c:307 ../src/burn-image-format.c:391
-#: ../src/burn-image-format.c:420 ../src/burn-image-format.c:547
-#: ../src/burn-image-format.c:743 ../src/burn-image-format.c:784
+#: ../src/burn-image-format.c:307
+#: ../src/burn-image-format.c:391
+#: ../src/burn-image-format.c:420
+#: ../src/burn-image-format.c:547
+#: ../src/burn-image-format.c:743
+#: ../src/burn-image-format.c:784
 #, c-format
 msgid "size can't be retrieved (%s)"
 msgstr "не могу да учитам величину (%s)"
@@ -4534,7 +4422,8 @@ msgstr "не могу да учитам величину (%s)"
 msgid "size can't be retrieved for %s: %s"
 msgstr "не могу да добијем величину за %s: %s"
 
-#: ../src/brasero-data-session.c:135 ../src/brasero-data-session.c:148
+#: ../src/brasero-data-session.c:135
+#: ../src/brasero-data-session.c:148
 #, c-format
 msgid "there isn't any available session on the disc"
 msgstr "нема ни једне доступне сесије на диску"
@@ -4544,8 +4433,10 @@ msgstr "нема ни једне доступне сесије на диску"
 msgid "unknown volume type"
 msgstr "непозната врста диска"
 
-#: ../src/brasero-data-tree-model.c:426 ../src/brasero-data-tree-model.c:485
-#: ../src/brasero-data-tree-model.c:496 ../src/brasero-data-tree-model.c:557
+#: ../src/brasero-data-tree-model.c:426
+#: ../src/brasero-data-tree-model.c:485
+#: ../src/brasero-data-tree-model.c:496
+#: ../src/brasero-data-tree-model.c:557
 #: ../src/brasero-data-tree-model.c:562
 msgid "(loading ...)"
 msgstr "(учитавање ...)"
@@ -4567,14 +4458,12 @@ msgstr[1] "%d ставке"
 msgstr[2] "%d ставки"
 
 #: ../src/brasero-disc-message.c:168
-#, fuzzy
 msgid "_Hide changes"
-msgstr "_Занемари измене"
+msgstr "_Сакриј измене"
 
 #: ../src/brasero-disc-message.c:170
-#, fuzzy
 msgid "_Show changes"
-msgstr "_Прикажи грешке"
+msgstr "_Прикажи измене"
 
 #: ../src/brasero-disc-message.c:189
 msgid "_Show errors"
@@ -4595,7 +4484,7 @@ msgstr "Затвори овај обавештајни прозор"
 #. * for a list of actions.
 #: ../src/brasero-disc.c:669
 msgid "To add files to this project you can:"
-msgstr "Да би додали датотеку у овај пројекат можете:"
+msgstr "Како би додали датотеку у овај пројекат можете:"
 
 #: ../src/brasero-disc.c:670
 msgid "click the \"Add\" button to show the selection pane"
@@ -4606,10 +4495,8 @@ msgid "select files in selection pane and click the \"Add\" button"
 msgstr "изабрати датотеке у површи за избор и кликнути „Додај“ дугме"
 
 #: ../src/brasero-disc.c:672
-msgid ""
-"drag files in this area from the selection pane or from the file manager"
-msgstr ""
-"превући датотеке у ову област из површи за избор или разгледача датотека"
+msgid "drag files in this area from the selection pane or from the file manager"
+msgstr "превући датотеке у ову област из површи за избор или разгледача датотека"
 
 #: ../src/brasero-disc.c:673
 msgid "double click on files in the selection pane"
@@ -4692,11 +4579,8 @@ msgid "Filter Options"
 msgstr "Могућности занемаривања"
 
 #: ../src/brasero-file-filtered.c:499
-msgid ""
-"Select the files you want to restore and click on the \"Restore\" button"
-msgstr ""
-"Омогућава да изаберете датотеке које желите да повратите притиском на дугме "
-"„Поврати“"
+msgid "Select the files you want to restore and click on the \"Restore\" button"
+msgstr "Омогућава да изаберете датотеке које желите да повратите притиском на дугме „Поврати“"
 
 #: ../src/brasero-file-filtered.c:548
 msgid "Type"
@@ -4718,24 +4602,25 @@ msgstr "_Могућности..."
 msgid "Set the options for file filtering"
 msgstr "Подешава могућности занемаривања"
 
-#: ../src/brasero-filter-option.c:113
+#: ../src/brasero-filter-option.c:114
 msgid "Filter _hidden files"
 msgstr "Занемари _скривене датотеке"
 
-#: ../src/brasero-filter-option.c:135
+#: ../src/brasero-filter-option.c:136
 msgid "Filter _broken symlinks"
 msgstr "Занемари _непостојеће везе"
 
-#: ../src/brasero-filter-option.c:153
-msgid "<b>Filtering options</b>"
-msgstr "<b>Поставке занемаривања</b>"
+#: ../src/brasero-filter-option.c:154
+msgid "Filtering options"
+msgstr "Могућности занемаривања"
 
-#: ../src/brasero-data-vfs.c:240
+#: ../src/brasero-data-vfs.c:241
 #, c-format
 msgid "\"%s\" cannot be read"
 msgstr "Не могу да прочитам „%s“"
 
-#: ../src/brasero-io.c:901 ../src/brasero-io.c:1735
+#: ../src/brasero-io.c:901
+#: ../src/brasero-io.c:1735
 #, c-format
 msgid "recursive symbolic link"
 msgstr "рекурзивна симболичка везе"
@@ -4745,90 +4630,92 @@ msgstr "рекурзивна симболичка везе"
 msgid "the file doesn't appear to be a playlist"
 msgstr "датотека не изгледа као списак нумера"
 
-#: ../src/brasero-medium-selection.c:206 ../src/brasero-medium-selection.c:329
+#: ../src/brasero-medium-selection.c:206
+#: ../src/brasero-medium-selection.c:329
 msgid "There is no available medium. Please insert one."
 msgstr "Нема диска. Убаците га."
 
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../src/burn-drive.c:274 ../src/burn-volume-obj.c:669
+#: ../src/burn-drive.c:274
+#: ../src/burn-volume-obj.c:728
 msgid "Image File"
 msgstr "Датотека са одразом"
 
-#: ../src/burn-volume-obj.c:175
+#: ../src/burn-volume-obj.c:229
 #, c-format
 msgid "the disc mount point could not be retrieved."
 msgstr "тачка монтирања не може бити нађена."
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the label of the already existing session on this disc.
-#: ../src/burn-volume-obj.c:692
+#: ../src/burn-volume-obj.c:751
 #, c-format
 msgid "<b>Data %s</b>: \"%s\""
 msgstr "<b>Подаци %s</b>: „%s“"
 
-#: ../src/burn-volume-obj.c:696
+#: ../src/burn-volume-obj.c:755
 #, c-format
 msgid "Data %s: \"%s\""
 msgstr "Подаци %s: „%s“"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-volume-obj.c:715
+#: ../src/burn-volume-obj.c:774
 #, c-format
 msgid "<b>Blank %s</b> in %s"
 msgstr "<b>Избриши %s</b> у %s"
 
-#: ../src/burn-volume-obj.c:719
+#: ../src/burn-volume-obj.c:778
 #, c-format
 msgid "Blank %s in %s"
 msgstr "Избриши %s у %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-volume-obj.c:727
+#: ../src/burn-volume-obj.c:786
 #, c-format
 msgid "<b>Audio and data %s</b> in %s"
 msgstr "<b>Звук и подаци %s</b> у %s"
 
-#: ../src/burn-volume-obj.c:731
+#: ../src/burn-volume-obj.c:790
 #, c-format
 msgid "Audio and data %s in %s"
 msgstr "Звук и подаци %s у %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-volume-obj.c:739
+#: ../src/burn-volume-obj.c:798
 #, c-format
 msgid "<b>Audio %s</b> in %s"
 msgstr "<b>Звук %s</b> у %s"
 
-#: ../src/burn-volume-obj.c:743
+#: ../src/burn-volume-obj.c:802
 #, c-format
 msgid "Audio %s in %s"
 msgstr "Звук %s у %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-volume-obj.c:751
+#: ../src/burn-volume-obj.c:810
 #, c-format
 msgid "<b>Data %s</b> in %s"
 msgstr "<b>Подаци %s</b> у %s"
 
-#: ../src/burn-volume-obj.c:755
+#: ../src/burn-volume-obj.c:814
 #, c-format
 msgid "Data %s in %s"
 msgstr "Подаци %s у %s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-volume-obj.c:763
+#: ../src/burn-volume-obj.c:822
 #, c-format
 msgid "<b>%s</b> in %s"
 msgstr "<b>%s</b> у %s"
 
-#: ../src/burn-volume-obj.c:767
+#: ../src/burn-volume-obj.c:826
 #, c-format
 msgid "%s in %s"
 msgstr "%s у %s"
@@ -4855,9 +4742,8 @@ msgid "Creating checksum for image files"
 msgstr "Правим суму за проверу одраза"
 
 #: ../src/plugins/checksum/burn-checksum-files.c:730
-#, fuzzy
 msgid "Checking file integrity"
-msgstr "Провери испра_вност..."
+msgstr "Провери исправност датотеке"
 
 #: ../src/plugins/checksum/burn-checksum-files.c:870
 #: ../src/plugins/checksum/burn-checksum-files.c:990
@@ -4913,71 +4799,71 @@ msgstr "дозвољава проверу исправности податак�
 msgid "Images"
 msgstr "Слике"
 
-#: ../src/brasero-jacket-background.c:182
-msgid "<b>_Color</b>"
-msgstr "<b>_Боја</b>"
+#: ../src/brasero-jacket-background.c:183
+msgid "_Color"
+msgstr "_Боја"
 
-#: ../src/brasero-jacket-background.c:208
+#: ../src/brasero-jacket-background.c:212
 msgid "Solid color"
 msgstr "Једнобојно"
 
-#: ../src/brasero-jacket-background.c:209
+#: ../src/brasero-jacket-background.c:213
 msgid "Horizontal gradient"
 msgstr "Хоризонтални прелив"
 
-#: ../src/brasero-jacket-background.c:210
+#: ../src/brasero-jacket-background.c:214
 msgid "Vertical gradient"
 msgstr "Вертикални прелив"
 
-#: ../src/brasero-jacket-background.c:226
-msgid "<b>_Image</b>"
-msgstr "<b>_Слика</b>"
+#: ../src/brasero-jacket-background.c:229
+msgid "_Image"
+msgstr "_Слика"
 
-#: ../src/brasero-jacket-background.c:249
+#: ../src/brasero-jacket-background.c:255
 msgid "Image path:"
 msgstr "Путања до слике:"
 
-#: ../src/brasero-jacket-background.c:254
+#: ../src/brasero-jacket-background.c:260
 msgid "Choose an image"
 msgstr "Изаберите слику"
 
-#: ../src/brasero-jacket-background.c:262
+#: ../src/brasero-jacket-background.c:268
 msgid "Image style:"
 msgstr "Врста слике:"
 
-#: ../src/brasero-jacket-background.c:270
+#: ../src/brasero-jacket-background.c:276
 msgid "Centered"
 msgstr "На средини"
 
-#: ../src/brasero-jacket-background.c:271
+#: ../src/brasero-jacket-background.c:277
 msgid "Tiled"
 msgstr "Поплочано"
 
-#: ../src/brasero-jacket-background.c:272
+#: ../src/brasero-jacket-background.c:278
 msgid "Scaled"
 msgstr "Раширено"
 
-#: ../src/brasero-jacket-background.c:303
+#: ../src/brasero-jacket-background.c:309
 msgid "Background Properties"
 msgstr "Особине позадине"
 
-#: ../src/brasero-jacket-view.c:724
+#: ../src/brasero-jacket-view.c:736
 msgid "Set bac_kground properties"
 msgstr "По_десите особине позадине"
 
-#: ../src/brasero-jacket-view.c:765
+#: ../src/brasero-jacket-view.c:777
 msgid "SIDES"
 msgstr "Стране"
 
-#: ../src/brasero-jacket-view.c:781
+#: ../src/brasero-jacket-view.c:793
 msgid "BACK COVER"
 msgstr "Задњи омот"
 
-#: ../src/brasero-jacket-view.c:798
+#: ../src/brasero-jacket-view.c:810
 msgid "FRONT COVER"
 msgstr "Предњи омот"
 
-#: ../src/brasero-jacket-view.c:1087
+#: ../src/brasero-jacket-view.c:1099
 msgid "The image couldn't be loaded:"
 msgstr "Не могу да учитам слику:"
 
@@ -4993,26 +4879,33 @@ msgstr "од "
 msgid "Cover Editor"
 msgstr "Уредник омота"
 
-#: ../src/brasero-multi-song-props.c:85 ../src/brasero-multi-song-props.c:93
-#: ../src/brasero-multi-song-props.c:101 ../src/brasero-multi-song-props.c:119
-#: ../src/brasero-multi-song-props.c:135 ../src/brasero-multi-song-props.c:156
-#: ../src/brasero-multi-song-props.c:169 ../src/brasero-multi-song-props.c:237
-#: ../src/brasero-multi-song-props.c:258 ../src/brasero-multi-song-props.c:279
-#: ../src/brasero-rename.c:87 ../src/brasero-rename.c:279
+#: ../src/brasero-multi-song-props.c:85
+#: ../src/brasero-multi-song-props.c:93
+#: ../src/brasero-multi-song-props.c:101
+#: ../src/brasero-multi-song-props.c:119
+#: ../src/brasero-multi-song-props.c:135
+#: ../src/brasero-multi-song-props.c:156
+#: ../src/brasero-multi-song-props.c:169
+#: ../src/brasero-multi-song-props.c:244
+#: ../src/brasero-multi-song-props.c:265
+#: ../src/brasero-multi-song-props.c:286
+#: ../src/brasero-rename.c:87
+#: ../src/brasero-rename.c:279
 msgid "<keep current values>"
 msgstr "<задржи текуће вредности>"
 
-#: ../src/brasero-multi-song-props.c:122 ../src/brasero-multi-song-props.c:139
+#: ../src/brasero-multi-song-props.c:122
+#: ../src/brasero-multi-song-props.c:139
 msgid "Remove silences"
 msgstr "Уклони тишину"
 
-#: ../src/brasero-multi-song-props.c:207
-msgid "<b>Song titles</b>"
-msgstr "<b>Наслов нумере</b>"
+#: ../src/brasero-multi-song-props.c:208
+msgid "Song titles"
+msgstr "Наслови нумера"
 
-#: ../src/brasero-multi-song-props.c:221
-msgid "<b>Additional song information</b>"
-msgstr "<b>Додатни подаци о нумери</b>"
+#: ../src/brasero-multi-song-props.c:225
+msgid "Additional song information"
+msgstr "Додатни подаци о нумери"
 
 #: ../src/brasero-rename.c:280
 msgid "Insert text"
@@ -5167,22 +5060,93 @@ msgid "Converting video file to MPEG2"
 msgstr "Преводим видео датотеку у MPEG2"
 
 #: ../src/plugins/transcode/burn-vob.c:1060
-msgid ""
-"Vob allows to transcode any video file to a format suitable for video DVDs"
-msgstr ""
-"Vob дозвољава превођење било које видео датотеке у формат кога подржава "
-"видео ДВД"
+msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
+msgstr "Vob дозвољава превођење било које видео датотеке у формат кога подржава видео ДВД"
 
 #: ../src/plugins/vcdimager/burn-vcdimager.c:472
 msgid "use vcdimager to convert a set of files to burn to SVCDs"
-msgstr "користи vcdimager за превођење датотека и упис на SVCD"
+msgstr "користи vcdimager за превођење датотека и упис на СВЦД"
 
+#: ../data/brasero-copy-medium.desktop.in.in.h:1
+msgid "Brasero Disc Copy"
+msgstr "Брасеро за умножавање дискова"
+
+#: ../data/brasero-copy-medium.desktop.in.in.h:2
+msgid "Copy CDs and DVDs"
+msgstr "Умножите ЦД и ДВД дискове"
+
+#: ../data/brasero-copy-medium.desktop.in.in.h:3
+msgid "Disc Copy"
+msgstr "Умножавање диска"
+
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Create CDs and DVDs"
+msgstr "Направи ЦД и ДВД дискове"
+
+#~ msgid "<b>Size:</b>"
+#~ msgstr "<b>Величина:</b>"
+#~ msgid "Disc Burning Application"
+#~ msgstr "Програм за уписивање дискова"
+#~ msgid "<i><b>Pause</b></i>"
+#~ msgstr "<i><b>Пауза</b></i>"
+#~ msgid "<b>No results</b>"
+#~ msgstr "<b>Нема резултата</b>"
+#~ msgid "<b>Options</b>"
+#~ msgstr "<b>Поставке</b>"
+#~ msgid "<big><b>Creating image</b></big>"
+#~ msgstr "<big><b>Правим слику</b></big>"
+#~ msgid "<big><b>Burning video DVD</b></big>"
+#~ msgstr "<big><b>Упис видеа на ДВД</b></big>"
+#~ msgid "<big><b>Burning data DVD</b></big>"
+#~ msgstr "<big><b>Упис података на ДВД</b></big>"
+#~ msgid "<big><b>Burning image to DVD</b></big>"
+#~ msgstr "<big><b>Упис одраза на ДВД</b></big>"
+#~ msgid "<big><b>Copying data DVD</b></big>"
+#~ msgstr "<big><b>Умножавање ДВД-а са подацима</b></big>"
+#~ msgid "<big><b>Burning (S)VCD</b></big>"
+#~ msgstr "<big><b>Уписујем (С)ВЦД</b></big>"
+#~ msgid "<big><b>Burning audio CD</b></big>"
+#~ msgstr "<big><b>Упис звучног диска</b></big>"
+#~ msgid "<big><b>Burning data CD</b></big>"
+#~ msgstr "<big><b>Упис података на ЦД</b></big>"
+#~ msgid "<big><b>Copying CD</b></big>"
+#~ msgstr "<big><b>Умножавање ЦД-а</b></big>"
+#~ msgid "<big><b>Burning image to CD</b></big>"
+#~ msgstr "<big><b>Упис одраза на ЦД</b></big>"
+#~ msgid "<big><b>Burning video disc</b></big>"
+#~ msgstr "<big><b>Упис видео диска</b></big>"
+#~ msgid "<big><b>Burning data disc</b></big>"
+#~ msgstr "<big><b>Упис података на диск</b></big>"
+#~ msgid "<big><b>Copying disc</b></big>"
+#~ msgstr "<big><b>Умножавање диска</b></big>"
+#~ msgid "<big><b>Burning image to disc</b></big>"
+#~ msgstr "<big><b>Уписивање одраза на диск</b></big>"
+#~ msgid "<b>Title</b>"
+#~ msgstr "<b>Наслов</b>"
+#~ msgid "<b>Image</b>"
+#~ msgstr "<b>Одраз</b>"
+#~ msgid "<span size='x-large'><b>Create a new project:</b></span>"
+#~ msgstr "<span size='x-large'><b>Направи нови пројекат:</b></span>"
+#~ msgid ""
+#~ "<span foreground='grey50'><b><i>Choose from the following options</i></"
+#~ "b></span>"
+#~ msgstr ""
+#~ "<span foreground='grey50'><b><i>Одаберите из приложених ставки</i></b></"
+#~ "span>"
+#~ msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
+#~ msgstr "<span size='x-large'><b>Изабери скорашњи пројекат:</b></span>"
+#~ msgid "<b>Options:</b>"
+#~ msgstr "<b>Поставке:</b>"
+#~ msgid "<b>Filtering options</b>"
+#~ msgstr "<b>Поставке занемаривања</b>"
+#~ msgid "<b>_Image</b>"
+#~ msgstr "<b>_Слика</b>"
 #~ msgid "Burn Image"
 #~ msgstr "Упиши одраз"
-
 #~ msgid "Open project"
 #~ msgstr "Отвори пројекат"
-
 #~ msgid ""
 #~ "<b>%s</b>\n"
 #~ "%s\n"
@@ -5191,270 +5155,186 @@ msgstr "користи vcdimager за превођење датотека и у�
 #~ "<b>%s</b>\n"
 #~ "%s\n"
 #~ "<i>%s</i>"
-
 #~ msgid "A data integrity test is about to begin:"
 #~ msgstr "Тест исправности података ће почети:"
-
 #~ msgid "<span weight=\"bold\">Name:</span>\t %s"
 #~ msgstr "<span weight=\"bold\">Име:</span>\t %s"
-
 #~ msgid "<span weight=\"bold\">%s</span>\n"
 #~ msgstr "<span weight=\"bold\">%s</span>\n"
-
 #~ msgid "Default Burning Application"
 #~ msgstr "Подразумевани програм за уписивање"
-
 #~ msgid "_Hide errors"
 #~ msgstr "_Сакриј грешке"
-
 #~ msgid "Find all available music"
 #~ msgstr "Нађи сву доступну музику"
-
 #~ msgid "Find all available videos"
 #~ msgstr "Нађи све доступне видео датотеке"
-
 #~ msgid "Find all available pictures"
 #~ msgstr "Нађи све доступне слике"
-
 #~ msgid "Find all available documents"
 #~ msgstr "Нађи све доступне текстуалне документе"
-
 #~ msgid "Find all available spreadsheets"
 #~ msgstr "Нађи све доступне табеле"
-
 #~ msgid "Find all available presentations"
 #~ msgstr "Нађи све доступне презентације"
-
 #~ msgid "Find all available Pdf / Postscripts"
 #~ msgstr "Нађи све доступне ПДФ / Постскрипт датотеке"
-
 #~ msgid "Text File"
 #~ msgstr "Текстуална датотека"
-
 #~ msgid "%d:%02i hour"
 #~ msgid_plural "%i:%02i hours"
 #~ msgstr[0] "%d:%02i сат"
 #~ msgstr[1] "%d:%02i сата"
 #~ msgstr[2] "%d:%02i сати"
-
 #~ msgid "Waiting for disc insertion"
 #~ msgstr "Чекам на убацивање диска"
-
 #~ msgid "Waiting for disc replacement"
 #~ msgstr "Чекам на замену диска"
-
 #~ msgid "Import session error"
 #~ msgstr "Грешка при учитавању сесије"
-
 #~ msgid "Waiting for ongoing tasks"
 #~ msgstr "Чекам на текуће задатке"
-
 #~ msgid "Brasero - Copy a disc"
 #~ msgstr "Брасеро - Умножи диск"
-
 #~ msgid "(%s) libburn tried to say something"
 #~ msgstr "(%s) libburn је покушао да нешто каже"
-
 #~ msgid "No title"
 #~ msgstr "Нема наслова"
-
 #~ msgid "Cover editor"
 #~ msgstr "Уредник омота"
-
 #~ msgid "Empty project"
 #~ msgstr "Празан пројекат"
-
 #~ msgid "New project"
 #~ msgstr "Нови пројекат"
-
 #~ msgid "Close if successful"
 #~ msgstr "Затвори уколико је успело"
-
 #~ msgid "Display file chooser"
 #~ msgstr "Прикажи изборник датотека"
-
 #~ msgid "_Close the application if the burn process is successful"
 #~ msgstr "_Затвори програм уколико упис успе"
-
 #~ msgid "Continue burning"
 #~ msgstr "Настави упис"
-
 #~ msgid "Sorry, no documentation for Brasero."
 #~ msgstr "Документација за Брасеро не постоји."
-
 #~ msgid "File Image"
 #~ msgstr "Одраз датотеке"
-
 #~ msgid "<big><b>Options</b></big>"
 #~ msgstr "<big><b>Поставке</b></big>"
-
 #~ msgid ""
 #~ "Do you want to erase the current disc?\n"
 #~ "Or replace the current disc with a new disc?"
 #~ msgstr ""
 #~ "Да ли желите да обришете убачени диск?\n"
 #~ "Или замените убачени диск са новим?"
-
 #~ msgid "their names will be changed and truncated to 64 characters."
 #~ msgstr "њихова имена ће бити промењена и скраћена на 64 знака."
-
 #~ msgid "you must delete some files."
 #~ msgstr "морате уклонити неке датотеке."
-
 #~ msgid "The size of the project is too large for the disc:"
 #~ msgstr "Величина пројекта је превелика за диск:"
-
 #~ msgid "No song in the project:"
 #~ msgstr "Нема песама у пројекту:"
-
 #~ msgid "don't _show this dialog again"
 #~ msgstr "_не приказуј овај прозор више"
-
 #~ msgid "Brasero is not the default application to burn audio CDs:"
 #~ msgstr "Брасеро није подразумевани програм за уписивање звучних дискова:"
-
 #~ msgid "Brasero is not the default application to burn data discs:"
 #~ msgstr "Брасеро није подразумеван програм за уписивање дискова са подацима:"
-
 #~ msgid "wodim could not be found in the path"
 #~ msgstr "wodim није нађен у путањи"
-
 #~ msgid "cdrecord could not be found in the path"
 #~ msgstr "cdrecord није нађен у путањи"
-
 #~ msgid "unsupported type of file (at %s)"
 #~ msgstr "неподржан тип датотеке (у %s)"
-
 #~ msgid "\"%s\" is now ready for use"
 #~ msgstr "„%s“ је спреман за коришћење"
-
 #~ msgid "DVD is now ready for use"
 #~ msgstr "ДВД је спреман за коришћење"
-
 #~ msgid "CD is now ready for use"
 #~ msgstr "ЦД је спреман за коришћење"
-
 #~ msgid "Choose the drive that holds the media"
 #~ msgstr "Изабери који уређај који садржи диск"
-
 #~ msgid "<b>Select a recorder:</b>"
 #~ msgstr "<b>Изабери уређај за упис:</b>"
-
 #~ msgid "%s can't be removed"
 #~ msgstr "%s не може бити уклоњен(а)"
-
 #~ msgid "One file is not a directory or a regular file"
 #~ msgstr "Једана датотека није ни директоријум ни обична датотека"
-
 #~ msgid "the file can't be read"
 #~ msgstr "датотека нечитљива"
-
 #~ msgid "%s can't be removed and is not a directory (%s)"
 #~ msgstr "%s не може бити уклоњен и није директоријум (%s)"
-
 #~ msgid "%s can't be created (%s)"
 #~ msgstr "не могу да направим %s (%s)"
-
 #~ msgid "directory \"%s\" can't be created (%s)"
 #~ msgstr "директоријум „%s“ не може бити направљен (%s)"
-
 #~ msgid "the file %s couldn't be seeked (%s)"
 #~ msgstr "датотеку %s није могуће претражити (%s)"
-
 #~ msgid "Creating local image checksum"
 #~ msgstr "Правим локалну суму за проверу одраза"
-
 #~ msgid "(u)mount command could not be found in the path"
 #~ msgstr "команда за (де)монтирање није нађена у путањи"
-
 #~ msgid "the drive could not be mounted"
 #~ msgstr "уређај није могуће монтирати"
-
 #~ msgid "Removed files"
 #~ msgstr "Уклоњене датотеке"
-
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"larger\">The following files were removed "
 #~ "automatically from the project.</span>"
 #~ msgstr ""
 #~ "<span weight=\"bold\" size=\"larger\">Следеће датотеке су аутоматски "
 #~ "уклоњене из пројекта.</span>"
-
 #~ msgid "_Notify when files are filtered"
 #~ msgstr "_Обавести када су датотеке занемарене"
-
 #~ msgid "there is no application defined for this file."
 #~ msgstr "не постоји дефинисан програм за овај тип датотеке."
-
 #~ msgid "application %s can't be started."
 #~ msgstr "не могу да покренем програм %s."
-
 #~ msgid "Removed Files"
 #~ msgstr "Уклони датотеке"
-
 #~ msgid "Display the files filtered from the project"
 #~ msgstr "Прикажи датотеке изфилтриране из пројекта"
-
 #~ msgid "Filtered Files"
 #~ msgstr "Занемарене датотеке"
-
 #~ msgid "(empty)"
 #~ msgstr "(празно)"
-
 #~ msgid "Some files were filtered:"
 #~ msgstr "Неке датотеке су изфилтриране:"
-
 #~ msgid "click here to see the list."
 #~ msgstr "кликните овде да видите списак."
-
 #~ msgid "The file \"%s\" is unreadable:"
 #~ msgstr "Датотека „%s“ је нечитљива:"
-
 #~ msgid "The directory \"%s\" is unreadable:"
 #~ msgstr "Директоријум „%s“ је нечитњив:"
-
 #~ msgid "Some files couldn't be restored."
 #~ msgstr "Неке датотеке не могу бити повраћене."
-
 #~ msgid "File restoration failure"
 #~ msgstr "Грешка при повратку датотека"
-
 #~ msgid "loading project"
 #~ msgstr "учитавање пројекта"
-
 #~ msgid "there is no selected disc"
 #~ msgstr "изабран диск не постоји"
-
 #~ msgid "Project couldn't be loaded:"
 #~ msgstr "Пројекат не може бити учитан:"
-
 #~ msgid "Project loading failure"
 #~ msgstr "Грешка при учитавању пројекта"
-
 #~ msgid "<i>no disc</i>"
 #~ msgstr "<i>нема диска</i>"
-
 #~ msgid "<i>unknown type</i>"
 #~ msgstr "<i>непознат тип</i>"
-
 #~ msgid "<i>busy disc</i>"
 #~ msgstr "<i>диск је заузет.</i>"
-
 #~ msgid "audio tracks"
 #~ msgstr "звучне стазе"
-
 #~ msgid "data tracks"
 #~ msgstr "стазе с подацима"
-
 #~ msgid "<b>Type:</b>"
 #~ msgstr "<b>Тип:</b>"
-
 #~ msgid "Burn..."
 #~ msgstr "Упиши..."
-
 #~ msgid "%s (%s) inserted in %s"
 #~ msgstr "%s (%s) убачено у %s"
-
 #~ msgid "this operation is not supported. Try to activate proper plugins"
 #~ msgstr ""
 #~ "ова операција није подржана. Покушајте да активирате адекватне додатке."
+
