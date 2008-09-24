@@ -276,7 +276,7 @@ brasero_disc_message_destroy (BraseroDiscMessage *self)
 	gtk_widget_destroy (GTK_WIDGET (self));
 }
 
-void
+GtkWidget *
 brasero_disc_message_add_button (BraseroDiscMessage *self,
 				 GtkSizeGroup *group,
 				 const gchar *text,
@@ -293,7 +293,7 @@ brasero_disc_message_add_button (BraseroDiscMessage *self,
 
 	/* only add buttons to group if the text is not wrapped. Otherwise
 	 * buttons would be too big. */
-	layout = gtk_label_get_layout (priv->primary);
+	layout = gtk_label_get_layout (GTK_LABEL (priv->primary));
 	if (!pango_layout_is_wrapped (layout))
 		gtk_size_group_add_widget (priv->group, button);
 
@@ -312,6 +312,7 @@ brasero_disc_message_add_button (BraseroDiscMessage *self,
 			    TRUE,
 			    0);
 	gtk_widget_queue_draw (GTK_WIDGET (self));
+	return button;
 }
 
 void
@@ -328,7 +329,7 @@ brasero_disc_message_add_close_button (BraseroDiscMessage *self)
 
 	/* only add buttons to group if the text is not wrapped. Otherwise
 	 * buttons would be too big. */
-	layout = gtk_label_get_layout (priv->primary);
+	layout = gtk_label_get_layout (GTK_LABEL (priv->primary));
 	if (pango_layout_is_wrapped (layout))
 		gtk_size_group_add_widget (priv->group, button);
 

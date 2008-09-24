@@ -93,8 +93,6 @@ brasero_SOURCES = \
 	brasero-layout.h         \
 	brasero-file-chooser.c         \
 	brasero-file-chooser.h         \
-	brasero-project-size.c         \
-	brasero-project-size.h         \
 	burn-session.h 		\
 	brasero-sum-dialog.c         \
 	brasero-sum-dialog.h         \
@@ -276,7 +274,9 @@ brasero_SOURCES = \
 	brasero-session-cfg.h           \
 	brasero-session-cfg.c           \
 	brasero-burn-options.h           \
-	brasero-burn-options.c
+	brasero-burn-options.c           \
+	brasero-project-name.c           \
+	brasero-project-name.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

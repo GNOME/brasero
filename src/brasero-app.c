@@ -169,7 +169,7 @@ brasero_app_get_statusbar1 (BraseroApp *app)
 	priv = BRASERO_APP_PRIVATE (app);
 
 	/* FIXME: change with future changes */
-	return priv->statusbar2;
+	return priv->statusbar1;
 }
 
 GtkWidget *
@@ -547,6 +547,10 @@ brasero_menu_item_selected_cb (GtkMenuItem *proxy,
 				    priv->tooltip_ctx,
 				    message);
 		g_free (message);
+
+		gtk_statusbar_push (GTK_STATUSBAR (priv->statusbar1),
+				    priv->tooltip_ctx,
+				    "");
 	}
 }
 
@@ -559,6 +563,8 @@ brasero_menu_item_deselected_cb (GtkMenuItem *proxy,
 	priv = BRASERO_APP_PRIVATE (app);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (priv->statusbar2),
+			   priv->tooltip_ctx);
+	gtk_statusbar_pop (GTK_STATUSBAR (priv->statusbar1),
 			   priv->tooltip_ctx);
 }
 

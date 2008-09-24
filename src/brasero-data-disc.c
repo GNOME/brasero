@@ -70,6 +70,7 @@
 #include "burn-basics.h"
 #include "burn-track.h"
 #include "burn-session.h"
+#include "burn-volume-obj.h"
 
 
 typedef struct _BraseroDataDiscPrivate BraseroDataDiscPrivate;
@@ -84,6 +85,7 @@ struct _BraseroDataDiscPrivate
 
 	GtkUIManager *manager;
 	GtkActionGroup *disc_group;
+	GtkActionGroup *import_group;
 
 	gint press_start_x;
 	gint press_start_y;
@@ -97,15 +99,15 @@ struct _BraseroDataDiscPrivate
 	guint editing:1;
 	guint reject_files:1;
 
+	guint overburning:1;
+
 	guint G2_files:1;
 	guint deep_directory:1;
 };
 
 #define BRASERO_DATA_DISC_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_DISC, BraseroDataDiscPrivate))
 
-static void
-brasero_data_disc_import_session_cb (GtkToggleAction *action,
-				     BraseroDataDisc *disc);
+
 static void
 brasero_data_disc_new_folder_clicked_cb (GtkButton *button,
 					 BraseroDataDisc *disc);
@@ -136,18 +138,12 @@ static GtkActionEntry entries [] = {
 	 G_CALLBACK (brasero_data_disc_new_folder_clicked_cb)},
 };
 
-static GtkToggleActionEntry toggle_entries [] = {
-	{"ImportSession", "drive-optical", N_("Import Session"), NULL, N_("Import session"),
-	 G_CALLBACK (brasero_data_disc_import_session_cb), FALSE},
-};
-
 static const gchar *description = {
 	"<ui>"
 	"<menubar name='menubar' >"
 		"<menu action='EditMenu'>"
 		"<placeholder name='EditPlaceholder'>"
 			"<menuitem action='NewFolder'/>"
-			"<menuitem action='ImportSession'/>"
 		"</placeholder>"
 		"</menu>"
 	"</menubar>"
@@ -162,7 +158,6 @@ static const gchar *description = {
 		"<placeholder name='DiscButtonPlaceholder'>"
 			"<separator/>"
 			"<toolitem action='NewFolder'/>"
-			"<toolitem action='ImportSession'/>"
 		"</placeholder>"
 	"</toolbar>"
 	"</ui>"
@@ -199,6 +194,9 @@ G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_data_disc_iface_disc_init));
 
+#define BRASERO_DATA_DISC_MEDIUM	"brasero-data-disc-medium"
+#define BRASERO_DATA_DISC_MERGE_ID	"brasero-data-disc-merge-id"
+
 /**
  * Actions callbacks
  */
@@ -229,6 +227,7 @@ brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 
 static gboolean
 brasero_data_disc_import_session (BraseroDataDisc *disc,
+				  BraseroMedium *medium,
 				  gboolean import)
 {
 	BraseroDataDiscPrivate *priv;
@@ -238,7 +237,7 @@ brasero_data_disc_import_session (BraseroDataDisc *disc,
 	if (import) {
 		GError *error = NULL;
 
-		if (!brasero_data_session_add_last (BRASERO_DATA_SESSION (priv->project), &error)) {
+		if (!brasero_data_session_add_last (BRASERO_DATA_SESSION (priv->project), medium, &error)) {
 			brasero_data_disc_import_failure_dialog (disc, error);
 			return FALSE;
 		}
@@ -253,22 +252,28 @@ brasero_data_disc_import_session (BraseroDataDisc *disc,
 
 static void
 brasero_data_disc_import_session_cb (GtkToggleAction *action,
-				     BraseroDataDisc *disc)
+				     BraseroDataDisc *self)
 {
 	BraseroDataDiscPrivate *priv;
+	BraseroMedium *medium;
 	gboolean res;
 
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	medium = g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MEDIUM);
+	if (!medium)
+		return;
 
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
-
-	res = brasero_data_disc_import_session (disc, gtk_toggle_action_get_active (action));
+	res = brasero_data_disc_import_session (self,
+						medium,
+						gtk_toggle_action_get_active (action));
 
 	/* make sure the button reflects the current state */
 	if (gtk_toggle_action_get_active (action) != res) {
-		g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, disc);
+		g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, self);
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), res);
-		g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, disc);
+		g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, self);
 	}
 }
 
@@ -576,6 +581,76 @@ brasero_data_disc_row_expanded_cb (GtkTreeView *tree,
 				   BraseroDataDisc *self)
 {
 	brasero_data_disc_set_expand_state (self, treepath, TRUE);
+}
+
+static void
+brasero_data_disc_use_overburn_response_cb (GtkButton *button,
+					    GtkResponseType response,
+					    BraseroDataDisc *self)
+{
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	if (response != GTK_RESPONSE_OK)
+		return;
+
+	priv->overburning = 1;
+}
+
+static void
+brasero_data_disc_project_oversized_cb (BraseroDataProject *project,
+					gboolean oversized,
+					gboolean overburn,
+					BraseroDataDisc *self)
+{
+	GtkWidget *message;
+	BraseroDataDiscPrivate *priv;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	if (overburn) {
+		if (priv->overburning)
+			return;
+
+		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+						      _("Would you like to burn beyond the disc reported capacity?"),
+						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
+							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which can't be properly recognised and therefore need overburn option."
+							"\nNOTE: This option might cause failure."),
+						      -1,
+						      BRASERO_NOTIFY_CONTEXT_SIZE);
+
+		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_WARNING);
+		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+					   BRASERO_DISC_MESSAGE (message),
+					   _("_Overburn"),
+					   _("Burn beyond the disc reported capacity"),
+					   GTK_RESPONSE_OK);
+		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
+					   BRASERO_DISC_MESSAGE (message),
+					   _("_Cancel"),
+					   _("Click here not to use overburning"),
+					   GTK_RESPONSE_CANCEL);
+		
+		g_signal_connect (BRASERO_DISC_MESSAGE (message),
+				  "response",
+				  G_CALLBACK (brasero_data_disc_use_overburn_response_cb),
+				  self);
+	}
+	else if (oversized) {
+		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
+						      _("Please, delete some files from the project."),
+						      _("The size of the project is too large for the disc even with the overburn option."),
+						      -1,
+						      BRASERO_NOTIFY_CONTEXT_SIZE);
+
+		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_WARNING);
+		brasero_disc_message_add_close_button (BRASERO_DISC_MESSAGE (message));
+	}
+	else
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message),
+					       BRASERO_NOTIFY_CONTEXT_SIZE);
 }
 
 static void
@@ -1086,15 +1161,21 @@ brasero_disc_disc_session_import_response_cb (GtkButton *button,
 {
 	gboolean res;
 	GtkAction *action;
+	gchar *action_name;
+	BraseroMedium *medium;
 	BraseroDataDiscPrivate *priv;
 
 	if (response != GTK_RESPONSE_OK)
 		return;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
-	res = brasero_data_disc_import_session (self, TRUE);
 
-	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
+	medium = g_object_get_data (G_OBJECT (button), BRASERO_DATA_DISC_MEDIUM);
+	res = brasero_data_disc_import_session (self, medium, TRUE);
+
+	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+	action = gtk_action_group_get_action (priv->import_group, action_name);
+	g_free (action_name);
 
 	g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, self);
 	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), res);
@@ -1102,50 +1183,177 @@ brasero_disc_disc_session_import_response_cb (GtkButton *button,
 }
 
 static void
+brasero_data_disc_import_button_new (BraseroDataDisc *self,
+				     BraseroMedium *medium)
+{
+	int merge_id;
+	gchar *string;
+	GtkAction *action;
+	gchar *action_name;
+	gchar *volume_name;
+	gchar *description;
+	BraseroDataDiscPrivate *priv;
+	GtkToggleActionEntry toggle_entry = { 0, };
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+	volume_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), FALSE);
+
+	/* Translators: %s is the name of the volume to import */
+	string = g_strdup_printf (_("Import %s"), volume_name);
+	g_free (volume_name);
+
+	toggle_entry.name = action_name;
+	toggle_entry.stock_id = "drive-optical";
+	toggle_entry.label = string;
+	toggle_entry.tooltip = string;
+	toggle_entry.callback = G_CALLBACK (brasero_data_disc_import_session_cb);
+
+	gtk_action_group_add_toggle_actions (priv->import_group,
+					     &toggle_entry,
+					     1,
+					     self);
+	g_free (string);
+
+	action = gtk_action_group_get_action (priv->import_group, action_name);
+	if (!action) {
+		g_free (action_name);
+		return;
+	}
+
+	g_object_ref (medium);
+	g_object_set_data (G_OBJECT (action),
+			   BRASERO_DATA_DISC_MEDIUM,
+			   medium);
+
+	g_object_set (action,
+		      "short-label", _("Import"), /* for toolbar buttons */
+		      NULL);
+
+	description = g_strdup_printf ("<ui>"
+				       "<menubar name='menubar'>"
+				       "<menu action='EditMenu'>"
+				       "<placeholder name='EditPlaceholder'>"
+				       "<menuitem action='%s'/>"
+				       "</placeholder>"
+				       "</menu>"
+				       "</menubar>"
+				       "<toolbar name='Toolbar'>"
+				       "<placeholder name='DiscButtonPlaceholder'>"
+				       "<toolitem action='%s'/>"
+				       "</placeholder>"
+				       "</toolbar>"
+				       "</ui>",
+				       action_name,
+				       action_name);
+
+	merge_id = gtk_ui_manager_add_ui_from_string (priv->manager,
+						      description,
+						      -1,
+						      NULL);
+	g_object_set_data (G_OBJECT( action),
+			   BRASERO_DATA_DISC_MERGE_ID,
+			   GINT_TO_POINTER (merge_id));
+
+	g_free (description);
+	g_free (action_name);
+}
+
+static void
 brasero_data_disc_session_available_cb (BraseroDataSession *session,
-					gboolean multisession,
+					BraseroMedium *medium,
+					gboolean available,
 					BraseroDataDisc *self)
 {
-	GtkAction *action;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
-	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
 
-	if (multisession) {
+	if (available) {
+		gchar *string;
+		gchar *volume_name;
 		GtkWidget *message;
 
-		gtk_action_set_sensitive (action, TRUE);
+		/* create button and menu entry */
+		brasero_data_disc_import_button_new (self, medium);
+
+		/* ask user */
+		volume_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), FALSE);
+
+		/* Translators: %s is the name of the volume to import */
+		string = g_strdup_printf (_("Import %s"), volume_name);
+		g_free (volume_name);
+
+		string = g_strdup_printf (_("Do you want to import the session from \'%s\'?"), volume_name);
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
-						      _("A multisession disc is inserted:"),
-						      _("Do you want to import its contents?"),
+						      string,
+						      _("That way, old files from previous sessions will be usable after burning."),
 						      10000,
 						      BRASERO_NOTIFY_CONTEXT_MULTISESSION);
+		g_free (string);
 
-		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message), GTK_STOCK_DIALOG_INFO);
+		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
+						GTK_STOCK_DIALOG_INFO);
 
 		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
 					   BRASERO_DISC_MESSAGE (message),
 					   _("_Import Session"),
 					   _("Click here to import its contents"),
 					   GTK_RESPONSE_OK);
+
+		/* no need to ref the medium since its removal would cause the
+		 * hiding of the message it's associated with */
+		g_object_set_data (G_OBJECT (message),
+				   BRASERO_DATA_DISC_MEDIUM,
+				   medium);
+
 		g_signal_connect (BRASERO_DISC_MESSAGE (message),
 				  "response",
 				  G_CALLBACK (brasero_disc_disc_session_import_response_cb),
 				  self);
 	}
 	else {
+		int merge_id;
+		GtkAction *action;
+		gchar *action_name;
+
+		action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+		action = gtk_action_group_get_action (priv->import_group, action_name);
+		g_free (action_name);
+
 		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message), BRASERO_NOTIFY_CONTEXT_MULTISESSION);
-		gtk_action_set_sensitive (action, FALSE);
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
+
+		merge_id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (action), BRASERO_DATA_DISC_MERGE_ID));
+		gtk_ui_manager_remove_ui (priv->manager, merge_id);
+		gtk_action_group_remove_action (priv->import_group, action);
+
+		/* unref it since we reffed it when it was associated with the action */
+		g_object_unref (medium);
 	}
 }
 
 static void
 brasero_data_disc_session_loaded_cb (BraseroDataSession *session,
+				     BraseroMedium *medium,
 				     gboolean loaded,
 				     BraseroDataDisc *self)
 {
+	BraseroDataDiscPrivate *priv;
+	gchar *action_name;
+	GtkAction *action;
+
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+	action = gtk_action_group_get_action (priv->import_group, action_name);
+	g_free (action_name);
+
+	g_signal_handlers_block_by_func (action, brasero_data_disc_import_session_cb, self);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), loaded);
+	g_signal_handlers_unblock_by_func (action, brasero_data_disc_import_session_cb, self);
+
+	/* Update buttons states */
 	if (loaded)
 		brasero_disc_flags_changed (BRASERO_DISC (self), BRASERO_BURN_FLAG_MERGE);
 	else
@@ -1171,11 +1379,16 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
 		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 
+	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)))
+		brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->project));
+
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
 		g_slist_free (priv->load_errors);
 		priv->load_errors = NULL;
 	}
+
+	priv->overburning = FALSE;
 
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
@@ -1195,13 +1408,19 @@ static void
 brasero_data_disc_reset (BraseroDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
-	GtkAction *action;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
-	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
+	/* Unload session */
+	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)))
+		brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->project));
+
+	/* Hide all toggle actions for session importing */
+	if (gtk_action_group_get_visible (priv->import_group))
+		gtk_action_group_set_visible (priv->import_group, FALSE);
+
+	if (gtk_action_group_get_visible (priv->disc_group))
+		gtk_action_group_set_visible (priv->disc_group, FALSE);
 
 	if (priv->load_errors) {
 		g_slist_foreach (priv->load_errors, (GFunc) g_free , NULL);
@@ -1210,6 +1429,8 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	}
 
 	brasero_data_project_reset (priv->project);
+
+	priv->overburning = FALSE;
 
 	priv->loading = FALSE;
 	priv->G2_files = FALSE;
@@ -1371,12 +1592,24 @@ brasero_data_disc_set_session_param (BraseroDisc *self,
 
 	/* set multisession options */
 	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project))) {
+		BraseroDrive *drive;
+		BraseroMedium *medium;
+
+		medium = brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project));
+		if (medium)
+			drive = brasero_medium_get_drive (medium);
+		else
+			drive = NULL;
+
+		if (priv->overburning)
+			brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_OVERBURN);
+
 		/* remove the following flag just in case */
 		brasero_burn_session_remove_flag (session,
 						  BRASERO_BURN_FLAG_FAST_BLANK|
 						  BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
 		brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_MERGE);
-		brasero_burn_session_set_burner (session, brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)));
+		brasero_burn_session_set_burner (session, drive);
 	}
 
 	type.type = BRASERO_TRACK_TYPE_DATA;
@@ -1544,16 +1777,6 @@ brasero_data_disc_get_selected_uri (BraseroDisc *disc,
 	return TRUE;
 }
 
-static void
-brasero_data_disc_set_drive (BraseroDisc *disc, BraseroDrive *drive)
-{
-	BraseroDataDiscPrivate *priv;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-
-	brasero_data_session_set_drive (BRASERO_DATA_SESSION (priv->project), drive);
-}
-
 static guint
 brasero_data_disc_add_ui (BraseroDisc *disc,
 			  GtkUIManager *manager,
@@ -1565,7 +1788,6 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 	guint merge_id;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
-
 	if (priv->message) {
 		g_object_unref (priv->message);
 		priv->message = NULL;
@@ -1581,39 +1803,56 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 					      entries,
 					      G_N_ELEMENTS (entries),
 					      disc);
-		gtk_action_group_add_toggle_actions (priv->disc_group,
-						     toggle_entries,
-						     G_N_ELEMENTS (toggle_entries),
-						     disc);
 		gtk_ui_manager_insert_action_group (manager,
 						    priv->disc_group,
 						    0);
+
+		merge_id = gtk_ui_manager_add_ui_from_string (manager,
+							      description,
+							      -1,
+							      &error);
+		if (!merge_id) {
+			BRASERO_BURN_LOG ("Adding ui elements failed: %s", error->message);
+			g_error_free (error);
+			return 0;
+		}
+
+		action = gtk_action_group_get_action (priv->disc_group, "NewFolder");
+		g_object_set (action,
+			      "short-label", _("New Folder"), /* for toolbar buttons */
+			      NULL);
+	
+		priv->manager = manager;
+		g_object_ref (manager);
 	}
+	else
+		gtk_action_group_set_visible (priv->disc_group, TRUE);
 
-	merge_id = gtk_ui_manager_add_ui_from_string (manager,
-						      description,
-						      -1,
-						      &error);
-	if (!merge_id) {
-		BRASERO_BURN_LOG ("Adding ui elements failed: %s", error->message);
-		g_error_free (error);
-		return 0;
+	/* Now let's take care of all the available sessions */
+	if (!priv->import_group) {
+		GSList *iter;
+		GSList *list;
+
+		priv->import_group = gtk_action_group_new ("session_import_group");
+		gtk_action_group_set_translation_domain (priv->import_group, GETTEXT_PACKAGE);
+		gtk_ui_manager_insert_action_group (manager,
+						    priv->import_group,
+						    0);
+
+		list = brasero_data_session_get_available_media (BRASERO_DATA_SESSION (priv->project));
+		for (iter = list; iter; iter = iter->next) {
+			BraseroMedium *medium;
+
+			medium = iter->data;
+			brasero_data_disc_import_button_new (BRASERO_DATA_DISC (disc), medium);
+		}
+		g_slist_foreach (list, (GFunc) g_object_unref, NULL);
+		g_slist_free (list);
 	}
+	else
+		gtk_action_group_set_visible (priv->import_group, TRUE);
 
-	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
-	gtk_action_set_sensitive (action, FALSE);
-	g_object_set (action,
-		      "short-label", _("Import"), /* for toolbar buttons */
-		      NULL);
-
-	action = gtk_action_group_get_action (priv->disc_group, "NewFolder");
-	g_object_set (action,
-		      "short-label", _("New Folder"), /* for toolbar buttons */
-		      NULL);
-
-	priv->manager = manager;
-	g_object_ref (manager);
-	return merge_id;
+	return -1;
 }
 
 /**
@@ -2135,6 +2374,11 @@ brasero_data_disc_init (BraseroDataDisc *object)
 			  G_CALLBACK (brasero_data_disc_project_loaded_cb),
 			  object);
 	g_signal_connect (priv->project,
+			  "oversize",
+			  G_CALLBACK (brasero_data_disc_project_oversized_cb),
+			  object);
+
+	g_signal_connect (priv->project,
 			  "row-inserted",
 			  G_CALLBACK (brasero_data_disc_contents_added_cb),
 			  object);
@@ -2381,7 +2625,6 @@ brasero_data_disc_iface_disc_init (BraseroDiscIface *iface)
 	iface->get_status = brasero_data_disc_get_status;
 	iface->get_selected_uri = brasero_data_disc_get_selected_uri;
 	iface->add_ui = brasero_data_disc_add_ui;
-	iface->set_drive = brasero_data_disc_set_drive;
 }
 
 static void

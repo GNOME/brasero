@@ -146,7 +146,7 @@ brasero_notify_message_add (BraseroNotify *self,
 	return message;
 }
 
-void
+GtkWidget *
 brasero_notify_button_add (BraseroNotify *self,
 			   BraseroDiscMessage *message,
 			   const gchar *text,
@@ -156,11 +156,11 @@ brasero_notify_button_add (BraseroNotify *self,
 	BraseroNotifyPrivate *priv;
 
 	priv = BRASERO_NOTIFY_PRIVATE (self);
-	brasero_disc_message_add_button (BRASERO_DISC_MESSAGE (message),
-					 priv->button,
-					 text,
-					 tooltip,
-					 response);
+	return brasero_disc_message_add_button (BRASERO_DISC_MESSAGE (message),
+						priv->button,
+						text,
+						tooltip,
+						response);
 }
 
 static void

@@ -141,9 +141,6 @@ struct _BraseroDiscIface {
 	guint			(*add_ui)		(BraseroDisc *disc,
 							 GtkUIManager *manager,
 							 GtkWidget *message);
-
-	void			(*set_drive)		(BraseroDisc *disc,
-							 BraseroDrive *drive);
 };
 
 GType brasero_disc_get_type ();
@@ -207,10 +204,6 @@ void
 brasero_track_clear (BraseroDiscTrack *track);
 void
 brasero_track_free (BraseroDiscTrack *track);
-
-void
-brasero_disc_set_current_drive (BraseroDisc *disc,
-				BraseroDrive *drive);
 
 GtkWidget *
 brasero_disc_get_use_info_notebook (void);

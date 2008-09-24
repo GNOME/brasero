@@ -77,7 +77,7 @@ brasero_disc_message_set_progress_active (BraseroDiscMessage *message,
 void
 brasero_disc_message_set_progress (BraseroDiscMessage *self,
 				   gdouble progress);
-void
+GtkWidget *
 brasero_disc_message_add_button (BraseroDiscMessage *message,
 				 GtkSizeGroup *group,
 				 const gchar *text,

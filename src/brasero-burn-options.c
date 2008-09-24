@@ -235,32 +235,19 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 		gtk_widget_show (priv->info);
 	}
 
-	if (priv->message_input) {
-		gtk_widget_hide (priv->message_input);
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_input),
-					       BRASERO_NOTIFY_CONTEXT_SIZE);
-	}
-
-	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
-				       BRASERO_NOTIFY_CONTEXT_SIZE);
-
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
-		GtkWidget *message;
-
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-						      _("Please, choose another CD or DVD or insert a new one."),
-						      _("The size of the project is too large for the disc even with the overburn option."),
-						      -1,
-						      BRASERO_NOTIFY_CONTEXT_SIZE);
+		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+					    _("Please, choose another CD or DVD or insert a new one."),
+					    _("The size of the project is too large for the disc even with the overburn option."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
-		GtkWidget *message;
-
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-						      _("Please, insert a recordable CD or DVD."),
-						      _("There is no recordable medium inserted."),
-						      -1,
-						      BRASERO_NOTIFY_CONTEXT_SIZE);
+		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+					    _("Please, insert a recordable CD or DVD."),
+					    _("There is no recordable medium inserted."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_INPUT_MEDIUM) {
 		GtkWidget *message;
@@ -287,12 +274,11 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 		}
 	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
-		gtk_widget_show (priv->message_input);
-		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-						      _("Please, replace the disc with a recordable CD or DVD."),
-						      _("The medium is not writable with the current set of plugins."),
-						      -1,
-						      BRASERO_NOTIFY_CONTEXT_SIZE);
+		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+					    _("Please, replace the disc with a recordable CD or DVD."),
+					    _("The medium is not writable with the current set of plugins."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_OVERBURN_NECESSARY) {
 		GtkWidget *message;
@@ -300,6 +286,7 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						      _("Would you like to burn beyond the disc reported capacity?"),
 						      _("The size of the project is too large for the disc."
+							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which can't be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -320,7 +307,17 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 	else if (valid == BRASERO_SESSION_APPENDING) {
 		
 	}
-*/
+*/	else {
+		if (priv->message_input) {
+			gtk_widget_hide (priv->message_input);
+			brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_input),
+						       BRASERO_NOTIFY_CONTEXT_SIZE);
+		}
+
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+					       BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);
 }
 
@@ -399,7 +396,7 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 
 	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
 	selection = brasero_utils_pack_properties (string,
-						  // priv->message_output,
+						   priv->message_output,
 						   priv->copies_box,
 						   priv->info,
 						   priv->selection,

@@ -573,11 +573,26 @@ brasero_session_cfg_check (BraseroSessionCfg *self)
 
 	priv->configuring = FALSE;
 	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
-	g_signal_emit (self,
-		       session_cfg_signals [IS_VALID_SIGNAL],
-		       0,
-		       (result == BRASERO_BURN_OK)? 
-		       BRASERO_SESSION_VALID:BRASERO_SESSION_NOT_SUPPORTED);
+
+	if (result != BRASERO_BURN_OK) {
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NOT_SUPPORTED);
+		return;
+	}
+
+	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self)))
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_VALID);
+
+	else
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       brasero_session_cfg_check_size (self));
 }
 
 static void

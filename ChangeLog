@@ -1,5 +1,78 @@
 2008-09-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Another patch that moves the project name back to main window (was in
+	burn option dialogs before)
+	It removes the project size as a consequence, the size of the project is
+	now in the statusbar
+	It modifies the way multisession media are displayed and loaded
+	It fixes some small bugs introduced by previous changes
+
+	One known bug: the project name is not updated when a multisession disc
+	is loaded
+
+	* src/Makefile.am:
+	* src/brasero-app.c (brasero_app_get_statusbar1),
+	(brasero_menu_item_selected_cb), (brasero_menu_item_deselected_cb):
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb),
+	(brasero_burn_options_init):
+	* src/brasero-data-disc.c (brasero_data_disc_import_session),
+	(brasero_data_disc_import_session_cb),
+	(brasero_data_disc_use_overburn_response_cb),
+	(brasero_data_disc_project_oversized_cb),
+	(brasero_disc_disc_session_import_response_cb),
+	(brasero_data_disc_import_button_new),
+	(brasero_data_disc_session_available_cb),
+	(brasero_data_disc_session_loaded_cb), (brasero_data_disc_clear),
+	(brasero_data_disc_reset), (brasero_data_disc_set_session_param),
+	(brasero_data_disc_add_ui), (brasero_data_disc_init),
+	(brasero_data_disc_iface_disc_init):
+	* src/brasero-data-session.c (brasero_data_session_check_size),
+	(brasero_data_session_size_changed),
+	(brasero_data_session_remove_last),
+	(brasero_data_session_add_last),
+	(brasero_data_session_has_available_media),
+	(brasero_data_session_get_available_media),
+	(brasero_data_session_get_loaded_medium),
+	(brasero_data_session_is_valid_multi),
+	(brasero_data_session_disc_added_cb),
+	(brasero_data_session_disc_removed_cb),
+	(brasero_data_session_init), (brasero_data_session_finalize),
+	(brasero_data_session_class_init):
+	* src/brasero-data-session.h:
+	* src/brasero-disc-message.c (brasero_disc_message_add_button),
+	(brasero_disc_message_add_close_button):
+	* src/brasero-disc-message.h:
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_valid_media_cb):
+	* src/brasero-disc.c:
+	* src/brasero-disc.h:
+	* src/brasero-file-filtered.c
+	(brasero_file_filtered_get_label_text):
+	* src/brasero-marshal.list:
+	* src/brasero-notify.c (brasero_notify_button_add):
+	* src/brasero-notify.h:
+	* src/brasero-project-name.c (brasero_project_name_truncate_label),
+	(brasero_project_name_get_default_label),
+	(brasero_project_name_label_insert_text),
+	(brasero_project_name_label_changed),
+	(brasero_project_name_set_type),
+	(brasero_project_name_set_multisession_medium),
+	(brasero_project_name_init), (brasero_project_name_finalize),
+	(brasero_project_name_class_init), (brasero_project_name_new):
+	* src/brasero-project-name.h:
+	* src/brasero-project-size.c:
+	* src/brasero-project-size.h:
+	* src/brasero-project.c (brasero_project_get_proportion),
+	(brasero_project_init), (brasero_project_update_project_size),
+	(brasero_project_size_changed_cb),
+	(brasero_project_flags_changed_cb), (brasero_project_burn),
+	(brasero_project_switch), (brasero_project_set_none),
+	(brasero_project_open_project), (brasero_project_open_playlist):
+	* src/brasero-session-cfg.c (brasero_session_cfg_check):
+
+2008-09-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix problem with no message being displayed when session is not supported
 
 	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb):

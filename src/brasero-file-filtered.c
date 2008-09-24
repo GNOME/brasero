@@ -97,7 +97,6 @@ G_DEFINE_TYPE (BraseroFileFiltered, brasero_file_filtered, GTK_TYPE_EXPANDER);
 static gchar *
 brasero_file_filtered_get_label_text (guint num, gboolean expanded)
 {
-	gchar *markup;
 	gchar *label;
 
 	if (expanded) {
@@ -113,10 +112,7 @@ brasero_file_filtered_get_label_text (guint num, gboolean expanded)
 			label = g_strdup_printf (ngettext ("Show the _filtered file list (%d file)", "Show the _filtered file list (%d files)", num), num);
 	}
 
-	markup = g_strdup_printf ("<span weight=\"bold\" size=\"medium\">%s</span>", label);
-	g_free (label);
-
-	return markup;
+	return label;
 }
 
 static void

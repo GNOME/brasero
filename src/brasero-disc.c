@@ -338,22 +338,6 @@ brasero_disc_add_ui (BraseroDisc *disc, GtkUIManager *manager, GtkWidget *messag
 }
 
 void
-brasero_disc_set_current_drive (BraseroDisc *disc,
-				BraseroDrive *drive)
-{
-	BraseroDiscIface *iface;
-
-	if (!disc)
-		return;
-
-	g_return_if_fail (BRASERO_IS_DISC (disc));
-
-	iface = BRASERO_DISC_GET_IFACE (disc);
-	if (iface->set_drive)
-		(* iface->set_drive) (disc, drive);
-}
-
-void
 brasero_disc_selection_changed (BraseroDisc *disc)
 {
 	g_return_if_fail (BRASERO_IS_DISC (disc));

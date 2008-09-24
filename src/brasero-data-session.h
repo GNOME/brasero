@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include "burn-drive.h"
+#include "burn-medium.h"
 #include "brasero-data-project.h"
 
 G_BEGIN_DECLS
@@ -54,15 +54,19 @@ GType brasero_data_session_get_type (void) G_GNUC_CONST;
 
 gboolean
 brasero_data_session_add_last (BraseroDataSession *session,
+			       BraseroMedium *medium,
 			       GError **error);
-BraseroDrive *
-brasero_data_session_get_loaded_medium (BraseroDataSession *session);
-
-void
-brasero_data_session_set_drive (BraseroDataSession *session,
-				BraseroDrive *drive);
 void
 brasero_data_session_remove_last (BraseroDataSession *session);
+
+BraseroMedium *
+brasero_data_session_get_loaded_medium (BraseroDataSession *session);
+
+GSList *
+brasero_data_session_get_available_media (BraseroDataSession *session);
+
+gboolean
+brasero_data_session_has_available_media (BraseroDataSession *session);
 
 G_END_DECLS
 

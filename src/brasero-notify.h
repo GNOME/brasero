@@ -65,7 +65,7 @@ brasero_notify_message_add (BraseroNotify *notify,
 			    const gchar *secondary,
 			    gint timeout,
 			    guint context_id);
-void
+GtkWidget *
 brasero_notify_button_add (BraseroNotify *notify,
 			   BraseroDiscMessage *message,
 			   const gchar *text,
