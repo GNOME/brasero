@@ -41,6 +41,7 @@
 #include "brasero-video-tree-model.h"
 #include "brasero-multi-song-props.h"
 #include "brasero-song-properties.h"
+#include "brasero-session-cfg.h"
 
 typedef struct _BraseroVideoDiscPrivate BraseroVideoDiscPrivate;
 struct _BraseroVideoDiscPrivate
@@ -1326,11 +1327,24 @@ BraseroDiscResult
 brasero_video_disc_set_session_param (BraseroDisc *self,
 				      BraseroBurnSession *session)
 {
+	BraseroVideoDiscPrivate *priv;
 	BraseroTrackType type;
+	GtkTreeModel *model;
+	GValue *value;
+
+	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 
 	type.type = BRASERO_TRACK_TYPE_AUDIO;
 	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED|BRASERO_VIDEO_FORMAT_UNDEFINED;
 	brasero_burn_session_set_input_type (session, &type);
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT64);
+	g_value_set_int64 (value, brasero_video_project_get_size (BRASERO_VIDEO_PROJECT (model)));
+	brasero_burn_session_tag_add (session,
+				      BRASERO_AUDIO_TRACK_SIZE_TAG,
+				      value);
 	return BRASERO_BURN_OK;
 }
 

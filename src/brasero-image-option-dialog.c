@@ -41,21 +41,23 @@
 
 #include <gconf/gconf-client.h>
 
-#include "brasero-utils.h"
 #include "burn-basics.h"
-#include "burn-plugin-manager.h"
+#include "burn-caps.h"
+#include "burn-drive.h"
+
+#include "brasero-utils.h"
 #include "brasero-session-cfg.h"
 #include "brasero-image-option-dialog.h"
 #include "brasero-image-type-chooser.h"
 #include "brasero-dest-selection.h"
-#include "burn-drive.h"
 #include "brasero-io.h"
+#include "brasero-burn-options.h"
+
 
 #define BRASERO_KEY_ISO_DIRECTORY		"/apps/brasero/display/iso_folder"
-G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (BraseroImageOptionDialog, brasero_image_option_dialog, BRASERO_TYPE_BURN_OPTIONS);
 
 struct _BraseroImageOptionDialogPrivate {
-	BraseroBurnSession *session;
 	BraseroTrack *track;
 
 	BraseroBurnCaps *caps;
@@ -63,10 +65,10 @@ struct _BraseroImageOptionDialogPrivate {
 	BraseroIO *io;
 	BraseroIOJobBase *info_type;
 
-	GtkWidget *selection;
 	GtkWidget *format;
 	GtkWidget *file;
-	GtkWidget *button;
+
+	gulong valid_sig;
 };
 typedef struct _BraseroImageOptionDialogPrivate BraseroImageOptionDialogPrivate;
 
@@ -86,8 +88,10 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 				       const gchar *toc)
 {
 	BraseroImageOptionDialogPrivate *priv;
+	BraseroBurnSession *session;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (dialog);
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 
 	/* add a track every time to send a signal */
 	if (priv->track) {
@@ -102,19 +106,22 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 		else if (toc)
 			uri = brasero_track_get_toc_source (priv->track, TRUE);
 
-		if (!toc && !image && !uri)
+		if (!toc && !image && !uri) {
+			g_object_unref (session);
 			return;
+		}
 
 		if((format == type.subtype.img_format)
 		&&  uri && (image || toc)
-		&& !strcmp (uri, image?image:toc)) {
+		&& !strcmp (uri, image? image:toc)) {
+			g_object_unref (session);
 			g_free (uri);
 			return;
 		}
 
 		g_free (uri);
 
-		brasero_burn_session_clear_current_track (priv->session);
+		brasero_burn_session_clear_current_track (session);
 		brasero_track_unref (priv->track);
 	}
 
@@ -124,7 +131,8 @@ brasero_image_option_dialog_set_track (BraseroImageOptionDialog *dialog,
 					image,
 					toc,
 					format);
-	brasero_burn_session_add_track (priv->session, priv->track);
+	brasero_burn_session_add_track (session, priv->track);
+	g_object_unref (session);
 }
 
 static void
@@ -301,6 +309,7 @@ static void
 brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 {
 	BraseroImageOptionDialogPrivate *priv;
+	BraseroBurnSession *session;
 	BraseroImageFormat formats;
 	BraseroImageFormat format;
 	BraseroTrackType output;
@@ -313,9 +322,11 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 	if (!priv->format)
 		return;
 
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
+
 	/* get the available image types */
 	output.type = BRASERO_TRACK_TYPE_DISC;
-	drive = brasero_burn_session_get_burner (priv->session);
+	drive = brasero_burn_session_get_burner (session);
 	medium = brasero_drive_get_medium (drive);
 	output.subtype.media = brasero_medium_get_status (medium);
 
@@ -328,7 +339,7 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 
 		input.subtype.img_format = format;
 		result = brasero_burn_caps_is_input_supported (priv->caps,
-							       priv->session,
+							       session,
 							       &input,
 							       FALSE);
 		if (result == BRASERO_BURN_OK)
@@ -337,6 +348,8 @@ brasero_image_option_dialog_set_formats (BraseroImageOptionDialog *dialog)
 
 	brasero_image_type_chooser_set_formats (BRASERO_IMAGE_TYPE_CHOOSER (priv->format),
 					        formats);
+
+	g_object_unref (session);
 }
 
 void
@@ -473,21 +486,15 @@ brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog)
 		g_free (uri);
 	}
 
-	g_object_ref (priv->session);
-	return priv->session;
+	return brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 }
 
 static void
 brasero_image_option_dialog_valid_media_cb (BraseroBurnSession *session,
-					    gboolean valid,
+					    BraseroSessionError valid,
 					    BraseroImageOptionDialog *self)
 {
-	BraseroImageOptionDialogPrivate *priv;
-
-	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (self);
-
 	brasero_image_option_dialog_set_formats (self);
-	gtk_widget_set_sensitive (priv->button, valid);
 }
 
 static void	
@@ -514,64 +521,26 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 {
 	gchar *uri;
 	gchar *string;
+	GtkWidget *box1;
 	GtkWidget *label;
-	GtkWidget *button;
-	GtkWidget *options;
 	GConfClient *client;
-	GtkWidget *box, *box1;
 	GtkFileFilter *filter;
+	BraseroBurnSession *session;
 	BraseroImageOptionDialogPrivate *priv;
 
 	priv = BRASERO_IMAGE_OPTION_DIALOG_PRIVATE (obj);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-
-	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_widget_show (button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      button,
-				      GTK_RESPONSE_CANCEL);
-
-	priv->button = brasero_utils_make_button (_("_Burn"),
-						  NULL,
-						  "media-optical-burn",
-						  GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (priv->button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      priv->button,
-				      GTK_RESPONSE_OK);
-
 	priv->caps = brasero_burn_caps_get_default ();
 
-	priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
-	g_signal_connect (priv->session,
-			  "is-valid",
-			  G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
-			  obj);
-	
-	brasero_burn_session_add_flag (priv->session,
-				       BRASERO_BURN_FLAG_NOGRACE|
-				       BRASERO_BURN_FLAG_CHECK_SIZE|
-				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT);
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (obj));
+	priv->valid_sig = g_signal_connect (session,
+					    "is-valid",
+					    G_CALLBACK (brasero_image_option_dialog_valid_media_cb),
+					    obj);
+	g_object_unref (session);
 
-	/* first box */
-	priv->selection = brasero_dest_selection_new (priv->session);
-
-	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
-	options = brasero_utils_pack_properties (string,
-						 priv->selection,
-						 NULL);
-	g_free (string);
-
-	gtk_widget_show (options);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    options,
-			    FALSE,
-			    FALSE,
-			    6);
-
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
-						BRASERO_MEDIA_TYPE_WRITABLE);
+	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (obj),
+					     BRASERO_MEDIA_TYPE_WRITABLE);
 
 	/* Image properties */
 	box1 = gtk_table_new (2, 2, FALSE);
@@ -672,18 +641,14 @@ brasero_image_option_dialog_init (BraseroImageOptionDialog *obj)
 			  obj);
 
 	string = g_strdup_printf ("<b>%s</b>", _("Image"));
-	box = brasero_utils_pack_properties (string,
-					     box1,
-					     NULL);
+	brasero_burn_options_add_source (BRASERO_BURN_OPTIONS (obj), 
+					 string,
+					 box1,
+					 NULL);
 	g_free (string);
 
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			  box,
-			  TRUE,
-			  FALSE,
-			  6);
+	gtk_widget_show_all (box1);
 
-	gtk_widget_show_all (box);
 	brasero_image_option_dialog_set_formats (obj);
 }
 
@@ -709,9 +674,14 @@ brasero_image_option_dialog_finalize (GObject *object)
 		priv->track = NULL;
 	}
 
-	if (priv->session) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
+	if (priv->valid_sig) {
+		BraseroBurnSession *session;
+
+		session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (object));
+		g_signal_handler_disconnect (session, priv->valid_sig);
+		g_object_unref (session);
+
+		priv->valid_sig = 0;
 	}
 
 	if (priv->caps) {

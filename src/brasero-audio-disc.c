@@ -70,6 +70,7 @@
 #include "brasero-song-properties.h"
 #include "brasero-io.h"
 #include "brasero-split-dialog.h"
+#include "brasero-session-cfg.h"
 #include "eggtreemultidnd.h"
 
 #ifdef BUILD_INOTIFY
@@ -255,7 +256,6 @@ struct _BraseroAudioDiscPrivate {
 	BraseroIOJobBase *add_dir;
 	BraseroIOJobBase *add_uri;
 	BraseroIOJobBase *add_playlist;
-
 
 	GtkWidget *notebook;
 	GtkWidget *tree;
@@ -2015,10 +2015,19 @@ brasero_audio_disc_set_session_param (BraseroDisc *disc,
 				      BraseroBurnSession *session)
 {
 	BraseroTrackType type;
+	GValue *value = NULL;
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT64);
+	g_value_set_int64 (value, BRASERO_AUDIO_DISC (disc)->priv->sectors);
+	brasero_burn_session_tag_add (session,
+				      BRASERO_AUDIO_TRACK_SIZE_TAG,
+				      value);
 
 	type.type = BRASERO_TRACK_TYPE_AUDIO;
 	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED;
 	brasero_burn_session_set_input_type (session, &type);
+
 	return BRASERO_BURN_OK;
 }
 

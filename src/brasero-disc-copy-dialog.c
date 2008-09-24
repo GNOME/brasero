@@ -25,13 +25,13 @@
  */
 
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -53,32 +53,18 @@
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-dest-selection.h"
 #include "brasero-src-selection.h"
+#include "brasero-burn-options.h"
 
-G_DEFINE_TYPE (BraseroDiscCopyDialog, brasero_disc_copy_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (BraseroDiscCopyDialog, brasero_disc_copy_dialog, BRASERO_TYPE_BURN_OPTIONS);
 
 struct BraseroDiscCopyDialogPrivate {
-	GtkWidget *selection;
 	GtkWidget *source;
-
-	GtkWidget *button;
-
-	BraseroBurnSession *session;
 };
 typedef struct BraseroDiscCopyDialogPrivate BraseroDiscCopyDialogPrivate;
 
 #define BRASERO_DISC_COPY_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DISC_COPY_DIALOG, BraseroDiscCopyDialogPrivate))
 
 static GObjectClass *parent_class = NULL;
-
-BraseroBurnSession *
-brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self)
-{
-	BraseroDiscCopyDialogPrivate *priv;
-
-	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
-	g_object_ref (priv->session);
-	return priv->session;
-}
 
 gboolean
 brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
@@ -91,78 +77,30 @@ brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
 }
 
 static void
-brasero_disc_copy_dialog_valid_media_cb (BraseroBurnSession *session,
-					 gboolean valid,
-					 BraseroDiscCopyDialog *self)
-{
-	BraseroDiscCopyDialogPrivate *priv;
-
-	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
-	gtk_widget_set_sensitive (priv->button, valid);
-}
-
-static void
 brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 {
 	gchar *title_str;
-	GtkWidget *button;
+	BraseroBurnSession *session;
 	BraseroDiscCopyDialogPrivate *priv;
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (obj);
 
-	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD Copy Options"));
 
-	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_widget_show (button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      button, 
-				      GTK_RESPONSE_CANCEL);
-
-	priv->button = brasero_utils_make_button (_("_Copy"),
-						  NULL,
-						  "media-optical-burn",
-						  GTK_ICON_SIZE_BUTTON);
-	gtk_widget_show (priv->button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
-				      priv->button,
-				      GTK_RESPONSE_OK);
-
-	/* create a session and add some default sane flags */
-	priv->session = BRASERO_BURN_SESSION (brasero_session_cfg_new ());
-	g_signal_connect (priv->session,
-			  "is_valid",
-			  G_CALLBACK (brasero_disc_copy_dialog_valid_media_cb),
-			  obj);
-
-	brasero_burn_session_add_flag (priv->session,
-				       BRASERO_BURN_FLAG_NOGRACE|
-				       BRASERO_BURN_FLAG_CHECK_SIZE|
-				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT);
+	brasero_burn_options_add_burn_button (BRASERO_BURN_OPTIONS (obj),
+					      _("_Copy"),
+					      "media-optical-burn");
 
 	/* take care of source media */
-	priv->source = brasero_src_selection_new (priv->session);
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (obj));
+	priv->source = brasero_src_selection_new (session);
+	g_object_unref (session);
+
 	title_str = g_strdup_printf ("<b>%s</b>", _("Select disc to copy"));
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    brasero_utils_pack_properties (title_str,
-							   priv->source,
-							   NULL),
-			    FALSE,
-			    FALSE,
-			    0);
-	g_free (title_str);
-
-	/* destination drive */
-	priv->selection = brasero_dest_selection_new (priv->session);
-
-	title_str = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
-			    brasero_utils_pack_properties (title_str,
-							   priv->selection,
-							   NULL),
-			    FALSE,
-			    FALSE,
-			    0);
+	brasero_burn_options_add_source (BRASERO_BURN_OPTIONS (obj),
+					 title_str,
+					 priv->source,
+					 NULL);
 	g_free (title_str);
 
 	/* only show media with something to be read on them */
@@ -172,22 +110,14 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	/* This is a special case. When we're copying, someone may want to read
 	 * and burn to the same drive so provided that the drive is a burner
 	 * then show its contents. */
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection),
-						BRASERO_MEDIA_TYPE_ANY_IN_BURNER|
-						BRASERO_MEDIA_TYPE_FILE);
+	brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (obj),
+					     BRASERO_MEDIA_TYPE_ANY_IN_BURNER|
+					     BRASERO_MEDIA_TYPE_FILE);
 }
 
 static void
 brasero_disc_copy_dialog_finalize (GObject *object)
 {
-	BraseroDiscCopyDialogPrivate *priv;
-
-	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (object);
-	if (priv->session) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
-
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

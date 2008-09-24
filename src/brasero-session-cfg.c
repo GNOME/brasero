@@ -30,6 +30,7 @@
 #include <gconf/gconf-client.h>
 
 #include "burn-basics.h"
+#include "burn-debug.h"
 #include "burn-plugin-manager.h"
 #include "burn-session.h"
 #include "burn-caps.h"
@@ -206,8 +207,8 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 static void
 brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 {
+	BraseroTrackType source = { 0, };
 	BraseroSessionCfgPrivate *priv;
-	BraseroTrackType source;
 	BraseroBurnFlag flags;
 	BraseroMedium *medium;
 	BraseroDrive *drive;
@@ -219,13 +220,9 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
+	/* The next two must work as they were checked earlier */
 	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
-	if (source.type == BRASERO_TRACK_TYPE_NONE)
-		return;
-
 	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-	if (!drive)
-		return;
 
 	medium = brasero_drive_get_medium (drive);
 	if (!medium || brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE)
@@ -324,10 +321,116 @@ brasero_session_cfg_check_drive_settings (BraseroSessionCfg *self)
 	brasero_session_cfg_save_drive_properties (self);
 }
 
+static BraseroSessionError
+brasero_session_cfg_check_size (BraseroSessionCfg *self)
+{
+	BraseroBurnFlag flags;
+	BraseroMedium *medium;
+	BraseroDrive *burner;
+	GValue *value = NULL;
+	/* in sectors */
+	gint64 session_size;
+	gint64 max_sectors;
+	gint64 disc_size;
+	GSList *iter;
+
+	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
+	if (!burner)
+		return BRASERO_SESSION_NO_OUTPUT;
+
+	/* FIXME: here we could check the hard drive space */
+	if (brasero_drive_is_fake (burner))
+		return BRASERO_SESSION_VALID;
+
+	medium = brasero_drive_get_medium (burner);
+	if (!medium)
+		return BRASERO_SESSION_NO_OUTPUT;
+
+	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
+	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+		brasero_medium_get_free_space (medium, NULL, &disc_size);
+	else
+		brasero_medium_get_capacity (medium, NULL, &disc_size);
+
+	if (disc_size < 0)
+		disc_size = 0;
+
+	/* get input track size */
+	iter = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (self));
+	session_size = 0;
+
+	if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
+					     BRASERO_DATA_TRACK_SIZE_TAG,
+					     &value) == BRASERO_BURN_OK) {
+		session_size = g_value_get_int64 (value);
+	}
+	else if (brasero_burn_session_tag_lookup (BRASERO_BURN_SESSION (self),
+						  BRASERO_AUDIO_TRACK_SIZE_TAG,
+						  &value) == BRASERO_BURN_OK) {
+		session_size = g_value_get_int64 (value);
+	}
+	else for (; iter; iter = iter->next) {
+		BraseroTrackDataType type;
+		BraseroTrack *track;
+		gint64 sectors;
+
+		track = iter->data;
+		sectors = 0;
+
+		type = brasero_track_get_type (track, NULL);
+		if (type == BRASERO_TRACK_TYPE_DISC)
+			brasero_track_get_disc_data_size (track, &sectors, NULL);
+		else if (type == BRASERO_TRACK_TYPE_IMAGE)
+			brasero_track_get_image_size (track, NULL, &sectors, NULL, NULL);
+		else if (type == BRASERO_TRACK_TYPE_AUDIO) {
+			gint64 len = 0;
+
+			brasero_track_get_audio_length (track, &len);
+			sectors = BRASERO_DURATION_TO_SECTORS (len);
+		}
+
+		session_size += sectors;
+	}
+
+	BRASERO_BURN_LOG ("Session size %lli/Disc size %lli",
+			  session_size,
+			  disc_size);
+
+	if (session_size < disc_size)
+		return BRASERO_SESSION_VALID;
+
+	/* FIXME: This is not good since with a DVD 3% of 4.3G may be too much
+	 * with 3% we are slightly over the limit of the most overburnable discs
+	 * but at least users can try to overburn as much as they can. */
+
+	/* The idea would be to test write the disc with cdrecord from /dev/null
+	 * until there is an error and see how much we were able to write. So,
+	 * when we propose overburning to the user, we could ask if he wants
+	 * us to determine how much data can be written to a particular disc
+	 * provided he has chosen a real disc. */
+	max_sectors = disc_size * 103 / 100;
+	if (max_sectors < session_size)
+		return BRASERO_SESSION_INSUFFICIENT_SPACE;
+
+	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)) {
+		BraseroSessionCfgPrivate *priv;
+
+		priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
+		if (!(priv->supported & BRASERO_BURN_FLAG_OVERBURN))
+			return BRASERO_SESSION_INSUFFICIENT_SPACE;
+
+		return BRASERO_SESSION_OVERBURN_NECESSARY;
+	}
+
+	return BRASERO_SESSION_VALID;
+}
+
 static void
 brasero_session_cfg_update (BraseroSessionCfg *self)
 {
 	BraseroSessionCfgPrivate *priv;
+	BraseroTrackType source = { 0, };
 	BraseroBurnResult result;
 	BraseroDrive *burner;
 
@@ -338,13 +441,45 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 
 	priv->configuring = TRUE;
 
+	/* make sure there is a source */
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
+	if (source.type == BRASERO_TRACK_TYPE_NONE) {
+		priv->configuring = FALSE;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NOT_SUPPORTED);
+		return;
+	}
+
+	if (source.type == BRASERO_TRACK_TYPE_DISC
+	&&  source.subtype.media == BRASERO_MEDIUM_NONE) {
+		priv->configuring = FALSE;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NO_INPUT_MEDIUM);
+		return;
+	}
+
+	if (source.type == BRASERO_TRACK_TYPE_IMAGE
+	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+		priv->configuring = FALSE;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NO_INPUT_IMAGE);
+		return;
+	}
+
+	/* make sure there is an output set */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {
 		priv->configuring = FALSE;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
-			       FALSE);
+			       BRASERO_SESSION_NO_OUTPUT);
 		return;
 	}
 
@@ -358,10 +493,26 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 
 	priv->configuring = FALSE;
 	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
-	g_signal_emit (self,
-		       session_cfg_signals [IS_VALID_SIGNAL],
-		       0,
-		       (result == BRASERO_BURN_OK));
+
+	if (result != BRASERO_BURN_OK) {
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NOT_SUPPORTED);
+		return;
+	}
+
+	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self)))
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_VALID);
+
+	else
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       brasero_session_cfg_check_size (self));
 }
 
 static void
@@ -408,7 +559,7 @@ brasero_session_cfg_check (BraseroSessionCfg *self)
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
-			       FALSE);
+			       BRASERO_SESSION_NO_OUTPUT);
 		return;
 	}
 
@@ -425,7 +576,8 @@ brasero_session_cfg_check (BraseroSessionCfg *self)
 	g_signal_emit (self,
 		       session_cfg_signals [IS_VALID_SIGNAL],
 		       0,
-		       (result == BRASERO_BURN_OK));
+		       (result == BRASERO_BURN_OK)? 
+		       BRASERO_SESSION_VALID:BRASERO_SESSION_NOT_SUPPORTED);
 }
 
 static void
@@ -437,6 +589,14 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 	 * - new image types as input/output are supported
 	 * - if the current set of flags/input/output still works */
 	brasero_session_cfg_check (self);
+}
+
+void
+brasero_session_cfg_add_flags (BraseroSessionCfg *self,
+			       BraseroBurnFlag flags)
+{
+	brasero_session_cfg_add_drive_properties_flags (self, flags);
+	brasero_session_cfg_update (self);
 }
 
 static void
@@ -498,10 +658,10 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 		              G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
 		              0,
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__BOOLEAN,
+		              g_cclosure_marshal_VOID__INT,
 		              G_TYPE_NONE,
 			      1,
-		              G_TYPE_BOOLEAN);
+		              G_TYPE_INT);
 }
 
 BraseroSessionCfg *

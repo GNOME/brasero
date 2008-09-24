@@ -31,9 +31,8 @@
 #include <glib-object.h>
 
 #include <gtk/gtkwidget.h>
-#include <gtk/gtkdialog.h>
 
-#include "burn-caps.h"
+#include "brasero-burn-options.h"
 
 G_BEGIN_DECLS
 
@@ -48,11 +47,11 @@ typedef struct _BraseroImageOptionDialog BraseroImageOptionDialog;
 typedef struct _BraseroImageOptionDialogClass BraseroImageOptionDialogClass;
 
 struct _BraseroImageOptionDialog {
-	GtkDialog parent;
+	BraseroBurnOptions parent;
 };
 
 struct _BraseroImageOptionDialogClass {
-	GtkDialogClass parent_class;
+	BraseroBurnOptionsClass parent_class;
 };
 
 GType brasero_image_option_dialog_get_type ();
@@ -61,7 +60,6 @@ GtkWidget *brasero_image_option_dialog_new ();
 void
 brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
 					   const gchar *uri);
-
 BraseroBurnSession *
 brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog);
 

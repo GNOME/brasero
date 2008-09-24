@@ -34,7 +34,7 @@
 #include <gtk/gtkdialog.h>
 
 #include "brasero-disc.h"
-#include "burn-session.h"
+#include "brasero-burn-options.h"
 
 G_BEGIN_DECLS
 
@@ -49,11 +49,11 @@ typedef struct _BraseroDiscOptionDialog BraseroDiscOptionDialog;
 typedef struct _BraseroDiscOptionDialogClass BraseroDiscOptionDialogClass;
 
 struct _BraseroDiscOptionDialog {
-	GtkDialog parent;
+	BraseroBurnOptions parent;
 };
 
 struct _BraseroDiscOptionDialogClass {
-	GtkDialogClass parent_class;
+	BraseroBurnOptionsClass parent_class;
 };
 
 GType brasero_disc_option_dialog_get_type ();

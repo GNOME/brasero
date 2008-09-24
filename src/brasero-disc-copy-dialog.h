@@ -32,7 +32,7 @@
 
 #include <gtk/gtkdialog.h>
 
-#include "burn-session.h"
+#include "brasero-burn-options.h"
 #include "burn-drive.h"
 
 G_BEGIN_DECLS
@@ -45,20 +45,17 @@ G_BEGIN_DECLS
 #define BRASERO_DISC_COPY_DIALOG_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), BRASERO_TYPE_DISC_COPY_DIALOG, BraseroDiscCopyDialogClass))
 
 typedef struct {
-	GtkDialog parent;
+	BraseroBurnOptions parent;
 } BraseroDiscCopyDialog;
 
 typedef struct {
-	GtkDialogClass parent_class;
+	BraseroBurnOptionsClass parent_class;
 } BraseroDiscCopyDialogClass;
 
 GType brasero_disc_copy_dialog_get_type ();
 
 GtkWidget *
 brasero_disc_copy_dialog_new ();
-
-BraseroBurnSession *
-brasero_disc_copy_dialog_get_session (BraseroDiscCopyDialog *self);
 
 gboolean
 brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,

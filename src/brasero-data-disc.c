@@ -61,6 +61,7 @@
 #include "brasero-disc-message.h"
 #include "brasero-rename.h"
 #include "brasero-notify.h"
+#include "brasero-session-cfg.h"
 
 #include "brasero-app.h"
 #include "brasero-project-manager.h"
@@ -1336,6 +1337,7 @@ static BraseroDiscResult
 brasero_data_disc_set_session_param (BraseroDisc *self,
 				     BraseroBurnSession *session)
 {
+	GValue *value;
 	BraseroFileNode *root;
 	BraseroTrackType type;
 	BraseroImageFS fs_type;
@@ -1360,9 +1362,12 @@ brasero_data_disc_set_session_param (BraseroDisc *self,
 	if (brasero_data_project_is_video_project (priv->project))
 		fs_type |= BRASERO_IMAGE_FS_VIDEO;
 
-	type.type = BRASERO_TRACK_TYPE_DATA;
-	type.subtype.fs_type = fs_type;
-	brasero_burn_session_set_input_type (session, &type);
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT64);
+	g_value_set_int64 (value, brasero_data_project_get_size (priv->project));
+	brasero_burn_session_tag_add (session,
+				      BRASERO_DATA_TRACK_SIZE_TAG,
+				      value);
 
 	/* set multisession options */
 	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project))) {
@@ -1373,6 +1378,10 @@ brasero_data_disc_set_session_param (BraseroDisc *self,
 		brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_MERGE);
 		brasero_burn_session_set_burner (session, brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)));
 	}
+
+	type.type = BRASERO_TRACK_TYPE_DATA;
+	type.subtype.fs_type = fs_type;
+	brasero_burn_session_set_input_type (session, &type);
 
 	return BRASERO_DISC_OK;
 }

@@ -83,6 +83,7 @@
 #include "brasero-disc-message.h"
 #include "brasero-file-chooser.h"
 #include "brasero-notify.h"
+#include "brasero-burn-options.h"
 
 static void brasero_project_class_init (BraseroProjectClass *klass);
 static void brasero_project_init (BraseroProject *sp);

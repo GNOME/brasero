@@ -47,6 +47,7 @@
 #include "burn-track.h"
 #include "burn-medium.h"
 #include "burn-session.h"
+#include "brasero-session-cfg.h"
 #include "burn-plugin-manager.h"
 #include "burn-drive.h"
 #include "brasero-drive-selection.h"
@@ -62,13 +63,10 @@ struct _BraseroDestSelectionPrivate
 	BraseroBurnCaps *caps;
 	BraseroBurnSession *session;
 
-	GtkWidget *info;
-
 	GtkWidget *drive_prop;
 	GtkWidget *button;
 
-	GtkWidget *copies_box;
-	GtkWidget *copies_spin;
+	glong valid_sig;
 
 	guint default_format:1;
 	guint default_path:1;
@@ -468,7 +466,6 @@ brasero_dest_selection_image_properties (BraseroDestSelection *self)
 	gtk_widget_destroy (priv->drive_prop);
 	priv->drive_prop = NULL;
 
-	brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), image_path);
 	brasero_dest_selection_set_output_path (self,
 						format,
 						image_path);
@@ -544,7 +541,6 @@ brasero_dest_selection_update_image_output (BraseroDestSelection *self,
 
 	/* Now check, fix the output path, _provided__the__format__changed_ */
 	if (valid_format == format) {
-		brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), path);
 		g_free (path);
 		return;
 	}
@@ -564,9 +560,6 @@ brasero_dest_selection_update_image_output (BraseroDestSelection *self,
 		path = brasero_image_format_fix_path_extension (format, TRUE, path);
 		g_free (tmp);
 	}
-
-	/* Do it now !!! before a possible nested "is-valid" signal is fired */
-	brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), path);
 
 	/* we always need to do this */
 	brasero_dest_selection_set_output_path (self,
@@ -589,7 +582,7 @@ brasero_dest_selection_update_image_output (BraseroDestSelection *self,
 
 static void
 brasero_dest_selection_valid_session (BraseroBurnSession *session,
-				      gboolean is_valid,
+				      BraseroSessionError is_valid,
 				      BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;
@@ -614,33 +607,16 @@ brasero_dest_selection_valid_session (BraseroBurnSession *session,
 		g_object_unref (drive);
 
 	if (!burner) {
-		gtk_widget_set_sensitive (priv->button, is_valid);
+		gtk_widget_set_sensitive (priv->button, is_valid == BRASERO_SESSION_VALID);
 		return;
 	}
 
 	/* do it now !!! */
-	gtk_widget_set_sensitive (priv->button, is_valid);
+	gtk_widget_set_sensitive (priv->button, is_valid == BRASERO_SESSION_VALID);
 
-	if (!brasero_drive_is_fake (burner)) {
-		gint numcopies;
-
-		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
-		brasero_burn_session_set_num_copies (priv->session, numcopies);
-		gtk_widget_set_sensitive (priv->copies_box, is_valid);
-		gtk_widget_show (priv->copies_box);
-
-		brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info),
-					       brasero_drive_get_medium (drive));
- 		brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
-						      brasero_burn_session_same_src_dest_drive (priv->session));
-	}
-	else {
-		gtk_widget_hide (priv->copies_box);
-		brasero_burn_session_set_num_copies (priv->session, 1);
-
+	if (brasero_drive_is_fake (burner))
 		/* need to update the format and perhaps the path */
-		brasero_dest_selection_update_image_output (self, is_valid);
-	}
+		brasero_dest_selection_update_image_output (self, is_valid == BRASERO_SESSION_VALID);
 }
 
 static void
@@ -656,32 +632,11 @@ brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
 }
 
 static void
-brasero_dest_selection_copies_num_changed_cb (GtkSpinButton *button,
-					      BraseroDestSelection *self)
-{
-	gint numcopies;
-	BraseroDestSelectionPrivate *priv;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-	numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
-	brasero_burn_session_set_num_copies (priv->session, numcopies);
-}
-
-static void
 brasero_dest_selection_init (BraseroDestSelection *object)
 {
 	BraseroDestSelectionPrivate *priv;
-	GtkWidget *label;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
-
-	priv->info = brasero_drive_info_new ();
-	gtk_widget_show (priv->info);
-	gtk_box_pack_start (GTK_BOX (object),
-			    priv->info,
-			    FALSE,
-			    FALSE,
-			    0);
 
 	priv->caps = brasero_burn_caps_get_default ();
 
@@ -698,23 +653,6 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 
 	brasero_drive_selection_set_button (BRASERO_DRIVE_SELECTION (object),
 					    priv->button);
-
-	priv->copies_box = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (priv->copies_box);
-	gtk_box_pack_end (GTK_BOX (object), priv->copies_box, FALSE, FALSE, 0);
-
-	label = gtk_label_new (_("Number of copies "));
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (priv->copies_box), label, FALSE, FALSE, 0);
-
-	priv->copies_spin = gtk_spin_button_new_with_range (1.0, 99.0, 1.0);
-	gtk_widget_show (priv->copies_spin);
-	gtk_box_pack_start (GTK_BOX (priv->copies_box), priv->copies_spin, FALSE, FALSE, 0);
-	g_signal_connect (priv->copies_spin,
-			  "value-changed",
-			  G_CALLBACK (brasero_dest_selection_copies_num_changed_cb),
-			  object);
 
 	/* Only show media on which we can write and which are in a burner.
 	 * There is one exception though, when we're copying media and when the
@@ -737,6 +675,12 @@ brasero_dest_selection_finalize (GObject *object)
 	if (priv->caps) {
 		g_object_unref (priv->caps);
 		priv->caps = NULL;
+	}
+
+	if (priv->valid_sig) {
+		g_signal_handler_disconnect (priv->session,
+					     priv->valid_sig);
+		priv->valid_sig = 0;
 	}
 
 	if (priv->session) {
@@ -770,10 +714,10 @@ brasero_dest_selection_set_property (GObject *object,
 		 * it's only set at construct time */
 		priv->session = session;
 		g_object_ref (session);
-		g_signal_connect (session,
-				  "is-valid",
-				  G_CALLBACK (brasero_dest_selection_valid_session),
-				  object);
+		priv->valid_sig = g_signal_connect (session,
+						    "is-valid",
+						    G_CALLBACK (brasero_dest_selection_valid_session),
+						    object);
 
 		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
 		brasero_burn_session_set_burner (session, drive);

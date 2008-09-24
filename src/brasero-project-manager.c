@@ -625,7 +625,7 @@ brasero_project_manager_copy_disc (BraseroProjectManager *manager,
 		return;
 	}
 
-	session = brasero_disc_copy_dialog_get_session (BRASERO_DISC_COPY_DIALOG (dialog));
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	gtk_widget_destroy (dialog);
 
 	brasero_project_manager_burn (manager, session);

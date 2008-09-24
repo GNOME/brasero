@@ -22,6 +22,7 @@
 
 #include <glib-object.h>
 
+#include "burn-basics.h"
 #include "burn-session.h"
 
 G_BEGIN_DECLS
@@ -55,6 +56,32 @@ GType brasero_session_cfg_get_type (void) G_GNUC_CONST;
 
 BraseroSessionCfg *
 brasero_session_cfg_new (void);
+
+void
+brasero_session_cfg_add_flags (BraseroSessionCfg *cfg,
+			       BraseroBurnFlag flags);
+
+/**
+ * This is for the signal sent to tell whether or not session is valid
+ */
+
+typedef enum {
+	BRASERO_SESSION_VALID				= 0,
+	BRASERO_SESSION_NO_INPUT_IMAGE			= 1,
+	BRASERO_SESSION_NO_INPUT_MEDIUM,
+	BRASERO_SESSION_NO_OUTPUT,
+	BRASERO_SESSION_NOT_SUPPORTED,
+	BRASERO_SESSION_INSUFFICIENT_SPACE,
+	BRASERO_SESSION_OVERBURN_NECESSARY
+} BraseroSessionError;
+
+/**
+ * This tag (for sessions) is used to set an estimated size, used to determine
+ * in the burn option dialog is the selected medium is big enough.
+ */
+
+#define BRASERO_DATA_TRACK_SIZE_TAG	"track::data::estimated_size"
+#define BRASERO_AUDIO_TRACK_SIZE_TAG	"track::audio::estimated_size"
 
 G_END_DECLS
 

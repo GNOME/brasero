@@ -344,15 +344,23 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
-	gtk_box_pack_end (GTK_BOX (vbox_main), hbox, TRUE, TRUE, 6);
+	gtk_box_pack_end (GTK_BOX (vbox_main),
+			  hbox,
+			  TRUE,
+			  TRUE,
+			  6);
 
 	label = gtk_label_new ("\t");
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
 
 	vbox_prop = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox_prop);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox_prop, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    vbox_prop,
+			    TRUE,
+			    TRUE,
+			    0);
 
 	for (iter = list; iter; iter = iter->next) {
 		gtk_box_pack_start (GTK_BOX (vbox_prop),
@@ -376,6 +384,8 @@ brasero_utils_pack_properties_list (const gchar *title, GSList *list)
 		gtk_container_add (GTK_CONTAINER (frame), vbox_main);
 		return frame;
 	}
+	else
+		gtk_container_set_border_width (GTK_CONTAINER (vbox_main), 6);
 
 	return vbox_main;
 }

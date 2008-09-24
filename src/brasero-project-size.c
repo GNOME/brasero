@@ -1465,6 +1465,7 @@ brasero_project_size_check_status (BraseroProjectSize *self,
 	gint64 max_sectors;
 	gint64 disc_size;
 
+	return TRUE;
 	if (!self->priv->current)
 		return FALSE;
 

@@ -195,11 +195,13 @@ brasero_drive_selection_set_button (BraseroDriveSelection *self,
 				    GtkWidget *button)
 {
 	BraseroDriveSelectionPrivate *priv;
-	GtkWidget *parent;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
-	parent = gtk_widget_get_parent (priv->selection);
-	gtk_box_pack_start (GTK_BOX (parent), button, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (priv->box),
+			    button,
+			    FALSE,
+			    TRUE,
+			    0);
 }
 
 void
@@ -231,10 +233,14 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 	BraseroDriveSelectionPrivate *priv;
 
 	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
-	gtk_box_set_spacing (GTK_BOX (object), 12);
+	gtk_box_set_spacing (GTK_BOX (object), 6);
 
 	priv->box = gtk_hbox_new (FALSE, 12);
-	gtk_box_pack_start (GTK_BOX (object), priv->box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (object), 
+			    priv->box,
+			    FALSE,
+			    TRUE,
+			    0);
 
 	priv->selection = brasero_medium_selection_new ();
 	g_signal_connect (priv->selection,
@@ -243,8 +249,8 @@ brasero_drive_selection_init (BraseroDriveSelection *object)
 			  object);
 	gtk_box_pack_start (GTK_BOX (priv->box),
 			    priv->selection,
-			    FALSE,
-			    FALSE,
+			    TRUE,
+			    TRUE,
 			    0);
 
 	gtk_widget_show_all (GTK_WIDGET (object));
