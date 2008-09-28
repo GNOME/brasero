@@ -1,3 +1,13 @@
+2008-09-28  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image):
+
+	Added support for cdrtools format DVD-RW.
+	Patch from <lin.ma@sun.com> closes bgo #553229.
+
 2008-09-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #549852 – Data DVD+RW detected badly as multisession

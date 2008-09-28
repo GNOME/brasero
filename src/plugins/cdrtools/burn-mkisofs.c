@@ -316,7 +316,11 @@ brasero_mkisofs_set_argv_image (BraseroMkisofs *mkisofs,
 						BRASERO_SUB));
 	
 	g_ptr_array_add (argv, g_strdup ("-sysid"));
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	g_ptr_array_add (argv, g_strdup ("SOLARIS"));
+#else
 	g_ptr_array_add (argv, g_strdup ("LINUX"));
+#endif
 	
 	/* FIXME! -sort is an interesting option allowing to decide where the 
 	* files are written on the disc and therefore to optimize later reading */
