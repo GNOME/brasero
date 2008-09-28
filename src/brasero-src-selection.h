@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include "brasero-drive-selection.h"
+#include "brasero-medium-selection.h"
 #include "burn-session.h"
 
 G_BEGIN_DECLS
@@ -42,12 +42,12 @@ typedef struct _BraseroSrcSelection BraseroSrcSelection;
 
 struct _BraseroSrcSelectionClass
 {
-	BraseroDriveSelectionClass parent_class;
+	BraseroMediumSelectionClass parent_class;
 };
 
 struct _BraseroSrcSelection
 {
-	BraseroDriveSelection parent_instance;
+	BraseroMediumSelection parent_instance;
 };
 
 GType brasero_src_selection_get_type (void) G_GNUC_CONST;

@@ -685,37 +685,8 @@ brasero_volume_get_name (BraseroVolume *self)
 {
 	BraseroVolumePrivate *priv;
 	BraseroMedia media;
-	GVolume *volume;
-	gchar *name;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
-	if (media & BRASERO_MEDIUM_FILE) {
-		/* FIXME: here let's read the image label ?*/
-		return NULL;
-	}
-
-	volume = brasero_volume_get_gvolume (self);
-	if (!volume)
-		return NULL;
-
-	name = g_volume_get_name (volume);
-	g_object_unref (volume);
-
-	return name;
-}
-
-gchar *
-brasero_volume_get_display_label (BraseroVolume *self,
-				  gboolean with_markup)
-{
-	BraseroVolumePrivate *priv;
-	BraseroDrive *drive;
-	BraseroMedia media;
 	const gchar *type;
 	GVolume *volume;
-	gchar *label;
 	gchar *name;
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
@@ -725,111 +696,45 @@ brasero_volume_get_display_label (BraseroVolume *self,
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
 		 * image on the hard drive. */
-		label = g_strdup (_("Image File"));
-		if (!with_markup)
-			return label;
-
-		name = label;
-		label = g_strdup_printf ("<b>%s</b>", label);
-		g_free (name);
-
-		return label;
+		return g_strdup (_("Image File"));
 	}
+
+	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		goto last_chance;
+
+	name = g_volume_get_name (volume);
+	g_object_unref (volume);
+
+	if (name)
+		return name;
+
+last_chance:
 
 	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
-
 	name = NULL;
-	volume = brasero_volume_get_gvolume (self);
-	if (volume) {
-		name = g_volume_get_name (volume);
-		g_object_unref (volume);
-
-		if (name && name [0] != '\0') {
-			if (with_markup)
-				/* NOTE for translators: the first %s is the disc type and the
-				 * second %s the label of the already existing session on this disc. */
-				label = g_strdup_printf (_("<b>Data %s</b>: \"%s\""),
-							 type,
-							 name);
-			else
-				label = g_strdup_printf (_("Data %s: \"%s\""),
-							 type,
-							 name);
-
-			g_free (name);
-			return label;
-		}
-
-		if (name)
-			g_free (name);
-	}
-
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-	name = brasero_drive_get_display_name (drive);
-
 	if (media & BRASERO_MEDIUM_BLANK) {
-		if (with_markup)
-			/* NOTE for translators: the first %s is the disc type and the
-			 * second %s the name of the drive this disc is in. */
-			label = g_strdup_printf (_("<b>Blank %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Blank %s in %s"),
-						 type,
-						 name);
+		/* NOTE for translators: the first %s is the disc type. */
+		name = g_strdup_printf (_("Blank %s"), type);
 	}
 	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-		if (with_markup)
-			/* NOTE for translators: the first %s is the disc type and the
-			 * second %s the name of the drive this disc is in. */
-			label = g_strdup_printf (_("<b>Audio and data %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Audio and data %s in %s"),
-						 type,
-						 name);
+		/* NOTE for translators: the first %s is the disc type. */
+		name = g_strdup_printf (_("Audio and data %s"), type);
 	}
 	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
-		if (with_markup)
-			/* NOTE for translators: the first %s is the disc type and the
-			 * second %s the name of the drive this disc is in. */
-			label = g_strdup_printf (_("<b>Audio %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Audio %s in %s"),
-						 type,
-						 name);
+		/* NOTE for translators: the first %s is the disc type. */
+		name = g_strdup_printf (_("Audio %s"), type);
 	}
 	else if (media & BRASERO_MEDIUM_HAS_DATA) {
-		if (with_markup)
-			/* NOTE for translators: the first %s is the disc type and the
-		 	* second %s the name of the drive this disc is in. */
-			label = g_strdup_printf (_("<b>Data %s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("Data %s in %s"),
-						 type,
-						 name);
+		/* NOTE for translators: the first %s is the disc type. */
+		name = g_strdup_printf (_("Data %s"), type);
 	}
 	else {
-		if (with_markup)
-			/* NOTE for translators: the first %s is the disc type and the
-		 	* second %s the name of the drive this disc is in. */
-			label = g_strdup_printf (_("<b>%s</b> in %s"),
-						 type,
-						 name);
-		else
-			label = g_strdup_printf (_("%s in %s"),
-						 type,
-						 name);
+		/* NOTE for translators: the first %s is the disc type. */
+		name = g_strdup (type);
 	}
 
-	g_free (name);
-	return label;
+	return name;
 }
 
 static void

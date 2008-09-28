@@ -279,6 +279,9 @@ brasero_medium_can_be_written (BraseroMedium *medium);
 const gchar *
 brasero_medium_get_type_string (BraseroMedium *medium);
 
+gchar *
+brasero_medium_get_tooltip (BraseroMedium *medium);
+
 const gchar *
 brasero_medium_get_icon (BraseroMedium *medium);
 

@@ -579,7 +579,7 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 		return;
 	}
 
-	session = brasero_image_option_dialog_get_session (BRASERO_IMAGE_OPTION_DIALOG (dialog));
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	gtk_widget_destroy (dialog);
 
 	if (!session)

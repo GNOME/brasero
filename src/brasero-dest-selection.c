@@ -47,30 +47,23 @@
 #include "burn-track.h"
 #include "burn-medium.h"
 #include "burn-session.h"
-#include "brasero-session-cfg.h"
 #include "burn-plugin-manager.h"
 #include "burn-drive.h"
-#include "brasero-drive-selection.h"
-#include "brasero-drive-properties.h"
-#include "brasero-drive-info.h"
-#include "brasero-image-properties.h"
-#include "brasero-dest-selection.h"
+#include "burn-volume-obj.h"
 
+#include "brasero-dest-selection.h"
+#include "brasero-session-cfg.h"
+#include "brasero-utils.h"
 
 typedef struct _BraseroDestSelectionPrivate BraseroDestSelectionPrivate;
 struct _BraseroDestSelectionPrivate
 {
-	BraseroBurnCaps *caps;
 	BraseroBurnSession *session;
+	BraseroBurnCaps *caps;
 
-	GtkWidget *drive_prop;
-	GtkWidget *button;
+	BraseroDrive *locked_drive;
 
-	glong valid_sig;
-
-	guint default_format:1;
-	guint default_path:1;
-	guint default_ext:1;
+	gulong valid_sig;
 };
 
 #define BRASERO_DEST_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DEST_SELECTION, BraseroDestSelectionPrivate))
@@ -80,79 +73,203 @@ enum {
 	PROP_SESSION
 };
 
-static BraseroDriveSelectionClass* parent_class = NULL;
+G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_MEDIUM_SELECTION);
 
-G_DEFINE_TYPE (BraseroDestSelection, brasero_dest_selection, BRASERO_TYPE_DRIVE_SELECTION);
 
-#define BRASERO_DEST_SAVED_FLAGS	(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
-
-static void
-brasero_dest_selection_drive_properties (BraseroDestSelection *self)
+void
+brasero_dest_selection_lock (BraseroDestSelection *self,
+			     gboolean locked)
 {
 	BraseroDestSelectionPrivate *priv;
-	BraseroBurnFlag compulsory = 0;
-	BraseroBurnFlag supported = 0;
-	BraseroBurnFlag flags = 0;
-	BraseroDrive *drive;
-	GtkWidget *toplevel;
-	const gchar *path;
-	gint result;
-	gint64 rate;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
 
-	/* Build dialog */
-	priv->drive_prop = brasero_drive_properties_new ();
+	gtk_widget_set_sensitive (GTK_WIDGET (self), (locked != TRUE));
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	gtk_window_set_transient_for (GTK_WINDOW (priv->drive_prop), GTK_WINDOW (toplevel));
-	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->drive_prop), TRUE);
-	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
-
-	/* get information */
-	drive = brasero_burn_session_get_burner (priv->session);
-	rate = brasero_burn_session_get_rate (priv->session);
-
-	brasero_drive_properties_set_drive (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
-					    drive,
-					    rate);
-
-	flags = brasero_burn_session_get_flags (priv->session);
-	brasero_burn_caps_get_flags (priv->caps,
-				     priv->session,
-				     &supported,
-				     &compulsory);
-
-	brasero_drive_properties_set_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
-					    flags,
-					    supported,
-					    compulsory);
-
-	path = brasero_burn_session_get_tmpdir (priv->session);
-	brasero_drive_properties_set_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->drive_prop),
-					     path);
-
-	/* launch the dialog */
-	gtk_widget_show_all (priv->drive_prop);
-	result = gtk_dialog_run (GTK_DIALOG (priv->drive_prop));
-	if (result != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy (priv->drive_prop);
-		priv->drive_prop = NULL;
-		return;
+	gtk_widget_queue_draw (GTK_WIDGET (self));
+	if (priv->locked_drive) {
+		brasero_drive_unlock (priv->locked_drive);
+		g_object_unref (priv->locked_drive);
 	}
 
-	rate = brasero_drive_properties_get_rate (BRASERO_DRIVE_PROPERTIES (priv->drive_prop));
-	brasero_burn_session_set_rate (priv->session, rate);
+	if (locked) {
+		BraseroDrive *drive;
 
-	brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
-	flags = brasero_drive_properties_get_flags (BRASERO_DRIVE_PROPERTIES (priv->drive_prop));
-	brasero_burn_session_add_flag (priv->session, flags);
+		drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (self));
+		priv->locked_drive = drive;
+		if (priv->locked_drive)
+			brasero_drive_lock (priv->locked_drive,
+					    _("ongoing burning process"),
+					    NULL);
+	}
+}
 
-	path = brasero_drive_properties_get_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->drive_prop));
-	brasero_burn_session_set_tmpdir (priv->session, path);
+static void
+brasero_dest_selection_valid_session (BraseroBurnSession *session,
+				      BraseroSessionError is_valid,
+				      BraseroDestSelection *self)
+{
+	BraseroDestSelectionPrivate *priv;
+	BraseroDrive *burner;
+	BraseroDrive *drive;
 
-	gtk_widget_destroy (priv->drive_prop);
-	priv->drive_prop = NULL;
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+
+	/* make sure the current displayed drive reflects that */
+	burner = brasero_burn_session_get_burner (priv->session);
+	drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (self));
+	if (burner != drive) {
+		BraseroMedium *medium;
+
+		medium = brasero_drive_get_medium (drive);
+		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self), medium);
+	}
+
+	if (drive)
+		g_object_unref (drive);
+
+	brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (self));
+}
+
+static void
+brasero_dest_selection_medium_changed (GtkComboBox *combo)
+{
+	BraseroDestSelectionPrivate *priv;
+	BraseroDrive *drive;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (combo);
+
+	if (!priv->session)
+		goto chain;
+
+	drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (combo));
+	if (!drive) {
+	    	gtk_widget_set_sensitive (GTK_WIDGET (combo), FALSE);
+		goto chain;
+	}
+
+	if (drive == brasero_burn_session_get_burner (priv->session)) {
+		g_object_unref (drive);
+		goto chain;
+	}
+
+	brasero_burn_session_set_burner (priv->session, drive);
+	if (priv->locked_drive && priv->locked_drive != drive) {
+		brasero_drive_unlock (priv->locked_drive);
+		g_object_unref (priv->locked_drive);
+		priv->locked_drive = NULL;
+	}
+
+	gtk_widget_set_sensitive (GTK_WIDGET (combo), (priv->locked_drive == NULL));
+
+chain:
+
+	if (GTK_COMBO_BOX_CLASS (brasero_dest_selection_parent_class)->changed)
+		GTK_COMBO_BOX_CLASS (brasero_dest_selection_parent_class)->changed (combo);
+}
+
+static void
+brasero_dest_selection_init (BraseroDestSelection *object)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+
+	priv->caps = brasero_burn_caps_get_default ();
+
+	/* Only show media on which we can write and which are in a burner.
+	 * There is one exception though, when we're copying media and when the
+	 * burning device is the same as the dest device. */
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (object),
+					    BRASERO_MEDIA_TYPE_WRITABLE);
+}
+
+static void
+brasero_dest_selection_finalize (GObject *object)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+
+	if (priv->caps) {
+		g_object_unref (priv->caps);
+		priv->caps = NULL;
+	}
+
+	if (priv->valid_sig) {
+		g_signal_handler_disconnect (priv->session,
+					     priv->valid_sig);
+		priv->valid_sig = 0;
+	}
+
+	if (priv->session) {
+		g_object_unref (priv->session);
+		priv->session = NULL;
+	}
+
+	G_OBJECT_CLASS (brasero_dest_selection_parent_class)->finalize (object);
+}
+
+static void
+brasero_dest_selection_set_property (GObject *object,
+				     guint property_id,
+				     const GValue *value,
+				     GParamSpec *pspec)
+{
+	BraseroDestSelectionPrivate *priv;
+	BraseroBurnSession *session;
+	BraseroDrive *drive;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+
+	switch (property_id) {
+	case PROP_SESSION:
+		if (priv->session)
+			g_object_unref (priv->session);
+
+		session = g_value_get_object (value);
+
+		/* NOTE: no need to unref a potential previous session since
+		 * it's only set at construct time */
+		priv->session = session;
+		g_object_ref (session);
+		priv->valid_sig = g_signal_connect (session,
+						    "is-valid",
+						    G_CALLBACK (brasero_dest_selection_valid_session),
+						    object);
+
+		drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (object));
+		brasero_burn_session_set_burner (session, drive);
+
+		if (drive)
+			g_object_unref (drive);
+
+		brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (object));
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	}
+}
+
+static void
+brasero_dest_selection_get_property (GObject *object,
+				     guint property_id,
+				     GValue *value,
+				     GParamSpec *pspec)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+
+	switch (property_id) {
+	case PROP_SESSION:
+		g_value_set_object (value, priv->session);
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	}
 }
 
 static gchar *
@@ -201,564 +318,94 @@ brasero_dest_selection_get_output_path (BraseroDestSelection *self)
 	return path;
 }
 
-static void
-brasero_dest_selection_set_output_path (BraseroDestSelection *self,
-					BraseroImageFormat format,
-					const gchar *path)
+static gchar *
+brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
+					     BraseroMedium *medium)
 {
-	BraseroDestSelectionPrivate *priv;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	switch (format) {
-	case BRASERO_IMAGE_FORMAT_BIN:
-		brasero_burn_session_set_image_output_full (priv->session,
-							    format,
-							    path,
-							    NULL);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-	case BRASERO_IMAGE_FORMAT_CLONE:
-	case BRASERO_IMAGE_FORMAT_CUE:
-		brasero_burn_session_set_image_output_full (priv->session,
-							    format,
-							    NULL,
-							    path);
-		break;
-
-	default:
-		break;
-	}
-}
-
-static guint
-brasero_dest_selection_get_possible_output_formats (BraseroDestSelection *self,
-						    BraseroImageFormat *formats)
-{
-	guint num = 0;
-	BraseroTrackType output;
-	BraseroImageFormat format;
-	BraseroDestSelectionPrivate *priv;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	/* see how many output format are available */
-	format = BRASERO_IMAGE_FORMAT_CDRDAO;
-	(*formats) = BRASERO_IMAGE_FORMAT_NONE;
-	output.type = BRASERO_TRACK_TYPE_IMAGE;
-
-	for (; format > BRASERO_IMAGE_FORMAT_NONE; format >>= 1) {
-		BraseroBurnResult result;
-
-		output.subtype.img_format = format;
-		result = brasero_burn_caps_is_output_supported (priv->caps,
-								priv->session,
-								&output);
-		if (result == BRASERO_BURN_OK) {
-			(*formats) |= format;
-			num ++;
-		}
-	}
-
-	return num;
-}
-
-static void
-brasero_dest_selection_image_format_changed_cb (BraseroImageProperties *dialog,
-						BraseroDestSelection *self)
-{
-	BraseroDestSelectionPrivate *priv;
-	BraseroImageFormat format;
-	gchar *image_path;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	/* make sure the extension is still valid */
-	image_path = brasero_image_properties_get_path (dialog);
-	if (!image_path)
-		return;
-
-	format = brasero_image_properties_get_format (dialog);
-
-	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE)
-		format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
-
-	if (priv->default_path && !brasero_image_properties_is_path_edited (dialog)) {
-		/* not changed: get a new default path */
-		g_free (image_path);
-		image_path = brasero_image_format_get_default_path (format);
-	}
-	else if (image_path) {
-		gchar *tmp;
-
-		tmp = image_path;
-		image_path = brasero_image_format_fix_path_extension (format, FALSE, image_path);
-		g_free (tmp);
-	}
-	else {
-		priv->default_path = TRUE;
-		image_path = brasero_image_format_get_default_path (format);
-	}
-
-	brasero_image_properties_set_path (dialog, image_path);
-}
-
-static gboolean
-brasero_dest_selection_image_check_extension (BraseroDestSelection *self,
-					      BraseroImageFormat format,
-					      const gchar *path)
-{
-	gchar *dot;
-	const gchar *suffixes [] = {".iso",
-				    ".toc",
-				    ".cue",
-				    ".toc",
-				    NULL };
-
-	dot = g_utf8_strrchr (path, -1, '.');
-	if (dot) {
-		if (format & BRASERO_IMAGE_FORMAT_BIN
-		&& !strcmp (suffixes [0], dot))
-			return TRUE;
-		else if (format & BRASERO_IMAGE_FORMAT_CLONE
-		     && !strcmp (suffixes [1], dot))
-			return TRUE;
-		else if (format & BRASERO_IMAGE_FORMAT_CUE
-		     && !strcmp (suffixes [2], dot))
-			return TRUE;
-		else if (format & BRASERO_IMAGE_FORMAT_CDRDAO
-		     && !strcmp (suffixes [3], dot))
-			return TRUE;
-	}
-
-	return FALSE;
-}
-
-static gboolean
-brasero_dest_selection_image_extension_ask (BraseroDestSelection *self)
-{
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
-	GtkResponseType answer;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
-					 _("Do you really want to keep the current extension for the disc image name?"));
-
-		
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Image Extension"));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("If you choose to keep it programs may not be able to recognize the file type properly."));
-
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("_Don't change extension"),
-			       GTK_RESPONSE_CANCEL);
-	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("Change _extension"),
-			       GTK_RESPONSE_YES);
-
-	answer = gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
-
-	if (answer == GTK_RESPONSE_YES)
-		return TRUE;
-
-	return FALSE;
-}
-
-static void
-brasero_dest_selection_image_properties (BraseroDestSelection *self)
-{
-	BraseroDestSelectionPrivate *priv;
-	BraseroImageFormat formats;
-	BraseroImageFormat format;
-	gulong format_changed;
-	gchar *original_path;
-	GtkWindow *toplevel;
-	gchar *image_path;
-	gint answer;
-	guint num;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	priv->drive_prop = brasero_image_properties_new ();
-
-	toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self)));
-	gtk_window_set_transient_for (GTK_WINDOW (priv->drive_prop), GTK_WINDOW (toplevel));
-	gtk_window_set_destroy_with_parent (GTK_WINDOW (priv->drive_prop), TRUE);
-	gtk_window_set_position (GTK_WINDOW (toplevel), GTK_WIN_POS_CENTER_ON_PARENT);
-
-	/* set all information namely path and format */
-	original_path = brasero_dest_selection_get_output_path (self);
-	brasero_image_properties_set_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop), original_path);
-	g_free (original_path);
-
-	if (!priv->default_format)
-		format = brasero_burn_session_get_output_format (priv->session);
-	else
-		format = BRASERO_IMAGE_FORMAT_ANY;
-
-	num = brasero_dest_selection_get_possible_output_formats (self, &formats);
-	brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->drive_prop),
-					      num > 0 ? formats:BRASERO_IMAGE_FORMAT_NONE,
-					      format);
-
-	format_changed = g_signal_connect (priv->drive_prop,
-					   "format-changed",
-					   G_CALLBACK (brasero_dest_selection_image_format_changed_cb),
-					   self);
-
-	/* and here we go ... run the thing */
-	gtk_widget_show (priv->drive_prop);
-	answer = gtk_dialog_run (GTK_DIALOG (priv->drive_prop));
-
-	g_signal_handler_disconnect (priv->drive_prop, format_changed);
-
-	if (answer != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (priv->drive_prop);
-		priv->drive_prop = NULL;
-		return;
-	}
-
-	/* get and check format */
-	format = brasero_image_properties_get_format (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
-
-	/* see if we are to choose the format ourselves */
-	if (format == BRASERO_IMAGE_FORMAT_ANY || format == BRASERO_IMAGE_FORMAT_NONE) {
-		format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
-		priv->default_format = TRUE;
-	}
-	else
-		priv->default_format = FALSE;
-
-	/* see if the user has changed the path */
-	if (brasero_image_properties_is_path_edited (BRASERO_IMAGE_PROPERTIES (priv->drive_prop)))
-		priv->default_path = FALSE;
-
-	if (!priv->default_path) {
-		/* check the extension */
-		image_path = brasero_image_properties_get_path (BRASERO_IMAGE_PROPERTIES (priv->drive_prop));
-
-		/* there is one special case: CLONE image tocs _must_ have a
-		 * correct suffix ".toc" so don't ask, fix it */
-		if (!brasero_dest_selection_image_check_extension (self, format, image_path)) {
-			if (format == BRASERO_IMAGE_FORMAT_CLONE
-			||  brasero_dest_selection_image_extension_ask (self)) {
-				gchar *tmp;
-
-				priv->default_ext = TRUE;
-				tmp = image_path;
-				image_path = brasero_image_format_fix_path_extension (format, TRUE, image_path);
-				g_free (tmp);
-			}
-			else
-				priv->default_ext = FALSE;
-		}
-	}
-	else
-		image_path = brasero_image_format_get_default_path (format);
-
-	gtk_widget_destroy (priv->drive_prop);
-	priv->drive_prop = NULL;
-
-	brasero_dest_selection_set_output_path (self,
-						format,
-						image_path);
-	g_free (image_path);
-}
-
-static void
-brasero_dest_selection_properties_button_cb (GtkWidget *button,
-					     BraseroDestSelection *self)
-{
-	BraseroDestSelectionPrivate *priv;
-	BraseroDrive *drive;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	drive = brasero_burn_session_get_burner (priv->session);
-	if (!drive)
-		return;
-
-	if (brasero_drive_is_fake (drive))
-		brasero_dest_selection_image_properties (self);
-	else
-		brasero_dest_selection_drive_properties (self);
-}
-
-static void
-brasero_dest_selection_update_image_output (BraseroDestSelection *self,
-					    gboolean is_valid)
-{
-	BraseroDestSelectionPrivate *priv;
-	BraseroImageFormat valid_format;
-	BraseroImageFormat format;
-	gchar *path = NULL;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	/* Get session current state */
-	format = brasero_burn_session_get_output_format (priv->session);
-	valid_format = format;
-
-	/* Check current set format if it's invalid */
-	if (format != BRASERO_IMAGE_FORMAT_NONE) {
-		/* The user set a format. There is nothing to do about it except
-		 * checking if the format is still available. If not, then set
-		 * default and remove the current one */
-		if (!is_valid) {
-			priv->default_format = TRUE;
-			valid_format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
-		}
-		else if (priv->default_format) {
-			/* since input, or caps changed, check if there isn't a
-			 * better format available. */
-			valid_format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
-		}
-	}
-	else {
-		/* This is always invalid; find one */
-		priv->default_format = TRUE;
-		valid_format = brasero_burn_caps_get_default_output_format (priv->caps, priv->session);
-	}
-
-	/* see if we have a workable format */
-	if (valid_format == BRASERO_IMAGE_FORMAT_NONE) {
-		if (priv->drive_prop) {
-			gtk_widget_destroy (priv->drive_prop);
-			priv->drive_prop = NULL;
-		}
-
-		return;
-	}
-
-	path = brasero_dest_selection_get_output_path (self);
-
-	/* Now check, fix the output path, _provided__the__format__changed_ */
-	if (valid_format == format) {
-		g_free (path);
-		return;
-	}
-
-	if (!path) {
-		priv->default_path = TRUE;
-		priv->default_ext = TRUE;
-		path = brasero_image_format_get_default_path (valid_format);
-	}
-	else if (priv->default_ext
-	     &&  brasero_dest_selection_image_check_extension (self, format, path)) {
-		gchar *tmp;
-
-		priv->default_ext = TRUE;
-
-		tmp = path;
-		path = brasero_image_format_fix_path_extension (format, TRUE, path);
-		g_free (tmp);
-	}
-
-	/* we always need to do this */
-	brasero_dest_selection_set_output_path (self,
-						valid_format,
-						path);
-
-	g_free (path);
-
-	if (priv->drive_prop) {
-		BraseroImageFormat formats;
-		guint num;
-
-		/* update image settings dialog if needed */
-		num = brasero_dest_selection_get_possible_output_formats (self, &formats);
-		brasero_image_properties_set_formats (BRASERO_IMAGE_PROPERTIES (priv->drive_prop),
-						      num > 1 ? formats:BRASERO_IMAGE_FORMAT_NONE,
-						      BRASERO_IMAGE_FORMAT_ANY);
-	}
-}
-
-static void
-brasero_dest_selection_valid_session (BraseroBurnSession *session,
-				      BraseroSessionError is_valid,
-				      BraseroDestSelection *self)
-{
-	BraseroDestSelectionPrivate *priv;
-	BraseroDrive *burner;
-	BraseroDrive *drive;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
-
-	/* make sure the current displayed drive reflects that */
-	burner = brasero_burn_session_get_burner (priv->session);
-	drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (self));
-	if (burner != drive) {
-		brasero_drive_selection_set_drive (BRASERO_DRIVE_SELECTION (self), drive);
-
-		if (priv->drive_prop) {
-			/* cancel the drive properties dialog as it's not the same drive */
-			gtk_dialog_response (GTK_DIALOG (priv->drive_prop), GTK_RESPONSE_CANCEL);
-		}
-	}
-
-	if (drive)
-		g_object_unref (drive);
-
-	if (!burner) {
-		gtk_widget_set_sensitive (priv->button, is_valid == BRASERO_SESSION_VALID);
-		return;
-	}
-
-	/* do it now !!! */
-	gtk_widget_set_sensitive (priv->button, is_valid == BRASERO_SESSION_VALID);
-
-	if (brasero_drive_is_fake (burner))
-		/* need to update the format and perhaps the path */
-		brasero_dest_selection_update_image_output (self, is_valid == BRASERO_SESSION_VALID);
-}
-
-static void
-brasero_dest_selection_drive_changed (BraseroDriveSelection *selection,
-				      BraseroDrive *drive)
-{
+	gchar *label;
+	gint64 size = 0;
+	gchar *medium_name;
+	gchar *size_string;
+	BraseroMedia media;
+	BraseroBurnFlag flags;
+	BraseroTrackDataType input;
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
 
-	if (priv->session)
-		brasero_burn_session_set_burner (priv->session, drive);	
-}
+	medium_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
+	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE) {
+		gchar *path;
 
-static void
-brasero_dest_selection_init (BraseroDestSelection *object)
-{
-	BraseroDestSelectionPrivate *priv;
+		/* get the set path for the image file */
+		path = brasero_dest_selection_get_output_path (BRASERO_DEST_SELECTION (selection));
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
+		if (!path)
+			return medium_name;
 
-	priv->caps = brasero_burn_caps_get_default ();
-
-	priv->button = gtk_button_new_from_stock (GTK_STOCK_PROPERTIES);
-	gtk_widget_show (priv->button);
-	gtk_widget_set_tooltip_text (priv->button, _("Configure some options for the recording"));
-	g_signal_connect (G_OBJECT (priv->button),
-			  "clicked",
-			  G_CALLBACK (brasero_dest_selection_properties_button_cb),
-			  object);
-
-	brasero_drive_selection_set_tooltip (BRASERO_DRIVE_SELECTION (object),
-					     _("Choose the disc to write to"));
-
-	brasero_drive_selection_set_button (BRASERO_DRIVE_SELECTION (object),
-					    priv->button);
-
-	/* Only show media on which we can write and which are in a burner.
-	 * There is one exception though, when we're copying media and when the
-	 * burning device is the same as the dest device. */
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (object),
-						BRASERO_MEDIA_TYPE_WRITABLE);
-
-	priv->default_ext = TRUE;
-	priv->default_path = TRUE;
-	priv->default_format = TRUE;
-}
-
-static void
-brasero_dest_selection_finalize (GObject *object)
-{
-	BraseroDestSelectionPrivate *priv;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
-
-	if (priv->caps) {
-		g_object_unref (priv->caps);
-		priv->caps = NULL;
+		/* NOTE for translators: the first %s is medium_name ("File
+		 * Image") and the second the path for the image file */
+		label = g_strdup_printf (_("%s: \"%s\""),
+					 medium_name,
+					 path);
+		g_free (medium_name);
+		g_free (path);
+		return label;
 	}
 
-	if (priv->valid_sig) {
-		g_signal_handler_disconnect (priv->session,
-					     priv->valid_sig);
-		priv->valid_sig = 0;
+	if (!priv->session)
+		return NULL;
+
+	media = brasero_medium_get_status (medium);
+	flags = brasero_burn_session_get_flags (priv->session);
+
+	if ((media & BRASERO_MEDIUM_BLANK)
+	||  (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+		brasero_medium_get_capacity (medium,
+					     &size,
+					     NULL);
+	}
+	else if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
+		brasero_medium_get_free_space (medium,
+					       &size,
+					       NULL);
+	}
+	else if (media & BRASERO_MEDIUM_CLOSED) {
+		/* NOTE for translators, the first %s is the medium name */
+		label = g_strdup_printf (_("%s: no free space"), medium_name);
+		g_free (medium_name);
+		return label;
+	}
+	else {
+		brasero_medium_get_capacity (medium,
+					     &size,
+					     NULL);
 	}
 
-	if (priv->session) {
-		g_object_unref (priv->session);
-		priv->session = NULL;
-	}
+	/* format the size */
+	input = brasero_burn_session_get_input_type (priv->session, NULL);
+	if (input == BRASERO_TRACK_TYPE_AUDIO)
+		size_string = brasero_utils_get_size_string (size,
+							     TRUE,
+							     TRUE);
+	else
+		size_string = g_format_size_for_display (size);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
+	/* NOTE for translators: the first %s is the medium name, the second %s
+	 * is its available free space. "Free" here is the free space available. */
+	label = g_strdup_printf (_("%s: %s of free space"), medium_name, size_string);
+	g_free (medium_name);
+	g_free (size_string);
 
-static void
-brasero_dest_selection_set_property (GObject *object,
-				     guint property_id,
-				     const GValue *value,
-				     GParamSpec *pspec)
-{
-	BraseroDestSelectionPrivate *priv;
-	BraseroBurnSession *session;
-	BraseroDrive *drive;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
-
-	switch (property_id) {
-	case PROP_SESSION:
-		if (priv->session)
-			g_object_unref (priv->session);
-
-		session = g_value_get_object (value);
-
-		/* NOTE: no need to unref a potential previous session since
-		 * it's only set at construct time */
-		priv->session = session;
-		g_object_ref (session);
-		priv->valid_sig = g_signal_connect (session,
-						    "is-valid",
-						    G_CALLBACK (brasero_dest_selection_valid_session),
-						    object);
-
-		drive = brasero_drive_selection_get_drive (BRASERO_DRIVE_SELECTION (object));
-		brasero_burn_session_set_burner (session, drive);
-
-		if (drive)
-			g_object_unref (drive);
-
-		break;
-
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-	}
-}
-
-static void
-brasero_dest_selection_get_property (GObject *object,
-				     guint property_id,
-				     GValue *value,
-				     GParamSpec *pspec)
-{
-	BraseroDestSelectionPrivate *priv;
-
-	priv = BRASERO_DEST_SELECTION_PRIVATE (object);
-
-	switch (property_id) {
-	case PROP_SESSION:
-		g_value_set_object (value, priv->session);
-		break;
-
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-	}
+	return label;
 }
 
 static void
 brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	BraseroDriveSelectionClass *select_class = BRASERO_DRIVE_SELECTION_CLASS (klass);
-
-	parent_class = BRASERO_DRIVE_SELECTION_CLASS (g_type_class_peek_parent (klass));
+	GtkComboBoxClass *combo_box_class = GTK_COMBO_BOX_CLASS (klass);
+	BraseroMediumSelectionClass *medium_selection_class = BRASERO_MEDIUM_SELECTION_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroDestSelectionPrivate));
 
@@ -766,7 +413,9 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 	object_class->set_property = brasero_dest_selection_set_property;
 	object_class->get_property = brasero_dest_selection_get_property;
 
-	select_class->drive_changed = brasero_dest_selection_drive_changed;
+	combo_box_class->changed = brasero_dest_selection_medium_changed;
+
+	medium_selection_class->format_medium_string = brasero_dest_selection_format_medium_string;
 
 	g_object_class_install_property (object_class,
 					 PROP_SESSION,
@@ -782,7 +431,7 @@ brasero_dest_selection_new (BraseroBurnSession *session)
 {
 	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (session), NULL);
 
-	return GTK_WIDGET (g_object_new (BRASERO_TYPE_DEST_SELECTION,
-					 "session", session,
-					 NULL));
+	return g_object_new (BRASERO_TYPE_DEST_SELECTION,
+			     "session", session,
+			     NULL);
 }

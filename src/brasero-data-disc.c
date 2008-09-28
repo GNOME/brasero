@@ -1188,6 +1188,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 {
 	int merge_id;
 	gchar *string;
+	gchar *tooltip;
 	GtkAction *action;
 	gchar *action_name;
 	gchar *volume_name;
@@ -1197,24 +1198,36 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
-	volume_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), FALSE);
+	if (!priv->manager)
+		return;
 
+	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+
+	tooltip = brasero_medium_get_tooltip (medium);
+	/* Translators: %s is a string describing the type of medium and the 
+	 * drive it is in. */
+	string = g_strdup_printf (_("Import %s"), tooltip);
+	g_free (tooltip);
+	tooltip = string;
+
+	volume_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
 	/* Translators: %s is the name of the volume to import */
 	string = g_strdup_printf (_("Import %s"), volume_name);
 	g_free (volume_name);
+	volume_name = string;
 
 	toggle_entry.name = action_name;
 	toggle_entry.stock_id = "drive-optical";
 	toggle_entry.label = string;
-	toggle_entry.tooltip = string;
+	toggle_entry.tooltip = tooltip;
 	toggle_entry.callback = G_CALLBACK (brasero_data_disc_import_session_cb);
 
 	gtk_action_group_add_toggle_actions (priv->import_group,
 					     &toggle_entry,
 					     1,
 					     self);
-	g_free (string);
+	g_free (volume_name);
+	g_free (tooltip);
 
 	action = gtk_action_group_get_action (priv->import_group, action_name);
 	if (!action) {
@@ -1270,6 +1283,9 @@ brasero_data_disc_session_available_cb (BraseroDataSession *session,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
+	if (!priv->manager)
+		return;
+
 	if (available) {
 		gchar *string;
 		gchar *volume_name;
@@ -1279,19 +1295,15 @@ brasero_data_disc_session_available_cb (BraseroDataSession *session,
 		brasero_data_disc_import_button_new (self, medium);
 
 		/* ask user */
-		volume_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), FALSE);
-
+		volume_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
 		/* Translators: %s is the name of the volume to import */
-		string = g_strdup_printf (_("Import %s"), volume_name);
-		g_free (volume_name);
-
 		string = g_strdup_printf (_("Do you want to import the session from \'%s\'?"), volume_name);
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
 						      string,
 						      _("That way, old files from previous sessions will be usable after burning."),
 						      10000,
 						      BRASERO_NOTIFY_CONTEXT_MULTISESSION);
-		g_free (string);
+		g_free (volume_name);
 
 		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
 						GTK_STOCK_DIALOG_INFO);
@@ -1368,16 +1380,11 @@ static void
 brasero_data_disc_clear (BraseroDisc *disc)
 {
 	BraseroDataDiscPrivate *priv;
-	GtkAction *action;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
 	if (priv->loading)
 		return;
-
-	action = gtk_action_group_get_action (priv->disc_group, "ImportSession");
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
-		gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), FALSE);
 
 	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)))
 		brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->project));
@@ -1389,7 +1396,6 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	}
 
 	priv->overburning = FALSE;
-
 	priv->G2_files = FALSE;
 	priv->deep_directory = FALSE;
 

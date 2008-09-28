@@ -43,9 +43,8 @@
 #include <gtk/gtkmessagedialog.h>
 
 #include "brasero-utils.h"
-#include "brasero-drive-info.h"
 #include "brasero-progress.h"
-#include "brasero-drive-selection.h"
+#include "brasero-medium-selection.h"
 #include "brasero-tool-dialog.h"
 #include "burn-session.h"
 #include "burn.h"
@@ -62,7 +61,6 @@ struct _BraseroToolDialogPrivate {
 	GtkWidget *button;
 	GtkWidget *options;
 	GtkWidget *cancel;
-	GtkWidget *info;
 
 	BraseroBurn *burn;
 
@@ -213,7 +211,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	BraseroMedia media;
 	GdkCursor *cursor;
 
-	medium = brasero_drive_selection_get_medium (BRASERO_DRIVE_SELECTION (self->priv->selector));
+	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (self->priv->selector));
 
 	/* set up */
 	gtk_widget_set_sensitive (self->priv->upper_box, FALSE);
@@ -345,31 +343,30 @@ void
 brasero_tool_dialog_set_medium_type_shown (BraseroToolDialog *self,
 					   BraseroMediaType media_type)
 {
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (self->priv->selector),
-						media_type);
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (self->priv->selector),
+					    media_type);
 }
 
 BraseroMedium *
 brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 {
-	return brasero_drive_selection_get_medium (BRASERO_DRIVE_SELECTION (self->priv->selector));
+	return brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (self->priv->selector));
 }
 
 static void
-brasero_tool_dialog_drive_changed_cb (BraseroDriveSelection *selection,
-				      BraseroDrive *drive,
+brasero_tool_dialog_drive_changed_cb (GtkComboBox *combo_box,
 				      BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
 	BraseroMedium *medium;
 
-	medium = brasero_drive_get_medium (drive);
-
-	brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (self->priv->info), medium);
+	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (combo_box));
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->drive_changed)
 		klass->drive_changed (self, medium);
+
+	g_object_unref (medium);
 }
 
 static gboolean
@@ -497,27 +494,23 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	obj->priv->upper_box = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (GTK_WIDGET (obj->priv->upper_box));
 
-	obj->priv->selector = brasero_drive_selection_new ();
+	obj->priv->selector = brasero_medium_selection_new ();
 	gtk_widget_show (GTK_WIDGET (obj->priv->selector));
 	gtk_widget_set_tooltip_text (obj->priv->selector,
 				     _("Choose a media"));
 
-	obj->priv->info = brasero_drive_info_new ();
-	gtk_widget_show (GTK_WIDGET (obj->priv->info));
-
 	title_str = g_strdup_printf ("<b>%s</b>", _("Select a disc"));
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
 			    brasero_utils_pack_properties (title_str,
-							   obj->priv->info,
 							   obj->priv->selector,
 							   NULL),
 			    FALSE, FALSE, 0);
 	g_free (title_str);
 
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (obj->priv->selector),
-						BRASERO_MEDIA_TYPE_REWRITABLE|
-						BRASERO_MEDIA_TYPE_WRITABLE|
-						BRASERO_MEDIA_TYPE_READABLE);
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (obj->priv->selector),
+					    BRASERO_MEDIA_TYPE_REWRITABLE|
+					    BRASERO_MEDIA_TYPE_WRITABLE|
+					    BRASERO_MEDIA_TYPE_READABLE);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    obj->priv->upper_box,
@@ -574,7 +567,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 				      GTK_RESPONSE_CANCEL);
 
 	g_signal_connect (G_OBJECT (obj->priv->selector),
-			  "drive-changed",
+			  "changed",
 			  G_CALLBACK (brasero_tool_dialog_drive_changed_cb),
 			  obj);
 }

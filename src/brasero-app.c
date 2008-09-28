@@ -161,6 +161,15 @@ static const gchar *description = {
 	"</ui>"
 };
 
+GtkUIManager *
+brasero_app_get_ui_manager (BraseroApp *app)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	return priv->manager;
+}
+
 GtkWidget *
 brasero_app_get_statusbar1 (BraseroApp *app)
 {

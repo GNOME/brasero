@@ -27,6 +27,8 @@
 
 #include <gtk/gtkdialog.h>
 
+#include "burn-drive.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_DRIVE_PROPERTIES             (brasero_drive_properties_get_type ())

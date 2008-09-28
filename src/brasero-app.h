@@ -22,6 +22,8 @@
 
 #include <glib-object.h>
 
+#include <gtk/gtk.h>
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_APP             (brasero_app_get_type ())
@@ -63,6 +65,9 @@ brasero_app_get_statusbar1 (BraseroApp *app);
 
 GtkWidget *
 brasero_app_get_statusbar2 (BraseroApp *app);
+
+GtkUIManager *
+brasero_app_get_ui_manager (BraseroApp *app);
 
 GtkWidget *
 brasero_app_get_project_manager (BraseroApp *app);

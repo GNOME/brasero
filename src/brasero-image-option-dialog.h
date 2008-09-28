@@ -32,6 +32,8 @@
 
 #include <gtk/gtkwidget.h>
 
+#include "burn-session.h"
+
 #include "brasero-burn-options.h"
 
 G_BEGIN_DECLS
@@ -60,8 +62,6 @@ GtkWidget *brasero_image_option_dialog_new ();
 void
 brasero_image_option_dialog_set_image_uri (BraseroImageOptionDialog *dialog,
 					   const gchar *uri);
-BraseroBurnSession *
-brasero_image_option_dialog_get_session (BraseroImageOptionDialog *dialog);
 
 G_END_DECLS
 

@@ -29,6 +29,7 @@
 
 #include "burn-medium-monitor.h"
 #include "burn-medium.h"
+#include "burn-drive.h"
 
 G_BEGIN_DECLS
 
@@ -45,6 +46,10 @@ typedef struct _BraseroMediumSelection BraseroMediumSelection;
 struct _BraseroMediumSelectionClass
 {
 	GtkComboBoxClass parent_class;
+
+	/* virtual function */
+	gchar *		(*format_medium_string)		(BraseroMediumSelection *selection,
+							 BraseroMedium *medium);
 };
 
 struct _BraseroMediumSelection
@@ -57,15 +62,21 @@ GtkWidget* brasero_medium_selection_new (void);
 
 
 BraseroMedium *
-brasero_medium_selection_get_active (BraseroMediumSelection *self);
+brasero_medium_selection_get_active (BraseroMediumSelection *selection);
+
+BraseroDrive *
+brasero_medium_selection_get_active_drive (BraseroMediumSelection *selection);
 
 gboolean
-brasero_medium_selection_set_active (BraseroMediumSelection *self,
+brasero_medium_selection_set_active (BraseroMediumSelection *selection,
 				     BraseroMedium *medium);
 
 void
-brasero_medium_selection_show_type (BraseroMediumSelection *self,
+brasero_medium_selection_show_type (BraseroMediumSelection *selection,
 				    BraseroMediaType type);
+
+void
+brasero_medium_selection_update_media_string (BraseroMediumSelection *selection);
 
 G_END_DECLS
 

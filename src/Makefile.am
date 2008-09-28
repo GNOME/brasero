@@ -173,14 +173,10 @@ brasero_SOURCES = \
 	burn-task-ctx.c         \
 	burn-mkisofs-base.c         \
 	burn-mkisofs-base.h         \
-	brasero-drive-selection.h         \
-	brasero-drive-selection.c         \
 	brasero-src-selection.h         \
 	brasero-src-selection.c         \
 	brasero-dest-selection.h         \
 	brasero-dest-selection.c         \
-	brasero-drive-info.c         \
-	brasero-drive-info.h         \
 	brasero-drive-properties.h         \
 	brasero-drive-properties.c         \
 	brasero-image-properties.h         \
@@ -269,14 +265,16 @@ brasero_SOURCES = \
 	scsi-sbc.h		\
 	brasero-app.c		\
 	brasero-app.h           \
-	brasero-src-info.c           \
-	brasero-src-info.h           \
 	brasero-session-cfg.h           \
 	brasero-session-cfg.c           \
 	brasero-burn-options.h           \
 	brasero-burn-options.c           \
 	brasero-project-name.c           \
-	brasero-project-name.h
+	brasero-project-name.h           \
+	brasero-medium-properties.h           \
+	brasero-medium-properties.c           \
+	brasero-src-image.h           \
+	brasero-src-image.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

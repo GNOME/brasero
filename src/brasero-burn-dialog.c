@@ -57,7 +57,6 @@
 #include "burn-debug.h"
 #include "burn-session.h"
 #include "burn-medium.h"
-#include "brasero-drive-selection.h"
 #include "brasero-progress.h"
 #include "burn-drive.h"
 

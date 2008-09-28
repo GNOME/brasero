@@ -27,7 +27,7 @@
 
 #include <gtk/gtkwidget.h>
 
-#include "brasero-drive-selection.h"
+#include "brasero-medium-selection.h"
 #include "burn-session.h"
 
 G_BEGIN_DECLS
@@ -44,18 +44,22 @@ typedef struct _BraseroDestSelection BraseroDestSelection;
 
 struct _BraseroDestSelectionClass
 {
-	BraseroDriveSelectionClass parent_class;
+	BraseroMediumSelectionClass parent_class;
 };
 
 struct _BraseroDestSelection
 {
-	BraseroDriveSelection parent_instance;
+	BraseroMediumSelection parent_instance;
 };
 
 GType brasero_dest_selection_get_type (void) G_GNUC_CONST;
 
 GtkWidget *
 brasero_dest_selection_new (BraseroBurnSession *session);
+
+void
+brasero_dest_selection_lock (BraseroDestSelection *session,
+			     gboolean locked);
 
 G_END_DECLS
 

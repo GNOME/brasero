@@ -140,6 +140,70 @@ enum
 
 static GObjectClass* parent_class = NULL;
 
+gchar *
+brasero_medium_get_tooltip (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+	BraseroDrive *drive;
+	BraseroMedia media;
+	const gchar *type;
+	gchar *label;
+	gchar *name;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
+	if (media & BRASERO_MEDIUM_FILE) {
+		/* Translators: This is a fake drive, a file, and means that
+		 * when we're writing, we're writing to a file and create an
+		 * image on the hard drive. */
+		return g_strdup (_("Image File"));
+	}
+
+	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+	name = brasero_drive_get_display_name (drive);
+
+	if (media & BRASERO_MEDIUM_BLANK) {
+		/* NOTE for translators: the first %s is the disc type and the
+		 * second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Blank %s in %s"),
+					 type,
+					 name);
+	}
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		/* NOTE for translators: the first %s is the disc type and the
+		 * second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Audio and data %s in %s"),
+					 type,
+					 name);
+	}
+	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
+		/* NOTE for translators: the first %s is the disc type and the
+		 * second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Audio %s in %s"),
+					 type,
+					 name);
+	}
+	else if (media & BRASERO_MEDIUM_HAS_DATA) {
+		/* NOTE for translators: the first %s is the disc type and the
+	 	* second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Data %s in %s"),
+					 type,
+					 name);
+	}
+	else {
+		/* NOTE for translators: the first %s is the disc type and the
+	 	* second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("%s in %s"),
+					 type,
+					 name);
+	}
+
+	g_free (name);
+	return label;
+}
+
 const gchar *
 brasero_medium_get_type_string (BraseroMedium *medium)
 {

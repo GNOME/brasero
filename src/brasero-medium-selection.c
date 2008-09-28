@@ -31,9 +31,12 @@
 #include <gtk/gtk.h>
 
 #include "brasero-medium-selection.h"
+#include "brasero-utils.h"
+
 #include "burn-medium.h"
 #include "burn-volume-obj.h"
 #include "burn-basics.h"
+#include "burn-medium-monitor.h"
 
 typedef struct _BraseroMediumSelectionPrivate BraseroMediumSelectionPrivate;
 struct _BraseroMediumSelectionPrivate
@@ -54,21 +57,117 @@ enum {
 
 G_DEFINE_TYPE (BraseroMediumSelection, brasero_medium_selection, GTK_TYPE_COMBO_BOX);
 
-enum {
-	MEDIUM_CHANGED,
-	LAST_SIGNAL
-};
-static gulong medium_selection_signals [LAST_SIGNAL];
+static gchar *
+brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
+					    BraseroMedium *medium)
+{
+	gchar *label;
+	gint64 size = 0;
+	gchar *size_string;
+	gchar *medium_name;
+	BraseroMedia media;
+	BraseroMediumSelectionClass *klass;
+
+	klass = BRASERO_MEDIUM_SELECTION_GET_CLASS (self);
+	if (klass->format_medium_string) {
+		gchar *label;
+
+		label = klass->format_medium_string (self, medium);
+		if (label)
+			return label;
+	}
+
+	medium_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
+	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
+		return medium_name;
+
+	media = brasero_medium_get_status (medium);
+	if (media & BRASERO_MEDIUM_BLANK) {
+		/* NOTE for translators, the first %s is the medium name */
+		label = g_strdup_printf (_("%s: empty"), medium_name);
+		g_free (medium_name);
+
+		return label;
+	}
+
+	brasero_medium_get_data_size (medium,
+				      &size,
+				      NULL);
+
+	/* format the size */
+	if (media & BRASERO_MEDIUM_HAS_DATA)
+		size_string = g_format_size_for_display (size);
+	else
+		size_string = brasero_utils_get_size_string (size,
+							     TRUE,
+							     TRUE);
+
+	/* NOTE for translators: the first %s is the medium name, the second %s
+	 * is the space used by data on the disc. */
+	label = g_strdup_printf (_("%s: %s of data"), medium_name, size_string);
+	g_free (medium_name);
+	g_free (size_string);
+
+	return label;
+}
+
+void
+brasero_medium_selection_update_media_string (BraseroMediumSelection *self)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
+	do {
+		BraseroMedium *medium;
+		gchar *label;
+
+		medium = NULL;
+		gtk_tree_model_get (model, &iter,
+				    MEDIUM_COL, &medium,
+				    -1);
+		if (!medium)
+			continue;
+
+		label = brasero_medium_selection_get_medium_string (self, medium);
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    NAME_COL, label,
+				    -1);
+
+		g_object_unref (medium);
+		g_free (label);
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+}
+
+static void
+brasero_drive_selection_set_tooltip (BraseroMediumSelection *self)
+{
+	BraseroMediumSelectionPrivate *priv;
+	BraseroMedium *medium;
+	gchar *tooltip;
+
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
+
+	medium = brasero_medium_selection_get_active (self);
+	if (medium) {
+		tooltip = brasero_medium_get_tooltip (medium);
+		g_object_unref (medium);
+	}
+	else
+		tooltip = NULL;
+
+	gtk_widget_set_tooltip_text (GTK_WIDGET (self), tooltip);
+	g_free (tooltip);
+}
 
 static void
 brasero_medium_selection_changed (GtkComboBox *box)
 {
-	GtkTreeIter iter;
-
-	if (gtk_combo_box_get_active_iter (box, &iter))
-		g_signal_emit (box,
-			       medium_selection_signals [MEDIUM_CHANGED],
-			       0);
+	brasero_drive_selection_set_tooltip (BRASERO_MEDIUM_SELECTION (box));
 }
 
 gboolean
@@ -93,9 +192,6 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 		if (medium == iter_medium) {
 			g_object_unref (iter_medium);
 			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-			g_signal_emit (self,
-				       medium_selection_signals [MEDIUM_CHANGED],
-				       0);
 			result = TRUE;
 			break;
 		}
@@ -121,6 +217,32 @@ brasero_medium_selection_get_active (BraseroMediumSelection *self)
 			    MEDIUM_COL, &medium,
 			    -1);
 	return medium;
+}
+
+BraseroDrive *
+brasero_medium_selection_get_active_drive (BraseroMediumSelection *self)
+{
+	BraseroMedium *medium;
+	BraseroDrive *drive;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (self), &iter))
+		return NULL;
+
+	gtk_tree_model_get (model, &iter,
+			    MEDIUM_COL, &medium,
+			    -1);
+
+	if (!medium)
+		return NULL;
+
+	drive = brasero_medium_get_drive (medium);
+	g_object_unref (medium);
+	g_object_ref (drive);
+
+	return drive;
 }
 
 void
@@ -184,7 +306,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 
 			medium = item->data;
 
-			medium_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), TRUE);
+			medium_name = brasero_medium_selection_get_medium_string (self, medium);
 			medium_icon = brasero_medium_get_icon (medium);
 
 			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
@@ -207,18 +329,11 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 				    -1),
 
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-		g_signal_emit (self,
-			       medium_selection_signals [MEDIUM_CHANGED],
-			       0);
 		return;
 	}
 
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1)
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-	else
-		g_signal_emit (self,
-			       medium_selection_signals [MEDIUM_CHANGED],
-			       0);
 }
 
 static void
@@ -273,7 +388,7 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 			g_object_unref (tmp);
 	}
 
-	medium_name = brasero_volume_get_display_label (BRASERO_VOLUME (medium), TRUE);
+	medium_name = brasero_medium_selection_get_medium_string (self, medium);
 	medium_icon = brasero_medium_get_icon (medium);
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -283,12 +398,8 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 			    -1);
 	g_free (medium_name);
 
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1)
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-		g_signal_emit (self,
-			       medium_selection_signals [MEDIUM_CHANGED],
-			       0);
-	}
 }
 
 static void
@@ -330,18 +441,11 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 				    -1),
 
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-		g_signal_emit (self,
-			       medium_selection_signals [MEDIUM_CHANGED],
-			       0);
 		return;
 	}
 
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1)
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-		g_signal_emit (self,
-			       medium_selection_signals [MEDIUM_CHANGED],
-			       0);
-	}
 }
 
 static void
@@ -375,13 +479,13 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 	gtk_combo_box_set_model (GTK_COMBO_BOX (object), GTK_TREE_MODEL (model));
 	g_object_unref (model);
 
-/*	renderer = gtk_cell_renderer_pixbuf_new ();
+	renderer = gtk_cell_renderer_pixbuf_new ();
 	g_object_set (renderer, "follow-state", TRUE, NULL);
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, FALSE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
 					"icon-name", ICON_COL,
 					NULL);
-*/
+
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set (renderer, "xpad", 8, NULL);
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, TRUE);
@@ -421,17 +525,6 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 	object_class->finalize = brasero_medium_selection_finalize;
 
 	combo_class->changed = brasero_medium_selection_changed;
-
-	medium_selection_signals [MEDIUM_CHANGED] =
-	    g_signal_new ("medium_changed",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_FIRST,
-			  0,
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__VOID,
-			  G_TYPE_NONE,
-			  0,
-			  G_TYPE_NONE);
 }
 
 GtkWidget *

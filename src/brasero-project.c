@@ -1322,6 +1322,7 @@ brasero_project_file_chooser_activated_cb (GtkWidget *chooser,
 	g_slist_free (uris);
 
 	gtk_widget_destroy (GTK_WIDGET (project->priv->chooser));
+	project->priv->chooser = NULL;
 }
 
 static void
@@ -1334,6 +1335,7 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 
 	if (response != BRASERO_RESPONSE_ADD) {
 		gtk_widget_destroy (chooser);
+		project->priv->chooser = NULL;
 		return;
 	}
 
@@ -1348,6 +1350,7 @@ brasero_project_file_chooser_response_cb (GtkWidget *chooser,
 	g_slist_free (uris);
 
 	gtk_widget_destroy (GTK_WIDGET (project->priv->chooser));
+	project->priv->chooser = NULL;
 }
 
 static void

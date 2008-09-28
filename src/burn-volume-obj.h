@@ -58,10 +58,6 @@ brasero_volume_new (BraseroDrive *drive,
 gchar *
 brasero_volume_get_name (BraseroVolume *self);
 
-gchar *
-brasero_volume_get_display_label (BraseroVolume *volume,
-				  gboolean with_markup);
-
 gboolean
 brasero_volume_is_mounted (BraseroVolume *volume);
 

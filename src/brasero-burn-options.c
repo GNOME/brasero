@@ -37,7 +37,7 @@
 #include "brasero-notify.h"
 #include "brasero-dest-selection.h"
 #include "brasero-utils.h"
-#include "brasero-drive-info.h"
+#include "brasero-medium-properties.h"
 
 typedef struct _BraseroBurnOptionsPrivate BraseroBurnOptionsPrivate;
 struct _BraseroBurnOptionsPrivate
@@ -49,7 +49,8 @@ struct _BraseroBurnOptionsPrivate
 	GtkWidget *source;
 	GtkWidget *message_input;
 	GtkWidget *selection;
-	GtkWidget *info;
+	GtkWidget *properties;
+	GtkWidget *warning;
 	GtkWidget *copies_box;
 	GtkWidget *copies_spin;
 	GtkWidget *message_output;
@@ -76,7 +77,6 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
-	priv->message_input = brasero_notify_new ();
 	list = g_slist_prepend (list, priv->message_input);
 
 	va_start (vlist, title);
@@ -134,7 +134,7 @@ brasero_burn_options_lock_selection (BraseroBurnOptions *self)
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-	brasero_drive_selection_lock (BRASERO_DRIVE_SELECTION (priv->selection), TRUE);
+	brasero_dest_selection_lock (BRASERO_DEST_SELECTION (priv->selection), TRUE);
 }
 
 void
@@ -144,7 +144,7 @@ brasero_burn_options_set_type_shown (BraseroBurnOptions *self,
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->selection), type);
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
 }
 
 BraseroBurnSession *
@@ -195,45 +195,37 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 
 	gtk_widget_set_sensitive (priv->button, valid == BRASERO_SESSION_VALID);
 	gtk_widget_set_sensitive (priv->options, valid == BRASERO_SESSION_VALID);
+	gtk_widget_set_sensitive (priv->properties, valid == BRASERO_SESSION_VALID);
 
 	if (valid != BRASERO_SESSION_VALID) {
+		gtk_widget_hide (priv->warning);
 		gtk_widget_hide (priv->copies_box);
-		gtk_widget_hide (priv->info);
 	}
 	else if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))) {
-		gchar *path;
-		BraseroDrive *burner;
-
-		brasero_burn_session_get_output (BRASERO_BURN_SESSION (priv->session),
-						 &path,
-						 NULL,
-						 NULL);
-
-		burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session));
-		brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info),
-					       brasero_drive_get_medium (burner));
-		brasero_drive_info_set_image_path (BRASERO_DRIVE_INFO (priv->info), path);
-		g_free (path);
-
+		gtk_widget_hide (priv->warning);
 		gtk_widget_hide (priv->copies_box);
-		gtk_widget_show (priv->info);
 	}
 	else {
-		BraseroDrive *burner;
-
 		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
 		brasero_burn_session_set_num_copies (BRASERO_BURN_SESSION (priv->session), numcopies);
 		gtk_widget_set_sensitive (priv->copies_box, TRUE);
 
-		burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session));
-		brasero_drive_info_set_medium (BRASERO_DRIVE_INFO (priv->info),
-					       brasero_drive_get_medium (burner));
- 		brasero_drive_info_set_same_src_dest (BRASERO_DRIVE_INFO (priv->info),
-						      brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (priv->session)));
+		if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (priv->session)))
+			gtk_widget_show (priv->warning);
+		else
+			gtk_widget_hide (priv->warning);
 
 		gtk_widget_show (priv->copies_box);
-		gtk_widget_show (priv->info);
 	}
+
+	if (priv->message_input) {
+		gtk_widget_hide (priv->message_input);
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_input),
+					       BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+
+	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
@@ -273,6 +265,18 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
+	else if (valid == BRASERO_SESSION_UNKNOWN_IMAGE) {
+		GtkWidget *message;
+
+		if (priv->message_input) {
+			gtk_widget_show (priv->message_input);
+			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
+							      _("Please, select another image."),
+							      _("It doesn't appear to be a valid image or a valid cue file."),
+							      -1,
+							      BRASERO_NOTIFY_CONTEXT_SIZE);
+		}
+	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("Please, replace the disc with a recordable CD or DVD."),
@@ -307,17 +311,7 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 	else if (valid == BRASERO_SESSION_APPENDING) {
 		
 	}
-*/	else {
-		if (priv->message_input) {
-			gtk_widget_hide (priv->message_input);
-			brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_input),
-						       BRASERO_NOTIFY_CONTEXT_SIZE);
-		}
-
-		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
-					       BRASERO_NOTIFY_CONTEXT_SIZE);
-	}
-
+*/
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);
 }
 
@@ -366,13 +360,42 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 			    TRUE,
 			    0);
 
+	/* create message queue for input */
+	priv->message_input = brasero_notify_new ();
+
 	/* Medium selection box */
+	selection = gtk_hbox_new (FALSE, 12);
+	gtk_widget_show (selection);
+
 	priv->selection = brasero_dest_selection_new (BRASERO_BURN_SESSION (priv->session));
 	gtk_widget_show (priv->selection);
+	gtk_box_pack_start (GTK_BOX (selection),
+			    priv->selection,
+			    TRUE,
+			    TRUE,
+			    0);
+
+	priv->properties = brasero_medium_properties_new (BRASERO_BURN_SESSION (priv->session));
+	gtk_widget_show (priv->properties);
+	gtk_box_pack_start (GTK_BOX (selection),
+			    priv->properties,
+			    TRUE,
+			    TRUE,
+			    0);
 
 	/* Medium info */
-	priv->info = brasero_drive_info_new ();
-	gtk_widget_show (priv->info);
+	string = g_strdup_printf ("<b><i>%s</i></b><i>%s</i>",
+				  _("The drive that holds the source media will also be the one used to record.\n"),
+				  _("A new recordable media will be required once the one currently loaded has been copied."));
+	priv->warning = gtk_label_new (string);
+	g_free (string);
+
+	gtk_misc_set_alignment (GTK_MISC (priv->warning), 0.0, 0.5);
+	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->warning), PANGO_WRAP_WORD);
+	gtk_label_set_line_wrap (GTK_LABEL (priv->warning), TRUE);
+	gtk_label_set_use_markup (GTK_LABEL (priv->warning), TRUE);
+
+	gtk_widget_show (priv->warning);
 
 	/* Number of copies */
 	priv->copies_box = gtk_hbox_new (FALSE, 0);
@@ -398,8 +421,8 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	selection = brasero_utils_pack_properties (string,
 						   priv->message_output,
 						   priv->copies_box,
-						   priv->info,
-						   priv->selection,
+						   priv->warning,
+						   selection,
 						   NULL);
 	g_free (string);
 	gtk_widget_show (selection);

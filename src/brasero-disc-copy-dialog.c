@@ -73,7 +73,8 @@ brasero_disc_copy_dialog_set_drive (BraseroDiscCopyDialog *self,
 	BraseroDiscCopyDialogPrivate *priv;
 
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (self);
-	return brasero_drive_selection_set_drive (BRASERO_DRIVE_SELECTION (priv->source), drive);
+	return brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (priv->source),
+						    brasero_drive_get_medium (drive));
 }
 
 static void
@@ -86,7 +87,6 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	priv = BRASERO_DISC_COPY_DIALOG_PRIVATE (obj);
 
 	gtk_window_set_title (GTK_WINDOW (obj), _("CD/DVD Copy Options"));
-
 	brasero_burn_options_add_burn_button (BRASERO_BURN_OPTIONS (obj),
 					      _("_Copy"),
 					      "media-optical-burn");
@@ -94,6 +94,7 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	/* take care of source media */
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (obj));
 	priv->source = brasero_src_selection_new (session);
+	gtk_widget_show (priv->source);
 	g_object_unref (session);
 
 	title_str = g_strdup_printf ("<b>%s</b>", _("Select disc to copy"));
@@ -104,8 +105,8 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	g_free (title_str);
 
 	/* only show media with something to be read on them */
-	brasero_drive_selection_set_type_shown (BRASERO_DRIVE_SELECTION (priv->source),
-						BRASERO_MEDIA_TYPE_READABLE);
+	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->source),
+					    BRASERO_MEDIA_TYPE_READABLE);
 
 	/* This is a special case. When we're copying, someone may want to read
 	 * and burn to the same drive so provided that the drive is a burner

@@ -1,3 +1,106 @@
+2008-09-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for a few bugs (mostly added by latest changes) and improvements
+	Fix #538298 – Burn image dialog history
+	Fix #551938 – Image burning dialog
+
+	* src/Makefile.am:
+	* src/brasero-app.c (brasero_app_get_ui_manager):
+	* src/brasero-app.h:
+	* src/brasero-burn-dialog.c:
+	* src/brasero-burn-options.c (brasero_burn_options_add_source),
+	(brasero_burn_options_lock_selection),
+	(brasero_burn_options_set_type_shown),
+	(brasero_burn_options_valid_media_cb), (brasero_burn_options_init):
+	* src/brasero-data-disc.c (brasero_data_disc_import_button_new),
+	(brasero_data_disc_session_available_cb),
+	(brasero_data_disc_clear):
+	* src/brasero-dest-selection.c (brasero_dest_selection_lock),
+	(brasero_dest_selection_valid_session),
+	(brasero_dest_selection_medium_changed),
+	(brasero_dest_selection_init), (brasero_dest_selection_finalize),
+	(brasero_dest_selection_set_property),
+	(brasero_dest_selection_get_output_path),
+	(brasero_dest_selection_format_medium_string),
+	(brasero_dest_selection_class_init), (brasero_dest_selection_new):
+	* src/brasero-dest-selection.h:
+	* src/brasero-disc-copy-dialog.c
+	(brasero_disc_copy_dialog_set_drive),
+	(brasero_disc_copy_dialog_init):
+	* src/brasero-drive-info.c:
+	* src/brasero-drive-info.h:
+	* src/brasero-drive-properties.h:
+	* src/brasero-drive-selection.c:
+	* src/brasero-drive-selection.h:
+	* src/brasero-image-option-dialog.c
+	(brasero_image_option_dialog_set_image_uri),
+	(brasero_image_option_dialog_init),
+	(brasero_image_option_dialog_finalize):
+	* src/brasero-image-option-dialog.h:
+	* src/brasero-medium-properties.c
+	(brasero_medium_properties_drive_properties),
+	(brasero_medium_properties_get_output_path),
+	(brasero_medium_properties_set_output_path),
+	(brasero_medium_properties_get_possible_output_formats),
+	(brasero_medium_properties_image_format_changed_cb),
+	(brasero_medium_properties_image_check_extension),
+	(brasero_medium_properties_image_extension_ask),
+	(brasero_medium_properties_image_properties),
+	(brasero_medium_properties_clicked),
+	(brasero_medium_properties_update_image_output),
+	(brasero_medium_properties_valid_session),
+	(brasero_medium_properties_init),
+	(brasero_medium_properties_finalize),
+	(brasero_medium_properties_set_property),
+	(brasero_medium_properties_get_property),
+	(brasero_medium_properties_class_init),
+	(brasero_medium_properties_new):
+	* src/brasero-medium-properties.h:
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_get_medium_string),
+	(brasero_medium_selection_update_media_string),
+	(brasero_drive_selection_set_tooltip),
+	(brasero_medium_selection_changed),
+	(brasero_medium_selection_set_active),
+	(brasero_medium_selection_get_active_drive),
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_medium_removed_cb),
+	(brasero_medium_selection_init),
+	(brasero_medium_selection_class_init):
+	* src/brasero-medium-selection.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_burn_iso_dialog):
+	* src/brasero-project.c
+	(brasero_project_file_chooser_activated_cb),
+	(brasero_project_file_chooser_response_cb):
+	* src/brasero-session-cfg.h:
+	* src/brasero-src-image.c (brasero_src_image_save),
+	(brasero_src_image_set_track), (brasero_src_image_image_info_cb),
+	(brasero_src_image_get_format), (brasero_src_image_changed),
+	(brasero_src_image_set_formats), (brasero_src_image_clicked),
+	(brasero_src_image_set_uri), (brasero_src_image_init),
+	(brasero_src_image_finalize), (brasero_src_image_set_property),
+	(brasero_src_image_get_property), (brasero_src_image_class_init),
+	(brasero_src_image_new):
+	* src/brasero-src-image.h:
+	* src/brasero-src-info.c:
+	* src/brasero-src-info.h:
+	* src/brasero-src-selection.c
+	(brasero_src_selection_medium_changed),
+	(brasero_src_selection_init), (brasero_src_selection_finalize),
+	(brasero_src_selection_set_property),
+	(brasero_src_selection_class_init):
+	* src/brasero-src-selection.h:
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_run),
+	(brasero_tool_dialog_set_medium_type_shown),
+	(brasero_tool_dialog_get_medium),
+	(brasero_tool_dialog_drive_changed_cb), (brasero_tool_dialog_init):
+	* src/burn-medium.c (brasero_medium_get_tooltip):
+	* src/burn-medium.h:
+	* src/burn-volume-obj.c (brasero_volume_get_name):
+	* src/burn-volume-obj.h:
+
 2008-09-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Another patch that moves the project name back to main window (was in
