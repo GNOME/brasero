@@ -38,6 +38,7 @@
 #include "brasero-marshal.h"
 
 #include "brasero-utils.h"
+#include "brasero-io.h"
 
 
 typedef struct _BraseroDataProjectPrivate BraseroDataProjectPrivate;
@@ -1621,7 +1622,11 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 			&&  !brasero_data_project_uri_has_parent (self, uri_node->uri))
 				brasero_data_project_uri_remove_graft (self, uri_node->uri);
 
-			node->is_fake = FALSE;
+			if (node->is_file)
+				node->is_fake = FALSE;
+			else
+				node->union3.imported_address = g_file_info_get_attribute_int64 (info, BRASERO_IO_DIR_CONTENTS_ADDR);
+
 			node->is_imported = TRUE;
 			node->is_tmp_parent = FALSE;
 
