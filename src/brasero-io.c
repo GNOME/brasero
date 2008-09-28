@@ -40,8 +40,9 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "brasero-utils.h"
+#include "burn-volume.h"
 
+#include "brasero-utils.h"
 #include "brasero-io.h"
 #include "brasero-metadata.h"
 #include "brasero-async-task-manager.h"
@@ -1856,6 +1857,129 @@ brasero_io_load_directory (BraseroIO *self,
 	brasero_io_push_job (self, BRASERO_IO_JOB (data), &contents_type);
 }
 
+/**
+ * to evaluate the contents of a medium or image async
+ */
+struct _BraseroIOImageContentsData {
+	BraseroIOJob job;
+	gchar *dev_image;
+
+	gint64 session_block;
+	gint64 block;
+};
+typedef struct _BraseroIOImageContentsData BraseroIOImageContentsData;
+
+static void
+brasero_io_image_directory_contents_destroy (BraseroAsyncTaskManager *manager,
+					     gboolean cancelled,
+					     gpointer callback_data)
+{
+	BraseroIOImageContentsData *data = callback_data;
+
+	g_free (data->dev_image);
+	brasero_io_job_free (BRASERO_IO (manager), cancelled, BRASERO_IO_JOB (data));
+}
+
+static BraseroAsyncTaskResult
+brasero_io_image_directory_contents_thread (BraseroAsyncTaskManager *manager,
+					    GCancellable *cancel,
+					    gpointer callback_data)
+{
+	BraseroIOImageContentsData *data = callback_data;
+	BraseroDeviceHandle *handle;
+	GList *children, *iter;
+	GError *error = NULL;
+	BraseroVolSrc *vol;
+
+	handle = brasero_device_handle_open (data->job.uri, NULL);
+	vol = brasero_volume_source_open_device_handle (handle, &error);
+	if (!vol) {
+		brasero_device_handle_close (handle);
+		brasero_io_return_result (BRASERO_IO (manager),
+					  data->job.base,
+					  data->job.uri,
+					  NULL,
+					  error,
+					  data->job.callback_data);
+		return BRASERO_ASYNC_TASK_FINISHED;
+	}
+
+	children = brasero_volume_load_directory_contents (vol,
+							   data->session_block,
+							   data->block,
+							   &error);
+	brasero_volume_source_close (vol);
+	brasero_device_handle_close (handle);
+
+	for (iter = children; iter; iter = iter->next) {
+		BraseroVolFile *file;
+		GFileInfo *info;
+
+		file = iter->data;
+
+		info = g_file_info_new ();
+		g_file_info_set_file_type (info, file->isdir? G_FILE_TYPE_DIRECTORY:G_FILE_TYPE_REGULAR);
+		g_file_info_set_name (info, BRASERO_VOLUME_FILE_NAME (file));
+
+		if (file->isdir)
+			g_file_info_set_attribute_int64 (info,
+							 BRASERO_IO_DIR_CONTENTS_ADDR,
+							 file->specific.dir.address);
+		else
+			g_file_info_set_size (info, BRASERO_VOLUME_FILE_SIZE (file));
+
+		brasero_io_return_result (BRASERO_IO (manager),
+					  data->job.base,
+					  data->job.uri,
+					  info,
+					  NULL,
+					  data->job.callback_data);
+	}
+
+	g_list_foreach (children, (GFunc) brasero_volume_file_free, NULL);
+	g_list_free (children);
+
+	return BRASERO_ASYNC_TASK_FINISHED;
+}
+
+static const BraseroAsyncTaskType image_contents_type = {
+	brasero_io_image_directory_contents_thread,
+	brasero_io_image_directory_contents_destroy
+};
+
+void
+brasero_io_load_image_directory (BraseroIO *self,
+				 const gchar *dev_image,
+				 gint64 session_block,
+				 gint64 block,
+				 const BraseroIOJobBase *base,
+				 BraseroIOFlags options,
+				 gpointer user_data)
+{
+	BraseroIOImageContentsData *data;
+	BraseroIOResultCallbackData *callback_data = NULL;
+
+	if (user_data) {
+		callback_data = g_new0 (BraseroIOResultCallbackData, 1);
+		callback_data->callback_data = user_data;
+	}
+
+	data = g_new0 (BraseroIOImageContentsData, 1);
+	data->block = block;
+	data->session_block = session_block;
+
+	brasero_io_set_job (BRASERO_IO_JOB (data),
+			    base,
+			    dev_image,
+			    options,
+			    callback_data);
+
+	brasero_io_push_job (self,
+			     BRASERO_IO_JOB (data),
+			     &image_contents_type);
+
+}
+					 
 /**
  * That's for file transfer
  */

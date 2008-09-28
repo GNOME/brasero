@@ -487,7 +487,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	gchar *title_str;
 
 	obj->priv = g_new0 (BraseroToolDialogPrivate, 1);
-	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 300);
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
 
 	/* upper part */
@@ -570,4 +569,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 			  "changed",
 			  G_CALLBACK (brasero_tool_dialog_drive_changed_cb),
 			  obj);
+
+	gtk_window_resize (GTK_WINDOW (obj), 10, 10);
 }

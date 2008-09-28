@@ -62,13 +62,16 @@ struct _BraseroVolFile {
 
 	struct {
 		GList *children;
+		guint address;
 	} dir;
 
 	} specific;
 
 	guint isdir:1;
+	guint isdir_loaded:1;
 
 	/* mainly used internally */
+	guint has_RR:1;
 	guint relocated:1;
 };
 
@@ -95,6 +98,12 @@ brasero_volume_get_file (BraseroVolSrc *src,
 			 const gchar *path,
 			 gint64 volume_start_block,
 			 GError **error);
+
+GList *
+brasero_volume_load_directory_contents (BraseroVolSrc *vol,
+					gint64 session_block,
+					gint64 block,
+					GError **error);
 
 
 #define BRASERO_VOLUME_FILE_NAME(file)			((file)->rr_name?(file)->rr_name:(file)->name)

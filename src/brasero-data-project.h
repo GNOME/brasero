@@ -154,7 +154,7 @@ brasero_data_project_add_empty_directory (BraseroDataProject *project,
 					  BraseroFileNode *parent);
 BraseroFileNode *
 brasero_data_project_add_imported_session_file (BraseroDataProject *project,
-						BraseroVolFile *file,
+						GFileInfo *info,
 						BraseroFileNode *parent);
 
 void

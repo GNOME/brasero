@@ -108,6 +108,9 @@ struct _BraseroFileNode {
 	 * discs. */
 	union {
 		guint sectors;
+
+		/* stores the address of the children records in image */
+		guint imported_address;
 		BraseroFileTreeStats *stats;
 	} union3;
 
@@ -169,6 +172,9 @@ struct _BraseroFileNode {
 #define BRASERO_FILE_NODE_STATS(MACRO_root)					\
 	((MACRO_root)->is_root?(MACRO_root)->union3.stats:NULL)
 
+#define BRASERO_FILE_NODE_IMPORTED_ADDRESS(MACRO_node)				\
+	((MACRO_node) && (MACRO_node)->is_imported && (MACRO_node)->is_fake?(MACRO_node)->union3.imported_address:-1)
+
 #define BRASERO_FILE_2G_LIMIT		1048576
 
 BraseroFileNode *
@@ -229,7 +235,7 @@ brasero_file_node_new_empty_folder (const gchar *name,
 				    BraseroFileNode *parent,
 				    GCompareFunc sort_func);
 BraseroFileNode *
-brasero_file_node_new_imported_session_file (BraseroVolFile *file,
+brasero_file_node_new_imported_session_file (GFileInfo *info,
 					     BraseroFileNode *parent,
 					     GCompareFunc sort_func);
 

@@ -207,6 +207,11 @@ brasero_dest_selection_finalize (GObject *object)
 		priv->session = NULL;
 	}
 
+	if (priv->locked_drive) {
+		brasero_drive_unlock (priv->locked_drive);
+		g_object_unref (priv->locked_drive);
+	}
+
 	G_OBJECT_CLASS (brasero_dest_selection_parent_class)->finalize (object);
 }
 

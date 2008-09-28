@@ -75,10 +75,12 @@ brasero_volume_file_free (BraseroVolFile *file)
 	if (file->isdir) {
 		GList *iter;
 
-		for (iter = file->specific.dir.children; iter; iter = iter->next)
-			brasero_volume_file_free (iter->data);
+		if (file->isdir_loaded) {
+			for (iter = file->specific.dir.children; iter; iter = iter->next)
+				brasero_volume_file_free (iter->data);
 
-		g_list_free (file->specific.dir.children);
+			g_list_free (file->specific.dir.children);
+		}
 	}
 	else {
 		g_slist_foreach (file->specific.file.extents,
@@ -175,7 +177,33 @@ brasero_volume_get_files (BraseroVolSrc *vol,
 	&& !brasero_iso9660_get_size (buffer, nb_blocks, error))
 		return NULL;
 
-	return brasero_iso9660_get_contents (vol, buffer, data_blocks, error);
+	return brasero_iso9660_get_contents (vol,
+					     buffer,
+					     data_blocks,
+					     error);
+}
+
+GList *
+brasero_volume_load_directory_contents (BraseroVolSrc *vol,
+					gint64 session_block,
+					gint64 block,
+					GError **error)
+{
+	gchar buffer [ISO9660_BLOCK_SIZE];
+
+	if (BRASERO_VOL_SRC_SEEK (vol, session_block, SEEK_SET, error) == -1)
+		return FALSE;
+
+	if (!brasero_volume_get_primary_from_file (vol, buffer, error))
+		return NULL;
+
+	if (!brasero_iso9660_is_primary_descriptor (buffer, error))
+		return NULL;
+
+	return brasero_iso9660_get_directory_contents (vol,
+						       buffer,
+						       block,
+						       error);
 }
 
 BraseroVolFile *

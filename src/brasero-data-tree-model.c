@@ -344,8 +344,14 @@ brasero_data_tree_model_node_shown (GtkTreeModel *model,
 
 	node->is_visible ++;
 
-	if (node->is_imported)
+	if (node->is_imported) {
+		if (node->is_fake && !node->is_file) {
+			/* we don't load all nodes when importing a session do it now */
+			brasero_data_session_load_directory_contents (BRASERO_DATA_SESSION (model), node, NULL);
+		}
+
 		return;
+	}
 
 	if (node->is_visible > 1)
 		return;

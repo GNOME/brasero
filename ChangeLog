@@ -1,5 +1,47 @@
 2008-09-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #549852 – Data DVD+RW detected badly as multisession
+	Greatly improved performance when loading session (now it's done async)
+	and save memory by not loading all nodes
+
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb):
+	* src/brasero-data-project.c
+	(brasero_data_project_add_imported_session_file):
+	* src/brasero-data-project.h:
+	* src/brasero-data-session.c
+	(brasero_data_session_load_dir_destroy),
+	(brasero_data_session_load_dir_result),
+	(brasero_data_session_load_directory_contents_real),
+	(brasero_data_session_load_directory_contents),
+	(brasero_data_session_add_last), (brasero_data_session_stop_io),
+	(brasero_data_session_reset), (brasero_data_session_finalize),
+	(brasero_data_session_class_init):
+	* src/brasero-data-session.h:
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_node_shown):
+	* src/brasero-dest-selection.c (brasero_dest_selection_finalize):
+	* src/brasero-file-node.c
+	(brasero_file_node_new_imported_session_file):
+	* src/brasero-file-node.h:
+	* src/brasero-io.c (brasero_io_image_directory_contents_destroy),
+	(brasero_io_image_directory_contents_thread),
+	(brasero_io_load_image_directory):
+	* src/brasero-io.h:
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_init):
+	* src/burn-iso9660.c (brasero_iso9660_get_first_directory_record),
+	(brasero_iso9660_read_directory_record),
+	(brasero_iso9660_load_directory_records),
+	(brasero_iso9660_check_SUSP_RR_use), (brasero_iso9660_ctx_init),
+	(brasero_iso9660_get_contents), (brasero_iso9660_get_file),
+	(brasero_iso9660_get_directory_contents):
+	* src/burn-iso9660.h:
+	* src/burn-volume.c (brasero_volume_file_free),
+	(brasero_volume_get_files),
+	(brasero_volume_load_directory_contents):
+	* src/burn-volume.h:
+
+2008-09-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for a few bugs (mostly added by latest changes) and improvements
 	Fix #538298 – Burn image dialog history
 	Fix #551938 – Image burning dialog

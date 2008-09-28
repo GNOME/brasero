@@ -95,6 +95,8 @@ typedef enum {
 #define BRASERO_IO_HAS_VIDEO		"metadata::has_video"
 #define BRASERO_IO_IS_SEEKABLE		"metadata::is_seekable"
 
+#define BRASERO_IO_DIR_CONTENTS_ADDR	"image::directory::address"
+
 typedef struct _BraseroIOJobProgress BraseroIOJobProgress;
 
 typedef void		(*BraseroIOResultCallback)	(GObject *object,
@@ -145,6 +147,15 @@ brasero_io_find_urgent (BraseroIO *self,
 			const BraseroIOJobBase *base,
 			BraseroIOCompareCallback callback,
 			gpointer callback_data);			
+
+void
+brasero_io_load_image_directory (BraseroIO *self,
+				 const gchar *dev_image,
+				 gint64 session_block,
+				 gint64 block,
+				 const BraseroIOJobBase *base,
+				 BraseroIOFlags options,
+				 gpointer user_data);
 
 void
 brasero_io_load_directory (BraseroIO *self,

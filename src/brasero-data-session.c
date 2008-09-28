@@ -39,12 +39,16 @@
 #include "brasero-data-session.h"
 #include "brasero-data-project.h"
 #include "brasero-file-node.h"
+#include "brasero-io.h"
 
 #include "brasero-marshal.h"
 
 typedef struct _BraseroDataSessionPrivate BraseroDataSessionPrivate;
 struct _BraseroDataSessionPrivate
 {
+	BraseroIO *io;
+	BraseroIOJobBase *load_dir;
+
 	/* Multisession drives that are inserted */
 	GSList *media;
 
@@ -187,27 +191,136 @@ brasero_data_session_remove_last (BraseroDataSession *self)
 }
 
 static void
-brasero_data_session_add_children_files (BraseroDataSession *self,
-					 BraseroFileNode *parent,
-					 GList *children)
+brasero_data_session_load_dir_destroy (GObject *object,
+				       gboolean cancelled,
+				       gpointer data)
 {
-	for (; children; children = children->next) {
-		BraseroFileNode *node;
-		BraseroVolFile *child;
+	gint reference;
+	BraseroFileNode *parent;
 
-		child = children->data;
-		node = brasero_data_project_add_imported_session_file (BRASERO_DATA_PROJECT (self),
-								       child,
-								       parent);
+	/* reference */
+	reference = GPOINTER_TO_INT (data);
+	if (reference <= 0)
+		return;
 
-		/* There is little chance that a NULL node will be returned and
-		 * logically that shouldn't be the case. But who knows bugs
-		 * happen, let's try not to crash. ;) */
-		if (node && !node->is_file)
-			brasero_data_session_add_children_files (self,
-								 node,
-								 child->specific.dir.children);
+	parent = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (object), reference);
+	if (parent)
+		parent->is_exploring = FALSE;
+
+	brasero_data_project_reference_free (BRASERO_DATA_PROJECT (object), reference);
+}
+
+static void
+brasero_data_session_load_dir_result (GObject *owner,
+				      GError *error,
+				      const gchar *dev_image,
+				      GFileInfo *info,
+				      gpointer data)
+{
+	BraseroDataSessionPrivate *priv;
+	BraseroFileNode *parent;
+	BraseroFileNode *node;
+	gint reference;
+
+	priv = BRASERO_DATA_SESSION_PRIVATE (owner);
+
+	if (!info) {
+		g_signal_emit (owner,
+			       brasero_data_session_signals [LOADED_SIGNAL],
+			       0,
+			       priv->loaded,
+			       FALSE);
+/*		error = g_error_new (BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("unknown volume type"));
+*/		return;
 	}
+
+	reference = GPOINTER_TO_INT (data);
+	if (reference > 0)
+		parent = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (owner),
+							     reference);
+	else
+		parent = NULL;
+
+	/* add all the files/folders at the root of the session */
+	node = brasero_data_project_add_imported_session_file (BRASERO_DATA_PROJECT (owner),
+							       info,
+							       parent);
+	if (!node) {
+		/* a problem ? */
+		g_signal_emit (owner,
+			       brasero_data_session_signals [LOADED_SIGNAL],
+			       0,
+			       priv->loaded,
+			       FALSE);
+		return;
+ 	}
+
+	/* Only if we're exploring root directory */
+	if (!parent)
+		priv->nodes = g_slist_prepend (priv->nodes, node);
+
+	g_signal_emit (owner,
+		       brasero_data_session_signals [LOADED_SIGNAL],
+		       0,
+		       priv->loaded,
+		       TRUE);
+}
+
+static gboolean
+brasero_data_session_load_directory_contents_real (BraseroDataSession *self,
+						   BraseroFileNode *node,
+						   GError **error)
+{
+	BraseroDataSessionPrivate *priv;
+	gint64 session_block;
+	const gchar *device;
+	gint reference = -1;
+
+	if (node && !node->is_fake)
+		return TRUE;
+
+	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+	device = brasero_drive_get_device (brasero_medium_get_drive (priv->loaded));
+	brasero_medium_get_last_data_track_address (priv->loaded,
+						    NULL,
+						    &session_block);
+	if (!priv->io)
+		priv->io = brasero_io_get_default ();
+
+	if (!priv->load_dir)
+		priv->load_dir = brasero_io_register (G_OBJECT (self),
+						      brasero_data_session_load_dir_result,
+						      brasero_data_session_load_dir_destroy,
+						      NULL);
+
+	/* If there aren't any node then that's root */
+	if (node) {
+		reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
+		node->is_exploring = TRUE;
+	}
+
+	brasero_io_load_image_directory (priv->io,
+					 device,
+					 session_block,
+					 BRASERO_FILE_NODE_IMPORTED_ADDRESS (node),
+					 priv->load_dir,
+					 BRASERO_IO_INFO_URGENT,
+					 GINT_TO_POINTER (reference));
+
+	if (node)
+		node->is_fake = FALSE;
+
+	return TRUE;
+}
+
+gboolean
+brasero_data_session_load_directory_contents (BraseroDataSession *self,
+					      BraseroFileNode *node,
+					      GError **error)
+{
+	return brasero_data_session_load_directory_contents_real (self, node, error);
 }
 
 gboolean
@@ -216,125 +329,17 @@ brasero_data_session_add_last (BraseroDataSession *self,
 			       GError **error)
 {
 	BraseroDataSessionPrivate *priv;
-	BraseroDeviceHandle *handle;
-	BraseroVolFile *volume;
-	BraseroScsiErrCode err;
-	BraseroDrive *drive;
-	const gchar *device;
-	BraseroVolSrc *vol;
-	gint64 block;
-	GList *iter;
 
 	priv = BRASERO_DATA_SESSION_PRIVATE (self);
-
-	if (!g_slist_find (priv->media, medium)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("there isn't any available session on the disc"));
-		return FALSE;
-	}
-
-	if (priv->loaded == medium)
-		return TRUE;
-
-	/* Remove the old imported session if any */
-	if (priv->nodes)
-		brasero_data_session_remove_last (self);
-
-	if (priv->loaded) {
-		g_object_unref (priv->loaded);
-		priv->loaded = NULL;
-	}
-	
-	/* get the address for the last track and retrieve the file list */
-	brasero_medium_get_last_data_track_address (medium,
-						    NULL,
-						    &block);
-	if (block == -1) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("there isn't any available session on the disc"));
-		return FALSE;
-	}
-
-	drive = brasero_medium_get_drive (medium);
- 	device = brasero_drive_get_device (drive);
-	handle = brasero_device_handle_open (device, &err);
-	if (!handle) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     brasero_scsi_strerror (err));
-		return FALSE;
-	}
-
-	vol = brasero_volume_source_open_device_handle (handle, error);
-	volume = brasero_volume_get_files (vol,
-					   block,
-					   NULL,
-					   NULL,
-					   NULL,
-					   error);
-	brasero_device_handle_close (handle);
-	brasero_volume_source_close (vol);
-	if (*error) {
-		if (volume)
-			brasero_volume_file_free (volume);
-		return FALSE;
-	}
-
-	if (!volume) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("unknown volume type"));
-		return FALSE;
-	}
-
-	/* add all the files/folders at the root of the session */
-	for (iter = volume->specific.dir.children; iter; iter = iter->next) {
-		BraseroVolFile *file;
-		BraseroFileNode *node;
-
-		file = iter->data;
-		node = brasero_data_project_add_imported_session_file (BRASERO_DATA_PROJECT (self),
-								       file,
-								       NULL);
-		if (!node)
-			continue;
-
-		if (!node->is_file)
-			brasero_data_session_add_children_files (self,
-								 node,
-								 file->specific.dir.children);
-
-		priv->nodes = g_slist_prepend (priv->nodes, node);
-	}
-
 	priv->loaded = medium;
 	g_object_ref (medium);
-
-	brasero_volume_file_free (volume);
-
-	g_signal_emit (self,
-		       brasero_data_session_signals [LOADED_SIGNAL],
-		       0,
-		       priv->loaded,
-		       TRUE);
-
-	/* check the size of the selection to see if it fits the current 
-	 * selected disc and listen for signal "size-changed" */
-	priv->is_oversized = FALSE;
-	priv->is_overburn = FALSE;
-	brasero_data_session_check_size (self);
 
 	priv->size_changed_sig = g_signal_connect (self,
 						   "size-changed",
 						   G_CALLBACK (brasero_data_session_size_changed),
 						   NULL);
-	return TRUE;
+
+	return brasero_data_session_load_directory_contents_real (self, NULL, error);
 }
 
 gboolean
@@ -487,6 +492,32 @@ brasero_data_session_init (BraseroDataSession *object)
 }
 
 static void
+brasero_data_session_stop_io (BraseroDataSession *self)
+{
+	BraseroDataSessionPrivate *priv;
+
+	priv = BRASERO_DATA_SESSION_PRIVATE (self);
+
+	if (priv->io) {
+		brasero_io_cancel_by_base (priv->io, priv->load_dir);
+
+		g_free (priv->load_dir);
+		priv->load_dir = NULL;
+	}
+}
+
+static void
+brasero_data_session_reset (BraseroDataProject *project,
+			    guint num_nodes)
+{
+	brasero_data_session_stop_io (BRASERO_DATA_SESSION (project));
+
+	/* chain up this function except if we invalidated the node */
+	if (BRASERO_DATA_PROJECT_CLASS (brasero_data_session_parent_class)->reset)
+		BRASERO_DATA_PROJECT_CLASS (brasero_data_session_parent_class)->reset (project, num_nodes);
+}
+
+static void
 brasero_data_session_finalize (GObject *object)
 {
 	BraseroDataSessionPrivate *priv;
@@ -511,6 +542,8 @@ brasero_data_session_finalize (GObject *object)
 	/* NOTE no need to clean up size_changed_sig since it's connected to 
 	 * ourselves. It disappears with use. */
 
+	brasero_data_session_stop_io (BRASERO_DATA_SESSION (object));
+
 	/* don't care about the nodes since they will be automatically
 	 * destroyed */
 
@@ -522,10 +555,13 @@ static void
 brasero_data_session_class_init (BraseroDataSessionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+	BraseroDataProjectClass *project_class = BRASERO_DATA_PROJECT_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroDataSessionPrivate));
 
 	object_class->finalize = brasero_data_session_finalize;
+
+	project_class->reset = brasero_data_session_reset;
 
 	brasero_data_session_signals [AVAILABLE_SIGNAL] = 
 	    g_signal_new ("session_available",

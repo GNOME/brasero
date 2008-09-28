@@ -34,6 +34,7 @@
 
 #include "brasero-file-node.h"
 #include "brasero-utils.h"
+#include "brasero-io.h"
 
 BraseroFileNode *
 brasero_file_node_root_new (void)
@@ -838,7 +839,7 @@ brasero_file_node_new_from_info (GFileInfo *info,
 }
 
 BraseroFileNode *
-brasero_file_node_new_imported_session_file (BraseroVolFile *file,
+brasero_file_node_new_imported_session_file (GFileInfo *info,
 					     BraseroFileNode *parent,
 					     GCompareFunc sort_func)
 {
@@ -846,12 +847,16 @@ brasero_file_node_new_imported_session_file (BraseroVolFile *file,
 
 	/* Create the node information */
 	node = g_new0 (BraseroFileNode, 1);
-	node->union1.name = g_strdup (BRASERO_VOLUME_FILE_NAME (file));
-	node->is_file = (file->isdir == FALSE);
+	node->union1.name = g_strdup (g_file_info_get_name (info));
+	node->is_file = (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY);
 	node->is_imported = TRUE;
 
-	if (node->is_file)
-		node->union3.sectors = BRASERO_SIZE_TO_SECTORS (BRASERO_VOLUME_FILE_SIZE (file), 2048);
+	if (!node->is_file) {
+		node->is_fake = TRUE;
+		node->union3.imported_address = g_file_info_get_attribute_int64 (info, BRASERO_IO_DIR_CONTENTS_ADDR);
+	}
+	else
+		node->union3.sectors = BRASERO_SIZE_TO_SECTORS (g_file_info_get_size (info), 2048);
 
 	/* Add it (we must add a graft) */
 	brasero_file_node_add (parent, node, sort_func);

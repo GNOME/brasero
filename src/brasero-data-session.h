@@ -62,6 +62,11 @@ brasero_data_session_remove_last (BraseroDataSession *session);
 BraseroMedium *
 brasero_data_session_get_loaded_medium (BraseroDataSession *session);
 
+gboolean
+brasero_data_session_load_directory_contents (BraseroDataSession *session,
+					      BraseroFileNode *node,
+					      GError **error);
+
 GSList *
 brasero_data_session_get_available_media (BraseroDataSession *session);
 

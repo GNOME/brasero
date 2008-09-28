@@ -40,6 +40,11 @@ G_BEGIN_DECLS
 
 #define ISO9660_BLOCK_SIZE 2048
 
+typedef enum {
+	BRASERO_ISO_FLAG_NONE	= 0,
+	BRASERO_ISO_FLAG_RR	= 1
+} BraseroIsoFlag;
+
 gboolean
 brasero_iso9660_is_primary_descriptor (const gchar *buffer,
 				       GError **error);
@@ -59,6 +64,15 @@ brasero_iso9660_get_contents (BraseroVolSrc *src,
 			      const gchar *block,
 			      gint64 *nb_blocks,
 			      GError **error);
+
+/**
+ * Address to -1 for root
+ */
+GList *
+brasero_iso9660_get_directory_contents (BraseroVolSrc *vol,
+					const gchar *vol_desc,
+					gint address,
+					GError **error);
 
 BraseroVolFile *
 brasero_iso9660_get_file (BraseroVolSrc *src,

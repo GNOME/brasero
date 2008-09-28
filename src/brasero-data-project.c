@@ -1584,7 +1584,7 @@ brasero_data_project_exclude_uri (BraseroDataProject *self,
 
 BraseroFileNode *
 brasero_data_project_add_imported_session_file (BraseroDataProject *self,
-						BraseroVolFile *file,
+						GFileInfo *info,
 						BraseroFileNode *parent)
 {
 	BraseroFileNode *node;
@@ -1592,14 +1592,14 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	g_return_val_if_fail (BRASERO_IS_DATA_PROJECT (self), NULL);
-	g_return_val_if_fail (file != NULL, NULL);
+	g_return_val_if_fail (info != NULL, NULL);
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	if (!parent)
 		parent = priv->root;
 
-	node = brasero_file_node_check_name_existence (parent, BRASERO_VOLUME_FILE_NAME (file));
+	node = brasero_file_node_check_name_existence (parent, g_file_info_get_name (info));
 	if (node) {
 		/* The node exists but it may be that we've loaded the project
 		 * before. Then the necessary directories to hold the grafted
@@ -1642,7 +1642,7 @@ brasero_data_project_add_imported_session_file (BraseroDataProject *self,
 		brasero_data_project_remove_real (self, node);
 	}
 
-	node = brasero_file_node_new_imported_session_file (file, parent, priv->sort_func);
+	node = brasero_file_node_new_imported_session_file (info, parent, priv->sort_func);
 
 	/* In this case, there can be no graft, and furthermore the
 	 * lengths of the names are not our problem. Just signal that

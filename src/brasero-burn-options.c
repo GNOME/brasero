@@ -305,13 +305,7 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 				  G_CALLBACK (brasero_burn_options_message_response_cb),
 				  self);
 	}
-/*	else if (valid == BRASERO_SESSION_BLANKING) {
-		
-	}
-	else if (valid == BRASERO_SESSION_APPENDING) {
-		
-	}
-*/
+
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);
 }
 
