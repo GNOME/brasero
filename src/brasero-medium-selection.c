@@ -98,9 +98,9 @@ brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
 	if (media & BRASERO_MEDIUM_HAS_DATA)
 		size_string = g_format_size_for_display (size);
 	else
-		size_string = brasero_utils_get_size_string (size,
-							     TRUE,
-							     TRUE);
+		size_string = brasero_utils_get_time_string_from_size (size,
+								       TRUE,
+								       TRUE);
 
 	/* NOTE for translators: the first %s is the medium name, the second %s
 	 * is the space used by data on the disc. */
@@ -325,7 +325,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 		/* Nothing's available =(. Say it. */
 		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-				    NAME_COL, _("There is no available medium. Please insert one."),
+				    NAME_COL, _("No available medium"),
 				    -1),
 
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
@@ -437,7 +437,7 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 		/* Nothing's available any more =(. Say it. */
 		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-				    NAME_COL, _("There is no available medium. Please insert one."),
+				    NAME_COL, _("No available medium"),
 				    -1),
 
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);

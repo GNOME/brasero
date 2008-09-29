@@ -333,7 +333,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	gchar *size_string;
 	BraseroMedia media;
 	BraseroBurnFlag flags;
-	BraseroTrackDataType input;
+	BraseroTrackType input = { 0, };
 	BraseroDestSelectionPrivate *priv;
 
 	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
@@ -361,11 +361,24 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	if (!priv->session)
 		return NULL;
 
+	brasero_burn_session_get_input_type (priv->session, &input);
+	if (input.type == BRASERO_TRACK_TYPE_DISC) {
+		BraseroMedium *src_medium;
+
+		src_medium = brasero_burn_session_get_src_medium (priv->session);
+		if (src_medium == medium) {
+			label = g_strdup_printf (_("New disc in burner holding source medium"));
+			g_free (medium_name);
+			return label;
+		}
+	}
+
 	media = brasero_medium_get_status (medium);
 	flags = brasero_burn_session_get_flags (priv->session);
 
 	if ((media & BRASERO_MEDIUM_BLANK)
-	||  (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+	|| ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
+	&&  brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK)) {
 		brasero_medium_get_capacity (medium,
 					     &size,
 					     NULL);
@@ -388,11 +401,12 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	}
 
 	/* format the size */
-	input = brasero_burn_session_get_input_type (priv->session, NULL);
-	if (input == BRASERO_TRACK_TYPE_AUDIO)
-		size_string = brasero_utils_get_size_string (size,
-							     TRUE,
-							     TRUE);
+	if (input.type == BRASERO_TRACK_TYPE_AUDIO
+	|| (input.type == BRASERO_TRACK_TYPE_DISC
+	&& (input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO)))
+		size_string = brasero_utils_get_time_string_from_size (size,
+								       TRUE,
+								       TRUE);
 	else
 		size_string = g_format_size_for_display (size);
 
