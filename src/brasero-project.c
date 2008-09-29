@@ -254,11 +254,6 @@ static GObjectClass *parent_class = NULL;
 #define BRASERO_PROJECT_SPACING			6
 #define BRASERO_PROJECT_SIZE_WIDGET_BORDER	1
 
-#define KEY_DEFAULT_DATA_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_data_cd_command"
-#define KEY_DEFAULT_AUDIO_BURNING_APP		"/desktop/gnome/volume_manager/autoburn_audio_cd_command"
-#define KEY_ASK_DEFAULT_BURNING_AUDIO		"/apps/brasero/ask_default_audio"
-#define KEY_ASK_DEFAULT_BURNING_DATA		"/apps/brasero/ask_default_data"
-
 #define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/viewer"
 
 #define BRASERO_PROJECT_VERSION "0.2"
@@ -785,85 +780,6 @@ brasero_project_no_file_dialog (BraseroProject *project)
 	gtk_widget_destroy (message);
 }
 
-static void
-brasero_project_check_default_burning_app (BraseroProject *project,
-					   const gchar *primary,
-					   const gchar *key,
-					   const gchar *key_ask,
-					   const gchar *default_command)
-{
-	GtkResponseType response;
-	GConfClient *client;
-	GtkWidget *toplevel;
-	GtkWidget *message;
-	gchar *command;
-	gboolean ask;
-	gchar *text;
-
-	client = gconf_client_get_default ();
-	command = gconf_client_get_string (client,
-					   key,
-					   NULL);
-
-	if (command && g_str_has_prefix (command, "brasero")) {
-		g_object_unref (client);
-		g_free (command);
-		return;
-	}
-
-	ask = gconf_client_get_bool (client,
-				     key_ask,
-				     NULL);
-	if (ask) {
-		g_object_unref (client);
-		g_free (command);
-		return;
-	}
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					  GTK_DIALOG_MODAL|
-					  GTK_DIALOG_DESTROY_WITH_PARENT,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_NONE,
-					  primary);
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("This is a first time running dialog that won't be shown again. If you change your mind, you can change your choice later in the Removable Drives and Media Preferences whether or not you chose brasero."));
-
-	if (command)
-		/* NOTE for translators the %s is the old application name */
-		text = g_strdup_printf (_("_Keep using \"%s\""), command);
-	else
-		text = g_strdup (GTK_STOCK_CANCEL);
-
-	gtk_dialog_add_button (GTK_DIALOG (message),
-			       text,
-			       GTK_RESPONSE_CANCEL);
-	g_free (text);
-	g_free (command);
-
-	gtk_dialog_add_button (GTK_DIALOG (message),
-			       _("_Use Brasero next time"),
-			       GTK_RESPONSE_YES);
-
-	response = gtk_dialog_run (GTK_DIALOG (message));
-	gconf_client_set_bool (client,
-			       key_ask,
-			       TRUE,
-			       NULL);
-
-	gtk_widget_destroy (message);
-
-	if (response == GTK_RESPONSE_YES)
-		gconf_client_set_string (client,
-					 key,
-					 default_command,
-					 NULL);
-
-	g_object_unref (client);
-}
-
 void
 brasero_project_burn (BraseroProject *project)
 {
@@ -934,21 +850,6 @@ brasero_project_burn (BraseroProject *project)
 	g_object_unref (session);
 
     	project->priv->burnt = success;
-
-	if (success) {
-		if (BRASERO_IS_AUDIO_DISC (project->priv->current))
-			brasero_project_check_default_burning_app (project,
-								   _("Would you like to use Brasero in the future to burn audio discs?"),
-								   KEY_DEFAULT_AUDIO_BURNING_APP,
-								   KEY_ASK_DEFAULT_BURNING_AUDIO,
-								   "brasero -a");
-		else
-			brasero_project_check_default_burning_app (project,
-								   _("Would you like to use Brasero in the future to burn data discs?"),
-								   KEY_DEFAULT_DATA_BURNING_APP,
-								   KEY_ASK_DEFAULT_BURNING_DATA,
-								   "brasero -d");
-	}
 
 end:
 
