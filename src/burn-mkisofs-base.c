@@ -137,6 +137,11 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	localpath = g_filename_from_uri (unescaped_uri, NULL, NULL);
 	g_free (unescaped_uri);
 
+	if (!localpath) {
+		BRASERO_BURN_LOG ("Localpath is NULL");
+		return BRASERO_BURN_ERR;
+	}
+
 	/* we need to escape some characters like []\? since in this file we
 	 * can use glob like expressions. */
 	character = localpath;
@@ -463,6 +468,11 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 	GSList *grafts_excluded;
 	BraseroMkisofsBase base;
 	BraseroBurnResult result;
+
+	if (!grafts) {
+		BRASERO_BURN_LOG ("No graft passed");
+		return BRASERO_BURN_ERR;
+	}
 
 	/* initialize base */
 	bzero (&base, sizeof (base));
