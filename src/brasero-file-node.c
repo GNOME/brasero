@@ -456,6 +456,9 @@ brasero_file_node_nth_child (BraseroFileNode *parent,
 	BraseroFileNode *peers;
 	guint pos;
 
+	if (!parent)
+		return NULL;
+
 	peers = BRASERO_FILE_NODE_CHILDREN (parent);
 	for (pos = 0; pos < nth && peers; pos ++)
 		peers = peers->next;
@@ -481,6 +484,9 @@ brasero_file_node_get_pos_as_child (BraseroFileNode *node)
 	BraseroFileNode *parent;
 	BraseroFileNode *peers;
 	guint pos = 0;
+
+	if (!node)
+		return 0;
 
 	parent = node->parent;
 	for (peers = BRASERO_FILE_NODE_CHILDREN (parent); peers; peers = peers->next) {
