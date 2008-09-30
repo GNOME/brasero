@@ -75,6 +75,9 @@ void
 brasero_medium_selection_show_type (BraseroMediumSelection *selection,
 				    BraseroMediaType type);
 
+guint
+brasero_medium_selection_get_drive_num (BraseroMediumSelection *selection);
+
 void
 brasero_medium_selection_update_media_string (BraseroMediumSelection *selection);
 

@@ -1,5 +1,22 @@
 2008-09-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	New message to tell the user when there is no writable disc inserted
+
+	* src/brasero-burn-options.c
+	(brasero_burn_options_update_no_medium_warning),
+	(brasero_burn_options_valid_media_cb),
+	(brasero_burn_options_medium_num_changed),
+	(brasero_burn_options_init):
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_get_drive_num),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_medium_removed_cb),
+	(brasero_medium_selection_class_init):
+	* src/brasero-medium-selection.h:
+
+2008-09-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Added a message when the input is a protected disc
 
 	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb):

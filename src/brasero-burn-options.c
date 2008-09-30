@@ -56,6 +56,8 @@ struct _BraseroBurnOptionsPrivate
 	GtkWidget *message_output;
 	GtkWidget *options;
 	GtkWidget *button;
+
+	guint is_valid:1;
 };
 
 #define BRASERO_BURN_OPTIONS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_OPTIONS, BraseroBurnOptionsPrivate))
@@ -183,6 +185,42 @@ brasero_burn_options_message_response_cb (BraseroDiscMessage *message,
 	}
 }
 
+#define BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING	1000
+
+static void
+brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
+{
+	BraseroBurnOptionsPrivate *priv;
+
+	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+
+	if (!priv->is_valid) {
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
+		return;
+	}
+
+	if (!brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))) {
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
+		return;
+	}
+
+	if (brasero_medium_selection_get_drive_num (BRASERO_MEDIUM_SELECTION (priv->selection)) != 1) {
+		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
+					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
+		return;
+	}
+
+	/* The user may have forgotten to insert a disc so remind him of that if
+	 * there aren't any other possibility in the selection */
+	brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+				    _("Please, insert a recordable CD or DVD if you don't want to write to an image file."),
+				    NULL,
+				    -1,
+				    BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
+}
+
 static void
 brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 				     BraseroSessionError valid,
@@ -227,6 +265,7 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
+	priv->is_valid = FALSE;
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("Please, choose another CD or DVD or insert a new one."),
@@ -317,7 +356,18 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 				  G_CALLBACK (brasero_burn_options_message_response_cb),
 				  self);
 	}
+	else
+		priv->is_valid = TRUE;
 
+	brasero_burn_options_update_no_medium_warning (self);
+	gtk_window_resize (GTK_WINDOW (self), 10, 10);
+}
+
+static void
+brasero_burn_options_medium_num_changed (BraseroMediumSelection *selection,
+					 BraseroBurnOptions *self)
+{
+	brasero_burn_options_update_no_medium_warning (self);
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);
 }
 
@@ -451,6 +501,15 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 					    "is-valid",
 					    G_CALLBACK (brasero_burn_options_valid_media_cb),
 					    object);
+
+	g_signal_connect (priv->selection,
+			  "medium-added",
+			  G_CALLBACK (brasero_burn_options_medium_num_changed),
+			  object);
+	g_signal_connect (priv->selection,
+			  "medium-removed",
+			  G_CALLBACK (brasero_burn_options_medium_num_changed),
+			  object);
 }
 
 static void
