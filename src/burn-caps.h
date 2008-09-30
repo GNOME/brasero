@@ -98,6 +98,10 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
  */
 
 BraseroBurnResult
+brasero_burn_caps_has_capability (BraseroBurnCaps *caps,
+				  BraseroTrackType *type);
+
+BraseroBurnResult
 brasero_burn_caps_can_blank (BraseroBurnCaps *caps,
 			     BraseroBurnSession *session);
 

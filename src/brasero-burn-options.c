@@ -277,10 +277,22 @@ brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
 	}
+	else if (valid == BRASERO_SESSION_DISC_PROTECTED) {
+		GtkWidget *message;
+
+		if (priv->message_input) {
+			gtk_widget_show (priv->message_input);
+			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
+							      _("Please, insert a disc that is not copy protected."),
+							      _("Such a medium can't be copied without the proper plugins."),
+							      -1,
+							      BRASERO_NOTIFY_CONTEXT_SIZE);
+		}
+	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please, replace the disc with a recordable CD or DVD."),
-					    _("The medium is not writable with the current set of plugins."),
+					    _("Please, replace the disc with a supported CD or DVD."),
+					    _("It is not possible to write with the current set of plugins."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}

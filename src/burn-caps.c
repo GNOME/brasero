@@ -2292,6 +2292,82 @@ brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
 	return BRASERO_IMAGE_FORMAT_NONE;
 }
 
+static BraseroCapsLink *
+brasero_caps_find_link_for_input (BraseroCaps *caps,
+				  BraseroCaps *input)
+{
+	GSList *links;
+
+	for (links = caps->links; links; links = links->next) {
+		BraseroCapsLink *link;
+
+		link = links->data;
+		if (link->caps == input)
+			return link;
+	}
+
+	return NULL;
+}
+
+static gboolean
+brasero_caps_has_active_input (BraseroCaps *caps,
+			       BraseroCaps *input)
+{
+	GSList *links;
+
+	for (links = caps->links; links; links = links->next) {
+		BraseroCapsLink *link;
+
+		link = links->data;
+		if (link->caps != input)
+			continue;
+
+		if (brasero_caps_link_active (link))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+brasero_burn_caps_is_input (BraseroBurnCaps *self,
+			    BraseroCaps *input)
+{
+	GSList *iter;
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *tmp;
+
+		tmp = iter->data;
+		if (tmp == input)
+			continue;
+
+		if (brasero_caps_has_active_input (tmp, input))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+BraseroBurnResult
+brasero_burn_caps_has_capability (BraseroBurnCaps *self,
+				  BraseroTrackType *type)
+{
+	GSList *iter;
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *caps;
+
+		caps = iter->data;
+
+		if (brasero_caps_is_compatible_type (caps, type)
+		&&  brasero_burn_caps_is_input (self, caps))
+			return BRASERO_BURN_OK;
+	}
+
+	return BRASERO_BURN_ERR;
+}
+
 static BraseroPluginIOFlag
 brasero_caps_get_flags (BraseroCaps *caps,
 			BraseroBurnFlag session_flags,
@@ -3615,23 +3691,6 @@ brasero_caps_disc_new (BraseroMedia type)
 /**
  * these functions are to create links
  */
-
-static BraseroCapsLink *
-brasero_caps_find_link_for_input (BraseroCaps *caps,
-				  BraseroCaps *input)
-{
-	GSList *links;
-
-	for (links = caps->links; links; links = links->next) {
-		BraseroCapsLink *link;
-
-		link = links->data;
-		if (link->caps == input)
-			return link;
-	}
-
-	return NULL;
-}
 
 static void
 brasero_caps_create_links (BraseroCaps *output,

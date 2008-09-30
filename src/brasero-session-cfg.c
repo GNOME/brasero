@@ -495,10 +495,19 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
 
 	if (result != BRASERO_BURN_OK) {
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NOT_SUPPORTED);
+		/* This is a special case */
+		if (source.type == BRASERO_TRACK_TYPE_DISC
+		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
+		&&  brasero_burn_caps_has_capability (priv->caps, &source) != BRASERO_BURN_OK)
+			g_signal_emit (self,
+				       session_cfg_signals [IS_VALID_SIGNAL],
+				       0,
+				       BRASERO_SESSION_DISC_PROTECTED);
+		else
+			g_signal_emit (self,
+				       session_cfg_signals [IS_VALID_SIGNAL],
+				       0,
+				       BRASERO_SESSION_NOT_SUPPORTED);
 		return;
 	}
 
@@ -544,6 +553,7 @@ brasero_session_cfg_check (BraseroSessionCfg *self)
 {
 	BraseroSessionCfgPrivate *priv;
 	BraseroBurnResult result;
+	BraseroTrackType source = {0,};
 	BraseroDrive *burner;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
@@ -552,6 +562,37 @@ brasero_session_cfg_check (BraseroSessionCfg *self)
 		return;
 
 	priv->configuring = TRUE;
+
+	/* make sure there is a source */
+	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
+	if (source.type == BRASERO_TRACK_TYPE_NONE) {
+		priv->configuring = FALSE;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NOT_SUPPORTED);
+		return;
+	}
+
+	if (source.type == BRASERO_TRACK_TYPE_DISC
+	&&  source.subtype.media == BRASERO_MEDIUM_NONE) {
+		priv->configuring = FALSE;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NO_INPUT_MEDIUM);
+		return;
+	}
+
+	if (source.type == BRASERO_TRACK_TYPE_IMAGE
+	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
+		priv->configuring = FALSE;
+		g_signal_emit (self,
+			       session_cfg_signals [IS_VALID_SIGNAL],
+			       0,
+			       BRASERO_SESSION_NO_INPUT_IMAGE);
+		return;
+	}
 
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {
@@ -575,10 +616,19 @@ brasero_session_cfg_check (BraseroSessionCfg *self)
 	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
 
 	if (result != BRASERO_BURN_OK) {
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NOT_SUPPORTED);
+		/* This is a special case */
+		if (source.type == BRASERO_TRACK_TYPE_DISC
+		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
+		&&  brasero_burn_caps_has_capability (priv->caps, &source) != BRASERO_BURN_OK)
+			g_signal_emit (self,
+				       session_cfg_signals [IS_VALID_SIGNAL],
+				       0,
+				       BRASERO_SESSION_DISC_PROTECTED);
+		else
+			g_signal_emit (self,
+				       session_cfg_signals [IS_VALID_SIGNAL],
+				       0,
+				       BRASERO_SESSION_NOT_SUPPORTED);
 		return;
 	}
 
