@@ -1,5 +1,13 @@
 2008-09-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #552834 – burning image file fails
+
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_setup_session_file),
+	(brasero_libburn_start_record), (brasero_libburn_clock_tick):
+
+2008-09-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed #550048 – Icon missing in burn dialog
 
 	* src/burn-medium.c:

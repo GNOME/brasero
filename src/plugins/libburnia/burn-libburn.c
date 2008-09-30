@@ -399,6 +399,7 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 		}
 		else if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
 			gchar *imagepath;
+			gint64 size;
 			gint mode;
 
 			if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN) {
@@ -415,10 +416,18 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 			if (!imagepath)
 				return BRASERO_BURN_ERR;
 
+			result = brasero_track_get_image_size (track,
+							       NULL,
+							       NULL,
+							       &size,
+							       error);
+			if (result != BRASERO_BURN_OK)
+				return BRASERO_BURN_ERR;
+
 			result = brasero_libburn_add_file_track (session,
 								 imagepath,
 								 mode,
-								 -1,
+								 size,
 								 priv->pvd,
 								 error);
 		}
@@ -465,6 +474,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 			      GError **error)
 {
 	guint64 rate;
+	gchar reason [4096];
 	BraseroMedia media;
 	BraseroBurnFlag flags;
 	BraseroBurnResult result;
@@ -524,6 +534,15 @@ brasero_libburn_start_record (BraseroLibburn *self,
 
 	brasero_job_get_rate (BRASERO_JOB (self), &rate);
 	burn_drive_set_speed (priv->ctx->drive, rate, 0);
+
+	if (burn_precheck_write (opts, priv->ctx->disc, reason, 0) < 1) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     reason);
+		return BRASERO_BURN_ERR;
+	}
+
 	burn_disc_write (opts, priv->ctx->disc);
 	burn_write_opts_free (opts);
 
@@ -727,6 +746,7 @@ brasero_libburn_clock_tick (BraseroJob *job)
 
 	/* Double check that everything went well */
 	if (!burn_drive_wrote_well (priv->ctx->drive)) {
+		BRASERO_JOB_LOG (job, "Something went wrong");
 		brasero_job_error (job,
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
