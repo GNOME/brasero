@@ -101,13 +101,13 @@ brasero_file_filtered_get_label_text (guint num, gboolean expanded)
 
 	if (expanded) {
 		if (!num)
-			label = g_strdup (_("Hide the _filtered file list (no file)"));
+			label = g_strdup (_("No file filtered"));
 		else
 			label = g_strdup_printf (ngettext ("Hide the _filtered file list (%d file)", "Hide the _filtered file list (%d files)", num), num);
 	}
 	else {
 		if (!num)
-			label = g_strdup (_("Show the _filtered file list (no file)"));
+			label = g_strdup (_("No file filtered"));
 		else
 			label = g_strdup_printf (ngettext ("Show the _filtered file list (%d file)", "Show the _filtered file list (%d files)", num), num);
 	}
