@@ -251,7 +251,6 @@ static const gchar *description = {
 
 static GObjectClass *parent_class = NULL;
 
-#define BRASERO_PROJECT_SPACING			6
 #define BRASERO_PROJECT_SIZE_WIDGET_BORDER	1
 
 #define BRASERO_KEY_SHOW_PREVIEW		"/apps/brasero/display/viewer"
@@ -334,8 +333,10 @@ brasero_project_get_proportion (BraseroLayoutObject *object,
 				gint *center,
 				gint *footer)
 {
-	*footer = BRASERO_PROJECT (object)->priv->name_display->allocation.height +
-		  BRASERO_PROJECT_SPACING * 2 + BRASERO_PROJECT_SIZE_WIDGET_BORDER * 2;
+	if (!BRASERO_PROJECT (object)->priv->name_display)
+		return;
+
+	*footer = BRASERO_PROJECT (object)->priv->name_display->parent->allocation.height;
 }
 
 static void
@@ -400,11 +401,14 @@ brasero_project_init (BraseroProject *obj)
 
 	/* bottom */
 	box = gtk_hbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
 	gtk_widget_show (box);
-	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, BRASERO_PROJECT_SPACING);
+	gtk_box_pack_end (GTK_BOX (obj), box, FALSE, TRUE, 0);
 
 	/* Name widget */
 	label = gtk_label_new_with_mnemonic (_("_Name:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_misc_set_padding (GTK_MISC (label), 6, 0);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (box), label, FALSE, TRUE, 0);
 
@@ -412,7 +416,9 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (obj->priv->name_display);
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->name_display, TRUE, TRUE, 0);
 	obj->priv->empty = 1;
-	
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), obj->priv->name_display);
+
 	/* burn button set insensitive since there are no files in the selection */
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 	obj->priv->burn = brasero_utils_make_button (_("_Burn..."),
