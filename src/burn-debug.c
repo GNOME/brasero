@@ -260,6 +260,8 @@ brasero_debug_data_fs_to_string (gchar *buffer,
 		strcat (buffer, "JOLIET ");
 	if (fs_type & BRASERO_IMAGE_FS_VIDEO)
 		strcat (buffer, "VIDEO ");
+	if (fs_type & BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY)
+		strcat (buffer, "DEEP ");
 }
 
 static void

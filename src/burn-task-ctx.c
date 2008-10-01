@@ -75,7 +75,6 @@ struct _BraseroTaskCtxPrivate
 	gint64 rate;
 
 	/* the current action */
-	/* FIXME: we need two types of actions */
 	BraseroBurnAction current_action;
 	gchar *action_string;
 
@@ -869,7 +868,9 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 		return BRASERO_BURN_OK;
 	}
 
+	total = 0;
 	brasero_task_ctx_get_session_output_size (self, NULL, &total);
+
 	if ((priv->session_bytes + priv->track_bytes) <= 0 || total <= 0) {
 		/* if brasero_task_ctx_start_progress () was called (and a timer
 		 * created), assume that the task will report either a progress
@@ -891,7 +892,6 @@ brasero_task_ctx_get_progress (BraseroTaskCtx *self,
 		return BRASERO_BURN_OK;
 
 	*progress = (gdouble) ((gdouble) (priv->track_bytes + priv->session_bytes) / (gdouble)  total);
-
 	return BRASERO_BURN_OK;
 }
 

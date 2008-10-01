@@ -985,6 +985,7 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					 BRASERO_IMAGE_FORMAT_BIN);
 	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
+				       BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
 				       BRASERO_IMAGE_FS_JOLIET);
 
 	brasero_plugin_link_caps (plugin, output, input);

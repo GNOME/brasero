@@ -44,6 +44,8 @@
 static void
 brasero_libburn_common_ctx_free_real (BraseroLibburnCtx *ctx)
 {
+	BRASERO_BURN_LOG ("Drive stopped");
+
 	if (ctx->drive_info) {
 		burn_drive_info_free (ctx->drive_info);
 		ctx->drive_info = NULL;
@@ -77,6 +79,7 @@ brasero_libburn_common_ctx_wait_for_idle_drive (gpointer data)
 	status = burn_drive_get_status (ctx->drive, NULL);
 	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING)
 		burn_drive_cancel (ctx->drive);
+
 	if (status == BURN_DRIVE_GRABBING)
 		/* This should probably never happen */
 		burn_drive_info_forget (ctx->drive_info, 1);

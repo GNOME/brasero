@@ -694,11 +694,12 @@ brasero_file_node_add (BraseroFileNode *parent,
 							    node,
 							    sort_func,
 							    NULL);
-
 	node->parent = parent;
 	if (!node->is_imported) {
 		guint depth = 0;
+		BraseroFileTreeStats *stats;
 
+		/* NOTE: parent will be changed afterwards !!! */
 		if (!node->is_grafted) {
 			/* propagate the size change*/
 			for (; parent && !parent->is_root; parent = parent->parent) {
@@ -708,8 +709,11 @@ brasero_file_node_add (BraseroFileNode *parent,
 			}
 		}
 
-		if (depth > 6)
+		stats = brasero_file_node_get_tree_stats (node->parent, &depth);
+		if (depth == 5) {
+			stats->num_deep ++;
 			node->is_deep = TRUE;
+		}
 	}
 }
 
@@ -957,14 +961,11 @@ void
 brasero_file_node_move_from (BraseroFileNode *node,
 			     BraseroFileTreeStats *stats)
 {
-	gboolean was_deep;
-
 	/* NOTE: for the time being no backend supports moving imported files */
 	if (node->is_imported)
 		return;
 
-	was_deep = (brasero_file_node_get_depth (node) > 6);
-	if (was_deep)
+	if (node->is_deep)
 		stats->num_deep --;
 
 	brasero_file_node_unlink (node);
@@ -976,7 +977,7 @@ brasero_file_node_move_to (BraseroFileNode *node,
 			   GCompareFunc sort_func)
 {
 	BraseroFileTreeStats *stats;
-	guint depth;
+	guint depth = 0;
 
 	/* NOTE: for the time being no backend supports moving imported files */
 	if (node->is_imported)
@@ -1002,8 +1003,8 @@ brasero_file_node_move_to (BraseroFileNode *node,
 
 	/* NOTE: here stats about the tree can change if the parent has a depth
 	 * > 6 and if previous didn't. Other stats remains unmodified. */
-	stats = brasero_file_node_get_tree_stats (parent, &depth);
-	if (!depth > 6) {
+	stats = brasero_file_node_get_tree_stats (node->parent, &depth);
+	if (depth == 5) {
 		stats->num_deep ++;
 		node->is_deep = TRUE;
 	}

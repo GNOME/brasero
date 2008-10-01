@@ -1,3 +1,25 @@
+2008-10-01  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix problems with deep directory handling
+
+	* src/brasero-file-node.c (brasero_file_node_add),
+	(brasero_file_node_move_from), (brasero_file_node_move_to):
+	* src/burn-debug.c (brasero_debug_data_fs_to_string):
+	* src/burn-task-ctx.c (brasero_task_ctx_get_progress):
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_ctx_free_real),
+	(brasero_libburn_common_ctx_wait_for_idle_drive):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_start_record):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_export_caps):
+
 2008-09-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #552834 – burning image file fails

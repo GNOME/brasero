@@ -781,6 +781,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
 				       BRASERO_IMAGE_FS_UDF|
 				       BRASERO_IMAGE_ISO_FS_LEVEL_3|
+				       BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
 				       BRASERO_IMAGE_FS_JOLIET|
 				       BRASERO_IMAGE_FS_VIDEO);
 

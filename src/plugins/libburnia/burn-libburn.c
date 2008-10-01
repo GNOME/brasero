@@ -474,12 +474,13 @@ brasero_libburn_start_record (BraseroLibburn *self,
 			      GError **error)
 {
 	guint64 rate;
-	gchar reason [4096];
+	gint64 blocks = 0;
 	BraseroMedia media;
 	BraseroBurnFlag flags;
 	BraseroBurnResult result;
 	BraseroLibburnPrivate *priv;
 	struct burn_write_opts *opts;
+	gchar reason [BURN_REASONS_LEN];
 
 	priv = BRASERO_LIBBURN_PRIVATE (self);
 
@@ -542,6 +543,14 @@ brasero_libburn_start_record (BraseroLibburn *self,
 			     reason);
 		return BRASERO_BURN_ERR;
 	}
+
+	/* If we're writing to a disc remember that the session can't be under
+	 * 300 sectors (= 614400 bytes) */
+	brasero_job_get_session_output_size (BRASERO_JOB (self), &blocks, NULL);
+	if (blocks < 300)
+		brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
+							       300L - blocks,
+							       614400L - blocks * 2048);
 
 	burn_disc_write (opts, priv->ctx->disc);
 	burn_write_opts_free (opts);
