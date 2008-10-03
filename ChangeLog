@@ -1,5 +1,16 @@
 2008-10-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make sure the session auto configuration object is off when starting burn dialog
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_run):
+	* src/brasero-session-cfg.c (brasero_session_cfg_disable),
+	(brasero_session_cfg_input_changed),
+	(brasero_session_cfg_output_changed),
+	(brasero_session_cfg_caps_changed):
+	* src/brasero-session-cfg.h:
+
+2008-10-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #554722 – Main window does not fit on a 600px vertical screen (netbooks)
 	Fix #525376 – Dialog contains a lot of empty space
 

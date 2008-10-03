@@ -52,6 +52,7 @@ struct _BraseroSessionCfgPrivate
 	glong caps_sig;
 
 	guint configuring:1;
+	guint disabled:1;
 };
 
 #define BRASERO_SESSION_CFG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_SESSION_CFG, BraseroSessionCfgPrivate))
@@ -68,6 +69,15 @@ static guint session_cfg_signals [LAST_SIGNAL] = { 0 };
 G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_BURN_SESSION);
 
 #define BRASERO_DEST_SAVED_FLAGS	(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
+
+void
+brasero_session_cfg_disable (BraseroSessionCfg *self)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	priv->disabled = TRUE;
+}
 
 static void
 brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
@@ -527,6 +537,12 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 static void
 brasero_session_cfg_input_changed (BraseroBurnSession *session)
 {
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	if (priv->disabled)
+		return;
+
 	/* when that happens it's mostly because a medium source changed, or
 	 * a new image was set. 
 	 * - reload saved flags
@@ -540,6 +556,12 @@ brasero_session_cfg_input_changed (BraseroBurnSession *session)
 static void
 brasero_session_cfg_output_changed (BraseroBurnSession *session)
 {
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (session);
+	if (priv->disabled)
+		return;
+
 	/* In this case need to :
 	 * - load flags 
 	 * - check if all flags are thereafter supported
@@ -649,6 +671,12 @@ static void
 brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 				  BraseroSessionCfg *self)
 {
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	if (priv->disabled)
+		return;
+
 	/* In this case we need to check if:
 	 * - new flags are supported or not supported anymore
 	 * - new image types as input/output are supported

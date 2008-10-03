@@ -52,6 +52,7 @@
 #include "brasero-tray.h"
 #include "brasero-burn-dialog.h"
 #include "brasero-jacket-edit.h"
+#include "brasero-session-cfg.h"
 
 #include "burn-basics.h"
 #include "burn-debug.h"
@@ -1841,6 +1842,11 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	BraseroBurnResult result;
 
 	dialog->priv->session = session;
+
+	/* disable autoconfiguration */
+	if (BRASERO_IS_SESSION_CFG (dialog->priv->session))
+		brasero_session_cfg_disable (BRASERO_SESSION_CFG (dialog->priv->session));
+
 	g_object_ref (session);
 
 	/* update what we should display */
