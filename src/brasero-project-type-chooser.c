@@ -154,23 +154,27 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
 	gtk_container_add (GTK_CONTAINER (eventbox), vbox);
 
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 4);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, FALSE, 0);
 
 	image = gtk_image_new_from_icon_name (description->image, GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 1.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+
+	vbox = gtk_vbox_new (TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, TRUE, 0);
 
 	label = gtk_label_new (NULL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), eventbox);
 	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), _(description->text));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 	g_object_set_data (G_OBJECT (eventbox), LABEL_KEY, label);
 
 	label = gtk_label_new (NULL);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_label_set_markup (GTK_LABEL (label), _(description->description));
-	gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 
 	return eventbox;
 }
@@ -210,6 +214,7 @@ static void
 brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 					   GtkRecentManager *recent)
 {
+	GtkSizeGroup *group;
 	GList *list = NULL;
 	GList *recents;
 	GList *iter;
@@ -244,6 +249,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 			list = g_list_delete_link (list, g_list_last (list));
 	}
 
+	group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
 	for (iter = list; iter; iter = iter->next) {
 		GtkRecentInfo *info;
 		const gchar *name;
@@ -261,7 +267,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		gtk_box_pack_start (GTK_BOX (self->priv->recent_box),
 				    hbox,
 				    FALSE,
-				    FALSE,
+				    TRUE,
 				    0);
 
 		tooltip = gtk_recent_info_get_uri_display (info);
@@ -277,6 +283,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		uri = gtk_recent_info_get_uri (info);
 
 		link = gtk_link_button_new_with_label (uri, name);
+		gtk_button_set_alignment (GTK_BUTTON (link), 0.0, 0.5);
 		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
 		gtk_button_set_image (GTK_BUTTON (link), image);
 		g_signal_connect (link,
@@ -286,10 +293,13 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 		gtk_widget_show (link);
 		gtk_widget_set_tooltip_text (link, tooltip);
-		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, TRUE, 0);
 
 		g_free (tooltip);
+
+		gtk_size_group_add_widget (group, link);
 	}
+	g_object_unref (group);
 
 	if (!g_list_length (list)) {
 		GtkWidget *label;
@@ -346,7 +356,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_container_add (GTK_CONTAINER (obj), vbox);
 
 	project_box = gtk_vbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (project_box), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (project_box), 6);
 	gtk_widget_show (project_box);
 	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, FALSE, 0);
 
@@ -375,11 +385,11 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 		rows ++;
 
 	table = gtk_table_new (rows, nb_rows, TRUE);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 12);
-	gtk_box_pack_start (GTK_BOX (project_box), table, FALSE, FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 6);
+	gtk_box_pack_start (GTK_BOX (project_box), table, FALSE, FALSE, 0);
 
-	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 12);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
 
 	for (i = 0; i < nb_items; i ++) {
 		widget = brasero_project_type_chooser_new_item (obj, items + i);
@@ -398,7 +408,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	/* The recent files part */
 	recent_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (recent_box), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (recent_box), 6);
 	gtk_widget_show (recent_box);
 	gtk_box_pack_start (GTK_BOX (vbox), recent_box, FALSE, FALSE, 0);
 
@@ -409,12 +419,11 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 6);
 
-	vbox = gtk_vbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
+	vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (vbox);
-	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
 	obj->priv->recent_box = vbox;
 
 	recent = gtk_recent_manager_get_default ();

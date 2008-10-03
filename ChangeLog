@@ -1,5 +1,15 @@
 2008-10-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #554722 – Main window does not fit on a 600px vertical screen (netbooks)
+	Fix #525376 – Dialog contains a lot of empty space
+
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_new_item),
+	(brasero_project_type_chooser_build_recent),
+	(brasero_project_type_chooser_init):
+
+2008-10-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #554599 – Translation comments
 	Added some comments to help make things clearer
 
