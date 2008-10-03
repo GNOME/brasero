@@ -367,6 +367,12 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 
 		src_medium = brasero_burn_session_get_src_medium (priv->session);
 		if (src_medium == medium) {
+			/* Translators: this string is only used when the user
+			 * wants to copy a disc using the same destination and
+			 * source drive. It tells him that brasero will use as
+			 * destination disc a new one (once the source has been
+			 * copied) which is to be inserted in the drive currently
+			 * holding the source disc */
 			label = g_strdup_printf (_("New disc in burner holding source medium"));
 			g_free (medium_name);
 			return label;

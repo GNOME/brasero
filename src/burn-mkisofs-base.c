@@ -275,6 +275,9 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 	graft_point = _build_graft_point (uri, disc_path);
 
 	if (!graft_point) {
+		/* Translators: Error message saying no graft point is specified
+		 * A graft point is the path (on the disc) where a file from
+		 * any source will be added ("grafted") */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,

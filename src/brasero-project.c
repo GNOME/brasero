@@ -2459,6 +2459,7 @@ brasero_project_save_audio_project_plain_text (BraseroProject *proj,
 			if (written != 1)
 				goto error;
 
+			/* Translators: %s is an artist */
 			string = g_strdup_printf (_(" by %s"), info->artist);
 			written = fwrite (string, 1, strlen (string), file);
 			if (written != strlen (string)) {
