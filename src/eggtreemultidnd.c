@@ -43,7 +43,9 @@ typedef struct _TreeViewDragInfo TreeViewDragInfo;
 struct _TreeViewDragInfo
 {
   GdkModifierType start_button_mask;
-  GtkTargetList *source_target_list;
+
+  /* This has been unused since 2.14.x */
+  GtkTargetList *unused_source_target_list;
   GdkDragAction source_actions;
 
   GtkTargetList *dest_target_list;
@@ -317,9 +319,8 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
       model = gtk_tree_view_get_model (GTK_TREE_VIEW (widget));
       if (egg_tree_multi_drag_source_row_draggable (EGG_TREE_MULTI_DRAG_SOURCE (model), path_list))
 	{
-
 	  context = gtk_drag_begin (widget,
-				    di->source_target_list,
+				    gtk_drag_source_get_target_list (widget),
 				    di->source_actions,
 				    priv_data->pressed_button,
 				    (GdkEvent*)event);
