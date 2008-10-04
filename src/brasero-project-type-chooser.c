@@ -332,11 +332,12 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	GtkWidget *project_box;
 	GtkWidget *recent_box;
 	GError *error = NULL;
+	GtkWidget *separator;
 	GtkWidget *widget;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *vbox;
-	int nb_rows = 2;
+	int nb_rows = 1;
 	gchar *string;
 	int nb_items;
 	int rows;
@@ -351,14 +352,14 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 		error = NULL;
 	}
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_hbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (obj), vbox);
 
 	project_box = gtk_vbox_new (FALSE, 6);
-	gtk_container_set_border_width (GTK_CONTAINER (project_box), 6);
 	gtk_widget_show (project_box);
-	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), project_box, FALSE, TRUE, 0);
 
 	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Create a new project:"));
 	label = gtk_label_new (string);
@@ -366,16 +367,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, FALSE, 0);
-
-	string = g_strdup_printf ("<span foreground='grey50'><b><i>%s</i></b></span>", _("Choose from the following options"));
-	label = gtk_label_new (string);
-	g_free (string);
-
-	gtk_widget_show (label);
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 	gtk_box_pack_start (GTK_BOX (project_box), label, FALSE, FALSE, 0);
 
 	/* get the number of rows */
@@ -386,7 +378,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 
 	table = gtk_table_new (rows, nb_rows, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 6);
-	gtk_box_pack_start (GTK_BOX (project_box), table, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (project_box), table, FALSE, TRUE, 0);
 
 	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 4);
@@ -406,24 +398,28 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	}
 	gtk_widget_show_all (table);
 
+	separator = gtk_vseparator_new ();
+	gtk_widget_show (separator);
+	gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 8);
+
 	/* The recent files part */
 	recent_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (recent_box), 6);
 	gtk_widget_show (recent_box);
-	gtk_box_pack_start (GTK_BOX (vbox), recent_box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), recent_box, FALSE, TRUE, 0);
 
-	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Choose a recently opened project:"));
+	string = g_strdup_printf ("<span size='x-large'><b>%s</b></span>", _("Recent projects:"));
 	label = gtk_label_new (string);
 	g_free (string);
 
 	gtk_widget_show (label);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 6);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (recent_box), label, FALSE, FALSE, 0);
 
 	vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
 	obj->priv->recent_box = vbox;
 
 	recent = gtk_recent_manager_get_default ();
