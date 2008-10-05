@@ -197,6 +197,14 @@ G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 #define BRASERO_DATA_DISC_MEDIUM	"brasero-data-disc-medium"
 #define BRASERO_DATA_DISC_MERGE_ID	"brasero-data-disc-merge-id"
 
+BraseroMedium *
+brasero_data_disc_get_loaded_medium (BraseroDataDisc *self)
+{
+	BraseroDataDiscPrivate *priv;
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+	return brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project));
+}
+
 /**
  * Actions callbacks
  */

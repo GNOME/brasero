@@ -311,7 +311,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		g_free (string);
 
 		gtk_widget_show (label);
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 6);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 0);
 	}
 
 	g_list_free (list);
@@ -424,7 +424,7 @@ brasero_project_type_chooser_init (BraseroProjectTypeChooser *obj)
 	vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (recent_box), vbox, FALSE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	obj->priv->recent_box = vbox;
 
 	recent = gtk_recent_manager_get_default ();

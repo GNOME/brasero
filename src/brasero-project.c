@@ -194,6 +194,8 @@ struct BraseroProjectPrivate {
 	guint has_focus:1;
 	guint oversized:1;
 	guint selected_uris:1;
+
+	guint merging:1;
 };
 
 static GtkActionEntry entries [] = {
@@ -577,7 +579,26 @@ brasero_project_update_project_size (BraseroProject *project,
 						   !BRASERO_IS_DATA_DISC (project->priv->current),
 						   TRUE,
 						   FALSE);
-	size = g_strdup_printf (_("Project estimated size: %s"), string);
+	if (project->priv->merging) {
+		gchar *medium_string;
+		BraseroMedium *medium;
+		gint64 free_space = 0;
+
+		medium = brasero_data_disc_get_loaded_medium (BRASERO_DATA_DISC (project->priv->current));
+		brasero_medium_get_free_space (medium,
+					       &free_space,
+					       NULL);
+		/* Translators: first %s is the size of the project and the 
+		 * second %s is the remaining free space on the disc that is
+		 * used for multisession */
+		medium_string = g_format_size_for_display (free_space);
+		size = g_strdup_printf (_("Project estimated size: %s/%s"),
+					string,
+					medium_string);
+		g_free (medium_string);
+	}
+	else
+		size = g_strdup_printf (_("Project estimated size: %s"), string);
 	g_free (string);
 
 	gtk_statusbar_push (GTK_STATUSBAR (status), project->priv->status_ctx, size);
@@ -597,7 +618,11 @@ static void
 brasero_project_flags_changed_cb (BraseroDisc *disc,
 				  BraseroBurnFlag flags,
 				  BraseroProject *project)
-{ }
+{
+	/* we just need to know if MERGE flag is on */
+	project->priv->merging = (flags & BRASERO_BURN_FLAG_MERGE) != 0;
+	brasero_project_update_project_size (project, project->priv->sectors);
+}
 
 /***************************** URIContainer ************************************/
 static void
@@ -898,6 +923,7 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 
 	project->priv->empty = 1;
     	project->priv->burnt = 0;
+	project->priv->merging = 0;
 	project->priv->modified = 0;
 
 	if (project->priv->current)

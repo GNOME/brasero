@@ -28,6 +28,8 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtksizegroup.h>
 
+#include "burn-medium.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_DATA_DISC             (brasero_data_disc_get_type ())
@@ -58,6 +60,10 @@ brasero_data_disc_new (void);
 void
 brasero_data_disc_set_right_button_group (BraseroDataDisc *disc,
 					  GtkSizeGroup *size_group);
+
+BraseroMedium *
+brasero_data_disc_get_loaded_medium (BraseroDataDisc *disc);
+
 G_END_DECLS
 
 #endif /* _BRASERO_DATA_DISC_H_ */
