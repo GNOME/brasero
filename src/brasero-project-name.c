@@ -229,7 +229,11 @@ brasero_project_name_set_type (BraseroProjectName *self,
 	priv->label_modified = FALSE;
 
 	title_str = brasero_project_name_get_default_label (self);
+
+	g_signal_handlers_block_by_func (self, brasero_project_name_label_changed, NULL);
 	gtk_entry_set_text (GTK_ENTRY (self), title_str);
+	g_signal_handlers_unblock_by_func (self, brasero_project_name_label_changed, NULL);
+
 	g_free (title_str);
 }
 
@@ -255,7 +259,11 @@ brasero_project_name_set_multisession_medium (BraseroProjectName *self,
 		return;
 
 	title_str = brasero_project_name_get_default_label (self);
+
+	g_signal_handlers_block_by_func (self, brasero_project_name_label_changed, NULL);
 	gtk_entry_set_text (GTK_ENTRY (self), title_str);
+	g_signal_handlers_unblock_by_func (self, brasero_project_name_label_changed, NULL);
+
 	g_free (title_str);
 }
 

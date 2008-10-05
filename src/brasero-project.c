@@ -572,7 +572,6 @@ brasero_project_update_project_size (BraseroProject *project,
 		project->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
 									  "size_project");
 
-
 	gtk_statusbar_pop (GTK_STATUSBAR (status), project->priv->status_ctx);
 
 	string = brasero_utils_get_sectors_string (sectors,
@@ -619,8 +618,16 @@ brasero_project_flags_changed_cb (BraseroDisc *disc,
 				  BraseroBurnFlag flags,
 				  BraseroProject *project)
 {
+	gboolean merging;
+
+	merging = (flags & BRASERO_BURN_FLAG_MERGE) != 0;
+
+	/* see if the project name should be updated */
+	brasero_project_name_set_multisession_medium (BRASERO_PROJECT_NAME (project->priv->name_display),
+						      brasero_data_disc_get_loaded_medium (BRASERO_DATA_DISC (disc)));
+
 	/* we just need to know if MERGE flag is on */
-	project->priv->merging = (flags & BRASERO_BURN_FLAG_MERGE) != 0;
+	project->priv->merging = merging;
 	brasero_project_update_project_size (project, project->priv->sectors);
 }
 
