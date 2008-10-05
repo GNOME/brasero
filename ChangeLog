@@ -1,5 +1,21 @@
 2008-10-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #535330 – Volume label should be part of the project
+
+	* src/brasero-project-name.c (brasero_project_name_label_changed),
+	(brasero_project_name_class_init):
+	* src/brasero-project.c (brasero_project_name_changed_cb),
+	(brasero_project_init), (brasero_project_open_project_xml),
+	(brasero_project_open_project),
+	(brasero_project_playlist_playlist_started),
+	(brasero_project_open_audio_playlist_project),
+	(brasero_project_open_playlist), (brasero_project_load_session),
+	(brasero_project_save_project_xml),
+	(brasero_project_save_audio_project_plain_text),
+	(brasero_project_save_audio_project_playlist):
+
+2008-10-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Use average read rate for these two to avoid jerky rate displaying
 	Fix #550526 – Wrong drive's speed displayed
 

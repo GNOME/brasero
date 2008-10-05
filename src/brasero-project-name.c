@@ -46,6 +46,12 @@ struct _BraseroProjectNamePrivate
 
 #define BRASERO_PROJECT_NAME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_PROJECT_NAME, BraseroProjectNamePrivate))
 
+typedef enum {
+	CHANGED_SIGNAL,
+	LAST_SIGNAL
+} BraseroDiscSignalType;
+
+static guint brasero_project_name_signals [LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroProjectName, brasero_project_name, GTK_TYPE_ENTRY);
 
@@ -208,6 +214,9 @@ brasero_project_name_label_changed (GtkEditable *editable,
 
 	priv = BRASERO_PROJECT_NAME_PRIVATE (editable);
 	priv->label_modified = 1;
+	g_signal_emit (editable,
+		       brasero_project_name_signals [CHANGED_SIGNAL],
+		       0);
 }
 
 void
@@ -307,6 +316,16 @@ brasero_project_name_class_init (BraseroProjectNameClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroProjectNamePrivate));
 
 	object_class->finalize = brasero_project_name_finalize;
+	brasero_project_name_signals [CHANGED_SIGNAL] =
+	    g_signal_new ("name_changed",
+			  BRASERO_TYPE_PROJECT_NAME,
+			  G_SIGNAL_RUN_FIRST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  0,
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__VOID,
+			  G_TYPE_NONE,
+			  0);
 }
 
 GtkWidget *

@@ -399,6 +399,22 @@ brasero_project_focus_changed_cb (GtkContainer *container,
 }
 
 static void
+brasero_project_name_changed_cb (BraseroProjectName *name,
+				 BraseroProject *project)
+{
+	GtkAction *action;
+
+	project->priv->modified = TRUE;
+
+	/* the state of the following depends on the existence of an opened project */
+	action = gtk_action_group_get_action (project->priv->project_group, "Save");
+	if (project->priv->modified)
+		gtk_action_set_sensitive (action, TRUE);
+	else
+		gtk_action_set_sensitive (action, FALSE);
+}
+
+static void
 brasero_project_init (BraseroProject *obj)
 {
 	GtkSizeGroup *size_group;
@@ -434,6 +450,11 @@ brasero_project_init (BraseroProject *obj)
 	gtk_widget_show (obj->priv->name_display);
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->name_display, TRUE, TRUE, 0);
 	obj->priv->empty = 1;
+
+	g_signal_connect (obj->priv->name_display,
+			  "name-changed",
+			  G_CALLBACK (brasero_project_name_changed_cb),
+			  obj);
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), obj->priv->name_display);
 
@@ -1910,6 +1931,7 @@ error :
 static gboolean
 brasero_project_open_project_xml (BraseroProject *proj,
 				  const gchar *uri,
+				  gchar **label,
 				  BraseroDiscTrack **track,
 				  gboolean warn_user)
 {
@@ -1953,6 +1975,13 @@ brasero_project_open_project_xml (BraseroProject *proj,
 		if (!xmlStrcmp (item->name, (const xmlChar *) "version")) {
 			/* simply ignore it */
 		}
+		else if (!xmlStrcmp (item->name, (const xmlChar *) "label")) {
+			*label = (gchar *) xmlNodeListGetString (project,
+								 item->xmlChildrenNode,
+								 1);
+			if (!(*label))
+				goto error;
+		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "track")) {
 			if (track_node)
 				goto error;
@@ -1988,11 +2017,12 @@ brasero_project_open_project (BraseroProject *project,
 {
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
+	gchar *label = NULL;
 
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (!brasero_project_open_project_xml (project, uri, &track, TRUE))
+	if (!brasero_project_open_project_xml (project, uri, &label, &track, TRUE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	brasero_project_update_project_size (project, 0);
@@ -2010,6 +2040,14 @@ brasero_project_open_project (BraseroProject *project,
 
 	brasero_project_switch (project, type);
 
+	g_signal_handlers_block_by_func (project->priv->name_display,
+					 brasero_project_name_changed_cb,
+					 project);
+	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) label);
+	g_signal_handlers_unblock_by_func (project->priv->name_display,
+					   brasero_project_name_changed_cb,
+					   project);
+
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
 
@@ -2020,6 +2058,20 @@ brasero_project_open_project (BraseroProject *project,
 }
 
 #ifdef BUILD_PLAYLIST
+
+static void
+brasero_project_playlist_playlist_started (TotemPlParser *parser,
+					   const gchar *uri,
+					   GHashTable *metadata,
+					   gpointer user_data)
+{
+	gchar *string;
+	gchar **retval = user_data;
+
+	string = g_hash_table_lookup (metadata, TOTEM_PL_PARSER_FIELD_TITLE);
+	if (string)
+		*retval = g_strdup (string);
+}
 
 static void
 brasero_project_playlist_entry_parsed (TotemPlParser *parser,
@@ -2042,6 +2094,7 @@ brasero_project_playlist_entry_parsed (TotemPlParser *parser,
 static gboolean
 brasero_project_open_audio_playlist_project (BraseroProject *proj,
 					     const gchar *uri,
+					     gchar **label,
 					     BraseroDiscTrack **track,
 					     gboolean warn_user)
 {
@@ -2057,6 +2110,11 @@ brasero_project_open_audio_playlist_project (BraseroProject *proj,
 		      "recurse", FALSE,
 		      "disable-unsafe", TRUE,
 		      NULL);
+
+	g_signal_connect (parser,
+			  "playlist-started",
+			  G_CALLBACK (brasero_project_playlist_playlist_started),
+			  &label);
 
 	g_signal_connect (parser,
 			  "entry-parsed",
@@ -2083,15 +2141,26 @@ brasero_project_open_playlist (BraseroProject *project,
 			       const gchar *uri) /* escaped */
 {
 	BraseroDiscTrack *track = NULL;
+	gchar *label = NULL;
 
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (!brasero_project_open_audio_playlist_project (project, uri, &track, TRUE))
+	if (!brasero_project_open_audio_playlist_project (project, uri, &label, &track, TRUE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	brasero_project_update_project_size (project, 0);
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
+
+	if (label) {
+		g_signal_handlers_block_by_func (project->priv->name_display,
+						 brasero_project_name_changed_cb,
+						 project);
+		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) label);
+		g_signal_handlers_unblock_by_func (project->priv->name_display,
+						   brasero_project_name_changed_cb,
+						   project);
+	}
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2109,8 +2178,9 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 {
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
+	gchar *label;
 
-	if (!brasero_project_open_project_xml (project, uri, &track, FALSE))
+	if (!brasero_project_open_project_xml (project, uri, &label, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	if (track->type == BRASERO_DISC_TRACK_AUDIO)
@@ -2125,6 +2195,14 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 	}
 
 	brasero_project_switch (project, type);
+
+	g_signal_handlers_block_by_func (project->priv->name_display,
+					 brasero_project_name_changed_cb,
+					 project);
+	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) label);
+	g_signal_handlers_unblock_by_func (project->priv->name_display,
+					   brasero_project_name_changed_cb,
+					   project);
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2378,6 +2456,12 @@ brasero_project_save_project_xml (BraseroProject *proj,
 	if (success < 0)
 		goto error;
 
+	success = xmlTextWriterWriteElement (project,
+					     (xmlChar *) "label",
+					     (xmlChar *) gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display)));
+	if (success < 0)
+		goto error;
+
 	success = xmlTextWriterStartElement (project, (xmlChar *) "track");
 	if (success < 0)
 		goto error;
@@ -2457,6 +2541,8 @@ brasero_project_save_audio_project_plain_text (BraseroProject *proj,
 					       BraseroDiscTrack *track,
 					       gboolean use_dialog)
 {
+	const gchar *title;
+	guint written;
 	GSList *iter;
 	gchar *path;
 	FILE *file;
@@ -2474,10 +2560,19 @@ brasero_project_save_audio_project_plain_text (BraseroProject *proj,
 		return FALSE;
 	}
 
+	/* write title */
+	title = gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display));
+	written = fwrite (title, strlen (title), 1, file);
+	if (written != 1)
+		goto error;
+
+	written = fwrite ("\n", 1, 1, file);
+	if (written != 1)
+		goto error;
+
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
 		BraseroSongInfo *info;
-		guint written;
 		gchar *time;
 
 		song = iter->data;
@@ -2619,13 +2714,14 @@ brasero_project_save_audio_project_playlist (BraseroProject *proj,
 			break;
 	}
 
-	result = totem_pl_parser_write (parser,
-					GTK_TREE_MODEL (model),
-					brasero_project_save_audio_playlist_entry,
-					path,
-					pl_type,
-					NULL,
-					NULL);
+	result = totem_pl_parser_write_with_title (parser,
+						   GTK_TREE_MODEL (model),
+						   brasero_project_save_audio_playlist_entry,
+						   path,
+						   gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display)),
+						   pl_type,
+						   NULL,
+						   NULL);
 	if (!result && use_dialog)
 		brasero_project_not_saved_dialog (proj);
 
