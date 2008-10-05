@@ -1560,7 +1560,7 @@ brasero_audio_disc_add_playlist (BraseroAudioDisc *disc,
 				   BRASERO_IO_INFO_MIME|
 				   BRASERO_IO_INFO_METADATA|
 				   BRASERO_IO_INFO_METADATA_MISSING_CODEC,
-				   NULL);
+				   disc); /* It's necessary to have a callback_data != from NULL */
 
 	return BRASERO_DISC_OK;
 }
