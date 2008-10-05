@@ -2050,7 +2050,6 @@ brasero_project_open_playlist (BraseroProject *project,
 			       const gchar *uri) /* escaped */
 {
 	BraseroDiscTrack *track = NULL;
-	BraseroProjectType type;
 
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
@@ -2058,10 +2057,8 @@ brasero_project_open_playlist (BraseroProject *project,
 	if (!brasero_project_open_audio_playlist_project (project, uri, &track, TRUE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-
 	brasero_project_update_project_size (project, 0);
-	brasero_project_switch (project, TRUE);
-	type = BRASERO_PROJECT_TYPE_AUDIO;
+	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);
@@ -2069,7 +2066,7 @@ brasero_project_open_playlist (BraseroProject *project,
 	brasero_project_add_to_recents (project, uri, FALSE);
 	project->priv->modified = 0;
 
-	return type;
+	return BRASERO_PROJECT_TYPE_AUDIO;
 }
 
 #endif
