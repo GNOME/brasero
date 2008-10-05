@@ -303,10 +303,15 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 	if (!g_list_length (list)) {
 		GtkWidget *label;
+		gchar *string;
 
-		label = gtk_label_new (_("No recently used project"));
+		string = g_strdup_printf ("<i>%s</i>", _("No recently used project"));
+		label = gtk_label_new (string);
+		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+		g_free (string);
+
 		gtk_widget_show (label);
-		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box), label, FALSE, FALSE, 6);
 	}
 
 	g_list_free (list);
