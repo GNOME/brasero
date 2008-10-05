@@ -357,13 +357,29 @@ static void
 brasero_project_set_add_button_state (BraseroProject *project)
 {
 	GtkAction *action;
+	GtkWidget *widget;
 	gboolean sensitive;
+	GtkWidget *toplevel;
 
 	sensitive = ((!project->priv->current_source || !project->priv->has_focus) &&
 		      !project->priv->oversized);
 
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, sensitive);
+
+	/* set the Add button to be the default for the whole window. That fixes 
+	 * #465175 – Location field not working. GtkFileChooser needs a default
+	 * widget to be activated. */
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	if (!sensitive) {
+		gtk_window_set_default (GTK_WINDOW (toplevel), NULL);
+		return;
+	}
+
+	widget = gtk_ui_manager_get_widget (project->priv->manager, "/Toolbar/Add");
+	widget = gtk_bin_get_child (GTK_BIN (widget));
+	GTK_WIDGET_SET_FLAGS (widget, GTK_CAN_DEFAULT);
+	gtk_window_set_default (GTK_WINDOW (toplevel), widget);
 }
 
 static void
@@ -1281,7 +1297,8 @@ brasero_project_update_preview (GtkFileChooser *chooser,
 }
 
 static void
-brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
+brasero_project_add_uris_cb (GtkAction *action,
+			     BraseroProject *project)
 {
 	GtkWidget *toplevel;
 	GtkFileFilter *filter;
@@ -1312,6 +1329,8 @@ brasero_project_add_uris_cb (GtkAction *action, BraseroProject *project)
 	gtk_dialog_add_button (GTK_DIALOG (project->priv->chooser),
 			       GTK_STOCK_ADD,
 			       BRASERO_RESPONSE_ADD);
+	gtk_dialog_set_default_response (GTK_DIALOG (project->priv->chooser),
+					 BRASERO_RESPONSE_ADD);
 
 	g_signal_connect (project->priv->chooser,
 			  "file-activated",
