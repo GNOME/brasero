@@ -1,5 +1,13 @@
 2008-10-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Use average read rate for these two to avoid jerky rate displaying
+	Fix #550526 – Wrong drive's speed displayed
+
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_set_argv):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_set_argv):
+
+2008-10-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Update project name on multisession medium loading in data projects
 
 	* src/brasero-project-name.c (brasero_project_name_set_type),

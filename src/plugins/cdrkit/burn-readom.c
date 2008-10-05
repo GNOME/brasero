@@ -361,6 +361,7 @@ brasero_readom_set_argv (BraseroProcess *process,
 	else 	/* unfortunately raw images can't be piped out */
 		BRASERO_JOB_NOT_SUPPORTED (readom);
 
+	brasero_job_set_use_average_rate (BRASERO_JOB (process), TRUE);
 	return BRASERO_BURN_OK;
 }
 
