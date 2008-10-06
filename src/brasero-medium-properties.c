@@ -558,8 +558,7 @@ brasero_medium_properties_update_image_output (BraseroMediumProperties *self,
 }
 
 static void
-brasero_medium_properties_valid_session (BraseroBurnSession *session,
-					 BraseroSessionError is_valid,
+brasero_medium_properties_valid_session (BraseroSessionCfg *session,
 					 BraseroMediumProperties *self)
 {
 	BraseroMediumPropertiesPrivate *priv;
@@ -568,7 +567,7 @@ brasero_medium_properties_valid_session (BraseroBurnSession *session,
 
 	/* make sure the current displayed path is valid */
 	if (brasero_burn_session_is_dest_file (priv->session))
-		brasero_medium_properties_update_image_output (self, is_valid == BRASERO_SESSION_VALID);
+		brasero_medium_properties_update_image_output (self, brasero_session_cfg_get_error (session) == BRASERO_SESSION_VALID);
 }
 
 static void

@@ -54,16 +54,6 @@ GType brasero_session_cfg_get_type (void) G_GNUC_CONST;
 						BRASERO_BURN_FLAG_BURNPROOF|	\
 						BRASERO_BURN_FLAG_NO_TMP_FILES)
 
-BraseroSessionCfg *
-brasero_session_cfg_new (void);
-
-void
-brasero_session_cfg_add_flags (BraseroSessionCfg *cfg,
-			       BraseroBurnFlag flags);
-
-void
-brasero_session_cfg_disable (BraseroSessionCfg *self);
-
 /**
  * This is for the signal sent to tell whether or not session is valid
  */
@@ -79,6 +69,20 @@ typedef enum {
 	BRASERO_SESSION_NOT_SUPPORTED,
 	BRASERO_SESSION_DISC_PROTECTED
 } BraseroSessionError;
+
+BraseroSessionCfg *
+brasero_session_cfg_new (void);
+
+BraseroSessionError
+brasero_session_cfg_get_error (BraseroSessionCfg *cfg);
+
+void
+brasero_session_cfg_add_flags (BraseroSessionCfg *cfg,
+			       BraseroBurnFlag flags);
+
+void
+brasero_session_cfg_disable (BraseroSessionCfg *self);
+
 
 /**
  * This tag (for sessions) is used to set an estimated size, used to determine

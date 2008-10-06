@@ -1034,8 +1034,7 @@ brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *self)
 }
 
 static void
-brasero_disc_option_dialog_valid_media_cb (BraseroDestSelection *selection,
-					   BraseroSessionError valid,
+brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 					   BraseroDiscOptionDialog *self)
 {
 	BraseroDiscOptionDialogPrivate *priv;
@@ -1043,7 +1042,7 @@ brasero_disc_option_dialog_valid_media_cb (BraseroDestSelection *selection,
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (self);
 
 	if (priv->video_options)
-		gtk_widget_set_sensitive (priv->video_options, valid == BRASERO_SESSION_VALID);
+		gtk_widget_set_sensitive (priv->video_options, brasero_session_cfg_get_error (session) == BRASERO_SESSION_VALID);
 
 	/* update the multi button:
 	 * NOTE: order is important here multi then video */

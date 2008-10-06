@@ -51,6 +51,8 @@ struct _BraseroSessionCfgPrivate
 
 	glong caps_sig;
 
+	BraseroSessionError is_valid;
+
 	guint configuring:1;
 	guint disabled:1;
 };
@@ -69,6 +71,15 @@ static guint session_cfg_signals [LAST_SIGNAL] = { 0 };
 G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_BURN_SESSION);
 
 #define BRASERO_DEST_SAVED_FLAGS	(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
+
+BraseroSessionError
+brasero_session_cfg_get_error (BraseroSessionCfg *self)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	return priv->is_valid;
+}
 
 void
 brasero_session_cfg_disable (BraseroSessionCfg *self)
@@ -150,7 +161,13 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 		return;
 	}
 
-	for (flag = 1; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
+	/* These are always supported and better be set. */
+	brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self),
+					BRASERO_BURN_FLAG_DONT_OVERWRITE|
+					BRASERO_BURN_FLAG_CHECK_SIZE|
+					BRASERO_BURN_FLAG_NOGRACE);
+
+	for (flag = BRASERO_BURN_FLAG_EJECT; flag < BRASERO_BURN_FLAG_LAST; flag <<= 1) {
 		/* see if this flag was originally set */
 		if (!(flags & flag))
 			continue;
@@ -334,6 +351,7 @@ brasero_session_cfg_check_drive_settings (BraseroSessionCfg *self)
 static BraseroSessionError
 brasero_session_cfg_check_size (BraseroSessionCfg *self)
 {
+	BraseroSessionCfgPrivate *priv;
 	BraseroBurnFlag flags;
 	BraseroMedium *medium;
 	BraseroDrive *burner;
@@ -344,17 +362,25 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	gint64 disc_size;
 	GSList *iter;
 
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-	if (!burner)
+	if (!burner) {
+		priv->is_valid = BRASERO_SESSION_NO_OUTPUT;
 		return BRASERO_SESSION_NO_OUTPUT;
+	}
 
 	/* FIXME: here we could check the hard drive space */
-	if (brasero_drive_is_fake (burner))
+	if (brasero_drive_is_fake (burner)) {
+		priv->is_valid = BRASERO_SESSION_VALID;
 		return BRASERO_SESSION_VALID;
+	}
 
 	medium = brasero_drive_get_medium (burner);
-	if (!medium)
+	if (!medium) {
+		priv->is_valid = BRASERO_SESSION_NO_OUTPUT;
 		return BRASERO_SESSION_NO_OUTPUT;
+	}
 
 	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
 	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
@@ -406,8 +432,10 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 			  session_size,
 			  disc_size);
 
-	if (session_size < disc_size)
+	if (session_size < disc_size) {
+		priv->is_valid = BRASERO_SESSION_VALID;
 		return BRASERO_SESSION_VALID;
+	}
 
 	/* FIXME: This is not good since with a DVD 3% of 4.3G may be too much
 	 * with 3% we are slightly over the limit of the most overburnable discs
@@ -419,20 +447,26 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 	 * us to determine how much data can be written to a particular disc
 	 * provided he has chosen a real disc. */
 	max_sectors = disc_size * 103 / 100;
-	if (max_sectors < session_size)
+	if (max_sectors < session_size) {
+		priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
 		return BRASERO_SESSION_INSUFFICIENT_SPACE;
+	}
 
 	if (!(flags & BRASERO_BURN_FLAG_OVERBURN)) {
 		BraseroSessionCfgPrivate *priv;
 
 		priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
-		if (!(priv->supported & BRASERO_BURN_FLAG_OVERBURN))
+		if (!(priv->supported & BRASERO_BURN_FLAG_OVERBURN)) {
+			priv->is_valid = BRASERO_SESSION_INSUFFICIENT_SPACE;
 			return BRASERO_SESSION_INSUFFICIENT_SPACE;
+		}
 
+		priv->is_valid = BRASERO_SESSION_OVERBURN_NECESSARY;
 		return BRASERO_SESSION_OVERBURN_NECESSARY;
 	}
 
+	priv->is_valid = BRASERO_SESSION_VALID;
 	return BRASERO_SESSION_VALID;
 }
 
@@ -455,6 +489,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
 	if (source.type == BRASERO_TRACK_TYPE_NONE) {
 		priv->configuring = FALSE;
+		priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
@@ -465,6 +500,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	if (source.type == BRASERO_TRACK_TYPE_DISC
 	&&  source.subtype.media == BRASERO_MEDIUM_NONE) {
 		priv->configuring = FALSE;
+		priv->is_valid = BRASERO_SESSION_NO_INPUT_MEDIUM;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
@@ -475,6 +511,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	if (source.type == BRASERO_TRACK_TYPE_IMAGE
 	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
 		priv->configuring = FALSE;
+		priv->is_valid = BRASERO_SESSION_NO_INPUT_IMAGE;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
@@ -508,25 +545,30 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 		/* This is a special case */
 		if (source.type == BRASERO_TRACK_TYPE_DISC
 		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
-		&&  brasero_burn_caps_has_capability (priv->caps, &source) != BRASERO_BURN_OK)
+		&&  brasero_burn_caps_has_capability (priv->caps, &source) != BRASERO_BURN_OK) {
+			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
 			g_signal_emit (self,
 				       session_cfg_signals [IS_VALID_SIGNAL],
 				       0,
 				       BRASERO_SESSION_DISC_PROTECTED);
-		else
+		}
+		else {
+			priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
 			g_signal_emit (self,
 				       session_cfg_signals [IS_VALID_SIGNAL],
 				       0,
 				       BRASERO_SESSION_NOT_SUPPORTED);
+		}
 		return;
 	}
 
-	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self)))
+	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))) {
+		priv->is_valid = BRASERO_SESSION_VALID;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
 			       BRASERO_SESSION_VALID);
-
+	}
 	else
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -748,13 +790,13 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 	session_cfg_signals[IS_VALID_SIGNAL] =
 		g_signal_new ("is_valid",
 		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
 		              0,
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__INT,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE,
-			      1,
-		              G_TYPE_INT);
+			      0,
+		              G_TYPE_NONE);
 }
 
 BraseroSessionCfg *

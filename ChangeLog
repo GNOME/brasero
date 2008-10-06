@@ -1,3 +1,27 @@
+2008-10-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fixed a small problem with copy dialog if disc is inserted during
+	run time: the button stayed grayed
+	Some cleanup (removed one unused flag)
+
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb),
+	(brasero_burn_options_init):
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_valid_session):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_valid_media_cb):
+	* src/brasero-medium-properties.c
+	(brasero_medium_properties_valid_session):
+	* src/brasero-session-cfg.c (brasero_session_cfg_get_error),
+	(brasero_session_cfg_add_drive_properties_flags),
+	(brasero_session_cfg_check_size), (brasero_session_cfg_update),
+	(brasero_session_cfg_class_init):
+	* src/brasero-session-cfg.h:
+	* src/brasero-src-image.c:
+	* src/burn-basics.h:
+	* src/burn-caps.c (brasero_burn_caps_get_flags):
+	* src/burn-debug.c (brasero_debug_burn_flags_to_string):
+
 2008-10-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #535330 – Volume label should be part of the project

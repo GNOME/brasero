@@ -105,8 +105,7 @@ brasero_dest_selection_lock (BraseroDestSelection *self,
 }
 
 static void
-brasero_dest_selection_valid_session (BraseroBurnSession *session,
-				      BraseroSessionError is_valid,
+brasero_dest_selection_valid_session (BraseroSessionCfg *session,
 				      BraseroDestSelection *self)
 {
 	BraseroDestSelectionPrivate *priv;

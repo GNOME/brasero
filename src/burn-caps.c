@@ -2780,7 +2780,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 	/* FIXME: what's the meaning of NOGRACE when outputting ? */
 	BraseroBurnFlag compulsory_flags = BRASERO_BURN_FLAG_NONE;
 	BraseroBurnFlag supported_flags = BRASERO_BURN_FLAG_DONT_OVERWRITE|
-					  BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT|
 					  BRASERO_BURN_FLAG_CHECK_SIZE|
 					  BRASERO_BURN_FLAG_NOGRACE;
 
@@ -2797,10 +2796,6 @@ brasero_burn_caps_get_flags (BraseroBurnCaps *self,
 		/* In this case no APPEND/MERGE is possible */
 		if (input.type == BRASERO_TRACK_TYPE_DISC)
 			supported_flags |= BRASERO_BURN_FLAG_EJECT;
-
-		/* FIXME: do the flag have the same meaning now with session
-		 * making a clear distinction between tmp files and output */
-		compulsory_flags |= BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT;
 
 		*supported = supported_flags;
 		*compulsory = compulsory_flags;

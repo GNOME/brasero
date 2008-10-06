@@ -114,8 +114,6 @@ brasero_debug_burn_flags_to_string (gchar *buffer,
 		strcat (buffer, "burnproof, ");
 	if (flags & BRASERO_BURN_FLAG_NO_TMP_FILES)
 		strcat (buffer, "no tmp file, ");
-	if (flags & BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT)
-		strcat (buffer, "clean output, ");
 	if (flags & BRASERO_BURN_FLAG_DONT_OVERWRITE)
 		strcat (buffer, "no overwrite, ");
 	if (flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)

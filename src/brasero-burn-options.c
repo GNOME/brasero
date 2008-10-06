@@ -222,13 +222,16 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 }
 
 static void
-brasero_burn_options_valid_media_cb (BraseroBurnSession *session,
-				     BraseroSessionError valid,
+brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 				     BraseroBurnOptions *self)
 {
 	BraseroBurnOptionsPrivate *priv;
+	BraseroSessionError valid;
 	gint numcopies;
 
+g_print("VALID %d\n", valid);
+	valid = brasero_session_cfg_get_error (session);
+g_print("VALID2 %d\n", valid);
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
 	gtk_widget_set_sensitive (priv->button, valid == BRASERO_SESSION_VALID);
@@ -388,8 +391,7 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	priv->session = brasero_session_cfg_new ();
 	brasero_burn_session_add_flag (BRASERO_BURN_SESSION (priv->session),
 				       BRASERO_BURN_FLAG_NOGRACE|
-				       BRASERO_BURN_FLAG_CHECK_SIZE|
-				       BRASERO_BURN_FLAG_DONT_CLEAN_OUTPUT);
+				       BRASERO_BURN_FLAG_CHECK_SIZE);
 
 	/* Create a cancel button */
 	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
@@ -435,8 +437,8 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	gtk_widget_show (priv->properties);
 	gtk_box_pack_start (GTK_BOX (selection),
 			    priv->properties,
-			    TRUE,
-			    TRUE,
+			    FALSE,
+			    FALSE,
 			    0);
 
 	/* Medium info */
