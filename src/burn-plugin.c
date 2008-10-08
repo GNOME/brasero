@@ -36,6 +36,7 @@
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"
 #include "burn-caps.h"
+#include "burn-media.h"
 
 #define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config/priority"
 
@@ -510,12 +511,22 @@ brasero_plugin_set_flags (BraseroPlugin *self,
 			  BraseroBurnFlag compulsory)
 {
 	BraseroPluginPrivate *priv;
+	GSList *list;
+	GSList *iter;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
-	priv->flags = brasero_plugin_set_flags_real (priv->flags,
-						     media,
-						     supported,
-						     compulsory);
+
+	list = brasero_media_get_all_list (media);
+	for (iter = list; iter; iter = iter->next) {
+		BraseroMedia medium;
+
+		medium = GPOINTER_TO_INT (iter->data);
+		priv->flags = brasero_plugin_set_flags_real (priv->flags,
+							     medium,
+							     supported,
+							     compulsory);
+	}
+	g_slist_free (list);
 }
 
 static gboolean
@@ -535,6 +546,7 @@ brasero_plugin_get_all_flags (GSList *flags_list,
 
 	flags = brasero_plugin_get_flags (flags_list, media);
 	if (!flags) {
+
 		if (supported_retval)
 			*supported_retval = BRASERO_BURN_FLAG_NONE;
 		if (compulsory_retval)

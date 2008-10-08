@@ -79,7 +79,15 @@ brasero_session_cfg_get_error (BraseroSessionCfg *cfg);
 void
 brasero_session_cfg_add_flags (BraseroSessionCfg *cfg,
 			       BraseroBurnFlag flags);
-
+void
+brasero_session_cfg_remove_flags (BraseroSessionCfg *cfg,
+				  BraseroBurnFlag flags);
+gboolean
+brasero_session_cfg_is_supported (BraseroSessionCfg *cfg,
+				  BraseroBurnFlag flags);
+gboolean
+brasero_session_cfg_is_compulsory (BraseroSessionCfg *cfg,
+				   BraseroBurnFlag flags);
 void
 brasero_session_cfg_disable (BraseroSessionCfg *self);
 

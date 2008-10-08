@@ -280,7 +280,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_APPEND);
 
 #define BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS(plugin_MACRO)			\
-	/* Use DAO for first session since AUDIO need it to write CD-TEXT */	\
+	/* Use DAO for first session since AUDIO needs it to write CD-TEXT */	\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_CD|				\
 				  BRASERO_MEDIUM_REWRITABLE|			\

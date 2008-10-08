@@ -274,7 +274,9 @@ brasero_SOURCES = \
 	brasero-medium-properties.h           \
 	brasero-medium-properties.c           \
 	brasero-src-image.h           \
-	brasero-src-image.c
+	brasero-src-image.c           \
+	burn-media.c           \
+	burn-media.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

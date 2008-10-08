@@ -121,7 +121,7 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
 	}
 
 	flags = gconf_client_get_int (client, key, NULL);
-	flags &= ~BRASERO_DRIVE_PROPERTIES_FLAGS;
+	flags &= ~BRASERO_DEST_SAVED_FLAGS;
 	flags |= (brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self)) & BRASERO_DEST_SAVED_FLAGS);
 	gconf_client_set_int (client, key, flags, NULL);
 	g_free (key);
@@ -230,6 +230,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 						     BRASERO_BURN_SESSION (self),
 						     &priv->supported,
 						     &priv->compulsory);
+
+			/* NOTE: after setting DAO, some flags may become
+			 * compulsory like BLANK_BEFORE for CDRW with data */
 		}
 	}
 }
@@ -338,9 +341,10 @@ brasero_session_cfg_check_drive_settings (BraseroSessionCfg *self)
 
 	/* Try to properly update the flags for the current drive */
 	flags = brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
-	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self)))
+	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))) {
 		flags |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
 			 BRASERO_BURN_FLAG_FAST_BLANK;
+	}
 
 	/* check each flag before re-adding it */
 	brasero_session_cfg_add_drive_properties_flags (self, flags);
@@ -733,8 +737,64 @@ void
 brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 			       BraseroBurnFlag flags)
 {
-	brasero_session_cfg_add_drive_properties_flags (self, flags);
-	brasero_session_cfg_update (self);
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
+	if ((priv->supported & flags) != flags)
+		return;
+
+	if ((brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self)) & flags) == flags)
+		return;
+
+	brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), flags);
+	priv->supported = BRASERO_BURN_FLAG_NONE;
+	priv->compulsory = BRASERO_BURN_FLAG_NONE;
+	brasero_burn_caps_get_flags (priv->caps,
+				     BRASERO_BURN_SESSION (self),
+				     &priv->supported,
+				     &priv->compulsory);
+
+	brasero_session_cfg_check (self);
+}
+
+void
+brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
+				  BraseroBurnFlag flags)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
+	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
+	priv->supported = BRASERO_BURN_FLAG_NONE;
+	priv->compulsory = BRASERO_BURN_FLAG_NONE;
+	brasero_burn_caps_get_flags (priv->caps,
+				     BRASERO_BURN_SESSION (self),
+				     &priv->supported,
+				     &priv->compulsory);
+
+	brasero_session_cfg_check (self);
+}
+
+gboolean
+brasero_session_cfg_is_supported (BraseroSessionCfg *self,
+				  BraseroBurnFlag flags)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	return (priv->supported & flags) == flags;
+}
+
+gboolean
+brasero_session_cfg_is_compulsory (BraseroSessionCfg *self,
+				   BraseroBurnFlag flags)
+{
+	BraseroSessionCfgPrivate *priv;
+
+	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+	return (priv->compulsory & flags) == flags;
 }
 
 static void

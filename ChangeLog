@@ -1,5 +1,46 @@
 2008-10-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Cleanups and rotten code removal
+	New CD-TEXT retrieval function => brasero displays the CD-TEXT title for the medium
+	Fix plugin flag declaration when multiple flags set were defined for a same medium
+	Fix a problem with drive locking when doing multisession with multiple medium inserted
+	Fix a problem with DVD+RW selection when copying with two writable media with data
+	<= don't always add FAST flag
+
+	* src/Makefile.am:
+	* src/brasero-burn-options.c (brasero_burn_options_lock_selection):
+	* src/brasero-dest-selection.c (brasero_dest_selection_lock),
+	(brasero_dest_selection_medium_changed),
+	(brasero_dest_selection_set_property):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_load_multi_state),
+	(brasero_disc_option_dialog_update_multi),
+	(brasero_disc_option_dialog_set_multi),
+	(brasero_disc_option_dialog_set_disc),
+	(brasero_disc_option_dialog_valid_media_cb):
+	* src/brasero-session-cfg.c
+	(brasero_session_cfg_save_drive_properties),
+	(brasero_session_cfg_add_drive_properties_flags),
+	(brasero_session_cfg_check_drive_settings),
+	(brasero_session_cfg_add_flags),
+	(brasero_session_cfg_remove_flags),
+	(brasero_session_cfg_is_supported),
+	(brasero_session_cfg_is_compulsory):
+	* src/brasero-session-cfg.h:
+	* src/burn-caps.c (brasero_burn_caps_get_flags_for_medium),
+	(brasero_caps_disc_lookup_or_create), (brasero_caps_disc_new):
+	* src/burn-medium.c (brasero_medium_get_CD_TEXT),
+	(brasero_medium_read_CD_TEXT), (brasero_medium_init_real),
+	(brasero_medium_reload_info), (brasero_medium_finalize),
+	(brasero_medium_get_CD_TEXT_title):
+	* src/burn-medium.h:
+	* src/burn-plugin.c (brasero_plugin_set_flags),
+	(brasero_plugin_get_all_flags):
+	* src/burn-plugin.h:
+	* src/burn-volume-obj.c (brasero_volume_get_name):
+
+2008-10-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make brasero more intelligent when choosing destination media
 	Fix a small bug with FAST_BLANK flag being used unconditionally
 

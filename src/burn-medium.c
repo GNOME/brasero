@@ -114,6 +114,8 @@ struct _BraseroMediumPrivate
 	BraseroMedia info;
 	BraseroDrive *drive;
 
+	gchar *CD_TEXT_title;
+
 	/* Do we really need both? */
 	guint dummy_sao:2;
 	guint dummy_tao:2;
@@ -2608,6 +2610,121 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	return BRASERO_BURN_OK;
 }
 
+static gboolean
+brasero_medium_get_CD_TEXT (BraseroMedium *medium,
+			    int type,
+			    int track_num,
+			    const char *string)
+{
+	char *utf8_string;
+	const char *charset = NULL;
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+
+	/* For the moment we're only interested in medium title but that could
+	 * be extented to all tracks information. */
+	switch (type) {
+	case BRASERO_SCSI_CD_TEXT_ALBUM_TITLE:
+		BRASERO_BURN_LOG ("Title %s", string);
+		if (track_num)
+			return FALSE;
+
+		break;
+
+	case BRASERO_SCSI_CD_TEXT_PERFORMER_NAME:
+	case BRASERO_SCSI_CD_TEXT_SONGWRITER_NAME:
+	case BRASERO_SCSI_CD_TEXT_COMPOSER_NAME:
+	case BRASERO_SCSI_CD_TEXT_ARRANGER_NAME:
+	case BRASERO_SCSI_CD_TEXT_ARTIST_NAME:
+	case BRASERO_SCSI_CD_TEXT_DISC_ID_INFO:
+	case BRASERO_SCSI_CD_TEXT_GENRE_ID_INFO:
+	case BRASERO_SCSI_CD_TEXT_UPC_EAN_ISRC:
+	case BRASERO_SCSI_CD_TEXT_BLOCK_SIZE:
+	default:
+		return FALSE;
+	}
+
+	g_get_charset (&charset);
+
+	/* it's ASCII so convert to locale */
+	utf8_string = g_convert_with_fallback (string,
+					       -1,
+					       charset,
+					       "ASCII",
+					       NULL,
+					       NULL,
+					       NULL,
+					       NULL);
+
+	if (priv->CD_TEXT_title)
+		g_free (priv->CD_TEXT_title);
+
+	priv->CD_TEXT_title = utf8_string;
+	return TRUE;
+}
+
+static void
+brasero_medium_read_CD_TEXT (BraseroMedium *self,
+			     BraseroDeviceHandle *handle,
+			     BraseroScsiErrCode *code)
+{
+	int off;
+	int track_num;
+	int num, size, i;
+	char buffer [256]; /* mmc specs advise no more than 160 */
+	BraseroMediumPrivate *priv;
+	BraseroScsiCDTextData *cd_text;
+
+	BRASERO_BURN_LOG ("Getting CD-TEXT");
+	if (brasero_mmc3_read_cd_text (handle, &cd_text, &size, code) != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("GET CD-TEXT failed");
+		return;
+	}
+
+	num = (BRASERO_GET_16 (cd_text->hdr->len) -
+	      (sizeof (BraseroScsiTocPmaAtipHdr) - sizeof (cd_text->hdr->len)))  /
+	       sizeof (BraseroScsiCDTextPackData);
+
+	track_num = 0;
+	off = 0;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	for (i = 0; i < num; i ++) {
+		int j;
+
+		track_num = cd_text->pack [i].track_num;
+
+		for (j = 0; j < sizeof (cd_text->pack [i].text); j++) {
+			if (!off && cd_text->pack [i].text [j] == '\t') {
+				/* Specs say that tab character means that's the
+				 * same string as before */
+				if (buffer [0] != '\0')
+					brasero_medium_get_CD_TEXT (self,
+								    cd_text->pack [i].type,
+								    track_num,
+								    buffer);
+				track_num ++;
+				continue;
+			}
+
+			buffer [off] = cd_text->pack [i].text [j];
+			off++;
+
+			if (cd_text->pack [i].text [j] == '\0') {
+				if (buffer [0] != '\0')
+					brasero_medium_get_CD_TEXT (self,
+								    cd_text->pack [i].type,
+								    track_num,
+								    buffer);
+				track_num ++;
+				off = 0;
+			}
+		}
+	}
+}
+
 static void
 brasero_medium_init_real (BraseroMedium *object,
 			  BraseroDeviceHandle *handle)
@@ -2640,6 +2757,10 @@ brasero_medium_init_real (BraseroMedium *object,
 		brasero_medium_get_css_feature (object, handle, &code);
 
 	brasero_medium_init_caps (object, handle, &code);
+
+	/* read CD-TEXT title */
+	if (priv->info & BRASERO_MEDIUM_HAS_AUDIO)
+		brasero_medium_read_CD_TEXT (object, handle, &code);
 
 	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
 
@@ -2766,6 +2887,11 @@ brasero_medium_reload_info (BraseroMedium *self)
 		priv->id = NULL;
 	}
 
+	if (priv->CD_TEXT_title) {
+		g_free (priv->CD_TEXT_title);
+		priv->CD_TEXT_title = NULL;
+	}
+
 	g_free (priv->rd_speeds);
 	priv->rd_speeds = NULL;
 
@@ -2822,6 +2948,11 @@ brasero_medium_finalize (GObject *object)
 	if (priv->id) {
 		g_free (priv->id);
 		priv->id = NULL;
+	}
+
+	if (priv->CD_TEXT_title) {
+		g_free (priv->CD_TEXT_title);
+		priv->CD_TEXT_title = NULL;
 	}
 
 	g_free (priv->rd_speeds);
@@ -3028,6 +3159,16 @@ brasero_medium_get_id (BraseroMedium *self)
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	return priv->id;
+}
+
+const gchar *
+brasero_medium_get_CD_TEXT_title (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+	return priv->CD_TEXT_title;;
+
 }
 
 GType

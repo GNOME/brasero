@@ -2567,13 +2567,28 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 {
 	BraseroBurnResult result;
 
+	/* See if medium is supported out of the box */
 	result = brasero_caps_get_flags_for_disc (session_flags,
 						  media,
 						  input,
 						  supported_flags,
 						  compulsory_flags);
 
-	if (result != BRASERO_BURN_OK) {
+	/* see if we can add BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE */
+	if ((media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+	&& !(session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+	&&  brasero_burn_caps_can_blank_real (self, media, session_flags) == BRASERO_BURN_OK)
+		(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+	else if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
+		return BRASERO_BURN_NOT_SUPPORTED;
+
+	if (((*supported_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
+		BraseroBurnFlag blank_compulsory = BRASERO_BURN_FLAG_NONE;
+		BraseroBurnFlag blank_supported = BRASERO_BURN_FLAG_NONE;
+
+		/* If BLANK flag is supported then MERGE/APPEND can't be compulsory */
+		(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
+
 		/* we reached this point in two cases:
 		 * - if the disc cannot be handled
 		 * - if some flags are not handled
@@ -2585,23 +2600,18 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 		 * then write on its own. Basically that works only with
 		 * overwrite formatted discs, DVD+RW, ...) */
 
-		if (!(media & (BRASERO_MEDIUM_HAS_AUDIO|
-			       BRASERO_MEDIUM_HAS_DATA|
-			       BRASERO_MEDIUM_UNFORMATTED))) {
-			/* media must have data/audio */
-			return BRASERO_BURN_NOT_SUPPORTED;
-		}
-
-		if (session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
-			/* There is nothing we can do here */
-			return BRASERO_BURN_NOT_SUPPORTED;
-		}
-
-		if (brasero_burn_caps_can_blank_real (self, media, session_flags) != BRASERO_BURN_OK)
-			return BRASERO_BURN_NOT_SUPPORTED;
+		/* What's above is not entirely true. In fact we always need to
+		 * check even if we first succeeded. There are some cases like
+		 * CDRW where it's useful.
+		 * Ex: a CDRW with data appendable can be either appended (then
+		 * no DAO possible) or blanked and written (DAO possible). */
 
 		(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-		(*compulsory_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
+
+		/* result here is the result of the first operation, so if it
+		 * failed, BLANK before becomes compulsory. */
+		if (result != BRASERO_BURN_OK)
+			(*compulsory_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 
 		/* pretends it is blank and formatted to see if it would work.
 		 * If it works then that means that the BLANK_BEFORE_WRITE flag
@@ -2617,29 +2627,11 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 							  input,
 							  supported_flags,
 							  compulsory_flags);
-		if (result != BRASERO_BURN_OK)
+
+		/* if both attempts failed, drop it */
+		if (result != BRASERO_BURN_OK
+		&& (((*compulsory_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)))
 			return result;
-	}
-	else {
-		/* see if we can add BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE */
-		if ((media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
-		&& !(session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-		&&  brasero_burn_caps_can_blank_real (self, media, session_flags) == BRASERO_BURN_OK)
-			(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
-		else if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
-			return BRASERO_BURN_NOT_SUPPORTED;
-	}
-
-	if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		/* make sure we remove MERGE/APPEND from supported and
-		 * compulsory since that's not possible anymore */
-		(*supported_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
-		(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
-	}
-
-	if ((*supported_flags) & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
-		BraseroBurnFlag blank_compulsory = BRASERO_BURN_FLAG_NONE;
-		BraseroBurnFlag blank_supported = BRASERO_BURN_FLAG_NONE;
 
 		/* need to add blanking flags */
 		brasero_burn_caps_get_blanking_flags_real (self,
@@ -2649,8 +2641,14 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 							   &blank_compulsory);
 		(*supported_flags) |= blank_supported;
 		(*compulsory_flags) |= blank_compulsory;
+	}
+	else if (result != BRASERO_BURN_OK)
+		return result;
 
-		/* If BLANK flag is supported then MERGE/APPEND can't be compulsory */
+	if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
+		/* make sure we remove MERGE/APPEND from supported and
+		 * compulsory since that's not possible anymore */
+		(*supported_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
 		(*compulsory_flags) &= ~(BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND);
 	}
 
@@ -3435,6 +3433,10 @@ brasero_caps_disc_lookup_or_create (GSList *retval,
 
 	for (iter = default_caps->priv->caps_list; iter; iter = iter->next) {
 		caps = iter->data;
+
+		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+			continue;
+
 		if (caps->type.subtype.media == media) {
 			BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
 						    caps->flags,
@@ -3456,229 +3458,21 @@ brasero_caps_disc_lookup_or_create (GSList *retval,
 	return g_slist_prepend (retval, caps);
 }
 
-static GSList *
-brasero_caps_disc_new_status (GSList *retval,
-			      BraseroMedia media,
-			      BraseroMedia type)
-{
-	if ((type & BRASERO_MEDIUM_BLANK)
-	&& !(media & BRASERO_MEDIUM_ROM)) {
-		/* If media is blank there is no other possible property.
-		 * BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-		 * condition is checked but in fact it's never valid since
-		 * such a medium cannot exist if it hasn't been formatted before
-		 * which is in contradiction with the fact is unformatted. */
-		if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW)
-		||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
-			/* This is only for above types */
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_BLANK);
-			if (type & BRASERO_MEDIUM_UNFORMATTED)
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_BLANK|
-									     BRASERO_MEDIUM_UNFORMATTED);
-		}
-		else
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_BLANK);
-	}
-
-	if (type & BRASERO_MEDIUM_CLOSED) {
-		if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_CLOSED|
-								     (type & BRASERO_MEDIUM_HAS_DATA)|
-								     (type & BRASERO_MEDIUM_PROTECTED));
-		else {
-			if (type & BRASERO_MEDIUM_HAS_AUDIO)
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_CLOSED|
-									     BRASERO_MEDIUM_HAS_AUDIO);
-			if (type & BRASERO_MEDIUM_HAS_DATA)
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_CLOSED|
-									     BRASERO_MEDIUM_HAS_DATA);
-			if (BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_CLOSED|
-									     BRASERO_MEDIUM_HAS_DATA|
-									     BRASERO_MEDIUM_HAS_AUDIO);
-		}
-	}
-
-	if ((type & BRASERO_MEDIUM_APPENDABLE)
-	&& !(media & BRASERO_MEDIUM_ROM)
-	&& !(media & BRASERO_MEDIUM_RESTRICTED)
-	&& ! BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_REWRITABLE)
-	&& ! BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_REWRITABLE)) {
-		if (media & BRASERO_MEDIUM_DVD)
-			retval = brasero_caps_disc_lookup_or_create (retval,
-								     media|
-								     BRASERO_MEDIUM_APPENDABLE|
-								     BRASERO_MEDIUM_HAS_DATA);
-		else {
-			if (type & BRASERO_MEDIUM_HAS_AUDIO)
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_APPENDABLE|
-									     BRASERO_MEDIUM_HAS_AUDIO);
-			if (type & BRASERO_MEDIUM_HAS_DATA)
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_APPENDABLE|
-									     BRASERO_MEDIUM_HAS_DATA);
-			if (BRASERO_MEDIUM_IS (type, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
-				retval = brasero_caps_disc_lookup_or_create (retval,
-									     media|
-									     BRASERO_MEDIUM_HAS_DATA|
-									     BRASERO_MEDIUM_APPENDABLE|
-									     BRASERO_MEDIUM_HAS_AUDIO);
-		}
-	}
-
-	return retval;
-}
-
-static GSList *
-brasero_caps_disc_new_attribute (GSList *retval,
-				 BraseroMedia media,
-				 BraseroMedia type)
-{
-	if (type & BRASERO_MEDIUM_REWRITABLE) {
-		/* Always true for + media there are both single and dual layer */
-		if (media & BRASERO_MEDIUM_PLUS)
-			retval = brasero_caps_disc_new_status (retval,
-							       media|BRASERO_MEDIUM_REWRITABLE,
-							       type);
-		/* There is no dual layer DVD-RW */
-		else if (!(media & BRASERO_MEDIUM_DVD_DL))
-			retval = brasero_caps_disc_new_status (retval,
-							       media|BRASERO_MEDIUM_REWRITABLE,
-							       type);
-	}
-
-	if ((type & BRASERO_MEDIUM_WRITABLE)
-	&& !(media & BRASERO_MEDIUM_RESTRICTED))
-		retval = brasero_caps_disc_new_status (retval,
-						       media|BRASERO_MEDIUM_WRITABLE,
-						       type);
-
-	if (type & BRASERO_MEDIUM_ROM)
-		retval = brasero_caps_disc_new_status (retval,
-						       media|BRASERO_MEDIUM_ROM,
-						       type);
-
-	return retval;
-}
-
-static GSList *
-brasero_caps_disc_new_subtype (GSList *retval,
-			       BraseroMedia media,
-			       BraseroMedia type)
-{
-	if (media & BRASERO_MEDIUM_BD) {
-		if (type & BRASERO_MEDIUM_RANDOM)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_RANDOM,
-								  type);
-		if (type & BRASERO_MEDIUM_SRM)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_SRM,
-								  type);
-		if (type & BRASERO_MEDIUM_POW)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_POW,
-								  type);
-	}
-
-	if (media & BRASERO_MEDIUM_DVD) {
-		if (type & BRASERO_MEDIUM_SEQUENTIAL)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_SEQUENTIAL,
-								  type);
-
-		if (type & BRASERO_MEDIUM_RESTRICTED)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_RESTRICTED,
-								  type);
-
-		if (type & BRASERO_MEDIUM_PLUS)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_PLUS,
-								  type);
-		if (type & BRASERO_MEDIUM_ROM)
-			retval = brasero_caps_disc_new_status (retval,
-							       media|BRASERO_MEDIUM_ROM,
-							       type);
-	}
-
-	if (media & BRASERO_MEDIUM_DVD_DL) {
-		/* There is no such thing as DVD-RW DL */
-		if ((type & BRASERO_MEDIUM_SEQUENTIAL) && !(type & BRASERO_MEDIUM_REWRITABLE))
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_SEQUENTIAL,
-								  type);
-
-		if ((type & BRASERO_MEDIUM_JUMP) && !(type & BRASERO_MEDIUM_REWRITABLE))
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_JUMP,
-								  type);
-
-		if (type & BRASERO_MEDIUM_PLUS)
-			retval = brasero_caps_disc_new_attribute (retval,
-								  media|BRASERO_MEDIUM_PLUS,
-								  type);
-
-		if (type & BRASERO_MEDIUM_ROM)
-			retval = brasero_caps_disc_new_status (retval,
-							       media|BRASERO_MEDIUM_ROM,
-							       type);
-	}
-
-	return retval;
-}
-
 GSList *
 brasero_caps_disc_new (BraseroMedia type)
 {
 	GSList *retval = NULL;
+	GSList *list;
+	GSList *iter;
 
-	if (type & BRASERO_MEDIUM_FILE)
-		retval = brasero_caps_disc_lookup_or_create (retval, BRASERO_MEDIUM_FILE);					       
+	list = brasero_media_get_all_list (type);
+	for (iter = list; iter; iter = iter->next) {
+		BraseroMedia medium;
 
-	if (type & BRASERO_MEDIUM_CD)
-		retval = brasero_caps_disc_new_attribute (retval,
-							  BRASERO_MEDIUM_CD,
-							  type);
-
-	if (type & BRASERO_MEDIUM_DVD)
-		retval = brasero_caps_disc_new_subtype (retval,
-							BRASERO_MEDIUM_DVD,
-							type);
-
-	if (type & BRASERO_MEDIUM_DVD_DL)
-		retval = brasero_caps_disc_new_subtype (retval,
-							BRASERO_MEDIUM_DVD_DL,
-							type);
-
-	if (type & BRASERO_MEDIUM_RAM)
-		retval = brasero_caps_disc_new_attribute (retval,
-							  BRASERO_MEDIUM_RAM,
-							  type);
-
-	if (type & BRASERO_MEDIUM_BD)
-		retval = brasero_caps_disc_new_subtype (retval,
-							BRASERO_MEDIUM_BD,
-							type);
+		medium = GPOINTER_TO_INT (iter->data);
+		retval = brasero_caps_disc_lookup_or_create (retval, medium);
+	}
+	g_slist_free (list);
 
 	return retval;
 }

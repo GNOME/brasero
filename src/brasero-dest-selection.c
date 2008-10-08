@@ -97,6 +97,7 @@ brasero_dest_selection_lock (BraseroDestSelection *self,
 
 		drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (self));
 		priv->locked_drive = drive;
+
 		if (priv->locked_drive)
 			brasero_drive_lock (priv->locked_drive,
 					    _("ongoing burning process"),
@@ -152,13 +153,13 @@ brasero_dest_selection_medium_changed (GtkComboBox *combo)
 		goto chain;
 	}
 
-	brasero_burn_session_set_burner (priv->session, drive);
 	if (priv->locked_drive && priv->locked_drive != drive) {
-		brasero_drive_unlock (priv->locked_drive);
-		g_object_unref (priv->locked_drive);
-		priv->locked_drive = NULL;
+		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (combo),
+						     brasero_drive_get_medium (priv->locked_drive));
+		goto chain;
 	}
 
+	brasero_burn_session_set_burner (priv->session, drive);
 	gtk_widget_set_sensitive (GTK_WIDGET (combo), (priv->locked_drive == NULL));
 
 chain:
@@ -299,10 +300,17 @@ brasero_dest_selection_set_property (GObject *object,
 		priv->session = session;
 		g_object_ref (session);
 
-		drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (object));
-		if (drive) {
-			brasero_burn_session_set_burner (session, drive);
-			g_object_unref (drive);
+		if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE) {
+			drive = brasero_burn_session_get_burner (session);
+			brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (object),
+							     brasero_drive_get_medium (drive));
+		}
+		else {
+			drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (object));
+			if (drive) {
+				brasero_burn_session_set_burner (session, drive);
+				g_object_unref (drive);
+			}
 		}
 
 		priv->valid_sig = g_signal_connect (session,

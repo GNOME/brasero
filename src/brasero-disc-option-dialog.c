@@ -39,8 +39,6 @@
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkbutton.h>
 
-#include <gconf/gconf-client.h>
-
 #include "burn-basics.h"
 #include "burn-drive.h"
 #include "burn-medium.h"
@@ -87,64 +85,36 @@ typedef struct _BraseroDiscOptionDialogPrivate BraseroDiscOptionDialogPrivate;
 static GtkDialogClass *parent_class = NULL;
 
 static void
-brasero_disc_option_dialog_save_multi_state (BraseroDiscOptionDialog *dialog)
-{
-	BraseroDiscOptionDialogPrivate *priv;
-	BraseroBurnSession *session;
-	GConfClient *client;
-	gboolean multi_on;
-	gchar *key;
-
-	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	key = brasero_burn_session_get_config_key (session, "multi");
-	if (!key) {
-		g_object_unref (session);
-		return;
-	}
-
-	multi_on = (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MULTI) != 0;
-
-	client = gconf_client_get_default ();
-	gconf_client_set_int (client, key, multi_on, NULL);
-	g_object_unref (client);
-	g_object_unref (session);
-	g_free (key);
-}
-
-static void
 brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
 {
 	BraseroDiscOptionDialogPrivate *priv;
 	BraseroBurnSession *session;
-	GConfClient *client;
-	gboolean multi_on;
-	gchar *key;
+	gboolean value;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 
-	/* That's only provided multi is not compulsory or unsupported */
-	key = brasero_burn_session_get_config_key (session, "multi");
-	if (!key) {
+	if (!brasero_session_cfg_is_supported (BRASERO_SESSION_CFG (session), BRASERO_BURN_FLAG_MULTI)) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
+		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
 		g_object_unref (session);
 		return;
 	}
 
-	client = gconf_client_get_default ();
-	multi_on = gconf_client_get_int (client, key, NULL);
-	g_object_unref (session);
-	g_object_unref (client);
-	g_free (key);
+	value = (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MULTI) != 0;
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), value);
 
-	/* NOTE: no need to take care of adding/removing MULTI flag to session,
-	 * the callback for the button will do it on its own. */
-	if (multi_on)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
+	if (!value) {
+		g_object_unref (session);
+		return;
+	}
+
+	/* set sensitivity */
+	value = brasero_session_cfg_is_compulsory (BRASERO_SESSION_CFG (session),
+						   BRASERO_BURN_FLAG_MULTI);
+	gtk_widget_set_sensitive (priv->multi_toggle, value != TRUE);
+	g_object_unref (session);
 }
 
 /**
@@ -219,8 +189,6 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 	BraseroTrackType input;
 	BraseroBurnSession *session;
 	BraseroDiscOptionDialogPrivate *priv;
-	BraseroBurnFlag supported = BRASERO_BURN_FLAG_NONE;
-	BraseroBurnFlag compulsory = BRASERO_BURN_FLAG_NONE;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
@@ -229,58 +197,19 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	brasero_burn_session_get_input_type (session, &input);
+
+	/* MULTI and Video projects don't get along */
 	if (input.type == BRASERO_TRACK_TYPE_DATA
 	&& (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
 	&& (brasero_burn_session_get_dest_media (session) & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
-		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-		goto end;
-	}
-
-	/* Wipe out some flags before trying to see if MULTI is supported:
-	 * DAO don't really get along well with MULTI */
-	brasero_burn_session_remove_flag (session, BRASERO_BURN_FLAG_DAO);
-
-	/* see if multi disc option is supported or compulsory. The returned
-	 * value just indicate if the button state can be modified. */
-	brasero_burn_caps_get_flags (priv->caps,
-				     session,
-				     &supported,
-				     &compulsory);
-
-	if (!(supported & BRASERO_BURN_FLAG_MULTI)) {
-		/* just in case it was already set */
-		brasero_burn_session_remove_flag (session, BRASERO_BURN_FLAG_MULTI);
-
-		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
+		brasero_session_cfg_remove_flags (BRASERO_SESSION_CFG (session), BRASERO_BURN_FLAG_MULTI);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
-		goto end;
-	}
-
-	if (compulsory & BRASERO_BURN_FLAG_MULTI) {
-		/* NOTE: in this case video button is updated later see caps_changed and media_changed */
-		brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_MULTI);
-
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), TRUE);
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
-		goto end;
+		g_object_unref (session);
+		return;
 	}
 
-	/* only load preferences if it is supported and not compulsory */
-	gtk_widget_set_sensitive (priv->multi_toggle, TRUE);
 	brasero_disc_option_dialog_load_multi_state (dialog);
-
-end:
-	/* Try to see if previously wiped out flags can be re-enabled now */
-	brasero_burn_caps_get_flags (priv->caps,
-				     session,
-				     &supported,
-				     &compulsory);
-
-	/* Likewise DAO and MULTI don't always get along well but use DAO
-	 * whenever it's possible */
-	if (supported & BRASERO_BURN_FLAG_DAO)
-		brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_DAO);
-
 	g_object_unref (session);
 }
 
@@ -379,14 +308,12 @@ brasero_disc_option_dialog_set_multi (BraseroDiscOptionDialog *dialog)
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 
-	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle))) {
-		brasero_burn_session_remove_flag (session, BRASERO_BURN_FLAG_MULTI);
-		brasero_disc_option_dialog_save_multi_state (dialog);
-	}
-	else {
-		brasero_burn_session_add_flag (session, BRASERO_BURN_FLAG_MULTI);
-		brasero_disc_option_dialog_save_multi_state (dialog);
-	}
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi_toggle)))
+		brasero_session_cfg_remove_flags (BRASERO_SESSION_CFG (session),
+						  BRASERO_BURN_FLAG_MULTI);
+	else
+		brasero_session_cfg_add_flags (BRASERO_SESSION_CFG (session),
+					       BRASERO_BURN_FLAG_MULTI);
 
 	g_object_unref (session);
 }
@@ -992,10 +919,6 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	brasero_disc_set_session_param (disc, session);
 
-	/* see if we should lock the drive only with MERGE */
-	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE)
-		brasero_burn_options_lock_selection (BRASERO_BURN_OPTIONS (dialog));
-
 	brasero_burn_session_get_input_type (session, &type);
 	if (type.type == BRASERO_TRACK_TYPE_DATA) {
 		brasero_burn_options_set_type_shown (BRASERO_BURN_OPTIONS (dialog),
@@ -1016,6 +939,10 @@ brasero_disc_option_dialog_set_disc (BraseroDiscOptionDialog *dialog,
 			brasero_disc_option_dialog_add_audio_options (dialog);
 		}
 	}
+
+	/* see if we should lock the drive only with MERGE */
+	if (brasero_burn_session_get_flags (session) & BRASERO_BURN_FLAG_MERGE)
+		brasero_burn_options_lock_selection (BRASERO_BURN_OPTIONS (dialog));
 
 	g_object_unref (session);
 }
@@ -1043,10 +970,6 @@ brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 
 	if (priv->video_options)
 		gtk_widget_set_sensitive (priv->video_options, brasero_session_cfg_get_error (session) == BRASERO_SESSION_VALID);
-
-	/* update the multi button:
-	 * NOTE: order is important here multi then video */
-	brasero_disc_option_dialog_update_multi (self);
 
 	/* update the joliet button */
 	brasero_disc_option_dialog_update_joliet (self);

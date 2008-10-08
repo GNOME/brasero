@@ -699,6 +699,14 @@ brasero_volume_get_name (BraseroVolume *self)
 		return g_strdup (_("Image File"));
 	}
 
+	if (media & BRASERO_MEDIUM_HAS_AUDIO) {
+		const gchar *audio_name;
+
+		audio_name = brasero_medium_get_CD_TEXT_title (BRASERO_MEDIUM (self));
+		if (audio_name)
+			return g_strdup (audio_name);
+	}
+
 	volume = brasero_volume_get_gvolume (self);
 	if (!volume)
 		goto last_chance;
