@@ -65,6 +65,37 @@ enum {
 
 G_DEFINE_TYPE (BraseroMediumSelection, brasero_medium_selection, GTK_TYPE_COMBO_BOX);
 
+void
+brasero_medium_selection_foreach (BraseroMediumSelection *selection,
+				  BraseroMediumSelectionFunc function,
+				  gpointer callback_data)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
+
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+
+	do {
+		BraseroMedium *medium;
+
+		medium = NULL;
+		gtk_tree_model_get (model, &iter,
+				    MEDIUM_COL, &medium,
+				    -1);
+
+		/* The following can happen when there isn't any medium */
+		if (!medium)
+			return;
+
+		if (!function (medium, callback_data))
+			break;
+
+	} while (gtk_tree_model_iter_next (model, &iter));
+}
+
 static gchar *
 brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
 					    BraseroMedium *medium)

@@ -214,6 +214,67 @@ brasero_dest_selection_finalize (GObject *object)
 	G_OBJECT_CLASS (brasero_dest_selection_parent_class)->finalize (object);
 }
 
+static gboolean
+brasero_dest_selection_foreach_medium (BraseroMedium *medium,
+				       gpointer callback_data)
+{
+	BraseroBurnSession *session;
+	BraseroDrive *burner;
+
+	session = callback_data;
+	burner = brasero_burn_session_get_burner (session);
+
+	if (!burner) {
+		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
+		return TRUE;
+	}
+
+	/* no need to deal with this case */
+	if (brasero_drive_get_medium (burner) == medium)
+		return TRUE;
+
+	/* The rule is:
+	 * - take the biggest
+	 * - blank media are our favourite
+	 * - try to avoid a medium that is already our source for copying */
+
+	/* NOTE: we could check if medium is bigger */
+	if (brasero_burn_session_get_dest_media (session) & BRASERO_MEDIUM_BLANK)
+		return TRUE;
+
+	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_BLANK) {
+		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
+		return TRUE;
+	}
+	if (brasero_burn_session_same_src_dest_drive (session)) {
+		brasero_burn_session_set_burner (session, brasero_medium_get_drive (medium));
+		return TRUE;
+	}
+
+	return TRUE;
+}
+
+void
+brasero_dest_selection_choose_best (BraseroDestSelection *self)
+{
+	BraseroDestSelectionPrivate *priv;
+
+	priv = BRASERO_DEST_SELECTION_PRIVATE (self);
+	if (!(brasero_burn_session_get_flags (priv->session) & BRASERO_BURN_FLAG_MERGE)) {
+		BraseroDrive *drive;
+
+		/* Select the best fitting media */
+		brasero_medium_selection_foreach (BRASERO_MEDIUM_SELECTION (self),
+						  brasero_dest_selection_foreach_medium,
+						  priv->session);
+
+		drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (priv->session));
+		if (drive)
+			brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self),
+							     brasero_drive_get_medium (drive));
+	}
+}
+
 static void
 brasero_dest_selection_set_property (GObject *object,
 				     guint property_id,
@@ -237,16 +298,17 @@ brasero_dest_selection_set_property (GObject *object,
 		 * it's only set at construct time */
 		priv->session = session;
 		g_object_ref (session);
+
+		drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (object));
+		if (drive) {
+			brasero_burn_session_set_burner (session, drive);
+			g_object_unref (drive);
+		}
+
 		priv->valid_sig = g_signal_connect (session,
 						    "is-valid",
 						    G_CALLBACK (brasero_dest_selection_valid_session),
 						    object);
-
-		drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (object));
-		brasero_burn_session_set_burner (session, drive);
-
-		if (drive)
-			g_object_unref (drive);
 
 		brasero_medium_selection_update_media_string (BRASERO_MEDIUM_SELECTION (object));
 		break;

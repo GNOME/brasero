@@ -55,11 +55,14 @@ struct _BraseroDestSelection
 GType brasero_dest_selection_get_type (void) G_GNUC_CONST;
 
 GtkWidget *
-brasero_dest_selection_new (BraseroBurnSession *session);
+brasero_dest_selection_new (BraseroBurnSession *selection);
 
 void
-brasero_dest_selection_lock (BraseroDestSelection *session,
+brasero_dest_selection_lock (BraseroDestSelection *selection,
 			     gboolean locked);
+
+void
+brasero_dest_selection_choose_best (BraseroDestSelection *selection);
 
 G_END_DECLS
 

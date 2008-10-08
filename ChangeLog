@@ -1,3 +1,21 @@
+2008-10-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Make brasero more intelligent when choosing destination media
+	Fix a small bug with FAST_BLANK flag being used unconditionally
+
+	* src/brasero-burn-options.c (brasero_burn_options_add_source),
+	(brasero_burn_options_valid_media_cb):
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_foreach_medium),
+	(brasero_dest_selection_choose_best),
+	(brasero_dest_selection_set_property):
+	* src/brasero-dest-selection.h:
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_foreach):
+	* src/brasero-medium-selection.h:
+	* src/brasero-session-cfg.c
+	(brasero_session_cfg_add_drive_properties_flags):
+
 2008-10-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fixed a small problem with copy dialog if disc is inserted during

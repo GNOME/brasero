@@ -91,6 +91,8 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 
 	gtk_container_add (GTK_CONTAINER (priv->source), source);
 	gtk_widget_show (priv->source);
+
+	brasero_dest_selection_choose_best (BRASERO_DEST_SELECTION (priv->selection));
 }
 
 void
@@ -229,9 +231,8 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	BraseroSessionError valid;
 	gint numcopies;
 
-g_print("VALID %d\n", valid);
 	valid = brasero_session_cfg_get_error (session);
-g_print("VALID2 %d\n", valid);
+
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
 	gtk_widget_set_sensitive (priv->button, valid == BRASERO_SESSION_VALID);

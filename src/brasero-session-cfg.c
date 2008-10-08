@@ -204,8 +204,11 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 	/* Always set this flag whenever possible */
 	if (priv->supported & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE) {
 		brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
-					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE|
-					       BRASERO_BURN_FLAG_FAST_BLANK);
+					       BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE);
+
+		if (priv->supported & BRASERO_BURN_FLAG_FAST_BLANK)
+			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+						       BRASERO_BURN_FLAG_FAST_BLANK);
 
 		priv->supported = BRASERO_BURN_FLAG_NONE;
 		priv->compulsory = BRASERO_BURN_FLAG_NONE;
