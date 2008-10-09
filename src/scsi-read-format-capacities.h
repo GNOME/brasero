@@ -56,7 +56,9 @@ BRASERO_SCSI_HD_DVD_R				= 0x16,
 BRASERO_SCSI_SPARING				= 0x20,
 	/* reserved */
 BRASERO_SCSI_MAX_DMA_NUM			= 0x24,
-BRASERO_SCSI_DVDRW_PLUS				= 0x26
+BRASERO_SCSI_DVDRW_PLUS				= 0x26,
+	/* reserved */
+BRASERO_SCSI_BDRE_FORMAT			= 0x30 /* Remember there are 3 in a row */
 } BraseroScsiFormatCapacitiesParamType;
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN

@@ -1,3 +1,14 @@
+2008-10-09  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Initial support BD-R(E) and DVD-RAM
+
+	* src/burn-medium.c (brasero_medium_get_capacity_DVD_RW),
+	(brasero_medium_get_capacity_by_type),
+	(brasero_medium_get_sessions_info),
+	(brasero_medium_get_medium_type):
+	* src/burn-medium.h:
+	* src/scsi-read-format-capacities.h:
+
 2008-10-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Cleanups and rotten code removal

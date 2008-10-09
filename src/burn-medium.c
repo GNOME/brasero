@@ -969,11 +969,31 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 		return BRASERO_BURN_ERR;
 	}
 
+	/* NOTE: for BD-RE there is a slight problem to determine the exact
+	 * capacity of the medium when it is unformatted. Indeed the final size
+	 * of the User Data Area will depend on the size of the Spare areas.
+	 * On the other hand if it's formatted then that's OK, just take the 
+	 * current one.
+	 * NOTE: that could work also for BD-R SRM+POW and BD-R RRM */
+
 	/* see if the media is already formatted */
 	current = hdr->max_caps;
 	if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
 		BRASERO_BURN_LOG ("Unformatted media");
 		priv->info |= BRASERO_MEDIUM_UNFORMATTED;
+
+		/* if unformatted, a DVD-RAM will return its maximum formattable
+		 * size in this descriptor and that's what we're looking for. */
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM)) {
+			priv->block_num = BRASERO_GET_32 (desc->blocks_num);
+			priv->block_size = 2048;
+			goto end;
+		}
+	}
+	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE)) {
+		priv->block_num = BRASERO_GET_32 (desc->blocks_num);
+		priv->block_size = 2048;
+		goto end;
 	}
 
 	max = (hdr->len - 
@@ -995,11 +1015,23 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 				break;
 			}
 		}
+		else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE)) {
+			/* This is for unformatted BDRE: since we can't know the
+			 * size of the Spare Area in advance, we take the vendor
+			 * preferred one. Always following are the smallest one
+			 * and the biggest one. */
+			if (desc->format_type == BRASERO_SCSI_BDRE_FORMAT) {
+				priv->block_num = BRASERO_GET_32 (desc->blocks_num);
+				break;
+			}
+		}
 		else if (desc->format_type == BRASERO_SCSI_MAX_PACKET_SIZE_FORMAT) {
 			priv->block_num = BRASERO_GET_32 (desc->blocks_num);
 			break;
 		}
 	}
+
+end:
 
 	BRASERO_BURN_LOG ("Format capacity %lli %lli",
 			  priv->block_num,
@@ -1018,7 +1050,7 @@ brasero_medium_get_capacity_by_type (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	/* For DVDs that's always that block size */
+	/* For DVDs/BDs that's always that block size */
 	priv->block_size = 2048;
 
 	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE))
@@ -1685,11 +1717,10 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				track->type |= BRASERO_MEDIUM_TRACK_INCREMENTAL;
 		}
 
-		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
 			BraseroBurnResult result;
 
-			/* A special case for these two kinds of media (DVD+RW)
+			/* A special case for these kinds of media (DVD+RW, ...)
 			 * which have only one track: the first. Since it's not
 			 * possible to know the amount of data that were really
 			 * written in this session, read the filesystem. */
@@ -1733,8 +1764,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	/* put the tracks in the right order */
 	priv->tracks = g_slist_reverse (priv->tracks);
 
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+	if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info))
 		brasero_medium_add_DVD_plus_RW_leadout (self);
 	else if (!(priv->info & BRASERO_MEDIUM_CLOSED)) {
 		BraseroMediumTrack *leadout;
@@ -2490,7 +2520,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		priv->icon = icons [5];
 		break;
 
-	/* WARNING: these types are recognized, no more */
 	case BRASERO_SCSI_PROF_BD_ROM:
 		priv->info = BRASERO_MEDIUM_BD_ROM;
 		priv->type = types [13];
@@ -2498,6 +2527,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		break;
 
 	case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
+		/* need to check if that's a POW as well */
 		priv->info = BRASERO_MEDIUM_BDR_SRM;
 		priv->type = types [14];
 		priv->icon = icons [5];
@@ -2510,7 +2540,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		break;
 
 	case BRASERO_SCSI_PROF_BD_RW:
-		priv->info = BRASERO_MEDIUM_BDRW;
+		priv->info = BRASERO_MEDIUM_BDRE;
 		priv->type = types [15];
 		priv->icon = icons [6];
 		break;
@@ -2520,7 +2550,8 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		priv->type = types [12];
 		priv->icon = icons [8];
 		break;
-	
+
+	/* WARNING: these types are recognized, no more */
 	case BRASERO_SCSI_PROF_NON_REMOVABLE:
 	case BRASERO_SCSI_PROF_REMOVABLE:
 	case BRASERO_SCSI_PROF_MO_ERASABLE:
