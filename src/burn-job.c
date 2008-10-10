@@ -546,24 +546,83 @@ brasero_job_set_output_file (BraseroJob *self,
 
 		/* check if that's the last task */
 		format = brasero_burn_session_get_output_format (session);
-		if (priv->type.subtype.img_format == format)
+		if (priv->type.subtype.img_format == format) {
+			BraseroTrackType input = { 0, };
+
 			result = brasero_burn_session_get_output (session,
 								  &image,
 								  &toc,
 								  error);
-		else
+
+			/* check paths are set */
+			if (!image
+			|| (priv->type.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN && !toc)) {
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("no path"));
+				return BRASERO_BURN_ERR;
+			}
+
+			brasero_burn_session_get_input_type (session,
+							     &input);
+
+			/* if input is the same as output, then that's a
+			 * processing task and there's no need to check if the
+			 * output already exists since it will (but that's OK) */
+			if (input.type == BRASERO_TRACK_TYPE_IMAGE
+			&&  input.subtype.img_format == priv->type.subtype.img_format) {
+				BRASERO_BURN_LOG ("Processing task, skipping check size");
+				priv->output = g_new0 (BraseroJobOutput, 1);
+				priv->output->image = image;
+				priv->output->toc = toc;
+				return BRASERO_BURN_OK;
+			}
+
+			/* There must be an image at least */
+			if ((flags & BRASERO_BURN_FLAG_DONT_OVERWRITE)
+			&&   g_file_test (image, G_FILE_TEST_EXISTS)) {
+				BRASERO_BURN_LOG ("Problem with image existence");
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("%s already exists"),
+					     image);
+				g_free (toc);
+				g_free (image);
+				return BRASERO_BURN_ERR;
+			}
+
+			if (priv->type.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN) {
+				/* There must a toc file in this case */
+				if ((flags & BRASERO_BURN_FLAG_DONT_OVERWRITE)
+				&&   g_file_test (toc, G_FILE_TEST_EXISTS)) {
+					BRASERO_BURN_LOG ("Problem with toc existence");
+					g_set_error (error,
+						     BRASERO_BURN_ERROR,
+						     BRASERO_BURN_ERROR_GENERAL,
+						     _("%s already exists"),
+						     toc);
+					g_free (toc);
+					g_free (image);
+					return BRASERO_BURN_ERR;
+				}
+			}
+		}
+		else {
+			/* NOTE: no need to check for the existence here */
 			result = brasero_burn_session_get_tmp_image (session,
 								     priv->type.subtype.img_format,
 								     &image,
 								     &toc,
 								     error);
-
-		if (result != BRASERO_BURN_OK)
-			return result;
+			if (result != BRASERO_BURN_OK)
+				return result;
+		}
 
 		BRASERO_JOB_LOG (self, "output set (IMAGE) image = %s toc = %s",
 				 image,
-		    toc ? toc : "nil");
+				 toc ? toc : "nil");
 	}
 	else if (priv->type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		/* NOTE: this one can only a temporary file */
@@ -571,8 +630,7 @@ brasero_job_set_output_file (BraseroJob *self,
 							    ".cdr",
 							    &image,
 							    error);
-		BRASERO_JOB_LOG (self, "Output set (AUDIO) image = %s",
-				 image);
+		BRASERO_JOB_LOG (self, "Output set (AUDIO) image = %s", image);
 	}
 	else /* other types don't need an output */
 		return BRASERO_BURN_OK;

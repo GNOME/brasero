@@ -532,7 +532,7 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	if (format == BRASERO_IMAGE_FORMAT_CLONE)
-			retval = g_strdup_printf ("%s.toc", path);
+		retval = g_strdup_printf ("%s.toc", path);
 	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
 		if (g_str_has_suffix (path, ".bin"))
 			retval = g_strdup_printf ("%.*scue",
@@ -553,38 +553,6 @@ brasero_burn_session_get_image_complement (BraseroBurnSession *self,
 		retval = NULL;
 
 	return retval;
-}
-
-static BraseroBurnResult
-brasero_burn_session_file_test (BraseroBurnSession *self,
-				const gchar *path,
-				GError **error)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (!path) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no path"));
-		return BRASERO_BURN_ERR;
-	}
-
-	if (!g_file_test (path, G_FILE_TEST_EXISTS))
-		return BRASERO_BURN_OK;
-	
-	if (priv->settings->flags & BRASERO_BURN_FLAG_DONT_OVERWRITE) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("%s already exists"),
-			     path);
-		return BRASERO_BURN_ERR;
-	}
-
-	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
@@ -676,23 +644,8 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 		return BRASERO_BURN_ERR;
 
 	if (image_ret) {
-		BraseroBurnResult result;
-
 		/* output paths were set so test them and returns them if OK */
-		if (image) {
-			result = brasero_burn_session_file_test (self,
-								 image,
-								 error);
-			if (result != BRASERO_BURN_OK) {
-				BRASERO_BURN_LOG ("Problem with image existence");
-				g_free (image);
-				g_free (toc);
-				return result;
-			}
-
-			*image_ret = image;
-		}
-		else if (toc) {
+		if (!image && toc) {
 			gchar *complement;
 			BraseroImageFormat format;
 
@@ -711,18 +664,10 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 				return BRASERO_BURN_ERR;
 			}
 
-			result = brasero_burn_session_file_test (self,
-								 complement,
-								 error);
-			if (result != BRASERO_BURN_OK) {
-				BRASERO_BURN_LOG ("Problem with image existence");
-				g_free (complement);
-				g_free (toc);
-				return result;
-			}
-
 			*image_ret = complement;
 		}
+		else if (image)
+			*image_ret = image;
 		else {
 			BRASERO_BURN_LOG ("no output specified");
 
@@ -736,21 +681,8 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 	else
 		g_free (image);
 
-	if (toc_ret) {
-		if (toc) {
-			BraseroBurnResult result;
-
-			result = brasero_burn_session_file_test (self,
-								 toc,
-								 error);
-			if (result != BRASERO_BURN_OK) {
-				BRASERO_BURN_LOG ("Problem with toc existence");
-				return result;
-			}
-		}
-
+	if (toc_ret)
 		*toc_ret = toc;
-	}
 	else
 		g_free (toc);
 
@@ -990,7 +922,10 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
 	/* Image tmp file */
-	result = brasero_burn_session_get_tmp_file (self, NULL, &path, error);
+	result = brasero_burn_session_get_tmp_file (self,
+						    NULL,
+						    &path,
+						    error);
 	if (result != BRASERO_BURN_OK)
 		return result;
 
@@ -998,10 +933,8 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 		/* toc tmp file */
 		complement = brasero_burn_session_get_image_complement (self, format, path);
 		if (complement) {
-			result = brasero_burn_session_file_test (self,
-								 complement,
-								 error);
-			if (result != BRASERO_BURN_OK) {
+			/* That shouldn't happen ... */
+			if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 				g_free (complement);
 				return result;
 			}
@@ -1764,10 +1697,14 @@ brasero_burn_session_clean (const gchar *path)
 	if (!path)
 		return TRUE;
 
-	if (g_file_test (path, G_FILE_TEST_IS_DIR))
+	BRASERO_BURN_LOG ("Cleaning %s", path);
+
+	/* NOTE: g_file_test follows symbolic links */
+	if (g_file_test (path, G_FILE_TEST_IS_DIR)
+	&& !g_file_test (path, G_FILE_TEST_IS_SYMLINK))
 		brasero_burn_session_clean_directory (path);
 
-	/* NOTE : we don't follow uris as certain files are simply linked by content-data */
+	/* NOTE : we don't follow paths as certain files are simply linked */
 	if (g_remove (path)) {
 		BRASERO_BURN_LOG ("Cannot remove file %s", path);
 		result = FALSE;
