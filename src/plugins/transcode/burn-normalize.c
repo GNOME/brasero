@@ -580,7 +580,9 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED);
 	brasero_plugin_process_caps (plugin, input);
-	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_FIRST);
+
+	/* We should run first */
+	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
 	g_slist_free (input);
 
 	return BRASERO_BURN_OK;

@@ -702,9 +702,10 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					BRASERO_IMAGE_FORMAT_BIN);
 	brasero_plugin_process_caps (plugin, input);
+
 	brasero_plugin_set_process_flags (plugin,
-					  BRASERO_PLUGIN_RUN_FIRST|
-					  BRASERO_PLUGIN_RUN_LAST);
+					  BRASERO_PLUGIN_RUN_PREPROCESSING|
+					  BRASERO_PLUGIN_RUN_BEFORE_TARGET);
 
 	brasero_plugin_check_caps (plugin,
 				   BRASERO_CHECKSUM_MD5|

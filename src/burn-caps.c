@@ -1190,8 +1190,8 @@ brasero_burn_caps_sort_modifiers (gconstpointer a,
 	BraseroPlugin *plug_a = BRASERO_PLUGIN (a);
 	BraseroPlugin *plug_b = BRASERO_PLUGIN (b);
 
-	return brasero_plugin_get_priority (plug_a) -
-	       brasero_plugin_get_priority (plug_b);
+	return brasero_plugin_get_priority (plug_b) -
+	       brasero_plugin_get_priority (plug_a);
 }
 
 static GSList *
@@ -1232,7 +1232,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 			continue;
 
 		brasero_plugin_get_process_flags (plugin, &flags);
-		if (!(flags & position))
+		if ((flags & position) != position)
 			continue;
 
 		type = brasero_plugin_get_gtype (plugin);
@@ -1419,7 +1419,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 
 	/* reverse the list of links to have them in the right order */
 	list = g_slist_reverse (list);
-	position = BRASERO_PLUGIN_RUN_FIRST;
+	position = BRASERO_PLUGIN_RUN_PREPROCESSING;
 	group_id = self->priv->group_id;
 
 	brasero_burn_session_get_input_type (session, &plugin_input);
@@ -1432,13 +1432,6 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		GType type;
 
 		link = iter->data;
-
-		if (last_caps->type.type == BRASERO_TRACK_TYPE_DISC && !iter->next) {
-			/* if we are recording then the last caps is considered
-			 * to be the one before the DISC caps since the latter
-			 * can't have processing plugin */
-			position |= BRASERO_PLUGIN_RUN_LAST;
-		}
 
 		/* determine the plugin output */
 		if (iter->next) {
@@ -1525,29 +1518,22 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 		BRASERO_BURN_LOG_TYPE (&plugin_input, "input");
 		BRASERO_BURN_LOG_TYPE (&plugin_output, "output");
 
-		position = BRASERO_PLUGIN_RUN_NEVER;
+		position = BRASERO_PLUGIN_RUN_BEFORE_TARGET;
 
 		/* the output of the plugin will become the input of the next */
 		memcpy (&plugin_input, &plugin_output, sizeof (BraseroTrackType));
 	}
 	g_slist_free (list);
 
-	if (last_caps->type.type != BRASERO_TRACK_TYPE_DISC) {
-		GSList *result;
+	/* add the post processing plugins */
+	list = brasero_caps_add_processing_plugins_to_task (session,
+							    NULL,
+							    last_caps,
+							    &output,
+							    BRASERO_PLUGIN_RUN_AFTER_TARGET);
+	retval = g_slist_concat (retval, list);
 
-		/* imaging to a file so we never run the processing plugin on
-		 * the fly in this case so as to allow the last plugin to output
-		 * correctly to a file */
-		/* NOTE: if it's not a disc we didn't modified the output
-		 * subtype */
-		result = brasero_caps_add_processing_plugins_to_task (session,
-								      NULL,
-								      last_caps,
-								      &output,
-								      BRASERO_PLUGIN_RUN_LAST);
-		retval = g_slist_concat (retval, result);
-	}
-	else if (blanking) {
+	if (last_caps->type.type == BRASERO_TRACK_TYPE_DISC && blanking) {
 		retval = g_slist_insert_before (retval,
 						g_slist_last (retval),
 						blanking);

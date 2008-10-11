@@ -983,7 +983,7 @@ brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_process_caps (plugin, caps);
 	g_slist_free (caps);
 
-	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_FIRST);
+	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
 
 	return BRASERO_BURN_OK;
 }

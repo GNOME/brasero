@@ -1,5 +1,22 @@
 2008-10-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improved processing plugin handling
+
+	* src/burn-caps.c (brasero_burn_caps_sort_modifiers),
+	(brasero_caps_add_processing_plugins_to_task),
+	(brasero_burn_caps_new_task):
+	* src/burn-plugin.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_export_caps):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_export_caps):
+
+2008-10-11  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Respect modifiers priority order
 
 	* src/burn-caps.c (brasero_burn_caps_sort_modifiers),

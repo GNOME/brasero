@@ -95,11 +95,14 @@ typedef enum {
 typedef enum {
 	BRASERO_PLUGIN_RUN_NEVER		= 0,
 
-	/* run before the plugin */
-	BRASERO_PLUGIN_RUN_FIRST		= 1,
+	/* pre-process initial track */
+	BRASERO_PLUGIN_RUN_PREPROCESSING	= 1,
 
-	/* run after the plugin */
-	BRASERO_PLUGIN_RUN_LAST			= 1 << 1,
+	/* run before final image/disc is created */
+	BRASERO_PLUGIN_RUN_BEFORE_TARGET	= 1 << 1,
+
+	/* run after final image/disc is created: post-processing */
+	BRASERO_PLUGIN_RUN_AFTER_TARGET		= 1 << 2,
 } BraseroPluginProcessFlag;
 
 GType

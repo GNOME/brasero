@@ -1231,9 +1231,10 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_process_caps (plugin, input);
 	g_slist_free (input);
 
+	/* we can run on initial track or later for whatever a DATA track */
 	brasero_plugin_set_process_flags (plugin,
-					  BRASERO_PLUGIN_RUN_FIRST|
-					  BRASERO_PLUGIN_RUN_LAST);
+					  BRASERO_PLUGIN_RUN_PREPROCESSING|
+					  BRASERO_PLUGIN_RUN_BEFORE_TARGET);
 
 	/* For discs, we can only check each files on a disc against an md5sum 
 	 * file (provided we managed to mount the disc).
