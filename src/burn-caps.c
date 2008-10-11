@@ -1183,6 +1183,17 @@ brasero_caps_find_best_link (BraseroCaps *caps,
 	return results;
 }
 
+static gboolean
+brasero_burn_caps_sort_modifiers (gconstpointer a,
+				  gconstpointer b)
+{
+	BraseroPlugin *plug_a = BRASERO_PLUGIN (a);
+	BraseroPlugin *plug_b = BRASERO_PLUGIN (b);
+
+	return brasero_plugin_get_priority (plug_a) -
+	       brasero_plugin_get_priority (plug_b);
+}
+
 static GSList *
 brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 					     BraseroTask *task,
@@ -1191,6 +1202,7 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 					     BraseroPluginProcessFlag position)
 {
 	GSList *retval = NULL;
+	GSList *modifiers;
 	GSList *iter;
 
 	if (position == BRASERO_PLUGIN_RUN_NEVER
@@ -1205,9 +1217,11 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 
 	/* Go through all plugins and add all possible modifiers. They must:
 	 * - be active
-	 * - accept the position flags
-	 * => no need for modifiers to be sorted in list. */
-	for (iter = caps->modifiers; iter; iter = iter->next) {
+	 * - accept the position flags */
+	modifiers = g_slist_copy (caps->modifiers);
+	modifiers = g_slist_sort (modifiers, brasero_burn_caps_sort_modifiers);
+
+	for (iter = modifiers; iter; iter = iter->next) {
 		BraseroPluginProcessFlag flags;
 		BraseroPlugin *plugin;
 		BraseroJob *job;
@@ -1241,11 +1255,14 @@ brasero_caps_add_processing_plugins_to_task (BraseroBurnSession *session,
 			retval = g_slist_prepend (retval, task);
 		}
 
-		BRASERO_BURN_LOG ("%s (modifier) added to task", brasero_plugin_get_name (plugin));
+		BRASERO_BURN_LOG ("%s (modifier) added to task",
+				  brasero_plugin_get_name (plugin));
+
 		BRASERO_BURN_LOG_TYPE (io_type, "IO type");
 
 		brasero_task_add_item (task, BRASERO_TASK_ITEM (job));
 	}
+	g_slist_free (modifiers);
 
 	return retval;
 }

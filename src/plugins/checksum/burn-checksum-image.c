@@ -697,21 +697,21 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin, gchar **error)
 			       0);
 
 	/* For images we can process (thus generating a sum on the fly or simply
-	 * test images. */
+	 * test images). */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					BRASERO_PLUGIN_IO_ACCEPT_PIPE,
 					BRASERO_IMAGE_FORMAT_BIN);
 	brasero_plugin_process_caps (plugin, input);
+	brasero_plugin_set_process_flags (plugin,
+					  BRASERO_PLUGIN_RUN_FIRST|
+					  BRASERO_PLUGIN_RUN_LAST);
+
 	brasero_plugin_check_caps (plugin,
 				   BRASERO_CHECKSUM_MD5|
 				   BRASERO_CHECKSUM_SHA1|
 				   BRASERO_CHECKSUM_SHA256,
 				   input);
 	g_slist_free (input);
-
-	brasero_plugin_set_process_flags (plugin,
-					  BRASERO_PLUGIN_RUN_FIRST|
-					  BRASERO_PLUGIN_RUN_LAST);
 
 	/* add some configure options */
 	checksum_type = brasero_plugin_conf_option_new (GCONF_KEY_CHECKSUM_TYPE,

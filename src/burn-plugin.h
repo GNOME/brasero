@@ -94,7 +94,11 @@ typedef enum {
 
 typedef enum {
 	BRASERO_PLUGIN_RUN_NEVER		= 0,
+
+	/* run before the plugin */
 	BRASERO_PLUGIN_RUN_FIRST		= 1,
+
+	/* run after the plugin */
 	BRASERO_PLUGIN_RUN_LAST			= 1 << 1,
 } BraseroPluginProcessFlag;
 
