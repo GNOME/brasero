@@ -43,6 +43,8 @@
 #include "scsi-error.h"
 #include "scsi-sense-data.h"
 
+#define DEBUG BRASERO_BURN_LOG
+
 struct _BraseroDeviceHandle {
 	int fd;
 };
@@ -60,6 +62,25 @@ typedef struct _BraseroScsiCmd BraseroScsiCmd;
 
 #define OPEN_FLAGS			O_RDWR /*|O_EXCL */|O_NONBLOCK
 
+gchar *
+dump_bytes(guchar *buf, gint len)
+{
+	GString *out;
+	out = g_string_new("");
+	for(;len > 0; len--) {
+		g_string_append_printf(out, "%02X ", *buf++);
+	}
+	return g_string_free(out, FALSE);
+}
+
+void
+dump_cdb(guchar *cdb, gint cdblen)
+{
+	gchar *out = dump_bytes(cdb, cdblen);
+	DEBUG("CDB:\t%s", out);
+	g_free(out);
+}
+
 /**
  * This is to send a command
  */
@@ -71,9 +92,9 @@ brasero_scsi_command_issue_sync (gpointer command,
 {
 	uchar sense_buffer [BRASERO_SENSE_DATA_SIZE];
 	struct uscsi_cmd transport;
-	BraseroScsiResult res;
+	int res;
 	BraseroScsiCmd *cmd;
-	short timeout = 10;
+	short timeout = 4 * 60;
 
 	memset (&sense_buffer, 0, BRASERO_SENSE_DATA_SIZE);
 	memset (&transport, 0, sizeof (struct uscsi_cmd));
@@ -86,23 +107,47 @@ brasero_scsi_command_issue_sync (gpointer command,
 		transport.uscsi_flags = USCSI_WRITE;
 
 	transport.uscsi_cdb = (caddr_t) cmd->cmd;
-	g_debug("cmd: %s\n", transport.uscsi_cdb);
 	transport.uscsi_cdblen = (uchar_t) cmd->info->size;
+	dump_cdb(transport.uscsi_cdb, transport.uscsi_cdblen);
 	transport.uscsi_bufaddr = (caddr_t) buffer;
 	transport.uscsi_buflen = (size_t) size;
 	transport.uscsi_timeout = timeout;
 
 	/* where to output the scsi sense buffer */
-	transport.uscsi_flags |= USCSI_RQENABLE;
+	transport.uscsi_flags |= USCSI_RQENABLE | USCSI_SILENT | USCSI_DIAGNOSE;
 	transport.uscsi_rqbuf = sense_buffer;
 	transport.uscsi_rqlen = BRASERO_SENSE_DATA_SIZE;
 
-	/* NOTE only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY,
-	 * READ CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
+	/* NOTE only for TEST UNIT READY, REQUEST/MODE SENSE, INQUIRY, READ
+	 * CAPACITY, READ BUFFER, READ and LOG SENSE are allowed with it */
 	res = ioctl (cmd->handle->fd, USCSICMD, &transport);
-	if (res) {
+
+	DEBUG("ret: %d errno: %d (%s)", res,
+	    res != 0 ? errno : 0,
+	    res != 0 ? g_strerror(errno) : "Error 0");
+	DEBUG("uscsi_flags:     0x%x", transport.uscsi_flags);
+	DEBUG("uscsi_status:    0x%x", transport.uscsi_status);
+	DEBUG("uscsi_timeout:   %d", transport.uscsi_timeout);
+	DEBUG("uscsi_bufaddr:   0x%lx", (long)transport.uscsi_bufaddr);
+	DEBUG("uscsi_buflen:    %d", (int)transport.uscsi_buflen);
+	DEBUG("uscsi_resid:     %d", (int)transport.uscsi_resid);
+	DEBUG("uscsi_rqlen:     %d", transport.uscsi_rqlen);
+	DEBUG("uscsi_rqstatus:  0x%x", transport.uscsi_rqstatus);
+	DEBUG("uscsi_rqresid:   %d", transport.uscsi_rqresid);
+	DEBUG("uscsi_rqbuf ptr: 0x%lx", (long)transport.uscsi_rqbuf);
+	if (transport.uscsi_rqbuf != NULL && transport.uscsi_rqlen > transport.uscsi_rqresid) {
+		int	len = transport.uscsi_rqlen - transport.uscsi_rqresid;
+		gchar	*out;
+
+		out = dump_bytes((char *)transport.uscsi_rqbuf, len);
+		DEBUG("uscsi_rqbuf:     %s\n", out);
+		g_free(out);
+	} else {
+		DEBUG("uscsi_rqbuf:     <data not available>\n");
+	}
+
+	if (res == -1) {
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_ERRNO);
-		g_debug("ioctl ERR: %s\n", g_strerror(errno));
 		return BRASERO_SCSI_FAILURE;
 	}
 
@@ -150,7 +195,6 @@ brasero_device_handle_open (const gchar *path,
 {
 	int fd;
 	BraseroDeviceHandle *handle;
-	const gchar *blockdisk = "/dev/dsk/";
 	gchar *rawdisk = NULL;
 
 	fd = open (path, OPEN_FLAGS);
@@ -162,7 +206,7 @@ brasero_device_handle_open (const gchar *path,
 		else
 			*code = BRASERO_SCSI_ERRNO;
 
-		g_debug("open ERR: %s\n", g_strerror(errno));
+		DEBUG("open ERR: %s\n", g_strerror(errno));
 		return NULL;
 	}
 

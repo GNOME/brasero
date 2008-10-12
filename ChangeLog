@@ -1,3 +1,13 @@
+2008-10-12  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Patch by Lin Ma
+	Fix #555776 – Brasero will fail to get disck information on big-endian machines
+	Fix a problem on big endian machines with medium information retrieval
+
+	* src/scsi-read-disc-info.h:
+	* src/scsi-uscsi.c (dump_bytes), (dump_cdb),
+	(brasero_scsi_command_issue_sync), (brasero_device_handle_open):
+
 2008-10-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Improved processing plugin handling
