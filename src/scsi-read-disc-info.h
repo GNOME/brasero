@@ -112,33 +112,6 @@ struct _BraseroScsiDiscInfoStd {
 	BraseroScsiOPCEntry opc_entry	[0];
 };
 
-struct _BraseroScsiTrackResInfo {
-	uchar len			[2];
-
-	uchar reserved0			:5;
-	uchar disc_info			:3;
-
-	uchar reserved1;
-
-	uchar max_track_num		[2];
-	uchar track_num			[2];
-	uchar max_appendable_track	[2];
-	uchar appendable_track_num	[2];
-};
-
-struct _BraseroScsiPOWResInfo {
-	uchar len			[2];
-
-	uchar reserved0			:5;
-	uchar disc_info			:3;
-
-	uchar reserved1;
-
-	uchar remaining_pow_replacements[4];
-	uchar remaining_pow_realloc	[4];
-	uchar remaining_pow_update	[4];
-};
-
 #else
 
 struct _BraseroScsiDiscInfoStd {
@@ -184,33 +157,6 @@ struct _BraseroScsiDiscInfoStd {
 	BraseroScsiOPCEntry opc_entry	[0];
 };
 
-struct _BraseroScsiTrackResInfo {
-	uchar len			[2];
-
-	uchar reserved0			:5;
-	uchar disc_info			:3;
-
-	uchar reserved1;
-
-	uchar max_track_num		[2];
-	uchar tracks_num		[2];
-	uchar max_appendable_tracks	[2];
-	uchar appendable_track_num	[2];
-};
-
-struct _BraseroScsiPOWResInfo {
-	uchar len			[2];
-
-	uchar reserved0			:5;
-	uchar disc_info			:3;
-
-	uchar reserved1;
-
-	uchar remaining_pow_replacements[4];
-	uchar remaining_pow_realloc	[4];
-	uchar remaining_pow_update	[4];
-};
-
 #endif
 
 #define BRASERO_FIRST_TRACK_IN_LAST_SESSION(info) (((info)->first_track_nb_lastses_high << 8) + (info)->first_track_nb_lastses_low)
@@ -218,8 +164,6 @@ struct _BraseroScsiPOWResInfo {
 #define BRASERO_SESSION_NUM(info) (((info)->sessions_num_high << 8) + (info)->sessions_num_low)
 
 typedef struct _BraseroScsiDiscInfoStd BraseroScsiDiscInfoStd;
-typedef struct _BraseroScsiTrackResInfo BraseroScsiTrackResInfo;
-typedef struct _BraseroScsiPOWResInfo BraseroScsiPOWResInfo;
 
 G_END_DECLS
 
