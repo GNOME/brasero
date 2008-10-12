@@ -170,7 +170,12 @@ struct _BraseroScsiDiscInfoStd {
 
 	uchar disc_id			[4];
 	uchar last_session_leadin	[4];
-	uchar last_possible_leadout	[4];
+
+	uchar last_possible_leadout_res;
+	uchar last_possible_leadout_mn;
+	uchar last_possible_leadout_sec;
+	uchar last_possible_leadout_frame;
+
 	uchar disc_barcode		[8];
 
 	uchar reserved1;
