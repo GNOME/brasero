@@ -2220,8 +2220,7 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *self,
 	/* filter as we are only interested in these */
 	required_media &= BRASERO_MEDIUM_WRITABLE|
 			  BRASERO_MEDIUM_CD|
-			  BRASERO_MEDIUM_DVD|
-			  BRASERO_MEDIUM_DVD_DL;
+			  BRASERO_MEDIUM_DVD;
 
 	return required_media;
 }
@@ -2269,7 +2268,7 @@ brasero_burn_caps_get_default_output_format (BraseroBurnCaps *self,
 
 	if (source.type == BRASERO_TRACK_TYPE_DATA
 	|| (source.type == BRASERO_TRACK_TYPE_DISC
-	&&  source.subtype.media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
+	&& (source.subtype.media & BRASERO_MEDIUM_DVD))) {
 		output.subtype.img_format = BRASERO_IMAGE_FORMAT_BIN;
 		result = brasero_burn_caps_is_output_supported (self,
 								session,
@@ -2906,7 +2905,7 @@ brasero_burn_caps_sort (gconstpointer a, gconstpointer b)
 			return ((gint32) BRASERO_MEDIUM_TYPE (caps_a->type.subtype.media) -
 			        (gint32) BRASERO_MEDIUM_TYPE (caps_b->type.subtype.media));
 
-		if ((caps_a->type.subtype.media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
+		if ((caps_a->type.subtype.media & BRASERO_MEDIUM_DVD)
 		&&  BRASERO_MEDIUM_SUBTYPE (caps_a->type.subtype.media) !=
 		    BRASERO_MEDIUM_SUBTYPE (caps_b->type.subtype.media))			
 			return ((gint32) BRASERO_MEDIUM_SUBTYPE (caps_a->type.subtype.media) -

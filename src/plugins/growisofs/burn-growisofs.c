@@ -729,8 +729,11 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
 
-	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_DVD_DL|
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_SRM|
+					BRASERO_MEDIUM_POW|
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_JUMP|
 					BRASERO_MEDIUM_SEQUENTIAL|
@@ -750,8 +753,10 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 
 	/* and images to DVD RW +/-(restricted) whatever the status */
-	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_DVD_DL|
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_RAM|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_REWRITABLE|
@@ -765,8 +770,19 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	/* for DATA type recording discs can be also appendable */
-	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_DVD_DL|
+	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
+				       BRASERO_IMAGE_FS_UDF|
+				       BRASERO_IMAGE_ISO_FS_LEVEL_3|
+				       BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
+				       BRASERO_IMAGE_FS_JOLIET|
+				       BRASERO_IMAGE_FS_VIDEO);
+
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_SRM|
+					BRASERO_MEDIUM_POW|
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_DUAL_L|
+					BRASERO_MEDIUM_RAM|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_SEQUENTIAL|
@@ -777,21 +793,15 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_BLANK|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA);
-	
-	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
-				       BRASERO_IMAGE_FS_UDF|
-				       BRASERO_IMAGE_ISO_FS_LEVEL_3|
-				       BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
-				       BRASERO_IMAGE_FS_JOLIET|
-				       BRASERO_IMAGE_FS_VIDEO);
-
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
 	/* growisofs has the possibility to record to closed DVD+RW/-restricted
 	 * and to append some more data to them which makes them unique */
-	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_DVD_DL|
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
+					BRASERO_MEDIUM_DVD|
+					BRASERO_MEDIUM_DUAL_L|
+					BRASERO_MEDIUM_RAM|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_REWRITABLE|
@@ -814,9 +824,15 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* for DVD+RW */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin);
 
+	/* for BD-R */
+	BRASERO_PLUGIN_ADD_STANDARD_BD_R_FLAGS (plugin);
+
+	/* for BD-RE */
+	BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS (plugin);
+
 	/* blank caps for +/restricted RW */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_DVD_DL|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_REWRITABLE|
@@ -844,7 +860,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* again DVD+RW don't support dummy */
 	brasero_plugin_set_blank_flags (plugin,
 					BRASERO_MEDIUM_DVDRW_PLUS|
-					BRASERO_MEDIUM_DVD_DL|
+					BRASERO_MEDIUM_DUAL_L|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_BLANK|

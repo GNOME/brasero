@@ -34,6 +34,7 @@
 #include <gtk/gtkvbox.h>
 
 #include "burn-basics.h"
+#include "burn-media.h"
 
 G_BEGIN_DECLS
 
@@ -64,7 +65,7 @@ brasero_burn_progress_reset (BraseroBurnProgress *progress);
 
 void
 brasero_burn_progress_set_status (BraseroBurnProgress *progress,
-				  gboolean is_DVD,
+				  BraseroMedia media,
 				  gdouble overall_progress,
 				  gdouble action_progress,
 				  glong remaining,
@@ -75,7 +76,7 @@ void
 brasero_burn_progress_display_session_info (BraseroBurnProgress *progress,
 					    glong time,
 					    gint64 rate,
-					    gboolean is_DVD,
+					    BraseroMedia media,
 					    gint mb_written);
 
 void

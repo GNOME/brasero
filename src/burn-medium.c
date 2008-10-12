@@ -1380,7 +1380,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	/* at this point we know the type of the disc that's why we set the 
 	 * size according to this type. That may help to avoid outrange address
 	 * errors. */
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_WRITABLE))
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DUAL_L|BRASERO_MEDIUM_WRITABLE))
 		size = 48;
 	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_WRITABLE))
 		size = 40;
@@ -1541,7 +1541,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 	/* at this point we know the type of the disc that's why we set the 
 	 * size according to this type. That may help to avoid outrange address
 	 * errors. */
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_DL|BRASERO_MEDIUM_WRITABLE))
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DUAL_L|BRASERO_MEDIUM_WRITABLE))
 		size = 48;
 	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_WRITABLE))
 		size = 40;
@@ -2527,7 +2527,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		break;
 
 	case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
-		/* need to check if that's a POW as well */
+		/* check if that's a POW later */
 		priv->info = BRASERO_MEDIUM_BDR_SRM;
 		priv->type = types [14];
 		priv->icon = icons [5];
@@ -2597,6 +2597,52 @@ end:
 
 	if (result != BRASERO_BURN_OK)
 		return result;
+
+	/* for BDs media we need to check the number of layers */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_SRM)) {
+		/* check for POW */
+		hdr = NULL;
+		result = brasero_mmc2_get_configuration_feature (handle,
+								 BRASERO_SCSI_FEAT_BDR_POW,
+								 &hdr,
+								 &size,
+								 code);
+		if (result == BRASERO_SCSI_OK) {
+			if (hdr->desc->current) {
+				BRASERO_BURN_LOG ("POW formatted medium detected");
+				priv->info |= BRASERO_MEDIUM_POW;
+			}
+
+			g_free (hdr);			
+		}
+		else {
+			BraseroScsiFormatCapacitiesHdr *hdr = NULL;
+
+			/* NOTE: the disc status as far as format is concerned
+			 * is done later for all rewritable media. */
+			/* check for unformatted media (if it's POW or RANDOM
+			 * there is no need of course) */
+			result = brasero_mmc2_read_format_capacities (handle,
+								      &hdr,
+								      &size,
+								      NULL);
+			if (result == BRASERO_SCSI_OK) {
+				BraseroScsiMaxCapacityDesc *current;
+
+				current = hdr->max_caps;
+				if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
+					BRASERO_BURN_LOG ("Unformatted BD-R");
+					priv->info |= BRASERO_MEDIUM_UNFORMATTED;
+				}
+
+				g_free (hdr);
+			}
+		}		
+	}
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD)) {
+		/* check for dual layer BD */
+	}
 
 	return BRASERO_BURN_OK;
 }

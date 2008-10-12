@@ -322,7 +322,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 	/* DAO and MULTI are exclusive */					\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR|				\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_JUMP|				\
 				  BRASERO_MEDIUM_BLANK,				\
 				  BRASERO_BURN_FLAG_DAO|			\
@@ -333,7 +333,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_NONE);			\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR|				\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_JUMP|				\
 				  BRASERO_MEDIUM_BLANK,				\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
@@ -345,7 +345,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 	/* This is a DVDR with data data can be merged or at least appended */	\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR|				\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_JUMP|				\
 				  BRASERO_MEDIUM_APPENDABLE|			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
@@ -362,7 +362,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 	/* DVD+R don't have a DUMMY mode */					\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR_PLUS|			\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  BRASERO_BURN_FLAG_DAO|			\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
@@ -371,7 +371,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_NONE);			\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR_PLUS|			\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  BRASERO_BURN_FLAG_BURNPROOF|			\
 				  BRASERO_BURN_FLAG_OVERBURN|			\
@@ -381,7 +381,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 	/* DVD+R with data: data can be merged or at least appended */		\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR_PLUS|			\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_APPENDABLE|			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
 				  BRASERO_BURN_FLAG_MERGE|			\
@@ -440,7 +440,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 #define BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS(plugin_MACRO)		\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDRW_PLUS|			\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_UNFORMATTED|			\
 				  BRASERO_MEDIUM_BLANK,				\
 				  BRASERO_BURN_FLAG_MULTI|			\
@@ -449,7 +449,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_MULTI);			\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDRW_PLUS|			\
-				  BRASERO_MEDIUM_DVD_DL|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_APPENDABLE|			\
 				  BRASERO_MEDIUM_CLOSED|			\
 				  BRASERO_MEDIUM_HAS_DATA,			\
@@ -487,6 +487,75 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_MERGE,			\
 				  BRASERO_BURN_FLAG_MULTI);
 
+#define BRASERO_PLUGIN_ADD_STANDARD_BD_R_FLAGS(plugin_MACRO)			\
+	/* DAO and MULTI are exclusive */					\
+	brasero_plugin_set_flags (plugin_MACRO,					\
+				  BRASERO_MEDIUM_BDR_RANDOM|			\
+				  BRASERO_MEDIUM_BDR_SRM|			\
+				  BRASERO_MEDIUM_BDR_SRM_POW|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
+				  BRASERO_MEDIUM_BLANK,				\
+				  BRASERO_BURN_FLAG_DAO|			\
+				  BRASERO_BURN_FLAG_OVERBURN|			\
+				  BRASERO_BURN_FLAG_DUMMY|			\
+				  BRASERO_BURN_FLAG_NOGRACE,			\
+				  BRASERO_BURN_FLAG_NONE);			\
+	brasero_plugin_set_flags (plugin_MACRO,					\
+				  BRASERO_MEDIUM_BDR_RANDOM|			\
+				  BRASERO_MEDIUM_BDR_SRM|			\
+				  BRASERO_MEDIUM_BDR_SRM_POW|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
+				  BRASERO_MEDIUM_BLANK,				\
+				  BRASERO_BURN_FLAG_OVERBURN|			\
+				  BRASERO_BURN_FLAG_MULTI|			\
+				  BRASERO_BURN_FLAG_DUMMY|			\
+				  BRASERO_BURN_FLAG_NOGRACE,			\
+				  BRASERO_BURN_FLAG_NONE);			\
+	/* This is a DVDR with data data can be merged or at least appended */	\
+	brasero_plugin_set_flags (plugin_MACRO,					\
+				  BRASERO_MEDIUM_BDR_RANDOM|			\
+				  BRASERO_MEDIUM_BDR_SRM|			\
+				  BRASERO_MEDIUM_BDR_SRM_POW|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
+				  BRASERO_MEDIUM_APPENDABLE|			\
+				  BRASERO_MEDIUM_HAS_DATA,			\
+				  BRASERO_BURN_FLAG_APPEND|			\
+				  BRASERO_BURN_FLAG_MERGE|			\
+				  BRASERO_BURN_FLAG_OVERBURN|			\
+				  BRASERO_BURN_FLAG_MULTI|			\
+				  BRASERO_BURN_FLAG_DUMMY|			\
+				  BRASERO_BURN_FLAG_NOGRACE,			\
+				  BRASERO_BURN_FLAG_APPEND);
+
+/**
+ * These kind of media don't support:
+ * - BURNPROOF
+ * - DAO
+ * - APPEND
+ * since they don't behave and are not written in the same way.
+ * They also can't be closed so MULTI is compulsory.
+ */
+#define BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS(plugin_MACRO)			\
+	brasero_plugin_set_flags (plugin_MACRO,					\
+				  BRASERO_MEDIUM_DVDRW_PLUS|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
+				  BRASERO_MEDIUM_UNFORMATTED|			\
+				  BRASERO_MEDIUM_BLANK,				\
+				  BRASERO_BURN_FLAG_MULTI|			\
+				  BRASERO_BURN_FLAG_OVERBURN|			\
+				  BRASERO_BURN_FLAG_NOGRACE,			\
+				  BRASERO_BURN_FLAG_MULTI);			\
+	brasero_plugin_set_flags (plugin_MACRO,					\
+				  BRASERO_MEDIUM_DVDRW_PLUS|			\
+				  BRASERO_MEDIUM_DUAL_L|			\
+				  BRASERO_MEDIUM_APPENDABLE|			\
+				  BRASERO_MEDIUM_CLOSED|			\
+				  BRASERO_MEDIUM_HAS_DATA,			\
+				  BRASERO_BURN_FLAG_MULTI|			\
+				  BRASERO_BURN_FLAG_OVERBURN|			\
+				  BRASERO_BURN_FLAG_NOGRACE|			\
+				  BRASERO_BURN_FLAG_MERGE,			\
+				  BRASERO_BURN_FLAG_MULTI);
 G_END_DECLS
 
 #endif /* _BURN_PLUGIN_H_ */

@@ -155,7 +155,7 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	/* NOTE: sequential and restricted are added later on demand */
 	const BraseroMedia media = BRASERO_MEDIUM_DVD|
-				   BRASERO_MEDIUM_DVD_DL|
+				   BRASERO_MEDIUM_DUAL_L|
 				   BRASERO_MEDIUM_REWRITABLE|
 				   BRASERO_MEDIUM_APPENDABLE|
 				   BRASERO_MEDIUM_CLOSED|

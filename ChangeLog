@@ -1,5 +1,60 @@
 2008-10-12  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some additional changes for DVD-RAM and BDs support
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_update_info),
+	(brasero_burn_dialog_get_media_type_string),
+	(brasero_burn_dialog_progress_changed_real),
+	(brasero_burn_dialog_notify_success):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_update_multi):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_format_disc_speed):
+	* src/brasero-progress.c
+	(brasero_burn_progress_display_session_info),
+	(brasero_burn_progress_set_status):
+	* src/brasero-progress.h:
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_set_progress):
+	* src/burn-caps.c (brasero_burn_caps_get_required_media_type),
+	(brasero_burn_caps_get_default_output_format),
+	(brasero_burn_caps_sort):
+	* src/burn-debug.c (brasero_debug_medium_info_to_string):
+	* src/burn-job.c (brasero_job_get_speed),
+	(brasero_job_get_max_speed):
+	* src/burn-media.c (brasero_media_new_status),
+	(brasero_media_new_attribute), (brasero_media_new_subtype),
+	(brasero_media_get_all_list):
+	* src/burn-media.h:
+	* src/burn-medium.c (brasero_medium_track_get_info),
+	(brasero_medium_track_set_leadout),
+	(brasero_medium_get_medium_type):
+	* src/burn-medium.h:
+	* src/burn-plugin.h:
+	* src/burn.c (brasero_burn_is_loaded_dest_media_supported),
+	(brasero_burn_reload_dest_media),
+	(brasero_burn_same_src_dest_reload_medium):
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_export_caps):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_export_caps):
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_export_caps):
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_export_caps):
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_export_caps):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_export_caps):
+
+2008-10-12  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Again another problem for big endian architecture
 
 	* src/scsi-read-disc-info.h:

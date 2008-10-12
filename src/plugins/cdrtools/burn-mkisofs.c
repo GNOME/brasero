@@ -524,7 +524,7 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_DVDR_PLUS|
-				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_DUAL_L|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_AUDIO|
 				  BRASERO_MEDIUM_HAS_DATA,
@@ -533,7 +533,7 @@ brasero_mkisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_BURN_FLAG_NONE);
 
 	brasero_plugin_set_flags (plugin,
-				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_DUAL_L|
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_RESTRICTED|
 				  BRASERO_MEDIUM_APPENDABLE|

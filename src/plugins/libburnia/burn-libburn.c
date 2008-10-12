@@ -862,7 +862,7 @@ brasero_libburn_export_caps (BraseroPlugin *plugin, gchar **error)
 					  BRASERO_MEDIUM_HAS_DATA|
 					  BRASERO_MEDIUM_BLANK;
 	const BraseroMedia media_dvd_rw_plus = BRASERO_MEDIUM_DVD|
-					       BRASERO_MEDIUM_DVD_DL|
+					       BRASERO_MEDIUM_DUAL_L|
 					       BRASERO_MEDIUM_PLUS|
 					       BRASERO_MEDIUM_RESTRICTED|
 					       BRASERO_MEDIUM_REWRITABLE|

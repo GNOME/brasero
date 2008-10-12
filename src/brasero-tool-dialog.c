@@ -133,7 +133,7 @@ brasero_tool_dialog_set_progress (BraseroToolDialog *self,
 				  gint written_mb)
 {
 	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (self->priv->progress),
-					  FALSE,
+					  FALSE, /* no need for the media here since speed is not specified */
 					  overall_progress,
 					  task_progress,
 					  remaining,

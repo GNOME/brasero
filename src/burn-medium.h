@@ -37,6 +37,7 @@ G_BEGIN_DECLS
  * Source Wikipedia.com =)
  * Apparently most drives return rates that should be used with Audio factor
  */
+
 #define CD_RATE 176400 /* bytes by second */
 #define DVD_RATE 1387500
 #define BD_RATE 4500000
@@ -47,6 +48,7 @@ typedef struct _BraseroDrive BraseroDrive;
 #define BRASERO_SPEED_TO_RATE_DVD(speed)	(guint) ((speed) * DVD_RATE)
 #define BRASERO_RATE_TO_SPEED_CD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) CD_RATE)
 #define BRASERO_RATE_TO_SPEED_DVD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) DVD_RATE)
+#define BRASERO_RATE_TO_SPEED_BD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) BD_RATE)
 
 #define BRASERO_TYPE_MEDIUM             (brasero_medium_get_type ())
 #define BRASERO_MEDIUM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_MEDIUM, BraseroMedium))

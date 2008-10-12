@@ -386,7 +386,7 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
   				  BRASERO_MEDIUM_FILE|
 				  BRASERO_MEDIUM_DVDR|
 				  BRASERO_MEDIUM_DVDR_PLUS|
-				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_DUAL_L|
 				  BRASERO_MEDIUM_BLANK|
 				  BRASERO_MEDIUM_APPENDABLE|
 				  BRASERO_MEDIUM_HAS_DATA,
@@ -397,7 +397,7 @@ brasero_dvd_author_export_caps (BraseroPlugin *plugin, gchar **error)
 				  BRASERO_MEDIUM_DVDRW|
 				  BRASERO_MEDIUM_DVDRW_PLUS|
 				  BRASERO_MEDIUM_DVDRW_RESTRICTED|
-				  BRASERO_MEDIUM_DVD_DL|
+				  BRASERO_MEDIUM_DUAL_L|
 				  BRASERO_MEDIUM_BLANK|
 				  BRASERO_MEDIUM_CLOSED|
 				  BRASERO_MEDIUM_APPENDABLE|

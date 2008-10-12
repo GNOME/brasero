@@ -168,7 +168,7 @@ brasero_burn_dialog_update_info (BraseroBurnDialog *dialog,
 		header = g_strdup_printf ("<big><b>%s</b></big>", _("Creating image"));
 		title = g_strdup (_("Brasero - Creating Image"));
 	}
-	else if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)) {
+	else if (media & BRASERO_MEDIUM_DVD) {
 		if (BRASERO_TRACK_TYPE_HAS_VIDEO (input)) {
 			if (flags & BRASERO_BURN_FLAG_DUMMY) {
 				title = g_strdup (_("Brasero - Burning DVD (Simulation)"));
@@ -412,7 +412,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 				     NULL,
 				     NULL);
 
-		if ((type & BRASERO_MEDIUM_CD) && !(type & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
+		if ((type & BRASERO_MEDIUM_CD) && !(type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
 				if (isosize)
 					message = g_strdup_printf (_("Please, replace the disc with a recordable CD with at least %i MiB of free space."), 
@@ -428,7 +428,7 @@ brasero_burn_dialog_get_media_type_string (BraseroBurn *burn,
 					message = g_strdup (_("Please, insert a recordable CD."));
 			}
 		}
-		else if (!(type & BRASERO_MEDIUM_CD) && (type & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
+		else if (!(type & BRASERO_MEDIUM_CD) && (type & BRASERO_MEDIUM_DVD)) {
 			if (!insert) {
 				if (isosize)
 					message = g_strdup_printf (_("Please, replace the disc with a recordable DVD with at least %i MiB of free space."), 
@@ -904,7 +904,7 @@ brasero_burn_dialog_progress_changed_real (BraseroBurnDialog *dialog,
 								   (guint) (task_progress * 100.0));
 
 	brasero_burn_progress_set_status (BRASERO_BURN_PROGRESS (dialog->priv->progress),
-					  (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL)),
+					  media,
 					  overall_progress,
 					  task_progress,
 					  remaining,
@@ -1647,13 +1647,13 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		break;
 	case BRASERO_TRACK_TYPE_DISC:
 		if (!brasero_drive_is_fake (drive)) {
-			if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("DVD successfully copied"));
 			else
 				primary = g_strdup (_("CD successfully copied"));
 		}
 		else {
-			if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("Image of DVD successfully created"));
 			else
 				primary = g_strdup (_("Image of CD successfully created"));
@@ -1661,7 +1661,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		break;
 	case BRASERO_TRACK_TYPE_IMAGE:
 		if (!brasero_drive_is_fake (drive)) {
-			if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("Image successfully burnt to DVD"));
 			else
 				primary = g_strdup (_("Image successfully burnt to CD"));
@@ -1669,7 +1669,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		break;
 	default:
 		if (!brasero_drive_is_fake (drive)) {
-			if (media & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
+			if (media & BRASERO_MEDIUM_DVD)
 				primary = g_strdup (_("Data DVD successfully burnt"));
 			else
 				primary = g_strdup (_("Data CD successfully burnt"));
@@ -1697,7 +1697,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 	brasero_burn_progress_display_session_info (BRASERO_BURN_PROGRESS (dialog->priv->progress),
 						    g_timer_elapsed (dialog->priv->total_time, NULL),
 						    rate,
-						    (media & BRASERO_MEDIUM_DVD),
+						    media,
 						    dialog->priv->total_size);
 
 

@@ -201,7 +201,7 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 	/* MULTI and Video projects don't get along */
 	if (input.type == BRASERO_TRACK_TYPE_DATA
 	&& (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
-	&& (brasero_burn_session_get_dest_media (session) & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))) {
+	&& (brasero_burn_session_get_dest_media (session) & BRASERO_MEDIUM_DVD)) {
 		brasero_session_cfg_remove_flags (BRASERO_SESSION_CFG (session), BRASERO_BURN_FLAG_MULTI);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);

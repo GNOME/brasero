@@ -176,12 +176,12 @@ brasero_debug_medium_info_to_string (gchar *buffer,
 		strcat (buffer, "DVD ");
 
 	if (media & BRASERO_MEDIUM_RAM)
-		strcat (buffer, "RAM");
+		strcat (buffer, "RAM ");
 
 	if (media & BRASERO_MEDIUM_BD)
 		strcat (buffer, "BD ");
 
-	if (media & BRASERO_MEDIUM_DVD_DL)
+	if (media & BRASERO_MEDIUM_DUAL_L)
 		strcat (buffer, "DL ");
 
 	/* DVD subtypes */
@@ -196,6 +196,16 @@ brasero_debug_medium_info_to_string (gchar *buffer,
 
 	if (media & BRASERO_MEDIUM_JUMP)
 		strcat (buffer, "- (jump) ");
+
+	/* BD subtypes */
+	if (media & BRASERO_MEDIUM_SRM)
+		strcat (buffer, "SRM ");
+
+	if (media & BRASERO_MEDIUM_POW)
+		strcat (buffer, "POW ");
+
+	if (media & BRASERO_MEDIUM_RANDOM)
+		strcat (buffer, "RANDOM ");
 
 	/* discs attributes */
 	if (media & BRASERO_MEDIUM_REWRITABLE)

@@ -747,7 +747,7 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 
 		return BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE;
 	}
-	else if (unsupported & (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_DVD_DL))
+	else if (unsupported & BRASERO_MEDIUM_DVD)
 		return BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED;
 
 	return BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
@@ -949,8 +949,7 @@ again:
 	required_media = brasero_burn_caps_get_required_media_type (priv->caps, priv->session);
 	required_media &= (BRASERO_MEDIUM_WRITABLE|
 			   BRASERO_MEDIUM_CD|
-			   BRASERO_MEDIUM_DVD|
-			   BRASERO_MEDIUM_DVD_DL);
+			   BRASERO_MEDIUM_DVD);
 
 	if (required_media == BRASERO_MEDIUM_NONE)
 		required_media = BRASERO_MEDIUM_WRITABLE;
@@ -2351,8 +2350,7 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 								    priv->session);
 	required_media &= (BRASERO_MEDIUM_WRITABLE|
 			   BRASERO_MEDIUM_CD|
-			   BRASERO_MEDIUM_DVD|
-			   BRASERO_MEDIUM_DVD_DL);
+			   BRASERO_MEDIUM_DVD);
 
 	/* There is sometimes no way to determine which type of media is
 	 * required since some flags (that will be adjusted afterwards)

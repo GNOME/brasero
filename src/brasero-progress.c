@@ -193,7 +193,7 @@ void
 brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 					    glong time,
 					    gint64 rate,
-					    gboolean is_DVD,
+					    BraseroMedia media,
 					    gint written)
 {
 	GtkWidget *label;
@@ -253,8 +253,10 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 				  0,
 				  0);
 
-		if (is_DVD)
+		if (media & BRASERO_MEDIUM_DVD)
 			speed = (gfloat) BRASERO_RATE_TO_SPEED_DVD (rate);
+		else if (media & BRASERO_MEDIUM_BD)
+			speed = (gfloat) BRASERO_RATE_TO_SPEED_BD (rate);
 		else
 			speed = (gfloat) BRASERO_RATE_TO_SPEED_CD (rate);
 
@@ -428,7 +430,7 @@ brasero_burn_progress_start_blinking (BraseroBurnProgress *self)
 
 void
 brasero_burn_progress_set_status (BraseroBurnProgress *self,
-				  gboolean is_DVD,
+				  BraseroMedia media,
 				  gdouble overall_progress,
 				  gdouble action_progress,
 				  glong remaining,
@@ -491,8 +493,10 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 	if (rate > 0 && self->priv->speed) {
 		gfloat speed;
 
-		if (rate >= 0 && is_DVD)
+		if (media & BRASERO_MEDIUM_DVD)
 			speed = (gfloat) BRASERO_RATE_TO_SPEED_DVD (rate);
+		else if (media & BRASERO_MEDIUM_BD)
+			speed = (gfloat) BRASERO_RATE_TO_SPEED_BD (rate);
 		else
 			speed = (gfloat) BRASERO_RATE_TO_SPEED_CD (rate);
 
