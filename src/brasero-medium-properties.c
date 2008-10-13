@@ -124,7 +124,7 @@ brasero_medium_properties_drive_properties (BraseroMediumProperties *self)
 
 	brasero_burn_session_remove_flag (priv->session, BRASERO_DRIVE_PROPERTIES_FLAGS);
 	flags = brasero_drive_properties_get_flags (BRASERO_DRIVE_PROPERTIES (priv->medium_prop));
-	brasero_burn_session_add_flag (priv->session, flags);
+	brasero_session_cfg_add_flags (BRASERO_SESSION_CFG (priv->session), flags);
 
 	path = brasero_drive_properties_get_tmpdir (BRASERO_DRIVE_PROPERTIES (priv->medium_prop));
 	brasero_burn_session_set_tmpdir (priv->session, path);

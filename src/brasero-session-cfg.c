@@ -235,6 +235,9 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 			 * compulsory like BLANK_BEFORE for CDRW with data */
 		}
 	}
+
+	/* Always save flags */
+	brasero_session_cfg_save_drive_properties (self);
 }
 
 static void
@@ -348,11 +351,6 @@ brasero_session_cfg_check_drive_settings (BraseroSessionCfg *self)
 
 	/* check each flag before re-adding it */
 	brasero_session_cfg_add_drive_properties_flags (self, flags);
-
-	/* NOTE: always save. That way if a flag is no longer supported after
-	 * the removal of a plugin then the properties are reset and the user
-	 * can access them again */
-	brasero_session_cfg_save_drive_properties (self);
 }
 
 static BraseroSessionError
@@ -478,7 +476,9 @@ brasero_session_cfg_check_size (BraseroSessionCfg *self)
 }
 
 static void
-brasero_session_cfg_update (BraseroSessionCfg *self)
+brasero_session_cfg_update (BraseroSessionCfg *self,
+			    gboolean update,
+			    gboolean check)
 {
 	BraseroSessionCfgPrivate *priv;
 	BraseroTrackType source = { 0, };
@@ -490,12 +490,9 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	if (priv->configuring)
 		return;
 
-	priv->configuring = TRUE;
-
 	/* make sure there is a source */
 	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
 	if (source.type == BRASERO_TRACK_TYPE_NONE) {
-		priv->configuring = FALSE;
 		priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -506,7 +503,6 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 
 	if (source.type == BRASERO_TRACK_TYPE_DISC
 	&&  source.subtype.media == BRASERO_MEDIUM_NONE) {
-		priv->configuring = FALSE;
 		priv->is_valid = BRASERO_SESSION_NO_INPUT_MEDIUM;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -517,7 +513,6 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 
 	if (source.type == BRASERO_TRACK_TYPE_IMAGE
 	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
-		priv->configuring = FALSE;
 		priv->is_valid = BRASERO_SESSION_NO_INPUT_IMAGE;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
@@ -529,7 +524,6 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 	/* make sure there is an output set */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {
-		priv->configuring = FALSE;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0,
@@ -537,15 +531,20 @@ brasero_session_cfg_update (BraseroSessionCfg *self)
 		return;
 	}
 
+	priv->configuring = TRUE;
+
 	if (brasero_drive_is_fake (burner))
 		/* Remove some impossible flags */
 		brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self),
 						  BRASERO_BURN_FLAG_DUMMY|
 						  BRASERO_BURN_FLAG_NO_TMP_FILES);
-	else
+	else if (update)
 		brasero_session_cfg_set_drive_properties (self);
+	else if (check)
+		brasero_session_cfg_check_drive_settings (self);
 
 	priv->configuring = FALSE;
+
 	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
 
 	if (result != BRASERO_BURN_OK) {
@@ -599,7 +598,9 @@ brasero_session_cfg_input_changed (BraseroBurnSession *session)
 	 * - check available formats for path
 	 * - set one path
 	 */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
+				    TRUE,
+				    FALSE);
 }
 
 static void
@@ -616,104 +617,9 @@ brasero_session_cfg_output_changed (BraseroBurnSession *session)
 	 * - check if all flags are thereafter supported
 	 * - for images, set a path if it wasn't already set
 	 */
-	brasero_session_cfg_update (BRASERO_SESSION_CFG (session));
-}
-
-static void
-brasero_session_cfg_check (BraseroSessionCfg *self)
-{
-	BraseroSessionCfgPrivate *priv;
-	BraseroBurnResult result;
-	BraseroTrackType source = {0,};
-	BraseroDrive *burner;
-
-	priv = BRASERO_SESSION_CFG_PRIVATE (self);
-
-	if (priv->configuring)
-		return;
-
-	priv->configuring = TRUE;
-
-	/* make sure there is a source */
-	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
-	if (source.type == BRASERO_TRACK_TYPE_NONE) {
-		priv->configuring = FALSE;
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NOT_SUPPORTED);
-		return;
-	}
-
-	if (source.type == BRASERO_TRACK_TYPE_DISC
-	&&  source.subtype.media == BRASERO_MEDIUM_NONE) {
-		priv->configuring = FALSE;
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NO_INPUT_MEDIUM);
-		return;
-	}
-
-	if (source.type == BRASERO_TRACK_TYPE_IMAGE
-	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
-		priv->configuring = FALSE;
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NO_INPUT_IMAGE);
-		return;
-	}
-
-	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
-	if (!burner) {
-		priv->configuring = FALSE;
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NO_OUTPUT);
-		return;
-	}
-
-	if (brasero_drive_is_fake (burner))
-		/* Remove some impossible flags */
-		brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self),
-						  BRASERO_BURN_FLAG_DUMMY|
-						  BRASERO_BURN_FLAG_NO_TMP_FILES);
-	else
-		brasero_session_cfg_check_drive_settings (self);
-
-	priv->configuring = FALSE;
-	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
-
-	if (result != BRASERO_BURN_OK) {
-		/* This is a special case */
-		if (source.type == BRASERO_TRACK_TYPE_DISC
-		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
-		&&  brasero_burn_caps_has_capability (priv->caps, &source) != BRASERO_BURN_OK)
-			g_signal_emit (self,
-				       session_cfg_signals [IS_VALID_SIGNAL],
-				       0,
-				       BRASERO_SESSION_DISC_PROTECTED);
-		else
-			g_signal_emit (self,
-				       session_cfg_signals [IS_VALID_SIGNAL],
-				       0,
-				       BRASERO_SESSION_NOT_SUPPORTED);
-		return;
-	}
-
-	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self)))
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_VALID);
-
-	else
-		g_signal_emit (self,
-			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       brasero_session_cfg_check_size (self));
+	brasero_session_cfg_update (BRASERO_SESSION_CFG (session),
+				    TRUE,
+				    FALSE);
 }
 
 static void
@@ -730,7 +636,9 @@ brasero_session_cfg_caps_changed (BraseroPluginManager *manager,
 	 * - new flags are supported or not supported anymore
 	 * - new image types as input/output are supported
 	 * - if the current set of flags/input/output still works */
-	brasero_session_cfg_check (self);
+	brasero_session_cfg_update (self,
+				    FALSE,
+				    TRUE);
 }
 
 void
@@ -755,7 +663,12 @@ brasero_session_cfg_add_flags (BraseroSessionCfg *self,
 				     &priv->supported,
 				     &priv->compulsory);
 
-	brasero_session_cfg_check (self);
+	/* Always save flags */
+	brasero_session_cfg_save_drive_properties (self);
+
+	brasero_session_cfg_update (self,
+				    FALSE,
+				    FALSE);
 }
 
 void
@@ -774,7 +687,12 @@ brasero_session_cfg_remove_flags (BraseroSessionCfg *self,
 				     &priv->supported,
 				     &priv->compulsory);
 
-	brasero_session_cfg_check (self);
+	/* Always save flags */
+	brasero_session_cfg_save_drive_properties (self);
+
+	brasero_session_cfg_update (self,
+				    FALSE,
+				    FALSE);
 }
 
 gboolean
