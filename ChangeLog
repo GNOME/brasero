@@ -1,5 +1,13 @@
 2008-10-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix usage of --simulate option when blanking
+
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_set_argv_common_rec),
+	(brasero_cdrdao_set_argv_common), (brasero_cdrdao_set_argv_blank):
+
+2008-10-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a problem introduced by previous changes that prevented to burn images
 	Fix extension of image and toc temporary files
 

@@ -261,13 +261,16 @@ brasero_cdrdao_set_argv_common_rec (BraseroCdrdao *cdrdao,
 	gchar *speed_str;
 	guint speed;
 
+	brasero_job_get_flags (BRASERO_JOB (cdrdao), &flags);
+	if (flags & BRASERO_BURN_FLAG_DUMMY)
+		g_ptr_array_add (argv, g_strdup ("--simulate"));
+
 	g_ptr_array_add (argv, g_strdup ("--speed"));
 
 	brasero_job_get_speed (BRASERO_JOB (cdrdao), &speed);
 	speed_str = g_strdup_printf ("%d", speed);
 	g_ptr_array_add (argv, speed_str);
 
-	brasero_job_get_flags (BRASERO_JOB (cdrdao), &flags);
 	if (flags & BRASERO_BURN_FLAG_OVERBURN)
 		g_ptr_array_add (argv, g_strdup ("--overburn"));
 	if (flags & BRASERO_BURN_FLAG_MULTI)
@@ -281,8 +284,6 @@ brasero_cdrdao_set_argv_common (BraseroCdrdao *cdrdao,
 	BraseroBurnFlag flags;
 
 	brasero_job_get_flags (BRASERO_JOB (cdrdao), &flags);
-	if (flags & BRASERO_BURN_FLAG_DUMMY)
-		g_ptr_array_add (argv, g_strdup ("--simulate"));
 
 	/* cdrdao manual says it is a similar option to gracetime */
 	if (flags & BRASERO_BURN_FLAG_NOGRACE)
@@ -375,11 +376,12 @@ brasero_cdrdao_set_argv_blank (BraseroCdrdao *cdrdao,
 	brasero_cdrdao_set_argv_device (cdrdao, argv);
 	brasero_cdrdao_set_argv_common (cdrdao, argv);
 
+	g_ptr_array_add (argv, g_strdup ("--blank-mode"));
 	brasero_job_get_flags (BRASERO_JOB (cdrdao), &flags);
-	if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
-		g_ptr_array_add (argv, g_strdup ("--blank-mode"));
+	if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK))
 		g_ptr_array_add (argv, g_strdup ("full"));
-	}
+	else
+		g_ptr_array_add (argv, g_strdup ("minimal"));
 
 	brasero_job_set_current_action (BRASERO_JOB (cdrdao),
 					BRASERO_BURN_ACTION_BLANKING,
