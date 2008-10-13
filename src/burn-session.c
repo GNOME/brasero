@@ -521,98 +521,6 @@ brasero_burn_session_get_num_copies (BraseroBurnSession *self)
 	return priv->settings->num_copies;
 }
 
-static gchar *
-brasero_burn_session_get_image_complement (BraseroBurnSession *self,
-					   BraseroImageFormat format,
-					   const gchar *path)
-{
-	gchar *retval = NULL;
-	BraseroBurnSessionPrivate *priv;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (format == BRASERO_IMAGE_FORMAT_CLONE)
-		retval = g_strdup_printf ("%s.toc", path);
-	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
-		if (g_str_has_suffix (path, ".bin"))
-			retval = g_strdup_printf ("%.*scue",
-						  strlen (path) - 3,
-						  path);
-		else
-			retval = g_strdup_printf ("%s.bin", path);
-	}
-	else if (format == BRASERO_IMAGE_FORMAT_CDRDAO) {
-		if (g_str_has_suffix (path, ".bin"))
-			retval = g_strdup_printf ("%.*stoc",
-						  strlen (path) - 3,
-						  path);
-		else
-			retval = g_strdup_printf ("%s.toc", path);
-	}
-	else
-		retval = NULL;
-
-	return retval;
-}
-
-static BraseroBurnResult
-brasero_burn_session_set_image_output_retval (BraseroBurnSession *self,
-					      BraseroImageFormat format,
-					      gchar **image,
-					      gchar **toc,
-					      gchar *output,
-					      gchar *complement)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	switch (format) {
-	case BRASERO_IMAGE_FORMAT_BIN:
-	case BRASERO_IMAGE_FORMAT_NONE:
-		if (image)
-			*image = output;
-		else
-			g_free (output);
-
-		if (toc)
-			*toc = NULL;
-
-		g_free (complement);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CLONE:
-		if (image)
-			*image = output;
-		else
-			g_free (output);
-
-		if (toc)
-			*toc = complement;
-		else
-			g_free (complement);
-		break;
-
-	case BRASERO_IMAGE_FORMAT_CUE:
-	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		if (image)
-			*image = complement;
-		else
-			g_free (complement);
-
-		if (toc)
-			*toc = output;
-		else
-			g_free (output);
-		break;
-
-	default:
-		return BRASERO_BURN_ERR;
-	}
-
-	return BRASERO_BURN_OK;
-}
-
 /**
  * This function returns a path only if we should output to a file image
  * and not burn.
@@ -905,6 +813,40 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 	return BRASERO_BURN_OK;
 }
 
+static gchar *
+brasero_burn_session_get_image_complement (BraseroBurnSession *self,
+					   BraseroImageFormat format,
+					   const gchar *path)
+{
+	gchar *retval = NULL;
+	BraseroBurnSessionPrivate *priv;
+
+	priv = BRASERO_BURN_SESSION_PRIVATE (self);
+
+	if (format == BRASERO_IMAGE_FORMAT_CLONE)
+		retval = g_strdup_printf ("%s.toc", path);
+	else if (format == BRASERO_IMAGE_FORMAT_CUE) {
+		if (g_str_has_suffix (path, ".bin"))
+			retval = g_strdup_printf ("%.*scue",
+						  strlen (path) - 3,
+						  path);
+		else
+			retval = g_strdup_printf ("%s.cue", path);
+	}
+	else if (format == BRASERO_IMAGE_FORMAT_CDRDAO) {
+		if (g_str_has_suffix (path, ".bin"))
+			retval = g_strdup_printf ("%.*stoc",
+						  strlen (path) - 3,
+						  path);
+		else
+			retval = g_strdup_printf ("%s.toc", path);
+	}
+	else
+		retval = NULL;
+
+	return retval;
+}
+
 BraseroBurnResult
 brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 				    BraseroImageFormat format,
@@ -923,7 +865,7 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 
 	/* Image tmp file */
 	result = brasero_burn_session_get_tmp_file (self,
-						    NULL,
+						    (format == BRASERO_IMAGE_FORMAT_CLONE)? NULL:".bin",
 						    &path,
 						    error);
 	if (result != BRASERO_BURN_OK)
@@ -934,9 +876,9 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 		complement = brasero_burn_session_get_image_complement (self, format, path);
 		if (complement) {
 			/* That shouldn't happen ... */
-			if (g_file_test (path, G_FILE_TEST_EXISTS)) {
+			if (g_file_test (complement, G_FILE_TEST_EXISTS)) {
 				g_free (complement);
-				return result;
+				return BRASERO_BURN_ERR;
 			}
 		}
 	}
@@ -945,12 +887,15 @@ brasero_burn_session_get_tmp_image (BraseroBurnSession *self,
 		priv->tmpfiles = g_slist_prepend (priv->tmpfiles,
 						  g_strdup (complement));
 
-	brasero_burn_session_set_image_output_retval (self,
-						      format,
-						      image,
-						      toc,
-						      path,
-						      complement);
+	if (image)
+		*image = path;
+	else
+		g_free (path);
+
+	if (toc)
+		*toc = complement;
+	else
+		g_free (complement);
 
 	return BRASERO_BURN_OK;
 }

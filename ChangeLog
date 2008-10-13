@@ -1,3 +1,12 @@
+2008-10-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix a problem introduced by previous changes that prevented to burn images
+	Fix extension of image and toc temporary files
+
+	* src/burn-job.c (brasero_job_set_output_file):
+	* src/burn-session.c (brasero_burn_session_get_image_complement),
+	(brasero_burn_session_get_tmp_image):
+
 2008-10-12  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Some additional changes for DVD-RAM and BDs support

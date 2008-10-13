@@ -622,7 +622,7 @@ brasero_job_set_output_file (BraseroJob *self,
 
 		BRASERO_JOB_LOG (self, "output set (IMAGE) image = %s toc = %s",
 				 image,
-				 toc ? toc : "nil");
+				 toc ? toc : "none");
 	}
 	else if (priv->type.type == BRASERO_TRACK_TYPE_AUDIO) {
 		/* NOTE: this one can only a temporary file */
