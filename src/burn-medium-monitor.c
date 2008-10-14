@@ -82,14 +82,11 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *self,
 	BraseroMediumMonitorPrivate *priv;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-	for (iter = priv->media; iter; iter = iter->next) {
+	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
-		BraseroMedium *medium;
 		const gchar *drive_device;
 
-		medium = iter->data;
-		drive = brasero_medium_get_drive (medium);
-
+		drive = iter->data;
 		drive_device = brasero_drive_get_device (drive);
 		if (drive_device && !strcmp (drive_device, device)) {
 			g_object_ref (drive);

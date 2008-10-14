@@ -1651,7 +1651,7 @@ brasero_burn_session_clean (const gchar *path)
 
 	/* NOTE : we don't follow paths as certain files are simply linked */
 	if (g_remove (path)) {
-		BRASERO_BURN_LOG ("Cannot remove file %s", path);
+		BRASERO_BURN_LOG ("Cannot remove file %s (%s)", path, strerror (errno));
 		result = FALSE;
 	}
 
