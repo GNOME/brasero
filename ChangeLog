@@ -1,6 +1,22 @@
 2008-10-15  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Probe for medium asynchronously and avoid blocking sometimes
+
+	* src/burn-drive.c (brasero_drive_get_medium),
+	(brasero_drive_medium_probed), (brasero_drive_reprobe),
+	(brasero_drive_check_medium_inside):
+	* src/burn-drive.h:
+	* src/burn-medium.c (brasero_medium_get_sessions_info),
+	(brasero_medium_init_real), (brasero_medium_probed),
+	(brasero_medium_probe_thread), (brasero_medium_probe),
+	(brasero_medium_finalize), (brasero_medium_set_property),
+	(brasero_medium_class_init):
+	* src/burn-medium.h:
+	* src/burn.c (brasero_burn_record_session):
+
+2008-10-15  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Small memory leak fixed.
 
 	* src/brasero-dest-selection.c
 	(brasero_dest_selection_format_medium_string):

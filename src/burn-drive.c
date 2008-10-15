@@ -65,6 +65,8 @@ struct _BraseroDrivePrivate
 	gint lun;
 
 	gulong hal_sig;
+
+	guint probed:1;
 };
 
 #define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
@@ -288,6 +290,10 @@ brasero_drive_get_medium (BraseroDrive *self)
 		return NULL;
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (!priv->probed && priv->udi)
+		return NULL;
+
 	return priv->medium;
 }
 
@@ -365,6 +371,56 @@ brasero_drive_finalize (GObject *object)
 }
 
 static void
+brasero_drive_medium_probed (BraseroMedium *medium,
+			     BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	/* only when it is probed */
+	priv->probed = TRUE;
+	g_signal_emit (self,
+		       drive_signals [MEDIUM_INSERTED],
+		       0,
+		       priv->medium);
+}
+
+void
+brasero_drive_reprobe (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+	BraseroMedium *medium;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	if (!priv->medium)
+		return;
+
+	BRASERO_BURN_LOG ("Reprobing inserted medium");
+
+	/* remove current medium */
+	medium = priv->medium;
+	priv->medium = NULL;
+
+	g_signal_emit (self,
+		       drive_signals [MEDIUM_REMOVED],
+		       0,
+		       medium);
+	g_object_unref (medium);
+	priv->probed = FALSE;
+
+	/* try to get a new one */
+	priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
+				     "drive", self,
+				     NULL);
+	g_signal_connect (priv->medium,
+			  "probed",
+			  G_CALLBACK (brasero_drive_medium_probed),
+			  self);
+}
+
+static void
 brasero_drive_check_medium_inside (BraseroDrive *self)
 {
 	BraseroDrivePrivate *priv;
@@ -393,16 +449,17 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 	}
 
 	if (has_medium) {
-		BRASERO_BURN_LOG ("New medium inserted");
+		BRASERO_BURN_LOG ("Medium inserted");
 
+		priv->probed = FALSE;
 		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 					     "drive", self,
 					     NULL);
-		if (priv->medium)
-			g_signal_emit (self,
-				       drive_signals [MEDIUM_INSERTED],
-				       0,
-				       priv->medium);
+
+		g_signal_connect (priv->medium,
+				  "probed",
+				  G_CALLBACK (brasero_drive_medium_probed),
+				  self);
 	}
 	else if (priv->medium) {
 		BraseroMedium *medium;
@@ -417,6 +474,7 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 			       0,
 			       medium);
 		g_object_unref (medium);
+		priv->probed = FALSE;
 	}
 }
 

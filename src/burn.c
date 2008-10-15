@@ -2114,21 +2114,19 @@ brasero_burn_record_session (BraseroBurn *burn,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	medium = brasero_drive_get_medium (priv->dest);
-	brasero_medium_reload_info (medium);
+	/* reprobe the medium and wait for it to be probed */
+	brasero_drive_reprobe (priv->dest);
+	while (!(medium = brasero_drive_get_medium (priv->dest)))
+		brasero_burn_sleep (burn, 1000);
 
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
 	||  type == BRASERO_CHECKSUM_SHA256) {
 		BraseroMedia media;
-		BraseroDrive *drive;
-		BraseroMedium *medium;
 
 		/* get the last written track address in case of DVD+RW/DVD-RW
 		 * restricted overwrite since there is no such thing as track
 		 * number for these drives. */
-		drive = brasero_burn_session_get_burner (priv->session);
-		medium = brasero_drive_get_medium (drive);
 		media = brasero_medium_get_status (medium);
 
 		if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)

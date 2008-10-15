@@ -91,8 +91,6 @@ struct _BraseroMediumTrack {
 };
 typedef struct _BraseroMediumTrack BraseroMediumTrack;
 
-void
-brasero_medium_reload_info (BraseroMedium *self);
 
 BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium);

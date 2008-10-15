@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -88,7 +89,8 @@ typedef enum {
 typedef struct _BraseroMediumPrivate BraseroMediumPrivate;
 struct _BraseroMediumPrivate
 {
-	gint retry_id;
+	GThread *probe;
+	gint probe_id;
 
 	GSList *tracks;
 
@@ -118,6 +120,8 @@ struct _BraseroMediumPrivate
 	guint dummy_sao:2;
 	guint dummy_tao:2;
 	guint burnfree:2;
+
+	guint probe_cancelled:1;
 };
 
 #define BRASERO_MEDIUM_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM, BraseroMediumPrivate))
@@ -136,6 +140,14 @@ enum
 	PROP_0,
 	PROP_DRIVE,
 };
+
+enum {
+	PROBED,
+	LAST_SIGNAL
+};
+static gulong medium_signals [LAST_SIGNAL] = {0, };
+
+#define BRASERO_MEDIUM_OPEN_ATTEMPTS			5
 
 static GObjectClass* parent_class = NULL;
 
@@ -1750,12 +1762,22 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			continue;
 		}
 
+		if (priv->probe_cancelled) {
+			g_free (toc);
+			return BRASERO_BURN_CANCEL;
+		}
+
 		brasero_medium_track_get_info (self,
 					       multisession,
 					       track,
 					       g_slist_length (priv->tracks),
 					       handle,
 					       code);
+	}
+
+	if (priv->probe_cancelled) {
+		g_free (toc);
+		return BRASERO_BURN_CANCEL;
 	}
 
 	/* put the tracks in the right order */
@@ -2815,8 +2837,14 @@ brasero_medium_init_real (BraseroMedium *object,
 	BRASERO_BURN_LOG ("Initializing information for medium in %s", name);
 	g_free (name);
 
+	if (priv->probe_cancelled)
+		return;
+
 	result = brasero_medium_get_medium_type (object, handle, &code);
 	if (result != BRASERO_BURN_OK)
+		return;
+
+	if (priv->probe_cancelled)
 		return;
 
 	brasero_medium_get_capacity_by_type (object, handle, &code);
@@ -2825,16 +2853,28 @@ brasero_medium_init_real (BraseroMedium *object,
 	if (result != BRASERO_BURN_OK)
 		return;
 
+	if (priv->probe_cancelled)
+		return;
+
 	/* assume that css feature is only for DVD-ROM which might be wrong but
 	 * some drives wrongly reports that css is enabled for blank DVD+R/W */
 	if (BRASERO_MEDIUM_IS (priv->info, (BRASERO_MEDIUM_DVD|BRASERO_MEDIUM_ROM)))
 		brasero_medium_get_css_feature (object, handle, &code);
 
+	if (priv->probe_cancelled)
+		return;
+
 	brasero_medium_init_caps (object, handle, &code);
+
+	if (priv->probe_cancelled)
+		return;
 
 	/* read CD-TEXT title */
 	if (priv->info & BRASERO_MEDIUM_HAS_AUDIO)
 		brasero_medium_read_CD_TEXT (object, handle, &code);
+
+	if (priv->probe_cancelled)
+		return;
 
 	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
 
@@ -2858,48 +2898,25 @@ brasero_medium_init_real (BraseroMedium *object,
 }
 
 static gboolean
-brasero_medium_retry_open (gpointer object)
+brasero_medium_probed (gpointer data)
 {
-	const gchar *path;
-	BraseroMedium *self;
-	BraseroScsiErrCode code;
 	BraseroMediumPrivate *priv;
-	BraseroDeviceHandle *handle;
 
-	self = BRASERO_MEDIUM (object);
-	priv = BRASERO_MEDIUM_PRIVATE (object);
-	path = brasero_drive_get_device (priv->drive);
+	priv = BRASERO_MEDIUM_PRIVATE (data);
 
-	BRASERO_BURN_LOG ("Retrying to open device %s", path);
-	handle = brasero_device_handle_open (path, &code);
-	if (!handle) {
-		if (code == BRASERO_SCSI_NOT_READY) {
-			BRASERO_BURN_LOG ("Device busy");
-			/* we'll retry in a second */
-			return TRUE;
-		}
+	/* This signal must be emitted in the main thread */
+	g_signal_emit (data,
+		       medium_signals [PROBED],
+		       0);
 
-		BRASERO_BURN_LOG ("Open () failed");
-		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
-		priv->retry_id = 0;
-		return FALSE;
-	}
-
-	BRASERO_BURN_LOG ("Open () succeeded\n");
-	priv->info = BRASERO_MEDIUM_NONE;
-	priv->icon = icons [0];
-
-	priv->retry_id = 0;
-
-	brasero_medium_init_real (self, handle);
-	brasero_device_handle_close (handle);
-
+	priv->probe_id = 0;
 	return FALSE;
 }
 
-static void
-brasero_medium_try_open (BraseroMedium *self)
+static gpointer
+brasero_medium_probe_thread (gpointer self)
 {
+	gint counter = 0;
 	const gchar *path;
 	BraseroScsiErrCode code;
 	BraseroMediumPrivate *priv;
@@ -2907,76 +2924,61 @@ brasero_medium_try_open (BraseroMedium *self)
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	path = brasero_drive_get_device (priv->drive);
+
+	priv->info = BRASERO_MEDIUM_BUSY;
+	priv->icon = icons [0];
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
 	BRASERO_BURN_LOG ("Trying to open device %s", path);
+
 	handle = brasero_device_handle_open (path, &code);
+	while (!handle && counter <= BRASERO_MEDIUM_OPEN_ATTEMPTS) {
+		sleep (1);
 
-	if (!handle) {
-		if (code == BRASERO_SCSI_NOT_READY) {
-			BRASERO_BURN_LOG ("Device busy");
-			priv->info = BRASERO_MEDIUM_BUSY;
-			priv->icon = icons [0];
-
-			priv->retry_id = g_timeout_add (BUSY_RETRY_TIME,
-							brasero_medium_retry_open,
-							self);
+		if (priv->probe_cancelled) {
+			priv->probe = NULL;
+			return NULL;
 		}
 
-		BRASERO_BURN_LOG ("Open () failed");
-		return;
+		counter ++;
+		handle = brasero_device_handle_open (path, &code);
 	}
 
-	BRASERO_BURN_LOG ("Open () succeeded");
-	brasero_medium_init_real (self, handle);
-	brasero_device_handle_close (handle);
+	if (priv->probe_cancelled) {
+		priv->probe = NULL;
+		return NULL;
+	}
+
+	if (handle) {
+		BRASERO_BURN_LOG ("Open () succeeded");
+		brasero_medium_init_real (BRASERO_MEDIUM (self), handle);
+		brasero_device_handle_close (handle);
+	}
+	else
+		BRASERO_BURN_LOG ("Open () failed: medium busy");
+
+	priv->probe_id = g_idle_add (brasero_medium_probed, self);
+	priv->probe = NULL;
+	return NULL;
 }
 
-void
-brasero_medium_reload_info (BraseroMedium *self)
+static void
+brasero_medium_probe (BraseroMedium *self)
 {
 	BraseroMediumPrivate *priv;
 
-	g_return_if_fail (BRASERO_IS_MEDIUM (self));
-
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	priv->max_rd = 0;
-	priv->max_wrt = 0;
-	priv->block_num = 0;
-	priv->block_size = 0;
-	priv->next_wr_add = -1;
-	priv->type = NULL;
-	priv->icon = NULL;
-	priv->info = BRASERO_MEDIUM_NONE;
-
-	if (priv->retry_id) {
-		g_source_remove (priv->retry_id);
-		priv->retry_id = 0;
-	}
-
-	if (priv->id) {
-		g_free (priv->id);
-		priv->id = NULL;
-	}
-
-	if (priv->CD_TEXT_title) {
-		g_free (priv->CD_TEXT_title);
-		priv->CD_TEXT_title = NULL;
-	}
-
-	g_free (priv->rd_speeds);
-	priv->rd_speeds = NULL;
-
-	g_free (priv->wr_speeds);
-	priv->wr_speeds = NULL;
-
-	g_slist_foreach (priv->tracks, (GFunc) g_free, NULL);
-	g_slist_free (priv->tracks);
-	priv->tracks = NULL;
-
-	brasero_medium_try_open (self);
+	/* NOTE: why a thread? Because in case of a damaged medium, brasero can
+	 * block on some functions until timeout and if we do this in the main
+	 * thread then our whole UI blocks. This medium won't be exported by the
+	 * BraseroDrive that exported until it returns PROBED signal.
+	 * One (good) side effect is that it also improves start time. */
+	priv->probe = g_thread_create (brasero_medium_probe_thread,
+				       self,
+				       TRUE,
+				       NULL);
 }
 
 static void
@@ -3009,9 +3011,15 @@ brasero_medium_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
-	if (priv->retry_id) {
-		g_source_remove (priv->retry_id);
-		priv->retry_id = 0;
+	if (priv->probe) {
+		priv->probe_cancelled = TRUE;
+		g_thread_join (priv->probe);
+		priv->probe = 0;
+	}
+
+	if (priv->probe_id) {
+		g_source_remove (priv->probe_id);
+		priv->probe_id = 0;
 	}
 
 	if (priv->id) {
@@ -3061,7 +3069,7 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 			break;
 		}
 
-		brasero_medium_try_open (BRASERO_MEDIUM (object));
+		brasero_medium_probe (BRASERO_MEDIUM (object));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -3100,6 +3108,16 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	object_class->finalize = brasero_medium_finalize;
 	object_class->set_property = brasero_medium_set_property;
 	object_class->get_property = brasero_medium_get_property;
+
+	medium_signals[PROBED] =
+		g_signal_new ("probed",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              0,
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0,
+		              G_TYPE_NONE);
 
 	g_object_class_install_property (object_class,
 	                                 PROP_DRIVE,
