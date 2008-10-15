@@ -413,7 +413,6 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 
 		/* get the set path for the image file */
 		path = brasero_dest_selection_get_output_path (BRASERO_DEST_SELECTION (selection));
-
 		if (!path)
 			return medium_name;
 
@@ -427,8 +426,10 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 		return label;
 	}
 
-	if (!priv->session)
+	if (!priv->session) {
+		g_free (medium_name);
 		return NULL;
+	}
 
 	brasero_burn_session_get_input_type (priv->session, &input);
 	if (input.type == BRASERO_TRACK_TYPE_DISC) {
