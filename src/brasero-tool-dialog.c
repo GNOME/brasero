@@ -366,7 +366,8 @@ brasero_tool_dialog_drive_changed_cb (GtkComboBox *combo_box,
 	if (klass->drive_changed)
 		klass->drive_changed (self, medium);
 
-	g_object_unref (medium);
+	if (medium)
+		g_object_unref (medium);
 }
 
 static gboolean

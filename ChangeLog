@@ -1,3 +1,42 @@
+2008-10-15  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Changed the way drives and media are probed since when HAL failed to 
+	probe a medium it remained unknown to brasero. Now brasero can blank
+	those media for example.
+
+	* src/Makefile.am:
+	* src/brasero-data-disc.c
+	(brasero_disc_disc_session_import_response_cb),
+	(brasero_data_disc_import_button_new),
+	(brasero_data_disc_session_available_cb),
+	(brasero_data_disc_session_loaded_cb):
+	* src/brasero-marshal.list:
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_drive_changed_cb):
+	* src/burn-basics.c (brasero_burn_library_shutdown):
+	* src/burn-drive.c (brasero_drive_lock), (brasero_drive_unlock),
+	(brasero_drive_get_display_name), (brasero_drive_finalize),
+	(brasero_drive_check_medium_inside),
+	(brasero_drive_medium_inside_property_changed_cb),
+	(brasero_drive_init_real), (brasero_drive_set_property):
+	* src/burn-drive.h:
+	* src/burn-hal-watch.c (brasero_hal_watch_get_ctx),
+	(brasero_hal_watch_property_changed_cb),
+	(brasero_hal_watch_device_added_cb),
+	(brasero_hal_watch_device_removed_cb), (brasero_hal_watch_init),
+	(brasero_hal_watch_finalize), (brasero_hal_watch_class_init),
+	(brasero_hal_watch_get_default), (brasero_hal_watch_destroy):
+	* src/burn-hal-watch.h:
+	* src/burn-medium-monitor.c (brasero_medium_monitor_get_media),
+	(brasero_medium_monitor_medium_added_cb),
+	(brasero_medium_monitor_medium_removed_cb),
+	(brasero_medium_monitor_inserted_cb),
+	(brasero_medium_monitor_removed_cb), (brasero_medium_monitor_init),
+	(brasero_medium_monitor_finalize):
+	* src/burn-medium.c (brasero_medium_finalize),
+	(brasero_medium_set_property), (brasero_medium_get_property),
+	(brasero_medium_class_init):
+	* src/burn-medium.h:
+
 2008-10-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Small cleanup

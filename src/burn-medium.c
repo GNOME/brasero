@@ -95,8 +95,6 @@ struct _BraseroMediumPrivate
 	const gchar *type;
 	const gchar *icon;
 
-	gchar *udi;
-
 	gchar *id;
 
 	gint max_rd;
@@ -137,7 +135,6 @@ enum
 {
 	PROP_0,
 	PROP_DRIVE,
-	PROP_UDI
 };
 
 static GObjectClass* parent_class = NULL;
@@ -3012,11 +3009,6 @@ brasero_medium_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
-	if (priv->udi) {
-		g_free (priv->udi);
-		priv->udi = NULL;
-	}
-
 	if (priv->retry_id) {
 		g_source_remove (priv->retry_id);
 		priv->retry_id = 0;
@@ -3058,9 +3050,6 @@ brasero_medium_set_property (GObject *object, guint prop_id, const GValue *value
 
 	switch (prop_id)
 	{
-	case PROP_UDI:
-		priv->udi = g_strdup (g_value_get_string (value));
-		break;
 	case PROP_DRIVE:
 		/* we don't ref the drive here as it would create a circular
 		 * dependency where the drive would hold a reference on the 
@@ -3094,9 +3083,6 @@ brasero_medium_get_property (GObject *object, guint prop_id, GValue *value, GPar
 	case PROP_DRIVE:
 		g_value_set_object (value, priv->drive);
 		break;
-	case PROP_UDI:
-		g_value_set_string (value, g_strdup (priv->udi));
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -3121,13 +3107,6 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	                                                      "drive",
 	                                                      "drive in which medium is inserted",
 	                                                      BRASERO_TYPE_DRIVE,
-	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-	g_object_class_install_property (object_class,
-	                                 PROP_UDI,
-	                                 g_param_spec_string ("udi",
-	                                                      "udi",
-	                                                      "HAL udi",
-	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
@@ -3218,15 +3197,6 @@ brasero_medium_get_drive (BraseroMedium *self)
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	return priv->drive;
-}
-
-const gchar *
-brasero_medium_get_udi (BraseroMedium *self)
-{
-	BraseroMediumPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-	return priv->udi;
 }
 
 const gchar *

@@ -37,10 +37,10 @@
 
 #include <libhal.h>
 
+#include "burn-debug.h"
 #include "burn-drive.h"
-
 #include "burn-medium.h"
-#include "burn-volume-obj.h"
+#include "burn-hal-watch.h"
 #include "burn-medium-monitor.h"
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
@@ -52,10 +52,7 @@
 typedef struct _BraseroMediumMonitorPrivate BraseroMediumMonitorPrivate;
 struct _BraseroMediumMonitorPrivate
 {
-	GSList *media;
 	GSList *drives;
-
-	LibHalContext *ctx;
 	GVolumeMonitor *gmonitor;
 };
 
@@ -107,12 +104,14 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-	for (iter = priv->media; iter; iter = iter->next) {
+	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroMedium *medium;
 		BraseroDrive *drive;
 
-		medium = iter->data;
-		drive = brasero_medium_get_drive (medium);
+		drive = iter->data;
+		medium = brasero_drive_get_medium (drive);
+		if (!medium)
+			continue;
 
 		if ((type & BRASERO_MEDIA_TYPE_ANY_IN_BURNER)
 		&&  (brasero_drive_can_write (drive))) {
@@ -157,64 +156,10 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 }
 
 static void
-brasero_medium_monitor_drive_inserted (LibHalContext *ctx,
-				       const gchar *udi)
+brasero_medium_monitor_medium_added_cb (BraseroDrive *drive,
+					BraseroMedium *medium,
+					BraseroMediumMonitor *self)
 {
-	BraseroMediumMonitorPrivate *priv;
-	BraseroMediumMonitor *self;
-	BraseroDrive *drive = NULL;
-
-	self = libhal_ctx_get_user_data (ctx);
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	drive = brasero_drive_new (udi);
-	priv->drives = g_slist_prepend (priv->drives, drive);
-}
-
-static void
-brasero_medium_monitor_medium_inserted (LibHalContext *ctx,
-					const gchar *udi)
-{
-	BraseroMediumMonitorPrivate *priv;
-	BraseroMediumMonitor *self;
-	BraseroDrive *drive = NULL;
-	BraseroMedium *medium;
-	gchar *drive_path;
-	GSList *iter;
-
-	drive_path = libhal_device_get_property_string (ctx,
-							udi,
-							BLOCK_DEVICE,
-							NULL);
-	if (!drive_path)
-		return;
-
-	self = libhal_ctx_get_user_data (ctx);
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	/* Search the drive */
-	for (iter = priv->drives; iter; iter = iter->next) {
-		BraseroDrive *tmp;
-
-		tmp = iter->data;
-		if (!brasero_drive_get_device (tmp))
-			continue;
-
-		if (!strcmp (brasero_drive_get_device (tmp), drive_path)) {
-			drive = tmp;
-			break;
-		}
-	}
-	g_free (drive_path);
-
-	if (!drive)
-		return;
-
-	/* Create medium */
-	medium = BRASERO_MEDIUM (brasero_volume_new (drive, udi));
-	priv->media = g_slist_prepend (priv->media, medium);
-	brasero_drive_set_medium (drive, medium);
-
 	g_signal_emit (self,
 		       medium_monitor_signals [MEDIUM_INSERTED],
 		       0,
@@ -222,60 +167,76 @@ brasero_medium_monitor_medium_inserted (LibHalContext *ctx,
 }
 
 static void
-brasero_medium_monitor_inserted_cb (LibHalContext *ctx,
-				    const char *udi)
+brasero_medium_monitor_medium_removed_cb (BraseroDrive *drive,
+					  BraseroMedium *medium,
+					  BraseroMediumMonitor *self)
 {
-	if (libhal_device_property_exists (ctx, udi, "volume.is_disc", NULL)
-	&&  libhal_device_get_property_bool (ctx, udi, "volume.is_disc", NULL))
-		brasero_medium_monitor_medium_inserted (ctx, udi);
-	else if (libhal_device_property_exists (ctx, udi, "storage.cdrom", NULL)
-	     &&  libhal_device_get_property_bool (ctx, udi, "storage.cdrom", NULL))
-		brasero_medium_monitor_drive_inserted (ctx, udi);
+	g_signal_emit (self,
+		       medium_monitor_signals [MEDIUM_REMOVED],
+		       0,
+		       medium);
 }
 
 static void
-brasero_medium_monitor_removed_cb (LibHalContext *ctx,
-				   const char *udi)
+brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
+				    const char *udi,
+				    BraseroMediumMonitor *self)
 {
 	BraseroMediumMonitorPrivate *priv;
-	BraseroMediumMonitor *self;
-	GSList *iter;
+	BraseroDrive *drive = NULL;
+	LibHalContext *ctx;
 
-	self = libhal_ctx_get_user_data (ctx);
+	ctx = brasero_hal_watch_get_ctx (watch);
+	if (!libhal_device_query_capability (ctx, udi, "storage.cdrom", NULL))
+		return;
+
+	BRASERO_BURN_LOG ("New drive inserted");
+
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-	for (iter = priv->media; iter; iter = iter->next) {
-		const gchar *device_udi;
-		BraseroMedium *medium;
+	drive = brasero_drive_new (udi);
+	priv->drives = g_slist_prepend (priv->drives, drive);
 
-		medium = iter->data;
-		device_udi = brasero_medium_get_udi (medium);
-		if (!device_udi)
-			continue;
+	/* check if a medium is inserted */
+	if (brasero_drive_get_medium (drive))
+		g_signal_emit (self,
+			       medium_monitor_signals [MEDIUM_INSERTED],
+			       0,
+			       brasero_drive_get_medium (drive));
 
-		if (!strcmp (device_udi, udi)) {
-			BraseroDrive *drive;
+	/* connect to signals */
+	g_signal_connect (drive,
+			  "medium-added",
+			  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
+			  self);
+	g_signal_connect (drive,
+			  "medium-removed",
+			  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
+			  self);
+}
 
-			drive = brasero_medium_get_drive (medium);
-			if (drive)
-				brasero_drive_set_medium (drive, NULL);
+static void
+brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
+				   const char *udi,
+				   BraseroMediumMonitor *self)
+{
+	BraseroMediumMonitorPrivate *priv;
+	LibHalContext *ctx;
+	GSList *iter;
+	GSList *next;
 
-			priv->media = g_slist_remove (priv->media, medium);
-			g_signal_emit (self,
-				       medium_monitor_signals [MEDIUM_REMOVED],
-				       0,
-				       medium);
+	ctx = brasero_hal_watch_get_ctx (watch);
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-			g_object_unref (medium);
-			break;
-		}
-	}
+	BRASERO_BURN_LOG ("Drive removed");
 
-	for (iter = priv->drives; iter; iter = iter->next) {
+	for (iter = priv->drives; iter; iter = next) {
 		const gchar *device_udi;
 		BraseroDrive *drive;
 
 		drive = iter->data;
+		next = iter->next;
+
 		device_udi = brasero_drive_get_udi (drive);
 		if (!device_udi)
 			continue;
@@ -284,42 +245,16 @@ brasero_medium_monitor_removed_cb (LibHalContext *ctx,
 			BraseroMedium *medium;
 
 			medium = brasero_drive_get_medium (drive);
-			brasero_drive_set_medium (drive, NULL);
-
-			if (medium) {
-				priv->media = g_slist_remove (priv->media, medium);
+			if (medium)
 				g_signal_emit (self,
 					       medium_monitor_signals [MEDIUM_REMOVED],
 					       0,
 					       medium);
-				g_object_unref (medium);
-				return;
-			}
 
 			priv->drives = g_slist_remove (priv->drives, drive);
 			g_object_unref (drive);
-			break;
 		}
 	}
-}
-
-static void
-brasero_medium_monitor_add_file (BraseroMediumMonitor *self)
-{
-	BraseroMediumMonitorPrivate *priv;
-	BraseroMedium *medium;
-	BraseroDrive *drive;
-
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
-
-	drive = brasero_drive_new (NULL);
-	priv->drives = g_slist_prepend (priv->drives, drive);
-	
-	medium = g_object_new (BRASERO_TYPE_VOLUME,
-			       "drive", drive,
-			       NULL);
-	priv->media = g_slist_prepend (priv->media, medium);
-	brasero_drive_set_medium (drive, medium);
 }
 
 static void
@@ -327,8 +262,10 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 {
 	DBusError error;
 	int nb_devices, i;
+	LibHalContext *ctx;
+	BraseroDrive *drive;
 	char **devices = NULL;
-	DBusConnection *dbus_connection;
+	BraseroHALWatch *watch;
 	BraseroMediumMonitorPrivate *priv;
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
@@ -338,96 +275,48 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 	 * connect to HAL before us. */
 	priv->gmonitor = g_volume_monitor_get ();
 
-	/* initialize the connection with hal */
-	priv->ctx = libhal_ctx_new ();
-	if (priv->ctx == NULL) {
-		g_warning ("Cannot initialize hal library\n");
-		goto error;
-	}
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
 
-	dbus_error_init (&error);
-	dbus_connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (dbus_error_is_set (&error)) {
-		g_warning ("Cannot connect to DBus %s\n", error.message);
-		dbus_error_free (&error);
-		goto error;
-	}
-
-	dbus_connection_setup_with_g_main (dbus_connection, NULL);
-	libhal_ctx_set_dbus_connection (priv->ctx, dbus_connection);
-
-	libhal_ctx_set_user_data (priv->ctx, object);
-	libhal_ctx_set_cache (priv->ctx, FALSE);
-
-	/* monitor devices addition and removal */
-	libhal_ctx_set_device_added (priv->ctx, brasero_medium_monitor_inserted_cb);
-	libhal_ctx_set_device_removed (priv->ctx, brasero_medium_monitor_removed_cb);
-
-	if (libhal_ctx_init (priv->ctx, &error) == FALSE) {
-		g_warning ("Failed to initialize hal : %s\n", error.message);
-		dbus_error_free (&error);
-		goto error;
-	}
+	g_signal_connect (watch,
+			  "device-added",
+			  G_CALLBACK (brasero_medium_monitor_inserted_cb),
+			  object);
+	g_signal_connect (watch,
+			  "device-removed",
+			  G_CALLBACK (brasero_medium_monitor_removed_cb),
+			  object);
 
 	/* Now we get the list and cache it */
-	devices = libhal_find_device_by_capability (priv->ctx,
+	dbus_error_init (&error);
+	devices = libhal_find_device_by_capability (ctx,
 						    "storage.cdrom", &nb_devices,
 						    &error);
 	if (dbus_error_is_set (&error)) {
 		g_warning ("Hal is not running : %s\n", error.message);
 		dbus_error_free (&error);
-		goto error;
+		return;
 	}
 
 	for (i = 0; i < nb_devices; i++) {
-		int j;
-		int nb_volumes;
-		BraseroDrive *drive;
-		char **volumes = NULL;
-
 		/* create the drive */
 		drive = brasero_drive_new (devices [i]);
 		priv->drives = g_slist_prepend (priv->drives, drive);
 
-		/* Now search for a possible medium inside */
-		volumes = libhal_manager_find_device_string_match (priv->ctx,
-								   "info.parent",
-								   devices [i],
-								   &nb_volumes,
-								   &error);
-		if (dbus_error_is_set (&error)) {
-			g_warning ("Hal connection problem :  %s\n",
-				   error.message);
-			dbus_error_free (&error);
-
-			if (volumes)
-				libhal_free_string_array (volumes);
-			goto error;
-		}
-
-		for (j = 0; j < nb_volumes; j++) {
-			BraseroMedium *medium;
-
-			medium = BRASERO_MEDIUM (brasero_volume_new (drive, volumes [j]));
-			priv->media = g_slist_prepend (priv->media, medium);
-			brasero_drive_set_medium (drive, medium);
-		}
-
-		libhal_free_string_array (volumes);
+		g_signal_connect (drive,
+				  "medium-added",
+				  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
+				  object);
+		g_signal_connect (drive,
+				  "medium-removed",
+				  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
+				  object);
 	}
 	libhal_free_string_array (devices);
 
-	brasero_medium_monitor_add_file (object);
-
-	return;
-
-      error:
-	libhal_ctx_shutdown (priv->ctx, NULL);
-	libhal_ctx_free (priv->ctx);
-	priv->ctx = NULL;
-
-	if (devices)
-		libhal_free_string_array (devices);
+	/* add fake/file drive */
+	drive = brasero_drive_new (NULL);
+	priv->drives = g_slist_prepend (priv->drives, drive);
 
 	return;
 }
@@ -439,27 +328,10 @@ brasero_medium_monitor_finalize (GObject *object)
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (object);
 
-	if (priv->media) {
-		g_slist_foreach (priv->media, (GFunc) g_object_unref, NULL);
-		g_slist_free (priv->media);
-		priv->media = NULL;
-	}
-
 	if (priv->drives) {
 		g_slist_foreach (priv->drives, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->drives);
 		priv->drives = NULL;
-	}
-
-	if (priv->ctx) {
-		DBusConnection *connection;
-
-		connection = libhal_ctx_get_dbus_connection (priv->ctx);
-		dbus_connection_unref (connection);
-
-		libhal_ctx_shutdown (priv->ctx, NULL);
-		libhal_ctx_free (priv->ctx);
-		priv->ctx = NULL;
 	}
 
 	if (priv->gmonitor) {

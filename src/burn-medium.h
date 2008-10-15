@@ -72,10 +72,6 @@ struct _BraseroMedium
 
 GType brasero_medium_get_type (void) G_GNUC_CONST;
 
-const gchar *
-brasero_medium_get_udi (BraseroMedium *medium);
-
-
 typedef enum {
 	BRASERO_MEDIUM_TRACK_NONE		= 0,
 	BRASERO_MEDIUM_TRACK_DATA		= 1,

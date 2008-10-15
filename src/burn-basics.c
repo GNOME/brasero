@@ -37,6 +37,7 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-caps.h"
+#include "burn-hal-watch.h"
 #include "burn-plugin-manager.h"
 #include "burn-medium-monitor.h"
 #include "burn-plugin-private.h"
@@ -120,4 +121,7 @@ brasero_burn_library_shutdown (void)
 		g_object_unref (medium_manager);
 		medium_manager = NULL;
 	}
+
+	/* close HAL connection */
+	brasero_hal_watch_destroy ();
 }

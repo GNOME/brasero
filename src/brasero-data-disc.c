@@ -194,8 +194,9 @@ G_DEFINE_TYPE_WITH_CODE (BraseroDataDisc,
 			 G_IMPLEMENT_INTERFACE (BRASERO_TYPE_DISC,
 					        brasero_data_disc_iface_disc_init));
 
-#define BRASERO_DATA_DISC_MEDIUM	"brasero-data-disc-medium"
-#define BRASERO_DATA_DISC_MERGE_ID	"brasero-data-disc-merge-id"
+#define BRASERO_DATA_DISC_MEDIUM		"brasero-data-disc-medium"
+#define BRASERO_DATA_DISC_MERGE_ID		"brasero-data-disc-merge-id"
+#define BRASERO_MEDIUM_GET_UDI(medium)		(brasero_drive_get_udi (brasero_medium_get_drive (medium)))
 
 BraseroMedium *
 brasero_data_disc_get_loaded_medium (BraseroDataDisc *self)
@@ -1181,7 +1182,7 @@ brasero_disc_disc_session_import_response_cb (GtkButton *button,
 	medium = g_object_get_data (G_OBJECT (button), BRASERO_DATA_DISC_MEDIUM);
 	res = brasero_data_disc_import_session (self, medium, TRUE);
 
-	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 	action = gtk_action_group_get_action (priv->import_group, action_name);
 	g_free (action_name);
 
@@ -1209,7 +1210,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 	if (!priv->manager)
 		return;
 
-	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 
 	tooltip = brasero_medium_get_tooltip (medium);
 	/* Translators: %s is a string describing the type of medium and the 
@@ -1338,7 +1339,7 @@ brasero_data_disc_session_available_cb (BraseroDataSession *session,
 		GtkAction *action;
 		gchar *action_name;
 
-		action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+		action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 		action = gtk_action_group_get_action (priv->import_group, action_name);
 		g_free (action_name);
 
@@ -1365,7 +1366,7 @@ brasero_data_disc_session_loaded_cb (BraseroDataSession *session,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
-	action_name = g_strdup_printf ("Import_%s", brasero_medium_get_udi (medium));
+	action_name = g_strdup_printf ("Import_%s", BRASERO_MEDIUM_GET_UDI (medium));
 	action = gtk_action_group_get_action (priv->import_group, action_name);
 	g_free (action_name);
 

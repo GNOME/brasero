@@ -36,8 +36,10 @@
 
 #include "burn-basics.h"
 #include "burn-medium.h"
+#include "burn-volume-obj.h"
 #include "burn-drive.h"
 #include "burn-debug.h"
+#include "burn-hal-watch.h"
 
 #include "scsi-mmc1.h"
 
@@ -61,6 +63,8 @@ struct _BraseroDrivePrivate
 	gint bus;
 	gint target;
 	gint lun;
+
+	gulong hal_sig;
 };
 
 #define BRASERO_DRIVE_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE, BraseroDrivePrivate))
@@ -79,8 +83,6 @@ enum {
 };
 
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
-
-static LibHalContext *hal_context = NULL;
 
 gboolean
 brasero_drive_get_bus_target_lun (BraseroDrive *self,
@@ -132,45 +134,6 @@ brasero_drive_is_fake (BraseroDrive *self)
 	return (priv->path == NULL);
 }
 
-static LibHalContext *
-brasero_drive_get_hal_context (void)
-{
-	DBusError error;
-	DBusConnection *dbus_connection;
-
-	if (hal_context)
-		return hal_context;
-
-	hal_context = libhal_ctx_new ();
-	if (hal_context == NULL) {
-		g_warning ("Cannot initialize hal library.");
-		goto error;
-	}
-
-	dbus_error_init (&error);
-	dbus_connection = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-	if (dbus_error_is_set (&error)) {
-		g_warning ("Cannot connect to DBus %s.", error.message);
-		dbus_error_free (&error);
-		goto error;
-	}
-
-	libhal_ctx_set_dbus_connection (hal_context, dbus_connection);
-	if (libhal_ctx_init (hal_context, &error) == FALSE) {
-		g_warning ("Failed to initialize hal : %s", error.message);
-		dbus_error_free (&error);
-		goto error;
-	}
-
-	return hal_context;
-
-error:
-	libhal_ctx_shutdown (hal_context, NULL);
-	libhal_ctx_free (hal_context);
-	hal_context = NULL;
-	return NULL;
-}
-
 gboolean
 brasero_drive_is_door_open (BraseroDrive *self)
 {
@@ -202,6 +165,7 @@ brasero_drive_lock (BraseroDrive *self,
 		    gchar **reason_for_failure)
 {
 	BraseroDrivePrivate *priv;
+	BraseroHALWatch *watch;
 	LibHalContext *ctx;
 	DBusError error;
 	gboolean result;
@@ -212,7 +176,8 @@ brasero_drive_lock (BraseroDrive *self,
 	if (!priv->udi)
 		return FALSE;
 
-	ctx = brasero_drive_get_hal_context ();
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
 
 	dbus_error_init (&error);
 	result = libhal_device_lock (ctx,
@@ -237,6 +202,7 @@ gboolean
 brasero_drive_unlock (BraseroDrive *self)
 {
 	BraseroDrivePrivate *priv;
+	BraseroHALWatch *watch;
 	LibHalContext *ctx;
 	DBusError error;
 	gboolean result;
@@ -246,7 +212,8 @@ brasero_drive_unlock (BraseroDrive *self)
 	if (!priv->udi)
 		return FALSE;
 
-	ctx = brasero_drive_get_hal_context ();
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
 
 	dbus_error_init (&error);
 	result = libhal_device_unlock (ctx,
@@ -263,6 +230,7 @@ gchar *
 brasero_drive_get_display_name (BraseroDrive *self)
 {
 	BraseroDrivePrivate *priv;
+	BraseroHALWatch *watch;
 	LibHalContext *ctx;
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
@@ -273,7 +241,8 @@ brasero_drive_get_display_name (BraseroDrive *self)
 	if (!priv->udi)
 		return g_strdup (_("Image File"));;
 
-	ctx = brasero_drive_get_hal_context ();
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
 	return libhal_device_get_property_string (ctx,
 						  priv->udi,
 	  					  DEVICE_MODEL,
@@ -322,35 +291,6 @@ brasero_drive_get_medium (BraseroDrive *self)
 	return priv->medium;
 }
 
-void
-brasero_drive_set_medium (BraseroDrive *self,
-			  BraseroMedium *medium)
-{
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (self);
-
-	if (priv->medium) {
-		g_signal_emit (self,
-			       drive_signals [MEDIUM_REMOVED],
-			       0,
-			       priv->medium);
-
-		g_object_unref (priv->medium);
-		priv->medium = NULL;
-	}
-
-	priv->medium = medium;
-
-	if (medium) {
-		g_object_ref (medium);
-		g_signal_emit (self,
-			       drive_signals [MEDIUM_INSERTED],
-			       0,
-			       medium);
-	}
-}
-
 BraseroDriveCaps
 brasero_drive_get_caps (BraseroDrive *self)
 {
@@ -396,29 +336,122 @@ brasero_drive_finalize (GObject *object)
 		priv->block_path = NULL;
 	}
 
-	if (priv->udi) {
-		g_free (priv->udi);
-		priv->udi = NULL;
-	}
-
 	if (priv->medium) {
 		g_object_unref (priv->medium);
 		priv->medium = NULL;
+	}
+
+	if (priv->hal_sig) {
+		BraseroHALWatch *watch;
+		LibHalContext *ctx;
+		DBusError error;
+
+		watch = brasero_hal_watch_get_default ();
+		ctx = brasero_hal_watch_get_ctx (watch);
+
+		dbus_error_init (&error);
+		libhal_device_remove_property_watch (ctx, priv->udi, &error);
+
+		g_signal_handler_disconnect (watch, priv->hal_sig);
+		priv->hal_sig = 0;
+	}
+
+	if (priv->udi) {
+		g_free (priv->udi);
+		priv->udi = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_drive_parent_class)->finalize (object);
 }
 
 static void
+brasero_drive_check_medium_inside (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+	BraseroHALWatch *watch;
+	gboolean has_medium;
+	LibHalContext *ctx;
+	DBusError error;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
+
+	BRASERO_BURN_LOG ("Contents changed");
+
+	dbus_error_init (&error);
+	has_medium = libhal_device_get_property_bool (ctx,
+						      priv->udi,
+						      "storage.removable.media_available",
+						      &error);
+	if (dbus_error_is_set (&error)) {
+		g_warning ("Hal connection problem :  %s\n",
+			   error.message);
+		dbus_error_free (&error);
+		return;
+	}
+
+	if (has_medium) {
+		BRASERO_BURN_LOG ("New medium inserted");
+
+		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
+					     "drive", self,
+					     NULL);
+		if (priv->medium)
+			g_signal_emit (self,
+				       drive_signals [MEDIUM_INSERTED],
+				       0,
+				       priv->medium);
+	}
+	else if (priv->medium) {
+		BraseroMedium *medium;
+
+		BRASERO_BURN_LOG ("Medium removed");
+
+		medium = priv->medium;
+		priv->medium = NULL;
+
+		g_signal_emit (self,
+			       drive_signals [MEDIUM_REMOVED],
+			       0,
+			       medium);
+		g_object_unref (medium);
+	}
+}
+
+static void
+brasero_drive_medium_inside_property_changed_cb (BraseroHALWatch *watch,
+						 const char *udi,
+						 const char *key,
+						 BraseroDrive *drive)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	if (key && strcmp (key, "storage.removable.media_available"))
+		return;
+
+	if (udi && strcmp (udi, priv->udi))
+		return;
+
+	brasero_drive_check_medium_inside (drive);
+}
+
+static void
 brasero_drive_init_real (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
+	BraseroHALWatch *watch;
 	LibHalContext *ctx;
+	DBusError error;
 	char *parent;
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	ctx = brasero_drive_get_hal_context ();
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
 
 	priv->path = libhal_device_get_property_string (ctx, priv->udi, BLOCK_DEVICE, NULL);
 	if (priv->path [0] == '\0') {
@@ -476,6 +509,21 @@ brasero_drive_init_real (BraseroDrive *drive)
 
 	BRASERO_BURN_LOG ("Drive %s has bus,target,lun = %i %i %i", priv->path, priv->bus, priv->target, priv->lun);
 	libhal_free_string (parent);
+
+	/* Now check for the medium */
+	brasero_drive_check_medium_inside (drive);
+
+	dbus_error_init (&error);
+	libhal_device_add_property_watch (ctx, priv->udi, &error);
+	if (dbus_error_is_set (&error)) {
+		g_warning ("Hal is not running : %s\n", error.message);
+		dbus_error_free (&error);
+	}
+
+	priv->hal_sig = g_signal_connect (watch,
+					  "property-changed",
+					  G_CALLBACK (brasero_drive_medium_inside_property_changed_cb),
+					  drive);
 }
 
 static void
@@ -494,8 +542,14 @@ brasero_drive_set_property (GObject *object,
 	{
 	case PROP_UDI:
 		priv->udi = g_strdup (g_value_get_string (value));
-		if (priv->udi)
+		if (!priv->udi) {
+			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
+						     "drive", object,
+						     NULL);
+		}
+		else
 			brasero_drive_init_real (BRASERO_DRIVE (object));
+			
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -560,10 +614,10 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	g_object_class_install_property (object_class,
 	                                 PROP_UDI,
 	                                 g_param_spec_string("udi",
-	                                                      "udi",
-	                                                      "HAL udi",
-	                                                      NULL,
-	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	                                                     "udi",
+	                                                     "HAL udi",
+	                                                     NULL,
+	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 BraseroDrive *

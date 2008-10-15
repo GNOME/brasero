@@ -276,7 +276,9 @@ brasero_SOURCES = \
 	brasero-src-image.h           \
 	brasero-src-image.c           \
 	burn-media.c           \
-	burn-media.h
+	burn-media.h           \
+	burn-hal-watch.c           \
+	burn-hal-watch.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

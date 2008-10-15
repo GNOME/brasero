@@ -68,10 +68,6 @@ GType brasero_drive_get_type (void) G_GNUC_CONST;
 BraseroDrive *
 brasero_drive_new (const gchar *udi);
 
-void
-brasero_drive_set_medium (BraseroDrive *drive,
-			  BraseroMedium *medium);
-
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive);
 
