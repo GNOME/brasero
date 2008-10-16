@@ -1515,8 +1515,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+	if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
 		BRASERO_BURN_LOG ("Overwritable medium  => skipping");
 		return BRASERO_BURN_OK;
 	}
@@ -1529,22 +1528,23 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 						   &data,
 						   &size,
 						   code);
-	if (result != BRASERO_SCSI_OK) {
+	if (result == BRASERO_SCSI_OK) {
+		wrt_page = (BraseroScsiWritePage *) &data->page;
+		wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
+
+		result = brasero_spc1_mode_select (handle, data, size, code);
 		g_free (data);
 
-		BRASERO_BURN_LOG ("MODE SENSE failed");
-		return BRASERO_BURN_ERR;
+		if (result != BRASERO_SCSI_OK) {
+			BRASERO_BURN_LOG ("MODE SELECT failed");
+			return BRASERO_BURN_ERR;
+		}
 	}
+	else {
+		BRASERO_BURN_LOG ("MODE SENSE failed");
 
-	wrt_page = (BraseroScsiWritePage *) &data->page;
-	wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
-
-	result = brasero_spc1_mode_select (handle, data, size, code);
-	g_free (data);
-
-	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("MODE SELECT failed");
-		return BRASERO_BURN_ERR;
+		/* This isn't necessarily a problem */
+		//		return BRASERO_BURN_ERR;
 	}
 
 	/* at this point we know the type of the disc that's why we set the 

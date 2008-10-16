@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 struct _BraseroScsiModePage {
 	uchar code			:6;
 	uchar reserved			:1;
-	uchar ps				:1;
+	uchar ps			:1;
 
 	uchar len;
 };
