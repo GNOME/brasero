@@ -1,3 +1,14 @@
+2008-10-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Ensure that if CD-TEXT string can't be converted to UTF-8 we keep the
+	original one since it may (must if brasero burnt it) be already UTF-8
+
+	* src/burn-drive.c (brasero_drive_lock), (brasero_drive_unlock):
+	* src/burn-medium.c (brasero_medium_get_CD_TEXT):
+	* src/burn-volume-obj.c (brasero_volume_eject):
+	* src/burn.c (brasero_burn_eject_src_media):
+	* src/plugins/cdrdao/burn-cdrdao.c (brasero_cdrdao_set_argv_image):
+
 2008-10-15  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Probe for medium asynchronously and avoid blocking sometimes

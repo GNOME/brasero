@@ -365,6 +365,7 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 		return BRASERO_BURN_OK;
 
 	medium = brasero_drive_get_medium (priv->src);
+
 	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		BraseroBurnResult result;
 

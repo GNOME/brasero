@@ -197,6 +197,13 @@ brasero_drive_lock (BraseroDrive *self,
 	if (failure)
 		dbus_free (failure);
 
+	if (result) {
+		BRASERO_BURN_LOG ("Device locked");
+	}
+	else {
+		BRASERO_BURN_LOG ("Device failed to lock");
+	}
+
 	return result;
 }
 
@@ -210,7 +217,6 @@ brasero_drive_unlock (BraseroDrive *self)
 	gboolean result;
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
-
 	if (!priv->udi)
 		return FALSE;
 
@@ -225,6 +231,7 @@ brasero_drive_unlock (BraseroDrive *self)
 	if (dbus_error_is_set (&error))
 		dbus_error_free (&error);
 
+	BRASERO_BURN_LOG ("Device unlocked");
 	return result;
 }
 

@@ -2722,7 +2722,6 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	 * be extented to all tracks information. */
 	switch (type) {
 	case BRASERO_SCSI_CD_TEXT_ALBUM_TITLE:
-		BRASERO_BURN_LOG ("Title %s", string);
 		if (track_num)
 			return FALSE;
 
@@ -2756,7 +2755,12 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	if (priv->CD_TEXT_title)
 		g_free (priv->CD_TEXT_title);
 
-	priv->CD_TEXT_title = utf8_string;
+	if (!utf8_string)
+		priv->CD_TEXT_title = g_strdup (string);
+	else
+		priv->CD_TEXT_title = utf8_string;
+
+	BRASERO_BURN_LOG ("CD-TEXT title %s", priv->CD_TEXT_title);
 	return TRUE;
 }
 

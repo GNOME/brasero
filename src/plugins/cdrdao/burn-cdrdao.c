@@ -422,7 +422,6 @@ brasero_cdrdao_set_argv_image (BraseroCdrdao *cdrdao,
 	/* This is done so that if a cue file is required we first generate
 	 * a temporary toc file that will be later converted to a cue file.
 	 * The datafile is written where it should be from the start. */
-
 	brasero_job_get_output_type (BRASERO_JOB (cdrdao), &output);
 	if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO) {
 		result = brasero_job_get_image_output (BRASERO_JOB (cdrdao),

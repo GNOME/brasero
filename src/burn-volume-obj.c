@@ -600,6 +600,8 @@ brasero_volume_eject (BraseroVolume *self,
 	gboolean result;
 	BraseroVolumePrivate *priv;
 
+	BRASERO_BURN_LOG ("Ejecting");
+
 	if (!self)
 		return TRUE;
 
@@ -608,6 +610,8 @@ brasero_volume_eject (BraseroVolume *self,
 	gdrive = brasero_volume_get_gdrive (self);
 	if (!gdrive) {
 		GVolume *volume;
+
+		BRASERO_BURN_LOG ("No GDrive");
 
 		/* last resort */
 		volume = brasero_volume_get_gvolume (self);
@@ -619,6 +623,8 @@ brasero_volume_eject (BraseroVolume *self,
 
 	if (!g_drive_can_eject (gdrive)) {
 		GVolume *volume;
+
+		BRASERO_BURN_LOG ("GDrive can't eject");
 
 		/* last resort */
 		volume = brasero_volume_get_gvolume (self);
