@@ -879,7 +879,7 @@ brasero_data_project_uri_add_graft (BraseroDataProject *self,
 	BraseroURINode *graft;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
+g_print ("GRAFT %s\n", uri);
 	graft = g_new0 (BraseroURINode, 1);
 	if (uri != NEW_FOLDER)
 		graft->uri = brasero_utils_register_string (uri);
@@ -909,7 +909,7 @@ brasero_data_project_uri_ensure_graft (BraseroDataProject *self,
 	return brasero_data_project_uri_add_graft (self, uri);
 }
 
-static void
+static BraseroURINode *
 brasero_data_project_uri_graft_nodes (BraseroDataProject *self,
 				      const gchar *uri)
 {
@@ -919,10 +919,6 @@ brasero_data_project_uri_graft_nodes (BraseroDataProject *self,
 	GSList *iter;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
-	/* see if that's really needed */
-	if (g_hash_table_lookup (priv->grafts, uri))
-		return;
 
 	/* Find all the nodes that should be grafted.
 	 * NOTE: this must be done before asking for a new graft */
@@ -936,9 +932,12 @@ brasero_data_project_uri_graft_nodes (BraseroDataProject *self,
 		BraseroFileNode *iter_node;
 
 		iter_node = iter->data;
+		g_print ("NERKJ %s\n", BRASERO_FILE_NODE_NAME (iter_node));
 		brasero_file_node_graft (iter_node, graft);
 	}
 	g_slist_free (nodes);
+
+	return graft;
 }
 
 static void
@@ -1038,6 +1037,7 @@ brasero_data_project_node_removed (BraseroDataProject *self,
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 #ifdef BUILD_INOTIFY
+
 	/* remove all monitoring */
 	if (node->is_monitored)
 		brasero_file_monitor_foreach_cancel (BRASERO_FILE_MONITOR (self),
@@ -1093,7 +1093,9 @@ brasero_data_project_node_removed (BraseroDataProject *self,
 
 		/* This URI will need a graft if it hasn't one yet */
 		uri = brasero_data_project_node_to_uri (self, node);
-		brasero_data_project_uri_graft_nodes (self, uri);
+
+		if (!g_hash_table_lookup (priv->grafts, uri))
+			brasero_data_project_uri_graft_nodes (self, uri);
 
 		/* NOTE: since the URI wasn't grafted it has to have a
 		 * valid parent that's why we don't check the graft 
@@ -1301,7 +1303,8 @@ brasero_data_project_move_node (BraseroDataProject *self,
 		 * move it should probably be a graft now.
 		 * NOTE: we need to do it now before it gets unparented. */
 		uri = brasero_data_project_node_to_uri (self, node);
-		brasero_data_project_uri_graft_nodes (self, uri);
+		if (!g_hash_table_lookup (priv->grafts, uri))
+			brasero_data_project_uri_graft_nodes (self, uri);
 		g_free (uri);
 
 		check_graft = FALSE;
@@ -1406,7 +1409,8 @@ brasero_data_project_rename_node (BraseroDataProject *self,
 		 * we need to add one with all nodes having the same
 		 * URI. */
 		uri = brasero_data_project_node_to_uri (self, node);
-		brasero_data_project_uri_graft_nodes (self, uri);
+		if (!g_hash_table_lookup (priv->grafts, uri))
+			brasero_data_project_uri_graft_nodes (self, uri);
 		g_free (uri);
 
 		/* now we can change the name */
@@ -1457,7 +1461,7 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 	BraseroDataProjectClass *klass;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
+g_print ("REACHED %s\n", uri);
 	/* See if we should create a graft for the node.
 	 * NOTE: if we create a graft we create a graft for all nodes
 	 * that have the same URI in the tree too. */
@@ -1466,24 +1470,33 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 		brasero_file_node_graft (node, graft);
 	}
 	else if (node->is_symlink) {
-		/* NOTE: info has the uri for the target of the symlink */
-		graft = brasero_data_project_uri_ensure_graft (self, uri);
+		/* NOTE: info has the uri for the target of the symlink; graft
+		 * it as well as all the nodes already in the tree with the same
+		 * URI */
+		graft = brasero_data_project_uri_graft_nodes (self, uri);
 		brasero_file_node_graft (node, graft);
 	}
 	else if (node->parent == priv->root) {
-		/* The node is at the root of the project; graft it */
-		graft = brasero_data_project_uri_ensure_graft (self, uri);
+g_print ("SKDLFKD \n");
+		/* The node is at the root of the project; graft it as well as
+		 * all the nodes already in the tree with the same URI */
+		graft = brasero_data_project_uri_graft_nodes (self, uri);
 		brasero_file_node_graft (node, graft);
 	}
 	else if (node->is_fake) {
-		/* The node is a fake directory; graft it */
-		graft = brasero_data_project_uri_ensure_graft (self, uri);
-		brasero_file_node_graft (node, graft);
+		/* The node is a fake directory; graft it as well as all the 
+		 * nodes already in the tree with the same URI */
+		graft = brasero_data_project_uri_graft_nodes (self, uri);
 	}
 	else {
 		gchar *parent_uri;
 
 		parent_uri = brasero_data_project_node_to_uri (self, node->parent);
+g_print ("OKK %s %p\n", parent_uri, node->parent);
+		/* NOTE: in here use a special function here since that node 
+		 * could already be in the tree but under its rightful parent
+		 * and then it won't have any graft yet. That's why these nodes
+		 * need to be grafted as well. */ 
 		if (parent_uri) {
 			guint parent_len;
 
@@ -1492,8 +1505,8 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 			&&  uri [parent_len] != G_DIR_SEPARATOR) {
 				/* The node hasn't been put under its rightful
 				 * parent from the original file system. That
-				 * means we must add a graft*/
-				graft = brasero_data_project_uri_add_graft (self, uri);
+				 * means we must add a graft */
+				graft = brasero_data_project_uri_graft_nodes (self, uri);
 				brasero_file_node_graft (node, graft);
 			}
 			/* NOTE: we don't need to check if the nodes's name
@@ -1507,7 +1520,7 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 		}
 		else {
 			/* its father is probably an fake empty directory */
-			graft = brasero_data_project_uri_add_graft (self, uri);
+			graft = brasero_data_project_uri_graft_nodes (self, uri);
 			brasero_file_node_graft (node, graft);
 		}
 	}
@@ -1965,7 +1978,6 @@ brasero_data_project_add_loading_node (BraseroDataProject *self,
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	graft = g_hash_table_lookup (priv->grafts, uri);
-
 	if (!parent)
 		parent = priv->root;
 
@@ -1988,7 +2000,7 @@ brasero_data_project_add_loading_node (BraseroDataProject *self,
 		brasero_data_project_remove_real (self, node);
 		graft = g_hash_table_lookup (priv->grafts, uri);
 	}
-
+g_print ("GRAFF %p\n", graft);
 	node = brasero_file_node_new_loading (name, parent, priv->sort_func);
 	brasero_data_project_add_node_real (self, node, graft, uri);
 	g_free (name);

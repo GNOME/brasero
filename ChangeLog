@@ -1,5 +1,19 @@
 2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	reviewed by: <delete if not using a buddy>
+
+	* src/brasero-data-project.c (brasero_data_project_uri_add_graft),
+	(brasero_data_project_uri_graft_nodes),
+	(brasero_data_project_node_removed),
+	(brasero_data_project_move_node),
+	(brasero_data_project_rename_node),
+	(brasero_data_project_add_node_real),
+	(brasero_data_project_add_loading_node):
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_inotify_monitor_cb):
+
+2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a potential crash in the file monitor backend
 
 	* src/brasero-file-monitor.c (brasero_file_monitor_foreach_cancel):

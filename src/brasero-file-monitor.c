@@ -530,8 +530,7 @@ brasero_file_monitor_inotify_monitor_cb (GIOChannel *channel,
 		callback_data = g_hash_table_lookup (priv->files, GINT_TO_POINTER (event.wd));
 		if (!callback_data) {
 			/* Retry with children */
-			callback_data = g_hash_table_lookup (priv->directories,
-							     GINT_TO_POINTER (event.wd));
+			callback_data = g_hash_table_lookup (priv->directories, GINT_TO_POINTER (event.wd));
 			if (name && callback_data) {
 				/* For directories we don't take heed of the SELF events.
 				 * All events are treated through the parent directory
