@@ -1,6 +1,17 @@
 2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Remove leftovers debug statements
+
+	* src/brasero-data-project.c (brasero_data_project_uri_add_graft),
+	(brasero_data_project_uri_graft_nodes),
+	(brasero_data_project_add_node_real),
+	(brasero_data_project_add_loading_node):
+
+2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix a problem in the tree when adding file(s) to graft that was already
+	in the tree but not grafted yet. The previous location(s) were not
+	grafted as well.
 
 	* src/brasero-data-project.c (brasero_data_project_uri_add_graft),
 	(brasero_data_project_uri_graft_nodes),
