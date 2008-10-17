@@ -1543,7 +1543,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 	else {
 		BRASERO_BURN_LOG ("MODE SENSE failed");
 
-		/* This isn't necessarily a problem */
+		/* This isn't necessarily a problem we better try the rest */
 		//		return BRASERO_BURN_ERR;
 	}
 

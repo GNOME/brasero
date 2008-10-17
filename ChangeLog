@@ -1,3 +1,16 @@
+2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Improved handling of symlinks pointing to an image
+	Fix #551051 – Brasero shows absurdly large %-done when burning a symlink-to-ISO (divide by 0 error)
+	since we were using the size of the symlink file not the size of the target
+
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	* src/burn-image-format.c (brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* src/burn-medium.c (brasero_medium_track_set_leadout):
+
 2008-10-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Try to fix

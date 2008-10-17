@@ -380,8 +380,9 @@ stat_end:
 		g_free (tmp);
 	}
 
-	/* if size is skipped then g_lstat () the file */
-	res = g_lstat (path, &buffer);
+	/* if size is skipped then g_stat () the file */
+	/* NOTE: follow symlink if any */
+	res = g_stat (path, &buffer);
 	g_free (path);
 
 	if (res == -1) {
@@ -580,7 +581,8 @@ brasero_image_format_get_cue_size (gchar *path,
 				g_free (tmp);
 			}
 
-			res = g_lstat (file_path, &buffer);
+			/* NOTE: follow symlink if any */
+			res = g_stat (path, &buffer);
 			if (res == -1) {
 				g_set_error (error,
 					     BRASERO_BURN_ERR,
@@ -735,7 +737,8 @@ brasero_image_format_get_iso_size (gchar *path,
 	 * since it'll be local and stat() will work.
 	 * if local-track is not enabled we can't use non-local images anyway so
 	 * there is no need to have a function set_size */
-	res = g_lstat (path, &buffer);
+	/* NOTE: follow symlink if any */
+	res = g_stat (path, &buffer);
 	if (res == -1) {
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
@@ -776,7 +779,8 @@ brasero_image_format_get_clone_size (gchar *path,
 	 * since it'll be local and stat() will work.
 	 * if local-track is not enabled we can't use non-local images anyway so
 	 * there is no need to have a function set_size */
-	res = g_lstat (path, &buffer);
+	/* NOTE: follow symlink if any */
+	res = g_stat (path, &buffer);
 	if (res == -1) {
 		g_set_error (error,
 			     BRASERO_BURN_ERR,

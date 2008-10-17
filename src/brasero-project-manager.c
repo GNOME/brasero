@@ -924,12 +924,58 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	BraseroProjectType type;
 
 	/* FIXME: make that asynchronous */
+	/* NOTE: don't follow symlink because we want to identify them */
 	file = g_file_new_for_commandline_arg (uri_arg);
 	info = g_file_query_info (file,
-				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-				  G_FILE_QUERY_INFO_NONE,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
+				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 				  NULL,
 				  NULL);
+
+	/* if that's a symlink, redo it on its target to get the real mime type
+	 * that usually also depends on the extension of the target:
+	 * ex: an iso file with the extension .iso will be seen as octet-stream
+	 * if the symlink hasn't got any extention at all */
+	while (g_file_info_get_is_symlink (info)) {
+		const gchar *target;
+		GFileInfo *tmp_info;
+		GFile *tmp_file;
+		GError *error = NULL;
+
+		target = g_file_info_get_symlink_target (info);
+		if (!g_path_is_absolute (target)) {
+			gchar *parent;
+			gchar *tmp;
+
+			tmp = g_file_get_path (file);
+			parent = g_path_get_dirname (tmp);
+			g_free (tmp);
+
+			target = g_build_filename (parent, target, NULL);
+			g_free (parent);
+		}
+
+		tmp_file = g_file_new_for_commandline_arg (target);
+		tmp_info = g_file_query_info (tmp_file,
+					      G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+					      G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
+					      G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+					      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+					      NULL,
+					      &error);
+		if (!tmp_info) {
+			g_object_unref (tmp_file);
+			break;
+		}
+
+		g_object_unref (info);
+		g_object_unref (file);
+
+		info = tmp_info;
+		file = tmp_file;
+	}
 
 	uri = g_file_get_uri (file);
 	if (g_file_query_exists (file, NULL)) {
@@ -939,6 +985,7 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	  	type = brasero_project_manager_open_by_mime (manager, uri, mime);
         } 
 	else {
+		/* FIXME: we may want to ask the user if he wants to remove it */
 		window = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 	  	dialog = gtk_message_dialog_new (GTK_WINDOW (window),
 					   	 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
