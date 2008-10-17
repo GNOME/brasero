@@ -727,6 +727,7 @@ brasero_file_monitor_foreach_cancel (BraseroFileMonitor *self,
 				     gpointer callback_data)
 {
 	GSList *iter;
+	GSList *next;
 	BraseroFileMonitorPrivate *priv;
 	BraseroFileMonitorCancelForeach data;
 
@@ -765,6 +766,20 @@ brasero_file_monitor_foreach_cancel (BraseroFileMonitor *self,
 	g_hash_table_foreach_remove (priv->directories,
 				     brasero_file_monitor_foreach_cancel_directory_cb,
 				     &data);
+
+	/* Finally get rid of moved that data in moved list */
+	for (iter = priv->moved_list; iter; iter = next) {
+		BraseroInotifyMovedData *data;
+
+		data = iter->data;
+		next = iter->next;
+		if (func (callback_data, data->callback_data)) {
+			priv->moved_list = g_slist_remove (priv->moved_list, data);
+			g_source_remove (data->id);
+			g_free (data->name);
+			g_free (data);
+		}
+	}
 }
 
 static gboolean

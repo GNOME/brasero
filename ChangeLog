@@ -1,5 +1,11 @@
 2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a potential crash in the file monitor backend
+
+	* src/brasero-file-monitor.c (brasero_file_monitor_foreach_cancel):
+
+2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Improved handling of symlinks pointing to an image
 	Fix #551051 – Brasero shows absurdly large %-done when burning a symlink-to-ISO (divide by 0 error)
 	since we were using the size of the symlink file not the size of the target
