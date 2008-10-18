@@ -489,9 +489,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 	brasero_job_get_media (BRASERO_JOB (self), &media);
 
 	if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)
-	&& (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL))
+	&&  BRASERO_MEDIUM_RANDOM_WRITABLE (media)
 	&& (media & BRASERO_MEDIUM_HAS_DATA))
 		priv->pvd = g_new0 (unsigned char, BRASERO_PVD_SIZE);
 
@@ -506,10 +504,7 @@ brasero_libburn_start_record (BraseroLibburn *self,
 	opts = burn_write_opts_new (priv->ctx->drive);
 	burn_write_opts_set_perform_opc (opts, 0);
 
-	if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)
-	&&  (flags & BRASERO_BURN_FLAG_DAO))
+	if (flags & BRASERO_BURN_FLAG_DAO)
 		burn_write_opts_set_write_type (opts,
 						BURN_WRITE_SAO,
 						BURN_BLOCK_SAO);
@@ -518,8 +513,11 @@ brasero_libburn_start_record (BraseroLibburn *self,
 						BURN_WRITE_TAO,
 						BURN_BLOCK_MODE1);
 
-		/* we also set the start block to write from if MERGE is set */
-		if (flags & BRASERO_BURN_FLAG_MERGE) {
+		/* we also set the start block to write from if MERGE is set.
+		 * That only for random writable media; for other media libburn
+		 * handles all by himself where to start writing. */
+		if (BRASERO_MEDIUM_RANDOM_WRITABLE (media)
+		&& (flags & BRASERO_BURN_FLAG_MERGE)) {
 			gint64 address = 0;
 
 			brasero_job_get_next_writable_address (BRASERO_JOB (self), &address);
