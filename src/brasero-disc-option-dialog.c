@@ -92,10 +92,11 @@ brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
 	gboolean value;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
-
+g_print ("KKLS\n");
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 
 	if (!brasero_session_cfg_is_supported (BRASERO_SESSION_CFG (session), BRASERO_BURN_FLAG_MULTI)) {
+g_print ("RRKE\n");
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), FALSE);
 		gtk_widget_set_sensitive (priv->multi_toggle, FALSE);
 		g_object_unref (session);
@@ -109,7 +110,7 @@ brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
 		g_object_unref (session);
 		return;
 	}
-
+g_print ("jlskjd\n");
 	/* set sensitivity */
 	value = brasero_session_cfg_is_compulsory (BRASERO_SESSION_CFG (session),
 						   BRASERO_BURN_FLAG_MULTI);
@@ -197,7 +198,7 @@ brasero_disc_option_dialog_update_multi (BraseroDiscOptionDialog *dialog)
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	brasero_burn_session_get_input_type (session, &input);
-
+g_print ("REACHED\n");
 	/* MULTI and Video projects don't get along */
 	if (input.type == BRASERO_TRACK_TYPE_DATA
 	&& (input.subtype.fs_type & BRASERO_IMAGE_FS_VIDEO)
@@ -977,6 +978,9 @@ brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 	/* for video disc see what's the output : CD or DVD */
 	if (priv->dvd_audio)
 		brasero_disc_option_dialog_update_video (self);
+
+	/* flags could have changed so make sure multi gets updated */
+	brasero_disc_option_dialog_update_multi (self);
 }
 
 static void

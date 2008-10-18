@@ -538,7 +538,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self),
 						  BRASERO_BURN_FLAG_DUMMY|
 						  BRASERO_BURN_FLAG_NO_TMP_FILES);
-	else if (update)
+
+	if (update)
 		brasero_session_cfg_set_drive_properties (self);
 	else if (check)
 		brasero_session_cfg_check_drive_settings (self);
