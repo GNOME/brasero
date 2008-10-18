@@ -128,7 +128,7 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 
 #define BRASERO_BURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN, BraseroBurnPrivate))
 
-#define MAX_EJECT_WAIT_TIME	20000
+#define MAX_EJECT_ATTEMPTS	5
 #define MAX_MOUNT_ATTEMPTS	20
 #define MOUNT_TIMEOUT		500
 
@@ -300,10 +300,56 @@ brasero_burn_wait_for_dest_insertion (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
+brasero_burn_eject (BraseroBurn *self,
+		    BraseroDrive *drive,
+		    GError **error)
+{
+	BraseroMedium *medium;
+	guint counter = 0;
+
+	medium = brasero_drive_get_medium (drive);
+	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, error);
+
+	/* sleep some time and see what happened */
+	brasero_burn_sleep (self, 500);
+	medium = brasero_drive_get_medium (drive);
+
+	/* Retry several times, since sometimes the drives are really busy */
+	while (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+		counter ++;
+		if (counter > MAX_EJECT_ATTEMPTS) {
+			gchar *name;
+
+			BRASERO_BURN_LOG ("Max attempts reached at ejecting");
+
+			/* FIXME: it'd be better if we asked the user to do it
+			 * manually */
+			name = brasero_drive_get_display_name (drive);
+			if (error && !(*error))
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("the media in %s can't be ejected"),
+					     name);
+			g_free (name);
+			return BRASERO_BURN_ERR;
+		}
+
+		BRASERO_BURN_LOG ("Retrying ejection");
+		brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, error);
+		brasero_burn_sleep (self, 500);
+		medium = brasero_drive_get_medium (drive);
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_burn_eject_dest_media (BraseroBurn *self,
 			       GError **error)
 {
 	BraseroBurnPrivate *priv;
+	BraseroBurnResult result;
 	BraseroMedium *medium;
 
 	priv = BRASERO_BURN_PRIVATE (self);
@@ -332,22 +378,8 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 		}
 	}
 
-	if (!brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, NULL)) {
-		gchar *name;
-
-		name = brasero_drive_get_display_name (priv->dest);
-
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the media in %s can't be ejected"),
-			     name);
-
-		g_free (name);
-
-		priv->dest = NULL;
-		return BRASERO_BURN_ERR;
-	}
+	result = brasero_burn_eject (self, priv->dest, error);
+	priv->dest = NULL;
 
 	return BRASERO_BURN_OK;
 }
@@ -357,6 +389,7 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 			      GError **error)
 {
 	BraseroBurnPrivate *priv;
+	BraseroBurnResult result;
 	BraseroMedium *medium;
 
 	priv = BRASERO_BURN_PRIVATE (self);
@@ -364,8 +397,8 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 	if (!priv->src)
 		return BRASERO_BURN_OK;
 
+	/* Release lock, unmount, ... */
 	medium = brasero_drive_get_medium (priv->src);
-
 	if (brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		BraseroBurnResult result;
 
@@ -390,28 +423,11 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 		}
 	}
 
-	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, error);
-	medium = brasero_drive_get_medium (priv->src);
-	if (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
-		gchar *name;
-
-		name = brasero_drive_get_display_name (priv->src);
-
-		if (error && !(*error))
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the media in %s can't be ejected"),
-				     name);
-
-		g_free (name);
-
-		priv->src = NULL;
-		return BRASERO_BURN_ERR;
-	}
-
+	/* and eject */
+	result = brasero_burn_eject (self, priv->src, error);
 	priv->src = NULL;
-	return BRASERO_BURN_OK;
+
+	return result;
 }
 
 static BraseroBurnResult

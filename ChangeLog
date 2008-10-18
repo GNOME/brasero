@@ -1,5 +1,16 @@
 2008-10-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Be a little more patient and understanding when we eject media
+
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_start_monitoring_real),
+	(brasero_file_monitor_single_file):
+	* src/burn-volume-obj.c (brasero_volume_eject):
+	* src/burn.c (brasero_burn_eject), (brasero_burn_eject_dest_media),
+	(brasero_burn_eject_src_media):
+
+2008-10-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for file change monitoring we were stopping parent nodes instead of
 	children nodes
 	Possibly fixing: 552811 – crash after delete used directory

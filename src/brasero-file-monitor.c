@@ -595,6 +595,7 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 	       IN_DELETE_SELF |
 	       IN_MOVE_SELF;
 
+	/* NOTE: always return the same wd when we ask for the same file */
 	wd = inotify_add_watch (dev_fd, path, mask);
 	if (wd == -1) {
 		BRASERO_BURN_LOG ("ERROR creating watch for local file %s : %s\n",
@@ -642,6 +643,7 @@ brasero_file_monitor_single_file (BraseroFileMonitor *self,
 	data->callback_data = callback_data;
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, data->name);
 
+	/* inotify always return the same wd for the same file */
 	list = g_hash_table_lookup (priv->files, GINT_TO_POINTER (wd));
 	list = g_slist_prepend (list, data);
 	g_hash_table_insert (priv->files,
