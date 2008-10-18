@@ -1,3 +1,13 @@
+2008-10-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for file change monitoring we were stopping parent nodes instead of
+	children nodes
+	Possibly fixing: 552811 – crash after delete used directory
+
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_foreach_cancel_file_cb),
+	(brasero_file_monitor_foreach_cancel):
+
 2008-10-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Remove leftovers debug statements

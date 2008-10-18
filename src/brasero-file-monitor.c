@@ -35,6 +35,8 @@
 #include "brasero-file-monitor.h"
 #include "burn-debug.h"
 
+#include "brasero-file-node.h"
+
 typedef struct _BraseroFileMonitorPrivate BraseroFileMonitorPrivate;
 struct _BraseroFileMonitorPrivate
 {
@@ -692,7 +694,7 @@ brasero_file_monitor_foreach_cancel_file_cb (gpointer key,
 		BraseroInotifyFileData *file_data = NULL;
 
 		file_data = iter->data;
-		if (data->func (data->callback_data, file_data->callback_data)) {
+		if (data->func (file_data->callback_data, data->callback_data)) {
 			BraseroFileMonitorSearchResult *result;
 
 			result = g_new0 (BraseroFileMonitorSearchResult, 1);
@@ -772,7 +774,7 @@ brasero_file_monitor_foreach_cancel (BraseroFileMonitor *self,
 
 		data = iter->data;
 		next = iter->next;
-		if (func (callback_data, data->callback_data)) {
+		if (func (data->callback_data, callback_data)) {
 			priv->moved_list = g_slist_remove (priv->moved_list, data);
 			g_source_remove (data->id);
 			g_free (data->name);
