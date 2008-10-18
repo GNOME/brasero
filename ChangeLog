@@ -1,5 +1,12 @@
 2008-10-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #556449 – Session error : Insufficient space on media when copying an audio CD (same problem with trunk)
+
+	* src/burn-medium.c (brasero_medium_track_set_leadout):
+	* src/scsi-mode-select.c (brasero_spc1_mode_select):
+
+2008-10-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Remove leftover debug statements
 
 	* src/brasero-disc-option-dialog.c

@@ -91,8 +91,8 @@ brasero_spc1_mode_select (BraseroDeviceHandle *handle,
 	cdb->SP = 0;
 
 	/* Header pages lengths should be 0 */
-	BRASERO_SET_16 (data->hdr.len, 0);
-	BRASERO_SET_16 (data->hdr.bdlen, 0);
+//	BRASERO_SET_16 (data->hdr.len, 0);
+//	BRASERO_SET_16 (data->hdr.bdlen, 0);
 
 	BRASERO_SET_16 (cdb->alloc_len, size);
 	res = brasero_scsi_command_issue_sync (cdb, data, size, error);

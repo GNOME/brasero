@@ -1537,14 +1537,16 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 
 		if (result != BRASERO_SCSI_OK) {
 			BRASERO_BURN_LOG ("MODE SELECT failed");
-			return BRASERO_BURN_ERR;
+
+			/* This isn't necessarily a problem! we better try */
+			//	return BRASERO_BURN_ERR;
 		}
 	}
 	else {
 		BRASERO_BURN_LOG ("MODE SENSE failed");
 
-		/* This isn't necessarily a problem we better try the rest */
-		//		return BRASERO_BURN_ERR;
+		/* This isn't necessarily a problem we better! try the rest */
+		//	return BRASERO_BURN_ERR;
 	}
 
 	/* at this point we know the type of the disc that's why we set the 
