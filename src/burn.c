@@ -355,6 +355,7 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 	priv = BRASERO_BURN_PRIVATE (self);
 
 	BRASERO_BURN_LOG ("Ejecting destination disc");
+
 	if (!priv->dest)
 		return BRASERO_BURN_OK;
 
@@ -393,6 +394,8 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 	BraseroMedium *medium;
 
 	priv = BRASERO_BURN_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Ejecting source disc");
 
 	if (!priv->src)
 		return BRASERO_BURN_OK;
@@ -503,19 +506,8 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 				 BraseroMedia required_media,
 				 GError **error)
 {
-	BraseroMedia media;
 	BraseroMedium *medium;
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
-
-	medium = brasero_drive_get_medium (priv->dest);
-	media = brasero_medium_get_status (medium);
-	if (media != BRASERO_MEDIUM_NONE) {
-		BraseroBurnResult result;
-
-		result = brasero_burn_eject_dest_media (burn, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
 
 	if (!priv->dest) {
 		priv->dest = brasero_burn_session_get_burner (priv->session);
@@ -526,6 +518,15 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 				     _("no drive specified"));
 			return BRASERO_BURN_ERR;
 		}
+	}
+
+	medium = brasero_drive_get_medium (priv->dest);
+	if (medium || brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+		BraseroBurnResult result;
+
+		result = brasero_burn_eject_dest_media (burn, error);
+		if (result != BRASERO_BURN_OK)
+			return result;
 	}
 
 	return brasero_burn_ask_for_media (burn,
@@ -2354,6 +2355,9 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 	BraseroBurnFlag session_flags;
 
 	priv = BRASERO_BURN_PRIVATE (burn);
+
+	BRASERO_BURN_LOG ("Reloading medium after copy");
+
 	/* Now there is the problem of flags... This really is a special
 	 * case. we need to try to adjust the flags to the media type
 	 * just after a new one is detected. For example there could be
@@ -2365,7 +2369,8 @@ brasero_burn_same_src_dest_reload_medium (BraseroBurn *burn,
 								    priv->session);
 	required_media &= (BRASERO_MEDIUM_WRITABLE|
 			   BRASERO_MEDIUM_CD|
-			   BRASERO_MEDIUM_DVD);
+			   BRASERO_MEDIUM_DVD|
+			   BRASERO_MEDIUM_BD);
 
 	/* There is sometimes no way to determine which type of media is
 	 * required since some flags (that will be adjusted afterwards)

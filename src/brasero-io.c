@@ -52,6 +52,8 @@ struct _BraseroIOPrivate
 {
 	GMutex *lock;
 
+	GSList *mounted;
+
 	/* used for returning results */
 	GSList *results;
 	gint results_id;
@@ -126,6 +128,7 @@ struct _BraseroIOJobProgress {
 };
 
 G_DEFINE_TYPE (BraseroIO, brasero_io, BRASERO_TYPE_ASYNC_TASK_MANAGER);
+
 
 /**
  * That's the structure to pass the progress on
@@ -324,6 +327,7 @@ brasero_io_return_result_idle (gpointer callback_data)
 						       FALSE);
 		brasero_io_job_result_free (result);
 	}
+
 	return TRUE;
 }
 
@@ -476,6 +480,101 @@ brasero_io_job_destroy (BraseroAsyncTaskManager *manager,
 	 * block until the active task is removed which means that if we called
 	 * the destroy () then the destruction would be done in the main loop */
 	brasero_io_job_free (BRASERO_IO (manager), cancelled, job);
+}
+
+/**
+ * That's when we need to mount a remote volume
+ */
+
+struct _BraseroIOMount {
+	GError *error;
+	gboolean result;
+	gboolean finished;
+};
+typedef struct _BraseroIOMount BraseroIOMount;
+
+static void
+brasero_io_mount_enclosing_volume_cb (GObject *source,
+				      GAsyncResult *result,
+				      gpointer callback_data)
+{
+	BraseroIOMount *mount = callback_data;
+
+	BRASERO_BURN_LOG ("Volume mounting operation result");
+	mount->result = g_file_mount_enclosing_volume_finish (G_FILE (source),
+							      result,
+							      &mount->error);
+	mount->finished = TRUE;
+}
+
+static void
+brasero_io_mount_ask_password (GMountOperation *operation,
+			       gchar *message,
+			       gchar *default_user,
+			       gchar *default_domain,
+			       GAskPasswordFlags flags,
+			       gpointer user_data)
+{
+	BRASERO_BURN_LOG ("Password asked");
+	g_mount_operation_reply (operation, G_MOUNT_OPERATION_HANDLED);
+}
+
+static gboolean
+brasero_io_mount_enclosing_volume (BraseroIO *self,
+				   GFile *file,
+				   GCancellable *cancel,
+				   GError **error)
+{
+	GMount *mounted;
+	GMountOperation *operation;
+	BraseroIOMount mount = { NULL, };
+
+	operation = g_mount_operation_new ();
+	g_mount_operation_set_anonymous (operation, TRUE);
+	g_signal_connect (operation,
+			  "ask-password",
+			  G_CALLBACK (brasero_io_mount_ask_password),
+			  NULL);
+
+	g_file_mount_enclosing_volume (file,
+				       G_MOUNT_MOUNT_NONE,
+				       operation,
+				       cancel,
+				       brasero_io_mount_enclosing_volume_cb,
+				       &mount);
+
+	/* sleep and wait operation end */
+	while (!mount.finished && !g_cancellable_is_cancelled (cancel))
+		sleep (1);
+
+	mounted = g_file_find_enclosing_mount (file, cancel, NULL);
+	if (mounted) {
+		BraseroIOPrivate *priv;
+
+		priv = BRASERO_IO_PRIVATE (self);
+
+		/* Keep these for later to unmount them */
+		if (mount.result) {
+			g_mutex_lock (priv->lock);
+			priv->mounted = g_slist_prepend (priv->mounted, mounted);
+			g_mutex_unlock (priv->lock);
+		}
+		else
+			g_object_unref (mounted);
+	}
+
+	if (!mounted
+	&&   mount.error
+	&&  !g_cancellable_is_cancelled (cancel))
+		g_propagate_error (error, mount.error);
+	else if (mount.error)
+		g_error_free (mount.error);
+
+	BRASERO_BURN_LOG ("Parent volume is %s",
+			  (mounted != NULL && !g_cancellable_is_cancelled (cancel))?
+			  "mounted":"not mounted");
+
+	return (mounted != NULL && !g_cancellable_is_cancelled (cancel));
 }
 
 /**
@@ -862,12 +961,13 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
 				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET ","
 				  G_FILE_ATTRIBUTE_STANDARD_TYPE};
+	GError *local_error = NULL;
 	GFileInfo *info;
 	GFile *file;
 
 	if (g_cancellable_is_cancelled (cancel))
-		return BRASERO_ASYNC_TASK_FINISHED;
-	
+		return NULL;
+
 	if (options & BRASERO_IO_INFO_PERM)
 		strcat (attributes, "," G_FILE_ATTRIBUTE_ACCESS_CAN_READ);
 	if (options & BRASERO_IO_INFO_MIME)
@@ -885,8 +985,35 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 				  attributes,
 				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
 				  cancel,
-				  error);
+				  &local_error);
 	if (!info) {
+		if (local_error && local_error->code == G_IO_ERROR_NOT_MOUNTED) {
+			gboolean res;
+
+			BRASERO_BURN_LOG ("Starting to mount parent volume");
+			g_error_free (local_error);
+			local_error = NULL;
+
+			/* try to mount whatever has to be mounted */
+			/* NOTE: of course, we block a thread but one advantage
+			 * is that we won't have many queries to mount the same
+			 * remote volume at the same time. */
+			res = brasero_io_mount_enclosing_volume (BRASERO_IO (manager),
+								 file,
+								 cancel,
+								 error);
+			g_object_unref (file);
+			if (!res)
+				return NULL;
+
+			return brasero_io_get_file_info_thread_real (manager,
+								     cancel,
+								     uri,
+								     options,
+								     error);
+		}
+
+		g_propagate_error (error, local_error);
 		g_object_unref (file);
 		return NULL;
 	}
@@ -2598,6 +2725,25 @@ brasero_io_finalize (GObject *object)
 	if (priv->lock) {
 		g_mutex_free (priv->lock);
 		priv->lock = NULL;
+	}
+
+	if (priv->mounted) {
+		GSList *iter;
+
+		/* unmount all volumes we mounted ourselves */
+		for (iter = priv->mounted; iter; iter = iter->next) {
+			GMount *mount;
+
+			mount = iter->data;
+
+			BRASERO_BURN_LOG ("Unmountin volume");
+			g_mount_unmount (mount,
+					 G_MOUNT_UNMOUNT_NONE,
+					 NULL,
+					 NULL,
+					 NULL);
+			g_object_unref (mount);
+		}
 	}
 
 	G_OBJECT_CLASS (brasero_io_parent_class)->finalize (object);
