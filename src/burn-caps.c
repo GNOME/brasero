@@ -1190,8 +1190,8 @@ brasero_burn_caps_sort_modifiers (gconstpointer a,
 	BraseroPlugin *plug_a = BRASERO_PLUGIN (a);
 	BraseroPlugin *plug_b = BRASERO_PLUGIN (b);
 
-	return brasero_plugin_get_priority (plug_b) -
-	       brasero_plugin_get_priority (plug_a);
+	return brasero_plugin_get_priority (plug_a) -
+	       brasero_plugin_get_priority (plug_b);
 }
 
 static GSList *

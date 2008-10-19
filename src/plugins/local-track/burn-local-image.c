@@ -278,8 +278,10 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 		return BRASERO_BURN_ERR;
 
 	/* Retrieve the size of all the data. */
-	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY)
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
+		BRASERO_JOB_LOG (self, "Downloading file %lli", g_file_info_get_size (info));
 		priv->data_size = g_file_info_get_size (info);
+	}
 	else
 		brasero_local_track_get_download_size (self, src, error);
 
@@ -686,8 +688,10 @@ _foreach_non_local_cb (const gchar *uri,
 	/* check that is hasn't any parent in the hash */
 	parent = g_path_get_dirname (uri);
 	while (parent [1] != '\0') {
-		localuri = g_hash_table_lookup (priv->nonlocals, parent);
-		if (localuri) {
+		gchar *uri_local;
+
+		uri_local = g_hash_table_lookup (priv->nonlocals, parent);
+		if (uri_local) {
 			g_free (parent);
 			return TRUE;
 		}
@@ -899,11 +903,13 @@ brasero_local_track_stop (BraseroJob *job,
 	if (priv->src_list) {
 		g_slist_foreach (priv->src_list, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->src_list);
+		priv->src_list = NULL;
 	}
 
 	if (priv->dest_list) {
 		g_slist_foreach (priv->dest_list, (GFunc) g_object_unref, NULL);
 		g_slist_free (priv->dest_list);
+		priv->dest_list = NULL;
 	}
 
 	if (priv->nonlocals) {

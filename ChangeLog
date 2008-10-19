@@ -1,15 +1,22 @@
 2008-10-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Fix #547395 – Support for remote filesystems
+	Fix for #547395 – Support for remote filesystems
+	make local-track plugin work (sort of)
+
+	* src/burn-caps.c (brasero_burn_caps_sort_modifiers):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_transfer), (_foreach_non_local_cb),
+	(brasero_local_track_stop):
+
+2008-10-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for #547395 – Support for remote filesystems
 
 	* src/brasero-io.c (brasero_io_return_result_idle),
 	(brasero_io_mount_enclosing_volume_cb),
 	(brasero_io_mount_ask_password),
 	(brasero_io_mount_enclosing_volume),
 	(brasero_io_get_file_info_thread_real), (brasero_io_finalize):
-	* src/burn.c (brasero_burn_eject_dest_media),
-	(brasero_burn_eject_src_media), (brasero_burn_ask_for_dest_media),
-	(brasero_burn_same_src_dest_reload_medium):
 
 2008-10-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
