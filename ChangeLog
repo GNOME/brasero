@@ -1,3 +1,10 @@
+2008-10-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix a problem with infinite loading and potential crash when the same 
+	uri was requested to be loaded at the same time
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_load_mime):
+
 2008-10-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix for #556449 – Session error : Insufficient space on media when copying an audio CD (same problem with trunk)

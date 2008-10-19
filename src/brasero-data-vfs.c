@@ -947,18 +947,19 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 	nodes = g_hash_table_lookup (priv->loading, uri);
 	if (nodes) {
 		gchar *registered;
+		GSList *iter;
 
 		registered = brasero_utils_register_string (uri);
 		g_free (uri);
 
-		for (; nodes; nodes = nodes->next) {
+		for (iter = nodes; iter; iter = iter->next) {
 			guint reference;
 			BraseroFileNode *ref_node;
 
-			reference = GPOINTER_TO_INT (nodes->data);
+			reference = GPOINTER_TO_INT (iter->data);
 			ref_node = brasero_data_project_reference_get (BRASERO_DATA_PROJECT (self), reference);
 			if (ref_node == node) {
-				/* 1sk for a higher priority */
+				/* Ask for a higher priority */
 				brasero_io_find_urgent (priv->io,
 							priv->load_uri,
 							brasero_data_vfs_increase_priority_cb,
@@ -971,7 +972,7 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 		/* It's loading, wait for the results */
 		reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
 		nodes = g_slist_prepend (nodes, GINT_TO_POINTER (reference));
-		g_hash_table_insert (priv->loading, (gchar *) uri, nodes);
+		g_hash_table_insert (priv->loading, registered, nodes);
 
 		/* Yet, ask for a higher priority */
 		brasero_io_find_urgent (priv->io,
