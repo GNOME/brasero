@@ -1877,8 +1877,9 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 		brasero_data_project_exclude_uri (self, uri);
 		g_free (uri);
 
-		/* NOTE: info has the uri for the target of the symlink */
-		graft = brasero_data_project_uri_ensure_graft (self, g_file_info_get_symlink_target (info));
+		/* NOTE: info has the uri for the target of the symlink.
+		 * NOTE 2: all nodes with target URI become grafted. */
+		graft = brasero_data_project_uri_graft_nodes (self, g_file_info_get_symlink_target (info));
 		brasero_file_node_graft (node, graft);
 	}
 
@@ -2113,12 +2114,8 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 
 	node = brasero_file_node_new_from_info (info, parent, priv->sort_func);
 	if (node->is_symlink) {
-		gchar *symlink_uri;
-
 		/* first we exclude the symlink, then we graft its target */
-		symlink_uri = brasero_data_project_node_to_uri (self, node);
-		brasero_data_project_exclude_uri (self, symlink_uri);
-		g_free (symlink_uri);
+		brasero_data_project_exclude_uri (self, uri);
 
 		/* then we add the node */
 		brasero_data_project_add_node_real (self,
@@ -2127,7 +2124,10 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 						    g_file_info_get_symlink_target (info));
 	}
 	else
-		brasero_data_project_add_node_real (self, node, graft, uri);
+		brasero_data_project_add_node_real (self,
+						    node,
+						    graft,
+						    uri);
 
 	if (type != G_FILE_TYPE_DIRECTORY)
 		g_signal_emit (self,
