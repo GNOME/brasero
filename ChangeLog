@@ -1,3 +1,17 @@
+2008-10-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for #547395 – Support for remote filesystems
+	Fix progress and directory creation
+
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_get_download_size),
+	(brasero_local_track_progress_cb),
+	(brasero_local_track_file_transfer),
+	(brasero_local_track_recursive_transfer),
+	(brasero_local_track_transfer),
+	(brasero_local_track_translate_uri),
+	(brasero_local_track_thread_finished), (_foreach_non_local_cb):
+
 2008-10-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix for #547395 – Support for remote filesystems

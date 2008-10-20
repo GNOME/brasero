@@ -95,7 +95,9 @@ brasero_local_track_get_download_size (BraseroLocalTrack *self,
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
 	enumerator = g_file_enumerate_children (src,
-						G_FILE_ATTRIBUTE_STANDARD_TYPE,
+						G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+						G_FILE_ATTRIBUTE_STANDARD_NAME ","
+						G_FILE_ATTRIBUTE_STANDARD_SIZE,
 						G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
 						priv->cancel,
 						error);
@@ -132,6 +134,9 @@ brasero_local_track_progress_cb (goffset current_num_bytes,
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
+	if (!priv->data_size)
+		return;
+
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 	brasero_job_set_progress (BRASERO_JOB (self),
 				  (gdouble) (priv->read_bytes + current_num_bytes) /
@@ -151,6 +156,7 @@ brasero_local_track_file_transfer (BraseroLocalTrack *self,
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
 	name = g_file_get_basename (src);
+	BRASERO_JOB_LOG (self, "Downloading %s", name);
 	string = g_strdup_printf (_("Copying `%s` locally"), name);
 	g_free (name);
 
@@ -184,8 +190,11 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
+	BRASERO_JOB_LOG (self, "Downloading directory contents");
 	enumerator = g_file_enumerate_children (src,
-						G_FILE_ATTRIBUTE_STANDARD_TYPE,
+						G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+						G_FILE_ATTRIBUTE_STANDARD_NAME ","
+						G_FILE_ATTRIBUTE_STANDARD_SIZE,
 						G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
 						priv->cancel,
 						error);
@@ -197,13 +206,6 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 		GFile *dest_child;
 		GFile *src_child;
 
-		if (error) {
-			g_file_enumerator_close (enumerator, priv->cancel, NULL);
-			g_object_unref (enumerator);
-			g_object_unref (info);
-			return BRASERO_BURN_ERR;
-		}
-
 		src_child = g_file_get_child (src, g_file_info_get_name (info));
 		dest_child = g_file_get_child (dest, g_file_info_get_name (info));
 
@@ -211,9 +213,10 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 			gchar *path;
 
 			path = g_file_get_path (dest_child);
+			BRASERO_JOB_LOG (self, "Creating directory %s", path);
 
 			/* create a directory with the same name and explore it */
-			if (g_mkdir (path, 700)) {
+			if (g_mkdir (path, S_IRWXU)) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
@@ -246,14 +249,13 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 			g_file_enumerator_close (enumerator, priv->cancel, NULL);
 			g_object_unref (enumerator);
 			return BRASERO_BURN_ERR;
-
 		}
 	}
 
 	g_file_enumerator_close (enumerator, priv->cancel, NULL);
 	g_object_unref (enumerator);
 
-	return BRASERO_BURN_OK;
+	return ((*error) != NULL)? BRASERO_BURN_OK:BRASERO_BURN_ERR;
 }
 
 static BraseroBurnResult
@@ -264,18 +266,22 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 {
 	GFileInfo *info;
 	BraseroBurnResult result;
+	GError *local_error = NULL;
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
 	/* Retrieve some information about the file we have to copy */
 	info = g_file_query_info (src,
-				  G_FILE_ATTRIBUTE_STANDARD_TYPE,
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+				  G_FILE_ATTRIBUTE_STANDARD_SIZE,
 				  G_FILE_QUERY_INFO_NONE, /* follow symlinks */
 				  priv->cancel,
-				  error);
-	if (!info || error)
+				  &local_error);
+	if (!info || local_error) {
+		g_propagate_error (error, local_error);
 		return BRASERO_BURN_ERR;
+	}
 
 	/* Retrieve the size of all the data. */
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
@@ -292,7 +298,10 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 		gchar *dest_path;
 
 		dest_path = g_file_get_path (dest);
-		if (g_mkdir_with_parents (dest_path, 700)) {
+
+		/* remove the temporary file that was created */
+		g_remove (dest_path);
+		if (g_mkdir_with_parents (dest_path, S_IRWXU)) {
 			g_free (dest_path);
 			g_object_unref (info);
 
@@ -304,7 +313,9 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 			return BRASERO_BURN_ERR;
 		}
 
+		BRASERO_JOB_LOG (self, "Created directory %s", dest_path);
 		g_free (dest_path);
+
 		result = brasero_local_track_recursive_transfer (self, src, dest, error);
 	}
 	else {
@@ -370,7 +381,7 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 	}
 
 	/* that should not happen */
-	g_warning ("Can't find a downloaded parent for this non local uri.\n");
+	BRASERO_JOB_LOG (self, "Can't find a downloaded parent for %s", uri);
 
 	g_free (parent);
 	g_free (uri);
@@ -553,10 +564,17 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 			graft->uri = brasero_local_track_translate_uri (self, graft->uri);
 		}
 
+		BRASERO_JOB_LOG (self, "Translating unreadable");
+
 		/* translate the globally excluded */
 		unreadable = brasero_track_get_data_excluded_source (track, FALSE);
-		for (; unreadable; unreadable = unreadable->next)
-			unreadable->data = brasero_local_track_translate_uri (self, unreadable->data);
+		for (; unreadable; unreadable = unreadable->next) {
+			gchar *new_uri;
+
+			new_uri = brasero_local_track_translate_uri (self, unreadable->data);
+			if (new_uri)
+				unreadable->data = new_uri;
+		}
 	}
 	break;
 
@@ -678,6 +696,7 @@ _foreach_non_local_cb (const gchar *uri,
 		       const gchar *localuri,
 		       gpointer *data)
 {
+	BraseroLocalTrack *self = BRASERO_LOCAL_TRACK (data);
 	BraseroLocalTrackPrivate *priv;
 	GFile *file, *tmpfile;
 	gchar *parent;
@@ -692,6 +711,7 @@ _foreach_non_local_cb (const gchar *uri,
 
 		uri_local = g_hash_table_lookup (priv->nonlocals, parent);
 		if (uri_local) {
+			BRASERO_JOB_LOG (self, "Parent for %s was found %s", uri, parent);
 			g_free (parent);
 			return TRUE;
 		}
@@ -708,6 +728,7 @@ _foreach_non_local_cb (const gchar *uri,
 	tmpfile = g_file_new_for_uri (localuri);
 	priv->dest_list = g_slist_append (priv->dest_list, tmpfile);
 
+	BRASERO_JOB_LOG (self, "%s set to be downloaded to %s", uri, localuri);
 	return FALSE;
 }
 
