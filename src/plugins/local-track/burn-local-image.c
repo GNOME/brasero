@@ -255,7 +255,7 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 	g_file_enumerator_close (enumerator, priv->cancel, NULL);
 	g_object_unref (enumerator);
 
-	return ((*error) != NULL)? BRASERO_BURN_OK:BRASERO_BURN_ERR;
+	return ((*error) == NULL)? BRASERO_BURN_OK:BRASERO_BURN_ERR;
 }
 
 static BraseroBurnResult
@@ -553,6 +553,7 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 	/* make a copy of the tracks instead of modifying them */
 	switch (input.type) {
 	case BRASERO_TRACK_TYPE_DATA: {
+		GSList *next;
 		GSList *grafts;
 		GSList *unreadable;
 
@@ -568,12 +569,15 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 
 		/* translate the globally excluded */
 		unreadable = brasero_track_get_data_excluded_source (track, FALSE);
-		for (; unreadable; unreadable = unreadable->next) {
+		for (; unreadable; unreadable = next) {
 			gchar *new_uri;
 
+			next = unreadable->next;
 			new_uri = brasero_local_track_translate_uri (self, unreadable->data);
 			if (new_uri)
 				unreadable->data = new_uri;
+			else
+				unreadable = g_slist_remove (unreadable, unreadable->data);
 		}
 	}
 	break;
