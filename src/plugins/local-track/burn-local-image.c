@@ -560,20 +560,27 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 		grafts = brasero_track_get_data_grafts_source (track);
 		for (; grafts; grafts = grafts->next) {
 			BraseroGraftPt *graft;
+			gchar *uri;
 
 			graft = grafts->data;
-			graft->uri = brasero_local_track_translate_uri (self, graft->uri);
+			uri = brasero_local_track_translate_uri (self, graft->uri);
+			g_free (graft->uri);
+			graft->uri = uri;
 		}
 
 		BRASERO_JOB_LOG (self, "Translating unreadable");
 
-		/* translate the globally excluded */
+		/* Translate the globally excluded.
+		 * NOTE: if we can't find a parent for an excluded URI that
+		 * means it shouldn't be included. */
 		unreadable = brasero_track_get_data_excluded_source (track, FALSE);
 		for (; unreadable; unreadable = next) {
 			gchar *new_uri;
 
 			next = unreadable->next;
 			new_uri = brasero_local_track_translate_uri (self, unreadable->data);
+			g_free (unreadable->data);
+
 			if (new_uri)
 				unreadable->data = new_uri;
 			else
@@ -584,23 +591,36 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 
 	case BRASERO_TRACK_TYPE_AUDIO: {
 		gchar *uri;
+		gchar *newuri;
 
 		uri = brasero_track_get_audio_source (track, TRUE);
-		uri = brasero_local_track_translate_uri (self, uri);
-		brasero_track_set_audio_source (track, uri, input.subtype.audio_format); 
+		newuri = brasero_local_track_translate_uri (self, uri);
+		brasero_track_set_audio_source (track,
+						newuri,
+						input.subtype.audio_format);
+		g_free (uri);
 	}
 	break;
 
 	case BRASERO_TRACK_TYPE_IMAGE: {
 		gchar *uri;
+		gchar *newuri;
 
 		uri = brasero_track_get_image_source (track, TRUE);
-		uri = brasero_local_track_translate_uri (self, uri);
-		brasero_track_set_image_source (track, uri, NULL, input.subtype.img_format);
+		newuri = brasero_local_track_translate_uri (self, uri);
+		brasero_track_set_image_source (track,
+						newuri,
+						NULL,
+						input.subtype.img_format);
+		g_free (uri);
 
 		uri = brasero_track_get_toc_source (track, TRUE);
-		uri = brasero_local_track_translate_uri (self, uri);
-		brasero_track_set_image_source (track, NULL, uri, input.subtype.img_format);
+		newuri = brasero_local_track_translate_uri (self, uri);
+		brasero_track_set_image_source (track,
+						NULL,
+						newuri,
+						input.subtype.img_format);
+		g_free (uri);
 	}
 	break;
 
