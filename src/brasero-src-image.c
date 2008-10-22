@@ -138,9 +138,9 @@ static void
 brasero_src_image_set_track (BraseroSrcImage *dialog,
 			     BraseroImageFormat format,
 			     const gchar *image,
-			     const gchar *toc)
+			     const gchar *toc,
+			     guint64 size)
 {
-	gint64 size;
 	gchar *path;
 	gchar *string;
 	gchar *size_string;
@@ -188,23 +188,21 @@ brasero_src_image_set_track (BraseroSrcImage *dialog,
 	if (!toc && !image && format == BRASERO_IMAGE_FORMAT_NONE)
 		return;
 
-	brasero_track_get_image_size (priv->track,
-				      NULL,
-				      NULL,
-				      &size,
-				      NULL);
-
 	size_string = g_format_size_for_display (size);
 	path = NULL;
 	switch (format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
 	case BRASERO_IMAGE_FORMAT_BIN:
 		path = g_filename_from_uri (image?image:toc, NULL, NULL);
+		if (!path)
+			path = g_uri_unescape_string (image?image:toc, NULL);
 		break;
 	case BRASERO_IMAGE_FORMAT_CUE:
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
 	case BRASERO_IMAGE_FORMAT_CLONE:
 		path = g_filename_from_uri (toc, NULL, NULL);
+		if (!path)
+			path = g_uri_unescape_string (toc, NULL);
 		break;
 	default:
 		break;
@@ -236,6 +234,7 @@ brasero_src_image_image_info_cb (GObject *object,
 {
 	BraseroSrcImage *dialog = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
+	BraseroImageFormat format;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
 
@@ -243,8 +242,48 @@ brasero_src_image_image_info_cb (GObject *object,
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     NULL);
+					     NULL,
+					     0);
 		return;
+	}
+
+	if (priv->format) {
+		brasero_image_type_chooser_get_format (BRASERO_IMAGE_TYPE_CHOOSER (priv->format), &format);
+		switch (format) {
+		/* Respect the user's choice regarding format */
+		case BRASERO_IMAGE_FORMAT_BIN:
+			brasero_src_image_set_track (dialog,
+						     format,
+						     uri,
+						     NULL,
+						     g_file_info_get_size (info));
+			return;
+		case BRASERO_IMAGE_FORMAT_CUE:
+			brasero_src_image_set_track (dialog,
+						     format,
+						     NULL,
+						     uri,
+						     g_file_info_get_size (info));
+			return;
+		case BRASERO_IMAGE_FORMAT_CDRDAO:
+			brasero_src_image_set_track (dialog,
+						     format,
+						     NULL,
+						     uri,
+						     g_file_info_get_size (info));
+			return;
+		case BRASERO_IMAGE_FORMAT_CLONE:
+			brasero_src_image_set_track (dialog,
+						     format,
+						     NULL,
+						     uri,
+						     g_file_info_get_size (info));
+			return;
+
+		/* handle those cases afterwards */
+		default:
+			break;
+		}
 	}
 
 	if (!strcmp (g_file_info_get_content_type (info), "application/x-toc")
@@ -261,17 +300,20 @@ brasero_src_image_image_info_cb (GObject *object,
 			brasero_src_image_set_track (dialog,
 						     format,
 						     NULL,
-						     uri);
+						     uri,
+						     g_file_info_get_size (info));
 		else if (g_str_has_suffix (path, ".toc"))
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_CLONE,
 						     NULL,
-						     uri);
+						     uri,
+						     g_file_info_get_size (info));
 		else
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_NONE,
 						     NULL,
-						     uri);
+						     uri,
+						     g_file_info_get_size (info));
 	}
 	else if (!strcmp (g_file_info_get_content_type (info), "application/octet-stream")) {
 		/* that could be an image, so here is the deal:
@@ -281,33 +323,39 @@ brasero_src_image_image_info_cb (GObject *object,
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_CDRDAO,
 						     uri,
-						     NULL);
+						     NULL,
+						     g_file_info_get_size (info));
 		else if (g_str_has_suffix (uri, ".raw"))
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_CLONE,
 						     uri,
-						     NULL);
+						     NULL,
+						     g_file_info_get_size (info));
 		else
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_BIN,
 						     uri,
-						     NULL);
+						     NULL,
+						     g_file_info_get_size (info));
 	}
 	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cd-image"))
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_BIN,
 					     uri,
-					     NULL);
+					     NULL,
+					     g_file_info_get_size (info));
 	else
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     uri);
+					     uri,
+					     g_file_info_get_size (info));
 }
 
 static void
 brasero_src_image_get_format (BraseroSrcImage *dialog,
-			      const gchar *uri)
+			      const gchar *uri,
+			      gboolean type)
 {
 	BraseroSrcImagePrivate *priv;
 
@@ -317,7 +365,8 @@ brasero_src_image_get_format (BraseroSrcImage *dialog,
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     NULL);
+					     NULL,
+					     0);
 		return;
 	}
 
@@ -333,7 +382,7 @@ brasero_src_image_get_format (BraseroSrcImage *dialog,
 	brasero_io_get_file_info (priv->io,
 				  uri,
 				  priv->info_type,
-				  BRASERO_IO_INFO_MIME,
+				  type? BRASERO_IO_INFO_MIME:BRASERO_IO_INFO_NONE,
 				  NULL);
 }
 
@@ -353,32 +402,17 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 
 	switch (format) {
 	case BRASERO_IMAGE_FORMAT_NONE:
-		brasero_src_image_get_format (dialog, uri);
+		brasero_src_image_get_format (dialog, uri, TRUE);
 		break;
+
+	/* for the following we only need the size */
 	case BRASERO_IMAGE_FORMAT_BIN:
-		brasero_src_image_set_track (dialog,
-					     format,
-					     uri,
-					     NULL);
-		break;
 	case BRASERO_IMAGE_FORMAT_CUE:
-		brasero_src_image_set_track (dialog,
-					     format,
-					     NULL,
-					     uri);
-		break;
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
-		brasero_src_image_set_track (dialog,
-					     format,
-					     NULL,
-					     uri);
-		break;
 	case BRASERO_IMAGE_FORMAT_CLONE:
-		brasero_src_image_set_track (dialog,
-					     format,
-					     NULL,
-					     uri);
+		brasero_src_image_get_format (dialog, uri, TRUE);
 		break;
+
 	default:
 		break;
 	}
@@ -527,12 +561,13 @@ brasero_src_image_set_uri (BraseroSrcImage *self,
 	priv = BRASERO_SRC_IMAGE_PRIVATE (self);
 
 	if (uri)
-		brasero_src_image_get_format (self, uri);
+		brasero_src_image_get_format (self, uri, TRUE);
 	else
 		brasero_src_image_set_track (self,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     NULL);
+					     NULL,
+					     0);
 }
 
 static void

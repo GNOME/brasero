@@ -1,5 +1,13 @@
 2008-10-22  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Allow using remote image files
+
+	* src/brasero-src-image.c (brasero_src_image_set_track),
+	(brasero_src_image_image_info_cb), (brasero_src_image_get_format),
+	(brasero_src_image_changed), (brasero_src_image_set_uri):
+
+2008-10-22  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #547395 – Support for remote filesystems
 	Fix wrong changes introduced in previous changes (memleaks change)
 	Improved image handling by downloading a potential checksum file in the
