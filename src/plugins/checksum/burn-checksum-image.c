@@ -563,6 +563,7 @@ brasero_checksum_image_start (BraseroJob *job,
 			      GError **error)
 {
 	BraseroChecksumImagePrivate *priv;
+	BraseroTrack *track = NULL;
 	BraseroJobAction action;
 
 	brasero_job_get_action (job, &action);
@@ -575,6 +576,15 @@ brasero_checksum_image_start (BraseroJob *job,
 		 * writing anything to the disc. That will prevent a disc space
 		 * failure. */
 		brasero_job_set_output_size_for_current_track (job, 0, 0);
+		return BRASERO_BURN_NOT_RUNNING;
+	}
+
+	brasero_job_get_current_track (job, &track);
+
+	if (action == BRASERO_JOB_ACTION_IMAGE
+	&&  brasero_track_get_checksum_type (track) != BRASERO_CHECKSUM_NONE) {
+		BRASERO_JOB_LOG (job, "There is a checksum already");
+		/* if there is a checksum already, if so no need to redo one */
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
