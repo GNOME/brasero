@@ -1,5 +1,23 @@
 2008-10-22  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #547395 – Support for remote filesystems
+	Fix wrong changes introduced in previous changes (memleaks change)
+	Improved image handling by downloading a potential checksum file in the
+	same folder
+	Delete destination tmp file before starting downloading
+
+	* src/burn-image-format.c (brasero_image_format_get_iso_size):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_transfer),
+	(brasero_local_track_translate_uri),
+	(brasero_local_track_read_checksum),
+	(brasero_local_track_download_checksum),
+	(brasero_local_track_thread_finished),
+	(brasero_local_track_add_if_non_local),
+	(brasero_local_track_start):
+
+2008-10-22  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Don't create a new checksum if there is one already
 
 	* src/plugins/checksum/burn-checksum-image.c

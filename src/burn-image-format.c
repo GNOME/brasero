@@ -726,6 +726,9 @@ brasero_image_format_get_iso_size (gchar *path,
 	struct stat buffer;
 	int res;
 
+	if (!path)
+		return FALSE;
+
 	/* a simple stat () will do. That means of course that the image must be
 	 * local. Now if local-track is enabled, it will always run first and we
 	 * don't need that size before it starts. During the GET_SIZE phase of 

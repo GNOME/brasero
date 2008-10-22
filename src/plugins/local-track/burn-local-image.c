@@ -28,9 +28,14 @@
 #  include <config.h>
 #endif
 
+/* This is for getline() and isblank() */
+#define _GNU_SOURCE
+
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stdio.h>
+#include <ctype.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -285,7 +290,7 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 
 	/* Retrieve the size of all the data. */
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
-		BRASERO_JOB_LOG (self, "Downloading file %lli", g_file_info_get_size (info));
+		BRASERO_JOB_LOG (self, "Downloading file (size = %lli)", g_file_info_get_size (info));
 		priv->data_size = g_file_info_get_size (info);
 	}
 	else
@@ -319,6 +324,7 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 		result = brasero_local_track_recursive_transfer (self, src, dest, error);
 	}
 	else {
+		g_file_delete (dest, priv->cancel, NULL);
 		result = brasero_local_track_file_transfer (self, src, dest, error);
 		priv->read_bytes += g_file_info_get_size (info);
 	}
@@ -334,7 +340,7 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 
 static gchar *
 brasero_local_track_translate_uri (BraseroLocalTrack *self,
-				   gchar *uri)
+				   const gchar *uri)
 {
 	gchar *newuri;
 	gchar *parent;
@@ -347,13 +353,11 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 
 	/* see if it is a local file */
 	if (g_str_has_prefix (uri, "file://"))
-		return uri;
+		return g_strdup (uri);
 
 	/* see if it was downloaded itself */
 	newuri = g_hash_table_lookup (priv->nonlocals, uri);
 	if (newuri) {
-		g_free (uri);
-
 		/* we copy this string as it will be freed when freeing 
 		 * downloaded GSList */
 		return g_strdup (newuri);
@@ -371,7 +375,6 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 					       uri + strlen (parent),
 					       NULL);
 			g_free (parent);
-			g_free (uri);
 			return newuri;
 		}
 
@@ -384,41 +387,67 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 	BRASERO_JOB_LOG (self, "Can't find a downloaded parent for %s", uri);
 
 	g_free (parent);
-	g_free (uri);
 	return NULL;
 }
 
 static BraseroBurnResult
 brasero_local_track_read_checksum (BraseroLocalTrack *self)
 {
-	gint bytes;
+	gint size;
 	FILE *file;
-	gchar *path;
-	gchar buffer [512];
+	gchar *name;
+	gchar *source;
+	gchar *line = NULL;
+	size_t line_len = 0;
+	BraseroTrack *track = NULL;
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	/* get the file_checksum from the md5 file */
-	path = g_filename_from_uri (priv->checksum_path, NULL, NULL);
-	file = fopen (path, "r");
-	g_free (path);
+	/* get the file_checksum from the checksum file */
+	file = fopen (priv->checksum_path, "r");
 
-	if (!file)
+	/* get the name of the file that was downloaded */
+	brasero_job_get_current_track (BRASERO_JOB (self), &track);
+	source = brasero_track_get_image_source (track, TRUE);
+	name = g_path_get_basename (source);
+	g_free (source);
+
+	if (!file) {
+		g_free (name);
+		BRASERO_JOB_LOG (self, "Impossible to open the downloaded checksum file");
 		return BRASERO_BURN_ERR;
+	}
 
-	bytes = fread (buffer,
-		       1,
-		       g_checksum_type_get_length (priv->gchecksum_type) - 1,
-		       file);
+	/* find a line with the name of our file (there could be several ones) */
+	BRASERO_JOB_LOG (self, "Searching %s in file", name);
+	while ((size = getline (&line, &line_len, file)) > 0) {
+		if (strstr (line, name)) {
+			gchar *ptr;
+
+			/* Skip blanks */
+			ptr = line;
+			while (isblank (*ptr)) { ptr ++; size --; }
+
+			if (g_checksum_type_get_length (priv->checksum_type) * 2 > size) {
+				g_free (line);
+				line = NULL;
+				continue;
+			}
+	
+			ptr [g_checksum_type_get_length (priv->gchecksum_type) * 2] = '\0';
+			priv->checksum = g_strdup (ptr);
+			g_free (line);
+			BRASERO_JOB_LOG (self, "Found checksum %s", priv->checksum);
+			break;
+		}
+
+		g_free (line);
+		line = NULL;
+	}
 	fclose (file);
-	buffer [g_checksum_type_get_length (priv->gchecksum_type)] = '\0';
 
-	if (bytes != g_checksum_type_get_length (priv->gchecksum_type) - 1)
-		return BRASERO_BURN_ERR;
-
-	priv->checksum = g_strdup (buffer);
-	return BRASERO_BURN_OK;
+	return (priv->checksum? BRASERO_BURN_OK:BRASERO_BURN_ERR);
 }
 
 static BraseroBurnResult
@@ -429,9 +458,12 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 	BraseroTrack *track;
 	gchar *checksum_src;
 	GFile *src, *dest;
+	GFile *tmp;
 	gchar *uri;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	BRASERO_JOB_LOG (self, "Copying checksum file");
 
 	/* generate a unique name for destination */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
@@ -447,10 +479,11 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 					TRUE);
 
 	/* This is an image. See if there is any checksum sitting in the same
-	 * directory to check our download integrity. Try all types of checksum. */
+	 * directory to check our download integrity.
+	 * Try all types of checksum. */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	uri = brasero_track_get_image_source (track, TRUE);
-	dest = g_file_new_for_uri (priv->checksum_path);
+	dest = g_file_new_for_path (priv->checksum_path);
 
 	/* Try with three difference sources */
 	checksum_src = g_strdup_printf ("%s.md5", uri);
@@ -495,14 +528,36 @@ brasero_local_track_download_checksum (BraseroLocalTrack *self)
 					       NULL);
 	g_object_unref (src);
 
+	if (result == BRASERO_BURN_OK) {
+		priv->gchecksum_type = G_CHECKSUM_SHA256;
+		priv->checksum_type = BRASERO_CHECKSUM_SHA256;
+		goto end;
+	}
+
+	/* There are also ftp sites that includes all images checksum in one big
+	 * SHA1 file. */
+	tmp = g_file_new_for_uri (uri);
+	src = g_file_get_parent (tmp);
+	g_object_unref (tmp);
+
+	tmp = src;
+	src = g_file_get_child_for_display_name (tmp, "SHA1SUM", NULL);
+	g_object_unref (tmp);
+
+	result = brasero_local_track_transfer (self,
+					       src,
+					       dest,
+					       NULL);
+	g_object_unref (src);
+
 	if (result != BRASERO_BURN_OK) {
 		g_free (uri);
 		g_object_unref (dest);
 		goto error;
 	}
 
-	priv->gchecksum_type = G_CHECKSUM_SHA256;
-	priv->checksum_type = BRASERO_CHECKSUM_SHA256;
+	priv->gchecksum_type = G_CHECKSUM_SHA1;
+	priv->checksum_type = BRASERO_CHECKSUM_SHA1;
 
 end:
 
@@ -512,7 +567,9 @@ end:
 	return result;
 
 error:
+
 	/* we give up */
+	BRASERO_JOB_LOG (self, "No checksum file available");
 	g_free (priv->checksum_path);
 	priv->checksum_path = NULL;
 	return result;
@@ -564,8 +621,10 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 
 			graft = grafts->data;
 			uri = brasero_local_track_translate_uri (self, graft->uri);
-			g_free (graft->uri);
-			graft->uri = uri;
+			if (uri) {
+				g_free (graft->uri);
+				graft->uri = uri;
+			}
 		}
 
 		BRASERO_JOB_LOG (self, "Translating unreadable");
@@ -604,23 +663,21 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 
 	case BRASERO_TRACK_TYPE_IMAGE: {
 		gchar *uri;
-		gchar *newuri;
+		gchar *newtoc;
+		gchar *newimage;
 
 		uri = brasero_track_get_image_source (track, TRUE);
-		newuri = brasero_local_track_translate_uri (self, uri);
-		brasero_track_set_image_source (track,
-						newuri,
-						NULL,
-						input.subtype.img_format);
+		newimage = brasero_local_track_translate_uri (self, uri);
 		g_free (uri);
 
 		uri = brasero_track_get_toc_source (track, TRUE);
-		newuri = brasero_local_track_translate_uri (self, uri);
-		brasero_track_set_image_source (track,
-						NULL,
-						newuri,
-						input.subtype.img_format);
+		newtoc = brasero_local_track_translate_uri (self, uri);
 		g_free (uri);
+
+		brasero_track_set_image_source (track,
+						newimage,
+						newtoc,
+						input.subtype.img_format);
 	}
 	break;
 
@@ -799,7 +856,7 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 			return BRASERO_BURN_ERR;
 		}
 
-		g_hash_table_insert (priv->nonlocals, (gpointer) uri, localuri);
+		g_hash_table_insert (priv->nonlocals, g_strdup (uri), localuri);
 		return BRASERO_BURN_OK;
 	}
 
@@ -821,7 +878,7 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 
 	/* we don't want to replace it if it has already been downloaded */
 	if (!g_hash_table_lookup (priv->nonlocals, uri))
-		g_hash_table_insert (priv->nonlocals, (gpointer) uri, localuri);
+		g_hash_table_insert (priv->nonlocals, g_strdup (uri), localuri);
 
 	return BRASERO_BURN_OK;
 }
@@ -871,12 +928,14 @@ brasero_local_track_start (BraseroJob *job,
 		break;
 
 	case BRASERO_TRACK_TYPE_AUDIO:
+		/* NOTE: don't delete URI as they will be inserted in hash */
 		uri = brasero_track_get_audio_source (track, TRUE);
 		brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
 		break;
 
 	case BRASERO_TRACK_TYPE_IMAGE:
+		/* NOTE: don't delete URI as they will be inserted in hash */
 		uri = brasero_track_get_image_source (track, TRUE);
 		brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
