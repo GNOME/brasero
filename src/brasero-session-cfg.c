@@ -496,8 +496,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NOT_SUPPORTED);
+			       0);
 		return;
 	}
 
@@ -506,8 +505,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		priv->is_valid = BRASERO_SESSION_NO_INPUT_MEDIUM;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NO_INPUT_MEDIUM);
+			       0);
 		return;
 	}
 
@@ -516,18 +514,17 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		priv->is_valid = BRASERO_SESSION_NO_INPUT_IMAGE;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NO_INPUT_IMAGE);
+			       0);
 		return;
 	}
 
 	/* make sure there is an output set */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {
+		priv->is_valid = BRASERO_SESSION_NO_OUTPUT;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_NO_OUTPUT);
+			       0);
 		return;
 	}
 
@@ -556,15 +553,13 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
 			g_signal_emit (self,
 				       session_cfg_signals [IS_VALID_SIGNAL],
-				       0,
-				       BRASERO_SESSION_DISC_PROTECTED);
+				       0);
 		}
 		else {
 			priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
 			g_signal_emit (self,
 				       session_cfg_signals [IS_VALID_SIGNAL],
-				       0,
-				       BRASERO_SESSION_NOT_SUPPORTED);
+				       0);
 		}
 		return;
 	}
@@ -573,14 +568,14 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		priv->is_valid = BRASERO_SESSION_VALID;
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       BRASERO_SESSION_VALID);
+			       0);
 	}
-	else
+	else {
+		brasero_session_cfg_check_size (self);
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
-			       0,
-			       brasero_session_cfg_check_size (self));
+			       0);
+	}
 }
 
 static void
