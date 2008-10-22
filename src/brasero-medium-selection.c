@@ -229,7 +229,9 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 				    -1);
 
 		if (medium == iter_medium) {
-			g_object_unref (iter_medium);
+			if (iter_medium)
+				g_object_unref (iter_medium);
+
 			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
 			result = TRUE;
 			break;
