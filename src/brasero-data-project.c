@@ -850,11 +850,9 @@ brasero_data_project_uri_remove_graft (BraseroDataProject *self,
 
 static gboolean
 brasero_data_project_graft_is_needed (BraseroDataProject *self,
-				      BraseroGraft *graft)
+				      BraseroURINode *uri_node)
 {
-	BraseroURINode *uri_node;
-
-	uri_node = graft->node;
+g_print ("Checking for %s\n", uri_node->uri);
 	if (uri_node->nodes)
 		return TRUE;
 
@@ -866,7 +864,7 @@ brasero_data_project_graft_is_needed (BraseroDataProject *self,
 		 * signal that URI is not in the tree. */
 		return TRUE;
 	}
-
+g_print ("REMOVVE\n");
 	brasero_data_project_uri_remove_graft (self, uri_node->uri);
 	return FALSE;
 }
@@ -1721,16 +1719,19 @@ brasero_data_project_update_uri (BraseroDataProject *self,
 	gchar *parent_uri;
 	BraseroGraft *graft;
 	BraseroURINode *uri_node;
+	BraseroURINode *former_uri_node;
 
 	graft = BRASERO_FILE_NODE_GRAFT (node);
-	if (!strcmp (graft->node->uri, uri)) {
+	former_uri_node = graft->node;
+
+	if (!strcmp (former_uri_node->uri, uri)) {
 		/* Nothing needs update */
 		return;
 	}
 
 	/* different URIS; make sure the node still needs a graft:
 	 * - if so, update it
-	 * - if not, remove it*/
+	 * - if not, remove it */
 	parent_uri = brasero_data_project_node_to_uri (self, node->parent);
 	if (parent_uri) {
 		guint parent_len;
@@ -1757,8 +1758,8 @@ brasero_data_project_update_uri (BraseroDataProject *self,
 		brasero_file_node_graft (node, uri_node);
 	}
 
-	/* the node was ungrafted, check if the old graft is still needed */
-	brasero_data_project_graft_is_needed (self, graft);
+	/* the node was ungrafted, check if the former graft is still needed */
+	brasero_data_project_graft_is_needed (self, former_uri_node);
 }
 
 void
