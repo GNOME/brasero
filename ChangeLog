@@ -1,3 +1,18 @@
+2008-10-23  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #555860 – Brasero fails make distcheck
+
+	* Makefile.am:
+	* data/Makefile.am:
+	* docs/Makefile.am:
+	* src/Makefile.am:
+	* src/brasero-io.c (brasero_io_check_symlink_target),
+	(brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_info_thread),
+	(brasero_io_parse_playlist_thread),
+	(brasero_io_load_directory_thread):
+	* src/plugins/libburnia/burn-libread-disc.c:
+
 2008-10-22  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Allow using remote image files

@@ -27,11 +27,14 @@ mime_DATA = brasero.xml
 
 IMAGES=	logo.png
 
-CLEANFILES =	$(desktop_DATA)\
-			$(mime_DATA)
+CLEANFILES =		$(desktop_DATA)		\
+			$(mime_DATA)		\
+			$(schemas_DATA)
 
-EXTRA_DIST = $(desktop_in_files)\
-			$(MIMEFILES)\
+EXTRA_DIST = 		brasero.xml		\
+			$(desktop_in_files)	\
+			$(schemas_in_files)	\
+			$(MIMEFILES)		\
 			$(IMAGES)
 
 braserodistpixdir = $(datadir)/brasero/

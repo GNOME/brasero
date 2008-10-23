@@ -13,6 +13,9 @@ EXTRA_DIST = 			\
 	MAINTAINERS		\
 	NEWS			\
 	README			\
+	intltool-extract.in	\
+	intltool-merge.in	\
+	intltool-update.in	\
 	gnome-doc-utils.make	\
 	m4
 
