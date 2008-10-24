@@ -1883,9 +1883,9 @@ brasero_medium_get_contents (BraseroMedium *self,
 		priv->block_size = 2048;
 
 		priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
+		BRASERO_BURN_LOG ("First open track %d", priv->first_open_track);
 
-		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS)
-		||  BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_RESTRICTED))
+		if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info))
 			brasero_medium_add_DVD_plus_RW_leadout (self);
 		else {
 			track = g_new0 (BraseroMediumTrack, 1);
@@ -1898,25 +1898,22 @@ brasero_medium_get_contents (BraseroMedium *self,
 							  track,
 							  code);
 		}
-
-		goto end;
 	}
-
-	if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
+	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
 		BRASERO_BURN_LOG ("Appendable media");
 
 		priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
-		BRASERO_BURN_LOG ("First track in last open session %i", priv->first_open_track);
+		BRASERO_BURN_LOG ("First track in last open session %d", priv->first_open_track);
+
+		result = brasero_medium_get_sessions_info (self, handle, code);
 	}
 	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
 		priv->info |= BRASERO_MEDIUM_CLOSED;
 		BRASERO_BURN_LOG ("Closed media");
+
+		result = brasero_medium_get_sessions_info (self, handle, code);
 	}
-
-	result = brasero_medium_get_sessions_info (self, handle, code);
-
-end:
 
 	g_free (info);
 	return result;
