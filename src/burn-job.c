@@ -1727,7 +1727,8 @@ brasero_job_start_progress (BraseroJob *self,
 {
 	BraseroJobPrivate *priv;
 
-	BRASERO_JOB_DEBUG (self);
+	/* Turn this off as otherwise it floods bug reports */
+	// BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
 	if (priv->next)
@@ -1762,7 +1763,9 @@ brasero_job_set_progress (BraseroJob *self,
 {
 	BraseroJobPrivate *priv;
 
-	BRASERO_JOB_LOG (self, "Called brasero_job_set_progress (%lf)", progress);
+	/* Turn this off as it floods bug reports */
+	//BRASERO_JOB_LOG (self, "Called brasero_job_set_progress (%lf)", progress);
+
 	priv = BRASERO_JOB_PRIVATE (self);
 	if (priv->next)
 		return BRASERO_BURN_ERR;
@@ -1823,7 +1826,8 @@ brasero_job_set_rate (BraseroJob *self,
 {
 	BraseroJobPrivate *priv;
 
-	BRASERO_JOB_DEBUG (self);
+	/* Turn this off as otherwise it floods bug reports */
+	// BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
 	if (priv->next)
@@ -1864,7 +1868,8 @@ brasero_job_set_written_track (BraseroJob *self,
 {
 	BraseroJobPrivate *priv;
 
-	BRASERO_JOB_DEBUG (self);
+	/* Turn this off as otherwise it floods bug reports */
+	// BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
 	if (priv->next)
@@ -1879,7 +1884,8 @@ brasero_job_set_written_session (BraseroJob *self,
 {
 	BraseroJobPrivate *priv;
 
-	BRASERO_JOB_DEBUG (self);
+	/* Turn this off as otherwise it floods bug reports */
+	// BRASERO_JOB_DEBUG (self);
 
 	priv = BRASERO_JOB_PRIVATE (self);
 	if (priv->next)

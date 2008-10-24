@@ -1,3 +1,12 @@
+2008-10-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Turn off some debugging statements as they were flooding bug reports
+	with unnecessary information
+
+	* src/burn-job.c (brasero_job_start_progress),
+	(brasero_job_set_progress), (brasero_job_set_rate),
+	(brasero_job_set_written_track), (brasero_job_set_written_session):
+
 2008-10-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Remove unneeded graft when updating URI for a node
