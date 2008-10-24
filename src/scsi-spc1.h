@@ -35,6 +35,10 @@
 G_BEGIN_DECLS
 
 BraseroScsiResult
+brasero_spc1_test_unit_ready (BraseroDeviceHandle *handle,
+			      BraseroScsiErrCode *error);
+
+BraseroScsiResult
 brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 				  BraseroSPCPageType num,
 				  BraseroScsiModeData **data,

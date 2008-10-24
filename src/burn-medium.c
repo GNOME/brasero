@@ -2958,6 +2958,22 @@ brasero_medium_probe_thread (gpointer self)
 
 	if (handle) {
 		BRASERO_BURN_LOG ("Open () succeeded");
+
+		/* NOTE: if we wanted to know the status we'd need to read the 
+		 * error code variable which is currently NULL */
+		while (brasero_spc1_test_unit_ready (handle, NULL) != BRASERO_SCSI_OK) {
+			sleep (1);
+
+			if (priv->probe_cancelled) {
+				priv->probe = NULL;
+				brasero_device_handle_close (handle);
+				BRASERO_BURN_LOG ("Device probing cancelled");
+				return NULL;
+			}
+		}
+
+		BRASERO_BURN_LOG ("Device ready");
+
 		brasero_medium_init_real (BRASERO_MEDIUM (self), handle);
 		brasero_device_handle_close (handle);
 	}
