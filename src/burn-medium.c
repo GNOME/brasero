@@ -1530,6 +1530,8 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 						   code);
 	if (result == BRASERO_SCSI_OK) {
 		wrt_page = (BraseroScsiWritePage *) &data->page;
+
+		BRASERO_BURN_LOG ("Former write mode %d", wrt_page->write_type;
 		wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
 
 		result = brasero_spc1_mode_select (handle, data, size, code);

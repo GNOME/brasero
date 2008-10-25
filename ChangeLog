@@ -1,5 +1,11 @@
 2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Added debug line to catch problem with CD-R initialization
+
+	* src/burn-medium.c (brasero_medium_track_set_leadout):
+
+2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #556146 – brasero crashed with SIGSEGV in g_main_context_dispatch()
 	Fixed a crash when the mime type detection failed
 
