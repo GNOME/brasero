@@ -1,5 +1,12 @@
 2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #556146 – brasero crashed with SIGSEGV in g_main_context_dispatch()
+	Fixed a crash when the mime type detection failed
+
+	* src/brasero-player.c (brasero_player_metadata_completed):
+
+2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #556724 – Brasero main GUI appears after closing the dialog when opening an ISO file using Nautilus
 
 	* src/brasero-data-disc.c (brasero_data_disc_switch_to_image):

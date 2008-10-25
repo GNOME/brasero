@@ -876,6 +876,7 @@ brasero_player_metadata_completed (GObject *obj,
 				   gpointer null_data)
 {
 	BraseroPlayer *player = BRASERO_PLAYER (obj);
+	const gchar *mime;
 
 	if (player->priv->pixbuf) {
 		gtk_image_set_from_pixbuf (GTK_IMAGE (player->priv->image_display), NULL);
@@ -893,6 +894,8 @@ brasero_player_metadata_completed (GObject *obj,
 			       0);
 		return;
 	}
+
+	mime = g_file_info_get_content_type (info);
 
 	/* based on the mime type, we try to determine the type of file */
 	if (g_file_info_get_attribute_boolean (info, BRASERO_IO_HAS_VIDEO)) {
@@ -920,7 +923,7 @@ brasero_player_metadata_completed (GObject *obj,
 		else
 			gtk_widget_set_sensitive (player->priv->progress, FALSE);
 	}
-	else if (!strncmp ("image/", g_file_info_get_content_type (info), 6)) {
+	else if (mime && !strncmp ("image/", mime, 6)) {
 		brasero_player_image (player);
 		return;
 	}
