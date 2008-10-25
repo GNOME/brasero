@@ -1015,10 +1015,12 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	gboolean hide;
 	gint id;
 
-	if (!GTK_WIDGET_VISIBLE (dialog)) {
+	if (!GTK_WIDGET_MAPPED (dialog)) {
 		gtk_widget_show (GTK_WIDGET (dialog));
 		hide = TRUE;
 	}
+	else
+		hide = FALSE;
 
 	g_timer_stop (dialog->priv->total_time);
 
@@ -1045,6 +1047,9 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	id = g_timeout_add (10000,
 			    brasero_burn_dialog_dummy_success_timeout,
 			    message);
+
+	gtk_widget_show (GTK_WIDGET (dialog));
+	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);

@@ -1,5 +1,11 @@
 2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to fix #557833 – Brasero Graphical Interaface Disappears after simulate & during writing
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_dummy_success_cb):
+
+2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #556874 – Error is shown when trying to select an image file to burning
 	Make sure there is a valid parent path to be set in image dialog
 	Tell user when the image path is not valid
