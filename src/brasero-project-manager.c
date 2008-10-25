@@ -182,6 +182,8 @@ struct BraseroProjectManagerPrivate {
 	guint status_ctx;
 
 	GtkActionGroup *action_group;
+
+	guint oneshot:1;
 };
 
 #define BRASERO_PROJECT_MANAGER_CONNECT_CHANGED(manager, container)		\
@@ -576,17 +578,30 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (result != GTK_RESPONSE_OK) {
 		gtk_widget_destroy (dialog);
+
+		/* Here we may have to close brasero altogether */
+		if (manager->priv->oneshot) {
+			GtkWidget *toplevel;
+
+			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+			gtk_widget_destroy (toplevel);
+		}
 		return;
 	}
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	gtk_widget_destroy (dialog);
 
-	if (!session)
-		return;
-
 	brasero_project_manager_burn (manager, session);
 	g_object_unref (session);
+
+	/* Here we may have to close brasero altogether */
+	if (manager->priv->oneshot) {
+		GtkWidget *toplevel;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+		gtk_widget_destroy (toplevel);
+	}
 }
 
 static void
@@ -622,6 +637,15 @@ brasero_project_manager_copy_disc (BraseroProjectManager *manager,
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (result != GTK_RESPONSE_OK) {
 		gtk_widget_destroy (dialog);
+
+		/* Here we may have to close brasero altogether */
+		if (manager->priv->oneshot) {
+			GtkWidget *toplevel;
+
+			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+			gtk_widget_destroy (toplevel);
+		}
+
 		return;
 	}
 
@@ -630,6 +654,14 @@ brasero_project_manager_copy_disc (BraseroProjectManager *manager,
 
 	brasero_project_manager_burn (manager, session);
 	g_object_unref (session);
+
+	/* Here we may have to close brasero altogether */
+	if (manager->priv->oneshot) {
+		GtkWidget *toplevel;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+		gtk_widget_destroy (toplevel);
+	}
 }
 
 static void
@@ -642,13 +674,20 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	GtkWidget *toplevel;
 	GtkAction *action;
 
-	if ((manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
-	||   manager->priv->type == BRASERO_PROJECT_TYPE_DATA
-	||   manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO)
-	&&  !brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
-		return;
-
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
+
+	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
+	||  manager->priv->type == BRASERO_PROJECT_TYPE_DATA
+	||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO) {
+		if (!brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
+			return;
+
+		if (manager->priv->oneshot) {
+			/* Here we may have to close brasero altogether */
+			gtk_widget_destroy (toplevel);
+			return;
+		}
+	}
 
 	if (manager->priv->status_ctx) {
 		GtkWidget *status;
@@ -743,47 +782,55 @@ brasero_project_manager_type_changed_cb (BraseroProjectTypeChooser *chooser,
 					 BraseroProjectType type,
 					 BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, type, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_empty_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_audio_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_AUDIO, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_data_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_DATA, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_video_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_VIDEO, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_copy_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_iso_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, NULL, TRUE);
 }
 
 void
-brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris)
+brasero_project_manager_audio (BraseroProjectManager *manager,
+			       GSList *uris)
 {
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_AUDIO,
@@ -793,7 +840,8 @@ brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris)
 }
 
 void
-brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris)
+brasero_project_manager_data (BraseroProjectManager *manager,
+			      GSList *uris)
 {
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_DATA,
@@ -803,7 +851,8 @@ brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris)
 }
 
 void
-brasero_project_manager_video (BraseroProjectManager *manager, GSList *uris)
+brasero_project_manager_video (BraseroProjectManager *manager,
+			       GSList *uris)
 {
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_VIDEO,
@@ -816,13 +865,22 @@ void
 brasero_project_manager_copy (BraseroProjectManager *manager,
 			      const gchar *device)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, device, TRUE);
+	brasero_project_manager_switch (manager,
+					BRASERO_PROJECT_TYPE_COPY,
+					NULL,
+					device,
+					TRUE);
 }
 
 void
-brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri)
+brasero_project_manager_iso (BraseroProjectManager *manager,
+			     const gchar *uri)
 {
-	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, uri, TRUE);
+	brasero_project_manager_switch (manager,
+					BRASERO_PROJECT_TYPE_ISO,
+					NULL,
+					uri,
+					TRUE);
 }
 
 BraseroProjectType
@@ -1038,6 +1096,7 @@ brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manag
 	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
 	gtk_widget_destroy (chooser);
 
+	manager->priv->oneshot = FALSE;
 	type = brasero_project_manager_open_uri (manager, uri);
 	g_free (uri);
 }
@@ -1047,7 +1106,15 @@ brasero_project_manager_recent_clicked_cb (BraseroProjectTypeChooser *chooser,
 					   const gchar *uri,
 					   BraseroProjectManager *manager)
 {
+	manager->priv->oneshot = FALSE;
 	brasero_project_manager_open_uri (manager, uri);
+}
+
+void
+brasero_project_manager_set_oneshot (BraseroProjectManager *manager,
+				     gboolean oneshot)
+{
+	manager->priv->oneshot = oneshot;
 }
 
 void

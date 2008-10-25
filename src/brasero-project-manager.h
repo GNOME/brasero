@@ -60,22 +60,32 @@ GType brasero_project_manager_get_type ();
 GtkWidget *brasero_project_manager_new ();
 
 void
-brasero_project_manager_audio (BraseroProjectManager *manager, GSList *uris);
+brasero_project_manager_set_oneshot (BraseroProjectManager *manager,
+				     gboolean oneshot);
+
 void
-brasero_project_manager_data (BraseroProjectManager *manager, GSList *uris);
+brasero_project_manager_audio (BraseroProjectManager *manager,
+			       GSList *uris);
 void
-brasero_project_manager_video (BraseroProjectManager *manager, GSList *uris);
+brasero_project_manager_data (BraseroProjectManager *manager,
+			      GSList *uris);
+void
+brasero_project_manager_video (BraseroProjectManager *manager,
+			       GSList *uris);
 void
 brasero_project_manager_copy (BraseroProjectManager *manager,
 			      const gchar *device);
 void
-brasero_project_manager_iso (BraseroProjectManager *manager, const gchar *uri);
+brasero_project_manager_iso (BraseroProjectManager *manager,
+			     const gchar *uri);
 
 BraseroProjectType
-brasero_project_manager_open_playlist (BraseroProjectManager *manager, const gchar *uri);
+brasero_project_manager_open_playlist (BraseroProjectManager *manager,
+				       const gchar *uri);
 
 BraseroProjectType
-brasero_project_manager_open_project (BraseroProjectManager *manager, const gchar *uri);
+brasero_project_manager_open_project (BraseroProjectManager *manager,
+				      const gchar *uri);
 
 BraseroProjectType
 brasero_project_manager_open_by_mime (BraseroProjectManager *manager,

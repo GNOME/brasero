@@ -784,7 +784,8 @@ brasero_data_disc_switch_to_image (gpointer data)
 
 	/* Tell project manager to switch */
 	manager = brasero_app_get_project_manager (BRASERO_APP (toplevel));
-	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager), callback_data->uri);
+	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager),
+				     callback_data->uri);
 
 	return FALSE;
 }

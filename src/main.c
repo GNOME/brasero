@@ -214,18 +214,22 @@ brasero_app_parse_options (BraseroApp *app)
 			device = files [0];
 		
 		/* this can't combine with any other options */
+		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device);
 	}
 	else if (iso_uri) {
+		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_iso, iso_uri);
 	}
 	else if (project_uri) {
+		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_project, project_uri);
 	}
 
 #ifdef BUILD_PLAYLIST
 
 	else if (playlist_uri) {
+		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
 	}
 
@@ -260,18 +264,25 @@ brasero_app_parse_options (BraseroApp *app)
 
 		/* reverse to keep the order of files */
 		list = g_slist_reverse (list);
+		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
 		g_slist_free (list);
 	}
 	else if (files) {
-		BraseroProjectType type;
+		if (g_strv_length (files) == 1) {
+			BraseroProjectType type;
 
-	    	if (g_strv_length (files) > 1)
-			BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+			brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
+			type = brasero_project_manager_open_uri (BRASERO_PROJECT_MANAGER (manager), files [0]);
 
-		type = brasero_project_manager_open_uri (BRASERO_PROJECT_MANAGER (manager), files [0]);
-		if (type == BRASERO_PROJECT_TYPE_INVALID)
+			/* Fallback if it hasn't got a suitable URI */
+			if (type == BRASERO_PROJECT_TYPE_INVALID)
+				BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+		}
+		else {
+			brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 			BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+		}
 	}
 	else {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
