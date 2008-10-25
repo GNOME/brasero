@@ -1,5 +1,21 @@
 2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #556874 – Error is shown when trying to select an image file to burning
+	Make sure there is a valid parent path to be set in image dialog
+	Tell user when the image path is not valid
+	Mark a string to be translated (used an old string)
+	Fix a small memory leak
+	Fix potential crash when it's not possible to retrieve content type
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_finalize):
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	* src/brasero-src-image.c (brasero_src_image_error),
+	(brasero_src_image_image_info_cb), (brasero_src_image_folder_cb),
+	(brasero_src_image_changed), (brasero_src_image_clicked),
+	(brasero_src_image_init), (brasero_src_image_finalize):
+
+2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed typo in previous patch
 
 	* src/burn-medium.c (brasero_medium_track_set_leadout):

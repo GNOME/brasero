@@ -1234,6 +1234,7 @@ brasero_data_vfs_finalize (GObject *object)
 	brasero_data_vfs_clear (BRASERO_DATA_VFS (object));
 
 	priv = BRASERO_DATA_VFS_PRIVATE (object);
+
 	if (priv->loading) {
 		g_hash_table_destroy (priv->loading);
 		priv->loading = NULL;

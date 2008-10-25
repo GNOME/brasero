@@ -52,6 +52,9 @@ struct _BraseroSrcImagePrivate
 	BraseroIO *io;
 	BraseroIOJobBase *info_type;
 
+	gchar *folder;
+	BraseroIOJobBase *folder_type;
+
 	GtkWidget *format;
 	GtkWidget *label;
 	GtkWidget *file;
@@ -226,6 +229,28 @@ brasero_src_image_set_track (BraseroSrcImage *dialog,
 }
 
 static void
+brasero_src_image_error (BraseroSrcImage *self,
+			 GError *error)
+{
+	GtkWidget *toplevel;
+	GtkWidget *dialog;
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT |
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_WARNING,
+					 GTK_BUTTONS_CLOSE,
+					 _("Please, select another image."));
+
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  error->message);
+
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+}
+
+static void
 brasero_src_image_image_info_cb (GObject *object,
 				 GError *error,
 				 const gchar *uri,
@@ -235,6 +260,7 @@ brasero_src_image_image_info_cb (GObject *object,
 	BraseroSrcImage *dialog = BRASERO_SRC_IMAGE (object);
 	BraseroSrcImagePrivate *priv;
 	BraseroImageFormat format;
+	const gchar *mime;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
 
@@ -244,6 +270,9 @@ brasero_src_image_image_info_cb (GObject *object,
 					     NULL,
 					     NULL,
 					     0);
+
+		/* we need to say that image can't be loaded */
+		brasero_src_image_error (dialog, error);
 		return;
 	}
 
@@ -286,9 +315,11 @@ brasero_src_image_image_info_cb (GObject *object,
 		}
 	}
 
-	if (!strcmp (g_file_info_get_content_type (info), "application/x-toc")
-	||  !strcmp (g_file_info_get_content_type (info), "application/x-cdrdao-toc")
-	||  !strcmp (g_file_info_get_content_type (info), "application/x-cue")) {
+	mime = g_file_info_get_content_type (info);
+	if (mime
+	&& (!strcmp (mime, "application/x-toc")
+	||  !strcmp (mime, "application/x-cdrdao-toc")
+	||  !strcmp (mime, "application/x-cue"))) {
 		BraseroImageFormat format;
 		gchar *path;
 
@@ -315,7 +346,7 @@ brasero_src_image_image_info_cb (GObject *object,
 						     uri,
 						     g_file_info_get_size (info));
 	}
-	else if (!strcmp (g_file_info_get_content_type (info), "application/octet-stream")) {
+	else if (mime && !strcmp (mime, "application/octet-stream")) {
 		/* that could be an image, so here is the deal:
 		 * if we can find the type through the extension, fine.
 		 * if not default to CLONE */
@@ -338,7 +369,7 @@ brasero_src_image_image_info_cb (GObject *object,
 						     NULL,
 						     g_file_info_get_size (info));
 	}
-	else if (!strcmp (g_file_info_get_content_type (info), "application/x-cd-image"))
+	else if (mime && !strcmp (mime, "application/x-cd-image"))
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_BIN,
 					     uri,
@@ -350,6 +381,53 @@ brasero_src_image_image_info_cb (GObject *object,
 					     NULL,
 					     uri,
 					     g_file_info_get_size (info));
+}
+
+static void
+brasero_src_image_folder_cb (GObject *object,
+			     GError *error,
+			     const gchar *uri,
+			     GFileInfo *info,
+			     gpointer data_update_folder)
+{
+	BraseroSrcImagePrivate *priv;
+	gboolean update_on_error;
+	GConfClient *client;
+
+	priv = BRASERO_SRC_IMAGE_PRIVATE (object);
+
+	update_on_error = GPOINTER_TO_INT (data_update_folder);
+
+	if (error) {
+		if (!update_on_error)
+			return;
+
+		g_free (priv->folder);
+		priv->folder = NULL;
+		goto update_gconf;
+	}
+
+	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
+		if (!update_on_error)
+			return;
+
+		g_free (priv->folder);
+		priv->folder = NULL;
+		goto update_gconf;
+	}
+
+	g_free (priv->folder);
+	priv->folder = g_strdup (uri);
+
+update_gconf:
+
+	client = gconf_client_get_default ();
+	gconf_client_set_string (client,
+				 BRASERO_KEY_ISO_DIRECTORY,
+				 priv->folder? priv->folder:"",
+				 NULL);
+	g_object_unref (client);
+
 }
 
 static void
@@ -391,7 +469,6 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 {
 	gchar *uri;
 	gchar *parent;
-	GConfClient *client;
 	BraseroImageFormat format;
 	BraseroSrcImagePrivate *priv;
 
@@ -417,13 +494,23 @@ brasero_src_image_changed (BraseroSrcImage *dialog)
 		break;
 	}
 
-	/* save directory path */
-	client = gconf_client_get_default ();
+	/* This is to save the parent folder location for next time */
+	if (!priv->io)
+		priv->io = brasero_io_get_default ();
+
+	if (!priv->folder_type)
+		priv->folder_type = brasero_io_register (G_OBJECT (dialog),
+							 brasero_src_image_folder_cb,
+							 NULL,
+							 NULL);
+
 	parent = g_path_get_dirname (uri);
-	gconf_client_set_string (client, BRASERO_KEY_ISO_DIRECTORY, parent, NULL);
-	g_object_unref (client);
+	brasero_io_get_file_info (priv->io,
+				  parent,
+				  priv->folder_type,
+				  BRASERO_IO_INFO_NONE,
+				  GINT_TO_POINTER (FALSE));
 	g_free (parent);
-	g_free (uri);
 }
 
 static void
@@ -475,10 +562,8 @@ brasero_src_image_clicked (GtkButton *button)
 	GtkResponseType response;
 	GtkFileFilter *filter;
 	GtkWidget *toplevel;
-	GConfClient *client;
 	GtkWidget *label;
 	GtkWidget *box;
-	gchar *uri;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (button);
 
@@ -492,17 +577,16 @@ brasero_src_image_clicked (GtkButton *button)
 
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (priv->file), FALSE);
 
-	client = gconf_client_get_default ();
-	uri = gconf_client_get_string (client, BRASERO_KEY_ISO_DIRECTORY, NULL);
-	g_object_unref (client);
-	if (uri) {
-		if (!gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), uri))
-			gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
+	/* if we haven't been able to get the saved parent folder type, give up */
+	if (priv->folder_type)
+		brasero_io_cancel_by_base (priv->io, priv->folder_type);
 
-		g_free (uri);
+	if (priv->folder) {
+		if (!gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), priv->folder))
+			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
 	}
 	else
-		gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (priv->file), g_get_home_dir ());
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("All files"));
@@ -574,13 +658,40 @@ static void
 brasero_src_image_init (BraseroSrcImage *object)
 {
 	BraseroSrcImagePrivate *priv;
+	GConfClient *client;
 	GtkWidget *image;
 	GtkWidget *label;
 	GtkWidget *box;
 	gchar *string;
+	gchar *uri;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (object);
 
+	/* Set the parent folder to be used in gtkfilechooser. This has to be 
+	 * done now not to delay its creation when it's needed and we need to
+	 * know if the location that was saved is still valid */
+	client = gconf_client_get_default ();
+	uri = gconf_client_get_string (client, BRASERO_KEY_ISO_DIRECTORY, NULL);
+	g_object_unref (client);
+
+	if (uri && uri [0] != '\0') {
+		if (!priv->io)
+			priv->io = brasero_io_get_default ();
+
+		if (!priv->folder_type)
+			priv->folder_type = brasero_io_register (G_OBJECT (object),
+								 brasero_src_image_folder_cb,
+								 NULL,
+								 NULL);
+
+		brasero_io_get_file_info (priv->io,
+					  uri,
+					  priv->folder_type,
+					  BRASERO_IO_INFO_NONE,
+					  GINT_TO_POINTER (TRUE));
+	}
+	g_free (uri);
+		 
 	priv->caps = brasero_burn_caps_get_default ();
 
 	string = g_strdup_printf ("<i>%s</i>", _("Click here to select an _image"));
@@ -621,6 +732,23 @@ brasero_src_image_finalize (GObject *object)
 	if (priv->caps) {
 		g_object_unref (priv->caps);
 		priv->caps = NULL;
+	}
+
+	if (priv->io) {
+		if (priv->info_type) {
+			brasero_io_cancel_by_base (priv->io, priv->info_type);
+			g_free (priv->info_type);
+			priv->info_type = NULL;
+		}
+
+		if (priv->folder_type) {
+			brasero_io_cancel_by_base (priv->io, priv->folder_type);
+			g_free (priv->folder_type);
+			priv->folder_type = NULL;
+		}
+
+		g_object_unref (priv->io);
+		priv->io = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_src_image_parent_class)->finalize (object);

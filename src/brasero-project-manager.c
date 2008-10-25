@@ -1049,7 +1049,7 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 					   	 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					   	 GTK_MESSAGE_ERROR,
 					   	 GTK_BUTTONS_CLOSE,
-					   	 "Error loading project");
+					   	 _("Error while loading the project:"));
 	  	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("The project '%s' does not exist."),
 							  uri);
