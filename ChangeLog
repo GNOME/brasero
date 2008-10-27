@@ -1,5 +1,12 @@
 2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a crash when an audio/video file isn't loaded yet or hasn't got any
+	BraseroSongInfo and we're trying to save the project contents.
+
+	* src/burn-track.c (brasero_song_info_copy):
+
+2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a problem where metadata object didn't always return a snapshot 
 	because it was stopped by a state change event
 

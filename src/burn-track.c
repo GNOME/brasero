@@ -128,6 +128,9 @@ brasero_song_info_copy (BraseroSongInfo *info)
 {
 	BraseroSongInfo *copy;
 
+	if (!info)
+		return NULL;
+
 	copy = g_new0 (BraseroSongInfo, 1);
 
 	copy->title = g_strdup (info->title);
