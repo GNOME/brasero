@@ -1,5 +1,18 @@
 2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #557810 – Video Project Compute File size Hang
+	Some Gstreamer plugin need to have the decoded video stream linked as well
+
+	* src/brasero-metadata.c (brasero_metadata_destroy_pipeline),
+	(brasero_metadata_create_audio_pipeline),
+	(brasero_metadata_create_video_pipeline),
+	(brasero_metadata_error_on_pad_linking),
+	(brasero_metadata_link_dummy_pad),
+	(brasero_metadata_new_decoded_pad_cb),
+	(brasero_metadata_get_info_wait):
+
+2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a crash when an audio/video file isn't loaded yet or hasn't got any
 	BraseroSongInfo and we're trying to save the project contents.
 

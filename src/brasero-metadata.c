@@ -211,7 +211,7 @@ brasero_metadata_destroy_pipeline (BraseroMetadata *self)
 	}
 
 	if (change == GST_STATE_CHANGE_FAILURE)
-		g_warning ("State change failure\n");
+		g_warning ("State change failure");
 
 	if (priv->audio) {
 		gst_bin_remove (GST_BIN (priv->pipeline), priv->audio);
@@ -1096,9 +1096,16 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 		audio_pad = gst_element_get_static_pad (queue, "sink");
 	}
 	else {
+		GstElement *queue;
+
+		queue = gst_element_factory_make ("queue", NULL);
+		gst_bin_add (GST_BIN (priv->audio), queue);
+
 		gst_object_ref (priv->sink);
 		gst_bin_add (GST_BIN (priv->audio), priv->sink);
-		audio_pad = gst_element_get_static_pad (priv->sink, "sink");
+
+		gst_element_link (queue, priv->sink);
+		audio_pad = gst_element_get_static_pad (queue, "sink");
 	}
 
 	gst_element_add_pad (priv->audio, gst_ghost_pad_new ("sink", audio_pad));
@@ -1119,12 +1126,20 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 	GstElement *queue;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
-
 	priv->video = gst_bin_new (NULL);
 
 	priv->snapshot = gst_element_factory_make ("gdkpixbufsink", NULL);
-	colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
-	queue = gst_element_factory_make ("queue", NULL);
+	if (!priv->snapshot) {
+		gst_object_unref (priv->video);
+		priv->video = NULL;
+
+		BRASERO_BURN_LOG ("gdkpixbufsink is not installed");
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "Can't create gdkpixbufsink");
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (priv->video), priv->snapshot);
 
 	g_object_set (priv->snapshot,
 		      "qos", FALSE,
@@ -1132,11 +1147,23 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 		      "max-lateness", (gint64) - 1,
 		      NULL);
 
-	gst_bin_add_many (GST_BIN (priv->video),
-			  queue,
-			  colorspace,
-			  priv->snapshot,
-			  NULL);
+	colorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
+	if (!colorspace) {
+		gst_object_unref (priv->video);
+		priv->video = NULL;
+
+		BRASERO_BURN_LOG ("ffmpegcolorspace is not installed");
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   "Can't create gdkpixbufsink");
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (priv->video), colorspace);
+
+	queue = gst_element_factory_make ("queue", NULL);
+	gst_bin_add (GST_BIN (priv->video), queue);
+
+	/* link elements */
 	gst_element_link_many (queue,
 			       colorspace,
 			       priv->snapshot,
@@ -1150,6 +1177,61 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 	BRASERO_BURN_LOG ("Adding pixbuf snapshot sink for %s", priv->info->uri);
 
 	return TRUE;
+}
+
+static void
+brasero_metadata_error_on_pad_linking (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+	GstMessage *message;
+	GstBus *bus;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
+					 priv->error,
+					 "Sent by brasero_metadata_error_on_pad_linking");
+
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
+	gst_bus_post (bus, message);
+	g_object_unref (bus);
+}
+
+static gboolean
+brasero_metadata_link_dummy_pad (BraseroMetadata *self,
+				 GstPad *pad)
+{
+	BraseroMetadataPrivate *priv;
+	GstElement *fakesink;
+	GstPadLinkReturn res;
+	GstPad *sink;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Linking to a fake sink");
+
+	/* It doesn't hurt to link to a fakesink and can avoid some deadlocks.
+	 * I don't know why but some demuxers in particular will lock (probably
+	 * because they can't output video) if only their audio streams are
+	 * linked and not their video streams (one example is dv demuxer).
+	 * NOTE: there must also be a queue for audio streams. */
+	fakesink = gst_element_factory_make ("fakesink", NULL);
+	if (!fakesink)
+		return FALSE;
+
+	gst_bin_add (GST_BIN (priv->pipeline), fakesink);
+	sink = gst_element_get_static_pad (fakesink, "sink");
+	if (!sink)
+		return FALSE;
+
+	res = gst_pad_link (pad, sink);
+
+	if (res == GST_PAD_LINK_OK) {
+		gst_element_set_state (fakesink, BRASERO_METADATA_INITIAL_STATE);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void
@@ -1200,8 +1282,24 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	}
 
 	if (g_strrstr (name, "video/x-raw-") && !priv->video_linked) {
-		if (priv->flags & BRASERO_METADATA_FLAG_SNAPHOT) {
-			brasero_metadata_create_video_pipeline (self);
+		BRASERO_BURN_LOG ("RAW video stream found");
+
+		if (!priv->video && (priv->flags & BRASERO_METADATA_FLAG_SNAPHOT)) {
+			/* we shouldn't error out if we can't create a video
+			 * pipeline (mostly used for snapshots) */
+			/* FIXME: we should nevertheless tell the user what
+			 * plugin he is missing. */
+			if (!brasero_metadata_create_video_pipeline (self)) {
+				BRASERO_BURN_LOG ("Impossible to create video pipeline");
+
+				gst_caps_unref (caps);
+
+				if (!brasero_metadata_link_dummy_pad (self, pad))
+					brasero_metadata_error_on_pad_linking (self);
+
+				return;
+			}
+
 			sink = gst_element_get_static_pad (priv->video, "sink");
 			if (!sink || GST_PAD_IS_LINKED (sink)) {
 				gst_object_unref (sink);
@@ -1217,7 +1315,12 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 
 			BRASERO_BURN_LOG ("Video stream link %i for %s", res, priv->info->uri);
 		}
+		else if (!brasero_metadata_link_dummy_pad (self, pad))
+			brasero_metadata_error_on_pad_linking (self);
 	}
+	else if (has_video
+	     && !brasero_metadata_link_dummy_pad (self, pad))
+		brasero_metadata_error_on_pad_linking (self);
 
 	gst_caps_unref (caps);
 }
@@ -1439,7 +1542,7 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 			priv->error = NULL;
 		} 
 		else {
-			BRASERO_BURN_LOG ("ERROR getting metadata : %s\n", priv->error->message);
+			BRASERO_BURN_LOG ("ERROR getting metadata : %s", priv->error->message);
 			g_error_free (priv->error);
 			priv->error = NULL;
 		}
