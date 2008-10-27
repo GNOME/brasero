@@ -1,5 +1,13 @@
 2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a problem where metadata object didn't always return a snapshot 
+	because it was stopped by a state change event
+
+	* src/brasero-metadata.c (brasero_metadata_bus_messages):
+	* src/brasero-src-image.c (brasero_src_image_save):
+
+2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Tell the user when we can't recognize the format of the image
 
 	* src/brasero-data-project.c

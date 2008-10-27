@@ -123,7 +123,7 @@ brasero_src_image_save (BraseroSrcImage *self)
 		break;
 
 	default:
-		break;
+		return;
 	}
 
 	if (!uri)

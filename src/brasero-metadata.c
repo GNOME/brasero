@@ -960,7 +960,7 @@ brasero_metadata_bus_messages (GstBus *bus,
 	case GST_MESSAGE_ERROR:
 		/* save the error message */
 		gst_message_parse_error (msg, &error, &debug_string);
-		BRASERO_BURN_LOG (debug_string);
+		BRASERO_BURN_LOG ("Gstreamer error (%s)", debug_string);
 		g_free (debug_string);
 		if (!priv->error && error)
 			priv->error = error;
@@ -1030,7 +1030,11 @@ brasero_metadata_bus_messages (GstBus *bus,
 			break;
 		}
 
-		brasero_metadata_success (self);
+		BRASERO_BURN_LOG ("State changed to PAUSED or PLAYING");
+
+		if (!priv->snapshot_started)
+			brasero_metadata_success (self);
+
 		break;
 
 	default:
