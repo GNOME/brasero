@@ -1348,6 +1348,27 @@ brasero_transcode_bus_messages (GstBus *bus,
 }
 
 static void
+brasero_transcode_error_on_pad_linking (BraseroTranscode *self)
+{
+	BraseroTranscodePrivate *priv;
+	GstMessage *message;
+	GstBus *bus;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (self);
+
+	BRASERO_JOB_LOG (self, "Error on pad linking");
+	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
+					 g_error_new (BRASERO_BURN_ERROR,
+						      BRASERO_BURN_ERROR_GENERAL,
+						      "Impossible to link gstreamer plugin pads."),	/* FIXME: translate */
+					 "Sent by brasero_metadata_error_on_pad_linking");
+
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));
+	gst_bus_post (bus, message);
+	g_object_unref (bus);
+}
+
+static void
 brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				      GstPad *pad,
 				      gboolean arg2,
@@ -1360,23 +1381,75 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
-	sink = gst_element_get_pad (priv->link, "sink");
-	if (GST_PAD_IS_LINKED (sink))
-		return;
+	BRASERO_JOB_LOG (transcode, "New pad");
 
 	/* make sure we only have audio */
 	caps = gst_pad_get_caps (pad);
 	if (!caps)
 		return;
 
-	/* before linking pads (before any data reach grvolume), send tags */
-	brasero_transcode_send_volume_event (transcode);
-
 	structure = gst_caps_get_structure (caps, 0);
-	if (structure
-	&&  g_strrstr (gst_structure_get_name (structure), "audio"))
-		gst_pad_link (pad, sink);
+	if (structure) {
+		if (g_strrstr (gst_structure_get_name (structure), "audio")) {
+			GstElement *queue;
+			GstPadLinkReturn res;
 
+			/* before linking pads (before any data reach grvolume), send tags */
+			brasero_transcode_send_volume_event (transcode);
+
+			/* This is necessary in case there is a video stream
+			 * (see brasero-metadata.c). we need to queue to avoid
+			 * a deadlock. */
+			queue = gst_element_factory_make ("queue", NULL);
+			gst_bin_add (GST_BIN (priv->pipeline), queue);
+			if (!gst_element_link (queue, priv->link)) {
+				brasero_transcode_error_on_pad_linking (transcode);
+				goto end;
+			}
+
+			sink = gst_element_get_pad (queue, "sink");
+			if (GST_PAD_IS_LINKED (sink)) {
+				brasero_transcode_error_on_pad_linking (transcode);
+				goto end;
+			}
+
+			res = gst_pad_link (pad, sink);
+			if (res == GST_PAD_LINK_OK)
+				gst_element_set_state (queue, GST_STATE_PLAYING);
+			else
+				brasero_transcode_error_on_pad_linking (transcode);
+		}
+		/* For video streams add a fakesink (see brasero-metadata.c) */
+		else if (g_strrstr (gst_structure_get_name (structure), "video")) {
+			GstElement *fakesink;
+			GstPadLinkReturn res;
+
+			BRASERO_JOB_LOG (transcode, "Adding a fakesink for video stream");
+
+			fakesink = gst_element_factory_make ("fakesink", NULL);
+			if (!fakesink) {
+				brasero_transcode_error_on_pad_linking (transcode);
+				goto end;
+			}
+
+			sink = gst_element_get_static_pad (fakesink, "sink");
+			if (!sink) {
+				brasero_transcode_error_on_pad_linking (transcode);
+				gst_object_unref (fakesink);
+				goto end;
+			}
+
+			gst_bin_add (GST_BIN (priv->pipeline), fakesink);
+			res = gst_pad_link (pad, sink);
+
+			if (res == GST_PAD_LINK_OK)
+				gst_element_set_state (fakesink, GST_STATE_PLAYING);
+			else
+				brasero_transcode_error_on_pad_linking (transcode);
+		}
+	}
+
+end:
 	gst_object_unref (sink);
 	gst_caps_unref (caps);
 }

@@ -1,5 +1,14 @@
 2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Same as before, try to avoid GStreamer deadlock with video files when
+	we only need audio stream for an audio CD.
+
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_error_on_pad_linking),
+	(brasero_transcode_new_decoded_pad_cb):
+
+2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #557810 – Video Project Compute File size Hang
 	Some Gstreamer plugin need to have the decoded video stream linked as well
 
