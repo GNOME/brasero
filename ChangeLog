@@ -1,3 +1,14 @@
+2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Tell the user when we can't recognize the format of the image
+
+	* src/brasero-data-project.c
+	(brasero_data_project_graft_is_needed):
+	* src/brasero-session-cfg.c (brasero_session_cfg_update):
+	* src/brasero-src-image.c (brasero_src_image_set_track),
+	(brasero_src_image_image_info_cb):
+	* src/burn-track.c (brasero_track_set_image_source):
+
 2008-10-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Try to fix #557833 – Brasero Graphical Interaface Disappears after simulate & during writing

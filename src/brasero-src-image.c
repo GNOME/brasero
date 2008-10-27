@@ -203,9 +203,9 @@ brasero_src_image_set_track (BraseroSrcImage *dialog,
 	case BRASERO_IMAGE_FORMAT_CUE:
 	case BRASERO_IMAGE_FORMAT_CDRDAO:
 	case BRASERO_IMAGE_FORMAT_CLONE:
-		path = g_filename_from_uri (toc, NULL, NULL);
+		path = g_filename_from_uri (toc?toc:image, NULL, NULL);
 		if (!path)
-			path = g_uri_unescape_string (toc, NULL);
+			path = g_uri_unescape_string (toc?toc:image, NULL);
 		break;
 	default:
 		break;
@@ -378,8 +378,8 @@ brasero_src_image_image_info_cb (GObject *object,
 	else
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
-					     NULL,
 					     uri,
+					     NULL,
 					     g_file_info_get_size (info));
 }
 

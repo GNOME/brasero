@@ -852,7 +852,6 @@ static gboolean
 brasero_data_project_graft_is_needed (BraseroDataProject *self,
 				      BraseroURINode *uri_node)
 {
-g_print ("Checking for %s\n", uri_node->uri);
 	if (uri_node->nodes)
 		return TRUE;
 
@@ -864,7 +863,7 @@ g_print ("Checking for %s\n", uri_node->uri);
 		 * signal that URI is not in the tree. */
 		return TRUE;
 	}
-g_print ("REMOVVE\n");
+
 	brasero_data_project_uri_remove_graft (self, uri_node->uri);
 	return FALSE;
 }

@@ -511,7 +511,29 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 
 	if (source.type == BRASERO_TRACK_TYPE_IMAGE
 	&&  source.subtype.img_format == BRASERO_IMAGE_FORMAT_NONE) {
-		priv->is_valid = BRASERO_SESSION_NO_INPUT_IMAGE;
+		gchar *uri;
+		GSList *tracks;
+
+		tracks = brasero_burn_session_get_tracks (BRASERO_BURN_SESSION (self));
+
+		/* It can be two cases:
+		 * - no image set
+		 * - image format cannot be detected */
+		if (tracks) {
+			BraseroTrack *track;
+
+			track = tracks->data;
+			uri = brasero_track_get_image_source (track, TRUE);
+			if (uri) {
+				priv->is_valid = BRASERO_SESSION_UNKNOWN_IMAGE;
+				g_free (uri);
+			}
+			else
+				priv->is_valid = BRASERO_SESSION_NO_INPUT_IMAGE;
+		}
+		else
+			priv->is_valid = BRASERO_SESSION_NO_INPUT_IMAGE;
+
 		g_signal_emit (self,
 			       session_cfg_signals [IS_VALID_SIGNAL],
 			       0);

@@ -612,9 +612,6 @@ brasero_track_set_image_source (BraseroTrack *track,
 	if (track->type.type != BRASERO_TRACK_TYPE_IMAGE)
 		return BRASERO_BURN_NOT_SUPPORTED;
 
-	if (format == BRASERO_IMAGE_FORMAT_NONE)
-		return BRASERO_BURN_NOT_SUPPORTED;
-
 	track->type.subtype.img_format = format;
 
 	image = (BraseroTrackImage *) track;
