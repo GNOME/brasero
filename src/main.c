@@ -61,6 +61,7 @@ gchar *iso_uri;
 gchar **files;
 gchar **audio_project;
 gchar **data_project;
+gchar **video_project;
 gint copy_project;
 gint empty_project;
 gint disc_blank;
@@ -90,6 +91,10 @@ static const GOptionEntry options [] = {
 
 	{ "copy", 'c', 0, G_OPTION_ARG_NONE, &copy_project,
 	  N_("Copy a disc"),
+	  NULL },
+
+	{ "video", 'o', 0, G_OPTION_ARG_NONE, &video_project,
+	  N_("Open a video project adding the URIs given on the command line"),
 	  NULL },
 
 	/* FIXME: last argument should be defined */
@@ -178,6 +183,8 @@ brasero_app_parse_options (BraseroApp *app)
 		nb ++;
 	if (data_project)
 		nb ++;
+	if (video_project)
+	    	nb ++;
 	if (disc_blank)
 	  	nb ++;
 	if (open_ncb)
@@ -240,6 +247,9 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else if (data_project) {
 		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+	}
+	else if (video_project) {
+	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
 	}
 	else if (disc_blank) {
 		brasero_app_blank (app);
