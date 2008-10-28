@@ -1,5 +1,15 @@
 2008-10-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Properly release drive and shutdown libburn (allows dummy mode to work)
+
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_ctx_free_real),
+	(brasero_libburn_common_ctx_wait_for_idle_drive),
+	(brasero_libburn_common_ctx_free),
+	(brasero_libburn_common_ctx_new):
+
+2008-10-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #558207 – Labels in start page of New Audio Disc is not accessible to screen reader.
 
 	* src/brasero-disc.c (brasero_disc_draw_focus_around_help_text),

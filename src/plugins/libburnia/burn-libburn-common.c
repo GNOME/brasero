@@ -46,20 +46,22 @@ brasero_libburn_common_ctx_free_real (BraseroLibburnCtx *ctx)
 {
 	BRASERO_BURN_LOG ("Drive stopped");
 
-	if (ctx->drive_info) {
-		burn_drive_info_free (ctx->drive_info);
-		ctx->drive_info = NULL;
-		ctx->drive = NULL;
-	}
-
 	if (ctx->disc) {
 		burn_disc_free (ctx->disc);
 		ctx->disc = NULL;
 	}
 
+	/* This must be done in this order since:
+	 * ctx->drive = ctx->drive_info->drive */
+
 	if (ctx->drive) {
 		burn_drive_release (ctx->drive, 0);
 		ctx->drive = NULL;
+	}
+
+	if (ctx->drive_info) {
+		burn_drive_info_free (ctx->drive_info);
+		ctx->drive_info = NULL;
 	}
 
 	g_free (ctx);
@@ -77,12 +79,16 @@ brasero_libburn_common_ctx_wait_for_idle_drive (gpointer data)
 
 	/* try to properly cancel the drive */
 	status = burn_drive_get_status (ctx->drive, NULL);
-	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING)
+	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING) {
+		BRASERO_BURN_LOG ("Cancelling operation");
 		burn_drive_cancel (ctx->drive);
+	}
 
-	if (status == BURN_DRIVE_GRABBING)
+	if (status == BURN_DRIVE_GRABBING) {
 		/* This should probably never happen */
+		BRASERO_BURN_LOG ("Grabbing state, try to forget");
 		burn_drive_info_forget (ctx->drive_info, 1);
+	}
 
 	if (status != BURN_DRIVE_IDLE) {
 		BRASERO_BURN_LOG ("Drive not idle yet");
@@ -102,12 +108,16 @@ brasero_libburn_common_ctx_free (BraseroLibburnCtx *ctx)
 
 	/* try to properly cancel the drive */
 	status = burn_drive_get_status (ctx->drive, NULL);
-	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING)
+	if (status == BURN_DRIVE_WRITING || status == BURN_DRIVE_READING) {
+		BRASERO_BURN_LOG ("Cancelling operation");
 		burn_drive_cancel (ctx->drive);
+	}
 
-	if (status == BURN_DRIVE_GRABBING)
+	if (status == BURN_DRIVE_GRABBING) {
 		/* This should probably never happen */
+		BRASERO_BURN_LOG ("Grabbing state, try to forget");
 		burn_drive_info_forget (ctx->drive_info, 1);
+	}
 	
 	if (status != BURN_DRIVE_IDLE) {
 		/* otherwise wait for the drive to calm down */
@@ -144,10 +154,8 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 
 	/* we just want to scan the drive proposed by drive */
 	brasero_job_get_device (job, &device);
-
 	res = burn_drive_convert_fs_adr (device, libburn_device);
 	g_free (device);
-
 	if (res <= 0) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -158,6 +166,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 
 	ctx = g_new0 (BraseroLibburnCtx, 1);
 	res = burn_drive_scan_and_grab (&ctx->drive_info, libburn_device, 0);
+	BRASERO_JOB_LOG (job, "Drive (%s) init result = %d", libburn_device, res);
 	if (res <= 0) {
 		g_free (ctx);
 		g_set_error (error,
