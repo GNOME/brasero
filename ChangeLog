@@ -1,9 +1,11 @@
-2008-10-27  Luis Medinas  <lmedinas@gnome.org>
+2008-10-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	* src/main.c (brasero_app_parse_options):
-	
-	Parse video project to cmd line args. 
-	Fixes bgo #556725. 
+	Fix #557810  – Video Project Compute File size Hang
+	Don't tell the user that a video file hasn't video if we can't create a
+	snapshot
+
+	* src/brasero-metadata.c (brasero_metadata_create_video_pipeline),
+	(brasero_metadata_new_decoded_pad_cb):
 
 2008-10-27  Philippe Rouquier  <ykw@localhost.localdomain>
 

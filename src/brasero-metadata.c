@@ -1134,9 +1134,6 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 		priv->video = NULL;
 
 		BRASERO_BURN_LOG ("gdkpixbufsink is not installed");
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
-					   "Can't create gdkpixbufsink");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (priv->video), priv->snapshot);
@@ -1153,9 +1150,6 @@ brasero_metadata_create_video_pipeline (BraseroMetadata *self)
 		priv->video = NULL;
 
 		BRASERO_BURN_LOG ("ffmpegcolorspace is not installed");
-		priv->error = g_error_new (BRASERO_ERROR,
-					   BRASERO_ERROR_GENERAL,
-					   "Can't create gdkpixbufsink");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (priv->video), colorspace);
@@ -1318,8 +1312,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 		else if (!brasero_metadata_link_dummy_pad (self, pad))
 			brasero_metadata_error_on_pad_linking (self);
 	}
-	else if (has_video
-	     && !brasero_metadata_link_dummy_pad (self, pad))
+	else if (has_video && !brasero_metadata_link_dummy_pad (self, pad))
 		brasero_metadata_error_on_pad_linking (self);
 
 	gst_caps_unref (caps);
