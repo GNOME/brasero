@@ -585,9 +585,30 @@ brasero_utils_disc_realized_cb (GtkWidget *event_box,
 			  event_box);
 }
 
+static gboolean
+brasero_disc_draw_focus_around_help_text (GtkWidget *label,
+					  GdkEventExpose *event,
+					  gpointer NULL_data)
+{
+	if (!gtk_widget_is_focus (label))
+		return FALSE;
+
+	gtk_paint_focus (label->style,
+			 label->window,
+			 GTK_STATE_NORMAL,
+			 &event->area,
+			 label,
+			 NULL,
+			 label->style->xthickness, label->style->ythickness,
+			 label->allocation.width - label->style->xthickness * 2,
+			 label->allocation.height - label->style->ythickness * 2);
+	return FALSE;
+}
+
 GtkWidget *
 brasero_disc_get_use_info_notebook (void)
 {
+	GList	  *chain;
 	GtkWidget *frame;
 	GtkWidget *notebook;
 	GtkWidget *event_box;
@@ -674,6 +695,7 @@ brasero_disc_get_use_info_notebook (void)
 					 "</span>", NULL);
 	first_use = gtk_label_new (first_use_message);
 	gtk_misc_set_alignment (GTK_MISC (first_use), 0.50, 0.30);
+	gtk_label_set_selectable (GTK_LABEL (first_use), TRUE);
 	gtk_label_set_ellipsize (GTK_LABEL (first_use), PANGO_ELLIPSIZE_END);
 	g_free (first_use_message);
 
@@ -682,6 +704,25 @@ brasero_disc_get_use_info_notebook (void)
 	gtk_label_set_use_markup (GTK_LABEL (first_use), TRUE);
 	gtk_container_add (GTK_CONTAINER (event_box), first_use);
 
+	/* This is meant for accessibility so that screen readers can read it */
+	g_object_set (first_use,
+		      "can-focus", TRUE,
+		      NULL);
+
+	g_signal_connect_after (first_use,
+				"expose-event",
+				G_CALLBACK (brasero_disc_draw_focus_around_help_text),
+				NULL);
+	/* We don't want to have the whole text selected */
+	g_object_set (gtk_widget_get_settings (first_use),
+		      "gtk-label-select-on-focus", FALSE,
+		      NULL);
+
+	chain = g_list_prepend (NULL, first_use);
+	gtk_container_set_focus_chain (GTK_CONTAINER (frame), chain);
+	g_list_free (chain);
+
+	/* This gets all events and forward them to treeview */
 	gtk_event_box_set_above_child (GTK_EVENT_BOX (event_box), TRUE);
 
 	g_free (message_add_header);

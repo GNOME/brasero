@@ -1,5 +1,12 @@
 2008-10-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #558207 – Labels in start page of New Audio Disc is not accessible to screen reader.
+
+	* src/brasero-disc.c (brasero_disc_draw_focus_around_help_text),
+	(brasero_disc_get_use_info_notebook):
+
+2008-10-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #557810  – Video Project Compute File size Hang
 	Don't tell the user that a video file hasn't video if we can't create a
 	snapshot
