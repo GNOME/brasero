@@ -430,6 +430,7 @@ brasero_libburn_setup_session_file (BraseroLibburn *self,
 								 size,
 								 priv->pvd,
 								 error);
+			g_free (imagepath);
 		}
 		else
 			BRASERO_JOB_NOT_SUPPORTED (self);
