@@ -1054,6 +1054,8 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	answer = gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
 
+	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), FALSE);
+
 	if (hide)
 		gtk_widget_hide (GTK_WIDGET (dialog));
 
