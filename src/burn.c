@@ -2133,6 +2133,8 @@ brasero_burn_record_session (BraseroBurn *burn,
 	if (result != BRASERO_BURN_OK)
 		return result;
 
+	medium = brasero_drive_get_medium (priv->dest);
+
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1
 	||  type == BRASERO_CHECKSUM_SHA256) {
