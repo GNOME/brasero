@@ -1100,7 +1100,8 @@ brasero_checksum_files_activate (BraseroJob *job,
 		return BRASERO_BURN_OK;
 
 	/* see that a file with graft "/BRASERO_CHECKSUM_FILE" doesn't already
-	 * exists (possible when doing several copies) */
+	 * exists (possible when doing several copies) or when a simulation 
+	 * already took place before. */
 	brasero_job_get_current_track (job, &track);
 	grafts = brasero_track_get_data_grafts_source (track);
 	for (; grafts; grafts = grafts->next) {

@@ -563,7 +563,6 @@ brasero_checksum_image_start (BraseroJob *job,
 			      GError **error)
 {
 	BraseroChecksumImagePrivate *priv;
-	BraseroTrack *track = NULL;
 	BraseroJobAction action;
 
 	brasero_job_get_action (job, &action);
@@ -579,15 +578,6 @@ brasero_checksum_image_start (BraseroJob *job,
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
-	brasero_job_get_current_track (job, &track);
-
-	if (action == BRASERO_JOB_ACTION_IMAGE
-	&&  brasero_track_get_checksum_type (track) != BRASERO_CHECKSUM_NONE) {
-		BRASERO_JOB_LOG (job, "There is a checksum already");
-		/* if there is a checksum already, if so no need to redo one */
-		return BRASERO_BURN_NOT_RUNNING;
-	}
-
 	/* we start a thread for the exploration of the graft points */
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
 	priv->thread = g_thread_create (brasero_checksum_image_thread,
@@ -596,6 +586,34 @@ brasero_checksum_image_start (BraseroJob *job,
 					error);
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
+brasero_checksum_image_activate (BraseroJob *job,
+				 GError **error)
+{
+	BraseroBurnFlag flags = BRASERO_BURN_FLAG_NONE;
+	BraseroTrack *track = NULL;
+	BraseroJobAction action;
+
+	brasero_job_get_current_track (job, &track);
+	brasero_job_get_action (job, &action);
+
+	if (action == BRASERO_JOB_ACTION_IMAGE
+	&&  brasero_track_get_checksum_type (track) != BRASERO_CHECKSUM_NONE) {
+		BRASERO_JOB_LOG (job, "There is a checksum already");
+		/* if there is a checksum already, if so no need to redo one */
+		return BRASERO_BURN_NOT_RUNNING;
+	}
+
+	flags = BRASERO_BURN_FLAG_NONE;
+	brasero_job_get_flags (job, &flags);
+	if (flags & BRASERO_BURN_FLAG_DUMMY) {
+		BRASERO_JOB_LOG (job, "Dummy operation, skipping");
+		return BRASERO_BURN_NOT_RUNNING;
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -689,6 +707,7 @@ brasero_checksum_image_class_init (BraseroChecksumImageClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->finalize = brasero_checksum_image_finalize;
 
+	job_class->activate = brasero_checksum_image_activate;
 	job_class->start = brasero_checksum_image_start;
 	job_class->stop = brasero_checksum_image_stop;
 	job_class->clock_tick = brasero_checksum_image_clock_tick;

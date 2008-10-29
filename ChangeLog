@@ -1,5 +1,17 @@
 2008-10-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make (and fix) ChecksumImage by not using it when that's a
+	simulation and/or when there is already a checksum set
+
+	* src/burn-task.c (brasero_task_start_items):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_activate):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_start), (brasero_checksum_image_activate),
+	(brasero_checksum_image_class_init):
+
+2008-10-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a crash introduced by previous change.
 
 	* src/burn.c (brasero_burn_record_session):
