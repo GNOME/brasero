@@ -148,21 +148,38 @@ brasero_scsi_command_free (gpointer cmd)
 
 BraseroDeviceHandle *
 brasero_device_handle_open (const gchar *path,
+			    gboolean exclusive,
 			    BraseroScsiErrCode *code)
 {
 	int fd;
+	int flags = OPEN_FLAGS;
 	BraseroDeviceHandle *handle;
 	struct cam_device *cam;
 
 	g_assert (path != NULL);
 
+	if (exclusive)
+		flags |= O_EXCL;
+
 	/* cam_open_device() fails unless we use O_RDWR */
 	cam = cam_open_device (path, O_RDWR);
-	fd = open (path, OPEN_FLAGS);
+	fd = open (path, flags);
 	if (cam && fd > -1) {
 		handle = g_new0 (BraseroDeviceHandle, 1);
 		handle->cam = cam;
 		handle->fd = fd;
+	}
+	else {
+		if (code) {
+			if (errno == EAGAIN
+			||  errno == EWOULDBLOCK
+			||  errno == EBUSY)
+				*code = BRASERO_SCSI_NOT_READY;
+			else
+				*code = BRASERO_SCSI_ERRNO;
+		}
+
+		return NULL;
 	}
 
 	return handle;

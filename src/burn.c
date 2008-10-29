@@ -32,6 +32,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
@@ -239,64 +243,20 @@ brasero_burn_sleep (BraseroBurn *burn, gint msec)
 }
 
 static BraseroBurnResult
-brasero_burn_wait_for_dest_insertion (BraseroBurn *burn,
-				      GError **error)
+brasero_burn_reprobe (BraseroBurn *burn)
 {
-	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 	BraseroMedium *medium;
-	guint attempt = 0;
-	gchar *failure;
+	BraseroBurnPrivate *priv;
+	BraseroBurnResult result = BRASERO_BURN_OK;
 
-	BRASERO_BURN_LOG ("Waiting for destination disc");
-	if (!priv->dest)
-		return BRASERO_BURN_OK;
+	priv = BRASERO_BURN_PRIVATE (burn);
 
-	/* we need to release our lock */
-	if (priv->dest_locked) {
-		priv->dest_locked = 0;
-		if (!brasero_drive_unlock (priv->dest)) {
-			gchar *name;
+	/* reprobe the medium and wait for it to be probed */
+	brasero_drive_reprobe (priv->dest);
+	while (!(medium = brasero_drive_get_medium (priv->dest)))
+		result = brasero_burn_sleep (burn, 250);
 
-			name = brasero_drive_get_display_name (priv->dest);
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("\"%s\" can't be unlocked"),
-				     name);
-			g_free (name);
-			return BRASERO_BURN_ERR;
-		}
-	}
-
-	medium = brasero_drive_get_medium (priv->dest);
-	while (brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE) {
-		brasero_burn_sleep (burn, LOAD_TIMEOUT);
-		
-		attempt ++;
-		if (attempt > MAX_LOAD_ATTEMPTS) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the disc could not be reloaded (max attemps reached)"));
-			return BRASERO_BURN_ERR;
-		}
-
-		medium = brasero_drive_get_medium (priv->dest);
-	}
-
-	/* Re-add the lock */
-	if (!priv->dest_locked
-	&&  !brasero_drive_lock (priv->dest, _("ongoing burning process"), &failure)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive can't be locked (%s)"),
-			     failure);
-		return BRASERO_BURN_ERR;
-	}
-	priv->dest_locked = 1;
-
-	return BRASERO_BURN_OK;
+	return result;
 }
 
 static BraseroBurnResult
@@ -1462,6 +1422,25 @@ start:
 }
 
 static BraseroBurnResult
+brasero_burn_can_use_drive_exclusively (BraseroBurn *burn,
+					BraseroDrive *drive)
+{
+	BraseroBurnResult result;
+
+	if (!drive)
+		return BRASERO_BURN_OK;
+
+	while (!brasero_drive_can_use_exclusively (drive)) {
+		BRASERO_BURN_LOG ("Device busy, retrying in 250 ms");
+		result = brasero_burn_sleep (burn, 250);
+		if (result == BRASERO_BURN_CANCEL)
+			return result;
+	}
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 {
 	gint error_code;
@@ -1475,10 +1454,22 @@ brasero_burn_run_recorder (BraseroBurn *burn, GError **error)
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
 
 	has_slept = FALSE;
+
 	src = brasero_burn_session_get_src_drive (priv->session);
 	src_medium = brasero_drive_get_medium (src);
+
 	burner = brasero_burn_session_get_burner (priv->session);
 	burnt_medium = brasero_drive_get_medium (burner);
+
+	/* before we start let's see if that drive can be used exclusively.
+	 * Of course, it's not really safe since a process could take a lock
+	 * just after us but at least it'll give some time to HAL and friends
+	 * to finish what they're doing. 
+	 * This was done because more than often backends wouldn't be able to 
+	 * get a lock on a medium after a simulation. */
+	result = brasero_burn_can_use_drive_exclusively (burn, burner);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 start:
 
@@ -1706,10 +1697,15 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 			priv->task = NULL;
 			priv->tasks_done ++;
 
-			/* Now it can happen (like with dvd+rw-format) that for
-			 * the whole OS, the disc doesn't exist during the 
+			/* Reprobe. It can happen (like with dvd+rw-format) that
+			 * for the whole OS, the disc doesn't exist during the 
 			 * formatting. Wait for the disc to reappear */
-			result = brasero_burn_wait_for_dest_insertion (burn, error);
+			/*  Likewise, this is necessary when we do a
+			 * simulation before blanking since it blanked the disc
+			 * and then to create all tasks necessary for the real
+			 * burning operation, we'll need the real medium status 
+			 * not to include a blanking job again. */
+			result = brasero_burn_reprobe (burn);
 			if (result != BRASERO_BURN_OK)
 				break;
 
@@ -2133,9 +2129,9 @@ brasero_burn_record_session (BraseroBurn *burn,
 		return result;
 
 	/* reprobe the medium and wait for it to be probed */
-	brasero_drive_reprobe (priv->dest);
-	while (!(medium = brasero_drive_get_medium (priv->dest)))
-		brasero_burn_sleep (burn, 1000);
+	result = brasero_burn_reprobe (burn);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	if (type == BRASERO_CHECKSUM_MD5
 	||  type == BRASERO_CHECKSUM_SHA1

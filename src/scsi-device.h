@@ -34,7 +34,9 @@ G_BEGIN_DECLS
 typedef struct _BraseroDeviceHandle BraseroDeviceHandle;
 
 BraseroDeviceHandle *
-brasero_device_handle_open (const gchar *path, BraseroScsiErrCode *error);
+brasero_device_handle_open (const gchar *path,
+			    gboolean exclusive,
+			    BraseroScsiErrCode *error);
 
 void
 brasero_device_handle_close (BraseroDeviceHandle *handle);

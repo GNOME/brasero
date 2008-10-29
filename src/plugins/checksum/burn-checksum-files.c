@@ -380,7 +380,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 
 	/* try every file and make sure they are of the same type */
 	brasero_job_get_device (BRASERO_JOB (self), &device);
-	dev_handle = brasero_device_handle_open (device, NULL);
+	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
 	g_free (device);
 
 	vol = brasero_volume_source_open_device_handle (dev_handle, error);

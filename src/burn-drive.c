@@ -148,7 +148,7 @@ brasero_drive_is_door_open (BraseroDrive *self)
 	if (!priv->udi)
 		return FALSE;
 
-	handle = brasero_device_handle_open (priv->path, NULL);
+	handle = brasero_device_handle_open (priv->path, FALSE, NULL);
 	if (!handle)
 		return FALSE;
 
@@ -159,6 +159,27 @@ brasero_drive_is_door_open (BraseroDrive *self)
 	brasero_device_handle_close (handle);
 
 	return hdr.door_open;
+}
+
+gboolean
+brasero_drive_can_use_exclusively (BraseroDrive *self)
+{
+	BraseroDeviceHandle *handle;
+	BraseroScsiErrCode code = 0;
+	const gchar *device;
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	device = brasero_drive_get_block_device (self);
+#else
+	device = brasero_drive_get_device (self);
+#endif
+
+	handle = brasero_device_handle_open (device, TRUE, NULL);
+	if (!handle)
+		return FALSE;
+
+	brasero_device_handle_close (handle);
+	return TRUE;
 }
 
 gboolean

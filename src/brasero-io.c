@@ -2031,7 +2031,7 @@ brasero_io_image_directory_contents_thread (BraseroAsyncTaskManager *manager,
 	GError *error = NULL;
 	BraseroVolSrc *vol;
 
-	handle = brasero_device_handle_open (data->job.uri, NULL);
+	handle = brasero_device_handle_open (data->job.uri, FALSE, NULL);
 	vol = brasero_volume_source_open_device_handle (handle, &error);
 	if (!vol) {
 		brasero_device_handle_close (handle);

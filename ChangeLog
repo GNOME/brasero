@@ -1,5 +1,27 @@
 2008-10-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Sometimes after simulation HAL reprobes drive; so check if we can use
+	the drive exclusively before starting to burn
+	Also reprobe medium after blanking
+
+	* src/brasero-io.c (brasero_io_image_directory_contents_thread):
+	* src/burn-drive.c (brasero_drive_is_door_open),
+	(brasero_drive_can_use_exclusively):
+	* src/burn-drive.h:
+	* src/burn-medium.c (brasero_medium_probe_thread):
+	* src/burn.c (brasero_burn_reprobe),
+	(brasero_burn_can_use_drive_exclusively),
+	(brasero_burn_run_recorder), (brasero_burn_run_tasks),
+	(brasero_burn_record_session):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session):
+	* src/scsi-cam.c (brasero_device_handle_open):
+	* src/scsi-device.h:
+	* src/scsi-sg.c (brasero_device_handle_open):
+	* src/scsi-uscsi.c (brasero_device_handle_open):
+
+2008-10-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Small memleak
 
 	* src/plugins/libburnia/burn-libburn.c

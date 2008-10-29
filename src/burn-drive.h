@@ -107,6 +107,9 @@ gboolean
 brasero_drive_is_door_open (BraseroDrive *drive);
 
 gboolean
+brasero_drive_can_use_exclusively (BraseroDrive *drive);;
+
+gboolean
 brasero_drive_lock (BraseroDrive *drive,
 		    const gchar *reason,
 		    gchar **reason_for_failure);

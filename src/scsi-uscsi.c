@@ -191,20 +191,27 @@ brasero_scsi_command_free (gpointer cmd)
 
 BraseroDeviceHandle *
 brasero_device_handle_open (const gchar *path,
+			    gboolean exclusive,
 			    BraseroScsiErrCode *code)
 {
 	int fd;
+	int flags = OPEN_FLAGS;
 	BraseroDeviceHandle *handle;
 	gchar *rawdisk = NULL;
 
-	fd = open (path, OPEN_FLAGS);
+	if (exclusive)
+		flags |= O_EXCL;
+
+	fd = open (path, flags);
 	if (fd < 0) {
-		if (errno == EAGAIN
-		||  errno == EWOULDBLOCK
-		||  errno == EBUSY)
-			*code = BRASERO_SCSI_NOT_READY;
-		else
-			*code = BRASERO_SCSI_ERRNO;
+		if (code) {
+			if (errno == EAGAIN
+			||  errno == EWOULDBLOCK
+			||  errno == EBUSY)
+				*code = BRASERO_SCSI_NOT_READY;
+			else
+				*code = BRASERO_SCSI_ERRNO;
+		}
 
 		DEBUG("open ERR: %s\n", g_strerror(errno));
 		return NULL;

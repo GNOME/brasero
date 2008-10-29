@@ -2937,7 +2937,7 @@ brasero_medium_probe_thread (gpointer self)
 	 * but we re-try to open it every second */
 	BRASERO_BURN_LOG ("Trying to open device %s", path);
 
-	handle = brasero_device_handle_open (path, &code);
+	handle = brasero_device_handle_open (path, FALSE, &code);
 	while (!handle && counter <= BRASERO_MEDIUM_OPEN_ATTEMPTS) {
 		sleep (1);
 
@@ -2947,7 +2947,7 @@ brasero_medium_probe_thread (gpointer self)
 		}
 
 		counter ++;
-		handle = brasero_device_handle_open (path, &code);
+		handle = brasero_device_handle_open (path, FALSE, &code);
 	}
 
 	if (priv->probe_cancelled) {
