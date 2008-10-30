@@ -541,6 +541,7 @@ brasero_job_set_output_file (BraseroJob *self,
 
 	/* no next job so we need a file pad */
 	session = brasero_task_ctx_get_session (priv->ctx);
+	flags = brasero_burn_session_get_flags (session);
 	if (priv->type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroImageFormat format;
 
@@ -641,8 +642,6 @@ brasero_job_set_output_file (BraseroJob *self,
 	priv->output = g_new0 (BraseroJobOutput, 1);
 	priv->output->image = image;
 	priv->output->toc = toc;
-
-	flags = brasero_burn_session_get_flags (session);
 
 	if (flags & BRASERO_BURN_FLAG_CHECK_SIZE)
 		return brasero_job_check_output_volume_space (self, error);

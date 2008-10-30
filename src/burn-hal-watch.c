@@ -115,7 +115,7 @@ brasero_hal_watch_init (BraseroHALWatch *object)
 {
 	DBusError error;
 	BraseroHALWatchPrivate *priv;
-	DBusConnection *dbus_connection;
+	DBusConnection *dbus_connection = NULL;
 
 	priv = BRASERO_HAL_WATCH_PRIVATE (object);
 
@@ -157,7 +157,8 @@ error:
 	libhal_ctx_free (priv->ctx);
 	priv->ctx = NULL;
 
-	dbus_connection_unref (dbus_connection);
+	if (dbus_connection)
+		dbus_connection_unref (dbus_connection);
 }
 
 static void

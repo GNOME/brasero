@@ -1,5 +1,14 @@
 2008-10-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a bunch of build warnings that could have turned into crash in some
+	rare cases.
+
+	* src/burn-hal-watch.c (brasero_hal_watch_init):
+	* src/burn-job.c (brasero_job_set_output_file):
+	* src/burn-medium.c (brasero_medium_get_capacity_DVD_RW):
+
+2008-10-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	(Realized a bit late that) libburn hasn't got any overburning capabilities
 
 	* src/burn-drive.c (brasero_drive_can_use_exclusively):

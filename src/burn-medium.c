@@ -994,13 +994,13 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 		/* if unformatted, a DVD-RAM will return its maximum formattable
 		 * size in this descriptor and that's what we're looking for. */
 		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM)) {
-			priv->block_num = BRASERO_GET_32 (desc->blocks_num);
+			priv->block_num = BRASERO_GET_32 (current->blocks_num);
 			priv->block_size = 2048;
 			goto end;
 		}
 	}
 	else if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE)) {
-		priv->block_num = BRASERO_GET_32 (desc->blocks_num);
+		priv->block_num = BRASERO_GET_32 (current->blocks_num);
 		priv->block_size = 2048;
 		goto end;
 	}
