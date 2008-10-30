@@ -180,7 +180,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (vbox);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), vbox, TRUE, TRUE, 0);
 
-	string = g_strdup_printf ("<b>%s</b", _("_Color"));
+	string = g_strdup_printf ("<b>%s</b>", _("_Color"));
 	label = gtk_label_new_with_mnemonic (string);
 	g_free (string);
 
