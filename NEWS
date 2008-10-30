@@ -1,3 +1,42 @@
+10-2008 brasero 0.8.3
+Again the focus has been bug fixing but one feature slipped in:
+- allow use of remote files
+- drives are now probed asynchronously and may not popup immediatly but brasero starts faster
+- some parts of GUI were revisited (in particular the burn option dialogs)
+
+#558469 – Audio CD cloning fails but brasero reports success
+#558207 – Labels in start page of New Audio Disc is not accessible to screen reader.
+#557810 – Video Project Compute File size Hang
+#556725 – command line option for video projects
+#557833 – Brasero Graphical Interaface Disappears after simulate & during writing
+#556874 – Error is shown when trying to select an image file to burning
+#556146 – brasero crashed with SIGSEGV in g_main_context_dispatch()
+#556724 – Brasero main GUI appears after closing the dialog when opening an ISO file using Nautilus
+#555860 – Brasero fails make distcheck
+#547395 – Support for remote filesystems
+#556449 – Session error : Insufficient space on media when copying an audio CD (same problem with trunk)
+#552811 – crash after delete used directory
+#551051 – Brasero shows absurdly large %-done when burning a symlink-to-ISO
+#555776 – Brasero will fail to get disck information on big-endian machines
+#555703 – brasero delete original files in VIDEO_TS folder
+#535330 – Volume label should be part of the project
+#550526 – Wrong drive's speed displayed
+#553349 – Cannot burn a .m3u playlist file when the logical steps below are followed
+#465175 – Location field not working
+#547874 – Unable to choose order audio tracks in a Audio CD project
+#554722 – Main window does not fit on a 600px vertical screen (netbooks)
+#552834 – burning image file fails
+#554292 – brasero crashed with SIGSEGV in brasero_mkisofs_base_write_to_files()
+#550050 – First run dialog after burn
+#549852 – Data DVD+RW detected badly as multisession
+#538298 – Burn image dialog history
+#547731 – warn idiot users ...
+
+And many other bugs that were fixed before they were reported in bugzilla.
+
+Thanks to all the people who contributed to this release through patches, translations, advices, artwork, bug reports.
+
+
 09-2008 brasero 0.8.2
 
 The focus has been bug fixing and as a result there aren't any new feature this
