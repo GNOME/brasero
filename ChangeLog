@@ -1,3 +1,12 @@
+2008-10-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for #558469 – Audio CD cloning fails but brasero reports success 
+	readcd/readom fail but report success on reading. Do a workaround in the
+	plugins
+
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_read_stderr):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_read_stderr):
+
 2008-10-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make (and fix) ChecksumImage by not using it when that's a

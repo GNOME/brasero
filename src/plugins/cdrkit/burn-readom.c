@@ -52,6 +52,8 @@ static BraseroBurnResult
 brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 {
 	BraseroReadom *readom;
+	gint dummy1;
+	gint dummy2;
 	gchar *pos;
 
 	readom = BRASERO_READOM (process);
@@ -109,6 +111,14 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_SCSI_IOCTL,
 						_("you don't seem to have the required permissions to access the drive")));
 	}
+	/* we scan for this error as in this case readcd returns success */
+	else if (sscanf (line, "Input/output error. Error on sector %d not corrected. Total of %d error", &dummy1, &dummy2) == 2) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("internal error")));
+	}
+
 
 	return BRASERO_BURN_OK;
 }
