@@ -165,7 +165,6 @@ gboolean
 brasero_drive_can_use_exclusively (BraseroDrive *self)
 {
 	BraseroDeviceHandle *handle;
-	BraseroScsiErrCode code = 0;
 	const gchar *device;
 
 #if defined(HAVE_STRUCT_USCSI_CMD)

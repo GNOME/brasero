@@ -293,15 +293,18 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 						    "storage.cdrom", &nb_devices,
 						    &error);
 	if (dbus_error_is_set (&error)) {
-		g_warning ("Hal is not running : %s\n", error.message);
+		BRASERO_BURN_LOG ("Hal is not running : %s\n", error.message);
 		dbus_error_free (&error);
 		return;
 	}
 
+	BRASERO_BURN_LOG ("Polling for drives");
 	for (i = 0; i < nb_devices; i++) {
 		/* create the drive */
 		drive = brasero_drive_new (devices [i]);
 		priv->drives = g_slist_prepend (priv->drives, drive);
+
+		BRASERO_BURN_LOG ("Found one drive");
 
 		g_signal_connect (drive,
 				  "medium-added",

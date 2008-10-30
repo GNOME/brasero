@@ -1086,8 +1086,8 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	/* Flags for CD (RW)s */
-	BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS (plugin);
-	BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS (plugin);
+	BRASERO_PLUGIN_ADD_STANDARD_CDR_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+	BRASERO_PLUGIN_ADD_STANDARD_CDRW_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
 	/* Apart from DAO it also supports RAW mode to burn CLONE images. This
 	 * is a special mode for which there isn't any DUMMY burn possible */
