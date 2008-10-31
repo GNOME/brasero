@@ -373,6 +373,8 @@ brasero_file_filtered_restore_pressed_cb (GtkButton *button,
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree));
 	selected = gtk_tree_selection_get_selected_rows (selection, &model);
+
+	/* reverse the list so as to be able to delete properly item */
 	selected = g_list_reverse (selected);
 
 	for (iter = selected; iter; iter = iter->next) {
@@ -382,9 +384,14 @@ brasero_file_filtered_restore_pressed_cb (GtkButton *button,
 		gchar *uri;
 
 		treepath = iter->data;
-		gtk_tree_model_get_iter (model, &treeiter, treepath);
+		if (!gtk_tree_model_get_iter (model, &treeiter, treepath)) {
+			gtk_tree_path_free (treepath);
+			continue;
+		}
+
 		gtk_tree_path_free (treepath);
 
+		uri = NULL;
 		gtk_tree_model_get (model, &treeiter,
 				    UNESCAPED_URI_COL, &uri, 
 				    -1);
