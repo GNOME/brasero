@@ -1454,9 +1454,6 @@ brasero_jacket_view_container_forall (GtkContainer *container,
 {
 	BraseroJacketViewPrivate *priv;
 
-	if (!include_internals)
-		return;
-
 	priv = BRASERO_JACKET_VIEW_PRIVATE (container);
 	if (priv->edit)
 		callback (priv->edit, callback_data);
@@ -1532,7 +1529,9 @@ brasero_jacket_view_init (BraseroJacketView *object)
 			  G_CALLBACK (brasero_jacket_view_scrolled_cb),
 			  priv->edit);
 
-	gtk_widget_set_scroll_adjustments (priv->edit, GTK_ADJUSTMENT (hadj), GTK_ADJUSTMENT (vadj));
+	gtk_widget_set_scroll_adjustments (priv->edit,
+					   GTK_ADJUSTMENT (hadj),
+					   GTK_ADJUSTMENT (vadj));
 }
 
 static void
