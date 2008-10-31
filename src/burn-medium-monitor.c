@@ -289,6 +289,7 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 
 	/* Now we get the list and cache it */
 	dbus_error_init (&error);
+	BRASERO_BURN_LOG ("Polling for drives");
 	devices = libhal_find_device_by_capability (ctx,
 						    "storage.cdrom", &nb_devices,
 						    &error);
@@ -298,13 +299,12 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 		return;
 	}
 
-	BRASERO_BURN_LOG ("Polling for drives");
+	BRASERO_BURN_LOG ("Found %d drives", nb_devices);
 	for (i = 0; i < nb_devices; i++) {
 		/* create the drive */
+		BRASERO_BURN_LOG ("Probing %s", devices [i]);
 		drive = brasero_drive_new (devices [i]);
 		priv->drives = g_slist_prepend (priv->drives, drive);
-
-		BRASERO_BURN_LOG ("Found one drive");
 
 		g_signal_connect (drive,
 				  "medium-added",

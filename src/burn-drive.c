@@ -538,13 +538,19 @@ brasero_drive_init_real (BraseroDrive *drive)
 	watch = brasero_hal_watch_get_default ();
 	ctx = brasero_hal_watch_get_ctx (watch);
 
-	priv->path = libhal_device_get_property_string (ctx, priv->udi, BLOCK_DEVICE, NULL);
+	priv->path = libhal_device_get_property_string (ctx,
+							priv->udi,
+							BLOCK_DEVICE,
+							NULL);
 	if (priv->path [0] == '\0') {
 		g_free (priv->path);
 		priv->path = NULL;
 	}
 
-	priv->block_path = libhal_device_get_property_string (ctx, priv->udi, "block.device", NULL);
+	priv->block_path = libhal_device_get_property_string (ctx,
+							      priv->udi,
+							      "block.device",
+							      NULL);
 	if (priv->block_path [0] == '\0') {
 		g_free (priv->block_path);
 		priv->block_path = NULL;
@@ -568,32 +574,27 @@ brasero_drive_init_real (BraseroDrive *drive)
 		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL;
 
 	/* Also get its parent to retrieve the bus, host, lun values */
+	priv->bus = -1;
+	priv->lun = -1;
+	priv->target = -1;
 	parent = libhal_device_get_property_string (ctx, priv->udi, "info.parent", NULL);
-	if (!parent) {
-		priv->bus = -1;
-		priv->lun = -1;
-		priv->target = -1;
-		return;
+	if (parent) {
+		/* Check it is a SCSI interface */
+		if (libhal_device_property_exists (ctx, parent, "scsi.host", NULL)
+		&&  libhal_device_property_exists (ctx, parent, "scsi.lun", NULL)
+		&&  libhal_device_property_exists (ctx, parent, "scsi.target", NULL)) {
+			priv->bus = libhal_device_get_property_int (ctx, parent, "scsi.host", NULL);
+			priv->lun = libhal_device_get_property_int (ctx, parent, "scsi.lun", NULL);
+			priv->target = libhal_device_get_property_int (ctx, parent, "scsi.target", NULL);
+		}
+
+		BRASERO_BURN_LOG ("Drive %s has bus,target,lun = %i %i %i",
+				  priv->path,
+				  priv->bus,
+				  priv->target,
+				  priv->lun);
+		libhal_free_string (parent);
 	}
-
-	/* Check it is a SCSI interface */
-	if (!libhal_device_property_exists (ctx, parent, "scsi.host", NULL)
-	||  !libhal_device_property_exists (ctx, parent, "scsi.lun", NULL)
-	||  !libhal_device_property_exists (ctx, parent, "scsi.target", NULL)) {
-		g_free (parent);
-
-		priv->bus = -1;
-		priv->lun = -1;
-		priv->target = -1;
-		return;
-	}
-
-	priv->bus = libhal_device_get_property_int (ctx, parent, "scsi.host", NULL);
-	priv->lun = libhal_device_get_property_int (ctx, parent, "scsi.lun", NULL);
-	priv->target = libhal_device_get_property_int (ctx, parent, "scsi.target", NULL);
-
-	BRASERO_BURN_LOG ("Drive %s has bus,target,lun = %i %i %i", priv->path, priv->bus, priv->target, priv->lun);
-	libhal_free_string (parent);
 
 	/* Now check for the medium */
 	brasero_drive_check_medium_inside (drive);
@@ -601,7 +602,7 @@ brasero_drive_init_real (BraseroDrive *drive)
 	dbus_error_init (&error);
 	libhal_device_add_property_watch (ctx, priv->udi, &error);
 	if (dbus_error_is_set (&error)) {
-		g_warning ("Hal is not running : %s\n", error.message);
+		g_warning ("Failed to watch property : %s\n", error.message);
 		dbus_error_free (&error);
 	}
 
