@@ -2766,7 +2766,8 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 	}
 
-	if (save_type == BRASERO_PROJECT_SAVE_XML) {
+	if (save_type == BRASERO_PROJECT_SAVE_XML
+	||  track.type == BRASERO_DISC_TRACK_DATA) {
 		brasero_project_set_uri (project, uri, track.type);
 		if (!brasero_project_save_project_xml (project,
 						       uri ? uri : project->priv->project,
@@ -2881,7 +2882,7 @@ brasero_project_save_project (BraseroProject *project)
 gboolean
 brasero_project_save_project_as (BraseroProject *project)
 {
-	BraseroProjectSave type;
+	BraseroProjectSave type = BRASERO_PROJECT_SAVE_XML;
 	gboolean result;
 	gchar *uri;
 

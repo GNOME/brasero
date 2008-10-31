@@ -1,5 +1,12 @@
 2008-10-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #554294 – brasero crashed with SIGSEGV in brasero_project_save_project_as()
+
+	* src/brasero-project.c (brasero_project_save_project_real),
+	(brasero_project_save_project_as):
+
+2008-10-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #556144 – brasero crashed with SIGSEGV in IA__g_sequence_iter_get_sequence()
 
 	* src/brasero-file-filtered.c
