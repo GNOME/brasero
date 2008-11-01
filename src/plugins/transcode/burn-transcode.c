@@ -1374,7 +1374,6 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				      gboolean arg2,
 				      BraseroTranscode *transcode)
 {
-	GstPad *sink;
 	GstCaps *caps;
 	GstStructure *structure;
 	BraseroTranscodePrivate *priv;
@@ -1391,6 +1390,7 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 	structure = gst_caps_get_structure (caps, 0);
 	if (structure) {
 		if (g_strrstr (gst_structure_get_name (structure), "audio")) {
+			GstPad *sink;
 			GstElement *queue;
 			GstPadLinkReturn res;
 
@@ -1418,9 +1418,12 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				gst_element_set_state (queue, GST_STATE_PLAYING);
 			else
 				brasero_transcode_error_on_pad_linking (transcode);
+
+			gst_object_unref (sink);
 		}
 		/* For video streams add a fakesink (see brasero-metadata.c) */
 		else if (g_strrstr (gst_structure_get_name (structure), "video")) {
+			GstPad *sink;
 			GstElement *fakesink;
 			GstPadLinkReturn res;
 
@@ -1446,11 +1449,12 @@ brasero_transcode_new_decoded_pad_cb (GstElement *decode,
 				gst_element_set_state (fakesink, GST_STATE_PLAYING);
 			else
 				brasero_transcode_error_on_pad_linking (transcode);
+
+			gst_object_unref (sink);
 		}
 	}
 
 end:
-	gst_object_unref (sink);
 	gst_caps_unref (caps);
 }
 
