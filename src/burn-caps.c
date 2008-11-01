@@ -179,38 +179,6 @@ brasero_burn_caps_get_default ()
 	return default_caps;
 }
 
-gint
-brasero_burn_caps_register_plugin_group (BraseroBurnCaps *self,
-					 const gchar *name)
-{
-	guint retval;
-
-	if (!name)
-		return 0;
-
-	if (!self->priv->groups)
-		self->priv->groups = g_hash_table_new_full (g_str_hash,
-							    g_str_equal,
-							    g_free,
-							    NULL);
-
-	retval = GPOINTER_TO_INT (g_hash_table_lookup (self->priv->groups, name));
-	if (retval)
-		return retval;
-
-	g_hash_table_insert (self->priv->groups,
-			     g_strdup (name),
-			     GINT_TO_POINTER (g_hash_table_size (self->priv->groups) + 1));
-
-	/* see if we have a group id now */
-	if (!self->priv->group_id
-	&&   self->priv->group_str
-	&&  !strcmp (name, self->priv->group_str))
-		self->priv->group_id = g_hash_table_size (self->priv->groups) + 1;
-
-	return g_hash_table_size (self->priv->groups) + 1;
-}
-
 /* that function receives all errors returned by the object and 'learns' from 
  * these errors what are the safest defaults for a particular system. It should 
  * also offer fallbacks if an error occurs through a signal */
@@ -3640,6 +3608,53 @@ brasero_plugin_check_caps (BraseroPlugin *plugin,
 
 		link->plugins = g_slist_prepend (link->plugins, plugin);
 	}
+}
+
+/**
+ * This is to register a plugin group 
+ * This function is only define here (though it's implemented in burn-plugin.c).
+ */
+
+void
+brasero_plugin_set_group (BraseroPlugin *plugin, gint group_id);
+
+void
+brasero_plugin_register_group (BraseroPlugin *plugin,
+			       const gchar *name)
+{
+	guint retval;
+	BraseroBurnCaps *self;
+
+	if (!name) {
+		brasero_plugin_set_group (plugin, 0);
+		return;
+	}
+
+	self = brasero_burn_caps_get_default ();
+
+	if (!self->priv->groups)
+		self->priv->groups = g_hash_table_new_full (g_str_hash,
+							    g_str_equal,
+							    g_free,
+							    NULL);
+
+	retval = GPOINTER_TO_INT (g_hash_table_lookup (self->priv->groups, name));
+	if (retval) {
+		brasero_plugin_set_group (plugin, retval);
+		return;
+	}
+
+	g_hash_table_insert (self->priv->groups,
+			     g_strdup (name),
+			     GINT_TO_POINTER (g_hash_table_size (self->priv->groups) + 1));
+
+	/* see if we have a group id now */
+	if (!self->priv->group_id
+	&&   self->priv->group_str
+	&&  !strcmp (name, self->priv->group_str))
+		self->priv->group_id = g_hash_table_size (self->priv->groups) + 1;
+
+	brasero_plugin_set_group (plugin, g_hash_table_size (self->priv->groups) + 1);
 }
 
 /** 

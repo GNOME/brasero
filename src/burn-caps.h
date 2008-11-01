@@ -61,10 +61,6 @@ GType brasero_burn_caps_get_type();
 
 BraseroBurnCaps *brasero_burn_caps_get_default ();
 
-gint
-brasero_burn_caps_register_plugin_group (BraseroBurnCaps *caps,
-					 const gchar *name);
-
 /**
  *
  */

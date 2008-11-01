@@ -428,19 +428,13 @@ brasero_plugin_define (BraseroPlugin *self,
 }
 
 void
-brasero_plugin_register_group (BraseroPlugin *self,
-			       const gchar *name)
+brasero_plugin_set_group (BraseroPlugin *self,
+			  gint group_id)
 {
-	guint id;
-	BraseroBurnCaps *caps;
 	BraseroPluginPrivate *priv;
 
 	priv = BRASERO_PLUGIN_PRIVATE (self);
-
-	caps = brasero_burn_caps_get_default ();
-	id = brasero_burn_caps_register_plugin_group (caps, name);
-	priv->group = id;
-	g_object_unref (caps);
+	priv->group = group_id;
 }
 
 guint
