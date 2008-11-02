@@ -382,14 +382,10 @@ static gboolean
 brasero_data_session_is_valid_multi (BraseroMedium *medium)
 {
 	BraseroMedia media;
-	BraseroBurnCaps *caps;
 	BraseroMedia media_status;
 
 	media = brasero_medium_get_status (medium);
-
-	caps = brasero_burn_caps_get_default ();
-	media_status = brasero_burn_caps_media_capabilities (caps, media);
-	g_object_unref (caps);
+	media_status = brasero_media_capabilities (media);
 
 	return (media_status & BRASERO_MEDIUM_WRITABLE) &&
 	       (media & BRASERO_MEDIUM_HAS_DATA) &&

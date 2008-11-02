@@ -168,6 +168,9 @@ typedef enum {
 GSList *
 brasero_media_get_all_list (BraseroMedia type);
 
+BraseroMedia
+brasero_media_capabilities (BraseroMedia media);
+
 G_END_DECLS
 
 #endif /* _BURN_MEDIA_H */

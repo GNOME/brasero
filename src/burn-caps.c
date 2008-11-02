@@ -212,11 +212,6 @@ brasero_burn_caps_job_error_cb (BraseroJob *job,
 	return BRASERO_BURN_ERR;
 }
 
-/**
- * returns the flags that must be used (compulsory),
- * and the flags that can be used (supported).
- */
-
 static gboolean
 brasero_caps_is_compatible_type (const BraseroCaps *caps,
 				 const BraseroTrackType *type)
@@ -265,80 +260,6 @@ brasero_caps_is_compatible_type (const BraseroCaps *caps,
 	}
 
 	return TRUE;
-}
-
-/**
- * Used to test what the library can do based on the medium type.
- * Returns BRASERO_MEDIUM_WRITABLE if the disc can be written
- * and / or BRASERO_MEDIUM_REWRITABLE if the disc can be erased.
- */
-
-BraseroMedia
-brasero_burn_caps_media_capabilities (BraseroBurnCaps *self,
-				      BraseroMedia media)
-{
-	GSList *iter;
-	GSList *links;
-	BraseroMedia retval;
-	BraseroCaps *caps = NULL;
-
-	retval = BRASERO_MEDIUM_NONE;
-	BRASERO_BURN_LOG_DISC_TYPE (media, "checking media caps for");
-
-	/* we're only interested in DISC caps. There should be only one caps fitting */
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		caps = iter->data;
-		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
-			continue;
-
-		if ((media & caps->type.subtype.media) == media)
-			break;
-
-		caps = NULL;
-	}
-
-	if (!caps)
-		return BRASERO_MEDIUM_NONE;
-
-	/* check the links */
-	for (links = caps->links; links; links = links->next) {
-		GSList *plugins;
-		gboolean active;
-		BraseroCapsLink *link;
-
-		link = links->data;
-
-		/* this link must have at least one active plugin to be valid
-		 * plugins are not sorted but in this case we don't need them
-		 * to be. we just need one active if another is with a better
-		 * priority all the better. */
-		active = FALSE;
-		for (plugins = link->plugins; plugins; plugins = plugins->next) {
-			BraseroPlugin *plugin;
-
-			plugin = plugins->data;
-			if (brasero_plugin_get_active (plugin)) {
-				/* this link is valid */
-				active = TRUE;
-				break;
-			}
-		}
-
-		if (!active)
-			continue;
-
-		if (!link->caps) {
-			/* means that it can be blanked */
-			retval |= BRASERO_MEDIUM_REWRITABLE;
-			continue;
-		}
-
-		/* means it can be written. NOTE: if this disc has already some
-		 * data on it, it even means it can be appended */
-		retval |= BRASERO_MEDIUM_WRITABLE;
-	}
-
-	return retval;
 }
 
 static BraseroCaps *
@@ -3763,10 +3684,95 @@ brasero_plugin_can_convert (BraseroPlugin *plugin)
 	return BRASERO_BURN_NOT_SUPPORTED;
 }
 
-gboolean
-brasero_burn_caps_can_checksum (BraseroBurnCaps *self)
+/**
+ * Used to test what the library can do based on the medium type.
+ * Returns BRASERO_MEDIUM_WRITABLE if the disc can be written
+ * and / or BRASERO_MEDIUM_REWRITABLE if the disc can be erased.
+ * Declared in burn-media.h.
+ */
+
+BraseroMedia
+brasero_media_capabilities (BraseroMedia media)
 {
 	GSList *iter;
+	GSList *links;
+	BraseroMedia retval;
+	BraseroBurnCaps *self;
+	BraseroCaps *caps = NULL;
+
+	self = brasero_burn_caps_get_default ();
+
+	retval = BRASERO_MEDIUM_NONE;
+	BRASERO_BURN_LOG_DISC_TYPE (media, "checking media caps for");
+
+	/* we're only interested in DISC caps. There should be only one caps fitting */
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		caps = iter->data;
+		if (caps->type.type != BRASERO_TRACK_TYPE_DISC)
+			continue;
+
+		if ((media & caps->type.subtype.media) == media)
+			break;
+
+		caps = NULL;
+	}
+
+	if (!caps)
+		return BRASERO_MEDIUM_NONE;
+
+	/* check the links */
+	for (links = caps->links; links; links = links->next) {
+		GSList *plugins;
+		gboolean active;
+		BraseroCapsLink *link;
+
+		link = links->data;
+
+		/* this link must have at least one active plugin to be valid
+		 * plugins are not sorted but in this case we don't need them
+		 * to be. we just need one active if another is with a better
+		 * priority all the better. */
+		active = FALSE;
+		for (plugins = link->plugins; plugins; plugins = plugins->next) {
+			BraseroPlugin *plugin;
+
+			plugin = plugins->data;
+			if (brasero_plugin_get_active (plugin)) {
+				/* this link is valid */
+				active = TRUE;
+				break;
+			}
+		}
+
+		if (!active)
+			continue;
+
+		if (!link->caps) {
+			/* means that it can be blanked */
+			retval |= BRASERO_MEDIUM_REWRITABLE;
+			continue;
+		}
+
+		/* means it can be written. NOTE: if this disc has already some
+		 * data on it, it even means it can be appended */
+		retval |= BRASERO_MEDIUM_WRITABLE;
+	}
+
+	return retval;
+}
+
+/**
+ * This function is declared in burn-basics.h
+ * It can be used to determine whether or not brasero can do any checksuming.
+ */
+
+gboolean
+brasero_burn_library_can_checksum (void)
+{
+	GSList *iter;
+	BraseroBurnCaps *self;
+
+	self = brasero_burn_caps_get_default ();
 
 	if (self->priv->tests == NULL)
 		return FALSE;

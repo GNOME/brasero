@@ -180,6 +180,9 @@ brasero_burn_library_init (void);
 GSList *
 brasero_burn_library_get_plugins_list (void);
 
+gboolean
+brasero_burn_library_can_checksum (void);
+
 void
 brasero_burn_library_shutdown (void);
 

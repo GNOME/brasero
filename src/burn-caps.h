@@ -62,17 +62,6 @@ GType brasero_burn_caps_get_type();
 BraseroBurnCaps *brasero_burn_caps_get_default ();
 
 /**
- *
- */
-
-BraseroMedia
-brasero_burn_caps_media_capabilities (BraseroBurnCaps *caps,
-				      BraseroMedia media);
-
-gboolean
-brasero_burn_caps_can_checksum (BraseroBurnCaps *caps);
-
-/**
  * Returns a GSList * of BraseroTask * for a given session
  */
 
@@ -88,6 +77,22 @@ BraseroTask *
 brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *caps,
 					BraseroBurnSession *session,
 					GError **error);
+
+/**
+ * Test the supported or compulsory flags for a given session
+ */
+
+BraseroBurnResult
+brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
+			     BraseroBurnSession *session,
+			     BraseroBurnFlag *supported,
+			     BraseroBurnFlag *compulsory);
+
+BraseroBurnResult
+brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
+				      BraseroBurnSession *session,
+				      BraseroBurnFlag *supported,
+				      BraseroBurnFlag *compulsory);
 
 /**
  * Used to test the possibilities offered for a given session
@@ -122,21 +127,5 @@ brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 BraseroImageFormat
 brasero_burn_caps_get_default_output_format (BraseroBurnCaps *caps,
 					     BraseroBurnSession *session);
-
-/**
- * Test the supported or compulsory flags for a given session
- */
-
-BraseroBurnResult
-brasero_burn_caps_get_flags (BraseroBurnCaps *caps,
-			     BraseroBurnSession *session,
-			     BraseroBurnFlag *supported,
-			     BraseroBurnFlag *compulsory);
-
-BraseroBurnResult
-brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
-				      BraseroBurnSession *session,
-				      BraseroBurnFlag *supported,
-				      BraseroBurnFlag *compulsory);
 
 #endif /* BURN_CAPS_H */

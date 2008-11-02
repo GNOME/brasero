@@ -618,20 +618,16 @@ brasero_caps_changed_cb (BraseroPluginManager *manager,
 			 BraseroApp *app)
 {
 	BraseroAppPrivate *priv;
-	BraseroBurnCaps *caps;
 	GtkWidget *widget;
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	caps = brasero_burn_caps_get_default ();
 	widget = gtk_ui_manager_get_widget (priv->manager, "/menubar/ToolMenu/Check");
 
-	if (!brasero_burn_caps_can_checksum (caps))
+	if (!brasero_burn_library_can_checksum ())
 		gtk_widget_set_sensitive (widget, FALSE);
 	else
 		gtk_widget_set_sensitive (widget, TRUE);
-
-	g_object_unref (caps);
 }
 
 static void
@@ -640,7 +636,6 @@ brasero_app_init (BraseroApp *object)
 	GtkWidget *hbox;
 	GtkWidget *menubar;
 	GError *error = NULL;
-	BraseroBurnCaps *caps;
 	BraseroAppPrivate *priv;
 	GtkAccelGroup *accel_group;
 	GtkActionGroup *action_group;
@@ -722,14 +717,12 @@ brasero_app_init (BraseroApp *object)
 	gtk_ui_manager_ensure_update (priv->manager);
 
 	/* check if we can use checksums (we need plugins enabled) */
-	caps = brasero_burn_caps_get_default ();
-	if (!brasero_burn_caps_can_checksum (caps)) {
+	if (!brasero_burn_library_can_checksum ()) {
 		GtkWidget *widget;
 
 		widget = gtk_ui_manager_get_widget (priv->manager, "/menubar/ToolMenu/Check");
 		gtk_widget_set_sensitive (widget, FALSE);
 	}
-	g_object_unref (caps);
 
 	plugin_manager = brasero_plugin_manager_get_default ();
 	g_signal_connect (plugin_manager,
