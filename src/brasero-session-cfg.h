@@ -94,7 +94,7 @@ brasero_session_cfg_disable (BraseroSessionCfg *self);
 
 /**
  * This tag (for sessions) is used to set an estimated size, used to determine
- * in the burn option dialog is the selected medium is big enough.
+ * in the burn option dialog if the selected medium is big enough.
  */
 
 #define BRASERO_DATA_TRACK_SIZE_TAG	"track::data::estimated_size"

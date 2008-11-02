@@ -1,5 +1,20 @@
 2008-11-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some headers cleanup and (small) code reorganization
+
+	* src/brasero-session-cfg.c (brasero_session_cfg_get_gconf_key),
+	(brasero_session_cfg_save_drive_properties),
+	(brasero_session_cfg_set_drive_properties),
+	(brasero_session_cfg_update):
+	* src/brasero-session-cfg.h:
+	* src/burn-caps.c (brasero_track_type_is_supported):
+	* src/burn-caps.h:
+	* src/burn-session.c:
+	* src/burn-session.h:
+	* src/burn-track.h:
+
+2008-11-02  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some more code cleanup removed some function that shouldn't be declared
 	in burn-caps.h
 

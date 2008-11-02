@@ -70,7 +70,93 @@ static guint session_cfg_signals [LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroSessionCfg, brasero_session_cfg, BRASERO_TYPE_BURN_SESSION);
 
-#define BRASERO_DEST_SAVED_FLAGS	(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
+#define BRASERO_DEST_SAVED_FLAGS		(BRASERO_DRIVE_PROPERTIES_FLAGS|BRASERO_BURN_FLAG_MULTI)
+#define BRASERO_DRIVE_PROPERTIES_KEY		"/apps/brasero/drives"
+
+/**
+ * Get a key to save parameters through GConf
+ */
+
+static gchar *
+brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
+				   const gchar *property)
+{
+	BraseroMedium *medium;
+	BraseroDrive *drive;
+	gchar *display_name;
+	gchar *key = NULL;
+	gchar *disc_type;
+
+	drive = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
+	if (!drive)
+		return NULL;
+
+	medium = brasero_drive_get_medium (drive);
+	if (brasero_medium_get_status (medium) == BRASERO_MEDIUM_NONE)
+		return NULL;
+	
+	/* make sure display_name doesn't contain any forbidden characters */
+	display_name = brasero_drive_get_display_name (drive);
+	g_strdelimit (display_name, " +()", '_');
+
+	disc_type = g_strdup (brasero_medium_get_type_string (medium));
+	if (!disc_type) {
+		g_free (display_name);
+		return NULL;
+	}
+
+	g_strdelimit (disc_type, " +()", '_');
+
+	display_name = display_name ? display_name : "";
+	disc_type = disc_type ? disc_type : "";
+
+	switch (brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), NULL)) {
+	case BRASERO_TRACK_TYPE_NONE:
+		key = g_strdup_printf ("%s/%s/none_%s/%s",
+				       BRASERO_DRIVE_PROPERTIES_KEY,
+				       display_name,
+				       disc_type,
+				       property);
+		break;
+	case BRASERO_TRACK_TYPE_DISC:
+		key = g_strdup_printf ("%s/%s/disc_%s/%s",
+				       BRASERO_DRIVE_PROPERTIES_KEY,
+				       display_name,
+				       disc_type,
+				       property);
+		break;
+
+	case BRASERO_TRACK_TYPE_DATA:
+		key = g_strdup_printf ("%s/%s/data_%s/%s",
+				       BRASERO_DRIVE_PROPERTIES_KEY,
+				       display_name,
+				       disc_type,
+				       property);
+		break;
+
+	case BRASERO_TRACK_TYPE_IMAGE:
+		key = g_strdup_printf ("%s/%s/image_%s/%s",
+				       BRASERO_DRIVE_PROPERTIES_KEY,
+				       display_name,
+				       disc_type,
+				       property);
+		break;
+
+	case BRASERO_TRACK_TYPE_AUDIO:
+		key = g_strdup_printf ("%s/%s/audio_%s/%s",
+				       BRASERO_DRIVE_PROPERTIES_KEY,
+				       display_name,
+				       disc_type,
+				       property);
+		break;
+	default:
+		break;
+	}
+
+	g_free (display_name);
+	g_free (disc_type);
+	return key;
+}
 
 BraseroSessionError
 brasero_session_cfg_get_error (BraseroSessionCfg *self)
@@ -105,7 +191,7 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
 	client = gconf_client_get_default ();
 
 	rate = brasero_burn_session_get_rate (BRASERO_BURN_SESSION (self));
-	key = brasero_burn_session_get_config_key (BRASERO_BURN_SESSION (self), "speed");
+	key = brasero_session_cfg_get_gconf_key (self, "speed");
 	if (!key) {
 		g_object_unref (client);
 		return;
@@ -114,7 +200,7 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
 	gconf_client_set_int (client, key, rate / 1024, NULL);
 	g_free (key);
 
-	key = brasero_burn_session_get_config_key (BRASERO_BURN_SESSION (self), "flags");
+	key = brasero_session_cfg_get_gconf_key (self, "flags");
 	if (!key) {
 		g_object_unref (client);
 		return;
@@ -267,7 +353,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 	/* Update/set the rate */
 	client = gconf_client_get_default ();
 
-	key = brasero_burn_session_get_config_key (BRASERO_BURN_SESSION (self), "speed");
+	key = brasero_session_cfg_get_gconf_key (self, "speed");
 	value = gconf_client_get_without_default (client, key, NULL);
 	g_free (key);
 
@@ -291,7 +377,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 
 	/* Do the same with the flags.
 	 * NOTE: we only save/load PROPERTIES_FLAGS */
-	key = brasero_burn_session_get_config_key (BRASERO_BURN_SESSION (self), "flags");
+	key = brasero_session_cfg_get_gconf_key (self, "flags");
 	if (!key) {
 		g_object_unref (client);
 		return;
@@ -571,7 +657,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		/* This is a special case */
 		if (source.type == BRASERO_TRACK_TYPE_DISC
 		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
-		&&  brasero_burn_caps_has_capability (priv->caps, &source) != BRASERO_BURN_OK) {
+		&&  brasero_track_type_is_supported (&source) != BRASERO_BURN_OK) {
 			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
 			g_signal_emit (self,
 				       session_cfg_signals [IS_VALID_SIGNAL],

@@ -2222,25 +2222,6 @@ brasero_burn_caps_is_input (BraseroBurnCaps *self,
 	return FALSE;
 }
 
-BraseroBurnResult
-brasero_burn_caps_has_capability (BraseroBurnCaps *self,
-				  BraseroTrackType *type)
-{
-	GSList *iter;
-
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *caps;
-
-		caps = iter->data;
-
-		if (brasero_caps_is_compatible_type (caps, type)
-		&&  brasero_burn_caps_is_input (self, caps))
-			return BRASERO_BURN_OK;
-	}
-
-	return BRASERO_BURN_ERR;
-}
-
 static BraseroPluginIOFlag
 brasero_caps_get_flags (BraseroCaps *caps,
 			BraseroBurnFlag session_flags,
@@ -3815,5 +3796,32 @@ brasero_caps_list_dump (void)
 					    "Created %i links pointing to",
 					    g_slist_length (caps->links));
 	}
+}
+
+
+/**
+ * Declared in burn-track.h
+ * This is to determine whether of not a track type is supported
+ */
+
+BraseroBurnResult
+brasero_track_type_is_supported (BraseroTrackType *type)
+{
+	GSList *iter;
+	BraseroBurnCaps *self;
+
+	self = brasero_burn_caps_get_default ();
+
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *caps;
+
+		caps = iter->data;
+
+		if (brasero_caps_is_compatible_type (caps, type)
+		&&  brasero_burn_caps_is_input (self, caps))
+			return BRASERO_BURN_OK;
+	}
+
+	return BRASERO_BURN_ERR;
 }
 

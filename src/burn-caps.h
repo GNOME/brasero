@@ -99,10 +99,6 @@ brasero_burn_caps_get_blanking_flags (BraseroBurnCaps *caps,
  */
 
 BraseroBurnResult
-brasero_burn_caps_has_capability (BraseroBurnCaps *caps,
-				  BraseroTrackType *type);
-
-BraseroBurnResult
 brasero_burn_caps_can_blank (BraseroBurnCaps *caps,
 			     BraseroBurnSession *session);
 
@@ -124,6 +120,7 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *caps,
 BraseroMedia
 brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,
 					   BraseroBurnSession *session);
+
 BraseroImageFormat
 brasero_burn_caps_get_default_output_format (BraseroBurnCaps *caps,
 					     BraseroBurnSession *session);
