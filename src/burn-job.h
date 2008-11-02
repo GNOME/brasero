@@ -276,10 +276,6 @@ brasero_job_set_output_size_for_current_track (BraseroJob *job,
 					       gint64 sectors,
 					       gint64 size);
 
-BraseroBurnResult
-brasero_job_add_wrong_checksum (BraseroJob *job,
-				const gchar *path);
-
 /**
  * Used to tell it's (or not) dangerous to interrupt this job
  */

@@ -331,8 +331,14 @@ brasero_track_tag_lookup (BraseroTrack *track,
  * Commonly used Tags
  */
 
-#define BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG	"track::medium::address::start"
-#define BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG	"track::medium::address::end"
+#define BRASERO_TRACK_MEDIUM_ADDRESS_START_TAG		"track::medium::address::start"
+#define BRASERO_TRACK_MEDIUM_ADDRESS_END_TAG		"track::medium::address::end"
+
+/**
+ * Array of filenames (on medium) which have a wrong checksum value (G_TYPE_STRV)
+ */
+
+#define BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG		"track::medium::error::checksum::list"
 
 G_END_DECLS
 

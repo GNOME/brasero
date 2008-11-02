@@ -678,16 +678,15 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	const gchar *name;
 	gint checksum_len;
 	BraseroTrack *track;
+	GValue *value = NULL;
 	BraseroMedium *medium;
-	gboolean has_wrongsums;
 	GChecksumType gchecksum_type;
-	BraseroChecksumFilesPrivate *priv;
+	GArray *wrong_checksums = NULL;
 	gchar filename [MAXPATHLEN + 1];
+	BraseroChecksumFilesPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
-
-	has_wrongsums = FALSE;
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	medium = brasero_track_get_medium_source (track);
@@ -847,8 +846,15 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 				 filename, checksum_file, checksum_real);
 
 		if (strcmp (checksum_file, checksum_real)) {
-			has_wrongsums = TRUE;
-			brasero_job_add_wrong_checksum (BRASERO_JOB (self), filename);
+			gchar *string;
+			if (!wrong_checksums)
+				wrong_checksums = g_array_new (TRUE,
+							       TRUE, 
+							       sizeof (gchar *));
+
+			string = g_strdup (filename);
+			wrong_checksums = g_array_append_val (wrong_checksums,
+							      string);
 		}
 
 		g_free (checksum_real);
@@ -863,15 +869,25 @@ end:
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	if (has_wrongsums) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_BAD_CHECKSUM,
-			     _("some files may be corrupted on the disc"));
-		return BRASERO_BURN_ERR;
-	}
+	if (!wrong_checksums)
+		return BRASERO_BURN_OK;
 
-	return BRASERO_BURN_OK;
+	/* add the tag */
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_STRV);
+	g_value_take_boxed (value, wrong_checksums->data);
+	g_array_free (wrong_checksums, FALSE);
+
+	brasero_track_tag_add (track,
+			       BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG,
+			       value);
+
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_BAD_CHECKSUM,
+		     _("some files may be corrupted on the disc"));
+
+	return BRASERO_BURN_ERR;
 }
 
 struct _BraseroChecksumFilesThreadCtx {

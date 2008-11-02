@@ -1741,22 +1741,6 @@ brasero_job_start_progress (BraseroJob *self,
  */
 
 BraseroBurnResult
-brasero_job_add_wrong_checksum (BraseroJob *self,
-				const gchar *path)
-{
-	BraseroJobPrivate *priv;
-	BraseroBurnSession *session;
-
-	BRASERO_JOB_DEBUG (self);
-
-	priv = BRASERO_JOB_PRIVATE (self);
-	session = brasero_task_ctx_get_session (priv->ctx);
-
-	brasero_burn_session_add_wrong_checksum (session, path);
-	return BRASERO_BURN_OK;
-}
-
-BraseroBurnResult
 brasero_job_set_progress (BraseroJob *self,
 			  gdouble progress)
 {

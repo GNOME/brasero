@@ -1147,7 +1147,10 @@ brasero_track_tag_add (BraseroTrack *track,
 						     g_str_equal,
 						     g_free,
 						     brasero_track_tag_value_free);
-	g_hash_table_insert (track->tags, g_strdup (tag), value);
+	g_hash_table_insert (track->tags,
+			     g_strdup (tag),
+			     value);
+
 	return BRASERO_BURN_OK;
 }
 

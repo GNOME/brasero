@@ -78,8 +78,6 @@ struct _BraseroBurnSessionPrivate {
 	FILE *session;
 	gchar *session_path;
 
-	GSList *wrong_checksums;
-
 	GSList *tmpfiles;
 
 	BraseroSessionSetting settings [1];
@@ -1321,37 +1319,6 @@ brasero_burn_session_same_src_dest_drive (BraseroBurnSession *self)
 }
 
 
-/**
- *
- */
-
-void
-brasero_burn_session_add_wrong_checksum (BraseroBurnSession *self,
-					 const gchar *path)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-	priv->wrong_checksums = g_slist_prepend (priv->wrong_checksums, g_strdup (path));
-}
-
-GSList *
-brasero_burn_session_get_wrong_checksums (BraseroBurnSession *self)
-{
-	BraseroBurnSessionPrivate *priv;
-	GSList *retval;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), NULL);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	/* reset our list so it will return only the new ones next time */
-	retval = priv->wrong_checksums;
-	priv->wrong_checksums = NULL;
-
-	return retval;
-}
-
 /****************************** this part is for log ***************************/
 void
 brasero_burn_session_logv (BraseroBurnSession *self,
@@ -1645,12 +1612,6 @@ brasero_burn_session_finalize (GObject *object)
 		g_remove (priv->session_path);
 		g_free (priv->session_path);
 		priv->session_path = NULL;
-	}
-
-	if (priv->wrong_checksums) {
-		g_slist_foreach (priv->wrong_checksums, (GFunc) g_free, NULL);
-		g_slist_free (priv->wrong_checksums);
-		priv->wrong_checksums = NULL;
 	}
 
 	brasero_session_settings_clean (priv->settings);

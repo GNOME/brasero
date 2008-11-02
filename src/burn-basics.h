@@ -193,7 +193,7 @@ brasero_burn_library_shutdown (void);
 /**
  * Define the audio streams for a DVD
  */
-#define BRASERO_DVD_AUDIO_STREAMS		"DVD-audio-format"
+#define BRASERO_DVD_AUDIO_STREAMS		"session::DVD::audio::format"
 
 /**
  * Define the format: whether VCD or SVCD
@@ -204,7 +204,7 @@ enum {
 	BRASERO_VCD_V2,
 	BRASERO_SVCD
 };
-#define BRASERO_VCD_TYPE			"VCD-format"
+#define BRASERO_VCD_TYPE			"session::VCD::format"
 
 /**
  * This is the video format that should be used.
@@ -214,7 +214,7 @@ enum {
 	BRASERO_VIDEO_FRAMERATE_NTSC,
 	BRASERO_VIDEO_FRAMERATE_PAL_SECAM
 };
-#define BRASERO_VIDEO_OUTPUT_FRAMERATE		"video-framerate"
+#define BRASERO_VIDEO_OUTPUT_FRAMERATE		"session::video::framerate"
 
 /**
  * Aspect ratio
@@ -224,7 +224,7 @@ enum {
 	BRASERO_VIDEO_ASPECT_4_3,
 	BRASERO_VIDEO_ASPECT_16_9
 };
-#define BRASERO_VIDEO_OUTPUT_ASPECT		"video-aspect"
+#define BRASERO_VIDEO_OUTPUT_ASPECT		"session::video::aspect"
 
 
 G_END_DECLS

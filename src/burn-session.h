@@ -289,18 +289,6 @@ brasero_burn_session_set_num_copies (BraseroBurnSession *session,
 guint
 brasero_burn_session_get_num_copies (BraseroBurnSession *session);
 
-/**
- * Used to report wrong checksum
- */
-
-void
-brasero_burn_session_add_wrong_checksum (BraseroBurnSession *session,
-					 const gchar *path);
-
-GSList *
-brasero_burn_session_get_wrong_checksums (BraseroBurnSession *session);
-
-
 G_END_DECLS
 
 #endif /* BURN_SESSION_H */

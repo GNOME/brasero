@@ -178,9 +178,8 @@ enum {
 
 static gboolean
 brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
-				       GSList *wrong_sums)
+				       const gchar **wrong_sums)
 {
-	GSList *iter;
 	gchar *string;
 	GtkWidget *tree;
 	GtkWidget *scroll;
@@ -219,11 +218,11 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 
 	/* build a list */
 	model = GTK_TREE_MODEL (gtk_list_store_new (BRASERO_SUM_DIALOG_NB_COL, G_TYPE_STRING));
-	for (iter = wrong_sums; iter; iter = iter->next) {
-		gchar *path;
+	for (; wrong_sums && (*wrong_sums); wrong_sums ++) {
+		const gchar *path;
 		GtkTreeIter tree_iter;
 
-		path = iter->data;
+		path = (*wrong_sums);
 		gtk_list_store_append (GTK_LIST_STORE (model), &tree_iter);
 		gtk_list_store_set (GTK_LIST_STORE (model), &tree_iter,
 				    BRASERO_SUM_DIALOG_PATH, path,
@@ -542,8 +541,10 @@ brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
 		return BRASERO_CHECKSUM_NONE;
 
 	filename = g_build_path (G_DIR_SEPARATOR_S, root, BRASERO_MD5_FILE, NULL);
+
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		g_free (filename);
+		g_free (root);
 
 		brasero_track_set_checksum (track,
 					    BRASERO_CHECKSUM_MD5_FILE,
@@ -556,6 +557,7 @@ brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
 	filename = g_build_path (G_DIR_SEPARATOR_S, root, BRASERO_SHA1_FILE, NULL);
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		g_free (filename);
+		g_free (root);
 
 		brasero_track_set_checksum (track,
 					    BRASERO_CHECKSUM_SHA1_FILE,
@@ -568,6 +570,7 @@ brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
 	filename = g_build_path (G_DIR_SEPARATOR_S, root, BRASERO_SHA256_FILE, NULL);
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		g_free (filename);
+		g_free (root);
 
 		brasero_track_set_checksum (track,
 					    BRASERO_CHECKSUM_SHA256_FILE,
@@ -576,6 +579,7 @@ brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
 		return BRASERO_CHECKSUM_SHA256_FILE;
 	}
 	g_free (filename);
+	g_free (root);
 
 	g_set_error (error,
 		     BRASERO_ERROR,
@@ -590,9 +594,9 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 				   BraseroDrive *drive)
 {
 	BraseroChecksumType checksum_type;
-	GSList *wrong_sums = NULL;
 	BraseroBurnResult result;
 	GError *error = NULL;
+	GValue *value = NULL;
 	BraseroTrack *track;
 	BraseroBurn *burn;
 	gboolean retval;
@@ -646,12 +650,11 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 
 	g_error_free (error);
 
-	wrong_sums = brasero_burn_session_get_wrong_checksums (self->priv->session);
-	retval = brasero_sum_dialog_corruption_warning (self, wrong_sums);
-	g_slist_foreach (wrong_sums, (GFunc) g_free, NULL);
-	g_slist_free (wrong_sums);
+	brasero_track_tag_lookup (track,
+				  BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG,
+				  &value);
 
-	return retval;
+	return brasero_sum_dialog_corruption_warning (self, g_value_get_boxed (value));
 }
 
 static gboolean

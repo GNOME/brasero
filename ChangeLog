@@ -1,5 +1,23 @@
 2008-11-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Changed the way we dealt with lists of files having a wrong checksum.
+	Use track tags instead which cleans up the headers a little.
+
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_set_track_checksum_type),
+	(brasero_sum_dialog_check_disc_sum):
+	* src/burn-basics.h:
+	* src/burn-job.c:
+	* src/burn-job.h:
+	* src/burn-session.c (brasero_burn_session_finalize):
+	* src/burn-session.h:
+	* src/burn-track.c (brasero_track_tag_add):
+	* src/burn-track.h:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_check_files):
+
+2008-11-02  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some headers cleanup and (small) code reorganization
 
 	* src/brasero-session-cfg.c (brasero_session_cfg_get_gconf_key),
