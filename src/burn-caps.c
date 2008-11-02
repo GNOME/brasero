@@ -217,24 +217,6 @@ brasero_burn_caps_job_error_cb (BraseroJob *job,
  * and the flags that can be used (supported).
  */
 
-void
-brasero_caps_list_dump (void)
-{
-	GSList *iter;
-	BraseroBurnCaps *self;
-
-	self = brasero_burn_caps_get_default ();
-	for (iter = self->priv->caps_list; iter; iter = iter->next) {
-		BraseroCaps *caps;
-
-		caps = iter->data;
-		BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
-					    caps->flags,
-					    "Created %i links pointing to",
-					    g_slist_length (caps->links));
-	}
-}
-
 static gboolean
 brasero_caps_is_compatible_type (const BraseroCaps *caps,
 				 const BraseroTrackType *type)
@@ -3658,7 +3640,8 @@ brasero_plugin_register_group (BraseroPlugin *plugin,
 }
 
 /** 
- * This is to find out what are the capacities of a plugin 
+ * This is to find out what are the capacities of a plugin
+ * Declared in brasero-plugin-private.h
  */
 
 BraseroBurnResult
@@ -3804,3 +3787,27 @@ brasero_burn_caps_can_checksum (BraseroBurnCaps *self)
 
 	return FALSE;
 }
+
+/**
+ * This is declared in burn-basics.c. It's private stuff that needs to be
+ * defined in this file. For debugging use only.
+ */
+
+void
+brasero_caps_list_dump (void)
+{
+	GSList *iter;
+	BraseroBurnCaps *self;
+
+	self = brasero_burn_caps_get_default ();
+	for (iter = self->priv->caps_list; iter; iter = iter->next) {
+		BraseroCaps *caps;
+
+		caps = iter->data;
+		BRASERO_BURN_LOG_WITH_TYPE (&caps->type,
+					    caps->flags,
+					    "Created %i links pointing to",
+					    g_slist_length (caps->links));
+	}
+}
+

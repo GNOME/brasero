@@ -46,6 +46,12 @@
 static BraseroPluginManager *plugin_manager = NULL;
 static BraseroMediumMonitor *medium_manager = NULL;
 
+/**
+ * This is defined in burn-caps.c it's for debugging mainly
+ */
+
+void brasero_caps_list_dump (void);
+
 GQuark
 brasero_burn_quark (void)
 {
