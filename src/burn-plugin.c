@@ -388,11 +388,11 @@ brasero_plugin_get_gconf_priority_key (BraseroPlugin *self)
 	caps = brasero_burn_caps_get_default ();
 
 	/* make sure the name used has characters usable by GConf */
-	if (brasero_burn_caps_plugin_can_burn (caps, self) == BRASERO_BURN_OK)
+	if (brasero_plugin_can_burn (self) == BRASERO_BURN_OK)
 		type = 0;
-	else if (brasero_burn_caps_plugin_can_image (caps, self) == BRASERO_BURN_OK)
+	else if (brasero_plugin_can_image (self) == BRASERO_BURN_OK)
 		type = 1;
-	else if (brasero_burn_caps_plugin_can_convert (caps, self) == BRASERO_BURN_OK)
+	else if (brasero_plugin_can_convert (self) == BRASERO_BURN_OK)
 		type = 2;
 
 	gconf_name = g_strdup (priv->name);

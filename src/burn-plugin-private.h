@@ -118,6 +118,21 @@ gboolean
 brasero_plugin_get_process_flags (BraseroPlugin *plugin,
 				  BraseroPluginProcessFlag *flags);
 
+
+/** 
+ * This is to find out what are the capacities of a plugin 
+ */
+
+BraseroBurnResult
+brasero_plugin_can_burn (BraseroPlugin *plugin);
+
+BraseroBurnResult
+brasero_plugin_can_image (BraseroPlugin *plugin);
+
+BraseroBurnResult
+brasero_plugin_can_convert (BraseroPlugin *plugin);
+
+
 /**
  * Plugin configuration options
  */

@@ -355,9 +355,9 @@ plugin_manager_ui_populate_lists (BraseroPluginManagerUI *pm)
 	for (; plugins; plugins = plugins->next) {
 		plugin = plugins->data;
 
-		if (brasero_burn_caps_plugin_can_burn (caps, plugin) == BRASERO_BURN_OK
-		||  brasero_burn_caps_plugin_can_convert (caps, plugin) == BRASERO_BURN_OK
-		||  brasero_burn_caps_plugin_can_image (caps, plugin) == BRASERO_BURN_OK
+		if (brasero_plugin_can_burn (plugin) == BRASERO_BURN_OK
+		||  brasero_plugin_can_convert (plugin) == BRASERO_BURN_OK
+		||  brasero_plugin_can_image (plugin) == BRASERO_BURN_OK
 		||  brasero_plugin_get_gtype (plugin) == G_TYPE_NONE)
 			continue;
 

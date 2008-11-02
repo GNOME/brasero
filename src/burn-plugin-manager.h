@@ -26,10 +26,6 @@
 #include <glib-object.h>
 #include <gmodule.h>
 
-#include "burn-basics.h"
-#include "burn-plugin.h"
-#include "burn-task.h"
-
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_PLUGIN_MANAGER             (brasero_plugin_manager_get_type ())

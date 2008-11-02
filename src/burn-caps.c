@@ -3662,10 +3662,12 @@ brasero_plugin_register_group (BraseroPlugin *plugin,
  */
 
 BraseroBurnResult
-brasero_burn_caps_plugin_can_burn (BraseroBurnCaps *self,
-				   BraseroPlugin *plugin)
+brasero_plugin_can_burn (BraseroPlugin *plugin)
 {
 	GSList *iter;
+	BraseroBurnCaps *self;
+
+	self = brasero_burn_caps_get_default ();
 
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroCaps *caps;
@@ -3696,11 +3698,12 @@ brasero_burn_caps_plugin_can_burn (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_plugin_can_image (BraseroBurnCaps *self,
-				    BraseroPlugin *plugin)
+brasero_plugin_can_image (BraseroPlugin *plugin)
 {
 	GSList *iter;
+	BraseroBurnCaps *self;
 
+	self = brasero_burn_caps_get_default ();
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroTrackDataType destination;
 		BraseroCaps *caps;
@@ -3737,11 +3740,12 @@ brasero_burn_caps_plugin_can_image (BraseroBurnCaps *self,
 }
 
 BraseroBurnResult
-brasero_burn_caps_plugin_can_convert (BraseroBurnCaps *self,
-				      BraseroPlugin *plugin)
+brasero_plugin_can_convert (BraseroPlugin *plugin)
 {
 	GSList *iter;
+	BraseroBurnCaps *self;
 
+	self = brasero_burn_caps_get_default ();
 	for (iter = self->priv->caps_list; iter; iter = iter->next) {
 		BraseroTrackDataType destination;
 		BraseroCaps *caps;
