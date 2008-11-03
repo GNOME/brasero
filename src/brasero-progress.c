@@ -279,15 +279,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 	gtk_box_pack_start (GTK_BOX (obj), table, TRUE, TRUE, 20);
 	gtk_widget_show_all (table);
 
-	if (written > 1024 * 1024)
-		text = g_strdup_printf (_("%i MiB"), written / 1024 / 1024);
-	else if (written > 1024)
-		text = g_strdup_printf (_("%i KiB"), written / 1024);
-	else if (written > 0)
-		text = g_strdup_printf (_("%i bytes"), written);
-	else
-		return;
-
+	text = g_format_size_for_display (written);
 	gtk_label_set_text (GTK_LABEL (obj->priv->bytes_written), text);
 	gtk_widget_show (obj->priv->bytes_written);
 	g_free (text);

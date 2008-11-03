@@ -207,6 +207,7 @@ static GtkActionEntry entries [] = {
 	 N_("Add files to the project"), G_CALLBACK (brasero_project_add_uris_cb)},
 	{"DeleteProject", GTK_STOCK_REMOVE, N_("_Remove Files"), NULL,
 	 N_("Remove the selected files from the project"), G_CALLBACK (brasero_project_remove_selected_uris_cb)},
+	/* Translators: "empty" is a verb here */
 	{"DeleteAll", GTK_STOCK_CLEAR, N_("E_mpty Project"), NULL,
 	 N_("Remove all files from the project"), G_CALLBACK (brasero_project_empty_cb)},
 	{"Burn", "media-optical-burn", N_("_Burn..."), NULL,
@@ -1489,8 +1490,10 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 							    "All the work will be lost. "
 							    "Note that files will not be deleted from their own location, "
 							    "just no longer listed here."));
+		/* Translators: "empty" is a verb here */
 		gtk_dialog_add_button (GTK_DIALOG (dialog),
-				       _("_Empty Project"), GTK_RESPONSE_OK);
+				       _("E_mpty Project"),
+				       GTK_RESPONSE_OK);
 
 		answer = gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);

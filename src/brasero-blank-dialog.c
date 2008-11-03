@@ -214,6 +214,9 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 		GtkWidget *message;
 		GtkWidget *button;
 
+		/* FIXME: error in string (capital letter) */
+		/* Translators: the following string means there was an error
+		 * while blanking. */
 		message =  gtk_message_dialog_new (GTK_WINDOW (self),
 						   GTK_DIALOG_DESTROY_WITH_PARENT|
 						   GTK_DIALOG_MODAL,
@@ -363,6 +366,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 
 	priv = BRASERO_BLANK_DIALOG_PRIVATE (obj);
 
+	/* Translators: This is a verb, an action */
 	brasero_tool_dialog_set_button (BRASERO_TOOL_DIALOG (obj),
 					_("_Blank"),
 					NULL,

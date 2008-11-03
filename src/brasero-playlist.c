@@ -979,7 +979,7 @@ brasero_playlist_insert (BraseroPlaylist *playlist, const gchar *uri)
 	gtk_tree_store_set (GTK_TREE_STORE (model), &parent,
 			    BRASERO_PLAYLIST_DISPLAY_COL, name,
 			    BRASERO_PLAYLIST_URI_COL, uri,
-			    BRASERO_PLAYLIST_NB_SONGS_COL, _("Loading ..."),
+			    BRASERO_PLAYLIST_NB_SONGS_COL, _("(loading ...)"),
 			    -1);
 	g_free (name);
 

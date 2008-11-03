@@ -46,7 +46,7 @@
 #define BRASERO_ERROR brasero_error_quark()
 
 static GHashTable *stringsH = NULL;
-G_LOCK_DEFINE (strings_mutex);
+G_LOCK_DEFINE_STATIC (stringsH);
 
 static gboolean
 brasero_utils_clear_strings_cb (gchar *string,
@@ -61,13 +61,13 @@ static void
 brasero_utils_free (void)
 {
 	if (stringsH) {
-		G_LOCK (strings_mutex);
+		G_LOCK (stringsH);
 		g_hash_table_foreach_remove (stringsH,
 					     (GHRFunc) brasero_utils_clear_strings_cb,
 					     NULL);
 		g_hash_table_destroy (stringsH);
 		stringsH = NULL;
-		G_UNLOCK (strings_mutex);
+		G_UNLOCK (stringsH);
 	}
 }
 
@@ -111,7 +111,7 @@ brasero_utils_register_string (const gchar *string)
 		return NULL;
 	}
 
-	G_LOCK (strings_mutex);
+	G_LOCK (stringsH);
 
 	if (!stringsH) {
 		stringsH = g_hash_table_new (g_str_hash, g_str_equal);
@@ -128,7 +128,7 @@ brasero_utils_register_string (const gchar *string)
 		g_hash_table_insert (stringsH,
 				     key,
 				     GINT_TO_POINTER (1));
-		G_UNLOCK (strings_mutex);
+		G_UNLOCK (stringsH);
 		return key;
 	}
 
@@ -137,7 +137,7 @@ brasero_utils_register_string (const gchar *string)
 			     key,
 			     GINT_TO_POINTER (ref));
 
-	G_UNLOCK (strings_mutex);
+	G_UNLOCK (stringsH);
 	return key;
 }
 
@@ -153,10 +153,10 @@ brasero_utils_unregister_string (const gchar *string)
 		return;
 	}
 
-	G_LOCK (strings_mutex);
+	G_LOCK (stringsH);
 
 	if (!stringsH) {
-		G_UNLOCK (strings_mutex);
+		G_UNLOCK (stringsH);
 		return;
 	}
 
@@ -165,7 +165,7 @@ brasero_utils_unregister_string (const gchar *string)
 						&key,
 						&reftmp);
 	if (!success) {
-		G_UNLOCK (strings_mutex);
+		G_UNLOCK (stringsH);
 		return;
 	}
 
@@ -178,7 +178,7 @@ brasero_utils_unregister_string (const gchar *string)
 		g_free (key);
 	}
 
-	G_UNLOCK (strings_mutex);
+	G_UNLOCK (stringsH);
 }
 
 gchar *
@@ -261,7 +261,9 @@ brasero_utils_get_size_string (gint64 dsize,
 	int unit;
 	int size;
 	int remain = 0;
-	const char *units[] = { "", N_("KiB"), N_("MiB"), N_("GiB") };
+
+	if (with_unit)
+		return g_format_size_for_display (dsize);
 
 	if (dsize < 1024) {
 		unit = BRASERO_UTILS_NO_UNIT;
@@ -294,18 +296,7 @@ brasero_utils_get_size_string (gint64 dsize,
 		size -= remains;
 	}
 
-	if (with_unit == TRUE && unit != BRASERO_UTILS_NO_UNIT) {
-		if (remain)
-			return g_strdup_printf ("%i.%i %s",
-						size,
-						remain,
-						_(units[unit]));
-		else
-			return g_strdup_printf ("%i %s",
-						size,
-						_(units[unit]));
-	}
-	else if (remain)
+	if (remain)
 		return g_strdup_printf ("%i.%i",
 					size,
 					remain);

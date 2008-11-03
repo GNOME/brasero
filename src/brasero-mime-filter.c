@@ -241,6 +241,8 @@ brasero_mime_filter_add_mime (BraseroMimeFilter *filter, const gchar *mime)
 		const gchar *icon_string = BRASERO_DEFAULT_ICON;
 
 		description = g_content_type_get_description (mime);
+
+		/* Translators: the %s is the mime type used to filter files */
 		display = g_strdup_printf (_("%s only"), description);
 
 		icon = g_content_type_get_icon (mime);

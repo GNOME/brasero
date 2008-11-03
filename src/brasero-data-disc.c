@@ -1250,6 +1250,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 			   BRASERO_DATA_DISC_MEDIUM,
 			   medium);
 
+	/* Translators: This is a verb */
 	g_object_set (action,
 		      "short-label", _("Import"), /* for toolbar buttons */
 		      NULL);

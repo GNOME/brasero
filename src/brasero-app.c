@@ -643,7 +643,7 @@ brasero_app_init (BraseroApp *object)
 
 	/* New window */
 	priv = BRASERO_APP_PRIVATE (object);
-	g_set_application_name (_("Brasero Disc Burning"));
+	g_set_application_name (_("Brasero Disc Burner"));
 
 	gtk_window_set_default_icon_name ("brasero");
 	gtk_window_set_icon_name (GTK_WINDOW (object), "brasero");

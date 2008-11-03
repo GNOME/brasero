@@ -195,7 +195,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 			g_free (text);
 		}
 		else
-			g_value_set_string (value, _("loading"));
+			g_value_set_string (value, _("(loading ...)"));
 
 		return;
 

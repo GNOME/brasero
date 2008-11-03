@@ -1741,7 +1741,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 			    NAME_COL, markup,
 			    ICON_COL, "image-loading",
 			    URI_COL, uri,
-			    ARTIST_COL, _("loading"),
+			    ARTIST_COL, _("(loading ...)"),
 			    SONG_COL, TRUE,
 			    -1);
 	g_free (markup);
@@ -1766,7 +1766,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	}
 	else
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-				    SIZE_COL, _("loading"),
+				    SIZE_COL, _("(loading ...)"),
 				    -1);
 
 	if (gap_sectors > 0)
