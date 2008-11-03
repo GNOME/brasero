@@ -843,11 +843,24 @@ void
 brasero_project_manager_data (BraseroProjectManager *manager,
 			      GSList *uris)
 {
+	gchar *burn_URI = NULL;
+
+	/* always add the contents of burn:/// URI if list is empty */
+	if (!uris) {
+		burn_URI = g_strdup ("burn:///");
+		uris = g_slist_prepend (NULL, burn_URI);
+	}
+
 	brasero_project_manager_switch (manager,
 					BRASERO_PROJECT_TYPE_DATA,
 					uris,
 					NULL,
 					TRUE);
+	
+	if (burn_URI) {
+		g_slist_free (uris);
+		g_free (burn_URI);
+	}
 }
 
 void

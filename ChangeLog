@@ -1,3 +1,10 @@
+2008-11-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	If we're asked to open a new empty data project on the command line,
+	then add the contents of burn:/// by default
+
+	* src/brasero-project-manager.c (brasero_project_manager_data):
+
 2008-11-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Changed the way we dealt with lists of files having a wrong checksum.
