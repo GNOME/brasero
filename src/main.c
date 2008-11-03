@@ -111,8 +111,8 @@ static const GOptionEntry options [] = {
 	  NULL },
 
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
-	  N_("Open a data project with the contents of nautilus-cd-burner"),
-          NULL },
+	  N_("Burn the contents of burn:// URI"),
+	  NULL },
 
 	{ "debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout"),
@@ -260,7 +260,7 @@ brasero_app_parse_options (BraseroApp *app)
 
 		list = g_slist_prepend (NULL, "burn:///");
 
-		/* in this case we can also add the files */
+		/* in this case we can also add the files from the command line */
 		for (iter = files; iter && *iter; iter ++) {
 			GFile *file;
 			gchar *uri;

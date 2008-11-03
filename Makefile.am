@@ -5,6 +5,10 @@ if BUILD_GNOME2
 SUBDIRS += help
 endif
 
+if BUILD_NAUTILUS
+SUBDIRS += nautilus
+endif
+
 braserodocdir = ${prefix}/docs/brasero
 
 

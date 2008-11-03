@@ -112,13 +112,11 @@ PKG_CHECK_MODULES(BRASERO_GSTREAMER, 		\
 	gstreamer-0.10 >= $GSTREAMER_REQUIRED \
 	gstreamer-plugins-base-0.10 >= $GSTREAMER_BASE_REQUIRED)
 
-BRASERO_GSTREAMER_LIBS="$BRASERO_GSTREAMER_LIBS -lgstpbutils-0.10"
-
 AC_SUBST(BRASERO_GSTREAMER_CFLAGS)
 AC_SUBST(BRASERO_GSTREAMER_LIBS)
 
 BRASERO_GSTREAMER_CFLAGS="$BRASERO_GSTREAMER_CFLAGS $CFLAGS"
-BRASERO_GSTREAMER_LIBS="$BRASERO_GSTREAMER_LIBS $LDFLAGS"
+BRASERO_GSTREAMER_LIBS="$BRASERO_GSTREAMER_LIBS $LDFLAGS -lgstpbutils-0.10"
 
 dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_GIO, 	\
@@ -152,17 +150,21 @@ BRASERO_BASE_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_GIO_CFLAGS $CFLAGS"
 BRASERO_BASE_LIBS="$BRASERO_BASE_LIBS $LDFLAGS"
 
 dnl ** used only by brasero app itself ***
-PKG_CHECK_MODULES(BRASERO,			\
+PKG_CHECK_MODULES(BRASERO_UI,			\
 	hal >= $HAL_REQUIRED		\
 	gmodule-2.0 >= $GMODULE_REQUIRED 	\
 	gdk-2.0 >= $GDK_REQUIRED	\
 	gtk+-2.0 >= $GTK_REQUIRED		\
 	dbus-glib-1 >= $DBUS_REQUIRED)
 
+AC_SUBST(BRASERO_UI_CFLAGS)
+AC_SUBST(BRASERO_UI_LIBS)
+
+BRASERO_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_UI_CFLAGS $BRASERO_GSTREAMER_CFLAGS $BRASERO_GIO_CFLAGS $BRASERO_CFLAGS $CFLAGS"
+BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_UI_LIBS $BRASERO_GSTREAMER_LIBS $BRASERO_GIO_LIBS $BRASERO_LIBS $BRASERO_SCSI_LIBS $LDFLAGS"
+
 AC_SUBST(BRASERO_CFLAGS)
 AC_SUBST(BRASERO_LIBS)
-BRASERO_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_GSTREAMER_CFLAGS $BRASERO_GIO_CFLAGS $BRASERO_CFLAGS $CFLAGS"
-BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_GSTREAMER_LIBS $BRASERO_GIO_LIBS $BRASERO_LIBS $BRASERO_SCSI_LIBS $LDFLAGS"
 
 dnl ********** GNOME2 ******************************
 LIBGNOME_REQUIRED=2.10.0
@@ -186,6 +188,34 @@ if test x"$build_gnome2" = "xyes"; then
 fi
 
 AM_CONDITIONAL(BUILD_GNOME2, test x"$build_gnome2" = "xyes")
+
+dnl ****************Nautilus**********************************
+EEL_REQUIRED=2.13.3
+NAUTILUS_REQUIRED=2.22.2
+
+AC_ARG_ENABLE(nautilus,
+			[  --enable-nautilus		Build Nautilus extension [[default = yes]]],,
+			[enable_nautilus="yes"])
+
+if test x"$enable_nautilus" = "xyes"; then
+	PKG_CHECK_MODULES(NAUTILUS_EXTENSION,
+			  libnautilus-extension >= $NAUTILUS_REQUIRED \
+			  eel-2.0 >= $EEL_REQUIRED,
+			  build_nautilus=yes,
+			  build_nautilus=no)
+else
+	build_nautilus="no"
+fi
+
+if test x"$build_nautilus" = "xyes"; then
+	NAUTILUS_EXTENSION_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_UI_CFLAGS $NAUTILUS_EXTENSION_CFLAGS"
+	BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_UI_LIBS $NAUTILUS_EXTENSION_LIBS"
+	NAUTILUSDIR=`pkg-config --variable=extensiondir libnautilus-extension`
+	AC_SUBST(NAUTILUSDIR)
+	AM_GLIB_DEFINE_LOCALEDIR([GNOMELOCALEDIR])
+fi
+
+AM_CONDITIONAL(BUILD_NAUTILUS, test x"$build_nautilus" = "xyes")
 
 dnl ****************check for libburn (optional)**************
 LIBBURN_REQUIRED=0.4.0
@@ -373,6 +403,7 @@ data/brasero-open-project.desktop.in
 data/brasero-copy-medium.desktop.in
 data/icons/Makefile
 help/Makefile
+nautilus/Makefile
 src/plugins/Makefile
 src/plugins/cdrdao/Makefile
 src/plugins/cdrkit/Makefile
@@ -399,6 +430,7 @@ dnl 	Build libnotify support : ${build_libnotify}
 echo "Version: $BRASERO_VERSION
 	Update caches: ${enable_caches}
 	Build with GNOME2 : ${build_gnome2}
+	Build Nautilus extension : ${build_nautilus}
 	Build inotify: ${enable_inotify}
 	Build search pane : ${build_beagle}
 	Build playlist pane : ${build_totem}

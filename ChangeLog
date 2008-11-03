@@ -1,5 +1,38 @@
 2008-11-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Provide a nautilus extension (based on existing nautilus-cd-burner)
+
+	* Makefile.am:
+	* configure.in:
+	* nautilus/Makefile.am:
+	* nautilus/nautilus-burn-bar.c (nautilus_burn_bar_get_button),
+	(nautilus_burn_bar_set_property), (nautilus_burn_bar_get_property),
+	(nautilus_burn_bar_class_init), (button_clicked_cb),
+	(nautilus_burn_bar_init), (nautilus_burn_bar_finalize),
+	(nautilus_burn_bar_new):
+	* nautilus/nautilus-burn-bar.h:
+	* nautilus/nautilus-burn-extension.c (debug_init), (debug_print),
+	(launch_process), (launch_brasero_on_window), (write_activate_cb),
+	(uri_to_path), (write_iso_activate_cb), (copy_disc_activate_cb),
+	(get_hal_context), (volume_is_blank), (drive_get_first_volume),
+	(drive_is_cd_device), (nautilus_burn_get_file_items),
+	(nautilus_burn_get_background_items),
+	(nautilus_burn_get_toolbar_items),
+	(nautilus_burn_menu_provider_iface_init), (bar_activated_cb),
+	(dir_is_empty), (destroyed_callback), (sense_widget),
+	(nautilus_burn_get_location_widget),
+	(nautilus_burn_location_widget_provider_iface_init),
+	(update_widget_sensitivity), (update_empty_idle),
+	(queue_update_empty), (burn_monitor_cb), (start_monitor),
+	(nautilus_burn_instance_init), (nautilus_burn_finalize),
+	(nautilus_burn_class_init), (nautilus_burn_get_type),
+	(nautilus_burn_register_type), (nautilus_module_initialize),
+	(nautilus_module_shutdown), (nautilus_module_list_types):
+	* src/Makefile.am:
+	* src/main.c (brasero_app_parse_options):
+
+2008-11-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #558852 – translation issues
 
 	* data/brasero.schemas.in:
