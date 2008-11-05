@@ -228,10 +228,12 @@ brasero_app_parse_options (BraseroApp *app)
 		/* this can't combine with any other options */
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device);
+		return FALSE;
 	}
 	else if (iso_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_iso, iso_uri);
+		return FALSE;
 	}
 	else if (project_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
@@ -394,11 +396,8 @@ main (int argc, char **argv)
 	if (app == NULL)
 		return 1;
 
-	if (brasero_app_parse_options (BRASERO_APP (app))) {
-		gtk_widget_realize (app);
-		gtk_widget_show (app);
-		gtk_main ();
-	}
+	if (brasero_app_parse_options (BRASERO_APP (app)))
+		brasero_app_run (BRASERO_APP (app));
 
 	brasero_burn_library_shutdown ();
 

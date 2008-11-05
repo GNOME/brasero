@@ -52,6 +52,9 @@ GtkWidget *
 brasero_app_new (void);
 
 void
+brasero_app_run (BraseroApp *app);
+
+void
 brasero_app_blank (BraseroApp *app,
 		   const gchar *device,
 		   gboolean wait_and_close);

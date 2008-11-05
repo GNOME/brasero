@@ -62,7 +62,8 @@ struct _BraseroAppPrivate
 	gint width;
 	gint height;
 
-	gboolean is_maximised;
+	guint is_maximised:1;
+	guint is_running:1;
 };
 
 #define BRASERO_APP_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_APP, BraseroAppPrivate))
@@ -217,13 +218,24 @@ brasero_app_get_geometry (BraseroApp *app,
 static gboolean
 on_delete_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
 {
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	if (!priv->is_running)
+		return FALSE;
+
 	return brasero_session_save (app, TRUE, TRUE);
 }
 
 static gboolean
-on_destroy_cb (GtkWidget *window, GdkEvent *event, BraseroApp *app)
+on_destroy_cb (GtkWidget *window, BraseroApp *app)
 {
-	gtk_main_quit ();
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	if (priv->is_running)
+		gtk_main_quit ();
+
 	return FALSE;
 }
 
@@ -234,6 +246,19 @@ on_exit_cb (GtkAction *action, BraseroApp *app)
 		return;
 
 	gtk_widget_destroy (GTK_WIDGET (app));
+}
+
+void
+brasero_app_run (BraseroApp *app)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	priv->is_running = TRUE;
+
+	gtk_widget_realize (GTK_WIDGET (app));
+	gtk_widget_show (GTK_WIDGET (app));
+	gtk_main ();
 }
 
 void

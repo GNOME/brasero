@@ -1,5 +1,18 @@
 2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #559229 – Brasero svn trunk crashes when cancel an iso.
+	The crash was triggered by our attempt at gtk_main_quit () whereas we
+	had not even started it
+
+	* src/brasero-app.c (on_delete_cb), (on_destroy_cb),
+	(brasero_app_run):
+	* src/brasero-app.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_burn_iso_dialog):
+	* src/main.c (brasero_app_parse_options), (main):
+
+2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix build of nautilus extension (bug from previous change)
 
 	* nautilus/Makefile.am:

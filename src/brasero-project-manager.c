@@ -586,6 +586,7 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 			gtk_widget_destroy (toplevel);
 		}
+
 		return;
 	}
 
