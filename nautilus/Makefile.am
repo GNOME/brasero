@@ -24,11 +24,11 @@ DISTCLEANFILES = 		\
 nautilus_extensiondir = $(NAUTILUSDIR)
 nautilus_extension_LTLIBRARIES = libnautilus-brasero-extension.la
 
-libnautilus_burn_extension_la_SOURCES = 	\
+libnautilus_brasero_extension_la_SOURCES = 	\
 	nautilus-burn-bar.c			\
 	nautilus-burn-bar.h			\
 	nautilus-burn-extension.c			\
 	$(NULL)
 
-libnautilus_burn_extension_la_LIBADD = $(NAUTILUS_EXTENSION_LIBS)
-libnautilus_burn_extension_la_LDFLAGS = $(module_flags)
+libnautilus_brasero_extension_la_LIBADD = $(NAUTILUS_EXTENSION_LIBS)
+libnautilus_brasero_extension_la_LDFLAGS = $(module_flags)
