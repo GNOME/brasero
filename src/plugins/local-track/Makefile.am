@@ -1,5 +1,3 @@
-plugindir = $(libdir)/brasero/plugins
-
 DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED
 
 INCLUDES = \
@@ -19,8 +17,17 @@ INCLUDES = \
 AM_CFLAGS = -g
 
 #local-track
-plugin_LTLIBRARIES = libbrasero-local-track.la
+local_trackdir = $(libdir)/brasero/plugins
+local_track_LTLIBRARIES = libbrasero-local-track.la
 
 libbrasero_local_track_la_SOURCES = burn-local-image.c burn-local-image.h
-libbrasero_local_track_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_GNOMEVFS_LIBS)
+libbrasero_local_track_la_LIBADD = $(BRASERO_BASE_LIBS)
 libbrasero_local_track_la_LDFLAGS = -module -avoid-version
+
+#burn-uri
+burn_uridir = $(libdir)/brasero/plugins
+burn_uri_LTLIBRARIES = libbrasero-burn-uri.la
+
+libbrasero_burn_uri_la_SOURCES = burn-uri.c burn-uri.h
+libbrasero_burn_uri_la_LIBADD = $(BRASERO_BASE_LIBS)
+libbrasero_burn_uri_la_LDFLAGS = -module -avoid-version

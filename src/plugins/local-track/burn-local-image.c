@@ -575,32 +575,14 @@ error:
 	return result;
 }
 
-static gboolean
-brasero_local_track_thread_finished (BraseroLocalTrack *self)
+static BraseroBurnResult
+brasero_local_track_update_track (BraseroLocalTrack *self)
 {
 	BraseroTrack *track;
 	BraseroTrackType input;
 	BraseroLocalTrackPrivate *priv;
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
-
-	priv->thread_id = 0;
-
-	if (priv->cancel) {
-		g_object_unref (priv->cancel);
-		priv->cancel = NULL;
-		if (g_cancellable_is_cancelled (priv->cancel))
-			return FALSE;
-	}
-
-	if (priv->error) {
-		GError *error;
-
-		error = priv->error;
-		priv->error = NULL;
-		brasero_job_error (BRASERO_JOB (self), error);
-		return FALSE;
-	}
 
 	/* now we update all the track with the local uris in retval */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
@@ -695,6 +677,37 @@ brasero_local_track_thread_finished (BraseroLocalTrack *self)
 	/* It's good practice to unref the track afterwards as we don't need it
 	 * anymore. BraseroTaskCtx refs it. */
 	brasero_track_unref (track);
+
+	return BRASERO_BURN_OK;
+}
+
+static gboolean
+brasero_local_track_thread_finished (BraseroLocalTrack *self)
+{
+	BraseroLocalTrackPrivate *priv;
+
+	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
+
+	priv->thread_id = 0;
+
+	if (priv->cancel) {
+		g_object_unref (priv->cancel);
+		priv->cancel = NULL;
+		if (g_cancellable_is_cancelled (priv->cancel))
+			return FALSE;
+	}
+
+	if (priv->error) {
+		GError *error;
+
+		error = priv->error;
+		priv->error = NULL;
+		brasero_job_error (BRASERO_JOB (self), error);
+		return FALSE;
+	}
+
+	brasero_local_track_update_track (self);
+
 	brasero_job_finished_track (BRASERO_JOB (self));
 	return FALSE;
 }
@@ -824,7 +837,11 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	if (!uri || g_str_has_prefix (uri, "file://"))
+	if (!uri
+	||   uri [0] == '\0'
+	||   uri [0] == '/'
+	||   g_str_has_prefix (uri, "file://")
+	||   g_str_has_prefix (uri, "burn://"))
 		return BRASERO_BURN_OK;
 
 	/* add it to the list or uris to download */
@@ -833,32 +850,6 @@ brasero_local_track_add_if_non_local (BraseroLocalTrack *self,
 							 g_str_equal,
 							 NULL,
 							 g_free);
-
-	if (g_str_has_prefix (uri, "burn://")) {
-		GFile *file;
-		GFileInfo *info;
-
-		/* this is a special case for burn:// uris */
-		file = g_file_new_for_uri (uri);
-		info = g_file_query_info (file, "burn::backing-file", 0, NULL, error);
-		g_object_unref (file);
-
-		if (!info)
-			return BRASERO_BURN_ERR;
-
-		localuri = g_strdup (g_file_info_get_attribute_byte_string (info, "burn::backing-file"));
-		g_object_unref (info);
-		if (!localuri) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("impossible to retrieve local file path"));
-			return BRASERO_BURN_ERR;
-		}
-
-		g_hash_table_insert (priv->nonlocals, g_strdup (uri), localuri);
-		return BRASERO_BURN_OK;
-	}
 
 	/* generate a unique name */
 	result = brasero_job_get_tmp_file (BRASERO_JOB (self),
@@ -888,6 +879,7 @@ brasero_local_track_start (BraseroJob *job,
 			   GError **error)
 {
 	BraseroLocalTrackPrivate *priv;
+	BraseroBurnResult result;
 	BraseroJobAction action;
 	BraseroLocalTrack *self;
 	BraseroTrackType input;
@@ -913,6 +905,8 @@ brasero_local_track_start (BraseroJob *job,
 	brasero_job_get_current_track (job, &track);
 	brasero_job_get_input_type (job, &input);
 
+	result = BRASERO_BURN_OK;
+
 	/* make a list of all non local uris to be downloaded and put them in a
 	 * list to avoid to download the same file twice. */
 	switch (input.type) {
@@ -923,37 +917,47 @@ brasero_local_track_start (BraseroJob *job,
 			BraseroGraftPt *graft;
 
 			graft = grafts->data;
-			brasero_local_track_add_if_non_local (self, graft->uri, error);
+			result = brasero_local_track_add_if_non_local (self, graft->uri, error);
+			if (result != BRASERO_BURN_OK)
+				break;
 		}
+
 		break;
 
 	case BRASERO_TRACK_TYPE_AUDIO:
 		/* NOTE: don't delete URI as they will be inserted in hash */
 		uri = brasero_track_get_audio_source (track, TRUE);
-		brasero_local_track_add_if_non_local (self, uri, error);
+		result = brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
 		break;
 
 	case BRASERO_TRACK_TYPE_IMAGE:
 		/* NOTE: don't delete URI as they will be inserted in hash */
 		uri = brasero_track_get_image_source (track, TRUE);
-		brasero_local_track_add_if_non_local (self, uri, error);
+		result = brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
+
+		if (result != BRASERO_BURN_OK)
+			break;
 
 		priv->download_checksum = TRUE;
 
 		uri = brasero_track_get_toc_source (track, TRUE);
-		brasero_local_track_add_if_non_local (self, uri, error);
+		result = brasero_local_track_add_if_non_local (self, uri, error);
 		g_free (uri);
+
 		break;
 
 	default:
 		BRASERO_JOB_NOT_SUPPORTED (self);
 	}
 
+	if (result != BRASERO_BURN_OK)
+		return result;
+
 	/* see if there is anything to download */
 	if (!priv->nonlocals) {
-		BRASERO_JOB_LOG (self, "no foreign URIs");
+		BRASERO_JOB_LOG (self, "no remote URIs");
 		return BRASERO_BURN_NOT_RUNNING;
 	}
 
@@ -963,13 +967,6 @@ brasero_local_track_start (BraseroJob *job,
 	g_hash_table_foreach_remove (priv->nonlocals,
 				     (GHRFunc) _foreach_non_local_cb,
 				     job);
-
-	/* if there are files in list then download them otherwise stop */
-	if (!priv->src_list) {
-		/* that means there were only burn:// uris in nonlocals */
-		BRASERO_JOB_LOG (self, "no foreign URIs");
-		return BRASERO_BURN_NOT_RUNNING;
-	}
 
 	return brasero_local_track_start_thread (self, error);
 }

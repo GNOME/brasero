@@ -1,3 +1,22 @@
+2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Move burn:// URI handling to its own plugin and make it work.
+
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_update_track),
+	(brasero_local_track_thread_finished),
+	(brasero_local_track_add_if_non_local),
+	(brasero_local_track_start):
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_thread_finished),
+	(brasero_burn_uri_explore_directory), (brasero_burn_uri_thread),
+	(brasero_burn_uri_start_thread), (brasero_burn_uri_start_if_found),
+	(brasero_burn_uri_start), (brasero_burn_uri_stop),
+	(brasero_burn_uri_finalize), (brasero_burn_uri_class_init),
+	(brasero_burn_uri_init), (brasero_burn_uri_export_caps):
+	* src/plugins/local-track/burn-uri.h:
+
 2008-11-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Provide a nautilus extension (based on existing nautilus-cd-burner)
