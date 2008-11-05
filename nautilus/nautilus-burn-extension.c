@@ -246,6 +246,55 @@ copy_disc_activate_cb (NautilusMenuItem *item,
         g_free (argv [0]);
 }
 
+static void
+blank_disc_activate_cb (NautilusMenuItem *item,
+                        gpointer          user_data)
+{
+        char             *argv [4];
+        char             *device_path;
+
+        device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
+
+        if (!device_path) {
+                g_warning ("Drive device path not specified");
+                return;
+        }
+
+        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
+        argv [1] = g_strdup ("-b");
+        argv [2] = device_path;
+        argv [3] = NULL;
+
+        launch_process (argv, GTK_WINDOW (user_data));
+
+        g_free (argv [1]);
+        g_free (argv [0]);
+}
+
+static void
+check_disc_activate_cb (NautilusMenuItem *item,
+                        gpointer          user_data)
+{
+        char             *argv [4];
+        char             *device_path;
+
+        device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
+
+        if (!device_path) {
+                g_warning ("Drive device path not specified");
+                return;
+        }
+
+        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
+        argv [1] = g_strdup ("-k");
+        argv [2] = device_path;
+        argv [3] = NULL;
+
+        launch_process (argv, GTK_WINDOW (user_data));
+
+        g_free (argv [1]);
+        g_free (argv [0]);
+}
 
 static LibHalContext *
 get_hal_context (void)
@@ -414,6 +463,7 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
         is_iso = (strcmp (mime_type, "application/x-iso-image") == 0)
                 || (strcmp (mime_type, "application/x-cd-image") == 0)
                 || (strcmp (mime_type, "application/x-cue") == 0)
+                || (strcmp (mime_type, "application/x-toc") == 0)
                 || (strcmp (mime_type, "application/x-cdrdao-toc") == 0);
 
         if (is_iso) {
@@ -470,6 +520,7 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
 
                 device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 
+                /* user may want to copy it ... */
                 item = nautilus_menu_item_new ("NautilusBurn::copy_disc",
                                                _("_Copy Disc..."),
                                                _("Create a copy of this CD or DVD disc"),
@@ -479,6 +530,30 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
                 g_signal_connect (item, "activate",
                                   G_CALLBACK (copy_disc_activate_cb), NULL);
+                items = g_list_append (items, item);
+
+                /* ... or if it's a rewritable medium to blank it ... */
+                item = nautilus_menu_item_new ("NautilusBurn::blank_disc",
+                                               _("_Blank Disc..."),
+                                               _("Blank this CD or DVD disc"),
+                                               "brasero");
+                g_object_set_data (G_OBJECT (item), "file_info", file_info);
+                g_object_set_data (G_OBJECT (item), "window", window);
+                g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+                g_signal_connect (item, "activate",
+                                  G_CALLBACK (blank_disc_activate_cb), NULL);
+                items = g_list_append (items, item);
+
+                /* ... or verify medium. */
+                item = nautilus_menu_item_new ("NautilusBurn::check_disc",
+                                               _("_Check Disc..."),
+                                               _("Check the data integrity on this CD or DVD disc"),
+                                               "brasero");
+                g_object_set_data (G_OBJECT (item), "file_info", file_info);
+                g_object_set_data (G_OBJECT (item), "window", window);
+                g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
+                g_signal_connect (item, "activate",
+                                  G_CALLBACK (check_disc_activate_cb), NULL);
                 items = g_list_append (items, item);
 
                 g_free (device_path);
