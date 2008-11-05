@@ -626,7 +626,14 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			gchar *local_path;
 			IsoDirIter *sibling;
 
-			local_path = g_filename_from_uri (graft->uri, NULL, NULL);
+			/* graft->uri can be a path or a URI */
+			if (graft->uri [0] == '/')
+				local_path = g_strdup (graft->uri);
+			else if (g_str_has_prefix (graft->uri, "file://"))
+				local_path = g_filename_from_uri (graft->uri, NULL, NULL);
+			else
+				local_path = NULL;
+
 			if (!local_path){
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,

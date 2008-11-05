@@ -586,7 +586,6 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 		BraseroGraftPt *graft;
 		gchar *graft_path;
 		gchar *path;
-		gchar *uri;
 
 		if (priv->cancel) {
 			result = BRASERO_BURN_CANCEL;
@@ -598,8 +597,15 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 			continue;
 
 		/* get the current and future paths */
-		uri = graft->uri;
-		path = g_filename_from_uri (uri, NULL, NULL);
+		/* FIXME: graft->uri can be path or URIs ... This should be
+		 * fixed for graft points. */
+		if (graft->uri && graft->uri [0] == '/')
+			path = g_strdup (graft->uri);
+		else if (g_str_has_prefix (graft->uri, "file://"))
+			path = g_filename_from_uri (graft->uri, NULL, NULL);
+		else
+			path = NULL;
+
 		graft_path = graft->path;
 
 		if (g_file_test (path, G_FILE_TEST_IS_DIR))

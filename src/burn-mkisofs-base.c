@@ -125,17 +125,25 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	/* make sure uri is local: otherwise error out */
-	if (!g_str_has_prefix (uri, "file://")) {
+	/* FIXME: uri can be path or URI? problem with graft->uri */
+	if (uri && uri [0] == '/') {
+		localpath = g_strdup (unescaped_uri);
+	}
+	else if (g_str_has_prefix (uri, "file://")) {
+		gchar *unescaped_uri;
+
+		unescaped_uri = g_uri_unescape_string (uri, NULL);
+		localpath = g_filename_from_uri (unescaped_uri, NULL, NULL);
+		g_free (unescaped_uri);	      
+	}
+	else {
+		BRASERO_BURN_LOG ("File not stored locally %s", uri);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the file is not stored locally"));
 		return BRASERO_BURN_ERR;
 	}
-
-	unescaped_uri = g_uri_unescape_string (uri, NULL);
-	localpath = g_filename_from_uri (unescaped_uri, NULL, NULL);
-	g_free (unescaped_uri);
 
 	if (!localpath) {
 		BRASERO_BURN_LOG ("Localpath is NULL");
@@ -407,8 +415,11 @@ brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 	GSList *list;
 
 	/* check the file is local */
-	if (!g_str_has_prefix (graft->uri, "file://")) {
+	if (graft->uri
+	&&  graft->uri [0] != '/'
+	&& !g_str_has_prefix (graft->uri, "file://")) {
 		/* Error out, files must be local */
+		BRASERO_BURN_LOG ("File not stored locally %s", graft->uri);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -556,6 +567,11 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 	/* write the global excluded files list */
 	for (; excluded; excluded = excluded->next) {
 		uri = excluded->data;
+		if (!uri) {
+			BRASERO_BURN_LOG ("NULL URI");
+			continue;
+		}
+
 		result = brasero_mkisofs_base_write_excluded (&base,
 							      uri,
 							      error);

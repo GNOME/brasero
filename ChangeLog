@@ -1,5 +1,17 @@
 2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Allow use of path or URIs in uri member of BraseroGraftPt structure
+
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded),
+	(brasero_mkisofs_base_add_graft),
+	(brasero_mkisofs_base_write_to_files):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_create_checksum):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_volume_thread):
+
+2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Add blanking and checking to nautilus extension
 
 	* nautilus/nautilus-burn-bar.c:
