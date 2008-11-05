@@ -22,7 +22,7 @@ DISTCLEANFILES = 		\
 
 ### Nautilus Extension
 nautilus_extensiondir = $(NAUTILUSDIR)
-nautilus_extension_LTLIBRARIES = libnautilus-burn-extension.la
+nautilus_extension_LTLIBRARIES = libnautilus-brasero-extension.la
 
 libnautilus_burn_extension_la_SOURCES = 	\
 	nautilus-burn-bar.c			\
