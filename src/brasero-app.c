@@ -237,7 +237,9 @@ on_exit_cb (GtkAction *action, BraseroApp *app)
 }
 
 void
-brasero_app_blank (BraseroApp *app)
+brasero_app_blank (BraseroApp *app,
+		   const gchar *device,
+		   gboolean wait_and_close)
 {
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
@@ -245,17 +247,39 @@ brasero_app_blank (BraseroApp *app)
 	dialog = brasero_blank_dialog_new ();
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (app));
 
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	if (device) {
+		BraseroDrive *drive;
+		BraseroMedium *medium;
+		BraseroMediumMonitor *monitor;
 
-	gtk_widget_show (dialog);
+		monitor = brasero_medium_monitor_get_default ();
+		drive = brasero_medium_monitor_get_drive (monitor, device);
+		g_object_unref (monitor);
+
+		medium = brasero_drive_get_medium (drive);
+
+		brasero_tool_dialog_set_medium (BRASERO_TOOL_DIALOG (dialog), medium);
+		g_object_unref (drive);
+	}
+
+	if (wait_and_close) {
+		gtk_widget_show (dialog);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+	else {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+		
+		gtk_widget_show (dialog);
+	}
 }
 
 static void
 on_erase_cb (GtkAction *action, BraseroApp *app)
 {
-	brasero_app_blank (app);
+	brasero_app_blank (app, NULL, FALSE);
 }
 
 static void
@@ -274,8 +298,10 @@ on_eject_cb (GtkAction *action, BraseroApp *app)
 	gtk_widget_show (dialog);
 }
 
-static void
-on_integrity_check_cb (GtkAction *action, BraseroApp *app)
+void
+brasero_app_check (BraseroApp *app,
+		   const gchar *device,
+		   gboolean wait_and_close)
 {
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
@@ -283,11 +309,39 @@ on_integrity_check_cb (GtkAction *action, BraseroApp *app)
 	dialog = brasero_sum_dialog_new ();
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (app));
 
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	if (device) {
+		BraseroDrive *drive;
+		BraseroMedium *medium;
+		BraseroMediumMonitor *monitor;
 
-	gtk_widget_show (dialog);
+		monitor = brasero_medium_monitor_get_default ();
+		drive = brasero_medium_monitor_get_drive (monitor, device);
+		g_object_unref (monitor);
+
+		medium = brasero_drive_get_medium (drive);
+
+		brasero_tool_dialog_set_medium (BRASERO_TOOL_DIALOG (dialog), medium);
+		g_object_unref (drive);
+	}
+
+	if (wait_and_close) {
+		gtk_widget_show (dialog);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+	}
+	else {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+		
+		gtk_widget_show (dialog);
+	}
+}
+
+static void
+on_integrity_check_cb (GtkAction *action, BraseroApp *app)
+{
+	brasero_app_check (app, NULL, FALSE);
 }
 
 static void

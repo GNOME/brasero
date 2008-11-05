@@ -65,6 +65,7 @@ gchar **video_project;
 gint copy_project;
 gint empty_project;
 gint disc_blank;
+gint disc_check;
 gint open_ncb;
 gint debug;
 
@@ -108,6 +109,10 @@ static const GOptionEntry options [] = {
 
 	{ "blank", 'b', 0, G_OPTION_ARG_NONE, &disc_blank,
 	  N_("Open the blank disc dialog"),
+	  NULL },
+
+	{ "check", 'k', 0, G_OPTION_ARG_NONE, &disc_check,
+	  N_("Open the check disc dialog"),
 	  NULL },
 
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
@@ -154,7 +159,7 @@ static const GOptionEntry options [] = {
 	g_slist_free (list);							\
 }
 
-static void
+static gboolean
 brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
@@ -166,7 +171,7 @@ brasero_app_parse_options (BraseroApp *app)
     	if (empty_project) {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
 	    	brasero_session_load (app, FALSE);
-		return;
+		return TRUE;
 	}
 
 	/* we first check that only one of the options was given
@@ -252,7 +257,32 @@ brasero_app_parse_options (BraseroApp *app)
 	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
 	}
 	else if (disc_blank) {
-		brasero_app_blank (app);
+		gchar *device = NULL;
+
+		/* make sure there is only one file in the remaining list for
+		 * specifying the source device. It could be extended to let
+		 * the user specify the destination device as well */
+		if (files
+		&&  files [0] != NULL
+		&&  files [1] == NULL)
+			device = files [0];
+
+		brasero_app_blank (app, device, TRUE);
+		return FALSE;
+	}
+	else if (disc_check) {
+		gchar *device = NULL;
+
+		/* make sure there is only one file in the remaining list for
+		 * specifying the source device. It could be extended to let
+		 * the user specify the destination device as well */
+		if (files
+		&&  files [0] != NULL
+		&&  files [1] == NULL)
+			device = files [0];
+
+		brasero_app_check (app, device, TRUE);
+		return FALSE;
 	}
 	else if (open_ncb) {
 		GSList *list = NULL;
@@ -300,6 +330,7 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 
     	brasero_session_load (app, load_default_project);
+	return TRUE;
 }
 
 int
@@ -363,13 +394,11 @@ main (int argc, char **argv)
 	if (app == NULL)
 		return 1;
 
-	gtk_widget_realize (app);
-
-	brasero_app_parse_options (BRASERO_APP (app));
-
-	gtk_widget_show (app);
-
-	gtk_main ();
+	if (brasero_app_parse_options (BRASERO_APP (app))) {
+		gtk_widget_realize (app);
+		gtk_widget_show (app);
+		gtk_main ();
+	}
 
 	brasero_burn_library_shutdown ();
 

@@ -52,7 +52,14 @@ GtkWidget *
 brasero_app_new (void);
 
 void
-brasero_app_blank (BraseroApp *app);
+brasero_app_blank (BraseroApp *app,
+		   const gchar *device,
+		   gboolean wait_and_close);
+
+void
+brasero_app_check (BraseroApp *app,
+		   const gchar *device,
+		   gboolean wait_and_close);
 
 void
 brasero_app_get_geometry (BraseroApp *app,
