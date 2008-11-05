@@ -136,7 +136,7 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 #define MAX_MOUNT_ATTEMPTS	20
 #define MOUNT_TIMEOUT		500
 
-#define MAX_LOAD_ATTEMPTS	20
+#define MAX_LOAD_ATTEMPTS	50
 #define LOAD_TIMEOUT		500
 
 static GObjectClass *parent_class = NULL;
@@ -973,6 +973,8 @@ brasero_burn_mount_media (BraseroBurn *self,
 				     _("the disc could not be mounted (max attemps reached)"));
 			return BRASERO_BURN_ERR;
 		}
+
+		BRASERO_BURN_LOG ("Trying to mount medium");
 
 		/* NOTE: we don't really care about the return value */
 		brasero_volume_mount (BRASERO_VOLUME (medium), FALSE, NULL);
