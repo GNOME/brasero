@@ -258,6 +258,7 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	}
 
 end:
+
 	gdk_window_set_cursor (GTK_WIDGET (self)->window, NULL);
 	gtk_button_set_label (GTK_BUTTON (self->priv->cancel), GTK_STOCK_CLOSE);
 
@@ -268,6 +269,8 @@ end:
 
 	if (medium)
 		g_object_unref (medium);
+
+	g_signal_stop_emission_by_name (self, "response");
 }
 
 static void
@@ -351,6 +354,16 @@ BraseroMedium *
 brasero_tool_dialog_get_medium (BraseroToolDialog *self)
 {
 	return brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (self->priv->selector));
+}
+
+void
+brasero_tool_dialog_set_medium (BraseroToolDialog *self,
+				BraseroMedium *medium)
+{
+	if (!medium)
+		return;
+
+	brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (self->priv->selector), medium);
 }
 
 static void

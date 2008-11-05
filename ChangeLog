@@ -1,5 +1,14 @@
 2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Add function so set the medium and handles "blank/check again" in a
+	more graceful way (block the response signal)
+
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_run),
+	(brasero_tool_dialog_set_medium):
+	* src/brasero-tool-dialog.h:
+
+2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix LIBS flags for building brasero and nautilus extension
 
 	* configure.in:

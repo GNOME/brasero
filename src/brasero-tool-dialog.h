@@ -101,6 +101,10 @@ brasero_tool_dialog_get_burn (BraseroToolDialog *dialog);
 BraseroMedium *
 brasero_tool_dialog_get_medium (BraseroToolDialog *dialog);
 
+void
+brasero_tool_dialog_set_medium (BraseroToolDialog *dialog,
+				BraseroMedium *medium);
+
 G_END_DECLS
 
 #endif /* BRASERO_TOOL_DIALOG_H */
