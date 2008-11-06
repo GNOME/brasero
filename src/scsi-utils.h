@@ -54,8 +54,9 @@ G_BEGIN_DECLS
 #define BRASERO_SCSI_SET_ERRCODE(err, code)					\
 {										\
 	if (code == BRASERO_SCSI_ERRNO)	 {					\
+		int errsv = errno;						\
 		BRASERO_BURN_LOG ("SCSI command error: %s",			\
-				  strerror (errno));				\
+				  g_strerror (errsv));				\
 	} else {								\
 		BRASERO_BURN_LOG ("SCSI command error: %s",			\
 				  brasero_scsi_strerror (code));		\

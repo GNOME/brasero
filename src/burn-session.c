@@ -745,12 +745,14 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 
 	*path = mkdtemp (tmp);
 	if (*path == NULL) {
+                int errsv = errno;
+
 		g_free (tmp);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("a temporary directory could not be created (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -793,12 +795,14 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 
 	fd = g_mkstemp (tmp);
 	if (fd == -1) {
+                int errsv = errno;
+
 		g_free (tmp);
 		g_set_error (error, 
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("a temporary file can't be created: %s"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1533,7 +1537,7 @@ brasero_burn_session_clean (const gchar *path)
 
 	/* NOTE : we don't follow paths as certain files are simply linked */
 	if (g_remove (path)) {
-		BRASERO_BURN_LOG ("Cannot remove file %s (%s)", path, strerror (errno));
+		BRASERO_BURN_LOG ("Cannot remove file %s (%s)", path, g_strerror (errno));
 		result = FALSE;
 	}
 

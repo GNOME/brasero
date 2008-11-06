@@ -101,12 +101,14 @@ brasero_checksum_image_read (BraseroChecksumImage *self,
 		/* ... or an error =( */
 		if (read_bytes == -1) {
 			if (errno != EAGAIN && errno != EINTR) {
+                                int errsv = errno;
+
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
 					     _("data could not be read from the pipe (%i: %s)"),
-					     errno,
-					     strerror (errno));
+					     errsv,
+					     g_strerror (errsv));
 				return -1;
 			}
 		}
@@ -149,13 +151,15 @@ brasero_checksum_image_write (BraseroChecksumImage *self,
 
 		if (written != bytes_remaining) {
 			if (errno != EINTR && errno != EAGAIN) {
+                                int errsv = errno;
+
 				/* unrecoverable error */
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
 					     _("the data couldn't be written to the pipe (%i: %s)"),
-					     errno,
-					     strerror (errno));
+					     errsv,
+					     g_strerror (errsv));
 				return BRASERO_BURN_ERR;
 			}
 		}
@@ -278,6 +282,7 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 
 	fd_in = open (path, O_RDONLY);
 	if (!fd_in) {
+                int errsv;
 		gchar *name = NULL;
 
 		if (errno == ENOENT)
@@ -285,12 +290,13 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 
 		name = g_path_get_basename (path);
 
+                errsv = errno;
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the file %s couldn't be read (%s)"),
 			     name,
-			     strerror (errno));
+			     g_strerror (errsv));
 		g_free (name);
 		g_free (path);
 

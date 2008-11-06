@@ -600,7 +600,7 @@ brasero_file_monitor_start_monitoring_real (BraseroFileMonitor *self,
 	if (wd == -1) {
 		BRASERO_BURN_LOG ("ERROR creating watch for local file %s : %s\n",
 				  path,
-				  strerror (errno));
+				  g_strerror (errno));
 		g_free (path);
 		return 0;
 	}
@@ -852,7 +852,7 @@ brasero_file_monitor_init (BraseroFileMonitor *object)
 		g_io_channel_unref (priv->notify);
 	}
 	else
-		g_warning ("Failed to open inotify: %s\n", strerror (errno));
+		g_warning ("Failed to open inotify: %s\n", g_strerror (errno));
 }
 
 static void

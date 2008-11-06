@@ -384,6 +384,7 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	gchar buffer [128];
 	BraseroSongInfo *info;
 	BraseroWodimPrivate *priv;
+        int errsv;
 
 	priv = BRASERO_WODIM_PRIVATE (wodim);
 
@@ -577,6 +578,8 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 
 
 error:
+        errsv = errno;
+
 	g_remove (path);
 	g_free (path);
 
@@ -584,7 +587,7 @@ error:
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
 		     _("the inf file can't be written : %s"), 
-		     strerror (errno));
+		     g_strerror (errsv));
 
 	return BRASERO_BURN_ERR;
 }

@@ -51,7 +51,7 @@ brasero_scsi_strerror (BraseroScsiErrCode code)
 		return NULL;
 
 	if (code == BRASERO_SCSI_ERRNO)
-		return strerror (errno);
+		return g_strerror (errno);
 
 	return _(error_string [code]);
 }

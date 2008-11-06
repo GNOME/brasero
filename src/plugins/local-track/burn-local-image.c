@@ -222,11 +222,12 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 
 			/* create a directory with the same name and explore it */
 			if (g_mkdir (path, S_IRWXU)) {
+                                int errsv = errno;
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
 					     _("a directory couldn't be created (%s)"),
-					     strerror (errno));
+					     g_strerror (errsv));
 				result = BRASERO_BURN_ERR;
 			}
 			else {
@@ -307,6 +308,8 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 		/* remove the temporary file that was created */
 		g_remove (dest_path);
 		if (g_mkdir_with_parents (dest_path, S_IRWXU)) {
+                        int errsv = errno;
+
 			g_free (dest_path);
 			g_object_unref (info);
 
@@ -314,7 +317,7 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("a directory couldn't be created (%s)"),
-				     strerror (errno));
+				     g_strerror (errsv));
 			return BRASERO_BURN_ERR;
 		}
 

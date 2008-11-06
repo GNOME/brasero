@@ -96,6 +96,7 @@ brasero_checksum_files_get_file_checksum (BraseroChecksumFiles *self,
 
 	file = fopen (path, "r");
 	if (!file) {
+                int errsv;
 		gchar *name = NULL;
 
 		/* If the file doesn't exist carry on with next */
@@ -104,12 +105,13 @@ brasero_checksum_files_get_file_checksum (BraseroChecksumFiles *self,
 
 		name = g_path_get_basename (path);
 
+                errsv = errno;
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the file %s couldn't be read (%s)"),
 			     name,
-			     strerror (errno));
+			     g_strerror (errsv));
 		g_free (name);
 
 		return BRASERO_BURN_ERR;
@@ -165,11 +167,12 @@ brasero_checksum_files_add_file_checksum (BraseroChecksumFiles *self,
 	g_free (checksum_string);
 
 	if (written != 1) {
+                int errsv = errno;
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the md5 file couldn't be written to (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 			
 		return BRASERO_BURN_ERR;
 	}
@@ -187,11 +190,12 @@ brasero_checksum_files_add_file_checksum (BraseroChecksumFiles *self,
 			  priv->file);
 
 	if (written != 1) {
+                int errsv = errno;
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("the md5 file couldn't be written to (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 
 		return BRASERO_BURN_ERR;
 	}
@@ -542,11 +546,12 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 
 	priv->file = fopen (priv->sums_path, "w");
 	if (!priv->file) {
+                int errsv = errno;
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("md5 file couldn't be opened (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 
 		return BRASERO_BURN_ERR;
 	}

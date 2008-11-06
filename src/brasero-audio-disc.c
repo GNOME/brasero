@@ -802,7 +802,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 	}
 	else
 		g_warning ("Failed to open /dev/inotify: %s\n",
-			   strerror (errno));
+			   g_strerror (errno));
 #endif
 }
 
@@ -3569,7 +3569,7 @@ brasero_audio_disc_start_monitoring (BraseroAudioDisc *disc,
 		if (wd == -1) {
 			g_warning ("ERROR creating watch for local file %s : %s\n",
 				   parent,
-				   strerror (errno));
+				   g_strerror (errno));
 
 			g_free (parent);
 			g_free (dir);

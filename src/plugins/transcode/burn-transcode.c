@@ -577,11 +577,13 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 	brasero_job_get_audio_output (BRASERO_JOB (transcode), &path_dest);
 
 	if (symlink (path_src, path_dest) == -1) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("a symlink could not be created (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 
 		goto error;
 	}
@@ -833,11 +835,13 @@ brasero_transcode_pad_real (BraseroTranscode *transcode,
 		}
 
 		if (size != b_written) {
+                        int errsv = errno;
+
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("error padding (%s)"),
-				     strerror (errno));
+				     g_strerror (errsv));
 			return -1;
 		}
 	}
@@ -1023,11 +1027,13 @@ brasero_transcode_pad_file (BraseroTranscode *transcode, GError **error)
 	g_free (output);
 
 	if (fd == -1) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("error opening file for padding : %s"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 

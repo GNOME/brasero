@@ -104,6 +104,8 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	
 	output = fopen (toc_path, "w");
 	if (!output) {
+                int errsv = errno;
+
 		g_io_channel_unref (source);
 
 		g_free (img_path);
@@ -112,7 +114,7 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_GENERAL,
-							g_strerror (errno)));
+							g_strerror (errsv)));
 		return BRASERO_BURN_OK;
 	}
 
@@ -139,6 +141,8 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 		}
 
 		if (!fwrite (buffer, strlen (buffer), 1, output)) {
+                        int errsv = errno;
+
 			g_free (buffer);
 
 			fclose (output);
@@ -152,7 +156,7 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 			brasero_job_error (BRASERO_JOB (process),
 					   g_error_new_literal (BRASERO_BURN_ERROR,
 								BRASERO_BURN_ERROR_GENERAL,
-								g_strerror (errno)));
+								g_strerror (errsv)));
 			return BRASERO_BURN_OK;
 		}
 
@@ -174,18 +178,22 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	/* the previous track image path will now be a link pointing to the
 	 * image path of the new track just created */
 	if (g_rename (tmp_img_path, img_path)) {
+                int errsv = errno;
+
 		brasero_job_error (BRASERO_JOB (self),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_GENERAL,
-							g_strerror (errno)));
+							g_strerror (errsv)));
 		return BRASERO_BURN_OK;
 	}
 
 	if (link (img_path, tmp_img_path)) {
+                int errsv = errno;
+
 		brasero_job_error (BRASERO_JOB (self),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_GENERAL,
-							g_strerror (errno)));
+							g_strerror (errsv)));
 		return BRASERO_BURN_OK;
 	} /* symlink () could also be used */
 

@@ -66,15 +66,17 @@ brasero_volume_source_seek_fd (BraseroVolSrc *src,
 
 	oldpos = ftello (src->data);
 	if (fseeko (src->data, (guint64) (block * ISO9660_BLOCK_SIZE), whence) == -1) {
+		int errsv = errno;
+
 		BRASERO_BURN_LOG ("fseeko () failed at block %i (= %lli bytes) (%s)",
 				  block,
 				  (guint64) (block * ISO9660_BLOCK_SIZE),
-				  strerror (errno));
+				  g_strerror (errsv));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     "%s",
-			     strerror (errno));
+			     g_strerror (errsv));
 		return -1;
 	}
 
@@ -93,12 +95,14 @@ brasero_volume_source_read_fd (BraseroVolSrc *src,
 
 	bytes_read = fread (buffer, 1, ISO9660_BLOCK_SIZE * blocks, src->data);
 	if (bytes_read != ISO9660_BLOCK_SIZE * blocks) {
-		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
+		int errsv = errno;
+
+		BRASERO_BURN_LOG ("fread () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     "%s",
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
@@ -227,12 +231,14 @@ brasero_volume_source_open_file (const gchar *path,
 
 	file = fopen (path, "r");
 	if (!file) {
-		BRASERO_BURN_LOG ("open () failed (%s)", strerror (errno));
+		int errsv = errno;
+
+		BRASERO_BURN_LOG ("open () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     "%s",
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
@@ -254,25 +260,29 @@ brasero_volume_source_open_fd (int fd,
 
 	dup_fd = dup (fd);
 	if (dup_fd == -1) {
-		BRASERO_BURN_LOG ("dup () failed (%s)", strerror (errno));
+		int errsv = errno;
+
+		BRASERO_BURN_LOG ("dup () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     "%s",
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
 	file = fdopen (dup_fd, "r");
 	if (!file) {
+		int errsv = errno;
+
 		close (dup_fd);
 
-		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
+		BRASERO_BURN_LOG ("fdopen () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     "%s",
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 

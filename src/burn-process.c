@@ -580,13 +580,13 @@ brasero_process_setup (gpointer data)
 	fd = -1;
 	if (brasero_job_get_fd_in (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
 		if (dup2 (fd, 0) == -1)
-			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
+			BRASERO_JOB_LOG (process, "Dup2 failed: %s", g_strerror (errno));
 	}
 
 	fd = -1;
 	if (brasero_job_get_fd_out (BRASERO_JOB (process), &fd) == BRASERO_BURN_OK) {
 		if (dup2 (fd, 1) == -1)
-			BRASERO_JOB_LOG (process, "Dup2 failed: %s", strerror (errno));
+			BRASERO_JOB_LOG (process, "Dup2 failed: %s", g_strerror (errno));
 	}
 }
 
@@ -683,7 +683,7 @@ brasero_process_stop (BraseroJob *job,
 		if (kill (pid, SIGTERM) == -1 && errno != ESRCH) {
 			BRASERO_JOB_LOG (process, 
 					 "process (%s) couldn't be killed: terminating",
-					 strerror (errno));
+					 g_strerror (errno));
 			kill (pid, SIGKILL);
 		}
 		else

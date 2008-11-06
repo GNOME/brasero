@@ -139,12 +139,14 @@ brasero_libisofs_write_sector_to_fd (BraseroLibisofs *self,
 
 		if (written != bytes_remaining) {
 			if (errno != EINTR && errno != EAGAIN) {
+                                int errsv = errno;
+
 				/* unrecoverable error */
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
 							   _("the data couldn't be written to the pipe (%i: %s)"),
-							   errno,
-							   strerror (errno));
+							   errsv,
+							   g_strerror (errsv));
 				return BRASERO_BURN_ERR;
 			}
 
@@ -212,9 +214,9 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 	brasero_job_get_image_output (BRASERO_JOB (self), &output, NULL);
 	file = fopen (output, "w");
 	if (!file) {
-		priv->error = g_error_new (BRASERO_BURN_ERROR,
-					   BRASERO_BURN_ERROR_GENERAL,
-					   strerror (errno));
+		priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                   BRASERO_BURN_ERROR_GENERAL,
+                                                   g_strerror (errno));
 		return;
 	}
 
@@ -233,11 +235,13 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 			break;
 
 		if (fwrite (buf, 1, sector_size, file) != sector_size) {
+                        int errsv = errno;
+
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
 						   _("the data couldn't be written to the file (%i: %s)"),
-						   errno,
-						   strerror (errno));
+						   errsv,
+						   g_strerror (errsv));
 			break;
 		}
 

@@ -82,9 +82,9 @@ brasero_sum_check_get_line_num (BraseroSumCheckCtx *ctx,
 	}
 
 	if (!feof (file)) {
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  strerror (errno));
+		ctx->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                  BRASERO_BURN_ERROR_GENERAL,
+                                                  g_strerror (errno));
 		return FALSE;
 	}
 
@@ -109,18 +109,18 @@ brasero_sum_check_thread (gpointer data)
 	strcpy (filename + root_len, BRASERO_CHECKSUM_FILE);
 	file = fopen (filename, "r");
 	if (!file) {
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  strerror (errno));
+		ctx->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                  BRASERO_BURN_ERROR_GENERAL,
+                                                  g_strerror (errno));
 		goto end;
 	}
 
 	/* we need to get the number of files at this time and rewind */
 	ctx->file_nb = 0;
 	if (!brasero_sum_check_get_line_num (ctx, file)) {
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  strerror (errno));
+		ctx->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                  BRASERO_BURN_ERROR_GENERAL,
+                                                  g_strerror (errno));
 		goto end;
 	}
 
@@ -137,9 +137,9 @@ brasero_sum_check_thread (gpointer data)
 
 		if (fread (checksum_file, 1, 32, file) != 32) {
 			if (!feof (file))
-				ctx->error = g_error_new (BRASERO_BURN_ERROR,
-							  BRASERO_BURN_ERROR_GENERAL,
-							  strerror (errno));
+				ctx->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                                  BRASERO_BURN_ERROR_GENERAL,
+                                                                  g_strerror (errno));
 			break;
 		}
 
@@ -158,9 +158,9 @@ brasero_sum_check_thread (gpointer data)
 				if (errno == EAGAIN || errno == EINTR)
 					continue;
 
-				ctx->error = g_error_new (BRASERO_BURN_ERROR,
-							  BRASERO_BURN_ERROR_GENERAL,
-							  strerror (errno));
+				ctx->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                                  BRASERO_BURN_ERROR_GENERAL,
+                                                                  g_strerror (errno));
 				goto end;
 			}
 
@@ -181,9 +181,9 @@ brasero_sum_check_thread (gpointer data)
 				if (errno == EAGAIN || errno == EINTR)
 					continue;
 
-				ctx->error = g_error_new (BRASERO_BURN_ERROR,
-							  BRASERO_BURN_ERROR_GENERAL,
-							  strerror (errno));
+				ctx->error = g_error_new_literal (BRASERO_BURN_ERROR,
+                                                                  BRASERO_BURN_ERROR_GENERAL,
+                                                                  g_strerror (errno));
 				goto end;
 			}
 

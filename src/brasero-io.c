@@ -2328,13 +2328,15 @@ brasero_io_xfer_start (BraseroIO *self,
 	/* start the downloading */
 	if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY) {
 		if (g_mkdir_with_parents (data->dest_path, 700)) {
+                        int errsv = errno;
+
 			g_object_unref (file);
 
 			g_set_error (error,
 				     BRASERO_ERROR,
 				     BRASERO_ERROR_GENERAL,
 				     _("a directory couldn't be created (%s)"),
-				     strerror (errno));
+				     g_strerror (errsv));
 			return FALSE;
 		}
 

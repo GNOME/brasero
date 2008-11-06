@@ -1455,18 +1455,22 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 
 		file = g_fopen (logfile, "r");
 		if (!file) {
+			int errsv = errno;
+
 			brasero_utils_message_dialog (GTK_WIDGET (dialog),
 						      _("The session log cannot be displayed:"),
-						      strerror (errno),
+						      g_strerror (errsv),
 						      GTK_MESSAGE_ERROR);
 			gtk_widget_destroy (message);
 			return;
 		}
 
 		if (fread (contents, 1, sizeof (contents), file) != sizeof (contents)) {
+			int errsv = errno;
+
 			brasero_utils_message_dialog (GTK_WIDGET (dialog),
 						      _("The session log cannot be displayed:"),
-						      strerror (errno),
+						      g_strerror (errsv),
 						      GTK_MESSAGE_ERROR);
 			gtk_widget_destroy (message);
 			return;

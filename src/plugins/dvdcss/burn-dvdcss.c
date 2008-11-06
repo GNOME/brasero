@@ -206,12 +206,14 @@ brasero_dvdcss_write_sector_to_fd (BraseroDvdcss *self,
 
 		if (written != bytes_remaining) {
 			if (errno != EINTR && errno != EAGAIN) {
+                                int errsv = errno;
+
 				/* unrecoverable error */
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
 							   _("the data couldn't be written to the pipe (%i: %s)"),
-							   errno,
-							   strerror (errno));
+							   errsv,
+							   g_strerror (errsv));
 				return BRASERO_BURN_ERR;
 			}
 
@@ -456,11 +458,13 @@ brasero_dvdcss_write_image_thread (gpointer data)
 		data_size = num_blocks * DVDCSS_BLOCK_SIZE;
 		if (output_fd) {
 			if (fwrite (buf, 1, data_size, output_fd) != data_size) {
+                                int errsv = errno;
+
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
 							   _("the data couldn't be written to the file (%i: %s)"),
-							   errno,
-							   strerror (errno));
+							   errsv,
+							   g_strerror (errsv));
 				break;
 			}
 		}

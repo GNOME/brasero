@@ -398,6 +398,8 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 	/* now get the md5 sum from the file */
 	file = fopen (src, "r");
 	if (!file) {
+                int errsv = errno;
+
 		if (tmppath)
 			g_remove (tmppath);
 
@@ -407,7 +409,7 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     "%s",
-			     strerror (errno));
+			     g_strerror (errsv));
 		return BRASERO_BURN_ERR;
 	}
 

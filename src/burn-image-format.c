@@ -301,11 +301,13 @@ stat_end:
 	g_free (path);
 
 	if (res == -1) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
@@ -386,11 +388,13 @@ stat_end:
 	g_free (path);
 
 	if (res == -1) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
@@ -415,11 +419,13 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 	 * multiple files. Which is great but not for us ... */
 	file = fopen (path, "r");
 	if (!file) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
@@ -542,11 +548,13 @@ brasero_image_format_get_cue_size (gchar *path,
 	 * multiple files. Which is great but not for us ... */
 	file = fopen (path, "r");
 	if (!file) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 		return FALSE;
 	}
 
@@ -584,12 +592,14 @@ brasero_image_format_get_cue_size (gchar *path,
 			/* NOTE: follow symlink if any */
 			res = g_stat (path, &buffer);
 			if (res == -1) {
+                                int errsv = errno;
+
 				g_set_error (error,
 					     BRASERO_BURN_ERR,
 					     BRASERO_BURN_ERROR_GENERAL,
 					     _("size can't be retrieved for %s: %s"),
 					     file_path,
-					     strerror (errno));
+					     g_strerror (errsv));
 				g_free (file_path);
 				return FALSE;
 			}
@@ -743,11 +753,13 @@ brasero_image_format_get_iso_size (gchar *path,
 	/* NOTE: follow symlink if any */
 	res = g_stat (path, &buffer);
 	if (res == -1) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 
 		return FALSE;
 	}
@@ -785,11 +797,13 @@ brasero_image_format_get_clone_size (gchar *path,
 	/* NOTE: follow symlink if any */
 	res = g_stat (path, &buffer);
 	if (res == -1) {
+                int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("size can't be retrieved (%s)"),
-			     strerror (errno));
+			     g_strerror (errsv));
 
 		return FALSE;
 	}

@@ -727,11 +727,13 @@ brasero_job_item_start (BraseroTaskItem *item,
 
 		/* setup a pipe */
 		if (pipe (fd)) {
+                        int errsv = errno;
+
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("the pipe couldn't be created (%s)"),
-				     strerror (errno));
+				     g_strerror (errsv));
 
 			return BRASERO_BURN_ERR;
 		}

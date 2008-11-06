@@ -1,5 +1,60 @@
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #559427 – uses strerror
+	Patch by Christian Persch
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_init),
+	(brasero_audio_disc_start_monitoring):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_show_log):
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_start_monitoring_real),
+	(brasero_file_monitor_init):
+	* src/brasero-io.c (brasero_io_xfer_start):
+	* src/brasero-sum-check.c (brasero_sum_check_get_line_num),
+	(brasero_sum_check_thread):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_get_file_checksum):
+	* src/burn-image-format.c (brasero_image_format_get_DATAFILE_info),
+	(brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* src/burn-job.c (brasero_job_item_start):
+	* src/burn-process.c (brasero_process_setup),
+	(brasero_process_stop):
+	* src/burn-session.c (brasero_burn_session_get_tmp_dir),
+	(brasero_burn_session_get_tmp_file), (brasero_burn_session_clean):
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd),
+	(brasero_volume_source_read_fd), (brasero_volume_source_open_file),
+	(brasero_volume_source_open_fd):
+	* src/plugins/cdrdao/burn-toc2cue.c (brasero_toc2cue_read_stderr):
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_write_inf):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_write_inf):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_get_file_checksum),
+	(brasero_checksum_files_add_file_checksum),
+	(brasero_checksum_files_create_checksum):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_read), (brasero_checksum_image_write),
+	(brasero_checksum_image_checksum_file_input):
+	* src/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_write_sector_to_fd),
+	(brasero_dvdcss_write_image_thread):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_write_sector_to_fd),
+	(brasero_libisofs_write_image_to_file_thread):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_recursive_transfer),
+	(brasero_local_track_transfer):
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_pad_real), (brasero_transcode_pad_file):
+	* src/scsi-error.c (brasero_scsi_strerror):
+	* src/scsi-utils.h:
+
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Modify previous patch that uses g_set_error_literal which is only 
 	available in glib 2.18 and brasero 0.8.x targets 2.16
 
