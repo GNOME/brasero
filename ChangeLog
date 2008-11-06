@@ -1,5 +1,17 @@
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix warnings
+
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_create_checksum):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_translate_uri):
+	* src/plugins/local-track/burn-uri.c (brasero_burn_uri_thread),
+	(brasero_burn_uri_start_if_found):
+
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix crashes with accessibility on in data project
 
 	* src/brasero-data-tree-model.c

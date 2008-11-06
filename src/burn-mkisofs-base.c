@@ -131,7 +131,7 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 	if (uri && uri [0] == '/') {
 		localpath = g_strdup (unescaped_uri);
 	}
-	else if (g_str_has_prefix (uri, "file://")) {
+	else if (uri && g_str_has_prefix (uri, "file://")) {
 		gchar *unescaped_uri;
 
 		unescaped_uri = g_uri_unescape_string (uri, NULL);

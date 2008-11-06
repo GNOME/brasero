@@ -319,7 +319,7 @@ brasero_burn_uri_thread (gpointer data)
 
 		uri = src->data;
 
-		if (g_str_has_prefix (uri, "burn://"))
+		if (uri && g_str_has_prefix (uri, "burn://"))
 			continue;
 
 		uri = g_strdup (uri);
@@ -379,7 +379,7 @@ brasero_burn_uri_start_if_found (BraseroBurnURI *self,
 				 GError **error)
 {
 	/* Find any graft point with burn:// URI */
-	if (!g_str_has_prefix (uri, "burn://"))
+	if (uri && !g_str_has_prefix (uri, "burn://"))
 		return BRASERO_BURN_NOT_RUNNING;
 
 	BRASERO_JOB_LOG (self, "burn:// URI found %s", uri);

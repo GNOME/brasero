@@ -606,7 +606,9 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 		/* get the current and future paths */
 		/* FIXME: graft->uri can be path or URIs ... This should be
 		 * fixed for graft points. */
-		if (graft->uri && graft->uri [0] == '/')
+		if (!graft->uri)
+			path = NULL;
+		else if (graft->uri [0] == '/')
 			path = g_strdup (graft->uri);
 		else if (g_str_has_prefix (graft->uri, "file://"))
 			path = g_filename_from_uri (graft->uri, NULL, NULL);

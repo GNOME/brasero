@@ -351,7 +351,7 @@ brasero_local_track_translate_uri (BraseroLocalTrack *self,
 
 	priv = BRASERO_LOCAL_TRACK_PRIVATE (self);
 
-	if (uri == NULL)
+	if (!uri)
 		return NULL;
 
 	/* see if it is a local file */
