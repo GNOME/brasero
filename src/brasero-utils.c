@@ -468,25 +468,10 @@ brasero_utils_launch_app (GtkWidget *widget,
 		uri = item->data;
 
 		if (!g_app_info_launch_default_for_uri (uri, NULL, &error)) {
-			GtkWidget *dialog;
-			GtkWidget *toplevel;
-
-			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (widget));
-			dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-							 GTK_DIALOG_DESTROY_WITH_PARENT|
-							 GTK_DIALOG_MODAL,
-							 GTK_MESSAGE_ERROR,
-							 GTK_BUTTONS_CLOSE,
-							 _("This file can't be opened:"));
-
-			gtk_window_set_title (GTK_WINDOW (dialog), _("File Error"));
-
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-								  error->message);
-
-			gtk_dialog_run (GTK_DIALOG (dialog));
-			gtk_widget_destroy (dialog);
-
+			brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (widget)),
+						      _("This file can't be opened:"),
+						      error->message,
+						      GTK_MESSAGE_ERROR);
 			g_error_free (error);
 			continue;
 		}
@@ -517,4 +502,30 @@ brasero_utils_validate_utf8 (const gchar *name)
 	}
 
 	return retval;
+}
+
+void
+brasero_utils_message_dialog (GtkWidget *parent,
+			      const gchar *primary_message,
+			      const gchar *secondary_message,
+			      GtkMessageType type)
+{
+	GtkWidget *message;
+
+	message = gtk_message_dialog_new (GTK_WINDOW (parent),
+					  GTK_DIALOG_MODAL |
+					  GTK_DIALOG_DESTROY_WITH_PARENT,
+					  type,
+					  GTK_BUTTONS_CLOSE,
+					  primary_message);
+
+	gtk_window_set_title (GTK_WINDOW (message), "");
+
+	if (secondary_message)
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+							  "%s",
+							  secondary_message);
+
+	gtk_dialog_run (GTK_DIALOG (message));
+	gtk_widget_destroy (message);
 }

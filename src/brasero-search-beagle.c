@@ -1044,7 +1044,6 @@ brasero_search_beagle_finished_cb (BeagleQuery *query,
 static void
 brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
 {
-	GtkWidget *dialog;
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (search));
@@ -1053,20 +1052,10 @@ brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
 		return;
 	}
 
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("Error querying beagle:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Search Error"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  error->message);
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	brasero_utils_message_dialog (toplevel,
+				      _("Error querying beagle:"),
+				      error->message,
+				      GTK_MESSAGE_ERROR);
 }
 
 static void

@@ -1144,23 +1144,10 @@ brasero_audio_disc_row_changed_cb (GtkTreeModel *model,
 static void
 brasero_audio_disc_short_track_dialog (BraseroAudioDisc *disc)
 {
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_CLOSE,
-					 _("The track will be padded at its end:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Track Length"));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("the track is shorter than 6 seconds."));
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
+				      _("The track will be padded at its end:"),
+				      ("the track is shorter than 6 seconds."),
+				      GTK_MESSAGE_WARNING);
 }
 
 static gchar *
@@ -1327,7 +1314,8 @@ static void
 brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 					   const gchar *uri)
 {
-	GtkWidget *dialog, *toplevel;
+	GtkWidget *toplevel;
+	gchar *primary;
 	gchar *name;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
@@ -1337,22 +1325,13 @@ brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 	}
 
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("\"%s\" can't be handled by gstreamer:"),
-					 name);
+	primary = g_strdup_printf (_("\"%s\" can't be handled by gstreamer:"), name);
+	brasero_utils_message_dialog (toplevel,
+				      primary,
+				      _("Make sure the appropriate codec is installed."),
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unhandled Song"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Make sure the appropriate codec is installed."));
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static gboolean
@@ -1573,7 +1552,8 @@ brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
 				      const gchar *uri,
 				      GError *error)
 {
-	GtkWidget *dialog, *toplevel;
+	GtkWidget *toplevel;
+	gchar *primary;
 	gchar *name;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
@@ -1585,23 +1565,13 @@ brasero_audio_disc_unreadable_dialog (BraseroAudioDisc *disc,
 		return;
 	}
 
-	name = g_filename_display_basename (uri);
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("File \"%s\" can't be opened."),
-					 name);
+	primary = g_strdup_printf (_("File \"%s\" can't be opened."), name);
+	brasero_utils_message_dialog (toplevel,
+				      primary,
+				      error->message,
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable File"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  error->message);
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -2780,22 +2750,10 @@ brasero_audio_disc_split (BraseroAudioDisc *disc)
 
 	/* don't check g_slist_length == 0 since then the button is greyed */
 	if (g_list_length (selected) > 1) {
-		GtkWidget *message;
-
-		message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						  GTK_DIALOG_DESTROY_WITH_PARENT|
-						  GTK_DIALOG_MODAL,
-						  GTK_MESSAGE_ERROR,
-						  GTK_BUTTONS_CLOSE,
-						  _("Select one song only please."));
-
-		gtk_window_set_title (GTK_WINDOW (message), _("Error"));
-
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  _("Impossible to split more than one song at a time"));
-
-		gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
+		brasero_utils_message_dialog (toplevel,
+					      _("Select one song only please."),
+					      _("Impossible to split more than one song at a time"),
+					      GTK_MESSAGE_ERROR);
 
 		g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
 		g_list_free (selected);
@@ -3669,27 +3627,17 @@ brasero_audio_disc_inotify_removal_warning (BraseroAudioDisc *disc,
 					    const gchar *uri)
 {
 	gchar *name;
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
+	gchar *primary;
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_CLOSE,
-					 _("File \"%s\" was removed from the file system:"),
-					 name);
+	primary = g_strdup_printf (_("File \"%s\" was removed from the file system:"), name);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
+				      primary,
+				      _("it will be removed from the project."),
+				      GTK_MESSAGE_WARNING);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("File Deletion"));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("it will be removed from the project."));
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static void

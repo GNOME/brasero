@@ -1,3 +1,39 @@
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	reviewed by: <delete if not using a buddy>
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_unreadable_dialog), (brasero_audio_disc_split),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_show_log):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb):
+	* src/brasero-jacket-view.c (brasero_jacket_view_set_image):
+	* src/brasero-playlist.c (brasero_playlist_dialog_error):
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	* src/brasero-project.c (brasero_project_no_song_dialog),
+	(brasero_project_no_file_dialog),
+	(brasero_project_invalid_project_dialog),
+	(brasero_project_not_saved_dialog):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-split-dialog.c
+	(brasero_split_dialog_no_silence_message),
+	(brasero_split_dialog_metadata_finished_cb):
+	* src/brasero-src-image.c (brasero_src_image_error):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy), (brasero_tool_dialog_no_media):
+	* src/brasero-utils.c (brasero_utils_launch_app),
+	(brasero_utils_message_dialog):
+	* src/brasero-utils.h:
+	* src/brasero-video-disc.c
+	(brasero_video_disc_unreadable_uri_dialog),
+	(brasero_video_disc_not_video_dialog):
+	* src/main.c (brasero_app_parse_options):
+
 2008-11-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #559229 – Brasero svn trunk crashes when cancel an iso.

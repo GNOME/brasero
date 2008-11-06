@@ -232,22 +232,10 @@ static void
 brasero_src_image_error (BraseroSrcImage *self,
 			 GError *error)
 {
-	GtkWidget *toplevel;
-	GtkWidget *dialog;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_CLOSE,
-					 _("Please, select another image."));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  error->message);
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+				      _("Please, select another image."),
+				      error->message,
+				      GTK_MESSAGE_ERROR);
 }
 
 static void

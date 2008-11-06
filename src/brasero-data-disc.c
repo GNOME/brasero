@@ -214,24 +214,10 @@ static void
 brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 					 GError *error)
 {
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_CLOSE,
-					 _("The session couldn't be imported:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Session Import Error"));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  error?error->message:_("unknown error"));
-
-	gtk_widget_show_all (dialog);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
+				      _("The session couldn't be imported:"),
+				      error?error->message:_("unknown error"),
+				      GTK_MESSAGE_WARNING);
 }
 
 static gboolean
@@ -897,8 +883,7 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 				     BraseroDataDisc *self)
 {
 	gchar *name;
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
+	gchar *primary;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -911,24 +896,13 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 		return;
 	}
 
- 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("\"%s\" cannot be added to the selection:"),
-					 name);
+	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection:"), name);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+				      primary,
+				      error->message,
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable File"));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  "%s.",
-						  error->message);
-
-	gtk_widget_show_all (dialog);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -937,8 +911,7 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 				    BraseroDataDisc *self)
 {
 	gchar *name;
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
+	gchar *primary;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -954,24 +927,13 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 		return;
 	}
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("\"%s\" cannot be added to the selection:"),
-					 name);
+	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection:"), name);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+				      primary,
+				      _("it is a recursive symlink."),
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Recursive Symlink"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("it is a recursive symlink."));
-
-	gtk_widget_show_all (dialog);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -980,8 +942,7 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 				  BraseroDataDisc *self)
 {
 	gchar *name;
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
+	gchar *primary;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -997,24 +958,13 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 		return;
 	}
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("\"%s\" cannot be added to the selection:"),
-					 name);
+	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection:"), name);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+				      primary,
+				      _("it doesn't exist at the specified location."),
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("File Not Found"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("it doesn't exist at the specified location."));
-
-	gtk_widget_show_all (dialog);
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static gboolean

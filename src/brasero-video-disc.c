@@ -270,7 +270,8 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
 					  const gchar *uri,
 					  BraseroVideoDisc *self)
 {
-	GtkWidget *dialog, *toplevel;
+	GtkWidget *toplevel;
+	gchar *primary;
 	gchar *name;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
@@ -282,22 +283,13 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
 	}
 
 	name = g_filename_display_basename (uri);
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("File \"%s\" can't be opened."),
-					 name);
+	primary = g_strdup_printf (_("File \"%s\" can't be opened."), name);
+	brasero_utils_message_dialog (toplevel,
+				      primary,
+				      error->message,
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unreadable file"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  error->message);
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -305,7 +297,8 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 				     const gchar *uri,
 				     BraseroVideoDisc *self)
 {
-	GtkWidget *dialog, *toplevel;
+	GtkWidget *toplevel;
+	gchar *primary;
 	gchar *name;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
@@ -315,22 +308,13 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 	}
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("\"%s\" does not have a suitable type for video projects."),
-					 name);
+	primary = g_strdup_printf (_("\"%s\" does not have a suitable type for video projects."), name);
+	brasero_utils_message_dialog (toplevel,
+				      primary,
+				      _("Please only add files with video contents."),
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unhandled file"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Please only add files with video contents."));
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static BraseroDiscResult

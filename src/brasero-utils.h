@@ -109,6 +109,12 @@ brasero_utils_launch_app (GtkWidget *widget,
 gchar*
 brasero_utils_validate_utf8 (const gchar *name);
 
+void
+brasero_utils_message_dialog (GtkWidget *parent,
+			      const gchar *primary_message,
+			      const gchar *secondary_message,
+			      GtkMessageType type);
+
 G_END_DECLS
 
 #endif				/* _UTILS_H */

@@ -991,8 +991,6 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	gchar *uri;
 	GFile *file;
 	GFileInfo *info;
-	GtkWidget *dialog;
-	GtkWidget *window;
 	BraseroProjectType type;
 
 	/* FIXME: make that asynchronous */
@@ -1057,18 +1055,14 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	  	type = brasero_project_manager_open_by_mime (manager, uri, mime);
         } 
 	else {
-		/* FIXME: we may want to ask the user if he wants to remove it */
-		window = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-	  	dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-					   	 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-					   	 GTK_MESSAGE_ERROR,
-					   	 GTK_BUTTONS_CLOSE,
-					   	 _("Error while loading the project:"));
-	  	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("The project '%s' does not exist."),
-							  uri);
-	  	gtk_dialog_run (GTK_DIALOG (dialog));
-	  	gtk_widget_destroy (dialog);
+		gchar *string;
+
+		string = g_strdup_printf (_("The project '%s' does not exist."), uri);
+		brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (manager)),
+					      _("Error while loading the project:"),
+					      string,
+					      GTK_MESSAGE_ERROR);
+		g_free (string);
 
 		type = BRASERO_PROJECT_TYPE_INVALID;
 	}

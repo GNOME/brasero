@@ -1391,30 +1391,6 @@ brasero_burn_dialog_save_log (BraseroBurnDialog *dialog)
 }
 
 static void
-brasero_burn_dialog_message (BraseroBurnDialog *dialog,
-			     const gchar *title,
-			     const gchar *primary_message,
-			     const gchar *secondary_message,
-			     GtkMessageType type)
-{
-	GtkWidget *message;
-
-	message = gtk_message_dialog_new (GTK_WINDOW (dialog),
-					  GTK_DIALOG_MODAL |
-					  GTK_DIALOG_DESTROY_WITH_PARENT,
-					  type,
-					  GTK_BUTTONS_CLOSE,
-					  primary_message);
-
-	gtk_window_set_title (GTK_WINDOW (message), title);
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  secondary_message);
-	gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
-}
-
-static void
 brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 {
 	gint words_num;
@@ -1457,11 +1433,10 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 	 * bigger then only show the end which is the most relevant. */
 	logfile = brasero_burn_session_get_log_path (dialog->priv->session);
 	if (g_stat (logfile, &stats) == -1) {
-		brasero_burn_dialog_message (dialog,
-					     _("Session Log Error"),
-					     _("The session log cannot be displayed:"),
-					     _("the log file could not be found."),
-					     GTK_MESSAGE_ERROR);
+		brasero_utils_message_dialog (GTK_WIDGET (dialog),
+					      _("The session log cannot be displayed:"),
+					      _("the log file could not be found."),
+					      GTK_MESSAGE_ERROR);
 		gtk_widget_destroy (message);
 		return;
 	}
@@ -1480,21 +1455,19 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 
 		file = g_fopen (logfile, "r");
 		if (!file) {
-			brasero_burn_dialog_message (dialog,
-						     _("Session Log Error"),
-						     _("The session log cannot be displayed:"),
-						     strerror (errno),
-						     GTK_MESSAGE_ERROR);
+			brasero_utils_message_dialog (GTK_WIDGET (dialog),
+						      _("The session log cannot be displayed:"),
+						      strerror (errno),
+						      GTK_MESSAGE_ERROR);
 			gtk_widget_destroy (message);
 			return;
 		}
 
 		if (fread (contents, 1, sizeof (contents), file) != sizeof (contents)) {
-			brasero_burn_dialog_message (dialog,
-						     _("Session Log Error"),
-						     _("The session log cannot be displayed:"),
-						     strerror (errno),
-						     GTK_MESSAGE_ERROR);
+			brasero_utils_message_dialog (GTK_WIDGET (dialog),
+						      _("The session log cannot be displayed:"),
+						      strerror (errno),
+						      GTK_MESSAGE_ERROR);
 			gtk_widget_destroy (message);
 			return;
 		}

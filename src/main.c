@@ -196,21 +196,10 @@ brasero_app_parse_options (BraseroApp *app)
 		nb ++;
 
 	if (nb > 1) {
-		GtkWidget *message;
-
-		message = gtk_message_dialog_new (NULL,
-						  GTK_DIALOG_MODAL |
-						  GTK_DIALOG_DESTROY_WITH_PARENT,
-						  GTK_MESSAGE_INFO,
-						  GTK_BUTTONS_CLOSE,
-						  _("Incompatible command line options used:"));
-
-		gtk_window_set_title (GTK_WINDOW (message), _("Incompatible Options"));
-		
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  _("only one option can be given at a time."));
-		gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
+		brasero_utils_message_dialog (NULL,
+					      _("Incompatible command line options used:"),
+					      _("only one option can be given at a time."),
+					      GTK_MESSAGE_ERROR);
 
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
 	}

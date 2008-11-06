@@ -814,7 +814,7 @@ static void
 brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 {
 	gchar *name;
-	GtkWidget *dialog;
+	gchar *primary;
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (playlist));
@@ -824,22 +824,14 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 	}
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("Error parsing playlist \"%s\":"),
-					 name);
+
+	primary = g_strdup_printf (_("Error parsing playlist \"%s\":"), name);
+	brasero_utils_message_dialog (GTK_WIDGET (toplevel),
+				      primary,
+				      _("an unknown error occured."),
+				      GTK_MESSAGE_ERROR);
+	g_free (primary);
 	g_free (name);
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("an unknown error occured."));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Playlist Loading Error"));
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static void

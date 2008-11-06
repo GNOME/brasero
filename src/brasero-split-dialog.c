@@ -607,22 +607,10 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 static void
 brasero_split_dialog_no_silence_message (BraseroSplitDialog *self)
 {
-	GtkWidget *message;
-
-	/* no silences found */
-	message = gtk_message_dialog_new (GTK_WINDOW (self),
-					  GTK_DIALOG_DESTROY_WITH_PARENT|
-					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_CLOSE,
-					  _("The track wasn't split:"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("no silence could be retrieved."));
-
-	gtk_window_set_title (GTK_WINDOW (message), _("No Silence"));
-	gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
+	brasero_utils_message_dialog (GTK_WIDGET (self),
+				      _("The track wasn't split:"),
+				      _("no silence could be retrieved."),
+				      GTK_MESSAGE_WARNING);
 }
 
 static void
@@ -643,21 +631,10 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 	priv->metadata = NULL;
 
 	if (error) {
-		GtkWidget *message;
-
-		/* error while retrieve silences */
-		message = gtk_message_dialog_new (GTK_WINDOW (self),
-						  GTK_DIALOG_DESTROY_WITH_PARENT|
-						  GTK_DIALOG_MODAL,
-						  GTK_MESSAGE_ERROR,
-						  GTK_BUTTONS_CLOSE,
-						  _("An error occured while retrieving silences:"));
-		gtk_window_set_title (GTK_WINDOW (message), _("Error"));
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  error->message);
-
-		gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
+		brasero_utils_message_dialog (GTK_WIDGET (self),
+					      _("An error occured while retrieving silences:"),
+					      error->message,
+					      GTK_MESSAGE_ERROR);
 		return;
 	}
 

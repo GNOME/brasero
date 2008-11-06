@@ -33,6 +33,7 @@
 
 #include "brasero-jacket-view.h"
 #include "brasero-jacket-buffer.h"
+#include "brasero-utils.h"
 
 typedef struct _BraseroJacketViewPrivate BraseroJacketViewPrivate;
 struct _BraseroJacketViewPrivate
@@ -1090,17 +1091,11 @@ brasero_jacket_view_set_image (BraseroJacketView *self,
 
 	image = gdk_pixbuf_new_from_file (path, &error);
 	if (error) {
-		GtkWidget *message;
-
-		message = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
-						  GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-						  GTK_MESSAGE_ERROR,
-						  GTK_BUTTONS_CLOSE,
-						  _("The image couldn't be loaded:"));
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  error->message);
-		gtk_dialog_run (GTK_DIALOG (message));
-		gtk_widget_destroy (message);
+		brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+					      _("The image couldn't be loaded:"),
+					      error->message,
+					      GTK_MESSAGE_ERROR);
+		g_error_free (error);
 		return priv->image_path;
 	}
 

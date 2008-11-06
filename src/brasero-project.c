@@ -813,47 +813,19 @@ brasero_project_set_cover_specifics (BraseroProject *self,
 static void
 brasero_project_no_song_dialog (BraseroProject *project)
 {
-	GtkWidget *message;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					  GTK_DIALOG_DESTROY_WITH_PARENT|
-					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_CLOSE,
-					  _("Please add songs to the project."));
-
-	gtk_window_set_title (GTK_WINDOW (message), _("Empty Project"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("The project is empty."));
-
-	gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
+				      _("Please add songs to the project."),
+				      _("The project is empty."),
+				      GTK_MESSAGE_WARNING);
 }
 
 static void
 brasero_project_no_file_dialog (BraseroProject *project)
 {
-	GtkWidget *message;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	message = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					  GTK_DIALOG_DESTROY_WITH_PARENT|
-					  GTK_DIALOG_MODAL,
-					  GTK_MESSAGE_WARNING,
-					  GTK_BUTTONS_CLOSE,
-					  _("Please add files to the project."));
-
-	gtk_window_set_title (GTK_WINDOW (message), _("Empty Project"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("The project is empty."));
-
-	gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
+				      _("Please add files to the project."),
+				      _("The project is empty."),
+				      GTK_MESSAGE_WARNING);
 }
 
 void
@@ -1642,24 +1614,10 @@ static void
 brasero_project_invalid_project_dialog (BraseroProject *project,
 					const char *reason)
 {
-	GtkWidget *dialog;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_ERROR,
-					 GTK_BUTTONS_CLOSE,
-					 _("Error while loading the project:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Loading Error"));
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  reason);
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
+				      _("Error while loading the project:"),
+				      reason,
+				      GTK_MESSAGE_ERROR);
 }
 
 static gboolean
@@ -2219,31 +2177,14 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 static void
 brasero_project_not_saved_dialog (BraseroProject *project)
 {
-	GtkWidget *dialog;
-	xmlErrorPtr error;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_CLOSE,
-					 _("Your project has not been saved:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved Project"));
+	xmlError *error;
 
 	error = xmlGetLastError ();
-	if (error)
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  error->message);
-	else
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("Unknown error."));	
+	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
+				      _("Your project has not been saved:"),
+				      error?error->message:_("Unknown error."),
+				      GTK_MESSAGE_ERROR);
 	xmlResetLastError ();
-
-	gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_destroy (dialog);
 }
 
 static GtkResponseType

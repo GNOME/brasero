@@ -71,34 +71,9 @@ struct _BraseroToolDialogPrivate {
 static GtkDialogClass *parent_class = NULL;
 
 static void
-brasero_tool_dialog_message (BraseroToolDialog *self,
-			     const gchar *title,
-			     const gchar *primary_message,
-			     const gchar *secondary_message,
-			     GtkMessageType type)
-{
-	GtkWidget *message;
-
-	message = gtk_message_dialog_new (GTK_WINDOW (self),
-					  GTK_DIALOG_MODAL |
-					  GTK_DIALOG_DESTROY_WITH_PARENT,
-					  type,
-					  GTK_BUTTONS_CLOSE,
-					  primary_message);
-
-	gtk_window_set_title (GTK_WINDOW (message), title);
-
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  secondary_message);
-	gtk_dialog_run (GTK_DIALOG (message));
-	gtk_widget_destroy (message);
-}
-
-static void
 brasero_tool_dialog_media_error (BraseroToolDialog *self)
 {
-	brasero_tool_dialog_message (self,
-				     _("Media Busy"),
+	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed:"),
 				     _("the inserted media is busy."),
 				     GTK_MESSAGE_ERROR);
@@ -107,8 +82,7 @@ brasero_tool_dialog_media_error (BraseroToolDialog *self)
 static void
 brasero_tool_dialog_media_busy (BraseroToolDialog *self)
 {
-	brasero_tool_dialog_message (self,
-				     _("Media Error"),
+	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed:"),
 				     _("the inserted media is not supported."),
 				     GTK_MESSAGE_ERROR);
@@ -117,8 +91,7 @@ brasero_tool_dialog_media_busy (BraseroToolDialog *self)
 static void
 brasero_tool_dialog_no_media (BraseroToolDialog *self)
 {
-	brasero_tool_dialog_message (self,
-				     _("Media Error"),
+	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed:"),
 				     _("the drive is empty."),
 				     GTK_MESSAGE_ERROR);
