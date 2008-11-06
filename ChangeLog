@@ -1,5 +1,16 @@
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a problem with accessibility enabled (gail) that triggered a loop
+	in libgail and then an exhaustion of memory
+	Probably bug #552811 – crash after delete used directory (comment #10)
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_node_index),
+	(brasero_data_tree_model_node_to_path),
+	(brasero_data_tree_model_get_path):
+
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix warnings
 
 	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):

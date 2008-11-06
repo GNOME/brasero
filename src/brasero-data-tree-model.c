@@ -659,13 +659,13 @@ brasero_data_tree_model_node_index (BraseroFileNode *node)
 	parent = node->parent;
 	for (peers = BRASERO_FILE_NODE_CHILDREN (parent); peers; peers = peers->next) {
 		if (peers == node)
-			break;
+			return pos;
 		if (!peers->is_visible)
 			continue;
 		pos ++;
 	}
 
-	return pos;
+	return -1;
 }
 
 GtkTreePath *
@@ -682,6 +682,11 @@ brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
 		guint nth;
 
 		nth = brasero_data_tree_model_node_index (node);
+		if (nth == -1) {
+			gtk_tree_path_free (path);
+			return NULL;
+		}
+
 		gtk_tree_path_prepend_index (path, nth);
 	}
 
@@ -703,6 +708,8 @@ brasero_data_tree_model_get_path (GtkTreeModel *model,
 	g_return_val_if_fail (iter->user_data != NULL, NULL);
 
 	node = iter->user_data;
+	if (!node->is_visible)
+		return NULL;
 
 	/* NOTE: there is only one single node without a name: root */
 	path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (model), node);
