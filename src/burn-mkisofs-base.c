@@ -91,10 +91,11 @@ _write_line (int fd, const gchar *filepath, GError **error)
 
 	if (lseek (fd, 0, SEEK_CUR)
 	&&  write (fd, "\n", 1) != 1) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -102,10 +103,11 @@ _write_line (int fd, const gchar *filepath, GError **error)
 	w_len = write (fd, filepath, len);
 
 	if (w_len != len) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -397,10 +399,11 @@ brasero_mkisofs_base_process_video_graft (BraseroMkisofsBase *base,
 	g_free (link_path);
 
 	if (res) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -493,20 +496,22 @@ brasero_mkisofs_base_write_to_files (GSList *grafts,
 
 	base.grafts_fd = open (grafts_path, O_WRONLY|O_TRUNC|O_EXCL);
 	if (base.grafts_fd == -1) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
 	base.excluded_fd = open (excluded_path, O_WRONLY|O_TRUNC|O_EXCL);
 	if (base.excluded_fd == -1) {
 		close (base.excluded_fd);
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 

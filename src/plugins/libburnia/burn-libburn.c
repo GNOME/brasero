@@ -279,7 +279,8 @@ brasero_libburn_add_file_track (struct burn_session *session,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 

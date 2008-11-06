@@ -59,11 +59,9 @@ brasero_scsi_strerror (BraseroScsiErrCode code)
 void
 brasero_scsi_set_error (GError **error, BraseroScsiErrCode code)
 {
-	if (!error)
-		return;
-
-	g_set_error_literal (error,
-                             BRASERO_BURN_ERROR,
-                             BRASERO_BURN_ERROR_GENERAL,
-                             brasero_scsi_strerror (code));
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     "%s",
+		     brasero_scsi_strerror (code));
 }

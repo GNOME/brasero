@@ -1,5 +1,29 @@
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Modify previous patch that uses g_set_error_literal which is only 
+	available in glib 2.18 and brasero 0.8.x targets 2.16
+
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_get_file_checksum):
+	* src/burn-job.c (brasero_job_check_output_volume_space),
+	(brasero_job_set_output_file), (brasero_job_set_nonblocking_fd):
+	* src/burn-mkisofs-base.c (_write_line),
+	(brasero_mkisofs_base_process_video_graft),
+	(brasero_mkisofs_base_write_to_files):
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd),
+	(brasero_volume_source_read_fd),
+	(brasero_volume_source_readcd_device_handle),
+	(brasero_volume_source_read10_device_handle),
+	(brasero_volume_source_open_file), (brasero_volume_source_open_fd):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_file_process_former_line),
+	(brasero_checksum_files_get_line_num),
+	(brasero_checksum_files_check_files):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_add_file_track):
+	* src/scsi-error.c (brasero_scsi_set_error):
+
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #559414 – format not a string literal and no format arguments
 	Patch by Christian Persch
 

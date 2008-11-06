@@ -331,18 +331,20 @@ brasero_checksum_file_process_former_line (BraseroChecksumFiles *self,
 	/* write the whole line in the new file */
 	written_bytes = fwrite (line, 1, strlen (line), priv->file);
 	if (written_bytes != strlen (line)) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
 	if (!fwrite ("\n", 1, 1, priv->file)) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -659,10 +661,11 @@ brasero_checksum_files_get_line_num (BraseroChecksumFiles *self,
 	}
 
 	if (!feof (file)) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return -1;
 	}
 
@@ -711,20 +714,22 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	g_free (root);
 	g_free (path);
 	if (!file) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
 	/* we need to get the number of files at this time and rewind */
 	file_nb = brasero_checksum_files_get_line_num (self, file, error);
 	if (file_nb < 1) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 		fclose (file);
 		return BRASERO_BURN_ERR;
 	}
@@ -765,10 +770,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 		/* first read the checksum string */
 		if (fread (checksum_file, 1, checksum_len, file) != checksum_len) {
 			if (!feof (file))
-				g_set_error_literal (error,
-                                                     BRASERO_BURN_ERROR,
-                                                     BRASERO_BURN_ERROR_GENERAL,
-                                                     g_strerror (errno));
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     "%s",
+					     g_strerror (errno));
 			break;
 		}
 		checksum_file [checksum_len] = '\0';
@@ -787,10 +793,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 				if (errno == EAGAIN || errno == EINTR)
 					continue;
 
-				g_set_error_literal (error,
-                                                     BRASERO_BURN_ERROR,
-                                                     BRASERO_BURN_ERROR_GENERAL,
-                                                     g_strerror (errno));
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     "%s",
+					     g_strerror (errno));
 				goto end;
 			}
 
@@ -811,10 +818,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 				if (errno == EAGAIN || errno == EINTR)
 					continue;
 
-				g_set_error_literal (error,
-                                                     BRASERO_BURN_ERROR,
-                                                     BRASERO_BURN_ERROR_GENERAL,
-                                                     g_strerror (errno));
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     "%s",
+					     g_strerror (errno));
 				goto end;
 			}
 
@@ -888,10 +896,10 @@ end:
 			       BRASERO_TRACK_MEDIUM_WRONG_CHECKSUM_TAG,
 			       value);
 
-	g_set_error_literal (error,
-                             BRASERO_BURN_ERROR,
-                             BRASERO_BURN_ERROR_BAD_CHECKSUM,
-                             _("some files may be corrupted on the disc"));
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_BAD_CHECKSUM,
+		     _("some files may be corrupted on the disc"));
 
 	return BRASERO_BURN_ERR;
 }

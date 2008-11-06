@@ -70,10 +70,11 @@ brasero_volume_source_seek_fd (BraseroVolSrc *src,
 				  block,
 				  (guint64) (block * ISO9660_BLOCK_SIZE),
 				  strerror (errno));
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     strerror (errno));
 		return -1;
 	}
 
@@ -93,10 +94,11 @@ brasero_volume_source_read_fd (BraseroVolSrc *src,
 	bytes_read = fread (buffer, 1, ISO9660_BLOCK_SIZE * blocks, src->data);
 	if (bytes_read != ISO9660_BLOCK_SIZE * blocks) {
 		BRASERO_BURN_LOG ("fread () failed (%s)", strerror (errno));
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     strerror (errno));
 		return FALSE;
 	}
 
@@ -161,10 +163,11 @@ brasero_volume_source_readcd_device_handle (BraseroVolSrc *src,
 		}
 	}
 
-	g_set_error_literal (error,
-                             BRASERO_BURN_ERROR,
-                             BRASERO_BURN_ERROR_GENERAL,
-                             brasero_scsi_strerror (code));
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     "%s",
+		     brasero_scsi_strerror (code));
 
 	return FALSE;
 }
@@ -193,10 +196,11 @@ brasero_volume_source_read10_device_handle (BraseroVolSrc *src,
 	BRASERO_BURN_LOG ("READ10 failed %s at %i",
 			  brasero_scsi_strerror (code),
 			  src->position);
-	g_set_error_literal (error,
-                             BRASERO_BURN_ERROR,
-                             BRASERO_BURN_ERROR_GENERAL,
-                             brasero_scsi_strerror (code));
+	g_set_error (error,
+		     BRASERO_BURN_ERROR,
+		     BRASERO_BURN_ERROR_GENERAL,
+		     "%s",
+		     brasero_scsi_strerror (code));
 
 	return FALSE;
 }
@@ -224,10 +228,11 @@ brasero_volume_source_open_file (const gchar *path,
 	file = fopen (path, "r");
 	if (!file) {
 		BRASERO_BURN_LOG ("open () failed (%s)", strerror (errno));
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     strerror (errno));
 		return FALSE;
 	}
 
@@ -250,10 +255,11 @@ brasero_volume_source_open_fd (int fd,
 	dup_fd = dup (fd);
 	if (dup_fd == -1) {
 		BRASERO_BURN_LOG ("dup () failed (%s)", strerror (errno));
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     strerror (errno));
 		return FALSE;
 	}
 
@@ -262,10 +268,11 @@ brasero_volume_source_open_fd (int fd,
 		close (dup_fd);
 
 		BRASERO_BURN_LOG ("fdopen () failed (%s)", strerror (errno));
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     strerror (errno));
 		return FALSE;
 	}
 

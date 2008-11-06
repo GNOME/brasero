@@ -495,10 +495,11 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	/* Last but not least, use getrlimit () to check that we are allowed to
 	 * write a file of such length and that quotas won't get in our way */
 	if (getrlimit (RLIMIT_FSIZE, &limit)) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_DISK_SPACE,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_DISK_SPACE,
+			     "%s",
+			     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -518,10 +519,10 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 error:
 
 	if (error && *error == NULL)
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     _("the size of the volume can't be checked (Unknown error)"));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("the size of the volume can't be checked (Unknown error)"));
 	g_object_unref (file);
 	return BRASERO_BURN_ERR;
 }
@@ -558,10 +559,10 @@ brasero_job_set_output_file (BraseroJob *self,
 			/* check paths are set */
 			if (!image
 			|| (priv->type.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN && !toc)) {
-				g_set_error_literal (error,
-                                                     BRASERO_BURN_ERROR,
-                                                     BRASERO_BURN_ERROR_GENERAL,
-                                                     _("no path"));
+				g_set_error (error,
+					     BRASERO_BURN_ERROR,
+					     BRASERO_BURN_ERROR_GENERAL,
+					     _("no path"));
 				return BRASERO_BURN_ERR;
 			}
 
@@ -1176,18 +1177,18 @@ brasero_job_set_nonblocking_fd (int fd, GError **error)
 		 * automatically but still offer that possibility. */
 		flags |= O_NONBLOCK;
 		if (fcntl (fd, F_SETFL, flags) == -1) {
-			g_set_error_literal (error,
-                                             BRASERO_BURN_ERROR,
-                                             BRASERO_BURN_ERROR_GENERAL,
-                                             _("couldn't set non blocking mode"));
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("couldn't set non blocking mode"));
 			return BRASERO_BURN_ERR;
 		}
 	}
 	else {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     _("couldn't get pipe flags"));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("couldn't get pipe flags"));
 		return BRASERO_BURN_ERR;
 	}
 

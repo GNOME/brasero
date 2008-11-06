@@ -403,10 +403,11 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 
 		g_free (src);
 
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -420,10 +421,11 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 	g_free (src);
 
 	if (ferror (file)) {
-		g_set_error_literal (error,
-                                     BRASERO_BURN_ERROR,
-                                     BRASERO_BURN_ERROR_GENERAL,
-                                     g_strerror (errno));
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     "%s",
+			     g_strerror (errno));
 
 		fclose (file);
 		return BRASERO_BURN_ERR;
