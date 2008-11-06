@@ -472,6 +472,9 @@ brasero_file_node_get_n_children (const BraseroFileNode *node)
 	BraseroFileNode *children;
 	guint num = 0;
 
+	if (!node)
+		return 0;
+
 	for (children = BRASERO_FILE_NODE_CHILDREN (node); children; children = children->next)
 		num ++;
 

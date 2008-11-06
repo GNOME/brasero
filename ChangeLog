@@ -1,5 +1,13 @@
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix crashes with accessibility on in data project
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_iter_children):
+	* src/brasero-file-node.c (brasero_file_node_get_n_children):
+
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #559427 – uses strerror
 	Patch by Christian Persch
 

@@ -241,7 +241,7 @@ brasero_data_tree_model_iter_children (GtkTreeModel *model,
 
 		/* This is for the top directory */
 		root = brasero_data_project_get_root (BRASERO_DATA_PROJECT (model));
-		if (!BRASERO_FILE_NODE_CHILDREN (root))
+		if (!root || !BRASERO_FILE_NODE_CHILDREN (root))
 			return FALSE;
 
 		iter->stamp = priv->stamp;
