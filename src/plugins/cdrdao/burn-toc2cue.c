@@ -110,9 +110,9 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 		g_free (toc_path);
 
 		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						strerror (errno)));
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+							g_strerror (errno)));
 		return BRASERO_BURN_OK;
 	}
 
@@ -150,9 +150,9 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 			g_free (toc_path);
 
 			brasero_job_error (BRASERO_JOB (process),
-					   g_error_new (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-							strerror (errno)));
+					   g_error_new_literal (BRASERO_BURN_ERROR,
+								BRASERO_BURN_ERROR_GENERAL,
+								g_strerror (errno)));
 			return BRASERO_BURN_OK;
 		}
 
@@ -175,17 +175,17 @@ brasero_toc2cue_read_stderr (BraseroProcess *process,
 	 * image path of the new track just created */
 	if (g_rename (tmp_img_path, img_path)) {
 		brasero_job_error (BRASERO_JOB (self),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						strerror (errno)));
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+							g_strerror (errno)));
 		return BRASERO_BURN_OK;
 	}
 
 	if (link (img_path, tmp_img_path)) {
 		brasero_job_error (BRASERO_JOB (self),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						strerror (errno)));
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_GENERAL,
+							g_strerror (errno)));
 		return BRASERO_BURN_OK;
 	} /* symlink () could also be used */
 

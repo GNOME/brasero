@@ -572,11 +572,11 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 						  GTK_DIALOG_MODAL,
 						  GTK_MESSAGE_WARNING,
 						  GTK_BUTTONS_CANCEL,
-						  main_message);
+						  "%s", main_message);
 
 		if (secondary_message) {
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  secondary_message);
+								  "%s", secondary_message);
 			g_free (secondary_message);
 		}
 	}
@@ -586,7 +586,7 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 							      GTK_DIALOG_MODAL,
 							      GTK_MESSAGE_WARNING,
 							      GTK_BUTTONS_CANCEL,
-							      main_message);
+							      "%s", main_message);
 
 	g_free (main_message);
 
@@ -656,12 +656,12 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
-					  main_message);
+					  "%s", main_message);
 
 	gtk_window_set_title (GTK_WINDOW (message), title);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						 secondary_message);
+						 "%s", secondary_message);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

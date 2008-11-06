@@ -479,7 +479,7 @@ on_help_cb (GtkAction *action, BraseroApp *app)
 		d = gtk_message_dialog_new (GTK_WINDOW (app),
 					    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 					    GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-					    error->message);
+					    "%s", error->message);
 		gtk_dialog_run (GTK_DIALOG(d));
 		gtk_widget_destroy (d);
 		g_error_free (error);

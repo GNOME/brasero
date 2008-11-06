@@ -391,9 +391,9 @@ brasero_dvdcss_write_image_thread (gpointer data)
 		g_free (output);
 
 		if (!output_fd) {
-			priv->error = g_error_new (BRASERO_BURN_ERROR,
-						   BRASERO_BURN_ERROR_GENERAL,
-						   strerror (errno));
+			priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
+							   BRASERO_BURN_ERROR_GENERAL,
+							   g_strerror (errno));
 			goto end;
 		}
 	}

@@ -1,6 +1,37 @@
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Fix for #559414 – format not a string literal and no format arguments
+	Patch by Christian Persch
+
+	* src/brasero-app.c (on_help_cb):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_loss_warnings_cb):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message),
+	(brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_get_file_checksum):
+	* src/burn-job.c (brasero_job_check_output_volume_space),
+	(brasero_job_set_output_file), (brasero_job_set_nonblocking_fd):
+	* src/burn-mkisofs-base.c (_write_line),
+	(brasero_mkisofs_base_process_video_graft),
+	(brasero_mkisofs_base_write_to_files):
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd),
+	(brasero_volume_source_read_fd),
+	(brasero_volume_source_readcd_device_handle),
+	(brasero_volume_source_read10_device_handle),
+	(brasero_volume_source_open_file), (brasero_volume_source_open_fd):
+	* src/plugins/cdrdao/burn-toc2cue.c (brasero_toc2cue_read_stderr):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_file_process_former_line),
+	(brasero_checksum_files_get_line_num),
+	(brasero_checksum_files_check_files):
+	* src/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_write_image_thread):
+	* src/scsi-error.c (brasero_scsi_set_error):
+
+2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #559415 – consolidate error dialogue code
+	Create a simple common error dialog function used throughout brasero
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
 	(brasero_audio_disc_file_type_error_dialog),

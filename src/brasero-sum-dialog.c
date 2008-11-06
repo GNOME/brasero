@@ -113,12 +113,12 @@ brasero_sum_dialog_message (BraseroSumDialog *self,
 					  GTK_DIALOG_DESTROY_WITH_PARENT,
 					  type,
 					  GTK_BUTTONS_NONE,
-					  primary_message);
+					  "%s", primary_message);
 
 	gtk_window_set_title (GTK_WINDOW (message), title);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  secondary_message);
+						  "%s", secondary_message);
 
 	button = brasero_utils_make_button (_("Check _Again"),
 					    GTK_STOCK_FIND,
@@ -196,7 +196,7 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_MESSAGE_ERROR,
 						      GTK_BUTTONS_NONE,
-						      string);
+						      "%s", string);
 	g_free (string);
 
 	gtk_window_set_title (GTK_WINDOW (message),  _("File Integrity Check Error"));
@@ -403,10 +403,10 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 
 		g_free (src);
 
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+		g_set_error_literal (error,
+                                     BRASERO_BURN_ERROR,
+                                     BRASERO_BURN_ERROR_GENERAL,
+                                     g_strerror (errno));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -420,10 +420,10 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 	g_free (src);
 
 	if (ferror (file)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     strerror (errno));
+		g_set_error_literal (error,
+                                     BRASERO_BURN_ERROR,
+                                     BRASERO_BURN_ERROR_GENERAL,
+                                     g_strerror (errno));
 
 		fclose (file);
 		return BRASERO_BURN_ERR;
