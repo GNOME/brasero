@@ -1,6 +1,11 @@
 2008-11-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Revert fix for #552811 – crash after delete used directory (comment #10)
+	and fix it in a more definitive way (hopefully)
+
+	Also when replacing a fake folder (created at project load time) by an
+	session imported one, make sure the folder contents from the session
+	get loaded.
 
 	* src/brasero-data-session.c
 	(brasero_data_session_load_dir_result):
