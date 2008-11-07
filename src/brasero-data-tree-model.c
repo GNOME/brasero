@@ -214,6 +214,14 @@ brasero_data_tree_model_iter_has_child (GtkTreeModel *model,
 	}
 
 	node = iter->user_data;
+
+	/* This is a workaround for a warning in gailtreeview.c line 2946 where
+	 * gail uses the GtkTreePath and not a copy which if the node inserted
+	 * declares to have children and is not expanded leads to the path being
+	 * upped and therefore wrong. */
+	if (node->is_inserting)
+		return FALSE;
+
 	if (node->is_file)
 		return FALSE;
 
@@ -1200,9 +1208,15 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 	}
 
 	/* Add the row itself */
+	/* This is a workaround for a warning in gailtreeview.c line 2946 where
+	 * gail uses the GtkTreePath and not a copy which if the node inserted
+	 * declares to have children and is not expanded leads to the path being
+	 * upped and therefore wrong. */
+	node->is_inserting = 1;
 	gtk_tree_model_row_inserted (GTK_TREE_MODEL (project),
 				     path,
 				     &iter);
+	node->is_inserting = 0;
 	gtk_tree_path_free (path);
 
 	parent = node->parent;

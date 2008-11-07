@@ -137,15 +137,22 @@ struct _BraseroFileNode {
 
 	/* This is for nodes created at project load time. This means
 	 * that they can be replaced if a real directory is under the
-	 * parent */
+	 * parent with the same name*/
 	guint is_tmp_parent:1;
 
 	/* this should be set by BraseroDataDisc */
 	guint is_expanded:1;
 	guint is_selected:1;
 
+	/* Used by the model */
+	/* This is a workaround for a warning in gailtreeview.c line 2946 where
+	 * gail uses the GtkTreePath and not a copy which if the node inserted
+	 * declares to have children and is not expanded leads to the path being
+	 * upped and therefore wrong. */
+	guint is_inserting:1;
+
 	/* this is a ref count a max of 255 should be enough */
-	guint is_visible:8;
+	guint is_visible:7;
 };
 
 /** Returns a const gchar* (it shouldn't be freed). */
