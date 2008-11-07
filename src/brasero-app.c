@@ -249,7 +249,7 @@ on_exit_cb (GtkAction *action, BraseroApp *app)
 }
 
 void
-brasero_app_run (BraseroApp *app)
+brasero_app_run (BraseroApp *app, gboolean load_default_project)
 {
 	BraseroAppPrivate *priv;
 
@@ -257,6 +257,7 @@ brasero_app_run (BraseroApp *app)
 	priv->is_running = TRUE;
 
 	gtk_widget_realize (GTK_WIDGET (app));
+    	brasero_session_load (app, load_default_project);
 	gtk_widget_show (GTK_WIDGET (app));
 	gtk_main ();
 }

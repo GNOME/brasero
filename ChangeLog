@@ -1,5 +1,15 @@
 2008-11-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Silenced a warning at start when we were trying to set windows properties
+	whereas it wasn't already realized.
+
+	* src/brasero-app.c (brasero_app_run):
+	* src/brasero-app.h:
+	* src/brasero-session.c (brasero_session_load):
+	* src/main.c (brasero_app_parse_options), (main):
+
+2008-11-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #543377 – No multisession (last comment)
 	When a session with deep directory nesting is detected also check when
 	a file or a directory is added beyond the depth 6 to the already session

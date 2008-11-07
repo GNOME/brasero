@@ -159,7 +159,7 @@ static const GOptionEntry options [] = {
 	g_slist_free (list);							\
 }
 
-static gboolean
+static void
 brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
@@ -170,8 +170,8 @@ brasero_app_parse_options (BraseroApp *app)
 
     	if (empty_project) {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
-	    	brasero_session_load (app, FALSE);
-		return TRUE;
+	    	brasero_app_run (app, FALSE);
+		return;
 	}
 
 	/* we first check that only one of the options was given
@@ -217,12 +217,12 @@ brasero_app_parse_options (BraseroApp *app)
 		/* this can't combine with any other options */
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device);
-		return FALSE;
+		return;
 	}
 	else if (iso_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_iso, iso_uri);
-		return FALSE;
+		return;
 	}
 	else if (project_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
@@ -259,7 +259,7 @@ brasero_app_parse_options (BraseroApp *app)
 			device = files [0];
 
 		brasero_app_blank (app, device, TRUE);
-		return FALSE;
+		return;
 	}
 	else if (disc_check) {
 		gchar *device = NULL;
@@ -273,7 +273,7 @@ brasero_app_parse_options (BraseroApp *app)
 			device = files [0];
 
 		brasero_app_check (app, device, TRUE);
-		return FALSE;
+		return;
 	}
 	else if (open_ncb) {
 		GSList *list = NULL;
@@ -320,8 +320,7 @@ brasero_app_parse_options (BraseroApp *app)
 	    	load_default_project = TRUE;
 	}
 
-    	brasero_session_load (app, load_default_project);
-	return TRUE;
+	brasero_app_run (app, load_default_project);
 }
 
 int
@@ -385,8 +384,7 @@ main (int argc, char **argv)
 	if (app == NULL)
 		return 1;
 
-	if (brasero_app_parse_options (BRASERO_APP (app)))
-		brasero_app_run (BRASERO_APP (app));
+	brasero_app_parse_options (BRASERO_APP (app));
 
 	brasero_burn_library_shutdown ();
 

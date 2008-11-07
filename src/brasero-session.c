@@ -87,8 +87,7 @@ brasero_session_load (BraseroApp *app, gboolean load_project)
 	/* Make sure that on first run the window has a default size of at least
 	 * 85% of the screen (hardware not GTK+) */
 	screen = gtk_window_get_screen (GTK_WINDOW (app));
-	monitor = gdk_screen_get_monitor_at_window (screen, 
-						    GTK_WIDGET (app)->window);
+	monitor = gdk_screen_get_monitor_at_window (screen, GTK_WIDGET (app)->window);
 	gdk_screen_get_monitor_geometry (screen, monitor, &rect);
 	width = rect.width / 100 * 85;
 	height = rect.height / 100 * 85;
