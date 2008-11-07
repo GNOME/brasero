@@ -1,5 +1,18 @@
 2008-11-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Allow to freeze the tree model at project load time to delay display
+	until we're ready and created all necessary nodes.
+
+	* src/brasero-data-project.c (brasero_data_project_load_contents):
+	* src/brasero-data-project.h:
+	* src/brasero-data-tree-model.c (brasero_data_tree_model_freeze),
+	(brasero_data_tree_model_node_added),
+	(brasero_data_tree_model_node_removed),
+	(brasero_data_tree_model_node_changed),
+	(brasero_data_tree_model_class_init):
+
+2008-11-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Revert fix for #552811 – crash after delete used directory (comment #10)
 	and fix it in a more definitive way (hopefully)
 

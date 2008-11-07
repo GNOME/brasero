@@ -53,6 +53,8 @@ struct _BraseroDataTreeModelPrivate
 
 	gint sort_column;
 	GtkSortType sort_type;
+
+	guint freeze:1;
 };
 
 #define BRASERO_DATA_TREE_MODEL_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DATA_TREE_MODEL, BraseroDataTreeModelPrivate))
@@ -639,12 +641,6 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 	return;
 }
 
-/**
- * This is a function mainly used at project load time. In this context there
- * can be nodes that have been added to the data project tree but not added 
- * through the model. Don't count those nodes.
- */
-
 GtkTreePath *
 brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
 				      BraseroFileNode *node)
@@ -1158,6 +1154,16 @@ brasero_data_tree_model_reset (BraseroDataProject *project,
 		BRASERO_DATA_PROJECT_CLASS (brasero_data_tree_model_parent_class)->reset (project, num_nodes);
 }
 
+static void
+brasero_data_tree_model_freeze (BraseroDataProject *project,
+				gboolean freeze)
+{
+	BraseroDataTreeModelPrivate *priv;
+
+	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (project);
+	priv->freeze = freeze;
+}
+
 static gboolean
 brasero_data_tree_model_node_added (BraseroDataProject *project,
 				    BraseroFileNode *node,
@@ -1175,6 +1181,8 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 		goto end;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (project);
+	if (priv->freeze)
+		goto end;
 
 	iter.stamp = priv->stamp;
 	iter.user_data = node;
@@ -1259,6 +1267,8 @@ brasero_data_tree_model_node_removed (BraseroDataProject *project,
 		goto end;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (project);
+	if (priv->freeze)
+		goto end;
 
 	/* remove it from the shown list and all its children as well */
 	priv->shown = g_slist_remove (priv->shown, node);
@@ -1321,6 +1331,8 @@ brasero_data_tree_model_node_changed (BraseroDataProject *project,
 		goto end;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (project);
+	if (priv->freeze)
+		goto end;
 
 	/* Get the iter for the node */
 	iter.stamp = priv->stamp;
@@ -1385,6 +1397,8 @@ brasero_data_tree_model_node_reordered (BraseroDataProject *project,
 		goto end;
 
 	priv = BRASERO_DATA_TREE_MODEL_PRIVATE (project);
+	if (priv->freeze)
+		goto end;
 
 	treepath = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (project), parent);
 	if (parent != brasero_data_project_get_root (project)) {
@@ -1578,6 +1592,7 @@ brasero_data_tree_model_class_init (BraseroDataTreeModelClass *klass)
 	vfs_class->activity_changed = brasero_data_tree_model_activity_changed;
 
 	data_project_class->reset = brasero_data_tree_model_reset;
+	data_project_class->freeze = brasero_data_tree_model_freeze;
 	data_project_class->node_added = brasero_data_tree_model_node_added;
 	data_project_class->node_removed = brasero_data_tree_model_node_removed;
 	data_project_class->node_changed = brasero_data_tree_model_node_changed;

@@ -2886,9 +2886,14 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 				    GSList *excluded)
 {
 	GSList *iter;
+	BraseroFileNode *node;
 	GSList *folders = NULL;
 	BraseroDataProjectClass *klass;
 	BraseroDataProjectPrivate *priv;
+
+	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
+	if (klass->freeze)
+		klass->freeze (self, TRUE);
 
 	for (iter = grafts; iter; iter = iter->next) {
 		BraseroGraftPt *graft;
@@ -2910,7 +2915,6 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 	}
 
 	/* Now load the temporary folders that were created */
-	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	for (iter = folders; iter; iter = iter->next) {
@@ -2957,6 +2961,18 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 		g_free (uri);
 	}
 	g_slist_free (folders);
+
+	if (klass->freeze)
+		klass->freeze (self, FALSE);
+
+	/* Now and only now signal to the tree-model that there are new nodes */
+	for (node = BRASERO_FILE_NODE_CHILDREN (priv->root); node; node = node->next) {
+		gchar *uri;
+
+		uri = brasero_data_project_node_to_uri (self, node);
+		if (klass->node_added)
+			klass->node_added (self, node, uri);
+	}
 
 	return priv->loading;
 }
