@@ -1238,6 +1238,44 @@ brasero_data_project_destroy_node (BraseroDataProject *self,
 	 * used to remove imported nodes. */
 }
 
+static gboolean
+brasero_data_project_is_deep (BraseroDataProject *self,
+			      BraseroFileNode *parent,
+			      const gchar *name,
+			      gboolean isfile)
+{
+	gint parent_depth;
+	BraseroFileTreeStats *stats;
+	BraseroDataProjectPrivate *priv;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	/* if there are already deep files accepts new ones (includes the 
+	 * possible imported ones. */
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	if (stats->num_deep)
+		return TRUE;
+
+	/* This node could have been moved beyond the depth 6 only in one case,
+	 * which is with imported directories. Otherwise since we check
+	 * directories for a depth of 5, its parent would have already been 
+	 * detected. */
+	parent_depth = brasero_file_node_get_depth (parent);
+	if (!isfile) {
+		if (parent_depth < 5)
+			return TRUE;
+	}
+	else {
+		if (parent_depth < 6)
+			return TRUE;
+	}
+
+	if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name))
+		return FALSE;
+
+	return TRUE;
+}
+
 gboolean
 brasero_data_project_move_node (BraseroDataProject *self,
 				BraseroFileNode *node,
@@ -1268,8 +1306,7 @@ brasero_data_project_move_node (BraseroDataProject *self,
 		return FALSE;
 
 	/* see if we won't break the max path depth barrier */
-	if (!node->is_file && brasero_file_node_get_depth (parent) == 5
-	&&   brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, BRASERO_FILE_NODE_NAME (node)))
+	if (!brasero_data_project_is_deep (self, parent, BRASERO_FILE_NODE_NAME (node), node->is_file))
 		return FALSE;
 
 	/* One case could make us fail: if there is the same name in
@@ -1685,10 +1722,8 @@ brasero_data_project_add_empty_directory (BraseroDataProject *self,
 		parent = priv->root;
 
 	/* check directory_depth */
-	if (brasero_file_node_get_depth (parent) == 5) {
-		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name))
-			return NULL;
-	}
+	if (!brasero_data_project_is_deep (self, parent, name, FALSE))
+		return NULL;
 
 	node = brasero_file_node_check_name_existence (parent, name);
 	if (node) {
@@ -1852,10 +1887,9 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 			}
 		}
 	}
+
 	/* avoid signalling twice for the same directory */
-	else if (!node->is_file
-	     &&  brasero_file_node_get_depth (node) == 6
-	     &&  brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, g_file_info_get_name (info))) {
+	if (!brasero_data_project_is_deep (self, node->parent,  BRASERO_FILE_NODE_NAME (node), node->is_file)) {
 		brasero_data_project_remove_node (self, node);
 		return;
 	}
@@ -2036,6 +2070,10 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 	}
 }
 
+
+/* This function is only used in brasero-data-vfs.c to add new nodes
+ * discovered through exploration */
+
 BraseroFileNode *
 brasero_data_project_add_node_from_info (BraseroDataProject *self,
 					 const gchar *uri,
@@ -2107,10 +2145,15 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name))
 				return NULL;
 	}
+	/* This is a special case where we won't try all checks for deep nested
+	 * files. Since this function is only used by brasero-data-vfs.c to 
+	 * add the results of its exploration, we only check directories and
+	 * just check for a directory to have a depth of 6 (means parent has a
+	 * depth of 5. */
 	else if (brasero_file_node_get_depth (parent) == 5) {
 		if (brasero_data_project_file_signal (self, DEEP_DIRECTORY_SIGNAL, name))
 			return NULL;
-	}
+	} 
 
 	node = brasero_file_node_new_from_info (info, parent, priv->sort_func);
 	if (node->is_symlink) {
@@ -3440,8 +3483,7 @@ brasero_data_project_file_moved (BraseroFileMonitor *monitor,
 		brasero_data_project_joliet_remove_node (BRASERO_DATA_PROJECT (monitor), node);
 
 		/* see if we won't break the max path depth barrier */
-		if (!node->is_file && brasero_file_node_get_depth (parent) == 5
-		&&   brasero_data_project_file_signal (BRASERO_DATA_PROJECT (monitor), DEEP_DIRECTORY_SIGNAL, BRASERO_FILE_NODE_NAME (node))) {
+		if (!brasero_data_project_is_deep (BRASERO_DATA_PROJECT (monitor), parent,  BRASERO_FILE_NODE_NAME (node), node->is_file)) {
 			brasero_data_project_remove_node (BRASERO_DATA_PROJECT (monitor), node);
 			return;
 		}

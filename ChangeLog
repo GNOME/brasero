@@ -1,3 +1,18 @@
+2008-11-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for #543377 – No multisession (last comment)
+	When a session with deep directory nesting is detected also check when
+	a file or a directory is added beyond the depth 6 to the already session
+
+	* src/brasero-data-project.c (brasero_data_project_is_deep),
+	(brasero_data_project_move_node),
+	(brasero_data_project_add_empty_directory),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_add_node_from_info),
+	(brasero_data_project_file_moved):
+	* src/brasero-file-node.c (brasero_file_node_add),
+	(brasero_file_node_move_to):
+
 2008-11-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix a problem with accessibility enabled (gail) that triggered a loop
