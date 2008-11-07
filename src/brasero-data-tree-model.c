@@ -215,11 +215,6 @@ brasero_data_tree_model_iter_has_child (GtkTreeModel *model,
 	if (node->is_file)
 		return FALSE;
 
-	if (!BRASERO_FILE_NODE_CHILDREN (node)) {
-		/* It has children but only a bogus one. */
-		return TRUE;
-	}
-
 	/* always return TRUE here when it's a directory since even if
 	 * it's empty we'll add a row written empty underneath it
 	 * anyway. */
@@ -649,24 +644,6 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
  * can be nodes that have been added to the data project tree but not added 
  * through the model. Don't count those nodes.
  */
-static guint
-brasero_data_tree_model_node_index (BraseroFileNode *node)
-{
-	BraseroFileNode *parent;
-	BraseroFileNode *peers;
-	guint pos = 0;
-
-	parent = node->parent;
-	for (peers = BRASERO_FILE_NODE_CHILDREN (parent); peers; peers = peers->next) {
-		if (peers == node)
-			return pos;
-		if (!peers->is_visible)
-			continue;
-		pos ++;
-	}
-
-	return -1;
-}
 
 GtkTreePath *
 brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
@@ -681,12 +658,7 @@ brasero_data_tree_model_node_to_path (BraseroDataTreeModel *self,
 	for (; node->parent && !node->is_root; node = node->parent) {
 		guint nth;
 
-		nth = brasero_data_tree_model_node_index (node);
-		if (nth == -1) {
-			gtk_tree_path_free (path);
-			return NULL;
-		}
-
+		nth = brasero_file_node_get_pos_as_child (node);
 		gtk_tree_path_prepend_index (path, nth);
 	}
 
@@ -708,8 +680,6 @@ brasero_data_tree_model_get_path (GtkTreeModel *model,
 	g_return_val_if_fail (iter->user_data != NULL, NULL);
 
 	node = iter->user_data;
-	if (!node->is_visible)
-		return NULL;
 
 	/* NOTE: there is only one single node without a name: root */
 	path = brasero_data_tree_model_node_to_path (BRASERO_DATA_TREE_MODEL (model), node);
@@ -1260,8 +1230,8 @@ brasero_data_tree_model_node_added (BraseroDataProject *project,
 	/* we also have to set the is_visible property as all nodes added to 
 	 * root are always visible but ref_node is not necessarily called on
 	 * these nodes. */
-	if (parent->is_root)
-		node->is_visible = TRUE;
+//	if (parent->is_root)
+//		node->is_visible = TRUE;
 
 end:
 	/* chain up this function */
@@ -1369,7 +1339,19 @@ brasero_data_tree_model_node_changed (BraseroDataProject *project,
 		/* emit child-toggled. Thanks to bogus rows we only need to emit
 		 * this signal once since a directory will always have a child
 		 * in the tree */
-		gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (project), path, &iter);
+		gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (project),
+						      path,
+						      &iter);
+
+		/* The problem is that without that, the folder contents on disc
+		 * won't be added to the tree if the node it replaced was
+		 * already visible. */
+		if (node->is_imported
+		&&  node->is_visible
+		&&  node->is_fake)
+			brasero_data_session_load_directory_contents (BRASERO_DATA_SESSION (project),
+								      node,
+								      NULL);
 
 		/* add the row */
 		if (!BRASERO_FILE_NODE_CHILDREN (node))  {

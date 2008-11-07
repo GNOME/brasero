@@ -230,6 +230,7 @@ brasero_data_session_load_dir_result (GObject *owner,
 			       0,
 			       priv->loaded,
 			       FALSE);
+		/* FIXME */
 /*		error = g_error_new (BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
 				     _("unknown volume type"));
