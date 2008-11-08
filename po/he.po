@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-10-05 14:45+0000\n"
-"PO-Revision-Date: 2008-09-30 16:34+0200\n"
+"POT-Creation-Date: 2008-11-05 13:00+0000\n"
+"PO-Revision-Date: 2008-11-08 18:46+0200\n"
 "Last-Translator: Mark Krapivner <mark125@gmail.com>\n"
 "Language-Team: Hebrew\n"
 "MIME-Version: 1.0\n"
@@ -13,9 +13,75 @@ msgstr ""
 "X-Poedit-Language: Hebrew\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: ../src/plugins/local-track/burn-uri.c:161
+#: ../src/plugins/local-track/burn-uri.c:288
+#, c-format
+msgid "impossible to retrieve local file path"
+msgstr ""
+
+#: ../src/plugins/local-track/burn-uri.c:205
+#: ../src/plugins/local-track/burn-local-image.c:725
+msgid "Copying files locally"
+msgstr ""
+
+#: ../src/plugins/local-track/burn-uri.c:530
+#: ../src/plugins/local-track/burn-local-image.c:1066
+msgid "local-track allows to burn files not stored locally"
+msgstr ""
+
+#: ../nautilus/nautilus-burn-bar.c:139
+msgid "CD/DVD Creator Folder"
+msgstr "תיקיית יוצר התקליטורים"
+
+#: ../nautilus/nautilus-burn-bar.c:143
+msgid "Write to Disc"
+msgstr "כתיבה על הדיסק"
+
+#: ../nautilus/nautilus-burn-bar.c:153
+#: ../nautilus/nautilus-burn-extension.c:591
+msgid "Write contents to a CD or DVD disc"
+msgstr "כתיבת תוכן לתקליטור"
+
+#: ../nautilus/nautilus-burn-extension.c:142
+#: ../nautilus/nautilus-burn-extension.c:146
+msgid "Unable to launch the cd burner application"
+msgstr "לא ניתן להפעיל את יישון צריבת התקליטורים"
+
+#: ../nautilus/nautilus-burn-extension.c:472
+#: ../nautilus/nautilus-burn-extension.c:590
+msgid "_Write to Disc..."
+msgstr "_כתיבה על הדיסק..."
+
+#: ../nautilus/nautilus-burn-extension.c:473
+msgid "Write disc image to a CD or DVD disc"
+msgstr ""
+
+#: ../nautilus/nautilus-burn-extension.c:525
+msgid "_Copy Disc..."
+msgstr "העתקת דיסק..."
+
+#: ../nautilus/nautilus-burn-extension.c:526
+msgid "Create a copy of this CD or DVD disc"
+msgstr "צור העתק מדויק של דיסק"
+
+#: ../nautilus/nautilus-burn-extension.c:537
+msgid "_Blank Disc..."
+msgstr "_דיסק ריק..."
+
+#: ../nautilus/nautilus-burn-extension.c:538
+msgid "Blank this CD or DVD disc"
+msgstr ""
+
+#: ../nautilus/nautilus-burn-extension.c:549
+msgid "_Check Disc..."
+msgstr "_בדוק דיסק..."
+
+#: ../nautilus/nautilus-burn-extension.c:550
+msgid "Check the data integrity on this CD or DVD disc"
+msgstr "בדוק את תקינות הנתונים על הדיסק"
+
 #: ../src/brasero-medium-properties.c:329
-msgid ""
-"Do you really want to keep the current extension for the disc image name?"
+msgid "Do you really want to keep the current extension for the disc image name?"
 msgstr ""
 
 #: ../src/brasero-medium-properties.c:332
@@ -23,9 +89,7 @@ msgid "Image Extension"
 msgstr "סיומת תמונת תקליטור"
 
 #: ../src/brasero-medium-properties.c:334
-msgid ""
-"If you choose to keep it programs may not be able to recognize the file type "
-"properly."
+msgid "If you choose to keep it programs may not be able to recognize the file type properly."
 msgstr ""
 
 #: ../src/brasero-medium-properties.c:337
@@ -36,176 +100,174 @@ msgstr "_אל תשנה את הסיומת"
 msgid "Change _extension"
 msgstr "שנה את ה_סיומת"
 
-#: ../src/brasero-medium-properties.c:583
+#: ../src/brasero-medium-properties.c:582
 msgid "Configure some options for the recording"
 msgstr ""
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
-#: ../src/brasero-src-image.c:218
+#: ../src/brasero-src-image.c:221
 #, c-format
 msgid "\"%s\": %s"
 msgstr "\"%s\": %s"
 
-#: ../src/brasero-src-image.c:450
+#: ../src/brasero-src-image.c:244
+#: ../src/brasero-burn-options.c:319
+msgid "Please, select another image."
+msgstr "נא לבחור קובץ תמונת תקליטור אחר."
+
+#: ../src/brasero-src-image.c:571
 msgid "Select Image File"
 msgstr "בחר קובץ תמונת תקליטור"
 
-#: ../src/brasero-src-image.c:472 ../src/brasero-search-entry.c:626
-#: ../src/brasero-search-entry.c:666 ../src/brasero-search-entry.c:705
-#: ../src/brasero-search-beagle.c:491 ../src/brasero-file-chooser.c:219
-#: ../src/brasero-project.c:1375
+#: ../src/brasero-src-image.c:592
+#: ../src/brasero-search-entry.c:626
+#: ../src/brasero-search-entry.c:666
+#: ../src/brasero-search-entry.c:705
+#: ../src/brasero-search-beagle.c:491
+#: ../src/brasero-file-chooser.c:219
+#: ../src/brasero-project.c:1404
 msgid "All files"
 msgstr "כל הקבצים"
 
-#: ../src/brasero-src-image.c:477 ../src/brasero-file-chooser.c:243
-#: ../src/brasero-project.c:1396
+#: ../src/brasero-src-image.c:597
+#: ../src/brasero-file-chooser.c:243
+#: ../src/brasero-project.c:1425
 msgid "Image files only"
 msgstr "קבצי תמונת תקליטור בלבד"
 
-#: ../src/brasero-src-image.c:495 ../src/brasero-image-properties.c:209
+#: ../src/brasero-src-image.c:615
+#: ../src/brasero-image-properties.c:209
 msgid "Image type:"
 msgstr "סוג קובץ תמונת תקליטור:"
 
-#: ../src/brasero-src-image.c:549
+#: ../src/brasero-src-image.c:697
 msgid "Click here to select an _image"
 msgstr "לחץ כאן כדי לבחור תמונת תקליטור"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_ otherwise it gets truncated.
-#: ../src/brasero-project-name.c:93
+#: ../src/brasero-project-name.c:99
 #, c-format
 msgid "Data disc (%s)"
 msgstr "דיסק נתונים (%s)"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_
-#: ../src/brasero-project-name.c:106
+#: ../src/brasero-project-name.c:112
 #, c-format
 msgid "Video disc (%s)"
 msgstr "דיסק וידאו (%s)"
 
 #. NOTE to translators: the final string must not be over
 #. * 32 _bytes_
-#: ../src/brasero-project-name.c:110
+#: ../src/brasero-project-name.c:116
 #, c-format
 msgid "Audio disc (%s)"
 msgstr "דיסק שמע (%s)"
 
-#: ../src/brasero-burn-options.c:218
-#, fuzzy
-msgid ""
-"Please, insert a recordable CD or DVD if you don't want to write to an image "
-"file."
-msgstr "הכנס תקליטור CD או DVD הניתן לכתיבה עם לפחות %i MiB פנוי."
+#: ../src/brasero-burn-options.c:222
+msgid "Please, insert a recordable CD or DVD if you don't want to write to an image file."
+msgstr "נא להכניס דיסק CD או DVD אם אין לך כוונה ליצור קובץ תוכנה תקליטור."
 
-#: ../src/brasero-burn-options.c:271
+#: ../src/brasero-burn-options.c:277
 msgid "Please, choose another CD or DVD or insert a new one."
 msgstr "בחר תקליטור CD או DVD אחר או הכנס אחד חדש."
 
-#: ../src/brasero-burn-options.c:272 ../src/brasero-data-disc.c:652
-msgid ""
-"The size of the project is too large for the disc even with the overburn "
-"option."
+#: ../src/brasero-burn-options.c:278
+#: ../src/brasero-data-disc.c:653
+msgid "The size of the project is too large for the disc even with the overburn option."
 msgstr "גודל הפרויקט גדול מידי עבור הדיסק אפילו עם אפשרות צריבת יתר."
 
-#: ../src/brasero-burn-options.c:278 ../src/brasero-burn-dialog.c:459
+#: ../src/brasero-burn-options.c:284
+#: ../src/brasero-burn-dialog.c:459
 msgid "Please, insert a recordable CD or DVD."
 msgstr "הכנס תקליטור CD או DVD הניתן לכתיבה."
 
-#: ../src/brasero-burn-options.c:279
+#: ../src/brasero-burn-options.c:285
 msgid "There is no recordable medium inserted."
 msgstr "לא הוכנסה מדיה הניתנת לצריבה."
 
-#: ../src/brasero-burn-options.c:289 ../src/brasero-burn-dialog.c:403
+#: ../src/brasero-burn-options.c:295
+#: ../src/brasero-burn-dialog.c:403
 msgid "Please, insert a disc holding data."
 msgstr "הכנס דיסק המכיל נתונים."
 
-#: ../src/brasero-burn-options.c:290
+#: ../src/brasero-burn-options.c:296
 msgid "There is no inserted medium to copy."
 msgstr "לא הוכנסה מדיה להעתקה."
 
-#: ../src/brasero-burn-options.c:301
+#: ../src/brasero-burn-options.c:307
 msgid "Please, select an image."
 msgstr "נא לבחור תמונת תקליטור."
 
-#: ../src/brasero-burn-options.c:302
+#: ../src/brasero-burn-options.c:308
 msgid "There is no selected image."
 msgstr "לא נבחר קובץ תמונת תקליטור."
 
-#: ../src/brasero-burn-options.c:313
-msgid "Please, select another image."
-msgstr "נא לבחור קובץ תמונת תקליטור אחר."
-
-#: ../src/brasero-burn-options.c:314
+#: ../src/brasero-burn-options.c:320
 msgid "It doesn't appear to be a valid image or a valid cue file."
-msgstr ""
-"אינו נראה כמו תמונת תקליטור תקינה או קובץ cue תקין."
+msgstr "אינו נראה כמו תמונת תקליטור תקינה או קובץ cue תקין."
 
-#: ../src/brasero-burn-options.c:325
-#, fuzzy
+#: ../src/brasero-burn-options.c:331
 msgid "Please, insert a disc that is not copy protected."
-msgstr "המדיה שהוכנסה לא ניתמכת."
+msgstr "נא להכניס דיסק שלא מוגן מפני העתקה."
 
-#: ../src/brasero-burn-options.c:326
+#: ../src/brasero-burn-options.c:332
 msgid "Such a medium can't be copied without the proper plugins."
-msgstr ""
+msgstr "לא ניתן להעתיק מדיה כזו בלי תוספים מתאימים."
 
-#: ../src/brasero-burn-options.c:333
-#, fuzzy
+#: ../src/brasero-burn-options.c:339
 msgid "Please, replace the disc with a supported CD or DVD."
-msgstr "החלף את הדיסק בתקליטור CD או DVD הניתן לצריבה."
+msgstr "נא להחליף את הדיסק בדיסק CD או DVD ניתמך."
 
-#: ../src/brasero-burn-options.c:334
-#, fuzzy
+#: ../src/brasero-burn-options.c:340
 msgid "It is not possible to write with the current set of plugins."
-msgstr "<i>לא ניתן לכתוב על המדיה עם התוספים הפעילים</i>"
+msgstr "לא ניתן לכתוב על המדיה עם התוספים הפעילים."
 
-#: ../src/brasero-burn-options.c:342 ../src/brasero-data-disc.c:625
+#: ../src/brasero-burn-options.c:348
+#: ../src/brasero-data-disc.c:626
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "לבצע צריבה מעבר לנפח המזוהה של הדיסק?"
 
-#: ../src/brasero-burn-options.c:343
+#: ../src/brasero-burn-options.c:349
 msgid ""
 "The size of the project is too large for the disc.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
-"can't be properly recognised and therefore need overburn option.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which can't be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
 "גודל הפרויקט גדול מידי עבור הדיסק.\n"
-"כדאי לך להשתמש באפשרות זו במידה ואתה משתמש בתקליטור (W)‏CD-R ‏90 או 100 דקות "
-"שלא ניתן לזהות נפחם כראוי לך זקוקים לאפשרות צריבת יתר.\n"
+"כדאי לך להשתמש באפשרות זו במידה ואתה משתמש בתקליטור (W)‏CD-R ‏90 או 100 דקות שלא ניתן לזהות נפחם כראוי לך זקוקים לאפשרות צריבת יתר.\n"
 "הערה: אפשרות זו עלולה לגרום לכישלון הצריבה."
 
-#: ../src/brasero-burn-options.c:350 ../src/brasero-data-disc.c:635
+#: ../src/brasero-burn-options.c:356
+#: ../src/brasero-data-disc.c:636
 msgid "_Overburn"
 msgstr "צריבת _יתר"
 
-#: ../src/brasero-burn-options.c:351 ../src/brasero-data-disc.c:636
+#: ../src/brasero-burn-options.c:357
+#: ../src/brasero-data-disc.c:637
 msgid "Burn beyond the disc reported capacity"
 msgstr "צריבה מעבר לנפח המזוהה של הדיסק"
 
 #. Create a default Burn button
-#: ../src/brasero-burn-options.c:402
+#: ../src/brasero-burn-options.c:407
 msgid "_Burn"
 msgstr "_צרוב"
 
-#: ../src/brasero-burn-options.c:444
-msgid ""
-"The drive that holds the source media will also be the one used to record.\n"
+#: ../src/brasero-burn-options.c:449
+msgid "The drive that holds the source media will also be the one used to record.\n"
 msgstr "הכונן המכיל את מדיית המקור ישמש גם לצריבה.\n"
 
-#: ../src/brasero-burn-options.c:445
-msgid ""
-"A new recordable media will be required once the one currently loaded has "
-"been copied."
+#: ../src/brasero-burn-options.c:450
+msgid "A new recordable media will be required once the one currently loaded has been copied."
 msgstr "מדיה חדשה שניתן לצרוב עליה תידרש לאחר שזו הטעונה כרגע תועתק."
 
-#: ../src/brasero-burn-options.c:460
+#: ../src/brasero-burn-options.c:465
 msgid "Number of copies "
 msgstr "מספר עותקים "
 
-#: ../src/brasero-burn-options.c:476
+#: ../src/brasero-burn-options.c:481
 msgid "Select a disc to write to"
 msgstr "בחר דיסק לכתיבה"
 
@@ -285,45 +347,23 @@ msgstr "נתוני _הדיסק"
 msgid "Display information on blank discs currently inserted"
 msgstr "הצג נתונים על דיסקים ריקים שכרגע הוכנסו."
 
-#: ../src/brasero-app.c:333
-msgid ""
-"Brasero is free software; you can redistribute it and/or modify it under the "
-"terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
-msgstr ""
-"Brasero is free software; you can redistribute it and/or modify it under the "
-"terms of the GNU General Public License as published by the Free Software "
-"Foundation; either version 2 of the License, or (at your option) any later "
-"version."
+#: ../src/brasero-app.c:387
+msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 
-#: ../src/brasero-app.c:338
-msgid ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
-msgstr ""
-"Brasero is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-"FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-"details."
+#: ../src/brasero-app.c:392
+msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
+msgstr "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 
-#: ../src/brasero-app.c:343
-msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301, USA"
-msgstr ""
-"You should have received a copy of the GNU General Public License along with "
-"Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin "
-"Street, Fifth Floor, Boston, MA 02110-1301, USA"
+#: ../src/brasero-app.c:397
+msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
+msgstr "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 
-#: ../src/brasero-app.c:352
+#: ../src/brasero-app.c:406
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "יישום פשוט לשימוש לצריבת CD/DVD ב-GNOME"
 
-#: ../src/brasero-app.c:368
+#: ../src/brasero-app.c:422
 msgid "Brasero Homepage"
 msgstr "דף הבית של Brasero"
 
@@ -335,7 +375,7 @@ msgstr "דף הבית של Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:380
+#: ../src/brasero-app.c:434
 msgid "translator-credits"
 msgstr ""
 "מארק קרפיבנר <mark125@gmail.com>\n"
@@ -343,22 +383,19 @@ msgstr ""
 "פרוייקט תרגום GNOME לעברית:\n"
 "http://gnome-il.berlios.de"
 
-#: ../src/brasero-app.c:502
+#: ../src/brasero-app.c:556
 msgid "_Recent Projects"
 msgstr "פרויקטים _אחרונים"
 
-#: ../src/brasero-app.c:503
+#: ../src/brasero-app.c:557
 msgid "Display the projects recently opened"
 msgstr "הצג פרויקטים שנפתחו לאחרונה"
 
-#: ../src/brasero-app.c:508
+#: ../src/brasero-app.c:562
 msgid "Brasero projects"
 msgstr "פרוייקטים של Brasero"
 
-#: ../src/brasero-app.c:651
-msgid "Brasero Disc Burning"
-msgstr "תוכנת הצריבה Brasero"
-
+#: ../src/brasero-app.c:700
 #: ../data/brasero.desktop.in.in.h:1
 #: ../data/brasero-open-image.desktop.in.in.h:1
 #: ../data/brasero-open-playlist.desktop.in.in.h:1
@@ -378,20 +415,12 @@ msgid "Disc Burner"
 msgstr "צורב דיסקים"
 
 #: ../data/brasero.schemas.in.h:1
-msgid ""
-"Contains the list of additional plugins brasero will use to burn discs. If "
-"set to NULL, brasero will load them all."
-msgstr ""
-"Contains the list of additional plugins brasero will use to burn discs. If "
-"set to NULL, brasero will load them all."
+msgid "Contains the list of additional plugins brasero will use to burn discs. If set to NULL, brasero will load them all."
+msgstr "Contains the list of additional plugins brasero will use to burn discs. If set to NULL, brasero will load them all."
 
 #: ../data/brasero.schemas.in.h:2
-msgid ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
-msgstr ""
-"Contains the name of the favourite burn engine suite installed. It will be "
-"used if possible."
+msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
+msgstr "Contains the name of the favourite burn engine suite installed. It will be used if possible."
 
 #: ../data/brasero.schemas.in.h:3
 msgid "Default height for image preview."
@@ -434,116 +463,78 @@ msgid "Layout of UI"
 msgstr "Layout of UI"
 
 #: ../data/brasero.schemas.in.h:13
-msgid ""
-"Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-msgstr ""
-"Only used in conjunction with -immed flag with cdrecord. See immed_flag."
-
-#: ../data/brasero.schemas.in.h:14
 msgid "Pane to display for audio projects"
 msgstr "Pane to display for audio projects"
 
-#: ../data/brasero.schemas.in.h:15
+#: ../data/brasero.schemas.in.h:14
 msgid "Pane to display for data projects"
 msgstr "Pane to display for data projects"
 
-#: ../data/brasero.schemas.in.h:16
+#: ../data/brasero.schemas.in.h:15
 msgid "Should brasero ask to be set as the default app to burn"
 msgstr "Should brasero ask to be set as the default app to burn"
 
-#: ../data/brasero.schemas.in.h:17
-msgid ""
-"Should brasero ask to be set as the default app to burn audio or data. Set "
-"to true, brasero won't ask."
-msgstr ""
-"Should brasero ask to be set as the default app to burn audio or data. Set "
-"to true, brasero won't ask."
+#: ../data/brasero.schemas.in.h:16
+msgid "Should brasero ask to be set as the default app to burn audio or data. Set to true, brasero won't ask."
+msgstr "Should brasero ask to be set as the default app to burn audio or data. Set to true, brasero won't ask."
 
-#: ../data/brasero.schemas.in.h:18
+#: ../data/brasero.schemas.in.h:17
 msgid "Should brasero filter broken symlinks files"
 msgstr "Should brasero filter broken symlinks files"
 
-#: ../data/brasero.schemas.in.h:19
-msgid ""
-"Should brasero filter broken symlinks. Set to true, brasero will filter "
-"broken symlinks."
-msgstr ""
-"Should brasero filter broken symlinks. Set to true, brasero will filter "
-"broken symlinks."
+#: ../data/brasero.schemas.in.h:18
+msgid "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
+msgstr "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
 
-#: ../data/brasero.schemas.in.h:20
+#: ../data/brasero.schemas.in.h:19
 msgid "Should brasero filter hidden files"
 msgstr "Should brasero filter hidden files"
 
-#: ../data/brasero.schemas.in.h:21
-msgid ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
-msgstr ""
-"Should brasero filter hidden files. Set to true, brasero will filter hidden "
-"files."
+#: ../data/brasero.schemas.in.h:20
+msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
+msgstr "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
 
-#: ../data/brasero.schemas.in.h:22
+#: ../data/brasero.schemas.in.h:21
 msgid "Should brasero notify when files are filtered"
 msgstr "Should brasero notify when files are filtered"
 
+#: ../data/brasero.schemas.in.h:22
+msgid "Should brasero notify when files are filtered. Set to true, brasero will display the notification."
+msgstr "Should brasero notify when files are filtered. Set to true, brasero will display the notification."
+
 #: ../data/brasero.schemas.in.h:23
-msgid ""
-"Should brasero notify when files are filtered. Set to true, brasero will "
-"display the notification."
-msgstr ""
-"Should brasero notify when files are filtered. Set to true, brasero will "
-"display the notification."
+msgid "The pane to display with audio projects. It should be one of the following: Chooser/Search/Playlist/EmptyView."
+msgstr "The pane to display with audio projects. It should be one of the following: Chooser/Search/Playlist/EmptyView."
 
 #: ../data/brasero.schemas.in.h:24
-msgid ""
-"The pane to display with audio projects. It should be one of the following: "
-"Chooser/Search/Playlist/EmptyView."
-msgstr ""
-"The pane to display with audio projects. It should be one of the following: "
-"Chooser/Search/Playlist/EmptyView."
+msgid "The pane to display with data projects. It should be one of the following: Chooser/Search/EmptyView."
+msgstr "The pane to display with data projects. It should be one of the following: Chooser/Search/EmptyView."
 
 #: ../data/brasero.schemas.in.h:25
-msgid ""
-"The pane to display with data projects. It should be one of the following: "
-"Chooser/Search/EmptyView."
-msgstr ""
-"The pane to display with data projects. It should be one of the following: "
-"Chooser/Search/EmptyView."
+msgid "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
+msgstr "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
 
 #: ../data/brasero.schemas.in.h:26
-msgid ""
-"This key sets where the project pane should be (0 = on the right, 1 = on the "
-"left, 2 = at the top, 3 = at the bottom)"
-msgstr ""
-"This key sets where the project pane should be (0 = on the right, 1 = on the "
-"left, 2 = at the top, 3 = at the bottom)"
-
-#: ../data/brasero.schemas.in.h:27
 msgid "Used in conjunction with -immed flag with cdrecord"
 msgstr "Used in conjunction with -immed flag with cdrecord"
 
-#: ../data/brasero.schemas.in.h:28
+#: ../data/brasero.schemas.in.h:27
 msgid "Whether to display file preview. Set to true to use it."
 msgstr "Whether to display file preview. Set to true to use it."
 
-#: ../data/brasero.schemas.in.h:29
-msgid ""
-"Whether to use -immed flag with cdrecord. Use with caution (set to true) as "
-"it's only a workaround for some drives/setups."
-msgstr ""
-"Whether to use -immed flag with cdrecord. Use with caution (set to true) as "
-"it's only a workaround for some drives/setups."
+#: ../data/brasero.schemas.in.h:28
+msgid "Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
+msgstr "Whether to use -immed flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
 
-#: ../data/brasero.schemas.in.h:30
+#: ../data/brasero.schemas.in.h:29
 msgid "White list of additional plugins to use"
 msgstr "White list of additional plugins to use"
 
-#: ../data/brasero.schemas.in.h:31
+#: ../data/brasero.schemas.in.h:30
 msgid "Width for video preview"
 msgstr "Width for video preview"
 
-#: ../data/brasero.schemas.in.h:32
+#: ../data/brasero.schemas.in.h:31
 msgid "width for image preview"
 msgstr "width for image preview"
 
@@ -555,17 +546,17 @@ msgstr "קובץ פרויקט Brasero"
 msgid "Cdrdao toc file"
 msgstr "קובץ Cdrdao toc"
 
-#: ../src/brasero-dest-selection.c:102 ../src/burn.c:289 ../src/burn.c:913
+#: ../src/brasero-dest-selection.c:103
+#: ../src/burn.c:891
 msgid "ongoing burning process"
 msgstr "תהליך צריבה פעיל"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
-#: ../src/brasero-dest-selection.c:353
+#: ../src/brasero-dest-selection.c:421
 #, c-format
 msgid "%s: \"%s\""
-msgstr ""
-"‏%s: \"‏%s\""
+msgstr "‏%s: \"‏%s\""
 
 #. Translators: this string is only used when the user
 #. * wants to copy a disc using the same destination and
@@ -573,36 +564,38 @@ msgstr ""
 #. * destination disc a new one (once the source has been
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
-#: ../src/brasero-dest-selection.c:376
+#: ../src/brasero-dest-selection.c:446
 #, c-format
 msgid "New disc in burner holding source medium"
-msgstr ""
+msgstr "דיסק חדש בצורב המחזיק את המדיה המקורית"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../src/brasero-dest-selection.c:399
+#: ../src/brasero-dest-selection.c:469
 #, c-format
 msgid "%s: no free space"
-msgstr ""
-"‏%s: אין מקום פנוי"
+msgstr "‏%s: אין מקום פנוי"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../src/brasero-dest-selection.c:421
+#: ../src/brasero-dest-selection.c:491
 #, c-format
 msgid "%s: %s of free space"
-msgstr ""
-"‏%s: ‏%s מקום פנוי"
+msgstr "‏%s: ‏%s מקום פנוי"
 
-#: ../src/brasero-audio-disc.c:313 ../src/brasero-tray.c:91
-#: ../src/brasero-data-disc.c:128 ../src/brasero-video-disc.c:91
+#: ../src/brasero-audio-disc.c:313
+#: ../src/brasero-tray.c:91
+#: ../src/brasero-data-disc.c:128
+#: ../src/brasero-video-disc.c:91
 msgid "Menu"
 msgstr "תפריט"
 
-#: ../src/brasero-audio-disc.c:314 ../src/brasero-data-disc.c:129
+#: ../src/brasero-audio-disc.c:314
+#: ../src/brasero-data-disc.c:129
 msgid "Open the selected files"
 msgstr "פתח קבצים מסומנים"
 
-#: ../src/brasero-audio-disc.c:316 ../src/brasero-video-disc.c:94
+#: ../src/brasero-audio-disc.c:316
+#: ../src/brasero-video-disc.c:94
 msgid "_Edit Information..."
 msgstr "_ערוך נתונים..."
 
@@ -610,12 +603,14 @@ msgstr "_ערוך נתונים..."
 msgid "Edit the track information (start, end, author, ...)"
 msgstr "ערוך את נתוני הרצועה (התחלה, סיום, יוצר, ...)"
 
-#: ../src/brasero-audio-disc.c:318 ../src/brasero-data-disc.c:133
+#: ../src/brasero-audio-disc.c:318
+#: ../src/brasero-data-disc.c:133
 #: ../src/brasero-project.c:209
 msgid "Remove the selected files from the project"
 msgstr "הסרת הקבצים המסומנים מהפרויקט"
 
-#: ../src/brasero-audio-disc.c:320 ../src/brasero-data-disc.c:135
+#: ../src/brasero-audio-disc.c:320
+#: ../src/brasero-data-disc.c:135
 #: ../src/brasero-video-disc.c:98
 msgid "Add the files stored in the clipboard"
 msgstr ""
@@ -636,7 +631,8 @@ msgstr "_פצל רצועה..."
 msgid "Split the selected track"
 msgstr "פצל את הרצועה הנבחרת"
 
-#: ../src/brasero-audio-disc.c:537 ../src/brasero-audio-disc.c:1012
+#: ../src/brasero-audio-disc.c:537
+#: ../src/brasero-audio-disc.c:1012
 msgid "Pause"
 msgstr "הפסקה"
 
@@ -648,7 +644,8 @@ msgstr "פיצול"
 msgid "Track"
 msgstr "רצועה"
 
-#: ../src/brasero-audio-disc.c:691 ../src/brasero-video-disc.c:1177
+#: ../src/brasero-audio-disc.c:691
+#: ../src/brasero-video-disc.c:1177
 msgid "Title"
 msgstr "כותרת"
 
@@ -656,7 +653,8 @@ msgstr "כותרת"
 msgid "Artist"
 msgstr "אומן"
 
-#: ../src/brasero-audio-disc.c:726 ../src/brasero-playlist.c:339
+#: ../src/brasero-audio-disc.c:726
+#: ../src/brasero-playlist.c:339
 #: ../src/brasero-split-dialog.c:1242
 msgid "Length"
 msgstr "אורך"
@@ -666,7 +664,6 @@ msgid "The track will be padded at its end:"
 msgstr ""
 
 #: ../src/brasero-audio-disc.c:1158
-#, fuzzy
 msgid "Track Length"
 msgstr "אורך הרצועה"
 
@@ -697,9 +694,7 @@ msgid "Video File"
 msgstr "קובץ וידאו"
 
 #: ../src/brasero-audio-disc.c:1385
-msgid ""
-"This file is a video and therefore only the audio part can be written to the "
-"disc."
+msgid "This file is a video and therefore only the audio part can be written to the disc."
 msgstr "הקובץ הוא קובץ וידאו לכן רק קטע השמע יכתב לדיסק."
 
 #: ../src/brasero-audio-disc.c:1388
@@ -714,7 +709,8 @@ msgstr "_הוסף וידאו"
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "לחפש קבצי שמע בתוך התיקייה?"
 
-#: ../src/brasero-audio-disc.c:1518 ../src/brasero-video-disc.c:247
+#: ../src/brasero-audio-disc.c:1518
+#: ../src/brasero-video-disc.c:247
 msgid "Directory Search"
 msgstr "חיפוש תיקייה"
 
@@ -722,29 +718,40 @@ msgstr "חיפוש תיקייה"
 msgid "Directories can't be added to an audio disc."
 msgstr "לא ניתן להוסיף תיקיות לתקליטור שמע."
 
-#: ../src/brasero-audio-disc.c:1525 ../src/brasero-video-disc.c:254
+#: ../src/brasero-audio-disc.c:1525
+#: ../src/brasero-video-disc.c:254
 msgid "Search directory"
 msgstr ""
 
-#: ../src/brasero-audio-disc.c:1594 ../src/brasero-video-disc.c:290
+#: ../src/brasero-audio-disc.c:1594
+#: ../src/brasero-video-disc.c:290
 #, c-format
 msgid "File \"%s\" can't be opened."
 msgstr "הקובץ \"%s\" לא ניתן לפתיחה."
 
-#: ../src/brasero-audio-disc.c:1598 ../src/brasero-data-disc.c:922
+#: ../src/brasero-audio-disc.c:1598
+#: ../src/brasero-data-disc.c:924
 msgid "Unreadable File"
-msgstr ""
+msgstr "קובץ לא ניתן לקיראה"
 
-#: ../src/brasero-audio-disc.c:1744 ../src/brasero-audio-disc.c:1769
+#: ../src/brasero-audio-disc.c:1744
+#: ../src/brasero-audio-disc.c:1769
+#: ../src/brasero-playlist.c:982
+#: ../src/brasero-data-tree-model.c:432
+#: ../src/brasero-data-tree-model.c:491
+#: ../src/brasero-data-tree-model.c:502
+#: ../src/brasero-data-tree-model.c:563
+#: ../src/brasero-data-tree-model.c:568
 #: ../src/brasero-video-tree-model.c:198
-msgid "loading"
-msgstr "טוען"
+msgid "(loading ...)"
+msgstr "(טוען ...)"
 
 #: ../src/brasero-audio-disc.c:2790
 msgid "Select one song only please."
 msgstr "נא לבחור שיר אחד בלבד."
 
-#: ../src/brasero-audio-disc.c:2792 ../src/brasero-split-dialog.c:655
+#: ../src/brasero-audio-disc.c:2792
+#: ../src/brasero-split-dialog.c:655
 msgid "Error"
 msgstr "שגיאה"
 
@@ -765,43 +772,45 @@ msgstr "מחיקת קובץ"
 msgid "it will be removed from the project."
 msgstr "זה יוסר מהפרויקט."
 
-#: ../src/brasero-blank-dialog.c:222
+#: ../src/brasero-blank-dialog.c:225
 msgid "Error Blanking:"
 msgstr "שגיאת מחיקה:"
 
-#: ../src/brasero-blank-dialog.c:224 ../src/brasero-blank-dialog.c:265
+#: ../src/brasero-blank-dialog.c:227
+#: ../src/brasero-blank-dialog.c:268
 msgid "Blanking Finished"
 msgstr "מחיקה הושלמה"
 
-#: ../src/brasero-blank-dialog.c:226 ../src/brasero-blank-dialog.c:270
+#: ../src/brasero-blank-dialog.c:229
+#: ../src/brasero-blank-dialog.c:273
 msgid "Blank _Again"
 msgstr "מחק _שוב"
 
-#: ../src/brasero-blank-dialog.c:243
+#: ../src/brasero-blank-dialog.c:246
 msgid "Unexpected error"
 msgstr "שגיאה לא צפויה"
 
-#: ../src/brasero-blank-dialog.c:263
+#: ../src/brasero-blank-dialog.c:266
 msgid "The disc was successfully blanked:"
 msgstr "הדיסק נמחק בהצלחה:"
 
-#: ../src/brasero-blank-dialog.c:268
+#: ../src/brasero-blank-dialog.c:271
 msgid "the disc is ready for use."
 msgstr "הדיסק מוכן לשימוש."
 
-#: ../src/brasero-blank-dialog.c:367
+#: ../src/brasero-blank-dialog.c:371
 msgid "_Blank"
 msgstr "_מחיקה"
 
-#: ../src/brasero-blank-dialog.c:399
+#: ../src/brasero-blank-dialog.c:403
 msgid "_fast blanking"
 msgstr "מחיקה _מהירה"
 
-#: ../src/brasero-blank-dialog.c:400
+#: ../src/brasero-blank-dialog.c:404
 msgid "Activate fast blanking by opposition to a longer thorough blanking"
 msgstr ""
 
-#: ../src/brasero-blank-dialog.c:423
+#: ../src/brasero-blank-dialog.c:427
 msgid "Disc Blanking"
 msgstr "מחיקת דיסק"
 
@@ -826,7 +835,8 @@ msgstr "סוג הקובץ לא ניתמך על ידי gstreamer"
 msgid "Show"
 msgstr "הצג"
 
-#: ../src/brasero-mime-filter.c:244
+#. Translators: the %s is the mime type used to filter files
+#: ../src/brasero-mime-filter.c:246
 #, c-format
 msgid "%s only"
 msgstr "%s בלבד"
@@ -844,7 +854,6 @@ msgid "Genre"
 msgstr "ז'אנר"
 
 #: ../src/brasero-playlist.c:655
-#, fuzzy
 msgid "Select Playlist"
 msgstr "בחר רשימת השמעה"
 
@@ -858,11 +867,11 @@ msgid "an unknown error occured."
 msgstr "התרחשה שגיאה לא ידועה."
 
 #: ../src/brasero-playlist.c:839
-#, fuzzy
 msgid "Playlist Loading Error"
 msgstr "שגיאה בטעינת רשימת השמעה"
 
-#: ../src/brasero-playlist.c:943 ../src/brasero-data-tree-model.c:434
+#: ../src/brasero-playlist.c:943
+#: ../src/brasero-data-tree-model.c:434
 #: ../src/brasero-data-tree-model.c:574
 msgid "empty"
 msgstr "ריק"
@@ -873,10 +882,6 @@ msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d שירים"
 msgstr[1] "%d שירים"
-
-#: ../src/brasero-playlist.c:982
-msgid "Loading ..."
-msgstr "טוען ..."
 
 #: ../src/brasero-plugin-manager-ui.c:61
 msgid "Plugin"
@@ -938,22 +943,7 @@ msgstr "סך כל הזמן:"
 msgid "Average drive speed:"
 msgstr "מהירות ממוצעת של הכונן:"
 
-#: ../src/brasero-progress.c:281
-#, c-format
-msgid "%i MiB"
-msgstr "%i MiB"
-
-#: ../src/brasero-progress.c:283
-#, c-format
-msgid "%i KiB"
-msgstr "%i KiB"
-
-#: ../src/brasero-progress.c:285
-#, c-format
-msgid "%i bytes"
-msgstr "%i bytes"
-
-#: ../src/brasero-progress.c:514
+#: ../src/brasero-progress.c:510
 #, c-format
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB מתוך %i MiB"
@@ -1012,7 +1002,8 @@ msgstr "לחץ כאן כדי להתחיל את החיפוש"
 msgid "Previous results"
 msgstr "תוצאות קודמות"
 
-#: ../src/brasero-search-beagle.c:355 ../src/brasero-search-beagle.c:816
+#: ../src/brasero-search-beagle.c:355
+#: ../src/brasero-search-beagle.c:816
 msgid "No results"
 msgstr "אין תוצאות"
 
@@ -1020,12 +1011,14 @@ msgstr "אין תוצאות"
 msgid "Next results"
 msgstr "תוצאות הבאות"
 
-#: ../src/brasero-search-beagle.c:424 ../src/brasero-data-disc.c:2505
-#: ../src/brasero-file-filtered.c:535
+#: ../src/brasero-search-beagle.c:424
+#: ../src/brasero-data-disc.c:2508
+#: ../src/brasero-file-filtered.c:542
 msgid "Files"
 msgstr "קבצים"
 
-#: ../src/brasero-search-beagle.c:443 ../src/brasero-data-disc.c:2533
+#: ../src/brasero-search-beagle.c:443
+#: ../src/brasero-data-disc.c:2536
 msgid "Description"
 msgstr "תיאור"
 
@@ -1036,8 +1029,7 @@ msgstr "מספר התוצאות להצגה"
 #: ../src/brasero-search-beagle.c:808
 #, c-format
 msgid "Results %i - %i (out of %i)"
-msgstr ""
-"תוצאות ‏%i ‏- %i (מתוך %i)"
+msgstr "תוצאות ‏%i ‏- %i (מתוך %i)"
 
 #: ../src/brasero-search-beagle.c:1061
 msgid "Error querying beagle:"
@@ -1051,21 +1043,22 @@ msgstr "שגיאת חיפוש"
 msgid "Title:"
 msgstr "כותרת:"
 
-#: ../src/brasero-song-properties.c:159 ../src/brasero-song-properties.c:167
-#: ../src/brasero-song-properties.c:175 ../src/brasero-multi-song-props.c:206
-#: ../src/brasero-multi-song-props.c:247 ../src/brasero-multi-song-props.c:268
-msgid ""
-"This information will be written to the disc using CD-TEXT technology. It "
-"can be read and displayed by some audio CD players."
-msgstr ""
-"המידע יכתב לתקליטור בעזרת טכנולוגיית CD-TEXT. פעולה זו תאפשר למידע להקרא "
-"על ידי חלק מהנגנים."
+#: ../src/brasero-song-properties.c:159
+#: ../src/brasero-song-properties.c:167
+#: ../src/brasero-song-properties.c:175
+#: ../src/brasero-multi-song-props.c:206
+#: ../src/brasero-multi-song-props.c:247
+#: ../src/brasero-multi-song-props.c:268
+msgid "This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."
+msgstr "המידע יכתב לתקליטור בעזרת טכנולוגיית CD-TEXT. פעולה זו תאפשר למידע להיקרא רק על ידי חלק מהנגנים."
 
-#: ../src/brasero-song-properties.c:161 ../src/brasero-multi-song-props.c:237
+#: ../src/brasero-song-properties.c:161
+#: ../src/brasero-multi-song-props.c:237
 msgid "Artist:"
 msgstr "אומן:"
 
-#: ../src/brasero-song-properties.c:169 ../src/brasero-multi-song-props.c:258
+#: ../src/brasero-song-properties.c:169
+#: ../src/brasero-multi-song-props.c:258
 msgid "Composer:\t"
 msgstr "מלחין:\t"
 
@@ -1077,11 +1070,13 @@ msgstr "התחלת השיר:\t"
 msgid "Song end:\t"
 msgstr "סיום השיר:\t"
 
-#: ../src/brasero-song-properties.c:211 ../src/brasero-multi-song-props.c:312
+#: ../src/brasero-song-properties.c:211
+#: ../src/brasero-multi-song-props.c:312
 msgid "Pause length:\t"
 msgstr "אורך ההפסקה:\t"
 
-#: ../src/brasero-song-properties.c:220 ../src/brasero-multi-song-props.c:323
+#: ../src/brasero-song-properties.c:220
+#: ../src/brasero-multi-song-props.c:323
 msgid "Gives the length of the pause that should follow the track"
 msgstr ""
 
@@ -1089,7 +1084,8 @@ msgstr ""
 msgid "Track length:\t"
 msgstr "אורך הרצועה:\t"
 
-#: ../src/brasero-song-properties.c:251 ../src/brasero-multi-song-props.c:340
+#: ../src/brasero-song-properties.c:251
+#: ../src/brasero-multi-song-props.c:340
 msgid "Song Information"
 msgstr "נתוני השיר"
 
@@ -1134,28 +1130,16 @@ msgstr "%lli דקות"
 msgid "%lli:%02lli min"
 msgstr "%lli:%02lli דקות"
 
-#: ../src/brasero-utils.c:264
-msgid "KiB"
-msgstr "KiB"
-
-#: ../src/brasero-utils.c:264
-msgid "MiB"
-msgstr "MiB"
-
-#: ../src/brasero-utils.c:264
-msgid "GiB"
-msgstr "GiB"
-
-#: ../src/brasero-utils.c:489
+#: ../src/brasero-utils.c:480
 msgid "This file can't be opened:"
 msgstr "הקובץ לא ניתן לפתיחה:"
 
-#: ../src/brasero-utils.c:491
-#, fuzzy
+#: ../src/brasero-utils.c:482
 msgid "File Error"
 msgstr "שגיאת קובץ"
 
-#: ../src/brasero-burn-dialog.c:168 ../src/burn-basics.c:64
+#: ../src/brasero-burn-dialog.c:168
+#: ../src/burn-basics.c:71
 msgid "Creating image"
 msgstr "יוצר תמונת תקליטור"
 
@@ -1163,7 +1147,8 @@ msgstr "יוצר תמונת תקליטור"
 msgid "Brasero - Creating Image"
 msgstr "‏Brasero - יוצר תמונת תקליטור"
 
-#: ../src/brasero-burn-dialog.c:174 ../src/brasero-burn-dialog.c:188
+#: ../src/brasero-burn-dialog.c:174
+#: ../src/brasero-burn-dialog.c:188
 #: ../src/brasero-burn-dialog.c:831
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "‏Brasero - צורב DVD (הדמיה)"
@@ -1172,7 +1157,8 @@ msgstr "‏Brasero - צורב DVD (הדמיה)"
 msgid "Simulation of video DVD burning"
 msgstr "הדמיית צריבה של דיסק DVD וידאו"
 
-#: ../src/brasero-burn-dialog.c:178 ../src/brasero-burn-dialog.c:192
+#: ../src/brasero-burn-dialog.c:178
+#: ../src/brasero-burn-dialog.c:192
 msgid "Brasero - Burning DVD"
 msgstr "‏Brasero - צורב DVD"
 
@@ -1204,7 +1190,8 @@ msgstr "צורב DVD"
 msgid "Burning image to DVD"
 msgstr "צורב תמונת תקליטור לדיסק DVD"
 
-#: ../src/brasero-burn-dialog.c:216 ../src/brasero-burn-dialog.c:825
+#: ../src/brasero-burn-dialog.c:216
+#: ../src/brasero-burn-dialog.c:825
 msgid "Brasero - Copying DVD (Simulation)"
 msgstr "‏Brasero - מעתיק DVD (הדמיה)"
 
@@ -1220,8 +1207,10 @@ msgstr "‏Brasero - מעתיק DVD"
 msgid "Copying data DVD"
 msgstr "מעתיק דיסק DVD נתונים"
 
-#: ../src/brasero-burn-dialog.c:232 ../src/brasero-burn-dialog.c:246
-#: ../src/brasero-burn-dialog.c:260 ../src/brasero-burn-dialog.c:288
+#: ../src/brasero-burn-dialog.c:232
+#: ../src/brasero-burn-dialog.c:246
+#: ../src/brasero-burn-dialog.c:260
+#: ../src/brasero-burn-dialog.c:288
 #: ../src/brasero-burn-dialog.c:317
 msgid "Brasero - Burning CD (Simulation)"
 msgstr "‏Brasero - צורב תקליטור CD (הדמיה)"
@@ -1230,8 +1219,10 @@ msgstr "‏Brasero - צורב תקליטור CD (הדמיה)"
 msgid "Simulation of (S)VCD burning"
 msgstr "הדמיית צריבת (S)VCD"
 
-#: ../src/brasero-burn-dialog.c:236 ../src/brasero-burn-dialog.c:250
-#: ../src/brasero-burn-dialog.c:264 ../src/brasero-burn-dialog.c:292
+#: ../src/brasero-burn-dialog.c:236
+#: ../src/brasero-burn-dialog.c:250
+#: ../src/brasero-burn-dialog.c:264
+#: ../src/brasero-burn-dialog.c:292
 #: ../src/brasero-burn-dialog.c:321
 msgid "Brasero - Burning CD"
 msgstr "‏Brasero - צורב תקליטור CD"
@@ -1240,11 +1231,13 @@ msgstr "‏Brasero - צורב תקליטור CD"
 msgid "Burning (S)VCD"
 msgstr "צורב (S)VCD"
 
-#: ../src/brasero-burn-dialog.c:247 ../src/brasero-burn-dialog.c:318
+#: ../src/brasero-burn-dialog.c:247
+#: ../src/brasero-burn-dialog.c:318
 msgid "Simulation of audio CD burning"
 msgstr "הדמיית צריבה של תקליטור שמע"
 
-#: ../src/brasero-burn-dialog.c:251 ../src/brasero-burn-dialog.c:322
+#: ../src/brasero-burn-dialog.c:251
+#: ../src/brasero-burn-dialog.c:322
 msgid "Burning audio CD"
 msgstr "צורב תקליטור שמע"
 
@@ -1256,10 +1249,10 @@ msgstr "הדמיית צריבה של תקליטור נתונים"
 msgid "Burning data CD"
 msgstr "צורב תקליטור נתונים"
 
-#: ../src/brasero-burn-dialog.c:274 ../src/brasero-burn-dialog.c:839
+#: ../src/brasero-burn-dialog.c:274
+#: ../src/brasero-burn-dialog.c:839
 msgid "Brasero - Copying CD (Simulation)"
-msgstr ""
-"‏Brasero - מעתיק תקליטור (הדמיה)"
+msgstr "‏Brasero - מעתיק תקליטור (הדמיה)"
 
 #: ../src/brasero-burn-dialog.c:275
 msgid "Simulation of CD copying"
@@ -1297,29 +1290,29 @@ msgstr "‏Brasero - צורב דיסק"
 msgid "Burning video disc"
 msgstr "צורב דיסק וידאו"
 
-#: ../src/brasero-burn-dialog.c:331 ../src/brasero-burn-dialog.c:358
+#: ../src/brasero-burn-dialog.c:331
+#: ../src/brasero-burn-dialog.c:358
 #: ../src/brasero-burn-dialog.c:858
 msgid "Brasero - Burning Disc (Simulation)"
-msgstr ""
-"‏Brasero - צורב דיסק (הדמיה)"
+msgstr "‏Brasero - צורב דיסק (הדמיה)"
 
 #: ../src/brasero-burn-dialog.c:332
 msgid "Simulation of data disc burning"
 msgstr "הדמיית צריבה של תקליטור נתונים"
 
-#: ../src/brasero-burn-dialog.c:335 ../src/brasero-burn-dialog.c:362
+#: ../src/brasero-burn-dialog.c:335
+#: ../src/brasero-burn-dialog.c:362
 msgid "Brasero - Burning Disc"
-msgstr ""
-"‏Brasero - צורב דיסק"
+msgstr "‏Brasero - צורב דיסק"
 
 #: ../src/brasero-burn-dialog.c:336
 msgid "Burning data disc"
 msgstr "צורב דיסק נתונים"
 
-#: ../src/brasero-burn-dialog.c:345 ../src/brasero-burn-dialog.c:852
+#: ../src/brasero-burn-dialog.c:345
+#: ../src/brasero-burn-dialog.c:852
 msgid "Brasero - Copying Disc (Simulation)"
-msgstr ""
-"‏Brasero - מעתיק דיסק (הדמיה)"
+msgstr "‏Brasero - מעתיק דיסק (הדמיה)"
 
 #: ../src/brasero-burn-dialog.c:346
 msgid "Simulation of disc copying"
@@ -1327,10 +1320,10 @@ msgstr "הדמיה של העתקת דיסק"
 
 #: ../src/brasero-burn-dialog.c:349
 msgid "Brasero - Copying Disc"
-msgstr ""
-"‏Brasero - מעתיק דיסק"
+msgstr "‏Brasero - מעתיק דיסק"
 
-#: ../src/brasero-burn-dialog.c:350 ../src/burn-basics.c:68
+#: ../src/brasero-burn-dialog.c:350
+#: ../src/burn-basics.c:75
 msgid "Copying disc"
 msgstr "מעתיק דיסק"
 
@@ -1356,9 +1349,7 @@ msgstr "הכנס דיסק הניתן לצריבה חוזרת שמכיל נתונ
 
 #: ../src/brasero-burn-dialog.c:418
 #, c-format
-msgid ""
-"Please, replace the disc with a recordable CD with at least %i MiB of free "
-"space."
+msgid "Please, replace the disc with a recordable CD with at least %i MiB of free space."
 msgstr "החלף את הדיסק בתקליטור הניתן לצריבה עם לפחות %i MiB פנויים."
 
 #: ../src/brasero-burn-dialog.c:421
@@ -1376,42 +1367,35 @@ msgstr "הכנס תקליטור הניתן לצריבה."
 
 #: ../src/brasero-burn-dialog.c:434
 #, c-format
-msgid ""
-"Please, replace the disc with a recordable DVD with at least %i MiB of free "
-"space."
+msgid "Please, replace the disc with a recordable DVD with at least %i MiB of free space."
 msgstr "החלף את הדיסק בתקליטור DVD הניתן לצריבה עם לפחות %i MiB פנויים."
 
 #: ../src/brasero-burn-dialog.c:437
-#, fuzzy
 msgid "Please, replace the disc with a recordable DVD."
-msgstr "החלף את הדיסק בתקליטור הניתן לצריבה עם לפחות %i MiB פנויים."
+msgstr "נא להחליף את הדיסק בדיסק DVD הניתן לכתיבה."
 
 #: ../src/brasero-burn-dialog.c:441
-#, fuzzy, c-format
+#, c-format
 msgid "Please, insert a recordable DVD with at least %i MiB of free space."
-msgstr "הכנס תקליטור CD או DVD הניתן לכתיבה עם לפחות %i MiB פנוי."
+msgstr "נא להכניס דיסק CD או DVD הניתן לכתיבה עם לפחות %i MiB פנוי."
 
 #: ../src/brasero-burn-dialog.c:444
-#, fuzzy
 msgid "Please, insert a recordable DVD."
-msgstr "הכנס תקליטור הניתן לצריבה."
+msgstr "נא להכניס דיסק DVD הניתן לצריבה."
 
 #: ../src/brasero-burn-dialog.c:449
-#, fuzzy, c-format
-msgid ""
-"Please, replace the disc with a recordable CD or DVD with at least %i MiB of "
-"free space."
-msgstr "החלף את הדיסק בתקליטור הניתן לצריבה עם לפחות %i MiB פנויים."
+#, c-format
+msgid "Please, replace the disc with a recordable CD or DVD with at least %i MiB of free space."
+msgstr "נא להחליף את הדיסק בדיסק CD או DVD הניתן לכתיבה עם לפחות %i MiB פנוי."
 
 #: ../src/brasero-burn-dialog.c:452
 msgid "Please, replace the disc with a recordable CD or DVD."
 msgstr "החלף את הדיסק בתקליטור CD או DVD הניתן לצריבה."
 
 #: ../src/brasero-burn-dialog.c:456
-#, fuzzy, c-format
-msgid ""
-"Please, insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr "הכנס תקליטור CD או DVD הניתן לכתיבה עם לפחות %i MiB פנוי."
+#, c-format
+msgid "Please, insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr "הכנס דיסק CD או DVD הניתן לכתיבה עם לפחות %i MiB פנוי."
 
 #: ../src/brasero-burn-dialog.c:505
 msgid ""
@@ -1423,7 +1407,7 @@ msgstr ""
 
 #: ../src/brasero-burn-dialog.c:510
 msgid "A data integrity test will begin as soon as the medium is inserted."
-msgstr ""
+msgstr "בדיקת תקינות הנתונים תתחיל מיד כאשר המדיה תוכנה."
 
 #: ../src/brasero-burn-dialog.c:511
 msgid "Please, re-insert the disc in the CD/DVD burner."
@@ -1515,7 +1499,8 @@ msgstr "הדיסק בכונן מחזיק במידע."
 msgid "Erase disc"
 msgstr "מחק דיסק"
 
-#: ../src/brasero-burn-dialog.c:720 ../src/brasero-burn-dialog.c:732
+#: ../src/brasero-burn-dialog.c:720
+#: ../src/brasero-burn-dialog.c:732
 msgid "Multisession Disc"
 msgstr "דיסק רב־צריבות"
 
@@ -1531,9 +1516,11 @@ msgstr ""
 "קבצים שכבר נצרבו יהיו בלתי נראים (אך יהיה ניתן לקרוא אותם).\n"
 "להמשיך בכל מקרה?"
 
-#: ../src/brasero-burn-dialog.c:723 ../src/brasero-burn-dialog.c:735
-#: ../src/brasero-burn-dialog.c:747 ../src/brasero-burn-dialog.c:784
-#: ../src/brasero-tool-dialog.c:394
+#: ../src/brasero-burn-dialog.c:723
+#: ../src/brasero-burn-dialog.c:735
+#: ../src/brasero-burn-dialog.c:747
+#: ../src/brasero-burn-dialog.c:784
+#: ../src/brasero-tool-dialog.c:408
 msgid "Continue"
 msgstr "המשך"
 
@@ -1543,8 +1530,7 @@ msgstr ""
 
 #: ../src/brasero-burn-dialog.c:734
 msgid ""
-"you might not be able to listen to them with stereos and CD-TEXT won't be "
-"written.\n"
+"you might not be able to listen to them with stereos and CD-TEXT won't be written.\n"
 "Do you want to continue anyway?"
 msgstr ""
 
@@ -1554,7 +1540,7 @@ msgstr "דיסק הניתן לצריבה חוזרת"
 
 #: ../src/brasero-burn-dialog.c:745
 msgid "Recording audio tracks on a rewritable disc is not advised:"
-msgstr ""
+msgstr "הקלטת רצועות שמע על דיסק שנועד לכתיבה חוזרת לא מומלצת:"
 
 #: ../src/brasero-burn-dialog.c:746
 msgid ""
@@ -1572,7 +1558,8 @@ msgstr "להמשיך כשהתאימות עם Windows מכובה? "
 msgid "Some files don't have a suitable name for a Windows-compatible CD:"
 msgstr "לחלק מהקבצים יש שם שלא תואם למערכות Windows:"
 
-#: ../src/brasero-burn-dialog.c:779 ../src/brasero-disc-option-dialog.c:434
+#: ../src/brasero-burn-dialog.c:779
+#: ../src/brasero-disc-option-dialog.c:360
 msgid "Windows Compatibility"
 msgstr "תאימות עם Windows"
 
@@ -1615,129 +1602,135 @@ msgstr "‏Brasero - מעתיק דיסק (%i%% הושלם)"
 msgid "Brasero - Burning Disc (%i%% Done)"
 msgstr "‏Brasero - צורב דיסק (%i%% הושלם)"
 
-#: ../src/brasero-burn-dialog.c:1031
+#: ../src/brasero-burn-dialog.c:1033
 msgid "The simulation was successful."
 msgstr "ההדמיה עברה בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1033
+#: ../src/brasero-burn-dialog.c:1035
 msgid "Successful Simulation"
 msgstr "הדמיה מוצלחת"
 
-#: ../src/brasero-burn-dialog.c:1036
+#: ../src/brasero-burn-dialog.c:1038
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "הצריבה האמתית תתחיל בעוד 10 שניות."
 
-#: ../src/brasero-burn-dialog.c:1038
+#: ../src/brasero-burn-dialog.c:1040
 msgid "Burn Now"
 msgstr "צרוב עכשיו"
 
-#: ../src/brasero-burn-dialog.c:1344
+#: ../src/brasero-burn-dialog.c:1351
 msgid "Save Current Session"
 msgstr "שמור צריבה נוכחית"
 
-#: ../src/brasero-burn-dialog.c:1424
+#: ../src/brasero-burn-dialog.c:1431
 msgid "Session Log"
 msgstr "יומן צריבות"
 
-#: ../src/brasero-burn-dialog.c:1454 ../src/brasero-burn-dialog.c:1477
-#: ../src/brasero-burn-dialog.c:1487
+#: ../src/brasero-burn-dialog.c:1461
+#: ../src/brasero-burn-dialog.c:1484
+#: ../src/brasero-burn-dialog.c:1494
 msgid "Session Log Error"
 msgstr "שגיאת יומן צריבות"
 
-#: ../src/brasero-burn-dialog.c:1455 ../src/brasero-burn-dialog.c:1478
-#: ../src/brasero-burn-dialog.c:1488
+#: ../src/brasero-burn-dialog.c:1462
+#: ../src/brasero-burn-dialog.c:1485
+#: ../src/brasero-burn-dialog.c:1495
 msgid "The session log cannot be displayed:"
 msgstr "לא ניתן להציג את יומן הצריבות:"
 
-#: ../src/brasero-burn-dialog.c:1456
+#: ../src/brasero-burn-dialog.c:1463
 msgid "the log file could not be found."
 msgstr "לא ניתן למצוא את קובץ היומן."
 
-#: ../src/brasero-burn-dialog.c:1471
+#: ../src/brasero-burn-dialog.c:1478
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
 msgstr ""
+"זהו קטע מיומן הצריבה (‏10 MiB האחרונים):\n"
+"\n"
 
-#: ../src/brasero-burn-dialog.c:1557
+#: ../src/brasero-burn-dialog.c:1564
 msgid "An unknown error occured. Check your disc"
 msgstr "התרחשה שגיאה לא ידועה. בדוק את הדיסק שלך"
 
-#: ../src/brasero-burn-dialog.c:1567
+#: ../src/brasero-burn-dialog.c:1574
 msgid "Error while burning:"
 msgstr "שגיאה בתהליך הצריבה:"
 
-#: ../src/brasero-burn-dialog.c:1569
-#, fuzzy
+#: ../src/brasero-burn-dialog.c:1576
 msgid "Burning Error"
 msgstr "שגיאת צריבה"
 
-#: ../src/brasero-burn-dialog.c:1575
+#: ../src/brasero-burn-dialog.c:1582
 msgid "Save log"
 msgstr "שמור יומן"
 
-#: ../src/brasero-burn-dialog.c:1582
+#: ../src/brasero-burn-dialog.c:1589
 msgid "View log"
 msgstr "הצג יומן"
 
-#: ../src/brasero-burn-dialog.c:1646
+#: ../src/brasero-burn-dialog.c:1653
 msgid "Audio CD successfully burnt"
 msgstr "תקליטור שמע נצרב בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1651
+#: ../src/brasero-burn-dialog.c:1658
 msgid "DVD successfully copied"
 msgstr "ה-DVD הועתק בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1653
+#: ../src/brasero-burn-dialog.c:1660
 msgid "CD successfully copied"
 msgstr "התקליטור הועתק בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1657
+#: ../src/brasero-burn-dialog.c:1664
 msgid "Image of DVD successfully created"
 msgstr "תמונת התקליטור של ה-DVD נוצרה בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1659
+#: ../src/brasero-burn-dialog.c:1666
 msgid "Image of CD successfully created"
 msgstr "קובץ תמונת תקליטור נוצר בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1665
+#: ../src/brasero-burn-dialog.c:1672
 msgid "Image successfully burnt to DVD"
 msgstr "תמונת התקליטור נצרבה אל ה-DVD בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1667
+#: ../src/brasero-burn-dialog.c:1674
 msgid "Image successfully burnt to CD"
 msgstr "תמונת התקליטור נצרבה בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1673
+#: ../src/brasero-burn-dialog.c:1680
 msgid "Data DVD successfully burnt"
 msgstr "תקליטור ה-DVD ניצרב בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1675
+#: ../src/brasero-burn-dialog.c:1682
 msgid "Data CD successfully burnt"
 msgstr "התקליטור ניצרב בהצלחה"
 
-#: ../src/brasero-burn-dialog.c:1678
+#: ../src/brasero-burn-dialog.c:1685
 msgid "Image successfully created"
 msgstr "תמונת התקליטור נוצרה בהצלחה"
 
 #. since we succeed offer the possibility to create cover if that's an audio disc
-#: ../src/brasero-burn-dialog.c:1708
+#: ../src/brasero-burn-dialog.c:1715
 msgid "Create cover"
 msgstr "צור כיסוי"
 
-#: ../src/brasero-burn-dialog.c:1901 ../src/brasero-tool-dialog.c:384
+#: ../src/brasero-burn-dialog.c:1908
+#: ../src/brasero-tool-dialog.c:398
 msgid "Do you really want to quit?"
 msgstr "באמת ברצונך לצאת?"
 
-#: ../src/brasero-burn-dialog.c:1903 ../src/brasero-tool-dialog.c:386
+#: ../src/brasero-burn-dialog.c:1910
+#: ../src/brasero-tool-dialog.c:400
 msgid "Confirm"
 msgstr "אישור"
 
-#: ../src/brasero-burn-dialog.c:1907 ../src/brasero-tool-dialog.c:389
+#: ../src/brasero-burn-dialog.c:1914
+#: ../src/brasero-tool-dialog.c:403
 msgid "Interrupting the process may make disc unusable."
 msgstr "הפרעה לתהליך עלולה לגרום לדיסק להיות לא שמיש."
 
-#: ../src/brasero-burn-dialog.c:1917
+#: ../src/brasero-burn-dialog.c:1924
 msgid "_Cancel burning"
 msgstr "_בטל צריבה"
 
@@ -1749,7 +1742,8 @@ msgstr "שנה שם..."
 msgid "Rename the selected file"
 msgstr "שנה את שם הקובץ המסומן"
 
-#: ../src/brasero-data-disc.c:137 ../src/brasero-data-disc.c:342
+#: ../src/brasero-data-disc.c:137
+#: ../src/brasero-data-disc.c:343
 #, c-format
 msgid "New folder"
 msgstr "תיקייה חדשה"
@@ -1758,389 +1752,382 @@ msgstr "תיקייה חדשה"
 msgid "Create a new empty folder"
 msgstr "יצירת תיקייה ריקה חדשה"
 
-#: ../src/brasero-data-disc.c:225
+#: ../src/brasero-data-disc.c:226
 msgid "The session couldn't be imported:"
 msgstr "לא ניתן לייבא את הצריבה:"
 
-#: ../src/brasero-data-disc.c:227
+#: ../src/brasero-data-disc.c:228
 msgid "Session Import Error"
 msgstr "שגיאת ייבוא צריבה"
 
-#: ../src/brasero-data-disc.c:229 ../src/brasero-sum-dialog.c:156
+#: ../src/brasero-data-disc.c:230
+#: ../src/brasero-sum-dialog.c:156
 #: ../src/scsi-error.c:32
 msgid "unknown error"
 msgstr "שגיאה לא ידוע"
 
-#: ../src/brasero-data-disc.c:349
+#: ../src/brasero-data-disc.c:350
 #, c-format
 msgid "New folder %i"
 msgstr "תיקייה חדשה %i"
 
-#: ../src/brasero-data-disc.c:626
+#: ../src/brasero-data-disc.c:627
 msgid ""
-"The size of the project is too large for the disc and you must remove files "
-"from the project otherwise.\n"
-"You may want to use this option if you're using 90 or 100 min CD-R(W) which "
-"can't be properly recognised and therefore need overburn option.\n"
+"The size of the project is too large for the disc and you must remove files from the project otherwise.\n"
+"You may want to use this option if you're using 90 or 100 min CD-R(W) which can't be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
+"גודל הפרויקט גדול מידי עבור הדיסק וכנראה שיהיה עליך להסיר קבצים מהפרויקט.\n"
+"תרצה להשתמש באפשרות זו במידה ואתה משתמש בתקליטור מסוג CD-R(W)‎ בעל 90 או 100 דקות שלא מזוהה כראוי ולכן אפשרות צריבת היתר נדרשת.\n"
+"הערה: אפשרות זו עלולה לגרום לכישלון הצריבה."
 
-#: ../src/brasero-data-disc.c:640
+#: ../src/brasero-data-disc.c:641
 msgid "_Cancel"
 msgstr "_ביטול"
 
-#: ../src/brasero-data-disc.c:641
+#: ../src/brasero-data-disc.c:642
 msgid "Click here not to use overburning"
 msgstr "לחץ כאן כדי לא להשתמש בצריבת יתר"
 
-#: ../src/brasero-data-disc.c:651
+#: ../src/brasero-data-disc.c:652
 msgid "Please, delete some files from the project."
 msgstr "נא למחוק מספר קבצים מהפרויקט"
 
-#: ../src/brasero-data-disc.c:690
+#: ../src/brasero-data-disc.c:691
 msgid "The contents of the project changed since it was saved."
 msgstr "תוכן הפרויקט השתנה מאז השמירה האחרונה."
 
-#: ../src/brasero-data-disc.c:692
-#, fuzzy
+#: ../src/brasero-data-disc.c:693
 msgid "Do you want to continue or discard the old project layout?"
-msgstr "ברצונך להמשיך או להתעלם?"
+msgstr "ברצונך להמשיך או לבטל את תבנית הפרויקט הישנה?"
 
-#: ../src/brasero-data-disc.c:698
+#: ../src/brasero-data-disc.c:699
 msgid "_Discard"
 msgstr "_התעלם"
 
-#: ../src/brasero-data-disc.c:699
+#: ../src/brasero-data-disc.c:700
 #, fuzzy
 msgid "Press if you want to discard the current modified project"
 msgstr "למחוק את כל הקבצים מהפרויקט הנוכחי?"
 
-#: ../src/brasero-data-disc.c:703
+#: ../src/brasero-data-disc.c:704
 msgid "_Continue"
 msgstr "_המשך"
 
-#: ../src/brasero-data-disc.c:704
+#: ../src/brasero-data-disc.c:705
 #, fuzzy
 msgid "Press if you want to continue with the current modified project"
 msgstr "למחוק את כל הקבצים מהפרויקט הנוכחי?"
 
-#: ../src/brasero-data-disc.c:819
+#: ../src/brasero-data-disc.c:821
 #, fuzzy, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
 msgstr "ברצונך להמשיך או להתעלם?"
 
-#: ../src/brasero-data-disc.c:824
-msgid ""
-"This file is the image of a disc and can therefore be burnt to disc without "
-"having to add it to a data project first."
+#: ../src/brasero-data-disc.c:826
+msgid "This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."
 msgstr ""
 
-#: ../src/brasero-data-disc.c:826
+#: ../src/brasero-data-disc.c:828
 msgid "_Add to project"
 msgstr "_הוסף לפרויקט"
 
-#: ../src/brasero-data-disc.c:828 ../src/brasero-project.c:212
-#: ../src/brasero-project.c:442
+#: ../src/brasero-data-disc.c:830
+#: ../src/brasero-project.c:213
+#: ../src/brasero-project.c:464
 msgid "_Burn..."
 msgstr "_צרוב..."
 
-#: ../src/brasero-data-disc.c:918 ../src/brasero-data-disc.c:961
-#: ../src/brasero-data-disc.c:1004
+#: ../src/brasero-data-disc.c:920
+#: ../src/brasero-data-disc.c:963
+#: ../src/brasero-data-disc.c:1006
 #, c-format
 msgid "\"%s\" cannot be added to the selection:"
 msgstr "לא ניתן להוסיף את \"%s\" לבחירה:"
 
-#: ../src/brasero-data-disc.c:948
+#: ../src/brasero-data-disc.c:950
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr ""
 
-#: ../src/brasero-data-disc.c:965
+#: ../src/brasero-data-disc.c:967
 msgid "Recursive Symlink"
 msgstr ""
 
-#: ../src/brasero-data-disc.c:968
+#: ../src/brasero-data-disc.c:970
 msgid "it is a recursive symlink."
 msgstr ""
 
-#: ../src/brasero-data-disc.c:991
+#: ../src/brasero-data-disc.c:993
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "\"%s\" לא נמצא."
 
-#: ../src/brasero-data-disc.c:1008
-#, fuzzy
+#: ../src/brasero-data-disc.c:1010
 msgid "File Not Found"
 msgstr "קובץ לא נמצא"
 
-#: ../src/brasero-data-disc.c:1011
+#: ../src/brasero-data-disc.c:1013
 msgid "it doesn't exist at the specified location."
-msgstr ""
+msgstr "לא קיים במיקום שצויין."
 
-#: ../src/brasero-data-disc.c:1041
+#: ../src/brasero-data-disc.c:1043
 #, c-format
 msgid "\"%s\" already exists in the directory:"
-msgstr ""
+msgstr "‏\"%s\" כבר קיים בתיקייה:"
 
-#: ../src/brasero-data-disc.c:1044
+#: ../src/brasero-data-disc.c:1046
 msgid "Already Existing File"
 msgstr "קובץ קיים"
 
-#: ../src/brasero-data-disc.c:1047
+#: ../src/brasero-data-disc.c:1049
 msgid "do you really want to replace it?"
 msgstr "האם להחליפו?"
 
-#: ../src/brasero-data-disc.c:1049
+#: ../src/brasero-data-disc.c:1051
 msgid "_Don't replace"
 msgstr "_אל תחליף"
 
-#: ../src/brasero-data-disc.c:1050
+#: ../src/brasero-data-disc.c:1052
 msgid "_Replace"
 msgstr "_החלף"
 
-#: ../src/brasero-data-disc.c:1086
+#: ../src/brasero-data-disc.c:1088
 #, fuzzy, c-format
-msgid ""
-"Do you really want to add \"%s\" to the selection and use the third version "
-"of ISO9660 standard to support it?"
+msgid "Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"
 msgstr "להוסיף את \"%s\" לבחירה?"
 
-#: ../src/brasero-data-disc.c:1089
+#: ../src/brasero-data-disc.c:1091
 msgid "File Over 2 GiB"
 msgstr "קובץ מעל 2 GiB "
 
-#: ../src/brasero-data-disc.c:1092
+#: ../src/brasero-data-disc.c:1094
 msgid ""
-"The size of the file is over 2 GiB. This isn't supported by ISO9660 standard "
-"in his first and second versions (the most widespread ones).\n"
-"It is recommended to use the third version of ISO9660 standard which is "
-"supported by most of the operating systems including Linux and all versions "
-"of Windows ©.\n"
-"A known exception is MacOS X that can't read images created with version 3 "
-"of ISO9660 standard."
+"The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones).\n"
+"It is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©.\n"
+"A known exception is MacOS X that can't read images created with version 3 of ISO9660 standard."
 msgstr ""
+"גודל הקובץ הוא מעל 2 GiB. הוא לא נתמך על ידי תקן ISO9660 בגרסה הראשונה והשנייה שלו (הנפוצות ביותר).\n"
+"מומלץ להשתמש בגרסה השלישית של תקן ISO9660 הנתמכת על ידי רוב מערכות ההפעלה כולל לינוקס וכל גרסאות Windows ©.‏\n"
+"יוצאת מן הכלל היא המערכת MacOS X שאינה מסוגלת לקרוא תמונות תקליטור הנוצרו עם הגרסה השלישית של תקן ISO9660."
 
-#: ../src/brasero-data-disc.c:1096 ../src/brasero-data-disc.c:1144
+#: ../src/brasero-data-disc.c:1098
+#: ../src/brasero-data-disc.c:1146
 msgid "_Don't add"
 msgstr "_אל תוסיף"
 
-#: ../src/brasero-data-disc.c:1097 ../src/brasero-data-disc.c:1145
+#: ../src/brasero-data-disc.c:1099
+#: ../src/brasero-data-disc.c:1147
 msgid "_Add"
 msgstr "_הוסף"
 
-#: ../src/brasero-data-disc.c:1134
+#: ../src/brasero-data-disc.c:1136
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "להוסיף את \"%s\" לבחירה?"
 
-#: ../src/brasero-data-disc.c:1137
+#: ../src/brasero-data-disc.c:1139
 msgid "Deep Directory"
-msgstr ""
+msgstr "תיקייה עמוקה"
 
-#: ../src/brasero-data-disc.c:1140
+#: ../src/brasero-data-disc.c:1142
 msgid ""
-"The children of this directory will have 6 parent directories. This is a "
-"violation of the ISO9660 standard which only allows 6.\n"
-"Brasero can create an image of such a file hierarchy and burn it; but the "
-"media may not be readable on all operating systems.\n"
+"The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6.\n"
+"Brasero can create an image of such a file hierarchy and burn it; but the media may not be readable on all operating systems.\n"
 "NOTE: such a file hierarchy is known to work on linux."
 msgstr ""
+"לתתי התיקיות של תיקייה זו יהיו 6 תיקיות אב. זו היא הפרה של תקן ISO9660 המאפשר רק 6.\n"
+"‏Brasero מסוגל ליצור תמונת תקליטור בעלת מבנה קבצים כזה וגם ליצור אותה; אבל יתכן שמדיה זו לא תהיה ניתנת לקריאה על ידי כל מערכות ההפעלה.\n"
+"הערה: מבנה קבצים מסוג זה פועל על לינוקס."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in.
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1217 ../src/brasero-data-disc.c:1223
+#: ../src/brasero-data-disc.c:1219
+#: ../src/brasero-data-disc.c:1225
 #, c-format
 msgid "Import %s"
 msgstr "יבוא %s"
 
-#: ../src/brasero-data-disc.c:1252
+#: ../src/brasero-data-disc.c:1255
 msgid "Import"
 msgstr "יבוא"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1308
+#: ../src/brasero-data-disc.c:1311
 #, c-format
 msgid "Do you want to import the session from '%s'?"
 msgstr "ברצונך לייבא את הצריבה מ-'%s'?"
 
-#: ../src/brasero-data-disc.c:1311
-msgid ""
-"That way, old files from previous sessions will be usable after burning."
-msgstr ""
+#: ../src/brasero-data-disc.c:1314
+msgid "That way, old files from previous sessions will be usable after burning."
+msgstr "בדרך זו, קבצים ישנים מצריבות קודמות יהיו ניתנים לשימוש אחרי הצריבה."
 
-#: ../src/brasero-data-disc.c:1321
+#: ../src/brasero-data-disc.c:1324
 msgid "_Import Session"
 msgstr "יי_בוא צריבה"
 
-#: ../src/brasero-data-disc.c:1322
+#: ../src/brasero-data-disc.c:1325
 msgid "Click here to import its contents"
 msgstr "לחץ כאן כדי לייבא את תוכנו"
 
-#: ../src/brasero-data-disc.c:1733
+#: ../src/brasero-data-disc.c:1736
 msgid "Please, wait while the project is loading."
 msgstr "נא להמתין בזמן שהפרויקט נטען."
 
-#: ../src/brasero-data-disc.c:1743
+#: ../src/brasero-data-disc.c:1746
 msgid "_Cancel Loading"
 msgstr "_ביטול טעינה"
 
-#: ../src/brasero-data-disc.c:1744
-#, fuzzy
+#: ../src/brasero-data-disc.c:1747
 msgid "Press if you want to cancel current project loading"
-msgstr "למחוק את כל הקבצים מהפרויקט הנוכחי?"
+msgstr "לחץ עם ברצונך לבטל את טעינת הפרויקט הנוכחי"
 
-#: ../src/brasero-data-disc.c:1836
+#: ../src/brasero-data-disc.c:1839
 msgid "New Folder"
 msgstr "תיקייה חדשה"
 
-#: ../src/brasero-data-disc.c:1992
-#, fuzzy
+#: ../src/brasero-data-disc.c:1995
 msgid "File Renaming"
 msgstr "שינוי שם לקובץ"
 
-#: ../src/brasero-data-disc.c:1995 ../src/brasero-disc-option-dialog.c:437
+#: ../src/brasero-data-disc.c:1998
+#: ../src/brasero-disc-option-dialog.c:363
 msgid "_Don't rename"
 msgstr "_אל תשנה שם"
 
-#: ../src/brasero-data-disc.c:1996 ../src/brasero-disc-option-dialog.c:440
+#: ../src/brasero-data-disc.c:1999
+#: ../src/brasero-disc-option-dialog.c:366
 msgid "_Rename"
 msgstr "_שנה שם"
 
-#: ../src/brasero-data-disc.c:2004
-#, fuzzy
+#: ../src/brasero-data-disc.c:2007
 msgid "Renaming mode"
-msgstr "<b>מהירות צריבה</b>"
+msgstr "מצב שינוי שם"
 
-#: ../src/brasero-data-disc.c:2519 ../src/brasero-video-disc.c:1195
+#: ../src/brasero-data-disc.c:2522
+#: ../src/brasero-video-disc.c:1195
 msgid "Size"
 msgstr "גודל"
 
-#: ../src/brasero-data-disc.c:2549
+#: ../src/brasero-data-disc.c:2552
 msgid "Space"
 msgstr "רווח"
 
-#: ../src/brasero-disc-option-dialog.c:429
+#: ../src/brasero-disc-option-dialog.c:355
 msgid "Should files be renamed to be windows-compatible?"
 msgstr "שינוי שמות הקבצים לתואמי windows?"
 
-#: ../src/brasero-disc-option-dialog.c:432
-msgid ""
-"Some files don't have a suitable name for a Windows-compatible CD. Those "
-"names will be changed and truncated to 64 characters."
-msgstr ""
-"לחלק מהקבצים יש שם שלא תואם למערכות Windows. השמות האלו ישונו ויקוצרו ל-64 "
-"תווים."
+#: ../src/brasero-disc-option-dialog.c:358
+msgid "Some files don't have a suitable name for a Windows-compatible CD. Those names will be changed and truncated to 64 characters."
+msgstr "לחלק מהקבצים יש שם שלא תואם למערכות Windows. השמות האלו ישונו ויקוצרו ל-64 תווים."
 
-#: ../src/brasero-disc-option-dialog.c:463
+#: ../src/brasero-disc-option-dialog.c:389
 msgid "Increase compatibility with _Windows systems"
 msgstr "שיפור התאימות עם מערכות _Windows"
 
-#: ../src/brasero-disc-option-dialog.c:465
-msgid ""
-"Improve compatibility with Windows systems by allowing to display long "
-"filenames (maximum 64 characters)"
-msgstr ""
-"שיפור התאימות עם מערכות Windows על ידי הפעלת אפשרות הצגת שמות קבצים ארוכים "
-"(מקסימום 64 תווים)"
+#: ../src/brasero-disc-option-dialog.c:391
+msgid "Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"
+msgstr "שיפור התאימות עם מערכות Windows על ידי הפעלת אפשרות הצגת שמות קבצים ארוכים (מקסימום 64 תווים)"
 
-#: ../src/brasero-disc-option-dialog.c:494
+#: ../src/brasero-disc-option-dialog.c:420
 msgid "Leave the disc _open to add other files later"
 msgstr "השאר את הדיסק _פתוח כדי להוסיף קבצים מאוחר יותר"
 
-#: ../src/brasero-disc-option-dialog.c:501
+#: ../src/brasero-disc-option-dialog.c:427
 msgid "Allow to add more data to the disc later"
 msgstr "אפשר הוספת נתונים נוספים לדיסק מאוחר יותר"
 
-#: ../src/brasero-disc-option-dialog.c:528
-#: ../src/brasero-disc-option-dialog.c:562
+#: ../src/brasero-disc-option-dialog.c:454
+#: ../src/brasero-disc-option-dialog.c:488
 msgid "Disc options"
 msgstr "אפשרויות דיסק"
 
 #. multisession options
-#: ../src/brasero-disc-option-dialog.c:554
+#: ../src/brasero-disc-option-dialog.c:480
 msgid "Leave the disc _open to add a data session later"
 msgstr "השאר את הדיסק _פתוח כדי להוסיף נתוני צריבה מאוחר יותר"
 
-#: ../src/brasero-disc-option-dialog.c:560
+#: ../src/brasero-disc-option-dialog.c:486
 msgid "Allow create what is called an enhanced CD or CD+"
-msgstr ""
+msgstr "אפשר יצירת מה שנקרא תקליטור משופר או CD+"
 
-#: ../src/brasero-disc-option-dialog.c:785
+#: ../src/brasero-disc-option-dialog.c:711
 msgid "Video format:"
-msgstr ""
+msgstr "סוג הוידאו:"
 
-#: ../src/brasero-disc-option-dialog.c:797
+#: ../src/brasero-disc-option-dialog.c:723
 msgid "_NTSC"
 msgstr "_NTSC"
 
-#: ../src/brasero-disc-option-dialog.c:798
+#: ../src/brasero-disc-option-dialog.c:724
 msgid "Format used mostly on the North American Continent"
-msgstr ""
+msgstr "נמצא בשימוש בעיקר ביבשת צפון אמריקה"
 
-#: ../src/brasero-disc-option-dialog.c:812
+#: ../src/brasero-disc-option-dialog.c:738
 msgid "_PAL/SECAM"
 msgstr "_PAL/SECAM"
 
-#: ../src/brasero-disc-option-dialog.c:813
+#: ../src/brasero-disc-option-dialog.c:739
 msgid "Format used mostly in Europe"
-msgstr ""
+msgstr "נמצא בשימוש בעיקר באירופה"
 
-#: ../src/brasero-disc-option-dialog.c:827
+#: ../src/brasero-disc-option-dialog.c:753
 msgid "Native _format"
 msgstr ""
 
-#: ../src/brasero-disc-option-dialog.c:841
+#: ../src/brasero-disc-option-dialog.c:767
 msgid "Aspect ratio:"
 msgstr ""
 
-#: ../src/brasero-disc-option-dialog.c:853
+#: ../src/brasero-disc-option-dialog.c:779
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../src/brasero-disc-option-dialog.c:867
+#: ../src/brasero-disc-option-dialog.c:793
 msgid "_16:9"
 msgstr "_16:9"
 
-#: ../src/brasero-disc-option-dialog.c:881
+#: ../src/brasero-disc-option-dialog.c:807
 msgid "Native aspect _ratio"
 msgstr ""
 
 #. Video options for (S)VCD
-#: ../src/brasero-disc-option-dialog.c:896
+#: ../src/brasero-disc-option-dialog.c:822
 msgid "VCD type:"
 msgstr "סוג VCD:"
 
-#: ../src/brasero-disc-option-dialog.c:909
+#: ../src/brasero-disc-option-dialog.c:835
 msgid "Create a SVCD"
 msgstr "יצירת SVCD"
 
-#: ../src/brasero-disc-option-dialog.c:924
+#: ../src/brasero-disc-option-dialog.c:850
 msgid "Create a VCD"
 msgstr "יצירת VCD"
 
-#: ../src/brasero-disc-option-dialog.c:939
+#: ../src/brasero-disc-option-dialog.c:865
 msgid "Video Options"
 msgstr "אפשרויות וידאו"
 
 #. Audio options for DVDs
-#: ../src/brasero-disc-option-dialog.c:948
+#: ../src/brasero-disc-option-dialog.c:874
 msgid "Add _AC3 audio stream"
 msgstr ""
 
-#: ../src/brasero-disc-option-dialog.c:949
+#: ../src/brasero-disc-option-dialog.c:875
 msgid "Add _MP2 audio stream"
 msgstr ""
 
-#: ../src/brasero-disc-option-dialog.c:951
+#: ../src/brasero-disc-option-dialog.c:877
 msgid "Audio Options"
 msgstr "אפשרויות שמע"
 
-#: ../src/brasero-disc-option-dialog.c:1125
+#: ../src/brasero-disc-option-dialog.c:1049
 msgid "Disc Burning Setup"
 msgstr "אשף צריבת דיסק"
 
-#: ../src/brasero-drive-properties.c:155 ../src/brasero-drive-properties.c:172
+#: ../src/brasero-drive-properties.c:155
+#: ../src/brasero-drive-properties.c:172
 msgid "unknown"
 msgstr "לא ידוע"
 
@@ -2150,8 +2137,7 @@ msgstr "לבחור במיקום זה?"
 
 #: ../src/brasero-drive-properties.c:200
 msgid ""
-"The filesystem on this volume doesn't support large files (size over 2 "
-"GiB).\n"
+"The filesystem on this volume doesn't support large files (size over 2 GiB).\n"
 "This can be a problem when writing DVDs or large images."
 msgstr ""
 
@@ -2164,6 +2150,7 @@ msgid "_Change location"
 msgstr "_שנה מיקום"
 
 #: ../src/brasero-drive-properties.c:355
+#: ../src/brasero-drive-properties.c:361
 #, c-format
 msgid "%.1f x (DVD)"
 msgstr "%.1f x (DVD)"
@@ -2173,96 +2160,92 @@ msgstr "%.1f x (DVD)"
 msgid "%.1f x (CD)"
 msgstr "%.1f x (CD)"
 
-#: ../src/brasero-drive-properties.c:361
+#: ../src/brasero-drive-properties.c:364
 #, c-format
 msgid "%.1f x (DVD) %.1f x (CD)"
 msgstr "%.1f x (DVD) %.1f x (CD)"
 
-#: ../src/brasero-drive-properties.c:388
+#: ../src/brasero-drive-properties.c:391
 #, c-format
 msgid "Properties of %s"
 msgstr "מאפייני %s"
 
-#: ../src/brasero-drive-properties.c:404
+#: ../src/brasero-drive-properties.c:407
 msgid "Impossible to retrieve speeds"
-msgstr ""
+msgstr "לא ניתן לקרוא את המהירות"
 
-#: ../src/brasero-drive-properties.c:413
+#: ../src/brasero-drive-properties.c:416
 msgid "Max speed"
 msgstr "מהירות מקסימלית"
 
-#: ../src/brasero-drive-properties.c:476
+#: ../src/brasero-drive-properties.c:479
 msgid "Burning speed"
 msgstr "מהירות צריבה"
 
-#: ../src/brasero-drive-properties.c:478
+#: ../src/brasero-drive-properties.c:481
 msgid "<b>Burning speed</b>"
 msgstr "<b>מהירות צריבה</b>"
 
-#: ../src/brasero-drive-properties.c:489
+#: ../src/brasero-drive-properties.c:492
 msgid "_Simulate before burning"
 msgstr "בצע _הדמיה לפני הצריבה"
 
-#: ../src/brasero-drive-properties.c:490
-msgid ""
-"Brasero will simulate the burning and if it is successful, go on with actual "
-"burning after 10 seconds"
-msgstr ""
-"‏Brasero יבצע הדמיה של הצריבה ובמידה והיא תצליח, הצריבה הממשית תתחיל לאחר 10 "
-"שניות"
+#: ../src/brasero-drive-properties.c:493
+msgid "Brasero will simulate the burning and if it is successful, go on with actual burning after 10 seconds"
+msgstr "‏Brasero יבצע הדמיה של הצריבה ובמידה והיא תצליח, הצריבה הממשית תתחיל לאחר 10 שניות"
 
-#: ../src/brasero-drive-properties.c:491
+#: ../src/brasero-drive-properties.c:494
 msgid "Use burn_proof (decrease the risk of failures)"
-msgstr ""
-"שימוש ב-burn_proof (מקטין את הסיכוי לצריבה כושלת)"
+msgstr "שימוש ב-burn_proof (מקטין את הסיכוי לצריבה כושלת)"
 
-#: ../src/brasero-drive-properties.c:492
+#: ../src/brasero-drive-properties.c:495
 msgid "_Eject after burning"
 msgstr "_הוצא אחרי הצריבה"
 
-#: ../src/brasero-drive-properties.c:493
+#: ../src/brasero-drive-properties.c:496
 msgid "Burn the image directly _without saving it to disc"
 msgstr ""
 
-#: ../src/brasero-drive-properties.c:495 ../src/brasero-tool-dialog.c:294
+#: ../src/brasero-drive-properties.c:498
+#: ../src/brasero-tool-dialog.c:297
 #: ../src/brasero-multi-song-props.c:303
 msgid "Options"
 msgstr "אפשרויות"
 
-#: ../src/brasero-drive-properties.c:507
+#: ../src/brasero-drive-properties.c:510
 msgid "Directory for temporary files"
 msgstr "תיקייה עבור קבצים זמניים"
 
-#: ../src/brasero-drive-properties.c:513
+#: ../src/brasero-drive-properties.c:516
 msgid "_Temporary directory free space:"
 msgstr "מקום פנוי בתיקיית הקבצים הז_מניים:"
 
-#: ../src/brasero-drive-properties.c:522
+#: ../src/brasero-drive-properties.c:525
 msgid "Temporary files"
 msgstr "קבצים זמניים"
 
-#: ../src/brasero-file-chooser.c:226 ../src/brasero-project.c:1380
+#: ../src/brasero-file-chooser.c:226
+#: ../src/brasero-project.c:1409
 msgid "Audio files only"
 msgstr "קבצי שמע בלבד"
 
-#: ../src/brasero-file-chooser.c:234 ../src/brasero-project.c:1389
+#: ../src/brasero-file-chooser.c:234
+#: ../src/brasero-project.c:1418
 msgid "Movies only"
 msgstr "סרטים בלבד"
 
 #. pack everything
 #: ../src/brasero-image-option-dialog.c:94
-#, fuzzy
 msgid "Select an image to write"
-msgstr "<b>בחר דיסק לכתיבה</b>"
+msgstr "בחר תמונת תקליטור לצריבה"
 
 #: ../src/brasero-image-option-dialog.c:125
 msgid "Image Burning Setup"
 msgstr "הגדרת צריבת תמונת תקליטור"
 
 #: ../src/brasero-image-properties.c:241
-#, fuzzy
 msgid "Image File Properties"
-msgstr "קובץ תמונת תקליטור"
+msgstr "מאפייני קובץ תמונת התקליטור"
 
 #: ../src/brasero-image-type-chooser.c:95
 msgid "Let brasero choose (safest)"
@@ -2310,7 +2293,7 @@ msgstr "פריסה _אופקית"
 
 #: ../src/brasero-layout.c:146
 msgid "Set an horizontal layout"
-msgstr ""
+msgstr "קבע פריסה אופקית"
 
 #: ../src/brasero-layout.c:148
 msgid "_Vertical Layout"
@@ -2318,7 +2301,7 @@ msgstr "פריסה _אנכית"
 
 #: ../src/brasero-layout.c:149
 msgid "Set a vertical layout"
-msgstr ""
+msgstr "קבע פריסה אנכית"
 
 #: ../src/brasero-layout.c:1433
 msgid "Click to close the side pane"
@@ -2348,12 +2331,8 @@ msgstr "שם:"
 
 #: ../src/brasero-player.c:822
 #, c-format
-msgid ""
-"<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i "
-"pixels</span></i>"
-msgstr ""
-"<span weight=\"bold\">גודל:</span>\t<i><span size=\"smaller\"> %i x %i "
-"פיקסלים</span></i>"
+msgid "<span weight=\"bold\">Size:</span>\t<i><span size=\"smaller\"> %i x %i pixels</span></i>"
+msgstr "<span weight=\"bold\">גודל:</span>\t<i><span size=\"smaller\"> %i x %i פיקסלים</span></i>"
 
 #: ../src/brasero-player.c:845
 #, c-format
@@ -2364,7 +2343,7 @@ msgstr ""
 "<span weight=\"bold\">%s</span>\n"
 "על ידי <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-player.c:1056
+#: ../src/brasero-player.c:1059
 #, c-format
 msgid ""
 "<span weight=\"bold\">Loading information</span>\n"
@@ -2397,243 +2376,227 @@ msgstr "הוספת קבצים לפרויקט"
 msgid "_Remove Files"
 msgstr "_הסר קבצים"
 
-#: ../src/brasero-project.c:210
+#. Translators: "empty" is a verb here
+#: ../src/brasero-project.c:211
+#: ../src/brasero-project.c:1495
 msgid "E_mpty Project"
 msgstr "_ריקון פרויקט"
 
-#: ../src/brasero-project.c:211
+#: ../src/brasero-project.c:212
 msgid "Remove all files from the project"
 msgstr "מחיקת כל הקבצים מהפרויקט"
 
-#: ../src/brasero-project.c:213
+#: ../src/brasero-project.c:214
 msgid "Burn the disc"
 msgstr "צריבת הדיסק"
 
 #. Name widget
-#: ../src/brasero-project.c:427
+#: ../src/brasero-project.c:444
 msgid "_Name:"
 msgstr "_שם:"
 
-#: ../src/brasero-project.c:454
+#: ../src/brasero-project.c:476
 msgid "Start to burn the contents of the selection"
 msgstr "התחל את צריבת התוכן הנבחר"
 
-#: ../src/brasero-project.c:595
-#, fuzzy, c-format
+#: ../src/brasero-project.c:616
+#, c-format
 msgid "Project estimated size: %s/%s"
-msgstr "הגודל המשוער של הפרויקט: %s"
+msgstr "הגודל המשוער של הפרויקט: %s/%s"
 
-#: ../src/brasero-project.c:601
+#: ../src/brasero-project.c:622
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "הגודל המשוער של הפרויקט: %s"
 
-#: ../src/brasero-project.c:723
+#: ../src/brasero-project.c:752
 msgid "Please wait:"
 msgstr "נא להמתין:"
 
-#: ../src/brasero-project.c:725
+#: ../src/brasero-project.c:754
 msgid "Please Wait"
 msgstr "נא להמתין"
 
-#: ../src/brasero-project.c:728
+#: ../src/brasero-project.c:757
 msgid "some tasks are not completed yet."
 msgstr "חלק מהפעולות עדיין לא הושלמו."
 
-#: ../src/brasero-project.c:730
+#: ../src/brasero-project.c:759
 msgid "Ongoing Tasks"
 msgstr "פעולות קיימות"
 
-#: ../src/brasero-project.c:796
+#: ../src/brasero-project.c:825
 msgid "Please add songs to the project."
 msgstr "נא להוסיף שירים לפרויקט."
 
-#: ../src/brasero-project.c:798 ../src/brasero-project.c:821
-#: ../src/brasero-project.c:1457
+#: ../src/brasero-project.c:827
+#: ../src/brasero-project.c:850
+#: ../src/brasero-project.c:1486
 msgid "Empty Project"
 msgstr "רוקן פרויקט"
 
-#: ../src/brasero-project.c:801 ../src/brasero-project.c:824
+#: ../src/brasero-project.c:830
+#: ../src/brasero-project.c:853
 msgid "The project is empty."
 msgstr "הפרויקט ריק."
 
-#: ../src/brasero-project.c:819
+#: ../src/brasero-project.c:848
 msgid "Please add files to the project."
 msgstr "נא להוסיף קבצים לפרויקט."
 
-#: ../src/brasero-project.c:1049
-msgid ""
-"Do you really want to create a new project and discard the changes to "
-"current one?"
+#: ../src/brasero-project.c:1078
+msgid "Do you really want to create a new project and discard the changes to current one?"
 msgstr "ליצור פרויקט חדש ולבטל את השינויים לפרויקט הנוכחי?"
 
-#: ../src/brasero-project.c:1052 ../src/brasero-project.c:2146
-#, fuzzy
+#: ../src/brasero-project.c:1081
+#: ../src/brasero-project.c:2234
 msgid "Unsaved Project"
 msgstr "פרויקט לא שמור"
 
-#: ../src/brasero-project.c:1055
+#: ../src/brasero-project.c:1084
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "אם תבחר ליצור פרויקט חדש, כל השינויים שבוצעו יאבדו."
 
-#: ../src/brasero-project.c:1057
+#: ../src/brasero-project.c:1086
 msgid "_Discard Changes"
 msgstr "_לבטל שינויים"
 
-#: ../src/brasero-project.c:1070
+#: ../src/brasero-project.c:1099
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "ליצור פרויקט חדש ולבטל את הפרויקט הנוכחי?"
 
-#: ../src/brasero-project.c:1073
+#: ../src/brasero-project.c:1102
 msgid "New Project"
 msgstr "פרויקט חדש"
 
-#: ../src/brasero-project.c:1076
-msgid ""
-"If you choose to create a new project, all files already added will be "
-"discarded. Note that files will not be deleted from their own location, just "
-"no longer listed here."
-msgstr ""
-"אם תיצור פרויקט חדש, כל הקבצים שהתווספו לפרויקט יבוטלו. הקבצים לא ימחקו "
-"מהמיקום המקורי שלהם, הם רק לא יופיעו כאן."
+#: ../src/brasero-project.c:1105
+msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "אם תיצור פרויקט חדש, כל הקבצים שהתווספו לפרויקט יבוטלו. הקבצים לא ימחקו מהמיקום המקורי שלהם, הם רק לא יופיעו כאן."
 
-#: ../src/brasero-project.c:1081
+#: ../src/brasero-project.c:1110
 msgid "_Discard Project"
 msgstr "_בטל פרויקט"
 
-#: ../src/brasero-project.c:1338
-#, fuzzy
+#: ../src/brasero-project.c:1367
 msgid "Select Files"
 msgstr "בחר קבצים"
 
-#: ../src/brasero-project.c:1454
+#: ../src/brasero-project.c:1483
 msgid "Do you really want to empty the current project?"
 msgstr "למחוק את כל הקבצים מהפרויקט הנוכחי?"
 
-#: ../src/brasero-project.c:1460
-msgid ""
-"Emptying a project will remove all files already added. All the work will be "
-"lost. Note that files will not be deleted from their own location, just no "
-"longer listed here."
-msgstr ""
-"פינוי פרויקט יסיר את כל הקבצים שהתווספו אליו. כל העבודה שבוצעה עד כה תאבד. "
-"הקבצים לא ימחקו מהמיקום המקורי שלהם, הם רק לא יופיעו כאן."
+#: ../src/brasero-project.c:1489
+msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
+msgstr "פינוי פרויקט יסיר את כל הקבצים שהתווספו אליו. כל העבודה שבוצעה עד כה תאבד. הקבצים לא ימחקו מהמיקום המקורי שלהם, הם רק לא יופיעו כאן."
 
-#: ../src/brasero-project.c:1465 ../src/brasero-project-manager.c:118
-msgid "_Empty Project"
-msgstr "_ריקון הפרויקט"
-
-#: ../src/brasero-project.c:1514
+#: ../src/brasero-project.c:1545
 msgid "Save"
 msgstr "שמור"
 
-#: ../src/brasero-project.c:1525
+#: ../src/brasero-project.c:1556
 msgid "Add"
 msgstr "הוסף"
 
-#: ../src/brasero-project.c:1530
+#: ../src/brasero-project.c:1561
 msgid "Remove"
 msgstr "הסר"
 
-#: ../src/brasero-project.c:1590
+#: ../src/brasero-project.c:1621
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "‏Brasero‏ - %s (דיסק נתונים)"
 
-#: ../src/brasero-project.c:1592
+#: ../src/brasero-project.c:1623
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "‏Brasero‏ - %s (דיסק שמע)"
 
-#: ../src/brasero-project.c:1594
+#: ../src/brasero-project.c:1625
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "‏Brasero‏ - %s (דיסק וידאו)"
 
-#: ../src/brasero-project.c:1623
+#: ../src/brasero-project.c:1654
+#: ../src/brasero-project-manager.c:1065
 msgid "Error while loading the project:"
 msgstr "שגיאה בזמן טעינת הפרויקט:"
 
-#: ../src/brasero-project.c:1625
+#: ../src/brasero-project.c:1656
 msgid "Project Loading Error"
 msgstr "שגיאת בטעינת פרויקט"
 
-#: ../src/brasero-project.c:1925
+#: ../src/brasero-project.c:1957
 msgid "the project could not be opened."
 msgstr "לא ניתן לפתוח את הפרויקט."
 
-#: ../src/brasero-project.c:1934
+#: ../src/brasero-project.c:1966
 msgid "the file is empty."
 msgstr "הקובץ ריק."
 
-#: ../src/brasero-project.c:1965 ../src/brasero-project.c:1973
-#: ../src/brasero-project.c:2062
+#: ../src/brasero-project.c:2004
+#: ../src/brasero-project.c:2012
+#: ../src/brasero-project.c:2130
 msgid "it doesn't seem to be a valid Brasero project."
 msgstr "אינו נראה כמו פרויקט Brasero תקין."
 
-#: ../src/brasero-project.c:2144
+#: ../src/brasero-project.c:2232
 msgid "Your project has not been saved:"
 msgstr "הפרויקט שלך לא נשמר:"
 
-#: ../src/brasero-project.c:2154
+#: ../src/brasero-project.c:2242
 msgid "Unknown error."
 msgstr "שגיאה לא ידועה."
 
-#: ../src/brasero-project.c:2175
+#: ../src/brasero-project.c:2263
 msgid "Save the changes of current project before closing?"
 msgstr "לשמור את השינויים לפרויקט הנוכחי לפני הסגירה?"
 
-#: ../src/brasero-project.c:2177
-#, fuzzy
+#: ../src/brasero-project.c:2265
 msgid "Modified Project"
 msgstr "הפרויקט שונה"
 
-#: ../src/brasero-project.c:2180
+#: ../src/brasero-project.c:2268
 msgid "If you don't save, changes will be permanently lost."
 msgstr "אם לא תשמור, השינויים יאבדו לתמיד."
 
-#: ../src/brasero-project.c:2184 ../src/brasero-project.c:2190
+#: ../src/brasero-project.c:2272
+#: ../src/brasero-project.c:2278
 msgid "Cl_ose without saving"
 msgstr "ל_סגור מבלי לשמור"
 
 #. Translators: %s is an artist
-#: ../src/brasero-project.c:2505
+#: ../src/brasero-project.c:2610
 #, fuzzy, c-format
 msgid " by %s"
 msgstr "%s / %s"
 
-#: ../src/brasero-project.c:2712
+#: ../src/brasero-project.c:2819
 msgid "Save Current Project"
 msgstr "שמור פרויקט נוכחי"
 
-#: ../src/brasero-project.c:2730
+#: ../src/brasero-project.c:2837
 msgid "Save project as Brasero audio project"
 msgstr "שמור את הפרויקט כפרויקט שמע של Brasero"
 
-#: ../src/brasero-project.c:2731
-#, fuzzy
+#: ../src/brasero-project.c:2838
 msgid "Save project as a plain text list"
-msgstr "בחר רשימת השמעה"
+msgstr "שמור את הפרויקט כרשימת טקסט פשוטה"
 
-#: ../src/brasero-project.c:2735
-#, fuzzy
+#: ../src/brasero-project.c:2842
 msgid "Save project as a PLS playlist"
-msgstr "בחר רשימת השמעה"
+msgstr "שמור את הפרויקט כרשימת השמעה מסוג PLS"
 
-#: ../src/brasero-project.c:2736
-#, fuzzy
+#: ../src/brasero-project.c:2843
 msgid "Save project as an M3U playlist"
-msgstr "בחר רשימת השמעה"
+msgstr "שמור את הפרויקט כרשימת השמעה מסוג M3U"
 
-#: ../src/brasero-project.c:2737
-#, fuzzy
+#: ../src/brasero-project.c:2844
 msgid "Save project as a XSPF playlist"
-msgstr "בחר רשימת השמעה"
+msgstr "שמור את הפרויקט כרשימת השמעה מסוג XSPF"
 
-#: ../src/brasero-project.c:2738
-#, fuzzy
+#: ../src/brasero-project.c:2845
 msgid "Save project as an IRIVER playlist"
-msgstr "בחר רשימת השמעה"
+msgstr "שמור את הפרויקט כרשימת השמעה מסוג IRIVER"
 
 #: ../src/brasero-project-manager.c:114
 msgid "_Cover Editor"
@@ -2650,6 +2613,10 @@ msgstr "_פרויקט חדש"
 #: ../src/brasero-project-manager.c:117
 msgid "Create a new project"
 msgstr "יצירת פרויקט חדש"
+
+#: ../src/brasero-project-manager.c:118
+msgid "_Empty Project"
+msgstr "_ריקון הפרויקט"
 
 #: ../src/brasero-project-manager.c:119
 msgid "Let you choose your new project"
@@ -2683,9 +2650,10 @@ msgstr "יצירת פרויקט וידאו חדש"
 msgid "Copy _Disc..."
 msgstr "העתקת _דיסק..."
 
-#: ../src/brasero-project-manager.c:127 ../src/main.c:92
+#: ../src/brasero-project-manager.c:127
+#: ../src/main.c:94
 msgid "Copy a disc"
-msgstr "העתק דיסק"
+msgstr "Copy a disc"
 
 #: ../src/brasero-project-manager.c:128
 msgid "_Burn Image..."
@@ -2703,104 +2671,104 @@ msgstr "_פתח..."
 msgid "Open a project"
 msgstr "פתח פרויקט"
 
-#: ../src/brasero-project-manager.c:268
+#: ../src/brasero-project-manager.c:270
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d קבצים נבחרו (%s)"
 msgstr[1] "%d קבצים נבחרו (%s)"
 
-#: ../src/brasero-project-manager.c:278
+#: ../src/brasero-project-manager.c:280
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
 msgstr[0] "%d קבצים נתמכים (%s)"
 msgstr[1] "%d קבצים נתמכים (%s)"
 
-#: ../src/brasero-project-manager.c:284
+#: ../src/brasero-project-manager.c:286
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
 msgstr[0] "ניתן להוסיף %d קבצים (%s)"
 msgstr[1] "ניתן להוסיף %d קבצים (%s)"
 
-#: ../src/brasero-project-manager.c:295
+#: ../src/brasero-project-manager.c:297
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] "לא ניתן להוסיף קבצים (%i קבצים נבחרים)"
 msgstr[1] "לא ניתן להוסיף קבצים (%i קבצים נבחרים)"
 
-#: ../src/brasero-project-manager.c:300
+#: ../src/brasero-project-manager.c:302
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "איו קבצים נתמכים (%i קבצים נבחרים)"
 msgstr[1] "איו קבצים נתמכים (%i קבצים נבחרים)"
 
-#: ../src/brasero-project-manager.c:306 ../src/brasero-project-manager.c:464
+#: ../src/brasero-project-manager.c:308
+#: ../src/brasero-project-manager.c:466
 msgid "No file selected"
 msgstr "לא נבחר קובץ"
 
-#: ../src/brasero-project-manager.c:686
+#: ../src/brasero-project-manager.c:725
 msgid "Brasero - New Audio Disc Project"
 msgstr "‏Brasero - פרויקט דיסק שמע חדש"
 
-#: ../src/brasero-project-manager.c:700
+#: ../src/brasero-project-manager.c:739
 msgid "Brasero - New Data Disc Project"
 msgstr "‏Brasero - פרויקט דיסק נתונים חדש"
 
-#: ../src/brasero-project-manager.c:714
+#: ../src/brasero-project-manager.c:753
 msgid "Brasero - New Video disc project"
 msgstr "‏Brasero - פרויקט דיסק וידאו חדש"
 
-#: ../src/brasero-project-manager.c:724
+#: ../src/brasero-project-manager.c:763
 msgid "Brasero - New Image File"
 msgstr "‏Brasero - קובץ תמונת תקליטור חדש"
 
-#: ../src/brasero-project-manager.c:735
+#: ../src/brasero-project-manager.c:774
 msgid "Brasero - Disc Copy"
 msgstr "‏Brasero - העתקת דיסק"
 
-#: ../src/brasero-project-manager.c:949
+#: ../src/brasero-project-manager.c:1067
 #, c-format
 msgid "The project '%s' does not exist."
 msgstr "הפרוייקט '%s' לא קיים."
 
-#: ../src/brasero-project-manager.c:974
+#: ../src/brasero-project-manager.c:1092
 msgid "Open Project"
 msgstr "פתח פרויקט"
 
-#: ../src/brasero-project-manager.c:1074
+#: ../src/brasero-project-manager.c:1201
 msgid "New"
 msgstr "חדש"
 
-#: ../src/brasero-project-manager.c:1078
+#: ../src/brasero-project-manager.c:1205
 msgid "Open"
 msgstr "פתח"
 
-#: ../src/brasero-project-manager.c:1125
+#: ../src/brasero-project-manager.c:1252
 msgid "Browse the file system"
 msgstr "עיין במערכת הקבצים"
 
-#: ../src/brasero-project-manager.c:1126
-#, fuzzy
+#: ../src/brasero-project-manager.c:1253
 msgid "Display File Browser"
 msgstr "הצג דפדפן קבצים"
 
-#: ../src/brasero-project-manager.c:1149
+#: ../src/brasero-project-manager.c:1276
 msgid "Search files using keywords"
 msgstr "חיפוש קבצים בעזרת מילות חיפוש"
 
-#: ../src/brasero-project-manager.c:1150
+#: ../src/brasero-project-manager.c:1277
 msgid "Display Search"
 msgstr "הצג חיפוש"
 
-#: ../src/brasero-project-manager.c:1170
+#: ../src/brasero-project-manager.c:1297
 msgid "Display playlists and their contents"
 msgstr "הצג רשימות השמעה ואת תוכנם"
 
-#: ../src/brasero-project-manager.c:1171
+#: ../src/brasero-project-manager.c:1298
 msgid "Display Playlists"
 msgstr "הצג רשימות השמעה"
 
@@ -2813,8 +2781,7 @@ msgid "Create a traditional audio CD"
 msgstr "יצירת תקליטור שמע מסורתי"
 
 #: ../src/brasero-project-type-chooser.c:76
-msgid ""
-"Create a traditional audio CD that will be playable on computers and stereos"
+msgid "Create a traditional audio CD that will be playable on computers and stereos"
 msgstr "יצירת תקליטור שמע מסורתי שניתן לנגן אותו על מחשבים ומערכות סטריאו"
 
 #: ../src/brasero-project-type-chooser.c:79
@@ -2826,9 +2793,7 @@ msgid "Create a data CD/DVD"
 msgstr "יצירת דיסק נתונים CD/DVD."
 
 #: ../src/brasero-project-type-chooser.c:81
-msgid ""
-"Create a CD/DVD containing any type of data that can only be read on a "
-"computer"
+msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
 msgstr "יצירת דיסק CD/DVD המכיל כל סוג נתונים שניתנים לקריאה על ידי מחשב"
 
 #: ../src/brasero-project-type-chooser.c:84
@@ -2852,9 +2817,7 @@ msgid "Create 1:1 copy of a CD/DVD"
 msgstr "צור העתק מדויק של דיסק"
 
 #: ../src/brasero-project-type-chooser.c:91
-msgid ""
-"Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on "
-"another CD/DVD"
+msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"
 msgstr "צור העתק 1:1 של תקליטר שמע או נתונים על המחשב שלך או על תקליטור אחר."
 
 #: ../src/brasero-project-type-chooser.c:94
@@ -2875,79 +2838,81 @@ msgid "Create a new project:"
 msgstr "יצירת פרויקט חדש:"
 
 #: ../src/brasero-project-type-chooser.c:415
-#, fuzzy
 msgid "Recent projects:"
-msgstr "פרויקטים _אחרונים"
+msgstr "פרויקטים אחרונים:"
 
-#: ../src/brasero-sum-dialog.c:123 ../src/brasero-sum-dialog.c:207
+#: ../src/brasero-sum-dialog.c:123
+#: ../src/brasero-sum-dialog.c:206
 msgid "Check _Again"
 msgstr "בדוק _שוב"
 
-#: ../src/brasero-sum-dialog.c:154 ../src/brasero-sum-dialog.c:203
-#: ../src/brasero-sum-dialog.c:478
+#: ../src/brasero-sum-dialog.c:154
+#: ../src/brasero-sum-dialog.c:202
+#: ../src/brasero-sum-dialog.c:477
 msgid "File Integrity Check Error"
-msgstr "שגיאה בבדיקת הכלילות של הקובץ"
+msgstr "שגיאה בבדיקת התקינות של הקובץ"
 
-#: ../src/brasero-sum-dialog.c:155 ../src/brasero-sum-dialog.c:479
+#: ../src/brasero-sum-dialog.c:155
+#: ../src/brasero-sum-dialog.c:478
 msgid "The file integrity check cannot be performed:"
-msgstr "לא ניתן לבצע את בדיקת הכלילות לקובץ::"
+msgstr "לא ניתן לבצע את בדיקת התקינות לקובץ:"
 
 #: ../src/brasero-sum-dialog.c:168
 msgid "File Integrity Check Success"
-msgstr "בדיקת כלילות הקובץ הצליחה"
+msgstr "בדיקת תקינות הקובץ הצליחה"
 
 #: ../src/brasero-sum-dialog.c:169
 msgid "The file integrity was performed successfully:"
-msgstr "בדיקת כלילות הקובץ בוצעה בהצלחה:"
+msgstr "בדיקת תקינות הקובץ בוצעה בהצלחה:"
 
 #: ../src/brasero-sum-dialog.c:170
 msgid "there seems to be no corrupted file on the disc."
 msgstr "לא נימצאו קבצים פגומים על הדיסק."
 
-#: ../src/brasero-sum-dialog.c:194
+#: ../src/brasero-sum-dialog.c:193
 msgid "The following files appear to be corrupted:"
 msgstr ""
 
-#: ../src/brasero-sum-dialog.c:242
+#: ../src/brasero-sum-dialog.c:241
 msgid "Corrupted files"
 msgstr "קבצים פגומים"
 
-#: ../src/brasero-sum-dialog.c:316
+#: ../src/brasero-sum-dialog.c:315
 #, c-format
 msgid "a temporary file couldn't be created"
 msgstr "לא ניתן ליצור קובץ זמני"
 
-#: ../src/brasero-sum-dialog.c:323
+#: ../src/brasero-sum-dialog.c:322
 msgid "Downloading md5 file"
 msgstr "מוריד קובץ md5"
 
-#: ../src/brasero-sum-dialog.c:371
+#: ../src/brasero-sum-dialog.c:370
 #, c-format
 msgid "URI is not valid"
 msgstr "הכתובת אינה תקינה"
 
-#: ../src/brasero-sum-dialog.c:480
+#: ../src/brasero-sum-dialog.c:479
 msgid "no md5 file was given."
 msgstr "לא ניתן קובץ md5."
 
-#: ../src/brasero-sum-dialog.c:583
+#: ../src/brasero-sum-dialog.c:587
 #, c-format
 msgid "no checksum file could be found on the disc."
 msgstr "לא נמצא קובץ סכום ביקורת על הדיסק."
 
-#: ../src/brasero-sum-dialog.c:728
+#: ../src/brasero-sum-dialog.c:731
 msgid "Use a _md5 file to check the disc"
 msgstr "שימוש בקובץ _md5 כדי לבדוק את הדיסק"
 
-#: ../src/brasero-sum-dialog.c:729
+#: ../src/brasero-sum-dialog.c:732
 msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr "שימוש בקובץ .md5 חיצוני שמכיל את סכום הביקורת של הדיסק"
 
-#: ../src/brasero-sum-dialog.c:742
+#: ../src/brasero-sum-dialog.c:745
 msgid "Open a md5 file"
 msgstr "פתח קובץ md5"
 
-#: ../src/brasero-sum-dialog.c:757
+#: ../src/brasero-sum-dialog.c:760
 msgid "_Check"
 msgstr "_בדוק"
 
@@ -2955,7 +2920,8 @@ msgstr "_בדוק"
 msgid "Media Busy"
 msgstr ""
 
-#: ../src/brasero-tool-dialog.c:102 ../src/brasero-tool-dialog.c:112
+#: ../src/brasero-tool-dialog.c:102
+#: ../src/brasero-tool-dialog.c:112
 #: ../src/brasero-tool-dialog.c:122
 msgid "The operation cannot be performed:"
 msgstr "לא ניתן לבצע את הפעולה:"
@@ -2964,7 +2930,8 @@ msgstr "לא ניתן לבצע את הפעולה:"
 msgid "the inserted media is busy."
 msgstr "המדיה שהוכנסה לא זמינה."
 
-#: ../src/brasero-tool-dialog.c:111 ../src/brasero-tool-dialog.c:121
+#: ../src/brasero-tool-dialog.c:111
+#: ../src/brasero-tool-dialog.c:121
 msgid "Media Error"
 msgstr "שגיאת מדיה"
 
@@ -2976,190 +2943,195 @@ msgstr "המדיה שהוכנסה לא ניתמכת."
 msgid "the drive is empty."
 msgstr "הכונן ריק."
 
-#: ../src/brasero-tool-dialog.c:499
+#: ../src/brasero-tool-dialog.c:513
 msgid "Choose a media"
 msgstr "בחר מדיה"
 
-#: ../src/brasero-tool-dialog.c:501
+#: ../src/brasero-tool-dialog.c:515
 msgid "Select a disc"
 msgstr "בחר דיסק"
 
-#: ../src/brasero-tool-dialog.c:526
+#: ../src/brasero-tool-dialog.c:540
 msgid "Progress"
 msgstr "התקדמות"
 
-#: ../src/burn-basics.c:63
+#: ../src/burn-basics.c:70
 msgid "Getting size"
 msgstr "מקבל גודל"
 
-#: ../src/burn-basics.c:65
+#: ../src/burn-basics.c:72
 msgid "Writing"
 msgstr "כותב"
 
-#: ../src/burn-basics.c:66
+#: ../src/burn-basics.c:73
 msgid "Blanking"
 msgstr "מוחק"
 
-#: ../src/burn-basics.c:67
+#: ../src/burn-basics.c:74
 msgid "Creating checksum"
 msgstr "יוצר סכום ביקורת"
 
-#: ../src/burn-basics.c:69
+#: ../src/burn-basics.c:76
 msgid "Copying file"
 msgstr "מעתיק קובץ"
 
-#: ../src/burn-basics.c:70
+#: ../src/burn-basics.c:77
 msgid "Analysing audio information"
 msgstr "מנתח נתוני שמע"
 
-#: ../src/burn-basics.c:71
+#: ../src/burn-basics.c:78
 msgid "Transcoding song"
 msgstr ""
 
-#: ../src/burn-basics.c:72
+#: ../src/burn-basics.c:79
 msgid "Preparing to write"
 msgstr "מתכונן לכתיבה"
 
-#: ../src/burn-basics.c:73
+#: ../src/burn-basics.c:80
 msgid "Writing leadin"
 msgstr ""
 
-#: ../src/burn-basics.c:74
+#: ../src/burn-basics.c:81
 msgid "Writing CD-TEXT information"
 msgstr "כותב נתוני CD-TEXT"
 
-#: ../src/burn-basics.c:75
+#: ../src/burn-basics.c:82
 msgid "Fixating"
 msgstr ""
 
-#: ../src/burn-basics.c:76
+#: ../src/burn-basics.c:83
 msgid "Writing leadout"
 msgstr ""
 
-#: ../src/burn-basics.c:77
+#: ../src/burn-basics.c:84
 msgid "Starting to record"
 msgstr "מתחיל לצרוב"
 
-#: ../src/burn-basics.c:78
+#: ../src/burn-basics.c:85
 msgid "Success"
 msgstr "הצלחה"
 
-#: ../src/burn.c:147
+#: ../src/burn.c:151
 msgid "Burning CD/DVD"
 msgstr "צורב CD/DVD"
 
-#: ../src/burn.c:264 ../src/burn.c:328 ../src/burn.c:385
-#, c-format
-msgid "\"%s\" can't be unlocked"
-msgstr ""
-
-#: ../src/burn.c:280
-#, c-format
-msgid "the disc could not be reloaded (max attemps reached)"
-msgstr ""
-
-#: ../src/burn.c:293 ../src/burn.c:581 ../src/burn.c:676 ../src/burn.c:917
-#: ../src/burn.c:1063
-#, c-format
-msgid "the drive can't be locked (%s)"
-msgstr ""
-
-#: ../src/burn.c:343 ../src/burn.c:403
+#: ../src/burn.c:292
 #, c-format
 msgid "the media in %s can't be ejected"
 msgstr "לא ניתן להוציא את המדיה ב-%s"
 
-#: ../src/burn.c:509 ../src/burn.c:625 ../src/burn.c:776
+#: ../src/burn.c:335
+#: ../src/burn.c:382
+#, c-format
+msgid "\"%s\" can't be unlocked"
+msgstr ""
+
+#: ../src/burn.c:478
+#: ../src/burn.c:603
+#: ../src/burn.c:754
 #, c-format
 msgid "no drive specified"
 msgstr "לא מצוין כונן"
 
-#: ../src/burn.c:537
+#: ../src/burn.c:515
 #, c-format
 msgid "no drive specified as source"
 msgstr "לא צוין כונן מקור"
 
-#: ../src/burn.c:577
+#: ../src/burn.c:555
 msgid "ongoing copying process"
 msgstr "תהליך העתקה פעיל"
 
-#: ../src/burn.c:636
+#: ../src/burn.c:559
+#: ../src/burn.c:654
+#: ../src/burn.c:895
+#: ../src/burn.c:1042
+#, c-format
+msgid "the drive can't be locked (%s)"
+msgstr ""
+
+#: ../src/burn.c:614
 #, c-format
 msgid "the drive has no rewriting capabilities"
 msgstr "אין לכונן יכולות כתיבה מדש"
 
-#: ../src/burn.c:672
+#: ../src/burn.c:650
 msgid "ongoing blanking process"
 msgstr "תהליך מחיקה פעיל"
 
-#: ../src/burn.c:796
+#: ../src/burn.c:774
 #, c-format
 msgid "the drive has no burning capabilities"
 msgstr "לכונן אין יכולות צריבה"
 
-#: ../src/burn.c:996
+#: ../src/burn.c:973
 #, c-format
 msgid "the disc could not be mounted (max attemps reached)"
 msgstr ""
 
-#: ../src/burn.c:1059
+#: ../src/burn.c:1038
 msgid "ongoing checksuming operation"
 msgstr ""
 
-#: ../src/burn.c:1338 ../src/burn.c:1370 ../src/burn.c:1476 ../src/burn.c:1485
-#: ../src/burn.c:1802 ../src/plugins/cdrdao/burn-cdrdao.c:220
+#: ../src/burn.c:1317
+#: ../src/burn.c:1349
+#: ../src/burn.c:1486
+#: ../src/burn.c:1495
+#: ../src/burn.c:1817
+#: ../src/plugins/cdrdao/burn-cdrdao.c:220
 #: ../src/plugins/growisofs/burn-growisofs.c:202
 #, c-format
 msgid "the drive seems to be busy"
 msgstr "נראה שהכונן עסוק"
 
-#: ../src/burn.c:1597
+#: ../src/burn.c:1607
 #, c-format
-msgid ""
-"it's not possible to merge to this media because it hasn't got enough space"
-msgstr ""
+msgid "it's not possible to merge to this media because it hasn't got enough space"
+msgstr "בלתי אפשרי למזג למדיה הזו בגלל שאין עליה מספיק מקום"
 
-#: ../src/burn.c:1853
+#: ../src/burn.c:1868
 #, c-format
 msgid "there is no track to be burnt"
 msgstr ""
 
-#: ../src/burn.c:1867
+#: ../src/burn.c:1882
 #, c-format
 msgid "there is no drive to burn to"
 msgstr "אין כונן לצרוב אליו"
 
-#: ../src/burn.c:1921
+#: ../src/burn.c:1936
 #, c-format
 msgid "merging data is impossible with this disc"
 msgstr "מיזוג נתונים בלתי אפשרי עם הדיסק הנ\"ל"
 
-#: ../src/burn.c:2205 ../src/burn-caps.c:1575
+#: ../src/burn.c:2220
+#: ../src/burn-caps.c:1449
 #, c-format
 msgid "only one track at a time can be checked"
 msgstr ""
 
-#: ../src/burn.c:2273
+#: ../src/burn.c:2288
 #, c-format
 msgid "impossible to find a format for the temporary image"
 msgstr ""
 
-#: ../src/burn.c:2514
+#: ../src/burn.c:2532
 #, c-format
 msgid "internal error (code %i)"
-msgstr ""
+msgstr "שגיאה פנימית (קוד %i)"
 
 #: ../src/burn-caps.c:108
 #, c-format
 msgid "this operation is not supported"
 msgstr "פעולה זאת לא נתמכת"
 
-#: ../src/burn-caps.c:1470
+#: ../src/burn-caps.c:1351
 #, c-format
 msgid "internal error in plugin system"
 msgstr "שגיאה פנימית במערכת התוספים"
 
-#: ../src/burn-iso9660.c:152 ../src/burn-iso9660.c:161
+#: ../src/burn-iso9660.c:152
+#: ../src/burn-iso9660.c:161
 #, c-format
 msgid "it does not appear to be a primary volume descriptor"
 msgstr ""
@@ -3169,7 +3141,8 @@ msgstr ""
 msgid "invalid directory record"
 msgstr ""
 
-#: ../src/burn-iso9660.c:432 ../src/burn-iso9660.c:480
+#: ../src/burn-iso9660.c:432
+#: ../src/burn-iso9660.c:480
 #, c-format
 msgid "file name is too long"
 msgstr "שם הקובץ ארוך מידי"
@@ -3177,7 +3150,7 @@ msgstr "שם הקובץ ארוך מידי"
 #: ../src/burn-job.c:313
 #, c-format
 msgid "plugin %s did not want to work. Try to deactivate it"
-msgstr ""
+msgstr "התוסף %s לא רוצה לפעול. נסה לכבות אותו"
 
 #: ../src/burn-job.c:411
 #, c-format
@@ -3186,36 +3159,41 @@ msgstr ""
 
 #: ../src/burn-job.c:475
 #, c-format
-msgid ""
-"The filesystem you chose to store the temporary image on cannot hold files "
-"with a size over 2 GiB."
+msgid "The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB."
 msgstr ""
 
 #: ../src/burn-job.c:490
 #, c-format
-msgid ""
-"The location you chose to store the temporary image on does not have enough "
-"free space for the disc image (%ld MiB needed)"
-msgstr ""
+msgid "The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"
+msgstr "למיקום שנבחר לאחסון תמונת התקליטור הזמנית אין מספיק מקום פנוי עבור תמונת התקליטור (%ld ‏MiB נדרש)"
 
 #: ../src/burn-job.c:511
 #, c-format
-msgid ""
-"the selected location does not have enough free space to store the disc "
-"image (%ld MiB needed)"
-msgstr ""
+msgid "the selected location does not have enough free space to store the disc image (%ld MiB needed)"
+msgstr "למיקום הנבחר אין מספיק מקום פנוי כדי לאחסן את תמונת התקליטור (%ld ‏MiB נדרש)"
 
 #: ../src/burn-job.c:524
 #, c-format
 msgid "the size of the volume can't be checked (Unknown error)"
 msgstr ""
 
-#: ../src/burn-job.c:675
+#: ../src/burn-job.c:564
+#, c-format
+msgid "no path"
+msgstr ""
+
+#: ../src/burn-job.c:590
+#: ../src/burn-job.c:605
+#, c-format
+msgid "%s already exists"
+msgstr "%s כבר קיים"
+
+#: ../src/burn-job.c:732
 #, c-format
 msgid "the pipe couldn't be created (%s)"
 msgstr ""
 
-#: ../src/burn-job.c:704
+#: ../src/burn-job.c:761
 #, c-format
 msgid ""
 "plugin %s did not work properly.\n"
@@ -3224,136 +3202,141 @@ msgstr ""
 "התוסף %s לא פועל כראוי.\n"
 "נסה לבטל אותו"
 
-#: ../src/burn-job.c:718
+#: ../src/burn-job.c:775
 #, c-format
 msgid ""
 "plugin %s didn't work properly (it does not support operation).\n"
 "Try to deactivate it"
 msgstr ""
+"התוסף %s לא פעל כראוי (התוסף לא תומך בפעולה).\n"
+"נסה לבטל אותו"
 
-#: ../src/burn-job.c:938 ../src/burn-job.c:1027
+#: ../src/burn-job.c:995
+#: ../src/burn-job.c:1084
 #, c-format
 msgid "a plugin did not behave properly"
 msgstr "תוסף לא התנהג כראוי"
 
-#: ../src/burn-job.c:1125
+#: ../src/burn-job.c:1182
 #, c-format
 msgid "couldn't set non blocking mode"
 msgstr ""
 
-#: ../src/burn-job.c:1133
+#: ../src/burn-job.c:1190
 #, c-format
 msgid "couldn't get pipe flags"
 msgstr ""
 
-#: ../src/burn-medium.c:64
+#: ../src/burn-medium.c:65
 msgid "file"
 msgstr "קובץ"
 
-#: ../src/burn-medium.c:65
+#: ../src/burn-medium.c:66
 msgid "CDROM"
 msgstr "CDROM"
 
-#: ../src/burn-medium.c:66
+#: ../src/burn-medium.c:67
 msgid "CD-R"
 msgstr "CD-R"
 
-#: ../src/burn-medium.c:67
+#: ../src/burn-medium.c:68
 msgid "CD-RW"
 msgstr "CD-RW"
 
-#: ../src/burn-medium.c:68
+#: ../src/burn-medium.c:69
 msgid "DVDROM"
 msgstr "DVDROM"
 
-#: ../src/burn-medium.c:69
+#: ../src/burn-medium.c:70
 msgid "DVD-R"
 msgstr "DVD-R"
 
-#: ../src/burn-medium.c:70
+#: ../src/burn-medium.c:71
 msgid "DVD-RW"
 msgstr "DVD-RW"
 
-#: ../src/burn-medium.c:71
+#: ../src/burn-medium.c:72
 msgid "DVD+R"
 msgstr "DVD+R"
 
-#: ../src/burn-medium.c:72
+#: ../src/burn-medium.c:73
 msgid "DVD+RW"
 msgstr "DVD+RW"
 
-#: ../src/burn-medium.c:73
+#: ../src/burn-medium.c:74
 msgid "DVD+R dual layer"
 msgstr "DVD+R dual layer"
 
-#: ../src/burn-medium.c:74
+#: ../src/burn-medium.c:75
 msgid "DVD+RW dual layer"
 msgstr "DVD+RW dual layer"
 
-#: ../src/burn-medium.c:75
+#: ../src/burn-medium.c:76
 msgid "DVD-R dual layer"
 msgstr "DVD-R dual layer"
 
-#: ../src/burn-medium.c:76
+#: ../src/burn-medium.c:77
 msgid "DVD-RAM"
 msgstr "DVD-RAM"
 
-#: ../src/burn-medium.c:77
+#: ../src/burn-medium.c:78
 msgid "Blu-ray disc"
 msgstr "דיסק Blu-ray"
 
-#: ../src/burn-medium.c:78
+#: ../src/burn-medium.c:79
 msgid "Writable Blu-ray disc"
 msgstr "דיסק Blu-ray הניתן לכתיבה"
 
-#: ../src/burn-medium.c:79
+#: ../src/burn-medium.c:80
 msgid "Rewritable Blu-ray disc"
 msgstr "דיסק Blu-ray הניתן לכתיבה חוזרת"
 
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../src/burn-medium.c:160 ../src/burn-drive.c:274
-#: ../src/burn-volume-obj.c:699
+#: ../src/burn-medium.c:171
+#: ../src/burn-drive.c:271
+#: ../src/burn-volume-obj.c:701
 msgid "Image File"
 msgstr "קובץ תמונת תקליטור"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:170
+#: ../src/burn-medium.c:181
 #, c-format
 msgid "Blank %s in %s"
 msgstr "דיסק %s ריק ב-%s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:177
+#: ../src/burn-medium.c:188
 #, c-format
 msgid "Audio and data %s in %s"
 msgstr "דיסק שמע ונתונים %s ב-%s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:184
+#: ../src/burn-medium.c:195
 #, c-format
 msgid "Audio %s in %s"
 msgstr "דיסק שמע  %s ב-%s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:191
+#: ../src/burn-medium.c:202
 #, c-format
 msgid "Data %s in %s"
 msgstr "דיסק %s נתונים ב-%s"
 
 #. NOTE for translators: the first %s is the disc type and the
 #. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:198
+#: ../src/burn-medium.c:209
 #, c-format
 msgid "%s in %s"
 msgstr "‏%s ב-%s"
 
-#: ../src/burn-mkisofs-base.c:132 ../src/burn-mkisofs-base.c:415
+#: ../src/burn-mkisofs-base.c:132
+#: ../src/burn-mkisofs-base.c:415
 #, c-format
 msgid "the file is not stored locally"
 msgstr ""
@@ -3385,8 +3368,7 @@ msgstr "בלתי אפשרי לקבל נתונים"
 
 #: ../src/burn-process.c:140
 #, c-format
-msgid ""
-"%s is a symlink pointing to another program. Use the target program instead."
+msgid "%s is a symlink pointing to another program. Use the target program instead."
 msgstr ""
 
 #: ../src/burn-process.c:226
@@ -3394,27 +3376,18 @@ msgstr ""
 msgid "process %s ended with an error code (%i)"
 msgstr "התהליך %s הסתיים עם קוד שגיאה (%i)"
 
-#: ../src/burn-session.c:571
-#, c-format
-msgid "no path"
-msgstr ""
-
-#: ../src/burn-session.c:582
-#, c-format
-msgid "%s already exists"
-msgstr "%s כבר קיים"
-
-#: ../src/burn-session.c:708 ../src/burn-session.c:732
+#: ../src/burn-session.c:567
+#: ../src/burn-session.c:583
 #, c-format
 msgid "no output specified"
 msgstr ""
 
-#: ../src/burn-session.c:914
+#: ../src/burn-session.c:752
 #, c-format
 msgid "a temporary directory could not be created (%s)"
 msgstr "לא ניתן ליצור תיקייה זמנית (%s)"
 
-#: ../src/burn-session.c:962
+#: ../src/burn-session.c:800
 #, c-format
 msgid "a temporary file can't be created: %s"
 msgstr "לא ניתן יצור קובץ זמני: %s"
@@ -3424,71 +3397,79 @@ msgstr "לא ניתן יצור קובץ זמני: %s"
 msgid "there isn't a valid volume descriptor"
 msgstr ""
 
-#: ../src/main.c:72
+#: ../src/main.c:74
 msgid "Open the specified project"
 msgstr "Open the specified project"
 
-#: ../src/main.c:73
+#: ../src/main.c:75
 msgid "PROJECT"
 msgstr "PROJECT"
 
-#: ../src/main.c:78
+#: ../src/main.c:80
 msgid "Open the specified playlist as an audio project"
 msgstr "Open the specified playlist as an audio project"
 
-#: ../src/main.c:79
+#: ../src/main.c:81
 msgid "PLAYLIST"
 msgstr "PLAYLIST"
 
-#: ../src/main.c:84
+#: ../src/main.c:86
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr "Open an audio project adding the URIs given on the command line"
 
-#: ../src/main.c:88
+#: ../src/main.c:90
 msgid "Open a data project adding the URIs given on the command line"
 msgstr "Open a data project adding the URIs given on the command line"
 
-#: ../src/main.c:97
+#: ../src/main.c:98
+msgid "Open a video project adding the URIs given on the command line"
+msgstr "Open a video project adding the URIs given on the command line"
+
+#: ../src/main.c:103
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr "Uri of an image file to be burnt (autodetected)"
 
-#: ../src/main.c:101
+#: ../src/main.c:107
 msgid "Force brasero to display the project selection page"
 msgstr "Force brasero to display the project selection page"
 
-#: ../src/main.c:105
+#: ../src/main.c:111
 msgid "Open the blank disc dialog"
 msgstr "Open the blank disc dialog"
 
-#: ../src/main.c:109
-msgid "Open a data project with the contents of nautilus-cd-burner"
-msgstr "Open a data project with the contents of nautilus-cd-burner"
+#: ../src/main.c:115
+msgid "Open the check disc dialog"
+msgstr "Open the check disc dialog"
 
-#: ../src/main.c:113
+#: ../src/main.c:119
+msgid "Burn the contents of burn:// URI"
+msgstr ""
+
+#: ../src/main.c:123
 msgid "Display debug statements on stdout"
 msgstr "Display debug statements on stdout"
 
-#: ../src/main.c:194
+#: ../src/main.c:206
 msgid "Incompatible command line options used:"
 msgstr "Incompatible command line options used:"
 
-#: ../src/main.c:196
+#: ../src/main.c:208
 msgid "Incompatible Options"
 msgstr "Incompatible Options"
 
-#: ../src/main.c:199
+#: ../src/main.c:211
 msgid "only one option can be given at a time."
 msgstr "only one option can be given at a time."
 
-#: ../src/main.c:295
+#: ../src/main.c:347
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:317
+#: ../src/main.c:369
 msgid "CD/DVD burning"
 msgstr "CD/DVD burning"
 
-#: ../src/main.c:324
+#: ../src/main.c:376
 #, c-format
 msgid "Please type %s --help to see all available options\n"
 msgstr "Please type %s --help to see all available options\n"
@@ -3525,11 +3506,11 @@ msgstr ""
 msgid "You don't seem to have the required permission to use this drive"
 msgstr "נראה שאין לך את ההרשאות המתאימות כדי להשתמש בכונן"
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:566
+#: ../src/plugins/cdrdao/burn-cdrdao.c:567
 msgid "use cdrdao to image and burn CDs"
 msgstr ""
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:574
+#: ../src/plugins/cdrdao/burn-cdrdao.c:575
 msgid "cdrdao could not be found in the path"
 msgstr ""
 
@@ -3595,9 +3576,7 @@ msgstr "הקובץ גדול מידי בשביל תקליטור"
 #: ../src/plugins/cdrkit/burn-genisoimage.c:348
 #: ../src/plugins/cdrtools/burn-mkisofs.c:343
 #, c-format
-msgid ""
-"failed to get the start point of the track. Make sure the media allow to add "
-"files (it is not closed)"
+msgid "failed to get the start point of the track. Make sure the media allow to add files (it is not closed)"
 msgstr ""
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:507
@@ -3608,33 +3587,43 @@ msgstr ""
 msgid "genisoimage could not be found in the path"
 msgstr ""
 
-#: ../src/plugins/cdrkit/burn-readom.c:90
-#: ../src/plugins/cdrtools/burn-readcd.c:90
+#: ../src/plugins/cdrkit/burn-readom.c:92
+#: ../src/plugins/cdrtools/burn-readcd.c:92
 #, c-format
 msgid "the drive is not ready"
 msgstr "הכונן לא מוכן"
 
-#: ../src/plugins/cdrkit/burn-readom.c:97
-#: ../src/plugins/cdrkit/burn-readom.c:104
-#: ../src/plugins/cdrkit/burn-readom.c:110
-#: ../src/plugins/cdrtools/burn-readcd.c:97
-#: ../src/plugins/cdrtools/burn-readcd.c:104
-#: ../src/plugins/cdrtools/burn-readcd.c:110
+#: ../src/plugins/cdrkit/burn-readom.c:99
+#: ../src/plugins/cdrkit/burn-readom.c:106
+#: ../src/plugins/cdrkit/burn-readom.c:112
+#: ../src/plugins/cdrtools/burn-readcd.c:99
+#: ../src/plugins/cdrtools/burn-readcd.c:106
+#: ../src/plugins/cdrtools/burn-readcd.c:112
 #, c-format
 msgid "you don't seem to have the required permissions to access the drive"
 msgstr "נראה שאין לך את ההרשאות הנדרשות כדי לגשת לכונן"
 
-#: ../src/plugins/cdrkit/burn-readom.c:320
-#: ../src/plugins/cdrtools/burn-readcd.c:330
+#: ../src/plugins/cdrkit/burn-readom.c:119
+#: ../src/plugins/cdrkit/burn-wodim.c:185
+#: ../src/plugins/cdrkit/burn-wodim.c:360
+#: ../src/plugins/cdrtools/burn-cdrecord.c:186
+#: ../src/plugins/cdrtools/burn-cdrecord.c:362
+#: ../src/plugins/cdrtools/burn-readcd.c:119
+#, c-format
+msgid "internal error"
+msgstr "שגיאה פנימית"
+
+#: ../src/plugins/cdrkit/burn-readom.c:330
+#: ../src/plugins/cdrtools/burn-readcd.c:339
 #, c-format
 msgid "raw images cannot be created with DVDs"
 msgstr ""
 
-#: ../src/plugins/cdrkit/burn-readom.c:399
+#: ../src/plugins/cdrkit/burn-readom.c:410
 msgid "use readom to image CDs"
 msgstr ""
 
-#: ../src/plugins/cdrkit/burn-readom.c:407
+#: ../src/plugins/cdrkit/burn-readom.c:418
 msgid "readom could not be found in the path"
 msgstr ""
 
@@ -3679,8 +3668,7 @@ msgstr "התרחשה שגיאת צריבה שכנראה נגרמה בגלל צר
 #: ../src/plugins/cdrkit/burn-wodim.c:138
 #: ../src/plugins/cdrtools/burn-cdrecord.c:138
 #, c-format
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:144
@@ -3693,14 +3681,12 @@ msgstr ""
 #: ../src/plugins/cdrtools/burn-cdrecord.c:150
 #, c-format
 msgid "The system is too slow to write the CD at this speed. Try a lower speed"
-msgstr ""
+msgstr "המערכת לא מהירה מספיק כדי לצרוב במהירות כזו. נסה מהירות נמוכה יותר"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:163
 #: ../src/plugins/cdrtools/burn-cdrecord.c:164
 #, c-format
-msgid ""
-"The drive seems to be busy (maybe check you have proper permissions to use "
-"it)"
+msgid "The drive seems to be busy (maybe check you have proper permissions to use it)"
 msgstr ""
 
 #: ../src/plugins/cdrkit/burn-wodim.c:172
@@ -3714,14 +3700,6 @@ msgstr ""
 #, c-format
 msgid "the image file cannot be found"
 msgstr "קובץ תמונת התקליטור לא נמצא"
-
-#: ../src/plugins/cdrkit/burn-wodim.c:185
-#: ../src/plugins/cdrkit/burn-wodim.c:360
-#: ../src/plugins/cdrtools/burn-cdrecord.c:186
-#: ../src/plugins/cdrtools/burn-cdrecord.c:362
-#, c-format
-msgid "internal error"
-msgstr "שגיאה פנימית"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:191
 #: ../src/plugins/cdrtools/burn-cdrecord.c:192
@@ -3810,19 +3788,18 @@ msgstr ""
 msgid "mkisofs could not be found in the path"
 msgstr ""
 
-#: ../src/plugins/cdrtools/burn-readcd.c:409
+#: ../src/plugins/cdrtools/burn-readcd.c:419
 msgid "use readcd to image CDs"
 msgstr ""
 
-#: ../src/plugins/cdrtools/burn-readcd.c:417
+#: ../src/plugins/cdrtools/burn-readcd.c:427
 msgid "readcd could not be found in the path"
 msgstr ""
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:120
 #, c-format
 msgid "encrypted DVD: please, install libdvdcss version 1.2.x"
-msgstr ""
-"‏DVD מוצפן: נא להתקין את libdvdcss גירסה ‎1.2.x"
+msgstr "‏DVD מוצפן: נא להתקין את libdvdcss גירסה ‎1.2.x"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:127
 #, c-format
@@ -3830,6 +3807,8 @@ msgid ""
 "libdvdcss version %s is not supported.\n"
 "Please, install libdvdcss version 1.2.x"
 msgstr ""
+"גרסת libdvdcss ‏%s לא נתמכת.\n"
+"נא להתקין את גרסה ‎1.2.x של libdvdcss"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:137
 #, c-format
@@ -3849,8 +3828,7 @@ msgstr ""
 #: ../src/plugins/dvdcss/burn-dvdcss.c:451
 #, c-format
 msgid "Error reading video DVD (%s)"
-msgstr ""
-"שגיאה במהלך קריאת דיסק DVD וידאו (%s)"
+msgstr "שגיאה במהלך קריאת דיסק DVD וידאו (%s)"
 
 #: ../src/plugins/dvdcss/burn-dvdcss.c:318
 msgid "Retrieving DVD keys"
@@ -3937,47 +3915,47 @@ msgstr ""
 msgid "unable to add the track to the session"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn.c:580
+#: ../src/plugins/libburnia/burn-libburn.c:579
 #, c-format
 msgid "no profile available for the medium"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn.c:626
+#: ../src/plugins/libburnia/burn-libburn.c:625
 #, c-format
 msgid "/dev/null can't be opened"
 msgstr "לא ניתן לפתוח את /dev/null"
 
-#: ../src/plugins/libburnia/burn-libburn.c:660
+#: ../src/plugins/libburnia/burn-libburn.c:659
 #, c-format
 msgid "libburn can't burn: %s"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn.c:762
-#: ../src/plugins/libburnia/burn-libburn.c:792
+#: ../src/plugins/libburnia/burn-libburn.c:761
+#: ../src/plugins/libburnia/burn-libburn.c:791
 #, c-format
 msgid "an unknown error occured"
 msgstr "התרחשה שגיאה לא ידועה"
 
-#: ../src/plugins/libburnia/burn-libburn.c:879
+#: ../src/plugins/libburnia/burn-libburn.c:878
 msgid "libburn burns CD(RW), DVD+/-(RW)"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:138
+#: ../src/plugins/libburnia/burn-libburn-common.c:148
 #, c-format
 msgid "Libburn library couldn't be initialized"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:155
+#: ../src/plugins/libburnia/burn-libburn-common.c:163
 #, c-format
 msgid "the drive address couldn't be retrieved"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:166
+#: ../src/plugins/libburnia/burn-libburn-common.c:175
 #, c-format
 msgid "the drive couldn't be initialized"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libburn-common.c:345
+#: ../src/plugins/libburnia/burn-libburn-common.c:354
 #, c-format
 msgid "Writing track %02i"
 msgstr ""
@@ -3996,7 +3974,7 @@ msgstr "לא ניתן היה לשחזר חלק מהקבצים."
 #: ../src/plugins/libburnia/burn-libisofs.c:456
 #, c-format
 msgid "Image import failed."
-msgstr ""
+msgstr "ייבוא תמונה נכשל."
 
 #: ../src/plugins/libburnia/burn-libisofs.c:509
 #, fuzzy, c-format
@@ -4038,38 +4016,21 @@ msgstr ""
 msgid "libisofs creates disc images from files"
 msgstr ""
 
-#: ../src/plugins/libburnia/burn-libread-disc.c:290
-#, c-format
-msgid "no disc could be found"
-msgstr "לא ניתן למצוא דיסק"
-
-#: ../src/plugins/local-track/burn-local-image.c:154
+#: ../src/plugins/local-track/burn-local-image.c:165
 #, c-format
 msgid "Copying `%s` locally"
 msgstr ""
 
-#: ../src/plugins/local-track/burn-local-image.c:220
-#: ../src/plugins/local-track/burn-local-image.c:300 ../src/brasero-io.c:2196
+#: ../src/plugins/local-track/burn-local-image.c:228
+#: ../src/plugins/local-track/burn-local-image.c:316
+#: ../src/brasero-io.c:2336
 #, c-format
 msgid "a directory couldn't be created (%s)"
 msgstr "לא ניתן ליצור תיקייה (%s)"
 
-#: ../src/plugins/local-track/burn-local-image.c:433
+#: ../src/plugins/local-track/burn-local-image.c:478
 msgid "Copying checksum file"
 msgstr "מעתיק קובץ סכום ביקורת"
-
-#: ../src/plugins/local-track/burn-local-image.c:611
-msgid "Copying files locally"
-msgstr ""
-
-#: ../src/plugins/local-track/burn-local-image.c:749
-#, c-format
-msgid "impossible to retrieve local file path"
-msgstr ""
-
-#: ../src/plugins/local-track/burn-local-image.c:959
-msgid "local-track allows to burn files not stored locally"
-msgstr ""
 
 #: ../src/plugins/transcode/burn-normalize.c:97
 #: ../src/plugins/transcode/burn-transcode.c:317
@@ -4171,7 +4132,7 @@ msgstr "מנתח את \"%s\""
 msgid "Transcoding \"%s\""
 msgstr ""
 
-#: ../src/plugins/transcode/burn-transcode.c:1443
+#: ../src/plugins/transcode/burn-transcode.c:1520
 msgid "Transcode converts song files into a format proper to burn them on CDs"
 msgstr ""
 
@@ -4236,16 +4197,16 @@ msgid "Size Error"
 msgstr "שגיאת גודל"
 
 #: ../src/brasero-split-dialog.c:177
-msgid ""
-"If you split the track, the size of the new track will be shorter than 6 "
-"seconds and will be padded."
+msgid "If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."
 msgstr ""
 
-#: ../src/brasero-split-dialog.c:180 ../src/brasero-split-dialog.c:734
+#: ../src/brasero-split-dialog.c:180
+#: ../src/brasero-split-dialog.c:734
 msgid "_Don't split"
 msgstr "_אל תפצל"
 
-#: ../src/brasero-split-dialog.c:183 ../src/brasero-split-dialog.c:737
+#: ../src/brasero-split-dialog.c:183
+#: ../src/brasero-split-dialog.c:737
 msgid "_Split"
 msgstr "_פצל"
 
@@ -4382,7 +4343,8 @@ msgstr "תצוגה מקדימה של הפיצול"
 msgid "Hours"
 msgstr "שעות"
 
-#: ../src/brasero-time-button.c:293 ../src/brasero-time-button.c:302
+#: ../src/brasero-time-button.c:293
+#: ../src/brasero-time-button.c:302
 #: ../src/brasero-time-button.c:311
 msgid ":"
 msgstr ":"
@@ -4419,23 +4381,20 @@ msgstr ""
 msgid "Cdrtools burning suite"
 msgstr ""
 
-#: ../src/burn-image-format.c:307 ../src/burn-image-format.c:391
-#: ../src/burn-image-format.c:420 ../src/burn-image-format.c:547
-#: ../src/burn-image-format.c:743 ../src/burn-image-format.c:784
+#: ../src/burn-image-format.c:307
+#: ../src/burn-image-format.c:392
+#: ../src/burn-image-format.c:421
+#: ../src/burn-image-format.c:548
+#: ../src/burn-image-format.c:749
+#: ../src/burn-image-format.c:791
 #, c-format
 msgid "size can't be retrieved (%s)"
 msgstr ""
 
-#: ../src/burn-image-format.c:588
+#: ../src/burn-image-format.c:590
 #, c-format
 msgid "size can't be retrieved for %s: %s"
 msgstr ""
-
-#: ../src/brasero-data-tree-model.c:432 ../src/brasero-data-tree-model.c:491
-#: ../src/brasero-data-tree-model.c:502 ../src/brasero-data-tree-model.c:563
-#: ../src/brasero-data-tree-model.c:568
-msgid "(loading ...)"
-msgstr "(טוען ...)"
 
 #: ../src/brasero-data-tree-model.c:500
 msgid "Disc file"
@@ -4477,48 +4436,47 @@ msgstr "סגור את חלון ההודעות הזה"
 #. * project, suggesting users how to add and remove items to project.
 #. * You simply have to translate messages in the best form
 #. * for a list of actions.
-#: ../src/brasero-disc.c:653
+#: ../src/brasero-disc.c:674
 msgid "To add files to this project you can:"
 msgstr "כדי להוסיף קבצים לפרויקט:"
 
-#: ../src/brasero-disc.c:654
+#: ../src/brasero-disc.c:675
 msgid "click the \"Add\" button to show the selection pane"
 msgstr "לחץ על הכפתור \"הוסף\" כדי להציג את תפריט הקבצים"
 
-#: ../src/brasero-disc.c:655
+#: ../src/brasero-disc.c:676
 msgid "select files in selection pane and click the \"Add\" button"
 msgstr "בחר קבצים מהתפריט ולחץ על הכפתור \"הוסף\" "
 
-#: ../src/brasero-disc.c:656
-msgid ""
-"drag files in this area from the selection pane or from the file manager"
+#: ../src/brasero-disc.c:677
+msgid "drag files in this area from the selection pane or from the file manager"
 msgstr "גרור קבצים לאזור הזה מתוך תפריט הקבצים או ממנהל הקבצים"
 
-#: ../src/brasero-disc.c:657
+#: ../src/brasero-disc.c:678
 msgid "double click on files in the selection pane"
 msgstr "לחיצה כפולה על קבצים בתפריט הקבצים"
 
-#: ../src/brasero-disc.c:659
+#: ../src/brasero-disc.c:680
 msgid "copy files (from file manager for example) and paste in this area"
 msgstr "העתקת קבצים (ממנהל הקבצים לדוגמה) והדבק אותם פה"
 
-#: ../src/brasero-disc.c:662
+#: ../src/brasero-disc.c:683
 msgid "To remove files from this project you can:"
 msgstr "כדי להסיר קבצים מהפרויקט:"
 
-#: ../src/brasero-disc.c:663
+#: ../src/brasero-disc.c:684
 msgid "click on the \"Remove\" button to remove selected items in this area"
 msgstr "לחץ על הכפתור \"הסר\" כדי להסיר פריטים נבחרים מהאזור הזה"
 
-#: ../src/brasero-disc.c:664
+#: ../src/brasero-disc.c:685
 msgid "drag and release items out from this area"
 msgstr "גרור ושחרר פריטים מהאזור הזה"
 
-#: ../src/brasero-disc.c:665
+#: ../src/brasero-disc.c:686
 msgid "select items in this area, and choose \"Remove\" from context menu"
 msgstr "בחר בפריטים מהאזור הזה, ובחר באפשרות \"הסר\" מתפריט ההקשר"
 
-#: ../src/brasero-disc.c:666
+#: ../src/brasero-disc.c:687
 msgid "select items in this area, and press \"Delete\" key"
 msgstr "בחר בפריטים מהאזור הזה, לחץ על המקש \"Delete\""
 
@@ -4530,10 +4488,10 @@ msgstr "_הוצא"
 msgid "Eject Disc"
 msgstr "הוצא דיסק"
 
-#: ../src/brasero-file-filtered.c:104 ../src/brasero-file-filtered.c:110
-#, fuzzy
+#: ../src/brasero-file-filtered.c:104
+#: ../src/brasero-file-filtered.c:110
 msgid "No file filtered"
-msgstr "לא נבחר קובץ"
+msgstr "לא בוצע סינון"
 
 #: ../src/brasero-file-filtered.c:106
 #, c-format
@@ -4569,28 +4527,27 @@ msgstr ""
 msgid "Filter Options"
 msgstr "אפשרויות סינון"
 
-#: ../src/brasero-file-filtered.c:495
-msgid ""
-"Select the files you want to restore and click on the \"Restore\" button"
+#: ../src/brasero-file-filtered.c:502
+msgid "Select the files you want to restore and click on the \"Restore\" button"
 msgstr "בחר את הקבצים שברצונך לשחזר ולחץ על הכפתור \"שחזר\""
 
-#: ../src/brasero-file-filtered.c:544
+#: ../src/brasero-file-filtered.c:551
 msgid "Type"
 msgstr "סוג"
 
-#: ../src/brasero-file-filtered.c:570
+#: ../src/brasero-file-filtered.c:577
 msgid "_Restore"
 msgstr "_שחזר"
 
-#: ../src/brasero-file-filtered.c:579
+#: ../src/brasero-file-filtered.c:586
 msgid "Restore the selected files"
 msgstr "שחזר את הקובץ הנבחר"
 
-#: ../src/brasero-file-filtered.c:581
+#: ../src/brasero-file-filtered.c:588
 msgid "_Options..."
 msgstr "_אפשרויות..."
 
-#: ../src/brasero-file-filtered.c:589
+#: ../src/brasero-file-filtered.c:596
 msgid "Set the options for file filtering"
 msgstr "קבע את האפשרויות לסינון קבצים"
 
@@ -4611,33 +4568,34 @@ msgstr "אפשרויות סינון"
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" לא ניתן לקריאה"
 
-#: ../src/brasero-io.c:902 ../src/brasero-io.c:1736
+#: ../src/brasero-io.c:1029
+#: ../src/brasero-io.c:1876
 #, c-format
 msgid "recursive symbolic link"
 msgstr ""
 
-#: ../src/brasero-io.c:1099
+#: ../src/brasero-io.c:1236
 #, c-format
 msgid "the file doesn't appear to be a playlist"
 msgstr ""
 
 #. NOTE for translators, the first %s is the medium name
-#: ../src/brasero-medium-selection.c:95
+#: ../src/brasero-medium-selection.c:126
 #, c-format
 msgid "%s: empty"
 msgstr "%s: ריק"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is the space used by data on the disc.
-#: ../src/brasero-medium-selection.c:115
-#, fuzzy, c-format
+#: ../src/brasero-medium-selection.c:146
+#, c-format
 msgid "%s: %s of data"
-msgstr "‏%s מהנתונים"
+msgstr ""
 
-#: ../src/brasero-medium-selection.c:346 ../src/brasero-medium-selection.c:477
-#, fuzzy
+#: ../src/brasero-medium-selection.c:379
+#: ../src/brasero-medium-selection.c:510
 msgid "No available medium"
-msgstr "מצא את כל המוזיקה הזמינה"
+msgstr "אין מדיה זמינה"
 
 #: ../src/burn-volume-obj.c:229
 #, c-format
@@ -4645,32 +4603,28 @@ msgid "the disc mount point could not be retrieved."
 msgstr ""
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:718
+#: ../src/burn-volume-obj.c:728
 #, c-format
 msgid "Blank %s"
-msgstr ""
-"‏%s ריק"
+msgstr "‏%s ריק"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:722
+#: ../src/burn-volume-obj.c:732
 #, c-format
 msgid "Audio and data %s"
-msgstr ""
-"‏%s שמע ונתונים"
+msgstr "‏%s שמע ונתונים"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:726
+#: ../src/burn-volume-obj.c:736
 #, c-format
 msgid "Audio %s"
-msgstr ""
-"‏%s שמע"
+msgstr "‏%s שמע"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:730
+#: ../src/burn-volume-obj.c:740
 #, c-format
 msgid "Data %s"
-msgstr ""
-"‏%s נתונים"
+msgstr "‏%s נתונים"
 
 #: ../src/plugins/checksum/burn-checksum-files.c:110
 #: ../src/plugins/checksum/burn-checksum-image.c:291
@@ -4693,38 +4647,38 @@ msgstr "לא ניתן לפתוח את קובץ ה-md5 (%s)"
 msgid "Creating checksum for image files"
 msgstr "יוצר את סכום הביקורת עבור קבצי תמונת התקליטור"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:730
+#: ../src/plugins/checksum/burn-checksum-files.c:729
 msgid "Checking file integrity"
-msgstr "בודק כלילות קובץ"
+msgstr "בודק תקינות קובץ"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:870
-#: ../src/plugins/checksum/burn-checksum-files.c:990
+#: ../src/plugins/checksum/burn-checksum-files.c:888
+#: ../src/plugins/checksum/burn-checksum-files.c:1006
 #: ../src/plugins/checksum/burn-checksum-image.c:489
 #, c-format
 msgid "some files may be corrupted on the disc"
 msgstr "יתכן שחלק מהקבצים על הדיסק פגומים"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1225
+#: ../src/plugins/checksum/burn-checksum-files.c:1242
 msgid "allows to check file integrities on a disc"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1263
-#: ../src/plugins/checksum/burn-checksum-image.c:718
+#: ../src/plugins/checksum/burn-checksum-files.c:1281
+#: ../src/plugins/checksum/burn-checksum-image.c:748
 msgid "Hashing algorithm to be used:"
 msgstr ""
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1266
-#: ../src/plugins/checksum/burn-checksum-image.c:721
+#: ../src/plugins/checksum/burn-checksum-files.c:1284
+#: ../src/plugins/checksum/burn-checksum-image.c:751
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1268
-#: ../src/plugins/checksum/burn-checksum-image.c:723
+#: ../src/plugins/checksum/burn-checksum-files.c:1286
+#: ../src/plugins/checksum/burn-checksum-image.c:753
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1270
-#: ../src/plugins/checksum/burn-checksum-image.c:725
+#: ../src/plugins/checksum/burn-checksum-files.c:1288
+#: ../src/plugins/checksum/burn-checksum-image.c:755
 msgid "SHA256"
 msgstr "SHA256"
 
@@ -4743,9 +4697,9 @@ msgstr "תמונת התקליטור לא מקומית"
 msgid "Creating image checksum"
 msgstr "יוצר סכום ביקורת לתמונת תקליטור"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:695
+#: ../src/plugins/checksum/burn-checksum-image.c:724
 msgid "allows to check data integrity on disc after it is burnt"
-msgstr "מאפשר בדיקת כלילות הנתונים על דיסק לאחר הצריבה"
+msgstr "מאפשר בדיקת תקינות הנתונים על דיסק לאחר הצריבה"
 
 #: ../src/brasero-jacket-background.c:160
 msgid "Images"
@@ -4831,16 +4785,23 @@ msgstr ""
 msgid "Cover Editor"
 msgstr "עורך כיסוי דיסק"
 
-#: ../src/brasero-multi-song-props.c:85 ../src/brasero-multi-song-props.c:93
-#: ../src/brasero-multi-song-props.c:101 ../src/brasero-multi-song-props.c:119
-#: ../src/brasero-multi-song-props.c:135 ../src/brasero-multi-song-props.c:156
-#: ../src/brasero-multi-song-props.c:169 ../src/brasero-multi-song-props.c:244
-#: ../src/brasero-multi-song-props.c:265 ../src/brasero-multi-song-props.c:286
-#: ../src/brasero-rename.c:87 ../src/brasero-rename.c:279
+#: ../src/brasero-multi-song-props.c:85
+#: ../src/brasero-multi-song-props.c:93
+#: ../src/brasero-multi-song-props.c:101
+#: ../src/brasero-multi-song-props.c:119
+#: ../src/brasero-multi-song-props.c:135
+#: ../src/brasero-multi-song-props.c:156
+#: ../src/brasero-multi-song-props.c:169
+#: ../src/brasero-multi-song-props.c:244
+#: ../src/brasero-multi-song-props.c:265
+#: ../src/brasero-multi-song-props.c:286
+#: ../src/brasero-rename.c:87
+#: ../src/brasero-rename.c:279
 msgid "<keep current values>"
 msgstr "<השאר ערכים קיימים>"
 
-#: ../src/brasero-multi-song-props.c:122 ../src/brasero-multi-song-props.c:139
+#: ../src/brasero-multi-song-props.c:122
+#: ../src/brasero-multi-song-props.c:139
 msgid "Remove silences"
 msgstr "הסר פיצולים"
 
@@ -4913,9 +4874,8 @@ msgid "Remove the selected videos from the project"
 msgstr "הסרת קבצי הווידאו המסומנים מהפרויקט"
 
 #: ../src/brasero-video-disc.c:245
-#, fuzzy
 msgid "Do you want to search for video files inside the directory?"
-msgstr "סמן אם ברצונך לחפש בין קבצי שמע בלבד"
+msgstr "האם אתה בתוך שברצונך לחפש קבצי וידאו בתוך התיקייה?"
 
 #: ../src/brasero-video-disc.c:250
 msgid "Directories can't be added to video disc."
@@ -4923,7 +4883,7 @@ msgstr "לא ניתן להוסיף תיקיות לדיסק וידאו"
 
 #: ../src/brasero-video-disc.c:294
 msgid "Unreadable file"
-msgstr ""
+msgstr "קובץ שלא ניתן לקריאה"
 
 #: ../src/brasero-video-disc.c:323
 #, c-format
@@ -5005,8 +4965,7 @@ msgid "Converting video file to MPEG2"
 msgstr "ממיר קובץ וידאו לקובץ MPEG2"
 
 #: ../src/plugins/transcode/burn-vob.c:1060
-msgid ""
-"Vob allows to transcode any video file to a format suitable for video DVDs"
+msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr ""
 
 #: ../src/plugins/vcdimager/burn-vcdimager.c:472
@@ -5019,7 +4978,7 @@ msgstr "מעתיק הדיסקים Brasero"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:2
 msgid "Copy CDs and DVDs"
-msgstr ""
+msgstr "העתקת תקליטורים"
 
 #: ../data/brasero-copy-medium.desktop.in.in.h:3
 msgid "Disc Copier"
@@ -5029,23 +4988,44 @@ msgstr "מעתיק דיסקים"
 #: ../data/brasero-open-playlist.desktop.in.in.h:2
 #: ../data/brasero-open-project.desktop.in.in.h:2
 msgid "Create CDs and DVDs"
-msgstr "יצירת תקליטורי CD ו-DVD"
+msgstr "יצירת תקליטורים"
 
+#~ msgid "Brasero Disc Burning"
+#~ msgstr "תוכנת הצריבה Brasero"
+#~ msgid ""
+#~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
+#~ msgstr ""
+#~ "Only used in conjunction with -immed flag with cdrecord. See immed_flag."
+#~ msgid "loading"
+#~ msgstr "טוען"
+#~ msgid "Loading ..."
+#~ msgstr "טוען ..."
+#~ msgid "%i MiB"
+#~ msgstr "%i MiB"
+#~ msgid "%i KiB"
+#~ msgstr "%i KiB"
+#~ msgid "%i bytes"
+#~ msgstr "%i bytes"
+#~ msgid "KiB"
+#~ msgstr "KiB"
+#~ msgid "MiB"
+#~ msgstr "MiB"
+#~ msgid "GiB"
+#~ msgstr "GiB"
+#~ msgid "Open a data project with the contents of nautilus-cd-burner"
+#~ msgstr "Open a data project with the contents of nautilus-cd-burner"
+#~ msgid "no disc could be found"
+#~ msgstr "לא ניתן למצוא דיסק"
 #~ msgid "Burn Image"
 #~ msgstr "צרוב תמונת תקליטור"
-
 #~ msgid "Disc Burning Application"
 #~ msgstr "יישום צריבת דיסקים"
-
 #~ msgid "Open project"
 #~ msgstr "פתח פרויקט"
-
 #~ msgid "Choose the disc to write to"
 #~ msgstr "בחר דיסק לכתיבה"
-
 #~ msgid "<i><b>Pause</b></i>"
 #~ msgstr "<i><b>הפסקה</b></i>"
-
 #~ msgid ""
 #~ "<b>%s</b>\n"
 #~ "%s\n"
@@ -5054,89 +5034,62 @@ msgstr "יצירת תקליטורי CD ו-DVD"
 #~ "<b>%s</b>\n"
 #~ "%s\n"
 #~ "<i>%s</i>"
-
 #~ msgid "<b>No results</b>"
 #~ msgstr "<b>אין תוצאות</b>"
-
 #~ msgid "<b>Options</b>"
 #~ msgstr "<b>אפשרויות</b>"
-
 #~ msgid "<big><b>Creating image</b></big>"
 #~ msgstr "<big><b>יוצר תמונת תקליטור</b></big>"
-
 #~ msgid "<big><b>Burning data DVD</b></big>"
 #~ msgstr "<big><b>צורב נתונים ל-DVD</b></big>"
-
 #~ msgid "<big><b>Burning image to DVD</b></big>"
 #~ msgstr "<big><b>צורב תמונת תקליטור ל-DVD</b></big>"
-
 #~ msgid "<big><b>Copying data DVD</b></big>"
 #~ msgstr "<big><b>מעתיק דיסק DVD</b></big>"
-
 #~ msgid "<big><b>Burning audio CD</b></big>"
 #~ msgstr "<big><b>צורב תקליטור שמע</b></big>"
-
 #~ msgid "<big><b>Burning data CD</b></big>"
 #~ msgstr "<big><b>צורב תקליטור נתונים</b></big>"
-
 #~ msgid "<big><b>Copying CD</b></big>"
 #~ msgstr "<big><b>מעתיק תקליטור</b></big>"
-
 #~ msgid "<big><b>Burning data disc</b></big>"
 #~ msgstr "<big><b>צורב דיסק נתונים</b></big>"
-
 #~ msgid "<big><b>Copying disc</b></big>"
 #~ msgstr "<big><b>מעתיק דיסק</b></big>"
-
 #~ msgid "<big><b>Burning image to disc</b></big>"
 #~ msgstr "<big><b>צורב תמונת תקליטור לדיסק</b></big>"
-
 #~ msgid "A data integrity test is about to begin:"
 #~ msgstr "בדיקת תקינות הנתונים עומדת להתחיל:"
-
 #~ msgid "Import Session"
 #~ msgstr "ייבוא צריבה"
-
 #~ msgid "Import session"
 #~ msgstr "ייבוא צריבה"
-
 #~ msgid "A multisession disc is inserted:"
 #~ msgstr "הוכנס דיסק מרובה צריבות:"
-
 #~ msgid "<b>Label of the disc</b>"
 #~ msgstr "<b>תווית הדיסק</b>"
-
 #~ msgid "<b>Title</b>"
 #~ msgstr "<b>כותרת</b>"
-
 #~ msgid "<i>the medium is not writable</i>"
 #~ msgstr "<i>לא ניתן לכתוב על המדיה</i>"
-
 #~ msgid "%s free"
 #~ msgstr "%s פנוי"
-
 #~ msgid "the medium can be recorded"
 #~ msgstr "ניתן לצרוב על המדיה"
-
 #~ msgid "data can be written or appended to the medium"
 #~ msgstr "ניתן לכתוב או להוסיף נתונים למדיה"
-
 #~ msgid "data can be appended to the medium"
 #~ msgstr "ניתן להוסיף נתונים למדיה"
-
 #~ msgid ""
 #~ "The <b>image</b> will be saved to\n"
 #~ "%s"
 #~ msgstr ""
 #~ "קובץ <b>תמונת התקליטור</b> ישמר ב\n"
 #~ "%s"
-
 #~ msgid "<b>Size:</b>"
 #~ msgstr "<b>גודל:</b>"
-
 #~ msgid "<b>Status:</b>"
 #~ msgstr "<b>מצב:</b>"
-
 #~ msgid "This image can't be burnt:"
 #~ msgstr "לא ניתן לצרוב את תמונת התקליטור:"
 
@@ -5147,36 +5100,28 @@ msgstr "יצירת תקליטורי CD ו-DVD"
 #, fuzzy
 #~ msgid "No Image"
 #~ msgstr "אין קובץ תמונת תקליטור"
-
 #~ msgid "Path:"
 #~ msgstr "נתיב:"
-
 #~ msgid "Open an image"
 #~ msgstr "פתח תמונת תקליטור"
-
 #~ msgid "<b>Image</b>"
 #~ msgstr "<b>תמונת תקליטור</b>"
-
 #~ msgid "<span weight=\"bold\">Name:</span>\t %s"
 #~ msgstr "<span weight=\"bold\">שם:</span>\t %s"
-
 #~ msgid "<span weight=\"bold\">%s</span>\n"
 #~ msgstr "<span weight=\"bold\">%s</span>\n"
-
 #~ msgid "Would you like to activate overburn?"
 #~ msgstr "להפעיל את אפשרות צריבת היתר?"
 
 #, fuzzy
 #~ msgid "Project Size"
 #~ msgstr "גודל הפרויקט"
-
 #~ msgid "_Don't use overburn"
 #~ msgstr "_אל תשתמש בצריבת יתר"
 
 #, fuzzy
 #~ msgid "Default Burning Application"
 #~ msgstr "יישום ברירת המחדל לצריבה"
-
 #~ msgid ""
 #~ "This is a first time running dialog that won't be shown again. If you "
 #~ "change your mind, you can change your choice later in the Removable "
@@ -5184,147 +5129,102 @@ msgstr "יצירת תקליטורי CD ו-DVD"
 #~ msgstr ""
 #~ "זו חלון המופעל פעם אחת ולא יוצג שוב. את תשנה את דעתך, ניתן לשנות את "
 #~ "הבחירה בהעדפות כוננים ומדיה נשלפים ולבחור או לבטל את הבחירה ב-brasero."
-
 #~ msgid "_Keep Using \"%s\""
 #~ msgstr "_המשך להשתמש ב \"%s\""
-
 #~ msgid "_Use Brasero next time"
 #~ msgstr "_השתמש ב-Brasero בפעם הבאה"
-
 #~ msgid "Would you like to use Brasero in the future to burn audio discs?"
 #~ msgstr "להשתמש ב-Brasero בעתיד כדי לצרוב תקליטורי שמע?"
-
 #~ msgid "<i>%s</i> is busy"
 #~ msgstr "<i>%s</i> בשימוש"
-
 #~ msgid "<i>%s</i> not properly supported"
 #~ msgstr "<i>%s</i> לא נתמך כראוי"
-
 #~ msgid "The disc in <i>%s</i> is not supported"
 #~ msgstr "הדיסק ב-<i>%s</i> לא ניתמך"
-
 #~ msgid "<b>Empty</b> (%s free for <i>%s</i>)"
 #~ msgstr "‏<b>ריק</b> ‏(%s פנוי עבור <i>%s</i>)"
-
 #~ msgid "<b>Empty</b> (%s free)"
 #~ msgstr "<b>ריק</b> (%s פנוי)"
-
 #~ msgid "%s (DVD-R Dual Layer)"
 #~ msgstr "%s (DVD-R Dual Layer)"
-
 #~ msgid "%s (DVD-R)"
 #~ msgstr "%s (DVD-R)"
-
 #~ msgid "%s (CD-R)"
 #~ msgstr "%s (CD-R)"
-
 #~ msgid "<span size='x-large'><b>Create a new project:</b></span>"
 #~ msgstr "<span size='x-large'><b>יצירת פרויקט חדש:</b></span>"
-
 #~ msgid ""
 #~ "<span foreground='grey50'><b><i>Choose from the following options</i></"
 #~ "b></span>"
 #~ msgstr "<span foreground='grey50'><b><i>בחר מהאפשרויות הבאות</i></b></span>"
-
 #~ msgid "<span size='x-large'><b>Choose a recently opened project:</b></span>"
 #~ msgstr "<span size='x-large'><b>בחר פרויקט שנפתח לאחרונה:</b></span>"
-
 #~ msgid "<b>Options:</b>"
 #~ msgstr "<b>אפשרויות:</b>"
-
 #~ msgid "Choose the disc to read from"
 #~ msgstr "בחר את הדיסק הדיסק לקריאה"
-
 #~ msgid "there isn't any available session on the disc"
 #~ msgstr "איו צריבות זמינות על הדיסק"
-
 #~ msgid "Hide the _filtered file list (no file)"
 #~ msgstr "הסתר את רשימת הקבצים ה_מסוננים (אין קבצים)"
-
 #~ msgid "Show the _filtered file list (no file)"
 #~ msgstr "הצג את רשימת הקבצים ה_מסוננים (אין קבצים)"
-
 #~ msgid "<b>Filtering options</b>"
 #~ msgstr "<b>אפשרויות סינון</b>"
 
 #, fuzzy
 #~ msgid "<b>Data %s</b>: \"%s\""
 #~ msgstr "<i>%s</i> בשימוש"
-
 #~ msgid "<b>%s</b> in %s"
 #~ msgstr "‏<b>%s</b> ב-%s"
-
 #~ msgid "<b>_Image</b>"
 #~ msgstr "<b>_תמונה</b>"
-
 #~ msgid "%d:%02i hour"
 #~ msgid_plural "%i:%02i hours"
 #~ msgstr[0] "%d:%02i שעות"
 #~ msgstr[1] "%i:%02i שעות"
-
 #~ msgid "Disc Insertion"
 #~ msgstr "הכנסת דיסק"
-
 #~ msgid "Disc Replacement"
 #~ msgstr "החלפת דיסק"
-
 #~ msgid "_Hide errors"
 #~ msgstr "_הסתר שגיאות"
-
 #~ msgid "Find all available videos"
 #~ msgstr "מצא את כל הווידאו הזמין"
-
 #~ msgid "Find all available pictures"
 #~ msgstr "מצא את כל התמונות הזמינות"
-
 #~ msgid "Find all available documents"
 #~ msgstr "מצא את כל המסמכים הזמינים"
-
 #~ msgid "Find all available spreadsheets"
 #~ msgstr "מצא את כל הגליונות האלקטרוניים הזמינים"
-
 #~ msgid "Find all available presentations"
 #~ msgstr "מצא את כל המצגות הזמינות"
-
 #~ msgid "Text File"
 #~ msgstr "קובץ טקסט"
-
 #~ msgid "Waiting for disc insertion"
 #~ msgstr "ממתין להכנסת דיסק"
-
 #~ msgid "Import session error"
 #~ msgstr "שגיאת ייבוא צריבה"
-
 #~ msgid "Waiting for ongoing tasks"
 #~ msgstr "ממתין למשימות פעילות."
-
 #~ msgid "Empty project"
 #~ msgstr "ריקון פרויקט"
-
 #~ msgid "New project"
 #~ msgstr "פרויקט חדש"
-
 #~ msgid "Brasero - Copy a disc"
 #~ msgstr "‏Brasero - העתקת דיסק"
-
 #~ msgid "No title"
 #~ msgstr "אין כותרת"
-
 #~ msgid "<big><b>Options</b></big>"
 #~ msgstr "<big><b>אפשרויות</b></big>"
-
 #~ msgid "Close if successful"
 #~ msgstr "סגור אחרי הצריבה"
-
 #~ msgid "Display file chooser"
 #~ msgstr "הצג בוחר קבצים"
-
 #~ msgid "_Close the application if the burn process is successful"
 #~ msgstr "_סגור את היישום אם תהליך הצריבה מסתיים בהצלחה"
-
 #~ msgid "Continue burning"
 #~ msgstr "המשך צריבה"
-
 #~ msgid "Sorry, no documentation for Brasero."
 #~ msgstr "סליחה, אין תיעוד עבור Brasero."
 
@@ -5335,89 +5235,64 @@ msgstr "יצירת תקליטורי CD ו-DVD"
 #, fuzzy
 #~ msgid "Insert a string"
 #~ msgstr "ה_כנס הפסקה"
-
 #~ msgid ""
 #~ "Do you want to erase the current disc?\n"
 #~ "Or replace the current disc with a new disc?"
 #~ msgstr ""
 #~ "למחוק את הדיסק הנוכחי?\n"
 #~ "או להחליף את הדיסק הנוכחי בדיסק חדש?"
-
 #~ msgid "you must delete some files."
 #~ msgstr "עליך למחוק מספר קבצים."
-
 #~ msgid "don't _show this dialog again"
 #~ msgstr "אל _תציג את החלון הזה שוב"
-
 #~ msgid "Brasero is not the default application to burn audio CDs:"
 #~ msgstr "‏Brasero אינו יישום ברירת המחדל לצריבת תקליטורי שמע:"
-
 #~ msgid "Brasero is not the default application to burn data discs:"
 #~ msgstr "‏Brasero אינו יישום ברירת המחדל לצריבת תקליטורי נתונים:"
-
 #~ msgid "Removed files"
 #~ msgstr "קבצים שהוסרו"
-
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"larger\">The following files were removed "
 #~ "automatically from the project.</span>"
 #~ msgstr ""
 #~ "<span weight=\"bold\" size=\"larger\">הקבצים הבאים הוסרו אוטומטית "
 #~ "מהפרויקט.</span>"
-
 #~ msgid "_Notify when files are filtered"
 #~ msgstr "_להודיע לי כשקבצים מסוננים"
-
 #~ msgid "\"%s\" is now ready for use"
 #~ msgstr "\"%s\" כעת מוכן לשימוש"
-
 #~ msgid "Removed Files"
 #~ msgstr "קבצים שהוסרו"
-
 #~ msgid "Display the files filtered from the project"
 #~ msgstr "הצגת הקבצים שסוננו מהפרויקט"
-
 #~ msgid "Filtered Files"
 #~ msgstr "קבצים מסוננים"
-
 #~ msgid "(empty)"
 #~ msgstr "(ריק)"
-
 #~ msgid "Some files were filtered:"
 #~ msgstr "חלק מהקבצים סוננו:"
-
 #~ msgid "The file \"%s\" is unreadable:"
 #~ msgstr "הקובץ \"%s\" לא ניתן לקריאה:"
-
 #~ msgid "The directory \"%s\" is unreadable:"
 #~ msgstr "הספרייה \"%s\" לא ניתנת לקריאה:"
-
 #~ msgid "loading project"
 #~ msgstr "טוען פרויקט"
-
 #~ msgid "Project loading failure"
 #~ msgstr "שגיאת בטעינת הפרויקט"
-
 #~ msgid "<i>no disc</i>"
 #~ msgstr "<i>אין דיסק</i>"
-
 #~ msgid "<i>unknown type</i>"
 #~ msgstr "<i>סוג לא ידוע</i>"
-
 #~ msgid "<i>busy disc</i>"
 #~ msgstr "<i>דיסק עסוק</i>"
-
 #~ msgid "data tracks"
 #~ msgstr "רצועות נתונים"
-
 #~ msgid "<b>Type:</b>"
 #~ msgstr "<b>סוג:</b>"
-
 #~ msgid "Burn..."
 #~ msgstr "צרוב..."
-
 #~ msgid "Choose the drive that holds the media"
 #~ msgstr "בחר את ההתקן המחזיק במדיה"
-
 #~ msgid "Creating local image checksum"
 #~ msgstr "יוצר סכום ביקורת לתמונת תקליטור"
+
