@@ -1,5 +1,20 @@
 2008-11-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Change behavior of display->show/hide sidebar.
+	This setting is now for all types of projects and not on a per-type
+	basis which was stupid
+
+	* src/brasero-file-chooser.c (brasero_file_chooser_set_context):
+	* src/brasero-layout.c (brasero_layout_item_set_active),
+	(brasero_layout_show_sidepane_changed_cb),
+	(brasero_layout_combo_changed_cb), (brasero_layout_load),
+	(brasero_layout_empty_toggled_cb), (brasero_layout_init):
+	* src/brasero-search-entry.c (brasero_search_entry_set_context):
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_start_if_found):
+
+2008-11-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix rare crash
 
 	* src/brasero-io.c (brasero_io_get_metadata_info):

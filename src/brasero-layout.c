@@ -112,6 +112,7 @@ struct BraseroLayoutPrivate {
 	gint radio_notify;
 	gint preview_notify;
 	gint layout_notify;
+	gint sidepane_notify;
 
 	GtkWidget *notebook;
 	GtkWidget *main_box;
@@ -171,6 +172,7 @@ const gchar description [] =
 
 
 #define BRASERO_KEY_DISPLAY_DIR		"/apps/brasero/display/"
+#define BRASERO_KEY_SHOW_SIDEPANE	BRASERO_KEY_DISPLAY_DIR "sidepane"
 #define BRASERO_KEY_LAYOUT_AUDIO	BRASERO_KEY_DISPLAY_DIR "audio_pane"
 #define BRASERO_KEY_LAYOUT_DATA		BRASERO_KEY_DISPLAY_DIR "data_pane"
 #define BRASERO_KEY_LAYOUT_VIDEO	BRASERO_KEY_DISPLAY_DIR "video_pane"
@@ -557,13 +559,43 @@ brasero_layout_item_set_active (BraseroLayout *layout,
 				    -1);
 
 		if (tree_item == item) {
+			BraseroLayoutObject *object;
+
 			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (layout->priv->combo), &iter);
 			gtk_widget_show (item->widget);
 			layout->priv->active_item = item;
+
+			/* tell the object what context we are in */
+			object = brasero_layout_item_get_object (item);
+			brasero_layout_object_set_context (object, layout->priv->ctx_type);
 			return;
 		}
 	} while (gtk_tree_model_iter_next (model, &iter));
 
+}
+
+static void
+brasero_layout_show_sidepane_changed_cb (GConfClient *client,
+					 guint cxn,
+					 GConfEntry *entry,
+					 gpointer data)
+{
+	BraseroLayout *layout;
+	GtkAction *action;
+	GConfValue *value;
+	gboolean show;
+
+	value = gconf_entry_get_value (entry);
+	if (value->type != GCONF_VALUE_BOOL)
+		return;
+
+	show = gconf_value_get_bool (value);
+
+	layout = BRASERO_LAYOUT (data);
+
+	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), show);
+	brasero_layout_set_side_pane_visible (layout, show);
 }
 
 static void
@@ -771,7 +803,10 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 	layout->priv->active_item = item;
 	gtk_widget_show (item->widget);
 
+	/* tell the object what context we are in */
 	source = brasero_layout_item_get_object (item);
+	brasero_layout_object_set_context (source, layout->priv->ctx_type);
+
 	if (!BRASERO_IS_URI_CONTAINER (source)) {
 		BRASERO_BURN_LOG ("Item is not an URI container");
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
@@ -821,12 +856,14 @@ brasero_layout_item_set_visible (BraseroLayout *layout,
 }
 
 void
-brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
+brasero_layout_load (BraseroLayout *layout,
+		     BraseroLayoutType type)
 {
 	gchar *layout_id = NULL;
 	GError *error = NULL;
 	GtkTreeModel *model;
 	GtkAction *action;
+	gboolean sidepane;
 	GtkTreeIter iter;
 
 	/* remove GCONF notification if any */
@@ -908,17 +945,11 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	model = gtk_tree_model_filter_get_model (GTK_TREE_MODEL_FILTER (model));
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		do {
-			BraseroLayoutObject *object;
 			BraseroLayoutItem *item = NULL;
 
 			gtk_tree_model_get (model, &iter,
 					    ITEM_COL, &item,
 					    -1);
-
-			/* tell all the object what context we are in */
-			object = brasero_layout_item_get_object (item);
-			if (object)
-				brasero_layout_object_set_context (object, type);
 
 			/* check if that pane should be displayed in such a context */
 			if (!(item->types & type)) {
@@ -949,10 +980,12 @@ brasero_layout_load (BraseroLayout *layout, BraseroLayoutType type)
 	}
 
 	/* hide or show side pane */
-	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
-	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action),
-				     (layout_id && strcmp (layout_id, BRASERO_LAYOUT_NONE_ID)));
+	sidepane = gconf_client_get_bool (layout->priv->client,
+					  BRASERO_KEY_SHOW_SIDEPANE,
+					  NULL);
 
+	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
+	gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), sidepane);
 	g_free (layout_id);
 }
 
@@ -1159,14 +1192,34 @@ brasero_layout_empty_toggled_cb (GtkToggleAction *action,
 				 BraseroLayout *layout)
 {
 	gboolean active;
+	GError *error = NULL;
 
 	active = gtk_toggle_action_get_active (action);
 	brasero_layout_set_side_pane_visible (layout, active);
 
-	if (!active)
-		brasero_layout_save (layout, BRASERO_LAYOUT_NONE_ID);
-	else if (layout->priv->active_item)
-		brasero_layout_save (layout, layout->priv->active_item->id);
+	if (layout->priv->sidepane_notify) {
+		gconf_client_notify_remove (layout->priv->client,
+					    layout->priv->sidepane_notify);
+		layout->priv->sidepane_notify = 0;
+	}
+
+	gconf_client_set_bool (layout->priv->client,
+			       BRASERO_KEY_SHOW_SIDEPANE,
+			       active,
+			       &error);
+
+	if (error) {
+		g_warning ("Can't set GConf key %s. \n", error->message);
+		g_error_free (error);
+		error = NULL;
+	}
+
+	layout->priv->sidepane_notify = gconf_client_notify_add (layout->priv->client,
+								 BRASERO_KEY_SHOW_SIDEPANE,
+								 brasero_layout_show_sidepane_changed_cb,
+								 layout,
+								 NULL,
+								 &error);
 }
 
 void
@@ -1380,6 +1433,13 @@ brasero_layout_init (BraseroLayout *obj)
 	obj->priv->main_box = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (alignment), obj->priv->main_box);
 	gtk_widget_show (obj->priv->main_box);
+
+	obj->priv->sidepane_notify = gconf_client_notify_add (obj->priv->client,
+							      BRASERO_KEY_SHOW_SIDEPANE,
+							      brasero_layout_show_sidepane_changed_cb,
+							      obj,
+							      NULL,
+							      NULL);
 
 	/* close button and  combo */
 	box = gtk_hbox_new (FALSE, 6);

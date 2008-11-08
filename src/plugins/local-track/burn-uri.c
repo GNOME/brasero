@@ -378,8 +378,11 @@ brasero_burn_uri_start_if_found (BraseroBurnURI *self,
 				 const gchar *uri,
 				 GError **error)
 {
+	if (!uri)
+		return BRASERO_BURN_NOT_RUNNING;
+
 	/* Find any graft point with burn:// URI */
-	if (uri && !g_str_has_prefix (uri, "burn://"))
+	if (!g_str_has_prefix (uri, "burn://"))
 		return BRASERO_BURN_NOT_RUNNING;
 
 	BRASERO_JOB_LOG (self, "burn:// URI found %s", uri);

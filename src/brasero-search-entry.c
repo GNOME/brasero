@@ -75,6 +75,8 @@ struct BraseroSearchEntryPrivate {
 	guint cxn;
 	gint search_id;
 
+	BraseroLayoutType ctx;
+
 	gchar *keywords;
 
 	GtkWidget *documents;
@@ -768,9 +770,19 @@ void
 brasero_search_entry_set_context (BraseroSearchEntry *self,
 				  BraseroLayoutType type)
 {
+	if (self->priv->ctx == type)
+		return;
+
+	self->priv->ctx = type;
 	if (type == BRASERO_LAYOUT_AUDIO) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->video), FALSE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->music), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->pictures), FALSE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->documents), FALSE);
+	}
+	else if (type == BRASERO_LAYOUT_VIDEO) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->video), TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->music), FALSE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->pictures), FALSE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->documents), FALSE);
 	}
