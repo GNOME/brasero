@@ -62,12 +62,6 @@ struct _BraseroDataProjectClass
 	/* virtual functions */
 
 	/**
-	 * That's to tell the model whether or not to update it
-	 */
-	void		(*freeze)		(BraseroDataProject *project,
-						 gboolean freeze);
-
-	/**
 	 * num_nodes is the number of nodes that were at the root of the 
 	 * project.
 	 */
