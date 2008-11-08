@@ -118,8 +118,6 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 	}
 
 	while ((info = g_file_enumerator_next_file (enumerator, cancel, error))) {
-		GFile *file;
-
 		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
 			GFile *directory;
 			BraseroGraftPt *graft;
