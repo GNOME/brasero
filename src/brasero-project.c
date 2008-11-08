@@ -1004,7 +1004,8 @@ brasero_project_set_audio (BraseroProject *project, GSList *uris)
 }
 
 void
-brasero_project_set_data (BraseroProject *project, GSList *uris)
+brasero_project_set_data (BraseroProject *project,
+			  GSList *uris)
 {
 	brasero_project_switch (project, BRASERO_PROJECT_TYPE_DATA);
 

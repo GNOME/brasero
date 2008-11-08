@@ -703,8 +703,6 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 
 		gtk_widget_destroy (message);
 	}
-
-	priv->loading = FALSE;
 }
 
 static void
@@ -1675,7 +1673,6 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 	priv->loading = brasero_data_project_load_contents (priv->project,
 							    track->contents.data.grafts,
 							    track->contents.data.excluded);
-
 	if (!priv->loading) {
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->tree), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (priv->filter), TRUE);
@@ -1715,14 +1712,17 @@ brasero_data_disc_get_status (BraseroDisc *disc)
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
 	if (priv->loading)
 		return BRASERO_DISC_LOADING;
 
-	if (brasero_data_project_is_empty (priv->project))
-		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
-	
+	/* This one goes before the next since a node may be loading but not
+	 * yet in the project and therefore project will look empty */
 	if (brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->project)))
 		return BRASERO_DISC_NOT_READY;
+
+	if (brasero_data_project_is_empty (priv->project))
+		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
 	return BRASERO_DISC_OK;
 }

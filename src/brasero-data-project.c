@@ -2568,7 +2568,6 @@ brasero_data_project_is_empty (BraseroDataProject *self)
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
 	if (g_hash_table_size (priv->grafts))
 		return FALSE;
 

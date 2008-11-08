@@ -852,11 +852,17 @@ brasero_project_manager_data (BraseroProjectManager *manager,
 		uris = g_slist_prepend (NULL, burn_URI);
 	}
 
-	brasero_project_manager_switch (manager,
-					BRASERO_PROJECT_TYPE_DATA,
-					uris,
-					NULL,
-					TRUE);
+	if (manager->priv->oneshot) {
+		brasero_project_set_data (BRASERO_PROJECT (manager->priv->project),
+					  uris);
+		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
+	}
+	else
+		brasero_project_manager_switch (manager,
+						BRASERO_PROJECT_TYPE_DATA,
+						uris,
+						NULL,
+						TRUE);
 	
 	if (burn_URI) {
 		g_slist_free (uris);

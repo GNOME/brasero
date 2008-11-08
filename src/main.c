@@ -298,6 +298,7 @@ brasero_app_parse_options (BraseroApp *app)
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
 		g_slist_free (list);
+		return;
 	}
 	else if (files) {
 		if (g_strv_length (files) == 1) {
