@@ -145,14 +145,19 @@ brasero_io_job_progress_report_cb (gpointer callback_data)
 	g_mutex_lock (priv->lock);
 	for (iter = priv->progress; iter; iter = iter->next) {
 		BraseroIOJobProgress *progress;
+		gpointer callback_data;
 
 		progress = iter->data;
+
+		callback_data = progress->job->callback_data?
+				progress->job->callback_data->callback_data:
+				NULL;
 
 		/* update our progress */
 		progress->progress (progress->job, progress);
 		progress->job->base->progress (progress->job->base->object,
 					       progress,
-					       progress->job->callback_data);
+					       callback_data);
 	}
 	g_mutex_unlock (priv->lock);
 
@@ -445,9 +450,11 @@ brasero_io_job_free (BraseroIO *self,
 		 * add a dummy result to destroy callback_data. */
 		if (g_atomic_int_dec_and_test (&job->callback_data->ref)) {
 			if (cancelled) {
-				job->base->destroy (job->base->object,
-						    TRUE,
-						    job->callback_data);
+				if (job->base->destroy)
+					job->base->destroy (job->base->object,
+							    TRUE,
+							    job->callback_data->callback_data);
+
 				g_free (job->callback_data);
 			}
 			else
@@ -2560,7 +2567,7 @@ brasero_io_cancel_tasks_by_data_cb (BraseroAsyncTaskManager *manager,
 {
 	BraseroIOJob *job = callback_data;
 
-	if (job->callback_data != user_data)
+	if (job->callback_data && job->callback_data->callback_data != user_data)
 		return FALSE;
 
 	return TRUE;
@@ -2616,7 +2623,10 @@ brasero_io_compare_unprocessed_task (BraseroAsyncTaskManager *manager,
 	if (job->base == data->base)
 		return FALSE;
 
-	return data->func (job->callback_data, data->user_data);
+	if (!job->callback_data)
+		return FALSE;
+
+	return data->func (job->callback_data->callback_data, data->user_data);
 }
 
 void
@@ -2679,11 +2689,6 @@ brasero_io_free_async_queue (BraseroAsyncTaskManager *manager,
 			     gpointer NULL_data)
 {
 	BraseroIOJob *job = callback_data;
-
-	if (job->base->destroy)
-		job->base->destroy (job->base->object,
-				    TRUE,
-				    job->callback_data);
 
 	brasero_io_job_free (BRASERO_IO (manager), TRUE, job);
 	return TRUE;

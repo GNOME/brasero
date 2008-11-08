@@ -1,5 +1,18 @@
 2008-11-08  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix some problem when cancelling job (crash) or progress report (not
+	used so unnoticeable), also happened when we tried to give a higher
+	priority to jobs
+
+	* src/brasero-data-disc.c (brasero_data_disc_session_available_cb):
+	* src/brasero-io.c (brasero_io_job_progress_report_cb),
+	(brasero_io_job_free), (brasero_io_cancel_tasks_by_data_cb),
+	(brasero_io_compare_unprocessed_task),
+	(brasero_io_free_async_queue):
+	* src/brasero-project.c (brasero_project_open_project):
+
+2008-11-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Change behavior of display->show/hide sidebar.
 	This setting is now for all types of projects and not on a per-type
 	basis which was stupid
