@@ -825,6 +825,13 @@ brasero_io_get_metadata_info (BraseroIO *self,
 
 		metadata_iter = iter->data;
 		metadata_uri = brasero_metadata_get_uri (metadata_iter);
+		if (!metadata_uri) {
+			/* It could a metadata that was running but failed to
+			 * retrieve anything and is waiting to be inserted back
+			 * in the available list. Ignore it. */
+			continue;
+		}
+
 		metadata_flags = brasero_metadata_get_flags (metadata_iter);
 
 		if (((flags & metadata_flags) == flags)
