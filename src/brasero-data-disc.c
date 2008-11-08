@@ -1265,6 +1265,7 @@ brasero_data_disc_session_available_cb (BraseroDataSession *session,
 						      10000,
 						      BRASERO_NOTIFY_CONTEXT_MULTISESSION);
 		g_free (volume_name);
+		g_free (string);
 
 		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),
 						GTK_STOCK_DIALOG_INFO);

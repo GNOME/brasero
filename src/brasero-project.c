@@ -2004,7 +2004,9 @@ brasero_project_open_project (BraseroProject *project,
 	g_signal_handlers_block_by_func (project->priv->name_display,
 					 brasero_project_name_changed_cb,
 					 project);
-	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) label);
+	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), label);
+	g_free (label);
+
 	g_signal_handlers_unblock_by_func (project->priv->name_display,
 					   brasero_project_name_changed_cb,
 					   project);
