@@ -578,7 +578,7 @@ brasero_medium_properties_init (BraseroMediumProperties *object)
 
 	priv->caps = brasero_burn_caps_get_default ();
 
-	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Configure some options for the recording"));
+	gtk_widget_set_tooltip_text (GTK_WIDGET (object), _("Configure recording options"));
 
 	priv->default_ext = TRUE;
 	priv->default_path = TRUE;

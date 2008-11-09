@@ -100,7 +100,7 @@ brasero_dest_selection_lock (BraseroDestSelection *self,
 
 		if (priv->locked_drive)
 			brasero_drive_lock (priv->locked_drive,
-					    _("ongoing burning process"),
+					    _("Ongoing burning process"),
 					    NULL);
 	}
 }

@@ -241,7 +241,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 		}
 		else
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  _("Unexpected error."));
+								  _("Unknown error."));
 
 		answer = gtk_dialog_run (GTK_DIALOG (message));
 		gtk_widget_destroy (message);

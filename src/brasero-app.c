@@ -82,7 +82,6 @@ static void on_integrity_check_cb (GtkAction *action, BraseroApp *app);
 
 static void on_exit_cb (GtkAction *action, BraseroApp *app);
 
-static void on_disc_info_cb (GtkAction *action, BraseroApp *app);
 static void on_about_cb (GtkAction *action, BraseroApp *app);
 
 #ifdef BUILD_GNOME2
@@ -121,10 +120,6 @@ static GtkActionEntry entries[] = {
 
 	{"About", GTK_STOCK_ABOUT, NULL, NULL, N_("About"),
 	 G_CALLBACK (on_about_cb)},
-
-	{"DiscInfo", GTK_STOCK_CDROM, N_("_Disc Info"), NULL,
-	 N_("Display information on blank discs currently inserted"),
-	 G_CALLBACK (on_disc_info_cb)},
 };
 
 
@@ -386,12 +381,6 @@ on_prefs_cb (GtkAction *action, BraseroApp *app)
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
-}
-
-static void
-on_disc_info_cb (GtkAction *button, BraseroApp *app)
-{
-
 }
 
 static void
