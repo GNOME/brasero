@@ -329,15 +329,14 @@ brasero_medium_properties_image_extension_ask (BraseroMediumProperties *self)
 					 _("Do you really want to keep the current extension for the disc image name?"));
 
 		
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Image Extension"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("If you choose to keep it programs may not be able to recognize the file type properly."));
+						  _("If you choose to keep it, programs may not be able to recognize the file type properly."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("_Don't change extension"),
+			       _("_Keep Current Extension"),
 			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("Change _extension"),
+			       _("Change _Extension"),
 			       GTK_RESPONSE_YES);
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));

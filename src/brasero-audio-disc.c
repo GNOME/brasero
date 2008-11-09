@@ -1358,16 +1358,14 @@ brasero_audio_disc_video_file_dialog (BraseroAudioDisc *disc,
 					 name);
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Video File"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("This file is a video and therefore only the audio part can be written to the disc."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("_Ignore video"),
+			       _("_Discard File"),
 			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dialog),
-			       _("_Add video"),
+			       _("_Add File"),
 			       GTK_RESPONSE_OK);
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1494,14 +1492,12 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 					 GTK_BUTTONS_NONE,
 					 _("Do you want to search for audio files inside the directory?"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory Search"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("Directories can't be added to an audio disc."));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				_("Search directory"), GTK_RESPONSE_OK,
+				_("Search _Directory"), GTK_RESPONSE_OK,
 				NULL);
 
 	gtk_widget_show_all (dialog);

@@ -172,12 +172,11 @@ brasero_split_dialog_size_error (BraseroSplitDialog *self)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to split the track?"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Size Error"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("If you split the track, the size of the new track will be shorter than 6 seconds and will be padded."));
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
-			       _("_Don't split"),
+			       GTK_STOCK_CANCEL,
 			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (message),
 			       _("_Split"),
@@ -703,7 +702,6 @@ brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to carry on with automatic splitting?"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Automatic Split"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("This will remove all previous results."));
 

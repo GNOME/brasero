@@ -244,14 +244,12 @@ brasero_video_disc_directory_dialog (BraseroVideoProject *project,
 					 GTK_BUTTONS_NONE,
 					 _("Do you want to search for video files inside the directory?"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Directory Search"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("Directories can't be added to video disc."));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				_("Search directory"), GTK_RESPONSE_OK,
+				_("_Search Directory"), GTK_RESPONSE_OK,
 				NULL);
 
 	gtk_widget_show_all (dialog);

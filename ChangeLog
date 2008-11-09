@@ -1,5 +1,35 @@
 2008-11-09  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed windows headers (capitalizations and alert windows)
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_video_file_dialog),
+	(brasero_audio_disc_add_dir):
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_loss_warnings_cb),
+	(brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_previous_session_loss_cb),
+	(brasero_burn_dialog_audio_to_appendable_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_notify_error),
+	(brasero_burn_dialog_cancel_dialog):
+	* src/brasero-medium-properties.c
+	(brasero_medium_properties_image_extension_ask):
+	* src/brasero-project-manager.c (brasero_project_manager_switch):
+	* src/brasero-project.c (brasero_project_confirm_switch),
+	(brasero_project_empty_cb), (brasero_project_save_project_dialog):
+	* src/brasero-split-dialog.c (brasero_split_dialog_size_error),
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message),
+	(brasero_sum_dialog_message_error), (brasero_sum_dialog_success),
+	(brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_check_md5_file), (brasero_sum_dialog_new):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_cancel_dialog):
+	* src/brasero-video-disc.c (brasero_video_disc_directory_dialog):
+
+2008-11-09  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #558852 – translation issues
 
 	* data/brasero.schemas.in:

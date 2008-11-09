@@ -751,7 +751,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		}
 
 		if (toplevel)
-			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Video disc project"));
+			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Video Disc Project"));
 	}
 	else if (type == BRASERO_PROJECT_TYPE_ISO) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);

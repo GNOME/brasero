@@ -1048,9 +1048,6 @@ brasero_project_confirm_switch (BraseroProject *project)
 						 GTK_BUTTONS_CANCEL,
 						 _("Do you really want to create a new project and discard the changes to current one?"));
 
-		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Unsaved Project"));
-
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("If you choose to create a new project, all changes made will be lost."));
 		gtk_dialog_add_button (GTK_DIALOG (dialog),
@@ -1068,9 +1065,6 @@ brasero_project_confirm_switch (BraseroProject *project)
 						 GTK_MESSAGE_WARNING,
 						 GTK_BUTTONS_CANCEL,
 						 _("Do you really want to create a new project and discard the current one?"));
-
-		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("New Project"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("If you choose to create a new project, "
@@ -1452,9 +1446,6 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 						 GTK_MESSAGE_WARNING,
 						 GTK_BUTTONS_CANCEL,
 						 _("Do you really want to empty the current project?"));
-
-		
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Empty Project"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("Emptying a project will remove all files already added. "
@@ -2204,20 +2195,18 @@ brasero_project_save_project_dialog (BraseroProject *project,
 					 GTK_BUTTONS_NONE,
 					 _("Save the changes of current project before closing?"));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Modified Project"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("If you don't save, changes will be permanently lost."));
 
 	if (show_cancel)
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-					_("Cl_ose without saving"), GTK_RESPONSE_NO,
+					_("Cl_ose Without Saving"), GTK_RESPONSE_NO,
 					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					GTK_STOCK_SAVE, GTK_RESPONSE_YES,
 					NULL);
 	else
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-					_("Cl_ose without saving"), GTK_RESPONSE_NO,
+					_("Cl_ose Without Saving"), GTK_RESPONSE_NO,
 					GTK_STOCK_SAVE, GTK_RESPONSE_YES,
 					NULL);
 

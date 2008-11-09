@@ -632,7 +632,6 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 static BraseroBurnResult
 brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog, 
-				      const gchar *title,
 				      const gchar *main_message,
 				      const gchar *secondary_message,
 				      const gchar *button_text,
@@ -659,8 +658,6 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 					  GTK_BUTTONS_NONE,
 					  "%s", main_message);
 
-	gtk_window_set_title (GTK_WINDOW (message), title);
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						 "%s", secondary_message);
 
@@ -668,7 +665,7 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Replace disc"),
+	button = brasero_utils_make_button (_("Replace Disc"),
 					    GTK_STOCK_REFRESH,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -706,7 +703,6 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 				  GtkDialog *dialog)
 {
 	return brasero_burn_dialog_loss_warnings_cb (dialog,
-						     _("Possible Data Loss"),
 						     _("Do you really want to erase the current disc?"),
 						     _("The disc in the drive holds data."),
 						     _("Erase disc"),
@@ -725,7 +721,6 @@ brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
 				     _("Do you want to continue anyway?"));
 				     
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
-						       _("Multisession Disc"),
 						       _("Appending new files to a multisession disc is not advised."),
 						       secondary,
 						       _("Continue"),
@@ -746,7 +741,6 @@ brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 				     _("Do you want to continue anyway?"));
 
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
-						       _("Multisession Disc"),
 						       _("Appending audio tracks to a CD is not advised."),
 						       secondary,
 						       _("Continue"),
@@ -767,7 +761,6 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 				     _("Do you want to continue anyway?"));
 
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
-						       _("Rewritable Disc"),
 						       _("Recording audio tracks on a rewritable disc is not advised."),
 						       secondary,
 						       _("Continue"),
@@ -804,7 +797,6 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Some files don't have a suitable name for a Windows-compatible CD."));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Windows Compatibility"));
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
@@ -1059,8 +1051,6 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 					  GTK_MESSAGE_INFO,
 					  GTK_BUTTONS_CANCEL,
 					  _("The simulation was successful."));
-
-	gtk_window_set_title (GTK_WINDOW (message), _("Successful Simulation"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Real disc burning will take place in 10 seconds."));
@@ -1578,7 +1568,6 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 					  GTK_BUTTONS_NONE,
 					  _("Error while burning."));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Burning Error"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  "%s",
 						  secondary);
@@ -1912,13 +1901,11 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to quit?"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Confirm"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG
 						  (message),
 						  _("Interrupting the process may make disc unusable."));
 
-	button = brasero_utils_make_button (("C_ontinue burning"),
+	button = brasero_utils_make_button (("C_ontinue Burning"),
 					    GTK_STOCK_OK,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -1926,7 +1913,7 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_OK);
 
-	button = brasero_utils_make_button (_("_Cancel burning"),
+	button = brasero_utils_make_button (_("_Cancel Burning"),
 					    GTK_STOCK_CANCEL,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);

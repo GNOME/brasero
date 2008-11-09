@@ -370,8 +370,6 @@ brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 					  GTK_BUTTONS_NONE,
 					  _("Do you really want to quit?"));
 
-	gtk_window_set_title (GTK_WINDOW (message), _("Confirm"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Interrupting the process may make disc unusable."));
 	gtk_dialog_add_buttons (GTK_DIALOG (message),

@@ -92,7 +92,6 @@ brasero_sum_dialog_stop (BraseroSumDialog *self)
 
 static gboolean
 brasero_sum_dialog_message (BraseroSumDialog *self,
-			    const gchar *title,
 			    const gchar *primary_message,
 			    const gchar *secondary_message,
 			    GtkMessageType type)
@@ -115,10 +114,9 @@ brasero_sum_dialog_message (BraseroSumDialog *self,
 					  GTK_BUTTONS_NONE,
 					  "%s", primary_message);
 
-	gtk_window_set_title (GTK_WINDOW (message), title);
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  "%s", secondary_message);
+						  "%s",
+						  secondary_message);
 
 	button = brasero_utils_make_button (_("Check _Again"),
 					    GTK_STOCK_FIND,
@@ -151,8 +149,7 @@ brasero_sum_dialog_message_error (BraseroSumDialog *self,
 					NULL);
 
 	return brasero_sum_dialog_message (self,
-					   _("File Integrity Check Error"),
-					   _("The file integrity check cannot be performed."),
+					   _("The file integrity check could not be performed."),
 					   error ? error->message:_("Unknown error."),
 					   GTK_MESSAGE_ERROR);
 }
@@ -165,7 +162,6 @@ brasero_sum_dialog_success (BraseroSumDialog *self)
 					NULL);
 
 	return brasero_sum_dialog_message (self,
-					   _("File Integrity Check Success"),
 					   _("The file integrity was performed successfully."),
 					   _("There seems to be no corrupted file on the disc."),
 					   GTK_MESSAGE_INFO);
@@ -199,7 +195,6 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 						      "%s", string);
 	g_free (string);
 
-	gtk_window_set_title (GTK_WINDOW (message),  _("File Integrity Check Error"));
 	gtk_window_set_resizable (GTK_WINDOW (message), TRUE);
 	gtk_widget_set_size_request (GTK_WIDGET (message), 440, 300);
 
@@ -478,8 +473,7 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
     	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (self->priv->md5_chooser));
 	if (!uri) {
 		retval = brasero_sum_dialog_message (self,
-						     _("File Integrity Check Error"),
-						     _("The file integrity check cannot be performed."),
+						     _("The file integrity check could not be performed."),
 						     error ? error->message:_("No md5 file was given."),
 						     GTK_MESSAGE_ERROR);
 		return retval;
@@ -784,7 +778,7 @@ brasero_sum_dialog_new ()
 	BraseroSumDialog *obj;
 	
 	obj = BRASERO_SUM_DIALOG (g_object_new (BRASERO_TYPE_SUM_DIALOG, NULL));
-	gtk_window_set_title (GTK_WINDOW (obj), "Disc Checking");
+	gtk_window_set_title (GTK_WINDOW (obj), _("Disc Checking"));
 	
 	return GTK_WIDGET (obj);
 }
