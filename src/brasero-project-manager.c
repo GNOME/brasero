@@ -1065,7 +1065,7 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 
 		string = g_strdup_printf (_("The project '%s' does not exist."), uri);
 		brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (manager)),
-					      _("Error while loading the project:"),
+					      _("Error while loading the project."),
 					      string,
 					      GTK_MESSAGE_ERROR);
 		g_free (string);

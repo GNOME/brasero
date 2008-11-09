@@ -219,7 +219,6 @@ brasero_tray_icon_init (BraseroTrayIcon *obj)
 			  NULL);
 
 	gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (obj), "brasero-disc-00");
-	gtk_status_icon_set_tooltip (GTK_STATUS_ICON (obj), _("waiting"));
 	obj->priv->first_burning_percent = -1;
 }
 

@@ -1145,8 +1145,8 @@ static void
 brasero_audio_disc_short_track_dialog (BraseroAudioDisc *disc)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
-				      _("The track will be padded at its end:"),
-				      ("the track is shorter than 6 seconds."),
+				      _("The track will be padded at its end."),
+				      ("The track is shorter than 6 seconds."),
 				      GTK_MESSAGE_WARNING);
 }
 
@@ -1325,7 +1325,7 @@ brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 	}
 
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	primary = g_strdup_printf (_("\"%s\" can't be handled by gstreamer:"), name);
+	primary = g_strdup_printf (_("\"%s\" can't be handled by gstreamer."), name);
 	brasero_utils_message_dialog (toplevel,
 				      primary,
 				      _("Make sure the appropriate codec is installed."),
@@ -1354,7 +1354,7 @@ brasero_audio_disc_video_file_dialog (BraseroAudioDisc *disc,
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_QUESTION,
 					 GTK_BUTTONS_NONE,
-					 _("Do you want to add a \"%s\" which is a video file?"),
+					 _("Do you want to add \"%s\" which is a video file?"),
 					 name);
 	g_free (name);
 
@@ -3631,10 +3631,10 @@ brasero_audio_disc_inotify_removal_warning (BraseroAudioDisc *disc,
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 
-	primary = g_strdup_printf (_("File \"%s\" was removed from the file system:"), name);
+	primary = g_strdup_printf (_("\"%s\" was removed from the file system."), name);
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
 				      primary,
-				      _("it will be removed from the project."),
+				      _("It will be removed from the project."),
 				      GTK_MESSAGE_WARNING);
 	g_free (primary);
 	g_free (name);

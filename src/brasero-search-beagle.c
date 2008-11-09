@@ -1053,7 +1053,7 @@ brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
 	}
 
 	brasero_utils_message_dialog (toplevel,
-				      _("Error querying beagle:"),
+				      _("Error querying beagle."),
 				      error->message,
 				      GTK_MESSAGE_ERROR);
 }

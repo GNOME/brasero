@@ -290,6 +290,7 @@ brasero_time_button_init (BraseroTimeButton *object)
 	gtk_widget_show (priv->hrs);
 	gtk_box_pack_start (GTK_BOX (object), priv->hrs, FALSE, FALSE, 0);
 
+	/* Translators: separating hours and minutes */
 	label = gtk_label_new (_(":"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (object), label, FALSE, FALSE, 0);
@@ -299,6 +300,7 @@ brasero_time_button_init (BraseroTimeButton *object)
 	gtk_widget_show (priv->min);
 	gtk_box_pack_start (GTK_BOX (object), priv->min, FALSE, FALSE, 0);
 
+	/* Translators: separating minutes and seconds */
 	label = gtk_label_new (_(":"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (object), label, FALSE, FALSE, 0);
@@ -308,6 +310,7 @@ brasero_time_button_init (BraseroTimeButton *object)
 	gtk_widget_show (priv->sec);
 	gtk_box_pack_start (GTK_BOX (object), priv->sec, FALSE, FALSE, 0);
 
+	/* Translators: separating seconds and frames */
 	label = gtk_label_new (_(":"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (object), label, FALSE, FALSE, 0);

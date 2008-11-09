@@ -825,10 +825,10 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 
-	primary = g_strdup_printf (_("Error parsing playlist \"%s\":"), name);
+	primary = g_strdup_printf (_("Error parsing playlist \"%s\"."), name);
 	brasero_utils_message_dialog (GTK_WIDGET (toplevel),
 				      primary,
-				      _("an unknown error occured."),
+				      _("An unknown error occured."),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);

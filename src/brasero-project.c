@@ -749,12 +749,10 @@ brasero_project_check_status (BraseroProject *project,
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_CLOSE,
-					 _("Please wait:"));
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Please Wait"));
+					 _("Please wait."));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("some tasks are not completed yet."));
+						  _("Some tasks are not completed yet."));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Ongoing Tasks"));
 
@@ -1616,7 +1614,7 @@ brasero_project_invalid_project_dialog (BraseroProject *project,
 					const char *reason)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
-				      _("Error while loading the project:"),
+				      _("Error while loading the project."),
 				      reason,
 				      GTK_MESSAGE_ERROR);
 }
@@ -1913,7 +1911,7 @@ brasero_project_open_project_xml (BraseroProject *proj,
 
 	if (!project) {
 	    	if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("the project could not be opened."));
+			brasero_project_invalid_project_dialog (proj, _("The project could not be opened."));
 
 		return FALSE;
 	}
@@ -1922,7 +1920,7 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	item = xmlDocGetRootElement (project);
 	if (!item) {
 	    	if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("the file is empty."));
+			brasero_project_invalid_project_dialog (proj, _("The file is empty."));
 
 		xmlFreeDoc (project);
 		return FALSE;
@@ -1960,7 +1958,7 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	xmlFreeDoc (project);
 
 	if (!retval && warn_user)
-		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid Brasero project."));
+		brasero_project_invalid_project_dialog (proj, _("It doesn't seem to be a valid Brasero project."));
 
 	return retval;
 
@@ -1968,7 +1966,7 @@ error:
 
 	xmlFreeDoc (project);
     	if (warn_user)
-		brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid Brasero project."));
+		brasero_project_invalid_project_dialog (proj, _("It doesn't seem to be a valid Brasero project."));
 
 	return FALSE;
 }
@@ -2184,7 +2182,7 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 
 	error = xmlGetLastError ();
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
-				      _("Your project has not been saved:"),
+				      _("Your project has not been saved."),
 				      error?error->message:_("Unknown error."),
 				      GTK_MESSAGE_ERROR);
 	xmlResetLastError ();
@@ -2551,7 +2549,7 @@ brasero_project_save_audio_project_plain_text (BraseroProject *proj,
 				goto error;
 
 			/* Translators: %s is an artist */
-			string = g_strdup_printf (_(" by %s"), info->artist);
+			string = g_strdup_printf (" by %s", info->artist);
 			written = fwrite (string, 1, strlen (string), file);
 			if (written != strlen (string)) {
 				g_free (string);

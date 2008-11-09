@@ -608,8 +608,8 @@ static void
 brasero_split_dialog_no_silence_message (BraseroSplitDialog *self)
 {
 	brasero_utils_message_dialog (GTK_WIDGET (self),
-				      _("The track wasn't split:"),
-				      _("no silence could be retrieved."),
+				      _("The track wasn't split."),
+				      _("No silence could be detected."),
 				      GTK_MESSAGE_WARNING);
 }
 
@@ -632,7 +632,7 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 
 	if (error) {
 		brasero_utils_message_dialog (GTK_WIDGET (self),
-					      _("An error occured while retrieving silences:"),
+					      _("An error occured while detecting silences."),
 					      error->message,
 					      GTK_MESSAGE_ERROR);
 		return;

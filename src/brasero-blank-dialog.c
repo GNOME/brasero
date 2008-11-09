@@ -222,7 +222,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 						   GTK_DIALOG_MODAL,
 						   GTK_MESSAGE_ERROR,
 						   GTK_BUTTONS_CLOSE,
-						   _("Error Blanking:"));
+						   _("Error Blanking."));
 
 		gtk_window_set_title (GTK_WINDOW (self), _("Blanking Finished"));
 
@@ -243,7 +243,7 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 		}
 		else
 			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-								  _("Unexpected error"));
+								  _("Unexpected error."));
 
 		answer = gtk_dialog_run (GTK_DIALOG (message));
 		gtk_widget_destroy (message);
@@ -263,12 +263,12 @@ brasero_blank_dialog_activate (BraseroToolDialog *dialog,
 						  GTK_DIALOG_MODAL,
 						  GTK_MESSAGE_INFO,
 						  GTK_BUTTONS_NONE,
-						  _("The disc was successfully blanked:"));
+						  _("The disc was successfully blanked."));
 
 		gtk_window_set_title (GTK_WINDOW (self), _("Blanking Finished"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  _("the disc is ready for use."));
+							  _("The disc is ready for use."));
 
 		button = brasero_utils_make_button (_("Blank _Again"),
 						    NULL,
@@ -400,7 +400,7 @@ brasero_blank_dialog_init (BraseroBlankDialog *obj)
 					   G_CALLBACK (brasero_blank_dialog_caps_changed),
 					   obj);
 
-	priv->fast = gtk_check_button_new_with_mnemonic (_("_fast blanking"));
+	priv->fast = gtk_check_button_new_with_mnemonic (_("_Fast blanking"));
 	gtk_widget_set_tooltip_text (priv->fast, _("Activate fast blanking by opposition to a longer thorough blanking"));
 	g_signal_connect (priv->fast,
 			  "clicked",

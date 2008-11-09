@@ -516,8 +516,9 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
 	else if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
-		main_message = g_strdup_printf (_("The disc in \"%s\" is busy."), drive_name);
-		secondary_message = g_strdup (_("make sure another application is not using it."));
+		/* Translators: %s is the name of a drive */
+		main_message = g_strdup_printf (_("\"%s\" is busy."), drive_name);
+		secondary_message = g_strdup (_("Make sure another application is not using it."));
 	} 
 	else if (error == BRASERO_BURN_ERROR_MEDIA_NONE) {
 		secondary_message = g_strdup_printf (_("There is no disc in \"%s\"."), drive_name);
@@ -716,36 +717,63 @@ static BraseroBurnResult
 brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
 					      GtkDialog *dialog)
 {
-	return brasero_burn_dialog_loss_warnings_cb (dialog,
-						     _("Multisession Disc"),
-						     _("Appending new files to a multisession disc is not advised:"),
-						     _("already burnt files will be invisible (though still readable).\nDo you want to continue anyway?"),
-						     _("Continue"),
-						     "media-optical-burn");
+	gchar *secondary;
+	BraseroBurnResult result;
+
+	secondary = g_strdup_printf ("%s\n%s",
+				     _("Already burnt files will be invisible (though still readable)."),
+				     _("Do you want to continue anyway?"));
+				     
+	result = brasero_burn_dialog_loss_warnings_cb (dialog,
+						       _("Multisession Disc"),
+						       _("Appending new files to a multisession disc is not advised."),
+						       secondary,
+						       _("Continue"),
+						       "media-optical-burn");
+	g_free (secondary);
+	return result;
 }
 
 static BraseroBurnResult
 brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 					    GtkDialog *dialog)
 {
-	return brasero_burn_dialog_loss_warnings_cb (dialog,
-						     _("Multisession Disc"),
-						     _("Appending audio tracks to a CD is not advised:"),
-						     _("you might not be able to listen to them with stereos and CD-TEXT won't be written.\nDo you want to continue anyway?"),
-						     _("Continue"),
-						     "media-optical-burn");
+	gchar *secondary;
+	BraseroBurnResult result;
+
+	secondary = g_strdup_printf ("%s\n%s",
+				     _("You might not be able to listen to them with stereos and CD-TEXT won't be written."),
+				     _("Do you want to continue anyway?"));
+
+	result = brasero_burn_dialog_loss_warnings_cb (dialog,
+						       _("Multisession Disc"),
+						       _("Appending audio tracks to a CD is not advised."),
+						       secondary,
+						       _("Continue"),
+						       "media-optical-burn");
+	g_free (secondary);
+	return result;
 }
 
 static BraseroBurnResult
 brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 				   GtkDialog *dialog)
 {
-	return brasero_burn_dialog_loss_warnings_cb (dialog,
-						     _("Rewritable Disc"),
-						     _("Recording audio tracks on a rewritable disc is not advised:"),
-						     _("you might not be able to listen to it with stereos.\nDo you want to continue anyway?"),
-						     _("Continue"),
-						     "media-optical-burn");
+	gchar *secondary;
+	BraseroBurnResult result;
+
+	secondary = g_strdup_printf ("%s\n%s",
+				     _("You might not be able to listen to it with stereos."),
+				     _("Do you want to continue anyway?"));
+
+	result = brasero_burn_dialog_loss_warnings_cb (dialog,
+						       _("Rewritable Disc"),
+						       _("Recording audio tracks on a rewritable disc is not advised."),
+						       secondary,
+						       _("Continue"),
+						       "media-optical-burn");
+	g_free (secondary);
+	return result;
 }
 
 static BraseroBurnResult
@@ -774,7 +802,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 					  _("Do you want to continue with Windows compatibility disabled?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Some files don't have a suitable name for a Windows-compatible CD:"));
+						  _("Some files don't have a suitable name for a Windows-compatible CD."));
 
 	gtk_window_set_title (GTK_WINDOW (message), _("Windows Compatibility"));
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
@@ -1434,8 +1462,8 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 	logfile = brasero_burn_session_get_log_path (dialog->priv->session);
 	if (g_stat (logfile, &stats) == -1) {
 		brasero_utils_message_dialog (GTK_WIDGET (dialog),
-					      _("The session log cannot be displayed:"),
-					      _("the log file could not be found."),
+					      _("The session log cannot be displayed."),
+					      _("The log file could not be found."),
 					      GTK_MESSAGE_ERROR);
 		gtk_widget_destroy (message);
 		return;
@@ -1458,7 +1486,7 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 			int errsv = errno;
 
 			brasero_utils_message_dialog (GTK_WIDGET (dialog),
-						      _("The session log cannot be displayed:"),
+						      _("The session log cannot be displayed."),
 						      g_strerror (errsv),
 						      GTK_MESSAGE_ERROR);
 			gtk_widget_destroy (message);
@@ -1469,7 +1497,7 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 			int errsv = errno;
 
 			brasero_utils_message_dialog (GTK_WIDGET (dialog),
-						      _("The session log cannot be displayed:"),
+						      _("The session log cannot be displayed."),
 						      g_strerror (errsv),
 						      GTK_MESSAGE_ERROR);
 			gtk_widget_destroy (message);
@@ -1538,7 +1566,7 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 		g_error_free (error);
 	}
 	else
-		secondary = g_strdup (_("An unknown error occured. Check your disc"));
+		secondary = g_strdup (_("An unknown error occured. Check your disc."));
 
 	if (!GTK_WIDGET_VISIBLE (dialog))
 		gtk_widget_show (GTK_WIDGET (dialog));
@@ -1548,11 +1576,11 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_ERROR,
 					  GTK_BUTTONS_NONE,
-					  _("Error while burning:"));
+					  _("Error while burning."));
 
 	gtk_window_set_title (GTK_WINDOW (message), _("Burning Error"));
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  "%s.",
+						  "%s",
 						  secondary);
 	g_free (secondary);
 

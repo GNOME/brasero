@@ -469,7 +469,7 @@ brasero_utils_launch_app (GtkWidget *widget,
 
 		if (!g_app_info_launch_default_for_uri (uri, NULL, &error)) {
 			brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (widget)),
-						      _("This file can't be opened:"),
+						      _("This file can't be opened."),
 						      error->message,
 						      GTK_MESSAGE_ERROR);
 			g_error_free (error);

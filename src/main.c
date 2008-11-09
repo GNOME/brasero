@@ -197,8 +197,8 @@ brasero_app_parse_options (BraseroApp *app)
 
 	if (nb > 1) {
 		brasero_utils_message_dialog (NULL,
-					      _("Incompatible command line options used:"),
-					      _("only one option can be given at a time."),
+					      _("Incompatible command line options used."),
+					      _("Only one option can be given at a time."),
 					      GTK_MESSAGE_ERROR);
 
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));

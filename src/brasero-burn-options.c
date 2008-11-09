@@ -462,7 +462,7 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	priv->copies_box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (priv->copies_box);
 
-	label = gtk_label_new (_("Number of copies "));
+	label = gtk_label_new (_("Number of copies"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (priv->copies_box), label, FALSE, FALSE, 0);
 

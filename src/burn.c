@@ -1314,7 +1314,9 @@ brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     _("the drive seems to be busy"));
+			     "%s %s",
+			     _("The drive is busy."),
+			     _("Make sure another application is not using it."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1346,7 +1348,9 @@ start:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     _("the drive seems to be busy"));
+			     "%s %s",
+			     _("The drive is busy."),
+			     _("Make sure another application is not using it."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1483,7 +1487,9 @@ start:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     _("the drive seems to be busy"));
+			     "%s %s",
+			     _("The drive is busy."),
+			     _("Make sure another application is not using it."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1492,7 +1498,9 @@ start:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     _("the drive seems to be busy"));
+			     "%s %s",
+			     _("The drive is busy."),
+			     _("Make sure another application is not using it."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1814,7 +1822,9 @@ brasero_burn_check_real (BraseroBurn *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_BUSY_DRIVE,
-				     _("the drive seems to be busy"));
+				     "%s %s",
+				     _("The drive is busy"),
+				     _("Make sure another application is not using it."));
 			return BRASERO_BURN_ERR;
 		}
 

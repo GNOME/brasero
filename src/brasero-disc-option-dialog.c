@@ -352,18 +352,16 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_INFO,
 					  GTK_BUTTONS_NONE,
-					  _("Should files be renamed to be windows-compatible?"));
+					  _("Should files be renamed to be fully Windows-compatible?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Some files don't have a suitable name for a Windows-compatible CD. Those names will be changed and truncated to 64 characters."));
-
-	gtk_window_set_title (GTK_WINDOW (message), _("Windows Compatibility"));
+						  _("Some files don't have a suitable name for a fully Windows-compatible CD. Those names should be changed and truncated to 64 characters."));
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
-			       _("_Don't rename"),
+			       _("_Disable Full Windows Compatibility"),
 			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (message),
-			       _("_Rename"),
+			       _("_Rename for Full Windows Compatibility"),
 			       GTK_RESPONSE_YES);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
@@ -483,7 +481,7 @@ brasero_disc_option_dialog_add_audio_options (BraseroDiscOptionDialog *dialog)
 			  G_CALLBACK (brasero_disc_option_dialog_multi_toggled),
 			  dialog);
 	gtk_widget_set_tooltip_text (priv->multi_toggle,
-				     _("Allow create what is called an enhanced CD or CD+"));
+				     _("Allow creating an enhanced CD or CD+"));
 
 	string = g_strdup_printf ("<b>%s</b>", _("Disc options"));
 	options = brasero_utils_pack_properties (string,

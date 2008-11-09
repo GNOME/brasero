@@ -215,8 +215,8 @@ brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 					 GError *error)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
-				      _("The session couldn't be imported:"),
-				      error?error->message:_("unknown error"),
+				      _("The session couldn't be imported."),
+				      error?error->message:_("Unknown error."),
 				      GTK_MESSAGE_WARNING);
 }
 
@@ -894,7 +894,7 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 		return;
 	}
 
-	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection:"), name);
+	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
 				      primary,
 				      error->message,
@@ -925,10 +925,10 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 		return;
 	}
 
-	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection:"), name);
+	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
 				      primary,
-				      _("it is a recursive symlink."),
+				      _("It is a recursive symlink."),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
@@ -956,10 +956,10 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 		return;
 	}
 
-	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection:"), name);
+	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
 				      primary,
-				      _("it doesn't exist at the specified location."),
+				      _("It doesn't exist at the specified location."),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
@@ -988,16 +988,16 @@ brasero_data_disc_name_collision_cb (BraseroDataProject *project,
 					 GTK_DIALOG_MODAL,
 					 GTK_MESSAGE_WARNING,
 					 GTK_BUTTONS_NONE,
-					 _("\"%s\" already exists in the directory:"),
+					 _("Do you really want to replace \"%s\"?"),
 					 name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Already Existing File"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("do you really want to replace it?"));
+						  _("It already exists in the directory."));
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Don't replace"), GTK_RESPONSE_NO);
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Replace"), GTK_RESPONSE_YES);
+	/* Translators: Keep means we're keeping the files that already existed
+	 * Replace means we're replacing it with a new one with the same name */
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Keep Project File"), GTK_RESPONSE_NO);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Replace Project File"), GTK_RESPONSE_YES);
 
 	gtk_widget_show_all (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1036,15 +1036,13 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 					 _("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"),
 					 name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("File Over 2 GiB"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones)."
 						    "\nIt is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©."
 						    "\nA known exception is MacOS X that can't read images created with version 3 of ISO9660 standard."));
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Don't add"), GTK_RESPONSE_NO);
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add File"), GTK_RESPONSE_YES);
 
 	gtk_widget_show_all (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1084,15 +1082,13 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 					 _("Do you really want to add \"%s\" to the selection?"),
 					 name);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Deep Directory"));
-
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6."
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the media may not be readable on all operating systems."
-						    "\nNOTE: such a file hierarchy is known to work on linux."));
+						    "\nNOTE: Such a file hierarchy is known to work on linux."));
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Don't add"), GTK_RESPONSE_NO);
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add"), GTK_RESPONSE_YES);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add File"), GTK_RESPONSE_YES);
 
 	gtk_widget_show_all (dialog);
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1946,7 +1942,7 @@ brasero_data_disc_rename_activated (BraseroDataDisc *disc)
 		dialog = gtk_dialog_new_with_buttons (_("File Renaming"),
 						      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (disc))),
 						      GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-						      _("_Don't rename"), GTK_RESPONSE_CANCEL,
+						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 						      _("_Rename"), GTK_RESPONSE_APPLY,
 						      NULL);
 		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);

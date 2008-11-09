@@ -152,8 +152,8 @@ brasero_sum_dialog_message_error (BraseroSumDialog *self,
 
 	return brasero_sum_dialog_message (self,
 					   _("File Integrity Check Error"),
-					   _("The file integrity check cannot be performed:"),
-					   error ? error->message:_("unknown error"),
+					   _("The file integrity check cannot be performed."),
+					   error ? error->message:_("Unknown error."),
 					   GTK_MESSAGE_ERROR);
 }
 
@@ -166,8 +166,8 @@ brasero_sum_dialog_success (BraseroSumDialog *self)
 
 	return brasero_sum_dialog_message (self,
 					   _("File Integrity Check Success"),
-					   _("The file integrity was performed successfully:"),
-					   _("there seems to be no corrupted file on the disc."),
+					   _("The file integrity was performed successfully."),
+					   _("There seems to be no corrupted file on the disc."),
 					   GTK_MESSAGE_INFO);
 }
 
@@ -479,8 +479,8 @@ brasero_sum_dialog_check_md5_file (BraseroSumDialog *self,
 	if (!uri) {
 		retval = brasero_sum_dialog_message (self,
 						     _("File Integrity Check Error"),
-						     _("The file integrity check cannot be performed:"),
-						     error ? error->message:_("no md5 file was given."),
+						     _("The file integrity check cannot be performed."),
+						     error ? error->message:_("No md5 file was given."),
 						     GTK_MESSAGE_ERROR);
 		return retval;
 	}

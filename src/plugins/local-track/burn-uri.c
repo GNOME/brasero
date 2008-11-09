@@ -156,7 +156,7 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("impossible to retrieve local file path"));
+					     _("Impossible to retrieve local file path."));
 
 				g_slist_foreach (grafts, (GFunc) brasero_graft_point_free, NULL);
 				g_slist_free (grafts);
