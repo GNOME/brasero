@@ -445,8 +445,8 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 			    0);
 
 	/* Medium info */
-	string = g_strdup_printf ("<b><i>%s</i></b><i>%s</i>",
-				  _("The drive that holds the source media will also be the one used to record.\n"),
+	string = g_strdup_printf ("<b><i>%s</i></b>\n<i>%s</i>",
+				  _("The drive that holds the source media will also be the one used to record."),
 				  _("A new recordable media will be required once the one currently loaded has been copied."));
 	priv->warning = gtk_label_new (string);
 	g_free (string);

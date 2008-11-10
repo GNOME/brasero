@@ -95,13 +95,13 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_MEDIA_NONE,
-						_("There doesn't seem to be a disc in the drive")));
+						_("There seems to be no disc in the drive")));
 	}
 	else if (strstr (line, "Input buffer error, aborting") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("input buffer error")));
+						_("Input buffer error")));
 	}
 	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
 		/* NOTE: defer the consequence of this error as it is not always
@@ -129,7 +129,7 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("a write error occured which was likely due to overburning the disc")));
+						_("A write error occured which was likely due to overburning the disc")));
 	}
 	else if (strstr (line, "Inappropriate audio coding")) {
 		brasero_job_error (BRASERO_JOB (process),
@@ -154,7 +154,7 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_SCSI_IOCTL,
-						_("You don't seem to have the required permission to use this drive")));
+						_("You do not seem to have the required permission to use this drive")));
 	}
 	else if (strstr (line, "Device or resource busy")) {
 		if (!strstr (line, "retrying in")) {
@@ -176,32 +176,32 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("the image file cannot be found")));
+						_("The image file cannot be found")));
 	}
 	else if (strstr (line, "Bad file descriptor. read error on input file")
 	     ||  strstr (line, "No tracks specified. Need at least one.")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("internal error")));
+						_("Internal error")));
 	}
 	else if (strstr (line, "Could not write Lead-in")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("the cd information could not be written")));
+						_("The disc information could not be written")));
 	}
 	else if (strstr (line, "Cannot fixate disk")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("the disc could not be closed")));
+						_("The disc could not be closed")));
 	}
 	else if (strstr (line, "Bad audio track size")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("the audio tracks are too short or not a multiple of 2352")));
+						_("The audio tracks are too short or not a multiple of 2352")));
 	}
 
 	return BRASERO_BURN_OK;
@@ -1035,7 +1035,7 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "cdrecord",
-			       _("use cdrecord to burn CDs"),
+			       _("Use cdrecord to burn CDs and DVDs"),
 			       "Philippe Rouquier",
 			       1);
 
@@ -1249,10 +1249,10 @@ brasero_cdrecord_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* add some configure options */
 	immed = brasero_plugin_conf_option_new (GCONF_KEY_IMMEDIATE_FLAG,
-						_("enable -immed flag (see cdrecord manual)"),
+						_("Enable \"-immed\" flag (see cdrecord manual)"),
 						BRASERO_PLUGIN_OPTION_BOOL);
 	minbuf = brasero_plugin_conf_option_new (GCONF_KEY_MINBUF_VALUE,
-						 _("minimum drive buffer fill ratio (in %)(see cdrecord manual):"),
+						 _("Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"),
 						 BRASERO_PLUGIN_OPTION_INT);
 	brasero_plugin_conf_option_int_set_range (minbuf, 25, 95);
 

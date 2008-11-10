@@ -339,7 +339,7 @@ brasero_search_init (BraseroSearch *obj)
 	box = gtk_hbox_new (FALSE, 6);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
-	button = brasero_utils_make_button (_("Previous results"),
+	button = brasero_utils_make_button (_("Previous Results"),
 					    GTK_STOCK_GO_BACK,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -360,7 +360,7 @@ brasero_search_init (BraseroSearch *obj)
 	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
 	obj->priv->results_label = label;
 
-	button = brasero_utils_make_button (_("Next results"),
+	button = brasero_utils_make_button (_("Next Results"),
 					    GTK_STOCK_GO_FORWARD,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);

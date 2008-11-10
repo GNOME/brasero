@@ -1,5 +1,65 @@
 2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Another bunch of string fixes (forgotten strings not marked, button
+	without mnemonics, ...)
+
+	* data/brasero.schemas.in:
+	* src/brasero-audio-disc.c (brasero_audio_disc_split):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_loss_warnings_cb),
+	(brasero_burn_dialog_data_loss_cb),
+	(brasero_burn_dialog_previous_session_loss_cb),
+	(brasero_burn_dialog_audio_to_appendable_cb),
+	(brasero_burn_dialog_rewritable_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_dummy_success_cb),
+	(brasero_burn_dialog_notify_error),
+	(brasero_burn_dialog_notify_success):
+	* src/brasero-burn-options.c (brasero_burn_options_init):
+	* src/brasero-data-disc.c (brasero_data_disc_image_uri_cb),
+	(brasero_data_disc_import_button_new),
+	(brasero_data_disc_session_available_cb),
+	(brasero_data_disc_add_ui):
+	* src/brasero-drive-properties.c (brasero_drive_properties_init):
+	* src/brasero-layout.c (brasero_layout_add_source):
+	* src/brasero-layout.h:
+	* src/brasero-playlist.c (brasero_playlist_init):
+	* src/brasero-pref.c (brasero_pref_init):
+	* src/brasero-project-manager.c (brasero_project_manager_init):
+	* src/brasero-project-name.c
+	(brasero_project_name_get_default_label):
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_new_item):
+	* src/brasero-project.c (brasero_project_register_ui),
+	(brasero_project_open_project_xml),
+	(brasero_project_open_audio_playlist_project):
+	* src/brasero-search-beagle.c (brasero_search_init):
+	* src/brasero-search-entry.c (brasero_search_entry_init):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_download),
+	(brasero_sum_dialog_get_file_checksum):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy),
+	(brasero_tool_dialog_cancel_dialog), (brasero_tool_dialog_init):
+	* src/burn-job.c (brasero_job_check_output_volume_space):
+	* src/burn.c (brasero_burn_ask_for_dest_media),
+	(brasero_burn_lock_src_media),
+	(brasero_burn_lock_rewritable_media),
+	(brasero_burn_lock_dest_media),
+	(brasero_burn_check_session_consistency):
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_read_stderr_record), (brasero_cdrdao_read_stderr):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_read_stderr):
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_export_caps):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_stderr_read), (brasero_cdrecord_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_read_stderr):
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_export_caps):
+	* src/plugins/vcdimager/burn-vcdimager.c
+	(brasero_vcd_imager_export_caps):
+
+2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some more HIG fixes (capitalization in button)
 	Remove some unused or redundant strings.
 

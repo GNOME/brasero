@@ -2748,7 +2748,7 @@ brasero_audio_disc_split (BraseroAudioDisc *disc)
 	if (g_list_length (selected) > 1) {
 		brasero_utils_message_dialog (toplevel,
 					      _("Select one song only please."),
-					      _("Impossible to split more than one song at a time"),
+					      _("Impossible to split more than one song at a time."),
 					      GTK_MESSAGE_ERROR);
 
 		g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);

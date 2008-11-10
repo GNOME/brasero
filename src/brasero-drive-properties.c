@@ -478,7 +478,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	priv->speed = gtk_combo_box_new_with_model (model);
 	string = g_strdup_printf ("<b>%s</b>", _("Burning speed"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
-			    brasero_utils_pack_properties (_("<b>Burning speed</b>"),
+			    brasero_utils_pack_properties (string,
 							   priv->speed, NULL),
 			    FALSE, FALSE, 0);
 	g_free (string);

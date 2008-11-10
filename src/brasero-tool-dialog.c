@@ -75,17 +75,23 @@ brasero_tool_dialog_media_error (BraseroToolDialog *self)
 {
 	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed."),
-				     _("The inserted media is busy."),
+				     _("The inserted media is not supported."),
 				     GTK_MESSAGE_ERROR);
 }
 
 static void
 brasero_tool_dialog_media_busy (BraseroToolDialog *self)
 {
+	gchar *string;
+
+	string = g_strdup_printf ("%s %s",
+				  _("The drive is busy."),
+				  _("Make sure another application is not using it."));
 	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed."),
-				     _("The inserted media is not supported."),
+				     string,
 				     GTK_MESSAGE_ERROR);
+	g_free (string);
 }
 
 static void
@@ -376,7 +382,7 @@ brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"),
+	button = brasero_utils_make_button (_("_Continue"),
 					    GTK_STOCK_OK,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -480,8 +486,8 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	obj->priv->selector = brasero_medium_selection_new ();
 	gtk_widget_show (GTK_WIDGET (obj->priv->selector));
-	gtk_widget_set_tooltip_text (obj->priv->selector,
-				     _("Choose a media"));
+
+/*	gtk_widget_set_tooltip_text (obj->priv->selector, _("Choose a medium"));*/
 
 	title_str = g_strdup_printf ("<b>%s</b>", _("Select a disc"));
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),

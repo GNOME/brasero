@@ -665,7 +665,7 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Replace Disc"),
+	button = brasero_utils_make_button (_("_Replace Disc"),
 					    GTK_STOCK_REFRESH,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -705,7 +705,7 @@ brasero_burn_dialog_data_loss_cb (BraseroBurn *burn,
 	return brasero_burn_dialog_loss_warnings_cb (dialog,
 						     _("Do you really want to erase the current disc?"),
 						     _("The disc in the drive holds data."),
-						     _("Erase disc"),
+						     _("_Erase Disc"),
 						     "media-optical-blank");
 }
 
@@ -723,7 +723,7 @@ brasero_burn_dialog_previous_session_loss_cb (BraseroBurn *burn,
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
 						       _("Appending new files to a multisession disc is not advised."),
 						       secondary,
-						       _("Continue"),
+						       _("_Continue"),
 						       "media-optical-burn");
 	g_free (secondary);
 	return result;
@@ -743,7 +743,7 @@ brasero_burn_dialog_audio_to_appendable_cb (BraseroBurn *burn,
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
 						       _("Appending audio tracks to a CD is not advised."),
 						       secondary,
-						       _("Continue"),
+						       _("_Continue"),
 						       "media-optical-burn");
 	g_free (secondary);
 	return result;
@@ -763,7 +763,7 @@ brasero_burn_dialog_rewritable_cb (BraseroBurn *burn,
 	result = brasero_burn_dialog_loss_warnings_cb (dialog,
 						       _("Recording audio tracks on a rewritable disc is not advised."),
 						       secondary,
-						       _("Continue"),
+						       _("_Continue"),
 						       "media-optical-burn");
 	g_free (secondary);
 	return result;
@@ -801,7 +801,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				NULL);
 
-	button = brasero_utils_make_button (_("Continue"),
+	button = brasero_utils_make_button (_("_Continue"),
 					    GTK_STOCK_OK,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -1055,7 +1055,7 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Real disc burning will take place in 10 seconds."));
 
-	button = brasero_utils_make_button (_("Burn Now"),
+	button = brasero_utils_make_button (_("Burn _Now"),
 					    NULL,
 					    "media-optical-burn",
 					    GTK_ICON_SIZE_BUTTON);
@@ -1573,14 +1573,14 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 						  secondary);
 	g_free (secondary);
 
-	button = brasero_utils_make_button (_("Save log"),
+	button = brasero_utils_make_button (_("_Save Log"),
 					    GTK_STOCK_SAVE_AS,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message), button, GTK_RESPONSE_APPLY);
 
-	button = brasero_utils_make_button (_("View log"),
+	button = brasero_utils_make_button (_("_View Log"),
 					    GTK_STOCK_EDIT,
 					    NULL,
 					    GTK_ICON_SIZE_BUTTON);
@@ -1706,7 +1706,7 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 		GtkWidget *button;
 
 		/* since we succeed offer the possibility to create cover if that's an audio disc */
-		button = brasero_utils_make_button (_("Create cover"),
+		button = brasero_utils_make_button (_("_Create Cover"),
 						    NULL,
 						    NULL,
 						    GTK_ICON_SIZE_BUTTON);

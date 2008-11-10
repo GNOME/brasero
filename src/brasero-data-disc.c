@@ -134,7 +134,7 @@ static GtkActionEntry entries [] = {
 	 G_CALLBACK (brasero_data_disc_delete_activated_cb)},
 	{"PasteData", GTK_STOCK_PASTE, NULL, NULL, N_("Add the files stored in the clipboard"),
 	 G_CALLBACK (brasero_data_disc_paste_activated_cb)},
-	{"NewFolder", "folder-new", N_("New folder"), NULL, N_("Create a new empty folder"),
+	{"NewFolder", "folder-new", N_("New _Folder"), NULL, N_("Create a new empty folder"),
 	 G_CALLBACK (brasero_data_disc_new_folder_clicked_cb)},
 };
 
@@ -809,7 +809,7 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."));
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add to project"), GTK_RESPONSE_NO);
+	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add to Project"), GTK_RESPONSE_NO);
 
 	button = brasero_utils_make_button (_("_Burn..."),
 					    NULL,
@@ -1159,14 +1159,15 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 
 	tooltip = brasero_medium_get_tooltip (medium);
 	/* Translators: %s is a string describing the type of medium and the 
-	 * drive it is in. */
+	 * drive it is in. It's a tooltip. */
 	string = g_strdup_printf (_("Import %s"), tooltip);
 	g_free (tooltip);
 	tooltip = string;
 
 	volume_name = brasero_volume_get_name (BRASERO_VOLUME (medium));
-	/* Translators: %s is the name of the volume to import */
-	string = g_strdup_printf (_("Import %s"), volume_name);
+	/* Translators: %s is the name of the volume to import. It's a menu
+	 * entry and toolbar button (text added later). */
+	string = g_strdup_printf (_("I_mport %s"), volume_name);
 	g_free (volume_name);
 	volume_name = string;
 
@@ -1194,9 +1195,9 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 			   BRASERO_DATA_DISC_MEDIUM,
 			   medium);
 
-	/* Translators: This is a verb */
+	/* Translators: This is a verb. It's a toolbar button. */
 	g_object_set (action,
-		      "short-label", _("Import"), /* for toolbar buttons */
+		      "short-label", _("I_mport"), /* for toolbar buttons */
 		      NULL);
 
 	description = g_strdup_printf ("<ui>"
@@ -1266,7 +1267,7 @@ brasero_data_disc_session_available_cb (BraseroDataSession *session,
 
 		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
 					   BRASERO_DISC_MESSAGE (message),
-					   _("_Import Session"),
+					   _("I_mport Session"),
 					   _("Click here to import its contents"),
 					   GTK_RESPONSE_OK);
 
@@ -1783,7 +1784,7 @@ brasero_data_disc_add_ui (BraseroDisc *disc,
 
 		action = gtk_action_group_get_action (priv->disc_group, "NewFolder");
 		g_object_set (action,
-			      "short-label", _("New Folder"), /* for toolbar buttons */
+			      "short-label", _("New _Folder"), /* for toolbar buttons */
 			      NULL);
 	
 		priv->manager = manager;

@@ -286,7 +286,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  0,
 			  0);
 
-	obj->priv->documents = gtk_check_button_new_with_mnemonic (_("_text documents"));
+	obj->priv->documents = gtk_check_button_new_with_mnemonic (_("_Text documents"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->documents), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->documents,
@@ -301,7 +301,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  G_CALLBACK (brasero_search_entry_category_clicked_cb),
 			  obj);
 
-	obj->priv->pictures = gtk_check_button_new_with_mnemonic (_("_pictures"));
+	obj->priv->pictures = gtk_check_button_new_with_mnemonic (_("_Pictures"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->pictures), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->pictures,
@@ -316,7 +316,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  G_CALLBACK (brasero_search_entry_category_clicked_cb),
 			  obj);
 
-	obj->priv->music = gtk_check_button_new_with_mnemonic (_("_music"));
+	obj->priv->music = gtk_check_button_new_with_mnemonic (_("_Music"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->music), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->music,
@@ -331,7 +331,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  G_CALLBACK (brasero_search_entry_category_clicked_cb),
 			  obj);
 
-	obj->priv->video = gtk_check_button_new_with_mnemonic (_("_video"));
+	obj->priv->video = gtk_check_button_new_with_mnemonic (_("_Video"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->video), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->video,

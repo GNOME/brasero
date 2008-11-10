@@ -118,15 +118,15 @@ static GtkActionEntry entries [] = {
 	{"NewChoose", GTK_STOCK_NEW, N_("_Empty Project"), NULL,
 	 N_("Let you choose your new project"), G_CALLBACK (brasero_project_manager_new_empty_prj_cb)},
 	{"NewAudio", "media-optical-audio-new", N_("New _Audio Project"), NULL,
-	 N_("Create a new audio project"), G_CALLBACK (brasero_project_manager_new_audio_prj_cb)},
+	 N_("Create a traditional audio CD that will be playable on computers and stereos"), G_CALLBACK (brasero_project_manager_new_audio_prj_cb)},
 	{"NewData", "media-optical-data-new", N_("New _Data Project"), NULL,
-	 N_("Create a new data project"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
+	 N_("Create a CD/DVD containing any type of data that can only be read on a computer"), G_CALLBACK (brasero_project_manager_new_data_prj_cb)},
 	{"NewVideo", "media-optical-video-new", N_("New _Video Project"), NULL,
-	 N_("Create a new video project"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
+	 N_("Create a video DVD or a SVCD that are readable on TV readers"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
 	{"NewCopy", "media-optical-copy", N_("Copy _Disc..."), NULL,
-	 N_("Copy a disc"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
+	 N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
 	{"NewIso", "iso-image-burn", N_("_Burn Image..."), NULL,
-	 N_("Burn an image"), G_CALLBACK (brasero_project_manager_new_iso_prj_cb)},
+	 N_("Burn an existing CD/DVD image to disc"), G_CALLBACK (brasero_project_manager_new_iso_prj_cb)},
 
 	{"Open", GTK_STOCK_OPEN, N_("_Open..."), NULL,
 	 N_("Open a project"), G_CALLBACK (brasero_project_manager_open_cb)},
@@ -1199,11 +1199,11 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 
 	action = gtk_action_group_get_action (obj->priv->action_group, "NewChoose");
 	g_object_set (action,
-		      "short-label", _("New"), /* for toolbar buttons */
+		      "short-label", _("_New"), /* for toolbar buttons */
 		      NULL);
 	action = gtk_action_group_get_action (obj->priv->action_group, "Open");
 	g_object_set (action,
-		      "short-label", _("Open"), /* for toolbar buttons */
+		      "short-label", _("_Open"), /* for toolbar buttons */
 		      NULL);
 
 	/* add the project type chooser to the notebook */
@@ -1251,7 +1251,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   chooser,
 				   "Chooser",
 				   _("Browse the file system"),
-				   _("Display File Browser"),
 				   GTK_STOCK_DIRECTORY,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
 
@@ -1275,7 +1274,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   search,
 				   "Search",
 				   _("Search files using keywords"),
-				   _("Display Search"),
 				   GTK_STOCK_FIND,
 				   BRASERO_LAYOUT_AUDIO|BRASERO_LAYOUT_DATA|BRASERO_LAYOUT_VIDEO);
 
@@ -1296,7 +1294,6 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 				   playlist,
 				   "Playlist",
 				   _("Display playlists and their contents"),
-				   _("Display Playlists"),
 				   "audio-x-generic", 
 				   BRASERO_LAYOUT_AUDIO);
 

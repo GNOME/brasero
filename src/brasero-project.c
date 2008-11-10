@@ -1504,7 +1504,7 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 	
 	action = gtk_action_group_get_action (project->priv->project_group, "Save");
 	g_object_set (action,
-		      "short-label", _("Save"), /* for toolbar buttons */
+		      "short-label", _("_Save"), /* for toolbar buttons */
 		      NULL);
 	gtk_action_set_sensitive (action, FALSE);
 	action = gtk_action_group_get_action (project->priv->project_group, "SaveAs");
@@ -1515,12 +1515,12 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 	action = gtk_action_group_get_action (project->priv->project_group, "Add");
 	gtk_action_set_sensitive (action, FALSE);
 	g_object_set (action,
-		      "short-label", _("Add"), /* for toolbar buttons */
+		      "short-label", _("_Add"), /* for toolbar buttons */
 		      NULL);
 	action = gtk_action_group_get_action (project->priv->project_group, "DeleteProject");
 	gtk_action_set_sensitive (action, FALSE);
 	g_object_set (action,
-		      "short-label", _("Remove"), /* for toolbar buttons */
+		      "short-label", _("_Remove"), /* for toolbar buttons */
 		      NULL);
 	action = gtk_action_group_get_action (project->priv->project_group, "DeleteAll");
 	gtk_action_set_sensitive (action, FALSE);
@@ -1949,7 +1949,7 @@ brasero_project_open_project_xml (BraseroProject *proj,
 	xmlFreeDoc (project);
 
 	if (!retval && warn_user)
-		brasero_project_invalid_project_dialog (proj, _("It doesn't seem to be a valid Brasero project."));
+		brasero_project_invalid_project_dialog (proj, _("It does not seem to be a valid Brasero project."));
 
 	return retval;
 
@@ -1957,7 +1957,7 @@ error:
 
 	xmlFreeDoc (project);
     	if (warn_user)
-		brasero_project_invalid_project_dialog (proj, _("It doesn't seem to be a valid Brasero project."));
+		brasero_project_invalid_project_dialog (proj, _("It does not seem to be a valid Brasero project."));
 
 	return FALSE;
 }
@@ -2077,7 +2077,7 @@ brasero_project_open_audio_playlist_project (BraseroProject *proj,
 	result = totem_pl_parser_parse (parser, uri, FALSE);
 	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
 		if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("it doesn't seem to be a valid Brasero project."));
+			brasero_project_invalid_project_dialog (proj, _("It does not seem to be a valid Brasero project."));
 
 		brasero_track_free (new_track);
 	}

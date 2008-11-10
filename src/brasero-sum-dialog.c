@@ -233,7 +233,7 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 	gtk_tree_view_column_add_attribute (column, renderer,
 					    "text", BRASERO_SUM_DIALOG_PATH);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
-	gtk_tree_view_column_set_title (column, _("Corrupted files"));
+	gtk_tree_view_column_set_title (column, _("Corrupted Files"));
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
@@ -307,7 +307,7 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("a temporary file couldn't be created"));
+			     _("A temporary file could not be created."));
 		return BRASERO_BURN_ERR;
 	}
 	close (fd);
@@ -362,7 +362,7 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("URI is not valid"));
+			     _("URI is not valid."));
 		return BRASERO_BURN_ERR;
 	}
 

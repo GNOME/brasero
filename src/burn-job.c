@@ -487,7 +487,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"),
+			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)."),
 			     (unsigned long) output_size / 1048576);
 		return BRASERO_BURN_ERR;
 	}
@@ -509,7 +509,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("the selected location does not have enough free space to store the disc image (%ld MiB needed)"),
+			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)."),
 			     (unsigned long) output_size / 1048576);
 		return BRASERO_BURN_ERR;
 	}
@@ -522,7 +522,7 @@ error:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the size of the volume can't be checked (Unknown error)"));
+			     _("The size of the volume can't be checked (Unknown error)."));
 	g_object_unref (file);
 	return BRASERO_BURN_ERR;
 }

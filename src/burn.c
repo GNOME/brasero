@@ -475,7 +475,7 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("no drive specified"));
+				     _("No burner specified."));
 			return BRASERO_BURN_ERR;
 		}
 	}
@@ -512,7 +512,7 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no drive specified as source"));
+			     _("No source drive specified."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -552,7 +552,7 @@ again:
 	}
 
 	if (!priv->src_locked
-	&&  !brasero_drive_lock (priv->src, _("ongoing copying process"), &failure)) {
+	&&  !brasero_drive_lock (priv->src, _("Ongoing copying process"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -600,7 +600,7 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no drive specified"));
+			     _("No burner specified."));
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -751,7 +751,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no drive specified"));
+			     _("No burner specified."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1875,7 +1875,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("there is no track to be burnt"));
+			     _("There is no track to be burnt."));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1885,11 +1885,11 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 
 		burner = brasero_burn_session_get_burner (priv->session);
 		if (!burner) {
-			BRASERO_BURN_DEBUG (burn, "No drive set");
+			BRASERO_BURN_DEBUG (burn, "No burner specified.");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("there is no drive to burn to"));
+				     _("No burner specified."));
 			return BRASERO_BURN_ERR;	
 		}
 	}
@@ -1943,7 +1943,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("merging data is impossible with this disc"));
+					     _("Merging data is impossible with this disc."));
 				return BRASERO_BURN_ERR;
 			}
 			else if ((flag & BRASERO_BURN_FLAG_BURNPROOF)

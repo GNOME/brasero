@@ -122,13 +122,12 @@ struct BraseroLayoutPrivate {
 static GObjectClass *parent_class = NULL;
 
 #define BRASERO_LAYOUT_PREVIEW_ID	"Viewer"
-#define BRASERO_LAYOUT_PREVIEW_NAME	N_("Preview")
 #define BRASERO_LAYOUT_PREVIEW_MENU	N_("P_review")
 #define BRASERO_LAYOUT_PREVIEW_TOOLTIP	N_("Display video, audio and image preview")
 #define BRASERO_LAYOUT_PREVIEW_ICON	GTK_STOCK_FILE
 
 #define BRASERO_LAYOUT_NONE_ID		"EmptyView"
-#define BRASERO_LAYOUT_NONE_MENU	N_("_Show side panel")
+#define BRASERO_LAYOUT_NONE_MENU	N_("_Show Side Panel")
 #define BRASERO_LAYOUT_NONE_TOOLTIP	N_("Show a side pane along the project")
 #define BRASERO_LAYOUT_NONE_ICON	NULL
 
@@ -742,7 +741,6 @@ brasero_layout_add_source (BraseroLayout *layout,
 			   GtkWidget *source,
 			   const gchar *id,
 			   const gchar *subtitle,
-			   const gchar *tooltip,
 			   const gchar *icon_name,
 			   BraseroLayoutType types)
 {

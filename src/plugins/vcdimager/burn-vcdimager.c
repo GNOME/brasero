@@ -469,7 +469,7 @@ brasero_vcd_imager_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "vcdimager",
-			       _("use vcdimager to convert a set of files to burn to SVCDs"),
+			       _("Use vcdimager to create SVCDs"),
 			       "Philippe Rouquier",
 			       1);
 

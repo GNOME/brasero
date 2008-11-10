@@ -89,34 +89,26 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (readcd),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("the drive is not ready")));
-	}
-	else if (strstr (line, "Device or resource busy")) {
-		if (!strstr (line, "retrying in")) {
-			brasero_job_error (BRASERO_JOB (readcd),
-					   g_error_new (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_BUSY_DRIVE,
-							_("you don't seem to have the required permissions to access the drive")));
-		}
+						_("The drive is busy.")));
 	}
 	else if (strstr (line, "Cannot open SCSI driver.")) {
 		brasero_job_error (BRASERO_JOB (readcd),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("you don't seem to have the required permissions to access the drive")));		
+						_("You do not seem to have the required permissions to access the drive")));		
 	}
 	else if (strstr (line, "Cannot send SCSI cmd via ioctl")) {
 		brasero_job_error (BRASERO_JOB (readcd),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_SCSI_IOCTL,
-						_("you don't seem to have the required permissions to access the drive")));
+						_("You do not to have the required permissions to access the drive")));
 	}
 	/* we scan for this error as in this case readcd returns success */
 	else if (sscanf (line, "Input/output error. Error on sector %d not corrected. Total of %d error", &dummy1, &dummy2) == 2) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("internal error")));
+						_("Internal error")));
 	}
 
 	return BRASERO_BURN_OK;

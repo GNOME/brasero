@@ -95,7 +95,8 @@ brasero_project_name_get_default_label (BraseroProjectName *self)
 	if (priv->type == BRASERO_PROJECT_TYPE_DATA) {
 		if (!title_str || title_str [0] == '\0') {
 			/* NOTE to translators: the final string must not be over
-			 * 32 _bytes_ otherwise it gets truncated. */
+			 * 32 _bytes_ otherwise it gets truncated.
+			 * The %s is the date */
 			title_str = g_strdup_printf (_("Data disc (%s)"), buffer);
 
 			if (strlen (title_str) > 32) {
@@ -108,11 +109,13 @@ brasero_project_name_get_default_label (BraseroProjectName *self)
 	else {
 		if (priv->type == BRASERO_PROJECT_TYPE_VIDEO)
 			/* NOTE to translators: the final string must not be over
-			 * 32 _bytes_ */
+			 * 32 _bytes_.
+			 * The %s is the date */
 			title_str = g_strdup_printf (_("Video disc (%s)"), buffer);
 		else if (priv->type == BRASERO_PROJECT_TYPE_AUDIO)
 			/* NOTE to translators: the final string must not be over
-			 * 32 _bytes_ */
+			 * 32 _bytes_ .
+			 * The %s is the date */
 			title_str = g_strdup_printf (_("Audio disc (%s)"), buffer);
 
 		if (strlen (title_str) > 32) {

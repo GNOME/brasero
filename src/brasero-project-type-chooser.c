@@ -71,27 +71,27 @@ struct _ItemDescription {
 typedef struct _ItemDescription ItemDescription;
 
 static ItemDescription items [] = {
-       {N_("<big>Audi_o project</big>"),
+       {N_("Audi_o project"),
 	N_("Create a traditional audio CD"),
 	N_("Create a traditional audio CD that will be playable on computers and stereos"),
 	"media-optical-audio-new",
 	BRASERO_PROJECT_TYPE_AUDIO},
-       {N_("<big>D_ata project</big>"),
+       {N_("D_ata project"),
 	N_("Create a data CD/DVD"),
 	N_("Create a CD/DVD containing any type of data that can only be read on a computer"),
 	"media-optical-data-new",
 	BRASERO_PROJECT_TYPE_DATA},
-       {N_("<big>_Video project</big>"),
+       {N_("_Video project"),
 	N_("Create a video DVD or a SVCD"),
 	N_("Create a video DVD or a SVCD that are readable on TV readers"),
 	"media-optical-video-new",
 	BRASERO_PROJECT_TYPE_VIDEO},
-       {N_("<big>Disc _copy</big>"),
+       {N_("Disc _copy"),
 	N_("Create 1:1 copy of a CD/DVD"),
 	N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"),
 	"media-optical-copy",
 	BRASERO_PROJECT_TYPE_COPY},
-       {N_("<big>Burn _image</big>"),
+       {N_("Burn _image"),
 	N_("Burn an existing CD/DVD image to disc"),
 	N_("Burn an existing CD/DVD image to disc"),
 	"iso-image-burn",
@@ -131,6 +131,7 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 	GtkWidget *image;
 	GtkWidget *label;
 	GtkWidget *eventbox;
+	gchar *description_str;
 
 	eventbox = gtk_button_new ();
 	g_signal_connect (eventbox,
@@ -149,7 +150,6 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 			   DESCRIPTION_KEY,
 			   description);
 
-
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
 	gtk_container_add (GTK_CONTAINER (eventbox), vbox);
@@ -166,7 +166,9 @@ brasero_project_type_chooser_new_item (BraseroProjectTypeChooser *chooser,
 
 	label = gtk_label_new (NULL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), eventbox);
-	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), _(description->text));
+	description_str = g_strdup_printf ("<big>%s</big>", _(description->text));
+	gtk_label_set_markup_with_mnemonic (GTK_LABEL (label), description_str);
+	g_free (description_str);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 	g_object_set_data (G_OBJECT (eventbox), LABEL_KEY, label);

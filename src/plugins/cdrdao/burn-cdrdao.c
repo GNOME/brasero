@@ -185,7 +185,7 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("the cue file (%s) seems to be invalid"),
+						_("The cue file (%s) seems to be invalid"),
 						name));
 		g_free (name);
 	}
@@ -217,19 +217,19 @@ brasero_cdrdao_read_stderr (BraseroProcess *process, const gchar *line)
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("the drive seems to be busy")));
+						_("The drive is busy")));
 	}
 	else if (strstr (line, "Illegal command")) {
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("your version of cdrdao doesn't seem to be supported by libbrasero")));
+						_("Your version of cdrdao does not seem to be supported by libbrasero")));
 	}
 	else if (strstr (line, "Operation not permitted. Cannot send SCSI")) {
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_SCSI_IOCTL,
-						_("You don't seem to have the required permission to use this drive")));
+						_("You do not seem to have the required permission to use this drive")));
 	}
 
 	return BRASERO_BURN_OK;

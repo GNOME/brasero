@@ -63,7 +63,7 @@ brasero_pref_init (BraseroPref *object)
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 
 	gtk_window_set_default_size (GTK_WINDOW (object), 550, 600);
-	gtk_window_set_title (GTK_WINDOW (object), "Brasero Plugins");
+	gtk_window_set_title (GTK_WINDOW (object), _("Brasero Plugins"));
 
 	notebook = gtk_notebook_new ();
 

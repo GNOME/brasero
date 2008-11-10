@@ -326,7 +326,7 @@ brasero_playlist_init (BraseroPlaylist *obj)
 	gtk_tree_view_column_set_expand (column, TRUE);
 
 	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new_with_attributes (_("Number of songs"),
+	column = gtk_tree_view_column_new_with_attributes (_("Number of Songs"),
 							   renderer, "text",
 							   BRASERO_PLAYLIST_NB_SONGS_COL,
 							   NULL);

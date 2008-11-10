@@ -1041,7 +1041,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* NOTE: it seems that cdrecord can burn cue files on the fly */
 	brasero_plugin_define (plugin,
 			       "wodim",
-			       _("use wodim to burn CDs"),
+			       _("Use wodim to burn CDs and DVDs"),
 			       "Philippe Rouquier",
 			       0);
 
@@ -1188,10 +1188,10 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* add some configure options */
 	immed = brasero_plugin_conf_option_new (GCONF_KEY_IMMEDIATE_FLAG,
-						_("enable -immed flag (see wodim manual)"),
+						_("Enable \"-immed\" flag (see wodim manual)"),
 						BRASERO_PLUGIN_OPTION_BOOL);
 	minbuf = brasero_plugin_conf_option_new (GCONF_KEY_MINBUF_VALUE,
-						 _("minimum drive buffer fill ratio (in %) (see wodim manual):"),
+						 _("Minimum drive buffer fill ratio (in %) (see wodim manual):"),
 						 BRASERO_PLUGIN_OPTION_INT);
 	brasero_plugin_conf_option_int_set_range (minbuf, 25, 95);
 
