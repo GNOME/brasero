@@ -661,10 +661,6 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						 "%s", secondary_message);
 
-	gtk_dialog_add_buttons (GTK_DIALOG (message),
-				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				NULL);
-
 	button = brasero_utils_make_button (_("_Replace Disc"),
 					    GTK_STOCK_REFRESH,
 					    NULL,
@@ -672,6 +668,10 @@ brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog,
 	gtk_widget_show_all (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message),
 				      button, GTK_RESPONSE_ACCEPT);
+
+	gtk_dialog_add_buttons (GTK_DIALOG (message),
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				NULL);
 
 	button = brasero_utils_make_button (button_text,
 					    NULL,
@@ -795,7 +795,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 					  _("Do you want to continue with Windows compatibility disabled?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Some files don't have a suitable name for a Windows-compatible CD."));
+						  _("Some files don't have a suitable name for a fully Windows-compatible CD."));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (message),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

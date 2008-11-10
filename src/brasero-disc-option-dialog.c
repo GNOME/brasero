@@ -331,6 +331,7 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 	BraseroDiscOptionDialogPrivate *priv;
 	GtkResponseType answer;
 	GtkWidget *message;
+	gchar *secondary;
 	gboolean hide;
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
@@ -354,8 +355,11 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 					  GTK_BUTTONS_NONE,
 					  _("Should files be renamed to be fully Windows-compatible?"));
 
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  _("Some files don't have a suitable name for a fully Windows-compatible CD. Those names should be changed and truncated to 64 characters."));
+	secondary = g_strdup_printf ("%s\n%s",
+				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),
+				     _("Those names should be changed and truncated to 64 characters."));
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message), secondary);
+	g_free (secondary);
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
 			       _("_Disable Full Windows Compatibility"),
