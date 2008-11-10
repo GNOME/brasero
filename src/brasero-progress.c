@@ -67,7 +67,6 @@ brasero_burn_progress_get_property (GObject *object,
 struct BraseroBurnProgressPrivate {
 	GtkWidget *progress;
 	GtkWidget *action;
-	GtkWidget *time;
 	GtkWidget *speed;
 	GtkWidget *bytes_written;
 	GtkWidget *speed_time_info;
@@ -134,41 +133,17 @@ brasero_burn_progress_create_info (BraseroBurnProgress *obj)
 	GtkWidget *label;
 	GtkWidget *table;
 
-	table = gtk_table_new (2, 2, FALSE);
+	table = gtk_table_new (1, 2, FALSE);
 	obj->priv->speed_time_info = table;
 	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
-
-	label = gtk_label_new (_("Estimated remaining time:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0,
-			  1,
-			  0,
-			  1, 
-			  GTK_EXPAND|GTK_FILL,
-			  GTK_EXPAND|GTK_FILL,
-			  0,
-			  0);
-
-	obj->priv->time = gtk_label_new (" ");
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->time), 1.0, 1.0);
-	gtk_table_attach (GTK_TABLE (table), obj->priv->time,
-			  1,
-			  2,
-			  0,
-			  1, 
-			  GTK_FILL,
-			  GTK_FILL,
-			  0,
-			  0);
 
 	label = gtk_label_new (_("Estimated drive speed:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
 	gtk_table_attach (GTK_TABLE (table), label,
 			  0,
 			  1,
-			  1,
-			  2, 
+			  0,
+			  1, 
 			  GTK_EXPAND|GTK_FILL,
 			  GTK_EXPAND|GTK_FILL,
 			  0,
@@ -179,13 +154,13 @@ brasero_burn_progress_create_info (BraseroBurnProgress *obj)
 	gtk_table_attach (GTK_TABLE (table), obj->priv->speed,
 			  1,
 			  2,
-			  1,
-			  2, 
+			  0,
+			  1, 
 			  GTK_FILL,
 			  GTK_FILL,
 			  0,
 			  0);
-	gtk_box_pack_start (GTK_BOX (obj), table, TRUE, TRUE, 20);
+	gtk_box_pack_start (GTK_BOX (obj), table, FALSE, TRUE, 12);
 	gtk_widget_show_all (table);
 }
 
@@ -197,57 +172,37 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 					    gint written)
 {
 	GtkWidget *label;
-	GtkWidget *table;
 	int hrs, mn, sec;
 	gdouble speed;
+	gchar *markup;
 	gchar *text;
 
 	if (obj->priv->speed_time_info)
 		gtk_widget_destroy (obj->priv->speed_time_info);
-
-	table = gtk_table_new (2, 2, FALSE);
-	obj->priv->speed_time_info = table;
-	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
-
-	label = gtk_label_new (_("Total time:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
-	gtk_table_attach (GTK_TABLE (table), label,
-			  0,
-			  1,
-			  0,
-			  1, 
-			  GTK_EXPAND|GTK_FILL,
-			  GTK_EXPAND|GTK_FILL,
-			  0,
-			  0);
 
 	hrs = time / 3600;
 	time = ((int) time) % 3600;
 	mn = time / 60;
 	sec = ((int) time) % 60;
 
-	text = g_strdup_printf ("%02i:%02i:%02i", hrs, mn, sec);
-	obj->priv->time = gtk_label_new (text);
+	text = g_strdup_printf (_("Total time: %02i:%02i:%02i"), hrs, mn, sec);
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (obj->priv->progress), text);
 	g_free (text);
 
-	gtk_misc_set_alignment (GTK_MISC (obj->priv->time), 1.0, 1.0);
-	gtk_table_attach (GTK_TABLE (table), obj->priv->time,
-			  1,
-			  2,
-			  0,
-			  1, 
-			  GTK_FILL,
-			  GTK_FILL,
-			  0,
-			  0);
 	if (rate > 0) {
+		GtkWidget *table;
+
+		table = gtk_table_new (1, 2, FALSE);
+		obj->priv->speed_time_info = table;
+		gtk_container_set_border_width (GTK_CONTAINER (table), 0);
+
 		label = gtk_label_new (_("Average drive speed:"));
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 1.0);
 		gtk_table_attach (GTK_TABLE (table), label,
 				  0,
 				  1,
-				  1,
-				  2, 
+				  0,
+				  1, 
 				  GTK_EXPAND|GTK_FILL,
 				  GTK_EXPAND|GTK_FILL,
 				  0,
@@ -268,21 +223,24 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 		gtk_table_attach (GTK_TABLE (table), obj->priv->speed,
 				  1,
 				  2,
-				  1,
-				  2, 
+				  0,
+				  1, 
 				  GTK_FILL,
 				  GTK_FILL,
 				  0,
 				  0);
+
+		gtk_box_pack_start (GTK_BOX (obj), table, FALSE, TRUE, 12);
+		gtk_widget_show_all (table);
 	}
 
-	gtk_box_pack_start (GTK_BOX (obj), table, TRUE, TRUE, 20);
-	gtk_widget_show_all (table);
-
 	text = g_format_size_for_display (written);
-	gtk_label_set_text (GTK_LABEL (obj->priv->bytes_written), text);
-	gtk_widget_show (obj->priv->bytes_written);
+	markup = g_strconcat ("<i>", text, "</i>", NULL);
 	g_free (text);
+
+	gtk_label_set_markup (GTK_LABEL (obj->priv->bytes_written), markup);
+	g_free (markup);
+	gtk_widget_show (obj->priv->bytes_written);
 }
 
 static void
@@ -301,7 +259,6 @@ brasero_burn_progress_set_property (GObject *object,
 				gtk_widget_destroy (progress->priv->speed_time_info);
 				progress->priv->speed_time_info = NULL;
 				progress->priv->speed = NULL;
-				progress->priv->time = NULL;
 			}
 		}
 		else if (progress->priv->speed_time_info)
@@ -340,6 +297,12 @@ brasero_burn_progress_init (BraseroBurnProgress *obj)
 	obj->priv = g_new0 (BraseroBurnProgressPrivate, 1);
 	gtk_box_set_spacing (GTK_BOX (obj), 2);
 
+	box = gtk_hbox_new (FALSE, 0);
+	obj->priv->progress = gtk_progress_bar_new ();
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (obj->priv->progress), " ");
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->progress, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (obj), box, TRUE, TRUE, 2);
+
 	box = gtk_hbox_new (FALSE, 24);
 	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
 
@@ -355,12 +318,6 @@ brasero_burn_progress_init (BraseroBurnProgress *obj)
 	gtk_misc_set_padding (GTK_MISC (obj->priv->bytes_written), 0, 0);
 	gtk_box_pack_start (GTK_BOX (box), obj->priv->bytes_written, TRUE, TRUE, 0);
 
-	box = gtk_hbox_new (FALSE, 0);
-	obj->priv->progress = gtk_progress_bar_new ();
-	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (obj->priv->progress), " ");
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->progress, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (obj), box, TRUE, TRUE, 0);
-	
 	brasero_burn_progress_create_info (obj);
 	
 	gtk_widget_show_all (GTK_WIDGET (obj));
@@ -439,8 +396,8 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 	}
 
 	if (self->priv->current == BRASERO_BURN_ACTION_NONE) {
-		if (self->priv->time)
-			gtk_label_set_text (GTK_LABEL (self->priv->time), " ");
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), " ");
+
 		if (self->priv->bytes_written)
 			gtk_label_set_text (GTK_LABEL (self->priv->bytes_written), " ");
 		if (self->priv->speed)
@@ -455,11 +412,7 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->priv->progress), 
 				       action_progress);
 
-	text = g_strdup_printf ("%i%%", (gint) (action_progress * 100));
-	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), text);
-	g_free (text);
-
-	if (remaining >= 0 && self->priv->time) {
+	if (remaining >= 0) {
 		int hrs, mn, sec;
 
 		hrs = remaining / 3600;
@@ -467,12 +420,12 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		mn = remaining / 60;
 		sec = ((int) remaining) % 60;
 
-		text = g_strdup_printf ("%02i:%02i:%02i", hrs, mn, sec);
-		gtk_label_set_text (GTK_LABEL (self->priv->time), text);
+		text = g_strdup_printf (_("Estimated remaining time: %02i:%02i:%02i"), hrs, mn, sec);
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), text);
 		g_free (text);
 	}
-	else if (self->priv->time)
-		gtk_label_set_text (GTK_LABEL (self->priv->time), " ");
+	else if (self->priv->progress)
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), " ");
 
 	if (self->priv->current == BRASERO_BURN_ACTION_BLANKING) {
 		if (self->priv->bytes_written)
@@ -500,6 +453,8 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		gtk_label_set_text (GTK_LABEL (self->priv->speed), " ");
 
 	if (mb_isosize > 0 || mb_written > 0) {
+		gchar *markup;
+
 		/* if we have just one, we can find the other */
 		if (mb_isosize <= 0)
 			mb_isosize = mb_written / action_progress;
@@ -508,8 +463,11 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 			mb_written = mb_isosize * action_progress;
 
 		text = g_strdup_printf (_("%i MiB of %i MiB"), mb_written, mb_isosize);
-		gtk_label_set_text (GTK_LABEL (self->priv->bytes_written), text);
+		markup = g_strconcat ("<i>", text, "</i>", NULL);
 		g_free (text);
+
+		gtk_label_set_markup (GTK_LABEL (self->priv->bytes_written), markup);
+		g_free (markup);
 	}
 	else if (self->priv->bytes_written)
 		gtk_label_set_text (GTK_LABEL (self->priv->bytes_written), " ");
@@ -532,8 +490,7 @@ brasero_burn_progress_set_action (BraseroBurnProgress *self,
 
 		if (self->priv->current != action) {
 			gtk_label_set_text (GTK_LABEL (self->priv->bytes_written), " ");
-			if (self->priv->time)
-				gtk_label_set_text (GTK_LABEL (self->priv->time), " ");
+			gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), " ");
 			if (self->priv->speed)
 				gtk_label_set_text (GTK_LABEL (self->priv->speed), " ");
 		}
@@ -555,8 +512,8 @@ brasero_burn_progress_reset (BraseroBurnProgress *progress)
 	brasero_burn_progress_stop_blinking (progress);
 
 	progress->priv->current = BRASERO_BURN_ACTION_NONE;
-	if (progress->priv->time)
-		gtk_label_set_text (GTK_LABEL (progress->priv->time), NULL);
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->priv->progress), " ");
+
 	if (progress->priv->speed)
 		gtk_label_set_text (GTK_LABEL (progress->priv->speed), NULL);
 	if (progress->priv->speed_time_info)
