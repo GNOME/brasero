@@ -1498,6 +1498,46 @@ brasero_medium_track_get_info (BraseroMedium *self,
 }
 
 static BraseroBurnResult
+brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
+					    BraseroDeviceHandle *handle,
+					    BraseroMediumTrack *leadout,
+					    BraseroScsiErrCode *code)
+{
+	BraseroScsiAtipData *atip = NULL;
+	BraseroMediumPrivate *priv;
+	BraseroScsiResult result;
+	int size = 0;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Using fallback method for blank CDR to retrieve NWA and leadout information");
+
+	/* NWA is easy for blank CDRs, it's 0. So far, so good... */
+	priv->next_wr_add = 0;
+
+	result = brasero_mmc1_read_atip (handle, &atip, &size, code);
+	if (result != BRASERO_SCSI_OK) {
+		BRASERO_BURN_LOG ("READ ATIP failed");
+		return BRASERO_BURN_ERR;
+	}
+
+	leadout->blocks_num = atip->desc->leadout_mn * 60 * 75 +
+			      atip->desc->leadout_sec * 75 +
+			      atip->desc->leadout_frame;
+
+	/* of course it starts at 0 since it's empty */
+	leadout->start = 0;
+
+	BRASERO_BURN_LOG ("Leadout (through READ ATIP): start = %llu size = %llu",
+			  leadout->start,
+			  leadout->blocks_num);
+
+	g_free (atip);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_medium_track_set_leadout (BraseroMedium *self,
 				  BraseroDeviceHandle *handle,
 				  BraseroMediumTrack *leadout,
@@ -1531,8 +1571,25 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 	if (result == BRASERO_SCSI_OK) {
 		wrt_page = (BraseroScsiWritePage *) &data->page;
 
-		BRASERO_BURN_LOG ("Former write mode %d", wrt_page->write_type);
+		BRASERO_BURN_LOG ("Former write type %d", wrt_page->write_type);
+		BRASERO_BURN_LOG ("Former track mode %d", wrt_page->track_mode);
+		BRASERO_BURN_LOG ("Former data block type %d", wrt_page->data_block_type);
+
+		/* "reset some stuff to be on the safe side" (words and ideas
+		 * taken from k3b:)). */
+		wrt_page->ps = 0;
+		wrt_page->BUFE = 0;
+		wrt_page->multisession = 0;
+		wrt_page->testwrite = 0;
+		wrt_page->LS_V = 0;
+		wrt_page->copy = 0;
+		wrt_page->FP = 0;
+		wrt_page->session_format = 0;
+		BRASERO_SET_16 (wrt_page->pause_len, 150);
+
 		wrt_page->write_type = BRASERO_SCSI_WRITE_TAO;
+		wrt_page->track_mode = 4; /* should be 5 for DVD-R(W) */
+		wrt_page->data_block_type = 8;
 
 		result = brasero_spc1_mode_select (handle, data, size, code);
 		g_free (data);
@@ -1540,12 +1597,26 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		if (result != BRASERO_SCSI_OK) {
 			BRASERO_BURN_LOG ("MODE SELECT failed");
 
+			/* This only for CD-R */
+			if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
+				return brasero_medium_track_set_leadout_CDR_blank (self,
+										   handle,
+										   leadout,
+										   code);
+
 			/* This isn't necessarily a problem! we better try */
 			//	return BRASERO_BURN_ERR;
 		}
 	}
 	else {
 		BRASERO_BURN_LOG ("MODE SENSE failed");
+
+		/* This only for CD-R */
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
+			return brasero_medium_track_set_leadout_CDR_blank (self,
+									   handle,
+									   leadout,
+									   code);
 
 		/* This isn't necessarily a problem we better! try the rest */
 		//	return BRASERO_BURN_ERR;
@@ -1580,6 +1651,13 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 					       code);
 
 	if (result != BRASERO_SCSI_OK) {
+		/* This only for CD-R */
+		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
+			return brasero_medium_track_set_leadout_CDR_blank (self,
+									   handle,
+									   leadout,
+									   code);
+
 		BRASERO_BURN_LOG ("READ TRACK INFO failed");
 		return BRASERO_BURN_ERR;
 	}

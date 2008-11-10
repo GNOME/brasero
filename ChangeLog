@@ -1,5 +1,15 @@
 2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for
+	#557561 – Brasero don't recognize empty disk
+	#556449 – Session error : Insufficient space on media when copying an audio CD (same problem with trunk)
+
+	* src/burn-medium.c (brasero_medium_track_set_leadout_CDR_blank),
+	(brasero_medium_track_set_leadout):
+	* src/scsi-write-page.h:
+
+2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Another bunch of string fixes (forgotten strings not marked, button
 	without mnemonics, ...)
 

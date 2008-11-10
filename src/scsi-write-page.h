@@ -51,7 +51,7 @@ struct _BraseroScsiWritePage {
 	uchar FP		:1;
 	uchar multisession	:2;
 
-	uchar book_type		:4;
+	uchar data_block_type	:4;
 	uchar reserved2		:4;
 
 	uchar link_size;
@@ -102,7 +102,7 @@ struct _BraseroScsiWritePage {
 	uchar track_mode	:4;
 
 	uchar reserved2		:4;
-	uchar book_type		:4;
+	uchar data_block_type	:4;
 
 	uchar link_size;
 
