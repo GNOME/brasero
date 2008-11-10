@@ -1,5 +1,12 @@
 2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a bug with URI where it couldn't sometimes determine if the local
+	path for a URI
+
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded):
+
+2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for
 	#557561 – Brasero don't recognize empty disk
 	#556449 – Session error : Insufficient space on media when copying an audio CD (same problem with trunk)

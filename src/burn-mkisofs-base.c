@@ -136,7 +136,10 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 
 		unescaped_uri = g_uri_unescape_string (uri, NULL);
 		localpath = g_filename_from_uri (unescaped_uri, NULL, NULL);
-		g_free (unescaped_uri);	      
+		g_free (unescaped_uri);
+
+		if (!localpath)
+			localpath = g_filename_from_uri (uri, NULL, NULL);					  
 	}
 	else {
 		BRASERO_BURN_LOG ("File not stored locally %s", uri);
