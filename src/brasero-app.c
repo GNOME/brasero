@@ -243,6 +243,15 @@ on_exit_cb (GtkAction *action, BraseroApp *app)
 	gtk_widget_destroy (GTK_WIDGET (app));
 }
 
+gboolean
+brasero_app_is_running (BraseroApp *app)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	return priv->is_running;
+}
+
 void
 brasero_app_run (BraseroApp *app, gboolean load_default_project)
 {

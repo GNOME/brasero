@@ -735,17 +735,36 @@ brasero_project_check_status (BraseroProject *project,
 	 * data or audio has not finished to explore a directory
 	 * or get the metadata of a song or a film */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_INFO,
-					 GTK_BUTTONS_CLOSE,
-					 _("Please wait."));
 
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Some tasks are not completed yet."));
+	/* This dialog will run as a standalone window when run from nautilus
+	 * to burn burn:// URI contents. */
+	if (!brasero_app_is_running (BRASERO_APP (toplevel))) {
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_INFO,
+						 GTK_BUTTONS_CANCEL,
+						 _("Please, wait while initializing."));
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Ongoing Tasks"));
+		gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("Some tasks are not completed yet."));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Initializing"));
+	}
+	else {
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_INFO,
+						 GTK_BUTTONS_CLOSE,
+						 _("Please, wait."));
+
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("Some tasks are not completed yet."));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Ongoing Tasks"));
+	}
 
 	progress = gtk_progress_bar_new ();
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress), " ");
@@ -779,7 +798,6 @@ brasero_project_check_status (BraseroProject *project,
 }
 
 /******************************** cover ****************************************/
-
 void
 brasero_project_set_cover_specifics (BraseroProject *self,
 				     BraseroJacketEdit *cover)
