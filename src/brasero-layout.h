@@ -34,8 +34,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtkhpaned.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

@@ -33,30 +33,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtktoggleaction.h>
-#include <gtk/gtkradioaction.h>
-#include <gtk/gtkaction.h>
-
-#include <gtk/gtkstock.h>
-
-#include <gtk/gtkbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkvpaned.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkhseparator.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcelllayout.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

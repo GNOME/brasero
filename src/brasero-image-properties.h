@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtk.h>
 
 #include "burn-track.h"
 

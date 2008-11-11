@@ -38,14 +38,7 @@
 
 #include <gdk/gdk.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 
 #include "brasero-utils.h"
 #include "brasero-disc.h"

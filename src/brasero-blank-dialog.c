@@ -31,18 +31,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtklabel.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkprogressbar.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkcheckbutton.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "burn-session.h"

@@ -30,8 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkfilechooserwidget.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

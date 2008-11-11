@@ -40,26 +40,7 @@
 
 #include <gio/gio.h>
 
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkfilefilter.h>
-#include <gtk/gtkselection.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrendererprogress.h>
-#include <gtk/gtktreeviewcolumn.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreemodelfilter.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtkcomboboxentry.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtk.h>
 
 #include <beagle/beagle.h>
 

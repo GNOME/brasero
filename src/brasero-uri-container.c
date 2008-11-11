@@ -25,7 +25,7 @@
  */
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "brasero-uri-container.h"
  

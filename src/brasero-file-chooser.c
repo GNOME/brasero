@@ -34,18 +34,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkpaned.h>
-#include <gtk/gtkhpaned.h>
-#include <gtk/gtkfilechooserwidget.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtktreeselection.h>
+#include <gtk/gtk.h>
 
 #include "eggtreemultidnd.h"
 
