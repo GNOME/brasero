@@ -53,8 +53,6 @@ G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 struct _BraseroSessionSetting {
 	BraseroDrive *burner;
 
-	guint num_copies;
-
 	/**
 	 * Used when outputting an image instead of burning
 	 */
@@ -486,37 +484,6 @@ brasero_burn_session_get_rate (BraseroBurnSession *self)
 		return max_rate;
 	else
 		return MIN (max_rate, priv->settings->rate);
-}
-
-void
-brasero_burn_session_set_num_copies (BraseroBurnSession *self,
-				     guint copies)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
-		return;
-
-	priv->settings->num_copies = copies;
-}
-
-guint
-brasero_burn_session_get_num_copies (BraseroBurnSession *self)
-{
-	BraseroBurnSessionPrivate *priv;
-
-	g_return_val_if_fail (BRASERO_IS_BURN_SESSION (self), 0);
-
-	priv = BRASERO_BURN_SESSION_PRIVATE (self);
-
-	if (!BRASERO_BURN_SESSION_WRITE_TO_DISC (priv))
-		return 1;
-
-	return priv->settings->num_copies;
 }
 
 /**
@@ -1446,7 +1413,6 @@ brasero_burn_session_start (BraseroBurnSession *self)
 		medium = brasero_drive_get_medium (priv->settings->burner);
 		BRASERO_BURN_LOG_DISC_TYPE (brasero_medium_get_status (medium), "media type\t=");
 		BRASERO_BURN_LOG ("speed\t= %i", priv->settings->rate);
-		BRASERO_BURN_LOG ("number of copies\t= %i", priv->settings->num_copies);
 	}
 	else {
 		type.type = BRASERO_TRACK_TYPE_IMAGE;

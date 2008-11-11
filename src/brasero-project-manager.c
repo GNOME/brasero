@@ -525,7 +525,6 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 {
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
-	gboolean destroy;
 
 	/* now setup the burn dialog */
 	dialog = brasero_burn_dialog_new ();
@@ -538,21 +537,16 @@ brasero_project_manager_burn (BraseroProjectManager *manager,
 	gtk_widget_show (dialog);
 
 	brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
-				 session,
-				 &destroy);
+				 session);
 
 	gtk_widget_destroy (dialog);
 
-	if (!destroy) {
-		brasero_project_manager_switch (manager,
-						BRASERO_PROJECT_TYPE_INVALID,
-						NULL,
-						NULL,
-						TRUE);
-		gtk_widget_show (toplevel);
-	}
-	else
-		gtk_widget_destroy (toplevel);
+	brasero_project_manager_switch (manager,
+					BRASERO_PROJECT_TYPE_INVALID,
+					NULL,
+					NULL,
+					TRUE);
+	gtk_widget_show (toplevel);
 }
 
 static void

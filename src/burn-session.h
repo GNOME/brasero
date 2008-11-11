@@ -282,13 +282,6 @@ brasero_burn_session_set_rate (BraseroBurnSession *session,
 guint64
 brasero_burn_session_get_rate (BraseroBurnSession *session);
 
-void
-brasero_burn_session_set_num_copies (BraseroBurnSession *session,
-				     guint copies);
-
-guint
-brasero_burn_session_get_num_copies (BraseroBurnSession *session);
-
 G_END_DECLS
 
 #endif /* BURN_SESSION_H */

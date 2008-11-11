@@ -762,6 +762,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 
 	medium = brasero_drive_get_medium (priv->dest);
 	if (!medium) {
+		g_print ("REALOOD\n");
 		result = BRASERO_BURN_NEED_RELOAD;
 		berror = BRASERO_BURN_ERROR_MEDIA_NONE;
 		goto end;
@@ -771,7 +772,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive has no burning capabilities"));
+			     _("The drive cannot burn or the medium cannot be burnt"));
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
 
@@ -832,7 +833,9 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		
 		/* we warn the user is going to lose data even if in the case of
 		 * DVD+/-RW we don't really blank the disc we rather overwrite */
-		result = brasero_burn_emit_signal (burn, WARN_DATA_LOSS_SIGNAL, BRASERO_BURN_CANCEL);
+		result = brasero_burn_emit_signal (burn,
+						   WARN_DATA_LOSS_SIGNAL,
+						   BRASERO_BURN_CANCEL);
 		if (result != BRASERO_BURN_OK)
 			goto end;
 	}
@@ -844,7 +847,9 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 			 * append audio to appendable disc. That's because audio
 			 * tracks have little chance to be readable by common CD
 			 * player as last tracks */
-			result = brasero_burn_emit_signal (burn, WARN_AUDIO_TO_APPENDABLE_SIGNAL, BRASERO_BURN_CANCEL);
+			result = brasero_burn_emit_signal (burn,
+							   WARN_AUDIO_TO_APPENDABLE_SIGNAL,
+							   BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
@@ -857,7 +862,9 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 			/* warn the users that their previous data
 			 * session (s) will not be mounted by default by
 			 * the OS and that it'll be invisible */
-			result = brasero_burn_emit_signal (burn, WARN_PREVIOUS_SESSION_LOSS_SIGNAL, BRASERO_BURN_CANCEL);
+			result = brasero_burn_emit_signal (burn,
+							   WARN_PREVIOUS_SESSION_LOSS_SIGNAL,
+							   BRASERO_BURN_CANCEL);
 			if (result != BRASERO_BURN_OK)
 				goto end;
 		}
@@ -906,7 +913,7 @@ end:
 		brasero_drive_unlock (priv->dest);
 	}
 
-	if (result == BRASERO_BURN_ERROR_RELOAD_MEDIA && ret_error)
+	if (result == BRASERO_BURN_NEED_RELOAD && ret_error)
 		*ret_error = berror;
 
 	return result;
@@ -1893,11 +1900,6 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			return BRASERO_BURN_ERR;	
 		}
 	}
-	else {
-		/* check number of copies must be 1 */
-		if (brasero_burn_session_get_num_copies (priv->session) != 1)
-			brasero_burn_session_set_num_copies (priv->session, 1);
-	}
 
 	media = brasero_burn_session_get_dest_media (priv->session);
 
@@ -2137,13 +2139,17 @@ brasero_burn_record_session (BraseroBurn *burn,
 	/* this may be necessary for the drive to settle down and possibly be
 	 * mounted by gnome-volume-manager (just temporarily) */
 	result = brasero_burn_sleep (burn, 5000);
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		brasero_burn_session_pop_tracks (priv->session);
 		return result;
+	}
 
 	/* reprobe the medium and wait for it to be probed */
 	result = brasero_burn_reprobe (burn);
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK) {
+		brasero_burn_session_pop_tracks (priv->session);
 		return result;
+	}
 
 	medium = brasero_drive_get_medium (priv->dest);
 
@@ -2461,15 +2467,16 @@ brasero_burn_record (BraseroBurn *burn,
 			goto end;
 	}
 	else if (!brasero_burn_session_is_dest_file (session)) {
-		BraseroBurnError berror;
+		BraseroBurnError berror = BRASERO_BURN_ERROR_NONE;
 
 		/* do some drive locking quite early to make sure we have a
 		 * media in the drive so that we'll have all the necessary
 		 * information */
 		result = brasero_burn_lock_dest_media (burn, &berror, error);
+		g_print ("BERR %i\n", berror);
 		while (result == BRASERO_BURN_NEED_RELOAD) {
 			BraseroMedia required_media;
-
+g_print ("berror %i\n", berror);
 			required_media = brasero_burn_caps_get_required_media_type (priv->caps,
 										    priv->session);
 			if (required_media == BRASERO_MEDIUM_NONE)
@@ -2479,7 +2486,7 @@ brasero_burn_record (BraseroBurn *burn,
 								  berror,
 								  required_media,
 								  error);
-			if (result == BRASERO_BURN_OK)
+			if (result != BRASERO_BURN_OK)
 				goto end;
 
 			result = brasero_burn_lock_dest_media (burn, &berror, error);
@@ -2498,31 +2505,6 @@ brasero_burn_record (BraseroBurn *burn,
 	/* burn the session a first time whatever the number of copies required 
 	 * except if dummy session */
 	result = brasero_burn_record_session (burn, TRUE, error);
-	if (result == BRASERO_BURN_OK) {
-		gint num_copies;
-
-		/* burn all other required copies */
-		num_copies = brasero_burn_session_get_num_copies (session);
-		while (--num_copies > 0 && result == BRASERO_BURN_OK) {
-			BRASERO_BURN_LOG ("Burning additional copies (%i left)",
-					  num_copies);
-
-			/* we only need to reload and lock dest media */
-			result = brasero_burn_reload_dest_media (burn,
-								 BRASERO_BURN_WARNING_NEXT_COPY,
-								 error);
-			if (result != BRASERO_BURN_OK)
-				break;
-
-			/* see if we still need it to be locked */
-			if (brasero_burn_session_get_input_type (session, NULL) != BRASERO_TRACK_TYPE_DISC)
-				brasero_burn_unlock_src_media (burn, NULL);
-
-			result = brasero_burn_record_session (burn, TRUE, error);
-			if (result != BRASERO_BURN_OK)
-				break;
-		}
-	}
 
 end:
 
@@ -2539,7 +2521,7 @@ end:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("internal error (code %i)"),
+			     _("Internal error (code %i)"),
 			     result);
 
 	if (result == BRASERO_BURN_CANCEL) {

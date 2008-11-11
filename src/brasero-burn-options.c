@@ -51,8 +51,6 @@ struct _BraseroBurnOptionsPrivate
 	GtkWidget *selection;
 	GtkWidget *properties;
 	GtkWidget *warning;
-	GtkWidget *copies_box;
-	GtkWidget *copies_spin;
 	GtkWidget *message_output;
 	GtkWidget *options;
 	GtkWidget *button;
@@ -165,18 +163,6 @@ brasero_burn_options_get_session (BraseroBurnOptions *self)
 }
 
 static void
-brasero_burn_options_copies_num_changed_cb (GtkSpinButton *button,
-					    BraseroBurnOptions *self)
-{
-	gint numcopies;
-	BraseroBurnOptionsPrivate *priv;
-
-	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-	numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
-	brasero_burn_session_set_num_copies (BRASERO_BURN_SESSION (priv->session), numcopies);
-}
-
-static void
 brasero_burn_options_message_response_cb (BraseroDiscMessage *message,
 					  GtkResponseType response,
 					  BraseroBurnOptions *self)
@@ -231,7 +217,6 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 {
 	BraseroBurnOptionsPrivate *priv;
 	BraseroSessionError valid;
-	gint numcopies;
 
 	valid = brasero_session_cfg_get_error (session);
 
@@ -241,25 +226,15 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	gtk_widget_set_sensitive (priv->options, valid == BRASERO_SESSION_VALID);
 	gtk_widget_set_sensitive (priv->properties, valid == BRASERO_SESSION_VALID);
 
-	if (valid != BRASERO_SESSION_VALID) {
+	if (valid != BRASERO_SESSION_VALID)
 		gtk_widget_hide (priv->warning);
-		gtk_widget_hide (priv->copies_box);
-	}
-	else if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session))) {
+	else if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session)))
 		gtk_widget_hide (priv->warning);
-		gtk_widget_hide (priv->copies_box);
-	}
 	else {
-		numcopies = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (priv->copies_spin));
-		brasero_burn_session_set_num_copies (BRASERO_BURN_SESSION (priv->session), numcopies);
-		gtk_widget_set_sensitive (priv->copies_box, TRUE);
-
 		if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (priv->session)))
 			gtk_widget_show (priv->warning);
 		else
 			gtk_widget_hide (priv->warning);
-
-		gtk_widget_show (priv->copies_box);
 	}
 
 	if (priv->message_input) {
@@ -383,7 +358,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	BraseroBurnOptionsPrivate *priv;
 	GtkWidget *selection;
 	GtkWidget *button;
-	GtkWidget *label;
 	gchar *string;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
@@ -458,22 +432,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 
 	gtk_widget_show (priv->warning);
 
-	/* Number of copies */
-	priv->copies_box = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (priv->copies_box);
-
-	label = gtk_label_new (_("Number of copies"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (priv->copies_box), label, FALSE, FALSE, 0);
-
-	priv->copies_spin = gtk_spin_button_new_with_range (1.0, 99.0, 1.0);
-	gtk_widget_show (priv->copies_spin);
-	gtk_box_pack_start (GTK_BOX (priv->copies_box), priv->copies_spin, FALSE, FALSE, 0);
-	g_signal_connect (priv->copies_spin,
-			  "value-changed",
-			  G_CALLBACK (brasero_burn_options_copies_num_changed_cb),
-			  object);
-
 	/* Box to display warning messages */
 	priv->message_output = brasero_notify_new ();
 	gtk_widget_show (priv->message_output);
@@ -481,7 +439,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
 	selection = brasero_utils_pack_properties (string,
 						   priv->message_output,
-						   priv->copies_box,
 						   priv->warning,
 						   selection,
 						   NULL);

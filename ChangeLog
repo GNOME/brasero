@@ -1,3 +1,32 @@
+2008-11-11  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Change the way we handle multiple copies to disc and offer the
+	possibility to reburn another disc after a successful burn.
+	Fix some problems with medium locking that appeared
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_activity_start),
+	(brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success),
+	(brasero_burn_dialog_end_session),
+	(brasero_burn_dialog_record_session), (brasero_burn_dialog_run):
+	* src/brasero-burn-dialog.h:
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb),
+	(brasero_burn_options_init):
+	* src/brasero-progress.c (brasero_burn_progress_create_info),
+	(brasero_burn_progress_display_session_info),
+	(brasero_burn_progress_set_property),
+	(brasero_burn_progress_get_property),
+	(brasero_burn_progress_reset):
+	* src/brasero-project-manager.c (brasero_project_manager_burn):
+	* src/brasero-project.c (brasero_project_burn):
+	* src/burn-basics.h:
+	* src/burn-session.c (brasero_burn_session_start):
+	* src/burn-session.h:
+	* src/burn.c (brasero_burn_lock_dest_media),
+	(brasero_burn_check_session_consistency),
+	(brasero_burn_record_session), (brasero_burn_record):
+
 2008-11-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix button order in alert dialog

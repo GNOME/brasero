@@ -833,7 +833,6 @@ brasero_project_burn (BraseroProject *project)
 	BraseroDiscResult result;
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
-	gboolean destroy;
 	gboolean success;
 
 	result = brasero_project_check_status (project, project->priv->current);
@@ -856,7 +855,6 @@ brasero_project_burn (BraseroProject *project)
 		return;
 
 	project->priv->is_burning = 1;
-	destroy = FALSE;
 
 	/* This is to stop the preview widget from playing */
 	brasero_uri_container_uri_selected (BRASERO_URI_CONTAINER (project));
@@ -891,8 +889,7 @@ brasero_project_burn (BraseroProject *project)
 	gtk_widget_show (dialog);
 
 	success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
-					   session,
-					   &destroy);
+					   session);
 	g_object_unref (session);
 
     	project->priv->burnt = success;
@@ -901,11 +898,7 @@ end:
 
 	project->priv->is_burning = 0;
 	gtk_widget_destroy (dialog);
-
-	if (destroy)
-		gtk_widget_destroy (toplevel);
-	else
-		gtk_widget_show (toplevel);
+	gtk_widget_show (toplevel);
 }
 
 /********************************     ******************************************/

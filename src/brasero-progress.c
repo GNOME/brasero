@@ -69,7 +69,7 @@ struct BraseroBurnProgressPrivate {
 	GtkWidget *action;
 	GtkWidget *speed;
 	GtkWidget *bytes_written;
-	GtkWidget *speed_time_info;
+	GtkWidget *speed_table;
 
 	BraseroBurnAction current;
 	gdouble current_progress;
@@ -133,8 +133,14 @@ brasero_burn_progress_create_info (BraseroBurnProgress *obj)
 	GtkWidget *label;
 	GtkWidget *table;
 
+	if (obj->priv->speed_table) {
+		gtk_widget_destroy (obj->priv->speed_table);
+		obj->priv->speed_table = NULL;
+		obj->priv->speed = NULL;
+	}
+
 	table = gtk_table_new (1, 2, FALSE);
-	obj->priv->speed_time_info = table;
+	obj->priv->speed_table = table;
 	gtk_container_set_border_width (GTK_CONTAINER (table), 0);
 
 	label = gtk_label_new (_("Estimated drive speed:"));
@@ -177,8 +183,8 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 	gchar *markup;
 	gchar *text;
 
-	if (obj->priv->speed_time_info)
-		gtk_widget_destroy (obj->priv->speed_time_info);
+	if (obj->priv->speed_table)
+		gtk_widget_destroy (obj->priv->speed_table);
 
 	hrs = time / 3600;
 	time = ((int) time) % 3600;
@@ -193,7 +199,7 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 		GtkWidget *table;
 
 		table = gtk_table_new (1, 2, FALSE);
-		obj->priv->speed_time_info = table;
+		obj->priv->speed_table = table;
 		gtk_container_set_border_width (GTK_CONTAINER (table), 0);
 
 		label = gtk_label_new (_("Average drive speed:"));
@@ -255,13 +261,13 @@ brasero_burn_progress_set_property (GObject *object,
 	switch (property_id) {
 	case PROP_SHOW_INFO:
 		if (!g_value_get_boolean (value)) {
-			if (progress->priv->speed_time_info) {
-				gtk_widget_destroy (progress->priv->speed_time_info);
-				progress->priv->speed_time_info = NULL;
+			if (progress->priv->speed_table) {
+				gtk_widget_destroy (progress->priv->speed_table);
+				progress->priv->speed_table = NULL;
 				progress->priv->speed = NULL;
 			}
 		}
-		else if (progress->priv->speed_time_info)
+		else if (progress->priv->speed_table)
 			brasero_burn_progress_create_info (progress);
 		break;
 
@@ -281,7 +287,7 @@ brasero_burn_progress_get_property (GObject *object,
 	progress = BRASERO_BURN_PROGRESS (object);
 	switch (property_id) {
 	case PROP_SHOW_INFO:
-		g_value_set_boolean (value, (progress->priv->speed_time_info != NULL));
+		g_value_set_boolean (value, (progress->priv->speed_table != NULL));
 		break;
 
 	default:
@@ -516,8 +522,8 @@ brasero_burn_progress_reset (BraseroBurnProgress *progress)
 
 	if (progress->priv->speed)
 		gtk_label_set_text (GTK_LABEL (progress->priv->speed), NULL);
-	if (progress->priv->speed_time_info)
-		gtk_label_set_text (GTK_LABEL (progress->priv->speed_time_info), NULL);
+	if (progress->priv->speed_table)
+		gtk_label_set_text (GTK_LABEL (progress->priv->speed_table), NULL);
 
 	gtk_label_set_text (GTK_LABEL (progress->priv->action), NULL);
 	gtk_label_set_text (GTK_LABEL (progress->priv->bytes_written), NULL);
