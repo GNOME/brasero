@@ -134,16 +134,28 @@ brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
 				      NULL);
 
 	/* format the size */
-	if (media & BRASERO_MEDIUM_HAS_DATA)
+	if (media & BRASERO_MEDIUM_HAS_DATA) {
 		size_string = g_format_size_for_display (size);
-	else
+		/* NOTE for translators: the first %s is the medium name, the
+		 * second %s is the space (kio, gio) used by data on the disc.
+		 */
+		label = g_strdup_printf (_("%s: %s"),
+					 medium_name,
+					 size_string);
+	}
+	else {
 		size_string = brasero_utils_get_time_string_from_size (size,
 								       TRUE,
 								       TRUE);
+		/* NOTE for translators: the first %s is the medium name, the
+		 * second %s is the space (time) used by data on the disc.
+		 * I really don't know if I should set this string as
+		 * translatable. */
+		label = g_strdup_printf (_("%s: %s"),
+					 medium_name,
+					 size_string);
+	}
 
-	/* NOTE for translators: the first %s is the medium name, the second %s
-	 * is the space used by data on the disc. */
-	label = g_strdup_printf (_("%s: %s of data"), medium_name, size_string);
 	g_free (medium_name);
 	g_free (size_string);
 
