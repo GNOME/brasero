@@ -35,7 +35,6 @@ static void nautilus_burn_bar_finalize   (GObject *object);
 
 struct NautilusBurnBarPrivate
 {
-        GtkTooltips *tooltips;
         GtkWidget   *button;
 };
 
@@ -130,10 +129,6 @@ nautilus_burn_bar_init (NautilusBurnBar *bar)
 
         bar->priv = NAUTILUS_BURN_BAR_GET_PRIVATE (bar);
 
-        bar->priv->tooltips = gtk_tooltips_new ();
-        g_object_ref (bar->priv->tooltips);
-        gtk_object_sink (GTK_OBJECT (bar->priv->tooltips));
-
         hbox = GTK_WIDGET (bar);
 
         label = gtk_label_new (_("CD/DVD Creator Folder"));
@@ -148,10 +143,8 @@ nautilus_burn_bar_init (NautilusBurnBar *bar)
                           G_CALLBACK (button_clicked_cb),
                           bar);
 
-        gtk_tooltips_set_tip (GTK_TOOLTIPS (bar->priv->tooltips),
-                              bar->priv->button,
-                              _("Write contents to a CD or DVD disc"),
-                              NULL);
+        gtk_widget_set_tooltip_text (bar->priv->button, _("Write contents to a CD or DVD disc"));
+
 }
 
 static void
@@ -165,10 +158,6 @@ nautilus_burn_bar_finalize (GObject *object)
         bar = NAUTILUS_BURN_BAR (object);
 
         g_return_if_fail (bar->priv != NULL);
-
-        if (bar->priv->tooltips != NULL) {
-                g_object_unref (bar->priv->tooltips);
-        }
 
         G_OBJECT_CLASS (nautilus_burn_bar_parent_class)->finalize (object);
 }
