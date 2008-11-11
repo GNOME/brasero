@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 
 #include "brasero-burn-options.h"
 #include "burn-drive.h"

@@ -31,17 +31,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtktooltips.h>
-#include <gtk/gtkeventbox.h>
-#include <gtk/gtkaction.h>
-#include <gtk/gtktoggleaction.h>
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkiconfactory.h>
-#include <gtk/gtkstatusicon.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "brasero-utils.h"

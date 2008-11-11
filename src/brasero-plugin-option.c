@@ -29,22 +29,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkcomboboxentry.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcelllayout.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

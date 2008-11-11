@@ -34,16 +34,7 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkstock.h>
-#include <gtk/gtkaction.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkfilefilter.h>
-#include <gtk/gtkfilechooser.h>
-#include <gtk/gtkfilechooserwidget.h>
-#include <gtk/gtkfilechooserdialog.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtk.h>
 
 #include "brasero-app.h"
 #include "brasero-utils.h"

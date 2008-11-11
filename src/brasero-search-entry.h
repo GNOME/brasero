@@ -35,7 +35,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtkhbox.h>
+#include <gtk/gtk.h>
 
 #include <beagle/beagle-query.h>
 

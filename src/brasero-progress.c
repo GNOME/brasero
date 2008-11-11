@@ -34,15 +34,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
-#include <gtk/gtklabel.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkprogressbar.h>
-#include <gtk/gtkmisc.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkeventbox.h>
-#include <gtk/gtkimage.h>
+#include <gtk/gtk.h>
 
 #include "brasero-utils.h"
 #include "brasero-progress.h"

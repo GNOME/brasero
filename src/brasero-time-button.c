@@ -28,10 +28,7 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 
 #include "brasero-time-button.h"
 

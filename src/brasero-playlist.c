@@ -39,22 +39,7 @@
 
 #include <gio/gio.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreeviewcolumn.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreestore.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkfilechooserdialog.h>
-#include <gtk/gtkselection.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtk.h>
 
 #ifdef BUILD_SEARCH
 #include <beagle/beagle.h>

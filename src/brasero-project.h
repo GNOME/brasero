@@ -30,9 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkuimanager.h>
+#include <gtk/gtk.h>
 
 #include "brasero-disc.h"
 #include "brasero-uri-container.h"

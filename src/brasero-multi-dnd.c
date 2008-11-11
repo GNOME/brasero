@@ -22,11 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
 
-#include <gtk/gtktreestore.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktreemodelsort.h>
-#include <gtk/gtktreemodelfilter.h>
-#include <gtk/gtktreednd.h>
+#include <gtk/gtk.h>
 
 #include "eggtreemultidnd.h"
 

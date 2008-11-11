@@ -35,7 +35,7 @@
 
 #include <gdk/gdkx.h>
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

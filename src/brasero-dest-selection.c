@@ -30,15 +30,7 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkspinbutton.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

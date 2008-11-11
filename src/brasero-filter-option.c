@@ -28,12 +28,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <gtk/gtklabel.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktogglebutton.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

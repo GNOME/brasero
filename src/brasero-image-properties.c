@@ -30,16 +30,7 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkfilechooser.h>
-#include <gtk/gtkfilechooserwidget.h>
-#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "brasero-image-properties.h"

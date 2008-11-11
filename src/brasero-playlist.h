@@ -34,7 +34,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 #define BRASERO_TYPE_PLAYLIST         (brasero_playlist_get_type ())

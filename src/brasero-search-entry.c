@@ -36,24 +36,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
-#include <gtk/gtktable.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtkcomboboxentry.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcelllayout.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 
 #include <beagle/beagle.h>
 

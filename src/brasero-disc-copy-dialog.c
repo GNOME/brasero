@@ -37,11 +37,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkwindow.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "burn-session.h"

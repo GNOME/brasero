@@ -30,21 +30,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <gtk/gtklabel.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktreeviewcolumn.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtksizegroup.h>
+#include <gtk/gtk.h>
 
 
 #include "brasero-file-filtered.h"

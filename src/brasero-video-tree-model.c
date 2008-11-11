@@ -27,9 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtktreednd.h>
-#include <gtk/gtkicontheme.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "brasero-utils.h"

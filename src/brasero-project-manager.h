@@ -30,8 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkuimanager.h>
+#include <gtk/gtk.h>
 
 #include "burn-medium.h"
 #include "brasero-project-type-chooser.h"

@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkhbox.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

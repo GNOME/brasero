@@ -36,16 +36,7 @@
 
 #include <gio/gio.h>
 
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkfilechooser.h>
-#include <gtk/gtkfilechooserdialog.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkprogressbar.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkfilechooser.h>
-#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtk.h>
 
 #include <libxml/xmlerror.h>
 #include <libxml/xmlwriter.h>

@@ -33,13 +33,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtkeventbox.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtkmisc.h>
+#include <gtk/gtk.h>
 
 #include "brasero-project-type-chooser.h"
 #include "brasero-utils.h"

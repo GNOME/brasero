@@ -33,18 +33,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkwidget.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkscale.h>
-#include <gtk/gtkrange.h>
-#include <gtk/gtkhscale.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

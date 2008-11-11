@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkcombobox.h>
+#include <gtk/gtk.h>
 
 #include "burn-medium-monitor.h"
 #include "burn-medium.h"

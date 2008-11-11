@@ -26,8 +26,7 @@
 
 #include <glib/gi18n.h>
 
-#include <gtk/gtknotebook.h>
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 
 #include "brasero-pref.h"
 #include "brasero-plugin-manager-ui.h"

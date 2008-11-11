@@ -27,23 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtktreeviewcolumn.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkradiobutton.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtknotebook.h>
+#include <gtk/gtk.h>
 
 #include "brasero-split-dialog.h"
 #include "brasero-player.h"

@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkeventbox.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

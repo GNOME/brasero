@@ -25,9 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkexpander.h>
-#include <gtk/gtksizegroup.h>
-
+#include <gtk/gtk.h>
 #include "brasero-data-vfs.h"
 
 G_BEGIN_DECLS

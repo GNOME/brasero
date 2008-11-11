@@ -32,16 +32,7 @@
 
 #include <gio/gio.h>
 
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktogglebutton.h>
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkcelllayout.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkbox.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "burn-medium.h"
