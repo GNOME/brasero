@@ -55,6 +55,18 @@
        </schema>
 
       <schema>
+        <key>/schemas/apps/brasero/display/sidepane</key>
+	<applyto>/apps/brasero/display/sidepane</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	  <short>Enable side pane</short>
+	  <long>Whether to display a side pane. Set to true to use it.</long>
+	</locale>
+       </schema>
+
+      <schema>
         <key>/schemas/apps/brasero/display/audio_pane</key>
 	<applyto>/apps/brasero/display/audio_pane</applyto>
 	<owner>brasero</owner>
@@ -74,7 +86,19 @@
 	<default>Chooser</default>
 	<locale name="C">
 	  <short>Pane to display for data projects</short>
-	  <long>The pane to display with data projects. It should be one of the following: "Chooser", "Search" or "Playlist".</long>
+	  <long>The pane to display with data projects. It should be one of the following: "Chooser" or "Search".</long>
+	</locale>
+       </schema>
+
+       <schema>
+        <key>/schemas/apps/brasero/display/video_pane</key>
+	<applyto>/apps/brasero/display/video_pane</applyto>
+	<owner>brasero</owner>
+	<type>string</type>
+	<default>Chooser</default>
+	<locale name="C">
+	  <short>Pane to display for video projects</short>
+	  <long>The pane to display with video projects. It should be one of the following: "Chooser", "Search" or "Playlist".</long>
 	</locale>
        </schema>
 
@@ -109,7 +133,7 @@
 	<type>int</type>
 	<default>120</default>
 	<locale name="C">
-	  <short>width for image preview</short>
+	  <short>Width for image preview</short>
 	  <long>Default width for image preview.</long>
 	</locale>
        </schema>
