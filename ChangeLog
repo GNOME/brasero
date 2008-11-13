@@ -1,8 +1,18 @@
 2008-11-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	reviewed by: <delete if not using a buddy>
+	Fixes for previous patch (the one about strings) which included some
+	changes that were not ready nor intended from prime time
+	medium-selection should now indicate when there are some drives loading
+	a medium
+	medium-selection is grayed out when no selection is possible
 
-	* data/brasero.schemas.in:
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_update_no_disc_entry),
+	(brasero_medium_selection_add_no_disc_entry),
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_medium_removed_cb):
+	* src/burn-medium-monitor.c (brasero_medium_monitor_is_probing):
 
 2008-11-13  Philippe Rouquier  <ykw@localhost.localdomain>
 

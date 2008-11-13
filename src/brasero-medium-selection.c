@@ -299,6 +299,45 @@ brasero_medium_selection_get_active_drive (BraseroMediumSelection *self)
 	return drive;
 }
 
+static void
+brasero_medium_selection_update_no_disc_entry (BraseroMediumSelection *self,
+					       GtkTreeModel *model,
+					       GtkTreeIter *iter)
+{
+	BraseroMediumMonitor *monitor;
+
+	monitor = brasero_medium_monitor_get_default ();
+	if (brasero_medium_monitor_is_probing (monitor))
+		gtk_list_store_set (GTK_LIST_STORE (model), iter,
+				    NAME_COL, _("Searching for available discs"),
+				    -1);
+	else
+		gtk_list_store_set (GTK_LIST_STORE (model), iter,
+				    NAME_COL, _("No available disc"),
+				    -1);
+	g_object_unref (monitor);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), iter);
+}
+
+static void
+brasero_medium_selection_add_no_disc_entry (BraseroMediumSelection *self)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	BraseroMediumSelectionPrivate *priv;
+
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
+
+	/* Nothing's available. Say it. Two cases here, either we're
+	 * still probing drives or there isn't actually any available
+	 * medium. */
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+	brasero_medium_selection_update_no_disc_entry (self, model, &iter);
+}
+
 void
 brasero_medium_selection_show_type (BraseroMediumSelection *self,
 				    BraseroMediaType type)
@@ -387,27 +426,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 	}
 
 	if (!gtk_tree_model_get_iter_first (model, &iter)) {
-		BraseroMediumMonitor *monitor;
-
-		/* Nothing's available. Say it. Two cases here, it's either
-		 * because we're still probing drives or because they aren't
-		 * actually any available medium. */
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-
-		monitor = brasero_medium_monitor_get_default ();
-		brasero_medium_monitor_is_probing (monitor);
-		if (brasero_medium_monitor_is_probing (monitor))
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    NAME_COL, _("Searching for available discs"),
-					    -1);
-		else
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    NAME_COL, _("No available disc"),
-					    -1);
-		g_object_unref (monitor);
-
-		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		brasero_medium_selection_add_no_disc_entry (self);
 		return;
 	}
 
@@ -479,10 +498,26 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 			add = TRUE;
 	}
 
-	if (!add)
-		return;
-
 	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+
+	if (!add) {
+		/* Try to get the first iter (it shouldn't fail) */
+		if (!gtk_tree_model_get_iter_first (model, &iter)) {
+			brasero_medium_selection_add_no_disc_entry (self);
+			return;
+		}
+
+		/* See if that's a real medium or not; if so, return. */
+		medium = NULL;
+		gtk_tree_model_get (model, &iter,
+				    MEDIUM_COL, &medium,
+				    -1);
+		if (medium)
+			return;
+
+		brasero_medium_selection_update_no_disc_entry (self, model, &iter);
+		return;
+	}
 
 	/* remove warning message */
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
@@ -551,29 +586,10 @@ brasero_medium_selection_medium_removed_cb (BraseroMediumMonitor *monitor,
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	if (!gtk_tree_model_get_iter_first (model, &iter)) {
-		BraseroMediumMonitor *monitor;
-
-		/* Nothing's available any more =(. Say it. */
-		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-
-		monitor = brasero_medium_monitor_get_default ();
-		brasero_medium_monitor_is_probing (monitor);
-		if (brasero_medium_monitor_is_probing (monitor))
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    NAME_COL, _("Searching for available discs"),
-					    -1);
-		else
-			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-					    NAME_COL, _("No available disc"),
-					    -1);
-		g_object_unref (monitor);
-
-		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+		brasero_medium_selection_add_no_disc_entry (self);
 		return;
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1)
 		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
 }

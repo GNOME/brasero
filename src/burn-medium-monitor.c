@@ -108,6 +108,9 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *self)
 		BraseroDrive *drive;
 
 		drive = iter->data;
+		if (brasero_drive_is_fake (drive))
+			continue;
+
 		if (brasero_drive_probing (drive))
 			return TRUE;
 	}
