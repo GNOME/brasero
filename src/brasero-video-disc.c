@@ -1295,14 +1295,16 @@ brasero_video_disc_set_property (GObject * object,
 }
 
 static BraseroDiscResult
-brasero_video_disc_get_status (BraseroDisc *self)
+brasero_video_disc_get_status (BraseroDisc *self,
+			       gint *remaining,
+			       gchar **current_task)
 {
 	BraseroVideoProject *project;
 	BraseroVideoDiscPrivate *priv;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	return brasero_video_project_get_status (project);
+	return brasero_video_project_get_status (project, remaining, current_task);
 }
 
 BraseroDiscResult

@@ -159,7 +159,9 @@ brasero_video_project_resize_file (BraseroVideoProject *project,
 				   gint64 end);
 
 BraseroDiscResult
-brasero_video_project_get_status (BraseroVideoProject *project);
+brasero_video_project_get_status (BraseroVideoProject *project,
+				  gint *remaining,
+				  gchar **current_task);
 
 GSList *
 brasero_video_project_get_contents (BraseroVideoProject *project);

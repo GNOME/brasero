@@ -111,7 +111,9 @@ struct _BraseroDiscIface {
 							 BraseroBurnFlag flags);
 
 	/* virtual functions */
-	BraseroDiscResult	(*get_status)		(BraseroDisc *disc);
+	BraseroDiscResult	(*get_status)		(BraseroDisc *disc,
+							 gint *remaining,
+							 gchar **current_task);
 
 	BraseroDiscResult	(*load_track)		(BraseroDisc *disc,
 							 BraseroDiscTrack *track);
@@ -123,8 +125,6 @@ struct _BraseroDiscIface {
 	BraseroDiscResult	(*set_session_contents)	(BraseroDisc *disc,
 							 BraseroBurnSession *session);
 
-	BraseroDiscResult	(*can_add_uri)		(BraseroDisc *disc,
-							 const gchar *uri);
 	BraseroDiscResult	(*add_uri)		(BraseroDisc *disc,
 							 const gchar *uri);
 
@@ -153,9 +153,6 @@ brasero_disc_add_ui (BraseroDisc *disc,
 BraseroDiscResult
 brasero_disc_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
 
-BraseroDiscResult
-brasero_disc_can_add_uri (BraseroDisc *disc, const gchar *escaped_uri);
-
 gboolean
 brasero_disc_get_selected_uri (BraseroDisc *disc, gchar **uri);
 
@@ -172,7 +169,9 @@ void
 brasero_disc_reset (BraseroDisc *disc);
 
 BraseroDiscResult
-brasero_disc_get_status (BraseroDisc *disc);
+brasero_disc_get_status (BraseroDisc *disc,
+			 gint *remaining,
+			 gchar **current_task);
 
 BraseroDiscResult
 brasero_disc_get_track (BraseroDisc *disc,

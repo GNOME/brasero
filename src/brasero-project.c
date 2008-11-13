@@ -611,6 +611,7 @@ brasero_project_update_project_size (BraseroProject *project,
 	}
 	else
 		size = g_strdup_printf (_("Project estimated size: %s"), string);
+
 	g_free (string);
 
 	gtk_statusbar_push (GTK_STATUSBAR (status), project->priv->status_ctx, size);
@@ -696,8 +697,11 @@ brasero_project_get_boundaries (BraseroURIContainer *container,
 static gboolean
 _wait_for_ready_state (GtkWidget *dialog)
 {
+	gchar *current_task = NULL;
 	GtkProgressBar *progress;
 	BraseroProject *project;
+	gint remaining = 0;
+	gint initial;
 
 	project = g_object_get_data (G_OBJECT (dialog), "Project");
 	if (project->priv->oversized) {
@@ -706,9 +710,38 @@ _wait_for_ready_state (GtkWidget *dialog)
 	}
 
 	progress = g_object_get_data (G_OBJECT (dialog), "ProgressBar");
+	initial = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (dialog), "Remaining"));
+	if (brasero_disc_get_status (project->priv->current, &remaining, &current_task) == BRASERO_DISC_NOT_READY) {
+		gchar *string;
+		gchar *size_str;
 
-	if (brasero_disc_get_status (project->priv->current) == BRASERO_DISC_NOT_READY) {
-		gtk_progress_bar_pulse (progress);
+		if (initial <= 0 || remaining <= 0)
+			gtk_progress_bar_pulse (progress);
+		else
+			gtk_progress_bar_set_fraction (progress, (gdouble) ((gdouble) (initial - remaining) / (gdouble) initial));
+
+		if (current_task) {
+			GtkWidget *current_action;
+
+			current_action = g_object_get_data (G_OBJECT (dialog), "CurrentAction");
+			string = g_strdup_printf ("<i>%s</i>", current_task);
+			g_free (current_task);
+
+			gtk_label_set_markup (GTK_LABEL (current_action), string);
+			g_free (string);
+		}
+
+		string = brasero_utils_get_sectors_string (project->priv->sectors,
+							   !BRASERO_IS_DATA_DISC (project->priv->current),
+							   TRUE,
+							   FALSE);
+
+		size_str = g_strdup_printf (_("Project estimated size: %s"), string);
+		g_free (string);
+
+		gtk_progress_bar_set_text (progress, size_str);
+		g_free (size_str);
+
 		return TRUE;
 	}
 
@@ -722,12 +755,17 @@ brasero_project_check_status (BraseroProject *project,
 {
 	int id;
 	int answer;
+	GtkWidget *box;
 	GtkWidget *dialog;
+	gchar *current_task;
 	GtkWidget *progress;
 	GtkWidget *toplevel;
+	gint remaining = -1;
 	BraseroDiscResult result;
+	GtkWidget *current_action;
 
-	result = brasero_disc_get_status (disc);
+	current_task = NULL;
+	result = brasero_disc_get_status (disc, &remaining, &current_task);
 	if (result != BRASERO_DISC_NOT_READY)
 		return result;
 
@@ -738,46 +776,64 @@ brasero_project_check_status (BraseroProject *project,
 
 	/* This dialog will run as a standalone window when run from nautilus
 	 * to burn burn:// URI contents. */
-	if (!brasero_app_is_running (BRASERO_APP (toplevel))) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						 GTK_DIALOG_DESTROY_WITH_PARENT |
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_INFO,
-						 GTK_BUTTONS_CANCEL,
-						 _("Please, wait while initializing."));
+	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+					 GTK_DIALOG_DESTROY_WITH_PARENT |
+					 GTK_DIALOG_MODAL,
+					 GTK_MESSAGE_INFO,
+					 GTK_BUTTONS_CANCEL,
+					 _("Please, wait until the estimation of the project size is completed."));
 
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+						  _("All files from the project need to be analysed to complete this operation."));
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Size Estimation"));
+
+	if (!brasero_app_is_running (BRASERO_APP (toplevel))) {
 		gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), FALSE);
 		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
-
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("Some tasks are not completed yet."));
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Initializing"));
 	}
-	else {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						 GTK_DIALOG_DESTROY_WITH_PARENT |
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_INFO,
-						 GTK_BUTTONS_CLOSE,
-						 _("Please, wait."));
 
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("Some tasks are not completed yet."));
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Ongoing Tasks"));
-	}
+	box = gtk_vbox_new (FALSE, 4);
+	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			  box,
+			  TRUE,
+			  TRUE,
+			  0);
 
 	progress = gtk_progress_bar_new ();
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress), " ");
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			  progress,
-			  TRUE,
-			  TRUE,
-			  10);
+	gtk_box_pack_start (GTK_BOX (box),
+			    progress,
+			    TRUE,
+			    TRUE,
+			    0);
+
+	if (current_task) {
+		gchar *string;
+
+		string = g_strdup_printf ("<i>%s</i>", current_task);
+		g_free (current_task);
+
+		current_action = gtk_label_new (string);
+		g_free (string);
+	}
+	else
+		current_action = gtk_label_new ("");
+
+	gtk_label_set_use_markup (GTK_LABEL (current_action), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (current_action), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (box),
+			    current_action,
+			    FALSE,
+			    TRUE,
+			    0);
 
 	gtk_widget_show_all (dialog);
 	gtk_progress_bar_pulse (GTK_PROGRESS_BAR (progress));
 
+	g_object_set_data (G_OBJECT (dialog), "CurrentAction", current_action);
 	g_object_set_data (G_OBJECT (dialog), "ProgressBar", progress);
+	g_object_set_data (G_OBJECT (dialog), "Remaining", GINT_TO_POINTER (remaining));
 	g_object_set_data (G_OBJECT (dialog), "Project", project);
 
 	id = g_timeout_add (100,
@@ -794,7 +850,7 @@ brasero_project_check_status (BraseroProject *project,
 	else if (project->priv->oversized)
 		return BRASERO_DISC_ERROR_SIZE;
 
-	return brasero_disc_get_status (disc);
+	return brasero_disc_get_status (disc, NULL, NULL);
 }
 
 /******************************** cover ****************************************/
@@ -1142,7 +1198,7 @@ brasero_project_contents_changed_cb (BraseroDisc *disc,
 
 	project->priv->empty = (nb_files == 0);
 
-	if (brasero_disc_get_status (disc) != BRASERO_DISC_LOADING)
+	if (brasero_disc_get_status (disc, NULL, NULL) != BRASERO_DISC_LOADING)
 		project->priv->modified = 1;
 
 	brasero_project_set_remove_button_state (project);

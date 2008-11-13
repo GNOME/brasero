@@ -74,7 +74,7 @@ brasero_burn_action_to_string (BraseroBurnAction action)
 							N_("Creating checksum"),
 							N_("Copying disc"),
 							N_("Copying file"),
-							N_("Analysing audio information"),
+							N_("Analysing audio files"),
 							N_("Transcoding song"),
 							N_("Preparing to write"),
 							N_("Writing leadin"),

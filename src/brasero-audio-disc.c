@@ -94,7 +94,9 @@ static void brasero_audio_disc_set_property (GObject * object,
 					     GParamSpec * spec);
 
 static BraseroDiscResult
-brasero_audio_disc_get_status (BraseroDisc *disc);
+brasero_audio_disc_get_status (BraseroDisc *disc,
+			       gint *remaining,
+			       gchar **current_task);
 
 static BraseroDiscResult
 brasero_audio_disc_get_track (BraseroDisc *disc,
@@ -913,15 +915,24 @@ brasero_audio_disc_new ()
 
 /******************************** activity *************************************/
 static BraseroDiscResult
-brasero_audio_disc_get_status (BraseroDisc *disc)
+brasero_audio_disc_get_status (BraseroDisc *disc,
+			       gint *remaining,
+			       gchar **current_task)
 {
 	GtkTreeModel *model;
 
 	if (BRASERO_AUDIO_DISC (disc)->priv->loading)
 		return BRASERO_DISC_LOADING;
 
-	if (BRASERO_AUDIO_DISC (disc)->priv->activity_counter)
+	if (BRASERO_AUDIO_DISC (disc)->priv->activity_counter) {
+		if (remaining)
+			*remaining = BRASERO_AUDIO_DISC (disc)->priv->activity_counter;
+
+		if (current_task)
+			*current_task = g_strdup (_("Analysing audio files"));
+
 		return BRASERO_DISC_NOT_READY;
+	}
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (BRASERO_AUDIO_DISC (disc)->priv->tree));
 	if (!gtk_tree_model_iter_n_children (model, NULL))

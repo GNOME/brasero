@@ -1704,7 +1704,9 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 }
 
 static BraseroDiscResult
-brasero_data_disc_get_status (BraseroDisc *disc)
+brasero_data_disc_get_status (BraseroDisc *disc,
+			      gint *remaining,
+			      gchar **current_task)
 {
 	BraseroDataDiscPrivate *priv;
 
@@ -1715,8 +1717,15 @@ brasero_data_disc_get_status (BraseroDisc *disc)
 
 	/* This one goes before the next since a node may be loading but not
 	 * yet in the project and therefore project will look empty */
-	if (brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->project)))
+	if (brasero_data_vfs_is_active (BRASERO_DATA_VFS (priv->project))) {
+		if (remaining)
+			*remaining = -1;
+
+		if (current_task)
+			*current_task = g_strdup (_("Analysing files"));
+
 		return BRASERO_DISC_NOT_READY;
+	}
 
 	if (brasero_data_project_is_empty (priv->project))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;

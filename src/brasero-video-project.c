@@ -904,14 +904,23 @@ brasero_video_project_get_item_index (BraseroVideoProject *self,
 }
 
 BraseroDiscResult
-brasero_video_project_get_status (BraseroVideoProject *self)
+brasero_video_project_get_status (BraseroVideoProject *self,
+				  gint *remaining,
+				  gchar **current_task)
 {
 	BraseroVideoProjectPrivate *priv;
 
 	priv = BRASERO_VIDEO_PROJECT_PRIVATE (self);
 
-	if (priv->loading)
-		return BRASERO_DISC_LOADING;
+	if (priv->loading) {
+		if (remaining)
+			*remaining = priv->loading;
+
+		if (current_task)
+			*current_task = g_strdup (_("Analysing video files"));
+
+		return BRASERO_DISC_NOT_READY;
+	}
 
 	if (!priv->first)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;

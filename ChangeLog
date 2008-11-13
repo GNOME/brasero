@@ -1,5 +1,21 @@
 2008-11-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #560525 – Add feedback about performed tasks
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_get_status):
+	* src/brasero-data-disc.c (brasero_data_disc_get_status):
+	* src/brasero-disc.c (brasero_disc_get_status):
+	* src/brasero-disc.h:
+	* src/brasero-project.c (brasero_project_update_project_size),
+	(_wait_for_ready_state), (brasero_project_check_status),
+	(brasero_project_contents_changed_cb):
+	* src/brasero-video-disc.c (brasero_video_disc_get_status):
+	* src/brasero-video-project.c (brasero_video_project_get_status):
+	* src/brasero-video-project.h:
+	* src/burn-basics.c (brasero_burn_action_to_string):
+
+2008-11-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixes for previous patch (the one about strings) which included some
 	changes that were not ready nor intended from prime time
 	medium-selection should now indicate when there are some drives loading
