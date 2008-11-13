@@ -226,7 +226,7 @@ brasero_local_track_recursive_transfer (BraseroLocalTrack *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("a directory couldn't be created (%s)"),
+					     _("Directory could not be created (%s)"),
 					     g_strerror (errsv));
 				result = BRASERO_BURN_ERR;
 			}
@@ -316,7 +316,7 @@ brasero_local_track_transfer (BraseroLocalTrack *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("a directory couldn't be created (%s)"),
+				     _("Directory could not be created (%s)"),
 				     g_strerror (errsv));
 			return BRASERO_BURN_ERR;
 		}

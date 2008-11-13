@@ -43,10 +43,11 @@ static BraseroPluginManager *default_manager = NULL;
 
 #define BRASERO_PLUGIN_MANAGER_NOT_SUPPORTED_LOG(caps, error)			\
 {										\
+	BRASERO_BURN_LOG ("Unsupported operation");				\
 	g_set_error (error,							\
 		     BRASERO_BURN_ERROR,					\
 		     BRASERO_BURN_ERROR_GENERAL,				\
-		     _("unsupported operation (at %s)"),			\
+		     _("An internal error occured"),				\
 		     G_STRLOC);							\
 	return BRASERO_BURN_NOT_SUPPORTED;					\
 }

@@ -74,6 +74,9 @@ BraseroDrive *
 brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
 				  const gchar *device);
 
+gboolean
+brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor);
+
 G_END_DECLS
 
 #endif /* _BRASERO_MEDIUM_MONITOR_H_ */

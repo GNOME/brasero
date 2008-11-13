@@ -148,8 +148,8 @@ brasero_iso9660_is_primary_descriptor (const char *buffer,
 	if (memcmp (vol->id, "CD001", 5)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("it does not appear to be a primary volume descriptor"));
+			     BRASERO_BURN_ERROR_IMAGE_INVALID,
+			     _("It does not appear to be a valid ISO image"));
 		return FALSE;
 	}
 
@@ -157,8 +157,8 @@ brasero_iso9660_is_primary_descriptor (const char *buffer,
 	if (vol->type != 1) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("it does not appear to be a primary volume descriptor"));
+			     BRASERO_BURN_ERROR_IMAGE_INVALID,
+			     _("It does not appear to be a valid ISO image"));
 		return FALSE;
 	}
 
@@ -357,8 +357,8 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 		 * "forbidden" by ECMA-119. But linux kernel accepts it, so ...
 		 */
 /*		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  _("directory record written across block boundary"));
+					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+					  _("It does not appear to be a valid ISO image"));
 		goto error;
 */
 		if (ctx->spare_record)
@@ -392,8 +392,8 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 error:
 	if (!ctx->error)
 		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  _("invalid directory record"));
+					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+					  _("It does not appear to be a valid ISO image"));
 	return BRASERO_ISO_ERROR;
 }
 
@@ -427,9 +427,10 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 	BraseroVolFileExtent *extent;
 
 	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
+		BRASERO_BURN_LOG ("Filename is too long");
 		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  _("file name is too long"));
+					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+					  _("It does not appear to be a valid ISO image"));
 		return NULL;
 	}
 
@@ -475,9 +476,10 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 	BraseroVolFile *directory;
 
 	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
+		BRASERO_BURN_LOG ("Filename is too long");
 		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_GENERAL,
-					  _("file name is too long"));
+					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+					  _("It does not appear to be a valid ISO image"));
 		return NULL;
 	}
 

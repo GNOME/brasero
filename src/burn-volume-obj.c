@@ -226,7 +226,7 @@ brasero_volume_get_mount_point (BraseroVolume *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the disc mount point could not be retrieved."));
+			     _("The disc mount point could not be retrieved"));
 	}
 	else {
 		local_path = g_file_get_path (root);

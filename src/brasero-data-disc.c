@@ -215,8 +215,8 @@ brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 					 GError *error)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
-				      _("The session couldn't be imported."),
-				      error?error->message:_("Unknown error."),
+				      _("The session could not be imported."),
+				      error?error->message:_("An unknown error occured"),
 				      GTK_MESSAGE_WARNING);
 }
 
@@ -611,7 +611,7 @@ brasero_data_disc_project_oversized_cb (BraseroDataProject *project,
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
 						      _("Would you like to burn beyond the disc reported capacity?"),
 						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
-							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which can't be properly recognised and therefore need overburn option."
+							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -928,7 +928,7 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
 				      primary,
-				      _("It is a recursive symlink."),
+				      _("It is a recursive symlink"),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
@@ -959,7 +959,7 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
 				      primary,
-				      _("It doesn't exist at the specified location."),
+				      _("It doesn't exist at the specified location"),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
@@ -1039,7 +1039,7 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones)."
 						    "\nIt is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©."
-						    "\nA known exception is MacOS X that can't read images created with version 3 of ISO9660 standard."));
+						    "\nA known exception is MacOS X that cannot read images created with version 3 of ISO9660 standard."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
 	gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Add File"), GTK_RESPONSE_YES);
@@ -1084,7 +1084,7 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6."
-						    "\nBrasero can create an image of such a file hierarchy and burn it; but the media may not be readable on all operating systems."
+						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
 						    "\nNOTE: Such a file hierarchy is known to work on linux."));
 
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_NO);
@@ -1197,7 +1197,7 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 
 	/* Translators: This is a verb. It's a toolbar button. */
 	g_object_set (action,
-		      "short-label", _("I_mport"), /* for toolbar buttons */
+		      "short-label", _("I_mport"),
 		      NULL);
 
 	description = g_strdup_printf ("<ui>"
@@ -2526,7 +2526,6 @@ brasero_data_disc_init (BraseroDataDisc *object)
 						nb_targets_source,
 						GDK_ACTION_MOVE);
 
-	/* FIXME: ..... */
 	g_signal_connect (G_OBJECT (priv->tree),
 			  "row-expanded",
 			  G_CALLBACK (brasero_data_disc_row_expanded_cb),

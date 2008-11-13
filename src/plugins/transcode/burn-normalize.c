@@ -94,7 +94,8 @@ brasero_normalize_set_next_track (BraseroJob *job,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("source can't be created"));
+			     _("%s element could not be created"),
+			     "\"Source\"");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), source);
@@ -353,7 +354,8 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("decode can't be created"));
+			     _("%s element could not be created"),
+			     "\"Decodebin\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
@@ -365,7 +367,8 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioconvert can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioconvert\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), convert);
@@ -376,7 +379,8 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioresample can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioresample\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), resample);
@@ -387,7 +391,8 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("rganalysis can't be created"));
+			     _("%s element could not be created"),
+			     "\"Rganalysis\"");
 		goto error;
 	}
 	priv->analysis = analysis;
@@ -399,7 +404,8 @@ brasero_normalize_build_pipeline (BraseroNormalize *normalize,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("sink can't be created"));
+			     _("%s element could not be created"),
+			     "\"Fakesink\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), sink);
@@ -554,10 +560,17 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 	GSList *input;
 	GstElement *element;
 
+	brasero_plugin_define (plugin,
+			       "normalize",
+			       _("Normalize allows to set consistent sound levels between tracks"),
+			       "Philippe Rouquier",
+			       0);
+
 	/* Let's see if we've got the plugins we need */
 	element = gst_element_factory_make ("rgvolume", NULL);
 	if (!element) {
-		*error = g_strdup (_("GST plugin \"rgvolume\" could not be found"));
+		*error = g_strdup_printf (_("%s element could not be created"),
+					  "\"Rgvolume\"");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -565,17 +578,12 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	element = gst_element_factory_make ("rganalysis", NULL);
 	if (!element) {
-		*error = g_strdup (_("GST plugin \"rganalysis\" could not be found"));
+		*error = g_strdup_printf (_("%s element could not be created"),
+					  "\"Rganalysis\"");
 		return BRASERO_BURN_ERR;
 	}
 
 	gst_object_unref (element);
-
-	brasero_plugin_define (plugin,
-			       "normalize",
-			       _("Normalize allows to set consistent sound levels between tracks"),
-			       "Philippe Rouquier",
-			       0);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED);

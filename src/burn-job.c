@@ -307,10 +307,12 @@ brasero_job_allow_deactivation (BraseroJob *self,
 	return BRASERO_BURN_NOT_RUNNING;
 
 error:
+
+	/* Translators: %s is the plugin name */
 	g_set_error (error,
 		     BRASERO_BURN_ERR,
-		     BRASERO_BURN_ERROR_GENERAL,
-		     _("plugin %s did not want to work. Try to deactivate it"),
+		     BRASERO_BURN_ERROR_PLUGIN_MISBEHAVIOR,
+		     _("\"%s\" did not behave properly"),
 		     G_OBJECT_TYPE_NAME (self));
 	return BRASERO_BURN_ERR;
 }
@@ -402,13 +404,13 @@ brasero_job_check_output_disc_space (BraseroJob *self,
 	/* this is not really an error, we'll probably ask the 
 	 * user to load a new disc */
 	if (output_blocks > media_blocks) {
-		BRASERO_BURN_LOG ("Insufficient space on media %lli/%lli",
+		BRASERO_BURN_LOG ("Insufficient space on disc %lli/%lli",
 				  media_blocks,
 				  output_blocks);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_MEDIA_SPACE,
-			     _("Insufficient space on media (%lli available for %lli)"),
+			     BRASERO_BURN_ERROR_MEDIUM_SPACE,
+			     _("Not enough space available on the disc (%lli available for %lli)"),
 			     media_blocks,
 			     output_blocks);
 		return BRASERO_BURN_NEED_RELOAD;
@@ -522,7 +524,7 @@ error:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The size of the volume can't be checked (Unknown error)."));
+			     _("The size of the volume could not be retrieved"));
 	g_object_unref (file);
 	return BRASERO_BURN_ERR;
 }
@@ -561,8 +563,8 @@ brasero_job_set_output_file (BraseroJob *self,
 			|| (priv->type.subtype.img_format != BRASERO_IMAGE_FORMAT_BIN && !toc)) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("no path"));
+					     BRASERO_BURN_ERROR_OUTPUT_NONE,
+					     _("No path was specified for the image output"));
 				return BRASERO_BURN_ERR;
 			}
 
@@ -588,7 +590,7 @@ brasero_job_set_output_file (BraseroJob *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("%s already exists"),
+					     _("\"%s\" already exists"),
 					     image);
 				g_free (toc);
 				g_free (image);
@@ -603,7 +605,7 @@ brasero_job_set_output_file (BraseroJob *self,
 					g_set_error (error,
 						     BRASERO_BURN_ERROR,
 						     BRASERO_BURN_ERROR_GENERAL,
-						     _("%s already exists"),
+						     _("\"%s\" already exists"),
 						     toc);
 					g_free (toc);
 					g_free (image);
@@ -729,10 +731,11 @@ brasero_job_item_start (BraseroTaskItem *item,
 		if (pipe (fd)) {
                         int errsv = errno;
 
+			BRASERO_BURN_LOG ("A pipe couldn't be created");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the pipe couldn't be created (%s)"),
+				     _("An internal error occured (%s)"),
 				     g_strerror (errsv));
 
 			return BRASERO_BURN_ERR;
@@ -760,9 +763,8 @@ brasero_job_item_start (BraseroTaskItem *item,
 		if (priv->linked) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("plugin %s did not work properly.\n"
-				       "Try to deactivate it"),
+				     BRASERO_BURN_ERROR_PLUGIN_MISBEHAVIOR,
+				     _("\"%s\" did not behave properly"),
 				     G_OBJECT_TYPE_NAME (self));
 			return BRASERO_BURN_ERR;
 		}
@@ -774,9 +776,8 @@ brasero_job_item_start (BraseroTaskItem *item,
 		if (action != BRASERO_JOB_ACTION_SIZE) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("plugin %s didn't work properly (it does not support operation).\n"
-				       "Try to deactivate it"),
+				     BRASERO_BURN_ERROR_PLUGIN_MISBEHAVIOR,
+				     _("\"%s\" did not behave properly"),
 				     G_OBJECT_TYPE_NAME (self));
 			return BRASERO_BURN_ERR;
 		}
@@ -994,8 +995,9 @@ brasero_job_finished_session (BraseroJob *self)
 		 * only call for a stop on an error. */
 		BRASERO_JOB_LOG (self, "is not a leader");
 		error = g_error_new (BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("a plugin did not behave properly"));
+				     BRASERO_BURN_ERROR_PLUGIN_MISBEHAVIOR,
+				     _("\"%s\" did not behave properly"),
+				     G_OBJECT_TYPE_NAME (self));
 		return brasero_task_ctx_error (priv->ctx,
 					       BRASERO_BURN_ERR,
 					       error);
@@ -1036,7 +1038,7 @@ brasero_job_finished_track (BraseroJob *self)
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "finished track successfully");
+	BRASERO_JOB_LOG (self, "Finished track successfully");
 
 	/* we first check if it's the first job */
 	if (brasero_job_is_first_active (self)) {
@@ -1083,8 +1085,9 @@ brasero_job_finished_track (BraseroJob *self)
 		 * for a stop on an error. */
 		BRASERO_JOB_LOG (self, "is not a leader");
 		error = g_error_new (BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("a plugin did not behave properly"));
+				     BRASERO_BURN_ERROR_PLUGIN_MISBEHAVIOR,
+				     _("\"%s\" did not behave properly"),
+				     G_OBJECT_TYPE_NAME (self));
 		return brasero_task_ctx_error (priv->ctx, BRASERO_BURN_ERR, error);
 	}
 
@@ -1179,18 +1182,20 @@ brasero_job_set_nonblocking_fd (int fd, GError **error)
 		 * automatically but still offer that possibility. */
 		flags |= O_NONBLOCK;
 		if (fcntl (fd, F_SETFL, flags) == -1) {
+			BRASERO_BURN_LOG ("couldn't set non blocking mode");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("couldn't set non blocking mode"));
+				     _("An internal error occured"));
 			return BRASERO_BURN_ERR;
 		}
 	}
 	else {
+		BRASERO_BURN_LOG ("couldn't get pipe flags");
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("couldn't get pipe flags"));
+			     _("An internal error occured"));
 		return BRASERO_BURN_ERR;
 	}
 

@@ -468,10 +468,14 @@ brasero_utils_launch_app (GtkWidget *widget,
 		uri = item->data;
 
 		if (!g_app_info_launch_default_for_uri (uri, NULL, &error)) {
+			gchar *string;
+
+			string = g_strdup_printf ("\"%s\" could not be opened", uri);
 			brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (widget)),
-						      _("This file can't be opened."),
+						      string,
 						      error->message,
 						      GTK_MESSAGE_ERROR);
+			g_free (string);
 			g_error_free (error);
 			continue;
 		}
@@ -523,7 +527,7 @@ brasero_utils_message_dialog (GtkWidget *parent,
 
 	if (secondary_message)
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-							  "%s",
+							  "%s.",
 							  secondary_message);
 
 	gtk_dialog_run (GTK_DIALOG (message));

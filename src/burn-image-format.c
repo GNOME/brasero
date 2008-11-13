@@ -306,7 +306,7 @@ stat_end:
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
+			     _("The size could not be retrieved (%s)"),
 			     g_strerror (errsv));
 		return FALSE;
 	}
@@ -393,7 +393,7 @@ stat_end:
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
+			     _("The size could not be retrieved (%s)"),
 			     g_strerror (errsv));
 		return FALSE;
 	}
@@ -424,7 +424,7 @@ brasero_image_format_get_cdrdao_size (gchar *path,
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
+			     _("The size could not be retrieved (%s)"),
 			     g_strerror (errsv));
 		return FALSE;
 	}
@@ -553,7 +553,7 @@ brasero_image_format_get_cue_size (gchar *path,
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
+			     _("The size could not be retrieved (%s)"),
 			     g_strerror (errsv));
 		return FALSE;
 	}
@@ -597,8 +597,7 @@ brasero_image_format_get_cue_size (gchar *path,
 				g_set_error (error,
 					     BRASERO_BURN_ERR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("size can't be retrieved for %s: %s"),
-					     file_path,
+					     _("The size could not be retrieved (%s)"),
 					     g_strerror (errsv));
 				g_free (file_path);
 				return FALSE;
@@ -758,7 +757,7 @@ brasero_image_format_get_iso_size (gchar *path,
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
+			     _("The size could not be retrieved (%s)"),
 			     g_strerror (errsv));
 
 		return FALSE;
@@ -802,7 +801,7 @@ brasero_image_format_get_clone_size (gchar *path,
 		g_set_error (error,
 			     BRASERO_BURN_ERR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("size can't be retrieved (%s)"),
+			     _("The size could not be retrieved (%s)"),
 			     g_strerror (errsv));
 
 		return FALSE;

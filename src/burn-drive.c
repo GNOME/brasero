@@ -413,6 +413,15 @@ brasero_drive_medium_probed (BraseroMedium *medium,
 		       priv->medium);
 }
 
+gboolean
+brasero_drive_probing (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+	return priv->probed != TRUE;
+}
+
 void
 brasero_drive_reprobe (BraseroDrive *self)
 {
@@ -501,7 +510,7 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 			       0,
 			       medium);
 		g_object_unref (medium);
-		priv->probed = FALSE;
+		priv->probed = TRUE;
 	}
 }
 

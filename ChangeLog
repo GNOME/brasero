@@ -1,3 +1,193 @@
+2008-11-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Another string update:
+	Fix capitalization problems
+	Fix ends of strings
+	Remove technical error messages
+	Merged strings that say the same things differently
+
+	Also rework the error enum
+
+	* data/brasero.schemas.in:
+	* src/brasero-app.c:
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_add_dir),
+	(brasero_audio_disc_unreadable_dialog), (brasero_audio_disc_split),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_insert_disc_cb),
+	(brasero_burn_dialog_disable_joliet_cb),
+	(brasero_burn_dialog_show_log), (brasero_burn_dialog_notify_error):
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb),
+	(brasero_burn_options_init):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_project_oversized_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb), (brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_deep_directory_cb),
+	(brasero_data_disc_import_button_new), (brasero_data_disc_init):
+	* src/brasero-data-session.c
+	(brasero_data_session_load_dir_result):
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_format_medium_string):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_format_disc_speed):
+	* src/brasero-file-filtered.c (brasero_file_filtered_add_real):
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_parse_playlist_get_uris),
+	(brasero_io_load_directory_thread), (brasero_io_xfer_start):
+	* src/brasero-jacket-view.c (brasero_jacket_view_set_image):
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_update_media_string),
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_get_drive_num),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_medium_removed_cb):
+	* src/brasero-playlist.c (brasero_playlist_dialog_error),
+	(brasero_playlist_parse_result):
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	* src/brasero-project.c (brasero_project_no_song_dialog),
+	(brasero_project_no_file_dialog),
+	(brasero_project_not_saved_dialog):
+	* src/brasero-split-dialog.c
+	(brasero_split_dialog_no_silence_message):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_message),
+	(brasero_sum_dialog_message_error), (brasero_sum_dialog_download),
+	(brasero_sum_dialog_get_file_checksum),
+	(brasero_sum_dialog_set_track_checksum_type):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_media_error),
+	(brasero_tool_dialog_media_busy), (brasero_tool_dialog_no_media):
+	* src/brasero-utils.c (brasero_utils_launch_app),
+	(brasero_utils_message_dialog):
+	* src/brasero-video-disc.c (brasero_video_disc_directory_dialog),
+	(brasero_video_disc_unreadable_uri_dialog),
+	(brasero_video_disc_not_video_dialog):
+	* src/burn-basics.h:
+	* src/burn-caps.c (brasero_burn_caps_new_task),
+	(brasero_burn_caps_new_checksuming_task):
+	* src/burn-drive.c (brasero_drive_probing),
+	(brasero_drive_check_medium_inside):
+	* src/burn-drive.h:
+	* src/burn-image-format.c (brasero_image_format_get_DATAFILE_info),
+	(brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cdrdao_size),
+	(brasero_image_format_get_cue_size),
+	(brasero_image_format_get_iso_size),
+	(brasero_image_format_get_clone_size):
+	* src/burn-iso9660.c (brasero_iso9660_is_primary_descriptor),
+	(brasero_iso9660_next_record), (brasero_iso9660_read_file_record),
+	(brasero_iso9660_read_directory_record):
+	* src/burn-job.c (brasero_job_allow_deactivation),
+	(brasero_job_check_output_disc_space),
+	(brasero_job_check_output_volume_space),
+	(brasero_job_set_output_file), (brasero_job_item_start),
+	(brasero_job_finished_session), (brasero_job_finished_track),
+	(brasero_job_set_nonblocking_fd):
+	* src/burn-medium-monitor.c (brasero_medium_monitor_is_probing),
+	(brasero_medium_monitor_get_media):
+	* src/burn-medium-monitor.h:
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_excluded),
+	(brasero_mkisofs_base_write_graft),
+	(brasero_mkisofs_base_add_graft):
+	* src/burn-plugin-manager.c:
+	* src/burn-process.c (brasero_process_check_path),
+	(brasero_process_finished):
+	* src/burn-session.c (brasero_burn_session_get_output),
+	(brasero_burn_session_set_image_output_full),
+	(brasero_burn_session_get_tmp_dir),
+	(brasero_burn_session_get_tmp_file):
+	* src/burn-volume-obj.c (brasero_volume_get_mount_point):
+	* src/burn-volume.c (brasero_volume_get_primary_from_file):
+	* src/burn.c (brasero_burn_eject), (brasero_burn_eject_dest_media),
+	(brasero_burn_eject_src_media), (brasero_burn_ask_for_dest_media),
+	(brasero_burn_lock_src_media),
+	(brasero_burn_lock_rewritable_media),
+	(brasero_burn_is_loaded_dest_media_supported),
+	(brasero_burn_lock_dest_media), (brasero_burn_mount_media),
+	(brasero_burn_lock_checksum_media), (brasero_burn_run_eraser),
+	(brasero_burn_run_imager), (brasero_burn_run_recorder),
+	(brasero_burn_check_real),
+	(brasero_burn_check_session_consistency), (brasero_burn_check),
+	(brasero_burn_same_src_dest_image),
+	(brasero_burn_same_src_dest_reload_medium), (brasero_burn_record),
+	(brasero_burn_blank):
+	* src/main.c (brasero_app_parse_options):
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_read_stderr_record), (brasero_cdrdao_read_stderr),
+	(brasero_cdrdao_export_caps):
+	* src/plugins/cdrdao/burn-toc2cue.c (brasero_toc2cue_export_caps):
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_read_stderr),
+	(brasero_genisoimage_set_argv_image),
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_read_stderr),
+	(brasero_readom_set_argv), (brasero_readom_export_caps):
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_stderr_read),
+	(brasero_wodim_stdout_read), (brasero_wodim_write_inf),
+	(brasero_wodim_set_argv_record):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_stderr_read), (brasero_cdrecord_stdout_read),
+	(brasero_cdrecord_write_inf), (brasero_cdrecord_set_argv_record):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_read_stderr), (brasero_mkisofs_set_argv_image),
+	(brasero_mkisofs_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_read_stderr),
+	(brasero_readcd_set_argv), (brasero_readcd_export_caps):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_get_file_checksum),
+	(brasero_checksum_files_add_file_checksum),
+	(brasero_checksum_files_create_checksum),
+	(brasero_checksum_files_check_files), (brasero_checksum_files_end),
+	(brasero_checksum_files_export_caps):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_read), (brasero_checksum_image_write),
+	(brasero_checksum_image_checksum_file_input),
+	(brasero_checksum_image_end), (brasero_checksum_image_export_caps):
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_library_init),
+	(brasero_dvdcss_write_sector_to_fd),
+	(brasero_dvdcss_write_image_thread):
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_read_stderr),
+	(brasero_dvd_rw_format_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_read_stderr),
+	(brasero_growisofs_set_argv_record),
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_ctx_new):
+	* src/plugins/libburnia/burn-libburn.c (brasero_libburn_add_track),
+	(brasero_libburn_start_erase), (brasero_libburn_clock_tick):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_write_sector_to_fd),
+	(brasero_libisofs_write_image_to_file_thread),
+	(brasero_libisofs_create_image),
+	(brasero_libisofs_import_last_session),
+	(brasero_libisofs_create_volume_thread),
+	(brasero_libisofs_create_volume):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_recursive_transfer),
+	(brasero_local_track_transfer):
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_explore_directory), (brasero_burn_uri_thread),
+	(brasero_burn_uri_export_caps):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_set_next_track),
+	(brasero_normalize_build_pipeline),
+	(brasero_normalize_export_caps):
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_create_pipeline),
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_pad_real), (brasero_transcode_pad_file),
+	(brasero_transcode_get_duration),
+	(brasero_transcode_error_on_pad_linking):
+	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_pcm),
+	(brasero_vob_build_audio_mp2), (brasero_vob_build_audio_ac3),
+	(brasero_vob_build_audio_bins), (brasero_vob_build_video_bin),
+	(brasero_vob_build_pipeline):
+	* src/scsi-error.c:
+
 2008-11-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make "Please wait" dialog appear in the task bar when started from nautilus

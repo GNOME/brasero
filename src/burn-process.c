@@ -99,7 +99,7 @@ brasero_process_check_path (const gchar *name,
 	 * the path */
 	prog_path = g_find_program_in_path (name);
 	if (!prog_path) {
-		*error = g_strdup_printf (_("%s could not be found in the path"), name);
+		*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
 		return BRASERO_BURN_ERR;
 	}
 
@@ -115,7 +115,7 @@ brasero_process_check_path (const gchar *name,
 		g_free (prog_path);
 
 		if (!file) {
-			*error = g_strdup_printf (_("wrong path"));
+			*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
 			return BRASERO_BURN_ERR;
 		}
 
@@ -127,7 +127,7 @@ brasero_process_check_path (const gchar *name,
 		g_object_unref (file);
 
 		if (!info) {
-			*error = g_strdup_printf (_("impossible to retrieve information"));
+			*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
 			return BRASERO_BURN_ERR;
 		}
 
@@ -137,7 +137,7 @@ brasero_process_check_path (const gchar *name,
 
 		if (!prog_name || strcmp (prog_name, name)) {
 			g_free (prog_name);
-			*error = g_strdup_printf (_("%s is a symlink pointing to another program. Use the target program instead."), name);
+			*error = g_strdup_printf (_("\"%s\" is a symlink pointing to another program. Use the target program instead"), name);
 			return BRASERO_BURN_ERR;
 		}
 
@@ -220,10 +220,11 @@ brasero_process_finished (BraseroProcess *self)
 	/* check if an error went undetected */
 	if (priv->return_status) {
 		if (priv->error) {
+			/* Translators: %s is the name of the brasero element */
 			brasero_job_error (BRASERO_JOB (self),
 					   g_error_new (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_GENERAL,
-							_("process %s ended with an error code (%i)"),
+							_("Process \"%s\" ended with an error code (%i)"),
 							G_OBJECT_TYPE_NAME (self),
 							priv->return_status));
 		}

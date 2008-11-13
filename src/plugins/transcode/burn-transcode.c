@@ -311,10 +311,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	uri = brasero_track_get_audio_source (track, TRUE);
 	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
 	if (source == NULL) {
+		/* Translators: %s is the name of the GstElement that 
+		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("source can't be created"));
+			     _("%s element could not be created"),
+			     "\"Source\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), source);
@@ -359,10 +362,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	}
 
 	if (!sink) {
+		/* Translators: %s is the name of the GstElement that 
+		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("sink can't be created"));
+			     _("%s element could not be created"),
+			     "\"Sink\"");
 		goto error;
 	}
 
@@ -374,10 +380,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
 	if (convert == NULL) {
+		/* Translators: %s is the name of the GstElement that 
+		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioconvert can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioconvert\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), convert);
@@ -386,10 +395,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		/* audioresample */
 		resample = gst_element_factory_make ("audioresample", NULL);
 		if (resample == NULL) {
+			/* Translators: %s is the name of the GstElement that 
+			 * could not be created */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("audioresample can't be created"));
+				     _("%s element could not be created"),
+				     "\"Audioresample\"");
 			goto error;
 		}
 		gst_bin_add (GST_BIN (pipeline), resample);
@@ -397,10 +409,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		/* filter */
 		filter = gst_element_factory_make ("capsfilter", NULL);
 		if (!filter) {
+			/* Translators: %s is the name of the GstElement that 
+			 * could not be created */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("filter can't be created"));
+				     _("%s element could not be created"),
+				     "\"Filter\"");
 			goto error;
 		}
 		gst_bin_add (GST_BIN (pipeline), filter);
@@ -420,10 +435,13 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	/* decode */
 	decode = gst_element_factory_make ("decodebin", NULL);
 	if (decode == NULL) {
+		/* Translators: %s is the name of the GstElement that 
+		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("decode can't be created"));
+			     _("%s element could not be created"),
+			     "\"Decodebin\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
@@ -579,10 +597,11 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 	if (symlink (path_src, path_dest) == -1) {
                 int errsv = errno;
 
+		/* Translators: the %s is the error message from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("a symlink could not be created (%s)"),
+			     _("An internal error occured (%s)"),
 			     g_strerror (errsv));
 
 		goto error;
@@ -837,10 +856,11 @@ brasero_transcode_pad_real (BraseroTranscode *transcode,
 		if (size != b_written) {
                         int errsv = errno;
 
+			/* Translators: %s is the string error from errno */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("error padding (%s)"),
+				     _("Error while padding file (%s)"),
 				     g_strerror (errsv));
 			return -1;
 		}
@@ -1029,10 +1049,11 @@ brasero_transcode_pad_file (BraseroTranscode *transcode, GError **error)
 	if (fd == -1) {
                 int errsv = errno;
 
+		/* Translators: %s is the string error from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("error opening file for padding : %s"),
+			     _("Error while padding file (%s)"),
 			     g_strerror (errsv));
 		return FALSE;
 	}
@@ -1129,7 +1150,7 @@ brasero_transcode_get_duration (BraseroTranscode *transcode)
 	    brasero_job_error (BRASERO_JOB (transcode),
 			       g_error_new (BRASERO_BURN_ERROR,
 					    BRASERO_BURN_ERROR_GENERAL,
-					    _("error getting duration")));
+					    _("Error while getting duration")));
 	return duration;
 }
 
@@ -1366,7 +1387,7 @@ brasero_transcode_error_on_pad_linking (BraseroTranscode *self)
 	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
 					 g_error_new (BRASERO_BURN_ERROR,
 						      BRASERO_BURN_ERROR_GENERAL,
-						      "Impossible to link gstreamer plugin pads."),	/* FIXME: translate */
+						      _("Impossible to link plugin pads")),
 					 "Sent by brasero_metadata_error_on_pad_linking");
 
 	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline));

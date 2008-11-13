@@ -435,7 +435,7 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 			 * destination disc a new one (once the source has been
 			 * copied) which is to be inserted in the drive currently
 			 * holding the source disc */
-			label = g_strdup_printf (_("New disc in burner holding source medium"));
+			label = g_strdup_printf (_("New disc in the burner holding source disc"));
 			g_free (medium_name);
 			return label;
 		}

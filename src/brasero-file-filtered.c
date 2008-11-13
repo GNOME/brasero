@@ -183,10 +183,10 @@ brasero_file_filtered_add_real (BraseroFileFiltered *self,
 				const gchar *unescaped_uri,
 				BraseroFilterStatus status)
 {
-	gchar *labels [] = { N_("hidden file"),
-			     N_("unreadable file"),
-			     N_("broken symlink"),
-			     N_("recursive symlink"),
+	gchar *labels [] = { N_("Hidden file"),
+			     N_("Unreadable file"),
+			     N_("Broken symbolic link"),
+			     N_("Recursive symbolic link"),
 			     NULL };
 	BraseroFileFilteredPrivate *priv;
 	const gchar *stock_id;

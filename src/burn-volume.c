@@ -119,8 +119,8 @@ brasero_volume_get_primary_from_file (BraseroVolSrc *vol,
 	&&  memcmp (desc->id, "TEA01", 5)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("there isn't a valid volume descriptor"));
+			     BRASERO_BURN_ERROR_IMAGE_INVALID,
+			     _("It does not appear to be a valid ISO image"));
 		BRASERO_BURN_LOG ("Wrong volume descriptor, got %.5s", desc->id);
 		return FALSE;
 	}

@@ -78,90 +78,46 @@ static GObjectClass *parent_class = NULL;
 static BraseroBurnResult
 brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 {
-	BraseroCDRecord *cdrecord = BRASERO_CD_RECORD (process);
-	BraseroCDRecordPrivate *priv;
 	BraseroBurnFlag flags;
 
-	priv = BRASERO_CD_RECORD_PRIVATE (cdrecord);
-	brasero_job_get_flags (BRASERO_JOB (cdrecord), &flags);
+	brasero_job_get_flags (BRASERO_JOB (process), &flags);
 
-	if (strstr (line, "Cannot open SCSI driver.")) {
+	if (strstr (line, "Cannot open SCSI driver.")
+	||  strstr (line, "Operation not permitted. Cannot send SCSI cmd via ioctl")
+	||  strstr (line, "Cannot open or use SCSI driver")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_PERMISSION,
-						_("You don't seem to have the required permission to use this drive")));
-	}
-	else if (strstr (line, "No disk / Wrong disk!") != NULL) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_NONE,
-						_("There seems to be no disc in the drive")));
-	}
-	else if (strstr (line, "Input buffer error, aborting") != NULL) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("Input buffer error")));
-	}
-	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
-		/* NOTE: defer the consequence of this error as it is not always
-		 * fatal. So send a warning but don't stop the process. */
-		brasero_process_deferred_error (process,
-						g_error_new (BRASERO_BURN_ERROR,
-							     BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE,
-							     _("The CD has already been recorded")));
-	}
-	else if (strstr (line, "Cannot blank disk, aborting.") != NULL) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE,
-						_("The CD cannot be blanked")));
+						_("You do not have the required permissions to use this drive")));
 	}
 	else if (!(flags & BRASERO_BURN_FLAG_OVERBURN)
 	     &&  strstr (line, "Data may not fit on current disk")) {
 		/* we don't error out if overburn was chosen */
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_SPACE,
-						_("The files selected did not fit on the CD")));
+						BRASERO_BURN_ERROR_MEDIUM_SPACE,
+						_("Not enough space available on the disc")));
 	}
-	else if (strstr (line ,"cdrecord: A write error occured")) {
+	else if (strstr (line ,"cdrecord: A write error occured")
+	     ||  strstr (line, "Could not write Lead-in")
+	     ||  strstr (line, "Cannot fixate disk")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("A write error occured which was likely due to overburning the disc")));
-	}
-	else if (strstr (line, "Inappropriate audio coding")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_INCOMPATIBLE_FORMAT,
-						_("All audio files must be stereo, 16-bit digital audio with 44100Hz samples")));
-	}
-	else if (strstr (line, "cannot write medium - incompatible format") != NULL) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_INCOMPATIBLE_FORMAT,
-						_("The image does not seem to be a proper iso9660 file system")));
+						BRASERO_BURN_ERROR_WRITE_MEDIUM,
+						_("An error occured while writing to disc")));
 	}
 	else if (strstr (line, "DMA speed too slow") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_SLOW_DMA,
-						_("The system is too slow to write the CD at this speed. Try a lower speed")));
-	}
-	else if (strstr (line, "Operation not permitted. Cannot send SCSI cmd via ioctl")
-	     ||  strstr (line, "Cannot open or use SCSI driver")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_SCSI_IOCTL,
-						_("You do not seem to have the required permission to use this drive")));
+						_("The system is too slow to write the disc at this speed. Try a lower speed")));
 	}
 	else if (strstr (line, "Device or resource busy")) {
 		if (!strstr (line, "retrying in")) {
 			brasero_job_error (BRASERO_JOB (process),
 					   g_error_new (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_BUSY_DRIVE,
-							_("The drive seems to be busy (maybe check you have proper permissions to use it)")));
+							BRASERO_BURN_ERROR_DRIVE_BUSY,
+							_("The drive is busy")));
 		}
 	}
 	else if (strstr (line, "Illegal write mode for this drive")) {
@@ -169,33 +125,31 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 		 * drive with cdrdao and eject it. Should we ? */
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("The drive seems to be busy (maybe you should reload the media)")));
+						BRASERO_BURN_ERROR_DRIVE_BUSY,
+						_("The drive is busy")));
 	}
-	else if (strstr (line, "cdrecord: No such file or directory. Cannot open")) {
+
+	/* REMINDER: these should not be necessary as we checked that already */
+	/**
+	else if (strstr (line, "cannot write medium - incompatible format") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("The image file cannot be found")));
+						BRASERO_BURN_ERROR_INPUT_INVALID,
+						_("The image does not seem to be a proper iso9660 file system")));
 	}
-	else if (strstr (line, "Bad file descriptor. read error on input file")
-	     ||  strstr (line, "No tracks specified. Need at least one.")) {
+	else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
+	**/	/* NOTE: defer the consequence of this error as it is not always
+		 * fatal. So send a warning but don't stop the process. */
+	/**	brasero_process_deferred_error (process,
+						g_error_new (BRASERO_BURN_ERROR,
+							     BRASERO_BURN_ERROR_MEDIUM_INVALID,
+							     _("The disc is already burnt")));
+	}
+	else if (strstr (line, "Cannot blank disk, aborting.") != NULL) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("Internal error")));
-	}
-	else if (strstr (line, "Could not write Lead-in")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("The disc information could not be written")));
-	}
-	else if (strstr (line, "Cannot fixate disk")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("The disc could not be closed")));
+						BRASERO_BURN_ERROR_MEDIUM_INVALID,
+						_("The disc could not be blanked")));
 	}
 	else if (strstr (line, "Bad audio track size")) {
 		brasero_job_error (BRASERO_JOB (process),
@@ -203,6 +157,39 @@ brasero_cdrecord_stderr_read (BraseroProcess *process, const gchar *line)
 						BRASERO_BURN_ERROR_GENERAL,
 						_("The audio tracks are too short or not a multiple of 2352")));
 	}
+	else if (strstr (line, "cdrecord: No such file or directory. Cannot open")
+	     ||  strstr (line, "No tracks specified. Need at least one.")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_INPUT,
+						_("The image file cannot be found")));
+	}
+	else if (strstr (line, "Inappropriate audio coding")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_INPUT_INVALID,
+						_("All audio files must be stereo, 16-bit digital audio with 44100Hz samples")));
+	}
+	else if (strstr (line, "No disk / Wrong disk!") != NULL) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_MEDIA_NONE,
+						_("There seems to be no disc in the drive")));
+	}
+
+	**/
+
+	/** For these we'd rather have a message saying "cdrecord failed"
+	 *  as an internal error occured says nothing/even less
+	else if (strstr (line, "Bad file descriptor. read error on input file")
+	     ||  strstr (line, "Input buffer error, aborting")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_GENERAL,
+						_("An internal error occured")));
+	}
+
+	**/
 
 	return BRASERO_BURN_OK;
 }
@@ -307,7 +294,7 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Formatting media")) {
 		brasero_job_set_current_action (BRASERO_JOB (process),
 						BRASERO_BURN_ACTION_BLANKING,
-						_("Formatting media"),
+						_("Formatting disc"),
 						FALSE);
 	}
 	else if (strstr (line, "Sending CUE sheet")) {
@@ -338,8 +325,8 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_RELOAD_MEDIA,
-						_("The media needs to be reloaded before being recorded")));
+						BRASERO_BURN_ERROR_MEDIUM_NEED_RELOADING,
+						_("The disc needs to be reloaded before being recorded")));
 	}
 	else if (g_str_has_prefix (line, "Fixating...")
 	     ||  g_str_has_prefix (line, "Writing Leadout...")) {
@@ -355,12 +342,8 @@ brasero_cdrecord_stdout_read (BraseroProcess *process, const gchar *line)
 	     ||  strstr (line, "Blanking entire disk")) {
 
 	}
-	else if (strstr (line, "Use tsize= option in SAO mode to specify track size")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("internal error")));
-	}
+	/* This should not happen */
+	/* else if (strstr (line, "Use tsize= option in SAO mode to specify track size")) */
 
 	return BRASERO_BURN_OK;
 }
@@ -591,7 +574,7 @@ error:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("the inf file can't be written : %s"), 
+		     _("An internal error occured (%s)"), 
 		     g_strerror (errsv));
 
 	return BRASERO_BURN_ERR;
@@ -699,10 +682,11 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 		/* we need to know what is the type of the track (audio / data) */
 		result = brasero_job_get_input_type (BRASERO_JOB (cdrecord), &type);
 		if (result != BRASERO_BURN_OK) {
+			BRASERO_JOB_LOG (cdrecord, "Imager doesn't seem to be ready")
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("imager doesn't seem to be ready"));
+				     _("An internal error occured"));
 			return BRASERO_BURN_ERR;
 		}
 		
@@ -711,10 +695,11 @@ brasero_cdrecord_set_argv_record (BraseroCDRecord *cdrecord,
 							      &sectors,
 							      NULL);
 		if (result != BRASERO_BURN_OK) {
+			BRASERO_JOB_LOG (cdrecord, "The size of the session cannot be retrieved")
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the size of the session cannot be retrieved"));
+				     _("An internal error occured"));
 			return BRASERO_BURN_ERR;
 		}
 

@@ -56,14 +56,20 @@ brasero_dvd_rw_format_read_stderr (BraseroProcess *process, const gchar *line)
 	float percent;
 
 	if (strstr (line, "unable to proceed with format")
-	||  strstr (line, "unable to umount")
 	||  strstr (line, "media is not blank")
 	||  strstr (line, "media is already formatted")
 	||  strstr (line, "you have the option to re-run")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("Unhandled error, aborting")));
+						BRASERO_BURN_ERROR_MEDIUM_INVALID,
+						_("The disc is not supported")));
+		return BRASERO_BURN_OK;
+	}
+	else if (strstr (line, "unable to umount")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_DRIVE_BUSY,
+						_("The drive is busy")));
 		return BRASERO_BURN_OK;
 	}
 
@@ -162,23 +168,19 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 				   BRASERO_MEDIUM_HAS_DATA|
 				   BRASERO_MEDIUM_UNFORMATTED|
 				   BRASERO_MEDIUM_BLANK;
-	gchar *prog_name;
+	BraseroBurnResult result;
 	GSList *output;
 
 	brasero_plugin_define (plugin,
 			       "dvd+rw-format",
-			       _("dvd+rw-format erases and formats DVD+/-RW"),
+			       _("Dvd+rw-format erases and formats DVD+/-R(W)"),
 			       "Philippe Rouquier",
 			       0);
 
-	/* First see if this plugin can be used, i.e. if growisofs is in
-	 * the path */
-	prog_name = g_find_program_in_path ("dvd+rw-format");
-	if (!prog_name) {
-		*error = g_strdup (_("dvd+rw-format could not be found in the path"));
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("dvd+rw-format", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	output = brasero_caps_disc_new (media|
 					BRASERO_MEDIUM_PLUS|

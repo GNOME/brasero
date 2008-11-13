@@ -164,61 +164,64 @@ brasero_growisofs_read_stderr (BraseroProcess *process, const gchar *line)
 						NULL,
 						FALSE);
 	}
-	else if (strstr (line, "already carries isofs") && strstr (line, "FATAL:")) {
-		brasero_job_error (BRASERO_JOB (process), 
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE,
-						_("The disc is already burnt")));
-	}
 	else if (strstr (line, "unable to open")
-	     ||  strstr (line, "unable to stat")) {
-		brasero_job_error (BRASERO_JOB (process), 
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("The recorder could not be accessed")));
-	}
-	else if (strstr (line, "not enough space available") != NULL) {
-		brasero_job_error (BRASERO_JOB (process), 
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("Not enough space available on the disc")));
-	}
-	else if (strstr (line, "end of user area encountered on this track") != NULL) {
-		brasero_job_error (BRASERO_JOB (process), 
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("The files selected did not fit on the CD")));
-	}
-	else if (strstr (line, "blocks are free") != NULL) {
-		brasero_job_error (BRASERO_JOB (process), 
-				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("The files selected did not fit on the CD")));
-	}
-	else if (strstr (line, "unable to proceed with recording: unable to unmount")) {
+	     ||  strstr (line, "unable to stat")
+	     ||  strstr (line, "unable to proceed with recording: unable to unmount")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_JOLIET_TREE,
-							_("the drive seems to be busy")));
+							BRASERO_BURN_ERROR_DRIVE_BUSY,
+							_("The drive is busy")));
 	}
-	else if (strstr (line, ":-(") != NULL || strstr (line, "FATAL")) {
+	else if (strstr (line, "not enough space available")
+	     ||  strstr (line, "end of user area encountered on this track")
+	     ||  strstr (line, "blocks are free")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("Unhandled error, aborting")));
+						BRASERO_BURN_ERROR_MEDIUM_SPACE,
+						_("Not enough space available on the disc")));
+	}
+	else if (strstr (line, "Input/output error. Read error on old image")) {
+		brasero_job_error (BRASERO_JOB (process), 
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_IMAGE_LAST_SESSION,
+							_("Last session import failed")));
+	}
+	else if (strstr (line, "Unable to sort directory")) {
+		brasero_job_error (BRASERO_JOB (process), 
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_WRITE_IMAGE,
+							_("An image could not be created")));
+	}
+	else if (strstr (line, "have the same joliet name")
+	     ||  strstr (line, "Joliet tree sort failed.")) {
+		brasero_job_error (BRASERO_JOB (process), 
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_IMAGE_JOLIET,
+							_("An image could not be created")));
 	}
 	else if (strstr (line, "Incorrectly encoded string")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_JOLIET_TREE,
+							BRASERO_BURN_ERROR_INPUT_INVALID,
 							_("Some files have invalid filenames")));
 	}
-	else if (strstr (line, "Joliet tree sort failed.")) {
-		brasero_job_error (BRASERO_JOB (process), 
+	else if (strstr (line, "Unknown charset")) {
+		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_JOLIET_TREE,
-							_("the image can't be created")));
+							BRASERO_BURN_ERROR_INPUT_INVALID,
+							_("Unknown character encoding")));
 	}
+
+	/** REMINDER! removed messages:
+	   else if (strstr (line, ":-(") != NULL || strstr (line, "FATAL"))
+
+	   else if (strstr (line, "already carries isofs") && strstr (line, "FATAL:")) {
+		brasero_job_error (BRASERO_JOB (process), 
+				   g_error_new (BRASERO_BURN_ERROR,
+						BRASERO_BURN_ERROR_MEDIUM_INVALID,
+						_("The disc is already burnt")));
+	   }
+	**/
 
 	return BRASERO_BURN_OK;
 }
@@ -478,8 +481,9 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			if (!g_file_test ("/proc/self/fd/0", G_FILE_TEST_EXISTS)) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("the file /proc/self/fd/0 is missing"));
+					     BRASERO_BURN_ERROR_FILE_NOT_FOUND,
+					     _("\"%s\" could not be found"),
+					     "/proc/self/fd/0");
 				return BRASERO_BURN_ERR;
 			}
 
@@ -497,8 +501,8 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 			if (!localpath) {
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("the image is not stored locally"));
+					     BRASERO_BURN_ERROR_FILE_NOT_LOCAL,
+					     _("The file is not stored locally"));
 				return BRASERO_BURN_ERR;
 			}
 
@@ -705,24 +709,20 @@ brasero_growisofs_finalize (GObject *object)
 static BraseroBurnResult
 brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 {
-	gchar *prog_name;
+	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
 	brasero_plugin_define (plugin,
 			       "growisofs",
-			       _("growisofs burns DVDs"),
+			       _("Growisofs burns DVDs"),
 			       "Philippe Rouquier",
 			       7);
 
-	/* First see if this plugin can be used, i.e. if growisofs is in
-	 * the path */
-	prog_name = g_find_program_in_path ("growisofs");
-	if (!prog_name) {
-		*error = g_strdup (_("growisofs could not be found in the path"));
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("growisofs", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* growisofs can write images to any type of DVD as long as it's blank */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|

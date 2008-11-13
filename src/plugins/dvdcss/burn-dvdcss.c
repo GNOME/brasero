@@ -117,14 +117,14 @@ error_doesnt_exist:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("encrypted DVD: please, install libdvdcss version 1.2.x"));
+		     _("Encrypted DVD: please, install libdvdcss version 1.2.x"));
 	return FALSE;
 
 error_version:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("libdvdcss version %s is not supported.\nPlease, install libdvdcss version 1.2.x"),
+		     _("Libdvdcss version %s is not supported.\nPlease, install libdvdcss version 1.2.x"),
 		     dvdcss_interface_2);
 	g_module_close (module);
 	return FALSE;
@@ -134,7 +134,7 @@ error_loading:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("libdvdcss couldn't be loaded properly"));
+		     _("Libdvdcss could not be loaded properly"));
 	g_module_close (module);
 	return FALSE;
 }
@@ -211,8 +211,7 @@ brasero_dvdcss_write_sector_to_fd (BraseroDvdcss *self,
 				/* unrecoverable error */
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
-							   _("the data couldn't be written to the pipe (%i: %s)"),
-							   errsv,
+							   _("Data could not be written (%s)"),
 							   g_strerror (errsv));
 				return BRASERO_BURN_ERR;
 			}
@@ -343,7 +342,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	if (volume_size == -1) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
-					   _("the size of the volume couln't be retrieved"));
+					   _("The size of the volume could not be retrieved"));
 		goto end;
 	}
 
@@ -352,7 +351,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	if (!handle) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
-					   _("DVD could not be opened"));
+					   _("Video DVD could not be opened"));
 		goto end;
 	}
 
@@ -370,7 +369,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	if (dvdcss_seek (handle, 0, DVDCSS_NOFLAGS) != 0) {
 		priv->error = g_error_new (BRASERO_BURN_ERROR,
 					   BRASERO_BURN_ERROR_GENERAL,
-					   _("Error reading video DVD (%s)"),
+					   _("Error while reading video DVD (%s)"),
 					   dvdcss_error (handle));
 		goto end;
 	}
@@ -430,7 +429,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 			&&  dvdcss_seek (handle, written_sectors, DVDCSS_SEEK_KEY) != written_sectors) {
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
-							   _("Error reading video DVD (%s)"),
+							   _("Error while reading video DVD (%s)"),
 							   dvdcss_error (handle));
 				break;
 			}
@@ -450,7 +449,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 		if (dvdcss_read (handle, buf, num_blocks, flag) != num_blocks) {
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
-						   _("Error reading video DVD (%s)"),
+						   _("Error while reading video DVD (%s)"),
 						   dvdcss_error (handle));
 			break;
 		}
@@ -462,8 +461,7 @@ brasero_dvdcss_write_image_thread (gpointer data)
 
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
-							   _("the data couldn't be written to the file (%i: %s)"),
-							   errsv,
+							   _("Data could not be written (%s)"),
 							   g_strerror (errsv));
 				break;
 			}

@@ -225,7 +225,7 @@ brasero_libburn_add_track (struct burn_session *session,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("unable to set the source"));
+			     _("Libburn track could not be created"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -233,7 +233,7 @@ brasero_libburn_add_track (struct burn_session *session,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("unable to add the track to the session"));
+			     _("Libburn track could not be created"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -573,11 +573,11 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	int fd;
 
 	priv = BRASERO_LIBBURN_PRIVATE (self);
-	if (burn_disc_get_profile (priv->ctx->drive, &profile, prof_name) < 0) {
+	if (burn_disc_get_profile (priv->ctx->drive, &profile, prof_name) <= 0) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("no profile available for the medium"));
+			     BRASERO_BURN_ERROR_MEDIUM_INVALID,
+			     _("The disc is not supported"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -620,10 +620,16 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	 * /dev/null */
 	fd = open ("/dev/null", O_RDONLY);
 	if (fd == -1) {
+		int errnum = errno;
+
+		/* Translators: first %s is the filename, second %s is the error
+		 * generated from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("/dev/null can't be opened"));
+			     _("\"%s\" could not be opened (%s)"),
+			     "/dev/null",
+			     g_strerror (errnum));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -654,10 +660,13 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 
 	if (burn_precheck_write (opts, priv->ctx->disc, reasons, 0) <= 0) {
 		burn_write_opts_free (opts);
+
+		/* Translators: %s is the error returned by libburn */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("libburn can't burn: %s"), reasons);
+			     _("An internal error occured (%s)"),
+			     reasons);
 		return BRASERO_BURN_ERR;
 	}
 
@@ -758,8 +767,8 @@ brasero_libburn_clock_tick (BraseroJob *job)
 		BRASERO_JOB_LOG (job, "Something went wrong");
 		brasero_job_error (job,
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("an unknown error occured")));
+						BRASERO_BURN_ERROR_WRITE_MEDIUM,
+						_("An error occured while writing to disc")));
 		return BRASERO_BURN_OK;
 	}
 
@@ -786,10 +795,11 @@ brasero_libburn_clock_tick (BraseroJob *job)
 					BRASERO_PVD_SIZE,
 					0);
 	if (ret != 1) {
+		BRASERO_JOB_LOG (job, "Random write failed");
 		brasero_job_error (job,
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("an unknown error occured")));
+						BRASERO_BURN_ERROR_WRITE_MEDIUM,
+						_("An error occured while writing to disc")));
 		return BRASERO_BURN_OK;
 	}
 

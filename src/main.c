@@ -98,10 +98,9 @@ static const GOptionEntry options [] = {
 	  N_("Open a video project adding the URIs given on the command line"),
 	  NULL },
 
-	/* FIXME: last argument should be defined */
 	{ "image", 'i', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &iso_uri,
 	 N_("Uri of an image file to be burnt (autodetected)"),
-          NULL },
+          N_("PATH TO PLAYLIST") },
 
     	{ "empty", 'e', 0, G_OPTION_ARG_NONE, &empty_project,
          N_("Force brasero to display the project selection page"),
@@ -198,7 +197,7 @@ brasero_app_parse_options (BraseroApp *app)
 	if (nb > 1) {
 		brasero_utils_message_dialog (NULL,
 					      _("Incompatible command line options used."),
-					      _("Only one option can be given at a time."),
+					      _("Only one option can be given at a time"),
 					      GTK_MESSAGE_ERROR);
 
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));

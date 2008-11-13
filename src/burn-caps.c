@@ -103,9 +103,9 @@ static BraseroBurnCaps *default_caps = NULL;
 {										\
 	if (error)								\
 		g_set_error (error,						\
-			    BRASERO_BURN_ERROR,					\
-			    BRASERO_BURN_ERROR_GENERAL,				\
-			    _("this operation is not supported")); \
+			     BRASERO_BURN_ERROR,				\
+			     BRASERO_BURN_ERROR_GENERAL,			\
+			     _("An internal error occured"));	 		\
 	BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG (session);				\
 }
 
@@ -1348,7 +1348,7 @@ brasero_burn_caps_new_task (BraseroBurnCaps *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("internal error in plugin system"));
+				     _("An internal error occured"));
 			g_slist_foreach (retval, (GFunc) g_object_unref, NULL);
 			g_slist_free (retval);
 			g_slist_free (list);
@@ -1446,7 +1446,7 @@ brasero_burn_caps_new_checksuming_task (BraseroBurnCaps *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("only one track at a time can be checked"));
+			     _("Only one track at a time can be checked"));
 		return NULL;
 	}
 

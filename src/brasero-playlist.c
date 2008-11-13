@@ -813,7 +813,7 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 	primary = g_strdup_printf (_("Error parsing playlist \"%s\"."), name);
 	brasero_utils_message_dialog (GTK_WIDGET (toplevel),
 				      primary,
-				      _("Unknown error."),
+				      _("An unknown error occured"),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
@@ -917,7 +917,7 @@ brasero_playlist_parse_result (GObject *object,
 	/* update the playlist information */
 	num = gtk_tree_model_iter_n_children (model, &parent);
 	if (!num)
-		num_string = g_strdup (_("empty"));
+		num_string = g_strdup (_("Empty"));
 	else
 		num_string = g_strdup_printf (ngettext ("%d song", "%d songs", num), num);
 

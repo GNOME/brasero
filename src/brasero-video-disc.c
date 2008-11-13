@@ -245,7 +245,7 @@ brasero_video_disc_directory_dialog (BraseroVideoProject *project,
 					 _("Do you want to search for video files inside the directory?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("Directories can't be added to video disc."));
+						  _("Directories cannot be added to video discs."));
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -281,7 +281,7 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
 	}
 
 	name = g_filename_display_basename (uri);
-	primary = g_strdup_printf (_("File \"%s\" can't be opened."), name);
+	primary = g_strdup_printf (_("\"%s\" could not be opened."), name);
 	brasero_utils_message_dialog (toplevel,
 				      primary,
 				      error->message,
@@ -309,7 +309,7 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 	primary = g_strdup_printf (_("\"%s\" does not have a suitable type for video projects."), name);
 	brasero_utils_message_dialog (toplevel,
 				      primary,
-				      _("Please only add files with video contents."),
+				      _("Please only add files with video contents"),
 				      GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);

@@ -106,29 +106,27 @@ brasero_genisoimage_read_stderr (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Input/output error. Read error on old image")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-							_("the old image couldn't be read")));
+							BRASERO_BURN_ERROR_IMAGE_LAST_SESSION,
+							_("Last session import failed")));
 	}
 	else if (strstr (line, "Unable to sort directory")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-							_("the image can't be created")));
+							BRASERO_BURN_ERROR_WRITE_IMAGE,
+							_("An image could not be created")));
 	}
-	else if (strstr (line, "have the same joliet name")) {
-		/* we keep the name of the files in case we need to rerun */
-	}
-	else if (strstr (line, "Joliet tree sort failed.")) {
+	else if (strstr (line, "have the same joliet name")
+	     ||  strstr (line, "Joliet tree sort failed.")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_JOLIET_TREE,
-							_("the image can't be created")));
+							BRASERO_BURN_ERROR_IMAGE_JOLIET,
+							_("An image could not be created")));
 	}
 	else if (strstr (line, "Use genisoimage -help")) {
 		brasero_job_error (BRASERO_JOB (process), 
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_JOLIET_TREE,
-							_("this version of genisoimage doesn't seem to be supported")));
+							BRASERO_BURN_ERROR_GENERAL,
+							_("This version of genisoimage is not supported")));
 	}
 /*	else if ((pos =  strstr (line,"genisoimage: Permission denied. "))) {
 		int res = FALSE;
@@ -169,40 +167,45 @@ brasero_genisoimage_read_stderr (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Incorrectly encoded string")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_JOLIET_TREE,
+							BRASERO_BURN_ERROR_INPUT_INVALID,
 							_("Some files have invalid filenames")));
 	}
 	else if (strstr (line, "Unknown charset")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
+							BRASERO_BURN_ERROR_INPUT_INVALID,
 							_("Unknown character encoding")));
-	}
-	else if (strstr (line, "Resource temporarily unavailable")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-							_("writing to file descriptor failed")));
-	}
-	else if (strstr (line, "Bad file descriptor.")) {
-		brasero_job_error (BRASERO_JOB (process),
-				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-							_("Internal error: bad file descriptor")));
 	}
 	else if (strstr (line, "No space left on device")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_DISK_SPACE,
 							_("There is no space left on the device")));
+
 	}
 	else if (strstr (line, "Value too large for defined data type")) {
-		/* TODO: get filename from error message */
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,
-							BRASERO_BURN_ERROR_GENERAL,
-							_("The file is too large for a CD")));
+							BRASERO_BURN_ERROR_MEDIUM_SPACE,
+							_("Not enough space available on the disc")));
 	}
+
+	/** REMINDER: these should not be necessary
+
+	else if (strstr (line, "Resource temporarily unavailable")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_INPUT,
+							_("Data could not be written")));
+	}
+	else if (strstr (line, "Bad file descriptor.")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_INPUT,
+							_("Internal error: bad file descriptor")));
+	}
+
+	**/
 
 	return BRASERO_BURN_OK;
 }
@@ -342,10 +345,11 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 		brasero_job_get_next_writable_address (BRASERO_JOB (genisoimage), &next_wr_add);
 		if (last_session == -1 || next_wr_add == -1) {
 			g_free (videodir);
+			BRASERO_JOB_LOG (genisoimage, "Failed to get the start point of the track. Make sure the media allow to add files (it is not closed)");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("failed to get the start point of the track. Make sure the media allow to add files (it is not closed)"));
+				     _("An internal error occured"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -498,25 +502,20 @@ brasero_genisoimage_finalize (GObject *object)
 static BraseroBurnResult
 brasero_genisoimage_export_caps (BraseroPlugin *plugin, gchar **error)
 {
-	gchar *prog_name;
+	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
 	brasero_plugin_define (plugin,
 			       "genisoimage",
-			       _("use genisoimage to create images from files"),
+			       _("Use genisoimage to create images from a file selection"),
 			       "Philippe Rouquier",
 			       1);
 
-	/* First see if this plugin can be used, i.e. if genisoimage is in
-	 * the path */
-	prog_name = g_find_program_in_path ("genisoimage");
-	if (!prog_name) {
-		*error = g_strdup (_("genisoimage could not be found in the path"));
-
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("genisoimage", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	brasero_plugin_set_flags (plugin,
 				  BRASERO_MEDIUM_CDR|

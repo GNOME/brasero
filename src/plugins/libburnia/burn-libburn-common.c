@@ -145,7 +145,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Libburn library couldn't be initialized"));
+			     _("Libburn library could not be initialized"));
 		return NULL;
 	}
 
@@ -160,7 +160,7 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive address couldn't be retrieved"));
+			     _("The drive address could not be retrieved"));
 		return NULL;
 	}
 
@@ -171,8 +171,8 @@ brasero_libburn_common_ctx_new (BraseroJob *job,
 		g_free (ctx);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive couldn't be initialized"));
+			     BRASERO_BURN_ERROR_DRIVE_BUSY,
+			     _("The drive is busy"));
 		return NULL;
 	}
 

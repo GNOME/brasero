@@ -71,6 +71,9 @@ brasero_drive_new (const gchar *udi);
 void
 brasero_drive_reprobe (BraseroDrive *drive);
 
+gboolean
+brasero_drive_probing (BraseroDrive *drive);
+
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive);
 

@@ -109,7 +109,7 @@ brasero_checksum_files_get_file_checksum (BraseroChecksumFiles *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the file %s couldn't be read (%s)"),
+			     _("File \"%s\" could not be opened (%s)"),
 			     name,
 			     g_strerror (errsv));
 		g_free (name);
@@ -171,7 +171,7 @@ brasero_checksum_files_add_file_checksum (BraseroChecksumFiles *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the md5 file couldn't be written to (%s)"),
+			     _("Data could not be written (%s)"),
 			     g_strerror (errsv));
 			
 		return BRASERO_BURN_ERR;
@@ -194,7 +194,7 @@ brasero_checksum_files_add_file_checksum (BraseroChecksumFiles *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the md5 file couldn't be written to (%s)"),
+			     _("Data could not be written (%s)"),
 			     g_strerror (errsv));
 
 		return BRASERO_BURN_ERR;
@@ -550,7 +550,8 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("md5 file couldn't be opened (%s)"),
+			     _("File \"%s\" could not be opened (%s)"),
+			     priv->sums_path,
 			     g_strerror (errsv));
 
 		return BRASERO_BURN_ERR;
@@ -906,7 +907,7 @@ end:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_BAD_CHECKSUM,
-		     _("some files may be corrupted on the disc"));
+		     _("Some files may be corrupted on the disc"));
 
 	return BRASERO_BURN_ERR;
 }
@@ -1024,7 +1025,7 @@ error:
 
 	error = g_error_new (BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BAD_CHECKSUM,
-			     _("some files may be corrupted on the disc"));
+			     _("Some files may be corrupted on the disc"));
 	brasero_job_error (BRASERO_JOB (self), error);
 	return FALSE;
 }
@@ -1260,7 +1261,7 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "File checksum",
-			       _("allows to check file integrities on a disc"),
+			       _("Allows to check file integrities on a disc"),
 			       "Philippe Rouquier",
 			       0);
 

@@ -289,7 +289,7 @@ brasero_burn_eject (BraseroBurn *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("the media in %s can't be ejected"),
+					     _("The disc in \"%s\" cannot be ejected"),
 					     name);
 			g_free (name);
 			return BRASERO_BURN_ERR;
@@ -332,7 +332,7 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("\"%s\" can't be unlocked"),
+				     _("\"%s\" cannot be unlocked"),
 				     name);
 			g_free (name);
 			return BRASERO_BURN_ERR;
@@ -379,7 +379,7 @@ brasero_burn_eject_src_media (BraseroBurn *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("\"%s\" can't be unlocked"),
+				     _("\"%s\" cannot be unlocked"),
 				     name);
 			g_free (name);
 			return BRASERO_BURN_ERR;
@@ -474,8 +474,8 @@ brasero_burn_ask_for_dest_media (BraseroBurn *burn,
 		if (!priv->dest) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("No burner specified."));
+				     BRASERO_BURN_ERROR_OUTPUT_NONE,
+				     _("No burner specified"));
 			return BRASERO_BURN_ERR;
 		}
 	}
@@ -512,7 +512,7 @@ brasero_burn_lock_src_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("No source drive specified."));
+			     _("No source drive specified"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -530,19 +530,19 @@ again:
 	 * get any information from the drive */
 	media = brasero_medium_get_status (medium);
 	if (media == BRASERO_MEDIUM_NONE)
-		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_NONE;
 	else if (media == BRASERO_MEDIUM_BUSY)
-		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
+		error_type = BRASERO_BURN_ERROR_DRIVE_BUSY;
 	else if (media == BRASERO_MEDIUM_UNSUPPORTED)
-		error_type = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_INVALID;
 	else if (media & BRASERO_MEDIUM_BLANK)
-		error_type = BRASERO_BURN_ERROR_MEDIA_BLANK;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_NO_DATA;
 	else
 		error_type = BRASERO_BURN_ERROR_NONE;
 
 	if (media & BRASERO_MEDIUM_BLANK) {
 		result = brasero_burn_ask_for_src_media (burn,
-							 BRASERO_BURN_ERROR_MEDIA_BLANK,
+							 BRASERO_BURN_ERROR_MEDIUM_NO_DATA,
 							 BRASERO_MEDIUM_HAS_DATA,
 							 error);
 		if (result != BRASERO_BURN_OK)
@@ -556,7 +556,7 @@ again:
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive can't be locked (%s)"),
+			     _("The drive cannot be locked (%s)"),
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
@@ -599,8 +599,8 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 	if (!priv->dest) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("No burner specified."));
+			     BRASERO_BURN_ERROR_OUTPUT_NONE,
+			     _("No burner specified"));
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -610,8 +610,8 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 	if (!brasero_medium_can_be_rewritten (medium)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive has no rewriting capabilities"));
+			     BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE,
+			     _("The drive has no rewriting capabilities"));
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -623,13 +623,13 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 
 	media = brasero_medium_get_status (medium);
 	if (media == BRASERO_MEDIUM_NONE)
-		error_type = BRASERO_BURN_ERROR_MEDIA_NONE;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_NONE;
 	else if (media == BRASERO_MEDIUM_BUSY)
-		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
+		error_type = BRASERO_BURN_ERROR_DRIVE_BUSY;
 	else if (media == BRASERO_MEDIUM_UNSUPPORTED)
-		error_type = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_INVALID;
 	else if (!(media & BRASERO_MEDIUM_REWRITABLE))
-		error_type = BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE;
 	else
 		error_type = BRASERO_BURN_ERROR_NONE;
 
@@ -647,11 +647,11 @@ brasero_burn_lock_rewritable_media (BraseroBurn *burn,
 	}
 
 	if (!priv->dest_locked
-	&&  !brasero_drive_lock (priv->dest, _("ongoing blanking process"), &failure)) {
+	&&  !brasero_drive_lock (priv->dest, _("Ongoing blanking process"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive can't be locked (%s)"),
+			     _("The drive cannot be locked (%s)"),
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
@@ -706,7 +706,7 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 
 	if (!(flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)) {
 		*must_blank = FALSE;
-		return BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		return BRASERO_BURN_ERROR_MEDIUM_INVALID;
 	}
 
 	/* let's see what our media is missing and what's not supported */
@@ -723,12 +723,10 @@ brasero_burn_is_loaded_dest_media_supported (BraseroBurn *burn,
 			return BRASERO_BURN_ERROR_NONE;
 		}
 
-		return BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE;
+		return BRASERO_BURN_ERROR_MEDIUM_NOT_WRITABLE;
 	}
-	else if (unsupported & BRASERO_MEDIUM_DVD)
-		return BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED;
 
-	return BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+	return BRASERO_BURN_ERROR_MEDIUM_INVALID;
 }
 
 static BraseroBurnResult
@@ -750,8 +748,8 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	if (!priv->dest) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("No burner specified."));
+			     BRASERO_BURN_ERROR_OUTPUT_NONE,
+			     _("No burner specified"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -762,9 +760,8 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 
 	medium = brasero_drive_get_medium (priv->dest);
 	if (!medium) {
-		g_print ("REALOOD\n");
 		result = BRASERO_BURN_NEED_RELOAD;
-		berror = BRASERO_BURN_ERROR_MEDIA_NONE;
+		berror = BRASERO_BURN_ERROR_MEDIUM_NONE;
 		goto end;
 	}
 
@@ -772,7 +769,7 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("The drive cannot burn or the medium cannot be burnt"));
+			     _("The drive cannot burn or the disc cannot be burnt"));
 		BRASERO_BURN_NOT_SUPPORTED_LOG (burn);
 	}
 
@@ -801,19 +798,19 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 
 	if (media == BRASERO_MEDIUM_NONE) {
 		result = BRASERO_BURN_NEED_RELOAD;
-		berror = BRASERO_BURN_ERROR_MEDIA_NONE;
+		berror = BRASERO_BURN_ERROR_MEDIUM_NONE;
 		goto end;
 	}
 
 	if (media == BRASERO_MEDIUM_UNSUPPORTED) {
 		result = BRASERO_BURN_NEED_RELOAD;
-		berror = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		berror = BRASERO_BURN_ERROR_MEDIUM_INVALID;
 		goto end;
 	}
 
 	if (media == BRASERO_MEDIUM_BUSY) {
 		result = BRASERO_BURN_NEED_RELOAD;
-		berror = BRASERO_BURN_ERROR_MEDIA_BUSY;
+		berror = BRASERO_BURN_ERROR_DRIVE_BUSY;
 		goto end;
 	}
 
@@ -895,11 +892,11 @@ brasero_burn_lock_dest_media (BraseroBurn *burn,
 	}
 
 	if (!priv->dest_locked
-	&&  !brasero_drive_lock (priv->dest, _("ongoing burning process"), &failure)) {
+	&&  !brasero_drive_lock (priv->dest, _("Ongoing burning process"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive can't be locked (%s)"),
+			     _("The drive cannot be locked (%s)"),
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
@@ -977,7 +974,7 @@ brasero_burn_mount_media (BraseroBurn *self,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("the disc could not be mounted (max attemps reached)"));
+				     _("The disc could not be mounted (max attemps reached)"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -1024,11 +1021,11 @@ again:
 			return result;
 	}
 	else if (media == BRASERO_MEDIUM_BUSY)
-		error_type = BRASERO_BURN_ERROR_MEDIA_BUSY;
+		error_type = BRASERO_BURN_ERROR_DRIVE_BUSY;
 	else if (media == BRASERO_MEDIUM_UNSUPPORTED)
-		error_type = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_INVALID;
 	else if (media & BRASERO_MEDIUM_BLANK)
-		error_type = BRASERO_BURN_ERROR_MEDIA_BLANK;
+		error_type = BRASERO_BURN_ERROR_MEDIUM_NO_DATA;
 
 	if (error_type != BRASERO_BURN_ERROR_NONE) {
 		result = brasero_burn_ask_for_dest_media (burn,
@@ -1042,11 +1039,11 @@ again:
 	}
 
 	if (!priv->dest_locked
-	&&  !brasero_drive_lock (priv->dest, _("ongoing checksuming operation"), &failure)) {
+	&&  !brasero_drive_lock (priv->dest, _("Ongoing checksuming operation"), &failure)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the drive can't be locked (%s)"),
+			     _("The drive cannot be locked (%s)"),
 			     failure);
 		return BRASERO_BURN_ERR;
 	}
@@ -1320,10 +1317,10 @@ brasero_burn_run_eraser (BraseroBurn *burn, GError **error)
 	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     "%s %s",
-			     _("The drive is busy."),
-			     _("Make sure another application is not using it."));
+			     BRASERO_BURN_ERROR_DRIVE_BUSY,
+			     "%s. %s",
+			     _("The drive is busy"),
+			     _("Make sure another application is not using it"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1354,10 +1351,10 @@ start:
 	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     "%s %s",
-			     _("The drive is busy."),
-			     _("Make sure another application is not using it."));
+			     BRASERO_BURN_ERROR_DRIVE_BUSY,
+			     "%s. %s",
+			     _("The drive is busy"),
+			     _("Make sure another application is not using it"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1393,7 +1390,7 @@ start:
 
 	/* See if we can recover from the error */
 	error_code = ret_error->code;
-	if (error_code == BRASERO_BURN_ERROR_JOLIET_TREE) {
+	if (error_code == BRASERO_BURN_ERROR_IMAGE_JOLIET) {
 		/* clean the error anyway since at worst the user will cancel */
 		g_error_free (ret_error);
 		ret_error = NULL;
@@ -1406,7 +1403,7 @@ start:
 
 		goto start;
 	}
-	else if (error_code == BRASERO_BURN_ERROR_MEDIA_BLANK) {
+	else if (error_code == BRASERO_BURN_ERROR_MEDIUM_NO_DATA) {
 		/* clean the error anyway since at worst the user will cancel */
 		g_error_free (ret_error);
 		ret_error = NULL;
@@ -1420,7 +1417,7 @@ start:
 
 		goto start;
 	}
-	/* (error_code == BRASERO_BURN_ERROR_MEDIA_SPACE) */
+	/* (error_code == BRASERO_BURN_ERROR_MEDIUM_SPACE) */
 	/* That's an imager (outputs an image to the disc) so that means that here
 	 * the problem comes from the hard drive being too small not from the media
 	 * there is nothing we can do here except fail. We could one day send a 
@@ -1493,10 +1490,10 @@ start:
 	&& !brasero_volume_umount (BRASERO_VOLUME (src_medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     "%s %s",
-			     _("The drive is busy."),
-			     _("Make sure another application is not using it."));
+			     BRASERO_BURN_ERROR_DRIVE_BUSY,
+			     "%s. %s",
+			     _("The drive is busy"),
+			     _("Make sure another application is not using it"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1504,10 +1501,10 @@ start:
 	&& !brasero_volume_umount (BRASERO_VOLUME (burnt_medium), TRUE, NULL)) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_BUSY_DRIVE,
-			     "%s %s",
-			     _("The drive is busy."),
-			     _("Make sure another application is not using it."));
+			     BRASERO_BURN_ERROR_DRIVE_BUSY,
+			     "%s. %s",
+			     _("The drive is busy"),
+			     _("Make sure another application is not using it"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1536,7 +1533,7 @@ start:
 
 	/* see if error is recoverable */
 	error_code = ret_error->code;
-	if (error_code == BRASERO_BURN_ERROR_JOLIET_TREE) {
+	if (error_code == BRASERO_BURN_ERROR_IMAGE_JOLIET) {
 		/* NOTE: this error can only come from the source when 
 		 * burning on the fly => no need to recreate an imager */
 
@@ -1554,7 +1551,7 @@ start:
 		ret_error = NULL;
 		goto start;
 	}
-	else if (error_code == BRASERO_BURN_ERROR_MEDIA_BLANK) {
+	else if (error_code == BRASERO_BURN_ERROR_MEDIUM_NEED_RELOADING) {
 		/* NOTE: this error can only come from the source when 
 		 * burning on the fly => no need to recreate an imager */
 
@@ -1598,7 +1595,7 @@ start:
 		brasero_burn_session_set_rate (priv->session, rate);
 		goto start;
 	}
-	else if (error_code == BRASERO_BURN_ERROR_MEDIA_SPACE) {
+	else if (error_code == BRASERO_BURN_ERROR_MEDIUM_SPACE) {
 		/* NOTE: this error can only come from the dest drive */
 
 		/* clean error and indicates this is a recoverable error */
@@ -1618,8 +1615,10 @@ start:
 		   (BRASERO_BURN_FLAG_APPEND|BRASERO_BURN_FLAG_MERGE)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_MEDIA_SPACE,
-				     _("it's not possible to merge to this media because it hasn't got enough space"));
+				     BRASERO_BURN_ERROR_MEDIUM_SPACE,
+				     "%s. %s",
+				     _("Merging data is impossible with this disc"),
+				     _("Not enough space available on the disc"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -1632,8 +1631,8 @@ start:
 
 		goto start;
 	}
-	else if (error_code > BRASERO_BURN_ERROR_MEDIA_SPACE
-	     &&  error_code <  BRASERO_BURN_ERROR_CD_NOT_SUPPORTED) {
+	else if (error_code >= BRASERO_BURN_ERROR_MEDIUM_NONE
+	     &&  error_code <=  BRASERO_BURN_ERROR_MEDIUM_NEED_RELOADING) {
 		/* NOTE: these errors can only come from the dest drive */
 
 		/* clean error and indicates this is a recoverable error */
@@ -1828,10 +1827,10 @@ brasero_burn_check_real (BraseroBurn *self,
 		&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_BUSY_DRIVE,
-				     "%s %s",
+				     BRASERO_BURN_ERROR_DRIVE_BUSY,
+				     "%s. %s",
 				     _("The drive is busy"),
-				     _("Make sure another application is not using it."));
+				     _("Make sure another application is not using it"));
 			return BRASERO_BURN_ERR;
 		}
 
@@ -1851,7 +1850,7 @@ brasero_burn_check_real (BraseroBurn *self,
 		priv->task = NULL;
 	}
 	else {
-		BRASERO_BURN_LOG ("the track can't be checked");
+		BRASERO_BURN_LOG ("the track cannot be checked");
 		result = BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -1882,7 +1881,7 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("There is no track to be burnt."));
+			     _("There is no track to be burnt"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1895,8 +1894,8 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 			BRASERO_BURN_DEBUG (burn, "No burner specified.");
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("No burner specified."));
+				     BRASERO_BURN_ERROR_OUTPUT_NONE,
+				     _("No burner specified"));
 			return BRASERO_BURN_ERR;	
 		}
 	}
@@ -1945,15 +1944,12 @@ brasero_burn_check_session_consistency (BraseroBurn *burn,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("Merging data is impossible with this disc."));
+					     _("Merging data is impossible with this disc"));
 				return BRASERO_BURN_ERR;
 			}
-			else if ((flag & BRASERO_BURN_FLAG_BURNPROOF)
-			     && !(BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-			     ||   BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))) {
-				 /* Warn the user BURNPROOF won't be possible */
-
-			}
+			/* No need to tell the user burnproof is not supported
+			 * as these drives handle errors differently which makes
+			 * burnproof useless for them. */
 		}
 	}
 
@@ -2233,7 +2229,7 @@ brasero_burn_check (BraseroBurn *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("only one track at a time can be checked"));
+			     _("Only one track at a time can be checked"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -2301,7 +2297,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("impossible to find a format for the temporary image"));
+			     _("No format for the temporary image could be found"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -2415,7 +2411,7 @@ again:
 
 	if (result != BRASERO_BURN_OK) {
 		/* Tell the user his/her disc is not supported and reload */
-		berror = BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED;
+		berror = BRASERO_BURN_ERROR_MEDIUM_INVALID;
 		brasero_burn_session_set_flags (priv->session, session_flags);
 		goto again;
 	}
@@ -2473,10 +2469,9 @@ brasero_burn_record (BraseroBurn *burn,
 		 * media in the drive so that we'll have all the necessary
 		 * information */
 		result = brasero_burn_lock_dest_media (burn, &berror, error);
-		g_print ("BERR %i\n", berror);
 		while (result == BRASERO_BURN_NEED_RELOAD) {
 			BraseroMedia required_media;
-g_print ("berror %i\n", berror);
+
 			required_media = brasero_burn_caps_get_required_media_type (priv->caps,
 										    priv->session);
 			if (required_media == BRASERO_MEDIUM_NONE)
@@ -2517,12 +2512,13 @@ end:
 	&& (result == BRASERO_BURN_NOT_READY
 	||  result == BRASERO_BURN_NOT_SUPPORTED
 	||  result == BRASERO_BURN_RUNNING
-	||  result == BRASERO_BURN_NOT_RUNNING))
+	||  result == BRASERO_BURN_NOT_RUNNING)) {
+		BRASERO_BURN_LOG ("Internal error with result %i", result);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("Internal error (code %i)"),
-			     result);
+			     _("An internal error occured"));
+	}
 
 	if (result == BRASERO_BURN_CANCEL) {
 		BRASERO_BURN_DEBUG (burn, "Session cancelled by user");
@@ -2608,12 +2604,12 @@ brasero_burn_blank (BraseroBurn *burn,
 	result = brasero_burn_blank_real (burn, &ret_error);
 	while (result == BRASERO_BURN_ERR
 	&&     ret_error
-	&&     ret_error->code == BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE) {
+	&&     ret_error->code == BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE) {
 		g_error_free (ret_error);
 		ret_error = NULL;
 
 		result = brasero_burn_ask_for_dest_media (burn,
-							  BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE,
+							  BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE,
 							  BRASERO_MEDIUM_REWRITABLE|
 							  BRASERO_MEDIUM_HAS_DATA,
 							  error);

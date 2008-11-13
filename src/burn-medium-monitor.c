@@ -54,6 +54,8 @@ struct _BraseroMediumMonitorPrivate
 {
 	GSList *drives;
 	GVolumeMonitor *gmonitor;
+
+	gint probing;
 };
 
 #define BRASERO_MEDIUM_MONITOR_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_MEDIUM_MONITOR, BraseroMediumMonitorPrivate))
@@ -94,6 +96,25 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *self,
 	return NULL;
 }
 
+gboolean
+brasero_medium_monitor_is_probing (BraseroMediumMonitor *self)
+{
+	GSList *iter;
+	BraseroMediumMonitorPrivate *priv;
+
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+
+	for (iter = priv->drives; iter; iter = iter->next) {
+		BraseroDrive *drive;
+
+		drive = iter->data;
+		if (brasero_drive_probing (drive))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 				  BraseroMediaType type)
@@ -109,6 +130,7 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
 		BraseroDrive *drive;
 
 		drive = iter->data;
+
 		medium = brasero_drive_get_medium (drive);
 		if (!medium)
 			continue;

@@ -530,8 +530,8 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     _("no output specified"));
+					     BRASERO_BURN_ERROR_OUTPUT_NONE,
+					     _("No path was specified for the image output"));
 
 				g_free (toc);
 				return BRASERO_BURN_ERR;
@@ -546,8 +546,8 @@ brasero_burn_session_get_output (BraseroBurnSession *self,
 
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("no output specified"));
+				     BRASERO_BURN_ERROR_OUTPUT_NONE,
+				     _("No path was specified for the image output"));
 			return BRASERO_BURN_ERR;
 		}
 	}
@@ -637,7 +637,7 @@ brasero_burn_session_set_image_output_full (BraseroBurnSession *self,
 		GSList *list;
 
 		monitor = brasero_medium_monitor_get_default ();
-		list = brasero_medium_monitor_get_media (monitor, BRASERO_MEDIA_TYPE_FILE);
+		list = brasero_medium_monitor_get_media (monitor,BRASERO_MEDIA_TYPE_FILE);
 		drive = brasero_medium_get_drive (list->data);
 		brasero_burn_session_set_burner (self, drive);
 		g_object_unref (monitor);
@@ -718,7 +718,7 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("a temporary directory could not be created (%s)"),
+			     _("A temporary directory could not be created (%s)"),
 			     g_strerror (errsv));
 		return BRASERO_BURN_ERR;
 	}
@@ -768,7 +768,7 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 		g_set_error (error, 
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("a temporary file can't be created: %s"),
+			     _("A temporary file could not be created (%s)"),
 			     g_strerror (errsv));
 		return BRASERO_BURN_ERR;
 	}

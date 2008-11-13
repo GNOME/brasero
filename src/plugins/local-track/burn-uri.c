@@ -156,7 +156,7 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("Impossible to retrieve local file path."));
+					     _("Impossible to retrieve local file path"));
 
 				g_slist_foreach (grafts, (GFunc) brasero_graft_point_free, NULL);
 				g_slist_free (grafts);
@@ -283,7 +283,7 @@ brasero_burn_uri_thread (gpointer data)
 			if (!real_path) {
 				priv->error = g_error_new (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
-							   _("Impossible to retrieve local file path."));
+							   _("Impossible to retrieve local file path"));
 
 				g_slist_foreach (grafts, (GFunc) brasero_graft_point_free, NULL);
 				g_slist_free (grafts);
@@ -528,7 +528,7 @@ brasero_burn_uri_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "burn_uris",
-			       _("Burn_uri allows to burn files added to \"CD/DVD Creator Folder\" in nautilus"),
+			       _("Burn_uri allows burning files added to \"CD/DVD Creator Folder\" in nautilus"),
 			       "Philippe Rouquier",
 			       11);
 

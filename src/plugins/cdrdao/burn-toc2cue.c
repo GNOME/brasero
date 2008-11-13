@@ -307,24 +307,20 @@ brasero_toc2cue_finalize (GObject *object)
 static BraseroBurnResult
 brasero_toc2cue_export_caps (BraseroPlugin *plugin, gchar **error)
 {
-	gchar *prog_name;
+	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
 	brasero_plugin_define (plugin,
 			       "toc2cue",
-			       _("toc2cue converts .toc files into .cue files"),
+			       _("Toc2cue converts .toc files into .cue files"),
 			       "Philippe Rouquier",
 			       0);
 
-	/* First see if this plugin can be used, i.e. if readcd is in
-	 * the path */
-	prog_name = g_find_program_in_path ("toc2cue");
-	if (!prog_name) {
-		*error = g_strdup (_("toc2cue could not be found in the path"));
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("toc2cue", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_CDRDAO);

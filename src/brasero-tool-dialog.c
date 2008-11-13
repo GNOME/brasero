@@ -75,7 +75,7 @@ brasero_tool_dialog_media_error (BraseroToolDialog *self)
 {
 	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed."),
-				     _("The inserted media is not supported."),
+				     _("The disc is not supported"),
 				     GTK_MESSAGE_ERROR);
 }
 
@@ -84,9 +84,9 @@ brasero_tool_dialog_media_busy (BraseroToolDialog *self)
 {
 	gchar *string;
 
-	string = g_strdup_printf ("%s %s",
-				  _("The drive is busy."),
-				  _("Make sure another application is not using it."));
+	string = g_strdup_printf ("%s. %s",
+				  _("The drive is busy"),
+				  _("Make sure another application is not using it"));
 	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed."),
 				     string,
@@ -99,7 +99,7 @@ brasero_tool_dialog_no_media (BraseroToolDialog *self)
 {
 	brasero_utils_message_dialog (GTK_WIDGET (self),
 				     _("The operation cannot be performed."),
-				     _("The drive is empty."),
+				     _("The drive is empty"),
 				     GTK_MESSAGE_ERROR);
 }
 

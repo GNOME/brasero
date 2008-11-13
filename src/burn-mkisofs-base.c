@@ -145,8 +145,8 @@ brasero_mkisofs_base_write_excluded (BraseroMkisofsBase *base,
 		BRASERO_BURN_LOG ("File not stored locally %s", uri);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the file is not stored locally"));
+			     BRASERO_BURN_ERROR_FILE_NOT_LOCAL,
+			     _("The file is not stored locally"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -286,7 +286,6 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 
 	/* build up graft and write it */
 	graft_point = _build_graft_point (uri, disc_path);
-
 	if (!graft_point) {
 		/* Translators: Error message saying no graft point is specified
 		 * A graft point is the path (on the disc) where a file from
@@ -294,7 +293,7 @@ brasero_mkisofs_base_write_graft (BraseroMkisofsBase *base,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("null graft point"));
+			     _("An internal error occured"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -428,8 +427,8 @@ brasero_mkisofs_base_add_graft (BraseroMkisofsBase *base,
 		BRASERO_BURN_LOG ("File not stored locally %s", graft->uri);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the file is not stored locally"));
+			     BRASERO_BURN_ERROR_FILE_NOT_LOCAL,
+			     _("The file is not stored locally"));
 		return BRASERO_BURN_ERR;
 	}
 

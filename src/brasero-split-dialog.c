@@ -592,7 +592,7 @@ brasero_split_dialog_no_silence_message (BraseroSplitDialog *self)
 {
 	brasero_utils_message_dialog (GTK_WIDGET (self),
 				      _("The track wasn't split."),
-				      _("No silence could be detected."),
+				      _("No silence could be detected"),
 				      GTK_MESSAGE_WARNING);
 }
 

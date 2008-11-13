@@ -182,10 +182,11 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		name = g_path_get_basename (cuepath);
 		g_free (cuepath);
 
+		/* Translators: %s is a filename */
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_GENERAL,
-						_("The cue file (%s) seems to be invalid"),
+						BRASERO_BURN_ERROR_FILE_NOT_FOUND,
+						_("\"%s\" could not be found"),
 						name));
 		g_free (name);
 	}
@@ -216,7 +217,7 @@ brasero_cdrdao_read_stderr (BraseroProcess *process, const gchar *line)
 	if (strstr (line, "Cannot setup device")) {
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
+						BRASERO_BURN_ERROR_DRIVE_BUSY,
 						_("The drive is busy")));
 	}
 	else if (strstr (line, "Illegal command")) {
@@ -228,8 +229,8 @@ brasero_cdrdao_read_stderr (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Operation not permitted. Cannot send SCSI")) {
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_SCSI_IOCTL,
-						_("You do not seem to have the required permission to use this drive")));
+						BRASERO_BURN_ERROR_PERMISSION,
+						_("You do not have the required permissions to use this drive")));
 	}
 
 	return BRASERO_BURN_OK;
@@ -549,7 +550,7 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 {
 	GSList *input;
 	GSList *output;
-	gchar *prog_name;
+	BraseroBurnResult result;
 	const BraseroMedia media_w = BRASERO_MEDIUM_CD|
 				     BRASERO_MEDIUM_WRITABLE|
 				     BRASERO_MEDIUM_REWRITABLE|
@@ -563,19 +564,15 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 				      BRASERO_MEDIUM_BLANK;
 
 	brasero_plugin_define (plugin,
-			       "cdrdao",
-			       _("use cdrdao to image and burn CDs"),
+			       "Cdrdao",
+			       _("Use cdrdao to copy and burn CDs"),
 			       "Philippe Rouquier",
 			       20);
 
-	/* First see if this plugin can be used, i.e. if readcd is in
-	 * the path */
-	prog_name = g_find_program_in_path ("cdrdao");
-	if (!prog_name) {
-		*error = g_strdup (_("cdrdao could not be found in the path"));
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("cdrdao", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* that's for cdrdao images: CDs only as input */
 	input = brasero_caps_disc_new (BRASERO_MEDIUM_CD|

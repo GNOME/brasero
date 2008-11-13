@@ -257,7 +257,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("Please, insert a recordable CD or DVD."),
-					    _("There is no recordable medium inserted."),
+					    _("There is no recordable disc inserted."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
@@ -268,7 +268,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
 							      _("Please, insert a disc holding data."),
-							      _("There is no inserted medium to copy."),
+							      _("There is no inserted disc to copy."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
@@ -304,7 +304,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
 							      _("Please, insert a disc that is not copy protected."),
-							      _("Such a medium can't be copied without the proper plugins."),
+							      _("Such a disc cannot be copied without the proper plugins."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
 		}
@@ -322,7 +322,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						      _("Would you like to burn beyond the disc reported capacity?"),
 						      _("The size of the project is too large for the disc."
-							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which can't be properly recognised and therefore need overburn option."
+							"\nYou may want to use this option if you are using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -420,8 +420,8 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 
 	/* Medium info */
 	string = g_strdup_printf ("<b><i>%s</i></b>\n<i>%s</i>",
-				  _("The drive that holds the source media will also be the one used to record."),
-				  _("A new recordable media will be required once the one currently loaded has been copied."));
+				  _("The drive that holds the source disc will also be the one used to record."),
+				  _("A new recordable disc will be required once the one currently loaded has been copied."));
 	priv->warning = gtk_label_new (string);
 	g_free (string);
 

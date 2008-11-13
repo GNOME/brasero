@@ -1040,7 +1040,7 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 			g_set_error (error,
 				     BRASERO_ERROR,
 				     BRASERO_ERROR_SYMLINK_LOOP,
-				     _("recursive symbolic link"));
+				     _("Recursive symbolic link"));
 
 			g_object_unref (info);
 			g_object_unref (file);
@@ -1247,7 +1247,7 @@ brasero_io_parse_playlist_get_uris (const gchar *uri,
 		g_set_error (error,
 			     BRASERO_ERROR,
 			     BRASERO_ERROR_GENERAL,
-			     _("the file doesn't appear to be a playlist"));
+			     _("The file does not appear to be a playlist"));
 
 		return FALSE;
 	}
@@ -1887,7 +1887,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 			if (!brasero_io_check_symlink_target (file, info)) {
 				error = g_error_new (BRASERO_ERROR,
 						     BRASERO_ERROR_SYMLINK_LOOP,
-						     _("recursive symbolic link"));
+						     _("Recursive symbolic link"));
 
 				/* since we checked for the existence of the file
 				 * an error means a looping symbolic link */
@@ -2349,7 +2349,7 @@ brasero_io_xfer_start (BraseroIO *self,
 			g_set_error (error,
 				     BRASERO_ERROR,
 				     BRASERO_ERROR_GENERAL,
-				     _("a directory couldn't be created (%s)"),
+				     _("A directory could not be created (%s)"),
 				     g_strerror (errsv));
 			return FALSE;
 		}

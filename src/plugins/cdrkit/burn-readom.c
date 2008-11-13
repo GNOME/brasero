@@ -88,27 +88,27 @@ brasero_readom_read_stderr (BraseroProcess *process, const gchar *line)
 	else if (strstr (line, "Device not ready.")) {
 		brasero_job_error (BRASERO_JOB (readom),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
+						BRASERO_BURN_ERROR_DRIVE_BUSY,
 						_("The drive is busy")));
 	}
 	else if (strstr (line, "Cannot open SCSI driver.")) {
 		brasero_job_error (BRASERO_JOB (readom),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_BUSY_DRIVE,
-						_("You do not seem to have the required permissions to access the drive")));		
+						BRASERO_BURN_ERROR_PERMISSION,
+						_("You do not have the required permissions to use this drive")));		
 	}
 	else if (strstr (line, "Cannot send SCSI cmd via ioctl")) {
 		brasero_job_error (BRASERO_JOB (readom),
 				   g_error_new (BRASERO_BURN_ERROR,
-						BRASERO_BURN_ERROR_SCSI_IOCTL,
-						_("You do not seem to have the required permissions to access the drive")));
+						BRASERO_BURN_ERROR_PERMISSION,
+						_("You do not have the required permissions to use this drive")));
 	}
 	/* we scan for this error as in this case readcd returns success */
 	else if (sscanf (line, "Input/output error. Error on sector %d not corrected. Total of %d error", &dummy1, &dummy2) == 2) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_GENERAL,
-						_("Internal error")));
+						_("An internal error occured")));
 	}
 
 
@@ -319,7 +319,7 @@ brasero_readom_set_argv (BraseroProcess *process,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("raw images cannot be created with DVDs"));
+			     _("An internal error occured"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -393,24 +393,20 @@ brasero_readom_finalize (GObject *object)
 static BraseroBurnResult
 brasero_readom_export_caps (BraseroPlugin *plugin, gchar **error)
 {
-	gchar *prog_name;
+	BraseroBurnResult result;
 	GSList *output;
 	GSList *input;
 
 	brasero_plugin_define (plugin,
 			       "readom",
-			       _("use readom to image CDs"),
+			       _("Use readom to image CDs and DVDs"),
 			       "Philippe Rouquier",
 			       1);
 
-	/* First see if this plugin can be used, i.e. if readom is in
-	 * the path */
-	prog_name = g_find_program_in_path ("readom");
-	if (!prog_name) {
-		*error = g_strdup (_("readom could not be found in the path"));
-		return BRASERO_BURN_ERR;
-	}
-	g_free (prog_name);
+	/* First see if this plugin can be used */
+	result = brasero_process_check_path ("readom", error);
+	if (result != BRASERO_BURN_OK)
+		return result;
 
 	/* that's for clone mode only The only one to copy audio */
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,

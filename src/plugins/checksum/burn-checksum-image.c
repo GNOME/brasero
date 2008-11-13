@@ -106,8 +106,7 @@ brasero_checksum_image_read (BraseroChecksumImage *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("data could not be read from the pipe (%i: %s)"),
-					     errsv,
+					     _("Data could not be read (%s)"),
 					     g_strerror (errsv));
 				return -1;
 			}
@@ -157,8 +156,7 @@ brasero_checksum_image_write (BraseroChecksumImage *self,
 				g_set_error (error,
 					     BRASERO_BURN_ERROR,
 					     BRASERO_BURN_ERROR_GENERAL,
-					     _("the data couldn't be written to the pipe (%i: %s)"),
-					     errsv,
+					     _("Data could not be written (%s)"),
 					     g_strerror (errsv));
 				return BRASERO_BURN_ERR;
 			}
@@ -270,8 +268,8 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 	if (!path) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the image is not local"));
+			     BRASERO_BURN_ERROR_FILE_NOT_LOCAL,
+			     _("The file is not stored locally"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -291,10 +289,13 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 		name = g_path_get_basename (path);
 
                 errsv = errno;
+
+		/* Translators: first %s is the filename, second %s is the error
+		 * generated from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("the file %s couldn't be read (%s)"),
+			     _("\"%s\" could not be opened (%s)"),
 			     name,
 			     g_strerror (errsv));
 		g_free (name);
@@ -492,7 +493,7 @@ error:
 
 	error = g_error_new (BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_BAD_CHECKSUM,
-			     _("some files may be corrupted on the disc"));
+			     _("Some files may be corrupted on the disc"));
 	brasero_job_error (BRASERO_JOB (self), error);
 	return FALSE;
 }
@@ -727,7 +728,7 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "Image checksum",
-			       _("allows to check data integrity on disc after it is burnt"),
+			       _("Allows to check data integrity on disc after it is burnt"),
 			       "Philippe Rouquier",
 			       0);
 

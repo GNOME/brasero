@@ -822,7 +822,7 @@ brasero_project_no_song_dialog (BraseroProject *project)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
 				      _("Please add songs to the project."),
-				      _("The project is empty."),
+				      _("The project is empty"),
 				      GTK_MESSAGE_WARNING);
 }
 
@@ -831,7 +831,7 @@ brasero_project_no_file_dialog (BraseroProject *project)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
 				      _("Please add files to the project."),
-				      _("The project is empty."),
+				      _("The project is empty"),
 				      GTK_MESSAGE_WARNING);
 }
 
@@ -2176,7 +2176,7 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 	error = xmlGetLastError ();
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
 				      _("Your project has not been saved."),
-				      error?error->message:_("Unknown error."),
+				      error?error->message:_("An unknown error occured"),
 				      GTK_MESSAGE_ERROR);
 	xmlResetLastError ();
 }

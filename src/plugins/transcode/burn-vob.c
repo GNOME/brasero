@@ -241,10 +241,13 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	/* queue */
 	queue = gst_element_factory_make ("queue", NULL);
 	if (queue == NULL) {
+		/* Translators: %s is the name of the GstElement that 
+		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("queue element can't be created"));
+			     _("%s element could not be created"),
+			     "\"Queue\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
@@ -257,10 +260,13 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	/* audioresample */
 	resample = gst_element_factory_make ("audioresample", NULL);
 	if (resample == NULL) {
+		/* Translators: %s is the name of the GstElement that 
+		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioresample can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioresample\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), resample);
@@ -268,10 +274,13 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
 	if (convert == NULL) {
+		/* Translators: %s is the name of the GstElement that 
+		 * element could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioconvert can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioconvert\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), convert);
@@ -307,7 +316,8 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("queue element can't be created"));
+			     _("%s element could not be created"),
+			     "\"Queue\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
@@ -323,7 +333,8 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioconvert can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioconvert\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), convert);
@@ -334,7 +345,8 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioresample can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioresample\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), resample);
@@ -344,7 +356,8 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("ffenc_mp2 can't be created"));
+			     _("%s element could not be created"),
+			     "\"Fenc_mp2\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
@@ -355,7 +368,8 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("queue1 element can't be created"));
+			     _("%s element could not be created"),
+			     "\"Queue1\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
@@ -377,7 +391,8 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
-				     _("filter can't be created"));
+				     _("%s element could not be created"),
+				     "\"Filter\"");
 			goto error;
 		}
 		gst_bin_add (GST_BIN (priv->pipeline), filter);
@@ -430,7 +445,8 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("queue element can't be created"));
+			     _("%s element could not be created"),
+			     "\"Queue\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
@@ -446,7 +462,8 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioconvert can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioconvert\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), convert);
@@ -457,7 +474,8 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("audioresample can't be created"));
+			     _("%s element could not be created"),
+			     "\"Audioresample\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), resample);
@@ -467,7 +485,8 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("ffenc_ac3 can't be created"));
+			     _("%s element could not be created"),
+			     "\"Ffenc_ac3\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
@@ -499,7 +518,8 @@ brasero_vob_build_audio_bins (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("tee element can't be created"));
+			     _("%s element could not be created"),
+			     "\"Tee\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), tee);
@@ -572,7 +592,8 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("queue element can't be created"));
+			     _("%s element could not be created"),
+			     "\"Queue\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
@@ -588,7 +609,8 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("framerate can't be created"));
+			     _("%s element could not be created"),
+			     "\"Framerate\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), framerate);
@@ -602,7 +624,8 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("scale can't be created"));
+			     _("%s element could not be created"),
+			     "\"Videoscale\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), scale);
@@ -613,7 +636,8 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("filter can't be created"));
+			     _("%s element could not be created"),
+			     "\"Filter\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), filter);
@@ -623,7 +647,8 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("ffmpegcolorspace can't be created"));
+			     _("%s element could not be created"),
+			     "\"Ffmepgcolorspace\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), colorspace);
@@ -633,7 +658,8 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("mpeg2enc can't be created"));
+			     _("%s element could not be created"),
+			     "\"Mpeg2enc\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
@@ -824,7 +850,8 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("source can't be created"));
+			     _("%s element could not be created"),
+			     "\"Source\"");
 		return FALSE;
 	}
 	gst_bin_add (GST_BIN (pipeline), source);
@@ -838,7 +865,8 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("decode can't be created"));
+			     _("%s element could not be created"),
+			     "\"Decodebin\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
@@ -850,7 +878,8 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("mplex can't be created"));
+			     _("%s element could not be created"),
+			     "\"Mplex\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), muxer);
@@ -876,7 +905,8 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("sink can't be created"));
+			     _("%s element could not be created"),
+			     "\"Sink\"");
 		return FALSE;
 	}
 	g_object_set (sink,

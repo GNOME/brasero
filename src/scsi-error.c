@@ -29,19 +29,19 @@
 #include "burn-basics.h"
 #include "scsi-error.h"
 
-static const gchar *error_string [] = {	N_("Unknown error."),
-					N_("Size mismatch."),
-					N_("Type mismatch."),
-					N_("Bad argument."),
-					N_("The drive is busy."),
-					N_("Outrange address."),
-					N_("Invalid address."),
-					N_("Invalid command."),
-					N_("Invalid parameter in command."),
-					N_("Invalid field in command."),
-					N_("The device timed out."),
-					N_("Key not established."),
-					N_("Invalid track mode."),
+static const gchar *error_string [] = {	N_("Unknown error"),
+					N_("Size mismatch"),
+					N_("Type mismatch"),
+					N_("Bad argument"),
+					N_("The drive is busy"),
+					N_("Outrange address"),
+					N_("Invalid address"),
+					N_("Invalid command"),
+					N_("Invalid parameter in command"),
+					N_("Invalid field in command"),
+					N_("The device timed out"),
+					N_("Key not established"),
+					N_("Invalid track mode"),
 					NULL	};	/* errno */
 
 const gchar *

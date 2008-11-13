@@ -115,7 +115,7 @@ brasero_sum_dialog_message (BraseroSumDialog *self,
 					  "%s", primary_message);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
-						  "%s",
+						  "%s.",
 						  secondary_message);
 
 	button = brasero_utils_make_button (_("Check _Again"),
@@ -150,7 +150,7 @@ brasero_sum_dialog_message_error (BraseroSumDialog *self,
 
 	return brasero_sum_dialog_message (self,
 					   _("The file integrity check could not be performed."),
-					   error ? error->message:_("Unknown error."),
+					   error ? error->message:_("An unknown error occured"),
 					   GTK_MESSAGE_ERROR);
 }
 
@@ -303,11 +303,15 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 				   g_get_tmp_dir ());
 	fd = g_mkstemp (tmppath);
 	if (fd < 0) {
+		int errnum = errno;
+
 		g_free (tmppath);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("A temporary file could not be created."));
+			     _("A temporary file could not be created (%s)"),
+			     g_strerror (errnum));
+
 		return BRASERO_BURN_ERR;
 	}
 	close (fd);
@@ -362,7 +366,8 @@ brasero_sum_dialog_get_file_checksum (BraseroSumDialog *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("URI is not valid."));
+			     _("\"%s\" is not a valid URI"),
+			     file_path);
 		return BRASERO_BURN_ERR;
 	}
 
@@ -582,7 +587,7 @@ brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
 	g_set_error (error,
 		     BRASERO_ERROR,
 		     BRASERO_ERROR_GENERAL,
-		     _("no checksum file could be found on the disc."));
+		     _("No checksum file could be found on the disc"));
 
 	return BRASERO_CHECKSUM_NONE;
 }

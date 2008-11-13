@@ -496,55 +496,47 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 
 	if (error == BRASERO_BURN_WARNING_INSERT_AFTER_COPY) {
 		secondary_message = g_strdup (_("An image of the disc has been created on your hard drive."
-						"\nBurning will begin as soon as a recordable medium is inserted."));
+						"\nBurning will begin as soon as a recordable disc is inserted."));
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_WARNING_CHECKSUM) {
-		secondary_message = g_strdup (_("A data integrity test will begin as soon as the medium is inserted."));
+		secondary_message = g_strdup (_("A data integrity test will begin as soon as the disc is inserted."));
 		main_message = g_strdup (_("Please, re-insert the disc in the CD/DVD burner."));
 	}
-	else if (error == BRASERO_BURN_ERROR_MEDIA_BUSY) {
+	else if (error == BRASERO_BURN_ERROR_DRIVE_BUSY) {
 		/* Translators: %s is the name of a drive */
 		main_message = g_strdup_printf (_("\"%s\" is busy."), drive_name);
-		secondary_message = g_strdup (_("Make sure another application is not using it."));
+		secondary_message = g_strdup_printf ("%s.", _("Make sure another application is not using it"));
 	} 
-	else if (error == BRASERO_BURN_ERROR_MEDIA_NONE) {
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_NONE) {
 		secondary_message = g_strdup_printf (_("There is no disc in \"%s\"."), drive_name);
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
-	else if (error == BRASERO_BURN_ERROR_MEDIA_UNSUPPORTED) {
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_INVALID) {
 		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not supported."), drive_name);
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 	}
-	else if (error == BRASERO_BURN_ERROR_MEDIA_NOT_REWRITABLE) {
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_NOT_REWRITABLE) {
 		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not rewritable."), drive_name);
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
-	else if (error == BRASERO_BURN_ERROR_MEDIA_BLANK) {
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_NO_DATA) {
 		secondary_message = g_strdup_printf (_("The disc in \"%s\" is empty."), drive_name);
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
-	else if (error == BRASERO_BURN_ERROR_MEDIA_NOT_WRITABLE) {
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_NOT_WRITABLE) {
 		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not writable."), drive_name);
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
-	else if (error == BRASERO_BURN_ERROR_DVD_NOT_SUPPORTED) {
-		secondary_message = g_strdup_printf (_("The disc in \"%s\" is a DVD."), drive_name);
-		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
-	}
-	else if (error == BRASERO_BURN_ERROR_CD_NOT_SUPPORTED) {
-		secondary_message = g_strdup_printf (_("The disc in \"%s\" is a CD."), drive_name);
-		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
-	}
-	else if (error == BRASERO_BURN_ERROR_MEDIA_SPACE) {
-		secondary_message = g_strdup_printf (_("The disc in \"%s\" is not big enough."), drive_name);
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_SPACE) {
+		secondary_message = g_strdup_printf (_("Not enough space available on the disc in \"%s\"."), drive_name);
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, FALSE);
 	}
 	else if (error == BRASERO_BURN_ERROR_NONE) {
 		main_message = brasero_burn_dialog_get_media_type_string (burn, type, TRUE);
 		secondary_message = NULL;
 	}
-	else if (error == BRASERO_BURN_ERROR_RELOAD_MEDIA) {
+	else if (error == BRASERO_BURN_ERROR_MEDIUM_NEED_RELOADING) {
 		secondary_message = g_strdup_printf (_("The disc in \"%s\" needs to be reloaded."), drive_name);
 		main_message = g_strdup (_("Please, eject the disc and reload it."));
 	}
@@ -785,7 +777,7 @@ brasero_burn_dialog_disable_joliet_cb (BraseroBurn *burn,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_WARNING,
 					  GTK_BUTTONS_NONE,
-					  _("Do you want to continue with Windows compatibility disabled?"));
+					  _("Do you want to continue with full Windows compatibility disabled?"));
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("Some files don't have a suitable name for a fully Windows-compatible CD."));
@@ -1450,7 +1442,7 @@ brasero_burn_dialog_show_log (BraseroBurnDialog *dialog)
 	if (g_stat (logfile, &stats) == -1) {
 		brasero_utils_message_dialog (GTK_WIDGET (dialog),
 					      _("The session log cannot be displayed."),
-					      _("The log file could not be found."),
+					      _("The log file could not be found"),
 					      GTK_MESSAGE_ERROR);
 		gtk_widget_destroy (message);
 		return;
@@ -1553,7 +1545,7 @@ brasero_burn_dialog_notify_error (BraseroBurnDialog *dialog,
 		g_error_free (error);
 	}
 	else
-		secondary = g_strdup (_("An unknown error occured. Check your disc."));
+		secondary = g_strdup (_("An unknown error occured."));
 
 	if (!GTK_WIDGET_VISIBLE (dialog))
 		gtk_widget_show (GTK_WIDGET (dialog));
