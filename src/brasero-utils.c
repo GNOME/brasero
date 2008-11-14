@@ -40,6 +40,7 @@
 
 #include <gst/gst.h>
 
+#include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-data-tree-model.h"
 
@@ -471,10 +472,10 @@ brasero_utils_launch_app (GtkWidget *widget,
 			gchar *string;
 
 			string = g_strdup_printf ("\"%s\" could not be opened", uri);
-			brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (widget)),
-						      string,
-						      error->message,
-						      GTK_MESSAGE_ERROR);
+			brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (widget))),
+					   string,
+					   error->message,
+					   GTK_MESSAGE_ERROR);
 			g_free (string);
 			g_error_free (error);
 			continue;

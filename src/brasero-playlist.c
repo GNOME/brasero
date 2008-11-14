@@ -47,6 +47,7 @@
 
 #include <totem-pl-parser.h>
 
+#include "brasero-app.h"
 #include "brasero-playlist.h"
 #include "brasero-utils.h"
 #include "brasero-metadata.h"
@@ -811,10 +812,10 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 
 	primary = g_strdup_printf (_("Error parsing playlist \"%s\"."), name);
-	brasero_utils_message_dialog (GTK_WIDGET (toplevel),
-				      primary,
-				      _("An unknown error occured"),
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (toplevel),
+			   primary,
+			   _("An unknown error occured"),
+			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
 }

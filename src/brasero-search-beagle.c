@@ -44,6 +44,7 @@
 
 #include <beagle/beagle.h>
 
+#include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-search-entry.h"
 #include "brasero-mime-filter.h"
@@ -1033,10 +1034,10 @@ brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
 		return;
 	}
 
-	brasero_utils_message_dialog (toplevel,
-				      _("Error querying beagle."),
-				      error->message,
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (toplevel),
+			   _("Error querying beagle."),
+			   error->message,
+			   GTK_MESSAGE_ERROR);
 }
 
 static void

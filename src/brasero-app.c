@@ -35,22 +35,25 @@
 #endif
 
 #include "brasero-app.h"
+#include "brasero-utils.h"
 #include "brasero-jacket-edit.h"
 #include "brasero-blank-dialog.h"
 #include "brasero-sum-dialog.h"
 #include "brasero-eject-dialog.h"
 #include "brasero-session.h"
 #include "brasero-project-manager.h"
-#include "burn-drive.h"
 #include "brasero-pref.h"
 #include "burn-debug.h"
-#include "burn.h"
+#include "burn-drive.h"
 #include "burn-caps.h"
+#include "burn.h"
 #include "burn-plugin-manager.h"
 
 typedef struct _BraseroAppPrivate BraseroAppPrivate;
 struct _BraseroAppPrivate
 {
+	GtkWidget *toplevel;
+
 	GtkWidget *projects;
 	GtkWidget *contents;
 	GtkWidget *statusbar1;
@@ -156,6 +159,86 @@ static const gchar *description = {
 	    "</menubar>"
 	"</ui>"
 };
+
+/**
+ * These functions are only useful because they set the proper toplevel parent
+ * for the message dialog. The following one also sets some properties in case
+ * there isn't any toplevel parent (like show in taskbar, ...).
+ **/
+
+static void
+brasero_app_toplevel_destroyed_cb (GtkObject *object,
+				   BraseroApp *app)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	priv->toplevel = NULL;
+}
+
+GtkWidget *
+brasero_app_dialog (BraseroApp *app,
+		    const gchar *primary_message,
+		    GtkButtonsType button_type,
+		    GtkMessageType msg_type)
+{
+	gboolean is_on_top = FALSE;
+	BraseroAppPrivate *priv;
+	GtkWindow *toplevel;
+	GtkWidget *dialog;
+
+	priv = BRASERO_APP_PRIVATE (app);
+
+	if (priv->is_running)
+		toplevel = GTK_WINDOW (app);
+	else if (!priv->toplevel) {
+		is_on_top = TRUE;
+		toplevel = NULL;
+	}
+	else
+		toplevel = GTK_WINDOW (priv->toplevel);
+
+	dialog = gtk_message_dialog_new (toplevel,
+					 GTK_DIALOG_DESTROY_WITH_PARENT|
+					 GTK_DIALOG_MODAL,
+					 msg_type,
+					 button_type,
+					 primary_message);
+
+	if (is_on_top) {
+		gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), FALSE);
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
+
+		priv->toplevel = dialog;
+		g_signal_connect (dialog,
+				  "destroy",
+				  G_CALLBACK (brasero_app_toplevel_destroyed_cb),
+				  app);
+	}
+
+	return dialog;
+}
+
+void
+brasero_app_alert (BraseroApp *app,
+		   const gchar *primary_message,
+		   const gchar *secondary_message,
+		   GtkMessageType type)
+{
+	BraseroAppPrivate *priv;
+	GtkWidget *parent = NULL;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	if (priv->is_running)
+		parent = GTK_WIDGET (app);
+	else
+		parent = priv->toplevel;
+
+	brasero_utils_message_dialog (parent,
+				      primary_message,
+				      secondary_message,
+				      type);
+}
 
 GtkUIManager *
 brasero_app_get_ui_manager (BraseroApp *app)

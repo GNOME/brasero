@@ -1049,10 +1049,10 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 		gchar *string;
 
 		string = g_strdup_printf (_("The project \"%s\" does not exist"), uri);
-		brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (manager)),
-					      _("Error while loading the project."),
-					      string,
-					      GTK_MESSAGE_ERROR);
+		brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (manager))),
+				   _("Error while loading the project."),
+				   string,
+				   GTK_MESSAGE_ERROR);
 		g_free (string);
 
 		type = BRASERO_PROJECT_TYPE_INVALID;

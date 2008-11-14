@@ -58,6 +58,18 @@ brasero_app_run (BraseroApp *app,
 gboolean
 brasero_app_is_running (BraseroApp *app);
 
+GtkWidget *
+brasero_app_dialog (BraseroApp *app,
+		    const gchar *primary_message,
+		    GtkButtonsType button_type,
+		    GtkMessageType msg_type);
+
+void
+brasero_app_alert (BraseroApp *app,
+		   const gchar *primary_message,
+		   const gchar *secondary_message,
+		   GtkMessageType type);
+
 void
 brasero_app_blank (BraseroApp *app,
 		   const gchar *device,

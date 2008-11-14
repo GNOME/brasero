@@ -33,6 +33,7 @@
 #include "eggtreemultidnd.h"
 
 #include "burn-debug.h"
+#include "brasero-app.h"
 #include "brasero-disc.h"
 #include "brasero-io.h"
 #include "brasero-utils.h"
@@ -237,12 +238,10 @@ brasero_video_disc_directory_dialog (BraseroVideoProject *project,
 	GtkWidget *toplevel;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
-					 _("Do you want to search for video files inside the directory?"));
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     _("Do you want to search for video files inside the directory?"),
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_WARNING);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("Directories cannot be added to video discs."));
@@ -282,10 +281,10 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
 
 	name = g_filename_display_basename (uri);
 	primary = g_strdup_printf (_("\"%s\" could not be opened."), name);
-	brasero_utils_message_dialog (toplevel,
-				      primary,
-				      error->message,
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (toplevel),
+			   primary,
+			   error->message,
+			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
 }
@@ -307,10 +306,10 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	primary = g_strdup_printf (_("\"%s\" does not have a suitable type for video projects."), name);
-	brasero_utils_message_dialog (toplevel,
-				      primary,
-				      _("Please only add files with video contents"),
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (toplevel),
+			   primary,
+			   _("Please only add files with video contents"),
+			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
 }

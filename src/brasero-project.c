@@ -774,24 +774,17 @@ brasero_project_check_status (BraseroProject *project,
 	 * or get the metadata of a song or a film */
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 
-	/* This dialog will run as a standalone window when run from nautilus
+	/* This dialog can run as a standalone window when run from nautilus
 	 * to burn burn:// URI contents. */
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_OTHER,
-					 GTK_BUTTONS_CANCEL,
-					 _("Please, wait until the estimation of the project size is completed."));
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     _("Please, wait until the estimation of the project size is completed."),
+				     GTK_BUTTONS_CANCEL,
+				     GTK_MESSAGE_OTHER);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("All files from the project need to be analysed to complete this operation."));
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Project Size Estimation"));
-
-	if (!brasero_app_is_running (BRASERO_APP (toplevel))) {
-		gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), FALSE);
-		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
-	}
 
 	box = gtk_vbox_new (FALSE, 4);
 	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->vbox),
@@ -876,19 +869,19 @@ brasero_project_set_cover_specifics (BraseroProject *self,
 static void
 brasero_project_no_song_dialog (BraseroProject *project)
 {
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
-				      _("Please add songs to the project."),
-				      _("The project is empty"),
-				      GTK_MESSAGE_WARNING);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (project))),
+			   _("Please add songs to the project."),
+			   _("The project is empty"),
+			   GTK_MESSAGE_WARNING);
 }
 
 static void
 brasero_project_no_file_dialog (BraseroProject *project)
 {
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
-				      _("Please add files to the project."),
-				      _("The project is empty"),
-				      GTK_MESSAGE_WARNING);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (project))),
+			   _("Please add files to the project."),
+			   _("The project is empty"),
+			   GTK_MESSAGE_WARNING);
 }
 
 void
@@ -1099,12 +1092,10 @@ brasero_project_confirm_switch (BraseroProject *project)
 		if (!project->priv->modified)
 			return TRUE;
 
-		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						 GTK_DIALOG_DESTROY_WITH_PARENT |
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_WARNING,
-						 GTK_BUTTONS_CANCEL,
-						 _("Do you really want to create a new project and discard the changes to current one?"));
+		dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+					     _("Do you really want to create a new project and discard the changes to current one?"),
+					     GTK_BUTTONS_CANCEL,
+					     GTK_MESSAGE_WARNING);
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("If you choose to create a new project, all changes made will be lost."));
@@ -1117,12 +1108,10 @@ brasero_project_confirm_switch (BraseroProject *project)
 			return TRUE;
 
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						 GTK_DIALOG_DESTROY_WITH_PARENT |
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_WARNING,
-						 GTK_BUTTONS_CANCEL,
-						 _("Do you really want to create a new project and discard the current one?"));
+		dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+					     _("Do you really want to create a new project and discard the current one?"),
+					     GTK_BUTTONS_CANCEL,
+					     GTK_MESSAGE_WARNING);
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("If you choose to create a new project, "
@@ -1498,12 +1487,10 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 		GtkResponseType answer;
 
 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-						 GTK_DIALOG_DESTROY_WITH_PARENT |
-						 GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_WARNING,
-						 GTK_BUTTONS_CANCEL,
-						 _("Do you really want to empty the current project?"));
+		dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+					      _("Do you really want to empty the current project?"),
+					     GTK_BUTTONS_CANCEL,
+					     GTK_MESSAGE_WARNING);
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 							  _("Emptying a project will remove all files already added. "
@@ -1662,10 +1649,10 @@ static void
 brasero_project_invalid_project_dialog (BraseroProject *project,
 					const char *reason)
 {
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
-				      _("Error while loading the project."),
-				      reason,
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (project))),
+			   _("Error while loading the project."),
+			   reason,
+			   GTK_MESSAGE_ERROR);
 }
 
 static gboolean
@@ -2230,10 +2217,10 @@ brasero_project_not_saved_dialog (BraseroProject *project)
 	xmlError *error;
 
 	error = xmlGetLastError ();
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (project)),
-				      _("Your project has not been saved."),
-				      error?error->message:_("An unknown error occured"),
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (project))),
+			   _("Your project has not been saved."),
+			   error? error->message:_("An unknown error occured"),
+			   GTK_MESSAGE_ERROR);
 	xmlResetLastError ();
 }
 
@@ -2246,12 +2233,10 @@ brasero_project_save_project_dialog (BraseroProject *project,
 	GtkResponseType result;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT|
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
-					 _("Save the changes of current project before closing?"));
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     _("Save the changes of current project before closing?"),
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_WARNING);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("If you don't save, changes will be permanently lost."));

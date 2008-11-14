@@ -1,5 +1,43 @@
 2008-11-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	When not running full standalone application make sure modality works
+	for dialogs
+
+	* src/brasero-app.c (brasero_app_toplevel_destroyed_cb),
+	(brasero_app_dialog), (brasero_app_alert):
+	* src/brasero-app.h:
+	* src/brasero-audio-disc.c (brasero_audio_disc_short_track_dialog),
+	(brasero_audio_disc_file_type_error_dialog),
+	(brasero_audio_disc_video_file_dialog),
+	(brasero_audio_disc_add_dir),
+	(brasero_audio_disc_unreadable_dialog), (brasero_audio_disc_split),
+	(brasero_audio_disc_inotify_removal_warning):
+	* src/brasero-data-disc.c
+	(brasero_data_disc_import_failure_dialog),
+	(brasero_data_disc_image_uri_cb),
+	(brasero_data_disc_unreadable_uri_cb),
+	(brasero_data_disc_recursive_uri_cb),
+	(brasero_data_disc_unknown_uri_cb),
+	(brasero_data_disc_name_collision_cb),
+	(brasero_data_disc_2G_file_cb),
+	(brasero_data_disc_deep_directory_cb):
+	* src/brasero-playlist.c (brasero_playlist_dialog_error):
+	* src/brasero-project-manager.c (brasero_project_manager_open_uri):
+	* src/brasero-project.c (brasero_project_check_status),
+	(brasero_project_no_song_dialog), (brasero_project_no_file_dialog),
+	(brasero_project_confirm_switch), (brasero_project_empty_cb),
+	(brasero_project_invalid_project_dialog),
+	(brasero_project_not_saved_dialog),
+	(brasero_project_save_project_dialog):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-utils.c (brasero_utils_launch_app):
+	* src/brasero-video-disc.c (brasero_video_disc_directory_dialog),
+	(brasero_video_disc_unreadable_uri_dialog),
+	(brasero_video_disc_not_video_dialog):
+	* src/main.c (brasero_app_parse_options):
+
+2008-11-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Remove icon from the progress dialog about Project Size Estimation
 
 	* src/brasero-project.c (brasero_project_check_status):

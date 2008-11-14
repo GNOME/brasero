@@ -214,10 +214,10 @@ static void
 brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 					 GError *error)
 {
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (disc)),
-				      _("The session could not be imported."),
-				      error?error->message:_("An unknown error occured"),
-				      GTK_MESSAGE_WARNING);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (disc))),
+			   _("The session could not be imported."),
+			   error?error->message:_("An unknown error occured"),
+			   GTK_MESSAGE_WARNING);
 }
 
 static gboolean
@@ -781,6 +781,7 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 {
 	gint answer;
 	gchar *name;
+	gchar *string;
 	GtkWidget *button;
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
@@ -797,13 +798,12 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 		return BRASERO_BURN_OK;
 
 	name = brasero_file_node_get_uri_name (uri);
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_QUESTION,
-					 GTK_BUTTONS_NONE,
-					 _("Do you want to burn \"%s\" to a disc or add it in to the data project?"),
-					 name);
+	string = g_strdup_printf (_("Do you want to burn \"%s\" to a disc or add it in to the data project?"), name);
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     string,
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_QUESTION);
+	g_free (string);
 	g_free (name);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
@@ -895,10 +895,10 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 	}
 
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
-				      primary,
-				      error->message,
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+			   primary,
+			   error->message,
+			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
 }
@@ -926,10 +926,10 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 	}
 
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
-				      primary,
-				      _("It is a recursive symlink"),
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+			   primary,
+			   _("It is a recursive symlink"),
+			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
 }
@@ -957,10 +957,10 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 	}
 
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
-	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
-				      primary,
-				      _("It doesn't exist at the specified location"),
-				      GTK_MESSAGE_ERROR);
+	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+			   primary,
+			   _("It doesn't exist at the specified location"),
+			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);
 }
@@ -971,6 +971,7 @@ brasero_data_disc_name_collision_cb (BraseroDataProject *project,
 				     BraseroDataDisc *self)
 {
 	gint answer;
+	gchar *string;
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
@@ -983,13 +984,12 @@ brasero_data_disc_name_collision_cb (BraseroDataProject *project,
 	}
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
-					 _("Do you really want to replace \"%s\"?"),
-					 name);
+	string = g_strdup_printf (_("Do you really want to replace \"%s\"?"), name);
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     string,
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_WARNING);
+	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("It already exists in the directory."));
@@ -1012,6 +1012,7 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 			      BraseroDataDisc *self)
 {
 	gint answer;
+	gchar *string;
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
@@ -1028,13 +1029,12 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 	}
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
-					 _("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"),
-					 name);
+	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"), name);
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     string,
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_WARNING);
+	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones)."
@@ -1058,6 +1058,7 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 				     BraseroDataDisc *self)
 {
 	gint answer;
+	gchar *string;
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
@@ -1074,13 +1075,13 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 	}
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
-					 GTK_DIALOG_DESTROY_WITH_PARENT |
-					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_WARNING,
-					 GTK_BUTTONS_NONE,
-					 _("Do you really want to add \"%s\" to the selection?"),
-					 name);
+
+	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection?"), name);
+	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+				     string,
+				     GTK_BUTTONS_NONE,
+				     GTK_MESSAGE_WARNING);
+	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 						  _("The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6."
