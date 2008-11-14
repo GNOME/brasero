@@ -779,7 +779,7 @@ brasero_project_check_status (BraseroProject *project,
 	dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
 					 GTK_DIALOG_DESTROY_WITH_PARENT |
 					 GTK_DIALOG_MODAL,
-					 GTK_MESSAGE_INFO,
+					 GTK_MESSAGE_OTHER,
 					 GTK_BUTTONS_CANCEL,
 					 _("Please, wait until the estimation of the project size is completed."));
 
