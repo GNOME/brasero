@@ -309,6 +309,10 @@ enum {
 	BACKGROUND_COL,
 	SONG_COL,
 	EDITABLE_COL,
+	TITLE_SET_COL,
+	ARTIST_SET_COL,
+	COMPOSER_SET_COL,
+	ISRC_SET_COL,
 	NB_COL
 };
 
@@ -385,6 +389,7 @@ enum {
 /* 1 sec = 75 sectors, len is in nanosecond */
 #define BRASERO_SECTORS_TO_TIME(sectors)	(gint64) (sectors * GST_SECOND / 75)
 #define COL_KEY "column_key"
+#define COL_KEY_SET "column_key_set"
 
 GType
 brasero_audio_disc_get_type()
@@ -632,6 +637,10 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 						    G_TYPE_INT,
 						    G_TYPE_STRING,
 						    G_TYPE_BOOLEAN,
+						    G_TYPE_BOOLEAN,
+						    G_TYPE_BOOLEAN,
+						    G_TYPE_BOOLEAN,
+						    G_TYPE_BOOLEAN,
 						    G_TYPE_BOOLEAN);
 
 	g_signal_connect (G_OBJECT (model),
@@ -671,6 +680,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set_data (G_OBJECT (renderer), COL_KEY, GINT_TO_POINTER (NAME_COL));
+	g_object_set_data (G_OBJECT (renderer), COL_KEY_SET, GINT_TO_POINTER (TITLE_SET_COL));
 	g_object_set (G_OBJECT (renderer),
 		      "mode", GTK_CELL_RENDERER_MODE_EDITABLE,
 		      "ellipsize-set", TRUE,
@@ -704,6 +714,7 @@ brasero_audio_disc_init (BraseroAudioDisc *obj)
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set_data (G_OBJECT (renderer), COL_KEY, GINT_TO_POINTER (ARTIST_COL));
+	g_object_set_data (G_OBJECT (renderer), COL_KEY_SET, GINT_TO_POINTER (ARTIST_SET_COL));
 	g_object_set (G_OBJECT (renderer),
 		      /* "editable", TRUE, disable this for the time being it doesn't play well with DND and double click */
 		      /* "mode", GTK_CELL_RENDERER_MODE_EDITABLE,*/
@@ -1200,8 +1211,12 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 {
 	const gchar *icon_string = BRASERO_DEFAULT_ICON;
 	gint64 current_length;
+	gboolean composer_set;
 	GtkTreeIter gap_iter;
+	gboolean artist_set;
 	gchar *size_string;
+	gboolean title_set;
+	gboolean isrc_set;
 	gint64 length;
 	gint64 start;
 	GIcon *icon;
@@ -1298,14 +1313,19 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 			    SIZE_COL, size_string,
 			    ICON_COL, icon_string,
 			    LENGTH_COL, g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN),
-			    ARTIST_COL, g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST),
-			    COMPOSER_COL, g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER),
-			    ISRC_COL, g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC),
 			    SONG_COL, TRUE,
 			    -1);
 	g_free (size_string);
 
-	if (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE)) {
+	/* Set all informations provided they were not set already */
+	gtk_tree_model_get (model, iter,
+			    TITLE_SET_COL, &title_set,
+			    ARTIST_SET_COL, &artist_set,
+			    COMPOSER_SET_COL, &composer_set,
+			    ISRC_SET_COL, &isrc_set,
+			    -1);
+
+	if (!title_set && g_file_info_get_attribute_string (info, BRASERO_IO_TITLE)) {
 		gchar *name;
 
 		name = brasero_audio_disc_validate_utf8_name (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
@@ -1313,6 +1333,28 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 				    NAME_COL, name,
 				    -1);
 		g_free (name);
+	}
+
+	if (!artist_set && g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST)) {
+		gtk_list_store_set (GTK_LIST_STORE (model), iter,
+				    ARTIST_COL, g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST),
+				    -1);
+	}
+	else if (!artist_set)
+		gtk_list_store_set (GTK_LIST_STORE (model), iter,
+				    ARTIST_COL, ("Unknown"),
+				    -1);
+
+	if (!composer_set && g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER)) {
+		gtk_list_store_set (GTK_LIST_STORE (model), iter,
+				    COMPOSER_COL, g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER),
+				    -1);
+	}
+
+	if (!isrc_set && g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC)) {
+		gtk_list_store_set (GTK_LIST_STORE (model), iter,
+				    ISRC_COL, g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC),
+				    -1);
 	}
 
 	if (icon)
@@ -1432,6 +1474,7 @@ brasero_audio_disc_result (GObject *obj,
 	markup = brasero_audio_disc_validate_utf8_name (name);
 	g_free (name);
 
+	/* Set a default name here */
     	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    NAME_COL, markup,
 			    URI_COL, uri,
@@ -1687,6 +1730,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 				 gint64 gap_sectors,
 				 gint64 start,
 				 gint64 end,
+				 BraseroSongInfo *info,
 				 GtkTreePath **path_return)
 {
 	GtkTreeRowReference *ref;
@@ -1713,13 +1757,28 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 	markup = g_markup_escape_text (name, -1);
 	g_free (name);
 
-    	gtk_list_store_set (GTK_LIST_STORE (store), &iter,
-			    NAME_COL, markup,
-			    ICON_COL, "image-loading",
-			    URI_COL, uri,
-			    ARTIST_COL, _("(loading ...)"),
-			    SONG_COL, TRUE,
-			    -1);
+	if (info)
+		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+				    URI_COL, uri,
+				    SONG_COL, TRUE,
+				    ICON_COL, "image-loading",
+				    NAME_COL, info->title? info->title:markup,
+				    TITLE_SET_COL, info->title? TRUE:FALSE,
+				    ARTIST_COL, info->artist? info->artist:_("loading ..."),
+				    ARTIST_SET_COL, info->artist? TRUE:FALSE,
+				    COMPOSER_COL, info->composer? info->composer:NULL,
+				    COMPOSER_SET_COL, info->composer? TRUE:FALSE,
+				    ISRC_COL, info->isrc,
+				    ISRC_SET_COL, info->isrc? TRUE:FALSE,
+				    -1);
+	else
+		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
+				    NAME_COL, markup,
+				    ICON_COL, "image-loading",
+				    URI_COL, uri,
+				    ARTIST_COL, _("(loading ...)"),
+				    SONG_COL, TRUE,
+				    -1);
 	g_free (markup);
 
 	start = start > 0 ? start:0;
@@ -1798,6 +1857,7 @@ brasero_audio_disc_add_uri (BraseroDisc *disc,
 						  0,
 						  -1,
 						  -1,
+						  NULL,
 						  &treepath);
 
 	if (treepath) {
@@ -1942,17 +2002,29 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 	song = NULL;
 
 	do {
+		gint isrc;
 		gint64 end;
 		gint64 start;
 		gchar *title;
 		gchar *artist;
+		gchar *composer;
+		gboolean isrc_set;
+		gboolean title_set;
+		gboolean artist_set;
+		gboolean composer_set;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
 				    START_COL, &start,
 				    END_COL, &end,
+				    TITLE_SET_COL, &title_set,
+				    ARTIST_SET_COL, &artist_set,
+				    COMPOSER_SET_COL, &composer_set,
+				    ISRC_SET_COL, &isrc_set,
 				    NAME_COL, &title,
 				    ARTIST_COL, &artist,
+				    COMPOSER_COL, &composer,
+				    ISRC_COL, &isrc,
 				    -1);
 
 		if (!uri) {
@@ -1974,8 +2046,24 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 			song->end = end > 0 ? end:0;
 
 			info = g_new0 (BraseroSongInfo, 1);
-			info->title = title;
-			info->artist = artist;
+			if (title_set)
+				info->title = title;
+			else
+				g_free (title);
+
+			if (artist_set)
+				info->artist = artist;
+			else
+				g_free (artist);
+
+			if (composer_set)
+				info->composer = composer;
+			else
+				g_free (composer);
+
+			if (isrc_set)
+				info->isrc = isrc;
+
 			song->info = info;
 
 			track->contents.tracks = g_slist_append (track->contents.tracks, song);
@@ -2026,15 +2114,27 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		gchar *uri;
 		gchar *title;
 		gchar *artist;
+		gchar *composer;
+		gint isrc;
 		gint64 end;
 		gint64 start;
 		gint64 length;
+		gboolean isrc_set;
+		gboolean title_set;
+		gboolean artist_set;
+		gboolean composer_set;
 		BraseroSongInfo *info;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
+				    TITLE_SET_COL, &title_set,
+				    ARTIST_SET_COL, &artist_set,
+				    COMPOSER_SET_COL, &composer_set,
+				    ISRC_SET_COL, &isrc_set,
 				    NAME_COL, &title,
 				    ARTIST_COL, &artist,
+				    COMPOSER_COL, &composer,
+				    ISRC_COL, &isrc,
 				    LENGTH_COL, &length,
 				    START_COL, &start,
 				    END_COL, &end,
@@ -2050,8 +2150,24 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		}
 
 		info = g_new0 (BraseroSongInfo, 1);
-		info->title = title;
-		info->artist = artist;
+
+		if (title_set)
+			info->title = title;
+		else
+			g_free (title);
+
+		if (artist_set)
+			info->artist = artist;
+		else
+			g_free (artist);
+
+		if (composer_set)
+			info->composer = composer;
+		else
+			g_free (composer);
+
+		if (isrc_set)
+			info->isrc = isrc;
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
 		brasero_track_set_audio_source (track, uri, BRASERO_AUDIO_FORMAT_UNDEFINED);
@@ -2083,8 +2199,10 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 	BRASERO_AUDIO_DISC (disc)->priv->loading = g_slist_length (track->contents.tracks);
 	for (iter = track->contents.tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
+		BraseroSongInfo *info;
 
 		song = iter->data;
+		info = song->info;
 
 		brasero_audio_disc_add_uri_real (BRASERO_AUDIO_DISC (disc),
 						 song->uri,
@@ -2092,7 +2210,9 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 						 song->gap,
 						 song->start,
 						 song->end,
+						 info,
 						 NULL);
+		
 	}
 
 	return BRASERO_DISC_OK;
@@ -2437,6 +2557,7 @@ brasero_audio_disc_drag_data_received_cb (GtkTreeView *tree,
 							   0,
 							   -1,
 							   -1,
+							   NULL,
 							   &treepath);
 		if (success == BRASERO_DISC_OK) {
 			pos ++;
@@ -2558,15 +2679,19 @@ brasero_audio_disc_display_edited_cb (GtkCellRendererText *renderer,
 {
 	GtkTreePath *treepath;
 	GtkTreeModel *model;
+	gint col_set_num;
 	GtkTreeIter row;
 	gint col_num;
 
 	col_num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (renderer), COL_KEY));
+	col_set_num = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (renderer), COL_KEY_SET));
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
 	treepath = gtk_tree_path_new_from_string (path_string);
 	gtk_tree_model_get_iter (model, &row, treepath);
 	gtk_list_store_set (GTK_LIST_STORE (model), &row,
-			    col_num, text, -1);
+			    col_num, text,
+			    col_set_num, TRUE,
+			    -1);
 	disc->priv->editing = 0;
 }
 
@@ -2656,6 +2781,11 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 	gint64 length;
 	GSList *iter;
 
+	gboolean title_set;
+	gboolean artist_set;
+	gboolean composer_set;
+	gboolean isrc_set;
+
 	gint64 start;
 	gint64 end;
 
@@ -2676,10 +2806,14 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 
 	gtk_tree_model_get (model, parent,
 			    NAME_COL, &name,
+			    TITLE_SET_COL, &title_set,
 			    ICON_COL, &icon_string,
 			    ARTIST_COL, &artist,
+			    ARTIST_SET_COL, &artist_set,
 			    COMPOSER_COL, &composer,
+			    COMPOSER_SET_COL, &composer_set,
 			    ISRC_COL, &isrc,
+			    ISRC_SET_COL, &isrc_set,
 			    URI_COL, &uri,
 			    LENGTH_COL, &length,
 			    START_COL, &start,
@@ -2706,10 +2840,14 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    URI_COL, uri,
 				    NAME_COL, name,
+				    TITLE_SET_COL, title_set,
 				    ICON_COL, icon_string,
 				    ARTIST_COL, artist,
+				    ARTIST_SET_COL, artist_set,
 				    COMPOSER_COL, composer,
+				    COMPOSER_SET_COL, composer_set,
 				    ISRC_COL, isrc,
+				    ISRC_SET_COL, isrc_set,
 				    SONG_COL, TRUE,
 				    START_COL, slice->start,
 				    END_COL, slice->end,
@@ -2938,126 +3076,30 @@ brasero_audio_disc_rename_songs (GtkTreeModel *model,
 {
 	gtk_list_store_set (GTK_LIST_STORE (model), iter,
 			    NAME_COL, new_name,
+			    TITLE_SET_COL, TRUE,
 			    -1);
 	return TRUE;
 }
 
 static void
-brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
-					 GList *list)
+brasero_audio_disc_edit_multi_song_properties (BraseroAudioDisc *disc,
+					       GList *list)
 {
-	gint64 end;
-	gint64 start;
+	gint isrc;
+	gint64 gap;
+	GList *copy;
 	GList *item;
-	gint song_num;
-	gint track_num;
 	GtkWidget *props;
 	GtkWidget *toplevel;
 	GtkTreeModel *model;
-	GtkTreePath *treepath;
+	gchar *artist = NULL;
 	GtkResponseType result;
-
-	if (!g_list_length (list))
-		return;
+	gchar *composer = NULL;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
-
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
 
-	/* count the number of selected songs */
-	song_num = 0;
-	for (item = list; item; item = item->next) {
-		GtkTreePath *tmp;
-		GtkTreeIter iter;
-		gboolean is_song;
-
-		tmp = item->data;
-		gtk_tree_model_get_iter (model, &iter, tmp);
-		gtk_tree_model_get (model, &iter, 
-				    SONG_COL, &is_song,
-				    -1);
-
-		if (is_song)
-			song_num ++;
-	}
-
-	if (!song_num)
-		return;
-
-	if (song_num == 1) {
-		gint isrc;
-		gint64 gap;
-		gint64 length;
-		gboolean is_song;
-		gboolean success;
-		gchar *title;
-		gchar *artist;
-		gchar *composer;
-		gchar *track_num_str;
-		GtkTreeIter iter;
-		GtkTreeIter gap_iter;
-
-		props = brasero_song_props_new ();
-
-		treepath = list->data;
-		success = gtk_tree_model_get_iter (model, &iter, treepath);
-
-		if (!success)
-			goto end;
-
-		gtk_tree_model_get (model, &iter,
-				    SONG_COL, &is_song,
-				    -1);
-		if (!is_song)
-			goto end;
-
-		gtk_tree_model_get (model, &iter,
-				    NAME_COL, &title,
-				    ARTIST_COL, &artist,
-				    COMPOSER_COL, &composer,
-				    TRACK_NUM_COL, &track_num_str,
-				    ISRC_COL, &isrc,
-				    END_COL, &end,
-				    START_COL, &start,
-				    LENGTH_COL, &length,
-				    -1);
-
-		if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
-			gtk_tree_model_get (model, &gap_iter,
-					    LENGTH_COL, &gap,
-					    -1);
-		else
-			gap = 0;
-
-		if (track_num_str) {
-			track_num = (gint) g_strtod (track_num_str + 6 /* (ignore markup) */, NULL);
-			g_free (track_num_str);
-		}
-		else
-			track_num = 0;
-
-		brasero_song_props_set_properties (BRASERO_SONG_PROPS (props),
-						   track_num,
-						   artist,
-						   title,
-						   composer,
-						   isrc,
-						   length,
-						   start,
-						   end,
-						   gap);
-		if (artist)
-			g_free (artist);
-		if (title)
-			g_free (title);
-		if (composer)
-			g_free (composer);
-	}
-	else {
-		treepath = NULL;
-		props = brasero_multi_song_props_new ();
-	}
-
+	props = brasero_multi_song_props_new ();
 	gtk_window_set_transient_for (GTK_WINDOW (props),
 				      GTK_WINDOW (toplevel));
 	gtk_window_set_modal (GTK_WINDOW (props), TRUE);
@@ -3067,123 +3109,272 @@ brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
 	gtk_widget_show (GTK_WIDGET (props));
 	result = gtk_dialog_run (GTK_DIALOG (props));
 	gtk_widget_hide (GTK_WIDGET (props));
-	if (result != GTK_RESPONSE_ACCEPT)
-		goto end;
-
-	if (treepath) {
-		gint isrc;
-		gint64 gap;
-		gchar *title;
-		gchar *markup;
-		gchar *artist;
-		gchar *composer;
-		gchar *length_str;
-		GtkTreeIter iter;
-
-		disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
-		brasero_song_props_get_properties (BRASERO_SONG_PROPS (props),
-						   &artist,
-						   &title,
-						   &composer,
-						   &isrc,
-						   &start,
-						   &end,
-						   &gap);
-
-		markup = g_markup_escape_text (title, -1);
-		length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end), TRUE, FALSE);
-
-		gtk_tree_model_get_iter (model, &iter, treepath);
-		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-				    NAME_COL, markup,
-				    ARTIST_COL, artist,
-				    COMPOSER_COL, composer,
-				    ISRC_COL, isrc,
-				    START_COL, start,
-				    END_COL, end,
-				    SIZE_COL, length_str,
-				    -1);
-		g_free (length_str);
-		g_free (markup);
-
-		if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_AUDIO_TRACK_LENGTH)
-			brasero_audio_disc_short_track_dialog (disc);
-
-		if (gap)
-			brasero_audio_disc_add_gap (disc, &iter, gap);
-
-		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
-		brasero_audio_disc_size_changed (disc);
-
-		g_free (title);
-		g_free (artist);
-		g_free (composer);
+	if (result != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy (props);
+		return;
 	}
-	else  {
-		gint isrc;
-		gint64 gap;
-		GList *copy;
-		gchar *artist = NULL;
-		gchar *composer = NULL;
 
-		brasero_multi_song_props_set_rename_callback (BRASERO_MULTI_SONG_PROPS (props),
-							      gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree)),
-							      NAME_COL,
-							      brasero_audio_disc_rename_songs);
+	brasero_multi_song_props_set_rename_callback (BRASERO_MULTI_SONG_PROPS (props),
+						      gtk_tree_view_get_selection (GTK_TREE_VIEW (disc->priv->tree)),
+						      NAME_COL,
+						      brasero_audio_disc_rename_songs);
 
-		brasero_multi_song_props_get_properties (BRASERO_MULTI_SONG_PROPS (props),
-							 &artist,
-							 &composer,
-							 &isrc,
-							 &gap);
+	brasero_multi_song_props_get_properties (BRASERO_MULTI_SONG_PROPS (props),
+						 &artist,
+						 &composer,
+						 &isrc,
+						 &gap);
 
-		/* start by the end in case we add silences since then the next
-		 * treepaths will be wrong */
-		copy = g_list_copy (list);
-		copy = g_list_reverse (copy);
-		for (item = copy; item; item = item->next) {
-			GtkTreePath *treepath;
-			GtkTreeIter iter;
-			gboolean is_song;
+	/* start by the end in case we add silences since then the next
+	 * treepaths will be wrong */
+	copy = g_list_copy (list);
+	copy = g_list_reverse (copy);
+	for (item = copy; item; item = item->next) {
+		GtkTreePath *treepath;
+		GtkTreeIter iter;
+		gboolean is_song;
 
-			treepath = item->data;
-			if (!gtk_tree_model_get_iter (model, &iter, treepath))
-				continue;
+		treepath = item->data;
+		if (!gtk_tree_model_get_iter (model, &iter, treepath))
+			continue;
 
-			gtk_tree_model_get (model, &iter,
-					    SONG_COL, &is_song,
+		gtk_tree_model_get (model, &iter,
+				    SONG_COL, &is_song,
+				    -1);
+
+		if (!is_song)
+			continue;
+
+		if (artist)
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    ARTIST_COL, artist,
+					    ARTIST_SET_COL, TRUE,
 					    -1);
 
-			if (!is_song)
-				continue;
+		if (composer)
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    COMPOSER_COL, composer,
+					    COMPOSER_SET_COL, TRUE,
+					    -1);
 
-			if (artist)
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-						    ARTIST_COL, artist,
-						    -1);
+		if (isrc > 0)
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    ISRC_COL, isrc,
+					    ISRC_SET_COL, TRUE,
+					    -1);
 
-			if (composer)
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-						    COMPOSER_COL, composer,
-						    -1);
-
-			if (isrc > 0)
-				gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-						    ISRC_COL, isrc,
-						    -1);
-
-			if (gap > -1)
-				brasero_audio_disc_add_gap (disc, &iter, gap);
-		}
-
-		g_list_free (copy);
-		g_free (artist);
-		g_free (composer);
+		if (gap > -1)
+			brasero_audio_disc_add_gap (disc, &iter, gap);
 	}
-
-end:
+	g_list_free (copy);
+	g_free (artist);
+	g_free (composer);
 
 	gtk_widget_destroy (props);
+}
+
+static void
+brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
+						GtkTreePath *treepath)
+{
+	gint64 gap;
+	gint isrc;
+	gint64 end;
+	gint64 start;
+	gint track_num;
+	GtkWidget *props;
+	gchar *length_str;
+	GtkWidget *toplevel;
+	GtkTreeModel *model;
+	GtkResponseType result;
+	gint64 length;
+	gboolean is_song;
+	gboolean success;
+	gchar *title;
+	gchar *artist;
+	gchar *composer;
+	GtkTreeIter iter;
+	gchar *track_num_str;
+	GtkTreeIter gap_iter;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
+	success = gtk_tree_model_get_iter (model, &iter, treepath);
+	if (!success)
+		return;
+
+	gtk_tree_model_get (model, &iter,
+			    SONG_COL, &is_song,
+			    -1);
+	if (!is_song)
+		return;
+
+	/* get all information */
+	gtk_tree_model_get (model, &iter,
+			    NAME_COL, &title,
+			    ARTIST_COL, &artist,
+			    COMPOSER_COL, &composer,
+			    TRACK_NUM_COL, &track_num_str,
+			    ISRC_COL, &isrc,
+			    END_COL, &end,
+			    START_COL, &start,
+			    LENGTH_COL, &length,
+			    -1);
+
+	if (brasero_audio_disc_has_gap (disc, &iter, &gap_iter))
+		gtk_tree_model_get (model, &gap_iter,
+				    LENGTH_COL, &gap,
+				    -1);
+	else
+		gap = 0;
+
+	if (track_num_str) {
+		track_num = (gint) g_strtod (track_num_str + 6 /* (ignore markup) */, NULL);
+		g_free (track_num_str);
+	}
+	else
+		track_num = 0;
+
+	/* set up dialog */
+	props = brasero_song_props_new ();
+	brasero_song_props_set_properties (BRASERO_SONG_PROPS (props),
+					   track_num,
+					   artist,
+					   title,
+					   composer,
+					   isrc,
+					   length,
+					   start,
+					   end,
+					   gap);
+	if (artist)
+		g_free (artist);
+	if (title)
+		g_free (title);
+	if (composer)
+		g_free (composer);
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
+	gtk_window_set_transient_for (GTK_WINDOW (props),
+				      GTK_WINDOW (toplevel));
+	gtk_window_set_modal (GTK_WINDOW (props), TRUE);
+	gtk_window_set_position (GTK_WINDOW (props),
+				 GTK_WIN_POS_CENTER_ON_PARENT);
+
+	gtk_widget_show (GTK_WIDGET (props));
+	result = gtk_dialog_run (GTK_DIALOG (props));
+	gtk_widget_hide (GTK_WIDGET (props));
+	if (result != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy (props);
+		return;
+	}
+
+	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	brasero_song_props_get_properties (BRASERO_SONG_PROPS (props),
+					   &artist,
+					   &title,
+					   &composer,
+					   &isrc,
+					   &start,
+					   &end,
+					   &gap);
+
+	length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end), TRUE, FALSE);
+
+	gtk_tree_model_get_iter (model, &iter, treepath);
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			    START_COL, start,
+			    END_COL, end,
+			    SIZE_COL, length_str,
+			    -1);
+	g_free (length_str);
+
+	if (title) {
+		gchar *markup;
+
+		markup = g_markup_escape_text (title, -1);
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    NAME_COL, markup,
+				    TITLE_SET_COL, TRUE,
+				    -1);
+		g_free (markup);
+	}
+
+	if (artist)
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    ARTIST_COL, artist,
+				    ARTIST_SET_COL, TRUE,
+				    -1);
+
+	if (composer)
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    COMPOSER_COL, composer,
+				    COMPOSER_SET_COL, TRUE,
+				    -1);
+
+	if (isrc)
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    ISRC_COL, isrc,
+				    ISRC_SET_COL, TRUE,
+				    -1);
+
+	if (end - start + BRASERO_SECTORS_TO_TIME (gap) < BRASERO_MIN_AUDIO_TRACK_LENGTH)
+		brasero_audio_disc_short_track_dialog (disc);
+
+	if (gap)
+		brasero_audio_disc_add_gap (disc, &iter, gap);
+
+	disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
+	brasero_audio_disc_size_changed (disc);
+
+	g_free (title);
+	g_free (artist);
+	g_free (composer);
+	gtk_widget_destroy (props);
+}
+
+static void
+brasero_audio_disc_edit_song_properties (BraseroAudioDisc *disc,
+					 GList *list)
+{
+	GList *item;
+	gint song_num;
+	GtkTreeModel *model;
+	GList *real_list = NULL;
+
+	if (!g_list_length (list))
+		return;
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (disc->priv->tree));
+
+	/* count the number of selected songs */
+	song_num = 0;
+	for (item = list; item; item = item->next) {
+		GtkTreePath *tmp;
+		GtkTreeIter iter;
+		gboolean is_song;
+
+		tmp = item->data;
+
+		gtk_tree_model_get_iter (model, &iter, tmp);
+		gtk_tree_model_get (model, &iter, 
+				    SONG_COL, &is_song,
+				    -1);
+
+		if (is_song) {
+			song_num ++;
+			real_list = g_list_prepend (real_list, tmp);
+		}
+	}
+
+	if (!song_num)
+		return;
+
+	if (song_num == 1)
+		brasero_audio_disc_edit_single_song_properties (disc, real_list->data);
+	else
+		brasero_audio_disc_edit_multi_song_properties (disc, real_list);
+
+	g_list_free (real_list);
 }
 
 static void
@@ -3242,6 +3433,7 @@ brasero_audio_disc_clipboard_text_cb (GtkClipboard *clipboard,
 							 0,
 							 -1,
 							 -1,
+							 NULL,
 							 NULL);
 			g_free (uri);
 		}
@@ -3371,9 +3563,10 @@ brasero_audio_disc_button_pressed_cb (GtkTreeView *tree,
 			 * part */
 			selection = gtk_tree_view_get_selection (tree);
 			gtk_tree_selection_unselect_all (selection);
+			return FALSE;
 		}
 	
-		if (!result || !treepath)
+		if (!result)
 			return FALSE;
 
 		if (disc->priv->selected_path)

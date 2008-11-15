@@ -53,7 +53,6 @@ struct _BraseroVideoFile {
 	BraseroVideoFile *prev;
 	BraseroVideoFile *next;
 
-	gchar *name;
 	gchar *uri;
 
 	BraseroSongInfo *info;
@@ -67,6 +66,11 @@ struct _BraseroVideoFile {
 	guint is_loading:1;
 	guint is_reloading:1;
 	guint is_monitored:1;
+
+	guint isrc_set:1;
+	guint title_set:1;
+	guint artist_set:1;
+	guint composer_set:1;
 };
 
 struct _BraseroVideoProjectClass
@@ -148,6 +152,7 @@ brasero_video_project_remove_file (BraseroVideoProject *project,
 BraseroVideoFile *
 brasero_video_project_add_uri (BraseroVideoProject *project,
 			       const gchar *uri,
+			       BraseroSongInfo *info,
 			       BraseroVideoFile *sibling,
 			       gint64 start,
 			       gint64 end);

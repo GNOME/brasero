@@ -208,9 +208,11 @@ brasero_video_project_rename (BraseroVideoProject *self,
 	gchar *tmp;
 	BraseroVideoProjectClass *klass;
 
-	tmp = file->name;
-	file->name = g_strdup (name);
+	tmp = file->info->title;
+	file->info->title = g_strdup (name);
 	g_free (tmp);
+
+	file->title_set = TRUE;
 
 	klass = BRASERO_VIDEO_PROJECT_GET_CLASS (self);
 	if (klass->node_changed)
@@ -476,7 +478,6 @@ brasero_video_project_set_file_information (BraseroVideoProject *self,
 {
 	guint64 len;
 	GdkPixbuf *snapshot;
-	BraseroSongInfo *song;
 	BraseroVideoProjectPrivate *priv;
 
 	priv = BRASERO_VIDEO_PROJECT_PRIVATE (self);
@@ -519,12 +520,32 @@ brasero_video_project_set_file_information (BraseroVideoProject *self,
 		file->end = len;
 
 	/* Get the song info */
-	song = g_new0 (BraseroSongInfo, 1);
-	song->title = g_strdup (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
-	song->artist = g_strdup (g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST));
-	song->composer = g_strdup (g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER));
-	song->isrc = g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC);
-	file->info = song;
+	if (!file->info)
+		file->info = g_new0 (BraseroSongInfo, 1);
+
+	if (!file->title_set) {
+		if (file->info->title)
+			g_free (file->info->title);
+
+		file->info->title = g_strdup (g_file_info_get_attribute_string (info, BRASERO_IO_TITLE));
+	}
+
+	if (!file->artist_set) {
+		if (file->info->artist)
+			g_free (file->info->artist);
+
+		file->info->artist = g_strdup (g_file_info_get_attribute_string (info, BRASERO_IO_ARTIST));
+	}
+
+	if (!file->composer_set) {
+		if (file->info->composer)
+			g_free (file->info->composer);
+
+		file->info->composer = g_strdup (g_file_info_get_attribute_string (info, BRASERO_IO_COMPOSER));
+	}
+
+	if (!file->isrc_set)
+		file->info->isrc = g_file_info_get_attribute_int32 (info, BRASERO_IO_ISRC);
 
 #ifdef BUILD_INOTIFY
 
@@ -718,6 +739,7 @@ brasero_video_project_result_cb (GObject *obj,
 BraseroVideoFile *
 brasero_video_project_add_uri (BraseroVideoProject *self,
 			       const gchar *uri,
+			       BraseroSongInfo *info,
 			       BraseroVideoFile *sibling,
 			       gint64 start,
 			       gint64 end)
@@ -734,6 +756,21 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 	/* create new file and insert it */
 	file = g_new0 (BraseroVideoFile, 1);
 	file->uri = g_strdup (uri);
+
+	if (info) {
+		file->info = brasero_song_info_copy (info);
+
+		if (info->isrc)
+			file->isrc_set = TRUE;
+		if (info->title)
+			file->title_set = TRUE;
+		if (info->artist)
+			file->artist_set = TRUE;
+		if (info->composer)
+			file->composer_set = TRUE;
+	}
+	else
+		file->info = g_new0 (BraseroSongInfo, 1);
 
 	if (start > -1)
 		file->start = start;

@@ -344,6 +344,7 @@ brasero_video_disc_add_uri_real (BraseroVideoDisc *self,
 
 	file = brasero_video_project_add_uri (project,
 					      uri,
+					      NULL,
 					      sibling,
 					      start,
 					      end);
@@ -491,10 +492,10 @@ brasero_video_disc_rename_songs (GtkTreeModel *model,
 	if (!file)
 		return FALSE;
 
-	if (file->name)
-		g_free (file->name);
+	if (file->info->title)
+		g_free (file->info->title);
 
-	file->name = g_strdup (new_name);
+	file->info->title = g_strdup (new_name);
 	return TRUE;
 }
 
@@ -502,8 +503,8 @@ static void
 brasero_video_disc_edit_song_properties_list (BraseroVideoDisc *self,
 					      GList *list)
 {
-	GList *item;
 	gint isrc;
+	GList *item;
 	GList *copy;
 	GtkWidget *props;
 	GtkWidget *toplevel;
@@ -587,8 +588,12 @@ static void
 brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 					      BraseroVideoFile *file)
 {
+	gint isrc;
 	gint64 end;
 	gint64 start;
+	gchar *title;
+	gchar *artist;
+	gchar *composer;
 	GtkWidget *props;
 	GtkWidget *toplevel;
 	GtkTreeModel *model;
@@ -596,7 +601,6 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 	BraseroVideoDiscPrivate *priv;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
-
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
@@ -625,17 +629,43 @@ brasero_video_disc_edit_song_properties_file (BraseroVideoDisc *self,
 	if (result != GTK_RESPONSE_ACCEPT)
 		goto end;
 
-	brasero_song_info_free (file->info);
-	file->info = g_new0 (BraseroSongInfo, 1);
-
 	brasero_song_props_get_properties (BRASERO_SONG_PROPS (props),
-					   &file->info->artist,
-					   &file->info->title,
-					   &file->info->composer,
-					   &file->info->isrc,
+					   &artist,
+					   &title,
+					   &composer,
+					   &isrc,
 					   &start,
 					   &end,
 					   NULL);
+
+	if (title) {
+		if (file->info->title)
+			g_free (file->info->title);
+
+		file->info->title = title;
+		file->title_set = TRUE;
+	}
+
+	if (artist) {
+		if (file->info->artist)
+			g_free (file->info->artist);
+
+		file->info->artist = artist;
+		file->artist_set = TRUE;
+	}
+
+	if (composer) {
+		if (file->info->composer)
+			g_free (file->info->composer);
+
+		file->info->composer = composer;
+		file->composer_set = TRUE;
+	}
+
+	if (isrc) {
+		file->info->isrc = isrc;
+		file->isrc_set = TRUE;
+	}
 
 	brasero_video_project_resize_file (BRASERO_VIDEO_PROJECT (model), file, start, end);
 
@@ -643,6 +673,7 @@ end:
 
 	gtk_widget_destroy (props);
 }
+
 static void
 brasero_video_disc_edit_information_cb (GtkAction *action,
 					BraseroVideoDisc *self)
@@ -1387,6 +1418,7 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 		song->start = brasero_track_get_audio_start (track);
 		song->end = brasero_track_get_audio_end (track);
 		song->info = brasero_song_info_copy (brasero_track_get_audio_info (track));
+
 		disc_track->contents.tracks = g_slist_append (disc_track->contents.tracks, song);
 	}
 
@@ -1420,6 +1452,7 @@ brasero_video_disc_load_track (BraseroDisc *disc,
 
 		brasero_video_project_add_uri (BRASERO_VIDEO_PROJECT (project),
 					       song->uri,
+					       song->info,
 					       NULL,
 					       song->start,
 					       song->end);

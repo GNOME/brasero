@@ -1,3 +1,40 @@
+2008-11-15  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #560539 – Brasero doesn't copy track & album info to audio CD
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_init),
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_result), (brasero_audio_disc_add_uri_real),
+	(brasero_audio_disc_add_uri), (brasero_audio_disc_get_track),
+	(brasero_audio_disc_set_session_contents),
+	(brasero_audio_disc_load_track),
+	(brasero_audio_disc_drag_data_received_cb),
+	(brasero_audio_disc_display_edited_cb),
+	(brasero_audio_disc_add_slices), (brasero_audio_disc_rename_songs),
+	(brasero_audio_disc_edit_multi_song_properties),
+	(brasero_audio_disc_edit_single_song_properties),
+	(brasero_audio_disc_edit_song_properties),
+	(brasero_audio_disc_clipboard_text_cb),
+	(brasero_audio_disc_button_pressed_cb):
+	* src/brasero-project.c (_read_audio_track),
+	(_save_audio_track_xml), (brasero_project_save_project_real):
+	* src/brasero-song-properties.c (brasero_song_props_title_set),
+	(brasero_song_props_artist_set), (brasero_song_props_composer_set),
+	(brasero_song_props_init), (brasero_song_props_get_properties),
+	(brasero_song_props_set_properties):
+	* src/brasero-video-disc.c (brasero_video_disc_add_uri_real),
+	(brasero_video_disc_rename_songs),
+	(brasero_video_disc_edit_song_properties_list),
+	(brasero_video_disc_edit_song_properties_file),
+	(brasero_video_disc_get_track), (brasero_video_disc_load_track):
+	* src/brasero-video-project.c (brasero_video_project_rename),
+	(brasero_video_project_set_file_information),
+	(brasero_video_project_add_uri):
+	* src/brasero-video-project.h:
+	* src/brasero-video-tree-model.c
+	(brasero_video_tree_model_get_value),
+	(brasero_video_tree_model_drag_data_received):
+
 2008-11-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	When not running full standalone application make sure modality works

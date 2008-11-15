@@ -62,6 +62,10 @@ struct BraseroSongPropsPrivate {
 
 	GtkWidget *gap;
 	GtkWidget *gap_label;
+
+	guint title_set:1;
+	guint artist_set:1;
+	guint composer_set:1;
 };
 
 static GObjectClass *parent_class = NULL;
@@ -120,6 +124,27 @@ brasero_song_props_gap_changed_cb (GtkSpinButton *button,
 }
 
 static void
+brasero_song_props_title_set (GtkEntry *entry,
+			      BraseroSongProps *self)
+{
+	self->priv->title_set = TRUE;
+}
+
+static void
+brasero_song_props_artist_set (GtkEntry *entry,
+			       BraseroSongProps *self)
+{
+	self->priv->artist_set = TRUE;
+}
+
+static void
+brasero_song_props_composer_set (GtkEntry *entry,
+				 BraseroSongProps *self)
+{
+	self->priv->composer_set = TRUE;
+}
+
+static void
 brasero_song_props_init (BraseroSongProps *obj)
 {
 	gchar *title_str;
@@ -153,6 +178,10 @@ brasero_song_props_init (BraseroSongProps *obj)
 	label = gtk_label_new (_("Title:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->title = gtk_entry_new ();
+	g_signal_connect (obj->priv->title,
+			  "changed",
+			  G_CALLBACK (brasero_song_props_title_set),
+			  obj);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->title, 1, 2, 0, 1);
 	gtk_widget_set_tooltip_text (obj->priv->title,
@@ -161,6 +190,10 @@ brasero_song_props_init (BraseroSongProps *obj)
 	label = gtk_label_new (_("Artist:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->artist = gtk_entry_new ();
+	g_signal_connect (obj->priv->artist,
+			  "changed",
+			  G_CALLBACK (brasero_song_props_artist_set),
+			  obj);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->artist, 1, 2, 1, 2);
 	gtk_widget_set_tooltip_text (obj->priv->artist,
@@ -169,6 +202,10 @@ brasero_song_props_init (BraseroSongProps *obj)
 	label = gtk_label_new (_("Composer:\t"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->composer = gtk_entry_new ();
+	g_signal_connect (obj->priv->composer,
+			  "changed",
+			  G_CALLBACK (brasero_song_props_composer_set),
+			  obj);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), obj->priv->composer, 1, 2, 2, 3);
 	gtk_widget_set_tooltip_text (obj->priv->composer,
@@ -276,12 +313,26 @@ brasero_song_props_get_properties (BraseroSongProps *self,
 				   gint64 *end,
 				   gint64 *gap)
 {
-	if (artist)
-		*artist = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->artist));
-	if (title)
-		*title = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->title));
-	if (composer)
-		*composer = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->composer));
+	if (artist) {
+		if (self->priv->artist_set)
+			*artist = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->artist));
+		else
+			*artist = NULL;
+	}
+
+	if (title) {
+		if (self->priv->title_set)
+			*title = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->title));
+		else
+			*title = NULL;
+	}
+
+	if (composer) {
+		if (self->priv->composer_set)
+			*composer = brasero_song_props_get_entry_value (GTK_ENTRY (self->priv->composer));
+		else
+			*composer = NULL;
+	}
 
 	if (isrc) {
 		const gchar *string;
@@ -369,6 +420,10 @@ brasero_song_props_set_properties (BraseroSongProps *self,
 					   self);
 
 	brasero_song_props_update_length (self);
+
+	self->priv->title_set = FALSE;
+	self->priv->artist_set = FALSE;
+	self->priv->composer_set = FALSE;
 }
 
 static void

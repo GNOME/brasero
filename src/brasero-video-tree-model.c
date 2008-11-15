@@ -135,9 +135,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 	case BRASERO_VIDEO_TREE_MODEL_NAME:
 		g_value_init (value, G_TYPE_STRING);
 
-		if (file->name)
-			g_value_set_string (value, file->name);
-		else if (file->info && file->info->title)
+		if (file->info && file->info->title)
 			g_value_set_string (value, file->info->title);
 		else {
 			gchar *name;
@@ -456,6 +454,7 @@ brasero_video_tree_model_drag_data_received (GtkTreeDragDest *drag_dest,
 			/* Add the URIs to the project */
 			brasero_video_project_add_uri (BRASERO_VIDEO_PROJECT (self),
 						       uris [i],
+						       NULL,
 						       sibling,
 						       -1,
 						       -1);
