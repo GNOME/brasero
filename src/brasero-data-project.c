@@ -2616,9 +2616,6 @@ brasero_data_project_create_path (BraseroDataProject *self,
 		 * isn't one. */
 		parent->is_tmp_parent = TRUE;
 
-		/* Increment it by 2 (loading folder and then its contents) */
-		priv->loading += 2;
-
 		(*folders) = g_slist_prepend ((*folders), parent);
 
 		/* Go on with the next; skip the separator */
@@ -2738,9 +2735,6 @@ brasero_data_project_add_path (BraseroDataProject *self,
 			node->is_loading = FALSE;
 			node->is_reloading = FALSE;
 
-			/* decrement that since we're not going to load anything */
-			priv->loading -= 2;
-
 			/* Don't signal the node addition yet we'll do it later
 			 * when all the nodes are created */
 		}
@@ -2749,9 +2743,6 @@ brasero_data_project_add_path (BraseroDataProject *self,
 			node->is_fake = FALSE;
 			node->is_loading = TRUE;
 			node->is_reloading = FALSE;
-
-			/* No need to increment priv->loading here since that
-			 * was done at the creation of the temporary folder */
 
 			/* Don't signal the node addition yet we'll do it later
 			 * when all the nodes are created */
@@ -2766,13 +2757,8 @@ brasero_data_project_add_path (BraseroDataProject *self,
 		/* don't use brasero_data_project_add_loading_node since that way:
 		 * - we don't check for sibling
 		 * - we set right from the start the right name */
-		if (uri != NEW_FOLDER) {
+		if (uri != NEW_FOLDER)
 			node = brasero_file_node_new_loading (path, parent, priv->sort_func);
-
-			/* Set loading counter to 2: 1 operation for loading the graft
-			 * point and 1 for loading its contents if that's a folder. */
-			priv->loading += 2;
-		}
 		else
 			node = brasero_file_node_new_empty_folder (path, parent, priv->sort_func);
 
@@ -2882,48 +2868,76 @@ brasero_data_project_add_excluded_uri (BraseroDataProject *self,
 	return folders;
 }
 
-static void
+static gint
 brasero_data_project_load_contents_notify_directory (BraseroDataProject *self,
 						     BraseroFileNode *parent,
 						     BraseroDataNodeAddedFunc func)
 {
 	BraseroFileNode *child;
+	gint num = 0;
 
 	child = BRASERO_FILE_NODE_CHILDREN (parent);
 	while (child) {
-		gchar *uri;
+		gboolean res;
+		BraseroFileNode *next;
 
-		uri = brasero_data_project_node_to_uri (self, child);
-		func (self, child, uri != NEW_FOLDER? uri:NULL);
-		g_free (uri);
+		/* The child could be removed during the process */
+		next = child->next;
+			
+		/**
+		 * This is to get the number of operations remaining before the
+		 * whole project is loaded.
+		 * +1 for loading information about a file or a directory (that
+		 * means they must not be fake).
+		 * +1 for loading the directory contents.
+		 */
+		if (!child->is_fake) {
+			gchar *uri;
 
-		if (!child->is_file)
-			brasero_data_project_load_contents_notify_directory (self,
-									     child,
-									     func);
+			uri = brasero_data_project_node_to_uri (self, child);
+			res = func (self, child, uri);
+			g_free (uri);
 
-		child = child->next;
+			if (res)
+				num ++;
+		}
+		else
+			res = func (self, child, NULL);
+
+		/* for whatever reason the node could have been invalidated */
+		if (res && !child->is_file) {
+			num ++;
+			num += brasero_data_project_load_contents_notify_directory (self,
+										    child,
+										    func);
+		}
+
+		child = next;
 	}
+
+	return num;
 }
 
-static void
+static gint
 brasero_data_project_load_contents_notify (BraseroDataProject *self)
 {
+	gint num;
 	BraseroDataProjectClass *klass;
 	BraseroDataProjectPrivate *priv;
 
 	klass = BRASERO_DATA_PROJECT_GET_CLASS (self);
 	if (!klass->node_added)
-		return;
+		return 0;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	/* we'll notify for every single node in the tree starting from the top.
 	 * NOTE: at this point there are only grafted nodes (fake or not) in the
 	 * tree. */
-	brasero_data_project_load_contents_notify_directory (self,
-							     priv->root,
-							     klass->node_added);
+	num = brasero_data_project_load_contents_notify_directory (self,
+								   priv->root,
+								   klass->node_added);
+	return num;
 }
 
 guint
@@ -2977,12 +2991,9 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 			tmp->is_fake = TRUE;
 			tmp->is_loading = FALSE;
 			tmp->is_reloading = FALSE;
-			//tmp->is_tmp_parent = FALSE;
 
 			graft = brasero_data_project_uri_ensure_graft (self, NEW_FOLDER);
 			brasero_file_node_graft (tmp, graft);
-
-			priv->loading -= 2;
 
 			/* Don't signal the node addition yet we'll do it later
 			 * when all the nodes are created */
@@ -3000,10 +3011,9 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 	}
 	g_slist_free (folders);
 
-	brasero_data_project_load_contents_notify (self);
+	priv->loading = brasero_data_project_load_contents_notify (self);
 
 	priv->is_loading_contents = 0;
-
 	return priv->loading;
 }
 

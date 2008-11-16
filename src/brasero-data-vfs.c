@@ -815,16 +815,13 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 		gchar *name;
 		GFile *vfs_uri;
 
-		/* g_path_get_basename is not comfortable with uri related
-		 * to the root directory so check that before */
 		vfs_uri = g_file_new_for_uri (uri);
 		name = g_file_get_basename (vfs_uri);
 		g_object_unref (vfs_uri);
 
-
 		/* NOTE and reminder names are already unescaped; the following
-		 * is not needed: unescaped_name = g_uri_unescape_string (name,
-		 * NULL); */
+		 * is not needed:
+		 * unescaped_name = g_uri_unescape_string (name, NULL); */
 
 		if (!name)
 			return TRUE;
@@ -1019,7 +1016,8 @@ brasero_data_vfs_node_added (BraseroDataProject *project,
 		if (brasero_data_vfs_loading_node (self, node, uri))
 			goto chain;
 
-		goto chain;
+		/* The node was invalidated. So there's no need to pass it on */
+		return FALSE;
 	}
 
 	/* NOTE: a symlink pointing to a directory will return TRUE. */

@@ -2105,15 +2105,17 @@ brasero_project_open_project (BraseroProject *project,
 
 	brasero_project_switch (project, type);
 
-	g_signal_handlers_block_by_func (project->priv->name_display,
-					 brasero_project_name_changed_cb,
-					 project);
-	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), label);
-	g_free (label);
+	if (label) {
+		g_signal_handlers_block_by_func (project->priv->name_display,
+						 brasero_project_name_changed_cb,
+						 project);
+		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), label);
+		g_free (label);
 
-	g_signal_handlers_unblock_by_func (project->priv->name_display,
-					   brasero_project_name_changed_cb,
-					   project);
+		g_signal_handlers_unblock_by_func (project->priv->name_display,
+						   brasero_project_name_changed_cb,
+						   project);
+	}
 
 	brasero_disc_load_track (project->priv->current, track);
 	brasero_track_free (track);

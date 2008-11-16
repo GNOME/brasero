@@ -1,3 +1,17 @@
+2008-11-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #Bug 560153 -- brasero crashed with SIGSEGV in brasero_data_project_node_to_uri()
+	Avoid crashing + Fix a warning
+
+	* src/brasero-data-project.c (brasero_data_project_create_path),
+	(brasero_data_project_add_path),
+	(brasero_data_project_load_contents_notify_directory),
+	(brasero_data_project_load_contents_notify),
+	(brasero_data_project_load_contents):
+	* src/brasero-data-vfs.c (brasero_data_vfs_loading_node),
+	(brasero_data_vfs_node_added):
+	* src/brasero-project.c (brasero_project_open_project):
+
 2008-11-15  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #560539 – Brasero doesn't copy track & album info to audio CD
