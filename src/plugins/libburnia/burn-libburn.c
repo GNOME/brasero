@@ -529,8 +529,10 @@ brasero_libburn_start_record (BraseroLibburn *self,
 		}
 	}
 
+	if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media))
+		burn_write_opts_set_multi (opts, (flags & BRASERO_BURN_FLAG_MULTI) != 0);
+
 	burn_write_opts_set_underrun_proof (opts, (flags & BRASERO_BURN_FLAG_BURNPROOF) != 0);
-	burn_write_opts_set_multi (opts, (flags & BRASERO_BURN_FLAG_MULTI) != 0);
 	burn_write_opts_set_simulate (opts, (flags & BRASERO_BURN_FLAG_DUMMY) != 0);
 
 	brasero_job_get_rate (BRASERO_JOB (self), &rate);

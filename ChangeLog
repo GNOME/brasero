@@ -1,5 +1,13 @@
 2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a problem with DVD+RW (and those media types of the same species)
+	and libburn
+
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_start_record):
+
+2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Show errors again when a burn fail (problem introduced by recent changes)
 
 	* src/brasero-burn-dialog.c (brasero_burn_dialog_record_session):
