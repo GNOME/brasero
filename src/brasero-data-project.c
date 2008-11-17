@@ -1141,6 +1141,33 @@ brasero_data_project_remove_real (BraseroDataProject *self,
 		       0);
 }
 
+static void
+brasero_data_project_convert_to_fake (BraseroDataProject *self,
+				      BraseroFileNode *node)
+{
+	BraseroURINode *graft;
+	BraseroDataProjectPrivate *priv;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	/* make it a fake directory not to break order */
+	node->is_fake = TRUE;
+	node->is_loading = FALSE;
+	node->is_tmp_parent = FALSE;
+
+	brasero_file_node_ungraft (node);
+	graft = brasero_data_project_uri_ensure_graft (self, NEW_FOLDER);
+	brasero_file_node_graft (node, graft);
+	brasero_data_project_node_changed (self, node);
+
+	/* Remove 2 since we're not going to load its contents */
+	priv->loading -= 2;
+	g_signal_emit (self,
+		       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
+		       0,
+		       priv->loading);
+}
+
 void
 brasero_data_project_remove_node (BraseroDataProject *self,
 				  BraseroFileNode *node)
@@ -1152,47 +1179,25 @@ brasero_data_project_remove_node (BraseroDataProject *self,
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
 
 	if (node->is_tmp_parent) {
-		BraseroURINode *graft;
-
 		/* This node was created as a temporary parent, it doesn't exist
 		 * so we replace it with a fake one. */
 
 		/* Don't exclude any URI since it doesn't exist apparently */
 
-		/* No need to check for deep directory since that was in
-		 * the project as such. Keep it that way. */
+		/* No need to check for deep directory since that was in the
+		 * project as such. Keep it that way. */
 
-		/* Remove 2 since we're not going to load its contents */
-		priv->loading -= 2;
-		g_signal_emit (self,
-			       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
-			       0,
-			       priv->loading);
-
-		node->is_tmp_parent = FALSE;
-
-		/* make it a fake directory not to break order */
-		node->is_fake = TRUE;
-		node->is_loading = FALSE;
-
-		brasero_file_node_ungraft (node);
-		graft = brasero_data_project_uri_ensure_graft (self, NEW_FOLDER);
-		brasero_file_node_graft (node, graft);
-		brasero_data_project_node_changed (self, node);
+		brasero_data_project_convert_to_fake (self, node);
 		return;
 	}
 	else if (priv->loading && node->is_grafted) {
-		/* that means that's a grafted that failed to load decrement by 2 */
-		priv->loading -= 2;
-		g_signal_emit (self,
-			       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
-			       0,
-			       priv->loading);
+		/* that means that's a grafted that failed to load */
+		brasero_data_project_convert_to_fake (self, node);
+		return;
 	}
 
 	/* check for a sibling now (before destruction) */
 	imported_sibling = brasero_file_node_check_imported_sibling (node);
-
 	brasero_data_project_remove_real (self, node);
 
 	/* add the sibling now (after destruction) */
@@ -1818,33 +1823,9 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	if (node->is_tmp_parent) {
 		/* we must make sure that this is really a directory */
 		if (type != G_FILE_TYPE_DIRECTORY) {
-			BraseroURINode *graft;
-
-			/* it isn't a directory so it won't be loaded but turned
-			 * into a fake one. Decrement the number of loading */
-			priv->loading -= 2;
-			g_signal_emit (self,
-				       brasero_data_project_signals [PROJECT_LOADED_SIGNAL],
-				       0,
-				       priv->loading);
-
-			/* no need to check for deep directory since that was in
-			 * the project as such. Keep it that way. */
-
-			/* make it a fake directory not to break order */
-			node->is_fake = TRUE;
-			node->is_loading = FALSE;
-			node->is_tmp_parent = FALSE;
-
 			/* exclude the URI we're replacing */
 			brasero_data_project_exclude_uri (self, uri);
-			brasero_file_node_ungraft (node);
-
-			graft = brasero_data_project_uri_ensure_graft (self, NEW_FOLDER);
-			brasero_file_node_graft (node, graft);
-			brasero_data_project_node_changed (self, node);
-
-			/* since that URI wasn't a folder no contents loading */
+			brasero_data_project_convert_to_fake (self, node);
 			return;
 		}
 
@@ -2954,21 +2935,34 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 
 	for (iter = grafts; iter; iter = iter->next) {
 		BraseroGraftPt *graft;
+		GFile *file;
+		gchar *uri;
 
 		graft = iter->data;
+
+		file = g_file_new_for_uri (graft->uri);
+		uri = g_file_get_uri (file);
+		g_object_unref (file);
+
 		folders = brasero_data_project_add_path (self,
 							 graft->path,
-							 graft->uri,
+							 uri,
 							 folders);
+		g_free (uri);
 	}
 
 	for (iter = excluded; iter; iter = iter->next) {
 		gchar *uri;
+		GFile *file;
 
-		uri = iter->data;
+		file = g_file_new_for_uri (iter->data);
+		uri = g_file_get_uri (file);
+		g_object_unref (file);
+
 		folders = brasero_data_project_add_excluded_uri (self,
 								 uri,
 								 folders);
+		g_free (uri);
 	}
 
 	/* Now load the temporary folders that were created */

@@ -94,6 +94,8 @@ struct _BraseroDataDiscPrivate
 
 	GSList *load_errors;
 
+	gint size_changed_id;
+
 	guint loading;
 
 	guint editing:1;
@@ -1099,14 +1101,35 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 	return (answer != GTK_RESPONSE_YES);
 }
 
+static gboolean
+brasero_data_disc_size_changed (gpointer user_data)
+{
+	gint64 size;
+	BraseroDataDisc *self;
+	BraseroDataDiscPrivate *priv;
+
+	self = BRASERO_DATA_DISC (user_data);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	size = brasero_data_project_get_size (BRASERO_DATA_PROJECT (priv->project));
+	brasero_disc_size_changed (BRASERO_DISC (self), size);
+
+	priv->size_changed_id = 0;
+	return FALSE;
+}
+
 static void
 brasero_data_disc_size_changed_cb (BraseroDataProject *project,
 				   BraseroDataDisc *self)
 {
-	gint64 size;
+	BraseroDataDiscPrivate *priv;
 
-	size = brasero_data_project_get_size (project);
-	brasero_disc_size_changed (BRASERO_DISC (self), size);
+	priv = BRASERO_DATA_DISC_PRIVATE (self);
+
+	if (!priv->size_changed_id)
+		priv->size_changed_id = g_timeout_add (500,
+						       brasero_data_disc_size_changed,
+						       self);
 }
 
 static void
@@ -1344,6 +1367,11 @@ brasero_data_disc_clear (BraseroDisc *disc)
 	if (priv->loading)
 		return;
 
+	if (priv->size_changed_id) {
+		g_source_remove (priv->size_changed_id);
+		priv->size_changed_id = 0;
+	}
+
 	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)))
 		brasero_data_session_remove_last (BRASERO_DATA_SESSION (priv->project));
 
@@ -1374,6 +1402,11 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
+
+	if (priv->size_changed_id) {
+		g_source_remove (priv->size_changed_id);
+		priv->size_changed_id = 0;
+	}
 
 	/* Unload session */
 	if (brasero_data_session_get_loaded_medium (BRASERO_DATA_SESSION (priv->project)))
@@ -2570,6 +2603,11 @@ brasero_data_disc_finalize (GObject *object)
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (object);
+
+	if (priv->size_changed_id) {
+		g_source_remove (priv->size_changed_id);
+		priv->size_changed_id = 0;
+	}
 
 	if (priv->message) {
 		g_object_unref (priv->message);

@@ -385,7 +385,8 @@ brasero_data_vfs_directory_check_symlink_loop (BraseroDataVFS *self,
 
 		/* The next graft point must be the natural parent of this one */
 		next = parent->parent;
-		if (!next || next->is_root) {
+		if (!next || next->is_root || next->is_fake) {
+			/* It's not we're done */
 			g_free (parent_uri);
 			break;
 		}
@@ -811,36 +812,19 @@ brasero_data_vfs_loading_node (BraseroDataVFS *self,
 
 	priv = BRASERO_DATA_VFS_PRIVATE (self);
 
-	if (!node->is_reloading) {
-		gchar *name;
-		GFile *vfs_uri;
+	if (!node->is_reloading
+	&&   BRASERO_FILE_NODE_NAME (node)
+	&&  !strcmp (BRASERO_FILE_NODE_NAME (node), G_DIR_SEPARATOR_S)) {
+		/* This is a root directory: we don't add it since a
+		 * child of the root directory can't be a root itself.
+		 * So we add all its contents under its parent. Remove
+		 * the loading node as well. 
+		 * Be careful in the next functions not to use node. */
+		brasero_data_vfs_load_directory (self, node->parent, uri);
 
-		vfs_uri = g_file_new_for_uri (uri);
-		name = g_file_get_basename (vfs_uri);
-		g_object_unref (vfs_uri);
-
-		/* NOTE and reminder names are already unescaped; the following
-		 * is not needed:
-		 * unescaped_name = g_uri_unescape_string (name, NULL); */
-
-		if (!name)
-			return TRUE;
-
-		if (!strcmp (name, G_DIR_SEPARATOR_S)) {
-			g_free (name);
-
-			/* This is a root directory: we don't add it since a
-			 * child of the root directory can't be a root itself.
-			 * So we add all its contents under its parent. Remove
-			 * the loading node as well. 
-			 * Be careful in the next functions not to use node. */
-			brasero_data_vfs_load_directory (self, node->parent, uri);
-
-			/* node was invalidated: return FALSE */
-			brasero_data_project_remove_node (BRASERO_DATA_PROJECT (self), node);
-			return FALSE;
-		}
-		g_free (name);
+		/* node was invalidated: return FALSE */
+		brasero_data_project_remove_node (BRASERO_DATA_PROJECT (self), node);
+		return FALSE;
 	}
 
 	/* FIXME: we could know right from the start if that node is is_loading */

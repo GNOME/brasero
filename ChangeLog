@@ -1,5 +1,22 @@
 2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Small speed up and fixes for project loading and exploration
+
+	* src/brasero-data-disc.c (brasero_data_disc_size_changed),
+	(brasero_data_disc_size_changed_cb), (brasero_data_disc_clear),
+	(brasero_data_disc_reset), (brasero_data_disc_finalize):
+	* src/brasero-data-project.c
+	(brasero_data_project_convert_to_fake),
+	(brasero_data_project_remove_node),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_load_contents):
+	* src/brasero-data-vfs.c
+	(brasero_data_vfs_directory_check_symlink_loop),
+	(brasero_data_vfs_loading_node):
+	* src/brasero-file-monitor.c (brasero_file_monitor_foreach_cancel):
+
+2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Try not to crash in the very unlikely event when HAL doesn't return a
 	block path
 

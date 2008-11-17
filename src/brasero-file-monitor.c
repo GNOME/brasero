@@ -739,7 +739,7 @@ brasero_file_monitor_foreach_cancel (BraseroFileMonitor *self,
 	data.func = func;
 	data.results = NULL;
 	data.callback_data = callback_data;
-	data.dev_fd = g_io_channel_unix_get_fd (priv->notify);;
+	data.dev_fd = g_io_channel_unix_get_fd (priv->notify);
 
 	g_hash_table_foreach (priv->files,
 			      brasero_file_monitor_foreach_cancel_file_cb,
