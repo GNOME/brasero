@@ -1,3 +1,10 @@
+2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Try not to crash in the very unlikely event when HAL doesn't return a
+	block path
+
+	* src/burn-drive.c (brasero_drive_init_real):
+
 2008-11-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #Bug 560153 -- brasero crashed with SIGSEGV in brasero_data_project_node_to_uri()

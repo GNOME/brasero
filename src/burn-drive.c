@@ -551,7 +551,7 @@ brasero_drive_init_real (BraseroDrive *drive)
 							priv->udi,
 							BLOCK_DEVICE,
 							NULL);
-	if (priv->path [0] == '\0') {
+	if (priv->path && priv->path [0] == '\0') {
 		g_free (priv->path);
 		priv->path = NULL;
 	}
@@ -560,7 +560,7 @@ brasero_drive_init_real (BraseroDrive *drive)
 							      priv->udi,
 							      "block.device",
 							      NULL);
-	if (priv->block_path [0] == '\0') {
+	if (priv->block_path && priv->block_path [0] == '\0') {
 		g_free (priv->block_path);
 		priv->block_path = NULL;
 	}
