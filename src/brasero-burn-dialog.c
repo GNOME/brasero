@@ -1851,12 +1851,13 @@ brasero_burn_dialog_record_session (BraseroBurnDialog *dialog,
 	result = brasero_burn_record (dialog->priv->burn,
 				      dialog->priv->session,
 				      &error);
-	if (result != BRASERO_BURN_OK)
-		return result;
 
 	retry = brasero_burn_dialog_end_session (dialog,
 						 result,
 						 error);
+
+	if (result == BRASERO_BURN_RETRY)
+		return result;
 
 	if (retry)
 		return BRASERO_BURN_RETRY;
