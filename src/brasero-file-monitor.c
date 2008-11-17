@@ -703,7 +703,12 @@ brasero_file_monitor_foreach_cancel_file_cb (gpointer key,
 			result->key = key;
 			result->callback_data = file_data;
 			data->results = g_slist_prepend (data->results, result);
-			break;
+
+			/* NOTE: don't stop here as func (at least for data 
+			 * projects returns TRUE when:
+			 * - callback_data is the data looked for
+			 * - when there it is an ancestor
+			 * So it's never finished with just one hit. */
 		}
 	}
 }

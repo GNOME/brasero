@@ -1,5 +1,13 @@
 2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a rare crash with file monitoring where some stale nodes remained
+	in the hash table. Make sure that doesn't happen anymore
+
+	* src/brasero-file-monitor.c
+	(brasero_file_monitor_foreach_cancel_file_cb):
+
+2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Small speed up and fixes for project loading and exploration
 
 	* src/brasero-data-disc.c (brasero_data_disc_size_changed),
