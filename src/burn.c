@@ -1170,40 +1170,7 @@ brasero_burn_action_changed (BraseroTask *task,
 			     BraseroBurnAction action,
 			     BraseroBurn *burn)
 {
-	BraseroBurnPrivate *priv;
-	BraseroMedia media;
-
 	brasero_burn_action_changed_real (burn, action);
-
-	if (action != BRASERO_BURN_ACTION_START_RECORDING)
-		return;
-
-	priv = BRASERO_BURN_PRIVATE (burn);
-
-	media = brasero_burn_session_get_dest_media (priv->session);
-	if ((BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-	||   BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED))) {
-		BraseroBurnFlag flags;
-		BraseroMedium *medium;
-		BraseroDrive *drive;
-		gint64 len = 0;
-
-		drive = brasero_burn_session_get_burner (priv->session);
-		medium = brasero_drive_get_medium (drive);
-		flags = brasero_burn_session_get_flags (priv->session);
-
-		/* we need to save some parameters for later checksuming */
-		brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
-							  &len,
-							  NULL);
-
-		if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
-			priv->session_start = brasero_medium_get_next_writable_address (medium);
-		else
-			priv->session_start = 0;
-
-		priv->session_end = priv->session_start + len;
-	}
 }
 
 void
@@ -1736,6 +1703,31 @@ brasero_burn_run_tasks (BraseroBurn *burn,
 		if (result != BRASERO_BURN_OK)
 			break;
 
+		/* try to get the output size */
+		if (BRASERO_MEDIUM_RANDOM_WRITABLE (brasero_burn_session_get_dest_media (priv->session))) {
+			gint64 len = 0;
+			BraseroDrive *drive;
+			BraseroMedium *medium;
+
+			brasero_task_ctx_get_session_output_size (BRASERO_TASK_CTX (priv->task),
+								  &len,
+								  NULL);
+
+			drive = brasero_burn_session_get_burner (priv->session);
+			medium = brasero_drive_get_medium (drive);
+
+			if (brasero_burn_session_get_flags (priv->session) & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
+				priv->session_start = brasero_medium_get_next_writable_address (medium);
+			else
+				priv->session_start = 0;
+
+			priv->session_end = priv->session_start + len;
+
+			BRASERO_BURN_LOG ("Burning from %lld to %lld",
+					  priv->session_start,
+					  priv->session_end);
+		}
+
 		/* see if we reached a recording task: it's the last task */
 		if (!next) {
 			if (brasero_burn_session_is_dest_file (priv->session))
@@ -2159,8 +2151,7 @@ brasero_burn_record_session (BraseroBurn *burn,
 		 * number for these drives. */
 		media = brasero_medium_get_status (medium);
 
-		if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-		&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
+		if (!BRASERO_MEDIUM_RANDOM_WRITABLE (media)) {
 			guint track_num;
 
 			track_num = brasero_medium_get_track_num (medium);

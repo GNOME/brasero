@@ -1,5 +1,18 @@
 2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improve and fix previous patch where we didn't set the checksum type
+	Also improve checksuming for track < 300k
+
+	* src/burn.c (brasero_burn_action_changed),
+	(brasero_burn_run_tasks), (brasero_burn_record_session):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_create_checksum),
+	(brasero_checksum_get_checksum_type),
+	(brasero_checksum_image_image_and_checksum),
+	(brasero_checksum_image_end):
+
+2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix checksum-image plugin start
 	Fix a string
 

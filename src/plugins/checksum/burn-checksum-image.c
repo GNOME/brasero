@@ -191,10 +191,10 @@ brasero_checksum_image_checksum (BraseroChecksumImage *self,
 	result = BRASERO_BURN_OK;
 	while (1) {
 		read_bytes = brasero_checksum_image_read (self,
-						  fd_in,
-						  buffer,
-						  sizeof (buffer),
-						  error);
+							  fd_in,
+							  buffer,
+							  sizeof (buffer),
+							  error);
 		if (read_bytes == -2)
 			return BRASERO_BURN_CANCEL;
 
@@ -208,9 +208,9 @@ brasero_checksum_image_checksum (BraseroChecksumImage *self,
 		 * that we don't need to output the received data */
 		if (fd_out > 0) {
 			result = brasero_checksum_image_write (self,
-						       fd_out,
-						       buffer,
-						       read_bytes, error);
+							       fd_out,
+							       buffer,
+							       read_bytes, error);
 			if (result != BRASERO_BURN_OK)
 				break;
 		}
@@ -318,9 +318,9 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 					GError **error)
 {
 	BraseroBurnResult result;
-	BraseroChecksumImagePrivate *priv;
 	BraseroTrack *track = NULL;
 	GChecksumType checksum_type;
+	BraseroChecksumImagePrivate *priv;
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
 
@@ -384,16 +384,8 @@ brasero_checksum_get_checksum_type (void)
 	checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
 	g_object_unref (client);
 
-	if (checksum_type == BRASERO_CHECKSUM_NONE)
-		checksum_type = G_CHECKSUM_MD5;
-	else if (checksum_type & BRASERO_CHECKSUM_MD5)
-		checksum_type = G_CHECKSUM_MD5;
-	else if (checksum_type & BRASERO_CHECKSUM_SHA1)
-		checksum_type = G_CHECKSUM_SHA1;
-	else if (checksum_type & BRASERO_CHECKSUM_SHA256)
-		checksum_type = G_CHECKSUM_SHA256;
-	else
-		checksum_type = G_CHECKSUM_MD5;
+	if (!checksum_type)
+		checksum_type = BRASERO_CHECKSUM_MD5;
 
 	return checksum_type;
 }
@@ -403,10 +395,22 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 					   GError **error)
 {
 	BraseroBurnResult result;
+	GChecksumType checksum_type;
 	BraseroChecksumImagePrivate *priv;
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
+
 	priv->checksum_type = brasero_checksum_get_checksum_type ();
+	if (priv->checksum_type == BRASERO_CHECKSUM_NONE)
+		checksum_type = G_CHECKSUM_MD5;
+	else if (priv->checksum_type & BRASERO_CHECKSUM_MD5)
+		checksum_type = G_CHECKSUM_MD5;
+	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA1)
+		checksum_type = G_CHECKSUM_SHA1;
+	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA256)
+		checksum_type = G_CHECKSUM_SHA256;
+	else
+		checksum_type = G_CHECKSUM_MD5;
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CHECKSUM,
@@ -426,10 +430,14 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		result = brasero_checksum_image_checksum_file_input (self, priv->checksum_type, error);
+		result = brasero_checksum_image_checksum_file_input (self,
+								     checksum_type,
+								     error);
 	}
 	else
-		result = brasero_checksum_image_checksum_fd_input (self, priv->checksum_type, error);
+		result = brasero_checksum_image_checksum_fd_input (self,
+								   checksum_type,
+								   error);
 
 	return result;
 }
@@ -480,7 +488,7 @@ brasero_checksum_image_end (gpointer data)
 	 * potential previous one. */
 	checksum = g_checksum_get_string (priv->checksum);
 	BRASERO_JOB_LOG (self,
-			 "setting new checksum (type = %i) %s (%s before)",
+			 "Setting new checksum (type = %i) %s (%s before)",
 			 priv->checksum_type,
 			 checksum,
 			 brasero_track_get_checksum (track));
