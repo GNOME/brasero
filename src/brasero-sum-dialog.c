@@ -614,15 +614,17 @@ brasero_sum_dialog_check_disc_sum (BraseroSumDialog *self,
 								    &error);
 
 	if (checksum_type == BRASERO_CHECKSUM_NONE) {
-		brasero_sum_dialog_message_error (self, error);
+		retval = brasero_sum_dialog_message_error (self, error);
 		brasero_track_unref (track);
-		g_error_free (error);
-		return FALSE;
+
+		if (error)
+			g_error_free (error);
+
+		return retval;
 	}
 
 	/* no eject at the end (it's default) */
 	brasero_burn_session_remove_flag (self->priv->session, BRASERO_BURN_FLAG_EJECT);
-
 	brasero_burn_session_add_track (self->priv->session, track);
 
 	/* It's good practice to unref the track afterwards as we don't need it
