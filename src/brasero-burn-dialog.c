@@ -1118,24 +1118,25 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 
 	box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (box);
-	gtk_box_pack_start (GTK_BOX (vbox), box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), box, FALSE, TRUE, 0);
 
 	obj->priv->header = gtk_label_new (NULL);
 	gtk_widget_show (obj->priv->header);
 	gtk_misc_set_alignment (GTK_MISC (obj->priv->header), 0.0, 0.5);
 	gtk_misc_set_padding (GTK_MISC (obj->priv->header), 0, 18);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->header, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->header, FALSE, TRUE, 0);
 
 	obj->priv->image = gtk_image_new ();
+	gtk_misc_set_alignment (GTK_MISC (obj->priv->image), 1.0, 0.5);
 	gtk_widget_show (obj->priv->image);
-	gtk_box_pack_start (GTK_BOX (box), obj->priv->image, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (box), obj->priv->image, TRUE, TRUE, 0);
 
 	obj->priv->progress = brasero_burn_progress_new ();
 	gtk_widget_show (obj->priv->progress);
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    obj->priv->progress,
 			    FALSE,
-			    FALSE,
+			    TRUE,
 			    0);
 
 	/* buttons */

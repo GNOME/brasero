@@ -1,5 +1,12 @@
 2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix UI glitch after a successful burn too fast to generate an average
+	speed
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_init):
+
+2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Improve and fix previous patch where we didn't set the checksum type
 	Also improve checksuming for track < 300k
 
