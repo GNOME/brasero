@@ -374,30 +374,39 @@ brasero_checksum_image_create_checksum (BraseroChecksumImage *self,
 	return BRASERO_BURN_OK;
 }
 
+static BraseroChecksumType
+brasero_checksum_get_checksum_type (void)
+{
+	GConfClient *client;
+	GChecksumType checksum_type;
+
+	client = gconf_client_get_default ();
+	checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
+	g_object_unref (client);
+
+	if (checksum_type == BRASERO_CHECKSUM_NONE)
+		checksum_type = G_CHECKSUM_MD5;
+	else if (checksum_type & BRASERO_CHECKSUM_MD5)
+		checksum_type = G_CHECKSUM_MD5;
+	else if (checksum_type & BRASERO_CHECKSUM_SHA1)
+		checksum_type = G_CHECKSUM_SHA1;
+	else if (checksum_type & BRASERO_CHECKSUM_SHA256)
+		checksum_type = G_CHECKSUM_SHA256;
+	else
+		checksum_type = G_CHECKSUM_MD5;
+
+	return checksum_type;
+}
+
 static BraseroBurnResult
 brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 					   GError **error)
 {
-	GConfClient *client;
 	BraseroBurnResult result;
-	GChecksumType checksum_type;
 	BraseroChecksumImagePrivate *priv;
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (self);
-	client = gconf_client_get_default ();
-	priv->checksum_type = gconf_client_get_int (client, GCONF_KEY_CHECKSUM_TYPE, NULL);
-	g_object_unref (client);
-
-	if (priv->checksum_type == BRASERO_CHECKSUM_NONE)
-		checksum_type = G_CHECKSUM_MD5;
-	else if (priv->checksum_type & BRASERO_CHECKSUM_MD5)
-		checksum_type = G_CHECKSUM_MD5;
-	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA1)
-		checksum_type = G_CHECKSUM_SHA1;
-	else if (priv->checksum_type & BRASERO_CHECKSUM_SHA256)
-		checksum_type = G_CHECKSUM_SHA256;
-	else
-		checksum_type = G_CHECKSUM_MD5;
+	priv->checksum_type = brasero_checksum_get_checksum_type ();
 
 	brasero_job_set_current_action (BRASERO_JOB (self),
 					BRASERO_BURN_ACTION_CHECKSUM,
@@ -417,10 +426,10 @@ brasero_checksum_image_image_and_checksum (BraseroChecksumImage *self,
 		if (result != BRASERO_BURN_OK)
 			return result;
 
-		result = brasero_checksum_image_checksum_file_input (self, checksum_type, error);
+		result = brasero_checksum_image_checksum_file_input (self, priv->checksum_type, error);
 	}
 	else
-		result = brasero_checksum_image_checksum_fd_input (self, checksum_type, error);
+		result = brasero_checksum_image_checksum_fd_input (self, priv->checksum_type, error);
 
 	return result;
 }
@@ -609,8 +618,10 @@ brasero_checksum_image_activate (BraseroJob *job,
 	brasero_job_get_action (job, &action);
 
 	if (action == BRASERO_JOB_ACTION_IMAGE
-	&&  brasero_track_get_checksum_type (track) != BRASERO_CHECKSUM_NONE) {
-		BRASERO_JOB_LOG (job, "There is a checksum already");
+	&&  brasero_track_get_checksum_type (track) == brasero_checksum_get_checksum_type ()) {
+		BRASERO_JOB_LOG (job,
+				 "There is a checksum already %d",
+				 brasero_track_get_checksum_type (track));
 		/* if there is a checksum already, if so no need to redo one */
 		return BRASERO_BURN_NOT_RUNNING;
 	}
