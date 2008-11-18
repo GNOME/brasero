@@ -42,7 +42,7 @@ typedef enum {
 	BRASERO_METADATA_FLAG_FAST			= 1,
 	BRASERO_METADATA_FLAG_SILENCES			= 1 << 1,
 	BRASERO_METADATA_FLAG_MISSING			= 1 << 2,
-	BRASERO_METADATA_FLAG_SNAPHOT			= 1 << 3
+	BRASERO_METADATA_FLAG_THUMBNAIL			= 1 << 3
 } BraseroMetadataFlag;
 
 #define BRASERO_TYPE_METADATA         (brasero_metadata_get_type ())

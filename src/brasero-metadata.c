@@ -1082,7 +1082,7 @@ brasero_metadata_create_audio_pipeline (BraseroMetadata *self)
 				       NULL);
 		audio_pad = gst_element_get_static_pad (priv->convert, "sink");
 	}
-	else if (priv->flags & BRASERO_METADATA_FLAG_SNAPHOT) {
+	else if (priv->flags & BRASERO_METADATA_FLAG_THUMBNAIL) {
 		GstElement *queue;
 
 		queue = gst_element_factory_make ("queue", NULL);
@@ -1283,7 +1283,7 @@ brasero_metadata_new_decoded_pad_cb (GstElement *decode,
 	if (g_strrstr (name, "video/x-raw-") && !priv->video_linked) {
 		BRASERO_BURN_LOG ("RAW video stream found");
 
-		if (!priv->video && (priv->flags & BRASERO_METADATA_FLAG_SNAPHOT)) {
+		if (!priv->video && (priv->flags & BRASERO_METADATA_FLAG_THUMBNAIL)) {
 			/* we shouldn't error out if we can't create a video
 			 * pipeline (mostly used for snapshots) */
 			/* FIXME: we should nevertheless tell the user what

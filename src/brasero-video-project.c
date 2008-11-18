@@ -501,7 +501,7 @@ brasero_video_project_set_file_information (BraseroVideoProject *self,
 	}
 
 	/* Set the snapshot */
-	snapshot = GDK_PIXBUF (g_file_info_get_attribute_object (info, BRASERO_IO_SNAPSHOT));
+	snapshot = GDK_PIXBUF (g_file_info_get_attribute_object (info, BRASERO_IO_THUMBNAIL));
 	if (snapshot) {
 		GdkPixbuf *scaled;
 
@@ -653,7 +653,7 @@ brasero_video_project_add_directory_contents (BraseroVideoProject *self,
 				   BRASERO_IO_INFO_METADATA|
 				   BRASERO_IO_INFO_METADATA_MISSING_CODEC|
 				   BRASERO_IO_INFO_RECURSIVE|
-				   BRASERO_IO_INFO_METADATA_SNAPSHOT,
+				   BRASERO_IO_INFO_METADATA_THUMBNAIL,
 				   GINT_TO_POINTER (ref));
 }
 
@@ -833,7 +833,7 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 				  BRASERO_IO_INFO_URGENT|
 				  BRASERO_IO_INFO_METADATA|
 				  BRASERO_IO_INFO_METADATA_MISSING_CODEC|
-				  BRASERO_IO_INFO_METADATA_SNAPSHOT,
+				  BRASERO_IO_INFO_METADATA_THUMBNAIL,
 				  GINT_TO_POINTER (ref));
 
 	g_signal_emit (self,
@@ -996,6 +996,7 @@ brasero_video_project_get_contents (BraseroVideoProject *self)
 		tracks = g_slist_prepend (tracks, track);
 	}
 
+	tracks = g_slist_reverse (tracks);
 	return tracks;
 }
 
@@ -1086,7 +1087,7 @@ brasero_video_project_file_modified (BraseroFileMonitor *monitor,
 				  BRASERO_IO_INFO_URGENT|
 				  BRASERO_IO_INFO_METADATA|
 				  BRASERO_IO_INFO_METADATA_MISSING_CODEC|
-				  BRASERO_IO_INFO_METADATA_SNAPSHOT,
+				  BRASERO_IO_INFO_METADATA_THUMBNAIL,
 				  GINT_TO_POINTER (ref));
 }
 

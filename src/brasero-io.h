@@ -57,7 +57,7 @@ typedef enum {
 	BRASERO_IO_INFO_ICON			= 1,
 	BRASERO_IO_INFO_PERM			= 1 << 1,
 	BRASERO_IO_INFO_METADATA		= 1 << 2,
-	BRASERO_IO_INFO_METADATA_SNAPSHOT		= 1 << 3,
+	BRASERO_IO_INFO_METADATA_THUMBNAIL	= 1 << 3,
 	BRASERO_IO_INFO_RECURSIVE		= 1 << 4,
 	BRASERO_IO_INFO_CHECK_PARENT_SYMLINK	= 1 << 5,
 	BRASERO_IO_INFO_METADATA_MISSING_CODEC	= 1 << 6,
@@ -82,7 +82,7 @@ typedef enum {
 #define BRASERO_IO_COUNT_SIZE		"count::size"
 #define BRASERO_IO_COUNT_INVALID	"count::invalid"
 
-#define BRASERO_IO_SNAPSHOT		"metadata::snapshot"
+#define BRASERO_IO_THUMBNAIL		"metadata::thumbnail"
 
 #define BRASERO_IO_LEN			"metadata::length"
 #define BRASERO_IO_ISRC			"metadata::isrc"

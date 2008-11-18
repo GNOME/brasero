@@ -784,7 +784,7 @@ brasero_io_set_metadata_attributes (GFileInfo *info,
 	g_file_info_set_attribute_boolean (info, BRASERO_IO_IS_SEEKABLE, metadata->is_seekable);
 
 	if (metadata->snapshot)
-		g_file_info_set_attribute_object (info, BRASERO_IO_SNAPSHOT, G_OBJECT (metadata->snapshot));
+		g_file_info_set_attribute_object (info, BRASERO_IO_THUMBNAIL, G_OBJECT (metadata->snapshot));
 
 	/* FIXME: what about silences */
 }
@@ -871,7 +871,7 @@ brasero_io_get_metadata_info (BraseroIO *self,
 		cached = node->data;
 		last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 		if (last_modified == cached->last_modified) {
-			if (flags & BRASERO_METADATA_FLAG_SNAPHOT) {
+			if (flags & BRASERO_METADATA_FLAG_THUMBNAIL) {
 				/* If there isn't any snapshot retry */
 				if (cached->info->snapshot) {
 					brasero_metadata_info_copy (meta_info, cached->info);
@@ -980,6 +980,7 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 				  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET ","
 				  G_FILE_ATTRIBUTE_STANDARD_TYPE};
 	GError *local_error = NULL;
+	gboolean should_thumbnail;
 	GFileInfo *info;
 
 	if (g_cancellable_is_cancelled (cancel))
@@ -991,6 +992,8 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
 	if (options & BRASERO_IO_INFO_ICON)
 		strcat (attributes, "," G_FILE_ATTRIBUTE_STANDARD_ICON);
+	if (options & BRASERO_IO_INFO_METADATA_THUMBNAIL)
+		strcat (attributes, "," G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
 
 	/* if retrieving metadata we need this one to check if a possible result
 	 * in cache should be updated or used */
@@ -1050,21 +1053,46 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 		g_object_unref (parent);
 	}
 
+	should_thumbnail = FALSE;
+	if (options & BRASERO_IO_INFO_METADATA_THUMBNAIL) {
+		const gchar *path;
+
+		path = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
+		if (path) {
+			GdkPixbuf *pixbuf;
+
+			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+			if (pixbuf) {
+				g_file_info_set_attribute_object (info,
+								  BRASERO_IO_THUMBNAIL,
+								  G_OBJECT (pixbuf));
+				g_object_unref (pixbuf);
+			}
+			else
+				should_thumbnail = TRUE;
+		}
+		else if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_THUMBNAILING_FAILED))
+			should_thumbnail = TRUE;
+	}
+
 	/* see if we are supposed to get metadata for this file (provided it's
 	 * an audio file of course). */
 	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY
 	&&  options & BRASERO_IO_INFO_METADATA) {
 		BraseroMetadataInfo metadata = { NULL };
+		BraseroMetadataFlag flags;
 		gboolean result;
 		gchar *uri;
+
+		flags = ((options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0)|
+			((should_thumbnail) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0);
 
 		uri = g_file_get_uri (file);
 		result = brasero_io_get_metadata_info (BRASERO_IO (manager),
 						       cancel,
 						       uri,
 						       info,
-						       ((options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
+						       flags,
 						       &metadata);
 		g_free (uri);
 
@@ -1433,7 +1461,7 @@ brasero_io_get_file_count_process_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0) |
 						       BRASERO_METADATA_FLAG_FAST,
 						       &metadata);
 
@@ -1470,7 +1498,7 @@ brasero_io_get_file_count_process_file (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0),
 						       &metadata);
 		if (result)
 			data->total_b += metadata.len;
@@ -1771,7 +1799,7 @@ brasero_io_load_directory_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0) |
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0) |
 						       BRASERO_METADATA_FLAG_FAST,
 						       &metadata);
 
@@ -1932,7 +1960,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 							       child_uri,
 							       info,
 							       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-							       ((data->job.options & BRASERO_IO_INFO_METADATA_SNAPSHOT) ? BRASERO_METADATA_FLAG_SNAPHOT : 0),
+							       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0),
 							       &metadata);
 
 			if (result)

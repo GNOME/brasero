@@ -1,5 +1,32 @@
 2008-11-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #559105 – video could use same thumbnails as nautilus
+	Now we use the thumbnails provided they are already generated otherwise
+	we create our own.
+
+	Also fix a bug where the video project would save its contents in the
+	reverse order.
+
+	* src/brasero-io.c (brasero_io_set_metadata_attributes),
+	(brasero_io_get_metadata_info),
+	(brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_count_process_playlist),
+	(brasero_io_get_file_count_process_file),
+	(brasero_io_load_directory_playlist),
+	(brasero_io_load_directory_thread):
+	* src/brasero-io.h:
+	* src/brasero-metadata.c (brasero_metadata_create_audio_pipeline),
+	(brasero_metadata_new_decoded_pad_cb):
+	* src/brasero-metadata.h:
+	* src/brasero-video-project.c
+	(brasero_video_project_set_file_information),
+	(brasero_video_project_add_directory_contents),
+	(brasero_video_project_add_uri),
+	(brasero_video_project_get_contents),
+	(brasero_video_project_file_modified):
+
+2008-11-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Miscellaneous small improvements (especially don't display we're probing
 	for discs if drive is empty)
 
