@@ -169,7 +169,7 @@ brasero_preview_init (BraseroPreview *object)
 
 	priv = BRASERO_PREVIEW_PRIVATE (object);
 
-	priv->frame = gtk_frame_new (_(" Preview "));
+	priv->frame = gtk_frame_new (_("Preview"));
 	gtk_container_add (GTK_CONTAINER (object), priv->frame);
 
 	priv->player = brasero_player_new ();

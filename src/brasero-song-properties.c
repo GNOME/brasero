@@ -199,7 +199,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_widget_set_tooltip_text (obj->priv->artist,
 				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
 
-	label = gtk_label_new (_("Composer:\t"));
+	label = gtk_label_new (_("Composer:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->composer = gtk_entry_new ();
 	g_signal_connect (obj->priv->composer,
@@ -233,19 +233,19 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox), frame, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Song start:\t"));
+	label = gtk_label_new (_("Song start:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->start = brasero_time_button_new ();
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->start, 1, 2, 0, 1, 0, 0, 0, 0);
 
-	label = gtk_label_new (_("Song end:\t"));
+	label = gtk_label_new (_("Song end:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->end = brasero_time_button_new ();
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach (GTK_TABLE (table), obj->priv->end, 1, 2, 1, 2, 0, 0, 0, 0);
 
-	label = gtk_label_new (_("Pause length:\t"));
+	label = gtk_label_new (_("Pause length:"));
 	obj->priv->gap_label = label;
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	obj->priv->gap = gtk_spin_button_new_with_range (0.0, 100.0, 1.0);
@@ -256,7 +256,7 @@ brasero_song_props_init (BraseroSongProps *obj)
 	gtk_widget_set_tooltip_text (obj->priv->gap,
 				     _("Gives the length of the pause that should follow the track"));
 
-	label = gtk_label_new (_("Track length:\t"));
+	label = gtk_label_new (_("Track length:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4, GTK_FILL, GTK_FILL, 0, 0);
 	obj->priv->length = gtk_label_new (NULL);

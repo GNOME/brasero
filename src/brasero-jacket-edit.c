@@ -809,7 +809,13 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
 
 		if (info->artist) {
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by "), "Artist", &start);
+			/* Translators: "by" is followed by the name of an artist.
+			 * This text is the one written on the cover of a disc.
+			 * Before it there is the name of the song.
+			 * I had to break it because it is in a GtkTextBuffer
+			 * and every word has a different tag. */
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by"), "Artist", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
 			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->artist, "Artist", &start);
 			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
 		}

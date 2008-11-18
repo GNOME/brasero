@@ -919,7 +919,7 @@ brasero_playlist_parse_result (GObject *object,
 	num = gtk_tree_model_iter_n_children (model, &parent);
 	if (!num)
 		num_string = g_strdup (_("Empty"));
-	else
+	else	/* Translators: %d is the number of songs */
 		num_string = g_strdup_printf (ngettext ("%d song", "%d songs", num), num);
 
 	/* get total length in time of the playlist */

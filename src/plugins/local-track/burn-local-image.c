@@ -1066,7 +1066,7 @@ brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "local-track",
-			       _("local-track allows to burn files not stored locally"),
+			       _("Local-track allows to burn files not stored locally"),
 			       "Philippe Rouquier",
 			       10);
 

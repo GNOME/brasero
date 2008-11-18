@@ -596,9 +596,14 @@ brasero_metadata_success (BraseroMetadata *self)
 
 	if (duration == -1) {
 		if (!priv->error) {
+			gchar *name;
+
+			BRASERO_GET_BASENAME_FOR_DISPLAY (priv->info->uri, name);
 			priv->error = g_error_new (BRASERO_ERROR,
 						   BRASERO_ERROR_GENERAL,
-						   _("this format is not supported by gstreamer"));
+						   _("\"%s\" could not be handled by gstreamer."),
+						   name);
+			g_free (name);
 		}
 
 		return brasero_metadata_completed (self);
@@ -1331,7 +1336,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 	if (priv->decode == NULL) {
 		priv->error = g_error_new (BRASERO_ERROR,
 					   BRASERO_ERROR_GENERAL,
-					   "decode can't be created");
+					   _("%s element could not be created"),
+					   "\"Decodebin\"");
 		return FALSE;
 	}
 	g_signal_connect (G_OBJECT (priv->decode), "new-decoded-pad",
@@ -1345,7 +1351,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 	if (!priv->convert) {
 		priv->error = g_error_new (BRASERO_ERROR,
 					   BRASERO_ERROR_GENERAL,
-					   "Can't create audioconvert");
+					   _("%s element could not be created"),
+					   "\"Audioconvert\"");
 		return FALSE;
 	}
 
@@ -1353,7 +1360,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 	if (!priv->level) {
 		priv->error = g_error_new (BRASERO_ERROR,
 					   BRASERO_ERROR_GENERAL,
-					   "Can't create level");
+					   _("%s element could not be created"),
+					   "\"Level\"");
 		return FALSE;
 	}
 	g_object_set (priv->level,
@@ -1365,7 +1373,8 @@ brasero_metadata_create_pipeline (BraseroMetadata *self)
 	if (priv->sink == NULL) {
 		priv->error = g_error_new (BRASERO_ERROR,
 					   BRASERO_ERROR_GENERAL,
-					   "Can't create fake sink");
+					   _("%s element could not be created"),
+					   "\"Fakesink\"");
 		return FALSE;
 	}
 

@@ -289,7 +289,7 @@ brasero_disc_message_add_button (BraseroDiscMessage *self,
 
 	priv = BRASERO_DISC_MESSAGE_PRIVATE (self);
 
-	button = gtk_button_new_with_mnemonic (text);
+	button = gtk_button_new_from_stock (text);
 
 	/* only add buttons to group if the text is not wrapped. Otherwise
 	 * buttons would be too big. */

@@ -137,12 +137,6 @@ brasero_mime_filter_init (BraseroMimeFilter * obj)
 
 	gtk_box_pack_end (GTK_BOX (obj), obj->combo, FALSE, FALSE, 0);
 
-	obj->priv->label = gtk_label_new (_("Show"));
-	gtk_label_set_justify (GTK_LABEL (obj->priv->label),
-			       GTK_JUSTIFY_RIGHT);
-	gtk_box_pack_end (GTK_BOX (obj), obj->priv->label, FALSE, FALSE,
-			  0);
-
 	obj->priv->table = g_hash_table_new_full (g_str_hash,
 						  g_str_equal,
 						  (GDestroyNotify) g_free,

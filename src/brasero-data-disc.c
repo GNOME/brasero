@@ -626,7 +626,7 @@ brasero_data_disc_project_oversized_cb (BraseroDataProject *project,
 					   GTK_RESPONSE_OK);
 		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
 					   BRASERO_DISC_MESSAGE (message),
-					   _("_Cancel"),
+					   GTK_STOCK_CANCEL,
 					   _("Click here not to use overburning"),
 					   GTK_RESPONSE_CANCEL);
 		

@@ -82,7 +82,7 @@ brasero_multi_song_props_get_properties (BraseroMultiSongProps *self,
 	priv = BRASERO_MULTI_SONG_PROPS_PRIVATE (self);
 	if (artist) {
 		text = gtk_entry_get_text (GTK_ENTRY (priv->artist));
-		if (text && strcmp (text, _("<keep current values>")))
+		if (text && strcmp (text, _("<Keep current values>")))
 			*artist = g_strdup (text);
 		else
 			*artist = NULL;
@@ -90,7 +90,7 @@ brasero_multi_song_props_get_properties (BraseroMultiSongProps *self,
 
 	if (composer) {
 		text = gtk_entry_get_text (GTK_ENTRY (priv->composer));
-		if (text && strcmp (text, _("<keep current values>")))
+		if (text && strcmp (text, _("<Keep current values>")))
 			*composer = g_strdup (text);
 		else
 			*composer = NULL;
@@ -98,7 +98,7 @@ brasero_multi_song_props_get_properties (BraseroMultiSongProps *self,
 
 	if (isrc) {
 		text = gtk_entry_get_text (GTK_ENTRY (priv->isrc));
-		if (text && strcmp (text, _("<keep current values>")))
+		if (text && strcmp (text, _("<Keep current values>")))
 			*isrc = (gint) g_strtod (text, NULL);
 		else
 			*isrc = -1;
@@ -116,7 +116,7 @@ brasero_multi_song_props_gap_output_cb (GtkSpinButton *spin,
 		return FALSE;
 
 	if (gtk_spin_button_get_value (spin) == -1.0)
-		gtk_entry_set_text (GTK_ENTRY (spin), _("<keep current values>"));
+		gtk_entry_set_text (GTK_ENTRY (spin), _("<Keep current values>"));
 
 	if (gtk_spin_button_get_value (spin) == 0.0)
 		gtk_entry_set_text (GTK_ENTRY (spin), _("Remove silences"));
@@ -132,7 +132,7 @@ brasero_multi_song_props_gap_input_cb (GtkSpinButton *spin,
 	const gchar *text;
 
 	text = gtk_entry_get_text (GTK_ENTRY (spin));
-	if (text && !strcmp (text, _("<keep current values>"))) {
+	if (text && !strcmp (text, _("<Keep current values>"))) {
 		*val = -1.0;
 		return TRUE;
 	}
@@ -153,7 +153,7 @@ brasero_multi_song_props_entry_focus_out (GtkEntry *entry,
 
 	text = gtk_entry_get_text (entry);
 	if (!text || text [0] == '\0')
-		gtk_entry_set_text (entry, _("<keep current values>"));
+		gtk_entry_set_text (entry, _("<Keep current values>"));
 
 	return FALSE;
 }
@@ -166,7 +166,7 @@ brasero_multi_song_props_entry_focus_in (GtkEntry *entry,
 	const gchar *text;
 
 	text = gtk_entry_get_text (entry);
-	if (text && !strcmp (text, _("<keep current values>")))
+	if (text && !strcmp (text, _("<Keep current values>")))
 		gtk_entry_set_text (entry, "");
 
 	return FALSE;
@@ -241,7 +241,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 
 	priv->artist = gtk_entry_new ();
 	gtk_widget_show (priv->artist);
-	gtk_entry_set_text (GTK_ENTRY (priv->artist), _("<keep current values>"));
+	gtk_entry_set_text (GTK_ENTRY (priv->artist), _("<Keep current values>"));
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->artist, 1, 2, 1, 2);
 	gtk_widget_set_tooltip_text (priv->artist,
 				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
@@ -255,14 +255,14 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 			  G_CALLBACK (brasero_multi_song_props_entry_focus_out),
 			  NULL);
 
-	label = gtk_label_new (_("Composer:\t"));
+	label = gtk_label_new (_("Composer:"));
 	gtk_widget_show (label);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 
 	priv->composer = gtk_entry_new ();
 	gtk_widget_show (priv->composer);
-	gtk_entry_set_text (GTK_ENTRY (priv->composer), _("<keep current values>"));
+	gtk_entry_set_text (GTK_ENTRY (priv->composer), _("<Keep current values>"));
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->composer, 1, 2, 2, 3);
 	gtk_widget_set_tooltip_text (priv->composer,
 				     _("This information will be written to the disc using CD-TEXT technology. It can be read and displayed by some audio CD players."));
@@ -283,7 +283,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 
 	priv->isrc = gtk_entry_new ();
 	gtk_widget_show (priv->isrc);
-	gtk_entry_set_text (GTK_ENTRY (priv->isrc), _("<keep current values>"));
+	gtk_entry_set_text (GTK_ENTRY (priv->isrc), _("<Keep current values>"));
 	gtk_table_attach_defaults (GTK_TABLE (table), priv->isrc, 1, 2, 3, 4);
 
 	g_signal_connect (priv->isrc,
@@ -309,7 +309,7 @@ brasero_multi_song_props_init (BraseroMultiSongProps *object)
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox), frame, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Pause length:\t"));
+	label = gtk_label_new (_("Pause length:"));
 	gtk_widget_show (label);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 

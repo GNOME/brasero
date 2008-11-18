@@ -961,7 +961,7 @@ brasero_libisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "libisofs",
-			       _("libisofs creates disc images from files"),
+			       _("Libisofs creates disc images from files"),
 			       "Philippe Rouquier",
 			       0);
 

@@ -62,7 +62,7 @@ const gchar *icons [] = { 	"iso-image-new",
 				"media-optical",
 				"media-optical",
 				NULL };
-const gchar *types [] = {	N_("file"),
+const gchar *types [] = {	N_("File"),
 				N_("CDROM"),
 				N_("CD-R"),
 				N_("CD-RW"),

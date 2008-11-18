@@ -901,12 +901,10 @@ plugin_manager_ui_construct_tree (BraseroPluginManagerUI *pm)
 static void 
 brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 {
-	gchar *markup;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *alignment;
 	GtkWidget *viewport;
+	GtkWidget *alignment;
 	GtkWidget *vbuttonbox;
 	BraseroPluginManager *manager;
 	BraseroPluginManagerUIPrivate *priv;
@@ -916,20 +914,10 @@ brasero_plugin_manager_ui_init (BraseroPluginManagerUI *pm)
 	gtk_box_set_spacing (GTK_BOX (pm), 6);
 	gtk_container_set_border_width (GTK_CONTAINER (pm), 12);
 
-	label = gtk_label_new (NULL);
-	markup = g_markup_printf_escaped ("<span weight=\"bold\">%s</span>",
-					  _("Plugins"));
-	gtk_label_set_markup (GTK_LABEL (label), markup);
-	g_free (markup);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	
-	gtk_box_pack_start (GTK_BOX (pm), label, FALSE, TRUE, 0);
-
 	alignment = gtk_alignment_new (0., 0., 1., 1.);
 	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment), 0, 0, 12, 0);
 	gtk_box_pack_start (GTK_BOX (pm), alignment, TRUE, TRUE, 0);
-
+ 	
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (alignment), vbox);

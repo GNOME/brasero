@@ -734,7 +734,7 @@ brasero_jacket_view_populate_popup_cb (GtkTextView *view,
 	gtk_widget_show (item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
-	item = gtk_menu_item_new_with_mnemonic (_("Set bac_kground properties"));
+	item = gtk_menu_item_new_with_mnemonic (_("Set Bac_kground Properties"));
 	gtk_widget_show (item);
 	g_signal_connect (item,
 			  "activate",

@@ -143,7 +143,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	file = g_file_new_for_commandline_arg (path);
 	if (!file) {
 		BRASERO_BURN_LOG ("impossible to retrieve size for %s", path);
-		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
+		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("Unknown"));
 		return FALSE;
 	}
 
@@ -160,7 +160,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 		BRASERO_BURN_LOG ("impossible to retrieve size for %s (%s)", path, error->message);
 		g_error_free (error);
 
-		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("unknown"));
+		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("Unknown"));
 		return FALSE;
 	}
 

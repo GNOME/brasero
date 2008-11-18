@@ -294,6 +294,7 @@ brasero_rename_init (BraseroRename *object)
 	gtk_widget_show (hbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 
+	/* Translators: This is a verb. This is completed later */
 	label = gtk_label_new (_("Insert"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -305,8 +306,15 @@ brasero_rename_init (BraseroRename *object)
 
 	combo = gtk_combo_box_new_text ();
 	gtk_widget_show (combo);
+
+	/* Translators: This finishes previous action "Insert". It goes like
+	 * this: "Insert" [Entry] "at the beginning". */
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("at the begining"));
+
+	/* Translators: This finishes previous action "Insert". It goes like
+	 * this: "Insert" [Entry] "at the end". */
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("at the end"));
+
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 	gtk_box_pack_start (GTK_BOX (hbox), combo, FALSE, FALSE, 0);
 	priv->insert_combo = combo;
@@ -330,6 +338,7 @@ brasero_rename_init (BraseroRename *object)
 	gtk_widget_show (hbox);
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 
+	/* Translators: this is a verb */
 	label = gtk_label_new (_("Substitute"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -339,6 +348,8 @@ brasero_rename_init (BraseroRename *object)
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	priv->substitute_entry = entry;
 
+	/* Translators: this goes with above verb to say "Substitute" [Entry]
+	 * "by" [Entry]. */
 	label = gtk_label_new (_("by"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);

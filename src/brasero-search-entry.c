@@ -120,7 +120,7 @@ brasero_search_entry_get_type ()
 			(GInstanceInitFunc) brasero_search_entry_init,
 		};
 
-		type = g_type_register_static (GTK_TYPE_VBOX,
+		type = g_type_register_static (GTK_TYPE_TABLE,
 					       "BraseroSearchEntry",
 					       &our_info,
 					       0);
@@ -173,7 +173,6 @@ static void
 brasero_search_entry_init (BraseroSearchEntry *obj)
 {
 	gchar *string;
-	GtkWidget *box;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *entry;
@@ -182,23 +181,33 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
 
-	gtk_box_set_spacing (GTK_BOX (obj), 6);
+	gtk_table_set_row_spacings (GTK_TABLE (obj), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (obj), 6);
+	gtk_table_resize (GTK_TABLE (obj), 2, 3);
 	obj->priv = g_new0 (BraseroSearchEntryPrivate, 1);
 
-	box = gtk_hbox_new (FALSE, 6);
-	gtk_box_pack_start (GTK_BOX (obj), box, FALSE, FALSE, 0);
-
-	/* Translators: This string is followed later by "only in\t" */
-	string = g_strdup_printf ("<b>%s</b>", _("Search:\t"));
+	string = g_strdup_printf ("<b>%s</b>", _("Search:"));
 	label = gtk_label_new (string);
 	g_free (string);
 
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (obj),
+			  label,
+			  0, 1,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  2, 2);
 
 	obj->priv->button = gtk_button_new_from_stock (GTK_STOCK_FIND);
-	/* gtk_widget_set_sensitive (obj->priv->button, FALSE); */
-	gtk_box_pack_end (GTK_BOX (box), obj->priv->button, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (obj),
+			  obj->priv->button,
+			  2, 3,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
+
 	g_signal_connect (G_OBJECT (obj->priv->button),
 			  "clicked",
 			  G_CALLBACK (brasero_search_entry_button_clicked_cb),
@@ -240,36 +249,28 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 	gtk_entry_completion_set_text_column (completion, BRASERO_SEARCH_ENTRY_DISPLAY_COL);
 	gtk_entry_set_completion (GTK_ENTRY (entry), completion);
 
-	gtk_box_pack_start (GTK_BOX (box),
-			    obj->priv->combo,
-			    TRUE,
-			    TRUE,
-			    0);
+	gtk_table_attach (GTK_TABLE (obj),
+			  obj->priv->combo,
+			  1, 2,
+			  0, 1,
+			  GTK_FILL|GTK_EXPAND,
+			  GTK_FILL,
+			  0, 0);
 
-	/* table */
-	table = gtk_table_new (2, 3, FALSE);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	/* Table with filtering options */
+	table = gtk_table_new (2, 2, FALSE);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 10);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
 
-	gtk_box_pack_end (GTK_BOX (obj), table, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (obj),
+			  table,
+			  1, 2,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
 
-	/* Translators: This is the end of the previous sentence  "Search:\t" */
-	string = g_strdup_printf ("<b>%s</b>", _("only in\t"));
-	label = gtk_label_new (string);
-	g_free (string);
-
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
-	gtk_table_attach (GTK_TABLE (table),
-			  label,
-			  0, 1,
-			  0, 1,
-			  0,
-			  0,
-			  0,
-			  0);
-
-	obj->priv->documents = gtk_check_button_new_with_mnemonic (_("_Text documents"));
+	obj->priv->documents = gtk_check_button_new_with_mnemonic (_("In _text documents"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->documents), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->documents,
@@ -284,7 +285,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  G_CALLBACK (brasero_search_entry_category_clicked_cb),
 			  obj);
 
-	obj->priv->pictures = gtk_check_button_new_with_mnemonic (_("_Pictures"));
+	obj->priv->pictures = gtk_check_button_new_with_mnemonic (_("In _pictures"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->pictures), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->pictures,
@@ -299,7 +300,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  G_CALLBACK (brasero_search_entry_category_clicked_cb),
 			  obj);
 
-	obj->priv->music = gtk_check_button_new_with_mnemonic (_("_Music"));
+	obj->priv->music = gtk_check_button_new_with_mnemonic (_("In _music"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->music), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->music,
@@ -314,7 +315,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 			  G_CALLBACK (brasero_search_entry_category_clicked_cb),
 			  obj);
 
-	obj->priv->video = gtk_check_button_new_with_mnemonic (_("_Video"));
+	obj->priv->video = gtk_check_button_new_with_mnemonic (_("In _videos"));
 	gtk_button_set_alignment (GTK_BUTTON (obj->priv->video), 0.0, 0.0);
 	gtk_table_attach (GTK_TABLE (table),
 			  obj->priv->video,
@@ -681,8 +682,8 @@ BeagleQuery *
 brasero_search_entry_get_query (BraseroSearchEntry *entry)
 {
 	BeagleQuery *query;
-	BeagleQueryPartOr *or_part;
 	BeagleQueryPartHuman *text;
+	BeagleQueryPartOr *or_part = NULL;
 
 	/* Not sure about all this */
 	query = beagle_query_new ();
@@ -702,10 +703,11 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 	beagle_query_part_human_set_string (text, "type:File");
 	beagle_query_add_part (query, BEAGLE_QUERY_PART (text));
 
-	or_part = beagle_query_part_or_new ();
-	
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->documents))) {
 		BeagleQueryPartProperty *filetype;
+
+		if (!or_part)
+			or_part = beagle_query_part_or_new ();
 
 		filetype = beagle_query_part_property_new ();
 		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
@@ -717,6 +719,9 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->pictures))) {
 		BeagleQueryPartProperty *filetype;
 
+		if (!or_part)
+			or_part = beagle_query_part_or_new ();
+
 		filetype = beagle_query_part_property_new ();
 		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
 		beagle_query_part_property_set_key (filetype, "beagle:FileType");
@@ -726,6 +731,9 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->music))) {
 		BeagleQueryPartProperty *filetype;
+
+		if (!or_part)
+			or_part = beagle_query_part_or_new ();
 
 		filetype = beagle_query_part_property_new ();
 		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
@@ -737,6 +745,9 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (entry->priv->video))) {
 		BeagleQueryPartProperty *filetype;
 
+		if (!or_part)
+			or_part = beagle_query_part_or_new ();
+
 		filetype = beagle_query_part_property_new ();
 		beagle_query_part_property_set_property_type (filetype, BEAGLE_PROPERTY_TYPE_KEYWORD);
 		beagle_query_part_property_set_key (filetype, "beagle:FileType");
@@ -744,8 +755,10 @@ brasero_search_entry_get_query (BraseroSearchEntry *entry)
 		beagle_query_part_or_add_subpart (or_part, BEAGLE_QUERY_PART (filetype));
 	}
 
-	beagle_query_add_part (query, BEAGLE_QUERY_PART (or_part));
+	if (!or_part)
+		return query;
 
+	beagle_query_add_part (query, BEAGLE_QUERY_PART (or_part));
 	return query;
 }
 

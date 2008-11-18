@@ -1,3 +1,52 @@
+2008-11-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Probably (and hopefully) the last patch for string review
+	Also fixed a problem with search pane which didn't return any result
+	when no category was selected
+	Small changes (mainly string) in search pane
+
+	* data/brasero-copy-medium.desktop.in.in:
+	* data/brasero-open-image.desktop.in.in:
+	* data/brasero-open-playlist.desktop.in.in:
+	* data/brasero-open-project.desktop.in.in:
+	* src/brasero-app.c (brasero_app_add_recent):
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_uri_real):
+	* src/brasero-data-disc.c (brasero_data_disc_project_oversized_cb):
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value):
+	* src/brasero-disc-message.c (brasero_disc_message_add_button):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_tmpdir_info):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_set_audio_tracks):
+	* src/brasero-jacket-view.c
+	(brasero_jacket_view_populate_popup_cb):
+	* src/brasero-metadata.c (brasero_metadata_success),
+	(brasero_metadata_create_pipeline):
+	* src/brasero-mime-filter.c (brasero_mime_filter_init):
+	* src/brasero-multi-song-props.c
+	(brasero_multi_song_props_get_properties),
+	(brasero_multi_song_props_gap_output_cb),
+	(brasero_multi_song_props_gap_input_cb),
+	(brasero_multi_song_props_entry_focus_out),
+	(brasero_multi_song_props_entry_focus_in),
+	(brasero_multi_song_props_init):
+	* src/brasero-playlist.c (brasero_playlist_parse_result):
+	* src/brasero-plugin-manager-ui.c (brasero_plugin_manager_ui_init):
+	* src/brasero-preview.c (brasero_preview_init):
+	* src/brasero-rename.c (brasero_rename_init):
+	* src/brasero-search-entry.c (brasero_search_entry_get_type),
+	(brasero_search_entry_init), (brasero_search_entry_get_query):
+	* src/brasero-search-entry.h:
+	* src/brasero-song-properties.c (brasero_song_props_init):
+	* src/brasero-tray.c:
+	* src/burn-medium.c:
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_export_caps):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+
 2008-11-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix UI glitch after a successful burn too fast to generate an average

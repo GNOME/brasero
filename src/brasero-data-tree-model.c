@@ -434,7 +434,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			if (node->is_exploring)
 				g_value_set_string (value, _("(loading ...)"));
 			else
-				g_value_set_string (value, _("empty"));
+				g_value_set_string (value, _("Empty"));
 
 			return;
 
@@ -574,7 +574,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 
 			nb_items = brasero_file_node_get_n_children (node);
 			if (!nb_items)
-				g_value_set_string (value, _("empty"));
+				g_value_set_string (value, _("Empty"));
 			else if (nb_items == 1)
 				g_value_set_string (value, _("1 item"));
 			else {

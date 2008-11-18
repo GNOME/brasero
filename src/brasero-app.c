@@ -108,7 +108,7 @@ static GtkActionEntry entries[] = {
 	{"Erase", "media-optical-blank", N_("_Erase..."), NULL,
 	 N_("Erase a disc"), G_CALLBACK (on_erase_cb)},
 
-	{"Check", GTK_STOCK_FIND, N_("_Check Integrity..."), NULL,
+	{"Check", NULL, N_("_Check Integrity..."), NULL,
 	 N_("Check data integrity of disc"), G_CALLBACK (on_integrity_check_cb)},
 
 	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
@@ -116,7 +116,7 @@ static GtkActionEntry entries[] = {
 
 #ifdef BUILD_GNOME2
 	
-	{"Contents", GTK_STOCK_HELP, N_("_Contents"), "F1", N_("Contents"),
+	{"Contents", GTK_STOCK_HELP, N_("_Contents"), "F1", N_("Display help"),
 	 G_CALLBACK (on_help_cb)}, 
 
 #endif
@@ -666,7 +666,7 @@ brasero_app_add_recent (BraseroApp *app,
 						    recent);
 	filter = gtk_recent_filter_new ();
 
-	gtk_recent_filter_set_name (filter, _("Brasero projects"));
+	gtk_recent_filter_set_name (filter, _("_Recent Projects"));
 	gtk_recent_filter_add_mime_type (filter, "application/x-brasero");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cd-image");
 	gtk_recent_filter_add_mime_type (filter, "application/x-cdrdao-toc");

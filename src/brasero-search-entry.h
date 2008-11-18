@@ -52,12 +52,12 @@ G_BEGIN_DECLS
 typedef struct BraseroSearchEntryPrivate BraseroSearchEntryPrivate;
 
 typedef struct {
-	GtkHBox parent;
+	GtkTable parent;
 	BraseroSearchEntryPrivate *priv;
 } BraseroSearchEntry;
 
 typedef struct {
-	GtkHBoxClass parent_class;
+	GtkTableClass parent_class;
 
 	void	(*activated)	(BraseroSearchEntry *entry);
 

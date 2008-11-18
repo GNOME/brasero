@@ -79,12 +79,12 @@ static GObjectClass *parent_class = NULL;
 
 static GtkActionEntry entries[] = {
 	{"ContextualMenu", NULL, N_("Menu")},
-	{"Cancel", GTK_STOCK_CANCEL, N_("Cancel"), NULL, N_("Cancel ongoing burning"),
+	{"Cancel", GTK_STOCK_CANCEL, NULL, NULL, N_("Cancel ongoing burning"),
 	 G_CALLBACK (brasero_tray_icon_cancel_cb)},
 };
 
 static GtkToggleActionEntry toggle_entries[] = {
-	{"Show", NULL, N_("Show dialog"), NULL, N_("Show dialog"),
+	{"Show", NULL, N_("Show _Dialog"), NULL, N_("Show dialog"),
 	 G_CALLBACK (brasero_tray_icon_show_cb), TRUE,},
 };
 
