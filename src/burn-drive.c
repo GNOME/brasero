@@ -512,6 +512,8 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 		g_object_unref (medium);
 		priv->probed = TRUE;
 	}
+	else
+		priv->probed = TRUE;
 }
 
 static void
@@ -524,11 +526,15 @@ brasero_drive_medium_inside_property_changed_cb (BraseroHALWatch *watch,
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
-	if (key && strcmp (key, "storage.removable.media_available"))
+	if (key && strcmp (key, "storage.removable.media_available")) {
+		priv->probed = TRUE;
 		return;
+	}
 
-	if (udi && strcmp (udi, priv->udi))
+	if (udi && strcmp (udi, priv->udi)) {
+		priv->probed = TRUE;
 		return;
+	}
 
 	brasero_drive_check_medium_inside (drive);
 }
@@ -638,6 +644,7 @@ brasero_drive_set_property (GObject *object,
 	case PROP_UDI:
 		priv->udi = g_strdup (g_value_get_string (value));
 		if (!priv->udi) {
+			priv->probed = TRUE;
 			priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
 						     "drive", object,
 						     NULL);

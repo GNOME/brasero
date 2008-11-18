@@ -487,8 +487,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	obj->priv->selector = brasero_medium_selection_new ();
 	gtk_widget_show (GTK_WIDGET (obj->priv->selector));
 
-/*	gtk_widget_set_tooltip_text (obj->priv->selector, _("Choose a medium"));*/
-
 	title_str = g_strdup_printf ("<b>%s</b>", _("Select a disc"));
 	gtk_box_pack_start (GTK_BOX (obj->priv->upper_box),
 			    brasero_utils_pack_properties (title_str,
@@ -510,7 +508,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 
 	/* lower part */
 	obj->priv->lower_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->lower_box), 6);
+	gtk_container_set_border_width (GTK_CONTAINER (obj->priv->lower_box), 12);
 	gtk_widget_set_sensitive (obj->priv->lower_box, FALSE);
 	gtk_widget_show (obj->priv->lower_box);
 
@@ -544,7 +542,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 			    obj->priv->lower_box,
 			    FALSE,
 			    FALSE,
-			    6);
+			    0);
 
 	/* buttons */
 	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CLOSE);

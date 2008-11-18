@@ -1,5 +1,15 @@
 2008-11-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Miscellaneous small improvements (especially don't display we're probing
+	for discs if drive is empty)
+
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_init):
+	* src/burn-drive.c (brasero_drive_check_medium_inside),
+	(brasero_drive_medium_inside_property_changed_cb),
+	(brasero_drive_set_property):
+
+2008-11-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Probably (and hopefully) the last patch for string review
 	Also fixed a problem with search pane which didn't return any result
 	when no category was selected
