@@ -32,16 +32,7 @@
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtktoolbar.h>
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtktreednd.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkeventbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkmisc.h>
+#include <gtk/gtk.h>
 
 #include "brasero-marshal.h"
 #include "brasero-disc.h"

@@ -25,8 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkvbox.h>
-#include <gtk/gtksizegroup.h>
+#include <gtk/gtk.h>
 
 #include "burn-medium.h"
 

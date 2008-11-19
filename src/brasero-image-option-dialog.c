@@ -34,10 +34,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkbutton.h>
+#include <gtk/gtk.h>
 
 #include <gconf/gconf-client.h>
 

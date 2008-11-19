@@ -31,20 +31,7 @@
 
 #include <gdk/gdkkeysyms.h>
 
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtkaction.h>
-#include <gtk/gtktoggleaction.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtknotebook.h>
-#include <gtk/gtksizegroup.h>
+#include <gtk/gtk.h>
 
 #include "eggtreemultidnd.h"
 #include "baobab-cell-renderer-progress.h"

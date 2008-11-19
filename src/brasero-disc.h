@@ -30,8 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtktoolbar.h>
-#include <gtk/gtkuimanager.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "burn-session.h"

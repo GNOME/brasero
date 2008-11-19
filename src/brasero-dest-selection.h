@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #include "brasero-medium-selection.h"
 #include "burn-session.h"
