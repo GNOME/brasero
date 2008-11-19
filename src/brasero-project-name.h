@@ -22,7 +22,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkentry.h>
+#include <gtk/gtk.h>
 
 #include "brasero-project-type-chooser.h"
 
