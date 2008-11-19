@@ -29,8 +29,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkfilefilter.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 #define BRASERO_TYPE_MIME_FILTER         (brasero_mime_filter_get_type ())

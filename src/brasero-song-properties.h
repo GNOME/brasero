@@ -30,7 +30,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 

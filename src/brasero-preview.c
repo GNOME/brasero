@@ -31,9 +31,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gtk/gtkframe.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkcontainer.h>
+#include <gtk/gtk.h>
 
 #include "brasero-player.h"
 #include "brasero-preview.h"

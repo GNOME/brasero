@@ -30,7 +30,7 @@
 #define _BRASERO_PREVIEW_H_
 
 #include <glib-object.h>
-#include <gtk/gtkalignment.h>
+#include <gtk/gtk.h>
 
 #include "brasero-uri-container.h"
 

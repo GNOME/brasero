@@ -32,14 +32,7 @@
 #include <glib-object.h>
 #include <glib/gi18n.h>
 
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktable.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkspinbutton.h>
+#include <gtk/gtk.h>
 
 #include <gst/gst.h>
 

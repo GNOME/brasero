@@ -25,9 +25,7 @@
 
 #include <glib-object.h>
 
-#include <gtk/gtkbin.h>
-#include <gtk/gtkdialog.h>
-
+#include <gtk/gtk.h>
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_DISC_MESSAGE             (brasero_disc_message_get_type ())

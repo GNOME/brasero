@@ -32,33 +32,12 @@
 #include <errno.h>
 #include <string.h>
 
-#include <glib.h>
-#include <glib/gstdio.h>
+#include <glib.
 #include <glib/gi18n.h>
 
-#include <gdk/gdkkeysyms.h>
+#include <gdk/gdk.h>
 
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkcellrendererpixbuf.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtktreeviewcolumn.h>
-#include <gtk/gtkentry.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkcontainer.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkcelllayout.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkmessagedialog.h>
-#include <gtk/gtkuimanager.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkstock.h>
-#include <gtk/gtktoolbar.h>
+#include <gtk/gtk.h>
 
 #include "burn-basics.h"
 #include "burn-debug.h"

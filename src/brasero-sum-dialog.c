@@ -36,20 +36,8 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
-#include <glib/gstdio.h>
 
 #include <gtk/gtk.h>
-
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkbox.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkdialog.h>
-#include <gtk/gtkmessagedialog.h>
 
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"

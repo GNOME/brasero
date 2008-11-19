@@ -27,28 +27,9 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <gdk/gdkkeysyms.h>
+#include <gdk/gdk.h>
 
-#include <gtk/gtkstock.h>
-#include <gtk/gtkalignment.h>
-#include <gtk/gtkbindings.h>
-#include <gtk/gtkbin.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkimage.h>
-#include <gtk/gtklabel.h>
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkexpander.h>
-#include <gtk/gtksizegroup.h>
-#include <gtk/gtkprogressbar.h>
-#include <gtk/gtktreeview.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtktreeviewcolumn.h>
-#include <gtk/gtkcellrenderer.h>
-#include <gtk/gtkcellrenderertext.h>
-#include <gtk/gtktreeselection.h>
-#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtk.h>
 
 #include "brasero-disc-message.h"
 

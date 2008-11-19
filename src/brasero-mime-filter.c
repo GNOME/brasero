@@ -34,14 +34,7 @@
 
 #include <gio/gio.h>
 
-#include <gtk/gtkhbox.h>
-#include <gtk/gtkfilefilter.h>
-#include <gtk/gtkcombobox.h>
-#include <gtk/gtkcomboboxentry.h>
-#include <gtk/gtktreemodel.h>
-#include <gtk/gtkliststore.h>
-#include <gtk/gtkmarshal.h>
-#include <gtk/gtklabel.h>
+#include <gtk/gtk.h>
 
 #include "brasero-mime-filter.h"
 #include "brasero-utils.h"
