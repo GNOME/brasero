@@ -280,7 +280,9 @@ brasero_SOURCES = \
 	burn-media.h           \
 	burn-hal-watch.c           \
 	burn-hal-watch.h           \
-	scsi-test-unit-ready.c
+	scsi-test-unit-ready.c           \
+	brasero-tool-color-picker.h           \
+	brasero-tool-color-picker.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

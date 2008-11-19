@@ -165,6 +165,7 @@ static void
 brasero_jacket_background_init (BraseroJacketBackground *object)
 {
 	BraseroJacketBackgroundPrivate *priv;
+	GtkWidget *table;
 	GtkWidget *combo;
 	GtkWidget *hbox2;
 	GtkWidget *label;
@@ -226,6 +227,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	priv->color2 = gtk_color_button_new ();
 	gtk_box_pack_start (GTK_BOX (hbox2), priv->color2, FALSE, TRUE, 0);
 
+	/* second part */
 	string = g_strdup_printf ("<b>%s</b>", _("_Image"));
 	label = gtk_label_new_with_mnemonic (string);
 	g_free (string);
@@ -244,31 +246,43 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, 6);
-	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox2, TRUE, TRUE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 12);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, TRUE, TRUE, 0);
+	table = gtk_table_new (2, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 6);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 6);
+	gtk_widget_show (table);
+	gtk_box_pack_start (GTK_BOX (hbox), table, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Image path:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (table),
+			  label,
+			  0, 1,
+			  0, 1,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
 
 	priv->image = gtk_file_chooser_button_new (_("Choose an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
 	gtk_widget_show (priv->image);
-	gtk_box_pack_start (GTK_BOX (hbox2), priv->image, TRUE, TRUE, 0);
-
-	hbox2 = gtk_hbox_new (FALSE, 12);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (table),
+			  priv->image,
+			  1, 2,
+			  0, 1,
+			  GTK_FILL|GTK_EXPAND,
+			  GTK_FILL,
+			  0, 0);
 
 	label = gtk_label_new (_("Image style:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (table),
+			  label,
+			  0, 1,
+			  1, 2,
+			  GTK_FILL,
+			  GTK_FILL,
+			  0, 0);
 
 	combo = gtk_combo_box_new_text ();
 	priv->image_style = combo;
@@ -277,7 +291,13 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Tiled"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (combo), _("Scaled"));
 	gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
-	gtk_box_pack_start (GTK_BOX (hbox2), combo, FALSE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (table),
+			  priv->image_style,
+			  1, 2,
+			  1, 2,
+			  GTK_FILL|GTK_EXPAND,
+			  GTK_FILL,
+			  0, 0);
 
 	gtk_dialog_add_button (GTK_DIALOG (object), 
 			       GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);

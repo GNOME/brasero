@@ -34,6 +34,7 @@
 #include "brasero-jacket-view.h"
 #include "brasero-jacket-font.h"
 #include "brasero-utils.h"
+#include "brasero-tool-color-picker.h"
 
 #include "burn-track.h"
 
@@ -67,7 +68,6 @@ enum {
 	SNAP_WIDGET_COL,
 	SNAP_NUM_COL
 };
-
 
 G_DEFINE_TYPE (BraseroJacketEdit, brasero_jacket_edit, GTK_TYPE_VBOX);
 
@@ -333,7 +333,7 @@ brasero_jacket_edit_colours_changed_cb (GtkColorButton *button,
 	if (!priv->current_view)
 		return;
 
-	gtk_color_button_get_color (button, &color);
+	brasero_tool_color_picker_get_color (BRASERO_TOOL_COLOR_PICKER (button), &color);
 
 	buffer = brasero_jacket_view_get_active_buffer (BRASERO_JACKET_VIEW (priv->current_view));
 	tag = gtk_text_buffer_create_tag (buffer, NULL,
@@ -433,7 +433,7 @@ brasero_jacket_edit_update_button_state (BraseroJacketEdit *self)
 	attributes = brasero_jacket_view_get_default_attributes (BRASERO_JACKET_VIEW (priv->current_view));
 	gtk_text_iter_get_attributes (&iter, attributes);
 
-	gtk_color_button_set_color (GTK_COLOR_BUTTON (priv->colours), &attributes->appearance.fg_color);
+	brasero_tool_color_picker_set_color (BRASERO_TOOL_COLOR_PICKER (priv->colours), &attributes->appearance.fg_color);
 	
 	font_name = pango_font_description_to_string (attributes->font);
 	brasero_jacket_font_set_name (BRASERO_JACKET_FONT (priv->fonts), font_name);
@@ -552,7 +552,9 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_widget_show (item);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
-	item = GTK_WIDGET (gtk_tool_button_new_from_stock (GTK_STOCK_SELECT_COLOR));
+	item = GTK_WIDGET (gtk_tool_button_new (NULL, _("Bac_kground Properties")));
+	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "background");
+	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (item), TRUE);
 	gtk_widget_show (item);
 	gtk_widget_set_sensitive (item, FALSE);
 	g_signal_connect (item,
@@ -645,18 +647,16 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 	gtk_tool_item_set_expand (GTK_TOOL_ITEM (item), FALSE);
 	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 0);
 
-	priv->colours = gtk_color_button_new ();
-	gtk_button_set_focus_on_click (GTK_BUTTON (priv->colours), FALSE);
+	priv->colours = brasero_tool_color_picker_new ();
+	brasero_tool_color_picker_set_text (BRASERO_TOOL_COLOR_PICKER (priv->colours),
+					    _("_Text Colour"));
 	gtk_widget_show (priv->colours);
 	g_signal_connect (priv->colours,
 			  "color-set",
 			  G_CALLBACK (brasero_jacket_edit_colours_changed_cb),
 			  object);
 
-	item = GTK_WIDGET (gtk_tool_item_new ());
-	gtk_widget_show (item);
-	gtk_container_add (GTK_CONTAINER (item), priv->colours);
-	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (item), 1);
+	gtk_toolbar_insert (GTK_TOOLBAR (toolbar), GTK_TOOL_ITEM (priv->colours), 1);
 
 	/* contents */
 	vbox = gtk_vbox_new (FALSE, 4);

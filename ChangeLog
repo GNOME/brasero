@@ -1,3 +1,29 @@
+2008-11-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #558213 – There should be a proper name for color picker button.
+	A new color picker button for toolbars was implemented allowing to set
+	some text.
+
+	* src/Makefile.am:
+	* src/brasero-jacket-background.c (brasero_jacket_background_init):
+	* src/brasero-jacket-edit.c
+	(brasero_jacket_edit_colours_changed_cb),
+	(brasero_jacket_edit_update_button_state),
+	(brasero_jacket_edit_init):
+	* src/brasero-tool-color-picker.c
+	(brasero_tool_color_picker_set_text),
+	(brasero_tool_color_picker_get_color),
+	(brasero_tool_color_picker_set_color),
+	(brasero_tool_color_picker_expose),
+	(brasero_tool_color_picker_cancel_clicked),
+	(brasero_tool_color_picker_ok_clicked),
+	(brasero_tool_color_picker_clicked),
+	(brasero_tool_color_picker_init),
+	(brasero_tool_color_picker_finalize),
+	(brasero_tool_color_picker_class_init),
+	(brasero_tool_color_picker_new):
+	* src/brasero-tool-color-picker.h:
+
 2008-11-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #559105 – video could use same thumbnails as nautilus
