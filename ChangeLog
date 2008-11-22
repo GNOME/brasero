@@ -1,3 +1,44 @@
+2008-11-22  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix small UI glitch
+
+	* src/brasero-burn-options.c (brasero_burn_options_init):
+
+2008-11-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Changes to support an upcoming rhythmbox plugin (provided it's accepted)
+	Added a new command line option to open and burn a project
+	If an audio project has audio end don't scan it anymore just use it
+	Added a new command line option to set a cover for jacket-view
+	Show a button to create a cover if the disc we've just copied is audio
+
+	Unrelated changes:
+	Use libburn signal handler while burning the docs say it's safer; so be it
+	Fix a minor bug where when creating a new project in the middle of another
+	no GtkFileChooser would pop up
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_get_status),
+	(brasero_audio_disc_add_track), (brasero_audio_disc_load_track):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_success_run),
+	(brasero_burn_dialog_notify_success):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_set_audio_tracks):
+	* src/brasero-jacket-edit.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_copy_disc),
+	(brasero_project_manager_switch), (brasero_project_manager_copy),
+	(brasero_project_manager_burn_project):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c (brasero_project_finalize),
+	(brasero_project_set_cover_specifics), (brasero_project_burn),
+	(brasero_project_switch), (brasero_project_set_none),
+	(brasero_project_open_project_xml), (brasero_project_open_project),
+	(brasero_project_load_session), (brasero_project_save_project_xml):
+	* src/burn-basics.h:
+	* src/main.c (brasero_app_parse_options):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_start_record), (brasero_libburn_start_erase),
+	(brasero_libburn_stop):
+
 2008-11-19  Luis Medinas  <lmedinas@gnome.org>
 
 	* src/brasero-data-disc.c:

@@ -357,6 +357,7 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 {
 	BraseroBurnOptionsPrivate *priv;
 	GtkWidget *selection;
+	GtkWidget *alignment;
 	GtkWidget *button;
 	gchar *string;
 
@@ -402,13 +403,17 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	selection = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (selection);
 
-	priv->selection = brasero_dest_selection_new (BRASERO_BURN_SESSION (priv->session));
-	gtk_widget_show (priv->selection);
+	alignment = gtk_alignment_new (0.0, 0.5, 1.0, 0.0);
+	gtk_widget_show (alignment);
 	gtk_box_pack_start (GTK_BOX (selection),
-			    priv->selection,
+			    alignment,
 			    TRUE,
 			    TRUE,
 			    0);
+
+	priv->selection = brasero_dest_selection_new (BRASERO_BURN_SESSION (priv->session));
+	gtk_widget_show (priv->selection);
+	gtk_container_add (GTK_CONTAINER (alignment), priv->selection);
 
 	priv->properties = brasero_medium_properties_new (BRASERO_BURN_SESSION (priv->session));
 	gtk_widget_show (priv->properties);
