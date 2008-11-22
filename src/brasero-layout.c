@@ -547,7 +547,6 @@ brasero_layout_item_set_active (BraseroLayout *layout,
 			return;
 		}
 	} while (gtk_tree_model_iter_next (model, &iter));
-
 }
 
 static void
@@ -762,6 +761,8 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 	BraseroLayoutObject *source;
 	BraseroLayoutItem *item;
 	GtkTreeModel *model;
+	gboolean is_visible;
+	GtkAction *action;
 	GtkTreeIter iter;
 
 	model = gtk_combo_box_get_model (combo);
@@ -771,6 +772,12 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 	gtk_tree_model_get (model, &iter,
 			    ITEM_COL, &item,
 			    -1);
+
+	/* Make sure there is a displayed sidepane before setting the source for
+	 * project. It can happen that when we're changing of project type this
+	 * is called. */
+	action = gtk_action_group_get_action (layout->priv->action_group, BRASERO_LAYOUT_NONE_ID);
+	is_visible = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 
 	if (layout->priv->active_item)
 		gtk_widget_hide (layout->priv->active_item->widget);
@@ -784,6 +791,9 @@ brasero_layout_combo_changed_cb (GtkComboBox *combo,
 
 	if (!BRASERO_IS_URI_CONTAINER (source)) {
 		BRASERO_BURN_LOG ("Item is not an URI container");
+		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
+	}
+	else if (!is_visible) {
 		brasero_project_set_source (BRASERO_PROJECT (layout->priv->project), NULL);
 	}
 	else {

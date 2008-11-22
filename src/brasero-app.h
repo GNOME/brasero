@@ -72,13 +72,11 @@ brasero_app_alert (BraseroApp *app,
 
 void
 brasero_app_blank (BraseroApp *app,
-		   const gchar *device,
-		   gboolean wait_and_close);
+		   const gchar *device);
 
 void
 brasero_app_check (BraseroApp *app,
-		   const gchar *device,
-		   gboolean wait_and_close);
+		   const gchar *device);
 
 void
 brasero_app_get_geometry (BraseroApp *app,

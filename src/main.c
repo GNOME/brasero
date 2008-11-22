@@ -31,6 +31,7 @@
 #include <locale.h>
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include <gio/gio.h>
@@ -55,13 +56,15 @@
 #include "burn-debug.h"
 #include "burn.h"
 
+gchar *burn_project_uri;
 gchar *project_uri;
+gchar *cover_project;
 gchar *playlist_uri;
 gchar *iso_uri;
 gchar **files;
-gchar **audio_project;
-gchar **data_project;
-gchar **video_project;
+gint audio_project;
+gint data_project;
+gint video_project;
 gint copy_project;
 gint empty_project;
 gint disc_blank;
@@ -92,7 +95,11 @@ static const GOptionEntry options [] = {
 
 	{ "copy", 'c', 0, G_OPTION_ARG_NONE, &copy_project,
 	  N_("Copy a disc"),
-	  NULL },
+	  N_("PATH TO DEVICE") },
+
+	{ "cover", 'j', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &cover_project,
+	  N_("Cover to use"),
+	  N_("PATH TO COVER") },
 
 	{ "video", 'o', 0, G_OPTION_ARG_NONE, &video_project,
 	  N_("Open a video project adding the URIs given on the command line"),
@@ -117,6 +124,10 @@ static const GOptionEntry options [] = {
 	{ "ncb", 'n', 0, G_OPTION_ARG_NONE, &open_ncb,
 	  N_("Burn the contents of burn:// URI"),
 	  NULL },
+
+	{ "burn-and-remove-project", 'r', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &burn_project_uri,
+	  N_("Burn the specified project and REMOVE it.\nThis option is mainly useful for integration use with other applications."),
+	  N_("PATH") },
 
 	{ "debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout"),
@@ -163,7 +174,6 @@ brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
 	GtkWidget *manager;
-    	gboolean load_default_project = FALSE;
 
 	manager = brasero_app_get_project_manager (app);
 
@@ -174,12 +184,14 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 
 	/* we first check that only one of the options was given
-	 * (except for --debug) */
+	 * (except for --debug and cover argument) */
 	if (copy_project)
 		nb ++;
 	if (iso_uri)
 		nb ++;
 	if (project_uri)
+		nb ++;
+	if (burn_project_uri)
 		nb ++;
 	if (playlist_uri)
 		nb ++;
@@ -205,17 +217,16 @@ brasero_app_parse_options (BraseroApp *app)
 	else if (copy_project) {
 		gchar *device = NULL;
 
-		/* make sure there is only one file in the remaining list for
-		 * specifying the source device. It could be extended to let
-		 * the user specify the destination device as well */
+		/* Make sure there is only one file in the remaining list for
+		* specifying the source device. It could be extended to let
+		* the user specify the destination device as well */
 		if (files
 		&&  files [0] != NULL
 		&&  files [1] == NULL)
-			device = files [0];
-		
-		/* this can't combine with any other options */
+			device = files [0]; 
+
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device);
+		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device, cover_project);
 		return;
 	}
 	else if (iso_uri) {
@@ -225,53 +236,19 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else if (project_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
+		brasero_app_run (app, FALSE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_project, project_uri);
 	}
-
-#ifdef BUILD_PLAYLIST
-
-	else if (playlist_uri) {
+	else if (burn_project_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
-	}
+		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_burn_project, burn_project_uri);
+		if (g_remove (burn_project_uri) != 0) {
+			gchar *path;
 
-#endif
-
-	else if (audio_project) {
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
-	}
-	else if (data_project) {
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
-	}
-	else if (video_project) {
-	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
-	}
-	else if (disc_blank) {
-		gchar *device = NULL;
-
-		/* make sure there is only one file in the remaining list for
-		 * specifying the source device. It could be extended to let
-		 * the user specify the destination device as well */
-		if (files
-		&&  files [0] != NULL
-		&&  files [1] == NULL)
-			device = files [0];
-
-		brasero_app_blank (app, device, TRUE);
-		return;
-	}
-	else if (disc_check) {
-		gchar *device = NULL;
-
-		/* make sure there is only one file in the remaining list for
-		 * specifying the source device. It could be extended to let
-		 * the user specify the destination device as well */
-		if (files
-		&&  files [0] != NULL
-		&&  files [1] == NULL)
-			device = files [0];
-
-		brasero_app_check (app, device, TRUE);
+			path = g_filename_from_uri (burn_project_uri, NULL, NULL);
+			g_remove (path);
+			g_free (path);
+		}
 		return;
 	}
 	else if (open_ncb) {
@@ -299,7 +276,59 @@ brasero_app_parse_options (BraseroApp *app)
 		g_slist_free (list);
 		return;
 	}
+
+#ifdef BUILD_PLAYLIST
+
+	else if (playlist_uri) {
+		brasero_app_run (app, FALSE);
+		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
+	}
+
+#endif
+
+	else if (audio_project) {
+		brasero_app_run (app, FALSE);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
+	}
+	else if (data_project) {
+		brasero_app_run (app, FALSE);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+	}
+	else if (video_project) {
+		brasero_app_run (app, FALSE);
+	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
+	}
+	else if (disc_blank) {
+		gchar *device = NULL;
+
+		/* make sure there is only one file in the remaining list for
+		 * specifying the source device. It could be extended to let
+		 * the user specify the destination device as well */
+		if (files
+		&&  files [0] != NULL
+		&&  files [1] == NULL)
+			device = files [0];
+
+		brasero_app_blank (app, device);
+		return;
+	}
+	else if (disc_check) {
+		gchar *device = NULL;
+
+		/* make sure there is only one file in the remaining list for
+		 * specifying the source device. It could be extended to let
+		 * the user specify the destination device as well */
+		if (files
+		&&  files [0] != NULL
+		&&  files [1] == NULL)
+			device = files [0];
+
+		brasero_app_check (app, device);
+		return;
+	}
 	else if (files) {
+		brasero_app_run (app, FALSE);
+
 		if (g_strv_length (files) == 1) {
 			BraseroProjectType type;
 
@@ -317,10 +346,11 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
-	    	load_default_project = TRUE;
+		brasero_app_run (app, TRUE);
 	}
 
-	brasero_app_run (app, load_default_project);
+	gtk_widget_show (GTK_WIDGET (app));
+	gtk_main ();
 }
 
 int

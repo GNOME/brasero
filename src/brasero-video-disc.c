@@ -1372,7 +1372,7 @@ brasero_video_disc_set_session_contents (BraseroDisc *self,
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (self);
 	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	tracks = brasero_video_project_get_contents (project);
+	tracks = brasero_video_project_get_contents (project, FALSE);
 
 	if (!tracks)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
@@ -1405,7 +1405,7 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
 	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
-	tracks = brasero_video_project_get_contents (project);
+	tracks = brasero_video_project_get_contents (project, TRUE);
 
 	for (iter = tracks; iter; iter = iter->next) {
 		BraseroDiscSong *song;
@@ -1414,7 +1414,7 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 		track = iter->data;
 
 		song = g_new0 (BraseroDiscSong, 1);
-		song->uri = brasero_track_get_audio_source (track, TRUE);;
+		song->uri = brasero_track_get_audio_source (track, TRUE);
 		song->start = brasero_track_get_audio_start (track);
 		song->end = brasero_track_get_audio_end (track);
 		song->info = brasero_song_info_copy (brasero_track_get_audio_info (track));

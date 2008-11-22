@@ -506,18 +506,20 @@ brasero_video_project_set_file_information (BraseroVideoProject *self,
 		GdkPixbuf *scaled;
 
 		scaled = gdk_pixbuf_scale_simple (snapshot,
-						  96 * gdk_pixbuf_get_width (snapshot) / gdk_pixbuf_get_height (snapshot),
-						  96,
+						  48 * gdk_pixbuf_get_width (snapshot) / gdk_pixbuf_get_height (snapshot),
+						  48,
 						  GDK_INTERP_BILINEAR);
 		file->snapshot = scaled;
 	}
 
 	/* size */
-	len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
-	if (file->end > len)
-		file->end = len;
-	else if (file->end <= 0)
-		file->end = len;
+	if (!file->len_set) {
+		len = g_file_info_get_attribute_uint64 (info, BRASERO_IO_LEN);
+		if (file->end > len)
+			file->end = len;
+		else if (file->end <= 0)
+			file->end = len;
+	}
 
 	/* Get the song info */
 	if (!file->info)
@@ -775,8 +777,10 @@ brasero_video_project_add_uri (BraseroVideoProject *self,
 	if (start > -1)
 		file->start = start;
 
-	if (end > -1)
+	if (end > -1) {
 		file->end = end;
+		file->len_set = TRUE;
+	}
 
 	if (sibling) {
 		file->next = sibling;
@@ -966,7 +970,8 @@ brasero_video_project_get_status (BraseroVideoProject *self,
 }
 
 GSList *
-brasero_video_project_get_contents (BraseroVideoProject *self)
+brasero_video_project_get_contents (BraseroVideoProject *self,
+				    gboolean values_set)
 {
 	GSList *tracks = NULL;
 	BraseroVideoFile *file;
@@ -980,8 +985,26 @@ brasero_video_project_get_contents (BraseroVideoProject *self)
 		BraseroSongInfo *info = NULL;
 		BraseroTrack *track;
 
-		if (file->info)
+		if (file->info) {
 			info = brasero_song_info_copy (file->info);
+
+			if (values_set) {
+				if (!file->title_set) {
+					g_free (info->title);
+					info->title = NULL;
+				}
+				if (!file->artist_set) {
+					g_free (info->artist);
+					info->artist = NULL;
+				}
+				if (!file->composer_set) {
+					g_free (info->composer);
+					info->composer = NULL;
+				}
+				if (!file->isrc_set)
+					info->isrc = 0;
+			}
+		}
 		else
 			info = NULL;
 
@@ -991,7 +1014,17 @@ brasero_video_project_get_contents (BraseroVideoProject *self)
 						BRASERO_AUDIO_FORMAT_UNDEFINED|
 						BRASERO_VIDEO_FORMAT_UNDEFINED);
 
-		brasero_track_set_audio_boundaries (track, file->start, file->end, -1);
+		if (!values_set || file->len_set)
+			brasero_track_set_audio_boundaries (track,
+							    file->start,
+							    file->end,
+							    -1);
+		else
+			brasero_track_set_audio_boundaries (track,
+							    file->start,
+							    0,
+							    -1);
+
 		brasero_track_set_audio_info (track, info);
 		tracks = g_slist_prepend (tracks, track);
 	}

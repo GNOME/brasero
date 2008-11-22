@@ -716,6 +716,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 void
 brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 				      const gchar *label,
+				      const gchar *cover,
 				      GSList *tracks)
 {
 	BraseroJacketEditPrivate *priv;
@@ -725,22 +726,37 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
-	buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->front));
+	/* Set background for front cover */
+	if (cover) {
+		gchar *path;
 
-	/* create the tags */
-	gtk_text_buffer_create_tag (buffer,
-				    "Title",
-				    "justification", GTK_JUSTIFY_CENTER,
-				    "weight", PANGO_WEIGHT_BOLD,
-				    "scale", PANGO_SCALE_X_LARGE,
-				    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
-				    NULL);
+		path = g_filename_from_uri (cover, NULL, NULL);
+		if (!path)
+			path = g_strdup (cover);
 
-	gtk_text_buffer_get_start_iter (buffer, &start);
+		brasero_jacket_view_set_image_style (BRASERO_JACKET_VIEW (priv->front), BRASERO_JACKET_IMAGE_STRETCH);
+		brasero_jacket_view_set_image (BRASERO_JACKET_VIEW (priv->front), path);
+		g_free (path);
+	}
+	else {
+		/* Otherwise we create a very rough one */
+		buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->front));
 
-	if (label) {
-		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n\n\n", "Title", &start);
-		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
+		/* create the tags */
+		gtk_text_buffer_create_tag (buffer,
+					    "Title",
+					    "justification", GTK_JUSTIFY_CENTER,
+					    "weight", PANGO_WEIGHT_BOLD,
+					    "scale", PANGO_SCALE_X_LARGE,
+					    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+					    NULL);
+
+		gtk_text_buffer_get_start_iter (buffer, &start);
+
+		if (label) {
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n\n\n", "Title", &start);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
+		}
 	}
 
 	buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->back));

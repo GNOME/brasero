@@ -341,22 +341,21 @@ brasero_app_run (BraseroApp *app, gboolean load_default_project)
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
-	priv->is_running = TRUE;
 
+	priv->is_running = TRUE;
 	gtk_widget_realize (GTK_WIDGET (app));
-    	brasero_session_load (app, load_default_project);
-	gtk_widget_show (GTK_WIDGET (app));
-	gtk_main ();
+	brasero_session_load (app, load_default_project);
 }
 
 void
 brasero_app_blank (BraseroApp *app,
-		   const gchar *device,
-		   gboolean wait_and_close)
+		   const gchar *device)
 {
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
+	BraseroAppPrivate *priv;
 
+	priv = BRASERO_APP_PRIVATE (app);
 	dialog = brasero_blank_dialog_new ();
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (app));
 
@@ -375,10 +374,12 @@ brasero_app_blank (BraseroApp *app,
 		g_object_unref (drive);
 	}
 
-	if (wait_and_close) {
+	if (!priv->is_running) {
 		gtk_widget_show (dialog);
 		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+
+		/* brasero-tool-dialog auto destroys itself */
+		// gtk_widget_destroy (dialog);
 	}
 	else {
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
@@ -392,7 +393,7 @@ brasero_app_blank (BraseroApp *app,
 static void
 on_erase_cb (GtkAction *action, BraseroApp *app)
 {
-	brasero_app_blank (app, NULL, FALSE);
+	brasero_app_blank (app, NULL);
 }
 
 static void
@@ -413,11 +414,13 @@ on_eject_cb (GtkAction *action, BraseroApp *app)
 
 void
 brasero_app_check (BraseroApp *app,
-		   const gchar *device,
-		   gboolean wait_and_close)
+		   const gchar *device)
 {
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
 
 	dialog = brasero_sum_dialog_new ();
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (app));
@@ -437,10 +440,12 @@ brasero_app_check (BraseroApp *app,
 		g_object_unref (drive);
 	}
 
-	if (wait_and_close) {
+	if (!priv->is_running) {
 		gtk_widget_show (dialog);
 		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+
+		/* brasero-tool-dialog auto destroys itself */
+		// gtk_widget_destroy (dialog);
 	}
 	else {
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
@@ -454,7 +459,7 @@ brasero_app_check (BraseroApp *app,
 static void
 on_integrity_check_cb (GtkAction *action, BraseroApp *app)
 {
-	brasero_app_check (app, NULL, FALSE);
+	brasero_app_check (app, NULL);
 }
 
 static void

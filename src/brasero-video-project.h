@@ -67,6 +67,7 @@ struct _BraseroVideoFile {
 	guint is_reloading:1;
 	guint is_monitored:1;
 
+	guint len_set:1;
 	guint isrc_set:1;
 	guint title_set:1;
 	guint artist_set:1;
@@ -169,7 +170,8 @@ brasero_video_project_get_status (BraseroVideoProject *project,
 				  gchar **current_task);
 
 GSList *
-brasero_video_project_get_contents (BraseroVideoProject *project);
+brasero_video_project_get_contents (BraseroVideoProject *project,
+				    gboolean values_set);
 
 BraseroVideoFile *
 brasero_video_project_get_nth_item (BraseroVideoProject *project,

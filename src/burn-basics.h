@@ -196,6 +196,11 @@ brasero_burn_library_shutdown (void);
  */
 
 /**
+ * Gives the uri (gchar *) of the cover
+ */
+#define BRASERO_COVER_URI			"session::art::cover"
+
+/**
  * Define the audio streams for a DVD
  */
 #define BRASERO_DVD_AUDIO_STREAMS		"session::DVD::audio::format"

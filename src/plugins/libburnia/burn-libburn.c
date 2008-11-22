@@ -61,6 +61,8 @@ struct _BraseroLibburnPrivate {
 	/* This buffer is used to capture Primary Volume Descriptor for
 	 * for overwrite media so as to "grow" the latter. */
 	unsigned char *pvd;
+
+	guint sig_handler:1;
 };
 typedef struct _BraseroLibburnPrivate BraseroLibburnPrivate;
 
@@ -554,6 +556,11 @@ brasero_libburn_start_record (BraseroLibburn *self,
 							       300L - blocks,
 							       614400L - blocks * 2048);
 
+	if (!priv->sig_handler) {
+		burn_set_signal_handling ("brasero", NULL, 0);
+		priv->sig_handler = 1;
+	}
+
 	burn_disc_write (opts, priv->ctx->disc);
 	burn_write_opts_free (opts);
 
@@ -590,6 +597,11 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	if (profile == BRASERO_SCSI_PROF_DVD_RW_RESTRICTED) {
 		if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
 			/* leave libburn choose the best format */
+			if (!priv->sig_handler) {
+				burn_set_signal_handling ("brasero", NULL, 0);
+				priv->sig_handler = 1;
+			}
+
 			burn_disc_format (priv->ctx->drive,
 					  (off_t) 0,
 					  (1 << 4));
@@ -602,8 +614,12 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 			 * Bit 4 is enforce (re)-format if needed
 			 * 0x26 is DVD+RW format is to be set from bit 8
 			 * in the latter case bit 7 needs to be set as 
-			 * well.
-			 */
+			 * well. */
+			if (!priv->sig_handler) {
+				burn_set_signal_handling ("brasero", NULL, 0);
+				priv->sig_handler = 1;
+			}
+
 			burn_disc_format (priv->ctx->drive,
 					  (off_t) 0,
 					  (1 << 2)|(1 << 4));
@@ -612,6 +628,11 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	}
 	else if (burn_disc_erasable (priv->ctx->drive)) {
 		/* This is mainly for CDRW and sequential DVD-RW */
+		if (!priv->sig_handler) {
+			burn_set_signal_handling ("brasero", NULL, 0);
+			priv->sig_handler = 1;
+		}
+
 		burn_disc_erase (priv->ctx->drive, (flags & BRASERO_BURN_FLAG_FAST_BLANK) != 0);
 		return BRASERO_BURN_OK;
 	}
@@ -670,6 +691,11 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 			     _("An internal error occured (%s)"),
 			     reasons);
 		return BRASERO_BURN_ERR;
+	}
+
+	if (!priv->sig_handler) {
+		burn_set_signal_handling ("brasero", NULL, 0);
+		priv->sig_handler = 1;
 	}
 
 	burn_disc_write (opts, priv->ctx->disc);
@@ -734,6 +760,11 @@ brasero_libburn_stop (BraseroJob *job,
 
 	self = BRASERO_LIBBURN (job);
 	priv = BRASERO_LIBBURN_PRIVATE (self);
+
+	if (priv->sig_handler) {
+		priv->sig_handler = 0;
+		burn_set_signal_handling (NULL, NULL, 1);
+	}
 
 	if (priv->ctx) {
 		brasero_libburn_common_ctx_free (priv->ctx);

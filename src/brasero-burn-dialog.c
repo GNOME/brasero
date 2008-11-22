@@ -1604,15 +1604,25 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (answer == GTK_RESPONSE_CLOSE) {
 		GtkWidget *contents;
-		GtkWidget *window;
+		GValue *cover_value;
 		const gchar *title;
+		GtkWidget *window;
 		GSList *tracks;
 
 		contents = brasero_jacket_edit_dialog_new (GTK_WIDGET (dialog), &window);
 
 		title = brasero_burn_session_get_label (dialog->priv->session);
 		tracks = brasero_burn_session_get_tracks (dialog->priv->session);
-		brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (contents), title, tracks);
+
+		cover_value = NULL;
+		brasero_burn_session_tag_lookup (dialog->priv->session,
+						 BRASERO_COVER_URI,
+						 &cover_value);
+
+		brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (contents),
+						      title,
+						      cover_value? g_value_get_string (cover_value):NULL,
+						      tracks);
 
 		gtk_dialog_run (GTK_DIALOG (window));
 
@@ -1705,7 +1715,9 @@ brasero_burn_dialog_notify_success (BraseroBurnDialog *dialog)
 						    media,
 						    dialog->priv->total_size);
 
-	if (brasero_burn_session_get_input_type (dialog->priv->session, NULL) == BRASERO_TRACK_TYPE_AUDIO) {
+	if (dialog->priv->input.type == BRASERO_TRACK_TYPE_AUDIO
+	|| (dialog->priv->input.type == BRASERO_TRACK_TYPE_DISC
+	&& (dialog->priv->input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO))) {
 		/* since we succeed offer the possibility to create cover if that's an audio disc */
 		gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Create Cover"), GTK_RESPONSE_CLOSE);
 	}

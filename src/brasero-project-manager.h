@@ -73,10 +73,14 @@ brasero_project_manager_video (BraseroProjectManager *manager,
 			       GSList *uris);
 void
 brasero_project_manager_copy (BraseroProjectManager *manager,
-			      const gchar *device);
+			      const gchar *device,
+			      const gchar *cover);
 void
 brasero_project_manager_iso (BraseroProjectManager *manager,
 			     const gchar *uri);
+void
+brasero_project_manager_burn_project (BraseroProjectManager *manager,
+				      const gchar *uri);
 
 BraseroProjectType
 brasero_project_manager_open_playlist (BraseroProjectManager *manager,

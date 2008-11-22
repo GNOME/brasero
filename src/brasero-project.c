@@ -167,6 +167,8 @@ struct BraseroProjectPrivate {
 
 	gchar *project;
 
+	gchar *cover;
+
 	gint64 sectors;
 	BraseroDisc *current;
 
@@ -553,8 +555,11 @@ brasero_project_finalize (GObject *object)
 	if (cobj->priv->project)
 		g_free (cobj->priv->project);
 
-	g_free(cobj->priv);
-	G_OBJECT_CLASS(parent_class)->finalize(object);
+	if (cobj->priv->cover)
+		g_free (cobj->priv->cover);
+
+	g_free (cobj->priv);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 GtkWidget *
@@ -861,6 +866,7 @@ brasero_project_set_cover_specifics (BraseroProject *self,
 	brasero_disc_set_session_contents (BRASERO_DISC (self->priv->current), session);
 	brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (cover),
 					      brasero_burn_session_get_label (session),
+					      self->priv->cover,
 					      brasero_burn_session_get_tracks (session));
 	g_object_unref (session);
 }
@@ -935,8 +941,19 @@ brasero_project_burn (BraseroProject *project)
 	session = brasero_disc_option_dialog_get_session (BRASERO_DISC_OPTION_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	/* set the label for the session */
+	/* set the label/cover for the session */
 	brasero_burn_session_set_label (session, gtk_entry_get_text (GTK_ENTRY (project->priv->name_display)));
+
+	if (project->priv->cover) {
+		GValue *value;
+
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_STRING);
+		g_value_set_string (value, project->priv->cover);
+		brasero_burn_session_tag_add (session,
+					      BRASERO_COVER_URI,
+					      value);
+	}
 
 	/* now setup the burn dialog */
 	dialog = brasero_burn_dialog_new ();
@@ -982,6 +999,11 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 	if (project->priv->project) {
 		g_free (project->priv->project);
 		project->priv->project = NULL;
+	}
+
+	if (project->priv->cover) {
+		g_free (project->priv->cover);
+		project->priv->cover = NULL;
 	}
 
 	client = gconf_client_get_default ();
@@ -1141,6 +1163,11 @@ brasero_project_set_none (BraseroProject *project)
 	if (project->priv->project) {
 		g_free (project->priv->project);
 		project->priv->project = NULL;
+	}
+
+	if (project->priv->cover) {
+		g_free (project->priv->cover);
+		project->priv->cover = NULL;
 	}
 
 	if (project->priv->chooser) {
@@ -1997,6 +2024,7 @@ static gboolean
 brasero_project_open_project_xml (BraseroProject *proj,
 				  const gchar *uri,
 				  gchar **label,
+				  gchar **cover,
 				  BraseroDiscTrack **track,
 				  gboolean warn_user)
 {
@@ -2047,6 +2075,18 @@ brasero_project_open_project_xml (BraseroProject *proj,
 			if (!(*label))
 				goto error;
 		}
+		else if (!xmlStrcmp (item->name, (const xmlChar *) "cover")) {
+			xmlChar *escaped;
+
+			escaped = xmlNodeListGetString (project,
+							item->xmlChildrenNode,
+							1);
+			if (!escaped)
+				goto error;
+
+			*cover = g_uri_unescape_string ((char *) escaped, NULL);
+			g_free (escaped);
+		}
 		else if (!xmlStrcmp (item->name, (const xmlChar *) "track")) {
 			if (track_node)
 				goto error;
@@ -2083,11 +2123,12 @@ brasero_project_open_project (BraseroProject *project,
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
 	gchar *label = NULL;
+	gchar *cover = NULL;
 
 	if (!uri || *uri =='\0')
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (!brasero_project_open_project_xml (project, uri, &label, &track, TRUE))
+	if (!brasero_project_open_project_xml (project, uri, &label, &cover, &track, TRUE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	brasero_project_update_project_size (project, 0);
@@ -2115,6 +2156,13 @@ brasero_project_open_project (BraseroProject *project,
 		g_signal_handlers_unblock_by_func (project->priv->name_display,
 						   brasero_project_name_changed_cb,
 						   project);
+	}
+
+	if (cover) {
+		if (project->priv->cover)
+			g_free (project->priv->cover);
+
+		project->priv->cover = cover;
 	}
 
 	brasero_disc_load_track (project->priv->current, track);
@@ -2248,8 +2296,9 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
 	gchar *label;
+	gchar *cover;
 
-	if (!brasero_project_open_project_xml (project, uri, &label, &track, FALSE))
+	if (!brasero_project_open_project_xml (project, uri, &label, &cover, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	if (track->type == BRASERO_DISC_TRACK_AUDIO)
@@ -2379,25 +2428,27 @@ _save_audio_track_xml (xmlTextWriter *project,
 				return FALSE;
 		}
 
-		/* start of the song */
-		start = g_strdup_printf ("%"G_GINT64_FORMAT, song->start);
-		success = xmlTextWriterWriteElement (project,
-						     (xmlChar *) "start",
-						     (xmlChar *) start);
+		if (song->end > 0) {
+			/* start of the song */
+			start = g_strdup_printf ("%"G_GINT64_FORMAT, song->start);
+			success = xmlTextWriterWriteElement (project,
+							     (xmlChar *) "start",
+							     (xmlChar *) start);
 
-		g_free (start);
-		if (success == -1)
-			return FALSE;
+			g_free (start);
+			if (success == -1)
+				return FALSE;
 
-		/* end of the song */
-		end = g_strdup_printf ("%"G_GINT64_FORMAT, song->end);
-		success = xmlTextWriterWriteElement (project,
-						     (xmlChar *) "end",
-						     (xmlChar *) end);
+			/* end of the song */
+			end = g_strdup_printf ("%"G_GINT64_FORMAT, song->end);
+			success = xmlTextWriterWriteElement (project,
+							     (xmlChar *) "end",
+							     (xmlChar *) end);
 
-		g_free (end);
-		if (success == -1)
-			return FALSE;
+			g_free (end);
+			if (success == -1)
+				return FALSE;
+		}
 
 		if (!info)
 			continue;
@@ -2520,8 +2571,8 @@ brasero_project_save_project_xml (BraseroProject *proj,
 	gint success;
     	gchar *path;
 
-    	path = g_filename_from_uri (uri, NULL, NULL);
-    	if (!path)
+	path = g_filename_from_uri (uri, NULL, NULL);
+	if (!path)
 		return FALSE;
 
 	project = xmlNewTextWriterFilename (path, 0);
@@ -2560,6 +2611,19 @@ brasero_project_save_project_xml (BraseroProject *proj,
 					     (xmlChar *) gtk_entry_get_text (GTK_ENTRY (proj->priv->name_display)));
 	if (success < 0)
 		goto error;
+
+	if (proj->priv->cover) {
+		gchar *escaped;
+
+		escaped = g_uri_escape_string (proj->priv->cover, NULL, FALSE);
+		success = xmlTextWriterWriteElement (project,
+						     (xmlChar *) "cover",
+						     (xmlChar *) escaped);
+		g_free (escaped);
+
+		if (success < 0)
+			goto error;
+	}
 
 	success = xmlTextWriterStartElement (project, (xmlChar *) "track");
 	if (success < 0)

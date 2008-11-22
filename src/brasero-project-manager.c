@@ -592,7 +592,8 @@ brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
 
 static void
 brasero_project_manager_copy_disc (BraseroProjectManager *manager,
-				   const gchar *device)
+				   const gchar *device,
+				   const gchar *cover)
 {
 	BraseroBurnSession *session;
 	GtkResponseType result;
@@ -637,6 +638,18 @@ brasero_project_manager_copy_disc (BraseroProjectManager *manager,
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	gtk_widget_destroy (dialog);
+
+	/* Set a cover if any. */
+	if (cover) {
+		GValue *value;
+
+		value = g_new0 (GValue, 1);
+		g_value_init (value, G_TYPE_STRING);
+		g_value_set_string (value, cover);
+		brasero_burn_session_tag_add (session,
+					      BRASERO_COVER_URI,
+					      value);
+	}
 
 	brasero_project_manager_burn (manager, session);
 	g_object_unref (session);
@@ -759,7 +772,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Disc Copy"));
 
-		brasero_project_manager_copy_disc (manager, uri);
+		brasero_project_manager_copy_disc (manager, uri, NULL);
 	}
 }
 
@@ -868,13 +881,17 @@ brasero_project_manager_video (BraseroProjectManager *manager,
 
 void
 brasero_project_manager_copy (BraseroProjectManager *manager,
-			      const gchar *device)
+			      const gchar *device,
+			      const gchar *cover)
 {
-	brasero_project_manager_switch (manager,
-					BRASERO_PROJECT_TYPE_COPY,
-					NULL,
-					device,
-					TRUE);
+	if (manager->priv->oneshot)
+		brasero_project_manager_copy_disc (manager, device, cover);
+	else
+		brasero_project_manager_switch (manager,
+						BRASERO_PROJECT_TYPE_COPY,
+						NULL,
+						device,
+						TRUE);
 }
 
 void
@@ -914,6 +931,22 @@ brasero_project_manager_open_project (BraseroProjectManager *manager,
 	gtk_action_set_sensitive (action, TRUE);
 
 	return type;
+}
+
+void
+brasero_project_manager_burn_project (BraseroProjectManager *manager,
+				      const gchar *uri)
+{
+	BraseroProjectType type;
+
+	brasero_project_manager_set_oneshot (manager, TRUE);
+	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri);
+
+	if (type == BRASERO_PROJECT_TYPE_INVALID)
+		return;
+
+	manager->priv->type = type;
+	brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
 }
 
 #ifdef BUILD_PLAYLIST
