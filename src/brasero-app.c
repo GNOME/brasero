@@ -225,19 +225,31 @@ brasero_app_alert (BraseroApp *app,
 		   const gchar *secondary_message,
 		   GtkMessageType type)
 {
-	BraseroAppPrivate *priv;
 	GtkWidget *parent = NULL;
+	BraseroAppPrivate *priv;
+	GtkWidget *alert;
 
 	priv = BRASERO_APP_PRIVATE (app);
+
+	/* Whatever happens, they need a parent or must be in the taskbar */
 	if (priv->is_running)
 		parent = GTK_WIDGET (app);
-	else
+	else if (priv->toplevel)
 		parent = priv->toplevel;
 
-	brasero_utils_message_dialog (parent,
-				      primary_message,
-				      secondary_message,
-				      type);
+	alert = brasero_utils_create_message_dialog (parent,
+						     primary_message,
+						     secondary_message,
+						     type);
+	gtk_window_set_title (GTK_WINDOW (alert), _("Disc Burner"));
+
+	if (!parent) {
+		gtk_window_set_skip_pager_hint (GTK_WINDOW (alert), FALSE);
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (alert), FALSE);
+	}
+
+	gtk_dialog_run (GTK_DIALOG (alert));
+	gtk_widget_destroy (alert);
 }
 
 GtkUIManager *

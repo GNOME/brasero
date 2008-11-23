@@ -509,11 +509,11 @@ brasero_utils_validate_utf8 (const gchar *name)
 	return retval;
 }
 
-void
-brasero_utils_message_dialog (GtkWidget *parent,
-			      const gchar *primary_message,
-			      const gchar *secondary_message,
-			      GtkMessageType type)
+GtkWidget *
+brasero_utils_create_message_dialog (GtkWidget *parent,
+				     const gchar *primary_message,
+				     const gchar *secondary_message,
+				     GtkMessageType type)
 {
 	GtkWidget *message;
 
@@ -530,6 +530,22 @@ brasero_utils_message_dialog (GtkWidget *parent,
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 							  "%s.",
 							  secondary_message);
+
+	return message;
+}
+
+void
+brasero_utils_message_dialog (GtkWidget *parent,
+			      const gchar *primary_message,
+			      const gchar *secondary_message,
+			      GtkMessageType type)
+{
+	GtkWidget *message;
+
+	message = brasero_utils_create_message_dialog (parent,
+						       primary_message,
+						       secondary_message,
+						       type);
 
 	gtk_dialog_run (GTK_DIALOG (message));
 	gtk_widget_destroy (message);
