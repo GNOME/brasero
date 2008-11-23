@@ -221,12 +221,13 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	valid = brasero_session_cfg_get_error (session);
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
+	priv->is_valid = BRASERO_SESSION_IS_VALID (valid);
 
-	gtk_widget_set_sensitive (priv->button, valid == BRASERO_SESSION_VALID);
-	gtk_widget_set_sensitive (priv->options, valid == BRASERO_SESSION_VALID);
-	gtk_widget_set_sensitive (priv->properties, valid == BRASERO_SESSION_VALID);
+	gtk_widget_set_sensitive (priv->button, priv->is_valid);
+	gtk_widget_set_sensitive (priv->options, priv->is_valid);
+	gtk_widget_set_sensitive (priv->properties, priv->is_valid);
 
-	if (valid != BRASERO_SESSION_VALID)
+	if (!priv->is_valid)
 		gtk_widget_hide (priv->warning);
 	else if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session)))
 		gtk_widget_hide (priv->warning);
@@ -246,7 +247,6 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
 				       BRASERO_NOTIFY_CONTEXT_SIZE);
 
-	priv->is_valid = FALSE;
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("Please, choose another CD or DVD or insert a new one."),
@@ -258,6 +258,13 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 					    _("Please, insert a recordable CD or DVD."),
 					    _("There is no recordable disc inserted."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
+	else if (valid == BRASERO_SESSION_NO_CD_TEXT) {
+		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+					    _("No track information (artist, compositor, ...) will be written to the disc."),
+					    _("This is not supported by the current active burning backend."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
@@ -337,8 +344,6 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 				  G_CALLBACK (brasero_burn_options_message_response_cb),
 				  self);
 	}
-	else
-		priv->is_valid = TRUE;
 
 	brasero_burn_options_update_no_medium_warning (self);
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);

@@ -1,3 +1,74 @@
+2008-11-23  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Improve previous patch by letting users without a burning backend able
+	to write CD-TEXT write audio CDs nevertheless.
+
+	Fix also some crashes introduced in previous patch and some minor glitches
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_set_session_param),
+	(brasero_audio_disc_set_session_contents):
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_load_multi_state),
+	(brasero_disc_option_dialog_valid_media_cb):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_set_audio_tracks):
+	* src/brasero-medium-properties.c
+	(brasero_medium_properties_valid_session):
+	* src/brasero-project-manager.c
+	(brasero_project_manager_burn_project):
+	* src/brasero-project.c (brasero_project_set_uri):
+	* src/brasero-session-cfg.c (brasero_session_cfg_get_error),
+	(brasero_session_cfg_update), (brasero_session_cfg_class_init):
+	* src/brasero-session-cfg.h:
+	* src/burn-caps.c (brasero_caps_get_flags_for_disc),
+	(brasero_caps_audio_new):
+	* src/burn-debug.c (brasero_debug_audio_format_to_string):
+	* src/burn-session.c (brasero_burn_session_class_init):
+	* src/burn-track.h:
+	* src/main.c (brasero_app_parse_options):
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_export_caps):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_export_caps):
+	* src/plugins/transcode/burn-transcode.c (foreach_tag),
+	(brasero_transcode_export_caps):
+	* src/plugins/transcode/burn-vob.c (brasero_vob_export_caps):
+	* src/plugins/vcdimager/burn-vcdimager.c
+	(brasero_vcd_imager_export_caps):
+
+2008-11-22  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Added a new flag for BraseroAudioFormat indicating the support for
+	CD-TEXT. Sadly libburn doesn't support it.
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_set_session_param),
+	(brasero_audio_disc_set_session_contents):
+	* src/brasero-project-manager.c
+	(brasero_project_manager_burn_project):
+	* src/brasero-project.c (brasero_project_set_uri):
+	* src/burn-caps.c (brasero_caps_audio_new):
+	* src/burn-track.h:
+	* src/main.c (brasero_app_parse_options):
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_export_caps):
+	* src/plugins/cdrtools/burn-cdrecord.c
+	(brasero_cdrecord_export_caps):
+	* src/plugins/dvdauthor/burn-dvdauthor.c
+	(brasero_dvd_author_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_export_caps):
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_export_caps):
+	* src/plugins/transcode/burn-vob.c (brasero_vob_export_caps):
+	* src/plugins/vcdimager/burn-vcdimager.c
+	(brasero_vcd_imager_export_caps):
+
 2008-11-22  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix small UI glitch

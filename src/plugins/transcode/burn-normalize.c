@@ -586,12 +586,18 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 	gst_object_unref (element);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_UNDEFINED|
+					BRASERO_METADATA_INFO);
+	brasero_plugin_process_caps (plugin, input);
+	g_slist_free (input);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_UNDEFINED);
 	brasero_plugin_process_caps (plugin, input);
+	g_slist_free (input);
 
 	/* We should run first */
 	brasero_plugin_set_process_flags (plugin, BRASERO_PLUGIN_RUN_PREPROCESSING);
-	g_slist_free (input);
 
 	return BRASERO_BURN_OK;
 }

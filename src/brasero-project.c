@@ -1601,7 +1601,6 @@ brasero_project_register_ui (BraseroProject *project, GtkUIManager *manager)
 }
 
 /******************************* common to save/open ***************************/
-
 static void
 brasero_project_add_to_recents (BraseroProject *project,
 				const gchar *uri,
@@ -1646,8 +1645,10 @@ brasero_project_set_uri (BraseroProject *project,
 
 	uri = uri ? uri : project->priv->project;
 
-    	/* add it to recent manager */
-    	brasero_project_add_to_recents (project, uri, TRUE);
+	/* add it to recent manager */
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	if (brasero_app_is_running (BRASERO_APP (toplevel)))
+		brasero_project_add_to_recents (project, uri, TRUE);
 
 	/* update the name of the main window */
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
@@ -1662,7 +1663,6 @@ brasero_project_set_uri (BraseroProject *project,
  
 	g_free (name);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	gtk_window_set_title (GTK_WINDOW (toplevel), title);
 	g_free (title);
 

@@ -1085,10 +1085,24 @@ brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 				       BRASERO_AUDIO_FORMAT_AC3|
 				       BRASERO_AUDIO_FORMAT_MP2|
 				       BRASERO_AUDIO_FORMAT_44100|
-				       BRASERO_AUDIO_FORMAT_48000);
+				       BRASERO_AUDIO_FORMAT_48000|
+				       BRASERO_METADATA_INFO);
 	brasero_plugin_process_caps (plugin, caps);
 	g_slist_free (caps);
 
+	caps = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+				       BRASERO_AUDIO_FORMAT_UNDEFINED|
+				       BRASERO_AUDIO_FORMAT_4_CHANNEL|
+				       BRASERO_AUDIO_FORMAT_RAW|
+				       BRASERO_VIDEO_FORMAT_UNDEFINED|
+				       BRASERO_VIDEO_FORMAT_VCD|
+				       BRASERO_VIDEO_FORMAT_VIDEO_DVD|
+				       BRASERO_AUDIO_FORMAT_AC3|
+				       BRASERO_AUDIO_FORMAT_MP2|
+				       BRASERO_AUDIO_FORMAT_44100|
+				       BRASERO_AUDIO_FORMAT_48000);
+	brasero_plugin_process_caps (plugin, caps);
+	g_slist_free (caps);
 	caps = brasero_caps_data_new (BRASERO_IMAGE_FS_ANY);
 	brasero_plugin_process_caps (plugin, caps);
 	g_slist_free (caps);

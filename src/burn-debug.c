@@ -305,6 +305,9 @@ brasero_debug_audio_format_to_string (gchar *buffer,
 
 	if (format & BRASERO_VIDEO_FORMAT_VCD)
 		strcat (buffer, "Video DVD ");
+
+	if (format & BRASERO_METADATA_INFO)
+		strcat (buffer, "Metadata Information ");
 }
 
 void

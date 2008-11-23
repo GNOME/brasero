@@ -1607,7 +1607,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [OUTPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("output_changed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  G_SIGNAL_RUN_FIRST,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, output_changed),
 			  NULL,
 			  NULL,
@@ -1618,7 +1618,7 @@ brasero_burn_session_class_init (BraseroBurnSessionClass *klass)
 	brasero_burn_session_signals [INPUT_CHANGED_SIGNAL] =
 	    g_signal_new ("input_changed",
 			  BRASERO_TYPE_BURN_SESSION,
-			  G_SIGNAL_RUN_FIRST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  G_SIGNAL_RUN_FIRST,
 			  G_STRUCT_OFFSET (BraseroBurnSessionClass, input_changed),
 			  NULL,
 			  NULL,

@@ -2398,6 +2398,13 @@ brasero_caps_get_flags_for_disc (BraseroBurnFlag session_flags,
 	else
 		supported_flags &= ~BRASERO_BURN_FLAG_RAW;
 
+	if ((supported_flags & BRASERO_BURN_FLAG_DAO)
+	&&   input->type == BRASERO_TRACK_TYPE_AUDIO
+	&&  (input->subtype.img_format & BRASERO_METADATA_INFO)) {
+		/* In this case, DAO is compulsory if we want to write CD-TEXT */
+		compulsory_flags |= BRASERO_BURN_FLAG_DAO;
+	}
+
 	if (io_flags & BRASERO_PLUGIN_IO_ACCEPT_PIPE) {
 		supported_flags |= BRASERO_BURN_FLAG_NO_TMP_FILES;
 
@@ -3147,15 +3154,22 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		 * them, the other does have a VIDEO stream too. */
 		common_audio = BRASERO_AUDIO_CAPS_AUDIO (caps->type.subtype.audio_format) & 
 			       BRASERO_AUDIO_CAPS_AUDIO (format);
-		if (common_audio == BRASERO_AUDIO_FORMAT_NONE)
+		if (common_audio == BRASERO_AUDIO_FORMAT_NONE
+		&& (BRASERO_AUDIO_CAPS_AUDIO (caps->type.subtype.audio_format)
+		||  BRASERO_AUDIO_CAPS_AUDIO (format)))
 			continue;
 
 		common_video = BRASERO_AUDIO_CAPS_VIDEO (caps->type.subtype.audio_format) & 
 			       BRASERO_AUDIO_CAPS_VIDEO (format);
-		if (common_video == BRASERO_AUDIO_FORMAT_NONE)
+
+		if (common_video == BRASERO_AUDIO_FORMAT_NONE
+		&& (BRASERO_AUDIO_CAPS_VIDEO (caps->type.subtype.audio_format)
+		||  BRASERO_AUDIO_CAPS_VIDEO (format)))
 			continue;
 
-		common = common_audio|common_video;
+		/* Likewise... that must be common */
+		if ((caps->type.subtype.audio_format & BRASERO_METADATA_INFO) != (format & BRASERO_METADATA_INFO))
+			continue;
 
 		/* encompassed caps just add it to retval */
 		if (caps->type.subtype.audio_format == common)

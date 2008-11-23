@@ -60,7 +60,8 @@ GType brasero_session_cfg_get_type (void) G_GNUC_CONST;
 
 typedef enum {
 	BRASERO_SESSION_VALID				= 0,
-	BRASERO_SESSION_NO_INPUT_IMAGE			= 1,
+	BRASERO_SESSION_NO_CD_TEXT			= 1,
+	BRASERO_SESSION_NO_INPUT_IMAGE			= 2,
 	BRASERO_SESSION_UNKNOWN_IMAGE,
 	BRASERO_SESSION_NO_INPUT_MEDIUM,
 	BRASERO_SESSION_NO_OUTPUT,
@@ -69,6 +70,10 @@ typedef enum {
 	BRASERO_SESSION_NOT_SUPPORTED,
 	BRASERO_SESSION_DISC_PROTECTED
 } BraseroSessionError;
+
+#define BRASERO_SESSION_IS_VALID(result_MACRO)					\
+	((result_MACRO) == BRASERO_SESSION_VALID ||				\
+	 (result_MACRO) == BRASERO_SESSION_NO_CD_TEXT)
 
 BraseroSessionCfg *
 brasero_session_cfg_new (void);

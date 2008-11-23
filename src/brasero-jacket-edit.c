@@ -806,40 +806,42 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 
 		info = brasero_track_get_audio_info (track);
 
-		if (info->title) {
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->title, "Subtitle", &start);
+		if (info) {
+			if (info->title) {
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->title, "Subtitle", &start);
+			}
+			else {
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("Unknown song"), "Subtitle", &start);
+			}
+
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\t\t", "Subtitle", &start);
+
+			time = brasero_utils_get_time_string (brasero_track_get_audio_end (track) -
+							      brasero_track_get_audio_start (track),
+							      TRUE,
+							      FALSE);
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
+			g_free (time);
+
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
+
+			if (info->artist) {
+				/* Translators: "by" is followed by the name of an artist.
+				 * This text is the one written on the cover of a disc.
+				 * Before it there is the name of the song.
+				 * I had to break it because it is in a GtkTextBuffer
+				 * and every word has a different tag. */
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by"), "Artist", &start);
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->artist, "Artist", &start);
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
+			}
+
+			if (info->composer)
+				BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->composer, "Subtitle", &start);
+
+			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n", "Subtitle", &start);
 		}
-		else {
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("Unknown song"), "Subtitle", &start);
-		}
-
-		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\t\t", "Subtitle", &start);
-
-		time = brasero_utils_get_time_string (brasero_track_get_audio_end (track) -
-						      brasero_track_get_audio_start (track),
-						      TRUE,
-						      FALSE);
-		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, time, "Subtitle", &start);
-		g_free (time);
-
-		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
-
-		if (info->artist) {
-			/* Translators: "by" is followed by the name of an artist.
-			 * This text is the one written on the cover of a disc.
-			 * Before it there is the name of the song.
-			 * I had to break it because it is in a GtkTextBuffer
-			 * and every word has a different tag. */
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, _("by"), "Artist", &start);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->artist, "Artist", &start);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, " ", "Artist", &start);
-		}
-
-		if (info->composer)
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, info->composer, "Subtitle", &start);
-
-		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n", "Subtitle", &start);
 	}
 
 	/* side */

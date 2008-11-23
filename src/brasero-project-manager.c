@@ -941,7 +941,6 @@ brasero_project_manager_burn_project (BraseroProjectManager *manager,
 
 	brasero_project_manager_set_oneshot (manager, TRUE);
 	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri);
-
 	if (type == BRASERO_PROJECT_TYPE_INVALID)
 		return;
 

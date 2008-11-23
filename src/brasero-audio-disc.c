@@ -2075,7 +2075,8 @@ brasero_audio_disc_set_session_param (BraseroDisc *disc,
 				      value);
 
 	type.type = BRASERO_TRACK_TYPE_AUDIO;
-	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED;
+	type.subtype.audio_format = BRASERO_AUDIO_FORMAT_UNDEFINED|
+				    BRASERO_METADATA_INFO;
 	brasero_burn_session_set_input_type (session, &type);
 
 	return BRASERO_BURN_OK;
@@ -2089,12 +2090,14 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 	GtkTreeModel *model;
 	BraseroTrack *track;
 	BraseroAudioDisc *audio;
+	BraseroTrackType track_type = { 0, };
 
 	audio = BRASERO_AUDIO_DISC (disc);
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (audio->priv->tree));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
+	brasero_burn_session_get_input_type (session, &track_type);
 	track = NULL;
 	do {
 		gchar *uri;
@@ -2156,7 +2159,10 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 			info->isrc = isrc;
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
-		brasero_track_set_audio_source (track, uri, BRASERO_AUDIO_FORMAT_UNDEFINED);
+		brasero_track_set_audio_source (track,
+						uri,
+						track_type.subtype.audio_format);
+
 		brasero_track_set_audio_boundaries (track, start, end, -1);
 		brasero_track_set_audio_info (track, info);
 		brasero_burn_session_add_track (session, track);

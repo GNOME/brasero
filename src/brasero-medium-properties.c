@@ -566,7 +566,7 @@ brasero_medium_properties_valid_session (BraseroSessionCfg *session,
 
 	/* make sure the current displayed path is valid */
 	if (brasero_burn_session_is_dest_file (priv->session))
-		brasero_medium_properties_update_image_output (self, brasero_session_cfg_get_error (session) == BRASERO_SESSION_VALID);
+		brasero_medium_properties_update_image_output (self, BRASERO_SESSION_IS_VALID (brasero_session_cfg_get_error (session)));
 }
 
 static void

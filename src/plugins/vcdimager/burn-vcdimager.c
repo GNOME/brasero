@@ -481,9 +481,19 @@ brasero_vcd_imager_export_caps (BraseroPlugin *plugin, gchar **error)
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_AUDIO_FORMAT_MP2|
 					BRASERO_AUDIO_FORMAT_44100|
-					BRASERO_VIDEO_FORMAT_VCD);
+					BRASERO_VIDEO_FORMAT_VCD|
+					BRASERO_METADATA_INFO);
+
 	output = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					 BRASERO_IMAGE_FORMAT_CUE);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (input);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_MP2|
+					BRASERO_AUDIO_FORMAT_44100|
+					BRASERO_VIDEO_FORMAT_VCD);
 
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);

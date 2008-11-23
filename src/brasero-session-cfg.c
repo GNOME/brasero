@@ -53,6 +53,7 @@ struct _BraseroSessionCfgPrivate
 
 	BraseroSessionError is_valid;
 
+	guint CD_TEXT_modified:1;
 	guint configuring:1;
 	guint disabled:1;
 };
@@ -164,6 +165,11 @@ brasero_session_cfg_get_error (BraseroSessionCfg *self)
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
+
+	if (priv->is_valid == BRASERO_SESSION_VALID
+	&&  priv->CD_TEXT_modified)
+		return BRASERO_SESSION_NO_CD_TEXT;
+
 	return priv->is_valid;
 }
 
@@ -576,7 +582,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	if (priv->configuring)
 		return;
 
-	/* make sure there is a source */
+	/* Make sure there is a source */
 	brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), &source);
 	if (source.type == BRASERO_TRACK_TYPE_NONE) {
 		priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
@@ -636,6 +642,82 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		return;
 	}
 
+	/* Check that current input and output work */
+	if (priv->CD_TEXT_modified) {
+		/* Try to redo what we undid (after all a new plugin could have
+		 * been activated in the mean time ...) and see what happens */
+		source.subtype.audio_format |= BRASERO_METADATA_INFO;
+		result = brasero_burn_caps_is_input_supported (priv->caps,
+							       BRASERO_BURN_SESSION (self),
+							       &source,
+							       FALSE);
+		if (result == BRASERO_BURN_OK) {
+			priv->CD_TEXT_modified = FALSE;
+
+			priv->configuring = TRUE;
+			brasero_burn_session_set_input_type (BRASERO_BURN_SESSION (self), &source);
+			priv->configuring = FALSE;
+		}
+		else {
+			/* No, nothing's changed */
+			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
+			result = brasero_burn_caps_is_input_supported (priv->caps,
+								       BRASERO_BURN_SESSION (self),
+								       &source,
+								       FALSE);
+		}
+	}
+	else {
+		/* NOTE: don't use flags here as they will be adapted afterwards */
+		result = brasero_burn_caps_is_input_supported (priv->caps,
+							       BRASERO_BURN_SESSION (self),
+							       &source,
+							       FALSE);
+
+		if (result != BRASERO_BURN_OK
+		&&  source.type == BRASERO_TRACK_TYPE_AUDIO
+		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {
+			/* Another special case in case some burning backends don't
+			 * support CD-TEXT for audio (libburn). If no other backend is
+			 * available remove CD-TEXT option but tell user... */
+			/* NOTE: set flags to NONE as they'll need to be updated */
+			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
+			result = brasero_burn_caps_is_input_supported (priv->caps,
+								       BRASERO_BURN_SESSION (self),
+								       &source,
+								       FALSE);
+			BRASERO_BURN_LOG ("Tested support without Metadata information (result %d)", result);
+			if (result == BRASERO_BURN_OK) {
+				priv->CD_TEXT_modified = TRUE;
+
+				priv->configuring = TRUE;
+				brasero_burn_session_set_input_type (BRASERO_BURN_SESSION (self), &source);
+				priv->configuring = FALSE;
+			}
+		}
+	}
+
+	if (result != BRASERO_BURN_OK) {
+		if (source.type == BRASERO_TRACK_TYPE_DISC
+		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
+		&&  brasero_track_type_is_supported (&source) != BRASERO_BURN_OK) {
+			/* This is a special case to display a helpful message */
+			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
+			g_signal_emit (self,
+				       session_cfg_signals [IS_VALID_SIGNAL],
+				       0);
+		}
+		else {
+			priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
+			g_signal_emit (self,
+				       session_cfg_signals [IS_VALID_SIGNAL],
+				       0);
+		}
+
+		return;
+	}
+
+	/* Configure flags */
 	priv->configuring = TRUE;
 
 	if (brasero_drive_is_fake (burner))
@@ -651,27 +733,7 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 
 	priv->configuring = FALSE;
 
-	result = brasero_burn_caps_is_session_supported (priv->caps, BRASERO_BURN_SESSION (self));
-
-	if (result != BRASERO_BURN_OK) {
-		/* This is a special case */
-		if (source.type == BRASERO_TRACK_TYPE_DISC
-		&& (source.subtype.media & BRASERO_MEDIUM_PROTECTED)
-		&&  brasero_track_type_is_supported (&source) != BRASERO_BURN_OK) {
-			priv->is_valid = BRASERO_SESSION_DISC_PROTECTED;
-			g_signal_emit (self,
-				       session_cfg_signals [IS_VALID_SIGNAL],
-				       0);
-		}
-		else {
-			priv->is_valid = BRASERO_SESSION_NOT_SUPPORTED;
-			g_signal_emit (self,
-				       session_cfg_signals [IS_VALID_SIGNAL],
-				       0);
-		}
-		return;
-	}
-
+	/* Finally check size */
 	if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (self))) {
 		priv->is_valid = BRASERO_SESSION_VALID;
 		g_signal_emit (self,
@@ -875,7 +937,7 @@ brasero_session_cfg_class_init (BraseroSessionCfgClass *klass)
 	session_cfg_signals[IS_VALID_SIGNAL] =
 		g_signal_new ("is_valid",
 		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_RUN_CLEANUP | G_SIGNAL_ACTION,
 		              0,
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,

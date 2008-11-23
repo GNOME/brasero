@@ -1213,18 +1213,18 @@ foreach_tag (const GstTagList *list,
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	info = brasero_track_get_audio_info (track);
 
-	if (!strcmp (tag, GST_TAG_TITLE)) {
+	if (info && !strcmp (tag, GST_TAG_TITLE)) {
 		if (!info->title)
 			gst_tag_list_get_string (list, tag, &(info->title));
 	}
-	else if (!strcmp (tag, GST_TAG_ARTIST)) {
+	else if (info && !strcmp (tag, GST_TAG_ARTIST)) {
 		if (!info->artist)
 			gst_tag_list_get_string (list, tag, &(info->artist));
 	}
-	else if (!strcmp (tag, GST_TAG_ISRC)) {
+	else if (info && !strcmp (tag, GST_TAG_ISRC)) {
 		gst_tag_list_get_int (list, tag, &(info->isrc));
 	}
-	else if (!strcmp (tag, GST_TAG_PERFORMER)) {
+	else if (info && !strcmp (tag, GST_TAG_PERFORMER)) {
 		if (!info->artist)
 			gst_tag_list_get_string (list, tag, &(info->artist));
 	}
@@ -1547,6 +1547,20 @@ brasero_transcode_export_caps (BraseroPlugin *plugin, gchar **error)
 			       _("Transcode converts song files into a format proper to burn them on CDs"),
 			       "Philippe Rouquier",
 			       0);
+
+	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
+					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,
+					 BRASERO_AUDIO_FORMAT_RAW|
+					 BRASERO_AUDIO_FORMAT_44100|
+					 BRASERO_METADATA_INFO);
+
+	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,
+					BRASERO_AUDIO_FORMAT_UNDEFINED|
+					BRASERO_METADATA_INFO);
+
+	brasero_plugin_link_caps (plugin, output, input);
+	g_slist_free (output);
+	g_slist_free (input);
 
 	output = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE|
 					 BRASERO_PLUGIN_IO_ACCEPT_PIPE,

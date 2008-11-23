@@ -102,6 +102,7 @@ brasero_disc_option_dialog_load_multi_state (BraseroDiscOptionDialog *dialog)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->multi_toggle), value);
 
 	if (!value) {
+		gtk_widget_set_sensitive (priv->multi_toggle, TRUE);
 		g_object_unref (session);
 		return;
 	}
@@ -967,7 +968,7 @@ brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (self);
 
 	if (priv->video_options)
-		gtk_widget_set_sensitive (priv->video_options, brasero_session_cfg_get_error (session) == BRASERO_SESSION_VALID);
+		gtk_widget_set_sensitive (priv->video_options, BRASERO_SESSION_IS_VALID (brasero_session_cfg_get_error (session)));
 
 	/* update the joliet button */
 	brasero_disc_option_dialog_update_joliet (self);
