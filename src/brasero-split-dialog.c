@@ -621,7 +621,7 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 		return;
 	}
 
-	brasero_metadata_set_info (metadata, &info);
+	brasero_metadata_get_result (metadata, &info, NULL);
 	if (!info.silences) {
 		brasero_split_dialog_no_silence_message (self);
 		return;

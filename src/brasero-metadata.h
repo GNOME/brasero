@@ -103,28 +103,28 @@ typedef struct {
 GType brasero_metadata_get_type ();
 BraseroMetadata *brasero_metadata_new (void);
 
-void
-brasero_metadata_cancel (BraseroMetadata *metadata);
-
-gboolean
-brasero_metadata_get_info_wait (BraseroMetadata *metadata,
-				GCancellable *cancel,
-				const gchar *uri,
-				BraseroMetadataFlag flags,
-				GError **error);
-
 gboolean
 brasero_metadata_get_info_async (BraseroMetadata *metadata,
 				 const gchar *uri,
 				 BraseroMetadataFlag flags);
-void
-brasero_metadata_lock (BraseroMetadata *metadata);
 
 void
-brasero_metadata_unlock (BraseroMetadata *metadata);
+brasero_metadata_cancel (BraseroMetadata *metadata);
 
 gboolean
-brasero_metadata_try_lock (BraseroMetadata *metadata);
+brasero_metadata_set_uri (BraseroMetadata *metadata,
+			  BraseroMetadataFlag flags,
+			  const gchar *uri,
+			  GError **error);
+
+void
+brasero_metadata_wait (BraseroMetadata *metadata,
+		       GCancellable *cancel);
+void
+brasero_metadata_increase_listener_number (BraseroMetadata *metadata);
+
+gboolean
+brasero_metadata_decrease_listener_number (BraseroMetadata *metadata);
 
 const gchar *
 brasero_metadata_get_uri (BraseroMetadata *metadata);
@@ -133,7 +133,8 @@ BraseroMetadataFlag
 brasero_metadata_get_flags (BraseroMetadata *metadata);
 
 gboolean
-brasero_metadata_set_info (BraseroMetadata *metadata,
-			   BraseroMetadataInfo *info);
+brasero_metadata_get_result (BraseroMetadata *metadata,
+			     BraseroMetadataInfo *info,
+			     GError **error);
 
 #endif				/* METADATA_H */

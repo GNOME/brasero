@@ -1,3 +1,23 @@
+2008-11-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Try to fix
+	#561050 – Brasero Hangs after trying to add mp3 files in an Audio Project
+	and perhaps #558291 – Crash after New Audio Project and change path into folder /etc
+
+	* src/brasero-io.c (brasero_io_find_metadata),
+	(brasero_io_wait_for_metadata), (brasero_io_get_metadata_info),
+	(brasero_io_init), (brasero_io_finalize):
+	* src/brasero-metadata.c (brasero_metadata_stop),
+	(brasero_metadata_set_uri), (brasero_metadata_wait_cancelled),
+	(brasero_metadata_wait),
+	(brasero_metadata_increase_listener_number),
+	(brasero_metadata_decrease_listener_number),
+	(brasero_metadata_get_result), (brasero_metadata_init),
+	(brasero_metadata_finalize):
+	* src/brasero-metadata.h:
+	* src/brasero-split-dialog.c
+	(brasero_split_dialog_metadata_finished_cb):
+
 2008-11-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #561590 – Flickering "Project Size Estimation" dialog

@@ -81,10 +81,9 @@ struct BraseroMetadataPrivate {
 	GSList *downloads;
 
 	GMutex *mutex;
-	GCond *cond;
+	GSList *conditions;
 
-	/* Used by threads */
-	GMutex *lock;
+	gint listeners;
 
 	guint started:1;
 	guint moved_forward:1;
@@ -247,6 +246,7 @@ static void
 brasero_metadata_stop (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
+	GSList *iter;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
@@ -254,22 +254,11 @@ brasero_metadata_stop (BraseroMetadata *self)
   			  priv->info ? priv->info->uri:"Unknown",
 			  self);
 
-	/* Destroy the pipeline as it has become unusable. */
+	g_mutex_lock (priv->mutex);
+
+	/* Destroy the pipeline as it has become un-re-usable */
 	if (priv->pipeline)
 		brasero_metadata_destroy_pipeline (self);
-/*	else if (priv->pipeline)
-	{	
-		GstState state = GST_STATE_NULL;
-
-		gst_element_set_state (priv->pipeline, GST_STATE_NULL);
-		gst_element_get_state (priv->pipeline, &state, NULL, GST_MSECOND);
-		while (state != GST_STATE_NULL)
-			gst_element_get_state (priv->pipeline,
-					       &state,
-					       NULL,
-					       GST_MSECOND);
-	}
-*/
 
 	if (priv->progress_id) {
 		g_source_remove (priv->progress_id);
@@ -283,7 +272,9 @@ brasero_metadata_stop (BraseroMetadata *self)
 
 	/* That's automatic missing plugin installation */
 	if (priv->missing_plugins) {
-		g_slist_foreach (priv->missing_plugins, (GFunc) gst_mini_object_unref, NULL);
+		g_slist_foreach (priv->missing_plugins,
+				 (GFunc) gst_mini_object_unref,
+				 NULL);
 		g_slist_free (priv->missing_plugins);
 		priv->missing_plugins = NULL;
 	}
@@ -305,11 +296,14 @@ brasero_metadata_stop (BraseroMetadata *self)
 	/* stop the pipeline */
 	priv->started = 0;
 
-	/* that's for sync_wait */
-	g_mutex_lock (priv->mutex);
+	/* Tell all the waiting threads that we're done */
+	for (iter = priv->conditions; iter; iter = iter->next) {
+		GCond *condition;
 
-	/* use broadcast here as there could be more than one thread waiting */
-	g_cond_broadcast (priv->cond);
+		condition = iter->data;
+		g_cond_broadcast (condition);
+	}
+
 	g_mutex_unlock (priv->mutex);
 }
 
@@ -1468,25 +1462,18 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 	return TRUE;
 }
 
-static void
-brasero_metadata_cancelled_cb (GCancellable *cancel,
-			       BraseroMetadata *self)
-{
-	brasero_metadata_cancel (self);
-}
-
 gboolean
-brasero_metadata_get_info_wait (BraseroMetadata *self,
-				GCancellable *cancel,
-				const gchar *uri,
-				BraseroMetadataFlag flags,
-				GError **error)
+brasero_metadata_set_uri (BraseroMetadata *self,
+			  BraseroMetadataFlag flags,
+			  const gchar *uri,
+			  GError **error)
 {
 	GstStateChangeReturn state_change;
 	BraseroMetadataPrivate *priv;
-	gulong cancel_signal = 0;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
+
+	g_mutex_lock (priv->mutex);
 
 	priv->flags = flags;
 	if (!brasero_metadata_set_new_uri (self, uri)) {
@@ -1496,64 +1483,20 @@ brasero_metadata_get_info_wait (BraseroMetadata *self,
 		brasero_metadata_info_free (priv->info);
 		priv->info = NULL;
 
-		return FALSE;
-	}
-
-	g_mutex_lock (priv->mutex);
-
-	/* Now wait ... but check a last time otherwise we wouldn't get the
-	 * any notice of cancellation if it had been cancelled before we 
-	 * connected to the signal */
-	if (g_cancellable_is_cancelled (cancel)) {
 		g_mutex_unlock (priv->mutex);
-
-		brasero_metadata_stop (self);
-		brasero_metadata_info_free (priv->info);
-		priv->info = NULL;
-
 		return FALSE;
 	}
-
-	cancel_signal = g_signal_connect (cancel,
-					  "cancelled",
-					  G_CALLBACK (brasero_metadata_cancelled_cb),
-					  self);
 
 	priv->started = 1;
 	state_change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
 					      BRASERO_METADATA_INITIAL_STATE);
 
-	if (state_change != GST_STATE_CHANGE_FAILURE) {
-		/* no need to wait for a condition if it failed */
-		g_cond_wait (priv->cond, priv->mutex);
-		g_mutex_unlock (priv->mutex);
-	}
-	else {
-		g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (priv->mutex);
+
+	if (state_change == GST_STATE_CHANGE_FAILURE)
 		brasero_metadata_stop (self);
-	}
 
-	g_signal_handler_disconnect (cancel, cancel_signal);
-
-	if (priv->pipeline)
-		gst_element_set_state (GST_ELEMENT (priv->pipeline), GST_STATE_NULL);
-
-	if (priv->error) {
-		if (error) {
-			g_propagate_error (error, priv->error);
-			priv->error = NULL;
-		} 
-		else {
-			BRASERO_BURN_LOG ("ERROR getting metadata : %s", priv->error->message);
-			g_error_free (priv->error);
-			priv->error = NULL;
-		}
-
-		return FALSE;
-	}
-
-	return (g_cancellable_is_cancelled (cancel) == FALSE) &&
-	       (state_change != GST_STATE_CHANGE_FAILURE);
+	return (state_change != GST_STATE_CHANGE_FAILURE);
 }
 
 gboolean
@@ -1590,31 +1533,71 @@ brasero_metadata_get_info_async (BraseroMetadata *self,
 	return priv->started;
 }
 
-void
-brasero_metadata_lock (BraseroMetadata *self)
+static void
+brasero_metadata_wait_cancelled (GCancellable *cancel,
+				 GCond *condition)
 {
-	BraseroMetadataPrivate *priv;
-
-	priv = BRASERO_METADATA_PRIVATE (self);
-	g_mutex_lock (priv->lock);
+	BRASERO_BURN_LOG ("Thread waiting for retrieval end cancelled");
+	g_cond_broadcast (condition);
 }
 
 void
-brasero_metadata_unlock (BraseroMetadata *self)
+brasero_metadata_wait (BraseroMetadata *self,
+		       GCancellable *cancel)
+{
+	BraseroMetadataPrivate *priv;
+	GCond *condition;
+	gulong sig;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Metadata lock and wait %p", self);
+
+	g_mutex_lock (priv->mutex);
+
+	if (!priv->started) {
+		/* Maybe we were waiting for the lock which was held by the 
+		 * finish function. That's why we check if it didn't finish in
+		 * the mean time. */
+		g_mutex_unlock (priv->mutex);
+		return;
+	}
+
+	condition = g_cond_new ();
+	priv->conditions = g_slist_prepend (priv->conditions, condition);
+
+	sig = g_signal_connect (cancel,
+				"cancelled",
+				G_CALLBACK (brasero_metadata_wait_cancelled),
+				condition);
+
+	if (!g_cancellable_is_cancelled (cancel))
+		g_cond_wait (condition, priv->mutex);
+
+	priv->conditions = g_slist_remove (priv->conditions, condition);
+	g_cond_free (condition);
+
+	g_mutex_unlock (priv->mutex);
+
+	g_signal_handler_disconnect (cancel, sig);
+}
+
+void
+brasero_metadata_increase_listener_number (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
-	g_mutex_unlock (priv->lock);
+	g_atomic_int_inc (&priv->listeners);
 }
 
 gboolean
-brasero_metadata_try_lock (BraseroMetadata *self)
+brasero_metadata_decrease_listener_number (BraseroMetadata *self)
 {
 	BraseroMetadataPrivate *priv;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
-	return g_mutex_trylock (priv->lock);
+	return g_atomic_int_dec_and_test (&priv->listeners);
 }
 
 const gchar *
@@ -1691,14 +1674,25 @@ brasero_metadata_info_copy (BraseroMetadataInfo *dest,
 }
 
 gboolean
-brasero_metadata_set_info (BraseroMetadata *self,
-			   BraseroMetadataInfo *info)
+brasero_metadata_get_result (BraseroMetadata *self,
+			     BraseroMetadataInfo *info,
+			     GError **error)
 {
 	BraseroMetadataPrivate *priv;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
+	if (priv->error) {
+		if (error)
+			*error = g_error_copy (priv->error);
+
+		return FALSE;
+	}
+
 	if (!priv->info)
+		return FALSE;
+
+	if (priv->started)
 		return FALSE;
 
 	memset (info, 0, sizeof (BraseroMetadataInfo));
@@ -1713,15 +1707,14 @@ brasero_metadata_init (BraseroMetadata *obj)
 
 	priv = BRASERO_METADATA_PRIVATE (obj);
 
-	priv->cond = g_cond_new ();
 	priv->mutex = g_mutex_new ();
-	priv->lock = g_mutex_new ();
 }
 
 static void
 brasero_metadata_finalize (GObject *object)
 {
 	BraseroMetadataPrivate *priv;
+	GSList *iter;
 
 	priv = BRASERO_METADATA_PRIVATE (object);
 
@@ -1752,19 +1745,19 @@ brasero_metadata_finalize (GObject *object)
 		priv->info = NULL;
 	}
 
+	for (iter = priv->conditions; iter; iter = iter->next) {
+		GCond *condition;
+
+		condition = iter->data;
+		g_cond_broadcast (condition);
+		g_cond_free (condition);
+	}
+	g_slist_free (priv->conditions);
+	priv->conditions = NULL;
+
 	if (priv->mutex) {
 		g_mutex_free (priv->mutex);
 		priv->mutex = NULL;
-	}
-
-	if (priv->cond) {
-		g_cond_free (priv->cond);
-		priv->cond = NULL;
-	}
-
-	if (priv->lock) {
-		g_mutex_free (priv->lock);
-		priv->lock = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
