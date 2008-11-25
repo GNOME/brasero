@@ -361,9 +361,12 @@ brasero_project_manager_selected_uris_preview (gpointer data)
 	for (iter = manager->priv->selected; iter && *iter; iter ++)
 		list = g_slist_prepend (list, *iter);
 
-	flags = BRASERO_IO_INFO_RECURSIVE|BRASERO_IO_INFO_IDLE;
-	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
+	flags = BRASERO_IO_INFO_IDLE;
+	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO
+	||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO)
 		flags |= BRASERO_IO_INFO_METADATA;
+	else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
+		flags |= BRASERO_IO_INFO_RECURSIVE;
 
 	brasero_io_get_file_count (manager->priv->io,
 				   list,
