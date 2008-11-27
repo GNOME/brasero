@@ -2789,11 +2789,13 @@ static gboolean
 brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 			    int type,
 			    int track_num,
+			    guint charset_CD_TEXT,
+			    gboolean double_byte,
 			    const char *string)
 {
 	char *utf8_string;
-	const char *charset = NULL;
 	BraseroMediumPrivate *priv;
+	const gchar *charset = NULL;
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
@@ -2814,7 +2816,6 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	case BRASERO_SCSI_CD_TEXT_DISC_ID_INFO:
 	case BRASERO_SCSI_CD_TEXT_GENRE_ID_INFO:
 	case BRASERO_SCSI_CD_TEXT_UPC_EAN_ISRC:
-	case BRASERO_SCSI_CD_TEXT_BLOCK_SIZE:
 	default:
 		return FALSE;
 	}
@@ -2822,14 +2823,59 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	g_get_charset (&charset);
 
 	/* it's ASCII so convert to locale */
-	utf8_string = g_convert_with_fallback (string,
-					       -1,
-					       charset,
-					       "ASCII",
-					       NULL,
-					       NULL,
-					       NULL,
-					       NULL);
+	switch (charset_CD_TEXT) {
+	case BRASERO_CD_TEXT_8859_1:
+		utf8_string = g_convert_with_fallback (string,
+						       -1,
+						       charset,
+						       "ISO-8859-1",
+						       NULL,
+						       NULL,
+						       NULL,
+						       NULL);
+		break;
+	case BRASERO_CD_TEXT_KANJI:
+		utf8_string = g_convert_with_fallback (string,
+						       -1,
+						       charset,
+						       "EUC-JP",
+						       NULL,
+						       NULL,
+						       NULL,
+						       NULL);
+		break;
+	case BRASERO_CD_TEXT_KOREAN:
+		utf8_string = g_convert_with_fallback (string,
+						       -1,
+						       charset,
+						       "EUC-KR",
+						       NULL,
+						       NULL,
+						       NULL,
+						       NULL);
+		break;
+	case BRASERO_CD_TEXT_CHINESE:
+		utf8_string = g_convert_with_fallback (string,
+						       -1,
+						       charset,
+						       "GB2312",
+						       NULL,
+						       NULL,
+						       NULL,
+						       NULL);
+		break;
+	default:
+	case BRASERO_CD_TEXT_ASCII:
+		utf8_string = g_convert_with_fallback (string,
+						       -1,
+						       charset,
+						       "ASCII",
+						       NULL,
+						       NULL,
+						       NULL,
+						       NULL);
+	}
+
 
 	if (priv->CD_TEXT_title)
 		g_free (priv->CD_TEXT_title);
@@ -2843,15 +2889,72 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	return TRUE;
 }
 
+static int
+_next_CD_TEXT_pack (BraseroScsiCDTextData *cd_text,
+		    int current,
+		    int max)
+{
+	current ++;
+	if (current >= max)
+		return -1;
+
+	/* Skip all packs we're not interested or are not valid */
+	while (cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_ALBUM_TITLE &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_PERFORMER_NAME &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_SONGWRITER_NAME &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_COMPOSER_NAME &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_ARRANGER_NAME &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_ARTIST_NAME &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_DISC_ID_INFO &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_GENRE_ID_INFO &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_UPC_EAN_ISRC &&
+	       cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_BLOCK_SIZE) {
+		current ++;
+		if (current > max)
+			return -1;
+	}
+
+	return current;
+}
+
+static gboolean
+brasero_medium_read_CD_TEXT_block_info (BraseroScsiCDTextData *cd_text,
+					int current,
+					int max,
+					gchar *buffer)
+{
+	while ((current = _next_CD_TEXT_pack (cd_text, current, max)) != -1) {
+		off_t offset = 0;
+
+		if (cd_text->pack [current].type != BRASERO_SCSI_CD_TEXT_BLOCK_SIZE)
+			continue;
+
+		do {
+			memcpy (buffer + offset,
+				cd_text->pack [current].text,
+				sizeof (cd_text->pack [current].text));
+
+			offset += sizeof (cd_text->pack [current].text);
+			current = _next_CD_TEXT_pack (cd_text, current, max);
+		} while (current != -1 && cd_text->pack [current].type == BRASERO_SCSI_CD_TEXT_BLOCK_SIZE);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 brasero_medium_read_CD_TEXT (BraseroMedium *self,
 			     BraseroDeviceHandle *handle,
 			     BraseroScsiErrCode *code)
 {
 	int off;
+	gint charset;
 	int track_num;
 	int num, size, i;
 	char buffer [256]; /* mmc specs advise no more than 160 */
+	gboolean find_block_info;
 	BraseroMediumPrivate *priv;
 	BraseroScsiCDTextData *cd_text;
 
@@ -2861,28 +2964,63 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 		return;
 	}
 
+	/* Get the number of CD-Text Data Packs */
 	num = (BRASERO_GET_16 (cd_text->hdr->len) -
 	      (sizeof (BraseroScsiTocPmaAtipHdr) - sizeof (cd_text->hdr->len)))  /
 	       sizeof (BraseroScsiCDTextPackData);
 
-	track_num = 0;
-	off = 0;
-
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	for (i = 0; i < num; i ++) {
+	off = 0;
+	track_num = 0;
+	charset = BRASERO_CD_TEXT_ASCII;
+
+	i = -1;
+	find_block_info = TRUE;
+	while ((i = _next_CD_TEXT_pack (cd_text, i, num)) != -1) {
 		int j;
+		gboolean is_double_byte;
+
+		/* skip these until the start of another language block or the end */
+		if (cd_text->pack [i].type == BRASERO_SCSI_CD_TEXT_BLOCK_SIZE) {
+			find_block_info = TRUE;
+			continue;
+		}
+
+		if (find_block_info) {
+			find_block_info = FALSE;
+
+			/* This pack is important since it holds the charset. */
+			/* NOTE: it's always the last in a block (max 255
+			 * CD-TEXT pack data). So find it first. */
+			if (brasero_medium_read_CD_TEXT_block_info (cd_text, i, num, buffer)) {
+				BraseroScsiCDTextPackCharset *pack;
+
+				pack = (BraseroScsiCDTextPackCharset *) buffer;
+				charset = pack->charset;
+
+				BRASERO_BURN_LOG ("Found language pack. Charset = %d. Start %d. End %d",
+						  charset, pack->first_track, pack->last_track);
+			}
+		}
 
 		track_num = cd_text->pack [i].track_num;
+		is_double_byte = cd_text->pack [i].double_byte;
 
 		for (j = 0; j < sizeof (cd_text->pack [i].text); j++) {
-			if (!off && cd_text->pack [i].text [j] == '\t') {
+			if (!off
+			&&   cd_text->pack [i].text [j] == '\t'
+			&& (!is_double_byte 
+			|| (j+1 < sizeof (cd_text->pack [i].text) && cd_text->pack [i].text [j + 1] == '\t'))) {
 				/* Specs say that tab character means that's the
-				 * same string as before */
+				 * same string as before. So if buffer is not
+				 * empty send the same string. */
 				if (buffer [0] != '\0')
 					brasero_medium_get_CD_TEXT (self,
 								    cd_text->pack [i].type,
 								    track_num,
+								    charset,
+								    cd_text->pack [i].double_byte,
 								    buffer);
 				track_num ++;
 				continue;
@@ -2891,17 +3029,27 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 			buffer [off] = cd_text->pack [i].text [j];
 			off++;
 
-			if (cd_text->pack [i].text [j] == '\0') {
+			if (cd_text->pack [i].text [j] == '\0'
+			&& (!is_double_byte 
+			|| (j+1 < sizeof (cd_text->pack [i].text) && cd_text->pack [i].text [j + 1] == '\0'))) {
+				/* Make sure we actually wrote something to the
+				 * buffer and that it's not empty. */
 				if (buffer [0] != '\0')
 					brasero_medium_get_CD_TEXT (self,
 								    cd_text->pack [i].type,
 								    track_num,
+								    charset,
+								    cd_text->pack [i].double_byte,
 								    buffer);
+
+				/* End of encapsulated Text Pack. Skip to the next. */
 				track_num ++;
 				off = 0;
 			}
 		}
 	}
+
+	g_free (cd_text);
 }
 
 static void

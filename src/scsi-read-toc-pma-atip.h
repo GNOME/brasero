@@ -284,6 +284,7 @@ struct _BraseroScsiMultisessionData {
 };
 typedef struct _BraseroScsiMultisessionData BraseroScsiMultisessionData;
 
+/* Inside a language block, packs must be recorded in that order */
 typedef enum {
 BRASERO_SCSI_CD_TEXT_ALBUM_TITLE	= 0x80,
 BRASERO_SCSI_CD_TEXT_PERFORMER_NAME	= 0x81,
@@ -303,12 +304,23 @@ BRASERO_SCSI_CD_TEXT_UPC_EAN_ISRC	= 0x8E,
 BRASERO_SCSI_CD_TEXT_BLOCK_SIZE		= 0x8F,
 } BraseroScsiCDTextPackType;
 
+typedef enum {
+	BRASERO_CD_TEXT_8859_1		= 0x00,
+	BRASERO_CD_TEXT_ASCII		= 0x01,	/* (7 bit)	*/
+
+	/* Reserved */
+
+	BRASERO_CD_TEXT_KANJI		= 0x80,
+	BRASERO_CD_TEXT_KOREAN		= 0x81,
+	BRASERO_CD_TEXT_CHINESE		= 0x82	/* Mandarin */
+} BraseroScsiCDTextCharset;
+
 struct _BraseroScsiCDTextPackData {
 	uchar type;
 	uchar track_num;
 	uchar pack_num;
 
-	uchar char_pos			:4;
+	uchar char_pos			:4;	/* byte not used for type 0x8F */
 	uchar block_num			:3;
 	uchar double_byte		:1;
 
@@ -316,6 +328,18 @@ struct _BraseroScsiCDTextPackData {
 	uchar crc			[2];
 };
 typedef struct _BraseroScsiCDTextPackData BraseroScsiCDTextPackData;
+
+/* Takes two BraseroScsiCDTextPackData (18 bytes) 3 x 12 = 36 bytes */
+struct _BraseroScsiCDTextPackCharset {
+	char charset;
+	char first_track;
+	char last_track;
+	char copyr_flags;
+	char pack_count [16];
+	char last_seqnum [8];
+	char language_code [8];
+};
+typedef struct _BraseroScsiCDTextPackCharset BraseroScsiCDTextPackCharset;
 
 struct _BraseroScsiCDTextData {
 	BraseroScsiTocPmaAtipHdr hdr	[1];
