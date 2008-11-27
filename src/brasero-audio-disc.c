@@ -2108,18 +2108,10 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		gint64 end;
 		gint64 start;
 		gint64 length;
-		gboolean isrc_set;
-		gboolean title_set;
-		gboolean artist_set;
-		gboolean composer_set;
 		BraseroSongInfo *info;
 
 		gtk_tree_model_get (model, &iter,
 				    URI_COL, &uri,
-				    TITLE_SET_COL, &title_set,
-				    ARTIST_SET_COL, &artist_set,
-				    COMPOSER_SET_COL, &composer_set,
-				    ISRC_SET_COL, &isrc_set,
 				    NAME_COL, &title,
 				    ARTIST_COL, &artist,
 				    COMPOSER_COL, &composer,
@@ -2140,23 +2132,10 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 
 		info = g_new0 (BraseroSongInfo, 1);
 
-		if (title_set)
-			info->title = title;
-		else
-			g_free (title);
-
-		if (artist_set)
-			info->artist = artist;
-		else
-			g_free (artist);
-
-		if (composer_set)
-			info->composer = composer;
-		else
-			g_free (composer);
-
-		if (isrc_set)
-			info->isrc = isrc;
+		info->title = title;
+		info->artist = artist;
+		info->composer = composer;
+		info->isrc = isrc;
 
 		track = brasero_track_new (BRASERO_TRACK_TYPE_AUDIO);
 		brasero_track_set_audio_source (track,
