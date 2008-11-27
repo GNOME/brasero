@@ -3171,6 +3171,8 @@ brasero_caps_audio_new (BraseroPluginIOFlag flags,
 		if ((caps->type.subtype.audio_format & BRASERO_METADATA_INFO) != (format & BRASERO_METADATA_INFO))
 			continue;
 
+		common = common_audio|common_video|(format & BRASERO_METADATA_INFO);
+
 		/* encompassed caps just add it to retval */
 		if (caps->type.subtype.audio_format == common)
 			retval = g_slist_prepend (retval, caps);
