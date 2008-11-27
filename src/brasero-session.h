@@ -46,7 +46,7 @@ brasero_session_save (BraseroApp *app,
 		      gboolean save_project,
 		      gboolean cancellable);
 gboolean
-brasero_session_load (BraseroApp *app, gboolean load_project);
+brasero_session_load (BraseroApp *app);
 
 G_END_DECLS
 

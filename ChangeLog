@@ -1,5 +1,26 @@
 2008-11-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #559107 – Never resume last used project by default
+	Instead of loading automatically the last unburnt project, add a button
+	in the recent projects/files pane for the user to load it in one click
+	if he wants to
+
+	* src/brasero-app.c (brasero_app_run):
+	* src/brasero-app.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_last_saved_clicked_cb),
+	(brasero_project_manager_init):
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_last_unsaved_clicked_cb),
+	(brasero_project_type_chooser_build_recent),
+	(brasero_project_type_chooser_class_init):
+	* src/brasero-project-type-chooser.h:
+	* src/brasero-session.c (brasero_session_load):
+	* src/brasero-session.h:
+	* src/main.c (brasero_app_parse_options):
+
+2008-11-27  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a small stupid error
 
 	* src/burn-caps.c (brasero_caps_audio_new):

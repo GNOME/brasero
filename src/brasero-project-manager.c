@@ -1175,6 +1175,14 @@ brasero_project_manager_load_session (BraseroProjectManager *manager,
     	return TRUE;
 }
 
+static void
+brasero_project_manager_last_saved_clicked_cb (BraseroProjectTypeChooser *chooser,
+					       const gchar *path,
+					       BraseroProjectManager *manager)
+{
+	brasero_project_manager_load_session (manager, path);
+}
+
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
@@ -1236,6 +1244,10 @@ brasero_project_manager_init (BraseroProjectManager *obj)
 	g_signal_connect (type,
 			  "recent-clicked",
 			  G_CALLBACK (brasero_project_manager_recent_clicked_cb),
+			  obj);
+	g_signal_connect (type,
+			  "last-saved",
+			  G_CALLBACK (brasero_project_manager_last_saved_clicked_cb),
 			  obj);
 	gtk_notebook_prepend_page (GTK_NOTEBOOK (obj), type, NULL);
 

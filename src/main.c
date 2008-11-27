@@ -179,7 +179,7 @@ brasero_app_parse_options (BraseroApp *app)
 
     	if (empty_project) {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
-	    	brasero_app_run (app, FALSE);
+	    	brasero_app_run (app);
 		return;
 	}
 
@@ -207,7 +207,7 @@ brasero_app_parse_options (BraseroApp *app)
 		nb ++;
 
 	if (nb > 1) {
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 
 		brasero_app_alert (app,
 				   _("Incompatible command line options used."),
@@ -238,7 +238,7 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else if (project_uri) {
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_project, project_uri);
 	}
 	else if (burn_project_uri) {
@@ -341,22 +341,22 @@ brasero_app_parse_options (BraseroApp *app)
 #ifdef BUILD_PLAYLIST
 
 	else if (playlist_uri) {
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
 	}
 
 #endif
 
 	else if (audio_project) {
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
 	}
 	else if (data_project) {
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
 	}
 	else if (video_project) {
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
 	}
 	else if (disc_blank) {
@@ -388,7 +388,7 @@ brasero_app_parse_options (BraseroApp *app)
 		return;
 	}
 	else if (files) {
-		brasero_app_run (app, FALSE);
+		brasero_app_run (app);
 
 		if (g_strv_length (files) == 1) {
 			BraseroProjectType type;
@@ -407,7 +407,7 @@ brasero_app_parse_options (BraseroApp *app)
 	}
 	else {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
-		brasero_app_run (app, TRUE);
+		brasero_app_run (app);
 	}
 
 	gtk_widget_show (GTK_WIDGET (app));

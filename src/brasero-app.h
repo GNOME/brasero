@@ -52,8 +52,7 @@ GtkWidget *
 brasero_app_new (void);
 
 void
-brasero_app_run (BraseroApp *app,
-		 gboolean load_default_project);
+brasero_app_run (BraseroApp *app);
 
 gboolean
 brasero_app_is_running (BraseroApp *app);

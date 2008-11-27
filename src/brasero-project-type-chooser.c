@@ -31,17 +31,20 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 
 #include <gtk/gtk.h>
 
 #include "brasero-project-type-chooser.h"
 #include "brasero-utils.h"
+#include "brasero-session.h"
 
 
 G_DEFINE_TYPE (BraseroProjectTypeChooser, brasero_project_type_chooser, GTK_TYPE_EVENT_BOX);
 
 typedef enum {
+	LAST_SAVED_CLICKED_SIGNAL,
 	RECENT_CLICKED_SIGNAL,
 	CHOSEN_SIGNAL,
 	LAST_SIGNAL
@@ -188,6 +191,25 @@ brasero_project_type_chooser_recent_clicked_cb (GtkButton *button,
 		       uri);
 }
 
+static void
+brasero_project_type_chooser_last_unsaved_clicked_cb (GtkButton *button,
+						      BraseroProjectTypeChooser *self)
+{
+	const gchar *uri;
+	gchar *path;
+
+	uri = gtk_link_button_get_uri (GTK_LINK_BUTTON (button));
+	path = g_filename_from_uri (uri, NULL, NULL);
+
+	g_signal_emit (self,
+		       brasero_project_type_chooser_signals [LAST_SAVED_CLICKED_SIGNAL],
+		       0,
+		       path);
+
+	g_remove (path);
+	g_free (path);
+}
+
 static gint
 brasero_project_type_chooser_sort_recent (gconstpointer a, gconstpointer b)
 {
@@ -210,8 +232,10 @@ static void
 brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 					   GtkRecentManager *recent)
 {
+	GtkSizeGroup *image_group;
 	GtkSizeGroup *group;
 	GList *list = NULL;
+	gchar *filename;
 	GList *recents;
 	GList *iter;
 
@@ -246,6 +270,51 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 	}
 
 	group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
+	image_group = gtk_size_group_new (GTK_SIZE_GROUP_BOTH);
+
+	/* If a project was left unfinished last time then add another entry */
+	filename = g_build_filename (g_get_user_config_dir (),
+				     "brasero",
+				     BRASERO_SESSION_TMP_PROJECT_PATH,
+				     NULL);
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		gchar *uri;
+		GtkWidget *link;
+		GtkWidget *hbox;
+		GtkWidget *image;
+
+		uri = g_filename_to_uri (filename, NULL, NULL);
+
+		hbox = gtk_hbox_new (FALSE, 6);
+		gtk_widget_show (hbox);
+		gtk_box_pack_start (GTK_BOX (self->priv->recent_box),
+				    hbox,
+				    FALSE,
+				    TRUE,
+				    0);
+
+		image = gtk_image_new_from_icon_name ("brasero", GTK_ICON_SIZE_BUTTON);
+		gtk_size_group_add_widget (image_group, image);
+
+		link = gtk_link_button_new_with_label (uri, _("Last _Unsaved Project"));
+		gtk_button_set_alignment (GTK_BUTTON (link), 0.0, 0.5);
+		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
+		gtk_button_set_image (GTK_BUTTON (link), image);
+		g_signal_connect (link,
+				  "clicked",
+				  G_CALLBACK (brasero_project_type_chooser_last_unsaved_clicked_cb),
+				  self);
+
+		gtk_widget_show (link);
+		gtk_widget_set_tooltip_text (link, _("Load the last project that was not burnt and not saved"));
+		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, TRUE, 0);
+
+		g_free (uri);
+
+		gtk_size_group_add_widget (group, link);
+	}
+	g_free (filename);
+
 	for (iter = list; iter; iter = iter->next) {
 		GtkRecentInfo *info;
 		const gchar *name;
@@ -271,6 +340,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		pixbuf = gtk_recent_info_get_icon (info, GTK_ICON_SIZE_BUTTON);
 		image = gtk_image_new_from_pixbuf (pixbuf);
 		g_object_unref (pixbuf);
+		gtk_size_group_add_widget (image_group, image);
 
 		gtk_widget_show (image);
 		gtk_widget_set_tooltip_text (image, tooltip);
@@ -507,6 +577,15 @@ brasero_project_type_chooser_class_init (BraseroProjectTypeChooserClass *klass)
 	    g_signal_new ("recent_clicked", G_OBJECT_CLASS_TYPE (object_class),
 			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
 			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, recent_clicked),
+			  NULL, NULL,
+			  g_cclosure_marshal_VOID__STRING,
+			  G_TYPE_NONE,
+			  1,
+			  G_TYPE_STRING);
+	brasero_project_type_chooser_signals[LAST_SAVED_CLICKED_SIGNAL] =
+	    g_signal_new ("last_saved", G_OBJECT_CLASS_TYPE (object_class),
+			  G_SIGNAL_ACTION | G_SIGNAL_RUN_FIRST,
+			  G_STRUCT_OFFSET (BraseroProjectTypeChooserClass, last_saved_clicked),
 			  NULL, NULL,
 			  g_cclosure_marshal_VOID__STRING,
 			  G_TYPE_NONE,

@@ -64,14 +64,12 @@ brasero_session_get_path (const gchar *name)
 }
 
 gboolean
-brasero_session_load (BraseroApp *app, gboolean load_project)
+brasero_session_load (BraseroApp *app)
 {
 	gchar *height_str = NULL;
 	gchar *width_str = NULL;
 	gchar *state_str = NULL;
 	gchar *version = NULL;
-    	gchar *project_path;
-	GtkWidget *manager;
 	gint height;
 	gint width;
 	gint state = 0;
@@ -183,23 +181,6 @@ end:
 
 	if (state)
 		gtk_window_maximize (GTK_WINDOW (app));
-
-	/* now we start the project if any */
-	project_path = brasero_session_get_path (BRASERO_SESSION_TMP_PROJECT_PATH);
-    	if (!load_project
-	||  !g_file_test (project_path,G_FILE_TEST_EXISTS)) {
-    		g_free (project_path);
-		project_path = NULL;
-	}
-
-	manager = brasero_app_get_project_manager (app);
-    	brasero_project_manager_load_session (BRASERO_PROJECT_MANAGER (manager), project_path);
-
-    	if (project_path) {
-    		/* remove the project file not to have it next time */
-    		g_remove (project_path);
-    		g_free (project_path);
-	}
 
 	return TRUE;
 }
