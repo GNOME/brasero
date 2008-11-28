@@ -2822,14 +2822,14 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 
 	g_get_charset (&charset);
 
-	/* it's ASCII so convert to locale */
+	/* It's ASCII so convert to locale */
 	switch (charset_CD_TEXT) {
 	case BRASERO_CD_TEXT_8859_1:
 		utf8_string = g_convert_with_fallback (string,
 						       -1,
 						       charset,
 						       "ISO-8859-1",
-						       NULL,
+						       "_",
 						       NULL,
 						       NULL,
 						       NULL);
@@ -2839,7 +2839,7 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 						       -1,
 						       charset,
 						       "EUC-JP",
-						       NULL,
+						       "_",
 						       NULL,
 						       NULL,
 						       NULL);
@@ -2849,7 +2849,7 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 						       -1,
 						       charset,
 						       "EUC-KR",
-						       NULL,
+						       "_",
 						       NULL,
 						       NULL,
 						       NULL);
@@ -2859,7 +2859,7 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 						       -1,
 						       charset,
 						       "GB2312",
-						       NULL,
+						       "_",
 						       NULL,
 						       NULL,
 						       NULL);
@@ -2870,7 +2870,7 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 						       -1,
 						       charset,
 						       "ASCII",
-						       NULL,
+						       "_",
 						       NULL,
 						       NULL,
 						       NULL);
@@ -2880,8 +2880,10 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 	if (priv->CD_TEXT_title)
 		g_free (priv->CD_TEXT_title);
 
-	if (!utf8_string)
+	if (!utf8_string) {
+		BRASERO_BURN_LOG ("Charset convertion failed");
 		priv->CD_TEXT_title = g_strdup (string);
+	}
 	else
 		priv->CD_TEXT_title = utf8_string;
 

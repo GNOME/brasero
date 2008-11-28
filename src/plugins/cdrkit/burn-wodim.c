@@ -411,6 +411,16 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 
 	BRASERO_JOB_LOG (wodim, "writing inf (%s)", path);
 
+	/* The problem here is that when writing CD-TEXT from .inf files, wodim
+	 * uses only one charset (and don't let us specify which one) which is
+	 * ISO-8859-1. (NOTE: don't believe the doc claiming it requires ASCII
+	 * and see cdrecord/cdtext.c line 309).
+	 * So we have to convert our UTF-8 input into such a charset.
+	 * NOTE: according to docs ASCII should be used for text packs other
+	 * than disc/track title.
+	 * It might be good in the end to write and pack CD-TEXT pack data 
+	 * ourselves so we can set a different charset from English like 
+	 * Chinese for example. */
 	info = brasero_track_get_audio_info (track);
 
 	strcpy (buffer, "# created by brasero\n");
@@ -441,8 +451,20 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	if (b_written != size)
 		goto error;
 
-	if (album)
-		string = g_strdup_printf ("Albumtitle=\t%s\n", album);
+	if (album) {
+		gchar *encoded;
+
+		encoded = g_convert_with_fallback (album,
+						   -1,
+						   "ISO-8859-1",
+						   "UTF-8",
+						   "_",	/* Fallback for non convertible characters */
+						   NULL,
+						   NULL,
+						   NULL);
+		string = g_strdup_printf ("Albumtitle=\t%s\n", encoded);
+		g_free (encoded);
+	}
 	else
 		string = strdup ("Albumtitle=\t\n");
 	size = strlen (string);
@@ -451,8 +473,20 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	if (b_written != size)
 		goto error;
 
-	if (info->artist)
-		string = g_strdup_printf ("Performer=\t%s\n", info->artist);
+	if (info->artist) {
+		gchar *encoded;
+
+		encoded = g_convert_with_fallback (info->artist,
+						   -1,
+						   "ISO-8859-1",
+						   "UTF-8",
+						   "_",	/* Fallback for non convertible characters */
+						   NULL,
+						   NULL,
+						   NULL);
+		string = g_strdup_printf ("Performer=\t%s\n", encoded);
+		g_free (encoded);
+	}
 	else
 		string = strdup ("Performer=\t\n");
 	size = strlen (string);
@@ -461,8 +495,20 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	if (b_written != size)
 		goto error;
 
-	if (info->composer)
-		string = g_strdup_printf ("Composer=\t%s\n", info->composer);
+	if (info->composer) {
+		gchar *encoded;
+
+		encoded = g_convert_with_fallback (info->composer,
+						   -1,
+						   "ISO-8859-1",
+						   "UTF-8",
+						   "_",	/* Fallback for non convertible characters */
+						   NULL,
+						   NULL,
+						   NULL);
+		string = g_strdup_printf ("Composer=\t%s\n", encoded);
+		g_free (encoded);
+	}
 	else
 		string = strdup ("Composer=\t\n");
 	size = strlen (string);
@@ -471,8 +517,20 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 	if (b_written != size)
 		goto error;
 
-	if (info->title)
-		string = g_strdup_printf ("Tracktitle=\t%s\n", info->title);
+	if (info->title) {
+		gchar *encoded;
+
+		encoded = g_convert_with_fallback (info->title,
+						   -1,
+						   "ISO-8859-1",
+						   "UTF-8",
+						   "_",	/* Fallback for non convertible characters */
+						   NULL,
+						   NULL,
+						   NULL);
+		string = g_strdup_printf ("Tracktitle=\t%s\n", encoded);
+		g_free (encoded);
+	}
 	else
 		string = strdup ("Tracktitle=\t\n");
 	size = strlen (string);
