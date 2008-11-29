@@ -39,6 +39,7 @@
 #include "burn-debug.h"
 #include "burn-drive.h"
 #include "brasero-utils.h"
+#include "brasero-session-cfg.h"
 #include "brasero-drive-properties.h"
 
 typedef struct _BraseroDrivePropertiesPrivate BraseroDrivePropertiesPrivate;
@@ -46,6 +47,7 @@ struct _BraseroDrivePropertiesPrivate
 {
 	GtkWidget *speed;
 	GtkWidget *dummy;
+	GtkWidget *multi;
 	GtkWidget *burnproof;
 	GtkWidget *notmp;
 	GtkWidget *eject;
@@ -90,6 +92,9 @@ brasero_drive_properties_get_flags (BraseroDriveProperties *self)
 
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->burnproof)))
 		flags |= BRASERO_BURN_FLAG_BURNPROOF;
+
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->multi)))
+		flags |= BRASERO_BURN_FLAG_MULTI;
 
 	return flags;
 }
@@ -334,6 +339,11 @@ brasero_drive_properties_set_flags (BraseroDriveProperties *self,
 						   flags,
 						   supported,
 						   compulsory);
+	brasero_drive_properties_set_toggle_state (priv->multi,
+						   BRASERO_BURN_FLAG_MULTI,
+						   flags,
+						   supported,
+						   compulsory);
 }
 
 static gchar *
@@ -486,6 +496,8 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 	priv->burnproof = gtk_check_button_new_with_mnemonic (_("Use burn_proof (decrease the risk of failures)"));
 	priv->eject = gtk_check_button_new_with_mnemonic (_("_Eject after burning"));
 	priv->notmp = gtk_check_button_new_with_mnemonic (_("Burn the image directly _without saving it to disc"));
+	priv->multi = gtk_check_button_new_with_mnemonic (_("Leave the disc _open to add other files later"));
+	gtk_widget_set_tooltip_text (priv->multi, _("Allow to add more data to the disc later"));
 
 	string = g_strdup_printf ("<b>%s</b>", _("Options"));
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (object)->vbox),
@@ -493,6 +505,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 							   priv->eject,
 							   priv->dummy,
 							   priv->burnproof,
+							   priv->multi,
 							   priv->notmp,
 							   NULL),
 			    FALSE,

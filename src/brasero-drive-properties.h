@@ -51,11 +51,6 @@ struct _BraseroDriveProperties
 	GtkDialog parent_instance;
 };
 
-#define BRASERO_DRIVE_PROPERTIES_FLAGS	       (BRASERO_BURN_FLAG_DUMMY|	\
-						BRASERO_BURN_FLAG_EJECT|	\
-						BRASERO_BURN_FLAG_BURNPROOF|	\
-						BRASERO_BURN_FLAG_NO_TMP_FILES)
-
 GType brasero_drive_properties_get_type (void) G_GNUC_CONST;
 GtkWidget *brasero_drive_properties_new ();
 
