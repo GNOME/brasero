@@ -1,5 +1,13 @@
 2008-11-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make the "Same source, same destination drive" warning be like the rest
+	of errors or warnings and appear in a yellow message box.
+
+	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb),
+	(brasero_burn_options_init):
+
+2008-11-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Move "Leave disc open" option to properties dialog as it well handled
 	automatically by brasero now and it's mainly useful for Data Projects.
 

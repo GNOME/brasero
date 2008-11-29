@@ -52,7 +52,6 @@ struct _BraseroBurnOptionsPrivate
 	GtkWidget *message_input;
 	GtkWidget *selection;
 	GtkWidget *properties;
-	GtkWidget *warning;
 	GtkWidget *message_output;
 	GtkWidget *options;
 	GtkWidget *button;
@@ -243,17 +242,6 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	gtk_widget_set_sensitive (priv->options, priv->is_valid);
 	gtk_widget_set_sensitive (priv->properties, priv->is_valid);
 
-	if (!priv->is_valid)
-		gtk_widget_hide (priv->warning);
-	else if (brasero_burn_session_is_dest_file (BRASERO_BURN_SESSION (priv->session)))
-		gtk_widget_hide (priv->warning);
-	else {
-		if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (priv->session)))
-			gtk_widget_show (priv->warning);
-		else
-			gtk_widget_hide (priv->warning);
-	}
-
 	if (priv->message_input) {
 		gtk_widget_hide (priv->message_input);
 		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_input),
@@ -360,6 +348,14 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 				  G_CALLBACK (brasero_burn_options_message_response_cb),
 				  self);
 	}
+	else if (brasero_burn_session_same_src_dest_drive (BRASERO_BURN_SESSION (session))) {
+		/* The medium is valid but it's a special case */
+		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
+					    _("The drive that holds the source disc will also be the one used to record."),
+					    _("A new recordable disc will be required once the one currently loaded has been copied."),
+					    -1,
+					    BRASERO_NOTIFY_CONTEXT_SIZE);
+	}
 
 	brasero_burn_options_update_no_medium_warning (self);
 	gtk_window_resize (GTK_WINDOW (self), 10, 10);
@@ -447,20 +443,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 			    FALSE,
 			    0);
 
-	/* Medium info */
-	string = g_strdup_printf ("<b><i>%s</i></b>\n<i>%s</i>",
-				  _("The drive that holds the source disc will also be the one used to record."),
-				  _("A new recordable disc will be required once the one currently loaded has been copied."));
-	priv->warning = gtk_label_new (string);
-	g_free (string);
-
-	gtk_misc_set_alignment (GTK_MISC (priv->warning), 0.0, 0.5);
-	gtk_label_set_line_wrap_mode (GTK_LABEL (priv->warning), PANGO_WRAP_WORD);
-	gtk_label_set_line_wrap (GTK_LABEL (priv->warning), TRUE);
-	gtk_label_set_use_markup (GTK_LABEL (priv->warning), TRUE);
-
-	gtk_widget_show (priv->warning);
-
 	/* Box to display warning messages */
 	priv->message_output = brasero_notify_new ();
 	gtk_widget_show (priv->message_output);
@@ -468,7 +450,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	string = g_strdup_printf ("<b>%s</b>", _("Select a disc to write to"));
 	selection = brasero_utils_pack_properties (string,
 						   priv->message_output,
-						   priv->warning,
 						   selection,
 						   NULL);
 	g_free (string);
