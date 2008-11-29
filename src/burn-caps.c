@@ -1894,7 +1894,8 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *self,
 
 static BraseroBurnResult
 brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
-						      BraseroBurnSession *session)
+						      BraseroBurnSession *session,
+						      gboolean use_flags)
 {
 	GSList *iter;
 	BraseroTrackType input;
@@ -1911,14 +1912,18 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 	brasero_burn_session_get_input_type (session, &input);
 	BRASERO_BURN_LOG_TYPE (&input, "input");
 
-	/* NOTE: DAO can be a problem. So just in case remove it. It is not
-	 * really useful in this context. What we want here is to know whether
-	 * a medium can be used given the input; only 1 flag is important here
-	 * (MERGE) and can have consequences. */
-	session_flags = brasero_burn_session_get_flags (session);
-	session_flags &= ~BRASERO_BURN_FLAG_DAO;
+	if (use_flags) {
+		/* NOTE: DAO can be a problem. So just in case remove it. It is
+		 * not really useful in this context. What we want here is to
+		 * know whether a medium can be used given the input; only 1
+		 * flag is important here (MERGE) and can have consequences. */
+		session_flags = brasero_burn_session_get_flags (session);
+		session_flags &= ~BRASERO_BURN_FLAG_DAO;
 
-	BRASERO_BURN_LOG_FLAGS (session_flags, "flags");
+		BRASERO_BURN_LOG_FLAGS (session_flags, "flags");
+	}
+	else
+		session_flags = BRASERO_BURN_FLAG_NONE;
 
 	/* Find one available output format */
 	format = BRASERO_IMAGE_FORMAT_CDRDAO;
@@ -1935,7 +1940,7 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 								   &output,
 								   &input,
 								   BRASERO_PLUGIN_IO_ACCEPT_FILE,
-								   TRUE);
+								   use_flags);
 		if (!supported)
 			continue;
 
@@ -1971,7 +1976,8 @@ brasero_burn_caps_is_session_supported_same_src_dest (BraseroBurnCaps *self,
 
 BraseroBurnResult
 brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
-					BraseroBurnSession *session)
+					BraseroBurnSession *session,
+					gboolean use_flags)
 {
 	gboolean result;
 	BraseroTrackType input;
@@ -1980,9 +1986,9 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 
 	/* Special case */
 	if (brasero_burn_session_same_src_dest_drive (session))
-		return brasero_burn_caps_is_session_supported_same_src_dest (self, session);
+		return brasero_burn_caps_is_session_supported_same_src_dest (self, session, use_flags);
 
-	if (!brasero_burn_caps_flags_check_for_drive (session))
+	if (use_flags && !brasero_burn_caps_flags_check_for_drive (session))
 		BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG_RES (session);
 
 	/* Here flags don't matter as we don't record anything.
@@ -2010,14 +2016,16 @@ brasero_burn_caps_is_session_supported (BraseroBurnCaps *self,
 
 	BRASERO_BURN_LOG_TYPE (&output, "Checking support for session output");
 	BRASERO_BURN_LOG_TYPE (&input, "and input");
-	BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
+
+	if (use_flags)
+		BRASERO_BURN_LOG_FLAGS (brasero_burn_session_get_flags (session), "with flags");
 
 	result = brasero_caps_try_output_with_blanking (self,
 							session,
 							&output,
 							&input,
 							io_flags,
-							TRUE);
+							use_flags);
 	if (!result) {
 		BRASERO_BURN_LOG_TYPE (&output, "Output not supported");
 		return BRASERO_BURN_NOT_SUPPORTED;

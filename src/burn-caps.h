@@ -115,7 +115,8 @@ brasero_burn_caps_is_output_supported (BraseroBurnCaps *caps,
 
 BraseroBurnResult
 brasero_burn_caps_is_session_supported (BraseroBurnCaps *caps,
-					BraseroBurnSession *session);
+					BraseroBurnSession *session,
+					gboolean use_flags);
 
 BraseroMedia
 brasero_burn_caps_get_required_media_type (BraseroBurnCaps *caps,

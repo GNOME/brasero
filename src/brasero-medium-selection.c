@@ -310,10 +310,12 @@ brasero_medium_selection_update_no_disc_entry (BraseroMediumSelection *self,
 	if (brasero_medium_monitor_is_probing (monitor))
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, _("Searching for available discs"),
+				    ICON_COL, "image-loading",
 				    -1);
 	else
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, _("No available disc"),
+				    ICON_COL, "drive-optical",
 				    -1);
 	g_object_unref (monitor);
 

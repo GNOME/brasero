@@ -46,6 +46,8 @@ struct _BraseroBurnOptionsPrivate
 
 	gulong valid_sig;
 
+	GtkSizeGroup *size_group;
+
 	GtkWidget *source;
 	GtkWidget *message_input;
 	GtkWidget *selection;
@@ -80,8 +82,22 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 	list = g_slist_prepend (list, priv->message_input);
 
 	va_start (vlist, title);
-	while ((child = va_arg (vlist, GtkWidget *)))
-		list = g_slist_prepend (list, child);
+	while ((child = va_arg (vlist, GtkWidget *))) {
+		GtkWidget *hbox;
+		GtkWidget *alignment;
+
+		hbox = gtk_hbox_new (FALSE, 12);
+		gtk_widget_show (hbox);
+
+		gtk_box_pack_start (GTK_BOX (hbox), child, TRUE, TRUE, 0);
+
+		alignment = gtk_alignment_new (0.0, 0.5, 0., 0.);
+		gtk_widget_show (alignment);
+		gtk_size_group_add_widget (priv->size_group, alignment);
+		gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
+
+		list = g_slist_prepend (list, hbox);
+	}
 	va_end (vlist);
 
 	source = brasero_utils_pack_properties_list (title, list);
@@ -368,6 +384,8 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
 
+	priv->size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+
 	gtk_dialog_set_has_separator (GTK_DIALOG (object), FALSE);
 
 	/* Create the session */
@@ -421,6 +439,7 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	gtk_container_add (GTK_CONTAINER (alignment), priv->selection);
 
 	priv->properties = brasero_medium_properties_new (BRASERO_BURN_SESSION (priv->session));
+	gtk_size_group_add_widget (priv->size_group, priv->properties);
 	gtk_widget_show (priv->properties);
 	gtk_box_pack_start (GTK_BOX (selection),
 			    priv->properties,
@@ -500,6 +519,11 @@ brasero_burn_options_finalize (GObject *object)
 	if (priv->session) {
 		g_object_unref (priv->session);
 		priv->session = NULL;
+	}
+
+	if (priv->size_group) {
+		g_object_unref (priv->size_group);
+		priv->size_group = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_burn_options_parent_class)->finalize (object);

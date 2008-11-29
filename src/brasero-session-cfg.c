@@ -668,19 +668,18 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		}
 	}
 	else {
-		/* NOTE: don't use flags here as they will be adapted afterwards */
-		result = brasero_burn_caps_is_input_supported (priv->caps,
-							       BRASERO_BURN_SESSION (self),
-							       &source,
-							       FALSE);
+		/* Don't use flags as they'll be adapted later. */
+		result = brasero_burn_caps_is_session_supported (priv->caps,
+								 BRASERO_BURN_SESSION (self),
+								 FALSE);
 
 		if (result != BRASERO_BURN_OK
 		&&  source.type == BRASERO_TRACK_TYPE_AUDIO
 		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {
-			/* Another special case in case some burning backends don't
-			 * support CD-TEXT for audio (libburn). If no other backend is
-			 * available remove CD-TEXT option but tell user... */
-			/* NOTE: set flags to NONE as they'll need to be updated */
+			/* Another special case in case some burning backends 
+			 * don't support CD-TEXT for audio (libburn). If no
+			 * other backend is available remove CD-TEXT option but
+			 * tell user... */
 			source.subtype.audio_format &= ~BRASERO_METADATA_INFO;
 			result = brasero_burn_caps_is_input_supported (priv->caps,
 								       BRASERO_BURN_SESSION (self),
