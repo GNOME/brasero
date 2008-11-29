@@ -1312,7 +1312,7 @@ start:
 
 	medium = brasero_drive_get_medium (src);
 
-	/* this is just in case */
+	/* This is just in case */
 	if (medium
 	&&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
 	&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
@@ -1325,7 +1325,7 @@ start:
 		return BRASERO_BURN_ERR;
 	}
 
-	/* if it succeeds then the new track(s) will be at the top of
+	/* If it succeeds then the new track(s) will be at the top of
 	 * session tracks stack and therefore usable by the recorder.
 	 * NOTE: it's up to the job to push the current tracks. */
 	if (fake)
@@ -1384,14 +1384,35 @@ start:
 
 		goto start;
 	}
-	/* (error_code == BRASERO_BURN_ERROR_MEDIUM_SPACE) */
-	/* That's an imager (outputs an image to the disc) so that means that here
-	 * the problem comes from the hard drive being too small not from the media
-	 * there is nothing we can do here except fail. We could one day send a 
-	 * signal so that a dialog asking for a new hard drive location is shown
-	 */
+	else if (error_code == BRASERO_BURN_ERROR_DISK_SPACE) {
+		/* That's an imager (outputs an image to the disc) so that means
+		 * that here the problem comes from the hard drive being too
+		 * small. */
+		/* ATM there is nothing we can do here except fail. We could one
+		 * day send a signal so that a dialog asking for a new hard
+		 * drive location is shown */
+	}
 
-	/* not recoverable propagate the error */
+	if (brasero_burn_session_is_dest_file (priv->session)) {
+		gchar *image = NULL;
+		gchar *toc = NULL;
+
+		/* If it was an image that was output, remove it. If that was
+		 * a temporary image, it will be removed by BraseroBurnSession 
+		 * object. But if it was a final image, it would be left and
+		 * would clutter the disk, wasting space. */
+		brasero_burn_session_get_output (priv->session,
+						 &image,
+						 &toc,
+						 NULL);
+		if (image)
+			g_remove (image);
+		if (toc)
+			g_remove (toc);
+	}
+
+	/* If we reached this point that means the error was not recoverable.
+	 * Propagate the error. */
 	if (error && ret_error)
 		g_propagate_error (error, ret_error);
 

@@ -1,5 +1,12 @@
 2008-11-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix part of #560365 – Image creation breaks when disk is out of space
+	Make sure that if image creation fails, there is no leftover.
+
+	* src/burn.c (brasero_burn_run_imager):
+
+2008-11-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make the "Same source, same destination drive" warning be like the rest
 	of errors or warnings and appear in a yellow message box.
 
