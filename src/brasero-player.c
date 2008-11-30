@@ -913,7 +913,17 @@ brasero_player_metadata_completed (GObject *obj,
 			gtk_widget_set_sensitive (player->priv->progress, FALSE);
 	}
 	else if (mime && !strncmp ("image/", mime, 6)) {
-		brasero_player_image (player);
+		/* Only do that if the image is < 20 M otherwise that's crap
+		 * FIXME: maybe a sort of error message here? or use thumbnail? */
+		if (g_file_info_get_size (info) > 100000000) {
+			brasero_player_no_multimedia_stream (player);
+			g_signal_emit (player,
+				       brasero_player_signals [ERROR_SIGNAL],
+				       0);
+		}
+		else
+			brasero_player_image (player);
+
 		return;
 	}
 	else {
