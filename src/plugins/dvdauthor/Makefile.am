@@ -1,4 +1,3 @@
-DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED
 
 INCLUDES = \
 	-I$(top_srcdir)					\
@@ -12,8 +11,6 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_BASE_CFLAGS)				\
 	$(BRASERO_LIBXML_CFLAGS)
-
-AM_CFLAGS = -g
 
 dvdauthordir = $(libdir)/brasero/plugins
 dvdauthor_LTLIBRARIES = libbrasero-dvdauthor.la

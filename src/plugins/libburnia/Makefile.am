@@ -1,6 +1,4 @@
 
-DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED
-
 INCLUDES = \
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -14,8 +12,6 @@ INCLUDES = \
 	$(BRASERO_LIBISOFS_CFLAGS)			\
 	$(BRASERO_LIBBURN_CFLAGS)			\
 	$(BRASERO_BASE_CFLAGS)
-
-AM_CFLAGS = -g
 
 #libburn
 libburndir = $(libdir)/brasero/plugins

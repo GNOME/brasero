@@ -1,6 +1,4 @@
 
-DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED
-
 INCLUDES = \
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
@@ -13,8 +11,6 @@ INCLUDES = \
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
 	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_BASE_CFLAGS)
-
-AM_CFLAGS = -g
 
 checksumdir = $(libdir)/brasero/plugins
 checksum_LTLIBRARIES = libbrasero-checksum.la

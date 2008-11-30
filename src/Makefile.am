@@ -1,9 +1,4 @@
 SUBDIRS = plugins
-DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED \
-					-DGDK_DISABLE_DEPRECATED \
-					-DGDK_PIXBUF_DISABLE_DEPRECATED \
-					-DGTK_DISABLE_DEPRECATED \
-					-DGNOME_DISABLE_DEPRECATED
 
 INCLUDES = \
 	-I$(top_srcdir)							\
@@ -19,8 +14,6 @@ INCLUDES = \
 
 EXTRA_DIST = brasero-marshal.list
 CLEANFILES = $(RECMARSHALFILES)
-
-AM_CFLAGS = -g
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 RECMARSHALFILES = brasero-marshal.h brasero-marshal.c 

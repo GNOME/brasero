@@ -9,10 +9,11 @@ INCLUDES =					\
 	-D_REENTRANT				\
 	-D_POSIX_PTHREAD_SEMANTICS		\
 	-DPREFIX=\"$(prefix)\"			\
-	-DBINDIR=\""$(bindir)"\"	\
+	-DBINDIR=\""$(bindir)"\"		\
 	-DLIBEXECDIR=\""$(libexecdir)"\"	\
 	-DSHAREDIR=\""$(datadir)"\"		\
-	-DDATADIR=\""$(datadir)/brasero"\"
+	-DDATADIR=\""$(datadir)/brasero"\"	\
+	$(DISABLE_DEPRECATED)
 
 CLEANFILES = 			\
 	$(NULL)

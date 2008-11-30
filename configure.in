@@ -31,6 +31,19 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE(brasero, $BRASERO_VERSION)
 AM_CONFIG_HEADER(config.h)
 
+AM_MAINTAINER_MODE
+
+
+dnl ***************** GNOME MACROS *****************************
+
+GNOME_COMPILE_WARNINGS([maximum])
+GNOME_CXX_WARNINGS
+
+dnl This could be use one day not to compile all debugging message
+dnl GNOME_DEBUG_CHECK
+
+GNOME_MAINTAINER_MODE_DEFINES
+
 dnl ***************** GENERAL **********************************
 
 AC_DISABLE_STATIC
