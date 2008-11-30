@@ -1,5 +1,18 @@
 2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	reviewed by: <delete if not using a buddy>
+
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_tmpdir_info):
+	* src/burn-job.c (brasero_job_check_output_volume_space):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_read_stderr):
+	* src/plugins/dvdcss/burn-dvdcss.c:
+	* src/plugins/libburnia/burn-libburn-common.c
+	(brasero_libburn_common_status):
+	* src/plugins/libburnia/burn-libburn.c:
+
+2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #560365 – Image creation breaks when disk is out of space
 	and #549119 – no space in /tmp given a not informative error
 

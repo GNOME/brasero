@@ -152,16 +152,14 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 		return FALSE;
 	}
 
-	info = g_file_query_filesystem_info (file,
-					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE ","
-					     G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
-					     NULL,
-					     &error);
-	g_object_unref (file);
-
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  &error);
 	if (error) {
 		g_object_unref (info);
+		g_object_unref (file);
 
 		BRASERO_BURN_LOG ("impossible to retrieve size for %s (%s)", path, error->message);
 		g_error_free (error);
@@ -199,11 +197,20 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 
 		if (answer != GTK_RESPONSE_OK) {
 			g_object_unref (info);
+			g_object_unref (file);
 			return FALSE;
 		}
 
 		priv->check_filesystem = 1;
 	}
+
+	g_object_unref (info);
+	info = g_file_query_filesystem_info (file,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
+					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+					     NULL,
+					     &error);
+	g_object_unref (file);
 
 	/* NOTE/FIXME: also check, probably best at start or in a special dialog
 	 * whether quotas or any other limitation enforced on the system may not
@@ -229,7 +236,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 						 _("Do you really want to choose this location?"));
 
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  _("The filesystem on this volume doesn't support large files (size over 2 GiB)."
+							  _("The filesystem on this volume does not support large files (size over 2 GiB)."
 							    "\nThis can be a problem when writing DVDs or large images."));
 
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),

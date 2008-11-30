@@ -423,9 +423,9 @@ static BraseroBurnResult
 brasero_job_check_output_volume_space (BraseroJob *self,
 				       GError **error)
 {
-	GFile *file;
 	GFileInfo *info;
 	gchar *directory;
+	GFile *file = NULL;
 	struct rlimit limit;
 	guint64 vol_size = 0;
 	gint64 output_size = 0;
@@ -437,11 +437,16 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	priv = BRASERO_JOB_PRIVATE (self);
 
-	/* get the size and filesystem type for the volume first.
+	/* Get the size and filesystem type for the volume first.
 	 * NOTE: since any plugin must output anything LOCALLY, we can then use
 	 * all libc API. */
 	if (!priv->output)
 		return BRASERO_BURN_ERR;
+
+	/* If the plugin is not supposed to output anything, then don't test */
+	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
+	if (!output_size)
+		return BRASERO_BURN_OK;
 
 	directory = g_path_get_dirname (priv->output->image);
 	file = g_file_new_for_path (directory);
@@ -450,27 +455,37 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	if (file == NULL)
 		goto error;
 
-	info = g_file_query_filesystem_info (file,
-					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE ","
-					     G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
-					     NULL,
-					     error);
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  error);
 	if (!info)
 		goto error;
 
-	g_object_unref (file);
-
 	/* Check permissions first */
 	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+		g_object_unref (info);
+		g_object_unref (file);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_PERMISSION,
 			     _("You do not have the required permission to write at this location"));
 		return BRASERO_BURN_ERR;
 	}
+	g_object_unref (info);
 
-	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
+	/* Now size left */
+	info = g_file_query_filesystem_info (file,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
+					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+					     NULL,
+					     error);
+	if (!info)
+		goto error;
+
+	g_object_unref (file);
+	file = NULL;
 
 	/* Now check the filesystem type: the problem here is that some
 	 * filesystems have a maximum file size limit of 4 GiB and more than
@@ -481,6 +496,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	if (output_size >= 2147483648ULL
 	&&  filesystem
 	&& !strcmp (filesystem, "msdos")) {
+		g_object_unref (info);
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
@@ -535,7 +551,10 @@ error:
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("The size of the volume could not be retrieved"));
-	g_object_unref (file);
+
+	if (file)
+		g_object_unref (file);
+
 	return BRASERO_BURN_ERR;
 }
 
