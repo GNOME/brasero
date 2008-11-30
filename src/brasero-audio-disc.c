@@ -1522,7 +1522,7 @@ brasero_audio_disc_add_dir (BraseroAudioDisc *disc, const gchar *uri)
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (disc));
 	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
-				     _("Do you want to search for audio files inside the directory"),
+				     _("Do you want to search for audio files inside the directory?"),
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_WARNING);
 
