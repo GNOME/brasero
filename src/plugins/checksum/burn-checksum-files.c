@@ -541,12 +541,13 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 		break;
 	}
 
-	if (result != BRASERO_BURN_OK)
+	if (result != BRASERO_BURN_OK || !priv->sums_path)
 		return result;
 
 	priv->file = fopen (priv->sums_path, "w");
 	if (!priv->file) {
                 int errsv = errno;
+
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,

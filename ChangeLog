@@ -1,5 +1,45 @@
 2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #560365 – Image creation breaks when disk is out of space
+	and #549119 – no space in /tmp given a not informative error
+
+	Handle temporary location errors and image creation errors by asking
+	the user if he wants to set another location.
+	We now also detect permission problem (as well as space error) for images.
+
+	Fix some small things in the mean time
+	- malformed strings
+	- a small bug in burn-job.c not returning correct value on error
+	- a small bug in checksum-file plugin that was overwriting errors
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_image_error),
+	(brasero_burn_dialog_setup_session):
+	* src/brasero-data-disc.c (brasero_data_disc_unknown_uri_cb):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_tmpdir_info),
+	(brasero_drive_properties_init):
+	* src/brasero-image-properties.c (brasero_image_properties_init):
+	* src/brasero-marshal.list:
+	* src/brasero-session-cfg.c (brasero_session_cfg_update):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_download):
+	* src/burn-job.c (brasero_job_check_output_volume_space),
+	(brasero_job_get_tmp_file):
+	* src/burn-session.c (brasero_burn_session_get_tmp_dir),
+	(brasero_burn_session_get_tmp_file):
+	* src/burn.c (brasero_burn_ask_for_location),
+	(brasero_burn_run_imager), (brasero_burn_class_init):
+	* src/burn.h:
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_read_stderr):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_read_stderr):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_create_checksum):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_write_image_to_file_thread):
+
+2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #562705 – brasero passes GTK_DISABLE_DEPRECATED and co unconditionally
 	Use gnome-common macros to allow use of a maintainer-mode that enables
 	all DISABLE-DEPRECATED macros. These macros, that were unconditionally 

@@ -54,8 +54,13 @@ typedef struct {
 
 	/* signals */
 	BraseroBurnResult		(*insert_media_request)		(BraseroBurn *obj,
+									 BraseroDrive *drive,
 									 BraseroBurnError error,
 									 BraseroMedia required_media);
+
+	BraseroBurnResult		(*location_request)		(BraseroBurn *obj,
+									 GError *error,
+									 gboolean is_temporary);
 
 	BraseroBurnResult		(*ask_disable_joliet)		(BraseroBurn *obj);
 

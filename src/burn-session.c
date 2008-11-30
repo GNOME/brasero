@@ -715,11 +715,17 @@ brasero_burn_session_get_tmp_dir (BraseroBurnSession *self,
                 int errsv = errno;
 
 		g_free (tmp);
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("A temporary directory could not be created (%s)"),
-			     g_strerror (errsv));
+		if (errsv != EACCES)
+			g_set_error (error, 
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     "%s",
+				     g_strerror (errsv));
+		else
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_PERMISSION,
+				     _("You do not have the required permission to write at this location"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -765,11 +771,18 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
                 int errsv = errno;
 
 		g_free (tmp);
-		g_set_error (error, 
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     _("A temporary file could not be created (%s)"),
-			     g_strerror (errsv));
+		if (errsv != EACCES)
+			g_set_error (error, 
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     "%s",
+				     g_strerror (errsv));
+		else
+			g_set_error (error, 
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_PERMISSION,
+				     _("You do not have the required permission to write at this location"));
+
 		return BRASERO_BURN_ERR;
 	}
 

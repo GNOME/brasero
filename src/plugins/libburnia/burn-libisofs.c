@@ -213,9 +213,16 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 	brasero_job_get_image_output (BRASERO_JOB (self), &output, NULL);
 	file = fopen (output, "w");
 	if (!file) {
-		priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
-                                                   BRASERO_BURN_ERROR_GENERAL,
-                                                   g_strerror (errno));
+		int errnum = errno;
+
+		if (errno == EACCES)
+			priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
+							   BRASERO_BURN_ERROR_PERMISSION,
+							   "You do not have the required permission to write at this location");
+		else
+			priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
+							   BRASERO_BURN_ERROR_GENERAL,
+							   g_strerror (errnum));
 		return;
 	}
 

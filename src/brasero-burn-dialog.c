@@ -616,6 +616,150 @@ brasero_burn_dialog_insert_disc_cb (BraseroBurn *burn,
 }
 
 static BraseroBurnResult
+brasero_burn_dialog_image_error (BraseroBurn *burn,
+				 GError *error,
+				 gboolean is_temporary,
+				 BraseroBurnDialog *dialog)
+{
+	gint result;
+	gchar *path;
+	gchar *string;
+	GtkWindow *window;
+	GtkWidget *message;
+	gboolean hide = FALSE;
+
+	if (!GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_show (GTK_WIDGET (dialog));
+		hide = TRUE;
+	}
+
+	g_timer_stop (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
+
+	window = GTK_WINDOW (dialog);
+
+	string = g_strdup_printf ("%s. %s",
+				  is_temporary?
+				  _("A file could not be created at the location specified for temporary files"):
+				  _("The image could not be created at the specified location"),
+				  _("Do you want to specify another location for this session or retry with the current location?"));
+
+	message = gtk_message_dialog_new (window,
+					  GTK_DIALOG_DESTROY_WITH_PARENT|
+					  GTK_DIALOG_MODAL,
+					  GTK_MESSAGE_ERROR,
+					  GTK_BUTTONS_NONE,
+					  string);
+	g_free (string);
+
+	if (error && error->code == BRASERO_BURN_ERROR_DISK_SPACE)
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+							 "%s.\n%s.",
+							  error->message,
+							  _("You may want to free some space on the disc and retry"));
+	else
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
+							 "%s.",
+							  error->message);
+
+	gtk_dialog_add_buttons (GTK_DIALOG (message),
+				_("_Keep Current Location"), GTK_RESPONSE_OK,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				_("_Change Location"), GTK_RESPONSE_ACCEPT,
+				NULL);
+
+	result = gtk_dialog_run (GTK_DIALOG (message));
+	gtk_widget_destroy (message);
+
+	if (hide)
+		gtk_widget_hide (GTK_WIDGET (dialog));
+
+	if (result == GTK_RESPONSE_OK) {
+		g_timer_start (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
+		return BRASERO_BURN_OK;
+	}
+
+	if (result != GTK_RESPONSE_ACCEPT) {
+		g_timer_start (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
+		return BRASERO_BURN_CANCEL;
+	}
+
+	/* Show a GtkFileChooserDialog */
+	if (!is_temporary) {
+		gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (message), TRUE);
+		message = gtk_file_chooser_dialog_new (_("Location for Image File"),
+						       GTK_WINDOW (dialog),
+						       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+						       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						       GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+						       NULL);
+	}
+	else
+		message = gtk_file_chooser_dialog_new (_("Location for Temporary Files"),
+						       GTK_WINDOW (dialog),
+						       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+						       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						       GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+						       NULL);
+
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (message), TRUE);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (message), g_get_home_dir ());
+
+	result = gtk_dialog_run (GTK_DIALOG (message));
+	if (result != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (message);
+		g_timer_start (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
+		return BRASERO_BURN_CANCEL;
+	}
+
+	path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (message));
+	gtk_widget_destroy (message);
+
+	if (!is_temporary) {
+		BraseroImageFormat format;
+		gchar *image = NULL;
+		gchar *toc = NULL;
+
+		format = brasero_burn_session_get_output_format (dialog->priv->session);
+		brasero_burn_session_get_output (dialog->priv->session,
+						 &image,
+						 &toc,
+						 NULL);
+
+		if (toc) {
+			gchar *name;
+
+			name = g_path_get_basename (toc);
+			g_free (toc);
+
+			toc = g_build_filename (path, name, NULL);
+			BRASERO_BURN_LOG ("New toc location %s", toc);
+		}
+
+		if (image) {
+			gchar *name;
+
+			name = g_path_get_basename (image);
+			g_free (image);
+
+			image = g_build_filename (path, name, NULL);
+			BRASERO_BURN_LOG ("New image location %s", toc);
+		}
+
+		brasero_burn_session_set_image_output_full (dialog->priv->session,
+							    format,
+							    image,
+							    toc);
+	}
+	else
+		brasero_burn_session_set_tmpdir (dialog->priv->session, path);
+
+	g_free (path);
+
+	g_timer_start (BRASERO_BURN_DIALOG (dialog)->priv->total_time);
+	return BRASERO_BURN_OK;
+}
+
+static BraseroBurnResult
 brasero_burn_dialog_loss_warnings_cb (GtkDialog *dialog, 
 				      const gchar *main_message,
 				      const gchar *secondary_message,
@@ -1285,6 +1429,10 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 	g_signal_connect (dialog->priv->burn,
 			  "insert-media",
 			  G_CALLBACK (brasero_burn_dialog_insert_disc_cb),
+			  dialog);
+	g_signal_connect (dialog->priv->burn,
+			  "location-request",
+			  G_CALLBACK (brasero_burn_dialog_image_error),
 			  dialog);
 	g_signal_connect (dialog->priv->burn,
 			  "warn-data-loss",

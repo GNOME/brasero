@@ -298,7 +298,8 @@ brasero_sum_dialog_download (BraseroSumDialog *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     _("A temporary file could not be created (%s)"),
+			     "%s (%s)",
+			     _("A file could not be created at the location specified for temporary files"),
 			     g_strerror (errnum));
 
 		return BRASERO_BURN_ERR;

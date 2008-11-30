@@ -122,6 +122,7 @@ typedef enum {
 	WARN_AUDIO_TO_APPENDABLE_SIGNAL,
 	WARN_REWRITABLE_SIGNAL,
 	INSERT_MEDIA_REQUEST_SIGNAL,
+	LOCATION_REQUEST_SIGNAL,
 	PROGRESS_CHANGED_SIGNAL,
 	ACTION_CHANGED_SIGNAL,
 	DUMMY_SUCCESS_SIGNAL,
@@ -434,6 +435,41 @@ brasero_burn_ask_for_media (BraseroBurn *burn,
 	return g_value_get_int (&return_value);
 }
 
+static BraseroBurnResult
+brasero_burn_ask_for_location (BraseroBurn *burn,
+			       GError *received_error,
+			       gboolean is_temporary,
+			       GError **error)
+{
+	GValue instance_and_params [3];
+	GValue return_value;
+
+	instance_and_params [0].g_type = 0;
+	g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (burn));
+	g_value_set_instance (instance_and_params, burn);
+	
+	instance_and_params [1].g_type = 0;
+	g_value_init (instance_and_params + 1, G_TYPE_POINTER);
+	g_value_set_pointer (instance_and_params + 1, received_error);
+	
+	instance_and_params [2].g_type = 0;
+	g_value_init (instance_and_params + 2, G_TYPE_BOOLEAN);
+	g_value_set_boolean (instance_and_params + 2, is_temporary);
+	
+	return_value.g_type = 0;
+	g_value_init (&return_value, G_TYPE_INT);
+	g_value_set_int (&return_value, BRASERO_BURN_CANCEL);
+
+	g_signal_emitv (instance_and_params,
+			brasero_burn_signals [LOCATION_REQUEST_SIGNAL],
+			0,
+			&return_value);
+
+	g_value_unset (instance_and_params);
+	g_value_unset (instance_and_params + 1);
+
+	return g_value_get_int (&return_value);
+}
 static BraseroBurnResult
 brasero_burn_ask_for_src_media (BraseroBurn *burn,
 				BraseroBurnError error_type,
@@ -1355,6 +1391,24 @@ start:
 	if (!ret_error)
 		return result;
 
+	if (brasero_burn_session_is_dest_file (priv->session)) {
+		gchar *image = NULL;
+		gchar *toc = NULL;
+
+		/* If it was an image that was output, remove it. If that was
+		 * a temporary image, it will be removed by BraseroBurnSession 
+		 * object. But if it was a final image, it would be left and
+		 * would clutter the disk, wasting space. */
+		brasero_burn_session_get_output (priv->session,
+						 &image,
+						 &toc,
+						 NULL);
+		if (image)
+			g_remove (image);
+		if (toc)
+			g_remove (toc);
+	}
+
 	/* See if we can recover from the error */
 	error_code = ret_error->code;
 	if (error_code == BRASERO_BURN_ERROR_IMAGE_JOLIET) {
@@ -1384,31 +1438,35 @@ start:
 
 		goto start;
 	}
-	else if (error_code == BRASERO_BURN_ERROR_DISK_SPACE) {
+	else if (error_code == BRASERO_BURN_ERROR_DISK_SPACE
+	     ||  error_code == BRASERO_BURN_ERROR_PERMISSION) {
+		gboolean is_temp;
+
 		/* That's an imager (outputs an image to the disc) so that means
 		 * that here the problem comes from the hard drive being too
-		 * small. */
-		/* ATM there is nothing we can do here except fail. We could one
-		 * day send a signal so that a dialog asking for a new hard
-		 * drive location is shown */
-	}
+		 * small or we don't have the right permission. */
 
-	if (brasero_burn_session_is_dest_file (priv->session)) {
-		gchar *image = NULL;
-		gchar *toc = NULL;
+		/* NOTE: Image file creation is always the last to take place 
+		 * when it's not temporary. Another job should not take place
+		 * afterwards */
+		if (!brasero_burn_session_is_dest_file (priv->session))
+			is_temp = TRUE;
+		else
+			is_temp = FALSE;
 
-		/* If it was an image that was output, remove it. If that was
-		 * a temporary image, it will be removed by BraseroBurnSession 
-		 * object. But if it was a final image, it would be left and
-		 * would clutter the disk, wasting space. */
-		brasero_burn_session_get_output (priv->session,
-						 &image,
-						 &toc,
-						 NULL);
-		if (image)
-			g_remove (image);
-		if (toc)
-			g_remove (toc);
+		result = brasero_burn_ask_for_location (burn,
+							ret_error,
+							is_temp,
+							error);
+
+		/* clean the error anyway since at worst the user will cancel */
+		g_error_free (ret_error);
+		ret_error = NULL;
+
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		goto start;
 	}
 
 	/* If we reached this point that means the error was not recoverable.
@@ -2768,7 +2826,7 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      NULL, NULL,
 			      brasero_marshal_INT__VOID,
 			      G_TYPE_INT, 0);
-        brasero_burn_signals [INSERT_MEDIA_REQUEST_SIGNAL] =
+	brasero_burn_signals [INSERT_MEDIA_REQUEST_SIGNAL] =
 		g_signal_new ("insert_media",
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,
@@ -2781,7 +2839,19 @@ brasero_burn_class_init (BraseroBurnClass *klass)
 			      BRASERO_TYPE_DRIVE,
 			      G_TYPE_INT,
 			      G_TYPE_INT);
-        brasero_burn_signals [PROGRESS_CHANGED_SIGNAL] =
+	brasero_burn_signals [LOCATION_REQUEST_SIGNAL] =
+		g_signal_new ("location-request",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BraseroBurnClass,
+					       location_request),
+			      NULL, NULL,
+			      brasero_marshal_INT__POINTER_BOOLEAN,
+			      G_TYPE_INT, 
+			      2,
+			      G_TYPE_POINTER,
+			      G_TYPE_INT);
+	brasero_burn_signals [PROGRESS_CHANGED_SIGNAL] =
 		g_signal_new ("progress_changed",
 			      G_TYPE_FROM_CLASS (klass),
 			      G_SIGNAL_RUN_LAST,

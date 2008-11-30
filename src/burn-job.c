@@ -452,13 +452,23 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	info = g_file_query_filesystem_info (file,
 					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE ","
+					     G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
 					     NULL,
 					     error);
 	if (!info)
 		goto error;
 
 	g_object_unref (file);
+
+	/* Check permissions first */
+	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_PERMISSION,
+			     _("You do not have the required permission to write at this location"));
+		return BRASERO_BURN_ERR;
+	}
 
 	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
 
@@ -474,7 +484,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB."));
+			     _("The filesystem you chose to store the temporary image on cannot hold files with a size over 2 GiB"));
 		return BRASERO_BURN_ERR;
 	}
 
@@ -489,7 +499,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)."),
+			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"),
 			     (unsigned long) output_size / 1048576);
 		return BRASERO_BURN_ERR;
 	}
@@ -511,7 +521,7 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_DISK_SPACE,
-			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)."),
+			     _("The location you chose to store the temporary image on does not have enough free space for the disc image (%ld MiB needed)"),
 			     (unsigned long) output_size / 1048576);
 		return BRASERO_BURN_ERR;
 	}
@@ -1650,12 +1660,10 @@ brasero_job_get_tmp_file (BraseroJob *self,
 
 	priv = BRASERO_JOB_PRIVATE (self);
 	session = brasero_task_ctx_get_session (priv->ctx);
-	brasero_burn_session_get_tmp_file (session,
-					   suffix,
-					   output,
-					   error);
-
-	return BRASERO_BURN_OK;
+	return brasero_burn_session_get_tmp_file (session,
+						  suffix,
+						  output,
+						  error);
 }
 
 BraseroBurnResult

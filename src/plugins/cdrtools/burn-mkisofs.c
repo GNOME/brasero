@@ -184,6 +184,13 @@ brasero_mkisofs_read_stderr (BraseroProcess *process, const gchar *line)
 							_("There is no space left on the device")));
 
 	}
+	else if (strstr (line, "Unable to open disc image file")) {
+		brasero_job_error (BRASERO_JOB (process),
+				   g_error_new_literal (BRASERO_BURN_ERROR,
+							BRASERO_BURN_ERROR_PERMISSION,
+							_("You do not have the required permission to write at this location")));
+
+	}
 	else if (strstr (line, "Value too large for defined data type")) {
 		brasero_job_error (BRASERO_JOB (process),
 				   g_error_new_literal (BRASERO_BURN_ERROR,

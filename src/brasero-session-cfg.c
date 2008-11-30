@@ -632,6 +632,8 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		return;
 	}
 
+	/* FIXME: another easy error to catch: AUDIO project with a DVD */
+
 	/* make sure there is an output set */
 	burner = brasero_burn_session_get_burner (BRASERO_BURN_SESSION (self));
 	if (!burner) {

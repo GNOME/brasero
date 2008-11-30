@@ -948,7 +948,7 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
 	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
 			   primary,
-			   _("It doesn't exist at the specified location"),
+			   _("It does not exist at the specified location"),
 			   GTK_MESSAGE_ERROR);
 	g_free (primary);
 	g_free (name);

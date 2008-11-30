@@ -154,7 +154,8 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 
 	info = g_file_query_filesystem_info (file,
 					     G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE ","
+					     G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
 					     NULL,
 					     &error);
 	g_object_unref (file);
@@ -167,6 +168,41 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 
 		gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), _("Unknown"));
 		return FALSE;
+	}
+
+	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+		gint answer;
+		gchar *string;
+		GtkWidget *dialog;
+		GtkWidget *toplevel;
+
+		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+						 GTK_DIALOG_DESTROY_WITH_PARENT |
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_WARNING,
+						 GTK_BUTTONS_NONE,
+						 _("Do you really want to choose this location?"));
+
+		string = g_strdup_printf ("%s.", _("You do not have the required permission to write at this location"));
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
+		g_free (string);
+
+		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+					_("_Keep Current Location"), GTK_RESPONSE_CANCEL,
+					_("_Change Location"), GTK_RESPONSE_OK,
+					NULL);
+
+		gtk_widget_show_all (dialog);
+		answer = gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		if (answer != GTK_RESPONSE_OK) {
+			g_object_unref (info);
+			return FALSE;
+		}
+
+		priv->check_filesystem = 1;
 	}
 
 	/* NOTE/FIXME: also check, probably best at start or in a special dialog
@@ -197,8 +233,8 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 							    "\nThis can be a problem when writing DVDs or large images."));
 
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-					_("_Keep current location"), GTK_RESPONSE_CANCEL,
-					_("_Change location"), GTK_RESPONSE_OK,
+					_("_Keep Current Location"), GTK_RESPONSE_CANCEL,
+					_("_Change Location"), GTK_RESPONSE_OK,
 					NULL);
 
 		gtk_widget_show_all (dialog);
@@ -512,7 +548,7 @@ brasero_drive_properties_init (BraseroDriveProperties *object)
 			    FALSE, 0);
 	g_free (string);
 
-	priv->tmpdir = gtk_file_chooser_button_new (_("Directory for temporary files"),
+	priv->tmpdir = gtk_file_chooser_button_new (_("Location for Temporary Files"),
 						    GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
 
 	box = gtk_hbox_new (FALSE, 6);
