@@ -360,7 +360,7 @@ brasero_libburn_common_status (BraseroJob *self,
 		}
 
 		cur_sector = progress.sector + ctx->sectors;
-		brasero_job_set_written_session (self, cur_sector * 2048);
+		brasero_job_set_written_session (self, (gint64) ((gint64) cur_sector * 2048ULL));
 	}
 	else {
 		gdouble fraction;

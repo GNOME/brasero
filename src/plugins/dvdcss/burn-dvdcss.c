@@ -62,7 +62,7 @@ typedef struct _BraseroDvdcssPrivate BraseroDvdcssPrivate;
 
 #define BRASERO_DVDCSS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DVDCSS, BraseroDvdcssPrivate))
 
-#define BRASERO_DVDCSS_I_BLOCKS	16
+#define BRASERO_DVDCSS_I_BLOCKS	16ULL
 
 static GObjectClass *parent_class = NULL;
 
@@ -400,7 +400,8 @@ brasero_dvdcss_write_image_thread (gpointer data)
 	}
 
 	while (remaining_sectors) {
-		gint flag, num_blocks, data_size;
+		gint flag;
+		guint64 num_blocks, data_size;
 
 		if (priv->cancel)
 			break;
@@ -472,7 +473,6 @@ brasero_dvdcss_write_image_thread (gpointer data)
 			result = brasero_dvdcss_write_sector_to_fd (self,
 								    buf,
 								    data_size);
-
 			if (result != BRASERO_BURN_OK)
 				break;
 		}

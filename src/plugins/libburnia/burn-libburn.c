@@ -53,7 +53,7 @@
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroLibburn, brasero_libburn, BRASERO_TYPE_JOB, BraseroJob);
 
-#define BRASERO_PVD_SIZE	32L * 2048L
+#define BRASERO_PVD_SIZE	32ULL * 2048ULL
 
 struct _BraseroLibburnPrivate {
 	BraseroLibburnCtx *ctx;

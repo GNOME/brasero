@@ -68,11 +68,11 @@ brasero_readcd_read_stderr (BraseroProcess *process, const gchar *line)
 
 		brasero_job_get_output_type (BRASERO_JOB (readcd), &output);
 		if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_BIN)
-			written = sector * 2048;
+			written = (gint64) ((gint64) sector * 2048ULL);
 		else if (output.subtype.img_format == BRASERO_IMAGE_FORMAT_CLONE)
-			written = sector * 2448;
+			written = (gint64) ((gint64) sector * 2448ULL);
 		else
-			written = sector * 2048;
+			written = (gint64) ((gint64) sector * 2048ULL);
 
 		brasero_job_set_written_track (BRASERO_JOB (readcd), written);
 
