@@ -1,5 +1,16 @@
 2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Allow to recover from error in image creation in disc copy too
+	Complement the previous changes
+
+	* src/burn-job.c (brasero_job_check_output_volume_space),
+	(brasero_job_set_output_file):
+	* src/burn-session.c (brasero_burn_session_get_tmp_dir),
+	(brasero_burn_session_get_tmp_file):
+	* src/burn.c (brasero_burn_same_src_dest_image):
+
+2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Limit preview of images to some size
 	Fix #560913 – preview of large images
 

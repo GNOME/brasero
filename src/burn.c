@@ -2342,6 +2342,7 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 	gchar *image = NULL;
 	BraseroTrack *track;
 	BraseroTrackType output;
+	GError *ret_error = NULL;
 	BraseroBurnResult result;
 	BraseroBurnPrivate *priv;
 	BraseroImageFormat format;
@@ -2377,9 +2378,48 @@ brasero_burn_same_src_dest_image (BraseroBurn *self,
 						     format,
 						     &image,
 						     &toc,
-						     error);
-	if (result != BRASERO_BURN_OK)
-		return result;
+						     &ret_error);
+	while (result != BRASERO_BURN_OK) {
+		gboolean is_temp;
+
+		if (!ret_error
+		||  (ret_error->code != BRASERO_BURN_ERROR_DISK_SPACE
+		&&   ret_error->code != BRASERO_BURN_ERROR_PERMISSION)) {
+			g_propagate_error (error, ret_error);
+			return result;
+		}
+
+		/* That's an imager (outputs an image to the disc) so that means
+		 * that here the problem comes from the hard drive being too
+		 * small or we don't have the right permission. */
+
+		/* NOTE: Image file creation is always the last to take place 
+		 * when it's not temporary. Another job should not take place
+		 * afterwards */
+		if (!brasero_burn_session_is_dest_file (priv->session))
+			is_temp = TRUE;
+		else
+			is_temp = FALSE;
+
+		result = brasero_burn_ask_for_location (self,
+							ret_error,
+							is_temp,
+							error);
+
+		/* clean the error anyway since at worst the user will cancel */
+		g_error_free (ret_error);
+		ret_error = NULL;
+
+		if (result != BRASERO_BURN_OK)
+			return result;
+
+		/* retry */
+		result = brasero_burn_session_get_tmp_image (priv->session,
+							     format,
+							     &image,
+							     &toc,
+							     &ret_error);
+	}
 
 	/* some, like cdrdao, can't overwrite the files */
 	g_remove (image);

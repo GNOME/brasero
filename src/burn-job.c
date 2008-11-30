@@ -443,11 +443,6 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 	if (!priv->output)
 		return BRASERO_BURN_ERR;
 
-	/* If the plugin is not supposed to output anything, then don't test */
-	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
-	if (!output_size)
-		return BRASERO_BURN_OK;
-
 	directory = g_path_get_dirname (priv->output->image);
 	file = g_file_new_for_path (directory);
 	g_free (directory);
@@ -465,6 +460,8 @@ brasero_job_check_output_volume_space (BraseroJob *self,
 
 	/* Check permissions first */
 	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+		BRASERO_JOB_LOG (self, "No permissions");
+
 		g_object_unref (info);
 		g_object_unref (file);
 		g_set_error (error,
@@ -566,6 +563,7 @@ brasero_job_set_output_file (BraseroJob *self,
 	BraseroBurnResult result;
 	BraseroJobPrivate *priv;
 	BraseroBurnFlag flags;
+	gint64 output_size = 0;
 	gchar *image = NULL;
 	gchar *toc = NULL;
 
@@ -573,6 +571,12 @@ brasero_job_set_output_file (BraseroJob *self,
 
 	/* no next job so we need a file pad */
 	session = brasero_task_ctx_get_session (priv->ctx);
+
+	/* If the plugin is not supposed to output anything, then don't test */
+	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
+	if (!output_size)
+		return BRASERO_BURN_OK;
+
 	flags = brasero_burn_session_get_flags (session);
 	if (priv->type.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroImageFormat format;
