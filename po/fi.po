@@ -1,5 +1,5 @@
 # Finnish messages for brasero 
-# Copyright (C) 2006 Ilkka Tuohela
+# Copyright (C) 2006-2008 Free Software Foundation Inc.
 # This file is distributed under the same license as the brasero package.
 # Ilkka Tuohela <hile@iki.fi> 2006-2008.
 # Timo Jyrinki <timo.jyrinki@iki.fi> 2007-2008.
@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-01 05:13+0300\n"
-"PO-Revision-Date: 2008-12-01 05:00+0300\n"
+"POT-Creation-Date: 2008-12-01 12:56+0300\n"
+"PO-Revision-Date: 2008-12-01 12:00+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -41,12 +41,11 @@ msgid "Copying files locally"
 msgstr "Kopioidaan tiedostoja paikallisesti"
 
 #: ../src/plugins/local-track/burn-uri.c:531
-#, fuzzy
 msgid ""
 "Burn_uri allows burning files added to \"CD/DVD Creator Folder\" in nautilus"
 msgstr ""
-"Burn_uri mahdollistaa nautiluksen \"CD/DVD-luontityökalun kansion\" "
-"sisältämien tiedostojen kirjoittamisen"
+"Burn_uri mahdollistaa \"CD/DVD-luontityökalun kansion\" sisältämien "
+"tiedostojen kirjoittamisen"
 
 #: ../nautilus/nautilus-burn-bar.c:134
 msgid "CD/DVD Creator Folder"
@@ -216,8 +215,7 @@ msgstr "Asemassa ei ole kirjoitettavaa levyä."
 #: ../src/brasero-burn-options.c:270
 msgid ""
 "No track information (artist, compositor, ...) will be written to the disc."
-msgstr ""
-"Kappaletietoja (esittäjä, levyn nimi, ...) ei kirjoiteta levylle."
+msgstr "Kappaletietoja (esittäjä, levyn nimi, ...) ei kirjoiteta levylle."
 
 #: ../src/brasero-burn-options.c:271
 msgid "This is not supported by the current active burning backend."
@@ -264,15 +262,15 @@ msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Haluatko kirjoittaa levylle enemmän kuin sinne pitäisi mahtua?"
 
 #: ../src/brasero-burn-options.c:335
-#, fuzzy
 msgid ""
 "The size of the project is too large for the disc.\n"
 "You may want to use this option if you are using 90 or 100 min CD-R(W) which "
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Projektin koko on liian suuri levylle, ja muussa tapauksessa joudut "
-"poistamaan tiedostoja.\n"
+"Projektin koko on liian suuri levylle.\n"
+"Voit haluta silti jatkaa, jos käytät 90- tai 100 min pitkiä CD-R(W)-levyjä, "
+"joita ei voitu tunnistaa oikein ja jotka vaativat ylikirjoitusvalinnan.\n"
 "HUOMAUTUS: Tämä valinta saattaa aiheuttaa ongelmia."
 
 #: ../src/brasero-burn-options.c:342 ../src/brasero-data-disc.c:611
@@ -284,19 +282,16 @@ msgid "Burn beyond the disc reported capacity"
 msgstr "Kirjoita yli levyn reportoidun kapasiteetin"
 
 #: ../src/brasero-burn-options.c:354
-#, fuzzy
 msgid ""
 "The drive that holds the source disc will also be the one used to record."
-msgstr "Lähdemedian sisältävää asemaa käytetään myös kirjoittamiseen.\n"
+msgstr "Lähdemedian sisältävää asemaa käytetään myös kirjoittamiseen."
 
 #: ../src/brasero-burn-options.c:355
-#, fuzzy
 msgid ""
 "A new recordable disc will be required once the one currently loaded has "
 "been copied."
 msgstr ""
-"Uusi kirjoitettava media vaaditaan, kun nykyinen syötetty levy on ensin "
-"kopioitu."
+"Uusi kirjoitettava levy vaaditaan, kun nyt ladattu levy on ensin kopioitu."
 
 #. Create a default Burn button
 #: ../src/brasero-burn-options.c:401
@@ -565,31 +560,28 @@ msgstr ""
 "näyttää huomautuksen."
 
 #: ../data/brasero.schemas.in.h:23
-#, fuzzy
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
 "Ääniprojekteille näytettävä paneeli. Paneelin arvon tulisi olla joko "
-"Chooser, Search, Playlist tai EmptyView."
+"\"Chooser\", \"Search\" tai \"Playlist\"."
 
 #: ../data/brasero.schemas.in.h:24
-#, fuzzy
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
 msgstr ""
 "Dataprojekteille näytettävä paneeli. Paneelin arvon tulisi olla joko "
-"Chooser, Search, tai EmptyView."
+"\"Chooser\" tai \"Search\"."
 
 #: ../data/brasero.schemas.in.h:25
-#, fuzzy
 msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
 msgstr ""
-"Ääniprojekteille näytettävä paneeli. Paneelin arvon tulisi olla joko "
-"Chooser, Search, Playlist tai EmptyView."
+"Videoprojekteille näytettävä paneeli. Paneelin arvon tulisi olla joko "
+"\"Chooser\", \"Search\" tai \"Playlist\"."
 
 #: ../data/brasero.schemas.in.h:26
 msgid ""
@@ -1512,8 +1504,7 @@ msgstr "Poista levy asemasta ja lataa se uudelleen."
 #: ../src/brasero-burn-dialog.c:642 ../src/brasero-sum-dialog.c:302
 msgid ""
 "A file could not be created at the location specified for temporary files"
-msgstr ""
-"Tiedostoa ei voitu luoda annettuun väliaikaistiedostojen sijaintiin"
+msgstr "Tiedostoa ei voitu luoda annettuun väliaikaistiedostojen sijaintiin"
 
 #: ../src/brasero-burn-dialog.c:643
 msgid "The image could not be created at the specified location"
@@ -1802,7 +1793,6 @@ msgid "New folder %i"
 msgstr "Uusi kansio %i"
 
 #: ../src/brasero-data-disc.c:602
-#, fuzzy
 msgid ""
 "The size of the project is too large for the disc and you must remove files "
 "from the project otherwise.\n"
@@ -1810,8 +1800,10 @@ msgid ""
 "cannot be properly recognised and therefore need overburn option.\n"
 "NOTE: This option might cause failure."
 msgstr ""
-"Projektin koko on liian suuri levylle, ja muussa tapauksessa joudut "
-"poistamaan tiedostoja.\n"
+"Projektin koko on liian suuri levylle, joten sinun täytyisi tavallisesti "
+"poistaa projektista tiedostoja.\n"
+"Voit haluta silti jatkaa, jos käytät 90- tai 100 min pitkiä CD-R(W)-levyjä, "
+"joita ei voitu tunnistaa oikein ja jotka vaativat ylikirjoitusvalinnan.\n"
 "HUOMAUTUS: Tämä valinta saattaa aiheuttaa ongelmia."
 
 #: ../src/brasero-data-disc.c:617
@@ -1917,7 +1909,6 @@ msgstr ""
 "versiota 3 tiedoston tukemiseksi?"
 
 #: ../src/brasero-data-disc.c:1029
-#, fuzzy
 msgid ""
 "The size of the file is over 2 GiB. This isn't supported by ISO9660 standard "
 "in his first and second versions (the most widespread ones).\n"
@@ -1932,7 +1923,7 @@ msgstr ""
 "On suositeltavaa käyttää ISO9660-standardin versiota 3, joka on tuettu "
 "useimmissa käyttöjärjestelmissä, mukaanlukien Linux ja kaikki Windows©-"
 "versiot.\n"
-"Tunnettu poikkeus on, että MacOS X ei osaa lukea ISO9660 version 3 mukaisia "
+"Tunnettu poikkeus on MacOS/X, joka ei osaa lukea ISO9660 version 3 mukaisia "
 "levyjä."
 
 #: ../src/brasero-data-disc.c:1068
@@ -1941,7 +1932,6 @@ msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "Haluatko varmasti lisätä \"%s\" valintaan?"
 
 #: ../src/brasero-data-disc.c:1076
-#, fuzzy
 msgid ""
 "The children of this directory will have 6 parent directories. This is a "
 "violation of the ISO9660 standard which only allows 6.\n"
@@ -1949,12 +1939,12 @@ msgid ""
 "disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
-"Tämän kansion lapsitiedostoilla on kuusi ylempää kansiota. Tämä rikkoo "
-"ISO9660-standardia, joka sallii vain kuusi alikansioiden tasoa.\n"
+"Tämän kansion lapsitiedostoilla on kuusi yläkansiota. Tämä rikkoo ISO9660-"
+"standardia, joka sallii vain kuusi alikansioiden tasoa.\n"
 "Brasero voi luoda ja kirjoittaa levykuvan, joka sisältää standardin "
 "vastaisen syvemmän kansiorakenteen, mutta sitä ei välttämättä pysty lukemaan "
 "kaikissa käyttöjärjestelmissä.\n"
-"Huomaa että linux tukee syviä kansiorakenteita aina."
+"Huomaa, että linuxissa näiden levyjen pitäisi toimia."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
@@ -2543,7 +2533,7 @@ msgstr "Tiedosto on tyhjä."
 #: ../src/brasero-project.c:2106 ../src/brasero-project.c:2114
 #: ../src/brasero-project.c:2244
 msgid "It does not seem to be a valid Brasero project."
-msgstr "Se ei vaikuta olevan kelvollinen Braseron projekti."
+msgstr "Tämä ei näytä olevan kelvollinen Brasero-projekti."
 
 #: ../src/brasero-project.c:2341
 msgid "Your project has not been saved."
@@ -2833,9 +2823,8 @@ msgid "The file integrity was performed successfully."
 msgstr "Tiedostojen eheystarkistus onnistui."
 
 #: ../src/brasero-sum-dialog.c:155
-#, fuzzy
 msgid "There seems to be no corrupted file on the disc"
-msgstr "Levyllä ei vaikuta olevan viallisia tiedostoja."
+msgstr "Levyllä ei näytä olevan viallisia tiedostoja"
 
 #: ../src/brasero-sum-dialog.c:178
 msgid "The following files appear to be corrupted:"
@@ -2912,9 +2901,8 @@ msgid "The drive is busy"
 msgstr "Asema on käytössä"
 
 #: ../src/brasero-tool-dialog.c:93
-#, fuzzy
 msgid "The drive is empty"
-msgstr "Asemassa on tyhjä."
+msgstr "Asemassa ei ole levyä"
 
 #: ../src/brasero-tool-dialog.c:481
 msgid "Select a disc"
@@ -3010,34 +2998,32 @@ msgid "The drive cannot be locked (%s)"
 msgstr "Asemaa ei voi lukita (%s)"
 
 #: ../src/burn.c:650
-#, fuzzy, c-format
+#, c-format
 msgid "The drive has no rewriting capabilities"
-msgstr "asema ei osaa uudelleenkirjoittaa levyjä"
+msgstr "Asema ei osaa uudelleenkirjoittaa levyjä"
 
 #: ../src/burn.c:686
-#, fuzzy
 msgid "Ongoing blanking process"
-msgstr "tyhjennys on kesken"
+msgstr "Levyn tyhjennys on kesken"
 
 #: ../src/burn.c:808
-#, fuzzy, c-format
+#, c-format
 msgid "The drive cannot burn or the disc cannot be burnt"
-msgstr "Asema ei pysty kirjoittamaan tai medialle ei voi kirjoittaa"
+msgstr "Asema ei pysty kirjoittamaan tai levylle ei voi kirjoittaa"
 
 #: ../src/burn.c:1013
-#, fuzzy, c-format
+#, c-format
 msgid "The disc could not be mounted (max attemps reached)"
-msgstr "levyä ei voitu liittää (liikaa yrityksiä)"
+msgstr "Levyä ei voitu liittää (liikaa yrityksiä)"
 
 #: ../src/burn.c:1078
-#, fuzzy
 msgid "Ongoing checksuming operation"
-msgstr "tarkistussumman laskenta on kesken"
+msgstr "Tarkistussumman laskenta on kesken"
 
 #: ../src/burn.c:1666 ../src/burn.c:2018
-#, fuzzy, c-format
+#, c-format
 msgid "Merging data is impossible with this disc"
-msgstr "Tietojen yhdistäminen on mahdotonta tällä levyllä."
+msgstr "Tietojen yhdistäminen on mahdotonta tällä levyllä"
 
 #: ../src/burn.c:1667 ../src/plugins/cdrkit/burn-genisoimage.c:197
 #: ../src/plugins/cdrkit/burn-wodim.c:99
@@ -3084,43 +3070,43 @@ msgstr "Tapahtui sisäinen virhe"
 #: ../src/burn-iso9660.c:152 ../src/burn-iso9660.c:161
 #: ../src/burn-iso9660.c:396 ../src/burn-iso9660.c:433
 #: ../src/burn-iso9660.c:482 ../src/burn-volume.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "It does not appear to be a valid ISO image"
-msgstr "Tämä ei näytä olevan kelvollinen levykuva tai cue-tiedosto."
+msgstr "Tämä ei näytä olevan kelvollinen ISO-levykuva"
 
 #: ../src/burn-job.c:315 ../src/burn-job.c:800 ../src/burn-job.c:813
 #: ../src/burn-job.c:1032 ../src/burn-job.c:1122
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" did not behave properly"
-msgstr "Liitännäinen toimi väärin"
+msgstr "\"%s\" ei toimi oikein"
 
 #: ../src/burn-job.c:413
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough space available on the disc (%lli available for %lli)"
-msgstr "Levyllä ei ole tarpeeksi tilaa"
+msgstr "Levyllä ei ole tarpeeksi tilaa (%lli saatavilla, %lli vaaditaan)"
 
 #: ../src/burn-job.c:500
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr ""
 "Väliaikaisen levykuvan tallennuskohteen tiedostojärjestelmä ei salli yli 2 "
-"GiB kokoisia tiedostoja."
+"GiB kokoisia tiedostoja"
 
 #: ../src/burn-job.c:515 ../src/burn-job.c:537
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
 msgstr ""
-"Väliaikaisen levykuvan valitussa tallenussijainnissa ei ole tarpeeksi "
-"vapaata tilaa levykuvan tallentamiseen (%ld MiB vaaditaan)."
+"Väliaikaisen levykuvan tallenukseen valitussa kohteessa ei ole tarpeeksi "
+"vapaata tilaa levykuvaa varten (vaaditaan %ld MiB)."
 
 #: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:345
-#, fuzzy, c-format
+#, c-format
 msgid "The size of the volume could not be retrieved"
-msgstr "taltion kokoa ei voitu selvittää"
+msgstr "Taltion kokoa ei voitu selvittää"
 
 #: ../src/burn-job.c:600 ../src/burn-session.c:534 ../src/burn-session.c:550
 #, c-format
@@ -3262,23 +3248,23 @@ msgstr "VIDEO_TS-hakemisto ei ole olemassa tai on epäkelpo"
 
 #: ../src/burn-process.c:102 ../src/burn-process.c:118
 #: ../src/burn-process.c:130
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" could not be found in the path"
-msgstr "komentoa %s ei löydy polulta"
+msgstr "Komentoa \"%s\" ei löydy polulta"
 
 #: ../src/burn-process.c:140
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" is a symlink pointing to another program. Use the target program "
 "instead"
 msgstr ""
-"%s on toiseen ohjelmaan osoittava symbolinen linkki. Käytä sen sijaan "
+"\"%s\" on toiseen ohjelmaan osoittava symbolinen linkki. Käytä sen sijaan "
 "kohteena olevaa ohjelmaa."
 
 #: ../src/burn-process.c:227
-#, fuzzy, c-format
+#, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
-msgstr "prosessi %s päättyi virhekoodiin (%i)"
+msgstr "prosessi \"%s\" päättyi virhekoodiin (%i)"
 
 #: ../src/main.c:77
 msgid "Open the specified project"
@@ -3680,8 +3666,7 @@ msgstr "Libisofs kertoi virheestä luotaessa kansiota \"%s\""
 #, c-format
 msgid ""
 "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
-msgstr ""
-"Libisofs kertoi virheestä lisättäessä sisältöä kansioon \"%s\" (%x)"
+msgstr "Libisofs kertoi virheestä lisättäessä sisältöä kansioon \"%s\" (%x)"
 
 #: ../src/plugins/libburnia/burn-libisofs.c:729
 #: ../src/plugins/libburnia/burn-libisofs.c:745
@@ -3710,7 +3695,8 @@ msgstr "Kopioidaan tarkistussummatiedostoa"
 
 #: ../src/plugins/local-track/burn-local-image.c:1069
 msgid "Local-track allows to burn files not stored locally"
-msgstr "Local-track sallii ei-paikallisesti tallennetujen tiedostojen kirjoituksen"
+msgstr ""
+"Local-track sallii ei-paikallisesti tallennetujen tiedostojen kirjoituksen"
 
 #: ../src/plugins/transcode/burn-normalize.c:473
 msgid "Normalizing tracks"
@@ -4290,7 +4276,8 @@ msgstr "Luodaan levykuvan tarkistussummaa"
 
 #: ../src/plugins/checksum/burn-checksum-image.c:750
 msgid "Allows to check data integrity on disc after it is burnt"
-msgstr "Sallii levylle kirjoitettujen tietojen eheystarkistuksen kirjoituksen jälkeen"
+msgstr ""
+"Sallii levylle kirjoitettujen tietojen eheystarkistuksen kirjoituksen jälkeen"
 
 #: ../src/brasero-jacket-background.c:160
 msgid "Images"
