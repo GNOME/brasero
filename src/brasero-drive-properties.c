@@ -137,12 +137,19 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	GFile *file;
 	gchar *string;
 	GFileInfo *info;
+	gboolean noalert;
 	GError *error = NULL;
 	guint64 vol_size = 0;
 	const gchar *filesystem;
 	BraseroDrivePropertiesPrivate *priv;
 
 	priv = BRASERO_DRIVE_PROPERTIES_PRIVATE (self);
+
+	/* This is to avoid showing an alert right before window is shown */
+	if (!GTK_WIDGET_VISIBLE (self))
+		noalert = TRUE;
+	else
+		noalert = FALSE;
 
 	/* get the volume free space */
 	file = g_file_new_for_commandline_arg (path);
@@ -168,7 +175,8 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 		return FALSE;
 	}
 
-	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+	if (!noalert
+	&&  !g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
 		gint answer;
 		gchar *string;
 		GtkWidget *dialog;
@@ -222,6 +230,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	filesystem = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
 	if (priv->check_filesystem
 	&&  filesystem
+	&& !noalert
 	&& !strcmp (filesystem, "msdos")) {
 		gint answer;
 		GtkWidget *dialog;
