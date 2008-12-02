@@ -220,10 +220,10 @@ brasero_process_finished (BraseroProcess *self)
 	/* check if an error went undetected */
 	if (priv->return_status) {
 		if (priv->error) {
-			/* Translators: %s is the name of the brasero element */
 			brasero_job_error (BRASERO_JOB (self),
 					   g_error_new (BRASERO_BURN_ERROR,
 							BRASERO_BURN_ERROR_GENERAL,
+						        /* Translators: %s is the name of the brasero element */
 							_("Process \"%s\" ended with an error code (%i)"),
 							G_OBJECT_TYPE_NAME (self),
 							priv->return_status));

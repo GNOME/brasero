@@ -1206,8 +1206,8 @@ brasero_data_disc_import_button_new (BraseroDataDisc *self,
 			   BRASERO_DATA_DISC_MEDIUM,
 			   medium);
 
-	/* Translators: This is a verb. It's a toolbar button. */
 	g_object_set (action,
+			/* Translators: This is a verb. It's a toolbar button. */
 		      "short-label", _("I_mport"),
 		      NULL);
 

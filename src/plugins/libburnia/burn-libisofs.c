@@ -621,9 +621,9 @@ brasero_libisofs_create_volume_thread (gpointer data)
 			/* an error has occured, possibly libisofs hasn't been
 			 * able to find a parent for this node */
 			g_free (path_name);
-			/* Translators: %s is the path */
 			priv->error = g_error_new (BRASERO_BURN_ERROR,
 						   BRASERO_BURN_ERROR_GENERAL,
+						   /* Translators: %s is the path */
 						   _("No parent could be found in the tree for the path \"%s\""),
 						   graft->path);
 			goto end;

@@ -645,11 +645,11 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	if (fd == -1) {
 		int errnum = errno;
 
-		/* Translators: first %s is the filename, second %s is the error
-		 * generated from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: first %s is the filename, second %s is the error
+			      * generated from errno */
 			     _("\"%s\" could not be opened (%s)"),
 			     "/dev/null",
 			     g_strerror (errnum));
@@ -684,10 +684,10 @@ brasero_libburn_start_erase (BraseroLibburn *self,
 	if (burn_precheck_write (opts, priv->ctx->disc, reasons, 0) <= 0) {
 		burn_write_opts_free (opts);
 
-		/* Translators: %s is the error returned by libburn */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: %s is the error returned by libburn */
 			     _("An internal error occured (%s)"),
 			     reasons);
 		return BRASERO_BURN_ERR;

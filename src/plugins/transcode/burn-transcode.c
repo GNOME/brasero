@@ -311,11 +311,11 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	uri = brasero_track_get_audio_source (track, TRUE);
 	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
 	if (source == NULL) {
-		/* Translators: %s is the name of the GstElement that 
-		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: %s is the name of the GstElement that 
+			      * could not be created */
 			     _("%s element could not be created"),
 			     "\"Source\"");
 		goto error;
@@ -362,8 +362,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	}
 
 	if (!sink) {
-		/* Translators: %s is the name of the GstElement that 
-		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -380,8 +378,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
 	if (convert == NULL) {
-		/* Translators: %s is the name of the GstElement that 
-		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -395,8 +391,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		/* audioresample */
 		resample = gst_element_factory_make ("audioresample", NULL);
 		if (resample == NULL) {
-			/* Translators: %s is the name of the GstElement that 
-			 * could not be created */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -409,8 +403,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		/* filter */
 		filter = gst_element_factory_make ("capsfilter", NULL);
 		if (!filter) {
-			/* Translators: %s is the name of the GstElement that 
-			 * could not be created */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
@@ -435,8 +427,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	/* decode */
 	decode = gst_element_factory_make ("decodebin", NULL);
 	if (decode == NULL) {
-		/* Translators: %s is the name of the GstElement that 
-		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -597,10 +587,10 @@ brasero_transcode_create_sibling_image (BraseroTranscode *transcode,
 	if (symlink (path_src, path_dest) == -1) {
                 int errsv = errno;
 
-		/* Translators: the %s is the error message from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: the %s is the error message from errno */
 			     _("An internal error occured (%s)"),
 			     g_strerror (errsv));
 
@@ -856,10 +846,10 @@ brasero_transcode_pad_real (BraseroTranscode *transcode,
 		if (size != b_written) {
                         int errsv = errno;
 
-			/* Translators: %s is the string error from errno */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
+				     /* Translators: %s is the string error from errno */
 				     _("Error while padding file (%s)"),
 				     g_strerror (errsv));
 			return -1;
@@ -1049,10 +1039,10 @@ brasero_transcode_pad_file (BraseroTranscode *transcode, GError **error)
 	if (fd == -1) {
                 int errsv = errno;
 
-		/* Translators: %s is the string error from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: %s is the string error from errno */
 			     _("Error while padding file (%s)"),
 			     g_strerror (errsv));
 		return FALSE;

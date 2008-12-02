@@ -308,10 +308,10 @@ brasero_job_allow_deactivation (BraseroJob *self,
 
 error:
 
-	/* Translators: %s is the plugin name */
 	g_set_error (error,
 		     BRASERO_BURN_ERR,
 		     BRASERO_BURN_ERROR_PLUGIN_MISBEHAVIOR,
+		     /* Translators: %s is the plugin name */
 		     _("\"%s\" did not behave properly"),
 		     G_OBJECT_TYPE_NAME (self));
 	return BRASERO_BURN_ERR;

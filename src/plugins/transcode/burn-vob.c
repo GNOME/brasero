@@ -241,11 +241,11 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	/* queue */
 	queue = gst_element_factory_make ("queue", NULL);
 	if (queue == NULL) {
-		/* Translators: %s is the name of the GstElement that 
-		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: %s is the name of the GstElement that 
+			      * could not be created */
 			     _("%s element could not be created"),
 			     "\"Queue\"");
 		goto error;
@@ -260,11 +260,11 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	/* audioresample */
 	resample = gst_element_factory_make ("audioresample", NULL);
 	if (resample == NULL) {
-		/* Translators: %s is the name of the GstElement that 
-		 * could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: %s is the name of the GstElement that 
+			      * could not be created */
 			     _("%s element could not be created"),
 			     "\"Audioresample\"");
 		goto error;
@@ -274,11 +274,11 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
 	if (convert == NULL) {
-		/* Translators: %s is the name of the GstElement that 
-		 * element could not be created */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: %s is the name of the GstElement that 
+			      * element could not be created */
 			     _("%s element could not be created"),
 			     "\"Audioconvert\"");
 		goto error;

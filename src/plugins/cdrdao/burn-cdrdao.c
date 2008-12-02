@@ -182,10 +182,10 @@ brasero_cdrdao_read_stderr_record (BraseroCdrdao *cdrdao, const gchar *line)
 		name = g_path_get_basename (cuepath);
 		g_free (cuepath);
 
-		/* Translators: %s is a filename */
 		brasero_job_error (BRASERO_JOB (cdrdao),
 				   g_error_new (BRASERO_BURN_ERROR,
 						BRASERO_BURN_ERROR_FILE_NOT_FOUND,
+						/* Translators: %s is a filename */
 						_("\"%s\" could not be found"),
 						name));
 		g_free (name);

@@ -1,3 +1,30 @@
+2008-12-02  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #562915 – Translator comments should be the line just before the string
+
+	* src/brasero-blank-dialog.c (brasero_blank_dialog_activate),
+	(brasero_blank_dialog_init):
+	* src/brasero-data-disc.c (brasero_data_disc_import_button_new):
+	* src/brasero-project.c (brasero_project_update_project_size),
+	(brasero_project_empty_cb):
+	* src/burn-drive.c (brasero_drive_get_display_name):
+	* src/burn-job.c (brasero_job_allow_deactivation):
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_write_graft):
+	* src/burn-process.c (brasero_process_finished):
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_read_stderr_record):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_checksum_file_input):
+	* src/plugins/libburnia/burn-libburn.c
+	(brasero_libburn_start_erase):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_volume_thread):
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_create_pipeline),
+	(brasero_transcode_create_sibling_image),
+	(brasero_transcode_pad_real), (brasero_transcode_pad_file):
+	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_pcm):
+
 2008-11-30  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fixed string

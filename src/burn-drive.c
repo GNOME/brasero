@@ -264,11 +264,12 @@ brasero_drive_get_display_name (BraseroDrive *self)
 
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
-	/* Translators: This is a fake drive, a file, and means that when we're
-	 * writing, we're writing to a file and create an image on the hard 
-	 * drive. */
-	if (!priv->udi)
-		return g_strdup (_("Image File"));;
+	if (!priv->udi) {
+		/* Translators: This is a fake drive, a file, and means that
+		 * when we're writing, we're writing to a file and create an
+		 * image on the hard drive. */
+		return g_strdup (_("Image File"));
+	}
 
 	watch = brasero_hal_watch_get_default ();
 	ctx = brasero_hal_watch_get_ctx (watch);

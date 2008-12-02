@@ -605,10 +605,11 @@ brasero_project_update_project_size (BraseroProject *project,
 		brasero_medium_get_free_space (medium,
 					       &free_space,
 					       NULL);
+
+		medium_string = g_format_size_for_display (free_space);
 		/* Translators: first %s is the size of the project and the 
 		 * second %s is the remaining free space on the disc that is
 		 * used for multisession */
-		medium_string = g_format_size_for_display (free_space);
 		size = g_strdup_printf (_("Project estimated size: %s/%s"),
 					string,
 					medium_string);
@@ -1524,8 +1525,8 @@ brasero_project_empty_cb (GtkAction *action, BraseroProject *project)
 							    "All the work will be lost. "
 							    "Note that files will not be deleted from their own location, "
 							    "just no longer listed here."));
-		/* Translators: "empty" is a verb here */
 		gtk_dialog_add_button (GTK_DIALOG (dialog),
+					/* Translators: "empty" is a verb here */
 				       _("E_mpty Project"),
 				       GTK_RESPONSE_OK);
 

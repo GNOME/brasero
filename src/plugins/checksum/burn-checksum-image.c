@@ -290,11 +290,11 @@ brasero_checksum_image_checksum_file_input (BraseroChecksumImage *self,
 
                 errsv = errno;
 
-		/* Translators: first %s is the filename, second %s is the error
-		 * generated from errno */
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
+			     /* Translators: first %s is the filename, second %s
+			      * is the error generated from errno */
 			     _("\"%s\" could not be opened (%s)"),
 			     name,
 			     g_strerror (errsv));
