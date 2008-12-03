@@ -1,5 +1,14 @@
 2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to fix #562879 – Multi session disk - Progress meter in systray
+
+	* src/brasero-tray.c (brasero_tray_icon_init),
+	(brasero_tray_icon_set_action), (brasero_tray_icon_set_progress):
+	* src/burn-task.c (brasero_task_start):
+	* src/burn.c (brasero_burn_progress_changed):
+
+2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed some problems with incorrect strings
 	See #549211 – Wrong use of word Delete (last comments)
 

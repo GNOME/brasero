@@ -1177,11 +1177,13 @@ brasero_burn_progress_changed (BraseroTaskCtx *task,
 	/* get the task current progress */
 	if (brasero_task_ctx_get_progress (task, &task_progress) == BRASERO_BURN_OK) {
 		brasero_task_ctx_get_remaining_time (task, &time_remaining);
+		g_print ("%d %d\n", priv->tasks_done, priv->task_nb);
 		overall_progress = (task_progress + (gdouble) priv->tasks_done) /
 				   (gdouble) priv->task_nb;
 	}
 	else
-		overall_progress =  (gdouble) priv->tasks_done / (gdouble) priv->task_nb;
+		overall_progress =  (gdouble) priv->tasks_done /
+				    (gdouble) priv->task_nb;
 
 	g_signal_emit (burn,
 		       brasero_burn_signals [PROGRESS_CHANGED_SIGNAL],

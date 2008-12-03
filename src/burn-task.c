@@ -541,7 +541,7 @@ brasero_task_start (BraseroTask *self,
 	/* Activate all items that can be. If no item can be then skip */
 	result = brasero_task_activate_items (self, error);
 	if (result == BRASERO_BURN_NOT_RUNNING) {
-		BRASERO_BURN_LOG ("task skipped");
+		BRASERO_BURN_LOG ("Task skipped");
 		return BRASERO_BURN_OK;
 	}
 

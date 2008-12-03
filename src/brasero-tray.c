@@ -60,11 +60,8 @@ struct BraseroTrayIconPrivate {
 	BraseroBurnAction action;
 	GtkUIManager *manager;
 
-	int first_burning_percent;
 	int rounded_percent;
 	int percent;
-
-	int show_disc:1;
 };
 
 typedef enum {
@@ -209,7 +206,6 @@ brasero_tray_icon_init (BraseroTrayIcon *obj)
 			  NULL);
 
 	gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (obj), "brasero-disc-00");
-	obj->priv->first_burning_percent = -1;
 }
 
 static void
@@ -267,10 +263,6 @@ void
 brasero_tray_icon_set_action (BraseroTrayIcon *tray,
 			      BraseroBurnAction action)
 {
-	if (action == BRASERO_BURN_ACTION_DRIVE_COPY
-	||  action == BRASERO_BURN_ACTION_RECORDING)
-		tray->priv->show_disc = TRUE;
-
 	tray->priv->action = action;
 	brasero_tray_icon_set_tooltip (tray, -1);
 }
@@ -289,19 +281,6 @@ brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 
 	/* set the tooltip */
 	brasero_tray_icon_set_tooltip (tray, remaining);
-
-	if (!tray->priv->show_disc)
-		return;
-
-	if (tray->priv->first_burning_percent == -1)
-		tray->priv->first_burning_percent = percent;
-
-	if (tray->priv->first_burning_percent != 0) {
-		percent -= tray->priv->first_burning_percent;
-		percent = (100 - tray->priv->first_burning_percent) != 0 ?
-			   percent * 100 / (100 - tray->priv->first_burning_percent) :
-			   0;
-	}
 
 	/* change image if need be */
 	remains = percent % 5;
