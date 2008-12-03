@@ -45,17 +45,6 @@ struct _BraseroVolumePrivate
 
 #define BRASERO_VOLUME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VOLUME, BraseroVolumePrivate))
 
-enum
-{
-	MOUNTED,
-	UNMOUNTED,
-
-	LAST_SIGNAL
-};
-
-
-static guint volume_signals[LAST_SIGNAL] = { 0 };
-
 G_DEFINE_TYPE (BraseroVolume, brasero_volume, BRASERO_TYPE_MEDIUM);
 
 static GVolume *
@@ -301,6 +290,8 @@ brasero_volume_umounted_cb (GVolumeMonitor *monitor,
 	}
 
 	g_object_unref (vol_mount);
+
+	/* Check it's the one we were looking for */
 	if (vol_mount != mount)
 		return;
 
@@ -337,12 +328,12 @@ brasero_volume_umount_finish (GObject *source,
 			priv->error = NULL;
 			priv->result = TRUE;
 		}
-	}
 
-	if (priv->result)
-		g_signal_emit (self,
-			       volume_signals[UNMOUNTED],
-			       0);
+		/* Since there was an error. The "unmounted" signal won't be 
+		 * emitted by GVolumeMonitor and therefore we'd get stuck if
+		 * we didn't get out of the loop. */
+		brasero_volume_operation_end (self);
+	}
 }
 
 gboolean
@@ -440,11 +431,6 @@ brasero_volume_mount_finish (GObject *source,
 	}
 
 	brasero_volume_operation_end (self);
-
-	if (priv->result)
-		g_signal_emit (self,
-			       volume_signals[MOUNTED],
-			       0);
 }
 
 gboolean
@@ -783,26 +769,6 @@ brasero_volume_class_init (BraseroVolumeClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroVolumePrivate));
 
 	object_class->finalize = brasero_volume_finalize;
-
-	volume_signals[MOUNTED] =
-		g_signal_new ("mounted",
-		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
-		              0,
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0,
-		              G_TYPE_NONE);
-
-	volume_signals[UNMOUNTED] =
-		g_signal_new ("unmounted",
-		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
-		              0,
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0,
-		              G_TYPE_NONE);
 }
 
 BraseroVolume *

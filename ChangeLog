@@ -1,5 +1,13 @@
 2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to fix #559161 – Trying to burn to previously used CDRW does not offer to erase and claims to burn endlessly
+
+	* src/burn-volume-obj.c (brasero_volume_umounted_cb),
+	(brasero_volume_umount_finish), (brasero_volume_mount_finish),
+	(brasero_volume_class_init):
+
+2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Try to fix #562879 – Multi session disk - Progress meter in systray
 
 	* src/brasero-tray.c (brasero_tray_icon_init),
