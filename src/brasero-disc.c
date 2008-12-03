@@ -650,8 +650,8 @@ brasero_disc_get_use_info_notebook (void)
 	 * You simply have to translate messages in the best form
          * for a list of actions. */
 	message_add_header = g_strconcat ("<big>", _("To add files to this project you can:"), "\n</big>", NULL);
-	message_add = g_strconcat ("\t* ", _("click the \"Add\" button to show the selection pane"), "\n",
-				   "\t* ", _("select files in selection pane and click the \"Add\" button"), "\n",
+	message_add = g_strconcat ("\t* ", _("click the \"Add\" button to show a selection dialog"), "\n",
+				   "\t* ", _("select files in the selection pane and click the \"Add\" button"), "\n",
 				   "\t* ", _("drag files in this area from the selection pane or from the file manager"), "\n",
 				   "\t* ", _("double click on files in the selection pane"), "\n",
 

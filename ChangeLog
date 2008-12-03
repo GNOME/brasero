@@ -1,5 +1,16 @@
 2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed some problems with incorrect strings
+	See #549211 – Wrong use of word Delete (last comments)
+
+	* src/brasero-disc.c (brasero_disc_get_use_info_notebook):
+	* src/brasero-split-dialog.c
+	(brasero_split_dialog_clear_confirm_dialog),
+	(brasero_split_dialog_cut_clicked_cb),
+	(brasero_split_dialog_reset_clicked_cb):
+
+2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Rework previous change:
 	Now only show alert dialog when the user clicked OK
 

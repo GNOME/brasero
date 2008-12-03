@@ -666,7 +666,10 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 }
 
 static gboolean
-brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self)
+brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self,
+					   const gchar *primary,
+					   const gchar *cancel_button,
+					   const gchar *ok_button)
 {
 	BraseroSplitDialogPrivate *priv;
 	GtkResponseType answer;
@@ -684,16 +687,16 @@ brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self)
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_QUESTION,
 					  GTK_BUTTONS_NONE,
-					  _("Do you really want to carry on with automatic splitting?"));
+					  primary);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),
 						  _("This will remove all previous results."));
 
 	gtk_dialog_add_button (GTK_DIALOG (message),
-			       _("_Don't split"),
+			       cancel_button,
 			       GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (message),
-			       _("_Split"),
+			       ok_button,
 			       GTK_RESPONSE_YES);
 
 	answer = gtk_dialog_run (GTK_DIALOG (message));
@@ -726,7 +729,10 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 	}
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
-	if (!brasero_split_dialog_clear_confirm_dialog (self))
+	if (!brasero_split_dialog_clear_confirm_dialog (self,
+							_("Do you really want to carry on with automatic splitting?"),
+							_("_Don't split"),
+							_("_Split")))
 		return;
 
 	if (page == 1) {
@@ -940,7 +946,10 @@ brasero_split_dialog_reset_clicked_cb (GtkButton *button,
 	GtkTreeModel *model;
 
 	priv = BRASERO_SPLIT_DIALOG_PRIVATE (self);
-	if (!brasero_split_dialog_clear_confirm_dialog (self))
+	if (!brasero_split_dialog_clear_confirm_dialog (self,
+							_("Do you really want to empty the slices preview?"),
+							GTK_STOCK_CANCEL,
+							_("Re_move All")))
 		return;
 
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree));
