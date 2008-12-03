@@ -1,5 +1,18 @@
 2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #559161 – Trying to burn to previously used CDRW does not offer to erase and claims to burn endlessly
+	brasero-volume.c didn't get out of the loop when the unmount operation
+	failed which meant brasero got stuck. This is fixed and to make sure
+	we won't loop indefinitely I added a timeout of 20 sec for all operations.
+
+	* src/burn-volume-obj.c (brasero_volume_operation_end),
+	(brasero_volume_operation_timeout),
+	(brasero_volume_wait_for_operation_end),
+	(brasero_volume_umount_finish), (brasero_volume_finalize):
+	* src/burn.c (brasero_burn_progress_changed):
+
+2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Try to fix #559161 – Trying to burn to previously used CDRW does not offer to erase and claims to burn endlessly
 
 	* src/burn-volume-obj.c (brasero_volume_umounted_cb),

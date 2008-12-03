@@ -38,6 +38,7 @@ struct _BraseroVolumePrivate
 {
 	GCancellable *cancel;
 
+	guint timeout_id;
 	GMainLoop *loop;
 	gboolean result;
 	GError *error;
@@ -225,34 +226,6 @@ brasero_volume_get_mount_point (BraseroVolume *self,
 	return local_path;
 }
 
-static gboolean
-brasero_volume_wait_for_operation_end (BraseroVolume *self,
-				       GError **error)
-{
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	/* FIXME! that's where we should put a timeout (30 sec ?) */
-	priv->loop = g_main_loop_new (NULL, FALSE);
-	g_main_loop_run (priv->loop);
-
-	g_main_loop_unref (priv->loop);
-	priv->loop = NULL;
-
-	if (priv->error) {
-		if (error)
-			g_propagate_error (error, priv->error);
-		else
-			g_error_free (priv->error);
-
-		priv->error = NULL;
-	}
-	g_cancellable_reset (priv->cancel);
-
-	return priv->result;
-}
-
 static void
 brasero_volume_operation_end (BraseroVolume *self)
 {
@@ -266,6 +239,58 @@ brasero_volume_operation_end (BraseroVolume *self)
 		return;
 
 	g_main_loop_quit (priv->loop);	
+}
+
+static gboolean
+brasero_volume_operation_timeout (gpointer data)
+{
+	BraseroVolume *self = BRASERO_VOLUME (data);
+	BraseroVolumePrivate *priv;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+	brasero_volume_operation_end (self);
+
+	BRASERO_BURN_LOG ("Volume/Disc operation timed out");
+	priv->timeout_id = 0;
+	priv->result = FALSE;
+	return FALSE;
+}
+
+static gboolean
+brasero_volume_wait_for_operation_end (BraseroVolume *self,
+				       GError **error)
+{
+	BraseroVolumePrivate *priv;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	/* put a timeout (30 sec) */
+	priv->timeout_id = g_timeout_add_seconds (20,
+						  brasero_volume_operation_timeout,
+						  self);
+
+	priv->loop = g_main_loop_new (NULL, FALSE);
+	g_main_loop_run (priv->loop);
+
+	g_main_loop_unref (priv->loop);
+	priv->loop = NULL;
+
+	if (priv->timeout_id) {
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id = 0;
+	}
+
+	if (priv->error) {
+		if (error)
+			g_propagate_error (error, priv->error);
+		else
+			g_error_free (priv->error);
+
+		priv->error = NULL;
+	}
+	g_cancellable_reset (priv->cancel);
+
+	return priv->result;
 }
 
 static void
@@ -334,6 +359,8 @@ brasero_volume_umount_finish (GObject *source,
 		 * we didn't get out of the loop. */
 		brasero_volume_operation_end (self);
 	}
+	else if (!priv->result)
+		brasero_volume_operation_end (self);
 }
 
 gboolean
@@ -753,6 +780,11 @@ brasero_volume_finalize (GObject *object)
 		g_cancellable_cancel (priv->cancel);
 		g_object_unref (priv->cancel);
 		priv->cancel = NULL;
+	}
+
+	if (priv->timeout_id) {
+		g_source_remove (priv->timeout_id);
+		priv->timeout_id = 0;
 	}
 
 	if (priv->loop && g_main_loop_is_running (priv->loop))
