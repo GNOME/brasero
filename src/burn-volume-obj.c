@@ -159,8 +159,12 @@ brasero_volume_get_gdrive (BraseroVolume *self)
 gboolean
 brasero_volume_is_mounted (BraseroVolume *self)
 {
-	GMount *mount;
-	GVolume *volume;
+	GList *iter;
+	GList *mounts;
+	gboolean result;
+	BraseroDrive *drive;
+	GVolumeMonitor *monitor;
+	const gchar *volume_path;
 	BraseroVolumePrivate *priv;
 
 	if (!self)
@@ -168,23 +172,42 @@ brasero_volume_is_mounted (BraseroVolume *self)
 
 	priv = BRASERO_VOLUME_PRIVATE (self);
 
-	volume = brasero_volume_get_gvolume (self);
-	if (!volume)
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	volume_path = brasero_drive_get_block_device (drive);
+#else
+	volume_path = brasero_drive_get_device (drive);
+#endif
+
+	if (!volume_path)
 		return FALSE;
 
-	if (!g_volume_can_mount (volume)) {
-		/* if it can't be mounted then it's unmounted ... */
-		g_object_unref (volume);
-		return FALSE;
+	monitor = g_volume_monitor_get ();
+	mounts = g_volume_monitor_get_mounts (monitor);
+	g_object_unref (monitor);
+
+	result = FALSE;
+	for (iter = mounts; iter; iter = iter->next) {
+		GMount *mount;
+		GVolume *volume;
+		gchar *device_path;
+
+		mount = iter->data;
+		volume = g_mount_get_volume (mount);
+		device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (!device_path)
+			continue;		
+
+		if (!strcmp (device_path, volume_path)) {
+			result = TRUE;
+			break;
+		}
 	}
+	g_list_foreach (mounts, (GFunc) g_object_unref, NULL);
+	g_list_free (mounts);
 
-	mount = g_volume_get_mount (volume);
-	g_object_unref (volume);
-	if (!mount)
-		return FALSE;
-
-	g_object_unref (mount);
-	return TRUE;
+	return result;
 }
 
 gchar *
@@ -340,6 +363,8 @@ brasero_volume_umount_finish (GObject *source,
 					       result,
 					       &priv->error);
 
+	BRASERO_BURN_LOG ("Umount operation completed (result = %d)", priv->result);
+
 	if (priv->error) {
 		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
 			/* means we shouldn't display any error message since 
@@ -402,10 +427,10 @@ brasero_volume_umount (BraseroVolume *self,
 		GVolumeMonitor *monitor;
 
 		monitor = g_volume_monitor_get ();
-		umount_sig = g_signal_connect (monitor,
-					       "mount-removed",
-					       G_CALLBACK (brasero_volume_umounted_cb),
-					       self);
+		umount_sig = g_signal_connect_after (monitor,
+						     "mount-removed",
+						     G_CALLBACK (brasero_volume_umounted_cb),
+						     self);
 
 		g_mount_unmount (mount,
 				 G_MOUNT_UNMOUNT_NONE,

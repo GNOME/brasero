@@ -1,3 +1,13 @@
+2008-12-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Attempt at fixing #559161 – Trying to burn to previously used CDRW does not offer to erase and claims to burn endlessly
+	Added an additional debug statement.
+	Rewrote brasero_volume_is_mounted ().
+
+	* src/burn-volume-obj.c (brasero_volume_is_mounted),
+	(brasero_volume_umount_finish), (brasero_volume_umount):
+	* src/burn.c (brasero_burn_record):
+
 2008-12-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #559161 – Trying to burn to previously used CDRW does not offer to erase and claims to burn endlessly

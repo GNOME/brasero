@@ -2608,8 +2608,7 @@ brasero_burn_record (BraseroBurn *burn,
 			goto end;
 	}
 
-	/* burn the session a first time whatever the number of copies required 
-	 * except if dummy session */
+	/* burn the session except if dummy session */
 	result = brasero_burn_record_session (burn, TRUE, error);
 
 end:
