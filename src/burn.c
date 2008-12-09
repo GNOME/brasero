@@ -1007,6 +1007,7 @@ brasero_burn_mount_media (BraseroBurn *self,
 	medium = brasero_drive_get_medium (priv->dest);
 	while (!brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
 		if (retries++ > MAX_MOUNT_ATTEMPTS) {
+			/* FIXME: there is a spelling mistake */
 			g_set_error (error,
 				     BRASERO_BURN_ERROR,
 				     BRASERO_BURN_ERROR_GENERAL,
