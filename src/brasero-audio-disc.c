@@ -4071,9 +4071,9 @@ brasero_audio_disc_inotify_move (BraseroAudioDisc *disc,
 		/* we remember this move for 5s. If 5s later we haven't received
 		 * a corresponding MOVED_TO then we consider the file was
 		 * removed. */
-		data->id = g_timeout_add (5000,
-					  (GSourceFunc) brasero_audio_disc_inotify_move_timeout,
-					  disc);
+		data->id = g_timeout_add_seconds (5,
+						  (GSourceFunc) brasero_audio_disc_inotify_move_timeout,
+						  disc);
 
 		/* NOTE: the order is important, we _must_ append them */
 		disc->priv->moved_list = g_slist_append (disc->priv->moved_list, data);

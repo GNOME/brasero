@@ -577,9 +577,9 @@ brasero_search_new ()
 		gtk_widget_set_sensitive (GTK_WIDGET (obj), FALSE);
 
 		/* we will retry in 10 seconds */
-		obj->priv->id = g_timeout_add (10000,
-					       (GSourceFunc) brasero_search_try_again,
-					       obj);
+		obj->priv->id = g_timeout_add_seconds (10,
+						       (GSourceFunc) brasero_search_try_again,
+						       obj);
 	}
 
 	return GTK_WIDGET (obj);

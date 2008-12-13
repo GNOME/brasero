@@ -231,9 +231,9 @@ brasero_file_monitor_moved_from_event (BraseroFileMonitor *self,
 			
 	/* we remember this move for 5s. If 5s later we haven't received
 	 * a corresponding MOVED_TO then we consider the file was removed. */
-	data->id = g_timeout_add (5000,
-				  (GSourceFunc) brasero_file_monitor_move_timeout_cb,
-				  self);
+	data->id = g_timeout_add_seconds (5,
+					  (GSourceFunc) brasero_file_monitor_move_timeout_cb,
+					  self);
 
 	/* NOTE: the order is important, we _must_ append them */
 	priv->moved_list = g_slist_append (priv->moved_list, data);

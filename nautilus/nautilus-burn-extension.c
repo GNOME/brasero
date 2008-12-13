@@ -839,9 +839,9 @@ nautilus_burn_instance_init (NautilusBurn *burn)
         debug_init ();
 #endif
 
-        burn->priv->start_monitor_id = g_timeout_add (1000,
-                                                      (GSourceFunc)start_monitor,
-                                                      burn);
+        burn->priv->start_monitor_id = g_timeout_add_seconds (1,
+                                                              (GSourceFunc)start_monitor,
+                                                              burn);
 }
 
 static void

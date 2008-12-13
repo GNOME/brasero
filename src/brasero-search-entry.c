@@ -553,9 +553,9 @@ brasero_search_entry_activated (BraseroSearchEntry *entry,
 
 	if (!search_now) {
 		/* gtk_widget_set_sensitive (entry->priv->button, TRUE); */
-		entry->priv->search_id = g_timeout_add (2000,
-							(GSourceFunc) brasero_search_entry_activated_real,
-							entry);
+		entry->priv->search_id = g_timeout_add_seconds (2,
+								(GSourceFunc) brasero_search_entry_activated_real,
+								entry);
 	}
 	else
 		brasero_search_entry_check_keywords (entry);

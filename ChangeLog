@@ -1,3 +1,17 @@
+2008-12-13  Debarshi Ray  <rishi@gnu.org>
+
+	Fix for #564397 – Use g_timeout_add_seconds where possible
+
+	* src/brasero-file-monitor.c (brasero_file_monitor_moved_from_event):
+	* src/brasero-audio-disc.c (brasero_audio_disc_inotify_move):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_dummy_success_cb):
+	* src/brasero-file-filtered.c (brasero_file_filtered_add):
+	* src/brasero-search-beagle.c (brasero_search_new):
+	* src/brasero-search-entry.c (brasero_search_entry_activated):
+	* src/brasero-playlist.c (brasero_playlist_start_beagle_search):
+	* nautilus/nautilus-burn-extension.c (nautilus_burn_instance_init):
+	Use g_timeout_add_seconds instead of g_timeout_add.
+	
 2008-12-13  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix for #563989 – brasero crashs on fifo-files

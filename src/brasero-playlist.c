@@ -540,9 +540,9 @@ brasero_playlist_start_beagle_search (BraseroPlaylist *playlist)
 	}
 	else {
 		/* we will retry in 10 seconds */
-		playlist->priv->id = g_timeout_add (10000,
-					       (GSourceFunc) brasero_playlist_try_again,
-					       playlist);
+		playlist->priv->id = g_timeout_add_seconds (10,
+							    (GSourceFunc) brasero_playlist_try_again,
+							    playlist);
 	}
 }
 

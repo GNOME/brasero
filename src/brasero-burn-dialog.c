@@ -1191,9 +1191,9 @@ brasero_burn_dialog_dummy_success_cb (BraseroBurn *burn,
 	gtk_widget_show (button);
 	gtk_dialog_add_action_widget (GTK_DIALOG (message), button, GTK_RESPONSE_OK);
 
-	id = g_timeout_add (10000,
-			    brasero_burn_dialog_dummy_success_timeout,
-			    message);
+	id = g_timeout_add_seconds (10,
+				    brasero_burn_dialog_dummy_success_timeout,
+				    message);
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 	gtk_window_set_urgency_hint (GTK_WINDOW (dialog), TRUE);

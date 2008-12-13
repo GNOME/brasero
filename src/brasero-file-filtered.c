@@ -316,9 +316,9 @@ brasero_file_filtered_add (BraseroFileFiltered *self,
 	}
 
 	if (!priv->idle_id)
-		priv->idle_id = g_timeout_add (1000,
-					       brasero_file_filtered_add_loop,
-					       self);
+		priv->idle_id = g_timeout_add_seconds (1,
+						       brasero_file_filtered_add_loop,
+						       self);
 }
 
 static void
