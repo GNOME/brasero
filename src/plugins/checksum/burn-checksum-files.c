@@ -261,6 +261,13 @@ brasero_checksum_files_explore_directory (BraseroChecksumFiles *self,
 			continue;
 		}
 
+		/* Only checksum regular files and avoid fifos, ... */
+		if (!g_file_test (path, G_FILE_TEST_IS_REGULAR)) {
+			g_free (path);
+			g_free (graft_path);
+			continue;
+		}
+
 		result = brasero_checksum_files_add_file_checksum (self,
 								   path,
 								   checksum_type,
@@ -733,7 +740,12 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 
 	/* we need to get the number of files at this time and rewind */
 	file_nb = brasero_checksum_files_get_line_num (self, file, error);
-	if (file_nb < 1) {
+	if (file_nb == 0) {
+		fclose (file);
+		return BRASERO_BURN_OK;
+	}
+
+	if (file_nb < 0) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
@@ -849,6 +861,11 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 
 		filename [i] = 0;
 		checksum_real = NULL;
+
+		/* we certainly don't want to checksum anything but regular file */
+		if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
+			continue;
+
 		result = brasero_checksum_files_get_file_checksum (self,
 								   gchecksum_type,
 								   filename,

@@ -1,3 +1,14 @@
+2008-12-13  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix for #563989 – brasero crashs on fifo-files
+
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_count_process_directory),
+	(brasero_io_get_file_count_start), (brasero_io_xfer_start):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_explore_directory),
+	(brasero_checksum_files_check_files):
+
 2008-12-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Attempt at fixing #559161 – Trying to burn to previously used CDRW does not offer to erase and claims to burn endlessly

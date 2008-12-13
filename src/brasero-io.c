@@ -1119,8 +1119,9 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 
 	/* see if we are supposed to get metadata for this file (provided it's
 	 * an audio file of course). */
-	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY
-	&&  options & BRASERO_IO_INFO_METADATA) {
+	if ((g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR
+	||   g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK)
+	&&  (options & BRASERO_IO_INFO_METADATA)) {
 		BraseroMetadataInfo metadata = { NULL };
 		BraseroMetadataFlag flags;
 		gboolean result;
@@ -1627,12 +1628,15 @@ brasero_io_get_file_count_process_directory (BraseroIO *self,
 
 		child = g_file_get_child (file, g_file_info_get_name (info));
 
-		if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
+		if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR
+		||  g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK) {
 			brasero_io_get_file_count_process_file (self, cancel, data, child, info);
 			g_object_unref (child);
 		}
-		else
+		else if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
 			data->children = g_slist_prepend (data->children, child);
+		else
+			g_object_unref (child);
 
 		g_object_unref (info);
 	}
@@ -1672,12 +1676,17 @@ brasero_io_get_file_count_start (BraseroIO *self,
 		return FALSE;
 	}
 
-	if (g_file_info_get_file_type (info) != G_FILE_TYPE_DIRECTORY) {
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR
+	||  g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK) {
 		brasero_io_get_file_count_process_file (self, cancel, data, file, info);
 		g_object_unref (file);
 	}
-	else if (data->job.options & BRASERO_IO_INFO_RECURSIVE)
-		data->children = g_slist_prepend (data->children, file);
+	else if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		if (data->job.options & BRASERO_IO_INFO_RECURSIVE)
+			data->children = g_slist_prepend (data->children, file);
+		else
+			g_object_unref (file);
+	}
 	else
 		g_object_unref (file);
 
@@ -2403,9 +2412,10 @@ brasero_io_xfer_start (BraseroIO *self,
 	/* see if we should explore it beforehand to report progress */
 	if (data->count.job.base->progress) {
 		data->count.files_num = 1;
-		if (g_file_info_get_file_type (data->info) != G_FILE_TYPE_DIRECTORY)
+		if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_REGULAR
+		||  g_file_info_get_file_type (data->info) == G_FILE_TYPE_SYMBOLIC_LINK)
 			brasero_io_get_file_count_process_file (self, cancel, &data->count, file, data->info);
-		else
+		else if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY)
 			brasero_io_get_file_count_process_directory (self, cancel, &data->count);
 	}
 
@@ -2431,7 +2441,8 @@ brasero_io_xfer_start (BraseroIO *self,
 							  data->dest_path,
 							  NULL);
 	}
-	else
+	else if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_REGULAR
+	     ||  g_file_info_get_file_type (data->info) == G_FILE_TYPE_SYMBOLIC_LINK)
 		result = brasero_io_xfer_file_thread (data,
 						      cancel,
 						      file,
