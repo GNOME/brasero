@@ -1,3 +1,56 @@
+12-2008 brasero 0.8.4
+
+Some more work has been put into having brasero work through the nautilus plugin.
+Work has also be done to create a rhythmbox plugin (awaits review in bugzilla).
+
+Other improvement and fixes:
+
+- Fixed translation issues
+- HIG fixes
+- 557561 – Brasero don't recognize empty disk
+- 556449 – Session error : Insufficient space on media when copying an audio CD (same problem with trunk)
+- Fix GTK+ includes
+- #560525 – Add feedback about performed tasks
+- #560539 – Brasero doesn't copy track & album info to audio CD
+- #Bug 560153 -- brasero crashed with SIGSEGV in brasero_data_project_node_to_uri()
+- #559105 – video could use same thumbnails as nautilus
+- #558213 – There should be a proper name for color picker button.
+- #561590 – Flickering "Project Size Estimation" dialog
+- #561050 – Brasero Hangs after trying to add mp3 files in an Audio Project
+- #558291 – Crash after New Audio Project and change path into folder /etc
+- #559107 – Never resume last used project by default
+- #560365 – Image creation breaks when disk is out of space
+- #562705 – brasero passes GTK_DISABLE_DEPRECATED and co unconditionally
+- #549119 – no space in /tmp given a not informative error
+- #561683 – No status whilst copying data DVD to DVD/ISO after 2048MB copied.
+- #560913 – preview of large images
+- #563989 – brasero crashs on fifo-files
+- #564397 – Use g_timeout_add_seconds where possible
+
+Updated translations:
+
+* ro.po: New Romanian translation by Adi Roiban <adi@roiban.ro>
+* da.po: Danish translation by Mads Lundby
+* fr.po: Updated French translation by Claude Paroz  <claude@2xlibre.net>
+* hu.po: Translation updated by Gabor Kelemen  <kelemeng@gnome.hu>
+* et.po: Translation updated by Mattias Põldaru
+* zh_HK.po: Updated Traditional Chinese translation(Hong Kong) by Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>
+* zh_TW.po: Updated Traditional Chinese translation(Taiwan) by Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>
+* fi.po: Updated Finnish translation by Ilkka Tuohela <hile@iki.fi>
+* de.po: Updated German translation by Mario Blättermann  <mariobl@svn.gnome.org>
+* cs.po: Updated Czech translation by Adrian Gunis
+* sv.po: Updated Swedish translation by Daniel Nylander <po@danielnylander.se>
+* pl.po: Updated Polish translation by Tomasz Dominikowski  <tdominikowski@aviary.pl>
+* es.po: Updated Spanish translation by Jorge Gonzalez  <jorgegonz@svn.gnome.org>
+* lt.po: Updated Lithuanian translation by Gintautas Miliauskas  <gintas@akl.lt>
+* nb.po: Updated Norwegian bokmål translation by Kjartan Maraas  <kmaraas@gnome.org>
+
+And many other bugs that were fixed before they were reported in bugzilla.
+
+Thanks to all the people who contributed to this release through patches, translations, advices, artwork, bug reports.
+
+
+2008-11-12  Timo Jyrinki  <timo.jyrinki@iki.fi>
 10-2008 brasero 0.8.3
 Again the focus has been bug fixing but one feature slipped in:
 - allow use of remote files
