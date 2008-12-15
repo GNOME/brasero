@@ -930,7 +930,7 @@ brasero_app_class_init (BraseroAppClass *klass)
 	object_class->finalize = brasero_app_finalize;
 }
 
-GtkWidget *
+BraseroApp *
 brasero_app_new (void)
 {
 	return g_object_new (BRASERO_TYPE_APP,

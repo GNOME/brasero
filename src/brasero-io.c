@@ -34,6 +34,8 @@
 
 #include <gio/gio.h>
 
+#include <gtk/gtk.h>
+
 #ifdef BUILD_PLAYLIST
 #include <totem-pl-parser.h>
 #endif
@@ -516,18 +518,6 @@ brasero_io_mount_enclosing_volume_cb (GObject *source,
 	mount->finished = TRUE;
 }
 
-static void
-brasero_io_mount_ask_password (GMountOperation *operation,
-			       gchar *message,
-			       gchar *default_user,
-			       gchar *default_domain,
-			       GAskPasswordFlags flags,
-			       gpointer user_data)
-{
-	BRASERO_BURN_LOG ("Password asked");
-	g_mount_operation_reply (operation, G_MOUNT_OPERATION_HANDLED);
-}
-
 static gboolean
 brasero_io_mount_enclosing_volume (BraseroIO *self,
 				   GFile *file,
@@ -538,13 +528,7 @@ brasero_io_mount_enclosing_volume (BraseroIO *self,
 	GMountOperation *operation;
 	BraseroIOMount mount = { NULL, };
 
-	operation = g_mount_operation_new ();
-	g_mount_operation_set_anonymous (operation, TRUE);
-	g_signal_connect (operation,
-			  "ask-password",
-			  G_CALLBACK (brasero_io_mount_ask_password),
-			  NULL);
-
+	operation = gtk_mount_operation_new (GTK_WINDOW (brasero_app_get_default ()));
 	g_file_mount_enclosing_volume (file,
 				       G_MOUNT_MOUNT_NONE,
 				       operation,

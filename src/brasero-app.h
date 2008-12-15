@@ -48,8 +48,11 @@ struct _BraseroApp
 
 GType brasero_app_get_type (void) G_GNUC_CONST;
 
-GtkWidget *
+BraseroApp *
 brasero_app_new (void);
+
+BraseroApp *
+brasero_app_get_default (void);
 
 void
 brasero_app_run (BraseroApp *app);

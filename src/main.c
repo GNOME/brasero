@@ -413,6 +413,18 @@ brasero_app_parse_options (BraseroApp *app)
 	gtk_main ();
 }
 
+static BraseroApp *current_app = NULL;
+
+/**
+ * This is actually declared in brasero-app.h
+ */
+
+BraseroApp *
+brasero_app_get_default (void)
+{
+	return current_app;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -421,7 +433,6 @@ main (int argc, char **argv)
 	GnomeProgram *program;
 #endif
 
-	GtkWidget *app;
 	GOptionContext *context;
 
 	context = g_option_context_new (_("[URI] [URI] ..."));
@@ -470,11 +481,12 @@ main (int argc, char **argv)
 	brasero_enable_multi_DND ();
 	brasero_utils_init ();
 
-	app = brasero_app_new ();
-	if (app == NULL)
+	current_app = brasero_app_new ();
+	if (current_app == NULL)
 		return 1;
 
-	brasero_app_parse_options (BRASERO_APP (app));
+	brasero_app_parse_options (current_app);
+	current_app = NULL;
 
 	brasero_burn_library_shutdown ();
 

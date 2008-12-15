@@ -78,13 +78,6 @@ brasero_utils_register_string (const gchar *string);
 void
 brasero_utils_unregister_string (const gchar *string);
 
-GdkPixbuf *
-brasero_utils_get_icon_for_mime (const gchar *mime,
-				 gint size);
-GdkPixbuf *
-brasero_utils_get_icon (const gchar *name,
-			gint size);
-
 GtkWidget *
 brasero_utils_pack_properties (const gchar *title, ...);
 GtkWidget *
