@@ -184,7 +184,7 @@ LIBGNOME_REQUIRED=2.10.0
 LIBGNOMEUI_REQUIRED=2.10.0
 
 AC_ARG_ENABLE(gnome2,
-			[  --enable-gnome2		Build with GNOME2 (improved integration with GNOME2, help system, session management support) [[default = yes]]],,
+			[  --enable-gnome2		Build with GNOME2 (improved integration with GNOME2, session management support) [[default = yes]]],,
 			[enable_gnome2="yes"])
 
 if test x"$enable_gnome2" = "xyes"; then

@@ -27,13 +27,6 @@
 
 #include <gtk/gtk.h>
 
-#ifdef BUILD_GNOME2
-
-#include <libgnome/gnome-help.h>
-#include <libgnomeui/libgnomeui.h>
-
-#endif
-
 #include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-jacket-edit.h"
@@ -86,10 +79,7 @@ static void on_integrity_check_cb (GtkAction *action, BraseroApp *app);
 static void on_exit_cb (GtkAction *action, BraseroApp *app);
 
 static void on_about_cb (GtkAction *action, BraseroApp *app);
-
-#ifdef BUILD_GNOME2
 static void on_help_cb (GtkAction *action, BraseroApp *app);
-#endif
 
 static GtkActionEntry entries[] = {
 	{"ProjectMenu", NULL, N_("_Project")},
@@ -114,12 +104,8 @@ static GtkActionEntry entries[] = {
 	{"Exit", GTK_STOCK_QUIT, NULL, NULL,
 	 N_("Exit the program"), G_CALLBACK (on_exit_cb)},
 
-#ifdef BUILD_GNOME2
-	
 	{"Contents", GTK_STOCK_HELP, N_("_Contents"), "F1", N_("Display help"),
 	 G_CALLBACK (on_help_cb)}, 
-
-#endif
 
 	{"About", GTK_STOCK_ABOUT, NULL, NULL, N_("About"),
 	 G_CALLBACK (on_about_cb)},
@@ -149,11 +135,8 @@ static const gchar *description = {
 		"<menuitem action='Check'/>"
 	    "</menu>"
 	    "<menu action='HelpMenu'>"
-
-#ifdef BUILD_GNOME2
 		"<menuitem action='Contents'/>"
 		"<separator/>"
-#endif
 		"<menuitem action='About'/>"
 	    "</menu>"
 	    "</menubar>"
@@ -562,16 +545,12 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 	g_free (license);
 }
 
-#ifdef BUILD_GNOME2
-
 static void
 on_help_cb (GtkAction *action, BraseroApp *app)
 {
 	GError *error = NULL;
 
- 	gnome_help_display ("brasero.xml",
-			     NULL,
-			     &error);
+ 	gtk_show_uri (NULL, "ghelp:brasero", gtk_get_current_event_time (), &error);
    	if (error) {
 		GtkWidget *d;
         
@@ -585,8 +564,6 @@ on_help_cb (GtkAction *action, BraseroApp *app)
 		error = NULL;
 	}
 }
-
-#endif
 
 static gboolean
 on_window_state_changed_cb (GtkWidget *widget,
