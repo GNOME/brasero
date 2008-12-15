@@ -1,5 +1,18 @@
 2008-12-15  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Use GIcon in medium selection to get the same icons as nautilus
+
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_show_type),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_init):
+	* src/burn-medium.c (brasero_medium_get_medium_type),
+	(brasero_medium_probe_thread), (brasero_medium_init_file):
+	* src/burn-volume-obj.c (brasero_volume_get_icon):
+	* src/burn-volume-obj.h:
+
+2008-12-15  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	backportable warning fix
 
 	* src/brasero-session.c (brasero_session_load):

@@ -24,6 +24,7 @@
 #define _BRASERO_VOLUME_H_
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #include "burn-drive.h"
 
@@ -56,7 +57,10 @@ brasero_volume_new (BraseroDrive *drive,
 		    const gchar *udi);
 
 gchar *
-brasero_volume_get_name (BraseroVolume *self);
+brasero_volume_get_name (BraseroVolume *volume);
+
+GIcon *
+brasero_volume_get_icon (BraseroVolume *volume);
 
 gboolean
 brasero_volume_is_mounted (BraseroVolume *volume);

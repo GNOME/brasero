@@ -405,12 +405,12 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 		for (item = list; item; item = item->next) {
 			gchar *medium_name;
 			BraseroMedium *medium;
-			const gchar *medium_icon;
+			GIcon *medium_icon;
 
 			medium = item->data;
 
 			medium_name = brasero_medium_selection_get_medium_string (self, medium);
-			medium_icon = brasero_medium_get_icon (medium);
+			medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
 
 			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -472,11 +472,11 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 					  BraseroMediumSelection *self)
 {
 	BraseroMediumSelectionPrivate *priv;
-	const gchar *medium_icon;
 	gboolean add = FALSE;
 	GtkTreeModel *model;
 	BraseroDrive *drive;
 	gchar *medium_name;
+	GIcon *medium_icon;
 	GtkTreeIter iter;
 
 	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
@@ -535,7 +535,7 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 	}
 
 	medium_name = brasero_medium_selection_get_medium_string (self, medium);
-	medium_icon = brasero_medium_get_icon (medium);
+	medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    MEDIUM_COL, medium,
@@ -622,7 +622,7 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 	model = gtk_list_store_new (NUM_COL,
 				    G_TYPE_OBJECT,
 				    G_TYPE_STRING,
-				    G_TYPE_STRING);
+				    G_TYPE_ICON);
 
 	gtk_combo_box_set_model (GTK_COMBO_BOX (object), GTK_TREE_MODEL (model));
 	g_object_unref (model);
@@ -631,7 +631,7 @@ brasero_medium_selection_init (BraseroMediumSelection *object)
 	g_object_set (renderer, "follow-state", TRUE, NULL);
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, FALSE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
-					"icon-name", ICON_COL,
+					"gicon", ICON_COL,
 					NULL);
 
 	renderer = gtk_cell_renderer_text_new ();

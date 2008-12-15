@@ -52,16 +52,7 @@
 #include "burn-volume.h"
 #include "burn-drive.h"
 
-const gchar *icons [] = { 	"iso-image-new",
-				"media-optical",
-				"media-optical",
-				"media-optical",
-				"media-optical",
-				"media-optical",
-				"media-optical",
-				"media-optical",
-				"media-optical",
-				NULL };
+
 const gchar *types [] = {	N_("File"),
 				N_("CDROM"),
 				N_("CD-R"),
@@ -95,7 +86,6 @@ struct _BraseroMediumPrivate
 	GSList *tracks;
 
 	const gchar *type;
-	const gchar *icon;
 
 	gchar *id;
 
@@ -222,18 +212,6 @@ brasero_medium_get_type_string (BraseroMedium *medium)
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->type;
-}
-
-const gchar *
-brasero_medium_get_icon (BraseroMedium *medium)
-{
-	BraseroMediumPrivate *priv;
-
-	if (!medium)
-		return NULL;
-
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
-	return priv->icon;
 }
 
 BraseroMedia
@@ -2508,7 +2486,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 			/* CDROM */
 			priv->info = BRASERO_MEDIUM_CDROM;
 			priv->type = types [1];
-			priv->icon = icons [1];
 		}
 		else {
 			/* check the size of the structure: it must be at least 8 bytes long */
@@ -2524,13 +2501,11 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 				/* CDRW */
 				priv->info = BRASERO_MEDIUM_CDRW;
 				priv->type = types [3];
-				priv->icon = icons [3];
 			}
 			else {
 				/* CDR */
 				priv->info = BRASERO_MEDIUM_CDR;
 				priv->type = types [2];
-				priv->icon = icons [2];
 			}
 
 			g_free (data);
@@ -2543,110 +2518,92 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	case BRASERO_SCSI_PROF_CDROM:
 		priv->info = BRASERO_MEDIUM_CDROM;
 		priv->type = types [1];
-		priv->icon = icons [1];
 		break;
 
 	case BRASERO_SCSI_PROF_CDR:
 		priv->info = BRASERO_MEDIUM_CDR;
 		priv->type = types [2];
-		priv->icon = icons [2];
 		break;
 
 	case BRASERO_SCSI_PROF_CDRW:
 		priv->info = BRASERO_MEDIUM_CDRW;
 		priv->type = types [3];
-		priv->icon = icons [3];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_ROM:
 		priv->info = BRASERO_MEDIUM_DVD_ROM;
 		priv->type = types [4];
-		priv->icon = icons [4];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_R:
 		priv->info = BRASERO_MEDIUM_DVDR;
 		priv->type = types [5];
-		priv->icon = icons [5];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_RW_RESTRICTED:
 		priv->info = BRASERO_MEDIUM_DVDRW_RESTRICTED;
 		priv->type = types [6];
-		priv->icon = icons [6];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_RW_SEQUENTIAL:
 		priv->info = BRASERO_MEDIUM_DVDRW;
 		priv->type = types [6];
-		priv->icon = icons [6];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_R_PLUS:
 		priv->info = BRASERO_MEDIUM_DVDR_PLUS;
 		priv->type = types [7];
-		priv->icon = icons [7];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_RW_PLUS:
 		priv->info = BRASERO_MEDIUM_DVDRW_PLUS;
 		priv->type = types [8];
-		priv->icon = icons [7];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_R_PLUS_DL:
 		priv->info = BRASERO_MEDIUM_DVDR_PLUS_DL;
 		priv->type = types [9];
-		priv->icon = icons [7];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_RW_PLUS_DL:
 		priv->info = BRASERO_MEDIUM_DVDRW_PLUS_DL;
 		priv->type = types [10];
-		priv->icon = icons [7];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_R_DL_SEQUENTIAL:
 		priv->info = BRASERO_MEDIUM_DVDR_DL;
 		priv->type = types [11];
-		priv->icon = icons [5];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_R_DL_JUMP:
 		priv->info = BRASERO_MEDIUM_DVDR_JUMP_DL;
 		priv->type = types [11];
-		priv->icon = icons [5];
 		break;
 
 	case BRASERO_SCSI_PROF_BD_ROM:
 		priv->info = BRASERO_MEDIUM_BD_ROM;
 		priv->type = types [13];
-		priv->icon = icons [4];
 		break;
 
 	case BRASERO_SCSI_PROF_BR_R_SEQUENTIAL:
 		/* check if that's a POW later */
 		priv->info = BRASERO_MEDIUM_BDR_SRM;
 		priv->type = types [14];
-		priv->icon = icons [5];
 		break;
 
 	case BRASERO_SCSI_PROF_BR_R_RANDOM:
 		priv->info = BRASERO_MEDIUM_BDR_RANDOM;
 		priv->type = types [14];
-		priv->icon = icons [5];
 		break;
 
 	case BRASERO_SCSI_PROF_BD_RW:
 		priv->info = BRASERO_MEDIUM_BDRE;
 		priv->type = types [15];
-		priv->icon = icons [6];
 		break;
 
 	case BRASERO_SCSI_PROF_DVD_RAM:
 		priv->info = BRASERO_MEDIUM_DVD_RAM;
 		priv->type = types [12];
-		priv->icon = icons [8];
 		break;
 
 	/* WARNING: these types are recognized, no more */
@@ -2662,7 +2619,6 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	case BRASERO_SCSI_PROF_HD_DVD_R:
 	case BRASERO_SCSI_PROF_HD_DVD_RAM:
 		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
-		priv->icon = icons [0];
 		g_free (hdr);
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
@@ -3159,7 +3115,6 @@ brasero_medium_probe_thread (gpointer self)
 	path = brasero_drive_get_device (priv->drive);
 
 	priv->info = BRASERO_MEDIUM_BUSY;
-	priv->icon = icons [0];
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
@@ -3239,7 +3194,6 @@ brasero_medium_init_file (BraseroMedium *self)
 
 	priv->info = BRASERO_MEDIUM_FILE;
 	priv->type = types [0];
-	priv->icon = icons [0];
 }
 
 static void

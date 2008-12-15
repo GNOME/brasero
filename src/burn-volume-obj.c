@@ -720,6 +720,36 @@ brasero_volume_cancel_current_operation (BraseroVolume *self)
 		g_main_loop_quit (priv->loop);
 }
 
+GIcon *
+brasero_volume_get_icon (BraseroVolume *self)
+{
+	GVolume *volume;
+	GMount *mount;
+	GIcon *icon;
+
+	if (!self)
+		return g_themed_icon_new_with_default_fallbacks ("drive-optical");
+
+	if (brasero_medium_get_status (BRASERO_MEDIUM (self)) == BRASERO_MEDIUM_FILE)
+		return g_themed_icon_new_with_default_fallbacks ("iso-image-new");
+
+	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return g_themed_icon_new_with_default_fallbacks ("drive-optical");
+
+	mount = g_volume_get_mount (volume);
+	if (mount) {
+		icon = g_mount_get_icon (mount);
+		g_object_unref (mount);
+	}
+	else
+		icon = g_volume_get_icon (volume);
+
+	g_object_unref (volume);
+
+	return icon;
+}
+
 gchar *
 brasero_volume_get_name (BraseroVolume *self)
 {
