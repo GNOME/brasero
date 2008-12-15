@@ -43,7 +43,6 @@
 
 #ifdef BUILD_GNOME2
 
-#include <libgnome/gnome-help.h>
 #include <libgnomeui/libgnomeui.h>
 
 #endif
