@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&amp;component=general\n"
 "POT-Creation-Date: 2008-12-15 21:26+0000\n"
-"PO-Revision-Date: 2008-12-16 16:43+0100\n"
+"PO-Revision-Date: 2008-12-16 22:43+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1607,14 +1607,12 @@ msgid "_Continue"
 msgstr "_Continuar"
 
 #: ../src/brasero-burn-dialog.c:869
-#, fuzzy
 msgid ""
 "You might not be able to listen to them with stereos and CD-TEXT won't be "
 "written."
 msgstr ""
-"quizá no puedo escucharlos con cadenas musicales y el CD-TEXT no se "
-"escribirá.\n"
-"¿Desea continuar de todos modos?"
+"Quizá no pueda escucharlos con cadenas musicales y el CD-TEXT no se "
+"escribirá."
 
 #: ../src/brasero-burn-dialog.c:873
 msgid "Appending audio tracks to a CD is not advised."
@@ -1633,12 +1631,11 @@ msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "¿Desea continuar con la compatibilidad para Windows desactivada?"
 
 #: ../src/brasero-burn-dialog.c:927 ../src/brasero-disc-option-dialog.c:259
-#, fuzzy
 msgid ""
 "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr ""
 "Algunos archivos no tienen un nombre apropiado para un CD compatible con "
-"Windows:"
+"Windows."
 
 #: ../src/brasero-burn-dialog.c:970
 #, c-format
@@ -1824,7 +1821,6 @@ msgid "New folder %i"
 msgstr "Carpeta nueva %i"
 
 #: ../src/brasero-data-disc.c:602
-#, fuzzy
 msgid ""
 "The size of the project is too large for the disc and you must remove files "
 "from the project otherwise.\n"
@@ -1834,9 +1830,9 @@ msgid ""
 msgstr ""
 "El tamaño del proyecto es demasiado grande para el disco y deberá borrar "
 "archivos.\n"
-"Quizá quiera usar esta opción si está usando un CD-R(w) de 90 o 100 minutos, "
-"que no se pueden reconocer correctamente y por ello necesitan la opción de "
-"sobregrabado.\n"
+"Quizá quiera usar esta opción si está usando un CD-R(W)) de 90 o 100 "
+"minutos, que no se pueden reconocer correctamente y por ello necesitan la "
+"opción de sobregrabado.\n"
 "NOTA: Esta opción puede causar fallos."
 
 #: ../src/brasero-data-disc.c:617
@@ -1942,7 +1938,6 @@ msgstr ""
 "ISO9660 para soportarlo?"
 
 #: ../src/brasero-data-disc.c:1029
-#, fuzzy
 msgid ""
 "The size of the file is over 2 GiB. This isn't supported by ISO9660 standard "
 "in his first and second versions (the most widespread ones).\n"
@@ -1966,7 +1961,6 @@ msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "¿Está seguro de que quiere añadir «%s» a la selección?"
 
 #: ../src/brasero-data-disc.c:1076
-#, fuzzy
 msgid ""
 "The children of this directory will have 6 parent directories. This is a "
 "violation of the ISO9660 standard which only allows 6.\n"
@@ -2840,9 +2834,8 @@ msgid "Last _Unsaved Project"
 msgstr "_Último proyecto sin guardar"
 
 #: ../src/brasero-project-type-chooser.c:309
-#, fuzzy
 msgid "Load the last project that was not burnt and not saved"
-msgstr "Su proyecto no ha sido guardado:"
+msgstr "Cargar el último proyecto que no se grabó y no se guardó"
 
 #: ../src/brasero-project-type-chooser.c:374
 msgid "No recently used project"
@@ -2861,26 +2854,22 @@ msgid "Check _Again"
 msgstr "Verificar de _nuevo"
 
 #: ../src/brasero-sum-dialog.c:141 ../src/brasero-sum-dialog.c:471
-#, fuzzy
 msgid "The file integrity check could not be performed."
-msgstr "No se pudo ejecutar la verificación de integridad de archivos:"
+msgstr "No se pudo ejecutar la verificación de integridad de archivos."
 
 #: ../src/brasero-sum-dialog.c:154
-#, fuzzy
 msgid "The file integrity was performed successfully."
-msgstr "La verificación de integridad de archivos se ejecutó correctamente:"
+msgstr "La verificación de integridad de archivos se ejecutó correctamente."
 
 #: ../src/brasero-sum-dialog.c:155
-#, fuzzy
 msgid "There seems to be no corrupted file on the disc"
-msgstr "Parece que no hay archivos corruptos en el disco."
+msgstr "Parece que no hay archivos corruptos en el disco"
 
 #: ../src/brasero-sum-dialog.c:178
 msgid "The following files appear to be corrupted:"
 msgstr "Los siguientes archivos parecen estar corruptos:"
 
 #: ../src/brasero-sum-dialog.c:225
-#, fuzzy
 msgid "Corrupted Files"
 msgstr "Archivos corruptos"
 
@@ -2889,19 +2878,18 @@ msgid "Downloading md5 file"
 msgstr "Descargando archivo md5"
 
 #: ../src/brasero-sum-dialog.c:359
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" is not a valid URI"
-msgstr "El URI no es válido"
+msgstr "«%s» no es un URI válido"
 
 #: ../src/brasero-sum-dialog.c:472
 msgid "No md5 file was given."
 msgstr "No se especificó ningún archivo MD5."
 
 #: ../src/brasero-sum-dialog.c:580
-#, fuzzy, c-format
+#, c-format
 msgid "No checksum file could be found on the disc"
-msgstr ""
-"no se pudo encontrar el archivo de la suma de verificación en el disco."
+msgstr "No se pudo encontrar el archivo de la suma de verificación en el disco"
 
 #: ../src/brasero-sum-dialog.c:726
 msgid "Use a _md5 file to check the disc"
@@ -3092,9 +3080,9 @@ msgid "There is no track to be burnt"
 msgstr "No hay pista que grabar"
 
 #: ../src/burn.c:2304 ../src/burn-caps.c:1449
-#, fuzzy, c-format
+#, c-format
 msgid "Only one track at a time can be checked"
-msgstr "sólo se puede verificar una pista cada vez"
+msgstr "Sólo se puede verificar una pista cada vez"
 
 #: ../src/burn.c:2373
 #, c-format
@@ -3126,39 +3114,40 @@ msgstr "Ocurrió un error interno"
 #: ../src/burn-iso9660.c:152 ../src/burn-iso9660.c:161
 #: ../src/burn-iso9660.c:396 ../src/burn-iso9660.c:433
 #: ../src/burn-iso9660.c:482 ../src/burn-volume.c:123
-#, fuzzy, c-format
+#, c-format
 msgid "It does not appear to be a valid ISO image"
-msgstr "No parece ser una imagen o archivo cue válido."
+msgstr "No parece ser una imagen ISO válida"
 
 #. Translators: %s is the plugin name
 #: ../src/burn-job.c:315 ../src/burn-job.c:800 ../src/burn-job.c:813
 #: ../src/burn-job.c:1032 ../src/burn-job.c:1122
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" did not behave properly"
-msgstr "un complemento no se comportó de la manera adecuada"
+msgstr "«%s» no se comportó de forma correcta"
 
 #: ../src/burn-job.c:413
-#, fuzzy, c-format
+#, c-format
 msgid "Not enough space available on the disc (%lli available for %lli)"
-msgstr "No hay suficiente espacio disponible en el disco"
+msgstr ""
+"No hay suficiente espacio disponible en el disco (%lli disponible para %lli)"
 
 #: ../src/burn-job.c:500
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The filesystem you chose to store the temporary image on cannot hold files "
 "with a size over 2 GiB"
 msgstr ""
 "El sistema de archivos que ha elegido para almacenar la imagen temporal no "
-"puede mantener archivos de tamaño superior a 2 GiB."
+"puede mantener archivos de tamaño superior a 2 GiB"
 
 #: ../src/burn-job.c:515 ../src/burn-job.c:537
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The location you chose to store the temporary image on does not have enough "
 "free space for the disc image (%ld MiB needed)"
 msgstr ""
-"El lugar seleccionado no tiene suficiente espacio para almacenar la imagen "
-"de disco (se necesitan %ld MiB)"
+"La ubicación seleccionada no tiene suficiente espacio libre para almacenar "
+"la imagen del disco (se necesitan %ld MiB)"
 
 #: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:345
 #, c-format
@@ -3801,9 +3790,9 @@ msgid "Transcoding \"%s\""
 msgstr "Convirtiendo «%s»"
 
 #: ../src/plugins/transcode/burn-transcode.c:1380
-#, fuzzy, c-format
+#, c-format
 msgid "Impossible to link plugin pads"
-msgstr "Imposible obtener las velocidades"
+msgstr "No se pudieron enlazar las interfaces de los complementos"
 
 #: ../src/plugins/transcode/burn-transcode.c:1537
 msgid "Transcode converts song files into a format proper to burn them on CDs"
@@ -3904,9 +3893,8 @@ msgid "_Don't split"
 msgstr "_No partir"
 
 #: ../src/brasero-split-dialog.c:950
-#, fuzzy
 msgid "Do you really want to empty the slices preview?"
-msgstr "¿Está seguro de que quiere vaciar el proyecto actual?"
+msgstr "¿Realmente quiere vaciar la vista previa de las partes?"
 
 #: ../src/brasero-split-dialog.c:952 ../src/brasero-split-dialog.c:1254
 msgid "Re_move All"
