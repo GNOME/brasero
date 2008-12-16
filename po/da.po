@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-13 14:02+0100\n"
-"PO-Revision-Date: 2008-12-12 08:55+0100\n"
+"POT-Creation-Date: 2008-12-16 22:32+0100\n"
+"PO-Revision-Date: 2008-12-16 20:47+0100\n"
 "Last-Translator: Mads Lundby <lundbymads@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -324,7 +324,7 @@ msgstr "_Redigér"
 
 #: ../src/brasero-app.c:98
 msgid "_Tools"
-msgstr "_Værktøj"
+msgstr "_Værktøjer"
 
 #: ../src/brasero-app.c:100
 msgid "_Help"
@@ -446,7 +446,7 @@ msgstr ""
 
 #: ../src/brasero-app.c:680 ../src/brasero-app.c:686
 msgid "_Recent Projects"
-msgstr "_Nylige projekter"
+msgstr "N_ylige projekter"
 
 #: ../src/brasero-app.c:681
 msgid "Display the projects recently opened"
@@ -2402,7 +2402,7 @@ msgstr "_Fjern filer"
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:204 ../src/brasero-project.c:1530
 msgid "E_mpty Project"
-msgstr "_Tøm projekt"
+msgstr "Tø_m projekt"
 
 #: ../src/brasero-project.c:205
 msgid "Remove all files from the project"
@@ -4148,7 +4148,7 @@ msgid "Broken symbolic link"
 msgstr "Ugyldig symbolsk henvisning"
 
 #: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1088
-#: ../src/brasero-io.c:1960
+#: ../src/brasero-io.c:1969
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Rekursiv symbolsk henvisning"
@@ -4199,12 +4199,12 @@ msgstr "Filterindstillinger"
 msgid "\"%s\" cannot be read"
 msgstr "\"%s\" kan ikke læses"
 
-#: ../src/brasero-io.c:1320
+#: ../src/brasero-io.c:1321
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "Filen ser ikke ud til at være en spilleliste"
 
-#: ../src/brasero-io.c:2422
+#: ../src/brasero-io.c:2432
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "En mappe kunne ikke oprettes (%s)"
@@ -4265,46 +4265,46 @@ msgid "Data %s"
 msgstr "Data-%s"
 
 #: ../src/plugins/checksum/burn-checksum-files.c:112
-#: ../src/plugins/checksum/burn-checksum-files.c:554
+#: ../src/plugins/checksum/burn-checksum-files.c:561
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
 msgstr "Filen \"%s\" kunne ikke åbnes (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:582
+#: ../src/plugins/checksum/burn-checksum-files.c:589
 msgid "Creating checksum for image files"
 msgstr "Opretter checksum for aftryksfiler"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:749
+#: ../src/plugins/checksum/burn-checksum-files.c:761
 msgid "Checking file integrity"
 msgstr "Kontrollérer filintegritet"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:911
-#: ../src/plugins/checksum/burn-checksum-files.c:1029
+#: ../src/plugins/checksum/burn-checksum-files.c:928
+#: ../src/plugins/checksum/burn-checksum-files.c:1046
 #: ../src/plugins/checksum/burn-checksum-image.c:513
 #, c-format
 msgid "Some files may be corrupted on the disc"
 msgstr "Nogle filer kan være ødelagt på disken"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1265
+#: ../src/plugins/checksum/burn-checksum-files.c:1282
 msgid "Allows to check file integrities on a disc"
 msgstr "Tillader at tjekke filintegriteter på en disk"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1304
+#: ../src/plugins/checksum/burn-checksum-files.c:1321
 #: ../src/plugins/checksum/burn-checksum-image.c:774
 msgid "Hashing algorithm to be used:"
 msgstr "Hashing-algoritme som anvendes:"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1307
+#: ../src/plugins/checksum/burn-checksum-files.c:1324
 #: ../src/plugins/checksum/burn-checksum-image.c:777
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1309
+#: ../src/plugins/checksum/burn-checksum-files.c:1326
 #: ../src/plugins/checksum/burn-checksum-image.c:779
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1311
+#: ../src/plugins/checksum/burn-checksum-files.c:1328
 #: ../src/plugins/checksum/burn-checksum-image.c:781
 msgid "SHA256"
 msgstr "SHA256"
@@ -4386,11 +4386,11 @@ msgstr "SIDER"
 
 #: ../src/brasero-jacket-view.c:794
 msgid "BACK COVER"
-msgstr "OMSLAGS FORSIDE"
+msgstr "OMSLAGS BAGSIDE"
 
 #: ../src/brasero-jacket-view.c:811
 msgid "FRONT COVER"
-msgstr "FORSIDES OMSLAG"
+msgstr "OMSLAGS FORSIDE"
 
 #: ../src/brasero-jacket-view.c:1095
 msgid "The image could not be loaded."
@@ -4417,7 +4417,7 @@ msgstr "Ukendt sang"
 #. * "by" [Entry].
 #: ../src/brasero-jacket-edit.c:834 ../src/brasero-rename.c:353
 msgid "by"
-msgstr "efter"
+msgstr "af"
 
 #: ../src/brasero-jacket-edit.c:894
 msgid "Cover Editor"
