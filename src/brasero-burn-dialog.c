@@ -1109,7 +1109,8 @@ brasero_burn_dialog_action_changed_real (BraseroBurnDialog *dialog,
 					  action,
 					  string);
 	brasero_tray_icon_set_action (BRASERO_TRAYICON (dialog->priv->tray),
-				      action);
+				      action,
+				      string);
 }
 
 static void
@@ -1485,7 +1486,8 @@ brasero_burn_dialog_setup_session (BraseroBurnDialog *dialog,
 					  NULL);
 
 	brasero_tray_icon_set_action (BRASERO_TRAYICON (dialog->priv->tray),
-				      BRASERO_BURN_ACTION_NONE);
+				      BRASERO_BURN_ACTION_NONE,
+				      NULL);
 
 	if (dialog->priv->total_time)
 		g_timer_destroy (dialog->priv->total_time);

@@ -1,12 +1,24 @@
 2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Make sure all temporary files obey the specified location
+	Make sure the text of the tooltip for the tray icon is the same as
+	the one in the burn dialog.
+
+	* src/brasero-burn-dialog.c
+	(brasero_burn_dialog_action_changed_real),
+	(brasero_burn_dialog_setup_session):
+	* src/brasero-tray.c (brasero_tray_icon_finalize),
+	(brasero_tray_icon_set_tooltip), (brasero_tray_icon_set_action):
+	* src/brasero-tray.h:
+
+2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Make sure all temporary files obey the specified location (backportable)
 
 	* src/burn-session.c (brasero_burn_session_start):
 
 2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Fix image size when loading snapshot in video project
+	Fix image size when loading snapshot in video project (backportable)
 
 	* src/brasero-video-tree-model.c
 	(brasero_video_tree_model_get_value):

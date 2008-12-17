@@ -58,6 +58,8 @@ brasero_tray_icon_show_cb (GtkAction *action, BraseroTrayIcon *tray);
 
 struct BraseroTrayIconPrivate {
 	BraseroBurnAction action;
+	gchar *action_string;
+
 	GtkUIManager *manager;
 
 	int rounded_percent;
@@ -215,6 +217,11 @@ brasero_tray_icon_finalize (GObject *object)
 
 	cobj = BRASERO_TRAYICON (object);
 
+	if (cobj->priv->action_string) {
+		g_free (cobj->priv->action_string);
+		cobj->priv->action_string = NULL;
+	}
+
 	g_free (cobj->priv);
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -236,7 +243,10 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 	gchar *text;
 	const gchar *action_string;
 
-	action_string = brasero_burn_action_to_string (tray->priv->action);
+	if (!tray->priv->action_string)
+		action_string = brasero_burn_action_to_string (tray->priv->action);
+	else
+		action_string = tray->priv->action_string;
 
 	if (remaining > 0) {
 		gchar *remaining_string;
@@ -261,9 +271,18 @@ brasero_tray_icon_set_tooltip (BraseroTrayIcon *tray,
 
 void
 brasero_tray_icon_set_action (BraseroTrayIcon *tray,
-			      BraseroBurnAction action)
+			      BraseroBurnAction action,
+			      const gchar *string)
 {
 	tray->priv->action = action;
+	if (tray->priv->action_string)
+		g_free (tray->priv->action_string);
+
+	if (string)
+		tray->priv->action_string = g_strdup (string);
+	else
+		tray->priv->action_string = NULL;
+
 	brasero_tray_icon_set_tooltip (tray, -1);
 }
 

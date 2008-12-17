@@ -66,8 +66,14 @@ void
 brasero_tray_icon_set_progress (BraseroTrayIcon *tray,
 				gdouble fraction,
 				long remaining);
+
 void
-brasero_tray_icon_set_action (BraseroTrayIcon *tray, BraseroBurnAction action);
+brasero_tray_icon_set_action (BraseroTrayIcon *tray,
+			      BraseroBurnAction action,
+			      const gchar *string);
+
 void
-brasero_tray_icon_set_show_dialog (BraseroTrayIcon *tray, gboolean show);
+brasero_tray_icon_set_show_dialog (BraseroTrayIcon *tray,
+				   gboolean show);
+
 #endif /* TRAY_H */
