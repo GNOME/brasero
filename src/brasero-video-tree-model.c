@@ -165,14 +165,14 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		else if (file->is_loading) {
 			pixbuf = gtk_icon_theme_load_icon (priv->theme,
 							   "image-loading",
-							   96,
+							   48,
 							   0,
 							   NULL);
 		}
 		else {
 			pixbuf = gtk_icon_theme_load_icon (priv->theme,
 							   "image-missing",
-							   96,
+							   48,
 							   0,
 							   NULL);
 		}

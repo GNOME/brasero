@@ -1,6 +1,13 @@
 2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Some mounts don't have volume, fix warnings
+	Fix image size when loading snapshot in video project
+
+	* src/brasero-video-tree-model.c
+	(brasero_video_tree_model_get_value):
+
+2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Some mounts don't have volume, fix warnings (backportable)
 
 	* src/burn-volume-obj.c (brasero_volume_is_mounted):
 
