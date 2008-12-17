@@ -305,18 +305,25 @@ brasero_medium_selection_update_no_disc_entry (BraseroMediumSelection *self,
 					       GtkTreeIter *iter)
 {
 	BraseroMediumMonitor *monitor;
+	GIcon *icon;
 
 	monitor = brasero_medium_monitor_get_default ();
-	if (brasero_medium_monitor_is_probing (monitor))
+	if (brasero_medium_monitor_is_probing (monitor)) {
+		icon = g_themed_icon_new_with_default_fallbacks ("image-loading");
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, _("Searching for available discs"),
-				    ICON_COL, "image-loading",
+				    ICON_COL, icon,
 				    -1);
-	else
+	}
+	else {
+		icon = g_themed_icon_new_with_default_fallbacks ("drive-optical");
 		gtk_list_store_set (GTK_LIST_STORE (model), iter,
 				    NAME_COL, _("No available disc"),
-				    ICON_COL, "drive-optical",
+				    ICON_COL, icon,
 				    -1);
+	}
+
+	g_object_unref (icon);
 	g_object_unref (monitor);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
@@ -404,8 +411,8 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 		/* add remaining media */
 		for (item = list; item; item = item->next) {
 			gchar *medium_name;
-			BraseroMedium *medium;
 			GIcon *medium_icon;
+			BraseroMedium *medium;
 
 			medium = item->data;
 
