@@ -1596,7 +1596,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 									   leadout,
 									   code);
 
-		/* This isn't necessarily a problem we better! try the rest */
+		/* This isn't necessarily a problem! we better try the rest */
 		//	return BRASERO_BURN_ERR;
 	}
 
