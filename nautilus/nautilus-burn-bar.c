@@ -29,11 +29,11 @@
 
 #include "nautilus-burn-bar.h"
 
-static void nautilus_burn_bar_finalize   (GObject *object);
+static void nautilus_disc_burn_bar_finalize   (GObject *object);
 
-#define NAUTILUS_BURN_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_BURN_BAR, NautilusBurnBarPrivate))
+#define NAUTILUS_DISC_BURN_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_DISC_BURN_BAR, NautilusDiscBurnBarPrivate))
 
-struct NautilusBurnBarPrivate
+struct NautilusDiscBurnBarPrivate
 {
         GtkWidget   *button;
 };
@@ -45,10 +45,10 @@ enum {
 
 static guint           signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (NautilusBurnBar, nautilus_burn_bar, GTK_TYPE_HBOX)
+G_DEFINE_TYPE (NautilusDiscBurnBar, nautilus_disc_burn_bar, GTK_TYPE_HBOX)
 
 GtkWidget *
-nautilus_burn_bar_get_button (NautilusBurnBar *bar)
+nautilus_disc_burn_bar_get_button (NautilusDiscBurnBar *bar)
 {
         GtkWidget *button;
 
@@ -60,14 +60,14 @@ nautilus_burn_bar_get_button (NautilusBurnBar *bar)
 }
 
 static void
-nautilus_burn_bar_set_property (GObject            *object,
+nautilus_disc_burn_bar_set_property (GObject            *object,
                                 guint               prop_id,
                                 const GValue       *value,
                                 GParamSpec         *pspec)
 {
-        NautilusBurnBar *self;
+        NautilusDiscBurnBar *self;
 
-        self = NAUTILUS_BURN_BAR (object);
+        self = NAUTILUS_DISC_BURN_BAR (object);
 
         switch (prop_id) {
         default:
@@ -77,14 +77,14 @@ nautilus_burn_bar_set_property (GObject            *object,
 }
 
 static void
-nautilus_burn_bar_get_property (GObject    *object,
+nautilus_disc_burn_bar_get_property (GObject    *object,
                                 guint       prop_id,
                                 GValue     *value,
                                 GParamSpec *pspec)
 {
-        NautilusBurnBar *self;
+        NautilusDiscBurnBar *self;
 
-        self = NAUTILUS_BURN_BAR (object);
+        self = NAUTILUS_DISC_BURN_BAR (object);
 
         switch (prop_id) {
         default:
@@ -94,20 +94,20 @@ nautilus_burn_bar_get_property (GObject    *object,
 }
 
 static void
-nautilus_burn_bar_class_init (NautilusBurnBarClass *klass)
+nautilus_disc_burn_bar_class_init (NautilusDiscBurnBarClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize     = nautilus_burn_bar_finalize;
-        object_class->get_property = nautilus_burn_bar_get_property;
-        object_class->set_property = nautilus_burn_bar_set_property;
+        object_class->finalize     = nautilus_disc_burn_bar_finalize;
+        object_class->get_property = nautilus_disc_burn_bar_get_property;
+        object_class->set_property = nautilus_disc_burn_bar_set_property;
 
-        g_type_class_add_private (klass, sizeof (NautilusBurnBarPrivate));
+        g_type_class_add_private (klass, sizeof (NautilusDiscBurnBarPrivate));
 
         signals [ACTIVATE] = g_signal_new ("activate",
                                            G_TYPE_FROM_CLASS (klass),
                                            G_SIGNAL_RUN_LAST,
-                                           G_STRUCT_OFFSET (NautilusBurnBarClass, activate),
+                                           G_STRUCT_OFFSET (NautilusDiscBurnBarClass, activate),
                                            NULL, NULL,
                                            g_cclosure_marshal_VOID__VOID,
                                            G_TYPE_NONE, 0);
@@ -116,18 +116,18 @@ nautilus_burn_bar_class_init (NautilusBurnBarClass *klass)
 
 static void
 button_clicked_cb (GtkWidget       *button,
-                   NautilusBurnBar *bar)
+                   NautilusDiscBurnBar *bar)
 {
         g_signal_emit (bar, signals [ACTIVATE], 0);
 }
 
 static void
-nautilus_burn_bar_init (NautilusBurnBar *bar)
+nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
 {
         GtkWidget   *label;
         GtkWidget   *hbox;
 
-        bar->priv = NAUTILUS_BURN_BAR_GET_PRIVATE (bar);
+        bar->priv = NAUTILUS_DISC_BURN_BAR_GET_PRIVATE (bar);
 
         hbox = GTK_WIDGET (bar);
 
@@ -144,30 +144,29 @@ nautilus_burn_bar_init (NautilusBurnBar *bar)
                           bar);
 
         gtk_widget_set_tooltip_text (bar->priv->button, _("Write contents to a CD or DVD disc"));
-
 }
 
 static void
-nautilus_burn_bar_finalize (GObject *object)
+nautilus_disc_burn_bar_finalize (GObject *object)
 {
-        NautilusBurnBar *bar;
+        NautilusDiscBurnBar *bar;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (NAUTILUS_IS_BURN_BAR (object));
+        g_return_if_fail (NAUTILUS_IS_DISC_BURN_BAR (object));
 
-        bar = NAUTILUS_BURN_BAR (object);
+        bar = NAUTILUS_DISC_BURN_BAR (object);
 
         g_return_if_fail (bar->priv != NULL);
 
-        G_OBJECT_CLASS (nautilus_burn_bar_parent_class)->finalize (object);
+        G_OBJECT_CLASS (nautilus_disc_burn_bar_parent_class)->finalize (object);
 }
 
 GtkWidget *
-nautilus_burn_bar_new (void)
+nautilus_disc_burn_bar_new (void)
 {
         GObject *result;
 
-        result = g_object_new (NAUTILUS_TYPE_BURN_BAR,
+        result = g_object_new (NAUTILUS_TYPE_DISC_BURN_BAR,
                                NULL);
 
         return GTK_WIDGET (result);

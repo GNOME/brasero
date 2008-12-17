@@ -27,34 +27,34 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_BURN_BAR         (nautilus_burn_bar_get_type ())
-#define NAUTILUS_BURN_BAR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_BURN_BAR, NautilusBurnBar))
-#define NAUTILUS_BURN_BAR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_BURN_BAR, NautilusBurnBarClass))
-#define NAUTILUS_IS_BURN_BAR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_BURN_BAR))
-#define NAUTILUS_IS_BURN_BAR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_BURN_BAR))
-#define NAUTILUS_BURN_BAR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_BURN_BAR, NautilusBurnBarClass))
+#define NAUTILUS_TYPE_DISC_BURN_BAR         (nautilus_disc_burn_bar_get_type ())
+#define NAUTILUS_DISC_BURN_BAR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_DISC_BURN_BAR, NautilusDiscBurnBar))
+#define NAUTILUS_DISC_BURN_BAR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_DISC_BURN_BAR, NautilusDiscBurnBarClass))
+#define NAUTILUS_IS_DISC_BURN_BAR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_DISC_BURN_BAR))
+#define NAUTILUS_IS_DISC_BURN_BAR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_DISC_BURN_BAR))
+#define NAUTILUS_DISC_BURN_BAR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_DISC_BURN_BAR, NautilusDiscBurnBarClass))
 
-typedef struct NautilusBurnBarPrivate NautilusBurnBarPrivate;
+typedef struct NautilusDiscBurnBarPrivate NautilusDiscBurnBarPrivate;
 
 typedef struct
 {
         GtkHBox                 box;
 
-        NautilusBurnBarPrivate *priv;
-} NautilusBurnBar;
+        NautilusDiscBurnBarPrivate *priv;
+} NautilusDiscBurnBar;
 
 typedef struct
 {
         GtkHBoxClass            parent_class;
 
-	void (* activate) (NautilusBurnBar *bar);
+	void (* activate) (NautilusDiscBurnBar *bar);
 
-} NautilusBurnBarClass;
+} NautilusDiscBurnBarClass;
 
-GType       nautilus_burn_bar_get_type          (void);
-GtkWidget  *nautilus_burn_bar_new               (void);
+GType       nautilus_disc_burn_bar_get_type          (void);
+GtkWidget  *nautilus_disc_burn_bar_new               (void);
 
-GtkWidget  *nautilus_burn_bar_get_button        (NautilusBurnBar *bar);
+GtkWidget  *nautilus_disc_burn_bar_get_button        (NautilusDiscBurnBar *bar);
 
 G_END_DECLS
 

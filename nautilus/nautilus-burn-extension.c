@@ -36,26 +36,26 @@
 
 #define BURN_URI "burn:///"
 
-#define NAUTILUS_TYPE_BURN  (nautilus_burn_get_type ())
-#define NAUTILUS_BURN(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_BURN, NautilusBurn))
+#define NAUTILUS_TYPE_BURN  (nautilus_disc_burn_get_type ())
+#define NAUTILUS_DISC_BURN(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_BURN, NautilusDiscBurn))
 #define NAUTILUS_IS_BURN(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_BURN))
 
-typedef struct _NautilusBurnPrivate NautilusBurnPrivate;
+typedef struct _NautilusDiscBurnPrivate NautilusDiscBurnPrivate;
 
 typedef struct
 {
         GObject              parent_slot;
-        NautilusBurnPrivate *priv;
-} NautilusBurn;
+        NautilusDiscBurnPrivate *priv;
+} NautilusDiscBurn;
 
 typedef struct
 {
         GObjectClass parent_slot;
-} NautilusBurnClass;
+} NautilusDiscBurnClass;
 
-#define NAUTILUS_BURN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_BURN, NautilusBurnPrivate))
+#define NAUTILUS_DISC_BURN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_BURN, NautilusDiscBurnPrivate))
 
-struct _NautilusBurnPrivate
+struct _NautilusDiscBurnPrivate
 {
         GFileMonitor *burn_monitor;
         guint         empty : 1;
@@ -66,8 +66,8 @@ struct _NautilusBurnPrivate
         GSList       *widget_list;
 };
 
-static GType nautilus_burn_get_type      (void);
-static void  nautilus_burn_register_type (GTypeModule *module);
+static GType nautilus_disc_burn_get_type      (void);
+static void  nautilus_disc_burn_register_type (GTypeModule *module);
 
 static GObjectClass *parent_class;
 
@@ -128,7 +128,7 @@ launch_process (char **argv, GtkWindow *parent)
                             NULL,
                             &error)) {
 
-                dialog = gtk_message_dialog_new (NULL,
+                dialog = gtk_message_dialog_new (parent,
                                                  GTK_DIALOG_MODAL,
                                                  GTK_MESSAGE_WARNING,
                                                  GTK_BUTTONS_OK,
@@ -413,9 +413,9 @@ drive_is_cd_device (GDrive *drive)
 }
 
 static GList *
-nautilus_burn_get_file_items (NautilusMenuProvider *provider,
-                              GtkWidget            *window,
-                              GList                *selection)
+nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
+                                   GtkWidget            *window,
+                                   GList                *selection)
 {
         GList            *items = NULL;
         NautilusMenuItem *item;
@@ -461,7 +461,7 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
 
         if (is_iso) {
                 /* Whether or not this file is local is not a problem */
-                item = nautilus_menu_item_new ("NautilusBurn::write_iso",
+                item = nautilus_menu_item_new ("NautilusDiscBurn::write_iso",
                                                _("_Write to Disc..."),
                                                _("Write disc image to a CD or DVD disc"),
                                                "brasero");
@@ -514,7 +514,7 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
                 device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 
                 /* user may want to copy it ... */
-                item = nautilus_menu_item_new ("NautilusBurn::copy_disc",
+                item = nautilus_menu_item_new ("NautilusDiscBurn::copy_disc",
                                                _("_Copy Disc..."),
                                                _("Create a copy of this CD or DVD disc"),
                                                "brasero");
@@ -526,7 +526,7 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
                 items = g_list_append (items, item);
 
                 /* ... or if it's a rewritable medium to blank it ... */
-                item = nautilus_menu_item_new ("NautilusBurn::blank_disc",
+                item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
                                                _("_Blank Disc..."),
                                                _("Blank this CD or DVD disc"),
                                                "brasero");
@@ -538,7 +538,7 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
                 items = g_list_append (items, item);
 
                 /* ... or verify medium. */
-                item = nautilus_menu_item_new ("NautilusBurn::check_disc",
+                item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
                                                _("_Check Disc..."),
                                                _("Check the data integrity on this CD or DVD disc"),
                                                "brasero");
@@ -565,9 +565,9 @@ nautilus_burn_get_file_items (NautilusMenuProvider *provider,
 }
 
 static GList *
-nautilus_burn_get_background_items (NautilusMenuProvider *provider,
-                                    GtkWidget            *window,
-                                    NautilusFileInfo     *current_folder)
+nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
+                                         GtkWidget            *window,
+                                         NautilusFileInfo     *current_folder)
 {
         GList *items;
         char  *scheme;
@@ -579,7 +579,7 @@ nautilus_burn_get_background_items (NautilusMenuProvider *provider,
         if (strcmp (scheme, "burn") == 0) {
                 NautilusMenuItem *item;
 
-                item = nautilus_menu_item_new ("NautilusBurn::write_menu",
+                item = nautilus_menu_item_new ("NautilusDiscBurn::write_menu",
                                                _("_Write to Disc..."),
                                                _("Write contents to a CD or DVD disc"),
                                                "brasero");
@@ -587,7 +587,7 @@ nautilus_burn_get_background_items (NautilusMenuProvider *provider,
                                   G_CALLBACK (write_activate_cb), window);
                 items = g_list_append (items, item);
 
-                g_object_set (item, "sensitive", ! NAUTILUS_BURN (provider)->priv->empty, NULL);
+                g_object_set (item, "sensitive", ! NAUTILUS_DISC_BURN (provider)->priv->empty, NULL);
         }
 
         g_free (scheme);
@@ -596,9 +596,9 @@ nautilus_burn_get_background_items (NautilusMenuProvider *provider,
 }
 
 static GList *
-nautilus_burn_get_toolbar_items (NautilusMenuProvider *provider,
-                                 GtkWidget            *window,
-                                 NautilusFileInfo     *current_folder)
+nautilus_disc_burn_get_toolbar_items (NautilusMenuProvider *provider,
+                                      GtkWidget            *window,
+                                      NautilusFileInfo     *current_folder)
 {
         GList *items;
 
@@ -608,15 +608,15 @@ nautilus_burn_get_toolbar_items (NautilusMenuProvider *provider,
 }
 
 static void
-nautilus_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
+nautilus_disc_burn_menu_provider_iface_init (NautilusMenuProviderIface *iface)
 {
-        iface->get_file_items = nautilus_burn_get_file_items;
-        iface->get_background_items = nautilus_burn_get_background_items;
-        iface->get_toolbar_items = nautilus_burn_get_toolbar_items;
+        iface->get_file_items = nautilus_disc_burn_get_file_items;
+        iface->get_background_items = nautilus_disc_burn_get_background_items;
+        iface->get_toolbar_items = nautilus_disc_burn_get_toolbar_items;
 }
 
 static void
-bar_activated_cb (NautilusBurnBar *bar,
+bar_activated_cb (NautilusDiscBurnBar *bar,
                   gpointer         data)
 {
         launch_brasero_on_window (GTK_WINDOW (data));
@@ -672,13 +672,13 @@ dir_is_empty (const char *uri)
 
 static void
 destroyed_callback (GtkWidget    *widget,
-                    NautilusBurn *burn)
+                    NautilusDiscBurn *burn)
 {
         burn->priv->widget_list = g_slist_remove (burn->priv->widget_list, widget);
 }
 
 static void
-sense_widget (NautilusBurn *burn,
+sense_widget (NautilusDiscBurn *burn,
               GtkWidget    *widget)
 {
         gtk_widget_set_sensitive (widget, !burn->priv->empty);
@@ -691,21 +691,21 @@ sense_widget (NautilusBurn *burn,
 }
 
 static GtkWidget *
-nautilus_burn_get_location_widget (NautilusLocationWidgetProvider *iface,
-                                   const char                     *uri,
-                                   GtkWidget                      *window)
+nautilus_disc_burn_get_location_widget (NautilusLocationWidgetProvider *iface,
+                                        const char                     *uri,
+                                        GtkWidget                      *window)
 {
         if (g_str_has_prefix (uri, "burn:")) {
                 GtkWidget    *bar;
-                NautilusBurn *burn;
+                NautilusDiscBurn *burn;
 
                 DEBUG_PRINT ("Get location widget for burn\n");
 
-                burn = NAUTILUS_BURN (iface);
+                burn = NAUTILUS_DISC_BURN (iface);
 
-                bar = nautilus_burn_bar_new ();
+                bar = nautilus_disc_burn_bar_new ();
 
-                sense_widget (burn, nautilus_burn_bar_get_button (NAUTILUS_BURN_BAR (bar)));
+                sense_widget (burn, nautilus_disc_burn_bar_get_button (NAUTILUS_DISC_BURN_BAR (bar)));
 
                 g_signal_connect (bar, "activate",
                                   G_CALLBACK (bar_activated_cb),
@@ -720,20 +720,20 @@ nautilus_burn_get_location_widget (NautilusLocationWidgetProvider *iface,
 }
 
 static void
-nautilus_burn_location_widget_provider_iface_init (NautilusLocationWidgetProviderIface *iface)
+nautilus_disc_burn_location_widget_provider_iface_init (NautilusLocationWidgetProviderIface *iface)
 {
-        iface->get_widget = nautilus_burn_get_location_widget;
+        iface->get_widget = nautilus_disc_burn_get_location_widget;
 }
 
 static void
 update_widget_sensitivity (GtkWidget    *widget,
-                           NautilusBurn *burn)
+                           NautilusDiscBurn *burn)
 {
         gtk_widget_set_sensitive (widget, !burn->priv->empty);
 }
 
 static gboolean
-update_empty_idle (NautilusBurn *burn)
+update_empty_idle (NautilusDiscBurn *burn)
 {
         gboolean is_empty;
 
@@ -756,7 +756,7 @@ update_empty_idle (NautilusBurn *burn)
 }
 
 static void
-queue_update_empty (NautilusBurn *burn)
+queue_update_empty (NautilusDiscBurn *burn)
 {
         if (burn->priv->empty_update_id != 0) {
                 g_source_remove (burn->priv->empty_update_id);
@@ -770,7 +770,7 @@ burn_monitor_cb (GFileMonitor     *monitor,
                  GFile            *file,
                  GFile            *other_file,
                  GFileMonitorEvent event_type,
-                 NautilusBurn     *burn)
+                 NautilusDiscBurn     *burn)
 {
         DEBUG_PRINT ("Monitor callback type %d\n", event_type);
 
@@ -787,7 +787,7 @@ burn_monitor_cb (GFileMonitor     *monitor,
 }
 
 static gboolean
-start_monitor (NautilusBurn *burn)
+start_monitor (NautilusDiscBurn *burn)
 {
         GFile  *file;
         GError *error;
@@ -824,9 +824,9 @@ start_monitor (NautilusBurn *burn)
 }
 
 static void
-nautilus_burn_instance_init (NautilusBurn *burn)
+nautilus_disc_burn_instance_init (NautilusDiscBurn *burn)
 {
-        burn->priv = NAUTILUS_BURN_GET_PRIVATE (burn);
+        burn->priv = NAUTILUS_DISC_BURN_GET_PRIVATE (burn);
 
 #ifdef DEBUG_ENABLE
         debug_init ();
@@ -838,16 +838,16 @@ nautilus_burn_instance_init (NautilusBurn *burn)
 }
 
 static void
-nautilus_burn_finalize (GObject *object)
+nautilus_disc_burn_finalize (GObject *object)
 {
-        NautilusBurn *burn;
+        NautilusDiscBurn *burn;
 
         g_return_if_fail (object != NULL);
         g_return_if_fail (NAUTILUS_IS_BURN (object));
 
         DEBUG_PRINT ("Finalizing burn extension\n");
 
-        burn = NAUTILUS_BURN (object);
+        burn = NAUTILUS_DISC_BURN (object);
 
         g_return_if_fail (burn->priv != NULL);
 
@@ -871,54 +871,54 @@ nautilus_burn_finalize (GObject *object)
 }
 
 static void
-nautilus_burn_class_init (NautilusBurnClass *klass)
+nautilus_disc_burn_class_init (NautilusDiscBurnClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
         parent_class = g_type_class_peek_parent (klass);
 
-        object_class->finalize = nautilus_burn_finalize;
+        object_class->finalize = nautilus_disc_burn_finalize;
 
-        g_type_class_add_private (klass, sizeof (NautilusBurnPrivate));
+        g_type_class_add_private (klass, sizeof (NautilusDiscBurnPrivate));
 }
 
 static GType burn_type = 0;
 
 static GType
-nautilus_burn_get_type (void)
+nautilus_disc_burn_get_type (void)
 {
         return burn_type;
 }
 
 static void
-nautilus_burn_register_type (GTypeModule *module)
+nautilus_disc_burn_register_type (GTypeModule *module)
 {
         static const GTypeInfo info = {
-                sizeof (NautilusBurnClass),
+                sizeof (NautilusDiscBurnClass),
                 (GBaseInitFunc) NULL,
                 (GBaseFinalizeFunc) NULL,
-                (GClassInitFunc) nautilus_burn_class_init,
+                (GClassInitFunc) nautilus_disc_burn_class_init,
                 NULL,
                 NULL,
-                sizeof (NautilusBurn),
+                sizeof (NautilusDiscBurn),
                 0,
-                (GInstanceInitFunc) nautilus_burn_instance_init,
+                (GInstanceInitFunc) nautilus_disc_burn_instance_init,
         };
 
         static const GInterfaceInfo menu_provider_iface_info = {
-                (GInterfaceInitFunc) nautilus_burn_menu_provider_iface_init,
+                (GInterfaceInitFunc) nautilus_disc_burn_menu_provider_iface_init,
                 NULL,
                 NULL
         };
         static const GInterfaceInfo location_widget_provider_iface_info = {
-                (GInterfaceInitFunc) nautilus_burn_location_widget_provider_iface_init,
+                (GInterfaceInitFunc) nautilus_disc_burn_location_widget_provider_iface_init,
                 NULL,
                 NULL
         };
 
         burn_type = g_type_module_register_type (module,
                                                  G_TYPE_OBJECT,
-                                                 "NautilusBurn",
+                                                 "NautilusDiscBurn",
                                                  &info, 0);
 
         g_type_module_add_interface (module,
@@ -934,7 +934,7 @@ nautilus_burn_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule *module)
 {
-        nautilus_burn_register_type (module);
+        nautilus_disc_burn_register_type (module);
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 }

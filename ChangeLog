@@ -1,5 +1,31 @@
 2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make the plugin really side installable by changing the name of the 
+	object which I had stupidly forgotten to do. (Must be backported)
+
+	* nautilus/nautilus-burn-bar.c (nautilus_disc_burn_bar_get_button),
+	(nautilus_disc_burn_bar_set_property),
+	(nautilus_disc_burn_bar_get_property),
+	(nautilus_disc_burn_bar_class_init), (button_clicked_cb),
+	(nautilus_disc_burn_bar_init), (nautilus_disc_burn_bar_finalize),
+	(nautilus_disc_burn_bar_new):
+	* nautilus/nautilus-burn-bar.h:
+	* nautilus/nautilus-burn-extension.c (launch_process),
+	(nautilus_disc_burn_get_file_items),
+	(nautilus_disc_burn_get_background_items),
+	(nautilus_disc_burn_get_toolbar_items),
+	(nautilus_disc_burn_menu_provider_iface_init), (bar_activated_cb),
+	(destroyed_callback), (sense_widget),
+	(nautilus_disc_burn_get_location_widget),
+	(nautilus_disc_burn_location_widget_provider_iface_init),
+	(update_widget_sensitivity), (update_empty_idle),
+	(queue_update_empty), (burn_monitor_cb), (start_monitor),
+	(nautilus_disc_burn_instance_init), (nautilus_disc_burn_finalize),
+	(nautilus_disc_burn_class_init), (nautilus_disc_burn_get_type),
+	(nautilus_disc_burn_register_type), (nautilus_module_initialize):
+
+2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed a couple of problems with previous patch (wrong function name)
 	(backportable)
 	Fixes #564720 – Brasero trivially depends on Eel
