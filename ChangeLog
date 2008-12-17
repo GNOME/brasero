@@ -1,3 +1,9 @@
+2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fixed a couple of problems with previous patch (wrong function name)
+
+	* nautilus/nautilus-burn-extension.c (launch_process):
+
 2008-12-16  A. Walton  <awalton@gnome.org>
 
  	* configure.in:
@@ -7,7 +13,7 @@
 2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make sure the text of the tooltip for the tray icon is the same as
-	the one in the burn dialog.
+	the one in the burn dialog. (backportable)
 
 	* src/brasero-burn-dialog.c
 	(brasero_burn_dialog_action_changed_real),
