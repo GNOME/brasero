@@ -195,6 +195,9 @@ brasero_volume_is_mounted (BraseroVolume *self)
 
 		mount = iter->data;
 		volume = g_mount_get_volume (mount);
+		if (!volume)
+			continue;
+
 		device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 		if (!device_path)
 			continue;		
