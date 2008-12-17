@@ -29,9 +29,6 @@
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <libhal.h>
-#include <eel/eel-features.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-vfs-extensions.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 
@@ -73,14 +70,6 @@ static GType nautilus_burn_get_type      (void);
 static void  nautilus_burn_register_type (GTypeModule *module);
 
 static GObjectClass *parent_class;
-
-#ifndef EEL_CHECK_VERSION
-#define EEL_CHECK_VERSION(major,minor,micro)    \
-    (EEL_MAJOR_VERSION > (major) || \
-     (EEL_MAJOR_VERSION == (major) && EEL_MINOR_VERSION > (minor)) || \
-     (EEL_MAJOR_VERSION == (major) && EEL_MINOR_VERSION == (minor) && \
-      EEL_MICRO_VERSION >= (micro)))
-#endif
 
 #undef DEBUG_ENABLE
 
@@ -128,6 +117,7 @@ debug_print (const char *format, ...)
 static void
 launch_process (char **argv, GtkWindow *parent)
 {
+        GtkWidget *dialog;
         GError *error;
 
         error = NULL;
@@ -138,16 +128,14 @@ launch_process (char **argv, GtkWindow *parent)
                             NULL,
                             &error)) {
 
-#if EEL_CHECK_VERSION (2,13,3)
-                eel_show_error_dialog (_("Unable to launch the cd burner application"),
-                                       error->message,
-                                       GTK_WINDOW (parent));
-#else
-                eel_show_error_dialog (_("Unable to launch the cd burner application"),
-                                       error->message,
-                                       "",
-                                       GTK_WINDOW (parent));
-#endif
+                dialog = gtk_message_dialog (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING,
+                        GTK_BUTTONS_OK, _("Unable to launch the cd burner application"));
+
+                gtk_message_dialog_format_secondary_text (dialog, "%s", error->message);
+
+                gtk_dialog_run (dialog);
+                gtk_widget_destroy (dialog);
+
 
                 g_error_free (error);
         }
