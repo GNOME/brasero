@@ -1397,9 +1397,16 @@ brasero_burn_session_start (BraseroBurnSession *self)
 
 	if (!priv->session_path) {
 		int fd;
+		const gchar *tmpdir;
 
+		/* takes care of the output file */
+		tmpdir = priv->settings->tmpdir ?
+			 priv->settings->tmpdir :
+			 g_get_tmp_dir ();
+
+		/* This must obey the path of the temporary directory */
 		priv->session_path = g_build_path (G_DIR_SEPARATOR_S,
-						   g_get_tmp_dir (),
+						   tmpdir,
 						   BRASERO_BURN_TMP_FILE_NAME,
 						   NULL);
 
