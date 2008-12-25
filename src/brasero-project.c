@@ -896,7 +896,6 @@ brasero_project_burn (BraseroProject *project)
 {
 	BraseroBurnSession *session;
 	BraseroDiscResult result;
-	GtkWidget *toplevel;
 	GtkWidget *dialog;
 	gboolean success;
 
@@ -929,11 +928,7 @@ brasero_project_burn (BraseroProject *project)
 	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
 					     project->priv->current);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_widget_show (dialog);
+	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (result != GTK_RESPONSE_OK)
@@ -958,14 +953,8 @@ brasero_project_burn (BraseroProject *project)
 
 	/* now setup the burn dialog */
 	dialog = brasero_burn_dialog_new ();
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (toplevel));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-	gtk_widget_hide (toplevel);
-	gtk_widget_show (dialog);
-
-	success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog),
-					   session);
+	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
+	success = brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog), session);
 	g_object_unref (session);
 
     	project->priv->burnt = success;
@@ -973,8 +962,9 @@ brasero_project_burn (BraseroProject *project)
 end:
 
 	project->priv->is_burning = 0;
+
+	/* The destruction of the dialog will bring the main window forward */
 	gtk_widget_destroy (dialog);
-	gtk_widget_show (toplevel);
 }
 
 /********************************     ******************************************/

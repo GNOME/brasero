@@ -1233,10 +1233,6 @@ brasero_burn_dialog_init (BraseroBurnDialog * obj)
 	gtk_window_set_default_size (GTK_WINDOW (obj), 500, 0);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (obj), FALSE);
-	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (obj), FALSE);
-	gtk_window_set_skip_pager_hint (GTK_WINDOW (obj), FALSE);
-	gtk_window_set_type_hint (GTK_WINDOW (obj), GDK_WINDOW_TYPE_HINT_NORMAL);
-	gtk_window_set_position (GTK_WINDOW (obj),GTK_WIN_POS_CENTER);
 
 	obj->priv->tray = brasero_tray_icon_new ();
 	g_signal_connect (obj->priv->tray,

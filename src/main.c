@@ -69,16 +69,17 @@ gint empty_project;
 gint disc_blank;
 gint disc_check;
 gint open_ncb;
+gint parent_window;
 gint debug;
 
 static const GOptionEntry options [] = {
-	{ "project", 'p', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &project_uri,
+	{ "project", 'p', 0, G_OPTION_ARG_STRING, &project_uri,
 	  N_("Open the specified project"),
 	  N_("PROJECT") },
 
 #ifdef BUILD_PLAYLIST
 
-	 { "playlist", 'l', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &playlist_uri,
+	 { "playlist", 'l', 0, G_OPTION_ARG_STRING, &playlist_uri,
 	  N_("Open the specified playlist as an audio project"),
 	  N_("PLAYLIST") },
 
@@ -96,7 +97,7 @@ static const GOptionEntry options [] = {
 	  N_("Copy a disc"),
 	  N_("PATH TO DEVICE") },
 
-	{ "cover", 'j', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &cover_project,
+	{ "cover", 'j', 0, G_OPTION_ARG_STRING, &cover_project,
 	  N_("Cover to use"),
 	  N_("PATH TO COVER") },
 
@@ -104,7 +105,7 @@ static const GOptionEntry options [] = {
 	  N_("Open a video project adding the URIs given on the command line"),
 	  NULL },
 
-	{ "image", 'i', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &iso_uri,
+	{ "image", 'i', 0, G_OPTION_ARG_STRING, &iso_uri,
 	 N_("Uri of an image file to be burnt (autodetected)"),
           N_("PATH TO PLAYLIST") },
 
@@ -124,9 +125,13 @@ static const GOptionEntry options [] = {
 	  N_("Burn the contents of burn:// URI"),
 	  NULL },
 
-	{ "burn-and-remove-project", 'r', G_OPTION_FLAG_FILENAME, G_OPTION_ARG_STRING, &burn_project_uri,
+	{ "burn-and-remove-project", 'r', 0, G_OPTION_ARG_STRING, &burn_project_uri,
 	  N_("Burn the specified project and REMOVE it.\nThis option is mainly useful for integration use with other applications."),
 	  N_("PATH") },
+
+	{ "transient-for", 'x', 0, G_OPTION_ARG_INT, &parent_window,
+	  N_("Set brasero transient for the window with Xlib xid"),
+	  N_("xid") },
 
 	{ "debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout"),
@@ -175,6 +180,9 @@ brasero_app_parse_options (BraseroApp *app)
 	GtkWidget *manager;
 
 	manager = brasero_app_get_project_manager (app);
+
+	if (parent_window)
+		brasero_app_set_parent (app, parent_window);
 
     	if (empty_project) {
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
@@ -481,7 +489,7 @@ main (int argc, char **argv)
 	brasero_enable_multi_DND ();
 	brasero_utils_init ();
 
-	current_app = brasero_app_new ();
+	current_app = brasero_app_new (TRUE);
 	if (current_app == NULL)
 		return 1;
 

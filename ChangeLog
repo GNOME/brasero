@@ -1,7 +1,25 @@
 2008-12-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Allow brasero to be set transient to another window from the command
+	line. This change is necessary to properly work with totem plugin.
+	(must be backported)
+
+	* src/brasero-app.c (brasero_app_dialog), (brasero_app_alert),
+	(brasero_app_run), (brasero_app_set_parent), (brasero_app_blank),
+	(brasero_app_check), (brasero_app_current_toplevel_destroyed),
+	(brasero_app_set_toplevel):
+	* src/brasero-app.h:
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_init):
+	* src/brasero-project-manager.c (brasero_project_manager_burn),
+	(brasero_project_manager_burn_iso_dialog),
+	(brasero_project_manager_copy_disc):
+	* src/brasero-project.c (brasero_project_burn):
+	* src/main.c (brasero_app_parse_options), (main):
+
+2008-12-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Don't eject src medium when we're copying unless we really need to
-	(to insert destination disc for example)
+	(to insert destination disc for example) (backportable)
 
 	* src/burn.c (brasero_burn_unlock_src_media):
 

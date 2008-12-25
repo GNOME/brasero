@@ -55,6 +55,13 @@ BraseroApp *
 brasero_app_get_default (void);
 
 void
+brasero_app_set_parent (BraseroApp *app,
+			guint xid);
+
+void
+brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window);
+
+void
 brasero_app_run (BraseroApp *app);
 
 gboolean

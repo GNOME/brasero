@@ -45,6 +45,8 @@
 typedef struct _BraseroAppPrivate BraseroAppPrivate;
 struct _BraseroAppPrivate
 {
+	GdkWindow *parent;
+
 	GtkWidget *toplevel;
 
 	GtkWidget *projects;
@@ -188,6 +190,12 @@ brasero_app_dialog (BraseroApp *app,
 					 button_type,
 					 primary_message);
 
+	if (!toplevel && priv->parent) {
+		gtk_widget_realize (GTK_WIDGET (dialog));
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gdk_window_set_transient_for (GTK_WIDGET (dialog)->window, priv->parent);
+	}
+
 	if (is_on_top) {
 		gtk_window_set_skip_pager_hint (GTK_WINDOW (dialog), FALSE);
 		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), FALSE);
@@ -209,24 +217,37 @@ brasero_app_alert (BraseroApp *app,
 		   GtkMessageType type)
 {
 	GtkWidget *parent = NULL;
+	gboolean is_on_top= TRUE;
 	BraseroAppPrivate *priv;
 	GtkWidget *alert;
 
 	priv = BRASERO_APP_PRIVATE (app);
 
 	/* Whatever happens, they need a parent or must be in the taskbar */
-	if (priv->is_running)
+	if (priv->is_running) {
 		parent = GTK_WIDGET (app);
-	else if (priv->toplevel)
+		is_on_top = FALSE;
+	}
+	else if (priv->toplevel) {
 		parent = priv->toplevel;
+		is_on_top = FALSE;
+	}
 
 	alert = brasero_utils_create_message_dialog (parent,
 						     primary_message,
 						     secondary_message,
 						     type);
-	gtk_window_set_title (GTK_WINDOW (alert), _("Disc Burner"));
 
-	if (!parent) {
+	if (!parent && priv->parent) {
+		is_on_top = FALSE;
+
+		gtk_widget_realize (GTK_WIDGET (alert));
+		gtk_window_set_modal (GTK_WINDOW (alert), TRUE);
+		gdk_window_set_transient_for (GTK_WIDGET (alert)->window, priv->parent);
+	}
+
+	if (is_on_top) {
+		gtk_window_set_title (GTK_WINDOW (alert), _("Disc Burner"));
 		gtk_window_set_skip_pager_hint (GTK_WINDOW (alert), FALSE);
 		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (alert), FALSE);
 	}
@@ -339,7 +360,24 @@ brasero_app_run (BraseroApp *app)
 
 	priv->is_running = TRUE;
 	gtk_widget_realize (GTK_WIDGET (app));
+
+	if (priv->parent) {
+		gtk_window_set_modal (GTK_WINDOW (app), TRUE);
+		gdk_window_set_transient_for (GTK_WIDGET (app)->window, priv->parent);
+	}
+
 	brasero_session_load (app);
+}
+
+void
+brasero_app_set_parent (BraseroApp *app,
+			guint parent_xid)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+
+	priv->parent = gdk_window_foreign_new (parent_xid);
 }
 
 void
@@ -370,7 +408,13 @@ brasero_app_blank (BraseroApp *app,
 	}
 
 	if (!priv->is_running) {
-		gtk_widget_show (dialog);
+		gtk_widget_realize (dialog);
+
+		if (priv->parent) {
+			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+			gdk_window_set_transient_for (GTK_WIDGET (dialog)->window, priv->parent);
+		}
+
 		gtk_dialog_run (GTK_DIALOG (dialog));
 
 		/* brasero-tool-dialog auto destroys itself */
@@ -436,6 +480,13 @@ brasero_app_check (BraseroApp *app,
 	}
 
 	if (!priv->is_running) {
+		gtk_widget_realize (dialog);
+
+		if (priv->parent) {
+			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+			gdk_window_set_transient_for (GTK_WIDGET (dialog)->window, priv->parent);
+		}
+
 		gtk_widget_show (dialog);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -455,6 +506,57 @@ static void
 on_integrity_check_cb (GtkAction *action, BraseroApp *app)
 {
 	brasero_app_check (app, NULL);
+}
+
+static void
+brasero_app_current_toplevel_destroyed (GtkWidget *widget,
+					BraseroApp *app)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+	if (priv->is_running)
+		gtk_widget_show (GTK_WIDGET (app));
+}
+
+void
+brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
+{
+	BraseroAppPrivate *priv;
+
+	priv = BRASERO_APP_PRIVATE (app);
+
+	if (!priv->is_running) {
+		if (priv->parent) {
+			gtk_widget_realize (GTK_WIDGET (window));
+			gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+			gdk_window_set_transient_for (GTK_WIDGET (window)->window, priv->parent);
+		}
+		else {
+			gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), FALSE);
+			gtk_window_set_skip_pager_hint (GTK_WINDOW (window), FALSE);
+			gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NORMAL);
+			gtk_window_set_position (GTK_WINDOW (window),GTK_WIN_POS_CENTER);
+		}
+	}
+	else {
+		gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (app));
+		gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+
+		/* hide main dialog if it is shown */
+		gtk_widget_hide (GTK_WIDGET (app));
+
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), FALSE);
+		gtk_window_set_skip_pager_hint (GTK_WINDOW (window), FALSE);
+		gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NORMAL);
+		gtk_window_set_position (GTK_WINDOW (window),GTK_WIN_POS_CENTER);
+	}
+
+	gtk_widget_show (GTK_WIDGET (window));
+	g_signal_connect (window,
+			  "destroy",
+			  G_CALLBACK (brasero_app_current_toplevel_destroyed),
+			  app);
 }
 
 static void
