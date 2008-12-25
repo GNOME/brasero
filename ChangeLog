@@ -1,3 +1,10 @@
+2008-12-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Don't eject src medium when we're copying unless we really need to
+	(to insert destination disc for example)
+
+	* src/burn.c (brasero_burn_unlock_src_media):
+
 2008-12-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make the plugin really side installable by changing the name of the 

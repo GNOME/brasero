@@ -1120,8 +1120,11 @@ brasero_burn_unlock_src_media (BraseroBurn *burn,
 	priv->src_locked = 0;
 	brasero_drive_unlock (priv->src);
 
-	if (BRASERO_BURN_SESSION_EJECT (priv->session))
-		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error);
+	/* Never eject the source if we don't need to. Let the user do that. For
+	 * one thing it avoids breaking other applications that are using it
+	 * like for example totem. */
+	/* if (BRASERO_BURN_SESSION_EJECT (priv->session))
+		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error); */
 
 	priv->src = NULL;
 	return BRASERO_BURN_OK;
