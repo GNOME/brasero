@@ -574,8 +574,12 @@ brasero_job_set_output_file (BraseroJob *self,
 
 	/* If the plugin is not supposed to output anything, then don't test */
 	brasero_job_get_session_output_size (BRASERO_JOB (self), NULL, &output_size);
-	if (!output_size)
-		return BRASERO_BURN_OK;
+
+	/* This should be re-enabled when we make sure all plugins (like vcd)
+	 * don't advertize an output of 0 whereas it's not true. Maybe we could
+	 * use -1 for plugins that don't output. */
+	/* if (!output_size)
+		return BRASERO_BURN_OK; */
 
 	flags = brasero_burn_session_get_flags (session);
 	if (priv->type.type == BRASERO_TRACK_TYPE_IMAGE) {

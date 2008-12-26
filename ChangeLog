@@ -1,5 +1,12 @@
 2008-12-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some plugin like vcdimager advertize an output of 0 (they can't determine
+	the size in advance) so create a temporary file for them too ...
+
+	* src/burn-job.c (brasero_job_set_output_file):
+
+2008-12-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a build problem with previous patch
 
 	* src/main.c (main):
