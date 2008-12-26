@@ -357,7 +357,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
 			     _("%s element could not be created"),
-			     "\"Fenc_mp2\"");
+			     "\"ffenc_mp2\"");
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
@@ -382,6 +382,13 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	if (!priv->is_video_dvd) {
 		GstElement *filter;
 		GstCaps *filtercaps;
+
+		if (!priv->svcd) {
+			BRASERO_JOB_LOG (vob, "Setting mp2 bitrate to 224000");
+			g_object_set (encode,
+				      "bitrate", 224000,
+				      NULL);
+		}
 
 		/* This is for (S)VCD which need to have audio at 44100 khz */
 
@@ -577,6 +584,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 	GstPad *sinkpad;
 	GstElement *scale;
 	GstElement *queue;
+	GstElement *queue1;
 	GstElement *filter;
 	GstElement *encode;
 	GstPadLinkReturn res;
@@ -668,6 +676,7 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_object_set (encode,
 			      "format", 8,
 			      NULL);
+
 	/* NOTE: there is another option to improve compatibility with vcdimager
 	 * but that would mean be sure that it's the next. */
 	else if (priv->svcd)
@@ -804,9 +813,26 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		}
 	}
 
-	gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, NULL);
+	/* another queue */
+	queue1 = gst_element_factory_make ("queue", NULL);
+	if (queue1 == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Queue1\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+	g_object_set (queue1,
+		      "max-size-bytes", 0,
+		      "max-size-buffers", 0,
+		      "max-size-time", (gint64) 0,
+		      NULL);
 
-	srcpad = gst_element_get_static_pad (encode, "src");
+	gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, queue1, NULL);
+
+	srcpad = gst_element_get_static_pad (queue1, "src");
 	sinkpad = gst_element_get_request_pad (muxer, "video_%d");
 	res = gst_pad_link (srcpad, sinkpad);
 	BRASERO_JOB_LOG (vob, "Linked video bin to muxer == %d", res)
@@ -892,9 +918,9 @@ brasero_vob_build_pipeline (BraseroVob *vob,
 		g_object_set (muxer,
 			      "format", 4,
 			      NULL);
-	else
+	else	/* This should be 1 but it causes frame drops */
 		g_object_set (muxer,
-			      "format", 1,
+			      "format", 4,
 			      NULL);
 
 	/* create sink */
@@ -983,7 +1009,7 @@ brasero_vob_start (BraseroJob *job,
 		priv->is_video_dvd = TRUE;
 
 	BRASERO_JOB_LOG (job,
-			 "Got output type (is DVD %i, is SVCD %i",
+			 "Got output type (is DVD %i, is SVCD %i)",
 			 priv->is_video_dvd,
 			 priv->svcd);
 

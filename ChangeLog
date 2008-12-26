@@ -1,5 +1,13 @@
 2008-12-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix MPEG2 encoding of video for SVCD
+
+	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_mp2),
+	(brasero_vob_build_video_bin), (brasero_vob_build_pipeline),
+	(brasero_vob_start):
+
+2008-12-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Force a display ratio (and remove the "default video ratio" option)
 
 	* src/brasero-disc-option-dialog.c
