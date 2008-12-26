@@ -130,8 +130,12 @@ static const GOptionEntry options [] = {
 	  N_("PATH") },
 
 	{ "transient-for", 'x', 0, G_OPTION_ARG_INT, &parent_window,
-	  N_("Set brasero transient for the window with Xlib xid"),
-	  N_("xid") },
+	/* Translators: the xid is a number identifying each window in the X11
+	 * world (not Windows, MacOS X). The following sentence says that
+	 * brasero will be set to be always on top of the window identified by
+	 * xid. In other word, the window with the given xid will become brasero
+	 * parent as if brasero was a dialog for the parent application */
+	  N_("The XID of the parent window"), NULL },
 
 	{ "debug", 'g', 0, G_OPTION_ARG_NONE, &debug,
 	  N_("Display debug statements on stdout"),
