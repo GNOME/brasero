@@ -489,7 +489,7 @@ main (int argc, char **argv)
 	brasero_enable_multi_DND ();
 	brasero_utils_init ();
 
-	current_app = brasero_app_new (TRUE);
+	current_app = brasero_app_new ();
 	if (current_app == NULL)
 		return 1;
 
