@@ -141,9 +141,9 @@ static void
 brasero_src_image_set_track (BraseroSrcImage *dialog,
 			     BraseroImageFormat format,
 			     const gchar *image,
-			     const gchar *toc,
-			     guint64 size)
+			     const gchar *toc)
 {
+	gint64 size;
 	gchar *path;
 	gchar *string;
 	gchar *size_string;
@@ -191,6 +191,7 @@ brasero_src_image_set_track (BraseroSrcImage *dialog,
 	if (!toc && !image && format == BRASERO_IMAGE_FORMAT_NONE)
 		return;
 
+	brasero_track_get_image_size (priv->track, NULL, NULL, &size, NULL);
 	size_string = g_format_size_for_display (size);
 	path = NULL;
 	switch (format) {
@@ -263,8 +264,7 @@ brasero_src_image_image_info_cb (GObject *object,
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     NULL,
-					     0);
+					     NULL);
 
 		/* we need to say that image can't be loaded */
 		brasero_src_image_error (dialog, error);
@@ -279,29 +279,25 @@ brasero_src_image_image_info_cb (GObject *object,
 			brasero_src_image_set_track (dialog,
 						     format,
 						     uri,
-						     NULL,
-						     g_file_info_get_size (info));
+						     NULL);
 			return;
 		case BRASERO_IMAGE_FORMAT_CUE:
 			brasero_src_image_set_track (dialog,
 						     format,
 						     NULL,
-						     uri,
-						     g_file_info_get_size (info));
+						     uri);
 			return;
 		case BRASERO_IMAGE_FORMAT_CDRDAO:
 			brasero_src_image_set_track (dialog,
 						     format,
 						     NULL,
-						     uri,
-						     g_file_info_get_size (info));
+						     uri);
 			return;
 		case BRASERO_IMAGE_FORMAT_CLONE:
 			brasero_src_image_set_track (dialog,
 						     format,
 						     NULL,
-						     uri,
-						     g_file_info_get_size (info));
+						     uri);
 			return;
 
 		/* handle those cases afterwards */
@@ -326,20 +322,17 @@ brasero_src_image_image_info_cb (GObject *object,
 			brasero_src_image_set_track (dialog,
 						     format,
 						     NULL,
-						     uri,
-						     g_file_info_get_size (info));
+						     uri);
 		else if (g_str_has_suffix (path, ".toc"))
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_CLONE,
 						     NULL,
-						     uri,
-						     g_file_info_get_size (info));
+						     uri);
 		else
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_NONE,
 						     NULL,
-						     uri,
-						     g_file_info_get_size (info));
+						     uri);
 	}
 	else if (mime && !strcmp (mime, "application/octet-stream")) {
 		/* that could be an image, so here is the deal:
@@ -349,33 +342,28 @@ brasero_src_image_image_info_cb (GObject *object,
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_CDRDAO,
 						     uri,
-						     NULL,
-						     g_file_info_get_size (info));
+						     NULL);
 		else if (g_str_has_suffix (uri, ".raw"))
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_CLONE,
 						     uri,
-						     NULL,
-						     g_file_info_get_size (info));
+						     NULL);
 		else
 			brasero_src_image_set_track (dialog,
 						     BRASERO_IMAGE_FORMAT_BIN,
 						     uri,
-						     NULL,
-						     g_file_info_get_size (info));
+						     NULL);
 	}
 	else if (mime && !strcmp (mime, "application/x-cd-image"))
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_BIN,
 					     uri,
-					     NULL,
-					     g_file_info_get_size (info));
+					     NULL);
 	else
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     uri,
-					     NULL,
-					     g_file_info_get_size (info));
+					     NULL);
 }
 
 static void
@@ -438,8 +426,7 @@ brasero_src_image_get_format (BraseroSrcImage *dialog,
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     NULL,
-					     0);
+					     NULL);
 		return;
 	}
 
@@ -645,8 +632,7 @@ brasero_src_image_set_uri (BraseroSrcImage *self,
 		brasero_src_image_set_track (self,
 					     BRASERO_IMAGE_FORMAT_NONE,
 					     NULL,
-					     NULL,
-					     0);
+					     NULL);
 }
 
 static void
