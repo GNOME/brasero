@@ -742,6 +742,9 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 	brasero_disc_option_dialog_update_video (dialog);
 
 	priv->video_options = widget;
+
+	/* Just to make sure our tags are correct in BraseroBurnSession */
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->vcd_button), TRUE);
 }
 
 void
