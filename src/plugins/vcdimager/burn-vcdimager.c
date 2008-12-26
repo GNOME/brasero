@@ -115,7 +115,7 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 	gchar *name;
 	gint i;
 
-	BRASERO_JOB_LOG (process, "Creating DVD layout xml file(%s)", path);
+	BRASERO_JOB_LOG (process, "Creating (S)VCD layout xml file (%s)", path);
 
 	xml = xmlNewTextWriterFilename (path, 0);
 	if (!xml)
