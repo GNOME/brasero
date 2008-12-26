@@ -517,20 +517,6 @@ brasero_disc_option_dialog_4_3 (GtkToggleButton *button,
 }
 
 static void
-brasero_disc_option_dialog_native_aspect (GtkToggleButton *button,
-					  BraseroDiscOptionDialog *dialog)
-{
-	BraseroBurnSession *session;
-
-	if (!gtk_toggle_button_get_active (button))
-		return;
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	brasero_burn_session_tag_remove (session, BRASERO_VIDEO_OUTPUT_ASPECT);
-	g_object_unref (session);
-}
-
-static void
 brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 {
 	gchar *string;
@@ -628,7 +614,7 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 			  dialog);
 	gtk_table_attach (GTK_TABLE (table),
 			  button1,
-			  3, 4,
+			  1, 2,
 			  1, 2,
 			  GTK_FILL,
 			  GTK_FILL,
@@ -643,21 +629,6 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 	gtk_table_attach (GTK_TABLE (table),
 			  button2,
 			  2, 3,
-			  1, 2,
-			  GTK_FILL,
-			  GTK_FILL,
-			  0, 0);
-
-	button3 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1),
-								  _("Native aspect _ratio"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button3), TRUE);
-	g_signal_connect (button3,
-			  "toggled",
-			  G_CALLBACK (brasero_disc_option_dialog_native_aspect),
-			  dialog);
-	gtk_table_attach (GTK_TABLE (table),
-			  button3,
-			  1, 2,
 			  1, 2,
 			  GTK_FILL,
 			  GTK_FILL,
@@ -744,7 +715,12 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 	priv->video_options = widget;
 
 	/* Just to make sure our tags are correct in BraseroBurnSession */
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->vcd_button), TRUE);
+	brasero_disc_option_dialog_set_tag (dialog,
+					    BRASERO_VCD_TYPE,
+					    BRASERO_SVCD);
+	brasero_disc_option_dialog_set_tag (dialog,
+					    BRASERO_VIDEO_OUTPUT_ASPECT,
+					    BRASERO_VIDEO_ASPECT_4_3);
 }
 
 void
