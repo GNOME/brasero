@@ -590,7 +590,7 @@ brasero_image_format_get_cue_size (gchar *path,
 			}
 
 			/* NOTE: follow symlink if any */
-			res = g_stat (path, &buffer);
+			res = g_stat (file_path, &buffer);
 			if (res == -1) {
                                 int errsv = errno;
 

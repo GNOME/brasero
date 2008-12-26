@@ -1,5 +1,11 @@
 2008-12-26  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix cue images size retrieval
+
+	* src/burn-image-format.c (brasero_image_format_get_cue_size):
+
+2008-12-26  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some plugin like vcdimager advertize an output of 0 (they can't determine
 	the size in advance) so create a temporary file for them too ...
 
