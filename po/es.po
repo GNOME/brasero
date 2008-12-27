@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&amp;component=general\n"
-"POT-Creation-Date: 2008-12-25 16:29+0000\n"
-"PO-Revision-Date: 2008-12-26 09:24+0100\n"
+"POT-Creation-Date: 2008-12-26 20:34+0000\n"
+"PO-Revision-Date: 2008-12-27 12:16+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -131,38 +131,38 @@ msgstr "Configurar las opciones de grabado"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
-#: ../src/brasero-src-image.c:221
+#: ../src/brasero-src-image.c:222
 #, c-format
 msgid "\"%s\": %s"
 msgstr "«%s» / %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
-#: ../src/brasero-src-image.c:228 ../src/brasero-src-image.c:692
+#: ../src/brasero-src-image.c:229 ../src/brasero-src-image.c:678
 msgid "Click here to select an _image"
 msgstr "Pulsar aquí para seleccionar una _imagen"
 
-#: ../src/brasero-src-image.c:243 ../src/brasero-burn-options.c:305
+#: ../src/brasero-src-image.c:244 ../src/brasero-burn-options.c:305
 msgid "Please, select another image."
 msgstr "Seleccionar otra imagen."
 
-#: ../src/brasero-src-image.c:566
+#: ../src/brasero-src-image.c:553
 msgid "Select Image File"
 msgstr "Seleccionar el archivo de imagen"
 
-#: ../src/brasero-src-image.c:587 ../src/brasero-search-entry.c:612
+#: ../src/brasero-src-image.c:574 ../src/brasero-search-entry.c:612
 #: ../src/brasero-search-entry.c:652 ../src/brasero-search-entry.c:691
 #: ../src/brasero-search-beagle.c:473 ../src/brasero-file-chooser.c:210
 #: ../src/brasero-project.c:1434
 msgid "All files"
 msgstr "Todos los archivos"
 
-#: ../src/brasero-src-image.c:592 ../src/brasero-file-chooser.c:234
+#: ../src/brasero-src-image.c:579 ../src/brasero-file-chooser.c:234
 #: ../src/brasero-project.c:1455
 msgid "Image files only"
 msgstr "Sólo archivos de imágenes"
 
-#: ../src/brasero-src-image.c:610 ../src/brasero-image-properties.c:200
+#: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Tipo de imagen:"
 
@@ -915,22 +915,23 @@ msgstr "Seleccione el disco para copiar"
 #: ../src/plugins/transcode/burn-vob.c:348
 #: ../src/plugins/transcode/burn-vob.c:359
 #: ../src/plugins/transcode/burn-vob.c:371
-#: ../src/plugins/transcode/burn-vob.c:394
-#: ../src/plugins/transcode/burn-vob.c:448
-#: ../src/plugins/transcode/burn-vob.c:465
-#: ../src/plugins/transcode/burn-vob.c:477
-#: ../src/plugins/transcode/burn-vob.c:488
-#: ../src/plugins/transcode/burn-vob.c:521
-#: ../src/plugins/transcode/burn-vob.c:595
-#: ../src/plugins/transcode/burn-vob.c:612
-#: ../src/plugins/transcode/burn-vob.c:627
-#: ../src/plugins/transcode/burn-vob.c:639
-#: ../src/plugins/transcode/burn-vob.c:650
-#: ../src/plugins/transcode/burn-vob.c:661
-#: ../src/plugins/transcode/burn-vob.c:853
-#: ../src/plugins/transcode/burn-vob.c:868
-#: ../src/plugins/transcode/burn-vob.c:881
-#: ../src/plugins/transcode/burn-vob.c:908
+#: ../src/plugins/transcode/burn-vob.c:401
+#: ../src/plugins/transcode/burn-vob.c:455
+#: ../src/plugins/transcode/burn-vob.c:472
+#: ../src/plugins/transcode/burn-vob.c:484
+#: ../src/plugins/transcode/burn-vob.c:495
+#: ../src/plugins/transcode/burn-vob.c:528
+#: ../src/plugins/transcode/burn-vob.c:603
+#: ../src/plugins/transcode/burn-vob.c:620
+#: ../src/plugins/transcode/burn-vob.c:635
+#: ../src/plugins/transcode/burn-vob.c:647
+#: ../src/plugins/transcode/burn-vob.c:658
+#: ../src/plugins/transcode/burn-vob.c:669
+#: ../src/plugins/transcode/burn-vob.c:822
+#: ../src/plugins/transcode/burn-vob.c:879
+#: ../src/plugins/transcode/burn-vob.c:894
+#: ../src/plugins/transcode/burn-vob.c:907
+#: ../src/plugins/transcode/burn-vob.c:934
 #, c-format
 msgid "%s element could not be created"
 msgstr "No se pudo crear el elemento %s"
@@ -2083,77 +2084,73 @@ msgstr ""
 msgid "Disc options"
 msgstr "Opciones de disco"
 
-#: ../src/brasero-disc-option-dialog.c:556
+#: ../src/brasero-disc-option-dialog.c:542
 msgid "Video format:"
 msgstr "Formato de vídeo:"
 
-#: ../src/brasero-disc-option-dialog.c:568
+#: ../src/brasero-disc-option-dialog.c:554
 msgid "_NTSC"
 msgstr "_NTSC"
 
-#: ../src/brasero-disc-option-dialog.c:569
+#: ../src/brasero-disc-option-dialog.c:555
 msgid "Format used mostly on the North American Continent"
 msgstr "Formato usado mayoritariamente en el continente Norteamericano"
 
-#: ../src/brasero-disc-option-dialog.c:583
+#: ../src/brasero-disc-option-dialog.c:569
 msgid "_PAL/SECAM"
 msgstr "_PAL/SECAM"
 
-#: ../src/brasero-disc-option-dialog.c:584
+#: ../src/brasero-disc-option-dialog.c:570
 msgid "Format used mostly in Europe"
 msgstr "Formato usado mayoritariamente en Europa"
 
-#: ../src/brasero-disc-option-dialog.c:598
+#: ../src/brasero-disc-option-dialog.c:584
 msgid "Native _format"
 msgstr "_Formato nativo"
 
-#: ../src/brasero-disc-option-dialog.c:612
+#: ../src/brasero-disc-option-dialog.c:598
 msgid "Aspect ratio:"
 msgstr "Proporción:"
 
-#: ../src/brasero-disc-option-dialog.c:624
+#: ../src/brasero-disc-option-dialog.c:610
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../src/brasero-disc-option-dialog.c:638
+#: ../src/brasero-disc-option-dialog.c:624
 msgid "_16:9"
 msgstr "_16:9"
 
-#: ../src/brasero-disc-option-dialog.c:652
-msgid "Native aspect _ratio"
-msgstr "Proporción _nativa:"
-
 #. Video options for (S)VCD
-#: ../src/brasero-disc-option-dialog.c:667
+#: ../src/brasero-disc-option-dialog.c:638
 msgid "VCD type:"
 msgstr "Tipo VCD:"
 
-#: ../src/brasero-disc-option-dialog.c:680
+#: ../src/brasero-disc-option-dialog.c:651
 msgid "Create a SVCD"
 msgstr "Crear un SVCD"
 
-#: ../src/brasero-disc-option-dialog.c:695
+#: ../src/brasero-disc-option-dialog.c:666
 msgid "Create a VCD"
 msgstr "Crear un VCD"
 
-#: ../src/brasero-disc-option-dialog.c:710
+#: ../src/brasero-disc-option-dialog.c:681
 msgid "Video Options"
 msgstr "Opciones de vídeo"
 
 #. Audio options for DVDs
-#: ../src/brasero-disc-option-dialog.c:719
+#: ../src/brasero-disc-option-dialog.c:690
 msgid "Add _AC3 audio stream"
 msgstr "Añadir un flujo de sonido _AC3"
 
-#: ../src/brasero-disc-option-dialog.c:720
+#: ../src/brasero-disc-option-dialog.c:691
 msgid "Add _MP2 audio stream"
 msgstr "Añadir un flujo de sonido _MP2"
 
-#: ../src/brasero-disc-option-dialog.c:722
+#: ../src/brasero-disc-option-dialog.c:693
 msgid "Audio Options"
 msgstr "Opciones de sonido"
 
-#: ../src/brasero-disc-option-dialog.c:891
+#: ../src/brasero-disc-option-dialog.c:870
 msgid "Disc Burning Setup"
 msgstr "Opciones de grabado"
 
@@ -2467,11 +2464,11 @@ msgstr "Estimación del tamaño del proyecto"
 msgid "Please add songs to the project."
 msgstr "Añada canciones al proyecto."
 
-#: ../src/brasero-project.c:881 ../src/brasero-project.c:890 ../src/main.c:333
+#: ../src/brasero-project.c:881 ../src/brasero-project.c:890 ../src/main.c:337
 msgid "The project is empty"
 msgstr "El proyecto está vacío"
 
-#: ../src/brasero-project.c:889 ../src/main.c:332
+#: ../src/brasero-project.c:889 ../src/main.c:336
 msgid "Please add files to the project."
 msgstr "Añada archivos al proyecto."
 
@@ -2554,7 +2551,7 @@ msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (disco de vídeo)"
 
 #: ../src/brasero-project.c:1671 ../src/brasero-project-manager.c:1072
-#: ../src/main.c:294 ../src/main.c:318
+#: ../src/main.c:298 ../src/main.c:322
 msgid "Error while loading the project."
 msgstr "Error al cargar proyecto."
 
@@ -3093,8 +3090,8 @@ msgstr "No se pudo encontrar un formato para la imagen temporal"
 #. * disc) where a file from any source will be added
 #. * ("grafted")
 #: ../src/burn.c:2634 ../src/burn-caps.c:108 ../src/burn-caps.c:1351
-#: ../src/burn-job.c:1222 ../src/burn-job.c:1231
-#: ../src/burn-mkisofs-base.c:297 ../src/main.c:291 ../src/main.c:315
+#: ../src/burn-job.c:1226 ../src/burn-job.c:1235
+#: ../src/burn-mkisofs-base.c:297 ../src/main.c:295 ../src/main.c:319
 #: ../src/plugins/cdrkit/burn-genisoimage.c:359
 #: ../src/plugins/cdrkit/burn-readom.c:111
 #: ../src/plugins/cdrkit/burn-readom.c:321
@@ -3118,8 +3115,8 @@ msgid "It does not appear to be a valid ISO image"
 msgstr "No parece ser una imagen ISO válida"
 
 #. Translators: %s is the plugin name
-#: ../src/burn-job.c:315 ../src/burn-job.c:800 ../src/burn-job.c:813
-#: ../src/burn-job.c:1032 ../src/burn-job.c:1122
+#: ../src/burn-job.c:315 ../src/burn-job.c:804 ../src/burn-job.c:817
+#: ../src/burn-job.c:1036 ../src/burn-job.c:1126
 #, c-format
 msgid "\"%s\" did not behave properly"
 msgstr "«%s» no se comportó de forma correcta"
@@ -3153,19 +3150,19 @@ msgstr ""
 msgid "The size of the volume could not be retrieved"
 msgstr "No se puede obtener el tamaño del volumen"
 
-#: ../src/burn-job.c:600 ../src/burn-session.c:534 ../src/burn-session.c:550
+#: ../src/burn-job.c:604 ../src/burn-session.c:534 ../src/burn-session.c:550
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "No se especificó ninguna ruta para la salida de la imagen"
 
-#: ../src/burn-job.c:626 ../src/burn-job.c:641
+#: ../src/burn-job.c:630 ../src/burn-job.c:645
 #, c-format
 msgid "\"%s\" already exists"
 msgstr "«%s» ya existe"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../src/burn-job.c:771 ../src/main.c:289 ../src/main.c:313
+#: ../src/burn-job.c:775 ../src/main.c:293 ../src/main.c:317
 #: ../src/plugins/cdrtools/burn-cdrecord.c:635
 #: ../src/plugins/libburnia/burn-libburn.c:691
 #: ../src/plugins/transcode/burn-transcode.c:594
@@ -3397,35 +3394,36 @@ msgstr ""
 msgid "PATH"
 msgstr "RUTA"
 
-#: ../src/main.c:133
-msgid "Set brasero transient for the window with Xlib xid"
-msgstr "Establecer Brasero de forma temporal para la ventana con Xlib xid"
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other word, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/main.c:138
+msgid "The XID of the parent window"
+msgstr "El XID de la ventana padre"
 
-#: ../src/main.c:134
-msgid "xid"
-msgstr "xid"
-
-#: ../src/main.c:137
+#: ../src/main.c:141
 msgid "Display debug statements on stdout"
 msgstr "Mostrar estadísticas de depuración en la salida estándar"
 
-#: ../src/main.c:220
+#: ../src/main.c:224
 msgid "Incompatible command line options used."
 msgstr "Se usaron opciones de línea de comandos incompatibles."
 
-#: ../src/main.c:221
+#: ../src/main.c:225
 msgid "Only one option can be given at a time"
 msgstr "Solamente se puede especificar una opción por vez."
 
-#: ../src/main.c:446
+#: ../src/main.c:450
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:468
+#: ../src/main.c:472
 msgid "CD/DVD burning"
 msgstr "Grabación de CD/DVD"
 
-#: ../src/main.c:475
+#: ../src/main.c:479
 #, c-format
 msgid "Please type %s --help to see all available options\n"
 msgstr "Escriba «%s» --help para ver todas las opciones disponibles\n"
@@ -4576,11 +4574,11 @@ msgstr "Creando disposición de archivo"
 msgid "Use dvdauthor to create Video DVDs"
 msgstr "Usar dvdauthor para crear DVD de vídeo"
 
-#: ../src/plugins/transcode/burn-vob.c:996
+#: ../src/plugins/transcode/burn-vob.c:1022
 msgid "Converting video file to MPEG2"
 msgstr "Convirtiendo el archivo de vídeo a MPEG2"
 
-#: ../src/plugins/transcode/burn-vob.c:1090
+#: ../src/plugins/transcode/burn-vob.c:1116
 msgid ""
 "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr ""
@@ -4604,6 +4602,15 @@ msgstr "Copiador de discos"
 #: ../data/brasero-open-project.desktop.in.in.h:1
 msgid "Create CDs and DVDs"
 msgstr "Cree CD y DVD"
+
+#~ msgid "Native aspect _ratio"
+#~ msgstr "Proporción _nativa:"
+
+#~ msgid "Set brasero transient for the window with Xlib xid"
+#~ msgstr "Establecer Brasero de forma temporal para la ventana con Xlib xid"
+
+#~ msgid "xid"
+#~ msgstr "xid"
 
 #~ msgid "Image File Properties"
 #~ msgstr "Propiedades de la imagen"
