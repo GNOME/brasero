@@ -21,6 +21,7 @@
  */
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #ifndef _BURN_DRIVE_H_
 #define _BURN_DRIVE_H_
@@ -76,6 +77,9 @@ brasero_drive_probing (BraseroDrive *drive);
 
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive);
+
+GDrive *
+brasero_drive_get_gdrive (BraseroDrive *drive);
 
 const gchar *
 brasero_drive_get_udi (BraseroDrive *drive);

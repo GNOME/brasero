@@ -1,7 +1,19 @@
 2008-12-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Small cleanup and (failed) attempt to rescan a drive after a change occured
+
+	* src/burn-drive.c (brasero_drive_get_gdrive),
+	(brasero_drive_hal_reprobe):
+	* src/burn-drive.h:
+	* src/burn-volume-obj.c (brasero_volume_eject):
+	* src/burn.c (brasero_burn_unlock_dest_media):
+	* src/plugins/vcdimager/burn-vcdimager.c
+	(brasero_vcd_imager_generate_xml_file):
+
+2008-12-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Don't use brasero icon in nautilus menu but more appropriate icons when 
-	there are.
+	there are. (backportable)
 
 	* nautilus/nautilus-burn-extension.c
 	(nautilus_disc_burn_get_file_items), (nautilus_disc_burn_finalize),

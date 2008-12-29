@@ -86,6 +86,54 @@ enum {
 
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 
+GDrive *
+brasero_drive_get_gdrive (BraseroDrive *drive)
+{
+	const gchar *volume_path = NULL;
+	GVolumeMonitor *monitor;
+	GDrive *gdrive = NULL;
+	GList *drives;
+	GList *iter;
+
+#if defined(HAVE_STRUCT_USCSI_CMD)
+	volume_path = brasero_drive_get_block_device (drive);
+#else
+	volume_path = brasero_drive_get_device (drive);
+#endif
+
+	/* NOTE: medium-monitor already holds a reference for GVolumeMonitor */
+	monitor = g_volume_monitor_get ();
+	drives = g_volume_monitor_get_connected_drives (monitor);
+	g_object_unref (monitor);
+
+	for (iter = drives; iter; iter = iter->next) {
+		gchar *device_path;
+		GDrive *tmp;
+
+		tmp = iter->data;
+		device_path = g_drive_get_identifier (tmp, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+		if (!device_path)
+			continue;
+
+		BRASERO_BURN_LOG ("Found drive %s", device_path);
+		if (!strcmp (device_path, volume_path)) {
+			gdrive = tmp;
+			g_free (device_path);
+			g_object_ref (gdrive);
+			break;
+		}
+
+		g_free (device_path);
+	}
+	g_list_foreach (drives, (GFunc) g_object_unref, NULL);
+	g_list_free (drives);
+
+	if (!drive)
+		BRASERO_BURN_LOG ("No drive found for medium");
+
+	return gdrive;
+}
+
 gboolean
 brasero_drive_get_bus_target_lun (BraseroDrive *self,
 				  guint *bus,
@@ -456,6 +504,31 @@ brasero_drive_reprobe (BraseroDrive *self)
 			  G_CALLBACK (brasero_drive_medium_probed),
 			  self);
 }
+
+#if 0
+
+void
+brasero_drive_hal_reprobe (BraseroDrive *self)
+{
+	BraseroDrivePrivate *priv;
+	BraseroHALWatch *watch;
+	LibHalContext *ctx;
+	DBusError error;
+
+	priv = BRASERO_DRIVE_PRIVATE (self);
+
+	watch = brasero_hal_watch_get_default ();
+	ctx = brasero_hal_watch_get_ctx (watch);
+
+	dbus_error_init (&error);
+	if (!libhal_device_reprobe (ctx, priv->udi, &error)) {
+		BRASERO_BURN_LOG ("libhal_device_reprobe () failed %s",
+				  error.message);
+		dbus_error_free (&error);
+	}			      
+}
+
+#endif
 
 static void
 brasero_drive_check_medium_inside (BraseroDrive *self)

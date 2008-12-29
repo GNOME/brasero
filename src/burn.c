@@ -1149,7 +1149,21 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 	brasero_drive_unlock (priv->dest);
 	medium = brasero_drive_get_medium (priv->dest);
 
-	if (BRASERO_BURN_SESSION_EJECT (priv->session))
+	if (!BRASERO_BURN_SESSION_EJECT (priv->session)) {
+		if (priv->dest) {
+			GDrive *gdrive;
+
+			gdrive = brasero_drive_get_gdrive (priv->dest);
+
+			/* reprobe the contents of the drive system wide */
+			BRASERO_BURN_LOG ("Reprobring drive %s", brasero_drive_get_display_name (priv->dest));
+			g_drive_poll_for_media (gdrive, NULL, NULL, NULL);
+			g_object_unref (gdrive);
+
+			brasero_drive_reprobe (priv->dest);
+		}
+	}
+	else
 		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error);
 
 	priv->dest = NULL;

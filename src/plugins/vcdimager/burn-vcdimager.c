@@ -214,6 +214,8 @@ brasero_vcd_imager_generate_xml_file (BraseroProcess *process,
 	if (success < 0)
 		goto error;
 
+	/* NOTE: no need to convert a possible non compliant name as this will 
+	 * be done by vcdimager. */
 	name = NULL;
 	brasero_job_get_audio_title (BRASERO_JOB (process), &name);
 	success = xmlTextWriterWriteElement (xml,
