@@ -36,9 +36,9 @@
 
 #define BURN_URI "burn:///"
 
-#define NAUTILUS_TYPE_BURN  (nautilus_disc_burn_get_type ())
-#define NAUTILUS_DISC_BURN(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_BURN, NautilusDiscBurn))
-#define NAUTILUS_IS_BURN(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_BURN))
+#define NAUTILUS_TYPE_DISC_BURN  (nautilus_disc_burn_get_type ())
+#define NAUTILUS_DISC_BURN(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_DISC_BURN, NautilusDiscBurn))
+#define NAUTILUS_IS_DISC_BURN(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_DISC_BURN))
 
 typedef struct _NautilusDiscBurnPrivate NautilusDiscBurnPrivate;
 
@@ -53,7 +53,7 @@ typedef struct
         GObjectClass parent_slot;
 } NautilusDiscBurnClass;
 
-#define NAUTILUS_DISC_BURN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_BURN, NautilusDiscBurnPrivate))
+#define NAUTILUS_DISC_BURN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_DISC_BURN, NautilusDiscBurnPrivate))
 
 struct _NautilusDiscBurnPrivate
 {
@@ -464,7 +464,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 item = nautilus_menu_item_new ("NautilusDiscBurn::write_iso",
                                                _("_Write to Disc..."),
                                                _("Write disc image to a CD or DVD disc"),
-                                               "brasero");
+                                               "media-optical-data-new");
                 g_object_set_data (G_OBJECT (item), "file_info", file_info);
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_signal_connect (item, "activate",
@@ -517,7 +517,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 item = nautilus_menu_item_new ("NautilusDiscBurn::copy_disc",
                                                _("_Copy Disc..."),
                                                _("Create a copy of this CD or DVD disc"),
-                                               "brasero");
+                                               "media-optical-copy");
                 g_object_set_data (G_OBJECT (item), "file_info", file_info);
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
@@ -529,7 +529,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 item = nautilus_menu_item_new ("NautilusDiscBurn::blank_disc",
                                                _("_Blank Disc..."),
                                                _("Blank this CD or DVD disc"),
-                                               "brasero");
+                                               "media-optical-blank");
                 g_object_set_data (G_OBJECT (item), "file_info", file_info);
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
@@ -541,7 +541,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 item = nautilus_menu_item_new ("NautilusDiscBurn::check_disc",
                                                _("_Check Disc..."),
                                                _("Check the data integrity on this CD or DVD disc"),
-                                               "brasero");
+                                               NULL);
                 g_object_set_data (G_OBJECT (item), "file_info", file_info);
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
@@ -843,7 +843,7 @@ nautilus_disc_burn_finalize (GObject *object)
         NautilusDiscBurn *burn;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (NAUTILUS_IS_BURN (object));
+        g_return_if_fail (NAUTILUS_IS_DISC_BURN (object));
 
         DEBUG_PRINT ("Finalizing burn extension\n");
 
@@ -937,6 +937,12 @@ nautilus_module_initialize (GTypeModule *module)
         nautilus_disc_burn_register_type (module);
         bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
+	/* As long as it's not a library I don't see how to do it differently */
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   "/usr/share/brasero/icons");
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   "/usr/local/share/brasero/icons");
 }
 
 void
@@ -955,7 +961,7 @@ nautilus_module_list_types (const GType **types,
 {
         static GType type_list [1];
 
-        type_list[0] = NAUTILUS_TYPE_BURN;
+        type_list[0] = NAUTILUS_TYPE_DISC_BURN;
 
         *types = type_list;
         *num_types = 1;
