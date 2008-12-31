@@ -44,6 +44,7 @@
 #include "burn-debug.h"
 #include "burn-volume.h"
 
+#include "brasero-app.h"
 #include "brasero-utils.h"
 #include "brasero-io.h"
 #include "brasero-metadata.h"
@@ -1028,7 +1029,7 @@ brasero_io_get_file_info_thread_real (BraseroAsyncTaskManager *manager,
 
 	info = g_file_query_info (file,
 				  attributes,
-				  G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+				  (options & BRASERO_IO_INFO_FOLLOW_SYMLINK)?G_FILE_QUERY_INFO_NONE:G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,	/* follow symlinks by default*/
 				  cancel,
 				  &local_error);
 	if (!info) {
@@ -1584,7 +1585,7 @@ brasero_io_get_file_count_process_directory (BraseroIO *self,
 
 	enumerator = g_file_enumerate_children (file,
 						attributes,
-						G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+						(data->job.options & BRASERO_IO_INFO_FOLLOW_SYMLINK)?G_FILE_QUERY_INFO_NONE:G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,	/* follow symlinks by default*/
 						cancel,
 						NULL);
 	if (!enumerator) {
@@ -1649,7 +1650,7 @@ brasero_io_get_file_count_start (BraseroIO *self,
 	file = g_file_new_for_uri (uri);
 	info = g_file_query_info (file,
 				  attributes,
-				  G_FILE_QUERY_INFO_NONE, /* follow symlinks */
+				  (data->job.options & BRASERO_IO_INFO_FOLLOW_SYMLINK)?G_FILE_QUERY_INFO_NONE:G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,	/* follow symlinks by default*/
 				  cancel,
 				  NULL);
 
@@ -1898,7 +1899,7 @@ brasero_io_load_directory_thread (BraseroAsyncTaskManager *manager,
 
 	enumerator = g_file_enumerate_children (file,
 						attributes,
-						G_FILE_QUERY_INFO_NONE,		/* follow symlinks */
+						(data->job.options & BRASERO_IO_INFO_FOLLOW_SYMLINK)?G_FILE_QUERY_INFO_NONE:G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,	/* follow symlinks by default*/
 						cancel,
 						&error);
 
@@ -2309,7 +2310,7 @@ brasero_io_xfer_recursive_thread (BraseroIOXferData *data,
 	enumerator = g_file_enumerate_children (src,
 						G_FILE_ATTRIBUTE_STANDARD_TYPE ","
 						G_FILE_ATTRIBUTE_STANDARD_NAME,
-						G_FILE_QUERY_INFO_NONE,	/* follow symlinks */
+						G_FILE_QUERY_INFO_NONE,	/* follow symlinks by default */
 						cancel,
 						error);
 	if (!enumerator)
@@ -2381,7 +2382,7 @@ brasero_io_xfer_start (BraseroIO *self,
 	data->info = g_file_query_info (file,
 					G_FILE_ATTRIBUTE_STANDARD_TYPE","
 					G_FILE_ATTRIBUTE_STANDARD_SIZE,
-					G_FILE_QUERY_INFO_NONE, /* follow symlinks */
+					G_FILE_QUERY_INFO_NONE,	/* follow symlinks by default*/
 					cancel,
 					error);
 	if (!data->info || error) {

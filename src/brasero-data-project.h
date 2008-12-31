@@ -41,6 +41,7 @@
 
 G_BEGIN_DECLS
 
+
 #define BRASERO_TYPE_DATA_PROJECT             (brasero_data_project_get_type ())
 #define BRASERO_DATA_PROJECT(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_DATA_PROJECT, BraseroDataProject))
 #define BRASERO_DATA_PROJECT_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_DATA_PROJECT, BraseroDataProjectClass))

@@ -34,6 +34,8 @@
 
 #include <gio/gio.h>
 
+#include <gconf/gconf-client.h>
+
 #include "brasero-data-project.h"
 #include "brasero-marshal.h"
 
@@ -1509,13 +1511,6 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 		/* If there is already a graft for this URI, then add node */
 		brasero_file_node_graft (node, graft);
 	}
-	else if (node->is_symlink) {
-		/* NOTE: info has the uri for the target of the symlink; graft
-		 * it as well as all the nodes already in the tree with the same
-		 * URI */
-		graft = brasero_data_project_uri_graft_nodes (self, uri);
-		brasero_file_node_graft (node, graft);
-	}
 	else if (node->parent == priv->root) {
 		/* The node is at the root of the project; graft it as well as
 		 * all the nodes already in the tree with the same URI */
@@ -1819,6 +1814,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	BraseroDataProjectPrivate *priv;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
 	type = g_file_info_get_file_type (info);
 	if (node->is_tmp_parent) {
 		/* we must make sure that this is really a directory */
@@ -1887,7 +1883,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	/* Check it that needs a graft: this node has not been moved so we don't
 	 * need to check these cases yet it could turn out that it was a symlink
 	 * then we need a graft. */
-	if (node->is_symlink) {
+	if (node->is_symlink && g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
 		BraseroURINode *graft;
 		gchar *uri;
 
@@ -2142,7 +2138,7 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	} 
 
 	node = brasero_file_node_new_from_info (info, parent, priv->sort_func);
-	if (node->is_symlink) {
+	if (node->is_symlink && g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
 		/* first we exclude the symlink, then we graft its target */
 		brasero_data_project_exclude_uri (self, uri);
 

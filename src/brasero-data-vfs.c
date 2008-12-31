@@ -59,6 +59,7 @@ struct _BraseroDataVFSPrivate
 	BraseroIOJobBase *load_uri;
 	BraseroIOJobBase *load_contents;
 
+	guint replace_sym:1;
 	guint filter_hidden:1;
 	guint filter_broken_sym:1;
 };
@@ -562,7 +563,8 @@ brasero_data_vfs_load_directory (BraseroDataVFS *self,
 	brasero_io_load_directory (priv->io,
 				   uri,
 				   priv->load_contents,
-				   BRASERO_IO_INFO_PERM,
+				   BRASERO_IO_INFO_PERM|
+				  (priv->replace_sym ? BRASERO_IO_INFO_FOLLOW_SYMLINK:BRASERO_IO_INFO_NONE),
 				   registered);
 
 	/* Only emit a signal if state changed. Some widgets need to know if 
@@ -783,7 +785,8 @@ brasero_data_vfs_load_node (BraseroDataVFS *self,
 	brasero_io_get_file_info (priv->io,
 				  uri,
 				  priv->load_uri,
-				  flags,
+				  flags|
+				  (priv->replace_sym ? BRASERO_IO_INFO_FOLLOW_SYMLINK:BRASERO_IO_INFO_NONE),
 				  registered);
 
 	/* Only emit a signal if state changed. Some widgets need to know if 
@@ -967,7 +970,8 @@ brasero_data_vfs_load_mime (BraseroDataVFS *self,
 	reference = brasero_data_project_reference_new (BRASERO_DATA_PROJECT (self), node);
 	result = brasero_data_vfs_load_node (self,
 					     BRASERO_IO_INFO_MIME|
-					     BRASERO_IO_INFO_URGENT,
+					     BRASERO_IO_INFO_URGENT|
+					     (priv->replace_sym ? BRASERO_IO_INFO_FOLLOW_SYMLINK:BRASERO_IO_INFO_NONE),
 					     reference,
 					     uri);
 	g_free (uri);
@@ -1170,6 +1174,24 @@ brasero_data_vfs_filter_broken_sym_changed (GConfClient *client,
 }
 
 static void
+brasero_data_vfs_replace_sym_changed (GConfClient *client,
+				      guint cxn,
+				      GConfEntry *entry,
+				      gpointer data)
+{
+	BraseroDataVFSPrivate *priv;
+	GConfValue *value;
+
+	priv = BRASERO_DATA_VFS_PRIVATE (data);
+
+	value = gconf_entry_get_value (entry);
+	if (value->type != GCONF_VALUE_BOOL)
+		return;
+
+	priv->replace_sym = gconf_value_get_bool (value);
+}
+
+static void
 brasero_data_vfs_init (BraseroDataVFS *object)
 {
 	GConfClient *client;
@@ -1179,12 +1201,16 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 
 	/* load the fitering rules */
 	client = gconf_client_get_default ();
+	priv->replace_sym = gconf_client_get_bool (client,
+						   BRASERO_REPLACE_SYMLINK_KEY,
+						   NULL);
 	priv->filter_hidden = gconf_client_get_bool (client,
 						     BRASERO_FILTER_HIDDEN_KEY,
 						     NULL);
 	priv->filter_broken_sym = gconf_client_get_bool (client,
 							 BRASERO_FILTER_BROKEN_SYM_KEY,
 							 NULL);
+
 	gconf_client_notify_add (client,
 				 BRASERO_FILTER_HIDDEN_KEY,
 				 brasero_data_vfs_filter_hidden_changed,
@@ -1194,6 +1220,12 @@ brasero_data_vfs_init (BraseroDataVFS *object)
 	gconf_client_notify_add (client,
 				 BRASERO_FILTER_BROKEN_SYM_KEY,
 				 brasero_data_vfs_filter_broken_sym_changed,
+				 object,
+				 NULL,
+				 NULL);
+	gconf_client_notify_add (client,
+				 BRASERO_REPLACE_SYMLINK_KEY,
+				 brasero_data_vfs_replace_sym_changed,
 				 object,
 				 NULL,
 				 NULL);

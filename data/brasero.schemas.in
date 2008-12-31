@@ -187,6 +187,18 @@
        </schema>
 
         <schema>
+        <key>/schemas/apps/brasero/filter/replace_sym</key>
+	<applyto>/apps/brasero/filter/replace_sym</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>true</default>
+	<locale name="C">
+	  <short>Replace symlinks files by their targets</short>
+	  <long>Should brasero replace symlinks by their target files in the project. Set to true, brasero will replace symlinks.</long>
+	</locale>
+       </schema>
+
+        <schema>
         <key>/schemas/apps/brasero/filter/broken_sym</key>
 	<applyto>/apps/brasero/filter/broken_sym</applyto>
 	<owner>brasero</owner>

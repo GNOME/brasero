@@ -1,6 +1,31 @@
 2008-12-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #564680 – Symlinks are written as files.
+	and #526263 – Allow adding symlinks too projects
+
+	* data/brasero.schemas.in:
+	* src/brasero-data-project.c (brasero_data_project_add_node_real),
+	(brasero_data_project_node_loaded),
+	(brasero_data_project_add_node_from_info):
+	* src/brasero-data-project.h:
+	* src/brasero-data-vfs.c (brasero_data_vfs_load_directory),
+	(brasero_data_vfs_load_node), (brasero_data_vfs_load_mime),
+	(brasero_data_vfs_replace_sym_changed), (brasero_data_vfs_init):
+	* src/brasero-data-vfs.h:
+	* src/brasero-filter-option.c
+	(brasero_file_filtered_replace_sym_cb),
+	(brasero_filter_option_init):
+	* src/brasero-io.c (brasero_io_get_file_info_thread_real),
+	(brasero_io_get_file_count_process_directory),
+	(brasero_io_get_file_count_start),
+	(brasero_io_load_directory_thread),
+	(brasero_io_xfer_recursive_thread), (brasero_io_xfer_start):
+	* src/brasero-io.h:
+
+2008-12-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Avoid a possible race condition when stopping threads in plugins
+	(backportable)
 
 	* src/plugins/checksum/burn-checksum-files.c
 	(brasero_checksum_files_thread), (brasero_checksum_files_stop),
