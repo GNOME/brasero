@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=brasero&amp;component=general\n"
-"POT-Creation-Date: 2008-12-26 20:34+0000\n"
-"PO-Revision-Date: 2008-12-27 12:16+0100\n"
+"product=brasero&component=general\n"
+"POT-Creation-Date: 2008-12-31 13:57+0000\n"
+"PO-Revision-Date: 2008-12-31 15:39+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,18 +35,18 @@ msgstr "Analizando archivos de vídeo"
 msgid "Brasero Plugins"
 msgstr "Complementos de Brasero"
 
-#: ../src/plugins/local-track/burn-uri.c:159
-#: ../src/plugins/local-track/burn-uri.c:286
+#: ../src/plugins/local-track/burn-uri.c:161
+#: ../src/plugins/local-track/burn-uri.c:288
 #, c-format
 msgid "Impossible to retrieve local file path"
 msgstr "imposible obtener la ruta del archivo local"
 
-#: ../src/plugins/local-track/burn-uri.c:203
-#: ../src/plugins/local-track/burn-local-image.c:728
+#: ../src/plugins/local-track/burn-uri.c:205
+#: ../src/plugins/local-track/burn-local-image.c:730
 msgid "Copying files locally"
 msgstr "Copiando archivo localmente"
 
-#: ../src/plugins/local-track/burn-uri.c:531
+#: ../src/plugins/local-track/burn-uri.c:557
 msgid ""
 "Burn_uri allows burning files added to \"CD/DVD Creator Folder\" in nautilus"
 msgstr ""
@@ -536,10 +536,14 @@ msgid "Pane to display for video projects"
 msgstr "Panel para mostrar en los proyectos de vídeo"
 
 #: ../data/brasero.schemas.in.h:17
+msgid "Replace symlinks files by their targets"
+msgstr "Reemplazar enlaces simbólicos a archivos por sus destinos"
+
+#: ../data/brasero.schemas.in.h:18
 msgid "Should brasero filter broken symlinks files"
 msgstr "Indica si brasero debe filtrar los enlaces a archivos rotos"
 
-#: ../data/brasero.schemas.in.h:18
+#: ../data/brasero.schemas.in.h:19
 msgid ""
 "Should brasero filter broken symlinks. Set to true, brasero will filter "
 "broken symlinks."
@@ -547,11 +551,11 @@ msgstr ""
 "Indica si brasero debe filtrar los enlaces a archivos rotos. Si se establece "
 "a true, brasero filtrará los enlaces simbólicos rotos."
 
-#: ../data/brasero.schemas.in.h:19
+#: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
 msgstr "Indica si brasero filtrará los archivos ocultos"
 
-#: ../data/brasero.schemas.in.h:20
+#: ../data/brasero.schemas.in.h:21
 msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
@@ -559,11 +563,11 @@ msgstr ""
 "Indica si brasero filtrará los archivos ocultos. Si se establece a true, "
 "brasero filtrará los archivos ocultos."
 
-#: ../data/brasero.schemas.in.h:21
+#: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
 msgstr "Indica si brasero debe notificar cuando se filtran los archivos"
 
-#: ../data/brasero.schemas.in.h:22
+#: ../data/brasero.schemas.in.h:23
 msgid ""
 "Should brasero notify when files are filtered. Set to true, brasero will "
 "display the notification."
@@ -571,7 +575,15 @@ msgstr ""
 "Indica si Brasero debe notificar cuando se filtren archivos. Se se establece "
 "a «true», brasero mostrará la notificación."
 
-#: ../data/brasero.schemas.in.h:23
+#: ../data/brasero.schemas.in.h:24
+msgid ""
+"Should brasero replace symlinks by their target files in the project. Set to "
+"true, brasero will replace symlinks."
+msgstr ""
+"Indica si brasero debe reemplazar los enlaces simbólicos por sus archivos de "
+"destino. Si está a «true» Brasero reemplazará los enlaces simbólicos."
+
+#: ../data/brasero.schemas.in.h:25
 msgid ""
 "The pane to display with audio projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
@@ -579,7 +591,7 @@ msgstr ""
 "El panel que mostrar con proyectos de sonido. Debería ser uno de los "
 "siguientes: «Chooser», «Search» o «Playlist»."
 
-#: ../data/brasero.schemas.in.h:24
+#: ../data/brasero.schemas.in.h:26
 msgid ""
 "The pane to display with data projects. It should be one of the following: "
 "\"Chooser\" or \"Search\"."
@@ -587,7 +599,7 @@ msgstr ""
 "El panel que mostrar con proyectos de datos. Debería ser uno de los "
 "siguientes: «Chooser» o «Search»."
 
-#: ../data/brasero.schemas.in.h:25
+#: ../data/brasero.schemas.in.h:27
 msgid ""
 "The pane to display with video projects. It should be one of the following: "
 "\"Chooser\", \"Search\" or \"Playlist\"."
@@ -595,7 +607,7 @@ msgstr ""
 "El panel que mostrar con proyectos de vídeo. Debería ser uno de los "
 "siguientes: «Chooser», «Search» o «Playlist»."
 
-#: ../data/brasero.schemas.in.h:26
+#: ../data/brasero.schemas.in.h:28
 msgid ""
 "This key sets where the project pane should be (0 = on the right, 1 = on the "
 "left, 2 = at the top, 3 = at the bottom)"
@@ -603,22 +615,22 @@ msgstr ""
 "Esta clave establece dónde debe estar el panel del proyecto (0 = a la "
 "derecha, 1 = a la izquierda, 2 = arriba, 3 = abajo)"
 
-#: ../data/brasero.schemas.in.h:27
+#: ../data/brasero.schemas.in.h:29
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
 msgstr "Usado junto a la bandera «-immed» con cdrecord"
 
-#: ../data/brasero.schemas.in.h:28
+#: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
 msgstr ""
 "Si se mostrará el panel lateral. Establezca esta opción a «true» para usarlo."
 
-#: ../data/brasero.schemas.in.h:29
+#: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
 msgstr ""
 "Si se mostrará la vista previa de archivos. Establezca esta opción a true "
 "para usarlo."
 
-#: ../data/brasero.schemas.in.h:30
+#: ../data/brasero.schemas.in.h:32
 msgid ""
 "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) "
 "as it's only a workaround for some drives/setups."
@@ -627,15 +639,15 @@ msgstr ""
 "(estableciéndolo a «true») ya que es sólo un arreglo para algunas unidades/"
 "configuraciones."
 
-#: ../data/brasero.schemas.in.h:31
+#: ../data/brasero.schemas.in.h:33
 msgid "White list of additional plugins to use"
 msgstr "Lista blanca de complementos adicionales que usar"
 
-#: ../data/brasero.schemas.in.h:32
+#: ../data/brasero.schemas.in.h:34
 msgid "Width for image preview"
 msgstr "Ancho de la vista previa de imágenes"
 
-#: ../data/brasero.schemas.in.h:33
+#: ../data/brasero.schemas.in.h:35
 msgid "Width for video preview"
 msgstr "Ancho de la vista previa de vídeo"
 
@@ -1485,8 +1497,8 @@ msgid "\"%s\" is busy."
 msgstr "«%s» está ocupado."
 
 #: ../src/brasero-burn-dialog.c:509 ../src/brasero-tool-dialog.c:80
-#: ../src/burn.c:1331 ../src/burn.c:1365 ../src/burn.c:1547 ../src/burn.c:1558
-#: ../src/burn.c:1909
+#: ../src/burn.c:1345 ../src/burn.c:1379 ../src/burn.c:1561 ../src/burn.c:1572
+#: ../src/burn.c:1923
 msgid "Make sure another application is not using it"
 msgstr "Asegúrese que otra aplicación no lo esté usando"
 
@@ -2920,8 +2932,8 @@ msgstr "No se puede realizar la operación."
 msgid "The disc is not supported"
 msgstr "El disco no está soportado"
 
-#: ../src/brasero-tool-dialog.c:79 ../src/burn.c:1330 ../src/burn.c:1364
-#: ../src/burn.c:1546 ../src/burn.c:1557 ../src/burn.c:1908
+#: ../src/brasero-tool-dialog.c:79 ../src/burn.c:1344 ../src/burn.c:1378
+#: ../src/burn.c:1560 ../src/burn.c:1571 ../src/burn.c:1922
 #: ../src/plugins/cdrdao/burn-cdrdao.c:221
 #: ../src/plugins/cdrkit/burn-readom.c:92
 #: ../src/plugins/cdrkit/burn-wodim.c:120
@@ -3014,7 +3026,7 @@ msgstr "No se puede expulsar el medio en «%s»"
 msgid "\"%s\" cannot be unlocked"
 msgstr "No se puede desbloquear %s"
 
-#: ../src/burn.c:514 ../src/burn.c:639 ../src/burn.c:788 ../src/burn.c:1974
+#: ../src/burn.c:514 ../src/burn.c:639 ../src/burn.c:788 ../src/burn.c:1988
 #, c-format
 msgid "No burner specified"
 msgstr "No se especificó la unidad grabadora"
@@ -3056,12 +3068,12 @@ msgstr "No se pudo montar el disco (se alcanzó el máximo número de intentos)"
 msgid "Ongoing checksuming operation"
 msgstr "Se está realizando la operación de la suma de verificación"
 
-#: ../src/burn.c:1671 ../src/burn.c:2023
+#: ../src/burn.c:1685 ../src/burn.c:2037
 #, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "No se pueden mezclar los datos con este disco"
 
-#: ../src/burn.c:1672 ../src/plugins/cdrkit/burn-genisoimage.c:197
+#: ../src/burn.c:1686 ../src/plugins/cdrkit/burn-genisoimage.c:197
 #: ../src/plugins/cdrkit/burn-wodim.c:99
 #: ../src/plugins/cdrtools/burn-cdrecord.c:99
 #: ../src/plugins/cdrtools/burn-mkisofs.c:198
@@ -3070,17 +3082,17 @@ msgstr "No se pueden mezclar los datos con este disco"
 msgid "Not enough space available on the disc"
 msgstr "No hay suficiente espacio disponible en el disco"
 
-#: ../src/burn.c:1960
+#: ../src/burn.c:1974
 #, c-format
 msgid "There is no track to be burnt"
 msgstr "No hay pista que grabar"
 
-#: ../src/burn.c:2307 ../src/burn-caps.c:1449
+#: ../src/burn.c:2321 ../src/burn-caps.c:1449
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Sólo se puede verificar una pista cada vez"
 
-#: ../src/burn.c:2376
+#: ../src/burn.c:2390
 #, c-format
 msgid "No format for the temporary image could be found"
 msgstr "No se pudo encontrar un formato para la imagen temporal"
@@ -3089,7 +3101,7 @@ msgstr "No se pudo encontrar un formato para la imagen temporal"
 #. * is specified. A graft point is the path (on the
 #. * disc) where a file from any source will be added
 #. * ("grafted")
-#: ../src/burn.c:2634 ../src/burn-caps.c:108 ../src/burn-caps.c:1351
+#: ../src/burn.c:2648 ../src/burn-caps.c:108 ../src/burn-caps.c:1351
 #: ../src/burn-job.c:1226 ../src/burn-job.c:1235
 #: ../src/burn-mkisofs-base.c:297 ../src/main.c:295 ../src/main.c:319
 #: ../src/plugins/cdrkit/burn-genisoimage.c:359
@@ -3145,7 +3157,7 @@ msgstr ""
 "La ubicación seleccionada no tiene suficiente espacio libre para almacenar "
 "la imagen del disco (se necesitan %ld MiB)"
 
-#: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:345
+#: ../src/burn-job.c:550 ../src/plugins/dvdcss/burn-dvdcss.c:347
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "No se puede obtener el tamaño del volumen"
@@ -3237,8 +3249,8 @@ msgstr "Disco Blu-ray regrabable"
 #. Translators: This is a fake drive, a file, and means that
 #. * when we're writing, we're writing to a file and create an
 #. * image on the hard drive.
-#: ../src/burn-medium.c:161 ../src/burn-drive.c:271
-#: ../src/burn-volume-obj.c:772
+#: ../src/burn-medium.c:161 ../src/burn-drive.c:319
+#: ../src/burn-volume-obj.c:720
 msgid "Image File"
 msgstr "Archivo de imagen"
 
@@ -3279,8 +3291,8 @@ msgstr "%s en %s"
 
 #: ../src/burn-mkisofs-base.c:149 ../src/burn-mkisofs-base.c:432
 #: ../src/plugins/growisofs/burn-growisofs.c:505
-#: ../src/plugins/libburnia/burn-libisofs.c:650
-#: ../src/plugins/checksum/burn-checksum-image.c:272
+#: ../src/plugins/libburnia/burn-libisofs.c:657
+#: ../src/plugins/checksum/burn-checksum-image.c:274
 #, c-format
 msgid "The file is not stored locally"
 msgstr "El archivo no está almacenado localmente"
@@ -3479,7 +3491,7 @@ msgstr "toc2cue convierte archivos .toc en archivos .cue"
 #: ../src/plugins/cdrkit/burn-genisoimage.c:110
 #: ../src/plugins/cdrtools/burn-mkisofs.c:111
 #: ../src/plugins/growisofs/burn-growisofs.c:187
-#: ../src/plugins/libburnia/burn-libisofs.c:465
+#: ../src/plugins/libburnia/burn-libisofs.c:472
 #, c-format
 msgid "Last session import failed"
 msgstr "Falló la importación de la última sesión"
@@ -3595,12 +3607,12 @@ msgstr "Usar mkisofs para crear imágenes de archivos seleccionados"
 msgid "Use readcd to image CDs and DVDs"
 msgstr "Usar readcd para crear imágenes de CD y DVD"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:120
+#: ../src/plugins/dvdcss/burn-dvdcss.c:122
 #, c-format
 msgid "Encrypted DVD: please, install libdvdcss version 1.2.x"
 msgstr "DVD cifrado: instale la versión 1.2.x de libdvdcss"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:127
+#: ../src/plugins/dvdcss/burn-dvdcss.c:129
 #, c-format
 msgid ""
 "Libdvdcss version %s is not supported.\n"
@@ -3609,48 +3621,48 @@ msgstr ""
 "libdvdcss versión %s no está soportado.\n"
 "Instale libdvdcss versión 1.2.x"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:137
+#: ../src/plugins/dvdcss/burn-dvdcss.c:139
 #, c-format
 msgid "Libdvdcss could not be loaded properly"
 msgstr "No se pudo cargar libdvdcss de forma apropiada"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:214
-#: ../src/plugins/dvdcss/burn-dvdcss.c:465
-#: ../src/plugins/libburnia/burn-libisofs.c:147
-#: ../src/plugins/libburnia/burn-libisofs.c:248
-#: ../src/plugins/checksum/burn-checksum-files.c:174
-#: ../src/plugins/checksum/burn-checksum-files.c:197
-#: ../src/plugins/checksum/burn-checksum-image.c:159
+#: ../src/plugins/dvdcss/burn-dvdcss.c:216
+#: ../src/plugins/dvdcss/burn-dvdcss.c:467
+#: ../src/plugins/libburnia/burn-libisofs.c:149
+#: ../src/plugins/libburnia/burn-libisofs.c:250
+#: ../src/plugins/checksum/burn-checksum-files.c:176
+#: ../src/plugins/checksum/burn-checksum-files.c:199
+#: ../src/plugins/checksum/burn-checksum-image.c:161
 #, c-format
 msgid "Data could not be written (%s)"
 msgstr "No se pudieron escribir los datos (%s)"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:274
+#: ../src/plugins/dvdcss/burn-dvdcss.c:276
 #, c-format
 msgid "Error reading video DVD (%s)"
 msgstr "Error al leer el DVD de vídeo (%s)"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:319
+#: ../src/plugins/dvdcss/burn-dvdcss.c:321
 msgid "Retrieving DVD keys"
 msgstr "Obteniendo claves DVD"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:354
+#: ../src/plugins/dvdcss/burn-dvdcss.c:356
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "No se pudo abrir el DVD de vídeo"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:372
-#: ../src/plugins/dvdcss/burn-dvdcss.c:433
-#: ../src/plugins/dvdcss/burn-dvdcss.c:453
+#: ../src/plugins/dvdcss/burn-dvdcss.c:374
+#: ../src/plugins/dvdcss/burn-dvdcss.c:435
+#: ../src/plugins/dvdcss/burn-dvdcss.c:455
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Error al leer el DVD de vídeo (%s)"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:379
+#: ../src/plugins/dvdcss/burn-dvdcss.c:381
 msgid "Copying Video DVD"
 msgstr "Copiando vídeo DVD"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:627
+#: ../src/plugins/dvdcss/burn-dvdcss.c:659
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr "Dvdcss permite leer DVD de vídeo cifrados con css"
 
@@ -3673,7 +3685,7 @@ msgstr "No se pudo crear la pista libburn"
 #. Translators: first %s is the filename, second %s
 #. * is the error generated from errno
 #: ../src/plugins/libburnia/burn-libburn.c:653
-#: ../src/plugins/checksum/burn-checksum-image.c:298
+#: ../src/plugins/checksum/burn-checksum-image.c:300
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "No se pudo abrir el «%s» (%s)"
@@ -3697,67 +3709,67 @@ msgstr "No se pudo obtener la dirección de la unidad"
 msgid "Writing track %02i"
 msgstr "Escribiendo pista %02i"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:302
-#: ../src/plugins/libburnia/burn-libisofs.c:826
+#: ../src/plugins/libburnia/burn-libisofs.c:309
+#: ../src/plugins/libburnia/burn-libisofs.c:838
 #, c-format
 msgid "Libisofs could not be initialized."
 msgstr "No se puede inicializar libisofs."
 
-#: ../src/plugins/libburnia/burn-libisofs.c:442
+#: ../src/plugins/libburnia/burn-libisofs.c:449
 #, c-format
 msgid "Read options could not be created"
 msgstr "No se pudieron crear las opciones de lectura."
 
-#: ../src/plugins/libburnia/burn-libisofs.c:518
+#: ../src/plugins/libburnia/burn-libisofs.c:525
 #, c-format
 msgid "Volume could not be created"
 msgstr "No se pudo crear el volumen"
 
 #. Translators: %s is the path
-#: ../src/plugins/libburnia/burn-libisofs.c:627
+#: ../src/plugins/libburnia/burn-libisofs.c:634
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
 msgstr "no se puede encontrar un padre en el árbol para la ruta «%s»"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:692
-#: ../src/plugins/libburnia/burn-libisofs.c:758
+#: ../src/plugins/libburnia/burn-libisofs.c:699
+#: ../src/plugins/libburnia/burn-libisofs.c:765
 #, c-format
 msgid "Libisofs reported an error while creating directory \"%s\""
 msgstr "libisofs informó de un error al crear el directorio «%s»"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:707
+#: ../src/plugins/libburnia/burn-libisofs.c:714
 #, c-format
 msgid ""
 "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
 msgstr ""
 "libisofs informó de un error al añadir el contenido al directorio «%s» (%x)"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:729
-#: ../src/plugins/libburnia/burn-libisofs.c:745
+#: ../src/plugins/libburnia/burn-libisofs.c:736
+#: ../src/plugins/libburnia/burn-libisofs.c:752
 #, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
 msgstr "libisofs informó de un error al añadir el archivo en la ruta «%s»"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:971
+#: ../src/plugins/libburnia/burn-libisofs.c:1003
 msgid "Libisofs creates disc images from files"
 msgstr "libisofs crea imágenes de discos desde archivos"
 
-#: ../src/plugins/local-track/burn-local-image.c:165
+#: ../src/plugins/local-track/burn-local-image.c:167
 #, c-format
 msgid "Copying `%s` locally"
 msgstr "Copiando  «%s» localmente"
 
-#: ../src/plugins/local-track/burn-local-image.c:229
-#: ../src/plugins/local-track/burn-local-image.c:319
+#: ../src/plugins/local-track/burn-local-image.c:231
+#: ../src/plugins/local-track/burn-local-image.c:321
 #, c-format
 msgid "Directory could not be created (%s)"
 msgstr "No se pudo crear un directorio (%s)"
 
-#: ../src/plugins/local-track/burn-local-image.c:481
+#: ../src/plugins/local-track/burn-local-image.c:483
 msgid "Copying checksum file"
 msgstr "Copiando el archivo de verificación de suma"
 
-#: ../src/plugins/local-track/burn-local-image.c:1069
+#: ../src/plugins/local-track/burn-local-image.c:1095
 msgid "Local-track allows to burn files not stored locally"
 msgstr ""
 "local-track permite grabar archivos que no están almacenados localmente"
@@ -4180,8 +4192,8 @@ msgstr "Archivo ilegible"
 msgid "Broken symbolic link"
 msgstr "Enlace simbólico roto"
 
-#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1072
-#: ../src/brasero-io.c:1953
+#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1073
+#: ../src/brasero-io.c:1954
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Enlace simbólico recursivo"
@@ -4216,29 +4228,33 @@ msgstr "_Opciones…"
 msgid "Set the options for file filtering"
 msgstr "Establecer las opciones para el filtrado de archivos"
 
-#: ../src/brasero-filter-option.c:109
+#: ../src/brasero-filter-option.c:126
 msgid "Filter _hidden files"
 msgstr "Filtrar archivos _ocultos"
 
-#: ../src/brasero-filter-option.c:131
+#: ../src/brasero-filter-option.c:149
+msgid "Re_place symlinks"
+msgstr "Reemp_lazar enlaces simbólicos"
+
+#: ../src/brasero-filter-option.c:172
 msgid "Filter _broken symlinks"
 msgstr "Filtrar enlaces simbólicos ro_tos"
 
-#: ../src/brasero-filter-option.c:149
+#: ../src/brasero-filter-option.c:190
 msgid "Filtering options"
 msgstr "Opciones de filtrado"
 
-#: ../src/brasero-data-vfs.c:241
+#: ../src/brasero-data-vfs.c:242
 #, c-format
 msgid "\"%s\" cannot be read"
 msgstr "No se puede leer «%s»"
 
-#: ../src/brasero-io.c:1305
+#: ../src/brasero-io.c:1306
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "El archivo no parece ser una lista de reproducción"
 
-#: ../src/brasero-io.c:2416
+#: ../src/brasero-io.c:2417
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "No se puede crear un directorio (%s)"
@@ -4269,91 +4285,91 @@ msgstr "Buscando discos disponibles"
 msgid "No available disc"
 msgstr "No hay ningún disco disponible"
 
-#: ../src/burn-volume-obj.c:245
+#: ../src/burn-volume-obj.c:191
 #, c-format
 msgid "The disc mount point could not be retrieved"
 msgstr "No se pudo obtener el punto de montaje del disco"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:799
+#: ../src/burn-volume-obj.c:747
 #, c-format
 msgid "Blank %s"
 msgstr "%s virgen"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:803
+#: ../src/burn-volume-obj.c:751
 #, c-format
 msgid "Audio and data %s"
 msgstr "%s de sonido y datos"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:807
+#: ../src/burn-volume-obj.c:755
 #, c-format
 msgid "Audio %s"
 msgstr "%s de sonido"
 
 #. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:811
+#: ../src/burn-volume-obj.c:759
 #, c-format
 msgid "Data %s"
 msgstr "%s de datos"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:112
-#: ../src/plugins/checksum/burn-checksum-files.c:561
+#: ../src/plugins/checksum/burn-checksum-files.c:114
+#: ../src/plugins/checksum/burn-checksum-files.c:563
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
 msgstr "No se pudo abrir el archivo «%s» (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:589
+#: ../src/plugins/checksum/burn-checksum-files.c:591
 msgid "Creating checksum for image files"
 msgstr "Creando suma de verificación para los archivos imagen"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:761
+#: ../src/plugins/checksum/burn-checksum-files.c:763
 msgid "Checking file integrity"
 msgstr "Comprobando la integridad del archivo"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:928
-#: ../src/plugins/checksum/burn-checksum-files.c:1046
-#: ../src/plugins/checksum/burn-checksum-image.c:513
+#: ../src/plugins/checksum/burn-checksum-files.c:930
+#: ../src/plugins/checksum/burn-checksum-files.c:1048
+#: ../src/plugins/checksum/burn-checksum-image.c:515
 #, c-format
 msgid "Some files may be corrupted on the disc"
 msgstr "Algunos archivos del disco pueden estar corruptos"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1282
+#: ../src/plugins/checksum/burn-checksum-files.c:1309
 msgid "Allows to check file integrities on a disc"
 msgstr "Permite comprobar la integridad de los archivos en el disco"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1321
-#: ../src/plugins/checksum/burn-checksum-image.c:774
+#: ../src/plugins/checksum/burn-checksum-files.c:1348
+#: ../src/plugins/checksum/burn-checksum-image.c:801
 msgid "Hashing algorithm to be used:"
 msgstr "Algoritmo de «hash» que usar:"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1324
-#: ../src/plugins/checksum/burn-checksum-image.c:777
+#: ../src/plugins/checksum/burn-checksum-files.c:1351
+#: ../src/plugins/checksum/burn-checksum-image.c:804
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1326
-#: ../src/plugins/checksum/burn-checksum-image.c:779
+#: ../src/plugins/checksum/burn-checksum-files.c:1353
+#: ../src/plugins/checksum/burn-checksum-image.c:806
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1328
-#: ../src/plugins/checksum/burn-checksum-image.c:781
+#: ../src/plugins/checksum/burn-checksum-files.c:1355
+#: ../src/plugins/checksum/burn-checksum-image.c:808
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:109
+#: ../src/plugins/checksum/burn-checksum-image.c:111
 #, c-format
 msgid "Data could not be read (%s)"
 msgstr "No se pudieron leer los datos (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:344
-#: ../src/plugins/checksum/burn-checksum-image.c:417
+#: ../src/plugins/checksum/burn-checksum-image.c:346
+#: ../src/plugins/checksum/burn-checksum-image.c:419
 msgid "Creating image checksum"
 msgstr "Creando suma de verificación"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:750
+#: ../src/plugins/checksum/burn-checksum-image.c:777
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr ""
 "Permite verificar la integridad de los datos del disco después de grabarlo"
@@ -4566,7 +4582,7 @@ msgid "Please only add files with video contents"
 msgstr "Añada sólo archivos con un contenido de vídeo"
 
 #: ../src/plugins/dvdauthor/burn-dvdauthor.c:302
-#: ../src/plugins/vcdimager/burn-vcdimager.c:423
+#: ../src/plugins/vcdimager/burn-vcdimager.c:425
 msgid "Creating file layout"
 msgstr "Creando disposición de archivo"
 
@@ -4585,7 +4601,7 @@ msgstr ""
 "Vob permite transcodificar cualquier archivo de vídeo a un formato adecuado "
 "para DVD de vídeo"
 
-#: ../src/plugins/vcdimager/burn-vcdimager.c:472
+#: ../src/plugins/vcdimager/burn-vcdimager.c:474
 msgid "Use vcdimager to create SVCDs"
 msgstr "Usar vcdimager para crear SVCD"
 
