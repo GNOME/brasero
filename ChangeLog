@@ -1,5 +1,12 @@
 2008-12-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Use GConf provided function to escape plugin names
+
+	* src/burn-plugin-manager.c (brasero_plugin_manager_init):
+	* src/burn-plugin.c (brasero_plugin_get_gconf_priority_key):
+
+2008-12-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Adding forgotten string to be translated. (must be backported)
 	patch by Gabor Kelemen
 

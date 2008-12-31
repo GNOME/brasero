@@ -475,11 +475,6 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 			continue;
 		}
 
-		g_signal_connect (plugin,
-				  "activated",
-				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
-				  self);
-
 		if (brasero_plugin_get_gtype (plugin) == G_TYPE_NONE) {
 			BRASERO_BURN_LOG ("Load failure, no GType was returned %s",
 					  brasero_plugin_get_error (plugin));
@@ -487,7 +482,12 @@ brasero_plugin_manager_init (BraseroPluginManager *self)
 			continue;
 		}
 
-		g_assert(brasero_plugin_get_name(plugin));
+		g_signal_connect (plugin,
+				  "activated",
+				  G_CALLBACK (brasero_plugin_manager_plugin_state_changed),
+				  self);
+
+		g_assert (brasero_plugin_get_name(plugin));
 		priv->plugins = g_slist_prepend (priv->plugins, plugin);
 	}
 	g_dir_close (directory);

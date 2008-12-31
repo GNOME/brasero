@@ -395,13 +395,11 @@ brasero_plugin_get_gconf_priority_key (BraseroPlugin *self)
 	else if (brasero_plugin_can_convert (self) == BRASERO_BURN_OK)
 		type = 2;
 
-	gconf_name = g_strdup (priv->name);
-	g_strdelimit (gconf_name, " +()", '_');
+	gconf_name = gconf_escape_key (priv->name, -1);
 	priority_path = g_strdup_printf ("%s/%s-%s",
 					 BRASERO_PLUGIN_PRIORITY_KEY,
 					 gconf_name,
 					 category [type]);
-
 	g_free (gconf_name);
 	g_object_unref (caps);
 
