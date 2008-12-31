@@ -1,3 +1,28 @@
+2008-12-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Avoid a possible race condition when stopping threads in plugins
+
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_thread), (brasero_checksum_files_stop),
+	(brasero_checksum_files_init), (brasero_checksum_files_finalize):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_thread), (brasero_checksum_image_stop),
+	(brasero_checksum_image_init), (brasero_checksum_image_finalize):
+	* src/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_write_image_thread), (brasero_dvdcss_stop_real),
+	(brasero_dvdcss_init), (brasero_dvdcss_finalize):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_thread_started),
+	(brasero_libisofs_create_volume_thread),
+	(brasero_libisofs_stop_real), (brasero_libisofs_init),
+	(brasero_libisofs_finalize):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_thread), (brasero_local_track_stop),
+	(brasero_local_track_finalize), (brasero_local_track_init):
+	* src/plugins/local-track/burn-uri.c (brasero_burn_uri_thread),
+	(brasero_burn_uri_stop), (brasero_burn_uri_finalize),
+	(brasero_burn_uri_init):
+
 2008-12-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Small cleanup and (failed) attempt to rescan a drive after a change occured

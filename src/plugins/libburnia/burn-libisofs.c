@@ -60,6 +60,8 @@ struct _BraseroLibisofsPrivate {
 
 	GError *error;
 	GThread *thread;
+	GMutex *mutex;
+	GCond *cond;
 	guint thread_id;
 
 	guint cancel:1;
@@ -279,7 +281,12 @@ brasero_libisofs_thread_started (gpointer data)
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
 	g_thread_exit (NULL);
 	return NULL;
 }
@@ -804,7 +811,12 @@ end:
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_libisofs_create_volume_thread_finished, self);
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
 	g_thread_exit (NULL);
 
 	return NULL;
@@ -881,14 +893,16 @@ brasero_libisofs_stop_real (BraseroLibisofs *self)
 		priv->ctx = NULL;
 	}
 
+	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
 		if (priv->libburn_src)
 			priv->libburn_src->cancel (priv->libburn_src);
 
 		priv->cancel = 1;
-		g_thread_join (priv->thread);
+		g_cond_wait (priv->cond, priv->mutex);
 		priv->cancel = 0;
 	}
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->thread_id) {
 		g_source_remove (priv->thread_id);
@@ -929,7 +943,13 @@ brasero_libisofs_class_init (BraseroLibisofsClass *klass)
 
 static void
 brasero_libisofs_init (BraseroLibisofs *obj)
-{ }
+{
+	BraseroLibisofsPrivate *priv;
+
+	priv = BRASERO_LIBISOFS_PRIVATE (obj);
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+}
 
 static void
 brasero_libisofs_clean_output (BraseroLibisofs *self)
@@ -951,11 +971,23 @@ static void
 brasero_libisofs_finalize (GObject *object)
 {
 	BraseroLibisofs *cobj;
+	BraseroLibisofsPrivate *priv;
 
 	cobj = BRASERO_LIBISOFS (object);
+	priv = BRASERO_LIBISOFS_PRIVATE (object);
 
 	brasero_libisofs_stop_real (cobj);
 	brasero_libisofs_clean_output (cobj);
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
+	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }

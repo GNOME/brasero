@@ -54,6 +54,8 @@ BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BRASERO_TYPE_JOB, Bra
 struct _BraseroDvdcssPrivate {
 	GError *error;
 	GThread *thread;
+	GMutex *mutex;
+	GCond *cond;
 	guint thread_id;
 
 	guint cancel:1;
@@ -504,7 +506,12 @@ end:
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_dvdcss_thread_finished, self);
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
 	g_thread_exit (NULL);
 
 	return NULL;
@@ -560,11 +567,14 @@ brasero_dvdcss_stop_real (BraseroDvdcss *self)
 	BraseroDvdcssPrivate *priv;
 
 	priv = BRASERO_DVDCSS_PRIVATE (self);
+
+	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
 		priv->cancel = 1;
-		g_thread_join (priv->thread);
+		g_cond_wait (priv->cond, priv->mutex);
 		priv->cancel = 0;
 	}
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->thread_id) {
 		g_source_remove (priv->thread_id);
@@ -606,12 +616,34 @@ brasero_dvdcss_class_init (BraseroDvdcssClass *klass)
 
 static void
 brasero_dvdcss_init (BraseroDvdcss *obj)
-{ }
+{
+	BraseroDvdcssPrivate *priv;
+
+	priv = BRASERO_DVDCSS_PRIVATE (obj);
+
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+}
 
 static void
 brasero_dvdcss_finalize (GObject *object)
 {
+	BraseroDvdcssPrivate *priv;
+
+	priv = BRASERO_DVDCSS_PRIVATE (object);
+
 	brasero_dvdcss_stop_real (BRASERO_DVDCSS (object));
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

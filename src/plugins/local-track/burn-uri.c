@@ -51,6 +51,8 @@ struct _BraseroBurnURIPrivate {
 
 	guint thread_id;
 	GThread *thread;
+	GMutex *mutex;
+	GCond *cond;
 
 	GError *error;
 };
@@ -343,7 +345,12 @@ end:
 	 if (!g_cancellable_is_cancelled (priv->cancel))
 		priv->thread_id = g_idle_add ((GSourceFunc) brasero_burn_uri_thread_finished, self);
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->mutex);
+ 
 	g_thread_exit (NULL);
 
 	return NULL;
@@ -465,7 +472,7 @@ brasero_burn_uri_start (BraseroJob *job,
 
 static BraseroBurnResult
 brasero_burn_uri_stop (BraseroJob *job,
-			  GError **error)
+		       GError **error)
 {
 	BraseroBurnURIPrivate *priv = BRASERO_BURN_URI_PRIVATE (job);
 
@@ -474,8 +481,10 @@ brasero_burn_uri_stop (BraseroJob *job,
 		g_cancellable_cancel (priv->cancel);
 	}
 
+	g_mutex_lock (priv->mutex);
 	if (priv->thread)
-		g_thread_join (priv->thread);
+		g_cond_wait (priv->cond, priv->mutex);
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->cancel) {
 		/* unref it after the thread has stopped */
@@ -499,6 +508,18 @@ brasero_burn_uri_stop (BraseroJob *job,
 static void
 brasero_burn_uri_finalize (GObject *object)
 {
+	BraseroBurnURIPrivate *priv = BRASERO_BURN_URI_PRIVATE (object);
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -519,7 +540,12 @@ brasero_burn_uri_class_init (BraseroBurnURIClass *klass)
 
 static void
 brasero_burn_uri_init (BraseroBurnURI *obj)
-{ }
+{
+	BraseroBurnURIPrivate *priv = BRASERO_BURN_URI_PRIVATE (obj);
+
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+}
 
 static BraseroBurnResult
 brasero_burn_uri_export_caps (BraseroPlugin *plugin, gchar **error)

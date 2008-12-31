@@ -63,6 +63,8 @@ struct _BraseroChecksumImagePrivate {
 
 	/* this is for the thread and the end of it */
 	GThread *thread;
+	GMutex *mutex;
+	GCond *cond;
 	gint end_id;
 
 	guint cancel;
@@ -577,7 +579,12 @@ brasero_checksum_image_thread (gpointer data)
 						brasero_checksum_image_destroy);
 	}
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
 	g_thread_exit (NULL);
 	return NULL;
 }
@@ -671,12 +678,14 @@ brasero_checksum_image_stop (BraseroJob *job,
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (job);
 
+	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
 		priv->cancel = 1;
-		g_thread_join (priv->thread);
+		g_cond_wait (priv->cond, priv->mutex);
 		priv->cancel = 0;
 		priv->thread = NULL;
 	}
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->end_id) {
 		g_source_remove (priv->end_id);
@@ -693,7 +702,13 @@ brasero_checksum_image_stop (BraseroJob *job,
 
 static void
 brasero_checksum_image_init (BraseroChecksumImage *obj)
-{ }
+{	BraseroChecksumImagePrivate *priv;
+
+	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (obj);
+
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+}
 
 static void
 brasero_checksum_image_finalize (GObject *object)
@@ -702,12 +717,14 @@ brasero_checksum_image_finalize (GObject *object)
 	
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (object);
 
+	g_mutex_lock (priv->mutex);
 	if (priv->thread) {
 		priv->cancel = 1;
-		g_thread_join (priv->thread);
+		g_cond_wait (priv->cond, priv->mutex);
 		priv->cancel = 0;
 		priv->thread = NULL;
 	}
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->end_id) {
 		g_source_remove (priv->end_id);
@@ -717,6 +734,16 @@ brasero_checksum_image_finalize (GObject *object)
 	if (priv->checksum) {
 		g_checksum_free (priv->checksum);
 		priv->checksum = NULL;
+	}
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

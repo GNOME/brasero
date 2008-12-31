@@ -67,6 +67,8 @@ struct _BraseroLocalTrackPrivate {
 
 	guint thread_id;
 	GThread *thread;
+	GMutex *mutex;
+	GCond *cond;
 
 	GSList *src_list;
 	GSList *dest_list;
@@ -760,7 +762,12 @@ end:
 	if (!g_cancellable_is_cancelled (priv->cancel))
 		priv->thread_id = g_idle_add ((GSourceFunc) brasero_local_track_thread_finished, self);
 
+	/* End thread */
+	g_mutex_lock (priv->mutex);
 	priv->thread = NULL;
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->mutex);
+
 	g_thread_exit (NULL);
 
 	return NULL;
@@ -985,8 +992,10 @@ brasero_local_track_stop (BraseroJob *job,
 		g_cancellable_cancel (priv->cancel);
 	}
 
+	g_mutex_lock (priv->mutex);
 	if (priv->thread)
-		g_thread_join (priv->thread);
+		g_cond_wait (priv->cond, priv->mutex);
+	g_mutex_unlock (priv->mutex);
 
 	if (priv->cancel) {
 		/* unref it after the thread has stopped */
@@ -1037,6 +1046,18 @@ brasero_local_track_stop (BraseroJob *job,
 static void
 brasero_local_track_finalize (GObject *object)
 {
+	BraseroLocalTrackPrivate *priv = BRASERO_LOCAL_TRACK_PRIVATE (object);
+
+	if (priv->mutex) {
+		g_mutex_free (priv->mutex);
+		priv->mutex = NULL;
+	}
+
+	if (priv->cond) {
+		g_cond_free (priv->cond);
+		priv->cond = NULL;
+	}
+
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -1057,7 +1078,12 @@ brasero_local_track_class_init (BraseroLocalTrackClass *klass)
 
 static void
 brasero_local_track_init (BraseroLocalTrack *obj)
-{ }
+{
+	BraseroLocalTrackPrivate *priv = BRASERO_LOCAL_TRACK_PRIVATE (obj);
+
+	priv->mutex = g_mutex_new ();
+	priv->cond = g_cond_new ();
+}
 
 static BraseroBurnResult
 brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
