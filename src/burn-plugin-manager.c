@@ -239,7 +239,6 @@ end:
 						      self,
 						      NULL,
 						      NULL);
-	
 	g_object_unref (client);
 }
 
