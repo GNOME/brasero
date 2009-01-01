@@ -77,7 +77,6 @@ enum {
 
 static GObjectClass *parent_class = NULL;
 
-#define BRASERO_CONF_DIR "/apps/brasero"
 #define BRASERO_SEARCH_ENTRY_HISTORY_KEY "/apps/brasero/search_history"
 #define BRASERO_SEARCH_ENTRY_MAX_HISTORY_ITEMS	10
 
@@ -347,8 +346,6 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 	/* Set up GConf Client */
 	obj->priv->client = gconf_client_get_default ();
 	if (obj->priv->client) {
-		gconf_client_add_dir (obj->priv->client, BRASERO_CONF_DIR,
-				      GCONF_CLIENT_PRELOAD_NONE, &error);
 		if (error) {
 			g_warning ("ERROR : %s\n", error->message);
 			g_error_free (error);

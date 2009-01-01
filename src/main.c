@@ -38,6 +38,8 @@
 
 #include <gtk/gtk.h>
 
+#include <gconf/gconf-client.h>
+
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
@@ -71,6 +73,8 @@ gint disc_check;
 gint open_ncb;
 gint parent_window;
 gint debug;
+
+#define BRASERO_CONF_DIR "/apps/brasero"
 
 static const GOptionEntry options [] = {
 	{ "project", 'p', 0, G_OPTION_ARG_STRING, &project_uri,
@@ -440,6 +444,7 @@ brasero_app_get_default (void)
 int
 main (int argc, char **argv)
 {
+	GConfClient *client;
 
 #ifdef BUILD_GNOME2
 	GnomeProgram *program;
@@ -487,6 +492,12 @@ main (int argc, char **argv)
 	/* This is for missing codec automatic install */
 	gst_pb_utils_init ();
 
+	client = gconf_client_get_default ();
+	gconf_client_add_dir (client,
+			      BRASERO_CONF_DIR,
+			      GCONF_CLIENT_PRELOAD_NONE,
+			      NULL);
+
 	brasero_burn_set_debug (debug);
 	brasero_burn_library_init ();
 
@@ -501,6 +512,9 @@ main (int argc, char **argv)
 	current_app = NULL;
 
 	brasero_burn_library_shutdown ();
+
+	gconf_client_remove_dir (client, BRASERO_CONF_DIR, NULL);
+	g_object_unref (client);
 
 #ifdef BUILD_GNOME2
 
