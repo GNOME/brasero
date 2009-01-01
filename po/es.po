@@ -7,14 +7,14 @@
 # Sergio Rivadero <sergiorivadero@argentina.com>, 2006.
 # Rafael Bermúdez <rafaelbermudez@gmail.com>, 2006.
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2008-12-31 13:57+0000\n"
-"PO-Revision-Date: 2008-12-31 15:39+0100\n"
+"POT-Creation-Date: 2009-01-01 13:49+0000\n"
+"PO-Revision-Date: 2009-01-01 19:29+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -46,16 +46,19 @@ msgstr "imposible obtener la ruta del archivo local"
 msgid "Copying files locally"
 msgstr "Copiando archivo localmente"
 
-#: ../src/plugins/local-track/burn-uri.c:557
-msgid ""
-"Burn_uri allows burning files added to \"CD/DVD Creator Folder\" in nautilus"
-msgstr ""
-"Grabar _URI permite grabar archivos añadidos en «Carpeta del creador de CD/"
-"DVD» en Nautilus"
-
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/local-track/burn-uri.c:559
 #: ../nautilus/nautilus-burn-bar.c:134
 msgid "CD/DVD Creator Folder"
 msgstr "Carpeta del creador de CD/DVD"
+
+#: ../src/plugins/local-track/burn-uri.c:560
+msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in nautilus"
+msgstr ""
+"Permite grabar archivos añadidos a la «Carpeta del creador de CD/DVD» en "
+"Nautilus"
 
 #: ../nautilus/nautilus-burn-bar.c:138
 msgid "Write to Disc"
@@ -150,8 +153,8 @@ msgstr "Seleccionar otra imagen."
 msgid "Select Image File"
 msgstr "Seleccionar el archivo de imagen"
 
-#: ../src/brasero-src-image.c:574 ../src/brasero-search-entry.c:612
-#: ../src/brasero-search-entry.c:652 ../src/brasero-search-entry.c:691
+#: ../src/brasero-src-image.c:574 ../src/brasero-search-entry.c:609
+#: ../src/brasero-search-entry.c:649 ../src/brasero-search-entry.c:688
 #: ../src/brasero-search-beagle.c:473 ../src/brasero-file-chooser.c:210
 #: ../src/brasero-project.c:1434
 msgid "All files"
@@ -1006,29 +1009,30 @@ msgstr "Activado"
 msgid "Copyright %s"
 msgstr "Copyright %s"
 
-#: ../src/brasero-plugin-manager-ui.c:578
-#: ../src/brasero-plugin-manager-ui.c:947
+#: ../src/brasero-plugin-manager-ui.c:587
+#: ../src/brasero-plugin-manager-ui.c:957
 msgid "_About"
 msgstr "_Acerca de"
 
-#: ../src/brasero-plugin-manager-ui.c:586
-#: ../src/brasero-plugin-manager-ui.c:953
+#: ../src/brasero-plugin-manager-ui.c:595
+#: ../src/brasero-plugin-manager-ui.c:963
 msgid "C_onfigure"
 msgstr "C_onfigurar"
 
-#: ../src/brasero-plugin-manager-ui.c:596
+#: ../src/brasero-plugin-manager-ui.c:605
 msgid "A_ctivate"
 msgstr "A_ctivar"
 
-#: ../src/brasero-plugin-manager-ui.c:608
+#: ../src/brasero-plugin-manager-ui.c:617
 msgid "Ac_tivate All"
 msgstr "Ac_tivar todos"
 
-#: ../src/brasero-plugin-manager-ui.c:613
+#: ../src/brasero-plugin-manager-ui.c:622
 msgid "_Deactivate All"
 msgstr "_Desactivar todos"
 
-#: ../src/brasero-plugin-option.c:393
+#. Use the translated name for the plugin.
+#: ../src/brasero-plugin-option.c:394
 #, c-format
 msgid "Options for plugin %s"
 msgstr "Opciones para el complemento %s"
@@ -1056,47 +1060,47 @@ msgstr "Tiempo restante estimado:%02i:%02i:%02i"
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB de %i MiB"
 
-#: ../src/brasero-search-entry.c:189
+#: ../src/brasero-search-entry.c:188
 msgid "Search:"
 msgstr "Buscar:"
 
-#: ../src/brasero-search-entry.c:273
+#: ../src/brasero-search-entry.c:272
 msgid "In _text documents"
 msgstr "En documentos de _texto"
 
-#: ../src/brasero-search-entry.c:288
+#: ../src/brasero-search-entry.c:287
 msgid "In _pictures"
 msgstr "En _imágenes"
 
-#: ../src/brasero-search-entry.c:303
+#: ../src/brasero-search-entry.c:302
 msgid "In _music"
 msgstr "En _música"
 
-#: ../src/brasero-search-entry.c:318
+#: ../src/brasero-search-entry.c:317
 msgid "In _videos"
 msgstr "En _vídeos"
 
-#: ../src/brasero-search-entry.c:335
+#: ../src/brasero-search-entry.c:334
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Escriba las palabras clave o elija «Todos los archivos» desde el menú"
 
-#: ../src/brasero-search-entry.c:337
+#: ../src/brasero-search-entry.c:336
 msgid "Select if you want to search among image files only"
 msgstr "Seleccione si quiere buscar solamente entre los archivos de imágenes"
 
-#: ../src/brasero-search-entry.c:339
+#: ../src/brasero-search-entry.c:338
 msgid "Select if you want to search among video files only"
 msgstr "Seleccione si desea buscar solamente entre los archivos de vídeo"
 
-#: ../src/brasero-search-entry.c:341
+#: ../src/brasero-search-entry.c:340
 msgid "Select if you want to search among audio files only"
 msgstr "Seleccione si desea buscar solamente entre archivos de sonido"
 
-#: ../src/brasero-search-entry.c:343
+#: ../src/brasero-search-entry.c:342
 msgid "Select if you want to search among your text documents only"
 msgstr "Seleccione si desea buscar solamente entre documentos de texto"
 
-#: ../src/brasero-search-entry.c:345
+#: ../src/brasero-search-entry.c:344
 msgid "Click to start the search"
 msgstr "Pulse para iniciar la búsqueda"
 
@@ -1155,6 +1159,11 @@ msgstr "Artista:"
 #: ../src/brasero-song-properties.c:195 ../src/brasero-multi-song-props.c:258
 msgid "Composer:"
 msgstr "Compositor:"
+
+#: ../src/brasero-song-properties.c:220 ../src/brasero-drive-properties.c:576
+#: ../src/brasero-tool-dialog.c:267 ../src/brasero-multi-song-props.c:303
+msgid "Options"
+msgstr "Opciones"
 
 #: ../src/brasero-song-properties.c:229
 msgid "Song start:"
@@ -1951,16 +1960,17 @@ msgstr ""
 
 #: ../src/brasero-data-disc.c:1029
 msgid ""
-"The size of the file is over 2 GiB. This isn't supported by ISO9660 standard "
-"in his first and second versions (the most widespread ones).\n"
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not "
+"supported by ISO9660 standard in its first and second versions (the most "
+"widespread ones).\n"
 "It is recommended to use the third version of ISO9660 standard which is "
 "supported by most of the operating systems including Linux and all versions "
 "of Windows ©.\n"
-"A known exception is MacOS X that cannot read images created with version 3 "
-"of ISO9660 standard."
+"However MacOS X cannot read images created with version 3 of ISO9660 "
+"standard."
 msgstr ""
-"El tamaño del archivo es más grande de 2 GiB. Esto no está soportado por el "
-"estándar ISO9660 en su primera y segunda versiones (las más extendidas).\n"
+"El tamaño del archivo es más grande de 2 GiB. El estándar ISO9660 no lo "
+"soporta en su primera y segunda versiones (las más extendidas).\n"
 "Se recomienda usar la versión 3 del estándar ISO9660, soportado por la "
 "mayoría de los sistemas operativos incluyendo GNU/Linux y todas las "
 "versiones de Windows ©.\n"
@@ -2262,11 +2272,6 @@ msgstr "Dejar el disco _abierto para añadir otros archivos después"
 msgid "Allow to add more data to the disc later"
 msgstr "Permitir añadir más datos al disco más tarde"
 
-#: ../src/brasero-drive-properties.c:576 ../src/brasero-tool-dialog.c:267
-#: ../src/brasero-multi-song-props.c:303
-msgid "Options"
-msgstr "Opciones"
-
 #: ../src/brasero-drive-properties.c:595
 msgid "_Temporary directory free space:"
 msgstr "Espacio libre del directorio _temporal:"
@@ -2476,11 +2481,11 @@ msgstr "Estimación del tamaño del proyecto"
 msgid "Please add songs to the project."
 msgstr "Añada canciones al proyecto."
 
-#: ../src/brasero-project.c:881 ../src/brasero-project.c:890 ../src/main.c:337
+#: ../src/brasero-project.c:881 ../src/brasero-project.c:890 ../src/main.c:341
 msgid "The project is empty"
 msgstr "El proyecto está vacío"
 
-#: ../src/brasero-project.c:889 ../src/main.c:336
+#: ../src/brasero-project.c:889 ../src/main.c:340
 msgid "Please add files to the project."
 msgstr "Añada archivos al proyecto."
 
@@ -2563,7 +2568,7 @@ msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (disco de vídeo)"
 
 #: ../src/brasero-project.c:1671 ../src/brasero-project-manager.c:1072
-#: ../src/main.c:298 ../src/main.c:322
+#: ../src/main.c:302 ../src/main.c:326
 msgid "Error while loading the project."
 msgstr "Error al cargar proyecto."
 
@@ -3103,7 +3108,7 @@ msgstr "No se pudo encontrar un formato para la imagen temporal"
 #. * ("grafted")
 #: ../src/burn.c:2648 ../src/burn-caps.c:108 ../src/burn-caps.c:1351
 #: ../src/burn-job.c:1226 ../src/burn-job.c:1235
-#: ../src/burn-mkisofs-base.c:297 ../src/main.c:295 ../src/main.c:319
+#: ../src/burn-mkisofs-base.c:297 ../src/main.c:299 ../src/main.c:323
 #: ../src/plugins/cdrkit/burn-genisoimage.c:359
 #: ../src/plugins/cdrkit/burn-readom.c:111
 #: ../src/plugins/cdrkit/burn-readom.c:321
@@ -3174,7 +3179,7 @@ msgstr "«%s» ya existe"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../src/burn-job.c:775 ../src/main.c:293 ../src/main.c:317
+#: ../src/burn-job.c:775 ../src/main.c:297 ../src/main.c:321
 #: ../src/plugins/cdrtools/burn-cdrecord.c:635
 #: ../src/plugins/libburnia/burn-libburn.c:691
 #: ../src/plugins/transcode/burn-transcode.c:594
@@ -3323,78 +3328,78 @@ msgstr ""
 msgid "Process \"%s\" ended with an error code (%i)"
 msgstr "El proceso «%s» terminó con un error de código (%i)"
 
-#: ../src/main.c:77
+#: ../src/main.c:81
 msgid "Open the specified project"
 msgstr "Abrir el proyecto especificado"
 
-#: ../src/main.c:78
+#: ../src/main.c:82
 msgid "PROJECT"
 msgstr "PROYECTO"
 
-#: ../src/main.c:83
+#: ../src/main.c:87
 msgid "Open the specified playlist as an audio project"
 msgstr "Abrir la lista de reproducción especificada como un proyecto de sonido"
 
-#: ../src/main.c:84
+#: ../src/main.c:88
 msgid "PLAYLIST"
 msgstr "LISTA DE REPRODUCCIÓN"
 
-#: ../src/main.c:89
+#: ../src/main.c:93
 msgid "Open an audio project adding the URIs given on the command line"
 msgstr ""
 "Abre un proyecto de sonido añadiendo los URI dados en la línea de comandos"
 
-#: ../src/main.c:93
+#: ../src/main.c:97
 msgid "Open a data project adding the URIs given on the command line"
 msgstr ""
 "Abre un proyecto de datos añadiendo los URI dados en la línea de comandos"
 
-#: ../src/main.c:97
+#: ../src/main.c:101
 msgid "Copy a disc"
 msgstr "Copiar un disco"
 
-#: ../src/main.c:98
+#: ../src/main.c:102
 msgid "PATH TO DEVICE"
 msgstr "RUTA AL DISPOSITIVO"
 
-#: ../src/main.c:101
+#: ../src/main.c:105
 msgid "Cover to use"
 msgstr "Carátula que usar"
 
-#: ../src/main.c:102
+#: ../src/main.c:106
 msgid "PATH TO COVER"
 msgstr "RUTA A LA CARÁTULA"
 
-#: ../src/main.c:105
+#: ../src/main.c:109
 msgid "Open a video project adding the URIs given on the command line"
 msgstr ""
 "Abre un proyecto de vídeo añadiendo los URI dados en la línea de comandos"
 
-#: ../src/main.c:109
+#: ../src/main.c:113
 msgid "Uri of an image file to be burnt (autodetected)"
 msgstr "URI del archivo de imagen para grabar (autodetectado)"
 
-#: ../src/main.c:110
+#: ../src/main.c:114
 msgid "PATH TO PLAYLIST"
 msgstr "RUTA A LA LISTA DE REPRODUCCIÓN"
 
-#: ../src/main.c:113
+#: ../src/main.c:117
 msgid "Force brasero to display the project selection page"
 msgstr "Obligar a Brasero a mostrar la página de selección de proyectos"
 
-#: ../src/main.c:117
+#: ../src/main.c:121
 msgid "Open the blank disc dialog"
 msgstr "Abrir el diálogo de borrar disco"
 
-#: ../src/main.c:121
+#: ../src/main.c:125
 msgid "Open the check disc dialog"
 msgstr "Abrir el diálogo de comprobar disco"
 
-#: ../src/main.c:125
+#: ../src/main.c:129
 msgid "Burn the contents of burn:// URI"
 msgstr "Grabar el contenido del URI burn://"
 
-#: ../src/main.c:129
+#: ../src/main.c:133
 msgid ""
 "Burn the specified project and REMOVE it.\n"
 "This option is mainly useful for integration use with other applications."
@@ -3402,7 +3407,7 @@ msgstr ""
 "Grabar el proyecto especificado y ELIMINARLO.\n"
 "Esta opción es útil para la integración con otras aplicaciones."
 
-#: ../src/main.c:130
+#: ../src/main.c:134
 msgid "PATH"
 msgstr "RUTA"
 
@@ -3411,31 +3416,31 @@ msgstr "RUTA"
 #. * brasero will be set to be always on top of the window identified by
 #. * xid. In other word, the window with the given xid will become brasero
 #. * parent as if brasero was a dialog for the parent application
-#: ../src/main.c:138
+#: ../src/main.c:142
 msgid "The XID of the parent window"
 msgstr "El XID de la ventana padre"
 
-#: ../src/main.c:141
+#: ../src/main.c:145
 msgid "Display debug statements on stdout"
 msgstr "Mostrar estadísticas de depuración en la salida estándar"
 
-#: ../src/main.c:224
+#: ../src/main.c:228
 msgid "Incompatible command line options used."
 msgstr "Se usaron opciones de línea de comandos incompatibles."
 
-#: ../src/main.c:225
+#: ../src/main.c:229
 msgid "Only one option can be given at a time"
 msgstr "Solamente se puede especificar una opción por vez."
 
-#: ../src/main.c:450
+#: ../src/main.c:455
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI]…"
 
-#: ../src/main.c:472
+#: ../src/main.c:477
 msgid "CD/DVD burning"
 msgstr "Grabación de CD/DVD"
 
-#: ../src/main.c:479
+#: ../src/main.c:484
 #, c-format
 msgid "Please type %s --help to see all available options\n"
 msgstr "Escriba «%s» --help para ver todas las opciones disponibles\n"
@@ -3769,14 +3774,24 @@ msgstr "No se pudo crear un directorio (%s)"
 msgid "Copying checksum file"
 msgstr "Copiando el archivo de verificación de suma"
 
-#: ../src/plugins/local-track/burn-local-image.c:1095
-msgid "Local-track allows to burn files not stored locally"
-msgstr ""
-"local-track permite grabar archivos que no están almacenados localmente"
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/local-track/burn-local-image.c:1097
+msgid "File Downloader"
+msgstr "Descargador de archivos"
+
+#: ../src/plugins/local-track/burn-local-image.c:1098
+msgid "Allows to burn files not stored locally"
+msgstr "Permite grabar archivos que no están almacenados localmente"
 
 #: ../src/plugins/transcode/burn-normalize.c:473
 msgid "Normalizing tracks"
 msgstr "Normalizando pistas"
+
+#: ../src/plugins/transcode/burn-normalize.c:564
+msgid "Normalize"
+msgstr "Normalizar"
 
 #: ../src/plugins/transcode/burn-normalize.c:565
 msgid "Normalize allows to set consistent sound levels between tracks"
@@ -4335,27 +4350,34 @@ msgstr "Comprobando la integridad del archivo"
 msgid "Some files may be corrupted on the disc"
 msgstr "Algunos archivos del disco pueden estar corruptos"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1309
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/checksum/burn-checksum-files.c:1311
+msgid "File Checksum"
+msgstr "Suma de verificación del archivo"
+
+#: ../src/plugins/checksum/burn-checksum-files.c:1312
 msgid "Allows to check file integrities on a disc"
 msgstr "Permite comprobar la integridad de los archivos en el disco"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1348
-#: ../src/plugins/checksum/burn-checksum-image.c:801
+#: ../src/plugins/checksum/burn-checksum-files.c:1351
+#: ../src/plugins/checksum/burn-checksum-image.c:804
 msgid "Hashing algorithm to be used:"
 msgstr "Algoritmo de «hash» que usar:"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1351
-#: ../src/plugins/checksum/burn-checksum-image.c:804
+#: ../src/plugins/checksum/burn-checksum-files.c:1354
+#: ../src/plugins/checksum/burn-checksum-image.c:807
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1353
-#: ../src/plugins/checksum/burn-checksum-image.c:806
+#: ../src/plugins/checksum/burn-checksum-files.c:1356
+#: ../src/plugins/checksum/burn-checksum-image.c:809
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1355
-#: ../src/plugins/checksum/burn-checksum-image.c:808
+#: ../src/plugins/checksum/burn-checksum-files.c:1358
+#: ../src/plugins/checksum/burn-checksum-image.c:811
 msgid "SHA256"
 msgstr "SHA256"
 
@@ -4369,7 +4391,14 @@ msgstr "No se pudieron leer los datos (%s)"
 msgid "Creating image checksum"
 msgstr "Creando suma de verificación"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:777
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/checksum/burn-checksum-image.c:779
+msgid "Image Checksum"
+msgstr "Suma de verificación de imagen"
+
+#: ../src/plugins/checksum/burn-checksum-image.c:780
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr ""
 "Permite verificar la integridad de los datos del disco después de grabarlo"
