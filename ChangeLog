@@ -1,13 +1,22 @@
 2009-01-01  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Silenced a warning related to GConf initialization
+	Allow the use of translated names for plugins
+
+	* src/brasero-plugin-manager-ui.c (about_button_cb),
+	(plugin_manager_ui_view_info_cell_cb), (name_search_cb),
+	(model_name_sort_func):
+	* src/brasero-plugin-option.c (brasero_plugin_option_set_plugin):
+
+2009-01-01  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Silenced a warning related to GConf initialization (backportable)
 
 	* src/brasero-search-entry.c (brasero_search_entry_init):
 	* src/main.c (main):
 
 2008-12-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Use GConf provided function to escape plugin names
+	Use GConf provided function to escape plugin names (backportable)
 
 	* src/burn-plugin-manager.c (brasero_plugin_manager_init):
 	* src/burn-plugin.c (brasero_plugin_get_gconf_priority_key):

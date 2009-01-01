@@ -390,7 +390,8 @@ brasero_plugin_option_set_plugin (BraseroPluginOption *self,
 
 	priv = BRASERO_PLUGIN_OPTION_PRIVATE (self);
 
-	tmp = g_strdup_printf (_("Options for plugin %s"), brasero_plugin_get_name (plugin));
+	/* Use the translated name for the plugin. */
+	tmp = g_strdup_printf (_("Options for plugin %s"), _(brasero_plugin_get_name (plugin)));
 	string = g_strdup_printf ("<b>%s</b>", tmp);
 	g_free (tmp);
 

@@ -143,7 +143,7 @@ about_button_cb (GtkWidget          *button,
 				     brasero_plugin_get_author (plugin));
 
 	dialog = g_object_new (GTK_TYPE_ABOUT_DIALOG,
-			       "program-name", brasero_plugin_get_name (plugin),
+			       "program-name", _(brasero_plugin_get_name (plugin)),
 			       "copyright", copyright,
 			       "authors", authors,
 			       "comments", brasero_plugin_get_description (plugin),
@@ -216,12 +216,16 @@ plugin_manager_ui_view_info_cell_cb (GtkTreeViewColumn *tree_column,
 
 	if (brasero_plugin_get_error (plugin))
 		text = g_markup_printf_escaped ("<b>%s</b>\n%s\n<i>%s</i>",
-						brasero_plugin_get_name (plugin),
+						/* Use the translated name of 
+						 * the plugin. */
+						_(brasero_plugin_get_name (plugin)),
 						brasero_plugin_get_description (plugin),
 						brasero_plugin_get_error (plugin));
 	else
 		text = g_markup_printf_escaped ("<b>%s</b>\n%s",
-						brasero_plugin_get_name (plugin),
+						/* Use the translated name of 
+						 * the plugin. */
+						_(brasero_plugin_get_name (plugin)),
 						brasero_plugin_get_description (plugin));
 
 	g_object_set (G_OBJECT (cell),
@@ -505,8 +509,13 @@ name_search_cb (GtkTreeModel *model,
 	if (!plugin)
 		return FALSE;
 
-	normalized_string = g_utf8_normalize (brasero_plugin_get_name (plugin), -1, G_NORMALIZE_ALL);
-	normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
+	/* Use translated name for the plugin */
+	normalized_string = g_utf8_normalize (_(brasero_plugin_get_name (plugin)),
+					      -1,
+					      G_NORMALIZE_ALL);
+	normalized_key = g_utf8_normalize (key,
+					   -1,
+					   G_NORMALIZE_ALL);
 	case_normalized_string = g_utf8_casefold (normalized_string, -1);
 	case_normalized_key = g_utf8_casefold (normalized_key, -1);
 
@@ -794,8 +803,9 @@ model_name_sort_func (GtkTreeModel *model,
 	gtk_tree_model_get (model, iter1, PLUGIN_COLUMN, &plugin1, -1);
 	gtk_tree_model_get (model, iter2, PLUGIN_COLUMN, &plugin2, -1);
 
-	return g_utf8_collate (brasero_plugin_get_name (plugin1),
-			       brasero_plugin_get_name (plugin2));
+	/* Use the translated name for the plugins */
+	return g_utf8_collate (_(brasero_plugin_get_name (plugin1)),
+			       _(brasero_plugin_get_name (plugin2)));
 }
 
 static void
