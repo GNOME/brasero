@@ -1,5 +1,22 @@
 2009-01-01  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Set the names of plugins displayed to user as translatable
+	Improved patch by Gabor Kelemen
+	Fix #564262 – Untranslated strings
+
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_export_caps):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_export_caps):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_export_caps):
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_export_caps):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_export_caps):
+
+2009-01-01  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Allow the use of translated names for plugins
 
 	* src/brasero-plugin-manager-ui.c (about_button_cb),

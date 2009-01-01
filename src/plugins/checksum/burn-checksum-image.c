@@ -773,7 +773,10 @@ brasero_checksum_image_export_caps (BraseroPlugin *plugin, gchar **error)
 	BraseroPluginConfOption *checksum_type;
 
 	brasero_plugin_define (plugin,
-			       "Image checksum",
+			       /* Translators: this is the name of the plugin
+				* which will be translated only when it needs
+				* displaying. */
+			       N_("Image Checksum"),
 			       _("Allows to check data integrity on disc after it is burnt"),
 			       "Philippe Rouquier",
 			       0);

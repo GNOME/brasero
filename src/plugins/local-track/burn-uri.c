@@ -553,8 +553,11 @@ brasero_burn_uri_export_caps (BraseroPlugin *plugin, gchar **error)
 	GSList *caps;
 
 	brasero_plugin_define (plugin,
-			       "burn_uris",
-			       _("Burn_uri allows burning files added to \"CD/DVD Creator Folder\" in nautilus"),
+			       /* Translators: this is the name of the plugin
+				* which will be translated only when it needs
+				* displaying. */
+			       N_("CD/DVD Creator Folder"),
+			       _("Allows to burn files added to \"CD/DVD Creator Folder\" in nautilus"),
 			       "Philippe Rouquier",
 			       11);
 

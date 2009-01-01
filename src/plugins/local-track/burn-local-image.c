@@ -1091,8 +1091,11 @@ brasero_local_track_export_caps (BraseroPlugin *plugin, gchar **error)
 	GSList *caps;
 
 	brasero_plugin_define (plugin,
-			       "local-track",
-			       _("Local-track allows to burn files not stored locally"),
+			       /* Translators: this is the name of the plugin
+				* which will be translated only when it needs
+				* displaying. */
+			       N_("File Downloader"),
+			       _("Allows to burn files not stored locally"),
 			       "Philippe Rouquier",
 			       10);
 
