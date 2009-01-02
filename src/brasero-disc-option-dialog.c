@@ -60,7 +60,6 @@ struct _BraseroDiscOptionDialogPrivate {
 	GtkWidget *joliet_toggle;
 
 	GtkWidget *video_options;
-	GtkWidget *dvd_audio;
 	GtkWidget *vcd_label;
 	GtkWidget *vcd_button;
 	GtkWidget *svcd_button;
@@ -75,6 +74,43 @@ typedef struct _BraseroDiscOptionDialogPrivate BraseroDiscOptionDialogPrivate;
 #define BRASERO_DISC_OPTION_DIALOG_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DISC_OPTION_DIALOG, BraseroDiscOptionDialogPrivate))
 
 static GtkDialogClass *parent_class = NULL;
+
+
+static void
+brasero_disc_option_audio_AC3 (BraseroDiscOptionDialog *dialog)
+{
+	BraseroBurnSession *session;
+	GValue *value = NULL;
+
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, BRASERO_AUDIO_FORMAT_AC3);
+	brasero_burn_session_tag_add (session,
+				      BRASERO_DVD_AUDIO_STREAMS,
+				      value);
+
+	g_object_unref (session);
+}
+
+static void
+brasero_disc_option_audio_MP2 (BraseroDiscOptionDialog *dialog)
+{
+	BraseroBurnSession *session;
+	GValue *value = NULL;
+
+	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
+
+	value = g_new0 (GValue, 1);
+	g_value_init (value, G_TYPE_INT);
+	g_value_set_int (value, BRASERO_AUDIO_FORMAT_MP2);
+	brasero_burn_session_tag_add (session,
+				      BRASERO_DVD_AUDIO_STREAMS,
+				      value);
+
+	g_object_unref (session);
+}
 
 /**
  * These functions are used when caps-changed event or drive-changed event
@@ -151,17 +187,21 @@ brasero_disc_option_dialog_update_video (BraseroDiscOptionDialog *dialog)
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
+	/* means we haven't initialized yet */
+	if (!priv->vcd_label)
+		return;
+
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
 	media = brasero_burn_session_get_dest_media (session);
 
 	if (media & BRASERO_MEDIUM_DVD) {
-		gtk_widget_show (priv->dvd_audio);
+		brasero_disc_option_audio_AC3 (dialog);
 		gtk_widget_hide (priv->vcd_label);
 		gtk_widget_hide (priv->vcd_button);
 		gtk_widget_hide (priv->svcd_button);
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
-		gtk_widget_hide (priv->dvd_audio);
+		brasero_disc_option_audio_MP2 (dialog);
 		gtk_widget_show (priv->vcd_label);
 		gtk_widget_show (priv->vcd_button);
 		gtk_widget_show (priv->svcd_button);
@@ -177,13 +217,13 @@ brasero_disc_option_dialog_update_video (BraseroDiscOptionDialog *dialog)
 		}
 
 		if (format == BRASERO_IMAGE_FORMAT_CUE) {
-			gtk_widget_hide (priv->dvd_audio);
+			brasero_disc_option_audio_MP2 (dialog);
 			gtk_widget_show (priv->vcd_label);
 			gtk_widget_show (priv->vcd_button);
 			gtk_widget_show (priv->svcd_button);
 		}
 		else if (format == BRASERO_IMAGE_FORMAT_BIN) {
-			gtk_widget_show (priv->dvd_audio);
+			brasero_disc_option_audio_AC3 (dialog);
 			gtk_widget_hide (priv->vcd_label);
 			gtk_widget_hide (priv->vcd_button);
 			gtk_widget_hide (priv->svcd_button);
@@ -340,74 +380,6 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (widget);
-}
-
-static void
-brasero_disc_option_dialog_AC3 (GtkToggleButton *button,
-				BraseroDiscOptionDialog *dialog)
-{
-	BraseroBurnSession *session;
-	BraseroAudioFormat format;
-	GValue *value = NULL;
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-
-	brasero_burn_session_tag_lookup (session,
-					 BRASERO_DVD_AUDIO_STREAMS,
-					 &value);
-
-	if (value)
-		format = g_value_get_int (value);
-	else
-		format = BRASERO_AUDIO_FORMAT_NONE;
-
-	if (gtk_toggle_button_get_active (button))
-		format |= BRASERO_AUDIO_FORMAT_AC3;
-	else
-		format &= ~BRASERO_AUDIO_FORMAT_AC3;
-
-	value = g_new0 (GValue, 1);
-	g_value_init (value, G_TYPE_INT);
-	g_value_set_int (value, format);
-	brasero_burn_session_tag_add (session,
-				      BRASERO_DVD_AUDIO_STREAMS,
-				      value);
-
-	g_object_unref (session);
-}
-
-static void
-brasero_disc_option_dialog_MP2 (GtkToggleButton *button,
-				BraseroDiscOptionDialog *dialog)
-{
-	BraseroBurnSession *session;
-	BraseroAudioFormat format;
-	GValue *value = NULL;
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-
-	brasero_burn_session_tag_lookup (session,
-					 BRASERO_DVD_AUDIO_STREAMS,
-					 &value);
-
-	if (value)
-		format = g_value_get_int (value);
-	else
-		format = BRASERO_AUDIO_FORMAT_NONE;
-
-	if (gtk_toggle_button_get_active (button))
-		format |= BRASERO_AUDIO_FORMAT_MP2;
-	else
-		format &= ~BRASERO_AUDIO_FORMAT_MP2;
-
-	value = g_new0 (GValue, 1);
-	g_value_init (value, G_TYPE_INT);
-	g_value_set_int (value, format);
-	brasero_burn_session_tag_add (session,
-				      BRASERO_DVD_AUDIO_STREAMS,
-				      value);
-
-	g_object_unref (session);
 }
 
 static void
@@ -686,28 +658,9 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 
 	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
 
-	/* Audio options for DVDs */
-	button1 = gtk_check_button_new_with_mnemonic (_("Add _AC3 audio stream"));
-	button2 = gtk_check_button_new_with_mnemonic (_("Add _MP2 audio stream"));
-
-	string = g_strdup_printf ("<b>%s</b>", _("Audio Options"));
-	options = brasero_utils_pack_properties (string,
-						 button1,
-						 button2,
-						 NULL);
-	g_free (string);
-
-	g_signal_connect (button1,
-			  "clicked",
-			  G_CALLBACK (brasero_disc_option_dialog_AC3),
-			  dialog);
-	g_signal_connect (button2,
-			  "clicked",
-			  G_CALLBACK (brasero_disc_option_dialog_MP2),
-			  dialog);
-
-	gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
-	priv->dvd_audio = options;
+	/* NOTE: audio options for DVDs were removed. For SVCD that is MP2 and
+	 * for Video DVD even if we have a choice AC3 is the most widespread
+	 * audio format. So use AC3 by default. */
 
 	gtk_widget_show_all (widget);
 	brasero_disc_option_dialog_update_video (dialog);
@@ -797,9 +750,8 @@ brasero_disc_option_dialog_valid_media_cb (BraseroSessionCfg *session,
 	/* update the joliet button */
 	brasero_disc_option_dialog_update_joliet (self);
 
-	/* for video disc see what's the output : CD or DVD */
-	if (priv->dvd_audio)
-		brasero_disc_option_dialog_update_video (self);
+	/* for video disc see what's the output: CD or DVD */
+	brasero_disc_option_dialog_update_video (self);
 }
 
 static void

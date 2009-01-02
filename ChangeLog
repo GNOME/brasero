@@ -1,3 +1,14 @@
+2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Strip off options to choose audio stream types for video DVD as they are
+	useless. Now default to AC3.
+
+	* src/brasero-disc-option-dialog.c (brasero_disc_option_audio_AC3),
+	(brasero_disc_option_audio_MP2),
+	(brasero_disc_option_dialog_update_video),
+	(brasero_disc_option_dialog_add_video_options),
+	(brasero_disc_option_dialog_valid_media_cb):
+
 2009-01-01  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Set the names of plugins displayed to user as translatable
