@@ -1,5 +1,15 @@
 2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #566178 – Insane memory usage on DVD video burning
+	Stop using queues with unlimited size. Leave them to default values.
+	That should make video conversion needs much more reasonable.
+
+	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_pcm),
+	(brasero_vob_build_audio_mp2), (brasero_vob_build_audio_ac3),
+	(brasero_vob_build_audio_bins), (brasero_vob_build_video_bin):
+
+2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make sure 4:3 ratio can't be selected for VCDs
 
 	* src/brasero-disc-option-dialog.c

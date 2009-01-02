@@ -232,11 +232,17 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 			     GError **error)
 {
 	GstElement *queue;
+	GstElement *queue1;
+	GstElement *filter;
 	GstElement *convert;
+	GstCaps *filtercaps;
 	GstElement *resample;
 	BraseroVobPrivate *priv;
 
 	priv = BRASERO_VOB_PRIVATE (vob);
+
+	/* NOTE: this can only be used for Video DVDs as PCM cannot be used for
+	 * (S)VCDs. */
 
 	/* queue */
 	queue = gst_element_factory_make ("queue", NULL);
@@ -251,11 +257,6 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
-	g_object_set (queue,
-		      "max-size-bytes", 0,
-		      "max-size-buffers", 0,
-		      "max-size-time", (gint64) 0,
-		      NULL);
 
 	/* audioresample */
 	resample = gst_element_factory_make ("audioresample", NULL);
@@ -285,8 +286,43 @@ brasero_vob_build_audio_pcm (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), convert);
 
-	gst_element_link_many (queue, resample, convert, NULL);
-	brasero_vob_link_audio (vob, queue, convert, tee, muxer);
+	/* another queue */
+	queue1 = gst_element_factory_make ("queue", NULL);
+	if (queue1 == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Queue1\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+
+	/* create a filter */
+	filter = gst_element_factory_make ("capsfilter", NULL);
+	if (filter == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Filter\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), filter);
+
+	/* NOTE: what about the number of channels (up to 6) ? */
+	filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
+							   "width", G_TYPE_INT, 16,
+							   "depth", G_TYPE_INT, 16,
+							   "rate", G_TYPE_INT, 48000,
+							   NULL),
+					NULL);
+
+	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
+	gst_caps_unref (filtercaps);
+
+	gst_element_link_many (queue, resample, convert, filter, queue1, NULL);
+	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 
 	return TRUE;
 
@@ -304,7 +340,9 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	GstElement *queue;
 	GstElement *queue1;
 	GstElement *encode;
+	GstElement *filter;
 	GstElement *convert;
+	GstCaps *filtercaps;
 	GstElement *resample;
 	BraseroVobPrivate *priv;
 
@@ -321,11 +359,6 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
-	g_object_set (queue,
-		      "max-size-bytes", 0,
-		      "max-size-buffers", 0,
-		      "max-size-time", (gint64) 0,
-		      NULL);
 
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
@@ -351,6 +384,7 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), resample);
 
+	/* encoder */
 	encode = gst_element_factory_make ("ffenc_mp2", NULL);
 	if (encode == NULL) {
 		g_set_error (error,
@@ -373,56 +407,63 @@ brasero_vob_build_audio_mp2 (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
-	g_object_set (queue1,
-		      "max-size-bytes", 0,
-		      "max-size-buffers", 0,
-		      "max-size-time", (gint64) 0,
-		      NULL);
 
-	if (!priv->is_video_dvd) {
-		GstElement *filter;
-		GstCaps *filtercaps;
+	/* create a filter */
+	filter = gst_element_factory_make ("capsfilter", NULL);
+	if (filter == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Filter\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), filter);
 
-		if (!priv->svcd) {
-			BRASERO_JOB_LOG (vob, "Setting mp2 bitrate to 224000");
-			g_object_set (encode,
-				      "bitrate", 224000,
-				      NULL);
-		}
+	if (priv->is_video_dvd) {
+		BRASERO_JOB_LOG (vob, "Setting mp2 bitrate to 448000, 48000 khz");
+		g_object_set (encode,
+			      "bitrate", 448000, /* it could go up to 912k */
+			      NULL);
 
-		/* This is for (S)VCD which need to have audio at 44100 khz */
-
-		/* create a filter */
-		filter = gst_element_factory_make ("capsfilter", NULL);
-		if (filter == NULL) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("%s element could not be created"),
-				     "\"Filter\"");
-			goto error;
-		}
-		gst_bin_add (GST_BIN (priv->pipeline), filter);
-
-		BRASERO_JOB_LOG (vob, "Setting rate to 44100");
-
+		/* NOTE: what about the number of channels (up to 7.1) ? */
 		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
-								   "channels", G_TYPE_INT, 2,
-								   "width", G_TYPE_INT, 16,
-								   "depth", G_TYPE_INT, 16,
-								   "endianness", G_TYPE_INT, 1234,
-								   "rate", G_TYPE_INT, 44100,
-								   "signed", G_TYPE_BOOLEAN, TRUE,
+								   "rate", G_TYPE_INT, 48000,
 								   NULL),
 						NULL);
-
-		g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
-		gst_caps_unref (filtercaps);
-
-		gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL);
 	}
-	else
-		gst_element_link_many (queue, convert, resample, encode, queue1, NULL);
+	else if (!priv->svcd) {
+		/* VCD */
+		BRASERO_JOB_LOG (vob, "Setting mp2 bitrate to 224000, 44100 khz");
+		g_object_set (encode,
+			      "bitrate", 224000,
+			      NULL);
+
+		/* 2 channels tops */
+		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
+								   "channels", G_TYPE_INT, 2,
+								   "rate", G_TYPE_INT, 44100,
+								   NULL),
+						NULL);
+	}
+	else {
+		/* SVCDs */
+		BRASERO_JOB_LOG (vob, "Setting mp2 bitrate to 384000, 44100 khz");
+		g_object_set (encode,
+			      "bitrate", 384000,
+			      NULL);
+
+		/* NOTE: channels up to 5.1 or dual */
+		filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
+								   "rate", G_TYPE_INT, 44100,
+								   NULL),
+						NULL);
+	}
+
+	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
+	gst_caps_unref (filtercaps);
+
+	gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL);
 
 	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 	return TRUE;
@@ -439,12 +480,17 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 			     GError **error)
 {
 	GstElement *queue;
+	GstElement *queue1;
+	GstElement *filter;
 	GstElement *encode;
 	GstElement *convert;
+	GstCaps *filtercaps;
 	GstElement *resample;
 	BraseroVobPrivate *priv;
 
 	priv = BRASERO_VOB_PRIVATE (vob);
+
+	/* NOTE: This has to be a DVD since AC3 is not supported by (S)VCD */
 
 	/* queue */
 	queue = gst_element_factory_make ("queue", NULL);
@@ -457,11 +503,6 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
-	g_object_set (queue,
-		      "max-size-bytes", 0,
-		      "max-size-buffers", 0,
-		      "max-size-time", (gint64) 0,
-		      NULL);
 
 	/* audioconvert */
 	convert = gst_element_factory_make ("audioconvert", NULL);
@@ -487,6 +528,29 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), resample);
 
+	/* create a filter */
+	filter = gst_element_factory_make ("capsfilter", NULL);
+	if (filter == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Filter\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), filter);
+
+	BRASERO_JOB_LOG (vob, "Setting AC3 rate to 48000");
+	/* NOTE: we may want to limit the number of channels. */
+	filtercaps = gst_caps_new_full (gst_structure_new ("audio/x-raw-int",
+							   "rate", G_TYPE_INT, 48000,
+							   NULL),
+					NULL);
+
+	g_object_set (GST_OBJECT (filter), "caps", filtercaps, NULL);
+	gst_caps_unref (filtercaps);
+
+	/* encoder */
 	encode = gst_element_factory_make ("ffenc_ac3", NULL);
 	if (encode == NULL) {
 		g_set_error (error,
@@ -498,8 +562,25 @@ brasero_vob_build_audio_ac3 (BraseroVob *vob,
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), encode);
 
-	gst_element_link_many (queue, convert, resample, encode, NULL);
-	brasero_vob_link_audio (vob, queue, encode, tee, muxer);
+	BRASERO_JOB_LOG (vob, "Setting AC3 bitrate to 448000");
+	g_object_set (encode,
+		      "bitrate", 448000, /* Maximum allowed, is it useful ? */
+		      NULL);
+
+	/* another queue */
+	queue1 = gst_element_factory_make ("queue", NULL);
+	if (queue1 == NULL) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Queue1\"");
+		goto error;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline), queue1);
+
+	gst_element_link_many (queue, convert, resample, filter, encode, queue1, NULL);
+	brasero_vob_link_audio (vob, queue, queue1, tee, muxer);
 
 	return TRUE;
 
@@ -519,7 +600,7 @@ brasero_vob_build_audio_bins (BraseroVob *vob,
 
 	priv = BRASERO_VOB_PRIVATE (vob);
 
-	/* queue */
+	/* tee */
 	tee = gst_element_factory_make ("tee", NULL);
 	if (tee == NULL) {
 		g_set_error (error,
@@ -544,6 +625,8 @@ brasero_vob_build_audio_bins (BraseroVob *vob,
 		if (priv->format == BRASERO_AUDIO_FORMAT_NONE)
 			priv->format = BRASERO_AUDIO_FORMAT_RAW;
 
+		/* FIXME: for the moment even if we use tee, we can't actually
+		 * encode and use more than one audio stream */
 		if (priv->format & BRASERO_AUDIO_FORMAT_RAW) {
 			/* PCM : on demand */
 			BRASERO_JOB_LOG (vob, "Adding PCM audio stream");
@@ -605,11 +688,6 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue);
-	g_object_set (queue,
-		      "max-size-bytes", 0,
-		      "max-size-buffers", 0,
-		      "max-size-time", (gint64) 0,
-		      NULL);
 
 	/* framerate and video type control */
 	framerate = gst_element_factory_make ("videorate", NULL);
@@ -676,13 +754,15 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		g_object_set (encode,
 			      "format", 8,
 			      NULL);
-
-	/* NOTE: there is another option to improve compatibility with vcdimager
-	 * but that would mean be sure that it's the next. */
-	else if (priv->svcd)
+	else if (priv->svcd) {
+		/* Option to improve compatibility with vcdimager */
+		g_object_set (encode,
+			      "dummy-svcd-sof", TRUE,
+			      NULL);
 		g_object_set (encode,
 			      "format", 4,
 			      NULL);
+	}
 	else
 		g_object_set (encode,
 			      "format", 1,
@@ -793,24 +873,35 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		}
 	}
 
-	value = NULL;
-	result = brasero_job_tag_lookup (BRASERO_JOB (vob),
-					 BRASERO_VIDEO_OUTPUT_ASPECT,
-					 &value);
-	if (result == BRASERO_BURN_OK && value) {
-		gint aspect;
+	if (priv->is_video_dvd || priv->svcd) {
+		value = NULL;
+		result = brasero_job_tag_lookup (BRASERO_JOB (vob),
+						 BRASERO_VIDEO_OUTPUT_ASPECT,
+						 &value);
+		if (result == BRASERO_BURN_OK && value) {
+			gint aspect;
 
-		aspect = g_value_get_int (value);
-		if (aspect == BRASERO_VIDEO_ASPECT_4_3) {
-			g_object_set (encode,
-				      "aspect", 2,
-				      NULL);
+			aspect = g_value_get_int (value);
+			if (aspect == BRASERO_VIDEO_ASPECT_4_3) {
+				BRASERO_JOB_LOG (vob, "Setting ration 4:3");
+				g_object_set (encode,
+					      "aspect", 2,
+					      NULL);
+			}
+			else if (aspect == BRASERO_VIDEO_ASPECT_16_9) {
+				BRASERO_JOB_LOG (vob, "Setting ration 16:9");
+				g_object_set (encode,
+					      "aspect", 3,
+					      NULL);	
+			}
 		}
-		else if (aspect == BRASERO_VIDEO_ASPECT_16_9) {
-			g_object_set (encode,
-				      "aspect", 3,
-				      NULL);	
-		}
+	}
+	else {
+		/* VCDs only support 4:3 */
+		BRASERO_JOB_LOG (vob, "Setting ration 4:3");
+		g_object_set (encode,
+			      "aspect", 2,
+			      NULL);
 	}
 
 	/* another queue */
@@ -824,11 +915,6 @@ brasero_vob_build_video_bin (BraseroVob *vob,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (priv->pipeline), queue1);
-	g_object_set (queue1,
-		      "max-size-bytes", 0,
-		      "max-size-buffers", 0,
-		      "max-size-time", (gint64) 0,
-		      NULL);
 
 	gst_element_link_many (queue, framerate, scale, colorspace, filter, encode, queue1, NULL);
 
