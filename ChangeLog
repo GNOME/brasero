@@ -1,5 +1,15 @@
 2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make sure 4:3 ratio can't be selected for VCDs
+
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_update_video),
+	(brasero_disc_option_dialog_SVCD),
+	(brasero_disc_option_dialog_VCD),
+	(brasero_disc_option_dialog_add_video_options):
+
+2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Strip off options to choose audio stream types for video DVD as they are
 	useless. Now default to AC3.
 

@@ -64,6 +64,9 @@ struct _BraseroDiscOptionDialogPrivate {
 	GtkWidget *vcd_button;
 	GtkWidget *svcd_button;
 
+	GtkWidget *button_4_3;
+	GtkWidget *button_16_9;
+
 	gulong valid_sig;
 
 	guint joliet_warning:1;
@@ -199,17 +202,29 @@ brasero_disc_option_dialog_update_video (BraseroDiscOptionDialog *dialog)
 		gtk_widget_hide (priv->vcd_label);
 		gtk_widget_hide (priv->vcd_button);
 		gtk_widget_hide (priv->svcd_button);
+
+		gtk_widget_set_sensitive (priv->button_4_3, TRUE);
+		gtk_widget_set_sensitive (priv->button_16_9, TRUE);
 	}
 	else if (media & BRASERO_MEDIUM_CD) {
 		brasero_disc_option_audio_MP2 (dialog);
 		gtk_widget_show (priv->vcd_label);
 		gtk_widget_show (priv->vcd_button);
 		gtk_widget_show (priv->svcd_button);
+
+		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->vcd_button))) {
+			gtk_widget_set_sensitive (priv->button_4_3, FALSE);
+			gtk_widget_set_sensitive (priv->button_16_9, FALSE);
+		}
+		else {
+			gtk_widget_set_sensitive (priv->button_4_3, TRUE);
+			gtk_widget_set_sensitive (priv->button_16_9, TRUE);
+		}
 	}
 	else if (media & BRASERO_MEDIUM_FILE) {
 		BraseroImageFormat format;
 
-		/* if we create a CUE file then that's a SVCD */
+		/* if we create a CUE file then that's a (S)VCD */
 		format = brasero_burn_session_get_output_format (session);
 		if (format == BRASERO_IMAGE_FORMAT_NONE) {
 			g_object_unref (session);
@@ -221,12 +236,24 @@ brasero_disc_option_dialog_update_video (BraseroDiscOptionDialog *dialog)
 			gtk_widget_show (priv->vcd_label);
 			gtk_widget_show (priv->vcd_button);
 			gtk_widget_show (priv->svcd_button);
+
+			if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (priv->vcd_button))) {
+				gtk_widget_set_sensitive (priv->button_4_3, FALSE);
+				gtk_widget_set_sensitive (priv->button_16_9, FALSE);
+			}
+			else {
+				gtk_widget_set_sensitive (priv->button_4_3, TRUE);
+				gtk_widget_set_sensitive (priv->button_16_9, TRUE);
+			}
 		}
 		else if (format == BRASERO_IMAGE_FORMAT_BIN) {
 			brasero_disc_option_audio_AC3 (dialog);
 			gtk_widget_hide (priv->vcd_label);
 			gtk_widget_hide (priv->vcd_button);
 			gtk_widget_hide (priv->svcd_button);
+
+			gtk_widget_set_sensitive (priv->button_4_3, TRUE);
+			gtk_widget_set_sensitive (priv->button_16_9, TRUE);
 		}
 	}
 
@@ -406,24 +433,39 @@ static void
 brasero_disc_option_dialog_SVCD (GtkToggleButton *button,
 				 BraseroDiscOptionDialog *dialog)
 {
+	BraseroDiscOptionDialogPrivate *priv;
+
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
 	brasero_disc_option_dialog_set_tag (dialog,
 					    BRASERO_VCD_TYPE,
 					    BRASERO_SVCD);
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+
+	gtk_widget_set_sensitive (priv->button_4_3, TRUE);
+	gtk_widget_set_sensitive (priv->button_16_9, TRUE);
 }
 
 static void
 brasero_disc_option_dialog_VCD (GtkToggleButton *button,
 				BraseroDiscOptionDialog *dialog)
 {
+	BraseroDiscOptionDialogPrivate *priv;
+
 	if (!gtk_toggle_button_get_active (button))
 		return;
 
 	brasero_disc_option_dialog_set_tag (dialog,
 					    BRASERO_VCD_TYPE,
 					    BRASERO_VCD_V2);
+
+	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
+	gtk_widget_set_sensitive (priv->button_4_3, FALSE);
+	gtk_widget_set_sensitive (priv->button_16_9, FALSE);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (priv->button_4_3), TRUE);
 }
 
 static void
@@ -591,6 +633,7 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 			  GTK_FILL,
 			  GTK_FILL,
 			  0, 0);
+	priv->button_4_3 = button1;
 
 	button2 = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (button1),
 								  _("_16:9"));
@@ -605,6 +648,7 @@ brasero_disc_option_dialog_add_video_options (BraseroDiscOptionDialog *dialog)
 			  GTK_FILL,
 			  GTK_FILL,
 			  0, 0);
+	priv->button_16_9 = button2;
 
 	/* Video options for (S)VCD */
 	label = gtk_label_new (_("VCD type:"));
