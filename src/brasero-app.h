@@ -87,12 +87,6 @@ void
 brasero_app_check (BraseroApp *app,
 		   const gchar *device);
 
-void
-brasero_app_get_geometry (BraseroApp *app,
-			  gint *width,
-			  gint *height,
-			  gboolean *maximised);
-
 GtkWidget *
 brasero_app_get_statusbar1 (BraseroApp *app);
 
@@ -104,6 +98,21 @@ brasero_app_get_ui_manager (BraseroApp *app);
 
 GtkWidget *
 brasero_app_get_project_manager (BraseroApp *app);
+
+/**
+ * Session management
+ */
+
+#define BRASERO_SESSION_TMP_PROJECT_PATH	"brasero-tmp-project"
+
+const gchar *
+brasero_app_get_saved_contents (BraseroApp *app);
+
+gboolean
+brasero_app_save_contents (BraseroApp *app,
+			   gboolean cancellable);
+void
+brasero_app_save_window_state (BraseroApp *app);
 
 G_END_DECLS
 

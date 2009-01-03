@@ -103,12 +103,13 @@ void
 brasero_project_manager_empty (BraseroProjectManager *manager);
 
 /**
- * returns TRUE on error to try to stop app closing
+ * returns the path of the project that was saved. NULL otherwise.
  */
 
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
+				      gchar **saved_uri,
 				      gboolean cancellable);
 gboolean
 brasero_project_manager_load_session (BraseroProjectManager *manager,

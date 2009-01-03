@@ -1170,6 +1170,7 @@ brasero_project_manager_last_saved_clicked_cb (BraseroProjectTypeChooser *choose
 gboolean
 brasero_project_manager_save_session (BraseroProjectManager *manager,
 				      const gchar *path,
+				      gchar **saved_uri,
 				      gboolean cancellable)
 {
     	gboolean result = FALSE;
@@ -1183,6 +1184,7 @@ brasero_project_manager_save_session (BraseroProjectManager *manager,
 		uri = g_filename_to_uri (path, NULL, NULL);
     		result = brasero_project_save_session (BRASERO_PROJECT (manager->priv->project),
 						       uri,
+						       saved_uri,
 						       cancellable);
 		g_free (uri);
 	}

@@ -99,6 +99,7 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri);
 gboolean
 brasero_project_save_session (BraseroProject *project,
 			      const gchar *uri,
+			      gchar **saved_uri,
 			      gboolean show_cancel);
 
 void

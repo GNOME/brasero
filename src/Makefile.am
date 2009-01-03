@@ -275,7 +275,13 @@ brasero_SOURCES = \
 	burn-hal-watch.h           \
 	scsi-test-unit-ready.c           \
 	brasero-tool-color-picker.h           \
-	brasero-tool-color-picker.c
+	brasero-tool-color-picker.c           \
+	eggdesktopfile.c           \
+	eggdesktopfile.h           \
+	eggsmclient.c           \
+	eggsmclient.h           \
+	eggsmclient-private.h           \
+	eggsmclient-xsmp.c
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

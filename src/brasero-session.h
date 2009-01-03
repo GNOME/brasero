@@ -34,19 +34,10 @@
 
 G_BEGIN_DECLS
 
-#define BRASERO_SESSION_TMP_PROJECT_PATH	"brasero-tmp-project"
-#define BRASERO_SESSION_TMP_SESSION_PATH	"brasero.session"
-
 gboolean
 brasero_session_connect (BraseroApp *app);
 void
 brasero_session_disconnect (BraseroApp *app);
-gboolean
-brasero_session_save (BraseroApp *app,
-		      gboolean save_project,
-		      gboolean cancellable);
-gboolean
-brasero_session_load (BraseroApp *app);
 
 G_END_DECLS
 

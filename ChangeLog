@@ -1,3 +1,78 @@
+2009-01-03  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #565253 – Use the smclient from libegg and kill gnomeui and friends
+	libgnomeui is still needed but at least we don't depend on it for session
+	management (which needs further work btw).
+
+	* src/Makefile.am:
+	* src/brasero-app.c (brasero_app_get_path),
+	(brasero_app_load_window_state), (brasero_app_save_window_state),
+	(brasero_app_save_contents), (brasero_app_get_saved_contents),
+	(on_destroy_cb), (on_delete_cb), (on_exit_cb), (brasero_app_run),
+	(brasero_app_set_toplevel), (brasero_app_init),
+	(brasero_app_finalize):
+	* src/brasero-app.h:
+	* src/brasero-project-manager.c
+	(brasero_project_manager_save_session):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c (brasero_project_save_session):
+	* src/brasero-project.h:
+	* src/brasero-session.c (brasero_session_quit_cb),
+	(brasero_session_quit_requested_cb),
+	(brasero_session_save_state_cb), (brasero_session_connect),
+	(brasero_session_disconnect):
+	* src/brasero-session.h:
+	* src/eggdesktopfile.c (egg_desktop_file_new),
+	(egg_desktop_file_new_from_data_dirs),
+	(egg_desktop_file_new_from_dirs),
+	(egg_desktop_file_new_from_key_file), (egg_desktop_file_free),
+	(egg_desktop_file_get_source),
+	(egg_desktop_file_get_desktop_file_type),
+	(egg_desktop_file_get_name), (egg_desktop_file_get_icon),
+	(egg_desktop_file_has_key), (egg_desktop_file_get_string),
+	(egg_desktop_file_get_locale_string),
+	(egg_desktop_file_get_boolean), (egg_desktop_file_get_numeric),
+	(egg_desktop_file_get_string_list),
+	(egg_desktop_file_get_locale_string_list),
+	(egg_desktop_file_can_launch),
+	(egg_desktop_file_accepts_documents),
+	(egg_desktop_file_accepts_multiple),
+	(egg_desktop_file_accepts_uris), (append_quoted_word),
+	(do_percent_subst), (parse_exec), (translate_document_list),
+	(free_document_list), (egg_desktop_file_parse_exec), (parse_link),
+	(start_startup_notification), (end_startup_notification),
+	(startup_notification_timeout), (set_startup_notification_timeout),
+	(array_putenv), (egg_desktop_file_launchv),
+	(egg_desktop_file_launch), (egg_desktop_file_error_quark),
+	(egg_set_desktop_file), (egg_get_desktop_file):
+	* src/eggdesktopfile.h:
+	* src/eggsmclient-private.h:
+	* src/eggsmclient-xsmp.c (egg_sm_client_xsmp_init),
+	(egg_sm_client_xsmp_class_init), (egg_sm_client_xsmp_new),
+	(sm_client_xsmp_set_initial_properties),
+	(sm_client_xsmp_disconnect), (sm_client_xsmp_startup),
+	(sm_client_xsmp_set_restart_command), (sm_client_xsmp_will_quit),
+	(sm_client_xsmp_end_session), (idle_do_pending_events),
+	(update_pending_events), (fix_broken_state), (xsmp_save_yourself),
+	(do_save_yourself), (save_state), (xsmp_interact), (xsmp_die),
+	(xsmp_save_complete), (xsmp_shutdown_cancelled),
+	(generate_command), (set_properties), (delete_properties),
+	(array_prop), (ptrarray_prop), (string_prop), (card8_prop),
+	(ice_init), (process_ice_messages), (ice_iochannel_watch),
+	(ice_connection_watch), (ice_error_handler),
+	(ice_io_error_handler), (smc_error_handler):
+	* src/eggsmclient.c (egg_sm_client_init),
+	(egg_sm_client_class_init), (sm_client_post_parse_func),
+	(egg_sm_client_get_option_group), (egg_sm_client_set_mode),
+	(egg_sm_client_get_mode), (egg_sm_client_get),
+	(egg_sm_client_is_resumed), (egg_sm_client_get_state_file),
+	(egg_sm_client_set_restart_command), (egg_sm_client_will_quit),
+	(egg_sm_client_end_session), (egg_sm_client_save_state),
+	(egg_sm_client_quit_requested), (egg_sm_client_quit_cancelled),
+	(egg_sm_client_quit), (egg_sm_client_debug_handler):
+	* src/eggsmclient.h:
+	* src/main.c (main):
+
 2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #566178 – Insane memory usage on DVD video burning

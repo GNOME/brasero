@@ -3071,9 +3071,17 @@ brasero_project_save_project_as (BraseroProject *project)
 gboolean
 brasero_project_save_session (BraseroProject *project,
 			      const gchar *uri,
+			      gchar **saved_uri,
 			      gboolean show_cancel)
 {
     	BraseroDiscTrack track;
+
+	if (!project->priv->current) {
+		if (saved_uri)
+			*saved_uri = NULL;
+
+		return FALSE;
+	}
 
 	if (project->priv->project) {
 		GtkResponseType answer;
@@ -3081,31 +3089,37 @@ brasero_project_save_session (BraseroProject *project,
 		if (!project->priv->modified) {
 			/* there is a saved project but unmodified.
 			 * No need to ask anything */
+			if (saved_uri)
+				*saved_uri = g_strdup (project->priv->project);
+
 			return FALSE;
 		}
 
 		/* ask the user if he wants to save the changes */
 		answer = brasero_project_save_project_dialog (project, show_cancel);
 		if (answer == GTK_RESPONSE_CANCEL)
-			return TRUE;
-
-		if (answer != GTK_RESPONSE_YES)
 			return FALSE;
 
-		brasero_project_save_project_real (project, NULL, BRASERO_PROJECT_SAVE_XML);
+		if (answer != GTK_RESPONSE_YES)
+			return TRUE;
 
-		/* return FALSE since this is not a tmp project */
+		if (!brasero_project_save_project_real (project, NULL, BRASERO_PROJECT_SAVE_XML))
+			return TRUE;
+
+		if (saved_uri)
+			*saved_uri = g_strdup (project->priv->project);
+
 		return FALSE;
 	}
 
 	if (project->priv->empty) {
 		/* the project is empty anyway. No need to ask anything.
 		 * return FALSE since this is not a tmp project */
+		if (saved_uri)
+			*saved_uri = NULL;
+
 		return FALSE;
 	}
-
-    	if (!project->priv->current)
-		return FALSE;
 
     	if (project->priv->burnt) {
 		GtkResponseType answer;
@@ -3113,31 +3127,45 @@ brasero_project_save_session (BraseroProject *project,
 		/* the project wasn't saved but burnt ask if the user wants to
 		 * keep it for another time by saving it */
 		answer = brasero_project_save_project_dialog (project, show_cancel);
-		if (answer == GTK_RESPONSE_CANCEL)
-			return TRUE;
+		if (answer == GTK_RESPONSE_CANCEL) {
+			if (saved_uri)
+				*saved_uri = NULL;
+
+			return FALSE;
+		}
 
 		if (answer != GTK_RESPONSE_YES)
-			return FALSE;
+			return TRUE;
 
-		brasero_project_save_project_as (project);
+		if (!brasero_project_save_project_as (project))
+			return TRUE;
 
-		/* return FALSE since this is not a tmp project */
+		if (saved_uri)
+			*saved_uri = g_strdup (project->priv->project);
+
 		return FALSE;
 	}
 
-    	if (!uri)
+    	if (!uri) {
+		if (saved_uri)
+			*saved_uri = NULL;
+
 		return FALSE;
+	}
 
     	bzero (&track, sizeof (track));
-	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK)
-		brasero_project_save_project_xml (project,
-						  uri,
-						  &track,
-						  FALSE);
+	if (brasero_disc_get_track (project->priv->current, &track) == BRASERO_DISC_OK) {
+		if (!brasero_project_save_project_xml (project,
+						       uri,
+						       &track,
+						       FALSE))
+			return TRUE;
+	}
 
 	brasero_track_clear (&track);
 
-	/* let the application close itself anyway. It wasn't asked by the user
-	 * and it may get into some critical shutdown */
+	if (saved_uri)
+		*saved_uri = g_strdup (uri);
+
     	return FALSE;
 }

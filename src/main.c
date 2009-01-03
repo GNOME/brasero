@@ -57,6 +57,8 @@
 #include "burn-debug.h"
 #include "burn.h"
 
+#include "eggsmclient.h"
+
 gchar *burn_project_uri;
 gchar *project_uri;
 gchar *cover_project;
@@ -452,10 +454,6 @@ main (int argc, char **argv)
 
 	GOptionContext *context;
 
-	context = g_option_context_new (_("[URI] [URI] ..."));
-	g_option_context_add_main_entries (context,
-					   options,
-					   GETTEXT_PACKAGE);
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -463,10 +461,14 @@ main (int argc, char **argv)
 	textdomain (GETTEXT_PACKAGE);
 #endif
 
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
-
+	g_thread_init (NULL);
 	g_type_init ();
+
+	context = g_option_context_new (_("[URI] [URI] ..."));
+	g_option_context_add_main_entries (context,
+					   options,
+					   GETTEXT_PACKAGE);
+	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
 
 #ifdef BUILD_GNOME2
 
@@ -479,11 +481,16 @@ main (int argc, char **argv)
 
 #else
 
+	g_option_context_add_group (context, egg_sm_client_get_option_group ());
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
+	g_option_context_add_group (context, gst_init_get_option_group ());
 	if (g_option_context_parse (context, &argc, &argv, NULL) == FALSE) {
 		g_print (_("Please type %s --help to see all available options\n"), argv [0]);
+		g_option_context_free (context);
 		exit (1);
 	}
+
+	g_option_context_free (context);
 
 #endif
 
