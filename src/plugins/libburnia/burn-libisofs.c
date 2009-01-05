@@ -312,10 +312,12 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 
 	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
 
+	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_libisofs_thread_started,
 					self,
 					TRUE,
 					error);
+	g_mutex_unlock (priv->mutex);
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;
 
@@ -840,10 +842,12 @@ brasero_libisofs_create_volume (BraseroLibisofs *self, GError **error)
 	}
 
 	iso_set_msgs_severities ("NEVER", "ALL", "brasero (libisofs)");
+	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_libisofs_create_volume_thread,
 					self,
 					TRUE,
 					error);
+	g_mutex_unlock (priv->mutex);
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;
 

@@ -342,15 +342,15 @@ brasero_burn_uri_thread (gpointer data)
 
 end:
 
-	 if (!g_cancellable_is_cancelled (priv->cancel))
+	if (!g_cancellable_is_cancelled (priv->cancel))
 		priv->thread_id = g_idle_add ((GSourceFunc) brasero_burn_uri_thread_finished, self);
 
 	/* End thread */
 	g_mutex_lock (priv->mutex);
-	priv->thread = NULL;
+	g_atomic_pointer_set (&priv->thread, NULL);
 	g_cond_signal (priv->cond);
 	g_mutex_unlock (priv->mutex);
- 
+
 	g_thread_exit (NULL);
 
 	return NULL;
@@ -367,10 +367,12 @@ brasero_burn_uri_start_thread (BraseroBurnURI *self,
 	if (priv->thread)
 		return BRASERO_BURN_RUNNING;
 
+	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_burn_uri_thread,
 					self,
 					TRUE,
 					error);
+	g_mutex_unlock (priv->mutex);
 	if (!priv->thread) 
 		return BRASERO_BURN_ERR;
 

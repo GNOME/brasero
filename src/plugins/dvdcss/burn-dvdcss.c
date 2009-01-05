@@ -550,10 +550,12 @@ brasero_dvdcss_start (BraseroJob *job,
 	if (!brasero_dvdcss_library_init (error))
 		return BRASERO_BURN_ERR;
 
+	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_dvdcss_write_image_thread,
 					self,
 					TRUE,
 					error);
+	g_mutex_unlock (priv->mutex);
 
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;

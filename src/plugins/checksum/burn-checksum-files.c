@@ -1139,10 +1139,12 @@ brasero_checksum_files_start (BraseroJob *job,
 
 	/* we start a thread for the exploration of the graft points */
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (job);
+	g_mutex_lock (priv->mutex);
 	priv->thread = g_thread_create (brasero_checksum_files_thread,
 					BRASERO_CHECKSUM_FILES (job),
 					TRUE,
 					error);
+	g_mutex_unlock (priv->mutex);
 
 	if (!priv->thread)
 		return BRASERO_BURN_ERR;

@@ -1,3 +1,19 @@
+2009-01-05  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix a very rare race condition problem with little amount of data
+
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_start):
+	* src/plugins/checksum/burn-checksum-image.c
+	(brasero_checksum_image_start):
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_start):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_create_image), (brasero_libisofs_create_volume):
+	* src/plugins/local-track/burn-local-image.c
+	(brasero_local_track_start_thread):
+	* src/plugins/local-track/burn-uri.c (brasero_burn_uri_thread),
+	(brasero_burn_uri_start_thread):
+
 2009-01-03  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #565253 – Use the smclient from libegg and kill gnomeui and friends
@@ -78,6 +94,7 @@
 	Fix #566178 – Insane memory usage on DVD video burning
 	Stop using queues with unlimited size. Leave them to default values.
 	That should make video conversion needs much more reasonable.
+	(backportable)
 
 	* src/plugins/transcode/burn-vob.c (brasero_vob_build_audio_pcm),
 	(brasero_vob_build_audio_mp2), (brasero_vob_build_audio_ac3),
@@ -86,6 +103,7 @@
 2009-01-02  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make sure 4:3 ratio can't be selected for VCDs
+	(backportable)
 
 	* src/brasero-disc-option-dialog.c
 	(brasero_disc_option_dialog_update_video),
@@ -97,6 +115,7 @@
 
 	Strip off options to choose audio stream types for video DVD as they are
 	useless. Now default to AC3.
+	(backportable)
 
 	* src/brasero-disc-option-dialog.c (brasero_disc_option_audio_AC3),
 	(brasero_disc_option_audio_MP2),
