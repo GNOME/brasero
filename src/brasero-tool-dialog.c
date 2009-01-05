@@ -56,7 +56,6 @@ struct _BraseroToolDialogPrivate {
 	BraseroBurn *burn;
 
 	gboolean running;
-	gboolean close;
 };
 
 static GtkDialogClass *parent_class = NULL;
@@ -172,7 +171,7 @@ brasero_tool_dialog_get_burn (BraseroToolDialog *self)
 	return self->priv->burn;
 }
 
-static void
+static gboolean
 brasero_tool_dialog_run (BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
@@ -214,18 +213,18 @@ brasero_tool_dialog_run (BraseroToolDialog *self)
 	}
 
 	self->priv->running = TRUE;
+
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->activate)
 		close = klass->activate (self, medium);
+
 	self->priv->running = FALSE;
 
-	if (close || self->priv->close) {
-		gtk_widget_destroy (GTK_WIDGET (self));
+	if (medium)
+		g_object_unref (medium);
 
-		if (medium)
-			g_object_unref (medium);
-		return;
-	}
+	if (close)
+		return TRUE;
 
 end:
 
@@ -237,17 +236,7 @@ end:
 
 	brasero_burn_progress_reset (BRASERO_BURN_PROGRESS (self->priv->progress));
 
-	if (medium)
-		g_object_unref (medium);
-
-	g_signal_stop_emission_by_name (self, "response");
-}
-
-static void
-brasero_tool_dialog_button_clicked (GtkButton *button,
-				    BraseroToolDialog *self)
-{
-	brasero_tool_dialog_run (self);
+	return FALSE;
 }
 
 void
@@ -294,10 +283,6 @@ brasero_tool_dialog_set_button (BraseroToolDialog *self,
 					    theme,
 					    GTK_ICON_SIZE_BUTTON);
 	gtk_widget_show_all (button);
-	g_signal_connect (G_OBJECT (button), "clicked",
-			  G_CALLBACK (brasero_tool_dialog_button_clicked),
-			  self);
-
 	gtk_dialog_add_action_widget (GTK_DIALOG (self),
 				      button,
 				      GTK_RESPONSE_OK);
@@ -390,41 +375,37 @@ brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 	return FALSE;
 }
 
-static gboolean
+/**
+ * returns TRUE when cancellation went well
+ * returns FALSE when it couldn't be done
+ */
+
+gboolean
 brasero_tool_dialog_cancel (BraseroToolDialog *self)
 {
 	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroToolDialogClass *klass;
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
-	if (klass->cancel)
-		klass->cancel (self);
+	if (klass->cancel) {
+		gboolean res;
 
-	if (self->priv->burn)
-		result = brasero_burn_cancel (self->priv->burn, TRUE);
-
-	if (result == BRASERO_BURN_DANGEROUS) {
-		if (brasero_tool_dialog_cancel_dialog (GTK_WIDGET (self))) {
-			if (self->priv->burn)
-				brasero_burn_cancel (self->priv->burn, FALSE);
-		}
-		else
+		res = klass->cancel (self);
+		if (!res)
 			return FALSE;
 	}
 
-	self->priv->close = TRUE;
+	if (!self->priv->burn)
+		return TRUE;
 
-	if (!self->priv->running)
-		gtk_widget_destroy (GTK_WIDGET (self));
+	if (brasero_burn_cancel (self->priv->burn, TRUE) == BRASERO_BURN_DANGEROUS) {
+		if (!brasero_tool_dialog_cancel_dialog (GTK_WIDGET (self)))
+			return FALSE;
+
+		brasero_burn_cancel (self->priv->burn, FALSE);
+	}
 
 	return TRUE;
-}
-
-static void
-brasero_tool_dialog_cancel_clicked_cb (GtkWidget *button,
-				       BraseroToolDialog *dialog)
-{
-	brasero_tool_dialog_cancel (dialog);
 }
 
 static gboolean
@@ -434,8 +415,22 @@ brasero_tool_dialog_delete (GtkWidget *widget, GdkEventAny *event)
 
 	self = BRASERO_TOOL_DIALOG (widget);
 
-	brasero_tool_dialog_cancel (self);
-	return FALSE;
+	return (brasero_tool_dialog_cancel (self) != TRUE);
+}
+
+static void
+brasero_tool_dialog_response (GtkDialog *dialog,
+			      GtkResponseType response,
+			      gpointer NULL_data)
+{
+	if (response == GTK_RESPONSE_CANCEL) {
+		if (!brasero_tool_dialog_cancel (BRASERO_TOOL_DIALOG (dialog)))
+			g_signal_stop_emission_by_name (dialog, "response");
+	}
+	else if (response == GTK_RESPONSE_OK) {
+		if (!brasero_tool_dialog_run (BRASERO_TOOL_DIALOG (dialog)))
+			g_signal_stop_emission_by_name (dialog, "response");
+	}
 }
 
 static void
@@ -538,9 +533,6 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 	/* buttons */
 	obj->priv->cancel = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	gtk_widget_show (obj->priv->cancel);
-	g_signal_connect (G_OBJECT (obj->priv->cancel), "clicked",
-			  G_CALLBACK (brasero_tool_dialog_cancel_clicked_cb),
-			  obj);
 	gtk_dialog_add_action_widget (GTK_DIALOG (obj),
 				      obj->priv->cancel,
 				      GTK_RESPONSE_CANCEL);
@@ -549,6 +541,11 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 			  "changed",
 			  G_CALLBACK (brasero_tool_dialog_drive_changed_cb),
 			  obj);
+
+	g_signal_connect (obj,
+			  "response",
+			  G_CALLBACK (brasero_tool_dialog_response),
+			  NULL);
 
 	gtk_window_resize (GTK_WINDOW (obj), 10, 10);
 }

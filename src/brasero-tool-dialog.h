@@ -62,12 +62,15 @@ struct _BraseroToolDialogClass {
 
 	gboolean	(*activate)		(BraseroToolDialog *dialog,
 						 BraseroMedium *medium);
-	void		(*cancel)		(BraseroToolDialog *dialog);
+	gboolean	(*cancel)		(BraseroToolDialog *dialog);
 	void		(*drive_changed)	(BraseroToolDialog *dialog,
 						 BraseroMedium *medium);
 };
 
 GType brasero_tool_dialog_get_type ();
+
+gboolean
+brasero_tool_dialog_cancel (BraseroToolDialog *self);
 
 void
 brasero_tool_dialog_pack_options (BraseroToolDialog *dialog, ...);

@@ -2102,20 +2102,17 @@ brasero_burn_dialog_cancel_dialog (GtkWidget *toplevel)
 	return (result != GTK_RESPONSE_OK);
 }
 
-static gboolean
+gboolean
 brasero_burn_dialog_cancel (BraseroBurnDialog *dialog)
 {
-	if (dialog->priv->burn) {
-		BraseroBurnResult result;
+	if (!dialog->priv->burn)
+		return TRUE;
 
-		result = brasero_burn_cancel (dialog->priv->burn, TRUE);
+	if (brasero_burn_cancel (dialog->priv->burn, TRUE) == BRASERO_BURN_DANGEROUS) {
+		if (!brasero_burn_dialog_cancel_dialog (GTK_WIDGET (dialog)))
+			return FALSE;
 
-		if (result == BRASERO_BURN_DANGEROUS) {
-			if (brasero_burn_dialog_cancel_dialog (GTK_WIDGET (dialog)))
-				brasero_burn_cancel (dialog->priv->burn, FALSE);
-			else
-				return FALSE;
-		}
+		brasero_burn_cancel (dialog->priv->burn, FALSE);
 	}
 
 	return TRUE;

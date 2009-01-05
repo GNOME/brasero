@@ -100,7 +100,7 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 	return TRUE;
 }
 
-static void
+static gboolean
 brasero_eject_dialog_cancel (BraseroToolDialog *dialog)
 {
 	BraseroMedium *medium;
@@ -111,6 +111,8 @@ brasero_eject_dialog_cancel (BraseroToolDialog *dialog)
 		brasero_volume_cancel_current_operation (BRASERO_VOLUME (medium));
 		g_object_unref (medium);
 	}
+
+	return TRUE;
 }
 
 static void

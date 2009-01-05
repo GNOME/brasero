@@ -187,16 +187,15 @@ static void
 brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
-	GtkWidget *manager;
-
-	manager = brasero_app_get_project_manager (app);
+	GtkWidget *manager = NULL;
 
 	if (parent_window)
 		brasero_app_set_parent (app, parent_window);
 
     	if (empty_project) {
+	    	brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
-	    	brasero_app_run (app);
 		return;
 	}
 
@@ -224,13 +223,14 @@ brasero_app_parse_options (BraseroApp *app)
 		nb ++;
 
 	if (nb > 1) {
-		brasero_app_run (app);
+		brasero_app_create_mainwin (app);
 
 		brasero_app_alert (app,
 				   _("Incompatible command line options used."),
 				   _("Only one option can be given at a time"),
 				   GTK_MESSAGE_ERROR);
 
+		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
 	}
 	else if (copy_project) {
@@ -244,21 +244,29 @@ brasero_app_parse_options (BraseroApp *app)
 		&&  files [1] == NULL)
 			device = files [0]; 
 
-		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		brasero_project_manager_copy (BRASERO_PROJECT_MANAGER (manager), device, cover_project);
+		brasero_app_copy_disc (app, device, cover_project);
 		return;
 	}
 	else if (iso_uri) {
-		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_iso, iso_uri);
+		GFile *file;
+		gchar *uri;
+
+		file = g_file_new_for_commandline_arg (iso_uri);
+		uri = g_file_get_uri (file);
+		g_object_unref (file);
+
+		brasero_app_burn_image (app, uri);
 		return;
 	}
 	else if (project_uri) {
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		brasero_app_run (app);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_project, project_uri);
 	}
 	else if (burn_project_uri) {
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_burn_project, burn_project_uri);
 		if (g_remove (burn_project_uri) != 0) {
@@ -347,6 +355,8 @@ brasero_app_parse_options (BraseroApp *app)
 
 		/* reverse to keep the order of files */
 		list = g_slist_reverse (list);
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
 
@@ -358,22 +368,26 @@ brasero_app_parse_options (BraseroApp *app)
 #ifdef BUILD_PLAYLIST
 
 	else if (playlist_uri) {
-		brasero_app_run (app);
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
 	}
 
 #endif
 
 	else if (audio_project) {
-		brasero_app_run (app);
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
 	}
 	else if (data_project) {
-		brasero_app_run (app);
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
 	}
 	else if (video_project) {
-		brasero_app_run (app);
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
 	}
 	else if (disc_blank) {
@@ -405,7 +419,8 @@ brasero_app_parse_options (BraseroApp *app)
 		return;
 	}
 	else if (files) {
-		brasero_app_run (app);
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 
 		if (g_strv_length (files) == 1) {
 			BraseroProjectType type;
@@ -423,12 +438,12 @@ brasero_app_parse_options (BraseroApp *app)
 		}
 	}
 	else {
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
-		brasero_app_run (app);
 	}
 
-	gtk_widget_show (GTK_WIDGET (app));
-	gtk_main ();
+	brasero_app_run_mainwin (app);
 }
 
 static BraseroApp *current_app = NULL;

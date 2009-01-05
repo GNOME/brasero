@@ -235,10 +235,8 @@ brasero_video_disc_directory_dialog (BraseroVideoProject *project,
 {
 	gint answer;
 	GtkWidget *dialog;
-	GtkWidget *toplevel;
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     _("Do you want to search for video files inside the directory?"),
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_WARNING);
@@ -267,21 +265,12 @@ brasero_video_disc_unreadable_uri_dialog (BraseroVideoProject *project,
 					  const gchar *uri,
 					  BraseroVideoDisc *self)
 {
-	GtkWidget *toplevel;
 	gchar *primary;
 	gchar *name;
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	if (toplevel == NULL) {
-		g_warning ("Can't open file %s : %s\n",
-			   uri,
-			   error->message);
-		return;
-	}
-
 	name = g_filename_display_basename (uri);
 	primary = g_strdup_printf (_("\"%s\" could not be opened."), name);
-	brasero_app_alert (BRASERO_APP (toplevel),
+	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   error->message,
 			   GTK_MESSAGE_ERROR);
@@ -294,19 +283,12 @@ brasero_video_disc_not_video_dialog (BraseroVideoProject *project,
 				     const gchar *uri,
 				     BraseroVideoDisc *self)
 {
-	GtkWidget *toplevel;
 	gchar *primary;
 	gchar *name;
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	if (toplevel == NULL) {
-		g_warning ("Content widget error : can't handle \"%s\".\n", uri);
-		return ;
-	}
-
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	primary = g_strdup_printf (_("\"%s\" does not have a suitable type for video projects."), name);
-	brasero_app_alert (BRASERO_APP (toplevel),
+	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   _("Please only add files with video contents"),
 			   GTK_MESSAGE_ERROR);

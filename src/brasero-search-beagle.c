@@ -1026,15 +1026,7 @@ brasero_search_beagle_finished_cb (BeagleQuery *query,
 static void
 brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
 {
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (search));
-	if (!GTK_WIDGET_TOPLEVEL (toplevel)) {
-		g_warning ("Error querying beagle : %s\n", error->message);
-		return;
-	}
-
-	brasero_app_alert (BRASERO_APP (toplevel),
+	brasero_app_alert (brasero_app_get_default (),
 			   _("Error querying beagle."),
 			   error->message,
 			   GTK_MESSAGE_ERROR);

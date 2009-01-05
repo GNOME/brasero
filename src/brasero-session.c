@@ -57,9 +57,9 @@ brasero_session_quit_requested_cb (EggSMClient *client,
 				   BraseroApp *app)
 {
 	/* See if we can quit */
-	egg_sm_client_will_quit (client, brasero_app_save_contents (app, TRUE));
+	egg_sm_client_will_quit (client, (brasero_app_save_contents (app, TRUE) == FALSE));
 }
- 
+
 static void
 brasero_session_save_state_cb (EggSMClient *client,
 			       GKeyFile *key_file,

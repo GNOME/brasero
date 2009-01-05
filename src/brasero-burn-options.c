@@ -375,7 +375,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 	BraseroBurnOptionsPrivate *priv;
 	GtkWidget *selection;
 	GtkWidget *alignment;
-	GtkWidget *button;
 	gchar *string;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (object);
@@ -391,11 +390,8 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 				       BRASERO_BURN_FLAG_CHECK_SIZE);
 
 	/* Create a cancel button */
-	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_widget_show (button);
-	gtk_dialog_add_action_widget (GTK_DIALOG (object),
-				      button, 
-				      GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (GTK_DIALOG (object),
+			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
 	/* Create a default Burn button */
 	priv->button = brasero_utils_make_button (_("_Burn"),

@@ -21,8 +21,10 @@
 #define _BRASERO_APP_H_
 
 #include <glib-object.h>
-
 #include <gtk/gtk.h>
+
+#include "burn-session.h"
+
 
 G_BEGIN_DECLS
 
@@ -62,7 +64,10 @@ void
 brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window);
 
 void
-brasero_app_run (BraseroApp *app);
+brasero_app_create_mainwin (BraseroApp *app);
+
+void
+brasero_app_run_mainwin (BraseroApp *app);
 
 gboolean
 brasero_app_is_running (BraseroApp *app);
@@ -78,6 +83,19 @@ brasero_app_alert (BraseroApp *app,
 		   const gchar *primary_message,
 		   const gchar *secondary_message,
 		   GtkMessageType type);
+
+gboolean
+brasero_app_burn (BraseroApp *app,
+		  BraseroBurnSession *session);
+
+void
+brasero_app_burn_image (BraseroApp *app,
+			const gchar *uri);
+
+void
+brasero_app_copy_disc (BraseroApp *app,
+		       const gchar *device,
+		       const gchar *cover);
 
 void
 brasero_app_blank (BraseroApp *app,

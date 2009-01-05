@@ -203,7 +203,7 @@ static void
 brasero_data_disc_import_failure_dialog (BraseroDataDisc *disc,
 					 GError *error)
 {
-	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (disc))),
+	brasero_app_alert (brasero_app_get_default (),
 			   _("The session could not be imported."),
 			   error?error->message:_("An unknown error occured"),
 			   GTK_MESSAGE_WARNING);
@@ -742,21 +742,16 @@ static gboolean
 brasero_data_disc_switch_to_image (gpointer data)
 {
 	GtkWidget *manager;
-	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
 	BraseroDataDiscProjectSwitch *callback_data = data;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (callback_data->disc);
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (callback_data->disc));
-	if (!BRASERO_IS_APP (toplevel))
-		return BRASERO_BURN_OK;
-
 	/* Clean up everything to avoid warning dialog */
 	brasero_data_project_reset (priv->project);
 
 	/* Tell project manager to switch */
-	manager = brasero_app_get_project_manager (BRASERO_APP (toplevel));
+	manager = brasero_app_get_project_manager (brasero_app_get_default ());
 	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager),
 				     callback_data->uri);
 
@@ -773,7 +768,6 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 	gchar *string;
 	GtkWidget *button;
 	GtkWidget *dialog;
-	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
 	BraseroDataDiscProjectSwitch *callback_data;
 
@@ -782,13 +776,9 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 	if (priv->loading)
 		return BRASERO_BURN_OK;
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-	if (!BRASERO_IS_APP (toplevel))
-		return BRASERO_BURN_OK;
-
 	name = brasero_file_node_get_uri_name (uri);
 	string = g_strdup_printf (_("Do you want to burn \"%s\" to a disc or add it in to the data project?"), name);
-	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_QUESTION);
@@ -884,7 +874,7 @@ brasero_data_disc_unreadable_uri_cb (BraseroDataVFS *vfs,
 	}
 
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
-	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   error->message,
 			   GTK_MESSAGE_ERROR);
@@ -915,7 +905,7 @@ brasero_data_disc_recursive_uri_cb (BraseroDataVFS *vfs,
 	}
 
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
-	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   _("It is a recursive symlink"),
 			   GTK_MESSAGE_ERROR);
@@ -946,7 +936,7 @@ brasero_data_disc_unknown_uri_cb (BraseroDataVFS *vfs,
 	}
 
 	primary = g_strdup_printf (_("\"%s\" cannot be added to the selection."), name);
-	brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   _("It does not exist at the specified location"),
 			   GTK_MESSAGE_ERROR);
@@ -962,7 +952,6 @@ brasero_data_disc_name_collision_cb (BraseroDataProject *project,
 	gint answer;
 	gchar *string;
 	GtkWidget *dialog;
-	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -972,9 +961,8 @@ brasero_data_disc_name_collision_cb (BraseroDataProject *project,
 		return FALSE;
 	}
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	string = g_strdup_printf (_("Do you really want to replace \"%s\"?"), name);
-	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_WARNING);
@@ -1003,7 +991,6 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 	gint answer;
 	gchar *string;
 	GtkWidget *dialog;
-	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -1017,9 +1004,8 @@ brasero_data_disc_2G_file_cb (BraseroDataProject *project,
 		return FALSE;
 	}
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
 	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"), name);
-	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_WARNING);
@@ -1049,7 +1035,6 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 	gint answer;
 	gchar *string;
 	GtkWidget *dialog;
-	GtkWidget *toplevel;
 	BraseroDataDiscPrivate *priv;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
@@ -1063,10 +1048,8 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 		return FALSE;
 	}
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
-
 	string = g_strdup_printf (_("Do you really want to add \"%s\" to the selection?"), name);
-	dialog = brasero_app_dialog (BRASERO_APP (toplevel),
+	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     string,
 				     GTK_BUTTONS_NONE,
 				     GTK_MESSAGE_WARNING);

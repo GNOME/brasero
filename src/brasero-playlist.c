@@ -801,18 +801,11 @@ brasero_playlist_dialog_error (BraseroPlaylist *playlist, const gchar *uri)
 {
 	gchar *name;
 	gchar *primary;
-	GtkWidget *toplevel;
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (playlist));
-	if (!GTK_WIDGET_TOPLEVEL (toplevel)) {
-		g_warning ("Error parsing playlist %s\n", uri);
-		return;
-	}
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 
 	primary = g_strdup_printf (_("Error parsing playlist \"%s\"."), name);
-	brasero_app_alert (BRASERO_APP (toplevel),
+	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   _("An unknown error occured"),
 			   GTK_MESSAGE_ERROR);

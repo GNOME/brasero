@@ -43,10 +43,7 @@
 #include "brasero-project-manager.h"
 #include "brasero-file-chooser.h"
 #include "brasero-uri-container.h"
-#include "brasero-image-option-dialog.h"
-#include "brasero-burn-dialog.h"
 #include "brasero-project-type-chooser.h"
-#include "brasero-disc-copy-dialog.h"
 #include "brasero-io.h"
 #include "burn-caps.h"
 #include "burn-medium-monitor.h"
@@ -234,12 +231,10 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 				       gint files_num)
 {
 	gchar *status_string = NULL;
-	GtkWidget *toplevel;
 	GtkWidget *status;
 	gint valid_num;
 
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-	status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+	status = brasero_app_get_statusbar1 (brasero_app_get_default ());
 
 	if (!manager->priv->status_ctx)
 		manager->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
@@ -444,11 +439,9 @@ brasero_project_manager_selected_uris_changed (BraseroURIContainer *container,
 
 	manager->priv->selected = uris;
 	if (!manager->priv->selected) {
-		GtkWidget *toplevel;
  		GtkWidget *status;
  
- 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
- 		status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+ 		status = brasero_app_get_statusbar1 (brasero_app_get_default ());
  
  		if (!manager->priv->status_ctx)
  			manager->priv->status_ctx = gtk_statusbar_get_context_id (GTK_STATUSBAR (status),
@@ -472,7 +465,6 @@ brasero_project_manager_sidepane_changed (BraseroLayout *layout,
 					  BraseroProjectManager *manager)
 {
 	if (!visible) {
-		GtkWidget *toplevel;
  		GtkWidget *status;
  
 		/* If sidepane is disabled, remove any text about selection */
@@ -480,8 +472,7 @@ brasero_project_manager_sidepane_changed (BraseroLayout *layout,
 			brasero_io_cancel_by_base (manager->priv->io,
 						   manager->priv->size_preview);
 
- 		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
- 		status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+ 		status = brasero_app_get_statusbar1 (brasero_app_get_default ());
 
  		gtk_statusbar_pop (GTK_STATUSBAR (status), manager->priv->status_ctx);
 
@@ -514,143 +505,6 @@ brasero_project_manager_register_ui (BraseroProjectManager *manager,
 }
 
 static void
-brasero_project_manager_burn (BraseroProjectManager *manager,
-			      BraseroBurnSession *session)
-{
-	GtkWidget *dialog;
-
-	/* now setup the burn dialog */
-	dialog = brasero_burn_dialog_new ();
-	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
-	gtk_widget_show (dialog);
-
-	brasero_burn_dialog_run (BRASERO_BURN_DIALOG (dialog), session);
-
-	brasero_project_manager_switch (manager,
-					BRASERO_PROJECT_TYPE_INVALID,
-					NULL,
-					NULL,
-					TRUE);
-
-	/* The destruction of the dialog will bring the main window forward */
-	gtk_widget_destroy (dialog);
-}
-
-static void
-brasero_project_manager_burn_iso_dialog (BraseroProjectManager *manager,
-					 const gchar *uri)
-{
-	BraseroBurnSession *session;
-	GtkResponseType result;
-	GtkWidget *dialog;
-
-	/* setup, show, and run options dialog */
-	dialog = brasero_image_option_dialog_new ();
-	brasero_image_option_dialog_set_image_uri (BRASERO_IMAGE_OPTION_DIALOG (dialog), uri);
-
-	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
-
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (dialog);
-
-		/* Here we may have to close brasero altogether */
-		if (manager->priv->oneshot) {
-			GtkWidget *toplevel;
-
-			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-			gtk_widget_destroy (toplevel);
-		}
-
-		return;
-	}
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-	/* The destruction of the dialog will bring the main window forward */
-	gtk_widget_destroy (dialog);
-
-	brasero_project_manager_burn (manager, session);
-	g_object_unref (session);
-
-	/* Here we may have to close brasero altogether */
-	if (manager->priv->oneshot) {
-		GtkWidget *toplevel;
-
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-		gtk_widget_destroy (toplevel);
-	}
-}
-
-static void
-brasero_project_manager_copy_disc (BraseroProjectManager *manager,
-				   const gchar *device,
-				   const gchar *cover)
-{
-	BraseroBurnSession *session;
-	GtkResponseType result;
-	GtkWidget *dialog;
-
-	dialog = brasero_disc_copy_dialog_new ();
-	brasero_app_set_toplevel (brasero_app_get_default (), GTK_WINDOW (dialog));
-
-	/* if a device is specified then get the corresponding medium */
-	if (device) {
-		BraseroDrive *drive;
-		BraseroMediumMonitor *monitor;
-
-		monitor = brasero_medium_monitor_get_default ();
-		drive = brasero_medium_monitor_get_drive (monitor, device);
-		g_object_unref (monitor);
-
-		brasero_disc_copy_dialog_set_drive (BRASERO_DISC_COPY_DIALOG (dialog), drive);
-		g_object_unref (drive);
-	}
-
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (result != GTK_RESPONSE_OK) {
-		gtk_widget_destroy (dialog);
-
-		/* Here we may have to close brasero altogether */
-		if (manager->priv->oneshot) {
-			GtkWidget *toplevel;
-
-			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-			gtk_widget_destroy (toplevel);
-		}
-
-		return;
-	}
-
-	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
-
-	/* The destruction of the dialog will bring the main window forward */
-	gtk_widget_destroy (dialog);
-
-	/* Set a cover if any. */
-	if (cover) {
-		GValue *value;
-
-		value = g_new0 (GValue, 1);
-		g_value_init (value, G_TYPE_STRING);
-		g_value_set_string (value, cover);
-		brasero_burn_session_tag_add (session,
-					      BRASERO_COVER_URI,
-					      value);
-	}
-
-	brasero_project_manager_burn (manager, session);
-	g_object_unref (session);
-
-	/* Here we may have to close brasero altogether */
-	if (manager->priv->oneshot) {
-		GtkWidget *toplevel;
-
-		toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-		gtk_widget_destroy (toplevel);
-	}
-}
-
-static void
 brasero_project_manager_switch (BraseroProjectManager *manager,
 				BraseroProjectType type,
 				GSList *uris,
@@ -678,7 +532,7 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	if (manager->priv->status_ctx) {
 		GtkWidget *status;
 
-		status = brasero_app_get_statusbar1 (BRASERO_APP (toplevel));
+		status = brasero_app_get_statusbar1 (brasero_app_get_default ());
 		gtk_statusbar_pop (GTK_STATUSBAR (status), manager->priv->status_ctx);
 	}
 
@@ -747,7 +601,13 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Image File"));
-		brasero_project_manager_burn_iso_dialog (manager, uri);
+
+		brasero_app_burn_image (brasero_app_get_default (), uri);
+		brasero_project_manager_switch (manager,
+						BRASERO_PROJECT_TYPE_INVALID,
+						NULL,
+						NULL,
+						TRUE);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_COPY) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);
@@ -759,7 +619,12 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Disc Copy"));
 
-		brasero_project_manager_copy_disc (manager, uri, NULL);
+		brasero_app_copy_disc (brasero_app_get_default (), uri, NULL);
+		brasero_project_manager_switch (manager,
+						BRASERO_PROJECT_TYPE_INVALID,
+						NULL,
+						NULL,
+						TRUE);
 	}
 }
 
@@ -871,14 +736,11 @@ brasero_project_manager_copy (BraseroProjectManager *manager,
 			      const gchar *device,
 			      const gchar *cover)
 {
-	if (manager->priv->oneshot)
-		brasero_project_manager_copy_disc (manager, device, cover);
-	else
-		brasero_project_manager_switch (manager,
-						BRASERO_PROJECT_TYPE_COPY,
-						NULL,
-						device,
-						TRUE);
+	brasero_project_manager_switch (manager,
+					BRASERO_PROJECT_TYPE_COPY,
+					NULL,
+					device,
+					TRUE);
 }
 
 void
@@ -1068,7 +930,7 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 		gchar *string;
 
 		string = g_strdup_printf (_("The project \"%s\" does not exist"), uri);
-		brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (manager))),
+		brasero_app_alert (brasero_app_get_default (),
 				   _("Error while loading the project."),
 				   string,
 				   GTK_MESSAGE_ERROR);

@@ -472,7 +472,7 @@ brasero_utils_launch_app (GtkWidget *widget,
 			gchar *string;
 
 			string = g_strdup_printf ("\"%s\" could not be opened", uri);
-			brasero_app_alert (BRASERO_APP (gtk_widget_get_toplevel (GTK_WIDGET (widget))),
+			brasero_app_alert (brasero_app_get_default (),
 					   string,
 					   error->message,
 					   GTK_MESSAGE_ERROR);
