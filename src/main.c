@@ -43,12 +43,6 @@
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
-#ifdef BUILD_GNOME2
-
-#include <libgnomeui/libgnomeui.h>
-
-#endif
-
 #include "brasero-project-manager.h"
 #include "brasero-multi-dnd.h"
 #include "brasero-session.h"
@@ -462,11 +456,6 @@ int
 main (int argc, char **argv)
 {
 	GConfClient *client;
-
-#ifdef BUILD_GNOME2
-	GnomeProgram *program;
-#endif
-
 	GOptionContext *context;
 
 
@@ -485,17 +474,6 @@ main (int argc, char **argv)
 					   GETTEXT_PACKAGE);
 	g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
 
-#ifdef BUILD_GNOME2
-
-	program = gnome_program_init (PACKAGE, VERSION, LIBGNOMEUI_MODULE,
-				      argc, argv,
-				      GNOME_PARAM_GOPTION_CONTEXT, context,
-				      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
-				      GNOME_PARAM_HUMAN_READABLE_NAME, _("CD/DVD burning"),
-				      NULL);
-
-#else
-
 	g_option_context_add_group (context, egg_sm_client_get_option_group ());
 	g_option_context_add_group (context, gtk_get_option_group (TRUE));
 	g_option_context_add_group (context, gst_init_get_option_group ());
@@ -506,8 +484,6 @@ main (int argc, char **argv)
 	}
 
 	g_option_context_free (context);
-
-#endif
 
 	gst_init (&argc, &argv);
 
