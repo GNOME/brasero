@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-05 23:31+0100\n"
-"PO-Revision-Date: 2009-01-04 23:16+0100\n"
+"POT-Creation-Date: 2009-01-06 23:38+0100\n"
+"PO-Revision-Date: 2009-01-06 20:42+0100\n"
 "Last-Translator: Mads Lundby <lundbymads@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -20,65 +20,67 @@ msgstr ""
 #: ../src/eggdesktopfile.c:165
 #, c-format
 msgid "File is not a valid .desktop file"
-msgstr ""
+msgstr "Fil er ikke en gyldig .desktop-fil"
 
 #: ../src/eggdesktopfile.c:188
 #, c-format
 msgid "Unrecognized desktop file Version '%s'"
-msgstr ""
+msgstr "Ukendt version for skrivebordsfil \"%s\""
 
 #: ../src/eggdesktopfile.c:958
-#, fuzzy, c-format
+#, c-format
 msgid "Starting %s"
-msgstr "Start"
+msgstr "Starter %s"
 
+#  i kommandolinjen???
 #: ../src/eggdesktopfile.c:1100
 #, c-format
 msgid "Application does not accept documents on command line"
-msgstr ""
+msgstr "Program accepterer ikke dokumenter i kommandolinjen"
 
 #: ../src/eggdesktopfile.c:1168
 #, c-format
 msgid "Unrecognized launch option: %d"
-msgstr ""
+msgstr "Ukendt startertilvalg: %d"
 
 #: ../src/eggdesktopfile.c:1373
 #, c-format
 msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
 msgstr ""
+"Kan ikke overføre dokument-URIer til en \"Type=Link\" skrivebordsindgang"
 
 #: ../src/eggdesktopfile.c:1392
 #, c-format
 msgid "Not a launchable item"
-msgstr ""
+msgstr "Ikke et startbart element"
 
 #: ../src/eggsmclient.c:224
 msgid "Disable connection to session manager"
-msgstr ""
+msgstr "Deaktivér forbindelse til sessionshåndtering"
 
 #: ../src/eggsmclient.c:227
 msgid "Specify file containing saved configuration"
-msgstr ""
+msgstr "Angiv fil indeholdende gemt opsætning"
 
 #: ../src/eggsmclient.c:227
 msgid "FILE"
-msgstr ""
+msgstr "FIL"
 
 #: ../src/eggsmclient.c:230
 msgid "Specify session management ID"
-msgstr ""
+msgstr "Angiv sessionshåndterings-ID"
 
 #: ../src/eggsmclient.c:230
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: ../src/eggsmclient.c:244
 msgid "Session management options:"
-msgstr ""
+msgstr "Indstillinger for sessionshåndtering:"
 
 #: ../src/eggsmclient.c:245
 msgid "Show session management options"
-msgstr ""
+msgstr "Vis indstillinger for sessionshåndtering"
 
 #: ../src/brasero-tool-color-picker.c:156
 msgid "Pick a Color"
@@ -531,7 +533,7 @@ msgid ""
 "set to NULL, brasero will load them all."
 msgstr ""
 "Indeholder listen over ekstra udvidelsesmoduler, som Brasero vil anvende til "
-"at brænde diske. Hvis sat til NULL vil Brasero indlæse dem alle."
+"at brænde diske. Hvis sat til NULL, så vil Brasero indlæse dem alle."
 
 #: ../data/brasero.schemas.in.h:2
 msgid ""
@@ -611,7 +613,7 @@ msgid ""
 "Should brasero filter broken symlinks. Set to true, brasero will filter "
 "broken symlinks."
 msgstr ""
-"Skal Brasero filtrere ugyldige symbolske henvisninger? Hvis slået til, så "
+"Skal Brasero filtrere ugyldige symbolske henvisninger? Hvis sat til sand, så "
 "vil Brasero filtrere ugyldige symbolske henvisninger."
 
 #: ../data/brasero.schemas.in.h:20
@@ -623,8 +625,8 @@ msgid ""
 "Should brasero filter hidden files. Set to true, brasero will filter hidden "
 "files."
 msgstr ""
-"Skal Brasero filtrere skjulte filer? Hvis slået til, så vil Brasero filtrere "
-"skjulte filer."
+"Skal Brasero filtrere skjulte filer? Hvis sat til sand, så vil Brasero "
+"filtrere skjulte filer."
 
 #: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
@@ -635,7 +637,7 @@ msgid ""
 "Should brasero notify when files are filtered. Set to true, brasero will "
 "display the notification."
 msgstr ""
-"Skal Brasero give besked, når filer er filtreret? Hvis slået til, så vil "
+"Skal Brasero give besked, når filer er filtreret? Hvis sat til sand, så vil "
 "Brasero give besked."
 
 #: ../data/brasero.schemas.in.h:24
@@ -644,7 +646,7 @@ msgid ""
 "true, brasero will replace symlinks."
 msgstr ""
 "Skal Brasero erstatte symbolske henvisninger med deres målfiler i projektet? "
-"Hvis slået til, så vil Brasero erstatte symbolske henvisninger."
+"Hvis sat til sand, så vil Brasero erstatte symbolske henvisninger."
 
 #: ../data/brasero.schemas.in.h:25
 msgid ""
@@ -684,11 +686,11 @@ msgstr "Anvendes sammen med \"-immed\"-flag med cdrecord"
 
 #: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
-msgstr "Hvorvidt et sidepanel skal vises. Aktivér for at anvende det."
+msgstr "Hvorvidt et sidepanel skal vises. Sæt til sand for at anvende det."
 
 #: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
-msgstr "Hvorvidt filer skal forhåndsvises. Aktivér for at forhåndsvise."
+msgstr "Hvorvidt filer skal forhåndsvises. Sæt til sand for at forhåndsvise."
 
 #: ../data/brasero.schemas.in.h:32
 msgid ""
@@ -696,7 +698,7 @@ msgid ""
 "as it's only a workaround for some drives/setups."
 msgstr ""
 "Hvorvidt \"-immed\"-flag med cdrecord skal anvendes. Anvend med forsigtighed "
-"(slået til), da det kun er en workaround for visse drev/opsætninger."
+"(sat til sand), da det kun er en workaround for visse drev/opsætninger."
 
 #: ../data/brasero.schemas.in.h:33
 msgid "White list of additional plugins to use"
