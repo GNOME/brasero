@@ -514,12 +514,6 @@ main (int argc, char **argv)
 	gconf_client_remove_dir (client, BRASERO_CONF_DIR, NULL);
 	g_object_unref (client);
 
-#ifdef BUILD_GNOME2
-
-	g_object_unref (program);
-
-#endif
-
 	gst_deinit ();
 
 	return 0;
