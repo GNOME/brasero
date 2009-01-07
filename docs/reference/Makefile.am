@@ -77,7 +77,7 @@ IGNORE_HFILES=	scsi-base.h		\
 		burn-iso-field.h	\
 		burn-iso9660.h		\
 		burn-volume.h		\
-		burn-volume-src.h	\
+		burn-volume-source.h	\
 		burn-susp.h		\
 		burn-hal-watch.h	\
 		libbrasero-marshal.h
