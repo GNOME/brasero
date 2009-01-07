@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in.
-SUBDIRS = src po data docs brasero-media
+SUBDIRS = brasero-media src po data docs
 
 SUBDIRS += help
 
