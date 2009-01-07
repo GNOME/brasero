@@ -2,6 +2,8 @@ module_flags = -avoid-version -module
 
 INCLUDES =					\
 	$(NAUTILUS_EXTENSION_CFLAGS)		\
+	$(BRASERO_DBUS_CFLAGS)			\
+	$(BRASERO_HAL_CFLAGS)			\
 	$(WERROR)				\
 	-D_FILE_OFFSET_BITS=64			\
 	-D_GNU_SOURCE				\
@@ -31,5 +33,9 @@ libnautilus_brasero_extension_la_SOURCES = 	\
 	nautilus-burn-extension.c			\
 	$(NULL)
 
-libnautilus_brasero_extension_la_LIBADD = $(NAUTILUS_EXTENSION_LIBS)
+libnautilus_brasero_extension_la_LIBADD =	\
+	$(NAUTILUS_EXTENSION_LIBS)		\
+	$(BRASERO_DBUS_LIBS)			\
+	$(BRASERO_HAL_LIBS)
+
 libnautilus_brasero_extension_la_LDFLAGS = $(module_flags)
