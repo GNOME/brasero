@@ -228,7 +228,7 @@ brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
 endif
 
 brasero_LDADD =				\
-	libbrasero-media.la		\
+	../brasero-media/libbrasero-media.la		\
 	$(BRASERO_GLIB_LIBS)		\
 	$(BRASERO_GIO_LIBS)		\
 	$(BRASERO_GCONF_LIBS)		\
@@ -243,8 +243,7 @@ brasero_LDADD =				\
 	$(BRASERO_PL_PARSER_LIBS)
 
 EXTRA_DIST =			\
-	brasero-marshal.list	\
-	libbrasero.symbols
+	brasero-marshal.list
 
 CLEANFILES =			\
 	$(RECMARSHALFILES)
