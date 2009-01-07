@@ -35,12 +35,13 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "burn-units.h"
+#include "burn-media.h"
 #include "burn-iso9660.h"
 #include "burn-iso-field.h"
 #include "burn-susp.h"
+#include "burn-media.h"
 #include "burn-volume.h"
-#include "burn-basics.h"
-#include "burn-debug.h"
 
 struct _BraseroIsoCtx {
 	gint num_blocks;
@@ -147,8 +148,8 @@ brasero_iso9660_is_primary_descriptor (const char *buffer,
 	vol = (BraseroVolDesc *) buffer;
 	if (memcmp (vol->id, "CD001", 5)) {
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_IMAGE_INVALID,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 			     _("It does not appear to be a valid ISO image"));
 		return FALSE;
 	}
@@ -156,8 +157,8 @@ brasero_iso9660_is_primary_descriptor (const char *buffer,
 	/* must be "1" for primary volume */
 	if (vol->type != 1) {
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_IMAGE_INVALID,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 			     _("It does not appear to be a valid ISO image"));
 		return FALSE;
 	}
@@ -235,7 +236,7 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 
 	memset (susp_ctx, 0, sizeof (BraseroSuspCtx));
 	if (!brasero_susp_read (susp_ctx, susp, susp_len)) {
-		BRASERO_BURN_LOG ("Could not read susp area");
+		BRASERO_MEDIA_LOG ("Could not read susp area");
 		return FALSE;
 	}
 
@@ -245,12 +246,12 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 		guint32 offset;
 		guint32 len;
 
-		BRASERO_BURN_LOG ("Continuation Area");
+		BRASERO_MEDIA_LOG ("Continuation Area");
 
 		/* we need to move to another block */
 		seek_res = BRASERO_VOL_SRC_SEEK (ctx->vol, susp_ctx->CE_address, SEEK_SET, NULL);
 		if (seek_res == -1) {
-			BRASERO_BURN_LOG ("Could not seek to continuation area");
+			BRASERO_MEDIA_LOG ("Could not seek to continuation area");
 			result = FALSE;
 			break;
 		}
@@ -259,7 +260,7 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 			current_position = seek_res;
 
 		if (!BRASERO_VOL_SRC_READ (ctx->vol, CE_block, 1, NULL)) {
-			BRASERO_BURN_LOG ("Could not get continuation area");
+			BRASERO_MEDIA_LOG ("Could not get continuation area");
 			result = FALSE;
 			break;
 		}
@@ -274,7 +275,7 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 
 		/* read all information contained in the CE area */
 		if (!brasero_susp_read (susp_ctx, CE_block + offset, len)) {
-			BRASERO_BURN_LOG ("Could not read continuation area");
+			BRASERO_MEDIA_LOG ("Could not read continuation area");
 			result = FALSE;
 			break;
 		}
@@ -283,7 +284,7 @@ brasero_iso9660_read_susp (BraseroIsoCtx *ctx,
 	/* reset the reading address properly */
 	if (current_position != -1
 	&&  BRASERO_VOL_SRC_SEEK (ctx->vol, current_position, SEEK_SET, NULL) == -1) {
-		BRASERO_BURN_LOG ("Could not rewind to previous position");
+		BRASERO_MEDIA_LOG ("Could not rewind to previous position");
 		result = FALSE;
 	}
 
@@ -321,7 +322,7 @@ brasero_iso9660_get_susp (BraseroIsoCtx *ctx,
 
 	susp_block = ((gchar *) record) + start;
 
-	BRASERO_BURN_LOG ("Got susp block");
+	BRASERO_MEDIA_LOG ("Got susp block");
 	return susp_block;
 }
 
@@ -331,19 +332,19 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 	BraseroIsoDirRec *record;
 
 	if (ctx->offset > sizeof (ctx->buffer)) {
-		BRASERO_BURN_LOG ("Invalid record size");
+		BRASERO_MEDIA_LOG ("Invalid record size");
 		goto error;
 	}
 
 	if (ctx->offset == sizeof (ctx->buffer)) {
-		BRASERO_BURN_LOG ("No next record");
+		BRASERO_MEDIA_LOG ("No next record");
 		return BRASERO_ISO_END;
 	}
 
 	/* record_size already checked last time function was called */
 	record = (BraseroIsoDirRec *) (ctx->buffer + ctx->offset);
 	if (!record->record_size) {
-		BRASERO_BURN_LOG ("Last record");
+		BRASERO_MEDIA_LOG ("Last record");
 		return BRASERO_ISO_END;
 	}
 
@@ -351,13 +352,13 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 		gint part_one, part_two;
 
 		/* This is for cross sector boundary records */
-		BRASERO_BURN_LOG ("Cross sector boundary record");
+		BRASERO_MEDIA_LOG ("Cross sector boundary record");
 
 		/* some implementations write across block boundary which is
 		 * "forbidden" by ECMA-119. But linux kernel accepts it, so ...
 		 */
-/*		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+/*		ctx->error = g_error_new (BRASERO_MEDIA_ERROR,
+					  BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 					  _("It does not appear to be a valid ISO image"));
 		goto error;
 */
@@ -391,8 +392,8 @@ brasero_iso9660_next_record (BraseroIsoCtx *ctx, BraseroIsoDirRec **retval)
 
 error:
 	if (!ctx->error)
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+		ctx->error = g_error_new (BRASERO_MEDIA_ERROR,
+					  BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 					  _("It does not appear to be a valid ISO image"));
 	return BRASERO_ISO_ERROR;
 }
@@ -404,7 +405,7 @@ brasero_iso9660_get_first_directory_record (BraseroIsoCtx *ctx,
 {
 	BraseroIsoResult result;
 
-	BRASERO_BURN_LOG ("Reading directory record");
+	BRASERO_MEDIA_LOG ("Reading directory record");
 
 	result = brasero_iso9660_seek (ctx, address);
 	if (result != BRASERO_ISO_OK)
@@ -427,9 +428,9 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 	BraseroVolFileExtent *extent;
 
 	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
-		BRASERO_BURN_LOG ("Filename is too long");
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+		BRASERO_MEDIA_LOG ("Filename is too long");
+		ctx->error = g_error_new (BRASERO_MEDIA_ERROR,
+					  BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 					  _("It does not appear to be a valid ISO image"));
 		return NULL;
 	}
@@ -449,14 +450,14 @@ brasero_iso9660_read_file_record (BraseroIsoCtx *ctx,
 
 	/* see if we've got a susp area */
 	if (!susp_ctx) {
-		BRASERO_BURN_LOG ("New file %s", file->name);
+		BRASERO_MEDIA_LOG ("New file %s", file->name);
 		return file;
 	}
 
-	BRASERO_BURN_LOG ("New file %s with a suspend area", file->name);
+	BRASERO_MEDIA_LOG ("New file %s with a suspend area", file->name);
 
 	if (susp_ctx->rr_name) {
-		BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx->rr_name);
+		BRASERO_MEDIA_LOG ("Got a susp (RR) %s", susp_ctx->rr_name);
 		file->rr_name = susp_ctx->rr_name;
 		susp_ctx->rr_name = NULL;
 	}
@@ -476,9 +477,9 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 	BraseroVolFile *directory;
 
 	if (record->id_size > record->record_size - sizeof (BraseroIsoDirRec)) {
-		BRASERO_BURN_LOG ("Filename is too long");
-		ctx->error = g_error_new (BRASERO_BURN_ERROR,
-					  BRASERO_BURN_ERROR_IMAGE_INVALID,
+		BRASERO_MEDIA_LOG ("Filename is too long");
+		ctx->error = g_error_new (BRASERO_MEDIA_ERROR,
+					  BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 					  _("It does not appear to be a valid ISO image"));
 		return NULL;
 	}
@@ -496,31 +497,31 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 		 */
 		susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
 		if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
-			BRASERO_BURN_LOG ("Could not read susp area");
+			BRASERO_MEDIA_LOG ("Could not read susp area");
 			brasero_volume_file_free (directory);
 			return NULL;
 		}
 
 		/* look for a "CL" SUSP entry in case the directory was relocated */
 		if (susp_ctx.CL_address) {
-			BRASERO_BURN_LOG ("Entry has a CL entry");
+			BRASERO_MEDIA_LOG ("Entry has a CL entry");
 			address = susp_ctx.CL_address;
 		}
 		else
 			address = brasero_iso9660_get_733_val (record->address);
 
-		BRASERO_BURN_LOG ("New directory %s with susp area", directory->name);
+		BRASERO_MEDIA_LOG ("New directory %s with susp area", directory->name);
 
 		/* if this directory has a "RE" susp entry then drop it; it's 
 		 * not at the right place in the Rock Ridge file hierarchy. It
 		 * will probably be skipped */
 		if (susp_ctx.has_RE) {
-			BRASERO_BURN_LOG ("Rock Ridge relocated directory. Skipping entry.");
+			BRASERO_MEDIA_LOG ("Rock Ridge relocated directory. Skipping entry.");
 			directory->relocated = TRUE;
 		}
 
 		if (susp_ctx.rr_name) {
-			BRASERO_BURN_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
+			BRASERO_MEDIA_LOG ("Got a susp (RR) %s", susp_ctx.rr_name);
 			directory->rr_name = susp_ctx.rr_name;
 			susp_ctx.rr_name = NULL;
 		}
@@ -555,7 +556,7 @@ brasero_iso9660_read_directory_record (BraseroIsoCtx *ctx,
 	else	/* store the address of contents for later use */
 		directory->specific.dir.address = address;
 
-	BRASERO_BURN_LOG ("New directory %s", directory->name);
+	BRASERO_MEDIA_LOG ("New directory %s", directory->name);
 	return directory;
 }
 
@@ -575,14 +576,14 @@ brasero_iso9660_load_directory_records (BraseroIsoCtx *ctx,
 
 	max_record_size = brasero_iso9660_get_733_val (record->file_size);
 	max_block = ISO9660_BYTES_TO_BLOCKS (max_record_size);
-	BRASERO_BURN_LOG ("Maximum directory record length %i block (= %i bytes)", max_block, max_record_size);
+	BRASERO_MEDIA_LOG ("Maximum directory record length %i block (= %i bytes)", max_block, max_record_size);
 
 	/* skip ".." */
 	result = brasero_iso9660_next_record (ctx, &record);
 	if (result != BRASERO_ISO_OK)
 		return NULL;
 
-	BRASERO_BURN_LOG ("Skipped '.' and '..'");
+	BRASERO_MEDIA_LOG ("Skipped '.' and '..'");
 
 	while (1) {
 		BraseroIsoResult result;
@@ -626,7 +627,7 @@ brasero_iso9660_load_directory_records (BraseroIsoCtx *ctx,
 			 * get deep directories that are flagged as files. */
 			susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
 			if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
-				BRASERO_BURN_LOG ("Could not read susp area");
+				BRASERO_MEDIA_LOG ("Could not read susp area");
 				goto error;
 			}
 
@@ -636,7 +637,7 @@ brasero_iso9660_load_directory_records (BraseroIsoCtx *ctx,
 			if (susp_ctx.CL_address) {
 				gpointer copy;
 
-				BRASERO_BURN_LOG ("Entry has a CL entry, keeping for later");
+				BRASERO_MEDIA_LOG ("Entry has a CL entry, keeping for later");
 				copy = g_new0 (gchar, record->record_size);
 				memcpy (copy, record, record->record_size);
 				directories = g_slist_prepend (directories, copy);
@@ -668,7 +669,7 @@ brasero_iso9660_load_directory_records (BraseroIsoCtx *ctx,
 				/* add size and addresses */
 				ctx->data_blocks += ISO9660_BYTES_TO_BLOCKS (entry->specific.file.size_bytes);
 				last = brasero_volume_file_merge (last, entry);
-				BRASERO_BURN_LOG ("Multi extent file");
+				BRASERO_MEDIA_LOG ("Multi extent file");
 				continue;
 			}
 		}
@@ -727,10 +728,10 @@ brasero_iso9660_check_SUSP_RR_use (BraseroIsoCtx *ctx,
 	ctx->is_root = FALSE;
 
 	if (ctx->has_susp)
-		BRASERO_BURN_LOG ("File system supports system use sharing protocol");
+		BRASERO_MEDIA_LOG ("File system supports system use sharing protocol");
 
 	if (ctx->has_RR)
-		BRASERO_BURN_LOG ("File system has Rock Ridge extension");
+		BRASERO_MEDIA_LOG ("File system has Rock Ridge extension");
 
 	brasero_susp_ctx_clean (&susp_ctx);
 	return TRUE;
@@ -815,7 +816,7 @@ brasero_iso9660_lookup_directory_record_RR (BraseroIsoCtx *ctx,
 	 * has a CL entry and rr_name. */
 	susp = brasero_iso9660_get_susp (ctx, record, &susp_len);
 	if (!brasero_iso9660_read_susp (ctx, &susp_ctx, susp, susp_len)) {
-		BRASERO_BURN_LOG ("Could not read susp area");
+		BRASERO_MEDIA_LOG ("Could not read susp area");
 		return NULL;
 	}
 
@@ -906,7 +907,7 @@ brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 	BraseroIsoDirRec *record;
 	BraseroVolFile *file = NULL;
 
-	BRASERO_BURN_LOG ("Reading directory record");
+	BRASERO_MEDIA_LOG ("Reading directory record");
 
 	result = brasero_iso9660_seek (ctx, address);
 	if (result != BRASERO_ISO_OK)
@@ -935,22 +936,22 @@ brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 		brasero_susp_ctx_clean (&susp_ctx);
 
 		if (ctx->has_susp)
-			BRASERO_BURN_LOG ("File system supports system use sharing protocol");
+			BRASERO_MEDIA_LOG ("File system supports system use sharing protocol");
 
 		if (ctx->has_RR)
-			BRASERO_BURN_LOG ("File system has Rock Ridge extension");
+			BRASERO_MEDIA_LOG ("File system has Rock Ridge extension");
 	}
 
 	max_record_size = brasero_iso9660_get_733_val (record->file_size);
 	max_block = ISO9660_BYTES_TO_BLOCKS (max_record_size);
-	BRASERO_BURN_LOG ("Maximum directory record length %i block (= %i bytes)", max_block, max_record_size);
+	BRASERO_MEDIA_LOG ("Maximum directory record length %i block (= %i bytes)", max_block, max_record_size);
 
 	/* skip ".." */
 	result = brasero_iso9660_next_record (ctx, &record);
 	if (result != BRASERO_ISO_OK)
 		return NULL;
 
-	BRASERO_BURN_LOG ("Skipped '.' and '..'");
+	BRASERO_MEDIA_LOG ("Skipped '.' and '..'");
 
 	end = strchr (path, '/');
 	if (!end)
@@ -966,25 +967,25 @@ brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 		result = brasero_iso9660_next_record (ctx, &record);
 		if (result == BRASERO_ISO_END) {
 			if (ctx->num_blocks >= max_block) {
-				BRASERO_BURN_LOG ("Reached the end of directory record");
+				BRASERO_MEDIA_LOG ("Reached the end of directory record");
 				break;
 			}
 
 			result = brasero_iso9660_next_block (ctx);
 			if (result != BRASERO_ISO_OK) {
-				BRASERO_BURN_LOG ("Failed to load next block");
+				BRASERO_MEDIA_LOG ("Failed to load next block");
 				return NULL;
 			}
 
 			continue;
 		}
 		else if (result == BRASERO_ISO_ERROR) {
-			BRASERO_BURN_LOG ("Error retrieving next record");
+			BRASERO_MEDIA_LOG ("Error retrieving next record");
 			return NULL;
 		}
 
 		if (!record) {
-			BRASERO_BURN_LOG ("No record !!!");
+			BRASERO_MEDIA_LOG ("No record !!!");
 			break;
 		}
 
@@ -1005,7 +1006,7 @@ brasero_iso9660_lookup_directory_records (BraseroIsoCtx *ctx,
 		if (file) {
 			/* add size and addresses */
 			file = brasero_volume_file_merge (file, entry);
-			BRASERO_BURN_LOG ("Multi extent file");
+			BRASERO_MEDIA_LOG ("Multi extent file");
 		}
 		else
 			file = entry;

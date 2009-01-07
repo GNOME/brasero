@@ -34,7 +34,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "burn-basics.h"
-#include "burn-debug.h"
 #include "burn-medium.h"
 #include "burn-drive.h"
 
@@ -226,6 +225,10 @@ brasero_medium_get_status (BraseroMedium *medium)
 	return priv->info;
 }
 
+/**
+ * This one is not supposed to be public API. It's declared in burn-caps.c
+ */
+
 BraseroBurnFlag
 brasero_medium_supported_flags (BraseroMedium *self,
 				BraseroBurnFlag flags)
@@ -255,6 +258,10 @@ brasero_medium_supported_flags (BraseroMedium *self,
 
 	return flags;
 }
+
+/**
+ * This one is not supposed to be public API. It's declared in burn-caps.c
+ */
 
 gboolean
 brasero_medium_support_flags (BraseroMedium *self,
@@ -704,20 +711,20 @@ brasero_medium_test_simulate_CD_SAO (BraseroMedium *self,
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	/* Try TAO and then SAO if it isn't persistent */
-	BRASERO_BURN_LOG ("Checking simulate (CD TAO)");
+	BRASERO_MEDIA_LOG ("Checking simulate (CD TAO)");
 	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_WRT_TAO,
 							 &hdr,
 							 &size,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
 	desc = hdr->desc;
 	if (!desc->current)
-		BRASERO_BURN_LOG ("Feature is not current");
+		BRASERO_MEDIA_LOG ("Feature is not current");
 
 	tao_desc = (BraseroScsiCDTAODesc *) desc->data;
 	priv->dummy_tao = tao_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
@@ -740,20 +747,20 @@ brasero_medium_test_simulate_CD_TAO (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Checking simulate (CD SAO)");
+	BRASERO_MEDIA_LOG ("Checking simulate (CD SAO)");
 	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_WRT_SAO_RAW,
 							 &hdr,
 							 &size,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
 	desc = hdr->desc;
 	if (!desc->current)
-		BRASERO_BURN_LOG ("Feature is not current");
+		BRASERO_MEDIA_LOG ("Feature is not current");
 
 	sao_desc = (BraseroScsiCDSAODesc *) desc->data;
 	priv->dummy_sao = sao_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
@@ -777,20 +784,20 @@ brasero_medium_test_simulate_DVDRW (BraseroMedium *self,
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	/* Only DVD-R(W) support simulation */
-	BRASERO_BURN_LOG ("Checking simulate (DVD-R/W)");
+	BRASERO_MEDIA_LOG ("Checking simulate (DVD-R/W)");
 	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_WRT_DVD_LESS,
 							 &hdr,
 							 &size,
 							 code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
 	desc = hdr->desc;
 	if (!desc->current)
-		BRASERO_BURN_LOG ("Feature is not current");
+		BRASERO_MEDIA_LOG ("Feature is not current");
 
 	less_wrt_desc = (BraseroScsiDVDRWlessWrtDesc *) desc->data;
 	priv->dummy_sao = less_wrt_desc->dummy ? BRASERO_MEDIUM_CAP_TRUE:BRASERO_MEDIUM_CAP_FALSE;
@@ -823,7 +830,7 @@ brasero_medium_test_simulate_2A (BraseroMedium *self,
 						   &size,
 						   code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("MODE SENSE failed");
+		BRASERO_MEDIA_LOG ("MODE SENSE failed");
 		return;
 	}
 
@@ -862,7 +869,7 @@ brasero_medium_init_caps (BraseroMedium *self,
 	else
 		res = brasero_medium_test_simulate_DVDRW (self, handle, code);
 
-	BRASERO_BURN_LOG ("Tested simulation %d %d, burnfree %d",
+	BRASERO_MEDIA_LOG ("Tested simulation %d %d, burnfree %d",
 			  priv->dummy_tao,
 			  priv->dummy_sao,
 			  priv->burnfree);
@@ -871,10 +878,10 @@ brasero_medium_init_caps (BraseroMedium *self,
 		return;
 
 	/* it didn't work out as expected use fallback */
-	BRASERO_BURN_LOG ("Using fallback 2A page for testing simulation and burnfree");
+	BRASERO_MEDIA_LOG ("Using fallback 2A page for testing simulation and burnfree");
 	brasero_medium_test_simulate_2A (self, handle, code);
 
-	BRASERO_BURN_LOG ("Re-tested simulation %d %d, burnfree %d",
+	BRASERO_MEDIA_LOG ("Re-tested simulation %d %d, burnfree %d",
 			  priv->dummy_tao,
 			  priv->dummy_sao,
 			  priv->burnfree);
@@ -896,7 +903,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Retrieving capacity from atip");
+	BRASERO_MEDIA_LOG ("Retrieving capacity from atip");
 
 	result = brasero_mmc1_read_atip (handle,
 					 &atip_data,
@@ -904,7 +911,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 					 NULL);
 
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("READ ATIP failed (scsi error)");
+		BRASERO_MEDIA_LOG ("READ ATIP failed (scsi error)");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -913,7 +920,7 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 		if (size)
 			g_free (atip_data);
 
-		BRASERO_BURN_LOG ("READ ATIP failed (wrong size)");
+		BRASERO_MEDIA_LOG ("READ ATIP failed (wrong size)");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -922,9 +929,9 @@ brasero_medium_get_capacity_CD_RW (BraseroMedium *self,
 					      atip_data->desc->leadout_frame);
 	g_free (atip_data);
 
-	BRASERO_BURN_LOG ("Format capacity %lli %lli",
-			  priv->block_num,
-			  priv->block_size);
+	BRASERO_MEDIA_LOG ("Format capacity %lli %lli",
+			   priv->block_num,
+			   priv->block_size);
 
 	return BRASERO_BURN_OK;
 }
@@ -942,7 +949,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	gint i, max;
 	gint size;
 
-	BRASERO_BURN_LOG ("Retrieving format capacity");
+	BRASERO_MEDIA_LOG ("Retrieving format capacity");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc2_read_format_capacities (handle,
@@ -952,7 +959,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (hdr);
 
-		BRASERO_BURN_LOG ("READ FORMAT CAPACITIES failed");
+		BRASERO_MEDIA_LOG ("READ FORMAT CAPACITIES failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -966,7 +973,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 	/* see if the media is already formatted */
 	current = hdr->max_caps;
 	if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
-		BRASERO_BURN_LOG ("Unformatted media");
+		BRASERO_MEDIA_LOG ("Unformatted media");
 		priv->info |= BRASERO_MEDIUM_UNFORMATTED;
 
 		/* if unformatted, a DVD-RAM will return its maximum formattable
@@ -1020,7 +1027,7 @@ brasero_medium_get_capacity_DVD_RW (BraseroMedium *self,
 
 end:
 
-	BRASERO_BURN_LOG ("Format capacity %lli %lli",
+	BRASERO_MEDIA_LOG ("Format capacity %lli %lli",
 			  priv->block_num,
 			  priv->block_size);
 
@@ -1068,7 +1075,7 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	BraseroScsiWrtSpdDesc *desc;
 	BraseroScsiGetPerfData *wrt_perf = NULL;
 
-	BRASERO_BURN_LOG ("Retrieving speed (Get Performance)");
+	BRASERO_MEDIA_LOG ("Retrieving speed (Get Performance)");
 
 	/* NOTE: this only work if there is RT streaming feature with
 	 * wspd bit set to 1. At least an MMC3 drive. */
@@ -1081,7 +1088,7 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (wrt_perf);
 
-		BRASERO_BURN_LOG ("GET PERFORMANCE failed");
+		BRASERO_MEDIA_LOG ("GET PERFORMANCE failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1137,7 +1144,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	gint max_num;
 	int size = 0;
 
-	BRASERO_BURN_LOG ("Retrieving speed (2A speeds)");
+	BRASERO_MEDIA_LOG ("Retrieving speed (2A speeds)");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_spc1_mode_sense_get_page (handle,
@@ -1148,7 +1155,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (data);
 
-		BRASERO_BURN_LOG ("MODE SENSE failed");
+		BRASERO_MEDIA_LOG ("MODE SENSE failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1158,7 +1165,7 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	if (size < sizeof (BraseroScsiStatusPage)) {
 		g_free (data);
 
-		BRASERO_BURN_LOG ("wrong size in page");
+		BRASERO_MEDIA_LOG ("wrong size in page");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1203,7 +1210,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size = 0;
 
-	BRASERO_BURN_LOG ("Retrieving speed (2A max)");
+	BRASERO_MEDIA_LOG ("Retrieving speed (2A max)");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -1215,7 +1222,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (data);
 
-		BRASERO_BURN_LOG ("MODE SENSE failed");
+		BRASERO_MEDIA_LOG ("MODE SENSE failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1224,7 +1231,7 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 	if (size < 0x14) {
 		g_free (data);
 
-		BRASERO_BURN_LOG ("wrong page size");
+		BRASERO_MEDIA_LOG ("wrong page size");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1278,7 +1285,7 @@ brasero_medium_track_volume_size (BraseroMedium *self,
 	brasero_volume_source_close (vol);
 
 	if (!res) {
-		BRASERO_BURN_LOG ("Failed to retrieve the volume size: %s",
+		BRASERO_MEDIA_LOG ("Failed to retrieve the volume size: %s",
 				  error && error->message ? 
 				  error->message:"unknown error");
 
@@ -1300,7 +1307,7 @@ brasero_medium_track_written_SAO (BraseroDeviceHandle *handle,
 	unsigned char buffer [2048];
 	BraseroScsiResult result;
 
-	BRASERO_BURN_LOG ("Checking for TDBs in track pregap.");
+	BRASERO_MEDIA_LOG ("Checking for TDBs in track pregap.");
 
 	/* The two following sectors are readable */
 	result = brasero_mmc1_read_block (handle,
@@ -1318,7 +1325,7 @@ brasero_medium_track_written_SAO (BraseroDeviceHandle *handle,
 		int i;
 
 		if (buffer [0] != 'T' || buffer [1] != 'D' || buffer [2] != 'I') {
-			BRASERO_BURN_LOG ("Track was probably recorded in SAO mode - no TDB.");
+			BRASERO_MEDIA_LOG ("Track was probably recorded in SAO mode - no TDB.");
 			return TRUE;
 		}
 
@@ -1330,20 +1337,20 @@ brasero_medium_track_written_SAO (BraseroDeviceHandle *handle,
 		}
 
 		if (i >= 128) {
-			BRASERO_BURN_LOG ("No appropriate TDU for track");
+			BRASERO_MEDIA_LOG ("No appropriate TDU for track");
 			return TRUE;
 		}
 
 		if (buffer [8 + i * 16] == 0x80 || buffer [8 + i * 16] == 0x00) {
-			BRASERO_BURN_LOG ("Track was recorded in TAO mode.");
+			BRASERO_MEDIA_LOG ("Track was recorded in TAO mode.");
 			return FALSE;
 		}
 
-		BRASERO_BURN_LOG ("Track was recorded in Packet mode.");
+		BRASERO_MEDIA_LOG ("Track was recorded in Packet mode.");
 		return FALSE;
 	}
 
-	BRASERO_BURN_LOG ("No pregap. That track must have been recorded in SAO mode.");
+	BRASERO_MEDIA_LOG ("No pregap. That track must have been recorded in SAO mode.");
 	return TRUE;
 }
 
@@ -1360,7 +1367,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	BRASERO_BURN_LOG ("Retrieving track information for %i", track_num);
+	BRASERO_MEDIA_LOG ("Retrieving track information for %i", track_num);
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -1381,7 +1388,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 					       code);
 
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("READ TRACK INFO failed");
+		BRASERO_MEDIA_LOG ("READ TRACK INFO failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1398,7 +1405,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 		 * use the old value.
 		 * That's important for checksuming to have a perfect account of
 		 * the data size. */
-		BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
+		BRASERO_MEDIA_LOG ("300 sectors size. Checking for real size");
 		brasero_medium_track_volume_size (self, track, handle);
 	}
 	/* NOTE: for multisession CDs only
@@ -1428,7 +1435,7 @@ brasero_medium_track_get_info (BraseroMedium *self,
 	     &&  multisession
 	     &&  (priv->info & BRASERO_MEDIUM_CD)
 	     && !(priv->info & BRASERO_MEDIUM_ROM)) {
-		BRASERO_BURN_LOG ("Data track belongs to first session of multisession CD. "
+		BRASERO_MEDIA_LOG ("Data track belongs to first session of multisession CD. "
 				  "Checking for real size (%i sectors currently).",
 				  track->blocks_num);
 
@@ -1453,19 +1460,19 @@ brasero_medium_track_get_info (BraseroMedium *self,
 						  NULL);
 
 		if (result == BRASERO_SCSI_OK) {
-			BRASERO_BURN_LOG ("Following two sectors are readable.");
+			BRASERO_MEDIA_LOG ("Following two sectors are readable.");
 
 			if (brasero_medium_track_written_SAO (handle, track_num, track->start)) {
 				track->blocks_num += 2;
-				BRASERO_BURN_LOG ("Correcting track size (now %i)", track->blocks_num);
+				BRASERO_MEDIA_LOG ("Correcting track size (now %i)", track->blocks_num);
 			}
 		}
 		else
-			BRASERO_BURN_LOG ("Detected runouts");
+			BRASERO_MEDIA_LOG ("Detected runouts");
 	}
 
 	/* NOTE: DVD+RW, DVD-RW (restricted overwrite) never reach this function */
-	BRASERO_BURN_LOG ("Track %i (session %i): type = %i start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Track %i (session %i): type = %i start = %llu size = %llu",
 			  track_num,
 			  track->session,
 			  track->type,
@@ -1488,14 +1495,14 @@ brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Using fallback method for blank CDR to retrieve NWA and leadout information");
+	BRASERO_MEDIA_LOG ("Using fallback method for blank CDR to retrieve NWA and leadout information");
 
 	/* NWA is easy for blank CDRs, it's 0. So far, so good... */
 	priv->next_wr_add = 0;
 
 	result = brasero_mmc1_read_atip (handle, &atip, &size, code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("READ ATIP failed");
+		BRASERO_MEDIA_LOG ("READ ATIP failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1506,7 +1513,7 @@ brasero_medium_track_set_leadout_CDR_blank (BraseroMedium *self,
 	/* of course it starts at 0 since it's empty */
 	leadout->start = 0;
 
-	BRASERO_BURN_LOG ("Leadout (through READ ATIP): start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Leadout (through READ ATIP): start = %llu size = %llu",
 			  leadout->start,
 			  leadout->blocks_num);
 
@@ -1529,12 +1536,12 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 	gint track_num;
 	int size;
 
-	BRASERO_BURN_LOG ("Retrieving NWA and leadout information");
+	BRASERO_MEDIA_LOG ("Retrieving NWA and leadout information");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info)) {
-		BRASERO_BURN_LOG ("Overwritable medium  => skipping");
+		BRASERO_MEDIA_LOG ("Overwritable medium  => skipping");
 		return BRASERO_BURN_OK;
 	}
 
@@ -1549,9 +1556,9 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 	if (result == BRASERO_SCSI_OK) {
 		wrt_page = (BraseroScsiWritePage *) &data->page;
 
-		BRASERO_BURN_LOG ("Former write type %d", wrt_page->write_type);
-		BRASERO_BURN_LOG ("Former track mode %d", wrt_page->track_mode);
-		BRASERO_BURN_LOG ("Former data block type %d", wrt_page->data_block_type);
+		BRASERO_MEDIA_LOG ("Former write type %d", wrt_page->write_type);
+		BRASERO_MEDIA_LOG ("Former track mode %d", wrt_page->track_mode);
+		BRASERO_MEDIA_LOG ("Former data block type %d", wrt_page->data_block_type);
 
 		/* "reset some stuff to be on the safe side" (words and ideas
 		 * taken from k3b:)). */
@@ -1573,7 +1580,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		g_free (data);
 
 		if (result != BRASERO_SCSI_OK) {
-			BRASERO_BURN_LOG ("MODE SELECT failed");
+			BRASERO_MEDIA_LOG ("MODE SELECT failed");
 
 			/* This only for CD-R */
 			if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
@@ -1587,7 +1594,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		}
 	}
 	else {
-		BRASERO_BURN_LOG ("MODE SENSE failed");
+		BRASERO_MEDIA_LOG ("MODE SENSE failed");
 
 		/* This only for CD-R */
 		if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_CDR|BRASERO_MEDIUM_BLANK))
@@ -1618,7 +1625,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 	else if (priv->first_open_track >= 0)
 		track_num = priv->first_open_track;
 	else {
-		BRASERO_BURN_LOG ("There aren't any open session set");
+		BRASERO_MEDIA_LOG ("There aren't any open session set");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1636,26 +1643,26 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 									   leadout,
 									   code);
 
-		BRASERO_BURN_LOG ("READ TRACK INFO failed");
+		BRASERO_MEDIA_LOG ("READ TRACK INFO failed");
 		return BRASERO_BURN_ERR;
 	}
 
-	BRASERO_BURN_LOG ("Next Writable Address is %d", BRASERO_GET_32 (track_info.next_wrt_address));
+	BRASERO_MEDIA_LOG ("Next Writable Address is %d", BRASERO_GET_32 (track_info.next_wrt_address));
 	if (track_info.next_wrt_address_valid)
 		priv->next_wr_add = BRASERO_GET_32 (track_info.next_wrt_address);
 	else
-		BRASERO_BURN_LOG ("Next Writable Address is not valid");
+		BRASERO_MEDIA_LOG ("Next Writable Address is not valid");
 
 	/* Set free space */
-	BRASERO_BURN_LOG ("Free blocks %d", BRASERO_GET_32 (track_info.free_blocks));
+	BRASERO_MEDIA_LOG ("Free blocks %d", BRASERO_GET_32 (track_info.free_blocks));
 	leadout->blocks_num = BRASERO_GET_32 (track_info.free_blocks);
 
 	if (!leadout->blocks_num) {
 		leadout->blocks_num = BRASERO_GET_32 (track_info.track_size);
-		BRASERO_BURN_LOG ("Using track size %d", leadout->blocks_num);
+		BRASERO_MEDIA_LOG ("Using track size %d", leadout->blocks_num);
 	}
 
-	BRASERO_BURN_LOG ("Leadout: start = %llu size = %llu",
+	BRASERO_MEDIA_LOG ("Leadout: start = %llu size = %llu",
 			  leadout->start,
 			  leadout->blocks_num);
 
@@ -1706,7 +1713,7 @@ brasero_medium_add_DVD_plus_RW_leadout (BraseroMedium *self)
 	 * buggy */
 	priv->next_wr_add = 0;
 
-	BRASERO_BURN_LOG ("Adding fabricated leadout start = %llu length = %llu",
+	BRASERO_MEDIA_LOG ("Adding fabricated leadout start = %llu length = %llu",
 			  leadout->start,
 			  leadout->blocks_num);
 }
@@ -1723,7 +1730,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiFormattedTocData *toc = NULL;
 
-	BRASERO_BURN_LOG ("Reading Toc");
+	BRASERO_MEDIA_LOG ("Reading Toc");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc1_read_toc_formatted (handle,
@@ -1734,7 +1741,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (toc);
 
-		BRASERO_BURN_LOG ("READ TOC failed");
+		BRASERO_MEDIA_LOG ("READ TOC failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -1748,14 +1755,14 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 	 * are open: all first concatenated sessions, the last session, and the
 	 * leadout. */
 	
-	BRASERO_BURN_LOG ("%i track(s) found", num);
+	BRASERO_MEDIA_LOG ("%i track(s) found", num);
 
 	desc = toc->desc;
 	for (i = 0; i < num; i ++, desc ++) {
 		BraseroMediumTrack *track;
 
 		if (desc->track_num == BRASERO_SCSI_TRACK_LEADOUT_START) {
-			BRASERO_BURN_LOG ("Leadout reached %d",
+			BRASERO_MEDIA_LOG ("Leadout reached %d",
 					  BRASERO_GET_32 (desc->track_start));
 			break;
 		}
@@ -1793,7 +1800,7 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 			 * which have only one track: the first. Since it's not
 			 * possible to know the amount of data that were really
 			 * written in this session, read the filesystem. */
-			BRASERO_BURN_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size (start = %i)", track->start);
+			BRASERO_MEDIA_LOG ("DVD+RW (DL) or DVD-RW (restricted overwrite) checking volume size (start = %i)", track->start);
 			track->session = 1;
 			track->start = 0;
 			result = brasero_medium_track_volume_size (self, 
@@ -1807,11 +1814,11 @@ brasero_medium_get_sessions_info (BraseroMedium *self,
 				priv->info &= ~(BRASERO_MEDIUM_CLOSED|
 					        BRASERO_MEDIUM_HAS_DATA);
 
-				BRASERO_BURN_LOG ("Empty first session.");
+				BRASERO_MEDIA_LOG ("Empty first session.");
 			}
 			else {
 				priv->next_wr_add = 0;
-				BRASERO_BURN_LOG ("Track 1 (session %i): type = %i start = %llu size = %llu",
+				BRASERO_MEDIA_LOG ("Track 1 (session %i): type = %i start = %llu size = %llu",
 						  track->session,
 						  track->type,
 						  track->start,
@@ -1885,11 +1892,11 @@ brasero_medium_get_DVD_id (BraseroMedium *self,
 						      &size,
 						      code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("Retrieval of DVD id failed");
+		BRASERO_MEDIA_LOG ("Retrieval of DVD id failed");
 		return;
 	}
 
-	BRASERO_BURN_LOG ("DVD id %d", BRASERO_GET_16 (hdr->data + 2));
+	BRASERO_MEDIA_LOG ("DVD id %d", BRASERO_GET_16 (hdr->data + 2));
 	priv->id = g_strdup_printf ("%d", BRASERO_GET_16 (hdr->data + 2));
 	g_free (hdr);
 }
@@ -1904,7 +1911,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiDiscInfoStd *info = NULL;
 
-	BRASERO_BURN_LOG ("Retrieving media status");
+	BRASERO_MEDIA_LOG ("Retrieving media status");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -1915,13 +1922,13 @@ brasero_medium_get_contents (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (info);
 	
-		BRASERO_BURN_LOG ("READ DISC INFORMATION failed");
+		BRASERO_MEDIA_LOG ("READ DISC INFORMATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
 	if (info->disc_id_valid) {
 		/* Try to get the disc identification if possible (CDs only) */
-		BRASERO_BURN_LOG ("Disc id %i", BRASERO_GET_32 (info->disc_id));
+		BRASERO_MEDIA_LOG ("Disc id %i", BRASERO_GET_32 (info->disc_id));
 		priv->id = g_strdup_printf ("%d", BRASERO_GET_32 (info->disc_id));
 	}
 	else if (!(priv->info & BRASERO_MEDIUM_CD))
@@ -1935,13 +1942,13 @@ brasero_medium_get_contents (BraseroMedium *self,
 	if (info->status == BRASERO_SCSI_DISC_EMPTY) {
 		BraseroMediumTrack *track;
 
-		BRASERO_BURN_LOG ("Empty media");
+		BRASERO_MEDIA_LOG ("Empty media");
 
 		priv->info |= BRASERO_MEDIUM_BLANK;
 		priv->block_size = 2048;
 
 		priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
-		BRASERO_BURN_LOG ("First open track %d", priv->first_open_track);
+		BRASERO_MEDIA_LOG ("First open track %d", priv->first_open_track);
 
 		if (BRASERO_MEDIUM_RANDOM_WRITABLE (priv->info))
 			brasero_medium_add_DVD_plus_RW_leadout (self);
@@ -1959,16 +1966,16 @@ brasero_medium_get_contents (BraseroMedium *self,
 	}
 	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
-		BRASERO_BURN_LOG ("Appendable media");
+		BRASERO_MEDIA_LOG ("Appendable media");
 
 		priv->first_open_track = BRASERO_FIRST_TRACK_IN_LAST_SESSION (info);
-		BRASERO_BURN_LOG ("First track in last open session %d", priv->first_open_track);
+		BRASERO_MEDIA_LOG ("First track in last open session %d", priv->first_open_track);
 
 		result = brasero_medium_get_sessions_info (self, handle, code);
 	}
 	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
 		priv->info |= BRASERO_MEDIUM_CLOSED;
-		BRASERO_BURN_LOG ("Closed media");
+		BRASERO_MEDIA_LOG ("Closed media");
 
 		result = brasero_medium_get_sessions_info (self, handle, code);
 	}
@@ -2082,7 +2089,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 	 * and BCD it must be 150. */
 
 	/* First find the first track and get track start address in BCD */
-	BRASERO_BURN_LOG ("Retrieving track information to determine number format");
+	BRASERO_MEDIA_LOG ("Retrieving track information to determine number format");
 
 	for (i = 0; i < num; i++) {
 		if (desc [i].adr == BRASERO_SCSI_Q_SUB_CHANNEL_LEADIN_MODE5
@@ -2105,7 +2112,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 						desc [i].p_sec,
 						desc [i].p_frame);
 
-		BRASERO_BURN_LOG ("Comparing to track information from READ TRACK INFO for track %i", track_num);
+		BRASERO_MEDIA_LOG ("Comparing to track information from READ TRACK INFO for track %i", track_num);
 
 		size = 36;
 		start_LBA -= 150;
@@ -2119,13 +2126,13 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 						       code);
 
 		if (result != BRASERO_SCSI_OK) {
-			BRASERO_BURN_LOG ("READ TRACK INFO failed");
+			BRASERO_MEDIA_LOG ("READ TRACK INFO failed");
 */			/* Fallback to formatted toc */
 /*			return 0;
 		}
 */
 		track_start = BRASERO_GET_32 (track_info.start_lba);
-		BRASERO_BURN_LOG ("comparing DCB %i and LBA %i to real start address %i",
+		BRASERO_MEDIA_LOG ("comparing DCB %i and LBA %i to real start address %i",
 				  start_BCD, start_LBA, track_start);
 
 		/* try to find a conclusive match */
@@ -2146,7 +2153,7 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 					desc [leadout].sec,
 					desc [leadout].frame);
 
-	BRASERO_BURN_LOG ("Comparing to track information from READ TRACK INFO for leadout");
+	BRASERO_MEDIA_LOG ("Comparing to track information from READ TRACK INFO for leadout");
 
 	size = 36;
 
@@ -2158,13 +2165,13 @@ brasero_medium_check_BCD_use (BraseroMedium *self,
 					       code);
 
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("READ TRACK INFO failed for leadout");
+		BRASERO_MEDIA_LOG ("READ TRACK INFO failed for leadout");
 		/* Fallback to formatted toc */
 		return 0;
 	}
 
 	track_start = BRASERO_GET_32 (track_info.start_lba);
-	BRASERO_BURN_LOG ("comparing DCB %i and LBA %i to real start address %i",
+	BRASERO_MEDIA_LOG ("comparing DCB %i and LBA %i to real start address %i",
 			  start_BCD, start_LBA, track_start);
 
 	/* try to find a conclusive match */
@@ -2197,7 +2204,7 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 	BraseroScsiRawTocDesc *desc;
 	BraseroScsiRawTocData *toc = NULL;
 
-	BRASERO_BURN_LOG ("Reading Raw Toc");
+	BRASERO_MEDIA_LOG ("Reading Raw Toc");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -2208,21 +2215,21 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 					    &size,
 					    code);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("READ TOC failed");
+		BRASERO_MEDIA_LOG ("READ TOC failed");
 		return BRASERO_BURN_ERR;
 	}
 
 	num = (size - sizeof (BraseroScsiRawTocData)) /
 	       sizeof (BraseroScsiRawTocDesc);
 
-	BRASERO_BURN_LOG ("%i track(s) found", num);
+	BRASERO_MEDIA_LOG ("%i track(s) found", num);
 
 	desc = toc->desc;
 	use_bcd = brasero_medium_check_BCD_use (self, handle, desc, num, code);
 	if (!use_bcd) {
 		g_free (toc);
 
-		BRASERO_BURN_LOG ("Fallback to formatted toc");
+		BRASERO_MEDIA_LOG ("Fallback to formatted toc");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -2230,10 +2237,10 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 		use_bcd = 0;
 
 	if (use_bcd) {
-		BRASERO_BURN_LOG ("Using BCD format");
+		BRASERO_MEDIA_LOG ("Using BCD format");
 	}
 	else {
-		BRASERO_BURN_LOG ("Using HEX format");
+		BRASERO_MEDIA_LOG ("Using HEX format");
 	}
 
 	for (i = 0; i < num; i++, desc ++) {
@@ -2328,11 +2335,11 @@ brasero_medium_get_CD_sessions_info (BraseroMedium *self,
 
 		/* check for tracks less that 300 sectors */
 		if (track->blocks_num <= 300 && track->type != BRASERO_MEDIUM_TRACK_LEADOUT) {
-			BRASERO_BURN_LOG ("300 sectors size. Checking for real size");
+			BRASERO_MEDIA_LOG ("300 sectors size. Checking for real size");
 			brasero_medium_track_volume_size (self, track, handle);
 		}
 
-		BRASERO_BURN_LOG ("Track %i: type = %i start = %llu size = %llu",
+		BRASERO_MEDIA_LOG ("Track %i: type = %i start = %llu size = %llu",
 				  g_slist_index (priv->tracks, track),
 				  track->type,
 				  track->start,
@@ -2353,7 +2360,7 @@ brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiDiscInfoStd *info = NULL;
 
-	BRASERO_BURN_LOG ("Retrieving media status for old drive");
+	BRASERO_MEDIA_LOG ("Retrieving media status for old drive");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
@@ -2364,7 +2371,7 @@ brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (info);
 	
-		BRASERO_BURN_LOG ("READ DISC INFORMATION failed for old drive");
+		BRASERO_MEDIA_LOG ("READ DISC INFORMATION failed for old drive");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -2382,17 +2389,17 @@ brasero_medium_old_drive_get_disc_info (BraseroMedium *self,
 		priv->info |= BRASERO_MEDIUM_BLANK;
 		priv->block_size = 2048;
 		priv->next_wr_add = 0;
-		BRASERO_BURN_LOG ("Empty media (old drive)");
+		BRASERO_MEDIA_LOG ("Empty media (old drive)");
 	}
 	else if (info->status == BRASERO_SCSI_DISC_INCOMPLETE) {
 		priv->info |= BRASERO_MEDIUM_APPENDABLE;
 		priv->block_size = 2048;
 		priv->next_wr_add = 0;
-		BRASERO_BURN_LOG ("Appendable media (old drive)");
+		BRASERO_MEDIA_LOG ("Appendable media (old drive)");
 	}
 	else if (info->status == BRASERO_SCSI_DISC_FINALIZED) {
 		priv->info |= BRASERO_MEDIUM_CLOSED;
-		BRASERO_BURN_LOG ("Closed media (old drive)");
+		BRASERO_MEDIA_LOG ("Closed media (old drive)");
 	}
 
 	/* get the contents */
@@ -2423,7 +2430,7 @@ brasero_medium_check_old_drive (BraseroMedium *self,
 							       code);
 	}
 
-	BRASERO_BURN_LOG ("Not an old drive model");
+	BRASERO_MEDIA_LOG ("Not an old drive model");
 
 	return BRASERO_BURN_ERR;
 }
@@ -2442,7 +2449,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	BraseroScsiResult result;
 	int size;
 
-	BRASERO_BURN_LOG ("Retrieving media profile");
+	BRASERO_MEDIA_LOG ("Retrieving media profile");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 	result = brasero_mmc2_get_configuration_feature (handle,
@@ -2454,7 +2461,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		BraseroScsiAtipData *data = NULL;
 		int size = 0;
 
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
 
 		/* This could be a MMC1 drive since this command was
 		 * introduced in MMC2 and is supported onward. So it
@@ -2493,7 +2500,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 				if (size)
 					g_free (data);
 
-				BRASERO_BURN_LOG ("READ ATIP failed (wrong size)");
+				BRASERO_MEDIA_LOG ("READ ATIP failed (wrong size)");
 				return BRASERO_BURN_ERR;
 			}
 
@@ -2663,7 +2670,7 @@ end:
 								 code);
 		if (result == BRASERO_SCSI_OK) {
 			if (hdr->desc->current) {
-				BRASERO_BURN_LOG ("POW formatted medium detected");
+				BRASERO_MEDIA_LOG ("POW formatted medium detected");
 				priv->info |= BRASERO_MEDIUM_POW;
 			}
 
@@ -2685,7 +2692,7 @@ end:
 
 				current = hdr->max_caps;
 				if (!(current->type & BRASERO_SCSI_DESC_FORMATTED)) {
-					BRASERO_BURN_LOG ("Unformatted BD-R");
+					BRASERO_MEDIA_LOG ("Unformatted BD-R");
 					priv->info |= BRASERO_MEDIUM_UNFORMATTED;
 				}
 
@@ -2713,7 +2720,7 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Testing for Css encrypted media");
+	BRASERO_MEDIA_LOG ("Testing for Css encrypted media");
 	result = brasero_mmc2_get_configuration_feature (handle,
 							 BRASERO_SCSI_FEAT_DVD_CSS,
 							 &hdr,
@@ -2722,7 +2729,7 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	if (result != BRASERO_SCSI_OK) {
 		g_free (hdr);
 
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed");
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed");
 		return BRASERO_BURN_ERR;
 	}
 
@@ -2734,7 +2741,7 @@ brasero_medium_get_css_feature (BraseroMedium *self,
 	/* here we just need to see if this feature is current or not */
 	if (hdr->desc->current) {
 		priv->info |= BRASERO_MEDIUM_PROTECTED;
-		BRASERO_BURN_LOG ("media is Css protected");
+		BRASERO_MEDIA_LOG ("media is Css protected");
 	}
 
 	g_free (hdr);
@@ -2837,13 +2844,13 @@ brasero_medium_get_CD_TEXT (BraseroMedium *medium,
 		g_free (priv->CD_TEXT_title);
 
 	if (!utf8_string) {
-		BRASERO_BURN_LOG ("Charset convertion failed");
+		BRASERO_MEDIA_LOG ("Charset convertion failed");
 		priv->CD_TEXT_title = g_strdup (string);
 	}
 	else
 		priv->CD_TEXT_title = utf8_string;
 
-	BRASERO_BURN_LOG ("CD-TEXT title %s", priv->CD_TEXT_title);
+	BRASERO_MEDIA_LOG ("CD-TEXT title %s", priv->CD_TEXT_title);
 	return TRUE;
 }
 
@@ -2916,9 +2923,9 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 	BraseroMediumPrivate *priv;
 	BraseroScsiCDTextData *cd_text;
 
-	BRASERO_BURN_LOG ("Getting CD-TEXT");
+	BRASERO_MEDIA_LOG ("Getting CD-TEXT");
 	if (brasero_mmc3_read_cd_text (handle, &cd_text, &size, code) != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("GET CD-TEXT failed");
+		BRASERO_MEDIA_LOG ("GET CD-TEXT failed");
 		return;
 	}
 
@@ -2957,7 +2964,7 @@ brasero_medium_read_CD_TEXT (BraseroMedium *self,
 				pack = (BraseroScsiCDTextPackCharset *) buffer;
 				charset = pack->charset;
 
-				BRASERO_BURN_LOG ("Found language pack. Charset = %d. Start %d. End %d",
+				BRASERO_MEDIA_LOG ("Found language pack. Charset = %d. Start %d. End %d",
 						  charset, pack->first_track, pack->last_track);
 			}
 		}
@@ -3019,11 +3026,12 @@ brasero_medium_init_real (BraseroMedium *object,
 	BraseroBurnResult result;
 	BraseroMediumPrivate *priv;
 	BraseroScsiErrCode code = 0;
+	gchar buffer [256] = { 0, };
 
 	priv = BRASERO_MEDIUM_PRIVATE (object);
 
 	name = brasero_drive_get_display_name (priv->drive);
-	BRASERO_BURN_LOG ("Initializing information for medium in %s", name);
+	BRASERO_MEDIA_LOG ("Initializing information for medium in %s", name);
 	g_free (name);
 
 	if (priv->probe_cancelled)
@@ -3065,7 +3073,8 @@ brasero_medium_init_real (BraseroMedium *object,
 	if (priv->probe_cancelled)
 		return;
 
-	BRASERO_BURN_LOG_DISC_TYPE (priv->info, "media is ");
+	brasero_media_to_string (priv->info, buffer);
+	BRASERO_MEDIA_LOG ("media is %s", buffer);
 
 	if (!priv->wr_speeds)
 		return;
@@ -3118,7 +3127,7 @@ brasero_medium_probe_thread (gpointer self)
 
 	/* the drive might be busy (a burning is going on) so we don't block
 	 * but we re-try to open it every second */
-	BRASERO_BURN_LOG ("Trying to open device %s", path);
+	BRASERO_MEDIA_LOG ("Trying to open device %s", path);
 
 	handle = brasero_device_handle_open (path, FALSE, &code);
 	while (!handle && counter <= BRASERO_MEDIUM_OPEN_ATTEMPTS) {
@@ -3139,7 +3148,7 @@ brasero_medium_probe_thread (gpointer self)
 	}
 
 	if (handle) {
-		BRASERO_BURN_LOG ("Open () succeeded");
+		BRASERO_MEDIA_LOG ("Open () succeeded");
 
 		/* NOTE: if we wanted to know the status we'd need to read the 
 		 * error code variable which is currently NULL */
@@ -3149,18 +3158,18 @@ brasero_medium_probe_thread (gpointer self)
 			if (priv->probe_cancelled) {
 				priv->probe = NULL;
 				brasero_device_handle_close (handle);
-				BRASERO_BURN_LOG ("Device probing cancelled");
+				BRASERO_MEDIA_LOG ("Device probing cancelled");
 				return NULL;
 			}
 		}
 
-		BRASERO_BURN_LOG ("Device ready");
+		BRASERO_MEDIA_LOG ("Device ready");
 
 		brasero_medium_init_real (BRASERO_MEDIUM (self), handle);
 		brasero_device_handle_close (handle);
 	}
 	else
-		BRASERO_BURN_LOG ("Open () failed: medium busy");
+		BRASERO_MEDIA_LOG ("Open () failed: medium busy");
 
 	priv->probe_id = g_idle_add (brasero_medium_probed, self);
 	priv->probe = NULL;

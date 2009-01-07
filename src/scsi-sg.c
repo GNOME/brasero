@@ -39,7 +39,6 @@
 #include <scsi/sg.h>
 
 #include "scsi-command.h"
-#include "burn-debug.h"
 #include "scsi-utils.h"
 #include "scsi-error.h"
 #include "scsi-sense-data.h"

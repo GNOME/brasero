@@ -20,6 +20,8 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
+LIBBRASERO_LT_VERSION=0:0:0
+AC_SUBST(LIBBRASERO_LT_VERSION) 
 
 AC_DEFINE_UNQUOTED(BRASERO_MAJOR_VERSION, $BRASERO_MAJOR_VERSION, [major version])
 AC_DEFINE_UNQUOTED(BRASERO_MINOR_VERSION, $BRASERO_MINOR_VERSION, [minor version])
@@ -47,7 +49,8 @@ GNOME_MAINTAINER_MODE_DEFINES
 dnl ***************** GENERAL **********************************
 
 AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
+AM_PROG_LIBTOOL
+
 dnl ** reminder: the following set CFLAGS to -O2 -g if empty
 AC_PROG_CC
 AC_HEADER_STDC
@@ -121,15 +124,15 @@ GTK_DOC_CHECK([1.3])
 GNOME_DOC_INIT
 
 dnl ** used by brasero and one plugin
-PKG_CHECK_MODULES(BRASERO_GSTREAMER, 		\
-	gstreamer-0.10 >= $GSTREAMER_REQUIRED \
+PKG_CHECK_MODULES(BRASERO_GSTREAMER, 			\
+	gstreamer-0.10 >= $GSTREAMER_REQUIRED		\
+	gstreamer-interfaces-0.10			\
 	gstreamer-plugins-base-0.10 >= $GSTREAMER_BASE_REQUIRED)
 
 AC_SUBST(BRASERO_GSTREAMER_CFLAGS)
 AC_SUBST(BRASERO_GSTREAMER_LIBS)
 
-BRASERO_GSTREAMER_CFLAGS="$BRASERO_GSTREAMER_CFLAGS $CFLAGS"
-BRASERO_GSTREAMER_LIBS="$BRASERO_GSTREAMER_LIBS $LDFLAGS -lgstpbutils-0.10"
+BRASERO_GSTREAMER_LIBS="$BRASERO_GSTREAMER_LIBS -lgstpbutils-0.10"
 
 dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_GIO, 	\
@@ -138,9 +141,6 @@ PKG_CHECK_MODULES(BRASERO_GIO, 	\
 AC_SUBST(BRASERO_GIO_CFLAGS)
 AC_SUBST(BRASERO_GIO_LIBS)
 
-BRASERO_GIO_CFLAGS="$BRASERO_GIO_CFLAGS $CFLAGS"
-BRASERO_GIO_LIBS="$BRASERO_GIO_LIBS $LDFLAGS"
-
 dnl ** used by brasero and one plugin
 PKG_CHECK_MODULES(BRASERO_LIBXML, 	\
 	libxml-2.0 >= $LIBXML2_REQUIRED)
@@ -148,37 +148,44 @@ PKG_CHECK_MODULES(BRASERO_LIBXML, 	\
 AC_SUBST(BRASERO_LIBXML_CFLAGS)
 AC_SUBST(BRASERO_LIBXML_LIBS)
 
-BRASERO_LIBXML_CFLAGS="$BRASERO_LIBXML_CFLAGS $CFLAGS"
-BRASERO_LIBXML_LIBS="$BRASERO_LIBXML_LIBS $LDFLAGS"
-
 dnl ** used by brasero and all modules
-PKG_CHECK_MODULES(BRASERO_BASE, 		\
-	gconf-2.0 >= $GCONF_REQUIRED		\
+PKG_CHECK_MODULES(BRASERO_GLIB, 		\
 	glib-2.0 >= $GLIB_REQUIRED)
 
-AC_SUBST(BRASERO_BASE_CFLAGS)
-AC_SUBST(BRASERO_BASE_LIBS)
+AC_SUBST(BRASERO_GLIB_CFLAGS)
+AC_SUBST(BRASERO_GLIB_LIBS)
 
-BRASERO_BASE_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_GIO_CFLAGS $CFLAGS"
-BRASERO_BASE_LIBS="$BRASERO_BASE_LIBS $LDFLAGS"
+PKG_CHECK_MODULES(BRASERO_GCONF, 		\
+	gconf-2.0 >= $GCONF_REQUIRED)
 
-dnl ** used only by brasero app itself ***
-PKG_CHECK_MODULES(BRASERO_UI,			\
-	hal >= $HAL_REQUIRED			\
-	gmodule-2.0 >= $GMODULE_REQUIRED 	\
+AC_SUBST(BRASERO_GCONF_CFLAGS)
+AC_SUBST(BRASERO_GCONF_LIBS)
+
+PKG_CHECK_MODULES(BRASERO_GMODULE,		\
+	gmodule-2.0 >= $GMODULE_REQUIRED)
+
+AC_SUBST(BRASERO_GMODULE_CFLAGS)
+AC_SUBST(BRASERO_GMODULE_LIBS)
+
+PKG_CHECK_MODULES(BRASERO_GTK,			\
 	gdk-2.0 >= $GDK_REQUIRED		\
-	gtk+-2.0 >= $GTK_REQUIRED		\
-	dbus-glib-1 >= $DBUS_REQUIRED		\
+	gtk+-2.0 >= $GTK_REQUIRED)
+
+AC_SUBST(BRASERO_GTK_CFLAGS)
+AC_SUBST(BRASERO_GTK_LIBS)
+
+PKG_CHECK_MODULES(BRASERO_HAL,			\
+	hal >= $HAL_REQUIRED			\
+	dbus-glib-1 >= $DBUS_REQUIRED)
+
+AC_SUBST(BRASERO_HAL_CFLAGS)
+AC_SUBST(BRASERO_HAL_LIBS)
+
+PKG_CHECK_MODULES(BRASERO_SM,			\
 	sm)
 
-AC_SUBST(BRASERO_UI_CFLAGS)
-AC_SUBST(BRASERO_UI_LIBS)
-
-BRASERO_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_UI_CFLAGS $BRASERO_GSTREAMER_CFLAGS $BRASERO_GIO_CFLAGS $BRASERO_CFLAGS $CFLAGS"
-BRASERO_LIBS="$BRASERO_BASE_LIBS $BRASERO_UI_LIBS $BRASERO_GSTREAMER_LIBS $BRASERO_GIO_LIBS $BRASERO_LIBS $BRASERO_SCSI_LIBS $LDFLAGS"
-
-AC_SUBST(BRASERO_CFLAGS)
-AC_SUBST(BRASERO_LIBS)
+AC_SUBST(BRASERO_SM_CFLAGS)
+AC_SUBST(BRASERO_SM_LIBS)
 
 dnl ****************Nautilus**********************************
 NAUTILUS_REQUIRED=2.22.2
@@ -197,8 +204,8 @@ else
 fi
 
 if test x"$build_nautilus" = "xyes"; then
-	NAUTILUS_EXTENSION_CFLAGS="$BRASERO_BASE_CFLAGS $BRASERO_UI_CFLAGS $NAUTILUS_EXTENSION_CFLAGS"
-	NAUTILUS_EXTENSION_LIBS="$BRASERO_BASE_LIBS $BRASERO_UI_LIBS $NAUTILUS_EXTENSION_LIBS"
+	NAUTILUS_EXTENSION_CFLAGS="$BRASERO_GLIB_CFLAGS $BRASERO_UI_CFLAGS $NAUTILUS_EXTENSION_CFLAGS"
+	NAUTILUS_EXTENSION_LIBS="$BRASERO_GLIB_LIBS $BRASERO_UI_LIBS $NAUTILUS_EXTENSION_LIBS"
 	NAUTILUSDIR=`pkg-config --variable=extensiondir libnautilus-extension`
 	AC_SUBST(NAUTILUSDIR)
 	AM_GLIB_DEFINE_LOCALEDIR([GNOMELOCALEDIR])
@@ -283,16 +290,18 @@ AC_ARG_ENABLE(search,
 			[enable_search="yes"])
 
 if test x"$enable_search" = "xyes"; then
-	PKG_CHECK_MODULES(BEAGLE, libbeagle-1.0 >= $BEAGLE_REQUIRED, build_beagle=yes, build_beagle=no)
+	PKG_CHECK_MODULES(BRASERO_BEAGLE, libbeagle-1.0 >= $BEAGLE_REQUIRED, build_beagle=yes, build_beagle=no)
 else
 	build_beagle="no"
 fi
 
 if test x"$build_beagle" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $BEAGLE_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $BEAGLE_LIBS"
 	AC_DEFINE(BUILD_SEARCH, 1, [define if you  want to use search pane])
+	
+	AC_SUBST(BRASERO_BEAGLE_CFLAGS)
+	AC_SUBST(BRASERO_BEAGLE_LIBS)
 fi
+
 AM_CONDITIONAL(BUILD_SEARCH, test x"$build_search" = "xyes")
 
 dnl ****************check for playlist (optional)**************
@@ -303,16 +312,18 @@ AC_ARG_ENABLE(playlist,
 			[enable_playlist="yes"])
 
 if test x"$enable_playlist" = "xyes"; then
-	PKG_CHECK_MODULES(TOTEM, totem-plparser >= $TOTEM_REQUIRED, build_totem=yes, build_totem=no)
+	PKG_CHECK_MODULES(BRASERO_PL_PARSER, totem-plparser >= $TOTEM_REQUIRED, build_totem=yes, build_totem=no)
 else
 	build_totem="no"
 fi
 
 if test x"$build_totem" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $TOTEM_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $TOTEM_LIBS"
 	AC_DEFINE(BUILD_PLAYLIST, 1, [define if you  want to build playlist pane])
 fi
+
+AC_SUBST(BRASERO_PL_PARSER_CFLAGS)
+AC_SUBST(BRASERO_PL_PARSER_LIBS)
+
 AM_CONDITIONAL(BUILD_PLAYLIST, test x"$build_totem" = "xyes")
 
 dnl ****************check for preview (optional)**************
@@ -322,16 +333,18 @@ AC_ARG_ENABLE(preview,
 			[enable_preview="yes"])
 
 if test x"$enable_preview" = "xyes"; then
-	PKG_CHECK_MODULES(GSTREAMER_GCONF, gstreamer-plugins-base-0.10 >= $GSTREAMER_MODULE_REQUIRED, build_preview=yes, build_preview=no)
+	PKG_CHECK_MODULES(BRASERO_GSTREAMER_BASE, gstreamer-plugins-base-0.10 >= $GSTREAMER_MODULE_REQUIRED, build_preview=yes, build_preview=no)
 else
 	build_preview="no"
 fi
 
 if test x"$build_preview" = "xyes"; then
-	BRASERO_CFLAGS="$BRASERO_CFLAGS $GSTREAMER_GCONF_CFLAGS"
-	BRASERO_LIBS="$BRASERO_LIBS $GSTREAMER_GCONF_LIBS -lgstinterfaces-0.10"
 	AC_DEFINE(BUILD_PREVIEW, 1, [define if you  want to build preview pane])
 fi
+
+AC_SUBST(BRASERO_GSTREAMER_BASE_CFLAGS)
+AC_SUBST(BRASERO_GSTREAMER_BASE_LIBS)
+
 AM_CONDITIONAL(BUILD_PREVIEW, test x"$build_preview" = "xyes")
 
 dnl ****************check for inotify (optional)**************
@@ -366,6 +379,9 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Location of package locale files])
 fi
 
+dnl ***** API docs **********************
+GTK_DOC_CHECK(1.9)
+
 dnl ***** GCONF *************************
 
 AC_ARG_ENABLE(schemas-install,AC_HELP_STRING([--disable-schemas-install],
@@ -383,7 +399,10 @@ dnl ****** END ***********************
 
 AC_OUTPUT([
 Makefile
+libbrasero-media.pc
 docs/Makefile
+docs/reference/Makefile
+docs/reference/version.xml
 data/Makefile
 data/brasero.desktop.in
 data/brasero-open-playlist.desktop.in

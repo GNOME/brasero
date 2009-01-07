@@ -33,6 +33,7 @@
 
 #include "burn-debug.h"
 #include "burn-track.h"
+#include "burn-media.h"
 
 static gboolean debug = FALSE;
 
@@ -163,84 +164,6 @@ brasero_burn_debug_flags_type_message (BraseroBurnFlag flags,
 }
 
 static void
-brasero_debug_medium_info_to_string (gchar *buffer,
-				     BraseroMedia media)
-{
-	if (media & BRASERO_MEDIUM_FILE)
-		strcat (buffer, "file ");
-
-	if (media & BRASERO_MEDIUM_CD)
-		strcat (buffer, "CD ");
-
-	if (media & BRASERO_MEDIUM_DVD)
-		strcat (buffer, "DVD ");
-
-	if (media & BRASERO_MEDIUM_RAM)
-		strcat (buffer, "RAM ");
-
-	if (media & BRASERO_MEDIUM_BD)
-		strcat (buffer, "BD ");
-
-	if (media & BRASERO_MEDIUM_DUAL_L)
-		strcat (buffer, "DL ");
-
-	/* DVD subtypes */
-	if (media & BRASERO_MEDIUM_PLUS)
-		strcat (buffer, "+ ");
-
-	if (media & BRASERO_MEDIUM_SEQUENTIAL)
-		strcat (buffer, "- (sequential) ");
-
-	if (media & BRASERO_MEDIUM_RESTRICTED)
-		strcat (buffer, "- (restricted) ");
-
-	if (media & BRASERO_MEDIUM_JUMP)
-		strcat (buffer, "- (jump) ");
-
-	/* BD subtypes */
-	if (media & BRASERO_MEDIUM_SRM)
-		strcat (buffer, "SRM ");
-
-	if (media & BRASERO_MEDIUM_POW)
-		strcat (buffer, "POW ");
-
-	if (media & BRASERO_MEDIUM_RANDOM)
-		strcat (buffer, "RANDOM ");
-
-	/* discs attributes */
-	if (media & BRASERO_MEDIUM_REWRITABLE)
-		strcat (buffer, "RW ");
-
-	if (media & BRASERO_MEDIUM_WRITABLE)
-		strcat (buffer, "W ");
-
-	if (media & BRASERO_MEDIUM_ROM)
-		strcat (buffer, "ROM ");
-
-	/* status of the disc */
-	if (media & BRASERO_MEDIUM_CLOSED)
-		strcat (buffer, "closed ");
-
-	if (media & BRASERO_MEDIUM_BLANK)
-		strcat (buffer, "blank ");
-
-	if (media & BRASERO_MEDIUM_APPENDABLE)
-		strcat (buffer, "appendable ");
-
-	if (media & BRASERO_MEDIUM_PROTECTED)
-		strcat (buffer, "protected ");
-
-	if (media & BRASERO_MEDIUM_HAS_DATA)
-		strcat (buffer, "with data ");
-
-	if (media & BRASERO_MEDIUM_HAS_AUDIO)
-		strcat (buffer, "with audio ");
-
-	if (media & BRASERO_MEDIUM_UNFORMATTED)
-		strcat (buffer, "Unformatted ");
-}
-
-static void
 brasero_debug_image_format_to_string (gchar *buffer,
 				      BraseroImageFormat format)
 {
@@ -332,7 +255,7 @@ brasero_burn_debug_track_type_message (BraseroTrackDataType type,
 		break;
 	case BRASERO_TRACK_TYPE_DISC:
 		strcpy (buffer, "Disc ");
-		brasero_debug_medium_info_to_string (buffer, subtype);
+		brasero_media_to_string (subtype, buffer);
 		break;
 	case BRASERO_TRACK_TYPE_AUDIO:
 		strcpy (buffer, "Audio ");

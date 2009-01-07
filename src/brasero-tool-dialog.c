@@ -383,7 +383,6 @@ brasero_tool_dialog_cancel_dialog (GtkWidget *toplevel)
 gboolean
 brasero_tool_dialog_cancel (BraseroToolDialog *self)
 {
-	BraseroBurnResult result = BRASERO_BURN_OK;
 	BraseroToolDialogClass *klass;
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);

@@ -29,8 +29,6 @@
 
 #include <gio/gio.h>
 
-#include "burn-basics.h"
-#include "burn-debug.h"
 #include "burn-volume-obj.h"
 
 typedef struct _BraseroVolumePrivate BraseroVolumePrivate;
@@ -83,7 +81,7 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 		if (!device_path)
 			continue;
 
-		BRASERO_BURN_LOG ("Found volume %s", device_path);
+		BRASERO_MEDIA_LOG ("Found volume %s", device_path);
 		if (!strcmp (device_path, volume_path)) {
 			volume = tmp;
 			g_free (device_path);
@@ -97,7 +95,7 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 	g_list_free (volumes);
 
 	if (!volume)
-		BRASERO_BURN_LOG ("No volume found for medium");
+		BRASERO_MEDIA_LOG ("No volume found for medium");
 
 	return volume;
 }
@@ -186,8 +184,8 @@ brasero_volume_get_mount_point (BraseroVolume *self,
 
 	if (!root) {
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_GENERAL,
 			     _("The disc mount point could not be retrieved"));
 	}
 	else {
@@ -222,7 +220,7 @@ brasero_volume_operation_timeout (gpointer data)
 	priv = BRASERO_VOLUME_PRIVATE (self);
 	brasero_volume_operation_end (self);
 
-	BRASERO_BURN_LOG ("Volume/Disc operation timed out");
+	BRASERO_MEDIA_LOG ("Volume/Disc operation timed out");
 	priv->timeout_id = 0;
 	priv->result = FALSE;
 	return FALSE;
@@ -312,7 +310,7 @@ brasero_volume_umount_finish (GObject *source,
 					       result,
 					       &priv->error);
 
-	BRASERO_BURN_LOG ("Umount operation completed (result = %d)", priv->result);
+	BRASERO_MEDIA_LOG ("Umount operation completed (result = %d)", priv->result);
 
 	if (priv->error) {
 		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
@@ -589,7 +587,7 @@ brasero_volume_eject (BraseroVolume *self,
 	BraseroDrive *drive;
 	BraseroVolumePrivate *priv;
 
-	BRASERO_BURN_LOG ("Ejecting");
+	BRASERO_MEDIA_LOG ("Ejecting");
 
 	if (!self)
 		return TRUE;
@@ -599,12 +597,12 @@ brasero_volume_eject (BraseroVolume *self,
 	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
 	gdrive = brasero_drive_get_gdrive (drive);
 	if (!gdrive) {
-		BRASERO_BURN_LOG ("No GDrive");
+		BRASERO_MEDIA_LOG ("No GDrive");
 		goto last_resort;
 	}
 
 	if (!g_drive_can_eject (gdrive)) {
-		BRASERO_BURN_LOG ("GDrive can't eject");
+		BRASERO_MEDIA_LOG ("GDrive can't eject");
 		goto last_resort;
 	}
 

@@ -28,8 +28,6 @@
 
 #include <glib.h>
 
-#include "burn-debug.h"
-
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-command.h"
@@ -114,15 +112,15 @@ brasero_get_performance_get_buffer (BraseroGetPerformanceCDB *cdb,
 
 	/* ... check the request size ... */
 	if (request_size > 2048) {
-		BRASERO_BURN_LOG ("Oversized data (%i) setting to max (2048)", request_size);
+		BRASERO_MEDIA_LOG ("Oversized data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
 	}
 	else if ((request_size - sizeof (hdr)) % sizeof_descriptors) {
-		BRASERO_BURN_LOG ("Unaligned data (%i) setting to max (2048)", request_size);
+		BRASERO_MEDIA_LOG ("Unaligned data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
 	}
 	else if (request_size < sizeof (hdr)) {
-		BRASERO_BURN_LOG ("Undersized data (%i) setting to max (2048)", request_size);
+		BRASERO_MEDIA_LOG ("Undersized data (%i) setting to max (2048)", request_size);
 		request_size = 2048;
 	}
 
@@ -190,7 +188,7 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		/* Strangely some drives returns a buffer size that is bigger
 		 * than the one they returned on the first time. So redo whole
 		 * operation again but this time with the new size we got */
-		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i\n"
+		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i\n"
 				  "Re-issuing the command with received size",
 				  request_size,
 				  buffer_size);
@@ -208,7 +206,7 @@ brasero_get_performance (BraseroGetPerformanceCDB *cdb,
 		g_free (tmp_hdr);
 	}
 	else if (request_size > buffer_size)
-		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i",
 				  request_size,
 				  buffer_size);
 	*data = buffer;

@@ -1,3 +1,131 @@
+2009-01-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	New library born out of splitting brasero and all media related code.
+	Its name is libbrasero-media.
+	The next patch should move it to its own directory.
+
+	* Makefile.am:
+	* autogen.sh:
+	* configure.in:
+	* docs/Makefile.am:
+	* docs/reference/Makefile.am:
+	* docs/reference/version.xml.in:
+	* libbrasero-media.pc.in:
+	* src/Makefile.am:
+	* src/brasero-dest-selection.c (brasero_dest_selection_lock),
+	(brasero_dest_selection_valid_session),
+	(brasero_dest_selection_medium_changed),
+	(brasero_dest_selection_set_property):
+	* src/brasero-medium-selection.c
+	(brasero_medium_selection_get_medium_string):
+	* src/brasero-medium-selection.h:
+	* src/brasero-src-selection.c
+	(brasero_src_selection_medium_changed):
+	* src/brasero-tool-dialog.c (brasero_tool_dialog_cancel):
+	* src/burn-basics.h:
+	* src/burn-caps.c:
+	* src/burn-debug.c (brasero_burn_debug_track_type_message):
+	* src/burn-drive.c (brasero_drive_get_gdrive),
+	(brasero_drive_get_bus_target_lun_string), (brasero_drive_is_fake),
+	(brasero_drive_is_door_open), (brasero_drive_can_use_exclusively),
+	(brasero_drive_lock), (brasero_drive_unlock),
+	(brasero_drive_get_display_name), (brasero_drive_get_device),
+	(brasero_drive_get_block_device), (brasero_drive_get_udi),
+	(brasero_drive_get_medium), (brasero_drive_reprobe),
+	(brasero_drive_hal_reprobe), (brasero_drive_check_medium_inside),
+	(brasero_drive_init_real), (brasero_drive_class_init):
+	* src/burn-drive.h:
+	* src/burn-hal-watch.c (brasero_hal_watch_get_ctx),
+	(brasero_hal_watch_destroy):
+	* src/burn-iso9660.c (brasero_iso9660_is_primary_descriptor),
+	(brasero_iso9660_read_susp), (brasero_iso9660_get_susp),
+	(brasero_iso9660_next_record),
+	(brasero_iso9660_get_first_directory_record),
+	(brasero_iso9660_read_file_record),
+	(brasero_iso9660_read_directory_record),
+	(brasero_iso9660_load_directory_records),
+	(brasero_iso9660_check_SUSP_RR_use),
+	(brasero_iso9660_lookup_directory_record_RR),
+	(brasero_iso9660_lookup_directory_records):
+	* src/burn-media.c (brasero_media_quark),
+	(brasero_media_to_string), (brasero_media_get_option_group),
+	(brasero_media_message):
+	* src/burn-media.h:
+	* src/burn-medium-monitor.c (brasero_medium_monitor_get_drive),
+	(brasero_medium_monitor_is_probing),
+	(brasero_medium_monitor_get_media),
+	(brasero_medium_monitor_inserted_cb),
+	(brasero_medium_monitor_removed_cb), (brasero_medium_monitor_init),
+	(brasero_medium_monitor_class_init):
+	* src/burn-medium-monitor.h:
+	* src/burn-medium.c (brasero_medium_test_simulate_CD_SAO),
+	(brasero_medium_test_simulate_CD_TAO),
+	(brasero_medium_test_simulate_DVDRW),
+	(brasero_medium_test_simulate_2A), (brasero_medium_init_caps),
+	(brasero_medium_get_capacity_CD_RW),
+	(brasero_medium_get_capacity_DVD_RW),
+	(brasero_medium_get_speed_mmc3),
+	(brasero_medium_get_page_2A_write_speed_desc),
+	(brasero_medium_get_page_2A_max_speed),
+	(brasero_medium_track_volume_size),
+	(brasero_medium_track_written_SAO),
+	(brasero_medium_track_get_info),
+	(brasero_medium_track_set_leadout_CDR_blank),
+	(brasero_medium_track_set_leadout),
+	(brasero_medium_add_DVD_plus_RW_leadout),
+	(brasero_medium_get_sessions_info), (brasero_medium_get_DVD_id),
+	(brasero_medium_get_contents), (brasero_medium_check_BCD_use),
+	(brasero_medium_get_CD_sessions_info),
+	(brasero_medium_old_drive_get_disc_info),
+	(brasero_medium_check_old_drive), (brasero_medium_get_medium_type),
+	(brasero_medium_get_css_feature), (brasero_medium_get_CD_TEXT),
+	(brasero_medium_read_CD_TEXT), (brasero_medium_init_real),
+	(brasero_medium_probe_thread):
+	* src/burn-medium.h:
+	* src/burn-units.c (brasero_units_get_time_string),
+	(brasero_units_get_time_string_from_size):
+	* src/burn-units.h:
+	* src/burn-volume-obj.c (brasero_volume_get_gvolume),
+	(brasero_volume_get_mount_point),
+	(brasero_volume_operation_timeout), (brasero_volume_umount_finish),
+	(brasero_volume_eject):
+	* src/burn-volume-read.c:
+	* src/burn-volume-read.h:
+	* src/burn-volume-source.c (brasero_volume_source_seek_fd),
+	(brasero_volume_source_read_fd),
+	(brasero_volume_source_readcd_device_handle),
+	(brasero_volume_source_read10_device_handle),
+	(brasero_volume_source_open_file), (brasero_volume_source_open_fd),
+	(brasero_volume_source_open_device_handle):
+	* src/burn-volume.c (brasero_volume_get_primary_from_file):
+	* src/libbrasero-marshal.list:
+	* src/main.c (main):
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/dvdcss/Makefile.am:
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/vcdimager/Makefile.am:
+	* src/scsi-cam.c:
+	* src/scsi-error.c (brasero_scsi_set_error):
+	* src/scsi-get-configuration.c (brasero_get_configuration):
+	* src/scsi-get-performance.c (brasero_get_performance_get_buffer),
+	(brasero_get_performance):
+	* src/scsi-mode-sense.c (brasero_spc1_mode_sense_get_page):
+	* src/scsi-read-disc-info.c
+	(brasero_mmc1_read_disc_information_std):
+	* src/scsi-read-toc-pma-atip.c (brasero_read_toc_pma_atip):
+	* src/scsi-read-track-information.c (brasero_read_track_info):
+	* src/scsi-sense-data.c (brasero_sense_data_print):
+	* src/scsi-sg.c:
+	* src/scsi-uscsi.c:
+	* src/scsi-utils.h:
+
 2009-01-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Small thing forgotten to remove

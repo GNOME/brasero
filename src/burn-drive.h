@@ -57,6 +57,14 @@ typedef struct _BraseroDriveClass BraseroDriveClass;
 struct _BraseroDriveClass
 {
 	GObjectClass parent_class;
+
+	/* Signals */
+
+	void		(*medium_added)		(BraseroDrive *drive,
+						 BraseroMedium *medium);
+
+	void		(*medium_removed)	(BraseroDrive *drive,
+						 BraseroMedium *medium);
 };
 
 struct _BraseroDrive
@@ -66,14 +74,8 @@ struct _BraseroDrive
 
 GType brasero_drive_get_type (void) G_GNUC_CONST;
 
-BraseroDrive *
-brasero_drive_new (const gchar *udi);
-
 void
 brasero_drive_reprobe (BraseroDrive *drive);
-
-gboolean
-brasero_drive_probing (BraseroDrive *drive);
 
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive);
@@ -96,11 +98,6 @@ brasero_drive_get_device (BraseroDrive *drive);
 const gchar *
 brasero_drive_get_block_device (BraseroDrive *drive);
 
-gboolean
-brasero_drive_get_bus_target_lun (BraseroDrive *drive,
-				  guint *bus,
-				  guint *target,
-				  guint *lun);
 gchar *
 brasero_drive_get_bus_target_lun_string (BraseroDrive *drive);
 
@@ -114,7 +111,7 @@ gboolean
 brasero_drive_is_door_open (BraseroDrive *drive);
 
 gboolean
-brasero_drive_can_use_exclusively (BraseroDrive *drive);;
+brasero_drive_can_use_exclusively (BraseroDrive *drive);
 
 gboolean
 brasero_drive_lock (BraseroDrive *drive,

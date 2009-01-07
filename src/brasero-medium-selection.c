@@ -144,7 +144,7 @@ brasero_medium_selection_get_medium_string (BraseroMediumSelection *self,
 					 size_string);
 	}
 	else {
-		size_string = brasero_utils_get_time_string_from_size (size,
+		size_string = brasero_units_get_time_string_from_size (size,
 								       TRUE,
 								       TRUE);
 		/* NOTE for translators: the first %s is the medium name, the
@@ -271,32 +271,6 @@ brasero_medium_selection_get_active (BraseroMediumSelection *self)
 			    MEDIUM_COL, &medium,
 			    -1);
 	return medium;
-}
-
-BraseroDrive *
-brasero_medium_selection_get_active_drive (BraseroMediumSelection *self)
-{
-	BraseroMedium *medium;
-	BraseroDrive *drive;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (self), &iter))
-		return NULL;
-
-	gtk_tree_model_get (model, &iter,
-			    MEDIUM_COL, &medium,
-			    -1);
-
-	if (!medium)
-		return NULL;
-
-	drive = brasero_medium_get_drive (medium);
-	g_object_unref (medium);
-	g_object_ref (drive);
-
-	return drive;
 }
 
 static void

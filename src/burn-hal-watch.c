@@ -30,9 +30,10 @@
 
 #include <libhal.h>
 
-#include "burn-debug.h"
+#include "burn-media.h"
+
 #include "burn-hal-watch.h"
-#include "brasero-marshal.h"
+#include "libbrasero-marshal.h"
 
 typedef struct _BraseroHALWatchPrivate BraseroHALWatchPrivate;
 struct _BraseroHALWatchPrivate
@@ -62,7 +63,7 @@ brasero_hal_watch_get_ctx (BraseroHALWatch *self)
 
 	priv = BRASERO_HAL_WATCH_PRIVATE (self);
 	if (!priv->ctx)
-		BRASERO_BURN_LOG ("HAL context is NULL");
+		BRASERO_MEDIA_LOG ("HAL context is NULL");
 
 	return priv->ctx;
 }
@@ -241,4 +242,3 @@ brasero_hal_watch_destroy (void)
 		singleton = NULL;
 	}
 }
-

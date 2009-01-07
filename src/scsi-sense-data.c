@@ -75,10 +75,10 @@ brasero_sense_data_print (uchar *sense_data)
 		return;
 
 	/* Print that in a more sensible way */
-	BRASERO_BURN_LOG ("SK=0x%02x ASC=0x%02x ASCQ=0x%02x",
-			  SENSE_DATA_KEY (sense_data),
-			  SENSE_DATA_ASC (sense_data),
-			  SENSE_DATA_ASCQ (sense_data));
+	BRASERO_MEDIA_LOG ("SK=0x%02x ASC=0x%02x ASCQ=0x%02x",
+			   SENSE_DATA_KEY (sense_data),
+			   SENSE_DATA_ASC (sense_data),
+			   SENSE_DATA_ASCQ (sense_data));
 
 	printf ("Sense key: 0x%02x ", sense_data [0]);
 	for (i = 1; i < BRASERO_SENSE_DATA_SIZE; i ++)

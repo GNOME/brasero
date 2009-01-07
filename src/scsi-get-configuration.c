@@ -28,8 +28,6 @@
 
 #include <glib.h>
 
-#include "burn-debug.h"
-
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"
@@ -116,11 +114,11 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 
 	/* NOTE: if size is not valid use the maximum possible size */
 	if ((request_size - sizeof (hdr)) % 8) {
-		BRASERO_BURN_LOG ("Unaligned data (%i) setting to max (65530)", request_size);
+		BRASERO_MEDIA_LOG ("Unaligned data (%i) setting to max (65530)", request_size);
 		request_size = 65530;
 	}
 	else if (request_size <= sizeof (hdr)) {
-		BRASERO_BURN_LOG ("Undersized data (%i) setting to max (65530)", request_size);
+		BRASERO_MEDIA_LOG ("Undersized data (%i) setting to max (65530)", request_size);
 		request_size = 65530;
 	}
 
@@ -140,7 +138,7 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 		      sizeof (hdr.len);
 
 	if (buffer_size != request_size)
-		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i",
 				  request_size,
 				  buffer_size);
 

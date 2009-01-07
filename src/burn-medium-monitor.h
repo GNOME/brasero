@@ -43,6 +43,14 @@ typedef struct _BraseroMediumMonitor BraseroMediumMonitor;
 struct _BraseroMediumMonitorClass
 {
 	GObjectClass parent_class;
+
+	/* Signals */
+
+	void		(*medium_added)		(BraseroMediumMonitor *monitor,
+						 BraseroMedium *medium);
+
+	void		(*medium_removed)	(BraseroMediumMonitor *monitor,
+						 BraseroMedium *medium);
 };
 
 struct _BraseroMediumMonitor

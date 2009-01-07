@@ -31,6 +31,8 @@
 
 G_BEGIN_DECLS
 
+#include "burn-units.h"
+
 #define BRASERO_GET_BASENAME_FOR_DISPLAY(uri, name)				\
 {										\
     	gchar *escaped_basename;						\
@@ -166,18 +168,6 @@ typedef enum {
 #define BRASERO_BURN_FLAG_ALL			0xFFFF
 
 #define BRASERO_PLUGIN_KEY		"/apps/brasero/config/plugins"
-
-#define BRASERO_DURATION_TO_BYTES(duration)					\
-	((gint64) (duration) * 75 * 2352 / 1000000000 +				\
-	(((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0))
-#define BRASERO_DURATION_TO_SECTORS(duration)					\
-	((gint64) (duration) * 75 / 1000000000 +				\
-	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
-#define BRASERO_SIZE_TO_SECTORS(size, secsize)					\
-	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
-#define BRASERO_BYTES_TO_DURATION(bytes)					\
-	(guint64) ((guint64) ((guint64) (bytes) * 1000000000) / (guint64) (2352 * 75) + 				\
-	(guint64) (((guint64) ((guint64) (bytes) * 1000000000) % (guint64) (2352 * 75)) ? 1:0))
 
 BraseroBurnResult
 brasero_burn_library_init (void);

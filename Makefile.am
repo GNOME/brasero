@@ -19,18 +19,23 @@ EXTRA_DIST = 			\
 	intltool-merge.in	\
 	intltool-update.in	\
 	gnome-doc-utils.make	\
+	libbrasero-media.pc	\
 	m4
 
 noinst_PROGRAMS =
 
-DIST_CHECK_CONFIGRE_FLAGS =
-	--disable-scrollkeeper
+DIST_CHECK_CONFIGRE_FLAGS =		\
+	--disable-scrollkeeper		\
+	--enable-gtk-doc
 
 DISTCLEANFILES = \
 	intltool-extract \
 	intltool-merge \
 	intltool-update		\
 	gtk-doc.make
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libbrasero-media.pc
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:

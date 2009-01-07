@@ -39,8 +39,8 @@
 #include "burn-volume-source.h"
 #include "burn-volume.h"
 #include "burn-iso9660.h"
-#include "burn-basics.h"
-#include "burn-debug.h"
+#include "burn-media.h"
+#include "burn-units.h"
 
 struct _BraseroTagDesc {
 	guint16 id;
@@ -118,10 +118,10 @@ brasero_volume_get_primary_from_file (BraseroVolSrc *vol,
 	&&  memcmp (desc->id, "NSR03", 5)	/* usually UDF */
 	&&  memcmp (desc->id, "TEA01", 5)) {
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_IMAGE_INVALID,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_IMAGE_INVALID,
 			     _("It does not appear to be a valid ISO image"));
-		BRASERO_BURN_LOG ("Wrong volume descriptor, got %.5s", desc->id);
+		BRASERO_MEDIA_LOG ("Wrong volume descriptor, got %.5s", desc->id);
 		return FALSE;
 	}
 

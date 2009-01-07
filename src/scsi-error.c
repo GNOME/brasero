@@ -26,7 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "burn-basics.h"
+#include "burn-media.h"
 #include "scsi-error.h"
 
 static const gchar *error_string [] = {	N_("Unknown error"),
@@ -60,8 +60,8 @@ void
 brasero_scsi_set_error (GError **error, BraseroScsiErrCode code)
 {
 	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
+		     BRASERO_MEDIA_ERROR,
+		     BRASERO_MEDIA_ERROR_GENERAL,
 		     "%s",
 		     brasero_scsi_strerror (code));
 }

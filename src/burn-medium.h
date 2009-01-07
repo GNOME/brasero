@@ -22,7 +22,6 @@
 
 #include <glib-object.h>
 
-#include "burn-basics.h"
 #include "burn-media.h"
 
 #ifndef _BURN_MEDIUM_H_
@@ -50,6 +49,25 @@ typedef struct _BraseroDrive BraseroDrive;
 #define BRASERO_RATE_TO_SPEED_DVD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) DVD_RATE)
 #define BRASERO_RATE_TO_SPEED_BD(rate)		(gdouble) ((gdouble) (rate) / (gdouble) BD_RATE)
 
+typedef enum {
+	BRASERO_MEDIUM_TRACK_NONE		= 0,
+	BRASERO_MEDIUM_TRACK_DATA		= 1,
+	BRASERO_MEDIUM_TRACK_AUDIO		= 1 << 1,
+	BRASERO_MEDIUM_TRACK_COPY		= 1 << 2,
+	BRASERO_MEDIUM_TRACK_PREEMP		= 1 << 3,
+	BRASERO_MEDIUM_TRACK_4_CHANNELS		= 1 << 4,
+	BRASERO_MEDIUM_TRACK_INCREMENTAL	= 1 << 5,
+	BRASERO_MEDIUM_TRACK_LEADOUT		= 1 << 6
+} BraseroMediumTrackType;
+
+struct _BraseroMediumTrack {
+	guint session;
+	BraseroMediumTrackType type;
+	guint64 start;
+	guint64 blocks_num;
+};
+typedef struct _BraseroMediumTrack BraseroMediumTrack;
+
 #define BRASERO_TYPE_MEDIUM             (brasero_medium_get_type ())
 #define BRASERO_MEDIUM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_MEDIUM, BraseroMedium))
 #define BRASERO_MEDIUM_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), BRASERO_TYPE_MEDIUM, BraseroMediumClass))
@@ -72,36 +90,9 @@ struct _BraseroMedium
 
 GType brasero_medium_get_type (void) G_GNUC_CONST;
 
-typedef enum {
-	BRASERO_MEDIUM_TRACK_NONE		= 0,
-	BRASERO_MEDIUM_TRACK_DATA		= 1,
-	BRASERO_MEDIUM_TRACK_AUDIO		= 1 << 1,
-	BRASERO_MEDIUM_TRACK_COPY		= 1 << 2,
-	BRASERO_MEDIUM_TRACK_PREEMP		= 1 << 3,
-	BRASERO_MEDIUM_TRACK_4_CHANNELS		= 1 << 4,
-	BRASERO_MEDIUM_TRACK_INCREMENTAL	= 1 << 5,
-	BRASERO_MEDIUM_TRACK_LEADOUT		= 1 << 6
-} BraseroMediumTrackType;
-
-struct _BraseroMediumTrack {
-	guint session;
-	BraseroMediumTrackType type;
-	guint64 start;
-	guint64 blocks_num;
-};
-typedef struct _BraseroMediumTrack BraseroMediumTrack;
-
 
 BraseroMedia
 brasero_medium_get_status (BraseroMedium *medium);
-
-gboolean
-brasero_medium_support_flags (BraseroMedium *medium,
-			      BraseroBurnFlag flags);
-
-BraseroBurnFlag
-brasero_medium_supported_flags (BraseroMedium *self,
-				BraseroBurnFlag flags);
 
 GSList *
 brasero_medium_get_tracks (BraseroMedium *medium);
@@ -129,6 +120,7 @@ brasero_medium_get_track_address (BraseroMedium *medium,
 				  guint num,
 				  gint64 *byte,
 				  gint64 *sector);
+
 
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium);

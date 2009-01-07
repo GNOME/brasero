@@ -11,7 +11,7 @@ INCLUDES = \
 	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_LIBISOFS_CFLAGS)			\
 	$(BRASERO_LIBBURN_CFLAGS)			\
-	$(BRASERO_BASE_CFLAGS)
+	$(BRASERO_GLIB_CFLAGS)
 
 #libburn
 libburndir = $(libdir)/brasero/plugins
@@ -21,7 +21,7 @@ libbrasero_libburn_la_SOURCES = burn-libburn.c 		\
 				burn-libburn-common.c	\
 				burn-libburn-common.h  \
 				burn-libburnia.h 
-libbrasero_libburn_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_LIBBURNIA_LIBS)
+libbrasero_libburn_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS)
 libbrasero_libburn_la_LDFLAGS = -module -avoid-version
 
 #libisofs (apparently libisofs needs one libburn function)
@@ -30,5 +30,5 @@ libisofs_LTLIBRARIES = libbrasero-libisofs.la
 libbrasero_libisofs_la_SOURCES = burn-libisofs.c burn-libisofs.h	\
 	burn-libburn-common.c burn-libburn-common.h			\
 	burn-libburnia.h 
-libbrasero_libisofs_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_LIBBURNIA_LIBS)
+libbrasero_libisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBBURNIA_LIBS)
 libbrasero_libisofs_la_LDFLAGS = -module -avoid-version

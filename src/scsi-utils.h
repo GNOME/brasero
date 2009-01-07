@@ -25,8 +25,8 @@
 #include <errno.h>
 #include <glib.h>
 
+#include "burn-media.h"
 #include "scsi-base.h"
-#include "burn-debug.h"
 
 #ifndef _BURN_UTILS_H
 #define _BURN_UTILS_H
@@ -55,11 +55,11 @@ G_BEGIN_DECLS
 {										\
 	if (code == BRASERO_SCSI_ERRNO)	 {					\
 		int errsv = errno;						\
-		BRASERO_BURN_LOG ("SCSI command error: %s",			\
-				  g_strerror (errsv));				\
+		BRASERO_MEDIA_LOG ("SCSI command error: %s",			\
+				   g_strerror (errsv));				\
 	} else {								\
-		BRASERO_BURN_LOG ("SCSI command error: %s",			\
-				  brasero_scsi_strerror (code));		\
+		BRASERO_MEDIA_LOG ("SCSI command error: %s",			\
+				   brasero_scsi_strerror (code));		\
 	}									\
 	if (err)								\
 		*(err) = code;							\

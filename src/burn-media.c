@@ -28,15 +28,26 @@
 #  include <config.h>
 #endif
 
+#include <string.h>
+
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 
 #include "burn-media.h"
+
+static gboolean debug = 0;
 
 #define BRASERO_MEDIUM_TRUE_RANDOM_WRITABLE(media)				\
 	(BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED) ||		\
 	 BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS) ||		\
 	 BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVD_RAM) || 			\
 	 BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BDRE))
+
+static const GOptionEntry options [] = {
+	{ "brasero-media-debug", 0, 0, G_OPTION_ARG_NONE, &debug,
+	  N_("Display debug statements on stdout for Brasero media library"),
+	  NULL }
+};
 
 static GSList *
 brasero_media_add_to_list (GSList *retval,
@@ -341,4 +352,134 @@ brasero_media_get_all_list (BraseroMedia type)
 						    type);
 
 	return retval;
+}
+
+GQuark
+brasero_media_quark (void)
+{
+	static GQuark quark = 0;
+
+	if (!quark)
+		quark = g_quark_from_static_string ("BraseroBurnError");
+
+	return quark;
+}
+
+void
+brasero_media_to_string (BraseroMedia media,
+			 gchar *buffer)
+{
+	if (media & BRASERO_MEDIUM_FILE)
+		strcat (buffer, "file ");
+
+	if (media & BRASERO_MEDIUM_CD)
+		strcat (buffer, "CD ");
+
+	if (media & BRASERO_MEDIUM_DVD)
+		strcat (buffer, "DVD ");
+
+	if (media & BRASERO_MEDIUM_RAM)
+		strcat (buffer, "RAM ");
+
+	if (media & BRASERO_MEDIUM_BD)
+		strcat (buffer, "BD ");
+
+	if (media & BRASERO_MEDIUM_DUAL_L)
+		strcat (buffer, "DL ");
+
+	/* DVD subtypes */
+	if (media & BRASERO_MEDIUM_PLUS)
+		strcat (buffer, "+ ");
+
+	if (media & BRASERO_MEDIUM_SEQUENTIAL)
+		strcat (buffer, "- (sequential) ");
+
+	if (media & BRASERO_MEDIUM_RESTRICTED)
+		strcat (buffer, "- (restricted) ");
+
+	if (media & BRASERO_MEDIUM_JUMP)
+		strcat (buffer, "- (jump) ");
+
+	/* BD subtypes */
+	if (media & BRASERO_MEDIUM_SRM)
+		strcat (buffer, "SRM ");
+
+	if (media & BRASERO_MEDIUM_POW)
+		strcat (buffer, "POW ");
+
+	if (media & BRASERO_MEDIUM_RANDOM)
+		strcat (buffer, "RANDOM ");
+
+	/* discs attributes */
+	if (media & BRASERO_MEDIUM_REWRITABLE)
+		strcat (buffer, "RW ");
+
+	if (media & BRASERO_MEDIUM_WRITABLE)
+		strcat (buffer, "W ");
+
+	if (media & BRASERO_MEDIUM_ROM)
+		strcat (buffer, "ROM ");
+
+	/* status of the disc */
+	if (media & BRASERO_MEDIUM_CLOSED)
+		strcat (buffer, "closed ");
+
+	if (media & BRASERO_MEDIUM_BLANK)
+		strcat (buffer, "blank ");
+
+	if (media & BRASERO_MEDIUM_APPENDABLE)
+		strcat (buffer, "appendable ");
+
+	if (media & BRASERO_MEDIUM_PROTECTED)
+		strcat (buffer, "protected ");
+
+	if (media & BRASERO_MEDIUM_HAS_DATA)
+		strcat (buffer, "with data ");
+
+	if (media & BRASERO_MEDIUM_HAS_AUDIO)
+		strcat (buffer, "with audio ");
+
+	if (media & BRASERO_MEDIUM_UNFORMATTED)
+		strcat (buffer, "Unformatted ");
+}
+
+#define BRASERO_MEDIA_LOG_DOMAIN				"BraseroMedia"
+
+const GOptionGroup *
+brasero_media_get_option_group (void)
+{
+	GOptionGroup *group;
+
+	group = g_option_group_new ("brasero-media",
+				    N_("Brasero optical media library"),
+				    N_("Display options for Brasero-media library"),
+				    NULL,
+				    NULL);
+	g_option_group_add_entries (group, options);
+	return group;
+}
+
+void
+brasero_media_message (const gchar *location,
+		       const gchar *format,
+		       ...)
+{
+	va_list arg_list;
+	gchar *format_real;
+
+	if (!debug)
+		return;
+
+	format_real = g_strdup_printf ("At %s: %s",
+				       location,
+				       format);
+
+	va_start (arg_list, format);
+	g_logv (BRASERO_MEDIA_LOG_DOMAIN,
+		G_LOG_LEVEL_DEBUG,
+		format_real,
+		arg_list);
+	va_end (arg_list);
+
+	g_free (format_real);
 }

@@ -38,7 +38,6 @@
 #include "burn-medium.h"
 #include "burn-volume-obj.h"
 #include "burn-drive.h"
-#include "burn-debug.h"
 #include "burn-hal-watch.h"
 
 #include "scsi-mmc1.h"
@@ -86,6 +85,7 @@ enum {
 
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 
+
 GDrive *
 brasero_drive_get_gdrive (BraseroDrive *drive)
 {
@@ -115,7 +115,7 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 		if (!device_path)
 			continue;
 
-		BRASERO_BURN_LOG ("Found drive %s", device_path);
+		BRASERO_MEDIA_LOG ("Found drive %s", device_path);
 		if (!strcmp (device_path, volume_path)) {
 			gdrive = tmp;
 			g_free (device_path);
@@ -129,42 +129,27 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 	g_list_free (drives);
 
 	if (!drive)
-		BRASERO_BURN_LOG ("No drive found for medium");
+		BRASERO_MEDIA_LOG ("No drive found for medium");
 
 	return gdrive;
 }
 
-gboolean
-brasero_drive_get_bus_target_lun (BraseroDrive *self,
-				  guint *bus,
-				  guint *target,
-				  guint *lun)
-{
-	BraseroDrivePrivate *priv;
-
-	priv = BRASERO_DRIVE_PRIVATE (self);
-
-	if (!priv->udi)
-		return FALSE;
-
-	if (!bus || !target || !lun)
-		return FALSE;
-
-	if (priv->bus < 0)
-		return FALSE;
-
-	*bus = priv->bus;
-	*target = priv->target;
-	*lun = priv->lun;
-	return TRUE;
-}
+/**
+ * brasero_drive_get_bus_target_lun_string:
+ * @drive: a #BraseroDrive
+ *
+ * Returns the bus, target, lun ("{bus},{target},{lun}") as a string which is
+ * sometimes needed by some backends like cdrecord.
+ *
+ * Return value: a string or NULL.
+ **/
 
 gchar *
-brasero_drive_get_bus_target_lun_string (BraseroDrive *self)
+brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->udi)
 		return NULL;
@@ -175,23 +160,40 @@ brasero_drive_get_bus_target_lun_string (BraseroDrive *self)
 	return g_strdup_printf ("%i,%i,%i", priv->bus, priv->target, priv->lun);
 }
 
+/**
+ * brasero_drive_is_fake:
+ * @drive: a #BraseroDrive
+ *
+ * Returns whether or not the drive is a fake one. There is only one and
+ * corresponds to a file which is used when the user wants to burn to a file.
+ *
+ * Return value: %TRUE or %FALSE.
+ **/
 gboolean
-brasero_drive_is_fake (BraseroDrive *self)
+brasero_drive_is_fake (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return (priv->path == NULL);
 }
 
+/**
+ * brasero_drive_is_door_open:
+ * @drive: a #BraseroDrive
+ *
+ * Returns whether or not the drive door is open.
+ *
+ * Return value: %TRUE or %FALSE.
+ **/
 gboolean
-brasero_drive_is_door_open (BraseroDrive *self)
+brasero_drive_is_door_open (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 	BraseroDeviceHandle *handle;
 	BraseroScsiMechStatusHdr hdr;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->udi)
 		return FALSE;
@@ -209,16 +211,25 @@ brasero_drive_is_door_open (BraseroDrive *self)
 	return hdr.door_open;
 }
 
+/**
+ * brasero_drive_can_use_exclusively:
+ * @drive: a #BraseroDrive
+ *
+ * Returns whether or not the drive can be used exclusively, that is whether or
+ * not it is currently used by another application.
+ *
+ * Return value: %TRUE or %FALSE.
+ **/
 gboolean
-brasero_drive_can_use_exclusively (BraseroDrive *self)
+brasero_drive_can_use_exclusively (BraseroDrive *drive)
 {
 	BraseroDeviceHandle *handle;
 	const gchar *device;
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
-	device = brasero_drive_get_block_device (self);
+	device = brasero_drive_get_block_device (drive);
 #else
-	device = brasero_drive_get_device (self);
+	device = brasero_drive_get_device (drive);
 #endif
 
 	handle = brasero_device_handle_open (device, TRUE, NULL);
@@ -229,8 +240,18 @@ brasero_drive_can_use_exclusively (BraseroDrive *self)
 	return TRUE;
 }
 
+/**
+ * brasero_drive_lock:
+ * @drive: a #BraseroDrive
+ * @reason: a string to indicate what the drive was locked for
+ * @reason_for_failure: a string to hold the reason why the locking failed
+ *
+ * Locks a #BraseroDrive. Ejection shouldn't be possible any more.
+ *
+ * Return value: %TRUE if the drive was successfully locked or %FALSE.
+ **/
 gboolean
-brasero_drive_lock (BraseroDrive *self,
+brasero_drive_lock (BraseroDrive *drive,
 		    const gchar *reason,
 		    gchar **reason_for_failure)
 {
@@ -241,7 +262,7 @@ brasero_drive_lock (BraseroDrive *self,
 	gboolean result;
 	gchar *failure;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->udi)
 		return FALSE;
@@ -266,17 +287,25 @@ brasero_drive_lock (BraseroDrive *self,
 		dbus_free (failure);
 
 	if (result) {
-		BRASERO_BURN_LOG ("Device locked");
+		BRASERO_MEDIA_LOG ("Device locked");
 	}
 	else {
-		BRASERO_BURN_LOG ("Device failed to lock");
+		BRASERO_MEDIA_LOG ("Device failed to lock");
 	}
 
 	return result;
 }
 
+/**
+ * brasero_drive_unlock:
+ * @drive: a #BraseroDrive
+ *
+ * Unlocks a #BraseroDrive.
+ *
+ * Return value: %TRUE if the drive was successfully unlocked or %FALSE.
+ **/
 gboolean
-brasero_drive_unlock (BraseroDrive *self)
+brasero_drive_unlock (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 	BraseroHALWatch *watch;
@@ -284,7 +313,7 @@ brasero_drive_unlock (BraseroDrive *self)
 	DBusError error;
 	gboolean result;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->udi)
 		return FALSE;
 
@@ -299,18 +328,27 @@ brasero_drive_unlock (BraseroDrive *self)
 	if (dbus_error_is_set (&error))
 		dbus_error_free (&error);
 
-	BRASERO_BURN_LOG ("Device unlocked");
+	BRASERO_MEDIA_LOG ("Device unlocked");
 	return result;
 }
 
+/**
+ * brasero_drive_get_display_name:
+ * @drive: a #BraseroDrive
+ *
+ * Gets a string holding the name for the drive. That string can be then
+ * displayed in a user interface.
+ *
+ * Return value: a string holding the name
+ **/
 gchar *
-brasero_drive_get_display_name (BraseroDrive *self)
+brasero_drive_get_display_name (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 	BraseroHALWatch *watch;
 	LibHalContext *ctx;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->udi) {
 		/* Translators: This is a fake drive, a file, and means that
@@ -327,45 +365,81 @@ brasero_drive_get_display_name (BraseroDrive *self)
 						  NULL);
 }
 
+/**
+ * brasero_drive_get_device:
+ * @drive: a #BraseroDrive
+ *
+ * Gets a string holding the device path for the drive.
+ *
+ * Return value: a string holding the device path
+ **/
 const gchar *
-brasero_drive_get_device (BraseroDrive *self)
+brasero_drive_get_device (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->path;
 }
 
+/**
+ * brasero_drive_get_block_device:
+ * @drive: a #BraseroDrive
+ *
+ * Gets a string holding the block device path for the drive. This can be used on
+ * some other OS, like Solaris, for burning operations instead of the device
+ * path.
+ *
+ * Return value: a string holding the block device path
+ **/
 const gchar *
-brasero_drive_get_block_device (BraseroDrive *self)
+brasero_drive_get_block_device (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->block_path;
 }
 
+/**
+ * brasero_drive_get_udi:
+ * @drive: a #BraseroDrive
+ *
+ * Gets a string holding the HAL udi corresponding to this device. It can be used
+ * to uniquely identify the drive.
+ *
+ * Return value: a string holding the HAL udi
+ **/
 const gchar *
-brasero_drive_get_udi (BraseroDrive *self)
+brasero_drive_get_udi (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	if (!self)
+	if (!drive)
 		return NULL;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->udi;
 }
 
+/**
+ * brasero_drive_get_medium:
+ * @drive: a #BraseroDrive
+ *
+ * Gets the medium currently inserted in the drive. If there is no medium or if
+ * the medium is not probed yet then it returns NULL.
+ *
+ * Return value: a #BraseroMedium object or NULL
+ **/
 BraseroMedium *
-brasero_drive_get_medium (BraseroDrive *self)
+brasero_drive_get_medium (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	if (!self)
+	if (!drive)
 		return NULL;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->probed && priv->udi)
 		return NULL;
@@ -462,6 +536,9 @@ brasero_drive_medium_probed (BraseroMedium *medium,
 		       priv->medium);
 }
 
+/**
+ * This is not public API. Defined in burn-monitor.h.
+ */
 gboolean
 brasero_drive_probing (BraseroDrive *self)
 {
@@ -471,24 +548,35 @@ brasero_drive_probing (BraseroDrive *self)
 	return priv->probed != TRUE;
 }
 
+/**
+ * brasero_drive_reprobe:
+ * @monitor: a #BraseroDrive
+ *
+ * Reprobes the drive contents. Useful when an operation has just been performed
+ * (blanking, burning, ...) and medium status should be updated.
+ *
+ * NOTE: This operation does not block.
+ *
+ **/
+
 void
-brasero_drive_reprobe (BraseroDrive *self)
+brasero_drive_reprobe (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 	BraseroMedium *medium;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->medium)
 		return;
 
-	BRASERO_BURN_LOG ("Reprobing inserted medium");
+	BRASERO_MEDIA_LOG ("Reprobing inserted medium");
 
 	/* remove current medium */
 	medium = priv->medium;
 	priv->medium = NULL;
 
-	g_signal_emit (self,
+	g_signal_emit (drive,
 		       drive_signals [MEDIUM_REMOVED],
 		       0,
 		       medium);
@@ -497,12 +585,12 @@ brasero_drive_reprobe (BraseroDrive *self)
 
 	/* try to get a new one */
 	priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
-				     "drive", self,
+				     "drive", drive,
 				     NULL);
 	g_signal_connect (priv->medium,
 			  "probed",
 			  G_CALLBACK (brasero_drive_medium_probed),
-			  self);
+			  drive);
 }
 
 #if 0
@@ -522,7 +610,7 @@ brasero_drive_hal_reprobe (BraseroDrive *self)
 
 	dbus_error_init (&error);
 	if (!libhal_device_reprobe (ctx, priv->udi, &error)) {
-		BRASERO_BURN_LOG ("libhal_device_reprobe () failed %s",
+		BRASERO_MEDIA_LOG ("libhal_device_reprobe () failed %s",
 				  error.message);
 		dbus_error_free (&error);
 	}			      
@@ -544,7 +632,7 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 	watch = brasero_hal_watch_get_default ();
 	ctx = brasero_hal_watch_get_ctx (watch);
 
-	BRASERO_BURN_LOG ("Contents changed");
+	BRASERO_MEDIA_LOG ("Contents changed");
 
 	dbus_error_init (&error);
 	has_medium = libhal_device_get_property_bool (ctx,
@@ -559,7 +647,7 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 	}
 
 	if (has_medium) {
-		BRASERO_BURN_LOG ("Medium inserted");
+		BRASERO_MEDIA_LOG ("Medium inserted");
 
 		priv->probed = FALSE;
 		priv->medium = g_object_new (BRASERO_TYPE_VOLUME,
@@ -574,7 +662,7 @@ brasero_drive_check_medium_inside (BraseroDrive *self)
 	else if (priv->medium) {
 		BraseroMedium *medium;
 
-		BRASERO_BURN_LOG ("Medium removed");
+		BRASERO_MEDIA_LOG ("Medium removed");
 
 		medium = priv->medium;
 		priv->medium = NULL;
@@ -677,7 +765,7 @@ brasero_drive_init_real (BraseroDrive *drive)
 			priv->target = libhal_device_get_property_int (ctx, parent, "scsi.target", NULL);
 		}
 
-		BRASERO_BURN_LOG ("Drive %s has bus,target,lun = %i %i %i",
+		BRASERO_MEDIA_LOG ("Drive %s has bus,target,lun = %i %i %i",
 				  priv->path,
 				  priv->bus,
 				  priv->target,
@@ -767,21 +855,37 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	object_class->set_property = brasero_drive_set_property;
 	object_class->get_property = brasero_drive_get_property;
 
+	/**
+ 	* BraseroVolumeMonitor::medium-added:
+ 	* @drive: the object which received the signal
+  	* @medium: the new medium which was added
+	*
+ 	* This signal gets emitted when a new medium was detected
+ 	*
+ 	*/
 	drive_signals[MEDIUM_INSERTED] =
 		g_signal_new ("medium_added",
 		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
-		              0,
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              G_STRUCT_OFFSET (BraseroDriveClass, medium_added),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1,
 		              BRASERO_TYPE_MEDIUM);
 
+	/**
+ 	* BraseroVolumeMonitor::medium-removed:
+ 	* @drive: the object which received the signal
+  	* @medium: the medium which was removed
+	*
+ 	* This signal gets emitted when a medium is not longer available
+ 	*
+ 	*/
 	drive_signals[MEDIUM_REMOVED] =
 		g_signal_new ("medium_removed",
 		              G_OBJECT_CLASS_TYPE (klass),
 		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-		              0,
+		              G_STRUCT_OFFSET (BraseroDriveClass, medium_removed),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1,
@@ -790,11 +894,15 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	g_object_class_install_property (object_class,
 	                                 PROP_UDI,
 	                                 g_param_spec_string("udi",
-	                                                     "udi",
 	                                                     "HAL udi",
+	                                                     "HAL udi as a string",
 	                                                     NULL,
 	                                                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
+
+/**
+ * This is not public API. Declared in burn-monitor.h.
+ */
 
 BraseroDrive *
 brasero_drive_new (const gchar *udi)

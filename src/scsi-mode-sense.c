@@ -114,7 +114,7 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 	BRASERO_SET_16 (cdb->alloc_len, sizeof (header));
 	bzero (&header, sizeof (header));
 
-	BRASERO_BURN_LOG ("Getting page size");
+	BRASERO_MEDIA_LOG ("Getting page size");
 	res = brasero_scsi_command_issue_sync (cdb, &header, sizeof (header), error);
 	if (res)
 		goto end;
@@ -148,7 +148,7 @@ brasero_spc1_mode_sense_get_page (BraseroDeviceHandle *handle,
 	buffer = (BraseroScsiModeData *) g_new0 (uchar, request_size);
 
 	/* ... re-issue the command */
-	BRASERO_BURN_LOG ("Getting page (size = %i)", request_size);
+	BRASERO_MEDIA_LOG("Getting page (size = %i)", request_size);
 
 	BRASERO_SET_16 (cdb->alloc_len, request_size);
 	res = brasero_scsi_command_issue_sync (cdb, buffer, request_size, error);

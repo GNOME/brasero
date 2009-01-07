@@ -57,6 +57,7 @@ static void
 brasero_src_selection_medium_changed (GtkComboBox *combo_box)
 {
 	BraseroSrcSelectionPrivate *priv;
+	BraseroMedium *medium = NULL;
 	BraseroDrive *drive = NULL;
 
 	priv = BRASERO_SRC_SELECTION_PRIVATE (combo_box);
@@ -64,7 +65,8 @@ brasero_src_selection_medium_changed (GtkComboBox *combo_box)
 	if (!priv->session)
 		goto chain;
 
-	drive = brasero_medium_selection_get_active_drive (BRASERO_MEDIUM_SELECTION (combo_box));
+	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (combo_box));
+	drive = brasero_medium_get_drive (medium);
 
 	/* NOTE: don't check for drive == NULL to set the session input type */
 	if (priv->track
@@ -84,8 +86,8 @@ brasero_src_selection_medium_changed (GtkComboBox *combo_box)
 
 chain:
 
-	if (drive)
-		g_object_unref (drive);
+	if (medium)
+		g_object_unref (medium);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (combo_box), drive != NULL);
 

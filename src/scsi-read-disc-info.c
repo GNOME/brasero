@@ -28,8 +28,6 @@
 
 #include <glib.h>
 
-#include "burn-debug.h"
-
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-base.h"
@@ -127,7 +125,7 @@ brasero_mmc1_read_disc_information_std (BraseroDeviceHandle *handle,
 		      sizeof (buffer->len);
 
 	if (request_size != buffer_size)
-		BRASERO_BURN_LOG ("Sizes mismatch asked %i / received %i",
+		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i",
 				  request_size,
 				  buffer_size);
 

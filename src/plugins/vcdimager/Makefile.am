@@ -8,14 +8,14 @@ INCLUDES = \
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
-	$(DISABLE_DEPRECATED)				\
-	$(BRASERO_BASE_CFLAGS)				\
+	$(DISABLE_DEPRECATED)					\
+	$(BRASERO_GLIB_CFLAGS)					\
 	$(BRASERO_LIBXML_CFLAGS)
 
 vcdimagerdir = $(libdir)/brasero/plugins
 vcdimager_LTLIBRARIES = libbrasero-vcdimager.la
 
 libbrasero_vcdimager_la_SOURCES = burn-vcdimager.c burn-vcdimager.h
-libbrasero_vcdimager_la_LIBADD = $(BRASERO_BASE_LIBS) $(BRASERO_LIBXML_LIBS)
+libbrasero_vcdimager_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_LIBXML_LIBS)
 libbrasero_vcdimager_la_LDFLAGS = -module -avoid-version
 

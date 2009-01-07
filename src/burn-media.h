@@ -29,6 +29,46 @@
 
 G_BEGIN_DECLS
 
+GQuark brasero_media_quark (void);
+#define BRASERO_MEDIA_ERROR brasero_media_quark()
+
+typedef enum {
+	BRASERO_MEDIA_ERROR_NONE,
+	BRASERO_MEDIA_ERROR_GENERAL, /******/
+
+	BRASERO_MEDIA_ERROR_PLUGIN_MISBEHAVIOR,
+
+	BRASERO_MEDIA_ERROR_SLOW_DMA,
+	BRASERO_MEDIA_ERROR_PERMISSION,
+	BRASERO_MEDIA_ERROR_DRIVE_BUSY,
+	BRASERO_MEDIA_ERROR_DISK_SPACE,
+
+	BRASERO_MEDIA_ERROR_INPUT_INVALID,
+
+	BRASERO_MEDIA_ERROR_OUTPUT_NONE,
+
+	BRASERO_MEDIA_ERROR_FILE_INVALID,
+	BRASERO_MEDIA_ERROR_FILE_NOT_FOUND,
+	BRASERO_MEDIA_ERROR_FILE_NOT_LOCAL,
+
+	BRASERO_MEDIA_ERROR_WRITE_MEDIUM,
+	BRASERO_MEDIA_ERROR_WRITE_IMAGE,
+
+	BRASERO_MEDIA_ERROR_IMAGE_INVALID,	/**/
+	BRASERO_MEDIA_ERROR_IMAGE_JOLIET,
+	BRASERO_MEDIA_ERROR_IMAGE_LAST_SESSION,
+
+	BRASERO_MEDIA_ERROR_MEDIUM_NONE,
+	BRASERO_MEDIA_ERROR_MEDIUM_INVALID,
+	BRASERO_MEDIA_ERROR_MEDIUM_SPACE,
+	BRASERO_MEDIA_ERROR_MEDIUM_NO_DATA,
+	BRASERO_MEDIA_ERROR_MEDIUM_NOT_WRITABLE,
+	BRASERO_MEDIA_ERROR_MEDIUM_NOT_REWRITABLE,
+	BRASERO_MEDIA_ERROR_MEDIUM_NEED_RELOADING,
+
+	BRASERO_MEDIA_ERROR_BAD_CHECKSUM,
+} BraseroMediaError;
+
 typedef enum {
 	BRASERO_MEDIUM_UNSUPPORTED		= -2,
 	BRASERO_MEDIUM_BUSY			= -1,
@@ -170,6 +210,27 @@ brasero_media_get_all_list (BraseroMedia type);
 
 BraseroMedia
 brasero_media_capabilities (BraseroMedia media);
+
+const GOptionGroup *
+brasero_media_get_option_group (void);
+
+/**
+ * For debugging purposes
+ */
+
+void
+brasero_media_to_string (BraseroMedia media,
+			 gchar *string);
+
+#define BRASERO_MEDIA_LOG(format, ...)				\
+	brasero_media_message (G_STRLOC,			\
+			       format,				\
+			       ##__VA_ARGS__);
+
+void
+brasero_media_message (const gchar *location,
+		       const gchar *format,
+		       ...);
 
 G_END_DECLS
 

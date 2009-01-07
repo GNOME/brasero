@@ -65,9 +65,6 @@ typedef gboolean (*BraseroMediumSelectionFunc) (BraseroMedium *medium, gpointer 
 BraseroMedium *
 brasero_medium_selection_get_active (BraseroMediumSelection *selection);
 
-BraseroDrive *
-brasero_medium_selection_get_active_drive (BraseroMediumSelection *selection);
-
 gboolean
 brasero_medium_selection_set_active (BraseroMediumSelection *selection,
 				     BraseroMedium *medium);

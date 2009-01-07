@@ -85,6 +85,19 @@ typedef struct _BraseroCapsTest BraseroCapsTest;
 static GObjectClass *parent_class = NULL;
 static BraseroBurnCaps *default_caps = NULL;
 
+/**
+ * These two functions are not public API and defined in burn-medium.c
+ */
+
+gboolean
+brasero_medium_support_flags (BraseroMedium *medium,
+			      BraseroBurnFlag flags);
+
+BraseroBurnFlag
+brasero_medium_supported_flags (BraseroMedium *self,
+				BraseroBurnFlag flags);
+
+
 #define BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG(session)				\
 {										\
 	brasero_burn_session_log (session, "Unsupported type of task operation"); \

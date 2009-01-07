@@ -38,12 +38,11 @@
 #include <sys/scsi/impl/uscsi.h>
 
 #include "scsi-command.h"
-#include "burn-debug.h"
 #include "scsi-utils.h"
 #include "scsi-error.h"
 #include "scsi-sense-data.h"
 
-#define DEBUG BRASERO_BURN_LOG
+#define DEBUG BRASERO_MEDIA_LOG
 
 struct _BraseroDeviceHandle {
 	int fd;

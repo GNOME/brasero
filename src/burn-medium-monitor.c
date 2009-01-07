@@ -37,7 +37,6 @@
 
 #include <libhal.h>
 
-#include "burn-debug.h"
 #include "burn-drive.h"
 #include "burn-medium.h"
 #include "burn-hal-watch.h"
@@ -73,14 +72,36 @@ static guint medium_monitor_signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (BraseroMediumMonitor, brasero_medium_monitor, G_TYPE_OBJECT);
 
+
+/**
+ * These definitions go here as they shouldn't be public and they're used only 
+ * here.
+ */
+
 BraseroDrive *
-brasero_medium_monitor_get_drive (BraseroMediumMonitor *self,
+brasero_drive_new (const gchar *udi);
+
+gboolean
+brasero_drive_probing (BraseroDrive *drive);
+
+/**
+ * brasero_medium_monitor_get_drive:
+ * @monitor: a #BraseroMediumMonitor
+ * @device: the path of the device
+ *
+ * Returns the #BraseroDrive object whose path is @path.
+ *
+ * Return value: a #BraseroDrive or NULL
+ **/
+
+BraseroDrive *
+brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
 				  const gchar *device)
 {
 	GSList *iter;
 	BraseroMediumMonitorPrivate *priv;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
 		const gchar *drive_device;
@@ -96,13 +117,22 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *self,
 	return NULL;
 }
 
+/**
+ * brasero_medium_monitor_is_probing:
+ * @monitor: a #BraseroMediumMonitor
+ *
+ * Returns if the library is still probing some other media.
+ *
+ * Return value: %TRUE if it is still probing some media
+ **/
+
 gboolean
-brasero_medium_monitor_is_probing (BraseroMediumMonitor *self)
+brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
 {
 	GSList *iter;
 	BraseroMediumMonitorPrivate *priv;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
@@ -118,15 +148,25 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *self)
 	return FALSE;
 }
 
+/**
+ * brasero_medium_monitor_get_media:
+ * @monitor: a #BraseroMediumMonitor
+ * @type: the type of #BraseroMedium that should be in the list
+ *
+ * Obtains the list of available media that are of the given type.
+ *
+ * Return value: a #GSList or NULL
+ **/
+
 GSList *
-brasero_medium_monitor_get_media (BraseroMediumMonitor *self,
+brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 				  BraseroMediaType type)
 {
 	GSList *iter;
 	GSList *list = NULL;
 	BraseroMediumMonitorPrivate *priv;
 
-	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroMedium *medium;
@@ -215,7 +255,7 @@ brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
 	if (!libhal_device_query_capability (ctx, udi, "storage.cdrom", NULL))
 		return;
 
-	BRASERO_BURN_LOG ("New drive inserted");
+	BRASERO_MEDIA_LOG ("New drive inserted");
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
@@ -253,7 +293,7 @@ brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
 	ctx = brasero_hal_watch_get_ctx (watch);
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Drive removed");
+	BRASERO_MEDIA_LOG ("Drive removed");
 
 	for (iter = priv->drives; iter; iter = next) {
 		const gchar *device_udi;
@@ -314,20 +354,20 @@ brasero_medium_monitor_init (BraseroMediumMonitor *object)
 
 	/* Now we get the list and cache it */
 	dbus_error_init (&error);
-	BRASERO_BURN_LOG ("Polling for drives");
+	BRASERO_MEDIA_LOG ("Polling for drives");
 	devices = libhal_find_device_by_capability (ctx,
 						    "storage.cdrom", &nb_devices,
 						    &error);
 	if (dbus_error_is_set (&error)) {
-		BRASERO_BURN_LOG ("Hal is not running : %s\n", error.message);
+		BRASERO_MEDIA_LOG ("Hal is not running : %s\n", error.message);
 		dbus_error_free (&error);
 		return;
 	}
 
-	BRASERO_BURN_LOG ("Found %d drives", nb_devices);
+	BRASERO_MEDIA_LOG ("Found %d drives", nb_devices);
 	for (i = 0; i < nb_devices; i++) {
 		/* create the drive */
-		BRASERO_BURN_LOG ("Probing %s", devices [i]);
+		BRASERO_MEDIA_LOG ("Probing %s", devices [i]);
 		drive = brasero_drive_new (devices [i]);
 		priv->drives = g_slist_prepend (priv->drives, drive);
 
@@ -379,21 +419,37 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 
 	object_class->finalize = brasero_medium_monitor_finalize;
 
+	/**
+ 	* BraseroVolumeMonitor::medium-added:
+ 	* @monitor: the object which received the signal
+  	* @medium: the new medium which was added
+	*
+ 	* This signal gets emitted when a new medium was detected
+ 	*
+ 	*/
 	medium_monitor_signals[MEDIUM_INSERTED] =
 		g_signal_new ("medium_added",
 		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
-		              0,
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              G_STRUCT_OFFSET (BraseroMediumMonitorClass, medium_added),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1,
 		              BRASERO_TYPE_MEDIUM);
 
+	/**
+ 	* BraseroVolumeMonitor::medium-removed:
+ 	* @monitor: the object which received the signal
+  	* @medium: the medium which was removed
+	*
+ 	* This signal gets emitted when a medium is not longer available
+ 	*
+ 	*/
 	medium_monitor_signals[MEDIUM_REMOVED] =
 		g_signal_new ("medium_removed",
 		              G_OBJECT_CLASS_TYPE (klass),
-		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_ACTION,
-		              0,
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              G_STRUCT_OFFSET (BraseroMediumMonitorClass, medium_removed),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1,

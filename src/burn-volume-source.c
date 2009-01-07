@@ -30,9 +30,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "burn-debug.h"
 #include "burn-volume-source.h"
 #include "burn-iso9660.h"
+#include "burn-media.h"
 
 #include "scsi-mmc1.h"
 #include "scsi-mmc2.h"
@@ -68,13 +68,13 @@ brasero_volume_source_seek_fd (BraseroVolSrc *src,
 	if (fseeko (src->data, (guint64) (block * ISO9660_BLOCK_SIZE), whence) == -1) {
 		int errsv = errno;
 
-		BRASERO_BURN_LOG ("fseeko () failed at block %i (= %lli bytes) (%s)",
-				  block,
-				  (guint64) (block * ISO9660_BLOCK_SIZE),
-				  g_strerror (errsv));
+		BRASERO_MEDIA_LOG ("fseeko () failed at block %i (= %lli bytes) (%s)",
+				   block,
+				   (guint64) (block * ISO9660_BLOCK_SIZE),
+				   g_strerror (errsv));
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_GENERAL,
 			     "%s",
 			     g_strerror (errsv));
 		return -1;
@@ -91,16 +91,16 @@ brasero_volume_source_read_fd (BraseroVolSrc *src,
 {
 	guint64 bytes_read;
 
-	BRASERO_BURN_LOG ("Using fread()");
+	BRASERO_MEDIA_LOG ("Using fread()");
 
 	bytes_read = fread (buffer, 1, ISO9660_BLOCK_SIZE * blocks, src->data);
 	if (bytes_read != ISO9660_BLOCK_SIZE * blocks) {
 		int errsv = errno;
 
-		BRASERO_BURN_LOG ("fread () failed (%s)", g_strerror (errsv));
+		BRASERO_MEDIA_LOG ("fread () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_GENERAL,
 			     "%s",
 			     g_strerror (errsv));
 		return FALSE;
@@ -118,7 +118,7 @@ brasero_volume_source_readcd_device_handle (BraseroVolSrc *src,
 	BraseroScsiResult result;
 	BraseroScsiErrCode code;
 
-	BRASERO_BURN_LOG ("Using READCD. Reading with track mode %i", src->data_mode);
+	BRASERO_MEDIA_LOG ("Using READCD. Reading with track mode %i", src->data_mode);
 	result = brasero_mmc1_read_block (src->data,
 					  TRUE,
 					  src->data_mode,
@@ -136,13 +136,13 @@ brasero_volume_source_readcd_device_handle (BraseroVolSrc *src,
 
 	/* Give it a last chance if the code is BRASERO_SCSI_INVALID_TRACK_MODE */
 	if (code == BRASERO_SCSI_INVALID_TRACK_MODE) {
-		BRASERO_BURN_LOG ("Wrong track mode autodetecting mode for block %i",
+		BRASERO_MEDIA_LOG ("Wrong track mode autodetecting mode for block %i",
 				  src->position);
 
 		for (src->data_mode = BRASERO_SCSI_BLOCK_TYPE_CDDA;
 		     src->data_mode <= BRASERO_SCSI_BLOCK_TYPE_MODE2_FORM2;
 		     src->data_mode ++) {
-			BRASERO_BURN_LOG ("Re-trying with track mode %i", src->data_mode);
+			BRASERO_MEDIA_LOG ("Re-trying with track mode %i", src->data_mode);
 			result = brasero_mmc1_read_block (src->data,
 							  TRUE,
 							  src->data_mode,
@@ -160,7 +160,7 @@ brasero_volume_source_readcd_device_handle (BraseroVolSrc *src,
 			}
 
 			if (code != BRASERO_SCSI_INVALID_TRACK_MODE) {
-				BRASERO_BURN_LOG ("Failed with error code %i", code);
+				BRASERO_MEDIA_LOG ("Failed with error code %i", code);
 				src->data_mode = BRASERO_SCSI_BLOCK_TYPE_ANY;
 				break;
 			}
@@ -168,8 +168,8 @@ brasero_volume_source_readcd_device_handle (BraseroVolSrc *src,
 	}
 
 	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
+		     BRASERO_MEDIA_ERROR,
+		     BRASERO_MEDIA_ERROR_GENERAL,
 		     "%s",
 		     brasero_scsi_strerror (code));
 
@@ -185,7 +185,7 @@ brasero_volume_source_read10_device_handle (BraseroVolSrc *src,
 	BraseroScsiResult result;
 	BraseroScsiErrCode code;
 
-	BRASERO_BURN_LOG ("Using READ10");
+	BRASERO_MEDIA_LOG ("Using READ10");
 	result = brasero_sbc_read10_block (src->data,
 					   src->position,
 					   blocks,
@@ -197,12 +197,12 @@ brasero_volume_source_read10_device_handle (BraseroVolSrc *src,
 		return TRUE;
 	}
 
-	BRASERO_BURN_LOG ("READ10 failed %s at %i",
+	BRASERO_MEDIA_LOG ("READ10 failed %s at %i",
 			  brasero_scsi_strerror (code),
 			  src->position);
 	g_set_error (error,
-		     BRASERO_BURN_ERROR,
-		     BRASERO_BURN_ERROR_GENERAL,
+		     BRASERO_MEDIA_ERROR,
+		     BRASERO_MEDIA_ERROR_GENERAL,
 		     "%s",
 		     brasero_scsi_strerror (code));
 
@@ -233,10 +233,10 @@ brasero_volume_source_open_file (const gchar *path,
 	if (!file) {
 		int errsv = errno;
 
-		BRASERO_BURN_LOG ("open () failed (%s)", g_strerror (errsv));
+		BRASERO_MEDIA_LOG ("open () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_GENERAL,
 			     "%s",
 			     g_strerror (errsv));
 		return FALSE;
@@ -262,10 +262,10 @@ brasero_volume_source_open_fd (int fd,
 	if (dup_fd == -1) {
 		int errsv = errno;
 
-		BRASERO_BURN_LOG ("dup () failed (%s)", g_strerror (errsv));
+		BRASERO_MEDIA_LOG ("dup () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_GENERAL,
 			     "%s",
 			     g_strerror (errsv));
 		return FALSE;
@@ -277,10 +277,10 @@ brasero_volume_source_open_fd (int fd,
 
 		close (dup_fd);
 
-		BRASERO_BURN_LOG ("fdopen () failed (%s)", g_strerror (errsv));
+		BRASERO_MEDIA_LOG ("fdopen () failed (%s)", g_strerror (errsv));
 		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
+			     BRASERO_MEDIA_ERROR,
+			     BRASERO_MEDIA_ERROR_GENERAL,
 			     "%s",
 			     g_strerror (errsv));
 		return FALSE;
@@ -315,16 +315,16 @@ brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 							 &size,
 							 NULL);
 	if (result != BRASERO_SCSI_OK) {
-		BRASERO_BURN_LOG ("GET CONFIGURATION failed for feature READ DVD. Using READCD.");
+		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed for feature READ DVD. Using READCD.");
 		src->read = brasero_volume_source_readcd_device_handle;
 	}
 	else if (!hdr->desc->current) {
-		BRASERO_BURN_LOG ("READ DVD not current. Using READCD.");
+		BRASERO_MEDIA_LOG ("READ DVD not current. Using READCD.");
 		src->read = brasero_volume_source_readcd_device_handle;
 		g_free (hdr);
 	}
 	else {
-		BRASERO_BURN_LOG ("READ DVD current. Using READ10");
+		BRASERO_MEDIA_LOG ("READ DVD current. Using READ10");
 		src->read = brasero_volume_source_read10_device_handle;
 		g_free (hdr);
 	}
