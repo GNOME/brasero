@@ -18,7 +18,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
 # e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=../../src
+DOC_SOURCE_DIR=../../brasero-media
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=
@@ -42,12 +42,44 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=$(top_srcdir)/src/*.h
-CFILE_GLOB=$(top_srcdir)/src/*.c
+HFILE_GLOB=$(top_srcdir)/brasero-media/*.h
+CFILE_GLOB=$(top_srcdir)/brasero-media/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=
+IGNORE_HFILES=	scsi-base.h		\
+		scsi-error.h		\
+		scsi-mmc1.h		\
+		scsi-opcodes.h		\
+		scsi-read-disc-info.h	\
+		scsi-read-track-information.h	\
+		scsi-status-page.h		\
+		scsi-command.h			\
+		scsi-get-configuration.h	\
+		scsi-mmc2.h			\
+		scsi-q-subchannel.h		\
+		scsi-read-disc-structure.h	\
+		scsi-sbc.h			\
+		scsi-utils.h			\
+		scsi-device.h			\
+		scsi-get-performance.h		\
+		scsi-mmc3.h			\
+		scsi-read-capacity.h		\
+		scsi-read-format-capacities.h	\
+		scsi-sense-data.h		\
+		scsi-write-page.h		\
+		scsi-dvd-structures.h		\
+		scsi-mech-status.h		\
+		scsi-mode-pages.h		\
+		scsi-read-cd.h			\
+		scsi-read-toc-pma-atip.h	\
+		scsi-spc1.h			\
+		burn-iso-field.h	\
+		burn-iso9660.h		\
+		burn-volume.h		\
+		burn-susp.h		\
+		burn-hal-watch.h	\
+		libbrasero-marshal.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -67,12 +99,16 @@ expand_content_files=
 # signals and properties.
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
-INCLUDES=	\
-	-I$(top_srcdir)	\
-	-I$(top_builddir)	\
-	$(BRASERO_CFLAGS)
+INCLUDES=								\
+	-I$(top_srcdir)							\
+	-I$(top_builddir)						\
+	$(BRASERO_GLIB_CFLAGS)						\
+	$(BRASERO_IO_CFLAGS)						\
+	$(BRASERO_GTK_CFLAGS)						\
+	$(BRASERO_DBUS_CFLAGS)						\
+	$(BRASERO_HAL_CFLAGS)
 
-GTKDOC_LIBS=$(top_builddir)/src/libbrasero.la
+GTKDOC_LIBS=$(top_builddir)/brasero-media/libbrasero-media.la
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

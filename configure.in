@@ -174,6 +174,12 @@ PKG_CHECK_MODULES(BRASERO_GTK,			\
 AC_SUBST(BRASERO_GTK_CFLAGS)
 AC_SUBST(BRASERO_GTK_LIBS)
 
+PKG_CHECK_MODULES(BRASERO_DBUS,			\
+	dbus-glib-1 >= $DBUS_REQUIRED)
+
+AC_SUBST(BRASERO_DBUS_CFLAGS)
+AC_SUBST(BRASERO_DBUS_LIBS)
+
 PKG_CHECK_MODULES(BRASERO_HAL,			\
 	hal >= $HAL_REQUIRED			\
 	dbus-glib-1 >= $DBUS_REQUIRED)
@@ -412,6 +418,7 @@ data/brasero-copy-medium.desktop.in
 data/icons/Makefile
 help/Makefile
 nautilus/Makefile
+brasero-media/Makefile
 src/plugins/Makefile
 src/plugins/cdrdao/Makefile
 src/plugins/cdrkit/Makefile

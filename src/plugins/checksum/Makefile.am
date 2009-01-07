@@ -1,9 +1,9 @@
 
 INCLUDES = \
 	-I$(top_srcdir)							\
+	-I$(top_srcdir)/brasero-media/					\
 	-I$(top_builddir)						\
 	-I$(top_srcdir)/src						\
-	-I$(top_srcdir)/src/md5						\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           		\
 	-DBRASERO_SYSCONFDIR=\"$(sysconfdir)\"   		\

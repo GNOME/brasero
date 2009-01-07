@@ -1,5 +1,102 @@
 2009-01-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Moved the new library to its directory
+	Also some fixes for proper building
+
+	* Makefile.am:
+	* brasero-media/Makefile.am:
+	* configure.in:
+	* docs/reference/Makefile.am:
+	* src/Makefile.am:
+	* src/brasero-medium-selection.c:
+	* src/brasero-medium-selection.h:
+	* src/burn-basics.c (brasero_burn_library_shutdown):
+	* src/burn-drive.c:
+	* src/burn-drive.h:
+	* src/burn-hal-watch.c:
+	* src/burn-hal-watch.h:
+	* src/burn-iso-field.c:
+	* src/burn-iso-field.h:
+	* src/burn-iso9660.c:
+	* src/burn-iso9660.h:
+	* src/burn-media.c:
+	* src/burn-media.h:
+	* src/burn-medium-monitor.c:
+	* src/burn-medium-monitor.h:
+	* src/burn-medium.c:
+	* src/burn-medium.h:
+	* src/burn-susp.c:
+	* src/burn-susp.h:
+	* src/burn-units.c:
+	* src/burn-units.h:
+	* src/burn-volume-obj.c:
+	* src/burn-volume-obj.h:
+	* src/burn-volume-source.c:
+	* src/burn-volume-source.h:
+	* src/burn-volume.c:
+	* src/burn-volume.h:
+	* src/libbrasero-marshal.list:
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/dvdcss/Makefile.am:
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/vcdimager/Makefile.am:
+	* src/scsi-base.h:
+	* src/scsi-cam.c:
+	* src/scsi-command.h:
+	* src/scsi-device.h:
+	* src/scsi-dvd-structures.h:
+	* src/scsi-eject.c:
+	* src/scsi-error.c:
+	* src/scsi-error.h:
+	* src/scsi-get-configuration.c:
+	* src/scsi-get-configuration.h:
+	* src/scsi-get-performance.c:
+	* src/scsi-get-performance.h:
+	* src/scsi-mech-status.c:
+	* src/scsi-mech-status.h:
+	* src/scsi-mmc1.h:
+	* src/scsi-mmc2.h:
+	* src/scsi-mmc3.h:
+	* src/scsi-mode-pages.h:
+	* src/scsi-mode-select.c:
+	* src/scsi-mode-sense.c:
+	* src/scsi-opcodes.h:
+	* src/scsi-q-subchannel.h:
+	* src/scsi-read-capacity.c:
+	* src/scsi-read-capacity.h:
+	* src/scsi-read-cd.c:
+	* src/scsi-read-cd.h:
+	* src/scsi-read-disc-info.c:
+	* src/scsi-read-disc-info.h:
+	* src/scsi-read-disc-structure.c:
+	* src/scsi-read-disc-structure.h:
+	* src/scsi-read-format-capacities.c:
+	* src/scsi-read-format-capacities.h:
+	* src/scsi-read-toc-pma-atip.c:
+	* src/scsi-read-toc-pma-atip.h:
+	* src/scsi-read-track-information.c:
+	* src/scsi-read-track-information.h:
+	* src/scsi-read10.c:
+	* src/scsi-sbc.h:
+	* src/scsi-sense-data.c:
+	* src/scsi-sense-data.h:
+	* src/scsi-sg.c:
+	* src/scsi-spc1.h:
+	* src/scsi-status-page.h:
+	* src/scsi-test-unit-ready.c:
+	* src/scsi-uscsi.c:
+	* src/scsi-utils.h:
+	* src/scsi-write-page.h:
+
+2009-01-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	New library born out of splitting brasero and all media related code.
 	Its name is libbrasero-media.
 	The next patch should move it to its own directory.
