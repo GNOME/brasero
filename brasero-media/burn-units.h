@@ -14,8 +14,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
  
-#ifndef _BRASERO_UNITS_H
-#define BRASERO_UNITS_H
+#ifndef _BRASERO_UNITS_H_
+#define _BRASERO_UNITS_H_
 
 #include <glib.h>
 
@@ -53,6 +53,6 @@ brasero_units_get_time_string_from_size (gint64 size,
 
 G_END_DECLS
 
-#endif /* BRASERO_UNITS_H */
+#endif /* _BRASERO_UNITS_H_ */
 
  

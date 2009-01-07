@@ -149,11 +149,11 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 gboolean
 brasero_medium_can_be_rewritten (BraseroMedium *medium);
 
-const gchar *
-brasero_medium_get_CD_TEXT_title (BraseroMedium *medium);
-
 gboolean
 brasero_medium_can_be_written (BraseroMedium *medium);
+
+const gchar *
+brasero_medium_get_CD_TEXT_title (BraseroMedium *medium);
 
 const gchar *
 brasero_medium_get_type_string (BraseroMedium *medium);
@@ -161,14 +161,8 @@ brasero_medium_get_type_string (BraseroMedium *medium);
 gchar *
 brasero_medium_get_tooltip (BraseroMedium *medium);
 
-const gchar *
-brasero_medium_get_icon (BraseroMedium *medium);
-
 BraseroDrive *
 brasero_medium_get_drive (BraseroMedium *self);
-
-const gchar *
-brasero_medium_get_id (BraseroMedium *self);
 
 G_END_DECLS
 
