@@ -466,6 +466,11 @@ brasero_medium_monitor_get_default (void)
 		return singleton;
 	}
 
+	/* Initialize i18n */
+	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+
 	singleton = g_object_new (BRASERO_TYPE_MEDIUM_MONITOR, NULL);
 	return singleton;
 }
