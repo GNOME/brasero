@@ -60,13 +60,14 @@ typedef enum {
 	BRASERO_MEDIUM_TRACK_LEADOUT		= 1 << 6
 } BraseroMediumTrackType;
 
+typedef struct _BraseroMediumTrack BraseroMediumTrack;
+
 struct _BraseroMediumTrack {
 	guint session;
 	BraseroMediumTrackType type;
 	guint64 start;
 	guint64 blocks_num;
 };
-typedef struct _BraseroMediumTrack BraseroMediumTrack;
 
 #define BRASERO_TYPE_MEDIUM             (brasero_medium_get_type ())
 #define BRASERO_MEDIUM(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), BRASERO_TYPE_MEDIUM, BraseroMedium))
