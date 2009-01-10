@@ -108,8 +108,9 @@ static void
 brasero_src_selection_init (BraseroSrcSelection *object)
 {
 	/* only show media with something to be read on them */
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (object),
-					    BRASERO_MEDIA_TYPE_READABLE);
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
+						  BRASERO_MEDIA_TYPE_AUDIO|
+						  BRASERO_MEDIA_TYPE_DATA);
 }
 
 static void

@@ -68,18 +68,23 @@ brasero_medium_selection_get_active (BraseroMediumSelection *selection);
 gboolean
 brasero_medium_selection_set_active (BraseroMediumSelection *selection,
 				     BraseroMedium *medium);
+const gchar *
+brasero_medium_selection_get_device (BraseroMediumSelection *self);
+
+gboolean
+brasero_medium_selection_set_device (BraseroMediumSelection *selector,
+				     const gchar *device);
+void
+brasero_medium_selection_show_media_type (BraseroMediumSelection *selection,
+					  BraseroMediaType type);
+
+guint
+brasero_medium_selection_get_media_num (BraseroMediumSelection *selection);
 
 void
 brasero_medium_selection_foreach (BraseroMediumSelection *selection,
 				  BraseroMediumSelectionFunc function,
 				  gpointer callback_data);
-
-void
-brasero_medium_selection_show_type (BraseroMediumSelection *selection,
-				    BraseroMediaType type);
-
-guint
-brasero_medium_selection_get_drive_num (BraseroMediumSelection *selection);
 
 void
 brasero_medium_selection_update_media_string (BraseroMediumSelection *selection);

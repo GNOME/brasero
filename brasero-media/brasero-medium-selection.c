@@ -57,6 +57,12 @@ typedef enum {
 static guint brasero_medium_selection_signals [LAST_SIGNAL] = { 0 };
 
 enum {
+	PROP_0,
+	PROP_DEVICE,
+	PROP_MEDIA_TYPE
+};
+
+enum {
 	MEDIUM_COL,
 	NAME_COL,
 	ICON_COL,
@@ -222,15 +228,24 @@ brasero_medium_selection_changed (GtkComboBox *box)
 	brasero_drive_selection_set_tooltip (BRASERO_MEDIUM_SELECTION (box));
 }
 
+/**
+ * brasero_medium_selection_set_active:
+ * @selector: a #BraseroMediumSelection
+ * @medium: a #BraseroMedium to set as the active one in the selector
+ *
+ * Sets the active medium.
+ *
+ * Return value: a #gboolean. TRUE if it succeeded, FALSE otherwise.
+ **/
 gboolean
-brasero_medium_selection_set_active (BraseroMediumSelection *self,
+brasero_medium_selection_set_active (BraseroMediumSelection *selector,
 				     BraseroMedium *medium)
 {
 	gboolean result = FALSE;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return FALSE;
 
@@ -245,7 +260,7 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 			if (iter_medium)
 				g_object_unref (iter_medium);
 
-			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selector), &iter);
 			result = TRUE;
 			break;
 		}
@@ -256,21 +271,81 @@ brasero_medium_selection_set_active (BraseroMediumSelection *self,
 	return result;
 }
 
+/**
+ * brasero_medium_selection_set_device:
+ * @selector: a #BraseroMediumSelection
+ * @device: a #gchar * to set as the active medium in the selector
+ *
+ * Sets the active medium.
+ *
+ * Return value: a #gboolean. TRUE if it succeeded, FALSE otherwise.
+ **/
+gboolean
+brasero_medium_selection_set_device (BraseroMediumSelection *selector,
+				     const gchar *device)
+{
+	BraseroMediumMonitor *monitor;
+	BraseroDrive *drive;
+	gboolean res;
+
+	monitor = brasero_medium_monitor_get_default ();
+	drive = brasero_medium_monitor_get_drive (monitor, device);
+	g_object_unref (monitor);
+
+	if (!drive) {
+		g_object_unref (drive);
+		return FALSE;
+	}
+
+	res = brasero_medium_selection_set_active (selector, brasero_drive_get_medium (drive));
+	g_object_unref (drive);
+
+	return res;
+}
+
+/**
+ * brasero_medium_selection_get_active:
+ * @selector: a #BraseroMediumSelection
+ *
+ * Gets the active medium.
+ *
+ * Return value: a #BraseroMedium or NULL. Unref when it is not needed anymore.
+ **/
 BraseroMedium *
-brasero_medium_selection_get_active (BraseroMediumSelection *self)
+brasero_medium_selection_get_active (BraseroMediumSelection *selector)
 {
 	BraseroMedium *medium;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
-	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (self), &iter))
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
+	if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (selector), &iter))
 		return NULL;
 
 	gtk_tree_model_get (model, &iter,
 			    MEDIUM_COL, &medium,
 			    -1);
 	return medium;
+}
+
+/**
+ * brasero_medium_selection_get_device:
+ * @selector: a #BraseroMediumSelection
+ *
+ * Gets the active medium device.
+ *
+ * Return value: a #char * or NULL.
+ **/
+const gchar *
+brasero_medium_selection_get_device (BraseroMediumSelection *self)
+{
+	BraseroMedium *medium;
+
+	medium = brasero_medium_selection_get_active (self);
+	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
+		return NULL;
+
+	return brasero_drive_get_device (brasero_medium_get_drive (medium));
 }
 
 static void
@@ -321,9 +396,17 @@ brasero_medium_selection_add_no_disc_entry (BraseroMediumSelection *self)
 	brasero_medium_selection_update_no_disc_entry (self, model, &iter);
 }
 
+/**
+ * brasero_medium_selection_show_media_type:
+ * @selector: a #BraseroMediumSelection
+ * @type: a #BraseroMediaType
+ *
+ * Filters and displays media corresponding to @type.
+ *
+ **/
 void
-brasero_medium_selection_show_type (BraseroMediumSelection *self,
-				    BraseroMediaType type)
+brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
+					  BraseroMediaType type)
 {
 	BraseroMediumSelectionPrivate *priv;
 	BraseroMediumMonitor *monitor;
@@ -332,7 +415,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 	GSList *list;
 	GSList *item;
 
-	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (self);
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (selector);
 
 	priv->type = type;
 
@@ -340,7 +423,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 	list = brasero_medium_monitor_get_media (monitor, type);
 	g_object_unref (monitor);
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		/* First filter */
 		do {
@@ -363,14 +446,14 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 
 			if (!node) {
 				if (gtk_list_store_remove (GTK_LIST_STORE (model), &iter)) {
-					g_signal_emit (self,
+					g_signal_emit (selector,
 						       brasero_medium_selection_signals [REMOVED_SIGNAL],
 						       0);
 					continue;
 				}
 
 				/* no more iter in the tree  get out */
-				g_signal_emit (self,
+				g_signal_emit (selector,
 					       brasero_medium_selection_signals [REMOVED_SIGNAL],
 					       0);
 				break;
@@ -390,7 +473,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 
 			medium = item->data;
 
-			medium_name = brasero_medium_selection_get_medium_string (self, medium);
+			medium_name = brasero_medium_selection_get_medium_string (selector, medium);
 			medium_icon = brasero_volume_get_icon (BRASERO_VOLUME (medium));
 
 			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
@@ -400,7 +483,7 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 					    ICON_COL, medium_icon,
 					    -1);
 			g_free (medium_name);
-			g_signal_emit (self,
+			g_signal_emit (selector,
 				       brasero_medium_selection_signals [ADDED_SIGNAL],
 				       0);
 		}
@@ -409,23 +492,32 @@ brasero_medium_selection_show_type (BraseroMediumSelection *self,
 	}
 
 	if (!gtk_tree_model_get_iter_first (model, &iter)) {
-		brasero_medium_selection_add_no_disc_entry (self);
+		brasero_medium_selection_add_no_disc_entry (selector);
 		return;
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
-	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1)
-		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
+	gtk_widget_set_sensitive (GTK_WIDGET (selector), TRUE);
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (selector)) == -1)
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selector), &iter);
 }
 
+/**
+ * brasero_medium_selection_get_media_num:
+ * @selector: a #BraseroMediumSelection
+ * @type: a #BraseroMediaType
+ *
+ * Returns the number of media being currently displayed and available.
+ *
+ * Return value: a #guint
+ **/
 guint
-brasero_medium_selection_get_drive_num (BraseroMediumSelection *self)
+brasero_medium_selection_get_media_num (BraseroMediumSelection *selector)
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	int num = 0;
 
-	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return 0;
 
@@ -467,8 +559,12 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 	&&  (brasero_drive_can_write (drive)))
 		add = TRUE;
 
-	if ((priv->type & BRASERO_MEDIA_TYPE_READABLE)
-	&&  (brasero_medium_get_status (medium) & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)))
+	if ((priv->type & BRASERO_MEDIA_TYPE_AUDIO)
+	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_AUDIO))
+		add = TRUE;
+
+	if ((priv->type & BRASERO_MEDIA_TYPE_DATA)
+	&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_DATA))
 		add = TRUE;
 
 	if (priv->type & BRASERO_MEDIA_TYPE_WRITABLE) {
@@ -644,6 +740,60 @@ brasero_medium_selection_finalize (GObject *object)
 }
 
 static void
+brasero_medium_selection_set_property (GObject *object,
+				       guint prop_id,
+				       const GValue *value,
+				       GParamSpec *pspec)
+{
+	BraseroMediumSelectionPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_MEDIUM_SELECTION (object));
+
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_DEVICE:
+		brasero_medium_selection_set_device (BRASERO_MEDIUM_SELECTION (object),
+						     g_value_get_string (value));
+		break;
+	case PROP_MEDIA_TYPE:
+		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
+							  g_value_get_uint (value));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+brasero_medium_selection_get_property (GObject *object,
+				       guint prop_id,
+				       GValue *value,
+				       GParamSpec *pspec)
+{
+	BraseroMediumSelectionPrivate *priv;
+
+	g_return_if_fail (BRASERO_IS_MEDIUM_SELECTION (object));
+
+	priv = BRASERO_MEDIUM_SELECTION_PRIVATE (object);
+
+	switch (prop_id)
+	{
+	case PROP_DEVICE:
+		g_value_set_string (value, brasero_medium_selection_get_device (BRASERO_MEDIUM_SELECTION (object)));
+		break;
+	case PROP_MEDIA_TYPE:
+		g_value_set_uint (value, priv->type);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
 brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
@@ -652,8 +802,20 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 	g_type_class_add_private (klass, sizeof (BraseroMediumSelectionPrivate));
 
 	object_class->finalize = brasero_medium_selection_finalize;
+	object_class->set_property = brasero_medium_selection_set_property;
+	object_class->get_property = brasero_medium_selection_get_property;
 
 	combo_class->changed = brasero_medium_selection_changed;
+
+	g_object_class_install_property (object_class, PROP_DEVICE,
+					 g_param_spec_string ("device", NULL, NULL,
+							      NULL, G_PARAM_READWRITE));
+
+	g_object_class_install_property (object_class, PROP_MEDIA_TYPE,
+					 g_param_spec_uint ("media-type", NULL, NULL,
+							    0, BRASERO_MEDIA_TYPE_ALL,
+							    BRASERO_MEDIA_TYPE_NONE,
+							    G_PARAM_READWRITE));
 
 	brasero_medium_selection_signals [ADDED_SIGNAL] =
 	    g_signal_new ("medium_added",

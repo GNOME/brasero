@@ -1,3 +1,61 @@
+2009-01-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Patch to update library to meet sound-juicer patch requirements
+	Adds a library initialization function
+	Adds a new widget to select a BraseroDrive
+	Improves slightly documentation here and there
+	Fixes a few bugs and glitches
+
+	* brasero-media/Makefile.am:
+	* brasero-media/brasero-drive-selection.c
+	(brasero_drive_selection_class_init),
+	(brasero_drive_selection_set_drive_internal), (combo_changed),
+	(selection_update_sensitivity), (get_iter_for_drive),
+	(selection_append_drive), (selection_remove_drive),
+	(populate_model), (drive_connected_cb), (drive_disconnected_cb),
+	(brasero_drive_selection_init), (brasero_drive_selection_finalize),
+	(brasero_drive_selection_new), (repopulate_model),
+	(brasero_drive_selection_show_type),
+	(brasero_drive_selection_set_property),
+	(brasero_drive_selection_get_property),
+	(brasero_drive_selection_set_active),
+	(brasero_drive_selection_get_active):
+	* brasero-media/brasero-drive-selection.h:
+	* brasero-media/brasero-medium-selection.c
+	(brasero_medium_selection_set_active),
+	(brasero_medium_selection_set_device),
+	(brasero_medium_selection_get_active),
+	(brasero_medium_selection_get_device),
+	(brasero_medium_selection_show_media_type),
+	(brasero_medium_selection_get_media_num),
+	(brasero_medium_selection_medium_added_cb),
+	(brasero_medium_selection_set_property),
+	(brasero_medium_selection_get_property),
+	(brasero_medium_selection_class_init):
+	* brasero-media/brasero-medium-selection.h:
+	* brasero-media/burn-drive.h:
+	* brasero-media/burn-media.c (brasero_media_quark),
+	(brasero_media_library_start), (brasero_media_library_stop):
+	* brasero-media/burn-media.h:
+	* brasero-media/burn-medium-monitor.c
+	(brasero_medium_monitor_get_drives),
+	(brasero_medium_monitor_get_media),
+	(brasero_medium_monitor_inserted_cb),
+	(brasero_medium_monitor_removed_cb),
+	(brasero_medium_monitor_class_init),
+	(brasero_medium_monitor_get_default):
+	* brasero-media/burn-medium-monitor.h:
+	* nautilus/Makefile.am:
+	* src/brasero-burn-options.c (brasero_burn_options_set_type_shown),
+	(brasero_burn_options_update_no_medium_warning):
+	* src/brasero-dest-selection.c (brasero_dest_selection_init):
+	* src/brasero-disc-copy-dialog.c (brasero_disc_copy_dialog_init):
+	* src/brasero-src-selection.c (brasero_src_selection_init):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_init):
+	* src/brasero-tool-dialog.c
+	(brasero_tool_dialog_set_medium_type_shown),
+	(brasero_tool_dialog_init):
+
 2009-01-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Exclude the right file from documentation

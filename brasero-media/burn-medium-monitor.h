@@ -45,6 +45,11 @@ struct _BraseroMediumMonitorClass
 	GObjectClass parent_class;
 
 	/* Signals */
+	void		(*drive_added)		(BraseroMediumMonitor *monitor,
+						 BraseroDrive *medium);
+
+	void		(*drive_removed)	(BraseroMediumMonitor *monitor,
+						 BraseroDrive*medium);
 
 	void		(*medium_added)		(BraseroMediumMonitor *monitor,
 						 BraseroMedium *medium);
@@ -66,17 +71,31 @@ brasero_medium_monitor_get_default (void);
 typedef enum {
 	BRASERO_MEDIA_TYPE_NONE				= 0,
 	BRASERO_MEDIA_TYPE_FILE				= 1,
-	BRASERO_MEDIA_TYPE_READABLE			= 1 << 1,
-	BRASERO_MEDIA_TYPE_WRITABLE			= 1 << 2,
-	BRASERO_MEDIA_TYPE_REWRITABLE			= 1 << 3,
-	BRASERO_MEDIA_TYPE_ANY_IN_BURNER		= 1 << 4,
+	BRASERO_MEDIA_TYPE_DATA				= 1 << 1,
+	BRASERO_MEDIA_TYPE_AUDIO			= 1 << 2,
+	BRASERO_MEDIA_TYPE_WRITABLE			= 1 << 3,
+	BRASERO_MEDIA_TYPE_REWRITABLE			= 1 << 4,
+	BRASERO_MEDIA_TYPE_ANY_IN_BURNER		= 1 << 5,
 	BRASERO_MEDIA_TYPE_ALL_BUT_FILE			= 0xFE,
 	BRASERO_MEDIA_TYPE_ALL				= 0xFF
 } BraseroMediaType;
 
+typedef enum {
+	BRASERO_DRIVE_TYPE_NONE				= 0,
+	BRASERO_DRIVE_TYPE_FILE				= 1,
+	BRASERO_DRIVE_TYPE_WRITER			= 1 << 1,
+	BRASERO_DRIVE_TYPE_READER			= 1 << 2,
+	BRASERO_DRIVE_TYPE_ALL_BUT_FILE			= 0xFE,
+	BRASERO_DRIVE_TYPE_ALL				= 0xFF
+} BraseroDriveType;
+
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 				  BraseroMediaType type);
+
+GSList *
+brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
+				   BraseroDriveType type);
 
 BraseroDrive *
 brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,

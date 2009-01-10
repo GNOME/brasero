@@ -758,7 +758,8 @@ brasero_sum_dialog_init (BraseroSumDialog *obj)
 
 	/* only media with data, no blank medium */
 	brasero_tool_dialog_set_medium_type_shown (BRASERO_TOOL_DIALOG (obj),
-						   BRASERO_MEDIA_TYPE_READABLE);
+						   BRASERO_MEDIA_TYPE_AUDIO|
+						   BRASERO_MEDIA_TYPE_DATA);
 
 	medium = brasero_tool_dialog_get_medium (BRASERO_TOOL_DIALOG (obj));
 	if (medium) {

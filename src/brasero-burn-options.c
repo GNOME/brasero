@@ -163,7 +163,7 @@ brasero_burn_options_set_type_shown (BraseroBurnOptions *self,
 	BraseroBurnOptionsPrivate *priv;
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->selection), type);
 }
 
 BraseroBurnSession *
@@ -211,7 +211,7 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 		return;
 	}
 
-	if (brasero_medium_selection_get_drive_num (BRASERO_MEDIUM_SELECTION (priv->selection)) != 1) {
+	if (brasero_medium_selection_get_media_num (BRASERO_MEDIUM_SELECTION (priv->selection)) != 1) {
 		brasero_notify_message_remove (BRASERO_NOTIFY (priv->message_output),
 					       BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
 		return;

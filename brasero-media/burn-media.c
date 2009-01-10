@@ -360,7 +360,7 @@ brasero_media_quark (void)
 	static GQuark quark = 0;
 
 	if (!quark)
-		quark = g_quark_from_static_string ("BraseroBurnError");
+		quark = g_quark_from_static_string ("BraseroMediaError");
 
 	return quark;
 }
@@ -445,7 +445,7 @@ brasero_media_to_string (BraseroMedia media,
 
 #define BRASERO_MEDIA_LOG_DOMAIN				"BraseroMedia"
 
-const GOptionGroup *
+GOptionGroup *
 brasero_media_get_option_group (void)
 {
 	GOptionGroup *group;
@@ -482,4 +482,48 @@ brasero_media_message (const gchar *location,
 	va_end (arg_list);
 
 	g_free (format_real);
+}
+
+#include <gtk/gtk.h>
+
+#include "burn-medium-monitor.h"
+
+static BraseroMediumMonitor *default_monitor = NULL;
+
+/**
+ * brasero_media_start:
+ *
+ * Initialize the library.
+ *
+ **/
+void
+brasero_media_library_start (void)
+{
+	if (default_monitor)
+		return;
+
+	/* Initialize i18n */
+	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+
+	/* Initialize icon-theme */
+	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+					   BRASERO_DATADIR "/icons");
+
+	/* Take a reference for the monitoring library */
+	default_monitor = brasero_medium_monitor_get_default ();
+}
+
+/**
+ * brasero_media_stop:
+ *
+ * De-initialize the library.
+ *
+ **/
+void
+brasero_media_library_stop (void)
+{
+	g_object_unref (default_monitor);
+	default_monitor = NULL;
 }

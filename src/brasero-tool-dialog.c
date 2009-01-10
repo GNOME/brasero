@@ -301,8 +301,8 @@ void
 brasero_tool_dialog_set_medium_type_shown (BraseroToolDialog *self,
 					   BraseroMediaType media_type)
 {
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (self->priv->selector),
-					    media_type);
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (self->priv->selector),
+						  media_type);
 }
 
 BraseroMedium *
@@ -480,10 +480,11 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 			    FALSE, FALSE, 0);
 	g_free (title_str);
 
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (obj->priv->selector),
-					    BRASERO_MEDIA_TYPE_REWRITABLE|
-					    BRASERO_MEDIA_TYPE_WRITABLE|
-					    BRASERO_MEDIA_TYPE_READABLE);
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (obj->priv->selector),
+						  BRASERO_MEDIA_TYPE_REWRITABLE|
+						  BRASERO_MEDIA_TYPE_WRITABLE|
+						  BRASERO_MEDIA_TYPE_AUDIO|
+						  BRASERO_MEDIA_TYPE_DATA);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (obj)->vbox),
 			    obj->priv->upper_box,

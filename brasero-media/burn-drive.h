@@ -59,7 +59,6 @@ struct _BraseroDriveClass
 	GObjectClass parent_class;
 
 	/* Signals */
-
 	void		(*medium_added)		(BraseroDrive *drive,
 						 BraseroMedium *medium);
 

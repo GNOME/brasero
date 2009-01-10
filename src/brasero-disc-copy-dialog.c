@@ -101,8 +101,9 @@ brasero_disc_copy_dialog_init (BraseroDiscCopyDialog *obj)
 	g_free (title_str);
 
 	/* only show media with something to be read on them */
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (priv->source),
-					    BRASERO_MEDIA_TYPE_READABLE);
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (priv->source),
+						  BRASERO_MEDIA_TYPE_AUDIO|
+						  BRASERO_MEDIA_TYPE_DATA);
 
 	/* This is a special case. When we're copying, someone may want to read
 	 * and burn to the same drive so provided that the drive is a burner

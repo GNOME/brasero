@@ -63,6 +63,8 @@ enum
 {
 	MEDIUM_INSERTED,
 	MEDIUM_REMOVED,
+	DRIVE_ADDED,
+	DRIVE_REMOVED,
 
 	LAST_SIGNAL
 };
@@ -149,6 +151,53 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
 }
 
 /**
+ * brasero_medium_monitor_get_drives:
+ * @monitor: a #BraseroMediumMonitor
+ * @include_fake: a #BraseroDriveType to tell what type of drives to include in the list
+ *
+ * Obtains the list of available drives.
+ *
+ * Return value: a #GSList or NULL
+ **/
+
+GSList *
+brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
+				   BraseroDriveType type)
+{
+	BraseroMediumMonitorPrivate *priv;
+	GSList *drives = NULL;
+	GSList *iter;
+
+	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
+
+	for (iter = priv->drives; iter; iter = iter->next) {
+		BraseroDrive *drive;
+
+		drive = iter->data;
+		if (brasero_drive_is_fake (drive)) {
+			if (type & BRASERO_DRIVE_TYPE_FILE)
+				drives = g_slist_prepend (drives, drive);
+
+			continue;
+		}
+
+		if (brasero_drive_can_write (drive)
+		&& (type & BRASERO_DRIVE_TYPE_WRITER)) {
+			drives = g_slist_prepend (drives, drive);
+			continue;
+		}
+
+		if (type & BRASERO_DRIVE_TYPE_READER) {
+			drives = g_slist_prepend (drives, drive);
+			continue;
+		}
+	}
+	g_slist_foreach (drives, (GFunc) g_object_ref, NULL);
+
+	return drives;
+}
+
+/**
  * brasero_medium_monitor_get_media:
  * @monitor: a #BraseroMediumMonitor
  * @type: the type of #BraseroMedium that should be in the list
@@ -185,9 +234,17 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 			continue;
 		}
 
-		if ((type & BRASERO_MEDIA_TYPE_READABLE)
+		if ((type & BRASERO_MEDIA_TYPE_AUDIO)
 		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
-		&&  (brasero_medium_get_status (medium) & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))) {
+		&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_AUDIO)) {
+			list = g_slist_prepend (list, medium);
+			g_object_ref (medium);
+			continue;
+		}
+
+		if ((type & BRASERO_MEDIA_TYPE_DATA)
+		&& !(brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
+		&&  (brasero_medium_get_status (medium) & BRASERO_MEDIUM_HAS_DATA)) {
 			list = g_slist_prepend (list, medium);
 			g_object_ref (medium);
 			continue;
@@ -255,12 +312,16 @@ brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
 	if (!libhal_device_query_capability (ctx, udi, "storage.cdrom", NULL))
 		return;
 
-	BRASERO_MEDIA_LOG ("New drive inserted");
+	BRASERO_MEDIA_LOG ("New drive added");
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (self);
 
 	drive = brasero_drive_new (udi);
 	priv->drives = g_slist_prepend (priv->drives, drive);
+	g_signal_emit (self,
+		       medium_monitor_signals [DRIVE_ADDED],
+		       0,
+		       drive);
 
 	/* check if a medium is inserted */
 	if (brasero_drive_get_medium (drive))
@@ -317,6 +378,10 @@ brasero_medium_monitor_removed_cb (BraseroHALWatch *watch,
 					       medium);
 
 			priv->drives = g_slist_remove (priv->drives, drive);
+			g_signal_emit (self,
+				       medium_monitor_signals [DRIVE_REMOVED],
+				       0,
+				       drive);
 			g_object_unref (drive);
 		}
 	}
@@ -454,9 +519,53 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1,
 		              BRASERO_TYPE_MEDIUM);
+
+	/**
+ 	* BraseroVolumeMonitor::drive-added:
+ 	* @monitor: the object which received the signal
+  	* @medium: the new medium which was added
+	*
+ 	* This signal gets emitted when a new drive was detected
+ 	*
+ 	*/
+	medium_monitor_signals[DRIVE_ADDED] =
+		g_signal_new ("drive_added",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              G_STRUCT_OFFSET (BraseroMediumMonitorClass, drive_added),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__OBJECT,
+		              G_TYPE_NONE, 1,
+		              BRASERO_TYPE_DRIVE);
+
+	/**
+ 	* BraseroVolumeMonitor::drive-removed:
+ 	* @monitor: the object which received the signal
+  	* @medium: the medium which was removed
+	*
+ 	* This signal gets emitted when a drive is not longer available
+ 	*
+ 	*/
+	medium_monitor_signals[DRIVE_REMOVED] =
+		g_signal_new ("drive_removed",
+		              G_OBJECT_CLASS_TYPE (klass),
+		              G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		              G_STRUCT_OFFSET (BraseroMediumMonitorClass, drive_removed),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__OBJECT,
+		              G_TYPE_NONE, 1,
+		              BRASERO_TYPE_DRIVE);
 }
 
 static BraseroMediumMonitor *singleton = NULL;
+
+/**
+ * brasero_medium_monitor_get_default:
+ *
+ * Gets the currently active monitor.
+ *
+ * Return value: a #BraseroMediumMonitor. Unref when it is not needed anymore.
+ **/
 
 BraseroMediumMonitor *
 brasero_medium_monitor_get_default (void)
@@ -466,11 +575,9 @@ brasero_medium_monitor_get_default (void)
 		return singleton;
 	}
 
-	/* Initialize i18n */
-	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
-
 	singleton = g_object_new (BRASERO_TYPE_MEDIUM_MONITOR, NULL);
+
+	/* keep a reference */
+	g_object_ref (singleton);
 	return singleton;
 }

@@ -35,7 +35,8 @@ libbraseromediainclude_HEADERS =	\
 	burn-units.h			\
 	burn-medium.h			\
 	burn-volume-obj.h		\
-	brasero-medium-selection.h
+	brasero-medium-selection.h	\
+	brasero-drive-selection.h
 
 libbrasero_media_la_LIBADD =					\
 	$(BRASERO_GLIB_LIBS)					\
@@ -122,7 +123,9 @@ libbrasero_media_la_SOURCES =		\
 	burn-volume-obj.c         \
 	burn-drive.c         \
 	brasero-medium-selection.c         \
-	burn-units.c
+	burn-units.c         \
+	brasero-drive-selection.c         \
+	brasero-drive-selection.h
 
 # FreeBSD's SCSI CAM interface
 if HAVE_CAM_LIB_H

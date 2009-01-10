@@ -15,7 +15,9 @@ INCLUDES =					\
 	-DLIBEXECDIR=\""$(libexecdir)"\"	\
 	-DSHAREDIR=\""$(datadir)"\"		\
 	-DDATADIR=\""$(datadir)/brasero"\"	\
-	$(DISABLE_DEPRECATED)
+	$(DISABLE_DEPRECATED)			\
+	$(BRASERO_HAL_CFLAGS)
+
 
 CLEANFILES = 			\
 	$(NULL)

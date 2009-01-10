@@ -32,6 +32,16 @@ G_BEGIN_DECLS
 GQuark brasero_media_quark (void);
 #define BRASERO_MEDIA_ERROR brasero_media_quark()
 
+/**
+ * To start and stop the library
+ */
+
+void
+brasero_media_library_start (void);
+
+void
+brasero_media_library_stop (void);
+
 typedef enum {
 	BRASERO_MEDIA_ERROR_NONE,
 	BRASERO_MEDIA_ERROR_GENERAL, /******/
@@ -211,7 +221,7 @@ brasero_media_get_all_list (BraseroMedia type);
 BraseroMedia
 brasero_media_capabilities (BraseroMedia media);
 
-const GOptionGroup *
+GOptionGroup *
 brasero_media_get_option_group (void);
 
 /**

@@ -174,8 +174,8 @@ brasero_dest_selection_init (BraseroDestSelection *object)
 	/* Only show media on which we can write and which are in a burner.
 	 * There is one exception though, when we're copying media and when the
 	 * burning device is the same as the dest device. */
-	brasero_medium_selection_show_type (BRASERO_MEDIUM_SELECTION (object),
-					    BRASERO_MEDIA_TYPE_WRITABLE);
+	brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
+						  BRASERO_MEDIA_TYPE_WRITABLE);
 }
 
 static void
