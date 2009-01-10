@@ -33,8 +33,8 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "brasero-drive-selection.h"
 #include "brasero-medium-monitor.h"
+#include "brasero-drive-selection.h"
 
 /* Signals */
 enum {

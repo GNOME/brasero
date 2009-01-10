@@ -1,5 +1,105 @@
 2009-01-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Rename brasero-media directory to libbrasero-media
+	and fix a build problem
+
+	* Makefile.am:
+	* brasero-media/Makefile.am:
+	* brasero-media/brasero-drive-selection.c:
+	* brasero-media/brasero-drive-selection.h:
+	* brasero-media/brasero-drive.c:
+	* brasero-media/brasero-drive.h:
+	* brasero-media/brasero-media.c:
+	* brasero-media/brasero-media.h:
+	* brasero-media/brasero-medium-monitor.c:
+	* brasero-media/brasero-medium-monitor.h:
+	* brasero-media/brasero-medium-selection.c:
+	* brasero-media/brasero-medium-selection.h:
+	* brasero-media/brasero-medium.c:
+	* brasero-media/brasero-medium.h:
+	* brasero-media/brasero-units.c:
+	* brasero-media/brasero-units.h:
+	* brasero-media/brasero-volume.c:
+	* brasero-media/brasero-volume.h:
+	* brasero-media/burn-hal-watch.c:
+	* brasero-media/burn-hal-watch.h:
+	* brasero-media/burn-iso-field.c:
+	* brasero-media/burn-iso-field.h:
+	* brasero-media/burn-iso9660.c:
+	* brasero-media/burn-iso9660.h:
+	* brasero-media/burn-susp.c:
+	* brasero-media/burn-susp.h:
+	* brasero-media/burn-volume-source.c:
+	* brasero-media/burn-volume-source.h:
+	* brasero-media/burn-volume.c:
+	* brasero-media/burn-volume.h:
+	* brasero-media/libbrasero-marshal.list:
+	* brasero-media/scsi-base.h:
+	* brasero-media/scsi-cam.c:
+	* brasero-media/scsi-command.h:
+	* brasero-media/scsi-device.h:
+	* brasero-media/scsi-dvd-structures.h:
+	* brasero-media/scsi-eject.c:
+	* brasero-media/scsi-error.c:
+	* brasero-media/scsi-error.h:
+	* brasero-media/scsi-get-configuration.c:
+	* brasero-media/scsi-get-configuration.h:
+	* brasero-media/scsi-get-performance.c:
+	* brasero-media/scsi-get-performance.h:
+	* brasero-media/scsi-mech-status.c:
+	* brasero-media/scsi-mech-status.h:
+	* brasero-media/scsi-mmc1.h:
+	* brasero-media/scsi-mmc2.h:
+	* brasero-media/scsi-mmc3.h:
+	* brasero-media/scsi-mode-pages.h:
+	* brasero-media/scsi-mode-select.c:
+	* brasero-media/scsi-mode-sense.c:
+	* brasero-media/scsi-opcodes.h:
+	* brasero-media/scsi-q-subchannel.h:
+	* brasero-media/scsi-read-capacity.c:
+	* brasero-media/scsi-read-capacity.h:
+	* brasero-media/scsi-read-cd.c:
+	* brasero-media/scsi-read-cd.h:
+	* brasero-media/scsi-read-disc-info.c:
+	* brasero-media/scsi-read-disc-info.h:
+	* brasero-media/scsi-read-disc-structure.c:
+	* brasero-media/scsi-read-disc-structure.h:
+	* brasero-media/scsi-read-format-capacities.c:
+	* brasero-media/scsi-read-format-capacities.h:
+	* brasero-media/scsi-read-toc-pma-atip.c:
+	* brasero-media/scsi-read-toc-pma-atip.h:
+	* brasero-media/scsi-read-track-information.c:
+	* brasero-media/scsi-read-track-information.h:
+	* brasero-media/scsi-read10.c:
+	* brasero-media/scsi-sbc.h:
+	* brasero-media/scsi-sense-data.c:
+	* brasero-media/scsi-sense-data.h:
+	* brasero-media/scsi-sg.c:
+	* brasero-media/scsi-spc1.h:
+	* brasero-media/scsi-status-page.h:
+	* brasero-media/scsi-test-unit-ready.c:
+	* brasero-media/scsi-uscsi.c:
+	* brasero-media/scsi-utils.h:
+	* brasero-media/scsi-write-page.h:
+	* configure.in:
+	* docs/reference/Makefile.am:
+	* libbrasero-media/brasero-drive-selection.c:
+	* libbrasero-media/brasero-drive-selection.h:
+	* src/Makefile.am:
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrkit/Makefile.am:
+	* src/plugins/cdrtools/Makefile.am:
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/dvdauthor/Makefile.am:
+	* src/plugins/dvdcss/Makefile.am:
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/libburnia/Makefile.am:
+	* src/plugins/local-track/Makefile.am:
+	* src/plugins/transcode/Makefile.am:
+	* src/plugins/vcdimager/Makefile.am:
+
+2009-01-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Renamed some header files
 
 	* brasero-media/Makefile.am:

@@ -2,7 +2,7 @@ SUBDIRS = plugins
 
 INCLUDES = \
 	-I$(top_srcdir)							\
-	-I$(top_srcdir)/brasero-media/					\
+	-I$(top_srcdir)/libbrasero-media/					\
 	-I$(top_builddir)						\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           			\
@@ -228,7 +228,7 @@ brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h
 endif
 
 brasero_LDADD =				\
-	../brasero-media/libbrasero-media.la		\
+	../libbrasero-media/libbrasero-media.la		\
 	$(BRASERO_GLIB_LIBS)		\
 	$(BRASERO_GIO_LIBS)		\
 	$(BRASERO_GCONF_LIBS)		\

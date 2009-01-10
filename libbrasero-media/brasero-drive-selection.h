@@ -52,7 +52,7 @@ typedef struct {
                                  BraseroDrive      *drive);
 } BraseroDriveSelectionClass;
 
-GtkType                  brasero_drive_selection_get_type           (void);
+GType                    brasero_drive_selection_get_type           (void) G_GNUC_CONST;
 GtkWidget               *brasero_drive_selection_new                (void);
 
 void                     brasero_drive_selection_set_active         (BraseroDriveSelection *selection,
