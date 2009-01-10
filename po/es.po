@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-01-07 21:24+0000\n"
-"PO-Revision-Date: 2009-01-10 02:03+0100\n"
+"POT-Creation-Date: 2009-01-10 13:05+0000\n"
+"PO-Revision-Date: 2009-01-10 14:35+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,6 +22,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: ../brasero-media/brasero-drive-selection.c:109
+msgid "Drive"
+msgstr "Unidad"
+
+#: ../brasero-media/brasero-drive-selection.c:224
+msgid "Unnamed CD/DVD Drive"
+msgstr "Unidad CD/DVD sin nombre"
 
 #: ../brasero-media/burn-media.c:48
 msgid "Display debug statements on stdout for Brasero media library"
@@ -48,7 +56,7 @@ msgid "%lli:%02lli min"
 msgstr "%lli:%02lli min"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../brasero-media/brasero-medium-selection.c:126
+#: ../brasero-media/brasero-medium-selection.c:132
 #, c-format
 msgid "%s: empty"
 msgstr "%s: vacío"
@@ -60,17 +68,17 @@ msgstr "%s: vacío"
 #. * second %s is the space (time) used by data on the disc.
 #. * I really don't know if I should set this string as
 #. * translatable.
-#: ../brasero-media/brasero-medium-selection.c:142
-#: ../brasero-media/brasero-medium-selection.c:154
+#: ../brasero-media/brasero-medium-selection.c:148
+#: ../brasero-media/brasero-medium-selection.c:160
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../brasero-media/brasero-medium-selection.c:288
+#: ../brasero-media/brasero-medium-selection.c:363
 msgid "Searching for available discs"
 msgstr "Buscando discos disponibles"
 
-#: ../brasero-media/brasero-medium-selection.c:295
+#: ../brasero-media/brasero-medium-selection.c:370
 msgid "No available disc"
 msgstr "No hay ningún disco disponible"
 
@@ -3224,7 +3232,7 @@ msgstr "Abrir un archivo md5"
 msgid "_Check"
 msgstr "_Verificar"
 
-#: ../src/brasero-sum-dialog.c:778
+#: ../src/brasero-sum-dialog.c:779
 msgid "Disc Checking"
 msgstr "Comprobación de disco"
 
@@ -3248,7 +3256,7 @@ msgstr "La unidad está vacía"
 msgid "Select a disc"
 msgstr "Seleccione un disco"
 
-#: ../src/brasero-tool-dialog.c:500
+#: ../src/brasero-tool-dialog.c:501
 msgid "Progress"
 msgstr "Progreso"
 
