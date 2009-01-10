@@ -33,7 +33,7 @@
 
 #include "burn-debug.h"
 #include "burn-track.h"
-#include "burn-media.h"
+#include "brasero-media.h"
 
 static gboolean debug = FALSE;
 

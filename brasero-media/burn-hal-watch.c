@@ -30,7 +30,7 @@
 
 #include <libhal.h>
 
-#include "burn-media.h"
+#include "brasero-media.h"
 
 #include "burn-hal-watch.h"
 #include "libbrasero-marshal.h"

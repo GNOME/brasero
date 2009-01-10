@@ -46,7 +46,7 @@
 #include "brasero-project-type-chooser.h"
 #include "brasero-io.h"
 #include "burn-caps.h"
-#include "burn-medium-monitor.h"
+#include "brasero-medium-monitor.h"
 
 #ifdef BUILD_SEARCH
 #include "brasero-search-beagle.h"

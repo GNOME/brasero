@@ -30,13 +30,11 @@
 
 #include <gtk/gtk.h>
 
-#include "brasero-medium-selection.h"
-#include "brasero-utils.h"
-
-#include "burn-medium.h"
-#include "burn-volume-obj.h"
-#include "burn-basics.h"
-#include "burn-medium-monitor.h"
+#include <brasero-medium-selection.h>
+#include <brasero-medium.h>
+#include <brasero-volume.h>
+#include <brasero-medium-monitor.h>
+#include <brasero-units.h>
 
 typedef struct _BraseroMediumSelectionPrivate BraseroMediumSelectionPrivate;
 struct _BraseroMediumSelectionPrivate

@@ -37,9 +37,9 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
-#include "burn-drive.h"
-#include "burn-medium.h"
-#include "burn-volume-obj.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
 #include "burn-session.h"
 #include "burn-caps.h"
 #include "burn-plugin-manager.h"

@@ -41,7 +41,7 @@
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-dvd-rw-format.h"
 #include "burn-growisofs-common.h"
 

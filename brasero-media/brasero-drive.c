@@ -34,10 +34,9 @@
 #include <libhal.h>
 #include <gio/gio.h>
 
-#include "burn-basics.h"
-#include "burn-medium.h"
-#include "burn-volume-obj.h"
-#include "burn-drive.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
+#include "brasero-drive.h"
 #include "burn-hal-watch.h"
 
 #include "scsi-mmc1.h"

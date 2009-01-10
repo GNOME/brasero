@@ -29,8 +29,8 @@
 
 #include <gtk/gtk.h>
 
-#include <burn-drive.h>
-#include <burn-medium-monitor.h>
+#include <brasero-drive.h>
+#include <brasero-medium-monitor.h>
 
 G_BEGIN_DECLS
 

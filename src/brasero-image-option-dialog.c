@@ -39,7 +39,7 @@
 #include <gconf/gconf-client.h>
 
 #include "burn-basics.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 #include "brasero-utils.h"
 #include "brasero-image-option-dialog.h"

@@ -42,9 +42,9 @@
 
 #include "brasero-sum-dialog.h"
 #include "brasero-tool-dialog.h"
-#include "burn-drive.h"
-#include "burn-medium.h"
-#include "burn-volume-obj.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
 #include "brasero-xfer.h"
 #include "burn-basics.h"
 #include "burn-debug.h"

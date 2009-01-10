@@ -33,7 +33,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "burn-media.h"
+#include "brasero-media.h"
 
 static gboolean debug = 0;
 
@@ -486,7 +486,7 @@ brasero_media_message (const gchar *location,
 
 #include <gtk/gtk.h>
 
-#include "burn-medium-monitor.h"
+#include "brasero-medium-monitor.h"
 
 static BraseroMediumMonitor *default_monitor = NULL;
 

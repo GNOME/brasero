@@ -26,7 +26,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "burn-media.h"
+#include "brasero-media.h"
 #include "scsi-error.h"
 
 static const gchar *error_string [] = {	N_("Unknown error"),

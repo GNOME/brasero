@@ -38,8 +38,8 @@
 
 #include "burn-basics.h"
 #include "burn-debug.h"
-#include "burn-drive.h"
-#include "burn-medium.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
 #include "burn-session.h"
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"

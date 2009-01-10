@@ -25,7 +25,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-track.h"
 
 G_BEGIN_DECLS

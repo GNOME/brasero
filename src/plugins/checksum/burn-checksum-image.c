@@ -49,7 +49,7 @@
 #include "burn-job.h"
 #include "burn-checksum-image.h"
 #include "burn-volume.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumImage, brasero_checksum_image, BRASERO_TYPE_JOB, BraseroJob);
 

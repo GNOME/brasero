@@ -32,7 +32,7 @@
 
 #include "burn-volume-source.h"
 #include "burn-iso9660.h"
-#include "burn-media.h"
+#include "brasero-media.h"
 
 #include "scsi-mmc1.h"
 #include "scsi-mmc2.h"

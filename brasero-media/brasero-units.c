@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "burn-units.h"
+#include "brasero-units.h"
 
 gchar *
 brasero_units_get_time_string (guint64 time,

@@ -30,7 +30,7 @@
 #include "burn-basics.h"
 #include "burn-session.h"
 #include "burn-caps.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 
 #include "brasero-burn-options.h"
 #include "brasero-session-cfg.h"

@@ -48,8 +48,8 @@
 #include "burn-job.h"
 #include "burn-checksum-files.h"
 #include "burn-volume.h"
-#include "burn-drive.h"
-#include "burn-volume-obj.h"
+#include "brasero-drive.h"
+#include "brasero-volume.h"
 #include "burn-volume-read.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroChecksumFiles, brasero_checksum_files, BRASERO_TYPE_JOB, BraseroJob);

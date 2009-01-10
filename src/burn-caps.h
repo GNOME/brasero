@@ -31,7 +31,7 @@
 #include <glib-object.h>
 
 #include "burn-basics.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-session.h"
 #include "burn-plugin.h"
 #include "burn-task.h"

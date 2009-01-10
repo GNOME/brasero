@@ -26,7 +26,7 @@
 #ifndef _BURN_DRIVE_H_
 #define _BURN_DRIVE_H_
 
-#include "burn-medium.h"
+#include <brasero-medium.h>
 
 G_BEGIN_DECLS
 

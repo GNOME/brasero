@@ -34,8 +34,8 @@
 
 #include "burn-track.h"
 #include "burn-session.h"
-#include "burn-drive.h"
-#include "burn-volume-obj.h"
+#include "brasero-drive.h"
+#include "brasero-volume.h"
 
 typedef struct _BraseroSrcSelectionPrivate BraseroSrcSelectionPrivate;
 struct _BraseroSrcSelectionPrivate

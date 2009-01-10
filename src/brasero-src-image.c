@@ -33,7 +33,7 @@
 
 #include "burn-basics.h"
 #include "burn-caps.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 #include "brasero-utils.h"
 #include "brasero-image-type-chooser.h"

@@ -35,9 +35,9 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-debug.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 #include "brasero-utils.h"
 #include "brasero-session-cfg.h"
 #include "brasero-drive-properties.h"

@@ -57,7 +57,7 @@
 #include "burn-basics.h"
 #include "burn-track.h"
 #include "burn-session.h"
-#include "burn-volume-obj.h"
+#include "brasero-volume.h"
 
 
 typedef struct _BraseroDataDiscPrivate BraseroDataDiscPrivate;

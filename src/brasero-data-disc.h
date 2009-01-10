@@ -27,7 +27,7 @@
 
 #include <gtk/gtk.h>
 
-#include "burn-medium.h"
+#include "brasero-medium.h"
 
 G_BEGIN_DECLS
 

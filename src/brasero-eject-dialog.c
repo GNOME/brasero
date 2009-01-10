@@ -36,8 +36,8 @@
 
 #include "brasero-eject-dialog.h"
 #include "brasero-tool-dialog.h"
-#include "burn-medium.h"
-#include "burn-volume-obj.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
 #include "burn-debug.h"
 #include "brasero-utils.h"
 #include "burn.h"

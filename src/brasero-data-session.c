@@ -32,9 +32,9 @@
 
 #include "scsi-device.h"
 
-#include "burn-drive.h"
-#include "burn-medium.h"
-#include "burn-medium-monitor.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
+#include "brasero-medium-monitor.h"
 
 #include "brasero-data-session.h"
 #include "brasero-data-project.h"

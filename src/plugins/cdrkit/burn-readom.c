@@ -43,7 +43,7 @@
 #include "burn-job.h"
 #include "burn-plugin.h"
 #include "burn-volume.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroReadom, brasero_readom, BRASERO_TYPE_PROCESS, BraseroProcess);
 static GObjectClass *parent_class = NULL;

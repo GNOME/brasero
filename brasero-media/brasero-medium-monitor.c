@@ -37,10 +37,10 @@
 
 #include <libhal.h>
 
-#include "burn-drive.h"
-#include "burn-medium.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
 #include "burn-hal-watch.h"
-#include "burn-medium-monitor.h"
+#include "brasero-medium-monitor.h"
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 #define BLOCK_DEVICE	"block.solaris.raw_device"

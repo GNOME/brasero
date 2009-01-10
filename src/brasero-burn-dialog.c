@@ -50,9 +50,9 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-session.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "brasero-progress.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 static void brasero_burn_dialog_class_init (BraseroBurnDialogClass *klass);
 static void brasero_burn_dialog_init (BraseroBurnDialog *obj);

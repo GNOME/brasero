@@ -47,7 +47,7 @@
 #include "burn-dvdcss.h"
 #include "burn-dvdcss-private.h"
 #include "burn-volume.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroDvdcss, brasero_dvdcss, BRASERO_TYPE_JOB, BraseroJob);
 

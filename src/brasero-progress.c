@@ -39,7 +39,7 @@
 #include "brasero-utils.h"
 #include "brasero-progress.h"
 #include "burn-basics.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 
 static void brasero_burn_progress_class_init (BraseroBurnProgressClass *klass);
 static void brasero_burn_progress_init (BraseroBurnProgress *sp);

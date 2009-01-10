@@ -29,12 +29,12 @@ lib_LTLIBRARIES = \
 
 libbraseromediaincludedir = $(pkgincludedir)/
 libbraseromediainclude_HEADERS =	\
-	burn-drive.h			\
-	burn-medium-monitor.h		\
-	burn-media.h			\
-	burn-units.h			\
-	burn-medium.h			\
-	burn-volume-obj.h		\
+	brasero-drive.h			\
+	brasero-medium-monitor.h		\
+	brasero-media.h			\
+	brasero-units.h			\
+	brasero-medium.h			\
+	brasero-volume.h		\
 	brasero-medium-selection.h	\
 	brasero-drive-selection.h
 
@@ -54,12 +54,12 @@ libbrasero_media_la_LDFLAGS =					\
 libbrasero_media_la_SOURCES =		\
 	libbrasero-marshal.c		\
 	libbrasero-marshal.h		\
-	burn-drive.h			\
-	burn-medium-monitor.h		\
-	burn-media.h			\
-	burn-units.h			\
-	burn-medium.h			\
-	burn-volume-obj.h		\
+	brasero-drive.h			\
+	brasero-medium-monitor.h		\
+	brasero-media.h			\
+	brasero-units.h			\
+	brasero-medium.h			\
+	brasero-volume.h		\
 	brasero-medium-selection.h	\
 	scsi-base.h         \
 	scsi-command.h         \
@@ -105,10 +105,10 @@ libbrasero_media_la_SOURCES =		\
 	scsi-read10.c         \
 	scsi-sbc.h		\
 	scsi-test-unit-ready.c           \
-	burn-media.c           \
+	brasero-media.c           \
 	burn-hal-watch.c           \
 	burn-hal-watch.h           \
-	burn-medium-monitor.c         \
+	brasero-medium-monitor.c         \
 	burn-susp.c         \
 	burn-susp.h         \
 	burn-iso-field.c         \
@@ -119,11 +119,11 @@ libbrasero_media_la_SOURCES =		\
 	burn-volume-source.h         \
 	burn-volume.c         \
 	burn-volume.h         \
-	burn-medium.c         \
-	burn-volume-obj.c         \
-	burn-drive.c         \
+	brasero-medium.c         \
+	brasero-volume.c         \
+	brasero-drive.c         \
 	brasero-medium-selection.c         \
-	burn-units.c         \
+	brasero-units.c         \
 	brasero-drive-selection.c         \
 	brasero-drive-selection.h
 

@@ -36,7 +36,7 @@
 #include "burn-plugin.h"
 #include "burn-plugin-private.h"
 #include "burn-caps.h"
-#include "burn-media.h"
+#include "brasero-media.h"
 
 #define BRASERO_PLUGIN_PRIORITY_KEY			"/apps/brasero/config/priority"
 

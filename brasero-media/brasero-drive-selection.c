@@ -34,7 +34,7 @@
 #include <gtk/gtk.h>
 
 #include "brasero-drive-selection.h"
-#include "burn-medium-monitor.h"
+#include "brasero-medium-monitor.h"
 
 /* Signals */
 enum {

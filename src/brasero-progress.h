@@ -33,7 +33,7 @@
 #include <gtk/gtk.h>
 
 #include "burn-basics.h"
-#include "burn-media.h"
+#include "brasero-media.h"
 
 G_BEGIN_DECLS
 

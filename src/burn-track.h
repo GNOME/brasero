@@ -25,8 +25,8 @@
 #include <glib.h>
 
 #include "burn-basics.h"
-#include "burn-drive.h"
-#include "burn-medium.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
 #include "burn-image-format.h"
 
 #ifndef _BURN_TRACK_H

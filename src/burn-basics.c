@@ -38,9 +38,9 @@
 #include "burn-debug.h"
 #include "burn-caps.h"
 #include "burn-plugin-manager.h"
-#include "burn-medium-monitor.h"
+#include "brasero-medium-monitor.h"
 #include "burn-plugin-private.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 static BraseroPluginManager *plugin_manager = NULL;
 static BraseroMediumMonitor *medium_manager = NULL;

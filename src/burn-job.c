@@ -50,8 +50,8 @@
 #include "burn-task-ctx.h"
 #include "burn-task-item.h"
 #include "brasero-marshal.h"
-#include "burn-drive.h"
-#include "burn-medium.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
 
 typedef struct _BraseroJobOutput {
 	gchar *image;

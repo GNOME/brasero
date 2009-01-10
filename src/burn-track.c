@@ -37,9 +37,9 @@
 
 #include "burn-track.h"
 #include "burn-debug.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-image-format.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 #include "burn-mkisofs-base.h"
 
 struct _BraseroTrack {

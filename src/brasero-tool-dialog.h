@@ -35,9 +35,9 @@
 #include "burn-basics.h"
 #include "burn-job.h"
 #include "burn.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-session.h"
-#include "burn-medium-monitor.h"
+#include "brasero-medium-monitor.h"
 
 G_BEGIN_DECLS
 

@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include "burn-drive.h"
+#include <brasero-drive.h>
 
 G_BEGIN_DECLS
 

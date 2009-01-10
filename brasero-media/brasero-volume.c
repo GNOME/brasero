@@ -29,7 +29,7 @@
 
 #include <gio/gio.h>
 
-#include "burn-volume-obj.h"
+#include "brasero-volume.h"
 
 typedef struct _BraseroVolumePrivate BraseroVolumePrivate;
 struct _BraseroVolumePrivate

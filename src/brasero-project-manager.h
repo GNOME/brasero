@@ -32,7 +32,7 @@
 
 #include <gtk/gtk.h>
 
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "brasero-project-type-chooser.h"
 
 G_BEGIN_DECLS

@@ -1,5 +1,94 @@
 2009-01-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Renamed some header files
+
+	* brasero-media/Makefile.am:
+	* brasero-media/brasero-drive-selection.c:
+	* brasero-media/brasero-drive-selection.h:
+	* brasero-media/brasero-drive.c:
+	* brasero-media/brasero-drive.h:
+	* brasero-media/brasero-media.c:
+	* brasero-media/brasero-medium-monitor.c:
+	* brasero-media/brasero-medium-monitor.h:
+	* brasero-media/brasero-medium-selection.c:
+	* brasero-media/brasero-medium-selection.h:
+	* brasero-media/brasero-medium.c:
+	* brasero-media/brasero-medium.h:
+	* brasero-media/brasero-units.c:
+	* brasero-media/brasero-volume.c:
+	* brasero-media/brasero-volume.h:
+	* brasero-media/burn-drive.c:
+	* brasero-media/burn-drive.h:
+	* brasero-media/burn-hal-watch.c:
+	* brasero-media/burn-iso9660.c:
+	* brasero-media/burn-media.c:
+	* brasero-media/burn-media.h:
+	* brasero-media/burn-medium-monitor.c:
+	* brasero-media/burn-medium-monitor.h:
+	* brasero-media/burn-medium.c:
+	* brasero-media/burn-medium.h:
+	* brasero-media/burn-units.c:
+	* brasero-media/burn-units.h:
+	* brasero-media/burn-volume-obj.c:
+	* brasero-media/burn-volume-obj.h:
+	* brasero-media/burn-volume-source.c:
+	* brasero-media/burn-volume.c:
+	* brasero-media/scsi-error.c:
+	* brasero-media/scsi-utils.h:
+	* src/brasero-app.c:
+	* src/brasero-burn-dialog.c:
+	* src/brasero-burn-options.c:
+	* src/brasero-burn-options.h:
+	* src/brasero-data-disc.c:
+	* src/brasero-data-disc.h:
+	* src/brasero-data-session.c:
+	* src/brasero-data-session.h:
+	* src/brasero-dest-selection.c:
+	* src/brasero-disc-copy-dialog.c:
+	* src/brasero-disc-copy-dialog.h:
+	* src/brasero-disc-option-dialog.c:
+	* src/brasero-drive-properties.c:
+	* src/brasero-drive-properties.h:
+	* src/brasero-eject-dialog.c:
+	* src/brasero-image-option-dialog.c:
+	* src/brasero-medium-properties.c:
+	* src/brasero-progress.c:
+	* src/brasero-progress.h:
+	* src/brasero-project-manager.c:
+	* src/brasero-project-manager.h:
+	* src/brasero-project-name.c:
+	* src/brasero-src-image.c:
+	* src/brasero-src-selection.c:
+	* src/brasero-sum-dialog.c:
+	* src/brasero-tool-dialog.c:
+	* src/brasero-tool-dialog.h:
+	* src/burn-basics.c:
+	* src/burn-basics.h:
+	* src/burn-caps.c:
+	* src/burn-caps.h:
+	* src/burn-debug.c:
+	* src/burn-debug.h:
+	* src/burn-job.c:
+	* src/burn-plugin.c:
+	* src/burn-plugin.h:
+	* src/burn-session.c:
+	* src/burn-session.h:
+	* src/burn-track.c:
+	* src/burn-track.h:
+	* src/burn.c:
+	* src/burn.h:
+	* src/plugins/cdrdao/burn-cdrdao.c:
+	* src/plugins/cdrkit/burn-readom.c:
+	* src/plugins/cdrtools/burn-readcd.c:
+	* src/plugins/checksum/burn-checksum-files.c:
+	* src/plugins/checksum/burn-checksum-image.c:
+	* src/plugins/dvdcss/burn-dvdcss.c:
+	* src/plugins/growisofs/burn-dvd-rw-format.c:
+	* src/plugins/growisofs/burn-growisofs.c:
+	* src/plugins/transcode/burn-transcode.c:
+
+2009-01-10  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Patch to update library to meet sound-juicer patch requirements
 	Adds a library initialization function
 	Adds a new widget to select a BraseroDrive

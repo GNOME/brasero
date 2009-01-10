@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "brasero-data-project.h"
 
 G_BEGIN_DECLS

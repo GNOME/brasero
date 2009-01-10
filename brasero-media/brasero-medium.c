@@ -34,8 +34,9 @@
 #include <glib/gi18n-lib.h>
 
 #include "burn-basics.h"
-#include "burn-medium.h"
-#include "burn-drive.h"
+
+#include "brasero-medium.h"
+#include "brasero-drive.h"
 
 #include "scsi-device.h"
 #include "scsi-mmc1.h"
@@ -49,7 +50,6 @@
 #include "scsi-q-subchannel.h"
 #include "scsi-dvd-structures.h"
 #include "burn-volume.h"
-#include "burn-drive.h"
 
 
 const gchar *types [] = {	N_("File"),

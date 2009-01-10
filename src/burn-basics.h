@@ -31,7 +31,7 @@
 
 G_BEGIN_DECLS
 
-#include "burn-units.h"
+#include "brasero-units.h"
 
 #define BRASERO_GET_BASENAME_FOR_DISPLAY(uri, name)				\
 {										\

@@ -29,8 +29,8 @@
 
 #include <gtk/gtk.h>
 
-#include "burn-medium.h"
-#include "burn-volume-obj.h"
+#include "brasero-medium.h"
+#include "brasero-volume.h"
 
 #include "brasero-project-name.h"
 #include "brasero-project-type-chooser.h"

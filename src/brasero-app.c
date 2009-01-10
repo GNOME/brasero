@@ -45,7 +45,7 @@
 #include "brasero-disc-copy-dialog.h"
 #include "brasero-burn-dialog.h"
 #include "burn-debug.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 #include "burn-caps.h"
 #include "burn.h"
 #include "burn-plugin-manager.h"

@@ -39,8 +39,8 @@
 #include "brasero-tool-dialog.h"
 #include "burn-session.h"
 #include "burn.h"
-#include "burn-medium.h"
-#include "burn-drive.h"
+#include "brasero-medium.h"
+#include "brasero-drive.h"
 
 G_DEFINE_TYPE (BraseroToolDialog, brasero_tool_dialog, GTK_TYPE_DIALOG);
 

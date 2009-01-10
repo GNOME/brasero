@@ -28,7 +28,7 @@
 #include <glib.h>
 #include <gmodule.h>
 
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-track.h"
 #include "burn-plugin.h"
 

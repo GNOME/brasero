@@ -39,8 +39,8 @@
 #include "burn-volume-source.h"
 #include "burn-volume.h"
 #include "burn-iso9660.h"
-#include "burn-media.h"
-#include "burn-units.h"
+#include "brasero-media.h"
+#include "brasero-units.h"
 
 struct _BraseroTagDesc {
 	guint16 id;

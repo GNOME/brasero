@@ -45,8 +45,8 @@
 #include "burn-plugin.h"
 #include "burn-job.h"
 #include "burn-process.h"
-#include "burn-drive.h"
-#include "burn-medium.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BRASERO_TYPE_PROCESS, BraseroProcess);
 

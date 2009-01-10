@@ -35,12 +35,12 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "burn-units.h"
-#include "burn-media.h"
+#include "brasero-units.h"
+#include "brasero-media.h"
 #include "burn-iso9660.h"
 #include "burn-iso-field.h"
 #include "burn-susp.h"
-#include "burn-media.h"
+#include "brasero-media.h"
 #include "burn-volume.h"
 
 struct _BraseroIsoCtx {

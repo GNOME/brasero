@@ -34,7 +34,7 @@
 #include "burn-caps.h"
 #include "burn-session.h"
 #include "burn-task.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 
 G_BEGIN_DECLS
 

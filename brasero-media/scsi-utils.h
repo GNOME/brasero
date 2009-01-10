@@ -25,7 +25,7 @@
 #include <errno.h>
 #include <glib.h>
 
-#include "burn-media.h"
+#include "brasero-media.h"
 #include "scsi-base.h"
 
 #ifndef _BURN_UTILS_H

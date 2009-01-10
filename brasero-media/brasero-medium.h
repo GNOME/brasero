@@ -22,7 +22,7 @@
 
 #include <glib-object.h>
 
-#include "burn-media.h"
+#include <brasero-media.h>
 
 #ifndef _BURN_MEDIUM_H_
 #define _BURN_MEDIUM_H_

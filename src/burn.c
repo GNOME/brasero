@@ -51,8 +51,8 @@
 #include "burn-task-ctx.h"
 #include "burn-task.h"
 #include "burn-caps.h"
-#include "burn-volume-obj.h"
-#include "burn-drive.h"
+#include "brasero-volume.h"
+#include "brasero-drive.h"
 #include "burn-dbus.h"
 
 G_DEFINE_TYPE (BraseroBurn, brasero_burn, G_TYPE_OBJECT);

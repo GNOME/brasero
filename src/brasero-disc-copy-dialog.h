@@ -33,7 +33,7 @@
 #include <gtk/gtk.h>
 
 #include "brasero-burn-options.h"
-#include "burn-drive.h"
+#include "brasero-drive.h"
 
 G_BEGIN_DECLS
 

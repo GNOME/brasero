@@ -37,7 +37,7 @@
 #include "burn-basics.h"
 #include "burn-caps.h"
 #include "burn-track.h"
-#include "burn-medium.h"
+#include "brasero-medium.h"
 #include "burn-session.h"
 
 typedef struct _BraseroMediumPropertiesPrivate BraseroMediumPropertiesPrivate;

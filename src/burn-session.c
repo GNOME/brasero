@@ -43,9 +43,9 @@
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "burn-track.h"
-#include "burn-medium.h"
-#include "burn-drive.h"
-#include "burn-medium-monitor.h"
+#include "brasero-medium.h"
+#include "brasero-drive.h"
+#include "brasero-medium-monitor.h"
 
 G_DEFINE_TYPE (BraseroBurnSession, brasero_burn_session, G_TYPE_OBJECT);
 #define BRASERO_BURN_SESSION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN_SESSION, BraseroBurnSessionPrivate))
