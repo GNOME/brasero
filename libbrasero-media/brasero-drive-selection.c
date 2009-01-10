@@ -324,6 +324,7 @@ brasero_drive_selection_init (BraseroDriveSelection *selection)
                                         "text", DISPLAY_NAME_COLUMN,
                                         NULL);
 
+        priv->type = BRASERO_DRIVE_TYPE_ALL_BUT_FILE;
         populate_model (selection, store);
 
         selection_update_sensitivity (selection);
