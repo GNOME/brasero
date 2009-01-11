@@ -34,6 +34,8 @@
 #include <libhal.h>
 #include <gio/gio.h>
 
+#include "brasero-media-private.h"
+
 #include "brasero-medium.h"
 #include "brasero-volume.h"
 #include "brasero-drive.h"
@@ -84,7 +86,20 @@ enum {
 
 G_DEFINE_TYPE (BraseroDrive, brasero_drive, G_TYPE_OBJECT);
 
+/**
+ * This is private API. The function is defined in brasero-volume.c
+ */
+BraseroVolume *
+brasero_volume_new (BraseroDrive *drive, const gchar *udi);
 
+/**
+ * brasero_drive_get_gdrive:
+ * @drive: a #BraseroDrive
+ *
+ * Returns the #GDrive corresponding to this #BraseroDrive
+ *
+ * Return value: a #GDrive or NULL.
+ **/
 GDrive *
 brasero_drive_get_gdrive (BraseroDrive *drive)
 {
@@ -93,6 +108,11 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 	GDrive *gdrive = NULL;
 	GList *drives;
 	GList *iter;
+
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
+
+	if (brasero_drive_is_fake (drive))
+		return NULL;
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 	volume_path = brasero_drive_get_block_device (drive);
@@ -140,16 +160,16 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
  * Returns the bus, target, lun ("{bus},{target},{lun}") as a string which is
  * sometimes needed by some backends like cdrecord.
  *
- * Return value: a string or NULL.
+ * Return value: a string or NULL. The string must be freed when not needed
  **/
-
 gchar *
 brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->udi)
 		return NULL;
 
@@ -173,6 +193,8 @@ brasero_drive_is_fake (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return (priv->path == NULL);
 }
@@ -192,8 +214,9 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	BraseroDeviceHandle *handle;
 	BraseroScsiMechStatusHdr hdr;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->udi)
 		return FALSE;
 
@@ -224,6 +247,8 @@ brasero_drive_can_use_exclusively (BraseroDrive *drive)
 {
 	BraseroDeviceHandle *handle;
 	const gchar *device;
+
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 	device = brasero_drive_get_block_device (drive);
@@ -261,8 +286,9 @@ brasero_drive_lock (BraseroDrive *drive,
 	gboolean result;
 	gchar *failure;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->udi)
 		return FALSE;
 
@@ -312,6 +338,8 @@ brasero_drive_unlock (BraseroDrive *drive)
 	DBusError error;
 	gboolean result;
 
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->udi)
 		return FALSE;
@@ -347,8 +375,9 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 	BraseroHALWatch *watch;
 	LibHalContext *ctx;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->udi) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
@@ -377,6 +406,8 @@ brasero_drive_get_device (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
+
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->path;
 }
@@ -396,6 +427,8 @@ brasero_drive_get_block_device (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
+
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->block_path;
 }
@@ -407,7 +440,7 @@ brasero_drive_get_block_device (BraseroDrive *drive)
  * Gets a string holding the HAL udi corresponding to this device. It can be used
  * to uniquely identify the drive.
  *
- * Return value: a string holding the HAL udi
+ * Return value: a string holding the HAL udi. Not to be freed
  **/
 const gchar *
 brasero_drive_get_udi (BraseroDrive *drive)
@@ -438,6 +471,8 @@ brasero_drive_get_medium (BraseroDrive *drive)
 	if (!drive)
 		return NULL;
 
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
+
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 
 	if (!priv->probed && priv->udi)
@@ -446,21 +481,41 @@ brasero_drive_get_medium (BraseroDrive *drive)
 	return priv->medium;
 }
 
+/**
+ * brasero_drive_get_caps:
+ * @drive: a #BraseroDrive
+ *
+ * Returns what type(s) of disc the drive can write to.
+ *
+ * Return value: a #BraseroDriveCaps.
+ **/
 BraseroDriveCaps
-brasero_drive_get_caps (BraseroDrive *self)
+brasero_drive_get_caps (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), BRASERO_DRIVE_CAPS_NONE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->caps;
 }
 
+/**
+ * brasero_drive_can_write:
+ * @drive: a #BraseroDrive
+ *
+ * Returns whether the disc can burn any disc at all.
+ *
+ * Return value: a #gboolean. TRUE if the drive can write a disc and FALSE otherwise
+ **/
 gboolean
-brasero_drive_can_write (BraseroDrive *self)
+brasero_drive_can_write (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return (priv->caps & (BRASERO_DRIVE_CAPS_CDR|
 			      BRASERO_DRIVE_CAPS_DVDR|
 			      BRASERO_DRIVE_CAPS_DVDR_PLUS|
@@ -539,11 +594,13 @@ brasero_drive_medium_probed (BraseroMedium *medium,
  * This is not public API. Defined in burn-monitor.h.
  */
 gboolean
-brasero_drive_probing (BraseroDrive *self)
+brasero_drive_probing (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
-	priv = BRASERO_DRIVE_PRIVATE (self);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->probed != TRUE;
 }
 
@@ -564,8 +621,9 @@ brasero_drive_reprobe (BraseroDrive *drive)
 	BraseroDrivePrivate *priv;
 	BraseroMedium *medium;
 
-	priv = BRASERO_DRIVE_PRIVATE (drive);
+	g_return_if_fail (BRASERO_IS_DRIVE (drive));
 
+	priv = BRASERO_DRIVE_PRIVATE (drive);
 	if (!priv->medium)
 		return;
 

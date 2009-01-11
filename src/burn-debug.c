@@ -31,6 +31,8 @@
 #include <glib.h>
 #include <gmodule.h>
 
+#include "brasero-media-private.h"
+
 #include "burn-debug.h"
 #include "burn-track.h"
 #include "brasero-media.h"

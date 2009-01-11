@@ -29,6 +29,7 @@
 
 #include <gio/gio.h>
 
+#include "brasero-media-private.h"
 #include "brasero-volume.h"
 
 typedef struct _BraseroVolumePrivate BraseroVolumePrivate;

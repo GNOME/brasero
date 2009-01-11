@@ -1,3 +1,58 @@
+2009-01-11  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	reviewed by: <delete if not using a buddy>
+
+	* docs/reference/Makefile.am:
+	* libbrasero-media/Makefile.am:
+	* libbrasero-media/brasero-drive.c (brasero_drive_get_gdrive),
+	(brasero_drive_get_bus_target_lun_string), (brasero_drive_is_fake),
+	(brasero_drive_is_door_open), (brasero_drive_can_use_exclusively),
+	(brasero_drive_lock), (brasero_drive_unlock),
+	(brasero_drive_get_display_name), (brasero_drive_get_device),
+	(brasero_drive_get_block_device), (brasero_drive_get_medium),
+	(brasero_drive_get_caps), (brasero_drive_can_write),
+	(brasero_drive_probing), (brasero_drive_reprobe):
+	* libbrasero-media/brasero-media-private.h:
+	* libbrasero-media/brasero-media.c:
+	* libbrasero-media/brasero-media.h:
+	* libbrasero-media/brasero-medium-monitor.c:
+	* libbrasero-media/brasero-medium-selection.c
+	(brasero_medium_selection_set_property),
+	(brasero_medium_selection_get_property),
+	(brasero_medium_selection_class_init):
+	* libbrasero-media/brasero-medium-selection.h:
+	* libbrasero-media/brasero-medium.c:
+	* libbrasero-media/brasero-medium.h:
+	* libbrasero-media/brasero-units.h:
+	* libbrasero-media/brasero-volume.c:
+	* libbrasero-media/brasero-volume.h:
+	* libbrasero-media/burn-hal-watch.c:
+	* libbrasero-media/burn-iso9660.c:
+	* libbrasero-media/burn-volume-source.c:
+	* libbrasero-media/burn-volume.c (brasero_volume_file_size):
+	* libbrasero-media/scsi-get-configuration.c:
+	* libbrasero-media/scsi-get-performance.c:
+	* libbrasero-media/scsi-mode-sense.c:
+	* libbrasero-media/scsi-read-disc-info.c:
+	* libbrasero-media/scsi-read-disc-structure.c:
+	* libbrasero-media/scsi-read-format-capacities.c:
+	* libbrasero-media/scsi-read-toc-pma-atip.c:
+	* libbrasero-media/scsi-read-track-information.c:
+	* libbrasero-media/scsi-sense-data.c:
+	* libbrasero-media/scsi-sg.c:
+	* src/brasero-data-project.c (brasero_data_project_node_loaded),
+	(brasero_data_project_node_reloaded),
+	(brasero_data_project_add_node_from_info):
+	* src/brasero-data-session.c:
+	* src/brasero-file-node.c (brasero_file_node_set_from_info),
+	(brasero_file_node_new_imported_session_file):
+	* src/burn-caps.c:
+	* src/burn-debug.c:
+	* src/burn-image-format.c (brasero_image_format_get_DATAFILE_info),
+	(brasero_image_format_get_FILE_info),
+	(brasero_image_format_get_cue_size):
+	* src/burn-plugin.c:
+
 2009-01-10  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Small fixes:

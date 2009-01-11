@@ -35,6 +35,8 @@
 
 #include "burn-basics.h"
 
+#include "brasero-media-private.h"
+
 #include "brasero-medium.h"
 #include "brasero-drive.h"
 
@@ -123,6 +125,26 @@ struct _BraseroMediumPrivate
  */
 
 #define BUSY_RETRY_TIME			1000
+
+typedef enum {
+	BRASERO_MEDIUM_TRACK_NONE		= 0,
+	BRASERO_MEDIUM_TRACK_DATA		= 1,
+	BRASERO_MEDIUM_TRACK_AUDIO		= 1 << 1,
+	BRASERO_MEDIUM_TRACK_COPY		= 1 << 2,
+	BRASERO_MEDIUM_TRACK_PREEMP		= 1 << 3,
+	BRASERO_MEDIUM_TRACK_4_CHANNELS		= 1 << 4,
+	BRASERO_MEDIUM_TRACK_INCREMENTAL	= 1 << 5,
+	BRASERO_MEDIUM_TRACK_LEADOUT		= 1 << 6
+} BraseroMediumTrackType;
+
+typedef struct _BraseroMediumTrack BraseroMediumTrack;
+
+struct _BraseroMediumTrack {
+	guint session;
+	BraseroMediumTrackType type;
+	guint64 start;
+	guint64 blocks_num;
+};
 
 enum
 {
@@ -294,15 +316,6 @@ brasero_medium_support_flags (BraseroMedium *self,
 	}
 
 	return TRUE;
-}
-
-GSList *
-brasero_medium_get_tracks (BraseroMedium *medium)
-{
-	BraseroMediumPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
-	return g_slist_copy (priv->tracks);
 }
 
 gboolean

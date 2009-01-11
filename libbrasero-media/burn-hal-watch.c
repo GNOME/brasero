@@ -31,6 +31,7 @@
 #include <libhal.h>
 
 #include "brasero-media.h"
+#include "brasero-media-private.h"
 
 #include "burn-hal-watch.h"
 #include "libbrasero-marshal.h"

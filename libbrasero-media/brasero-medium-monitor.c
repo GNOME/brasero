@@ -37,6 +37,8 @@
 
 #include <libhal.h>
 
+#include "brasero-media-private.h"
+
 #include "brasero-drive.h"
 #include "brasero-medium.h"
 #include "burn-hal-watch.h"
@@ -95,7 +97,6 @@ brasero_drive_probing (BraseroDrive *drive);
  *
  * Return value: a #BraseroDrive or NULL
  **/
-
 BraseroDrive *
 brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
 				  const gchar *device)
@@ -127,7 +128,6 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
  *
  * Return value: %TRUE if it is still probing some media
  **/
-
 gboolean
 brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
 {
@@ -159,7 +159,6 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
  *
  * Return value: a #GSList or NULL
  **/
-
 GSList *
 brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
 				   BraseroDriveType type)
@@ -206,7 +205,6 @@ brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
  *
  * Return value: a #GSList or NULL
  **/
-
 GSList *
 brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 				  BraseroMediaType type)
@@ -566,7 +564,6 @@ static BraseroMediumMonitor *singleton = NULL;
  *
  * Return value: a #BraseroMediumMonitor. Unref when it is not needed anymore.
  **/
-
 BraseroMediumMonitor *
 brasero_medium_monitor_get_default (void)
 {

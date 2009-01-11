@@ -1861,7 +1861,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 
 	size = g_file_info_get_size (info);
 	if (type != G_FILE_TYPE_DIRECTORY) {
-		if (BRASERO_SIZE_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT
+		if (BRASERO_BYTES_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT
 		&&  BRASERO_FILE_NODE_SECTORS (node) < BRASERO_FILE_2G_LIMIT) {
 			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, g_file_info_get_name (info))) {
 				brasero_data_project_remove_node (self, node);
@@ -1876,7 +1876,7 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 		return;
 	}
 
-	size_changed = (BRASERO_SIZE_TO_SECTORS (size, 2048) != BRASERO_FILE_NODE_SECTORS (node));
+	size_changed = (BRASERO_BYTES_TO_SECTORS (size, 2048) != BRASERO_FILE_NODE_SECTORS (node));
 	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
 	brasero_file_node_set_from_info (node, stats, info);
 
@@ -1949,7 +1949,7 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 
 	size = g_file_info_get_size (info);
 	name = g_file_info_get_name (info);
-	if (BRASERO_SIZE_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT
+	if (BRASERO_BYTES_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT
 	&&  BRASERO_FILE_NODE_SECTORS (node) < BRASERO_FILE_2G_LIMIT) {
 		if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name)) {
 			brasero_data_project_remove_node (self, node);
@@ -1957,7 +1957,7 @@ brasero_data_project_node_reloaded (BraseroDataProject *self,
 		}
 	}
 
-	size_changed = (BRASERO_SIZE_TO_SECTORS (size, 2048) == BRASERO_FILE_NODE_SECTORS (node));
+	size_changed = (BRASERO_BYTES_TO_SECTORS (size, 2048) == BRASERO_FILE_NODE_SECTORS (node));
 	if (BRASERO_FILE_NODE_MIME (node) && !size_changed)
 		return;
 
@@ -2123,7 +2123,7 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 		guint64 size;
 
 		size = g_file_info_get_size (info);
-		if (BRASERO_SIZE_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT)
+		if (BRASERO_BYTES_TO_SECTORS (size, 2048) > BRASERO_FILE_2G_LIMIT)
 			if (brasero_data_project_file_signal (self, G2_FILE_SIGNAL, name))
 				return NULL;
 	}

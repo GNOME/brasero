@@ -78,6 +78,7 @@ IGNORE_HFILES=	scsi-base.h		\
 		burn-iso9660.h		\
 		burn-volume.h		\
 		burn-volume-source.h	\
+		brasero-media-private.h	\
 		burn-susp.h		\
 		burn-hal-watch.h	\
 		libbrasero-marshal.h

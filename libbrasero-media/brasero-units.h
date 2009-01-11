@@ -21,6 +21,37 @@
 
 G_BEGIN_DECLS
 
+/* Data Transfer Speeds: rates are in KiB/sec */
+/* NOTE: rates for audio and data transfer speeds are different:
+ * - Data : 150 KiB/sec
+ * - Audio : 172.3 KiB/sec
+ * Source Wikipedia.com =)
+ * Apparently most drives return rates that should be used with Audio factor
+ */
+
+#define CD_RATE 176400		/* bytes by second */
+#define DVD_RATE 1387500	/* bytes by second */
+#define BD_RATE 4500000		/* bytes by second */
+
+#define BRASERO_SPEED_TO_RATE_CD(speed)						\
+	(guint) ((speed) * CD_RATE)
+
+#define BRASERO_SPEED_TO_RATE_DVD(speed)					\
+	(guint) ((speed) * DVD_RATE)
+
+#define BRASERO_SPEED_TO_RATE_BD(speed)						\
+	(guint) ((speed) * BD_RATE)
+
+#define BRASERO_RATE_TO_SPEED_CD(rate)						\
+	(gdouble) ((gdouble) (rate) / (gdouble) CD_RATE)
+
+#define BRASERO_RATE_TO_SPEED_DVD(rate)						\
+	(gdouble) ((gdouble) (rate) / (gdouble) DVD_RATE)
+
+#define BRASERO_RATE_TO_SPEED_BD(rate)						\
+	(gdouble) ((gdouble) (rate) / (gdouble) BD_RATE)
+
+
 /**
  * Used to convert between known units
  **/
@@ -28,11 +59,14 @@ G_BEGIN_DECLS
 #define BRASERO_DURATION_TO_BYTES(duration)					\
 	((gint64) (duration) * 75 * 2352 / 1000000000 +				\
 	(((gint64) ((duration) * 75 * 2352) % 1000000000) ? 1:0))
+
 #define BRASERO_DURATION_TO_SECTORS(duration)					\
 	((gint64) (duration) * 75 / 1000000000 +				\
 	(((gint64) ((duration) * 75) % 1000000000) ? 1:0))
-#define BRASERO_SIZE_TO_SECTORS(size, secsize)					\
+
+#define BRASERO_BYTES_TO_SECTORS(size, secsize)					\
 	(((size) / (secsize)) + (((size) % (secsize)) ? 1:0))
+
 #define BRASERO_BYTES_TO_DURATION(bytes)					\
 	(guint64) ((guint64) ((guint64) (bytes) * 1000000000) / (guint64) (2352 * 75) + 				\
 	(guint64) (((guint64) ((guint64) (bytes) * 1000000000) % (guint64) (2352 * 75)) ? 1:0))

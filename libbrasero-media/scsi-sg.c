@@ -38,6 +38,8 @@
 #include <scsi/scsi.h>
 #include <scsi/sg.h>
 
+#include "brasero-media-private.h"
+
 #include "scsi-command.h"
 #include "scsi-utils.h"
 #include "scsi-error.h"

@@ -445,6 +445,14 @@ brasero_media_to_string (BraseroMedia media,
 
 #define BRASERO_MEDIA_LOG_DOMAIN				"BraseroMedia"
 
+/**
+ * brasero_media_get_option_group:
+ *
+ * Returns a GOptionGroup for the commandline arguments recognized by libbrasero-media.
+ * You should add this to your GOptionContext if your are using g_option_context_parse ()
+ * to parse your commandline arguments.
+ *
+ **/
 GOptionGroup *
 brasero_media_get_option_group (void)
 {

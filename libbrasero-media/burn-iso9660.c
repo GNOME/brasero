@@ -37,6 +37,7 @@
 
 #include "brasero-units.h"
 #include "brasero-media.h"
+#include "brasero-media-private.h"
 #include "burn-iso9660.h"
 #include "burn-iso-field.h"
 #include "burn-susp.h"
@@ -125,7 +126,7 @@ typedef enum {
 	BRASERO_ISO_ERROR
 } BraseroIsoResult;
 
-#define ISO9660_BYTES_TO_BLOCKS(size)			BRASERO_SIZE_TO_SECTORS ((size), ISO9660_BLOCK_SIZE)
+#define ISO9660_BYTES_TO_BLOCKS(size)			BRASERO_BYTES_TO_SECTORS ((size), ISO9660_BLOCK_SIZE)
 
 static GList *
 brasero_iso9660_load_directory_records (BraseroIsoCtx *ctx,

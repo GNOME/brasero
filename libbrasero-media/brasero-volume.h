@@ -52,10 +52,6 @@ struct _BraseroVolume
 
 GType brasero_volume_get_type (void) G_GNUC_CONST;
 
-BraseroVolume *
-brasero_volume_new (BraseroDrive *drive,
-		    const gchar *udi);
-
 gchar *
 brasero_volume_get_name (BraseroVolume *volume);
 

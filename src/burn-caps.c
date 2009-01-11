@@ -36,6 +36,8 @@
 
 #include <gconf/gconf-client.h>
 
+#include "brasero-media-private.h"
+
 #include "burn-basics.h"
 #include "burn-debug.h"
 #include "brasero-drive.h"

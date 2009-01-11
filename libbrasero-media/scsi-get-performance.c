@@ -28,6 +28,8 @@
 
 #include <glib.h>
 
+#include "brasero-media-private.h"
+
 #include "scsi-error.h"
 #include "scsi-utils.h"
 #include "scsi-command.h"

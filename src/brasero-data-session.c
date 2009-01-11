@@ -27,6 +27,8 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "brasero-media-private.h"
+
 #include "burn-basics.h"
 #include "burn-caps.h"
 

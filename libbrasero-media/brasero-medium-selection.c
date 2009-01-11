@@ -56,7 +56,7 @@ static guint brasero_medium_selection_signals [LAST_SIGNAL] = { 0 };
 
 enum {
 	PROP_0,
-	PROP_DEVICE,
+	PROP_MEDIUM,
 	PROP_MEDIA_TYPE
 };
 
@@ -270,38 +270,6 @@ brasero_medium_selection_set_active (BraseroMediumSelection *selector,
 }
 
 /**
- * brasero_medium_selection_set_device:
- * @selector: a #BraseroMediumSelection
- * @device: a #gchar * to set as the active medium in the selector
- *
- * Sets the active medium.
- *
- * Return value: a #gboolean. TRUE if it succeeded, FALSE otherwise.
- **/
-gboolean
-brasero_medium_selection_set_device (BraseroMediumSelection *selector,
-				     const gchar *device)
-{
-	BraseroMediumMonitor *monitor;
-	BraseroDrive *drive;
-	gboolean res;
-
-	monitor = brasero_medium_monitor_get_default ();
-	drive = brasero_medium_monitor_get_drive (monitor, device);
-	g_object_unref (monitor);
-
-	if (!drive) {
-		g_object_unref (drive);
-		return FALSE;
-	}
-
-	res = brasero_medium_selection_set_active (selector, brasero_drive_get_medium (drive));
-	g_object_unref (drive);
-
-	return res;
-}
-
-/**
  * brasero_medium_selection_get_active:
  * @selector: a #BraseroMediumSelection
  *
@@ -324,26 +292,6 @@ brasero_medium_selection_get_active (BraseroMediumSelection *selector)
 			    MEDIUM_COL, &medium,
 			    -1);
 	return medium;
-}
-
-/**
- * brasero_medium_selection_get_device:
- * @selector: a #BraseroMediumSelection
- *
- * Gets the active medium device.
- *
- * Return value: a #char * or NULL.
- **/
-const gchar *
-brasero_medium_selection_get_device (BraseroMediumSelection *self)
-{
-	BraseroMedium *medium;
-
-	medium = brasero_medium_selection_get_active (self);
-	if (brasero_medium_get_status (medium) & BRASERO_MEDIUM_FILE)
-		return NULL;
-
-	return brasero_drive_get_device (brasero_medium_get_drive (medium));
 }
 
 static void
@@ -751,13 +699,13 @@ brasero_medium_selection_set_property (GObject *object,
 
 	switch (prop_id)
 	{
-	case PROP_DEVICE:
-		brasero_medium_selection_set_device (BRASERO_MEDIUM_SELECTION (object),
-						     g_value_get_string (value));
-		break;
 	case PROP_MEDIA_TYPE:
 		brasero_medium_selection_show_media_type (BRASERO_MEDIUM_SELECTION (object),
 							  g_value_get_uint (value));
+		break;
+	case PROP_MEDIUM:
+		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (object),
+						     BRASERO_MEDIUM (g_value_get_object (value)));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -779,11 +727,11 @@ brasero_medium_selection_get_property (GObject *object,
 
 	switch (prop_id)
 	{
-	case PROP_DEVICE:
-		g_value_set_string (value, brasero_medium_selection_get_device (BRASERO_MEDIUM_SELECTION (object)));
-		break;
 	case PROP_MEDIA_TYPE:
 		g_value_set_uint (value, priv->type);
+		break;
+	case PROP_MEDIUM:
+		g_value_set_object (value, brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (object)));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -805,9 +753,9 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 
 	combo_class->changed = brasero_medium_selection_changed;
 
-	g_object_class_install_property (object_class, PROP_DEVICE,
-					 g_param_spec_string ("device", NULL, NULL,
-							      NULL, G_PARAM_READWRITE));
+	g_object_class_install_property (object_class, PROP_MEDIUM,
+					 g_param_spec_object ("medium", NULL, NULL,
+							      BRASERO_TYPE_MEDIUM, G_PARAM_READWRITE));
 
 	g_object_class_install_property (object_class, PROP_MEDIA_TYPE,
 					 g_param_spec_uint ("media-type", NULL, NULL,

@@ -771,7 +771,7 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 			node->union2.mime = brasero_utils_register_string (mime);
 		}
 
-		sectors = BRASERO_SIZE_TO_SECTORS (g_file_info_get_size (info), 2048);
+		sectors = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2048);
 
 		if (sectors > BRASERO_FILE_2G_LIMIT && BRASERO_FILE_NODE_SECTORS (node) <= BRASERO_FILE_2G_LIMIT)
 			stats->num_2GiB ++;
@@ -875,7 +875,7 @@ brasero_file_node_new_imported_session_file (GFileInfo *info,
 		node->union3.imported_address = g_file_info_get_attribute_int64 (info, BRASERO_IO_DIR_CONTENTS_ADDR);
 	}
 	else
-		node->union3.sectors = BRASERO_SIZE_TO_SECTORS (g_file_info_get_size (info), 2048);
+		node->union3.sectors = BRASERO_BYTES_TO_SECTORS (g_file_info_get_size (info), 2048);
 
 	/* Add it (we must add a graft) */
 	brasero_file_node_add (parent, node, sort_func);

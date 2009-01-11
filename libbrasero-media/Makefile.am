@@ -124,7 +124,8 @@ libbrasero_media_la_SOURCES =		\
 	brasero-medium-selection.c         \
 	brasero-units.c         \
 	brasero-drive-selection.c         \
-	brasero-drive-selection.h
+	brasero-drive-selection.h         \
+	brasero-media-private.h
 
 # FreeBSD's SCSI CAM interface
 if HAVE_CAM_LIB_H

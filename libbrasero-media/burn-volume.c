@@ -40,6 +40,7 @@
 #include "burn-volume.h"
 #include "burn-iso9660.h"
 #include "brasero-media.h"
+#include "brasero-media-private.h"
 #include "brasero-units.h"
 
 struct _BraseroTagDesc {
@@ -313,7 +314,7 @@ brasero_volume_file_size (BraseroVolFile *file)
 			extent = extents->data;
 			size += extent->size;
 		}
-		return BRASERO_SIZE_TO_SECTORS (size, 2048);
+		return BRASERO_BYTES_TO_SECTORS (size, 2048);
 	}
 
 	for (iter = file->specific.dir.children; iter; iter = iter->next) {
@@ -322,7 +323,7 @@ brasero_volume_file_size (BraseroVolFile *file)
 		if (file->isdir)
 			size += brasero_volume_file_size (file);
 		else
-			size += BRASERO_SIZE_TO_SECTORS (file->specific.file.size_bytes, 2048);
+			size += BRASERO_BYTES_TO_SECTORS (file->specific.file.size_bytes, 2048);
 	}
 
 	return size;

@@ -312,7 +312,7 @@ stat_end:
 	}
 
 	if (size)
-		*size = BRASERO_SIZE_TO_SECTORS (buffer.st_size, 2352);
+		*size = BRASERO_BYTES_TO_SECTORS (buffer.st_size, 2352);
 
 	return TRUE;
 }
@@ -399,7 +399,7 @@ stat_end:
 	}
 
 	if (size)
-		*size = BRASERO_SIZE_TO_SECTORS (buffer.st_size, 2352) - start;
+		*size = BRASERO_BYTES_TO_SECTORS (buffer.st_size, 2352) - start;
 
 	return TRUE;
 }
@@ -648,7 +648,7 @@ brasero_image_format_get_cue_size (gchar *path,
 	if (size)
 		*size = cue_size;
 	if (blocks)
-		*blocks = BRASERO_SIZE_TO_SECTORS (cue_size, 2352);
+		*blocks = BRASERO_BYTES_TO_SECTORS (cue_size, 2352);
 
 	return TRUE;
 }
