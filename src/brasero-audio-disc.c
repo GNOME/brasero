@@ -3835,9 +3835,18 @@ brasero_audio_disc_inotify_removal_warning (BraseroAudioDisc *disc,
 
 	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 
+	/* Translators: "%s" is the name of a file here */
 	primary = g_strdup_printf (_("\"%s\" was removed from the file system."), name);
 	brasero_app_alert (brasero_app_get_default (),
 			   primary,
+			   /* Translators: This is when brasero detects that a file
+			    * in the audio project was removed from its original 
+			    * location (on a hard drive, USB stick, whatever) so
+			    * it removes the file from the project (not from its
+			    * original location) and lets the user know. The "It"
+			    * refers to the file and this string is coupled with
+			    * previous string:
+			    * ""\"%s\" was removed from the file system."*/
 			   _("It will be removed from the project"),
 			   GTK_MESSAGE_WARNING);
 	g_free (primary);
