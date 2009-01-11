@@ -42,6 +42,7 @@
 #include "burn-plugin-manager.h"
 #include "brasero-drive.h"
 #include "brasero-volume.h"
+#include "brasero-medium-selection-priv.h"
 
 #include "brasero-dest-selection.h"
 #include "brasero-session-cfg.h"

@@ -31,6 +31,7 @@
 #include "burn-session.h"
 #include "burn-caps.h"
 #include "brasero-medium.h"
+#include "brasero-medium-selection-priv.h"
 
 #include "brasero-burn-options.h"
 #include "brasero-session-cfg.h"
