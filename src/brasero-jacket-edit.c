@@ -649,7 +649,7 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 
 	priv->colours = brasero_tool_color_picker_new ();
 	brasero_tool_color_picker_set_text (BRASERO_TOOL_COLOR_PICKER (priv->colours),
-					    _("_Text Colour"));
+					    _("_Text Color"));
 	gtk_widget_show (priv->colours);
 	g_signal_connect (priv->colours,
 			  "color-set",

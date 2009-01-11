@@ -1083,7 +1083,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 			  "clicked",
 			  G_CALLBACK (brasero_split_dialog_cut_clicked_cb),
 			  object);
-	gtk_widget_set_tooltip_text (button, _("Press to add a splitting point"));
+	gtk_widget_set_tooltip_text (button, _("Add a splitting point"));
 	priv->cut = button;
 
 	priv->notebook = gtk_notebook_new ();

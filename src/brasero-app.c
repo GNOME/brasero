@@ -984,8 +984,8 @@ on_about_cb (GtkAction *action, BraseroApp *app)
 	};
 
 	const gchar *documenters[] = {
-		"Phil Bull <philbull@gmail.com>"
-		"Milo Casagrande <milo_casagrande@yahoo.it>"
+		"Phil Bull <philbull@gmail.com>\n"
+		"Milo Casagrande <milo_casagrande@yahoo.it>\n"
 		"Andrew Stabeno <stabeno@gmail.com>",
 		NULL
 	};

@@ -1353,7 +1353,7 @@ brasero_audio_disc_file_type_error_dialog (BraseroAudioDisc *disc,
 	gchar *name;
 
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-	primary = g_strdup_printf (_("\"%s\" could not be handled by gstreamer."), name);
+	primary = g_strdup_printf (_("\"%s\" could not be handled by Gstreamer."), name);
 	brasero_app_alert (brasero_app_get_default (),
 			   primary,
 			   _("Make sure the appropriate codec is installed"),

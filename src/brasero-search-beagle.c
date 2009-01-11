@@ -1027,7 +1027,7 @@ static void
 brasero_search_beagle_error_dialog (BraseroSearch *search, GError *error)
 {
 	brasero_app_alert (brasero_app_get_default (),
-			   _("Error querying beagle."),
+			   _("Error querying Beagle."),
 			   error->message,
 			   GTK_MESSAGE_ERROR);
 }

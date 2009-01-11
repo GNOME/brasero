@@ -1,3 +1,23 @@
+2009-01-11  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/brasero-app.c (on_about_cb):
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_file_type_error_dialog):
+	* src/brasero-data-disc.c (brasero_data_disc_project_loaded_cb),
+	(brasero_data_disc_deep_directory_cb),
+	(brasero_data_disc_load_track):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_init):
+	* src/brasero-metadata.c (brasero_metadata_success):
+	* src/brasero-search-beagle.c (brasero_search_beagle_error_dialog):
+	* src/brasero-split-dialog.c (brasero_split_dialog_init):
+	* src/plugins/cdrkit/burn-readom.c (brasero_readom_export_caps):
+	* src/plugins/cdrtools/burn-readcd.c (brasero_readcd_export_caps):
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_export_caps):
+
+	Fix String problems on bgo #564258. Thanks to Gabor Kelemen for
+	the pointing.
+
 2009-01-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Make some functions private as they only serve for objects derived from

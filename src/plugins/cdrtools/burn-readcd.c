@@ -408,7 +408,7 @@ brasero_readcd_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_define (plugin,
 			       "readcd",
-			       _("Use readcd to image CDs and DVDs"),
+			       _("Use readcd to create disc images"),
 			       "Philippe Rouquier",
 			       0);
 

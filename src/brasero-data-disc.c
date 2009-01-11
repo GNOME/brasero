@@ -665,19 +665,19 @@ brasero_data_disc_project_loaded_cb (BraseroDataProject *project,
 		brasero_disc_message_set_primary (BRASERO_DISC_MESSAGE (message),
 						  _("The contents of the project changed since it was saved."));
 		brasero_disc_message_set_secondary (BRASERO_DISC_MESSAGE (message),
-						    _("Do you want to continue or discard the old project layout?"));
+						    _("Discard the current modified project"));
 
 		brasero_disc_message_set_image (BRASERO_DISC_MESSAGE (message),GTK_STOCK_DIALOG_WARNING);
 		brasero_disc_message_set_progress_active (BRASERO_DISC_MESSAGE (message), FALSE);
 		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
 					   BRASERO_DISC_MESSAGE (message),
 					   _("_Discard"),
-					   _("Press if you want to discard the current modified project"),
+					   _("Discard the current modified project"),
 					   GTK_RESPONSE_CANCEL);
 		brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
 					   BRASERO_DISC_MESSAGE (message),
 					   _("_Continue"),
-					   _("Press if you want to continue with the current modified project"),
+					   _("Continue with the current modified project"),
 					   GTK_RESPONSE_OK);
 
 		brasero_disc_message_add_errors (BRASERO_DISC_MESSAGE (message),
@@ -1056,7 +1056,7 @@ brasero_data_disc_deep_directory_cb (BraseroDataProject *project,
 	g_free (string);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-						  _("The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6."
+						  _("The children of this directory will have 7 parent directories."
 						    "\nBrasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems."
 						    "\nNOTE: Such a file hierarchy is known to work on linux."));
 
@@ -1693,7 +1693,7 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 	brasero_notify_button_add (BRASERO_NOTIFY (priv->message),
 				   BRASERO_DISC_MESSAGE (message),
 				   _("_Cancel Loading"),
-				   _("Press if you want to cancel current project loading"),
+				   _("Cancel loading current project"),
 				   GTK_RESPONSE_CANCEL);
 	g_signal_connect (message,
 			  "response",

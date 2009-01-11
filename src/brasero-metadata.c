@@ -595,7 +595,7 @@ brasero_metadata_success (BraseroMetadata *self)
 			BRASERO_GET_BASENAME_FOR_DISPLAY (priv->info->uri, name);
 			priv->error = g_error_new (BRASERO_ERROR,
 						   BRASERO_ERROR_GENERAL,
-						   _("\"%s\" could not be handled by gstreamer."),
+						   _("\"%s\" could not be handled by Gstreamer."),
 						   name);
 			g_free (name);
 		}
