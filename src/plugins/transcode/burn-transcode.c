@@ -1377,6 +1377,13 @@ brasero_transcode_error_on_pad_linking (BraseroTranscode *self)
 	message = gst_message_new_error (GST_OBJECT (priv->pipeline),
 					 g_error_new (BRASERO_BURN_ERROR,
 						      BRASERO_BURN_ERROR_GENERAL,
+						      /* Translators: This message is sent
+						       * when brasero could not link together
+						       * two gstreamer plugins so that one
+						       * sends its data to the second for further
+						       * processing. This data transmission is
+						       * done through a pad. Maybe this is a bit
+						       * too technical and should be removed? */
 						      _("Impossible to link plugin pads")),
 					 "Sent by brasero_metadata_error_on_pad_linking");
 

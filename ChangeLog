@@ -1,5 +1,13 @@
 2009-01-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #566971 – Unclear string "Impossible to link plugin pads"
+	Add a translator comment
+
+	* src/plugins/transcode/burn-transcode.c
+	(brasero_transcode_error_on_pad_linking):
+
+2009-01-11  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Link plugins against gobject
 	Fix #566721 – Wrong LDFLAGS introduced into BRASERO_*_LIBS
 	Patch by Funda Wang
