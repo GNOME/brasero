@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY version SYSTEM "version.xml">
+<!ENTITY slash "/">
+]>
+<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
+  <bookinfo>
+    <title>Libbrasero-media Reference Manual</title>
+    <releaseinfo>
+      for brasero &version;
+    </releaseinfo>
+  </bookinfo>
+
+  <chapter>
+    <title>API Reference</title>
+    <xi:include href="xml/brasero-drive-selection.xml"/>
+    <xi:include href="xml/brasero-drive.xml"/>
+    <xi:include href="xml/brasero-media.xml"/>
+    <xi:include href="xml/brasero-medium-monitor.xml"/>
+    <xi:include href="xml/brasero-medium-selection.xml"/>
+    <xi:include href="xml/brasero-units.xml"/>
+    <xi:include href="xml/brasero-volume.xml"/>
+  </chapter>
+</book>
