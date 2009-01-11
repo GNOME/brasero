@@ -1,4 +1,4 @@
-.TH BRASERO 1 "November 4, 2007" "GNOME"
+.TH BRASERO 1 "January 11, 2009" "GNOME"
 .SH NAME
 brasero \- Simple and easy to use CD/DVD burning application for the Gnome Desktop
 .SH SYNOPSIS
@@ -13,7 +13,7 @@ This manual page documents briefly the
 .B brasero
 command.
 .PP
-\fBBrasero\fP is a disc burning application. It is designed to be simple and easy to use. 
+\fBrasero\fP is a disc burning application. It is designed to be simple and easy to use. 
 It allows to create data CD/DVD, audio CD, to copy CD/DVD and to burn images. It has some nices features, such as a song, image and video previewer. It can also search for files (thanks to beagle) and display a playlist and its contents.
 .SH OPTIONS
 This program follows the usual GNU command line syntax, with long options starting with two dashes (`-'). A summary of options is included below.
@@ -28,20 +28,32 @@ Open an empty audio project.
 .B \-d, \-\-data
 Open an empty data project.
 .TP
-.B \-c, \-\-copy
+.B \-c, \-\-copy=PATH
 Copy a disc.
 .TP
-.B \-i, \-\-iso
+.B \-j, \-\-cover=PATH
+Cover to use.
+.TP
+.B \-o, \-\-video
+Open a video project adding the URIs given on the command line.
+.TP
+.B \-i, \-\-image=PATH
 Uri of an image file or a cue file to be burnt (autodetected).
 .TP
-.B \-e	\-\-empty
+.B \-e,	\-\-empty
 Force brasero to display the project selection page.
 .TP
-.B \-b	\-\-blank
+.B \-b,	\-\-blank
 Open the blank disc dialog.
 .TP
+.B \-k, \-\-check
+Open the check disc dialog.
+.TP
 .B \-n, \-\-ncb
-Open a data project with the contents of nautilus-cd-burner.
+Open a data project with the contents of burn:/// URI.
+.TP
+.B \-r, \-\-burn-and-remove-project=PATH
+Burn the specified project and REMOVE it.
 .TP
 .B \-g, \-\-debug
 Display debug statements on stdout.
