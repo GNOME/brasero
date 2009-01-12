@@ -48,7 +48,7 @@ libbrasero_media_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
 	-no-undefined						\
 	$(AM_LDFLAGS)
-#	-export-symbols $(srcdir)/libbrasero-media.symbols
+#	-export-symbols ./libbrasero-media.symbols
 
 libbrasero_media_la_SOURCES =		\
 	libbrasero-marshal.c		\
@@ -125,7 +125,8 @@ libbrasero_media_la_SOURCES =		\
 	brasero-units.c         \
 	brasero-drive-selection.c         \
 	brasero-drive-selection.h         \
-	brasero-media-private.h
+	brasero-media-private.h         \
+	brasero-medium-selection-priv.h
 
 # FreeBSD's SCSI CAM interface
 if HAVE_CAM_LIB_H
