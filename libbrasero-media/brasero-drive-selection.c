@@ -103,21 +103,30 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
         g_type_class_add_private (klass, sizeof (BraseroDriveSelectionPrivate));
 
         /* Properties */
-        g_object_class_install_property (object_class,
-                                         PROP_DRIVE,
+        g_object_class_install_property (object_class, PROP_DRIVE,
                                          g_param_spec_object ("drive",
                                                               _("Drive"),
-                                                              NULL,
+                                                              "The drive currently selected",
                                                               BRASERO_TYPE_DRIVE,
                                                               G_PARAM_READWRITE));
+        
         g_object_class_install_property (object_class, PROP_DRIVE_TYPE,
-                                         g_param_spec_uint ("drive-type", NULL, NULL,
+                                         g_param_spec_uint ("drive-type",
+                                                            "Drive type",
+                                                            "The drive types used to filter",
                                                             0, 255, BRASERO_DRIVE_TYPE_ALL_BUT_FILE,
                                                             G_PARAM_READWRITE));
 
-        /* Signals */
+	/**
+ 	* BraseroDriveSelection::drive_changed:
+ 	* @selection: the object which received the signal
+  	* @drive: the new drive which is selected
+	*
+ 	* This signal gets emitted when the selected drive has changed
+ 	*
+ 	*/
         brasero_drive_selection_table_signals [DRIVE_CHANGED] =
-                g_signal_new ("drive-changed",
+                g_signal_new ("drive_changed",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
                               G_STRUCT_OFFSET (BraseroDriveSelectionClass,
@@ -363,6 +372,7 @@ brasero_drive_selection_finalize (GObject *object)
  * Create a new drive selector.
  *
  * Return value: Newly allocated #BraseroDriveSelection widget
+ *
  **/
 GtkWidget *
 brasero_drive_selection_new (void)
@@ -467,8 +477,6 @@ brasero_drive_selection_get_property (GObject    *object,
  * Set the current selected drive to that which corresponds to the
  * specified drive.
  *
- * Since: 2.14
- *
  **/
 void
 brasero_drive_selection_set_active (BraseroDriveSelection *selection,
@@ -496,8 +504,6 @@ brasero_drive_selection_set_active (BraseroDriveSelection *selection,
  *
  * Return value: currently selected #BraseroDrive.  The drive must be
  * unreffed using nautilus_burn_drive_unref after use.
- *
- * Since: 2.14
  *
  **/
 BraseroDrive *

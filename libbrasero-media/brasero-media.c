@@ -452,6 +452,7 @@ brasero_media_to_string (BraseroMedia media,
  * You should add this to your GOptionContext if your are using g_option_context_parse ()
  * to parse your commandline arguments.
  *
+ * Return value: a #GOptionGroup *
  **/
 GOptionGroup *
 brasero_media_get_option_group (void)
@@ -503,6 +504,8 @@ static BraseroMediumMonitor *default_monitor = NULL;
  *
  * Initialize the library.
  *
+ * You should call this function before using any other from the library.
+ *
  **/
 void
 brasero_media_library_start (void)
@@ -526,7 +529,7 @@ brasero_media_library_start (void)
 /**
  * brasero_media_stop:
  *
- * De-initialize the library.
+ * De-initialize the library once you do not need the library anymore.
  *
  **/
 void

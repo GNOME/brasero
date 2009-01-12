@@ -162,91 +162,6 @@ static gulong medium_signals [LAST_SIGNAL] = {0, };
 
 static GObjectClass* parent_class = NULL;
 
-gchar *
-brasero_medium_get_tooltip (BraseroMedium *self)
-{
-	BraseroMediumPrivate *priv;
-	BraseroDrive *drive;
-	BraseroMedia media;
-	const gchar *type;
-	gchar *label;
-	gchar *name;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-
-	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
-	if (media & BRASERO_MEDIUM_FILE) {
-		/* Translators: This is a fake drive, a file, and means that
-		 * when we're writing, we're writing to a file and create an
-		 * image on the hard drive. */
-		return g_strdup (_("Image File"));
-	}
-
-	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-	name = brasero_drive_get_display_name (drive);
-
-	if (media & BRASERO_MEDIUM_BLANK) {
-		/* NOTE for translators: the first %s is the disc type and the
-		 * second %s the name of the drive this disc is in. */
-		label = g_strdup_printf (_("Blank %s in %s"),
-					 type,
-					 name);
-	}
-	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
-		/* NOTE for translators: the first %s is the disc type and the
-		 * second %s the name of the drive this disc is in. */
-		label = g_strdup_printf (_("Audio and data %s in %s"),
-					 type,
-					 name);
-	}
-	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
-		/* NOTE for translators: the first %s is the disc type and the
-		 * second %s the name of the drive this disc is in. */
-		label = g_strdup_printf (_("Audio %s in %s"),
-					 type,
-					 name);
-	}
-	else if (media & BRASERO_MEDIUM_HAS_DATA) {
-		/* NOTE for translators: the first %s is the disc type and the
-	 	* second %s the name of the drive this disc is in. */
-		label = g_strdup_printf (_("Data %s in %s"),
-					 type,
-					 name);
-	}
-	else {
-		/* NOTE for translators: the first %s is the disc type and the
-	 	* second %s the name of the drive this disc is in. */
-		label = g_strdup_printf (_("%s in %s"),
-					 type,
-					 name);
-	}
-
-	g_free (name);
-	return label;
-}
-
-const gchar *
-brasero_medium_get_type_string (BraseroMedium *medium)
-{
-	BraseroMediumPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
-	return priv->type;
-}
-
-BraseroMedia
-brasero_medium_get_status (BraseroMedium *medium)
-{
-	BraseroMediumPrivate *priv;
-
-	if (!medium)
-		return BRASERO_MEDIUM_NONE;
-
-	priv = BRASERO_MEDIUM_PRIVATE (medium);
-	return priv->info;
-}
-
 /**
  * This one is not supposed to be public API. It's declared in burn-caps.c
  */
@@ -318,6 +233,120 @@ brasero_medium_support_flags (BraseroMedium *self,
 	return TRUE;
 }
 
+gchar *
+brasero_medium_get_tooltip (BraseroMedium *self)
+{
+	BraseroMediumPrivate *priv;
+	BraseroDrive *drive;
+	BraseroMedia media;
+	const gchar *type;
+	gchar *label;
+	gchar *name;
+
+	priv = BRASERO_MEDIUM_PRIVATE (self);
+
+	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
+	if (media & BRASERO_MEDIUM_FILE) {
+		/* Translators: This is a fake drive, a file, and means that
+		 * when we're writing, we're writing to a file and create an
+		 * image on the hard drive. */
+		return g_strdup (_("Image File"));
+	}
+
+	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+	name = brasero_drive_get_display_name (drive);
+
+	if (media & BRASERO_MEDIUM_BLANK) {
+		/* NOTE for translators: the first %s is the disc type and the
+		 * second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Blank %s in %s"),
+					 type,
+					 name);
+	}
+	else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) {
+		/* NOTE for translators: the first %s is the disc type and the
+		 * second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Audio and data %s in %s"),
+					 type,
+					 name);
+	}
+	else if (media & BRASERO_MEDIUM_HAS_AUDIO) {
+		/* NOTE for translators: the first %s is the disc type and the
+		 * second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Audio %s in %s"),
+					 type,
+					 name);
+	}
+	else if (media & BRASERO_MEDIUM_HAS_DATA) {
+		/* NOTE for translators: the first %s is the disc type and the
+	 	* second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("Data %s in %s"),
+					 type,
+					 name);
+	}
+	else {
+		/* NOTE for translators: the first %s is the disc type and the
+	 	* second %s the name of the drive this disc is in. */
+		label = g_strdup_printf (_("%s in %s"),
+					 type,
+					 name);
+	}
+
+	g_free (name);
+	return label;
+}
+
+/**
+ * brasero_medium_get_type_string:
+ * @medium: #BraseroMedium
+ *
+ * Returns the medium type as a string to be displayed in a UI.
+ *
+ * Return value: a #gchar *.
+ *
+ **/
+const gchar *
+brasero_medium_get_type_string (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->type;
+}
+
+/**
+ * brasero_medium_get_status:
+ * @medium: #BraseroMedium
+ *
+ * Gets the medium type and state.
+ *
+ * Return value: a #BraseroMedia.
+ *
+ **/
+BraseroMedia
+brasero_medium_get_status (BraseroMedium *medium)
+{
+	BraseroMediumPrivate *priv;
+
+	if (!medium)
+		return BRASERO_MEDIUM_NONE;
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->info;
+}
+
+/**
+ * brasero_medium_get_last_data_track_address:
+ * @medium: #BraseroMedium
+ * @byte: a #gint64 * or NULL
+ * @sector: a #gint64 * or NULL
+ *
+ * Stores in either @byte (in bytes) or in @sector (in blocks) the address where
+ * the last session starts. This is useful when creating a multisession image or
+ * when reading the contents of this last track.
+ *
+ **/
 gboolean
 brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 					    gint64 *byte,
@@ -354,6 +383,16 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 	return TRUE;
 }
 
+/**
+ * brasero_medium_get_last_data_track_space:
+ * @medium: #BraseroMedium
+ * @size: a #gint64 * or NULL
+ * @blocks: a #gint64 * or NULL
+ *
+ * Stores in either @size (in bytes) or in @blocks (in blocks) the space used by
+ * the last track on the medium.
+ *
+ **/
 gboolean
 brasero_medium_get_last_data_track_space (BraseroMedium *medium,
 					  gint64 *size,
@@ -389,6 +428,15 @@ brasero_medium_get_last_data_track_space (BraseroMedium *medium,
 	return TRUE;
 }
 
+/**
+ * brasero_medium_get_track_num:
+ * @medium: #BraseroMedium
+ *
+ * Gets the number of tracks on the medium.
+ *
+ * Return value: a #guint.
+ *
+ **/
 guint
 brasero_medium_get_track_num (BraseroMedium *medium)
 {
@@ -436,6 +484,20 @@ brasero_medium_get_track (BraseroMedium *medium,
 	return NULL;
 }
 
+/**
+ * brasero_medium_get_track_space:
+ * @medium: a #BraseroMedium
+ * @num: a #guint
+ * @size: a #gint64 * or NULL
+ * @blocks: a #gint64 * or NULL
+ *
+ * Stores in either @size (in bytes) or in @blocks (in blocks) the space used
+ * by session @num on the disc.
+ *
+ * Return value: a #gboolean. Returns TRUE if information could be retrieved;
+ * FALSE otherwise (usually when track @num doesn't exist).
+ *
+ **/
 gboolean
 brasero_medium_get_track_space (BraseroMedium *medium,
 				guint num,
@@ -464,6 +526,20 @@ brasero_medium_get_track_space (BraseroMedium *medium,
 	return TRUE;
 }
 
+/**
+ * brasero_medium_get_track_address:
+ * @medium: a #BraseroMedium
+ * @num: a #guint
+ * @byte: a #gint64 * or NULL
+ * @sector: a #gint64 * or NULL
+ *
+ * Stores in either @byte (in bytes) or in @sector (in blocks) the address at
+ * which the session identified by @num starts.
+ *
+ * Return value: a #gboolean. Returns TRUE if information could be retrieved;
+ * FALSE otherwise (usually when track @num doesn't exist).
+ *
+ **/
 gboolean
 brasero_medium_get_track_address (BraseroMedium *medium,
 				  guint num,
@@ -492,6 +568,15 @@ brasero_medium_get_track_address (BraseroMedium *medium,
 	return TRUE;	
 }
 
+/**
+ * brasero_medium_get_next_writable_address:
+ * @medium: #BraseroMedium
+ *
+ * Gets the address (block number) that can be used to write a new session on @medium
+ *
+ * Return value: a #gint64.
+ *
+ **/
 gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium)
 {
@@ -519,6 +604,16 @@ brasero_medium_get_next_writable_address (BraseroMedium *medium)
 	return priv->next_wr_add;
 }
 
+/**
+ * brasero_medium_get_max_write_speed:
+ * @medium: #BraseroMedium
+ *
+ * Gets the maximum speed that can be used to write to @medium.
+ * Note: the speed are in B/sec.
+ *
+ * Return value: a #gint64.
+ *
+ **/
 gint64
 brasero_medium_get_max_write_speed (BraseroMedium *medium)
 {
@@ -528,6 +623,16 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
 	return priv->max_wrt * 1000;
 }
 
+/**
+ * brasero_medium_get_write_speeds:
+ * @medium: #BraseroMedium
+ *
+ * Gets an array holding all possible speeds to write to @medium.
+ * Note: the speed are in B/sec.
+ *
+ * Return value: a #gint64 *.
+ *
+ **/
 gint64 *
 brasero_medium_get_write_speeds (BraseroMedium *medium)
 {
@@ -576,6 +681,16 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
  * session is always equal to the size of the disc. 
  */
 
+/**
+ * brasero_medium_get_data_size:
+ * @medium: #BraseroMedium
+ * @size: a #gint64 * or NULL
+ * @blocks: a #gint64 * or NULL
+ *
+ * Stores in either @size (in bytes) or @blocks (the number of blocks) the size
+ * used to store data (including audio on CDs) on the disc.
+ *
+ **/
 void
 brasero_medium_get_data_size (BraseroMedium *medium,
 			      gint64 *size,
@@ -615,6 +730,16 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 		*blocks = track ? track->start + track->blocks_num: 0;
 }
 
+/**
+ * brasero_medium_get_free_space:
+ * @medium: #BraseroMedium
+ * @size: a #gint64 * or NULL
+ * @blocks: a #gint64 * or NULL
+ *
+ * Stores in either @size (in bytes) or @blocks (the number of blocks) the space
+ * on the disc that can be used for writing.
+ *
+ **/
 void
 brasero_medium_get_free_space (BraseroMedium *medium,
 			       gint64 *size,
@@ -683,6 +808,18 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 	}
 }
 
+/**
+ * brasero_medium_get_capacity:
+ * @medium: #BraseroMedium
+ * @size: a #gint64 * or NULL
+ * @blocks: a #gint64 * or NULL
+ *
+ * Stores in either @size (in bytes) or @blocks (the number of blocks) the total
+ * disc space.
+ * Note that when the disc is closed this space is the one occupied by data. 
+ * Otherwise it is the sum of free and used space.
+ *
+ **/
 void
 brasero_medium_get_capacity (BraseroMedium *medium,
 			     gint64 *size,
@@ -3334,6 +3471,14 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	object_class->set_property = brasero_medium_set_property;
 	object_class->get_property = brasero_medium_get_property;
 
+	/**
+ 	* BraseroMedium::probed:
+ 	* @medium: the object which received the signal
+	*
+ 	* This signal gets emitted when the medium inside the drive has been
+	* fully probed. This is mostly for internal use.
+ 	*
+ 	*/
 	medium_signals[PROBED] =
 		g_signal_new ("probed",
 		              G_OBJECT_CLASS_TYPE (klass),
@@ -3347,12 +3492,22 @@ brasero_medium_class_init (BraseroMediumClass *klass)
 	g_object_class_install_property (object_class,
 	                                 PROP_DRIVE,
 	                                 g_param_spec_object ("drive",
-	                                                      "drive",
-	                                                      "drive in which medium is inserted",
+	                                                      "Drive",
+	                                                      "Drive in which medium is inserted",
 	                                                      BRASERO_TYPE_DRIVE,
 	                                                      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
+/**
+ * brasero_medium_can_be_written:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium can be written. It also checks that the medium can
+ * write the medium.
+ *
+ * Return value: a #gboolean. TRUE if the medium can be rewritten, FALSE otherwise.
+ *
+ **/
 gboolean
 brasero_medium_can_be_written (BraseroMedium *self)
 {
@@ -3399,6 +3554,16 @@ brasero_medium_can_be_written (BraseroMedium *self)
 	return FALSE;
 }
 
+/**
+ * brasero_medium_can_be_rewritten:
+ * @medium: #BraseroMedium
+ *
+ * Gets whether the medium can be rewritten. Note: it also checks that the drive
+ * can rewrite the medium type.
+ *
+ * Return value: a #gboolean. TRUE if the medium can be rewritten, FALSE otherwise.
+ *
+ **/
 gboolean
 brasero_medium_can_be_rewritten (BraseroMedium *self)
 {
@@ -3430,6 +3595,15 @@ brasero_medium_can_be_rewritten (BraseroMedium *self)
 	return FALSE;
 }
 
+/**
+ * brasero_medium_get_drive:
+ * @medium: #BraseroMedium
+ *
+ * Gets the #BraseroDrive in which the medium is inserted.
+ *
+ * Return value: a #BraseroDrive.
+ *
+ **/
 BraseroDrive *
 brasero_medium_get_drive (BraseroMedium *self)
 {
@@ -3442,15 +3616,15 @@ brasero_medium_get_drive (BraseroMedium *self)
 	return priv->drive;
 }
 
-const gchar *
-brasero_medium_get_id (BraseroMedium *self)
-{
-	BraseroMediumPrivate *priv;
-
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-	return priv->id;
-}
-
+/**
+ * brasero_medium_get_CD_TEXT_title:
+ * @medium: #BraseroMedium
+ *
+ * Gets the CD-TEXT title for @Medium.
+ *
+ * Return value: a #gchar *.
+ *
+ **/
 const gchar *
 brasero_medium_get_CD_TEXT_title (BraseroMedium *self)
 {
