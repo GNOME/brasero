@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-01-11 21:57+0000\n"
-"PO-Revision-Date: 2009-01-11 23:46+0100\n"
+"POT-Creation-Date: 2009-01-11 22:58+0000\n"
+"PO-Revision-Date: 2009-01-12 23:18+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -389,7 +389,6 @@ msgid "CD/DVD Creator Folder"
 msgstr "Carpeta del creador de CD/DVD"
 
 #: ../src/plugins/local-track/burn-uri.c:562
-#| msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in nautilus"
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
 msgstr ""
 "Permite grabar archivos añadidos a la «Carpeta del creador de CD/DVD» en "
@@ -802,9 +801,12 @@ msgid "Create and copy CDs and DVDs"
 msgstr "Cree y copie CD y DVD"
 
 #: ../data/brasero.schemas.in.h:1
+#| msgid ""
+#| "Contains the list of additional plugins brasero will use to burn discs. "
+#| "If set to NULL, brasero will load them all."
 msgid ""
-"Contains the list of additional plugins brasero will use to burn discs. If "
-"set to NULL, brasero will load them all."
+"Contains the list of additional plugins Brasero will use to burn discs. If "
+"set to NULL, Brasero will load them all."
 msgstr ""
 "Contiene la lista de complementos adicionales que Brasero usará para grabar "
 "discos. Si está establecida a NULL, Brasero los cargará todos."
@@ -1114,7 +1116,6 @@ msgstr "La pista es más corta de 6 segundos."
 
 #: ../src/brasero-audio-disc.c:1356 ../src/brasero-metadata.c:598
 #, c-format
-#| msgid "\"%s\" could not be handled by gstreamer."
 msgid "\"%s\" could not be handled by Gstreamer."
 msgstr "gstreamer no pudo manejar «%s»."
 
@@ -1484,7 +1485,6 @@ msgid "Results %i - %i (out of %i)"
 msgstr "Resultados %i al %i (de %i)"
 
 #: ../src/brasero-search-beagle.c:1030
-#| msgid "Error querying beagle."
 msgid "Error querying Beagle."
 msgstr "Error al consultar a Beagle."
 
@@ -2209,7 +2209,6 @@ msgid "The contents of the project changed since it was saved."
 msgstr "El contenido del proyecto ha cambiado desde que se guardó."
 
 #: ../src/brasero-data-disc.c:668 ../src/brasero-data-disc.c:675
-#| msgid "Press if you want to discard the current modified project"
 msgid "Discard the current modified project"
 msgstr "Descartar el proyecto actualmente modificado"
 
@@ -2218,7 +2217,6 @@ msgid "_Discard"
 msgstr "_Descartar"
 
 #: ../src/brasero-data-disc.c:680
-#| msgid "Press if you want to continue with the current modified project"
 msgid "Continue with the current modified project"
 msgstr "Continuar con el proyecto actual modificado"
 
@@ -2321,12 +2319,6 @@ msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "¿Está seguro de que quiere añadir «%s» a la selección?"
 
 #: ../src/brasero-data-disc.c:1059
-#| msgid ""
-#| "The children of this directory will have 6 parent directories. This is a "
-#| "violation of the ISO9660 standard which only allows 6.\n"
-#| "Brasero can create an image of such a file hierarchy and burn it; but the "
-#| "disc may not be readable on all operating systems.\n"
-#| "NOTE: Such a file hierarchy is known to work on linux."
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -2387,7 +2379,6 @@ msgid "_Cancel Loading"
 msgstr "_Cancelar la carga"
 
 #: ../src/brasero-data-disc.c:1696
-#| msgid "Save current project"
 msgid "Cancel loading current project"
 msgstr "Cancelar la carga actual de proyecto"
 
@@ -3732,7 +3723,6 @@ msgid "Use genisoimage to create images from a file selection"
 msgstr "Usar genisoimage para crear imágenes desde una selección de archivos"
 
 #: ../src/plugins/cdrkit/burn-readom.c:401
-#| msgid "Use readom to image CDs and DVDs"
 msgid "Use readom to create disc images"
 msgstr "Usar readom para crear imágenes de discos"
 
@@ -3806,7 +3796,6 @@ msgid "Use mkisofs to create image from a file selection"
 msgstr "Usar mkisofs para crear imágenes de archivos seleccionados"
 
 #: ../src/plugins/cdrtools/burn-readcd.c:411
-#| msgid "Use readcd to image CDs and DVDs"
 msgid "Use readcd to create disc images"
 msgstr "Usar readcd para crear imágenes de discos"
 
@@ -4122,7 +4111,6 @@ msgid "_Slice"
 msgstr "Pa_rtir"
 
 #: ../src/brasero-split-dialog.c:1086
-#| msgid "Press to add a splitting point"
 msgid "Add a splitting point"
 msgstr "Añadir un punto para partir"
 
@@ -4584,7 +4572,6 @@ msgid "Bac_kground Properties"
 msgstr "Propiedades del _fondo"
 
 #: ../src/brasero-jacket-edit.c:652
-#| msgid "_Text Colour"
 msgid "_Text Color"
 msgstr "Color del _texto"
 
