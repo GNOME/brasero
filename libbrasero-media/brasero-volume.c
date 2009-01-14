@@ -527,7 +527,7 @@ brasero_volume_eject_finish (GObject *source,
 		brasero_volume_operation_end (self);
 }
 
-gboolean
+static gboolean
 brasero_volume_eject_gvolume (BraseroVolume *self,
 			      gboolean wait,
 			      GVolume *volume,
@@ -652,6 +652,53 @@ last_resort:
 
 	if (gdrive)
 		g_object_unref (gdrive);
+
+	return result;
+}
+
+gboolean
+brasero_volume_can_eject (BraseroVolume *self)
+{
+	GDrive *gdrive;
+	GVolume *volume;
+	gboolean result;
+	BraseroDrive *drive;
+	BraseroVolumePrivate *priv;
+
+	BRASERO_MEDIA_LOG ("Ejecting");
+
+	if (!self)
+		return TRUE;
+
+	priv = BRASERO_VOLUME_PRIVATE (self);
+
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+	gdrive = brasero_drive_get_gdrive (drive);
+	if (!gdrive) {
+		BRASERO_MEDIA_LOG ("No GDrive");
+		goto last_resort;
+	}
+
+	if (!g_drive_can_eject (gdrive)) {
+		BRASERO_MEDIA_LOG ("GDrive can't eject");
+		goto last_resort;
+	}
+
+	g_object_unref (gdrive);
+	return TRUE;
+
+last_resort:
+
+	if (gdrive)
+		g_object_unref (gdrive);
+
+	/* last resort */
+	volume = brasero_volume_get_gvolume (self);
+	if (!volume)
+		return FALSE;
+
+	result = g_volume_can_eject (volume);
+	g_object_unref (volume);
 
 	return result;
 }

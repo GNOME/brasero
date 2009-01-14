@@ -76,6 +76,9 @@ brasero_volume_mount (BraseroVolume *volume,
 		      GError **error);
 
 gboolean
+brasero_volume_can_eject (BraseroVolume *volume);
+
+gboolean
 brasero_volume_eject (BraseroVolume *volume,
 		      gboolean wait,
 		      GError **error);
