@@ -2,8 +2,8 @@
  *            burn-media.c
  *
  *  Wed Oct  8 16:40:48 2008
- *  Copyright  2008  ykw
- *  <ykw@localhost.localdomain>
+ *  Copyright  2008  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

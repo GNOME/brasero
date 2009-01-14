@@ -25,6 +25,7 @@
 
 #include <glib-object.h>
 
+#include <brasero-medium.h>
 #include <brasero-drive.h>
 
 G_BEGIN_DECLS
@@ -46,10 +47,10 @@ struct _BraseroMediumMonitorClass
 
 	/* Signals */
 	void		(*drive_added)		(BraseroMediumMonitor *monitor,
-						 BraseroDrive *medium);
+						 BraseroDrive *drive);
 
 	void		(*drive_removed)	(BraseroMediumMonitor *monitor,
-						 BraseroDrive*medium);
+						 BraseroDrive *drive);
 
 	void		(*medium_added)		(BraseroMediumMonitor *monitor,
 						 BraseroMedium *medium);

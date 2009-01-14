@@ -126,41 +126,36 @@ brasero_dest_selection_valid_session (BraseroSessionCfg *session,
 }
 
 static void
-brasero_dest_selection_medium_changed (GtkComboBox *combo)
+brasero_dest_selection_medium_changed (BraseroMediumSelection *selection,
+				       BraseroMedium *medium)
 {
 	BraseroDestSelectionPrivate *priv;
-	BraseroMedium *medium;
 
-	priv = BRASERO_DEST_SELECTION_PRIVATE (combo);
+	priv = BRASERO_DEST_SELECTION_PRIVATE (selection);
 
 	if (!priv->session)
 		goto chain;
 
-	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (combo));
 	if (!medium) {
-	    	gtk_widget_set_sensitive (GTK_WIDGET (combo), FALSE);
+	    	gtk_widget_set_sensitive (GTK_WIDGET (selection), FALSE);
 		goto chain;
 	}
 
-	if (brasero_medium_get_drive (medium) == brasero_burn_session_get_burner (priv->session)) {
-		g_object_unref (medium);
+	if (brasero_medium_get_drive (medium) == brasero_burn_session_get_burner (priv->session))
 		goto chain;
-	}
 
 	if (priv->locked_drive && priv->locked_drive != brasero_medium_get_drive (medium)) {
-		brasero_medium_selection_set_active (BRASERO_MEDIUM_SELECTION (combo), medium);
-		g_object_unref (medium);
+		brasero_medium_selection_set_active (selection, medium);
 		goto chain;
 	}
 
 	brasero_burn_session_set_burner (priv->session, brasero_medium_get_drive (medium));
-	gtk_widget_set_sensitive (GTK_WIDGET (combo), (priv->locked_drive == NULL));
-	g_object_unref (medium);
+	gtk_widget_set_sensitive (GTK_WIDGET (selection), (priv->locked_drive == NULL));
 
 chain:
 
-	if (GTK_COMBO_BOX_CLASS (brasero_dest_selection_parent_class)->changed)
-		GTK_COMBO_BOX_CLASS (brasero_dest_selection_parent_class)->changed (combo);
+	if (BRASERO_MEDIUM_SELECTION_CLASS (brasero_dest_selection_parent_class)->medium_changed)
+		BRASERO_MEDIUM_SELECTION_CLASS (brasero_dest_selection_parent_class)->medium_changed (selection, medium);
 }
 
 static void
@@ -497,7 +492,6 @@ static void
 brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	GtkComboBoxClass *combo_box_class = GTK_COMBO_BOX_CLASS (klass);
 	BraseroMediumSelectionClass *medium_selection_class = BRASERO_MEDIUM_SELECTION_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroDestSelectionPrivate));
@@ -506,14 +500,12 @@ brasero_dest_selection_class_init (BraseroDestSelectionClass *klass)
 	object_class->set_property = brasero_dest_selection_set_property;
 	object_class->get_property = brasero_dest_selection_get_property;
 
-	combo_box_class->changed = brasero_dest_selection_medium_changed;
-
 	medium_selection_class->format_medium_string = brasero_dest_selection_format_medium_string;
-
+	medium_selection_class->medium_changed = brasero_dest_selection_medium_changed;
 	g_object_class_install_property (object_class,
 					 PROP_SESSION,
 					 g_param_spec_object ("session",
-							      "The session to work with",
+							      "The session",
 							      "The session to work with",
 							      BRASERO_TYPE_BURN_SESSION,
 							      G_PARAM_READWRITE|G_PARAM_CONSTRUCT_ONLY));

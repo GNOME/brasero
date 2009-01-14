@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <brasero-drive.h>
+#include <brasero/brasero-drive.h>
 
 G_BEGIN_DECLS
 

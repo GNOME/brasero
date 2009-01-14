@@ -538,7 +538,7 @@ brasero_tool_dialog_init (BraseroToolDialog *obj)
 				      GTK_RESPONSE_CANCEL);
 
 	g_signal_connect (G_OBJECT (obj->priv->selector),
-			  "changed",
+			  "medium-changed",
 			  G_CALLBACK (brasero_tool_dialog_drive_changed_cb),
 			  obj);
 

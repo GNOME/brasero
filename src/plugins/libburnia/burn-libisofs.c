@@ -799,7 +799,7 @@ end:
 		if (iso_image_create_burn_source (image, opts, &priv->libburn_src) >= 0) {
 			size = priv->libburn_src->get_size (priv->libburn_src);
 			brasero_job_set_output_size_for_current_track (BRASERO_JOB (self),
-								       BRASERO_SIZE_TO_SECTORS (size, 2048),
+								       BRASERO_BYTES_TO_SECTORS (size, 2048),
 								       size);
 		}
 	}

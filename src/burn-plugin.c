@@ -950,13 +950,14 @@ brasero_plugin_priority_changed (GConfClient *client,
 	priv = BRASERO_PLUGIN_PRIVATE (self);
 
 	value = gconf_entry_get_value (entry);
-	if (value->type != GCONF_VALUE_INT)
+	if (!value)
+		priv->priority = 0;
+	else if (value->type != GCONF_VALUE_INT)
 		return;
-
-	self = BRASERO_PLUGIN (data);
+	else
+		priv->priority = gconf_value_get_int (value);
 
 	is_active = brasero_plugin_get_active (self);
-	priv->priority = gconf_value_get_int (value);
 
 	g_object_notify (G_OBJECT (self), "priority");
 	if (is_active != brasero_plugin_get_active (self))

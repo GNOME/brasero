@@ -327,13 +327,18 @@ brasero_burn_session_set_input_type (BraseroBurnSession *self,
 				     BraseroTrackType *type)
 {
 	BraseroBurnSessionPrivate *priv;
+	BraseroTrackType input = { 0, };
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 	g_return_if_fail (type != NULL);
 
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 
+	brasero_burn_session_get_input_type (self, &input);
 	memcpy (&priv->input, type, sizeof (BraseroTrackType));
+
+	if (brasero_track_type_equal (&input, type))
+		return;
 
 	if (!priv->tracks)
 		g_signal_emit (self,

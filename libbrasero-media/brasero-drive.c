@@ -98,7 +98,7 @@ brasero_volume_new (BraseroDrive *drive, const gchar *udi);
  *
  * Returns the #GDrive corresponding to this #BraseroDrive
  *
- * Return value: a #GDrive or NULL.
+ * Return value: a #GDrive or NULL. Unref after use.
  **/
 GDrive *
 brasero_drive_get_gdrive (BraseroDrive *drive)

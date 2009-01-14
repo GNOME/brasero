@@ -2,8 +2,8 @@
  *            burn-media-private.h
  *
  *  Wed Oct  8 16:42:17 2008
- *  Copyright  2008  ykw
- *  <ykw@localhost.localdomain>
+ *  Copyright  2008  Rouquier Philippe
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*

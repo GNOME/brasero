@@ -20,7 +20,7 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
-LIBBRASERO_LT_VERSION=0:0:0
+LIBBRASERO_LT_VERSION=$LT_CURRENT:$LT_REVISION:$LT_AGE
 AC_SUBST(LIBBRASERO_LT_VERSION) 
 
 AC_DEFINE_UNQUOTED(BRASERO_MAJOR_VERSION, $BRASERO_MAJOR_VERSION, [major version])
@@ -420,6 +420,7 @@ data/icons/Makefile
 help/Makefile
 nautilus/Makefile
 libbrasero-media/Makefile
+libbrasero-media/brasero-media.h
 src/plugins/Makefile
 src/plugins/cdrdao/Makefile
 src/plugins/cdrkit/Makefile

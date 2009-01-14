@@ -27,11 +27,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
-#include <libhal.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 
+#include "brasero-media.h"
+#include "brasero-medium-monitor.h"
+#include "brasero-drive.h"
+#include "brasero-medium.h"
 #include "nautilus-burn-bar.h"
 
 #define BURN_URI "burn:///"
@@ -115,10 +119,20 @@ debug_print (const char *format, ...)
 #endif
 
 static void
-launch_process (char **argv, GtkWindow *parent)
+launch_process (char **argv, gint next_arg, GtkWindow *parent)
 {
         GtkWidget *dialog;
         GError *error;
+
+        if (parent && GTK_WIDGET (parent)->window) {
+                guint xid;
+
+		xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
+                if (xid > 0) {
+                        argv [next_arg++] = g_strdup ("-x");
+                        argv [next_arg] = g_strdup_printf ("%d", xid);
+                }
+        }
 
         error = NULL;
         if (!g_spawn_async (NULL,
@@ -149,16 +163,15 @@ launch_process (char **argv, GtkWindow *parent)
 static void
 launch_brasero_on_window (GtkWindow *window)
 {
-        char *argv [3];
+        int i;
+        char *argv [5] = { NULL, };
 
         argv [0] = g_build_filename (BINDIR, "brasero", NULL);
         argv [1] = g_strdup ("-n");
-        argv [2] = NULL;
 
-        launch_process (argv, window);
-
-        g_free (argv [0]);
-        g_free (argv [1]);
+        launch_process (argv, 2, window);
+	for (i = 0; argv [i]; i++)
+		g_free (argv [i]);
 }
 
 static void
@@ -185,9 +198,10 @@ write_iso_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
         NautilusFileInfo *file_info;
-        char             *argv [4];
+        char             *argv [6] = { NULL, };
         char             *uri;
         char             *image_name;
+        int               i;
 
         file_info = g_object_get_data (G_OBJECT (item), "file_info");
 
@@ -205,20 +219,19 @@ write_iso_activate_cb (NautilusMenuItem *item,
         argv [0] = g_build_filename (BINDIR, "brasero", NULL);
         argv [1] = g_strdup ("-i");
         argv [2] = image_name;
-        argv [3] = NULL;
 
-        launch_process (argv, GTK_WINDOW (user_data));
+        launch_process (argv, 3, GTK_WINDOW (user_data));
 
-        g_free (argv [1]);
-        g_free (argv [0]);
-        g_free (image_name);
+	for (i = 0; argv [i]; i++)
+		g_free (argv [i]);
 }
 
 static void
 copy_disc_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
-        char             *argv [4];
+        int               i;
+        char             *argv [6] = { NULL, };
         char             *device_path;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
@@ -231,19 +244,19 @@ copy_disc_activate_cb (NautilusMenuItem *item,
         argv [0] = g_build_filename (BINDIR, "brasero", NULL);
         argv [1] = g_strdup ("-c");
         argv [2] = device_path;
-        argv [3] = NULL;
 
-        launch_process (argv, GTK_WINDOW (user_data));
+        launch_process (argv, 3, GTK_WINDOW (user_data));
 
-        g_free (argv [1]);
-        g_free (argv [0]);
+	for (i = 0; argv [i]; i++)
+		g_free (argv [i]);
 }
 
 static void
 blank_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
-        char             *argv [4];
+        int               i;
+        char             *argv [6]= { NULL, };
         char             *device_path;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
@@ -256,19 +269,19 @@ blank_disc_activate_cb (NautilusMenuItem *item,
         argv [0] = g_build_filename (BINDIR, "brasero", NULL);
         argv [1] = g_strdup ("-b");
         argv [2] = device_path;
-        argv [3] = NULL;
 
-        launch_process (argv, GTK_WINDOW (user_data));
+        launch_process (argv, 3, GTK_WINDOW (user_data));
 
-        g_free (argv [1]);
-        g_free (argv [0]);
+	for (i = 0; argv [i]; i++)
+		g_free (argv [i]);
 }
 
 static void
 check_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
-        char             *argv [4];
+        int               i;
+        char             *argv [6] = { NULL, };
         char             *device_path;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
@@ -281,78 +294,42 @@ check_disc_activate_cb (NautilusMenuItem *item,
         argv [0] = g_build_filename (BINDIR, "brasero", NULL);
         argv [1] = g_strdup ("-k");
         argv [2] = device_path;
-        argv [3] = NULL;
 
-        launch_process (argv, GTK_WINDOW (user_data));
+        launch_process (argv, 3, GTK_WINDOW (user_data));
 
-        g_free (argv [1]);
-        g_free (argv [0]);
-}
-
-static LibHalContext *
-get_hal_context (void)
-{
-        static LibHalContext *ctx = NULL;
-        DBusError             error;
-        DBusConnection       *dbus_conn;
-
-        if (ctx == NULL) {
-                ctx = libhal_ctx_new ();
-                if (ctx == NULL) {
-                        g_warning ("Could not create a HAL context");
-                } else {
-                        dbus_error_init (&error);
-                        dbus_conn = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-
-                        if (dbus_error_is_set (&error)) {
-                                g_warning ("Could not connect to system bus: %s", error.message);
-                                dbus_error_free (&error);
-                                return NULL;
-                        }
-
-                        libhal_ctx_set_dbus_connection (ctx, dbus_conn);
-
-                        if (! libhal_ctx_init (ctx, &error)) {
-                                g_warning ("Could not initalize the HAL context: %s",
-                                           error.message);
-
-                                if (dbus_error_is_set (&error))
-                                        dbus_error_free (&error);
-
-                                libhal_ctx_free (ctx);
-                                ctx = NULL;
-                        }
-                }
-        }
-
-        return ctx;
+	for (i = 0; argv [i]; i++)
+		g_free (argv [i]);
 }
 
 static gboolean
 volume_is_blank (GVolume *volume)
 {
-        LibHalContext *ctx;
-        char          *udi;
-        gboolean       is_blank;
-
-        ctx = get_hal_context ();
-        if (ctx == NULL) {
-                return FALSE;
-        }
+        BraseroMediumMonitor *monitor;
+        BraseroMedium        *medium;
+        BraseroDrive         *drive;
+        gchar                *device;
+        gboolean              is_blank;
 
         is_blank = FALSE;
 
-        udi = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
-        DEBUG_PRINT ("Got udi: %s\n", udi);
-        if (udi != NULL) {
-                is_blank = libhal_device_get_property_bool (ctx,
-                                                            udi,
-                                                            "volume.disc.is_blank",
-                                                            NULL);
-        }
-        g_free (udi);
+        device = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (!device)
+                return FALSE;
 
-        DEBUG_PRINT ("is-blank: %d\n", is_blank);
+        DEBUG_PRINT ("Got device: %s\n", device);
+
+        monitor = brasero_medium_monitor_get_default ();
+        drive = brasero_medium_monitor_get_drive (monitor, device);
+        g_object_unref (monitor);
+        g_free (device);
+
+        if (drive == NULL)
+                return FALSE;
+
+        medium = brasero_drive_get_medium (drive);
+        is_blank = (brasero_medium_get_status (medium) & BRASERO_MEDIUM_BLANK);
+        g_object_unref (drive);
+
         return is_blank;
 }
 
@@ -377,39 +354,28 @@ drive_get_first_volume (GDrive *drive)
 }
 
 static gboolean
-drive_is_cd_device (GDrive *drive)
+drive_is_cd_device (GDrive *gdrive)
 {
-        LibHalContext *ctx;
-        char          *udi;
-        gboolean       is_cd;
+        BraseroMediumMonitor *monitor;
+        BraseroDrive         *drive;
+        gchar                *device;
 
-        ctx = get_hal_context ();
-        if (ctx == NULL) {
+        device = g_drive_get_identifier (gdrive, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        if (!device)
                 return FALSE;
-        }
 
-        is_cd = FALSE;
+        DEBUG_PRINT ("Got device: %s\n", device);
 
-        udi = g_drive_get_identifier (drive, G_VOLUME_IDENTIFIER_KIND_HAL_UDI);
-        DEBUG_PRINT ("Got udi: %s\n", udi);
+        monitor = brasero_medium_monitor_get_default ();
+        drive = brasero_medium_monitor_get_drive (monitor, device);
+        g_object_unref (monitor);
+        g_free (device);
 
-        if (udi != NULL) {
-                char *drive_type;
-                drive_type = libhal_device_get_property_string (ctx,
-                                                                udi,
-                                                                "storage.drive_type",
-                                                                NULL);
-                DEBUG_PRINT ("Got drive type: '%s'\n", drive_type);
-                if (drive_type != NULL && strcmp (drive_type, "cdrom") == 0) {
-                        is_cd = TRUE;
-                }
-                g_free (drive_type);
-        }
-        g_free (udi);
-
-        DEBUG_PRINT ("is-cdrom: %d\n", is_cd);
-
-        return is_cd;
+        if (drive == NULL)
+                return FALSE;
+        
+        g_object_unref (drive);
+        return TRUE;
 }
 
 static GList *
@@ -468,7 +434,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 g_object_set_data (G_OBJECT (item), "file_info", file_info);
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_signal_connect (item, "activate",
-                                  G_CALLBACK (write_iso_activate_cb), NULL);
+                                  G_CALLBACK (write_iso_activate_cb), window);
                 items = g_list_append (items, item);
         }
 
@@ -522,7 +488,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
                 g_signal_connect (item, "activate",
-                                  G_CALLBACK (copy_disc_activate_cb), NULL);
+                                  G_CALLBACK (copy_disc_activate_cb), window);
                 items = g_list_append (items, item);
 
                 /* ... or if it's a rewritable medium to blank it ... */
@@ -534,7 +500,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
                 g_signal_connect (item, "activate",
-                                  G_CALLBACK (blank_disc_activate_cb), NULL);
+                                  G_CALLBACK (blank_disc_activate_cb), window);
                 items = g_list_append (items, item);
 
                 /* ... or verify medium. */
@@ -546,7 +512,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
                 g_object_set_data (G_OBJECT (item), "window", window);
                 g_object_set_data_full (G_OBJECT (item), "drive_device_path", g_strdup (device_path), g_free);
                 g_signal_connect (item, "activate",
-                                  G_CALLBACK (check_disc_activate_cb), NULL);
+                                  G_CALLBACK (check_disc_activate_cb), window);
                 items = g_list_append (items, item);
 
                 g_free (device_path);
@@ -584,7 +550,8 @@ nautilus_disc_burn_get_background_items (NautilusMenuProvider *provider,
                                                _("Write contents to a CD or DVD disc"),
                                                "brasero");
                 g_signal_connect (item, "activate",
-                                  G_CALLBACK (write_activate_cb), window);
+                                  G_CALLBACK (write_activate_cb),
+                                  window);
                 items = g_list_append (items, item);
 
                 g_object_set (item, "sensitive", ! NAUTILUS_DISC_BURN (provider)->priv->empty, NULL);
@@ -934,25 +901,16 @@ nautilus_disc_burn_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule *module)
 {
-        nautilus_disc_burn_register_type (module);
-        bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-        bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+        brasero_media_library_start ();
 
-	/* As long as it's not a library I don't see how to do it differently */
-	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
-					   "/usr/share/brasero/icons");
-	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
-					   "/usr/local/share/brasero/icons");
+        nautilus_disc_burn_register_type (module);
 }
 
 void
 nautilus_module_shutdown (void)
 {
-        LibHalContext *ctx;
-        ctx = get_hal_context ();
-        if (ctx != NULL) {
-                libhal_ctx_free (ctx);
-        }
+        /* Don't do that in case another module would need the library */
+        //brasero_media_library_stop ();
 }
 
 void

@@ -54,18 +54,17 @@ enum {
 G_DEFINE_TYPE (BraseroSrcSelection, brasero_src_selection, BRASERO_TYPE_MEDIUM_SELECTION);
 
 static void
-brasero_src_selection_medium_changed (GtkComboBox *combo_box)
+brasero_src_selection_medium_changed (BraseroMediumSelection *selection,
+				      BraseroMedium *medium)
 {
 	BraseroSrcSelectionPrivate *priv;
-	BraseroMedium *medium = NULL;
 	BraseroDrive *drive = NULL;
 
-	priv = BRASERO_SRC_SELECTION_PRIVATE (combo_box);
+	priv = BRASERO_SRC_SELECTION_PRIVATE (selection);
 
 	if (!priv->session)
 		goto chain;
 
-	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (combo_box));
 	drive = brasero_medium_get_drive (medium);
 
 	/* NOTE: don't check for drive == NULL to set the session input type */
@@ -86,13 +85,10 @@ brasero_src_selection_medium_changed (GtkComboBox *combo_box)
 
 chain:
 
-	if (medium)
-		g_object_unref (medium);
+	gtk_widget_set_sensitive (GTK_WIDGET (selection), drive != NULL);
 
-	gtk_widget_set_sensitive (GTK_WIDGET (combo_box), drive != NULL);
-
-	if (GTK_COMBO_BOX_CLASS (brasero_src_selection_parent_class)->changed)
-		GTK_COMBO_BOX_CLASS (brasero_src_selection_parent_class)->changed (combo_box);
+	if (BRASERO_MEDIUM_SELECTION_CLASS (brasero_src_selection_parent_class)->medium_changed)
+		BRASERO_MEDIUM_SELECTION_CLASS (brasero_src_selection_parent_class)->medium_changed (selection, medium);
 }
 
 GtkWidget *
@@ -146,6 +142,9 @@ brasero_src_selection_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_SESSION:
+	{
+		BraseroMedium *medium;
+
 		session = g_value_get_object (value);
 
 		priv->session = session;
@@ -154,8 +153,10 @@ brasero_src_selection_set_property (GObject *object,
 		if (priv->track)
 			brasero_track_unref (priv->track);
 
-		brasero_src_selection_medium_changed (GTK_COMBO_BOX (object));
+		medium = brasero_burn_session_get_src_medium (session);
+		brasero_src_selection_medium_changed (BRASERO_MEDIUM_SELECTION (object), medium);
 		break;
+	}
 
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -186,7 +187,7 @@ static void
 brasero_src_selection_class_init (BraseroSrcSelectionClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
-	GtkComboBoxClass *combo_box_class = GTK_COMBO_BOX_CLASS (klass);
+	BraseroMediumSelectionClass *medium_selection_class = BRASERO_MEDIUM_SELECTION_CLASS (klass);
 
 	g_type_class_add_private (klass, sizeof (BraseroSrcSelectionPrivate));
 
@@ -194,7 +195,7 @@ brasero_src_selection_class_init (BraseroSrcSelectionClass *klass)
 	object_class->set_property = brasero_src_selection_set_property;
 	object_class->get_property = brasero_src_selection_get_property;
 
-	combo_box_class->changed = brasero_src_selection_medium_changed;
+	medium_selection_class->medium_changed = brasero_src_selection_medium_changed;
 
 	g_object_class_install_property (object_class,
 					 PROP_SESSION,

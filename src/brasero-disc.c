@@ -654,7 +654,6 @@ brasero_disc_get_use_info_notebook (void)
 				   "\t* ", _("select files in the selection pane and click the \"Add\" button"), "\n",
 				   "\t* ", _("drag files in this area from the selection pane or from the file manager"), "\n",
 				   "\t* ", _("double click on files in the selection pane"), "\n",
-
 				   "\t* ", _("copy files (from file manager for example) and paste in this area"), "\n",
 				   NULL);
 

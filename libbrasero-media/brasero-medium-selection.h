@@ -47,6 +47,10 @@ struct _BraseroMediumSelectionClass
 {
 	GtkComboBoxClass parent_class;
 
+	/* Signals */
+	void		(* medium_changed)		(BraseroMediumSelection *selection,
+							 BraseroMedium *medium);
+
 	/* virtual function */
 	gchar *		(*format_medium_string)		(BraseroMediumSelection *selection,
 							 BraseroMedium *medium);

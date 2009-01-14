@@ -1620,7 +1620,6 @@ brasero_project_set_uri (BraseroProject *project,
 	uri = uri ? uri : project->priv->project;
 
 	/* add it to recent manager */
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
 	if (brasero_app_is_running (brasero_app_get_default ()))
 		brasero_project_add_to_recents (project, uri, TRUE);
 
@@ -1630,14 +1629,16 @@ brasero_project_set_uri (BraseroProject *project,
 		title = g_strdup_printf (_("Brasero - %s (Data Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
 		title = g_strdup_printf (_("Brasero - %s (Audio Disc)"), name);
-	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
+	else if (type == BRASERO_PROJECT_TYPE_VIDEO)
 		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
 	else
 		title = NULL;
  
 	g_free (name);
 
-	gtk_window_set_title (GTK_WINDOW (toplevel), title);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (project));
+	if (toplevel)
+		gtk_window_set_title (GTK_WINDOW (toplevel), title);
 	g_free (title);
 
 	/* update the menus */

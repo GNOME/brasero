@@ -126,6 +126,7 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
 {
         GtkWidget   *label;
         GtkWidget   *hbox;
+        GtkWidget   *image;
 
         bar->priv = NAUTILUS_DISC_BURN_BAR_GET_PRIVATE (bar);
 
@@ -138,6 +139,10 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
         bar->priv->button = gtk_button_new_with_label (_("Write to Disc"));
         gtk_widget_show (bar->priv->button);
         gtk_box_pack_end (GTK_BOX (hbox), bar->priv->button, FALSE, FALSE, 0);
+
+        image = gtk_image_new_from_icon_name ("media-optical-burn", GTK_ICON_SIZE_BUTTON);
+        gtk_widget_show (image);
+        gtk_button_set_image (GTK_BUTTON (bar->priv->button), image);
 
         g_signal_connect (bar->priv->button, "clicked",
                           G_CALLBACK (button_clicked_cb),

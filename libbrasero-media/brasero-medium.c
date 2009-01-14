@@ -243,6 +243,9 @@ brasero_medium_get_tooltip (BraseroMedium *self)
 	gchar *label;
 	gchar *name;
 
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (self), NULL);
+
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	media = brasero_medium_get_status (BRASERO_MEDIUM (self));

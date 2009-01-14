@@ -75,7 +75,9 @@ struct _BraseroAppPrivate
 	gint height;
 
 	gchar *saved_contents;
+
 	guint is_maximised:1;
+	guint mainwin_running:1;
 };
 
 #define BRASERO_APP_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_APP, BraseroAppPrivate))
@@ -908,7 +910,7 @@ brasero_app_current_toplevel_destroyed (GtkWidget *widget,
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
-	if (priv->mainwin)
+	if (priv->mainwin_running)
 		gtk_widget_show (GTK_WIDGET (priv->mainwin));
 }
 
@@ -919,8 +921,10 @@ brasero_app_set_toplevel (BraseroApp *app, GtkWindow *window)
 
 	priv = BRASERO_APP_PRIVATE (app);
 
-	if (!priv->mainwin) {
+	if (!priv->mainwin_running) {
 		if (priv->parent) {
+			gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+			gtk_window_set_skip_pager_hint (GTK_WINDOW (window), TRUE);
 			gtk_widget_realize (GTK_WIDGET (window));
 			gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 			gdk_window_set_transient_for (GTK_WIDGET (window)->window, priv->parent);
@@ -1429,6 +1433,7 @@ brasero_app_run_mainwin (BraseroApp *app)
 
 	priv = BRASERO_APP_PRIVATE (app);
 
+	priv->mainwin_running = 1;
 	gtk_widget_show (GTK_WIDGET (priv->mainwin));
 	gtk_main ();
 }

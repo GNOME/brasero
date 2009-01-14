@@ -2,8 +2,8 @@
  *            burn-media.h
  *
  *  Wed Oct  8 16:42:17 2008
- *  Copyright  2008  ykw
- *  <ykw@localhost.localdomain>
+ *  Copyright  2008  Philippe Rouquier
+ *  <bonfire-app@wanadoo.fr>
  ****************************************************************************/
 
 /*
@@ -19,7 +19,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 021101301,  USA
  */
  
 #ifndef _BURN_MEDIA_H
@@ -28,6 +28,21 @@
 #include <glib.h>
 
 G_BEGIN_DECLS
+
+/**
+ * Some needed information about the library
+ */
+
+#define LIBBRASERO_MEDIA_VERSION_MAJOR						\
+	@BRASERO_MAJOR_VERSION@
+#define LIBBRASERO_MEDIA_VERSION_MINOR						\
+	@BRASERO_MINOR_VERSION@
+#define LIBBRASERO_MEDIA_VERSION_MICRO						\
+	@BRASERO_SUB@
+#define LIBBRASERO_MEDIA_AGE							\
+	@LT_CURRENT@@LT_REVISION@@LT_AGE@
+#define LIBBRASERO_MEDIA_INSTALL							\
+	"@prefix@"
 
 /**
  * To start and stop the library
@@ -216,3 +231,4 @@ G_END_DECLS
 #endif /* _BURN_MEDIA_H */
 
  
+

@@ -363,14 +363,6 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 }
 
 static void
-brasero_burn_options_medium_num_changed (BraseroMediumSelection *selection,
-					 BraseroBurnOptions *self)
-{
-	brasero_burn_options_update_no_medium_warning (self);
-	gtk_window_resize (GTK_WINDOW (self), 10, 10);
-}
-
-static void
 brasero_burn_options_init (BraseroBurnOptions *object)
 {
 	BraseroBurnOptionsPrivate *priv;
@@ -470,15 +462,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 					    "is-valid",
 					    G_CALLBACK (brasero_burn_options_valid_media_cb),
 					    object);
-
-	g_signal_connect (priv->selection,
-			  "medium-added",
-			  G_CALLBACK (brasero_burn_options_medium_num_changed),
-			  object);
-	g_signal_connect (priv->selection,
-			  "medium-removed",
-			  G_CALLBACK (brasero_burn_options_medium_num_changed),
-			  object);
 }
 
 static void

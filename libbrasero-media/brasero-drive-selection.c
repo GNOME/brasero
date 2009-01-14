@@ -1,524 +1,640 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*-
- *
- * brasero-drive-selection.c
- *
- * Copyright (C) 2002-2004 Bastien Nocera <hadess@hadess.net>
- * Copyright (C) 2005-2006 William Jon McCann <mccann@jhu.edu>
- * Copyright (C) 2009      Philippe Rouquier <bonfire-app@wanadoo.fr>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *
- * Authors: Bastien Nocera <hadess@hadess.net>
- *          William Jon McCann <mccann@jhu.edu>
- *
- */
-
-#include "config.h"
-
-#include <string.h>
-
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/*
+ * brasero
+ * Copyright (C) Philippe Rouquier 2005-2008 <bonfire-app@wanadoo.fr>
+ * 
+ *  Brasero is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ * 
+ * brasero is distributed in the hope that it will be useful,
+   * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+   * You should have received a copy of the GNU General Public License
+ * along with brasero.  If not, write to:
+ * 	The Free Software Foundation, Inc.,
+ * 	51 Franklin Street, Fifth Floor
+ * 	Boston, MA  02110-1301, USA.
+   */
+  
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+  
 #include <glib.h>
-#include <glib/gi18n.h>
+#include <glib-object.h>
+#include <glib/gi18n-lib.h>
+  
 #include <gtk/gtk.h>
-
-#include "brasero-medium-monitor.h"
+  
 #include "brasero-drive-selection.h"
+#include "brasero-medium-monitor.h"
+#include "brasero-drive.h"
+#include "brasero-units.h"
+  
+typedef struct _BraseroDriveSelectionPrivate BraseroDriveSelectionPrivate;
+struct _BraseroDriveSelectionPrivate
+{
+	BraseroDrive *active;
 
-/* Signals */
-enum {
-        DRIVE_CHANGED,
-        LAST_SIGNAL
+	BraseroDriveType type;
+	gulong added_sig;
+	gulong removed_sig;
 };
-
-/* Arguments */
-enum {
-        PROP_0,
-        PROP_DRIVE,
-        PROP_DRIVE_TYPE,
-        PROP_RECORDERS_ONLY,
-};
-
-enum {
-        DISPLAY_NAME_COLUMN,
-        DRIVE_COLUMN,
-        N_COLUMNS
-};
-
-#define BRASERO_DRIVE_SELECTION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_SELECTION, BraseroDriveSelectionPrivate))
-
-typedef struct BraseroDriveSelectionPrivate BraseroDriveSelectionPrivate;
-
-struct BraseroDriveSelectionPrivate {
-        BraseroMediumMonitor *monitor;
-
-        BraseroDrive        *selected_drive;
-        BraseroDriveType     type;
-};
-
+  
 #define BRASERO_DRIVE_SELECTION_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_DRIVE_SELECTION, BraseroDriveSelectionPrivate))
 
-static void brasero_drive_selection_init         (BraseroDriveSelection *selection);
+typedef enum {
+	CHANGED_SIGNAL,
+	LAST_SIGNAL
+} BraseroDriveSelectionSignalType;
 
-static void brasero_drive_selection_set_property (GObject      *object,
-                                                  guint         property_id,
-                                                  const GValue *value,
-                                                  GParamSpec   *pspec);
-static void brasero_drive_selection_get_property (GObject      *object,
-                                                  guint         property_id,
-                                                  GValue       *value,
-                                                  GParamSpec   *pspec);
+static guint brasero_drive_selection_signals [LAST_SIGNAL] = { 0 };
 
-static void brasero_drive_selection_finalize     (GObject      *object);
-
-static int brasero_drive_selection_table_signals [LAST_SIGNAL] = { 0 };
-
+enum {
+	PROP_0,
+	PROP_DRIVE,
+	PROP_DRIVE_TYPE
+};
+  
+enum {
+	DRIVE_COL,
+	NAME_COL,
+	ICON_COL,
+	NUM_COL
+};
+  
 G_DEFINE_TYPE (BraseroDriveSelection, brasero_drive_selection, GTK_TYPE_COMBO_BOX);
-
+  
+  
 static void
-brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
+brasero_drive_selection_set_current_drive (BraseroDriveSelection *self,
+					   GtkTreeIter *iter)
 {
-        GObjectClass *object_class;
-        GtkWidgetClass *widget_class;
+	BraseroDriveSelectionPrivate *priv;
+	BraseroDrive *drive;
+	GtkTreeModel *model;
 
-        object_class = (GObjectClass *) klass;
-        widget_class = (GtkWidgetClass *) klass;
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 
-        /* GObject */
-        object_class->set_property = brasero_drive_selection_set_property;
-        object_class->get_property = brasero_drive_selection_get_property;
-        object_class->finalize = brasero_drive_selection_finalize;
-
-        g_type_class_add_private (klass, sizeof (BraseroDriveSelectionPrivate));
-
-        /* Properties */
-        g_object_class_install_property (object_class, PROP_DRIVE,
-                                         g_param_spec_object ("drive",
-                                                              _("Drive"),
-                                                              "The drive currently selected",
-                                                              BRASERO_TYPE_DRIVE,
-                                                              G_PARAM_READWRITE));
-        
-        g_object_class_install_property (object_class, PROP_DRIVE_TYPE,
-                                         g_param_spec_uint ("drive-type",
-                                                            "Drive type",
-                                                            "The drive types used to filter",
-                                                            0, 255, BRASERO_DRIVE_TYPE_ALL_BUT_FILE,
-                                                            G_PARAM_READWRITE));
-
-	/**
- 	* BraseroDriveSelection::drive_changed:
- 	* @selection: the object which received the signal
-  	* @drive: the new drive which is selected
-	*
- 	* This signal gets emitted when the selected drive has changed
- 	*
- 	*/
-        brasero_drive_selection_table_signals [DRIVE_CHANGED] =
-                g_signal_new ("drive_changed",
-                              G_TYPE_FROM_CLASS (object_class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (BraseroDriveSelectionClass,
-                                               drive_changed),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__OBJECT,
-                              G_TYPE_NONE, 1,
-                              BRASERO_TYPE_DRIVE);
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	gtk_tree_model_get (model, iter,
+			    DRIVE_COL, &drive,
+			    -1);
+  
+	if (priv->active == drive)
+		return;
+  
+	if (priv->active)
+		g_object_unref (priv->active);
+  
+	priv->active = drive;
+  
+	if (priv->active) {
+		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+		g_object_ref (priv->active);
+	}
+	else
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+  
+	g_signal_emit (self,
+		       brasero_drive_selection_signals [CHANGED_SIGNAL],
+		       0,
+		       priv->active);
 }
-
+  
 static void
-brasero_drive_selection_set_drive_internal (BraseroDriveSelection *selection,
-                                            BraseroDrive          *drive)
+brasero_drive_selection_changed (GtkComboBox *combo)
 {
-        BraseroDriveSelectionPrivate *priv;
-
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-        priv->selected_drive = g_object_ref (drive);
-
-        g_signal_emit (G_OBJECT (selection),
-                       brasero_drive_selection_table_signals [DRIVE_CHANGED],
-                       0, drive);
-
-        g_object_notify (G_OBJECT (selection), "drive");
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+  
+	model = gtk_combo_box_get_model (combo);
+	if (!gtk_combo_box_get_active_iter (combo, &iter))
+		return;
+  
+	brasero_drive_selection_set_current_drive (BRASERO_DRIVE_SELECTION (combo), &iter);
 }
-
-static void
-combo_changed (GtkComboBox                *combo,
-               BraseroDriveSelection *selection)
+  
+/**
+ * brasero_drive_selection_set_active:
+ * @selector: a #BraseroDriveSelection
+ * @drive: a #BraseroDrive to set as the active one in the selector
+ *
+ * Sets the active drive. Emits the ::drive-changed signal.
+ *
+ * Return value: a #gboolean. TRUE if it succeeded, FALSE otherwise.
+ **/
+gboolean
+brasero_drive_selection_set_active (BraseroDriveSelection *selector,
+				     BraseroDrive *drive)
 {
-        BraseroDrive      *drive;
-        GtkTreeModel      *model;
-        GtkTreeIter        iter;
+	BraseroDriveSelectionPrivate *priv;
+	gboolean result = FALSE;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-        if (! gtk_combo_box_get_active_iter (GTK_COMBO_BOX (selection), &iter)) {
-                return;
-        }
+	g_return_val_if_fail (selector != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_DRIVE_SELECTION (selector), FALSE);
 
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
-        gtk_tree_model_get (model, &iter, DRIVE_COLUMN, &drive, -1);
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selector);
+  
+	if (priv->active == drive)
+		return TRUE;
+  
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return FALSE;
+  
+	do {
+		BraseroDrive *iter_drive;
+  
+		gtk_tree_model_get (model, &iter,
+				    DRIVE_COL, &iter_drive,
+				    -1);
+  
+		if (drive == iter_drive) {
+			if (iter_drive)
+				g_object_unref (iter_drive);
 
-        if (drive == NULL) {
-                return;
-        }
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selector), &iter);
+			brasero_drive_selection_set_current_drive (selector, &iter);
+			result = TRUE;
+			break;
+		}
 
-        brasero_drive_selection_set_drive_internal (selection, drive);
+		g_object_unref (iter_drive);
+	} while (gtk_tree_model_iter_next (model, &iter));
+
+	return result;
 }
-
-static void
-selection_update_sensitivity (BraseroDriveSelection *selection)
+  
+/**
+ * brasero_drive_selection_get_active:
+ * @selector: a #BraseroDriveSelection
+ *
+ * Gets the active drive.
+ *
+ * Return value: a #BraseroDrive or NULL. Unref when it is not needed anymore.
+ **/
+BraseroDrive *
+brasero_drive_selection_get_active (BraseroDriveSelection *selector)
 {
-        GtkTreeModel *model;
-        int           num_drives;
+	BraseroDriveSelectionPrivate *priv;
 
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
-        num_drives = gtk_tree_model_iter_n_children (model, NULL);
+	g_return_val_if_fail (selector != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_DRIVE_SELECTION (selector), NULL);
 
-        gtk_widget_set_sensitive (GTK_WIDGET (selection), (num_drives > 0));
-}
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selector);
+	if (!priv->active)
+		return NULL;
 
-static gboolean
-get_iter_for_drive (BraseroDriveSelection *selection,
-                    BraseroDrive          *drive,
-                    GtkTreeIter           *iter)
-{
-        GtkTreeModel      *model;
-        gboolean           found;
-
-        found = FALSE;
-
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
-        if (! gtk_tree_model_get_iter_first (model, iter)) {
-                goto out;
-        }
-
-        do {
-                BraseroDrive *drive2;
-
-                gtk_tree_model_get (model, iter, DRIVE_COLUMN, &drive2, -1);
-
-                if (drive == drive2) {
-                        found = TRUE;
-                        break;
-                }
-
-        } while (gtk_tree_model_iter_next (model, iter));
- out:
-        return found;
+	return g_object_ref (priv->active);
 }
 
 static void
-selection_append_drive (BraseroDriveSelection *selection,
-                        BraseroDrive          *drive)
+brasero_drive_selection_update_no_disc_entry (BraseroDriveSelection *self,
+					      GtkTreeModel *model,
+					      GtkTreeIter *iter)
 {
-        char         *display_name;
-        GtkTreeIter   iter;
-        GtkTreeModel *model;
+	GIcon *icon;
 
-        display_name = brasero_drive_get_display_name (drive);
+	icon = g_themed_icon_new_with_default_fallbacks ("drive-optical");
 
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
-        gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-        gtk_list_store_set (GTK_LIST_STORE (model), &iter,
-                            DISPLAY_NAME_COLUMN, display_name ? display_name : _("Unnamed CD/DVD Drive"),
-                            DRIVE_COLUMN, drive,
-                            -1);
+	/* FIXME: that needs a string */
+	gtk_list_store_set (GTK_LIST_STORE (model), iter,
+			    NAME_COL, NULL,
+			    ICON_COL, NULL,
+			    -1);
 
-        g_free (display_name);
+	g_object_unref (icon);
+
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), iter);
+	brasero_drive_selection_set_current_drive (self, iter);
+}
+  
+static void
+brasero_drive_selection_add_no_disc_entry (BraseroDriveSelection *self)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	BraseroDriveSelectionPrivate *priv;
+  
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
+  
+	/* Nothing's available. Say it. Two cases here, either we're
+	 * still probing drives or there isn't actually any available
+	 * drive. */
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+	brasero_drive_selection_update_no_disc_entry (self, model, &iter);
+}
+  
+/**
+ * brasero_drive_selection_show_type:
+ * @selector: a #BraseroDriveSelection
+ * @type: a #BraseroDriveType
+ *
+ * Filters and displays drive corresponding to @type.
+ *
+ **/
+void
+brasero_drive_selection_show_type (BraseroDriveSelection *selector,
+				   BraseroDriveType type)
+{
+	BraseroDriveSelectionPrivate *priv;
+	BraseroMediumMonitor *monitor;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GSList *list;
+	GSList *item;
+
+	g_return_if_fail (selector != NULL);
+	g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (selector));
+
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (selector);
+
+	priv->type = type;
+
+	monitor = brasero_medium_monitor_get_default ();
+	list = brasero_medium_monitor_get_drives (monitor, type);
+	g_object_unref (monitor);
+  
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (selector));
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		/* First filter */
+		do {
+			GSList *node;
+			BraseroDrive *drive;
+  
+			gtk_tree_model_get (model, &iter,
+					    DRIVE_COL, &drive,
+					    -1);
+  
+			if (!drive) {
+				/* That's the dummy line saying there isn't any
+				 * available drive for whatever action it is */
+				gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+				break;
+			}
+  
+			node = g_slist_find (list, drive);
+			g_object_unref (drive);
+  
+			if (!node) {
+				if (gtk_list_store_remove (GTK_LIST_STORE (model), &iter))
+					continue;
+  
+				/* no more iter in the tree get out */
+				break;
+			}
+  
+			g_object_unref (node->data);
+			list = g_slist_delete_link (list, node);
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+  
+	if (list) {
+		/* add remaining drive */
+		for (item = list; item; item = item->next) {
+			gchar *drive_name;
+			BraseroDrive *drive;
+  			GIcon *drive_icon = NULL;
+
+			drive = item->data;
+
+			drive_name =  brasero_drive_get_display_name (drive);
+
+			if (!brasero_drive_is_fake (drive)) {
+				GDrive *gdrive;
+
+				gdrive = brasero_drive_get_gdrive (drive);
+				if (gdrive) {
+					drive_icon = g_drive_get_icon (gdrive);
+					g_object_unref (gdrive);
+				}
+				else
+					drive_icon = g_themed_icon_new_with_default_fallbacks ("drive-optical");
+			}
+			else
+				drive_icon = g_themed_icon_new_with_default_fallbacks ("iso-image-new");
+  
+			gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    DRIVE_COL, drive,
+					    NAME_COL, drive_name?drive_name:_("Unnamed CD/DVD Drive"),
+					    ICON_COL, drive_icon,
+					    -1);
+			g_free (drive_name);
+		}
+		g_slist_foreach (list, (GFunc) g_object_unref, NULL);
+		g_slist_free (list);
+	}
+  
+	if (!gtk_tree_model_get_iter_first (model, &iter)) {
+		brasero_drive_selection_add_no_disc_entry (selector);
+		return;
+	}
+
+	gtk_widget_set_sensitive (GTK_WIDGET (selector), TRUE);
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (selector)) == -1) {
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selector), &iter);
+		brasero_drive_selection_set_current_drive (selector, &iter);
+	}
 }
 
 static void
-selection_remove_drive (BraseroDriveSelection *selection,
-                        BraseroDrive          *drive)
+brasero_drive_selection_drive_added_cb (BraseroMediumMonitor *monitor,
+					BraseroDrive *drive,
+					BraseroDriveSelection *self)
 {
-        gboolean                      found;
-        GtkTreeIter                   iter;
-        GtkTreeModel                 *model;
-        BraseroDriveSelectionPrivate *priv;
+	BraseroDriveSelectionPrivate *priv;
+	gboolean add = FALSE;
+	GtkTreeModel *model;
+	gchar *drive_name;
+	GIcon *drive_icon;
+	GtkTreeIter iter;
 
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-        found = get_iter_for_drive (selection, drive, &iter);
-        if (! found) {
-                return;
-        }
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (self);
 
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
-        gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+	if ((priv->type & BRASERO_DRIVE_TYPE_WRITER)
+	&&  (brasero_drive_can_write (drive)))
+		add = TRUE;
+	else if (priv->type & BRASERO_DRIVE_TYPE_READER)
+		add = TRUE;
 
-        if (priv->selected_drive != NULL
-        && (drive == priv->selected_drive)) {
-                if (gtk_tree_model_get_iter_first (model, &iter)) {
-                        gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selection), &iter);
-                }
-        }
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+
+	if (!add) {
+		/* Try to get the first iter (it shouldn't fail) */
+		if (!gtk_tree_model_get_iter_first (model, &iter)) {
+			brasero_drive_selection_add_no_disc_entry (self);
+			return;
+		}
+  
+		/* See if that's a real drive or not; if so, return. */
+		drive = NULL;
+		gtk_tree_model_get (model, &iter,
+				    DRIVE_COL, &drive,
+				    -1);
+		if (drive)
+			return;
+  
+		brasero_drive_selection_update_no_disc_entry (self, model, &iter);
+		return;
+	}
+  
+	/* remove warning message */
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		BraseroDrive *tmp;
+  
+		gtk_tree_model_get (model, &iter,
+				    DRIVE_COL, &tmp,
+				    -1);
+		if (!tmp)
+			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+		else
+			g_object_unref (tmp);
+	}
+
+	if (!brasero_drive_is_fake (drive)) {
+		GDrive *gdrive;
+
+		gdrive = brasero_drive_get_gdrive (drive);
+		if (gdrive) {
+			drive_icon = g_drive_get_icon (gdrive);
+			g_object_unref (gdrive);
+		}
+		else
+			drive_icon = g_themed_icon_new_with_default_fallbacks ("drive-optical");
+	}
+	else
+		drive_icon = g_themed_icon_new_with_default_fallbacks ("iso-image-new");
+
+	drive_name = brasero_drive_get_display_name (drive);
+
+	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+			    DRIVE_COL, drive,
+			    NAME_COL, drive_name?drive_name:_("Unnamed CD/DVD Drive"),
+			    ICON_COL, drive_icon,
+			    -1);
+	g_free (drive_name);
+
+	gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
+		brasero_drive_selection_set_current_drive (self, &iter);
+	}
 }
-
+  
 static void
-populate_model (BraseroDriveSelection *selection,
-                GtkListStore          *store)
-{
-        GSList                       *drives;
-        BraseroDrive                 *drive;
-        BraseroMediumMonitor         *monitor;
-        BraseroDriveSelectionPrivate *priv;
+brasero_drive_selection_drive_removed_cb (BraseroMediumMonitor *monitor,
+					    BraseroDrive *drive,
+					    BraseroDriveSelection *self)
+  {
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+  
+	model = gtk_combo_box_get_model (GTK_COMBO_BOX (self));
+	if (!gtk_tree_model_get_iter_first (model, &iter))
+		return;
+  
+	do {
+		BraseroDrive *iter_drive;
+  
+		gtk_tree_model_get (model, &iter,
+				    DRIVE_COL, &iter_drive,
+				    -1);
+  
+		if (drive == iter_drive) {
+			g_object_unref (iter_drive);
+			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+			break;
+		}
+  
+		/* Could be NULL if a message "there is no drive ..." is on */
+		if (iter_drive)
+			g_object_unref (iter_drive);
+  
+	} while (gtk_tree_model_iter_next (model, &iter));
 
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-        monitor = brasero_medium_monitor_get_default ();
-        drives = brasero_medium_monitor_get_drives (monitor, priv->type);
-        while (drives != NULL) {
-                drive = drives->data;
+	if (!gtk_tree_model_get_iter_first (model, &iter)) {
+		brasero_drive_selection_add_no_disc_entry (self);
+		return;
+	}
 
-                selection_append_drive (selection, drive);
-
-                if (drive != NULL) {
-                        g_object_unref (drive);
-                }
-                drives = g_slist_delete_link (drives, drives);
-        }
-
-        gtk_combo_box_set_active (GTK_COMBO_BOX (selection), 0);
+	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (self), &iter);
+		brasero_drive_selection_set_current_drive (self, &iter);
+	}
 }
-
+  
 static void
-drive_connected_cb (BraseroMediumMonitor   *monitor,
-                    BraseroDrive          *drive,
-                    BraseroDriveSelection *selection)
+brasero_drive_selection_init (BraseroDriveSelection *object)
 {
-        selection_append_drive (selection, drive);
+	GtkListStore *model;
+	GtkCellRenderer *renderer;
+	BraseroMediumMonitor *monitor;
+	BraseroDriveSelectionPrivate *priv;
 
-        selection_update_sensitivity (selection);
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+
+	monitor = brasero_medium_monitor_get_default ();
+	priv->added_sig = g_signal_connect (monitor,
+					    "drive-added",
+					    G_CALLBACK (brasero_drive_selection_drive_added_cb),
+					    object);
+	priv->removed_sig = g_signal_connect (monitor,
+					      "drive-removed",
+					      G_CALLBACK (brasero_drive_selection_drive_removed_cb),
+					      object);
+
+	g_object_unref (monitor);
+
+	/* get the list and fill the model */
+	model = gtk_list_store_new (NUM_COL,
+				    G_TYPE_OBJECT,
+				    G_TYPE_STRING,
+				    G_TYPE_ICON);
+
+	gtk_combo_box_set_model (GTK_COMBO_BOX (object), GTK_TREE_MODEL (model));
+	g_object_unref (model);
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (renderer, "follow-state", TRUE, NULL);
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
+					"gicon", ICON_COL,
+					NULL);
+
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set (renderer, "xpad", 8, NULL);
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
+					"markup", NAME_COL,
+					NULL);
+
+	brasero_drive_selection_show_type (BRASERO_DRIVE_SELECTION (object),
+					   BRASERO_DRIVE_TYPE_ALL_BUT_FILE);
+						 
 }
-
-static void
-drive_disconnected_cb (BraseroMediumMonitor   *monitor,
-                       BraseroDrive          *drive,
-                       BraseroDriveSelection *selection)
-{
-        selection_remove_drive (selection, drive);
-
-        selection_update_sensitivity (selection);
-}
-
-static void
-brasero_drive_selection_init (BraseroDriveSelection *selection)
-{
-        GtkCellRenderer              *cell;
-        GtkListStore                 *store;
-        BraseroDriveSelectionPrivate *priv;
-
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-
-        priv->monitor = brasero_medium_monitor_get_default ();
-
-        g_signal_connect (priv->monitor, "drive-added", G_CALLBACK (drive_connected_cb), selection);
-        g_signal_connect (priv->monitor, "drive-removed", G_CALLBACK (drive_disconnected_cb), selection);
-
-        store = gtk_list_store_new (N_COLUMNS, G_TYPE_STRING, BRASERO_TYPE_DRIVE);
-        gtk_combo_box_set_model (GTK_COMBO_BOX (selection),
-                                 GTK_TREE_MODEL (store));
-
-        cell = gtk_cell_renderer_text_new ();
-        gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (selection), cell, TRUE);
-        gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (selection), cell,
-                                        "text", DISPLAY_NAME_COLUMN,
-                                        NULL);
-
-        priv->type = BRASERO_DRIVE_TYPE_ALL_BUT_FILE;
-        populate_model (selection, store);
-
-        selection_update_sensitivity (selection);
-
-        g_signal_connect (G_OBJECT (selection), "changed",
-                          G_CALLBACK (combo_changed), selection);
-
-}
-
+  
 static void
 brasero_drive_selection_finalize (GObject *object)
 {
-        BraseroDriveSelection *selection = (BraseroDriveSelection *) object;
-        BraseroDriveSelectionPrivate *priv;
+	BraseroDriveSelectionPrivate *priv;
+	BraseroMediumMonitor *monitor;
+  
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+  
+	monitor = brasero_medium_monitor_get_default ();
+  
+	g_signal_handler_disconnect (monitor, priv->added_sig);
+	g_signal_handler_disconnect (monitor, priv->removed_sig);
+	priv->removed_sig = 0;
+	priv->added_sig = 0;
 
-        g_return_if_fail (selection != NULL);
-        g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (selection));
+	g_object_unref (monitor);
 
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-
-        g_signal_handlers_disconnect_by_func (priv->monitor, G_CALLBACK (drive_connected_cb), selection);
-        g_signal_handlers_disconnect_by_func (priv->monitor, G_CALLBACK (drive_disconnected_cb), selection);
-
-        if (priv->selected_drive != NULL) {
-                g_object_unref (priv->selected_drive);
-        }
-
-        if (G_OBJECT_CLASS (brasero_drive_selection_parent_class)->finalize != NULL) {
-                (* G_OBJECT_CLASS (brasero_drive_selection_parent_class)->finalize) (object);
-        }
+	G_OBJECT_CLASS (brasero_drive_selection_parent_class)->finalize (object);
+  }
+  
+static void
+brasero_drive_selection_set_property (GObject *object,
+				       guint prop_id,
+				       const GValue *value,
+				       GParamSpec *pspec)
+{
+	BraseroDriveSelectionPrivate *priv;
+  
+	g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (object));
+  
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+  
+	switch (prop_id)
+	{
+	case PROP_DRIVE_TYPE:
+		brasero_drive_selection_show_type (BRASERO_DRIVE_SELECTION (object),
+						   g_value_get_uint (value));
+		break;
+	case PROP_DRIVE:
+		brasero_drive_selection_set_active (BRASERO_DRIVE_SELECTION (object),
+						     BRASERO_DRIVE (g_value_get_object (value)));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+  }
+  
+static void
+brasero_drive_selection_get_property (GObject *object,
+				       guint prop_id,
+				       GValue *value,
+				       GParamSpec *pspec)
+{
+	BraseroDriveSelectionPrivate *priv;
+  
+	g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (object));
+  
+	priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
+  
+	switch (prop_id)
+	{
+	case PROP_DRIVE_TYPE:
+		g_value_set_uint (value, priv->type);
+		break;
+	case PROP_DRIVE:
+		g_value_set_object (value, brasero_drive_selection_get_active (BRASERO_DRIVE_SELECTION (object)));
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
 }
+  
+static void
+brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
+{
+	GObjectClass* object_class = G_OBJECT_CLASS (klass);
+	GtkComboBoxClass *combo_class = GTK_COMBO_BOX_CLASS (klass);
+  
+	g_type_class_add_private (klass, sizeof (BraseroDriveSelectionPrivate));
+  
+	object_class->finalize = brasero_drive_selection_finalize;
+	object_class->set_property = brasero_drive_selection_set_property;
+	object_class->get_property = brasero_drive_selection_get_property;
+  
+	combo_class->changed = brasero_drive_selection_changed;
 
-/**
- * brasero_drive_selection_new:
- *
- * Create a new drive selector.
- *
- * Return value: Newly allocated #BraseroDriveSelection widget
- *
- **/
+	g_object_class_install_property (object_class, PROP_DRIVE,
+					 g_param_spec_object (_("drive"), NULL, NULL,
+							      BRASERO_TYPE_DRIVE, G_PARAM_READWRITE));
+
+	g_object_class_install_property (object_class, PROP_DRIVE_TYPE,
+					 g_param_spec_uint ("drive-type", NULL, NULL,
+							    0, BRASERO_DRIVE_TYPE_ALL,
+							    BRASERO_DRIVE_TYPE_ALL_BUT_FILE,
+							    G_PARAM_READWRITE));
+	brasero_drive_selection_signals [CHANGED_SIGNAL] =
+	    g_signal_new ("drive_changed",
+			  BRASERO_TYPE_DRIVE_SELECTION,
+			  G_SIGNAL_RUN_FIRST|G_SIGNAL_ACTION|G_SIGNAL_NO_RECURSE,
+			  G_STRUCT_OFFSET (BraseroDriveSelectionClass, drive_changed),
+			  NULL,
+			  NULL,
+			  g_cclosure_marshal_VOID__OBJECT,
+			  G_TYPE_NONE,
+			  1,
+			  BRASERO_TYPE_DRIVE);
+}
+  
 GtkWidget *
 brasero_drive_selection_new (void)
 {
-        GtkWidget *widget;
-
-        widget = GTK_WIDGET
-                (g_object_new (BRASERO_TYPE_DRIVE_SELECTION, NULL));
-
-        return widget;
+	return g_object_new (BRASERO_TYPE_DRIVE_SELECTION, NULL);
 }
-
-static void
-repopulate_model (BraseroDriveSelection *selection)
-{
-        GtkTreeModel *model;
-
-        /* block the combo changed signal handler until we're done */
-        g_signal_handlers_block_by_func (G_OBJECT (selection),
-                                         combo_changed, selection);
-
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (selection));
-        gtk_list_store_clear (GTK_LIST_STORE (model));
-        populate_model (selection, GTK_LIST_STORE (model));
-
-        g_signal_handlers_unblock_by_func (G_OBJECT (selection),
-                                           combo_changed, selection);
-
-        /* Force a signal out */
-        combo_changed (GTK_COMBO_BOX (selection), (gpointer) selection);
-}
-
-void
-brasero_drive_selection_show_type (BraseroDriveSelection          *selection,
-                                   BraseroDriveType                type)
-{
-        BraseroDriveSelectionPrivate *priv;
-
-        g_return_if_fail (selection != NULL);
-        g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (selection));
-
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-        priv->type = type;
-
-        repopulate_model (selection);
-        selection_update_sensitivity (selection);
-}
-
-static void
-brasero_drive_selection_set_property (GObject      *object,
-                                      guint         property_id,
-                                      const GValue *value,
-                                      GParamSpec   *pspec)
-{
-        BraseroDriveSelection *selection;
-
-        g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (object));
-
-        selection = BRASERO_DRIVE_SELECTION (object);
-
-        switch (property_id) {
-        case PROP_DRIVE:
-                brasero_drive_selection_set_active (selection, g_value_get_object (value));
-                break;
-        case PROP_DRIVE_TYPE:
-                brasero_drive_selection_show_type (selection, g_value_get_uint (value));
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-        }
-}
-
-static void
-brasero_drive_selection_get_property (GObject    *object,
-                                      guint       property_id,
-                                      GValue     *value,
-                                      GParamSpec *pspec)
-{
-        BraseroDriveSelectionPrivate *priv;
-
-        g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (object));
-
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (object);
-
-        switch (property_id) {
-        case PROP_DRIVE:
-                g_value_set_object (value, priv->selected_drive);
-                break;
-        case PROP_DRIVE_TYPE:
-                g_value_set_uint (value, priv->type);
-                break;
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-        }
-}
-
-/**
- * brasero_drive_selection_set_active:
- * @selection: #BraseroDriveSelection
- * @drive: #BraseroDrive
- *
- * Set the current selected drive to that which corresponds to the
- * specified drive.
- *
- **/
-void
-brasero_drive_selection_set_active (BraseroDriveSelection *selection,
-                                          BraseroDrive          *drive)
-{
-        GtkTreeIter        iter;
-        gboolean           found;
-
-        g_return_if_fail (selection != NULL);
-        g_return_if_fail (BRASERO_IS_DRIVE_SELECTION (selection));
-
-        found = get_iter_for_drive (selection, drive, &iter);
-        if (! found) {
-                return;
-        }
-
-        gtk_combo_box_set_active_iter (GTK_COMBO_BOX (selection), &iter);
-}
-
-/**
- * brasero_drive_selection_get_active:
- * @selection: #BraseroDriveSelection
- *
- * Get the currently selected drive
- *
- * Return value: currently selected #BraseroDrive.  The drive must be
- * unreffed using nautilus_burn_drive_unref after use.
- *
- **/
-BraseroDrive *
-brasero_drive_selection_get_active (BraseroDriveSelection *selection)
-{
-        BraseroDriveSelectionPrivate *priv;
-
-        g_return_val_if_fail (selection != NULL, NULL);
-        g_return_val_if_fail (BRASERO_IS_DRIVE_SELECTION (selection), NULL);
-
-        priv = BRASERO_DRIVE_SELECTION_PRIVATE (selection);
-        if (priv->selected_drive != NULL) {
-                g_object_ref (priv->selected_drive);
-        }
-
-        return priv->selected_drive;
-}
-
