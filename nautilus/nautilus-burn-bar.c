@@ -111,7 +111,6 @@ nautilus_disc_burn_bar_class_init (NautilusDiscBurnBarClass *klass)
                                            NULL, NULL,
                                            g_cclosure_marshal_VOID__VOID,
                                            G_TYPE_NONE, 0);
-
 }
 
 static void

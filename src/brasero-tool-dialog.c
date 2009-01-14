@@ -322,20 +322,15 @@ brasero_tool_dialog_set_medium (BraseroToolDialog *self,
 }
 
 static void
-brasero_tool_dialog_drive_changed_cb (GtkComboBox *combo_box,
+brasero_tool_dialog_drive_changed_cb (BraseroMediumSelection *selection,
+				      BraseroMedium *medium,
 				      BraseroToolDialog *self)
 {
 	BraseroToolDialogClass *klass;
-	BraseroMedium *medium;
-
-	medium = brasero_medium_selection_get_active (BRASERO_MEDIUM_SELECTION (combo_box));
 
 	klass = BRASERO_TOOL_DIALOG_GET_CLASS (self);
 	if (klass->drive_changed)
 		klass->drive_changed (self, medium);
-
-	if (medium)
-		g_object_unref (medium);
 }
 
 static gboolean
