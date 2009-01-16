@@ -724,7 +724,7 @@ brasero_drive_probing (BraseroDrive *drive)
 
 /**
  * brasero_drive_reprobe:
- * @monitor: a #BraseroDrive
+ * @drive: a #BraseroDrive
  *
  * Reprobes the drive contents. Useful when an operation has just been performed
  * (blanking, burning, ...) and medium status should be updated.

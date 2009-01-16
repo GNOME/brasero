@@ -81,7 +81,8 @@ IGNORE_HFILES=	scsi-base.h		\
 		brasero-media-private.h	\
 		burn-susp.h		\
 		burn-hal-watch.h	\
-		libbrasero-marshal.h
+		libbrasero-marshal.h	\
+		brasero-gio-operation.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png

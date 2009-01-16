@@ -612,11 +612,15 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
 	combo_class->changed = brasero_drive_selection_changed;
 
 	g_object_class_install_property (object_class, PROP_DRIVE,
-					 g_param_spec_object (_("drive"), NULL, NULL,
+					 g_param_spec_object (_("Drive"),
+							      "Selected drive",
+							      "The currently selected drive",
 							      BRASERO_TYPE_DRIVE, G_PARAM_READWRITE));
 
 	g_object_class_install_property (object_class, PROP_DRIVE_TYPE,
-					 g_param_spec_uint ("drive-type", NULL, NULL,
+					 g_param_spec_uint ("drive-type",
+							    "The type of drives",
+							    "The type of drives displayed",
 							    0, BRASERO_DRIVE_TYPE_ALL,
 							    BRASERO_DRIVE_TYPE_ALL_BUT_FILE,
 							    G_PARAM_READWRITE));

@@ -153,7 +153,7 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
 /**
  * brasero_medium_monitor_get_drives:
  * @monitor: a #BraseroMediumMonitor
- * @include_fake: a #BraseroDriveType to tell what type of drives to include in the list
+ * @type: a #BraseroDriveType to tell what type of drives to include in the list
  *
  * Obtains the list of available drives.
  *

@@ -65,14 +65,14 @@ GType brasero_medium_selection_get_type (void) G_GNUC_CONST;
 GtkWidget* brasero_medium_selection_new (void);
 
 BraseroMedium *
-brasero_medium_selection_get_active (BraseroMediumSelection *selection);
+brasero_medium_selection_get_active (BraseroMediumSelection *selector);
 
 gboolean
-brasero_medium_selection_set_active (BraseroMediumSelection *selection,
+brasero_medium_selection_set_active (BraseroMediumSelection *selector,
 				     BraseroMedium *medium);
 
 void
-brasero_medium_selection_show_media_type (BraseroMediumSelection *selection,
+brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
 					  BraseroMediaType type);
 
 G_END_DECLS

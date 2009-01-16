@@ -800,11 +800,15 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 	combo_class->changed = brasero_medium_selection_changed;
 
 	g_object_class_install_property (object_class, PROP_MEDIUM,
-					 g_param_spec_object ("medium", NULL, NULL,
+					 g_param_spec_object ("medium",
+							      "Selected medium",
+							      "The currently selected medium",
 							      BRASERO_TYPE_MEDIUM, G_PARAM_READWRITE));
 
 	g_object_class_install_property (object_class, PROP_MEDIA_TYPE,
-					 g_param_spec_uint ("media-type", NULL, NULL,
+					 g_param_spec_uint ("media-type",
+							    "The type of media",
+							    "The type of media displayed",
 							    0, BRASERO_MEDIA_TYPE_ALL,
 							    BRASERO_MEDIA_TYPE_NONE,
 							    G_PARAM_READWRITE));

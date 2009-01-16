@@ -96,7 +96,7 @@ gchar *
 brasero_medium_get_tooltip (BraseroMedium *medium);
 
 BraseroDrive *
-brasero_medium_get_drive (BraseroMedium *self);
+brasero_medium_get_drive (BraseroMedium *medium);
 
 guint
 brasero_medium_get_track_num (BraseroMedium *medium);

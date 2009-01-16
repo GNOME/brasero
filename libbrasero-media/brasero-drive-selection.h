@@ -60,14 +60,14 @@ GType brasero_drive_selection_get_type (void) G_GNUC_CONST;
 GtkWidget* brasero_drive_selection_new (void);
 
 BraseroDrive *
-brasero_drive_selection_get_active (BraseroDriveSelection *selection);
+brasero_drive_selection_get_active (BraseroDriveSelection *selector);
 
 gboolean
-brasero_drive_selection_set_active (BraseroDriveSelection *selection,
+brasero_drive_selection_set_active (BraseroDriveSelection *selector,
 				    BraseroDrive *drive);
 
 void
-brasero_drive_selection_show_type (BraseroDriveSelection *selection,
+brasero_drive_selection_show_type (BraseroDriveSelection *selector,
 				   BraseroDriveType type);
 
 G_END_DECLS
