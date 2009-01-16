@@ -84,7 +84,7 @@ brasero_volume_file_open (BraseroVolSrc *src,
 
 	handle->position = extent->block;
 	handle->extent_size = extent->size;
-	handle->extent_last = BRASERO_SIZE_TO_SECTORS (extent->size, 2048) + extent->block;
+	handle->extent_last = BRASERO_BYTES_TO_SECTORS (extent->size, 2048) + extent->block;
 
 	/* start loading first block */
 	res_seek = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
@@ -139,7 +139,7 @@ brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 
 		handle->position = extent->block;
 		handle->extent_size = extent->size;
-		handle->extent_last = BRASERO_SIZE_TO_SECTORS (extent->size, 2048) + extent->block;
+		handle->extent_last = BRASERO_BYTES_TO_SECTORS (extent->size, 2048) + extent->block;
 	}
 
 	result = BRASERO_VOL_SRC_READ (handle->src, (char *) handle->buffer, 1, NULL);

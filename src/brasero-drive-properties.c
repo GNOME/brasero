@@ -236,7 +236,7 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 						 _("Do you really want to choose this location?"));
 
 		string = g_strdup_printf ("%s.", error->message);
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", string);
 		g_error_free (error);
 		g_free (string);
 
@@ -272,7 +272,7 @@ brasero_drive_properties_check_tmpdir (BraseroDriveProperties *self,
 						 _("Do you really want to choose this location?"));
 
 		string = g_strdup_printf ("%s.", _("You do not have the required permission to write at this location"));
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), string);
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", string);
 		g_free (string);
 
 		gtk_dialog_add_buttons (GTK_DIALOG (dialog),

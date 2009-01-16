@@ -687,6 +687,7 @@ brasero_split_dialog_clear_confirm_dialog (BraseroSplitDialog *self,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_QUESTION,
 					  GTK_BUTTONS_NONE,
+					  "%s",
 					  primary);
 
 	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message),

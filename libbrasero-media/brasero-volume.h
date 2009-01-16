@@ -25,7 +25,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-
+#include <gtk/gtk.h>
 #include <brasero-drive.h>
 
 G_BEGIN_DECLS
@@ -58,6 +58,9 @@ brasero_volume_get_name (BraseroVolume *volume);
 GIcon *
 brasero_volume_get_icon (BraseroVolume *volume);
 
+GVolume *
+brasero_volume_get_gvolume (BraseroVolume *self);
+
 gboolean
 brasero_volume_is_mounted (BraseroVolume *volume);
 
@@ -72,14 +75,7 @@ brasero_volume_umount (BraseroVolume *volume,
 
 gboolean
 brasero_volume_mount (BraseroVolume *volume,
-		      gboolean wait,
-		      GError **error);
-
-gboolean
-brasero_volume_can_eject (BraseroVolume *volume);
-
-gboolean
-brasero_volume_eject (BraseroVolume *volume,
+		      GtkWindow *parent_window,
 		      gboolean wait,
 		      GError **error);
 

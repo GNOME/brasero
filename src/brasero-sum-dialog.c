@@ -525,7 +525,10 @@ brasero_sum_dialog_set_track_checksum_type (BraseroSumDialog *self,
 
 	medium = brasero_drive_get_medium (drive);
 
-	retval = brasero_volume_mount (BRASERO_VOLUME (medium), TRUE, error);
+	retval = brasero_volume_mount (BRASERO_VOLUME (medium),
+				       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+				       TRUE,
+				       error);
 	if (!retval)
 		return BRASERO_CHECKSUM_NONE;
 

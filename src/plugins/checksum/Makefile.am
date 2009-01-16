@@ -11,6 +11,7 @@ INCLUDES = \
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
 	$(DISABLE_DEPRECATED)				\
 	$(BRASERO_GLIB_CFLAGS)				\
+	$(BRASERO_GTK_CFLAGS)				\
 	$(BRASERO_GCONF_CFLAGS)
 
 checksumdir = $(libdir)/brasero/plugins
@@ -29,4 +30,4 @@ libbrasero_checksum_file_la_SOURCES = burn-checksum-files.c	\
 				      burn-volume-read.h
 
 libbrasero_checksum_file_la_LDFLAGS = -module -avoid-version
-libbrasero_checksum_file_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS)
+libbrasero_checksum_file_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS) $(BRASERO_GTK_LIBS)

@@ -31,23 +31,19 @@
 
 #include "brasero-media-private.h"
 #include "brasero-volume.h"
+#include "brasero-gio-operation.h"
 
 typedef struct _BraseroVolumePrivate BraseroVolumePrivate;
 struct _BraseroVolumePrivate
 {
 	GCancellable *cancel;
-
-	guint timeout_id;
-	GMainLoop *loop;
-	gboolean result;
-	GError *error;
 };
 
 #define BRASERO_VOLUME_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_VOLUME, BraseroVolumePrivate))
 
 G_DEFINE_TYPE (BraseroVolume, brasero_volume, BRASERO_TYPE_MEDIUM);
 
-static GVolume *
+GVolume *
 brasero_volume_get_gvolume (BraseroVolume *self)
 {
 	const gchar *volume_path = NULL;
@@ -102,81 +98,41 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 }
 
 gboolean
-brasero_volume_is_mounted (BraseroVolume *self)
+brasero_volume_is_mounted (BraseroVolume *volume)
 {
-	GList *iter;
-	GList *mounts;
-	gboolean result;
-	BraseroDrive *drive;
-	GVolumeMonitor *monitor;
-	const gchar *volume_path;
-	BraseroVolumePrivate *priv;
+	gchar *path;
 
-	if (!self)
-		return FALSE;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-
-#if defined(HAVE_STRUCT_USCSI_CMD)
-	volume_path = brasero_drive_get_block_device (drive);
-#else
-	volume_path = brasero_drive_get_device (drive);
-#endif
-
-	if (!volume_path)
-		return FALSE;
-
-	monitor = g_volume_monitor_get ();
-	mounts = g_volume_monitor_get_mounts (monitor);
-	g_object_unref (monitor);
-
-	result = FALSE;
-	for (iter = mounts; iter; iter = iter->next) {
-		GMount *mount;
-		GVolume *volume;
-		gchar *device_path;
-
-		mount = iter->data;
-		volume = g_mount_get_volume (mount);
-		if (!volume)
-			continue;
-
-		device_path = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-		if (!device_path)
-			continue;		
-
-		if (!strcmp (device_path, volume_path)) {
-			result = TRUE;
-			break;
-		}
+	/* NOTE: that's the surest way to know if a drive is really mounted. For
+	 * GIO a blank medium can be mounted to burn:/// which is not really 
+	 * what we're interested in. So the mount path must be also local. */
+	path = brasero_volume_get_mount_point (volume, NULL);
+	if (path) {
+		g_free (path);
+		return TRUE;
 	}
-	g_list_foreach (mounts, (GFunc) g_object_unref, NULL);
-	g_list_free (mounts);
 
-	return result;
+	return FALSE;
 }
 
 gchar *
-brasero_volume_get_mount_point (BraseroVolume *self,
+brasero_volume_get_mount_point (BraseroVolume *volume,
 				GError **error)
 {
 	BraseroVolumePrivate *priv;
 	gchar *local_path = NULL;
-	GVolume *volume;
+	GVolume *gvolume;
 	GMount *mount;
 	GFile *root;
 
-	priv = BRASERO_VOLUME_PRIVATE (self);
+	priv = BRASERO_VOLUME_PRIVATE (volume);
 
-	volume = brasero_volume_get_gvolume (self);
-	if (!volume)
+	gvolume = brasero_volume_get_gvolume (volume);
+	if (!gvolume)
 		return NULL;
 
 	/* get the uri for the mount point */
-	mount = g_volume_get_mount (volume);
-	g_object_unref (volume);
+	mount = g_volume_get_mount (gvolume);
+	g_object_unref (gvolume);
 	if (!mount)
 		return NULL;
 
@@ -197,508 +153,58 @@ brasero_volume_get_mount_point (BraseroVolume *self,
 	return local_path;
 }
 
-static void
-brasero_volume_operation_end (BraseroVolume *self)
-{
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-	if (!priv->loop)
-		return;
-
-	if (!g_main_loop_is_running (priv->loop))
-		return;
-
-	g_main_loop_quit (priv->loop);	
-}
-
-static gboolean
-brasero_volume_operation_timeout (gpointer data)
-{
-	BraseroVolume *self = BRASERO_VOLUME (data);
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-	brasero_volume_operation_end (self);
-
-	BRASERO_MEDIA_LOG ("Volume/Disc operation timed out");
-	priv->timeout_id = 0;
-	priv->result = FALSE;
-	return FALSE;
-}
-
-static gboolean
-brasero_volume_wait_for_operation_end (BraseroVolume *self,
-				       GError **error)
-{
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	/* put a timeout (30 sec) */
-	priv->timeout_id = g_timeout_add_seconds (20,
-						  brasero_volume_operation_timeout,
-						  self);
-
-	priv->loop = g_main_loop_new (NULL, FALSE);
-	g_main_loop_run (priv->loop);
-
-	g_main_loop_unref (priv->loop);
-	priv->loop = NULL;
-
-	if (priv->timeout_id) {
-		g_source_remove (priv->timeout_id);
-		priv->timeout_id = 0;
-	}
-
-	if (priv->error) {
-		if (error)
-			g_propagate_error (error, priv->error);
-		else
-			g_error_free (priv->error);
-
-		priv->error = NULL;
-	}
-	g_cancellable_reset (priv->cancel);
-
-	return priv->result;
-}
-
-static void
-brasero_volume_umounted_cb (GVolumeMonitor *monitor,
-			    GMount *mount,
-			    BraseroVolume *self)
-{
-	BraseroVolumePrivate *priv;
-	GMount *vol_mount;
-	GVolume *volume;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	volume = brasero_volume_get_gvolume (self);
-	vol_mount = g_volume_get_mount (volume);
-	g_object_unref (volume);
-
-	/* If it's NULL then that means it was unmounted */
-	if (!vol_mount) {
-		brasero_volume_operation_end (self);
-		return;
-	}
-
-	g_object_unref (vol_mount);
-
-	/* Check it's the one we were looking for */
-	if (vol_mount != mount)
-		return;
-
-	brasero_volume_operation_end (self);
-}
-
-static void
-brasero_volume_umount_finish (GObject *source,
-			      GAsyncResult *result,
-			      gpointer user_data)
-{
-	BraseroVolume *self = BRASERO_VOLUME (user_data);
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	if (!priv->loop)
-		return;
-
-	priv->result = g_mount_unmount_finish (G_MOUNT (source),
-					       result,
-					       &priv->error);
-
-	BRASERO_MEDIA_LOG ("Umount operation completed (result = %d)", priv->result);
-
-	if (priv->error) {
-		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
-			/* means we shouldn't display any error message since 
-			 * that was already done */
-			g_error_free (priv->error);
-			priv->error = NULL;
-		}
-		else if (priv->error->code == G_IO_ERROR_NOT_MOUNTED) {
-			/* That can happen sometimes */
-			g_error_free (priv->error);
-			priv->error = NULL;
-			priv->result = TRUE;
-		}
-
-		/* Since there was an error. The "unmounted" signal won't be 
-		 * emitted by GVolumeMonitor and therefore we'd get stuck if
-		 * we didn't get out of the loop. */
-		brasero_volume_operation_end (self);
-	}
-	else if (!priv->result)
-		brasero_volume_operation_end (self);
-}
-
 gboolean
-brasero_volume_umount (BraseroVolume *self,
+brasero_volume_umount (BraseroVolume *volume,
 		       gboolean wait,
 		       GError **error)
 {
-	GMount *mount;
 	gboolean result;
-	GVolume *volume;
+	GVolume *gvolume;
 	BraseroVolumePrivate *priv;
 
-	if (!self)
-		return TRUE;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	volume = brasero_volume_get_gvolume (self);
 	if (!volume)
 		return TRUE;
 
-	if (!g_volume_can_mount (volume)) {
-		/* if it can't be mounted then it's unmounted ... */
-		g_object_unref (volume);
-		return TRUE;
-	}
+	priv = BRASERO_VOLUME_PRIVATE (volume);
 
-	mount = g_volume_get_mount (volume);
-	g_object_unref (volume);
-
-	if (!mount)
+	gvolume = brasero_volume_get_gvolume (volume);
+	if (!gvolume)
 		return TRUE;
 
-	if (!g_mount_can_unmount (mount))
-		return FALSE;
-
-	if (wait) {
-		gulong umount_sig;
-		GVolumeMonitor *monitor;
-
-		monitor = g_volume_monitor_get ();
-		umount_sig = g_signal_connect_after (monitor,
-						     "mount-removed",
-						     G_CALLBACK (brasero_volume_umounted_cb),
-						     self);
-
-		g_mount_unmount (mount,
-				 G_MOUNT_UNMOUNT_NONE,
-				 priv->cancel,
-				 brasero_volume_umount_finish,
-				 self);
-		result = brasero_volume_wait_for_operation_end (self, error);
-
-		g_signal_handler_disconnect (monitor, umount_sig);
-	}
-	else {
-		g_mount_unmount (mount,
-				 G_MOUNT_UNMOUNT_NONE,
-				 priv->cancel,
-				 NULL,					/* callback */
-				 self);
-		result = TRUE;
-	}
-	g_object_unref (mount);
+	result = brasero_gio_operation_umount (gvolume,
+					       priv->cancel,
+					       wait,
+					       error);
+	g_object_unref (gvolume);
 
 	return result;
 }
 
-static void
-brasero_volume_mount_finish (GObject *source,
-			     GAsyncResult *result,
-			     gpointer user_data)
-{
-	BraseroVolume *self = BRASERO_VOLUME (user_data);
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-	priv->result = g_volume_mount_finish (G_VOLUME (source),
-					      result,
-					      &priv->error);
-
-	if (priv->error) {
-		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
-			/* means we shouldn't display any error message since 
-			 * that was already done */
-			g_error_free (priv->error);
-			priv->error = NULL;
-			priv->result = TRUE;
-		}
-		else if (priv->error->code == G_IO_ERROR_ALREADY_MOUNTED) {
-			g_error_free (priv->error);
-			priv->error = NULL;
-			priv->result = TRUE;
-		}
-	}
-
-	brasero_volume_operation_end (self);
-}
-
 gboolean
-brasero_volume_mount (BraseroVolume *self,
+brasero_volume_mount (BraseroVolume *volume,
+		      GtkWindow *parent_window,
 		      gboolean wait,
 		      GError **error)
 {
-	GMount *mount;
 	gboolean result;
-	GVolume *volume;
+	GVolume *gvolume;
 	BraseroVolumePrivate *priv;
 
-	if (!self)
-		return FALSE;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	volume = brasero_volume_get_gvolume (self);
 	if (!volume)
-		return FALSE;
-
-	if (!g_volume_can_mount (volume)) {
-		g_object_unref (volume);
-		return FALSE;
-	}
-
-	mount = g_volume_get_mount (volume);
-	if (mount) {
-		g_object_unref (volume);
-		g_object_unref (mount);
-		return TRUE;
-	}
-
-	if (wait) {
-		g_volume_mount (volume,
-				G_MOUNT_MOUNT_NONE,
-				NULL,					/* authentification */
-				priv->cancel,
-				brasero_volume_mount_finish,
-				self);
-		result = brasero_volume_wait_for_operation_end (self, error);
-	}
-	else {
-		g_volume_mount (volume,
-				G_MOUNT_MOUNT_NONE,
-				NULL,					/* authentification */
-				priv->cancel,
-				NULL,
-				self);
-		result = TRUE;
-	}
-	g_object_unref (volume);
-
-	return result;
-}
-
-static void
-brasero_volume_ejected_cb (BraseroDrive *drive,
-			   gpointer callback_data)
-{
-	BraseroVolume *self = BRASERO_VOLUME (callback_data);
-	brasero_volume_operation_end (self);
-}
-
-static void
-brasero_volume_eject_finish (GObject *source,
-			     GAsyncResult *result,
-			     gpointer user_data)
-{
-	BraseroVolume *self = BRASERO_VOLUME (user_data);
-	BraseroVolumePrivate *priv;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-	if (G_IS_DRIVE (source))
-		priv->result = g_drive_eject_finish (G_DRIVE (source),
-						     result,
-						     &priv->error);
-	else
-		priv->result = g_volume_eject_finish (G_VOLUME (source),
-						      result,
-						      &priv->error);
-
-	if (priv->error) {
-		if (priv->error->code == G_IO_ERROR_FAILED_HANDLED) {
-			/* means we shouldn't display any error message since 
-			 * that was already done */
-			g_error_free (priv->error);
-			priv->error = NULL;
-		}
-
-		brasero_volume_operation_end (self);
-	}
-	else if (!priv->result)
-		brasero_volume_operation_end (self);
-}
-
-static gboolean
-brasero_volume_eject_gvolume (BraseroVolume *self,
-			      gboolean wait,
-			      GVolume *volume,
-			      GError **error)
-{
-	BraseroVolumePrivate *priv;
-	gboolean result;
-
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	if (!g_volume_can_eject (volume))
-		return FALSE;
-
-	if (wait) {
-		gulong eject_sig;
-		BraseroDrive *drive;
-
-		drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-		eject_sig = g_signal_connect (drive,
-					      "medium-removed",
-					      G_CALLBACK (brasero_volume_ejected_cb),
-					      self);
-
-		g_volume_eject (volume,
-				G_MOUNT_UNMOUNT_NONE,
-				priv->cancel,
-				brasero_volume_eject_finish,
-				self);
-
-		g_object_ref (self);
-		result = brasero_volume_wait_for_operation_end (self, error);
-		g_object_unref (self);
-
-		/* NOTE: from this point on self is no longer valid */
-
-		g_signal_handler_disconnect (drive, eject_sig);
-	}
-	else {
-		g_volume_eject (volume,
-				G_MOUNT_UNMOUNT_NONE,
-				priv->cancel,
-				NULL,
-				self);
-		result = TRUE;
-	}
-
-	return result;
-}
-
-gboolean
-brasero_volume_eject (BraseroVolume *self,
-		      gboolean wait,
-		      GError **error)
-{
-	GDrive *gdrive;
-	GVolume *volume;
-	gboolean result;
-	BraseroDrive *drive;
-	BraseroVolumePrivate *priv;
-
-	BRASERO_MEDIA_LOG ("Ejecting");
-
-	if (!self)
 		return TRUE;
 
-	priv = BRASERO_VOLUME_PRIVATE (self);
+	priv = BRASERO_VOLUME_PRIVATE (volume);
 
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-	gdrive = brasero_drive_get_gdrive (drive);
-	if (!gdrive) {
-		BRASERO_MEDIA_LOG ("No GDrive");
-		goto last_resort;
-	}
-
-	if (!g_drive_can_eject (gdrive)) {
-		BRASERO_MEDIA_LOG ("GDrive can't eject");
-		goto last_resort;
-	}
-
-	if (wait) {
-		gulong eject_sig;
-		BraseroDrive *drive;
-
-		drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-		eject_sig = g_signal_connect (drive,
-					      "medium-removed",
-					      G_CALLBACK (brasero_volume_ejected_cb),
-					      self);
-
-		g_drive_eject (gdrive,
-			       G_MOUNT_UNMOUNT_NONE,
-			       priv->cancel,
-			       brasero_volume_eject_finish,
-			       self);
-
-		g_object_ref (self);
-		result = brasero_volume_wait_for_operation_end (self, error);
-		g_object_unref (self);
-
-		/* NOTE: from this point on self is no longer valid */
-
-		g_signal_handler_disconnect (drive, eject_sig);
-	}
-	else {
-		g_drive_eject (gdrive,
-			       G_MOUNT_UNMOUNT_NONE,
-			       priv->cancel,
-			       NULL,
-			       self);
-		result = TRUE;
-	}
-
-	g_object_unref (gdrive);
-	return result;
-
-last_resort:
-
-	/* last resort */
-	volume = brasero_volume_get_gvolume (self);
-	result = brasero_volume_eject_gvolume (self, wait, volume, error);
-	g_object_unref (volume);
-
-	if (gdrive)
-		g_object_unref (gdrive);
-
-	return result;
-}
-
-gboolean
-brasero_volume_can_eject (BraseroVolume *self)
-{
-	GDrive *gdrive;
-	GVolume *volume;
-	gboolean result;
-	BraseroDrive *drive;
-	BraseroVolumePrivate *priv;
-
-	BRASERO_MEDIA_LOG ("Ejecting");
-
-	if (!self)
+	gvolume = brasero_volume_get_gvolume (volume);
+	if (!gvolume)
 		return TRUE;
 
-	priv = BRASERO_VOLUME_PRIVATE (self);
-
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
-	gdrive = brasero_drive_get_gdrive (drive);
-	if (!gdrive) {
-		BRASERO_MEDIA_LOG ("No GDrive");
-		goto last_resort;
-	}
-
-	if (!g_drive_can_eject (gdrive)) {
-		BRASERO_MEDIA_LOG ("GDrive can't eject");
-		goto last_resort;
-	}
-
-	g_object_unref (gdrive);
-	return TRUE;
-
-last_resort:
-
-	if (gdrive)
-		g_object_unref (gdrive);
-
-	/* last resort */
-	volume = brasero_volume_get_gvolume (self);
-	if (!volume)
-		return FALSE;
-
-	result = g_volume_can_eject (volume);
-	g_object_unref (volume);
+	result = brasero_gio_operation_mount (gvolume,
+					      parent_window,
+					      priv->cancel,
+					      wait,
+					      error);
+	g_object_unref (gvolume);
 
 	return result;
 }
@@ -709,12 +215,7 @@ brasero_volume_cancel_current_operation (BraseroVolume *self)
 	BraseroVolumePrivate *priv;
 
 	priv = BRASERO_VOLUME_PRIVATE (self);	
-
-	priv->result = FALSE;
-
 	g_cancellable_cancel (priv->cancel);
-	if (priv->loop && g_main_loop_is_running (priv->loop))
-		g_main_loop_quit (priv->loop);
 }
 
 GIcon *
@@ -833,14 +334,6 @@ brasero_volume_finalize (GObject *object)
 		g_object_unref (priv->cancel);
 		priv->cancel = NULL;
 	}
-
-	if (priv->timeout_id) {
-		g_source_remove (priv->timeout_id);
-		priv->timeout_id = 0;
-	}
-
-	if (priv->loop && g_main_loop_is_running (priv->loop))
-		g_main_loop_quit (priv->loop);
 
 	G_OBJECT_CLASS (brasero_volume_parent_class)->finalize (object);
 }

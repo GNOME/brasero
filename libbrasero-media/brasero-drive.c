@@ -35,6 +35,7 @@
 #include <gio/gio.h>
 
 #include "brasero-media-private.h"
+#include "brasero-gio-operation.h"
 
 #include "brasero-medium.h"
 #include "brasero-volume.h"
@@ -65,6 +66,8 @@ struct _BraseroDrivePrivate
 	gint lun;
 
 	gulong hal_sig;
+
+	GCancellable *cancel;
 
 	guint probed:1;
 };
@@ -151,6 +154,110 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 		BRASERO_MEDIA_LOG ("No drive found for medium");
 
 	return gdrive;
+}
+
+/**
+ * brasero_drive_can_eject:
+ * @drive: #BraseroDrive
+ *
+ * Returns whether the drive can eject media.
+ *
+ * Return value: a #gboolean. TRUE if the media can be ejected, FALSE otherwise.
+ *
+ **/
+gboolean
+brasero_drive_can_eject (BraseroDrive *drive)
+{
+	GDrive *gdrive;
+	GVolume *volume;
+	gboolean result;
+	BraseroDrivePrivate *priv;
+
+	g_return_val_if_fail (drive != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	gdrive = brasero_drive_get_gdrive (drive);
+	if (!gdrive) {
+		BRASERO_MEDIA_LOG ("No GDrive");
+		goto last_resort;
+	}
+
+	if (!g_drive_can_eject (gdrive)) {
+		BRASERO_MEDIA_LOG ("GDrive can't eject");
+		goto last_resort;
+	}
+
+	g_object_unref (gdrive);
+	return TRUE;
+
+last_resort:
+
+	if (gdrive)
+		g_object_unref (gdrive);
+
+	if (!priv->medium)
+		return FALSE;
+
+	/* last resort */
+	volume = brasero_volume_get_gvolume (BRASERO_VOLUME (priv->medium));
+	if (!volume)
+		return FALSE;
+
+	result = g_volume_can_eject (volume);
+	g_object_unref (volume);
+
+	return result;
+}
+
+/**
+ * brasero_drive_eject:
+ * @drive: #BraseroDrive
+ * @wait: #gboolean
+ * @error: #GError
+ *
+ * Open the drive tray or ejects the media if there is any inside.
+ *
+ * Return value: a #gboolean. TRUE on success, FALSE otherwise.
+ *
+ **/
+gboolean
+brasero_drive_eject (BraseroDrive *drive,
+		     gboolean wait,
+		     GError **error)
+{
+	BraseroDrivePrivate *priv;
+	GVolume *gvolume;
+	GDrive *gdrive;
+	gboolean res;
+
+	g_return_val_if_fail (drive != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
+
+	priv = BRASERO_DRIVE_PRIVATE (drive);
+
+	gdrive = brasero_drive_get_gdrive (drive);
+	res = brasero_gio_operation_eject_drive (gdrive,
+						 priv->cancel,
+						 wait,
+						 error);
+	g_object_unref (gdrive);
+
+	if (res)
+		return TRUE;
+
+	if (!priv->medium)
+		return FALSE;
+
+	gvolume = brasero_volume_get_gvolume (BRASERO_VOLUME (priv->medium));
+	res = brasero_gio_operation_eject_volume (gvolume,
+						  priv->cancel,
+						  wait,
+						  error);
+	g_object_unref (gvolume);
+
+	return res;
 }
 
 /**
@@ -528,7 +635,12 @@ brasero_drive_can_write (BraseroDrive *drive)
 
 static void
 brasero_drive_init (BraseroDrive *object)
-{ }
+{
+	BraseroDrivePrivate *priv;
+
+	priv = BRASERO_DRIVE_PRIVATE (object);
+	priv->cancel = g_cancellable_new ();
+}
 
 static void
 brasero_drive_finalize (GObject *object)
@@ -569,6 +681,12 @@ brasero_drive_finalize (GObject *object)
 	if (priv->udi) {
 		g_free (priv->udi);
 		priv->udi = NULL;
+	}
+
+	if (priv->cancel) {
+		g_cancellable_cancel (priv->cancel);
+		g_object_unref (priv->cancel);
+		priv->cancel = NULL;
 	}
 
 	G_OBJECT_CLASS (brasero_drive_parent_class)->finalize (object);

@@ -265,18 +265,15 @@ brasero_burn_eject (BraseroBurn *self,
 		    BraseroDrive *drive,
 		    GError **error)
 {
-	BraseroMedium *medium;
 	guint counter = 0;
 
-	medium = brasero_drive_get_medium (drive);
-	brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, error);
+	brasero_drive_eject (drive, TRUE, error);
 
 	/* sleep some time and see what happened */
 	brasero_burn_sleep (self, 500);
-	medium = brasero_drive_get_medium (drive);
 
 	/* Retry several times, since sometimes the drives are really busy */
-	while (medium && brasero_medium_get_status (medium) != BRASERO_MEDIUM_NONE) {
+	while (brasero_drive_get_medium (drive)) {
 		counter ++;
 		if (counter > MAX_EJECT_ATTEMPTS) {
 			gchar *name;
@@ -297,9 +294,8 @@ brasero_burn_eject (BraseroBurn *self,
 		}
 
 		BRASERO_BURN_LOG ("Retrying ejection");
-		brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, error);
+		brasero_drive_eject (drive, TRUE, error);
 		brasero_burn_sleep (self, 500);
-		medium = brasero_drive_get_medium (drive);
 	}
 
 	return BRASERO_BURN_OK;
@@ -1018,7 +1014,9 @@ brasero_burn_mount_media (BraseroBurn *self,
 		BRASERO_BURN_LOG ("Trying to mount medium");
 
 		/* NOTE: we don't really care about the return value */
-		brasero_volume_mount (BRASERO_VOLUME (medium), FALSE, NULL);
+		/* NOTE: brasero_app_get_default () wouldn't work here as we 
+		 * want to have it split soon */
+		brasero_volume_mount (BRASERO_VOLUME (medium), NULL, FALSE, NULL);
 		priv->mounted_by_us = TRUE;
 
 		brasero_burn_sleep (self, MOUNT_TIMEOUT);
@@ -1124,7 +1122,7 @@ brasero_burn_unlock_src_media (BraseroBurn *burn,
 	 * one thing it avoids breaking other applications that are using it
 	 * like for example totem. */
 	/* if (BRASERO_BURN_SESSION_EJECT (priv->session))
-		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error); */
+		brasero_drive_eject (BRASERO_VOLUME (medium), FALSE, error); */
 
 	priv->src = NULL;
 	return BRASERO_BURN_OK;
@@ -1135,7 +1133,6 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 				GError **error)
 {
 	BraseroBurnPrivate *priv = BRASERO_BURN_PRIVATE (burn);
-	BraseroMedium *medium;
 
 	if (!priv->dest)
 		return BRASERO_BURN_OK;
@@ -1147,7 +1144,6 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 
 	priv->dest_locked = 0;
 	brasero_drive_unlock (priv->dest);
-	medium = brasero_drive_get_medium (priv->dest);
 
 	if (!BRASERO_BURN_SESSION_EJECT (priv->session)) {
 		if (priv->dest) {
@@ -1164,7 +1160,7 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 		}
 	}
 	else
-		brasero_volume_eject (BRASERO_VOLUME (medium), FALSE, error);
+		brasero_drive_eject (priv->dest, FALSE, error);
 
 	priv->dest = NULL;
 	return BRASERO_BURN_OK;

@@ -491,6 +491,7 @@ brasero_app_dialog (BraseroApp *app,
 					 GTK_DIALOG_MODAL,
 					 msg_type,
 					 button_type,
+					 "%s",
 					 primary_message);
 
 	if (!toplevel && priv->parent) {

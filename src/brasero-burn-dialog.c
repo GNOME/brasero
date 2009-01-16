@@ -648,6 +648,7 @@ brasero_burn_dialog_image_error (BraseroBurn *burn,
 					  GTK_DIALOG_MODAL,
 					  GTK_MESSAGE_ERROR,
 					  GTK_BUTTONS_NONE,
+					  "%s",
 					  string);
 	g_free (string);
 

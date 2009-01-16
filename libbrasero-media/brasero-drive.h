@@ -107,6 +107,14 @@ gboolean
 brasero_drive_can_write (BraseroDrive *drive);
 
 gboolean
+brasero_drive_can_eject (BraseroDrive *drive);
+
+gboolean
+brasero_drive_eject (BraseroDrive *drive,
+		     gboolean wait,
+		     GError **error);
+
+gboolean
 brasero_drive_is_door_open (BraseroDrive *drive);
 
 gboolean

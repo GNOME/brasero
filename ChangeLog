@@ -1,3 +1,59 @@
+2009-01-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Rework API and set eject for drives only not volumes
+	Fix mounted volume detection
+	Also allow for auth window when mounting
+
+	Fixed some warnings with strings and dialogs
+
+	Fix wrong macro in plugin
+
+	* libbrasero-media/Makefile.am:
+	* libbrasero-media/brasero-drive.c (brasero_drive_can_eject),
+	(brasero_drive_eject), (brasero_drive_init),
+	(brasero_drive_finalize):
+	* libbrasero-media/brasero-drive.h:
+	* libbrasero-media/brasero-gio-operation.c
+	(brasero_gio_operation_destroy), (brasero_gio_operation_end),
+	(brasero_gio_operation_timeout), (brasero_gio_operation_cancelled),
+	(brasero_gio_operation_wait_for_operation_end),
+	(brasero_gio_operation_umounted_cb),
+	(brasero_gio_operation_umount_finish),
+	(brasero_gio_operation_umount),
+	(brasero_gio_operation_mount_finish),
+	(brasero_gio_operation_mount),
+	(brasero_gio_operation_eject_finish),
+	(brasero_gio_operation_removed_cb),
+	(brasero_gio_operation_eject_volume),
+	(brasero_gio_operation_ejected_cb),
+	(brasero_gio_operation_disconnected_cb),
+	(brasero_gio_operation_eject_drive):
+	* libbrasero-media/brasero-gio-operation.h:
+	* libbrasero-media/brasero-volume.c (brasero_volume_is_mounted),
+	(brasero_volume_get_mount_point), (brasero_volume_umount),
+	(brasero_volume_mount), (brasero_volume_cancel_current_operation),
+	(brasero_volume_finalize):
+	* libbrasero-media/brasero-volume.h:
+	* src/brasero-app.c (brasero_app_dialog):
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_image_error):
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_joliet_toggled_cb):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_check_tmpdir):
+	* src/brasero-eject-dialog.c (brasero_eject_dialog_activate):
+	* src/brasero-split-dialog.c
+	(brasero_split_dialog_clear_confirm_dialog):
+	* src/brasero-sum-dialog.c
+	(brasero_sum_dialog_set_track_checksum_type):
+	* src/brasero-utils.c (brasero_utils_create_message_dialog):
+	* src/burn.c (brasero_burn_eject), (brasero_burn_mount_media),
+	(brasero_burn_unlock_src_media), (brasero_burn_unlock_dest_media):
+	* src/plugins/checksum/Makefile.am:
+	* src/plugins/checksum/burn-volume-read.c
+	(brasero_volume_file_open), (brasero_volume_file_check_state):
+	* src/plugins/dvdcss/burn-dvdcss.c
+	(brasero_dvdcss_create_scrambled_sectors_map):
+
 2009-01-14  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Added a new function to test whether a volume can be ejected

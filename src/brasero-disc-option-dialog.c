@@ -325,7 +325,7 @@ brasero_disc_option_dialog_joliet_toggled_cb (GtkToggleButton *toggle,
 	secondary = g_strdup_printf ("%s\n%s",
 				     _("Some files don't have a suitable name for a fully Windows-compatible CD."),
 				     _("Those names should be changed and truncated to 64 characters."));
-	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message), secondary);
+	gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message), "%s", secondary);
 	g_free (secondary);
 
 	gtk_dialog_add_button (GTK_DIALOG (message),

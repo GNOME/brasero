@@ -37,6 +37,7 @@
 #include "brasero-eject-dialog.h"
 #include "brasero-tool-dialog.h"
 #include "brasero-medium.h"
+#include "brasero-drive.h"
 #include "brasero-volume.h"
 #include "burn-debug.h"
 #include "brasero-utils.h"
@@ -81,7 +82,7 @@ brasero_eject_dialog_activate (BraseroToolDialog *dialog,
 		return TRUE;
 	}*/
 
-	if (!brasero_volume_eject (BRASERO_VOLUME (medium), TRUE, &error)) {
+	if (!brasero_drive_eject (drive, TRUE, &error)) {
 		BRASERO_BURN_LOG ("Error ejecting medium: %s", error?error->message:"Unknown error");
 		return TRUE;
 	}

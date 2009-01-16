@@ -265,7 +265,7 @@ brasero_dvdcss_create_scrambled_sectors_map (GQueue *map,
 
 					extent = extents->data;
 					range->start = extent->block;
-					range->end = extent->block + BRASERO_SIZE_TO_SECTORS (extent->size, DVDCSS_BLOCK_SIZE);
+					range->end = extent->block + BRASERO_BYTES_TO_SECTORS (extent->size, DVDCSS_BLOCK_SIZE);
 
 					g_queue_push_head (map, range);
 

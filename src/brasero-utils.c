@@ -522,6 +522,7 @@ brasero_utils_create_message_dialog (GtkWidget *parent,
 					  GTK_DIALOG_DESTROY_WITH_PARENT,
 					  type,
 					  GTK_BUTTONS_CLOSE,
+					  "%s",
 					  primary_message);
 
 	gtk_window_set_title (GTK_WINDOW (message), "");
