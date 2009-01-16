@@ -337,7 +337,6 @@ brasero_burn_eject_dest_media (BraseroBurn *self,
 	}
 
 	result = brasero_burn_eject (self, priv->dest, error);
-	priv->dest = NULL;
 
 	return BRASERO_BURN_OK;
 }
