@@ -568,7 +568,7 @@ brasero_drive_get_udi (BraseroDrive *drive)
  * Gets the medium currently inserted in the drive. If there is no medium or if
  * the medium is not probed yet then it returns NULL.
  *
- * Return value: a #BraseroMedium object or NULL
+ * Return value: a #BraseroMedium object or NULL. No need to unref after use.
  **/
 BraseroMedium *
 brasero_drive_get_medium (BraseroDrive *drive)
@@ -1031,7 +1031,7 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 	object_class->get_property = brasero_drive_get_property;
 
 	/**
- 	* BraseroVolumeMonitor::medium-added:
+ 	* BraseroDrive::medium-added:
  	* @drive: the object which received the signal
   	* @medium: the new medium which was added
 	*
@@ -1049,7 +1049,7 @@ brasero_drive_class_init (BraseroDriveClass *klass)
 		              BRASERO_TYPE_MEDIUM);
 
 	/**
- 	* BraseroVolumeMonitor::medium-removed:
+ 	* BraseroDrive::medium-removed:
  	* @drive: the object which received the signal
   	* @medium: the medium which was removed
 	*

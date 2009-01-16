@@ -233,6 +233,16 @@ brasero_medium_support_flags (BraseroMedium *self,
 	return TRUE;
 }
 
+/**
+ * brasero_medium_get_tooltip:
+ * @medium: #BraseroMedium
+ *
+ * Returns a tooltip to be displayed in the UI.
+ * It is of the form {content type} {disc type} in {drive name}.
+ *
+ * Return value: a #gchar *.
+ *
+ **/
 gchar *
 brasero_medium_get_tooltip (BraseroMedium *self)
 {
@@ -3604,7 +3614,7 @@ brasero_medium_can_be_rewritten (BraseroMedium *self)
  *
  * Gets the #BraseroDrive in which the medium is inserted.
  *
- * Return value: a #BraseroDrive.
+ * Return value: a #BraseroDrive. No need to unref after use.
  *
  **/
 BraseroDrive *

@@ -47,7 +47,7 @@ struct _BraseroDriveSelectionClass
 	GtkComboBoxClass parent_class;
 
 	/* Signals */
-	void		(* drive_changed)		(BraseroDriveSelection *selection,
+	void		(* drive_changed)		(BraseroDriveSelection *selector,
 							 BraseroDrive *drive);
 };
 

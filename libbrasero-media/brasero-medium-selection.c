@@ -812,6 +812,13 @@ brasero_medium_selection_class_init (BraseroMediumSelectionClass *klass)
 							    0, BRASERO_MEDIA_TYPE_ALL,
 							    BRASERO_MEDIA_TYPE_NONE,
 							    G_PARAM_READWRITE));
+	/**
+ 	* BraseroMediumSelection::medium-changed:
+ 	* @monitor: the object which received the signal
+  	* @medium: the new selected medium
+	*
+ 	* This signal gets emitted when the selected medium has changed.
+ 	**/
 	brasero_medium_selection_signals [CHANGED_SIGNAL] =
 	    g_signal_new ("medium_changed",
 			  BRASERO_TYPE_MEDIUM_SELECTION,

@@ -46,16 +46,16 @@ struct _BraseroMediumMonitorClass
 	GObjectClass parent_class;
 
 	/* Signals */
-	void		(*drive_added)		(BraseroMediumMonitor *monitor,
+	void		(* drive_added)		(BraseroMediumMonitor *monitor,
 						 BraseroDrive *drive);
 
-	void		(*drive_removed)	(BraseroMediumMonitor *monitor,
+	void		(* drive_removed)	(BraseroMediumMonitor *monitor,
 						 BraseroDrive *drive);
 
-	void		(*medium_added)		(BraseroMediumMonitor *monitor,
+	void		(* medium_added)	(BraseroMediumMonitor *monitor,
 						 BraseroMedium *medium);
 
-	void		(*medium_removed)	(BraseroMediumMonitor *monitor,
+	void		(* medium_removed)	(BraseroMediumMonitor *monitor,
 						 BraseroMedium *medium);
 };
 

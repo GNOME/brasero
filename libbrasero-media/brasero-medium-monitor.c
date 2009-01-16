@@ -155,7 +155,7 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
  * @monitor: a #BraseroMediumMonitor
  * @type: a #BraseroDriveType to tell what type of drives to include in the list
  *
- * Obtains the list of available drives.
+ * Gets the list of available drives that are of the given type.
  *
  * Return value: a #GSList or NULL
  **/
@@ -483,13 +483,12 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 	object_class->finalize = brasero_medium_monitor_finalize;
 
 	/**
- 	* BraseroVolumeMonitor::medium-added:
+ 	* BraseroMediumMonitor::medium-added:
  	* @monitor: the object which received the signal
   	* @medium: the new medium which was added
 	*
  	* This signal gets emitted when a new medium was detected
- 	*
- 	*/
+ 	**/
 	medium_monitor_signals[MEDIUM_INSERTED] =
 		g_signal_new ("medium_added",
 		              G_OBJECT_CLASS_TYPE (klass),
@@ -501,13 +500,12 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 		              BRASERO_TYPE_MEDIUM);
 
 	/**
- 	* BraseroVolumeMonitor::medium-removed:
+ 	* BraseroMediumMonitor::medium-removed:
  	* @monitor: the object which received the signal
   	* @medium: the medium which was removed
 	*
  	* This signal gets emitted when a medium is not longer available
- 	*
- 	*/
+ 	**/
 	medium_monitor_signals[MEDIUM_REMOVED] =
 		g_signal_new ("medium_removed",
 		              G_OBJECT_CLASS_TYPE (klass),
@@ -519,13 +517,12 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 		              BRASERO_TYPE_MEDIUM);
 
 	/**
- 	* BraseroVolumeMonitor::drive-added:
+ 	* BraseroMediumMonitor::drive-added:
  	* @monitor: the object which received the signal
   	* @medium: the new medium which was added
 	*
  	* This signal gets emitted when a new drive was detected
- 	*
- 	*/
+ 	**/
 	medium_monitor_signals[DRIVE_ADDED] =
 		g_signal_new ("drive_added",
 		              G_OBJECT_CLASS_TYPE (klass),
@@ -537,13 +534,12 @@ brasero_medium_monitor_class_init (BraseroMediumMonitorClass *klass)
 		              BRASERO_TYPE_DRIVE);
 
 	/**
- 	* BraseroVolumeMonitor::drive-removed:
+ 	* BraseroMediumMonitor::drive-removed:
  	* @monitor: the object which received the signal
   	* @medium: the medium which was removed
 	*
  	* This signal gets emitted when a drive is not longer available
- 	*
- 	*/
+ 	**/
 	medium_monitor_signals[DRIVE_REMOVED] =
 		g_signal_new ("drive_removed",
 		              G_OBJECT_CLASS_TYPE (klass),
