@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2005 William Jon McCann <mccann@jhu.edu>
+ * Copyright (C) 2008 Philippe Rouquier <bonfire-app@wanadoo.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,14 +127,26 @@ nautilus_disc_burn_bar_init (NautilusDiscBurnBar *bar)
         GtkWidget   *label;
         GtkWidget   *hbox;
         GtkWidget   *image;
+        gchar       *string;
 
         bar->priv = NAUTILUS_DISC_BURN_BAR_GET_PRIVATE (bar);
 
         hbox = GTK_WIDGET (bar);
 
-        label = gtk_label_new (_("CD/DVD Creator Folder"));
+        string = g_strdup_printf ("<b>%s</b>", _("CD/DVD Creator Folder"));
+        label = gtk_label_new (string);
+        g_free (string);
+        gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
         gtk_widget_show (label);
         gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+        string = g_strdup_printf ("<i>%s</i>", _("Drag or copy files below to write them to disc"));
+        label = gtk_label_new (string);
+        g_free (string);
+        gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+        gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
+        gtk_widget_show (label);
+        gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
 
         bar->priv->button = gtk_button_new_with_label (_("Write to Disc"));
         gtk_widget_show (bar->priv->button);
@@ -171,6 +184,7 @@ nautilus_disc_burn_bar_new (void)
         GObject *result;
 
         result = g_object_new (NAUTILUS_TYPE_DISC_BURN_BAR,
+                               "spacing", 6,
                                NULL);
 
         return GTK_WIDGET (result);

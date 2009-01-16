@@ -214,7 +214,7 @@ last_resort:
 /**
  * brasero_drive_eject:
  * @drive: #BraseroDrive
- * @wait: #gboolean
+ * @wait: #gboolean whether to wait for the completion of the operation (with a GMainLoop)
  * @error: #GError
  *
  * Open the drive tray or ejects the media if there is any inside.

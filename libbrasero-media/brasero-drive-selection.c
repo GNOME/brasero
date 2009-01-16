@@ -620,6 +620,14 @@ brasero_drive_selection_class_init (BraseroDriveSelectionClass *klass)
 							    0, BRASERO_DRIVE_TYPE_ALL,
 							    BRASERO_DRIVE_TYPE_ALL_BUT_FILE,
 							    G_PARAM_READWRITE));
+	/**
+ 	* BraseroDriveSelection::drive_changed:
+ 	* @selection: the object which received the signal
+  	* @medium: the medium which is now selected
+	*
+ 	* This signal gets emitted when the selected medium has changed
+ 	*
+ 	*/
 	brasero_drive_selection_signals [CHANGED_SIGNAL] =
 	    g_signal_new ("drive_changed",
 			  BRASERO_TYPE_DRIVE_SELECTION,
