@@ -288,9 +288,14 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	}
 	else if (sscanf (line, "Formating in progress: %d.%d %% done", &mb_written, &mb_total) == 2) {
+		brasero_job_set_current_action (BRASERO_JOB (process),
+						BRASERO_BURN_ACTION_BLANKING,
+						_("Formatting disc"),
+						FALSE);
+
 		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 		brasero_job_set_progress (BRASERO_JOB (wodim),
-					  (gdouble) ((gdouble) mb_written + ((gdouble) mb_total) / 10.0));
+					  (gdouble) ((gdouble) mb_written + ((gdouble) mb_total) / 10.0) / 100.0);
 	}
 	else if (sscanf (line, "Track %*d: %*s %d MB ", &mb_total) == 1) {
 /*		if (mb_total > 0)
