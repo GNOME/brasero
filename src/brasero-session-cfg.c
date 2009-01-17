@@ -248,6 +248,8 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 					      BRASERO_BURN_SESSION (self),
 					      &priv->supported,
 					      &priv->compulsory);
+	BRASERO_BURN_LOG ("Got supported flags %d", result);
+
 	if (result != BRASERO_BURN_OK) {
 		brasero_burn_session_set_flags (BRASERO_BURN_SESSION (self), flags);
 		return;
@@ -671,10 +673,11 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 	}
 	else {
 		/* Don't use flags as they'll be adapted later. */
+		BRASERO_BURN_LOG ("Testing media support");
 		result = brasero_burn_caps_is_session_supported (priv->caps,
 								 BRASERO_BURN_SESSION (self),
 								 FALSE);
-
+		BRASERO_BURN_LOG ("Result %i", result);
 		if (result != BRASERO_BURN_OK
 		&&  source.type == BRASERO_TRACK_TYPE_AUDIO
 		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {
