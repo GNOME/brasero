@@ -39,6 +39,8 @@
 #include <glib/gstdio.h>
 #include <gmodule.h>
 
+#include <gconf/gconf-client.h>
+
 #include "burn-cdrdao-common.h"
 #include "burn-cdrdao.h"
 #include "burn-basics.h"
@@ -50,7 +52,15 @@
 
 BRASERO_PLUGIN_BOILERPLATE (BraseroCdrdao, brasero_cdrdao, BRASERO_TYPE_PROCESS, BraseroProcess);
 
+struct _BraseroCdrdaoPrivate {
+  	guint use_raw:1;
+};
+typedef struct _BraseroCdrdaoPrivate BraseroCdrdaoPrivate;
+#define BRASERO_CDRDAO_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_CDRDAO, BraseroCdrdaoPrivate)) 
+
 static GObjectClass *parent_class = NULL;
+
+#define GCONF_KEY_RAW_FLAG "/apps/brasero/config/raw_flag" 
 
 static gboolean
 brasero_cdrdao_read_stderr_image (BraseroCdrdao *cdrdao, const gchar *line)
@@ -299,6 +309,9 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 				GPtrArray *argv)
 {
 	BraseroTrackType type;
+	BraseroCdrdaoPrivate *priv;
+
+	priv = BRASERO_CDRDAO_PRIVATE (cdrdao); 
 
 	g_ptr_array_add (argv, g_strdup ("cdrdao"));
 
@@ -316,6 +329,9 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 		brasero_job_get_flags (BRASERO_JOB (cdrdao), &flags);
 		if (flags & BRASERO_BURN_FLAG_NO_TMP_FILES)
 			g_ptr_array_add (argv, g_strdup ("--on-the-fly"));
+
+		if (priv->use_raw)
+		  	g_ptr_array_add (argv, g_strdup ("--driver generic-mmc-raw")); 
 
 		g_ptr_array_add (argv, g_strdup ("--source-device"));
 
@@ -527,6 +543,8 @@ brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
+	g_type_class_add_private (klass, sizeof(BraseroCdrdaoPrivate));
+
 	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_cdrdao_finalize;
 
@@ -537,7 +555,20 @@ brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 
 static void
 brasero_cdrdao_init (BraseroCdrdao *obj)
-{  }
+{  
+	GConfClient *client;
+ 	BraseroCdrdaoPrivate *priv;
+ 	
+	/* load our "configuration" */
+ 	priv = BRASERO_CDRDAO_PRIVATE (obj);
+ 	
+ 	client = gconf_client_get_default ();
+ 	priv->use_raw = gconf_client_get_bool (client,
+					       GCONF_KEY_RAW_FLAG,
+					       NULL);
+
+ 	g_object_unref (client); 
+}
 
 static void
 brasero_cdrdao_finalize (GObject *object)
@@ -551,6 +582,7 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 	GSList *input;
 	GSList *output;
 	BraseroBurnResult result;
+	BraseroPluginConfOption *use_raw; 
 	const BraseroMedia media_w = BRASERO_MEDIUM_CD|
 				     BRASERO_MEDIUM_WRITABLE|
 				     BRASERO_MEDIUM_REWRITABLE|
@@ -629,6 +661,12 @@ brasero_cdrdao_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
+
+	use_raw = brasero_plugin_conf_option_new (GCONF_KEY_RAW_FLAG,
+						  _("Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"),
+						  BRASERO_PLUGIN_OPTION_BOOL);
+
+	brasero_plugin_add_conf_option (plugin, use_raw);
 
 	brasero_plugin_register_group (plugin, _(CDRDAO_DESCRIPTION));
 	return BRASERO_BURN_OK;

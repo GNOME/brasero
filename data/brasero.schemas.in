@@ -54,6 +54,19 @@
 	</locale>
        </schema>
 
+     <schema>
+	<key>/schemas/apps/brasero/config/raw_flag</key>
+	<applyto>/apps/brasero/config/raw_flag</applyto>
+	<owner>brasero</owner>
+	<type>bool</type>
+	<default>false</default>
+	<locale name="C">
+	<short>Whether to use "--driver generic-mmc-raw" flag with cdrdao</short>
+	<long>Whether to use "--driver generic-mmc-raw" flag with
+	cdrdao. Set to True, brasero won't use it; it may be a workaround for some drives/setups.</long>
+	</locale>
+      </schema> 
+
       <schema>
         <key>/schemas/apps/brasero/display/sidepane</key>
 	<applyto>/apps/brasero/display/sidepane</applyto>

@@ -1,4 +1,17 @@
-2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+2009-01-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Work around for some drives/setups with cdrdao
+	Fix #561451 – Cannot burn CDs with brasero
+
+	Patch by Luis Medinas
+
+	* data/brasero.schemas.in:
+	* src/plugins/cdrdao/Makefile.am:
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_set_argv_record), (brasero_cdrdao_class_init),
+	(brasero_cdrdao_init), (brasero_cdrdao_export_caps):
+
+2009-01-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Second part of the fix for #567582 – Fails to burn a DVD iso
 	Because GIO doesn't follow a symlink that is pointed by another symlink,
@@ -8,26 +21,26 @@
 	* src/brasero-session-cfg.c (brasero_session_cfg_update):
 	* src/burn-process.c (brasero_process_check_path):
 
-2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+2009-01-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix for #567582 – Fails to burn a DVD iso
 	When using wodim only DVD+RWs needs prior formatting, a bug prevented that
 
 	* src/burn-caps.c (brasero_burn_caps_get_flags_for_medium):
 
-2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+2009-01-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Improved formatting feedback of DVD+RW when using wodim
 
 	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_stdout_read):
 
-2009-01-16  Philippe Rouquier  <ykw@localhost.localdomain>
+2009-01-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix a NULL pointer used sometimes when ejecting
 
 	* src/burn.c (brasero_burn_eject_dest_media):
 
-2009-01-16  Philippe Rouquier  <ykw@localhost.localdomain>
+2009-01-16  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Some fixes for API documentation
 

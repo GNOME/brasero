@@ -10,14 +10,15 @@ INCLUDES = \
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
 	$(DISABLE_DEPRECATED)				\
-	$(BRASERO_GLIB_CFLAGS)
+	$(BRASERO_GLIB_CFLAGS)				\
+	$(BRASERO_GCONF_CFLAGS)
 
 #cdrdao
 cdrdaodir = $(libdir)/brasero/plugins
 cdrdao_LTLIBRARIES = libbrasero-cdrdao.la
 libbrasero_cdrdao_la_SOURCES = burn-cdrdao.c burn-cdrdao.h \
 	burn-cdrdao-common.h 
-libbrasero_cdrdao_la_LIBADD = $(BRASERO_GLIB_LIBS)
+libbrasero_cdrdao_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_CFLAGS)
 libbrasero_cdrdao_la_LDFLAGS = -module -avoid-version
 
 #toc2cue
