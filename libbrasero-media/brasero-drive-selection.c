@@ -92,7 +92,12 @@ brasero_drive_selection_set_current_drive (BraseroDriveSelection *self,
 	gtk_tree_model_get (model, iter,
 			    DRIVE_COL, &drive,
 			    -1);
-  
+
+	if (drive)
+		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+	else
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
+
 	if (priv->active == drive)
 		return;
   
@@ -101,12 +106,8 @@ brasero_drive_selection_set_current_drive (BraseroDriveSelection *self,
   
 	priv->active = drive;
   
-	if (priv->active) {
-		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+	if (priv->active)
 		g_object_ref (priv->active);
-	}
-	else
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
   
 	g_signal_emit (self,
 		       brasero_drive_selection_signals [CHANGED_SIGNAL],

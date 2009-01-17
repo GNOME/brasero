@@ -223,6 +223,10 @@ brasero_medium_selection_set_current_medium (BraseroMediumSelection *self,
 	gtk_tree_model_get (model, iter,
 			    MEDIUM_COL, &medium,
 			    -1);
+	if (medium)
+		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+	else
+		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
 
 	if (priv->active == medium)
 		return;
@@ -232,12 +236,8 @@ brasero_medium_selection_set_current_medium (BraseroMediumSelection *self,
 
 	priv->active = medium;
 
-	if (priv->active) {
-		gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
+	if (priv->active)
 		g_object_ref (priv->active);
-	}
-	else
-		gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
 
 	g_signal_emit (self,
 		       brasero_medium_selection_signals [CHANGED_SIGNAL],
