@@ -674,7 +674,6 @@ brasero_session_cfg_update (BraseroSessionCfg *self,
 		result = brasero_burn_caps_is_session_supported (priv->caps,
 								 BRASERO_BURN_SESSION (self),
 								 FALSE);
-
 		if (result != BRASERO_BURN_OK
 		&&  source.type == BRASERO_TRACK_TYPE_AUDIO
 		&& (source.subtype.audio_format & BRASERO_METADATA_INFO)) {

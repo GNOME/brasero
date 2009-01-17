@@ -1,5 +1,15 @@
 2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Second part of the fix for #567582 – Fails to burn a DVD iso
+	Because GIO doesn't follow a symlink that is pointed by another symlink,
+	we ended up using wodim as if it were cdrecord
+	Forbid the use of programs that are actually symlinks.
+
+	* src/brasero-session-cfg.c (brasero_session_cfg_update):
+	* src/burn-process.c (brasero_process_check_path):
+
+2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #567582 – Fails to burn a DVD iso
 	When using wodim only DVD+RWs needs prior formatting, a bug prevented that
 
