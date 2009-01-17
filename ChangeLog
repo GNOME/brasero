@@ -1,5 +1,87 @@
 2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Relicenced to GPL 2 + restrictions
+
+	* libbrasero-media/brasero-drive-selection.c:
+	* libbrasero-media/brasero-drive-selection.h:
+	* libbrasero-media/brasero-drive.c:
+	* libbrasero-media/brasero-drive.h:
+	* libbrasero-media/brasero-gio-operation.c:
+	* libbrasero-media/brasero-gio-operation.h:
+	* libbrasero-media/brasero-media-private.h:
+	* libbrasero-media/brasero-media.c:
+	* libbrasero-media/brasero-media.h.in:
+	* libbrasero-media/brasero-medium-monitor.c:
+	* libbrasero-media/brasero-medium-monitor.h:
+	* libbrasero-media/brasero-medium-selection-priv.h:
+	* libbrasero-media/brasero-medium-selection.c:
+	* libbrasero-media/brasero-medium-selection.h:
+	* libbrasero-media/brasero-medium.c:
+	* libbrasero-media/brasero-medium.h:
+	* libbrasero-media/brasero-units.c:
+	* libbrasero-media/brasero-units.h:
+	* libbrasero-media/brasero-volume.c:
+	* libbrasero-media/brasero-volume.h:
+	* libbrasero-media/burn-hal-watch.c:
+	* libbrasero-media/burn-hal-watch.h:
+	* libbrasero-media/burn-iso-field.c:
+	* libbrasero-media/burn-iso-field.h:
+	* libbrasero-media/burn-iso9660.c:
+	* libbrasero-media/burn-iso9660.h:
+	* libbrasero-media/burn-susp.c:
+	* libbrasero-media/burn-susp.h:
+	* libbrasero-media/burn-volume-source.c:
+	* libbrasero-media/burn-volume-source.h:
+	* libbrasero-media/burn-volume.c:
+	* libbrasero-media/burn-volume.h:
+	* libbrasero-media/scsi-base.h:
+	* libbrasero-media/scsi-command.h:
+	* libbrasero-media/scsi-device.h:
+	* libbrasero-media/scsi-dvd-structures.h:
+	* libbrasero-media/scsi-eject.c:
+	* libbrasero-media/scsi-error.c:
+	* libbrasero-media/scsi-error.h:
+	* libbrasero-media/scsi-get-configuration.c:
+	* libbrasero-media/scsi-get-configuration.h:
+	* libbrasero-media/scsi-get-performance.c:
+	* libbrasero-media/scsi-get-performance.h:
+	* libbrasero-media/scsi-mech-status.c:
+	* libbrasero-media/scsi-mech-status.h:
+	* libbrasero-media/scsi-mmc1.h:
+	* libbrasero-media/scsi-mmc2.h:
+	* libbrasero-media/scsi-mmc3.h:
+	* libbrasero-media/scsi-mode-pages.h:
+	* libbrasero-media/scsi-mode-select.c:
+	* libbrasero-media/scsi-mode-sense.c:
+	* libbrasero-media/scsi-opcodes.h:
+	* libbrasero-media/scsi-q-subchannel.h:
+	* libbrasero-media/scsi-read-capacity.c:
+	* libbrasero-media/scsi-read-capacity.h:
+	* libbrasero-media/scsi-read-cd.c:
+	* libbrasero-media/scsi-read-cd.h:
+	* libbrasero-media/scsi-read-disc-info.c:
+	* libbrasero-media/scsi-read-disc-info.h:
+	* libbrasero-media/scsi-read-disc-structure.c:
+	* libbrasero-media/scsi-read-disc-structure.h:
+	* libbrasero-media/scsi-read-format-capacities.c:
+	* libbrasero-media/scsi-read-format-capacities.h:
+	* libbrasero-media/scsi-read-toc-pma-atip.c:
+	* libbrasero-media/scsi-read-toc-pma-atip.h:
+	* libbrasero-media/scsi-read-track-information.c:
+	* libbrasero-media/scsi-read-track-information.h:
+	* libbrasero-media/scsi-read10.c:
+	* libbrasero-media/scsi-sbc.h:
+	* libbrasero-media/scsi-sense-data.c:
+	* libbrasero-media/scsi-sense-data.h:
+	* libbrasero-media/scsi-sg.c:
+	* libbrasero-media/scsi-spc1.h:
+	* libbrasero-media/scsi-status-page.h:
+	* libbrasero-media/scsi-test-unit-ready.c:
+	* libbrasero-media/scsi-utils.h:
+	* libbrasero-media/scsi-write-page.h:
+
+2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #564748 – Brasero fails to burn DVDs
 	This adds a workaround for some drives that don't work properly with
 	growisofs when DAO is on
