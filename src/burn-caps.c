@@ -99,14 +99,6 @@ BraseroBurnFlag
 brasero_medium_supported_flags (BraseroMedium *self,
 				BraseroBurnFlag flags);
 
-/**
- * This macro is used to determine whether or not blanking could change anything
- * for the medium so that we can write to it.
- */
-#define BRASERO_BURN_CAPS_SHOULD_BLANK(media_MACRO, flags_MACRO)		\
-	((media_MACRO & BRASERO_MEDIUM_UNFORMATTED) ||				\
-	((media_MACRO & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA)) &&	\
-	 (flags_MACRO & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) == FALSE))
 
 #define BRASERO_BURN_CAPS_NOT_SUPPORTED_LOG(session)				\
 {										\
@@ -2466,10 +2458,9 @@ brasero_burn_caps_get_flags_for_medium (BraseroBurnCaps *self,
 						  supported_flags,
 						  compulsory_flags);
 
-	/* see if we can add BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE. Add it when:
-	 * - media can be blanked, it has audio or data and we're not merging
-	 * - media is not formatted and it can be blanked/formatted */
-	if (BRASERO_BURN_CAPS_SHOULD_BLANK (media, session_flags)
+	/* see if we can add BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE */
+	if ((media & (BRASERO_MEDIUM_HAS_AUDIO|BRASERO_MEDIUM_HAS_DATA))
+	&& !(session_flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND))
 	&&  brasero_burn_caps_can_blank_real (self, media, session_flags) == BRASERO_BURN_OK)
 		(*supported_flags) |= BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE;
 	else if (session_flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)

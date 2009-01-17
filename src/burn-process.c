@@ -89,7 +89,6 @@ struct _BraseroProcessPrivate {
 static GObjectClass *parent_class = NULL;
 
 /* This is a helper function for plugins at load time */
-
 gboolean
 brasero_process_check_path (const gchar *name,
 			    gchar **error)
@@ -104,30 +103,49 @@ brasero_process_check_path (const gchar *name,
 		return BRASERO_BURN_ERR;
 	}
 
-	if (!g_file_test (prog_path, G_FILE_TEST_IS_EXECUTABLE)) {
-		g_free (prog_path);
-		*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
-		return BRASERO_BURN_ERR;
-	}
-
 	/* make sure that's not a symlink pointing to something with another
-	 * name like wodim.
-	 * NOTE: we used to test the target and see if it had the same name as
-	 * the symlink with GIO. The problem is, when the symlink pointed to
-	 * another symlink, then GIO didn't follow that other symlink. And in
-	 * the end it didn't work. So forbid all symlink. */
+	 * name like wodim. */
 	if (g_file_test (prog_path, G_FILE_TEST_IS_SYMLINK)) {
-		*error = g_strdup_printf (_("\"%s\" is a symlink pointing to another program. Use the target program instead"), name);
-		return BRASERO_BURN_ERR;
-	}
-	/* Make sure it's a regular file */
-	else if (!g_file_test (prog_path, G_FILE_TEST_IS_REGULAR)) {
-		*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
-		g_free (prog_path);
-		return BRASERO_BURN_ERR;
-	}
+		GFile *file;
+		GFileInfo *info;
+		gchar *prog_name;
+		const gchar *target;
 
-	g_free (prog_path);
+		file = g_file_new_for_path (prog_path);
+		g_free (prog_path);
+
+		if (!file) {
+			*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
+			return BRASERO_BURN_ERR;
+		}
+
+		info = g_file_query_info (file,
+					  G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET,
+					  G_FILE_QUERY_INFO_NONE,
+					  NULL,
+					  NULL);
+		g_object_unref (file);
+
+		if (!info) {
+			*error = g_strdup_printf (_("\"%s\" could not be found in the path"), name);
+			return BRASERO_BURN_ERR;
+		}
+
+		target = g_file_info_get_symlink_target (info);
+		prog_name = g_path_get_basename (target);
+		g_object_unref (info);
+
+		if (!prog_name || strcmp (prog_name, name)) {
+			g_free (prog_name);
+			*error = g_strdup_printf (_("\"%s\" is a symlink pointing to another program. Use the target program instead"), name);
+			return BRASERO_BURN_ERR;
+		}
+
+		g_free (prog_name);
+	}
+	else
+		g_free (prog_path);
+
 	return BRASERO_BURN_OK;
 }
 
