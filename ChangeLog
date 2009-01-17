@@ -1,5 +1,12 @@
 2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #567582 – Fails to burn a DVD iso
+	When using wodim only DVD+RWs needs prior formatting, a bug prevented that
+
+	* src/burn-caps.c (brasero_burn_caps_get_flags_for_medium):
+
+2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Improved formatting feedback of DVD+RW when using wodim
 
 	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_stdout_read):
