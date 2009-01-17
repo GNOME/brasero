@@ -10,14 +10,15 @@ INCLUDES = \
 	-DBRASERO_DATADIR=\"$(datadir)/brasero\"     	    	\
 	-DBRASERO_LIBDIR=\"$(libdir)\"  	         	\
 	$(DISABLE_DEPRECATED)				\
-	$(BRASERO_GLIB_CFLAGS)
+	$(BRASERO_GLIB_CFLAGS)				\
+	$(BRASERO_GCONF_CFLAGS)
 
 #growisofs
 growisofsdir = $(libdir)/brasero/plugins
 growisofs_LTLIBRARIES = libbrasero-growisofs.la
 libbrasero_growisofs_la_SOURCES = burn-growisofs.c burn-growisofs.h \
 	burn-growisofs-common.h 
-libbrasero_growisofs_la_LIBADD = $(BRASERO_GLIB_LIBS)
+libbrasero_growisofs_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS)
 libbrasero_growisofs_la_LDFLAGS = -module -avoid-version
 
 #dvdrwformat

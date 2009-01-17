@@ -543,7 +543,7 @@ brasero_cdrdao_class_init (BraseroCdrdaoClass *klass)
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	BraseroProcessClass *process_class = BRASERO_PROCESS_CLASS (klass);
 
-	g_type_class_add_private (klass, sizeof(BraseroCdrdaoPrivate));
+	g_type_class_add_private (klass, sizeof (BraseroCdrdaoPrivate));
 
 	parent_class = g_type_class_peek_parent(klass);
 	object_class->finalize = brasero_cdrdao_finalize;

@@ -40,6 +40,8 @@
 
 #include <gmodule.h>
 
+#include <gconf/gconf-client.h> 
+
 #include "burn-basics.h"
 #include "burn-plugin.h"
 #include "burn-job.h"
@@ -53,12 +55,15 @@ BRASERO_PLUGIN_BOILERPLATE (BraseroGrowisofs, brasero_growisofs, BRASERO_TYPE_PR
 struct BraseroGrowisofsPrivate {
 	guint use_utf8:1;
 	guint use_genisoimage:1;
+  	guint use_dao:1;
 };
 typedef struct BraseroGrowisofsPrivate BraseroGrowisofsPrivate;
 
 #define BRASERO_GROWISOFS_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_GROWISOFS, BraseroGrowisofsPrivate))
 
 static GObjectClass *parent_class = NULL;
+
+#define GCONF_KEY_DAO_FLAG "/apps/brasero/config/dao_flag" 
 
 /* Process start */
 static BraseroBurnResult
@@ -418,7 +423,9 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	 * DVD+-R. It will close the disc. Which make sense since DAO means
 	 * Disc At Once. That's checked in burn-caps.c with coherency checks.
 	 * NOTE 2: dao is supported for DL DVD after 6.0 (think about that for
-	 * BurnCaps) */
+	 * BurnCaps)
+	 * Moreover even for single session DVDs it doesn't work properly so
+	 * there is a workaround to turn it off entirely. */
 	if (flags & BRASERO_BURN_FLAG_DAO)
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=dao"));
 
@@ -709,7 +716,10 @@ brasero_growisofs_finalize (GObject *object)
 static BraseroBurnResult
 brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 {
+	BraseroPluginConfOption *use_dao;
+	gboolean use_dao_gconf_key;
 	BraseroBurnResult result;
+	GConfClient *client;
 	GSList *output;
 	GSList *input;
 
@@ -811,15 +821,80 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
-	/* For DVD-W and DVD-RW sequential */
-	BRASERO_PLUGIN_ADD_STANDARD_DVDR_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+	/* For DVD-RW sequential */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
-	/* see NOTE for DVD-RW restricted overwrite below */
+	/* see NOTE for DVD-RW restricted overwrite */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_RESTRICTED_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
-	/* DVD+ W */
-	BRASERO_PLUGIN_ADD_STANDARD_DVDR_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+	/* DVD+R and DVD-R. DAO and growisofs don't always work well with these
+	 * types of media and with some drives. So don't allow it if the
+	 * workaround is set in GConf. */
+	client = gconf_client_get_default ();
+	use_dao_gconf_key = gconf_client_get_bool (client,
+						   GCONF_KEY_DAO_FLAG,
+						   NULL);
+	g_object_unref (client);
+	if (use_dao_gconf_key == TRUE) {
+		BRASERO_PLUGIN_ADD_STANDARD_DVDR_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+		BRASERO_PLUGIN_ADD_STANDARD_DVDR_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
+	}
+	else {
+		/* All above standard flags minus DAO flag support */
+		brasero_plugin_set_flags (plugin,
+					  BRASERO_MEDIUM_DVDR_PLUS|
+					  BRASERO_MEDIUM_DUAL_L|
+					  BRASERO_MEDIUM_BLANK,                         
+					  (BRASERO_BURN_FLAG_BURNPROOF|                 
+					  BRASERO_BURN_FLAG_OVERBURN|                   
+					  BRASERO_BURN_FLAG_MULTI|                      
+					  BRASERO_BURN_FLAG_NOGRACE) &                  
+					  (~BRASERO_BURN_FLAG_NONE),                         
+					  BRASERO_BURN_FLAG_NONE);                      
+
+		brasero_plugin_set_flags (plugin,
+					  BRASERO_MEDIUM_DVDR_PLUS|
+					  BRASERO_MEDIUM_DUAL_L|
+					  BRASERO_MEDIUM_APPENDABLE|
+					  BRASERO_MEDIUM_HAS_DATA,
+					  (BRASERO_BURN_FLAG_MERGE|
+					  BRASERO_BURN_FLAG_APPEND|
+					  BRASERO_BURN_FLAG_BURNPROOF|
+					  BRASERO_BURN_FLAG_OVERBURN|
+					  BRASERO_BURN_FLAG_MULTI|
+					  BRASERO_BURN_FLAG_NOGRACE) &
+					  (~BRASERO_BURN_FLAG_NONE),
+					  BRASERO_BURN_FLAG_APPEND);
+
+		brasero_plugin_set_flags (plugin,
+					  BRASERO_MEDIUM_DVDR|
+					  BRASERO_MEDIUM_DUAL_L|
+					  BRASERO_MEDIUM_JUMP|
+					  BRASERO_MEDIUM_BLANK,
+					  (BRASERO_BURN_FLAG_BURNPROOF|
+					  BRASERO_BURN_FLAG_OVERBURN|
+					  BRASERO_BURN_FLAG_MULTI|
+					  BRASERO_BURN_FLAG_DUMMY|
+					  BRASERO_BURN_FLAG_NOGRACE) &
+					  (~BRASERO_BURN_FLAG_NONE),
+					  BRASERO_BURN_FLAG_NONE);
+
+		brasero_plugin_set_flags (plugin,
+					  BRASERO_MEDIUM_DVDR|
+					  BRASERO_MEDIUM_DUAL_L|
+					  BRASERO_MEDIUM_JUMP|
+					  BRASERO_MEDIUM_APPENDABLE|
+					  BRASERO_MEDIUM_HAS_DATA,
+					  (BRASERO_BURN_FLAG_APPEND|
+					  BRASERO_BURN_FLAG_MERGE|
+					  BRASERO_BURN_FLAG_BURNPROOF|
+					  BRASERO_BURN_FLAG_OVERBURN|
+					  BRASERO_BURN_FLAG_MULTI|
+					  BRASERO_BURN_FLAG_DUMMY|
+					  BRASERO_BURN_FLAG_NOGRACE) &
+					  (~BRASERO_BURN_FLAG_NONE),
+					  BRASERO_BURN_FLAG_APPEND);
+	}
 
 	/* for DVD+RW */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
@@ -869,6 +944,12 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_BURN_FLAG_NOGRACE|
 					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_FAST_BLANK);
+
+	use_dao = brasero_plugin_conf_option_new (GCONF_KEY_DAO_FLAG,
+						  _("Allow DAO use"),
+						  BRASERO_PLUGIN_OPTION_BOOL);
+
+	brasero_plugin_add_conf_option (plugin, use_dao); 
 
 	brasero_plugin_register_group (plugin, _(GROWISOFS_DESCRIPTION));
 

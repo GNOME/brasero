@@ -1,3 +1,17 @@
+2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #564748 – Brasero fails to burn DVDs
+	This adds a workaround for some drives that don't work properly with
+	growisofs when DAO is on
+
+	Reworked patch by Luis Medinas
+
+	* data/brasero.schemas.in:
+	* src/plugins/cdrdao/burn-cdrdao.c (brasero_cdrdao_class_init):
+	* src/plugins/growisofs/Makefile.am:
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+
 2009-01-17  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Work around for some drives/setups with cdrdao

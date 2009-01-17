@@ -42,6 +42,19 @@
 	</locale>
        </schema>
 
+       <schema>
+ 	<key>/schemas/apps/brasero/config/dao_flag</key>
+ 	<applyto>/apps/brasero/config/dao_flag</applyto>
+ 	<owner>brasero</owner>
+ 	<type>bool</type>
+ 	<default>true</default>
+ 	<locale name="C">
+ 	<short>Whether to use "-use-the-force-luke=dao" flag with growisofs</short>
+ 	<long>Whether to use "-use-the-force-luke=dao" flag with
+ 	growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups.</long>
+ 	</locale>
+ 	</schema> 
+
       <schema>
         <key>/schemas/apps/brasero/config/minbuf_value</key>
 	<applyto>/apps/brasero/config/minbuf_value</applyto>
@@ -63,7 +76,7 @@
 	<locale name="C">
 	<short>Whether to use "--driver generic-mmc-raw" flag with cdrdao</short>
 	<long>Whether to use "--driver generic-mmc-raw" flag with
-	cdrdao. Set to True, brasero won't use it; it may be a workaround for some drives/setups.</long>
+	cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups.</long>
 	</locale>
       </schema> 
 
