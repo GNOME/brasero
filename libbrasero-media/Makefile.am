@@ -146,8 +146,8 @@ libbrasero_media_la_SOURCES += scsi-uscsi.c
 endif
 
 EXTRA_DIST =			\
-	libbrasero-marshal.list	\
-	libbrasero-media.symbols
+	libbrasero-marshal.list
+#	libbrasero-media.symbols
 
 CLEANFILES =			\
 	$(RECMARSHALFILES)
