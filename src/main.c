@@ -178,6 +178,96 @@ static const GOptionEntry options [] = {
 }
 
 static void
+brasero_handle_burn_uri (BraseroApp *app,
+			 GtkWidget *manager)
+{
+	GFileEnumerator *enumerator;
+	GFileInfo *info = NULL;
+	GError *error = NULL;
+	GSList *list = NULL;
+	GFile *file;
+
+	/* Here we get the contents from the burn:// URI and add them
+	 * individually to the data project. This is done in case it is
+	 * empty no to start the "Getting Project Size" dialog and then
+	 * show the "Project is empty" dialog. Do this synchronously as:
+	 * - we only want the top nodes which reduces time needed
+	 * - it's always local
+	 * - windows haven't been shown yet
+	 * NOTE: don't use any file specified on the command line. */
+	file = g_file_new_for_uri ("burn://");
+	enumerator = g_file_enumerate_children (file,
+						G_FILE_ATTRIBUTE_STANDARD_NAME,
+						G_FILE_QUERY_INFO_NONE,
+						NULL,
+						&error);
+
+	if (!enumerator) {
+		gchar *string;
+
+		if (error)
+			string = g_strdup_printf (_("An internal error occured (%s)"), error->message);
+		else
+			string = g_strdup (_("An internal error occured"));
+
+		brasero_app_alert (app,
+				   _("Error while loading the project."),
+				   string,
+				   GTK_MESSAGE_ERROR);
+
+		g_free (string);
+		g_object_unref (file);
+		return;
+	}
+
+	while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)))
+		list = g_slist_prepend (list, g_strconcat ("burn:///", g_file_info_get_name (info), NULL));
+
+	g_object_unref (enumerator);
+	g_object_unref (file);
+
+	if (error) {
+		gchar *string;
+
+		if (error)
+			string = g_strdup_printf (_("An internal error occured (%s)"), error->message);
+		else
+			string = g_strdup (_("An internal error occured"));
+
+		brasero_app_alert (app,
+				   _("Error while loading the project."),
+				   string,
+				   GTK_MESSAGE_ERROR);
+
+		g_free (string);
+		g_object_unref (file);
+
+		g_slist_foreach (list, (GFunc) g_free, NULL);
+		g_slist_free (list);
+		return;
+	}
+
+	if (!list) {
+		brasero_app_alert (app,
+				   _("Please add files to the project."),
+				   _("The project is empty"),
+				   GTK_MESSAGE_ERROR);
+		return;
+	}
+
+	/* reverse to keep the order of files */
+	list = g_slist_reverse (list);
+	brasero_app_create_mainwin (app);
+	manager = brasero_app_get_project_manager (app);
+	brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
+	brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
+
+	g_slist_foreach (list, (GFunc) g_free, NULL);
+	g_slist_free (list);
+	return;
+}
+
+static void
 brasero_app_parse_options (BraseroApp *app)
 {
 	gint nb = 0;
@@ -273,89 +363,7 @@ brasero_app_parse_options (BraseroApp *app)
 		return;
 	}
 	else if (open_ncb) {
-		GFileEnumerator *enumerator;
-		GFileInfo *info = NULL;
-		GError *error = NULL;
-		GSList *list = NULL;
-		GFile *file;
-
-		/* Here we get the contents from the burn:// URI and add them
-		 * individually to the data project. This is done in case it is
-		 * empty no to start the "Getting Project Size" dialog and then
-		 * show the "Project is empty" dialog. Do this synchronously as:
-		 * - we only want the top nodes which reduces time needed
-		 * - it's always local
-		 * - windows haven't been shown yet
-		 * NOTE: don't use any file specified on the command line. */
-		file = g_file_new_for_uri ("burn://");
-		enumerator = g_file_enumerate_children (file,
-							G_FILE_ATTRIBUTE_STANDARD_NAME,
-							G_FILE_QUERY_INFO_NONE,
-							NULL,
-							&error);
-
-		if (!enumerator) {
-			gchar *string;
-
-			if (error)
-				string = g_strdup_printf (_("An internal error occured (%s)"), error->message);
-			else
-				string = g_strdup (_("An internal error occured"));
-
-			brasero_app_alert (app,
-					   _("Error while loading the project."),
-					   string,
-					   GTK_MESSAGE_ERROR);
-
-			g_free (string);
-			g_object_unref (file);
-			return;
-		}
-
-		while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)))
-			list = g_slist_prepend (list, g_strconcat ("burn:///", g_file_info_get_name (info), NULL));
-
-		g_object_unref (enumerator);
-		g_object_unref (file);
-
-		if (error) {
-			gchar *string;
-
-			if (error)
-				string = g_strdup_printf (_("An internal error occured (%s)"), error->message);
-			else
-				string = g_strdup (_("An internal error occured"));
-
-			brasero_app_alert (app,
-					   _("Error while loading the project."),
-					   string,
-					   GTK_MESSAGE_ERROR);
-
-			g_free (string);
-			g_object_unref (file);
-
-			g_slist_foreach (list, (GFunc) g_free, NULL);
-			g_slist_free (list);
-			return;
-		}
-
-		if (!list) {
-			brasero_app_alert (app,
-					   _("Please add files to the project."),
-					   _("The project is empty"),
-					   GTK_MESSAGE_ERROR);
-			return;
-		}
-
-		/* reverse to keep the order of files */
-		list = g_slist_reverse (list);
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
-
-		g_slist_foreach (list, (GFunc) g_free, NULL);
-		g_slist_free (list);
+		brasero_handle_burn_uri (app, manager);
 		return;
 	}
 
@@ -419,17 +427,15 @@ brasero_app_parse_options (BraseroApp *app)
 		if (g_strv_length (files) == 1) {
 			BraseroProjectType type;
 
-			brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 			type = brasero_project_manager_open_uri (BRASERO_PROJECT_MANAGER (manager), files [0]);
 
 			/* Fallback if it hasn't got a suitable URI */
-			if (type == BRASERO_PROJECT_TYPE_INVALID)
+			if (type == BRASERO_PROJECT_TYPE_INVALID) {
 				BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+			}
 		}
-		else {
-			brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
+		else
 			BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
-		}
 	}
 	else {
 		brasero_app_create_mainwin (app);
