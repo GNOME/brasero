@@ -134,11 +134,8 @@ static guint brasero_burn_signals [LAST_SIGNAL] = { 0 };
 #define BRASERO_BURN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), BRASERO_TYPE_BURN, BraseroBurnPrivate))
 
 #define MAX_EJECT_ATTEMPTS	5
-#define MAX_MOUNT_ATTEMPTS	20
+#define MAX_MOUNT_ATTEMPTS	40
 #define MOUNT_TIMEOUT		500
-
-#define MAX_LOAD_ATTEMPTS	50
-#define LOAD_TIMEOUT		500
 
 static GObjectClass *parent_class = NULL;
 

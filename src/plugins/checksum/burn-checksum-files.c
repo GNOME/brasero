@@ -125,8 +125,11 @@ brasero_checksum_files_get_file_checksum (BraseroChecksumFiles *self,
 	g_checksum_update (checksum, buffer, read_bytes);
 
 	while (read_bytes == BLOCK_SIZE) {
-		if (priv->cancel)
+		if (priv->cancel) {
+			fclose (file);
+			g_checksum_free (checksum);
 			return BRASERO_BURN_CANCEL;
+		}
 
 		read_bytes = fread (buffer, 1, BLOCK_SIZE, file);
 		g_checksum_update (checksum, buffer, read_bytes);

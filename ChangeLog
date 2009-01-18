@@ -1,3 +1,12 @@
+2009-01-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Increased the number attempts at mounting to avoid bug
+	Fix leak when cancelling in checksum file plugin
+
+	* src/burn.c:
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_get_file_checksum):
+
 2009-01-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fixed sensitiveness of media/drive selection when selection is empty
