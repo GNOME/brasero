@@ -1,5 +1,13 @@
 2009-01-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Condider DVD+RW/DVD-RW/DVD-RAM in incomplete state as being blank since
+	it happens when they have just been formatted.
+
+	* libbrasero-media/brasero-medium.c (brasero_medium_set_blank),
+	(brasero_medium_get_contents):
+
+2009-01-18  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Set use of DAO by growisofs to off by default
 
 	* data/brasero.schemas.in:
