@@ -1,5 +1,12 @@
 2009-01-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix second part of #568204 – Brasero can't erase DVD+RW and speed issue
+	Fix speed rounding that caused some slow burning with some media
+
+	* src/burn-job.c (brasero_job_get_speed):
+
+2009-01-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Some more debug statements for errors in drive probing code
 	Save drive rates more properly
 

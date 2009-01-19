@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <math.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -52,6 +53,9 @@
 #include "brasero-marshal.h"
 #include "brasero-drive.h"
 #include "brasero-medium.h"
+
+/* For nearbyintf ()*/
+#define _ISOC99_SOURCE
 
 typedef struct _BraseroJobOutput {
 	gchar *image;
@@ -1613,11 +1617,11 @@ brasero_job_get_speed (BraseroJob *self, guint *speed)
 
 	media = brasero_burn_session_get_dest_media (session);
 	if (media & BRASERO_MEDIUM_DVD)
-		*speed = BRASERO_RATE_TO_SPEED_DVD (rate);
+		*speed = nearbyint (BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_BD)
-		*speed = BRASERO_RATE_TO_SPEED_BD (rate);
+		*speed = nearbyint (BRASERO_RATE_TO_SPEED_BD (rate));
 	else
-		*speed = BRASERO_RATE_TO_SPEED_CD (rate);
+		*speed = nearbyint (BRASERO_RATE_TO_SPEED_CD (rate));
 
 	return BRASERO_BURN_OK;
 }
