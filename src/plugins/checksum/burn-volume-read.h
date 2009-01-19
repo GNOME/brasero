@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 
 typedef struct _BraseroVolFileHandle BraseroVolFileHandle;
 
+
 BraseroVolFileHandle *
 brasero_volume_file_open (BraseroVolSrc *src,
 			  BraseroVolFile *file);
@@ -42,6 +43,8 @@ brasero_volume_file_open (BraseroVolSrc *src,
 void
 brasero_volume_file_close (BraseroVolFileHandle *handle);
 
+gboolean
+brasero_volume_file_rewind (BraseroVolFileHandle *handle);
 
 gint
 brasero_volume_file_read (BraseroVolFileHandle *handle,
@@ -49,7 +52,7 @@ brasero_volume_file_read (BraseroVolFileHandle *handle,
 			  guint len);
 
 BraseroBurnResult
-brasero_volume_file_read_line (BraseroVolFileHandle *hanlde,
+brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 			       gchar *buffer,
 			       guint len);
 

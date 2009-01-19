@@ -1,5 +1,19 @@
 2009-01-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some more debug statements for errors in drive probing code
+	Save drive rates more properly
+
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_get_speed_mmc3),
+	(brasero_medium_get_page_2A_write_speed_desc),
+	(brasero_medium_get_page_2A_max_speed),
+	(brasero_medium_check_old_drive):
+	* src/brasero-session-cfg.c
+	(brasero_session_cfg_save_drive_properties),
+	(brasero_session_cfg_set_drive_properties):
+
+2009-01-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fixed a problem with infinite blanking when fast is selected
 	Fix part of #568204 – Brasero can't erase DVD+RW and speed issue
 

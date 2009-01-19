@@ -1287,6 +1287,8 @@ brasero_medium_get_speed_mmc3 (BraseroMedium *self,
 	priv->max_rd = max_rd;
 	priv->max_wrt = max_wrt;
 
+	BRASERO_MEDIA_LOG ("Maximum Speed (mmc3) %i", max_wrt);
+
 end:
 
 	g_free (wrt_perf);
@@ -1364,6 +1366,8 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 	else
 		priv->max_wrt = max_wrt;
 
+	BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A) %i", priv->max_wrt);
+
 	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
 	g_free (data);
 
@@ -1408,6 +1412,8 @@ brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
 
 	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
 	priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
+
+	BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A [old]) %i", priv->max_wrt);
 
 	/* also add it to the speed descriptors */
 	priv->wr_speeds = g_new0 (gint, 2);
@@ -2624,6 +2630,8 @@ brasero_medium_check_old_drive (BraseroMedium *self,
 		g_free (model);
 		priv->max_rd = BRASERO_SPEED_TO_RATE_CD (12);
 		priv->max_wrt = BRASERO_SPEED_TO_RATE_CD (4);
+		BRASERO_MEDIA_LOG ("Maximum Speed (old drive) %i", priv->max_wrt);
+
 		return brasero_medium_old_drive_get_disc_info (self,
 							       handle,
 							       code);

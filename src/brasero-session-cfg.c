@@ -203,7 +203,7 @@ brasero_session_cfg_save_drive_properties (BraseroSessionCfg *self)
 		return;
 	}
 
-	gconf_client_set_int (client, key, rate / 1024, NULL);
+	gconf_client_set_int (client, key, rate / 1000, NULL);
 	g_free (key);
 
 	key = brasero_session_cfg_get_gconf_key (self, "flags");
@@ -364,7 +364,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 	g_free (key);
 
 	if (value) {
-		rate = gconf_value_get_int (value) * 1024;
+		rate = gconf_value_get_int (value) * 1000;
 		gconf_value_free (value);
 	}
 	else

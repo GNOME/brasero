@@ -57,24 +57,13 @@ brasero_volume_file_close (BraseroVolFileHandle *handle)
 	g_free (handle);
 }
 
-BraseroVolFileHandle *
-brasero_volume_file_open (BraseroVolSrc *src,
-			  BraseroVolFile *file)
+static gboolean
+brasero_volume_file_rewind_real (BraseroVolFileHandle *handle)
 {
-	BraseroVolFileHandle *handle;
-	BraseroVolFileExtent *extent;
-	gboolean result;
-	gint res_seek;
 	GSList *node;
-
-	if (file->isdir)
-		return NULL;
-
-	handle = g_new0 (BraseroVolFileHandle, 1);
-	handle->src = src;
-	brasero_volume_source_ref (src);
-
-	handle->extents_forward = g_slist_copy (file->specific.file.extents);
+	gint res_seek;
+	gboolean result;
+	BraseroVolFileExtent *extent;
 
 	node = handle->extents_forward;
 	extent = node->data;
@@ -89,16 +78,12 @@ brasero_volume_file_open (BraseroVolSrc *src,
 
 	/* start loading first block */
 	res_seek = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
-	if (res_seek == -1) {
-		brasero_volume_file_close (handle);
-		return NULL;
-	}
+	if (res_seek == -1)
+		return FALSE;
 
 	result = BRASERO_VOL_SRC_READ (handle->src, (gchar *) handle->buffer, 1, NULL);
-	if (!result) {
-		brasero_volume_file_close (handle);
-		return NULL;
-	}
+	if (!result)
+		return FALSE;
 
 	handle->offset = 0;
 	handle->position ++;
@@ -108,7 +93,45 @@ brasero_volume_file_open (BraseroVolSrc *src,
 	else
 		handle->buffer_max = sizeof (handle->buffer);
 
+	return TRUE;
+}
+
+BraseroVolFileHandle *
+brasero_volume_file_open (BraseroVolSrc *src,
+			  BraseroVolFile *file)
+{
+	BraseroVolFileHandle *handle;
+
+	if (file->isdir)
+		return NULL;
+
+	handle = g_new0 (BraseroVolFileHandle, 1);
+	handle->src = src;
+	brasero_volume_source_ref (src);
+
+	handle->extents_forward = g_slist_copy (file->specific.file.extents);
+	if (brasero_volume_file_rewind_real (handle)) {
+		brasero_volume_file_close (handle);
+		return NULL;
+	}
+
 	return handle;
+}
+
+gboolean
+brasero_volume_file_rewind (BraseroVolFileHandle *handle)
+{
+	GSList *node, *next;
+
+	/* Put back all extents in the unread list */
+	for (node = handle->extents_backward; node; node = next) {
+		next = node->next;
+		handle->extents_backward = g_slist_remove_link (handle->extents_backward, node);
+
+		node->next = handle->extents_forward;
+		handle->extents_forward = node;
+	}
+	return brasero_volume_file_rewind (handle);
 }
 
 BraseroBurnResult
@@ -215,17 +238,22 @@ brasero_volume_file_find_line_break (BraseroVolFileHandle *handle,
 		line_len = break_line - (handle->buffer + handle->offset);
 		if (line_len >= len) {
 			/* - 1 is to be able to set last character to '\0' */
-			memcpy (buffer + buffer_offset,
-				handle->buffer + handle->offset,
-				len - buffer_offset - 1);
+			if (buffer) {
+				memcpy (buffer + buffer_offset,
+					handle->buffer + handle->offset,
+					len - buffer_offset - 1);
 
-			buffer [len - 1] = '\0';
+				buffer [len - 1] = '\0';
+			}
+
 			handle->offset += len - buffer_offset - 1;
 			return TRUE;
 		}
 
-		memcpy (buffer, handle->buffer + handle->offset, line_len);
-		buffer [line_len] = '\0';
+		if (buffer) {
+			memcpy (buffer, handle->buffer + handle->offset, line_len);
+			buffer [line_len] = '\0';
+		}
 
 		/* add 1 to skip the line break */
 		handle->offset += line_len + 1;
@@ -255,9 +283,10 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 		BraseroScsiResult result;
 
 		/* copy what we already have in the buffer. */
-		memcpy (buffer + buffer_offset,
-			handle->offset + handle->buffer,
-			handle->buffer_max - handle->offset);
+		if (buffer)
+			memcpy (buffer + buffer_offset,
+				handle->offset + handle->buffer,
+				handle->buffer_max - handle->offset);
 
 		buffer_offset += handle->buffer_max - handle->offset;
 		handle->offset = handle->buffer_max;
@@ -277,12 +306,14 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 			return brasero_volume_file_check_state (handle);
 	}
 
-	memcpy (buffer + buffer_offset,
-		handle->buffer + handle->offset,
-		len - buffer_offset - 1);
-
 	/* we filled the buffer */
-	buffer [len - 1] = '\0';
+	if (buffer) {
+		memcpy (buffer + buffer_offset,
+			handle->buffer + handle->offset,
+			len - buffer_offset - 1);
+		buffer [len - 1] = '\0';
+	}
+
 	handle->offset += len - buffer_offset - 1;
 
 	return brasero_volume_file_check_state (handle);
