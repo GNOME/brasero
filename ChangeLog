@@ -1,6 +1,14 @@
+2009-01-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fixed a problem with infinite blanking when fast is selected
+	Fix part of #568204 – Brasero can't erase DVD+RW and speed issue
+
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_read_stdout):
+
 2009-01-18  Philippe Rouquier  <ykw@localhost.localdomain>
 
-	Condider DVD+RW/DVD-RW/DVD-RAM in incomplete state as being blank since
+	Consider DVD+RW/DVD-RW/DVD-RAM in incomplete state as being blank since
 	it happens when they have just been formatted.
 
 	* libbrasero-media/brasero-medium.c (brasero_medium_set_blank),

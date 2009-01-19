@@ -73,13 +73,14 @@ brasero_growisofs_read_stdout (BraseroProcess *process, const gchar *line)
 	int speed_1, speed_2;
 	long long b_written, b_total;
 
-	if (sscanf (line, "%10lld/%lld (%2d.%1d%%) @%2d.%1dx, remaining %*d:%*d",
+	/* Newer growisofs version have a different line pattern that shows
+	 * drive buffer filling. */
+	if (sscanf (line, "%10lld/%lld (%4d.%1d%%) @%2d.%1dx, remaining %*d:%*d",
 		    &b_written, &b_total, &perc_1, &perc_2, &speed_1, &speed_2) == 6) {
 		BraseroJobAction action;
 
 		brasero_job_get_action (BRASERO_JOB (process), &action);
-		if (action == BRASERO_JOB_ACTION_ERASE
-		&&  b_written >= 65536) {
+		if (action == BRASERO_JOB_ACTION_ERASE && b_written >= 65536) {
 			/* we nullified 65536 that's enough. A signal SIGTERM
 			 * will be sent in process.c. That's not the best way
 			 * to do it but it works. */
