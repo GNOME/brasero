@@ -42,7 +42,8 @@ libbrasero_media_la_LIBADD =					\
 	$(BRASERO_GIO_LIBS)					\
 	$(BRASERO_GTK_LIBS)					\
 	$(BRASERO_DBUS_LIBS)					\
-	$(BRASERO_HAL_LIBS)
+	$(BRASERO_HAL_LIBS)					\
+	$(BRASERO_SCSI_LIBS)
 
 libbrasero_media_la_LDFLAGS =					\
 	-version-info $(LIBBRASERO_LT_VERSION)			\
