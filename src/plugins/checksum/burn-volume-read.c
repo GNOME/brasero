@@ -110,7 +110,7 @@ brasero_volume_file_open (BraseroVolSrc *src,
 	brasero_volume_source_ref (src);
 
 	handle->extents_forward = g_slist_copy (file->specific.file.extents);
-	if (brasero_volume_file_rewind_real (handle)) {
+	if (!brasero_volume_file_rewind_real (handle)) {
 		brasero_volume_file_close (handle);
 		return NULL;
 	}
@@ -131,7 +131,7 @@ brasero_volume_file_rewind (BraseroVolFileHandle *handle)
 		node->next = handle->extents_forward;
 		handle->extents_forward = node;
 	}
-	return brasero_volume_file_rewind (handle);
+	return brasero_volume_file_rewind_real (handle);
 }
 
 BraseroBurnResult
@@ -146,6 +146,7 @@ brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 	/* check if we need to change our extent */
 	if (handle->position >= handle->extent_last) {
 		BraseroVolFileExtent *extent;
+		gint res_seek;
 		GSList *node;
 
 		/* we are at the end of current extent try to find another */
@@ -164,6 +165,10 @@ brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 		handle->position = extent->block;
 		handle->extent_size = extent->size;
 		handle->extent_last = BRASERO_BYTES_TO_SECTORS (extent->size, 2048) + extent->block;
+
+		res_seek = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
+		if (res_seek == -1)
+			return BRASERO_BURN_ERR;
 	}
 
 	result = BRASERO_VOL_SRC_READ (handle->src, (char *) handle->buffer, 1, NULL);
@@ -190,12 +195,13 @@ brasero_volume_file_read (BraseroVolFileHandle *handle,
 	BraseroBurnResult result;
 
 	while ((len - buffer_offset) > (handle->buffer_max - handle->offset)) {
-		/* copy what we already have */
+		/* copy what is already in the buffer and refill the latter */
 		memcpy (buffer + buffer_offset,
 			handle->buffer + handle->offset,
 			handle->buffer_max - handle->offset);
 
 		buffer_offset += handle->buffer_max - handle->offset;
+		handle->offset = handle->buffer_max;
 
 		result = brasero_volume_file_check_state (handle);
 		if (result == BRASERO_BURN_OK)
@@ -205,7 +211,7 @@ brasero_volume_file_read (BraseroVolFileHandle *handle,
 			return -1;
 	}
 
-	/* we filled the buffer */
+	/* we filled the buffer and put len bytes in it */
 	memcpy (buffer + buffer_offset,
 		handle->buffer + handle->offset,
 		len - buffer_offset);
@@ -226,41 +232,39 @@ brasero_volume_file_find_line_break (BraseroVolFileHandle *handle,
 				     guint len)
 {
 	guchar *break_line;
+	guint line_len;
 
 	/* search the next end of line characher in the buffer */
 	break_line = memchr (handle->buffer + handle->offset,
 			     '\n',
 			     handle->buffer_max - handle->offset);
 
-	if (break_line) {
-		guint line_len;
+	if (!break_line)
+		return FALSE;
 
-		line_len = break_line - (handle->buffer + handle->offset);
-		if (line_len >= len) {
-			/* - 1 is to be able to set last character to '\0' */
-			if (buffer) {
-				memcpy (buffer + buffer_offset,
-					handle->buffer + handle->offset,
-					len - buffer_offset - 1);
-
-				buffer [len - 1] = '\0';
-			}
-
-			handle->offset += len - buffer_offset - 1;
-			return TRUE;
-		}
-
+	line_len = break_line - (handle->buffer + handle->offset);
+	if (len && line_len >= len) {
+		/* - 1 is to be able to set last character to '\0' */
 		if (buffer) {
-			memcpy (buffer, handle->buffer + handle->offset, line_len);
-			buffer [line_len] = '\0';
+			memcpy (buffer + buffer_offset,
+				handle->buffer + handle->offset,
+				len - buffer_offset - 1);
+
+			buffer [len - 1] = '\0';
 		}
 
-		/* add 1 to skip the line break */
-		handle->offset += line_len + 1;
+		handle->offset += len - buffer_offset - 1;
 		return TRUE;
 	}
 
-	return FALSE;
+	if (buffer) {
+		memcpy (buffer, handle->buffer + handle->offset, line_len);
+		buffer [line_len] = '\0';
+	}
+
+	/* add 1 to skip the line break */
+	handle->offset += line_len + 1;
+	return TRUE;
 }
 
 BraseroBurnResult
@@ -279,7 +283,7 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 		return brasero_volume_file_check_state (handle);
 
 	/* continue while remaining data is too small to fit buffer */
-	while ((len - buffer_offset) > (handle->buffer_max - handle->offset)) {
+	while (!len || (len - buffer_offset) > (handle->buffer_max - handle->offset)) {
 		BraseroScsiResult result;
 
 		/* copy what we already have in the buffer. */
@@ -294,7 +298,9 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 		/* refill buffer */
 		result = brasero_volume_file_check_state (handle);
 		if (result == BRASERO_BURN_OK) {
-			buffer [len - 1] = '\0';
+			if (buffer)
+				buffer [len - 1] = '\0';
+
 			return result;
 		}
 
@@ -314,6 +320,7 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 		buffer [len - 1] = '\0';
 	}
 
+	/* NOTE: when len == 0 we never reach this part */
 	handle->offset += len - buffer_offset - 1;
 
 	return brasero_volume_file_check_state (handle);

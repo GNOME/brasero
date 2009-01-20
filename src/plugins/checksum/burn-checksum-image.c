@@ -705,7 +705,8 @@ brasero_checksum_image_stop (BraseroJob *job,
 
 static void
 brasero_checksum_image_init (BraseroChecksumImage *obj)
-{	BraseroChecksumImagePrivate *priv;
+{
+	BraseroChecksumImagePrivate *priv;
 
 	priv = BRASERO_CHECKSUM_IMAGE_PRIVATE (obj);
 

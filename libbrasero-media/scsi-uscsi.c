@@ -37,6 +37,7 @@
 #include <sys/scsi/scsi.h>
 #include <sys/scsi/impl/uscsi.h>
 
+#include "brasero-media-private.h"
 #include "scsi-command.h"
 #include "scsi-utils.h"
 #include "scsi-error.h"

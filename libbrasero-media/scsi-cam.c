@@ -47,7 +47,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
-#include "media-private.h"
+#include "brasero-media-private.h"
 #include "scsi-command.h"
 #include "scsi-utils.h"
 #include "scsi-error.h"
