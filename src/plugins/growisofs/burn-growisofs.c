@@ -735,7 +735,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	/* growisofs can write images to any type of DVD as long as it's blank */
+	/* growisofs can write images to any type of DVD-R as long as it's blank */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);

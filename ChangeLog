@@ -1,5 +1,23 @@
 2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix/Improve unformatted DVD+RW detection and all disc detection in general
+	See #567582 – Fails to burn a DVD iso
+
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_get_page_2A_write_speed_desc),
+	(brasero_medium_get_speed), (brasero_medium_get_medium_type),
+	(brasero_medium_init_real):
+	* libbrasero-media/scsi-get-configuration.c
+	(brasero_get_configuration),
+	(brasero_mmc2_get_configuration_feature),
+	(brasero_mmc2_get_profile):
+	* libbrasero-media/scsi-mmc2.h:
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+
+2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #568309 – Brasero can't erase DVD+RW (full erase mode)
 	(+ last patch)
 	Bump priority of dvd+rw-format to be used before wodim

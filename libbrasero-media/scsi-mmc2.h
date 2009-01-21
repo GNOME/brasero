@@ -43,6 +43,11 @@
 G_BEGIN_DECLS
 
 BraseroScsiResult
+brasero_mmc2_get_profile (BraseroDeviceHandle *handle,
+			  BraseroScsiProfile *profile,
+			  BraseroScsiErrCode *error);
+
+BraseroScsiResult
 brasero_mmc2_read_capacity (BraseroDeviceHandle *handle,
 			    BraseroScsiReadCapacityData *data,
 			    int size,

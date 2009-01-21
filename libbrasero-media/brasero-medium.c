@@ -1337,12 +1337,27 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 
 	page_2A = (BraseroScsiStatusPage *) &data->page;
 
-	/* FIXME: the following is not necessarily true */
-	if (size < sizeof (BraseroScsiStatusPage)) {
+	if (size < 18) {
 		g_free (data);
-
-		BRASERO_MEDIA_LOG ("wrong size in page");
+		BRASERO_MEDIA_LOG ("wrong page size");
 		return BRASERO_BURN_ERR;
+	}
+
+	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
+	priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
+
+	/* Check if we can use the speed descriptors; if not use maximum */
+	if (size < 20) {
+		BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A [old]) %i", priv->max_wrt);
+
+		/* also add fake speed descriptors */
+		priv->wr_speeds = g_new0 (gint, 2);
+		priv->wr_speeds [0] = BRASERO_GET_16 (page_2A->wr_max_speed);
+		priv->rd_speeds = g_new0 (gint, 2);
+		priv->rd_speeds [0] = BRASERO_GET_16 (page_2A->rd_max_speed);
+
+		g_free (data);
+		return BRASERO_BURN_OK;
 	}
 
 	desc_num = BRASERO_GET_16 (page_2A->wr_speed_desc_num);
@@ -1364,70 +1379,33 @@ brasero_medium_get_page_2A_write_speed_desc (BraseroMedium *self,
 		max_wrt = MAX (max_wrt, priv->wr_speeds [i]);
 	}
 
-	if (!max_wrt)
-		priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
-	else
+	if (max_wrt)
 		priv->max_wrt = max_wrt;
 
 	BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A) %i", priv->max_wrt);
-
-	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
 	g_free (data);
 
 	return BRASERO_BURN_OK;
 }
 
 static BraseroBurnResult
-brasero_medium_get_page_2A_max_speed (BraseroMedium *self,
-				      BraseroDeviceHandle *handle,
-				      BraseroScsiErrCode *code)
+brasero_medium_get_speed (BraseroMedium *self,
+			  BraseroDeviceHandle *handle,
+			  BraseroScsiErrCode *code)
 {
-	BraseroScsiStatusPage *page_2A = NULL;
-	BraseroScsiModeData *data = NULL;
-	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
-	int size = 0;
 
-	BRASERO_MEDIA_LOG ("Retrieving speed (2A max)");
+	BRASERO_MEDIA_LOG ("Retrieving media available speeds");
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	result = brasero_medium_get_speed_mmc3 (self, handle, code);
+	if (result == BRASERO_BURN_OK)
+		return result;
 
-	result = brasero_spc1_mode_sense_get_page (handle,
-						   BRASERO_SPC_PAGE_STATUS,
-						   &data,
-						   &size,
-						   code);
-	if (result != BRASERO_SCSI_OK) {
-		g_free (data);
-
-		BRASERO_MEDIA_LOG ("MODE SENSE failed");
-		return BRASERO_BURN_ERR;
-	}
-
-	page_2A = (BraseroScsiStatusPage *) &data->page;
-
-	if (size < 0x14) {
-		g_free (data);
-
-		BRASERO_MEDIA_LOG ("wrong page size");
-		return BRASERO_BURN_ERR;
-	}
-
-	priv->max_rd = BRASERO_GET_16 (page_2A->rd_max_speed);
-	priv->max_wrt = BRASERO_GET_16 (page_2A->wr_max_speed);
-
-	BRASERO_MEDIA_LOG ("Maximum Speed (Page 2A [old]) %i", priv->max_wrt);
-
-	/* also add it to the speed descriptors */
-	priv->wr_speeds = g_new0 (gint, 2);
-	priv->wr_speeds [0] = BRASERO_GET_16 (page_2A->wr_max_speed);
-	priv->rd_speeds = g_new0 (gint, 2);
-	priv->rd_speeds [0] = BRASERO_GET_16 (page_2A->rd_max_speed);
-
-	g_free (data);
-	return BRASERO_BURN_OK;
+	/* Fallback */
+	result = brasero_medium_get_page_2A_write_speed_desc (self, handle, code);
+	return result;
 }
- 
+
 /**
  * Functions to get information about disc contents
  */
@@ -2192,6 +2170,8 @@ brasero_medium_get_contents (BraseroMedium *self,
 	return result;
 }
 
+#if 0
+
 /**
  * These are special routines for old CD-R(W) drives that don't conform to MMC
  */
@@ -2645,6 +2625,8 @@ brasero_medium_check_old_drive (BraseroMedium *self,
 	return BRASERO_BURN_ERR;
 }
 
+#endif
+
 /**
  * Some identification functions
  */
@@ -2654,19 +2636,15 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 				BraseroDeviceHandle *handle,
 				BraseroScsiErrCode *code)
 {
-	BraseroScsiGetConfigHdr *hdr = NULL;
+	BraseroScsiProfile profile;
 	BraseroMediumPrivate *priv;
 	BraseroScsiResult result;
-	int size;
 
 	BRASERO_MEDIA_LOG ("Retrieving media profile");
 
 	priv = BRASERO_MEDIUM_PRIVATE (self);
-	result = brasero_mmc2_get_configuration_feature (handle,
-							 BRASERO_SCSI_FEAT_REAL_TIME_STREAM,
-							 &hdr,
-							 &size,
-							 code);
+	result = brasero_mmc2_get_profile (handle, &profile, code);
+
 	if (result != BRASERO_SCSI_OK) {
 		BraseroScsiAtipData *data = NULL;
 		int size = 0;
@@ -2679,16 +2657,14 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		 * will be provided by read_disc_information. */
 
 		/* retrieve the speed */
-		result = brasero_medium_get_page_2A_max_speed (self,
-							       handle,
-							       code);
+		result = brasero_medium_get_page_2A_write_speed_desc (self,
+								      handle,
+								      code);
 
 		/* If this fails it means that this drive is probably older than
-		 * MMC1 spec or does not conform to it. Try our last chance. */
+		 * MMC1 spec or does not conform to it. */
 		if (result != BRASERO_BURN_OK)
-			return brasero_medium_check_old_drive (self,
-							       handle,
-							       code);
+			return BRASERO_BURN_ERR;
 
 		/* The only thing here left to determine is if that's a WRITABLE
 		 * or a REWRITABLE. To determine that information, we need to
@@ -2731,7 +2707,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return result;
 	}
 
-	switch (BRASERO_GET_16 (hdr->current_profile)) {
+	switch (profile) {
 	case BRASERO_SCSI_PROF_CDROM:
 		priv->info = BRASERO_MEDIUM_CDROM;
 		priv->type = types [1];
@@ -2836,43 +2812,15 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	case BRASERO_SCSI_PROF_HD_DVD_R:
 	case BRASERO_SCSI_PROF_HD_DVD_RAM:
 		priv->info = BRASERO_MEDIUM_UNSUPPORTED;
-		g_free (hdr);
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	/* try all SCSI functions to get write/read speeds in order */
-	if (hdr->desc->add_len >= sizeof (BraseroScsiRTStreamDesc)) {
-		BraseroScsiRTStreamDesc *stream;
-
-		/* means it's at least an MMC3 drive */
-		stream = (BraseroScsiRTStreamDesc *) hdr->desc->data;
-		if (stream->wrt_spd) {
-			result = brasero_medium_get_speed_mmc3 (self, handle, code);
-			if (result == BRASERO_BURN_OK)
-				goto end;
-		}
-
-		if (stream->mp2a) {
-			result = brasero_medium_get_page_2A_write_speed_desc (self, handle, code);
-			if (result == BRASERO_BURN_OK)
-				goto end;
-		}
-	}
-
-	/* fallback for speeds */
-	result = brasero_medium_get_page_2A_max_speed (self, handle, code);
-
-end:
-
-	g_free (hdr);
-
-	if (result != BRASERO_BURN_OK)
-		return result;
-
 	/* for BDs media we need to check the number of layers */
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_SRM)) {
+		BraseroScsiGetConfigHdr *hdr = NULL;
+		int size = 0;
+
 		/* check for POW */
-		hdr = NULL;
 		result = brasero_mmc2_get_configuration_feature (handle,
 								 BRASERO_SCSI_FEAT_BDR_POW,
 								 &hdr,
@@ -3254,7 +3202,16 @@ brasero_medium_init_real (BraseroMedium *object,
 	if (priv->probe_cancelled)
 		return;
 
+	result = brasero_medium_get_speed (object, handle, &code);
+	if (result != BRASERO_BURN_OK)
+		return;
+
+	if (priv->probe_cancelled)
+		return;
+
 	brasero_medium_get_capacity_by_type (object, handle, &code);
+	if (priv->probe_cancelled)
+		return;
 
 	result = brasero_medium_get_contents (object, handle, &code);
 	if (result != BRASERO_BURN_OK)
@@ -3272,7 +3229,6 @@ brasero_medium_init_real (BraseroMedium *object,
 		return;
 
 	brasero_medium_init_caps (object, handle, &code);
-
 	if (priv->probe_cancelled)
 		return;
 

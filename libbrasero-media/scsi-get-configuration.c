@@ -126,6 +126,8 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 		request_size = 65530;
 	}
 	else if (request_size <= sizeof (hdr)) {
+		/* NOTE: if there is a feature, the size must be larger than the
+		 * header size. */
 		BRASERO_MEDIA_LOG ("Undersized data (%i) setting to max (65530)", request_size);
 		request_size = 65530;
 	}
@@ -144,6 +146,13 @@ brasero_get_configuration (BraseroGetConfigCDB *cdb,
 	buffer_size = BRASERO_GET_32 (buffer->len) +
 		      G_STRUCT_OFFSET (BraseroScsiGetConfigHdr, len) +
 		      sizeof (hdr.len);
+
+	if (buffer_size < sizeof (BraseroScsiGetConfigHdr) + 2) {
+		/* we can't have a size less or equal to that of the header */
+		BRASERO_MEDIA_LOG ("Size of buffer is less or equal to size of header");
+		g_free (buffer);
+		return BRASERO_SCSI_FAILURE;
+	}
 
 	if (buffer_size != request_size)
 		BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i",
@@ -177,6 +186,7 @@ brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 
 	/* make sure the desc is the one we want */
 	if ((*data) && BRASERO_GET_16 ((*data)->desc->code) != type) {
+		BRASERO_MEDIA_LOG ("Wrong type returned %d", (*data)->desc->code);
 		BRASERO_SCSI_SET_ERRCODE (error, BRASERO_SCSI_TYPE_MISMATCH);
 
 		g_free (*data);
@@ -185,4 +195,31 @@ brasero_mmc2_get_configuration_feature (BraseroDeviceHandle *handle,
 	}
 
 	return res;
+}
+
+BraseroScsiResult
+brasero_mmc2_get_profile (BraseroDeviceHandle *handle,
+			  BraseroScsiProfile *profile,
+			  BraseroScsiErrCode *error)
+{
+	BraseroScsiGetConfigHdr hdr;
+	BraseroGetConfigCDB *cdb;
+	BraseroScsiResult res;
+
+	g_return_val_if_fail (profile != NULL, BRASERO_SCSI_FAILURE);
+
+	cdb = brasero_scsi_command_new (&info, handle);
+	BRASERO_SET_16 (cdb->feature_num, BRASERO_SCSI_FEAT_CORE);
+	cdb->returned_data = BRASERO_GET_CONFIG_RETURN_ONLY_FEATURE;
+
+	memset (&hdr, 0, sizeof (hdr));
+	BRASERO_SET_16 (cdb->alloc_len, sizeof (hdr));
+	res = brasero_scsi_command_issue_sync (cdb, &hdr, sizeof (hdr), error);
+	if (res)
+		return res;
+
+	brasero_scsi_command_free (cdb);
+
+	*profile = BRASERO_GET_16 (hdr.current_profile);
+	return BRASERO_SCSI_OK;
 }
