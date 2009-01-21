@@ -121,7 +121,10 @@ brasero_project_name_get_default_label (BraseroProjectName *self)
 		if (strlen (title_str) > 32) {
 			g_free (title_str);
 			strftime (buffer, sizeof (buffer), "%F", localtime (&t));
-			title_str = g_strdup_printf ("Audio disc %s", buffer);
+			if (priv->type == BRASERO_PROJECT_TYPE_VIDEO)
+				title_str = g_strdup_printf ("Video disc %s", buffer);
+			else
+				title_str = g_strdup_printf ("Audio disc %s", buffer);
 		}
 	}
 

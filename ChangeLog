@@ -1,3 +1,13 @@
+2009-01-21  Luis Medinas  <lmedinas@gnome.org>
+
+	* src/brasero-project-name.c
+	(brasero_project_name_get_default_label):
+
+	Fix wrong default name string in video project when
+	using localized string bigger than 32bits.
+	Closes bgo #568027. Strings remains unlocalized only 
+	as a fallback.
+
 2009-01-20  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
 	Fix some headers for FreeBSD and Open Solaris
