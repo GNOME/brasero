@@ -202,7 +202,7 @@ brasero_wodim_compute (BraseroWodim *wodim,
 {
 	gboolean track_num_changed = FALSE;
 	BraseroWodimPrivate *priv;
-	gchar *action_string;
+	BraseroJobAction action;
 	gint64 this_remain;
 	gint64 bytes;
 	gint64 total;
@@ -223,12 +223,24 @@ brasero_wodim_compute (BraseroWodim *wodim,
 	bytes = (total - priv->current_track_end_pos) + this_remain;
 	brasero_job_set_written_session (BRASERO_JOB (wodim), total - bytes);
 
-	action_string = g_strdup_printf ("Writing track %02i", track_num);
-	brasero_job_set_current_action (BRASERO_JOB (wodim),
-					BRASERO_BURN_ACTION_RECORDING,
-					action_string,
-					track_num_changed);
-	g_free (action_string);
+	brasero_job_get_action (BRASERO_JOB (wodim), &action);
+	if (action == BRASERO_JOB_ACTION_RECORD) {
+		gchar *action_string;
+
+		action_string = g_strdup_printf ("Writing track %02i", track_num);
+		brasero_job_set_current_action (BRASERO_JOB (wodim),
+						BRASERO_BURN_ACTION_RECORDING,
+						action_string,
+						track_num_changed);
+		g_free (action_string);
+	}
+	else if (action == BRASERO_JOB_ACTION_ERASE) {
+		brasero_job_set_progress (BRASERO_JOB (wodim), (gfloat) mb_written / (gfloat) mb_total);
+		brasero_job_set_current_action (BRASERO_JOB (wodim),
+						BRASERO_BURN_ACTION_BLANKING,
+						NULL,
+						FALSE);
+	}
 }
 
 static BraseroBurnResult
@@ -254,9 +266,9 @@ brasero_wodim_stdout_read (BraseroProcess *process, const gchar *line)
 
 		priv->current_track_written = mb_written * 1048576;
 		brasero_wodim_compute (wodim,
-					  mb_written,
-					  mb_total,
-					  track);
+				       mb_written,
+				       mb_total,
+				       track);
 
 		brasero_job_start_progress (BRASERO_JOB (wodim), FALSE);
 	} 
@@ -921,8 +933,59 @@ brasero_wodim_set_argv_blank (BraseroWodim *wodim, GPtrArray *argv)
 					    (flags & BRASERO_BURN_FLAG_FAST_BLANK) ? "fast" : "all");
 		g_ptr_array_add (argv, blank_str);
 	}
-	else
+	else if (media & BRASERO_MEDIUM_UNFORMATTED) {
 		g_ptr_array_add (argv, g_strdup ("-format"));
+
+		/* There are many options for this given by an option that is
+		 * not documented: formattype=#type where type can be:
+		 * - force: to force reformatting => problem cannot/doesn't want to reformat a disc already formated
+		 * - full: to do a full formatting => problem only reformats what is not done yet
+		 * - background: formatting in the background => problem cannot/doesn't want to reformat a disc already formated
+		 * conclusion: we can only accept unformated media.
+		 * The following option allows to do it more quickly:
+		 * g_ptr_array_add (argv, g_strdup ("formattype=background");
+		 */
+				
+	}
+	else {
+		guint speed;
+		BraseroWodimPrivate *priv;
+
+		priv = BRASERO_WODIM_PRIVATE (wodim);
+
+		/* Since we can't reformat any already formatted DVD+RW, we 
+		 * write 0s to it to blank. */
+		if (priv->immediate) {
+			g_ptr_array_add (argv, g_strdup ("-immed"));
+			g_ptr_array_add (argv, g_strdup_printf ("minbuf=%i", priv->minbuf));
+		}
+
+		if (brasero_job_get_speed (BRASERO_JOB (wodim), &speed) == BRASERO_BURN_OK) {
+			gchar *speed_str;
+
+			speed_str = g_strdup_printf ("speed=%d", speed);
+			g_ptr_array_add (argv, speed_str);
+		}
+
+		if (!(flags & BRASERO_BURN_FLAG_FAST_BLANK)) {
+			gint64 sectors = 0;
+			BraseroMedium *medium;
+
+			brasero_job_get_medium (BRASERO_JOB (wodim), &medium);
+			brasero_medium_get_data_size (medium, NULL, &sectors);
+			if (!sectors)
+				brasero_medium_get_capacity (medium, NULL, &sectors);
+
+			g_ptr_array_add (argv, g_strdup_printf ("tsize=%Lis", sectors));
+		}
+		else	/* we set 512s because wodim complains otherwise */
+			g_ptr_array_add (argv, g_strdup_printf ("tsize=512s"));
+
+		g_ptr_array_add (argv, g_strdup ("fs=16m"));
+		g_ptr_array_add (argv, g_strdup ("-data"));
+		g_ptr_array_add (argv, g_strdup ("-nopad"));
+		g_ptr_array_add (argv, g_strdup ("/dev/zero"));
+	}
 
 	brasero_job_set_current_action (BRASERO_JOB (wodim),
 					BRASERO_BURN_ACTION_BLANKING,
@@ -1218,10 +1281,7 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	 * NOTE: restricted overwrite DVD-RW can't be formatted.
 	 * moreover DVD+RW are formatted while DVD-RW sequential are blanked.
 	 * NOTE: blanking DVD-RW doesn't work */
-	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVD|
-					BRASERO_MEDIUM_PLUS|
-					BRASERO_MEDIUM_REWRITABLE|
-					BRASERO_MEDIUM_APPENDABLE|
+	output = brasero_caps_disc_new (BRASERO_MEDIUM_DVDRW_PLUS|
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_UNFORMATTED|
@@ -1230,14 +1290,16 @@ brasero_wodim_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 
 	/* again DVD+RW don't support dummy */
+	/* NOTE: wodim doesn't support formating already formated DVD+RWs. That
+	 * is an error for it (stupid!). So sets only unformated DVDs. */
 	brasero_plugin_set_blank_flags (plugin,
 					BRASERO_MEDIUM_DVDRW_PLUS|
-					BRASERO_MEDIUM_APPENDABLE|
+					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA|
 					BRASERO_MEDIUM_UNFORMATTED|
-					BRASERO_MEDIUM_BLANK|
-					BRASERO_MEDIUM_CLOSED,
-					BRASERO_BURN_FLAG_NOGRACE,
+					BRASERO_MEDIUM_BLANK,
+					BRASERO_BURN_FLAG_NOGRACE|
+					BRASERO_BURN_FLAG_FAST_BLANK,
 					BRASERO_BURN_FLAG_NONE);
 
 	/* for blanking (CDRWs) */

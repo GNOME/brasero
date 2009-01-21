@@ -147,6 +147,9 @@ brasero_job_get_session_output_size (BraseroJob *job, gint64 *blocks, gint64 *si
  */
 
 BraseroBurnResult
+brasero_job_get_medium (BraseroJob *job, BraseroMedium **medium);
+
+BraseroBurnResult
 brasero_job_get_device (BraseroJob *job, gchar **device);
 
 BraseroBurnResult

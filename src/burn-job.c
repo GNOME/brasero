@@ -1543,6 +1543,29 @@ brasero_job_get_media (BraseroJob *self, BraseroMedia *media)
 }
 
 BraseroBurnResult
+brasero_job_get_medium (BraseroJob *job, BraseroMedium **medium)
+{
+	BraseroBurnSession *session;
+	BraseroJobPrivate *priv;
+	BraseroDrive *drive;
+
+	BRASERO_JOB_DEBUG (job);
+
+	g_return_val_if_fail (medium != NULL, BRASERO_BURN_ERR);
+
+	priv = BRASERO_JOB_PRIVATE (job);
+	session = brasero_task_ctx_get_session (priv->ctx);
+	drive = brasero_burn_session_get_burner (session);
+	*medium = brasero_drive_get_medium (drive);
+
+	if (!(*medium))
+		return BRASERO_BURN_ERR;
+
+	g_object_ref (*medium);
+	return BRASERO_BURN_OK;
+}
+
+BraseroBurnResult
 brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
 {
 	BraseroBurnSession *session;
@@ -1558,9 +1581,10 @@ brasero_job_get_last_session_address (BraseroJob *self, gint64 *address)
 	session = brasero_task_ctx_get_session (priv->ctx);
 	drive = brasero_burn_session_get_burner (session);
 	medium = brasero_drive_get_medium (drive);
-	brasero_medium_get_last_data_track_address (medium, NULL, address);
+	if (brasero_medium_get_last_data_track_address (medium, NULL, address))
+		return BRASERO_BURN_OK;
 
-	return BRASERO_BURN_OK;
+	return BRASERO_BURN_ERR;
 }
 
 BraseroBurnResult
@@ -1671,11 +1695,11 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 	rate = brasero_medium_get_max_write_speed (medium);
 	media = brasero_medium_get_status (medium);
 	if (media & BRASERO_MEDIUM_DVD)
-		*speed = BRASERO_RATE_TO_SPEED_DVD (rate);
+		*speed = nearbyint (BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_BD)
-		*speed = BRASERO_RATE_TO_SPEED_BD (rate);
+		*speed = nearbyint (BRASERO_RATE_TO_SPEED_BD (rate));
 	else
-		*speed = BRASERO_RATE_TO_SPEED_CD (rate);
+		*speed = nearbyint (BRASERO_RATE_TO_SPEED_CD (rate));
 
 	return BRASERO_BURN_OK;
 }

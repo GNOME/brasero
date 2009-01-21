@@ -1,5 +1,18 @@
 2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Add blanking capabilities to wodim
+
+	* src/burn-job.c (brasero_job_get_medium),
+	(brasero_job_get_last_session_address),
+	(brasero_job_get_max_speed):
+	* src/burn-job.h:
+	* src/burn-process.c (brasero_process_stop):
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_compute),
+	(brasero_wodim_set_argv_blank), (brasero_wodim_export_caps):
+
+
+2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Remove nograce in wodim plugin because of a bug where it takes in fact
 	15 seconds more before starting.
 

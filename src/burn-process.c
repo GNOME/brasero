@@ -663,11 +663,13 @@ brasero_process_stop (BraseroJob *job,
 		pid = priv->pid;
 		priv->pid = 0;
 
-		if (kill (pid, SIGTERM) == -1 && errno != ESRCH) {
+		/* Reminder: -1 is here to send the signal to all children of
+		 * the process with pid as well */
+		if (kill ((-1) * pid, SIGTERM) == -1 && errno != ESRCH) {
 			BRASERO_JOB_LOG (process, 
 					 "process (%s) couldn't be killed: terminating",
 					 g_strerror (errno));
-			kill (pid, SIGKILL);
+			kill ((-1) * pid, SIGKILL);
 		}
 		else
 			BRASERO_JOB_LOG (process, "got killed");
