@@ -175,7 +175,7 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 			       "dvd+rw-format",
 			       _("Dvd+rw-format erases and formats DVD+/-R(W)"),
 			       "Philippe Rouquier",
-			       0);
+			       4);
 
 	/* First see if this plugin can be used */
 	result = brasero_process_check_path ("dvd+rw-format", error);

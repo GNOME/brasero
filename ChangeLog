@@ -1,5 +1,14 @@
 2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for #568309 – Brasero can't erase DVD+RW (full erase mode)
+	(+ last patch)
+	Bump priority of dvd+rw-format to be used before wodim
+
+	* src/plugins/growisofs/burn-dvd-rw-format.c
+	(brasero_dvd_rw_format_export_caps):
+
+2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Add g_return*_if_fail to protect code
 
 	* libbrasero-media/brasero-medium.c
