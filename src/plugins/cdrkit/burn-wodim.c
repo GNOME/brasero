@@ -963,8 +963,12 @@ brasero_wodim_set_argv (BraseroProcess *process,
         if (flags & BRASERO_BURN_FLAG_DUMMY)
 		g_ptr_array_add (argv, g_strdup ("-dummy"));
 
-	if (flags & BRASERO_BURN_FLAG_NOGRACE)
-		g_ptr_array_add (argv, g_strdup ("gracetime=0"));
+	/* There is a bug in wodim where if we set that it takes 15 more so 
+	 * disable it as long as the bug remains. */
+
+	/* if (flags & BRASERO_BURN_FLAG_NOGRACE)
+	 *	g_ptr_array_add (argv, g_strdup ("gracetime=0"));
+	 */
 
 	if (action == BRASERO_JOB_ACTION_RECORD)
 		result = brasero_wodim_set_argv_record (wodim, argv, error);
