@@ -30,7 +30,7 @@ fy
 #include "burn-volume-read.h"
 
 struct _BraseroVolFileHandle {
-	guchar buffer [2048];
+	guchar buffer [2048 * 4];
 	guint buffer_max;
 
 	/* position in buffer */
@@ -58,12 +58,38 @@ brasero_volume_file_close (BraseroVolFileHandle *handle)
 }
 
 static gboolean
-brasero_volume_file_rewind_real (BraseroVolFileHandle *handle)
+brasero_volume_file_fill_buffer (BraseroVolFileHandle *handle)
 {
-	GSList *node;
-	gint res_seek;
+	guint blocks;
 	gboolean result;
+
+	blocks = MIN (sizeof (handle->buffer) / 2048,
+		      handle->extent_last - handle->position);
+
+	result = BRASERO_VOL_SRC_READ (handle->src,
+				       (char *) handle->buffer,
+				       blocks,
+				       NULL);
+	if (!result)
+		return FALSE;
+
+	handle->offset = 0;
+	handle->position += blocks;
+
+	if (handle->position == handle->extent_last)
+		handle->buffer_max = (blocks - 1) * 2048 + handle->extent_size % 2048;
+	else
+		handle->buffer_max = sizeof (handle->buffer);
+
+	return TRUE;
+}
+
+static gboolean
+brasero_volume_file_next_extent (BraseroVolFileHandle *handle)
+{
 	BraseroVolFileExtent *extent;
+	gint res_seek;
+	GSList *node;
 
 	node = handle->extents_forward;
 	extent = node->data;
@@ -76,24 +102,20 @@ brasero_volume_file_rewind_real (BraseroVolFileHandle *handle)
 	handle->extent_size = extent->size;
 	handle->extent_last = BRASERO_BYTES_TO_SECTORS (extent->size, 2048) + extent->block;
 
-	/* start loading first block */
 	res_seek = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
 	if (res_seek == -1)
 		return FALSE;
 
-	result = BRASERO_VOL_SRC_READ (handle->src, (gchar *) handle->buffer, 1, NULL);
-	if (!result)
+	return TRUE;
+}
+
+static gboolean
+brasero_volume_file_rewind_real (BraseroVolFileHandle *handle)
+{
+	if (!brasero_volume_file_next_extent (handle))
 		return FALSE;
 
-	handle->offset = 0;
-	handle->position ++;
-
-	if (handle->position == handle->extent_last)
-		handle->buffer_max = handle->extent_size % 2048;
-	else
-		handle->buffer_max = sizeof (handle->buffer);
-
-	return TRUE;
+	return brasero_volume_file_fill_buffer (handle);
 }
 
 BraseroVolFileHandle *
@@ -137,51 +159,25 @@ brasero_volume_file_rewind (BraseroVolFileHandle *handle)
 BraseroBurnResult
 brasero_volume_file_check_state (BraseroVolFileHandle *handle)
 {
-	gboolean result;
-
 	/* check if we need to load a new block */
 	if (handle->offset < handle->buffer_max)
 		return BRASERO_BURN_RETRY;
 
 	/* check if we need to change our extent */
 	if (handle->position >= handle->extent_last) {
-		BraseroVolFileExtent *extent;
-		gint res_seek;
-		GSList *node;
-
 		/* we are at the end of current extent try to find another */
 		if (!handle->extents_forward) {
 			/* we reached the end of our file */
 			return BRASERO_BURN_OK;
 		}
 
-		node = handle->extents_forward;
-		extent = node->data;
-
-		handle->extents_forward = g_slist_remove_link (handle->extents_forward, node);
-		node->next = handle->extents_backward;
-		handle->extents_backward = node;
-
-		handle->position = extent->block;
-		handle->extent_size = extent->size;
-		handle->extent_last = BRASERO_BYTES_TO_SECTORS (extent->size, 2048) + extent->block;
-
-		res_seek = BRASERO_VOL_SRC_SEEK (handle->src, handle->position, SEEK_SET,  NULL);
-		if (res_seek == -1)
+		if (!brasero_volume_file_next_extent (handle))
 			return BRASERO_BURN_ERR;
 	}
 
-	result = BRASERO_VOL_SRC_READ (handle->src, (char *) handle->buffer, 1, NULL);
-	if (!result)
+	/* Refill buffer */
+	if (!brasero_volume_file_fill_buffer (handle))
 		return BRASERO_BURN_ERR;
-
-	handle->offset = 0;
-	handle->position ++;
-
-	if (handle->position == handle->extent_last)
-		handle->buffer_max = handle->extent_size % 2048;
-	else
-		handle->buffer_max = sizeof (handle->buffer);
 
 	return BRASERO_BURN_RETRY;
 }

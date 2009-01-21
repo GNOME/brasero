@@ -1,5 +1,15 @@
 2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Improvements and code fixing (offset did not get updated properly)
+
+	* src/plugins/checksum/burn-volume-read.c
+	(brasero_volume_file_fill_buffer),
+	(brasero_volume_file_next_extent),
+	(brasero_volume_file_rewind_real),
+	(brasero_volume_file_check_state):
+
+2009-01-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Removed two dead files
 
 	* src/brasero-sum-check.c:
