@@ -377,6 +377,9 @@ brasero_medium_get_last_data_track_address (BraseroMedium *medium,
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track = NULL;
 
+	g_return_val_if_fail (medium != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
