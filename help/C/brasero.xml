@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" 
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY appversion "0.8.1">
-<!ENTITY manrevision "2.1">
-<!ENTITY date "August 2008">
+<!ENTITY appversion "2.26">
+<!ENTITY manrevision "2.2">
+<!ENTITY date "January 2009">
 <!ENTITY app "<application>Brasero</application>">
 <!ENTITY appname "Brasero">
 <!ENTITY svcd "http://en.wikipedia.org/wiki/SVCD">
@@ -29,7 +29,8 @@
 	    </abstract>
 
     <copyright> 
-      <year>2008</year> 
+      <year>2008</year>
+      <year>2009</year>
       <holder>Ubuntu Documentation Project</holder> 
     </copyright> 
 <!-- translators: uncomment this:
@@ -97,6 +98,16 @@
       <revision> 
 	<revnumber>Brasero Manual V&manrevision;</revnumber> 
 	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Milo Casagrande
+	    <email>milo@ubuntu.com</email>
+	  </para>
+	  <para role="publisher">Ubuntu Documentation Project</para>
+	</revdescription> 
+      </revision>
+      <revision> 
+	<revnumber>Brasero Manual V2.1</revnumber> 
+	<date>August 2008</date> 
 	<revdescription> 
 	  <para role="author">Milo Casagrande
 	    <email>milo@ubuntu.com</email>
@@ -1686,13 +1697,26 @@
 	  </thead>
 	  <tbody>
 	    <row>
-	      <entry><guilabel>File checksum</guilabel></entry>
+	      <entry><guilabel>CD/DVD Creator Folder</guilabel></entry>
+	      <entry>
+		Enalbes &app; to burn files stored in the
+		<filename class="directory">CD/DVD Creator</filename> folder of <application>Nautilus</application>.
+	      </entry>
+	    </row>
+	    <row>
+	      <entry><guilabel>File Checksum</guilabel></entry>
 	      <entry>
 		Enables &app; to check the integrity of files.
 	      </entry>
 	    </row>
 	    <row>
-	      <entry><guilabel>Image checksum</guilabel></entry>
+	      <entry><guilabel>File Downloader</guilabel></entry>
+	      <entry>
+		Enables &app; to burn files which are not stored locally.
+	      </entry>
+	    </row>
+	    <row>
+	      <entry><guilabel>Image Checksum</guilabel></entry>
 	      <entry>
 		Enables &app; to perform integrity checks 
 		on discs after they have been burnt. Also enables
@@ -1701,13 +1725,7 @@
 	      </entry>
 	    </row>
 	    <row>
-	      <entry><guilabel>local-track</guilabel></entry>
-	      <entry>
-		Enables &app; to burn files which are not stored locally.
-	      </entry>
-	    </row>
-	    <row>
-	      <entry><guilabel>normalize</guilabel></entry>
+	      <entry><guilabel>Normalize</guilabel></entry>
 	      <entry>
 		Enables &app; to set consistent sound levels between tracks.
 	      </entry>
@@ -1717,11 +1735,12 @@
       </table>
     </para>
     <para>
-      To enable or disable a plugin, select the check box next to it.
+      To enable or disable a plugin, select the check box next to its
+      name in the <guilabel>Enabled</guilabel> column.
     </para>
     <para>
-      With the <guilabel>File checksum</guilabel> and <guilabel>Image
-      checksum</guilabel> plugins you can choose which algorithm to
+      With the <guilabel>File Checksum</guilabel> and <guilabel>Image
+      Checksum</guilabel> plugins you can choose which algorithm to
       use:
       <orderedlist>
 	<listitem>
