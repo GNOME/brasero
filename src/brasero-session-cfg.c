@@ -231,19 +231,21 @@ static void
 brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 						BraseroBurnFlag flags)
 {
+	BraseroMedia media;
 	BraseroBurnFlag flag;
 	BraseroBurnResult result;
 	BraseroSessionCfgPrivate *priv;
 
 	priv = BRASERO_SESSION_CFG_PRIVATE (self);
 
-	priv->supported = BRASERO_BURN_FLAG_NONE;
-	priv->compulsory = BRASERO_BURN_FLAG_NONE;
+	media = brasero_burn_session_get_dest_media (BRASERO_BURN_SESSION (self));
 
 	/* add flags then wipe out flags from session to check them one by one */
 	flags |= brasero_burn_session_get_flags (BRASERO_BURN_SESSION (self));
 	brasero_burn_session_remove_flag (BRASERO_BURN_SESSION (self), flags);
 
+	priv->supported = BRASERO_BURN_FLAG_NONE;
+	priv->compulsory = BRASERO_BURN_FLAG_NONE;
 	result = brasero_burn_caps_get_flags (priv->caps,
 					      BRASERO_BURN_SESSION (self),
 					      &priv->supported,
@@ -290,6 +292,22 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 						     BRASERO_BURN_SESSION (self),
 						     &priv->supported,
 						     &priv->compulsory);
+		}
+		else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+		     ||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+		     ||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+			/* This is a special case to favour libburn/growisofs
+			 * wodim/cdrecord for these types of media. */
+			if (priv->supported & BRASERO_BURN_FLAG_MULTI) {
+				brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), flag);
+
+				priv->supported = BRASERO_BURN_FLAG_NONE;
+				priv->compulsory = BRASERO_BURN_FLAG_NONE;
+				brasero_burn_caps_get_flags (priv->caps,
+							     BRASERO_BURN_SESSION (self),
+							     &priv->supported,
+							     &priv->compulsory);
+			}
 		}
 	}
 
