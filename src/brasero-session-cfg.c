@@ -97,19 +97,23 @@ brasero_session_cfg_get_gconf_key (BraseroSessionCfg *self,
 		return NULL;
 	
 	/* make sure display_name doesn't contain any forbidden characters */
-	display_name = brasero_drive_get_display_name (drive);
-	g_strdelimit (display_name, " +()", '_');
+	if (!brasero_drive_is_fake (drive)) {
+		gchar *tmp;
 
-	disc_type = g_strdup (brasero_medium_get_type_string (medium));
+		tmp = brasero_drive_get_display_name (drive);
+		display_name = gconf_escape_key (tmp, -1);
+		g_free (tmp);
+	}
+	else
+		display_name = g_strdup ("File");
+
+	display_name = display_name ? display_name : "";
+
+	disc_type = gconf_escape_key (brasero_medium_get_type_string (medium), -1);
 	if (!disc_type) {
 		g_free (display_name);
 		return NULL;
 	}
-
-	g_strdelimit (disc_type, " +()", '_');
-
-	display_name = display_name ? display_name : "";
-	disc_type = disc_type ? disc_type : "";
 
 	switch (brasero_burn_session_get_input_type (BRASERO_BURN_SESSION (self), NULL)) {
 	case BRASERO_TRACK_TYPE_NONE:

@@ -1,5 +1,13 @@
 2009-01-22  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #567603 – Invalid GConf key when coping disk to image file
+
+	Use gconf_escaped_key () instead of a homegrown one
+
+	* src/brasero-session-cfg.c (brasero_session_cfg_get_gconf_key):
+
+2009-01-22  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix for #568693 – Doesn't replace n-c-b properly
 
 	* configure.in:
