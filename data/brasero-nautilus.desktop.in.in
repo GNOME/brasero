@@ -1,16 +1,15 @@
 [Desktop Entry]
 _Name=Disc Burner
-_GenericName=Disc Burner
 _Comment=Create CDs and DVDs
 Categories=GNOME;GTK;System;
-Exec=brasero -l %u
+TryExec=nautilus
+Exec=nautilus --no-default-window --no-desktop burn:/// 
 Icon=brasero
-MimeType=audio/x-scpls;audio/x-ms-asx;audio/x-mp3-playlist;audio/x-mpegurl;
+MimeType=x-content/blank-cd;x-content/blank-dvd;x-content/blank-bd;x-content/blank-hddvd;
 StartupNotify=true
 Terminal=false
 Type=Application
-NoDisplay=true
-OnlyShowIn=GNOME
+OnlyShowIn=GNOME;
 X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=brasero
 X-GNOME-Bugzilla-Component=general
