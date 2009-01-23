@@ -297,21 +297,23 @@ brasero_session_cfg_add_drive_properties_flags (BraseroSessionCfg *self,
 						     &priv->supported,
 						     &priv->compulsory);
 		}
-		else if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
-		     ||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
-		     ||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
-			/* This is a special case to favour libburn/growisofs
-			 * wodim/cdrecord for these types of media. */
-			if (priv->supported & BRASERO_BURN_FLAG_MULTI) {
-				brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self), flag);
+	}
 
-				priv->supported = BRASERO_BURN_FLAG_NONE;
-				priv->compulsory = BRASERO_BURN_FLAG_NONE;
-				brasero_burn_caps_get_flags (priv->caps,
-							     BRASERO_BURN_SESSION (self),
-							     &priv->supported,
-							     &priv->compulsory);
-			}
+	if (BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)
+	||  BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS_DL)) {
+		/* This is a special case to favour libburn/growisofs
+		 * wodim/cdrecord for these types of media. */
+		if (priv->supported & BRASERO_BURN_FLAG_MULTI) {
+			brasero_burn_session_add_flag (BRASERO_BURN_SESSION (self),
+						       BRASERO_BURN_FLAG_MULTI);
+
+			priv->supported = BRASERO_BURN_FLAG_NONE;
+			priv->compulsory = BRASERO_BURN_FLAG_NONE;
+			brasero_burn_caps_get_flags (priv->caps,
+						     BRASERO_BURN_SESSION (self),
+						     &priv->supported,
+						     &priv->compulsory);
 		}
 	}
 
@@ -430,7 +432,7 @@ brasero_session_cfg_set_drive_properties (BraseroSessionCfg *self)
 			 BRASERO_BURN_FLAG_FAST_BLANK;
 	}
 	else if (!value) {
-		/* Set sound defaults */
+		/* Set sound defaults. */
 		flags = BRASERO_BURN_FLAG_EJECT|
 			BRASERO_BURN_FLAG_BURNPROOF;
 
