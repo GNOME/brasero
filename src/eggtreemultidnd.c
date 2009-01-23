@@ -373,10 +373,25 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
 				 &path, &column,
 				 &cell_x, &cell_y);
 
-  selection = gtk_tree_view_get_selection (tree_view);
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
 
   if (path && gtk_tree_selection_path_is_selected (selection, path))
     {
+      GList *iter;
+      GList *selected;
+      GtkWidgetClass *widget_klass;
+
+      /* The call to ::button_press_event will unselect all selected rows so
+       * we must save the selection and select all previously selected rows
+       * again. */
+      selected = gtk_tree_selection_get_selected_rows (selection, NULL);
+
+      widget_klass = GTK_WIDGET_GET_CLASS (tree_view);
+      widget_klass->button_press_event (widget, event);
+
+      for (iter = selected; iter; iter = iter->next)
+        gtk_tree_selection_select_path (selection, iter->data);
+
       priv_data->pressed_button = event->button;
       priv_data->x = event->x;
       priv_data->y = event->y;
