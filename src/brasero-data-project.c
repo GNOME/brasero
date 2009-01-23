@@ -2855,6 +2855,7 @@ brasero_data_project_load_contents_notify_directory (BraseroDataProject *self,
 
 	child = BRASERO_FILE_NODE_CHILDREN (parent);
 	while (child) {
+		gchar *uri;
 		gboolean res;
 		BraseroFileNode *next;
 
@@ -2868,18 +2869,19 @@ brasero_data_project_load_contents_notify_directory (BraseroDataProject *self,
 		 * means they must not be fake).
 		 * +1 for loading the directory contents.
 		 */
-		if (!child->is_fake) {
-			gchar *uri;
-
-			uri = brasero_data_project_node_to_uri (self, child);
-			res = func (self, child, uri);
-			g_free (uri);
-
-			if (res)
-				num ++;
-		}
-		else
+		if (child->is_fake) {
+			/* This is a fake directory, there is no operation */
 			res = func (self, child, NULL);
+			child = next;
+			continue;
+		}
+
+		uri = brasero_data_project_node_to_uri (self, child);
+		res = func (self, child, uri);
+		g_free (uri);
+
+		if (res)
+			num ++;
 
 		/* for whatever reason the node could have been invalidated */
 		if (res && !child->is_file) {
@@ -2936,15 +2938,21 @@ brasero_data_project_load_contents (BraseroDataProject *self,
 
 		graft = iter->data;
 
-		file = g_file_new_for_uri (graft->uri);
-		uri = g_file_get_uri (file);
-		g_object_unref (file);
+		if (graft->uri) {
+			file = g_file_new_for_uri (graft->uri);
+			uri = g_file_get_uri (file);
+			g_object_unref (file);
+		}
+		else
+			uri = NULL;
 
 		folders = brasero_data_project_add_path (self,
 							 graft->path,
 							 uri,
 							 folders);
-		g_free (uri);
+
+		if (uri)
+			g_free (uri);
 	}
 
 	for (iter = excluded; iter; iter = iter->next) {

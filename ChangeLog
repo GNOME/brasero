@@ -1,5 +1,13 @@
 2009-01-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix loading (and quiet warnings) when loading project with fake directories 
+
+	* src/brasero-data-project.c
+	(brasero_data_project_load_contents_notify_directory),
+	(brasero_data_project_load_contents):
+
+2009-01-23  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Try to fix #560114 – seg fault when dragging files from user's directory
 
 	* src/eggtreemultidnd.c (egg_tree_multi_drag_button_press_event):
