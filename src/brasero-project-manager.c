@@ -868,6 +868,9 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	/* FIXME: make that asynchronous */
 	/* NOTE: don't follow symlink because we want to identify them */
 	file = g_file_new_for_commandline_arg (uri_arg);
+	if (file)
+		return BRASERO_PROJECT_TYPE_INVALID;
+
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
 				  G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK ","
@@ -875,6 +878,11 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 				  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 				  NULL,
 				  NULL);
+
+	if (!info) {
+		g_object_unref (file);
+		return BRASERO_PROJECT_TYPE_INVALID;
+	}
 
 	/* if that's a symlink, redo it on its target to get the real mime type
 	 * that usually also depends on the extension of the target:
