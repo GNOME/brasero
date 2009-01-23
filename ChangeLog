@@ -1,5 +1,12 @@
 2009-01-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a warning with percent value that was over 100 sometimes
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value):
+
+2009-01-23  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #568898 – don't rely on GtkAction implementation details
 
 	* src/brasero-app.c (brasero_menu_item_selected_cb):

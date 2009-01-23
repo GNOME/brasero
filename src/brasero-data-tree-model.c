@@ -614,7 +614,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			else
 				node_size = BRASERO_FILE_NODE_SECTORS (node);
 			if (size)
-				g_value_set_int (value, node_size * 100 / size);
+				g_value_set_int (value, MAX (0, MIN (node_size * 100 / size, 100)));
 			else
 				g_value_set_int (value, 0);
 		}
