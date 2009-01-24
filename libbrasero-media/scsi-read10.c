@@ -108,8 +108,9 @@ brasero_sbc_read10_block (BraseroDeviceHandle *handle,
 	/* reladr should be 0 */
 	/* DPO should be 0 */
 
-	/* This is to force reading media ==> no caching */
-	cdb->FUA = 1;
+	/* This is to force reading media ==> no caching (set to 1) */
+	/* On the other hand caching improves dramatically the performances. */
+	cdb->FUA = 0;
 
 	memset (buffer, 0, buffer_size);
 	res = brasero_scsi_command_issue_sync (cdb,

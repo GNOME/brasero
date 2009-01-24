@@ -981,47 +981,6 @@ again:
 }
 
 static BraseroBurnResult
-brasero_burn_mount_media (BraseroBurn *self,
-			  GError **error)
-{
-	guint retries = 0;
-	BraseroMedium *medium;
-	BraseroBurnPrivate *priv;
-
-	priv = BRASERO_BURN_PRIVATE (self);
-
-	/* get the mount point */
-	g_signal_emit (self,
-		       brasero_burn_signals [ACTION_CHANGED_SIGNAL],
-		       0,
-		       BRASERO_BURN_ACTION_CHECKSUM);
-
-	medium = brasero_drive_get_medium (priv->dest);
-	while (!brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
-		if (retries++ > MAX_MOUNT_ATTEMPTS) {
-			/* FIXME: there is a spelling mistake */
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_GENERAL,
-				     _("The disc could not be mounted (max attemps reached)"));
-			return BRASERO_BURN_ERR;
-		}
-
-		BRASERO_BURN_LOG ("Trying to mount medium");
-
-		/* NOTE: we don't really care about the return value */
-		/* NOTE: brasero_app_get_default () wouldn't work here as we 
-		 * want to have it split soon */
-		brasero_volume_mount (BRASERO_VOLUME (medium), NULL, FALSE, NULL);
-		priv->mounted_by_us = TRUE;
-
-		brasero_burn_sleep (self, MOUNT_TIMEOUT);
-	}
-
-	return BRASERO_BURN_OK;
-}
-
-static BraseroBurnResult
 brasero_burn_lock_checksum_media (BraseroBurn *burn,
 				  GError **error)
 {
@@ -1148,7 +1107,6 @@ brasero_burn_unlock_dest_media (BraseroBurn *burn,
 			gdrive = brasero_drive_get_gdrive (priv->dest);
 
 			/* reprobe the contents of the drive system wide */
-			BRASERO_BURN_LOG ("Reprobring drive %s", brasero_drive_get_display_name (priv->dest));
 			g_drive_poll_for_media (gdrive, NULL, NULL, NULL);
 			g_object_unref (gdrive);
 
@@ -1870,17 +1828,9 @@ brasero_burn_check_real (BraseroBurn *self,
 	checksum_type = brasero_track_get_checksum_type (track);
 	brasero_track_get_type (track, &type);
 
-	/* if the input is a DISC, ask/mount/unmount and lock it (as dest) */
+	/* if the input is a DISC and there isn't any checksum specified that 
+	 * means the checksum file is on the disc. */
 	medium = brasero_drive_get_medium (priv->dest);
-	if (type.type == BRASERO_TRACK_TYPE_DISC
-	&& (checksum_type == BRASERO_CHECKSUM_MD5_FILE
-	||  checksum_type == BRASERO_CHECKSUM_SHA1_FILE
-	||  checksum_type == BRASERO_CHECKSUM_SHA256_FILE)
-	&& !brasero_volume_is_mounted (BRASERO_VOLUME (medium))) {
-		result = brasero_burn_mount_media (self, error);
-		if (result != BRASERO_BURN_OK)
-			return result;
-	}
 
 	/* get the task and run it */
 	priv->task = brasero_burn_caps_new_checksuming_task (priv->caps,
@@ -1901,20 +1851,19 @@ brasero_burn_check_real (BraseroBurn *self,
 
 		/* make sure one last time it is not mounted IF and only IF the
 		 * checksum type is NOT FILE_MD5 */
-		if (priv->dest
-		&& (checksum_type == BRASERO_CHECKSUM_MD5
-		||  checksum_type == BRASERO_CHECKSUM_SHA1
-		||  checksum_type == BRASERO_CHECKSUM_SHA256)
-		&&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
-		&& !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
-			g_set_error (error,
-				     BRASERO_BURN_ERROR,
-				     BRASERO_BURN_ERROR_DRIVE_BUSY,
-				     "%s. %s",
-				     _("The drive is busy"),
-				     _("Make sure another application is not using it"));
-			return BRASERO_BURN_ERR;
-		}
+		/* it seems to work without unmounting ... */
+		/* if (medium
+		 * &&  brasero_volume_is_mounted (BRASERO_VOLUME (medium))
+		 * && !brasero_volume_umount (BRASERO_VOLUME (medium), TRUE, NULL)) {
+		 *	g_set_error (error,
+		 *		     BRASERO_BURN_ERROR,
+		 *		     BRASERO_BURN_ERROR_DRIVE_BUSY,
+		 *		     "%s. %s",
+		 *		     _("The drive is busy"),
+		 *		     _("Make sure another application is not using it"));
+		 *	return BRASERO_BURN_ERR;
+		 * }
+		 */
 
 		result = brasero_task_run (priv->task, error);
 		g_signal_emit (self,
@@ -1932,7 +1881,7 @@ brasero_burn_check_real (BraseroBurn *self,
 		priv->task = NULL;
 	}
 	else {
-		BRASERO_BURN_LOG ("the track cannot be checked");
+		BRASERO_BURN_LOG ("The track cannot be checked");
 		result = BRASERO_BURN_NOT_SUPPORTED;
 	}
 
@@ -2317,7 +2266,7 @@ brasero_burn_check (BraseroBurn *self,
 	track = tracks->data;
 	brasero_track_get_type (track, &type);
 
-	/* if the input is a DISC, ask/mount/unmount and lock it (as dest) */
+	/* if the input is a DISC, ask/check there is one and lock it (as dest) */
 	if (type.type == BRASERO_TRACK_TYPE_DISC) {
 		/* make sure there is a disc. If not, ask one and lock it */
 		result = brasero_burn_lock_checksum_media (self, error);

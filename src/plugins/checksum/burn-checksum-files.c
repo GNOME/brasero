@@ -446,7 +446,7 @@ brasero_checksum_files_merge_with_former_session (BraseroChecksumFiles *self,
 		return BRASERO_BURN_OK;
 	}
 
-	BRASERO_JOB_LOG (self, "Found file %s", file);
+	BRASERO_JOB_LOG (self, "Found file %p", file);
 	handle = brasero_volume_file_open (vol, file);
 	brasero_volume_source_close (vol);
 
@@ -668,98 +668,196 @@ brasero_checksum_files_create_checksum (BraseroChecksumFiles *self,
 	return result;
 }
 
+static BraseroBurnResult
+brasero_checksum_files_sum_on_disc_file (BraseroChecksumFiles *self,
+					 GChecksumType type,
+					 BraseroVolSrc *src,
+					 BraseroVolFile *file,
+					 gchar **checksum_string,
+					 GError **error)
+{
+	guchar buffer [64 * 2048];
+	BraseroChecksumFilesPrivate *priv;
+	BraseroVolFileHandle *handle;
+	GChecksum *checksum;
+	gint read_bytes;
+
+	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
+
+	handle = brasero_volume_file_open_direct (src, file);
+	if (!handle)
+		return BRASERO_BURN_ERR;
+
+	checksum = g_checksum_new (type);
+
+	read_bytes = brasero_volume_file_read_direct (handle,
+						      buffer,
+						      64);
+	g_checksum_update (checksum, buffer, read_bytes);
+
+	while (read_bytes == sizeof (buffer)) {
+		if (priv->cancel) {
+			brasero_volume_file_close (handle);
+			return BRASERO_BURN_CANCEL;
+		}
+
+		read_bytes = brasero_volume_file_read_direct (handle,
+							      buffer,
+							      64);
+		g_checksum_update (checksum, buffer, read_bytes);
+	}
+
+	*checksum_string = g_strdup (g_checksum_get_string (checksum));
+	g_checksum_free (checksum);
+
+	brasero_volume_file_close (handle);
+
+	return BRASERO_BURN_OK;
+}
+
+static BraseroVolFile *
+brasero_checksum_files_get_on_disc_checksum_type (BraseroChecksumFiles *self,
+						  BraseroVolSrc *vol,
+						  guint start_block)
+{
+	BraseroVolFile *file;
+	BraseroChecksumFilesPrivate *priv;
+
+	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
+
+
+	file = brasero_volume_get_file (vol,
+					"/"BRASERO_MD5_FILE,
+					start_block,
+					NULL);
+
+	if (!file) {
+		file = brasero_volume_get_file (vol,
+						"/"BRASERO_SHA1_FILE,
+						start_block,
+						NULL);
+		if (!file) {
+			file = brasero_volume_get_file (vol,
+							"/"BRASERO_SHA256_FILE,
+							start_block,
+							NULL);
+			if (!file || !(priv->checksum_type & (BRASERO_CHECKSUM_SHA256_FILE|BRASERO_CHECKSUM_DETECT))) {
+				BRASERO_JOB_LOG (self, "no checksum file found");
+				if (file)
+					brasero_volume_file_free (file);
+
+				return NULL;
+			}
+			priv->checksum_type = BRASERO_CHECKSUM_SHA256_FILE;
+		}
+		else if (priv->checksum_type & (BRASERO_CHECKSUM_SHA1_FILE|BRASERO_CHECKSUM_DETECT))
+			priv->checksum_type = BRASERO_CHECKSUM_SHA1_FILE;
+		else {
+			brasero_volume_file_free (file);
+			file = NULL;
+		}
+	}
+	else if (priv->checksum_type & (BRASERO_CHECKSUM_MD5_FILE|BRASERO_CHECKSUM_DETECT))
+		priv->checksum_type = BRASERO_CHECKSUM_MD5_FILE;
+	else {
+		brasero_volume_file_free (file);
+		file = NULL;
+	}
+
+	BRASERO_JOB_LOG (self, "Found file %p", file);
+	return file;
+}
+
 static gint
 brasero_checksum_files_get_line_num (BraseroChecksumFiles *self,
-				     FILE *file,
-				     GError **error)
+				     BraseroVolFileHandle *handle)
 {
-	gint c;
-	gint num = 0;
+	BraseroBurnResult result;
+	int num = 0;
 
-	while ((c = getc (file)) != EOF) {
-		if (c == '\n')
-			num ++;
-	}
+	while ((result = brasero_volume_file_read_line (handle, NULL, 0)) == BRASERO_BURN_RETRY)
+		num ++;
 
-	if (!feof (file)) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     "%s",
-			     g_strerror (errno));
+	if (result == BRASERO_BURN_ERR)
 		return -1;
-	}
 
-	rewind (file);
+	brasero_volume_file_rewind (handle);
 	return num;
 }
 
 static BraseroBurnResult
 brasero_checksum_files_check_files (BraseroChecksumFiles *self,
-				    BraseroChecksumType checksum_type,
 				    GError **error)
 {
-	gchar *root;
-	gchar *path;
-	gint root_len;
+	GValue *value;
 	guint file_nb;
 	guint file_num;
-	FILE *file = NULL;
-	const gchar *name;
 	gint checksum_len;
+	BraseroVolSrc *vol;
+	gint64 start_block;
 	BraseroTrack *track;
-	GValue *value = NULL;
+	const gchar *device;
+	BraseroVolFile *file;
 	BraseroMedium *medium;
+	BraseroVolFileHandle *handle;
 	GChecksumType gchecksum_type;
 	GArray *wrong_checksums = NULL;
-	gchar filename [MAXPATHLEN + 1];
+	BraseroDeviceHandle *dev_handle;
 	BraseroChecksumFilesPrivate *priv;
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	priv = BRASERO_CHECKSUM_FILES_PRIVATE (self);
 
+	/* get medium */
 	brasero_job_get_current_track (BRASERO_JOB (self), &track);
 	medium = brasero_track_get_medium_source (track);
-	root = brasero_volume_get_mount_point (BRASERO_VOLUME (medium), FALSE);
-	if (!root)
+	/* open volume */
+	if (!brasero_medium_get_last_data_track_address (medium, NULL, &start_block))
 		return BRASERO_BURN_ERR;
 
-	root_len = strlen (root);
-	memcpy (filename, root, root_len);
-	filename [root_len ++ ] = '/';
+	device = brasero_drive_get_device (brasero_medium_get_drive (medium));
+	dev_handle = brasero_device_handle_open (device, FALSE, NULL);
+	vol = brasero_volume_source_open_device_handle (dev_handle, error);
 
-	name = brasero_track_get_checksum (track);
-	path = g_build_path (G_DIR_SEPARATOR_S, root, name, NULL);
-
-	file = fopen (path, "r");
-	g_free (root);
-	g_free (path);
+	/* open checksum file */
+	file = brasero_checksum_files_get_on_disc_checksum_type (self,
+								 vol,
+								 start_block);
 	if (!file) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
 			     BRASERO_BURN_ERROR_GENERAL,
-			     "%s",
-			     g_strerror (errno));
-		return BRASERO_BURN_ERR;
+			     _("No checksum file could be found on the disc"));
+
+		BRASERO_JOB_LOG (self, "No checksum file");
+		result = BRASERO_BURN_ERR;
+		goto end;
 	}
 
-	/* we need to get the number of files at this time and rewind */
-	file_nb = brasero_checksum_files_get_line_num (self, file, error);
+	handle = brasero_volume_file_open (vol, file);
+	if (!handle) {
+		BRASERO_JOB_LOG (self, "Cannot open checksum file");
+		/* FIXME: error here ? */
+		result = BRASERO_BURN_ERR;
+		goto end;
+	}
+
+	/* get the number of files at this time and rewind */
+	file_nb = brasero_checksum_files_get_line_num (self, handle);
 	if (file_nb == 0) {
-		fclose (file);
-		return BRASERO_BURN_OK;
+		BRASERO_JOB_LOG (self, "Empty checksum file");
+		result = BRASERO_BURN_OK;
+		goto end;
 	}
 
 	if (file_nb < 0) {
-		g_set_error (error,
-			     BRASERO_BURN_ERROR,
-			     BRASERO_BURN_ERROR_GENERAL,
-			     "%s",
-			     g_strerror (errno));
-		fclose (file);
-		return BRASERO_BURN_ERR;
+		/* An error here */
+		BRASERO_JOB_LOG (self, "Failed to retrieve the number of lines");
+		result = BRASERO_BURN_ERR;
+		goto end;
 	}
 
+	/* signal we're ready to start */
 	file_num = 0;
 	brasero_job_set_current_action (BRASERO_JOB (self),
 				        BRASERO_BURN_ACTION_CHECKSUM,
@@ -768,7 +866,7 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	brasero_job_start_progress (BRASERO_JOB (self), FALSE);
 
 	/* Get the checksum type */
-	switch (checksum_type) {
+	switch (priv->checksum_type) {
 	case BRASERO_CHECKSUM_MD5_FILE:
 		gchecksum_type = G_CHECKSUM_MD5;
 		break;
@@ -785,22 +883,26 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 
 	checksum_len = g_checksum_type_get_length (gchecksum_type) * 2;
 	while (1) {
-		gchar checksum_file [512];
+		gchar file_path [MAXPATHLEN + 1];
+		gchar checksum_file [512 + 1];
+		BraseroVolFile *disc_file;
 		gchar *checksum_real;
-		gint i;
-		int c;
+		gint read_bytes;
 
 		if (priv->cancel)
 			break;
 
-		/* first read the checksum string */
-		if (fread (checksum_file, 1, checksum_len, file) != checksum_len) {
-			if (!feof (file))
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     "%s",
-					     g_strerror (errno));
+		/* first read the checksum */
+		read_bytes = brasero_volume_file_read (handle,
+						       checksum_file,
+						       checksum_len);
+		if (read_bytes == 0)
+			break;
+
+		if (read_bytes != checksum_len) {
+			/* FIXME: an error here */
+			BRASERO_JOB_LOG (self, "Impossible to read the checksum from file");
+			result = BRASERO_BURN_ERR;
 			break;
 		}
 		checksum_file [checksum_len] = '\0';
@@ -810,74 +912,78 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 
 		/* skip spaces in between */
 		while (1) {
-			c = fgetc (file);
+			gchar c [2];
 
-			if (c == EOF) {
-				if (feof (file))
-					goto end;
-
-				if (errno == EAGAIN || errno == EINTR)
-					continue;
-
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     "%s",
-					     g_strerror (errno));
+			read_bytes = brasero_volume_file_read (handle, c, 1);
+			if (read_bytes == 0) {
+				result = BRASERO_BURN_OK;
 				goto end;
 			}
 
-			if (!isspace (c)) {
-				filename [root_len] = c;
+			if (read_bytes < 0) {
+				/* FIXME: an error here */
+				BRASERO_JOB_LOG (self, "Impossible to read checksum file");
+				result = BRASERO_BURN_ERR;
+				goto end;
+			}
+
+			if (!isspace (c [0])) {
+				file_path [0] = '/';
+				file_path [1] = c [0];
 				break;
 			}
 		}
 
 		/* get the filename */
-		i = root_len + 1;
-		while (1) {
-			c = fgetc (file);
-			if (c == EOF) {
-				if (feof (file))
-					goto end;
+		result = brasero_volume_file_read_line (handle, file_path + 2, sizeof (file_path) - 2);
 
-				if (errno == EAGAIN || errno == EINTR)
-					continue;
-
-				g_set_error (error,
-					     BRASERO_BURN_ERROR,
-					     BRASERO_BURN_ERROR_GENERAL,
-					     "%s",
-					     g_strerror (errno));
-				goto end;
-			}
-
-			if (c == '\n')
-				break;
-
-			if (i < MAXPATHLEN)
-				filename [i ++] = c;
+		/* FIXME: an error here */
+		if (result == BRASERO_BURN_ERR) {
+			BRASERO_JOB_LOG (self, "Impossible to read checksum file");
+			break;
 		}
 
-		if (i > MAXPATHLEN) {
-			/* we ignore paths that are too long */
-			continue;
-		}
-
-		filename [i] = 0;
 		checksum_real = NULL;
 
-		/* we certainly don't want to checksum anything but regular file */
-		if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
-			continue;
+		/* get the file handle itself */
+		BRASERO_JOB_LOG (self, "Getting file %s", file_path);
+		disc_file = brasero_volume_get_file (vol,
+						     file_path,
+						     start_block,
+						     NULL);
+		if (!disc_file) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("File \"%s\" could not be opened"),
+				     file_path);
+			result = BRASERO_BURN_ERR;
+			break;
+		}
 
-		result = brasero_checksum_files_get_file_checksum (self,
-								   gchecksum_type,
-								   filename,
-								   &checksum_real,
-								   error);
-		if (result == BRASERO_BURN_RETRY)
-			continue;
+		/* we certainly don't want to checksum anything but regular file
+		 * if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR)) {
+		 *	brasero_volume_file_free (disc_file);
+		 *	continue;
+		 * }
+		 */
+
+		/* checksum the file */
+		result = brasero_checksum_files_sum_on_disc_file (self,
+								  gchecksum_type,
+								  vol,
+								  disc_file,
+								  &checksum_real,
+								  error);
+		brasero_volume_file_free (disc_file);
+		if (result == BRASERO_BURN_ERR) {
+			g_set_error (error,
+				     BRASERO_BURN_ERROR,
+				     BRASERO_BURN_ERROR_GENERAL,
+				     _("File \"%s\" could not be opened"),
+				     file_path);
+			break;
+		}
 
 		if (result != BRASERO_BURN_OK)
 			break;
@@ -888,18 +994,19 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 					  (gdouble) file_nb);
 		BRASERO_JOB_LOG (self,
 				 "comparing checksums for file %s : %s (from md5 file) / %s (current)",
-				 filename, checksum_file, checksum_real);
+				 file_path, checksum_file, checksum_real);
 
 		if (strcmp (checksum_file, checksum_real)) {
 			gchar *string;
+
+			BRASERO_JOB_LOG (self, "Wrong checksum");
 			if (!wrong_checksums)
 				wrong_checksums = g_array_new (TRUE,
 							       TRUE, 
 							       sizeof (gchar *));
 
-			string = g_strdup (filename);
-			wrong_checksums = g_array_append_val (wrong_checksums,
-							      string);
+			string = g_strdup (file_path);
+			wrong_checksums = g_array_append_val (wrong_checksums, string);
 		}
 
 		g_free (checksum_real);
@@ -908,11 +1015,27 @@ brasero_checksum_files_check_files (BraseroChecksumFiles *self,
 	}
 
 end:
-	if (file)
-		fclose (file);
 
-	if (result != BRASERO_BURN_OK)
+	if (handle)
+		brasero_volume_file_close (handle);
+
+	if (file)
+		brasero_volume_file_free (file);
+
+	if (vol)
+		brasero_volume_source_close (vol);
+
+	if (dev_handle)
+		brasero_device_handle_close (dev_handle);
+
+	if (result != BRASERO_BURN_OK) {
+		BRASERO_JOB_LOG (self, "Ended with an error");
+		if (wrong_checksums) {
+			g_strfreev ((gchar **) wrong_checksums->data);
+			g_array_free (wrong_checksums, FALSE);
+		}
 		return result;
+	}
 
 	if (!wrong_checksums)
 		return BRASERO_BURN_OK;
@@ -1083,15 +1206,13 @@ brasero_checksum_files_thread (gpointer data)
 
 	/* check DISC types and add checksums for DATA and IMAGE-bin types */
 	brasero_job_get_action (BRASERO_JOB (self), &action);
-
 	if (action == BRASERO_JOB_ACTION_CHECKSUM) {
-		BraseroChecksumType type;
 		BraseroTrack *track;
 
 		brasero_job_get_current_track (BRASERO_JOB (self), &track);
-		type = brasero_track_get_checksum_type (track);
-		if (type & (BRASERO_CHECKSUM_MD5_FILE|BRASERO_CHECKSUM_SHA1_FILE|BRASERO_CHECKSUM_SHA256))
-			result = brasero_checksum_files_check_files (self, type, &error);
+		priv->checksum_type = brasero_track_get_checksum_type (track);
+		if (priv->checksum_type & (BRASERO_CHECKSUM_MD5_FILE|BRASERO_CHECKSUM_SHA1_FILE|BRASERO_CHECKSUM_SHA256_FILE|BRASERO_CHECKSUM_DETECT))
+			result = brasero_checksum_files_check_files (self, &error);
 		else
 			result = BRASERO_BURN_ERR;
 	}
@@ -1345,6 +1466,7 @@ brasero_checksum_files_export_caps (BraseroPlugin *plugin, gchar **error)
 				       BRASERO_MEDIUM_APPENDABLE|
 				       BRASERO_MEDIUM_HAS_DATA);
 	brasero_plugin_check_caps (plugin,
+				   BRASERO_CHECKSUM_DETECT|				   
 				   BRASERO_CHECKSUM_MD5_FILE|
 				   BRASERO_CHECKSUM_SHA1_FILE|
 				   BRASERO_CHECKSUM_SHA256_FILE,

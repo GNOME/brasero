@@ -913,6 +913,8 @@ brasero_burn_session_add_flag (BraseroBurnSession *self,
 
 	g_return_if_fail (BRASERO_IS_BURN_SESSION (self));
 
+	if (flag & BRASERO_BURN_FLAG_BURNPROOF)
+		g_warning ("REACHEd\n");
 	priv = BRASERO_BURN_SESSION_PRIVATE (self);
 	priv->settings->flags |= flag;
 }

@@ -30,7 +30,8 @@ fy
 #include "burn-volume-read.h"
 
 struct _BraseroVolFileHandle {
-	guchar buffer [2048 * 4];
+	/* 64 is an empirical value based on one of my drives. */
+	guchar buffer [2048 * 64];
 	guint buffer_max;
 
 	/* position in buffer */
@@ -321,3 +322,71 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 
 	return brasero_volume_file_check_state (handle);
 }
+
+BraseroVolFileHandle *
+brasero_volume_file_open_direct (BraseroVolSrc *src,
+				 BraseroVolFile *file)
+{
+	BraseroVolFileHandle *handle;
+
+	if (file->isdir)
+		return NULL;
+
+	handle = g_new0 (BraseroVolFileHandle, 1);
+	handle->src = src;
+	brasero_volume_source_ref (src);
+
+	handle->extents_forward = g_slist_copy (file->specific.file.extents);
+
+	/* Here the buffer stays unused, we copy straight to the buffer passed
+	 * in the read direct function. */
+	if (!brasero_volume_file_next_extent (handle)) {
+		brasero_volume_file_close (handle);
+		return NULL;
+	}
+
+	return handle;
+}
+
+gint64
+brasero_volume_file_read_direct (BraseroVolFileHandle *handle,
+				 guchar *buffer,
+				 guint blocks)
+{
+	gboolean result;
+	guint block2read;
+	guint readblocks = 0;
+
+start:
+
+	block2read = MIN (blocks - readblocks, handle->extent_last - handle->position);
+	if (!block2read)
+		return readblocks * 2048;
+
+	result = BRASERO_VOL_SRC_READ (handle->src,
+				       (char *) buffer + readblocks * 2048,
+				       block2read,
+				       NULL);
+	if (!result)
+		return -1;
+
+	handle->position += block2read;
+	readblocks += block2read;
+
+	if (handle->position == handle->extent_last) {
+		/* we are at the end of current extent try to find another */
+		if (!handle->extents_forward) {
+			/* we reached the end of our file */
+			return (readblocks - 1) * 2048 +
+				handle->extent_size % 2048;
+		}
+
+		if (!brasero_volume_file_next_extent (handle))
+			return -1;
+
+		goto start;
+	}
+
+	return readblocks * 2048;
+}
+

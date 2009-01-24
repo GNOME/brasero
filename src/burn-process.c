@@ -118,6 +118,7 @@ brasero_process_check_path (const gchar *name,
 	 * the end it didn't work. So forbid all symlink. */
 	if (g_file_test (prog_path, G_FILE_TEST_IS_SYMLINK)) {
 		*error = g_strdup_printf (_("\"%s\" is a symlink pointing to another program. Use the target program instead"), name);
+		g_free (prog_path);
 		return BRASERO_BURN_ERR;
 	}
 	/* Make sure it's a regular file */
@@ -665,7 +666,7 @@ brasero_process_stop (BraseroJob *job,
 
 		/* Reminder: -1 is here to send the signal to all children of
 		 * the process with pid as well */
-		if (kill ((-1) * pid, SIGTERM) == -1 && errno != ESRCH) {
+		if (pid > 0 && kill ((-1) * pid, SIGTERM) == -1 && errno != ESRCH) {
 			BRASERO_JOB_LOG (process, 
 					 "process (%s) couldn't be killed: terminating",
 					 g_strerror (errno));

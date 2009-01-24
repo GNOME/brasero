@@ -1,3 +1,45 @@
+2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	- Some minor leak fixes
+	- Stop trying to mount media to check on disc file integrity. Rather read
+	straight from the disc the files and check them without mounting as we
+	do for images or when we merge checksum files in a multisession context.
+	Otherwise,  in some cases, we'd try to unmount the media (which is not
+	possible when it's blank and mounted by burn:// URI) then reload the
+	media into the drive so as HAL realizes the changes that took place
+	after burning. 
+
+	It fixes long standing bugs
+	#561006 – Unable to Mount Error
+	#562740 – brasero errors on inability to mount disk after burning on a laptop
+	which is also mentioned in:
+	#564693 – Too Slow DVD Burning
+
+	* libbrasero-media/scsi-read10.c (brasero_sbc_read10_block):
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_build_recent):
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_corruption_warning),
+	(brasero_sum_dialog_check_disc_sum):
+	* src/burn-process.c (brasero_process_check_path),
+	(brasero_process_stop):
+	* src/burn-session.c (brasero_burn_session_add_flag):
+	* src/burn-track.c (brasero_track_set_checksum):
+	* src/burn-track.h:
+	* src/burn.c (brasero_burn_unlock_dest_media),
+	(brasero_burn_check_real), (brasero_burn_check):
+	* src/plugins/checksum/burn-checksum-files.c
+	(brasero_checksum_files_merge_with_former_session),
+	(brasero_checksum_files_sum_on_disc_file),
+	(brasero_checksum_files_get_on_disc_checksum_type),
+	(brasero_checksum_files_get_line_num),
+	(brasero_checksum_files_check_files),
+	(brasero_checksum_files_thread),
+	(brasero_checksum_files_export_caps):
+	* src/plugins/checksum/burn-volume-read.c
+	(brasero_volume_file_open_direct),
+	(brasero_volume_file_read_direct):
+	* src/plugins/checksum/burn-volume-read.h:
+
 2009-01-23  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Corrected a bug introduced by earlier patch:

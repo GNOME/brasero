@@ -56,6 +56,15 @@ brasero_volume_file_read_line (BraseroVolFileHandle *handle,
 			       gchar *buffer,
 			       guint len);
 
+BraseroVolFileHandle *
+brasero_volume_file_open_direct (BraseroVolSrc *src,
+				 BraseroVolFile *file);
+
+gint64
+brasero_volume_file_read_direct (BraseroVolFileHandle *handle,
+				 guchar *buffer,
+				 guint blocks);
+
 G_END_DECLS
 
 #endif /* BRASERO_MEDIUM_HANDLE_H */

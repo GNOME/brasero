@@ -923,10 +923,8 @@ brasero_track_set_checksum (BraseroTrack *track,
 	BraseroBurnResult result = BRASERO_BURN_OK;
 
 	if (type == track->checksum_type
-	&& (type == BRASERO_CHECKSUM_MD5
-	||  type == BRASERO_CHECKSUM_SHA1
-	||  type == BRASERO_CHECKSUM_SHA256)
-	&&  strcmp (checksum, track->checksum))
+	&& (type == BRASERO_CHECKSUM_MD5 || type == BRASERO_CHECKSUM_SHA1 || type == BRASERO_CHECKSUM_SHA256)
+	&&  checksum && strcmp (checksum, track->checksum))
 		result = BRASERO_BURN_ERR;
 
 	if (track->checksum)

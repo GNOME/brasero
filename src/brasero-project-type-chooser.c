@@ -365,6 +365,7 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 		gtk_size_group_add_widget (group, link);
 	}
+	g_object_unref (image_group);
 	g_object_unref (group);
 
 	if (!g_list_length (list)) {
