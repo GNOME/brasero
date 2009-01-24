@@ -112,6 +112,9 @@ brasero_medium_monitor_get_drive (BraseroMediumMonitor *monitor,
 	GSList *iter;
 	BraseroMediumMonitorPrivate *priv;
 
+	g_return_val_if_fail (monitor != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
+
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 	for (iter = priv->drives; iter; iter = iter->next) {
 		BraseroDrive *drive;
@@ -141,6 +144,9 @@ brasero_medium_monitor_is_probing (BraseroMediumMonitor *monitor)
 {
 	GSList *iter;
 	BraseroMediumMonitorPrivate *priv;
+
+	g_return_val_if_fail (monitor != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), FALSE);
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
@@ -174,6 +180,9 @@ brasero_medium_monitor_get_drives (BraseroMediumMonitor *monitor,
 	BraseroMediumMonitorPrivate *priv;
 	GSList *drives = NULL;
 	GSList *iter;
+
+	g_return_val_if_fail (monitor != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 
@@ -220,6 +229,9 @@ brasero_medium_monitor_get_media (BraseroMediumMonitor *monitor,
 	GSList *iter;
 	GSList *list = NULL;
 	BraseroMediumMonitorPrivate *priv;
+
+	g_return_val_if_fail (monitor != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM_MONITOR (monitor), NULL);
 
 	priv = BRASERO_MEDIUM_MONITOR_PRIVATE (monitor);
 

@@ -253,7 +253,7 @@ brasero_medium_support_flags (BraseroMedium *self,
  *
  **/
 gchar *
-brasero_medium_get_tooltip (BraseroMedium *self)
+brasero_medium_get_tooltip (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 	BraseroDrive *drive;
@@ -262,12 +262,12 @@ brasero_medium_get_tooltip (BraseroMedium *self)
 	gchar *label;
 	gchar *name;
 
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (BRASERO_IS_MEDIUM (self), NULL);
+	g_return_val_if_fail (medium != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
-	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
+	media = brasero_medium_get_status (BRASERO_MEDIUM (medium));
 	if (media & BRASERO_MEDIUM_FILE) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
@@ -275,8 +275,8 @@ brasero_medium_get_tooltip (BraseroMedium *self)
 		return g_strdup (_("Image File"));
 	}
 
-	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+	type = brasero_medium_get_type_string (BRASERO_MEDIUM (medium));
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (medium));
 	name = brasero_drive_get_display_name (drive);
 
 	if (media & BRASERO_MEDIUM_BLANK) {
@@ -333,6 +333,9 @@ brasero_medium_get_type_string (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
+	g_return_val_if_fail (medium != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->type;
 }
@@ -353,6 +356,8 @@ brasero_medium_get_status (BraseroMedium *medium)
 
 	if (!medium)
 		return BRASERO_MEDIUM_NONE;
+
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), BRASERO_MEDIUM_NONE);
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->info;
@@ -427,6 +432,9 @@ brasero_medium_get_last_data_track_space (BraseroMedium *medium,
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track = NULL;
 
+	g_return_val_if_fail (medium != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	for (iter = priv->tracks; iter; iter = iter->next) {
@@ -465,9 +473,12 @@ brasero_medium_get_last_data_track_space (BraseroMedium *medium,
 guint
 brasero_medium_get_track_num (BraseroMedium *medium)
 {
-	guint retval = 0;
 	GSList *iter;
+	guint retval = 0;
 	BraseroMediumPrivate *priv;
+
+	g_return_val_if_fail (medium != NULL, 0);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), 0);
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	for (iter = priv->tracks; iter; iter = iter->next) {
@@ -532,6 +543,9 @@ brasero_medium_get_track_space (BraseroMedium *medium,
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track;
 
+	g_return_val_if_fail (medium != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	track = brasero_medium_get_track (medium, num);
@@ -574,6 +588,9 @@ brasero_medium_get_track_address (BraseroMedium *medium,
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track;
 
+	g_return_val_if_fail (medium != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	track = brasero_medium_get_track (medium, num);
@@ -606,6 +623,9 @@ gint64
 brasero_medium_get_next_writable_address (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
+
+	g_return_val_if_fail (medium != NULL, 0);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), 0);
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
@@ -644,6 +664,9 @@ brasero_medium_get_max_write_speed (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
+	g_return_val_if_fail (medium != NULL, 0);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), 0);
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->max_wrt * 1000;
 }
@@ -665,6 +688,9 @@ brasero_medium_get_write_speeds (BraseroMedium *medium)
 	gint64 *speeds;
 	guint max = 0;
 	guint i;
+
+	g_return_val_if_fail (medium != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
@@ -725,6 +751,9 @@ brasero_medium_get_data_size (BraseroMedium *medium,
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track = NULL;
 
+	g_return_if_fail (medium != NULL);
+	g_return_if_fail (BRASERO_IS_MEDIUM (medium));
+
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	if (!priv->tracks) {
@@ -773,6 +802,9 @@ brasero_medium_get_free_space (BraseroMedium *medium,
 	GSList *iter;
 	BraseroMediumPrivate *priv;
 	BraseroMediumTrack *track = NULL;
+
+	g_return_if_fail (medium != NULL);
+	g_return_if_fail (BRASERO_IS_MEDIUM (medium));
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
@@ -851,6 +883,9 @@ brasero_medium_get_capacity (BraseroMedium *medium,
 			     gint64 *blocks)
 {
 	BraseroMediumPrivate *priv;
+
+	g_return_if_fail (medium != NULL);
+	g_return_if_fail (BRASERO_IS_MEDIUM (medium));
 
 	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
@@ -3528,12 +3563,15 @@ brasero_medium_class_init (BraseroMediumClass *klass)
  *
  **/
 gboolean
-brasero_medium_can_be_written (BraseroMedium *self)
+brasero_medium_can_be_written (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 	BraseroDriveCaps caps;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	g_return_val_if_fail (medium != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE)
 	&&   (priv->info & BRASERO_MEDIUM_CLOSED))
@@ -3584,12 +3622,15 @@ brasero_medium_can_be_written (BraseroMedium *self)
  *
  **/
 gboolean
-brasero_medium_can_be_rewritten (BraseroMedium *self)
+brasero_medium_can_be_rewritten (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 	BraseroDriveCaps caps;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	g_return_val_if_fail (medium != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), FALSE);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 
 	if (!(priv->info & BRASERO_MEDIUM_REWRITABLE)
 	||   (priv->info & BRASERO_MEDIUM_FILE))
@@ -3624,14 +3665,16 @@ brasero_medium_can_be_rewritten (BraseroMedium *self)
  *
  **/
 BraseroDrive *
-brasero_medium_get_drive (BraseroMedium *self)
+brasero_medium_get_drive (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
-	if (!self)
+	if (!medium)
 		return NULL;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
 	return priv->drive;
 }
 
@@ -3645,12 +3688,15 @@ brasero_medium_get_drive (BraseroMedium *self)
  *
  **/
 const gchar *
-brasero_medium_get_CD_TEXT_title (BraseroMedium *self)
+brasero_medium_get_CD_TEXT_title (BraseroMedium *medium)
 {
 	BraseroMediumPrivate *priv;
 
-	priv = BRASERO_MEDIUM_PRIVATE (self);
-	return priv->CD_TEXT_title;;
+	g_return_val_if_fail (medium != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_MEDIUM (medium), NULL);
+
+	priv = BRASERO_MEDIUM_PRIVATE (medium);
+	return priv->CD_TEXT_title;
 
 }
 

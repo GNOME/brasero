@@ -120,6 +120,7 @@ brasero_drive_get_gdrive (BraseroDrive *drive)
 	GList *drives;
 	GList *iter;
 
+	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	if (brasero_drive_is_fake (drive))
@@ -282,6 +283,7 @@ brasero_drive_get_bus_target_lun_string (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -308,6 +310,7 @@ brasero_drive_is_fake (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -329,6 +332,7 @@ brasero_drive_is_door_open (BraseroDrive *drive)
 	BraseroDeviceHandle *handle;
 	BraseroScsiMechStatusHdr hdr;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -363,6 +367,7 @@ brasero_drive_can_use_exclusively (BraseroDrive *drive)
 	BraseroDeviceHandle *handle;
 	const gchar *device;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
@@ -401,6 +406,7 @@ brasero_drive_lock (BraseroDrive *drive,
 	gboolean result;
 	gchar *failure;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -453,6 +459,7 @@ brasero_drive_unlock (BraseroDrive *drive)
 	DBusError error;
 	gboolean result;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -490,6 +497,7 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 	BraseroHALWatch *watch;
 	LibHalContext *ctx;
 
+	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -521,6 +529,7 @@ brasero_drive_get_device (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -542,6 +551,7 @@ brasero_drive_get_block_device (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -564,6 +574,8 @@ brasero_drive_get_udi (BraseroDrive *drive)
 
 	if (!drive)
 		return NULL;
+
+	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
 	return priv->udi;
@@ -609,6 +621,7 @@ brasero_drive_get_caps (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, BRASERO_DRIVE_CAPS_NONE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), BRASERO_DRIVE_CAPS_NONE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -628,6 +641,7 @@ brasero_drive_can_write (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -725,6 +739,7 @@ brasero_drive_probing (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
 
+	g_return_val_if_fail (drive != NULL, FALSE);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), FALSE);
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);
@@ -748,6 +763,7 @@ brasero_drive_reprobe (BraseroDrive *drive)
 	BraseroDrivePrivate *priv;
 	BraseroMedium *medium;
 
+	g_return_if_fail (drive != NULL);
 	g_return_if_fail (BRASERO_IS_DRIVE (drive));
 
 	priv = BRASERO_DRIVE_PRIVATE (drive);

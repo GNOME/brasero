@@ -1,5 +1,40 @@
 2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some more documentation for API (should now be completed) and add some
+	more g_return_(val_)_if_fail ().
+
+	* libbrasero-media/brasero-drive.c (brasero_drive_get_gdrive),
+	(brasero_drive_get_bus_target_lun_string), (brasero_drive_is_fake),
+	(brasero_drive_is_door_open), (brasero_drive_can_use_exclusively),
+	(brasero_drive_lock), (brasero_drive_unlock),
+	(brasero_drive_get_display_name), (brasero_drive_get_device),
+	(brasero_drive_get_block_device), (brasero_drive_get_udi),
+	(brasero_drive_get_caps), (brasero_drive_can_write),
+	(brasero_drive_probing), (brasero_drive_reprobe):
+	* libbrasero-media/brasero-medium-monitor.c
+	(brasero_medium_monitor_get_drive),
+	(brasero_medium_monitor_is_probing),
+	(brasero_medium_monitor_get_drives),
+	(brasero_medium_monitor_get_media):
+	* libbrasero-media/brasero-medium.c (brasero_medium_get_tooltip),
+	(brasero_medium_get_type_string), (brasero_medium_get_status),
+	(brasero_medium_get_last_data_track_space),
+	(brasero_medium_get_track_num), (brasero_medium_get_track_space),
+	(brasero_medium_get_track_address),
+	(brasero_medium_get_next_writable_address),
+	(brasero_medium_get_max_write_speed),
+	(brasero_medium_get_write_speeds), (brasero_medium_get_data_size),
+	(brasero_medium_get_free_space), (brasero_medium_get_capacity),
+	(brasero_medium_can_be_written), (brasero_medium_can_be_rewritten),
+	(brasero_medium_get_drive), (brasero_medium_get_CD_TEXT_title):
+	* libbrasero-media/brasero-volume.c (brasero_volume_get_gvolume),
+	(brasero_volume_is_mounted), (brasero_volume_get_mount_point),
+	(brasero_volume_umount), (brasero_volume_mount),
+	(brasero_volume_cancel_current_operation),
+	(brasero_volume_get_icon), (brasero_volume_get_name):
+
+2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make sure libbrasero-media is more MT safe by using GDK_THREADS_*() macros
 
 	* libbrasero-media/brasero-drive.c (brasero_drive_medium_probed):

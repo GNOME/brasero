@@ -53,20 +53,32 @@ struct _BraseroVolumePrivate
 
 G_DEFINE_TYPE (BraseroVolume, brasero_volume, BRASERO_TYPE_MEDIUM);
 
+/**
+ * brasero_volume_get_gvolume:
+ * @volume: #BraseroVolume
+ *
+ * Gets the corresponding #GVolume for @Medium.
+ *
+ * Return value: a #GVolume *.
+ *
+ **/
 GVolume *
-brasero_volume_get_gvolume (BraseroVolume *self)
+brasero_volume_get_gvolume (BraseroVolume *volume)
 {
 	const gchar *volume_path = NULL;
 	BraseroVolumePrivate *priv;
 	GVolumeMonitor *monitor;
-	GVolume *volume = NULL;
+	GVolume *gvolume = NULL;
 	BraseroDrive *drive;
 	GList *volumes;
 	GList *iter;
 
-	priv = BRASERO_VOLUME_PRIVATE (self);
+	g_return_val_if_fail (volume != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
 
-	drive = brasero_medium_get_drive (BRASERO_MEDIUM (self));
+	priv = BRASERO_VOLUME_PRIVATE (volume);
+
+	drive = brasero_medium_get_drive (BRASERO_MEDIUM (volume));
 
 #if defined(HAVE_STRUCT_USCSI_CMD)
 	volume_path = brasero_drive_get_block_device (drive);
@@ -90,7 +102,7 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 
 		BRASERO_MEDIA_LOG ("Found volume %s", device_path);
 		if (!strcmp (device_path, volume_path)) {
-			volume = tmp;
+			gvolume = tmp;
 			g_free (device_path);
 			g_object_ref (volume);
 			break;
@@ -101,16 +113,28 @@ brasero_volume_get_gvolume (BraseroVolume *self)
 	g_list_foreach (volumes, (GFunc) g_object_unref, NULL);
 	g_list_free (volumes);
 
-	if (!volume)
+	if (!gvolume)
 		BRASERO_MEDIA_LOG ("No volume found for medium");
 
-	return volume;
+	return gvolume;
 }
 
+/**
+ * brasero_volume_is_mounted:
+ * @volume: #BraseroVolume
+ *
+ * Returns whether the volume is currently mounted.
+ *
+ * Return value: a #gboolean. TRUE if it is mounted.
+ *
+ **/
 gboolean
 brasero_volume_is_mounted (BraseroVolume *volume)
 {
 	gchar *path;
+
+	g_return_val_if_fail (volume != NULL, FALSE);
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), FALSE);
 
 	/* NOTE: that's the surest way to know if a drive is really mounted. For
 	 * GIO a blank medium can be mounted to burn:/// which is not really 
@@ -124,6 +148,16 @@ brasero_volume_is_mounted (BraseroVolume *volume)
 	return FALSE;
 }
 
+/**
+ * brasero_volume_get_mount_point:
+ * @volume: #BraseroVolume
+ * @error: #GError **
+ *
+ * Returns the path for mount point for @volume.
+ *
+ * Return value: a #gchar *
+ *
+ **/
 gchar *
 brasero_volume_get_mount_point (BraseroVolume *volume,
 				GError **error)
@@ -133,6 +167,9 @@ brasero_volume_get_mount_point (BraseroVolume *volume,
 	GVolume *gvolume;
 	GMount *mount;
 	GFile *root;
+
+	g_return_val_if_fail (volume != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
 
 	priv = BRASERO_VOLUME_PRIVATE (volume);
 
@@ -163,6 +200,18 @@ brasero_volume_get_mount_point (BraseroVolume *volume,
 	return local_path;
 }
 
+/**
+ * brasero_volume_umount:
+ * @volume: #BraseroVolume
+ * @wait: #gboolean
+ * @error: #GError **
+ *
+ * Unmount @volume. If wait is set to TRUE, then block (in a GMainLoop) until
+ * the operation finishes.
+ *
+ * Return value: a #gboolean. TRUE if the operation succeeded.
+ *
+ **/
 gboolean
 brasero_volume_umount (BraseroVolume *volume,
 		       gboolean wait,
@@ -174,6 +223,8 @@ brasero_volume_umount (BraseroVolume *volume,
 
 	if (!volume)
 		return TRUE;
+
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), FALSE);
 
 	priv = BRASERO_VOLUME_PRIVATE (volume);
 
@@ -190,6 +241,21 @@ brasero_volume_umount (BraseroVolume *volume,
 	return result;
 }
 
+/**
+ * brasero_volume_mount:
+ * @volume: #BraseroVolume *
+ * @parent_window: #GtkWindow *
+ * @wait: #gboolean
+ * @error: #GError **
+ *
+ * Mount @volume. If wait is set to TRUE, then block (in a GMainLoop) until
+ * the operation finishes.
+ * @parent_window is used if an authentification is needed. Then the authentification
+ * dialog will be set modal.
+ *
+ * Return value: a #gboolean. TRUE if the operation succeeded.
+ *
+ **/
 gboolean
 brasero_volume_mount (BraseroVolume *volume,
 		      GtkWindow *parent_window,
@@ -202,6 +268,8 @@ brasero_volume_mount (BraseroVolume *volume,
 
 	if (!volume)
 		return TRUE;
+
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), FALSE);
 
 	priv = BRASERO_VOLUME_PRIVATE (volume);
 
@@ -219,57 +287,90 @@ brasero_volume_mount (BraseroVolume *volume,
 	return result;
 }
 
+/**
+ * brasero_volume_cancel_current_operation:
+ * @volume: #BraseroVolume *
+ *
+ * Cancels all operations currently running for @volume
+ *
+ **/
 void
-brasero_volume_cancel_current_operation (BraseroVolume *self)
+brasero_volume_cancel_current_operation (BraseroVolume *volume)
 {
 	BraseroVolumePrivate *priv;
 
-	priv = BRASERO_VOLUME_PRIVATE (self);	
+	g_return_if_fail (volume != NULL);
+	g_return_if_fail (BRASERO_IS_VOLUME (volume));
+
+	priv = BRASERO_VOLUME_PRIVATE (volume);	
 	g_cancellable_cancel (priv->cancel);
 }
 
+/**
+ * brasero_volume_get_icon:
+ * @volume: #BraseroVolume *
+ *
+ * Returns a GIcon pointer for the volume.
+ *
+ * Return value: a #GIcon*
+ *
+ **/
 GIcon *
-brasero_volume_get_icon (BraseroVolume *self)
+brasero_volume_get_icon (BraseroVolume *volume)
 {
-	GVolume *volume;
+	GVolume *gvolume;
 	GMount *mount;
 	GIcon *icon;
 
-	if (!self)
-		return g_themed_icon_new_with_default_fallbacks ("drive-optical");
-
-	if (brasero_medium_get_status (BRASERO_MEDIUM (self)) == BRASERO_MEDIUM_FILE)
-		return g_themed_icon_new_with_default_fallbacks ("iso-image-new");
-
-	volume = brasero_volume_get_gvolume (self);
 	if (!volume)
 		return g_themed_icon_new_with_default_fallbacks ("drive-optical");
 
-	mount = g_volume_get_mount (volume);
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
+
+	if (brasero_medium_get_status (BRASERO_MEDIUM (volume)) == BRASERO_MEDIUM_FILE)
+		return g_themed_icon_new_with_default_fallbacks ("iso-image-new");
+
+	gvolume = brasero_volume_get_gvolume (volume);
+	if (!gvolume)
+		return g_themed_icon_new_with_default_fallbacks ("drive-optical");
+
+	mount = g_volume_get_mount (gvolume);
 	if (mount) {
 		icon = g_mount_get_icon (mount);
 		g_object_unref (mount);
 	}
 	else
-		icon = g_volume_get_icon (volume);
+		icon = g_volume_get_icon (gvolume);
 
-	g_object_unref (volume);
+	g_object_unref (gvolume);
 
 	return icon;
 }
 
+/**
+ * brasero_volume_get_name:
+ * @volume: #BraseroVolume *
+ *
+ * Returns a string that can be displayed to represent the volume²
+ *
+ * Return value: a #gchar *. Free when not needed anymore.
+ *
+ **/
 gchar *
-brasero_volume_get_name (BraseroVolume *self)
+brasero_volume_get_name (BraseroVolume *volume)
 {
 	BraseroVolumePrivate *priv;
 	BraseroMedia media;
 	const gchar *type;
-	GVolume *volume;
+	GVolume *gvolume;
 	gchar *name;
 
-	priv = BRASERO_VOLUME_PRIVATE (self);
+	g_return_val_if_fail (volume != NULL, NULL);
+	g_return_val_if_fail (BRASERO_IS_VOLUME (volume), NULL);
 
-	media = brasero_medium_get_status (BRASERO_MEDIUM (self));
+	priv = BRASERO_VOLUME_PRIVATE (volume);
+
+	media = brasero_medium_get_status (BRASERO_MEDIUM (volume));
 	if (media & BRASERO_MEDIUM_FILE) {
 		/* Translators: This is a fake drive, a file, and means that
 		 * when we're writing, we're writing to a file and create an
@@ -280,24 +381,24 @@ brasero_volume_get_name (BraseroVolume *self)
 	if (media & BRASERO_MEDIUM_HAS_AUDIO) {
 		const gchar *audio_name;
 
-		audio_name = brasero_medium_get_CD_TEXT_title (BRASERO_MEDIUM (self));
+		audio_name = brasero_medium_get_CD_TEXT_title (BRASERO_MEDIUM (volume));
 		if (audio_name)
 			return g_strdup (audio_name);
 	}
 
-	volume = brasero_volume_get_gvolume (self);
-	if (!volume)
+	gvolume = brasero_volume_get_gvolume (volume);
+	if (!gvolume)
 		goto last_chance;
 
-	name = g_volume_get_name (volume);
-	g_object_unref (volume);
+	name = g_volume_get_name (gvolume);
+	g_object_unref (gvolume);
 
 	if (name)
 		return name;
 
 last_chance:
 
-	type = brasero_medium_get_type_string (BRASERO_MEDIUM (self));
+	type = brasero_medium_get_type_string (BRASERO_MEDIUM (volume));
 	name = NULL;
 	if (media & BRASERO_MEDIUM_BLANK) {
 		/* NOTE for translators: the first %s is the disc type. */
@@ -357,6 +458,10 @@ brasero_volume_class_init (BraseroVolumeClass *klass)
 
 	object_class->finalize = brasero_volume_finalize;
 }
+
+/**
+ * This is private API defined in brasero-drive.c
+ */
 
 BraseroVolume *
 brasero_volume_new (BraseroDrive *drive,
