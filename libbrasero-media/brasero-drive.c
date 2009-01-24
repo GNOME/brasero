@@ -709,6 +709,7 @@ brasero_drive_medium_probed (BraseroMedium *medium,
 	priv = BRASERO_DRIVE_PRIVATE (self);
 
 	/* only when it is probed */
+	/* NOTE: BraseroMedium calls GDK_THREADS_ENTER/LEAVE() around g_signal_emit () */
 	priv->probed = TRUE;
 	g_signal_emit (self,
 		       drive_signals [MEDIUM_INSERTED],

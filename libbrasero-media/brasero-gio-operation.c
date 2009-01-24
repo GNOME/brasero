@@ -123,7 +123,10 @@ brasero_gio_operation_wait_for_operation_end (BraseroGioOperation *operation,
 						       operation);
 
 	operation->loop = g_main_loop_new (NULL, FALSE);
+
+	GDK_THREADS_LEAVE ();
 	g_main_loop_run (operation->loop);
+	GDK_THREADS_ENTER ();
 
 	g_main_loop_unref (operation->loop);
 	operation->loop = NULL;

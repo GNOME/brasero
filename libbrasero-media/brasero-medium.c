@@ -40,6 +40,7 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <gdk/gdk.h>
 
 #include "burn-basics.h"
 
@@ -3269,9 +3270,11 @@ brasero_medium_probed (gpointer data)
 	priv = BRASERO_MEDIUM_PRIVATE (data);
 
 	/* This signal must be emitted in the main thread */
+	GDK_THREADS_ENTER ();
 	g_signal_emit (data,
 		       medium_signals [PROBED],
 		       0);
+	GDK_THREADS_LEAVE ();
 
 	priv->probe_id = 0;
 	return FALSE;

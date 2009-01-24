@@ -1,5 +1,16 @@
 2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make sure libbrasero-media is more MT safe by using GDK_THREADS_*() macros
+
+	* libbrasero-media/brasero-drive.c (brasero_drive_medium_probed):
+	* libbrasero-media/brasero-gio-operation.c
+	(brasero_gio_operation_wait_for_operation_end):
+	* libbrasero-media/brasero-medium-monitor.c
+	(brasero_medium_monitor_inserted_cb):
+	* libbrasero-media/brasero-medium.c (brasero_medium_probed):
+
+2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a bug with previous patch which led to see as corrupted files that
 	were a multiple of 2048.
 

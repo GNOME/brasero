@@ -324,6 +324,18 @@ brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
 
 	drive = brasero_drive_new (udi);
 	priv->drives = g_slist_prepend (priv->drives, drive);
+
+	/* connect to signals. This must come before the g_signal_emit () so we
+	 * are the first to get an update on the medium inside. */
+	g_signal_connect (drive,
+			  "medium-added",
+			  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
+			  self);
+	g_signal_connect (drive,
+			  "medium-removed",
+			  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
+			  self);
+
 	g_signal_emit (self,
 		       medium_monitor_signals [DRIVE_ADDED],
 		       0,
@@ -335,16 +347,6 @@ brasero_medium_monitor_inserted_cb (BraseroHALWatch *watch,
 			       medium_monitor_signals [MEDIUM_INSERTED],
 			       0,
 			       brasero_drive_get_medium (drive));
-
-	/* connect to signals */
-	g_signal_connect (drive,
-			  "medium-added",
-			  G_CALLBACK (brasero_medium_monitor_medium_added_cb),
-			  self);
-	g_signal_connect (drive,
-			  "medium-removed",
-			  G_CALLBACK (brasero_medium_monitor_medium_removed_cb),
-			  self);
 }
 
 static void
