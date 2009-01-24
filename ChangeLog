@@ -1,5 +1,14 @@
 2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a bug with previous patch which led to see as corrupted files that
+	were a multiple of 2048.
+
+	* src/plugins/checksum/burn-volume-read.c
+	(brasero_volume_file_fill_buffer),
+	(brasero_volume_file_read_direct):
+
+2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	- Some minor leak fixes
 	- Stop trying to mount media to check on disc file integrity. Rather read
 	straight from the disc the files and check them without mounting as we

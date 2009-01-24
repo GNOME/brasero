@@ -78,7 +78,10 @@ brasero_volume_file_fill_buffer (BraseroVolFileHandle *handle)
 	handle->position += blocks;
 
 	if (handle->position == handle->extent_last)
-		handle->buffer_max = (blocks - 1) * 2048 + handle->extent_size % 2048;
+		handle->buffer_max = (blocks - 1) * 2048 +
+				     ((handle->extent_size % 2048) ?
+				      (handle->extent_size % 2048) :
+				       2048);
 	else
 		handle->buffer_max = sizeof (handle->buffer);
 
@@ -378,7 +381,9 @@ start:
 		if (!handle->extents_forward) {
 			/* we reached the end of our file */
 			return (readblocks - 1) * 2048 +
-				handle->extent_size % 2048;
+			       ((handle->extent_size % 2048) != 0?
+			        (handle->extent_size % 2048) :
+				 2048);
 		}
 
 		if (!brasero_volume_file_next_extent (handle))
