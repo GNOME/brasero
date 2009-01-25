@@ -99,7 +99,10 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 				      BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
-	GtkPrintOperation *print;	
+	GtkPrintOperationResult res;
+	GtkPrintOperation *print;
+	GError *error = NULL;
+	GtkWidget *toplevel;
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 	print = gtk_print_operation_new ();
@@ -111,10 +114,13 @@ brasero_jacket_edit_print_pressed_cb (GtkButton *button,
 			  "begin-print",
 			  G_CALLBACK (brasero_jacket_edit_print_begin),
 			  self);
-	gtk_print_operation_run (print,
-				 GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-				 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
-				 NULL);
+
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+	res = gtk_print_operation_run (print,
+				       GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+				       GTK_WINDOW (toplevel),
+				       &error);
+	g_object_unref (print);
 }
 
 static void
@@ -886,7 +892,7 @@ brasero_jacket_edit_new (void)
 
 GtkWidget *
 brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
-				GtkWidget **dialog)
+				BraseroJacketEdit **contents_ret)
 {
 	GtkWidget *window;
 	GtkWidget *contents;
@@ -899,22 +905,15 @@ brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
 					      GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					      NULL);
 
+	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_NORMAL);
 	gtk_window_set_default_size (GTK_WINDOW (window), 680, 640);
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER_ON_PARENT);
-	g_signal_connect (window,
-			  "response",
-			  G_CALLBACK (gtk_widget_destroy),
-			  NULL);
-
 	contents = brasero_jacket_edit_new ();
 	gtk_widget_show (contents);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), contents, TRUE, TRUE, 0);
-	gtk_widget_show (window);
+	if (contents_ret)
+		*contents_ret = BRASERO_JACKET_EDIT (contents);
 
-	if (dialog)
-		*dialog = window;
-
-	return contents;
+	return window;
 }
 

@@ -1750,13 +1750,13 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	if (answer == GTK_RESPONSE_CLOSE) {
-		GtkWidget *contents;
+		BraseroJacketEdit *contents;
 		GValue *cover_value;
 		const gchar *title;
 		GtkWidget *window;
 		GSList *tracks;
 
-		contents = brasero_jacket_edit_dialog_new (GTK_WIDGET (dialog), &window);
+		window = brasero_jacket_edit_dialog_new (GTK_WIDGET (dialog), &contents);
 
 		title = brasero_burn_session_get_label (dialog->priv->session);
 		tracks = brasero_burn_session_get_tracks (dialog->priv->session);
@@ -1766,13 +1766,13 @@ brasero_burn_dialog_success_run (BraseroBurnDialog *dialog)
 						 BRASERO_COVER_URI,
 						 &cover_value);
 
-		brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (contents),
+		brasero_jacket_edit_set_audio_tracks (contents,
 						      title,
 						      cover_value? g_value_get_string (cover_value):NULL,
 						      tracks);
 
 		gtk_dialog_run (GTK_DIALOG (window));
-
+		gtk_widget_destroy (window);
 		return FALSE;
 	}
 

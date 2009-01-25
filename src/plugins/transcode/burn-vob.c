@@ -1182,19 +1182,21 @@ brasero_vob_export_caps (BraseroPlugin *plugin, gchar **error)
 	element = gst_element_factory_make ("ffenc_mpeg2video", NULL);
 	if (!element)
 		return BRASERO_BURN_ERR;
+	gst_object_unref (element);
 
 	element = gst_element_factory_make ("ffenc_ac3", NULL);
 	if (!element)
 		return BRASERO_BURN_ERR;
+	gst_object_unref (element);
 
 	element = gst_element_factory_make ("ffenc_mp2", NULL);
 	if (!element)
 		return BRASERO_BURN_ERR;
+	gst_object_unref (element);
 
 	element = gst_element_factory_make ("mplex", NULL);
 	if (!element)
 		return BRASERO_BURN_ERR;
-
 	gst_object_unref (element);
 
 	brasero_plugin_define (plugin,

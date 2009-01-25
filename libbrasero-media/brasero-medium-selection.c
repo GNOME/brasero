@@ -487,6 +487,7 @@ brasero_medium_selection_show_media_type (BraseroMediumSelection *selector,
 					    ICON_COL, medium_icon,
 					    -1);
 			g_free (medium_name);
+			g_object_unref (medium_icon);
 		}
 		g_slist_foreach (list, (GFunc) g_object_unref, NULL);
 		g_slist_free (list);
@@ -623,6 +624,7 @@ brasero_medium_selection_medium_added_cb (BraseroMediumMonitor *monitor,
 			    ICON_COL, medium_icon,
 			    -1);
 	g_free (medium_name);
+	g_object_unref (medium_icon);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {

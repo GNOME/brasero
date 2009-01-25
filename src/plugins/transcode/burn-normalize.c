@@ -573,7 +573,6 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 					  "\"Rgvolume\"");
 		return BRASERO_BURN_ERR;
 	}
-
 	gst_object_unref (element);
 
 	element = gst_element_factory_make ("rganalysis", NULL);
@@ -582,7 +581,6 @@ brasero_normalize_export_caps (BraseroPlugin *plugin, gchar **error)
 					  "\"Rganalysis\"");
 		return BRASERO_BURN_ERR;
 	}
-
 	gst_object_unref (element);
 
 	input = brasero_caps_audio_new (BRASERO_PLUGIN_IO_ACCEPT_FILE,

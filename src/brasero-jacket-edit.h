@@ -56,7 +56,7 @@ brasero_jacket_edit_new (void);
 
 GtkWidget *
 brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
-				GtkWidget **dialog);
+				BraseroJacketEdit **contents);
 
 void
 brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,

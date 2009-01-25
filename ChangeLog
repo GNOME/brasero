@@ -1,5 +1,23 @@
 2009-01-25  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed memleaks
+
+	* libbrasero-media/brasero-drive-selection.c
+	(brasero_drive_selection_show_type),
+	(brasero_drive_selection_drive_added_cb),
+	(brasero_drive_selection_drive_removed_cb):
+	* libbrasero-media/brasero-gio-operation.c
+	(brasero_gio_operation_umount):
+	* libbrasero-media/brasero-medium-selection.c
+	(brasero_medium_selection_show_media_type),
+	(brasero_medium_selection_medium_added_cb):
+	* src/main.c (brasero_handle_burn_uri):
+	* src/plugins/transcode/burn-normalize.c
+	(brasero_normalize_export_caps):
+	* src/plugins/transcode/burn-vob.c (brasero_vob_export_caps):
+
+2009-01-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #568802 – Brasero 0.9.2 (svn trunk) crashes
 
 	* libbrasero-media/brasero-volume.c (brasero_volume_get_gvolume): fix unref of wrong object

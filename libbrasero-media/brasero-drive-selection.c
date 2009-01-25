@@ -338,6 +338,7 @@ brasero_drive_selection_show_type (BraseroDriveSelection *selector,
 					    ICON_COL, drive_icon,
 					    -1);
 			g_free (drive_name);
+			g_object_unref (drive_icon);
 		}
 		g_slist_foreach (list, (GFunc) g_object_unref, NULL);
 		g_slist_free (list);
@@ -432,6 +433,7 @@ brasero_drive_selection_drive_added_cb (BraseroMediumMonitor *monitor,
 			    ICON_COL, drive_icon,
 			    -1);
 	g_free (drive_name);
+	g_object_unref (drive_icon);
 
 	gtk_widget_set_sensitive (GTK_WIDGET (self), TRUE);
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (self)) == -1) {
@@ -444,7 +446,7 @@ static void
 brasero_drive_selection_drive_removed_cb (BraseroMediumMonitor *monitor,
 					    BraseroDrive *drive,
 					    BraseroDriveSelection *self)
-  {
+{
 	GtkTreeModel *model;
 	GtkTreeIter iter;
   

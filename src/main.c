@@ -220,8 +220,10 @@ brasero_handle_burn_uri (BraseroApp *app,
 		return;
 	}
 
-	while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)))
+	while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)) != NULL) {
 		list = g_slist_prepend (list, g_strconcat ("burn:///", g_file_info_get_name (info), NULL));
+		g_object_unref (info);
+	}
 
 	g_object_unref (enumerator);
 	g_object_unref (file);

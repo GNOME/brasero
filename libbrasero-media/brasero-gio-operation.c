@@ -205,7 +205,7 @@ brasero_gio_operation_umount (GVolume *gvolume,
 	GMount *mount;
 	gboolean result;
 
-	BRASERO_MEDIA_LOG ("Unmounting volume %s", g_volume_get_name (gvolume));
+	BRASERO_MEDIA_LOG ("Unmounting volume");
 
 	if (!gvolume) {
 		BRASERO_MEDIA_LOG ("No volume");

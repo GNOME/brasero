@@ -213,15 +213,20 @@ static void
 brasero_project_manager_new_cover_cb (GtkAction *action,
 				      BraseroProjectManager *manager)
 {
+	BraseroJacketEdit *edit;
 	GtkWidget *toplevel;
-	GtkWidget *edit;
+	GtkWidget *dialog;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
-	edit = brasero_jacket_edit_dialog_new (toplevel, NULL);
+	dialog = NULL;
+
+	dialog = brasero_jacket_edit_dialog_new (toplevel, &edit);
 
 	if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
-		brasero_project_set_cover_specifics (BRASERO_PROJECT (manager->priv->project),
-						     BRASERO_JACKET_EDIT (edit));
+		brasero_project_set_cover_specifics (BRASERO_PROJECT (manager->priv->project), edit);
+
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
 }
 
 static void
