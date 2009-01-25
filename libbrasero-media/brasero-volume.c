@@ -104,7 +104,7 @@ brasero_volume_get_gvolume (BraseroVolume *volume)
 		if (!strcmp (device_path, volume_path)) {
 			gvolume = tmp;
 			g_free (device_path);
-			g_object_ref (volume);
+			g_object_ref (gvolume);
 			break;
 		}
 

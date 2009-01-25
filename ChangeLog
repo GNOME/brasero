@@ -1,3 +1,10 @@
+2009-01-25  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #568802 – Brasero 0.9.2 (svn trunk) crashes
+
+	* libbrasero-media/brasero-volume.c (brasero_volume_get_gvolume): fix unref of wrong object
+	* src/burn-session.c (brasero_burn_session_add_flag): removed warning
+
 2009-01-24  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Some more documentation for API (should now be completed) and add some
