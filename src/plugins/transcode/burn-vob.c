@@ -1180,23 +1180,35 @@ brasero_vob_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	/* Let's see if we've got the plugins we need */
 	element = gst_element_factory_make ("ffenc_mpeg2video", NULL);
-	if (!element)
+	if (!element) {
+		*error = g_strdup_printf (_("%s element could not be created"),
+					  "\"ffenc_mpeg2video\"");
 		return BRASERO_BURN_ERR;
+	}
 	gst_object_unref (element);
 
 	element = gst_element_factory_make ("ffenc_ac3", NULL);
-	if (!element)
+	if (!element) {
+		*error = g_strdup_printf (_("%s element could not be created"),
+					  "\"ffenc_ac3\"");
 		return BRASERO_BURN_ERR;
+	}
 	gst_object_unref (element);
 
 	element = gst_element_factory_make ("ffenc_mp2", NULL);
-	if (!element)
+	if (!element) {
+		*error = g_strdup_printf (_("%s element could not be created"),
+					  "\"ffenc_mp2\"");
 		return BRASERO_BURN_ERR;
+	}
 	gst_object_unref (element);
 
 	element = gst_element_factory_make ("mplex", NULL);
-	if (!element)
+	if (!element) {
+		*error = g_strdup_printf (_("%s element could not be created"),
+					  "\"mplex\"");
 		return BRASERO_BURN_ERR;
+	}
 	gst_object_unref (element);
 
 	brasero_plugin_define (plugin,
