@@ -144,7 +144,6 @@ brasero_read_track_info (BraseroRdTrackInfoCDB *cdb,
 	memset (info, 0, sizeof (BraseroScsiTrackInfo));
 	BRASERO_SET_16 (cdb->alloc_len, datasize);
 	res = brasero_scsi_command_issue_sync (cdb, info, datasize, error);
-
 	if (res == BRASERO_SCSI_OK) {
 		if (datasize != BRASERO_GET_16 (info->len) + sizeof (info->len))
 			BRASERO_MEDIA_LOG ("Sizes mismatch asked %i / received %i",

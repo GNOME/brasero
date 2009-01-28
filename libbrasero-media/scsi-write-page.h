@@ -146,7 +146,7 @@ struct _BraseroScsiWritePage {
 typedef struct _BraseroScsiWritePage BraseroScsiWritePage;
 
 typedef enum {
-	BRASERO_SCSI_WRITE_PACKET	= 0x00,
+	BRASERO_SCSI_WRITE_PACKET_INC	= 0x00,
 	BRASERO_SCSI_WRITE_TAO		= 0x01,
 	BRASERO_SCSI_WRITE_SAO		= 0x02,
 	BRASERO_SCSI_WRITE_RAW		= 0x03

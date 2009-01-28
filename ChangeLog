@@ -1,8 +1,20 @@
 2009-01-28  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Removed dead code and try to fix #57561 – Brasero don't recognize empty disk (comment #25).
+	To retrieve correct next writable addresses, brasero sets write modes to TAO, which is not
+	supported by DVD-Rs so now mode is set to incremental for these media.
+
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_track_set_leadout):
+	* libbrasero-media/scsi-read-track-information.c
+	(brasero_read_track_info):
+	* libbrasero-media/scsi-write-page.h:
+
+2009-01-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #569352 – File names get truncated
 	gtk+ forces the use of mnemonics on the button label when you add an image.
-	Workaround this
+	Workaround this.
 
 	* src/brasero-project-type-chooser.c
 	(brasero_project_type_chooser_build_recent):
