@@ -1,3 +1,12 @@
+2009-01-28  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #569352 – File names get truncated
+	gtk+ forces the use of mnemonics on the button label when you add an image.
+	Workaround this
+
+	* src/brasero-project-type-chooser.c
+	(brasero_project_type_chooser_build_recent):
+
 2009-01-27  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Add some more errors strings to catch #564169 – Brasero can't burn a video DVD from file or project

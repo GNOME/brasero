@@ -317,12 +317,15 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 
 	for (iter = list; iter; iter = iter->next) {
 		GtkRecentInfo *info;
+		GList *child_iter;
 		const gchar *name;
 		GdkPixbuf *pixbuf;
 		GtkWidget *image;
 		const gchar *uri;
+		GtkWidget *child;
 		GtkWidget *hbox;
 		GtkWidget *link;
+		GList *children;
 		gchar *tooltip;
 
 		info = iter->data;
@@ -348,22 +351,48 @@ brasero_project_type_chooser_build_recent (BraseroProjectTypeChooser *self,
 		name = gtk_recent_info_get_display_name (info);
 		uri = gtk_recent_info_get_uri (info);
 
+		/* Don't use mnemonics with filenames */
 		link = gtk_link_button_new_with_label (uri, name);
+		gtk_button_set_image (GTK_BUTTON (link), image);
 		gtk_button_set_alignment (GTK_BUTTON (link), 0.0, 0.5);
 		gtk_button_set_focus_on_click (GTK_BUTTON (link), FALSE);
-		gtk_button_set_image (GTK_BUTTON (link), image);
 		g_signal_connect (link,
 				  "clicked",
 				  G_CALLBACK (brasero_project_type_chooser_recent_clicked_cb),
 				  self);
-
 		gtk_widget_show (link);
+
 		gtk_widget_set_tooltip_text (link, tooltip);
 		gtk_box_pack_start (GTK_BOX (hbox), link, FALSE, TRUE, 0);
 
 		g_free (tooltip);
 
 		gtk_size_group_add_widget (group, link);
+
+		/* That's a tedious hack to avoid mnemonics which are hardcoded
+		 * when you add an image to a button. BUG? */
+		if (!GTK_IS_BIN (link))
+			continue;
+
+		child = gtk_bin_get_child (GTK_BIN (link));
+		if (!GTK_IS_BIN (child))
+			continue;
+
+		child = gtk_bin_get_child (GTK_BIN (child));
+		if (!GTK_IS_BOX (child))
+			continue;
+
+		children = gtk_container_get_children (GTK_CONTAINER (child));
+		for (child_iter = children; child_iter; child_iter = child_iter->next) {
+			GtkWidget *widget;
+
+			widget = child_iter->data;
+			if (GTK_IS_LABEL (widget)) {
+				gtk_label_set_use_underline (GTK_LABEL (widget), FALSE);
+				break;
+			}
+		}
+		g_list_free (children);
 	}
 	g_object_unref (image_group);
 	g_object_unref (group);
