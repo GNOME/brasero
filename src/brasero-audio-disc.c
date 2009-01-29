@@ -2490,7 +2490,7 @@ brasero_audio_disc_drag_data_received_cb (GtkTreeView *tree,
 		pos = brasero_audio_disc_get_dest_path (disc, x, y);
 		if (pos != -1) {
 			references = g_list_reverse (references);
-			dest = 	gtk_tree_path_new_from_indices (pos, -1);
+			dest = gtk_tree_path_new_from_indices (pos, -1);
 		}
 		else
 			dest = NULL;

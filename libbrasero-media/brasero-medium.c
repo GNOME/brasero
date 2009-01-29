@@ -1262,7 +1262,7 @@ brasero_medium_get_capacity_by_type (BraseroMedium *self,
 
 	if (priv->info & BRASERO_MEDIUM_CD)
 		brasero_medium_get_capacity_CD_RW (self, handle, code);
-	else
+	else	/* Works for BD-RE as well */
 		brasero_medium_get_capacity_DVD_RW (self, handle, code);
 
 	return BRASERO_BURN_OK;
@@ -1739,6 +1739,7 @@ brasero_medium_track_set_leadout (BraseroMedium *self,
 		return BRASERO_BURN_OK;
 	}
 
+	/* NOTE this works for CDR, DVDR+-, BDR-SRM */
 	/* make sure the current write mode is TAO. Otherwise the drive will
 	 * return the first sector of the pregap instead of the first user
 	 * accessible sector. */
@@ -2400,12 +2401,12 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 		return BRASERO_BURN_NOT_SUPPORTED;
 	}
 
-	/* for BDs media we need to check the number of layers */
-	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_SRM)) {
+	/* Get a more precise idea of what sequential BD-R type we have here */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDR_SRM)) {
 		BraseroScsiGetConfigHdr *hdr = NULL;
 		int size = 0;
 
-		/* check for POW */
+		/* check for POW type */
 		result = brasero_mmc2_get_configuration_feature (handle,
 								 BRASERO_SCSI_FEAT_BDR_POW,
 								 &hdr,
@@ -2445,7 +2446,7 @@ brasero_medium_get_medium_type (BraseroMedium *self,
 	}
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD)) {
-		/* check for dual layer BD */
+		/* FIXME: check for dual layer BD */
 	}
 
 	return BRASERO_BURN_OK;
