@@ -352,8 +352,14 @@ brasero_cdrdao_set_argv_record (BraseroCdrdao *cdrdao,
 
 		brasero_job_get_current_track (BRASERO_JOB (cdrdao), &track);
 
-		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE)
+		if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CUE) {
+			gchar *parent;
+
 			cuepath = brasero_track_get_toc_source (track, FALSE);
+			parent = g_path_get_dirname (cuepath);
+			brasero_process_set_working_directory (BRASERO_PROCESS (cdrdao), parent);
+			g_free (parent);
+		}
 		else if (type.subtype.img_format == BRASERO_IMAGE_FORMAT_CDRDAO)
 			cuepath = brasero_track_get_toc_source (track, FALSE);
 		else

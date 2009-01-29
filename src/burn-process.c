@@ -75,6 +75,8 @@ struct _BraseroProcessPrivate {
 	GIOChannel *std_error;
 	GString *err_buffer;
 
+	gchar *working_directory;
+
 	GPid pid;
 	gint io_out;
 	gint io_err;
@@ -597,7 +599,12 @@ brasero_process_start (BraseroJob *job, GError **error)
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	BRASERO_JOB_LOG (process, "launching command");
+	if (priv->working_directory) {
+		BRASERO_JOB_LOG (process, "Launching command in %s", priv->working_directory);
+	}
+	else {
+		BRASERO_JOB_LOG (process, "Launching command");
+	}
 
 	klass = BRASERO_PROCESS_GET_CLASS (process);
 
@@ -606,7 +613,7 @@ brasero_process_start (BraseroJob *job, GError **error)
 		       brasero_job_get_fd_out (BRASERO_JOB (process), NULL) != BRASERO_BURN_OK);
 
 	priv->return_status = 0;
-	if (!g_spawn_async_with_pipes (NULL,
+	if (!g_spawn_async_with_pipes (priv->working_directory,
 				       (gchar **) priv->argv->pdata,
 				       (gchar **) envp,
 				       G_SPAWN_SEARCH_PATH|
@@ -769,6 +776,20 @@ brasero_process_stop (BraseroJob *job,
 	return result;
 }
 
+void
+brasero_process_set_working_directory (BraseroProcess *process,
+				       const gchar *directory)
+{
+	BraseroProcessPrivate *priv = BRASERO_PROCESS_PRIVATE (process);
+
+	if (priv->working_directory) {
+		g_free (priv->working_directory);
+		priv->working_directory = NULL;
+	}
+
+	priv->working_directory = g_strdup (directory);
+}
+
 static void
 brasero_process_finalize (GObject *object)
 {
@@ -823,6 +844,11 @@ brasero_process_finalize (GObject *object)
 	if (priv->error) {
 		g_error_free (priv->error);
 		priv->error = NULL;
+	}
+
+	if (priv->working_directory) {
+		g_free (priv->working_directory);
+		priv->working_directory = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);

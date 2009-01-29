@@ -81,4 +81,8 @@ gboolean
 brasero_process_check_path (const gchar *name,
 			    gchar **error);
 
+void
+brasero_process_set_working_directory (BraseroProcess *process,
+				       const gchar *directory);
+
 #endif /* PROCESS_H */

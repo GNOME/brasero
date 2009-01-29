@@ -1,5 +1,18 @@
 2009-01-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Try to fix #563204 – .CUE image path handling
+	and #555829 – Brasero doesn't set working directory properly when launched from Nautilus; fails with "cue file appears to be invalid"
+	Start cdrdao in the directory where the cue file is
+
+	* src/burn-process.c (brasero_process_start),
+	(brasero_process_set_working_directory),
+	(brasero_process_finalize):
+	* src/burn-process.h:
+	* src/plugins/cdrdao/burn-cdrdao.c
+	(brasero_cdrdao_set_argv_record):
+
+2009-01-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix fd leak when cue image size retrieval fails
 
 	* src/burn-image-format.c (brasero_image_format_get_cue_size):
