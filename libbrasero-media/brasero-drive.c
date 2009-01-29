@@ -950,6 +950,8 @@ brasero_drive_init_real (BraseroDrive *drive)
 	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusrwdl", NULL))
 		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL;
 
+	BRASERO_MEDIA_LOG ("Drive caps are %d", priv->caps);
+
 	/* Also get its parent to retrieve the bus, host, lun values */
 	priv->bus = -1;
 	priv->lun = -1;
