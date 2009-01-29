@@ -34,7 +34,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib-object.h>
 
-#include <gdk/gdkpixbuf.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>

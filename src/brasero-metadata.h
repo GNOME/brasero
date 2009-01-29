@@ -31,7 +31,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <gdk/gdkpixbuf.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <gst/gst.h>
 
