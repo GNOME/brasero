@@ -601,6 +601,7 @@ brasero_image_format_get_cue_size (gchar *path,
 					     _("The size could not be retrieved (%s)"),
 					     g_strerror (errsv));
 				g_free (file_path);
+				fclose (file);
 				return FALSE;
 			}
 

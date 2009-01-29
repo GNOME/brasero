@@ -1,5 +1,11 @@
 2009-01-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix fd leak when cue image size retrieval fails
+
+	* src/burn-image-format.c (brasero_image_format_get_cue_size):
+
+2009-01-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Initializes image size to 0 which prevents displaying any size when an
 	error occurs while retrieving the size of the image.
 
