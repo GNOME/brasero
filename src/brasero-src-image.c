@@ -143,9 +143,9 @@ brasero_src_image_set_track (BraseroSrcImage *dialog,
 			     const gchar *image,
 			     const gchar *toc)
 {
-	gint64 size;
 	gchar *path;
 	gchar *string;
+	gint64 size = 0;
 	gchar *size_string;
 	BraseroSrcImagePrivate *priv;
 

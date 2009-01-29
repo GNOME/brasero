@@ -1,5 +1,12 @@
 2009-01-29  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Initializes image size to 0 which prevents displaying any size when an
+	error occurs while retrieving the size of the image.
+
+	* src/brasero-src-image.c (brasero_src_image_set_track):
+
+2009-01-29  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	More debug to catch #567822 – Can't blank DVD on FreeBSD
 
 	* libbrasero-media/brasero-drive.c (brasero_drive_init_real):
