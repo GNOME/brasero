@@ -1,5 +1,23 @@
 2009-01-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #569923 – Grammar issues
+	Use "Please " instead of "Please,"
+	Patch by Bruce Cowan
+
+	* src/brasero-burn-dialog.c
+	(brasero_burn_dialog_get_media_type_string),
+	(brasero_burn_dialog_insert_disc_cb):
+	* src/brasero-burn-options.c
+	(brasero_burn_options_update_no_medium_warning),
+	(brasero_burn_options_valid_media_cb):
+	* src/brasero-data-disc.c (brasero_data_disc_project_oversized_cb),
+	(brasero_data_disc_load_track):
+	* src/brasero-project.c (brasero_project_check_status):
+	* src/brasero-src-image.c (brasero_src_image_error):
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_library_init):
+
+2009-01-31  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #569953 – Brasero fails to build outside source dir
 	Patch by Theppitak Karoonboonyanan
 

@@ -778,7 +778,7 @@ brasero_project_check_status (BraseroProject *project,
 	/* This dialog can run as a standalone window when run from nautilus
 	 * to burn burn:// URI contents. */
 	dialog = brasero_app_dialog (brasero_app_get_default (),
-				     _("Please, wait until the estimation of the project size is completed."),
+				     _("Please wait until the estimation of the project size is completed."),
 				     GTK_BUTTONS_CANCEL,
 				     GTK_MESSAGE_OTHER);
 

@@ -119,14 +119,14 @@ error_doesnt_exist:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("Encrypted DVD: please, install libdvdcss version 1.2.x"));
+		     _("Encrypted DVD: please install libdvdcss version 1.2.x"));
 	return FALSE;
 
 error_version:
 	g_set_error (error,
 		     BRASERO_BURN_ERROR,
 		     BRASERO_BURN_ERROR_GENERAL,
-		     _("Libdvdcss version %s is not supported.\nPlease, install libdvdcss version 1.2.x"),
+		     _("Libdvdcss version %s is not supported.\nPlease install libdvdcss version 1.2.x"),
 		     dvdcss_interface_2);
 	g_module_close (module);
 	return FALSE;

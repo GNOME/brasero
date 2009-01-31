@@ -221,7 +221,7 @@ brasero_burn_options_update_no_medium_warning (BraseroBurnOptions *self)
 	/* The user may have forgotten to insert a disc so remind him of that if
 	 * there aren't any other possibility in the selection */
 	brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-				    _("Please, insert a recordable CD or DVD if you don't want to write to an image file."),
+				    _("Please insert a recordable CD or DVD if you don't want to write to an image file."),
 				    NULL,
 				    -1,
 				    BRASERO_BURN_OPTIONS_NO_MEDIUM_WARNING);
@@ -254,14 +254,14 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 
 	if (valid == BRASERO_SESSION_INSUFFICIENT_SPACE) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please, choose another CD or DVD or insert a new one."),
+					    _("Please choose another CD or DVD or insert a new one."),
 					    _("The size of the project is too large for the disc even with the overburn option."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
 	}
 	else if (valid == BRASERO_SESSION_NO_OUTPUT) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please, insert a recordable CD or DVD."),
+					    _("Please insert a recordable CD or DVD."),
 					    _("There is no recordable disc inserted."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -279,7 +279,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
-							      _("Please, insert a disc holding data."),
+							      _("Please insert a disc holding data."),
 							      _("There is no inserted disc to copy."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -291,7 +291,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
-							      _("Please, select an image."),
+							      _("Please select an image."),
 							      _("There is no selected image."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -303,7 +303,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
-							      _("Please, select another image."),
+							      _("Please select another image."),
 							      _("It doesn't appear to be a valid image or a valid cue file."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -315,7 +315,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		if (priv->message_input) {
 			gtk_widget_show (priv->message_input);
 			message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_input),
-							      _("Please, insert a disc that is not copy protected."),
+							      _("Please insert a disc that is not copy protected."),
 							      _("Such a disc cannot be copied without the proper plugins."),
 							      -1,
 							      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -323,7 +323,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 	}
 	else if (valid == BRASERO_SESSION_NOT_SUPPORTED) {
 		brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
-					    _("Please, replace the disc with a supported CD or DVD."),
+					    _("Please replace the disc with a supported CD or DVD."),
 					    _("It is not possible to write with the current set of plugins."),
 					    -1,
 					    BRASERO_NOTIFY_CONTEXT_SIZE);

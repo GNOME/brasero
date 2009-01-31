@@ -241,7 +241,7 @@ brasero_src_image_error (BraseroSrcImage *self,
 			 GError *error)
 {
 	brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
-				      _("Please, select another image."),
+				      _("Please select another image."),
 				      error->message,
 				      GTK_MESSAGE_ERROR);
 }

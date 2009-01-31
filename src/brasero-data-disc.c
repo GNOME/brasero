@@ -624,7 +624,7 @@ brasero_data_disc_project_oversized_cb (BraseroDataProject *project,
 	}
 	else if (oversized) {
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
-						      _("Please, delete some files from the project."),
+						      _("Please delete some files from the project."),
 						      _("The size of the project is too large for the disc even with the overburn option."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
@@ -1682,7 +1682,7 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 	}
 
 	message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message),
-					      _("Please, wait while the project is loading."),
+					      _("Please wait while the project is loading."),
 					      NULL,
 					      -1,
 					      BRASERO_NOTIFY_CONTEXT_LOADING);
