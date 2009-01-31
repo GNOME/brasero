@@ -3,7 +3,7 @@ plugindir = $(libdir)/brasero/plugins
 INCLUDES = \
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/libbrasero-media/					\
-	-I$(top_builddir)				\
+	-I$(top_builddir)/libbrasero-media/		\
 	-I$(top_srcdir)/src				\
 	-DBRASERO_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DBRASERO_PREFIX=\"$(prefix)\"           		\

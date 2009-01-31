@@ -2,6 +2,7 @@ module_flags = -avoid-version -module
 
 INCLUDES =					\
 	-I$(top_srcdir)/libbrasero-media/	\
+	-I$(top_builddir)/libbrasero-media/	\
 	$(NAUTILUS_EXTENSION_CFLAGS)		\
 	$(WERROR)				\
 	-D_FILE_OFFSET_BITS=64			\
