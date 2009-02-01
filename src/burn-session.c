@@ -776,8 +776,9 @@ brasero_burn_session_get_tmp_file (BraseroBurnSession *self,
 	if (fd == -1) {
                 int errsv = errno;
 
+		BRASERO_BURN_LOG ("Impossible to create tmp file %s", tmp);
+
 		g_free (tmp);
-		BRASERO_BURN_LOG ("Impossible to create tmp file");
 		if (errsv != EACCES)
 			g_set_error (error, 
 				     BRASERO_BURN_ERROR,

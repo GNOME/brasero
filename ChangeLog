@@ -1,3 +1,13 @@
+2009-02-01  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix crash with audio split dialog
+	+ small memleak
+
+	* src/brasero-split-dialog.c
+	(brasero_split_dialog_metadata_finished_cb),
+	(brasero_split_dialog_init):
+	* src/burn-session.c (brasero_burn_session_get_tmp_file): Add some more debug
+
 2009-01-31  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Synced version number with GNOME's

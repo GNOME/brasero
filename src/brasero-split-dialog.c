@@ -601,8 +601,8 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 					   GError *error,
 					   BraseroSplitDialog *self)
 {
+	BraseroMetadataInfo info = { NULL, };
 	BraseroSplitDialogPrivate *priv;
-	BraseroMetadataInfo info;
 	gboolean added_silence;
 	GSList *iter;
 
@@ -633,6 +633,9 @@ brasero_split_dialog_metadata_finished_cb (BraseroMetadata *metadata,
 		BraseroMetadataSilence *silence;
 
 		silence = iter->data;
+
+		if (!silence)
+			continue;
 
 		if (silence->start >= priv->end)
 			continue;
@@ -1292,6 +1295,7 @@ brasero_split_dialog_init (BraseroSplitDialog *object)
 	g_free (title);
 
 	gtk_combo_box_set_active (GTK_COMBO_BOX (priv->combo), 0);
+	g_object_unref (size_group);
 }
 
 static void
