@@ -1489,8 +1489,7 @@ brasero_io_get_file_count_process_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0) |
-						       BRASERO_METADATA_FLAG_FAST,
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0),
 						       &metadata);
 
 		if (result)
@@ -1835,8 +1834,7 @@ brasero_io_load_directory_playlist (BraseroIO *self,
 						       child_uri,
 						       info,
 						       ((data->job.options & BRASERO_IO_INFO_METADATA_MISSING_CODEC) ? BRASERO_METADATA_FLAG_MISSING : 0) |
-						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0) |
-						       BRASERO_METADATA_FLAG_FAST,
+						       ((data->job.options & BRASERO_IO_INFO_METADATA_THUMBNAIL) ? BRASERO_METADATA_FLAG_THUMBNAIL : 0),
 						       &metadata);
 
 		if (result) {

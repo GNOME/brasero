@@ -61,6 +61,8 @@ struct BraseroMetadataPrivate {
 	GstElement *level;
 	GstElement *sink;
 
+	GstElement *pipeline_mp3;
+
 	GstElement *audio;
 	GstElement *video;
 
@@ -68,8 +70,7 @@ struct BraseroMetadataPrivate {
 
 	GError *error;
 	guint watch;
-
-	guint progress_id;
+	guint watch_mp3;
 
 	BraseroMetadataSilence *silence;
 
@@ -102,7 +103,6 @@ enum {
 
 typedef enum {
 	COMPLETED_SIGNAL,
-	PROGRESS_CHANGED_SIGNAL,
 	LAST_SIGNAL
 } BraseroMetadataSignalType;
 
@@ -175,24 +175,71 @@ brasero_metadata_info_free (BraseroMetadataInfo *info)
 	g_free (info);
 }
 
+void
+brasero_metadata_info_copy (BraseroMetadataInfo *dest,
+			    BraseroMetadataInfo *src)
+{
+	GSList *iter;
+
+	if (!dest || !src)
+		return;
+
+	dest->isrc = src->isrc;
+	dest->len = src->len;
+	dest->is_seekable = src->is_seekable;
+	dest->has_audio = src->has_audio;
+	dest->has_video = src->has_video;
+
+	if (src->uri)
+		dest->uri = g_strdup (src->uri);
+
+	if (src->type)
+		dest->type = g_strdup (src->type);
+
+	if (src->title)
+		dest->title = g_strdup (src->title);
+
+	if (src->artist)
+		dest->artist = g_strdup (src->artist);
+
+	if (src->album)
+		dest->album = g_strdup (src->album);
+
+	if (src->genre)
+		dest->genre = g_strdup (src->genre);
+
+	if (src->musicbrainz_id)
+		dest->musicbrainz_id = g_strdup (src->musicbrainz_id);
+
+	if (src->snapshot) {
+		dest->snapshot = src->snapshot;
+		g_object_ref (dest->snapshot);
+	}
+
+	for (iter = src->silences; iter; iter = iter->next) {
+		BraseroMetadataSilence *silence, *copy;
+
+		silence = iter->data;
+
+		copy = g_new0 (BraseroMetadataSilence, 1);
+		copy->start = silence->start;
+		copy->end = silence->end;
+
+		dest->silences = g_slist_append (dest->silences, copy);
+	}
+
+}
+
 static void
-brasero_metadata_destroy_pipeline (BraseroMetadata *self)
+brasero_metadata_stop_pipeline (GstElement *pipeline)
 {
 	GstState state;
 	GstStateChangeReturn change;
-	BraseroMetadataPrivate *priv;
 
-	priv = BRASERO_METADATA_PRIVATE (self);
-
-	priv->started = 0;
-
-	if (!priv->pipeline)
-		return;
-
-	change = gst_element_set_state (GST_ELEMENT (priv->pipeline),
+	change = gst_element_set_state (GST_ELEMENT (pipeline),
 					GST_STATE_NULL);
 
-	change = gst_element_get_state (priv->pipeline,
+	change = gst_element_get_state (pipeline,
 					&state,
 					NULL,
 					GST_MSECOND);
@@ -201,7 +248,7 @@ brasero_metadata_destroy_pipeline (BraseroMetadata *self)
 	while (change == GST_STATE_CHANGE_ASYNC && state != GST_STATE_NULL) {
 		GstState pending;
 
-		change = gst_element_get_state (priv->pipeline,
+		change = gst_element_get_state (pipeline,
 						&state,
 						&pending,
 						GST_MSECOND);
@@ -211,6 +258,33 @@ brasero_metadata_destroy_pipeline (BraseroMetadata *self)
 
 	if (change == GST_STATE_CHANGE_FAILURE)
 		g_warning ("State change failure");
+
+}
+
+static void
+brasero_metadata_destroy_pipeline (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->started = 0;
+
+	if (priv->pipeline_mp3) {
+		brasero_metadata_stop_pipeline (priv->pipeline_mp3);
+		gst_object_unref (GST_OBJECT (priv->pipeline_mp3));
+		priv->pipeline_mp3 = NULL;
+	}
+
+	if (priv->watch_mp3) {
+		g_source_remove (priv->watch_mp3);
+		priv->watch_mp3 = 0;
+	}
+
+	if (!priv->pipeline)
+		return;
+
+	brasero_metadata_stop_pipeline (priv->pipeline);
 
 	if (priv->audio) {
 		gst_bin_remove (GST_BIN (priv->pipeline), priv->audio);
@@ -257,18 +331,13 @@ brasero_metadata_stop (BraseroMetadata *self)
 	g_mutex_lock (priv->mutex);
 
 	/* Destroy the pipeline as it has become un-re-usable */
-	if (priv->pipeline)
-		brasero_metadata_destroy_pipeline (self);
-
-	if (priv->progress_id) {
-		g_source_remove (priv->progress_id);
-		priv->progress_id = 0;
-	}
-
 	if (priv->watch) {
 		g_source_remove (priv->watch);
 		priv->watch = 0;
 	}
+
+	if (priv->pipeline)
+		brasero_metadata_destroy_pipeline (self);
 
 	/* That's automatic missing plugin installation */
 	if (priv->missing_plugins) {
@@ -332,41 +401,24 @@ brasero_metadata_completed (BraseroMetadata *self)
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
+	if (priv->error) {
+		BRASERO_BURN_LOG ("Operation completed with an error %s", priv->error->message);
+	}
+
 	/* we send a message only if we haven't got a loop (= async mode) */
 	g_object_ref (self);
 	g_signal_emit (G_OBJECT (self),
 		       brasero_metadata_signals [COMPLETED_SIGNAL],
 		       0,
 		       priv->error);
-	g_object_unref (self);
 
 	brasero_metadata_stop (self);
-	return TRUE;
-}
 
-static gint
-brasero_metadata_report_progress (BraseroMetadata *self)
-{
-	gdouble progress;
-	gint64 position = -1;
-	gint64 duration = -1;
-	BraseroMetadataPrivate *priv;
-	GstFormat format = GST_FORMAT_BYTES;
+	g_object_unref (self);
 
-	priv = BRASERO_METADATA_PRIVATE (self);
-	if (!gst_element_query_duration (priv->pipeline, &format, &duration))
-		return TRUE;
-
-	if (!gst_element_query_position (priv->pipeline, &format, &position))
-		return TRUE;
-
-	progress = position / duration;
-	g_signal_emit (self,
-		       brasero_metadata_signals [PROGRESS_CHANGED_SIGNAL],
-		       0,
-		       progress);
-
-	return TRUE;
+	/* Return FALSE on purpose here as it will stop the bus callback 
+	 * It's not whether we succeeded or not. */
+	return FALSE;
 }
 
 static gboolean
@@ -565,26 +617,47 @@ brasero_metadata_process_pending_tag_messages (BraseroMetadata *self)
 static gboolean
 brasero_metadata_success (BraseroMetadata *self)
 {
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Metadata retrieval completed for %s", priv->info->uri);
+
+	/* check if that's a seekable one */
+	brasero_metadata_is_seekable (self);
+
+	if (priv->silence) {
+		priv->silence->end = priv->info->len;
+		priv->info->silences = g_slist_append (priv->info->silences, priv->silence);
+		priv->silence = NULL;
+	}
+
+	/* before leaving, check if we need a snapshot */
+	if (priv->snapshot
+	&&  priv->video_linked
+	&& !priv->snapshot_started)
+		return brasero_metadata_thumbnail (self);
+
+	return brasero_metadata_completed (self);
+}
+
+static gboolean
+brasero_metadata_get_duration (BraseroMetadata *self,
+			       GstElement *pipeline,
+			       gboolean use_duration)
+{
 	GstFormat format = GST_FORMAT_TIME;
 	BraseroMetadataPrivate *priv;
 	gint64 duration = -1;
 
 	priv = BRASERO_METADATA_PRIVATE (self);
 
-	BRASERO_BURN_LOG ("Metadata retrieval successfully completed for %s", priv->info->uri);
-
-	/* find the type of the file */
-	brasero_metadata_get_mime_type (self);
-
-	/* get the size */
-	if (!BRASERO_METADATA_IS_FAST (priv->flags)
-	&&   brasero_metadata_is_mp3 (self))
-		gst_element_query_position (GST_ELEMENT (priv->sink),
+	if (!use_duration)
+		gst_element_query_position (GST_ELEMENT (pipeline),
 					    &format,
 					    &duration);
-
-	if (duration == -1)
-		gst_element_query_duration (GST_ELEMENT (priv->pipeline),
+	else
+		gst_element_query_duration (GST_ELEMENT (pipeline),
 					    &format,
 					    &duration);
 
@@ -606,26 +679,153 @@ brasero_metadata_success (BraseroMetadata *self)
 	BRASERO_BURN_LOG ("found duration %lli for %s", duration, priv->info->uri);
 
 	priv->info->len = duration;
+	return brasero_metadata_success (self);
+}
 
-	/* check if that's a seekable one */
-	brasero_metadata_is_seekable (self);
+/**
+ * This is to deal with mp3 more particularly the vbrs
+ **/
 
-	if (priv->silence) {
-		priv->silence->end = duration;
-		priv->info->silences = g_slist_append (priv->info->silences, priv->silence);
-		priv->silence = NULL;
+static gboolean
+brasero_metadata_mp3_bus_messages (GstBus *bus,
+				   GstMessage *msg,
+				   BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+	gchar *debug_string = NULL;
+	GError *error = NULL;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	switch (GST_MESSAGE_TYPE (msg)) {
+	case GST_MESSAGE_ERROR:
+		/* save the error message */
+		gst_message_parse_error (msg, &error, &debug_string);
+		BRASERO_BURN_LOG ("Gstreamer error - mp3 - (%s)", debug_string);
+		g_free (debug_string);
+		if (!priv->error && error)
+			priv->error = error;
+
+		brasero_metadata_completed (self);
+		return FALSE;
+
+	case GST_MESSAGE_EOS:
+		BRASERO_BURN_LOG ("End of stream reached - mp3 - for %s", priv->info->uri);
+		brasero_metadata_get_duration (self, priv->pipeline_mp3, FALSE);
+		return FALSE;
+
+	default:
+		break;
 	}
+
+	return TRUE;
+}
+
+static gboolean
+brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+	GstElement *source;
+	GstElement *parse;
+	GstElement *sink;
+	GstBus *bus;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	priv->pipeline_mp3 = gst_pipeline_new (NULL);
+
+	source = gst_element_make_from_uri (GST_URI_SRC,
+					    priv->info->uri,
+					    NULL);
+	if (!source) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   _("%s element could not be created"),
+					   "\"Source\"");
+
+		g_object_unref (priv->pipeline_mp3);
+		priv->pipeline_mp3 = NULL;
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline_mp3), source);
+
+	parse = gst_element_factory_make ("mp3parse", NULL);
+	if (!parse) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   _("%s element could not be created"),
+					   "\"mp3parse\"");
+
+		g_object_unref (priv->pipeline_mp3);
+		priv->pipeline_mp3 = NULL;
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline_mp3), parse);
+
+	sink = gst_element_factory_make ("fakesink", NULL);
+	if (!sink) {
+		priv->error = g_error_new (BRASERO_ERROR,
+					   BRASERO_ERROR_GENERAL,
+					   _("%s element could not be created"),
+					   "\"Fakesink\"");
+
+		g_object_unref (priv->pipeline_mp3);
+		priv->pipeline_mp3 = NULL;
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (priv->pipeline_mp3), sink);
+
+	/* Link */
+	if (!gst_element_link (source, parse)) {
+		g_object_unref (priv->pipeline_mp3);
+		priv->pipeline_mp3 = NULL;
+		return FALSE;
+	}
+
+	if (!gst_element_link (parse, sink)) {
+		g_object_unref (priv->pipeline_mp3);
+		priv->pipeline_mp3 = NULL;
+		return FALSE;
+	}
+
+	/* Bus */
+	bus = gst_pipeline_get_bus (GST_PIPELINE (priv->pipeline_mp3));
+	priv->watch_mp3 = gst_bus_add_watch (bus,
+					     (GstBusFunc) brasero_metadata_mp3_bus_messages,
+					     self);
+	gst_object_unref (bus);
+
+	gst_element_set_state (priv->pipeline_mp3, GST_STATE_PLAYING);
+	return TRUE;
+}
+
+static gboolean
+brasero_metadata_success_main (BraseroMetadata *self)
+{
+	BraseroMetadataPrivate *priv;
+
+	priv = BRASERO_METADATA_PRIVATE (self);
+
+	BRASERO_BURN_LOG ("Metadata retrieval successfully completed for %s", priv->info->uri);
+
+	/* find the type of the file */
+	brasero_metadata_get_mime_type (self);
 
 	/* empty the bus of any pending message */
 	brasero_metadata_process_pending_tag_messages (self);
 
-	/* before leaving, check if we need a snapshot */
-	if (priv->snapshot
-	&&  priv->video_linked
-	&& !priv->snapshot_started)
-		return brasero_metadata_thumbnail (self);
+	/* get the size */
+	if (brasero_metadata_is_mp3 (self)) {
+		if (!brasero_metadata_create_mp3_pipeline (self)) {
+			BRASERO_BURN_LOG ("Impossible to run mp3 specific pipeline");
+			return brasero_metadata_completed (self);
+		}
 
-	return brasero_metadata_completed (self);
+		/* Return FALSE here not because we failed but to stop the Bus callback */
+		return FALSE;
+	}
+
+	return brasero_metadata_get_duration (self, priv->pipeline, TRUE);
 }
 
 static void
@@ -883,10 +1083,8 @@ brasero_metadata_bus_messages (GstBus *bus,
 	priv = BRASERO_METADATA_PRIVATE (self);
 
 	switch (GST_MESSAGE_TYPE (msg)) {
-	case GST_MESSAGE_ASYNC_DONE:
-		BRASERO_BURN_LOG ("Async state change done for %s", priv->info->uri);
-		break;
 	case GST_MESSAGE_ELEMENT:
+		/* This is for snapshot function */
 		if (!strcmp (gst_structure_get_name (msg->structure), "preroll-pixbuf")
 		||  !strcmp (gst_structure_get_name (msg->structure), "pixbuf")) {
 			const GValue *value;
@@ -898,11 +1096,11 @@ brasero_metadata_bus_messages (GstBus *bus,
 			BRASERO_BURN_LOG ("Received pixbuf snapshot sink (%p) for %s", priv->info->snapshot, priv->info->uri);
 
 			/* Now we can stop */
-			brasero_metadata_completed (self);
-			return TRUE;
+			return brasero_metadata_completed (self);
 		}
+
 		/* here we just want to check if that's a missing codec */
-		else if ((priv->flags & BRASERO_METADATA_FLAG_MISSING)
+		if ((priv->flags & BRASERO_METADATA_FLAG_MISSING)
 		     &&   gst_is_missing_plugin_message (msg))
 			priv->missing_plugins = g_slist_prepend (priv->missing_plugins, gst_message_ref (msg));
 		else if (!strcmp (gst_structure_get_name (msg->structure), "level")
@@ -967,17 +1165,16 @@ brasero_metadata_bus_messages (GstBus *bus,
 		/* See if we have missing plugins */
 		if (priv->missing_plugins) {
 			if (!brasero_metadata_install_missing_plugins (self))
-				brasero_metadata_completed (self);
+				return brasero_metadata_completed (self);
 		}
 		else
-			brasero_metadata_completed (self);
+			return brasero_metadata_completed (self);
 
 		break;
 
 	case GST_MESSAGE_EOS:
 		BRASERO_BURN_LOG ("End of stream reached for %s", priv->info->uri);
-		brasero_metadata_success (self);
-		break;
+		return brasero_metadata_success_main (self);
 
 	case GST_MESSAGE_TAG:
 		gst_message_parse_tag (msg, &tags);
@@ -998,41 +1195,8 @@ brasero_metadata_bus_messages (GstBus *bus,
 		if (newstate != GST_STATE_PAUSED && newstate != GST_STATE_PLAYING)
 			break;
 
-		if ((priv->flags & BRASERO_METADATA_FLAG_SILENCES)
-		||   brasero_metadata_is_mp3 (self)) {
-			gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
-
-			if (BRASERO_METADATA_IS_FAST (priv->flags)
-			&& !priv->moved_forward) {
-				/* we try to go forward. This allows us to avoid
-				 * reading the whole file till the end. The byte
-				 * format is really important here as time
-				 * format needs calculation and is dead slow. 
-				 * The number of bytes is important to reach 
-				 * the end. */
-				gst_element_seek (priv->pipeline,
-						  1.0,
-						  GST_FORMAT_BYTES,
-						  GST_SEEK_FLAG_FLUSH,
-						  GST_SEEK_TYPE_SET,
-						  52428800,
-						  GST_SEEK_TYPE_NONE,
-						  GST_CLOCK_TIME_NONE);
-				priv->moved_forward = 1;
-			}
-
-			if (!priv->progress_id)
-				priv->progress_id = g_timeout_add (500,
-								   (GSourceFunc) brasero_metadata_report_progress,
-								   self);
-
-			break;
-		}
-
-		BRASERO_BURN_LOG ("State changed to PAUSED or PLAYING");
-
 		if (!priv->snapshot_started)
-			brasero_metadata_success (self);
+			return brasero_metadata_success_main (self);
 
 		break;
 
@@ -1399,11 +1563,6 @@ brasero_metadata_set_new_uri (BraseroMetadata *self,
 		priv->silence = NULL;
 	}
 
-	if (priv->progress_id) {
-		g_source_remove (priv->progress_id);
-		priv->progress_id = 0;
-	}
-
 	priv->info = g_new0 (BraseroMetadataInfo, 1);
 	priv->info->uri = g_strdup (uri);
 
@@ -1618,61 +1777,6 @@ brasero_metadata_get_flags (BraseroMetadata *self)
 	return priv->flags;
 }
 
-void
-brasero_metadata_info_copy (BraseroMetadataInfo *dest,
-			    BraseroMetadataInfo *src)
-{
-	GSList *iter;
-
-	if (!dest || !src)
-		return;
-
-	dest->isrc = src->isrc;
-	dest->len = src->len;
-	dest->is_seekable = src->is_seekable;
-	dest->has_audio = src->has_audio;
-	dest->has_video = src->has_video;
-
-	if (src->uri)
-		dest->uri = g_strdup (src->uri);
-
-	if (src->type)
-		dest->type = g_strdup (src->type);
-
-	if (src->title)
-		dest->title = g_strdup (src->title);
-
-	if (src->artist)
-		dest->artist = g_strdup (src->artist);
-
-	if (src->album)
-		dest->album = g_strdup (src->album);
-
-	if (src->genre)
-		dest->genre = g_strdup (src->genre);
-
-	if (src->musicbrainz_id)
-		dest->musicbrainz_id = g_strdup (src->musicbrainz_id);
-
-	if (src->snapshot) {
-		dest->snapshot = src->snapshot;
-		g_object_ref (dest->snapshot);
-	}
-
-	for (iter = src->silences; iter; iter = iter->next) {
-		BraseroMetadataSilence *silence, *copy;
-
-		silence = iter->data;
-
-		copy = g_new0 (BraseroMetadataSilence, 1);
-		copy->start = silence->start;
-		copy->end = silence->end;
-
-		dest->silences = g_slist_append (dest->silences, copy);
-	}
-
-}
-
 gboolean
 brasero_metadata_get_result (BraseroMetadata *self,
 			     BraseroMetadataInfo *info,
@@ -1723,11 +1827,6 @@ brasero_metadata_finalize (GObject *object)
 	if (priv->silence) {
 		g_free (priv->silence);
 		priv->silence = NULL;
-	}
-
-	if (priv->progress_id) {
-		g_source_remove (priv->progress_id);
-		priv->progress_id = 0;
 	}
 
 	if (priv->error) {
@@ -1843,17 +1942,6 @@ brasero_metadata_class_init (BraseroMetadataClass *klass)
 			  G_TYPE_NONE,
 			  1,
 			  G_TYPE_POINTER);
-	brasero_metadata_signals[PROGRESS_CHANGED_SIGNAL] =
-	    g_signal_new ("progress",
-			  G_TYPE_FROM_CLASS (klass),
-			  G_SIGNAL_RUN_LAST,
-			  G_STRUCT_OFFSET (BraseroMetadataClass,
-					   progress),
-			  NULL, NULL,
-			  g_cclosure_marshal_VOID__DOUBLE,
-			  G_TYPE_NONE,
-			  1,
-			  G_TYPE_DOUBLE);
 	g_object_class_install_property (object_class,
 					 PROP_URI,
 					 g_param_spec_string ("uri",

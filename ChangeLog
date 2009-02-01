@@ -1,5 +1,26 @@
 2009-02-01  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #561626 – loading file info slow for audio projects
+	For vbr mp3s we used to read/decode them till the end to get a very
+	precise length. Now, we just read/parse the frame headers till the end
+	which saves a lot of time and CPU.
+
+	* src/brasero-io.c (brasero_io_get_file_count_process_playlist),
+	(brasero_io_load_directory_playlist):
+	* src/brasero-metadata.c (brasero_metadata_info_copy),
+	(brasero_metadata_stop_pipeline),
+	(brasero_metadata_destroy_pipeline), (brasero_metadata_stop),
+	(brasero_metadata_completed), (brasero_metadata_success),
+	(brasero_metadata_get_duration),
+	(brasero_metadata_mp3_bus_messages),
+	(brasero_metadata_create_mp3_pipeline),
+	(brasero_metadata_success_main), (brasero_metadata_bus_messages),
+	(brasero_metadata_set_new_uri), (brasero_metadata_finalize),
+	(brasero_metadata_class_init):
+	* src/brasero-metadata.h:
+
+2009-02-01  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix crash with audio split dialog
 	+ small memleak
 
