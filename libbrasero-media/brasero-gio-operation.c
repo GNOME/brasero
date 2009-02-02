@@ -137,7 +137,7 @@ brasero_gio_operation_wait_for_operation_end (BraseroGioOperation *operation,
 	}
 
 	if (operation->error) {
-		BRASERO_MEDIA_LOG ("Medium operation finished with an error %s"
+		BRASERO_MEDIA_LOG ("Medium operation finished with an error %s",
 				   operation->error->message);
 
 		if (operation->error->code == G_IO_ERROR_FAILED_HANDLED) {
