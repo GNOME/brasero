@@ -137,7 +137,18 @@ brasero_gio_operation_wait_for_operation_end (BraseroGioOperation *operation,
 	}
 
 	if (operation->error) {
-		if (error)
+		BRASERO_MEDIA_LOG ("Medium operation finished with an error %s"
+				   operation->error->message);
+
+		if (operation->error->code == G_IO_ERROR_FAILED_HANDLED) {
+			BRASERO_MEDIA_LOG ("Error already handled and displayed by GIO");
+
+			/* means we shouldn't display any error message since 
+			 * that was already done */
+			g_error_free (operation->error);
+			operation->error = NULL;
+		}
+		else if (error)
 			g_propagate_error (error, operation->error);
 		else
 			g_error_free (operation->error);
@@ -174,13 +185,7 @@ brasero_gio_operation_umount_finish (GObject *source,
 	BRASERO_MEDIA_LOG ("Umount operation completed (result = %d)", op->result);
 
 	if (op->error) {
-		if (op->error->code == G_IO_ERROR_FAILED_HANDLED) {
-			/* means we shouldn't display any error message since 
-			 * that was already done */
-			g_error_free (op->error);
-			op->error = NULL;
-		}
-		else if (op->error->code == G_IO_ERROR_NOT_MOUNTED) {
+		if (op->error->code == G_IO_ERROR_NOT_MOUNTED) {
 			/* That can happen sometimes */
 			g_error_free (op->error);
 			op->error = NULL;
@@ -272,14 +277,7 @@ brasero_gio_operation_mount_finish (GObject *source,
 					    &op->error);
 
 	if (op->error) {
-		if (op->error->code == G_IO_ERROR_FAILED_HANDLED) {
-			/* means we shouldn't display any error message since 
-			 * that was already done */
-			g_error_free (op->error);
-			op->error = NULL;
-			op->result = TRUE;
-		}
-		else if (op->error->code == G_IO_ERROR_ALREADY_MOUNTED) {
+		if (op->error->code == G_IO_ERROR_ALREADY_MOUNTED) {
 			g_error_free (op->error);
 			op->error = NULL;
 			op->result = TRUE;
@@ -370,16 +368,8 @@ brasero_gio_operation_eject_finish (GObject *source,
 							   result,
 							   &operation->error);
 
-	if (operation->error) {
-		if (operation->error->code == G_IO_ERROR_FAILED_HANDLED) {
-			/* means we shouldn't display any error message since 
-			 * that was already done */
-			g_error_free (operation->error);
-			operation->error = NULL;
-		}
-
+	if (operation->error)
 		brasero_gio_operation_end (operation);
-	}
 	else if (!operation->result)
 		brasero_gio_operation_end (operation);
 }

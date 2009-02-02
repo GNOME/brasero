@@ -195,6 +195,7 @@ brasero_volume_get_mount_point (BraseroVolume *volume,
 	else {
 		local_path = g_file_get_path (root);
 		g_object_unref (root);
+		BRASERO_MEDIA_LOG ("Mount point is %s", local_path);
 	}
 
 	return local_path;
