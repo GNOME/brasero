@@ -1,5 +1,10 @@
 2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	* src/brasero-burn-options.c (brasero_burn_options_add_source),
+	(brasero_burn_options_init): Don't leak the message area (create it on demand)
+
+2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	* src/eggtreemultidnd.c (egg_tree_multi_drag_button_press_event): Don't leak the selected GtkTreePath
 
 2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>

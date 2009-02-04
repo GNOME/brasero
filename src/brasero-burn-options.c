@@ -79,6 +79,8 @@ brasero_burn_options_add_source (BraseroBurnOptions *self,
 
 	priv = BRASERO_BURN_OPTIONS_PRIVATE (self);
 
+	/* create message queue for input */
+	priv->message_input = brasero_notify_new ();
 	list = g_slist_prepend (list, priv->message_input);
 
 	va_start (vlist, title);
@@ -403,9 +405,6 @@ brasero_burn_options_init (BraseroBurnOptions *object)
 			    FALSE,
 			    TRUE,
 			    0);
-
-	/* create message queue for input */
-	priv->message_input = brasero_notify_new ();
 
 	/* Medium selection box */
 	selection = gtk_hbox_new (FALSE, 12);
