@@ -514,13 +514,14 @@ static BraseroMediumMonitor *default_monitor = NULL;
 void
 brasero_media_library_start (void)
 {
-	if (default_monitor)
+	if (default_monitor) {
+		g_object_ref (default_monitor);
 		return;
+	}
 
 	/* Initialize i18n */
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
 
 	/* Initialize icon-theme */
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
