@@ -776,7 +776,9 @@ brasero_split_dialog_cut_clicked_cb (GtkButton *button,
 			return;
 
 		gtk_list_store_clear (priv->model);
-		for (start = step; start < length; start += step)
+
+		parts --;
+		for (start = step; start < length && parts; start += step, parts --)
 			brasero_split_dialog_cut (self, start, FALSE);
 
 		return;
