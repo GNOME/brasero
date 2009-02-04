@@ -1,5 +1,10 @@
 2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	* src/plugins/cdrkit/burn-wodim.c (brasero_wodim_write_inf),
+	(brasero_wodim_write_infs): Don't leak album and string
+
+2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	* src/plugins/cdrtools/burn-cdrecord.c
 	(brasero_cdrecord_write_inf), (brasero_cdrecord_write_infs): Don't leak album and string
 

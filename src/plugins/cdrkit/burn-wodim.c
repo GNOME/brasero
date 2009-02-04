@@ -623,6 +623,8 @@ brasero_wodim_write_inf (BraseroWodim *wodim,
 
 	size = strlen (string);
 	b_written = write (fd, string, size);
+	g_free (string);
+
 	if (b_written != size)
 		goto error;
 
@@ -699,6 +701,7 @@ brasero_wodim_write_infs (BraseroWodim *wodim,
 		start += BRASERO_DURATION_TO_SECTORS (length);
 	}
 
+	g_free (album);
 	g_free (tmpdir);
 
 	return BRASERO_BURN_OK;
