@@ -2124,7 +2124,7 @@ brasero_audio_disc_set_session_contents (BraseroDisc *disc,
 		/* It's good practice to unref the track afterwards as we don't
 		 * need it anymore. BraseroBurnSession refs it. */
 		brasero_track_unref (track);
-
+		g_free (uri);
 	} while (gtk_tree_model_iter_next (model, &iter));
 
 	return BRASERO_DISC_OK;

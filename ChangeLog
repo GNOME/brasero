@@ -1,5 +1,10 @@
 2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	* src/brasero-audio-disc.c
+	(brasero_audio_disc_set_session_contents): Don't leak the URI
+
+2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	* src/brasero-burn-options.c (brasero_burn_options_add_source),
 	(brasero_burn_options_init): Don't leak the message area (create it on demand)
 
