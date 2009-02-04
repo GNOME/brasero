@@ -610,6 +610,7 @@ brasero_cdrecord_write_inf (BraseroCDRecord *cdrecord,
 
 	size = strlen (string);
 	b_written = write (fd, string, size);
+	g_free (string);
 	if (b_written != size)
 		goto error;
 
@@ -683,6 +684,7 @@ brasero_cdrecord_write_infs (BraseroCDRecord *cdrecord,
 		start += BRASERO_DURATION_TO_SECTORS (length);
 	}
 
+	g_free (album);
 	g_free (tmpdir);
 
 	return BRASERO_BURN_OK;
