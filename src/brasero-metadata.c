@@ -776,13 +776,7 @@ brasero_metadata_create_mp3_pipeline (BraseroMetadata *self)
 	gst_bin_add (GST_BIN (priv->pipeline_mp3), sink);
 
 	/* Link */
-	if (!gst_element_link (source, parse)) {
-		g_object_unref (priv->pipeline_mp3);
-		priv->pipeline_mp3 = NULL;
-		return FALSE;
-	}
-
-	if (!gst_element_link (parse, sink)) {
+	if (!gst_element_link_many (source, parse, sink, NULL)) {
 		g_object_unref (priv->pipeline_mp3);
 		priv->pipeline_mp3 = NULL;
 		return FALSE;
