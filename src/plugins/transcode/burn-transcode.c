@@ -79,6 +79,7 @@ struct BraseroTranscodePrivate {
 	gint64 segment_end;
 
 	guint set_active_state:1;
+	guint mp3_size_pipeline:1;
 };
 typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
 
@@ -87,7 +88,9 @@ typedef struct BraseroTranscodePrivate BraseroTranscodePrivate;
 static GObjectClass *parent_class = NULL;
 
 static gboolean
-brasero_transcode_buffer_handler (GstPad *pad, GstBuffer *buffer, BraseroTranscode *self)
+brasero_transcode_buffer_handler (GstPad *pad,
+				  GstBuffer *buffer,
+				  BraseroTranscode *self)
 {
 	BraseroTranscodePrivate *priv;
 	GstPad *peer;
@@ -124,12 +127,11 @@ brasero_transcode_buffer_handler (GstPad *pad, GstBuffer *buffer, BraseroTransco
 		peer = gst_pad_get_peer (pad);
 		gst_pad_push (peer, new_buffer);
 
+		priv->size += size - data_size;
+
 		/* post an EOS event to stop pipeline */
 		gst_pad_push_event (peer, gst_event_new_eos ());
-		
 		gst_object_unref (peer);
-
-		priv->size += size - data_size;
 		return FALSE;
 	}
 
@@ -155,13 +157,15 @@ brasero_transcode_buffer_handler (GstPad *pad, GstBuffer *buffer, BraseroTransco
 			data_size);
 		GST_BUFFER_TIMESTAMP (new_buffer) = GST_BUFFER_TIMESTAMP (buffer) + data_size;
 
+		/* move forward by the size of bytes we dropped */
+		priv->size += size - data_size;
+
 		/* this is recursive the following calls ourselves 
 		 * BEFORE we finish */
 		peer = gst_pad_get_peer (pad);
 		gst_pad_push (peer, new_buffer);
 		gst_object_unref (peer);
 
-		priv->size += size - data_size;
 		return FALSE;
 	}
 
@@ -231,7 +235,7 @@ brasero_transcode_send_volume_event (BraseroTranscode *transcode)
 	if (!gst_element_send_event (priv->convert, event))
 		BRASERO_JOB_LOG (transcode, "Couldn't send tags to rgvolume");
 
-	BRASERO_JOB_LOG (transcode, "Set %lf %lf", track_gain, track_peak);
+	BRASERO_JOB_LOG (transcode, "Set volume level %lf %lf", track_gain, track_peak);
 }
 
 static GstElement *
@@ -257,11 +261,69 @@ brasero_transcode_create_volume (BraseroTranscode *transcode,
 }
 
 static gboolean
+brasero_transcode_create_pipeline_size_mp3 (BraseroTranscode *transcode,
+					    GstElement *pipeline,
+					    GstElement *source,				       GError **error)
+{
+	BraseroTranscodePrivate *priv;
+	GstElement *parse;
+	GstElement *sink;
+
+	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
+
+	BRASERO_JOB_LOG (transcode, "Creating specific pipeline for MP3s");
+
+	parse = gst_element_factory_make ("mp3parse", NULL);
+	if (!parse) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Mp3parse\"");
+		g_object_unref (pipeline);
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (pipeline), parse);
+
+	sink = gst_element_factory_make ("fakesink", NULL);
+	if (!sink) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("%s element could not be created"),
+			     "\"Fakesink\"");
+		g_object_unref (pipeline);
+		return FALSE;
+	}
+	gst_bin_add (GST_BIN (pipeline), sink);
+
+	/* Link */
+	if (!gst_element_link_many (source, parse, sink, NULL)) {
+		g_set_error (error,
+			     BRASERO_BURN_ERROR,
+			     BRASERO_BURN_ERROR_GENERAL,
+			     _("Impossible to link plugin pads"));
+		BRASERO_JOB_LOG (transcode, "Impossible to link elements");
+		g_object_unref (pipeline);
+		return FALSE;
+	}
+
+	priv->convert = NULL;
+
+	priv->sink = sink;
+	priv->source = source;
+	priv->pipeline = pipeline;
+
+	/* Get it going */
+	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
+	return TRUE;
+}
+
+static gboolean
 brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 				   GError **error)
 {
 	gchar *uri;
-	GstPad *sinkpad;
 	GstElement *decode;
 	GstElement *source;
 	GstBus *bus = NULL;
@@ -294,7 +356,7 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	}
 
 	/* create three types of pipeline according to the needs: (possibly adding grvolume)
-	 * - filesrc ! decodebin ! audioconvert ! fakesink (find size)
+	 * - filesrc ! decodebin ! audioconvert ! fakesink (find size) and filesrc!mp3parse!fakesink for mp3s
 	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw-int,rate=44100,width=16,depth=16,endianness=4321,signed ! filesink
 	 * - filesrc ! decodebin ! audioresample ! audioconvert ! audio/x-raw-int,rate=44100,width=16,depth=16,endianness=4321,signed ! fdsink
 	 */
@@ -310,6 +372,8 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	uri = brasero_track_get_audio_source (track, TRUE);
 	source = gst_element_make_from_uri (GST_URI_SRC, uri, NULL);
+	g_free (uri);
+
 	if (source == NULL) {
 		g_set_error (error,
 			     BRASERO_BURN_ERROR,
@@ -329,6 +393,9 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 	switch (action) {
 	case BRASERO_JOB_ACTION_SIZE:
+		if (priv->mp3_size_pipeline)
+			return brasero_transcode_create_pipeline_size_mp3 (transcode, pipeline, source, error);
+
 		sink = gst_element_factory_make ("fakesink", NULL);
 		break;
 
@@ -435,9 +502,16 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 		goto error;
 	}
 	gst_bin_add (GST_BIN (pipeline), decode);
+
+	priv->sink = sink;
 	priv->decode = decode;
+	priv->source = source;
+	priv->convert = convert;
+	priv->pipeline = pipeline;
 
 	if (action == BRASERO_JOB_ACTION_IMAGE) {
+		GstPad *sinkpad;
+
 		gst_element_link_many (source, decode, NULL);
 		priv->link = resample;
 		g_signal_connect (G_OBJECT (decode),
@@ -460,6 +534,16 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 					       filter,
 					       sink,
 					       NULL);
+
+		/* This is an ugly workaround for the lack of accuracy with
+		 * gstreamer. Yet this is unfortunately a necessary evil. */
+		priv->pos = 0;
+		priv->size = 0;
+		sinkpad = gst_element_get_pad (priv->sink, "sink");
+		priv->probe = gst_pad_add_buffer_probe (sinkpad,
+							G_CALLBACK (brasero_transcode_buffer_handler),
+							transcode);
+		gst_object_unref (sinkpad);
 	}
 	else {
 		gst_element_link (source, decode);
@@ -471,21 +555,6 @@ brasero_transcode_create_pipeline (BraseroTranscode *transcode,
 				  G_CALLBACK (brasero_transcode_new_decoded_pad_cb),
 				  transcode);
 	}
-
-	priv->sink = sink;
-	priv->source = source;
-	priv->convert = convert;
-	priv->pipeline = pipeline;
-
-	/* This is an ugly workaround for the lack of accuracy with gstreamer.
-	 * Yet this is unfortunately a necessary evil. */
-	priv->pos = 0;
-	priv->size = 0;
-	sinkpad = gst_element_get_pad (priv->sink, "sink");
-	priv->probe = gst_pad_add_buffer_probe (sinkpad,
-						G_CALLBACK (brasero_transcode_buffer_handler),
-						transcode);
-	gst_object_unref (sinkpad);
 
 	gst_element_set_state (priv->pipeline, GST_STATE_PLAYING);
 	return TRUE;
@@ -730,7 +799,6 @@ brasero_transcode_start (BraseroJob *job,
 		 * carry on with a lengthy get size and the library will do it
 		 * itself. */
 		brasero_job_get_current_track (job, &track);
-
 		if (brasero_track_get_audio_end (track) > 0)
 			return BRASERO_BURN_NOT_SUPPORTED;
 
@@ -745,7 +813,8 @@ brasero_transcode_start (BraseroJob *job,
 		brasero_job_start_progress (job, FALSE);
 		return BRASERO_BURN_OK;
 	}
-	else if (action == BRASERO_JOB_ACTION_IMAGE) {
+
+	if (action == BRASERO_JOB_ACTION_IMAGE) {
 		/* Look for a sibling to avoid transcoding twice. In this case
 		 * though start and end of this track must be inside start and
 		 * end of the previous track. Of course if we are piping that
@@ -777,7 +846,9 @@ brasero_transcode_stop_pipeline (BraseroTranscode *transcode)
 		return;
 
 	sinkpad = gst_element_get_pad (priv->sink, "sink");
-	gst_pad_remove_buffer_probe (sinkpad, priv->probe);
+	if (priv->probe)
+		gst_pad_remove_buffer_probe (sinkpad, priv->probe);
+
 	gst_object_unref (sinkpad);
 
 	gst_element_set_state (priv->pipeline, GST_STATE_NULL);
@@ -799,6 +870,8 @@ brasero_transcode_stop (BraseroJob *job,
 	BraseroTranscodePrivate *priv;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (job);
+
+	priv->mp3_size_pipeline = 0;
 
 	if (priv->pad_id) {
 		g_source_remove (priv->pad_id);
@@ -1066,9 +1139,7 @@ brasero_transcode_is_mp3 (BraseroTranscode *transcode)
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
 	/* find the type of the file */
-	typefind = gst_bin_get_by_name (GST_BIN (priv->decode),
-					"typefind");
-
+	typefind = gst_bin_get_by_name (GST_BIN (priv->decode), "typefind");
 	g_object_get (typefind, "caps", &caps, NULL);
 	if (!caps) {
 		gst_object_unref (typefind);
@@ -1092,51 +1163,32 @@ brasero_transcode_is_mp3 (BraseroTranscode *transcode)
 }
 
 static gint64
-brasero_transcode_get_position (BraseroTranscode *transcode)
-{
-	gint64 position;
-	GstElement *element;
-	BraseroTranscodePrivate *priv;
-	GstFormat format = GST_FORMAT_TIME;
-
-	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
-	if (priv->convert)
-		element = priv->convert;
-	else
-		element = priv->pipeline;
-
-	gst_element_query_position (GST_ELEMENT (element),
-				    &format,
-				    &position);
-
-	return position;
-}
-
-static gint64
 brasero_transcode_get_duration (BraseroTranscode *transcode)
 {
 	gint64 duration = -1;
-	BraseroJobAction action;
 	BraseroTranscodePrivate *priv;
 	GstFormat format = GST_FORMAT_TIME;
 
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
-	/* this is the most reliable way to get the duration for mp3 read them
-	 * till the end and get the position. Convert is then needed. */
-	brasero_job_get_action (BRASERO_JOB (transcode), &action);
-	if (action == BRASERO_JOB_ACTION_IMAGE
-	&&  brasero_transcode_is_mp3 (transcode))
-		duration = brasero_transcode_get_position (transcode);
+	/* This part is specific to MP3s */
+	if (priv->mp3_size_pipeline) {
+		/* This is the most reliable way to get the duration for mp3
+		 * read them till the end and get the position. */
+		gst_element_query_position (priv->pipeline,
+					    &format,
+					    &duration);
+	}
 
-	if (duration == -1)
-		gst_element_query_duration (GST_ELEMENT (priv->pipeline),
+	/* This is for any sort of files */
+	if (duration == -1 || duration == 0)
+		gst_element_query_duration (priv->pipeline,
 					    &format,
 					    &duration);
 
 	BRASERO_JOB_LOG (transcode, "got duration %"G_GINT64_FORMAT, duration);
 
-	if (duration == -1)	
+	if (duration == -1 || duration == 0)	
 	    brasero_job_error (BRASERO_JOB (transcode),
 			       g_error_new (BRASERO_BURN_ERROR,
 					    BRASERO_BURN_ERROR_GENERAL,
@@ -1203,6 +1255,8 @@ foreach_tag (const GstTagList *list,
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	info = brasero_track_get_audio_info (track);
 
+	BRASERO_JOB_LOG (transcode, "Retrieving tags");
+
 	if (info && !strcmp (tag, GST_TAG_TITLE)) {
 		if (!info->title)
 			gst_tag_list_get_string (list, tag, &(info->title));
@@ -1228,7 +1282,8 @@ foreach_tag (const GstTagList *list,
 	}
 }
 
-static BraseroBurnResult
+/* NOTE: the return value is whether or not we should stop the bus callback */
+static gboolean
 brasero_transcode_active_state (BraseroTranscode *transcode)
 {
 	BraseroTranscodePrivate *priv;
@@ -1239,31 +1294,51 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 	priv = BRASERO_TRANSCODE_PRIVATE (transcode);
 
 	if (priv->set_active_state)
-		return BRASERO_BURN_OK;
+		return TRUE;
+
+	priv->set_active_state = TRUE;
 
 	brasero_job_get_current_track (BRASERO_JOB (transcode), &track);
 	uri = brasero_track_get_audio_source (track, FALSE);
 
-	priv->set_active_state = 1;
 	brasero_job_get_action (BRASERO_JOB (transcode), &action);
 	if (action == BRASERO_JOB_ACTION_SIZE) {
-		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
-		string = g_strdup_printf (_("Analysing \"%s\""), name);
-		g_free (name);
-	
-		brasero_job_set_current_action (BRASERO_JOB (transcode),
-						BRASERO_BURN_ACTION_ANALYSING,
-						string,
-						TRUE);
-		g_free (string);
-
 		BRASERO_JOB_LOG (transcode,
 				 "Analysing Track %s",
 				 uri);
 
-		brasero_job_start_progress (BRASERO_JOB (transcode), FALSE);
-		if (!brasero_transcode_is_mp3 (transcode))
-			return brasero_transcode_song_end_reached (transcode);
+		if (priv->mp3_size_pipeline) {
+			/* Run the pipeline till the end */
+			BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
+			string = g_strdup_printf (_("Analysing \"%s\""), name);
+			g_free (name);
+		
+			brasero_job_set_current_action (BRASERO_JOB (transcode),
+							BRASERO_BURN_ACTION_ANALYSING,
+							string,
+							TRUE);
+			g_free (string);
+
+			brasero_job_start_progress (BRASERO_JOB (transcode), FALSE);
+			g_free (uri);
+			return TRUE;
+		}
+
+		if (brasero_transcode_is_mp3 (transcode)) {
+			GError *error = NULL;
+
+			/* Rebuild another pipeline which is specific to MP3s. */
+			priv->mp3_size_pipeline = TRUE;
+			brasero_transcode_stop_pipeline (transcode);
+
+			if (!brasero_transcode_create_pipeline (transcode, &error))
+				brasero_job_error (BRASERO_JOB (transcode), error);
+		}
+		else
+			brasero_transcode_song_end_reached (transcode);
+
+		g_free (uri);
+		return FALSE;
 	}
 	else {
 		BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
@@ -1293,7 +1368,7 @@ brasero_transcode_active_state (BraseroTranscode *transcode)
 	}
 
 	g_free (uri);
-	return BRASERO_BURN_OK;
+	return TRUE;
 }
 
 static gboolean
@@ -1340,19 +1415,8 @@ brasero_transcode_bus_messages (GstBus *bus,
 		if (result != GST_STATE_CHANGE_SUCCESS)
 			return TRUE;
 
-		if (state == GST_STATE_PLAYING) {
-			BraseroJobAction action;
-
-			brasero_job_get_action (BRASERO_JOB (transcode), &action);
-			if (action == BRASERO_JOB_ACTION_SIZE) {
-				if (!brasero_transcode_is_mp3 (transcode)) {
-					brasero_transcode_song_end_reached (transcode);
-					return TRUE;
-				}
-			}
-
-			brasero_transcode_active_state (transcode);
-		}
+		if (state == GST_STATE_PLAYING)
+			return brasero_transcode_active_state (transcode);
 
 		break;
 	}
