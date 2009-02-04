@@ -244,7 +244,7 @@ brasero_rename_type_changed (GtkComboBox *combo,
 	BraseroRenamePrivate *priv;
 
 	priv = BRASERO_RENAME_PRIVATE (self);
-	if (!gtk_combo_box_get_active (combo)) {
+	if (gtk_combo_box_get_active (combo) == -1) {
 		gtk_widget_hide (priv->notebook);
 		return;
 	}
