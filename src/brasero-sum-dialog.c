@@ -165,7 +165,6 @@ static gboolean
 brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 				       const gchar **wrong_sums)
 {
-	gchar *string;
 	GtkWidget *tree;
 	GtkWidget *scroll;
 	GtkWidget *button;
@@ -175,16 +174,13 @@ brasero_sum_dialog_corruption_warning (BraseroSumDialog *self,
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 
-	string = g_strdup_printf ("<b><big>%s</big></b>",
-				  _("The following files appear to be corrupted:"));
-
 	message = gtk_message_dialog_new_with_markup (GTK_WINDOW (self),
 						      GTK_DIALOG_MODAL |
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_MESSAGE_ERROR,
 						      GTK_BUTTONS_NONE,
-						      string);
-	g_free (string);
+						      "<b><big>%s</big></b>",
+						      _("The following files appear to be corrupted:"));
 
 	gtk_window_set_resizable (GTK_WINDOW (message), TRUE);
 	gtk_widget_set_size_request (GTK_WIDGET (message), 440, 300);

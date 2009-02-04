@@ -1,5 +1,13 @@
 2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix some build warnings
+
+	* src/brasero-sum-dialog.c (brasero_sum_dialog_corruption_warning):
+	* src/burn-job.c (_round_speed), (brasero_job_get_speed),
+	(brasero_job_get_max_speed):
+
+2009-02-04  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #570227 – Slicing tracks in audio project is not working correctly
 
 	* src/brasero-split-dialog.c (brasero_split_dialog_cut_clicked_cb):

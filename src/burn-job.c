@@ -34,7 +34,6 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <math.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -53,9 +52,6 @@
 #include "brasero-marshal.h"
 #include "brasero-drive.h"
 #include "brasero-medium.h"
-
-/* For nearbyintf ()*/
-#define _ISOC99_SOURCE
 
 typedef struct _BraseroJobOutput {
 	gchar *image;
@@ -1623,6 +1619,19 @@ brasero_job_get_rate (BraseroJob *self, guint64 *rate)
 	return BRASERO_BURN_OK;
 }
 
+static int
+_round_speed (float number)
+{
+	int retval = (gint) number;
+
+	/* NOTE: number must always be positive */
+	number -= (float) retval;
+	if (number >= 0.5)
+		return retval + 1;
+
+	return retval;
+}
+
 BraseroBurnResult
 brasero_job_get_speed (BraseroJob *self, guint *speed)
 {
@@ -1641,11 +1650,11 @@ brasero_job_get_speed (BraseroJob *self, guint *speed)
 
 	media = brasero_burn_session_get_dest_media (session);
 	if (media & BRASERO_MEDIUM_DVD)
-		*speed = nearbyint (BRASERO_RATE_TO_SPEED_DVD (rate));
+		*speed = _round_speed (BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_BD)
-		*speed = nearbyint (BRASERO_RATE_TO_SPEED_BD (rate));
+		*speed = _round_speed (BRASERO_RATE_TO_SPEED_BD (rate));
 	else
-		*speed = nearbyint (BRASERO_RATE_TO_SPEED_CD (rate));
+		*speed = _round_speed (BRASERO_RATE_TO_SPEED_CD (rate));
 
 	return BRASERO_BURN_OK;
 }
@@ -1695,11 +1704,11 @@ brasero_job_get_max_speed (BraseroJob *self, guint *speed)
 	rate = brasero_medium_get_max_write_speed (medium);
 	media = brasero_medium_get_status (medium);
 	if (media & BRASERO_MEDIUM_DVD)
-		*speed = nearbyint (BRASERO_RATE_TO_SPEED_DVD (rate));
+		*speed = _round_speed (BRASERO_RATE_TO_SPEED_DVD (rate));
 	else if (media & BRASERO_MEDIUM_BD)
-		*speed = nearbyint (BRASERO_RATE_TO_SPEED_BD (rate));
+		*speed = _round_speed (BRASERO_RATE_TO_SPEED_BD (rate));
 	else
-		*speed = nearbyint (BRASERO_RATE_TO_SPEED_CD (rate));
+		*speed = _round_speed (BRASERO_RATE_TO_SPEED_CD (rate));
 
 	return BRASERO_BURN_OK;
 }
