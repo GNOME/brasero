@@ -389,8 +389,11 @@ egg_tree_multi_drag_button_press_event (GtkWidget      *widget,
       widget_klass = GTK_WIDGET_GET_CLASS (tree_view);
       widget_klass->button_press_event (widget, event);
 
-      for (iter = selected; iter; iter = iter->next)
+      for (iter = selected; iter; iter = iter->next) {
         gtk_tree_selection_select_path (selection, iter->data);
+	gtk_tree_path_free (iter->data);
+      }
+      g_list_free (selected);
 
       priv_data->pressed_button = event->button;
       priv_data->x = event->x;
