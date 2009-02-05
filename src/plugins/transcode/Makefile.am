@@ -17,19 +17,19 @@ transcodedir = $(libdir)/brasero/plugins
 transcode_LTLIBRARIES = libbrasero-transcode.la
 
 libbrasero_transcode_la_SOURCES = burn-transcode.c burn-transcode.h burn-normalize.h
-libbrasero_transcode_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
+libbrasero_transcode_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS)
 libbrasero_transcode_la_LDFLAGS = -module -avoid-version
 
 normalizedir = $(libdir)/brasero/plugins
 normalize_LTLIBRARIES = libbrasero-normalize.la
 
 libbrasero_normalize_la_SOURCES = burn-normalize.c burn-normalize.h
-libbrasero_normalize_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
+libbrasero_normalize_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS)
 libbrasero_normalize_la_LDFLAGS = -module -avoid-version
 
 vobdir = $(libdir)/brasero/plugins
 vob_LTLIBRARIES = libbrasero-vob.la
 
 libbrasero_vob_la_SOURCES = burn-vob.c burn-vob.h
-libbrasero_vob_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_CFLAGS)
+libbrasero_vob_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GSTREAMER_LIBS)
 libbrasero_vob_la_LDFLAGS = -module -avoid-version

@@ -18,7 +18,7 @@ wodimdir = $(libdir)/brasero/plugins
 wodim_LTLIBRARIES = libbrasero-wodim.la
 libbrasero_wodim_la_SOURCES = burn-wodim.c burn-wodim.h \
 	burn-cdrkit.h 
-libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GIO_LIBS)
+libbrasero_wodim_la_LIBADD = $(BRASERO_GLIB_LIBS) $(BRASERO_GCONF_LIBS)
 libbrasero_wodim_la_LDFLAGS = -module -avoid-version
 
 #genisoimage
