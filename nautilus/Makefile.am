@@ -18,12 +18,16 @@ INCLUDES =					\
 	$(DISABLE_DEPRECATED)			\
 	$(BRASERO_HAL_CFLAGS)
 
+@INTLTOOL_DESKTOP_RULE@
 
-CLEANFILES = 			\
-	$(NULL)
+desktopdir=$(datadir)/applications
+desktop_in_files = brasero-nautilus.desktop.in
 
-DISTCLEANFILES = 		\
-	$(NULL)
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+EXTRA_DIST = $(desktop_in_files)
+CLEANFILES = $(desktop_DATA)
+DISTCLEANFILES = $(NULL)
 
 ### Nautilus Extension
 nautilus_extensiondir = $(NAUTILUSDIR)

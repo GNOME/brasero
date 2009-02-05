@@ -11,7 +11,6 @@ schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
 desktopdir=$(datadir)/applications
 desktop_in_files =	brasero.desktop.in			\
-			brasero-nautilus.desktop.in		\
 			brasero-open-playlist.desktop.in	\
 			brasero-open-project.desktop.in		\
 			brasero-open-image.desktop.in		\
