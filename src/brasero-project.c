@@ -24,11 +24,11 @@
  * 	Boston, MA  02110-1301, USA.
  */
 
-#include <string.h>
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include <string.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -73,6 +73,7 @@
 #include "brasero-disc-message.h"
 #include "brasero-file-chooser.h"
 #include "brasero-notify.h"
+#include "brasero-project-parse.h"
 #include "brasero-burn-options.h"
 #include "brasero-project-name.h"
 
@@ -702,6 +703,7 @@ _wait_for_ready_state (GtkWidget *dialog)
 {
 	gchar *current_task = NULL;
 	GtkProgressBar *progress;
+	BraseroDiscResult status;
 	BraseroProject *project;
 	gint remaining = 0;
 	gint initial;
@@ -714,7 +716,8 @@ _wait_for_ready_state (GtkWidget *dialog)
 
 	progress = g_object_get_data (G_OBJECT (dialog), "ProgressBar");
 	initial = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (dialog), "Remaining"));
-	if (brasero_disc_get_status (project->priv->current, &remaining, &current_task) == BRASERO_DISC_NOT_READY) {
+	status = brasero_disc_get_status (project->priv->current, &remaining, &current_task);
+	if (status == BRASERO_DISC_NOT_READY || status == BRASERO_DISC_LOADING) {
 		gchar *string;
 		gchar *size_str;
 
@@ -768,7 +771,7 @@ brasero_project_check_status (BraseroProject *project,
 
 	current_task = NULL;
 	result = brasero_disc_get_status (disc, &remaining, &current_task);
-	if (result != BRASERO_DISC_NOT_READY)
+	if (result != BRASERO_DISC_NOT_READY && result != BRASERO_DISC_LOADING)
 		return result;
 
 	/* we are not ready to create tracks presumably because
@@ -1647,640 +1650,69 @@ brasero_project_set_uri (BraseroProject *project,
 }
 
 /******************************* Projects **************************************/
-static void
-brasero_project_invalid_project_dialog (BraseroProject *project,
-					const char *reason)
-{
-	brasero_app_alert (brasero_app_get_default (),
-			   _("Error while loading the project."),
-			   reason,
-			   GTK_MESSAGE_ERROR);
-}
-
-static gboolean
-_read_graft_point (xmlDocPtr project,
-		   xmlNodePtr graft,
-		   BraseroDiscTrack *track)
-{
-	BraseroGraftPt *retval;
-
-	retval = g_new0 (BraseroGraftPt, 1);
-	while (graft) {
-		if (!xmlStrcmp (graft->name, (const xmlChar *) "uri")) {
-			xmlChar *uri;
-
-			if (retval->uri)
-				goto error;
-
-			uri = xmlNodeListGetString (project,
-						    graft->xmlChildrenNode,
-						    1);
-			retval->uri = g_uri_unescape_string ((char *)uri, NULL);
-			g_free (uri);
-			if (!retval->uri)
-				goto error;
-		}
-		else if (!xmlStrcmp (graft->name, (const xmlChar *) "path")) {
-			if (retval->path)
-				goto error;
-
-			retval->path = (char *) xmlNodeListGetString (project,
-								      graft->xmlChildrenNode,
-								      1);
-			if (!retval->path)
-				goto error;
-		}
-		else if (!xmlStrcmp (graft->name, (const xmlChar *) "excluded")) {
-			xmlChar *excluded;
-
-			excluded = xmlNodeListGetString (project,
-							 graft->xmlChildrenNode,
-							 1);
-			if (!excluded)
-				goto error;
-
-			track->contents.data.excluded = g_slist_prepend (track->contents.data.excluded,
-									 xmlURIUnescapeString ((char*) excluded, 0, NULL));
-			g_free (excluded);
-		}
-		else if (graft->type == XML_ELEMENT_NODE)
-			goto error;
-
-		graft = graft->next;
-	}
-
-	track->contents.data.grafts = g_slist_prepend (track->contents.data.grafts, retval);
-	return TRUE;
-
-error:
-	brasero_graft_point_free (retval);
-	return FALSE;
-}
-
-static BraseroDiscTrack *
-_read_data_track (xmlDocPtr project,
-		  xmlNodePtr item)
-{
-	BraseroDiscTrack *track;
-
-	track = g_new0 (BraseroDiscTrack, 1);
-	track->type = BRASERO_DISC_TRACK_DATA;
-
-	while (item) {
-		if (!xmlStrcmp (item->name, (const xmlChar *) "graft")) {
-			if (!_read_graft_point (project, item->xmlChildrenNode, track))
-				goto error;
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "restored")) {
-			xmlChar *restored;
-
-			restored = xmlNodeListGetString (project,
-							 item->xmlChildrenNode,
-							 1);
-			if (!restored)
-				goto error;
-
-			track->contents.data.restored = g_slist_prepend (track->contents.data.restored, restored);
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "excluded")) {
-			xmlChar *excluded;
-
-			excluded = xmlNodeListGetString (project,
-							 item->xmlChildrenNode,
-							 1);
-			if (!excluded)
-				goto error;
-
-			track->contents.data.excluded = g_slist_prepend (track->contents.data.excluded,
-									 xmlURIUnescapeString ((char*) excluded, 0, NULL));
-			g_free (excluded);
-		}
-		else if (item->type == XML_ELEMENT_NODE)
-			goto error;
-
-		item = item->next;
-	}
-
-	track->contents.data.excluded = g_slist_reverse (track->contents.data.excluded);
-	track->contents.data.grafts = g_slist_reverse (track->contents.data.grafts);
-	return track;
-
-error:
-	brasero_track_free (track);
-	return NULL;
-}
-
-static BraseroDiscTrack *
-_read_audio_track (xmlDocPtr project,
-		   xmlNodePtr uris)
-{
-	BraseroDiscTrack *track;
-	BraseroDiscSong *song;
-
-	track = g_new0 (BraseroDiscTrack, 1);
-	song = NULL;
-
-	while (uris) {
-		if (!xmlStrcmp (uris->name, (const xmlChar *) "uri")) {
-			xmlChar *uri;
-
-			uri = xmlNodeListGetString (project,
-						    uris->xmlChildrenNode,
-						    1);
-			if (!uri)
-				goto error;
-
-			song = g_new0 (BraseroDiscSong, 1);
-			song->uri = g_uri_unescape_string ((char *) uri, NULL);
-
-			/* to know if this info was set or not */
-			song->start = -1;
-			song->end = -1;
-			g_free (uri);
-			track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "silence")) {
-			gchar *silence;
-
-			if (!song)
-				goto error;
-
-			/* impossible to have two gaps in a row */
-			if (song->gap)
-				goto error;
-
-			silence = (gchar *) xmlNodeListGetString (project,
-								  uris->xmlChildrenNode,
-								  1);
-			if (!silence)
-				goto error;
-
-			song->gap = (gint64) g_ascii_strtoull (silence, NULL, 10);
-			g_free (silence);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "start")) {
-			gchar *start;
-
-			if (!song)
-				goto error;
-
-			start = (gchar *) xmlNodeListGetString (project,
-								uris->xmlChildrenNode,
-								1);
-			if (!start)
-				goto error;
-
-			song->start = (gint64) g_ascii_strtoull (start, NULL, 10);
-			g_free (start);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "end")) {
-			gchar *end;
-
-			if (!song)
-				goto error;
-
-			end = (gchar *) xmlNodeListGetString (project,
-							      uris->xmlChildrenNode,
-							      1);
-			if (!end)
-				goto error;
-
-			song->end = (gint64) g_ascii_strtoull (end, NULL, 10);
-			g_free (end);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "title")) {
-			xmlChar *title;
-
-			title = xmlNodeListGetString (project,
-						      uris->xmlChildrenNode,
-						      1);
-			if (!title)
-				goto error;
-
-			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
-
-			if (song->info->title)
-				g_free (song->info->title);
-
-			song->info->title = g_uri_unescape_string ((char *) title, NULL);
-			g_free (title);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "artist")) {
-			xmlChar *artist;
-
-			artist = xmlNodeListGetString (project,
-						      uris->xmlChildrenNode,
-						      1);
-			if (!artist)
-				goto error;
-
-			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
-
-			if (song->info->artist)
-				g_free (song->info->artist);
-
-			song->info->artist = g_uri_unescape_string ((char *) artist, NULL);
-			g_free (artist);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "composer")) {
-			xmlChar *composer;
-
-			composer = xmlNodeListGetString (project,
-							 uris->xmlChildrenNode,
-							 1);
-			if (!composer)
-				goto error;
-
-			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
-
-			if (song->info->composer)
-				g_free (song->info->composer);
-
-			song->info->composer = g_uri_unescape_string ((char *) composer, NULL);
-			g_free (composer);
-		}
-		else if (!xmlStrcmp (uris->name, (const xmlChar *) "isrc")) {
-			gchar *isrc;
-
-			isrc = (gchar *) xmlNodeListGetString (project,
-							       uris->xmlChildrenNode,
-							       1);
-			if (!isrc)
-				goto error;
-
-			if (!song->info)
-				song->info = g_new0 (BraseroSongInfo, 1);
-
-			song->info->isrc = (gint) g_ascii_strtod (isrc, NULL);
-			g_free (isrc);
-		}
-		else if (uris->type == XML_ELEMENT_NODE)
-			goto error;
-
-		uris = uris->next;
-	}
-
-	track->contents.tracks = g_slist_reverse (track->contents.tracks);
-	return (BraseroDiscTrack*) track;
-
-error:
-	brasero_track_free ((BraseroDiscTrack *) track);
-	return NULL;
-}
-
-static gboolean
-_get_tracks (xmlDocPtr project,
-	     xmlNodePtr track_node,
-	     BraseroDiscTrack **track)
-{
-	BraseroDiscTrack *newtrack;
-
-	track_node = track_node->xmlChildrenNode;
-
-	newtrack = NULL;
-	while (track_node) {
-		if (!xmlStrcmp (track_node->name, (const xmlChar *) "audio")) {
-			if (newtrack)
-				goto error;
-
-			newtrack = _read_audio_track (project,
-						      track_node->xmlChildrenNode);
-			if (!newtrack)
-				goto error;
-
-			newtrack->type = BRASERO_DISC_TRACK_AUDIO;
-		}
-		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "data")) {
-			if (newtrack)
-				goto error;
-
-			newtrack = _read_data_track (project,
-						     track_node->xmlChildrenNode);
-
-			if (!newtrack)
-				goto error;
-		}
-		else if (!xmlStrcmp (track_node->name, (const xmlChar *) "video")) {
-			if (newtrack)
-				goto error;
-
-			newtrack = _read_audio_track (project,
-						      track_node->xmlChildrenNode);
-
-			if (!newtrack)
-				goto error;
-
-			newtrack->type = BRASERO_DISC_TRACK_VIDEO;
-		}
-		else if (track_node->type == XML_ELEMENT_NODE)
-			goto error;
-
-		track_node = track_node->next;
-	}
-
-	if (!newtrack)
-		goto error;
-
-	*track = newtrack;
-	return TRUE;
-
-error :
-	if (newtrack)
-		brasero_track_free (newtrack);
-
-	brasero_track_free (newtrack);
-	return FALSE;
-}
-
-static gboolean
-brasero_project_open_project_xml (BraseroProject *proj,
-				  const gchar *uri,
-				  gchar **label,
-				  gchar **cover,
-				  BraseroDiscTrack **track,
-				  gboolean warn_user)
-{
-	xmlNodePtr track_node = NULL;
-	xmlDocPtr project;
-	xmlNodePtr item;
-	gboolean retval;
-    	gchar *path;
-
-    	path = g_filename_from_uri (uri, NULL, NULL);
-    	if (!path)
-		return FALSE;
-
-	/* start parsing xml doc */
-	project = xmlParseFile (path);
-    	g_free (path);
-
-	if (!project) {
-	    	if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("The project could not be opened."));
-
-		return FALSE;
-	}
-
-	/* parses the "header" */
-	item = xmlDocGetRootElement (project);
-	if (!item) {
-	    	if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("The file is empty."));
-
-		xmlFreeDoc (project);
-		return FALSE;
-	}
-
-	if (xmlStrcmp (item->name, (const xmlChar *) "braseroproject")
-	||  item->next)
-		goto error;
-
-	item = item->children;
-	while (item) {
-		if (!xmlStrcmp (item->name, (const xmlChar *) "version")) {
-			/* simply ignore it */
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "label")) {
-			*label = (gchar *) xmlNodeListGetString (project,
-								 item->xmlChildrenNode,
-								 1);
-			if (!(*label))
-				goto error;
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "cover")) {
-			xmlChar *escaped;
-
-			escaped = xmlNodeListGetString (project,
-							item->xmlChildrenNode,
-							1);
-			if (!escaped)
-				goto error;
-
-			*cover = g_uri_unescape_string ((char *) escaped, NULL);
-			g_free (escaped);
-		}
-		else if (!xmlStrcmp (item->name, (const xmlChar *) "track")) {
-			if (track_node)
-				goto error;
-
-			track_node = item;
-		}
-		else if (item->type == XML_ELEMENT_NODE)
-			goto error;
-
-		item = item->next;
-	}
-
-	retval = _get_tracks (project, track_node, track);
-	xmlFreeDoc (project);
-
-	if (!retval && warn_user)
-		brasero_project_invalid_project_dialog (proj, _("It does not seem to be a valid Brasero project."));
-
-	return retval;
-
-error:
-
-	xmlFreeDoc (project);
-    	if (warn_user)
-		brasero_project_invalid_project_dialog (proj, _("It does not seem to be a valid Brasero project."));
-
-	return FALSE;
-}
-
 BraseroProjectType
 brasero_project_open_project (BraseroProject *project,
+			      BraseroDiscTrack *track,
 			      const gchar *uri)	/* escaped */
 {
-	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
-	gchar *label = NULL;
-	gchar *cover = NULL;
 
-	if (!uri || *uri =='\0')
-		return BRASERO_PROJECT_TYPE_INVALID;
-
-	if (!brasero_project_open_project_xml (project, uri, &label, &cover, &track, TRUE))
+	if (!track)
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	brasero_project_update_project_size (project, 0);
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO)
+	if (track->type == BRASERO_PROJECT_TYPE_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	else if (track->type == BRASERO_DISC_TRACK_DATA)
+	else if (track->type == BRASERO_PROJECT_TYPE_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	else if (track->type == BRASERO_DISC_TRACK_VIDEO)
+	else if (track->type == BRASERO_PROJECT_TYPE_VIDEO)
 		type = BRASERO_PROJECT_TYPE_VIDEO;
-	else {
-		brasero_track_free (track);
+	else
 		return BRASERO_PROJECT_TYPE_INVALID;
-	}
 
 	brasero_project_switch (project, type);
 
-	if (label) {
+	if (track->label) {
 		g_signal_handlers_block_by_func (project->priv->name_display,
 						 brasero_project_name_changed_cb,
 						 project);
-		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), label);
-		g_free (label);
-
+		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), track->label);
 		g_signal_handlers_unblock_by_func (project->priv->name_display,
 						   brasero_project_name_changed_cb,
 						   project);
 	}
 
-	if (cover) {
+	if (track->cover) {
 		if (project->priv->cover)
 			g_free (project->priv->cover);
 
-		project->priv->cover = cover;
+		project->priv->cover = g_strdup (track->cover);
 	}
 
 	brasero_disc_load_track (project->priv->current, track);
-	brasero_track_free (track);
-
 	project->priv->modified = 0;
 
-	brasero_project_set_uri (project, uri, type);
+	if (uri)
+		brasero_project_set_uri (project, uri, type);
+
 	return type;
 }
-
-#ifdef BUILD_PLAYLIST
-
-static void
-brasero_project_playlist_playlist_started (TotemPlParser *parser,
-					   const gchar *uri,
-					   GHashTable *metadata,
-					   gpointer user_data)
-{
-	gchar *string;
-	gchar **retval = user_data;
-
-	string = g_hash_table_lookup (metadata, TOTEM_PL_PARSER_FIELD_TITLE);
-	if (string)
-		*retval = g_strdup (string);
-}
-
-static void
-brasero_project_playlist_entry_parsed (TotemPlParser *parser,
-				       const gchar *uri,
-				       GHashTable *metadata,
-				       gpointer user_data)
-{
-	BraseroDiscTrack *track = user_data;
-	BraseroDiscSong *song;
-
-	song = g_new0 (BraseroDiscSong, 1);
-	song->uri = g_strdup (uri);
-
-	/* to know if this info was set or not */
-	song->start = -1;
-	song->end = -1;
-	track->contents.tracks = g_slist_prepend (track->contents.tracks, song);
-}
-
-static gboolean
-brasero_project_open_audio_playlist_project (BraseroProject *proj,
-					     const gchar *uri,
-					     gchar **label,
-					     BraseroDiscTrack **track,
-					     gboolean warn_user)
-{
-	TotemPlParser *parser;
-	TotemPlParserResult result;
-	BraseroDiscTrack *new_track;
-
-	new_track = g_new0 (BraseroDiscTrack, 1);
-	new_track->type = BRASERO_DISC_TRACK_AUDIO;
-
-	parser = totem_pl_parser_new ();
-	g_object_set (parser,
-		      "recurse", FALSE,
-		      "disable-unsafe", TRUE,
-		      NULL);
-
-	g_signal_connect (parser,
-			  "playlist-started",
-			  G_CALLBACK (brasero_project_playlist_playlist_started),
-			  &label);
-
-	g_signal_connect (parser,
-			  "entry-parsed",
-			  G_CALLBACK (brasero_project_playlist_entry_parsed),
-			  new_track);
-
-	result = totem_pl_parser_parse (parser, uri, FALSE);
-	if (result != TOTEM_PL_PARSER_RESULT_SUCCESS) {
-		if (warn_user)
-			brasero_project_invalid_project_dialog (proj, _("It does not seem to be a valid Brasero project."));
-
-		brasero_track_free (new_track);
-	}
-	else
-		*track = new_track;
-
-	g_object_unref (parser);
-
-	return (result == TOTEM_PL_PARSER_RESULT_SUCCESS);
-}
-
-BraseroProjectType
-brasero_project_open_playlist (BraseroProject *project,
-			       const gchar *uri) /* escaped */
-{
-	BraseroDiscTrack *track = NULL;
-	gchar *label = NULL;
-
-	if (!uri || *uri =='\0')
-		return BRASERO_PROJECT_TYPE_INVALID;
-
-	if (!brasero_project_open_audio_playlist_project (project, uri, &label, &track, TRUE))
-		return BRASERO_PROJECT_TYPE_INVALID;
-
-	brasero_project_update_project_size (project, 0);
-	brasero_project_switch (project, BRASERO_PROJECT_TYPE_AUDIO);
-
-	if (label) {
-		g_signal_handlers_block_by_func (project->priv->name_display,
-						 brasero_project_name_changed_cb,
-						 project);
-		gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) label);
-		g_signal_handlers_unblock_by_func (project->priv->name_display,
-						   brasero_project_name_changed_cb,
-						   project);
-	}
-
-	brasero_disc_load_track (project->priv->current, track);
-	brasero_track_free (track);
-
-	brasero_project_add_to_recents (project, uri, FALSE);
-	project->priv->modified = 0;
-
-	return BRASERO_PROJECT_TYPE_AUDIO;
-}
-
-#endif
 
 BraseroProjectType
 brasero_project_load_session (BraseroProject *project, const gchar *uri)
 {
 	BraseroDiscTrack *track = NULL;
 	BraseroProjectType type;
-	gchar *label;
-	gchar *cover;
 
-	if (!brasero_project_open_project_xml (project, uri, &label, &cover, &track, FALSE))
+	if (!brasero_project_open_project_xml (uri, &track, FALSE))
 		return BRASERO_PROJECT_TYPE_INVALID;
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO)
+	if (track->type == BRASERO_PROJECT_TYPE_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	else if (track->type == BRASERO_DISC_TRACK_DATA)
+	else if (track->type == BRASERO_PROJECT_TYPE_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	else if (track->type == BRASERO_DISC_TRACK_VIDEO)
+	else if (track->type == BRASERO_PROJECT_TYPE_VIDEO)
 		type = BRASERO_PROJECT_TYPE_VIDEO;
 	else {
 	    	brasero_track_free (track);
@@ -2292,7 +1724,7 @@ brasero_project_load_session (BraseroProject *project, const gchar *uri)
 	g_signal_handlers_block_by_func (project->priv->name_display,
 					 brasero_project_name_changed_cb,
 					 project);
-	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) label);
+	gtk_entry_set_text (GTK_ENTRY (project->priv->name_display), (gchar *) track->label);
 	g_signal_handlers_unblock_by_func (project->priv->name_display,
 					   brasero_project_name_changed_cb,
 					   project);
@@ -2602,7 +2034,7 @@ brasero_project_save_project_xml (BraseroProject *proj,
 	if (success < 0)
 		goto error;
 
-	if (track->type == BRASERO_DISC_TRACK_AUDIO) {
+	if (track->type == BRASERO_PROJECT_TYPE_AUDIO) {
 		success = xmlTextWriterStartElement (project, (xmlChar *) "audio");
 		if (success < 0)
 			goto error;
@@ -2615,7 +2047,7 @@ brasero_project_save_project_xml (BraseroProject *proj,
 		if (success < 0)
 			goto error;
 	}
-	else if (track->type == BRASERO_DISC_TRACK_DATA) {
+	else if (track->type == BRASERO_PROJECT_TYPE_DATA) {
 		success = xmlTextWriterStartElement (project, (xmlChar *) "data");
 		if (success < 0)
 			goto error;
@@ -2628,7 +2060,7 @@ brasero_project_save_project_xml (BraseroProject *proj,
 		if (success < 0)
 			goto error;
 	}
-	else  if (track->type == BRASERO_DISC_TRACK_VIDEO) {
+	else  if (track->type == BRASERO_PROJECT_TYPE_VIDEO) {
 		success = xmlTextWriterStartElement (project, (xmlChar *) "video");
 		if (success < 0)
 			goto error;
@@ -2903,11 +2335,11 @@ brasero_project_save_project_real (BraseroProject *project,
 		return FALSE;
 	}
 
-	if (track.type == BRASERO_DISC_TRACK_AUDIO)
+	if (track.type == BRASERO_PROJECT_TYPE_AUDIO)
 		type = BRASERO_PROJECT_TYPE_AUDIO;
-	else if (track.type == BRASERO_DISC_TRACK_DATA)
+	else if (track.type == BRASERO_PROJECT_TYPE_DATA)
 		type = BRASERO_PROJECT_TYPE_DATA;
-	else if (track.type == BRASERO_DISC_TRACK_VIDEO)
+	else if (track.type == BRASERO_PROJECT_TYPE_VIDEO)
 		type = BRASERO_PROJECT_TYPE_VIDEO;
 	else {
 		brasero_track_clear (&track);
@@ -2915,7 +2347,7 @@ brasero_project_save_project_real (BraseroProject *project,
 	}
 
 	if (save_type == BRASERO_PROJECT_SAVE_XML
-	||  track.type == BRASERO_DISC_TRACK_DATA) {
+	||  track.type == BRASERO_PROJECT_TYPE_DATA) {
 		brasero_project_set_uri (project, uri, type);
 		if (!brasero_project_save_project_xml (project,
 						       uri ? uri : project->priv->project,

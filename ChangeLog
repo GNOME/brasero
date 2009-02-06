@@ -1,3 +1,37 @@
+2009-02-06  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Move project parsing out of brasero-project
+	Also fix a couple of issues when launching brasero for a one shot operation.
+
+	* src/Makefile.am:
+	* src/brasero-app.c (brasero_app_recent_open):
+	* src/brasero-audio-disc.c (brasero_audio_disc_get_track),
+	(brasero_audio_disc_load_track):
+	* src/brasero-data-disc.c (brasero_data_disc_get_track):
+	* src/brasero-disc.c:
+	* src/brasero-disc.h:
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_open_project),
+	(brasero_project_manager_open_by_mime),
+	(brasero_project_manager_open_uri),
+	(brasero_project_manager_open_cb):
+	* src/brasero-project-manager.h:
+	* src/brasero-project-type-chooser.h:
+	* src/brasero-project.c (_wait_for_ready_state),
+	(brasero_project_check_status), (brasero_project_open_project),
+	(brasero_project_load_session), (brasero_project_save_project_xml),
+	(brasero_project_save_project_real):
+	* src/brasero-project.h:
+	* src/brasero-video-disc.c (brasero_video_disc_get_track),
+	(brasero_video_disc_load_track):
+	* src/main.c (brasero_app_open_project),
+	(brasero_app_parse_options):
+
+	Make sure filenames are UTF-8 encoded.
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value):
+
 2009-02-05  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix for correct linkage of plugins

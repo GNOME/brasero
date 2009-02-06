@@ -32,6 +32,8 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-project-parse.h"
+
 G_BEGIN_DECLS
 
 #define BRASERO_TYPE_PROJECT_TYPE_CHOOSER         (brasero_project_type_chooser_get_type ())
@@ -47,15 +49,6 @@ typedef struct {
 	GtkEventBox parent;
 	BraseroProjectTypeChooserPrivate *priv;
 } BraseroProjectTypeChooser;
-
-typedef enum {
-	BRASERO_PROJECT_TYPE_INVALID,
-	BRASERO_PROJECT_TYPE_COPY,
-	BRASERO_PROJECT_TYPE_ISO,
-	BRASERO_PROJECT_TYPE_AUDIO,
-	BRASERO_PROJECT_TYPE_DATA,
-	BRASERO_PROJECT_TYPE_VIDEO
-} BraseroProjectType;
 
 typedef struct {
 	GtkEventBoxClass parent_class;

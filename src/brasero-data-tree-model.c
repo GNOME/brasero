@@ -480,10 +480,23 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		g_value_set_boolean (value, (node->is_imported == FALSE) && node->is_selected);
 		return;
 
-	case BRASERO_DATA_TREE_MODEL_NAME:
+	case BRASERO_DATA_TREE_MODEL_NAME: {
+		gchar *filename;
+
 		g_value_init (value, G_TYPE_STRING);
-		g_value_set_string (value, BRASERO_FILE_NODE_NAME (node));
+		filename = g_filename_to_utf8 (BRASERO_FILE_NODE_NAME (node),
+					       -1,
+					       NULL,
+					       NULL,
+					       NULL);
+		if (filename)
+			g_value_set_string (value, filename);
+		else	/* Glib section on g_convert advise to use a string like
+			 * "Invalid Filename". */
+			g_value_set_string (value, BRASERO_FILE_NODE_NAME (node));
+
 		return;
+	}
 
 	case BRASERO_DATA_TREE_MODEL_MIME_DESC:
 		g_value_init (value, G_TYPE_STRING);

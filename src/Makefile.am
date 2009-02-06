@@ -221,7 +221,9 @@ brasero_SOURCES = \
 	eggsmclient.c           \
 	eggsmclient.h           \
 	eggsmclient-private.h           \
-	eggsmclient-xsmp.c           
+	eggsmclient-xsmp.c           \
+	brasero-project-parse.c           \
+	brasero-project-parse.h
 
 if BUILD_INOTIFY
 brasero_SOURCES += brasero-file-monitor.c brasero-file-monitor.h

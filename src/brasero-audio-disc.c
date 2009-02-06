@@ -1954,7 +1954,7 @@ brasero_audio_disc_get_track (BraseroDisc *disc,
 	if (!gtk_tree_model_get_iter_first (model, &iter))
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
-	track->type = BRASERO_DISC_TRACK_AUDIO;
+	track->type = BRASERO_PROJECT_TYPE_AUDIO;
 	song = NULL;
 
 	do {
@@ -2188,7 +2188,7 @@ brasero_audio_disc_load_track (BraseroDisc *disc,
 {
 	GSList *iter;
 
-	g_return_val_if_fail (track->type == BRASERO_DISC_TRACK_AUDIO, FALSE);
+	g_return_val_if_fail (track->type == BRASERO_PROJECT_TYPE_AUDIO, FALSE);
 
 	if (track->contents.tracks == NULL)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;

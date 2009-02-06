@@ -1510,7 +1510,7 @@ brasero_data_disc_get_track (BraseroDisc *disc,
 	if (!grafts)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;
 
-	track->type = BRASERO_DISC_TRACK_DATA;
+	track->type = BRASERO_PROJECT_TYPE_DATA;
 	track->contents.data.grafts = grafts;
 	track->contents.data.excluded = unreadable;
 

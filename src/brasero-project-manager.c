@@ -544,7 +544,6 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 
 	manager->priv->type = type;
-
 	if (type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);
 		brasero_project_set_none (BRASERO_PROJECT (manager->priv->project));
@@ -761,74 +760,33 @@ brasero_project_manager_iso (BraseroProjectManager *manager,
 
 BraseroProjectType
 brasero_project_manager_open_project (BraseroProjectManager *manager,
-				      const gchar *uri)
+				      BraseroDiscTrack *track,
+				      const gchar *uri,
+				      gboolean burn)
 {
-	BraseroProjectType type;
 	GtkAction *action;
+	BraseroProjectType type;
 
-	gtk_widget_show (manager->priv->layout);
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
-	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri);
-
-	manager->priv->type = type;
-    	if (type == BRASERO_PROJECT_TYPE_INVALID) {
+    	if (track->type == BRASERO_PROJECT_TYPE_INVALID) {
 		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 		return BRASERO_PROJECT_TYPE_INVALID;
 	}
 
-	if (type == BRASERO_PROJECT_TYPE_DATA)
-		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_DATA);
-	else
-		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
-
-	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
-	gtk_action_set_sensitive (action, TRUE);
-
-	return type;
-}
-
-void
-brasero_project_manager_burn_project (BraseroProjectManager *manager,
-				      const gchar *uri)
-{
-	BraseroProjectType type;
-
-	brasero_project_manager_set_oneshot (manager, TRUE);
-	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), uri);
+	brasero_project_manager_switch (manager, track->type, NULL, NULL, FALSE);
+	type = brasero_project_open_project (BRASERO_PROJECT (manager->priv->project), track, uri);
 	if (type == BRASERO_PROJECT_TYPE_INVALID)
-		return;
+		return type;
 
-	manager->priv->type = type;
-	brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
-}
-
-#ifdef BUILD_PLAYLIST
-
-BraseroProjectType
-brasero_project_manager_open_playlist (BraseroProjectManager *manager,
-				       const gchar *uri)
-{
-	BraseroProjectType type;
-	GtkAction *action;
-
-    	gtk_widget_show (manager->priv->layout);
-	gtk_notebook_set_current_page (GTK_NOTEBOOK (manager), 1);
-	type = brasero_project_open_playlist (BRASERO_PROJECT (manager->priv->project), uri);
-	manager->priv->type = type;
-
-    	if (type == BRASERO_PROJECT_TYPE_INVALID) {
-		brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
-		return BRASERO_PROJECT_TYPE_INVALID;
+	if (burn) {
+		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
+		return track->type;
 	}
 
-	brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_AUDIO);
 	action = gtk_action_group_get_action (manager->priv->action_group, "NewChoose");
 	gtk_action_set_sensitive (action, TRUE);
 
-	return BRASERO_PROJECT_TYPE_AUDIO;
+	return track->type;
 }
-
-#endif
 
 BraseroProjectType
 brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
@@ -838,16 +796,28 @@ brasero_project_manager_open_by_mime (BraseroProjectManager *manager,
 	/* When our files/description of x-brasero mime type is not properly 
 	 * installed, it's returned as application/xml, so check that too. */
 	if (!strcmp (mime, "application/x-brasero")
-	||  !strcmp (mime, "application/xml"))
-		return brasero_project_manager_open_project (manager, uri);
+	||  !strcmp (mime, "application/xml")) {
+		BraseroDiscTrack *track = NULL;
+
+		if (!brasero_project_open_project_xml (uri, &track, TRUE))
+			return BRASERO_PROJECT_TYPE_INVALID;
+
+		return brasero_project_manager_open_project (manager, track, uri, FALSE);
+	}
 
 #ifdef BUILD_PLAYLIST
 
 	else if (!strcmp (mime, "audio/x-scpls")
 	     ||  !strcmp (mime, "audio/x-ms-asx")
 	     ||  !strcmp (mime, "audio/x-mp3-playlist")
-	     ||  !strcmp (mime, "audio/x-mpegurl"))
-		return brasero_project_manager_open_playlist (manager, uri);
+	     ||  !strcmp (mime, "audio/x-mpegurl")) {
+		BraseroDiscTrack *track = NULL;
+
+		if (!brasero_project_open_audio_playlist_project (uri, &track, TRUE))
+			return BRASERO_PROJECT_TYPE_INVALID;
+
+		return brasero_project_manager_open_project (manager, track, uri, FALSE);
+	}
 #endif
 
 	else if (!strcmp (mime, "application/x-cd-image")
@@ -873,7 +843,7 @@ brasero_project_manager_open_uri (BraseroProjectManager *manager,
 	/* FIXME: make that asynchronous */
 	/* NOTE: don't follow symlink because we want to identify them */
 	file = g_file_new_for_commandline_arg (uri_arg);
-	if (file)
+	if (!file)
 		return BRASERO_PROJECT_TYPE_INVALID;
 
 	info = g_file_query_info (file,
@@ -966,7 +936,6 @@ brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manag
 	gint answer;
 	GtkWidget *chooser;
 	GtkWidget *toplevel;
-	BraseroProjectType type;
 
 	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (manager));
 	chooser = gtk_file_chooser_dialog_new (_("Open Project"),
@@ -990,7 +959,7 @@ brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manag
 	gtk_widget_destroy (chooser);
 
 	manager->priv->oneshot = FALSE;
-	type = brasero_project_manager_open_uri (manager, uri);
+	brasero_project_manager_open_uri (manager, uri);
 	g_free (uri);
 }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *            disc.h
+ *            brasero-disc.h
  *
  *  dim nov 27 14:58:13 2005
  *  Copyright  2005  Rouquier Philippe
@@ -32,6 +32,7 @@
 
 #include <gtk/gtk.h>
 
+#include "brasero-project-parse.h"
 #include "burn-basics.h"
 #include "burn-session.h"
 
@@ -62,37 +63,6 @@ typedef enum {
 	BRASERO_DISC_ERROR_THREAD,
 	BRASERO_DISC_ERROR_UNKNOWN
 } BraseroDiscResult;
-
-typedef enum {
-	BRASERO_DISC_TRACK_NONE = 0,
-	BRASERO_DISC_TRACK_AUDIO,
-	BRASERO_DISC_TRACK_VIDEO,
-	BRASERO_DISC_TRACK_DATA,
-} BraseroDiscTrackType;
-
-struct _BraseroDiscSong {
-	gchar *uri;
-	gint64 gap;
-	gint64 start;
-	gint64 end;
-
-	BraseroSongInfo *info;
-};
-typedef struct _BraseroDiscSong BraseroDiscSong;
-
-typedef struct {
-	BraseroDiscTrackType type;
-
-	union  {
-		struct {
-			GSList *grafts;
-			GSList *excluded;
-			GSList *restored;
-		} data;
-
-		GSList *tracks; /* BraseroDiscSong */
-	} contents;
-} BraseroDiscTrack;
 
 typedef struct _BraseroDisc        BraseroDisc;
 typedef struct _BraseroDiscIface   BraseroDiscIface;
@@ -198,10 +168,6 @@ brasero_disc_contents_changed (BraseroDisc *disc,
 void
 brasero_disc_selection_changed (BraseroDisc *disc);
 
-void
-brasero_track_clear (BraseroDiscTrack *track);
-void
-brasero_track_free (BraseroDiscTrack *track);
 
 GtkWidget *
 brasero_disc_get_use_info_notebook (void);

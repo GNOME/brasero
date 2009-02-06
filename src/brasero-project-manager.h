@@ -33,6 +33,7 @@
 #include <gtk/gtk.h>
 
 #include "brasero-medium.h"
+#include "brasero-project-parse.h"
 #include "brasero-project-type-chooser.h"
 
 G_BEGIN_DECLS
@@ -78,17 +79,12 @@ brasero_project_manager_copy (BraseroProjectManager *manager,
 void
 brasero_project_manager_iso (BraseroProjectManager *manager,
 			     const gchar *uri);
-void
-brasero_project_manager_burn_project (BraseroProjectManager *manager,
-				      const gchar *uri);
-
-BraseroProjectType
-brasero_project_manager_open_playlist (BraseroProjectManager *manager,
-				       const gchar *uri);
 
 BraseroProjectType
 brasero_project_manager_open_project (BraseroProjectManager *manager,
-				      const gchar *uri);
+				      BraseroDiscTrack *track,
+				      const gchar *uri,
+				      gboolean burn);
 
 BraseroProjectType
 brasero_project_manager_open_by_mime (BraseroProjectManager *manager,

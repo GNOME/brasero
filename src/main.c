@@ -269,6 +269,39 @@ brasero_handle_burn_uri (BraseroApp *app,
 	return;
 }
 
+static gboolean
+brasero_app_open_project (BraseroApp *app,
+			  const gchar *path,
+			  gboolean playlist,
+			  gboolean burn)
+{
+	BraseroDiscTrack *track = NULL;
+	BraseroProjectType type;
+	GtkWidget *manager;
+	GFile *file;
+	gchar *uri;
+
+	brasero_app_create_mainwin (app);
+
+	file = g_file_new_for_commandline_arg (path);
+	uri = g_file_get_uri (file);
+	g_object_unref (file);
+
+	if (playlist)
+		type = brasero_project_open_audio_playlist_project (uri, &track, TRUE);
+	else
+		type = brasero_project_open_project_xml (uri, &track, TRUE);
+
+	if (type == BRASERO_PROJECT_TYPE_INVALID)
+		return FALSE;
+
+	manager = brasero_app_get_project_manager (app);
+	brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
+	brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (manager), track, uri, burn);
+
+	return TRUE;
+}
+
 static void
 brasero_app_parse_options (BraseroApp *app)
 {
@@ -319,6 +352,49 @@ brasero_app_parse_options (BraseroApp *app)
 		manager = brasero_app_get_project_manager (app);
 		brasero_project_manager_empty (BRASERO_PROJECT_MANAGER (manager));
 	}
+	else if (project_uri) {
+		brasero_app_open_project (app, project_uri, FALSE, FALSE);
+	}
+	else if (burn_project_uri) {
+		brasero_app_open_project (app, burn_project_uri, FALSE, TRUE);
+
+		if (g_remove (burn_project_uri) != 0) {
+			gchar *path;
+
+			path = g_filename_from_uri (burn_project_uri, NULL, NULL);
+			g_remove (path);
+			g_free (path);
+		}
+		return;
+	}
+
+#ifdef BUILD_PLAYLIST
+
+	else if (playlist_uri) {
+		brasero_app_open_project (app, playlist_uri, TRUE, FALSE);
+	}
+
+#endif
+
+	else if (open_ncb) {
+		brasero_handle_burn_uri (app, manager);
+		return;
+	}
+	else if (audio_project) {
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
+	}
+	else if (data_project) {
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+	}
+	else if (video_project) {
+		brasero_app_create_mainwin (app);
+		manager = brasero_app_get_project_manager (app);
+	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
+	}
 	else if (copy_project) {
 		gchar *device = NULL;
 
@@ -343,56 +419,6 @@ brasero_app_parse_options (BraseroApp *app)
 
 		brasero_app_burn_image (app, uri);
 		return;
-	}
-	else if (project_uri) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_project, project_uri);
-	}
-	else if (burn_project_uri) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_burn_project, burn_project_uri);
-		if (g_remove (burn_project_uri) != 0) {
-			gchar *path;
-
-			path = g_filename_from_uri (burn_project_uri, NULL, NULL);
-			g_remove (path);
-			g_free (path);
-		}
-		return;
-	}
-	else if (open_ncb) {
-		brasero_handle_burn_uri (app, manager);
-		return;
-	}
-
-#ifdef BUILD_PLAYLIST
-
-	else if (playlist_uri) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_URI (manager, brasero_project_manager_open_playlist, playlist_uri);
-	}
-
-#endif
-
-	else if (audio_project) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
-	}
-	else if (data_project) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
-	}
-	else if (video_project) {
-		brasero_app_create_mainwin (app);
-		manager = brasero_app_get_project_manager (app);
-	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
 	}
 	else if (disc_blank) {
 		gchar *device = NULL;

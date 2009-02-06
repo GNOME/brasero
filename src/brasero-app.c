@@ -1149,6 +1149,8 @@ brasero_app_recent_open (GtkRecentChooser *chooser,
 		return;
 	}
 
+	/* Make sure it is no longer one shot */
+	brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (priv->projects), FALSE);
 	brasero_project_manager_open_by_mime (BRASERO_PROJECT_MANAGER (priv->projects),
 					      uri,
 					      mime);

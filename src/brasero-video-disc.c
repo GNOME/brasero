@@ -1383,7 +1383,7 @@ brasero_video_disc_get_track (BraseroDisc *disc,
 	BraseroVideoProject *project;
 	BraseroVideoDiscPrivate *priv;
 
-	disc_track->type = BRASERO_DISC_TRACK_VIDEO;
+	disc_track->type = BRASERO_PROJECT_TYPE_VIDEO;
 
 	priv = BRASERO_VIDEO_DISC_PRIVATE (disc);
 	project = BRASERO_VIDEO_PROJECT (gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree)));
@@ -1418,7 +1418,7 @@ brasero_video_disc_load_track (BraseroDisc *disc,
 	BraseroVideoProject *project;
 	BraseroVideoDiscPrivate *priv;
 
-	g_return_val_if_fail (track->type == BRASERO_DISC_TRACK_VIDEO, FALSE);
+	g_return_val_if_fail (track->type == BRASERO_PROJECT_TYPE_VIDEO, FALSE);
 
 	if (track->contents.tracks == NULL)
 		return BRASERO_DISC_ERROR_EMPTY_SELECTION;

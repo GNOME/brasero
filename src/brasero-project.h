@@ -82,11 +82,8 @@ brasero_project_set_source (BraseroProject *project,
 			    BraseroURIContainer *source);
 
 BraseroProjectType
-brasero_project_open_playlist (BraseroProject *project,
-			       const gchar *uri);
-
-BraseroProjectType
 brasero_project_open_project (BraseroProject *project,
+			      BraseroDiscTrack *track,
 			      const gchar *uri);
 
 gboolean
