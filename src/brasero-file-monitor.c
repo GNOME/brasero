@@ -473,8 +473,8 @@ brasero_file_monitor_inotify_monitor_cb (GIOChannel *channel,
 	gpointer callback_data;
 	GError *err = NULL;
 	GIOStatus status;
-	guint size;
 	gchar *name;
+	gsize size;
 
 	priv = BRASERO_FILE_MONITOR_PRIVATE (self);
 	while (condition & G_IO_IN) {

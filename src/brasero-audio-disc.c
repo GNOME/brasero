@@ -4195,7 +4195,7 @@ brasero_audio_disc_inotify_monitor_cb (GIOChannel *channel,
 	GIOStatus status;
 	gchar *monitored;
 	gchar *name;
-	guint size;
+	gsize size;
 
 	while (condition & G_IO_IN) {
 		monitored = NULL;
