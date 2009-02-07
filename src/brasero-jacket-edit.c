@@ -832,6 +832,9 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n", "Subtitle", &start);
 
 			if (info->artist) {
+				/* Reminder: if this string happens to be used
+				 * somewhere else in brasero we'll need a
+				 * context with C_() macro */
 				/* Translators: "by" is followed by the name of an artist.
 				 * This text is the one written on the cover of a disc.
 				 * Before it there is the name of the song.

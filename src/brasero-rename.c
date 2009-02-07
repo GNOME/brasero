@@ -339,7 +339,7 @@ brasero_rename_init (BraseroRename *object)
 	gtk_notebook_append_page (GTK_NOTEBOOK (priv->notebook), hbox, NULL);
 
 	/* Translators: this is a verb */
-	label = gtk_label_new (_("Substitute"));
+	label = gtk_label_new_with_mnemonic (_("_Replace"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -348,9 +348,13 @@ brasero_rename_init (BraseroRename *object)
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	priv->substitute_entry = entry;
 
-	/* Translators: this goes with above verb to say "Substitute" [Entry]
-	 * "by" [Entry]. */
-	label = gtk_label_new (_("by"));
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
+
+	/* Reminder: if this string happens to be used somewhere else in brasero
+	 * we'll need a context with C_() macro */
+	/* Translators: this goes with above verb to say "_Replace" [Entry]
+	 * "with" [Entry]. */
+	label = gtk_label_new (_("with"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 

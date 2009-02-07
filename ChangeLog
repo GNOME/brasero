@@ -1,3 +1,15 @@
+2009-02-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix #570235 – Possible incorrect translation of a string in multiple languages
+	Change the string "by" by "with" and "Substitute" to "_Replace".
+	There was a mistake as the English phrase is substitute A _for_ B.
+	Moreover it meant that B was changed into A which was the opposite.
+	Also added reminders in comments to use multiple context if such a thing
+	would happen again;
+
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_set_audio_tracks):
+	* src/brasero-rename.c (brasero_rename_init):
+
 2009-02-06  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix warnings appearing in GNOME build bot
