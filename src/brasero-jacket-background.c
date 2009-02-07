@@ -157,6 +157,8 @@ brasero_jacket_background_add_filters (BraseroJacketBackground *self)
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_add_pixbuf_formats (filter);
+
+	/* Translators: This is an image, a picture, not a "Disc Image" */
 	gtk_file_filter_set_name (filter, _("Images"));
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (priv->image), filter);
 }
@@ -228,6 +230,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_box_pack_start (GTK_BOX (hbox2), priv->color2, FALSE, TRUE, 0);
 
 	/* second part */
+	/* Translators: This is an image, a picture, not a "Disc Image" */
 	string = g_strdup_printf ("<b>%s</b>", _("_Image"));
 	label = gtk_label_new_with_mnemonic (string);
 	g_free (string);
@@ -252,6 +255,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 	gtk_widget_show (table);
 	gtk_box_pack_start (GTK_BOX (hbox), table, TRUE, TRUE, 0);
 
+	/* Translators: This is an image, a picture, not a "Disc Image" */
 	label = gtk_label_new (_("Image path:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
@@ -263,6 +267,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 			  GTK_FILL,
 			  0, 0);
 
+	/* Translators: This is an image, a picture, not a "Disc Image" */
 	priv->image = gtk_file_chooser_button_new (_("Choose an image"), GTK_FILE_CHOOSER_ACTION_OPEN);
 	gtk_widget_show (priv->image);
 	gtk_table_attach (GTK_TABLE (table),
@@ -273,6 +278,7 @@ brasero_jacket_background_init (BraseroJacketBackground *object)
 			  GTK_FILL,
 			  0, 0);
 
+	/* Translators: This is an image, a picture, not a "Disc Image" */
 	label = gtk_label_new (_("Image style:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
@@ -329,4 +335,3 @@ brasero_jacket_background_new (void)
 			     "title", _("Background Properties"),
 			     NULL);
 }
-

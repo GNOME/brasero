@@ -100,6 +100,7 @@ static GObjectClass *parent_class = NULL;
 
 #define BRASERO_LAYOUT_PREVIEW_ID	"Viewer"
 #define BRASERO_LAYOUT_PREVIEW_MENU	N_("P_review")
+/* Translators: this is an image, a picture, not a "Disc Image" */
 #define BRASERO_LAYOUT_PREVIEW_TOOLTIP	N_("Display video, audio and image preview")
 #define BRASERO_LAYOUT_PREVIEW_ICON	GTK_STOCK_FILE
 

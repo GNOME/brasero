@@ -332,6 +332,7 @@ brasero_search_entry_init (BraseroSearchEntry *obj)
 	/* add tooltips */
 	gtk_widget_set_tooltip_text (GTK_BIN (obj->priv->combo)->child,
 				     _("Type your keywords or choose 'All files' from the menu"));
+	/* Translators: this is an image, a picture, not a "Disc Image" */
 	gtk_widget_set_tooltip_text (obj->priv->pictures,
 				     _("Select if you want to search among image files only"));
 	gtk_widget_set_tooltip_text (obj->priv->video,

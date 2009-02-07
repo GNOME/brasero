@@ -1,5 +1,18 @@
 2009-02-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #570847 – Add translation help comment on the different uses of "image"
+	Add comments whenever "image" refered to a "picture" not a "disc image".
+
+	* src/brasero-jacket-background.c
+	(brasero_jacket_background_add_filters),
+	(brasero_jacket_background_init), (brasero_jacket_background_new):
+	* src/brasero-jacket-view.c (brasero_jacket_view_set_image):
+	* src/brasero-layout.c:
+	* src/brasero-project.c (brasero_project_add_uris_cb):
+	* src/brasero-search-entry.c (brasero_search_entry_init):
+
+2009-02-07  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #570235 – Possible incorrect translation of a string in multiple languages
 	Change the string "by" by "with" and "Substitute" to "_Replace".
 	There was a mistake as the English phrase is substitute A _for_ B.

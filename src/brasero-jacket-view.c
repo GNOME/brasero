@@ -1092,6 +1092,8 @@ brasero_jacket_view_set_image (BraseroJacketView *self,
 	image = gdk_pixbuf_new_from_file (path, &error);
 	if (error) {
 		brasero_utils_message_dialog (gtk_widget_get_toplevel (GTK_WIDGET (self)),
+					      /* Translators: This is an image,
+					       * a picture, not a "Disc Image" */
 					      _("The image could not be loaded."),
 					      error->message,
 					      GTK_MESSAGE_ERROR);
