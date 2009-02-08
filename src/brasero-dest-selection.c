@@ -458,10 +458,16 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 					       NULL);
 	}
 	else if (media & BRASERO_MEDIUM_CLOSED) {
-		/* NOTE for translators, the first %s is the medium name */
-		label = g_strdup_printf (_("%s: no free space"), medium_name);
-		g_free (medium_name);
-		return label;
+		if (!brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK) {
+			/* NOTE for translators, the first %s is the medium name */
+			label = g_strdup_printf (_("%s: no free space"), medium_name);
+			g_free (medium_name);
+			return label;
+		}
+
+		brasero_medium_get_capacity (medium,
+					     &size,
+					     NULL);
 	}
 	else {
 		brasero_medium_get_capacity (medium,
