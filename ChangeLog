@@ -1,3 +1,31 @@
+2009-02-08  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Don't allow JOLIET (so called "Windows compatibility") when there are
+	symlinks in the tree as joliet doesn't support them.
+
+	* src/brasero-data-disc.c (brasero_data_disc_set_session_param),
+	(brasero_data_disc_load_track):
+	* src/brasero-data-project.c (brasero_data_project_node_loaded),
+	(brasero_data_project_add_node_from_info),
+	(brasero_data_project_get_contents),
+	(brasero_data_project_has_symlinks),
+	(brasero_data_project_is_joliet_compliant):
+	* src/brasero-data-project.h:
+	* src/brasero-file-node.c (brasero_file_node_set_from_info),
+	(brasero_file_node_destroy_with_children):
+	* src/brasero-file-node.h:
+	* src/burn-caps.c (brasero_caps_data_new):
+	* src/burn-debug.c (brasero_debug_data_fs_to_string):
+	* src/burn-track.h:
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_export_caps):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_export_caps):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_export_caps):
+
 2009-02-07  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Fix #570847 – Add translation help comment on the different uses of "image"

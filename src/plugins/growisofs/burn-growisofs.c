@@ -720,6 +720,8 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	BraseroPluginConfOption *use_dao;
 	gboolean use_dao_gconf_key;
 	BraseroBurnResult result;
+	GSList *input_symlink;
+	GSList *input_joliet;
 	GConfClient *client;
 	GSList *output;
 	GSList *input;
@@ -781,12 +783,17 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (input);
 
 	/* for DATA type recording discs can be also appendable */
-	input = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
-				       BRASERO_IMAGE_FS_UDF|
-				       BRASERO_IMAGE_ISO_FS_LEVEL_3|
-				       BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
-				       BRASERO_IMAGE_FS_JOLIET|
-				       BRASERO_IMAGE_FS_VIDEO);
+	input_joliet = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
+					      BRASERO_IMAGE_FS_UDF|
+					      BRASERO_IMAGE_ISO_FS_LEVEL_3|
+					      BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
+					      BRASERO_IMAGE_FS_JOLIET|
+					      BRASERO_IMAGE_FS_VIDEO);
+
+	input_symlink = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
+					       BRASERO_IMAGE_ISO_FS_LEVEL_3|
+					       BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY|
+					       BRASERO_IMAGE_FS_SYMLINK);
 
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
 					BRASERO_MEDIUM_SRM|
@@ -804,7 +811,8 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_BLANK|
 					BRASERO_MEDIUM_APPENDABLE|
 					BRASERO_MEDIUM_HAS_DATA);
-	brasero_plugin_link_caps (plugin, output, input);
+	brasero_plugin_link_caps (plugin, output, input_joliet);
+	brasero_plugin_link_caps (plugin, output, input_symlink);
 	g_slist_free (output);
 
 	/* growisofs has the possibility to record to closed DVD+RW/-restricted
@@ -818,9 +826,12 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 					BRASERO_MEDIUM_REWRITABLE|
 					BRASERO_MEDIUM_CLOSED|
 					BRASERO_MEDIUM_HAS_DATA);
-	brasero_plugin_link_caps (plugin, output, input);
+
+	brasero_plugin_link_caps (plugin, output, input_joliet);
+	brasero_plugin_link_caps (plugin, output, input_symlink);
 	g_slist_free (output);
-	g_slist_free (input);
+	g_slist_free (input_joliet);
+	g_slist_free (input_symlink);
 
 	/* For DVD-RW sequential */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);

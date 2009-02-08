@@ -188,6 +188,8 @@ brasero_debug_data_fs_to_string (gchar *buffer,
 		strcat (buffer, "ISO ");
 	if (fs_type & BRASERO_IMAGE_FS_UDF)
 		strcat (buffer, "UDF ");
+	if (fs_type & BRASERO_IMAGE_FS_SYMLINK)
+		strcat (buffer, "SYMLINK ");
 	if (fs_type & BRASERO_IMAGE_ISO_FS_LEVEL_3)
 		strcat (buffer, "Level 3 ");
 	if (fs_type & BRASERO_IMAGE_FS_JOLIET)

@@ -130,6 +130,9 @@ gboolean
 brasero_data_project_is_empty (BraseroDataProject *project);
 
 gboolean
+brasero_data_project_has_symlinks (BraseroDataProject *project);
+
+gboolean
 brasero_data_project_is_video_project (BraseroDataProject *project);
 
 gboolean

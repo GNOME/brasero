@@ -746,6 +746,11 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 		stats->children ++;
 	}
 
+	if (!node->is_symlink && g_file_info_get_is_symlink (info)) {
+		/* only count files */
+		stats->num_sym ++;
+	}
+
 	/* update :
 	 * - the mime type
 	 * - the size (and possibly the one of his parent)
@@ -1049,6 +1054,10 @@ brasero_file_node_destroy_with_children (BraseroFileNode *node,
 		/* check if that's a deep directory file */
 		if (node->is_deep)
 			stats->num_deep --;
+
+		/* check if that's a symlink */
+		if (node->is_symlink)
+			stats->num_sym --;
 
 		/* update file number statistics */
 		if (!node->is_imported && node->is_file)

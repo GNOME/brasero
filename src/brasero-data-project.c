@@ -1887,6 +1887,10 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 		BraseroURINode *graft;
 		gchar *uri;
 
+		/* Update our stats and node state as it won't be a symlink anymore */
+		node->is_symlink = FALSE;
+		stats->num_sym --;
+
 		/* first we exclude the symlink, then we graft its target. */
 		uri = brasero_data_project_node_to_uri (self, node);
 		brasero_file_node_ungraft (node);
@@ -2137,8 +2141,18 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 			return NULL;
 	} 
 
-	node = brasero_file_node_new_from_info (info, parent, priv->sort_func);
+	node = brasero_file_node_new_from_info (info,
+						parent,
+						priv->sort_func);
 	if (node->is_symlink && g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
+		BraseroFileTreeStats *stats;
+
+		/* Update our stats and node state as it won't be a symlink anymore */
+		node->is_symlink = FALSE;
+
+		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+		stats->num_sym --;
+
 		/* first we exclude the symlink, then we graft its target */
 		brasero_data_project_exclude_uri (self, uri);
 
@@ -2455,6 +2469,8 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 				      &callback_data);
 	}
 
+	/* Finally add all the symlinks */
+
 	if (grafts)
 		*grafts = callback_data.grafts;
 
@@ -2469,11 +2485,31 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 }
 
 gboolean
+brasero_data_project_has_symlinks (BraseroDataProject *self)
+{
+	BraseroDataProjectPrivate *priv;
+	BraseroFileTreeStats *stats;
+
+	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	if (stats->num_sym)
+		return TRUE;
+
+	return FALSE;
+}
+
+gboolean
 brasero_data_project_is_joliet_compliant (BraseroDataProject *self)
 {
 	BraseroDataProjectPrivate *priv;
+	BraseroFileTreeStats *stats;
 
 	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
+
+	stats = brasero_file_node_get_tree_stats (priv->root, NULL);
+	if (stats->num_sym)
+		return FALSE;
 
 	if (!priv->joliet || !g_hash_table_size (priv->joliet))
 		return TRUE;

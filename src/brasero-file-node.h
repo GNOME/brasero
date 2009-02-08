@@ -69,6 +69,7 @@ struct _BraseroFileTreeStats {
 	guint children;
 	guint num_deep;
 	guint num_2GiB;
+	guint num_sym;
 };
 typedef struct _BraseroFileTreeStats BraseroFileTreeStats;
 

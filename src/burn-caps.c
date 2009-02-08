@@ -3274,7 +3274,7 @@ brasero_caps_data_new (BraseroImageFS fs_type)
 			continue;
 
 		if (caps->type.subtype.fs_type == fs_type) {
-			/* see if that's the perfect fit */
+			/* that's the perfect fit */
 			have_the_one = TRUE;
 			retval = g_slist_prepend (retval, caps);
 			continue;

@@ -1538,17 +1538,25 @@ brasero_data_disc_set_session_param (BraseroDisc *self,
 	stats = BRASERO_FILE_NODE_STATS (root);
 
 	fs_type = BRASERO_IMAGE_FS_ISO;
-	if (brasero_data_project_is_joliet_compliant (priv->project))
-		fs_type |= BRASERO_IMAGE_FS_JOLIET;
+	if (brasero_data_project_has_symlinks (priv->project))
+		fs_type |= BRASERO_IMAGE_FS_SYMLINK;
+	else {
+		/* These two are incompatible with symlinks */
+		if (brasero_data_project_is_joliet_compliant (priv->project))
+			fs_type |= BRASERO_IMAGE_FS_JOLIET;
 
-	if (stats->num_2GiB != 0)
-		fs_type |= BRASERO_IMAGE_ISO_FS_LEVEL_3|BRASERO_IMAGE_FS_UDF;
+		if (brasero_data_project_is_video_project (priv->project))
+			fs_type |= BRASERO_IMAGE_FS_VIDEO;
+	}
+
+	if (stats->num_2GiB != 0) {
+		fs_type |= BRASERO_IMAGE_ISO_FS_LEVEL_3;
+		if (!(fs_type & BRASERO_IMAGE_FS_SYMLINK))
+			fs_type |= BRASERO_IMAGE_FS_UDF;
+	}
 
 	if (stats->num_deep != 0)
 		fs_type |= BRASERO_IMAGE_ISO_FS_DEEP_DIRECTORY;
-
-	if (brasero_data_project_is_video_project (priv->project))
-		fs_type |= BRASERO_IMAGE_FS_VIDEO;
 
 	value = g_new0 (GValue, 1);
 	g_value_init (value, G_TYPE_INT64);
@@ -1663,7 +1671,7 @@ brasero_data_disc_load_track (BraseroDisc *disc,
 
 	priv = BRASERO_DATA_DISC_PRIVATE (disc);
 
-	/* Firstadd the restored files */
+	/* First add the restored files */
 	for (iter = track->contents.data.restored; iter; iter = iter->next) {
 		gchar *uri;
 
