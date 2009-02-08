@@ -2,6 +2,9 @@
 
 	Don't allow JOLIET (so called "Windows compatibility") when there are
 	symlinks in the tree as joliet doesn't support them.
+	Likewise don't allow UDF/Video when there are symlinks (UDF doesn't
+	support it apparently or at least mkisofs/genisoimage).
+	Also add forgotten support for ISO level 3 to libisofs backend.
 
 	* src/brasero-data-disc.c (brasero_data_disc_set_session_param),
 	(brasero_data_disc_load_track):
