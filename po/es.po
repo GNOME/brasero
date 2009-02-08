@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=brasero&component=general\n"
-"POT-Creation-Date: 2009-02-07 20:20+0000\n"
-"PO-Revision-Date: 2009-02-08 13:28+0100\n"
+"POT-Creation-Date: 2009-02-08 12:34+0000\n"
+"PO-Revision-Date: 2009-02-08 18:50+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -524,15 +524,16 @@ msgstr "Seleccione otra imagen."
 msgid "Select Image File"
 msgstr "Seleccionar el archivo de imagen"
 
-#: ../src/brasero-src-image.c:574 ../src/brasero-search-entry.c:609
-#: ../src/brasero-search-entry.c:649 ../src/brasero-search-entry.c:688
+#: ../src/brasero-src-image.c:574 ../src/brasero-search-entry.c:610
+#: ../src/brasero-search-entry.c:650 ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:473 ../src/brasero-file-chooser.c:210
 #: ../src/brasero-project.c:1422
 msgid "All files"
 msgstr "Todos los archivos"
 
+#. Translators: this is an image, a picture, not a "Disc Image"
 #: ../src/brasero-src-image.c:579 ../src/brasero-file-chooser.c:234
-#: ../src/brasero-project.c:1443
+#: ../src/brasero-project.c:1444
 msgid "Image files only"
 msgstr "Sólo archivos de imágenes"
 
@@ -1386,7 +1387,7 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "Error al analizar lista de reproducción «%s»."
 
 #: ../src/brasero-playlist.c:810 ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:1749 ../src/brasero-sum-dialog.c:142
+#: ../src/brasero-project.c:1750 ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "Ocurrió un error desconocido"
 
@@ -1491,23 +1492,23 @@ msgstr "En _vídeos"
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Escriba las palabras clave o elija «Todos los archivos» desde el menú"
 
-#: ../src/brasero-search-entry.c:336
+#: ../src/brasero-search-entry.c:337
 msgid "Select if you want to search among image files only"
 msgstr "Seleccione si quiere buscar solamente entre los archivos de imágenes"
 
-#: ../src/brasero-search-entry.c:338
+#: ../src/brasero-search-entry.c:339
 msgid "Select if you want to search among video files only"
 msgstr "Seleccione si desea buscar solamente entre los archivos de vídeo"
 
-#: ../src/brasero-search-entry.c:340
+#: ../src/brasero-search-entry.c:341
 msgid "Select if you want to search among audio files only"
 msgstr "Seleccione si desea buscar solamente entre archivos de sonido"
 
-#: ../src/brasero-search-entry.c:342
+#: ../src/brasero-search-entry.c:343
 msgid "Select if you want to search among your text documents only"
 msgstr "Seleccione si desea buscar solamente entre documentos de texto"
 
-#: ../src/brasero-search-entry.c:344
+#: ../src/brasero-search-entry.c:345
 msgid "Click to start the search"
 msgstr "Pulse para iniciar la búsqueda"
 
@@ -2482,7 +2483,7 @@ msgstr "_Renombrar para una compatibilidad completa con Windows"
 
 #: ../src/brasero-disc-option-dialog.c:358
 msgid "Increase compatibility with _Windows systems"
-msgstr "Aumentar la compatibilidad con sistemas _Windowsv"
+msgstr "Aumentar la compatibilidad con sistemas _Windows"
 
 #: ../src/brasero-disc-option-dialog.c:360
 msgid ""
@@ -2698,35 +2699,36 @@ msgstr "imagen *.toc (cdrdao)"
 msgid "P_review"
 msgstr "Vista p_revia"
 
-#: ../src/brasero-layout.c:103
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-layout.c:104
 msgid "Display video, audio and image preview"
 msgstr "Vista previa del sonido, vídeo e imágenes"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:108
 msgid "_Show Side Panel"
 msgstr "_Mostrar el panel lateral"
 
-#: ../src/brasero-layout.c:108
+#: ../src/brasero-layout.c:109
 msgid "Show a side pane along the project"
 msgstr "Mostrar un panel lateral junto con el proyecto"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:123
 msgid "_Horizontal Layout"
 msgstr "Disposición _horizontal"
 
-#: ../src/brasero-layout.c:123
+#: ../src/brasero-layout.c:124
 msgid "Set an horizontal layout"
 msgstr "Establecer una disposición horizontal"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:126
 msgid "_Vertical Layout"
 msgstr "Disposición _vertical"
 
-#: ../src/brasero-layout.c:126
+#: ../src/brasero-layout.c:127
 msgid "Set a vertical layout"
 msgstr "Establecer una disposición vertical"
 
-#: ../src/brasero-layout.c:1478
+#: ../src/brasero-layout.c:1479
 msgid "Click to close the side pane"
 msgstr "Pulse para cerrar el panel lateral"
 
@@ -2804,7 +2806,7 @@ msgid "_Remove Files"
 msgstr "_Quitar archivos"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1506
+#: ../src/brasero-project.c:204 ../src/brasero-project.c:1507
 msgid "E_mpty Project"
 msgstr "_Vaciar proyecto"
 
@@ -2903,11 +2905,11 @@ msgstr "_Descartar el proyecto"
 msgid "Select Files"
 msgstr "Seleccionar archivos"
 
-#: ../src/brasero-project.c:1495
+#: ../src/brasero-project.c:1496
 msgid "Do you really want to empty the current project?"
 msgstr "¿Está seguro de que quiere vaciar el proyecto actual?"
 
-#: ../src/brasero-project.c:1500
+#: ../src/brasero-project.c:1501
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -2917,74 +2919,74 @@ msgstr ""
 "el trabajo. Note que los archivos no se borrarán de sus ubicaciones, "
 "simplemente no se listarán aquí."
 
-#: ../src/brasero-project.c:1556
+#: ../src/brasero-project.c:1557
 msgid "_Save"
 msgstr "_Guardar"
 
-#: ../src/brasero-project.c:1567
+#: ../src/brasero-project.c:1568
 msgid "_Add"
 msgstr "_Añadir"
 
-#: ../src/brasero-project.c:1572 ../src/brasero-split-dialog.c:1246
+#: ../src/brasero-project.c:1573 ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "_Quitar"
 
-#: ../src/brasero-project.c:1632
+#: ../src/brasero-project.c:1633
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero - %s (disco de datos)"
 
-#: ../src/brasero-project.c:1634
+#: ../src/brasero-project.c:1635
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero - %s (disco de sonido)"
 
-#: ../src/brasero-project.c:1636
+#: ../src/brasero-project.c:1637
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (disco de vídeo)"
 
-#: ../src/brasero-project.c:1748
+#: ../src/brasero-project.c:1749
 msgid "Your project has not been saved."
 msgstr "Su proyecto no se ha guardado."
 
-#: ../src/brasero-project.c:1762
+#: ../src/brasero-project.c:1763
 msgid "Save the changes of current project before closing?"
 msgstr "¿Guardar los cambios del proyecto actual antes de cerrar?"
 
-#: ../src/brasero-project.c:1767
+#: ../src/brasero-project.c:1768
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Los cambios se perderán permanentemente si no los guarda."
 
-#: ../src/brasero-project.c:1771 ../src/brasero-project.c:1777
+#: ../src/brasero-project.c:1772 ../src/brasero-project.c:1778
 msgid "Cl_ose Without Saving"
 msgstr "Ce_rrar sin guardar"
 
-#: ../src/brasero-project.c:2396
+#: ../src/brasero-project.c:2397
 msgid "Save Current Project"
 msgstr "Guardar el proyecto actual"
 
-#: ../src/brasero-project.c:2414
+#: ../src/brasero-project.c:2415
 msgid "Save project as Brasero audio project"
 msgstr "Guardar el proyecto como un proyecto de sonido de Brasero"
 
-#: ../src/brasero-project.c:2415
+#: ../src/brasero-project.c:2416
 msgid "Save project as a plain text list"
 msgstr "Guardar el proyecto como una lista en texto plano"
 
-#: ../src/brasero-project.c:2419
+#: ../src/brasero-project.c:2420
 msgid "Save project as a PLS playlist"
 msgstr "Guardar el proyecto como una lista de reproducción PLS"
 
-#: ../src/brasero-project.c:2420
+#: ../src/brasero-project.c:2421
 msgid "Save project as an M3U playlist"
 msgstr "Guardar el proyecto como una lista de reproducción M3U"
 
-#: ../src/brasero-project.c:2421
+#: ../src/brasero-project.c:2422
 msgid "Save project as a XSPF playlist"
 msgstr "Guardar el proyecto como una lista de reproducción XSPF"
 
-#: ../src/brasero-project.c:2422
+#: ../src/brasero-project.c:2423
 msgid "Save project as an IRIVER playlist"
 msgstr "Guardar el proyecto como una lista de reproducción IRIVER"
 
@@ -4544,56 +4546,61 @@ msgid "Allows to check data integrity on disc after it is burnt"
 msgstr ""
 "Permite verificar la integridad de los datos del disco después de grabarlo"
 
-#: ../src/brasero-jacket-background.c:160
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:162
 msgid "Images"
 msgstr "Imágenes"
 
-#: ../src/brasero-jacket-background.c:184
+#: ../src/brasero-jacket-background.c:186
 msgid "_Color"
 msgstr "_Color"
 
-#: ../src/brasero-jacket-background.c:213
+#: ../src/brasero-jacket-background.c:215
 msgid "Solid color"
 msgstr "Color sólido"
 
-#: ../src/brasero-jacket-background.c:214
+#: ../src/brasero-jacket-background.c:216
 msgid "Horizontal gradient"
 msgstr "Gradiente horizontal"
 
-#: ../src/brasero-jacket-background.c:215
+#: ../src/brasero-jacket-background.c:217
 msgid "Vertical gradient"
 msgstr "Gradiente vertical"
 
 #. second part
-#: ../src/brasero-jacket-background.c:231
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:234
 msgid "_Image"
 msgstr "_Imagen"
 
-#: ../src/brasero-jacket-background.c:255
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:259
 msgid "Image path:"
 msgstr "Ruta de la imagen:"
 
-#: ../src/brasero-jacket-background.c:266
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:271
 msgid "Choose an image"
 msgstr "Elija una imagen"
 
-#: ../src/brasero-jacket-background.c:276
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:282
 msgid "Image style:"
 msgstr "Estilo de imagen:"
 
-#: ../src/brasero-jacket-background.c:290
+#: ../src/brasero-jacket-background.c:296
 msgid "Centered"
 msgstr "Centrado"
 
-#: ../src/brasero-jacket-background.c:291
+#: ../src/brasero-jacket-background.c:297
 msgid "Tiled"
 msgstr "Mosaico"
 
-#: ../src/brasero-jacket-background.c:292
+#: ../src/brasero-jacket-background.c:298
 msgid "Scaled"
 msgstr "Escalado"
 
-#: ../src/brasero-jacket-background.c:329
+#: ../src/brasero-jacket-background.c:335
 msgid "Background Properties"
 msgstr "Propiedades del fondo"
 
@@ -4613,7 +4620,9 @@ msgstr "Carátula trasera"
 msgid "FRONT COVER"
 msgstr "Carátula frontal"
 
-#: ../src/brasero-jacket-view.c:1095
+#. Translators: This is an image,
+#. * a picture, not a "Disc Image"
+#: ../src/brasero-jacket-view.c:1097
 msgid "The image could not be loaded."
 msgstr "No se pudo cargar la imagen."
 
