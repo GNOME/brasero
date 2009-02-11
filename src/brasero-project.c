@@ -864,7 +864,7 @@ brasero_project_set_cover_specifics (BraseroProject *self,
 	brasero_disc_set_session_param (BRASERO_DISC (self->priv->current), session);
 	brasero_disc_set_session_contents (BRASERO_DISC (self->priv->current), session);
 	brasero_jacket_edit_set_audio_tracks (BRASERO_JACKET_EDIT (cover),
-					      brasero_burn_session_get_label (session),
+					      gtk_entry_get_text (GTK_ENTRY (self->priv->name_display)),
 					      self->priv->cover,
 					      brasero_burn_session_get_tracks (session));
 	g_object_unref (session);
