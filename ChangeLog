@@ -1,3 +1,34 @@
+2009-02-12  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Fix a lot of small things with cover editor
+	Also fix crash #571218 – Brasero crashes from Cover Editor
+	It happened because a view was set (since we wrote to the buffer) but
+	no buffer was selected since grab_focus was inefficiently used. So turn
+	off any change notification by blocking signals while we initially set
+	up the buffers contents.
+
+	* src/brasero-jacket-buffer.c
+	(_gtk_text_attributes_fill_from_tags),
+	(brasero_jacket_buffer_add_default_tag),
+	(brasero_jacket_buffer_get_attributes),
+	(brasero_jacket_buffer_cursor_position_changed_cb):
+	* src/brasero-jacket-buffer.h:
+	* src/brasero-jacket-edit.c
+	(brasero_jacket_edit_center_pressed_cb),
+	(brasero_jacket_edit_font_changed_cb),
+	(brasero_jacket_edit_update_button_state),
+	(brasero_jacket_edit_init), (brasero_jacket_edit_set_audio_tracks),
+	(brasero_jacket_edit_dialog_new):
+	* src/brasero-jacket-font.c (brasero_jacket_font_get_family),
+	(brasero_jacket_font_get_size):
+	* src/brasero-jacket-font.h:
+	* src/brasero-jacket-view.c
+	(brasero_jacket_view_cursor_position_changed_cb),
+	(brasero_jacket_view_get_attributes), (brasero_jacket_view_init):
+	* src/brasero-jacket-view.h:
+	* src/brasero-tool-color-picker.c
+	(brasero_tool_color_picker_ok_clicked):
+
 2009-02-11  Philippe Rouquier  <ykw@localhost.localdomain>
 
 	Set the title when creating a cover for an audio project

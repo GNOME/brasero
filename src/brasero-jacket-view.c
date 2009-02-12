@@ -584,6 +584,9 @@ brasero_jacket_view_cursor_position_changed_cb (GObject *buffer,
 						GParamSpec *spec,
 						BraseroJacketView *self)
 {
+	BraseroJacketViewPrivate *priv;
+
+	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
 	g_signal_emit (self,
 		       jacket_view_signals [TAGS_CHANGED],
 		       0);
@@ -1148,12 +1151,27 @@ brasero_jacket_view_set_color_style (BraseroJacketView *self,
 }
 
 GtkTextAttributes *
-brasero_jacket_view_get_default_attributes (BraseroJacketView *self)
+brasero_jacket_view_get_attributes (BraseroJacketView *self,
+				    GtkTextIter *iter)
 {
 	BraseroJacketViewPrivate *priv;
+	GtkTextAttributes *attributes;
+	GtkTextBuffer *buffer;
 
 	priv = BRASERO_JACKET_VIEW_PRIVATE (self);
-	return gtk_text_view_get_default_attributes (GTK_TEXT_VIEW (priv->edit));
+
+	attributes = gtk_text_view_get_default_attributes (GTK_TEXT_VIEW (priv->edit));
+
+	if (iter)
+		gtk_text_iter_get_attributes (iter, attributes);
+
+	/* Now also merge changes that are 'on hold', that is non applied tags */
+	buffer = brasero_jacket_view_get_active_buffer (self);
+	if (!buffer)
+		return attributes;
+
+	brasero_jacket_buffer_get_attributes (BRASERO_JACKET_BUFFER (buffer), attributes);
+	return attributes;
 }
 
 GtkTextBuffer *
@@ -1526,6 +1544,7 @@ brasero_jacket_view_init (BraseroJacketView *object)
 			  G_CALLBACK (brasero_jacket_view_scrolled_cb),
 			  priv->edit);
 
+	gtk_container_set_focus_child (GTK_CONTAINER (object), priv->edit);
 	gtk_widget_set_scroll_adjustments (priv->edit,
 					   GTK_ADJUSTMENT (hadj),
 					   GTK_ADJUSTMENT (vadj));

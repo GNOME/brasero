@@ -52,8 +52,12 @@ BraseroJacketBuffer *
 brasero_jacket_buffer_new (void);
 
 void
-brasero_jacket_buffer_add_default_tag (BraseroJacketBuffer *buffer,
+brasero_jacket_buffer_add_default_tag (BraseroJacketBuffer *self,
 				       GtkTextTag *tag);
+
+void
+brasero_jacket_buffer_get_attributes (BraseroJacketBuffer *self,
+				      GtkTextAttributes *attributes);
 
 void
 brasero_jacket_buffer_set_default_text (BraseroJacketBuffer *self,

@@ -56,6 +56,139 @@ brasero_jacket_buffer_get_text (BraseroJacketBuffer *self,
 	return gtk_text_buffer_get_text (GTK_TEXT_BUFFER (self), start, end, invisible_chars);
 }
 
+/* As the name suggests it is copied from GTK 2.14.3
+ * It was changed to use GSList * as arguments */
+static void
+_gtk_text_attributes_fill_from_tags (GtkTextAttributes *dest,
+                                     GSList	       *tags)
+{
+  guint left_margin_accumulative = 0;
+  guint right_margin_accumulative = 0;
+
+  g_return_if_fail (!dest->realized);
+
+  for (; tags; tags = tags->next)
+    {
+      GtkTextTag *tag;
+      GtkTextAttributes *vals;
+
+      tag = tags->data;
+      vals = tag->values;
+
+      if (tag->bg_color_set)
+        {
+          dest->appearance.bg_color = vals->appearance.bg_color;
+
+          dest->appearance.draw_bg = TRUE;
+        }
+      if (tag->fg_color_set)
+        dest->appearance.fg_color = vals->appearance.fg_color;
+      
+      if (tag->pg_bg_color_set)
+        {
+          dest->pg_bg_color = gdk_color_copy (vals->pg_bg_color);
+        }
+
+      if (tag->bg_stipple_set)
+        {
+          g_object_ref (vals->appearance.bg_stipple);
+          if (dest->appearance.bg_stipple)
+            g_object_unref (dest->appearance.bg_stipple);
+          dest->appearance.bg_stipple = vals->appearance.bg_stipple;
+
+          dest->appearance.draw_bg = TRUE;
+        }
+
+      if (tag->fg_stipple_set)
+        {
+          g_object_ref (vals->appearance.fg_stipple);
+          if (dest->appearance.fg_stipple)
+            g_object_unref (dest->appearance.fg_stipple);
+          dest->appearance.fg_stipple = vals->appearance.fg_stipple;
+        }
+
+      if (vals->font)
+	{
+	  if (dest->font)
+	    pango_font_description_merge (dest->font, vals->font, TRUE);
+	  else
+	    dest->font = pango_font_description_copy (vals->font);
+	}
+
+      /* multiply all the scales together to get a composite */
+      if (tag->scale_set)
+        dest->font_scale *= vals->font_scale;
+      
+      if (tag->justification_set)
+        dest->justification = vals->justification;
+
+      if (vals->direction != GTK_TEXT_DIR_NONE)
+        dest->direction = vals->direction;
+
+      if (tag->left_margin_set) 
+        {
+          if (tag->accumulative_margin)
+            left_margin_accumulative += vals->left_margin;
+          else
+            dest->left_margin = vals->left_margin;
+        }
+
+      if (tag->indent_set)
+        dest->indent = vals->indent;
+
+      if (tag->rise_set)
+        dest->appearance.rise = vals->appearance.rise;
+
+      if (tag->right_margin_set) 
+        {
+          if (tag->accumulative_margin)
+            right_margin_accumulative += vals->right_margin;
+          else
+            dest->right_margin = vals->right_margin;
+        }
+
+      if (tag->pixels_above_lines_set)
+        dest->pixels_above_lines = vals->pixels_above_lines;
+
+      if (tag->pixels_below_lines_set)
+        dest->pixels_below_lines = vals->pixels_below_lines;
+
+      if (tag->pixels_inside_wrap_set)
+        dest->pixels_inside_wrap = vals->pixels_inside_wrap;
+
+      if (tag->tabs_set)
+        {
+          if (dest->tabs)
+            pango_tab_array_free (dest->tabs);
+          dest->tabs = pango_tab_array_copy (vals->tabs);
+        }
+
+      if (tag->wrap_mode_set)
+        dest->wrap_mode = vals->wrap_mode;
+
+      if (tag->underline_set)
+        dest->appearance.underline = vals->appearance.underline;
+
+      if (tag->strikethrough_set)
+        dest->appearance.strikethrough = vals->appearance.strikethrough;
+
+      if (tag->invisible_set)
+        dest->invisible = vals->invisible;
+
+      if (tag->editable_set)
+        dest->editable = vals->editable;
+
+      if (tag->bg_full_height_set)
+        dest->bg_full_height = vals->bg_full_height;
+
+      if (tag->language_set)
+	dest->language = vals->language;
+    }
+
+  dest->left_margin += left_margin_accumulative;
+  dest->right_margin += right_margin_accumulative;
+}
+
 void
 brasero_jacket_buffer_add_default_tag (BraseroJacketBuffer *self,
 				       GtkTextTag *tag)
@@ -63,7 +196,24 @@ brasero_jacket_buffer_add_default_tag (BraseroJacketBuffer *self,
 	BraseroJacketBufferPrivate *priv;
 
 	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
-	priv->tags = g_slist_prepend (priv->tags, tag);
+
+	g_object_ref (tag);
+	priv->tags = g_slist_append (priv->tags, tag);
+}
+
+void
+brasero_jacket_buffer_get_attributes (BraseroJacketBuffer *self,
+				      GtkTextAttributes *attributes)
+{
+	BraseroJacketBufferPrivate *priv;
+
+	priv = BRASERO_JACKET_BUFFER_PRIVATE (self);
+
+	/* Now also merge changes that are 'on hold', that is non applied tags */
+	if (!priv->tags)
+		return;
+
+	_gtk_text_attributes_fill_from_tags (attributes, priv->tags);
 }
 
 static void
@@ -92,8 +242,12 @@ brasero_jacket_buffer_cursor_position_changed_cb (GObject *buffer,
 	else
 		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (buffer), &iter, pos);
 
+	g_slist_foreach (priv->tags, (GFunc) g_object_unref, NULL);
 	g_slist_free (priv->tags);
+	priv->tags = NULL;
+ 
 	priv->tags = gtk_text_iter_get_tags (&iter);
+	g_slist_foreach (priv->tags, (GFunc) g_object_ref, NULL);
 }
 
 static void

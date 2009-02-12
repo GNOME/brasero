@@ -79,6 +79,10 @@ GtkWidget *
 brasero_jacket_view_new (void);
 
 void
+brasero_jacket_view_add_default_tag (BraseroJacketView *self,
+				     GtkTextTag *tag);
+
+void
 brasero_jacket_view_set_side (BraseroJacketView *view,
 			      BraseroJacketSide side);
 
@@ -123,7 +127,8 @@ GtkTextBuffer *
 brasero_jacket_view_get_side_buffer (BraseroJacketView *view);
 
 GtkTextAttributes *
-brasero_jacket_view_get_default_attributes (BraseroJacketView *view);
+brasero_jacket_view_get_attributes (BraseroJacketView *view,
+				    GtkTextIter *iter);
 
 G_END_DECLS
 

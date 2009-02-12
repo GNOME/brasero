@@ -241,7 +241,6 @@ brasero_jacket_edit_center_pressed_cb (GtkToggleToolButton *button,
 	else
 		gtk_text_buffer_get_selection_bounds (buffer, &start, &end);
 
-
 	gtk_text_iter_set_line_index (&start, 0);
 	gtk_text_iter_forward_to_line_end (&end);
 	gtk_text_buffer_apply_tag (buffer, tag, &start, &end);
@@ -359,12 +358,12 @@ brasero_jacket_edit_font_changed_cb (BraseroJacketFont *button,
 				     BraseroJacketEdit *self)
 {
 	BraseroJacketEditPrivate *priv;
-	PangoFontDescription *desc;
-	const gchar *font_name;
+	gchar *font_family = NULL;
+	GtkTextTag *tag_family;
 	GtkTextBuffer *buffer;
+	GtkTextTag *tag_size;
 	GtkTextIter start;
 	GtkTextIter end;
-	GtkTextTag *tag;
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
@@ -375,21 +374,27 @@ brasero_jacket_edit_font_changed_cb (BraseroJacketFont *button,
 	if (!buffer)
 		return;
 
-	font_name = brasero_jacket_font_get_name (button);
-	if (!font_name)
-		return;
+	/* Create two tags, one for the family, one for the size */
+	font_family = brasero_jacket_font_get_family (button);
+	if (font_family) {
+		tag_family = gtk_text_buffer_create_tag (buffer, NULL,
+							 "family", font_family,
+							 NULL);
+		g_free (font_family);
+	}
 
-	desc = pango_font_description_from_string (font_name);
-	tag = gtk_text_buffer_create_tag (buffer, NULL,
-					  "font-desc", desc,
-					  NULL);
+	tag_size = gtk_text_buffer_create_tag (buffer, NULL,
+					       "size", brasero_jacket_font_get_size (button),
+					       NULL);
 
 	if (gtk_text_buffer_get_has_selection (buffer)) {
 		gtk_text_buffer_get_selection_bounds (buffer, &start, &end);
-		gtk_text_buffer_apply_tag (buffer, tag, &start, &end);
+		gtk_text_buffer_apply_tag (buffer, tag_size, &start, &end);
+		gtk_text_buffer_apply_tag (buffer, tag_family, &start, &end);
 	}
-	else
-		brasero_jacket_buffer_add_default_tag (BRASERO_JACKET_BUFFER (buffer), tag);
+
+	brasero_jacket_buffer_add_default_tag (BRASERO_JACKET_BUFFER (buffer), tag_size);
+	brasero_jacket_buffer_add_default_tag (BRASERO_JACKET_BUFFER (buffer), tag_family);
 }
 
 static void
@@ -415,14 +420,20 @@ brasero_jacket_edit_update_button_state (BraseroJacketEdit *self)
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
-	if (priv->current_view) {
+	if (priv->current_view)
 		buffer = brasero_jacket_view_get_active_buffer (BRASERO_JACKET_VIEW (priv->current_view));
-		gtk_widget_set_sensitive (priv->background, TRUE);
-	}
-	else {
+	else
 		buffer = NULL;
-		gtk_widget_set_sensitive (priv->background, FALSE);
-	}
+
+	gtk_widget_set_sensitive (priv->background, buffer != NULL);
+	gtk_widget_set_sensitive (priv->bold, buffer != NULL);
+	gtk_widget_set_sensitive (priv->italic, buffer != NULL);
+	gtk_widget_set_sensitive (priv->underline, buffer != NULL);
+	gtk_widget_set_sensitive (priv->right, buffer != NULL);
+	gtk_widget_set_sensitive (priv->left, buffer != NULL);
+	gtk_widget_set_sensitive (priv->center, buffer != NULL);
+	gtk_widget_set_sensitive (priv->fonts, buffer != NULL);
+	gtk_widget_set_sensitive (priv->colours, buffer != NULL);
 
 	if (!buffer)
 		return;
@@ -436,8 +447,7 @@ brasero_jacket_edit_update_button_state (BraseroJacketEdit *self)
 	else
 		gtk_text_buffer_get_iter_at_offset (GTK_TEXT_BUFFER (buffer), &iter, pos);
 
-	attributes = brasero_jacket_view_get_default_attributes (BRASERO_JACKET_VIEW (priv->current_view));
-	gtk_text_iter_get_attributes (&iter, attributes);
+	attributes = brasero_jacket_view_get_attributes (BRASERO_JACKET_VIEW (priv->current_view), &iter);
 
 	brasero_tool_color_picker_set_color (BRASERO_TOOL_COLOR_PICKER (priv->colours), &attributes->appearance.fg_color);
 	
@@ -712,8 +722,6 @@ brasero_jacket_edit_init (BraseroJacketEdit *object)
 		sprintf (string, "%i", size);
 		brasero_jacket_font_set_name (BRASERO_JACKET_FONT (priv->fonts), "Sans 12");
 	}
-
-	gtk_widget_grab_focus (priv->front);
 }
 
 #define BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT(buffer_MACRO, text_MACRO, tag_MACRO, start_MACRO)	\
@@ -732,7 +740,10 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 
 	priv = BRASERO_JACKET_EDIT_PRIVATE (self);
 
-	/* Set background for front cover */
+	g_signal_handlers_block_by_func (priv->front, brasero_jacket_edit_tags_changed_cb, self);
+	g_signal_handlers_block_by_func (priv->back, brasero_jacket_edit_tags_changed_cb, self);
+
+	/* set background for front cover */
 	if (cover) {
 		gchar *path;
 
@@ -744,49 +755,45 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 		brasero_jacket_view_set_image (BRASERO_JACKET_VIEW (priv->front), path);
 		g_free (path);
 	}
-	else {
-		/* Otherwise we create a very rough one */
+
+	/* create the tags for front cover */
+	if (label) {
 		buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->front));
 
-		/* create the tags */
 		gtk_text_buffer_create_tag (buffer,
 					    "Title",
 					    "justification", GTK_JUSTIFY_CENTER,
 					    "weight", PANGO_WEIGHT_BOLD,
-					    "scale", PANGO_SCALE_X_LARGE,
-					    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+					    "size", 14 * PANGO_SCALE,
 					    NULL);
 
 		gtk_text_buffer_get_start_iter (buffer, &start);
 
-		if (label) {
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n\n\n", "Title", &start);
-			BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
-		}
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, "\n\n\n\n", "Title", &start);
+		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
 	}
 
+	/* create the tags for back cover */
 	buffer = brasero_jacket_view_get_body_buffer (BRASERO_JACKET_VIEW (priv->back));
 
-	/* create the tags */
 	gtk_text_buffer_create_tag (buffer,
 				    "Title",
 				    "justification", GTK_JUSTIFY_CENTER,
 				    "weight", PANGO_WEIGHT_BOLD,
-				    "scale", PANGO_SCALE_LARGE,
-				    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+				    "size", 12 * PANGO_SCALE,
 				    NULL);
 	gtk_text_buffer_create_tag (buffer,
 				    "Subtitle",
 				    "justification", GTK_JUSTIFY_LEFT,
 				    "weight", PANGO_WEIGHT_NORMAL,
+				    "size", 10 * PANGO_SCALE,
 				    NULL);
 	gtk_text_buffer_create_tag (buffer,
 				    "Artist",
 				    "weight", PANGO_WEIGHT_NORMAL,
 				    "justification", GTK_JUSTIFY_LEFT,
-				    "stretch", PANGO_STRETCH_NORMAL,
+				    "size", 8 * PANGO_SCALE,
 				    "style", PANGO_STYLE_ITALIC,
-				    "scale", PANGO_SCALE_SMALL,
 				    NULL);
 
 	gtk_text_buffer_get_start_iter (buffer, &start);
@@ -856,12 +863,12 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 	/* side */
 	buffer = brasero_jacket_view_get_side_buffer (BRASERO_JACKET_VIEW (priv->back));
 
-	/* create the tags */
+	/* create the tags for sides */
 	gtk_text_buffer_create_tag (buffer,
 				    "Title",
 				    "justification", GTK_JUSTIFY_CENTER,
 				    "weight", PANGO_WEIGHT_BOLD,
-				    "stretch", PANGO_STRETCH_ULTRA_EXPANDED,
+				    "size", 10 * PANGO_SCALE,
 				    NULL);
 
 	gtk_text_buffer_get_start_iter (buffer, &start);
@@ -869,6 +876,9 @@ brasero_jacket_edit_set_audio_tracks (BraseroJacketEdit *self,
 	if (label) {
 		BRASERO_JACKET_EDIT_INSERT_TAGGED_TEXT (buffer, label, "Title", &start);
 	}
+
+	g_signal_handlers_unblock_by_func (priv->front, brasero_jacket_edit_tags_changed_cb, self);
+	g_signal_handlers_unblock_by_func (priv->back, brasero_jacket_edit_tags_changed_cb, self);
 }
 
 static void
@@ -916,6 +926,8 @@ brasero_jacket_edit_dialog_new (GtkWidget *toplevel,
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), contents, TRUE, TRUE, 0);
 	if (contents_ret)
 		*contents_ret = BRASERO_JACKET_EDIT (contents);
+
+	brasero_jacket_edit_update_button_state (BRASERO_JACKET_EDIT (contents));
 
 	return window;
 }

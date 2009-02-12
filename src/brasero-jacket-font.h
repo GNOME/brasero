@@ -56,7 +56,10 @@ brasero_jacket_font_set_name (BraseroJacketFont *font,
 			      const gchar *name);
 
 gchar *
-brasero_jacket_font_get_name (BraseroJacketFont *font);
+brasero_jacket_font_get_family (BraseroJacketFont *font);
+
+guint
+brasero_jacket_font_get_size (BraseroJacketFont *font);
 
 G_END_DECLS
 

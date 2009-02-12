@@ -135,8 +135,6 @@ brasero_tool_color_picker_ok_clicked (GtkWidget *widget,
 	gtk_widget_destroy (priv->dialog);
 	priv->dialog = NULL;
 
-	gtk_widget_queue_draw (priv->icon);
-
 	g_signal_emit (self,
 		       tool_color_picker_signals[COLOR_SET_SIGNAL],
 		       0);
