@@ -79,7 +79,7 @@ brasero_dvdcss_library_init (GError **error)
 		return TRUE;
 
 	/* load libdvdcss library and see the version (mine is 1.2.0) */
-	module = g_module_open ("libdvdcss.so", G_MODULE_BIND_LOCAL);
+	module = g_module_open ("libdvdcss.so.2", G_MODULE_BIND_LOCAL);
 	if (!module)
 		goto error_doesnt_exist;
 

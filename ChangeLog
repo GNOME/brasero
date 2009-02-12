@@ -1,5 +1,11 @@
 2009-02-12  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Add a patch from Denis Leroy for dvdcss support (already used by fedora/ubuntu)
+
+	* src/plugins/dvdcss/burn-dvdcss.c (brasero_dvdcss_library_init):
+
+2009-02-12  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a lot of small things with cover editor
 	Also fix crash #571218 – Brasero crashes from Cover Editor
 	It happened because a view was set (since we wrote to the buffer) but
