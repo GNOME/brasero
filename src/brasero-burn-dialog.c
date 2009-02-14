@@ -2032,13 +2032,12 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 	BraseroMedia media;
 	BraseroBurnResult result;
 
+	g_object_ref (session);
 	dialog->priv->session = session;
 
 	/* disable autoconfiguration */
 	if (BRASERO_IS_SESSION_CFG (dialog->priv->session))
 		brasero_session_cfg_disable (BRASERO_SESSION_CFG (dialog->priv->session));
-
-	g_object_ref (session);
 
 	/* update what we should display */
 	brasero_burn_session_get_input_type (session, &dialog->priv->input);
@@ -2057,8 +2056,8 @@ brasero_burn_dialog_run (BraseroBurnDialog *dialog,
 		result = brasero_burn_dialog_record_session (dialog, media);
 	} while (result == BRASERO_BURN_RETRY);
 
-	g_object_unref (dialog->priv->session);
 	dialog->priv->session = NULL;
+	g_object_unref (session);
 
 	return (result == BRASERO_BURN_OK);
 }

@@ -1544,6 +1544,8 @@ brasero_burn_session_finalize (GObject *object)
 	BraseroBurnSessionPrivate *priv;
 	GSList *iter;
 
+	BRASERO_BURN_LOG ("Cleaning session");
+
 	priv = BRASERO_BURN_SESSION_PRIVATE (object);
 
 	if (priv->tags) {

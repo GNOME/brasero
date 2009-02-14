@@ -1,5 +1,14 @@
 2009-02-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix a memleak AND a temp file leak
+	(BraseroSession wasn't unreffed in some dialogs)
+
+	* src/brasero-burn-dialog.c (brasero_burn_dialog_run):
+	* src/brasero-project.c (brasero_project_burn):
+	* src/burn-session.c (brasero_burn_session_finalize):
+
+2009-02-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Mark a string for translation (not changes in strings though)
 	Avoid erroring out when the task is already finished when we check for
 	thread creation result.

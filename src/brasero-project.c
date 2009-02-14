@@ -955,6 +955,7 @@ brasero_project_burn (BraseroProject *project)
 	success = brasero_app_burn (brasero_app_get_default (), session);
 
     	project->priv->burnt = success;
+	g_object_unref (session);
 
 end:
 
