@@ -495,6 +495,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			 * "Invalid Filename". */
 			g_value_set_string (value, BRASERO_FILE_NODE_NAME (node));
 
+		g_free (filename);
 		return;
 	}
 
