@@ -1,10 +1,10 @@
 # translation of brasero.HEAD.pl.po to Polish
-# Tomasz Dominikowski <dominikowski@gmail.com>, 2006 - 2007.
-# Aviary.pl <gnomepl@aviary.pl>, 2008.
+# Aviary.pl <gnomepl@aviary.pl>, 2008, 2009
 # Joanna Mazgaj <jmazgaj@aviary.pl>, 2008.
+# Tomasz Dominikowski <tdominikowski@aviary.pl>, 2006, 2007, 2009
 # Polish translation of brasero.
-# Copyright (C) 2006, 2007, 2008 Aviary.pl
-# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) 2006, 2007, 2008, 2009 Aviary.pl
+# This file is distributed under the same license as the brasero package.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aviary.pl
 # Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD.pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 20:31+0100\n"
-"PO-Revision-Date: 2008-12-03 20:44+0100\n"
+"POT-Creation-Date: 2009-02-14 18:57+0100\n"
+"PO-Revision-Date: 2009-02-14 19:05+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,365 @@ msgstr ""
 "X-Poedit-Country: POLAND\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../src/brasero-tool-color-picker.c:156
+#: ../src/brasero-project-parse.c:103
+#: ../src/brasero-project-manager.c:917
+#: ../src/main.c:214
+#: ../src/main.c:240
+msgid "Error while loading the project."
+msgstr "Błąd podczas wczytywania projektu."
+
+#: ../src/brasero-project-parse.c:469
+msgid "The project could not be opened."
+msgstr "Projekt nie mógł zostać otwarty."
+
+#: ../src/brasero-project-parse.c:478
+msgid "The file is empty."
+msgstr "Plik jest pusty."
+
+#: ../src/brasero-project-parse.c:546
+#: ../src/brasero-project-parse.c:617
+msgid "It does not seem to be a valid Brasero project."
+msgstr "To nie wygląda na poprawny plik projektu programu Brasero."
+
+#: ../libbrasero-media/brasero-drive-selection.c:337
+#: ../libbrasero-media/brasero-drive-selection.c:432
+msgid "Unnamed CD/DVD Drive"
+msgstr "Napęd CD/DVD bez nazwy"
+
+#: ../libbrasero-media/brasero-drive-selection.c:626
+msgid "Drive"
+msgstr "Napęd"
+
+#: ../libbrasero-media/brasero-media.c:52
+msgid "Display debug statements on stdout for Brasero media library"
+msgstr "Wyświetlenie instrukcji debug na stdout biblioteki nośników Brasero"
+
+#: ../libbrasero-media/brasero-media.c:467
+msgid "Brasero optical media library"
+msgstr "Biblioteka nośników optycznych programu Brasero"
+
+#: ../libbrasero-media/brasero-media.c:468
+msgid "Display options for Brasero-media library"
+msgstr "Opcje wyświetlania biblioteki nośników programu Brasero"
+
+#: ../libbrasero-media/brasero-units.c:86
+#: ../src/brasero-utils.c:231
+#, c-format
+msgid "%lli min"
+msgstr "%lli min"
+
+#: ../libbrasero-media/brasero-units.c:88
+#: ../src/brasero-utils.c:233
+#, c-format
+msgid "%lli:%02lli min"
+msgstr "%lli:%02lli min"
+
+#. NOTE for translators, the first %s is the medium name
+#: ../libbrasero-media/brasero-medium-selection.c:140
+#, c-format
+msgid "%s: empty"
+msgstr "%s: pusta"
+
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (kio, gio) used by data on the disc.
+#.
+#. NOTE for translators: the first %s is the medium name, the
+#. * second %s is the space (time) used by data on the disc.
+#. * I really don't know if I should set this string as
+#. * translatable.
+#: ../libbrasero-media/brasero-medium-selection.c:156
+#: ../libbrasero-media/brasero-medium-selection.c:168
+#, c-format
+msgid "%s: %s"
+msgstr "%s: %s"
+
+#: ../libbrasero-media/brasero-medium-selection.c:371
+msgid "Searching for available discs"
+msgstr "Wyszukiwanie dostępnych nośników"
+
+#: ../libbrasero-media/brasero-medium-selection.c:378
+msgid "No available disc"
+msgstr "Brak dostępnego nośnika"
+
+#. Translators: This is a fake drive, a file, and means that
+#. * when we're writing, we're writing to a file and create an
+#. * image on the hard drive.
+#: ../libbrasero-media/brasero-drive.c:508
+#: ../libbrasero-media/brasero-medium.c:275
+#: ../libbrasero-media/brasero-volume.c:379
+msgid "Image File"
+msgstr "Plik obrazu"
+
+#: ../libbrasero-media/burn-iso9660.c:158
+#: ../libbrasero-media/burn-iso9660.c:167
+#: ../libbrasero-media/burn-iso9660.c:402
+#: ../libbrasero-media/burn-iso9660.c:439
+#: ../libbrasero-media/burn-iso9660.c:488
+#: ../libbrasero-media/burn-volume.c:128
+#, c-format
+msgid "It does not appear to be a valid ISO image"
+msgstr "To nie wygląda na poprawny plik obrazu ISO."
+
+#: ../libbrasero-media/brasero-medium.c:66
+msgid "File"
+msgstr "Plik"
+
+#: ../libbrasero-media/brasero-medium.c:67
+msgid "CDROM"
+msgstr "CDROM"
+
+#: ../libbrasero-media/brasero-medium.c:68
+msgid "CD-R"
+msgstr "CD-R"
+
+#: ../libbrasero-media/brasero-medium.c:69
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: ../libbrasero-media/brasero-medium.c:70
+msgid "DVDROM"
+msgstr "DVDROM"
+
+#: ../libbrasero-media/brasero-medium.c:71
+msgid "DVD-R"
+msgstr "DVD-R"
+
+#: ../libbrasero-media/brasero-medium.c:72
+msgid "DVD-RW"
+msgstr "DVD-RW"
+
+#: ../libbrasero-media/brasero-medium.c:73
+msgid "DVD+R"
+msgstr "DVD+R"
+
+#: ../libbrasero-media/brasero-medium.c:74
+msgid "DVD+RW"
+msgstr "DVD+RW"
+
+#: ../libbrasero-media/brasero-medium.c:75
+msgid "DVD+R dual layer"
+msgstr "DVD+R dwuwarstwowa"
+
+#: ../libbrasero-media/brasero-medium.c:76
+msgid "DVD+RW dual layer"
+msgstr "DVD+RW dwuwarstwowa"
+
+#: ../libbrasero-media/brasero-medium.c:77
+msgid "DVD-R dual layer"
+msgstr "DVD-R dwuwarstwowa"
+
+#: ../libbrasero-media/brasero-medium.c:78
+msgid "DVD-RAM"
+msgstr "DVD-RAM"
+
+#: ../libbrasero-media/brasero-medium.c:79
+msgid "Blu-ray disc"
+msgstr "Płyta Blu-Ray"
+
+#: ../libbrasero-media/brasero-medium.c:80
+msgid "Writable Blu-ray disc"
+msgstr "Zapisywalna płyta Blu-Ray"
+
+#: ../libbrasero-media/brasero-medium.c:81
+msgid "Rewritable Blu-ray disc"
+msgstr "Płyta Blu-Ray do wielokrotnego zapisu"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:285
+#, c-format
+msgid "Blank %s in %s"
+msgstr "Pusta płyta %s w %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:292
+#, c-format
+msgid "Audio and data %s in %s"
+msgstr "Płyta %s audio i z danymi w %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:299
+#, c-format
+msgid "Audio %s in %s"
+msgstr "Płyta %s audio w %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:306
+#, c-format
+msgid "Data %s in %s"
+msgstr "Płyta %s z danymi w %s"
+
+#. NOTE for translators: the first %s is the disc type and the
+#. * second %s the name of the drive this disc is in.
+#: ../libbrasero-media/brasero-medium.c:313
+#, c-format
+msgid "%s in %s"
+msgstr "%s / %s"
+
+#: ../libbrasero-media/brasero-volume.c:193
+#, c-format
+msgid "The disc mount point could not be retrieved"
+msgstr "Punkt montowania płyty nie mógł zostać uzyskany"
+
+#. NOTE for translators: the first %s is the disc type.
+#: ../libbrasero-media/brasero-volume.c:406
+#, c-format
+msgid "Blank %s"
+msgstr "Pusta płyta %s"
+
+#. NOTE for translators: the first %s is the disc type.
+#: ../libbrasero-media/brasero-volume.c:410
+#, c-format
+msgid "Audio and data %s"
+msgstr "Płyta %s Audio z danymi"
+
+#. NOTE for translators: the first %s is the disc type.
+#: ../libbrasero-media/brasero-volume.c:414
+#, c-format
+msgid "Audio %s"
+msgstr "Płyta %s Audio"
+
+#. NOTE for translators: the first %s is the disc type.
+#: ../libbrasero-media/brasero-volume.c:418
+#, c-format
+msgid "Data %s"
+msgstr "Płyta %s z danymi"
+
+#: ../libbrasero-media/scsi-error.c:43
+msgid "Unknown error"
+msgstr "Nieznany błąd"
+
+#: ../libbrasero-media/scsi-error.c:44
+msgid "Size mismatch"
+msgstr "Rozmiar się nie zgadza"
+
+#: ../libbrasero-media/scsi-error.c:45
+msgid "Type mismatch"
+msgstr "Rodzaj się nie zgadza"
+
+#: ../libbrasero-media/scsi-error.c:46
+msgid "Bad argument"
+msgstr "Niepoprawny parametr"
+
+#: ../libbrasero-media/scsi-error.c:47
+#: ../src/brasero-tool-dialog.c:78
+#: ../src/burn.c:1294
+#: ../src/burn.c:1328
+#: ../src/burn.c:1510
+#: ../src/burn.c:1521
+#: ../src/plugins/cdrdao/burn-cdrdao.c:231
+#: ../src/plugins/cdrkit/burn-readom.c:92
+#: ../src/plugins/cdrkit/burn-wodim.c:120
+#: ../src/plugins/cdrkit/burn-wodim.c:129
+#: ../src/plugins/cdrtools/burn-cdrecord.c:120
+#: ../src/plugins/cdrtools/burn-cdrecord.c:129
+#: ../src/plugins/cdrtools/burn-readcd.c:92
+#: ../src/plugins/growisofs/burn-dvd-rw-format.c:72
+#: ../src/plugins/growisofs/burn-growisofs.c:179
+#: ../src/plugins/libburnia/burn-libburn-common.c:175
+#, c-format
+msgid "The drive is busy"
+msgstr "Napęd jest zajęty"
+
+#: ../libbrasero-media/scsi-error.c:48
+msgid "Outrange address"
+msgstr "Adres poza zakresem"
+
+#: ../libbrasero-media/scsi-error.c:49
+msgid "Invalid address"
+msgstr "Niepoprawny adres"
+
+#: ../libbrasero-media/scsi-error.c:50
+msgid "Invalid command"
+msgstr "Niepoprawne polecenie"
+
+#: ../libbrasero-media/scsi-error.c:51
+msgid "Invalid parameter in command"
+msgstr "Nieprawidłowy parametr w poleceniu"
+
+#: ../libbrasero-media/scsi-error.c:52
+msgid "Invalid field in command"
+msgstr "Niepoprawne pole w poleceniu"
+
+#: ../libbrasero-media/scsi-error.c:53
+msgid "The device timed out"
+msgstr "Czas oczekiwania na urządzenie się skończył"
+
+#: ../libbrasero-media/scsi-error.c:54
+msgid "Key not established"
+msgstr "Klucz nie został uruchomiony"
+
+#: ../libbrasero-media/scsi-error.c:55
+msgid "Invalid track mode"
+msgstr "Niepoprawny tryb ścieżki"
+
+#: ../src/eggdesktopfile.c:165
+#, c-format
+msgid "File is not a valid .desktop file"
+msgstr "Plik nie jest poprawnym plikiem .desktop"
+
+#: ../src/eggdesktopfile.c:188
+#, c-format
+msgid "Unrecognized desktop file Version '%s'"
+msgstr "Nierozpoznany plik desktop w wersji \"%s\""
+
+#: ../src/eggdesktopfile.c:958
+#, c-format
+msgid "Starting %s"
+msgstr "Rozpoczynanie %s"
+
+#: ../src/eggdesktopfile.c:1100
+#, c-format
+msgid "Application does not accept documents on command line"
+msgstr "Program nie akceptuje dokumentów w wierszu poleceń"
+
+#: ../src/eggdesktopfile.c:1168
+#, c-format
+msgid "Unrecognized launch option: %d"
+msgstr "Nierozpoznana opcja uruchamiania: %d"
+
+#: ../src/eggdesktopfile.c:1373
+#, c-format
+msgid "Can't pass document URIs to a 'Type=Link' desktop entry"
+msgstr "Nie można przekazać adresów URI dokumentu do pozycji \"Type=Link\" pliku desktop"
+
+#: ../src/eggdesktopfile.c:1392
+#, c-format
+msgid "Not a launchable item"
+msgstr "Elementu nie można uruchomić"
+
+#: ../src/eggsmclient.c:224
+msgid "Disable connection to session manager"
+msgstr "Rozłączenie połączenia z menedżerem sesji"
+
+#: ../src/eggsmclient.c:227
+msgid "Specify file containing saved configuration"
+msgstr "Określa plik zawierający zapisaną konfigurację"
+
+#: ../src/eggsmclient.c:227
+msgid "FILE"
+msgstr "PLIK"
+
+#: ../src/eggsmclient.c:230
+msgid "Specify session management ID"
+msgstr "Określa ID zarządzania sesją"
+
+#: ../src/eggsmclient.c:230
+msgid "ID"
+msgstr "ID"
+
+#: ../src/eggsmclient.c:244
+msgid "Session management options:"
+msgstr "Opcje zarządzania sesją:"
+
+#: ../src/eggsmclient.c:245
+msgid "Show session management options"
+msgstr "Wyświetla opcje zarządzania sesją"
+
+#: ../src/brasero-tool-color-picker.c:154
 msgid "Pick a Color"
 msgstr "Proszę wybrać kolor"
 
@@ -39,69 +397,92 @@ msgstr "Analizowanie plików wideo"
 msgid "Brasero Plugins"
 msgstr "Wtyczki programu Brasero"
 
-#: ../src/plugins/local-track/burn-uri.c:159
-#: ../src/plugins/local-track/burn-uri.c:286
+#: ../src/plugins/local-track/burn-uri.c:161
+#: ../src/plugins/local-track/burn-uri.c:288
 #, c-format
 msgid "Impossible to retrieve local file path"
 msgstr "Nie można odczytać lokalnej ścieżki pliku"
 
-#: ../src/plugins/local-track/burn-uri.c:203
-#: ../src/plugins/local-track/burn-local-image.c:728
+#: ../src/plugins/local-track/burn-uri.c:205
+#: ../src/plugins/local-track/burn-local-image.c:730
 msgid "Copying files locally"
 msgstr "Kopiowanie plików lokalnie"
 
-#: ../src/plugins/local-track/burn-uri.c:531
-msgid "Burn_uri allows burning files added to \"CD/DVD Creator Folder\" in nautilus"
-msgstr "Burn_uri zezwala na nagrywanie plików dodanych do katalogu asystenta CD/DVD w programie Nautilus"
-
-#: ../nautilus/nautilus-burn-bar.c:134
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/local-track/burn-uri.c:561
+#: ../nautilus/nautilus-burn-bar.c:136
 msgid "CD/DVD Creator Folder"
 msgstr "Katalog asystenta CD/DVD"
 
-#: ../nautilus/nautilus-burn-bar.c:138
+#: ../src/plugins/local-track/burn-uri.c:562
+msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
+msgstr "Zezwala na nagrywanie plików dodanych do katalogu asystenta CD/DVD w programie Nautilus"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:1
+#: ../data/brasero-open-image.desktop.in.in.h:1
+#: ../data/brasero-open-playlist.desktop.in.in.h:1
+#: ../data/brasero-open-project.desktop.in.in.h:1
+msgid "Create CDs and DVDs"
+msgstr "Utworzenie płyt CD i DVD"
+
+#: ../nautilus/brasero-nautilus.desktop.in.in.h:2
+#: ../src/brasero-app.c:554
+#: ../data/brasero.desktop.in.in.h:3
+#: ../data/brasero-open-image.desktop.in.in.h:2
+#: ../data/brasero-open-playlist.desktop.in.in.h:2
+#: ../data/brasero-open-project.desktop.in.in.h:2
+msgid "Disc Burner"
+msgstr "Nagrywanie płyt"
+
+#: ../nautilus/nautilus-burn-bar.c:143
+msgid "Drag or copy files below to write them to disc"
+msgstr "Proszę przeciągnąć lub skopiować pliki poniżej, aby nagrać je na płycie"
+
+#: ../nautilus/nautilus-burn-bar.c:151
 msgid "Write to Disc"
 msgstr "Zapis na płytę"
 
-#: ../nautilus/nautilus-burn-bar.c:146
-#: ../nautilus/nautilus-burn-extension.c:591
+#: ../nautilus/nautilus-burn-bar.c:163
+#: ../nautilus/nautilus-burn-extension.c:550
 msgid "Write contents to a CD or DVD disc"
 msgstr "Zapisuje zawartość na płytę CD lub DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:142
-#: ../nautilus/nautilus-burn-extension.c:146
+#: ../nautilus/nautilus-burn-extension.c:149
 msgid "Unable to launch the cd burner application"
 msgstr "Uruchomienie programu nagrywającego płyty CD jest niemożliwe"
 
-#: ../nautilus/nautilus-burn-extension.c:472
-#: ../nautilus/nautilus-burn-extension.c:590
+#: ../nautilus/nautilus-burn-extension.c:431
+#: ../nautilus/nautilus-burn-extension.c:549
 msgid "_Write to Disc..."
 msgstr "_Zapisz płytę..."
 
-#: ../nautilus/nautilus-burn-extension.c:473
+#: ../nautilus/nautilus-burn-extension.c:432
 msgid "Write disc image to a CD or DVD disc"
 msgstr "Zapisuje plik obrazu na płytę CD lub DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:525
+#: ../nautilus/nautilus-burn-extension.c:484
 msgid "_Copy Disc..."
 msgstr "_Skopiuj płytę..."
 
-#: ../nautilus/nautilus-burn-extension.c:526
+#: ../nautilus/nautilus-burn-extension.c:485
 msgid "Create a copy of this CD or DVD disc"
 msgstr "Utworzenie kopii płyty CD/DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:537
+#: ../nautilus/nautilus-burn-extension.c:496
 msgid "_Blank Disc..."
 msgstr "Usuń za_wartość"
 
-#: ../nautilus/nautilus-burn-extension.c:538
+#: ../nautilus/nautilus-burn-extension.c:497
 msgid "Blank this CD or DVD disc"
 msgstr "Czyści zawartość płyty CD lub DVD"
 
-#: ../nautilus/nautilus-burn-extension.c:549
+#: ../nautilus/nautilus-burn-extension.c:508
 msgid "_Check Disc..."
 msgstr "_Sprawdź spójność..."
 
-#: ../nautilus/nautilus-burn-extension.c:550
+#: ../nautilus/nautilus-burn-extension.c:509
 msgid "Check the data integrity on this CD or DVD disc"
 msgstr "Sprawdzanie spójności danych na płycie CD/DVD"
 
@@ -127,44 +508,45 @@ msgstr "Konfiguracja opcji nagrywania"
 
 #. NOTE to translators, the first %s is the path of the image
 #. * file and the second its size.
-#: ../src/brasero-src-image.c:221
+#: ../src/brasero-src-image.c:222
 #, c-format
 msgid "\"%s\": %s"
 msgstr "\"%s\": %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
-#: ../src/brasero-src-image.c:228
-#: ../src/brasero-src-image.c:692
+#: ../src/brasero-src-image.c:229
+#: ../src/brasero-src-image.c:678
 msgid "Click here to select an _image"
 msgstr "Proszę nacisnąć _tutaj, aby wybrać obraz"
 
-#: ../src/brasero-src-image.c:243
-#: ../src/brasero-burn-options.c:305
-msgid "Please, select another image."
-msgstr "Proszę wybrać inny plik obrazu."
+#: ../src/brasero-src-image.c:244
+#: ../src/brasero-burn-options.c:308
+msgid "Please select another image."
+msgstr "Proszę wybrać inny obraz."
 
-#: ../src/brasero-src-image.c:566
+#: ../src/brasero-src-image.c:553
 msgid "Select Image File"
 msgstr "Wybór pliku obrazu"
 
-#: ../src/brasero-src-image.c:587
-#: ../src/brasero-search-entry.c:612
-#: ../src/brasero-search-entry.c:652
-#: ../src/brasero-search-entry.c:691
+#: ../src/brasero-src-image.c:574
+#: ../src/brasero-search-entry.c:610
+#: ../src/brasero-search-entry.c:650
+#: ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:473
 #: ../src/brasero-file-chooser.c:210
-#: ../src/brasero-project.c:1444
+#: ../src/brasero-project.c:1423
 msgid "All files"
 msgstr "Wszystkie pliki"
 
-#: ../src/brasero-src-image.c:592
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-src-image.c:579
 #: ../src/brasero-file-chooser.c:234
-#: ../src/brasero-project.c:1465
+#: ../src/brasero-project.c:1445
 msgid "Image files only"
 msgstr "Tylko pliki obrazów"
 
-#: ../src/brasero-src-image.c:610
+#: ../src/brasero-src-image.c:597
 #: ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Typ obrazu:"
@@ -193,79 +575,79 @@ msgstr "Płyta wideo (%s)"
 msgid "Audio disc (%s)"
 msgstr "Płyta CD-Audio (%s)"
 
-#: ../src/brasero-burn-options.c:223
-msgid "Please, insert a recordable CD or DVD if you don't want to write to an image file."
-msgstr "Proszę wsunąć zapisywalną płytę CD lub DVD jeśli opcja zapisu pliku obrazu nie ma być wybrana."
+#: ../src/brasero-burn-options.c:226
+msgid "Please insert a recordable CD or DVD if you don't want to write to an image file."
+msgstr "Proszę wsunąć zapisywalną płytę CD lub DVD jeśli nie ma to być zapis do pliku obrazu."
 
-#: ../src/brasero-burn-options.c:256
-msgid "Please, choose another CD or DVD or insert a new one."
+#: ../src/brasero-burn-options.c:259
+msgid "Please choose another CD or DVD or insert a new one."
 msgstr "Proszę wybrać inną płytę CD lub DVD, lub wsunąć nową."
 
-#: ../src/brasero-burn-options.c:257
+#: ../src/brasero-burn-options.c:260
 #: ../src/brasero-data-disc.c:628
 msgid "The size of the project is too large for the disc even with the overburn option."
 msgstr "Rozmiar projektu jest zbyt duży dla tej płyty, nawet z wykorzystaniem opcji nadpalania."
 
-#: ../src/brasero-burn-options.c:263
+#: ../src/brasero-burn-options.c:266
 #: ../src/brasero-burn-dialog.c:452
-msgid "Please, insert a recordable CD or DVD."
+msgid "Please insert a recordable CD or DVD."
 msgstr "Proszę wsunąć zapisywalną płytę CD lub DVD."
 
-#: ../src/brasero-burn-options.c:264
+#: ../src/brasero-burn-options.c:267
 msgid "There is no recordable disc inserted."
 msgstr "Nie wsunięto zapisywalnego nośnika."
 
-#: ../src/brasero-burn-options.c:270
+#: ../src/brasero-burn-options.c:273
 msgid "No track information (artist, compositor, ...) will be written to the disc."
 msgstr "Informacje o ścieżkach (wykonawca, kompozytor, itp.) nie zostaną nagrane na płycie."
 
-#: ../src/brasero-burn-options.c:271
+#: ../src/brasero-burn-options.c:274
 msgid "This is not supported by the current active burning backend."
 msgstr "Funkcja nie jest obsługiwana przez bieżący moduł nagrywający."
 
-#: ../src/brasero-burn-options.c:281
+#: ../src/brasero-burn-options.c:284
 #: ../src/brasero-burn-dialog.c:396
-msgid "Please, insert a disc holding data."
+msgid "Please insert a disc holding data."
 msgstr "Proszę wsunąć płytę zawierającą dane."
 
-#: ../src/brasero-burn-options.c:282
+#: ../src/brasero-burn-options.c:285
 msgid "There is no inserted disc to copy."
 msgstr "Nie wsunięto nośnika do kopiowania."
 
-#: ../src/brasero-burn-options.c:293
-msgid "Please, select an image."
+#: ../src/brasero-burn-options.c:296
+msgid "Please select an image."
 msgstr "Proszę wybrać obraz."
 
-#: ../src/brasero-burn-options.c:294
+#: ../src/brasero-burn-options.c:297
 msgid "There is no selected image."
 msgstr "Nie wybrano obrazu."
 
-#: ../src/brasero-burn-options.c:306
+#: ../src/brasero-burn-options.c:309
 msgid "It doesn't appear to be a valid image or a valid cue file."
 msgstr "To nie wygląda na poprawny plik obrazu lub plik cue."
 
-#: ../src/brasero-burn-options.c:317
-msgid "Please, insert a disc that is not copy protected."
+#: ../src/brasero-burn-options.c:320
+msgid "Please insert a disc that is not copy protected."
 msgstr "Proszę wsunąć płytę, która nie posiada zabezpieczeń przed kopiowaniem."
 
-#: ../src/brasero-burn-options.c:318
+#: ../src/brasero-burn-options.c:321
 msgid "Such a disc cannot be copied without the proper plugins."
 msgstr "Ta płyta nie może zostać skopiowana bez odpowiednich wtyczek."
 
-#: ../src/brasero-burn-options.c:325
-msgid "Please, replace the disc with a supported CD or DVD."
+#: ../src/brasero-burn-options.c:328
+msgid "Please replace the disc with a supported CD or DVD."
 msgstr "Proszę zamienić płytę na obsługiwaną płytę CD lub DVD."
 
-#: ../src/brasero-burn-options.c:326
+#: ../src/brasero-burn-options.c:329
 msgid "It is not possible to write with the current set of plugins."
 msgstr "Zapisywanie nie jest możliwe przy zastosowanym zestawie wtyczek."
 
-#: ../src/brasero-burn-options.c:334
+#: ../src/brasero-burn-options.c:337
 #: ../src/brasero-data-disc.c:601
 msgid "Would you like to burn beyond the disc reported capacity?"
 msgstr "Na pewno nagrywać ponad podaną pojemność nośnika?"
 
-#: ../src/brasero-burn-options.c:335
+#: ../src/brasero-burn-options.c:338
 msgid ""
 "The size of the project is too large for the disc.\n"
 "You may want to use this option if you are using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option.\n"
@@ -275,126 +657,118 @@ msgstr ""
 "Opcja ta może zostać użyta jeśli używa się płyty CD-R(W) o pojemności 90 lub 100 minut, z której prawidłowym rozpoznaniem są trudności. Z tego powodu konieczne jest użycie funkcji nadpalania.\n"
 "UWAGA: Użycie tej opcji może się zakończyć niepowodzeniem."
 
-#: ../src/brasero-burn-options.c:342
+#: ../src/brasero-burn-options.c:345
 #: ../src/brasero-data-disc.c:611
 msgid "_Overburn"
 msgstr "_Nadpal"
 
-#: ../src/brasero-burn-options.c:343
+#: ../src/brasero-burn-options.c:346
 #: ../src/brasero-data-disc.c:612
 msgid "Burn beyond the disc reported capacity"
 msgstr "Nagrywanie ponad podaną pojemność płyty"
 
-#: ../src/brasero-burn-options.c:354
+#: ../src/brasero-burn-options.c:357
 msgid "The drive that holds the source disc will also be the one used to record."
 msgstr "Napęd zawierający nośnik źródłowy zostanie także użyty do nagrywania."
 
-#: ../src/brasero-burn-options.c:355
+#: ../src/brasero-burn-options.c:358
 msgid "A new recordable disc will be required once the one currently loaded has been copied."
 msgstr "Po zakończeniu kopiowania obecnie wczytywanego nośnika należy go wymienić na nośnik zapisywalny."
 
 #. Create a default Burn button
-#: ../src/brasero-burn-options.c:401
+#: ../src/brasero-burn-options.c:392
 msgid "_Burn"
 msgstr "_Nagraj"
 
-#: ../src/brasero-burn-options.c:450
+#: ../src/brasero-burn-options.c:438
 msgid "Select a disc to write to"
 msgstr "Proszę wybrać płytę do nagrania"
 
-#: ../src/brasero-app.c:95
+#: ../src/brasero-app.c:107
 msgid "_Project"
 msgstr "_Projekt"
 
-#: ../src/brasero-app.c:96
+#: ../src/brasero-app.c:108
 msgid "_View"
 msgstr "_Widok"
 
-#: ../src/brasero-app.c:97
+#: ../src/brasero-app.c:109
 msgid "_Edit"
 msgstr "_Edycja"
 
-#: ../src/brasero-app.c:98
+#: ../src/brasero-app.c:110
 msgid "_Tools"
 msgstr "_Narzędzia"
 
-#: ../src/brasero-app.c:100
+#: ../src/brasero-app.c:112
 msgid "_Help"
 msgstr "Pomo_c"
 
-#: ../src/brasero-app.c:102
+#: ../src/brasero-app.c:114
 msgid "P_lugins"
 msgstr "_Wtyczki"
 
-#: ../src/brasero-app.c:103
+#: ../src/brasero-app.c:115
 msgid "Choose plugins for brasero"
 msgstr "Wybór wtyczek dla programu Brasero"
 
-#: ../src/brasero-app.c:105
+#: ../src/brasero-app.c:117
 msgid "E_ject"
 msgstr "_Wysuń"
 
-#: ../src/brasero-app.c:106
+#: ../src/brasero-app.c:118
 msgid "Eject a disc"
 msgstr "Wysuwa płytę"
 
-#: ../src/brasero-app.c:108
+#: ../src/brasero-app.c:120
 msgid "_Erase..."
 msgstr "_Usuń zawartość..."
 
-#: ../src/brasero-app.c:109
+#: ../src/brasero-app.c:121
 msgid "Erase a disc"
 msgstr "Usuwa zawartość płyty"
 
-#: ../src/brasero-app.c:111
+#: ../src/brasero-app.c:123
 msgid "_Check Integrity..."
 msgstr "_Sprawdź spójność..."
 
-#: ../src/brasero-app.c:112
+#: ../src/brasero-app.c:124
 msgid "Check data integrity of disc"
 msgstr "Sprawdzanie spójności danych na płycie"
 
-#: ../src/brasero-app.c:115
+#: ../src/brasero-app.c:127
 msgid "Exit the program"
 msgstr "Zakończenie programu"
 
-#: ../src/brasero-app.c:119
+#: ../src/brasero-app.c:129
 msgid "_Contents"
 msgstr "_Zawartość"
 
-#: ../src/brasero-app.c:119
+#: ../src/brasero-app.c:129
 msgid "Display help"
 msgstr "Wyświetlenie pomocy"
 
-#: ../src/brasero-app.c:124
+#: ../src/brasero-app.c:132
 msgid "About"
 msgstr "O programie"
 
-#: ../src/brasero-app.c:244
-#: ../data/brasero.desktop.in.in.h:3
-#: ../data/brasero-open-image.desktop.in.in.h:2
-#: ../data/brasero-open-playlist.desktop.in.in.h:2
-#: ../data/brasero-open-project.desktop.in.in.h:2
-msgid "Disc Burner"
-msgstr "Nagrywanie płyt"
-
-#: ../src/brasero-app.c:511
+#: ../src/brasero-app.c:999
 msgid "Brasero is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Niniejszy program jest wolnym oprogramowaniem; można go rozprowadzać dalej i/lub modyfikować na warunkach Powszechnej Licencji Publicznej GNU, wydanej przez Fundację Wolnego Oprogramowania - według wersji drugiej tej Licencji lub którejś z późniejszych wersji. "
 
-#: ../src/brasero-app.c:516
+#: ../src/brasero-app.c:1004
 msgid "Brasero is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Niniejszy program rozpowszechniany jest z nadzieją, iż będzie on użyteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domyślnej gwarancji PRZYDATNOŚCI HANDLOWEJ albo PRZYDATNOŚCI DO OKREŚLONYCH ZASTOSOWAŃ. W celu uzyskania bliższych informacji należy zapoznać się z Powszechną Licencją Publiczną GNU."
 
-#: ../src/brasero-app.c:521
+#: ../src/brasero-app.c:1009
 msgid "You should have received a copy of the GNU General Public License along with Brasero; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA"
 msgstr "Z pewnością wraz z niniejszym programem dostarczono także egzemplarz Powszechnej Licencji Publicznej GNU (GNU General Public License); jeśli nie - proszę napisać do Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-130159 USA"
 
-#: ../src/brasero-app.c:530
+#: ../src/brasero-app.c:1021
 msgid "A simple to use CD/DVD burning application for GNOME"
 msgstr "Łatwy w użyciu program do nagrywania płyt CD/DVD dla GNOME"
 
-#: ../src/brasero-app.c:546
+#: ../src/brasero-app.c:1038
 msgid "Brasero Homepage"
 msgstr "Witryna programu Brasero"
 
@@ -406,22 +780,23 @@ msgstr "Witryna programu Brasero"
 #. * this translation; in that case, please write each of them on a separate
 #. * line seperated by newlines (\n).
 #.
-#: ../src/brasero-app.c:558
+#: ../src/brasero-app.c:1050
 msgid "translator-credits"
 msgstr ""
-"Aviary.pl <gnomepl@aviary.pl>, 2008\n"
-"Joanna Mazgaj <jmazgaj@aviary.pl>, 2008"
+"Aviary.pl <gnomepl@aviary.pl>, 2008, 2009\n"
+"Joanna Mazgaj <jmazgaj@aviary.pl>, 2008\n"
+"Tomasz Dominikowski <tdominikowski@aviary.pl>, 2009"
 
-#: ../src/brasero-app.c:680
-#: ../src/brasero-app.c:686
+#: ../src/brasero-app.c:1171
+#: ../src/brasero-app.c:1177
 msgid "_Recent Projects"
 msgstr "Ostatnie p_rojekty"
 
-#: ../src/brasero-app.c:681
+#: ../src/brasero-app.c:1172
 msgid "Display the projects recently opened"
 msgstr "Wyświetla ostatnio otwarte projekty"
 
-#: ../src/brasero-app.c:824
+#: ../src/brasero-app.c:1454
 #: ../data/brasero.desktop.in.in.h:1
 msgid "Brasero Disc Burner"
 msgstr "Nagrywanie płyt Brasero"
@@ -431,8 +806,8 @@ msgid "Create and copy CDs and DVDs"
 msgstr "Nagrywanie i kopiowanie płyt CD/DVD"
 
 #: ../data/brasero.schemas.in.h:1
-msgid "Contains the list of additional plugins brasero will use to burn discs. If set to NULL, brasero will load them all."
-msgstr "Zawiera listę dodatkowych wtyczek używanych do nagrywania. Jeśli jest ustawiony na NULL każda z nich zostanie wczytana."
+msgid "Contains the list of additional plugins Brasero will use to burn discs. If set to NULL, Brasero will load them all."
+msgstr "Zawiera listę dodatkowych wtyczek używanych przez program Brasero do nagrywania. Jeśli jest ustawiony na NULL, to wszystkie zostaną wczytane."
 
 #: ../data/brasero.schemas.in.h:2
 msgid "Contains the name of the favourite burn engine suite installed. It will be used if possible."
@@ -495,70 +870,94 @@ msgid "Pane to display for video projects"
 msgstr "Panel do wyświetlenia dla projektów wideo"
 
 #: ../data/brasero.schemas.in.h:17
+msgid "Replace symlinks files by their targets"
+msgstr "Zamienia pliki dowiązań symbolicznych ich plikami docelowymi"
+
+#: ../data/brasero.schemas.in.h:18
 msgid "Should brasero filter broken symlinks files"
 msgstr "Określa, czy program Brasero ma filtrować uszkodzone dowiązania symboliczne"
 
-#: ../data/brasero.schemas.in.h:18
+#: ../data/brasero.schemas.in.h:19
 msgid "Should brasero filter broken symlinks. Set to true, brasero will filter broken symlinks."
 msgstr "Określa, czy program Brasero ma filtrować uszkodzone dowiązania symboliczne. Ustawienie \"true\" spowoduje odfiltrowywanie tych dowiązań."
 
-#: ../data/brasero.schemas.in.h:19
+#: ../data/brasero.schemas.in.h:20
 msgid "Should brasero filter hidden files"
 msgstr "Określa, czy program Brasero ma filtrować ukryte pliki"
 
-#: ../data/brasero.schemas.in.h:20
+#: ../data/brasero.schemas.in.h:21
 msgid "Should brasero filter hidden files. Set to true, brasero will filter hidden files."
 msgstr "Określa, czy program Brasero ma filtrować ukryte pliki. Ustawienie \"true\" spowoduje odfiltrowywanie tych plików."
 
-#: ../data/brasero.schemas.in.h:21
+#: ../data/brasero.schemas.in.h:22
 msgid "Should brasero notify when files are filtered"
 msgstr "Określa, czy program Brasero ma powiadamiać o filtrowaniu plików"
 
-#: ../data/brasero.schemas.in.h:22
+#: ../data/brasero.schemas.in.h:23
 msgid "Should brasero notify when files are filtered. Set to true, brasero will display the notification."
 msgstr "Określa, czy program Brasero ma powiadamiać o odfiltrowywaniu plików. Ustawienie \"true\" włącza powiadamianie."
 
-#: ../data/brasero.schemas.in.h:23
+#: ../data/brasero.schemas.in.h:24
+msgid "Should brasero replace symlinks by their target files in the project. Set to true, brasero will replace symlinks."
+msgstr "Określa, czy program Brasero ma zamieniać dowiązania symboliczne na ich pliki docelowe w projekcie. Ustawienie \"true\" spowoduje zamianę dowiązań."
+
+#: ../data/brasero.schemas.in.h:25
 msgid "The pane to display with audio projects. It should be one of the following: \"Chooser\", \"Search\" or \"Playlist\"."
 msgstr "Panel do wyświetlenia z projektami dźwiękowymi. Powinien być jednym z: \"Chooser\", \"Search\", lub \"Playlist\"."
 
-#: ../data/brasero.schemas.in.h:24
+#: ../data/brasero.schemas.in.h:26
 msgid "The pane to display with data projects. It should be one of the following: \"Chooser\" or \"Search\"."
 msgstr "Panel do wyświetlenia z projektami danych. Powinien być jednym z: \"Chooser\" lub \"Search\"."
 
-#: ../data/brasero.schemas.in.h:25
+#: ../data/brasero.schemas.in.h:27
 msgid "The pane to display with video projects. It should be one of the following: \"Chooser\", \"Search\" or \"Playlist\"."
 msgstr "Panel do wyświetlenia z projektami wideo. Powinien być jednym z: \"Chooser\", \"Search\", lub \"Playlist\"."
 
-#: ../data/brasero.schemas.in.h:26
+#: ../data/brasero.schemas.in.h:28
 msgid "This key sets where the project pane should be (0 = on the right, 1 = on the left, 2 = at the top, 3 = at the bottom)"
 msgstr "Służy do ustalenia pozycji panelu projektu (0 = po prawej stronie, 1 = po lewej stronie, 2 = u góry, 3 = na dole)"
 
-#: ../data/brasero.schemas.in.h:27
+#: ../data/brasero.schemas.in.h:29
 msgid "Used in conjunction with \"-immed\" flag with cdrecord"
 msgstr "Używane w połączeniu z flagą \"-immed\" cdrecord"
 
-#: ../data/brasero.schemas.in.h:28
+#: ../data/brasero.schemas.in.h:30
 msgid "Whether to display a side pane. Set to true to use it."
 msgstr "Określa, czy wyświetlać panel boczny. Ustawienie na \"true\" włączy wyświetlanie."
 
-#: ../data/brasero.schemas.in.h:29
+#: ../data/brasero.schemas.in.h:31
 msgid "Whether to display file preview. Set to true to use it."
 msgstr "Określa, czy wyświetlać podgląd plików. Ustawienie na \"true\" włączy wyświetlanie."
 
-#: ../data/brasero.schemas.in.h:30
-msgid "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
-msgstr "Określa, czy używać flagi \"-immed\" z cdrecord. Należy go używać z ostrożnością (ustawienie na \"true\" włącza używanie flagi), to tylko obejście problemów z niektórymi napędami/komputerami."
+#: ../data/brasero.schemas.in.h:32
+msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao"
+msgstr "Określa, czy używać flagi \"--driver generic-mmc-raw\" z cdrdao"
 
-#: ../data/brasero.schemas.in.h:31
+#: ../data/brasero.schemas.in.h:33
+msgid "Whether to use \"--driver generic-mmc-raw\" flag with cdrdao. Set to True, brasero will use it; it may be a workaround for some drives/setups."
+msgstr "Określa, czy używać flagi \"--driver generic-mmc-raw\" z cdrdao. Ustawienie \"true\" włącza używanie flagi; może być skutecznym obejściem problemów z niektórymi napędami/konfiguracjami."
+
+#: ../data/brasero.schemas.in.h:34
+msgid "Whether to use \"-immed\" flag with cdrecord. Use with caution (set to true) as it's only a workaround for some drives/setups."
+msgstr "Określa, czy używać flagi \"-immed\" z cdrecord. Należy go używać z ostrożnością (ustawienie na \"true\" włącza używanie flagi), to tylko obejście problemów z niektórymi napędami/konfiguracjami."
+
+#: ../data/brasero.schemas.in.h:35
+msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs"
+msgstr "Określa, czy używać flagi \"-use-the-force-luke=dao\" z growisofs"
+
+#: ../data/brasero.schemas.in.h:36
+msgid "Whether to use \"-use-the-force-luke=dao\" flag with growisofs. Set to false, brasero won't use it; it may be a workaround for some drives/setups."
+msgstr "Określa, czy używać flagi \"-use-the-force-luke=dao\" z growisofs. Ustawienie \"false\" wyłącza używanie flagi; może być skutecznym obejściem problemów z niektórymi napędami/konfiguracjami."
+
+#: ../data/brasero.schemas.in.h:37
 msgid "White list of additional plugins to use"
 msgstr "Lista dodatkowych wtyczek"
 
-#: ../data/brasero.schemas.in.h:32
+#: ../data/brasero.schemas.in.h:38
 msgid "Width for image preview"
 msgstr "Szerokość podglądu obrazów"
 
-#: ../data/brasero.schemas.in.h:33
+#: ../data/brasero.schemas.in.h:39
 msgid "Width for video preview"
 msgstr "Szerokość podglądu nagrań wideo"
 
@@ -566,18 +965,14 @@ msgstr "Szerokość podglądu nagrań wideo"
 msgid "Brasero project file"
 msgstr "Plik projektu programu Brasero"
 
-#: ../data/brasero.xml.in.h:2
-msgid "Cdrdao toc file"
-msgstr "Plik cdrdao toc"
-
-#: ../src/brasero-dest-selection.c:95
-#: ../src/burn.c:931
+#: ../src/brasero-dest-selection.c:97
+#: ../src/burn.c:923
 msgid "Ongoing burning process"
 msgstr "Trwa proces nagrywania"
 
 #. NOTE for translators: the first %s is medium_name ("File
 #. * Image") and the second the path for the image file
-#: ../src/brasero-dest-selection.c:413
+#: ../src/brasero-dest-selection.c:414
 #, c-format
 msgid "%s: \"%s\""
 msgstr "%s: \"%s\""
@@ -588,26 +983,26 @@ msgstr "%s: \"%s\""
 #. * destination disc a new one (once the source has been
 #. * copied) which is to be inserted in the drive currently
 #. * holding the source disc
-#: ../src/brasero-dest-selection.c:438
+#: ../src/brasero-dest-selection.c:439
 #, c-format
 msgid "New disc in the burner holding source disc"
 msgstr "Nowa płyta w napędzie zawierającym nośnik źródłowy"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../src/brasero-dest-selection.c:461
+#: ../src/brasero-dest-selection.c:463
 #, c-format
 msgid "%s: no free space"
 msgstr "%s: brak wolnego miejsce"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../src/brasero-dest-selection.c:483
+#: ../src/brasero-dest-selection.c:490
 #, c-format
 msgid "%s: %s of free space"
 msgstr "%s (%s wolnych)"
 
 #: ../src/brasero-audio-disc.c:300
-#: ../src/brasero-tray.c:78
+#: ../src/brasero-tray.c:80
 #: ../src/brasero-data-disc.c:117
 #: ../src/brasero-video-disc.c:92
 msgid "Menu"
@@ -669,7 +1064,7 @@ msgid "Track"
 msgstr "Ścieżka"
 
 #: ../src/brasero-audio-disc.c:685
-#: ../src/brasero-video-disc.c:1189
+#: ../src/brasero-video-disc.c:1171
 msgid "Title"
 msgstr "Tytuł"
 
@@ -679,12 +1074,12 @@ msgstr "Wykonawca"
 
 #: ../src/brasero-audio-disc.c:721
 #: ../src/brasero-playlist.c:325
-#: ../src/brasero-split-dialog.c:1210
+#: ../src/brasero-split-dialog.c:1216
 msgid "Length"
 msgstr "Długość"
 
 #: ../src/brasero-audio-disc.c:922
-#: ../src/burn-basics.c:77
+#: ../src/burn-basics.c:76
 msgid "Analysing audio files"
 msgstr "Analizowanie plików dźwiękowych"
 
@@ -696,80 +1091,89 @@ msgstr "Koniec ścieżki zostanie wydłużony."
 msgid "The track is shorter than 6 seconds"
 msgstr "Ścieżka jest krótsza niż 6 sekund."
 
-#: ../src/brasero-audio-disc.c:1363
-#: ../src/brasero-metadata.c:598
+#: ../src/brasero-audio-disc.c:1356
+#: ../src/brasero-metadata.c:671
 #, c-format
-msgid "\"%s\" could not be handled by gstreamer."
-msgstr "\"%s\" nie może zostać obsłużony przez gstreamer."
+msgid "\"%s\" could not be handled by Gstreamer."
+msgstr "\"%s\" nie mógł zostać obsłużony przez GStreamer."
 
-#: ../src/brasero-audio-disc.c:1366
+#: ../src/brasero-audio-disc.c:1359
 msgid "Make sure the appropriate codec is installed"
 msgstr "Proszę się upewnić, że zainstalowany jest odpowiedni kodek."
 
-#: ../src/brasero-audio-disc.c:1388
+#: ../src/brasero-audio-disc.c:1375
 #, c-format
 msgid "Do you want to add \"%s\" which is a video file?"
 msgstr "Dodać \"%s\", który jest plikiem wideo?"
 
-#: ../src/brasero-audio-disc.c:1397
+#: ../src/brasero-audio-disc.c:1384
 msgid "This file is a video and therefore only the audio part can be written to the disc."
 msgstr "Ponieważ jest to plik wideo, tylko jego ścieżka dźwiękowa może zostać zapisana."
 
-#: ../src/brasero-audio-disc.c:1400
+#: ../src/brasero-audio-disc.c:1387
 msgid "_Discard File"
 msgstr "O_drzuć"
 
-#: ../src/brasero-audio-disc.c:1403
-#: ../src/brasero-data-disc.c:1034
-#: ../src/brasero-data-disc.c:1081
+#: ../src/brasero-audio-disc.c:1390
+#: ../src/brasero-data-disc.c:1020
+#: ../src/brasero-data-disc.c:1064
 msgid "_Add File"
 msgstr "Dod_aj plik"
 
-#: ../src/brasero-audio-disc.c:1525
+#: ../src/brasero-audio-disc.c:1510
 msgid "Do you want to search for audio files inside the directory?"
 msgstr "Poszukać plików dźwiękowych wewnątrz tego katalogu?"
 
-#: ../src/brasero-audio-disc.c:1530
+#: ../src/brasero-audio-disc.c:1515
 msgid "Directories cannot be added to an audio disc."
 msgstr "Nie można dodawać katalogów do płyt CD-Audio."
 
-#: ../src/brasero-audio-disc.c:1534
+#: ../src/brasero-audio-disc.c:1519
 msgid "Search _Directory"
 msgstr "Przeszukaj _katalog"
 
-#: ../src/brasero-audio-disc.c:1598
-#: ../src/brasero-video-disc.c:283
+#: ../src/brasero-audio-disc.c:1573
+#: ../src/brasero-video-disc.c:272
 #, c-format
 msgid "\"%s\" could not be opened."
 msgstr "Nie udało się otworzyć \"%s\"."
 
-#: ../src/brasero-audio-disc.c:1748
+#: ../src/brasero-audio-disc.c:1723
+#: ../src/brasero-audio-disc.c:1735
 #: ../src/brasero-audio-disc.c:1760
-#: ../src/brasero-audio-disc.c:1785
-#: ../src/brasero-playlist.c:960
+#: ../src/brasero-playlist.c:953
 #: ../src/brasero-data-tree-model.c:432
-#: ../src/brasero-data-tree-model.c:491
-#: ../src/brasero-data-tree-model.c:502
-#: ../src/brasero-data-tree-model.c:563
-#: ../src/brasero-data-tree-model.c:568
+#: ../src/brasero-data-tree-model.c:505
+#: ../src/brasero-data-tree-model.c:516
+#: ../src/brasero-data-tree-model.c:577
+#: ../src/brasero-data-tree-model.c:582
 #: ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
 msgstr "(wczytywanie...)"
 
-#: ../src/brasero-audio-disc.c:2930
+#: ../src/brasero-audio-disc.c:2901
 msgid "Select one song only please."
 msgstr "Proszę wybrać tylko jeden utwór."
 
-#: ../src/brasero-audio-disc.c:2931
+#: ../src/brasero-audio-disc.c:2902
 msgid "Impossible to split more than one song at a time"
 msgstr "Nie można podzielić więcej niż jednego utworu jednocześnie"
 
-#: ../src/brasero-audio-disc.c:3866
+#. Translators: "%s" is the name of a file here
+#: ../src/brasero-audio-disc.c:3839
 #, c-format
 msgid "\"%s\" was removed from the file system."
 msgstr "Plik \"%s\" został usunięty z systemu plików."
 
-#: ../src/brasero-audio-disc.c:3869
+#. Translators: This is when brasero detects that a file
+#. * in the audio project was removed from its original
+#. * location (on a hard drive, USB stick, whatever) so
+#. * it removes the file from the project (not from its
+#. * original location) and lets the user know. The "It"
+#. * refers to the file and this string is coupled with
+#. * previous string:
+#. * ""\"%s\" was removed from the file system."
+#: ../src/brasero-audio-disc.c:3850
 msgid "It will be removed from the project"
 msgstr "Zostanie usunięty z projektu"
 
@@ -830,10 +1234,13 @@ msgstr "Proszę wybrać płytę do skopiowania"
 #. * could not be created
 #. Translators: %s is the name of the GstElement that
 #. * element could not be created
-#: ../src/brasero-metadata.c:1333
-#: ../src/brasero-metadata.c:1348
-#: ../src/brasero-metadata.c:1357
-#: ../src/brasero-metadata.c:1370
+#: ../src/brasero-metadata.c:743
+#: ../src/brasero-metadata.c:756
+#: ../src/brasero-metadata.c:769
+#: ../src/brasero-metadata.c:1491
+#: ../src/brasero-metadata.c:1506
+#: ../src/brasero-metadata.c:1515
+#: ../src/brasero-metadata.c:1528
 #: ../src/plugins/transcode/burn-normalize.c:97
 #: ../src/plugins/transcode/burn-normalize.c:357
 #: ../src/plugins/transcode/burn-normalize.c:370
@@ -841,37 +1248,48 @@ msgstr "Proszę wybrać płytę do skopiowania"
 #: ../src/plugins/transcode/burn-normalize.c:394
 #: ../src/plugins/transcode/burn-normalize.c:407
 #: ../src/plugins/transcode/burn-normalize.c:572
-#: ../src/plugins/transcode/burn-normalize.c:581
-#: ../src/plugins/transcode/burn-transcode.c:319
-#: ../src/plugins/transcode/burn-transcode.c:368
-#: ../src/plugins/transcode/burn-transcode.c:384
-#: ../src/plugins/transcode/burn-transcode.c:397
-#: ../src/plugins/transcode/burn-transcode.c:409
-#: ../src/plugins/transcode/burn-transcode.c:433
-#: ../src/plugins/transcode/burn-vob.c:249
-#: ../src/plugins/transcode/burn-vob.c:268
-#: ../src/plugins/transcode/burn-vob.c:282
-#: ../src/plugins/transcode/burn-vob.c:319
-#: ../src/plugins/transcode/burn-vob.c:336
-#: ../src/plugins/transcode/burn-vob.c:348
-#: ../src/plugins/transcode/burn-vob.c:359
-#: ../src/plugins/transcode/burn-vob.c:371
-#: ../src/plugins/transcode/burn-vob.c:394
-#: ../src/plugins/transcode/burn-vob.c:448
-#: ../src/plugins/transcode/burn-vob.c:465
-#: ../src/plugins/transcode/burn-vob.c:477
-#: ../src/plugins/transcode/burn-vob.c:488
-#: ../src/plugins/transcode/burn-vob.c:521
-#: ../src/plugins/transcode/burn-vob.c:595
-#: ../src/plugins/transcode/burn-vob.c:612
-#: ../src/plugins/transcode/burn-vob.c:627
-#: ../src/plugins/transcode/burn-vob.c:639
-#: ../src/plugins/transcode/burn-vob.c:650
-#: ../src/plugins/transcode/burn-vob.c:661
-#: ../src/plugins/transcode/burn-vob.c:853
-#: ../src/plugins/transcode/burn-vob.c:868
-#: ../src/plugins/transcode/burn-vob.c:881
-#: ../src/plugins/transcode/burn-vob.c:908
+#: ../src/plugins/transcode/burn-normalize.c:580
+#: ../src/plugins/transcode/burn-transcode.c:281
+#: ../src/plugins/transcode/burn-transcode.c:293
+#: ../src/plugins/transcode/burn-transcode.c:383
+#: ../src/plugins/transcode/burn-transcode.c:435
+#: ../src/plugins/transcode/burn-transcode.c:451
+#: ../src/plugins/transcode/burn-transcode.c:464
+#: ../src/plugins/transcode/burn-transcode.c:476
+#: ../src/plugins/transcode/burn-transcode.c:500
+#: ../src/plugins/transcode/burn-vob.c:255
+#: ../src/plugins/transcode/burn-vob.c:269
+#: ../src/plugins/transcode/burn-vob.c:283
+#: ../src/plugins/transcode/burn-vob.c:295
+#: ../src/plugins/transcode/burn-vob.c:307
+#: ../src/plugins/transcode/burn-vob.c:357
+#: ../src/plugins/transcode/burn-vob.c:369
+#: ../src/plugins/transcode/burn-vob.c:381
+#: ../src/plugins/transcode/burn-vob.c:393
+#: ../src/plugins/transcode/burn-vob.c:405
+#: ../src/plugins/transcode/burn-vob.c:417
+#: ../src/plugins/transcode/burn-vob.c:501
+#: ../src/plugins/transcode/burn-vob.c:513
+#: ../src/plugins/transcode/burn-vob.c:525
+#: ../src/plugins/transcode/burn-vob.c:537
+#: ../src/plugins/transcode/burn-vob.c:559
+#: ../src/plugins/transcode/burn-vob.c:576
+#: ../src/plugins/transcode/burn-vob.c:609
+#: ../src/plugins/transcode/burn-vob.c:686
+#: ../src/plugins/transcode/burn-vob.c:698
+#: ../src/plugins/transcode/burn-vob.c:713
+#: ../src/plugins/transcode/burn-vob.c:725
+#: ../src/plugins/transcode/burn-vob.c:736
+#: ../src/plugins/transcode/burn-vob.c:747
+#: ../src/plugins/transcode/burn-vob.c:913
+#: ../src/plugins/transcode/burn-vob.c:965
+#: ../src/plugins/transcode/burn-vob.c:980
+#: ../src/plugins/transcode/burn-vob.c:993
+#: ../src/plugins/transcode/burn-vob.c:1020
+#: ../src/plugins/transcode/burn-vob.c:1184
+#: ../src/plugins/transcode/burn-vob.c:1192
+#: ../src/plugins/transcode/burn-vob.c:1200
+#: ../src/plugins/transcode/burn-vob.c:1208
 #, c-format
 msgid "%s element could not be created"
 msgstr "Nie udało się utworzyć elementu %s"
@@ -898,26 +1316,26 @@ msgstr "Gatunek"
 msgid "Select Playlist"
 msgstr "Wybór listy odtwarzania"
 
-#: ../src/brasero-playlist.c:814
+#: ../src/brasero-playlist.c:807
 #, c-format
 msgid "Error parsing playlist \"%s\"."
 msgstr "Błąd podczas przetwarzania listy odtwarzania \"%s\"."
 
-#: ../src/brasero-playlist.c:817
+#: ../src/brasero-playlist.c:810
 #: ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:2343
+#: ../src/brasero-project.c:1751
 #: ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "Wystąpił nieznany błąd"
 
-#: ../src/brasero-playlist.c:921
+#: ../src/brasero-playlist.c:914
 #: ../src/brasero-data-tree-model.c:434
-#: ../src/brasero-data-tree-model.c:574
+#: ../src/brasero-data-tree-model.c:588
 msgid "Empty"
 msgstr "Pusty"
 
 #. Translators: %d is the number of songs
-#: ../src/brasero-playlist.c:923
+#: ../src/brasero-playlist.c:916
 #, c-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -925,42 +1343,43 @@ msgstr[0] "%d utwór"
 msgstr[1] "%d utwory"
 msgstr[2] "%d utworów"
 
-#: ../src/brasero-plugin-manager-ui.c:61
+#: ../src/brasero-plugin-manager-ui.c:62
 msgid "Plugin"
 msgstr "Wtyczka"
 
-#: ../src/brasero-plugin-manager-ui.c:62
+#: ../src/brasero-plugin-manager-ui.c:63
 msgid "Enabled"
 msgstr "Włączona"
 
-#: ../src/brasero-plugin-manager-ui.c:142
+#: ../src/brasero-plugin-manager-ui.c:143
 #, c-format
 msgid "Copyright %s"
 msgstr "Prawa autorskie %s"
 
-#: ../src/brasero-plugin-manager-ui.c:578
-#: ../src/brasero-plugin-manager-ui.c:947
+#: ../src/brasero-plugin-manager-ui.c:588
+#: ../src/brasero-plugin-manager-ui.c:958
 msgid "_About"
 msgstr "_O programie"
 
-#: ../src/brasero-plugin-manager-ui.c:586
-#: ../src/brasero-plugin-manager-ui.c:953
+#: ../src/brasero-plugin-manager-ui.c:596
+#: ../src/brasero-plugin-manager-ui.c:964
 msgid "C_onfigure"
 msgstr "_Konfiguruj"
 
-#: ../src/brasero-plugin-manager-ui.c:596
+#: ../src/brasero-plugin-manager-ui.c:606
 msgid "A_ctivate"
 msgstr "_Włącz"
 
-#: ../src/brasero-plugin-manager-ui.c:608
+#: ../src/brasero-plugin-manager-ui.c:618
 msgid "Ac_tivate All"
 msgstr "Włącz w_szystkie"
 
-#: ../src/brasero-plugin-manager-ui.c:613
+#: ../src/brasero-plugin-manager-ui.c:623
 msgid "_Deactivate All"
 msgstr "Wyłąc_z wszystkie"
 
-#: ../src/brasero-plugin-option.c:393
+#. Use the translated name for the plugin.
+#: ../src/brasero-plugin-option.c:394
 #, c-format
 msgid "Options for plugin %s"
 msgstr "Opcje dla wtyczki %s"
@@ -988,27 +1407,27 @@ msgstr "Szacowany pozostały czas: %02i:%02i:%02i"
 msgid "%i MiB of %i MiB"
 msgstr "%i MiB z %i MiB"
 
-#: ../src/brasero-search-entry.c:189
+#: ../src/brasero-search-entry.c:188
 msgid "Search:"
 msgstr "Wyszukiwanie:"
 
-#: ../src/brasero-search-entry.c:273
+#: ../src/brasero-search-entry.c:272
 msgid "In _text documents"
 msgstr "w dokumentach _tekstowych"
 
-#: ../src/brasero-search-entry.c:288
+#: ../src/brasero-search-entry.c:287
 msgid "In _pictures"
 msgstr "w _obrazach"
 
-#: ../src/brasero-search-entry.c:303
+#: ../src/brasero-search-entry.c:302
 msgid "In _music"
 msgstr "w _muzyce"
 
-#: ../src/brasero-search-entry.c:318
+#: ../src/brasero-search-entry.c:317
 msgid "In _videos"
 msgstr "w _nagraniach wideo"
 
-#: ../src/brasero-search-entry.c:335
+#: ../src/brasero-search-entry.c:334
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Proszę wprowadzić słowa kluczowe lub wybrać \"Wszystkie pliki\" z menu"
 
@@ -1046,16 +1465,15 @@ msgid "Next Results"
 msgstr "Następne wyniki"
 
 #: ../src/brasero-search-beagle.c:406
-#: ../src/brasero-data-disc.c:2486
+#: ../src/brasero-data-disc.c:2477
 #: ../src/brasero-file-filtered.c:528
 msgid "Files"
 msgstr "Pliki"
 
-# jm: określa czy to folder, czy plik word, etc
 #: ../src/brasero-search-beagle.c:425
-#: ../src/brasero-data-disc.c:2514
+#: ../src/brasero-data-disc.c:2505
 msgid "Description"
-msgstr "Typ"
+msgstr "Opis"
 
 #: ../src/brasero-search-beagle.c:484
 msgid "Number of results displayed"
@@ -1066,9 +1484,9 @@ msgstr "Ilość wyświetlanych wyników"
 msgid "Results %i - %i (out of %i)"
 msgstr "Wyniki %i - %i (z %i)"
 
-#: ../src/brasero-search-beagle.c:1038
-msgid "Error querying beagle."
-msgstr "Błąd podczas zapytania beagle."
+#: ../src/brasero-search-beagle.c:1030
+msgid "Error querying Beagle."
+msgstr "Błąd podczas zapytania programu Beagle."
 
 #: ../src/brasero-song-properties.c:171
 msgid "Title:"
@@ -1092,6 +1510,13 @@ msgstr "Wykonawca:"
 #: ../src/brasero-multi-song-props.c:258
 msgid "Composer:"
 msgstr "Kompozytor:"
+
+#: ../src/brasero-song-properties.c:220
+#: ../src/brasero-drive-properties.c:576
+#: ../src/brasero-tool-dialog.c:256
+#: ../src/brasero-multi-song-props.c:303
+msgid "Options"
+msgstr "Opcje"
 
 #: ../src/brasero-song-properties.c:229
 msgid "Song start:"
@@ -1125,40 +1550,30 @@ msgstr "Informacje o utworze"
 msgid "Song information for track %02i"
 msgstr "Informacje o utworze dla ścieżki %02i"
 
-#: ../src/brasero-tray.c:79
+#: ../src/brasero-tray.c:81
 msgid "Cancel ongoing burning"
 msgstr "Anuluje nagrywanie w trakcie"
 
-#: ../src/brasero-tray.c:84
+#: ../src/brasero-tray.c:86
 msgid "Show _Dialog"
 msgstr "Wyświetl okno _dialogowe"
 
-#: ../src/brasero-tray.c:84
+#: ../src/brasero-tray.c:86
 msgid "Show dialog"
 msgstr "Wyświetla okno dialogowe"
 
-#: ../src/brasero-tray.c:245
+#: ../src/brasero-tray.c:255
 #, c-format
 msgid "%s, %02i%% done, %s remaining"
 msgstr "%s, %02i%% gotowe, pozostało %s"
 
-#: ../src/brasero-tray.c:252
+#: ../src/brasero-tray.c:262
 #, c-format
 msgid "%s, %02i%% done"
 msgstr "%s, %02i%% gotowe"
 
-#: ../src/brasero-utils.c:231
-#, c-format
-msgid "%lli min"
-msgstr "%lli min"
-
-#: ../src/brasero-utils.c:233
-#, c-format
-msgid "%lli:%02lli min"
-msgstr "%lli:%02lli min"
-
 #: ../src/brasero-burn-dialog.c:161
-#: ../src/burn-basics.c:71
+#: ../src/burn-basics.c:70
 msgid "Creating image"
 msgstr "Tworzenie obrazu"
 
@@ -1168,7 +1583,7 @@ msgstr "Brasero - Tworzenie obrazu"
 
 #: ../src/brasero-burn-dialog.c:167
 #: ../src/brasero-burn-dialog.c:181
-#: ../src/brasero-burn-dialog.c:980
+#: ../src/brasero-burn-dialog.c:981
 msgid "Brasero - Burning DVD (Simulation)"
 msgstr "Brasero - Nagrywanie DVD (symulacja)"
 
@@ -1210,7 +1625,7 @@ msgid "Burning image to DVD"
 msgstr "Nagrywanie obrazu na płytę DVD"
 
 #: ../src/brasero-burn-dialog.c:209
-#: ../src/brasero-burn-dialog.c:974
+#: ../src/brasero-burn-dialog.c:975
 msgid "Brasero - Copying DVD (Simulation)"
 msgstr "Brasero - Kopiowanie DVD (symulacja)"
 
@@ -1269,7 +1684,7 @@ msgid "Burning data CD"
 msgstr "Nagrywanie płyty CD z danymi"
 
 #: ../src/brasero-burn-dialog.c:267
-#: ../src/brasero-burn-dialog.c:988
+#: ../src/brasero-burn-dialog.c:989
 msgid "Brasero - Copying CD (Simulation)"
 msgstr "Brasero - Kopiowanie płyty (symulacja)"
 
@@ -1311,7 +1726,7 @@ msgstr "Nagrywanie płyty wideo"
 
 #: ../src/brasero-burn-dialog.c:324
 #: ../src/brasero-burn-dialog.c:351
-#: ../src/brasero-burn-dialog.c:1007
+#: ../src/brasero-burn-dialog.c:1008
 msgid "Brasero - Burning Disc (Simulation)"
 msgstr "Brasero - Nagrywanie płyty (symulacja)"
 
@@ -1329,7 +1744,7 @@ msgid "Burning data disc"
 msgstr "Nagrywanie płyty z danymi"
 
 #: ../src/brasero-burn-dialog.c:338
-#: ../src/brasero-burn-dialog.c:1001
+#: ../src/brasero-burn-dialog.c:1002
 msgid "Brasero - Copying Disc (Simulation)"
 msgstr "Brasero - Kopiowanie płyty (symulacja)"
 
@@ -1342,7 +1757,7 @@ msgid "Brasero - Copying Disc"
 msgstr "Brasero - Kopiowanie płyty"
 
 #: ../src/brasero-burn-dialog.c:343
-#: ../src/burn-basics.c:75
+#: ../src/burn-basics.c:74
 msgid "Copying disc"
 msgstr "Kopiowanie płyty"
 
@@ -1355,66 +1770,66 @@ msgid "Burning image to disc"
 msgstr "Nagrywanie obrazu na płycie"
 
 #: ../src/brasero-burn-dialog.c:388
-msgid "Please, replace the disc with a rewritable disc holding data."
+msgid "Please replace the disc with a rewritable disc holding data."
 msgstr "Proszę zamienić płytę na płytę do wielokrotnego zapisu zawierającą dane."
 
 #: ../src/brasero-burn-dialog.c:390
-msgid "Please, replace the disc with a disc holding data."
+msgid "Please replace the disc with a disc holding data."
 msgstr "Proszę zamienić płytę na płytę zawierającą dane."
 
 #: ../src/brasero-burn-dialog.c:394
-msgid "Please, insert a rewritable disc holding data."
+msgid "Please insert a rewritable disc holding data."
 msgstr "Proszę wsunąć płytę do wielokrotnego zapisu zawierającą dane."
 
 #: ../src/brasero-burn-dialog.c:411
 #, c-format
-msgid "Please, replace the disc with a recordable CD with at least %i MiB of free space."
-msgstr "Proszę zamienić płytę na zapisywalną płytę CD zawierającą przynajmniej %i MiB wolnego miejsca."
+msgid "Please replace the disc with a recordable CD with at least %i MiB of free space."
+msgstr "Proszę zamienić płytę na zapisywalną płytę CD z przynajmniej %i MiB wolnego miejsca."
 
 #: ../src/brasero-burn-dialog.c:414
-msgid "Please, replace the disc with a recordable CD."
+msgid "Please replace the disc with a recordable CD."
 msgstr "Proszę zamienić płytę na zapisywalną płytę CD."
 
 #: ../src/brasero-burn-dialog.c:418
 #, c-format
-msgid "Please, insert a recordable CD with at least %i MiB of free space."
+msgid "Please insert a recordable CD with at least %i MiB of free space."
 msgstr "Proszę wsunąć zapisywalną płytę CD z przynajmniej %i MiB wolnego miejsca."
 
 #: ../src/brasero-burn-dialog.c:421
-msgid "Please, insert a recordable CD."
+msgid "Please insert a recordable CD."
 msgstr "Proszę wsunąć zapisywalną płytę CD."
 
 #: ../src/brasero-burn-dialog.c:427
 #, c-format
-msgid "Please, replace the disc with a recordable DVD with at least %i MiB of free space."
+msgid "Please replace the disc with a recordable DVD with at least %i MiB of free space."
 msgstr "Proszę zamienić płytę na zapisywalną płytę DVD z przynajmniej %i MiB wolnego miejsca."
 
 #: ../src/brasero-burn-dialog.c:430
-msgid "Please, replace the disc with a recordable DVD."
+msgid "Please replace the disc with a recordable DVD."
 msgstr "Proszę zamienić płytę na zapisywalną płytę DVD."
 
 #: ../src/brasero-burn-dialog.c:434
 #, c-format
-msgid "Please, insert a recordable DVD with at least %i MiB of free space."
+msgid "Please insert a recordable DVD with at least %i MiB of free space."
 msgstr "Proszę wsunąć zapisywalną płytę DVD z przynajmniej %i MiB wolnego miejsca."
 
 #: ../src/brasero-burn-dialog.c:437
-msgid "Please, insert a recordable DVD."
+msgid "Please insert a recordable DVD."
 msgstr "Proszę wsunąć zapisywalną płytę DVD."
 
 #: ../src/brasero-burn-dialog.c:442
 #, c-format
-msgid "Please, replace the disc with a recordable CD or DVD with at least %i MiB of free space."
+msgid "Please replace the disc with a recordable CD or DVD with at least %i MiB of free space."
 msgstr "Proszę zamienić płytę na zapisywalną płytę CD lub DVD z przynajmniej %i MiB wolnego miejsca."
 
 #: ../src/brasero-burn-dialog.c:445
-msgid "Please, replace the disc with a recordable CD or DVD."
+msgid "Please replace the disc with a recordable CD or DVD."
 msgstr "Proszę zamienić płytę na zapisywalną płytę CD lub DVD."
 
 #: ../src/brasero-burn-dialog.c:449
 #, c-format
-msgid "Please, insert a recordable CD or DVD with at least %i MiB of free space."
-msgstr "Proszę wsunąć zapisywalną płytę CD lub DVD z co najmniej %i MiB wolnego miejsca."
+msgid "Please insert a recordable CD or DVD with at least %i MiB of free space."
+msgstr "Proszę wsunąć zapisywalną płytę CD lub DVD z przynajmniej %i MiB wolnego miejsca."
 
 #: ../src/brasero-burn-dialog.c:498
 msgid ""
@@ -1429,7 +1844,7 @@ msgid "A data integrity test will begin as soon as the disc is inserted."
 msgstr "Test spójności danych rozpocznie się po wsunięciu nośnika."
 
 #: ../src/brasero-burn-dialog.c:504
-msgid "Please, re-insert the disc in the CD/DVD burner."
+msgid "Please re-insert the disc in the CD/DVD burner."
 msgstr "Proszę ponownie wsunąć płytę do nagrywarki CD/DVD."
 
 #. Translators: %s is the name of a drive
@@ -1439,12 +1854,11 @@ msgid "\"%s\" is busy."
 msgstr "Napęd \"%s\" jest zajęty."
 
 #: ../src/brasero-burn-dialog.c:509
-#: ../src/brasero-tool-dialog.c:80
-#: ../src/burn.c:1327
-#: ../src/burn.c:1361
-#: ../src/burn.c:1543
-#: ../src/burn.c:1554
-#: ../src/burn.c:1905
+#: ../src/brasero-tool-dialog.c:79
+#: ../src/burn.c:1295
+#: ../src/burn.c:1329
+#: ../src/burn.c:1511
+#: ../src/burn.c:1522
 msgid "Make sure another application is not using it"
 msgstr "Należy się upewnić, że nie korzysta z niego inny program"
 
@@ -1484,11 +1898,11 @@ msgid "The disc in \"%s\" needs to be reloaded."
 msgstr "Płyta w napędzie \"%s\" musi zostać wysunięta i wsunięta ponownie."
 
 #: ../src/brasero-burn-dialog.c:541
-msgid "Please, eject the disc and reload it."
-msgstr "Proszę wysunąć płytę i umieścić ją ponownie w napędzie."
+msgid "Please eject the disc and reload it."
+msgstr "Proszę wysunąć płytę i wsunąć ją ponownie do napędu."
 
 #: ../src/brasero-burn-dialog.c:642
-#: ../src/brasero-sum-dialog.c:302
+#: ../src/brasero-sum-dialog.c:300
 msgid "A file could not be created at the location specified for temporary files"
 msgstr "Nie można było utworzyć pliku w położeniu określonym dla plików tymczasowych"
 
@@ -1500,168 +1914,168 @@ msgstr "Obraz nie mógł zostać utworzony we wskazanym położeniu"
 msgid "Do you want to specify another location for this session or retry with the current location?"
 msgstr "Określić inne położenie dla tej sesji, czy spróbować ponownie używając bieżącego położenia?"
 
-#: ../src/brasero-burn-dialog.c:658
+#: ../src/brasero-burn-dialog.c:659
 msgid "You may want to free some space on the disc and retry"
 msgstr "Można zwolnić trochę miejsca na płycie i spróbować ponownie"
 
-#: ../src/brasero-burn-dialog.c:665
+#: ../src/brasero-burn-dialog.c:666
 #: ../src/brasero-drive-properties.c:244
 #: ../src/brasero-drive-properties.c:279
 #: ../src/brasero-drive-properties.c:328
 msgid "_Keep Current Location"
 msgstr "_Zachowaj bieżące położenie"
 
-#: ../src/brasero-burn-dialog.c:667
+#: ../src/brasero-burn-dialog.c:668
 #: ../src/brasero-drive-properties.c:245
 #: ../src/brasero-drive-properties.c:280
 #: ../src/brasero-drive-properties.c:329
 msgid "_Change Location"
 msgstr "_Zmień położenie"
 
-#: ../src/brasero-burn-dialog.c:689
+#: ../src/brasero-burn-dialog.c:690
 #: ../src/brasero-image-properties.c:232
 msgid "Location for Image File"
 msgstr "Położenie pliku obrazu"
 
-#: ../src/brasero-burn-dialog.c:697
+#: ../src/brasero-burn-dialog.c:698
 #: ../src/brasero-drive-properties.c:589
 msgid "Location for Temporary Files"
 msgstr "Położenie plików tymczasowych"
 
-#: ../src/brasero-burn-dialog.c:793
+#: ../src/brasero-burn-dialog.c:794
 msgid "_Replace Disc"
 msgstr "_Zamiana płyty"
 
-#: ../src/brasero-burn-dialog.c:835
+#: ../src/brasero-burn-dialog.c:836
 msgid "Do you really want to erase the current disc?"
 msgstr "Na pewno usunąć zawartość płyty?"
 
-#: ../src/brasero-burn-dialog.c:836
+#: ../src/brasero-burn-dialog.c:837
 msgid "The disc in the drive holds data."
 msgstr "Płyta w napędzie zawiera dane."
 
-#: ../src/brasero-burn-dialog.c:837
+#: ../src/brasero-burn-dialog.c:838
 msgid "_Erase Disc"
 msgstr "_Usunięcie zawartości płyty"
 
-#: ../src/brasero-burn-dialog.c:849
+#: ../src/brasero-burn-dialog.c:850
 msgid "Already burnt files will be invisible (though still readable)."
 msgstr "Już nagrane pliki staną się niewidoczne (nadal będzie można je odczytać)."
 
-#: ../src/brasero-burn-dialog.c:850
-#: ../src/brasero-burn-dialog.c:870
-#: ../src/brasero-burn-dialog.c:890
+#: ../src/brasero-burn-dialog.c:851
+#: ../src/brasero-burn-dialog.c:871
+#: ../src/brasero-burn-dialog.c:891
 msgid "Do you want to continue anyway?"
 msgstr "Kontynuować mimo tego?"
 
-#: ../src/brasero-burn-dialog.c:853
+#: ../src/brasero-burn-dialog.c:854
 msgid "Appending new files to a multisession disc is not advised."
 msgstr "Dodawanie nowych plików na płycie wielosesyjnej nie jest zalecane."
 
-#: ../src/brasero-burn-dialog.c:855
-#: ../src/brasero-burn-dialog.c:875
-#: ../src/brasero-burn-dialog.c:895
-#: ../src/brasero-burn-dialog.c:933
+#: ../src/brasero-burn-dialog.c:856
+#: ../src/brasero-burn-dialog.c:876
+#: ../src/brasero-burn-dialog.c:896
+#: ../src/brasero-burn-dialog.c:934
 #: ../src/brasero-data-disc.c:679
-#: ../src/brasero-tool-dialog.c:376
+#: ../src/brasero-tool-dialog.c:356
 msgid "_Continue"
 msgstr "_Kontynuuj"
 
-#: ../src/brasero-burn-dialog.c:869
+#: ../src/brasero-burn-dialog.c:870
 msgid "You might not be able to listen to them with stereos and CD-TEXT won't be written."
 msgstr "Odczyt ścieżek dźwiękowych oraz CD-TEXT w odtwarzaczach płyt może być niemożliwy."
 
-#: ../src/brasero-burn-dialog.c:873
+#: ../src/brasero-burn-dialog.c:874
 msgid "Appending audio tracks to a CD is not advised."
 msgstr "Dodawanie ścieżek dźwiękowych na płycie CD nie jest zalecane."
 
-#: ../src/brasero-burn-dialog.c:889
+#: ../src/brasero-burn-dialog.c:890
 msgid "You might not be able to listen to it with stereos."
 msgstr "Odczyt ścieżek dźwiękowych w odtwarzaczach płyt może być niemożliwy."
 
-#: ../src/brasero-burn-dialog.c:893
+#: ../src/brasero-burn-dialog.c:894
 msgid "Recording audio tracks on a rewritable disc is not advised."
 msgstr "Nagrywanie ścieżek dźwiękowych na płycie do wielokrotnego zapisu nie jest zalecane."
 
-#: ../src/brasero-burn-dialog.c:924
+#: ../src/brasero-burn-dialog.c:925
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Kontynuować z wyłączoną zgodnością z Windows?"
 
-#: ../src/brasero-burn-dialog.c:927
-#: ../src/brasero-disc-option-dialog.c:259
+#: ../src/brasero-burn-dialog.c:928
+#: ../src/brasero-disc-option-dialog.c:326
 msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Niektóre pliki nie mają nazwy odpowiedniej dla płyty CD zgodnej z Windows."
 
-#: ../src/brasero-burn-dialog.c:970
+#: ../src/brasero-burn-dialog.c:971
 #, c-format
 msgid "Brasero - Creating Image (%i%% Done)"
 msgstr "Brasero - Tworzenie pliku obrazu (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:976
+#: ../src/brasero-burn-dialog.c:977
 #, c-format
 msgid "Brasero - Copying DVD (%i%% Done)"
 msgstr "Brasero - Kopiowanie płyty DVD (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:982
+#: ../src/brasero-burn-dialog.c:983
 #, c-format
 msgid "Brasero - Burning DVD (%i%% Done)"
 msgstr "Brasero - Nagrywanie płyty DVD (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:990
+#: ../src/brasero-burn-dialog.c:991
 #, c-format
 msgid "Brasero - Copying CD (%i%% Done)"
 msgstr "Brasero - Kopiowanie płyty CD (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:994
+#: ../src/brasero-burn-dialog.c:995
 msgid "Brasero - Burning CD (simulation)"
 msgstr "Brasero - Nagrywanie płyty CD (symulacja)"
 
-#: ../src/brasero-burn-dialog.c:996
+#: ../src/brasero-burn-dialog.c:997
 #, c-format
 msgid "Brasero - Burning CD (%i%% Done)"
 msgstr "Brasero - Nagrywanie płyty CD (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:1003
+#: ../src/brasero-burn-dialog.c:1004
 #, c-format
 msgid "Brasero - Copying Disc (%i%% Done)"
 msgstr "Brasero - Kopiowanie płyty (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:1009
+#: ../src/brasero-burn-dialog.c:1010
 #, c-format
 msgid "Brasero - Burning Disc (%i%% Done)"
 msgstr "Brasero - Nagrywanie płyty (wykonano %i%%)"
 
-#: ../src/brasero-burn-dialog.c:1182
+#: ../src/brasero-burn-dialog.c:1184
 msgid "The simulation was successful."
 msgstr "Symulacja zakończona powodzeniem."
 
-#: ../src/brasero-burn-dialog.c:1185
+#: ../src/brasero-burn-dialog.c:1187
 msgid "Real disc burning will take place in 10 seconds."
 msgstr "Właściwe nagrywanie rozpocznie się za 10 sekund."
 
-#: ../src/brasero-burn-dialog.c:1187
+#: ../src/brasero-burn-dialog.c:1189
 msgid "Burn _Now"
 msgstr "_Nagraj"
 
-#: ../src/brasero-burn-dialog.c:1507
+#: ../src/brasero-burn-dialog.c:1506
 msgid "Save Current Session"
 msgstr "Zapisz bieżącą sesję"
 
-#: ../src/brasero-burn-dialog.c:1563
+#: ../src/brasero-burn-dialog.c:1562
 msgid "Session Log"
 msgstr "Dziennik sesji"
 
-#: ../src/brasero-burn-dialog.c:1593
-#: ../src/brasero-burn-dialog.c:1617
-#: ../src/brasero-burn-dialog.c:1628
+#: ../src/brasero-burn-dialog.c:1592
+#: ../src/brasero-burn-dialog.c:1616
+#: ../src/brasero-burn-dialog.c:1627
 msgid "The session log cannot be displayed."
 msgstr "Dziennik sesji nie może zostać wyświetlony."
 
-#: ../src/brasero-burn-dialog.c:1594
+#: ../src/brasero-burn-dialog.c:1593
 msgid "The log file could not be found"
 msgstr "Plik dziennika nie może zostać odnaleziony."
 
-#: ../src/brasero-burn-dialog.c:1609
+#: ../src/brasero-burn-dialog.c:1608
 msgid ""
 "This is a excerpt from the session log (the last 10 MiB):\n"
 "\n"
@@ -1669,82 +2083,82 @@ msgstr ""
 "Fragment dziennika sesji (ostatnie 10MiB):\n"
 "\n"
 
-#: ../src/brasero-burn-dialog.c:1697
+#: ../src/brasero-burn-dialog.c:1696
 msgid "An unknown error occured."
 msgstr "Wystąpił nieznany błąd."
 
-#: ../src/brasero-burn-dialog.c:1707
+#: ../src/brasero-burn-dialog.c:1706
 msgid "Error while burning."
 msgstr "Błąd podczas nagrywania."
 
-#: ../src/brasero-burn-dialog.c:1714
+#: ../src/brasero-burn-dialog.c:1713
 msgid "_Save Log"
 msgstr "_Zapisz dziennik"
 
-#: ../src/brasero-burn-dialog.c:1721
+#: ../src/brasero-burn-dialog.c:1720
 msgid "_View Log"
 msgstr "_Wyświetl dziennik"
 
-#: ../src/brasero-burn-dialog.c:1801
+#: ../src/brasero-burn-dialog.c:1800
 msgid "Audio CD successfully burnt"
 msgstr "Płyta CD-Audio nagrana z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1806
+#: ../src/brasero-burn-dialog.c:1805
 msgid "DVD successfully copied"
 msgstr "Płyta DVD skopiowana z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1808
+#: ../src/brasero-burn-dialog.c:1807
 msgid "CD successfully copied"
 msgstr "Płyta CD skopiowana z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1812
+#: ../src/brasero-burn-dialog.c:1811
 msgid "Image of DVD successfully created"
 msgstr "Obraz DVD utworzony z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1814
+#: ../src/brasero-burn-dialog.c:1813
 msgid "Image of CD successfully created"
 msgstr "Obraz CD utworzony z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1820
+#: ../src/brasero-burn-dialog.c:1819
 msgid "Image successfully burnt to DVD"
 msgstr "Obraz nagrany z powodzeniem na płycie DVD"
 
-#: ../src/brasero-burn-dialog.c:1822
+#: ../src/brasero-burn-dialog.c:1821
 msgid "Image successfully burnt to CD"
 msgstr "Obraz nagrany z powodzeniem na płycie CD"
 
-#: ../src/brasero-burn-dialog.c:1828
+#: ../src/brasero-burn-dialog.c:1827
 msgid "Data DVD successfully burnt"
 msgstr "Płyta DVD z danymi nagrana z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1830
+#: ../src/brasero-burn-dialog.c:1829
 msgid "Data CD successfully burnt"
 msgstr "Płyta CD z danymi nagrana z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1833
+#: ../src/brasero-burn-dialog.c:1832
 msgid "Image successfully created"
 msgstr "Obraz utworzony z powodzeniem"
 
-#: ../src/brasero-burn-dialog.c:1843
+#: ../src/brasero-burn-dialog.c:1842
 msgid "Make _Another Copy"
 msgstr "Skopiuj kolejny _raz"
 
 #. since we succeed offer the possibility to create cover if that's an audio disc
-#: ../src/brasero-burn-dialog.c:1870
+#: ../src/brasero-burn-dialog.c:1869
 msgid "_Create Cover"
 msgstr "_Utwórz okładkę"
 
-#: ../src/brasero-burn-dialog.c:2079
-#: ../src/brasero-tool-dialog.c:368
+#: ../src/brasero-burn-dialog.c:2077
+#: ../src/brasero-tool-dialog.c:348
 msgid "Do you really want to quit?"
 msgstr "Na pewno zakończyć?"
 
-#: ../src/brasero-burn-dialog.c:2083
-#: ../src/brasero-tool-dialog.c:371
+#: ../src/brasero-burn-dialog.c:2081
+#: ../src/brasero-tool-dialog.c:351
 msgid "Interrupting the process may make disc unusable."
 msgstr "Przerwanie tego procesu może spowodować uszkodzenie nośnika."
 
-#: ../src/brasero-burn-dialog.c:2093
+#: ../src/brasero-burn-dialog.c:2091
 msgid "_Cancel Burning"
 msgstr "_Anuluj nagrywanie"
 
@@ -1757,7 +2171,7 @@ msgid "Rename the selected file"
 msgstr "Zmienia nazwę zaznaczonego pliku"
 
 #: ../src/brasero-data-disc.c:126
-#: ../src/brasero-data-disc.c:1817
+#: ../src/brasero-data-disc.c:1808
 msgid "New _Folder"
 msgstr "Nowy _katalog"
 
@@ -1794,7 +2208,7 @@ msgid "Click here not to use overburning"
 msgstr "Należy nacisnąć tutaj, aby wyłączyć nadpalanie"
 
 #: ../src/brasero-data-disc.c:627
-msgid "Please, delete some files from the project."
+msgid "Please delete some files from the project."
 msgstr "Proszę usunąć część plików z projektu."
 
 #: ../src/brasero-data-disc.c:666
@@ -1802,214 +2216,210 @@ msgid "The contents of the project changed since it was saved."
 msgstr "Zawartość projektu zmieniła się od czasu ostatniego zapisu."
 
 #: ../src/brasero-data-disc.c:668
-msgid "Do you want to continue or discard the old project layout?"
-msgstr "Kontynuować czy odrzucić poprzedni układ projektu?"
+#: ../src/brasero-data-disc.c:675
+msgid "Discard the current modified project"
+msgstr "Odrzucenie obecnie modyfikowanego projektu"
 
 #: ../src/brasero-data-disc.c:674
 msgid "_Discard"
 msgstr "O_drzuć"
 
-#: ../src/brasero-data-disc.c:675
-msgid "Press if you want to discard the current modified project"
-msgstr "Należy nacisnąć, aby odrzucić obecnie modyfikowany projekt"
-
 #: ../src/brasero-data-disc.c:680
-msgid "Press if you want to continue with the current modified project"
-msgstr "Należy nacisnąć, aby pozostać przy obecnie modyfikowanym projekcie"
+msgid "Continue with the current modified project"
+msgstr "Kontynuacja pracy z obecnie modyfikowanym projektem"
 
-#: ../src/brasero-data-disc.c:790
+#: ../src/brasero-data-disc.c:780
 #, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
 msgstr "Nagrać \"%s\" na płytę czy dodać do projektu danych?"
 
-#: ../src/brasero-data-disc.c:799
+#: ../src/brasero-data-disc.c:789
 msgid "This file is the image of a disc and can therefore be burnt to disc without having to add it to a data project first."
 msgstr "Ten plik jest plikiem obrazu płyty, w związku z czym może zostać nagrany na płytę z pominięciem dodawania go do projektu danych."
 
-#: ../src/brasero-data-disc.c:801
+#: ../src/brasero-data-disc.c:791
 msgid "_Add to Project"
 msgstr "_Dodaj do projektu"
 
-#: ../src/brasero-data-disc.c:803
+#: ../src/brasero-data-disc.c:793
 #: ../src/brasero-project.c:206
 #: ../src/brasero-project.c:457
 msgid "_Burn..."
 msgstr "_Nagraj..."
 
-#: ../src/brasero-data-disc.c:886
-#: ../src/brasero-data-disc.c:917
-#: ../src/brasero-data-disc.c:948
+#: ../src/brasero-data-disc.c:876
+#: ../src/brasero-data-disc.c:907
+#: ../src/brasero-data-disc.c:938
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
 msgstr "\"%s\" nie może zostać dodany."
 
-#: ../src/brasero-data-disc.c:910
+#: ../src/brasero-data-disc.c:900
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "\"%s\" to rekursywne dowiązanie symboliczne."
 
-#: ../src/brasero-data-disc.c:920
+#: ../src/brasero-data-disc.c:910
 msgid "It is a recursive symlink"
 msgstr "Jest to rekursywne dowiązanie symboliczne"
 
-#: ../src/brasero-data-disc.c:941
+#: ../src/brasero-data-disc.c:931
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "Plik \"%s\" nie może zostać odnaleziony."
 
-#: ../src/brasero-data-disc.c:951
+#: ../src/brasero-data-disc.c:941
 msgid "It does not exist at the specified location"
 msgstr "Nie istnieje we wskazanym położeniu"
 
-#: ../src/brasero-data-disc.c:976
+#: ../src/brasero-data-disc.c:964
 #, c-format
 msgid "Do you really want to replace \"%s\"?"
 msgstr "Na pewno zastąpić \"%s\"?"
 
-#: ../src/brasero-data-disc.c:984
+#: ../src/brasero-data-disc.c:972
 msgid "It already exists in the directory."
 msgstr "Już istnieje w tym katalogu."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * Replace means we're replacing it with a new one with the same name
-#: ../src/brasero-data-disc.c:988
+#: ../src/brasero-data-disc.c:976
 msgid "_Keep Project File"
 msgstr "_Pozostaw plik projektu"
 
-#: ../src/brasero-data-disc.c:989
+#: ../src/brasero-data-disc.c:977
 msgid "_Replace Project File"
 msgstr "Za_mień plik projektu"
 
-#: ../src/brasero-data-disc.c:1021
+#: ../src/brasero-data-disc.c:1007
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection and use the third version of ISO9660 standard to support it?"
 msgstr "Na pewno dodać \"%s\" do zaznaczenia i użyć obsługi trzeciej wersji standardu ISO9660?"
 
-#: ../src/brasero-data-disc.c:1029
+#: ../src/brasero-data-disc.c:1015
 msgid ""
-"The size of the file is over 2 GiB. This isn't supported by ISO9660 standard in his first and second versions (the most widespread ones).\n"
+"The size of the file is over 2 GiB. Files larger than 2 GiB are not supported by ISO9660 standard in its first and second versions (the most widespread ones).\n"
 "It is recommended to use the third version of ISO9660 standard which is supported by most of the operating systems including Linux and all versions of Windows ©.\n"
-"A known exception is MacOS X that cannot read images created with version 3 of ISO9660 standard."
+"However MacOS X cannot read images created with version 3 of ISO9660 standard."
 msgstr ""
 "Rozmiar pliku przekracza 2 GiB. Nie jest on obsługiwany przez standard ISO9660 zarówno w pierwszej jak i drugiej wersji (najbardziej rozpowszechnionych).\n"
-"Zalecane jest użycie trzeciej wersji standardu ISO9660, który jest wspierany przez większość systemów operacyjnych zarówno linuksowych oraz każdej z wersji Windows ©.\n"
-"Znanym wyjątkiem jest MacOS X, który nie odczytuje plików obrazów stworzonych używając trzeciej wersji standardu ISO9660."
+"Zalecane jest użycie trzeciej wersji standardu ISO9660, który jest wspierany przez większość systemów operacyjnych zarówno Linux oraz każdej z wersji Windows ©.\n"
+"Jednakże MacOS X nie odczytuje plików obrazów stworzonych używając trzeciej wersji standardu ISO9660."
 
-#: ../src/brasero-data-disc.c:1068
+#: ../src/brasero-data-disc.c:1051
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "Na pewno dodać \"%s\"?"
 
-#: ../src/brasero-data-disc.c:1076
+#: ../src/brasero-data-disc.c:1059
 msgid ""
-"The children of this directory will have 6 parent directories. This is a violation of the ISO9660 standard which only allows 6.\n"
+"The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the disc may not be readable on all operating systems.\n"
 "NOTE: Such a file hierarchy is known to work on linux."
 msgstr ""
-"Katalogi podrzędne tego katalogu będą miały 6 katalogów nadrzędnych. Jest to niezgodne ze standardem ISO9660, który dopuszcza jedynie 6.\n"
+"Katalogi podrzędne tego katalogu będą miały 7 katalogów nadrzędnych. \n"
 "Program Brasero może stworzyć i nagrać obraz takiej hierarchii plików. Odczytanie nośnika może nie być możliwe we wszystkich systemach operacyjnych.\n"
-"NOTE: wiadomo, że taka hierarchia zadziała poprawnie w systemach GNU/Linux."
+"Uwaga: wiadomo, że taka hierarchia zadziała poprawnie w systemach GNU/Linux."
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
-#: ../src/brasero-data-disc.c:1174
+#: ../src/brasero-data-disc.c:1157
 #, c-format
 msgid "Import %s"
 msgstr "Import %s"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
-#: ../src/brasero-data-disc.c:1181
+#: ../src/brasero-data-disc.c:1164
 #, c-format
 msgid "I_mport %s"
 msgstr "I_mportuj %s"
 
 #. Translators: This is a verb. It's a toolbar button.
-#: ../src/brasero-data-disc.c:1211
+#: ../src/brasero-data-disc.c:1194
 msgid "I_mport"
 msgstr "I_mportuj"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1267
+#: ../src/brasero-data-disc.c:1250
 #, c-format
 msgid "Do you want to import the session from '%s'?"
 msgstr "Zaimportować zawartość sesji z \"%s\"?"
 
-#: ../src/brasero-data-disc.c:1270
+#: ../src/brasero-data-disc.c:1253
 msgid "That way, old files from previous sessions will be usable after burning."
 msgstr "W ten sposób starsze pliki z poprzedniej sesji będą mogły zostać użyte po nagraniu."
 
-#: ../src/brasero-data-disc.c:1281
+#: ../src/brasero-data-disc.c:1264
 msgid "I_mport Session"
 msgstr "I_mportuj sesję"
 
-#: ../src/brasero-data-disc.c:1282
+#: ../src/brasero-data-disc.c:1265
 msgid "Click here to import its contents"
 msgstr "Należy nacisnąć tutaj, aby zaimportować jej zawartość"
 
-#: ../src/brasero-data-disc.c:1702
-msgid "Please, wait while the project is loading."
+#: ../src/brasero-data-disc.c:1693
+msgid "Please wait while the project is loading."
 msgstr "Proszę poczekać na wczytanie projektu."
 
-#: ../src/brasero-data-disc.c:1712
+#: ../src/brasero-data-disc.c:1703
 msgid "_Cancel Loading"
 msgstr "_Przerwij wczytywanie"
 
-#: ../src/brasero-data-disc.c:1713
-msgid "Press if you want to cancel current project loading"
-msgstr "Naciśnięcie przerwie wczytywanie projektu"
+#: ../src/brasero-data-disc.c:1704
+msgid "Cancel loading current project"
+msgstr "Anulowanie wczytywania bieżącego projektu"
 
-#: ../src/brasero-data-disc.c:1746
+#: ../src/brasero-data-disc.c:1737
 msgid "Analysing files"
 msgstr "Analizowanie plików"
 
-#: ../src/brasero-data-disc.c:1973
+#: ../src/brasero-data-disc.c:1964
 msgid "File Renaming"
 msgstr "Zmiana nazwy pliku"
 
-#: ../src/brasero-data-disc.c:1977
+#: ../src/brasero-data-disc.c:1968
 msgid "_Rename"
 msgstr "_Zmień nazwę"
 
-#: ../src/brasero-data-disc.c:1985
+#: ../src/brasero-data-disc.c:1976
 msgid "Renaming mode"
 msgstr "Tryb zmieniania nazw"
 
-#: ../src/brasero-data-disc.c:2500
-#: ../src/brasero-video-disc.c:1207
+#: ../src/brasero-data-disc.c:2491
+#: ../src/brasero-video-disc.c:1189
 msgid "Size"
 msgstr "Rozmiar"
 
-# rev: Obszar? kontekst?
-#: ../src/brasero-data-disc.c:2530
+#: ../src/brasero-data-disc.c:2521
 msgid "Space"
-msgstr "Rozmiar"
+msgstr "Miejsce"
 
-#: ../src/brasero-disc-option-dialog.c:256
+#: ../src/brasero-disc-option-dialog.c:323
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr "Zmienić nazwy plików na zgodne z Windows?"
 
-#: ../src/brasero-disc-option-dialog.c:260
+#: ../src/brasero-disc-option-dialog.c:327
 msgid "Those names should be changed and truncated to 64 characters."
 msgstr "Te nazwy powinny zostać zmienione i skrócone do 64 znaków."
 
-#: ../src/brasero-disc-option-dialog.c:265
+#: ../src/brasero-disc-option-dialog.c:332
 msgid "_Disable Full Windows Compatibility"
 msgstr "_Ignoruj zgodność z Windows"
 
-#: ../src/brasero-disc-option-dialog.c:268
+#: ../src/brasero-disc-option-dialog.c:335
 msgid "_Rename for Full Windows Compatibility"
 msgstr "Zmie_ń nazwy na zgodne z Windows"
 
-#: ../src/brasero-disc-option-dialog.c:291
+#: ../src/brasero-disc-option-dialog.c:358
 msgid "Increase compatibility with _Windows systems"
 msgstr "Zwiększenie _kompatybilności z systemami Windows"
 
-#: ../src/brasero-disc-option-dialog.c:293
+#: ../src/brasero-disc-option-dialog.c:360
 msgid "Improve compatibility with Windows systems by allowing to display long filenames (maximum 64 characters)"
 msgstr "Zwiększa kompatybilność z systemami Windows zezwalając na wyświetlanie długich nazw plików (maksymalnie 64 znaki)"
 
-#: ../src/brasero-disc-option-dialog.c:334
+#: ../src/brasero-disc-option-dialog.c:401
 msgid "Disc options"
 msgstr "Opcje płyty"
 
@@ -2045,45 +2455,28 @@ msgstr "Proporcje obrazu:"
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../src/brasero-disc-option-dialog.c:638
+#: ../src/brasero-disc-option-dialog.c:639
 msgid "_16:9"
 msgstr "_16:9"
 
-#: ../src/brasero-disc-option-dialog.c:652
-msgid "Native aspect _ratio"
-msgstr "Pierwotne proporcje _obrazu"
-
 #. Video options for (S)VCD
-#: ../src/brasero-disc-option-dialog.c:667
+#: ../src/brasero-disc-option-dialog.c:654
 msgid "VCD type:"
 msgstr "Typ VCD:"
 
-#: ../src/brasero-disc-option-dialog.c:680
+#: ../src/brasero-disc-option-dialog.c:667
 msgid "Create a SVCD"
 msgstr "Utworzenie płyty SVCD"
 
-#: ../src/brasero-disc-option-dialog.c:695
+#: ../src/brasero-disc-option-dialog.c:682
 msgid "Create a VCD"
 msgstr "Utworzenie płyty VCD"
 
-#: ../src/brasero-disc-option-dialog.c:710
+#: ../src/brasero-disc-option-dialog.c:697
 msgid "Video Options"
 msgstr "Opcje wideo"
 
-#. Audio options for DVDs
-#: ../src/brasero-disc-option-dialog.c:719
-msgid "Add _AC3 audio stream"
-msgstr "Dodaj strumień dźwięku _AC3"
-
-#: ../src/brasero-disc-option-dialog.c:720
-msgid "Add _MP2 audio stream"
-msgstr "Dodaj strumień dźwięku _MP2"
-
-#: ../src/brasero-disc-option-dialog.c:722
-msgid "Audio Options"
-msgstr "Opcje dźwięku"
-
-#: ../src/brasero-disc-option-dialog.c:891
+#: ../src/brasero-disc-option-dialog.c:866
 msgid "Disc Burning Setup"
 msgstr "Ustawienia nagrywania płyt"
 
@@ -2100,10 +2493,11 @@ msgstr "Na pewno wybrać to położenie?"
 
 #: ../src/brasero-drive-properties.c:274
 #: ../src/burn-job.c:470
-#: ../src/burn-session.c:729
-#: ../src/burn-session.c:786
+#: ../src/burn-session.c:734
+#: ../src/burn-session.c:792
 #: ../src/plugins/cdrkit/burn-genisoimage.c:190
 #: ../src/plugins/cdrtools/burn-mkisofs.c:191
+#: ../src/plugins/libburnia/burn-libisofs.c:223
 #, c-format
 msgid "You do not have the required permission to write at this location"
 msgstr "Brak wystarczających uprawnień do zapisu w tym położeniu"
@@ -2181,12 +2575,6 @@ msgstr "Bez _zamykania sesji (pozwala na późniejsze dodawanie plików)"
 msgid "Allow to add more data to the disc later"
 msgstr "Zezwala na późniejsze dodawanie danych na płycie"
 
-#: ../src/brasero-drive-properties.c:576
-#: ../src/brasero-tool-dialog.c:267
-#: ../src/brasero-multi-song-props.c:303
-msgid "Options"
-msgstr "Opcje"
-
 #: ../src/brasero-drive-properties.c:595
 msgid "_Temporary directory free space:"
 msgstr "Ilość wolnego miejsca w katalogu _tymczasowym:"
@@ -2196,12 +2584,12 @@ msgid "Temporary files"
 msgstr "Pliki tymczasowe"
 
 #: ../src/brasero-file-chooser.c:217
-#: ../src/brasero-project.c:1449
+#: ../src/brasero-project.c:1428
 msgid "Audio files only"
 msgstr "Tylko pliki dźwiękowe"
 
 #: ../src/brasero-file-chooser.c:225
-#: ../src/brasero-project.c:1458
+#: ../src/brasero-project.c:1437
 msgid "Movies only"
 msgstr "Tylko nagrania wideo"
 
@@ -2238,35 +2626,36 @@ msgstr "Obraz *.toc (cdrdao)"
 msgid "P_review"
 msgstr "Po_dgląd"
 
-#: ../src/brasero-layout.c:103
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-layout.c:104
 msgid "Display video, audio and image preview"
 msgstr "Wyświetla podgląd nagrań wideo, utworów i obrazów"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:108
 msgid "_Show Side Panel"
 msgstr "Panel bo_czny"
 
-#: ../src/brasero-layout.c:108
+#: ../src/brasero-layout.c:109
 msgid "Show a side pane along the project"
 msgstr "Wyświetla panel boczny obok projektu"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:123
 msgid "_Horizontal Layout"
 msgstr "Układ po_ziomy"
 
-#: ../src/brasero-layout.c:123
+#: ../src/brasero-layout.c:124
 msgid "Set an horizontal layout"
 msgstr "Ustawia układ poziomy"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:126
 msgid "_Vertical Layout"
 msgstr "Układ pi_onowy"
 
-#: ../src/brasero-layout.c:126
+#: ../src/brasero-layout.c:127
 msgid "Set a vertical layout"
 msgstr "Ustawia układ pionowy"
 
-#: ../src/brasero-layout.c:1478
+#: ../src/brasero-layout.c:1479
 msgid "Click to close the side pane"
 msgstr "Należy nacisnąć, aby zamknąć panel boczny"
 
@@ -2341,7 +2730,7 @@ msgstr "_Usuń pliki"
 
 #. Translators: "empty" is a verb here
 #: ../src/brasero-project.c:204
-#: ../src/brasero-project.c:1530
+#: ../src/brasero-project.c:1508
 msgid "E_mpty Project"
 msgstr "U_suń zawartość projektu"
 
@@ -2365,249 +2754,228 @@ msgstr "Rozpoczęcie nagrywania wybranej zawartości"
 #. Translators: first %s is the size of the project and the
 #. * second %s is the remaining free space on the disc that is
 #. * used for multisession
-#: ../src/brasero-project.c:613
+#: ../src/brasero-project.c:611
 #, c-format
 msgid "Project estimated size: %s/%s"
 msgstr "Szacowany rozmiar projektu: %s/%s"
 
-#: ../src/brasero-project.c:619
+#: ../src/brasero-project.c:617
 #: ../src/brasero-project.c:745
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Szacowany rozmiar projektu: %s"
 
-#: ../src/brasero-project.c:786
-msgid "Please, wait until the estimation of the project size is completed."
-msgstr "Proszę poczekać, aż zakończy się szacowanie rozmiaru projektu."
+#: ../src/brasero-project.c:784
+msgid "Please wait until the estimation of the project size is completed."
+msgstr "Proszę poczekać, aż szacowanie rozmiaru projektu zostanie ukończone."
 
-#: ../src/brasero-project.c:791
+#: ../src/brasero-project.c:789
 msgid "All files from the project need to be analysed to complete this operation."
 msgstr "Wszystkie pliki w projekcie muszą zostać zanalizowane aby zakończyć tę operację."
 
-#: ../src/brasero-project.c:793
+#: ../src/brasero-project.c:791
 msgid "Project Size Estimation"
 msgstr "Szacowanie rozmiaru projektu"
 
-#: ../src/brasero-project.c:880
+#: ../src/brasero-project.c:878
 msgid "Please add songs to the project."
 msgstr "Proszę dodać utwory do projektu."
 
-#: ../src/brasero-project.c:881
-#: ../src/brasero-project.c:890
-#: ../src/main.c:326
+#: ../src/brasero-project.c:879
+#: ../src/brasero-project.c:888
+#: ../src/main.c:255
 msgid "The project is empty"
 msgstr "Projekt jest pusty"
 
-#: ../src/brasero-project.c:889
-#: ../src/main.c:325
+#: ../src/brasero-project.c:887
+#: ../src/main.c:254
 msgid "Please add files to the project."
 msgstr "Proszę dodać pliki do projektu."
 
-#: ../src/brasero-project.c:1119
+#: ../src/brasero-project.c:1101
 msgid "Do you really want to create a new project and discard the changes to current one?"
 msgstr "Na pewno utworzyć nowy projekt i odrzucić zmiany w obecnym?"
 
-#: ../src/brasero-project.c:1124
+#: ../src/brasero-project.c:1106
 msgid "If you choose to create a new project, all changes made will be lost."
 msgstr "Utworzenie nowego projektu spowoduje utratę wszystkich dotychczasowych zmian."
 
-#: ../src/brasero-project.c:1126
+#: ../src/brasero-project.c:1108
 msgid "_Discard Changes"
 msgstr "O_drzuć"
 
-#: ../src/brasero-project.c:1135
+#: ../src/brasero-project.c:1116
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Na pewno utworzyć nowy projekt i odrzucić aktualny?"
 
-#: ../src/brasero-project.c:1140
+#: ../src/brasero-project.c:1121
 msgid "If you choose to create a new project, all files already added will be discarded. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Po utworzeniu nowego projektu wszystkie dotychczas zaznaczone pliki zostaną odrzucone. Nie zostaną one usunięte z ich pierwotnego położenia, ale przestaną być wyświetlane."
 
-#: ../src/brasero-project.c:1145
+#: ../src/brasero-project.c:1126
 msgid "_Discard Project"
 msgstr "_Odrzuć projekt"
 
-#: ../src/brasero-project.c:1407
+#: ../src/brasero-project.c:1386
 msgid "Select Files"
 msgstr "Zaznaczanie plików"
 
-#: ../src/brasero-project.c:1519
+#: ../src/brasero-project.c:1497
 msgid "Do you really want to empty the current project?"
 msgstr "Na pewno usunąć zawartość projektu?"
 
-#: ../src/brasero-project.c:1524
+#: ../src/brasero-project.c:1502
 msgid "Emptying a project will remove all files already added. All the work will be lost. Note that files will not be deleted from their own location, just no longer listed here."
 msgstr "Usunięcie zawartości projektu spowoduje, że wszystkie dotychczas dodane pliki zostaną usunięte. Cała praca zostanie utracona. Nie zostaną one usunięte z ich pierwotnego położenia, ale przestaną być wyświetlane."
 
-#: ../src/brasero-project.c:1580
+#: ../src/brasero-project.c:1558
 msgid "_Save"
 msgstr "_Zapisz"
 
-#: ../src/brasero-project.c:1591
+#: ../src/brasero-project.c:1569
 msgid "_Add"
 msgstr "Dod_aj"
 
-#: ../src/brasero-project.c:1596
-#: ../src/brasero-split-dialog.c:1240
+#: ../src/brasero-project.c:1574
+#: ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "_Usuń"
 
-#: ../src/brasero-project.c:1657
+#: ../src/brasero-project.c:1634
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero - %s (płyta z danymi)"
 
-#: ../src/brasero-project.c:1659
+#: ../src/brasero-project.c:1636
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero - %s (płyta CD-Audio)"
 
-#: ../src/brasero-project.c:1661
+#: ../src/brasero-project.c:1638
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero - %s (płyta wideo)"
 
-#: ../src/brasero-project.c:1681
-#: ../src/brasero-project-manager.c:1088
-#: ../src/main.c:287
-#: ../src/main.c:311
-msgid "Error while loading the project."
-msgstr "Błąd podczas wczytywania projektu."
-
-#: ../src/brasero-project.c:2048
-msgid "The project could not be opened."
-msgstr "Projekt nie mógł zostać otwarty."
-
-#: ../src/brasero-project.c:2057
-msgid "The file is empty."
-msgstr "Plik jest pusty."
-
-#: ../src/brasero-project.c:2107
-#: ../src/brasero-project.c:2115
-#: ../src/brasero-project.c:2245
-msgid "It does not seem to be a valid Brasero project."
-msgstr "To nie wygląda na poprawny plik projektu programu Brasero."
-
-#: ../src/brasero-project.c:2342
+#: ../src/brasero-project.c:1750
 msgid "Your project has not been saved."
 msgstr "Projekt nie został zapisany."
 
-#: ../src/brasero-project.c:2358
+#: ../src/brasero-project.c:1764
 msgid "Save the changes of current project before closing?"
 msgstr "Zapisać zmiany w projekcie przed zamknięciem?"
 
-#: ../src/brasero-project.c:2363
+#: ../src/brasero-project.c:1769
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Zmiany zostaną bezpowrotnie utracone, jeśli nie zostaną zapisane."
 
-#: ../src/brasero-project.c:2367
-#: ../src/brasero-project.c:2373
+#: ../src/brasero-project.c:1773
+#: ../src/brasero-project.c:1779
 msgid "Cl_ose Without Saving"
 msgstr "Za_kończ bez zapisywania"
 
-#: ../src/brasero-project.c:2992
+#: ../src/brasero-project.c:2398
 msgid "Save Current Project"
 msgstr "Zapisanie bieżącego projektu"
 
-#: ../src/brasero-project.c:3010
+#: ../src/brasero-project.c:2416
 msgid "Save project as Brasero audio project"
 msgstr "Zapisanie jako projekt dźwiękowy programu Brasero"
 
-#: ../src/brasero-project.c:3011
+#: ../src/brasero-project.c:2417
 msgid "Save project as a plain text list"
 msgstr "Zapisanie projektu jako pliku tekstowego"
 
-#: ../src/brasero-project.c:3015
+#: ../src/brasero-project.c:2421
 msgid "Save project as a PLS playlist"
 msgstr "Zapisanie projektu jako listę odtwarzania PLS"
 
-#: ../src/brasero-project.c:3016
+#: ../src/brasero-project.c:2422
 msgid "Save project as an M3U playlist"
 msgstr "Zapisanie projektu jako listę odtwarzania M3U"
 
-#: ../src/brasero-project.c:3017
+#: ../src/brasero-project.c:2423
 msgid "Save project as a XSPF playlist"
 msgstr "Zapisanie projektu jako listę odtwarzania XSPF"
 
-#: ../src/brasero-project.c:3018
+#: ../src/brasero-project.c:2424
 msgid "Save project as an IRIVER playlist"
 msgstr "Zapisanie projektu jako listę odtwarzania IRIVER"
 
-#: ../src/brasero-project-manager.c:105
+#: ../src/brasero-project-manager.c:102
 msgid "_Cover Editor"
 msgstr "_Edytor okładek"
 
-#: ../src/brasero-project-manager.c:106
+#: ../src/brasero-project-manager.c:103
 msgid "Design and print covers for CDs"
 msgstr "Projekt i wydruk okładek płyt CD."
 
-#: ../src/brasero-project-manager.c:107
+#: ../src/brasero-project-manager.c:104
 msgid "_New Project"
 msgstr "No_wy projekt"
 
-#: ../src/brasero-project-manager.c:108
+#: ../src/brasero-project-manager.c:105
 msgid "Create a new project"
 msgstr "Utworzenie nowego projektu"
 
-#: ../src/brasero-project-manager.c:109
+#: ../src/brasero-project-manager.c:106
 msgid "_Empty Project"
 msgstr "_Usuń zawartość projektu"
 
-#: ../src/brasero-project-manager.c:110
+#: ../src/brasero-project-manager.c:107
 msgid "Let you choose your new project"
 msgstr "Pozwala na wybranie nowego projektu"
 
-#: ../src/brasero-project-manager.c:111
+#: ../src/brasero-project-manager.c:108
 msgid "New _Audio Project"
 msgstr "Nowy projekt dźwięk_owy"
 
-#: ../src/brasero-project-manager.c:112
+#: ../src/brasero-project-manager.c:109
 #: ../src/brasero-project-type-chooser.c:73
 msgid "Create a traditional audio CD that will be playable on computers and stereos"
 msgstr "Utworzenie płyty CD-Audio odtwarzalnej w komputerach i odtwarzaczach"
 
-#: ../src/brasero-project-manager.c:113
+#: ../src/brasero-project-manager.c:110
 msgid "New _Data Project"
 msgstr "Nowy projekt d_anych"
 
-#: ../src/brasero-project-manager.c:114
+#: ../src/brasero-project-manager.c:111
 #: ../src/brasero-project-type-chooser.c:78
 msgid "Create a CD/DVD containing any type of data that can only be read on a computer"
 msgstr "Utworzenie płyty CD/DVD zawierającej dowolny rodzaj danych odczytywalnych wyłącznie przez komputer"
 
-#: ../src/brasero-project-manager.c:115
+#: ../src/brasero-project-manager.c:112
 msgid "New _Video Project"
 msgstr "Nowy projekt _wideo"
 
-#: ../src/brasero-project-manager.c:116
+#: ../src/brasero-project-manager.c:113
 #: ../src/brasero-project-type-chooser.c:83
 msgid "Create a video DVD or a SVCD that are readable on TV readers"
 msgstr "Utworzenie płyty DVD-Video lub SVCD odtwarzalnej we wszystkich czytnikach TV"
 
-#: ../src/brasero-project-manager.c:117
+#: ../src/brasero-project-manager.c:114
 msgid "Copy _Disc..."
 msgstr "_Skopiuj płytę..."
 
-#: ../src/brasero-project-manager.c:118
+#: ../src/brasero-project-manager.c:115
 #: ../src/brasero-project-type-chooser.c:88
 msgid "Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"
 msgstr "Utworzenie kopii płyty CD-Audio lub płyty CD/DVD z danymi na komputerze lub kolejnej płycie CD/DVD"
 
-#: ../src/brasero-project-manager.c:119
+#: ../src/brasero-project-manager.c:116
 msgid "_Burn Image..."
 msgstr "Nagraj o_braz..."
 
-#: ../src/brasero-project-manager.c:120
+#: ../src/brasero-project-manager.c:117
 #: ../src/brasero-project-type-chooser.c:92
 #: ../src/brasero-project-type-chooser.c:93
 msgid "Burn an existing CD/DVD image to disc"
 msgstr "Nagranie gotowego obrazu CD/DVD na płycie"
 
-#: ../src/brasero-project-manager.c:122
+#: ../src/brasero-project-manager.c:119
 msgid "_Open..."
 msgstr "_Otwórz..."
 
-#: ../src/brasero-project-manager.c:123
+#: ../src/brasero-project-manager.c:120
 msgid "Open a project"
 msgstr "Otwiera projekt"
 
@@ -2652,56 +3020,56 @@ msgstr[1] "Żaden plik nie jest obsługiwany (%i zaznaczone pliki)"
 msgstr[2] "Żaden plik nie jest obsługiwany (%i zaznaczonych plików)"
 
 #: ../src/brasero-project-manager.c:299
-#: ../src/brasero-project-manager.c:460
+#: ../src/brasero-project-manager.c:458
 msgid "No file selected"
 msgstr "Żaden plik nie został wybrany"
 
-#: ../src/brasero-project-manager.c:727
+#: ../src/brasero-project-manager.c:569
 msgid "Brasero - New Audio Disc Project"
 msgstr "Brasero - Nowy projekt dźwiękowy"
 
-#: ../src/brasero-project-manager.c:741
+#: ../src/brasero-project-manager.c:583
 msgid "Brasero - New Data Disc Project"
 msgstr "Brasero - Nowy projekt danych"
 
-#: ../src/brasero-project-manager.c:755
+#: ../src/brasero-project-manager.c:597
 msgid "Brasero - New Video Disc Project"
 msgstr "Brasero - Nowy projekt wideo"
 
-#: ../src/brasero-project-manager.c:765
+#: ../src/brasero-project-manager.c:607
 msgid "Brasero - New Image File"
 msgstr "Brasero - Nowy plik obrazu"
 
-#: ../src/brasero-project-manager.c:776
+#: ../src/brasero-project-manager.c:624
 msgid "Brasero - Disc Copy"
 msgstr "Brasero - Kopiowanie płyty"
 
-#: ../src/brasero-project-manager.c:1086
+#: ../src/brasero-project-manager.c:915
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "Projekt \"%s\" nie istnieje"
 
-#: ../src/brasero-project-manager.c:1113
+#: ../src/brasero-project-manager.c:941
 msgid "Open Project"
 msgstr "Otwarcie projektu"
 
-#: ../src/brasero-project-manager.c:1230
+#: ../src/brasero-project-manager.c:1060
 msgid "_New"
 msgstr "_Nowy"
 
-#: ../src/brasero-project-manager.c:1234
+#: ../src/brasero-project-manager.c:1064
 msgid "_Open"
 msgstr "_Otwórz"
 
-#: ../src/brasero-project-manager.c:1285
+#: ../src/brasero-project-manager.c:1115
 msgid "Browse the file system"
 msgstr "Przeglądanie systemu plików"
 
-#: ../src/brasero-project-manager.c:1308
+#: ../src/brasero-project-manager.c:1138
 msgid "Search files using keywords"
 msgstr "Wyszukiwanie plików używając słów kluczowych"
 
-#: ../src/brasero-project-manager.c:1328
+#: ../src/brasero-project-manager.c:1158
 msgid "Display playlists and their contents"
 msgstr "Wyświetlanie list odtwarzania i ich zawartości"
 
@@ -2749,25 +3117,25 @@ msgstr "Ostatni _niezapisany projekt"
 msgid "Load the last project that was not burnt and not saved"
 msgstr "Wczytuje ostatni projekt, który nie został nagrany ani zapisany"
 
-#: ../src/brasero-project-type-chooser.c:374
+#: ../src/brasero-project-type-chooser.c:404
 msgid "No recently used project"
 msgstr "Brak ostatnich projektów"
 
-#: ../src/brasero-project-type-chooser.c:435
+#: ../src/brasero-project-type-chooser.c:465
 msgid "Create a new project:"
 msgstr "Utworzenie nowego projektu:"
 
-#: ../src/brasero-project-type-chooser.c:481
+#: ../src/brasero-project-type-chooser.c:511
 msgid "Recent projects:"
 msgstr "Ostatnie projekty:"
 
 #: ../src/brasero-sum-dialog.c:110
-#: ../src/brasero-sum-dialog.c:190
+#: ../src/brasero-sum-dialog.c:188
 msgid "Check _Again"
 msgstr "Spr_awdź ponownie"
 
 #: ../src/brasero-sum-dialog.c:141
-#: ../src/brasero-sum-dialog.c:471
+#: ../src/brasero-sum-dialog.c:469
 msgid "The file integrity check could not be performed."
 msgstr "Sprawdzenie spójności danych nie mogło zostać wykonane."
 
@@ -2779,241 +3147,210 @@ msgstr "Sprawdzenie spójności danych wykonane z powodzeniem."
 msgid "There seems to be no corrupted file on the disc"
 msgstr "Wygląda na to, że na płycie nie ma uszkodzonych plików"
 
-#: ../src/brasero-sum-dialog.c:178
+#: ../src/brasero-sum-dialog.c:183
 msgid "The following files appear to be corrupted:"
 msgstr "Następujące pliki wyglądają na uszkodzone:"
 
-#: ../src/brasero-sum-dialog.c:225
+#: ../src/brasero-sum-dialog.c:223
 msgid "Corrupted Files"
 msgstr "Pliki uszkodzone"
 
-#: ../src/brasero-sum-dialog.c:311
+#: ../src/brasero-sum-dialog.c:309
 msgid "Downloading md5 file"
 msgstr "Pobieranie pliku md5"
 
-#: ../src/brasero-sum-dialog.c:359
+#: ../src/brasero-sum-dialog.c:357
 #, c-format
 msgid "\"%s\" is not a valid URI"
 msgstr "\"%s\" nie jest poprawnym adres URI"
 
-#: ../src/brasero-sum-dialog.c:472
+#: ../src/brasero-sum-dialog.c:470
 msgid "No md5 file was given."
 msgstr "Nie wskazano pliku md5."
 
-#: ../src/brasero-sum-dialog.c:580
-#, c-format
-msgid "No checksum file could be found on the disc"
-msgstr "Nie odnaleziono sum kontrolnych"
-
-#: ../src/brasero-sum-dialog.c:726
+#: ../src/brasero-sum-dialog.c:639
 msgid "Use a _md5 file to check the disc"
 msgstr "_Plik md5 do sprawdzenia płyty"
 
-#: ../src/brasero-sum-dialog.c:727
+#: ../src/brasero-sum-dialog.c:640
 msgid "Use an external .md5 file that stores the checksum of a disc"
 msgstr "Używa zewnętrznego pliku .md5 do sprawdzenia płyty"
 
-#: ../src/brasero-sum-dialog.c:740
+#: ../src/brasero-sum-dialog.c:653
 msgid "Open a md5 file"
 msgstr "Otwórz plik md5"
 
-#: ../src/brasero-sum-dialog.c:755
+#: ../src/brasero-sum-dialog.c:668
 msgid "_Check"
 msgstr "_Sprawdź"
 
-#: ../src/brasero-sum-dialog.c:778
+#: ../src/brasero-sum-dialog.c:692
 msgid "Disc Checking"
 msgstr "Sprawdzanie płyty"
 
-#: ../src/brasero-tool-dialog.c:68
-#: ../src/brasero-tool-dialog.c:82
-#: ../src/brasero-tool-dialog.c:92
+#: ../src/brasero-tool-dialog.c:67
+#: ../src/brasero-tool-dialog.c:81
+#: ../src/brasero-tool-dialog.c:91
 msgid "The operation cannot be performed."
 msgstr "Operacja nie może zostać wykonana."
 
-#: ../src/brasero-tool-dialog.c:69
+#: ../src/brasero-tool-dialog.c:68
 #: ../src/plugins/growisofs/burn-dvd-rw-format.c:65
 #: ../src/plugins/libburnia/burn-libburn.c:589
 #, c-format
 msgid "The disc is not supported"
 msgstr "Płyta nie jest obsługiwana."
 
-#: ../src/brasero-tool-dialog.c:79
-#: ../src/burn.c:1326
-#: ../src/burn.c:1360
-#: ../src/burn.c:1542
-#: ../src/burn.c:1553
-#: ../src/burn.c:1904
-#: ../src/plugins/cdrdao/burn-cdrdao.c:221
-#: ../src/plugins/cdrkit/burn-readom.c:92
-#: ../src/plugins/cdrkit/burn-wodim.c:120
-#: ../src/plugins/cdrkit/burn-wodim.c:129
-#: ../src/plugins/cdrtools/burn-cdrecord.c:120
-#: ../src/plugins/cdrtools/burn-cdrecord.c:129
-#: ../src/plugins/cdrtools/burn-readcd.c:92
-#: ../src/plugins/growisofs/burn-dvd-rw-format.c:72
-#: ../src/plugins/growisofs/burn-growisofs.c:173
-#: ../src/plugins/libburnia/burn-libburn-common.c:175
-#: ../src/scsi-error.c:36
-#, c-format
-msgid "The drive is busy"
-msgstr "Napęd jest zajęty"
-
-#: ../src/brasero-tool-dialog.c:93
+#: ../src/brasero-tool-dialog.c:92
 msgid "The drive is empty"
 msgstr "Napęd jest pusty"
 
-#: ../src/brasero-tool-dialog.c:481
+#: ../src/brasero-tool-dialog.c:470
 msgid "Select a disc"
 msgstr "Proszę wybrać płytę"
 
-#: ../src/brasero-tool-dialog.c:506
+#: ../src/brasero-tool-dialog.c:496
 msgid "Progress"
 msgstr "Postęp"
 
-#: ../src/burn-basics.c:70
+#: ../src/burn-basics.c:69
 msgid "Getting size"
 msgstr "Pobieranie rozmiaru"
 
-#: ../src/burn-basics.c:72
+#: ../src/burn-basics.c:71
 msgid "Writing"
 msgstr "Zapisywanie"
 
-#: ../src/burn-basics.c:73
+#: ../src/burn-basics.c:72
 msgid "Blanking"
 msgstr "Usuwanie zawartości"
 
-#: ../src/burn-basics.c:74
+#: ../src/burn-basics.c:73
 msgid "Creating checksum"
 msgstr "Tworzenie sumy kontrolnej"
 
-#: ../src/burn-basics.c:76
+#: ../src/burn-basics.c:75
 msgid "Copying file"
 msgstr "Kopiowanie pliku"
 
-#: ../src/burn-basics.c:78
+#: ../src/burn-basics.c:77
 msgid "Transcoding song"
 msgstr "Transkodowanie utworu"
 
-#: ../src/burn-basics.c:79
+#: ../src/burn-basics.c:78
 msgid "Preparing to write"
 msgstr "Przygotowywanie do zapisu"
 
-#: ../src/burn-basics.c:80
+#: ../src/burn-basics.c:79
 msgid "Writing leadin"
 msgstr "Zapisywanie obszaru leadin"
 
-#: ../src/burn-basics.c:81
+#: ../src/burn-basics.c:80
 msgid "Writing CD-TEXT information"
 msgstr "Zapisywanie informacji CD-TEXT"
 
-#: ../src/burn-basics.c:82
+#: ../src/burn-basics.c:81
 msgid "Finalising"
 msgstr "Kończenie"
 
-#: ../src/burn-basics.c:83
+#: ../src/burn-basics.c:82
 msgid "Writing leadout"
 msgstr "Zapisywanie obszaru leadout"
 
-#: ../src/burn-basics.c:84
+#: ../src/burn-basics.c:83
 msgid "Starting to record"
 msgstr "Przygotowywanie do zapisu"
 
-#: ../src/burn-basics.c:85
+#: ../src/burn-basics.c:84
 msgid "Success"
 msgstr "Udane"
 
-#: ../src/burn.c:152
+#: ../src/burn.c:149
 msgid "Burning CD/DVD"
 msgstr "Nagrywanie CD/DVD"
 
-#: ../src/burn.c:293
+#: ../src/burn.c:287
 #, c-format
 msgid "The disc in \"%s\" cannot be ejected"
 msgstr "Płyta w \"%s\" nie może zostać wysunięta"
 
-#: ../src/burn.c:336
-#: ../src/burn.c:383
+#: ../src/burn.c:329
+#: ../src/burn.c:375
 #, c-format
 msgid "\"%s\" cannot be unlocked"
 msgstr "\"%s\" nie może zostać odblokowany"
 
-#: ../src/burn.c:514
-#: ../src/burn.c:639
-#: ../src/burn.c:788
-#: ../src/burn.c:1970
+#: ../src/burn.c:506
+#: ../src/burn.c:631
+#: ../src/burn.c:780
+#: ../src/burn.c:1929
 #, c-format
 msgid "No burner specified"
 msgstr "Nie określono napędu do nagrywania"
 
-#: ../src/burn.c:551
+#: ../src/burn.c:543
 #, c-format
 msgid "No source drive specified"
 msgstr "Nie określono napędu źródłowego"
 
-#: ../src/burn.c:591
+#: ../src/burn.c:583
 msgid "Ongoing copying process"
 msgstr "Trwa proces kopiowania"
 
-#: ../src/burn.c:595
-#: ../src/burn.c:690
-#: ../src/burn.c:935
-#: ../src/burn.c:1082
+#: ../src/burn.c:587
+#: ../src/burn.c:682
+#: ../src/burn.c:927
+#: ../src/burn.c:1036
 #, c-format
 msgid "The drive cannot be locked (%s)"
 msgstr "Napęd nie może zostać zablokowany (%s)"
 
-#: ../src/burn.c:650
+#: ../src/burn.c:642
 #, c-format
 msgid "The drive has no rewriting capabilities"
 msgstr "Napęd nie obsługuje opcji ponownego zapisu"
 
-#: ../src/burn.c:686
+#: ../src/burn.c:678
 msgid "Ongoing blanking process"
 msgstr "Trwa proces usuwania zawartości"
 
-#: ../src/burn.c:808
+#: ../src/burn.c:800
 #, c-format
 msgid "The drive cannot burn or the disc cannot be burnt"
 msgstr "Napęd nie może nagrywać lub nie można nagrywać na podanym nośniku"
 
-#: ../src/burn.c:1013
-#, c-format
-msgid "The disc could not be mounted (max attemps reached)"
-msgstr "Napęd nie może zostać zamontowany (przekroczono maksymalną liczbę prób)"
-
-#: ../src/burn.c:1078
+#: ../src/burn.c:1032
 msgid "Ongoing checksuming operation"
 msgstr "Trwa proces sprawdzania sumy kontrolnej"
 
-#: ../src/burn.c:1667
-#: ../src/burn.c:2019
+#: ../src/burn.c:1635
+#: ../src/burn.c:1978
 #, c-format
 msgid "Merging data is impossible with this disc"
 msgstr "Scalenie danych na tej płycie nie jest możliwe"
 
-#: ../src/burn.c:1668
+#: ../src/burn.c:1636
 #: ../src/plugins/cdrkit/burn-genisoimage.c:197
 #: ../src/plugins/cdrkit/burn-wodim.c:99
 #: ../src/plugins/cdrtools/burn-cdrecord.c:99
 #: ../src/plugins/cdrtools/burn-mkisofs.c:198
-#: ../src/plugins/growisofs/burn-growisofs.c:181
+#: ../src/plugins/growisofs/burn-growisofs.c:187
 #, c-format
 msgid "Not enough space available on the disc"
 msgstr "Brak wystarczającej ilości wolnego miejsca na płycie"
 
-#: ../src/burn.c:1956
+#: ../src/burn.c:1915
 #, c-format
 msgid "There is no track to be burnt"
 msgstr "Brak ścieżek do nagrywania"
 
-#: ../src/burn.c:2303
-#: ../src/burn-caps.c:1449
+#: ../src/burn.c:2262
+#: ../src/burn-caps.c:1472
 #, c-format
 msgid "Only one track at a time can be checked"
 msgstr "Możliwe jest sprawdzenie tylko jednej ścieżki jednocześnie"
 
-#: ../src/burn.c:2372
+#: ../src/burn.c:2331
 #, c-format
 msgid "No format for the temporary image could be found"
 msgstr "Odnalezienie formatu dla tymczasowego pliku obrazu jest niemożliwe"
@@ -3022,45 +3359,35 @@ msgstr "Odnalezienie formatu dla tymczasowego pliku obrazu jest niemożliwe"
 #. * is specified. A graft point is the path (on the
 #. * disc) where a file from any source will be added
 #. * ("grafted")
-#: ../src/burn.c:2631
-#: ../src/burn-caps.c:108
-#: ../src/burn-caps.c:1351
-#: ../src/burn-job.c:1222
-#: ../src/burn-job.c:1231
-#: ../src/burn-mkisofs-base.c:297
-#: ../src/main.c:284
-#: ../src/main.c:308
-#: ../src/plugins/cdrkit/burn-genisoimage.c:359
+#: ../src/burn.c:2589
+#: ../src/burn-caps.c:131
+#: ../src/burn-caps.c:1374
+#: ../src/burn-job.c:1226
+#: ../src/burn-job.c:1235
+#: ../src/burn-mkisofs-base.c:303
+#: ../src/main.c:211
+#: ../src/main.c:237
+#: ../src/plugins/cdrkit/burn-genisoimage.c:360
 #: ../src/plugins/cdrkit/burn-readom.c:111
 #: ../src/plugins/cdrkit/burn-readom.c:321
-#: ../src/plugins/cdrkit/burn-wodim.c:635
-#: ../src/plugins/cdrkit/burn-wodim.c:746
-#: ../src/plugins/cdrkit/burn-wodim.c:759
-#: ../src/plugins/cdrtools/burn-cdrecord.c:747
-#: ../src/plugins/cdrtools/burn-cdrecord.c:760
-#: ../src/plugins/cdrtools/burn-mkisofs.c:360
+#: ../src/plugins/cdrkit/burn-wodim.c:654
+#: ../src/plugins/cdrkit/burn-wodim.c:766
+#: ../src/plugins/cdrkit/burn-wodim.c:779
+#: ../src/plugins/cdrtools/burn-cdrecord.c:749
+#: ../src/plugins/cdrtools/burn-cdrecord.c:762
+#: ../src/plugins/cdrtools/burn-mkisofs.c:361
 #: ../src/plugins/cdrtools/burn-readcd.c:111
 #: ../src/plugins/cdrtools/burn-readcd.c:331
 #, c-format
 msgid "An internal error occured"
 msgstr "Wystąpił nieznany błąd wewnętrzny"
 
-#: ../src/burn-iso9660.c:152
-#: ../src/burn-iso9660.c:161
-#: ../src/burn-iso9660.c:396
-#: ../src/burn-iso9660.c:433
-#: ../src/burn-iso9660.c:482
-#: ../src/burn-volume.c:123
-#, c-format
-msgid "It does not appear to be a valid ISO image"
-msgstr "To nie wygląda na poprawny plik obrazu ISO."
-
 #. Translators: %s is the plugin name
 #: ../src/burn-job.c:315
-#: ../src/burn-job.c:800
-#: ../src/burn-job.c:813
-#: ../src/burn-job.c:1032
-#: ../src/burn-job.c:1122
+#: ../src/burn-job.c:804
+#: ../src/burn-job.c:817
+#: ../src/burn-job.c:1036
+#: ../src/burn-job.c:1126
 #, c-format
 msgid "\"%s\" did not behave properly"
 msgstr "wtyczka \"%s\" zadziałała niewłaściwie"
@@ -3082,172 +3409,64 @@ msgid "The location you chose to store the temporary image on does not have enou
 msgstr "Wybrane położenie do przechowania tymczasowego obrazu nie ma wystarczającej ilości wolnego miejsca dla obrazu płyty (potrzebne %ld MiB)."
 
 #: ../src/burn-job.c:550
-#: ../src/plugins/dvdcss/burn-dvdcss.c:345
+#: ../src/plugins/dvdcss/burn-dvdcss.c:347
 #, c-format
 msgid "The size of the volume could not be retrieved"
 msgstr "Rozmiar woluminu nie mógł zostać sprawdzony"
 
-#: ../src/burn-job.c:600
-#: ../src/burn-session.c:534
-#: ../src/burn-session.c:550
+#: ../src/burn-job.c:604
+#: ../src/burn-session.c:539
+#: ../src/burn-session.c:555
 #, c-format
 msgid "No path was specified for the image output"
 msgstr "Nie określono ścieżki dla wyjścia obrazu"
 
-#: ../src/burn-job.c:626
-#: ../src/burn-job.c:641
+#: ../src/burn-job.c:630
+#: ../src/burn-job.c:645
 #, c-format
 msgid "\"%s\" already exists"
 msgstr "\"%s\" już istnieje"
 
 #. Translators: %s is the error returned by libburn
 #. Translators: the %s is the error message from errno
-#: ../src/burn-job.c:771
-#: ../src/main.c:282
-#: ../src/main.c:306
-#: ../src/plugins/cdrtools/burn-cdrecord.c:635
+#: ../src/burn-job.c:775
+#: ../src/main.c:209
+#: ../src/main.c:235
+#: ../src/plugins/cdrtools/burn-cdrecord.c:636
 #: ../src/plugins/libburnia/burn-libburn.c:691
-#: ../src/plugins/transcode/burn-transcode.c:594
+#: ../src/plugins/transcode/burn-transcode.c:663
 #, c-format
 msgid "An internal error occured (%s)"
 msgstr "Wystąpił błąd wewnętrzny (%s)"
 
-#: ../src/burn-medium.c:65
-msgid "File"
-msgstr "Plik"
-
-#: ../src/burn-medium.c:66
-msgid "CDROM"
-msgstr "CDROM"
-
-#: ../src/burn-medium.c:67
-msgid "CD-R"
-msgstr "CD-R"
-
-#: ../src/burn-medium.c:68
-msgid "CD-RW"
-msgstr "CD-RW"
-
-#: ../src/burn-medium.c:69
-msgid "DVDROM"
-msgstr "DVDROM"
-
-#: ../src/burn-medium.c:70
-msgid "DVD-R"
-msgstr "DVD-R"
-
-#: ../src/burn-medium.c:71
-msgid "DVD-RW"
-msgstr "DVD-RW"
-
-#: ../src/burn-medium.c:72
-msgid "DVD+R"
-msgstr "DVD+R"
-
-#: ../src/burn-medium.c:73
-msgid "DVD+RW"
-msgstr "DVD+RW"
-
-#: ../src/burn-medium.c:74
-msgid "DVD+R dual layer"
-msgstr "DVD+R dwuwarstwowa"
-
-#: ../src/burn-medium.c:75
-msgid "DVD+RW dual layer"
-msgstr "DVD+RW dwuwarstwowa"
-
-#: ../src/burn-medium.c:76
-msgid "DVD-R dual layer"
-msgstr "DVD-R dwuwarstwowa"
-
-#: ../src/burn-medium.c:77
-msgid "DVD-RAM"
-msgstr "DVD-RAM"
-
-#: ../src/burn-medium.c:78
-msgid "Blu-ray disc"
-msgstr "Płyta Blu-Ray"
-
-#: ../src/burn-medium.c:79
-msgid "Writable Blu-ray disc"
-msgstr "Zapisywalna płyta Blu-Ray"
-
-#: ../src/burn-medium.c:80
-msgid "Rewritable Blu-ray disc"
-msgstr "Płyta Blu-Ray do wielokrotnego zapisu"
-
-#. Translators: This is a fake drive, a file, and means that
-#. * when we're writing, we're writing to a file and create an
-#. * image on the hard drive.
-#: ../src/burn-medium.c:171
-#: ../src/burn-drive.c:271
-#: ../src/burn-volume-obj.c:714
-msgid "Image File"
-msgstr "Plik obrazu"
-
-#. NOTE for translators: the first %s is the disc type and the
-#. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:181
-#, c-format
-msgid "Blank %s in %s"
-msgstr "Pusta płyta %s w %s"
-
-#. NOTE for translators: the first %s is the disc type and the
-#. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:188
-#, c-format
-msgid "Audio and data %s in %s"
-msgstr "Płyta %s audio i z danymi w %s"
-
-#. NOTE for translators: the first %s is the disc type and the
-#. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:195
-#, c-format
-msgid "Audio %s in %s"
-msgstr "Płyta %s audio w %s"
-
-#. NOTE for translators: the first %s is the disc type and the
-#. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:202
-#, c-format
-msgid "Data %s in %s"
-msgstr "Płyta %s z danymi w %s"
-
-#. NOTE for translators: the first %s is the disc type and the
-#. * second %s the name of the drive this disc is in.
-#: ../src/burn-medium.c:209
-#, c-format
-msgid "%s in %s"
-msgstr "%s / %s"
-
-#: ../src/burn-mkisofs-base.c:149
-#: ../src/burn-mkisofs-base.c:432
-#: ../src/plugins/growisofs/burn-growisofs.c:505
-#: ../src/plugins/libburnia/burn-libisofs.c:650
-#: ../src/plugins/checksum/burn-checksum-image.c:272
+#: ../src/burn-mkisofs-base.c:154
+#: ../src/burn-mkisofs-base.c:576
+#: ../src/plugins/growisofs/burn-growisofs.c:514
+#: ../src/plugins/libburnia/burn-libisofs.c:669
+#: ../src/plugins/checksum/burn-checksum-image.c:274
 #, c-format
 msgid "The file is not stored locally"
 msgstr "Plik nie jest przechowywany lokalnie"
 
-#: ../src/burn-mkisofs-base.c:566
+#: ../src/burn-mkisofs-base.c:712
 #, c-format
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "Brak katalogu VIDEO_TS lub jest niepoprawny"
 
-#: ../src/burn-process.c:102
-#: ../src/burn-process.c:118
-#: ../src/burn-process.c:130
+#: ../src/burn-process.c:105
+#: ../src/burn-process.c:111
+#: ../src/burn-process.c:128
 #, c-format
 msgid "\"%s\" could not be found in the path"
 msgstr "Nie udało się odnaleźć \"%s\" w ścieżce"
 
-#: ../src/burn-process.c:140
+#: ../src/burn-process.c:122
 #, c-format
 msgid "\"%s\" is a symlink pointing to another program. Use the target program instead"
 msgstr "\"%s\" jest dowiązaniem symbolicznym do innego programu. Proszę użyć programu docelowego."
 
 #. Translators: %s is the name of the brasero element
-#: ../src/burn-process.c:227
+#: ../src/burn-process.c:212
 #, c-format
 msgid "Process \"%s\" ended with an error code (%i)"
 msgstr "Proces \"%s\" zakończył się błędem (%i)"
@@ -3332,57 +3551,62 @@ msgstr ""
 msgid "PATH"
 msgstr "ŚCIEŻKA"
 
-#: ../src/main.c:133
+#. Translators: the xid is a number identifying each window in the X11
+#. * world (not Windows, MacOS X). The following sentence says that
+#. * brasero will be set to be always on top of the window identified by
+#. * xid. In other word, the window with the given xid will become brasero
+#. * parent as if brasero was a dialog for the parent application
+#: ../src/main.c:138
+msgid "The XID of the parent window"
+msgstr "XID okna nadrzędnego"
+
+#: ../src/main.c:141
 msgid "Display debug statements on stdout"
 msgstr "Wyświetla instrukcje debug na stdout"
 
-#: ../src/main.c:213
+#: ../src/main.c:348
 msgid "Incompatible command line options used."
 msgstr "Użyto niekompatybilnych opcji wiersza poleceń."
 
-#: ../src/main.c:214
+#: ../src/main.c:349
 msgid "Only one option can be given at a time"
 msgstr "Można wprowadzić tylko jedną opcję naraz"
 
-#: ../src/main.c:428
+#: ../src/main.c:505
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] ..."
 
-#: ../src/main.c:450
-msgid "CD/DVD burning"
-msgstr "Nagrywanie płyt CD/DVD"
-
-#: ../src/main.c:457
+#: ../src/main.c:516
 #, c-format
 msgid "Please type %s --help to see all available options\n"
 msgstr "Aby zobaczyć wszystkie dostępne opcje należy wprowadzić polecenie %s --help\n"
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:80
+#: ../src/plugins/cdrdao/burn-cdrdao.c:90
 msgid "Copying audio track"
 msgstr "Kopiowanie ścieżki dźwiękowej"
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:86
+#: ../src/plugins/cdrdao/burn-cdrdao.c:96
 msgid "Copying data track"
 msgstr "Kopiowanie ścieżki z danymi"
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:122
+#: ../src/plugins/cdrdao/burn-cdrdao.c:132
 #, c-format
 msgid "Analysing track %02i"
 msgstr "Analizowanie ścieżki %02i"
 
 #. Translators: %s is a filename
-#: ../src/plugins/cdrdao/burn-cdrdao.c:189
-#: ../src/plugins/growisofs/burn-growisofs.c:485
+#: ../src/plugins/cdrdao/burn-cdrdao.c:199
+#: ../src/plugins/growisofs/burn-growisofs.c:494
 #, c-format
 msgid "\"%s\" could not be found"
 msgstr "Nie można było odnaleźć \"%s\""
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:227
+#: ../src/plugins/cdrdao/burn-cdrdao.c:237
 #, c-format
 msgid "Your version of cdrdao does not seem to be supported by libbrasero"
 msgstr "Zainstalowana wersja cdrdao nie jest obsługiwana przez libbrasero"
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:233
+#: ../src/plugins/cdrdao/burn-cdrdao.c:243
 #: ../src/plugins/cdrkit/burn-readom.c:98
 #: ../src/plugins/cdrkit/burn-readom.c:104
 #: ../src/plugins/cdrkit/burn-wodim.c:91
@@ -3393,9 +3617,13 @@ msgstr "Zainstalowana wersja cdrdao nie jest obsługiwana przez libbrasero"
 msgid "You do not have the required permissions to use this drive"
 msgstr "Brak wystarczających uprawnień do użycia tego napędu"
 
-#: ../src/plugins/cdrdao/burn-cdrdao.c:568
+#: ../src/plugins/cdrdao/burn-cdrdao.c:606
 msgid "Use cdrdao to copy and burn CDs"
 msgstr "Cdrdao służy do tworzenia plików obrazów i nagrywania płyt CD"
+
+#: ../src/plugins/cdrdao/burn-cdrdao.c:672
+msgid "Enable \"--driver generic-mmc-raw\" flag (see cdrdao manual)"
+msgstr "Włączenie flagi \"--driver generic-mmc-raw\" (proszę zobaczyć instrukcję cdrdao)"
 
 #: ../src/plugins/cdrdao/burn-toc2cue.c:259
 msgid "Converting toc file"
@@ -3407,8 +3635,8 @@ msgstr "Toc2cue konwertuje pliki .toc do formatu .cue"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:110
 #: ../src/plugins/cdrtools/burn-mkisofs.c:111
-#: ../src/plugins/growisofs/burn-growisofs.c:187
-#: ../src/plugins/libburnia/burn-libisofs.c:465
+#: ../src/plugins/growisofs/burn-growisofs.c:193
+#: ../src/plugins/libburnia/burn-libisofs.c:484
 #, c-format
 msgid "Last session import failed"
 msgstr "Ostatnia sesja importu zakończona niepowodzeniem."
@@ -3417,8 +3645,8 @@ msgstr "Ostatnia sesja importu zakończona niepowodzeniem."
 #: ../src/plugins/cdrkit/burn-genisoimage.c:123
 #: ../src/plugins/cdrtools/burn-mkisofs.c:117
 #: ../src/plugins/cdrtools/burn-mkisofs.c:124
-#: ../src/plugins/growisofs/burn-growisofs.c:193
-#: ../src/plugins/growisofs/burn-growisofs.c:200
+#: ../src/plugins/growisofs/burn-growisofs.c:199
+#: ../src/plugins/growisofs/burn-growisofs.c:206
 msgid "An image could not be created"
 msgstr "Nie udało się utworzyć pliku obrazu."
 
@@ -3428,13 +3656,13 @@ msgstr "Ta wersja genisoimage nie jest obsługiwana"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:171
 #: ../src/plugins/cdrtools/burn-mkisofs.c:172
-#: ../src/plugins/growisofs/burn-growisofs.c:206
+#: ../src/plugins/growisofs/burn-growisofs.c:212
 msgid "Some files have invalid filenames"
 msgstr "Niektóre pliki zawierają niepoprawne nazwy"
 
 #: ../src/plugins/cdrkit/burn-genisoimage.c:177
 #: ../src/plugins/cdrtools/burn-mkisofs.c:178
-#: ../src/plugins/growisofs/burn-growisofs.c:212
+#: ../src/plugins/growisofs/burn-growisofs.c:218
 msgid "Unknown character encoding"
 msgstr "Nieznane kodowanie znaków"
 
@@ -3443,13 +3671,13 @@ msgstr "Nieznane kodowanie znaków"
 msgid "There is no space left on the device"
 msgstr "Brak wolnego miejsca w urządzeniu"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:518
+#: ../src/plugins/cdrkit/burn-genisoimage.c:519
 msgid "Use genisoimage to create images from a file selection"
 msgstr "Genisoimage służy do tworzenia obrazów z plików"
 
 #: ../src/plugins/cdrkit/burn-readom.c:401
-msgid "Use readom to image CDs and DVDs"
-msgstr "Readom służy do tworzenia obrazów płyt CD i DVD"
+msgid "Use readom to create disc images"
+msgstr "Użycie readom do tworzenia obrazów płyt"
 
 #: ../src/plugins/cdrkit/burn-wodim.c:107
 #: ../src/plugins/cdrtools/burn-cdrecord.c:107
@@ -3465,42 +3693,43 @@ msgstr "Wystąpił błąd podczas zapisywania na dysk"
 msgid "The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr "System jest za mało wydajny, aby nagrać płytę z taką prędkością. Należy spróbować obniżyć prędkość"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:307
+#: ../src/plugins/cdrkit/burn-wodim.c:305
+#: ../src/plugins/cdrtools/burn-cdrecord.c:297
+msgid "Formatting disc"
+msgstr "Formatowanie nośnika"
+
+#: ../src/plugins/cdrkit/burn-wodim.c:324
 #: ../src/plugins/cdrtools/burn-cdrecord.c:308
 msgid "Writing cue sheet"
 msgstr "Zapisywanie pliku cue"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:328
+#: ../src/plugins/cdrkit/burn-wodim.c:345
 #: ../src/plugins/cdrtools/burn-cdrecord.c:329
 #, c-format
 msgid "The disc needs to be reloaded before being recorded"
 msgstr "Nośnik musi zostać ponownie załadowany przed nagraniem"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1091
+#: ../src/plugins/cdrkit/burn-wodim.c:1166
 msgid "Use wodim to burn CDs and DVDs"
 msgstr "Użycie wodim do nagrywania płyt CD i DVD"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1247
+#: ../src/plugins/cdrkit/burn-wodim.c:1321
 msgid "Enable \"-immed\" flag (see wodim manual)"
 msgstr "Włączenie flagi \"-immed\" (proszę zobaczyć instrukcję wodim)"
 
-#: ../src/plugins/cdrkit/burn-wodim.c:1250
+#: ../src/plugins/cdrkit/burn-wodim.c:1324
 msgid "Minimum drive buffer fill ratio (in %) (see wodim manual):"
 msgstr "Minimalny procent wypełnienia bufora napędu (w %) (proszę zobaczyć instrukcję wodim):"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:297
-msgid "Formatting disc"
-msgstr "Formatowanie nośnika"
-
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1081
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1083
 msgid "Use cdrecord to burn CDs and DVDs"
 msgstr "Użycie cdrecord do nagrywania płyt CD i DVD"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1304
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1306
 msgid "Enable \"-immed\" flag (see cdrecord manual)"
 msgstr "Włączenie flagi \"-immed\" (proszę zobaczyć instrukcję cdrecord)"
 
-#: ../src/plugins/cdrtools/burn-cdrecord.c:1307
+#: ../src/plugins/cdrtools/burn-cdrecord.c:1309
 #, c-format
 msgid "Minimum drive buffer fill ratio (in %%)(see cdrecord manual):"
 msgstr "Minimalny procent wypełnienia bufora napędu (w %%) (proszę zobaczyć instrukcję cdrecord):"
@@ -3509,70 +3738,70 @@ msgstr "Minimalny procent wypełnienia bufora napędu (w %%) (proszę zobaczyć 
 msgid "This version of mkisofs is not supported"
 msgstr "Ta wersja mkisofs nie jest obsługiwana"
 
-#: ../src/plugins/cdrtools/burn-mkisofs.c:525
+#: ../src/plugins/cdrtools/burn-mkisofs.c:526
 msgid "Use mkisofs to create image from a file selection"
 msgstr "Użycie mkisoft do generowania obrazów"
 
 #: ../src/plugins/cdrtools/burn-readcd.c:411
-msgid "Use readcd to image CDs and DVDs"
-msgstr "Readcd służy do tworzenia obrazów płyt CD i DVD"
+msgid "Use readcd to create disc images"
+msgstr "Użycie readcd do tworzenia obrazów płyt"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:120
+#: ../src/plugins/dvdcss/burn-dvdcss.c:122
 #, c-format
-msgid "Encrypted DVD: please, install libdvdcss version 1.2.x"
-msgstr "Zaszyfrowane DVD: proszę zainstalować libdvdcss w wersji 1.2.x"
+msgid "Encrypted DVD: please install libdvdcss version 1.2.x"
+msgstr "Zaszyfrowane DVD: proszę zainstalować bibliotekę libdvdcss w wersji 1.2.x"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:127
+#: ../src/plugins/dvdcss/burn-dvdcss.c:129
 #, c-format
 msgid ""
 "Libdvdcss version %s is not supported.\n"
-"Please, install libdvdcss version 1.2.x"
+"Please install libdvdcss version 1.2.x"
 msgstr ""
-"Wersja %s libdvdcss nie jest obsługiwana.\n"
-"Proszę zainstalować libdvdcss w wersji 1.2.x"
+"Wersja %s biblioteki libdvdcss nie jest obsługiwana.\n"
+"Proszę zainstalować bibliotekę libdvdcss w wersji 1.2.x"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:137
+#: ../src/plugins/dvdcss/burn-dvdcss.c:139
 #, c-format
 msgid "Libdvdcss could not be loaded properly"
-msgstr "Libdvdcss nie mógł zostać poprawnie wczytany"
+msgstr "Biblioteka libdvdcss nie mogła zostać poprawnie wczytana"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:214
-#: ../src/plugins/dvdcss/burn-dvdcss.c:465
-#: ../src/plugins/libburnia/burn-libisofs.c:147
-#: ../src/plugins/libburnia/burn-libisofs.c:248
-#: ../src/plugins/checksum/burn-checksum-files.c:174
-#: ../src/plugins/checksum/burn-checksum-files.c:197
-#: ../src/plugins/checksum/burn-checksum-image.c:159
+#: ../src/plugins/dvdcss/burn-dvdcss.c:216
+#: ../src/plugins/dvdcss/burn-dvdcss.c:467
+#: ../src/plugins/libburnia/burn-libisofs.c:149
+#: ../src/plugins/libburnia/burn-libisofs.c:250
+#: ../src/plugins/checksum/burn-checksum-files.c:179
+#: ../src/plugins/checksum/burn-checksum-files.c:202
+#: ../src/plugins/checksum/burn-checksum-image.c:161
 #, c-format
 msgid "Data could not be written (%s)"
-msgstr "Plik md5 nie może zostać zapisany (%s)"
+msgstr "Nie udało się zapisać danych (%s)"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:274
+#: ../src/plugins/dvdcss/burn-dvdcss.c:276
 #, c-format
 msgid "Error reading video DVD (%s)"
 msgstr "Błąd podczas odczytywania DVD-Video (%s)"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:319
+#: ../src/plugins/dvdcss/burn-dvdcss.c:321
 msgid "Retrieving DVD keys"
 msgstr "Pobieranie kluczy DVD"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:354
+#: ../src/plugins/dvdcss/burn-dvdcss.c:356
 #, c-format
 msgid "Video DVD could not be opened"
 msgstr "Nie udało się otworzyć płyty DVD-Video"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:372
-#: ../src/plugins/dvdcss/burn-dvdcss.c:433
-#: ../src/plugins/dvdcss/burn-dvdcss.c:453
+#: ../src/plugins/dvdcss/burn-dvdcss.c:374
+#: ../src/plugins/dvdcss/burn-dvdcss.c:435
+#: ../src/plugins/dvdcss/burn-dvdcss.c:455
 #, c-format
 msgid "Error while reading video DVD (%s)"
 msgstr "Błąd podczas odczytywania DVD-Video (%s)"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:379
+#: ../src/plugins/dvdcss/burn-dvdcss.c:381
 msgid "Copying Video DVD"
 msgstr "Kopiowanie DVD-Video"
 
-#: ../src/plugins/dvdcss/burn-dvdcss.c:627
+#: ../src/plugins/dvdcss/burn-dvdcss.c:661
 msgid "Dvdcss allows to read css encrypted video DVDs"
 msgstr "Dvdcss pozwala na odczytywanie zakodowanych css płyt DVD-Video"
 
@@ -3580,9 +3809,13 @@ msgstr "Dvdcss pozwala na odczytywanie zakodowanych css płyt DVD-Video"
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "Dvd+re-format usuwa zawartość i formatuje płyty DVD+/-R(W)"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:718
+#: ../src/plugins/growisofs/burn-growisofs.c:732
 msgid "Growisofs burns DVDs"
 msgstr "Growisoft służy do nagrywania płyt DVD"
+
+#: ../src/plugins/growisofs/burn-growisofs.c:962
+msgid "Allow DAO use"
+msgstr "Zezwolenie na użycie DAO"
 
 #: ../src/plugins/libburnia/burn-libburn.c:230
 #: ../src/plugins/libburnia/burn-libburn.c:238
@@ -3595,7 +3828,7 @@ msgstr "Nie udało się utworzyć ścieżki Libburn"
 #. Translators: first %s is the filename, second %s
 #. * is the error generated from errno
 #: ../src/plugins/libburnia/burn-libburn.c:653
-#: ../src/plugins/checksum/burn-checksum-image.c:298
+#: ../src/plugins/checksum/burn-checksum-image.c:300
 #, c-format
 msgid "\"%s\" could not be opened (%s)"
 msgstr "Nie udało się otworzyć \"%s\" (%s)"
@@ -3619,158 +3852,129 @@ msgstr "Adres napędu nie mógł zostać wczytany"
 msgid "Writing track %02i"
 msgstr "Zapisywanie ścieżki %02i"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:302
-#: ../src/plugins/libburnia/burn-libisofs.c:826
+#: ../src/plugins/libburnia/burn-libisofs.c:312
+#: ../src/plugins/libburnia/burn-libisofs.c:850
 #, c-format
 msgid "Libisofs could not be initialized."
 msgstr "Nie można było zainicjować Libisoft."
 
-#: ../src/plugins/libburnia/burn-libisofs.c:442
+#: ../src/plugins/libburnia/burn-libisofs.c:461
 #, c-format
 msgid "Read options could not be created"
 msgstr "Nie mogły zostać utworzone żadne opcje odczytu"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:518
+#: ../src/plugins/libburnia/burn-libisofs.c:537
 #, c-format
 msgid "Volume could not be created"
 msgstr "Nie można utworzyć woluminu"
 
 #. Translators: %s is the path
-#: ../src/plugins/libburnia/burn-libisofs.c:627
+#: ../src/plugins/libburnia/burn-libisofs.c:646
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
 msgstr "Nie odnaleziono katalogu nadrzędnego w drzewie ścieżki \"%s\""
 
-#: ../src/plugins/libburnia/burn-libisofs.c:692
-#: ../src/plugins/libburnia/burn-libisofs.c:758
+#: ../src/plugins/libburnia/burn-libisofs.c:711
+#: ../src/plugins/libburnia/burn-libisofs.c:777
 #, c-format
 msgid "Libisofs reported an error while creating directory \"%s\""
 msgstr "Libisoft zgłosił błąd podczas tworzenia ścieżki \"%s\""
 
-#: ../src/plugins/libburnia/burn-libisofs.c:707
+#: ../src/plugins/libburnia/burn-libisofs.c:726
 #, c-format
 msgid "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
 msgstr "Libisoft zgłosił błąd podczas dodawania danych do ścieżki \"%s\" (%x)"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:729
-#: ../src/plugins/libburnia/burn-libisofs.c:745
+#: ../src/plugins/libburnia/burn-libisofs.c:748
+#: ../src/plugins/libburnia/burn-libisofs.c:764
 #, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
 msgstr "Libisoft zgłosił błąd podczas dodawania pliku do ścieżki \" %s\""
 
-#: ../src/plugins/libburnia/burn-libisofs.c:971
+#: ../src/plugins/libburnia/burn-libisofs.c:1017
 msgid "Libisofs creates disc images from files"
 msgstr "Libisofs tworzy pliki obrazów z plików"
 
-#: ../src/plugins/local-track/burn-local-image.c:165
+#: ../src/plugins/local-track/burn-local-image.c:167
 #, c-format
 msgid "Copying `%s` locally"
 msgstr "Kopiowanie lokalne \"%s\""
 
-#: ../src/plugins/local-track/burn-local-image.c:229
-#: ../src/plugins/local-track/burn-local-image.c:319
+#: ../src/plugins/local-track/burn-local-image.c:231
+#: ../src/plugins/local-track/burn-local-image.c:321
 #, c-format
 msgid "Directory could not be created (%s)"
 msgstr "Katalog nie mógł zostać utworzony (%s)"
 
-#: ../src/plugins/local-track/burn-local-image.c:481
+#: ../src/plugins/local-track/burn-local-image.c:483
 msgid "Copying checksum file"
 msgstr "Kopiowanie pliku sumy kontrolnej"
 
-#: ../src/plugins/local-track/burn-local-image.c:1069
-msgid "Local-track allows to burn files not stored locally"
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/local-track/burn-local-image.c:1100
+msgid "File Downloader"
+msgstr "Pobieranie plików"
+
+#: ../src/plugins/local-track/burn-local-image.c:1101
+msgid "Allows to burn files not stored locally"
 msgstr ""
-"Local-track zezwala na nagrywanie plików \n"
-"nie przechowywanych lokalnie"
+"Zezwala na nagrywanie plików\n"
+"przechowywanych zdalnie"
 
 #: ../src/plugins/transcode/burn-normalize.c:473
 msgid "Normalizing tracks"
 msgstr "Normalizowanie ścieżki"
 
+#: ../src/plugins/transcode/burn-normalize.c:564
+msgid "Normalize"
+msgstr "Normalizacja"
+
 #: ../src/plugins/transcode/burn-normalize.c:565
 msgid "Normalize allows to set consistent sound levels between tracks"
 msgstr ""
-"Normalize pozwala na ustawienie spójnego \n"
+"Normalizacja pozwala na ustawienie spójnego \n"
 "poziomu dźwięku między ścieżkami"
 
-#. Translators: %s is the string error from errno
-#: ../src/plugins/transcode/burn-transcode.c:853
-#: ../src/plugins/transcode/burn-transcode.c:1046
-#, c-format
-msgid "Error while padding file (%s)"
-msgstr "Błąd podczas dopełniania pliku (%s)"
-
-#: ../src/plugins/transcode/burn-transcode.c:1143
-#, c-format
-msgid "Error while getting duration"
-msgstr "Błąd podczas wczytywania długości trwania"
-
-#: ../src/plugins/transcode/burn-transcode.c:1251
-#, c-format
-msgid "Analysing \"%s\""
-msgstr "Analizowanie \"%s\""
-
-#: ../src/plugins/transcode/burn-transcode.c:1270
-#, c-format
-msgid "Transcoding \"%s\""
-msgstr "Transkodowanie \"%s\""
-
-#: ../src/plugins/transcode/burn-transcode.c:1380
+#. Translators: This message is sent
+#. * when brasero could not link together
+#. * two gstreamer plugins so that one
+#. * sends its data to the second for further
+#. * processing. This data transmission is
+#. * done through a pad. Maybe this is a bit
+#. * too technical and should be removed?
+#: ../src/plugins/transcode/burn-transcode.c:305
+#: ../src/plugins/transcode/burn-transcode.c:1451
 #, c-format
 msgid "Impossible to link plugin pads"
 msgstr "Połączenie dopełnień wtyczek jest niemożliwe"
 
-#: ../src/plugins/transcode/burn-transcode.c:1537
+#. Translators: %s is the string error from errno
+#: ../src/plugins/transcode/burn-transcode.c:926
+#: ../src/plugins/transcode/burn-transcode.c:1119
+#, c-format
+msgid "Error while padding file (%s)"
+msgstr "Błąd podczas dopełniania pliku (%s)"
+
+#: ../src/plugins/transcode/burn-transcode.c:1195
+#, c-format
+msgid "Error while getting duration"
+msgstr "Błąd podczas wczytywania długości trwania"
+
+#: ../src/plugins/transcode/burn-transcode.c:1313
+#, c-format
+msgid "Analysing \"%s\""
+msgstr "Analizowanie \"%s\""
+
+#: ../src/plugins/transcode/burn-transcode.c:1345
+#, c-format
+msgid "Transcoding \"%s\""
+msgstr "Transkodowanie \"%s\""
+
+#: ../src/plugins/transcode/burn-transcode.c:1608
 msgid "Transcode converts song files into a format proper to burn them on CDs"
 msgstr "Transcode konwertuje pliki piosenek do formatu umożliwiającego ich nagranie na płyty CD"
-
-#: ../src/scsi-error.c:32
-msgid "Unknown error"
-msgstr "Nieznany błąd"
-
-#: ../src/scsi-error.c:33
-msgid "Size mismatch"
-msgstr "Rozmiar się nie zgadza"
-
-#: ../src/scsi-error.c:34
-msgid "Type mismatch"
-msgstr "Rodzaj się nie zgadza"
-
-#: ../src/scsi-error.c:35
-msgid "Bad argument"
-msgstr "Niepoprawny argument"
-
-#: ../src/scsi-error.c:37
-msgid "Outrange address"
-msgstr "Adres poza zakresem"
-
-#: ../src/scsi-error.c:38
-msgid "Invalid address"
-msgstr "Niepoprawny adres"
-
-#: ../src/scsi-error.c:39
-msgid "Invalid command"
-msgstr "Niepoprawne polecenie"
-
-#: ../src/scsi-error.c:40
-msgid "Invalid parameter in command"
-msgstr "Nieprawidłowy parametr w poleceniu"
-
-#: ../src/scsi-error.c:41
-msgid "Invalid field in command"
-msgstr "Niepoprawne pole w poleceniu"
-
-#: ../src/scsi-error.c:42
-msgid "The device timed out"
-msgstr "Czas oczekiwania na urządzenie się skończył"
-
-#: ../src/scsi-error.c:43
-msgid "Key not established"
-msgstr "Klucz nie został uruchomiony"
-
-#: ../src/scsi-error.c:44
-msgid "Invalid track mode"
-msgstr "Niepoprawny typ ścieżki"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -3785,7 +3989,7 @@ msgid "If you split the track, the size of the new track will be shorter than 6 
 msgstr "Po podzieleniu tej ścieżki nowa ścieżka będzie krótsza niż 6 sekund i zostanie przedłużona."
 
 #: ../src/brasero-split-dialog.c:166
-#: ../src/brasero-split-dialog.c:735
+#: ../src/brasero-split-dialog.c:739
 msgid "_Split"
 msgstr "_Podziel"
 
@@ -3801,116 +4005,116 @@ msgstr "Nie wykryto ciszy"
 msgid "An error occured while detecting silences."
 msgstr "Błąd podczas wykrywania ciszy."
 
-#: ../src/brasero-split-dialog.c:693
+#: ../src/brasero-split-dialog.c:697
 msgid "This will remove all previous results."
 msgstr "Wszystkie dotychczasowe wyniki zostaną usunięte."
 
-#: ../src/brasero-split-dialog.c:733
+#: ../src/brasero-split-dialog.c:737
 msgid "Do you really want to carry on with automatic splitting?"
 msgstr "Na pewno rozpocząć automatyczne dzielenie?"
 
-#: ../src/brasero-split-dialog.c:734
+#: ../src/brasero-split-dialog.c:738
 msgid "_Don't split"
 msgstr "_Nie dziel"
 
-#: ../src/brasero-split-dialog.c:950
+#: ../src/brasero-split-dialog.c:956
 msgid "Do you really want to empty the slices preview?"
 msgstr "Na pewno usunąć zawartość podglądu fragmentów?"
 
-#: ../src/brasero-split-dialog.c:952
-#: ../src/brasero-split-dialog.c:1254
+#: ../src/brasero-split-dialog.c:958
+#: ../src/brasero-split-dialog.c:1260
 msgid "Re_move All"
 msgstr "Usuń _wszystkie"
 
-#: ../src/brasero-split-dialog.c:1038
+#: ../src/brasero-split-dialog.c:1044
 msgid "Split Track"
 msgstr "Dzielenie ścieżki"
 
-#: ../src/brasero-split-dialog.c:1057
+#: ../src/brasero-split-dialog.c:1063
 msgid "M_ethod:"
 msgstr "M_etoda:"
 
-#: ../src/brasero-split-dialog.c:1063
+#: ../src/brasero-split-dialog.c:1069
 msgid "Method to be used to split the track"
 msgstr "Metoda używana do dzielenia ścieżki"
 
-#: ../src/brasero-split-dialog.c:1066
+#: ../src/brasero-split-dialog.c:1072
 msgid "Split track manually"
 msgstr "Ręczny podział ścieżki"
 
-#: ../src/brasero-split-dialog.c:1067
+#: ../src/brasero-split-dialog.c:1073
 msgid "Split track in parts with a fixed length"
 msgstr "Podział ścieżki na jednakowe fragmenty"
 
-#: ../src/brasero-split-dialog.c:1068
+#: ../src/brasero-split-dialog.c:1074
 msgid "Split track in a fixed number of parts"
 msgstr "Podział ścieżki na określoną liczbę fragmentów"
 
-#: ../src/brasero-split-dialog.c:1069
+#: ../src/brasero-split-dialog.c:1075
 msgid "Split track for each silence"
 msgstr "Podział ścieżki przy każdej ciszy"
 
-#: ../src/brasero-split-dialog.c:1075
+#: ../src/brasero-split-dialog.c:1081
 msgid "_Slice"
 msgstr "_Podziel"
 
-#: ../src/brasero-split-dialog.c:1086
-msgid "Press to add a splitting point"
-msgstr "Naciśnięcie ustawi punkt dzielenia"
+#: ../src/brasero-split-dialog.c:1092
+msgid "Add a splitting point"
+msgstr "Dodaje punkt dzielenia"
 
 #. Translators: this goes with the next (= "seconds")
-#: ../src/brasero-split-dialog.c:1103
+#: ../src/brasero-split-dialog.c:1109
 msgid "Split this track every"
 msgstr "Podział ścieżki co"
 
 #. Translators: this goes with the previous (= "Split track every")
-#: ../src/brasero-split-dialog.c:1112
+#: ../src/brasero-split-dialog.c:1118
 msgid "seconds"
 msgstr "sekund"
 
 #. Translators: this goes with the next (= "parts")
-#: ../src/brasero-split-dialog.c:1121
+#: ../src/brasero-split-dialog.c:1127
 msgid "Split this track in"
 msgstr "Podział ścieżki na"
 
 #. Translators: this goes with the previous (= "Split this track in")
-#: ../src/brasero-split-dialog.c:1130
+#: ../src/brasero-split-dialog.c:1136
 msgid "parts"
 msgstr "fragmentów"
 
-#: ../src/brasero-split-dialog.c:1138
+#: ../src/brasero-split-dialog.c:1144
 msgid "Slicing Method"
 msgstr "Metoda dzielenia"
 
-#: ../src/brasero-split-dialog.c:1196
+#: ../src/brasero-split-dialog.c:1202
 msgid "Start"
 msgstr "Początek"
 
-#: ../src/brasero-split-dialog.c:1203
+#: ../src/brasero-split-dialog.c:1209
 msgid "End"
 msgstr "Koniec"
 
-#: ../src/brasero-split-dialog.c:1226
+#: ../src/brasero-split-dialog.c:1232
 msgid "Mer_ge"
 msgstr "P_ołącz"
 
-#: ../src/brasero-split-dialog.c:1237
+#: ../src/brasero-split-dialog.c:1243
 msgid "Merge a selected slice with the next selected one"
 msgstr "Łączy zaznaczony fragment z następnym zaznaczonym"
 
-#: ../src/brasero-split-dialog.c:1251
+#: ../src/brasero-split-dialog.c:1257
 msgid "Remove the selected slices"
 msgstr "Usuwa zaznaczone fragmenty"
 
-#: ../src/brasero-split-dialog.c:1265
+#: ../src/brasero-split-dialog.c:1271
 msgid "Clear the slices preview"
 msgstr "Czyści podgląd fragmentów"
 
-#: ../src/brasero-split-dialog.c:1275
+#: ../src/brasero-split-dialog.c:1281
 msgid "_List of slices that are to be created:"
 msgstr "_Lista fragmentów, które zostaną utworzone:"
 
-#: ../src/brasero-split-dialog.c:1283
+#: ../src/brasero-split-dialog.c:1289
 msgid "Slices Preview"
 msgstr "Podgląd fragmentów"
 
@@ -3939,7 +4143,7 @@ msgstr "Sekundy"
 msgid "Frames (1 second = 75 frames)"
 msgstr "Klatki (1 sekunda = 75 klatek)"
 
-#: ../src/plugins/cdrkit/burn-cdrkit.h:32
+#: ../src/plugins/cdrkit/burn-cdrkit.h:33
 msgid "Cdrkit burning suite"
 msgstr "Zestaw do nagrywania Cdrkit"
 
@@ -3947,38 +4151,38 @@ msgstr "Zestaw do nagrywania Cdrkit"
 msgid "Libburnia burning suite"
 msgstr "Zestaw do nagrywania Libburn"
 
-#: ../src/plugins/growisofs/burn-growisofs-common.h:32
+#: ../src/plugins/growisofs/burn-growisofs-common.h:33
 msgid "Growisofs burning suite"
 msgstr "Zestaw do nagrywania Growisofs"
 
-#: ../src/plugins/cdrdao/burn-cdrdao-common.h:32
+#: ../src/plugins/cdrdao/burn-cdrdao-common.h:33
 msgid "Cdrdao burning suite"
 msgstr "Zestaw do nagrywania Cdrdao"
 
-#: ../src/plugins/cdrtools/burn-cdrtools.h:32
+#: ../src/plugins/cdrtools/burn-cdrtools.h:33
 msgid "Cdrtools burning suite"
 msgstr "Zestaw do nagrywania Cdrtools"
 
-#: ../src/burn-image-format.c:309
-#: ../src/burn-image-format.c:396
-#: ../src/burn-image-format.c:427
-#: ../src/burn-image-format.c:556
-#: ../src/burn-image-format.c:600
-#: ../src/burn-image-format.c:760
-#: ../src/burn-image-format.c:804
+#: ../src/burn-image-format.c:310
+#: ../src/burn-image-format.c:397
+#: ../src/burn-image-format.c:428
+#: ../src/burn-image-format.c:557
+#: ../src/burn-image-format.c:601
+#: ../src/burn-image-format.c:762
+#: ../src/burn-image-format.c:806
 #, c-format
 msgid "The size could not be retrieved (%s)"
 msgstr "Nie udało się ustalić rozmiaru (%s)"
 
-#: ../src/brasero-data-tree-model.c:500
+#: ../src/brasero-data-tree-model.c:514
 msgid "Disc file"
 msgstr "Plik płyty"
 
-#: ../src/brasero-data-tree-model.c:576
+#: ../src/brasero-data-tree-model.c:590
 msgid "1 item"
 msgstr "1 element"
 
-#: ../src/brasero-data-tree-model.c:580
+#: ../src/brasero-data-tree-model.c:594
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
@@ -4031,35 +4235,35 @@ msgstr "przeciągnąć pliki na ten obszar z panelu wyboru lub z menedżera plik
 msgid "double click on files in the selection pane"
 msgstr "dwukrotnie kliknąć na plik w panelu wyboru"
 
-#: ../src/brasero-disc.c:658
+#: ../src/brasero-disc.c:657
 msgid "copy files (from file manager for example) and paste in this area"
 msgstr "skopiować plik (z menedżera plików) i wkleić go do tego obszaru"
 
-#: ../src/brasero-disc.c:661
+#: ../src/brasero-disc.c:660
 msgid "To remove files from this project you can:"
 msgstr "Aby usunąć pliki z tego projektu można:"
 
-#: ../src/brasero-disc.c:662
+#: ../src/brasero-disc.c:661
 msgid "click on the \"Remove\" button to remove selected items in this area"
 msgstr "nacisnąć przycisk \"Usuń\", aby usunąć zaznaczone elementy na tym obszarze"
 
-#: ../src/brasero-disc.c:663
+#: ../src/brasero-disc.c:662
 msgid "drag and release items out from this area"
 msgstr "przeciągnąć i upuścić elementy poza tym obszarem"
 
-#: ../src/brasero-disc.c:664
+#: ../src/brasero-disc.c:663
 msgid "select items in this area, and choose \"Remove\" from context menu"
 msgstr "zaznaczyć elementy na tym obszarze i wybrać \"Usuń\" z menu kontekstowego"
 
-#: ../src/brasero-disc.c:665
+#: ../src/brasero-disc.c:664
 msgid "select items in this area, and press \"Delete\" key"
 msgstr "zaznaczyć elementy na tym obszarze i naciśnąć przycisk \"Usuń\""
 
-#: ../src/brasero-eject-dialog.c:133
+#: ../src/brasero-eject-dialog.c:136
 msgid "_Eject"
 msgstr "_Wysuń"
 
-#: ../src/brasero-eject-dialog.c:154
+#: ../src/brasero-eject-dialog.c:157
 msgid "Eject Disc"
 msgstr "Wysunięcie płyty"
 
@@ -4097,8 +4301,8 @@ msgid "Broken symbolic link"
 msgstr "Uszkodzone dowiązanie symboliczne"
 
 #: ../src/brasero-file-filtered.c:189
-#: ../src/brasero-io.c:1088
-#: ../src/brasero-io.c:1960
+#: ../src/brasero-io.c:1073
+#: ../src/brasero-io.c:1952
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Rekursywne dowiązanie symboliczne"
@@ -4131,250 +4335,230 @@ msgstr "_Opcje..."
 msgid "Set the options for file filtering"
 msgstr "Ustawia opcje filtrowania plików"
 
-#: ../src/brasero-filter-option.c:109
+#: ../src/brasero-filter-option.c:126
 msgid "Filter _hidden files"
 msgstr "Odfiltruj ukryte pliki"
 
-#: ../src/brasero-filter-option.c:131
+#: ../src/brasero-filter-option.c:149
+msgid "Re_place symlinks"
+msgstr "_Zamień dowiązania symboliczne"
+
+#: ../src/brasero-filter-option.c:172
 msgid "Filter _broken symlinks"
 msgstr "Odfiltruj uszkodzone dowiązania symboliczne"
 
-#: ../src/brasero-filter-option.c:149
+#: ../src/brasero-filter-option.c:190
 msgid "Filtering options"
 msgstr "Opcje filtrowania"
 
-#: ../src/brasero-data-vfs.c:241
+#: ../src/brasero-data-vfs.c:242
 #, c-format
 msgid "\"%s\" cannot be read"
 msgstr "Nie można odczytać \"%s\""
 
-#: ../src/brasero-io.c:1320
+#: ../src/brasero-io.c:1306
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "To nie wygląda na listę odtwarzania"
 
-#: ../src/brasero-io.c:2422
+#: ../src/brasero-io.c:2415
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "Katalog nie może zostać utworzony (%s)"
 
-#. NOTE for translators, the first %s is the medium name
-#: ../src/brasero-medium-selection.c:126
-#, c-format
-msgid "%s: empty"
-msgstr "%s: pusta"
-
-#. NOTE for translators: the first %s is the medium name, the
-#. * second %s is the space (kio, gio) used by data on the disc.
-#.
-#. NOTE for translators: the first %s is the medium name, the
-#. * second %s is the space (time) used by data on the disc.
-#. * I really don't know if I should set this string as
-#. * translatable.
-#: ../src/brasero-medium-selection.c:142
-#: ../src/brasero-medium-selection.c:154
-#, c-format
-msgid "%s: %s"
-msgstr "%s: %s"
-
-#: ../src/brasero-medium-selection.c:312
-msgid "Searching for available discs"
-msgstr "Wyszukiwanie dostępnych nośników"
-
-#: ../src/brasero-medium-selection.c:317
-msgid "No available disc"
-msgstr "Brak dostępnego nośnika"
-
-#: ../src/burn-volume-obj.c:219
-#, c-format
-msgid "The disc mount point could not be retrieved"
-msgstr "Punkt montowania płyty nie mógł zostać uzyskany"
-
-#. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:741
-#, c-format
-msgid "Blank %s"
-msgstr "Pusta płyta %s"
-
-#. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:745
-#, c-format
-msgid "Audio and data %s"
-msgstr "Płyta %s Audio z danymi"
-
-#. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:749
-#, c-format
-msgid "Audio %s"
-msgstr "Płyta %s Audio"
-
-#. NOTE for translators: the first %s is the disc type.
-#: ../src/burn-volume-obj.c:753
-#, c-format
-msgid "Data %s"
-msgstr "Płyta %s z danymi"
-
-#: ../src/plugins/checksum/burn-checksum-files.c:112
-#: ../src/plugins/checksum/burn-checksum-files.c:554
+#: ../src/plugins/checksum/burn-checksum-files.c:114
+#: ../src/plugins/checksum/burn-checksum-files.c:566
 #, c-format
 msgid "File \"%s\" could not be opened (%s)"
 msgstr "Plik \"%s\" nie mógł zostać otwarty (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:582
+#: ../src/plugins/checksum/burn-checksum-files.c:594
 msgid "Creating checksum for image files"
 msgstr "Tworzenie sum kontrolnych dla plików obrazów"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:749
+#: ../src/plugins/checksum/burn-checksum-files.c:830
+#, c-format
+msgid "No checksum file could be found on the disc"
+msgstr "Nie odnaleziono sum kontrolnych"
+
+#: ../src/plugins/checksum/burn-checksum-files.c:864
 msgid "Checking file integrity"
 msgstr "Sprawdzanie spójności plików"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:911
-#: ../src/plugins/checksum/burn-checksum-files.c:1029
-#: ../src/plugins/checksum/burn-checksum-image.c:513
+#: ../src/plugins/checksum/burn-checksum-files.c:958
+#: ../src/plugins/checksum/burn-checksum-files.c:983
+#, c-format
+msgid "File \"%s\" could not be opened"
+msgstr "Plik \"%s\" nie mógł zostać otwarty"
+
+#: ../src/plugins/checksum/burn-checksum-files.c:1056
+#: ../src/plugins/checksum/burn-checksum-files.c:1174
+#: ../src/plugins/checksum/burn-checksum-image.c:515
 #, c-format
 msgid "Some files may be corrupted on the disc"
 msgstr "Niektóre pliki na płycie mogą być uszkodzone"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1265
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/checksum/burn-checksum-files.c:1437
+msgid "File Checksum"
+msgstr "Suma kontrolna pliku"
+
+#: ../src/plugins/checksum/burn-checksum-files.c:1438
 msgid "Allows to check file integrities on a disc"
 msgstr ""
 "Pozwala na sprawdzanie spójności danych\n"
 "na płycie"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1304
-#: ../src/plugins/checksum/burn-checksum-image.c:774
+#: ../src/plugins/checksum/burn-checksum-files.c:1478
+#: ../src/plugins/checksum/burn-checksum-image.c:808
 msgid "Hashing algorithm to be used:"
 msgstr "Wybór algorytmu do hashowania:"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1307
-#: ../src/plugins/checksum/burn-checksum-image.c:777
+#: ../src/plugins/checksum/burn-checksum-files.c:1481
+#: ../src/plugins/checksum/burn-checksum-image.c:811
 msgid "MD5"
 msgstr "MD5"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1309
-#: ../src/plugins/checksum/burn-checksum-image.c:779
+#: ../src/plugins/checksum/burn-checksum-files.c:1483
+#: ../src/plugins/checksum/burn-checksum-image.c:813
 msgid "SHA1"
 msgstr "SHA1"
 
-#: ../src/plugins/checksum/burn-checksum-files.c:1311
-#: ../src/plugins/checksum/burn-checksum-image.c:781
+#: ../src/plugins/checksum/burn-checksum-files.c:1485
+#: ../src/plugins/checksum/burn-checksum-image.c:815
 msgid "SHA256"
 msgstr "SHA256"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:109
+#: ../src/plugins/checksum/burn-checksum-image.c:111
 #, c-format
 msgid "Data could not be read (%s)"
 msgstr "Odczytanie danych nie powiodło się (%s)"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:344
-#: ../src/plugins/checksum/burn-checksum-image.c:417
+#: ../src/plugins/checksum/burn-checksum-image.c:346
+#: ../src/plugins/checksum/burn-checksum-image.c:419
 msgid "Creating image checksum"
 msgstr "Tworzenie sumy kontrolnej obrazu"
 
-#: ../src/plugins/checksum/burn-checksum-image.c:750
+#. Translators: this is the name of the plugin
+#. * which will be translated only when it needs
+#. * displaying.
+#: ../src/plugins/checksum/burn-checksum-image.c:783
+msgid "Image Checksum"
+msgstr "Suma kontrolna obrazu"
+
+#: ../src/plugins/checksum/burn-checksum-image.c:784
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr ""
 "Pozwala na sprawdzanie spójności danych\n"
 "na płycie po nagraniu"
 
-#: ../src/brasero-jacket-background.c:160
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:162
 msgid "Images"
 msgstr "Pliki obrazu"
 
-#: ../src/brasero-jacket-background.c:184
+#: ../src/brasero-jacket-background.c:186
 msgid "_Color"
 msgstr "_Kolor"
 
-#: ../src/brasero-jacket-background.c:213
+#: ../src/brasero-jacket-background.c:215
 msgid "Solid color"
 msgstr "Jednakowe kolory"
 
-#: ../src/brasero-jacket-background.c:214
+#: ../src/brasero-jacket-background.c:216
 msgid "Horizontal gradient"
 msgstr "Poziomo"
 
-#: ../src/brasero-jacket-background.c:215
+#: ../src/brasero-jacket-background.c:217
 msgid "Vertical gradient"
 msgstr "Pionowo"
 
 #. second part
-#: ../src/brasero-jacket-background.c:231
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:234
 msgid "_Image"
 msgstr "_Obraz"
 
-#: ../src/brasero-jacket-background.c:255
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:259
 msgid "Image path:"
 msgstr "Ścieżka obrazu:"
 
-#: ../src/brasero-jacket-background.c:266
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:271
 msgid "Choose an image"
 msgstr "Proszę wybrać obraz"
 
-#: ../src/brasero-jacket-background.c:276
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:282
 msgid "Image style:"
 msgstr "Typ obrazu:"
 
-#: ../src/brasero-jacket-background.c:290
+#: ../src/brasero-jacket-background.c:296
 msgid "Centered"
 msgstr "Wyśrodkowanie"
 
-#: ../src/brasero-jacket-background.c:291
+#: ../src/brasero-jacket-background.c:297
 msgid "Tiled"
 msgstr "Kafelkowanie"
 
-#: ../src/brasero-jacket-background.c:292
+#: ../src/brasero-jacket-background.c:298
 msgid "Scaled"
 msgstr "Skalowanie"
 
-#: ../src/brasero-jacket-background.c:329
+#: ../src/brasero-jacket-background.c:335
 msgid "Background Properties"
 msgstr "Właściwości tła"
 
-#: ../src/brasero-jacket-view.c:737
+#: ../src/brasero-jacket-view.c:740
 msgid "Set Bac_kground Properties"
 msgstr "_Ustaw właściwości tła"
 
-#: ../src/brasero-jacket-view.c:778
+#: ../src/brasero-jacket-view.c:781
 msgid "SIDES"
 msgstr "BOK"
 
-#: ../src/brasero-jacket-view.c:794
+#: ../src/brasero-jacket-view.c:797
 msgid "BACK COVER"
 msgstr "TYŁ"
 
-#: ../src/brasero-jacket-view.c:811
+#: ../src/brasero-jacket-view.c:814
 msgid "FRONT COVER"
 msgstr "PRZÓD"
 
-#: ../src/brasero-jacket-view.c:1095
+#. Translators: This is an image,
+#. * a picture, not a "Disc Image"
+#: ../src/brasero-jacket-view.c:1100
 msgid "The image could not be loaded."
 msgstr "Wczytanie obrazu nie powiodło się."
 
-#: ../src/brasero-jacket-edit.c:555
+#: ../src/brasero-jacket-edit.c:571
 msgid "Bac_kground Properties"
 msgstr "Właściwości _tła"
 
-#: ../src/brasero-jacket-edit.c:652
-msgid "_Text Colour"
-msgstr "Ko_lor Tekstu"
+#: ../src/brasero-jacket-edit.c:668
+msgid "_Text Color"
+msgstr "Ko_lor tekstu"
 
-#: ../src/brasero-jacket-edit.c:814
+#: ../src/brasero-jacket-edit.c:827
 msgid "Unknown song"
 msgstr "Nieznany utwór"
 
+#. Reminder: if this string happens to be used
+#. * somewhere else in brasero we'll need a
+#. * context with C_() macro
 #. Translators: "by" is followed by the name of an artist.
 #. * This text is the one written on the cover of a disc.
 #. * Before it there is the name of the song.
 #. * I had to break it because it is in a GtkTextBuffer
 #. * and every word has a different tag.
-#. Translators: this goes with above verb to say "Substitute" [Entry]
-#. * "by" [Entry].
-#: ../src/brasero-jacket-edit.c:834
-#: ../src/brasero-rename.c:353
+#: ../src/brasero-jacket-edit.c:850
 msgid "by"
 msgstr "przez"
 
-#: ../src/brasero-jacket-edit.c:894
+#: ../src/brasero-jacket-edit.c:913
 msgid "Cover Editor"
 msgstr "Edytor okładek"
 
@@ -4448,16 +4632,24 @@ msgstr "Usunięcie każdego wystąpienia"
 
 #. Translators: this is a verb
 #: ../src/brasero-rename.c:342
-msgid "Substitute"
-msgstr "Zastąp"
+msgid "_Replace"
+msgstr "Z_amień"
 
-#: ../src/brasero-rename.c:367
+#. Reminder: if this string happens to be used somewhere else in brasero
+#. * we'll need a context with C_() macro
+#. Translators: this goes with above verb to say "_Replace" [Entry]
+#. * "with" [Entry].
+#: ../src/brasero-rename.c:357
+msgid "with"
+msgstr "używając"
+
+#: ../src/brasero-rename.c:371
 msgid "Rename to"
 msgstr "Zmień nazwę na"
 
-#: ../src/brasero-rename.c:376
+#: ../src/brasero-rename.c:380
 msgid "{number}"
-msgstr "{number}"
+msgstr "{numer}"
 
 #: ../src/brasero-video-disc.c:93
 msgid "Open the selected video"
@@ -4471,29 +4663,29 @@ msgstr "Modyfikuje informacje o nagraniu wideo (początek, koniec, autor, ...)"
 msgid "Remove the selected videos from the project"
 msgstr "Usuwa zaznaczone nagrania wideo z projektu"
 
-#: ../src/brasero-video-disc.c:242
+#: ../src/brasero-video-disc.c:240
 msgid "Do you want to search for video files inside the directory?"
 msgstr "Wyszukać pliki nagrań wideo wewnątrz katalogu?"
 
-#: ../src/brasero-video-disc.c:247
+#: ../src/brasero-video-disc.c:245
 msgid "Directories cannot be added to video discs."
 msgstr "Katalogi nie mogą być dodawane do płyt wideo."
 
-#: ../src/brasero-video-disc.c:251
+#: ../src/brasero-video-disc.c:249
 msgid "_Search Directory"
 msgstr "Przeszukaj _katalog"
 
-#: ../src/brasero-video-disc.c:308
+#: ../src/brasero-video-disc.c:290
 #, c-format
 msgid "\"%s\" does not have a suitable type for video projects."
 msgstr "\"%s\" ma nieodpowiedni typ dla projektów wideo."
 
-#: ../src/brasero-video-disc.c:311
+#: ../src/brasero-video-disc.c:293
 msgid "Please only add files with video contents"
 msgstr "Proszę dodawać wyłącznie pliki z nagraniami wideo"
 
 #: ../src/plugins/dvdauthor/burn-dvdauthor.c:302
-#: ../src/plugins/vcdimager/burn-vcdimager.c:423
+#: ../src/plugins/vcdimager/burn-vcdimager.c:425
 msgid "Creating file layout"
 msgstr "Tworzenie układu plików"
 
@@ -4501,15 +4693,15 @@ msgstr "Tworzenie układu plików"
 msgid "Use dvdauthor to create Video DVDs"
 msgstr "Użycie dvdauthor do utworzenia płyt DVD-Video"
 
-#: ../src/plugins/transcode/burn-vob.c:996
+#: ../src/plugins/transcode/burn-vob.c:1108
 msgid "Converting video file to MPEG2"
 msgstr "Konwertowanie pliku wideo do MPEG2"
 
-#: ../src/plugins/transcode/burn-vob.c:1090
+#: ../src/plugins/transcode/burn-vob.c:1216
 msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr "Vob pozwala na kodowanie dowolnego pliku wideo do formatu odpowiedniego dla DVD-Video"
 
-#: ../src/plugins/vcdimager/burn-vcdimager.c:472
+#: ../src/plugins/vcdimager/burn-vcdimager.c:474
 msgid "Use vcdimager to create SVCDs"
 msgstr "Użycie vcdimager do utworzenia płyt SVCD"
 
@@ -4521,12 +4713,27 @@ msgstr "Kopiowanie płyt CD i DVD"
 msgid "Disc Copier"
 msgstr "Kopiowanie płyt"
 
-#: ../data/brasero-open-image.desktop.in.in.h:1
-#: ../data/brasero-open-playlist.desktop.in.in.h:1
-#: ../data/brasero-open-project.desktop.in.in.h:1
-msgid "Create CDs and DVDs"
-msgstr "Utworzenie płyt CD i DVD"
-
+#~ msgid "Substitute"
+#~ msgstr "Zastąp"
+#~ msgid "Cdrdao toc file"
+#~ msgstr "Plik cdrdao toc"
+#~ msgid "Do you want to continue or discard the old project layout?"
+#~ msgstr "Kontynuować czy odrzucić poprzedni układ projektu?"
+#~ msgid "Press if you want to cancel current project loading"
+#~ msgstr "Naciśnięcie przerwie wczytywanie projektu"
+#~ msgid "Native aspect _ratio"
+#~ msgstr "Pierwotne proporcje _obrazu"
+#~ msgid "Add _AC3 audio stream"
+#~ msgstr "Dodaj strumień dźwięku _AC3"
+#~ msgid "Add _MP2 audio stream"
+#~ msgstr "Dodaj strumień dźwięku _MP2"
+#~ msgid "Audio Options"
+#~ msgstr "Opcje dźwięku"
+#~ msgid "The disc could not be mounted (max attemps reached)"
+#~ msgstr ""
+#~ "Napęd nie może zostać zamontowany (przekroczono maksymalną liczbę prób)"
+#~ msgid "CD/DVD burning"
+#~ msgstr "Nagrywanie płyt CD/DVD"
 #~ msgid "Leave the disc _open to add a data session later"
 #~ msgstr "Bez z_amykania sesji (pozwala na późniejsze dodawanie plików)"
 #~ msgid "Allow creating an enhanced CD or CD+"
@@ -4725,8 +4932,6 @@ msgstr "Utworzenie płyt CD i DVD"
 #~ msgstr "Plik już istnieje"
 #~ msgid "_Don't replace"
 #~ msgstr "Nie _zamieniaj"
-#~ msgid "_Replace"
-#~ msgstr "Z_amień"
 #~ msgid "File Over 2 GiB"
 #~ msgstr "Nagrywanie płyt Brasero"
 #~ msgid "_Don't add"
