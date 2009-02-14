@@ -220,7 +220,7 @@ brasero_libisofs_write_image_to_file_thread (BraseroLibisofs *self)
 		if (errno == EACCES)
 			priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_PERMISSION,
-							   "You do not have the required permission to write at this location");
+							   _("You do not have the required permission to write at this location"));
 		else
 			priv->error = g_error_new_literal (BRASERO_BURN_ERROR,
 							   BRASERO_BURN_ERROR_GENERAL,
@@ -272,7 +272,7 @@ brasero_libisofs_thread_started (gpointer data)
 	self = BRASERO_LIBISOFS (data);
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
-	BRASERO_JOB_LOG (self, "entering thread");
+	BRASERO_JOB_LOG (self, "Entering thread");
 	if (brasero_job_get_fd_out (BRASERO_JOB (self), NULL) == BRASERO_BURN_OK)
 		brasero_libisofs_write_image_to_fd_thread (self);
 	else
@@ -280,6 +280,8 @@ brasero_libisofs_thread_started (gpointer data)
 
 	if (!priv->cancel)
 		priv->thread_id = g_idle_add (brasero_libisofs_thread_finished, self);
+
+	BRASERO_JOB_LOG (self, "Getting out thread");
 
 	/* End thread */
 	g_mutex_lock (priv->mutex);
@@ -296,6 +298,7 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 			       GError **error)
 {
 	BraseroLibisofsPrivate *priv;
+	GError *thread_error = NULL;
 
 	priv = BRASERO_LIBISOFS_PRIVATE (self);
 
@@ -316,10 +319,17 @@ brasero_libisofs_create_image (BraseroLibisofs *self,
 	priv->thread = g_thread_create (brasero_libisofs_thread_started,
 					self,
 					TRUE,
-					error);
+					&thread_error);
 	g_mutex_unlock (priv->mutex);
-	if (!priv->thread)
+
+	/* Reminder: this is not necessarily an error as the thread may have finished */
+	//if (!priv->thread)
+	//	return BRASERO_BURN_ERR;
+
+	if (thread_error) {
+		g_propagate_error (error, thread_error);
 		return BRASERO_BURN_ERR;
+	}
 
 	return BRASERO_BURN_OK;
 }
@@ -350,7 +360,7 @@ brasero_libisofs_create_volume_thread_finished (gpointer data)
 
 		result = brasero_libisofs_create_image (self, &error);
 		if (error)
-			priv->error = error;
+		brasero_job_error (BRASERO_JOB (self), error);
 		else
 			return FALSE;
 	}

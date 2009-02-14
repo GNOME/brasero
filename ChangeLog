@@ -1,5 +1,18 @@
 2009-02-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Mark a string for translation (not changes in strings though)
+	Avoid erroring out when the task is already finished when we check for
+	thread creation result.
+
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image):
+	* src/plugins/libburnia/burn-libisofs.c
+	(brasero_libisofs_write_image_to_file_thread),
+	(brasero_libisofs_thread_started), (brasero_libisofs_create_image),
+	(brasero_libisofs_create_volume_thread_finished):
+
+2009-02-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Moved joliet name mangling from data projects to mkisofs base.
 	NOTE: libisofs has its own internal mangling routines so it won't use it
 
