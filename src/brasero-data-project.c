@@ -2202,7 +2202,6 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
  * Export tree internals into a track 
  */
 struct _MakeTrackData {
-	gboolean joliet_compat;
 	gboolean append_slash;
 
 	GSList *grafts;
@@ -2212,82 +2211,9 @@ struct _MakeTrackData {
 };
 typedef struct _MakeTrackData MakeTrackData;
 
-static guint
-brasero_data_project_set_joliet_compliant_name (BraseroDataProject *self,
-						BraseroFileNode *node,
-						gchar *buffer)
-{
-	BraseroDataProjectPrivate *priv;
-	BraseroJolietKey key;
-	guint retval;
-	GSList *list;
-	gchar *name;
-	gchar *dot;
-	gint width;
-	gint num;
-	gint len;
-
-	priv = BRASERO_DATA_PROJECT_PRIVATE (self);
-
-	brasero_data_project_joliet_set_key (&key, node);
-	list = g_hash_table_lookup (priv->joliet, &key);
-	name = BRASERO_FILE_NODE_NAME (node);
-
-	/* see if it is joliet non compliant */
-	if (!list) {
-		len = strlen (name);
-		memcpy (buffer, name, len);
-		return len;
-	}
-
-	if (g_slist_length (list) == 1) {
-		/* Simply return joliet name truncated to 64 chars.
-		 * try to keep the extension. */
-		dot = g_utf8_strrchr (name, -1, '.');
-		if (dot && strlen (dot) < 5 && strlen (dot) > 1 )
-			retval = sprintf (buffer,
-					  "%.*s%s",
-					  64 - strlen (dot),
-					  name,
-					  dot);
-	        else {
-	        	retval = 64;
-			memcpy (buffer,
-				name,
-				64);
-		}
-
-		return 64;
-	}
-
-	num = g_slist_index (list, node);
-
-	width = 1;
-	while (num / (width * 10)) width ++;
-	width = 64 - width;
-
-	/* try to keep the extension */
-	dot = g_utf8_strrchr (name, -1, '.');
-	if (dot && strlen (dot) < 5 && strlen (dot) > 1 )
-		retval = sprintf (buffer,
-				  "%.*s%i%s",
-				  width - strlen (dot),
-				  name,
-				  num,
-				  dot);
-	else
-		retval = sprintf (buffer,
-				  "%.*s%i",
-				  width,
-				  name,
-				  num);
-	return retval;
-}
-
 static gchar *
 brasero_data_project_node_to_path (BraseroDataProject *self,
-				   BraseroFileNode *node,
-				   gboolean joliet_compat)
+				   BraseroFileNode *node)
 {
 	guint len;
 	GSList *list;
@@ -2307,6 +2233,7 @@ brasero_data_project_node_to_path (BraseroDataProject *self,
 	len = 0;
 	for (iter = list; iter; iter = iter->next) {
 		gchar *name;
+		guint name_len;
 
 		node = iter->data;
 
@@ -2317,27 +2244,14 @@ brasero_data_project_node_to_path (BraseroDataProject *self,
 			return NULL;
 
 		/* Make sure path length didn't go over MAXPATHLEN. */
-		if (!joliet_compat) {
-			guint name_len;
+		name = BRASERO_FILE_NODE_NAME (node);
 
-			name = BRASERO_FILE_NODE_NAME (node);
+		name_len = strlen (name);
+		if (len + name_len > MAXPATHLEN)
+			return NULL;
 
-			name_len = strlen (name);
-			if (len + name_len > MAXPATHLEN)
-				return NULL;
-
-			memcpy (path + len, name, name_len);
-			len += name_len;
-		}
-		else {
-			/* must have enough room for 64 characters */
-			if (len + 64 > MAXPATHLEN)
-				return NULL;
-
-			len += brasero_data_project_set_joliet_compliant_name (self,
-									       node,
-									       path + len);
-		}
+		memcpy (path + len, name, name_len);
+		len += name_len;
 	}
 	g_slist_free (list);
 
@@ -2376,9 +2290,7 @@ _foreach_grafts_make_list_cb (const gchar *uri,
 		if (uri && uri != NEW_FOLDER)
 			graft->uri = g_strdup (uri);
 
-		graft->path = brasero_data_project_node_to_path (data->project,
-								 node,
-								 data->joliet_compat);
+		graft->path = brasero_data_project_node_to_path (data->project, node);
 		if (!node->is_file && data->append_slash) {
 			gchar *tmp;
 
@@ -2414,7 +2326,7 @@ _foreach_joliet_incompatible_make_list_cb (BraseroJolietKey *key,
 			continue;
 
 		graft = g_new0 (BraseroGraftPt, 1);
-		graft->path = brasero_data_project_node_to_path (data->project, node, TRUE);
+		graft->path = brasero_data_project_node_to_path (data->project, node);
 		if (!node->is_file && data->append_slash) {
 			gchar *tmp;
 
@@ -2455,21 +2367,18 @@ brasero_data_project_get_contents (BraseroDataProject *self,
 	callback_data.grafts = NULL;
 	callback_data.excluded = NULL;
 	callback_data.append_slash = append_slash;
-	callback_data.joliet_compat = joliet_compat;
 
 	g_hash_table_foreach (priv->grafts,
 			      (GHFunc) _foreach_grafts_make_list_cb,
 			      &callback_data);
 
 	if (joliet_compat) {
-		/* we have to make sure that even the files that are not grafted
-		 * have joliet compatible names. */
+		/* Make sure that all nodes with incompatible joliet names are
+		 * added as graft points. */
 		g_hash_table_foreach (priv->joliet,
 				      (GHFunc) _foreach_joliet_incompatible_make_list_cb,
 				      &callback_data);
 	}
-
-	/* Finally add all the symlinks */
 
 	if (grafts)
 		*grafts = callback_data.grafts;

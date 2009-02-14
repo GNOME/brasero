@@ -1,5 +1,28 @@
 2009-02-14  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Moved joliet name mangling from data projects to mkisofs base.
+	NOTE: libisofs has its own internal mangling routines so it won't use it
+
+	* src/brasero-data-project.c (brasero_data_project_node_to_path),
+	(_foreach_grafts_make_list_cb),
+	(_foreach_joliet_incompatible_make_list_cb),
+	(brasero_data_project_get_contents):
+	* src/burn-mkisofs-base.c (_build_graft_point),
+	(brasero_mkisofs_base_mangle_joliet_name), (_foreach_write_grafts),
+	(brasero_mkisofs_base_write_grafts),
+	(brasero_mkisofs_base_write_to_files):
+	* src/burn-mkisofs-base.h:
+	* src/burn-track.c (brasero_track_get_data_paths):
+	* src/burn-track.h:
+	* src/plugins/cdrkit/burn-genisoimage.c
+	(brasero_genisoimage_set_argv_image):
+	* src/plugins/cdrtools/burn-mkisofs.c
+	(brasero_mkisofs_set_argv_image):
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_set_mkisofs_argv):
+
+2009-02-14  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix a memleak
 
 	* src/brasero-data-tree-model.c

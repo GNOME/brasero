@@ -265,6 +265,7 @@ brasero_track_get_data_excluded_source (BraseroTrack *track,
 
 BraseroBurnResult
 brasero_track_get_data_paths (BraseroTrack *track,
+			      gboolean use_joliet,
 			      const gchar *grafts_path,
 			      const gchar *excluded_path,
 			      const gchar *emptydir,

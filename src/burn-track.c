@@ -783,6 +783,7 @@ brasero_track_get_data_excluded_source (BraseroTrack *track,
 
 BraseroBurnResult
 brasero_track_get_data_paths (BraseroTrack *track,
+			      gboolean use_joliet,
 			      const gchar *grafts_path,
 			      const gchar *excluded_path,
 			      const gchar *emptydir,
@@ -798,6 +799,7 @@ brasero_track_get_data_paths (BraseroTrack *track,
 	data = (BraseroTrackData *) track;
 	result = brasero_mkisofs_base_write_to_files (data->grafts,
 						      data->excluded,
+						      use_joliet,
 						      emptydir,
 						      videodir,
 						      grafts_path,

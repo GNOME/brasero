@@ -302,6 +302,7 @@ brasero_genisoimage_set_argv_image (BraseroGenisoimage *genisoimage,
 	}
 
 	result = brasero_track_get_data_paths (track,
+					       (type.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					       grafts_path,
 					       excluded_path,
 					       emptydir,

@@ -332,6 +332,7 @@ brasero_growisofs_set_mkisofs_argv (BraseroGrowisofs *growisofs,
 	}
 
 	result = brasero_track_get_data_paths (track,
+					       (input.subtype.fs_type & BRASERO_IMAGE_FS_JOLIET) != 0,
 					       grafts_path,
 					       excluded_path,
 					       emptydir,
