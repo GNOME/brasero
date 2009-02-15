@@ -648,7 +648,7 @@ brasero_app_is_running (BraseroApp *app)
 	BraseroAppPrivate *priv;
 
 	priv = BRASERO_APP_PRIVATE (app);
-	return (priv->mainwin != NULL);
+	return priv->mainwin_running;
 }
 
 void
