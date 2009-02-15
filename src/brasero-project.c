@@ -937,8 +937,14 @@ brasero_project_burn (BraseroProject *project)
 	session = brasero_disc_option_dialog_get_session (BRASERO_DISC_OPTION_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 
-	/* set the label/cover for the session */
-	brasero_burn_session_set_label (session, gtk_entry_get_text (GTK_ENTRY (project->priv->name_display)));
+	if (brasero_app_is_running (brasero_app_get_default ())) {
+		const gchar *label;
+
+		/* Set the label for the session but only if we weren't started
+		 * to burn a project (like through nautilus). */
+		label = gtk_entry_get_text (GTK_ENTRY (project->priv->name_display));
+		brasero_burn_session_set_label (session, label);
+	}
 
 	if (project->priv->cover) {
 		GValue *value;

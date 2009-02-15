@@ -50,12 +50,17 @@
 #include "brasero-utils.h"
 #include "brasero-burn-options.h"
 
+/* This is only used when called through other apps */
+#include "brasero-project-name.h"
+#include "brasero-app.h"
 
 G_DEFINE_TYPE (BraseroDiscOptionDialog, brasero_disc_option_dialog, BRASERO_TYPE_BURN_OPTIONS);
 
 struct _BraseroDiscOptionDialogPrivate {
 	BraseroBurnCaps *caps;
 	BraseroDisc *disc;
+
+	GtkWidget *label;
 
 	GtkWidget *joliet_toggle;
 
@@ -390,14 +395,29 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 
 	priv = BRASERO_DISC_OPTION_DIALOG_PRIVATE (dialog);
 
-
-	/* create the options */
+	/* create the options box */
 	widget = gtk_vbox_new (FALSE, 0);
 	brasero_burn_options_add_options (BRASERO_BURN_OPTIONS (dialog), widget);
 
+	if (!brasero_app_is_running (brasero_app_get_default ())) {
+		/* Add the volume name widget but if and only if there isn't any
+		 * label already set in the BraseroBurnSession object. */
+
+		priv->label = brasero_project_name_new ();
+		brasero_project_name_set_type (BRASERO_PROJECT_NAME (priv->label),
+					       BRASERO_PROJECT_TYPE_DATA);
+		
+		string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
+		options = brasero_utils_pack_properties (string,
+							 priv->label,
+							 NULL);
+		g_free (string);
+
+		gtk_box_pack_start (GTK_BOX (widget), options, FALSE, FALSE, 0);
+	}
+
 	/* general options */
 	brasero_disc_option_dialog_joliet_widget (dialog);
-
 	string = g_strdup_printf ("<b>%s</b>", _("Disc options"));
 	options = brasero_utils_pack_properties (string,
 						 priv->joliet_toggle,
@@ -777,6 +797,14 @@ brasero_disc_option_dialog_get_session (BraseroDiscOptionDialog *self)
 
 	session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (self));
 	brasero_disc_set_session_contents (priv->disc, session);
+
+	if (priv->label) {
+		const gchar *label;
+
+		label = gtk_entry_get_text (GTK_ENTRY (priv->label));
+		brasero_burn_session_set_label (session, label);
+	}
+
 	return session;
 }
 

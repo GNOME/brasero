@@ -1,5 +1,17 @@
 2009-02-15  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #571776 – [regression] No possible to set media title when using the replacing nautilus-cd-burner 
+	Add possibility to set a volume name when started from nautilus
+
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_add_data_options),
+	(brasero_disc_option_dialog_get_session):
+	* src/brasero-project.c (brasero_project_burn):
+
+2009-02-15  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	The function wasn't properly returning whether main window was used.
+
 	* src/brasero-app.c (brasero_app_is_running):
 
 2009-02-15  Philippe Rouquier  <ykw@localhost.localdomain>
