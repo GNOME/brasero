@@ -2140,10 +2140,6 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 						parent,
 						priv->sort_func);
 
-	g_file_info_get_is_symlink (info),
-	 g_file_info_get_name (info),
-	 g_file_info_get_file_type (info),
-	 uri);
 	if (g_file_info_get_is_symlink (info)
 	&&  g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
 		/* first we exclude the symlink, then we graft its target */
