@@ -1883,13 +1883,9 @@ brasero_data_project_node_loaded (BraseroDataProject *self,
 	/* Check it that needs a graft: this node has not been moved so we don't
 	 * need to check these cases yet it could turn out that it was a symlink
 	 * then we need a graft. */
-	if (node->is_symlink && g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
+	if (g_file_info_get_is_symlink (info) && g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
 		BraseroURINode *graft;
 		gchar *uri;
-
-		/* Update our stats and node state as it won't be a symlink anymore */
-		node->is_symlink = FALSE;
-		stats->num_sym --;
 
 		/* first we exclude the symlink, then we graft its target. */
 		uri = brasero_data_project_node_to_uri (self, node);
@@ -2056,7 +2052,6 @@ brasero_data_project_directory_node_loaded (BraseroDataProject *self,
 	}
 }
 
-
 /* This function is only used in brasero-data-vfs.c to add new nodes
  * discovered through exploration */
 
@@ -2144,15 +2139,13 @@ brasero_data_project_add_node_from_info (BraseroDataProject *self,
 	node = brasero_file_node_new_from_info (info,
 						parent,
 						priv->sort_func);
-	if (node->is_symlink && g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
-		BraseroFileTreeStats *stats;
 
-		/* Update our stats and node state as it won't be a symlink anymore */
-		node->is_symlink = FALSE;
-
-		stats = brasero_file_node_get_tree_stats (priv->root, NULL);
-		stats->num_sym --;
-
+	g_file_info_get_is_symlink (info),
+	 g_file_info_get_name (info),
+	 g_file_info_get_file_type (info),
+	 uri);
+	if (g_file_info_get_is_symlink (info)
+	&&  g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK) {
 		/* first we exclude the symlink, then we graft its target */
 		brasero_data_project_exclude_uri (self, uri);
 

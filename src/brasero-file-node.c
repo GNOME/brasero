@@ -746,7 +746,7 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 		stats->children ++;
 	}
 
-	if (!node->is_symlink && g_file_info_get_is_symlink (info)) {
+	if (!node->is_symlink && (g_file_info_get_file_type (info) != G_FILE_TYPE_SYMBOLIC_LINK)) {
 		/* only count files */
 		stats->num_sym ++;
 	}
@@ -760,7 +760,7 @@ brasero_file_node_set_from_info (BraseroFileNode *node,
 	node->is_loading = FALSE;
 	node->is_imported = FALSE;
 	node->is_reloading = FALSE;
-	node->is_symlink = (g_file_info_get_is_symlink (info));
+	node->is_symlink = (g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK);
 
 	if (node->is_file) {
 		guint sectors;
