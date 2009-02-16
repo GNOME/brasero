@@ -935,6 +935,20 @@ brasero_project_burn (BraseroProject *project)
 
 	/* setup, show, and run options dialog */
 	dialog = brasero_disc_option_dialog_new ();
+
+	if (!brasero_app_is_running (brasero_app_get_default ())) {
+		const gchar *label;
+
+		/* Set the label for the session in the burn option dialog but
+		 * only if we were started to burn a project (like through
+		 * nautilus). */
+		label = gtk_entry_get_text (GTK_ENTRY (project->priv->name_display));
+
+		session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
+		brasero_burn_session_set_label (session, label);
+		g_object_unref (session);
+	}
+
 	brasero_disc_option_dialog_set_disc (BRASERO_DISC_OPTION_DIALOG (dialog),
 					     project->priv->current);
 

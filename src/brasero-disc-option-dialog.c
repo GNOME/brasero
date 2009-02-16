@@ -400,13 +400,22 @@ brasero_disc_option_dialog_add_data_options (BraseroDiscOptionDialog *dialog)
 	brasero_burn_options_add_options (BRASERO_BURN_OPTIONS (dialog), widget);
 
 	if (!brasero_app_is_running (brasero_app_get_default ())) {
+		const gchar *label;
+		BraseroBurnSession *session;
+
 		/* Add the volume name widget but if and only if there isn't any
 		 * label already set in the BraseroBurnSession object. */
 
 		priv->label = brasero_project_name_new ();
 		brasero_project_name_set_type (BRASERO_PROJECT_NAME (priv->label),
 					       BRASERO_PROJECT_TYPE_DATA);
-		
+
+		session = brasero_burn_options_get_session (BRASERO_BURN_OPTIONS (dialog));
+		label = brasero_burn_session_get_label (session);
+		g_object_unref (session);
+		if (label)
+			gtk_entry_set_text (GTK_ENTRY (priv->label), label);
+
 		string = g_strdup_printf ("<b>%s</b>", _("Disc name"));
 		options = brasero_utils_pack_properties (string,
 							 priv->label,

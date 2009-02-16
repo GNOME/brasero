@@ -1,5 +1,13 @@
 2009-02-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	When starting window less to burn project file contents respect the label
+
+	* src/brasero-disc-option-dialog.c
+	(brasero_disc_option_dialog_add_data_options):
+	* src/brasero-project.c (brasero_project_burn):
+
+2009-02-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	When an image is detected while going through the files in burn:// and
 	if the user wants to burn it, don't crash ... it won't help.
 
