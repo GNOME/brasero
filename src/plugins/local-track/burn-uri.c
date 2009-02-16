@@ -186,6 +186,69 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 	return grafts;
 }
 
+static gboolean
+brasero_burn_uri_retrieve_path (BraseroBurnURI *self,
+				const gchar *uri,
+				gchar **path)
+{
+	GFile *file;
+	GFileInfo *info;
+	BraseroBurnURIPrivate *priv;
+
+	priv = BRASERO_BURN_URI_PRIVATE (self);
+
+	file = g_file_new_for_uri (uri);
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_NAME ","
+				  G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+				  "burn::backing-file",
+				  G_FILE_QUERY_INFO_NONE,
+				  priv->cancel,
+				  &priv->error);
+
+	if (priv->error) {
+		g_object_unref (file);
+		return FALSE;
+	}
+
+	if (g_cancellable_is_cancelled (priv->cancel)) {
+		g_object_unref (file);
+		return FALSE;
+	}
+
+	if (!info) {
+		/* Error */
+		g_object_unref (file);
+		g_object_unref (info);
+		return FALSE;
+	}
+		
+	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+		*path = NULL;
+	}
+	else if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR
+	     /* NOTE: burn:// URI allows symlink */
+	     ||  g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK) {
+		const gchar *real_path;
+
+		real_path = g_file_info_get_attribute_byte_string (info, "burn::backing-file");
+		if (!real_path) {
+			priv->error = g_error_new (BRASERO_BURN_ERROR,
+						   BRASERO_BURN_ERROR_GENERAL,
+						   _("Impossible to retrieve local file path"));
+			g_object_unref (info);
+			g_object_unref (file);
+			return FALSE;
+		}
+
+		*path = g_strdup (real_path);
+	}
+
+	g_object_unref (file);
+	g_object_unref (info);
+	return TRUE;
+}
+
 static gpointer
 brasero_burn_uri_thread (gpointer data)
 {
@@ -206,6 +269,44 @@ brasero_burn_uri_thread (gpointer data)
 					TRUE);
 
 	brasero_job_get_current_track (BRASERO_JOB (self), &current);
+	brasero_track_get_type (current, &type);
+
+	/* This is for IMAGE tracks */
+	if (type.type == BRASERO_TRACK_TYPE_IMAGE) {
+		gchar *uri;
+		gchar *path_toc;
+		gchar *path_image;
+
+		path_image = NULL;
+		uri = brasero_track_get_image_source (current, TRUE);
+		if (!brasero_burn_uri_retrieve_path (self, uri, &path_image)) {
+			g_free (uri);
+			goto end;
+		}
+		g_free (uri);
+
+		path_toc = NULL;
+		uri = brasero_track_get_image_source (current, TRUE);
+		if (!brasero_burn_uri_retrieve_path (self, uri, &path_toc)) {
+			g_free (path_image);
+			g_free (uri);
+			goto end;
+		}
+		g_free (uri);
+
+		track = brasero_track_new (BRASERO_TRACK_TYPE_IMAGE);
+		brasero_track_set_image_source (track,
+						path_image,
+						path_toc,
+						type.subtype.img_format);
+		priv->track = track;
+
+		g_free (path_toc);
+		g_free (path_image);
+		goto end;
+	}
+
+	/* This is for DATA tracks */
 	for (src = brasero_track_get_data_grafts_source (current); src; src = src->next) {
 		GFile *file;
 		GFileInfo *info;
