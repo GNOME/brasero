@@ -1,5 +1,11 @@
 2009-02-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Avoid blocking if a callback for a result enter a g_main_loop
+
+	* src/brasero-io.c (brasero_io_return_result_idle):
+
+2009-02-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make plugin handling burn:/// URIs able to deal with images
 
 	* src/plugins/local-track/burn-uri.c

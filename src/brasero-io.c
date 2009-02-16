@@ -306,13 +306,17 @@ brasero_io_return_result_idle (gpointer callback_data)
 
 	priv = BRASERO_IO_PRIVATE (self);
 
+	g_mutex_lock (priv->lock);
+	priv->results_id = 0;
+	if (!priv->results) {
+		g_mutex_unlock (priv->lock);
+		return FALSE;
+	}
+
 	/* Return several results at a time that can be a huge speed gain.
 	 * What should be the value that provides speed and responsiveness. */
 	for (i = 0; i < 25; i ++) {
-		g_mutex_lock (priv->lock);
-
 		if (!priv->results) {
-			priv->results_id = 0;
 			g_mutex_unlock (priv->lock);
 			return FALSE;
 		}
@@ -336,9 +340,12 @@ brasero_io_return_result_idle (gpointer callback_data)
 						       result->base->destroy,
 						       FALSE);
 		brasero_io_job_result_free (result);
+		g_mutex_lock (priv->lock);
 	}
 
-	return TRUE;
+	g_mutex_unlock (priv->lock);
+
+	return FALSE;
 }
 
 static void
