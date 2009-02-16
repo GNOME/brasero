@@ -170,8 +170,6 @@ struct BraseroProjectManagerPrivate {
 	guint status_ctx;
 
 	GtkActionGroup *action_group;
-
-	guint oneshot:1;
 };
 
 #define BRASERO_PROJECT_MANAGER_CONNECT_CHANGED(manager, container)		\
@@ -526,12 +524,6 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 	||  manager->priv->type == BRASERO_PROJECT_TYPE_VIDEO) {
 		if (!brasero_project_confirm_switch (BRASERO_PROJECT (manager->priv->project)))
 			return;
-
-		if (manager->priv->oneshot) {
-			/* Here we may have to close brasero altogether */
-			gtk_widget_destroy (toplevel);
-			return;
-		}
 	}
 
 	if (manager->priv->status_ctx) {
@@ -606,12 +598,12 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - New Image File"));
 
-		brasero_app_burn_image (brasero_app_get_default (), uri);
 		brasero_project_manager_switch (manager,
 						BRASERO_PROJECT_TYPE_INVALID,
 						NULL,
 						NULL,
 						TRUE);
+		brasero_app_burn_image (brasero_app_get_default (), uri);
 	}
 	else if (type == BRASERO_PROJECT_TYPE_COPY) {
 		brasero_layout_load (BRASERO_LAYOUT (manager->priv->layout), BRASERO_LAYOUT_NONE);
@@ -623,12 +615,12 @@ brasero_project_manager_switch (BraseroProjectManager *manager,
 		if (toplevel)
 			gtk_window_set_title (GTK_WINDOW (toplevel), _("Brasero - Disc Copy"));
 
-		brasero_app_copy_disc (brasero_app_get_default (), uri, NULL);
 		brasero_project_manager_switch (manager,
 						BRASERO_PROJECT_TYPE_INVALID,
 						NULL,
 						NULL,
 						TRUE);
+		brasero_app_copy_disc (brasero_app_get_default (), uri, NULL);
 	}
 }
 
@@ -637,66 +629,49 @@ brasero_project_manager_type_changed_cb (BraseroProjectTypeChooser *chooser,
 					 BraseroProjectType type,
 					 BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, type, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_empty_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_INVALID, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_audio_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_AUDIO, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_data_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_DATA, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_video_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_VIDEO, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_copy_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_COPY, NULL, NULL, TRUE);
 }
 
 static void
 brasero_project_manager_new_iso_prj_cb (GtkAction *action, BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_switch (manager, BRASERO_PROJECT_TYPE_ISO, NULL, NULL, TRUE);
 }
 
 void
-brasero_project_manager_audio (BraseroProjectManager *manager,
-			       GSList *uris)
-{
-	brasero_project_manager_switch (manager,
-					BRASERO_PROJECT_TYPE_AUDIO,
-					uris,
-					NULL,
-					TRUE);
-}
-
-void
 brasero_project_manager_data (BraseroProjectManager *manager,
-			      GSList *uris)
+			      GSList *uris,
+			      gboolean burn)
 {
 	gchar *burn_URI = NULL;
 
@@ -706,9 +681,8 @@ brasero_project_manager_data (BraseroProjectManager *manager,
 		uris = g_slist_prepend (NULL, burn_URI);
 	}
 
-	if (manager->priv->oneshot) {
-		brasero_project_set_data (BRASERO_PROJECT (manager->priv->project),
-					  uris);
+	if (burn) {
+		brasero_project_set_data (BRASERO_PROJECT (manager->priv->project), uris);
 		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
 	}
 	else
@@ -717,7 +691,7 @@ brasero_project_manager_data (BraseroProjectManager *manager,
 						uris,
 						NULL,
 						TRUE);
-	
+
 	if (burn_URI) {
 		g_slist_free (uris);
 		g_free (burn_URI);
@@ -725,14 +699,37 @@ brasero_project_manager_data (BraseroProjectManager *manager,
 }
 
 void
-brasero_project_manager_video (BraseroProjectManager *manager,
-			       GSList *uris)
+brasero_project_manager_audio (BraseroProjectManager *manager,
+			       GSList *uris,
+			       gboolean burn)
 {
-	brasero_project_manager_switch (manager,
-					BRASERO_PROJECT_TYPE_VIDEO,
-					uris,
-					NULL,
-					TRUE);
+	if (burn) {
+		brasero_project_set_audio (BRASERO_PROJECT (manager->priv->project), uris);
+		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
+	}
+	else
+		brasero_project_manager_switch (manager,
+						BRASERO_PROJECT_TYPE_AUDIO,
+						uris,
+						NULL,
+						TRUE);
+}
+
+void
+brasero_project_manager_video (BraseroProjectManager *manager,
+			       GSList *uris,
+			       gboolean burn)
+{
+	if (burn) {
+		brasero_project_set_video (BRASERO_PROJECT (manager->priv->project), uris);
+		brasero_project_burn (BRASERO_PROJECT (manager->priv->project));
+	}
+	else
+		brasero_project_manager_switch (manager,
+						BRASERO_PROJECT_TYPE_VIDEO,
+						uris,
+						NULL,
+						TRUE);
 }
 
 void
@@ -958,7 +955,6 @@ brasero_project_manager_open_cb (GtkAction *action, BraseroProjectManager *manag
 	uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (chooser));
 	gtk_widget_destroy (chooser);
 
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_open_uri (manager, uri);
 	g_free (uri);
 }
@@ -968,15 +964,7 @@ brasero_project_manager_recent_clicked_cb (BraseroProjectTypeChooser *chooser,
 					   const gchar *uri,
 					   BraseroProjectManager *manager)
 {
-	manager->priv->oneshot = FALSE;
 	brasero_project_manager_open_uri (manager, uri);
-}
-
-void
-brasero_project_manager_set_oneshot (BraseroProjectManager *manager,
-				     gboolean oneshot)
-{
-	manager->priv->oneshot = oneshot;
 }
 
 void

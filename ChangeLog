@@ -1,5 +1,35 @@
 2009-02-16  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	When an image is detected while going through the files in burn:// and
+	if the user wants to burn it, don't crash ... it won't help.
+
+	* src/brasero-app.c (brasero_app_recent_open):
+	* src/brasero-data-disc.c (brasero_data_disc_image_uri_cb),
+	(brasero_data_disc_reset):
+	* src/brasero-data-vfs.c (brasero_data_vfs_loading_node_result):
+	* src/brasero-project-manager.c (brasero_project_manager_switch),
+	(brasero_project_manager_type_changed_cb),
+	(brasero_project_manager_new_empty_prj_cb),
+	(brasero_project_manager_new_audio_prj_cb),
+	(brasero_project_manager_new_data_prj_cb),
+	(brasero_project_manager_new_video_prj_cb),
+	(brasero_project_manager_new_copy_prj_cb),
+	(brasero_project_manager_new_iso_prj_cb),
+	(brasero_project_manager_data), (brasero_project_manager_audio),
+	(brasero_project_manager_video), (brasero_project_manager_open_cb),
+	(brasero_project_manager_recent_clicked_cb):
+	* src/brasero-project-manager.h:
+	* src/brasero-project.c (_wait_for_ready_state),
+	(brasero_project_check_status), (brasero_project_switch),
+	(brasero_project_set_none):
+	* src/brasero-src-image.c (brasero_src_image_image_info_cb):
+	* src/burn-task.c (brasero_task_set_track_output_size_default):
+	* src/burn-track.c (brasero_track_get_image_size):
+	* src/main.c (brasero_handle_burn_uri), (brasero_app_open_project),
+	(brasero_app_parse_options):
+
+2009-02-16  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Avoid blocking if a callback for a result enter a g_main_loop
 
 	* src/brasero-io.c (brasero_io_return_result_idle):

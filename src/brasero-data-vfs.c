@@ -693,6 +693,8 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 
 		result = brasero_data_vfs_emit_image_signal (self, uri);
 		if (result == BRASERO_BURN_CANCEL) {
+			/* recheck the node as a reset may have been done */
+			nodes = g_hash_table_lookup (priv->loading, registered);
 			for (iter = nodes; iter; iter = iter->next) {
 				BraseroFileNode *node;
 				guint reference;

@@ -394,6 +394,8 @@ brasero_task_set_track_output_size_default (BraseroTask *self,
 
 	brasero_task_ctx_get_current_track (BRASERO_TASK_CTX (self), &track);
 	brasero_track_get_type (track, &input);
+	BRASERO_BURN_LOG_TYPE (&input, "Track type");
+
 	if (input.type == BRASERO_TRACK_TYPE_IMAGE) {
 		BraseroBurnResult result;
 		gint64 sectors = 0;

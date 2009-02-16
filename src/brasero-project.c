@@ -159,6 +159,8 @@ struct BraseroProjectPrivate {
 
 	guint status_ctx;
 
+	GtkWidget *project_status;
+
 	/* header */
 	GtkWidget *burn;
 
@@ -709,7 +711,9 @@ _wait_for_ready_state (GtkWidget *dialog)
 	gint initial;
 
 	project = g_object_get_data (G_OBJECT (dialog), "Project");
-	if (project->priv->oversized) {
+	if (project->priv->oversized
+	|| !project->priv->current
+	|| !project->priv->project_status) {
 		gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
 		return FALSE;
 	}
@@ -776,10 +780,12 @@ brasero_project_check_status (BraseroProject *project,
 
 	/* we are not ready to create tracks presumably because
 	 * data or audio has not finished to explore a directory
-	 * or get the metadata of a song or a film */
+	 * or get the metadata of a song or a film
+	 */
 
 	/* This dialog can run as a standalone window when run from nautilus
-	 * to burn burn:// URI contents. */
+	 * to burn burn:// URI contents.
+	 */
 	dialog = brasero_app_dialog (brasero_app_get_default (),
 				     _("Please wait until the estimation of the project size is completed."),
 				     GTK_BUTTONS_CANCEL,
@@ -837,10 +843,16 @@ brasero_project_check_status (BraseroProject *project,
 			    (GSourceFunc) _wait_for_ready_state,
 		            dialog);
 
+	project->priv->project_status = dialog;
 	answer = gtk_dialog_run (GTK_DIALOG (dialog));
 	g_source_remove (id);
 
 	gtk_widget_destroy (dialog);
+
+	if (!project->priv->project_status)
+		return BRASERO_DISC_CANCELLED;
+
+	project->priv->project_status = NULL;
 
 	if (answer != GTK_RESPONSE_OK)
 		return BRASERO_DISC_CANCELLED;
@@ -974,6 +986,16 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
 {
 	GtkAction *action;
 	GConfClient *client;
+	
+	if (project->priv->project_status) {
+		gtk_widget_hide (project->priv->project_status);
+		gtk_dialog_response (GTK_DIALOG (project->priv->project_status),
+				     GTK_RESPONSE_CANCEL);
+		project->priv->project_status = NULL;
+	}
+
+	if (project->priv->current)
+		brasero_disc_reset (project->priv->current);
 
 	if (project->priv->chooser) {
 		gtk_widget_destroy (project->priv->chooser);
@@ -984,9 +1006,6 @@ brasero_project_switch (BraseroProject *project, BraseroProjectType type)
     	project->priv->burnt = 0;
 	project->priv->merging = 0;
 	project->priv->modified = 0;
-
-	if (project->priv->current)
-		brasero_disc_reset (project->priv->current);
 
 	if (project->priv->project) {
 		g_free (project->priv->project);
@@ -1146,6 +1165,18 @@ brasero_project_set_none (BraseroProject *project)
 {
 	GtkAction *action;
 	GtkWidget *status;
+
+	if (project->priv->project_status) {
+		gtk_widget_hide (project->priv->project_status);
+		gtk_dialog_response (GTK_DIALOG (project->priv->project_status),
+				     GTK_RESPONSE_CANCEL);
+		project->priv->project_status = NULL;
+	}
+
+	if (project->priv->chooser) {
+		gtk_widget_destroy (project->priv->chooser);
+		project->priv->chooser = NULL;
+	}
 
 	if (project->priv->project) {
 		g_free (project->priv->project);

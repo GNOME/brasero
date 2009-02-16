@@ -157,12 +157,12 @@ static const GOptionEntry options [] = {
 	function (BRASERO_PROJECT_MANAGER (manager_MACRO), uri);	\
 }
 
-#define BRASERO_PROJECT_OPEN_LIST(manager_MACRO, function, uris)		\
+#define BRASERO_PROJECT_OPEN_LIST(manager_MACRO, function_MACRO, uris_MACROS, burn_MACRO)	\
 {										\
 	GSList *list = NULL;							\
 	gchar **iter;								\
 	/* convert all names into a GSList * */					\
-	for (iter = uris; iter && *iter; iter ++) {				\
+	for (iter = uris_MACROS; iter && *iter; iter ++) {				\
 		gchar *uri;							\
 		GFile *file;							\
 		file = g_file_new_for_commandline_arg (*iter);			\
@@ -172,7 +172,7 @@ static const GOptionEntry options [] = {
 	}									\
 	/* reverse to keep the order of files */				\
 	list = g_slist_reverse (list);						\
-	function (BRASERO_PROJECT_MANAGER (manager_MACRO), list);		\
+	function_MACRO (BRASERO_PROJECT_MANAGER (manager_MACRO), list, burn_MACRO);		\
 	g_slist_foreach (list, (GFunc) g_free, NULL);				\
 	g_slist_free (list);							\
 }
@@ -261,8 +261,7 @@ brasero_handle_burn_uri (BraseroApp *app,
 	list = g_slist_reverse (list);
 	brasero_app_create_mainwin (app);
 	manager = brasero_app_get_project_manager (app);
-	brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
-	brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list);
+	brasero_project_manager_data (BRASERO_PROJECT_MANAGER (manager), list, TRUE);
 
 	g_slist_foreach (list, (GFunc) g_free, NULL);
 	g_slist_free (list);
@@ -296,7 +295,6 @@ brasero_app_open_project (BraseroApp *app,
 		return FALSE;
 
 	manager = brasero_app_get_project_manager (app);
-	brasero_project_manager_set_oneshot (BRASERO_PROJECT_MANAGER (manager), TRUE);
 	brasero_project_manager_open_project (BRASERO_PROJECT_MANAGER (manager), track, uri, burn);
 
 	return TRUE;
@@ -343,7 +341,6 @@ brasero_app_parse_options (BraseroApp *app)
 
 	if (nb > 1) {
 		brasero_app_create_mainwin (app);
-
 		brasero_app_alert (app,
 				   _("Incompatible command line options used."),
 				   _("Only one option can be given at a time"),
@@ -383,17 +380,17 @@ brasero_app_parse_options (BraseroApp *app)
 	else if (audio_project) {
 		brasero_app_create_mainwin (app);
 		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_audio, files, FALSE);
 	}
 	else if (data_project) {
 		brasero_app_create_mainwin (app);
 		manager = brasero_app_get_project_manager (app);
-		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+		BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
 	}
 	else if (video_project) {
 		brasero_app_create_mainwin (app);
 		manager = brasero_app_get_project_manager (app);
-	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files);
+	    	BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_video, files, FALSE);
 	}
 	else if (copy_project) {
 		gchar *device = NULL;
@@ -459,11 +456,11 @@ brasero_app_parse_options (BraseroApp *app)
 
 			/* Fallback if it hasn't got a suitable URI */
 			if (type == BRASERO_PROJECT_TYPE_INVALID) {
-				BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+				BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
 			}
 		}
 		else
-			BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files);
+			BRASERO_PROJECT_OPEN_LIST (manager, brasero_project_manager_data, files, FALSE);
 	}
 	else {
 		brasero_app_create_mainwin (app);

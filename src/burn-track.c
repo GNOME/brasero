@@ -1030,6 +1030,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 			return BRASERO_BURN_ERR;
 
 		path = brasero_track_get_localpath (image->image);
+
 		if (!brasero_image_format_get_iso_size (path, blocks, size, error)) {
 			g_free (path);
 			return BRASERO_BURN_ERR;
@@ -1043,6 +1044,7 @@ brasero_track_get_image_size (BraseroTrack *track,
 		gchar *path;
 
 		path = brasero_track_get_image_source (track, FALSE);
+
 		if (!path)
 			return BRASERO_BURN_ERR;
 

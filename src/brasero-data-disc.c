@@ -732,32 +732,6 @@ brasero_data_disc_filtered_uri_cb (BraseroDataVFS *vfs,
 		brasero_file_filtered_remove (BRASERO_FILE_FILTERED (priv->filter), uri);
 }
 
-struct _BraseroDataDiscProjectSwitch {
-	gchar *uri;
-	BraseroDataDisc *disc;
-};
-typedef struct _BraseroDataDiscProjectSwitch BraseroDataDiscProjectSwitch;
-
-static gboolean
-brasero_data_disc_switch_to_image (gpointer data)
-{
-	GtkWidget *manager;
-	BraseroDataDiscPrivate *priv;
-	BraseroDataDiscProjectSwitch *callback_data = data;
-
-	priv = BRASERO_DATA_DISC_PRIVATE (callback_data->disc);
-
-	/* Clean up everything to avoid warning dialog */
-	brasero_data_project_reset (priv->project);
-
-	/* Tell project manager to switch */
-	manager = brasero_app_get_project_manager (brasero_app_get_default ());
-	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager),
-				     callback_data->uri);
-
-	return FALSE;
-}
-
 static BraseroBurnResult
 brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 				const gchar *uri,
@@ -768,8 +742,8 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 	gchar *string;
 	GtkWidget *button;
 	GtkWidget *dialog;
+	GtkWidget *manager;
 	BraseroDataDiscPrivate *priv;
-	BraseroDataDiscProjectSwitch *callback_data;
 
 	priv = BRASERO_DATA_DISC_PRIVATE (self);
 
@@ -806,10 +780,10 @@ brasero_data_disc_image_uri_cb (BraseroDataVFS *vfs,
 	if (answer != GTK_RESPONSE_YES)
 		return BRASERO_BURN_OK;
 
-	callback_data = g_new (BraseroDataDiscProjectSwitch, 1);
-	callback_data->disc = self;
-	callback_data->uri = g_strdup (uri);
-	g_idle_add (brasero_data_disc_switch_to_image, callback_data);
+	/* Tell project manager to switch. First function to avoid warnings */
+	brasero_data_project_reset (priv->project);
+	manager = brasero_app_get_project_manager (brasero_app_get_default ());
+	brasero_project_manager_iso (BRASERO_PROJECT_MANAGER (manager), uri);
 
 	return BRASERO_BURN_CANCEL;
 }
@@ -1410,7 +1384,9 @@ brasero_data_disc_reset (BraseroDisc *disc)
 	brasero_file_filtered_clear (BRASERO_FILE_FILTERED (priv->filter));
 	brasero_disc_size_changed (disc, 0);
 
-	gdk_window_set_cursor (GTK_WIDGET (disc)->window, NULL);
+	if (GTK_WIDGET (disc)->window)
+		gdk_window_set_cursor (GTK_WIDGET (disc)->window, NULL);
+
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (priv->notebook), 0);
 }
 

@@ -259,7 +259,6 @@ brasero_src_image_image_info_cb (GObject *object,
 	const gchar *mime;
 
 	priv = BRASERO_SRC_IMAGE_PRIVATE (dialog);
-
 	if (error) {
 		brasero_src_image_set_track (dialog,
 					     BRASERO_IMAGE_FORMAT_NONE,
