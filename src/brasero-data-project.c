@@ -1524,8 +1524,10 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 	}
 	else {
 		gchar *parent_uri;
+		gchar *name_uri;
 
 		parent_uri = brasero_data_project_node_to_uri (self, node->parent);
+		name_uri = g_path_get_basename (uri);
 
 		/* NOTE: in here use a special function here since that node 
 		 * could already be in the tree but under its rightful parent
@@ -1536,7 +1538,10 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 
 			parent_len = strlen (parent_uri);
 			if (strncmp (parent_uri, uri, parent_len)
-			&&  uri [parent_len] != G_DIR_SEPARATOR) {
+			||  uri [parent_len] != G_DIR_SEPARATOR
+			|| !name_uri
+			|| !BRASERO_FILE_NODE_NAME (node)
+			||  strcmp (name_uri, BRASERO_FILE_NODE_NAME (node))) {
 				/* The node hasn't been put under its rightful
 				 * parent from the original file system. That
 				 * means we must add a graft */
@@ -1557,6 +1562,7 @@ brasero_data_project_add_node_real (BraseroDataProject *self,
 			graft = brasero_data_project_uri_graft_nodes (self, uri);
 			brasero_file_node_graft (node, graft);
 		}
+		g_free (name_uri);
 	}
 
 	/* check joliet compatibility; do it after node was created. */

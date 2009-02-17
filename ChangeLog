@@ -1,5 +1,13 @@
 2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix typo that broke symlinks handling (regular files/directories were
+	seen as symlinks)
+
+	* src/brasero-data-project.c (brasero_data_project_add_node_real):
+	* src/brasero-file-node.c (brasero_file_node_set_from_info):
+
+2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Workaround an inconsistency in GVFS burn:// backend which leads to
 	return true for g_file_info_get_is_symlink () and G_FILE_TYPE_REGULAR or
 	G_FILE_TYPE_DIRECTORY for g_file_info_get_file_type () when we ask not
