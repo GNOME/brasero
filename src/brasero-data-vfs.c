@@ -516,6 +516,15 @@ brasero_data_vfs_directory_load_result (GObject *owner,
 						       uri);
 				return;
 			}
+
+			if (!priv->replace_sym) {
+				/* This is to workaround a small inconsistency
+				 * in GVFS burn:// backend. When there is a
+				 * symlink in burn:// and we are asked not to 
+				 * follow symlinks then the file type is not
+				 * G_FILE_TYPE_SYMBOLIC_LINK */
+				g_file_info_set_file_type (info, G_FILE_TYPE_SYMBOLIC_LINK);
+			}
 		}
 
 		brasero_data_project_add_node_from_info (BRASERO_DATA_PROJECT (self),
@@ -711,7 +720,7 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		}
 	}
 
-	/* NOTE: we don't check for a broken symlink here since the  user chose
+	/* NOTE: we don't check for a broken symlink here since the user chose
 	 * to add it. So even if it were we would have to add it. The same for
 	 * hidden files. */
 	for (iter = nodes; iter; iter = iter->next) {
@@ -737,6 +746,15 @@ brasero_data_vfs_loading_node_result (GObject *owner,
 		/* NOTE: check is loading here on purpose. Otherwise directories
 		 * that replace a temp parent wouldn't load since they are also
 		 * reloading. */
+		if (g_file_info_get_is_symlink (info)
+		&& !priv->replace_sym) {
+			/* This is to workaround a small inconsistency
+			 * in GVFS burn:// backend. When there is a
+			 * symlink in burn:// and we are asked not to 
+			 * follow symlinks then the file type is not
+			 * G_FILE_TYPE_SYMBOLIC_LINK */
+			g_file_info_set_file_type (info, G_FILE_TYPE_SYMBOLIC_LINK);
+		}
 
 		if (!node->is_loading) {
 			brasero_data_project_node_reloaded (BRASERO_DATA_PROJECT (self),

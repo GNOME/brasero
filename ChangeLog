@@ -1,5 +1,15 @@
 2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Workaround an inconsistency in GVFS burn:// backend which leads to
+	return true for g_file_info_get_is_symlink () and G_FILE_TYPE_REGULAR or
+	G_FILE_TYPE_DIRECTORY for g_file_info_get_file_type () when we ask not
+	to follow symlinks in GIO
+
+	* src/brasero-data-vfs.c (brasero_data_vfs_directory_load_result),
+	(brasero_data_vfs_loading_node_result):
+
+2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Don't forget to add a slash at the end of the path for directories
 	since mkisofs need it. Also allows to check whether the graft path
 	was already created.
