@@ -94,6 +94,17 @@ brasero_burn_uri_thread_finished (BraseroBurnURI *self)
 	return FALSE;
 }
 
+static gint
+brasero_burn_uri_find_graft (gconstpointer A, gconstpointer B)
+{
+	const BraseroGraftPt *graft = A;
+
+	if (graft && graft->path)
+		return strcmp (graft->path, B);
+
+	return 1;
+}
+
 static GSList *
 brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 				    GSList *grafts,
@@ -102,7 +113,9 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 				    GCancellable *cancel,
 				    GError **error)
 {
+	BraseroTrack *current = NULL;
 	GFileEnumerator *enumerator;
+	GSList *current_grafts;
 	GFileInfo *info;
 
 	enumerator = g_file_enumerate_children (file,
@@ -119,15 +132,31 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 		return NULL;
 	}
 
+	brasero_job_get_current_track (BRASERO_JOB (self), &current);
+	current_grafts = brasero_track_get_data_grafts_source (current);
+
 	while ((info = g_file_enumerator_next_file (enumerator, cancel, error))) {
 		if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+			gchar *disc_path;
 			GFile *directory;
 			BraseroGraftPt *graft;
+
+			/* Make sure it's not one of the original grafts */
+			/* we need to know if that's a directory or not since if
+			 * it is then mkisofs (but not genisoimage) requires the
+			 * disc path to end with '/'; if there isn't '/' at the 
+			 * end then only the directory contents are added. */
+			disc_path = g_build_filename (path, g_file_info_get_name (info), G_DIR_SEPARATOR_S, NULL);
+			if (g_slist_find_custom (current_grafts, disc_path, (GCompareFunc) brasero_burn_uri_find_graft)) {
+				BRASERO_JOB_LOG (self, "Graft already in list %s", disc_path);
+				g_free (disc_path);
+				continue;
+			}
 
 			/* we need a dummy directory */
 			graft = g_new0 (BraseroGraftPt, 1);
 			graft->uri = NULL;
-			graft->path = g_build_filename (path, g_file_info_get_name (info), NULL);
+			graft->path = disc_path;
 			grafts = g_slist_prepend (grafts, graft);
 
 			BRASERO_JOB_LOG (self, "Adding directory %s at %s", graft->uri, graft->path);
@@ -152,6 +181,7 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 		     ||  g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK) {
 			const gchar *real_path;
 			BraseroGraftPt *graft;
+			gchar *disc_path;
 
 			real_path = g_file_info_get_attribute_byte_string (info, "burn::backing-file");
 			if (!real_path) {
@@ -167,13 +197,22 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 				return NULL;
 			}
 
-			graft = g_new0 (BraseroGraftPt, 1);
+			/* Make sure it's not one of the original grafts */
+			disc_path = g_build_filename (path, g_file_info_get_name (info), NULL);
+			if (g_slist_find_custom (current_grafts, disc_path, (GCompareFunc) brasero_burn_uri_find_graft)) {
+				BRASERO_JOB_LOG (self, "Graft already in list %s", disc_path);
+				g_free (disc_path);
+				continue;
+			}
 
-			graft->path = g_build_filename (path, g_file_info_get_name (info), NULL);
+			graft = g_new0 (BraseroGraftPt, 1);
+			graft->path = disc_path;
 			graft->uri = g_strdup (real_path);
 			/* FIXME: maybe one day, graft->uri will always be an URI */
 			/* graft->uri = g_filename_to_uri (real_path, NULL, NULL); */
 
+			/* Make sure it's not one of the original grafts */
+			
 			grafts = g_slist_prepend (grafts, graft);
 
 			BRASERO_JOB_LOG (self, "Added file %s at %s", graft->uri, graft->path);
@@ -323,6 +362,8 @@ brasero_burn_uri_thread (gpointer data)
 			grafts = g_slist_prepend (grafts, brasero_graft_point_copy (graft));
 			continue;
 		}
+
+		BRASERO_JOB_LOG (self, "Information retrieval for %s", graft->uri);
 
 		file = g_file_new_for_uri (graft->uri);
 		info = g_file_query_info (file,

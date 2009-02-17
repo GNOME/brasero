@@ -1,5 +1,14 @@
 2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Don't forget to add a slash at the end of the path for directories
+	since mkisofs need it. Also allows to check whether the graft path
+	was already created.
+
+	* src/plugins/local-track/burn-uri.c (brasero_burn_uri_find_graft),
+	(brasero_burn_uri_explore_directory), (brasero_burn_uri_thread):
+
+2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Remove GConf notify for replace symlink key
 	Use the correct key (replace symlink key)
 
