@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: brasero.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=brasero&component=general\n"
-"POT-Creation-Date: 2009-02-07 20:20+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-02-17 22:25+0100\n"
 "PO-Revision-Date: 2009-02-13 20:34+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@fsf.hu>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../src/brasero-project-parse.c:103 ../src/brasero-project-manager.c:917
+#: ../src/brasero-project-parse.c:103 ../src/brasero-project-manager.c:914
 #: ../src/main.c:214 ../src/main.c:240
 msgid "Error while loading the project."
 msgstr "Hiba a projekt betöltése közben."
@@ -370,7 +370,7 @@ msgstr "Munkamenet-kezelés kapcsolói:"
 msgid "Show session management options"
 msgstr "Munkamenet-kezelési kapcsolók megjelenítése"
 
-#: ../src/brasero-tool-color-picker.c:156
+#: ../src/brasero-tool-color-picker.c:154
 msgid "Pick a Color"
 msgstr "Válasszon egy színt"
 
@@ -382,13 +382,14 @@ msgstr "Videofájlok elemzése"
 msgid "Brasero Plugins"
 msgstr "Brasero bővítmények"
 
-#: ../src/plugins/local-track/burn-uri.c:161
-#: ../src/plugins/local-track/burn-uri.c:288
+#: ../src/plugins/local-track/burn-uri.c:192
+#: ../src/plugins/local-track/burn-uri.c:279
+#: ../src/plugins/local-track/burn-uri.c:432
 #, c-format
 msgid "Impossible to retrieve local file path"
 msgstr "A helyi fájlútvonal nem kérhető le"
 
-#: ../src/plugins/local-track/burn-uri.c:205
+#: ../src/plugins/local-track/burn-uri.c:309
 #: ../src/plugins/local-track/burn-local-image.c:730
 msgid "Copying files locally"
 msgstr "Fájlok másolása helyileg"
@@ -396,14 +397,15 @@ msgstr "Fájlok másolása helyileg"
 #. Translators: this is the name of the plugin
 #. * which will be translated only when it needs
 #. * displaying.
-#: ../src/plugins/local-track/burn-uri.c:561
+#: ../src/plugins/local-track/burn-uri.c:705
 #: ../nautilus/nautilus-burn-bar.c:136
 msgid "CD/DVD Creator Folder"
 msgstr "CD/DVD-készítő mappa"
 
-#: ../src/plugins/local-track/burn-uri.c:562
+#: ../src/plugins/local-track/burn-uri.c:706
 msgid "Allows to burn files added to \"CD/DVD Creator Folder\" in Nautilus"
-msgstr "Lehetővé teszi a Nautilus „CD/DVD-készítő mappájához” adott fájlok kiírását"
+msgstr ""
+"Lehetővé teszi a Nautilus „CD/DVD-készítő mappájához” adott fájlok kiírását"
 
 #: ../nautilus/brasero-nautilus.desktop.in.in.h:1
 #: ../data/brasero-open-image.desktop.in.in.h:1
@@ -471,8 +473,10 @@ msgid "Check the data integrity on this CD or DVD disc"
 msgstr "A lemezen lévő adatok épségének ellenőrzése"
 
 #: ../src/brasero-medium-properties.c:329
-msgid "Do you really want to keep the current extension for the disc image name?"
-msgstr "Valóban meg kívánja tartani a lemezkép nevének jelenlegi kiterjesztését?"
+msgid ""
+"Do you really want to keep the current extension for the disc image name?"
+msgstr ""
+"Valóban meg kívánja tartani a lemezkép nevének jelenlegi kiterjesztését?"
 
 #: ../src/brasero-medium-properties.c:333
 msgid ""
@@ -503,7 +507,7 @@ msgstr "„%s”: %s"
 
 #. This is hackish and meant to avoid ellipsization to make the
 #. * label to small.
-#: ../src/brasero-src-image.c:229 ../src/brasero-src-image.c:678
+#: ../src/brasero-src-image.c:229 ../src/brasero-src-image.c:677
 msgid "Click here to select an _image"
 msgstr "_Kattintson a lemezkép kiválasztásához"
 
@@ -511,23 +515,24 @@ msgstr "_Kattintson a lemezkép kiválasztásához"
 msgid "Please select another image."
 msgstr "Válasszon másik lemezképet."
 
-#: ../src/brasero-src-image.c:553
+#: ../src/brasero-src-image.c:552
 msgid "Select Image File"
 msgstr "Válasszon lemezképet"
 
-#: ../src/brasero-src-image.c:574 ../src/brasero-search-entry.c:609
-#: ../src/brasero-search-entry.c:649 ../src/brasero-search-entry.c:688
+#: ../src/brasero-src-image.c:573 ../src/brasero-search-entry.c:610
+#: ../src/brasero-search-entry.c:650 ../src/brasero-search-entry.c:689
 #: ../src/brasero-search-beagle.c:473 ../src/brasero-file-chooser.c:210
-#: ../src/brasero-project.c:1422
+#: ../src/brasero-project.c:1474
 msgid "All files"
 msgstr "Minden fájl"
 
-#: ../src/brasero-src-image.c:579 ../src/brasero-file-chooser.c:234
-#: ../src/brasero-project.c:1443
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-src-image.c:578 ../src/brasero-file-chooser.c:234
+#: ../src/brasero-project.c:1496
 msgid "Image files only"
 msgstr "Csak lemezképek"
 
-#: ../src/brasero-src-image.c:597 ../src/brasero-image-properties.c:200
+#: ../src/brasero-src-image.c:596 ../src/brasero-image-properties.c:200
 msgid "Image type:"
 msgstr "Lemezkép típusa:"
 
@@ -582,7 +587,8 @@ msgid "There is no recordable disc inserted."
 msgstr "Nincs behelyezve írható lemez."
 
 #: ../src/brasero-burn-options.c:273
-msgid "No track information (artist, compositor, ...) will be written to the disc."
+msgid ""
+"No track information (artist, compositor, ...) will be written to the disc."
 msgstr "A lemezre nem kerülnek száminformációk (előadó, zeneszerző stb.)."
 
 #: ../src/brasero-burn-options.c:274
@@ -651,7 +657,8 @@ msgid "Burn beyond the disc reported capacity"
 msgstr "Írás a lemez jelentett kapacitásán túl"
 
 #: ../src/brasero-burn-options.c:357
-msgid "The drive that holds the source disc will also be the one used to record."
+msgid ""
+"The drive that holds the source disc will also be the one used to record."
 msgstr "A forráslemezt tartalmazó meghajtó kerül felhasználásra az íráshoz is."
 
 #: ../src/brasero-burn-options.c:358
@@ -794,15 +801,15 @@ msgstr ""
 "Dvornik László <dvornik@gnome.hu>\n"
 "Kelemen Gábor <kelemeng@gnome.hu>"
 
-#: ../src/brasero-app.c:1171 ../src/brasero-app.c:1177
+#: ../src/brasero-app.c:1170 ../src/brasero-app.c:1176
 msgid "_Recent Projects"
 msgstr "Leg_utóbbi projektek"
 
-#: ../src/brasero-app.c:1172
+#: ../src/brasero-app.c:1171
 msgid "Display the projects recently opened"
 msgstr "Megjeleníti a legutóbb megnyitott projekteket"
 
-#: ../src/brasero-app.c:1454 ../data/brasero.desktop.in.in.h:1
+#: ../src/brasero-app.c:1453 ../data/brasero.desktop.in.in.h:1
 msgid "Brasero Disc Burner"
 msgstr "Brasero lemezíró"
 
@@ -1048,14 +1055,14 @@ msgid "New disc in the burner holding source disc"
 msgstr "Helyezzen új lemezt a forráslemezt tartalmazó meghajtóba"
 
 #. NOTE for translators, the first %s is the medium name
-#: ../src/brasero-dest-selection.c:462
+#: ../src/brasero-dest-selection.c:463
 #, c-format
 msgid "%s: no free space"
 msgstr "%s: nincs szabad hely"
 
 #. NOTE for translators: the first %s is the medium name, the second %s
 #. * is its available free space. "Free" here is the free space available.
-#: ../src/brasero-dest-selection.c:484
+#: ../src/brasero-dest-selection.c:490
 #, c-format
 msgid "%s: %s of free space"
 msgstr "%s: %s szabad"
@@ -1078,7 +1085,7 @@ msgid "Edit the track information (start, end, author, ...)"
 msgstr "A száminformációk szerkesztése (kezdet, vég, szerző, …)"
 
 #: ../src/brasero-audio-disc.c:305 ../src/brasero-data-disc.c:122
-#: ../src/brasero-project.c:202
+#: ../src/brasero-project.c:204
 msgid "Remove the selected files from the project"
 msgstr "A kijelölt fájlok eltávolítása a projektből"
 
@@ -1164,8 +1171,8 @@ msgstr "Ez a fájl egy videofájl, így csak a hang része írható a lemezre."
 msgid "_Discard File"
 msgstr "Fájl el_dobása"
 
-#: ../src/brasero-audio-disc.c:1390 ../src/brasero-data-disc.c:1020
-#: ../src/brasero-data-disc.c:1064
+#: ../src/brasero-audio-disc.c:1390 ../src/brasero-data-disc.c:994
+#: ../src/brasero-data-disc.c:1038
 msgid "_Add File"
 msgstr "Fájl hozzá_adása"
 
@@ -1188,9 +1195,9 @@ msgstr "„%s” nem nyitható meg."
 
 #: ../src/brasero-audio-disc.c:1723 ../src/brasero-audio-disc.c:1735
 #: ../src/brasero-audio-disc.c:1760 ../src/brasero-playlist.c:953
-#: ../src/brasero-data-tree-model.c:432 ../src/brasero-data-tree-model.c:504
-#: ../src/brasero-data-tree-model.c:515 ../src/brasero-data-tree-model.c:576
-#: ../src/brasero-data-tree-model.c:581 ../src/brasero-video-tree-model.c:194
+#: ../src/brasero-data-tree-model.c:432 ../src/brasero-data-tree-model.c:505
+#: ../src/brasero-data-tree-model.c:516 ../src/brasero-data-tree-model.c:577
+#: ../src/brasero-data-tree-model.c:582 ../src/brasero-video-tree-model.c:194
 msgid "(loading ...)"
 msgstr "(betöltés …)"
 
@@ -1360,12 +1367,12 @@ msgid "Error parsing playlist \"%s\"."
 msgstr "Hiba a(z) „%s” lejátszólista feldolgozása közben."
 
 #: ../src/brasero-playlist.c:810 ../src/brasero-data-disc.c:208
-#: ../src/brasero-project.c:1749 ../src/brasero-sum-dialog.c:142
+#: ../src/brasero-project.c:1802 ../src/brasero-sum-dialog.c:142
 msgid "An unknown error occured"
 msgstr "Ismeretlen hiba történt"
 
 #: ../src/brasero-playlist.c:914 ../src/brasero-data-tree-model.c:434
-#: ../src/brasero-data-tree-model.c:587
+#: ../src/brasero-data-tree-model.c:588
 msgid "Empty"
 msgstr "Üres"
 
@@ -1465,23 +1472,23 @@ msgstr "_Videó"
 msgid "Type your keywords or choose 'All files' from the menu"
 msgstr "Írja be a kulcsszavakat vagy válassza a menü „Minden fájl” pontját"
 
-#: ../src/brasero-search-entry.c:336
+#: ../src/brasero-search-entry.c:337
 msgid "Select if you want to search among image files only"
 msgstr "Válassza ki, ha csak lemezképek között akar keresni"
 
-#: ../src/brasero-search-entry.c:338
+#: ../src/brasero-search-entry.c:339
 msgid "Select if you want to search among video files only"
 msgstr "Válassza ki, ha csak videófájlok között akar keresni"
 
-#: ../src/brasero-search-entry.c:340
+#: ../src/brasero-search-entry.c:341
 msgid "Select if you want to search among audio files only"
 msgstr "Válassza ki, ha csak hangfájlok között akar keresni"
 
-#: ../src/brasero-search-entry.c:342
+#: ../src/brasero-search-entry.c:343
 msgid "Select if you want to search among your text documents only"
 msgstr "Válassza ki, ha csak szöveges dokumentumok között akar keresni"
 
-#: ../src/brasero-search-entry.c:344
+#: ../src/brasero-search-entry.c:345
 msgid "Click to start the search"
 msgstr "Kattintson ide a keresés megkezdéséhez"
 
@@ -1497,12 +1504,12 @@ msgstr "Nincs találat"
 msgid "Next Results"
 msgstr "Következő találatok"
 
-#: ../src/brasero-search-beagle.c:406 ../src/brasero-data-disc.c:2469
+#: ../src/brasero-search-beagle.c:406 ../src/brasero-data-disc.c:2453
 #: ../src/brasero-file-filtered.c:528
 msgid "Files"
 msgstr "Fájlok"
 
-#: ../src/brasero-search-beagle.c:425 ../src/brasero-data-disc.c:2497
+#: ../src/brasero-search-beagle.c:425 ../src/brasero-data-disc.c:2481
 msgid "Description"
 msgstr "Leírás"
 
@@ -1829,7 +1836,8 @@ msgstr "Cserélje ki a lemezt egy írható DVD-re."
 #: ../src/brasero-burn-dialog.c:434
 #, c-format
 msgid "Please insert a recordable DVD with at least %i MiB of free space."
-msgstr "Helyezzen be egy legalább %i MiB szabad helyet tartalmazó írható DVD-t."
+msgstr ""
+"Helyezzen be egy legalább %i MiB szabad helyet tartalmazó írható DVD-t."
 
 #: ../src/brasero-burn-dialog.c:437
 msgid "Please insert a recordable DVD."
@@ -1850,7 +1858,8 @@ msgstr "Cserélje ki a lemezt egy írható CD-re vagy DVD-re."
 
 #: ../src/brasero-burn-dialog.c:449
 #, c-format
-msgid "Please insert a recordable CD or DVD with at least %i MiB of free space."
+msgid ""
+"Please insert a recordable CD or DVD with at least %i MiB of free space."
 msgstr ""
 "Helyezzen be egy legalább %i MiB szabad helyet tartalmazó írható CD-t vagy "
 "DVD-t."
@@ -1922,7 +1931,8 @@ msgid "Please eject the disc and reload it."
 msgstr "Vegye ki a lemezt és helyezze vissza."
 
 #: ../src/brasero-burn-dialog.c:642 ../src/brasero-sum-dialog.c:300
-msgid "A file could not be created at the location specified for temporary files"
+msgid ""
+"A file could not be created at the location specified for temporary files"
 msgstr "Nem hozható létre fájl az ideiglenes fájloknak megadott helyen"
 
 #: ../src/brasero-burn-dialog.c:643
@@ -1933,7 +1943,8 @@ msgstr "A lemezkép nem hozható létre a megadott helyen"
 msgid ""
 "Do you want to specify another location for this session or retry with the "
 "current location?"
-msgstr "Megad másik helyet ehhez a szakaszhoz, vagy újrapróbálja a jelenlegi hellyel?"
+msgstr ""
+"Megad másik helyet ehhez a szakaszhoz, vagy újrapróbálja a jelenlegi hellyel?"
 
 #: ../src/brasero-burn-dialog.c:659
 msgid "You may want to free some space on the disc and retry"
@@ -2016,8 +2027,9 @@ msgstr "Hangsávok újraírható lemezre írása nem javasolt."
 msgid "Do you want to continue with full Windows compatibility disabled?"
 msgstr "Folytatja a Windows kompatibilitás kikapcsolásával?"
 
-#: ../src/brasero-burn-dialog.c:928 ../src/brasero-disc-option-dialog.c:326
-msgid "Some files don't have a suitable name for a fully Windows-compatible CD."
+#: ../src/brasero-burn-dialog.c:928 ../src/brasero-disc-option-dialog.c:331
+msgid ""
+"Some files don't have a suitable name for a fully Windows-compatible CD."
 msgstr "Néhány fájl neve nem megfelelő Windows-kompatibilis CD készítéséhez."
 
 #: ../src/brasero-burn-dialog.c:971
@@ -2161,15 +2173,15 @@ msgstr "_Másik példány készítése"
 msgid "_Create Cover"
 msgstr "B_orító létrehozása"
 
-#: ../src/brasero-burn-dialog.c:2078 ../src/brasero-tool-dialog.c:348
+#: ../src/brasero-burn-dialog.c:2077 ../src/brasero-tool-dialog.c:348
 msgid "Do you really want to quit?"
 msgstr "Valóban ki szeretne lépni?"
 
-#: ../src/brasero-burn-dialog.c:2082 ../src/brasero-tool-dialog.c:351
+#: ../src/brasero-burn-dialog.c:2081 ../src/brasero-tool-dialog.c:351
 msgid "Interrupting the process may make disc unusable."
 msgstr "A folyamat megszakítása használhatatlanná teheti a lemezt."
 
-#: ../src/brasero-burn-dialog.c:2092
+#: ../src/brasero-burn-dialog.c:2091
 msgid "_Cancel Burning"
 msgstr "Írás _megszakítása"
 
@@ -2181,7 +2193,7 @@ msgstr "Át_nevezés…"
 msgid "Rename the selected file"
 msgstr "A kijelölt fájl átnevezése"
 
-#: ../src/brasero-data-disc.c:126 ../src/brasero-data-disc.c:1800
+#: ../src/brasero-data-disc.c:126 ../src/brasero-data-disc.c:1784
 msgid "New _Folder"
 msgstr "Új _mappa"
 
@@ -2242,12 +2254,13 @@ msgstr "El_dobás"
 msgid "Continue with the current modified project"
 msgstr "Az aktuális módosított projekt folytatása"
 
-#: ../src/brasero-data-disc.c:780
+#: ../src/brasero-data-disc.c:754
 #, c-format
 msgid "Do you want to burn \"%s\" to a disc or add it in to the data project?"
-msgstr "Lemezre kívánja írni a(z) „%s” tartalmát vagy hozzáadja az adatprojekthez?"
+msgstr ""
+"Lemezre kívánja írni a(z) „%s” tartalmát vagy hozzáadja az adatprojekthez?"
 
-#: ../src/brasero-data-disc.c:789
+#: ../src/brasero-data-disc.c:763
 msgid ""
 "This file is the image of a disc and can therefore be burnt to disc without "
 "having to add it to a data project first."
@@ -2255,59 +2268,59 @@ msgstr ""
 "Ez egy lemez lemezképe, így anélkül írható lemezre, hogy előbb "
 "adatprojekthez kellene adnia."
 
-#: ../src/brasero-data-disc.c:791
+#: ../src/brasero-data-disc.c:765
 msgid "_Add to Project"
 msgstr "_Hozzáadás projekthez"
 
-#: ../src/brasero-data-disc.c:793 ../src/brasero-project.c:206
-#: ../src/brasero-project.c:457
+#: ../src/brasero-data-disc.c:767 ../src/brasero-project.c:208
+#: ../src/brasero-project.c:459
 msgid "_Burn..."
 msgstr "Í_rás…"
 
-#: ../src/brasero-data-disc.c:876 ../src/brasero-data-disc.c:907
-#: ../src/brasero-data-disc.c:938
+#: ../src/brasero-data-disc.c:850 ../src/brasero-data-disc.c:881
+#: ../src/brasero-data-disc.c:912
 #, c-format
 msgid "\"%s\" cannot be added to the selection."
 msgstr "A(z) „%s” nem adható a kijelöléshez."
 
-#: ../src/brasero-data-disc.c:900
+#: ../src/brasero-data-disc.c:874
 #, c-format
 msgid "\"%s\" is a recursive symlink."
 msgstr "„%s” egy rekurzív szimbolikus link."
 
-#: ../src/brasero-data-disc.c:910
+#: ../src/brasero-data-disc.c:884
 msgid "It is a recursive symlink"
 msgstr "Ez egy rekurzív szimbolikus link"
 
-#: ../src/brasero-data-disc.c:931
+#: ../src/brasero-data-disc.c:905
 #, c-format
 msgid "\"%s\" cannot be found."
 msgstr "„%s” nem található."
 
-#: ../src/brasero-data-disc.c:941
+#: ../src/brasero-data-disc.c:915
 msgid "It does not exist at the specified location"
 msgstr "Nem létezik a megadott helyen"
 
-#: ../src/brasero-data-disc.c:964
+#: ../src/brasero-data-disc.c:938
 #, c-format
 msgid "Do you really want to replace \"%s\"?"
 msgstr "Valóban le szeretné cserélni ezt: „%s”?"
 
-#: ../src/brasero-data-disc.c:972
+#: ../src/brasero-data-disc.c:946
 msgid "It already exists in the directory."
 msgstr "A(z) „%s” már létezik a könyvtárban."
 
 #. Translators: Keep means we're keeping the files that already existed
 #. * Replace means we're replacing it with a new one with the same name
-#: ../src/brasero-data-disc.c:976
+#: ../src/brasero-data-disc.c:950
 msgid "_Keep Project File"
 msgstr "_Projektfájl megtartása"
 
-#: ../src/brasero-data-disc.c:977
+#: ../src/brasero-data-disc.c:951
 msgid "_Replace Project File"
 msgstr "Projektfájl _cseréje"
 
-#: ../src/brasero-data-disc.c:1007
+#: ../src/brasero-data-disc.c:981
 #, c-format
 msgid ""
 "Do you really want to add \"%s\" to the selection and use the third version "
@@ -2316,7 +2329,7 @@ msgstr ""
 "Valóban hozzáadja a(z) „%s” elemet a kiválasztáshoz és a támogatásához az "
 "ISO9660 szabvány 3. változatát használja?"
 
-#: ../src/brasero-data-disc.c:1015
+#: ../src/brasero-data-disc.c:989
 msgid ""
 "The size of the file is over 2 GiB. Files larger than 2 GiB are not "
 "supported by ISO9660 standard in its first and second versions (the most "
@@ -2335,12 +2348,12 @@ msgstr ""
 "A MacOS X egy ismert kivétel, amely nem képes az ISO9660 szabvány harmadik "
 "változatával létrehozott lemezek olvasására."
 
-#: ../src/brasero-data-disc.c:1051
+#: ../src/brasero-data-disc.c:1025
 #, c-format
 msgid "Do you really want to add \"%s\" to the selection?"
 msgstr "Valóban hozzáadja a kijelöléshez a következőt: „%s”?"
 
-#: ../src/brasero-data-disc.c:1059
+#: ../src/brasero-data-disc.c:1033
 msgid ""
 "The children of this directory will have 7 parent directories.\n"
 "Brasero can create an image of such a file hierarchy and burn it; but the "
@@ -2354,98 +2367,99 @@ msgstr ""
 
 #. Translators: %s is a string describing the type of medium and the
 #. * drive it is in. It's a tooltip.
-#: ../src/brasero-data-disc.c:1157
+#: ../src/brasero-data-disc.c:1131
 #, c-format
 msgid "Import %s"
 msgstr "%s importálása"
 
 #. Translators: %s is the name of the volume to import. It's a menu
 #. * entry and toolbar button (text added later).
-#: ../src/brasero-data-disc.c:1164
+#: ../src/brasero-data-disc.c:1138
 #, c-format
 msgid "I_mport %s"
 msgstr "%s i_mportálása"
 
 #. Translators: This is a verb. It's a toolbar button.
-#: ../src/brasero-data-disc.c:1194
+#: ../src/brasero-data-disc.c:1168
 msgid "I_mport"
 msgstr "I_mportálás"
 
 #. Translators: %s is the name of the volume to import
-#: ../src/brasero-data-disc.c:1250
+#: ../src/brasero-data-disc.c:1224
 #, c-format
 msgid "Do you want to import the session from '%s'?"
 msgstr "Kívánja importálni a szakaszt erről: „%s”?"
 
-#: ../src/brasero-data-disc.c:1253
-msgid "That way, old files from previous sessions will be usable after burning."
+#: ../src/brasero-data-disc.c:1227
+msgid ""
+"That way, old files from previous sessions will be usable after burning."
 msgstr "Így az előző szakaszok az írás után is használhatja."
 
-#: ../src/brasero-data-disc.c:1264
+#: ../src/brasero-data-disc.c:1238
 msgid "I_mport Session"
 msgstr "Szakas_z importálása"
 
-#: ../src/brasero-data-disc.c:1265
+#: ../src/brasero-data-disc.c:1239
 msgid "Click here to import its contents"
 msgstr "Kattintson ide a tartalmának importálásához"
 
-#: ../src/brasero-data-disc.c:1685
+#: ../src/brasero-data-disc.c:1669
 msgid "Please wait while the project is loading."
 msgstr "Várjon a projekt betöltéséig."
 
-#: ../src/brasero-data-disc.c:1695
+#: ../src/brasero-data-disc.c:1679
 msgid "_Cancel Loading"
 msgstr "Betöltés _megszakítása"
 
-#: ../src/brasero-data-disc.c:1696
+#: ../src/brasero-data-disc.c:1680
 msgid "Cancel loading current project"
 msgstr "A jelenlegi projekt betöltésének megszakítása"
 
-#: ../src/brasero-data-disc.c:1729
+#: ../src/brasero-data-disc.c:1713
 msgid "Analysing files"
 msgstr "Fájlok elemzése"
 
-#: ../src/brasero-data-disc.c:1956
+#: ../src/brasero-data-disc.c:1940
 msgid "File Renaming"
 msgstr "Fájlátnevezés"
 
-#: ../src/brasero-data-disc.c:1960
+#: ../src/brasero-data-disc.c:1944
 msgid "_Rename"
 msgstr "Á_tnevezés"
 
-#: ../src/brasero-data-disc.c:1968
+#: ../src/brasero-data-disc.c:1952
 msgid "Renaming mode"
 msgstr "Átnevezési mód"
 
-#: ../src/brasero-data-disc.c:2483 ../src/brasero-video-disc.c:1189
+#: ../src/brasero-data-disc.c:2467 ../src/brasero-video-disc.c:1189
 msgid "Size"
 msgstr "Méret"
 
-#: ../src/brasero-data-disc.c:2513
+#: ../src/brasero-data-disc.c:2497
 msgid "Space"
 msgstr "Hely"
 
-#: ../src/brasero-disc-option-dialog.c:323
+#: ../src/brasero-disc-option-dialog.c:328
 msgid "Should files be renamed to be fully Windows-compatible?"
 msgstr "Átnevezi a fájlokat a Windows-kompatibilitás érdekében?"
 
-#: ../src/brasero-disc-option-dialog.c:327
+#: ../src/brasero-disc-option-dialog.c:332
 msgid "Those names should be changed and truncated to 64 characters."
 msgstr "Ezeket a neveket 64 karakteresre kell csonkítani."
 
-#: ../src/brasero-disc-option-dialog.c:332
+#: ../src/brasero-disc-option-dialog.c:337
 msgid "_Disable Full Windows Compatibility"
 msgstr "Teljes Windows-kompatibilitás _kikapcsolása"
 
-#: ../src/brasero-disc-option-dialog.c:335
+#: ../src/brasero-disc-option-dialog.c:340
 msgid "_Rename for Full Windows Compatibility"
 msgstr "Át_nevezés a Windows-kompatibilitás érdekében"
 
-#: ../src/brasero-disc-option-dialog.c:358
+#: ../src/brasero-disc-option-dialog.c:363
 msgid "Increase compatibility with _Windows systems"
 msgstr "Kompatibilitás növelése _Windows rendszerekkel"
 
-#: ../src/brasero-disc-option-dialog.c:360
+#: ../src/brasero-disc-option-dialog.c:365
 msgid ""
 "Improve compatibility with Windows systems by allowing to display long "
 "filenames (maximum 64 characters)"
@@ -2453,64 +2467,69 @@ msgstr ""
 "A kompatibilitás növelése Windows rendszerekkel a hosszú (legfeljebb 64 "
 "karakter) fájlnevek megjelenítésének lehetővé tételével"
 
-#: ../src/brasero-disc-option-dialog.c:401
+#: ../src/brasero-disc-option-dialog.c:419
+#, fuzzy
+msgid "Disc name"
+msgstr "Lemezíró"
+
+#: ../src/brasero-disc-option-dialog.c:430
 msgid "Disc options"
 msgstr "Lemezbeállítások"
 
-#: ../src/brasero-disc-option-dialog.c:556
+#: ../src/brasero-disc-option-dialog.c:585
 msgid "Video format:"
 msgstr "Videoformátum:"
 
-#: ../src/brasero-disc-option-dialog.c:568
+#: ../src/brasero-disc-option-dialog.c:597
 msgid "_NTSC"
 msgstr "_NTSC"
 
-#: ../src/brasero-disc-option-dialog.c:569
+#: ../src/brasero-disc-option-dialog.c:598
 msgid "Format used mostly on the North American Continent"
 msgstr "Leginkább az észak-amerikai kontinensen használt formátum"
 
-#: ../src/brasero-disc-option-dialog.c:583
+#: ../src/brasero-disc-option-dialog.c:612
 msgid "_PAL/SECAM"
 msgstr "_PAL/SECAM"
 
-#: ../src/brasero-disc-option-dialog.c:584
+#: ../src/brasero-disc-option-dialog.c:613
 msgid "Format used mostly in Europe"
 msgstr "Leginkább Európában használt formátum"
 
-#: ../src/brasero-disc-option-dialog.c:598
+#: ../src/brasero-disc-option-dialog.c:627
 msgid "Native _format"
 msgstr "N_atív formátum"
 
-#: ../src/brasero-disc-option-dialog.c:612
+#: ../src/brasero-disc-option-dialog.c:641
 msgid "Aspect ratio:"
 msgstr "Méretarány:"
 
-#: ../src/brasero-disc-option-dialog.c:624
+#: ../src/brasero-disc-option-dialog.c:653
 msgid "_4:3"
 msgstr "_4:3"
 
-#: ../src/brasero-disc-option-dialog.c:639
+#: ../src/brasero-disc-option-dialog.c:668
 msgid "_16:9"
 msgstr "_16:9"
 
 #. Video options for (S)VCD
-#: ../src/brasero-disc-option-dialog.c:654
+#: ../src/brasero-disc-option-dialog.c:683
 msgid "VCD type:"
 msgstr "VCD típusa:"
 
-#: ../src/brasero-disc-option-dialog.c:667
+#: ../src/brasero-disc-option-dialog.c:696
 msgid "Create a SVCD"
 msgstr "SVCD létrehozása"
 
-#: ../src/brasero-disc-option-dialog.c:682
+#: ../src/brasero-disc-option-dialog.c:711
 msgid "Create a VCD"
 msgstr "VCD létrehozása"
 
-#: ../src/brasero-disc-option-dialog.c:697
+#: ../src/brasero-disc-option-dialog.c:726
 msgid "Video Options"
 msgstr "Videobeállítások"
 
-#: ../src/brasero-disc-option-dialog.c:866
+#: ../src/brasero-disc-option-dialog.c:903
 msgid "Disc Burning Setup"
 msgstr "Lemezírás beállítása"
 
@@ -2527,6 +2546,7 @@ msgstr "Valóban ezt a helyet választja?"
 #: ../src/burn-session.c:734 ../src/burn-session.c:792
 #: ../src/plugins/cdrkit/burn-genisoimage.c:190
 #: ../src/plugins/cdrtools/burn-mkisofs.c:191
+#: ../src/plugins/libburnia/burn-libisofs.c:223
 #, c-format
 msgid "You do not have the required permission to write at this location"
 msgstr "Nincs megfelelő jogosultsága az adott hely írásához"
@@ -2618,11 +2638,11 @@ msgstr "Szabad hely az i_deiglenes könyvtárban:"
 msgid "Temporary files"
 msgstr "Ideiglenes fájlok"
 
-#: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1427
+#: ../src/brasero-file-chooser.c:217 ../src/brasero-project.c:1479
 msgid "Audio files only"
 msgstr "Csak hangfájlok"
 
-#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1436
+#: ../src/brasero-file-chooser.c:225 ../src/brasero-project.c:1488
 msgid "Movies only"
 msgstr "Csak filmek"
 
@@ -2659,35 +2679,36 @@ msgstr "*.toc lemezkép (cdrdao)"
 msgid "P_review"
 msgstr "Elő_nézet"
 
-#: ../src/brasero-layout.c:103
+#. Translators: this is an image, a picture, not a "Disc Image"
+#: ../src/brasero-layout.c:104
 msgid "Display video, audio and image preview"
 msgstr "Videó, hang és kép előnézetének megjelenítése"
 
-#: ../src/brasero-layout.c:107
+#: ../src/brasero-layout.c:108
 msgid "_Show Side Panel"
 msgstr "_Oldalpanel megjelenítése"
 
-#: ../src/brasero-layout.c:108
+#: ../src/brasero-layout.c:109
 msgid "Show a side pane along the project"
 msgstr "Az oldalpanel megjelenítése a projekt mellett"
 
-#: ../src/brasero-layout.c:122
+#: ../src/brasero-layout.c:123
 msgid "_Horizontal Layout"
 msgstr "_Vízszintes elrendezés"
 
-#: ../src/brasero-layout.c:123
+#: ../src/brasero-layout.c:124
 msgid "Set an horizontal layout"
 msgstr "Vízszintes elrendezés beállítása"
 
-#: ../src/brasero-layout.c:125
+#: ../src/brasero-layout.c:126
 msgid "_Vertical Layout"
 msgstr "_Függőleges elrendezés"
 
-#: ../src/brasero-layout.c:126
+#: ../src/brasero-layout.c:127
 msgid "Set a vertical layout"
 msgstr "Függőleges elrendezés beállítása"
 
-#: ../src/brasero-layout.c:1478
+#: ../src/brasero-layout.c:1479
 msgid "Click to close the side pane"
 msgstr "Kattintson az oldalpanel bezárásához"
 
@@ -2740,90 +2761,91 @@ msgstr ""
 "<span weight=\"bold\">Információk betöltése</span>\n"
 "a következőről: <span size=\"smaller\"><i>%s</i></span>"
 
-#: ../src/brasero-project.c:196
+#: ../src/brasero-project.c:198
 msgid "Save current project"
 msgstr "A jelenlegi projekt mentése"
 
-#: ../src/brasero-project.c:197
+#: ../src/brasero-project.c:199
 msgid "Save _As..."
 msgstr "Men_tés másként…"
 
-#: ../src/brasero-project.c:198
+#: ../src/brasero-project.c:200
 msgid "Save current project to a different location"
 msgstr "A jelenlegi projekt mentése egy másik helyre"
 
-#: ../src/brasero-project.c:199
+#: ../src/brasero-project.c:201
 msgid "_Add Files"
 msgstr "Fájlok hozzá_adása"
 
-#: ../src/brasero-project.c:200
+#: ../src/brasero-project.c:202
 msgid "Add files to the project"
 msgstr "Fájlok hozzáadása a projekthez"
 
-#: ../src/brasero-project.c:201
+#: ../src/brasero-project.c:203
 msgid "_Remove Files"
 msgstr "Fájlok e_ltávolítása"
 
 #. Translators: "empty" is a verb here
-#: ../src/brasero-project.c:204 ../src/brasero-project.c:1506
+#: ../src/brasero-project.c:206 ../src/brasero-project.c:1559
 msgid "E_mpty Project"
 msgstr "Projekt tö_rlése"
 
-#: ../src/brasero-project.c:205
+#: ../src/brasero-project.c:207
 msgid "Remove all files from the project"
 msgstr "Az összes fájl eltávolítása a projektből"
 
-#: ../src/brasero-project.c:207
+#: ../src/brasero-project.c:209
 msgid "Burn the disc"
 msgstr "Lemez írása"
 
 #. Name widget
-#: ../src/brasero-project.c:437
+#: ../src/brasero-project.c:439
 msgid "_Name:"
 msgstr "Né_v:"
 
-#: ../src/brasero-project.c:469
+#: ../src/brasero-project.c:471
 msgid "Start to burn the contents of the selection"
 msgstr "A kijelölt tartalom írásának elkezdése"
 
 #. Translators: first %s is the size of the project and the
 #. * second %s is the remaining free space on the disc that is
 #. * used for multisession
-#: ../src/brasero-project.c:611
+#: ../src/brasero-project.c:613
 #, c-format
 msgid "Project estimated size: %s/%s"
 msgstr "Projekt becsült mérete: %s/%s"
 
-#: ../src/brasero-project.c:617 ../src/brasero-project.c:745
+#: ../src/brasero-project.c:619 ../src/brasero-project.c:749
 #, c-format
 msgid "Project estimated size: %s"
 msgstr "Projekt becsült mérete: %s"
 
-#: ../src/brasero-project.c:784
+#: ../src/brasero-project.c:790
 msgid "Please wait until the estimation of the project size is completed."
 msgstr "Kis türelmet a projekt méretének megbecsléséig."
 
-#: ../src/brasero-project.c:789
-msgid "All files from the project need to be analysed to complete this operation."
+#: ../src/brasero-project.c:795
+msgid ""
+"All files from the project need to be analysed to complete this operation."
 msgstr "A projekt minden fájlját elemezni kell a művelet befejezéséhez."
 
-#: ../src/brasero-project.c:791
+#: ../src/brasero-project.c:797
 msgid "Project Size Estimation"
 msgstr "Projektméret becslése"
 
-#: ../src/brasero-project.c:878
+#: ../src/brasero-project.c:890
 msgid "Please add songs to the project."
 msgstr "Adjon számokat a projekthez."
 
-#: ../src/brasero-project.c:879 ../src/brasero-project.c:888 ../src/main.c:255
+#: ../src/brasero-project.c:891 ../src/brasero-project.c:900 ../src/main.c:255
 msgid "The project is empty"
 msgstr "A projekt üres"
 
-#: ../src/brasero-project.c:887 ../src/main.c:254
+#: ../src/brasero-project.c:899 ../src/main.c:254
 msgid "Please add files to the project."
 msgstr "Adjon fájlokat a projekthez."
 
-#: ../src/brasero-project.c:1100
+#: ../src/brasero-project.c:1140
 msgid ""
 "Do you really want to create a new project and discard the changes to "
 "current one?"
@@ -2831,19 +2853,20 @@ msgstr ""
 "Valóban létre kíván hozni egy új projektet és eldobni a jelenlegi "
 "változtatásait?"
 
-#: ../src/brasero-project.c:1105
+#: ../src/brasero-project.c:1145
 msgid "If you choose to create a new project, all changes made will be lost."
-msgstr "Ha új projekt létrehozását választja, akkor az összes változtatás elvész."
+msgstr ""
+"Ha új projekt létrehozását választja, akkor az összes változtatás elvész."
 
-#: ../src/brasero-project.c:1107
+#: ../src/brasero-project.c:1147
 msgid "_Discard Changes"
 msgstr "_Változtatások eldobása"
 
-#: ../src/brasero-project.c:1115
+#: ../src/brasero-project.c:1155
 msgid "Do you really want to create a new project and discard the current one?"
 msgstr "Valóban létre kíván hozni egy új projektet és eldobni a jelenlegit?"
 
-#: ../src/brasero-project.c:1120
+#: ../src/brasero-project.c:1160
 msgid ""
 "If you choose to create a new project, all files already added will be "
 "discarded. Note that files will not be deleted from their own location, just "
@@ -2853,19 +2876,19 @@ msgstr ""
 "eldobásra kerül. Ne feledje, hogy ezek a fájlok megmaradnak az eredeti "
 "helyükön, csak itt nem lesznek többé felsorolva."
 
-#: ../src/brasero-project.c:1125
+#: ../src/brasero-project.c:1165
 msgid "_Discard Project"
 msgstr "_Projekt eldobása"
 
-#: ../src/brasero-project.c:1385
+#: ../src/brasero-project.c:1437
 msgid "Select Files"
 msgstr "Válasszon fájlokat"
 
-#: ../src/brasero-project.c:1495
+#: ../src/brasero-project.c:1548
 msgid "Do you really want to empty the current project?"
 msgstr "Valóban ki akarja üríteni a jelenlegi projektet?"
 
-#: ../src/brasero-project.c:1500
+#: ../src/brasero-project.c:1553
 msgid ""
 "Emptying a project will remove all files already added. All the work will be "
 "lost. Note that files will not be deleted from their own location, just no "
@@ -2875,74 +2898,74 @@ msgstr ""
 "munkája elvész. Ne feledje, hogy ezek a fájlok megmaradnak az eredeti "
 "helyükön, csak itt nem lesznek többé felsorolva."
 
-#: ../src/brasero-project.c:1556
+#: ../src/brasero-project.c:1609
 msgid "_Save"
 msgstr "M_entés"
 
-#: ../src/brasero-project.c:1567
+#: ../src/brasero-project.c:1620
 msgid "_Add"
 msgstr "Hozzá_adás"
 
-#: ../src/brasero-project.c:1572 ../src/brasero-split-dialog.c:1246
+#: ../src/brasero-project.c:1625 ../src/brasero-split-dialog.c:1246
 msgid "_Remove"
 msgstr "_Eltávolítás"
 
-#: ../src/brasero-project.c:1632
+#: ../src/brasero-project.c:1685
 #, c-format
 msgid "Brasero - %s (Data Disc)"
 msgstr "Brasero – %s (adatlemez)"
 
-#: ../src/brasero-project.c:1634
+#: ../src/brasero-project.c:1687
 #, c-format
 msgid "Brasero - %s (Audio Disc)"
 msgstr "Brasero – %s (hang lemez)"
 
-#: ../src/brasero-project.c:1636
+#: ../src/brasero-project.c:1689
 #, c-format
 msgid "Brasero - %s (Video Disc)"
 msgstr "Brasero – %s (Videolemez)"
 
-#: ../src/brasero-project.c:1748
+#: ../src/brasero-project.c:1801
 msgid "Your project has not been saved."
 msgstr "A projekt nem lett elmentve."
 
-#: ../src/brasero-project.c:1762
+#: ../src/brasero-project.c:1815
 msgid "Save the changes of current project before closing?"
 msgstr "Menti a jelenlegi projekt módosításait bezárás előtt?"
 
-#: ../src/brasero-project.c:1767
+#: ../src/brasero-project.c:1820
 msgid "If you don't save, changes will be permanently lost."
 msgstr "Ha nem ment, akkor a változtatások véglegesen elvesznek."
 
-#: ../src/brasero-project.c:1771 ../src/brasero-project.c:1777
+#: ../src/brasero-project.c:1824 ../src/brasero-project.c:1830
 msgid "Cl_ose Without Saving"
 msgstr "_Bezárás mentés nélkül"
 
-#: ../src/brasero-project.c:2396
+#: ../src/brasero-project.c:2449
 msgid "Save Current Project"
 msgstr "Jelenlegi projekt mentése"
 
-#: ../src/brasero-project.c:2414
+#: ../src/brasero-project.c:2467
 msgid "Save project as Brasero audio project"
 msgstr "Projekt mentése Brasero hangprojektként"
 
-#: ../src/brasero-project.c:2415
+#: ../src/brasero-project.c:2468
 msgid "Save project as a plain text list"
 msgstr "Projekt mentése egyszerű szöveges listaként"
 
-#: ../src/brasero-project.c:2419
+#: ../src/brasero-project.c:2472
 msgid "Save project as a PLS playlist"
 msgstr "Projekt mentése PLS lejátszólistaként"
 
-#: ../src/brasero-project.c:2420
+#: ../src/brasero-project.c:2473
 msgid "Save project as an M3U playlist"
 msgstr "Projekt mentése M3U lejátszólistaként"
 
-#: ../src/brasero-project.c:2421
+#: ../src/brasero-project.c:2474
 msgid "Save project as a XSPF playlist"
 msgstr "Projekt mentése XSPF lejátszólistaként"
 
-#: ../src/brasero-project.c:2422
+#: ../src/brasero-project.c:2475
 msgid "Save project as an IRIVER playlist"
 msgstr "Projekt mentése IRIVER lejátszólistaként"
 
@@ -2976,7 +2999,8 @@ msgstr "Új _hangprojekt"
 
 #: ../src/brasero-project-manager.c:109
 #: ../src/brasero-project-type-chooser.c:73
-msgid "Create a traditional audio CD that will be playable on computers and stereos"
+msgid ""
+"Create a traditional audio CD that will be playable on computers and stereos"
 msgstr ""
 "Számítógépen és normál lejátszókon lejátszható hagyományos hang CD "
 "létrehozása"
@@ -3034,91 +3058,91 @@ msgstr "_Megnyitás…"
 msgid "Open a project"
 msgstr "Projekt megnyitása"
 
-#: ../src/brasero-project-manager.c:261
+#: ../src/brasero-project-manager.c:259
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d fájl kijelölve (%s)"
 msgstr[1] "%d fájl kijelölve (%s)"
 
-#: ../src/brasero-project-manager.c:271
+#: ../src/brasero-project-manager.c:269
 #, c-format
 msgid "%d file is supported (%s)"
 msgid_plural "%d files are supported (%s)"
 msgstr[0] "%d támogatott fájl (%s)"
 msgstr[1] "%d támogatott fájl (%s)"
 
-#: ../src/brasero-project-manager.c:277
+#: ../src/brasero-project-manager.c:275
 #, c-format
 msgid "%d file can be added (%s)"
 msgid_plural "%d selected files can be added (%s)"
 msgstr[0] "%d fájl vehető fel (%s)"
 msgstr[1] "%d fájl vehető fel (%s)"
 
-#: ../src/brasero-project-manager.c:288
+#: ../src/brasero-project-manager.c:286
 #, c-format
 msgid "No file can be added (%i selected file)"
 msgid_plural "No file can be added (%i selected files)"
 msgstr[0] "Nem vehető fel egy fájl sem (%i kijelölt fájl)"
 msgstr[1] "Nem vehető fel egy fájl sem (%i kijelölt fájl)"
 
-#: ../src/brasero-project-manager.c:293
+#: ../src/brasero-project-manager.c:291
 #, c-format
 msgid "No file is supported (%i selected file)"
 msgid_plural "No file is supported (%i selected files)"
 msgstr[0] "Egy fájl sem támogatott (%i kijelölt fájl)"
 msgstr[1] "Egy fájl sem támogatott (%i kijelölt fájl)"
 
-#: ../src/brasero-project-manager.c:299 ../src/brasero-project-manager.c:458
+#: ../src/brasero-project-manager.c:297 ../src/brasero-project-manager.c:456
 msgid "No file selected"
 msgstr "Nincs fájl kiválasztva"
 
-#: ../src/brasero-project-manager.c:569
+#: ../src/brasero-project-manager.c:561
 msgid "Brasero - New Audio Disc Project"
 msgstr "Brasero – Új hang lemez projekt"
 
-#: ../src/brasero-project-manager.c:583
+#: ../src/brasero-project-manager.c:575
 msgid "Brasero - New Data Disc Project"
 msgstr "Brasero – Új adatlemez projekt"
 
-#: ../src/brasero-project-manager.c:597
+#: ../src/brasero-project-manager.c:589
 msgid "Brasero - New Video Disc Project"
 msgstr "Brasero – Új videolemez projekt"
 
-#: ../src/brasero-project-manager.c:607
+#: ../src/brasero-project-manager.c:599
 msgid "Brasero - New Image File"
 msgstr "Brasero – Új lemezkép"
 
-#: ../src/brasero-project-manager.c:624
+#: ../src/brasero-project-manager.c:616
 msgid "Brasero - Disc Copy"
 msgstr "Brasero – CD másolása"
 
-#: ../src/brasero-project-manager.c:915
+#: ../src/brasero-project-manager.c:912
 #, c-format
 msgid "The project \"%s\" does not exist"
 msgstr "A projekt („%s”) nem létezik"
 
-#: ../src/brasero-project-manager.c:941
+#: ../src/brasero-project-manager.c:938
 msgid "Open Project"
 msgstr "Projekt megnyitása"
 
-#: ../src/brasero-project-manager.c:1060
+#: ../src/brasero-project-manager.c:1048
 msgid "_New"
 msgstr "Ú_j"
 
-#: ../src/brasero-project-manager.c:1064
+#: ../src/brasero-project-manager.c:1052
 msgid "_Open"
 msgstr "_Megnyitás"
 
-#: ../src/brasero-project-manager.c:1115
+#: ../src/brasero-project-manager.c:1103
 msgid "Browse the file system"
 msgstr "A fájlrendszer tallózása"
 
-#: ../src/brasero-project-manager.c:1138
+#: ../src/brasero-project-manager.c:1126
 msgid "Search files using keywords"
 msgstr "Fájlok keresése kulcsszavak használatával"
 
-#: ../src/brasero-project-manager.c:1158
+#: ../src/brasero-project-manager.c:1146
 msgid "Display playlists and their contents"
 msgstr "Lejátszólisták és tartalmuk megjelenítése"
 
@@ -3397,8 +3421,8 @@ msgstr "Lehetetlen formátumot találni az ideiglenes lemezképhez"
 #. * ("grafted")
 #: ../src/burn.c:2589 ../src/burn-caps.c:131 ../src/burn-caps.c:1374
 #: ../src/burn-job.c:1226 ../src/burn-job.c:1235
-#: ../src/burn-mkisofs-base.c:297 ../src/main.c:211 ../src/main.c:237
-#: ../src/plugins/cdrkit/burn-genisoimage.c:359
+#: ../src/burn-mkisofs-base.c:303 ../src/main.c:211 ../src/main.c:237
+#: ../src/plugins/cdrkit/burn-genisoimage.c:360
 #: ../src/plugins/cdrkit/burn-readom.c:111
 #: ../src/plugins/cdrkit/burn-readom.c:321
 #: ../src/plugins/cdrkit/burn-wodim.c:654
@@ -3406,7 +3430,7 @@ msgstr "Lehetetlen formátumot találni az ideiglenes lemezképhez"
 #: ../src/plugins/cdrkit/burn-wodim.c:779
 #: ../src/plugins/cdrtools/burn-cdrecord.c:749
 #: ../src/plugins/cdrtools/burn-cdrecord.c:762
-#: ../src/plugins/cdrtools/burn-mkisofs.c:360
+#: ../src/plugins/cdrtools/burn-mkisofs.c:361
 #: ../src/plugins/cdrtools/burn-readcd.c:111
 #: ../src/plugins/cdrtools/burn-readcd.c:331
 #, c-format
@@ -3468,15 +3492,15 @@ msgstr "„%s” már létezik"
 msgid "An internal error occured (%s)"
 msgstr "Belső hiba történt (%s)"
 
-#: ../src/burn-mkisofs-base.c:149 ../src/burn-mkisofs-base.c:432
-#: ../src/plugins/growisofs/burn-growisofs.c:513
-#: ../src/plugins/libburnia/burn-libisofs.c:659
+#: ../src/burn-mkisofs-base.c:154 ../src/burn-mkisofs-base.c:586
+#: ../src/plugins/growisofs/burn-growisofs.c:514
+#: ../src/plugins/libburnia/burn-libisofs.c:669
 #: ../src/plugins/checksum/burn-checksum-image.c:274
 #, c-format
 msgid "The file is not stored locally"
 msgstr "A fájl nem helyileg van tárolva"
 
-#: ../src/burn-mkisofs-base.c:566
+#: ../src/burn-mkisofs-base.c:722
 #, c-format
 msgid "VIDEO_TS directory is missing or invalid"
 msgstr "A VIDEO_TS könyvtár hiányzik vagy érvénytelen"
@@ -3595,19 +3619,19 @@ msgstr "A szülőablak XID-je"
 msgid "Display debug statements on stdout"
 msgstr "Hibajelentések megjelenítése a szabványos kimeneten"
 
-#: ../src/main.c:348
+#: ../src/main.c:350
 msgid "Incompatible command line options used."
 msgstr "Összeférhetetlen parancssori kapcsolókat használt."
 
-#: ../src/main.c:349
+#: ../src/main.c:351
 msgid "Only one option can be given at a time"
 msgstr "Egyszerre csak egy kapcsoló adható meg"
 
-#: ../src/main.c:505
+#: ../src/main.c:507
 msgid "[URI] [URI] ..."
 msgstr "[URI] [URI] …"
 
-#: ../src/main.c:516
+#: ../src/main.c:518
 #, c-format
 msgid "Please type %s --help to see all available options\n"
 msgstr "Az összes kapcsoló megjelenítéséhez adja ki a %s --help parancsot\n"
@@ -3627,7 +3651,7 @@ msgstr "%02i. sáv elemzése"
 
 #. Translators: %s is a filename
 #: ../src/plugins/cdrdao/burn-cdrdao.c:199
-#: ../src/plugins/growisofs/burn-growisofs.c:493
+#: ../src/plugins/growisofs/burn-growisofs.c:494
 #, c-format
 msgid "\"%s\" could not be found"
 msgstr "„%s” nem található"
@@ -3635,7 +3659,8 @@ msgstr "„%s” nem található"
 #: ../src/plugins/cdrdao/burn-cdrdao.c:237
 #, c-format
 msgid "Your version of cdrdao does not seem to be supported by libbrasero"
-msgstr "Úgy tűnik, hogy a cdrdao telepített verzióját nem támogatja a libbrasero"
+msgstr ""
+"Úgy tűnik, hogy a cdrdao telepített verzióját nem támogatja a libbrasero"
 
 #: ../src/plugins/cdrdao/burn-cdrdao.c:243
 #: ../src/plugins/cdrkit/burn-readom.c:98
@@ -3669,7 +3694,7 @@ msgstr "A toc2cue a .toc fájlokat .cue fájlokká alakítja"
 #: ../src/plugins/cdrkit/burn-genisoimage.c:110
 #: ../src/plugins/cdrtools/burn-mkisofs.c:111
 #: ../src/plugins/growisofs/burn-growisofs.c:193
-#: ../src/plugins/libburnia/burn-libisofs.c:474
+#: ../src/plugins/libburnia/burn-libisofs.c:484
 #, c-format
 msgid "Last session import failed"
 msgstr "Az utolsó szakasz importálása meghiúsult"
@@ -3704,9 +3729,10 @@ msgstr "Ismeretlen karakterkódolás"
 msgid "There is no space left on the device"
 msgstr "Nincs több hely az eszközön"
 
-#: ../src/plugins/cdrkit/burn-genisoimage.c:518
+#: ../src/plugins/cdrkit/burn-genisoimage.c:519
 msgid "Use genisoimage to create images from a file selection"
-msgstr "A genisoimage használható lemezképek készítésére kiválasztott fájlokból"
+msgstr ""
+"A genisoimage használható lemezképek készítésére kiválasztott fájlokból"
 
 #: ../src/plugins/cdrkit/burn-readom.c:401
 msgid "Use readom to create disc images"
@@ -3723,7 +3749,8 @@ msgstr "Hiba történt a lemezre írás során"
 #: ../src/plugins/cdrkit/burn-wodim.c:113
 #: ../src/plugins/cdrtools/burn-cdrecord.c:113
 #, c-format
-msgid "The system is too slow to write the disc at this speed. Try a lower speed"
+msgid ""
+"The system is too slow to write the disc at this speed. Try a lower speed"
 msgstr ""
 "A rendszer túl lassú a lemez írásához az adott sebességen. Próbálkozzon "
 "alacsonyabb sebességen."
@@ -3777,7 +3804,7 @@ msgstr ""
 msgid "This version of mkisofs is not supported"
 msgstr "Az mkisofs ezen verziója nem támogatott"
 
-#: ../src/plugins/cdrtools/burn-mkisofs.c:525
+#: ../src/plugins/cdrtools/burn-mkisofs.c:526
 msgid "Use mkisofs to create image from a file selection"
 msgstr "Az mkisofs használható lemezképek készítésére fájlokból"
 
@@ -3848,11 +3875,11 @@ msgstr "A Dvdcss lehetővé teszi css-sel titkosított videó DVD-k olvasását"
 msgid "Dvd+rw-format erases and formats DVD+/-R(W)"
 msgstr "A dvd+rw-format törli és formázza a DVD+/-R(W) lemezeket"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:729
+#: ../src/plugins/growisofs/burn-growisofs.c:732
 msgid "Growisofs burns DVDs"
 msgstr "A growisofs DVD-ket ír"
 
-#: ../src/plugins/growisofs/burn-growisofs.c:950
+#: ../src/plugins/growisofs/burn-growisofs.c:962
 msgid "Allow DAO use"
 msgstr "A DAO használatának engedélyezése"
 
@@ -3891,48 +3918,50 @@ msgstr "A meghajtó címe nem kérhető le"
 msgid "Writing track %02i"
 msgstr "%02i. sáv írása"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:309
-#: ../src/plugins/libburnia/burn-libisofs.c:840
+#: ../src/plugins/libburnia/burn-libisofs.c:312
+#: ../src/plugins/libburnia/burn-libisofs.c:850
 #, c-format
 msgid "Libisofs could not be initialized."
 msgstr "A Libisofs nem készíthető elő."
 
-#: ../src/plugins/libburnia/burn-libisofs.c:451
+#: ../src/plugins/libburnia/burn-libisofs.c:461
 #, c-format
 msgid "Read options could not be created"
 msgstr "Nem lehet létrehozni olvasási beállításokat"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:527
+#: ../src/plugins/libburnia/burn-libisofs.c:537
 #, c-format
 msgid "Volume could not be created"
 msgstr "Nem lehet létrehozni a kötetet"
 
 #. Translators: %s is the path
-#: ../src/plugins/libburnia/burn-libisofs.c:636
+#: ../src/plugins/libburnia/burn-libisofs.c:646
 #, c-format
 msgid "No parent could be found in the tree for the path \"%s\""
 msgstr "Az útvonal („%s”) szülője nem található a fában"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:701
-#: ../src/plugins/libburnia/burn-libisofs.c:767
+#: ../src/plugins/libburnia/burn-libisofs.c:711
+#: ../src/plugins/libburnia/burn-libisofs.c:777
 #, c-format
 msgid "Libisofs reported an error while creating directory \"%s\""
 msgstr "A libisofs hibát jelzett a következő könyvtár létrehozásakor: „%s”"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:716
+#: ../src/plugins/libburnia/burn-libisofs.c:726
 #, c-format
-msgid "Libisofs reported an error while adding contents to directory \"%s\" (%x)"
+msgid ""
+"Libisofs reported an error while adding contents to directory \"%s\" (%x)"
 msgstr ""
 "A libisofs hibát jelzett a tartalom a következő könyvtárhoz adásakor: „%s” (%"
 "x)"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:738
-#: ../src/plugins/libburnia/burn-libisofs.c:754
+#: ../src/plugins/libburnia/burn-libisofs.c:748
+#: ../src/plugins/libburnia/burn-libisofs.c:764
 #, c-format
 msgid "Libisofs reported an error while adding file at path \"%s\""
-msgstr "A libisofs hibát jelzett egy fájl hozzáadásakor a következő útvonalon: „%s”"
+msgstr ""
+"A libisofs hibát jelzett egy fájl hozzáadásakor a következő útvonalon: „%s”"
 
-#: ../src/plugins/libburnia/burn-libisofs.c:1007
+#: ../src/plugins/libburnia/burn-libisofs.c:1017
 msgid "Libisofs creates disc images from files"
 msgstr "A libisofs lemezképeket hoz létre fájlokból"
 
@@ -4013,7 +4042,8 @@ msgstr "„%s” átkódolása"
 
 #: ../src/plugins/transcode/burn-transcode.c:1608
 msgid "Transcode converts song files into a format proper to burn them on CDs"
-msgstr "A transcode a hangfájlokat CD-re íráshoz megfelelő formátumúvá alakítja"
+msgstr ""
+"A transcode a hangfájlokat CD-re íráshoz megfelelő formátumúvá alakítja"
 
 #: ../src/brasero-preview.c:170
 msgid "Preview"
@@ -4211,15 +4241,11 @@ msgstr "Cdrtools íróprogramcsomag"
 msgid "The size could not be retrieved (%s)"
 msgstr "A méret nem kérhető le (%s)"
 
-#: ../src/brasero-data-tree-model.c:513
+#: ../src/brasero-data-tree-model.c:514
 msgid "Disc file"
 msgstr "Lemezfájl"
 
-#: ../src/brasero-data-tree-model.c:589
-msgid "1 item"
-msgstr "1 elem"
-
-#: ../src/brasero-data-tree-model.c:593
+#: ../src/brasero-data-tree-model.c:592
 #, c-format
 msgid "%d item"
 msgid_plural "%d items"
@@ -4261,11 +4287,14 @@ msgstr "kattintson a „Hozzáadás” gombra a kiválasztó panel megjeleníté
 
 #: ../src/brasero-disc.c:654
 msgid "select files in the selection pane and click the \"Add\" button"
-msgstr "válasszon ki fájlokat a kiválasztó panelen és kattintson a „Hozzáadás” gombra"
+msgstr ""
+"válasszon ki fájlokat a kiválasztó panelen és kattintson a „Hozzáadás” gombra"
 
 #: ../src/brasero-disc.c:655
-msgid "drag files in this area from the selection pane or from the file manager"
-msgstr "húzzon fájlokat erről a területről vagy a fájlkezelőből a kiválasztó panelre"
+msgid ""
+"drag files in this area from the selection pane or from the file manager"
+msgstr ""
+"húzzon fájlokat erről a területről vagy a fájlkezelőből a kiválasztó panelre"
 
 #: ../src/brasero-disc.c:656
 msgid "double click on files in the selection pane"
@@ -4291,7 +4320,8 @@ msgstr "húzza ki az elemeket erről a területről"
 
 #: ../src/brasero-disc.c:663
 msgid "select items in this area, and choose \"Remove\" from context menu"
-msgstr "válasszon ki elemeket és válassza a felbukkanó menü Eltávolítás pontját"
+msgstr ""
+"válasszon ki elemeket és válassza a felbukkanó menü Eltávolítás pontját"
 
 #: ../src/brasero-disc.c:664
 msgid "select items in this area, and press \"Delete\" key"
@@ -4335,8 +4365,8 @@ msgstr "Olvashatatlan fájl"
 msgid "Broken symbolic link"
 msgstr "Törött szimbolikus link"
 
-#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1073
-#: ../src/brasero-io.c:1952
+#: ../src/brasero-file-filtered.c:189 ../src/brasero-io.c:1080
+#: ../src/brasero-io.c:1959
 #, c-format
 msgid "Recursive symbolic link"
 msgstr "Rekurzív szimbolikus link"
@@ -4346,8 +4376,10 @@ msgid "Filter Options"
 msgstr "Szűrési beállítások"
 
 #: ../src/brasero-file-filtered.c:488
-msgid "Select the files you want to restore and click on the \"Restore\" button"
-msgstr "Válassza ki a helyreállítandó fájlokat és kattintson a „Helyreállítás” gombra"
+msgid ""
+"Select the files you want to restore and click on the \"Restore\" button"
+msgstr ""
+"Válassza ki a helyreállítandó fájlokat és kattintson a „Helyreállítás” gombra"
 
 #: ../src/brasero-file-filtered.c:537
 msgid "Type"
@@ -4390,12 +4422,12 @@ msgstr "Szűrési beállítások"
 msgid "\"%s\" cannot be read"
 msgstr "„%s” nem olvasható"
 
-#: ../src/brasero-io.c:1306
+#: ../src/brasero-io.c:1313
 #, c-format
 msgid "The file does not appear to be a playlist"
 msgstr "A fájl nem tűnik lejátszólistának"
 
-#: ../src/brasero-io.c:2415
+#: ../src/brasero-io.c:2422
 #, c-format
 msgid "A directory could not be created (%s)"
 msgstr "Nem lehet létrehozni a könyvtárat (%s)"
@@ -4484,88 +4516,95 @@ msgstr "Lemezkép-ellenőrzőösszeg"
 msgid "Allows to check data integrity on disc after it is burnt"
 msgstr "Lehetővé teszi a frissen lemezre írt adatok épségének ellenőrzését"
 
-#: ../src/brasero-jacket-background.c:160
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:162
 msgid "Images"
 msgstr "Képek"
 
-#: ../src/brasero-jacket-background.c:184
+#: ../src/brasero-jacket-background.c:186
 msgid "_Color"
 msgstr "_Szín"
 
-#: ../src/brasero-jacket-background.c:213
+#: ../src/brasero-jacket-background.c:215
 msgid "Solid color"
 msgstr "Homogén szín"
 
-#: ../src/brasero-jacket-background.c:214
+#: ../src/brasero-jacket-background.c:216
 msgid "Horizontal gradient"
 msgstr "Vízszintes színátmenet"
 
-#: ../src/brasero-jacket-background.c:215
+#: ../src/brasero-jacket-background.c:217
 msgid "Vertical gradient"
 msgstr "Függőleges színátmenet"
 
 #. second part
-#: ../src/brasero-jacket-background.c:231
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:234
 msgid "_Image"
 msgstr "_Képfájl"
 
-#: ../src/brasero-jacket-background.c:255
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:259
 msgid "Image path:"
 msgstr "Kép útvonala:"
 
-#: ../src/brasero-jacket-background.c:266
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:271
 msgid "Choose an image"
 msgstr "Válasszon egy képet"
 
-#: ../src/brasero-jacket-background.c:276
+#. Translators: This is an image, a picture, not a "Disc Image"
+#: ../src/brasero-jacket-background.c:282
 msgid "Image style:"
 msgstr "Kép stílusa:"
 
-#: ../src/brasero-jacket-background.c:290
+#: ../src/brasero-jacket-background.c:296
 msgid "Centered"
 msgstr "Középre helyezett"
 
-#: ../src/brasero-jacket-background.c:291
+#: ../src/brasero-jacket-background.c:297
 msgid "Tiled"
 msgstr "Mozaik"
 
-#: ../src/brasero-jacket-background.c:292
+#: ../src/brasero-jacket-background.c:298
 msgid "Scaled"
 msgstr "Kifeszített"
 
-#: ../src/brasero-jacket-background.c:329
+#: ../src/brasero-jacket-background.c:335
 msgid "Background Properties"
 msgstr "Háttér tulajdonságai"
 
-#: ../src/brasero-jacket-view.c:737
+#: ../src/brasero-jacket-view.c:740
 msgid "Set Bac_kground Properties"
 msgstr "_Háttér tulajdonságainak beállítása"
 
-#: ../src/brasero-jacket-view.c:778
+#: ../src/brasero-jacket-view.c:781
 msgid "SIDES"
 msgstr "OLDAL"
 
-#: ../src/brasero-jacket-view.c:794
+#: ../src/brasero-jacket-view.c:797
 msgid "BACK COVER"
 msgstr "HÁTLAP"
 
-#: ../src/brasero-jacket-view.c:811
+#: ../src/brasero-jacket-view.c:814
 msgid "FRONT COVER"
 msgstr "ELŐLAP"
 
-#: ../src/brasero-jacket-view.c:1095
+#. Translators: This is an image,
+#. * a picture, not a "Disc Image"
+#: ../src/brasero-jacket-view.c:1100
 msgid "The image could not be loaded."
 msgstr "A kép nem tölthető be."
 
-#: ../src/brasero-jacket-edit.c:561
+#: ../src/brasero-jacket-edit.c:571
 msgid "Bac_kground Properties"
 msgstr "_Háttér tulajdonságai"
 
-#: ../src/brasero-jacket-edit.c:658
+#: ../src/brasero-jacket-edit.c:668
 msgid "_Text Color"
 msgstr "Szö_vegszín"
 
-#: ../src/brasero-jacket-edit.c:820
+#: ../src/brasero-jacket-edit.c:827
 msgid "Unknown song"
 msgstr "Ismeretlen szám"
 
@@ -4577,11 +4616,11 @@ msgstr "Ismeretlen szám"
 #. * Before it there is the name of the song.
 #. * I had to break it because it is in a GtkTextBuffer
 #. * and every word has a different tag.
-#: ../src/brasero-jacket-edit.c:843
+#: ../src/brasero-jacket-edit.c:850
 msgid "by"
 msgstr "előadó:"
 
-#: ../src/brasero-jacket-edit.c:903
+#: ../src/brasero-jacket-edit.c:913
 msgid "Cover Editor"
 msgstr "Borítószerkesztő"
 
@@ -4648,7 +4687,6 @@ msgstr "Minden előfordulás törlése"
 
 #. Translators: this is a verb
 #: ../src/brasero-rename.c:342
-#| msgid "_Replace Disc"
 msgid "_Replace"
 msgstr "_Cserélje ezt:"
 
@@ -4715,7 +4753,8 @@ msgid "Converting video file to MPEG2"
 msgstr "Videofájl átalakítása MPEG2-vé"
 
 #: ../src/plugins/transcode/burn-vob.c:1216
-msgid "Vob allows to transcode any video file to a format suitable for video DVDs"
+msgid ""
+"Vob allows to transcode any video file to a format suitable for video DVDs"
 msgstr ""
 "A Vob lehetővé teszi tetszőleges formátumú videofájlok átkódolását video DVD-"
 "khez megfelelő formátumra"
@@ -4732,3 +4771,5 @@ msgstr "CD-k és DVD-k másolása"
 msgid "Disc Copier"
 msgstr "Lemezmásoló"
 
+#~ msgid "1 item"
+#~ msgstr "1 elem"
