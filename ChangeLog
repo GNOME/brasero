@@ -1,5 +1,14 @@
 2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Don't forget to mangle joliet names for fake directories
+
+	* src/burn-mkisofs-base.c (brasero_mkisofs_base_clean),
+	(brasero_mkisofs_base_mangle_joliet_name), (_foreach_write_grafts),
+	(brasero_mkisofs_base_write_grafts),
+	(brasero_mkisofs_base_empty_directory):
+
+2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Post release build fix when building without totem-pl-parser
 
 	* src/main.c (brasero_app_open_project):

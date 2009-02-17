@@ -63,8 +63,6 @@ struct _BraseroMkisofsBase {
 typedef struct _BraseroMkisofsBase BraseroMkisofsBase;
 
 struct _BraseroWriteGraftData {
-	GHashTable *joliet;
-
 	BraseroMkisofsBase *base;
 	GError **error;
 };
@@ -81,6 +79,8 @@ brasero_mkisofs_base_clean (BraseroMkisofsBase *base)
 		close (base->grafts_fd);
 	if (base->excluded_fd)
 		close (base->excluded_fd);
+	if (base->joliet)
+		g_hash_table_destroy (base->joliet);
 
 	if (base->grafts) {
 		g_hash_table_destroy (base->grafts);
@@ -384,6 +384,7 @@ brasero_mkisofs_base_mangle_joliet_name (GHashTable *joliet,
 		if (has_slash)
 			strcat (buffer, G_DIR_SEPARATOR_S);
 
+		BRASERO_BURN_LOG ("Mangled name to %s (truncated)", buffer);
 		return joliet;
 	}
 
@@ -395,6 +396,7 @@ brasero_mkisofs_base_mangle_joliet_name (GHashTable *joliet,
 		if (has_slash)
 			strcat (buffer, G_DIR_SEPARATOR_S);
 
+		BRASERO_BURN_LOG ("Mangled name to %s (truncated)", buffer);
 		return joliet;
 	}
 
@@ -419,6 +421,7 @@ brasero_mkisofs_base_mangle_joliet_name (GHashTable *joliet,
 	if (has_slash)
 		strcat (buffer, G_DIR_SEPARATOR_S);
 
+	BRASERO_BURN_LOG ("Mangled name to %s", buffer);
 	return joliet;
 }
 
@@ -448,9 +451,9 @@ _foreach_write_grafts (const gchar *uri,
 		}
 
 		if (data->base->use_joliet) {
-			data->joliet = brasero_mkisofs_base_mangle_joliet_name (data->joliet,
-										graft->path,
-										buffer);
+			data->base->joliet = brasero_mkisofs_base_mangle_joliet_name (data->base->joliet,
+										      graft->path,
+										      buffer);
 			path = buffer;
 		}
 		else
@@ -476,14 +479,10 @@ brasero_mkisofs_base_write_grafts (BraseroMkisofsBase *base,
 
 	callback_data.error = error;
 	callback_data.base = base;
-	callback_data.joliet = NULL;
 
 	result = g_hash_table_find (base->grafts,
 				    (GHRFunc) _foreach_write_grafts,
 				    &callback_data);
-
-	if (callback_data.joliet)
-		g_hash_table_destroy (callback_data.joliet);
 
 	if (result)
 		return BRASERO_BURN_ERR;
@@ -497,11 +496,22 @@ brasero_mkisofs_base_empty_directory (BraseroMkisofsBase *base,
 				      GError **error)
 {
 	BraseroBurnResult result;
+	gchar buffer [MAXPATHLEN];
 	gchar *graft_point;
+	const gchar *path;
 
-	/* This a special case for uri = NULL; that
-	 * is treated as if it were a directory */
-	graft_point = _build_graft_point (base->emptydir, disc_path);
+	/* Mangle the name in case joliet is required */
+	if (base->use_joliet) {
+		base->joliet = brasero_mkisofs_base_mangle_joliet_name (base->joliet,
+									disc_path,
+									buffer);
+		path = buffer;
+	}
+	else
+		path = disc_path;
+
+	/* Special case for uri = NULL; that is treated as if it were a directory */
+	graft_point = _build_graft_point (base->emptydir, path);
 	result = _write_line (base->grafts_fd, graft_point, error);
 	g_free (graft_point);
 
