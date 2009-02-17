@@ -586,8 +586,6 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 			nb_items = brasero_file_node_get_n_children (node);
 			if (!nb_items)
 				g_value_set_string (value, _("Empty"));
-			else if (nb_items == 1)
-				g_value_set_string (value, _("1 item"));
 			else {
 				gchar *text;
 
