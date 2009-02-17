@@ -1,5 +1,13 @@
 2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Don't leak GFileInfo when the path already exists in the graft path list
+	(Introduced by recent changes)
+
+	* src/plugins/local-track/burn-uri.c
+	(brasero_burn_uri_explore_directory):
+
+2009-02-17  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix typo that broke symlinks handling (regular files/directories were
 	seen as symlinks)
 

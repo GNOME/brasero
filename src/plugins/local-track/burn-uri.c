@@ -149,6 +149,7 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 			disc_path = g_build_filename (path, g_file_info_get_name (info), G_DIR_SEPARATOR_S, NULL);
 			if (g_slist_find_custom (current_grafts, disc_path, (GCompareFunc) brasero_burn_uri_find_graft)) {
 				BRASERO_JOB_LOG (self, "Graft already in list %s", disc_path);
+				g_object_unref (info);
 				g_free (disc_path);
 				continue;
 			}
@@ -201,6 +202,7 @@ brasero_burn_uri_explore_directory (BraseroBurnURI *self,
 			disc_path = g_build_filename (path, g_file_info_get_name (info), NULL);
 			if (g_slist_find_custom (current_grafts, disc_path, (GCompareFunc) brasero_burn_uri_find_graft)) {
 				BRASERO_JOB_LOG (self, "Graft already in list %s", disc_path);
+				g_object_unref (info);
 				g_free (disc_path);
 				continue;
 			}
