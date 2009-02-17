@@ -286,9 +286,14 @@ brasero_app_open_project (BraseroApp *app,
 	uri = g_file_get_uri (file);
 	g_object_unref (file);
 
+#ifdef BUILD_PLAYLIST
+
 	if (playlist)
 		type = brasero_project_open_audio_playlist_project (uri, &track, TRUE);
 	else
+
+#endif
+		
 		type = brasero_project_open_project_xml (uri, &track, TRUE);
 
 	if (type == BRASERO_PROJECT_TYPE_INVALID)
