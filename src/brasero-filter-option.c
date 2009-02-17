@@ -143,7 +143,7 @@ brasero_filter_option_init (BraseroFilterOption *object)
 
 	/* replace symlink */
 	active = gconf_client_get_bool (priv->client,
-					BRASERO_FILTER_BROKEN_SYM_KEY,
+					BRASERO_REPLACE_SYMLINK_KEY,
 					NULL);
 
 	button_sym = gtk_check_button_new_with_mnemonic (_("Re_place symlinks"));
@@ -208,6 +208,11 @@ brasero_filter_option_finalize (GObject *object)
 	BraseroFilterOptionPrivate *priv;
 
 	priv = BRASERO_FILTER_OPTION_PRIVATE (object);
+
+	if (priv->sym_notify) {
+		gconf_client_notify_remove (priv->client, priv->sym_notify);
+		priv->sym_notify = 0;
+	}
 
 	if (priv->hidden_notify) {
 		gconf_client_notify_remove (priv->client,
