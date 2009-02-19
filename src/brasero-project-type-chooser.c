@@ -85,7 +85,7 @@ static ItemDescription items [] = {
 	BRASERO_PROJECT_TYPE_VIDEO},
        {N_("Disc _copy"),
 	N_("Create 1:1 copy of a CD/DVD"),
-	N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"),
+	N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"),
 	"media-optical-copy",
 	BRASERO_PROJECT_TYPE_COPY},
        {N_("Burn _image"),

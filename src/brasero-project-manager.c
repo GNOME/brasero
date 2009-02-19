@@ -112,7 +112,7 @@ static GtkActionEntry entries [] = {
 	{"NewVideo", "media-optical-video-new", N_("New _Video Project"), NULL,
 	 N_("Create a video DVD or a SVCD that are readable on TV readers"), G_CALLBACK (brasero_project_manager_new_video_prj_cb)},
 	{"NewCopy", "media-optical-copy", N_("Copy _Disc..."), NULL,
-	 N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hardisk or on another CD/DVD"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
+	 N_("Create a 1:1 copy of an audio CD or a data CD/DVD on your hard disk or on another CD/DVD"), G_CALLBACK (brasero_project_manager_new_copy_prj_cb)},
 	{"NewIso", "iso-image-burn", N_("_Burn Image..."), NULL,
 	 N_("Burn an existing CD/DVD image to disc"), G_CALLBACK (brasero_project_manager_new_iso_prj_cb)},
 
