@@ -1,5 +1,14 @@
 2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Avoid a race condition with dbus. Initialize drive name right from the start
+	so we don't use dbus from a thread now.
+
+	* libbrasero-media/brasero-drive.c
+	(brasero_drive_get_display_name), (brasero_drive_finalize),
+	(brasero_drive_init_real):
+
+2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	reviewed by: <delete if not using a buddy>
 
 	* libbrasero-media/brasero-drive.c

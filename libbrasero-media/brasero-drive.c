@@ -65,6 +65,7 @@ struct _BraseroDrivePrivate
 {
 	BraseroMedium *medium;
 	BraseroDriveCaps caps;
+	gchar *name;
 	gchar *path;
 	gchar *block_path;
 	gchar *udi;
@@ -494,8 +495,6 @@ gchar *
 brasero_drive_get_display_name (BraseroDrive *drive)
 {
 	BraseroDrivePrivate *priv;
-	BraseroHALWatch *watch;
-	LibHalContext *ctx;
 
 	g_return_val_if_fail (drive != NULL, NULL);
 	g_return_val_if_fail (BRASERO_IS_DRIVE (drive), NULL);
@@ -508,12 +507,7 @@ brasero_drive_get_display_name (BraseroDrive *drive)
 		return g_strdup (_("Image File"));
 	}
 
-	watch = brasero_hal_watch_get_default ();
-	ctx = brasero_hal_watch_get_ctx (watch);
-	return libhal_device_get_property_string (ctx,
-						  priv->udi,
-	  					  DEVICE_MODEL,
-						  NULL);
+	return g_strdup (priv->name);
 }
 
 /**
@@ -670,6 +664,12 @@ brasero_drive_finalize (GObject *object)
 	BraseroDrivePrivate *priv;
 
 	priv = BRASERO_DRIVE_PRIVATE (object);
+
+	if (priv->name) {
+		libhal_free_string (priv->name);
+		priv->name = NULL;
+	}
+
 	if (priv->path) {
 		libhal_free_string (priv->path);
 		priv->path = NULL;
@@ -914,6 +914,11 @@ brasero_drive_init_real (BraseroDrive *drive)
 
 	watch = brasero_hal_watch_get_default ();
 	ctx = brasero_hal_watch_get_ctx (watch);
+
+	priv->name = libhal_device_get_property_string (ctx,
+							priv->udi,
+							DEVICE_MODEL,
+							NULL);
 
 	priv->path = libhal_device_get_property_string (ctx,
 							priv->udi,
