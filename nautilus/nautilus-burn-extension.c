@@ -416,6 +416,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
         mime_type = nautilus_file_info_get_mime_type (file_info);
         DEBUG_PRINT ("Mime type: %s\n", mime_type);
         if (! mime_type) {
+                g_object_unref (file);
                 return NULL;
         }
 
@@ -517,6 +518,8 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 
                 g_free (device_path);
         }
+
+        g_object_unref (file);
 
         if (drive != NULL) {
                 g_object_unref (drive);
@@ -919,7 +922,7 @@ nautilus_module_list_types (const GType **types,
 {
         static GType type_list [1];
 
-        type_list[0] = NAUTILUS_TYPE_DISC_BURN;
+        type_list [0] = NAUTILUS_TYPE_DISC_BURN;
 
         *types = type_list;
         *num_types = 1;
