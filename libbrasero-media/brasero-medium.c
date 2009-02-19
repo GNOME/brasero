@@ -1067,7 +1067,7 @@ brasero_medium_init_caps (BraseroMedium *self,
 	priv = BRASERO_MEDIUM_PRIVATE (self);
 
 	/* These special media don't support/need burnfree and simulation */
-	if (priv->info & BRASERO_MEDIUM_PLUS)
+	if (priv->info & (BRASERO_MEDIUM_PLUS|BRASERO_MEDIUM_BD))
 		return;
 
 	if (priv->info & BRASERO_MEDIUM_CD) {
@@ -2168,7 +2168,7 @@ brasero_medium_get_contents (BraseroMedium *self,
 		BRASERO_MEDIA_LOG ("Disc id %i", BRASERO_GET_32 (info->disc_id));
 		priv->id = g_strdup_printf ("%d", BRASERO_GET_32 (info->disc_id));
 	}
-	else if (!(priv->info & BRASERO_MEDIUM_CD))
+	else if (priv->info & BRASERO_MEDIUM_DVD)
 		brasero_medium_get_DVD_id (self, handle, code);
 
 	if (info->erasable)

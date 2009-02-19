@@ -1,5 +1,12 @@
 2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fixed two small problems with BD-RE (trying to get an id and checking simul)
+
+	* libbrasero-media/brasero-medium.c (brasero_medium_init_caps),
+	(brasero_medium_get_contents):
+
+2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Avoid a race condition with dbus. Initialize drive name right from the start
 	so we don't use dbus from a thread now.
 
