@@ -75,68 +75,31 @@ static void  nautilus_disc_burn_register_type (GTypeModule *module);
 
 static GObjectClass *parent_class;
 
-#undef DEBUG_ENABLE
-
-#ifdef DEBUG_ENABLE
-#ifdef G_HAVE_ISO_VARARGS
-#  define DEBUG_PRINT(...) debug_print (__VA_ARGS__);
-#elif defined(G_HAVE_GNUC_VARARGS)
-#  define DEBUG_PRINT(args...) debug_print (args);
-#endif
-#else
-#ifdef G_HAVE_ISO_VARARGS
-#  define DEBUG_PRINT(...)
-#elif defined(G_HAVE_GNUC_VARARGS)
-#  define DEBUG_PRINT(args...)
-#endif
-#endif
-
-#ifdef DEBUG_ENABLE
-static FILE *debug_out = NULL;
+//#define DEBUG_PRINT(format_MACRO,...)           g_print (format_MACRO, ##__VA_ARGS__);
+#define DEBUG_PRINT(format_MACRO,...)             
 
 static void
-debug_init (void)
-{
-        const char path [50] = "burn_extension_debug_XXXXXX";
-        int  fd = g_file_open_tmp (path, NULL, NULL);
-        if (fd >= 0) {
-                debug_out = fdopen (fd, "a");
-        }
-}
-
-static void
-debug_print (const char *format, ...)
-{
-        va_list args;
-
-        va_start (args, format);
-        vfprintf ((debug_out ? debug_out : stderr), format, args);
-        vfprintf (stderr, format, args);
-        va_end (args);
-        if (debug_out)
-                fflush (debug_out);
-}
-#endif
-
-static void
-launch_process (char **argv, gint next_arg, GtkWindow *parent)
+launch_process (GPtrArray *argv, GtkWindow *parent)
 {
         GtkWidget *dialog;
         GError *error;
+        gchar **args;
 
         if (parent && GTK_WIDGET (parent)->window) {
                 guint xid;
 
 		xid = gdk_x11_drawable_get_xid (GDK_DRAWABLE (GTK_WIDGET (parent)->window));
                 if (xid > 0) {
-                        argv [next_arg++] = g_strdup ("-x");
-                        argv [next_arg] = g_strdup_printf ("%d", xid);
+                        g_ptr_array_add (argv, g_strdup ("-x"));
+                        g_ptr_array_add (argv, g_strdup_printf ("%d", xid));
                 }
         }
 
         error = NULL;
+        g_ptr_array_add (argv, NULL);
+        args = (gchar **) g_ptr_array_free (argv, FALSE);
         if (!g_spawn_async (NULL,
-                            argv, NULL,
+                            args, NULL,
                             0,
                             NULL, NULL,
                             NULL,
@@ -158,20 +121,21 @@ launch_process (char **argv, gint next_arg, GtkWindow *parent)
 
                 g_error_free (error);
         }
+
+        g_strfreev (args);
 }
 
 static void
 launch_brasero_on_window (GtkWindow *window)
 {
         int i;
-        char *argv [5] = { NULL, };
+        GPtrArray        *argv = NULL;
 
-        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
-        argv [1] = g_strdup ("-n");
+        argv = g_ptr_array_new ();
+        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
+        g_ptr_array_add (argv, g_strdup ("-n"));
 
-        launch_process (argv, 2, window);
-	for (i = 0; argv [i]; i++)
-		g_free (argv [i]);
+        launch_process (argv, window);
 }
 
 static void
@@ -181,34 +145,22 @@ write_activate_cb (NautilusMenuItem *item,
         launch_brasero_on_window (GTK_WINDOW (user_data));
 }
 
-static char *
-uri_to_path (const char *uri)
-{
-        GFile *file;
-        char  *path;
-
-        file = g_file_new_for_uri (uri);
-        path = g_file_get_path (file);
-        g_object_unref (file);
-        return path;
-}
-
 static void
 write_iso_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
         NautilusFileInfo *file_info;
-        char             *argv [6] = { NULL, };
+        GPtrArray        *argv = NULL;
         char             *uri;
-        char             *image_name;
+        char             *image_path;
         int               i;
 
         file_info = g_object_get_data (G_OBJECT (item), "file_info");
 
         uri = nautilus_file_info_get_uri (file_info);
-        image_name = uri_to_path (uri);
+        image_path = g_filename_from_uri (uri, NULL, NULL);
 
-        if (image_name == NULL) {
+        if (image_path == NULL) {
                 g_warning ("Can not get local path for URI %s", uri);
                 g_free (uri);
                 return;
@@ -216,14 +168,12 @@ write_iso_activate_cb (NautilusMenuItem *item,
 
         g_free (uri);
 
-        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
-        argv [1] = g_strdup ("-i");
-        argv [2] = image_name;
+        argv = g_ptr_array_new ();
+        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
+        g_ptr_array_add (argv, g_strdup ("-i"));
+        g_ptr_array_add (argv, image_path);
 
-        launch_process (argv, 3, GTK_WINDOW (user_data));
-
-	for (i = 0; argv [i]; i++)
-		g_free (argv [i]);
+        launch_process (argv, GTK_WINDOW (user_data));
 }
 
 static void
@@ -231,7 +181,7 @@ copy_disc_activate_cb (NautilusMenuItem *item,
                        gpointer          user_data)
 {
         int               i;
-        char             *argv [6] = { NULL, };
+        GPtrArray        *argv = NULL;
         char             *device_path;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
@@ -241,14 +191,12 @@ copy_disc_activate_cb (NautilusMenuItem *item,
                 return;
         }
 
-        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
-        argv [1] = g_strdup ("-c");
-        argv [2] = device_path;
+        argv = g_ptr_array_new ();
+        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
+        g_ptr_array_add (argv, g_strdup ("-c"));
+        g_ptr_array_add (argv, g_strdup (device_path));
 
-        launch_process (argv, 3, GTK_WINDOW (user_data));
-
-	for (i = 0; argv [i]; i++)
-		g_free (argv [i]);
+        launch_process (argv, GTK_WINDOW (user_data));
 }
 
 static void
@@ -256,7 +204,7 @@ blank_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
         int               i;
-        char             *argv [6]= { NULL, };
+        GPtrArray        *argv = NULL;
         char             *device_path;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
@@ -266,14 +214,12 @@ blank_disc_activate_cb (NautilusMenuItem *item,
                 return;
         }
 
-        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
-        argv [1] = g_strdup ("-b");
-        argv [2] = device_path;
+        argv = g_ptr_array_new ();
+        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
+        g_ptr_array_add (argv, g_strdup ("-b"));
+        g_ptr_array_add (argv, g_strdup (device_path));
 
-        launch_process (argv, 3, GTK_WINDOW (user_data));
-
-	for (i = 0; argv [i]; i++)
-		g_free (argv [i]);
+        launch_process (argv, GTK_WINDOW (user_data));
 }
 
 static void
@@ -281,7 +227,7 @@ check_disc_activate_cb (NautilusMenuItem *item,
                         gpointer          user_data)
 {
         int               i;
-        char             *argv [6] = { NULL, };
+        GPtrArray        *argv = NULL;
         char             *device_path;
 
         device_path = g_object_get_data (G_OBJECT (item), "drive_device_path");
@@ -291,14 +237,12 @@ check_disc_activate_cb (NautilusMenuItem *item,
                 return;
         }
 
-        argv [0] = g_build_filename (BINDIR, "brasero", NULL);
-        argv [1] = g_strdup ("-k");
-        argv [2] = device_path;
+        argv = g_ptr_array_new ();
+        g_ptr_array_add (argv, g_build_filename (BINDIR, "brasero", NULL));
+        g_ptr_array_add (argv, g_strdup ("-k"));
+        g_ptr_array_add (argv, g_strdup (device_path));
 
-        launch_process (argv, 3, GTK_WINDOW (user_data));
-
-	for (i = 0; argv [i]; i++)
-		g_free (argv [i]);
+        launch_process (argv, GTK_WINDOW (user_data));
 }
 
 static gboolean
@@ -409,7 +353,6 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 
         if (file == NULL) {
                 DEBUG_PRINT ("No file found\n");
-
                 return NULL;
         }
 
@@ -530,6 +473,7 @@ nautilus_disc_burn_get_file_items (NautilusMenuProvider *provider,
 
         g_free (mime_type);
 
+        DEBUG_PRINT ("Items returned\n");
         return items;
 }
 
@@ -797,11 +741,6 @@ static void
 nautilus_disc_burn_instance_init (NautilusDiscBurn *burn)
 {
         burn->priv = NAUTILUS_DISC_BURN_GET_PRIVATE (burn);
-
-#ifdef DEBUG_ENABLE
-        debug_init ();
-#endif
-
         burn->priv->start_monitor_id = g_timeout_add_seconds (1,
                                                               (GSourceFunc)start_monitor,
                                                               burn);
@@ -904,7 +843,10 @@ nautilus_disc_burn_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule *module)
 {
+        DEBUG_PRINT ("Initializing nautilus disc recorder\n");
+
         brasero_media_library_start ();
+        DEBUG_PRINT ("Libbrasero-media started\n");
 
         nautilus_disc_burn_register_type (module);
 }
@@ -912,6 +854,8 @@ nautilus_module_initialize (GTypeModule *module)
 void
 nautilus_module_shutdown (void)
 {
+        DEBUG_PRINT ("Shutting down nautilus disc recorder\n");
+
         /* Don't do that in case another module would need the library */
         //brasero_media_library_stop ();
 }

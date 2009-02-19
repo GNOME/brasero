@@ -1,5 +1,19 @@
 2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	reviewed by: <delete if not using a buddy>
+
+	* libbrasero-media/brasero-drive.c
+	(brasero_drive_get_display_name), (brasero_drive_finalize),
+	(brasero_drive_init_real):
+	* nautilus/nautilus-burn-extension.c (launch_process),
+	(launch_brasero_on_window), (write_iso_activate_cb),
+	(copy_disc_activate_cb), (blank_disc_activate_cb),
+	(check_disc_activate_cb), (nautilus_disc_burn_get_file_items),
+	(nautilus_disc_burn_instance_init), (nautilus_module_initialize),
+	(nautilus_module_shutdown):
+
+2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix memleak
 
 	* nautilus/nautilus-burn-extension.c
