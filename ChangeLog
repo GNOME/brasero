@@ -1,3 +1,12 @@
+2009-02-19  Philippe Rouquier  <ykw@localhost.localdomain>
+
+	Changes to make BDR(E) and DVD-RAM appear in the media selection dialog
+	Probing was correct for media but drive capabilities had been forgotten
+
+	* libbrasero-media/brasero-drive.c (brasero_drive_init_real):
+	* libbrasero-media/brasero-medium.c
+	(brasero_medium_can_be_written), (brasero_medium_can_be_rewritten):
+
 2009-02-19  Luis Medinas  <lmedinas@gnome.org>
 
 	* src/brasero-project-manager.c:

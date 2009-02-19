@@ -3158,6 +3158,16 @@ brasero_medium_can_be_written (BraseroMedium *medium)
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL))
 		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
 
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRAM) != 0;
+
+	/* All types of BD-R */
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BD|BRASERO_MEDIUM_WRITABLE))
+		return (caps & BRASERO_DRIVE_CAPS_BDR) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE))
+		return (caps & BRASERO_DRIVE_CAPS_BDRW) != 0;
+
 	return FALSE;
 }
 
@@ -3201,6 +3211,12 @@ brasero_medium_can_be_rewritten (BraseroMedium *medium)
 
 	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVDRW_PLUS_DL))
 		return (caps & BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_DVD_RAM))
+		return (caps & BRASERO_DRIVE_CAPS_DVDRAM) != 0;
+
+	if (BRASERO_MEDIUM_IS (priv->info, BRASERO_MEDIUM_BDRE))
+		return (caps & BRASERO_DRIVE_CAPS_BDRW) != 0;
 
 	return FALSE;
 }

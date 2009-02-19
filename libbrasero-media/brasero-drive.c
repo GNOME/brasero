@@ -954,6 +954,12 @@ brasero_drive_init_real (BraseroDrive *drive)
 		priv->caps |= BRASERO_DRIVE_CAPS_DVDR_PLUS_DL;
 	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdplusrwdl", NULL))
 		priv->caps |= BRASERO_DRIVE_CAPS_DVDRW_PLUS_DL;
+	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.dvdram", NULL))
+		priv->caps |= BRASERO_DRIVE_CAPS_DVDRAM;
+	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.bdr", NULL))
+		priv->caps |= BRASERO_DRIVE_CAPS_BDR;
+	if (libhal_device_get_property_bool (ctx, priv->udi, "storage.cdrom.bdre", NULL))
+		priv->caps |= BRASERO_DRIVE_CAPS_BDRW;
 
 	BRASERO_MEDIA_LOG ("Drive caps are %d", priv->caps);
 
