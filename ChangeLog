@@ -1,5 +1,14 @@
 2009-02-20  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Remove BD-R flags as support is untested.
+	Also, improve readibility of flags for DVD+/-R by using the standard
+	macro for flags which allows to specify unsupported flags
+
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_export_caps):
+
+2009-02-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Make sure we don't create a second structure when among flags already
 	set we find a pair of flags equal or encompassing those we want to add
 

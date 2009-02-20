@@ -738,7 +738,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	if (result != BRASERO_BURN_OK)
 		return result;
 
-	/* growisofs can write images to any type of DVD-R as long as it's blank */
+	/* growisofs can write images to any type of BD/DVD-R as long as it's blank */
 	input = brasero_caps_image_new (BRASERO_PLUGIN_IO_ACCEPT_PIPE|
 					BRASERO_PLUGIN_IO_ACCEPT_FILE,
 					BRASERO_IMAGE_FORMAT_BIN);
@@ -766,7 +766,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input);
 	g_slist_free (output);
 
-	/* and images to DVD RW +/-(restricted) whatever the status */
+	/* and images to BD/DVD RW +/-(restricted) whatever the status */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
 					BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_RAM|
@@ -783,7 +783,7 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	g_slist_free (output);
 	g_slist_free (input);
 
-	/* for DATA type recording discs can be also appendable */
+	/* for DATA type recording discs can be also appended */
 	input_joliet = brasero_caps_data_new (BRASERO_IMAGE_FS_ISO|
 					      BRASERO_IMAGE_FS_UDF|
 					      BRASERO_IMAGE_ISO_FS_LEVEL_3|
@@ -816,8 +816,9 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	brasero_plugin_link_caps (plugin, output, input_symlink);
 	g_slist_free (output);
 
-	/* growisofs has the possibility to record to closed DVD+RW/-restricted
-	 * and to append some more data to them which makes them unique */
+	/* growisofs has the possibility to record to closed BD/DVD+RW
+    	 * +/-restricted and to append some more data to them which makes them
+     	 * unique */
 	output = brasero_caps_disc_new (BRASERO_MEDIUM_BD|
 					BRASERO_MEDIUM_DVD|
 					BRASERO_MEDIUM_DUAL_L|
@@ -840,80 +841,27 @@ brasero_growisofs_export_caps (BraseroPlugin *plugin, gchar **error)
 	/* see NOTE for DVD-RW restricted overwrite */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_RESTRICTED_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
-	/* DVD+R and DVD-R. DAO and growisofs don't always work well with these
-	 * types of media and with some drives. So don't allow it if the
-	 * workaround is set in GConf. */
+	/* DVD+R and DVD-R. DAO and growisofs doesn't always work well with
+	 * these types of media and with some drives. So don't allow it if the
+	 * workaround is set in GConf (and it should be by default). */
 	client = gconf_client_get_default ();
 	use_dao_gconf_key = gconf_client_get_bool (client,
 						   GCONF_KEY_DAO_FLAG,
 						   NULL);
 	g_object_unref (client);
+
 	if (use_dao_gconf_key == TRUE) {
 		BRASERO_PLUGIN_ADD_STANDARD_DVDR_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 		BRASERO_PLUGIN_ADD_STANDARD_DVDR_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 	}
 	else {
 		/* All above standard flags minus DAO flag support */
-		brasero_plugin_set_flags (plugin,
-					  BRASERO_MEDIUM_DVDR_PLUS|
-					  BRASERO_MEDIUM_DUAL_L|
-					  BRASERO_MEDIUM_BLANK,                         
-					  (BRASERO_BURN_FLAG_BURNPROOF|                 
-					  BRASERO_BURN_FLAG_OVERBURN|                   
-					  BRASERO_BURN_FLAG_MULTI|                      
-					  BRASERO_BURN_FLAG_NOGRACE) &                  
-					  (~BRASERO_BURN_FLAG_NONE),                         
-					  BRASERO_BURN_FLAG_NONE);                      
-
-		brasero_plugin_set_flags (plugin,
-					  BRASERO_MEDIUM_DVDR_PLUS|
-					  BRASERO_MEDIUM_DUAL_L|
-					  BRASERO_MEDIUM_APPENDABLE|
-					  BRASERO_MEDIUM_HAS_DATA,
-					  (BRASERO_BURN_FLAG_MERGE|
-					  BRASERO_BURN_FLAG_APPEND|
-					  BRASERO_BURN_FLAG_BURNPROOF|
-					  BRASERO_BURN_FLAG_OVERBURN|
-					  BRASERO_BURN_FLAG_MULTI|
-					  BRASERO_BURN_FLAG_NOGRACE) &
-					  (~BRASERO_BURN_FLAG_NONE),
-					  BRASERO_BURN_FLAG_APPEND);
-
-		brasero_plugin_set_flags (plugin,
-					  BRASERO_MEDIUM_DVDR|
-					  BRASERO_MEDIUM_DUAL_L|
-					  BRASERO_MEDIUM_JUMP|
-					  BRASERO_MEDIUM_BLANK,
-					  (BRASERO_BURN_FLAG_BURNPROOF|
-					  BRASERO_BURN_FLAG_OVERBURN|
-					  BRASERO_BURN_FLAG_MULTI|
-					  BRASERO_BURN_FLAG_DUMMY|
-					  BRASERO_BURN_FLAG_NOGRACE) &
-					  (~BRASERO_BURN_FLAG_NONE),
-					  BRASERO_BURN_FLAG_NONE);
-
-		brasero_plugin_set_flags (plugin,
-					  BRASERO_MEDIUM_DVDR|
-					  BRASERO_MEDIUM_DUAL_L|
-					  BRASERO_MEDIUM_JUMP|
-					  BRASERO_MEDIUM_APPENDABLE|
-					  BRASERO_MEDIUM_HAS_DATA,
-					  (BRASERO_BURN_FLAG_APPEND|
-					  BRASERO_BURN_FLAG_MERGE|
-					  BRASERO_BURN_FLAG_BURNPROOF|
-					  BRASERO_BURN_FLAG_OVERBURN|
-					  BRASERO_BURN_FLAG_MULTI|
-					  BRASERO_BURN_FLAG_DUMMY|
-					  BRASERO_BURN_FLAG_NOGRACE) &
-					  (~BRASERO_BURN_FLAG_NONE),
-					  BRASERO_BURN_FLAG_APPEND);
+		BRASERO_PLUGIN_ADD_STANDARD_DVDR_FLAGS (plugin, BRASERO_BURN_FLAG_DAO);
+		BRASERO_PLUGIN_ADD_STANDARD_DVDR_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_DAO);
 	}
 
 	/* for DVD+RW */
 	BRASERO_PLUGIN_ADD_STANDARD_DVDRW_PLUS_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
-
-	/* for BD-R */
-	BRASERO_PLUGIN_ADD_STANDARD_BD_R_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
 
 	/* for BD-RE */
 	BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS (plugin, BRASERO_BURN_FLAG_NONE);
