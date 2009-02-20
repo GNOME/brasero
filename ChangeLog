@@ -1,5 +1,12 @@
 2009-02-20  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make sure we don't create a second structure when among flags already
+	set we find a pair of flags equal or encompassing those we want to add
+
+	* src/burn-plugin.c (brasero_plugin_set_flags_real):
+
+2009-02-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Improved reading function choice, allowing READ 10 to be chosen for BDs
 
 	* libbrasero-media/burn-volume-source.c

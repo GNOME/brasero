@@ -487,6 +487,14 @@ brasero_plugin_set_flags_real (GSList *flags_list,
 		flags->media = media;
 		flags_list = g_slist_prepend (flags_list, flags);
 	}
+	else for (pair = flags->pairs; pair; pair = pair->next) {
+		/* have a look at the BraseroPluginFlagPair to see if there
+		 * is an exactly similar pair of flags or at least which
+		 * encompasses it to avoid redundancy. */
+		if ((pair->supported & supported) == supported
+		&&  (pair->compulsory & compulsory) == compulsory)
+			return flags_list;
+	}
 
 	pair = g_new0 (BraseroPluginFlagPair, 1);
 	pair->supported = supported;
