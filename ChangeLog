@@ -1,5 +1,13 @@
 2009-02-20  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix for multisession DVDs when the new session is beyond the 4 Gio 
+	boundary.
+
+	* src/plugins/growisofs/burn-growisofs.c
+	(brasero_growisofs_set_argv_record):
+
+2009-02-20  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix flags for BD-RE which should now work.
 
 	* src/burn-plugin.h:

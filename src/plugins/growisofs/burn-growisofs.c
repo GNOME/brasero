@@ -431,6 +431,12 @@ brasero_growisofs_set_argv_record (BraseroGrowisofs *growisofs,
 	if (flags & BRASERO_BURN_FLAG_DAO)
 		g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=dao"));
 
+	/* This is necessary for multi session discs when a new session starts
+	 * beyond the 4Gio boundary since it may not be readable afterward.
+	 * To work, this requires a kernel > 2.6.8.
+	 * FIXME: This would deserve a flag to warn the user. */
+	g_ptr_array_add (argv, g_strdup ("-use-the-force-luke=4gms"));
+
 	if (!(flags & BRASERO_BURN_FLAG_MULTI)) {
 		/* This option seems to help creating DVD more compatible
 		 * with DVD readers.
