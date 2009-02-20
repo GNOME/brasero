@@ -348,7 +348,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_NOGRACE) &			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_NONE);			\
-	/* This is a DVDR with data data can be merged or at least appended */	\
+	/* This is a DVDR with data; data can be merged or at least appended */	\
 	brasero_plugin_set_flags (plugin_MACRO,					\
 				  BRASERO_MEDIUM_DVDR|				\
 				  BRASERO_MEDIUM_DUAL_L|			\
@@ -557,7 +557,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
  */
 #define BRASERO_PLUGIN_ADD_STANDARD_BD_RE_FLAGS(plugin_MACRO, unsupported_MACRO)			\
 	brasero_plugin_set_flags (plugin_MACRO,					\
-				  BRASERO_MEDIUM_DVDRW_PLUS|			\
+				  BRASERO_MEDIUM_BDRE|				\
 				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_UNFORMATTED|			\
 				  BRASERO_MEDIUM_BLANK,				\
@@ -567,7 +567,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_MULTI);			\
 	brasero_plugin_set_flags (plugin_MACRO,					\
-				  BRASERO_MEDIUM_DVDRW_PLUS|			\
+				  BRASERO_MEDIUM_BDRE|				\
 				  BRASERO_MEDIUM_DUAL_L|			\
 				  BRASERO_MEDIUM_APPENDABLE|			\
 				  BRASERO_MEDIUM_CLOSED|			\
@@ -578,6 +578,7 @@ brasero_plugin_register (BraseroPlugin *plugin, gchar **error)			\
 				  BRASERO_BURN_FLAG_MERGE) &			\
 				  (~unsupported_MACRO),				\
 				  BRASERO_BURN_FLAG_MULTI);
+
 G_END_DECLS
 
 #endif /* _BURN_PLUGIN_H_ */
