@@ -317,22 +317,30 @@ brasero_volume_source_open_device_handle (BraseroDeviceHandle *handle,
 
 	/* check which read function should be used. */
 	result = brasero_mmc2_get_configuration_feature (handle,
-							 BRASERO_SCSI_FEAT_RD_DVD,
+							 BRASERO_SCSI_FEAT_RD_CD,
 							 &hdr,
 							 &size,
 							 NULL);
-	if (result != BRASERO_SCSI_OK) {
-		BRASERO_MEDIA_LOG ("GET CONFIGURATION failed for feature READ DVD. Using READCD.");
+	if (result == BRASERO_SCSI_OK && hdr->desc->current) {
+		BRASERO_MEDIA_LOG ("READ CD current. Using READCD");
 		src->read = brasero_volume_source_readcd_device_handle;
+		g_free (hdr);
+		return src;
 	}
-	else if (!hdr->desc->current) {
-		BRASERO_MEDIA_LOG ("READ DVD not current. Using READCD.");
-		src->read = brasero_volume_source_readcd_device_handle;
+	
+	result = brasero_mmc2_get_configuration_feature (handle,
+							 BRASERO_SCSI_FEAT_RD_RANDOM,
+							 &hdr,
+							 &size,
+							 NULL);
+	if (result == BRASERO_SCSI_OK && hdr->desc->current) {
+		BRASERO_MEDIA_LOG ("READ DVD current. Using READ10");
+		src->read = brasero_volume_source_read10_device_handle;
 		g_free (hdr);
 	}
 	else {
-		BRASERO_MEDIA_LOG ("READ DVD current. Using READ10");
-		src->read = brasero_volume_source_read10_device_handle;
+		BRASERO_MEDIA_LOG ("READ DVD not current. Using READCD.");
+		src->read = brasero_volume_source_readcd_device_handle;
 		g_free (hdr);
 	}
 
