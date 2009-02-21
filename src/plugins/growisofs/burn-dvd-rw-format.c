@@ -105,7 +105,8 @@ brasero_dvd_rw_format_set_argv (BraseroProcess *process,
 
 	brasero_job_get_media (BRASERO_JOB (process), &media);
 	brasero_job_get_flags (BRASERO_JOB (process), &flags);
-        if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
+        if (!BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_BDRE)
+	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_PLUS)
 	&&  !BRASERO_MEDIUM_IS (media, BRASERO_MEDIUM_DVDRW_RESTRICTED)) {
 		gchar *blank_str;
 
@@ -183,6 +184,7 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 		return result;
 
 	output = brasero_caps_disc_new (media|
+					BRASERO_MEDIUM_BDRE|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED|
 					BRASERO_MEDIUM_SEQUENTIAL);
@@ -191,6 +193,7 @@ brasero_dvd_rw_format_export_caps (BraseroPlugin *plugin, gchar **error)
 
 	brasero_plugin_set_blank_flags (plugin,
 					media|
+					BRASERO_MEDIUM_BDRE|
 					BRASERO_MEDIUM_PLUS|
 					BRASERO_MEDIUM_RESTRICTED,
 					BRASERO_BURN_FLAG_NOGRACE,
