@@ -56,10 +56,6 @@ void brasero_utils_init (void);
 
 GQuark brasero_error_quark (void);
 
-gchar *brasero_utils_get_time_string (guint64 time,
-				      gboolean with_unit,
-				      gboolean round);
-
 gchar *brasero_utils_get_time_string_from_size (gint64 time,
 						gboolean with_unit,
 						gboolean round);

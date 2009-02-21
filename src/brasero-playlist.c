@@ -889,7 +889,7 @@ brasero_playlist_parse_result (GObject *object,
 		genre = g_file_info_get_attribute_string (info, BRASERO_IO_GENRE);
 
 		if (len > 0)
-			len_string = brasero_utils_get_time_string (len, TRUE, FALSE);
+			len_string = brasero_units_get_time_string (len, TRUE, FALSE);
 		else
 			len_string = NULL;
 
@@ -921,7 +921,7 @@ brasero_playlist_parse_result (GObject *object,
 			    -1);
 
   	if (total_length > 0)
-		len_string = brasero_utils_get_time_string (total_length, TRUE, FALSE);
+		len_string = brasero_units_get_time_string (total_length, TRUE, FALSE);
 	else
 		len_string = NULL;
 

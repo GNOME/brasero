@@ -250,7 +250,7 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 		gchar *size_string;
 
 		if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO)
-			size_string = brasero_utils_get_time_string (files_size, TRUE, FALSE);
+			size_string = brasero_units_get_time_string (files_size, TRUE, FALSE);
 		else if (manager->priv->type == BRASERO_PROJECT_TYPE_DATA)
 			size_string = g_format_size_for_display (files_size);
 		else
@@ -265,7 +265,7 @@ brasero_project_manager_set_statusbar (BraseroProjectManager *manager,
 		gchar *size_string = NULL;
 
 		if (manager->priv->type == BRASERO_PROJECT_TYPE_AUDIO) {
-			size_string = brasero_utils_get_time_string (files_size, TRUE, FALSE);
+			size_string = brasero_units_get_time_string (files_size, TRUE, FALSE);
 			status_string = g_strdup_printf (ngettext ("%d file is supported (%s)", "%d files are supported (%s)", valid_num),
 							 valid_num,
 							 size_string);

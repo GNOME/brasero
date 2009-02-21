@@ -1,5 +1,33 @@
 2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Code cleanup: remove a duplicate function
+
+	* src/brasero-audio-disc.c (brasero_audio_disc_add_gap),
+	(brasero_audio_disc_set_row_from_metadata),
+	(brasero_audio_disc_add_uri_real), (brasero_audio_disc_merge_gaps),
+	(brasero_audio_disc_add_slices),
+	(brasero_audio_disc_edit_single_song_properties):
+	* src/brasero-jacket-edit.c (brasero_jacket_edit_set_audio_tracks):
+	* src/brasero-player.c (brasero_player_update_position):
+	* src/brasero-playlist.c (brasero_playlist_parse_result):
+	* src/brasero-project-manager.c
+	(brasero_project_manager_set_statusbar):
+	* src/brasero-project.c
+	(brasero_project_save_audio_project_plain_text):
+	* src/brasero-song-properties.c (brasero_song_props_update_length),
+	(brasero_song_props_gap_changed_cb):
+	* src/brasero-split-dialog.c (brasero_split_dialog_cut),
+	(brasero_split_dialog_remove_range),
+	(brasero_split_dialog_merge_clicked_cb):
+	* src/brasero-tray.c (brasero_tray_icon_set_tooltip):
+	* src/brasero-utils.c (brasero_utils_get_time_string_from_size),
+	(brasero_utils_get_sectors_string):
+	* src/brasero-utils.h:
+	* src/brasero-video-tree-model.c
+	(brasero_video_tree_model_get_value):
+
+2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Fix #572621 – Missing translator comments
 	Added comments for the printf argument
 

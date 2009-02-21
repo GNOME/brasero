@@ -186,7 +186,7 @@ brasero_video_tree_model_get_value (GtkTreeModel *model,
 		g_value_init (value, G_TYPE_STRING);
 
 		if (!file->is_loading) {
-			text = brasero_utils_get_time_string (file->end - file->start, TRUE, FALSE);
+			text = brasero_units_get_time_string (file->end - file->start, TRUE, FALSE);
 			g_value_set_string (value, text);
 			g_free (text);
 		}

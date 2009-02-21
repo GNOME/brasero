@@ -255,10 +255,10 @@ brasero_player_update_position (BraseroPlayer *player)
 		return;
 
 	adjustment = gtk_range_get_adjustment (GTK_RANGE (player->priv->progress));
-	len_string = brasero_utils_get_time_string (player->priv->end - player->priv->start, FALSE, FALSE);
+	len_string = brasero_units_get_time_string (player->priv->end - player->priv->start, FALSE, FALSE);
 
 	value = gtk_range_get_value (GTK_RANGE (player->priv->progress));
-	pos_string = brasero_utils_get_time_string (value, FALSE, FALSE);
+	pos_string = brasero_units_get_time_string (value, FALSE, FALSE);
 
 	/**
 	 * Translators: this is the position being played in the stream. The 

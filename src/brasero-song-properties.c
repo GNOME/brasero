@@ -75,7 +75,7 @@ brasero_song_props_update_length (BraseroSongProps *self)
 	start = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->start));
 	gap = gtk_spin_button_get_value (GTK_SPIN_BUTTON (self->priv->gap)) * GST_SECOND;
 
-	length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end + gap), TRUE, FALSE);
+	length_str = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end + gap), TRUE, FALSE);
 	gtk_label_set_markup (GTK_LABEL (self->priv->length), length_str);
 	g_free (length_str);
 }
@@ -111,7 +111,7 @@ brasero_song_props_gap_changed_cb (GtkSpinButton *button,
 	start = brasero_time_button_get_value (BRASERO_TIME_BUTTON (self->priv->start));
 	gap = gtk_spin_button_get_value (GTK_SPIN_BUTTON (self->priv->gap)) * GST_SECOND;
 
-	length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end + gap), TRUE, FALSE);
+	length_str = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end + gap), TRUE, FALSE);
 	gtk_label_set_markup (GTK_LABEL (self->priv->length), length_str);
 	g_free (length_str);
 }

@@ -220,9 +220,9 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		&& !brasero_split_dialog_size_error (self))
 			return FALSE;
 
-		length_str = brasero_utils_get_time_string (pos - priv->start, TRUE, FALSE);
-		start_str = brasero_utils_get_time_string (priv->start, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
+		length_str = brasero_units_get_time_string (pos - priv->start, TRUE, FALSE);
+		start_str = brasero_units_get_time_string (priv->start, TRUE, FALSE);
+		end_str = brasero_units_get_time_string (pos, TRUE, FALSE);
 
 		gtk_list_store_append (priv->model, &iter);
 		gtk_list_store_set (priv->model, &iter,
@@ -238,9 +238,9 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 		g_free (end_str);
 
 		pos ++;
-		length_str = brasero_utils_get_time_string (end - pos, TRUE, FALSE);
-		start_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (end, TRUE, FALSE);
+		length_str = brasero_units_get_time_string (end - pos, TRUE, FALSE);
+		start_str = brasero_units_get_time_string (pos, TRUE, FALSE);
+		end_str = brasero_units_get_time_string (end, TRUE, FALSE);
 		
 		gtk_list_store_append (priv->model, &iter);
 		gtk_list_store_set (priv->model, &iter,
@@ -326,8 +326,8 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 	}
 	else {
 		/* we are in the middle of an existing slice */
-		length_str = brasero_utils_get_time_string (pos - slice.start, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
+		length_str = brasero_units_get_time_string (pos - slice.start, TRUE, FALSE);
+		end_str = brasero_units_get_time_string (pos, TRUE, FALSE);
 
 		gtk_tree_model_sort_convert_iter_to_child_iter (GTK_TREE_MODEL_SORT (model),
 								&child,
@@ -349,9 +349,9 @@ brasero_split_dialog_cut (BraseroSplitDialog *self,
 	/* create a new one */
 	gtk_list_store_append (priv->model, &child);
 
-	length_str = brasero_utils_get_time_string (slice.end - pos, TRUE, FALSE);
-	start_str = brasero_utils_get_time_string (pos, TRUE, FALSE);
-	end_str = brasero_utils_get_time_string (slice.end, TRUE, FALSE);
+	length_str = brasero_units_get_time_string (slice.end - pos, TRUE, FALSE);
+	start_str = brasero_units_get_time_string (pos, TRUE, FALSE);
+	end_str = brasero_units_get_time_string (slice.end, TRUE, FALSE);
 
 	gtk_list_store_set (priv->model, &child,
 			    START_COL, pos,
@@ -412,9 +412,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 		&& !brasero_split_dialog_size_error (self))
 			end = length - BRASERO_MIN_AUDIO_TRACK_LENGTH;
 
-		length_str = brasero_utils_get_time_string (start - priv->start, TRUE, FALSE);
-		start_str = brasero_utils_get_time_string (priv->start, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (start, TRUE, FALSE);
+		length_str = brasero_units_get_time_string (start - priv->start, TRUE, FALSE);
+		start_str = brasero_units_get_time_string (priv->start, TRUE, FALSE);
+		end_str = brasero_units_get_time_string (start, TRUE, FALSE);
 
 		gtk_list_store_append (priv->model, &iter);
 		gtk_list_store_set (priv->model, &iter,
@@ -432,9 +432,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 		if (end == length)
 			return;
 
-		length_str = brasero_utils_get_time_string (length - end, TRUE, FALSE);
-		start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (length, TRUE, FALSE);
+		length_str = brasero_units_get_time_string (length - end, TRUE, FALSE);
+		start_str = brasero_units_get_time_string (end, TRUE, FALSE);
+		end_str = brasero_units_get_time_string (length, TRUE, FALSE);
 		
 		gtk_list_store_append (priv->model, &iter);
 		gtk_list_store_set (priv->model, &iter,
@@ -482,8 +482,8 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 				&& !brasero_split_dialog_size_error (self))
 					end = track_end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
 
-				start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
-				length_str = brasero_utils_get_time_string (track_end - end, TRUE, FALSE);
+				start_str = brasero_units_get_time_string (end, TRUE, FALSE);
+				length_str = brasero_units_get_time_string (track_end - end, TRUE, FALSE);
 				gtk_list_store_set (priv->model, &child,
 						    START_COL, end,
 						    START_STR_COL, start_str,
@@ -506,8 +506,8 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			&& !brasero_split_dialog_size_error (self))
 				start = track_start + BRASERO_MIN_AUDIO_TRACK_LENGTH;
 
-			start_str = brasero_utils_get_time_string (start, TRUE, FALSE);
-			length_str = brasero_utils_get_time_string (start - track_start, TRUE, FALSE);
+			start_str = brasero_units_get_time_string (start, TRUE, FALSE);
+			length_str = brasero_units_get_time_string (start - track_start, TRUE, FALSE);
 			gtk_list_store_set (priv->model, &child,
 					    END_COL, start,
 					    END_STR_COL, start_str,
@@ -534,9 +534,9 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 
 			gtk_list_store_append (priv->model, &child);
 
-			length_str = brasero_utils_get_time_string (track_end - end, TRUE, FALSE);
-			start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
-			end_str = brasero_utils_get_time_string (track_end, TRUE, FALSE);
+			length_str = brasero_units_get_time_string (track_end - end, TRUE, FALSE);
+			start_str = brasero_units_get_time_string (end, TRUE, FALSE);
+			end_str = brasero_units_get_time_string (track_end, TRUE, FALSE);
 
 			gtk_list_store_set (priv->model, &child,
 					    START_COL, end,
@@ -569,8 +569,8 @@ brasero_split_dialog_remove_range (BraseroSplitDialog *self,
 			&& !brasero_split_dialog_size_error (self))
 				end = track_end - BRASERO_MIN_AUDIO_TRACK_LENGTH;
 
-			start_str = brasero_utils_get_time_string (end, TRUE, FALSE);
-			length_str = brasero_utils_get_time_string (track_end - end, TRUE, FALSE);
+			start_str = brasero_units_get_time_string (end, TRUE, FALSE);
+			length_str = brasero_units_get_time_string (track_end - end, TRUE, FALSE);
 			gtk_list_store_set (priv->model, &child,
 					    START_COL, end,
 					    START_STR_COL, start_str,
@@ -862,9 +862,9 @@ brasero_split_dialog_merge_clicked_cb (GtkButton *button,
 
 		} while (gtk_tree_selection_iter_is_selected (selection, &next));
 
-		length_str = brasero_utils_get_time_string (end - start, TRUE, FALSE);
-		start_str = brasero_utils_get_time_string (start, TRUE, FALSE);
-		end_str = brasero_utils_get_time_string (end, TRUE, FALSE);
+		length_str = brasero_units_get_time_string (end - start, TRUE, FALSE);
+		start_str = brasero_units_get_time_string (start, TRUE, FALSE);
+		end_str = brasero_units_get_time_string (end, TRUE, FALSE);
 
 		gtk_list_store_set (priv->model, &child,
 				    START_COL, (gint64) start,

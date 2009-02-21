@@ -183,64 +183,6 @@ brasero_utils_unregister_string (const gchar *string)
 }
 
 gchar *
-brasero_utils_get_time_string (guint64 time,
-			       gboolean with_unit,
-			       gboolean round)
-{
-	gint64 second, minute, hour;
-
-	time /= 1000000000;
-	hour = time / 3600;
-	time = time % 3600;
-	minute = time / 60;
-
-	if (round) {
-		if ((time % 60) > 30)
-			minute ++;
-
-		second = 0;
-	}
-	else
-		second = time % 60;
-
-	if (hour) {
-		if (with_unit) {
-			if (hour && minute && second)
-				return g_strdup_printf ("%lli h %02lli min %02lli",
-							 hour,
-							 minute,
-							 second);
-			else if (hour && minute)
-				return g_strdup_printf ("%lli h %02lli",
-							 hour,
-							 minute);
-			else
-				return g_strdup_printf ("%lli h",hour);
-		}
-		else if (hour && minute && second)
-			return g_strdup_printf ("%lli:%02lli:%02lli",
-						 hour,
-						 minute,
-						 second);
-		else if (hour && minute)
-			return g_strdup_printf ("%lli:%02lli", hour, minute);
-	}
-
-	if (with_unit) {
-		if (!second)
-			/* Translators: %lli is a duration expressed in minutes */
-			return g_strdup_printf (_("%lli min"), minute);
-		else
-			/* Translators: the first %lli is the number of minutes
-			 * and the second one is the number of seconds.
-			 * The whole string expresses a duration */
-			return g_strdup_printf (_("%lli:%02lli min"), minute, second);
-	}
-	else
-		return g_strdup_printf ("%lli:%02lli", minute, second);
-}
-
-gchar *
 brasero_utils_get_time_string_from_size (gint64 size,
 					 gboolean with_unit,
 					 gboolean round)
@@ -248,7 +190,7 @@ brasero_utils_get_time_string_from_size (gint64 size,
 	guint64 time = 0;
 
 	time = BRASERO_BYTES_TO_DURATION (size);
-	return brasero_utils_get_time_string (time, with_unit, round);
+	return brasero_units_get_time_string (time, with_unit, round);
 }
 
 enum {
@@ -320,7 +262,7 @@ brasero_utils_get_sectors_string (gint64 sectors,
 
 	if (time_format) {
 		size = sectors * GST_SECOND / 75;
-		return brasero_utils_get_time_string (size, with_unit, round);
+		return brasero_units_get_time_string (size, with_unit, round);
 	}
 	else {
 		size = sectors * 2048;

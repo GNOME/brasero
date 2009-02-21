@@ -2206,7 +2206,7 @@ brasero_project_save_audio_project_plain_text (BraseroProject *proj,
 		if (written != strlen (info->title))
 			goto error;
 
-		time = brasero_utils_get_time_string (song->end - song->start, TRUE, FALSE);
+		time = brasero_units_get_time_string (song->end - song->start, TRUE, FALSE);
 		if (time) {
 			written = fwrite ("\t", 1, 1, file);
 			if (written != 1)

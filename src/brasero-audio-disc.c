@@ -1023,7 +1023,7 @@ brasero_audio_disc_add_gap (BraseroAudioDisc *disc,
 			g_free (string);
 		}
 
-		size = brasero_utils_get_time_string (gap, TRUE, FALSE);
+		size = brasero_units_get_time_string (gap, TRUE, FALSE);
 		gtk_list_store_set (GTK_LIST_STORE (model), &gap_iter,
 				    SIZE_COL, size,
 				    LENGTH_COL, gap,
@@ -1289,7 +1289,7 @@ brasero_audio_disc_set_row_from_metadata (BraseroAudioDisc *disc,
 		brasero_audio_disc_size_changed (disc);
 	}
 
-	size_string = brasero_utils_get_time_string (length, TRUE, FALSE);
+	size_string = brasero_units_get_time_string (length, TRUE, FALSE);
 	gtk_list_store_set (GTK_LIST_STORE (model), iter,
 			    SIZE_COL, size_string,
 			    ICON_COL, icon_string,
@@ -1747,7 +1747,7 @@ brasero_audio_disc_add_uri_real (BraseroAudioDisc *disc,
 		disc->priv->sectors += BRASERO_DURATION_TO_SECTORS (length);
 		brasero_audio_disc_size_changed (disc);
 
-		string = brasero_utils_get_time_string (length, TRUE, FALSE);
+		string = brasero_units_get_time_string (length, TRUE, FALSE);
 		gtk_list_store_set (GTK_LIST_STORE (store), &iter,
 				    START_COL, start,
 				    END_COL, end,
@@ -2316,7 +2316,7 @@ brasero_audio_disc_merge_gaps (BraseroAudioDisc *disc,
 			    -1);
 
 	length_pos += length_iter;
-	size = brasero_utils_get_time_string (length_pos, TRUE, FALSE);
+	size = brasero_units_get_time_string (length_pos, TRUE, FALSE);
 	gtk_list_store_set (GTK_LIST_STORE (model), pos,
 			    SIZE_COL, size,
 			    LENGTH_COL, length_pos,
@@ -2824,7 +2824,7 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 			    -1);
 	disc->priv->sectors -= BRASERO_DURATION_TO_SECTORS (BRASERO_AUDIO_TRACK_LENGTH (start, end));
 
-	string = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
+	string = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
 	gtk_list_store_set (GTK_LIST_STORE (model), parent,
 			    LENGTH_SET_COL, TRUE,
 			    START_COL, slice->start,
@@ -2840,7 +2840,7 @@ brasero_audio_disc_add_slices (BraseroAudioDisc *disc,
 		gtk_list_store_insert_after (GTK_LIST_STORE (model), &row, parent);
 		gtk_tree_model_iter_next (model, parent);
 
-		string = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
+		string = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (slice->start, slice->end), TRUE, FALSE); 
 		gtk_list_store_set (GTK_LIST_STORE (model), &row,
 				    URI_COL, uri,
 				    NAME_COL, name,
@@ -3282,7 +3282,7 @@ brasero_audio_disc_edit_single_song_properties (BraseroAudioDisc *disc,
 					   &end,
 					   &gap);
 
-	length_str = brasero_utils_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end), TRUE, FALSE);
+	length_str = brasero_units_get_time_string (BRASERO_AUDIO_TRACK_LENGTH (start, end), TRUE, FALSE);
 
 	gtk_tree_model_get_iter (model, &iter, treepath);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
