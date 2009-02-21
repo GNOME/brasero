@@ -183,6 +183,8 @@ brasero_burn_progress_display_session_info (BraseroBurnProgress *obj,
 	mn = time / 60;
 	sec = ((int) time) % 60;
 
+	/* Translators: first %02i is hours, the second one is minutes and the
+	 * third one is seconds. */
 	text = g_strdup_printf (_("Total time: %02i:%02i:%02i"), hrs, mn, sec);
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (obj->priv->progress), text);
 	g_free (text);
@@ -418,6 +420,8 @@ brasero_burn_progress_set_status (BraseroBurnProgress *self,
 		mn = remaining / 60;
 		sec = ((int) remaining) % 60;
 
+		/* Translators: first %02i is hours, the second one is minutes
+		 * and the third one is seconds. */
 		text = g_strdup_printf (_("Estimated remaining time: %02i:%02i:%02i"), hrs, mn, sec);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->priv->progress), text);
 		g_free (text);

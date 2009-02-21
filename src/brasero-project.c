@@ -1682,10 +1682,13 @@ brasero_project_set_uri (BraseroProject *project,
 	/* update the name of the main window */
     	BRASERO_GET_BASENAME_FOR_DISPLAY (uri, name);
 	if (type == BRASERO_PROJECT_TYPE_DATA)
+		/* Translators: %s is the name of the project */
 		title = g_strdup_printf (_("Brasero - %s (Data Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_AUDIO)
+		/* Translators: %s is the name of the project */
 		title = g_strdup_printf (_("Brasero - %s (Audio Disc)"), name);
 	else if (type == BRASERO_PROJECT_TYPE_VIDEO)
+		/* Translators: %s is the name of the project */
 		title = g_strdup_printf (_("Brasero - %s (Video Disc)"), name);
 	else
 		title = NULL;

@@ -1,5 +1,19 @@
 2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Fix #572621 – Missing translator comments
+	Added comments for the printf argument
+
+	* libbrasero-media/brasero-units.c (brasero_units_get_time_string):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_format_disc_speed):
+	* src/brasero-progress.c
+	(brasero_burn_progress_display_session_info),
+	(brasero_burn_progress_set_status):
+	* src/brasero-project.c (brasero_project_set_uri):
+	* src/brasero-utils.c (brasero_utils_get_time_string):
+
+2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Added a few translators comments
 	Merged strings as suggested in bug #572622 – Merge strings
 

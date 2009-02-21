@@ -228,8 +228,12 @@ brasero_utils_get_time_string (guint64 time,
 
 	if (with_unit) {
 		if (!second)
+			/* Translators: %lli is a duration expressed in minutes */
 			return g_strdup_printf (_("%lli min"), minute);
 		else
+			/* Translators: the first %lli is the number of minutes
+			 * and the second one is the number of seconds.
+			 * The whole string expresses a duration */
 			return g_strdup_printf (_("%lli:%02lli min"), minute, second);
 	}
 	else

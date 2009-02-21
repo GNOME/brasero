@@ -61,6 +61,7 @@ brasero_units_get_time_string (guint64 time,
 	if (hour) {
 		if (with_unit) {
 			if (hour && minute && second)
+				/* FIXME: mark these strings for translation? */
 				return g_strdup_printf ("%lli h %02lli min %02lli",
 							 hour,
 							 minute,
@@ -83,8 +84,13 @@ brasero_units_get_time_string (guint64 time,
 
 	if (with_unit) {
 		if (!second)
+			/* Translators: %lli is a duration expressed in minutes
+			 * hence the "min" as unit. */
 			return g_strdup_printf (_("%lli min"), minute);
 		else
+			/* Translators: the first %lli is the number of minutes
+			 * and the second one is the number of seconds.
+			 * The whole string expresses a duration */
 			return g_strdup_printf (_("%lli:%02lli min"), minute, second);
 	}
 	else
