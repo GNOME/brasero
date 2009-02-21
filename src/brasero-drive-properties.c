@@ -159,7 +159,7 @@ brasero_drive_properties_set_tmpdir_info (BraseroDriveProperties *self,
 	vol_size = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 	g_object_unref (info);
 
-	string = brasero_utils_get_size_string (vol_size, TRUE, TRUE);
+	string = g_format_size_for_display (vol_size);
 	gtk_label_set_text (GTK_LABEL (priv->tmpdir_size), string);
 	g_free (string);
 }

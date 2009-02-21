@@ -597,7 +597,7 @@ brasero_data_tree_model_get_value (GtkTreeModel *model,
 		else {
 			gchar *text;
 
-			text = brasero_utils_get_size_string (BRASERO_FILE_NODE_SECTORS (node) * 2048, TRUE, TRUE);
+			text = g_format_size_for_display (BRASERO_FILE_NODE_SECTORS (node) * 2048);
 			g_value_set_string (value, text);
 			g_free (text);
 		}

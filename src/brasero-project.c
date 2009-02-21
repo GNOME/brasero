@@ -46,6 +46,8 @@
 
 #include <gconf/gconf-client.h>
 
+#include <gst/gst.h>
+
 #ifdef BUILD_PLAYLIST
 #include <totem-pl-parser.h>
 #endif
@@ -576,6 +578,22 @@ brasero_project_new ()
 }
 
 /********************************** size ***************************************/
+gchar *
+brasero_project_get_sectors_string (gint64 sectors,
+				    gboolean time_format)
+{
+	gint64 size_bytes;
+
+	if (time_format) {
+		size_bytes = sectors * GST_SECOND / 75;
+		return brasero_units_get_time_string (size_bytes, TRUE, FALSE);
+	}
+	else {
+		size_bytes = sectors * 2048;
+		return g_format_size_for_display (size_bytes);
+	}
+}
+
 static void
 brasero_project_update_project_size (BraseroProject *project,
 				     guint64 sectors)
@@ -592,10 +610,8 @@ brasero_project_update_project_size (BraseroProject *project,
 
 	gtk_statusbar_pop (GTK_STATUSBAR (status), project->priv->status_ctx);
 
-	string = brasero_utils_get_sectors_string (sectors,
-						   !BRASERO_IS_DATA_DISC (project->priv->current),
-						   TRUE,
-						   FALSE);
+	string = brasero_project_get_sectors_string (sectors,
+						     !BRASERO_IS_DATA_DISC (project->priv->current));
 	if (project->priv->merging) {
 		gchar *medium_string;
 		BraseroMedium *medium;
@@ -741,10 +757,8 @@ _wait_for_ready_state (GtkWidget *dialog)
 			g_free (string);
 		}
 
-		string = brasero_utils_get_sectors_string (project->priv->sectors,
-							   !BRASERO_IS_DATA_DISC (project->priv->current),
-							   TRUE,
-							   FALSE);
+		string = brasero_project_get_sectors_string (project->priv->sectors,
+							     !BRASERO_IS_DATA_DISC (project->priv->current));
 
 		size_str = g_strdup_printf (_("Project estimated size: %s"), string);
 		g_free (string);

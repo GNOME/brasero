@@ -1,5 +1,20 @@
 2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Some more code cleanup: remove unneeded functions
+
+	* src/brasero-data-tree-model.c
+	(brasero_data_tree_model_get_value):
+	* src/brasero-dest-selection.c
+	(brasero_dest_selection_format_medium_string):
+	* src/brasero-drive-properties.c
+	(brasero_drive_properties_set_tmpdir_info):
+	* src/brasero-project.c (brasero_project_get_sectors_string),
+	(brasero_project_update_project_size), (_wait_for_ready_state):
+	* src/brasero-utils.c:
+	* src/brasero-utils.h:
+
+2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Code cleanup: remove a duplicate function
 
 	* src/brasero-audio-disc.c (brasero_audio_disc_add_gap),

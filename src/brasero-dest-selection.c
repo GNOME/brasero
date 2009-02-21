@@ -390,10 +390,10 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 					     BraseroMedium *medium)
 {
 	gchar *label;
-	gint64 size = 0;
 	gchar *medium_name;
 	gchar *size_string;
 	BraseroMedia media;
+	gint64 size_bytes = 0;
 	BraseroBurnFlag flags;
 	BraseroTrackType input = { 0, };
 	BraseroDestSelectionPrivate *priv;
@@ -449,12 +449,12 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	|| ((flags & BRASERO_BURN_FLAG_BLANK_BEFORE_WRITE)
 	&&  brasero_burn_caps_can_blank (priv->caps, priv->session) == BRASERO_BURN_OK)) {
 		brasero_medium_get_capacity (medium,
-					     &size,
+					     &size_bytes,
 					     NULL);
 	}
 	else if (flags & (BRASERO_BURN_FLAG_MERGE|BRASERO_BURN_FLAG_APPEND)) {
 		brasero_medium_get_free_space (medium,
-					       &size,
+					       &size_bytes,
 					       NULL);
 	}
 	else if (media & BRASERO_MEDIUM_CLOSED) {
@@ -466,12 +466,12 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 		}
 
 		brasero_medium_get_capacity (medium,
-					     &size,
+					     &size_bytes,
 					     NULL);
 	}
 	else {
 		brasero_medium_get_capacity (medium,
-					     &size,
+					     &size_bytes,
 					     NULL);
 	}
 
@@ -479,11 +479,11 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	if (input.type == BRASERO_TRACK_TYPE_AUDIO
 	|| (input.type == BRASERO_TRACK_TYPE_DISC
 	&& (input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO)))
-		size_string = brasero_utils_get_time_string_from_size (size,
-								       TRUE,
-								       TRUE);
+		brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes),
+					       TRUE,
+					       TRUE);
 	else
-		size_string = g_format_size_for_display (size);
+		size_string = g_format_size_for_display (size_bytes);
 
 	/* NOTE for translators: the first %s is the medium name, the second %s
 	 * is its available free space. "Free" here is the free space available. */
