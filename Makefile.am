@@ -19,8 +19,7 @@ EXTRA_DIST = 			\
 	intltool-merge.in	\
 	intltool-update.in	\
 	gnome-doc-utils.make	\
-	libbrasero-media.pc	\
-	m4
+	libbrasero-media.pc
 
 noinst_PROGRAMS =
 

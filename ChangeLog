@@ -1,5 +1,13 @@
 2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Make "make dist" not mess the tarballs with .svn leftovers by removing
+	the m4 directory which was useless anyway.
+
+	* Makefile.am:
+	* configure.in:
+
+2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Try to merge strings for good this time.
 
 	* src/brasero-burn-options.c (brasero_burn_options_valid_media_cb):
