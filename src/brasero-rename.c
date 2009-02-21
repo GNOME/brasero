@@ -84,7 +84,7 @@ brasero_rename_set_show_keep_default (BraseroRename *self,
 			return;
 
 		gtk_combo_box_prepend_text (GTK_COMBO_BOX (priv->combo),
-					     _("<keep current values>"));
+					     _("<Keep current values>"));
 	}
 
 	priv->show_default = show;
@@ -276,7 +276,7 @@ brasero_rename_init (BraseroRename *object)
 	gtk_box_pack_start (GTK_BOX (object), priv->combo, FALSE, FALSE, 0);
 
 	priv->show_default = 1;
-	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("<keep current values>"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("<Keep current values>"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Insert text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Delete text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (priv->combo), _("Substitute text"));

@@ -231,6 +231,7 @@ brasero_file_chooser_init (BraseroFileChooser *obj)
 	obj->priv->filter_video = filter;
 
 	filter = gtk_file_filter_new ();
+	/* Translators: this is an image, a picture, not a "Disc Image" */
 	gtk_file_filter_set_name (filter, _("Image files only"));
 	gtk_file_filter_add_mime_type (filter, "image/*");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (obj->priv->chooser), filter);
