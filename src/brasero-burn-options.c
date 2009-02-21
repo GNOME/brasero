@@ -336,7 +336,7 @@ brasero_burn_options_valid_media_cb (BraseroSessionCfg *session,
 		message = brasero_notify_message_add (BRASERO_NOTIFY (priv->message_output),
 						      _("Would you like to burn beyond the disc reported capacity?"),
 						      _("The size of the project is too large for the disc and you must remove files from the project otherwise."
-							"\nYou may want to use this option if you are using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
+							"\nYou may want to use this option if you're using 90 or 100 min CD-R(W) which cannot be properly recognised and therefore need overburn option."
 							"\nNOTE: This option might cause failure."),
 						      -1,
 						      BRASERO_NOTIFY_CONTEXT_SIZE);
