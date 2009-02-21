@@ -1,5 +1,12 @@
 2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
+	Brasero was not returning all results which led to a blocking exploration
+	of directories.
+
+	* src/brasero-io.c (brasero_io_return_result_idle):
+
+2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
+
 	Allow formatting/long blanking of BD-RE
 
 	* src/plugins/growisofs/burn-dvd-rw-format.c

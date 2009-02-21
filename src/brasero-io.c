@@ -302,25 +302,22 @@ brasero_io_return_result_idle (gpointer callback_data)
 	BraseroIOResultCallbackData *data;
 	BraseroIOJobResult *result;
 	BraseroIOPrivate *priv;
+	guint results_id;
 	int i;
 
 	priv = BRASERO_IO_PRIVATE (self);
 
 	g_mutex_lock (priv->lock);
+
+	/* Put that to 0 for now so that a new idle call will be scheduled while
+	 * we are in the loop. That way if we block the other one will be able 
+	 * to deliver the results. */
+	results_id = priv->results_id;
 	priv->results_id = 0;
-	if (!priv->results) {
-		g_mutex_unlock (priv->lock);
-		return FALSE;
-	}
 
 	/* Return several results at a time that can be a huge speed gain.
-	 * What should be the value that provides speed and responsiveness. */
-	for (i = 0; i < 25; i ++) {
-		if (!priv->results) {
-			g_mutex_unlock (priv->lock);
-			return FALSE;
-		}
-
+	 * What should be the value that provides speed and responsiveness? */
+	for (i = 0; priv->results && i < 25; i ++) {
 		result = priv->results->data;
 		priv->results = g_slist_remove (priv->results, result);
 
@@ -340,11 +337,19 @@ brasero_io_return_result_idle (gpointer callback_data)
 						       result->base->destroy,
 						       FALSE);
 		brasero_io_job_result_free (result);
+
 		g_mutex_lock (priv->lock);
 	}
 
-	g_mutex_unlock (priv->lock);
+	if (!priv->results_id && priv->results) {
+		/* There are still results and no idle call is scheduled so we
+		 * have to restart ourselves to make sure we empty the queue */
+		priv->results_id = results_id;
+		g_mutex_unlock (priv->lock);
+		return TRUE;
+	}
 
+	g_mutex_unlock (priv->lock);
 	return FALSE;
 }
 
