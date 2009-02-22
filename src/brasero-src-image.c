@@ -576,7 +576,7 @@ brasero_src_image_clicked (GtkButton *button)
 
 	filter = gtk_file_filter_new ();
 	/* Translators: this a disc image here */
-	gtk_file_filter_set_name (filter, _("Image files only"));
+	gtk_file_filter_set_name (filter, C_("disc", "Image files only"));
 	gtk_file_filter_add_mime_type (filter, mimes [0]);
 	gtk_file_filter_add_mime_type (filter, mimes [1]);
 	gtk_file_filter_add_mime_type (filter, mimes [2]);

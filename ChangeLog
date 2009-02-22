@@ -1,9 +1,19 @@
 2009-02-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
 
-	Fix a crash introduced by late cleanups
+	Fix bug #572279 – Selecting image files also shows "picture" files
 
+	* src/brasero-file-chooser.c (brasero_file_chooser_init):
+	* src/brasero-project.c (brasero_project_add_uris_cb):
+	* src/brasero-src-image.c (brasero_src_image_clicked):
+
+2009-02-22  Philippe Rouquier  <bonfire-app@wanadoo.fr>
+
+	Fix a crash introduced by late cleanups
 	* src/brasero-dest-selection.c
 	(brasero_dest_selection_format_medium_string):
+
+	Fix a mem leak and add some more debug to catch endless loop bug
+	* src/plugins/transcode/burn-normalize.c
 
 2009-02-21  Philippe Rouquier  <ykw@localhost.localdomain>
 
