@@ -479,9 +479,9 @@ brasero_dest_selection_format_medium_string (BraseroMediumSelection *selection,
 	if (input.type == BRASERO_TRACK_TYPE_AUDIO
 	|| (input.type == BRASERO_TRACK_TYPE_DISC
 	&& (input.subtype.media & BRASERO_MEDIUM_HAS_AUDIO)))
-		brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes),
-					       TRUE,
-					       TRUE);
+		size_string = brasero_units_get_time_string (BRASERO_BYTES_TO_DURATION (size_bytes),
+							     TRUE,
+							     TRUE);
 	else
 		size_string = g_format_size_for_display (size_bytes);
 
